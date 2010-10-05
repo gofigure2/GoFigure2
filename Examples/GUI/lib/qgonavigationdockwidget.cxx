@@ -55,25 +55,31 @@ int main(int argc, char** argv)
   QCoreApplication::setOrganizationDomain("http://gofigure2.sourceforge.net");
 
   QGoNavigationDockWidget*
-  dock2d = new QGoNavigationDockWidget(0, 2);
+      dock2d = new QGoNavigationDockWidget(0, GoFigure::TWO_D);
 
   dock2d->show();
 
   QGoNavigationDockWidget*
-  dock3d = new QGoNavigationDockWidget(0, 3);
+      dock2dwt = new QGoNavigationDockWidget(0, GoFigure::TWO_D_WITH_T );
+
+  dock2dwt->show();
+
+  QGoNavigationDockWidget*
+  dock3d = new QGoNavigationDockWidget(0, GoFigure::THREE_D);
 
   dock3d->show();
 
   QGoNavigationDockWidget*
-  dock4d = new QGoNavigationDockWidget(0, 4);
+      dock3dwt = new QGoNavigationDockWidget(0, GoFigure::THREE_D_WITH_T);
 
-  dock4d->show();
+  dock3dwt->show();
 
   QTimer* timer = new QTimer;
   timer->setSingleShot(true);
   QObject::connect(timer, SIGNAL(timeout()), dock2d, SLOT(close()));
+  QObject::connect(timer, SIGNAL(timeout()), dock2dwt, SLOT(close()));
   QObject::connect(timer, SIGNAL(timeout()), dock3d, SLOT(close()));
-  QObject::connect(timer, SIGNAL(timeout()), dock4d, SLOT(close()));
+  QObject::connect(timer, SIGNAL(timeout()), dock3dwt, SLOT(close()));
 
   if (atoi(argv[1]) == 1)
     {
@@ -87,8 +93,9 @@ int main(int argc, char** argv)
   app.closeAllWindows();
 
   delete dock2d;
+  delete dock2dwt;
   delete dock3d;
-  delete dock4d;
+  delete dock3dwt;
   delete timer;
 
   return output;

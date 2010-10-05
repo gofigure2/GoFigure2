@@ -43,6 +43,7 @@
 
 #include "vtkMySQLDatabase.h"
 #include "ContourMeshStructure.h"
+#include "ContourMeshContainer.h"
 #include <vector>
 #include <map>
 
@@ -54,7 +55,7 @@ public:
 
   GoDBImport(std::string iServerName, std::string iLogin,
              std::string iPassword, int iImagingSessionID,
-             std::string iFilename);
+             std::string iFilename, int iCurrentTimePoint);
   virtual ~GoDBImport();
 
   /** \brief get the data needed from the import file to
@@ -87,7 +88,7 @@ public:
   /** \brief return a vector of the info needed to add in the
   visu the contours read from the import file and
   saved in the database*/
-  std::vector<ContourMeshStructure> GetNewContourInfo()
+  ContourMeshContainer* GetNewContourInfo()
   {
     return this->m_NewContourInfoForVisu;
   }
@@ -98,13 +99,14 @@ private:
   std::string                       m_Password;
   std::string                       m_Login;
   int                               m_ImagingSessionID;
+  int                               m_CurrentTimePoint;
   std::ifstream                     m_InFile;
   std::vector<int>                  m_NewMeshIDs;
   std::vector<int>                  m_NewContourIDs;
   std::vector<int>                  m_NewTracksIDs;
   std::vector<int>                  m_NewLineageIDs;
-  std::vector<ContourMeshStructure> m_NewContourInfoForVisu;
-  std::vector<ContourMeshStructure> m_NewMeshInfoForVisu;
+  ContourMeshContainer*             m_NewContourInfoForVisu;
+  ContourMeshContainer*             m_NewMeshInfoForVisu;
 
   /** \brief Return the name of the field contained in the line*/
   std::string FindFieldName(std::string iLine);

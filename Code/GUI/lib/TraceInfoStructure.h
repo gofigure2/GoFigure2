@@ -41,7 +41,7 @@
 #ifndef __TraceInfoStructure_h
 #define __TraceInfoStructure_h
 
-#include "QTableWidgetChild.h"
+#include "QGoTableWidget.h"
 #include "GoDBCollectionOfTraces.h"
 #include "ContourMeshStructureHelper.h"
 #include <QWidget>
@@ -54,16 +54,16 @@ struct TraceInfoStructure
   std::string CollectionNameID;
   std::string CollectionOf;
   std::string CollectionOfID;
-  QTableWidgetChild* Table;
+  QGoTableWidget* Table;
   GoDBCollectionOfTraces* CollectionOfTraces;
   ContourMeshStructureMultiIndexContainer* ListTracesInfoForVisu;
 
-  TraceInfoStructure() : Table(NULL), CollectionOfTraces(NULL),
+  TraceInfoStructure() : CollectionOfTraces(NULL),
     ListTracesInfoForVisu(NULL)
         {}
 
   TraceInfoStructure(const std::string& iTraceName, QWidget* parent) :
-    Table(NULL), CollectionOfTraces(NULL), ListTracesInfoForVisu(NULL)
+    CollectionOfTraces(NULL), ListTracesInfoForVisu(NULL)
     {
     SetInfoStructure(iTraceName, parent);
     }
@@ -71,10 +71,10 @@ struct TraceInfoStructure
   ~TraceInfoStructure()
     {
     // Table has a parent that is supposed to delete it
-    //if( Table )
-    //   {
-    //   delete Table;
-    //   }
+    if( Table )
+       {
+       delete Table;
+       }
     if (ListTracesInfoForVisu)
       {
       delete ListTracesInfoForVisu;
@@ -115,8 +115,9 @@ struct TraceInfoStructure
     CollectionNameID += "ID";
     CollectionOfID = CollectionOf;
     CollectionOfID += "ID";
-    CollectionOfTraces = new GoDBCollectionOfTraces(CollectionName, TraceName);
-    Table = new QTableWidgetChild(iParent);
+    //CollectionOfTraces = new GoDBCollectionOfTraces(CollectionName, TraceName);
+    CollectionOfTraces = new GoDBCollectionOfTraces();
+    Table = new QGoTableWidget(iParent);
   }
 
   };

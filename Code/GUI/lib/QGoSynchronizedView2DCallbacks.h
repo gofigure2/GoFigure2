@@ -59,8 +59,10 @@ class QGoSynchronizedView2DCallbacks
 public:
   /** \brief the constructor do most of the work :
    *  add observers & callbacks to QGoSynchronizedViews of the vector
+   * \tparam TContainer container of QGoSynchronizedView2D*
    */
-  QGoSynchronizedView2DCallbacks(std::vector<QGoSynchronizedView2D*> ioOpenSynchronizedViews);
+  explicit QGoSynchronizedView2DCallbacks(
+      std::vector< QGoSynchronizedView2D* > iOpenSynchronizedViews );
 
   ~QGoSynchronizedView2DCallbacks();
 
@@ -96,6 +98,28 @@ private:
    *  to transmit it to the callback function
    */
   std::vector<QGoSynchronizedView2D*> m_openSynchronizedView;
+
+  template< typename TIterator >
+  void Initialize ( TIterator iBegin, TIterator iEnd )
+    {
+    m_openSynchronizedView.clear();
+
+    // create the callback object
+    SetupCallBack();
+
+    TIterator it = iBegin;
+
+    // for every opened SynchronizedView :
+    while( it != iEnd )
+      {
+      // add the callback object as an observer of each SynchronizedView's camera
+      (*it)->GetCamera()->AddObserver( vtkCommand::ModifiedEvent,
+                                       QGoSynchronizedView2DCallbacks::m_vtkCallBackCamSync);
+      m_openSynchronizedView.push_back( *it );
+      ++it;
+      }
+    }
+
   };
 
 #endif // QGoSynchronizedView2DCallbacks_H

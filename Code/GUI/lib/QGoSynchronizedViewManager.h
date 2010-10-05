@@ -100,7 +100,7 @@ public:
       m_Synchronizer3D->addSynchronizedView( tempNewSynchronizedView );
       }
     // tell the QGoSynchronizedView who is his Manager
-    tempNewSynchronizedView->SetCurrentViewManager( this );
+    tempNewSynchronizedView->SetViewManager( this );
     // we add the QGoSynchronizedView to the list of open
     // QGoSynchronizedViews
     m_openSynchronizedViews3D.push_back( tempNewSynchronizedView );
@@ -134,7 +134,7 @@ public:
       m_Synchronizer->addSynchronizedView( tempNewSynchronizedView );
       }
     // tell the QGoSynchronizedView who is his Manager
-    tempNewSynchronizedView->SetCurrentViewManager( this );
+    tempNewSynchronizedView->SetViewManager( this );
     // we add the QGoSynchronizedView to the list of
     //open QGoSynchronizedViews
     m_openSynchronizedViews.push_back( tempNewSynchronizedView );
@@ -204,7 +204,7 @@ public slots:
    */
   void show();
 
-private:
+protected:
 
   // vector to store the open QGoSynchronizedView s
   std::vector<QGoSynchronizedView2D*> m_openSynchronizedViews;
@@ -213,6 +213,7 @@ private:
   QGoSynchronizedView2DCallbacks* m_Synchronizer;
   QGoSynchronizedView3DCallbacks* m_Synchronizer3D;
 
+private:
   Q_DISABLE_COPY( QGoSynchronizedViewManager );
 
   };

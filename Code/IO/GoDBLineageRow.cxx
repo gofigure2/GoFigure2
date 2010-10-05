@@ -70,7 +70,7 @@ void GoDBLineageRow::InitializeMap()
   //GoDBTraceRow::InitializeMap();
   //this->m_MapRow["LineageID"] = ConvertToString<int>(0);
   this->m_TableName = "lineage";
-  this->m_TableIDName = "LineageID";
+  this->m_TableIDName = "lineageID";
   this->m_CollectionName = "None";
   this->m_CollectionIDName = "NoneID";
   this->m_MapRow[this->m_TableIDName] = ConvertToString<int>(0);
@@ -82,7 +82,7 @@ void GoDBLineageRow::InitializeMap()
 //-------------------------------------------------------------------------
 int GoDBLineageRow::DoesThisBoundingBoxLineageExist(vtkMySQLDatabase* DatabaseConnector)
 {
-  return FindOneID(DatabaseConnector, "lineage", "LineageID",
+  return FindOneID(DatabaseConnector, "lineage", "lineageID",
                    "CoordIDMax", this->GetMapValue("CoordIDMax"),
                    "CoordIDMin", this->GetMapValue("CoordIDMin"));
 }
@@ -92,5 +92,5 @@ int GoDBLineageRow::DoesThisBoundingBoxLineageExist(vtkMySQLDatabase* DatabaseCo
 int GoDBLineageRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
 {
   return AddOnlyOneNewObjectInTable<GoDBLineageRow>(DatabaseConnector,
-                                                    "lineage", *this, "LineageID");
+                                                    "lineage", *this, "lineageID");
 }

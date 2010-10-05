@@ -519,12 +519,18 @@ GetAllSeeds()
       // Get indexes of the closest point
       int* index = this->m_Pool->GetItem(i)->GetImageCoordinatesFromWorldCoordinates(worldPosition);
       // Convert it back into world position
-      double spacing[3];
+      std::cout << "SLICE NUMBER: " << this->m_Pool->GetItem(i)->GetSlice() << std::endl;
+      double spacing[3] = {0., 0., 0.};
       this->m_Pool->GetItem(i)->GetInput()->GetSpacing(spacing);
       double correctedPosition[3];
       correctedPosition[0] = static_cast<double>(index[0]) * spacing[0];
       correctedPosition[1] = static_cast<double>(index[1]) * spacing[1];
       correctedPosition[2] = static_cast<double>(index[2]) * spacing[2];
+
+      std::cout << "CORRECTED: " << correctedPosition[0] << " - "
+                               << correctedPosition[1] << " - "
+                               << correctedPosition[2] << std::endl;
+
       oPoints->InsertNextPoint(correctedPosition);
       }
     }

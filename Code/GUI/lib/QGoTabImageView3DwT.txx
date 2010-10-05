@@ -43,6 +43,7 @@
 
 #include "QGoImageView3D.h"
 #include "vtkProperty.h"
+#include "vtkActor.h"
 
 //-------------------------------------------------------------------------
 template< typename TActor >
@@ -160,5 +161,45 @@ HighLightActorsInContainer(
   select_property->Delete();
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+template< typename TActor >
+void
+QGoTabImageView3DwT::
+ShowActorsInContainer(
+    ContourMeshStructureMultiIndexContainer& iContainer,
+    vtkActor* iActor )
+{
+  // Change the corresponding highlighted value in the container
+  typename ContourMeshStructureMultiIndexContainer::index<TActor>::type::iterator
+    actor_it = iContainer.get<TActor>().find(iActor);
+
+  //std::cout << "container date ---" << std::endl;
+
+  if (actor_it != iContainer.get<TActor>().end())
+    {
+
+      bool visibility = iActor->GetVisibility();
+      actor_it->ActorXY->SetVisibility(visibility);
+      this->m_ImageView->ChangeActorProperty( 0,
+                                              actor_it->ActorXY,
+                                              actor_it->ActorXY->GetProperty() );
+      actor_it->ActorXZ->SetVisibility(visibility);
+      this->m_ImageView->ChangeActorProperty( 1,
+                                              actor_it->ActorXZ,
+                                              actor_it->ActorXZ->GetProperty() );
+
+      actor_it->ActorYZ->SetVisibility(visibility);
+      this->m_ImageView->ChangeActorProperty( 2,
+                                              actor_it->ActorYZ,
+                                              actor_it->ActorYZ->GetProperty() );
+
+    ContourMeshStructure temp(*actor_it);
+    temp.Visible = visibility;
+    iContainer.get<TActor>().replace(actor_it, temp);
+    }
+
+ //std::cout << "container updated ---" << std::endl;
+}
 
 #endif // __QGoTabImageView3DwT_txx

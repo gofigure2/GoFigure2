@@ -115,5 +115,8 @@ int main(int argc, char** argv)
   delete menubar;
   delete tab;
 
+  reader->GetOutput()->Delete();
+  reader->Delete();
+
   return output;
 }

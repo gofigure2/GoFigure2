@@ -40,12 +40,14 @@
 #ifndef __QueryDatabaseHelper_h
 #define __QueryDatabaseHelper_h
 
+#include <list>
 #include <vector>
 #include <string>
 #include <map>
+#include <list>
 #include "itkMacro.h"
 #include "vtkMySQLDatabase.h"
-#include "GoDBContourRow.h"
+//#include "GoDBContourRow.h"
 
 #include "QGoIOConfigure.h"
 
@@ -84,10 +86,16 @@ void UpdateValueInDB(vtkMySQLDatabase* DatabaseConnector,
                      std::string TableName, std::string field, std::string newValue,
                      std::string ColumnName, std::string value);
 
-/** \todo to review*/
+//query: "UPDATE TableName SET field = newValue WHERE (ColumnName = value or ...)"
 QGOIO_EXPORT
-void UpdateContourInDB(vtkMySQLDatabase* DatabaseConnector,
-                       GoDBContourRow UpdatedContour);
+void UpdateValueInDB(vtkMySQLDatabase* DatabaseConnector,
+                     std::string TableName, std::string field, std::string newValue,
+                     std::string ColumnName, std::vector<unsigned int> iVectIDs);
+
+/** \todo to review*/
+//QGOIO_EXPORT
+//void UpdateContourInDB(vtkMySQLDatabase* DatabaseConnector,
+  //                     GoDBContourRow UpdatedContour);
 
 QGOIO_EXPORT
 void DropDatabase(

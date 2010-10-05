@@ -41,19 +41,18 @@
 #include <iostream>
 #include <cstdlib>
 
-GoDBTableWidgetContainer::GoDBTableWidgetContainer(std::string iCollectionName,
-                                                   std::string iTracesName)
-  {
+GoDBTableWidgetContainer::GoDBTableWidgetContainer(std::string iTracesName,
+                                                   std::string iCollectionName,
+                                                   int iImgSessionID)
+{
   m_CollectionName   = iCollectionName;
   m_CollectionIDName = m_CollectionName;
   m_CollectionIDName += "ID";
   m_TracesName       = iTracesName;
   m_TracesIDName     = m_TracesName;
   m_TracesIDName     += "ID";
-
-  m_ColumnsInfos     = GetColumnsInfoForTraceTable();
-
-  }
+  m_ImgSessionID     = iImgSessionID;
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -64,7 +63,6 @@ GetColumnsInfoForTraceTable()
   //IsSelected column will correspond to the "IsHighLighted":
   temp.InfoName = "Selected";
   temp.ColumnNameTableWidget = "";
-  //temp.ColumnNameTableWidget = "Selected";
   m_ColumnsInfos.push_back(temp);
   std::pair<GoDBTraceInfoForTableWidget, std::vector<std::string> > PairTemp;
   PairTemp.first = temp;
@@ -145,6 +143,19 @@ GetColumnsInfoForTraceTable()
   PairTemp.first = temp;
   m_RowContainer.push_back(PairTemp);
   temp.Clear();
+  
+  //Get the info for the Alpha value of the trace:
+  temp.ColumnNameDatabase = "Alpha";
+  temp.TableNameDatabase = "color";
+  OtherInfo = "AlphaFor";
+  OtherInfo += this->m_TracesName;
+  temp.InfoName = OtherInfo;
+  temp.TableForeignKeyDatabase = "ColorID";
+  temp.TableKeyDatabase = "ColorID";
+  m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
+  temp.Clear();
 
   //Get the info for the ColorID of the collection:
   std::string ColorCollection = this->m_CollectionName;
@@ -194,6 +205,21 @@ GetColumnsInfoForTraceTable()
   temp.ColumnNameDatabase = "Blue";
   temp.TableNameDatabase = "color";
   OtherInfo = "BlueFor";
+  OtherInfo += this->m_CollectionName;
+  temp.AccessFromTraceTableThroughWhichTable = this->m_CollectionName;
+  temp.InfoName = OtherInfo;
+  temp.TableForeignKeyDatabase = "ColorID";
+  temp.TableKeyDatabase = "ColorID";
+  temp.SameFieldForDifferentValues = true;
+  m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
+  temp.Clear();
+  
+  //Get the info for the Alpha value of the collection:
+  temp.ColumnNameDatabase = "Alpha";
+  temp.TableNameDatabase = "color";
+  OtherInfo = "AlphaFor";
   OtherInfo += this->m_CollectionName;
   temp.AccessFromTraceTableThroughWhichTable = this->m_CollectionName;
   temp.InfoName = OtherInfo;
@@ -375,64 +401,17 @@ GetColumnsInfoForTraceTable()
   temp.Clear();
 
   this->GetCommonInfoForTwoTracesTable();
-  this->GetSpecificInfoForTraceTable();
+  //this->GetSpecificInfoForTraceTable();
 
   return m_ColumnsInfos;
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBTableWidgetContainer::GetCommonInfoForTwoTracesTable()
+void GoDBTableWidgetContainer::GetInfoForColumnIsVisible()
 {
-  GoDBTraceInfoForTableWidget                                       temp;
+  GoDBTraceInfoForTableWidget temp;
   std::pair<GoDBTraceInfoForTableWidget, std::vector<std::string> > PairTemp;
-  if (this->m_TracesName == "contour" || this->m_TracesName == "mesh")
-    {
-    //GoDBTraceInfoForTableWidget temp;
-
-    //Get the info for the Time Point:
-    temp.InfoName = "TimePoint";
-    temp.ColumnNameDatabase = "TCoord";
-    temp.ColumnNameTableWidget = "TimePoint";
-    temp.TableNameDatabase = "coordinate";
-    temp.TableForeignKeyDatabase = "CoordIDMin";
-    temp.TableKeyDatabase = "CoordID";
-    m_ColumnsInfos.push_back(temp);
-    //std::pair<GoDBTraceInfoForTableWidget,std::vector<std::string> > PairTemp;
-    PairTemp.first = temp;
-    m_RowContainer.push_back(PairTemp);
-    temp.Clear();
-    }
-  else
-    {
-    //GoDBTraceInfoForTableWidget temp;
-
-    //Get the info for the Time Point Min:
-    temp.InfoName = "TimePointMin";
-    temp.ColumnNameDatabase = "TCoord";
-    temp.ColumnNameTableWidget = "TimePointMin";
-    temp.TableNameDatabase = "coordinate";
-    temp.TableForeignKeyDatabase = "CoordIDMin";
-    temp.TableKeyDatabase = "CoordID";
-    m_ColumnsInfos.push_back(temp);
-    //std::pair<GoDBTraceInfoForTableWidget,std::vector<std::string> > PairTemp;
-    PairTemp.first = temp;
-    m_RowContainer.push_back(PairTemp);
-    temp.Clear();
-
-    //Get the info for the Time Point Max:
-    temp.InfoName = "TimePointMax";
-    temp.ColumnNameDatabase = "TCoord";
-    temp.ColumnNameTableWidget = "TimePointMax";
-    temp.TableNameDatabase = "coordinate";
-    temp.TableForeignKeyDatabase = "CoordIDMax";
-    temp.TableKeyDatabase = "CoordID";
-    temp.SameFieldForDifferentValues = true;
-    m_ColumnsInfos.push_back(temp);
-    PairTemp.first = temp;
-    m_RowContainer.push_back(PairTemp);
-    temp.Clear();
-    }
   //for the column "is visible or not":
   temp.InfoName = "Show";
   temp.ColumnNameTableWidget = "Show";
@@ -440,18 +419,6 @@ void GoDBTableWidgetContainer::GetCommonInfoForTwoTracesTable()
   PairTemp.first = temp;
   m_RowContainer.push_back(PairTemp);
   temp.Clear();
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void GoDBTableWidgetContainer::GetSpecificInfoForTraceTable()
-{
-  /*GoDBTraceInfoForTableWidget temp;
-  std::pair<GoDBTraceInfoForTableWidget,std::vector<std::string> > PairTemp;
-  if (this->m_TracesName == "mesh")
-    {
-    SetSpecificColumnsInfoForMesh(*/
-
 }
 //--------------------------------------------------------------------------
 
@@ -681,7 +648,7 @@ GetQueryStringForTraceJoinedTables(bool SameFieldsInQuery)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-GoDBTableWidgetContainer::DBTableWidgetContainerType
+/*GoDBTableWidgetContainer::DBTableWidgetContainerType
 GoDBTableWidgetContainer::GetRowContainer()
 {
   return m_RowContainer;
@@ -692,7 +659,7 @@ GoDBTableWidgetContainer::GetRowContainer()
 void GoDBTableWidgetContainer::ClearRowContainer()
 {
   this->m_RowContainer.clear();
-}
+}*/
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -710,7 +677,227 @@ int GoDBTableWidgetContainer::GetIndexInsideRowContainer(std::string iInfoName)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::list<std::string> GoDBTableWidgetContainer::
+GoDBTableWidgetContainer::TWContainerType 
+GoDBTableWidgetContainer::GetContainerLoadedWithAllFromDB(
+  vtkMySQLDatabase* iDatabaseConnector)
+{
+  this->ClearRowContainerValues();
+  this->FillRowContainerWithDBValues(iDatabaseConnector,
+    "ImagingsessionID",ConvertToString<unsigned int>(this->m_ImgSessionID));
+
+  /*if (this->m_TracesName == "mesh")
+    {
+    this->FillRowContainerForIntensityValues(DatabaseConnector,
+                                             ListSpecificValuesForOneColumn(DatabaseConnector, "mesh", "MeshID",
+                                                                            "ImagingSessionID",
+                                                                            ConvertToString<unsigned int>(this->
+                                                                                                          m_ImgSessionID)),
+                                             this->m_LinkToRowContainer);*/
+    //}
+  /** \todo fill the container with the computed values*/
+  
+  //this->FillRowContainerForComputedValues(m_LinkToRowContainer);
+
+  return this->m_RowContainer;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+GoDBTableWidgetContainer::TWContainerType
+GoDBTableWidgetContainer::GetContainerForOneSpecificTrace(
+  vtkMySQLDatabase* iDatabaseConnector, int iTraceID)
+{
+  this->ClearRowContainerValues();
+  this->FillRowContainerWithDBValues(iDatabaseConnector,
+    this->m_TracesIDName,ConvertToString<int>(iTraceID));
+  return this->m_RowContainer;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+/*GoDBTableWidgetContainer::TWContainerType 
+GoDBTableWidgetContainer::GetContainerForLastCreatedTrace(
+  vtkMySQLDatabase* iDatabaseConnector)
+{
+  this->m_RowContainer.clear();
+  int LastTraceID = this->GetLastCreatedTraceID(iDatabaseConnector);
+  this->FillRowContainerWithDBValues(iDatabaseConnector, this->m_TracesIDName,
+    ConvertToString<int>(LastTraceID));
+  return this->m_RowContainer;
+}*/
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+/*int GoDBTableWidgetContainer::GetLastCreatedTraceID(
+  vtkMySQLDatabase* iDatabaseConnector)
+{
+  return MaxValueForOneColumnInTable(iDatabaseConnector,
+    this->m_TracesIDName, this->m_TracesName, "ImagingSessionID",
+    ConvertToString<unsigned int>(this->m_ImgSessionID));
+}*/
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBTableWidgetContainer::FillRowContainerWithDBValues(
+  vtkMySQLDatabase* iDatabaseConnector,
+  std::string iRestrictionName,std::string iRestrictionValue)
+{
+  /*first, get the right parts of the first query:
+  all the fields except the ones where table.field are already in the query:*/
+  std::vector<std::string> JoinFirstTablesOnTraceTable =
+    this->GetQueryStringForTraceJoinedTables(false);
+  std::vector<std::string> SelectFirstFields =
+    this->GetQueryStringForSelectFieldsTables(false);
+
+  //then, get the results of the first query:
+  std::vector<std::vector<std::string> > ResultsFirstQuery = GetValuesFromSeveralTables(
+    iDatabaseConnector, this->m_TracesName, SelectFirstFields, iRestrictionName,
+    iRestrictionValue, JoinFirstTablesOnTraceTable, true);
+
+  //fill the row container with the results of the first query:
+  this->FillRowContainer(ResultsFirstQuery, SelectFirstFields);
+
+  //Get the right parts of the second query (with only the remaining fields):
+  std::vector<std::string> JoinSecondTablesOnTraceTable =
+    this->GetQueryStringForTraceJoinedTables(true);
+  std::vector<std::string> SelectSecondFields =
+    this->GetQueryStringForSelectFieldsTables(true);
+
+  //then, get the results of the second query:
+  std::vector<std::vector<std::string> > ResultsSecondQuery = GetValuesFromSeveralTables(
+    iDatabaseConnector, this->m_TracesName, SelectSecondFields, iRestrictionName,
+    iRestrictionValue, JoinSecondTablesOnTraceTable, false);
+
+  //fill the row container with the results of the second query:
+  this->FillRowContainer(ResultsSecondQuery, SelectSecondFields);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBTableWidgetContainer::FillRowContainerForComputedValues(
+  std::vector<std::vector<std::string> >* iComputedValues)
+{
+  std::vector<std::string> ListComputedNames =this->GetNameComputedColumns();
+  if (!ListComputedNames.empty())
+    {
+    std::vector<std::vector<std::string> > ComputedValues;
+    if (iComputedValues == 0 && !ListComputedNames.empty())
+      {
+      for (unsigned int j = 0; j < this->GetNumberOfRows(); j++)
+        {
+        std::vector<std::string> EmptyVector;
+//         int Size = iLinkToRowContainer->GetNumberOfRows();
+        for (unsigned int i = 0; i < ListComputedNames.size(); i++)
+          {
+          EmptyVector.push_back("NV");
+          }
+        ComputedValues.push_back(EmptyVector);
+        EmptyVector.clear();
+        }
+      }
+    else
+      {
+      ComputedValues = *iComputedValues;
+      }
+   this->FillRowContainer(
+      ComputedValues, ListComputedNames, "ColumnNameTableWidget");
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::vector<int> GoDBTableWidgetContainer::GetIndexForGroupColor(
+  std::string iGroupName)
+{
+  std::vector<int> oIndexColor;
+  std::string RedInfoName = "RedFor";
+  RedInfoName += iGroupName;
+  oIndexColor.push_back(this->GetIndexInsideRowContainer(RedInfoName));
+
+  std::string GreenInfoName = "GreenFor";
+  GreenInfoName += iGroupName;
+  oIndexColor.push_back(this->GetIndexInsideRowContainer(GreenInfoName));
+
+  std::string BlueInfoName = "BlueFor";
+  BlueInfoName += iGroupName;
+   oIndexColor.push_back(this->GetIndexInsideRowContainer(BlueInfoName));
+
+  std::string AlphaInfoName = "AlphaFor";
+  AlphaInfoName += iGroupName;
+  oIndexColor.push_back(this->GetIndexInsideRowContainer(AlphaInfoName));
+
+  return oIndexColor;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBTableWidgetContainer::ClearRowContainerValues()
+{
+  TWContainerType::iterator iter = this->m_RowContainer.begin();
+  while (iter != this->m_RowContainer.end())
+    {
+    iter->second.clear();
+    iter++;
+    }
+}
+
+/*void GoDBTableWidgetContainer::GetCommonInfoForTwoTracesTable()
+{
+  GoDBTraceInfoForTableWidget                                       temp;
+  std::pair<GoDBTraceInfoForTableWidget, std::vector<std::string> > PairTemp;
+  if (this->m_TracesName == "contour" || this->m_TracesName == "mesh")
+    {
+    //GoDBTraceInfoForTableWidget temp;
+
+    //Get the info for the Time Point:
+    temp.InfoName = "TimePoint";
+    temp.ColumnNameDatabase = "TCoord";
+    temp.ColumnNameTableWidget = "TimePoint";
+    temp.TableNameDatabase = "coordinate";
+    temp.TableForeignKeyDatabase = "CoordIDMin";
+    temp.TableKeyDatabase = "CoordID";
+    m_ColumnsInfos.push_back(temp);
+    //std::pair<GoDBTraceInfoForTableWidget,std::vector<std::string> > PairTemp;
+    PairTemp.first = temp;
+    m_RowContainer.push_back(PairTemp);
+    temp.Clear();
+    }
+  else
+    {
+    //GoDBTraceInfoForTableWidget temp;
+
+    //Get the info for the Time Point Min:
+    temp.InfoName = "TimePointMin";
+    temp.ColumnNameDatabase = "TCoord";
+    temp.ColumnNameTableWidget = "TimePointMin";
+    temp.TableNameDatabase = "coordinate";
+    temp.TableForeignKeyDatabase = "CoordIDMin";
+    temp.TableKeyDatabase = "CoordID";
+    m_ColumnsInfos.push_back(temp);
+    //std::pair<GoDBTraceInfoForTableWidget,std::vector<std::string> > PairTemp;
+    PairTemp.first = temp;
+    m_RowContainer.push_back(PairTemp);
+    temp.Clear();
+
+    //Get the info for the Time Point Max:
+    temp.InfoName = "TimePointMax";
+    temp.ColumnNameDatabase = "TCoord";
+    temp.ColumnNameTableWidget = "TimePointMax";
+    temp.TableNameDatabase = "coordinate";
+    temp.TableForeignKeyDatabase = "CoordIDMax";
+    temp.TableKeyDatabase = "CoordID";
+    temp.SameFieldForDifferentValues = true;
+    m_ColumnsInfos.push_back(temp);
+    PairTemp.first = temp;
+    m_RowContainer.push_back(PairTemp);
+    temp.Clear();
+    }
+  
+}*/
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+/*std::list<std::string> GoDBTableWidgetContainer::
 GetTracesIDForAGivenZCoord(int iZCoord)
 {
   std::list<std::string> SelectedTracesIDFromRowContainer;
@@ -741,17 +928,17 @@ GetTracesIDForAGivenZCoord(int iZCoord)
     }
 
   return SelectedTracesIDFromRowContainer;
-}
+}*/
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBTableWidgetContainer::SetSpecificColumnsInfoForMesh(
+/*void GoDBTableWidgetContainer::SetSpecificColumnsInfoForMesh(
   std::vector<std::vector<std::string> > iChannelsInfo)
 {
   this->m_ChannelsInfo = iChannelsInfo;
   /*m_ColumnsInfos.clear();
   this->m_RowContainer.clear();
-  m_ColumnsInfos = GetColumnsInfoForTraceTable();*/
+  m_ColumnsInfos = GetColumnsInfoForTraceTable();
   //Get the info for the total intensities per channel:
   GoDBTraceInfoForTableWidget                                       temp;
   std::pair<GoDBTraceInfoForTableWidget, std::vector<std::string> > PairTemp;
@@ -804,7 +991,7 @@ std::vector<std::vector<std::string> > GoDBTableWidgetContainer::
 GetChannelsInfo()
 {
   return this->m_ChannelsInfo;
-}
+}*/
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -820,6 +1007,20 @@ size_t GoDBTableWidgetContainer::GetNumberOfRows()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+std::vector<int> GoDBTableWidgetContainer::GetAllTraceIDsInContainer()
+{
+  int IndexColumn = this->GetIndexInsideRowContainer(this->m_TracesIDName);
+  std::vector<std::string> VectorIDsstr = this->m_RowContainer[IndexColumn].second;
+  std::vector<std::string>::iterator iter = VectorIDsstr.begin();
+  std::vector<int> vectorInt;
+  while(iter != VectorIDsstr.end())
+    {
+    std::string intstr = *iter;
+    vectorInt.push_back(ss_atoi<int>(intstr));
+    iter++;
+    }
+  return vectorInt;
+}
 /*void GoDBTableWidgetContainer::InsertNewCreatedTrace(GoDBTableWidgetContainer
   iLinkToNewTraceContainer)
 {
@@ -938,3 +1139,18 @@ size_t GoDBTableWidgetContainer::GetNumberOfRows()
     }//ENDWHILE
 }
 */
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+/*void GoDBTableWidgetContainer::GetSpecificInfoForTraceTable()
+{
+  /*GoDBTraceInfoForTableWidget temp;
+  std::pair<GoDBTraceInfoForTableWidget,std::vector<std::string> > PairTemp;
+  if (this->m_TracesName == "mesh")
+    {
+    SetSpecificColumnsInfoForMesh(
+
+}*/
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------

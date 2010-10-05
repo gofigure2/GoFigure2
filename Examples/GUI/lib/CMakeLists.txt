@@ -11,9 +11,8 @@ SET( QGOGUILIB_EXAMPLE_SRC
   qgotabimageview4d
   qgomanualsegmentationsettingsdialog
   qgonavigationdockwidget
-  qgomanualsegmentationdockwidget
-#  contourmeshstructurehelpertest
-#  contourmeshstructurehelpertest2
+  QGoContourManualSegmentationDockWidgetTest
+  ContourMeshContainerTest
   QGoWizardDBTest
   QGoPrintDatabaseTest
   qgocreatemeshdialogtest
@@ -32,7 +31,6 @@ SET( QGOGUILIB_EXAMPLE_SRC
   qgosynchronizedviewmanagertest
 
   compareexample
-  compareguiexample
   comparepipelineexample
   QGoColorComboBoxTest
 )
@@ -114,7 +112,7 @@ ADD_TEST( qgotabimageview3dTest
 
 ADD_TEST( qgotabimageview3dwtTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgotabimageview3dwt
-  ${TESTING_DATA_PATH}/earpax2isl11.lsm
+  ${TTestESTING_DATA_PATH}/earpax2isl11.lsm
   1
 )
 
@@ -128,18 +126,14 @@ ADD_TEST( qgonavigationdockwidgetTest
   1
 )
 
-ADD_TEST( qgomanualsegmentationdockwidgetTest
-  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgomanualsegmentationdockwidget
+ADD_TEST( QGoContourManualSegmentationDockWidgetTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoContourManualSegmentationDockWidgetTest
   1
 )
 
-#ADD_TEST( contourmeshstructurehelperTest
-#  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/contourmeshstructurehelpertest
-#)
-
-#ADD_TEST( contourmeshstructurehelperTest2
-#  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/contourmeshstructurehelpertest2
-#)
+ADD_TEST( ContourMeshContainerTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/ContourMeshContainerTest
+)
 
 ADD_TEST( QGoLsmToMegaExportDialogTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoLsmToMegaExportDialogTest

@@ -43,7 +43,7 @@
 #include "QGoImageView3D.h"
 #include "QGoLUTDialog.h"
 #include "QGoNavigationDockWidget.h"
-#include "QGoManualSegmentationDockWidget.h"
+#include "QGoContourManualSegmentationWidget.h"
 
 #ifdef   ENABLEVIDEORECORD
 #include "QGoVideoRecorder.h"
@@ -298,7 +298,7 @@ void QGoTabImageView4D::CreateModeActions()
  */
 void QGoTabImageView4D::CreateVisuDockWidget()
 {
-  m_NavigationDockWidget = new QGoNavigationDockWidget(this, 4);
+  m_NavigationDockWidget = new QGoNavigationDockWidget(this, GoFigure::FOUR_D);
 
   QObject::connect(m_NavigationDockWidget, SIGNAL(XSliceChanged(int)),
                    this, SLOT(SetXSlice(int)));
@@ -339,21 +339,21 @@ void QGoTabImageView4D::CreateVisuDockWidget()
  */
 void QGoTabImageView4D::CreateManualSegmentationdockWidget()
 {
-  m_ManualSegmentationDockWidget = new QGoManualSegmentationDockWidget(this);
+  m_ManualSegmentationWidget = new QGoContourManualSegmentationWidget(this);
 
-  QObject::connect(m_ManualSegmentationDockWidget, SIGNAL(ValidatePressed()),
+  QObject::connect(m_ManualSegmentationWidget, SIGNAL(ValidatePressed()),
                    this, SLOT(ValidateContour()));
 
-  QObject::connect(m_ManualSegmentationDockWidget,
+  QObject::connect(m_ManualSegmentationWidget,
                    SIGNAL(ActivateManualSegmentationToggled(bool)),
                    this, SLOT(ActivateManualSegmentationEditor(bool)));
 
-  QObject::connect(m_ManualSegmentationDockWidget,
+  QObject::connect(m_ManualSegmentationWidget,
                    SIGNAL(ContourRepresentationPropertiesChanged()),
                    this, SLOT(ChangeContourRepresentationProperty()));
-
-  this->m_SegmentationActions.push_back(
-    m_ManualSegmentationDockWidget->toggleViewAction());
+/// TODO fix it is not a dock widget anymore
+//  this->m_SegmentationActions.push_back(
+//    m_ManualSegmentationWidget->toggleViewAction());
 }
 //-------------------------------------------------------------------------
 
@@ -1085,10 +1085,10 @@ void
 QGoTabImageView4D::
 ChangeContourRepresentationProperty()
 {
-  double linewidth = 0.0; // = m_ManualSegmentationDockWidget->GetLinesWidth();
-  QColor linecolor; // = m_ManualSegmentationDockWidget->GetLinesColor();
-  QColor nodecolor; // = m_ManualSegmentationDockWidget->GetNodesColor();
-  QColor activenodecolor; // = m_ManualSegmentationDockWidget->GetActiveNodesColor();
+  double linewidth = 0.0; // = m_ManualSegmentationWidget->GetLinesWidth();
+  QColor linecolor; // = m_ManualSegmentationWidget->GetLinesColor();
+  QColor nodecolor; // = m_ManualSegmentationWidget->GetNodesColor();
+  QColor activenodecolor; // = m_ManualSegmentationWidget->GetActiveNodesColor();
 
   double rl, gl, bl;
   linecolor.getRgbF(&rl, &gl, &bl);
@@ -1142,7 +1142,7 @@ ValidateContour(const int& iId)
     // get color from the dock widget
     double r( 1. ), g( 1. ), b( 1. );
     /// \todo to be fixed!
-    //QColor color; //= m_ManualSegmentationDockWidget->GetValidatedColor();
+    //QColor color; //= m_ManualSegmentationWidget->GetValidatedColor();
     //iColor.getRgbF(&r, &g, &b);
 
     vtkProperty* contour_property = vtkProperty::New();
@@ -1195,7 +1195,7 @@ ValidateContour(const int& iId)
     contour_property->Delete();
 
     // get meshid from the dock widget (SpinBox)
-    // unsigned int meshid = m_ManualSegmentationDockWidget->GetMeshId();
+    // unsigned int meshid = m_ManualSegmentationWidget->GetMeshId();
     // unused?
     // unsigned int meshid = this->m_NavigationDockWidget->GetCurrentCollectionID();
     // unsigned int timepoint = static_cast< unsigned int >( m_TimePoint );

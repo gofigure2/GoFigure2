@@ -44,6 +44,8 @@
 #include "GoDBCoordinateRow.h"
 #include "vtkPolyData.h"
 #include "vtkPolyDataMySQLTextWriter.h"
+#include "GoDBRecordSetHelper.h"
+#include "GoDBRecordSet.h"
 
 class QGOIO_EXPORT GoDBTraceRow : public GoDBRow
   {
@@ -72,9 +74,19 @@ public:
   std::string GetCollectionName();
 
   //set the data from the visu for an existing Trace
-  void SetTheDataFromTheVisu(vtkMySQLDatabase* DatabaseConnector,
-                             vtkPolyData* TraceVisu, GoDBCoordinateRow Min,
-                             GoDBCoordinateRow Max);
+  virtual void SetTheDataFromTheVisu(vtkMySQLDatabase* DatabaseConnector,
+                             vtkPolyData* TraceVisu,
+                             GoDBCoordinateRow iCoordMin,
+                             GoDBCoordinateRow iCoordMax);
+
+  /**\brief check in the database if the Coordinate Min adn Max already exits,
+  if yes fill the map["CoordIDMin"] and ["CoordIDmax"] with the existing CoordinateID
+  if not, create the coordinates in the database and fill the map with the new created ID,
+  if the bounding box already exits, a cout is generated*/
+  void SetTheBoundingBox(vtkMySQLDatabase* iDatabaseConnector,
+    GoDBCoordinateRow Min, GoDBCoordinateRow Max);
+
+  void SetCollectionID(unsigned int iCollectionID);
 
 protected:
 
@@ -83,11 +95,36 @@ protected:
   if yes fill the map["CoordIDMin"] and ["CoordIDmax"] with the existing CoordinateID
   if not, create the coordinates in the database and fill the map with the new created ID,
   if the bounding box already exits, a cout is generated*/
-  void CreateBoundingBox(vtkMySQLDatabase* DatabaseConnector, GoDBCoordinateRow Min,
-                         GoDBCoordinateRow Max);
+ // void CreateBoundingBox(vtkMySQLDatabase* DatabaseConnector, GoDBCoordinateRow Min,
+   //                      GoDBCoordinateRow Max);
 
   std::string m_CollectionIDName;
   std::string m_CollectionName;
+
+  /**
+  \brief save the row in the database if the TraceID is set to "0", update the
+  existing traceRow if the TraceID is <> 0
+  \param[in] iDatabaseConnector connection to the database
+  */
+  template<typename T>
+  int SaveInDBTemplate (vtkMySQLDatabase* iDatabaseConnector,T iTrace)
+  {
+   int SavedTraceID;
+  //in case the ID is different from 0, this means the values have been
+  //updated for this mesh, so we update it in the database:
+  if (this->m_MapRow[this->m_TableIDName] != "0")
+    {
+    SavedTraceID = UpdateOneNewObjectInTable<T> (iDatabaseConnector,
+                                                          &iTrace);
+    }
+  else
+    {
+    SavedTraceID = AddOnlyOneNewObjectInTable<T>(iDatabaseConnector,
+      this->m_TableName, iTrace, this->m_TableIDName);
+    this->SetField(this->m_TableIDName, SavedTraceID);
+    } 
+  return SavedTraceID;
+  }
 
   };
 #endif

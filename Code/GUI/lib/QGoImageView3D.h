@@ -73,6 +73,9 @@ class vtkViewImage2DCollection;
 // For the box widget
 class vtkOrientedBoxWidget;
 
+// For the plane widget
+class vtkImplicitPlaneWidget;
+
 /**
 \class QGoImageView3D
 \brief class for the visualization of 3D Image represented by one vtkImageData*.
@@ -154,9 +157,17 @@ public:
   /**
    * \brief Creates a box in 3d view to allow multiple meshes selection
    */
+  void EnablePlaneWidget(bool);
+
+  /**
+   * \brief Creates a box in 3d view to allow multiple meshes selection
+   */
   vtkProp* GetPickedActor();
 
   vtkActor* GetCurrentActor();
+  bool      GetCurrentState();
+
+  void ChangeCursorShape(QCursor iCursorShape);
 
 signals:
   void SliceViewXYChanged(int Slice);
@@ -170,15 +181,11 @@ signals:
   void SelectionYZChanged();
   void SelectionXYZChanged();
 
+  void VisibilityXYZChanged();
+
   void CurrentActorUpdated();
 
-  void ContoursSelectionXYChanged();
-  void ContoursSelectionXZChanged();
-  void ContoursSelectionYZChanged();
-//  void ContoursSelectionXYZChanged();
-
-  void MeshesSelectionChanged();
-  void ListMeshesSelectionChanged();
+  void UpdateRenderEvent();
 
 public slots:
   QString SnapshotViewXY(const GoFigure::FileType& iType,
@@ -208,7 +215,9 @@ public slots:
    */
   void EnableVolumeRendering(bool iValue);
 
-  void UpdateCurrentActor(vtkObject* caller);
+  void UpdateCurrentActorSelection(vtkObject* caller);
+  void UpdateCurrentActorVisibility(vtkObject* caller);
+
 //   void HighLightContours();
 
   /**
@@ -254,9 +263,11 @@ protected:
 
   bool m_ShowCube;
 
-  vtkOrientedBoxWidget*  m_BoxWidget;
+  vtkOrientedBoxWidget*    m_BoxWidget;
+  vtkImplicitPlaneWidget*  m_PlaneWidget;
 
   vtkActor* m_CurrentActor;
+  bool      m_CurrentState;
 
   virtual void resizeEvent(QResizeEvent* event);
 
@@ -269,6 +280,7 @@ protected:
   void FullScreenViewXYZ();
 
   void InitializeBoxWidget();
+  void InitializePlaneWidget();
 
 protected slots:
   void MoveSliderXY();
@@ -277,7 +289,7 @@ protected slots:
 
 private:
   Q_DISABLE_COPY(QGoImageView3D);
-  virtual void ChangeCursorShape(QCursor iCursorShape);
+
   };
 
 #endif

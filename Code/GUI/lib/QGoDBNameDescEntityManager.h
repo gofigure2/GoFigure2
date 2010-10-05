@@ -77,14 +77,14 @@ public:
   \brief execute the dialog asking the user to enter a name and a
   description, validates the name, set the m_DatabaseConnector,
   save the entity in the DB and return the name of the new entity
-  \param[out] std::string Name of the new entity, empty if the user canceled the adding
+  \return std::string Name of the new entity, empty if the user canceled the adding
   */
   std::string AddAnEntity(vtkMySQLDatabase* iDatabaseConnector);
 
   /** 
   \brief return the list of all the existing entities stored
   in the database
-  \param[out] NamesDescrContainerType vector of all the names associated with their description
+  \return NamesDescrContainerType vector of all the names associated with their description
   */
   NamesDescrContainerType GetListExistingEntities(
     vtkMySQLDatabase* iDatabaseConnector);
@@ -93,14 +93,14 @@ public:
   \brief show the list of the existing entities so the user can
   choose the ones he wants to delete, then delete them from the
   database
-  \param[out] bool is true if the user chooses to delete an entity,
+  \return bool is true if the user chooses to delete an entity,
   false if he canceled the deleting
   */
   virtual bool DeleteEntity(vtkMySQLDatabase* iDatabaseConnector);
 
   /**
   \brief return the name of the new entity added
-  \param[out] std::string name of the new entity
+  \return std::string name of the new entity
   */
   std::string GetNameNewEntity();
 

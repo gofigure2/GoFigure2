@@ -372,7 +372,50 @@ void UpdateValueInDB(vtkMySQLDatabase* DatabaseConnector,
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void UpdateContourInDB(vtkMySQLDatabase* DatabaseConnector,
+void UpdateValueInDB(vtkMySQLDatabase* DatabaseConnector,
+                     std::string TableName, std::string field, std::string newValue,
+                     std::string ColumnName, std::vector<unsigned int> iVectIDs)
+{
+  vtkSQLQuery*      query = DatabaseConnector->GetQueryInstance();
+  std::stringstream querystream;
+  querystream << "UPDATE ";
+  querystream << TableName;
+  querystream << " SET ";
+  querystream << field;
+  querystream << " = '";
+  querystream << newValue;
+  querystream << " WHERE (";
+  unsigned int i;
+  for (i = 0; i < iVectIDs.size() - 1; i++)
+    {
+    querystream << field;
+    querystream << " = '";
+    querystream << iVectIDs[i];
+    querystream << "' OR ";
+    }
+  querystream << field;
+  querystream << " = '";
+  querystream << iVectIDs[i];
+  querystream << "');";
+
+  query->SetQuery(querystream.str().c_str());
+  if (!query->Execute())
+    {
+    itkGenericExceptionMacro(
+      << "replace value in DB query failed"
+      << query->GetLastErrorText());
+    DatabaseConnector->Close();
+    DatabaseConnector->Delete();
+    query->Delete();
+    return;
+    }
+  query->Delete();
+
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+/*void UpdateContourInDB(vtkMySQLDatabase* DatabaseConnector,
                        GoDBContourRow UpdatedContour)
 {
   std::string contourID = UpdatedContour.GetMapValue("ContourID");
@@ -382,7 +425,7 @@ void UpdateContourInDB(vtkMySQLDatabase* DatabaseConnector,
                   "contourID", contourID);
   UpdateValueInDB(DatabaseConnector, "contour", "Points", UpdatedContour.GetMapValue("Points"),
                   "contourID", contourID);
-}
+}*/
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------

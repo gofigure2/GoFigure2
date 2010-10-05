@@ -80,7 +80,9 @@ public:
   void ReInitializeMapAfterCast();
 
   void SetTheDataFromTheVisu(vtkMySQLDatabase* DatabaseConnector, vtkPolyData* TraceVisu,
-                             GoDBCoordinateRow Min, GoDBCoordinateRow Max, GoFigureMeshAttributes* iMeshAttributes = 0);
+                             GoDBCoordinateRow Min, GoDBCoordinateRow Max);
+                             //GoDBCoordinateRow Min, GoDBCoordinateRow Max, GoFigureMeshAttributes* iMeshAttributes = 0);
+                             
 
 protected:
   virtual void InitializeMap();

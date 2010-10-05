@@ -79,6 +79,9 @@
 #include "vtkMath.h"
 #include "vtkPolyData.h"
 
+#include "vtkImplicitPlaneWidget.h"
+#include "vtkPlane.h"
+
 #include <cstdlib>
 
 //-------------------------------------------------------------------------
@@ -89,7 +92,8 @@ QGoImageView3D(QWidget* iParent) :
   m_FirstRender(true),
   m_Initialized(false),
   m_ShowCube(true),
-  m_BoxWidget(0)
+  m_BoxWidget(0),
+  m_PlaneWidget(0)
   {
   VtkEventQtConnector = vtkEventQtSlotConnect::New();
 
@@ -142,9 +146,11 @@ QGoImageView3D(QWidget* iParent) :
   QGoImageView::InitializeAngleWidget();
   QGoImageView::InitializeContourWidget();
   }
+//--------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QGoImageView3D::~QGoImageView3D()
+QGoImageView3D::
+~QGoImageView3D()
   {
   delete HtSplitter;
   delete HbSplitter;
@@ -161,15 +167,25 @@ QGoImageView3D::~QGoImageView3D()
 
   VtkEventQtConnector->Delete();
   m_HighlightedContourProperty->Delete();
+
   if(m_BoxWidget)
     {
     m_BoxWidget->Delete();
     m_BoxWidget = NULL;
     }
+
+  if(m_PlaneWidget)
+    {
+    m_PlaneWidget->Delete();
+    m_PlaneWidget = NULL;
+    }
 }
+//--------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoImageView3D::setupUi(QWidget* iParent)
+void
+QGoImageView3D::
+setupUi(QWidget* iParent)
 {
   if (iParent->objectName().isEmpty())
     {
@@ -238,7 +254,9 @@ void QGoImageView3D::setupUi(QWidget* iParent)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoImageView3D::retranslateUi(QWidget *iParent)
+void
+QGoImageView3D::
+retranslateUi(QWidget *iParent)
 {
   iParent->setWindowTitle(tr("QGoImageView3D"));
   Q_UNUSED(iParent);
@@ -246,7 +264,9 @@ void QGoImageView3D::retranslateUi(QWidget *iParent)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoImageView3D::Update()
+void
+QGoImageView3D::
+Update()
 {
   vtkViewImage2D* View1 = this->m_Pool->GetItem(0);
   View1->SetInput(this->m_Image);
@@ -335,6 +355,7 @@ void QGoImageView3D::Update()
 
     // Initialize widgets which requiere information about the input image
     InitializeBoxWidget();
+    InitializePlaneWidget();
 
     m_FirstRender = false;
     }
@@ -343,7 +364,9 @@ void QGoImageView3D::Update()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoImageView3D::SetupVTKtoQtConnections()
+void
+QGoImageView3D::
+SetupVTKtoQtConnections()
 {
   vtkViewImage2D* View1  = this->m_Pool->GetItem(0);
   vtkViewImage2D* View2  = this->m_Pool->GetItem(1);
@@ -417,33 +440,26 @@ void QGoImageView3D::SetupVTKtoQtConnections()
   VtkEventQtConnector->Connect(
     reinterpret_cast<vtkObject*>(View1->GetInteractorStyle()),
     vtkViewImage2DCommand::ContourPickingEvent,
-    this, SLOT(UpdateCurrentActor(vtkObject*)));
+    this, SLOT(UpdateCurrentActorSelection(vtkObject*)));
 
   VtkEventQtConnector->Connect(
     reinterpret_cast<vtkObject*>(View2->GetInteractorStyle()),
     vtkViewImage2DCommand::ContourPickingEvent,
-    this, SLOT(UpdateCurrentActor(vtkObject*)));
+    this, SLOT(UpdateCurrentActorSelection(vtkObject*)));
 
   VtkEventQtConnector->Connect(
     reinterpret_cast<vtkObject*>(View3->GetInteractorStyle()),
     vtkViewImage2DCommand::ContourPickingEvent,
-    this, SLOT(UpdateCurrentActor(vtkObject*)));
+    this, SLOT(UpdateCurrentActorSelection(vtkObject*)));
 
   // Event connection between vtk and qt
   // when contours picked, send a signal
   VtkEventQtConnector->Connect(
     reinterpret_cast<vtkObject*>(View3D->GetInteractorStyle3D()),
     vtkViewImage3DCommand::MeshPickingEvent,
-    this, SLOT(UpdateCurrentActor(vtkObject*)));
+    this, SLOT(UpdateCurrentActorSelection(vtkObject*)));
 
   /////////////////////////////////////////////////////////////////////////
-
-  // Event connection between vtk and qt
-  // when contours picked, send a signal
-  VtkEventQtConnector->Connect(
-    reinterpret_cast<vtkObject*>(View3D),
-    vtkViewImage3DCommand::BoxWidgetReadyEvent,
-    this, SIGNAL(MeshesSelectionChanged()));
 
   // Event connection between vtk and qt
   // when contours picked, send a signal
@@ -451,10 +467,29 @@ void QGoImageView3D::SetupVTKtoQtConnections()
     reinterpret_cast<vtkObject*>(View1->GetInteractorStyle()),
     vtkViewImage2DCommand::WindowLevelEvent,
     this, SLOT(UpdateScalarBarIn3DView()));
+
+  ////////////////////////////////////////////////////////////////////////////
+
+  // Event connection between vtk and qt
+  // when contours picked, send a signal
+  VtkEventQtConnector->Connect(
+    reinterpret_cast<vtkObject*>(View3D),
+    vtkViewImage3DCommand::VisibilityUpdatedEvent,
+    this, SLOT(UpdateCurrentActorVisibility(vtkObject*)));
+
+  // Event connection between vtk and qt
+  // when contours picked, send a signal
+  VtkEventQtConnector->Connect(
+    reinterpret_cast<vtkObject*>(View3D),
+    vtkViewImage3DCommand::UpdateRenderEvent,
+    this, SLOT(UpdateRenderWindows()));
 }
+//--------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoImageView3D::SetImage(vtkImageData* input)
+void
+QGoImageView3D::
+SetImage(vtkImageData* input)
 {
   if (!input)
     {
@@ -472,9 +507,12 @@ void QGoImageView3D::SetImage(vtkImageData* input)
       }
     }
 }
+//--------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QVTKInteractor* QGoImageView3D::GetInteractor(const int& iId)
+QVTKInteractor*
+QGoImageView3D::
+GetInteractor(const int& iId)
 {
   if ((iId < 0) || (iId > 3))
     {
@@ -504,9 +542,12 @@ QVTKInteractor* QGoImageView3D::GetInteractor(const int& iId)
       }
     }
 }
+//--------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QString QGoImageView3D::SnapshotViewXY(const GoFigure::FileType& iType,
+QString
+QGoImageView3D::
+SnapshotViewXY(const GoFigure::FileType& iType,
                                        const QString& iBaseName)
 {
   QString filename = SnapshotView(QvtkWidget_XY, iType,
@@ -515,9 +556,12 @@ QString QGoImageView3D::SnapshotViewXY(const GoFigure::FileType& iType,
   m_SnapshotId++;
   return filename;
 }
+//--------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QString QGoImageView3D::SnapshotView2(const GoFigure::FileType& iType,
+QString
+QGoImageView3D::
+SnapshotView2(const GoFigure::FileType& iType,
                                       const QString& iBaseName)
 {
   QString filename = SnapshotView(QvtkWidget_XZ, iType,
@@ -526,9 +570,12 @@ QString QGoImageView3D::SnapshotView2(const GoFigure::FileType& iType,
   m_SnapshotId++;
   return filename;
 }
+//--------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QString QGoImageView3D::SnapshotView3(
+QString
+QGoImageView3D::
+SnapshotView3(
   const GoFigure::FileType& iType,
   const QString& iBaseName)
 {
@@ -538,9 +585,12 @@ QString QGoImageView3D::SnapshotView3(
   m_SnapshotId++;
   return filename;
 }
+//--------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QString QGoImageView3D::SnapshotViewXYZ(
+QString
+QGoImageView3D::
+SnapshotViewXYZ(
   const GoFigure::FileType& iType,
   const QString& iBaseName)
 {
@@ -550,9 +600,12 @@ QString QGoImageView3D::SnapshotViewXYZ(
   m_SnapshotId++;
   return filename;
 }
+//--------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoImageView3D::SetFullScreenView(const int& iS)
+void
+QGoImageView3D::
+SetFullScreenView(const int& iS)
 {
   if (IsFullScreen == iS)
     {
@@ -594,9 +647,12 @@ void QGoImageView3D::SetFullScreenView(const int& iS)
     }
   emit FullScreenViewChanged(IsFullScreen);
 }
+//--------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoImageView3D::Quadview()
+void
+QGoImageView3D::
+Quadview()
 {
   IsFullScreen = 0;
   LayOutWidget1->show();
@@ -604,9 +660,12 @@ void QGoImageView3D::Quadview()
   LayOutWidget3->show();
   LayOutWidget4->show();
 }
+//--------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoImageView3D::FullScreenViewXY()
+void
+QGoImageView3D::
+FullScreenViewXY()
 {
   IsFullScreen = 1;
   LayOutWidget1->show();
@@ -614,9 +673,12 @@ void QGoImageView3D::FullScreenViewXY()
   LayOutWidget3->hide();
   LayOutWidget4->hide();
 }
+//--------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoImageView3D::FullScreenViewXZ()
+void
+QGoImageView3D::
+FullScreenViewXZ()
 {
   IsFullScreen = 2;
   LayOutWidget1->hide();
@@ -624,9 +686,12 @@ void QGoImageView3D::FullScreenViewXZ()
   LayOutWidget3->hide();
   LayOutWidget4->hide();
 }
+//--------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoImageView3D::FullScreenViewYZ()
+void
+QGoImageView3D::
+FullScreenViewYZ()
 {
   IsFullScreen = 3;
   LayOutWidget1->hide();
@@ -634,9 +699,12 @@ void QGoImageView3D::FullScreenViewYZ()
   LayOutWidget3->show();
   LayOutWidget4->hide();
 }
+//--------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoImageView3D::FullScreenViewXYZ()
+void
+QGoImageView3D::
+FullScreenViewXYZ()
 {
   IsFullScreen = 4;
   LayOutWidget1->hide();
@@ -644,22 +712,31 @@ void QGoImageView3D::FullScreenViewXYZ()
   LayOutWidget3->hide();
   LayOutWidget4->show();
 }
+//--------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int QGoImageView3D::GetFullScreenView() const
+int
+QGoImageView3D::
+GetFullScreenView() const
 {
   return IsFullScreen;
 }
+//--------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoImageView3D::resizeEvent(QResizeEvent* iEvent)
+void
+QGoImageView3D::
+resizeEvent(QResizeEvent* iEvent)
 {
   QWidget::resizeEvent(iEvent);
   VSplitter->resize(iEvent->size());
 }
+//--------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoImageView3D::SetSliceViewXY(const int& iSlice)
+void
+QGoImageView3D::
+SetSliceViewXY(const int& iSlice)
 {
   if (m_Initialized)
     {
@@ -673,15 +750,21 @@ void QGoImageView3D::SetSliceViewXY(const int& iSlice)
       }
     }
 }
+//--------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int QGoImageView3D::GetSliceViewXY() const
+int
+QGoImageView3D::
+GetSliceViewXY() const
 {
   return this->m_Pool->GetItem(0)->GetSlice();
 }
+//--------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoImageView3D::SetSliceViewXZ(const int& iSlice)
+void
+QGoImageView3D::
+SetSliceViewXZ(const int& iSlice)
 {
   if (m_Initialized)
     {
@@ -695,15 +778,21 @@ void QGoImageView3D::SetSliceViewXZ(const int& iSlice)
       }
     }
 }
+//--------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int QGoImageView3D::GetSliceViewXZ() const
+int
+QGoImageView3D::
+GetSliceViewXZ() const
 {
   return this->m_Pool->GetItem(1)->GetSlice();
 }
+//--------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoImageView3D::SetSliceViewYZ(const int& iSlice)
+void
+QGoImageView3D::
+SetSliceViewYZ(const int& iSlice)
 {
   if (m_Initialized)
     {
@@ -717,15 +806,21 @@ void QGoImageView3D::SetSliceViewYZ(const int& iSlice)
       }
     }
 }
+//--------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int QGoImageView3D::GetSliceViewYZ() const
+int
+QGoImageView3D::
+GetSliceViewYZ() const
 {
   return this->m_Pool->GetItem(2)->GetSlice();
 }
+//--------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoImageView3D::MoveSliderXY()
+void
+QGoImageView3D::
+MoveSliderXY()
 {
   if (m_Initialized)
     {
@@ -738,9 +833,12 @@ void QGoImageView3D::MoveSliderXY()
       }
     }
 }
+//--------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoImageView3D::MoveSliderXZ()
+void
+QGoImageView3D::
+MoveSliderXZ()
 {
   if (m_Initialized)
     {
@@ -753,9 +851,12 @@ void QGoImageView3D::MoveSliderXZ()
       }
     }
 }
+//--------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoImageView3D::MoveSliderYZ()
+void
+QGoImageView3D::
+MoveSliderYZ()
 {
   if (m_Initialized)
     {
@@ -770,13 +871,16 @@ void QGoImageView3D::MoveSliderYZ()
 }
 
 //-------------------------------------------------------------------------
-void QGoImageView3D::SaveStateSplitters()
+void
+QGoImageView3D::
+SaveStateSplitters()
 {
   QSettings settings;
   settings.setValue("VSplitterSizes", VSplitter->saveState());
   settings.setValue("HtSplitterSizes", HtSplitter->saveState());
   settings.setValue("HbSplitterSizes", HbSplitter->saveState());
 }
+//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 vtkViewImage3D*
@@ -785,6 +889,7 @@ GetImageViewer3D()
 {
   return m_View3D;
 }
+//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 std::vector<vtkActor*>
@@ -802,6 +907,7 @@ AddContour(vtkPolyData* dataset, vtkProperty* iProperty)
 
   return oList;
 }
+//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
@@ -811,6 +917,7 @@ ChangeActorProperty(vtkProp3D* iActor, vtkProperty* iProperty)
   m_View3D->ChangeActorProperty(iActor, iProperty);
   QGoImageView::ChangeActorProperty(iActor, iProperty);
 }
+//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
@@ -829,6 +936,7 @@ ChangeActorProperty(int iDir, vtkProp3D* iActor, vtkProperty* iProperty)
       }
     }
 }
+//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
@@ -844,6 +952,7 @@ RemoveActor(const int& iId, vtkActor* iActor)
     QGoImageView::RemoveActor(iId, iActor);
     }
 }
+//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
@@ -859,6 +968,7 @@ AddActor(const int& iId, vtkActor* iActor)
     QGoImageView::AddActor(iId, iActor);
     }
 }
+//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
@@ -872,6 +982,7 @@ SetLookupTable(vtkLookupTable* iLut)
 
   QGoImageView::SetLookupTable(iLut);
 }
+//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
@@ -886,6 +997,7 @@ ShowScalarBar(const bool& iShow)
 
   QGoImageView::ShowScalarBar(iShow);
 }
+//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 /**
@@ -901,11 +1013,12 @@ AddMesh(const int& iId, vtkPolyData* dataset, vtkProperty* iProperty)
   vtkActor* temp = m_View3D->AddDataSet((vtkDataSet*) dataset,
                                         iProperty, false, false);
 
-  m_View3D->Render();
+  //m_View3D->Render();
   oList.push_back(temp);
 
   return oList;
 }
+//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
@@ -917,6 +1030,7 @@ ShowSplinePlane()
 
   QGoImageView::UpdateRenderWindows();
 }
+//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
@@ -929,6 +1043,7 @@ ShowCube3D()
 
   QGoImageView::UpdateRenderWindows();
 }
+//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
@@ -960,6 +1075,7 @@ SetCamera(int iView)
   this->m_View3D->Render();
   camera->Delete();
 }
+//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
@@ -973,6 +1089,7 @@ DefaultMode()
   vtkInteractorStyleImage3D* t = m_View3D->GetInteractorStyle3D();
   t->EnableDefaultMode();
 }
+//--------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
@@ -986,6 +1103,7 @@ ZoomMode()
   vtkInteractorStyleImage3D* t = m_View3D->GetInteractorStyle3D();
   t->EnableZoomMode();
 }
+//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
@@ -1000,6 +1118,8 @@ PanMode()
   t->EnablePanMode();
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void
 QGoImageView3D::
 ActorPickingMode()
@@ -1010,6 +1130,7 @@ ActorPickingMode()
   vtkInteractorStyleImage3D* t = m_View3D->GetInteractorStyle3D();
   t->EnablePickMode();
 }
+//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
@@ -1024,6 +1145,8 @@ EnableSeedWidget( bool iActivate )
   t->EnableDefaultMode();
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void
 QGoImageView3D::
 EnableBoxWidget(bool iValue)
@@ -1031,7 +1154,35 @@ EnableBoxWidget(bool iValue)
   std::cout << "Box ---Widget---" <<std::endl;
   DefaultMode();
   m_BoxWidget->SetEnabled(iValue);
+
+  // if widget is enabled, update meshes visibility according to the widget
+  if(iValue)
+    {
+    this->m_BoxWidget->InvokeEvent(vtkViewImage2DCommand::InteractionEvent);
+    m_View3D->Render();
+    m_Pool->SyncRender();
+    }
+
 }
+//-------------------------------------------------------------------------
+void
+QGoImageView3D::
+EnablePlaneWidget(bool iValue)
+{
+  std::cout << "Plane ---Widget---" <<std::endl;
+  DefaultMode();
+  m_PlaneWidget->SetEnabled(iValue);
+
+  // if widget is enabled, update meshes visibility according to the widget
+  if(iValue)
+    {
+    this->m_PlaneWidget->InvokeEvent(vtkViewImage2DCommand::InteractionEvent);
+    m_View3D->Render();
+    m_Pool->SyncRender();
+    }
+}
+
+//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
@@ -1040,18 +1191,20 @@ UpdateScalarBarIn3DView()
 {
   m_View3D->SetLookupTable(m_Pool->GetItem(0)->GetLookupTable());
 }
+//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
 QGoImageView3D::
 ChangeCursorShape(QCursor iCursorShape)
 {
-//Change cursor
-QvtkWidget_XY->setCursor(iCursorShape);
-QvtkWidget_XZ->setCursor(iCursorShape);
-QvtkWidget_YZ->setCursor(iCursorShape);
-QvtkWidget_XYZ->setCursor(iCursorShape);
+  //Change cursor
+  QvtkWidget_XY->setCursor(iCursorShape);
+  QvtkWidget_XZ->setCursor(iCursorShape);
+  QvtkWidget_YZ->setCursor(iCursorShape);
+  QvtkWidget_XYZ->setCursor(iCursorShape);
 }
+//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
@@ -1065,19 +1218,70 @@ InitializeBoxWidget()
   imageData->GetExtent(extent);
   imageData->GetSpacing(spacing);
 
+  m_BoxWidget->SetInput(imageData);
   m_BoxWidget->SetInteractor(m_View3D->GetInteractor());
-  m_BoxWidget->SetPlaceFactor(0.5);
-  m_BoxWidget->PlaceWidget(extent[0], extent[1] * spacing[0],
-      extent[2], extent[3] * spacing[1],
-      extent[4], extent[5] * spacing[2]);
-  m_BoxWidget->RotationEnabledOff();
+  m_BoxWidget->SetPlaceFactor(1);
+  m_BoxWidget->PlaceWidget(extent[0] * spacing[0], extent[1] * spacing[0],
+      extent[2] * spacing[1], extent[3] * spacing[1],
+      extent[4] * spacing[2], extent[5] * spacing[2]);
+  //m_BoxWidget->RotationEnabledOff();
   m_BoxWidget->SetKeyPressActivationValue ('b');
+  m_BoxWidget->InsideOutOff();
 
   // has observer to be removed manually??
   m_BoxWidget->AddObserver(
       vtkViewImage2DCommand::InteractionEvent, m_View3D->GetCommand());
-}
+// update 2d views
+  m_BoxWidget->AddObserver(
+        vtkCommand::EndInteractionEvent, m_Pool->GetCommand() );
 
+  m_View3D->GetCommand()->SetBoxWidget(m_BoxWidget);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoImageView3D::
+InitializePlaneWidget()
+{
+  m_PlaneWidget = vtkImplicitPlaneWidget::New();
+  vtkImageData* imageData = this->m_Image;
+  int           extent[6];
+  double        spacing[3];
+  imageData->GetExtent(extent);
+  imageData->GetSpacing(spacing);
+
+  //imageData->Print(cout);
+
+  m_PlaneWidget->SetInteractor(m_View3D->GetInteractor());
+  m_PlaneWidget->SetInput(imageData);
+  m_PlaneWidget->SetPlaceFactor(1);
+  m_PlaneWidget->PlaceWidget(
+      extent[0] * spacing[0], extent[1] * spacing[0],
+      extent[2] * spacing[1], extent[3] * spacing[1],
+      extent[4] * spacing[2], extent[5] * spacing[2]);
+  m_PlaneWidget->SetOrigin(
+      (extent[0] + extent[1])*spacing[0]/2,
+      (extent[2] + extent[3])*spacing[1]/2,
+      (extent[4] + extent[5])*spacing[2]/2);
+
+  m_PlaneWidget->ScaleEnabledOff();
+  m_PlaneWidget->OutlineTranslationOff();
+  m_PlaneWidget->GetPlaneProperty()->SetOpacity(0.5);
+
+  m_PlaneWidget->UpdatePlacement();
+
+  // has observer to be removed manually??
+  m_PlaneWidget->AddObserver(
+      vtkCommand::InteractionEvent, m_View3D->GetCommand() );
+  // update 2d views
+  m_PlaneWidget->AddObserver(
+        vtkCommand::EndInteractionEvent, m_Pool->GetCommand() );
+
+  m_View3D->GetCommand()->SetPlaneWidget(m_PlaneWidget);
+}
+//-------------------------------------------------------------------------
+/// TODO Add button to enable/disable tri planar rendering
 //-------------------------------------------------------------------------
 void
 QGoImageView3D::
@@ -1085,11 +1289,13 @@ EnableVolumeRendering(bool iValue)
 {
   if(iValue)
     {
-  m_View3D->SetVolumeRenderingOn();
+    //m_View3D->SetTriPlanarRenderingOff();
+    m_View3D->SetVolumeRenderingOn();
     }
   else
     {
-  m_View3D->SetVolumeRenderingOff();
+    //m_View3D->SetTriPlanarRenderingOn();
+    m_View3D->SetVolumeRenderingOff();
     }
 }
 //---------------------------------------------------------------------------
@@ -1097,7 +1303,7 @@ EnableVolumeRendering(bool iValue)
 //---------------------------------------------------------------------------
 void
 QGoImageView3D::
-UpdateCurrentActor(vtkObject* caller)
+UpdateCurrentActorSelection(vtkObject* caller)
 {
   vtkInteractorStyleImage2D* t =
   static_cast<vtkInteractorStyleImage2D*>(caller);
@@ -1105,12 +1311,12 @@ UpdateCurrentActor(vtkObject* caller)
 
   if (t == m_Pool->GetItem(0)->GetInteractorStyle())
     {
-  std::cout << "in XY" << std::endl;
+    std::cout << "in XY" << std::endl;
     emit SelectionXYChanged();
     }
   else if (t == m_Pool->GetItem(1)->GetInteractorStyle())
     {
-  std::cout << "in XZ" << std::endl;
+    std::cout << "in XZ" << std::endl;
     emit SelectionXZChanged();
     }
   else if (t == m_Pool->GetItem(2)->GetInteractorStyle())
@@ -1130,6 +1336,22 @@ UpdateCurrentActor(vtkObject* caller)
 }
 //---------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+void
+QGoImageView3D::
+UpdateCurrentActorVisibility(vtkObject* caller)
+{
+  vtkViewImage3D* t =
+    static_cast<vtkViewImage3D*>(caller);
+
+  m_CurrentActor = vtkActor::
+      SafeDownCast(t->GetInteractorStyle3D()->GetCurrentProp());
+  m_CurrentState = t->GetInteractorStyle3D()->GetCurrentState();
+
+  emit VisibilityXYZChanged();
+}
+//-------------------------------------------------------------------------
+
 //---------------------------------------------------------------------------
 vtkActor*
 QGoImageView3D::
@@ -1139,4 +1361,11 @@ GetCurrentActor()
 }
 //---------------------------------------------------------------------------
 
-
+//---------------------------------------------------------------------------
+bool
+QGoImageView3D::
+GetCurrentState()
+{
+  return m_CurrentState;
+}
+//---------------------------------------------------------------------------

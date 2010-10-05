@@ -144,7 +144,7 @@ newSynchronizedView2D(QString iSynchronizedViewName, vtkImageData* iImage)
     }
 
   // tell the SynchronizedView who is his Manager
-  nSynchronizedView->SetCurrentViewManager(this);
+  nSynchronizedView->SetViewManager(this);
 
   return nSynchronizedView;
 }
@@ -179,7 +179,7 @@ newSynchronizedView3D(QString iSynchronizedViewName, vtkImageData* iImage)
     }
 
   // tell the SynchronizedView who is his Manager
-  nSynchronizedView->SetCurrentViewManager(this);
+  nSynchronizedView->SetViewManager(this);
 
   return nSynchronizedView;
 }
@@ -376,7 +376,8 @@ void
 QGoSynchronizedViewManager::
 synchronizeOpenSynchronizedViews()
 {
-  if (m_Synchronizer == NULL) m_Synchronizer = new QGoSynchronizedView2DCallbacks(m_openSynchronizedViews);
+  if (m_Synchronizer == NULL) m_Synchronizer =
+      new QGoSynchronizedView2DCallbacks(m_openSynchronizedViews);
 
   if (m_Synchronizer3D == NULL) m_Synchronizer3D = new QGoSynchronizedView3DCallbacks(m_openSynchronizedViews3D);
 }

@@ -45,7 +45,8 @@
 #include "vtkSmartPointer.h"
 #include "vtkImageCast.h"
 
-#include "QGoSeedsSegmentation.h"
+#include "vtkImageData.h"
+#include "QGoFilterChanAndVes.h"
 
 int main(int argc, char** argv)
 {
@@ -60,6 +61,7 @@ int main(int argc, char** argv)
   vtkSmartPointer<vtkMetaImageReader> reader =
     vtkSmartPointer<vtkMetaImageReader>::New();
   reader->SetFileName(argv[1]);
+  reader->Update();
 
   vtkSmartPointer<vtkImageCast> castFilter = vtkSmartPointer<vtkImageCast>::New();
   castFilter->SetInput(reader->GetOutput());
@@ -67,32 +69,30 @@ int main(int argc, char** argv)
   castFilter->Update();
 
   // Initialize the segmentation
-  QGoSeedsSegmentation seedsSegmentation(0, NULL, NULL);
-  seedsSegmentation.setInputVolume(castFilter->GetOutput());
-  seedsSegmentation.setRadius(
-    2);
-  seedsSegmentation.setNumberOfIterations(
-    50);
-  seedsSegmentation.setCurvatureWeight(
-    10);
+  QGoFilterChanAndVes* levelSet2DFilter = new QGoFilterChanAndVes(2);
+  std::vector<vtkImageData*> imagesVector;
+  imagesVector[0] = castFilter->GetOutput();
+  levelSet2DFilter->setOriginalImageMC(&imagesVector);
+  levelSet2DFilter->setIterations(50);
+  levelSet2DFilter->setRadius(2);
+  levelSet2DFilter->setCurvature(10);
 
   double seedPos[3];
   seedPos[0] = 5;
   seedPos[1] = 5;
   seedPos[2] = 5;
 
-  seedsSegmentation.setSeedsPosition(seedPos);
-
-  //
-  int orientation = 0;
+  levelSet2DFilter->setCenter(seedPos);
 
   // if there is an output
-  if (seedsSegmentation.LevelSetSegmentation2D(orientation))
+  if (levelSet2DFilter->Apply())
     {
+    delete levelSet2DFilter;
     return EXIT_SUCCESS;
     }
   else
     {
+    delete levelSet2DFilter;
     return EXIT_FAILURE;
     }
 }

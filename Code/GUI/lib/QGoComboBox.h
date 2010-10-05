@@ -48,6 +48,7 @@
 \class QGoComboBox
 \brief inherits from Qt QCombobox but add a the end of the list of items, 1 or 2 items:
 the first one to add new items and the second one to delete them
+\ingroup GUI
 */
 class QGOGUILIB_EXPORT QGoComboBox : public QComboBox
   {

@@ -42,6 +42,8 @@
 
 #include "GoDBTraceInfoForTableWidget.h"
 #include "GoDBTraceRow.h"
+#include "vtkMySQLDatabase.h"
+#include "SelectQueryDatabaseHelper.h"
 #include <string>
 #include <vector>
 #include <list>
@@ -56,11 +58,13 @@ class QGOIO_EXPORT GoDBTableWidgetContainer
 
 public:
   GoDBTableWidgetContainer();
-  GoDBTableWidgetContainer(std::string iCollectionName, std::string iTracesName);
-  ~GoDBTableWidgetContainer(){};
+  explicit GoDBTableWidgetContainer(std::string iCollectionName, std::string iTracesName,
+    int iImgSessionID);
+  virtual ~GoDBTableWidgetContainer(){};
 
   typedef  std::vector<std::pair<GoDBTraceInfoForTableWidget, std::vector<std::string> > >
-  DBTableWidgetContainerType;
+  TWContainerType;
+
   /** \brief Return a list with all the ColumnNames to be displayed in the
   tableWidget:*/
   std::list<std::string> GetListColumnsNamesForTableWidget();
@@ -69,6 +73,80 @@ public:
   tableWidget:*/
   std::vector<std::string> GetNameComputedColumns();
 
+  /** \brief get the results of the queries and put them in the row container corresponding
+  to all the data needed to fill the table widget for the traces and return the corresponding
+  row container*/
+  virtual TWContainerType GetContainerLoadedWithAllFromDB(
+    vtkMySQLDatabase* iDatabaseConnector);
+
+  /** \brief get the results of the queries and put them in the row container corresponding
+  to all the data needed to fill the table widget for the updated trace and return the
+  link to the corresponding row container which has only 1 row*/
+  virtual TWContainerType GetContainerForOneSpecificTrace(vtkMySQLDatabase* iDatabaseConnector,
+    int iTraceID);
+
+  /** \brief get the results of the queries and put them in the row container corresponding
+  to all the data needed to fill the table widget for the new created trace and return the
+  link to the corresponding row container which has only 1 row*/
+  //virtual TWContainerType GetContainerForLastCreatedTrace(
+    //vtkMySQLDatabase* iDatabaseConnector);
+
+  //void ClearRowContainer();
+
+  std::vector<int> GetIndexForGroupColor(std::string iGroupName);
+  /** 
+  \brief return all the traces IDs present in the RowContainer
+  */
+  std::vector<int> GetAllTraceIDsInContainer();
+  
+  /** *\brief return a list of all the traces with a bounding box
+  containing the given ZCoord*/
+  //std::list<std::string> GetTracesIDForAGivenZCoord(int iZCoord);
+
+  //std::vector<std::vector<std::string> > GetChannelsInfo();
+  /** \brief Set the info needed for mesh*/
+  //void SetSpecificColumnsInfoForMesh(
+    //std::vector<std::vector<std::string> > iChannelsInfo);
+
+  /** \brief Insert a new created trace with the datas contained in the
+  NewTraceContainer into the m_RowContainer*/
+  //void InsertNewCreatedTrace(GoDBTableWidgetContainer iLinkToNewTraceContainer);
+
+  //void DeleteSelectedTraces(std::list<int> iSelectedTraces);
+
+  //void UpdateIDs(std::list<int> iListTracesToUpdate,unsigned int NewCollectionID);
+
+protected:
+  std::string                              m_CollectionName;
+  std::string                              m_CollectionIDName;
+  std::string                              m_TracesName;
+  std::string                              m_TracesIDName;
+  int                                      m_ImgSessionID;
+  std::vector<GoDBTraceInfoForTableWidget> m_ColumnsInfos;
+  TWContainerType                          m_RowContainer;
+
+  /** \brief Fill a vector of GoDBTraceInfoForTableWidget with the info
+ needed to fill the table widget for all the traces*/
+  std::vector<GoDBTraceInfoForTableWidget> GetColumnsInfoForTraceTable();
+
+  /** \brief Fill the vector of GoDBTraceInfoForTableWidget with the info
+  common to 2 traces only*/
+  virtual void GetCommonInfoForTwoTracesTable()= 0;
+
+  void GetInfoForColumnIsVisible();
+
+  virtual void FillRowContainerWithDBValues(
+    vtkMySQLDatabase* iDatabaseConnector,std::string iRestrictionName,
+    std::string iRestrictionValue);
+
+  /** \todo find a way to make it ok for all traces, now only for mesh*/
+  /** \brief fill the row container with the values calculated and stored in th
+  meshAttributes*/
+  void FillRowContainerForComputedValues(
+    std::vector<std::vector<std::string> >* iComputedValues);
+
+  //int GetLastCreatedTraceID(vtkMySQLDatabase* iDatabaseConnector);
+  
   /** \brief return a vector of the table.fields to be selected from the database
   for all the fields except the ones with the same name if SameFieldsQuery is set
   to false and only for them if SameFieldsQuery is set to true*/
@@ -87,51 +165,16 @@ public:
   void FillRowContainer(std::vector<std::vector<std::string> > iResultsFromQuery,
                         std::vector<std::string> iSelectFields, std::string BaseOn = "");
 
-  DBTableWidgetContainerType GetRowContainer();
-  void ClearRowContainer();
-
+  size_t GetNumberOfRows();
+  
   /** *\brief return the index in the row container for the column with the given
   InfoName*/
   int GetIndexInsideRowContainer(std::string iInfoName);
 
-  /** *\brief return a list of all the traces with a bounding box
-  containing the given ZCoord*/
-  std::list<std::string> GetTracesIDForAGivenZCoord(int iZCoord);
-
-  std::vector<std::vector<std::string> > GetChannelsInfo();
-  /** \brief Set the info needed for mesh*/
-  void SetSpecificColumnsInfoForMesh(
-    std::vector<std::vector<std::string> > iChannelsInfo);
-
-  size_t GetNumberOfRows();
-
-  /** \brief Insert a new created trace with the datas contained in the
-  NewTraceContainer into the m_RowContainer*/
-  //void InsertNewCreatedTrace(GoDBTableWidgetContainer iLinkToNewTraceContainer);
-
-  //void DeleteSelectedTraces(std::list<int> iSelectedTraces);
-
-  //void UpdateIDs(std::list<int> iListTracesToUpdate,unsigned int NewCollectionID);
-
-protected:
-  std::string                              m_CollectionName;
-  std::string                              m_CollectionIDName;
-  std::string                              m_TracesName;
-  std::string                              m_TracesIDName;
-  std::vector<std::vector<std::string> >   m_ChannelsInfo;
-  std::vector<GoDBTraceInfoForTableWidget> m_ColumnsInfos;
-  DBTableWidgetContainerType               m_RowContainer;
-
-  /** \brief Fill a vector of GoDBTraceInfoForTableWidget with the info
- needed to fill the table widget for all the traces*/
-  std::vector<GoDBTraceInfoForTableWidget> GetColumnsInfoForTraceTable();
-
-  /** \brief Fill the vector of GoDBTraceInfoForTableWidget with the info
-  common to 2 traces only*/
-  void GetCommonInfoForTwoTracesTable();
+  virtual void ClearRowContainerValues();
 
   /** \brief Fill the vector of GoDBTraceInfoForTableWidget with the info
   specific to a trace*/
-  void GetSpecificInfoForTraceTable();
+  //virtual void GetSpecificInfoForTraceTable() = 0;
   };
 #endif

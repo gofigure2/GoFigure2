@@ -87,7 +87,7 @@ QGoTabImageView3D(QWidget* iParent)
     this->m_ContourWidget.back()->Off();
     }
 
-  m_NavigationDockWidget = new QGoNavigationDockWidget(this, 3);
+  m_NavigationDockWidget = new QGoNavigationDockWidget(this, GoFigure::THREE_D);
   m_NavigationDockWidget->resize(120, 300);
 
   QObject::connect(m_NavigationDockWidget, SIGNAL(XSliceChanged(int)),

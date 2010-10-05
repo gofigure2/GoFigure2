@@ -74,6 +74,8 @@ public:
   void setupUi(QWidget* parent);
   void retranslateUi(QWidget *parent);
 
+  virtual void ChangeCursorShape(QCursor iCursorShape);
+
 public slots:
   QString SnapshotViewXY(const GoFigure::FileType& iType,
                          const QString& iBaseName = tr("Snapshot"));
@@ -83,6 +85,6 @@ protected:
   QVTKWidget*            m_QVTKWidgetXY;
   vtkEventQtSlotConnect* m_VTKEventQtConnector;
 
-  virtual void ChangeCursorShape(QCursor iCursorShape);
+
   };
 #endif

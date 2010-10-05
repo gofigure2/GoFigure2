@@ -84,8 +84,6 @@ public:
   created mesh*/
   int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
 
-  void SetCollectionID(int iCollectionID);
-
   void ReInitializeMapAfterCast();
 
   void SaveInDBTotalIntensityPerChannel(vtkMySQLDatabase* DatabaseConnector,
@@ -94,8 +92,9 @@ public:
   void SafeDownCast(GoDBTraceRow& iRow);
 
   void SetTheDataFromTheVisu(vtkMySQLDatabase* DatabaseConnector,
-                             vtkPolyData* TraceVisu, GoDBCoordinateRow Min,
-                             GoDBCoordinateRow Max, GoFigureMeshAttributes* iMeshAttributes = 0);
+                             vtkPolyData* TraceVisu,GoDBCoordinateRow iCoordMin,
+                             GoDBCoordinateRow iCoordMax,
+                             GoFigureMeshAttributes* iMeshAttributes = 0);
 
 protected:
   virtual void InitializeMap();

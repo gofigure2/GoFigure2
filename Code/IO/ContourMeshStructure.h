@@ -141,8 +141,9 @@ struct ActorXZ {};
 struct ActorYZ {};
 struct ActorXYZ {};
 struct Nodes {};
-//struct CollectionID {};
 struct TCoord {};
+struct Highlighted {};
+struct Visible {};
 #endif
 
 #endif

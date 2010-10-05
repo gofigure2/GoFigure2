@@ -44,7 +44,7 @@
 #include <QVBoxLayout>
 
 QGoNavigationDockWidget::
-QGoNavigationDockWidget(QWidget* iParent, const unsigned int& iDim) :
+QGoNavigationDockWidget(QWidget* iParent, const GoFigure::TabDimensionType& iDim) :
   QDockWidget(iParent),
   m_Dimension(iDim)
   {
@@ -55,7 +55,9 @@ QGoNavigationDockWidget(QWidget* iParent, const unsigned int& iDim) :
   //temp->setIcon(Navigation);
   this->toggleViewAction()->setIcon(Navigation);
 
-  if (m_Dimension < 3)
+  switch( m_Dimension )
+  {
+  case GoFigure::TWO_D :
     {
     this->XSliceLbl->setVisible(false);
     this->XSliceSpinBox->setVisible(false);
@@ -67,15 +69,33 @@ QGoNavigationDockWidget(QWidget* iParent, const unsigned int& iDim) :
     this->TSliceSpinBox->setVisible(false);
 
     this->line->setVisible(false);
+
+    break;
     }
-  else
+  case GoFigure::TWO_D_WITH_T:
     {
-    if (m_Dimension == 3)
-      {
-      this->TSliceLbl->setVisible(false);
-      this->TSliceSpinBox->setVisible(false);
-      }
+    this->XSliceLbl->setVisible(false);
+    this->XSliceSpinBox->setVisible(false);
+    this->YSliceLbl->setVisible(false);
+    this->YSliceSpinBox->setVisible(false);
+    this->ZSliceLbl->setVisible(false);
+    this->ZSliceSpinBox->setVisible(false);
+
+    break;
     }
+  case GoFigure::THREE_D :
+    {
+    this->TSliceLbl->setVisible(false);
+    this->TSliceSpinBox->setVisible(false);
+
+    break;
+    }
+  default:
+  case GoFigure::THREE_D_WITH_T :
+    {
+    break;
+    }
+  }
 
   QObject::connect(this->XSliceSpinBox, SIGNAL(valueChanged(int)),
                    this, SIGNAL(XSliceChanged(int)));

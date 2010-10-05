@@ -122,7 +122,6 @@
 #include <vtkProperty.h>
 #include <vtkVolume.h>
 #include <vtkImageDataGeometryFilter.h>
-#include <vtkPolyDataMapper.h>
 #include <vtkImageActor.h>
 #include <vtkAxes.h>
 #include <vtkMatrix4x4.h>
@@ -143,16 +142,17 @@
 #include <vtkDataSetMapper.h>
 #include <vtkPlane.h>
 #include <vtkPlaneCollection.h>
-#include <vtkPolyDataMapper.h>
 #include <vtkGeometryFilter.h>
 #include <vtkDataSetSurfaceFilter.h>
-#include <vtkPolyDataMapper.h>
 #include <vtkPolyDataNormals.h>
 #include <vtkCellData.h>
 
 #include <vector>
 #include <string>
 #include <algorithm>
+
+#include "vtkPlanes.h"
+#include "vtkPlane.h"
 
 vtkCxxRevisionMacro(vtkViewImage3D, "$Revision: 501 $");
 vtkStandardNewMacro(vtkViewImage3D);
@@ -367,6 +367,7 @@ void vtkViewImage3D::SetupWidgets()
   this->Marker->SetOrientationMarker (this->Cube);
   this->Marker->SetViewport (0.0, 0.05, 0.15, 0.15);
 }
+//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 /**
@@ -393,7 +394,9 @@ void vtkViewImage3D::Render()
     this->RenderWindow->Render();
     }
 }
+//----------------------------------------------------------------------------
 
+//----------------------------------------------------------------------------
 /**
  *
  */
@@ -401,7 +404,9 @@ void vtkViewImage3D::SetVolumeRenderingOff()
 {
   this->VolumeActor->SetVisibility (false);
 }
+//----------------------------------------------------------------------------
 
+//----------------------------------------------------------------------------
 /**
  *
  */
@@ -480,7 +485,9 @@ void vtkViewImage3D::SetVolumeRenderingOn()
     this->VolumeActor->SetVisibility (true);
     }
 }
+//----------------------------------------------------------------------------
 
+//----------------------------------------------------------------------------
 /**
  *
  */
@@ -493,10 +500,9 @@ void vtkViewImage3D::SetTriPlanarRenderingOn()
     this->BoundsActor[i]->SetVisibility(true);
     }
 }
+//----------------------------------------------------------------------------
 
-/**
- *
- */
+//----------------------------------------------------------------------------
 void vtkViewImage3D::SetTriPlanarRenderingOff()
 {
   this->VolumeActor->SetVisibility(true);
@@ -506,7 +512,9 @@ void vtkViewImage3D::SetTriPlanarRenderingOff()
     this->BoundsActor[i]->SetVisibility(false);
     }
 }
+//----------------------------------------------------------------------------
 
+//----------------------------------------------------------------------------
 /**
  *
  * @param i
@@ -552,6 +560,7 @@ void vtkViewImage3D::Add2DPhantom(const unsigned int& i,
       vtkSmartPointer<vtkPolyDataMapper> bounds_mapper =
         vtkSmartPointer<vtkPolyDataMapper>::New();
       bounds_mapper->SetInput(in_bounds);
+      bounds_mapper->StaticOn();
 
       this->BoundsActor[i]->SetMapper(bounds_mapper);
       this->BoundsActor[i]->GetProperty()->SetRepresentationToWireframe();
@@ -581,6 +590,7 @@ SetBoundsActorsVisibility(bool iVisibility)
 }
 //----------------------------------------------------------------------------
 
+//----------------------------------------------------------------------------
 void vtkViewImage3D::UpdateInteractorStyle()
 
 {
@@ -589,6 +599,8 @@ void vtkViewImage3D::UpdateInteractorStyle()
 
   this->Interactor->SetInteractorStyle(interactorStyle);
 }
+//----------------------------------------------------------------------------
+
 //----------------------------------------------------------------------------
 /**
  *
@@ -620,7 +632,9 @@ void vtkViewImage3D::InstallPipeline()
     }
 
 }
+//----------------------------------------------------------------------------
 
+//----------------------------------------------------------------------------
 /**
  *
  * @param dataset
@@ -654,6 +668,7 @@ vtkViewImage3D::AddDataSet(vtkDataSet* dataset,
     vtkSmartPointer<vtkPolyDataMapper>::New();
   mapper->SetInput(dynamic_cast<vtkPolyData*>(dataset));
   mapper->SetScalarVisibility(iDataVisibility);
+  mapper->StaticOn();
 
   // actor coordinates geometry, properties, transformation
 
@@ -789,3 +804,95 @@ GetInteractorStyle3D()
 {
   return this->InteractorStyle3D;
 }
+//----------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------
+void
+vtkViewImage3D::
+ComputeDistances(double* n, double* origin)
+{
+  // go through all actors
+  // relative distance from point to plane
+  Prop3DCollection->InitTraversal();
+  vtkProp3D* prop_temp = Prop3DCollection->GetNextProp3D();
+
+  while( prop_temp )
+    {
+    double* point = prop_temp->GetCenter();
+    double distance = n[0]*(point[0]-origin[0])
+                    + n[1]*(point[1]-origin[1])
+                    + n[2]*(point[2]-origin[2]);
+
+    // condition on distance to the plane
+    //if(abs(distance) < 50)
+    //  {
+
+
+    // TEST CONTAINER
+    bool state;
+      if(distance < 0)
+        {
+      state = false;
+      //  prop_temp->SetVisibility(0);
+        }
+      else
+        {
+      state = true;
+      //  prop_temp->SetVisibility(1);
+        }
+
+
+      this->GetInteractorStyle3D()->SetCurrentProp(prop_temp);
+      this->GetInteractorStyle3D()->SetCurrentState(state);
+      this->InvokeEvent(vtkViewImage3DCommand::VisibilityUpdatedEvent);
+    //  }
+    prop_temp = Prop3DCollection->GetNextProp3D();
+    }
+  // emit signal to say to render
+  this->InvokeEvent(vtkViewImage3DCommand::UpdateRenderEvent);
+}
+//----------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------
+void
+vtkViewImage3D::
+ComputeDistancesToSquare(vtkPlanes* planes)
+{
+  // go through all actors
+  // relative distance from point to plane
+  Prop3DCollection->InitTraversal();
+  vtkProp3D* prop_temp = Prop3DCollection->GetNextProp3D();
+
+  while( prop_temp )
+    {
+    double* point = prop_temp->GetCenter();
+    bool show = true;
+
+    for (int i=0; i<6; ++i)
+      {
+      double* n = planes->GetPlane(i)->GetNormal();
+      double* origin = planes->GetPlane(i)->GetOrigin();
+      double  distance = n[0]*(point[0]-origin[0])
+                       + n[1]*(point[1]-origin[1])
+                       + n[2]*(point[2]-origin[2]);
+
+      if(distance > 0)
+        {
+        show = false;
+        break;
+        }
+      }
+    //if (abs(distance0) < 50 || abs(distance1) < 50 || abs(distance2) < 50
+   //     || abs(distance3) < 50 || abs(distance4) < 50 || abs(distance5) < 50)
+   //   {
+
+      this->GetInteractorStyle3D()->SetCurrentProp(prop_temp);
+      this->GetInteractorStyle3D()->SetCurrentState(show);
+      this->InvokeEvent(vtkViewImage3DCommand::VisibilityUpdatedEvent);
+    //  }
+    prop_temp = Prop3DCollection->GetNextProp3D();
+    }
+  // emit signal to say to render
+  this->InvokeEvent(vtkViewImage3DCommand::UpdateRenderEvent);
+}
+//----------------------------------------------------------------------------

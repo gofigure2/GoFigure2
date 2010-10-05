@@ -44,6 +44,7 @@
 #include <QDockWidget>
 #include <QComboBox>
 #include "ui_NavigationDockWidget.h"
+#include "GoFigureGlobalDefinition.h"
 
 #include "QGoGUILibConfigure.h"
 
@@ -57,8 +58,9 @@ class QGOGUILIB_EXPORT QGoNavigationDockWidget :
   Q_OBJECT
 
 public:
-  explicit QGoNavigationDockWidget(QWidget* parent = 0,
-                                   const unsigned int& iDim = 4);
+  explicit QGoNavigationDockWidget(
+      QWidget* parent = 0,
+      const GoFigure::TabDimensionType& iDim = GoFigure::THREE_D_WITH_T );
   ~QGoNavigationDockWidget();
 
   void SetNumberOfChannels(const unsigned int& iN);
@@ -91,6 +93,6 @@ signals:
   void TSliceChanged(int Slice);
 
 protected:
-  unsigned int m_Dimension;
+  GoFigure::TabDimensionType m_Dimension;
   };
 #endif

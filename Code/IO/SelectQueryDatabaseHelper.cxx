@@ -778,6 +778,77 @@ std::vector<std::string> ListSpecificValuesForOneColumn(
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
+std::list<unsigned int> ListSpecificValuesForOneColumn(
+  vtkMySQLDatabase* DatabaseConnector,
+  std::string TableName, std::string ColumnName,
+  std::string field, std::vector<unsigned int> ListValues,
+  bool Distinct, bool ExcludeZero)
+{
+  std::list<unsigned int> result;
+
+  vtkSQLQuery*      query = DatabaseConnector->GetQueryInstance();
+  std::stringstream querystream;
+  querystream << "SELECT ";
+  if (Distinct)
+    {
+    querystream << "DISTINCT ";
+    }
+  querystream << ColumnName;
+  querystream << " FROM ";
+  querystream << TableName;
+  querystream << " WHERE (";
+  if (ExcludeZero)
+    {
+    querystream << ColumnName;
+    querystream << " <> 0 AND (";
+    }
+
+  unsigned int i;
+  for (i = 0; i < ListValues.size() - 1; i++)
+    {
+    querystream << field;
+    querystream << " = '";
+    querystream << ListValues[i];
+    querystream << "' OR ";
+    }
+  querystream << field;
+  querystream << " = '";
+  querystream << ListValues[i];
+  //querystream << "');";
+  querystream << "'";
+  querystream << ")";
+  if (ExcludeZero)
+    {
+    querystream << ")";
+    }
+
+  query->SetQuery(querystream.str().c_str());
+  if (!query->Execute())
+    {
+    itkGenericExceptionMacro(
+      << "List of all values of ExpID query failed"
+      << query->GetLastErrorText());
+    DatabaseConnector->Close();
+    DatabaseConnector->Delete();
+    query->Delete();
+    return result;
+    }
+
+  while (query->NextRow())
+    {
+    for (int k = 0; k < query->GetNumberOfFields(); k++)
+      {
+      result.push_back(query->DataValue(k).ToUnsignedInt());
+      }
+    }
+
+  query->Delete();
+
+  return result;
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 //query: "SELECT ColumnNameOne,ColumnName2 FROM TableName
 //WHERE field = value ORDER BY ColumnNameOrder ASC"
 std::vector<std::pair<std::string, std::string> >
@@ -1158,13 +1229,12 @@ std::vector<std::pair<int, std::string> > ListSpecificValuesForTwoColumnsAndTwoT
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-ContourMeshStructureMultiIndexContainer* GetTracesInfoFromDB(
-  vtkMySQLDatabase* DatabaseConnector, std::string TraceName,
-  std::string CollectionName, unsigned int ImgSessionID, int iTimePoint,
-  std::vector<int> iListIDs)
+void GetTracesInfoFromDBAndModifyContainer(
+    std::list< ContourMeshStructure >& ioContainer,
+    vtkMySQLDatabase* DatabaseConnector, std::string TraceName,
+    std::string CollectionName, unsigned int ImgSessionID, int iTimePoint,
+    std::vector<int> iVectIDs)
 {
-  ContourMeshStructureMultiIndexContainer* Results =
-    new ContourMeshStructureMultiIndexContainer;
   vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
 
   std::stringstream Querystream;
@@ -1185,37 +1255,44 @@ ContourMeshStructureMultiIndexContainer* GetTracesInfoFromDB(
   Querystream << TraceName;
   Querystream << ".coordIDMax) left join color on ";
   Querystream << TraceName;
+
+  Querystream << ".colorID = color.colorID  where ";//(ImagingSessionID = ";
+  //Querystream << ImgSessionID;
+  //Querystream << " and ";
+  //Querystream << TraceName;
+  //Querystream << ".Points <> '0' ";
+
   if (iTimePoint != -1)
     {
-    Querystream << ".colorID = color.colorID  where (ImagingSessionID = ";
-    Querystream << ImgSessionID;
-    Querystream << " and ";
-    Querystream << "coordinate.TCoord = ";
-    Querystream << iTimePoint;
-    if (!iListIDs.empty())
+    if (!iVectIDs.empty())
       {
+      Querystream << "(ImagingSessionID = ";
+      Querystream << ImgSessionID;
+      Querystream << " and ";
+      Querystream << "coordinate.TCoord = ";
+      Querystream << iTimePoint;
       Querystream << " and (";
       unsigned int i;
-      for (i = 0; i < iListIDs.size() - 1; i++)
+      for (i = 0; i < iVectIDs.size() - 1; i++)
         {
         Querystream << TraceName;
         Querystream << "ID = '";
-        Querystream << iListIDs[i];
+        Querystream << iVectIDs[i];
         Querystream << "' OR ";
         }
       Querystream << TraceName;
       Querystream << "ID = '";
-      Querystream << iListIDs[i];
+      Querystream << iVectIDs[i];
       Querystream << "')";
       }
     Querystream << ");";
     }
   else
-    {
-    Querystream << ".colorID = color.colorID  where ImagingSessionID = ";
-    Querystream << ImgSessionID;
-    Querystream << ";";
-    }
+  {
+  Querystream << "ImagingSessionID = ";
+  Querystream << ImgSessionID;
+  Querystream << ";";
+  }
 
   query->SetQuery(Querystream.str().c_str());
   if (!query->Execute())
@@ -1226,7 +1303,7 @@ ContourMeshStructureMultiIndexContainer* GetTracesInfoFromDB(
     DatabaseConnector->Close();
     DatabaseConnector->Delete();
     query->Delete();
-    return Results;
+    return;
     }
 
   while (query->NextRow())
@@ -1236,7 +1313,6 @@ ContourMeshStructureMultiIndexContainer* GetTracesInfoFromDB(
       temp.TraceID = query->DataValue(0).ToInt();
       vtkSmartPointer<vtkPolyDataMySQLTextReader> convert_reader =
         vtkSmartPointer<vtkPolyDataMySQLTextReader>::New();
-      //temp.CollectionID = query->DataValue(1).ToUnsignedInt();
       std::string polydata_string = query->DataValue(2).ToString();
       if (!polydata_string.empty())
         {
@@ -1262,11 +1338,10 @@ ContourMeshStructureMultiIndexContainer* GetTracesInfoFromDB(
       temp.rgba[1]      = (query->DataValue(5).ToDouble()) / 255.;
       temp.rgba[2]      = (query->DataValue(6).ToDouble()) / 255.;
       temp.rgba[3]      = (query->DataValue(7).ToDouble()) / 255.;
-      Results->insert(temp);
+      ioContainer.push_back( temp );
       }
     }
   query->Delete();
-  return Results;
 }
 //------------------------------------------------------------------------------
 
@@ -1351,7 +1426,7 @@ ContourMeshStructure GetTraceInfoFromDB(
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-ContourMeshStructureMultiIndexContainer* GetTracesInfoFromDBMultiIndex(
+/*ContourMeshStructureMultiIndexContainer* GetTracesInfoFromDBMultiIndex(
   vtkMySQLDatabase* DatabaseConnector, std::string TraceName,
   std::string CollectionName, std::string WhereField,
   unsigned int ImgSessionID, int iTimePoint, std::vector<int> iListIDs)
@@ -1461,7 +1536,7 @@ ContourMeshStructureMultiIndexContainer* GetTracesInfoFromDBMultiIndex(
     }
   query->Delete();
   return Results;
-}
+}*/
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -1643,6 +1718,43 @@ std::string SelectQueryStreamListConditions(std::string iTable,
     querystream << "DISTINCT ";
     }
   querystream << iColumn;
+  querystream << " FROM ";
+  querystream << iTable;
+  querystream << " WHERE (";
+  unsigned int i;
+  for (i = 0; i < iListValues.size() - 1; i++)
+    {
+    querystream << iField;
+    querystream << " = '";
+    querystream << iListValues[i];
+    querystream << "' OR ";
+    }
+  querystream << iField;
+  querystream << " = '";
+  querystream << iListValues[i];
+  querystream << "')";
+  return querystream.str();
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string SelectQueryStreamListConditions(std::string iTable,
+                                            std::vector<std::string> iListColumn, std::string iField,
+                                            std::vector<std::string> iListValues, bool Distinct)
+{
+  std::stringstream querystream;
+  querystream << "SELECT ";
+  if (Distinct)
+    {
+    querystream << "DISTINCT ";
+    }
+  unsigned int j;
+  for(j = 0; j<iListColumn.size() - 1;j++)
+  {
+    querystream << iListColumn[j];
+    querystream << ", ";
+  }
+  querystream << iListColumn[j];
   querystream << " FROM ";
   querystream << iTable;
   querystream << " WHERE (";
@@ -1949,4 +2061,120 @@ std::vector<std::string> GetSpecificValueFromOneTableWithConditionsOnTwoColumns(
   query->Delete();
 
   return result;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list<unsigned int> GetColumnForBoundedValue(std::string iColumnName,
+   std::string iTableName, std::string iImgSessionID,std::string iCoordType,
+   std::string iValue, vtkMySQLDatabase* DatabaseConnector)
+{
+  std::list<unsigned int> result;
+  vtkSQLQuery*             query = DatabaseConnector->GetQueryInstance();
+
+  std::stringstream querystream;
+  querystream << "SELECT T1.";
+  querystream << iColumnName;
+  querystream << " FROM (SELECT ";
+  querystream << iTableName;
+  querystream << ".";
+  querystream << iColumnName;
+  querystream << " FROM ";
+  querystream << iTableName;
+  querystream << " LEFT JOIN coordinate ON ";
+  querystream << iTableName;
+  querystream << ".CoordIDMax = coordinate.coordid WHERE (ImagingsessionID = ";
+  querystream << iImgSessionID;
+  querystream << " AND Coordinate.";
+  querystream << iCoordType;
+  querystream << " > ";
+  querystream << iValue;
+  querystream << ")) AS T1 INNER JOIN (SELECT ";
+  querystream << iTableName;
+  querystream << ".";
+  querystream << iColumnName;
+  querystream << " FROM ";
+  querystream << iTableName;
+  querystream << " LEFT JOIN coordinate ON ";
+  querystream << iTableName;
+  querystream << ".CoordIDMin = coordinate.coordid WHERE (ImagingsessionID = ";
+  querystream << iImgSessionID;
+  querystream << " AND Coordinate.";
+  querystream << iCoordType;
+  querystream << " < ";
+  querystream << iValue;
+  querystream << ")) AS T2 on T1.";
+  querystream << iColumnName;
+  querystream << " = T2.";
+  querystream << iColumnName;
+
+  query->SetQuery(querystream.str().c_str());
+  if (!query->Execute())
+    {
+    itkGenericExceptionMacro(
+      << "GetColumnForBoundedValue query failed"
+      << query->GetLastErrorText());
+    DatabaseConnector->Close();
+    DatabaseConnector->Delete();
+    query->Delete();
+    return result;
+    }
+
+  while (query->NextRow())
+    {
+    for (int k = 0; k < query->GetNumberOfFields(); k++)
+      {
+      result.push_back(query->DataValue(k).ToInt());
+      }
+    }
+
+  query->Delete();
+
+  return result;
+
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list<unsigned int> GetSpecificValuesEqualToZero(
+  vtkMySQLDatabase* iDatabaseConnector,std::string iColumnName, std::string iTableName,
+  std::string iFieldOne, std::vector<std::string> iVectorConditionFieldOne,
+  std::string iFieldTwo)
+{
+  std::list<unsigned int> result;
+  vtkSQLQuery*             query = iDatabaseConnector->GetQueryInstance();
+  std::stringstream querystream;
+  std::string temp = SelectQueryStreamListConditions(iTableName,
+                                            iColumnName, iColumnName,
+                                            iVectorConditionFieldOne);
+  temp = temp.substr(0,temp.size()-1);
+  querystream << temp;
+  querystream << " AND ";
+  querystream << iFieldTwo;
+  querystream << " = 0);";
+  
+  query->SetQuery(querystream.str().c_str());
+  /** \todo check when several meshesID are in the query*/
+  if (!query->Execute())
+    {
+    itkGenericExceptionMacro(
+      << "GetColumnForBoundedValue query failed"
+      << query->GetLastErrorText());
+    iDatabaseConnector->Close();
+    iDatabaseConnector->Delete();
+    query->Delete();
+    return result;
+    }
+
+  while (query->NextRow())
+    {
+    for (int k = 0; k < query->GetNumberOfFields(); k++)
+      {
+      result.push_back(query->DataValue(k).ToInt());
+      }
+    }
+
+  query->Delete();
+
+  return result;  
 }

@@ -116,6 +116,8 @@ class vtkColorTransferFunction;
 
 class ImageActorCallback;
 
+class vtkPlanes;
+
 /**
  * \class vtkViewImage3D
  * \ingroup MegaVTK 
@@ -267,6 +269,10 @@ public:
   vtkInteractorStyleImage3D* GetInteractorStyle3D();
 
   vtkGetObjectMacro (Command, vtkViewImage3DCommand);
+
+  void ComputeDistances(double* n, double* origin);
+
+  void ComputeDistancesToSquare(vtkPlanes* planes);
 
 protected:
 

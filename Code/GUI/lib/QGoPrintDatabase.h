@@ -48,15 +48,12 @@
 #include "MegaVTK2Configure.h"
 #include "GoDBRecordSet.h"
 #include "GoDBContourRow.h"
-#include "QTableWidgetChild.h"
 #include "vtkMySQLDatabase.h"
 #include "vtkPolyData.h"
-#include "GoDBCollectionOfTraces.h"
 #include "GoDBTraceInfoForVisu.h"
 #include "ContourMeshStructure.h"
 #include "TraceInfoStructure.h"
 #include "QGoDBBookmarkManager.h"
-#include "ContourMeshStructureHelper.h"
 #include "QGoGUILibConfigure.h"
 #include "GoFigureMeshAttributes.h"
 #include "QGoTraceManualEditingDockWidget.h"
@@ -64,12 +61,16 @@
 #include "QGoDBCellTypeManager.h"
 #include "QGoDBSubCellTypeManager.h"
 #include "QGoDBColorManager.h"
+#include "QGoDBMeshManager.h"
+#include "QGoDBContourManager.h"
+#include "QGoDBTrackManager.h"
+#include "ContourMeshContainer.h"
   /**
   \defgroup DB Database
   \defgroup GUI GUI
   */
 
-  /** 
+  /**
   \class QGoPrintDatabase
   \brief Ensure the connection with the Database
  */
@@ -86,7 +87,7 @@ public:
   /** \brief Destructor */
   virtual ~QGoPrintDatabase();
 
-  typedef GoDBCollectionOfTraces::DBTableWidgetContainerType DBTableWidgetContainerType;
+  typedef GoDBCollectionOfTraces::TWContainerType TWContainerType;
   typedef QGoDBBookmarkManager::NamesDescrContainerType      NamesDescrContainerType;
   typedef QGoTraceManualEditingWidget::ItemColorComboboxData ItemColorComboboxData;
   typedef std::pair<int,QColor>                              IDWithColorData;
@@ -102,10 +103,10 @@ public:
  * and fill the info for the contours and meshes*/
   void FillTableFromDatabase();
 
-  /** \brief Add the contours in the trcaeinfoForvisu and return all the
+  /** \brief Add the contours in the traceinfoForvisu and return all the
   contours data for the given timepoint, included the new ones*/
-  ContourMeshStructureMultiIndexContainer* AddContoursFromDBForAGivenTimePoint(
-    int iTimePoint, std::vector<int> iListIDs = std::vector<int>());
+  void AddContoursFromDBForAGivenTimePoint(
+    std::vector<int> iListIDs = std::vector<int>());
 
   /** \brief return the multi index container for the contours with the
   data from the database corresponding to iTimePoint and to the list
@@ -130,8 +131,8 @@ public:
 
   /** \brief Add the meshes in the trcaeinfoForvisu and return all the
   meshes data for the given timepoint, included the new ones*/
-  ContourMeshStructureMultiIndexContainer*
-  AddMeshesFromDBForAGivenTimePoint(int iTimePoint, std::vector<int> iListIDs);
+  void
+  AddMeshesFromDBForAGivenTimePoint(std::vector<int> iListIDs);
 
   /** \brief Return a vector of all the contours for the given timepoint*/
   std::vector<ContourMeshStructure> GetContoursForAGivenTimepoint(
@@ -143,8 +144,7 @@ public:
 
   /** \brief Return a vector of all the contours with a bounding box
   containing the given ZCoord*/
-  std::vector<ContourMeshStructure> GetContoursForAGivenZCoord(
-    unsigned int iZCoord);
+  std::list<unsigned int> GetContoursForAGivenZCoord(unsigned int iZCoord);
 
   /** \brief Return a multiIndex of all the contours with a bounding box
   containing the given ZCoord*/
@@ -154,29 +154,25 @@ public:
 
   /** \brief Return a vector of all the meshes with a bounding box
   containing the given ZCoord*/
-  std::vector<ContourMeshStructure> GetMeshesForAGivenZCoord(
-    unsigned int iZCoordPoint);
-
-  /** \brief return a list of the IDs for the collection corresponding to
- * the tracename with their colors for all the timepoints*/
-  // std::list<std::pair<std::string,QColor> > GetListExistingCollectionIDFromDB(
-  //  std::string TraceName);
+ // std::vector<ContourMeshStructure> GetMeshesForAGivenZCoord(
+  //  unsigned int iZCoordPoint);
+  std::list<unsigned int> GetMeshesForAGivenZCoord(unsigned int iZCoordPoint);
 
   //useful ???
   std::pair<std::string, QColor> GetSelectedCollectionData();
 
-  /** \brief return the info for the visu for the related traces*/
-  ContourMeshStructureMultiIndexContainer* GetTracesInfoListForVisu(std::string iTraceName);
-
-  /** \brief save a new contour from the visu into the database, update
- * the table widget with the row container and the m_ContoursInfo*/
-  IDWithColorData SaveContoursFromVisuInDB(unsigned int iXCoordMin,
+  /** 
+  \brief save a new contour from the visu into the database, update
+  the table widget and the CurrentElement of the visu container if reeditMode 
+  is set to false; if not, update the contour in the DB and in the TW, for 
+  both modes, update the mesh the contour is part of.
+  */
+  void SaveContoursFromVisuInDB(unsigned int iXCoordMin,
                                unsigned int iYCoordMin, unsigned int iZCoordMin, unsigned int iTCoord,
                                unsigned int iXCoordMax, unsigned int iYCoordMax, unsigned int iZCoordMax,
-                               vtkPolyData* iContourNodes);//, std::pair<std::string, QColor> iColorData,
-                               //unsigned int iMeshID = 0);
+                               vtkPolyData* iContourNodes);
 
-  /** 
+  /**
   \brief Update the data for the reedited contour into the database and
   update the table widget
   */
@@ -190,18 +186,14 @@ public:
   visualization, if the mesh is an updated mesh which already exits(for
   example a new contour is added to this mesh, the NewMesh has to be set
   to false
-  \return IDWithColorData the ID and the color of the new created mesh
   */
-  IDWithColorData SaveMeshFromVisuInDB(unsigned int iXCoordMin,
+  void SaveMeshFromVisuInDB(unsigned int iXCoordMin,
                            unsigned int iYCoordMin, unsigned int iZCoordMin, unsigned int iTCoord,
                            unsigned int iXCoordMax, unsigned int iYCoordMax, unsigned int iZCoordMax,
-                           vtkPolyData* iMeshNodes, GoFigureMeshAttributes* iMeshAttributes,
-                           bool NewMesh = true, int iMeshID = 0);
+                           vtkPolyData* iMeshNodes, GoFigureMeshAttributes* iMeshAttributes);
+                           //bool NewMesh = true, int iMeshID = 0);
 
   int CreateMeshFromOneClickSegmentation(std::list<int> iListContoursIDs);
-
-  void AddTracesInTableWidgetFromDB(std::vector<int> ListTracesIDs,
-                                    std::string iTraceName);
 
   void AddBookmark(int iXCoord, int iYCoord,
                    int iZCoord, int iTCoord);
@@ -218,33 +210,56 @@ public:
 
   QAction* toggleViewAction();
 
-  ContourMeshStructureMultiIndexContainer* ImportContours(int iTimePoint);
-  ContourMeshStructureMultiIndexContainer* ImportMeshes(int iTimePoint);
+  void ImportContours(int iTimePoint);
+  void ImportMeshes(ContourMeshContainer* iContainer, int iTimePoint);
 
-  void PrintVolumeAreaForMesh(double iVolume, double iArea,
-                              unsigned int iMeshID);
+
+  void PrintVolumeAreaForMesh(GoFigureMeshAttributes*
+     iMeshAttributes,unsigned int iMeshID);
   /** \brief return the TraceManualEditingDockWidget*/
   QGoTraceManualEditingDockWidget* GetTraceManualEditingDockWidget();
 
-  /** \brief update the tracemanualeditingwidget for the trace with the 
+  /** 
+  \brief update the tracemanualeditingwidget for the trace with the
   corresponding list of collectionID and set the tablewidget for the
-  trace table*/
+  trace table
+  \param[in] iTraceName name of the corresponding trace
+  \param[in] iCollectionName name of the corresponding collection
+  \param[in] UpdateTableWidget true if the tablewidget has to be
+  updated also
+  */
   void UpdateWidgetsForCorrespondingTrace(std::string iTraceName,
     std::string iCollectionName,bool UpdateTableWidget = true);
-  
+
   /** \brief Initialize or reinitialized the celltype,subcelltype
   and color list from the database into the tracemanualeditingwidget*/
   void InitializeTheComboboxesNotTraceRelated();
 
+  /**
+  \brief set the pointer m_TraceInfoForVisu of the ContoursManager to
+  iContoursContainer
+  \param[in] iContoursContainer pointer for the container of contours 
+  for the visu
+  */
+  void SetContoursContainer(ContourMeshContainer* iContoursContainer);
+  /**
+  \brief set the pointer m_TraceInfoForVisu of the MeshesManager to
+  iMeshesContainer
+  \param[in] iMeshesContainer pointer for the container of meshes 
+  for the visu
+  */
+  void SetMeshesContainer(ContourMeshContainer* iMeshesContainer);
+  /**
+  \brief set the pointer m_TraceInfoForVisu of the TracksManager to
+  iTracksContainer
+  \param[in] iTrackssContainer pointer for the container of tracks 
+  for the visu
+  */
+  void SetTracksContainer( ContourMeshContainer* iContainer );
+
 public slots:
-  void ChangeContoursToHighLightInfoFromVisu(
-    std::list<int> iListContoursHighLightedInVisu, bool Reedit);
-
-  void ChangeMeshesToHighLightInfoFromVisu(
-    std::list<int> iListMeshesHighLightedInVisu);
-
   void DeleteBookmarks();
- 
+
   void SetTable(std::string iTablename);
   void ExportContours();
   void ExportMeshes();
@@ -253,20 +268,19 @@ public slots:
 
 signals:
   void PrintDBReady();
+  void DBVariablesSet();
   void TableContentChanged();
-  void SelectionContoursToHighLightChanged();
-  void SelectionMeshesToHighLightChanged();
   void TraceToReEdit(unsigned int);
-  void TracesToDeleteInVisu(std::list<int> );
   void OpenBookmarksToUpdate();
   void ColorChangedForSelectedTraces(QColor);
   void TableWidgetTabChanged();
-  void NewMeshToGenerate(std::list<int> ListContourIDs,int iNewMeshID);
+  void NewMeshToGenerate(std::list<unsigned int> ListContourIDs,int iNewMeshID);
   void MeshGenerationToUpdate(std::list<int> ListContourIDs);
+  /**
+  \brief signal emitted when a signal is emitted from a m_TraceManager for
+  "go to the trace " from the context menu
+  */
   void NeedToGoToTheLocation(int XCoord, int YCoord, int ZCoord, int TCoord);
-  void ShowCheckedTracesActivated();
-  void SelectionContoursToShowChanged();
-  void SelectionMeshesToShowChanged();
 
 protected:
   //updated by the TraceManualEditing Widget:
@@ -279,6 +293,8 @@ protected:
   QGoDBCellTypeManager*            m_CellTypeManager;
   QGoDBSubCellTypeManager*         m_SubCellTypeManager;
   QGoDBColorManager*               m_ColorManager;
+  QGoTraceManualEditingDockWidget* m_TraceManualEditingDockWidget;
+  QGoTraceManualEditingWidget*     m_TraceWidget;
 
   int                              m_SelectedTimePoint;
 
@@ -286,10 +302,11 @@ protected:
   TraceInfoStructure*              m_MeshesData;
   TraceInfoStructure*              m_TracksData;
   TraceInfoStructure*              m_LineagesData;
-  QGoTraceManualEditingDockWidget* m_TraceManualEditingDockWidget;
-  QGoTraceManualEditingWidget*     m_TraceWidget;
+  QGoDBContourManager*             m_ContoursManager;
+  QGoDBMeshManager*                m_MeshesManager;
+  QGoDBTrackManager*               m_TracksManager;
 
-
+  //Database variables:
   vtkMySQLDatabase*                m_DatabaseConnector;
   std::string                      m_Server;
   std::string                      m_User;
@@ -298,6 +315,7 @@ protected:
   unsigned int                     m_ImgSessionID;
   std::string                      m_ImgSessionName;
   bool                             m_IsDatabaseUsed;
+  bool                             m_ReeditMode;
 
   QAction* m_VisibilityAction;
 
@@ -305,42 +323,57 @@ protected:
   void OpenDBConnection();
   void CloseDBConnection();
 
+  /**
+  \brief create the m_ContoursManager and its SLOT/SIGNAL connection
+  */
+  void SetContoursManager();
+
+   /**
+  \brief create the m_MeshesManager and its SLOT/SIGNAL connection
+  */
+  void SetMeshesManager();
+
+   /**
+  \brief create the m_TracksManager and its SLOT/SIGNAL connection
+  */
+  void SetTracksManager();
+
   //******************Methods related to Trace Manual Editing Widget***********
 
   /**
-  \brief create all the connections between the QGoPrintDatabase and the 
+  \brief create all the connections between the QGoPrintDatabase and the
   QGoTraceManaualEditingWidget (TM)
   */
   void CreateConnectionsForTraceManualEditingWidget();
-  /** 
-  \brief get the list of celltypes from the database, put them in 
+  /**
+  \brief get the list of celltypes from the database, put them in
   the Trace Manual combobox and if the string is not empty, the combobox will have as
   selected item the string
   \param[in] iCellTypeToSelect name of the celltype to be selected
   */
   void SetTMListCellTypes(std::string iCellTypeToSelect = "");
 
-  /** 
-  \brief get the list of subcelltypes from the database, put them in 
+  /**
+  \brief get the list of subcelltypes from the database, put them in
   the Trace Manual combobox and if the string is not empty, the combobox will have as
   selected item the string
   \param[in] iSubCellTypeToSelect name of the subcelltype to be selected
   */
   void SetTMListSubCellTypes(std::string iSubCellTypeToSelect = "");
 
-  /** 
+  /**
   \brief get a list of the IDs with their colors for the collection corresponding to
   the tracename, for the given timepoint if the
   collection is a mesh or for all timepoints for tracks and lineages,
-  update the Trace Manual colorcombobox and select the corresponding ID in the combobox 
+  update the Trace Manual colorcombobox and select the corresponding ID in the combobox
   if the string is not empty
   \param[in] iIDToSelect ID for the item to be selected in the combobox
   */
   void SetTMListCollectionID(std::string iIDToSelect = "");
 
-  /** 
+  /**
   \brief get the data for the colorcombobox from the database,
-  put them in the Trace Manual colorcombobox and if the string is not empty, 
+  put them in the Trace Manual colorcombobox and if the string is not empty,
   the combobox will have as selected item the string
   \param[in] iColorToSelect name of the color to be selected in the combobox
   */
@@ -348,110 +381,53 @@ protected:
 
   //******************End of Methods related to Trace Manual Editing Widget***********
 
-  /** \brief get the info from the database for the collectionid, set the list in the
-  combobox and select the last activated item (i.e after delete)*/
- // void UpdateListCollectionIDFromDB();
-
-  /** \brief get the collection id with their corresponding color from the database*/
+  /** 
+  \brief get the collection id with their corresponding color from the database
+  \param[in] iDatabaseConnector connection to the database
+  */
   std::list<ItemColorComboboxData> GetListCollectionIDFromDB(
     vtkMySQLDatabase* iDatabaseConnector);
 
-  
+
   /** \brief Return the TraceInfoStructure corresponding to the trace name*/
   TraceInfoStructure* GetTraceInfoStructure(std::string iTraceName);
-
-  /** \brief initialize the m_ContoursInfo and m_MeshesInfo with the info
- * from the database*/
-  void LoadContoursAndMeshesFromDB(vtkMySQLDatabase* DatabaseConnector);
 
   std::vector<ContourMeshStructure> GetTracesForAGivenTimepoint(
     ContourMeshStructureMultiIndexContainer iAllTraces, unsigned int iTimePoint);
 
   /** \brief return a vector of all the traces with a bounding box
  * containing the given ZCoord*/
-  std::vector<ContourMeshStructure> GetTracesForAGivenZCoord(
-    ContourMeshStructureMultiIndexContainer iAllTraces, unsigned int iZCoord,
-    GoDBCollectionOfTraces* iCollectionOfTraces);
+  //std::vector<ContourMeshStructure> GetTracesForAGivenZCoord(
+  //  ContourMeshStructureMultiIndexContainer iAllTraces, unsigned int iZCoord,
+  //  GoDBCollectionOfTraces* iCollectionOfTraces);
+
   /**\brief get the columns names and the values of the table (type T)
  * from the database, then display them in the QTableWidgetchild.*/
-  void GetContentAndDisplayFromDB(std::string iTableName);
+  //void GetContentAndDisplayFromDB(std::string iTableName);
   void closeEvent(QCloseEvent* event);
-
-  /** \brief Insert a row in the table widget
- * with the corresponding values of the new created Trace and update the
- database with collectionID if needed*/
-  void UpdateTableWidgetAndDBWithNewCreatedTrace(
-    std::string iTraceName, GoFigureMeshAttributes* iMeshAttributes = 0);
-
-  /** \brief Update the IDs in the CollectionID column for the selected traces*/
-  /*void UpdateTableWidgetAndRowContainerWithNewCollectionID(
-   std::string iTraceName,unsigned int iNewCollectionID,
-   QColor iColorNewCollection,std::list<int> iListSelectedTraces);*/
 
   /** \brief Get the data for the corresponding trace from the database and
   replace the printed ones in the tablewidget with them*/
   void UpdateTableWidgetForAnExistingTrace(std::string iTraceName, int iTraceID,
     GoFigureMeshAttributes* iMeshAttributes = 0);
 
-  void DeleteTraceInContourMeshStructure(int iTraceID,
-                                         ContourMeshStructureMultiIndexContainer* iTraceInfo);
-
-  /** \brief take care of the traces belonging to the collection that are going
-  to be deleted and are collection of these belonging traces*/
-  void UpdateInfoForTracesToBeDeletedAsCollectionOf(std::string iTraceName,
-                                                    std::vector<std::string> iTracesAsCollectionToBeDeleted);
-
-  /** \brief delete the corresponding traces, update the related information
-  and recalculate the bounding box of the corresponding collections*/
-  void DeleteTracesAsPartOfACollection(std::string iTraceName,
-                                       std::list<int> iTracesToDelete);
-
   /** \brief update the database and the table widget for the selected traces,
   the new collection and the previous collection the traces were part of*/
-  void AddListTracesToACollection(std::list<int> iListSelectedTraces,
-                                  std::pair<std::string, QColor> iCollection, std::string iTraceName,
-                                  bool IsANewCollection, int iCollectionID = -1);
+  //void AddListTracesToACollection(std::list<unsigned int> iListSelectedTraces,
+  //                                std::pair<std::string, QColor> iCollection, std::string iTraceName,
+  //                                bool IsANewCollection, int iCollectionID = -1);
 
-  /** \brief set all the tracesinfostructures */
-  void SetTraceInfoStructures();
+  /** 
+  \brief set all the traces manager 
+  */
+  void SetTracesManager();
 
-  /** \brief create the trace row with the related data provided by
-  the visu, iTCoordMax is equal to 0 as for contour and mesh, it is the
-  same as TCoord*/
-  template<typename T>
-  void GetTraceRowFromVisu(
-    unsigned int iXCoordMin, unsigned int iYCoordMin, unsigned int iZCoordMin,
-    unsigned int iTCoord, unsigned int iXCoordMax, unsigned int iYCoordMax,
-    unsigned int iZCoordMax, vtkPolyData* iTraceNodes,
-    vtkMySQLDatabase* iDatabaseConnector, T& iTrace, unsigned int iTCoordMax = 0,
-    GoFigureMeshAttributes* iMeshAttributes = 0)
-  {
-    GoDBCoordinateRow coord_min;
-    coord_min.SetField<unsigned int>("XCoord", iXCoordMin);
-    coord_min.SetField<unsigned int>("YCoord", iYCoordMin);
-    coord_min.SetField<unsigned int>("ZCoord", iZCoordMin);
-    coord_min.SetField<unsigned int>("TCoord", iTCoord);
-
-    GoDBCoordinateRow coord_max;
-    coord_max.SetField<unsigned int>("XCoord", iXCoordMax);
-    coord_max.SetField<unsigned int>("YCoord", iYCoordMax);
-    coord_max.SetField<unsigned int>("ZCoord", iZCoordMax);
-
-    if (iTCoordMax == 0)
-      {
-      coord_max.SetField<unsigned int>("TCoord", iTCoord);
-      }
-    else
-      {
-      coord_max.SetField<unsigned int>("TCoordMax", iTCoord);
-      }
-
-    iTrace.SetTheDataFromTheVisu(iDatabaseConnector, iTraceNodes,
-                                 coord_min, coord_max, iMeshAttributes);
-
-    //T trace_row( iDatabaseConnector, iTraceNodes, coord_min, coord_max,
-    //this->m_ImgSessionID, iMeshAttributes );
-  }
+  /**
+  \brief get the data from the database for contours, meshes and tracks, display
+  them in the TableWidget and load the different containers for the visu with
+  the info from the database
+  */
+  void GetContentAndDisplayAllTracesInfo(vtkMySQLDatabase* iDatabaseConnector);
 
   /**
   \brief get the RGB Alpha values from the iTraceRow and set a QColor with them
@@ -481,50 +457,176 @@ protected:
     ioRow.SetField("Blue",iColor.blue());
     ioRow.SetField("Alpha",iColor.alpha());
   }
+  
+  /**
+  \brief update the color for the checked traces and the rows in the table widget
+  for the collectionOf
+  \param[in] iTraceManager manager for the trace (expl: mesh)
+  \param[in] iCollectionOfManager manager for the collectionOf (expl:contour)
+  \tparam TTrace children of QGoDBTraceManager
+  \tparam TCollection children of QGoDBTraceManager
+  */
+  template<typename TTrace, typename TCollection >
+  void ChangeTraceColor(TTrace* iTraceManager,
+    TCollection* iCollectionOfManager)
+  {
+   this->OpenDBConnection();
+   //update everything for the traces and get the list of collection ID they
+   //are collection of:
+   std::list<unsigned int> ListCollectionOfIDsToUpdate =
+     iTraceManager->UpdateTheTracesColor(this->m_DatabaseConnector,this->m_SelectedColorData);  
+   iCollectionOfManager->DisplayInfoForExistingTraces(this->m_DatabaseConnector,
+     ListCollectionOfIDsToUpdate);
+   this->CloseDBConnection();
+  }
+  
+  /** todo once lineage container is set up, the bool track needs to be removed*/
+  /** 
+  \brief delete the traces from the database,TW,visu container, udpate the collectionof 
+  collectionID in database and TW and update the bounding box of the collection
+  \param[in] iTraceManager the manager for the trace expl: mesh_manager
+  \param[in] iCollectionManager the manager for the collection expl: track
+  \param[in] iCollectionOfManager the manager for the collectioof expl: contour
+  \param[in] track if the trace is track, track is set to true
+  \tparam TTrace children of QGoDBTraceManager
+  \tparam TCollection children of QGoDBTraceManager
+  */
+  template<typename TTrace, typename TCollection, typename TCollectionOf>
+  void DeleteTraces(TTrace* iTraceManager,
+    TCollection* iCollectionManager, TCollectionOf* iCollectionOfManager,
+    bool track = false)
+  {
+    this->OpenDBConnection();
+    //need to get all the needed data from the traces before deleting them:
+    std::list<unsigned int> ListTracesToDelete = 
+      iTraceManager->GetListHighlightedIDs();
+    std::list<unsigned int> ListCollectionsIDs=
+      iTraceManager->GetListCollectionIDs(this->m_DatabaseConnector,ListTracesToDelete);
+    std::list<unsigned int> ListTracesAsCollectionOf = 
+      iTraceManager->GetListTracesIDsFromThisCollectionOf(this->m_DatabaseConnector,
+      ListTracesToDelete);
+
+      iTraceManager->DeleteTraces(this->m_DatabaseConnector);
+
+      if (!ListTracesAsCollectionOf.empty())
+      {
+      iCollectionOfManager->UpdateCollectionID(this->m_DatabaseConnector,
+        ListTracesAsCollectionOf, 0);
+      }
+
+    if(!ListCollectionsIDs.empty()|| track)
+      {
+      iCollectionManager->UpdateBoundingBoxes(this->m_DatabaseConnector,ListCollectionsIDs);
+      }
+
+    this->CloseDBConnection();
+  }
+
+  /**
+  \brief change the collectionIDs to iCollectionID for the traces in iListCheckedTraces,
+  and update the bounding boxes of the previous collection the traces were part of 
+  and of iCollectionID in the database, the TW and the container for visu
+  \param[in] iTraceManager the manager for the trace expl: mesh_manager
+  \param[in] iCollectionManager the manager for the collection expl: track
+  \param[in] iCollectionID the ID of the collection the checked traces will be part of
+  \param[in] iListCheckedTraces List of the tracesIDs checked in the TW
+  \tparam TTrace children of QGoDBTraceManager
+  \tparam TCollection children of QGoDBTraceManager
+  */
+  template<typename TTrace, typename TCollection>
+  void AddCheckedTracesToCollection(
+    TTrace* iTraceManager,
+    TCollection* iCollectionManager,unsigned int iCollectionID,
+    std::list<unsigned int> iListCheckedTraces)
+  {
+    //get the list of CollectionIDs that will be updated:
+    std::list<unsigned int> ListCollectionIDsToUpdate =
+      iTraceManager->GetListCollectionIDs(this->m_DatabaseConnector,
+      iListCheckedTraces);
+
+    iTraceManager->UpdateCollectionID(this->m_DatabaseConnector,
+    iListCheckedTraces,iCollectionID);
+  
+    ListCollectionIDsToUpdate.push_back(iCollectionID);
+    iCollectionManager->UpdateBoundingBoxes(this->m_DatabaseConnector,
+    ListCollectionIDsToUpdate);
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 protected slots:
-  void CreateContextMenu(const QPoint& pos);
-  void DeleteTraces();
-  void GoToTheTrace();
-  void CheckSelectedRows();
-  void UncheckSelectedRows();
-  void ShowSelectedRows();
-  void HideSelectedRows();
-  void ChangeTraceColor();
+  void CreateContextMenu(const QPoint& iPos);
   void TheTabIsChanged(int iIndex);
 
+  void PassDBConnectionToContoursManager();
+  void PassSelectedColorToContoursManager();
+  //void PassSelectedCollectionToContoursManager();
+
+  /**
+  \brief slot connected to the TraceColorToChange(0 emitted by the
+  m_MeshesManager
+  */
+  void ChangeMeshColor();
+
+  /**
+  \brief slot connected to the TraceColorToChange(0 emitted by the
+  m_MeshesManager
+  */
+  void ChangeTrackColor();
+
+  /**
+  \brief slot connected to the signal TracesToDelete() emitted by the 
+  m_ContoursManager
+  */
+  void DeleteContours();
+  /**
+  \brief slot connected to the signal Traces DeleteTracesToDelete() emitted by the 
+  m_MeshesManager
+  */
+  void DeleteMeshes();
+  /**
+  \brief slot connected to the signal TracesToDelete() emitted by the 
+  m_TracksManager
+  */
+  void DeleteTracks();
+
+  /**
+  \brief slot connected to the signal NewCollectionFromCheckedTraces() emitted by
+  the m_MeshesManager, create a new track and call the the 
+  AddCheckedTracesToCollection template method.
+  \param[in] iListCheckedMeshes list of the meshIDs of the checked meshes in the TW
+  */
+  void CreateNewTrackFromCheckedMeshes(std::list<unsigned int> iListCheckedMeshes);
+
+  /**
+  \brief slot connected to the signal NewCollectionFromCheckedTraces() emitted by
+  the m_ContoursManager, emit the signal NewMeshToGenerate for the visu 
+  after creating a new mesh and calling the AddCheckedTracesToCollection 
+  template method.
+  \param[in] iListCheckedMeshes list of the meshIDs of the checked meshes in the TW
+  */
+  void CreateNewMeshFromCheckedContours(std::list<unsigned int> iListCheckedContours);
+
+  void AddCheckedContoursToSelectedMesh(std::list<unsigned int> iListCheckedContours);
+  void AddCheckedMeshesToSelectedTrack(std::list<unsigned int> iListCheckedMeshes);
+  //void AddToSelectedCollection();
+
+  /**
+  \brief emit a signal TraceToReedit and set m_ReeditMode to true
+  \param[in] iTraceID ID of the trace to reedit
+  */
+  void ReEditTrace(unsigned int iTraceID);
   
-  /** \brief Create a new Collection row in the collection table and change the
-  collection ID of the selected contours to the new CollectionID created:*/
-  void CreateCorrespondingCollection();
-
-  void AddToSelectedCollection();
-  void ReEditTrace();
-  /** \brief Update the m_ContoursInfo or m_MeshesInfo depending on which
- * table the user had clicked with the selected traces and emit a signal
- * to say which m_tracesInfo has changed*/
-  void ChangeTracesToHighLightInfoFromTableWidget();
-
-  /** \brief Update the m_ContoursInfo or m_MeshesInfo depending on which
- * table the user had clicked with the selected traces to show and emit a signal
- * to say which m_tracesInfo has changed*/
-  void ChangeTracesToShowInfoFromTableWidget();
-  /** \brief Add the new created trace in the vector of ContourMeshInfo
- * \todo once we know more for the visualization of meshes, need to do the
- * same for add a collection*/
-  void AddATraceToContourMeshInfo(std::string iTraceName, int iTraceID);
 
   //*********************Slots for TraceManualEditingWidget:**************************
   /**
   \brief set the m_SelectedColorData to iSelectedColorData
-  \param[in] iSelectedColorData name and QColor of the color 
+  \param[in] iSelectedColorData name and QColor of the color
   */
   void UpdateSelectedColorData(ItemColorComboboxData iSelectedColorData);
   /**
   \brief set the m_SelectedCollectionData to iSelectedCollectionData
-  \param[in] iSelectedCollectionData ID and QColor of the collection 
+  \param[in] iSelectedCollectionData ID and QColor of the collection
   */
   void UpdateSelectedCollectionID(ItemColorComboboxData iSelectedCollectionData);
   /**
@@ -538,46 +640,48 @@ protected slots:
   */
   void UpdateSelectedSubCellType(std::string iSelectedSubCellType);
 
-  /** \brief Save the new collection in the database and update the
-  colorcombobox*/
-  void SaveNewCollectionInDB();
-
   /** 
+  \brief Add the new collection in the database,add a row in TW
+  and update the colorcombobox
+  */
+  void SaveNewCollectionFromTraceWidgetInDBAndTW();
+
+  /**
   \brief call the m_CellTypeManager to add a new celltype (ask the user to enter
   name+description and save it in the database) and call the setListCelltype to
   update the list in the TraceManualEditingWidget
   */
   void AddNewCellType();
-  /** 
+  /**
   \brief call the m_SubCellTypeManager to add a new subcelltype (ask the user to enter
   name+description and save it in the database) and call the setListSubCelltype to
   update the list in the TraceManualEditingWidget
   */
   void AddNewSubCellType();
-  /** 
+  /**
   \brief call the m_ColorManager to add a new color (ask the user to choose the
-  color +enter name+description and save it in the database) and call the 
+  color +enter name+description and save it in the database) and call the
   SetColorComboBoxInfofromDB to update the list in the TraceManualEditingWidget
   */
   void AddNewColor();
-  /** 
+  /**
   \brief call the m_CellTypeManager to delete celltypes (display all the
   celltypes for the user to select the ones he wants to delete and delete them
-  from the database) and call the setListCelltype to update the list in 
+  from the database) and call the setListCelltype to update the list in
   the TraceManualEditingWidget
   */
   void DeleteCellType();
-  /** 
+  /**
   \brief call the m_SubCellTypeManager to delete subcelltypes (display all the
   subcelltypes for the user to select the ones he wants to delete and delete them
-  from the database) and call the setListSubCelltype to update the list in 
+  from the database) and call the setListSubCelltype to update the list in
   the TraceManualEditingWidget
   */
   void DeleteSubCellType();
-  /** 
+  /**
   \brief call the m_ColorManager to delete colors (display all the
   colors for the user to select the ones he wants to delete and delete them
-  from the database) and call the SetColorComboBoxInfofromDB to update the 
+  from the database) and call the SetColorComboBoxInfofromDB to update the
   list in the TraceManualEditingWidget
   */
   void DeleteColor();

@@ -44,10 +44,9 @@
 #include "QGoTabImageView3D.h"
 #include "QGoTabImageView3DwT.h"
 #include "QGoPrintDatabase.h"
-#include "QGoManualSegmentationDockWidget.h"
 #include "QGoNetworkUtilities.h"
 
-#include "ContourMeshStructure.h"
+#include "ContourMeshContainer.h"
 
 // Plugin stuff
 #include "QGoPluginHelper.h"
@@ -426,22 +425,37 @@ LoadAllTracesFromDatabase(const int& iT, const std::string& iTraceName)
 
   if (w3t)
     {
-    ContourMeshStructureMultiIndexContainer* temp =
-      w3t->m_DataBaseTables->GetTracesInfoListForVisu(iTraceName);
+    ContourMeshContainer* temp = 0;
+    bool calculation = false;
 
-    bool calculation = (iTraceName.compare("mesh") == 0);
+    if( iTraceName.compare("contour") == 0 )
+      {
+      temp = w3t->GetContourContainer();
+      }
+    else
+      {
+      if( iTraceName.compare("mesh") == 0 )
+        {
+        temp = w3t->GetMeshContainer();
+        calculation = true;
+        }
+      else
+        {
+        std::cerr << "iTraceName should be either contour, either mesh"
+            <<std::endl;
+        return;
+        }
+      }
 
     if (temp)
       {
       // let's iterate on the container with increasing TraceID
-      ContourMeshStructureMultiIndexContainer::index<TraceID>::type::iterator
-      contourmesh_list_it = temp->get<TraceID>().begin();
-
-      std::set<unsigned int> temp_time_set;
+      ContourMeshContainer::MultiIndexContainer::index<TraceID>::type::iterator
+      contourmesh_list_it = temp->m_Container.get<TraceID>().begin();
 
       // we don't need here to save this contour in the database,
       // since they have just been extracted from it!
-      while (contourmesh_list_it != temp->get<TraceID>().end())
+      while (contourmesh_list_it != temp->m_Container.get<TraceID>().end())
         {
         // note here it only makes sense when the trace is a mesh (for now)
         if (calculation)
@@ -450,38 +464,24 @@ LoadAllTracesFromDatabase(const int& iT, const std::string& iTraceName)
             {
             GoFigureMeshAttributes attributes =
               w3t->ComputeMeshAttributes(contourmesh_list_it->Nodes);
-            w3t->m_DataBaseTables->PrintVolumeAreaForMesh(attributes.m_Volume,
-                                                          attributes.m_Area,
-                                                          contourmesh_list_it->TraceID);
+            w3t->m_DataBaseTables->PrintVolumeAreaForMesh(
+                &attributes, contourmesh_list_it->TraceID );
             }
           }
-        w3t->AddTraceFromNodesManager(
-          contourmesh_list_it->TraceID,
-          contourmesh_list_it->Nodes,
-          const_cast< double* >( contourmesh_list_it->rgba ),
-          contourmesh_list_it->TCoord,
+        w3t->AddTraceFromNodesManager<TraceID>(
+          contourmesh_list_it,
           iTraceName);     // Name of the trace to add
-
-        if (contourmesh_list_it->TCoord != static_cast<unsigned int>(iT))
-          {
-          temp_time_set.insert(contourmesh_list_it->TCoord);
-          }
 
         ++contourmesh_list_it;
         }
+      }
 
-      std::set<unsigned int>::iterator time_it = temp_time_set.begin();
-      while (time_it != temp_time_set.end())
-        {
-        /// \note temp is the container coming from the database and as of now
-        /// does not contain any information from the visualization. Thus all
-        /// actors are initialized to NULL and can not be removed from the
-        /// visualization.
-        //  w3t->RemoveAllTracesForGivenTimePoint( *time_it, *temp );
-        w3t->RemoveAllTracesForGivenTimePoint(*time_it, iTraceName);
-
-        ++time_it;
-        }
+    // if it we are loading contours
+    if (!calculation)
+      {
+/// TODO STH
+      //w3t->ReinitializeContour(); // contour widget is reinitialized...
+     // w3t->ActivateManualSegmentationEditor(false);
       }
     }
 }
@@ -1233,8 +1233,8 @@ void QGoMainWindow::ReadSettings()
     this->resize(1450, 750);
     }
 
-  QByteArray state = settings.value("state", QByteArray()).toByteArray();
-  this->restoreState(state);
+  //QByteArray state = settings.value("state", QByteArray()).toByteArray();
+  //this->restoreState(state);
 
   //  settings.setValue("vsplitterSizes", vSplitter->saveState());
   settings.endGroup();

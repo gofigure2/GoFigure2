@@ -139,7 +139,7 @@ public slots:
   QString SnapshotViewXY(const GoFigure::FileType& iType,
                          const QString& iBaseName = tr("Snapshot"));
 
-private:
+protected:
   /** delete the viewer contained in the widget
    */
   void deleteViewer( void );
@@ -149,10 +149,10 @@ private:
   void createViewer( void );
 
 
-  QGoImageView2D*               m_currentView;
+  QGoImageView2D*               m_View;
   itkvtkConnectorType::Pointer m_itkvtkConnector;
 
-
+private:
   Q_DISABLE_COPY(QGoSynchronizedView2D);
   };
 

@@ -58,7 +58,7 @@
 #include "vtkStringArray.h"
 #include "vtkStdString.h"
 
-#include "QTableWidgetChild.h"
+#include "QGoTableWidget.h"
 #include "GoDBRecordSet.h"
 #include "GoDBRecordSetHelper.h"
 #include "GoDBContourRow.h"
@@ -73,6 +73,8 @@
 #include "GoDBExport.h"
 #include "GoDBImport.h"
 
+#include "ContourMeshContainer.h"
+
 //--------------------------------------------------------------------------
 QGoPrintDatabase::
 QGoPrintDatabase(QWidget* iParent) :
@@ -80,7 +82,7 @@ QGoPrintDatabase(QWidget* iParent) :
   m_ContoursData(NULL),
   m_MeshesData(NULL),
   m_TracksData(NULL),
-  m_LineagesData(NULL),
+  //m_LineagesData(NULL),
   m_DatabaseConnector(NULL),
   m_IsDatabaseUsed(false)
   {
@@ -110,6 +112,7 @@ QGoPrintDatabase(QWidget* iParent) :
   this->m_ColorManager = new QGoDBColorManager(this);
 
   this->CreateConnectionsForTraceManualEditingWidget();
+  this->m_ReeditMode = false;
 
   QObject::connect(m_VisibilityAction, SIGNAL(toggled(bool)),
                    this, SLOT(setVisible(bool)));
@@ -119,12 +122,6 @@ QGoPrintDatabase(QWidget* iParent) :
   QObject::connect(this->DBTabWidget, SIGNAL(currentChanged(int)),
                    this, SLOT(TheTabIsChanged(int)));
 
-  // QObject::connect( this->ContourTable, SIGNAL(itemSelectionChanged()),
-  //   this, SLOT(ChangeTracesToHighLightInfoFromTableWidget()));
-
-  // QObject::connect( this->MeshTable, SIGNAL(itemSelectionChanged()),
-  //   this, SLOT(ChangeTracesToHighLightInfoFromTableWidget()));
-
   }
 //--------------------------------------------------------------------------
 
@@ -132,39 +129,26 @@ QGoPrintDatabase(QWidget* iParent) :
 QGoPrintDatabase::~QGoPrintDatabase()
   {
   // Need to release memory allocated for contours, meshes, tracks and lineages
-
-  // contours
-  if (m_ContoursData)
+    // contours
+  if (m_ContoursManager)
     {
-    if (this->m_ContoursData->ListTracesInfoForVisu != 0)
-      {
-      DeleteContourMeshStructureElement(
-        *this->m_ContoursData->ListTracesInfoForVisu);
-      }
-    delete m_ContoursData;
+    delete m_ContoursManager;
     }
   // meshes
-  if (m_MeshesData)
+  if (m_MeshesManager)
     {
-    if (this->m_MeshesData->ListTracesInfoForVisu != 0)
-      {
-      DeleteContourMeshStructureElement(
-        *this->m_MeshesData->ListTracesInfoForVisu);
-      }
-    delete m_MeshesData;
+    delete m_MeshesManager;
     }
-
   // tracks
-  if (m_TracksData)
+  if (m_TracksManager)
     {
-    delete m_TracksData;
+    delete m_TracksManager;
     }
-
   // lineages
-  if (m_LineagesData)
-    {
-    delete m_LineagesData;
-    }
+ // if (m_LineagesManager)
+ //   {
+ //   delete m_LineagesManager;
+ //   }
   }
 //--------------------------------------------------------------------------
 
@@ -190,43 +174,14 @@ void QGoPrintDatabase::SetDatabaseVariables(
   m_ImgSessionID   = iImgSessionID;
   m_ImgSessionName = iImgSessionName;
 
-  this->SetTraceInfoStructures();
+  this->SetTracesManager();
   this->m_BookmarkManager = new QGoDBBookmarkManager(this, this->m_ImgSessionID);
   QObject::connect(this->m_BookmarkManager, SIGNAL(ListBookmarksChanged()),
                    this, SIGNAL(OpenBookmarksToUpdate()));
 
   this->InitializeTheComboboxesNotTraceRelated();
   this->SetTMListCollectionID();
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void QGoPrintDatabase::SetTraceInfoStructures()
-{
-  m_ContoursData = new TraceInfoStructure("contour", this);
-  m_TracksData = new TraceInfoStructure("track", this);
-  m_LineagesData = new TraceInfoStructure("lineage", this);
-  m_MeshesData = new TraceInfoStructure("mesh", this);
-
-  QObject::connect(this->m_ContoursData->Table, SIGNAL (CheckedRowsChanged()),
-                   this, SLOT(ChangeTracesToHighLightInfoFromTableWidget()));
-
-  QObject::connect(this->m_MeshesData->Table, SIGNAL (CheckedRowsChanged()),
-                   this, SLOT(ChangeTracesToHighLightInfoFromTableWidget()));
-
-  QObject::connect(this->m_ContoursData->Table, SIGNAL (VisibleRowsChanged()),
-                   this, SLOT(ChangeTracesToShowInfoFromTableWidget()));
-
-  QObject::connect(this->m_MeshesData->Table, SIGNAL (VisibleRowsChanged()),
-                   this, SLOT(ChangeTracesToShowInfoFromTableWidget()));
-
-  this->m_ContoursData->CollectionOfTraces->SetImgSessionID(m_ImgSessionID);
-  this->m_MeshesData->CollectionOfTraces->SetImgSessionID(m_ImgSessionID);
-  this->OpenDBConnection();
-  this->m_MeshesData->CollectionOfTraces->SetChannelsInfo(this->m_DatabaseConnector);
-  this->CloseDBConnection();
-  this->m_TracksData->CollectionOfTraces->SetImgSessionID(m_ImgSessionID);
-  this->m_LineagesData->CollectionOfTraces->SetImgSessionID(m_ImgSessionID);
+  emit DBVariablesSet();
 }
 //--------------------------------------------------------------------------
 
@@ -255,32 +210,19 @@ void QGoPrintDatabase::CloseDBConnection()
 void QGoPrintDatabase::FillTableFromDatabase()
 {
   OpenDBConnection();
+  this->GetContentAndDisplayAllTracesInfo(this->m_DatabaseConnector);
+  CloseDBConnection();
 
   QString title = QString("Imaging Session: %1 ").arg(m_ImgSessionName.c_str());
   this->setWindowTitle(title);
   this->DBTabWidget->blockSignals(true);
-  GetContentAndDisplayFromDB("contour");
-  GetContentAndDisplayFromDB("mesh");
-
-  this->m_LineagesData->Table->hide();
-  this->m_TracksData->Table->hide();
-
-  GetContentAndDisplayFromDB("track");
-  //GetContentAndDisplayFromDB( "lineage" );
-
-  LoadContoursAndMeshesFromDB(m_DatabaseConnector);
+  this->DBTabWidget->removeTab(0);
+  this->DBTabWidget->addTab(this->m_ContoursManager->GetTableWidget(), "contour");
+  this->DBTabWidget->addTab(this->m_MeshesManager->GetTableWidget(), "mesh");
+  this->DBTabWidget->addTab(this->m_TracksManager->GetTableWidget(), "track");
+  this->DBTabWidget->blockSignals(false);
 
   m_IsDatabaseUsed = true;
-  //std::list<std::pair<std::string, std::vector<int> > > test =
-    //this->GetColorComboBoxInfofromDB(); //for test
-  //emit PrintExistingColorsFromDB(this->GetColorComboBoxInfofromDB());
-
-
-  /** \todo get the trace name from the visudockwidget*/
-  //PrintExistingCollectionIDsFromDB(
-    //this->GetListExistingCollectionIDFromDB("contour", iTimePoint));
-  CloseDBConnection();
-  this->DBTabWidget->blockSignals(false);
   emit PrintDBReady();
 }
 //--------------------------------------------------------------------------
@@ -294,7 +236,7 @@ void QGoPrintDatabase::closeEvent(QCloseEvent* iEvent)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoPrintDatabase::CreateContextMenu(const QPoint& iPos)
+/*void QGoPrintDatabase::CreateContextMenu(const QPoint& iPos)
 {
   QMenu* ContextMenu = new QMenu;
   //NeedCurrentSelectedCollectionID();
@@ -302,7 +244,7 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint& iPos)
 
   TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(TraceName);
 
-  /** \todo when using lineages, remove the following*/
+  /** \todo when using lineages, remove the following
   if (TraceName != "track") //for the time being, as we don't use lineages
     {
     ContextMenu->addAction(tr("Go to this %1")
@@ -339,138 +281,7 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint& iPos)
                          CurrentlyUsedTraceData->Table, SLOT(CopySelection()));
   ContextMenu->addAction(tr("Copy table"), CurrentlyUsedTraceData->Table, SLOT(CopyTable()));
   ContextMenu->exec(this->mapToGlobal(iPos));
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void QGoPrintDatabase::DeleteTraces()
-{
-  std::string         TraceName = this->InWhichTableAreWe();
-  TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(
-    TraceName);
-
-  std::list<int> SelectedTraces =
-    CurrentlyUsedTraceData->Table->GetListCheckedTraceID();
-
-  if (SelectedTraces.empty())
-    {
-    QMessageBox msgBox;
-    msgBox.setText(
-      tr("Please select at least one %1 to be deleted")
-      .arg(TraceName.c_str()));
-    msgBox.exec();
-    }
-  else
-    {
-    int r = QMessageBox::warning(this, tr(""),
-                                 tr("Are you sure you want to delete\n"
-                                    "permanently the selected %1s?").arg(TraceName.c_str()),
-                                 QMessageBox::Yes,
-                                 QMessageBox::No | QMessageBox::Default);
-
-    if (r == QMessageBox::Yes)
-      {
-      OpenDBConnection();
-
-      std::vector<std::string> VectorDeletedValues;
-      std::list<int>::iterator iter = SelectedTraces.begin();
-
-      while (iter != SelectedTraces.end())
-        {
-        int ID = *iter;
-        //delete the trace in the vector<ContourMeshStructure>:
-        this->DeleteTraceInContourMeshStructure(ID,
-                                                CurrentlyUsedTraceData->ListTracesInfoForVisu);
-
-        VectorDeletedValues.push_back(ConvertToString<int>(ID));
-
-        ++iter;
-        }
-      this->UpdateInfoForTracesToBeDeletedAsCollectionOf(TraceName,
-                                                         VectorDeletedValues);
-      //update the table widget for the delete traces:
-      CurrentlyUsedTraceData->Table->DeleteSelectedRows(CurrentlyUsedTraceData->TraceNameID);
-
-      //delete traces in database + update bounding box for collections and update table widget:
-      this->DeleteTracesAsPartOfACollection(TraceName, SelectedTraces);
-      CloseDBConnection();
-
-      emit TracesToDeleteInVisu(SelectedTraces);
-      }
-    }
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void QGoPrintDatabase::GoToTheTrace()
-{
-  std::string         TraceName = this->InWhichTableAreWe();
-  TraceInfoStructure* CurrentlyUsedTraceData =
-    this->GetTraceInfoStructure(TraceName);
-  if (CurrentlyUsedTraceData->Table->GetListCheckedTraceID().size() != 1)
-    {
-    QMessageBox msgBox;
-    msgBox.setText(
-      tr("Please select one and only one %1 to go to")
-      .arg(TraceName.c_str()));
-    msgBox.exec();
-    return;
-    }
-  GoDBCoordinateRow CoordCenter =
-    CurrentlyUsedTraceData->Table->GetCoordinateCenterBoundingBox();
-  emit NeedToGoToTheLocation(atoi(CoordCenter.GetMapValue("XCoord").c_str()),
-                             atoi(CoordCenter.GetMapValue("YCoord").c_str()),
-                             atoi(CoordCenter.GetMapValue("ZCoord").c_str()),
-                             atoi(CoordCenter.GetMapValue("TCoord").c_str()));
-}
-
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void QGoPrintDatabase::CreateCorrespondingCollection()
-{
-  std::string         TraceName = InWhichTableAreWe();
-  TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(TraceName);
-  std::list<int>      ListSelectedTraces = CurrentlyUsedTraceData->Table->GetListCheckedTraceID();
-  if (ListSelectedTraces.empty())
-    {
-    QMessageBox msgBox;
-    msgBox.setText(
-      tr("Please select at least one %1 to be part of the new %2")
-      .arg(CurrentlyUsedTraceData->TraceName.c_str())
-      .arg(CurrentlyUsedTraceData->CollectionName.c_str()));
-    msgBox.exec();
-    }
-  else
-    {
-    OpenDBConnection();
-    //set the color for the new collection:
-    GoDBTraceRow NewCollection;
-
-    //emit         NeedToGetCurrentSelectedColor();
-    NewCollection.SetColor(this->m_SelectedColorData.second.red(), this->m_SelectedColorData.second.green(),
-                           this->m_SelectedColorData.second.blue(), this->m_SelectedColorData.second.alpha(),
-                           this->m_SelectedColorData.first, this->m_DatabaseConnector);
-
-    //create the collection in the database and get the corresponding ID:
-    int NewCollectionID = CurrentlyUsedTraceData->CollectionOfTraces->
-                          CreateNewCollectionFromSelection<GoDBTraceRow>(
-      ListSelectedTraces, this->m_DatabaseConnector, NewCollection);
-
-    std::pair<std::string, QColor> NewCollectionInfo(
-      ConvertToString(NewCollectionID), this->m_SelectedColorData.second);
-    this->AddListTracesToACollection(ListSelectedTraces, NewCollectionInfo, TraceName, true);
-
-    CloseDBConnection();
-    QString CollectionIDQString = ConvertToString<int>(NewCollectionID).c_str();
-
-    //emit    NewCreatedCollection(this->m_SelectedColorData.second, CollectionIDQString);
-    if (CurrentlyUsedTraceData->TraceName == "contour")
-      {
-      emit NewMeshToGenerate(ListSelectedTraces,NewCollectionID);
-      }
-    }
-}
+}*/
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -482,9 +293,9 @@ std::string QGoPrintDatabase::InWhichTableAreWe()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoPrintDatabase::AddToSelectedCollection()
+/*void QGoPrintDatabase::AddToSelectedCollection()
 {
-  std::string         TraceName = this->InWhichTableAreWe();
+  /*std::string         TraceName = this->InWhichTableAreWe();
   TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(TraceName);
   std::list<int>      ListSelectedTraces = CurrentlyUsedTraceData->Table->GetListCheckedTraceID();
   //emit                NeedCurrentSelectedCollectionID();
@@ -502,8 +313,9 @@ void QGoPrintDatabase::AddToSelectedCollection()
   else
     {
     OpenDBConnection();
-    this->AddListTracesToACollection(ListSelectedTraces,
-                                     this->m_SelectedCollectionData, TraceName, false);
+    //refactoring
+   // this->AddListTracesToACollection(ListSelectedTraces,
+                               //      this->m_SelectedCollectionData, TraceName, false);
     if (CurrentlyUsedTraceData->TraceName == "contour")
       {
       std::list<int> ListIDs = CurrentlyUsedTraceData->CollectionOfTraces->GetTracesIDPartOfTheCollection(
@@ -513,106 +325,35 @@ void QGoPrintDatabase::AddToSelectedCollection()
       }
     CloseDBConnection();
     }
-}
+}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::ChangeTraceColor()
-{
-  std::string         TraceName = this->InWhichTableAreWe();
-  TraceInfoStructure* CurrentlyUsedTraceData =
-    this->GetTraceInfoStructure(TraceName);
-  std::list<int> ListSelectedTraces =
-    CurrentlyUsedTraceData->Table->GetListCheckedTraceID();
-  //emit NeedToGetCurrentSelectedColor();
-  if (ListSelectedTraces.empty())
-    {
-    QMessageBox msgBox;
-    msgBox.setText(
-      tr("Please select at least one %1 for the color to be changed")
-      .arg(CurrentlyUsedTraceData->TraceName.c_str()));
-    msgBox.exec();
-    }
-  else
-    {
-    OpenDBConnection();
-    int ColorID = FindOneID(
-      this->m_DatabaseConnector, "color", "ColorID", "Name",
-      this->m_SelectedColorData.first);
-
-    std::list<int>::iterator iter = ListSelectedTraces.begin();
-    while (iter != ListSelectedTraces.end())
-      {
-      UpdateValueInDB(this->m_DatabaseConnector,
-                      CurrentlyUsedTraceData->TraceName, "ColorID",
-                      ConvertToString<int>(ColorID), CurrentlyUsedTraceData->TraceNameID,
-                      ConvertToString<int>(*iter));
-
-      this->UpdateTableWidgetForAnExistingTrace(
-        CurrentlyUsedTraceData->TraceName, *iter);
-
-      if (CurrentlyUsedTraceData->CollectionOf != "None")
-        {
-        std::vector<std::string> ListTracesFromThisCollectionOf =
-          ListSpecificValuesForOneColumn(this->m_DatabaseConnector,
-                                         CurrentlyUsedTraceData->CollectionOf,
-                                         CurrentlyUsedTraceData->CollectionOfID,
-                                         CurrentlyUsedTraceData->TraceNameID, ConvertToString<int>(*iter));
-        for (unsigned int i = 0; i < ListTracesFromThisCollectionOf.size(); i++)
-          {
-          this->UpdateTableWidgetForAnExistingTrace(
-            CurrentlyUsedTraceData->CollectionOf,
-            atoi(ListTracesFromThisCollectionOf[i].c_str()));
-          }
-        }
-      ++iter;
-      //std::pair<std::list<int>, QColor> ListIDsWithColor;
-      //ListIDsWithColor.first = ListSelectedTraces;
-      //ListIDsWithColor.second = this->m_SelectedColorData.second;
-      //emit ColorChangedForSelectedTraces(ListIDsWithColor);
-      emit ColorChangedForSelectedTraces(this->m_SelectedColorData.second);
-      }
-    CloseDBConnection();
-    }
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoPrintDatabase::LoadContoursAndMeshesFromDB(
-  vtkMySQLDatabase* DatabaseConnector)
-{
-  /** \todo put it in the TraceInfoStructure and the GetTracesInforFromDB
-  in the collection of traces?*/
-  this->m_ContoursData->ListTracesInfoForVisu =
-    GetTracesInfoFromDB(DatabaseConnector, "contour", "mesh", m_ImgSessionID);
-  this->m_MeshesData->ListTracesInfoForVisu =
-    GetTracesInfoFromDB(DatabaseConnector, "mesh", "track", m_ImgSessionID);
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-ContourMeshStructureMultiIndexContainer* QGoPrintDatabase::
-AddContoursFromDBForAGivenTimePoint(int iTimePoint, std::vector<int> iListIDs)
+void QGoPrintDatabase::
+AddContoursFromDBForAGivenTimePoint(std::vector<int> iListIDs)
 {
   this->OpenDBConnection();
 
-  ContourMeshStructureMultiIndexContainer* ContoursInfoToAdd =
-    GetTracesInfoFromDB(this->m_DatabaseConnector, "contour", "mesh",
-                        this->m_ImgSessionID, iTimePoint, iListIDs);
+  //ContourMeshStructureMultiIndexContainer* ContoursInfoToAdd =
+   // GetTracesInfoFromDB(this->m_DatabaseConnector, "contour", "mesh",
+                      //  this->m_ImgSessionID, iTimePoint, iListIDs);
+  /*GetTracesInfoFromDB(this->m_ContoursContainer,this->m_DatabaseConnector,
+    "contour","mesh",this->m_ImgSessionID,iTimePoint,iListIDs);
 
   for (unsigned int i = 0; i < iListIDs.size(); i++)
     {
     this->AddATraceToContourMeshInfo("contour", iListIDs.at(i));
-    }
+    }*/
+  std::list<unsigned int> ListIDs(iListIDs.begin(),iListIDs.end());
+  this->m_ContoursManager->UpdateTWAndContainerForExistingTraces(
+    this->m_DatabaseConnector,ListIDs);
 
   this->CloseDBConnection();
-
-  return ContoursInfoToAdd;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-ContourMeshStructureMultiIndexContainer*
+/*ContourMeshStructureMultiIndexContainer*
 QGoPrintDatabase::
 GetContoursMultiIndexFromDBForAGivenTimePoint(int iTimePoint,
                                               std::vector<int> iListIDs)
@@ -628,11 +369,11 @@ GetContoursMultiIndexFromDBForAGivenTimePoint(int iTimePoint,
 
   this->CloseDBConnection();
   return ContoursInfo;
-}
+}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-ContourMeshStructureMultiIndexContainer* QGoPrintDatabase::
+/*ContourMeshStructureMultiIndexContainer* QGoPrintDatabase::
 GetMeshesMultiIndexFromDBForAGivenTimePoint(int iTimePoint,
                                             std::vector<int> iListIDs)
 {
@@ -647,237 +388,51 @@ GetMeshesMultiIndexFromDBForAGivenTimePoint(int iTimePoint,
   this->CloseDBConnection();
 
   return MeshesInfo;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-ContourMeshStructureMultiIndexContainer* QGoPrintDatabase::
-AddMeshesFromDBForAGivenTimePoint(int iTimePoint, std::vector<int> iListIDs)
-{
-  this->OpenDBConnection();
-
-  ContourMeshStructureMultiIndexContainer* MeshesInfoToAdd =
-    GetTracesInfoFromDB(this->m_DatabaseConnector, "mesh", "track",
-                        this->m_ImgSessionID, iTimePoint, iListIDs);
-
-  for (unsigned int i = 0; i < iListIDs.size(); i++)
-    {
-    this->AddATraceToContourMeshInfo("mesh", iListIDs.at(i));
-    }
-
-  this->CloseDBConnection();
-
-  return MeshesInfoToAdd;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-ContourMeshStructureMultiIndexContainer* QGoPrintDatabase::
-GetMeshesFromDBForAGivenTimePoint(int iTimePoint)
-{
-  this->OpenDBConnection();
-  ContourMeshStructureMultiIndexContainer* MeshesInfo = GetTracesInfoFromDB(
-    this->m_DatabaseConnector, "mesh", "track", m_ImgSessionID, iTimePoint);
-  this->CloseDBConnection();
-  return MeshesInfo;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoPrintDatabase::
-ChangeTracesToHighLightInfoFromTableWidget()
-{
-  std::string         TraceName = this->InWhichTableAreWe();
-  TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(
-    TraceName);
-  bool HasBeenModified =
-    CurrentlyUsedTraceData->Table->TracesToHighlight(
-      CurrentlyUsedTraceData->ListTracesInfoForVisu);
-
-  if (HasBeenModified)
-    {
-    if (TraceName.compare("contour") == 0)
-      {
-      emit SelectionContoursToHighLightChanged();
-      }
-    else if (TraceName.compare("mesh") == 0)
-      {
-      emit SelectionMeshesToHighLightChanged();
-      }
-    }
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoPrintDatabase::
-ChangeTracesToShowInfoFromTableWidget()
-{
-  std::string         TraceName = this->InWhichTableAreWe();
-  TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(
-    TraceName);
-  bool HasBeenModified =
-    CurrentlyUsedTraceData->Table->TracesToShow(
-      CurrentlyUsedTraceData->ListTracesInfoForVisu);
-
-  if (HasBeenModified)
-    {
-    if (TraceName.compare("contour") == 0)
-      {
-      emit SelectionContoursToShowChanged();
-      }
-    else if (TraceName.compare("mesh") == 0)
-      {
-      emit SelectionMeshesToShowChanged();
-      }
-    }
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoPrintDatabase::
-ChangeContoursToHighLightInfoFromVisu(
-  std::list<int> iListContoursHighLightedInVisu, bool Reedit)
-{
-  /** \todo get the tracename from the visu dock widget*/
-  TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure("contour");
-  if (!Reedit)
-    {
-    if (!iListContoursHighLightedInVisu.empty())
-      {
-      std::list<int>::iterator it = iListContoursHighLightedInVisu.begin();
-
-      while (it != iListContoursHighLightedInVisu.end())
-        {
-        //for( unsigned int j = 0 ; j < m_ContoursInfo.size(); j++ )
-        ContourMeshStructureMultiIndexContainer::index<TraceID>::type::iterator
-        traceid_it =
-          CurrentlyUsedTraceData->ListTracesInfoForVisu->get<TraceID>().find(*it);
-
-        // note here there is only one element with a given TraceID == *it
-        if (traceid_it !=
-            CurrentlyUsedTraceData->ListTracesInfoForVisu->get<TraceID>().end())
-          {
-          if (!traceid_it->Highlighted)
-            {
-            ContourMeshStructure temp(*traceid_it);
-            temp.Highlighted = true;
-            CurrentlyUsedTraceData->ListTracesInfoForVisu->get<TraceID>().replace(traceid_it, temp);
-            CurrentlyUsedTraceData->Table->SetSelectRowTraceID(CurrentlyUsedTraceData->TraceName,
-              *it, Qt::Checked);
-            }
-          else
-            {
-            ContourMeshStructure temp(*traceid_it);
-            temp.Highlighted = false;
-            CurrentlyUsedTraceData->ListTracesInfoForVisu->get<TraceID>().replace(traceid_it, temp);
-            CurrentlyUsedTraceData->Table->SetSelectRowTraceID(CurrentlyUsedTraceData->TraceName,
-              *it, Qt::Unchecked);
-            }
-          }
-
-        /*std::list< ContourMeshStructure* > Trace = FindContourGivenTraceID(
-          *CurrentlyUsedTraceData->ListTracesInfoForVisu,static_cast< unsigned int >( *it ) );
-        Trace.front()
-          bool temp_selected =
-            ( static_cast< unsigned int >( *it ) == (*CurrentlyUsedTraceData->ListTracesInfoForVisu)[j].TraceID );
-
-          (*CurrentlyUsedTraceData->ListTracesInfoForVisu)[j].Highlighted = temp_selected;
-          CurrentlyUsedTraceData->Table->SetSelectRowTraceID( CurrentlyUsedTraceData->TraceName,
-            (*CurrentlyUsedTraceData->ListTracesInfoForVisu)[j].TraceID, temp_selected );
-          }*/
-        ++it;
-        }
-      }
-    else
-      {
-      /// \todo fix this using multi index container
-      ContourMeshStructureMultiIndexContainer::iterator trace_it =
-        CurrentlyUsedTraceData->ListTracesInfoForVisu->begin();
-
-      while (trace_it != CurrentlyUsedTraceData->ListTracesInfoForVisu->end())
-        {
-        if (trace_it->Highlighted)
-          {
-          ContourMeshStructure temp(*trace_it);
-          temp.Highlighted = false;
-          CurrentlyUsedTraceData->ListTracesInfoForVisu->replace(trace_it, temp);
-          CurrentlyUsedTraceData->Table->SetSelectRowTraceID(
-            CurrentlyUsedTraceData->TraceName, trace_it->TraceID, Qt::Unchecked);
-          }
-        ++trace_it;
-        }
-      /*for( unsigned int j = 0 ; j < CurrentlyUsedTraceData->ListTracesInfoForVisu->size(); j++ )
-        {
-        (*CurrentlyUsedTraceData->ListTracesInfoForVisu)[j].Highlighted = false;
-
-        CurrentlyUsedTraceData->Table->SetSelectRowTraceID( CurrentlyUsedTraceData->TraceName,
-          (*CurrentlyUsedTraceData->ListTracesInfoForVisu)[j].TraceID, false);
-        }*/
-      }
-    }
-}
+}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoPrintDatabase::
-ChangeMeshesToHighLightInfoFromVisu(
-  std::list<int> iListMeshesHighLightedInVisu)
+AddMeshesFromDBForAGivenTimePoint(std::vector<int> iListIDs)
 {
-  std::list<int>::iterator it = iListMeshesHighLightedInVisu.begin();
-  /** \todo get the tracename from the visu dock widget*/
-  TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure("mesh");
+  this->OpenDBConnection();
 
-  while (it != iListMeshesHighLightedInVisu.end())
+  //ContourMeshStructureMultiIndexContainer* MeshesInfoToAdd =
+    //GetTracesInfoFromDB(this->m_DatabaseConnector, "mesh", "track",
+      //                  this->m_ImgSessionID, iTimePoint, iListIDs);
+  /*GetTracesInfoFromDB(this->m_MeshesContainer,this->m_DatabaseConnector,
+    "mesh","track",this->m_ImgSessionID,iTimePoint,iListIDs);
+
+  for (unsigned int i = 0; i < iListIDs.size(); i++)
     {
-    ContourMeshStructureMultiIndexContainer::index<TraceID>::type::iterator
-    traceid_it =
-      CurrentlyUsedTraceData->ListTracesInfoForVisu->get<TraceID>().find(*it);
+    this->AddATraceToContourMeshInfo("mesh", iListIDs.at(i));
+    }*/
+  std::list<unsigned int> ListIDs(iListIDs.begin(),iListIDs.end());
+  this->m_MeshesManager->UpdateTWAndContainerForExistingTraces(
+    this->m_DatabaseConnector,ListIDs);
 
-    // note here there is only one element with a given TraceID == *it
-    if (traceid_it !=
-        CurrentlyUsedTraceData->ListTracesInfoForVisu->get<TraceID>().end())
-      {
-      ContourMeshStructure temp(*traceid_it);
-      temp.Highlighted = traceid_it->Highlighted;
-      CurrentlyUsedTraceData->ListTracesInfoForVisu->get<TraceID>().replace(traceid_it, temp);
-      /*CurrentlyUsedTraceData->Table->SetSelectRowTraceID(CurrentlyUsedTraceData->TraceName,
-                                                         *it, !traceid_it->Highlighted);*/
-       if (!traceid_it->Highlighted)
-         {
-         CurrentlyUsedTraceData->Table->SetSelectRowTraceID( CurrentlyUsedTraceData->TraceName,
-           *it, Qt::Checked );
-         }
-       else
-         {
-         CurrentlyUsedTraceData->Table->SetSelectRowTraceID( CurrentlyUsedTraceData->TraceName,
-           *it, Qt::Unchecked );
-         }
-      }
-    ++it;
-    }
+  this->CloseDBConnection();
 
-  /// \todo check it seems to be the same code as in contour
-  /*for( unsigned int j = 0 ; j < CurrentlyUsedTraceData->ListTracesInfoForVisu->size(); j++ )
-    {
-    bool temp_selected =
-      ( static_cast< unsigned int >( *it ) ==
-      (*CurrentlyUsedTraceData->ListTracesInfoForVisu)[j].TraceID );
-
-    (*CurrentlyUsedTraceData->ListTracesInfoForVisu)[j].Highlighted = temp_selected;
-
-    CurrentlyUsedTraceData->Table->SetSelectRowTraceID( CurrentlyUsedTraceData->TraceName,
-      (*CurrentlyUsedTraceData->ListTracesInfoForVisu)[j].TraceID, temp_selected );
-    }
-    ++it;
-  }*/
+ // return MeshesInfoToAdd;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QGoPrintDatabase::IDWithColorData
+/*ContourMeshStructureMultiIndexContainer* QGoPrintDatabase::
+GetMeshesFromDBForAGivenTimePoint(int iTimePoint)
+{
+  this->OpenDBConnection();
+  //ContourMeshStructureMultiIndexContainer* MeshesInfo = GetTracesInfoFromDB(
+   // this->m_DatabaseConnector, "mesh", "track", m_ImgSessionID, iTimePoint);
+  GetTracesInfoFromDB(this->m_MeshesContainer,this->m_DatabasConnector,
+    "mesh","track",this->m_ImgSessionID,iTimePoint);
+  this->CloseDBConnection();
+  return MeshesInfo;
+}*/
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
 QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
                                            unsigned int iYCoordMin,
                                            unsigned int iZCoordMin,
@@ -885,71 +440,66 @@ QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
                                            unsigned int iXCoordMax,
                                            unsigned int iYCoordMax,
                                            unsigned int iZCoordMax,
-                                           vtkPolyData* iContourNodes)
-                                               //std::pair<std::string, QColor> iColorData,
-                                               //unsigned int iMeshID)
+                                           vtkPolyData* iContourNodes)                                       
 {
   OpenDBConnection();
-  GoDBContourRow contour_row(this->m_ImgSessionID);
-  this->GetTraceRowFromVisu<GoDBContourRow>(iXCoordMin,
-                                            iYCoordMin,
-                                            iZCoordMin,
-                                            iTCoord,
-                                            iXCoordMax,
-                                            iYCoordMax,
-                                            iZCoordMax,
-                                            iContourNodes,
-                                            this->m_DatabaseConnector,
-                                            contour_row);
+  unsigned int ContourID;
+  if(!this->m_ReeditMode)
+    {
+    unsigned int MeshID = 0;
+    std::string test = this->m_SelectedCollectionData.first;
+    if (this->m_SelectedCollectionData.first != "Add a new mesh ...")
+    {
+      MeshID = ss_atoi<unsigned int>(this->m_SelectedCollectionData.first);
+    }
+    ContourID = this->m_ContoursManager->SaveNewContourFromVisu(iXCoordMin,iYCoordMin,
+      iZCoordMin,iTCoord,iXCoordMax,iYCoordMax,iZCoordMax,iContourNodes,this->m_DatabaseConnector,
+      this->m_SelectedColorData,MeshID);
+    }
+  else
+    {
+    ContourID =  this->m_ContoursManager->SaveReeditedContourFromVisu(
+      iXCoordMin,iYCoordMin,iZCoordMin,iTCoord,iXCoordMax,iYCoordMax,iZCoordMax,
+      iContourNodes,this->m_DatabaseConnector);
+    this->m_ReeditMode = false;
+    this->m_TraceManualEditingDockWidget->setEnabled(true);
+    }
 
-  /*contour_row.SetColor(iColorData.second.red(), iColorData.second.green(),
-                       iColorData.second.blue(), iColorData.second.alpha(), iColorData.first,
-                       this->m_DatabaseConnector);*/
-  contour_row.SetColor(this->m_SelectedColorData.second.red(), m_SelectedColorData.second.green(),
-                       m_SelectedColorData.second.blue(), m_SelectedColorData.second.alpha(), m_SelectedColorData.first,
-                       this->m_DatabaseConnector);
-
-  contour_row.SetCollectionID(atoi(m_SelectedCollectionData.first.c_str()));
-  int NewContourID = contour_row.SaveInDB(this->m_DatabaseConnector);
-  this->UpdateTableWidgetAndDBWithNewCreatedTrace("contour");
-  std::list<int> ListSelectedTraces;
-
-  ListSelectedTraces.push_back(NewContourID);
-  //if (iMeshID != 0)
-  /** \todo check if there is no pb with no more iMeshID: */
-  //if (iMeshID == 0)
-  //  {
-    //emit this->NeedCurrentSelectedCollectionID();
-    this->AddListTracesToACollection(
-      ListSelectedTraces, this->m_SelectedCollectionData, "contour", false);
-  //  }
-  this->AddATraceToContourMeshInfo("contour", NewContourID);
+   std::list<unsigned int> ListContours;
+   ListContours.push_back(ContourID);   
+   std::list<unsigned int> ListMeshes = 
+     this->m_ContoursManager->GetListCollectionIDs(this->m_DatabaseConnector,ListContours);
+   if (!ListMeshes.empty())
+   {
+   this->m_MeshesManager->UpdateBoundingBoxes(this->m_DatabaseConnector,ListMeshes);
+   }
 
   CloseDBConnection();
-  IDWithColorData NewContourData;
-  NewContourData.first = NewContourID;
-  NewContourData.second = this->m_SelectedColorData.second;
-  return NewContourData;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QGoPrintDatabase::IDWithColorData QGoPrintDatabase::UpdateContourFromVisuInDB(unsigned int iXCoordMin,
-                                                unsigned int iYCoordMin,
-                                                unsigned int iZCoordMin,
-                                                unsigned int iTCoord,
-                                                unsigned int iXCoordMax,
-                                                unsigned int iYCoordMax,
-                                                unsigned int iZCoordMax,
-                                                vtkPolyData* iContourNodes,
-                                                int ContourID)
+/*void QGoPrintDatabase::AddATraceToCurrentCollection(int iTraceID)
+{
+
+}*/
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+QGoPrintDatabase::IDWithColorData QGoPrintDatabase::
+  UpdateContourFromVisuInDB(unsigned int iXCoordMin,
+                            unsigned int iYCoordMin,
+                            unsigned int iZCoordMin,
+                            unsigned int iTCoord,
+                            unsigned int iXCoordMax,
+                            unsigned int iYCoordMax,
+                            unsigned int iZCoordMax,
+                            vtkPolyData* iContourNodes,
+                            int ContourID)
 {
   OpenDBConnection();
   GoDBContourRow contour_row(this->m_ImgSessionID);
   contour_row.SetValuesForSpecificID(ContourID,this->m_DatabaseConnector);
-  this->GetTraceRowFromVisu<GoDBContourRow>(iXCoordMin,
-                                            iYCoordMin, iZCoordMin, iTCoord, iXCoordMax, iYCoordMax, iZCoordMax,
-                                            iContourNodes, this->m_DatabaseConnector, contour_row);
   contour_row.SaveInDB(this->m_DatabaseConnector);
 
   int CollectionID = FindOneID(this->m_DatabaseConnector,
@@ -963,13 +513,14 @@ QGoPrintDatabase::IDWithColorData QGoPrintDatabase::UpdateContourFromVisuInDB(un
   QColor Color = this->GetQColorFromTraceRow<GoDBContourRow>(contour_row,
     this->m_DatabaseConnector);
   CloseDBConnection();
+  //useful ?
   UpdatedContourData.second = Color;
   return UpdatedContourData;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QGoPrintDatabase::IDWithColorData
+void
 QGoPrintDatabase::
 SaveMeshFromVisuInDB( unsigned int iXCoordMin,
                       unsigned int iYCoordMin,
@@ -979,16 +530,25 @@ SaveMeshFromVisuInDB( unsigned int iXCoordMin,
                       unsigned int iYCoordMax,
                       unsigned int iZCoordMax,
                       vtkPolyData* iMeshNodes,
-                      GoFigureMeshAttributes* iMeshAttributes,
-                      bool NewMesh,
-                      int iMeshID)
+                      GoFigureMeshAttributes* iMeshAttributes)
+                      //bool NewMesh,
+                      //int iMeshID)
 {
   OpenDBConnection();
-  IDWithColorData MeshData;
+  unsigned int NewMeshID = this->m_MeshesManager->SaveNewMeshFromVisu(iXCoordMin,iYCoordMin,
+    iZCoordMin,iTCoord,iXCoordMax,iYCoordMax,iZCoordMax,iMeshNodes,this->m_DatabaseConnector,
+    this->m_SelectedColorData,ss_atoi<unsigned int>(this->m_SelectedCollectionData.first),
+    iMeshAttributes,this->m_SelectedCellType,this->m_SelectedSubCellType);
+
+  std::list<unsigned int> ListNewMeshes;
+  ListNewMeshes.push_back(NewMeshID);
+  this->m_TracksManager->UpdateBoundingBoxes(this->m_DatabaseConnector,
+    this->m_MeshesManager->GetListCollectionIDs(this->m_DatabaseConnector,ListNewMeshes));
+
   //emit NeedToGetCurrentSelectedColor();
   //emit NeedCurrentSelectedCollectionID();
 
-  GoDBMeshRow                    mesh_row(this->m_ImgSessionID);
+  /*GoDBMeshRow                    mesh_row(this->m_ImgSessionID);
   std::pair<std::string, QColor> CollectionData;
   int                            SavedMeshID;
 
@@ -1010,22 +570,37 @@ SaveMeshFromVisuInDB( unsigned int iXCoordMin,
     /*QColor ColorCollection(atoi(Collection.GetMapValue("Red").c_str()),
                            atoi(Collection.GetMapValue("Green").c_str()),
                            atoi(Collection.GetMapValue("Blue").c_str()),
+<<<<<<< .working
+                           atoi(Collection.GetMapValue("Alpha").c_str()));
+    CollectionData.second =
+      this->GetQColorFromTraceRow<GoDBTrackRow>(
+        Collection,
+        this->m_DatabaseConnector);
+=======
                            atoi(Collection.GetMapValue("Alpha").c_str()));*/
-    CollectionData.second = this->GetQColorFromTraceRow<GoDBTrackRow>(Collection,
+  /*  CollectionData.second = this->GetQColorFromTraceRow<GoDBTrackRow>(Collection,
       this->m_DatabaseConnector);
-
+<<<<<<< .working
+>>>>>>> .merge-right.r2033
+=======
+    CollectionData.second =
+        this->GetQColorFromTraceRow<GoDBTrackRow>(Collection, this->m_DatabaseConnector );
+>>>>>>> .merge-right.r2032
+=======
+>>>>>>> .merge-right.r2136
+*/
       /*QColor ColorMesh(atoi(mesh_row.GetMapValue("Red").c_str()),
                            atoi(mesh_row.GetMapValue("Green").c_str()),
                            atoi(mesh_row.GetMapValue("Blue").c_str()),
-                           atoi(mesh_row.GetMapValue("Alpha").c_str()));*/
+                           atoi(mesh_row.GetMapValue("Alpha").c_str()));
 
     MeshData.first = atoi(mesh_row.GetMapValue("MeshID").c_str());
 
     //MeshData.second = this->GetQColorFromTraceRow<GoDBMeshRow>(mesh_row);
     MeshData.second = this->m_SelectedColorData.second;
-    }
-
-  this->GetTraceRowFromVisu<GoDBMeshRow>( iXCoordMin,
+    }*/
+//refactoring:
+  /*this->GetTraceRowFromVisu<GoDBMeshRow>( iXCoordMin,
                                           iYCoordMin,
                                           iZCoordMin,
                                           iTCoord,
@@ -1079,20 +654,21 @@ SaveMeshFromVisuInDB( unsigned int iXCoordMin,
       "mesh", atoi(mesh_row.GetMapValue("MeshID").c_str()),iMeshAttributes);
     }
 
-  /** \todo check if it is needed for an updated mesh*/
+  /** \todo check if it is needed for an updated mesh
   std::list<int> ListSelectedTraces;
   ListSelectedTraces.push_back(SavedMeshID);
-  this->AddListTracesToACollection(
-    ListSelectedTraces, CollectionData, "mesh", false);
+  //refactoring
+  //this->AddListTracesToACollection(
+    //ListSelectedTraces, CollectionData, "mesh", false);*/
 
   CloseDBConnection();
 
   //return SavedMeshID;
-  return MeshData;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/** \todo check this method for the sphere/contours from one-click*/
 int QGoPrintDatabase::CreateMeshFromOneClickSegmentation(
   std::list<int> iListContoursIDs)
 {
@@ -1118,39 +694,21 @@ int QGoPrintDatabase::CreateMeshFromOneClickSegmentation(
                           this->m_SelectedSubCellType,this->m_DatabaseConnector));
 
     //create the collection in the database and get the corresponding ID:
-    NewMeshID = CurrentlyUsedTraceData->CollectionOfTraces->
-                CreateNewCollectionFromSelection<GoDBMeshRow>(
-      iListContoursIDs, this->m_DatabaseConnector, NewMesh);
-
+    //refactoring:
+      //NewMeshID = CurrentlyUsedTraceData->CollectionOfTraces->
+      //            CreateNewCollectionFromSelection<GoDBMeshRow>(
+      //  iListContoursIDs, this->m_DatabaseConnector, NewMesh);
+    //end refactoring
     std::pair<std::string, QColor> NewCollectionInfo(
       ConvertToString(NewMeshID), this->m_SelectedColorData.second);
-    this->AddListTracesToACollection(iListContoursIDs, NewCollectionInfo, "contour", true);
+    //refactoring
+    //this->AddListTracesToACollection(iListContoursIDs, NewCollectionInfo, "contour", true);
 
     CloseDBConnection();
     QString CollectionIDQString = ConvertToString<int>(NewMeshID).c_str();
     //emit NewCreatedCollection(this->m_CurrentColorData.second,CollectionIDQString);
     }
   return NewMeshID;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoPrintDatabase::GetContentAndDisplayFromDB(std::string iTraceName)
-{
-  TraceInfoStructure* CurrentlyUsedTraceData =
-    this->GetTraceInfoStructure(iTraceName);
-  //Get the column names to be displayed in the table widget:
-  std::list<std::string> ColumnsNames =
-    CurrentlyUsedTraceData->CollectionOfTraces->GetListColumnsNamesForTableWidget();
-  CurrentlyUsedTraceData->Table->DisplayColumnNames(
-    iTraceName.c_str(), ColumnsNames);
-  this->DBTabWidget->addTab(CurrentlyUsedTraceData->Table, iTraceName.c_str());
-  DBTableWidgetContainerType Row_Container =
-    CurrentlyUsedTraceData->CollectionOfTraces->GetRowContainer(this->m_DatabaseConnector);
-  CurrentlyUsedTraceData->Table->DisplayContent(CurrentlyUsedTraceData->CollectionOfTraces->GetLinkToRowContainer(),
-                                                iTraceName, CurrentlyUsedTraceData->CollectionName);
-  CurrentlyUsedTraceData->Table->setSortingEnabled(true);
-
 }
 //-------------------------------------------------------------------------
 
@@ -1193,16 +751,24 @@ GetTracesForAGivenTimepoint(ContourMeshStructureMultiIndexContainer iAllTraces,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::vector<ContourMeshStructure> QGoPrintDatabase::
+/*std::vector<ContourMeshStructure> QGoPrintDatabase::
 GetContoursForAGivenZCoord(unsigned int iZCoord)
 {
   return this->GetTracesForAGivenZCoord(*this->m_ContoursData->ListTracesInfoForVisu, iZCoord,
                                         this->m_ContoursData->CollectionOfTraces);
+}*/
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list<unsigned int> QGoPrintDatabase::GetContoursForAGivenZCoord(unsigned int iZCoord)
+{
+  this->OpenDBConnection();
+  std::list<unsigned int> ContourIDs = this->m_ContoursManager->GetAllTracesIDForAGivenZCoord(
+    this->m_DatabaseConnector,iZCoord);
+  this->CloseDBConnection();
+  return ContourIDs;
 }
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 /*ContourMeshStructureMultiIndexContainer* QGoPrintDatabase::
   GetContoursMultiIndexFromDBForAGivenZCoord(unsigned int iZCoord,
   std::vector<int> iListIDs)
@@ -1223,17 +789,25 @@ GetContoursForAGivenZCoord(unsigned int iZCoord)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::vector<ContourMeshStructure> QGoPrintDatabase::
+/*std::vector<ContourMeshStructure> QGoPrintDatabase::
 GetMeshesForAGivenZCoord(unsigned int iZCoord)
 {
   return this->GetTracesForAGivenZCoord(
            *this->m_MeshesData->ListTracesInfoForVisu, iZCoord,
            this->m_MeshesData->CollectionOfTraces);
+}*/
+std::list<unsigned int> QGoPrintDatabase::GetMeshesForAGivenZCoord(unsigned int iZCoord)
+{
+  this->OpenDBConnection();
+  std::list<unsigned int> MeshesIDs = this->m_MeshesManager->GetAllTracesIDForAGivenZCoord(
+    this->m_DatabaseConnector,iZCoord);
+  this->CloseDBConnection();
+  return MeshesIDs;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::vector<ContourMeshStructure> QGoPrintDatabase::
+/*std::vector<ContourMeshStructure> QGoPrintDatabase::
 GetTracesForAGivenZCoord(ContourMeshStructureMultiIndexContainer iAllTraces,
                          unsigned int iZCoord, GoDBCollectionOfTraces* iCollectionOfTraces)
 {
@@ -1264,7 +838,7 @@ GetTracesForAGivenZCoord(ContourMeshStructureMultiIndexContainer iAllTraces,
     ++iterTracesID;
     }
   return oSelectedTraces;
-}
+}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -1279,229 +853,44 @@ std::list<QGoPrintDatabase::ItemColorComboboxData>
 QGoPrintDatabase::GetListCollectionIDFromDB(vtkMySQLDatabase* iDatabaseConnector)
 {
   //OpenDBConnection();
+  std::list<ItemColorComboboxData> EmptyList = std::list<ItemColorComboboxData>();
   std::string TraceName = this->m_TraceWidget->GetTraceName();
-  TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(TraceName);
-  std::list<ItemColorComboboxData > oListCollectionIDs;
-  //First, build the query with selected fields and table to join with on conditions:
-  std::vector<std::string> SelectFields;
-  std::string              CollectionID = CurrentlyUsedTraceData->CollectionName;
-  CollectionID += ".";
-  CollectionID += CurrentlyUsedTraceData->CollectionNameID;
-  SelectFields.push_back(CollectionID);
-  std::string Red = "color.Red";
-  SelectFields.push_back(Red);
-  std::string Green = "color.Green";
-  SelectFields.push_back(Green);
-  std::string Blue = "color.Blue";
-  SelectFields.push_back(Blue);
-  std::string Alpha = "color.Alpha";
-  SelectFields.push_back(Alpha);
-
-  std::vector<std::string> JoinTablesOnTraceTable;
-  std::string              JoinTable = "color";
-  JoinTablesOnTraceTable.push_back(JoinTable);
-  std::string OnCondition = CurrentlyUsedTraceData->CollectionName;
-  OnCondition += ".ColorID = color.ColorID";
-  JoinTablesOnTraceTable.push_back(OnCondition);
-
-  std::vector<std::vector<std::string> > ResultsQuery;
-  if (TraceName == "contour") //for mesh as a collection, there is only one timepoint
+  if (TraceName == "contour")
     {
-    JoinTable = "coordinate";
-    JoinTablesOnTraceTable.push_back(JoinTable);
-    OnCondition = CurrentlyUsedTraceData->CollectionName;
-    OnCondition += ".";
-    OnCondition += "CoordIDMin = coordinate.coordid";
-    JoinTablesOnTraceTable.push_back(OnCondition);
-    std::vector<std::string> WhereAndConditions;
-    WhereAndConditions.push_back("mesh.ImagingsessionID");
-    WhereAndConditions.push_back(ConvertToString<unsigned int>(this->m_ImgSessionID));
-    WhereAndConditions.push_back("coordinate.TCoord");
-    WhereAndConditions.push_back(ConvertToString<int>(this->m_SelectedTimePoint));
-
-    ResultsQuery = GetValuesFromSeveralTables(iDatabaseConnector,
-                                              CurrentlyUsedTraceData->CollectionName, SelectFields, WhereAndConditions,
-                                              JoinTablesOnTraceTable, true);
+    return this->m_MeshesManager->GetAllTraceIDsWithColor(iDatabaseConnector,
+      this->m_SelectedTimePoint);
     }
-  else
+  if (TraceName == "mesh")
     {
-    //Get the results for the query:(for trace as mesh, tracks):
-    ResultsQuery  = GetValuesFromSeveralTables(iDatabaseConnector,
-                                               CurrentlyUsedTraceData->CollectionName, SelectFields, "ImagingSessionID",
-                                               ConvertToString<unsigned int>(
-                                                 this->m_ImgSessionID), JoinTablesOnTraceTable, true);
+    return this->m_TracksManager->GetAllTraceIDsWithColor(iDatabaseConnector);
     }
-  unsigned int                                     i = 0;
-  std::vector<std::vector<std::string> >::iterator iter = ResultsQuery.begin();
-  while (iter != ResultsQuery.end())
-    {
-    std::vector<std::string>       ResultsOneRow = *iter;
-    int                            intRed   = atoi(ResultsOneRow[i + 1].c_str());
-    int                            intGreen = atoi(ResultsOneRow[i + 2].c_str());
-    int                            intBlue  = atoi(ResultsOneRow[i + 3].c_str());
-    int                            intAlpha = atoi(ResultsOneRow[i + 4].c_str());
-    QColor                         Color(intRed, intGreen, intBlue, intAlpha);
-    ItemColorComboboxData temp;
-    temp.first = ResultsOneRow[i];
-    temp.second = Color;
-    oListCollectionIDs.push_back(temp);
-    iter++;
-    }
-  //for creating traces at the beginning, with no existing collection, we
-  //create a new collection:
-  /* if (oListCollectionIDs.empty())
-     {
-     int NewID = 0;
-     QColor FirstColor;
-     int Red = 0;
-     int Green = 0;
-     int Blue = 0;
-     int Alpha = 0;
-     GoDBTraceRow FirstCollection;
-     std::string ColorName = "Default";
-     ColorName += CurrentlyUsedTraceData->CollectionName;
-     ColorName += "Color";
-     if (CurrentlyUsedTraceData->CollectionName == "mesh")
-       {
-       Red   = 255;
-       Green = 255;
-       Blue  = 0;
-       Alpha = 255;
-       }
-     if (CurrentlyUsedTraceData->CollectionName == "track")
-       {
-       Red   = 0;
-       Green = 255;
-       Blue  = 255;
-       Alpha = 255;
-       }
-     if (CurrentlyUsedTraceData->CollectionName == "lineage")
-       {
-       Red   = 255;
-       Green = 0;
-       Blue  = 255;
-       Alpha = 255;
-       }
-     FirstColor.setRed(Red);
-     FirstColor.setGreen(Green);
-     FirstColor.setBlue(Blue);
-     FirstColor.setAlpha(Alpha);
-
-     FirstCollection.SetColor(Red,Green,Blue,Alpha,ColorName,this->m_DatabaseConnector);
-     NewID = CurrentlyUsedTraceData->CollectionOfTraces->CreateCollectionWithNoTraces(this->m_DatabaseConnector,
-       FirstCollection);
-     //add a new row in the table widget with the data corresponding to the new collection:
-     CurrentlyUsedTraceData = this->GetTraceInfoStructure(CurrentlyUsedTraceData->CollectionName);
-     this->UpdateTableWidgetAndRowContainerWithNewCreatedTrace(CurrentlyUsedTraceData->TraceName);
-
-     std::pair<std::string,QColor> temp;
-     temp.second = FirstColor;
-     temp.first = ConvertToString<int>(NewID);
-     oListCollectionIDs.push_back(temp);
-     }*/
   //CloseDBConnection();
-  return oListCollectionIDs;
+  return EmptyList;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::UpdateTableWidgetAndDBWithNewCreatedTrace(
-  std::string iTraceName, GoFigureMeshAttributes* iMeshAttributes)
-{
-  TraceInfoStructure*       CurrentlyUsedTraceData = this->GetTraceInfoStructure(iTraceName);
-  GoDBTableWidgetContainer* LinkToNewTrace = CurrentlyUsedTraceData->CollectionOfTraces->
-                                             GetLinkToNewCreatedTraceContainer(this->m_DatabaseConnector);
-
-  //Update the trace table widget with the new trace:
-  CurrentlyUsedTraceData->Table->setSortingEnabled(false);
-  CurrentlyUsedTraceData->Table->InsertNewRow(LinkToNewTrace, iTraceName,
-                                              CurrentlyUsedTraceData->CollectionName);
-  CurrentlyUsedTraceData->Table->setSortingEnabled(true);
-
-  //update the bounding box of the collection:
-  //Get the ID of the last created trace in the database:
-  std::list<int> ListNewTraces;
-  int            NewTraceID = MaxValueForOneColumnInTable(this->m_DatabaseConnector,
-                                                          CurrentlyUsedTraceData->TraceNameID, iTraceName);
-  ListNewTraces.push_back(NewTraceID);
-  int CollectionID = FindOneID(this->m_DatabaseConnector, iTraceName,
-                               CurrentlyUsedTraceData->CollectionNameID, CurrentlyUsedTraceData->TraceNameID,
-                               ConvertToString<int>(NewTraceID));
-  //update the database:
-  CurrentlyUsedTraceData->CollectionOfTraces->UpdateDBDataForAddedTracesToExistingCollection(
-    ListNewTraces, CollectionID, this->m_DatabaseConnector);
-  //update the table widget for the collection:
-  this->UpdateTableWidgetForAnExistingTrace(
-    CurrentlyUsedTraceData->CollectionName, CollectionID);
-  //Update the table widget with calculated values:
-  if (iMeshAttributes != 0)
-    {
-    this->PrintVolumeAreaForMesh(iMeshAttributes->m_Volume,
-                                 iMeshAttributes->m_Area, NewTraceID);
-    }
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/*void QGoPrintDatabase::UpdateTableWidgetAndRowContainerWithNewCollectionID(
-  std::string iTraceName,unsigned int iNewCollectionID,
-  QColor iColorNewCollection,std::list<int> iListSelectedTraces)
-{
- // unused arguments
- (void) iListSelectedTraces;
-
- TraceInfoStructure* TraceData = this->GetTraceInfoStructure(
-   iTraceName);
- //Update the TraceTable with the new collectionID + color:
- TraceData->Table->UpdateIDs(iNewCollectionID,TraceData->CollectionNameID,
-   iColorNewCollection);
-}*/
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoPrintDatabase::SaveNewCollectionInDB()
-  //std::pair<std::string, QColor> iColorNewCollection, std::string iTraceName,
-  //int iTimePoint, std::string iCellType, std::string iSubCellType)
+void QGoPrintDatabase::SaveNewCollectionFromTraceWidgetInDBAndTW()
 {
   this->OpenDBConnection();
   std::string TraceName = this->m_TraceWidget->GetTraceName();
-  GoDBTraceRow NewCollection;
-
-  NewCollection.SetColor(this->m_SelectedColorData.second.red(), this->m_SelectedColorData.second.green(),
-                         this->m_SelectedColorData.second.blue(),
-                         this->m_SelectedColorData.second.alpha(), this->m_SelectedColorData.first,
-                         this->m_DatabaseConnector);
-  TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(TraceName);
-
-  int NewCollectionID = CurrentlyUsedTraceData->CollectionOfTraces->CreateCollectionWithNoTraces(
-    this->m_DatabaseConnector, NewCollection, this->m_SelectedTimePoint);
-
-  //update the celltype and subcelltype if the collection is a mesh:
-  //to check: use the saveindb instead of the updatevalueindb:
-  if (TraceName == "contour" && this->m_SelectedCellType != "" && this->m_SelectedSubCellType != "")
-    {
-    int CellTypeID = FindOneID(this->m_DatabaseConnector, "celltype", "CellTypeID",
-      "Name", this->m_SelectedCellType);
-    UpdateValueInDB(this->m_DatabaseConnector, "mesh", "CellTypeID",
-                    ConvertToString<int>(CellTypeID), "MeshID", ConvertToString<int>(NewCollectionID));
-    int SubCellTypeID = FindOneID(this->m_DatabaseConnector, "subcellulartype",
-      "SubCellularID", "Name", this->m_SelectedSubCellType);
-    UpdateValueInDB(this->m_DatabaseConnector, "mesh", "SubCellularID",
-                    ConvertToString<int>(SubCellTypeID), "MeshID", ConvertToString<int>(NewCollectionID));
-    }
-
-  //update the table of the collection (which become the trace then):
-  CurrentlyUsedTraceData = this->GetTraceInfoStructure(CurrentlyUsedTraceData->CollectionName);
-  this->UpdateTableWidgetAndDBWithNewCreatedTrace(CurrentlyUsedTraceData->TraceName);
-
-  this->CloseDBConnection();
-  //return NewCollectionData;
-  //update the colorcombobox and set the new collection as the selected one:
+  unsigned int NewCollectionID;
+  if (TraceName == "contour")
+  {
+    NewCollectionID = this->m_MeshesManager->CreateNewMeshWithNoContourNoPoints(
+      this->m_DatabaseConnector,
+      this->m_SelectedColorData,this->m_SelectedTimePoint,this->m_SelectedCellType,
+      this->m_SelectedSubCellType);
+  }
+  if (TraceName == "mesh")
+  {
+    NewCollectionID = this->m_TracksManager->CreateNewTrackWithNoMesh(
+      this->m_DatabaseConnector,this->m_SelectedColorData);
+  }
   ItemColorComboboxData NewCollectionData;
-  NewCollectionData.first = ConvertToString<int>(NewCollectionID);
+  NewCollectionData.first = ConvertToString<unsigned int>(NewCollectionID);
   NewCollectionData.second = this->m_SelectedColorData.second;
   this->m_TraceWidget->AddANewCollectionID(NewCollectionData);
-  this->UpdateSelectedCollectionID(NewCollectionData);
 }
 //-------------------------------------------------------------------------
 
@@ -1513,42 +902,10 @@ std::pair<std::string, QColor> QGoPrintDatabase::GetSelectedCollectionData()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::ReEditTrace()
-{
-  std::string         TraceName = this->InWhichTableAreWe();
-  TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(TraceName);
-  std::list<int>      SelectedTrace = CurrentlyUsedTraceData->Table->GetListCheckedTraceID();
-  if (SelectedTrace.empty())
-    {
-    QMessageBox msgBox;
-    msgBox.setText(
-      tr("Please select the %1 you want to reedit")
-      .arg(TraceName.c_str()));
-    msgBox.exec();
-    }
-  else
-    {
-    if (SelectedTrace.size() != 1)
-      {
-      QMessageBox msgBox;
-      msgBox.setText(
-        tr("Please select only one %1 to reedit")
-        .arg(TraceName.c_str()));
-      msgBox.exec();
-      }
-    else
-      {
-      TraceToReEdit(static_cast<unsigned int>(SelectedTrace.front()));
-      }
-    }
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 void QGoPrintDatabase::UpdateTableWidgetForAnExistingTrace(
   std::string iTraceName, int iTraceID,GoFigureMeshAttributes* iMeshAttributes)
 {
-  TraceInfoStructure*       CurrentlyUsedTraceData = this->GetTraceInfoStructure(iTraceName);
+  /*TraceInfoStructure*       CurrentlyUsedTraceData = this->GetTraceInfoStructure(iTraceName);
   GoDBTableWidgetContainer* LinkToUpdatedRow = CurrentlyUsedTraceData->CollectionOfTraces->
                                                GetLinkToUpdatedTraceContainer(this->m_DatabaseConnector, iTraceID);
   CurrentlyUsedTraceData->Table->UpdateRow(LinkToUpdatedRow, iTraceID, iTraceName,
@@ -1557,53 +914,24 @@ void QGoPrintDatabase::UpdateTableWidgetForAnExistingTrace(
     {
     this->PrintVolumeAreaForMesh(iMeshAttributes->m_Volume,
                                  iMeshAttributes->m_Area, iTraceID);
-    }
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoPrintDatabase::AddATraceToContourMeshInfo(std::string iTraceName,
-                                                  int iTraceID)
-{
-  TraceInfoStructure* CurrentlyUsedTraceData =
-    this->GetTraceInfoStructure(iTraceName);
-
-  CurrentlyUsedTraceData->ListTracesInfoForVisu->insert(
-    GetTraceInfoFromDB(
-      this->m_DatabaseConnector, iTraceName,
-      CurrentlyUsedTraceData->CollectionName, iTraceID));
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoPrintDatabase::DeleteTraceInContourMeshStructure(int iTraceID,
-                                                         ContourMeshStructureMultiIndexContainer* iTraceInfo)
-{
-  /** \todo once the info for the vizu regarding the tracks are defined,
-  change it here:*/
-  if (this->InWhichTableAreWe() != "track")
+    }*/
+  if (iTraceName == "contour")
     {
-    ContourMeshStructureMultiIndexContainer::iterator iter =
-      iTraceInfo->begin();
-
-    while (iter != iTraceInfo->end())
-      {
-      if (static_cast<int>(iter->TraceID) == iTraceID)
-        {
-        iTraceInfo->erase(iter);
-        break;
-        }
-      ++iter;
-      }
+      //refactoring:
+    //this->m_ContoursManager->DisplayInfoForExistingTrace(this->m_DatabaseConnector,
+      //iTraceID);
     }
-}
-//-------------------------------------------------------------------------
+  if (iTraceName == "mesh")
+    {
+    this->m_MeshesManager->DisplayInfoForExistingTraceForMesh(this->m_DatabaseConnector,
+      iTraceID,iMeshAttributes);
+    }
+  if (iTraceName == "track")
+    {
+    this->m_TracksManager->DisplayInfoForExistingTrace(this->m_DatabaseConnector,
+      iTraceID);
+    }
 
-//-------------------------------------------------------------------------
-ContourMeshStructureMultiIndexContainer* QGoPrintDatabase::
-GetTracesInfoListForVisu(std::string iTraceName)
-{
-  return this->GetTraceInfoStructure(iTraceName)->ListTracesInfoForVisu;
 }
 //-------------------------------------------------------------------------
 
@@ -1634,102 +962,8 @@ GetTraceInfoStructure(std::string iTraceName)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::UpdateInfoForTracesToBeDeletedAsCollectionOf(
-  std::string iTraceName,
-  std::vector<std::string> iTracesAsCollectionToBeDeleted)
-{
-  TraceInfoStructure* CurrentlyUsedTraceData =
-    this->GetTraceInfoStructure(iTraceName);
-  if (CurrentlyUsedTraceData->CollectionOf != "None")
-    {
-    //signal that all this collection are going to be deleted (for
-    //the colorcombobox:
-    std::vector<std::string>::iterator iterSelec =
-      iTracesAsCollectionToBeDeleted.begin();
-    while (iterSelec != iTracesAsCollectionToBeDeleted.end())
-      {
-      std::string  TraceIDstr = *iterSelec;
-//      unsigned int TraceID =
-//        static_cast< unsigned int >( atoi(TraceIDstr.c_str()) );
-      //emit         DeletedCollection(TraceID);
-      if(this->m_TraceWidget->GetTraceName()== iTraceName)
-        {
-       // this->UpdateListCollectionIDFromDB();//update the colorcombobox
-        this->SetTMListCollectionID(this->m_SelectedCollectionData.first);
-        }
-      iterSelec++;
-      }
-    //Get the belonging traces for the traces that are going to be deleted
-    //and are collection of these 'belonging traces':
-    this->OpenDBConnection();
-    std::vector<std::string> ListBelongingTraces = ListSpecificValuesForOneColumn(
-      this->m_DatabaseConnector, CurrentlyUsedTraceData->CollectionOf,
-      CurrentlyUsedTraceData->CollectionOfID, CurrentlyUsedTraceData->TraceNameID,
-      iTracesAsCollectionToBeDeleted);
-    this->CloseDBConnection();
-
-    if (!ListBelongingTraces.empty())
-      {
-      //put the collectionid of the belonging traces to 0:
-      std::list<int>                     TracesWithCollectionToBeNull;
-      std::vector<std::string>::iterator it = ListBelongingTraces.begin();
-      while (it != ListBelongingTraces.end())
-        {
-        std::string ID = *it;
-        TracesWithCollectionToBeNull.push_back(atoi(ID.c_str()));
-        it++;
-        }
-      //update everything for the collection of: exp: for contour if the trace deleted is a mesh:
-      CurrentlyUsedTraceData = this->GetTraceInfoStructure(CurrentlyUsedTraceData->CollectionOf);
-      this->OpenDBConnection();
-      CurrentlyUsedTraceData->CollectionOfTraces->UpdateCollectionIDOfSelectedTraces(
-        TracesWithCollectionToBeNull, 0, this->m_DatabaseConnector);
-      this->CloseDBConnection();
-      QColor Color(255, 255, 255, 255);
-      CurrentlyUsedTraceData->Table->UpdateIDs(0, CurrentlyUsedTraceData->CollectionNameID, Color,
-                                               CurrentlyUsedTraceData->TraceNameID, TracesWithCollectionToBeNull);
-      }
-    }
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoPrintDatabase::DeleteTracesAsPartOfACollection(std::string iTraceName,
-                                                       std::list<int> iTracesToDelete)
-{
-  std::list<int>::iterator iterator = iTracesToDelete.begin();
- this->OpenDBConnection();
-  while (iterator != iTracesToDelete.end())
-    {
-    TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure(iTraceName);
-    int                 tempTraceID = *iterator;
-    int                 tempCollectionID = FindOneID(this->m_DatabaseConnector,
-                                                     iTraceName,
-                                                     CurrentlyUsedTraceData->CollectionNameID,
-                                                     CurrentlyUsedTraceData->TraceNameID,
-                                                     ConvertToString<int>(tempTraceID));
-    //save the current collection of traces corresponding to the trace before recentring to the collection:
-    GoDBCollectionOfTraces* CollectionOfTraces = CurrentlyUsedTraceData->CollectionOfTraces;
-    CollectionOfTraces->DeleteTraceInDB(tempTraceID, this->m_DatabaseConnector);
-    //change the data who were related to the trace to the collection:
-    CurrentlyUsedTraceData = this->GetTraceInfoStructure(CurrentlyUsedTraceData->CollectionName);
-    if (CurrentlyUsedTraceData->CollectionName != "None")
-      {
-      if (tempCollectionID != 0)
-        {
-        CollectionOfTraces->RecalculateDBBoundingBox(this->m_DatabaseConnector, tempCollectionID);
-        this->UpdateTableWidgetForAnExistingTrace(CurrentlyUsedTraceData->TraceName, tempCollectionID);
-        }
-      }
-    iterator++;
-    }
-  this->CloseDBConnection();
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoPrintDatabase::AddListTracesToACollection(
-  std::list<int> iListSelectedTraces, std::pair<std::string, QColor> iCollection,
+/*void QGoPrintDatabase::AddListTracesToACollection(
+  std::list<unsigned int> iListSelectedTraces, std::pair<std::string, QColor> iCollection,
   std::string iTraceName, bool IsANewCollection, int iCollectionID)
 {
   if (iCollectionID == -1)
@@ -1739,10 +973,12 @@ void QGoPrintDatabase::AddListTracesToACollection(
   TraceInfoStructure* CurrentlyUsedTraceData =
     this->GetTraceInfoStructure(iTraceName);
   //update the corresponding database data:
-  std::list<int> ListCollectionsToUpdateInTableWidget =
-    CurrentlyUsedTraceData->CollectionOfTraces->
-    UpdateDBDataForAddedTracesToExistingCollection(iListSelectedTraces,
-                                                   iCollectionID, this->m_DatabaseConnector);
+  //refactoring
+      //std::list<int> ListCollectionsToUpdateInTableWidget =
+      //  CurrentlyUsedTraceData->CollectionOfTraces->
+      //  UpdateDBDataForAddedTracesToExistingCollection(iListSelectedTraces,
+      //                                                 iCollectionID, this->m_DatabaseConnector);
+  //end refactoring
 
   //update the RowContainer for traces with the new ID for the selected traces:
   //GoDBTableWidgetContainer* LinkToRowContainerForTraces =
@@ -1750,15 +986,27 @@ void QGoPrintDatabase::AddListTracesToACollection(
   //LinkToRowContainerForTraces->UpdateIDs(ListSelectedTraces,CollectionID);
 
   //update the Table Widget Display:
-  CurrentlyUsedTraceData->Table->UpdateIDs(iCollectionID,
-                                           CurrentlyUsedTraceData->CollectionNameID, iCollection.second,
-                                           CurrentlyUsedTraceData->TraceNameID, iListSelectedTraces);
+  //CurrentlyUsedTraceData->Table->UpdateIDs(iCollectionID,
+                                        //   CurrentlyUsedTraceData->CollectionNameID, iCollection.second,
+                                        //   CurrentlyUsedTraceData->TraceNameID, iListSelectedTraces);
+  if (CurrentlyUsedTraceData->TraceName == "contour")
+      {
+        this->m_ContoursManager->DisplayInfoForExistingTraces(this->m_DatabaseConnector,iListSelectedTraces);
+      }
+    if (CurrentlyUsedTraceData->TraceName == "mesh")
+      {
+      this->m_MeshesManager->DisplayInfoForExistingTraces(this->m_DatabaseConnector,iListSelectedTraces);
+      }
+    if (CurrentlyUsedTraceData->TraceName == "track")
+      {
+      this->m_TracksManager->DisplayInfoForExistingTraces(this->m_DatabaseConnector,iListSelectedTraces);
+      }
   //update the Collection Table with the new bounding box:
   CurrentlyUsedTraceData = this->GetTraceInfoStructure(CurrentlyUsedTraceData->CollectionName);
   if (IsANewCollection)
     {
-    this->UpdateTableWidgetAndDBWithNewCreatedTrace(
-      CurrentlyUsedTraceData->TraceName);
+    //this->UpdateTableWidgetAndDBWithNewCreatedTrace(
+     // CurrentlyUsedTraceData->TraceName);
     }
   else
     {
@@ -1766,7 +1014,8 @@ void QGoPrintDatabase::AddListTracesToACollection(
     }
 
   //update the Collection Table with the old updated bounding box:
-  if (!ListCollectionsToUpdateInTableWidget.empty())
+  //refactoring
+  /*if (!ListCollectionsToUpdateInTableWidget.empty())
     {
     std::list<int>::iterator iter = ListCollectionsToUpdateInTableWidget.begin();
     while (iter != ListCollectionsToUpdateInTableWidget.end())
@@ -1776,7 +1025,8 @@ void QGoPrintDatabase::AddListTracesToACollection(
       iter++;
       }
     }
-}
+  //end refactoring
+}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -1830,65 +1080,6 @@ void QGoPrintDatabase::DeleteBookmarks()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::CheckSelectedRows()
-{
-  TraceInfoStructure* CurrentlyUsedTraceData =
-    this->GetTraceInfoStructure(this->InWhichTableAreWe());
-  CurrentlyUsedTraceData->Table->CheckSelectedRows(CurrentlyUsedTraceData->TraceName,
-                                                   CurrentlyUsedTraceData->TraceNameID);
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoPrintDatabase::UncheckSelectedRows()
-{
-  TraceInfoStructure* CurrentlyUsedTraceData =
-    this->GetTraceInfoStructure(this->InWhichTableAreWe());
-  CurrentlyUsedTraceData->Table->UncheckSelectedRows(CurrentlyUsedTraceData->TraceName,
-                                                     CurrentlyUsedTraceData->TraceNameID);
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoPrintDatabase::ShowSelectedRows()
-{
-  TraceInfoStructure* CurrentlyUsedTraceData =
-    this->GetTraceInfoStructure(this->InWhichTableAreWe());
-  CurrentlyUsedTraceData->Table->ShowSelectedRows(CurrentlyUsedTraceData->TraceName,
-                                                  CurrentlyUsedTraceData->TraceNameID);
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoPrintDatabase::HideSelectedRows()
-{
-  TraceInfoStructure* CurrentlyUsedTraceData =
-    this->GetTraceInfoStructure(this->InWhichTableAreWe());
-  CurrentlyUsedTraceData->Table->HideSelectedRows(CurrentlyUsedTraceData->TraceName,
-                                                  CurrentlyUsedTraceData->TraceNameID);
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoPrintDatabase::AddTracesInTableWidgetFromDB(std::vector<int> ListTracesIDs,
-                                                    std::string iTraceName)
-{
-  TraceInfoStructure* CurrentlyUsedTraceData =
-    this->GetTraceInfoStructure(iTraceName);
-  this->OpenDBConnection();
-  for (unsigned int i = 0; i < ListTracesIDs.size(); i++)
-    {
-    GoDBTableWidgetContainer* LinkToNewTrace = CurrentlyUsedTraceData->CollectionOfTraces->
-                                               GetLinkToNewCreatedTraceContainer(this->m_DatabaseConnector,
-                                                                                 ListTracesIDs.at(i));
-    CurrentlyUsedTraceData->Table->InsertNewRow(LinkToNewTrace, iTraceName,
-                                                CurrentlyUsedTraceData->CollectionName);
-    }
-  this->CloseDBConnection();
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 void QGoPrintDatabase::UpdateSelectedTimePoint(int iTimePoint)
 {
 
@@ -1909,25 +1100,23 @@ void QGoPrintDatabase::UpdateSelectedTimePoint(int iTimePoint)
 //-------------------------------------------------------------------------
 void QGoPrintDatabase::TheTabIsChanged(int iIndex)
 {
-  TraceInfoStructure* CurrentlyUsedTraceData = new TraceInfoStructure;
+  this->m_TraceManualEditingDockWidget->show();
+  //this->m_TraceManualEditingDockWidget->setEnabled(true);
   switch (iIndex)
     {
     case 1:
-      CurrentlyUsedTraceData = this->GetTraceInfoStructure("mesh");
+      this->UpdateWidgetsForCorrespondingTrace("mesh","track",false);
       break;
     case 2:
-      CurrentlyUsedTraceData = this->GetTraceInfoStructure("track");
+      this->UpdateWidgetsForCorrespondingTrace("track","lineage",false);
       break;
     case 3:
-      CurrentlyUsedTraceData = this->GetTraceInfoStructure("lineage");
+      this->UpdateWidgetsForCorrespondingTrace("lineage","None",false);
       break;
     default:
-      CurrentlyUsedTraceData = this->GetTraceInfoStructure("contour");
+      this->UpdateWidgetsForCorrespondingTrace("contour","mesh",false);
       break;
     }
-
-  this->UpdateWidgetsForCorrespondingTrace(CurrentlyUsedTraceData->TraceName,
-                               CurrentlyUsedTraceData->CollectionName, false);
   emit TableWidgetTabChanged();
 }
 //-------------------------------------------------------------------------
@@ -1938,15 +1127,15 @@ void QGoPrintDatabase::SetTable(std::string iTablename)
   int Index = 0;
   if (iTablename == "mesh")
     {
-    Index = 1;
+    Index = 2;
     }
   if (iTablename == "track")
     {
-    Index = 2;
+    Index = 3;
     }
   if (iTablename == "lineage")
     {
-    Index = 3;
+    Index = 4;
     }
   this->DBTabWidget->setCurrentIndex(Index);
 }
@@ -1987,14 +1176,14 @@ void QGoPrintDatabase::ExportMeshes()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-ContourMeshStructureMultiIndexContainer* QGoPrintDatabase::
-ImportContours(int iTimePoint)
+void QGoPrintDatabase::ImportContours(int iTimePoint)
 {
-  ContourMeshStructureMultiIndexContainer* ContoursForVisu = NULL;
+  //ContourMeshStructureMultiIndexContainer* ContoursForVisu = NULL;
   QString                                  p = QFileDialog::getOpenFileName(this,
                                                                             tr("Open Contour Export File"), "",
                                                                             tr("TextFile (*.txt)"));
-  if (!p.isNull())
+   //refactoring
+ /* if (!p.isNull())
     {
     QFileInfo   pathInfo(p);
     std::string filename = p.toStdString();
@@ -2017,18 +1206,20 @@ ImportContours(int iTimePoint)
     ContoursForVisu = this->AddContoursFromDBForAGivenTimePoint(iTimePoint,
                                                                 NewContourIDs);
     }
-  return ContoursForVisu;
+  return ContoursForVisu;*/
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-ContourMeshStructureMultiIndexContainer* QGoPrintDatabase::
-ImportMeshes(int iTimePoint)
+//ContourMeshStructureMultiIndexContainer* QGoPrintDatabase::
+void QGoPrintDatabase::ImportMeshes(ContourMeshContainer* iContainer,int iTimePoint)
 {
-  ContourMeshStructureMultiIndexContainer* MeshesForVisu = NULL;
+  //ContourMeshStructureMultiIndexContainer* MeshesForVisu = NULL;
   QString                                  p = QFileDialog::getOpenFileName(this,
                                                                             tr("Open Contour Export File"), "",
                                                                             tr("TextFile (*.txt)"));
+  //refactoring
+  /*
   if (!p.isNull())
     {
     QFileInfo   pathInfo(p);
@@ -2050,22 +1241,7 @@ ImportMeshes(int iTimePoint)
     MeshesForVisu = this->AddMeshesFromDBForAGivenTimePoint(iTimePoint,
                                                             NewMeshIDs);
     }
-  return MeshesForVisu;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoPrintDatabase::PrintVolumeAreaForMesh(double iVolume,
-                                              double iArea, unsigned int iMeshID)
-{
-  std::vector<std::string> ColumnNames (2);
-  std::vector<std::string> Values (2);
-  ColumnNames.at(0) = "SurfaceArea";
-  Values.at(0) = ConvertToString<double>(iArea);
-  ColumnNames.at(1) = "Volume";
-  Values.at(1) = ConvertToString<double>(iVolume);
-  this->m_MeshesData->Table->AddValuesForID(ColumnNames, Values, iMeshID,
-                                            "meshID");
+  return MeshesForVisu;*/
 }
 //-------------------------------------------------------------------------
 
@@ -2114,7 +1290,7 @@ void QGoPrintDatabase::CreateConnectionsForTraceManualEditingWidget()
   QObject::connect(this->m_TraceWidget,
                    SIGNAL(NewCollectionToBeCreated()),
                    this,
-                   SLOT(SaveNewCollectionInDB()));
+                   SLOT(SaveNewCollectionFromTraceWidgetInDBAndTW()));
 
   QObject::connect(this->m_TraceWidget,
                    SIGNAL(AddANewCellType()),
@@ -2343,5 +1519,273 @@ void QGoPrintDatabase::DeleteSubCellType()
     {
     this->m_TraceWidget->SetCurrentSubCellType(this->m_SelectedSubCellType);
     }
+  this->CloseDBConnection();
+}
+//*********************RELATED TO QGODBTRACEMANAGER**************************
+
+void QGoPrintDatabase::GetContentAndDisplayAllTracesInfo(
+  vtkMySQLDatabase* iDatabaseConnector)
+{
+  this->m_ContoursManager->DisplayInfoAndLoadVisuContainerForAllContours(
+    iDatabaseConnector);
+  this->m_MeshesManager->DisplayInfoAndLoadVisuContainerForAllMeshes(
+    iDatabaseConnector);
+  this->m_TracksManager->DisplayInfoAndLoadVisuContainerForAllTracks(
+    iDatabaseConnector);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::CreateContextMenu(const QPoint& iPos)
+{
+  std::string TraceName = this->m_TraceWidget->GetTraceName();
+  if ( TraceName == "contour")
+    {
+    this->m_ContoursManager->CreateContextMenu(iPos);
+    }
+  if ( TraceName == "mesh")
+    {
+    this->m_MeshesManager->CreateContextMenu(iPos);
+    }
+  if ( TraceName == "track")
+    {
+    this->m_TracksManager->CreateContextMenu(iPos);
+    }
+
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoPrintDatabase::DeleteContours()
+{
+  this->DeleteTraces<QGoDBContourManager,QGoDBMeshManager,QGoDBContourManager>(
+    this->m_ContoursManager,this->m_MeshesManager,this->m_ContoursManager);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoPrintDatabase::DeleteMeshes()
+{
+  this->DeleteTraces<QGoDBMeshManager,QGoDBTrackManager,QGoDBContourManager>(
+      this->m_MeshesManager,this->m_TracksManager,this->m_ContoursManager);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoPrintDatabase::DeleteTracks()
+{
+  this->DeleteTraces<QGoDBTrackManager,QGoDBMeshManager,QGoDBMeshManager>(
+        this->m_TracksManager,this->m_MeshesManager,this->m_MeshesManager,true);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoPrintDatabase::SetTracksManager()
+{
+  this->m_TracksManager = new QGoDBTrackManager(m_ImgSessionID,this);
+  QObject::connect(this->m_TracksManager,
+                   SIGNAL(TraceColorToChange()),
+                   this,SLOT(ChangeTrackColor()));
+  QObject::connect(this->m_TracksManager,SIGNAL(TracesToDelete()),
+                   this,SLOT(DeleteTracks()));
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoPrintDatabase::ChangeMeshColor()
+{
+  this->ChangeTraceColor<QGoDBMeshManager,QGoDBContourManager>(
+    this->m_MeshesManager,this->m_ContoursManager);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoPrintDatabase::ChangeTrackColor()
+{
+  this->ChangeTraceColor<QGoDBTrackManager,QGoDBMeshManager>(
+    this->m_TracksManager,this->m_MeshesManager);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::PrintVolumeAreaForMesh(GoFigureMeshAttributes*
+     iMeshAttributes,unsigned int iMeshID)
+{
+  this->m_MeshesManager->UpdateOnlyVolumeAreaForExistingMesh(
+    iMeshAttributes,iMeshID);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+QGoPrintDatabase::
+SetContoursContainer( ContourMeshContainer* iContainer )
+{
+  this->m_ContoursManager->SetTracesInfoContainerForVisu(iContainer);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+QGoPrintDatabase::
+SetMeshesContainer( ContourMeshContainer* iContainer )
+{
+  this->m_MeshesManager->SetTracesInfoContainerForVisu(iContainer);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+QGoPrintDatabase::
+SetTracksContainer( ContourMeshContainer* iContainer )
+{
+  this->m_TracksManager->SetTracesInfoContainerForVisu(iContainer);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoPrintDatabase::SetTracesManager()
+{
+  this->SetContoursManager();
+  this->SetMeshesManager();
+  this->SetTracksManager();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoPrintDatabase::SetContoursManager()
+{
+  this->m_ContoursManager = new QGoDBContourManager(m_ImgSessionID,this);
+
+  QObject::connect(this->m_ContoursManager,SIGNAL(NeedToGetDatabaseConnection()),
+                   this,SLOT(PassDBConnectionToContoursManager()));
+  QObject::connect(this->m_ContoursManager,SIGNAL(NeedToGetCurrentSelectedColor()),
+                   this,SLOT(PassSelectedColorToContoursManager()));
+  //QObject::connect(this->m_ContoursManager,SIGNAL(NeedToGetCurrentSelectedCollection()).
+                //   this,SLOT(PassSelectedCollectionToContoursManager()));
+  QObject::connect(this->m_ContoursManager,SIGNAL(TracesToDelete()),
+                   this,SLOT(DeleteContours()));
+  QObject::connect(this->m_ContoursManager,
+                   SIGNAL(NeedToGoToTheLocation(int,int,int,int)),
+                   this,SIGNAL(NeedToGoToTheLocation(int,int,int,int)));
+  QObject::connect(this->m_ContoursManager,
+                   SIGNAL(TraceToReEdit(unsigned int)),
+                   this,
+                   SLOT(ReEditTrace(unsigned int)));
+  QObject::connect(this->m_ContoursManager,
+                   SIGNAL(NewCollectionFromCheckedTraces(std::list<unsigned int>)),
+                   this,
+                   SLOT(CreateNewMeshFromCheckedContours(std::list<unsigned int>)));
+  QObject::connect(this->m_ContoursManager,
+                   SIGNAL(CheckedTracesToAddToSelectedCollection(
+                   std::list<unsigned int>)),this,
+                   SLOT(AddCheckedContoursToSelectedMesh(std::list<unsigned int>)));
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoPrintDatabase::SetMeshesManager()
+{
+  this->m_MeshesManager = new QGoDBMeshManager(m_ImgSessionID,this);
+  QObject::connect(this->m_MeshesManager,
+                   SIGNAL(TraceColorToChange()),
+                   this,SLOT(ChangeMeshColor()));
+  QObject::connect(this->m_MeshesManager,SIGNAL(TracesToDelete()),
+                   this,SLOT(DeleteMeshes()));
+  QObject::connect(this->m_MeshesManager,
+                   SIGNAL(NeedToGoToTheLocation(int,int,int,int)),
+                   this,SIGNAL(NeedToGoToTheLocation(int,int,int,int)));
+  QObject::connect(this->m_MeshesManager, 
+                   SIGNAL (NewCollectionFromCheckedTraces(std::list<unsigned int>)),
+                   this,
+                   SLOT(CreateNewTrackFromCheckedMeshes(std::list<unsigned int>)));
+  QObject::connect(this->m_MeshesManager,
+                   SIGNAL(CheckedTracesToAddToSelectedCollection(
+                   std::list<unsigned int>)),this,
+                   SLOT(AddCheckedMeshesToSelectedTrack(std::list<unsigned int>)));
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoPrintDatabase::PassDBConnectionToContoursManager()
+{
+  this->OpenDBConnection();
+  this->m_ContoursManager->SetDatabaseConnection(this->m_DatabaseConnector);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoPrintDatabase::PassSelectedColorToContoursManager()
+{
+  this->m_ContoursManager->SetSelectedColor(this->m_SelectedColorData);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+//void QGoPrintDatabase::PassSelectedCollectionToContoursManager()
+void QGoPrintDatabase::ReEditTrace(unsigned int iTraceID)
+{
+ this->m_ReeditMode = true;
+ this->m_TraceManualEditingDockWidget->setEnabled(false);
+ emit TraceToReEdit(iTraceID);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoPrintDatabase::CreateNewTrackFromCheckedMeshes(
+  std::list<unsigned int> iListCheckedMeshes)
+{
+  this->OpenDBConnection();
+  unsigned int NewTrackID = this->m_TracksManager->CreateNewTrackWithNoMesh(
+    this->m_DatabaseConnector,this->m_SelectedColorData);
+  this->AddCheckedTracesToCollection<QGoDBMeshManager,QGoDBTrackManager>
+    (this->m_MeshesManager,this->m_TracksManager,
+    NewTrackID,iListCheckedMeshes);
+  this->CloseDBConnection();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoPrintDatabase::CreateNewMeshFromCheckedContours(
+  std::list<unsigned int> iListCheckedContours)
+{
+  this->OpenDBConnection();
+
+  unsigned int NewMeshID = 
+    this->m_MeshesManager->CreateNewMeshWithNoContourNoPoints(
+      this->m_DatabaseConnector,this->m_SelectedColorData,
+      this->m_SelectedTimePoint,this->m_SelectedCellType,
+      this->m_SelectedSubCellType);
+
+  this->AddCheckedTracesToCollection<QGoDBContourManager,QGoDBMeshManager>
+    (this->m_ContoursManager,this->m_MeshesManager,
+     NewMeshID,iListCheckedContours);
+
+  emit NewMeshToGenerate(iListCheckedContours,NewMeshID);
+
+  this->CloseDBConnection();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoPrintDatabase::
+AddCheckedContoursToSelectedMesh(std::list<unsigned int> iListCheckedContours)
+{
+  this->OpenDBConnection();
+  this->AddCheckedTracesToCollection<QGoDBContourManager,QGoDBMeshManager>
+    (this->m_ContoursManager,this->m_MeshesManager,
+    ss_atoi<unsigned int>(this->m_SelectedCollectionData.first),iListCheckedContours);
+  this->CloseDBConnection();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoPrintDatabase::
+AddCheckedMeshesToSelectedTrack(std::list<unsigned int> iListCheckedMeshes)
+{
+  this->OpenDBConnection();
+  this->AddCheckedTracesToCollection<QGoDBMeshManager,QGoDBTrackManager>
+    (this->m_MeshesManager,this->m_TracksManager,
+    ss_atoi<unsigned int>(this->m_SelectedCollectionData.first),iListCheckedMeshes);
   this->CloseDBConnection();
 }

@@ -110,8 +110,10 @@ protected:
   virtual void InitializeMap();
 
   /**
-  \brief
-  \
+  \brief check if the GoDBNameDescRow already exists, if yes, return the ID of the 
+  existing one, if not, save it in the database and return the new ID
+  \param[in] iDatabaseConnector connection to the database
+  \tparam iNewEntity children of NameDescRow
   */
   template<typename T>
   int SaveInDBTemplate(vtkMySQLDatabase* iDatabaseConnector, T iNewEntity)

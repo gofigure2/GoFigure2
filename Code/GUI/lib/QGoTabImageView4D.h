@@ -47,7 +47,7 @@ class QGoPrintDatabase;
 
 class QGoImageView3D;
 class QGoNavigationDockWidget;
-class QGoManualSegmentationDockWidget;
+class QGoContourManualSegmentationWidget;
 
 #ifdef   ENABLEVIDEORECORD
 class QGoVideoRecorder;
@@ -180,7 +180,7 @@ protected:
 
   std::vector<QAction*>            m_ViewActions;
   QGoNavigationDockWidget*         m_NavigationDockWidget;
-  QGoManualSegmentationDockWidget* m_ManualSegmentationDockWidget;
+  QGoContourManualSegmentationWidget* m_ManualSegmentationWidget;
 
     #ifdef   ENABLEVIDEORECORD
   QGoVideoRecorder* m_VideoRecorderWidget;

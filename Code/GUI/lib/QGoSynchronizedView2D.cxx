@@ -60,7 +60,7 @@
 QGoSynchronizedView2D::
 QGoSynchronizedView2D(QString iViewName, QWidget *iParent) :
   QGoSynchronizedView(iViewName, iParent),
-  m_currentView (NULL)
+  m_View (NULL)
   {
   }
 
@@ -70,10 +70,10 @@ QGoSynchronizedView2D::
 ~QGoSynchronizedView2D()
   {
   // remove the comparer from the manager
-  if (m_currentViewManager != NULL)
+  if (m_ViewManager != NULL)
     {
-    m_currentViewManager->removeSynchronizedView2D(this);
-    m_currentViewManager = NULL;
+    m_ViewManager->removeSynchronizedView2D(this);
+    m_ViewManager = NULL;
     }
 
   // delete the view if any
@@ -90,10 +90,10 @@ QGoSynchronizedView2D::
 PrintOs(ostream& os)
 {
   // if we have an imageview, the we print its image information
-  if (m_currentImage)
+  if (m_Image)
     {
     os << "SynchronizedView 2D " << this << " contains :" << std::endl;
-    m_currentImage->Print(os);
+    m_Image->Print(os);
     }
   else
     {
@@ -107,11 +107,11 @@ void
 QGoSynchronizedView2D::
 Update()
 {
-  if (m_currentView)
+  if (m_View)
     {
-    this->m_currentView->Update();
+    this->m_View->Update();
     // in addition to standard parameters, we don't want to interpolate data
-    this->m_currentView->SetInterpolate(0);
+    this->m_View->SetInterpolate(0);
     }
 }
 
@@ -121,21 +121,21 @@ void
 QGoSynchronizedView2D::
 Render()
 {
-  if (m_currentView)
+  if (m_View)
     {
-    m_currentView->GetImageViewer(0)->Render();
+    m_View->GetImageViewer(0)->Render();
     }
 }
 
 //--------------------------------------------------------------------------
-/*  get the camera of the current viewer */
+/*  get the camera of the viewer */
 vtkCamera*
 QGoSynchronizedView2D::
 GetCamera()
 {
-  if ( m_currentView )
+  if ( m_View )
     {
-    return m_currentView->GetImageViewer(0)
+    return m_View->GetImageViewer(0)
            ->GetRenderer()
            ->GetActiveCamera();
     }
@@ -151,7 +151,7 @@ bool
 QGoSynchronizedView2D::
 HasViewer()
 {
-  return (m_currentView != NULL);
+  return (m_View != NULL);
 }
 
 //--------------------------------------------------------------------------
@@ -172,14 +172,14 @@ SetImage(vtkImageData* iImage)
   if (iImage)
     {
     // if there is no viewer, we create one
-    if (!m_currentView)
+    if (!m_View)
       {
       createViewer();
       }
-    // set the image to the current view
-    dynamic_cast<QGoImageView2D*>(m_currentView)->SetImage(iImage);
-    // update current image
-    m_currentImage = iImage;
+    // set the image to the view
+    dynamic_cast<QGoImageView2D*>(m_View)->SetImage(iImage);
+    // update image
+    m_Image = iImage;
 
     this->Update();
     }
@@ -195,12 +195,12 @@ QGoSynchronizedView2D::
 deleteViewer()
 {
   // if there is no viewer
-  if (m_currentView)
+  if (m_View)
     {
     // delete object
-    delete (m_currentView);
+    delete (m_View);
     // set pointer to NULL
-    m_currentView = NULL;
+    m_View = NULL;
     }
 }
 
@@ -211,7 +211,7 @@ QGoSynchronizedView2D::
 createViewer()
 {
   // if there is already a viewer
-  if (!m_currentView)
+  if (!m_View)
     {
     // else we create one
     QGoImageView2D* v = new QGoImageView2D(this);
@@ -220,7 +220,7 @@ createViewer()
     // setup position of the widget
     this->gridLayout->addWidget( v );
 
-    m_currentView = v;
+    m_View = v;
     }
 }
 
@@ -231,7 +231,7 @@ GetImageView()
 {
   if (HasViewer())
     {
-    return dynamic_cast<QGoImageView2D*>(m_currentView);
+    return dynamic_cast<QGoImageView2D*>(m_View);
     }
   else
     {

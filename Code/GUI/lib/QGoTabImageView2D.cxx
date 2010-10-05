@@ -84,7 +84,7 @@ QGoTabImageView2D(QWidget* iParent)
   this->m_ContourWidget.back()->SetInteractor(m_ImageView->GetInteractor());
   this->m_ContourWidget.back()->Off();
 
-  m_NavigationDockWidget = new QGoNavigationDockWidget(this, 2);
+  m_NavigationDockWidget = new QGoNavigationDockWidget(this, GoFigure::TWO_D);
   m_NavigationDockWidget->resize(120, 300);
 
   this->m_DockWidgetList.push_front(

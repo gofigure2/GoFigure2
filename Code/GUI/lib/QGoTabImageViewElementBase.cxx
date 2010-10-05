@@ -51,10 +51,10 @@
 #include "vtkActor.h"
 #include "vtkProperty.h"
 
-#include <set>
+#include "ContourMeshContainer.h"
 
 #include "QGoNavigationDockWidget.h"
-#include "QGoManualSegmentationDockWidget.h"
+#include "QGoContourManualSegmentationWidget.h"
 
 //--------------------------------------------------------------------------
 /**
@@ -70,14 +70,18 @@ QGoTabImageViewElementBase(QWidget* iParent) :
   m_ReEditContourMode(false),
   m_NavigationDockWidget(0)
   {
+  /// \todo fix this
+  m_ContourMeshContainer = new ContourMeshContainer( this, NULL );
+
   CreateManualSegmentationdockWidget();
 
   CreateToolsActions();
 
-  m_DockWidgetList.push_back(
-    std::pair<QGoDockWidgetStatus*, QDockWidget*>(
-      new QGoDockWidgetStatus(m_ManualSegmentationDockWidget, Qt::LeftDockWidgetArea, true, true),
-      m_ManualSegmentationDockWidget));
+  /// TODO fix it is not a dockwidget anymore
+  //m_DockWidgetList.push_back(
+  //  std::pair<QGoDockWidgetStatus*, QDockWidget*>(
+  //    new QGoDockWidgetStatus(m_ManualSegmentationWidget, Qt::LeftDockWidgetArea, true, true),
+  //   m_ManualSegmentationWidget));
   }
 //--------------------------------------------------------------------------
 
@@ -87,47 +91,6 @@ QGoTabImageViewElementBase(QWidget* iParent) :
  */
 QGoTabImageViewElementBase::~QGoTabImageViewElementBase()
   {
-
-  if (m_ContourMeshContainer.size() != 0)
-    {
-    ContourMeshStructureMultiIndexContainer::iterator
-    it = m_ContourMeshContainer.begin();
-    ContourMeshStructureMultiIndexContainer::iterator
-    end = m_ContourMeshContainer.end();
-
-    std::set<vtkPolyData*> NodeSet;
-
-    while (it != end)
-      {
-      NodeSet.insert(it->Nodes);
-      if( it->ActorXY )
-        {
-        it->ActorXY->Delete();
-        }
-      if( it->ActorXZ )
-        {
-        it->ActorXZ->Delete();
-        }
-      if( it->ActorYZ )
-        {
-        it->ActorYZ->Delete();
-        }
-      if( it->ActorXYZ )
-        {
-        it->ActorXYZ->Delete();
-        }
-      ++it;
-      }
-
-    std::set<vtkPolyData*>::iterator NodeSetIt = NodeSet.begin();
-    std::set<vtkPolyData*>::iterator NodeSetEnd = NodeSet.end();
-
-    while (NodeSetIt != NodeSetEnd)
-      {
-      (*NodeSetIt)->Delete();
-      ++NodeSetIt;
-      }
-    }
   }
 //--------------------------------------------------------------------------
 
@@ -139,21 +102,21 @@ void
 QGoTabImageViewElementBase::
 CreateManualSegmentationdockWidget()
 {
-  m_ManualSegmentationDockWidget = new QGoManualSegmentationDockWidget(this);
+  m_ManualSegmentationWidget = new QGoContourManualSegmentationWidget(this);
 
-  QObject::connect(m_ManualSegmentationDockWidget, SIGNAL(ValidatePressed()),
+  QObject::connect(m_ManualSegmentationWidget, SIGNAL(ValidatePressed()),
                    this, SLOT(ValidateContour()));
 
-  QObject::connect(m_ManualSegmentationDockWidget, SIGNAL(ReinitializePressed()),
+  QObject::connect(m_ManualSegmentationWidget, SIGNAL(ReinitializePressed()),
                    this, SLOT(ReinitializeContour()));
 
-  QObject::connect(m_ManualSegmentationDockWidget,
+  QObject::connect(m_ManualSegmentationWidget,
                    SIGNAL(UpdateContourRepresentationProperties()),
                    this, SLOT(ChangeContourRepresentationProperty()));
 
-  QAction* tempaction = m_ManualSegmentationDockWidget->toggleViewAction();
+//  QAction* tempaction = m_ManualSegmentationWidget->toggleViewAction();
 
-  this->m_SegmentationActions.push_back(tempaction);
+//  this->m_SegmentationActions.push_back(tempaction);
 }
 //-------------------------------------------------------------------------
 
@@ -338,7 +301,7 @@ ValidateContour(const int& iId)
   /// \todo use m_ContourMeshContainer here!
 
 //   // get meshid from the dock widget (SpinBox)
-// //  unsigned int meshid = m_ManualSegmentationDockWidget->GetMeshId();
+// //  unsigned int meshid = m_ManualSegmentationWidget->GetMeshId();
 //   unsigned int meshid = 0;
 //
 //   if( this->m_NavigationDockWidget->GetCurrentCollectionID() != -1 )
@@ -386,12 +349,10 @@ void
 QGoTabImageViewElementBase::
 ReEditContour(const unsigned int& iId)
 {
-  if (!m_ContourMeshContainer.empty())
-    {
-    ContourMeshStructureMultiIndexContainer::index<TraceID>::type::iterator
-    it = m_ContourMeshContainer.get<TraceID>().find(iId);
+  ContourMeshContainer::MultiIndexContainerTraceIDIterator
+      it = m_ContourMeshContainer->m_Container.get<TraceID>().find(iId);
 
-    if (it != m_ContourMeshContainer.get<TraceID>().end())
+    if (it != m_ContourMeshContainer->m_Container.get<TraceID>().end())
       {
       vtkPolyData* c_nodes = NULL;
 
@@ -402,11 +363,12 @@ ReEditContour(const unsigned int& iId)
 //
 //          RemoveActorFromViewer(c_dir, c_actor);
 
-      m_ContourMeshContainer.erase(iId);
+      m_ContourMeshContainer->m_Container.erase(iId);
 
       if (m_ContourWidget.size() > 1)
         {
-        int dir = ComputeDirectionFromContour(c_nodes);
+        int dir =
+            ContourMeshContainer::ComputeDirectionFromContour(c_nodes);
 
         if (dir != -1)
           {
@@ -419,16 +381,15 @@ ReEditContour(const unsigned int& iId)
           this->SetSlice(dir, idx);
 
           m_ContourWidget[dir]->Initialize(c_nodes);
-          m_ManualSegmentationDockWidget->setEnabled(true);
+          m_ManualSegmentationWidget->setEnabled(true);
           }
         }
       else
         {
         m_ContourWidget[0]->Initialize(c_nodes);
-        m_ManualSegmentationDockWidget->setEnabled(true);
+        m_ManualSegmentationWidget->setEnabled(true);
         }
       }
-    }
 }
 //--------------------------------------------------------------------------
 

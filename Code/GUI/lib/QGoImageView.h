@@ -172,11 +172,6 @@ public:
   void ShowScalarBar(const bool&);
 
   /**
-   * \brief Update only the visualization
-   */
-  void UpdateRenderWindows();
-
-  /**
    * \brief Get the image actor
    */
   vtkImageActor* GetImageActor(const int& iId);
@@ -216,9 +211,6 @@ public:
   void InitializeContourWidget();
   void EnableContourWidget(bool iActivate);
   void InitializeContourWidgetNodes( int iDir, vtkPolyData* iNodes );
-  void ReinitializeContourWidget();
-  void UpdateContourRepresentationProperties(float  linewidth, QColor linecolor,
-                                        QColor nodecolor, QColor activenodecolor);
   vtkPolyData* GetContourRepresentationAsPolydata(int iDir);
   vtkPolyData* GetContourRepresentationNodePolydata(int iDir);
 
@@ -252,7 +244,15 @@ public slots:
   /**
    * \brief Clear all the seeds positions after using it.
    */
-  void       ClearAllSeeds();
+  void ClearAllSeeds();
+  void UpdateContourRepresentationProperties(float  linewidth, QColor linecolor,
+                                        QColor nodecolor, QColor activenodecolor);
+  void ReinitializeContourWidget();
+
+  /**
+   * \brief Update only the visualization
+   */
+  void UpdateRenderWindows();
 
 protected:
   vtkViewImage2DCollection* m_Pool;

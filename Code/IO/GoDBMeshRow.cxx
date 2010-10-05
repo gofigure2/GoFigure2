@@ -65,8 +65,8 @@ GoDBMeshRow(vtkMySQLDatabase* DatabaseConnector,
   GoDBTraceRow(DatabaseConnector, TraceVisu, Min, Max, ImgSessionID)
   {
   this->InitializeMap();
-  this->SetTheDataFromTheVisu(DatabaseConnector, TraceVisu, Min,
-                              Max, iMeshAttributes);
+  //this->SetTheBoundingBox(DatabaseConnector, Min, Max);
+  this->SetTheDataFromTheVisu(DatabaseConnector, TraceVisu,Min,Max,iMeshAttributes);
   /*if (this->DoesThisBoundingBoxExist(DatabaseConnector))
     {
     std::cout << "The bounding box already exists for this mesh" << std::endl;
@@ -124,10 +124,12 @@ GoDBMeshRow::GoDBMeshRow(const GoDBMeshRow& iRow) : GoDBTraceRow()
 
 //-------------------------------------------------------------------------
 void GoDBMeshRow::SetTheDataFromTheVisu(vtkMySQLDatabase* DatabaseConnector,
-                                        vtkPolyData* TraceVisu, GoDBCoordinateRow Min,
-                                        GoDBCoordinateRow Max, GoFigureMeshAttributes* iMeshAttributes)
+                                        vtkPolyData* TraceVisu,
+                                        GoDBCoordinateRow iCoordMin,
+                                        GoDBCoordinateRow iCoordMax,
+                                        GoFigureMeshAttributes* iMeshAttributes)
 {
-  GoDBTraceRow::SetTheDataFromTheVisu(DatabaseConnector, TraceVisu, Min, Max);
+  GoDBTraceRow::SetTheDataFromTheVisu(DatabaseConnector, TraceVisu,iCoordMin,iCoordMax);
 
   if (this->DoesThisBoundingBoxExist(DatabaseConnector))
     {
@@ -161,34 +163,21 @@ SafeDownCast(GoDBTraceRow& iRow)
 void GoDBMeshRow::InitializeMap()
 {
   this->m_TableName = "mesh";
-  this->m_TableIDName = "MeshID";
+  this->m_TableIDName = "meshID";
   this->m_CollectionName = "track";
-  this->m_CollectionIDName = "TrackID";
+  this->m_CollectionIDName = "trackID";
   this->m_MapRow[this->m_TableIDName] = ConvertToString<int>(0);
   this->m_MapRow["CellTypeID"] = ConvertToString<int>(0);
   this->m_MapRow["SubCellularID"] = ConvertToString<int>(0);
-  this->m_MapRow["TrackID"] = ConvertToString<int>(0);
+  this->m_MapRow["trackID"] = ConvertToString<int>(0);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 int GoDBMeshRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
 {
-  int SavedMeshID;
-  //in case the ID is different from 0, this means the values have been
-  //updated for this mesh, so we update it in the database:
-  if (this->m_MapRow[this->m_TableIDName] != "0")
-    {
-    SavedMeshID = UpdateOneNewObjectInTable<GoDBMeshRow> (DatabaseConnector,
-                                                          this);
-    }
-  else
-    {
-    SavedMeshID = AddOnlyOneNewObjectInTable<GoDBMeshRow>(DatabaseConnector,
-                                                          "mesh", this, "MeshID");
-    this->SetField("MeshID", SavedMeshID);
-    } 
-
+  int SavedMeshID = this->SaveInDBTemplate<GoDBMeshRow>(DatabaseConnector,*this);
+  
   if (!this->m_NameChannelWithValues.empty())
     {
     this->SaveInDBTotalIntensityPerChannel(DatabaseConnector,
@@ -218,13 +207,6 @@ void GoDBMeshRow::SetSubCellType(vtkMySQLDatabase* DatabaseConnector,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void GoDBMeshRow::SetCollectionID(int iCollectionID)
-{
-  this->SetField<int>("TrackID", iCollectionID);
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 void GoDBMeshRow::ReInitializeMapAfterCast()
 {
   GoDBMeshRow::InitializeMap();
@@ -236,7 +218,7 @@ void GoDBMeshRow::SaveInDBTotalIntensityPerChannel(
   vtkMySQLDatabase* DatabaseConnector,
   std::map<std::string, int> iNameChannelWithValues)
 {
-  if (this->GetMapValue("MeshID") == "0")
+  if (this->GetMapValue("meshID") == "0")
     {
     std::cout << "The mesh needs to be saved before" << std::endl;
     return;
@@ -253,8 +235,12 @@ void GoDBMeshRow::SaveInDBTotalIntensityPerChannel(
     GoDBIntensityRow NewIntensity;
     NewIntensity.SetField("ChannelID", ChannelID);
     NewIntensity.SetField("Value", iter->second);
-    NewIntensity.SetField("MeshID", this->GetMapValue("MeshID"));
+    NewIntensity.SetField("meshID", this->GetMapValue("meshID"));
     NewIntensity.SaveInDB(DatabaseConnector);
     iter++;
     }
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+

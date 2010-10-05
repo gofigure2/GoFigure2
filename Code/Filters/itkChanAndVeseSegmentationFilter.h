@@ -53,8 +53,6 @@
 
 #include "itkImageFileWriter.h"
 
-#include "vtkImageData.h"
-
 #include "itkCellPreprocess.h"
 #include "itkRegionOfInterestImageFilter.h"
 
@@ -136,9 +134,6 @@ public:
   NodeContainer;
   typedef typename FastMarchingFilterType::NodeType NodeType;
 
-  typedef ImageToVTKImageFilter<InternalImageType> ConverterType;
-  typedef typename ConverterType::Pointer          ConverterPointer;
-
   void SetCenter(const InternalPointType& iC)
   {
     m_Center = iC;
@@ -178,18 +173,17 @@ public:
     GenerateData();
   }
 
-  vtkImageData* GetOutput()
+  InternalImagePointer GetOutput()
   {
-    return m_VTKImage;
+    return m_Output;
   }
 
   itkGetConstMacro (Preprocess, bool);
   itkSetMacro (Preprocess, bool);
 
 protected:
-  ChanAndVeseSegmentationFilter() : m_VTKImage(0), m_FeatureImage(0)
+  ChanAndVeseSegmentationFilter() : m_FeatureImage(0)
     {
-    m_Converter = ConverterType::New();
     m_Center.Fill(0.);
     m_Size.Fill(0);
     m_Radius = 0.;
@@ -198,8 +192,6 @@ protected:
 
   ~ChanAndVeseSegmentationFilter()  {}
 
-  vtkImageData*        m_VTKImage;
-  ConverterPointer     m_Converter;
   FeatureImagePointer  m_FeatureImage;  // Raw image -- very large in size
   InternalPointType    m_Center;  // Center of the cell/nucleus
   InternalSizeType     m_Size;  // Level-set image size
@@ -219,7 +211,7 @@ protected:
     FeatureSpacingType spacing = m_FeatureImage->GetSpacing();
     FeatureSizeType    inputSize = m_FeatureImage->GetLargestPossibleRegion().GetSize();
 
-    InternalIndexType start, start2;
+    InternalIndexType start2;
     InternalPointType origin;
     InternalIndexType cen;
 
@@ -231,7 +223,6 @@ protected:
       origin[j] = m_Center[j] - 2 * m_Radius;
       start2[j] = 0;
       }
-    m_FeatureImage->TransformPhysicalPointToIndex(origin, start);
 
     std::cout << "Spacing: " << spacing << std::endl;
     std::cout << "Input Size: " << inputSize << std::endl;
@@ -239,10 +230,6 @@ protected:
     std::cout << "Origin: " << origin << std::endl;
     std::cout << "Radius: " << m_Radius << std::endl;
     std::cout << "Center: " << cen << std::endl;
-
-    InternalRegionType region;
-    region.SetSize(m_Size);
-    region.SetIndex(start);
 
     NodeType node;
     node.SetValue(-m_Radius / 2);
@@ -262,6 +249,10 @@ protected:
     image->CopyInformation(m_FeatureImage);
     image->Allocate();
 
+
+    //-------------------------------
+    // not used
+    //-------------------------------
     InternalRegionIterator r_it(image, region2);
     r_it.GoToBegin();
 
@@ -281,24 +272,14 @@ protected:
       r_it.Set(vcl_sqrt(d) - r);
       ++r_it;
       }
+    //-------------------------------
+    //-------------------------------
 
     FeatureImagePointer feature;
     if (m_Preprocess)
       {
-      ROIFilterPointer roi = ROIFilterType::New();
-      roi->SetInput(m_FeatureImage);
-      roi->SetRegionOfInterest(region);
-      try
-        {
-        roi->Update();
-        }
-      catch (itk::ExceptionObject& err)
-        {
-        std::cerr << "roi Exception:" << err << std::endl;
-        }
-
       PreprocessFilterPointer preprocess = PreprocessFilterType::New();
-      preprocess->SetInput (roi->GetOutput());
+      preprocess->SetInput (m_FeatureImage);
       preprocess->SetLargestCellRadius (m_Radius);   // in real coordinates
       try
         {
@@ -352,22 +333,6 @@ protected:
       }
 
     m_Output = LevelSetFilter->GetLevelSet(0);
-
-    m_Converter->SetInput(m_Output);
-
-    try
-      {
-      m_Converter->Update();
-      }
-    catch (itk::ExceptionObject& err)
-      {
-      std::cerr << "m_converter Exception:" << err << std::endl;
-      }
-
-    m_VTKImage = m_Converter->GetOutput();
-    std::cout << "Output Image Size: " << m_VTKImage->GetDimensions()[0]
-              << " " << m_VTKImage->GetDimensions()[1]
-              << " " << m_VTKImage->GetDimensions()[2] << std::endl;
   }
 
 private:

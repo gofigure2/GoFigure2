@@ -85,6 +85,8 @@ vtkInteractorStyleImage3D::
 vtkInteractorStyleImage3D()
   {
   this->m_Mode = InteractionTypeDefault;
+
+  m_State = false;
   }
 
 //----------------------------------------------------------------------------
@@ -124,7 +126,7 @@ OnLeftButtonDown()
       this->Superclass::OnMiddleButtonDown();
       break;
     case InteractionTypeMeshPicking:
-      this->SetCurrentProp();
+      this->SetCurrentProp(this->CurrentProp);
       this->InvokeEvent(vtkViewImage3DCommand::MeshPickingEvent);
       this->State = VTKIS_NONE;
       this->Superclass::OnLeftButtonDown();
@@ -241,9 +243,9 @@ OnMiddleButtonUp()
 //----------------------------------------------------------------------------
 void
 vtkInteractorStyleImage3D::
-SetCurrentProp()
+SetCurrentProp(vtkProp* iCurrent)
 {
-  this->m_CurrentProp = this->CurrentProp;
+  this->m_CurrentProp = iCurrent;
 }
 
 //----------------------------------------------------------------------------
@@ -254,6 +256,21 @@ GetCurrentProp()
   return this->m_CurrentProp;
 }
 
+//----------------------------------------------------------------------------
+void
+vtkInteractorStyleImage3D::
+SetCurrentState(bool iState)
+{
+  m_State = iState;
+}
+
+//----------------------------------------------------------------------------
+bool
+vtkInteractorStyleImage3D::
+GetCurrentState()
+{
+  return m_State;
+}
 //----------------------------------------------------------------------------
 void
 vtkInteractorStyleImage3D::

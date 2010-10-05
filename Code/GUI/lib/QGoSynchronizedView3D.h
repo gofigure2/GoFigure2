@@ -139,7 +139,7 @@ public:
    */
   int GetSynchronizedViewType(void);
 
-  /** Returns the QGoImageView3D* displayed.
+  /** Returns the QGoImageView3D* displaid.
    */
   QGoImageView3D* GetImageView();
 
@@ -194,7 +194,7 @@ public slots:
    */
   void SetQuadView();
 
-private:
+protected:
 
   /** delete the viewer contained in the widget
    */
@@ -205,9 +205,10 @@ private:
   void createViewer();
 
 
-  QGoImageView3D*               m_currentView;
+  QGoImageView3D*               m_View;
   itkvtkConnectorType::Pointer  m_itkvtkConnector;
 
+private:
 
   Q_DISABLE_COPY(QGoSynchronizedView3D);
   };

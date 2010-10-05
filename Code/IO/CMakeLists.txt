@@ -13,7 +13,8 @@ CONFIGURE_FILE(${GOFIGURE2_SOURCE_DIR}/Code/IO/QGoIOConfigure.h.in
 
 SET( QGOIO_SRC
   ContourMeshStructure.cxx
-  ContourMeshStructureHelper.cxx
+#  ContourMeshStructureHelper.cxx
+#  ContourMeshContainer.cxx
 #  ContourMeshContainer.cxx
   CreateDataBaseHelper.cxx
   GoDBChannelRow.cxx
@@ -35,6 +36,9 @@ SET( QGOIO_SRC
   GoDBSubCellTypeRow.cxx
   GoDBIntensityRow.cxx
   GoDBTableWidgetContainer.cxx
+  GoDBTWContainerForContourMesh.cxx
+  GoDBTWContainerForTrackLineage.cxx
+  GoDBTWContainerForMesh.cxx
   GoDBExport.cxx
   GoDBImport.cxx
   MegaCaptureHeaderReader.cxx

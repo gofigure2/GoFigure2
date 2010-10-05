@@ -40,6 +40,8 @@
 #include "MegaVTK2Configure.h"
 
 class vtkViewImage3D;
+class vtkImplicitPlaneWidget;
+class vtkOrientedBoxWidget;
 
 /**
  * \class vtkViewImage3DCommand
@@ -69,7 +71,9 @@ public:
     DefaultMoveEvent,
     BoxWidgetModifiedEvent,
     ReadyEvent,
-    BoxWidgetReadyEvent
+    BoxWidgetReadyEvent,
+    VisibilityUpdatedEvent,
+    UpdateRenderEvent
     };
   //ETX
 
@@ -86,13 +90,19 @@ public:
    */
   void SetVtkImageView3D(vtkViewImage3D* vtkViewImage3D);
 
+  void SetPlaneWidget(vtkImplicitPlaneWidget* test);
+
+  void SetBoxWidget(vtkOrientedBoxWidget* test);
+
 protected:
 
   vtkViewImage3DCommand();
   ~vtkViewImage3DCommand();
 
 private:
-  vtkViewImage3D*       m_vtkViewImage3D;
+  vtkViewImage3D*            m_vtkViewImage3D;
+  vtkImplicitPlaneWidget*    m_PlaneWidget;
+  vtkOrientedBoxWidget*      m_BoxWidget;
   };
 
 #endif

@@ -43,8 +43,8 @@
 #include "vtkCommand.h"
 #include "QGoSynchronizedView3D.h"
 
-class vtkObject;
 class vtkCallbackCommand;
+class vtkObject;
 
 /**
  * \class QGoSynchronizedView3DCallbacks
@@ -90,6 +90,13 @@ public:
   static void synchronizeCameras3(vtkObject* caller, long unsigned int eventId,
                                   void* clientData, void* callData);
 
+  static void synchronizeCamera(  int iCamera,
+                      vtkObject* caller,
+                      long unsigned int eventId,
+                      void* clientData,
+                      void* callData);
+
+
   /** \brief remove a QGoSynchronizedView3D from the vector of synchronized Managers
    *  (this method takes care of removing the callback)
    */
@@ -125,10 +132,7 @@ private:
   /** callback object to link callback
    * function to QGoSynchronizedView's event
    */
-  vtkCallbackCommand* m_vtkCallBackCamSync0;
-  vtkCallbackCommand* m_vtkCallBackCamSync1;
-  vtkCallbackCommand* m_vtkCallBackCamSync2;
-  vtkCallbackCommand* m_vtkCallBackCamSync3;
+  std::vector< vtkCallbackCommand* > m_vtkCallBackCamSync;
 
   /** all open QGoSynchronizedView3D are stored in this array,
    *  to transmit it to the callback function

@@ -98,6 +98,12 @@ void vtkViewImage2DCollectionCommand::Execute(vtkObject *caller,
     return;
     }
 
+  if (event == vtkCommand::EndInteractionEvent)
+    {
+    this->Collection->SyncRender();
+    return;
+    }
+
   vtkInteractorStyleImage2D *isi =
     vtkInteractorStyleImage2D::SafeDownCast(caller);
   this->GetCollection()->InitTraversal();

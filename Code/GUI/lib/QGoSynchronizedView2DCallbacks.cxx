@@ -47,27 +47,12 @@
 #include "vtkSmartPointer.h"
 #include <algorithm>
 
-//--------------------------------------------------------------------------
 QGoSynchronizedView2DCallbacks::
-QGoSynchronizedView2DCallbacks (
-  std::vector<QGoSynchronizedView2D*> ioOpenSynchronizedViews) :
-  m_openSynchronizedView  (ioOpenSynchronizedViews)
-  {
-  // create the callback object
-  SetupCallBack();
-
-  // for every opened SynchronizedView :
-  for (std::vector<QGoSynchronizedView2D*>::iterator
-       SynchronizedViewIt = m_openSynchronizedView.begin();
-       SynchronizedViewIt != m_openSynchronizedView.end();
-       ++SynchronizedViewIt)
-    {
-    // add the callback object as an observer of each SynchronizedView's camera
-    (*SynchronizedViewIt)->GetCamera()->AddObserver(
-      vtkCommand::ModifiedEvent,
-      QGoSynchronizedView2DCallbacks::m_vtkCallBackCamSync);
-    }
-  }
+QGoSynchronizedView2DCallbacks(
+  std::vector< QGoSynchronizedView2D* > iOpenSynchronizedViews )
+{
+  Initialize( iOpenSynchronizedViews.begin(), iOpenSynchronizedViews.end() );
+}
 
 //--------------------------------------------------------------------------
 // the destructor is very important here, we want to leave clean
@@ -75,10 +60,6 @@ QGoSynchronizedView2DCallbacks (
 QGoSynchronizedView2DCallbacks::
 ~QGoSynchronizedView2DCallbacks()
   {
-  std::vector<QGoSynchronizedView2D*>::iterator SynchronizedViewIt;
-  // we remove the open synchronized SynchronizedViews
-  SynchronizedViewIt = m_openSynchronizedView.begin();
-
   // we pop out the element of the vector until it is empty
   while (!m_openSynchronizedView.empty())
     {
@@ -120,14 +101,15 @@ synchronizeCameras(vtkObject* caller,
   std::vector<QGoSynchronizedView2D*> p_m_QGoSynchronizedViews
     = *static_cast<std::vector<QGoSynchronizedView2D*>*>
       (clientData);
+
   // the observer are set on cameras, so that the caller is a vtk camera*
   vtkCamera* movedCamera
     = static_cast<vtkCamera*>(caller);
+
   // for every opened SynchronizedView :
-  for (std::vector<QGoSynchronizedView2D*>::iterator SynchronizedViewIt =
-         p_m_QGoSynchronizedViews.begin();
-       SynchronizedViewIt != p_m_QGoSynchronizedViews.end();
-       ++SynchronizedViewIt)
+  std::vector<QGoSynchronizedView2D*>::iterator SynchronizedViewIt =
+           p_m_QGoSynchronizedViews.begin();
+  while( SynchronizedViewIt != p_m_QGoSynchronizedViews.end() )
     {
     // we copy the position of the moved camera into
     // each SynchronizedView's camera
@@ -138,6 +120,7 @@ synchronizeCameras(vtkObject* caller,
       // we render all SynchronizedViews
       (*SynchronizedViewIt)->Render();
       }
+    ++SynchronizedViewIt;
     }
 }
 
@@ -158,22 +141,24 @@ void
 QGoSynchronizedView2DCallbacks::
 removeSynchronizedView(QGoSynchronizedView2D* ioSynchronizedView)
 {
-  std::vector<QGoSynchronizedView2D*>::iterator SynchronizedViewIt;
-
-  if (ioSynchronizedView != NULL) // this should always be true
+  if (ioSynchronizedView) // this should always be true
     {
     // We look for the SynchronizedView in the vector
     // of synchronized SynchronizedViews
-    SynchronizedViewIt = std::find(m_openSynchronizedView.begin(),
-                                   m_openSynchronizedView.end(),
-                                   ioSynchronizedView);
+    std::vector<QGoSynchronizedView2D*>::iterator
+      SynchronizedViewIt = std::find(m_openSynchronizedView.begin(),
+                                    m_openSynchronizedView.end(),
+                                     ioSynchronizedView);
+
     if (SynchronizedViewIt != m_openSynchronizedView.end()) // if we found it
       {
       if (ioSynchronizedView->HasViewer())
+        {
         // remove the callback object from each object's camera
         ioSynchronizedView->GetCamera()
         ->RemoveObserver(QGoSynchronizedView2DCallbacks::
                          m_vtkCallBackCamSync);
+        }
       (*SynchronizedViewIt) = NULL;
       // we remove the SynchronizedView
       m_openSynchronizedView.erase(SynchronizedViewIt);
@@ -187,7 +172,7 @@ QGoSynchronizedView2DCallbacks::
 addSynchronizedView(QGoSynchronizedView2D* ioSynchronizedView)
 {
 
-  if (ioSynchronizedView != NULL) // this should always be true
+  if (ioSynchronizedView) // this should always be true
     {
     m_openSynchronizedView.push_back(ioSynchronizedView);
     // if this SynchronizedView has a viewer, we add an observer

@@ -80,7 +80,7 @@ ContourMeshStructure(const unsigned int& iTraceID,
     }
   else
     {
-    std::cout <<"iActors.size() != 4" <<std::endl;
+    std::cerr <<"iActors.size() != 4" <<std::endl;
     return;
     }
   this->rgba[0] = r;

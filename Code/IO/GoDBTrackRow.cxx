@@ -51,8 +51,8 @@ GoDBTrackRow::GoDBTrackRow() : GoDBTraceRow()
 //-------------------------------------------------------------------------
 GoDBTrackRow::GoDBTrackRow(vtkMySQLDatabase* DatabaseConnector,
                            GoDBCoordinateRow Min, GoDBCoordinateRow Max, unsigned int ImgSessionID,
-                           std::string TraceVisu) : GoDBTraceRow(DatabaseConnector, TraceVisu, Min, Max,
-                                                                 ImgSessionID)
+                           std::string TraceVisu)
+:GoDBTraceRow(DatabaseConnector, TraceVisu, Min, Max,ImgSessionID)
   {
   //GoDBTraceRow::GoDBTraceRow(DatabaseConnector,TraceVisu,Min,Max,
   //ImgSessionID);
@@ -72,11 +72,11 @@ void GoDBTrackRow::InitializeMap()
   //GoDBTraceRow::InitializeMap();
   //this->m_MapRow["TrackID"] = ConvertToString<int>(0);
   this->m_TableName = "track";
-  this->m_TableIDName = "TrackID";
+  this->m_TableIDName = "trackID";
   this->m_CollectionName = "lineage";
-  this->m_CollectionIDName = "LineageID";
+  this->m_CollectionIDName = "lineageID";
   this->m_MapRow[this->m_TableIDName] = ConvertToString<int>(0);
-  this->m_MapRow["LineageID"] = ConvertToString<int>(0);
+  this->m_MapRow["lineageID"] = ConvertToString<int>(0);
   this->m_MapRow["TrackFamilyID"] = ConvertToString<int>(0);
 }
 //-------------------------------------------------------------------------
@@ -86,7 +86,7 @@ int GoDBTrackRow::DoesThisBoundingBoxTrackExist(
   vtkMySQLDatabase* DatabaseConnector)
 {
 
-  return FindOneID(DatabaseConnector, "track", "TrackID",
+  return FindOneID(DatabaseConnector, "track", "trackID",
                    "CoordIDMax", this->GetMapValue("CoordIDMax"),
                    "CoordIDMin", this->GetMapValue("CoordIDMin"));
 }
@@ -95,6 +95,5 @@ int GoDBTrackRow::DoesThisBoundingBoxTrackExist(
 //-------------------------------------------------------------------------
 int GoDBTrackRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
 {
-  return AddOnlyOneNewObjectInTable<GoDBTrackRow>(DatabaseConnector,
-                                                  "track", *this, "TrackID");
+  return this->SaveInDBTemplate<GoDBTrackRow>(DatabaseConnector,*this);
 }

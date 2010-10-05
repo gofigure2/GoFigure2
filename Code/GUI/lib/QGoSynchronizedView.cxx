@@ -53,9 +53,9 @@
 */
 QGoSynchronizedView::QGoSynchronizedView(QString iViewName, QWidget *iParent)
   : QWidget                  (iParent),
-  m_currentViewName       (iViewName),
-  m_currentImage          (NULL),
-  m_currentViewManager    (NULL)
+  m_ViewName       (iViewName),
+  m_Image          (NULL),
+  m_ViewManager    (NULL)
   {
   setupUi(this);
 
@@ -106,16 +106,16 @@ void QGoSynchronizedView::changeEvent(QEvent *e)
 //    }
 //
 //  // if there is no viewer, we create one
-//  if (m_currentView == NULL)
+//  if (m_View == NULL)
 //    {
 //    createViewer();
 //    }
 //
-//  // set the image to the current view
-//  m_currentView->SetImage(iImage);
+//  // set the image to the view
+//  m_View->SetImage(iImage);
 //
-//  // update current image
-//  m_currentImage = iImage;
+//  // update image
+//  m_Image = iImage;
 //
 //  this->Update();
 //}
@@ -127,20 +127,14 @@ QString*
 QGoSynchronizedView::
 GetName()
 {
-  return &m_currentViewName;
+  return &m_ViewName;
 }
 
 //--------------------------------------------------------------------------
-/* Set the address of the current orchestra */
+/* Set the address of the manager */
 void
 QGoSynchronizedView::
-SetCurrentViewManager(QGoSynchronizedViewManager* iCurrentViewManager)
+SetViewManager(QGoSynchronizedViewManager* iViewManager)
 {
-  m_currentViewManager = iCurrentViewManager;
+  m_ViewManager = iViewManager;
 }
-
-/*
-  Private
-*/
-
-

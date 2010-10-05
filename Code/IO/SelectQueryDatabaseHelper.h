@@ -43,11 +43,12 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <list>
 #include "itkMacro.h"
 #include "vtkMySQLDatabase.h"
 #include "GoDBTraceInfoForVisu.h"
 #include "ContourMeshStructure.h"
-#include "ContourMeshStructureHelper.h"
+#include "ContourMeshContainer.h"
 
 #include "QGoIOConfigure.h"
 
@@ -172,6 +173,14 @@ std::vector<std::string> ListSpecificValuesForOneColumn(
   std::string field, std::vector<std::string> VectorValues,
   bool Distinct = false, bool ExcludeZero = false);
 
+QGOIO_EXPORT
+std::list<unsigned int> ListSpecificValuesForOneColumn(
+  vtkMySQLDatabase* DatabaseConnector,
+  std::string TableName, std::string ColumnName,
+  std::string field, std::vector<unsigned int> ListValues,
+  bool Distinct = false, bool ExcludeZero = false);
+
+
 //query: "SELECT ColumnNameOne,ColumnName2 FROM TableName
 //WHERE field = value ORDER BY ColumnNameOrder ASC"
 QGOIO_EXPORT
@@ -228,22 +237,23 @@ std::vector<std::pair<int, std::string> > ListSpecificValuesForTwoColumnsAndTwoT
   std::string PrimaryKey, std::string field, std::string value);
 
 QGOIO_EXPORT
-ContourMeshStructureMultiIndexContainer* GetTracesInfoFromDB(
+  void GetTracesInfoFromDBAndModifyContainer(
+      std::list<ContourMeshStructure>& ioList,
   vtkMySQLDatabase* DatabaseConnector, std::string TraceName,
   std::string CollectionName, unsigned int ImgSessionID, int iTimePoint = -1,
   std::vector<int> iListIDs = std::vector<int>());
 
 QGOIO_EXPORT
-ContourMeshStructure GetTraceInfoFromDB(
+  ContourMeshStructure GetTraceInfoFromDB(
   vtkMySQLDatabase* DatabaseConnector, std::string TraceName,
   std::string CollectionName, unsigned int TraceID);
 
-QGOIO_EXPORT
+/*QGOIO_EXPORT
 ContourMeshStructureMultiIndexContainer* GetTracesInfoFromDBMultiIndex(
   vtkMySQLDatabase* DatabaseConnector, std::string TraceName,
   std::string CollectionName, std::string WhereField,
   unsigned int ImgSessionID, int iTimePoint = -1,
-  std::vector<int> iListIDs = std::vector<int>());
+  std::vector<int> iListIDs = std::vector<int>());*/
 
 //return a pair with the number of fields in the query and a vector of the results:
 QGOIO_EXPORT
@@ -267,6 +277,10 @@ std::string SelectQueryStream(std::string iTable, std::string iColumn, std::stri
 QGOIO_EXPORT
 std::string SelectQueryStreamListConditions(std::string iTable,
                                             std::string iColumn, std::string iField,
+                                            std::vector<std::string> iListValues, bool Distinct = false);
+QGOIO_EXPORT
+std::string SelectQueryStreamListConditions(std::string iTable,
+                                            std::vector<std::string> iListColumn, std::string iField,
                                             std::vector<std::string> iListValues, bool Distinct = false);
 
 //query: SELECT where condition1 UNION SELECT where condition1 and condition2
@@ -315,5 +329,22 @@ std::vector<std::string> GetSpecificValueFromOneTableWithConditionsOnTwoColumns(
   vtkMySQLDatabase* DatabaseConnector, std::string iColumnName, std::string iTableName,
   std::string iFieldOne, std::vector<std::string> iVectorConditionFieldOne,
   std::string iFieldTwo, std::vector<std::string> iVectorConditionFieldTwo);
+
+//Select t1 from (select mesh.meshid,coordinate.zcoord from mesh left join coordinate
+//on mesh.coordidmax = coordinate.coordid where( imagingsessionid = 2 and
+//coordinate.zcoord > 20) ) AS t1 INNER JOIN
+//(select mesh.meshid,coordinate.zcoord from mesh left join
+//coordinate on mesh.coordidmin = coordinate.coordid
+//where ( imagingsessionid = 2 and coordinate.zcoord < 20) )
+//AS t2 on t1.meshid = t2.meshid;
+std::list<unsigned int> GetColumnForBoundedValue(std::string iColumnName,
+   std::string iTableName, std::string iImgSessionID,std::string iCoordType,
+   std::string iValue, vtkMySQLDatabase* DatabaseConnector);
+
+std::list<unsigned int> GetSpecificValuesEqualToZero(
+  vtkMySQLDatabase* iDatabaseConnection,std::string iColumnName, std::string iTableName,
+  std::string iFieldOne, std::vector<std::string> iVectorConditionFieldOne,
+  std::string iFieldTwo);
+
 
 #endif

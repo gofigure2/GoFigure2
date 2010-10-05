@@ -18,6 +18,7 @@ CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx.in
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx @ONLY IMMEDIATE )
 
 SET( QGoGUILIB_SRC
+  ContourMeshContainer.cxx
   QGoConnectServerPage.cxx
   QGoCreateDataBasePage.cxx
   QGoCreateImgSessionPage.cxx
@@ -26,7 +27,6 @@ SET( QGoGUILIB_SRC
   QGoImageView3D.cxx
   QGoImageInfo.cxx
   QGoLUTDialog.cxx
-  QGoManualSegmentationDockWidget.cxx
   QGoManualSegmentationSettingsDialog.cxx
   QGoOpenCreateImgSessionPage.cxx
   QGoOpenCreateProjectPage.cxx
@@ -41,7 +41,7 @@ SET( QGoGUILIB_SRC
   QGoNavigationDockWidget.cxx
   QGoWizardDB.cxx
   QSplitterChild.cxx
-  QTableWidgetChild.cxx
+  QGoTableWidget.cxx
   SnapshotHelper.cxx
   QGoCreateMeshDialog.cxx
   QGoLsmToMegaExportDialog.cxx
@@ -61,7 +61,6 @@ SET( QGoGUILIB_SRC
   QGoDBInitCreateUserPage.cxx
   QGoDBInitCreateAuthorsPage.cxx
   QGoDBInitCreateMicroscopePage.cxx
-  QGoOneClickSegmentationDockWidget.cxx
   QGoColorComboBox.cxx
   QGoSelectedColorComboBox.cxx
   QGoCollectionColorComboBox.cxx
@@ -72,9 +71,30 @@ SET( QGoGUILIB_SRC
   QGoSynchronizedView2DCallbacks.cxx
   QGoSynchronizedView3DCallbacks.cxx
   QGoSynchronizedViewManager.cxx
-  QGoSynchronizedViewMainWindow.cxx
+  QGoDBTraceManager.cxx
+  QGoDBContourManager.cxx
+  QGoDBMeshManager.cxx
+  QGoDBTrackManager.cxx
 
-  QGoSeedsSegmentation.cxx
+  # base segmentation widgets
+  QGoContourSegmentationBaseDockWidget.cxx
+  QGoMeshSegmentationBaseDockWidget.cxx
+  
+  #--manual segmentation--
+  QGoContourManualSegmentation.cxx
+  QGoContourManualSegmentationWidget.cxx
+
+  #--seed segmentation--
+  QGoSeedSegmentationBase.cxx
+    QGoContourSeedSegmentation.cxx
+    QGoMeshSeedSegmentation.cxx
+  QGoSeedBaseWidget.cxx
+    QGoContourSemiAutoLevelsetWidget.cxx
+    QGoContourSemiAutoShapeWidget.cxx
+  QGoFilterSemiAutoBase.cxx
+    QGoFilterChanAndVes.cxx
+    QGoFilterShape.cxx
+  #Watershed.h
 
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx
@@ -107,6 +127,7 @@ ENDIF( ENABLE_VIDEO_RECORD_AVI )
 #---------------------------------------------------------------------------
 
 SET( QGoGUILIB_HDRS
+  ContourMeshContainer.h
   QGoConnectServerPage.h
   QGoCreateDataBasePage.h
   QGoCreateImgSessionPage.h
@@ -115,7 +136,6 @@ SET( QGoGUILIB_HDRS
   QGoImageView3D.h
   QGoImageInfo.h
   QGoLUTDialog.h
-  QGoManualSegmentationDockWidget.h
   QGoManualSegmentationSettingsDialog.h
   QGoOpenCreateImgSessionPage.h
   QGoOpenCreateProjectPage.h
@@ -130,7 +150,7 @@ SET( QGoGUILIB_HDRS
   QGoNavigationDockWidget.h
   QGoWizardDB.h
   QSplitterChild.h
-  QTableWidgetChild.h
+  QGoTableWidget.h
   QGoCreateMeshDialog.h
   QGoLsmToMegaExportDialog.h
   ConversionLsmToMegaThread.h
@@ -145,7 +165,6 @@ SET( QGoGUILIB_HDRS
   QGoDBColorManager.h
   QGoTraceManualEditingWidget.h
   QGoTraceManualEditingDockWidget.h
-  QGoOneClickSegmentationDockWidget.h
   QGoAboutWidget.h
   QGoDBInitializationWizard.h
   QGoDBInitCreateUserPage.h
@@ -160,11 +179,34 @@ SET( QGoGUILIB_HDRS
 #   QGoSynchronizedView2DCallbacks.h
   QGoSynchronizedView3DCallbacks.h
   QGoSynchronizedViewManager.h
-  QGoSynchronizedViewMainWindow.h
   QGoColorComboBox.h
   QGoSelectedColorComboBox.h
   QGoCollectionColorComboBox.h
   QGoComboBox.h
+  QGoDBTraceManager.h
+  QGoDBContourManager.h
+  QGoDBMeshManager.h
+  QGoDBTrackManager.h
+
+  # base segmentation widgets
+  QGoContourSegmentationBaseDockWidget.h
+  QGoMeshSegmentationBaseDockWidget.h
+  
+  #--manual segmentation--
+  QGoContourManualSegmentation.h
+  QGoContourManualSegmentationWidget.h
+
+  #--seed segmentation--
+  QGoSeedSegmentationBase.h
+    QGoContourSeedSegmentation.h
+    QGoMeshSeedSegmentation.h
+  QGoSeedBaseWidget.h
+    QGoContourSemiAutoLevelsetWidget.h
+    QGoContourSemiAutoShapeWidget.h
+  QGoFilterSemiAutoBase.h
+    QGoFilterChanAndVes.h
+    QGoFilterShape.h
+  #Watershed.h
 )
 
 #---------------------------------------------------------------------------
@@ -190,16 +232,28 @@ ENDIF( ENABLE_VIDEO_RECORD_AVI )
 #---------------------------------------------------------------------------
 
 SET( QGoGUILIB_UI
+# base segmentation dock widget
+  Resources/SegmentationBaseDockWidget.ui
+# base widget for the seed segmentation
+  Resources/SegmentationSeedBaseWidget.ui
+# manual contour segmentation dock widget
   Resources/ManualSegmentationSettingsDlg.ui
-  Resources/ManualSegmentationDockWidget.ui
+  Resources/ContourManualSegmentationDockWidget.ui
+  Resources/ContourManualSegmentationWidget.ui
+  Resources/ContourSemiAutoShapeWidget.ui
+  
+# other
   Resources/NavigationDockWidget.ui
   Resources/QGoPrintDatabase.ui
   Resources/LsmToMegaExportDialog.ui
   Resources/QNameDescriptionInputDialog.ui
   Resources/QGoTraceManualEditingWidget.ui
-  Resources/OneClickSegmentationDockWidget.ui
 
   Resources/QGoSynchronizedView.ui
+
+  # seed segmentation dock widgets
+  Resources/BaseAlgoSegmentationDockWidget.ui
+  Resources/LevelsetWidget.ui
 )
 
 #---------------------------------------------------------------------------
@@ -271,7 +325,7 @@ INSTALL( TARGETS QGoGui
   ARCHIVE DESTINATION ${GOFIGURE2_INSTALL_LIB_DIR} COMPONENT Libraries
   LIBRARY DESTINATION ${GOFIGURE2_INSTALL_LIB_DIR} NAMELINK_SKIP COMPONENT Libraries
   )
-  
+
 # Development
 INSTALL( TARGETS QGoGui
   EXPORT GoFigure2Targets
@@ -279,5 +333,5 @@ INSTALL( TARGETS QGoGui
   ARCHIVE DESTINATION ${GOFIGURE2_INSTALL_LIB_DIR} COMPONENT Libraries
   LIBRARY DESTINATION ${GOFIGURE2_INSTALL_LIB_DIR} COMPONENT Libraries NAMELINK_ONLY
   )
-  
+
 

@@ -45,10 +45,11 @@
 #include "vtkSmartPointer.h"
 
 #include "QGoTabElementBase.h"
-#include "ContourMeshStructureHelper.h"
 
 #include "QGoGUILibConfigure.h"
 
+class ContourMeshContainer;
+class vtkPolyData;
 class vtkContourWidget;
 class vtkOrientedGlyphContourRepresentation;
 class vtkDataSet;
@@ -57,7 +58,7 @@ class vtkProperty;
 class vtkActor;
 
 class QGoNavigationDockWidget;
-class QGoManualSegmentationDockWidget;
+class QGoContourManualSegmentationWidget;
 
 /**
 \class QGoTabImageViewElementBase
@@ -134,10 +135,10 @@ protected:
 
   std::vector<vtkSmartPointer<vtkContourWidget> >                      m_ContourWidget;
   std::vector<vtkSmartPointer<vtkOrientedGlyphContourRepresentation> > m_ContourRepresentation;
-  ContourMeshStructureMultiIndexContainer                              m_ContourMeshContainer;
+  ContourMeshContainer*            m_ContourMeshContainer;
 
-  QGoNavigationDockWidget*         m_NavigationDockWidget;
-  QGoManualSegmentationDockWidget* m_ManualSegmentationDockWidget;
+  QGoNavigationDockWidget*            m_NavigationDockWidget;
+  QGoContourManualSegmentationWidget* m_ManualSegmentationWidget;
 
   virtual void CreateManualSegmentationdockWidget();
   virtual void CreateToolsActions();

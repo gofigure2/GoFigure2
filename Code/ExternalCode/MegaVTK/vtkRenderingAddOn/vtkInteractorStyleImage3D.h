@@ -110,11 +110,22 @@ public:
   /**
    * \brief Store the actor which is pointed by the cursor into "m_CurrentProp"
    */
-  void     SetCurrentProp();
+  void     SetCurrentProp(vtkProp* iCurrent);
+
   /**
    * \brief Return the actor which is pointed by the cursor
    */
   vtkProp* GetCurrentProp();
+
+  /**
+   * \brief Store the actor which is pointed by the cursor into "m_CurrentProp"
+   */
+  void     SetCurrentState(bool iSate);
+
+  /**
+   * \brief Store the actor which is pointed by the cursor into "m_CurrentProp"
+   */
+  bool     GetCurrentState();
 
   /**
    * \brief Start Pick Mode by updating the "State" and sending the "StartPickEvent"
@@ -153,8 +164,9 @@ private:
   vtkInteractorStyleImage3D(const vtkInteractorStyleImage3D &);  // Not implemented.
   void operator =(const vtkInteractorStyleImage3D&);  // Not implemented.
 
-  vtkProp* m_CurrentProp;
+  vtkProp*     m_CurrentProp;
   unsigned int m_Mode;
+  bool         m_State;
   };
 
 #endif
