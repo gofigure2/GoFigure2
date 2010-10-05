@@ -129,3 +129,13 @@ std::list<unsigned int> QGoDBTrackManager::UpdateTheTracesColor(
   return this->UpdateTheTracesColorTemplate<GoDBTrackRow>(iDatabaseConnector,
     iNewColor);
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTrackManager::UpdateTWAndContainerForImportedTraces(
+  std::vector<int> iVectorImportedTraces,vtkMySQLDatabase* iDatabaseConnector)
+{
+  this->UpdateTWAndContainerWithImportedTracesTemplate<
+    GoDBTWContainerForTrackLineage>(this->m_TWContainer,
+    iVectorImportedTraces,iDatabaseConnector);
+}

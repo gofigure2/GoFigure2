@@ -139,9 +139,6 @@ void QGoDBMeshManager::DisplayInfoForLastCreatedMesh(
 {
   this->m_TWContainer->SetMeshAttributes(iMeshAttributes);
   this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
-  //int NewTraceID = this->GetLastCreatedTraceID(iDatabaseConnector);
- // this->PrintVolumeAreaForMesh(iMeshAttributes->m_Volume,
-    // iMeshAttributes->m_Area, this->GetLastCreatedTraceID(iDatabaseConnector));
 }
 //-------------------------------------------------------------------------
 
@@ -184,26 +181,14 @@ unsigned int QGoDBMeshManager::SaveNewMeshFromVisu(
   GoDBMeshRow NewMesh(this->m_ImgSessionID);
   NewMesh.SetCellType(iDatabaseConnector,iCellType);
   NewMesh.SetSubCellType(iDatabaseConnector,iSubCellType);
-  //NewMesh.SetTheDataFromTheVisu(iDatabaseConnector, iTraceNodes,iMeshAttributes);
-
-  /*this->SetBoundingBoxColorCollectionTraceRowFromVisu<GoDBMeshRow>(iXCoordMin,
-    iYCoordMin,iZCoordMin,iTCoord,iXCoordMax,iYCoordMax,iZCoordMax,iTraceNodes,
-    iColor,iDatabaseConnector,NewMesh,iTrackID); */
-  //unsigned int NewMeshID = this->CreateNewTraceInDBFromVisu<GoDBMeshRow>(iXCoordMin,
-  //  iYCoordMin,iZCoordMin,iTCoord,iXCoordMax,iYCoordMax,iZCoordMax,iTraceNodes,
-  //  iColor,iDatabaseConnector,NewMesh,iTrackID);
   this->SetMeshBoundingBoxAndPoints(iXCoordMin, iYCoordMin, iZCoordMin,iTCoord,
     iXCoordMax, iYCoordMax,iZCoordMax,iTraceNodes,iDatabaseConnector, NewMesh,
     iMeshAttributes);
   unsigned int NewMeshID = this->m_CollectionOfTraces->CreateNewTraceInDB<GoDBMeshRow>(
     NewMesh,iDatabaseConnector,iColor,iTrackID);
-  /*IDWithColorData NewMeshData = 
-    this->SaveTheNewCreatedTraceInDBAndContainerCurrentElement<GoDBMeshRow>(NewMesh,iColor.second,
-    iDatabaseConnector);*/
   double* rgba = this->GetVectorFromQColor(iColor.second);
   this->m_TraceContainerInfoForVisu->UpdateCurrentElementFromDB(
     NewMeshID, rgba);
-  //this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
   this->DisplayInfoForLastCreatedMesh(iDatabaseConnector,iMeshAttributes);
   return NewMeshID;
 }
@@ -285,4 +270,14 @@ void QGoDBMeshManager::SetMeshBoundingBoxAndPoints(unsigned int iXCoordMin,
       iYCoordMax,iZCoordMax,iTCoord);
   iMesh.SetTheDataFromTheVisu(iDatabaseConnector,iTraceNodes,
                                  coord_min,coord_max,iMeshAttributes);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBMeshManager::UpdateTWAndContainerForImportedTraces(
+  std::vector<int> iVectorImportedTraces,vtkMySQLDatabase* iDatabaseConnector)
+{
+  this->UpdateTWAndContainerWithImportedTracesTemplate<
+    GoDBTWContainerForMesh>(this->m_TWContainer,
+    iVectorImportedTraces,iDatabaseConnector);
 }

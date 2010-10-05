@@ -380,10 +380,6 @@ protected:
   std::list<ItemColorComboboxData> GetListCollectionIDFromDB(
     vtkMySQLDatabase* iDatabaseConnector);
 
-
-  /** \brief Return the TraceInfoStructure corresponding to the trace name*/
-  TraceInfoStructure* GetTraceInfoStructure(std::string iTraceName);
-
   std::vector<ContourMeshStructure> GetTracesForAGivenTimepoint(
     ContourMeshStructureMultiIndexContainer iAllTraces, unsigned int iTimePoint);
 
@@ -397,17 +393,6 @@ protected:
  * from the database, then display them in the QTableWidgetchild.*/
   //void GetContentAndDisplayFromDB(std::string iTableName);
   void closeEvent(QCloseEvent* event);
-
-  /** \brief Get the data for the corresponding trace from the database and
-  replace the printed ones in the tablewidget with them*/
-  void UpdateTableWidgetForAnExistingTrace(std::string iTraceName, int iTraceID,
-    GoFigureMeshAttributes* iMeshAttributes = 0);
-
-  /** \brief update the database and the table widget for the selected traces,
-  the new collection and the previous collection the traces were part of*/
-  //void AddListTracesToACollection(std::list<unsigned int> iListSelectedTraces,
-  //                                std::pair<std::string, QColor> iCollection, std::string iTraceName,
-  //                                bool IsANewCollection, int iCollectionID = -1);
 
   /** 
   \brief set all the traces manager 
@@ -601,7 +586,6 @@ protected slots:
 
   void AddCheckedContoursToSelectedMesh(std::list<unsigned int> iListCheckedContours);
   void AddCheckedMeshesToSelectedTrack(std::list<unsigned int> iListCheckedMeshes);
-  //void AddToSelectedCollection();
 
   /**
   \brief emit a signal TraceToReedit and set m_ReeditMode to true

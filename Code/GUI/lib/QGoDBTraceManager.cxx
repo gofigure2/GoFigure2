@@ -534,3 +534,6 @@ void QGoDBTraceManager::AddToSelectedCollection()
   emit CheckedTracesToAddToSelectedCollection(
     this->m_TraceContainerInfoForVisu->GetHighlightedElementsTraceID());
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------

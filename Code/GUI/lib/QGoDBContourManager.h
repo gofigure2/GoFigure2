@@ -95,6 +95,12 @@ public:
   std::list<unsigned int> UpdateTheTracesColor(vtkMySQLDatabase* iDatabaseConnector,
     NameWithColorData iNewColor);
 
+  /**
+  \brief virtual pure method in QGoDBTraceManager
+  */
+  virtual void UpdateTWAndContainerForImportedTraces(std::vector<int> iVectorImportedTraces,
+    vtkMySQLDatabase* iDatabaseConnector);
+
 signals:
   void NeedToGetDatabaseConnection();
   void NeedToGetCurrentSelectedColor();

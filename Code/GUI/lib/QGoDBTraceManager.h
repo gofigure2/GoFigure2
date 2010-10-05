@@ -114,6 +114,9 @@ public:
   void UpdateTWAndContainerForDeletedTraces(
     std::list<unsigned int> iTraceIDs);
 
+  virtual void UpdateTWAndContainerForImportedTraces(std::vector<int> iVectorImportedTraces,
+    vtkMySQLDatabase* iDatabaseConnector) = 0;
+
   /**
   \brief get from the database the list of all the IDs for the traces with the
   given ZCoord within the bounding box
@@ -208,6 +211,8 @@ public:
     GoFigureMeshAttributes* iMeshAttributes = 0)= 0;*/
 
   void CreateContextMenu(const QPoint& iPos);
+
+  void AddTracesToTWAndContainer(std::vector<int> iVectorTraceIDs);
 
 signals:
   /**
@@ -401,16 +406,6 @@ protected:
 
     return this->m_CollectionOfTraces->CreateNewTraceInDB<T>(iTrace,
       iDatabaseConnector,iColor,iCollectionID);
-    /*if (iMeshAttributes)
-      {
-      iTrace.SetTheDataFromTheVisu(iDatabaseConnector, iTraceNodes,
-                                   coord_min, coord_max, iMeshAttributes);
-      }
-    else
-      {
-      iTrace.SetTheDataFromTheVisu(iDatabaseConnector, iTraceNodes,
-                                   coord_min, coord_max);
-      }*/
   }
 
   template<typename T>
@@ -457,6 +452,39 @@ protected:
       this->m_TraceContainerInfoForVisu->Insert( *it );
       ++it;
       }
+  }
+
+  template<typename T>
+  void UpdateTWAndContainerWithImportedTracesTemplate(T* iTWContainer,
+    std::vector<int> iVectorTraceIDs,vtkMySQLDatabase* iDatabaseConnector)
+  {
+    std::list<ContourMeshStructure> ListOfTraces;
+    GetTracesInfoFromDBAndModifyContainer(
+      ListOfTraces,iDatabaseConnector, this->m_TraceName,this->m_CollectionName,
+      this->m_ImgSessionID,-1,iVectorTraceIDs);
+    std::list<ContourMeshStructure>::iterator it = ListOfTraces.begin();
+    while( it != ListOfTraces.end() )
+      {
+      this->m_TraceContainerInfoForVisu->Insert( *it );
+      ++it;
+      }
+
+    std::vector<int>::iterator iter = iVectorTraceIDs.begin();
+    this->m_Table->setSortingEnabled(false);
+    while(iter != iVectorTraceIDs.end())
+    {
+    TWContainerType RowContainer =
+      iTWContainer->GetContainerForOneSpecificTrace(iDatabaseConnector,
+      *iter);
+    this->m_Table->InsertNewRow(RowContainer,
+      iTWContainer->GetIndexForGroupColor(this->m_TraceName),
+      iTWContainer->GetIndexForGroupColor(this->m_CollectionName),
+       this->m_TraceName,this->m_CollectionName);
+    iter++;
+    }
+    this->m_Table->setSortingEnabled(true);
+
+    //method to be implemented in Container for visu ???
   }
 
   /**

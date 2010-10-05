@@ -103,6 +103,12 @@ public:
   void UpdateBoundingBoxes(vtkMySQLDatabase* iDatabaseConnector,
     std::list<unsigned int> iListTracesIDs);
 
+  /**
+  \brief virtual pure method in QGoDBTraceManager
+  */
+  virtual void UpdateTWAndContainerForImportedTraces(std::vector<int> iVectorImportedTraces,
+    vtkMySQLDatabase* iDatabaseConnector);
+
 protected:
   GoDBTWContainerForMesh*   m_TWContainer;
   virtual void SetCollectionsTraceNames();

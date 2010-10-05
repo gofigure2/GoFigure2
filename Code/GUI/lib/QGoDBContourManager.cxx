@@ -244,3 +244,10 @@ void QGoDBContourManager::ReEditTrace()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoDBContourManager::UpdateTWAndContainerForImportedTraces(
+  std::vector<int> iVectorImportedTraces,vtkMySQLDatabase* iDatabaseConnector)
+{
+  this->UpdateTWAndContainerWithImportedTracesTemplate<
+    GoDBTWContainerForContourMesh>(this->m_TWContainer,
+    iVectorImportedTraces,iDatabaseConnector);
+}

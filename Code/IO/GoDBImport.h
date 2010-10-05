@@ -56,6 +56,7 @@ public:
   GoDBImport(std::string iServerName, std::string iLogin,
              std::string iPassword, int iImagingSessionID,
              std::string iFilename, int iCurrentTimePoint);
+
   virtual ~GoDBImport();
 
   /** \brief get the data needed from the import file to
