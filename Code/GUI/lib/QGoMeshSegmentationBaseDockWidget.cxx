@@ -80,7 +80,6 @@ QGoMeshSegmentationBaseDockWidget(QWidget* iParent, vtkPoints* seeds,
   QWidget* semi_auto_widget = m_MeshSemiAutoSegmentation->getWidget();
 
   this->GetFrame()->layout()->addWidget( semi_auto_widget );
-  semi_auto_widget->setEnabled(false);
   semi_auto_widget->setVisible(false);
 
     // connect show/hide
@@ -114,7 +113,6 @@ QGoMeshSegmentationBaseDockWidget::
 GetFrame()
 {
   return frame;
-
 }
 
 //---------------------------------------------------------------------------//
@@ -151,8 +149,6 @@ void
 QGoMeshSegmentationBaseDockWidget::
 interactorBehavior(bool iSegmentationMethod)
 {
-  std::cout << "interactor behavior" << std::endl;
-
   if(iSegmentationMethod)
     {
     switch ( mode->currentIndex())

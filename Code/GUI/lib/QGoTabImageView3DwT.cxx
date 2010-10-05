@@ -1341,14 +1341,14 @@ SetLSMReader(vtkLSMReader* iReader, const int& iTimePoint)
       {
       m_NavigationDockWidget->SetChannel(0);
       m_ContourSegmentationDockWidget->SetChannel(0);
-      //m_MeshSegmentation->SetChannel(0);
+      m_MeshSegmentationDockWidget->SetChannel(0);
       m_InternalImages.resize(NumberOfChannels);
 
       for (int i = 1; i < NumberOfChannels; i++)
         {
         m_NavigationDockWidget->SetChannel(i);
         m_ContourSegmentationDockWidget->SetChannel(i);
-        //m_MeshSegmentation->SetChannel(i);
+        m_MeshSegmentationDockWidget->SetChannel(i);
 
         m_LSMReader.push_back(vtkSmartPointer<vtkLSMReader>::New());
         m_LSMReader.back()->SetFileName(m_LSMReader[0]->GetFileName());
@@ -1424,14 +1424,14 @@ SetMegaCaptureFile(
     {
     m_NavigationDockWidget->SetChannel(0);
     m_ContourSegmentationDockWidget->SetChannel(0);
-    //m_MeshSegmentation->SetChannel(0);
+    m_MeshSegmentationDockWidget->SetChannel(0);
     m_InternalImages.resize(NumberOfChannels, NULL);
 
     for (unsigned int i = 1; i < NumberOfChannels; i++)
       {
       m_NavigationDockWidget->SetChannel(i);
       m_ContourSegmentationDockWidget->SetChannel(i);
-      //m_MeshSegmentation->SetChannel(i);
+      m_MeshSegmentationDockWidget->SetChannel(i);
       }
     }
 
