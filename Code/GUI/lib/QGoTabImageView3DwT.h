@@ -343,8 +343,9 @@ protected:
 
   // base segmentation dockwidget for contours
   QGoContourSegmentationBaseDockWidget*     m_ContourSegmentationDockWidget;
+
   // base segmentation dockwidget for meshes
-  QGoMeshSegmentationBaseDockWidget*     m_MeshSegmentation;
+  QGoMeshSegmentationBaseDockWidget*     m_MeshSegmentationDockWidget;
 
   vtkPoints*                         m_Seeds;
 

@@ -152,7 +152,7 @@ QGoTabImageView3DwT(QWidget* iParent) :
 
   // segmentation dockwidgets
   CreateContourSegmentationDockWidget();
-  //CreateMeshSegmentationDockWidget();
+  CreateMeshSegmentationDockWidget();
 
   CreateDataBaseTablesConnection();
 
@@ -182,11 +182,11 @@ QGoTabImageView3DwT(QWidget* iParent) :
           m_ContourSegmentationDockWidget, Qt::LeftDockWidgetArea, true, true),
       m_ContourSegmentationDockWidget));
 
-  /* //Arnaud
-m_DockWidgetList.push_back(
+  m_DockWidgetList.push_back(
     std::pair<QGoDockWidgetStatus*, QDockWidget*>(
-      new QGoDockWidgetStatus(m_MeshSegmentation, Qt::LeftDockWidgetArea, true, true),
-      m_MeshSegmentation));*/
+      new QGoDockWidgetStatus(
+          m_MeshSegmentationDockWidget, Qt::LeftDockWidgetArea, true, true),
+      m_MeshSegmentationDockWidget));
 
 //   m_DockWidgetList.push_back(
 //     std::pair< QGoDockWidgetStatus*, QDockWidget* >(
@@ -342,31 +342,50 @@ CreateMeshSegmentationDockWidget()
   // basic interactor connections
   //----------------------------------------------------------------
 
-  m_MeshSegmentation
+  m_MeshSegmentationDockWidget
       = new QGoMeshSegmentationBaseDockWidget(this, m_Seeds, &m_InternalImages);
 
-  QObject::connect(m_MeshSegmentation, SIGNAL(ReinitializeInteractor(bool)),
-                   this, SLOT(DefaultInteractorBehavior(bool)));
-  QObject::connect(m_MeshSegmentation, SIGNAL(ManualSegmentation(bool)),
-                   this, SLOT(DefaultInteractorBehavior(bool)));
-  QObject::connect(m_MeshSegmentation, SIGNAL(SemiAutoSegmentation(bool)),
-                   this, SLOT(SeedInteractorBehavior(bool)));
-  QObject::connect(m_MeshSegmentation, SIGNAL(AutoSegmentation(bool)),
-                   this, SLOT(DefaultInteractorBehavior(bool)));
+  QObject::connect( m_MeshSegmentationDockWidget,
+                    SIGNAL(ReinitializeInteractor(bool)),
+                    this,
+                    SLOT(DefaultInteractorBehavior(bool)) );
+
+  QObject::connect( m_MeshSegmentationDockWidget,
+                    SIGNAL(ManualSegmentation(bool)),
+                    this,
+                    SLOT(DefaultInteractorBehavior(bool)));
+
+  QObject::connect( m_MeshSegmentationDockWidget,
+                    SIGNAL(SemiAutoSegmentation(bool)),
+                    this,
+                    SLOT(SeedInteractorBehavior(bool)));
+
+  QObject::connect( m_MeshSegmentationDockWidget,
+                    SIGNAL(AutoSegmentation(bool)),
+                    this,
+                    SLOT(DefaultInteractorBehavior(bool)));
   //m_MeshSegmentation->setFeature(QDockWidget::DockWidgetMovable);
   //QObject::connect(m_MeshSegmentation, SIGNAL(visibilityChanged(bool)),
   //    this, SLOT(GoToDefaultMenu(bool)));
 
   // signals for the semi automatic segmentation
-  QObject::connect(m_MeshSegmentation, SIGNAL(UpdateSeeds()),
-      this, SLOT(UpdateSeeds()));
-  QObject::connect(m_MeshSegmentation, SIGNAL(SaveAndVisuMesh(vtkPolyData*)),
-      this, SLOT(SaveAndVisuMesh(vtkPolyData*)));
-  QObject::connect(m_MeshSegmentation, SIGNAL(ClearAllSeeds()),
-      m_ImageView, SLOT(ClearAllSeeds()));
+  QObject::connect( m_MeshSegmentationDockWidget,
+                    SIGNAL(UpdateSeeds()),
+                    this,
+                    SLOT(UpdateSeeds()));
+
+  QObject::connect( m_MeshSegmentationDockWidget,
+                    SIGNAL(SaveAndVisuMesh(vtkPolyData*)),
+                    this,
+                    SLOT(SaveAndVisuMesh(vtkPolyData*)));
+
+  QObject::connect( m_MeshSegmentationDockWidget,
+                    SIGNAL(ClearAllSeeds()),
+                    m_ImageView,
+                    SLOT(ClearAllSeeds()));
 
   // intialize the widget
-  m_MeshSegmentation->Initialize();
+  m_MeshSegmentationDockWidget->Initialize();
 }
 //-------------------------------------------------------------------------
 
@@ -903,17 +922,27 @@ void QGoTabImageView3DwT::CreateModeActions()
       m_ContourSegmentation, SLOT(setEnabled(bool)));
   QObject::connect(ContourSegmentationAction, SIGNAL(toggled(bool)),
       m_ContourSegmentation, SLOT(setVisible(bool)));*/
-  QObject::connect(ContourSegmentationAction, SIGNAL(toggled(bool)),
-      m_ContourSegmentationDockWidget, SLOT(interactorBehavior(bool)));
-  QObject::connect(ContourSegmentationAction, SIGNAL(toggled(bool)),
-      this->m_DataBaseTables->GetTraceManualEditingDockWidget(), SLOT(setVisible(bool)));
-  QObject::connect(ContourSegmentationAction, SIGNAL(toggled(bool)),
-        this, SLOT(ShowTraceDockWidgetForContour(bool)));
+
+  QObject::connect( ContourSegmentationAction,
+                    SIGNAL(toggled(bool)),
+                    m_ContourSegmentationDockWidget,
+                    SLOT(interactorBehavior(bool)));
+
+  QObject::connect( ContourSegmentationAction,
+                    SIGNAL(toggled(bool)),
+                    this->m_DataBaseTables->GetTraceManualEditingDockWidget(),
+                    SLOT(setVisible(bool)));
+
+  QObject::connect( ContourSegmentationAction,
+                    SIGNAL(toggled(bool)),
+                    this,
+                    SLOT(ShowTraceDockWidgetForContour(bool)));
+
   //---------------------------------//
   //        Mesh segmentation        //
   //---------------------------------//
-  /* //Arnaud
- QAction* MeshSegmentationAction = m_MeshSegmentation->toggleViewAction();
+  QAction* MeshSegmentationAction =
+      m_MeshSegmentationDockWidget->toggleViewAction();
 
   QIcon MeshSegmentationIcon;
   MeshSegmentationIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/meshOneClick.png")),
@@ -922,7 +951,7 @@ void QGoTabImageView3DwT::CreateModeActions()
 
   group->addAction(MeshSegmentationAction);
 
-  this->m_ModeActions.push_back(MeshSegmentationAction);*/
+  this->m_ModeActions.push_back(MeshSegmentationAction);
 
   // When click on button, it updates widget in visu
   /*QObject::connect(MeshSegmentationAction, SIGNAL(toggled(bool)),
@@ -930,14 +959,21 @@ void QGoTabImageView3DwT::CreateModeActions()
   QObject::connect(MeshSegmentationAction, SIGNAL(toggled(bool)),
       m_MeshSegmentation, SLOT(setVisible(bool)));*/
 
-/* //Arnaud
-  QObject::connect(MeshSegmentationAction, SIGNAL(toggled(bool)),
-      m_MeshSegmentation, SLOT(interactorBehavior(bool)));
-  QObject::connect(MeshSegmentationAction, SIGNAL(toggled(bool)),
-      this->m_DataBaseTables->GetTraceManualEditingDockWidget(), SLOT(setVisible(bool)));
-  QObject::connect(MeshSegmentationAction, SIGNAL(toggled(bool)),
-        this, SLOT(ShowTraceDockWidgetForMesh(bool)));
-*/
+  QObject::connect( MeshSegmentationAction,
+                    SIGNAL(toggled(bool)),
+                    m_MeshSegmentationDockWidget,
+                    SLOT(interactorBehavior(bool)));
+
+  QObject::connect( MeshSegmentationAction,
+                    SIGNAL(toggled(bool)),
+                    this->m_DataBaseTables->GetTraceManualEditingDockWidget(),
+                    SLOT(setVisible(bool)));
+
+  QObject::connect( MeshSegmentationAction,
+                    SIGNAL(toggled(bool)),
+                    this,
+                    SLOT(ShowTraceDockWidgetForMesh(bool)) );
+
   //---------------------------------//
   //       Actor picking  mode       //
   //---------------------------------//

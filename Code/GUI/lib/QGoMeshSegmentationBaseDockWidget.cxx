@@ -76,15 +76,19 @@ QGoMeshSegmentationBaseDockWidget(QWidget* iParent, vtkPoints* seeds,
 
   m_MeshSemiAutoSegmentation =
       new QGoMeshSeedSegmentation( this, seeds, iOriginalImage);
-  this->GetFrame()->layout()->addWidget(m_MeshSemiAutoSegmentation->getWidget());
-  m_MeshSemiAutoSegmentation->getWidget()->setEnabled(false);
-  m_MeshSemiAutoSegmentation->getWidget()->setVisible(false);
+
+  QWidget* semi_auto_widget = m_MeshSemiAutoSegmentation->getWidget();
+
+  this->GetFrame()->layout()->addWidget( semi_auto_widget );
+  semi_auto_widget->setEnabled(false);
+  semi_auto_widget->setVisible(false);
 
     // connect show/hide
     QObject::connect(this, SIGNAL(SemiAutoSegmentation(bool)),
-        m_MeshSemiAutoSegmentation->getWidget(), SLOT(setVisible(bool)));
+                     semi_auto_widget, SLOT(setVisible(bool)));
+
     QObject::connect(this, SIGNAL(SemiAutoSegmentation(bool)),
-        m_MeshSemiAutoSegmentation->getWidget(), SLOT(setEnabled(bool)));
+                     semi_auto_widget, SLOT(setEnabled(bool)));
 
     // connect semi-automatic segmentation specific signals
     QObject::connect(m_MeshSemiAutoSegmentation, SIGNAL(UpdateSeeds()),
@@ -120,23 +124,23 @@ void
 QGoMeshSegmentationBaseDockWidget::
 SegmentationMethod(int iSegmentationMethod)
 {
-  emit ManualSegmentation(false);
-  emit SemiAutoSegmentation(false);
-  emit AutoSegmentation(false);
+  emit ManualSegmentationActivated(false);
+  emit SemiAutoSegmentationActivated(false);
+  emit AutoSegmentationActivated(false);
 
   switch(iSegmentationMethod)
   {
     case 0:
-      emit ManualSegmentation(true);
+      emit ManualSegmentationActivated(true);
       break;
     case 1:
-      emit SemiAutoSegmentation(true);
+      emit SemiAutoSegmentationActivated(true);
       break;
     case 2:
-      emit AutoSegmentation(true);
+      emit AutoSegmentationActivated(true);
       break;
     default:
-      emit ReinitializeInteractor(true);
+      emit ReinitializeInteractorActivated(true);
       break;
   }
 }
@@ -154,12 +158,13 @@ interactorBehavior(bool iSegmentationMethod)
     switch ( mode->currentIndex())
       {
       case 0:
-        emit ManualSegmentation(iSegmentationMethod);
+        emit ManualSegmentationActivated(iSegmentationMethod);
         break;
       case 1:
-        emit SemiAutoSegmentation(iSegmentationMethod);
+        emit SemiAutoSegmentationActivated(iSegmentationMethod);
+        break;
       case 2:
-        emit AutoSegmentation(iSegmentationMethod);
+        emit AutoSegmentationActivated(iSegmentationMethod);
         break;
       default:
         break;
@@ -167,10 +172,12 @@ interactorBehavior(bool iSegmentationMethod)
     }
   else
     {
-    emit ManualSegmentation(false);
-    emit SemiAutoSegmentation(false);
-    emit AutoSegmentation(false);
-    emit ReinitializeInteractor(true);
+    emit ManualSegmentationActivated(false);
+    emit SemiAutoSegmentationActivated(false);
+    emit AutoSegmentationActivated(false);
+    emit ReinitializeInteractorActivated(true);
+
+    this->setVisible( false );
     }
 }
 //---------------------------------------------------------------------------//

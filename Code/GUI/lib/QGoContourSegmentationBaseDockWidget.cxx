@@ -193,6 +193,7 @@ interactorBehavior(bool iSegmentationMethod)
     emit SemiAutoSegmentationActivated(false);
     emit AutoSegmentationActivated(false);
     emit ReinitializeInteractorActivated(true);
+
     this->setVisible( false );
     }
 }
