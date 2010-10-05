@@ -171,12 +171,10 @@ SET( QGoGUILIB_HDRS
   QGoDBInitCreateAuthorsPage.h
   QGoDBInitCreateMicroscopePage.h
   QGoNetworkUtilities.h
-  QGoSeedsSegmentation.h
-
   QGoSynchronizedView.h
   QGoSynchronizedView2D.h
   QGoSynchronizedView3D.h
-#   QGoSynchronizedView2DCallbacks.h
+  QGoSynchronizedView2DCallbacks.h
   QGoSynchronizedView3DCallbacks.h
   QGoSynchronizedViewManager.h
   QGoColorComboBox.h
