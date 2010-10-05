@@ -108,9 +108,6 @@ public:
   void UpdateTWAndContainerForExistingTraces(
     vtkMySQLDatabase* iDatabaseConnector,int iTraceID);
 
-  void DisplayInfoForExistingTraces(vtkMySQLDatabase*
-  iDatabaseConnector, std::list<unsigned int> iListTraces);
-
   void UpdateTWAndContainerForDeletedTraces(
     std::list<unsigned int> iTraceIDs);
 
@@ -204,15 +201,20 @@ public:
   std::list<unsigned int> GetListTracesIDsFromThisCollectionOf(
   vtkMySQLDatabase* iDatabaseConnector,std::list<unsigned int> iListTraces);
 
-  /*virtual void SaveNewTraceFromVisu(unsigned int iXCoordMin, unsigned int iYCoordMin, unsigned int iZCoordMin,
-    unsigned int iTCoord, unsigned int iXCoordMax, unsigned int iYCoordMax,
-    unsigned int iZCoordMax, vtkPolyData* iTraceNodes,
-    vtkMySQLDatabase* iDatabaseConnector,QColor iColor, unsigned int iTCoordMax = 0,
-    GoFigureMeshAttributes* iMeshAttributes = 0)= 0;*/
+  /**
+  \brief get the data from the database corresponding to the iListTraces and display
+  them in the Table Widget
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iListTraces list of the TraceIDs the rows in the TW need to be updated
+  */
+  void DisplayInfoForExistingTraces(vtkMySQLDatabase*iDatabaseConnector, 
+    std::list<unsigned int> iListTraces);
 
+  /**
+  \brief create the context menu when the user clicks on the table widget
+  \param[in] iPos position of the context menu event
+  */
   void CreateContextMenu(const QPoint& iPos);
-
-  void AddTracesToTWAndContainer(std::vector<int> iVectorTraceIDs);
 
 signals:
   /**

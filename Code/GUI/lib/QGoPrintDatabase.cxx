@@ -79,10 +79,13 @@
 QGoPrintDatabase::
 QGoPrintDatabase(QWidget* iParent) :
   QWidget(iParent),
-  m_ContoursData(NULL),
-  m_MeshesData(NULL),
-  m_TracksData(NULL),
+  //m_ContoursData(NULL),
+  //m_MeshesData(NULL),
+  //m_TracksData(NULL),
   //m_LineagesData(NULL),
+  m_ContoursManager(NULL),
+  m_MeshesManager(NULL),
+  m_TracksManager(NULL),
   m_DatabaseConnector(NULL),
   m_IsDatabaseUsed(false)
   {
@@ -526,7 +529,7 @@ int QGoPrintDatabase::CreateMeshFromOneClickSegmentation(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::vector<ContourMeshStructure> QGoPrintDatabase::
+/*std::vector<ContourMeshStructure> QGoPrintDatabase::
 GetContoursForAGivenTimepoint(unsigned int iTimePoint)
 {
   return GetTracesForAGivenTimepoint(
@@ -540,7 +543,7 @@ GetMeshesForAGivenTimepoint(unsigned int iTimePoint)
 {
   return GetTracesForAGivenTimepoint(
            *this->m_MeshesData->ListTracesInfoForVisu, iTimePoint);
-}
+}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

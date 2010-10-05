@@ -260,13 +260,13 @@ public slots:
 signals:
   void PrintDBReady();
   void DBVariablesSet();
-  void TableContentChanged();
+  //void TableContentChanged();
   void TraceToReEdit(unsigned int);
   void OpenBookmarksToUpdate();
-  void ColorChangedForSelectedTraces(QColor);
+ // void ColorChangedForSelectedTraces(QColor);
   void TableWidgetTabChanged();
   void NewMeshToGenerate(std::list<unsigned int> ListContourIDs,int iNewMeshID);
-  void MeshGenerationToUpdate(std::list<int> ListContourIDs);
+  //void MeshGenerationToUpdate(std::list<int> ListContourIDs);
   /**
   \brief signal emitted when a signal is emitted from a m_TraceManager for
   "go to the trace " from the context menu
@@ -280,19 +280,21 @@ protected:
   std::string                      m_SelectedCellType;
   std::string                      m_SelectedSubCellType;
 
+  //related to 3dwt:
+  int                              m_SelectedTimePoint;
   QGoDBBookmarkManager*            m_BookmarkManager;
+
+  //related to TraceManualEditing Widget:  
   QGoDBCellTypeManager*            m_CellTypeManager;
   QGoDBSubCellTypeManager*         m_SubCellTypeManager;
   QGoDBColorManager*               m_ColorManager;
   QGoTraceManualEditingDockWidget* m_TraceManualEditingDockWidget;
   QGoTraceManualEditingWidget*     m_TraceWidget;
 
-  int                              m_SelectedTimePoint;
-
-  TraceInfoStructure*              m_ContoursData;
-  TraceInfoStructure*              m_MeshesData;
-  TraceInfoStructure*              m_TracksData;
-  TraceInfoStructure*              m_LineagesData;
+  //TraceInfoStructure*              m_ContoursData;
+  //TraceInfoStructure*              m_MeshesData;
+  //TraceInfoStructure*              m_TracksData;
+  //TraceInfoStructure*              m_LineagesData;
   QGoDBContourManager*             m_ContoursManager;
   QGoDBMeshManager*                m_MeshesManager;
   QGoDBTrackManager*               m_TracksManager;
@@ -306,6 +308,7 @@ protected:
   unsigned int                     m_ImgSessionID;
   std::string                      m_ImgSessionName;
   bool                             m_IsDatabaseUsed;
+
   bool                             m_ReeditMode;
   bool                             m_MeshGenerationMode;
 
@@ -426,6 +429,12 @@ protected:
     return Color;
   }
 
+  /**
+  \brief set the color of the traceRow according to the iColor
+  \param[in|out] ioRow traceRow with the color to be set up
+  \param[in] iColor color for the traceRow
+  \tparam T children of GoDBTraceRow
+  */
   template<typename T>
   void SetTheColorForTheRow(T &ioRow, QColor iColor)
   {
@@ -537,7 +546,6 @@ protected slots:
 
   void PassDBConnectionToContoursManager();
   void PassSelectedColorToContoursManager();
-  //void PassSelectedCollectionToContoursManager();
 
   /**
   \brief slot connected to the TraceColorToChange(0 emitted by the
@@ -584,7 +592,20 @@ protected slots:
   */
   void CreateNewMeshFromCheckedContours(std::list<unsigned int> iListCheckedContours);
 
+  /**
+  \brief slot connected to the the signal CheckedTracesToAddToSelectedCollection
+  emitted by m_ContoursManager, which call the AddCheckedTracesToCollection template
+  \param[in] iListCheckedContours list of the checked contours to be part of the 
+  selected meshID
+  */
   void AddCheckedContoursToSelectedMesh(std::list<unsigned int> iListCheckedContours);
+
+  /**
+  \brief slot connected to the the signal CheckedTracesToAddToSelectedCollection
+  emitted by m_MeshesManager, which call the AddCheckedTracesToCollection template
+  \param[in] iListCheckedMeshes list of the checked meshes to be part of the 
+  selected trackID
+  */
   void AddCheckedMeshesToSelectedTrack(std::list<unsigned int> iListCheckedMeshes);
 
   /**
