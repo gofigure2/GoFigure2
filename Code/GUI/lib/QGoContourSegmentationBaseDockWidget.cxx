@@ -53,6 +53,13 @@ QGoContourSegmentationBaseDockWidget(
 {
   this->setupUi(this);
 
+  this->setWindowTitle(QString::fromUtf8("Contour Segmentation"));
+
+  QIcon ContourSegmentationIcon;
+  ContourSegmentationIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/contourManual.png")),
+                              QIcon::Normal, QIcon::Off);
+  this->toggleViewAction()->setIcon(ContourSegmentationIcon);
+
   // update interactor behavior
   QObject::connect(this->mode, SIGNAL(activated(int)),
                    this, SLOT(SegmentationMethod(int)));
@@ -180,6 +187,7 @@ interactorBehavior(bool iSegmentationMethod)
         break;
       case 1:
         emit SemiAutoSegmentationActivated(iSegmentationMethod);
+        break;
       case 2:
         emit AutoSegmentationActivated(iSegmentationMethod);
         break;

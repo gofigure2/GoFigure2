@@ -51,6 +51,13 @@ QGoMeshSegmentationBaseDockWidget(QWidget* iParent, vtkPoints* seeds,
 {
   this->setupUi(this);
 
+  this->setWindowTitle(QString::fromUtf8("Mesh Segmentation"));
+
+  QIcon MeshSegmentationIcon;
+  MeshSegmentationIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/meshOneClick.png")),
+                              QIcon::Normal, QIcon::Off);
+  this->toggleViewAction()->setIcon(MeshSegmentationIcon);
+
   // update interactor behavior
   QObject::connect(this->mode, SIGNAL(activated(int)),
                    this, SLOT(SegmentationMethod(int)));
@@ -83,10 +90,10 @@ QGoMeshSegmentationBaseDockWidget(QWidget* iParent, vtkPoints* seeds,
   semi_auto_widget->setVisible(false);
 
     // connect show/hide
-    QObject::connect(this, SIGNAL(SemiAutoSegmentation(bool)),
+    QObject::connect(this, SIGNAL(SemiAutoSegmentationActivated(bool)),
                      semi_auto_widget, SLOT(setVisible(bool)));
 
-    QObject::connect(this, SIGNAL(SemiAutoSegmentation(bool)),
+    QObject::connect(this, SIGNAL(SemiAutoSegmentationActivated(bool)),
                      semi_auto_widget, SLOT(setEnabled(bool)));
 
     // connect semi-automatic segmentation specific signals

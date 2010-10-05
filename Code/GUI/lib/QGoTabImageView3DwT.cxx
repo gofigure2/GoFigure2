@@ -346,22 +346,22 @@ CreateMeshSegmentationDockWidget()
       = new QGoMeshSegmentationBaseDockWidget(this, m_Seeds, &m_InternalImages);
 
   QObject::connect( m_MeshSegmentationDockWidget,
-                    SIGNAL(ReinitializeInteractor(bool)),
+                    SIGNAL(ReinitializeInteractorActivated(bool)),
                     this,
                     SLOT(DefaultInteractorBehavior(bool)) );
 
   QObject::connect( m_MeshSegmentationDockWidget,
-                    SIGNAL(ManualSegmentation(bool)),
+                    SIGNAL(ManualSegmentationActivated(bool)),
                     this,
                     SLOT(DefaultInteractorBehavior(bool)));
 
   QObject::connect( m_MeshSegmentationDockWidget,
-                    SIGNAL(SemiAutoSegmentation(bool)),
+                    SIGNAL(SemiAutoSegmentationActivated(bool)),
                     this,
                     SLOT(SeedInteractorBehavior(bool)));
 
   QObject::connect( m_MeshSegmentationDockWidget,
-                    SIGNAL(AutoSegmentation(bool)),
+                    SIGNAL(AutoSegmentationActivated(bool)),
                     this,
                     SLOT(DefaultInteractorBehavior(bool)));
   //m_MeshSegmentation->setFeature(QDockWidget::DockWidgetMovable);
@@ -908,11 +908,7 @@ void QGoTabImageView3DwT::CreateModeActions()
   QAction* ContourSegmentationAction =
       m_ContourSegmentationDockWidget->toggleViewAction();
 
-  QIcon ContourSegmentationIcon;
-  ContourSegmentationIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/contourManual.png")),
-                              QIcon::Normal, QIcon::Off);
-  ContourSegmentationAction->setIcon(ContourSegmentationIcon);
-
+  /// TODO move group to maintab
   group->addAction(ContourSegmentationAction);
 
   this->m_ModeActions.push_back(ContourSegmentationAction);
@@ -943,11 +939,6 @@ void QGoTabImageView3DwT::CreateModeActions()
   //---------------------------------//
   QAction* MeshSegmentationAction =
       m_MeshSegmentationDockWidget->toggleViewAction();
-
-  QIcon MeshSegmentationIcon;
-  MeshSegmentationIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/meshOneClick.png")),
-                              QIcon::Normal, QIcon::Off);
-  MeshSegmentationAction->setIcon(MeshSegmentationIcon);
 
   group->addAction(MeshSegmentationAction);
 
