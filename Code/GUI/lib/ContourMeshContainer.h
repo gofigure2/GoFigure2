@@ -183,6 +183,65 @@ public:
     */
   void Print();
 
+  template< class TContainer >
+  void UpdateVisualizationForGivenIDs( TContainer iList,
+                                       const bool& iContour )
+  {
+    typename TContainer::iterator it = iList.begin();
+
+    while( it != iList.end() )
+      {
+      MultiIndexContainerTraceIDIterator id_it =
+          m_Container.get< TraceID >().find( static_cast< unsigned int >( *it ) );
+
+      if( id_it != m_Container.get< TraceID >().end() )
+        {
+        ContourMeshStructure temp( *id_it );
+        temp.Highlighted = false;
+        temp.Visible =
+            ( static_cast< unsigned int >( m_TCoord ) == id_it->TCoord );
+
+        vtkProperty* property = vtkProperty::New();
+        property->SetColor( id_it->rgba[0], id_it->rgba[1], id_it->rgba[2] );
+        property->SetOpacity( id_it->rgba[3] );
+
+        vtkPolyData* nodes = id_it->Nodes;
+        std::vector<vtkActor*> actor;
+
+        if( iContour )
+          {
+          int dir = ComputeDirectionFromContour(nodes);
+
+          if( dir != -1 )
+            {
+            m_ImageView->EnableContourWidget( true );
+            m_ImageView->InitializeContourWidgetNodes( dir, nodes );
+
+            vtkPolyData* trace =
+                m_ImageView->GetContourRepresentationAsPolydata(dir);
+
+            actor = this->m_ImageView->AddContour(trace, property);
+
+            m_ImageView->ReinitializeContourWidget();
+            m_ImageView->EnableContourWidget( false );
+            }
+          }
+        else
+          {
+          actor = this->m_ImageView->AddContour( nodes, property );
+          }
+
+        temp.ActorXY = actor[0];
+        temp.ActorXZ = actor[1];
+        temp.ActorYZ = actor[2];
+        temp.ActorXYZ = actor[3];
+
+        m_Container.get< TraceID >().replace( id_it, temp );
+        }
+      ++it;
+      }
+  }
+
   void ShowActorsWithGivenTimePoint( const unsigned int& iT );
 
   void

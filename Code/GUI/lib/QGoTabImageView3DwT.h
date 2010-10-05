@@ -211,7 +211,7 @@ public:
         VisualizeContour<TIndex>( iIt, contour );
 
         m_ImageView->ReinitializeContourWidget();
-         m_ImageView->EnableContourWidget( false );
+        m_ImageView->EnableContourWidget( false );
         }
       }
   }
