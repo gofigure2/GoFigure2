@@ -140,7 +140,7 @@ class ITK_EXPORT GaussianProfileMatchingImageFilter : public ImageToImageFilter<
     inline ImagePixelType
     PearsonCorrelation ( ImageRegionType& region );
     ImagePointer InitializeBlob ( FeatureImageSpacingType spacing, FeatureImageSizeType size );
-    
+
     /** Method for evaluating the implicit function over the image. */
     virtual void BeforeThreadedGenerateData();
     virtual void AfterThreadedGenerateData();
@@ -148,7 +148,7 @@ class ITK_EXPORT GaussianProfileMatchingImageFilter : public ImageToImageFilter<
 			int threadId);
 	  void GenerateInputRequestedRegion();
     void EnlargeOutputRequestedRegion(DataObject *itkNotUsed(output));
-	
+
     double m_SigmaForm;
     double m_LargestCellRadius;
 	  FeatureImageSizeType m_CellExtent;

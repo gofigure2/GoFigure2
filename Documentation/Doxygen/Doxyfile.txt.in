@@ -607,7 +607,6 @@ FILE_PATTERNS          = *.c \
                          *.hxx \
                          *.hpp \
                          *.h++ \
-                         *.txx \
                          *.idl \
                          *.odl \
                          *.cs \

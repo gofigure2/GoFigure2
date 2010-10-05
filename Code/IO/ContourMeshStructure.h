@@ -67,10 +67,10 @@ struct QGOIO_EXPORT ContourMeshStructure
 
   /**
   \brief Return the direction of a given contour iContour
-  \return 0 \if z coordinates are constant
-  \return 1 \if y coordinates are constant
-  \return 2 \if x coordinates are constant
-  \return -1 \else
+  \return 0 if z coordinates are constant
+  \return 1 if y coordinates are constant
+  \return 2 if x coordinates are constant
+  \return -1 else
   */
   int GetDirection();
   bool IsAContour();
