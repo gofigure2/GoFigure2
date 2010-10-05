@@ -58,6 +58,10 @@ int main(int argc, char** argv)
     return EXIT_FAILURE;
     }
 
+  QApplication app(argc, argv);
+  QCoreApplication::setOrganizationName("MegasonLab");
+  QCoreApplication::setOrganizationDomain("http://gofigure2.sourceforge.net");
+
   vtkSmartPointer<vtkMetaImageReader> reader =
     vtkSmartPointer<vtkMetaImageReader>::New();
   reader->SetFileName(argv[1]);
