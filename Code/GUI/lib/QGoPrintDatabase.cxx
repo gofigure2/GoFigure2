@@ -113,6 +113,7 @@ QGoPrintDatabase(QWidget* iParent) :
 
   this->CreateConnectionsForTraceManualEditingWidget();
   this->m_ReeditMode = false;
+  this->m_MeshGenerationMode = false;
 
   QObject::connect(m_VisibilityAction, SIGNAL(toggled(bool)),
                    this, SLOT(setVisible(bool)));
@@ -486,40 +487,6 @@ QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QGoPrintDatabase::IDWithColorData QGoPrintDatabase::
-  UpdateContourFromVisuInDB(unsigned int iXCoordMin,
-                            unsigned int iYCoordMin,
-                            unsigned int iZCoordMin,
-                            unsigned int iTCoord,
-                            unsigned int iXCoordMax,
-                            unsigned int iYCoordMax,
-                            unsigned int iZCoordMax,
-                            vtkPolyData* iContourNodes,
-                            int ContourID)
-{
-  OpenDBConnection();
-  GoDBContourRow contour_row(this->m_ImgSessionID);
-  contour_row.SetValuesForSpecificID(ContourID,this->m_DatabaseConnector);
-  contour_row.SaveInDB(this->m_DatabaseConnector);
-
-  int CollectionID = FindOneID(this->m_DatabaseConnector,
-                               "contour", "meshID", "contourID", ConvertToString<int>(ContourID));
-  this->m_ContoursData->CollectionOfTraces->RecalculateDBBoundingBox(
-    this->m_DatabaseConnector, CollectionID);
-  this->UpdateTableWidgetForAnExistingTrace("mesh", CollectionID);
-  this->UpdateTableWidgetForAnExistingTrace("contour", ContourID);
-  IDWithColorData UpdatedContourData;
-  UpdatedContourData.first = ContourID;
-  QColor Color = this->GetQColorFromTraceRow<GoDBContourRow>(contour_row,
-    this->m_DatabaseConnector);
-  CloseDBConnection();
-  //useful ?
-  UpdatedContourData.second = Color;
-  return UpdatedContourData;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 void
 QGoPrintDatabase::
 SaveMeshFromVisuInDB( unsigned int iXCoordMin,
@@ -531,139 +498,29 @@ SaveMeshFromVisuInDB( unsigned int iXCoordMin,
                       unsigned int iZCoordMax,
                       vtkPolyData* iMeshNodes,
                       GoFigureMeshAttributes* iMeshAttributes)
-                      //bool NewMesh,
-                      //int iMeshID)
 {
   OpenDBConnection();
-  unsigned int NewMeshID = this->m_MeshesManager->SaveNewMeshFromVisu(iXCoordMin,iYCoordMin,
-    iZCoordMin,iTCoord,iXCoordMax,iYCoordMax,iZCoordMax,iMeshNodes,this->m_DatabaseConnector,
-    this->m_SelectedColorData,ss_atoi<unsigned int>(this->m_SelectedCollectionData.first),
-    iMeshAttributes,this->m_SelectedCellType,this->m_SelectedSubCellType);
-
-  std::list<unsigned int> ListNewMeshes;
-  ListNewMeshes.push_back(NewMeshID);
-  this->m_TracksManager->UpdateBoundingBoxes(this->m_DatabaseConnector,
-    this->m_MeshesManager->GetListCollectionIDs(this->m_DatabaseConnector,ListNewMeshes));
-
-  //emit NeedToGetCurrentSelectedColor();
-  //emit NeedCurrentSelectedCollectionID();
-
-  /*GoDBMeshRow                    mesh_row(this->m_ImgSessionID);
-  std::pair<std::string, QColor> CollectionData;
-  int                            SavedMeshID;
-
-  if (!NewMesh)
+  if(!this->m_MeshGenerationMode)
     {
-    int tempid = iMeshID;
-    if (tempid == 0)
-      {
-      tempid = atoi(this->m_SelectedCollectionData.first.c_str());
+    unsigned int NewMeshID = this->m_MeshesManager->SaveNewMeshFromVisu(iXCoordMin,iYCoordMin,
+      iZCoordMin,iTCoord,iXCoordMax,iYCoordMax,iZCoordMax,iMeshNodes,this->m_DatabaseConnector,
+      this->m_SelectedColorData,ss_atoi<unsigned int>(this->m_SelectedCollectionData.first),
+      iMeshAttributes,this->m_SelectedCellType,this->m_SelectedSubCellType);
 
-      CollectionData.first = mesh_row.GetMapValue("TrackID");
-      }
-    mesh_row.SetValuesForSpecificID( tempid, this->m_DatabaseConnector );
-
-    GoDBTrackRow Collection;
-    Collection.SetValuesForSpecificID( atoi(CollectionData.first.c_str()),
-                                       this->m_DatabaseConnector );
-
-    /*QColor ColorCollection(atoi(Collection.GetMapValue("Red").c_str()),
-                           atoi(Collection.GetMapValue("Green").c_str()),
-                           atoi(Collection.GetMapValue("Blue").c_str()),
-<<<<<<< .working
-                           atoi(Collection.GetMapValue("Alpha").c_str()));
-    CollectionData.second =
-      this->GetQColorFromTraceRow<GoDBTrackRow>(
-        Collection,
-        this->m_DatabaseConnector);
-=======
-                           atoi(Collection.GetMapValue("Alpha").c_str()));*/
-  /*  CollectionData.second = this->GetQColorFromTraceRow<GoDBTrackRow>(Collection,
-      this->m_DatabaseConnector);
-<<<<<<< .working
->>>>>>> .merge-right.r2033
-=======
-    CollectionData.second =
-        this->GetQColorFromTraceRow<GoDBTrackRow>(Collection, this->m_DatabaseConnector );
->>>>>>> .merge-right.r2032
-=======
->>>>>>> .merge-right.r2136
-*/
-      /*QColor ColorMesh(atoi(mesh_row.GetMapValue("Red").c_str()),
-                           atoi(mesh_row.GetMapValue("Green").c_str()),
-                           atoi(mesh_row.GetMapValue("Blue").c_str()),
-                           atoi(mesh_row.GetMapValue("Alpha").c_str()));
-
-    MeshData.first = atoi(mesh_row.GetMapValue("MeshID").c_str());
-
-    //MeshData.second = this->GetQColorFromTraceRow<GoDBMeshRow>(mesh_row);
-    MeshData.second = this->m_SelectedColorData.second;
-    }*/
-//refactoring:
-  /*this->GetTraceRowFromVisu<GoDBMeshRow>( iXCoordMin,
-                                          iYCoordMin,
-                                          iZCoordMin,
-                                          iTCoord,
-                                          iXCoordMax,
-                                          iYCoordMax,
-                                          iZCoordMax,
-                                          iMeshNodes,
-                                          this->m_DatabaseConnector,
-                                          mesh_row,
-                                          0,
-                                          iMeshAttributes);
-
-  if (NewMesh)
-    {
-    //if the new mesh is created from a collection of contours,
-    //there will be no collectionID from the tracemanualediting widget as
-    //the collection in the widget will be mesh and not track
-    mesh_row.SetColor( m_SelectedColorData.second.red(),
-                       m_SelectedColorData.second.green(),
-                       m_SelectedColorData.second.blue(),
-                       m_SelectedColorData.second.alpha(),
-                       m_SelectedColorData.first,
-                       this->m_DatabaseConnector);
-
-    if (this->InWhichTableAreWe() == "contour")
-      {
-      mesh_row.SetCollectionID(0);
-      CollectionData.first = "0";
-      QColor WhiteColor(255, 255, 255, 255);
-      CollectionData.second = WhiteColor;
-      }
-    else
-      {
-      mesh_row.SetCollectionID(atoi(m_SelectedCollectionData.first.c_str()));
-      CollectionData = this->m_SelectedCollectionData;
-      }
-    mesh_row.SetField("CellType", this->m_SelectedCellType);
-    mesh_row.SetField("SubCellType", this->m_SelectedSubCellType);
-    SavedMeshID = mesh_row.SaveInDB(this->m_DatabaseConnector);
-    this->UpdateTableWidgetAndDBWithNewCreatedTrace("mesh",
-                                                    iMeshAttributes);
-    this->AddATraceToContourMeshInfo("mesh", SavedMeshID);
-    MeshData.first = SavedMeshID;
-    MeshData.second = this->m_SelectedColorData.second;
+    std::list<unsigned int> ListNewMeshes;
+    ListNewMeshes.push_back(NewMeshID);
+    this->m_TracksManager->UpdateBoundingBoxes(this->m_DatabaseConnector,
+      this->m_MeshesManager->GetListCollectionIDs(this->m_DatabaseConnector,ListNewMeshes));
     }
-
-  if (!NewMesh)
+  else
     {
-    SavedMeshID = mesh_row.SaveInDB(this->m_DatabaseConnector);
-    this->UpdateTableWidgetForAnExistingTrace(
-      "mesh", atoi(mesh_row.GetMapValue("MeshID").c_str()),iMeshAttributes);
+    this->m_MeshesManager->SaveGeneratedMeshFromVisu(iXCoordMin,iYCoordMin,
+      iZCoordMin,iTCoord,iXCoordMax,iYCoordMax,iZCoordMax,iMeshNodes,this->m_DatabaseConnector,
+      iMeshAttributes);
+    //as the mesh is generated from contours, there is no TrackID associated.
+    this->m_MeshGenerationMode = false;
     }
-
-  /** \todo check if it is needed for an updated mesh
-  std::list<int> ListSelectedTraces;
-  ListSelectedTraces.push_back(SavedMeshID);
-  //refactoring
-  //this->AddListTracesToACollection(
-    //ListSelectedTraces, CollectionData, "mesh", false);*/
-
   CloseDBConnection();
-
-  //return SavedMeshID;
 }
 //-------------------------------------------------------------------------
 
@@ -1761,6 +1618,7 @@ void QGoPrintDatabase::CreateNewMeshFromCheckedContours(
     (this->m_ContoursManager,this->m_MeshesManager,
      NewMeshID,iListCheckedContours);
 
+  this->m_MeshGenerationMode = true;
   emit NewMeshToGenerate(iListCheckedContours,NewMeshID);
 
   this->CloseDBConnection();
@@ -1787,5 +1645,6 @@ AddCheckedMeshesToSelectedTrack(std::list<unsigned int> iListCheckedMeshes)
   this->AddCheckedTracesToCollection<QGoDBMeshManager,QGoDBTrackManager>
     (this->m_MeshesManager,this->m_TracksManager,
     ss_atoi<unsigned int>(this->m_SelectedCollectionData.first),iListCheckedMeshes);
+
   this->CloseDBConnection();
 }

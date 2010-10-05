@@ -45,6 +45,7 @@
 #include "GoDBCollectionOfTraces.h"
 #include "GoDBTWContainerForMesh.h"
 #include "QGoDBTraceManager.h"
+#include "GoDBMeshRow.h"
 //#include <QWidget>
 
 class QGOGUILIB_EXPORT QGoDBMeshManager: public QGoDBTraceManager
@@ -84,6 +85,12 @@ public:
     vtkMySQLDatabase* iDatabaseConnector,NameWithColorData iColor,unsigned int iTrackID,
     GoFigureMeshAttributes* iMeshAttributes,std::string iCellType, std::string iSubCellType);
 
+  void SaveGeneratedMeshFromVisu(unsigned int iXCoordMin, unsigned int iYCoordMin,
+    unsigned int iZCoordMin,
+    unsigned int iTCoord, unsigned int iXCoordMax, unsigned int iYCoordMax,
+    unsigned int iZCoordMax, vtkPolyData* iTraceNodes,
+    vtkMySQLDatabase* iDatabaseConnector,GoFigureMeshAttributes* iMeshAttributes);
+
   /**
   \brief virtual pure method in QGoDBTraceManager
   */
@@ -106,6 +113,11 @@ protected:
 
   //void PrintVolumeAreaForMesh(std::string iVolume,std::string iArea,
                              // unsigned int iMeshID);
+  void SetMeshBoundingBoxAndPoints(unsigned int iXCoordMin, 
+    unsigned int iYCoordMin, 
+    unsigned int iZCoordMin,unsigned int iTCoord, unsigned int iXCoordMax, 
+    unsigned int iYCoordMax,unsigned int iZCoordMax, vtkPolyData* iTraceNodes,
+    vtkMySQLDatabase* iDatabaseConnector,GoDBMeshRow &iMesh,GoFigureMeshAttributes* iMeshAttributes);
 
   };
 #endif

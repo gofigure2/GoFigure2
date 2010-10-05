@@ -360,7 +360,6 @@ protected:
   // ID + color map, real save+real visu
   //IDWithColorData SaveContour(vtkPolyData* contour, vtkPolyData* contour_nodes);
   void SaveContour(vtkPolyData* contour, vtkPolyData* contour_nodes);
-  IDWithColorData UpdateContour(vtkPolyData* contour, vtkPolyData* contour_nodes);
 
   std::vector<vtkActor*> VisualizeContour( vtkPolyData* contour );
 

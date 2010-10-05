@@ -173,15 +173,6 @@ public:
                                vtkPolyData* iContourNodes);
 
   /**
-  \brief Update the data for the reedited contour into the database and
-  update the table widget
-  */
-  IDWithColorData UpdateContourFromVisuInDB(unsigned int iXCoordMin,
-                                unsigned int iYCoordMin, unsigned int iZCoordMin, unsigned int iTCoord,
-                                unsigned int iXCoordMax, unsigned int iYCoordMax, unsigned int iZCoordMax,
-                                vtkPolyData* iContourNodes, int ContourID);
-
-  /**
   \brief save the mesh into the database for a mesh generated in the
   visualization, if the mesh is an updated mesh which already exits(for
   example a new contour is added to this mesh, the NewMesh has to be set
@@ -316,6 +307,7 @@ protected:
   std::string                      m_ImgSessionName;
   bool                             m_IsDatabaseUsed;
   bool                             m_ReeditMode;
+  bool                             m_MeshGenerationMode;
 
   QAction* m_VisibilityAction;
 

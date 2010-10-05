@@ -1884,36 +1884,6 @@ SaveContour(vtkPolyData* contour, vtkPolyData* contour_nodes)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QGoTabImageView3DwT::IDWithColorData
-QGoTabImageView3DwT::
-UpdateContour(vtkPolyData* contour, vtkPolyData* contour_nodes)
-{
-  IDWithColorData ContourData( -1, QColor(Qt::white) );
-
-  if ((contour->GetNumberOfPoints() > 2) && (m_TCoord >= 0))
-    {
-    // Compute Bounding Box
-    int* bounds = GetBoundingBox(contour);
-
-    /// TODO Fix bug here, returned color is wrong
-    // update contour in database!
-    ContourData = m_DataBaseTables->UpdateContourFromVisuInDB(
-        bounds[0], bounds[2], bounds[4],
-        m_TCoord,
-        bounds[1], bounds[3], bounds[5], contour_nodes, m_ContourId);
-    this->m_DataBaseTables->GetTraceManualEditingDockWidget()->setEnabled(true);
-
-    delete bounds;
-    }
-  else
-    {
-    std::cerr << "(contour->GetNumberOfPoints() < 2) or  (m_TCoord < 0)" << std::endl;
-    }
-  return ContourData;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 int*
 QGoTabImageView3DwT::GetBoundingBox(vtkPolyData* iElement)
 {
@@ -2587,10 +2557,8 @@ SaveMesh(vtkPolyData* iView, const int& iMeshID, double iRgba[4], bool NewMesh)
                                               bounds[1], bounds[3], bounds[5],
                                               iView,
                                               &MeshAttributes);
-                                              //NewMesh,
-                                              //iMeshID);
 
-  delete bounds;
+  //delete bounds;
   IDWithColorData MeshData;
 
   return MeshData;

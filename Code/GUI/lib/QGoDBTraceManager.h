@@ -419,25 +419,6 @@ protected:
     unsigned int iYCoordMax,unsigned int iZCoordMax, vtkPolyData* iTraceNodes,
     vtkMySQLDatabase* iDatabaseConnector, T& iTrace, unsigned int iTCoordMax = 0)
   {
-    /*GoDBCoordinateRow coord_min;
-    coord_min.SetField<unsigned int>("XCoord", iXCoordMin);
-    coord_min.SetField<unsigned int>("YCoord", iYCoordMin);
-    coord_min.SetField<unsigned int>("ZCoord", iZCoordMin);
-    coord_min.SetField<unsigned int>("TCoord", iTCoord);
-
-    GoDBCoordinateRow coord_max;
-    coord_max.SetField<unsigned int>("XCoord", iXCoordMax);
-    coord_max.SetField<unsigned int>("YCoord", iYCoordMax);
-    coord_max.SetField<unsigned int>("ZCoord", iZCoordMax);
-
-    if (iTCoordMax == 0)
-      {
-      coord_max.SetField<unsigned int>("TCoord", iTCoord);
-      }
-    else
-      {
-      coord_max.SetField<unsigned int>("TCoordMax", iTCoord);
-      }*/
     GoDBCoordinateRow coord_min = this->GetCoordinateFromInt(iXCoordMin,
       iYCoordMin,iZCoordMin,iTCoord);
     unsigned int TCoord;
@@ -451,10 +432,8 @@ protected:
       }
     GoDBCoordinateRow coord_max = this->GetCoordinateFromInt(iXCoordMax,
       iYCoordMax,iZCoordMax,TCoord);
-
-    //iTrace.SetTheBoundingBox(iDatabaseConnector,coord_min,coord_max);
     iTrace.SetTheDataFromTheVisu(iDatabaseConnector,iTraceNodes,
-                             coord_min,coord_max);
+                                 coord_min,coord_max);
   }
 
   template<typename T>
