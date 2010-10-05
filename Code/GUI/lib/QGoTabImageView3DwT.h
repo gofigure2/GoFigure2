@@ -223,7 +223,7 @@ public:
   int GetSliceViewXZ() const;
   int GetSliceViewYZ() const;
   int GetTimePoint() const;
-  
+
   QGoTraceManualEditingWidget*     GetTraceManualEditingWidget();
   QGoPrintDatabase* m_DataBaseTables;
 
@@ -362,6 +362,7 @@ protected:
   void SaveContour(vtkPolyData* contour, vtkPolyData* contour_nodes);
 
   std::vector<vtkActor*> VisualizeContour( vtkPolyData* contour );
+  std::vector<vtkActor*> VisualizeMesh( vtkPolyData* iMesh );
 
   //int VisualizeContour(const int& iContourID,
   //    const unsigned int& iTCoord, vtkPolyData* contour,
@@ -446,8 +447,8 @@ protected:
    * \param[in] iSaveInDataBase save in data base if true
    * \todo Alpha component is not used at all, it is assumed to be opaque
    */
-  IDWithColorData SaveMesh(vtkPolyData* iView, const int& iMeshID,
-                           double iRGBA[4], bool NewMesh );
+  void SaveMesh(vtkPolyData* iView );//, const int& iMeshID,
+                           //double iRGBA[4], bool NewMesh );
 
   void VisualizeNewMesh(vtkPolyData* iView, //const int& iMeshID,
       const unsigned int& iTCoord);//, const double iRGBA[4]);

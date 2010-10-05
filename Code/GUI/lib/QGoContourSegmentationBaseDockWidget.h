@@ -61,8 +61,11 @@ class QGoContourSegmentationBaseDockWidget :
   {
   Q_OBJECT
 public:
-  explicit QGoContourSegmentationBaseDockWidget(QWidget* iParent = 0, vtkPoints* seeds = 0,
+  explicit QGoContourSegmentationBaseDockWidget(
+      QWidget* iParent = 0,
+      vtkPoints* seeds = 0,
       std::vector<vtkImageData*>* iOriginalImage = 0);
+
   ~QGoContourSegmentationBaseDockWidget();
 
   /**
@@ -106,10 +109,11 @@ signals:
   void SaveAndVisuContour(vtkPolyData*);
   void ClearAllSeeds();
 
-private:
+protected:
   QGoContourManualSegmentation*      m_ContourManualSegmentation;
   QGoContourSeedSegmentation*        m_ContourSemiAutoSegmentation;
 
+private:
   Q_DISABLE_COPY( QGoContourSegmentationBaseDockWidget );
   };
 

@@ -59,7 +59,7 @@ public:
   /**
    * \brief Constructor
    */
-  explicit QGoContourManualSegmentation(QObject* parent = 0, QWidget * parentW = 0);
+  explicit QGoContourManualSegmentation( QWidget* parent = 0 );
 
   /**
    * \brief Destructor
@@ -81,7 +81,7 @@ signals:
   void changeContourRepresentationProperty(float  iLinewidth, QColor iLinecolor,
       QColor iNodecolor, QColor iActivenodecolor);
 
-private:
+protected:
   QGoContourManualSegmentationWidget*   m_ContourSegmentationWidget;
 
   double m_LinesWidth;
@@ -90,5 +90,8 @@ private:
   QColor m_ActiveNodesColor;
 
   bool m_ReeditMode;
+
+private:
+    Q_DISABLE_COPY( QGoContourManualSegmentation );
   };
 #endif

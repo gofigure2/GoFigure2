@@ -57,7 +57,7 @@ class QGOGUILIB_EXPORT QGoContourManualSegmentationWidget :
   {
   Q_OBJECT
 public:
-  QGoContourManualSegmentationWidget(QWidget * parent = 0);
+  explicit QGoContourManualSegmentationWidget(QWidget * parent = 0);
   ~QGoContourManualSegmentationWidget();
 
   QGoManualSegmentationSettingsDialog* m_SettingsDialog;
@@ -67,6 +67,9 @@ signals:
   void ValidatePressed();
   void SettingsPressed();
   void UpdateContourRepresentationProperties();
+
+private:
+  Q_DISABLE_COPY( QGoContourManualSegmentationWidget );
   };
 
 #endif

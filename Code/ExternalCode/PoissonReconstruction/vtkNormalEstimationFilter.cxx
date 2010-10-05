@@ -31,7 +31,7 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
  =========================================================================*/
- 
+
 /*=========================================================================
 
   Program:   Visualization Toolkit
@@ -451,7 +451,7 @@ int vtkNormalEstimationFilter::RequestData(
   vtkFloatArray* normals = vtkFloatArray::New();
   normals->SetNumberOfComponents(3);
   normals->SetNumberOfTuples(input->GetNumberOfPoints());
-  normals->SetName("normals");
+  normals->SetName("Normals");
 
   for (vtkIdType i = 0; i < input->GetNumberOfPoints(); i++)
     {

@@ -44,18 +44,23 @@
 
 //--------------------------------------------------------------------------
 QGoContourManualSegmentation::
-QGoContourManualSegmentation(QObject* parent,QWidget * parentW)
+QGoContourManualSegmentation( QWidget* parent ) :
+  QObject( parent ),
+  m_ReeditMode( false )
 {
-  m_ContourSegmentationWidget = new QGoContourManualSegmentationWidget(parentW);
+  m_ContourSegmentationWidget = new QGoContourManualSegmentationWidget( parent );
 
-  m_ReeditMode = false;
+  QObject::connect(
+      m_ContourSegmentationWidget, SIGNAL(UpdateContourRepresentationProperties()),
+      this, SLOT(GenerateContourRepresentationProperties()) );
 
-  QObject::connect(m_ContourSegmentationWidget, SIGNAL(UpdateContourRepresentationProperties()),
-                   this, SLOT(GenerateContourRepresentationProperties()));
-  QObject::connect(m_ContourSegmentationWidget, SIGNAL(ValidatePressed()),
-                   this, SIGNAL(validateContour()));
-  QObject::connect(m_ContourSegmentationWidget, SIGNAL(ReinitializePressed()),
-                   this, SIGNAL(reinitializeContour()));
+  QObject::connect(
+      m_ContourSegmentationWidget, SIGNAL(ValidatePressed()),
+      this, SIGNAL(validateContour()) );
+
+  QObject::connect(
+      m_ContourSegmentationWidget, SIGNAL(ReinitializePressed()),
+      this, SIGNAL(reinitializeContour()) );
 }
 //--------------------------------------------------------------------------
 
@@ -115,10 +120,11 @@ GenerateContourRepresentationProperties(bool iModified)
 
   if (haschanged)
     {
-    emit changeContourRepresentationProperty( static_cast<float>(m_LinesWidth),
-                                              m_LinesColor,
-                                              m_NodesColor,
-                                              m_ActiveNodesColor);
+    emit changeContourRepresentationProperty(
+        static_cast<float>(m_LinesWidth),
+        m_LinesColor,
+        m_NodesColor,
+        m_ActiveNodesColor );
     }
 }
 //--------------------------------------------------------------------------
@@ -141,3 +147,4 @@ GetReeditMode()
 {
   return m_ReeditMode;
 }
+//--------------------------------------------------------------------------
