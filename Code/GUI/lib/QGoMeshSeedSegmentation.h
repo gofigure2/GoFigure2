@@ -66,7 +66,7 @@ public:
   /**
    * \brief Constructor
    */
-  explicit QGoMeshSeedSegmentation(QObject* parentO = 0, QWidget * parentW = 0,
+  explicit QGoMeshSeedSegmentation( QWidget * parentW = 0,
                                     vtkPoints* seeds = 0,
                                     std::vector<vtkImageData*>* iOriginalImage = 0);
 

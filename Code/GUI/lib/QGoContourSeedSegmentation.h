@@ -66,9 +66,9 @@ public:
   /**
    * \brief Constructor
    */
-  explicit QGoContourSeedSegmentation(QObject* parentO = 0, QWidget * parentW = 0,
-                                    vtkPoints* seeds = 0,
-                                    std::vector<vtkImageData*>* iOriginalImage = 0);
+  explicit QGoContourSeedSegmentation( QWidget * parentW = 0,
+                                       vtkPoints* seeds = 0,
+                                       std::vector<vtkImageData*>* iOriginalImage = 0);
 
   /**
    * \brief Destructor

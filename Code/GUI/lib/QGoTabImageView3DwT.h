@@ -342,7 +342,7 @@ protected:
   QGoNavigationDockWidget*           m_NavigationDockWidget;
 
   // base segmentation dockwidget for contours
-  QGoContourSegmentationBaseDockWidget*     m_ContourSegmentation;
+  QGoContourSegmentationBaseDockWidget*     m_ContourSegmentationDockWidget;
   // base segmentation dockwidget for meshes
   QGoMeshSegmentationBaseDockWidget*     m_MeshSegmentation;
 

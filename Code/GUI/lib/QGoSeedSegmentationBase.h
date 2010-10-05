@@ -61,7 +61,8 @@ public:
   /**
    * \brief Constructor
    */
-  explicit QGoSeedSegmentationBase(QObject* parent = 0, QWidget* parentWidget = 0, vtkPoints* seeds = 0);
+  explicit QGoSeedSegmentationBase( QWidget* parentWidget = 0,
+                                    vtkPoints* seeds = 0);
 
   /**
    * \brief Destructor

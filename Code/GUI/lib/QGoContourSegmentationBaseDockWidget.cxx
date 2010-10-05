@@ -71,15 +71,18 @@ QGoContourSegmentationBaseDockWidget(
   //----------------------------------------------------------------
 
   m_ContourManualSegmentation = new QGoContourManualSegmentation( this );
-  this->GetFrame()->layout()->addWidget(m_ContourManualSegmentation->getWidget());
-//  m_ContourManualSegmentation->getWidget()->setEnabled(false);
-  m_ContourManualSegmentation->getWidget()->setVisible(false);
+
+  QWidget* manual_widget = m_ContourManualSegmentation->getWidget();
+
+  this->GetFrame()->layout()->addWidget( manual_widget );
+//  manual_widget->setEnabled(false);
+  manual_widget->setVisible(true);
 
   // connect show/hide
-  QObject::connect(this, SIGNAL(ManualSegmentation(bool)),
-      m_ContourManualSegmentation->getWidget(), SLOT(setVisible(bool)));
+  QObject::connect(this, SIGNAL(ManualSegmentationActivated(bool)),
+      manual_widget, SLOT(setVisible(bool)));
 //  QObject::connect(this, SIGNAL(ManualSegmentation(bool)),
-//      m_ContourManualSegmentation->getWidget(), SLOT(setEnabled(bool)));
+//      manual_widget, SLOT(setEnabled(bool)));
 
   // connect specific signals
   QObject::connect(m_ContourManualSegmentation, SIGNAL(validateContour()),
@@ -94,16 +97,19 @@ QGoContourSegmentationBaseDockWidget(
   //----------------------------------------------------------------
 
   m_ContourSemiAutoSegmentation =
-      new QGoContourSeedSegmentation(this, this, seeds, iOriginalImage);
-  this->GetFrame()->layout()->addWidget(m_ContourSemiAutoSegmentation->getWidget());
-//    m_ContourSemiAutoSegmentation->getWidget()->setEnabled(false);
-    m_ContourSemiAutoSegmentation->getWidget()->setVisible(false);
+      new QGoContourSeedSegmentation( this, seeds, iOriginalImage);
 
-    // connect show/hide
-    QObject::connect(this, SIGNAL(SemiAutoSegmentation(bool)),
-        m_ContourSemiAutoSegmentation->getWidget(), SLOT(setVisible(bool)));
+  QWidget* semi_auto_widget = m_ContourSemiAutoSegmentation->getWidget();
+
+  this->GetFrame()->layout()->addWidget( semi_auto_widget );
+//  semi_auto_widget->setEnabled(false);
+  semi_auto_widget->setVisible(false);
+
+  // connect show/hide
+  QObject::connect(this, SIGNAL(SemiAutoSegmentationActivated(bool)),
+        semi_auto_widget, SLOT(setVisible(bool)));
 //    QObject::connect(this, SIGNAL(SemiAutoSegmentation(bool)),
-//        m_ContourSemiAutoSegmentation->getWidget(), SLOT(setEnabled(bool)));
+//        semi_auto_widget, SLOT(setEnabled(bool)));
 
     // connect semi-automatic segmentation specific signals
     QObject::connect(m_ContourSemiAutoSegmentation, SIGNAL(UpdateSeeds()),
@@ -138,23 +144,23 @@ void
 QGoContourSegmentationBaseDockWidget::
 SegmentationMethod(int iSegmentationMethod)
 {
-  emit ManualSegmentation(false);
-  emit SemiAutoSegmentation(false);
-  emit AutoSegmentation(false);
+  emit ManualSegmentationActivated(false);
+  emit SemiAutoSegmentationActivated(false);
+  emit AutoSegmentationActivated(false);
 
   switch(iSegmentationMethod)
   {
     case 0:
-      emit ManualSegmentation(true);
+      emit ManualSegmentationActivated(true);
       break;
     case 1:
-      emit SemiAutoSegmentation(true);
+      emit SemiAutoSegmentationActivated(true);
       break;
     case 2:
-      emit AutoSegmentation(true);
+      emit AutoSegmentationActivated(true);
       break;
     default:
-      emit ReinitializeInteractor(true);
+      emit ReinitializeInteractorActivated(true);
       break;
   }
 }
@@ -165,19 +171,17 @@ void
 QGoContourSegmentationBaseDockWidget::
 interactorBehavior(bool iSegmentationMethod)
 {
-  std::cout << "interactor behavior" << std::endl;
-
   if(iSegmentationMethod)
     {
     switch ( mode->currentIndex())
       {
       case 0:
-        emit ManualSegmentation(iSegmentationMethod);
+        emit ManualSegmentationActivated(iSegmentationMethod);
         break;
       case 1:
-        emit SemiAutoSegmentation(iSegmentationMethod);
+        emit SemiAutoSegmentationActivated(iSegmentationMethod);
       case 2:
-        emit AutoSegmentation(iSegmentationMethod);
+        emit AutoSegmentationActivated(iSegmentationMethod);
         break;
       default:
         break;
@@ -185,10 +189,11 @@ interactorBehavior(bool iSegmentationMethod)
     }
   else
     {
-    emit ManualSegmentation(false);
-    emit SemiAutoSegmentation(false);
-    emit AutoSegmentation(false);
-    emit ReinitializeInteractor(true);
+    emit ManualSegmentationActivated(false);
+    emit SemiAutoSegmentationActivated(false);
+    emit AutoSegmentationActivated(false);
+    emit ReinitializeInteractorActivated(true);
+    this->setVisible( false );
     }
 }
 //---------------------------------------------------------------------------//

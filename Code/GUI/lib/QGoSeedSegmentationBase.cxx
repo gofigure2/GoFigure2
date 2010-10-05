@@ -46,7 +46,9 @@
 
 //--------------------------------------------------------------------------
 QGoSeedSegmentationBase::
-QGoSeedSegmentationBase(QObject* parent, QWidget* parentWidget, vtkPoints* seeds)
+QGoSeedSegmentationBase( QWidget* parentWidget,
+                         vtkPoints* seeds ) :
+  QObject( parentWidget )
 {
   m_Seeds = seeds;
   // initialize to 0 leads to segfaults
@@ -58,14 +60,17 @@ QGoSeedSegmentationBase(QObject* parent, QWidget* parentWidget, vtkPoints* seeds
 
   //Create associated Widget
   m_BaseAlgorithmSegmentationWidget = new QGoSeedBaseWidget(parentWidget);
+
   // connect with 3DwT to add the good number of channels
   QObject::connect(this, SIGNAL(addChannel(QString)),
       m_BaseAlgorithmSegmentationWidget, SLOT(AddChannel(QString)));
   // mesh has been created by a filter
-  QObject::connect(m_BaseAlgorithmSegmentationWidget, SIGNAL(MeshCreated(vtkPolyData*)),
+  QObject::connect(m_BaseAlgorithmSegmentationWidget,
+                   SIGNAL(MeshCreated(vtkPolyData*)),
       this, SIGNAL(MeshCreated(vtkPolyData*)));
   // contour has been created by a filter
-  QObject::connect(m_BaseAlgorithmSegmentationWidget, SIGNAL(ContourCreated(vtkPolyData*)),
+  QObject::connect(m_BaseAlgorithmSegmentationWidget,
+                   SIGNAL(ContourCreated(vtkPolyData*)),
       this, SIGNAL(ContourCreated(vtkPolyData*)));
   // image has been processed by a filter
   // should return the new image as argument

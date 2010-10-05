@@ -53,13 +53,14 @@
 
 //--------------------------------------------------------------------------
 QGoMeshSeedSegmentation::
-QGoMeshSeedSegmentation(QObject* parentO, QWidget * parentW, vtkPoints* seeds,
-    std::vector<vtkImageData*>* iOriginalImage)
-:QGoSeedSegmentationBase(parentO, parentW, seeds)
+QGoMeshSeedSegmentation( QWidget * parentW,
+                         vtkPoints* seeds,
+                         std::vector<vtkImageData*>* iOriginalImage ) :
+  QGoSeedSegmentationBase( parentW, seeds ),
+  m_OriginalImage( iOriginalImage )
 {
-  int filter = 0;
 
-  m_OriginalImage = iOriginalImage;
+  int filter = 0;
 
 //=============================================================================
 //=============================================================================

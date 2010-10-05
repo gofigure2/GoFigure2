@@ -75,7 +75,7 @@ QGoMeshSegmentationBaseDockWidget(QWidget* iParent, vtkPoints* seeds,
   //----------------------------------------------------------------
 
   m_MeshSemiAutoSegmentation =
-      new QGoMeshSeedSegmentation(this, this, seeds, iOriginalImage);
+      new QGoMeshSeedSegmentation( this, seeds, iOriginalImage);
   this->GetFrame()->layout()->addWidget(m_MeshSemiAutoSegmentation->getWidget());
   m_MeshSemiAutoSegmentation->getWidget()->setEnabled(false);
   m_MeshSemiAutoSegmentation->getWidget()->setVisible(false);

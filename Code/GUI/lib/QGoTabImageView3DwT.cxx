@@ -172,13 +172,15 @@ QGoTabImageView3DwT(QWidget* iParent) :
 
   m_DockWidgetList.push_back(
     std::pair<QGoDockWidgetStatus*, QDockWidget*>(
-      new QGoDockWidgetStatus(m_NavigationDockWidget, Qt::RightDockWidgetArea, true, true),
+      new QGoDockWidgetStatus(
+          m_NavigationDockWidget, Qt::RightDockWidgetArea, true, true),
       m_NavigationDockWidget));
 
   m_DockWidgetList.push_back(
     std::pair<QGoDockWidgetStatus*, QDockWidget*>(
-      new QGoDockWidgetStatus(m_ContourSegmentation, Qt::LeftDockWidgetArea, true, true),
-      m_ContourSegmentation));
+      new QGoDockWidgetStatus(
+          m_ContourSegmentationDockWidget, Qt::LeftDockWidgetArea, true, true),
+      m_ContourSegmentationDockWidget));
 
   /* //Arnaud
 m_DockWidgetList.push_back(
@@ -263,42 +265,70 @@ CreateContourSegmentationDockWidget()
   // basic interactor connections
   //----------------------------------------------------------------
 
-  m_ContourSegmentation
+  m_ContourSegmentationDockWidget
       = new QGoContourSegmentationBaseDockWidget(this, m_Seeds, &m_InternalImages);
 
-  QObject::connect(m_ContourSegmentation, SIGNAL(ReinitializeInteractor(bool)),
-                   this, SLOT(DefaultInteractorBehavior(bool)));
-  QObject::connect(m_ContourSegmentation, SIGNAL(ManualSegmentation(bool)),
-                   this, SLOT(ManualInteractorBehavior(bool)));
-  QObject::connect(m_ContourSegmentation, SIGNAL(SemiAutoSegmentation(bool)),
-                   this, SLOT(SeedInteractorBehavior(bool)));
-  QObject::connect(m_ContourSegmentation, SIGNAL(AutoSegmentation(bool)),
-                   this, SLOT(DefaultInteractorBehavior(bool)));
+  QObject::connect( m_ContourSegmentationDockWidget,
+                    SIGNAL(ReinitializeInteractorActivated(bool)),
+                    this,
+                    SLOT(DefaultInteractorBehavior(bool)) );
+
+  QObject::connect( m_ContourSegmentationDockWidget,
+                    SIGNAL(ManualSegmentationActivated(bool)),
+                    this,
+                    SLOT(ManualInteractorBehavior(bool)) );
+
+  QObject::connect(m_ContourSegmentationDockWidget,
+                   SIGNAL(SemiAutoSegmentationActivated(bool)),
+                   this,
+                   SLOT(SeedInteractorBehavior(bool)));
+
+  QObject::connect( m_ContourSegmentationDockWidget,
+                    SIGNAL(AutoSegmentationActivated(bool)),
+                    this,
+                    SLOT(DefaultInteractorBehavior(bool)) );
   //m_ContourSegmentation->setFeature(QDockWidget::DockWidgetMovable);
   //QObject::connect(m_ContourSegmentation, SIGNAL(visibilityChanged(bool)),
   //    this, SLOT(GoToDefaultMenu(bool)));
 
   // signals from the manual segmentation
-  QObject::connect(m_ContourSegmentation, SIGNAL(ValidateContour()),
-                     this, SLOT(ValidateContour()));
-  QObject::connect(m_ContourSegmentation, SIGNAL(ReinitializeContourWidget()),
-                     m_ImageView, SLOT(ReinitializeContourWidget()));
-  QObject::connect(m_ContourSegmentation, SIGNAL(UpdateContourRepresentationProperties(float, QColor, QColor, QColor)),
-      m_ImageView, SLOT(UpdateContourRepresentationProperties(float, QColor, QColor, QColor)));
+  QObject::connect( m_ContourSegmentationDockWidget,
+                    SIGNAL(ValidateContour()),
+                    this, SLOT(ValidateContour()) );
+
+  QObject::connect( m_ContourSegmentationDockWidget,
+                    SIGNAL(ReinitializeContourWidget()),
+                    m_ImageView,
+                    SLOT(ReinitializeContourWidget()) );
+
+  QObject::connect( m_ContourSegmentationDockWidget,
+                    SIGNAL(UpdateContourRepresentationProperties(float, QColor,
+                                                                 QColor, QColor)),
+                    m_ImageView,
+                    SLOT(UpdateContourRepresentationProperties(float, QColor,
+                                                               QColor, QColor)));
 
   // signals for the semi automated segmentation
-  QObject::connect(m_ContourSegmentation, SIGNAL(UpdateSeeds()),
-      this, SLOT(UpdateSeeds()));
-  QObject::connect(m_ContourSegmentation, SIGNAL(SaveAndVisuContour(vtkPolyData*)),
-      this, SLOT(SaveAndVisuContour(vtkPolyData*)));
-  QObject::connect(m_ContourSegmentation, SIGNAL(ClearAllSeeds()),
-      m_ImageView, SLOT(ClearAllSeeds()));
+  QObject::connect( m_ContourSegmentationDockWidget,
+                    SIGNAL(UpdateSeeds()),
+                    this,
+                    SLOT(UpdateSeeds()) );
+
+  QObject::connect( m_ContourSegmentationDockWidget,
+                    SIGNAL(SaveAndVisuContour(vtkPolyData*)),
+                    this,
+                    SLOT(SaveAndVisuContour(vtkPolyData*)));
+
+  QObject::connect( m_ContourSegmentationDockWidget,
+                    SIGNAL(ClearAllSeeds()),
+                    m_ImageView,
+                    SLOT(ClearAllSeeds()) );
 
   // signals for the automatic segmentation
   // ...
 
   // intialize the widget
-  m_ContourSegmentation->Initialize();
+  m_ContourSegmentationDockWidget->Initialize();
 }
 //-------------------------------------------------------------------------
 
@@ -857,7 +887,7 @@ void QGoTabImageView3DwT::CreateModeActions()
   //--------------------------------//
 
   QAction* ContourSegmentationAction =
-      m_ContourSegmentation->toggleViewAction();
+      m_ContourSegmentationDockWidget->toggleViewAction();
 
   QIcon ContourSegmentationIcon;
   ContourSegmentationIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/contourManual.png")),
@@ -874,7 +904,7 @@ void QGoTabImageView3DwT::CreateModeActions()
   QObject::connect(ContourSegmentationAction, SIGNAL(toggled(bool)),
       m_ContourSegmentation, SLOT(setVisible(bool)));*/
   QObject::connect(ContourSegmentationAction, SIGNAL(toggled(bool)),
-      m_ContourSegmentation, SLOT(interactorBehavior(bool)));
+      m_ContourSegmentationDockWidget, SLOT(interactorBehavior(bool)));
   QObject::connect(ContourSegmentationAction, SIGNAL(toggled(bool)),
       this->m_DataBaseTables->GetTraceManualEditingDockWidget(), SLOT(setVisible(bool)));
   QObject::connect(ContourSegmentationAction, SIGNAL(toggled(bool)),
@@ -1274,14 +1304,14 @@ SetLSMReader(vtkLSMReader* iReader, const int& iTimePoint)
     if (NumberOfChannels > 1)
       {
       m_NavigationDockWidget->SetChannel(0);
-      m_ContourSegmentation->SetChannel(0);
+      m_ContourSegmentationDockWidget->SetChannel(0);
       //m_MeshSegmentation->SetChannel(0);
       m_InternalImages.resize(NumberOfChannels);
 
       for (int i = 1; i < NumberOfChannels; i++)
         {
         m_NavigationDockWidget->SetChannel(i);
-        m_ContourSegmentation->SetChannel(i);
+        m_ContourSegmentationDockWidget->SetChannel(i);
         //m_MeshSegmentation->SetChannel(i);
 
         m_LSMReader.push_back(vtkSmartPointer<vtkLSMReader>::New());
@@ -1357,14 +1387,14 @@ SetMegaCaptureFile(
   if (NumberOfChannels > 1)
     {
     m_NavigationDockWidget->SetChannel(0);
-    m_ContourSegmentation->SetChannel(0);
+    m_ContourSegmentationDockWidget->SetChannel(0);
     //m_MeshSegmentation->SetChannel(0);
     m_InternalImages.resize(NumberOfChannels, NULL);
 
     for (unsigned int i = 1; i < NumberOfChannels; i++)
       {
       m_NavigationDockWidget->SetChannel(i);
-      m_ContourSegmentation->SetChannel(i);
+      m_ContourSegmentationDockWidget->SetChannel(i);
       //m_MeshSegmentation->SetChannel(i);
       }
     }
@@ -1984,7 +2014,7 @@ ValidateContour()
   int          ContourID = -1;
   double rgba[4] = {0., 0., 0., 0.};
   IDWithColorData test;
-  bool re_edit = m_ContourSegmentation->GetReeditMode();
+  bool re_edit = m_ContourSegmentationDockWidget->GetReeditMode();
 
   for ( int i = 0; i < m_ImageView->GetNumberOfImageViewers(); i++)
     {
@@ -2053,10 +2083,10 @@ ValidateContour()
     //m_DataBaseTables->ChangeContoursToHighLightInfoFromVisu(listofrowstobeselected,
                                                           //  true); // reedit mode = true
     this->m_DataBaseTables->GetTraceManualEditingDockWidget()->setEnabled(true);
-    m_ContourSegmentation->SetReeditMode(false);
+    m_ContourSegmentationDockWidget->SetReeditMode(false);
     m_ImageView->ReinitializeContourWidget();
-    m_ContourSegmentation->setEnabled( false );
-    m_ContourSegmentation->hide();
+    m_ContourSegmentationDockWidget->setEnabled( false );
+    m_ContourSegmentationDockWidget->hide();
     }
 }
 //-------------------------------------------------------------------------
@@ -2111,10 +2141,10 @@ ReEditContour(const unsigned int& iId)
 
       m_ImageView->InitializeContourWidgetNodes( dir , nodes );
 
-      this->m_ContourSegmentation->show();
-      this->m_ContourSegmentation->setEnabled(true);
-      this->m_ContourSegmentation->SegmentationMethod(0);
-      m_ContourSegmentation->SetReeditMode( true );
+      this->m_ContourSegmentationDockWidget->show();
+      this->m_ContourSegmentationDockWidget->setEnabled(true);
+      this->m_ContourSegmentationDockWidget->SegmentationMethod(0);
+      this->m_ContourSegmentationDockWidget->SetReeditMode( true );
           //m_ManualSegmentationDockWidget->setEnabled(true);
       //this->m_DataBaseTables->GetTraceManualEditingDockWidget()->setEnabled(false);
       }

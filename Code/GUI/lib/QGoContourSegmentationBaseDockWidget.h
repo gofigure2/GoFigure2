@@ -93,10 +93,10 @@ public slots:
   void interactorBehavior(bool);
 
 signals:
-  void ManualSegmentation(bool);
-  void SemiAutoSegmentation(bool);
-  void AutoSegmentation(bool);
-  void ReinitializeInteractor(bool);
+  void ManualSegmentationActivated(bool);
+  void SemiAutoSegmentationActivated(bool);
+  void AutoSegmentationActivated(bool);
+  void ReinitializeInteractorActivated(bool);
 
   // manual segmentation specific signals
   void ValidateContour();
