@@ -45,6 +45,10 @@
 #include <QVBoxLayout>
 #include <QFont>
 
+// DEBUG
+#include <QtDebug>
+#include <iostream>
+
 QGoTraceManualEditingWidget::
 QGoTraceManualEditingWidget(QWidget* iParent) :
   QWidget(iParent)
@@ -287,6 +291,8 @@ void QGoTraceManualEditingWidget::SetCurrentCollectionID(std::string iID)
 void QGoTraceManualEditingWidget::UpdateTraceAndCollection(
   std::string iTrace, std::string iCollection)
 {
+  std::cout << iTrace << std::endl;
+
   this->m_TraceName->setText(iTrace.c_str());
   this->m_CollectionName->setText(iCollection.c_str());
   //this->m_CollectionColorComboBox->SetTextToAdd(iCollection);
@@ -304,6 +310,7 @@ void QGoTraceManualEditingWidget::UpdateTraceAndCollection(
     this->m_ChoseSubCellType->hide();
     this->LabelSubCellType->hide();
     }
+  // update visualization
   this->show();
 }
 //-------------------------------------------------------------------------

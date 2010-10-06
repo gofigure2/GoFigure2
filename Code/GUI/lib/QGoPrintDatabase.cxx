@@ -813,15 +813,15 @@ void QGoPrintDatabase::SetTable(std::string iTablename)
   int Index = 0;
   if (iTablename == "mesh")
     {
-    Index = 2;
+    Index = 1;
     }
   if (iTablename == "track")
     {
-    Index = 3;
+    Index = 2;
     }
   if (iTablename == "lineage")
     {
-    Index = 4;
+    Index = 3;
     }
   this->DBTabWidget->setCurrentIndex(Index);
 }
@@ -1029,7 +1029,8 @@ void QGoPrintDatabase::UpdateWidgetsForCorrespondingTrace(std::string iTraceName
      this->SetTable(iTraceName);
      this->blockSignals(false);
      }
-   this->m_TraceManualEditingDockWidget->show();
+   /// TODO useful???
+   //this->m_TraceManualEditingDockWidget->show();
 }
 //-------------------------------------------------------------------------
 
