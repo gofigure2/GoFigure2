@@ -67,9 +67,9 @@ public:
   /** \brief the constructor do most of the work :
    *  add observers & callbacks to QGoSynchronizedViews of the vector
    */
-  QGoSynchronizedView3DCallbacks(std::vector<QGoSynchronizedView3D*>
-                                 ioOpenSynchronizedViews,
-                                 QObject*  iParent = 0);
+  QGoSynchronizedView3DCallbacks(
+      std::vector<QGoSynchronizedView3D*> ioOpenSynchronizedViews,
+      QObject*  iParent = 0);
 
   ~QGoSynchronizedView3DCallbacks();
 

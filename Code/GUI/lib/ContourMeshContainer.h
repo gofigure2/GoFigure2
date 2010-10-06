@@ -200,8 +200,7 @@ public:
         {
         ContourMeshStructure temp( *id_it );
         temp.Highlighted = false;
-        temp.Visible =
-            ( static_cast< unsigned int >( m_TCoord ) == id_it->TCoord );
+        temp.Visible = false;
 
         vtkProperty* tproperty = vtkProperty::New();
         tproperty->SetColor( id_it->rgba[0], id_it->rgba[1], id_it->rgba[2] );
@@ -210,6 +209,9 @@ public:
         vtkPolyData* nodes = id_it->Nodes;
         if( nodes )
           {
+          temp.Visible =
+              ( static_cast< unsigned int >( m_TCoord ) == id_it->TCoord );
+
           std::vector<vtkActor*> actor;
 
           if( iContour )
@@ -221,8 +223,9 @@ public:
               m_ImageView->EnableContourWidget( true );
               m_ImageView->InitializeContourWidgetNodes( dir, nodes );
 
-              vtkPolyData* trace =
-                  m_ImageView->GetContourRepresentationAsPolydata(dir);
+              vtkPolyData* trace = vtkPolyData::New();
+              trace->ShallowCopy(
+                  m_ImageView->GetContourRepresentationAsPolydata(dir) );
 
               actor = this->m_ImageView->AddContour(trace, tproperty);
 
@@ -240,8 +243,30 @@ public:
           temp.ActorYZ = actor[2];
           temp.ActorXYZ = actor[3];
 
-          m_Container.get< TraceID >().replace( id_it, temp );
+          typedef void (QGoImageView3D::*ImageViewMember)(const int&, vtkActor*);
+          ImageViewMember f;
+
+          if( temp.Visible )
+            {
+            f = & QGoImageView3D::AddActor;
+            }
+          else
+            {
+            f = & QGoImageView3D::RemoveActor;
+            }
+
+          for( int i = 0; i < 4; i++ )
+            {
+            (m_ImageView->*f)( i, actor[i] );
+            }
           }
+        else
+          {
+          temp.Visible = false;
+          }
+
+        m_Container.get< TraceID >().replace( id_it, temp );
+
         }
       ++it;
       }

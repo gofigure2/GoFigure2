@@ -54,15 +54,18 @@ class vtkCallbackCommand;
  * QGoSynchronizedViewManager deal
  * with SynchronizedView synchronization.
  */
-class QGoSynchronizedView2DCallbacks
+class QGoSynchronizedView2DCallbacks : public QObject
   {
+  Q_OBJECT
+
 public:
   /** \brief the constructor do most of the work :
    *  add observers & callbacks to QGoSynchronizedViews of the vector
    * \tparam TContainer container of QGoSynchronizedView2D*
    */
   explicit QGoSynchronizedView2DCallbacks(
-      std::vector< QGoSynchronizedView2D* > iOpenSynchronizedViews );
+      std::vector< QGoSynchronizedView2D* > iOpenSynchronizedViews,
+      QObject* iParent = 0 );
 
   ~QGoSynchronizedView2DCallbacks();
 

@@ -49,7 +49,8 @@
 
 QGoSynchronizedView2DCallbacks::
 QGoSynchronizedView2DCallbacks(
-  std::vector< QGoSynchronizedView2D* > iOpenSynchronizedViews )
+  std::vector< QGoSynchronizedView2D* > iOpenSynchronizedViews,
+  QObject* iParent ) : QObject( iParent )
 {
   Initialize( iOpenSynchronizedViews.begin(), iOpenSynchronizedViews.end() );
 }

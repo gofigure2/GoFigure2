@@ -437,6 +437,7 @@ DeleteAllHighlightedElements()
   while( it0 != it1 )
     {
     oList.push_back( it0->TraceID );
+    std::cout << it0->TraceID << std::endl;
 
     if( it0->ActorXY )
       {
