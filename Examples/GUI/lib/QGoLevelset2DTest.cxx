@@ -73,8 +73,8 @@ int main(int argc, char** argv)
   castFilter->Update();
 
   // Initialize the segmentation
-  QGoFilterChanAndVes* levelSet2DFilter = new QGoFilterChanAndVes(2);
-  std::vector<vtkImageData*> imagesVector;
+  QGoFilterChanAndVes* levelSet2DFilter = new QGoFilterChanAndVes(NULL, 2);
+  std::vector<vtkImageData*> imagesVector(1);
   imagesVector[0] = castFilter->GetOutput();
   levelSet2DFilter->setOriginalImageMC(&imagesVector);
   levelSet2DFilter->setIterations(50);
@@ -86,7 +86,11 @@ int main(int argc, char** argv)
   seedPos[1] = 5;
   seedPos[2] = 5;
 
+  vtkPoints* seeds = vtkPoints::New();
+  seeds->InsertNextPoint( seedPos );
+
   levelSet2DFilter->setCenter(seedPos);
+  levelSet2DFilter->setPoints( seeds );
 
   // if there is an output
   if (levelSet2DFilter->Apply())

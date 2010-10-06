@@ -44,16 +44,16 @@
 #include <QWidget>
 #include "ui_ContourSemiAutoShapeWidget.h"
 
-class QGoContourSemiAutoShapeWidget : public QWidget,
-                              protected Ui::ContourSemiAutoShapeWidget
+class QGoContourSemiAutoShapeWidget :
+    public QWidget,
+    protected Ui::ContourSemiAutoShapeWidget
 {
   Q_OBJECT
 public:
   explicit QGoContourSemiAutoShapeWidget(QWidget* iParent = 0, int iDimension = 2);
   ~QGoContourSemiAutoShapeWidget();
 
-public slots:
-  signals:
+signals:
   void Shape(int);
   void Sampling(int);
 };

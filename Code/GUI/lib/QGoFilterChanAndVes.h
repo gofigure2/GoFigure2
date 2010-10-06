@@ -45,16 +45,14 @@
 #include "QGoGUILibConfigure.h"
 
 /**
- * \class QGoAboutWidget
- * \brief About Widget which includes the list of authors, licenses,
- * copyrights, dates, versions...
+ * \class QGoFilterChanAndVes
  */
 class QGOGUILIB_EXPORT QGoFilterChanAndVes : public QGoFilterSemiAutoBase
 {
   Q_OBJECT
 public:
   /** \brief Constructor */
-  explicit QGoFilterChanAndVes(int iDimension);
+  explicit QGoFilterChanAndVes( QObject* iParent = NULL, int iDimension = 2 );
 
   /** \brief Destructor */
   ~QGoFilterChanAndVes();

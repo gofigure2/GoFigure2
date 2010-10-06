@@ -64,10 +64,10 @@ class QGOGUILIB_EXPORT QGoFilterSemiAutoBase : public QObject
   Q_OBJECT
 public:
   /** \brief Constructor */
-  explicit QGoFilterSemiAutoBase();
+  explicit QGoFilterSemiAutoBase( QObject* iParent = NULL );
 
   /** \brief Destructor */
-  ~QGoFilterSemiAutoBase();
+  virtual ~QGoFilterSemiAutoBase();
 
   void          setName(QString iName);
   QString       getName();
@@ -121,7 +121,7 @@ public slots:
   void    setRadius(double iRadius);
   void    setChannel(int iChannel = 0);
 
-  signals:
+signals:
   void MeshCreated(vtkPolyData* );
   void ContourCreated(vtkPolyData* );
   void ImageProcessed();

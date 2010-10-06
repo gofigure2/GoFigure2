@@ -61,7 +61,7 @@
 #include "vtkMarchingCubes.h"
 //--------------------------------------------------------------------------
 QGoFilterSemiAutoBase::
-QGoFilterSemiAutoBase()
+    QGoFilterSemiAutoBase( QObject* iParent ) : QObject( iParent )
 {
   m_Output = vtkImageData::New();
 

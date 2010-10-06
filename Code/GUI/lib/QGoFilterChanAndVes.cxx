@@ -54,7 +54,8 @@
 
 //--------------------------------------------------------------------------
 QGoFilterChanAndVes::
-QGoFilterChanAndVes(int iDimension)
+QGoFilterChanAndVes( QObject* iParent, int iDimension ) :
+    QGoFilterSemiAutoBase( iParent )
 {
   m_Dimension = iDimension;
   m_Iterations = 15;

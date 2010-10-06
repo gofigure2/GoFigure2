@@ -44,11 +44,11 @@
 
 //--------------------------------------------------------------------------
 QGoContourManualSegmentation::
-QGoContourManualSegmentation( QWidget* parent ) :
-  QObject( parent ),
+QGoContourManualSegmentation( QWidget* iParent ) :
+  QObject( iParent ),
   m_ReeditMode( false )
 {
-  m_ContourSegmentationWidget = new QGoContourManualSegmentationWidget( parent );
+  m_ContourSegmentationWidget = new QGoContourManualSegmentationWidget( iParent );
 
   QObject::connect(
       m_ContourSegmentationWidget, SIGNAL(UpdateContourRepresentationProperties()),

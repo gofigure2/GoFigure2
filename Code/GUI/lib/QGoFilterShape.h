@@ -47,16 +47,14 @@
 class vtkPolyData;
 
 /**
- * \class QGoAboutWidget
- * \brief About Widget which includes the list of authors, licenses,
- * copyrights, dates, versions...
+ * \class QGoFilterShape
  */
 class QGOGUILIB_EXPORT QGoFilterShape : public QGoFilterSemiAutoBase
 {
   Q_OBJECT
 public:
   /** \brief Constructor */
-  explicit QGoFilterShape(int iDimension);
+  explicit QGoFilterShape( QObject* iParent = NULL, int iDimension = 2 );
 
   /** \brief Destructor */
   ~QGoFilterShape();

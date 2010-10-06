@@ -66,7 +66,7 @@ QGoMeshSeedSegmentation( QWidget * parentW,
 //=============================================================================
 
   //Add new segmentation method
-  m_LevelSetfilter = new QGoFilterChanAndVes(3); // 3 i.e. 3D, to create a mesh
+  m_LevelSetfilter = new QGoFilterChanAndVes(this, 3); // 3 i.e. 3D, to create a mesh
   filter = m_BaseAlgorithmSegmentationWidget->GetNumberOfFilters();
   m_BaseAlgorithmSegmentationWidget->AddFilter( m_LevelSetfilter->getName() );
   m_LevelSetfilter->getWidget()->setParent(m_BaseAlgorithmSegmentationWidget->GetFrame());
@@ -79,7 +79,7 @@ QGoMeshSeedSegmentation( QWidget * parentW,
 
   //Add new segmentation method
 
-  m_ShapeFilter = new QGoFilterShape(3); // 3 i.e. 3D, to create a mesh
+  m_ShapeFilter = new QGoFilterShape(this, 3); // 3 i.e. 3D, to create a mesh
   filter = m_BaseAlgorithmSegmentationWidget->GetNumberOfFilters();
   m_BaseAlgorithmSegmentationWidget->AddFilter( m_ShapeFilter->getName() );
   m_ShapeFilter->getWidget()->setParent(m_BaseAlgorithmSegmentationWidget->GetFrame());
@@ -103,14 +103,5 @@ QGoMeshSeedSegmentation( QWidget * parentW,
 QGoMeshSeedSegmentation::
 ~QGoMeshSeedSegmentation()
 {
-  if(m_LevelSetfilter)
-    {
-    delete m_LevelSetfilter;
-    }
-
-  if(m_ShapeFilter)
-    {
-    delete m_ShapeFilter;
-    }
 }
 //--------------------------------------------------------------------------

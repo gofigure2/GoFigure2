@@ -64,7 +64,7 @@ QGoContourSeedSegmentation( QWidget * parentW,
 //=============================================================================
 
   //Add new segmentation method
-  m_LevelSetfilter = new QGoFilterChanAndVes(2); // 2 i.e. 2D, to create a contour
+  m_LevelSetfilter = new QGoFilterChanAndVes( this, 2 ); // 2 i.e. 2D, to create a contour
   filter = m_BaseAlgorithmSegmentationWidget->GetNumberOfFilters();
   m_BaseAlgorithmSegmentationWidget->AddFilter( m_LevelSetfilter->getName() );
   m_LevelSetfilter->getWidget()->setParent(m_BaseAlgorithmSegmentationWidget->GetFrame());
@@ -77,7 +77,7 @@ QGoContourSeedSegmentation( QWidget * parentW,
 
   //Add new segmentation method
 
-  m_ShapeFilter = new QGoFilterShape(2); // 2 i.e. 2D, to create a contour
+  m_ShapeFilter = new QGoFilterShape( this, 2); // 2 i.e. 2D, to create a contour
   filter = m_BaseAlgorithmSegmentationWidget->GetNumberOfFilters();
   m_BaseAlgorithmSegmentationWidget->AddFilter( m_ShapeFilter->getName() );
   m_ShapeFilter->getWidget()->setParent(m_BaseAlgorithmSegmentationWidget->GetFrame());
@@ -101,14 +101,5 @@ QGoContourSeedSegmentation( QWidget * parentW,
 QGoContourSeedSegmentation::
 ~QGoContourSeedSegmentation()
 {
-  if(m_LevelSetfilter)
-    {
-    delete m_LevelSetfilter;
-    }
-
-  if(m_ShapeFilter)
-    {
-    delete m_ShapeFilter;
-    }
 }
 //--------------------------------------------------------------------------

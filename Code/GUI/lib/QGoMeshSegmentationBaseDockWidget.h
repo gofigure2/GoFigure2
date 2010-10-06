@@ -65,6 +65,7 @@ public:
       QWidget* iParent = 0,
       vtkPoints* seeds = 0,
       std::vector<vtkImageData*>* iOriginalImage = 0 );
+
   ~QGoMeshSegmentationBaseDockWidget();
 
   /**

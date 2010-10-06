@@ -59,7 +59,8 @@
 
 //--------------------------------------------------------------------------
 QGoFilterShape::
-QGoFilterShape(int iDimension)
+QGoFilterShape(QObject* iParent, int iDimension) :
+    QGoFilterSemiAutoBase( iParent )
 {
   m_Dimension = iDimension;
 
