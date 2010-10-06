@@ -88,6 +88,8 @@ public:
 
   void SetCollectionID(unsigned int iCollectionID);
 
+  void SetValuesForSpecificID(int ID, vtkMySQLDatabase* iDatabaseConnector);
+
 protected:
 
   virtual void InitializeMap();

@@ -116,7 +116,7 @@ public:
     return os;
   }
 
-  void SetValuesForSpecificID(int ID, vtkMySQLDatabase* iDatabaseConnector);
+  virtual void SetValuesForSpecificID(int ID, vtkMySQLDatabase* iDatabaseConnector);
 
 protected:
   virtual void InitializeMap() = 0;

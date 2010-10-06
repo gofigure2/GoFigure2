@@ -191,3 +191,12 @@ void GoDBTraceRow::SetCollectionID(unsigned int iCollectionID)
 {
   this->SetField<int>(this->m_CollectionIDName, iCollectionID);
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void GoDBTraceRow::SetValuesForSpecificID(int ID, vtkMySQLDatabase* iDatabaseConnector)
+{
+  GoDBRow::SetValuesForSpecificID(ID,iDatabaseConnector);
+  //add the "" for the string
+  this->SetField("Points",this->m_MapRow["Points"]);
+}
