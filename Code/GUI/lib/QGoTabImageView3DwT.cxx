@@ -2488,6 +2488,7 @@ SaveAndVisuContour(vtkPolyData* iView)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/*
 void
 QGoTabImageView3DwT::
 SaveAndVisuContoursList(std::vector<vtkPolyData* >* iContours)
@@ -2508,6 +2509,7 @@ SaveAndVisuContoursList(std::vector<vtkPolyData* >* iContours)
     m_DataBaseTables->CreateMeshFromOneClickSegmentation(listContoursIDs);
     }
 }
+*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -2582,6 +2584,13 @@ SaveAndVisuMesh(vtkPolyData* iView, unsigned int iTCoord)
   if(!m_DataBaseTables->IsDatabaseUsed())
     {
     std::cerr << "Problem with DB" << std::endl;
+    return;
+    }
+
+  if( !iView )
+    {
+    std::cerr << "Input Mesh is NULL" << std::endl;
+    return;
     }
 
   SaveMesh( iView );
@@ -2710,21 +2719,10 @@ void QGoTabImageView3DwT::ImportContours()
 {
   if (this->m_DataBaseTables->IsDatabaseUsed())
     {
-    //ContourMeshStructureMultiIndexContainer* ContourToAdd =
-      //this->m_DataBaseTables->ImportContours( this->m_TCoord );
-      this->m_DataBaseTables->ImportContours(this->m_TCoord);
+    this->m_DataBaseTables->ImportContours(this->m_TCoord);
 
-    /*ContourMeshStructureMultiIndexContainer::iterator
-        c_it = ContourToAdd->begin();
-
-    while (c_it != ContourToAdd->end())
-      {
-      // NOT ENOUGH (ONLY VISU YET)
-      this->AddContourFromNodes( c_it->TraceID, c_it->Nodes,
-                                 c_it->rgba, c_it->TCoord );
-      ++c_it;
-      }*/
     this->GoToDefaultMenu();
+
     //as in the import contours file, there are data such as colors,celltype
     //and subcelltype, the lists may have been updated in the database:
     this->m_DataBaseTables->InitializeTheComboboxesNotTraceRelated();
@@ -2811,6 +2809,7 @@ CreateMeshFromSelectedContours(
     typedef itk::ContourToMeshFilter<std::vector<vtkPolyData*> > FilterType;
     FilterType::Pointer filter = FilterType::New();
     filter->ProcessContours(list_contours);
+
     //as the element is already in the container we need to delete it in order
     //to update it in the SaveAndVisuMesh:
     this->m_MeshContainer->RemoveElementFromVisualizationWithGivenTraceID(iMeshID);
@@ -2824,19 +2823,10 @@ void QGoTabImageView3DwT::ImportMeshes()
 {
   if (this->m_DataBaseTables->IsDatabaseUsed())
     {
-      m_DataBaseTables->ImportMeshes(this->m_MeshContainer,this->m_TCoord );
+    m_DataBaseTables->ImportMeshes(this->m_MeshContainer,this->m_TCoord );
 
-   /* ContourMeshStructureMultiIndexContainer::iterator c_it = MeshToAdd->begin();
-
-    while (c_it != MeshToAdd->end())
-      {
-      // save + visu....
-      // NOT ENOUGH ONLY VISU YET
-      AddMeshFromNodes(c_it->TraceID, c_it->Nodes, c_it->rgba, c_it->TCoord);
-
-      ++c_it;
-      }*/
     GoToDefaultMenu();
+
     this->m_DataBaseTables->InitializeTheComboboxesNotTraceRelated();
     }
 }

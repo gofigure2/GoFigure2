@@ -284,7 +284,7 @@ public slots:
 
   int SaveAndVisuContour(vtkPolyData* iView = NULL);
 
-  void SaveAndVisuContoursList(std::vector<vtkPolyData* >* iContours);
+  //void SaveAndVisuContoursList(std::vector<vtkPolyData* >* iContours);
 
   /** \brief Save a mesh in the database and render the mesh
    * at the given time point.
