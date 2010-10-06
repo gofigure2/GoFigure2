@@ -201,9 +201,9 @@ public:
         temp.Visible =
             ( static_cast< unsigned int >( m_TCoord ) == id_it->TCoord );
 
-        vtkProperty* property = vtkProperty::New();
-        property->SetColor( id_it->rgba[0], id_it->rgba[1], id_it->rgba[2] );
-        property->SetOpacity( id_it->rgba[3] );
+        vtkProperty* tproperty = vtkProperty::New();
+        tproperty->SetColor( id_it->rgba[0], id_it->rgba[1], id_it->rgba[2] );
+        tproperty->SetOpacity( id_it->rgba[3] );
 
         vtkPolyData* nodes = id_it->Nodes;
         std::vector<vtkActor*> actor;
@@ -220,7 +220,7 @@ public:
             vtkPolyData* trace =
                 m_ImageView->GetContourRepresentationAsPolydata(dir);
 
-            actor = this->m_ImageView->AddContour(trace, property);
+            actor = this->m_ImageView->AddContour(trace, tproperty);
 
             m_ImageView->ReinitializeContourWidget();
             m_ImageView->EnableContourWidget( false );
@@ -228,7 +228,7 @@ public:
           }
         else
           {
-          actor = this->m_ImageView->AddContour( nodes, property );
+          actor = this->m_ImageView->AddContour( nodes, tproperty );
           }
 
         temp.ActorXY = actor[0];
@@ -291,7 +291,7 @@ public:
   \brief Insert one element in the container
   \param[in] iE element to be insert in the container
   */
-  void Insert( const ContourMeshStructure& iE );
+:x
   void InsertCurrentElement();
 
   void ResetCurrentElement();
