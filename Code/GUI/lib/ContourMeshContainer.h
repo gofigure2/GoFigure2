@@ -291,7 +291,7 @@ public:
   \brief Insert one element in the container
   \param[in] iE element to be insert in the container
   */
-:x
+  void Insert( const ContourMeshStructure& iE );
   void InsertCurrentElement();
 
   void ResetCurrentElement();
