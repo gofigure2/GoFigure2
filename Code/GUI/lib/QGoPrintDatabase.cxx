@@ -408,7 +408,7 @@ QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
                                            unsigned int iXCoordMax,
                                            unsigned int iYCoordMax,
                                            unsigned int iZCoordMax,
-                                           vtkPolyData* iContourNodes)                                       
+                                           vtkPolyData* iContourNodes)
 {
   OpenDBConnection();
   unsigned int ContourID;
@@ -434,8 +434,8 @@ QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
     }
 
    std::list<unsigned int> ListContours;
-   ListContours.push_back(ContourID);   
-   std::list<unsigned int> ListMeshes = 
+   ListContours.push_back(ContourID);
+   std::list<unsigned int> ListMeshes =
      this->m_ContoursManager->GetListCollectionIDs(this->m_DatabaseConnector,ListContours);
    if (!ListMeshes.empty())
    {
@@ -885,7 +885,7 @@ void QGoPrintDatabase::ImportContours(int iTimePoint)
 
     //std::vector<int> ContourToAddTW = ImportHelper.GetVectorNewContourIDs();
     //add the imported traces in the table widget:
-    
+
     //this->AddTracesInTableWidgetFromDB(NewContourIDs, "contour");
     //this->AddTracesInTableWidgetFromDB(NewMeshIDs, "mesh");
     //this->AddTracesInTableWidgetFromDB(NewTrackIDs, "track");
@@ -914,7 +914,7 @@ void QGoPrintDatabase::ImportMeshes(ContourMeshContainer* iContainer,int iTimePo
                                                                             tr("Open Contour Export File"), "",
                                                                             tr("TextFile (*.txt)"));
   //refactoring
-  
+
   if (!p.isNull())
     {
     QFileInfo   pathInfo(p);
@@ -936,10 +936,12 @@ void QGoPrintDatabase::ImportMeshes(ContourMeshContainer* iContainer,int iTimePo
 
     //MeshesForVisu = this->AddMeshesFromDBForAGivenTimePoint(iTimePoint,
                                                             //NewMeshIDs);
+    this->OpenDBConnection();
     this->m_MeshesManager->UpdateTWAndContainerForImportedTraces(NewMeshIDs,
       this->m_DatabaseConnector);
     this->m_TracksManager->UpdateTWAndContainerForImportedTraces(NewTrackIDs,
       this->m_DatabaseConnector);
+    this->CloseDBConnection();
     }
   //return MeshesForVisu;
 }
@@ -1393,7 +1395,7 @@ void QGoPrintDatabase::SetMeshesManager()
   QObject::connect(this->m_MeshesManager,
                    SIGNAL(NeedToGoToTheLocation(int,int,int,int)),
                    this,SIGNAL(NeedToGoToTheLocation(int,int,int,int)));
-  QObject::connect(this->m_MeshesManager, 
+  QObject::connect(this->m_MeshesManager,
                    SIGNAL (NewCollectionFromCheckedTraces(std::list<unsigned int>)),
                    this,
                    SLOT(CreateNewTrackFromCheckedMeshes(std::list<unsigned int>)));
@@ -1448,7 +1450,7 @@ void QGoPrintDatabase::CreateNewMeshFromCheckedContours(
 {
   this->OpenDBConnection();
 
-  unsigned int NewMeshID = 
+  unsigned int NewMeshID =
     this->m_MeshesManager->CreateNewMeshWithNoContourNoPoints(
       this->m_DatabaseConnector,this->m_SelectedColorData,
       this->m_SelectedTimePoint,this->m_SelectedCellType,
