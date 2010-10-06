@@ -2179,22 +2179,25 @@ HighlightXY()
   vtkActor* temp_actor = m_ImageView->GetCurrentActor();
   if( temp_actor )
     {
-    vtkPolyData* pd =
+  // CODE COMMENTED AS REMINDER
+  // FIND A SOLUTION TO AVOID CHECKING THE 2 CONTAINERS
+  // FOR VISIBILITY AND HIGHLIGHT
+    /*vtkPolyData* pd =
         dynamic_cast< vtkPolyData* >( temp_actor->GetMapper()->GetInput() );
 
     if( pd )
       {
       if( ContourMeshContainer::ComputeDirectionFromContour( pd ) != -1 )
-        {
+        {*/
         m_ContourContainer->UpdateElementHighlightingWithGivenActor< ActorXY >(
             temp_actor );
-        }
+       /* }
       else
-        {
+        {*/
         m_MeshContainer->UpdateElementHighlightingWithGivenActor< ActorXY >(
             temp_actor );
-        }
-      }
+        /*}
+      }*/
     }
 }
 //-------------------------------------------------------------------------
@@ -2207,22 +2210,10 @@ HighlightXZ()
   vtkActor* temp_actor = m_ImageView->GetCurrentActor();
   if( temp_actor )
     {
-    vtkPolyData* pd =
-        dynamic_cast< vtkPolyData* >( temp_actor->GetMapper()->GetInput() );
-
-    if( pd )
-      {
-      if( ContourMeshContainer::ComputeDirectionFromContour( pd ) != -1 )
-        {
-        m_ContourContainer->UpdateElementHighlightingWithGivenActor< ActorXZ >(
-            temp_actor );
-        }
-      else
-        {
-        m_MeshContainer->UpdateElementHighlightingWithGivenActor< ActorXZ >(
-            temp_actor );
-        }
-      }
+    m_ContourContainer->UpdateElementHighlightingWithGivenActor< ActorXZ >(
+        temp_actor );
+    m_MeshContainer->UpdateElementHighlightingWithGivenActor< ActorXZ >(
+        temp_actor );
     }
 }
 //-------------------------------------------------------------------------
@@ -2235,22 +2226,10 @@ HighlightYZ()
   vtkActor* temp_actor = m_ImageView->GetCurrentActor();
   if( temp_actor )
     {
-    vtkPolyData* pd =
-        dynamic_cast< vtkPolyData* >( temp_actor->GetMapper()->GetInput() );
-
-    if( pd )
-      {
-      if( ContourMeshContainer::ComputeDirectionFromContour( pd ) != -1 )
-        {
-        m_ContourContainer->UpdateElementHighlightingWithGivenActor< ActorYZ >(
-            temp_actor );
-        }
-      else
-        {
-        m_MeshContainer->UpdateElementHighlightingWithGivenActor< ActorYZ >(
-            temp_actor );
-        }
-      }
+    m_ContourContainer->UpdateElementHighlightingWithGivenActor< ActorYZ >(
+        temp_actor );
+    m_MeshContainer->UpdateElementHighlightingWithGivenActor< ActorYZ >(
+        temp_actor );
     }
 }
 //-------------------------------------------------------------------------
@@ -2263,22 +2242,10 @@ HighlightXYZ()
   vtkActor* temp_actor = m_ImageView->GetCurrentActor();
   if( temp_actor )
     {
-    vtkPolyData* pd =
-        dynamic_cast< vtkPolyData* >( temp_actor->GetMapper()->GetInput() );
-
-    if( pd )
-      {
-      if( ContourMeshContainer::ComputeDirectionFromContour( pd ) != -1 )
-        {
-        m_ContourContainer->UpdateElementHighlightingWithGivenActor< ActorXYZ >(
-            temp_actor );
-        }
-      else
-        {
-        m_MeshContainer->UpdateElementHighlightingWithGivenActor< ActorXYZ >(
-            temp_actor );
-        }
-      }
+    m_ContourContainer->UpdateElementHighlightingWithGivenActor< ActorXYZ >(
+        temp_actor );
+    m_MeshContainer->UpdateElementHighlightingWithGivenActor< ActorXYZ >(
+        temp_actor );
     }
 }
 //-------------------------------------------------------------------------
@@ -2291,48 +2258,14 @@ VisibilityXYZ()
   vtkActor* temp_actor = m_ImageView->GetCurrentActor();
   if( temp_actor )
     {
-    vtkPolyData* pd =
-        dynamic_cast< vtkPolyData* >( temp_actor->GetMapper()->GetInput() );
-
-    if( pd )
-      {
-      if( ContourMeshContainer::ComputeDirectionFromContour( pd ) != -1 )
-        {
-        m_ContourContainer->UpdateElementVisibilityWithGivenActor< ActorXYZ >(
-            temp_actor,
-            m_ImageView->GetCurrentState()
-            );
-        }
-      else
-        {
-        m_MeshContainer->UpdateElementVisibilityWithGivenActor< ActorXYZ >(
-            temp_actor,
-            m_ImageView->GetCurrentState() );
-        }
-      }
+    m_ContourContainer->UpdateElementVisibilityWithGivenActor< ActorXYZ >(
+        temp_actor,
+        m_ImageView->GetCurrentState()
+        );
+    m_MeshContainer->UpdateElementVisibilityWithGivenActor< ActorXYZ >(
+        temp_actor,
+        m_ImageView->GetCurrentState() );
     }
-}
-//-------------------------------------------------------------------------
-
-
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
-ListSelectMeshesInTable()
-{
-  /// TODO Fix bug here
-  /*
-  if (this->m_DataBaseTables->IsDatabaseUsed())
-    {
-    std::list<vtkProp3D*> listofpicked = m_ImageView->GetListOfModifiedActors3D();
-
-    if (!listofpicked.empty())
-      {
-      this->m_DataBaseTables->ChangeMeshesToHighLightInfoFromVisu(
-        SelectTraceInTable(m_MeshContainer, listofpicked));
-      }
-    }
-    */
 }
 //-------------------------------------------------------------------------
 

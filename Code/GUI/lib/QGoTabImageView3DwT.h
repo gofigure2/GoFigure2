@@ -302,7 +302,6 @@ public slots:
   void HighlightYZ();
   void HighlightXYZ();
 
-  void             ListSelectMeshesInTable();
   std::list<int> SelectTraceInTable(
     ContourMeshStructureMultiIndexContainer& iContainer,
     std::list<vtkProp3D*>                  iActorList);
