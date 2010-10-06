@@ -286,7 +286,12 @@ public slots:
 
   void SaveAndVisuContoursList(std::vector<vtkPolyData* >* iContours);
 
+  /** \brief Save a mesh in the database and render the mesh
+   * at the given time point.
+  \todo to be renamed */
+  void  SaveAndVisuMesh(vtkPolyData* iView, unsigned int iTCoord);
   /** \brief Save a mesh in the database and render the mesh.
+   * at the current time point
   \todo to be renamed */
   void  SaveAndVisuMesh(vtkPolyData* iView);
 
@@ -450,10 +455,6 @@ protected:
    */
   void SaveMesh(vtkPolyData* iView );//, const int& iMeshID,
                            //double iRGBA[4], bool NewMesh );
-
-  void VisualizeNewMesh(vtkPolyData* iView, //const int& iMeshID,
-      const unsigned int& iTCoord);//, const double iRGBA[4]);
-
   void GetBackgroundColorFromImageViewer();
   void SetBackgroundColorToImageViewer();
   void CreateAllViewActions();

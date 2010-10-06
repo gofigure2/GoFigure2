@@ -551,6 +551,8 @@ ClearAllSeeds()
       this->m_SeedRep[i]->RemoveLastHandle();
       }
     }
+  // automatically remove seeds from the visualization
+  this->UpdateRenderWindows();
 }
 
 //-------------------------------------------------------------------------

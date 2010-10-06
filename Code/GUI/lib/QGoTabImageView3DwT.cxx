@@ -287,9 +287,6 @@ CreateContourSegmentationDockWidget()
                     SIGNAL(AutoSegmentationActivated(bool)),
                     this,
                     SLOT(DefaultInteractorBehavior(bool)) );
-  //m_ContourSegmentation->setFeature(QDockWidget::DockWidgetMovable);
-  //QObject::connect(m_ContourSegmentation, SIGNAL(visibilityChanged(bool)),
-  //    this, SLOT(GoToDefaultMenu(bool)));
 
   // signals from the manual segmentation
   QObject::connect( m_ContourSegmentationDockWidget,
@@ -364,9 +361,6 @@ CreateMeshSegmentationDockWidget()
                     SIGNAL(AutoSegmentationActivated(bool)),
                     this,
                     SLOT(DefaultInteractorBehavior(bool)));
-  //m_MeshSegmentation->setFeature(QDockWidget::DockWidgetMovable);
-  //QObject::connect(m_MeshSegmentation, SIGNAL(visibilityChanged(bool)),
-  //    this, SLOT(GoToDefaultMenu(bool)));
 
   // signals for the semi automatic segmentation
   QObject::connect( m_MeshSegmentationDockWidget,
@@ -908,22 +902,16 @@ void QGoTabImageView3DwT::CreateModeActions()
   QAction* ContourSegmentationAction =
       m_ContourSegmentationDockWidget->toggleViewAction();
 
-  /// TODO move group to maintab
   group->addAction(ContourSegmentationAction);
 
   this->m_ModeActions.push_back(ContourSegmentationAction);
-
-  // When click on button, it updates widget in visu
-  /*QObject::connect(ContourSegmentationAction, SIGNAL(toggled(bool)),
-      m_ContourSegmentation, SLOT(setEnabled(bool)));
-  QObject::connect(ContourSegmentationAction, SIGNAL(toggled(bool)),
-      m_ContourSegmentation, SLOT(setVisible(bool)));*/
 
   QObject::connect( ContourSegmentationAction,
                     SIGNAL(toggled(bool)),
                     m_ContourSegmentationDockWidget,
                     SLOT(interactorBehavior(bool)));
 
+  // BUG HERE
   QObject::connect( ContourSegmentationAction,
                     SIGNAL(toggled(bool)),
                     this->m_DataBaseTables->GetTraceManualEditingDockWidget(),
@@ -937,6 +925,7 @@ void QGoTabImageView3DwT::CreateModeActions()
   //---------------------------------//
   //        Mesh segmentation        //
   //---------------------------------//
+
   QAction* MeshSegmentationAction =
       m_MeshSegmentationDockWidget->toggleViewAction();
 
@@ -944,17 +933,12 @@ void QGoTabImageView3DwT::CreateModeActions()
 
   this->m_ModeActions.push_back(MeshSegmentationAction);
 
-  // When click on button, it updates widget in visu
-  /*QObject::connect(MeshSegmentationAction, SIGNAL(toggled(bool)),
-      m_MeshSegmentation, SLOT(setEnabled(bool)));
-  QObject::connect(MeshSegmentationAction, SIGNAL(toggled(bool)),
-      m_MeshSegmentation, SLOT(setVisible(bool)));*/
-
   QObject::connect( MeshSegmentationAction,
                     SIGNAL(toggled(bool)),
                     m_MeshSegmentationDockWidget,
                     SLOT(interactorBehavior(bool)));
 
+  // BUG HERE
   QObject::connect( MeshSegmentationAction,
                     SIGNAL(toggled(bool)),
                     this->m_DataBaseTables->GetTraceManualEditingDockWidget(),
@@ -2000,6 +1984,8 @@ VisualizeContour( vtkPolyData* contour )
     contour_property->Delete();
     }
 
+  m_ImageView->UpdateRenderWindows();
+
   return oActors;
 }
 //-------------------------------------------------------------------------
@@ -2026,6 +2012,8 @@ VisualizeMesh( vtkPolyData* iMesh )
   oActors = this->AddContour(mesh_copy, mesh_property);
 
   mesh_property->Delete();
+
+  m_ImageView->UpdateRenderWindows();
 
   return oActors;
 }
@@ -2544,6 +2532,7 @@ SaveAndVisuContour(vtkPolyData* iView)
 
   std::vector<vtkActor*> actors = VisualizeContour( iView );
 
+  // update the container
   m_ContourContainer->UpdateCurrentElementFromVisu(actors,
                                     contour_nodes,
                                     m_TCoord,
@@ -2637,64 +2626,33 @@ SaveMesh(vtkPolyData* iView )//, const int& iMeshID, double iRgba[4], bool NewMe
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-VisualizeNewMesh(vtkPolyData* iView,
-                 const unsigned int& iTCoord)//, const double iRgba[4])
+SaveAndVisuMesh(vtkPolyData* iView)
 {
-  if (iView)
-    {
-    vtkProperty* mesh_property = vtkProperty::New();
-    double* Rgba = this->m_MeshContainer->m_CurrentElement.rgba;
-    mesh_property->SetColor(Rgba[0], Rgba[1], Rgba[2]);
-    mesh_property->SetOpacity(Rgba[3]);
-
-    /// TODO fix bug, shouldn't be required
-    std::vector<vtkActor*> mesh_actor =
-        this->AddContour(iView, mesh_property);
-     mesh_property->Delete();
-
-    // get meshid from the visu dock widget (SpinBox)
-    /// \todo: this is not the track id when creating
-    //mesh from the context menu: this is the selected mesh in the combolist !!!
-    //unsigned int trackid =
-    // this->m_TraceManualEditingDockWidget->m_TraceWidget->GetCurrentCollectionID();
-
-    // fill the container
-    //ContourMeshStructure temp( iMeshID, mesh_actor, iView,
-                             //  iTCoord,
-                             //  false, //highlighted
-                             //  true, // visible
-                             //  iRgba[0], iRgba[1], iRgba[2], iRgba[3]);
-    this->m_MeshContainer->UpdateCurrentElementFromVisu(
-                                      mesh_actor,
-                                      iView,
-                                      iTCoord,
-                                      false,//highlighted
-                                      true);// visible
-    //m_MeshContainer->Insert(temp);
-    this->m_MeshContainer->InsertCurrentElement();
-    }
+  SaveAndVisuMesh(iView, m_TCoord);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-SaveAndVisuMesh(vtkPolyData* iView)
+SaveAndVisuMesh(vtkPolyData* iView, unsigned int iTCoord)
 {
   if(!m_DataBaseTables->IsDatabaseUsed())
     {
     std::cerr << "Problem with DB" << std::endl;
     }
-  double RGBA[4] = {0., 0., 0., 0.};
-  int iID(0);
-  // save in DB
-  //IDWithColorData MeshData = SaveMesh(iView, -1,RGBA, true);
-  //iID = MeshData.first;
-  //MeshData.second.getRgbF(&RGBA[0],&RGBA[1],&RGBA[2],&RGBA[3]);
-  // visu
-  //VisualizeNewMesh(iView, iID, m_TCoord);// ,RGBA);
 
-  VisualizeNewMesh( iView, m_TCoord );
+  SaveMesh( iView );
+
+  std::vector<vtkActor*> actors =  VisualizeMesh( iView );
+
+  // update container since a new mesh is created
+  m_MeshContainer->UpdateCurrentElementFromVisu( actors,
+                                                 iView,
+                                                 iTCoord,
+                                                 false, // highlighted
+                                                 true ); // visible
+  m_MeshContainer->InsertCurrentElement();
 }
 //-------------------------------------------------------------------------
 
@@ -2912,18 +2870,7 @@ CreateMeshFromSelectedContours(
     FilterType::Pointer filter = FilterType::New();
     filter->ProcessContours(list_contours);
 
-    SaveMesh( filter->GetOutput() );
-
-    // visu
-    std::vector<vtkActor*> actors =  VisualizeMesh( filter->GetOutput() );
-
-    m_MeshContainer->UpdateCurrentElementFromVisu( actors,
-                                                   filter->GetOutput(),
-                                                   tcoord,
-                                                   false, // highlighted
-                                                   true ); // visible
-
-    m_MeshContainer->InsertCurrentElement();
+    SaveAndVisuMesh( filter->GetOutput(), tcoord);
     }
 }
 //-------------------------------------------------------------------------
