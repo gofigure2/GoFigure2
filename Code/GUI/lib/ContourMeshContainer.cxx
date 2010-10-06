@@ -64,6 +64,14 @@ ContourMeshContainer::
 
 //-------------------------------------------------------------------------
 void
+ContourMeshContainer::SetTimePoint( const unsigned int& iT )
+{
+  this->m_TCoord = iT;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
 ContourMeshContainer::
 Print()
 {
@@ -169,12 +177,6 @@ ShowActorsWithGivenTimePoint( const unsigned int& iT )
     MultiIndexContainerTCoordIterator it, it0, it1;
 
     boost::tuples::tie(it0, it1) = m_Container.get<TCoord>().equal_range(iT);
-
-    if( ( it0 == m_Container.get<TCoord>().end() ) ||
-        ( it0 == it1 ) )
-      {
-      return;
-      }
 
     ChangeActorsVisibility<TCoord>( m_Container.get<TCoord>().begin(), it0, false );
     ChangeActorsVisibility<TCoord>( it0, it1, true );

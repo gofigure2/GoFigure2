@@ -150,6 +150,8 @@ public:
 
   ContourMeshStructure m_CurrentElement;
 
+  void SetTimePoint( const unsigned int& iT );
+
   /**
     \brief Print the container content in the application output
     */
