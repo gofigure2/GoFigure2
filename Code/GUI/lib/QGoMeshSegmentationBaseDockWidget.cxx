@@ -57,7 +57,7 @@ QGoMeshSegmentationBaseDockWidget(QWidget* iParent, vtkPoints* seeds,
   MeshSegmentationIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/meshOneClick.png")),
                               QIcon::Normal, QIcon::Off);
   //MeshSegmentationIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/MeshEditingWidget.png")),
-                             // QIcon::Normal, QIcon::Off);
+    //                          QIcon::Normal, QIcon::Off);
   
   this->toggleViewAction()->setIcon(MeshSegmentationIcon);
   this->toggleViewAction()->setToolTip(tr("Mesh Editing"));

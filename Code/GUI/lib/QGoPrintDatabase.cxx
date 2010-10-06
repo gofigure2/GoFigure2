@@ -483,6 +483,35 @@ SaveMeshFromVisuInDB( unsigned int iXCoordMin,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoPrintDatabase::SaveNewMeshWithNoPointsInDB()
+{
+  this->OpenDBConnection();
+  this->m_MeshesManager->CreateNewMeshWithNoContourNoPoints(this->m_DatabaseConnector,
+    this->m_SelectedColorData,this->m_SelectedTimePoint,this->m_SelectedCellType,
+    this->m_SelectedSubCellType,ss_atoi<unsigned int>(this->m_SelectedCollectionData.first));
+  this->CloseDBConnection();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::SaveNewContourForContoursToSphere(unsigned int iXCoordMin,
+                                                         unsigned int iYCoordMin,
+                                                         unsigned int iZCoordMin,
+                                                         unsigned int iXCoordMax,
+                                                         unsigned int iYCoordMax,
+                                                         unsigned int iZCoordMax,
+                                                         vtkPolyData* iTraceNodes,
+                                                         unsigned int iMeshID)
+{
+  this->OpenDBConnection();
+  this->m_ContoursManager->SaveNewContourFromVisu(iXCoordMin,iYCoordMin,iZCoordMin,
+    this->m_SelectedTimePoint,iXCoordMax,iYCoordMax,iZCoordMax,iTraceNodes,
+    this->m_DatabaseConnector,this->m_SelectedColorData,iMeshID);
+  this->CloseDBConnection();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 /** \todo check this method for the sphere/contours from one-click*/
 int QGoPrintDatabase::CreateMeshFromOneClickSegmentation(
   std::list<int> iListContoursIDs)

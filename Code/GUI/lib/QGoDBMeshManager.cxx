@@ -218,11 +218,15 @@ void QGoDBMeshManager::SaveGeneratedMeshFromVisu(unsigned int iXCoordMin,
 //-------------------------------------------------------------------------
 unsigned int QGoDBMeshManager::CreateNewMeshWithNoContourNoPoints(
     vtkMySQLDatabase* iDatabaseConnector,NameWithColorData iColor,unsigned int iTimePoint,
-    std::string iCellType, std::string iSubCellType)
+    std::string iCellType, std::string iSubCellType,unsigned int iTrackID)
 {
   GoDBMeshRow NewMesh;
   NewMesh.SetCellType(iDatabaseConnector,iCellType);
   NewMesh.SetSubCellType(iDatabaseConnector,iSubCellType);
+  if (iTrackID != 0)
+    {
+    NewMesh.SetCollectionID(iTrackID);
+    }
   unsigned int NewMeshID = 
     this->m_CollectionOfTraces->CreateCollectionWithNoTracesNoPoints<GoDBMeshRow>(
     iDatabaseConnector,iColor,NewMesh,iTimePoint);

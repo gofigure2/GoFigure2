@@ -186,6 +186,33 @@ public:
 
   int CreateMeshFromOneClickSegmentation(std::list<int> iListContoursIDs);
 
+  /**
+  \brief save a new mesh in the database, the TW and the container for the contours To sphere
+  action
+  */
+  void SaveNewMeshWithNoPointsInDB();
+
+  /**
+  \brief save a new contour in the database, the TW and the container for the contours to sphere
+  action
+  \param[in] iXCoordMin xcoord of the minimum for the boundingbox
+  \param[in] iYCoordMin ycoord of the minimum for the boundingbox
+  \param[in] iZCoordMin zcoord of the minimum for the boundingbox
+  \param[in] iXCoordMax xcoord of the maximum for the boundingbox
+  \param[in] iYCoordMax ycoord of the maximum for the boundingbox
+  \param[in] iZCoordMax zcoord of the maximum for the boundingbox
+  \param[in] iTraceNodes nodes to be saved as points in the database
+  \param[in] iMeshID meshID for the mesh that has just been created
+  */
+  void SaveNewContourForContoursToSphere(unsigned int iXCoordMin,
+                                         unsigned int iYCoordMin,
+                                         unsigned int iZCoordMin,
+                                         unsigned int iXCoordMax,
+                                         unsigned int iYCoordMax,
+                                         unsigned int iZCoordMax,
+                                         vtkPolyData* iTraceNodes,
+                                         unsigned int iMeshID);
+
   void AddBookmark(int iXCoord, int iYCoord,
                    int iZCoord, int iTCoord);
 
