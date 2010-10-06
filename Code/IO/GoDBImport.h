@@ -141,10 +141,10 @@ private:
 
   /** \brief fill the info needed for the new imported contours to add
   them in the visu*/
-  void FillContourInfoForVisu(
-    std::vector<int> iListContourIDs);
+  //void FillContourInfoForVisu(
+    //std::vector<int> iListContourIDs);
 
-  void FillMeshInfoForVisu(std::vector<int> iListMeshIDs);
+  //void FillMeshInfoForVisu(std::vector<int> iListMeshIDs);
 
   void SaveIntensityForMesh(std::string iLineContent,
                             std::map<int, int> iMapMeshIDs,

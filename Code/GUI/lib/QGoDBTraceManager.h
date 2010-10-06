@@ -456,10 +456,22 @@ protected:
       }
   }
 
+  /**
+  \brief update for the imported traces the table widget and the database info
+  of the container for visu.
+  \param[in] iTWContainer contains all the description of its columns to
+  get the data from the database and to display them in the m_Table but has
+  no value yet
+  \param[in] iVectorTraceIDs vector of the imported TracesIDs
+  \param[in] iDatabaseConnector connection to the database
+  \tparam T this method takes only children of GoDBTableWidgetContainer
+  */
   template<typename T>
   void UpdateTWAndContainerWithImportedTracesTemplate(T* iTWContainer,
     std::vector<int> iVectorTraceIDs,vtkMySQLDatabase* iDatabaseConnector)
   {
+    //insert the info from the database for the traces into the container
+    //for visu:
     std::list<ContourMeshStructure> ListOfTraces;
     GetTracesInfoFromDBAndModifyContainer(
       ListOfTraces,iDatabaseConnector, this->m_TraceName,this->m_CollectionName,
@@ -470,7 +482,7 @@ protected:
       this->m_TraceContainerInfoForVisu->Insert( *it );
       ++it;
       }
-
+    //insert the new rows intot the TW:
     std::vector<int>::iterator iter = iVectorTraceIDs.begin();
     this->m_Table->setSortingEnabled(false);
     while(iter != iVectorTraceIDs.end())
@@ -485,8 +497,6 @@ protected:
     iter++;
     }
     this->m_Table->setSortingEnabled(true);
-
-    //method to be implemented in Container for visu ???
   }
 
   /**

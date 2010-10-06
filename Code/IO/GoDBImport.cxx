@@ -87,7 +87,7 @@ void GoDBImport::ImportContours()
 
   this->SaveTracesEntities(MapColorIDs, MapCoordIDs, LineContent, MapCellTypeIDs,
                            MapSubCellTypeIDs);
-  this->FillContourInfoForVisu(this->m_NewContourIDs);
+  //this->FillContourInfoForVisu(this->m_NewContourIDs);
   this->CloseDBConnection();
 }
 //--------------------------------------------------------------------------
@@ -107,7 +107,7 @@ void GoDBImport::ImportMeshes()
                                            MapSubCellTypeIDs, MapCoordIDs);
   this->SaveTracesEntities(MapColorIDs, MapCoordIDs, LineContent, MapCellTypeIDs,
                            MapSubCellTypeIDs, true);
-  this->FillMeshInfoForVisu(this->m_NewMeshIDs);
+  //this->FillMeshInfoForVisu(this->m_NewMeshIDs);
   this->CloseDBConnection();
 }
 //--------------------------------------------------------------------------
@@ -203,7 +203,7 @@ void GoDBImport::SaveTracesEntities(std::map<int, int> iMapColorIDs,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBImport::FillContourInfoForVisu(std::vector<int> iListContourIDs)
+/*void GoDBImport::FillContourInfoForVisu(std::vector<int> iListContourIDs)
 {
   //for (unsigned int i = 0; i < iListContourIDs.size(); i++)
  //   {
@@ -231,7 +231,7 @@ void GoDBImport::FillContourInfoForVisu(std::vector<int> iListContourIDs)
 //--------------------------------------------------------------------------
 void GoDBImport::FillMeshInfoForVisu(std::vector<int> iListMeshIDs)
 {
-  /** \todo replace with one query only*/
+  /** \todo replace with one query only
  // for (unsigned int i = 0; i < iListMeshIDs.size(); i++)
   //  {
 
@@ -251,7 +251,7 @@ void GoDBImport::FillMeshInfoForVisu(std::vector<int> iListMeshIDs)
       ++it;
       }
    // }
-}
+}*/
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------

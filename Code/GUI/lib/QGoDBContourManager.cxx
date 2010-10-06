@@ -250,4 +250,8 @@ void QGoDBContourManager::UpdateTWAndContainerForImportedTraces(
   this->UpdateTWAndContainerWithImportedTracesTemplate<
     GoDBTWContainerForContourMesh>(this->m_TWContainer,
     iVectorImportedTraces,iDatabaseConnector);
+  //update the visualization and the data from visu in the container for visu:
+  this->m_TraceContainerInfoForVisu->
+    UpdateVisualizationForGivenIDs<std::vector<int> >( 
+      iVectorImportedTraces,true);
 }
