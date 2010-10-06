@@ -550,10 +550,6 @@ CreateDataBaseTablesConnection()
                    SIGNAL(TraceToReEdit(unsigned int)),
                    this, SLOT(ReEditContour(unsigned int)));
 
-  QObject::connect(
-    this->m_DataBaseTables, SIGNAL(TableWidgetTabChanged()),
-    this, SLOT(GoToDefaultMenu()));
-
   QObject::connect(this->m_DataBaseTables,
                    SIGNAL(NewMeshToGenerate(std::list<unsigned int>,int)),
                    this,
@@ -874,6 +870,10 @@ CreateAllViewActions()
   QObject::connect(Change3DPerspectiveToSagittalAction, SIGNAL(triggered()),
                    this, SLOT(Change3DPerspectiveToSagittal()));
 
+  QAction* separator6 = new QAction(this);
+  separator6->setSeparator(true);
+  this->m_ViewActions.push_back(separator6);
+
   // Enable volume rendering
   QAction* VolumeRenderingAction =
     new QAction(tr("Enable the volume rendering for the current channel(s)"), this);
@@ -995,45 +995,6 @@ void QGoTabImageView3DwT::CreateModeActions()
                    this, SLOT(ActorPickingInteractorBehavior(bool)));
 
   //---------------------------------//
-  //         Distance    mode        //
-  //---------------------------------//
-  QAction* DistanceAction = new QAction(tr("Measure Distance"), this);
-
-  DistanceAction->setCheckable(true);
-  DistanceAction->setChecked(false);
-
-  QIcon DistanceIcon;
-  DistanceIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/Distance.png")),
-                         QIcon::Normal, QIcon::Off);
-  DistanceAction->setIcon(DistanceIcon);
-
-  group->addAction(DistanceAction);
-
-  this->m_ModeActions.push_back(DistanceAction);
-
-  QObject::connect(DistanceAction, SIGNAL(toggled(bool)),
-                   this, SLOT(DistanceWidgetInteractorBehavior(bool)));
-
-  //---------------------------------//
-  //           Angle     mode        //
-  //---------------------------------//
-  QAction* AngleAction = new QAction(tr("Measure Angle"), this);
-  AngleAction->setCheckable(true);
-  AngleAction->setChecked(false);
-
-  QIcon AngleIcon;
-  AngleIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/Angle.png")),
-                      QIcon::Normal, QIcon::Off);
-  AngleAction->setIcon(AngleIcon);
-
-  group->addAction(AngleAction);
-
-  this->m_ModeActions.push_back(AngleAction);
-
-  QObject::connect(AngleAction, SIGNAL(toggled(bool)),
-                   this, SLOT(AngleWidgetInteractorBehavior(bool)));
-
-  //---------------------------------//
   //       Box 3D picking  mode      //
   //---------------------------------//
   QAction* Box3DPickingAction = new QAction(tr("Box 3D Picking"), this);
@@ -1070,6 +1031,50 @@ void QGoTabImageView3DwT::CreateModeActions()
   // it also updates the interactor behaviour
   QObject::connect(PlaneWidgetAction, SIGNAL(toggled(bool)),
                    this, SLOT(PlaneWidgetInteractorBehavior(bool)));
+
+
+  // NOT A MODE: ANNOTATION
+
+  QAction* separator = new QAction(this);
+  separator->setSeparator(true);
+  this->m_ModeActions.push_back(separator);
+
+  //---------------------------------//
+  //         Distance    mode        //
+  //---------------------------------//
+  QAction* DistanceAction = new QAction(tr("Measure Distance"), this);
+
+  DistanceAction->setCheckable(true);
+  DistanceAction->setChecked(false);
+
+  QIcon DistanceIcon;
+  DistanceIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/Distance.png")),
+                         QIcon::Normal, QIcon::Off);
+  DistanceAction->setIcon(DistanceIcon);
+
+  this->m_ModeActions.push_back(DistanceAction);
+
+  QObject::connect(DistanceAction, SIGNAL(toggled(bool)),
+                   this, SLOT(DistanceWidgetInteractorBehavior(bool)));
+
+  // NOT A MODE: ANNOTATION
+
+  //---------------------------------//
+  //           Angle     mode        //
+  //---------------------------------//
+  QAction* AngleAction = new QAction(tr("Measure Angle"), this);
+  AngleAction->setCheckable(true);
+  AngleAction->setChecked(false);
+
+  QIcon AngleIcon;
+  AngleIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/Angle.png")),
+                      QIcon::Normal, QIcon::Off);
+  AngleAction->setIcon(AngleIcon);
+
+  this->m_ModeActions.push_back(AngleAction);
+
+  QObject::connect(AngleAction, SIGNAL(toggled(bool)),
+                   this, SLOT(AngleWidgetInteractorBehavior(bool)));
 }
 //-------------------------------------------------------------------------
 
@@ -2648,7 +2653,7 @@ void QGoTabImageView3DwT::ShowTraceDockWidgetForMesh(
 //-------------------------------------------------------------------------
 void QGoTabImageView3DwT::GoToDefaultMenu(bool iEnable)
 {
-  if(!iEnable)
+  if(iEnable)
     {
     //m_ContourSegmentation->EnableAndShow(false);
     //m_MeshSegmentation->EnableAndShow(false);

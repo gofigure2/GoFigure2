@@ -483,7 +483,7 @@ void
 QGoImageView::
 EnableSeedWidget(bool iEnable)
 {
-  std::cout << "Seed ---Widget---" <<std::endl;
+  std::cout << "Seed ---Widget---"<< iEnable <<std::endl;
 
   if(iEnable)
     {
@@ -577,12 +577,13 @@ void
 QGoImageView::
 EnableDistanceWidget(bool iActive)
 {
-  std::cout << "Distance ---Widget---" <<std::endl;
+  std::cout << "Distance ---Widget---" << iActive <<std::endl;
+  /*
   if(iActive)
     {
     DefaultMode();
     }
-
+*/
   int N = this->m_Pool->GetNumberOfItems();
   for (int i = 0; i < N; i++)
   {
@@ -612,13 +613,13 @@ void
 QGoImageView::
 EnableAngleWidget(bool iActive)
 {
-  std::cout << "Angle ---Widget---" <<std::endl;
-
+  std::cout << "Angle ---Widget---" << iActive <<std::endl;
+/*
   if(iActive)
     {
     DefaultMode();
     }
-
+*/
   int N = this->m_Pool->GetNumberOfItems();
   for (int i = 0; i < N; i++)
   {
@@ -666,7 +667,7 @@ void
 QGoImageView::
 EnableContourWidget(bool iActivate)
 {
-  std::cout << "Contour ---Widget---" <<std::endl;
+  std::cout << "Contour ---Widget---"<< iActivate <<std::endl;
 
   if(iActivate)
     {
