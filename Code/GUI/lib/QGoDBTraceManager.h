@@ -482,7 +482,7 @@ protected:
       this->m_TraceContainerInfoForVisu->Insert( *it );
       ++it;
       }
-    //insert the new rows intot the TW:
+    //insert the new rows into the TW:
     std::vector<int>::iterator iter = iVectorTraceIDs.begin();
     this->m_Table->setSortingEnabled(false);
     while(iter != iVectorTraceIDs.end())

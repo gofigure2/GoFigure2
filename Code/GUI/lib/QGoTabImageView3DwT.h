@@ -502,7 +502,6 @@ protected slots:
   void OpenExistingBookmark();
   void ShowTraceDockWidgetForContour(bool ManualSegVisible = true);
   void ShowTraceDockWidgetForMesh(bool MeshVisible = true);
-  void ChangeColorOfSelectedTracesManager(QColor iSelectedColor);
 
   void UpdateSeeds();
 

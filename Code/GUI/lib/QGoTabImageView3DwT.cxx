@@ -554,10 +554,6 @@ CreateDataBaseTablesConnection()
     this->m_DataBaseTables, SIGNAL(TableWidgetTabChanged()),
     this, SLOT(GoToDefaultMenu()));
 
-  QObject::connect(
-    this->m_DataBaseTables, SIGNAL(ColorChangedForSelectedTraces(QColor)),
-    this, SLOT(ChangeColorOfSelectedTracesManager(QColor)));
-
   QObject::connect(this->m_DataBaseTables,
                    SIGNAL(NewMeshToGenerate(std::list<unsigned int>,int)),
                    this,
@@ -2797,30 +2793,6 @@ void QGoTabImageView3DwT::ImportContours()
     }
 }
 //-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
-ChangeColorOfSelectedTracesManager(QColor iSelectedColor)
-  //std::pair<std::list<int>, QColor> iSelectedTraces)
-{
-/*  // In which table are we?
-  std::string currentTrace = this->m_DataBaseTables->InWhichTableAreWe();
-
-  ContourMeshStructureMultiIndexContainer* tb_container =
-    this->m_DataBaseTables->GetTracesInfoListForVisu( currentTrace );
-  //QColor      selectedColor = iSelectedTraces.second;
-
-  // If we are in contour
-  if (currentTrace.compare("contour") == 0)
-    {
-    ChangeColorOfSelectedTraces(m_ContourContainer, tb_container, iSelectedColor);
-    }
-  // If we are in mesh
-  if (currentTrace.compare("mesh") == 0)
-    {
-    ChangeColorOfSelectedTraces(m_MeshContainer, tb_container, iSelectedColor);
-    }*/
-}
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
@@ -2901,7 +2873,9 @@ CreateMeshFromSelectedContours(
     typedef itk::ContourToMeshFilter<std::vector<vtkPolyData*> > FilterType;
     FilterType::Pointer filter = FilterType::New();
     filter->ProcessContours(list_contours);
-
+    //as the element is already in the container we need to delete it in order
+    //to update it in the SaveAndVisuMesh:
+    this->m_MeshContainer->RemoveElementFromVisualizationWithGivenTraceID(iMeshID);
     SaveAndVisuMesh( filter->GetOutput(), tcoord);
     }
 }
