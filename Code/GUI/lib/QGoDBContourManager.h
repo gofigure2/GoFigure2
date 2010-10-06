@@ -92,7 +92,7 @@ public:
   /**
   \brief virtual pure method in QGoDBTraceManager
   */
-  std::list<unsigned int> UpdateTheTracesColor(vtkMySQLDatabase* iDatabaseConnector,
+  virtual std::list<unsigned int> UpdateTheTracesColor(vtkMySQLDatabase* iDatabaseConnector,
     NameWithColorData iNewColor);
 
   /**
