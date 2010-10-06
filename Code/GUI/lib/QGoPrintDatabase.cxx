@@ -125,7 +125,6 @@ QGoPrintDatabase(QWidget* iParent) :
                    this, SLOT(CreateContextMenu(const QPoint &)));
   QObject::connect(this->DBTabWidget, SIGNAL(currentChanged(int)),
                    this, SLOT(TheTabIsChanged(int)));
-
   }
 //--------------------------------------------------------------------------
 
@@ -787,6 +786,7 @@ void QGoPrintDatabase::UpdateSelectedTimePoint(int iTimePoint)
 void QGoPrintDatabase::TheTabIsChanged(int iIndex)
 {
   this->m_TraceManualEditingDockWidget->show();
+
   //this->m_TraceManualEditingDockWidget->setEnabled(true);
   switch (iIndex)
     {
@@ -1020,8 +1020,6 @@ void QGoPrintDatabase::CreateConnectionsForTraceManualEditingWidget()
 void QGoPrintDatabase::UpdateWidgetsForCorrespondingTrace(std::string iTraceName,
   std::string iCollectionName,bool UpdateTableWidget)
 {
-   this->m_TraceWidget->UpdateTraceAndCollection(iTraceName, iCollectionName);
-   this->SetTMListCollectionID();
    if(UpdateTableWidget)
      {
      //if the TableWidget has to be set to match the trace name, no need for the
@@ -1031,8 +1029,10 @@ void QGoPrintDatabase::UpdateWidgetsForCorrespondingTrace(std::string iTraceName
      this->SetTable(iTraceName);
      this->blockSignals(false);
      }
-   /// TODO useful???
-   //this->m_TraceManualEditingDockWidget->show();
+   this->m_TraceWidget->UpdateTraceAndCollection(iTraceName, iCollectionName);
+   this->SetTMListCollectionID();
+   // show the updated widget
+   this->m_TraceManualEditingDockWidget->show();
 }
 //-------------------------------------------------------------------------
 

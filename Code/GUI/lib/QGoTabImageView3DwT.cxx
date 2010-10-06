@@ -120,7 +120,8 @@ QGoTabImageView3DwT(QWidget* iParent) :
   m_YTileCoord( 0 ),
   m_ZTileCoord( 0 ),
   m_TCoord(-1),
-  m_ContourId(0)
+  m_ContourId(0),
+  m_TraceWidgetRequiered(false)
   {
   m_Image = vtkImageData::New();
   m_Seeds = vtkPoints::New();
@@ -566,6 +567,33 @@ CreateDataBaseTablesConnection()
                    this, SLOT(GoToLocation(int, int, int, int)));
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+CloseTabRequest(bool iTable)
+{
+  if(iTable)
+    {
+    m_DataBaseTables->GetTraceManualEditingDockWidget()->show();
+    return;
+    }
+
+  if(!m_TraceWidgetRequiered)
+    {
+    m_DataBaseTables->GetTraceManualEditingDockWidget()->hide();
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+RequieresTraceWidget(bool iTable)
+{
+  m_TraceWidgetRequiered = iTable;
+}
+//-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
 SetTheContainersForDB()
@@ -805,6 +833,10 @@ CreateAllViewActions()
 
   this->m_ViewActions.push_back(m_DataBaseTables->toggleViewAction());
 
+  // to know if we should close the trace widget as well
+  QObject::connect( m_DataBaseTables->toggleViewAction(), SIGNAL(toggled(bool)),
+                   this, SLOT(CloseTabRequest(bool)));
+
   QAction* separator4 = new QAction(this);
   separator4->setSeparator(true);
   this->m_ViewActions.push_back(separator4);
@@ -911,11 +943,10 @@ void QGoTabImageView3DwT::CreateModeActions()
                     m_ContourSegmentationDockWidget,
                     SLOT(interactorBehavior(bool)));
 
-  // BUG HERE
   QObject::connect( ContourSegmentationAction,
                     SIGNAL(toggled(bool)),
-                    this->m_DataBaseTables->GetTraceManualEditingDockWidget(),
-                    SLOT(setVisible(bool)));
+                    this,
+                    SLOT(RequieresTraceWidget(bool)));
 
   QObject::connect( ContourSegmentationAction,
                     SIGNAL(toggled(bool)),
@@ -938,11 +969,10 @@ void QGoTabImageView3DwT::CreateModeActions()
                     m_MeshSegmentationDockWidget,
                     SLOT(interactorBehavior(bool)));
 
-  // BUG HERE
   QObject::connect( MeshSegmentationAction,
                     SIGNAL(toggled(bool)),
-                    this->m_DataBaseTables->GetTraceManualEditingDockWidget(),
-                    SLOT(setVisible(bool)));
+                    this,
+                    SLOT(RequieresTraceWidget(bool)));
 
   QObject::connect( MeshSegmentationAction,
                     SIGNAL(toggled(bool)),
@@ -1893,8 +1923,6 @@ SaveContour(vtkPolyData* contour, vtkPolyData* contour_nodes)
   //IDWithColorData ContourData = IDWithColorData(-1, QColor(Qt::white));
   if ((contour->GetNumberOfPoints() > 2) && (m_TCoord >= 0))
     {
-  //std::cout << " lllllllllllllllllllllllllllllllllllll " << std::endl;
-  //contour_nodes->Print(cout);
     // Compute Bounding Box
     int* bounds = GetBoundingBox(contour);
     // Save contour in database :
@@ -2067,26 +2095,6 @@ ValidateContour()
 
         m_ContourContainer->InsertCurrentElement();
         }
-
-
-
-
-        /*m_ContourContainer->UpdateCurrentElementFromVisu(
-                            m_ImageView->GetContourRepresentationAsPolydata(i),
-                            m_ImageView->GetContourRepresentationNodePolydata(i),
-                            iTCoord,
-                            false,//highlighted
-                            true);//visible
-        m_ContourContainer->InsertCurrentElement();*/
-        //rgba = m_ContourContainer->m_CurrentElement.rgba;
-        //to check if useful:
-        //ContourID = m_ContourContainer->m_CurrentElement.TraceID;
-
-
-      //test.second.getRgbF(&rgba[0], &rgba[1], &rgba[2], &rgba[3]);
-      //std::cout <<"RGBA: " << rgba[0] << " " << rgba[1] << " " << rgba[2] << std::endl;
-
-      // visu
       }
     }
 
@@ -2667,6 +2675,18 @@ void QGoTabImageView3DwT::ShowTraceDockWidgetForContour(
       this->m_DataBaseTables->UpdateWidgetsForCorrespondingTrace("contour","mesh");
       }
     }
+  else
+    {
+    if(m_DataBaseTables->toggleViewAction()->isChecked())
+      {
+      // do nothing
+      }
+    else
+      {
+      //
+      m_DataBaseTables->GetTraceManualEditingDockWidget()->hide();
+      }
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -2679,6 +2699,18 @@ void QGoTabImageView3DwT::ShowTraceDockWidgetForMesh(
     if (this->m_DataBaseTables->IsDatabaseUsed())
       {
       this->m_DataBaseTables->UpdateWidgetsForCorrespondingTrace("mesh","track");
+      }
+    }
+  else
+    {
+    if(m_DataBaseTables->toggleViewAction()->isChecked())
+      {
+      // do nothing
+      }
+    else
+      {
+      //
+      m_DataBaseTables->GetTraceManualEditingDockWidget()->hide();
       }
     }
 }

@@ -493,6 +493,8 @@ protected:
   ContourMeshContainer::MultiIndexContainerTraceIDIterator
       m_ElementToBeReEdited;
 
+  bool m_TraceWidgetRequiered;
+
 protected slots:
   void AddBookmark();
   void GetTheRelatedToDBActions();
@@ -505,6 +507,9 @@ protected slots:
   void UpdateSeeds();
 
   void GoToLocation(int iX, int iY, int iZ, int iT);
+
+  void CloseTabRequest(bool iTable);
+  void RequieresTraceWidget(bool iTable);
 
   /**
    * \brief Mouse interaction style allows contours segmentation, according to
