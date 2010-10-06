@@ -74,7 +74,7 @@ QGoFilterShape(QObject* iParent, int iDimension) :
   setWidget(widget);
 
   m_Shape = 0;
-  m_Sampling = 0;
+  m_Sampling = 1;
 }
 //--------------------------------------------------------------------------
 

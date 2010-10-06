@@ -73,7 +73,7 @@ QGoFilterSemiAutoBase::
   m_Center[1] = 0;
   m_Center[2] = 0;
 
-  m_Radius = 0.0;
+  m_Radius = 3.0;
 
   m_Channel = 0;
 

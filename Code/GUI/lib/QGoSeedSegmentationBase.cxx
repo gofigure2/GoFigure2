@@ -52,7 +52,7 @@ QGoSeedSegmentationBase( QWidget* parentWidget,
 {
   m_Seeds = seeds;
   // initialize to 0 leads to segfaults
-  m_Radius = 3.;
+  m_Radius = 3.0;
 
   m_SeedsPosition[0] = 0.;
   m_SeedsPosition[1] = 0.;

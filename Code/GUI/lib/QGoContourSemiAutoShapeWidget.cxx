@@ -51,7 +51,7 @@ QGoContourSemiAutoShapeWidget(QWidget* iParent, int iDimension) : QWidget(iParen
   QObject::connect(this->shape, SIGNAL(activated(int)),
                    this, SIGNAL(Shape(int)));
 
-  if(iDimension == 3)
+  if(iDimension == 2)
     {
     sampling->hide();
     samplingLabel->hide();
