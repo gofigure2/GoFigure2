@@ -469,20 +469,6 @@ protected:
 
   void CreateDataBaseTablesConnection();
 
-  template< typename TActor >
-  void HighLightActorsInContainer(
-    ContourMeshStructureMultiIndexContainer& iContainer, vtkActor* iActor);
-
-  template< typename TActor >
-  void ShowActorsInContainer(
-    ContourMeshStructureMultiIndexContainer& iContainer, vtkActor* iActor);
-
-  template< typename TActor >
-  void HighLightContours();
-
-  template< typename TActor >
-  void HighLightMeshes();
-
 #if defined (ENABLEFFMPEG) || defined (ENABLEAVI)
   void CreateVideoRecorderWidget();
 #endif /* ENABLEVIDEORECORD */
@@ -571,5 +557,4 @@ private:
   Q_DISABLE_COPY(QGoTabImageView3DwT);
   };
 
-#include "QGoTabImageView3DwT.txx"
 #endif

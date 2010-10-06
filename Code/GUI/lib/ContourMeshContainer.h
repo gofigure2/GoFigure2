@@ -299,19 +299,21 @@ public:
     temp.Highlighted = iHighlighted;
     temp.Visible = iVisible;
 
+    typedef void (QGoImageView3D::*ImageViewMember)(const int&, vtkActor*);
+    ImageViewMember f;
+
     if( iVisible )
       {
-      this->m_ImageView->AddActor( 0, iActors[0] );
-      this->m_ImageView->AddActor( 1, iActors[1] );
-      this->m_ImageView->AddActor( 2, iActors[2] );
-      this->m_ImageView->AddActor( 3, iActors[3] );
+      f = & QGoImageView3D::AddActor;
       }
     else
       {
-      this->m_ImageView->RemoveActor( 0, iActors[0] );
-      this->m_ImageView->RemoveActor( 1, iActors[1] );
-      this->m_ImageView->RemoveActor( 2, iActors[2] );
-      this->m_ImageView->RemoveActor( 3, iActors[3] );
+      f = & QGoImageView3D::RemoveActor;
+      }
+
+    for( int i = 0; i < 4; i++ )
+      {
+      (m_ImageView->*f)( i, iActors[i] );
       }
 
     m_Container.get< TIndex >().replace( iIt, temp );
