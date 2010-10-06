@@ -206,37 +206,40 @@ public:
         tproperty->SetOpacity( id_it->rgba[3] );
 
         vtkPolyData* nodes = id_it->Nodes;
-        std::vector<vtkActor*> actor;
-
-        if( iContour )
+        if( nodes )
           {
-          int dir = ComputeDirectionFromContour(nodes);
+          std::vector<vtkActor*> actor;
 
-          if( dir != -1 )
+          if( iContour )
             {
-            m_ImageView->EnableContourWidget( true );
-            m_ImageView->InitializeContourWidgetNodes( dir, nodes );
+            int dir = ComputeDirectionFromContour(nodes);
 
-            vtkPolyData* trace =
-                m_ImageView->GetContourRepresentationAsPolydata(dir);
+            if( dir != -1 )
+              {
+              m_ImageView->EnableContourWidget( true );
+              m_ImageView->InitializeContourWidgetNodes( dir, nodes );
 
-            actor = this->m_ImageView->AddContour(trace, tproperty);
+              vtkPolyData* trace =
+                  m_ImageView->GetContourRepresentationAsPolydata(dir);
 
-            m_ImageView->ReinitializeContourWidget();
-            m_ImageView->EnableContourWidget( false );
+              actor = this->m_ImageView->AddContour(trace, tproperty);
+
+              m_ImageView->ReinitializeContourWidget();
+              m_ImageView->EnableContourWidget( false );
+              }
             }
-          }
-        else
-          {
-          actor = this->m_ImageView->AddContour( nodes, tproperty );
-          }
+          else
+            {
+            actor = this->m_ImageView->AddContour( nodes, tproperty );
+            }
 
-        temp.ActorXY = actor[0];
-        temp.ActorXZ = actor[1];
-        temp.ActorYZ = actor[2];
-        temp.ActorXYZ = actor[3];
+          temp.ActorXY = actor[0];
+          temp.ActorXZ = actor[1];
+          temp.ActorYZ = actor[2];
+          temp.ActorXYZ = actor[3];
 
-        m_Container.get< TraceID >().replace( id_it, temp );
+          m_Container.get< TraceID >().replace( id_it, temp );
+          }
         }
       ++it;
       }
