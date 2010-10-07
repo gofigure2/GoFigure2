@@ -55,7 +55,6 @@ public:
 
 signals:
   void Shape(int);
-  void Sampling(int);
 };
 
 #endif

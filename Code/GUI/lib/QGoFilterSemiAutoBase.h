@@ -95,6 +95,7 @@ public:
   vtkImageData* extractOneSlice(vtkImageData* iOriginalImage, double* iOrigin, int iDirection);
 
   vtkPolyData*  ReconstructContour(vtkImageData* iInputImage);
+  vtkPolyData*  ReorganizeContour(vtkPolyData* iInputImage = NULL, bool iDecimate = false);
   vtkPolyData*  ReconstructMesh(vtkImageData* iInputImage);
 
   // connect signals to dockwidget

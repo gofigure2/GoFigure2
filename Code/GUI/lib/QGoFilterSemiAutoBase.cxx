@@ -53,9 +53,7 @@
 #include "vtkMarchingSquares.h"
 #include "vtkCellArray.h"
 #include "vtkPolylineDecimation.h"
-#include "vtkTransformPolyDataFilter.h"
 #include "vtkStripper.h"
-#include "vtkTransform.h"
 
 // construct mesh
 #include "vtkMarchingCubes.h"
@@ -375,9 +373,18 @@ ReconstructContour(vtkImageData* iInputImage)
   contours->SetInput(iInputImage);
   contours->GenerateValues (1, 0, 0);
 
+  return ReorganizeContour(contours->GetOutput());
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+vtkPolyData*
+QGoFilterSemiAutoBase::
+ReorganizeContour(vtkPolyData* iInputImage, bool iDecimate)
+{
   // Create reorganize contours
   vtkStripper* stripper = vtkStripper::New();
-  stripper->SetInput(contours->GetOutput());
+  stripper->SetInput(iInputImage);
   //Is it useful?? Which number is the best suited?
   stripper->SetMaximumLength(999);
   stripper->Update();
@@ -412,27 +419,20 @@ ReconstructContour(vtkImageData* iInputImage)
 
   lines->Delete();
 
-  //Decimation (has to be after points reorganization)
-  vtkPolylineDecimation* decimator = vtkPolylineDecimation::New();
-  decimator->SetInput(testPolyD);
-
-  /// \todo instead os setting it to 0.9, compute it to make 10 to 20 control points
-  decimator->SetTargetReduction(0.9);
-  decimator->Update();
-
-  // Translate to real location (i.e. see_pos[])
-  vtkTransform* t = vtkTransform::New();
-  t->Translate(getCenter()[0],
-               getCenter()[1],
-               getCenter()[2]);
-
-  vtkTransformPolyDataFilter* tf = vtkTransformPolyDataFilter::New();
-  tf->SetTransform(t);
-  tf->SetInput(decimator->GetOutput());
-  tf->Update();
-
-  // Update required here
-  return tf->GetOutput();
+  if(iDecimate)
+    {
+    //Decimation (has to be after points reorganization)
+    vtkPolylineDecimation* decimator = vtkPolylineDecimation::New();
+    decimator->SetInput(testPolyD);
+    /// \todo instead os setting it to 0.9, compute it to make 10 to 20 control points
+    decimator->SetTargetReduction(0.9);
+    decimator->Update();
+    return decimator->GetOutput();
+    }
+  else
+    {
+    return testPolyD;
+    }
 }
 //--------------------------------------------------------------------------
 

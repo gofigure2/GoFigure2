@@ -54,6 +54,10 @@
 #include "vtkPlane.h"
 #include "vtkCutter.h"
 
+// to translate
+#include "vtkTransform.h"
+#include "vtkTransformPolyDataFilter.h"
+
 #include "QGoContourSemiAutoLevelsetWidget.h"
 
 //--------------------------------------------------------------------------
@@ -209,7 +213,18 @@ Apply()
       //---------------------------------------------------------
       setOutput(ConvertITK2VTK<float, dimension>(test3));
 
-      emit ContourCreated(ReconstructContour(getOutput()));
+      // Translate to real location (i.e. see_pos[])
+      vtkTransform* t = vtkTransform::New();
+      t->Translate(getCenter()[0],
+                   getCenter()[1],
+                   getCenter()[2]);
+
+      vtkTransformPolyDataFilter* tf = vtkTransformPolyDataFilter::New();
+      tf->SetTransform(t);
+      tf->SetInput(ReconstructContour(getOutput()));
+      tf->Update();
+
+      emit ContourCreated(tf->GetOutput());
       }
     }
   else
@@ -278,8 +293,6 @@ Apply()
         }
       else
         {
-        std::cout << "emit empty mesh...." << std::endl;
-
         emit CreateEmptyMesh();
         // Extract each slice according top the sampling
         vtkPlane* implicitFunction = vtkPlane::New();
@@ -288,7 +301,6 @@ Apply()
         vtkCutter* cutter = vtkCutter::New();
         cutter->SetInput(ReconstructMesh(getOutput()));
         cutter->SetCutFunction(implicitFunction);
-        std::cout << "sampling...." << getSampling() << std::endl;
 
         for(int i=0; i< getSampling(); ++i)
           {
@@ -297,8 +309,8 @@ Apply()
                         (center2[1]-getRadius()+(i+1)*2*getRadius()/(getSampling()+1)),
                         (center2[2]-getRadius()+(i+1)*2*getRadius()/(getSampling()+1)));
           cutter->Update();
-          std::cout << "emit add contour...." << std::endl;
-          emit AddContourToCurrentMesh(cutter->GetOutput());
+          //true: we decimate the contour
+          emit AddContourToCurrentMesh(ReorganizeContour(cutter->GetOutput(), true));
           }
         }
 

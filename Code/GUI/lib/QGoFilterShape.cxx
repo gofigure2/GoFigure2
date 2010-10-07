@@ -155,7 +155,7 @@ Apply()
                   (center2[1]-getRadius()+(i+1)*2*getRadius()/(getSampling()+1)),
                   (center2[2]-getRadius()+(i+1)*2*getRadius()/(getSampling()+1)));
         cutter->Update();
-        emit ContourCreated(cutter->GetOutput());
+        emit ContourCreated(ReorganizeContour(cutter->GetOutput()));
         }
       }
     else // if dimension == 1, create a mesh
@@ -166,8 +166,6 @@ Apply()
         }
       else
         {
-        std::cout << "emit empty mesh...." << std::endl;
-
         emit CreateEmptyMesh();
         // Extract each slice according top the sampling
         vtkPlane* implicitFunction = vtkPlane::New();
@@ -176,7 +174,6 @@ Apply()
         vtkCutter* cutter = vtkCutter::New();
         cutter->SetInput(testing);
         cutter->SetCutFunction(implicitFunction);
-        std::cout << "sampling...." << getSampling() << std::endl;
 
         for(int i=0; i< getSampling(); ++i)
           {
@@ -185,8 +182,7 @@ Apply()
                         (center2[1]-getRadius()+(i+1)*2*getRadius()/(getSampling()+1)),
                         (center2[2]-getRadius()+(i+1)*2*getRadius()/(getSampling()+1)));
           cutter->Update();
-          std::cout << "emit add contour...." << std::endl;
-          emit AddContourToCurrentMesh(cutter->GetOutput());
+          emit AddContourToCurrentMesh(ReorganizeContour(cutter->GetOutput()));
           }
         }
       }
