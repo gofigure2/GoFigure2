@@ -221,7 +221,7 @@ Apply()
 
       vtkTransformPolyDataFilter* tf = vtkTransformPolyDataFilter::New();
       tf->SetTransform(t);
-      tf->SetInput(ReconstructContour(getOutput()));
+      tf->SetInput( ReconstructContour( getOutput(), 0. ) );
       tf->Update();
 
       vtkPolyData* contour = tf->GetOutput();
@@ -291,7 +291,7 @@ Apply()
 
       if(m_Dimension == 1)
         {
-        emit MeshCreated(ReconstructMesh(getOutput()));
+        emit MeshCreated( ReconstructMesh( getOutput(), 0. ) );
         }
       else
         {
@@ -301,7 +301,7 @@ Apply()
         implicitFunction->SetNormal(0, 0, 1);
 
         vtkCutter* cutter = vtkCutter::New();
-        cutter->SetInput(ReconstructMesh(getOutput()));
+        cutter->SetInput( ReconstructMesh( getOutput(), 0. ) );
         cutter->SetCutFunction(implicitFunction);
 
         for(int i=0; i< getSampling(); ++i)

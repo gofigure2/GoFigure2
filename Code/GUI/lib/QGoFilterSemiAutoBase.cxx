@@ -366,12 +366,12 @@ extractOneSlice(vtkImageData* iOriginalImage, double* iOrigin, int iDirection)
 //--------------------------------------------------------------------------
 vtkPolyData*
 QGoFilterSemiAutoBase::
-ReconstructContour(vtkImageData* iInputImage)
+ReconstructContour(vtkImageData* iInputImage, const double& iThreshold )
 {
   // create iso-contours
   vtkMarchingSquares* contours = vtkMarchingSquares::New();
   contours->SetInput(iInputImage);
-  contours->GenerateValues (1, 0, 0);
+  contours->GenerateValues (1, iThreshold, iThreshold);
 
   return ReorganizeContour(contours->GetOutput());
 }
@@ -439,12 +439,12 @@ ReorganizeContour(vtkPolyData* iInputImage, bool iDecimate)
 //--------------------------------------------------------------------------
 vtkPolyData*
 QGoFilterSemiAutoBase::
-ReconstructMesh(vtkImageData* iInputImage)
+ReconstructMesh(vtkImageData* iInputImage, const double& iThreshold)
 {
   // create iso-contours
   vtkMarchingCubes* contours = vtkMarchingCubes::New();
   contours->SetInput(iInputImage);
-  contours->GenerateValues (1, 0, 0);
+  contours->GenerateValues (1, iThreshold, iThreshold);
   contours->SetComputeGradients(0);
   contours->SetComputeNormals(0);
   contours->SetComputeScalars(0);

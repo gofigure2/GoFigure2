@@ -94,9 +94,14 @@ public:
 
   vtkImageData* extractOneSlice(vtkImageData* iOriginalImage, double* iOrigin, int iDirection);
 
-  vtkPolyData*  ReconstructContour(vtkImageData* iInputImage);
-  vtkPolyData*  ReorganizeContour(vtkPolyData* iInputImage = NULL, bool iDecimate = false);
-  vtkPolyData*  ReconstructMesh(vtkImageData* iInputImage);
+  vtkPolyData*  ReconstructContour( vtkImageData* iInputImage,
+                                    const double& iThreshold );
+
+  vtkPolyData*  ReorganizeContour( vtkPolyData* iInputImage = NULL,
+                                   bool iDecimate = false );
+
+  vtkPolyData*  ReconstructMesh( vtkImageData* iInputImage,
+                                 const double& iThreshold );
 
   // connect signals to dockwidget
   virtual void   ConnectSignals(int iFilterNumber);
