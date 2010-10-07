@@ -104,7 +104,10 @@ QGoContourSegmentationBaseDockWidget(
   //----------------------------------------------------------------
 
   m_ContourSemiAutoSegmentation =
-      new QGoContourSeedSegmentation( this, seeds, iOriginalImage);
+      // 0 2D
+      // 1 3D
+      // 2 2D+3D
+      new QGoContourSeedSegmentation( this, seeds, iOriginalImage, 0);
 
   QWidget* semi_auto_widget = m_ContourSemiAutoSegmentation->getWidget();
 
@@ -231,24 +234,6 @@ QGoContourSegmentationBaseDockWidget::
 SetReeditMode( bool iEnable)
 {
   m_ContourManualSegmentation->SetReeditMode(iEnable);
-}
-//---------------------------------------------------------------------------//
-
-//---------------------------------------------------------------------------//
-void
-QGoContourSegmentationBaseDockWidget::
-EnableAndShow( bool iEnable)
-{
-  if(iEnable)
-    {
-    //m_ContourManualSegmentation->getWidget()->show();
-    //m_ContourManualSegmentation->getWidget()->setEnabled(iEnable);
-    }
-  else
-    {
-    //m_ContourManualSegmentation->getWidget()->hide();
-    //m_ContourManualSegmentation->getWidget()->setEnabled(iEnable);
-    }
 }
 //---------------------------------------------------------------------------//
 

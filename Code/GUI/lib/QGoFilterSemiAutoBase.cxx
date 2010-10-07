@@ -62,6 +62,10 @@
   // and smooth it...!
 #include "vtkSmoothPolyDataFilter.h"
 
+// to cut
+#include "vtkPlane.h"
+#include "vtkCutter.h"
+
 //--------------------------------------------------------------------------
 QGoFilterSemiAutoBase::
     QGoFilterSemiAutoBase( QObject* iParent ) : QObject( iParent )
@@ -77,6 +81,8 @@ QGoFilterSemiAutoBase::
   m_Center[2] = 0;
 
   m_Radius = 3.0;
+
+  m_Sampling = 3;
 
   m_Channel = 0;
 
@@ -202,6 +208,24 @@ getRadius()
 //--------------------------------------------------------------------------
 void
 QGoFilterSemiAutoBase::
+setSampling(int iSampling)
+{
+  m_Sampling = iSampling;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+int
+QGoFilterSemiAutoBase::
+getSampling()
+{
+  return m_Sampling;
+}
+//--------------------------------------------------------------------------
+// Radius to define ROI
+//--------------------------------------------------------------------------
+void
+QGoFilterSemiAutoBase::
 setChannel(int iChannel)
 {
   m_Channel = iChannel;
@@ -271,6 +295,8 @@ ConnectSignals(int iFilterNumber)
       this, SLOT(setRadius(double)));
   QObject::connect(  m_Widget->parentWidget()->parentWidget(), SIGNAL(Channel(int)),
       this, SLOT(setChannel(int)));
+  QObject::connect(  m_Widget->parentWidget()->parentWidget(), SIGNAL(Sampling(int)),
+      this, SLOT(setSampling(int)));
 
   // End of segmentation signals
   QObject::connect(  this , SIGNAL(MeshCreated(vtkPolyData*)),
@@ -279,6 +305,12 @@ ConnectSignals(int iFilterNumber)
         m_Widget->parentWidget()->parentWidget(), SIGNAL(ContourCreated(vtkPolyData*)));
   QObject::connect(  this , SIGNAL(ImageProcessed()),
         m_Widget->parentWidget()->parentWidget(), SIGNAL(ImageProcessed()));
+
+  QObject::connect(  this , SIGNAL(CreateEmptyMesh()),
+        m_Widget->parentWidget()->parentWidget(), SIGNAL(CreateEmptyMesh()));
+  QObject::connect(  this , SIGNAL(AddContourToCurrentMesh(vtkPolyData*)),
+        m_Widget->parentWidget()->parentWidget(), SIGNAL(AddContourToCurrentMesh(vtkPolyData*)));
+
 
   QObject::connect(this, SIGNAL(UpdateSeeds()),
       m_Widget->parentWidget()->parentWidget(), SIGNAL(UpdateSeeds()));

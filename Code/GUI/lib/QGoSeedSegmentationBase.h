@@ -62,7 +62,8 @@ public:
    * \brief Constructor
    */
   explicit QGoSeedSegmentationBase( QWidget* parentWidget = 0,
-                                    vtkPoints* seeds = 0);
+                                    vtkPoints* seeds = 0,
+                                    int iSampling = 0);
 
   /**
    * \brief Destructor
@@ -91,6 +92,8 @@ public:
    */
   double     getRadius();
 
+  int        getSampling();
+
   /**
    * \brief Get the dockwidget associated to the segmentation method.
    */
@@ -116,6 +119,11 @@ public slots:
    * \param[in] iRadius Radius to be used for the segmentation.
    */
   void setRadius(double iRadius);
+  /**
+   * \brief Set the value of the radius.
+   * \param[in] iRadius Radius to be used for the segmentation.
+   */
+  void setSampling(int iSampling);
 
   signals:
   /**
@@ -140,6 +148,11 @@ public slots:
   void UpdateSeeds();
   void SegmentationFinished();
 
+  void CreateEmptyMesh();
+  void AddContourToCurrentMesh(vtkPolyData*);
+
+  void Sampling(int);
+
 protected:
   QGoSeedBaseWidget* m_BaseAlgorithmSegmentationWidget;
 
@@ -150,5 +163,6 @@ private:
   double     m_Radius;
   vtkPoints* m_Seeds;
   double     m_SeedsPosition[3];
+  int        m_Sampling;
   };
 #endif

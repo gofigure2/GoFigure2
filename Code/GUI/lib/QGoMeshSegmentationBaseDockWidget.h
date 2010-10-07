@@ -43,7 +43,6 @@
 
 #include <QDockWidget>
 #include <QLayout>
-#include <QFrame>
 
 #include "vtkPoints.h"
 #include "vtkImageData.h"
@@ -79,8 +78,6 @@ public:
   bool GetReeditMode();
   void SetReeditMode( bool iEnable);
 
-  void EnableAndShow( bool iEnable);
-
   void Initialize();
 
 /*
@@ -88,7 +85,6 @@ protected:
   virtual void InitializeWidgetAppearance();
 */
 public slots:
-  QFrame* GetFrame();
   void SegmentationMethod(int);
   void interactorBehavior(bool);
 
@@ -99,8 +95,8 @@ signals:
   void ReinitializeInteractorActivated(bool);
 
   // manual segmentation specific signals
-  void ValidateMesh();
-  void ShowTraceDockWidgetForMesh(bool);
+  void CreateEmptyMesh();
+  void AddContourToCurrentMesh(vtkPolyData* );
 
   // semi automatic signals
   void UpdateSeeds();
@@ -108,6 +104,7 @@ signals:
   void ClearAllSeeds();
 
 private:
+  QGoMeshSeedSegmentation*  m_MeshManualSegmentation;
   QGoMeshSeedSegmentation*  m_MeshSemiAutoSegmentation;
 
   Q_DISABLE_COPY( QGoMeshSegmentationBaseDockWidget );

@@ -314,6 +314,9 @@ public slots:
 
   void VisibilityXYZ();
 
+  void CreateEmptyMesh();
+  void AddContourToCurrentMesh(vtkPolyData* );
+
 protected:
   QHBoxLayout*                                m_HBoxLayout;
   QSplitter*                                  m_VSplitter;

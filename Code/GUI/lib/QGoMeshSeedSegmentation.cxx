@@ -55,10 +55,13 @@
 QGoMeshSeedSegmentation::
 QGoMeshSeedSegmentation( QWidget * parentW,
                          vtkPoints* seeds,
-                         std::vector<vtkImageData*>* iOriginalImage ) :
-  QGoSeedSegmentationBase( parentW, seeds ),
+                         std::vector<vtkImageData*>* iOriginalImage,
+                         int iSampling) :
+  QGoSeedSegmentationBase( parentW, seeds, iSampling ),
   m_OriginalImage( iOriginalImage )
 {
+
+  // ADD ARG IN CONSTRUCTORS TO ENABLE SAMPLING
 
   int filter = 0;
 
@@ -66,7 +69,7 @@ QGoMeshSeedSegmentation( QWidget * parentW,
 //=============================================================================
 
   //Add new segmentation method
-  m_LevelSetfilter = new QGoFilterChanAndVes(this, 3); // 3 i.e. 3D, to create a mesh
+  m_LevelSetfilter = new QGoFilterChanAndVes(this, iSampling); // 3 i.e. 3D, to create a mesh
   filter = m_BaseAlgorithmSegmentationWidget->GetNumberOfFilters();
   m_BaseAlgorithmSegmentationWidget->AddFilter( m_LevelSetfilter->getName() );
   m_LevelSetfilter->getWidget()->setParent(m_BaseAlgorithmSegmentationWidget->GetFrame());
@@ -79,7 +82,7 @@ QGoMeshSeedSegmentation( QWidget * parentW,
 
   //Add new segmentation method
 
-  m_ShapeFilter = new QGoFilterShape(this, 3); // 3 i.e. 3D, to create a mesh
+  m_ShapeFilter = new QGoFilterShape(this, iSampling); // 3 i.e. 3D, to create a mesh
   filter = m_BaseAlgorithmSegmentationWidget->GetNumberOfFilters();
   m_BaseAlgorithmSegmentationWidget->AddFilter( m_ShapeFilter->getName() );
   m_ShapeFilter->getWidget()->setParent(m_BaseAlgorithmSegmentationWidget->GetFrame());
@@ -87,7 +90,6 @@ QGoMeshSeedSegmentation( QWidget * parentW,
   m_ShapeFilter->setOriginalImageMC(m_OriginalImage);
   m_BaseAlgorithmSegmentationWidget->GetFrame()->layout()->addWidget(m_ShapeFilter->getWidget());
   m_ShapeFilter->ConnectSignals(filter);
-
 
 //=============================================================================
 //=============================================================================

@@ -55,7 +55,7 @@ class QGoSeedBaseWidget :
   {
   Q_OBJECT
 public:
-  explicit QGoSeedBaseWidget(QWidget* iParent = 0);
+  explicit QGoSeedBaseWidget(QWidget* iParent = 0, int iSampling = 0);
   ~QGoSeedBaseWidget();
 
   void Initialize();
@@ -71,11 +71,15 @@ public slots:
     void Radius(double);
     void Filter(int);
     void Channel(int);
+    void Sampling(int);
     void MeshCreated(vtkPolyData* );
     void ContourCreated(vtkPolyData* );
     void ImageProcessed();
     void UpdateSeeds();
     void SegmentationFinished();
+
+    void CreateEmptyMesh();
+    void AddContourToCurrentMesh(vtkPolyData*);
   };
 
 #endif

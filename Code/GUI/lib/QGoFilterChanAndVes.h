@@ -68,6 +68,5 @@ public slots:
 private:
   int          m_Iterations;
   int          m_Curvature;
-  int          m_Dimension;
 };
 #endif

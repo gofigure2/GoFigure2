@@ -65,7 +65,7 @@ QGoFilterShape(QObject* iParent, int iDimension) :
   m_Dimension = iDimension;
 
   QString name = "Shape ";
-  name.append(QString::number(m_Dimension, 10));
+  name.append(QString::number(m_Dimension + 2, 10));
   name.append("D");
 
   setName(name);
@@ -74,7 +74,6 @@ QGoFilterShape(QObject* iParent, int iDimension) :
   setWidget(widget);
 
   m_Shape = 0;
-  m_Sampling = 1;
 }
 //--------------------------------------------------------------------------
 
@@ -129,10 +128,10 @@ Apply()
         break;
     }
 
-    if(m_Dimension == 2)
+    if(m_Dimension == 0)
       {
       // Radius has to be > 0
-      if(m_Sampling <= 0)
+      if(getSampling() <= 0)
         {
         std::cerr << "Sampling should be > 0 " << std::endl;
         delete[] center2;
@@ -147,21 +146,49 @@ Apply()
       cutter->SetInput(testing);
       cutter->SetCutFunction(implicitFunction);
 
-      for(int i=0; i<m_Sampling; ++i)
+      for(int i=0; i<getSampling(); ++i)
         {
       // radius
       ///TODO should use the spacing to make sure the contour in on a slice
         implicitFunction
-      ->SetOrigin((center2[0]-getRadius()+(i+1)*2*getRadius()/(m_Sampling+1)),
-                  (center2[1]-getRadius()+(i+1)*2*getRadius()/(m_Sampling+1)),
-                  (center2[2]-getRadius()+(i+1)*2*getRadius()/(m_Sampling+1)));
+      ->SetOrigin((center2[0]-getRadius()+(i+1)*2*getRadius()/(getSampling()+1)),
+                  (center2[1]-getRadius()+(i+1)*2*getRadius()/(getSampling()+1)),
+                  (center2[2]-getRadius()+(i+1)*2*getRadius()/(getSampling()+1)));
         cutter->Update();
         emit ContourCreated(cutter->GetOutput());
         }
       }
-    else // if dimension == 3, create a mesh
+    else // if dimension == 1, create a mesh
       {
-      emit MeshCreated(testing);
+      if(m_Dimension == 1)
+        {
+        emit MeshCreated(testing);
+        }
+      else
+        {
+        std::cout << "emit empty mesh...." << std::endl;
+
+        emit CreateEmptyMesh();
+        // Extract each slice according top the sampling
+        vtkPlane* implicitFunction = vtkPlane::New();
+        implicitFunction->SetNormal(0, 0, 1);
+
+        vtkCutter* cutter = vtkCutter::New();
+        cutter->SetInput(testing);
+        cutter->SetCutFunction(implicitFunction);
+        std::cout << "sampling...." << getSampling() << std::endl;
+
+        for(int i=0; i< getSampling(); ++i)
+          {
+          implicitFunction
+            ->SetOrigin((center2[0]-getRadius()+(i+1)*2*getRadius()/(getSampling()+1)),
+                        (center2[1]-getRadius()+(i+1)*2*getRadius()/(getSampling()+1)),
+                        (center2[2]-getRadius()+(i+1)*2*getRadius()/(getSampling()+1)));
+          cutter->Update();
+          std::cout << "emit add contour...." << std::endl;
+          emit AddContourToCurrentMesh(cutter->GetOutput());
+          }
+        }
       }
     }
   emit SegmentationFinished();
@@ -182,8 +209,6 @@ ConnectSignals(int iFilterNumber)
   // connect specific
   QObject::connect(getWidget(), SIGNAL(Shape(int)),
       this, SLOT(setShape(int)));
-  QObject::connect(getWidget(), SIGNAL(Sampling(int)),
-      this, SLOT(setSampling(int)));
 }
 //--------------------------------------------------------------------------
 
@@ -195,16 +220,6 @@ setShape(int iShape)
   m_Shape = iShape;
 }
 //--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void
-QGoFilterShape::
-setSampling(int iSampling)
-{
-  m_Sampling = iSampling;
-}
-//--------------------------------------------------------------------------
-
 
 //--------------------------------------------------------------------------
 vtkPolyData*

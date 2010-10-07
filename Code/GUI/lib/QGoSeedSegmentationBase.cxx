@@ -47,19 +47,33 @@
 //--------------------------------------------------------------------------
 QGoSeedSegmentationBase::
 QGoSeedSegmentationBase( QWidget* parentWidget,
-                         vtkPoints* seeds ) :
+                         vtkPoints* seeds,
+                         int iSampling) :
   QObject( parentWidget )
 {
   m_Seeds = seeds;
   // initialize to 0 leads to segfaults
   m_Radius = 3.0;
 
+  m_Sampling = 3;
+
   m_SeedsPosition[0] = 0.;
   m_SeedsPosition[1] = 0.;
   m_SeedsPosition[3] = 0.;
 
   //Create associated Widget
-  m_BaseAlgorithmSegmentationWidget = new QGoSeedBaseWidget(parentWidget);
+  m_BaseAlgorithmSegmentationWidget = new QGoSeedBaseWidget(parentWidget, iSampling);
+
+  // CONNECT SAMPLING IF REQUIERED!!!!
+  if(iSampling == 2)
+    {
+    QObject::connect(m_BaseAlgorithmSegmentationWidget, SIGNAL(Sampling(int)),
+                   this, SLOT(setSampling(int)));
+    QObject::connect(m_BaseAlgorithmSegmentationWidget, SIGNAL(CreateEmptyMesh()),
+        this, SIGNAL(CreateEmptyMesh()));
+    QObject::connect(m_BaseAlgorithmSegmentationWidget, SIGNAL(AddContourToCurrentMesh(vtkPolyData*)),
+        this, SIGNAL(AddContourToCurrentMesh(vtkPolyData*)));
+    }
 
   // connect with 3DwT to add the good number of channels
   QObject::connect(this, SIGNAL(addChannel(QString)),
@@ -126,6 +140,25 @@ QGoSeedSegmentationBase::
 getRadius()
 {
   return m_Radius;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+QGoSeedSegmentationBase::
+setSampling(int iSampling)
+{
+  m_Sampling = iSampling;
+  emit Sampling(iSampling);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+int
+QGoSeedSegmentationBase::
+getSampling()
+{
+  return m_Sampling;
 }
 //--------------------------------------------------------------------------
 

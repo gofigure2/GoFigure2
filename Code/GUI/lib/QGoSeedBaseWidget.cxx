@@ -42,7 +42,7 @@
 
 //---------------------------------------------------------------------------//
 QGoSeedBaseWidget::
-QGoSeedBaseWidget(QWidget* iParent) : QWidget(iParent)
+QGoSeedBaseWidget(QWidget* iParent, int iSampling) : QWidget(iParent)
 {
   this->setupUi(this);
 
@@ -57,6 +57,27 @@ QGoSeedBaseWidget(QWidget* iParent) : QWidget(iParent)
 
   QObject::connect(this->channel, SIGNAL(activated(int)),
                    this, SIGNAL(Channel(int)));
+
+  // About the sampling button...
+  if (iSampling == 2)
+    {
+    // add the button and connect it
+    QLabel* samplingLabel = new QLabel(frame_base);
+    samplingLabel->setObjectName(QString::fromUtf8("samplingLabel"));
+    samplingLabel->setText(
+        QApplication::translate("SegmentationSeedBaseWidget", "Sampling",
+            0, QApplication::UnicodeUTF8));
+    gridLayout_10->addWidget(samplingLabel, 4, 0, 1, 1);
+    // Add the spin box
+    QSpinBox* sampling = new QSpinBox(frame_base);
+    sampling->setObjectName(QString::fromUtf8("label"));
+    sampling->setMinimum(1);
+    sampling->setValue(3);
+    gridLayout_10->addWidget(sampling, 5, 0, 1, 1);
+
+    QObject::connect(sampling, SIGNAL(valueChanged(int)),
+                     this, SIGNAL(Sampling(int)));
+    }
 }
 //---------------------------------------------------------------------------//
 

@@ -69,13 +69,10 @@ private:
   vtkPolyData* GenerateCylinder(double* iCenter);
 
   int m_Shape;
-  int m_Sampling;
-  int m_Dimension;
 
 public slots:
 
   void setShape(int);
-  void setSampling(int);
 
 private:
 

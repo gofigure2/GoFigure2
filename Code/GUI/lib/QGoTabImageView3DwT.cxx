@@ -348,10 +348,11 @@ CreateMeshSegmentationDockWidget()
                     this,
                     SLOT(DefaultInteractorBehavior(bool)) );
 
+  // we need seeds for the manual mesh segmentation
   QObject::connect( m_MeshSegmentationDockWidget,
                     SIGNAL(ManualSegmentationActivated(bool)),
                     this,
-                    SLOT(DefaultInteractorBehavior(bool)));
+                    SLOT(SeedInteractorBehavior(bool)));
 
   QObject::connect( m_MeshSegmentationDockWidget,
                     SIGNAL(SemiAutoSegmentationActivated(bool)),
@@ -362,6 +363,17 @@ CreateMeshSegmentationDockWidget()
                     SIGNAL(AutoSegmentationActivated(bool)),
                     this,
                     SLOT(DefaultInteractorBehavior(bool)));
+
+  // signals for manual segmentation
+  QObject::connect( m_MeshSegmentationDockWidget,
+                    SIGNAL(CreateEmptyMesh()),
+                    this,
+                    SLOT(CreateEmptyMesh()));
+
+  QObject::connect( m_MeshSegmentationDockWidget,
+                    SIGNAL(AddContourToCurrentMesh(vtkPolyData* )),
+                    this,
+                    SLOT(AddContourToCurrentMesh(vtkPolyData* )));
 
   // signals for the semi automatic segmentation
   QObject::connect( m_MeshSegmentationDockWidget,
@@ -2488,31 +2500,6 @@ SaveAndVisuContour(vtkPolyData* iView)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/*
-void
-QGoTabImageView3DwT::
-SaveAndVisuContoursList(std::vector<vtkPolyData* >* iContours)
-{
-  std::list<int> listContoursIDs;
-
-  for (unsigned int j = 1; j < (*iContours).size(); j++)
-    {
-    //save in db
-    listContoursIDs.push_back(SaveAndVisuContour((*iContours)[j]));
-    //update visu
-    }
-  // assign contours to mesh
-  // will increment mesh ID automatically
-  if (m_DataBaseTables->IsDatabaseUsed())
-    {
-  /// TODO rename method for consistency
-    m_DataBaseTables->CreateMeshFromOneClickSegmentation(listContoursIDs);
-    }
-}
-*/
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
 CreateContour(vtkPolyData* contour_nodes, vtkPolyData* iView)
@@ -2608,6 +2595,52 @@ SaveAndVisuMesh(vtkPolyData* iView, unsigned int iTCoord)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+CreateEmptyMesh()
+{
+  m_DataBaseTables->SaveNewMeshWithNoPointsInDB();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+AddContourToCurrentMesh(vtkPolyData* iInput)
+{
+  //IDWithColorData ContourData = IDWithColorData(-1, QColor(Qt::white));
+  if ((iInput->GetNumberOfPoints() > 2) && (m_TCoord >= 0))
+    {
+    // Compute Bounding Box
+    int* bounds = GetBoundingBox(iInput);
+    // Save contour in database :
+    this->m_DataBaseTables
+      ->SaveNewContourForContoursToSphere( bounds[0],
+                                           bounds[2],
+                                           bounds[4],
+                                           bounds[1],
+                                           bounds[3],
+                                           bounds[5],
+                                           iInput,
+                                           m_MeshContainer->m_CurrentElement.TraceID
+                                           );
+
+    // AND VISU!!!
+    std::vector<vtkActor*> actors = VisualizeContour( iInput );
+
+    // update the container
+    m_ContourContainer->UpdateCurrentElementFromVisu( actors,
+                                                      iInput,
+                                                      m_TCoord,
+                                                      false,//highlighted
+                                                      true);//visible
+
+    m_ContourContainer->InsertCurrentElement();
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void QGoTabImageView3DwT::ShowTraceDockWidgetForContour(
   bool ManualSegVisible)
 {
@@ -2664,8 +2697,6 @@ void QGoTabImageView3DwT::GoToDefaultMenu(bool iEnable)
 {
   if(iEnable)
     {
-    //m_ContourSegmentation->EnableAndShow(false);
-    //m_MeshSegmentation->EnableAndShow(false);
     this->m_ModeActions.at(0)->setChecked(true);
     }
 }

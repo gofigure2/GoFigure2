@@ -85,6 +85,8 @@ public:
 
   double        getRadius();
 
+  int           getSampling();
+
   void          setPoints(vtkPoints* iPoints);
   vtkPoints*    getPoints();
 
@@ -114,12 +116,15 @@ public:
       ExtractROI(typename itk::Image<PixelType, VImageDimension >::Pointer,
                      double* iCenter, double iRadius);
 
+  int m_Dimension;
+
 public slots:
 
   virtual vtkPolyData* Apply()=0;
   void    UpdateVisibility(int iFilter);
   void    setRadius(double iRadius);
   void    setChannel(int iChannel = 0);
+  void    setSampling(int iSampling);
 
 signals:
   void MeshCreated(vtkPolyData* );
@@ -127,6 +132,9 @@ signals:
   void ImageProcessed();
   void UpdateSeeds();
   void SegmentationFinished();
+
+  void CreateEmptyMesh();
+  void AddContourToCurrentMesh(vtkPolyData* );
 
 private:
   vtkImageData* m_Output;
@@ -138,6 +146,7 @@ private:
   int           m_Channel;
   vtkPoints*    m_Points;
   std::vector<vtkImageData*>* m_OriginalImageMC;
+  int           m_Sampling;
 };
 
 #include "QGoFilterSemiAutoBase.txx"

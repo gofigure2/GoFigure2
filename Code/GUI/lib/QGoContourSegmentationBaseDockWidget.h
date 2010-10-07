@@ -79,8 +79,6 @@ public:
   bool GetReeditMode();
   void SetReeditMode( bool iEnable);
 
-  void EnableAndShow( bool iEnable);
-
   void Initialize();
 
 /*

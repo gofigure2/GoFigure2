@@ -50,6 +50,10 @@
 #include "itkImage.h"
 #include "itkVTKImageImport.h"
 
+// to cut
+#include "vtkPlane.h"
+#include "vtkCutter.h"
+
 #include "QGoContourSemiAutoLevelsetWidget.h"
 
 //--------------------------------------------------------------------------
@@ -62,7 +66,7 @@ QGoFilterChanAndVes( QObject* iParent, int iDimension ) :
   m_Curvature = 5;
 
   QString name = "Levelset ";
-  name.append(QString::number(m_Dimension, 10));
+  name.append(QString::number(m_Dimension + 2, 10));
   name.append("D");
 
   setName(name);
@@ -113,7 +117,7 @@ Apply()
 
   double* center2 = new double[3];
 
-  if(m_Dimension == 2)
+  if(m_Dimension == 0)
     {
     const int dimension = 2;
     const int orientation = 0;
@@ -209,6 +213,7 @@ Apply()
       }
     }
   else
+    //if dimension is 3 - i.e. m_Dimension == 1
     {
     const int dimension = 3;
     double* center2 = new double[3];
@@ -267,8 +272,36 @@ Apply()
       //---------------------------------------------------------
       setOutput(ConvertITK2VTK<float, dimension>(test3));
 
-      //emit MeshCreated();
-      emit MeshCreated(ReconstructMesh(getOutput()));
+      if(m_Dimension == 1)
+        {
+        emit MeshCreated(ReconstructMesh(getOutput()));
+        }
+      else
+        {
+        std::cout << "emit empty mesh...." << std::endl;
+
+        emit CreateEmptyMesh();
+        // Extract each slice according top the sampling
+        vtkPlane* implicitFunction = vtkPlane::New();
+        implicitFunction->SetNormal(0, 0, 1);
+
+        vtkCutter* cutter = vtkCutter::New();
+        cutter->SetInput(ReconstructMesh(getOutput()));
+        cutter->SetCutFunction(implicitFunction);
+        std::cout << "sampling...." << getSampling() << std::endl;
+
+        for(int i=0; i< getSampling(); ++i)
+          {
+          implicitFunction
+            ->SetOrigin((center2[0]-getRadius()+(i+1)*2*getRadius()/(getSampling()+1)),
+                        (center2[1]-getRadius()+(i+1)*2*getRadius()/(getSampling()+1)),
+                        (center2[2]-getRadius()+(i+1)*2*getRadius()/(getSampling()+1)));
+          cutter->Update();
+          std::cout << "emit add contour...." << std::endl;
+          emit AddContourToCurrentMesh(cutter->GetOutput());
+          }
+        }
+
       }
     }
 

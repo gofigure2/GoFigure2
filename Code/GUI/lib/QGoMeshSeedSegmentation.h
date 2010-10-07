@@ -68,7 +68,8 @@ public:
    */
   explicit QGoMeshSeedSegmentation( QWidget * parentW = 0,
                                     vtkPoints* seeds = 0,
-                                    std::vector<vtkImageData*>* iOriginalImage = 0);
+                                    std::vector<vtkImageData*>* iOriginalImage = 0,
+                                    int iSampling = 1);
 
   /**
    * \brief Destructor

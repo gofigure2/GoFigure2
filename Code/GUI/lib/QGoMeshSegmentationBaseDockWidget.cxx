@@ -41,7 +41,6 @@
 #include "QGoMeshSegmentationBaseDockWidget.h"
 
 // base widgets
-//#include "QGoContourManualSegmentation.h"
 #include "QGoMeshSeedSegmentation.h"
 
 //---------------------------------------------------------------------------//
@@ -79,34 +78,60 @@ QGoMeshSegmentationBaseDockWidget(QWidget* iParent, vtkPoints* seeds,
   // Manual segmentation
   //----------------------------------------------------------------
 
-  /// TODO add manual mesh segmentation capability
+  m_MeshManualSegmentation =
+      // 0 2D
+      // 1 3D
+      // 2 2D+3D
+      new QGoMeshSeedSegmentation( this, seeds, iOriginalImage, 2);
+
+  QWidget* manual_widget = m_MeshManualSegmentation->getWidget();
+
+  frame->layout()->addWidget( manual_widget );
+  manual_widget->setVisible(false);
+
+  // connect show/hide
+  QObject::connect(this, SIGNAL(ManualSegmentationActivated(bool)),
+      manual_widget, SLOT(setVisible(bool)));
+
+  QObject::connect(this, SIGNAL(ManualSegmentationActivated(bool)),
+      manual_widget, SLOT(setEnabled(bool)));
+
+  // connect semi-automatic segmentation specific signals
+  QObject::connect(m_MeshManualSegmentation, SIGNAL(UpdateSeeds()),
+      this, SIGNAL(UpdateSeeds()));
+  QObject::connect(m_MeshManualSegmentation, SIGNAL(CreateEmptyMesh()),
+      this, SIGNAL(CreateEmptyMesh()));
+  QObject::connect(m_MeshManualSegmentation, SIGNAL(AddContourToCurrentMesh(vtkPolyData*)),
+      this, SIGNAL(AddContourToCurrentMesh(vtkPolyData*)));
+  QObject::connect(m_MeshManualSegmentation, SIGNAL(SegmentationFinished()),
+      this, SIGNAL(ClearAllSeeds()));
 
   //----------------------------------------------------------------
   // Semi auto segmentation ( i.e. algo with seed)
   //----------------------------------------------------------------
 
   m_MeshSemiAutoSegmentation =
-      new QGoMeshSeedSegmentation( this, seeds, iOriginalImage);
+      new QGoMeshSeedSegmentation( this, seeds, iOriginalImage, 1);
 
   QWidget* semi_auto_widget = m_MeshSemiAutoSegmentation->getWidget();
 
-  this->GetFrame()->layout()->addWidget( semi_auto_widget );
+  frame->layout()->addWidget( semi_auto_widget );
   semi_auto_widget->setVisible(false);
 
-    // connect show/hide
-    QObject::connect(this, SIGNAL(SemiAutoSegmentationActivated(bool)),
-                     semi_auto_widget, SLOT(setVisible(bool)));
+  // connect show/hide
+  QObject::connect(this, SIGNAL(SemiAutoSegmentationActivated(bool)),
+                   semi_auto_widget, SLOT(setVisible(bool)));
 
-    QObject::connect(this, SIGNAL(SemiAutoSegmentationActivated(bool)),
-                     semi_auto_widget, SLOT(setEnabled(bool)));
+  QObject::connect(this, SIGNAL(SemiAutoSegmentationActivated(bool)),
+                   semi_auto_widget, SLOT(setEnabled(bool)));
 
-    // connect semi-automatic segmentation specific signals
-    QObject::connect(m_MeshSemiAutoSegmentation, SIGNAL(UpdateSeeds()),
-        this, SIGNAL(UpdateSeeds()));
-    QObject::connect(m_MeshSemiAutoSegmentation, SIGNAL(MeshCreated(vtkPolyData*)),
-        this, SIGNAL(SaveAndVisuMesh(vtkPolyData*)));
-    QObject::connect(m_MeshSemiAutoSegmentation, SIGNAL(SegmentationFinished()),
-        this, SIGNAL(ClearAllSeeds()));
+  // connect semi-automatic segmentation specific signals
+  QObject::connect(m_MeshSemiAutoSegmentation, SIGNAL(UpdateSeeds()),
+      this, SIGNAL(UpdateSeeds()));
+  QObject::connect(m_MeshSemiAutoSegmentation, SIGNAL(MeshCreated(vtkPolyData*)),
+      this, SIGNAL(SaveAndVisuMesh(vtkPolyData*)));
+  QObject::connect(m_MeshSemiAutoSegmentation, SIGNAL(SegmentationFinished()),
+      this, SIGNAL(ClearAllSeeds()));
 
 }
 //---------------------------------------------------------------------------//
@@ -115,15 +140,6 @@ QGoMeshSegmentationBaseDockWidget(QWidget* iParent, vtkPoints* seeds,
 QGoMeshSegmentationBaseDockWidget::
 ~QGoMeshSegmentationBaseDockWidget()
 {
-}
-//---------------------------------------------------------------------------//
-
-//---------------------------------------------------------------------------//
-QFrame*
-QGoMeshSegmentationBaseDockWidget::
-GetFrame()
-{
-  return frame;
 }
 
 //---------------------------------------------------------------------------//
@@ -194,25 +210,8 @@ void
 QGoMeshSegmentationBaseDockWidget::
 SetChannel(int iChannel)
 {
+  m_MeshManualSegmentation->SetChannel(iChannel);
   m_MeshSemiAutoSegmentation->SetChannel(iChannel);
-}
-//---------------------------------------------------------------------------//
-
-//---------------------------------------------------------------------------//
-void
-QGoMeshSegmentationBaseDockWidget::
-EnableAndShow( bool iEnable)
-{
-  if(iEnable)
-    {
-    //m_ContourManualSegmentation->getWidget()->show();
-    //m_ContourManualSegmentation->getWidget()->setEnabled(iEnable);
-    }
-  else
-    {
-    //m_ContourManualSegmentation->getWidget()->hide();
-    //m_ContourManualSegmentation->getWidget()->setEnabled(iEnable);
-    }
 }
 //---------------------------------------------------------------------------//
 
