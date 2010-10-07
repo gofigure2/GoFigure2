@@ -2105,7 +2105,7 @@ ValidateContour()
     this->m_DataBaseTables->GetTraceManualEditingDockWidget()->setEnabled(true);
     m_ContourSegmentationDockWidget->SetReeditMode(false);
     m_ImageView->ReinitializeContourWidget();
-    m_ContourSegmentationDockWidget->setEnabled( false );
+    //m_ContourSegmentationDockWidget->setEnabled( false );
     m_ContourSegmentationDockWidget->hide();
     }
 }
@@ -2162,7 +2162,7 @@ ReEditContour(const unsigned int& iId)
       m_ImageView->InitializeContourWidgetNodes( dir , nodes );
 
       this->m_ContourSegmentationDockWidget->show();
-      this->m_ContourSegmentationDockWidget->setEnabled(true);
+      //this->m_ContourSegmentationDockWidget->setEnabled(true);
       this->m_ContourSegmentationDockWidget->SegmentationMethod(0);
       this->m_ContourSegmentationDockWidget->SetReeditMode( true );
           //m_ManualSegmentationDockWidget->setEnabled(true);

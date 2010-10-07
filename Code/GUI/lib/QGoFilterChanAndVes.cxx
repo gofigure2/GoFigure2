@@ -224,7 +224,9 @@ Apply()
       tf->SetInput(ReconstructContour(getOutput()));
       tf->Update();
 
-      emit ContourCreated(tf->GetOutput());
+      vtkPolyData* contour = tf->GetOutput();
+
+      emit ContourCreated( contour );
       }
     }
   else
