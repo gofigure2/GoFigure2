@@ -68,29 +68,21 @@
 
 //--------------------------------------------------------------------------
 QGoFilterSemiAutoBase::
-    QGoFilterSemiAutoBase( QObject* iParent ) : QObject( iParent )
+QGoFilterSemiAutoBase( QObject* iParent ) :
+  QObject( iParent ),
+  m_Widget( NULL ),
+  m_Radius( 3. ),
+  m_Sampling( 3 ),
+  m_Channel( 0 ),
+  m_Number( 0 ),
+  m_Points( NULL ),
+  m_OriginalImageMC( NULL )
 {
   m_Output = vtkImageData::New();
-
-  m_Name = ""; // will be change in herited class
-
-  m_Widget = NULL;// will be assigned in herited class
 
   m_Center[0] = 0;
   m_Center[1] = 0;
   m_Center[2] = 0;
-
-  m_Radius = 3.0;
-
-  m_Sampling = 3;
-
-  m_Channel = 0;
-
-  m_Number = 0;
-
-  m_Points = NULL;
-
-  m_OriginalImageMC = NULL;
 }
 //--------------------------------------------------------------------------
 
@@ -264,16 +256,17 @@ void
 QGoFilterSemiAutoBase::
 UpdateVisibility(int iCurrentFilter)
 {
+  QWidget* w = m_Widget->parentWidget()->parentWidget();
   if(m_Number == iCurrentFilter )
     {
     m_Widget->show();
-    QObject::connect(  m_Widget->parentWidget()->parentWidget(), SIGNAL(Apply()),
+    QObject::connect( w , SIGNAL(Apply()),
         this, SLOT(Apply()));
     }
   else
     {
     m_Widget->hide();
-    QObject::disconnect(  m_Widget->parentWidget()->parentWidget(), SIGNAL(Apply()),
+    QObject::disconnect( w, SIGNAL(Apply()),
         this, SLOT(Apply()));
     }
 }
@@ -286,25 +279,27 @@ ConnectSignals(int iFilterNumber)
 {
   m_Number = iFilterNumber;
 
+  QWidget* w = m_Widget->parentWidget()->parentWidget();
+
   // Buttons connections
-  QObject::connect(  m_Widget->parentWidget()->parentWidget(), SIGNAL(Apply()),
+  QObject::connect(  w, SIGNAL(Apply()),
       this, SLOT(Apply()));
-  QObject::connect(  m_Widget->parentWidget()->parentWidget(), SIGNAL(Filter(int)),
+  QObject::connect(  w, SIGNAL(Filter(int)),
       this, SLOT(UpdateVisibility(int)));
-  QObject::connect(  m_Widget->parentWidget()->parentWidget(), SIGNAL(Radius(double)),
+  QObject::connect(  w, SIGNAL(Radius(double)),
       this, SLOT(setRadius(double)));
-  QObject::connect(  m_Widget->parentWidget()->parentWidget(), SIGNAL(Channel(int)),
+  QObject::connect(  w, SIGNAL(Channel(int)),
       this, SLOT(setChannel(int)));
   QObject::connect(  m_Widget->parentWidget()->parentWidget(), SIGNAL(Sampling(int)),
       this, SLOT(setSampling(int)));
 
   // End of segmentation signals
   QObject::connect(  this , SIGNAL(MeshCreated(vtkPolyData*)),
-      m_Widget->parentWidget()->parentWidget(), SIGNAL(MeshCreated(vtkPolyData*)));
+      w, SIGNAL(MeshCreated(vtkPolyData*)));
   QObject::connect(  this , SIGNAL(ContourCreated(vtkPolyData*)),
-        m_Widget->parentWidget()->parentWidget(), SIGNAL(ContourCreated(vtkPolyData*)));
+      w, SIGNAL(ContourCreated(vtkPolyData*)));
   QObject::connect(  this , SIGNAL(ImageProcessed()),
-        m_Widget->parentWidget()->parentWidget(), SIGNAL(ImageProcessed()));
+      w, SIGNAL(ImageProcessed()));
 
   QObject::connect(  this , SIGNAL(CreateEmptyMesh()),
         m_Widget->parentWidget()->parentWidget(), SIGNAL(CreateEmptyMesh()));
@@ -313,9 +308,9 @@ ConnectSignals(int iFilterNumber)
 
 
   QObject::connect(this, SIGNAL(UpdateSeeds()),
-      m_Widget->parentWidget()->parentWidget(), SIGNAL(UpdateSeeds()));
+      w, SIGNAL(UpdateSeeds()));
   QObject::connect(this, SIGNAL(SegmentationFinished()),
-      m_Widget->parentWidget()->parentWidget(), SIGNAL(SegmentationFinished()));
+      w, SIGNAL(SegmentationFinished()));
 
 }
 //--------------------------------------------------------------------------
@@ -362,6 +357,9 @@ extractOneSlice(vtkImageData* iOriginalImage, double* iOrigin, int iDirection)
 
   vtkImageData* output = vtkImageData::New();
   output->DeepCopy(reslicer->GetOutput());
+
+  reslicer->Delete();
+  resliceAxes->Delete();
 
   return output;
 }

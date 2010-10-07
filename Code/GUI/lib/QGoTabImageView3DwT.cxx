@@ -120,7 +120,7 @@ QGoTabImageView3DwT(QWidget* iParent) :
   m_YTileCoord( 0 ),
   m_ZTileCoord( 0 ),
   m_TCoord(-1),
-  m_ContourId(0),
+  //m_ContourId(0),
   m_TraceWidgetRequiered(false)
   {
   m_Image = vtkImageData::New();
@@ -135,6 +135,7 @@ QGoTabImageView3DwT(QWidget* iParent) :
   m_HighlightedMeshesProperty->SetColor( 1., 0., 0. );
   m_HighlightedMeshesProperty->SetOpacity( 1. );
   m_HighlightedMeshesProperty->SetSpecular( 0.6 );
+  m_HighlightedMeshesProperty->SetLineWidth( 3. );
   m_HighlightedMeshesProperty->SetInterpolationToPhong();
 
   setupUi(this);
@@ -2067,8 +2068,8 @@ QGoTabImageView3DwT::
 ValidateContour()
 {
   // to make sure that m_ContourId is set to the right value
-  int          ContourID = -1;
-  double rgba[4] = {0., 0., 0., 0.};
+  //int          ContourID = -1;
+  //double rgba[4] = {0., 0., 0., 0.};
   IDWithColorData test;
   bool re_edit = m_ContourSegmentationDockWidget->GetReeditMode();
 
@@ -2080,41 +2081,24 @@ ValidateContour()
       {
       vtkPolyData* contour =  m_ImageView->GetContourRepresentationAsPolydata(i);
 
-      /*if( m_ReEditContourMode )
-        {
-        test = UpdateContour( contour, nodes );
-        std::vector<vtkActor*> actors = VisualizeContour( contour );
+      SaveContour( contour, nodes );
 
-        m_ContourContainer->UpdateCurrentElementFromVisu(actors,
-                                          nodes,
-                                          m_TCoord,
-                                          false,//highlighted
-                                          true);//visible
-        m_ContourContainer->m_Container.get<TraceID>().replace(
-            this->m_ElementToBeReEdited,
-            m_ContourContainer->m_CurrentElement );
-        }
-      else*/
-        {
-        SaveContour( contour, nodes );
+      std::vector<vtkActor*> actors = VisualizeContour( contour );
 
-        std::vector<vtkActor*> actors = VisualizeContour( contour );
-
-        m_ContourContainer->UpdateCurrentElementFromVisu(actors,
+      m_ContourContainer->UpdateCurrentElementFromVisu(actors,
                                           nodes,
                                           m_TCoord,
                                           re_edit,//highlighted
                                           true);//visible
 
-        m_ContourContainer->InsertCurrentElement();
-        }
+      m_ContourContainer->InsertCurrentElement();
       }
     }
 
   if (re_edit)
     {
-    std::list<int> listofrowstobeselected;
-    listofrowstobeselected.push_back(m_ContourId);
+    //std::list<int> listofrowstobeselected;
+    //listofrowstobeselected.push_back(m_ContourId);
 
     //m_DataBaseTables->ChangeContoursToHighLightInfoFromVisu(listofrowstobeselected,
                                                           //  true); // reedit mode = true
@@ -2762,6 +2746,7 @@ void QGoTabImageView3DwT::ImportContours()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/*
 void
 QGoTabImageView3DwT::
 ChangeColorOfSelectedTraces(ContourMeshStructureMultiIndexContainer& ioContainer,
@@ -2800,7 +2785,7 @@ ChangeColorOfSelectedTraces(ContourMeshStructureMultiIndexContainer& ioContainer
       }
     ++it;
     }
-}
+}*/
 //-------------------------------------------------------------------------
 
 /// TODO Bug iMeshID is not the one it is supposed to be

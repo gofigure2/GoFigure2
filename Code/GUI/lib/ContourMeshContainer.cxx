@@ -469,6 +469,8 @@ DeleteAllHighlightedElements()
     m_Container.get<Highlighted>().erase( it_t );
     }
 
+  m_ImageView->UpdateRenderWindows();
+
   return oList;
 }
 //-------------------------------------------------------------------------

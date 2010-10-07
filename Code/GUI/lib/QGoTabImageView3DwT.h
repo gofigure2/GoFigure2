@@ -94,7 +94,7 @@ public:
    * \brief Default Constructor
    * \param parent
    */
-  QGoTabImageView3DwT(QWidget * parent = 0);
+  explicit QGoTabImageView3DwT(QWidget * parent = 0);
 
   /**
    * \brief Destructor
@@ -216,8 +216,8 @@ public:
       }
   }
 
-  void AddMeshFromNodes(const unsigned int& iMeshID, vtkPolyData* iNodes,
-                        const double iRgba[4], const unsigned int& iTCoord);
+  //void AddMeshFromNodes(const unsigned int& iMeshID, vtkPolyData* iNodes,
+  //                      const double iRgba[4], const unsigned int& iTCoord);
 
   int GetSliceViewXY() const;
   int GetSliceViewXZ() const;
@@ -228,8 +228,6 @@ public:
   QGoPrintDatabase* m_DataBaseTables;
 
   GoFigureMeshAttributes ComputeMeshAttributes(vtkPolyData* iMesh);
-
-  void RemoveAllTracesForGivenTimePoint( const unsigned int& iT );
 
 signals:
   void TimePointChanged(int TimePoint);
@@ -484,16 +482,17 @@ protected:
   void SetTimePointWithLSMReaders(const int& iTimePoint);
   void SetTimePointWithMegaCapture(const int& iTimePoint);
 
+  /*
   void
   ChangeColorOfSelectedTraces(
       ContourMeshStructureMultiIndexContainer& ioContainer,
       ContourMeshStructureMultiIndexContainer* iTbContainer,
-      QColor iSelectedColor );
+      QColor iSelectedColor );*/
 
   //void GetTraceColor(double* rgba);
 
-  ContourMeshContainer::MultiIndexContainerTraceIDIterator
-      m_ElementToBeReEdited;
+  //ContourMeshContainer::MultiIndexContainerTraceIDIterator
+  //    m_ElementToBeReEdited;
 
   bool m_TraceWidgetRequiered;
 
