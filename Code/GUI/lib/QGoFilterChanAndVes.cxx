@@ -111,98 +111,165 @@ Apply()
   // update the pointed value of the seeds
   emit UpdateSeeds();
 
-  const int dimension = 2;
-  const int orientation = 0;
   double* center2 = new double[3];
 
-  // LOOP  FOR EACH SEED
-  for (int i = 0; i < getPoints()->GetNumberOfPoints(); i++)
+  if(m_Dimension == 2)
     {
-    getPoints()->GetPoint(i, center2);
+    const int dimension = 2;
+    const int orientation = 0;
 
-    // useful to translate the polydata afterwards
-    setCenter(center2);
+    // LOOP  FOR EACH SEED
+    for (int i = 0; i < getPoints()->GetNumberOfPoints(); i++)
+      {
+      getPoints()->GetPoint(i, center2);
 
-    // Extract one slice
-    vtkImageData* slice = vtkImageData::New();
+      // useful to translate the polydata afterwards
+      setCenter(center2);
 
-    slice->DeepCopy(extractOneSlice(getInput(), center2, orientation));
+      vtkImageData* slice = vtkImageData::New();
+      slice->DeepCopy(getInput());
 
-    // Recompute new center
-    double* newOrigin = slice->GetOrigin();
-    double* center = new double[3];
+      // Extract one slice if dimenesion == 2
+      slice->DeepCopy(extractOneSlice(getInput(), center2, orientation));
 
-    switch (orientation)
-          {
-          case 0:
+      // Recompute new center
+      double* newOrigin = slice->GetOrigin();
+      double* center = new double[3];
+
+      switch (orientation)
             {
-            center[0] = center2[0] + newOrigin[0];
-            center[1] = center2[1] + newOrigin[1];
-            break;
+            case 0:
+              {
+              center[0] = center2[0] + newOrigin[0];
+              center[1] = center2[1] + newOrigin[1];
+              break;
+              }
+            case 1:
+              {
+              center[0] = center2[0] + newOrigin[0];
+              center[1] = center2[2] + newOrigin[1];
+              break;
+              }
+            case 2:
+              {
+              center[0] = center2[1] + newOrigin[0];
+              center[1] = center2[2] + newOrigin[1];
+              break;
+              }
+            default:
+              {
+              break;
+              }
             }
-          case 1:
-            {
-            center[0] = center2[0] + newOrigin[0];
-            center[1] = center2[2] + newOrigin[1];
-            break;
-            }
-          case 2:
-            {
-            center[0] = center2[1] + newOrigin[0];
-            center[1] = center2[2] + newOrigin[1];
-            break;
-            }
-          default:
-            {
-            break;
-            }
-          }
 
-    // run filter
+      // run filter
+      typedef itk::Image<unsigned char, dimension> FeatureImageType;
+      typedef itk::Image<float, dimension>         OutputImageType;
 
-    typedef itk::Image<unsigned char, dimension> FeatureImageType;
-    typedef itk::Image<float, dimension>         OutputImageType;
+      //VTK to ITK
+      //---------------------------------------------------------
+      FeatureImageType::Pointer
+        itkImage = ConvertVTK2ITK<unsigned char, dimension>( slice );
 
-    //VTK to ITK
-    //---------------------------------------------------------
-    FeatureImageType::Pointer
-      itkImage = ConvertVTK2ITK<unsigned char, dimension>( slice );
+      // Extract ROI
+      //---------------------------------------------------------
+      FeatureImageType::Pointer
+        test2 = ExtractROI<unsigned char, dimension>(itkImage, center, getRadius());
 
-    // Extract ROI
-    //---------------------------------------------------------
-    FeatureImageType::Pointer
-      test2 = ExtractROI<unsigned char, dimension>(itkImage, center, getRadius());
+      // Apply filter
+      // Apply LevelSet segmentation filter
+      //---------------------------------------------------------
+      typedef itk::ChanAndVeseSegmentationFilter<FeatureImageType>
+        SegmentationFilterType;
 
-    // Apply filter
-    // Apply LevelSet segmentation filter
-    //---------------------------------------------------------
-    typedef itk::ChanAndVeseSegmentationFilter<FeatureImageType>
-      SegmentationFilterType;
+      FeatureImageType::PointType pt;
 
-    FeatureImageType::PointType pt;
+      SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
 
-    SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
+      filter->SetFeatureImage(test2);
+      filter->SetPreprocess(1);
 
-    filter->SetFeatureImage(test2);
-    filter->SetPreprocess(1);
+      pt[0] = center[0];
+      pt[1] = center[1];
+      pt[2] = center[2];
+      filter->SetCenter(pt);
 
-    pt[0] = center[0];
-    pt[1] = center[1];
-    pt[2] = center[2];
-    filter->SetCenter(pt);
+      filter->SetRadius(getRadius());
+      filter->SetNumberOfIterations(m_Iterations);
+      filter->SetCurvatureWeight(m_Curvature);
+      filter->Update();
 
-    filter->SetRadius(getRadius());
-    filter->SetNumberOfIterations(m_Iterations);
-    filter->SetCurvatureWeight(m_Curvature);
-    filter->Update();
+      OutputImageType::Pointer test3 = filter->GetOutput();
 
-    OutputImageType::Pointer test3 = filter->GetOutput();
+      // Convert output
+      //---------------------------------------------------------
+      setOutput(ConvertITK2VTK<float, dimension>(test3));
 
-    // Convert output
-    //---------------------------------------------------------
-    setOutput(ConvertITK2VTK<float, dimension>(test3));
+      emit ContourCreated(ReconstructContour(getOutput()));
+      }
+    }
+  else
+    {
+    const int dimension = 3;
+    double* center2 = new double[3];
 
-    emit ContourCreated(ReconstructContour(getOutput()));
+    // LOOP  FOR EACH SEED
+    for (int i = 0; i < getPoints()->GetNumberOfPoints(); i++)
+      {
+      getPoints()->GetPoint(i, center2);
+
+      // useful to translate the polydata afterwards
+      setCenter(center2);
+
+      vtkImageData* slice = vtkImageData::New();
+      slice->DeepCopy(getInput());
+
+      // run filter
+      typedef itk::Image<unsigned char, dimension> FeatureImageType;
+      typedef itk::Image<float, dimension>         OutputImageType;
+
+      //VTK to ITK
+      //---------------------------------------------------------
+      FeatureImageType::Pointer
+        itkImage = ConvertVTK2ITK<unsigned char, dimension>( slice );
+
+      // Extract ROI
+      //---------------------------------------------------------
+      FeatureImageType::Pointer
+        test2 = ExtractROI<unsigned char, dimension>(itkImage, center2, getRadius());
+
+      // Apply filter
+      // Apply LevelSet segmentation filter
+      //---------------------------------------------------------
+      typedef itk::ChanAndVeseSegmentationFilter<FeatureImageType>
+        SegmentationFilterType;
+
+      FeatureImageType::PointType pt;
+
+      SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
+
+      filter->SetFeatureImage(test2);
+      filter->SetPreprocess(1);
+
+      pt[0] = center2[0];
+      pt[1] = center2[1];
+      pt[2] = center2[2];
+      filter->SetCenter(pt);
+
+      filter->SetRadius(getRadius());
+      filter->SetNumberOfIterations(m_Iterations);
+      filter->SetCurvatureWeight(m_Curvature);
+      filter->Update();
+
+      OutputImageType::Pointer test3 = filter->GetOutput();
+
+      // Convert output
+      //---------------------------------------------------------
+      setOutput(ConvertITK2VTK<float, dimension>(test3));
+
+      //emit MeshCreated();
+      emit MeshCreated(ReconstructMesh(getOutput()));
+      }
     }
 
   emit SegmentationFinished();

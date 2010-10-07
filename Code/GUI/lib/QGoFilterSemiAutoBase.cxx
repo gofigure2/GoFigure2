@@ -59,6 +59,9 @@
 
 // construct mesh
 #include "vtkMarchingCubes.h"
+  // and smooth it...!
+#include "vtkSmoothPolyDataFilter.h"
+
 //--------------------------------------------------------------------------
 QGoFilterSemiAutoBase::
     QGoFilterSemiAutoBase( QObject* iParent ) : QObject( iParent )
@@ -420,6 +423,20 @@ ReconstructMesh(vtkImageData* iInputImage)
   //Update required here!!
   contours->Update();
 
+  // smooth the output mesh..?
+/*
+  std::cout<< "time consumming??" << std::endl;
+
+  vtkSmoothPolyDataFilter* smoother =
+      vtkSmoothPolyDataFilter::New();
+  smoother->SetInput(contours->GetOutput());
+  smoother->SetNumberOfIterations(400);
+
+  //Update required here!!
+  smoother->Update();
+
+  std::cout<< "hopefully not..." << std::endl;
+*/
   return contours->GetOutput();
 }
 //--------------------------------------------------------------------------

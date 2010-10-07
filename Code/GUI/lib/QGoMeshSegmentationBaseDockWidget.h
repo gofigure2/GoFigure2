@@ -108,8 +108,7 @@ signals:
   void ClearAllSeeds();
 
 private:
-  //QGoContourManualSegmentation*      m_ContourManualSegmentation;
-  QGoMeshSeedSegmentation*             m_MeshSemiAutoSegmentation;
+  QGoMeshSeedSegmentation*  m_MeshSemiAutoSegmentation;
 
   Q_DISABLE_COPY( QGoMeshSegmentationBaseDockWidget );
   };
