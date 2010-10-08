@@ -348,7 +348,7 @@ void QGoTableWidget::SetVisibleColumn(unsigned int iNbOfRows,
     Checkbox->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
     QColor WhiteColor(Qt::white);
     Checkbox->setTextColor(WhiteColor);
-    this->setItem(i, indexCol, Checkbox);  
+    this->setItem(i, indexCol, Checkbox);
     this->setVisibleStateCheckBox(Checkbox,Qt::Checked,false);
     }
 }
@@ -423,7 +423,7 @@ void QGoTableWidget::InsertNewRow(TWContainerType iTWRowContainer,
               CellTable->setData(0,QString::fromStdString(Value).toDouble());
               CellTable->setTextAlignment(Qt::AlignCenter);
               this->setItem(NewRow - 1, j, CellTable);
-              }        
+              }
             } //ENDIF
           } //ENDFOR
         } //ENDIF
@@ -678,6 +678,8 @@ void QGoTableWidget::CopyTable()
 void QGoTableWidget::PrepareRangeToCopy(QTableWidgetSelectionRange Range,
                                            QString& str)
 {
+  QTableWidgetItem* t_item = NULL;
+
   for (int i = 0; i < Range.rowCount(); ++i)
     {
     if (i > 0)
@@ -701,11 +703,29 @@ void QGoTableWidget::PrepareRangeToCopy(QTableWidgetSelectionRange Range,
         }
       else
         {
-        str += this->item(Range.topRow() + i, Range.leftColumn() + j)->text();
+        t_item = this->item(Range.topRow() + i, Range.leftColumn() + j);
+        if( t_item )
+          {
+          str += t_item->text();
+          }
+        else
+          {
+          str += "*";
+          }
         str += "\t";
         }
       }
-    str += this->item(Range.topRow() + i, Range.leftColumn() + Range.columnCount() - 1)->text();
+    t_item =
+        this->item(Range.topRow() + i, Range.leftColumn() + Range.columnCount() - 1);
+
+    if( t_item )
+      {
+      str += t_item->text();
+      }
+    else
+      {
+      str += "*";
+      }
     }
 }
 //--------------------------------------------------------------------------
@@ -869,8 +889,8 @@ std::string QGoTableWidget::GetMeanValue(std::string iColumnNameOne,
 
 //--------------------------------------------------------------------------
 void QGoTableWidget::setCheckedUncheckedStateCheckBox(QTableWidgetItem * iItem,
-                                              Qt::CheckState iState, 
-                                              bool EmitSignal)                 
+                                              Qt::CheckState iState,
+                                              bool EmitSignal)
 {
   if (this->setCheckStateCheckBox(iItem,iState) && EmitSignal)
     {
@@ -882,8 +902,8 @@ void QGoTableWidget::setCheckedUncheckedStateCheckBox(QTableWidgetItem * iItem,
 
 //--------------------------------------------------------------------------
 void QGoTableWidget::setVisibleStateCheckBox(QTableWidgetItem * iItem,
-                                              Qt::CheckState iState, 
-                                              bool EmitSignal)  
+                                              Qt::CheckState iState,
+                                              bool EmitSignal)
 {
   if(this->setCheckStateCheckBox(iItem,iState))
     {
