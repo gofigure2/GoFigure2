@@ -457,6 +457,8 @@ void QGoTableWidget::UpdateRow(TWContainerType iTWRowContainer,
     int     UpdateRow = this->findValueGivenColumn(iTraceID, TraceNameID);
     if (UpdateRow != -1)
       {
+      QTableWidgetItem* t_item = NULL;
+
       for (unsigned int i = 0; i < iTWRowContainer.size(); i++)
         {
         if (iTWRowContainer[i].first.ColumnNameTableWidget != "None" &&
@@ -468,7 +470,13 @@ void QGoTableWidget::UpdateRow(TWContainerType iTWRowContainer,
             if (HeaderCol == iTWRowContainer[i].first.ColumnNameTableWidget)
               {
               std::string Value = iTWRowContainer[i].second[0];
-              this->item(UpdateRow, j)->setData(0, QString::fromStdString(Value).toInt());
+
+              t_item = this->item(UpdateRow, j);
+
+              if( t_item )
+                {
+                t_item->setData(0, QString::fromStdString(Value).toInt());
+                }
               } //ENDIF
             } //ENDFOR
           } //ENDIF
