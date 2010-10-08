@@ -176,7 +176,8 @@ void GoDBMeshRow::InitializeMap()
 //-------------------------------------------------------------------------
 int GoDBMeshRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
 {
-  int SavedMeshID = this->SaveInDBTemplate<GoDBMeshRow>(DatabaseConnector,*this);
+  //int SavedMeshID = this->SaveInDBTemplate<GoDBMeshRow>(DatabaseConnector,*this);
+  int SavedMeshID = GoDBTraceRow::SaveInDBTemplate<GoDBMeshRow>(DatabaseConnector,*this);
   
   if (!this->m_NameChannelWithValues.empty())
     {
@@ -235,6 +236,7 @@ void GoDBMeshRow::SaveInDBTotalIntensityPerChannel(
     GoDBIntensityRow NewIntensity;
     NewIntensity.SetField("ChannelID", ChannelID);
     NewIntensity.SetField("Value", iter->second);
+    std::string strMeshID = this->GetMapValue("meshID");
     NewIntensity.SetField("meshID", this->GetMapValue("meshID"));
     NewIntensity.SaveInDB(DatabaseConnector);
     iter++;

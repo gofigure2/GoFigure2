@@ -1342,7 +1342,7 @@ void QGoPrintDatabase::ChangeTrackColor()
 void QGoPrintDatabase::PrintVolumeAreaForMesh(GoFigureMeshAttributes*
      iMeshAttributes,unsigned int iMeshID)
 {
-  this->m_MeshesManager->UpdateOnlyVolumeAreaForExistingMesh(
+  this->m_MeshesManager->DisplayOnlyVolumeAreaForExistingMesh(
     iMeshAttributes,iMeshID);
 }
 //--------------------------------------------------------------------------

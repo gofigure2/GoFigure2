@@ -96,28 +96,10 @@ void QGoDBMeshManager::DisplayInfoForLastCreatedTrace(
   this->DisplayInfoForLastCreatedTraceTemplate<GoDBTWContainerForMesh>(
     this->m_TWContainer,iDatabaseConnector);
 }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/*void QGoDBMeshManager::PrintVolumeAreaForMesh(double iVolume,
-                                              double iArea, unsigned int iMeshID)
-{
-
-  this->PrintVolumeAreaForMesh(ConvertToString<double>(iVolume),
-    ConvertToString<double>(iArea),iMeshID);
-  /*std::vector<std::string> ColumnNames (2);
-  std::vector<std::string> Values (2);
-  ColumnNames.at(0) = "SurfaceArea";
-  Values.at(0) = ConvertToString<double>(iArea);
-  ColumnNames.at(1) = "Volume";
-  Values.at(1) = ConvertToString<double>(iVolume);
-  this->m_Table->AddValuesForID(ColumnNames, Values, iMeshID,"meshID");
-}*/
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoDBMeshManager::UpdateOnlyVolumeAreaForExistingMesh(
+void QGoDBMeshManager::DisplayOnlyVolumeAreaForExistingMesh(
   GoFigureMeshAttributes* iMeshAttributes,unsigned iMeshID)
 {
   if (iMeshAttributes != 0)
@@ -184,6 +166,7 @@ unsigned int QGoDBMeshManager::SaveNewMeshFromVisu(
   this->SetMeshBoundingBoxAndPoints(iXCoordMin, iYCoordMin, iZCoordMin,iTCoord,
     iXCoordMax, iYCoordMax,iZCoordMax,iTraceNodes,iDatabaseConnector, NewMesh,
     iMeshAttributes);
+  //save the intensities for each channel !!!
   unsigned int NewMeshID = this->m_CollectionOfTraces->CreateNewTraceInDB<GoDBMeshRow>(
     NewMesh,iDatabaseConnector,iColor,iTrackID);
   double* rgba = this->GetVectorFromQColor(iColor.second);
@@ -209,7 +192,7 @@ void QGoDBMeshManager::SaveGeneratedMeshFromVisu(unsigned int iXCoordMin,
   
   this->SetMeshBoundingBoxAndPoints(iXCoordMin, iYCoordMin, iZCoordMin,iTCoord,iXCoordMax, 
     iYCoordMax,iZCoordMax, iTraceNodes,iDatabaseConnector,GeneratedMesh,iMeshAttributes);
-
+  //save the intensity for each channel !!!
   GeneratedMesh.SaveInDB(iDatabaseConnector);
   this->DisplayInfoForExistingTraceForMesh(iDatabaseConnector,TraceID,iMeshAttributes);
 }

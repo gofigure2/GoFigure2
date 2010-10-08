@@ -424,7 +424,8 @@ void QGoTableWidget::InsertNewRow(TWContainerType iTWRowContainer,
             {
             QTableWidgetItem* CellTable = new QTableWidgetItem;
             std::string       Value = iTWRowContainer[i].second[0];
-            CellTable->setData(0, QString::fromStdString(Value).toInt());
+            //CellTable->setData(0, QString::fromStdString(Value).toInt());
+            CellTable->setData(0,atoi(Value.c_str()));
             CellTable->setTextAlignment(Qt::AlignCenter);
             this->setItem(NewRow - 1, j, CellTable);
             } //ENDIF

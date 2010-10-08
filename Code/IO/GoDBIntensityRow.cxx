@@ -59,7 +59,7 @@ void GoDBIntensityRow::InitializeMap()
   this->m_TableIDName = "IntensityID";
   this->m_MapRow["IntensityID"] = ConvertToString<int>(0);
   this->m_MapRow["Value"] = ConvertToString<int>(0);
-  this->m_MapRow["MeshID"] = ConvertToString<int>(0);
+  this->m_MapRow["meshID"] = ConvertToString<int>(0);
   this->m_MapRow["ChannelID"] = ConvertToString<int>(0);
 }
 //-------------------------------------------------------------------------
@@ -82,7 +82,7 @@ int GoDBIntensityRow::DoesThisIntensityAlreadyExists(
   vtkMySQLDatabase* DatabaseConnector)
 {
   std::string ChannelID = this->GetMapValue("ChannelID");
-  std::string MeshID = this->GetMapValue("MeshID");
+  std::string MeshID = this->GetMapValue("meshID");
   /*return FindOneID(DatabaseConnector,"color", "ColorID","Red",Red,"Green",Green,
   "Blue",Blue,"Alpha",Alpha,"Name",Name);*/
   return FindOneID(DatabaseConnector, "intensity", "IntensityID", "ChannelID",

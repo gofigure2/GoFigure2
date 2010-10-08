@@ -70,8 +70,13 @@ public:
   void DisplayInfoForExistingTraceForMesh(vtkMySQLDatabase* iDatabaseConnector,
     int iTraceID,GoFigureMeshAttributes* iMeshAttributes);
 
-  //void PrintVolumeAreaForMesh(double iVolume,double iArea, unsigned int iMeshID);
-  void UpdateOnlyVolumeAreaForExistingMesh(GoFigureMeshAttributes* iMeshAttributes,
+  /**
+  \brief display in the TW the volume and area extracted from iMeshAttributes
+  * called when loading all meshes from database when opening an imagingsession
+  \param[in] iMeshAttributes computed values for a mesh
+  \param[in] iMeshID meshID of the mesh we want to display the volume and area
+  */
+  void DisplayOnlyVolumeAreaForExistingMesh(GoFigureMeshAttributes* iMeshAttributes,
     unsigned iMeshID);
 
   unsigned int CreateNewMeshWithNoContourNoPoints(
@@ -118,8 +123,6 @@ protected:
   virtual void AddActionsContextMenu(QMenu* iMenu);
   virtual void DisplayInfoForAllTraces(vtkMySQLDatabase* iDatabaseConnector);
 
-  //void PrintVolumeAreaForMesh(std::string iVolume,std::string iArea,
-                             // unsigned int iMeshID);
   void SetMeshBoundingBoxAndPoints(unsigned int iXCoordMin, 
     unsigned int iYCoordMin, 
     unsigned int iZCoordMin,unsigned int iTCoord, unsigned int iXCoordMax, 

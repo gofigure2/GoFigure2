@@ -59,8 +59,11 @@ public:
   virtual TWContainerType GetContainerForOneSpecificTrace(
   vtkMySQLDatabase* iDatabaseConnector, int iTraceID);
 
-  //virtual TWContainerType GetContainerForLastCreatedTrace(
-    //vtkMySQLDatabase* iDatabaseConnector);
+  /**
+  \brief set m_MeshAttributes to iMeshAttributes, needs to be called
+  before displaying the volume, area values
+  \param[in] iMeshAttributes attributes for the mesh computed from visu
+  */
   void SetMeshAttributes(GoFigureMeshAttributes* iMeshAttributes);
 
 protected:
@@ -72,31 +75,53 @@ protected:
   //std::vector<std::vector<std::string> > GetChannelsInfo();
 
   void SetChannelsInfo(vtkMySQLDatabase* iDatabaseConnector);
-  //intensities + surface area + volume
-  //if the volume and surface area needs to be filled, the method
-  //setmeshattributes had to be called before
+
+  /**
+  \brief fill the row container with intensities values only if there is
+  more than one mesh in the iVectmeshIDs and that m_MeshAttributes = 0,
+  (expl: when all meshes are loaded from the database)
+  if not, fill the container with values for volume and area also (expl:
+  when a mesh is created from the visu)but the method SetMeshAttributes
+  has to be called before.
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iVectMeshIDs vector of the meshIDs 
+  */
   void FillRowContainerForMeshValues(
     vtkMySQLDatabase* iDatabaseConnector, std::vector<std::string> iVectMeshIDs);
 
+  /**
+  \overloaded
+  */
   void FillRowContainerForMeshValues(
    vtkMySQLDatabase* iDatabaseConnector, int iMeshID);
 
-  //void FillRowContainerForIntensityValues(
-    //vtkMySQLDatabase* iDatabaseConnector,int iMeshID);
-
+  /**
+  \brief extract the volume and area values from the m_MeshAttributes,put
+  them in ioValuesToFill and put the corresponding columns names in ioSelectFields
+  \param[in|out] ioValuesToFill vector of the values where volume and area values 
+  will be pushed
+  \param[in|out] ioSelectFields vector of the selected fields where the volume and
+  area columns names in the TW will be pushed
+  */
   void GetValuesForSurfaceVolume(
     std::vector<std::vector<std::string> > &ioValuesToFill,
     std::vector<std::string>               &ioSelectFields);
 
+  /**
+  \brief get the intensities values from the database,put them in ioValuesToFill,
+  and put the corresponding columns names in ioSelectFields (from m_ChannelsInfo)
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iVectMeshIDs vector of the meshIDs for which the intensities are needed
+  \param[in|out] ioValuesToFill vector of the values where the intensities values 
+  will be pushed
+  \param[in|out] ioSelectFields vector of the selected fields where the intensities
+  columns names in the TW will be pushed
+  */
   void GetValuesForIntensities(
     vtkMySQLDatabase* iDatabaseConnector, 
     std::vector<std::string> iVectMeshIDs,
     std::vector<std::vector<std::string> > &ioValuesToFill,
     std::vector<std::string>               &ioSelectFields);
-
-  void ClearRowContainerValues();
-
-  //void SetChannelsInfo(vtkMySQLDatabase* iDatabaseConnector);
 
   };
 #endif
