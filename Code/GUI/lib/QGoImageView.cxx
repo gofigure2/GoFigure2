@@ -532,6 +532,7 @@ GetAllSeeds()
                                << correctedPosition[2] << std::endl;
 
       oPoints->InsertNextPoint(correctedPosition);
+      delete[] index;
       }
     }
 

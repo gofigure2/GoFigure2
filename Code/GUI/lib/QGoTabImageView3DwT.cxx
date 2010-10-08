@@ -1965,36 +1965,36 @@ QGoTabImageView3DwT::GetBoundingBox(vtkPolyData* iElement)
   std::vector<int> boundingBox( 6, 0 );
 
   if(iElement)
-  {
-  // Compute Bounding Box
-  double bounds[6];
-  iElement->GetBounds(bounds);
-
-  // Extract Min and Max from bounds
-  double       Min[3], Max[3];
-  int          k = 0;
-  unsigned int i;
-  for (i = 0; i < 3; i++)
     {
-    Min[i] = bounds[k++];
-    Max[i] = bounds[k++];
+    // Compute Bounding Box
+    double bounds[6];
+    iElement->GetBounds(bounds);
+
+    // Extract Min and Max from bounds
+    double       Min[3], Max[3];
+    int          k = 0;
+    unsigned int i;
+    for (i = 0; i < 3; i++)
+      {
+      Min[i] = bounds[k++];
+      Max[i] = bounds[k++];
+      }
+
+    int* min_idx = this->GetImageCoordinatesFromWorldCoordinates(Min);
+    int* max_idx = this->GetImageCoordinatesFromWorldCoordinates(Max);
+
+    boundingBox[0] = min_idx[0];
+    boundingBox[1] = max_idx[0];
+
+    boundingBox[2] = min_idx[1];
+    boundingBox[3] = max_idx[1];
+
+    boundingBox[4] = min_idx[2];
+    boundingBox[5] = max_idx[2];
+
+    delete[] min_idx;
+    delete[] max_idx;
     }
-
-  int* min_idx = this->GetImageCoordinatesFromWorldCoordinates(Min);
-  int* max_idx = this->GetImageCoordinatesFromWorldCoordinates(Max);
-
-  boundingBox[0] = min_idx[0];
-  boundingBox[1] = max_idx[0];
-
-  boundingBox[2] = min_idx[1];
-  boundingBox[3] = max_idx[1];
-
-  boundingBox[4] = min_idx[2];
-  boundingBox[5] = max_idx[2];
-
-  delete min_idx;
-  delete max_idx;
-  }
   return boundingBox;
 }
 //-------------------------------------------------------------------------
