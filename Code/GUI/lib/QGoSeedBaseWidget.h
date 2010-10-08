@@ -43,7 +43,7 @@
 
 #include <QWidget>
 #include <QLayout>
-#include <QFrame>
+#include <QGridLayout>
 
 #include "vtkPolyData.h"
 
@@ -61,10 +61,10 @@ public:
   void Initialize();
 
 public slots:
-  void    AddChannel(QString iChannel);
-  void    AddFilter(QString iFilter);
-  int     GetNumberOfFilters();
-  QFrame* GetFrame();
+  void         AddChannel(QString iChannel);
+  void         AddFilter(QString iFilter);
+  int          GetNumberOfFilters();
+  QGridLayout* GetFrame();
 
   signals:
     void Apply();

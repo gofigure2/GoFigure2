@@ -254,7 +254,7 @@ void
 QGoFilterSemiAutoBase::
 UpdateVisibility(int iCurrentFilter)
 {
-  QWidget* w = m_Widget->parentWidget()->parentWidget();
+  QWidget* w = m_Widget->parentWidget();
   if(m_Number == iCurrentFilter )
     {
     m_Widget->show();
@@ -277,7 +277,7 @@ ConnectSignals(int iFilterNumber)
 {
   m_Number = iFilterNumber;
 
-  QWidget* w = m_Widget->parentWidget()->parentWidget();
+  QWidget* w = m_Widget->parentWidget();
 
   // Buttons connections
   QObject::connect(  w, SIGNAL(Apply()),
@@ -288,7 +288,7 @@ ConnectSignals(int iFilterNumber)
       this, SLOT(setRadius(double)));
   QObject::connect(  w, SIGNAL(Channel(int)),
       this, SLOT(setChannel(int)));
-  QObject::connect(  m_Widget->parentWidget()->parentWidget(), SIGNAL(Sampling(int)),
+  QObject::connect(  w, SIGNAL(Sampling(int)),
       this, SLOT(setSampling(int)));
 
   // End of segmentation signals
@@ -300,9 +300,9 @@ ConnectSignals(int iFilterNumber)
       w, SIGNAL(ImageProcessed()));
 
   QObject::connect(  this , SIGNAL(CreateEmptyMesh()),
-        m_Widget->parentWidget()->parentWidget(), SIGNAL(CreateEmptyMesh()));
+      w, SIGNAL(CreateEmptyMesh()));
   QObject::connect(  this , SIGNAL(AddContourToCurrentMesh(vtkPolyData*)),
-        m_Widget->parentWidget()->parentWidget(), SIGNAL(AddContourToCurrentMesh(vtkPolyData*)));
+      w, SIGNAL(AddContourToCurrentMesh(vtkPolyData*)));
 
 
   QObject::connect(this, SIGNAL(UpdateSeeds()),

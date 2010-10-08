@@ -93,9 +93,6 @@ QGoMeshSegmentationBaseDockWidget(QWidget* iParent, vtkPoints* seeds,
   QObject::connect(this, SIGNAL(ManualSegmentationActivated(bool)),
       manual_widget, SLOT(setVisible(bool)));
 
-  QObject::connect(this, SIGNAL(ManualSegmentationActivated(bool)),
-      manual_widget, SLOT(setEnabled(bool)));
-
   // connect semi-automatic segmentation specific signals
   QObject::connect(m_MeshManualSegmentation, SIGNAL(UpdateSeeds()),
       this, SIGNAL(UpdateSeeds()));
@@ -121,9 +118,6 @@ QGoMeshSegmentationBaseDockWidget(QWidget* iParent, vtkPoints* seeds,
   // connect show/hide
   QObject::connect(this, SIGNAL(SemiAutoSegmentationActivated(bool)),
                    semi_auto_widget, SLOT(setVisible(bool)));
-
-  QObject::connect(this, SIGNAL(SemiAutoSegmentationActivated(bool)),
-                   semi_auto_widget, SLOT(setEnabled(bool)));
 
   // connect semi-automatic segmentation specific signals
   QObject::connect(m_MeshSemiAutoSegmentation, SIGNAL(UpdateSeeds()),

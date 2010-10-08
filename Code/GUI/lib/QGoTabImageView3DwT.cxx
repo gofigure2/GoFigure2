@@ -1948,7 +1948,7 @@ SaveContour(vtkPolyData* contour, vtkPolyData* contour_nodes)
                                                       bounds[3],
                                                       bounds[5],
                                                       contour_nodes);
-    //delete bounds;
+    delete bounds;
     }
   //else
   //  {
@@ -2481,6 +2481,8 @@ SaveAndVisuContour(vtkPolyData* iView)
 
   m_ContourContainer->InsertCurrentElement();
 
+  iView->Delete();
+
   return 0;
 }
 //-------------------------------------------------------------------------
@@ -2534,7 +2536,7 @@ SaveMesh(vtkPolyData* iView )//, const int& iMeshID, double iRgba[4], bool NewMe
                                               iView,
                                               &MeshAttributes);
 
-  //delete bounds;
+  delete bounds;
   //return MeshData;
 
 }

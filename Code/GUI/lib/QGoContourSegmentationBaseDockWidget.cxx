@@ -87,8 +87,6 @@ QGoContourSegmentationBaseDockWidget(
   // connect show/hide
   QObject::connect(this, SIGNAL(ManualSegmentationActivated(bool)),
       manual_widget, SLOT(setVisible(bool)));
-//  QObject::connect(this, SIGNAL(ManualSegmentation(bool)),
-//      manual_widget, SLOT(setEnabled(bool)));
 
   // connect specific signals
   QObject::connect(m_ContourManualSegmentation, SIGNAL(validateContour()),
@@ -116,8 +114,6 @@ QGoContourSegmentationBaseDockWidget(
   // connect show/hide
   QObject::connect(this, SIGNAL(SemiAutoSegmentationActivated(bool)),
         semi_auto_widget, SLOT(setVisible(bool)));
-//    QObject::connect(this, SIGNAL(SemiAutoSegmentation(bool)),
-//        semi_auto_widget, SLOT(setEnabled(bool)));
 
     // connect semi-automatic segmentation specific signals
     QObject::connect(m_ContourSemiAutoSegmentation, SIGNAL(UpdateSeeds()),

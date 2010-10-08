@@ -62,22 +62,25 @@ QGoSeedBaseWidget(QWidget* iParent, int iSampling) : QWidget(iParent)
   if (iSampling == 2)
     {
     // add the button and connect it
-    QLabel* samplingLabel = new QLabel(frame_base);
+    QLabel* samplingLabel = new QLabel(this);
     samplingLabel->setObjectName(QString::fromUtf8("samplingLabel"));
     samplingLabel->setText(
         QApplication::translate("SegmentationSeedBaseWidget", "Sampling",
             0, QApplication::UnicodeUTF8));
-    gridLayout_10->addWidget(samplingLabel, 4, 0, 1, 1);
+    gridLayout->addWidget(samplingLabel, 3, 0, 1, 2);
     // Add the spin box
-    QSpinBox* sampling = new QSpinBox(frame_base);
-    sampling->setObjectName(QString::fromUtf8("label"));
+    QSpinBox* sampling = new QSpinBox(this);
+    sampling->setObjectName(QString::fromUtf8("sampling"));
     sampling->setMinimum(1);
     sampling->setValue(3);
-    gridLayout_10->addWidget(sampling, 5, 0, 1, 1);
+    gridLayout->addWidget(sampling, 3, 2, 1, 1);
 
     QObject::connect(sampling, SIGNAL(valueChanged(int)),
                      this, SIGNAL(Sampling(int)));
     }
+
+  gridLayout->removeWidget(apply);
+  gridLayout->addWidget(apply, 5, 0, 1, -1);
 }
 //---------------------------------------------------------------------------//
 
@@ -117,11 +120,11 @@ GetNumberOfFilters()
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
-QFrame*
+QGridLayout*
 QGoSeedBaseWidget::
 GetFrame()
 {
-  return frame;
+  return gridLayout;
 }
 //---------------------------------------------------------------------------//
 
