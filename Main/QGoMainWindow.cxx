@@ -247,7 +247,7 @@ void QGoMainWindow::on_actionOpen_Single_File_triggered()
   QString filename = QFileDialog::getOpenFileName(
     this,
     tr("Select Image"), "",
-    tr("Images (*.png *.bmp *.jpg *.jpeg *.tiff *.mha *.mhd *.img *.lsm)")
+    tr("Images (*.png *.bmp *.jpg *.jpeg *.tiff *.tif *.mha *.mhd *.img *.lsm)")
     );
 
   if (!filename.isEmpty())
