@@ -164,12 +164,15 @@ Apply()
         cutter->SetInput(testing);
         cutter->SetCutFunction(implicitFunction);
 
-        for(int i=0; i< getSampling(); ++i)
+        double step = 2.*getRadius() / static_cast<double>(getSampling()+1);
+
+        for(int j=0; j< getSampling(); ++j)
           {
           implicitFunction
-            ->SetOrigin((center2[0]-getRadius()+(i+1)*2*getRadius()/(getSampling()+1)),
-                        (center2[1]-getRadius()+(i+1)*2*getRadius()/(getSampling()+1)),
-                        (center2[2]-getRadius()+(i+1)*2*getRadius()/(getSampling()+1)));
+            ->SetOrigin(
+                ( center2[0]-getRadius()+static_cast<double>(j+1)* step),
+                ( center2[1]-getRadius()+static_cast<double>(j+1)* step ),
+                ( center2[2]-getRadius()+static_cast<double>(j+1)* step ) );
           cutter->Update();
           vtkPolyData* output = ReorganizeContour(cutter->GetOutput());
           emit AddContourToCurrentMesh(output);
