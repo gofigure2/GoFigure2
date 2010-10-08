@@ -46,7 +46,11 @@
 QGoContourManualSegmentation::
 QGoContourManualSegmentation( QWidget* iParent ) :
   QObject( iParent ),
-  m_ReeditMode( false )
+  m_ReeditMode( false ),
+  m_LinesWidth( 2. ),
+  m_LinesColor( Qt::magenta ),
+  m_NodesColor( Qt::yellow ),
+  m_ActiveNodesColor( Qt::cyan )
 {
   m_ContourSegmentationWidget = new QGoContourManualSegmentationWidget( iParent );
 
