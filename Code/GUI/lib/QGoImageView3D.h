@@ -103,10 +103,6 @@ public:
   virtual void RemoveActor(const int& iId, vtkActor* iActor);
   virtual void AddActor(const int& iId, vtkActor* iActor);
 
-  std::vector<vtkActor*> AddMesh(const int& iId,
-                                 vtkPolyData* dataset,
-                                 vtkProperty* property = NULL);
-
 //   std::vector< vtkQuadricLODActor* >
   std::vector<vtkActor*> AddContour(vtkPolyData* dataset,
                                     vtkProperty* property = NULL);

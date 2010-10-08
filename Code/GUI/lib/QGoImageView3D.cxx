@@ -1000,27 +1000,6 @@ ShowScalarBar(const bool& iShow)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-/**
- * \todo use dynamic_cast or more appropriate cast operator
- */
-std::vector<vtkActor*>
-QGoImageView3D::
-AddMesh(const int& iId, vtkPolyData* dataset, vtkProperty* iProperty)
-{
-  std::vector<vtkActor*> oList =
-    QGoImageView::AddContour(dataset, iProperty);
-
-  vtkActor* temp = m_View3D->AddDataSet((vtkDataSet*) dataset,
-                                        iProperty, false, false);
-
-  //m_View3D->Render();
-  oList.push_back(temp);
-
-  return oList;
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
 void
 QGoImageView3D::
 ShowSplinePlane()

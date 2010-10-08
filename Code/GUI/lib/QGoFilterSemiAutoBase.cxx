@@ -70,11 +70,11 @@ QGoFilterSemiAutoBase( QObject* iParent ) :
   QObject( iParent ),
   m_Widget( NULL ),
   m_Radius( 3. ),
-  m_Sampling( 3 ),
-  m_Channel( 0 ),
   m_Number( 0 ),
+  m_Channel( 0 ),
   m_Points( NULL ),
-  m_OriginalImageMC( NULL )
+  m_OriginalImageMC( NULL ),
+  m_Sampling( 3 )
 {
   m_Output = vtkImageData::New();
 

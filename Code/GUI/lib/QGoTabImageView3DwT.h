@@ -300,9 +300,9 @@ public slots:
   void HighlightYZ();
   void HighlightXYZ();
 
-  std::list<int> SelectTraceInTable(
+  /*std::list<int> SelectTraceInTable(
     ContourMeshStructureMultiIndexContainer& iContainer,
-    std::list<vtkProp3D*>                  iActorList);
+    std::list<vtkProp3D*>                  iActorList);*/
 
   void Change3DPerspectiveToAxial();
   void Change3DPerspectiveToCoronal();
@@ -479,8 +479,8 @@ protected:
   std::vector<vtkActor*> AddContour(vtkPolyData* dataset,
                                     vtkProperty* property = NULL);
 
-  void SetTimePointWithLSMReaders(const int& iTimePoint);
-  void SetTimePointWithMegaCapture(const int& iTimePoint);
+  void SetTimePointWithLSMReaders();
+  void SetTimePointWithMegaCapture();
 
   /*
   void

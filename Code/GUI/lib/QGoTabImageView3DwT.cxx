@@ -1487,7 +1487,7 @@ SetMegaCaptureFile(
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-SetTimePointWithMegaCapture(const int& iTimePoint)
+SetTimePointWithMegaCapture()
 {
   m_MegaCaptureReader->SetTimePoint(m_TCoord);
 
@@ -1539,7 +1539,7 @@ SetTimePointWithMegaCapture(const int& iTimePoint)
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-SetTimePointWithLSMReaders(const int& iTimePoint)
+SetTimePointWithLSMReaders()
 {
   m_LSMReader[0]->SetUpdateTimePoint(m_TCoord);
 
@@ -1606,7 +1606,7 @@ SetTimePoint(const int& iTimePoint)
     else
       {
       m_TCoord = iTimePoint;
-      SetTimePointWithLSMReaders(iTimePoint);
+      SetTimePointWithLSMReaders();
       emit TimePointChanged(m_TCoord);
       }
     }
@@ -1623,7 +1623,7 @@ SetTimePoint(const int& iTimePoint)
       else
         {
         m_TCoord = iTimePoint;
-        SetTimePointWithMegaCapture(iTimePoint);
+        SetTimePointWithMegaCapture();
         emit TimePointChanged(m_TCoord);
         }
       }
@@ -2271,6 +2271,7 @@ VisibilityXYZ()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/*
 std::list<int>
 QGoTabImageView3DwT::
 SelectTraceInTable(ContourMeshStructureMultiIndexContainer& iContainer,
@@ -2302,6 +2303,7 @@ SelectTraceInTable(ContourMeshStructureMultiIndexContainer& iContainer,
 
   return listofrowstobeselected;
 }
+*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
