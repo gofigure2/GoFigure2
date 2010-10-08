@@ -144,33 +144,36 @@ Apply()
 
       // Recompute new center
       double* newOrigin = slice->GetOrigin();
-      double* center = new double[3];
+      double center[3];
 
       switch (orientation)
-            {
-            case 0:
-              {
-              center[0] = center2[0] + newOrigin[0];
-              center[1] = center2[1] + newOrigin[1];
-              break;
-              }
-            case 1:
-              {
-              center[0] = center2[0] + newOrigin[0];
-              center[1] = center2[2] + newOrigin[1];
-              break;
-              }
-            case 2:
-              {
-              center[0] = center2[1] + newOrigin[0];
-              center[1] = center2[2] + newOrigin[1];
-              break;
-              }
-            default:
-              {
-              break;
-              }
-            }
+        {
+        case 0:
+          {
+          center[0] = center2[0] + newOrigin[0];
+          center[1] = center2[1] + newOrigin[1];
+          center[2] = 0.;
+          break;
+          }
+        case 1:
+          {
+          center[0] = center2[0] + newOrigin[0];
+          center[1] = center2[2] + newOrigin[1];
+          center[2] = 0.;
+          break;
+          }
+        case 2:
+          {
+          center[0] = center2[1] + newOrigin[0];
+          center[1] = center2[2] + newOrigin[1];
+          center[2] = 0.;
+          break;
+          }
+        default:
+          {
+          break;
+          }
+        }
 
       // run filter
       typedef itk::Image<unsigned char, dimension> FeatureImageType;
@@ -231,21 +234,19 @@ Apply()
       tf->Update();
 
       vtkPolyData* contour = vtkPolyData::New();
-      contour->DeepCopy(tf->GetOutput());
+      contour->DeepCopy( tf->GetOutput() );
+
+      tf->Delete();
+      t->Delete();
+      reconstructed->Delete();
 
       emit ContourCreated( contour );
-
-      reconstructed->Delete();
-      slice->Delete();
-      t->Delete();
-      tf->Delete();
       }
     }
   else
     //if dimension is 3 - i.e. m_Dimension == 1
     {
     const int dimension = 3;
-    double* center2 = new double[3];
 
     // LOOP  FOR EACH SEED
     for (int i = 0; i < getPoints()->GetNumberOfPoints(); i++)
@@ -321,12 +322,12 @@ Apply()
         cutter->SetCutFunction(implicitFunction);
         reconstructed->Delete();
 
-        for(int i=0; i< getSampling(); ++i)
+        for(int j=0; j< getSampling(); ++j)
           {
           implicitFunction
-            ->SetOrigin((center2[0]-getRadius()+(i+1)*2*getRadius()/(getSampling()+1)),
-                        (center2[1]-getRadius()+(i+1)*2*getRadius()/(getSampling()+1)),
-                        (center2[2]-getRadius()+(i+1)*2*getRadius()/(getSampling()+1)));
+            ->SetOrigin((center2[0]-getRadius()+(j+1)*2*getRadius()/(getSampling()+1)),
+                        (center2[1]-getRadius()+(j+1)*2*getRadius()/(getSampling()+1)),
+                        (center2[2]-getRadius()+(j+1)*2*getRadius()/(getSampling()+1)));
           cutter->Update();
           //true: we decimate the contour
           vtkPolyData* output = ReorganizeContour(cutter->GetOutput(), true);
