@@ -241,6 +241,15 @@ QGoTabImageView3DwT::
       }
     }
 
+  if( m_ContourContainer )
+    {
+    delete m_ContourContainer;
+    }
+  if( m_MeshContainer )
+    {
+    delete m_MeshContainer;
+    }
+
   }
 //-------------------------------------------------------------------------
 
