@@ -1938,7 +1938,7 @@ SaveContour(vtkPolyData* contour, vtkPolyData* contour_nodes)
   if ((contour->GetNumberOfPoints() > 2) && (m_TCoord >= 0))
     {
     // Compute Bounding Box
-    int* bounds = GetBoundingBox(contour);
+    std::vector<int> bounds = GetBoundingBox(contour);
     // Save contour in database :
     this->m_DataBaseTables->SaveContoursFromVisuInDB( bounds[0],
                                                       bounds[2],
@@ -1948,7 +1948,6 @@ SaveContour(vtkPolyData* contour, vtkPolyData* contour_nodes)
                                                       bounds[3],
                                                       bounds[5],
                                                       contour_nodes);
-    delete bounds;
     }
   //else
   //  {
@@ -1960,9 +1959,11 @@ SaveContour(vtkPolyData* contour, vtkPolyData* contour_nodes)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int*
+std::vector<int>
 QGoTabImageView3DwT::GetBoundingBox(vtkPolyData* iElement)
 {
+  std::vector<int> boundingBox( 6, 0 );
+
   if(iElement)
   {
   // Compute Bounding Box
@@ -1982,7 +1983,6 @@ QGoTabImageView3DwT::GetBoundingBox(vtkPolyData* iElement)
   int* min_idx = this->GetImageCoordinatesFromWorldCoordinates(Min);
   int* max_idx = this->GetImageCoordinatesFromWorldCoordinates(Max);
 
-  int* boundingBox = new int;
   boundingBox[0] = min_idx[0];
   boundingBox[1] = max_idx[0];
 
@@ -1994,9 +1994,8 @@ QGoTabImageView3DwT::GetBoundingBox(vtkPolyData* iElement)
 
   delete min_idx;
   delete max_idx;
-  return boundingBox;
   }
-  return NULL;
+  return boundingBox;
 }
 //-------------------------------------------------------------------------
 
@@ -2141,7 +2140,7 @@ ReEditContour(const unsigned int& iId)
     {
     nodes = this->m_ContourContainer->m_CurrentElement.Nodes;
 
-    int* bounds = this->GetBoundingBox( nodes );
+    std::vector<int> bounds = this->GetBoundingBox( nodes );
 
     int dir = ContourMeshContainer::ComputeDirectionFromBounds<int>( bounds );
 
@@ -2519,7 +2518,7 @@ QGoTabImageView3DwT::
 SaveMesh(vtkPolyData* iView )//, const int& iMeshID, double iRgba[4], bool NewMesh)
 {
   // Compute Bounding Box
-  int* bounds = GetBoundingBox(iView);
+  std::vector<int> bounds = this->GetBoundingBox(iView);
 
   // Save mesh in database
   //don't use m_ContourId
@@ -2536,9 +2535,7 @@ SaveMesh(vtkPolyData* iView )//, const int& iMeshID, double iRgba[4], bool NewMe
                                               iView,
                                               &MeshAttributes);
 
-  delete bounds;
   //return MeshData;
-
 }
 //-------------------------------------------------------------------------
 
@@ -2600,7 +2597,7 @@ AddContourToCurrentMesh(vtkPolyData* iInput)
   if ((iInput->GetNumberOfPoints() > 2) && (m_TCoord >= 0))
     {
     // Compute Bounding Box
-    int* bounds = GetBoundingBox(iInput);
+    std::vector<int> bounds = GetBoundingBox(iInput);
     // Save contour in database :
     this->m_DataBaseTables
       ->SaveNewContourForContoursToSphere( bounds[0],

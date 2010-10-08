@@ -411,6 +411,27 @@ public:
     return oDir;
   }
 
+  template< typename T >
+  static
+  int
+  ComputeDirectionFromBounds( const std::vector<T>& iBounds )
+    {
+    int oDir = -1;
+
+    if( iBounds.size() == 6 )
+      {
+      for (int i = 0; i < 3; ++i)
+        {
+        if (iBounds[2 * i] == iBounds[2 * i + 1])
+          {
+          oDir = 2 - i;
+          }
+        }
+      }
+
+    return oDir;
+    }
+
   /**
   \brief Update highlighting property of one element given one actor.
   \param[in] iActor Actor of the element to be modified

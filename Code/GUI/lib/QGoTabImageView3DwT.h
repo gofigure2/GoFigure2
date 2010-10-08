@@ -438,7 +438,7 @@ protected:
       }
   }
 
-  int* GetBoundingBox(vtkPolyData* contour);
+  std::vector<int> GetBoundingBox(vtkPolyData* contour);
 
   void CreateContour( vtkPolyData* contour_nodes,vtkPolyData* iView);
 
