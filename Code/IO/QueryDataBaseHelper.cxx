@@ -75,7 +75,7 @@ std::pair<bool, vtkMySQLDatabase*> ConnectToServer(std::string ServerName, std::
 std::pair<bool, vtkMySQLDatabase*> ConnectToDatabase(std::string ServerName, std::string login,
                                                      std::string Password, std::string DBName)
 {
-  std::pair<bool, vtkMySQLDatabase*> ConnectionDatabase;
+  std::pair<bool, vtkMySQLDatabase*> ConnectionDatabase( false, NULL );
   vtkMySQLDatabase *                 DatabaseConnector = vtkMySQLDatabase::New();
   DatabaseConnector->SetHostName(ServerName.c_str());
   DatabaseConnector->SetUser(login.c_str());
@@ -89,7 +89,6 @@ std::pair<bool, vtkMySQLDatabase*> ConnectToDatabase(std::string ServerName, std
     std::cout << "Could not connect to the database." << std::endl;
     std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
     std::cout << std::endl;
-    ConnectionDatabase.first = false;
     return ConnectionDatabase;
     }
 
