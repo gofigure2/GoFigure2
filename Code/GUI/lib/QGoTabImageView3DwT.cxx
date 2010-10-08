@@ -2089,10 +2089,14 @@ ValidateContour()
       {
       vtkPolyData* contour =  m_ImageView->GetContourRepresentationAsPolydata(i);
 
+      //polydata for bounding box, node for points
       SaveContour( contour, nodes );
 
+      // polydata
       std::vector<vtkActor*> actors = VisualizeContour( contour );
+      contour->Delete();
 
+      //nodes
       m_ContourContainer->UpdateCurrentElementFromVisu(actors,
                                           nodes,
                                           m_TCoord,
@@ -2476,10 +2480,14 @@ SaveAndVisuContour(vtkPolyData* iView)
   vtkPolyData* contour_nodes = vtkPolyData::New();
   CreateContour( contour_nodes, iView );
 
+  // polydata for bounding box, nodes for db
   SaveContour(iView, contour_nodes);
 
+  // should be polydata
   std::vector<vtkActor*> actors = VisualizeContour( iView );
+  iView->Delete();
 
+  // should be nodes
   // update the container
   m_ContourContainer->UpdateCurrentElementFromVisu(actors,
                                     contour_nodes,
@@ -2488,8 +2496,6 @@ SaveAndVisuContour(vtkPolyData* iView)
                                     true);//visible
 
   m_ContourContainer->InsertCurrentElement();
-
-  iView->Delete();
 
   return 0;
 }
