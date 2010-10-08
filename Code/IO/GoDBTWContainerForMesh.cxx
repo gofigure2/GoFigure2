@@ -144,9 +144,6 @@ void GoDBTWContainerForMesh::GetValuesForIntensities(
     this->SetChannelsInfo(iDatabaseConnector);
     }
 
-  //std::vector<std::vector<std::string> > ChannelsInfo =
-   // this->GetChannelsInfo();
-
   for (unsigned int i = 0; i < this->m_ChannelsInfo.size(); i++)
     {
     std::string NameTableWidgetColumn = "T.I.";
@@ -164,14 +161,14 @@ void GoDBTWContainerForMesh::GetValuesForIntensities(
       int         ValueIntensity = FindOneID(iDatabaseConnector,
                                              "intensity", "Value", "MeshID", MeshID,
                                              "ChannelID", ChannelID);
-      //if ( ValueIntensity == -1)
-        //{
-        //temp.push_back("");
-        //}
-      //else
-        //{
+      if ( ValueIntensity == -1)
+        {
+        temp.push_back("");
+        }
+      else
+        {
         temp.push_back(ConvertToString<int>(ValueIntensity));
-        //}
+        }
       }
     ioValuesToFill.push_back(temp);
     temp.clear();
@@ -195,35 +192,25 @@ void GoDBTWContainerForMesh::GetValuesForSurfaceVolume(
   std::vector<std::vector<std::string> > &ioValuesToFill,
   std::vector<std::string>               &ioSelectFields)
 {
-  /* if (this->m_MeshAttributes != 0)
+  if (this->m_MeshAttributes != 0)
     {
-    std::vector<std::string> temp;
-    ioSelectFields.push_back("Volume");
-    temp.push_back(ConvertToString<double>(this->m_MeshAttributes->m_Volume));
-    ioValuesToFill.push_back(temp);
-    ioSelectFields.push_back("SurfaceArea");
-    temp.push_back(ConvertToString<double>(this->m_MeshAttributes->m_Area));
-    ioValuesToFill.push_back(temp);
-    }*/
-    if (this->m_MeshAttributes != 0)
-    {
-      if (ioValuesToFill.size() != 1)
-        {
-        std::cout<<"more than 1 mesh for volume and surface values"<<std::endl;
-        std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-        std::cout << std::endl;
-        return;
-        }
-      else
-        {
-        std::vector<std::string> temp = ioValuesToFill.at(0);
-        ioSelectFields.push_back("Volume");
-        temp.push_back(ConvertToString<double>(this->m_MeshAttributes->m_Volume));
-        ioSelectFields.push_back("SurfaceArea");
-        temp.push_back(ConvertToString<double>(this->m_MeshAttributes->m_Area));
-        ioValuesToFill.clear();
-        ioValuesToFill.push_back(temp);
-        }
+    if (ioValuesToFill.size() != 1)
+      {
+      std::cout<<"more than 1 mesh for volume and surface values"<<std::endl;
+      std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+      std::cout << std::endl;
+      return;
+      }
+    else
+      {
+      std::vector<std::string> temp = ioValuesToFill.at(0);
+      ioSelectFields.push_back("Volume");
+      temp.push_back(ConvertToString<double>(this->m_MeshAttributes->m_Volume));
+      ioSelectFields.push_back("SurfaceArea");
+      temp.push_back(ConvertToString<double>(this->m_MeshAttributes->m_Area));
+      ioValuesToFill.clear();
+      ioValuesToFill.push_back(temp);
+      }
     }
 }
 //--------------------------------------------------------------------------

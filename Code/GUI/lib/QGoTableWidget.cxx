@@ -292,11 +292,15 @@ void QGoTableWidget::DisplayContent(TWContainerType iTWRowContainer,
             int                                k = 0;
             while (iter != iTWRowContainer[i].second.end())
               {
-              QTableWidgetItem* CellTable = new QTableWidgetItem;
+              //QTableWidgetItem* CellTable = new QTableWidgetItem;
               std::string       Value = *iter;
-              CellTable->setData(0, QString::fromStdString(Value).toDouble());
-              CellTable->setTextAlignment(Qt::AlignCenter);
-              this->setItem(k, j, CellTable);
+              if (Value != "")
+                {
+                QTableWidgetItem* CellTable = new QTableWidgetItem;
+                CellTable->setData(0, QString::fromStdString(Value).toDouble());
+                CellTable->setTextAlignment(Qt::AlignCenter);
+                this->setItem(k, j, CellTable);
+                }
               ++iter;
               ++k;
               } //ENDWHILE
@@ -386,22 +390,11 @@ void QGoTableWidget::SetColorForTable(TWContainerType iTWRowContainer,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-/*int IndexForRowContainer(QGoTableWidget::DBTableWidgetContainerType iRowContainer)
-{
-  // unused argument
-  (void) iRowContainer;
-
-  return 0;
-}*/
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
 void QGoTableWidget::InsertNewRow(TWContainerType iTWRowContainer,
                                   std::vector<int> iIndexColorTraceRowContainer,
                                   std::vector<int> iIndexColorCollectionRowContainer,
                                   std::string TraceName, std::string CollectionName)
 {
-  //TWContainerType NewTraceRowContainer = iLinkToRowContainer->GetRowContainer();
   if (iTWRowContainer.size() == 0 || iTWRowContainer[1].second.size() != 1)
     {
     std::cout << "The New Trace Row Container is totally empty or there is more than 1 trace in it";
@@ -422,12 +415,15 @@ void QGoTableWidget::InsertNewRow(TWContainerType iTWRowContainer,
           std::string HeaderCol = this->horizontalHeaderItem(j)->text().toStdString();
           if (HeaderCol == iTWRowContainer[i].first.ColumnNameTableWidget)
             {
-            QTableWidgetItem* CellTable = new QTableWidgetItem;
+            //QTableWidgetItem* CellTable = new QTableWidgetItem;
             std::string       Value = iTWRowContainer[i].second[0];
-            //CellTable->setData(0, QString::fromStdString(Value).toInt());
-            CellTable->setData(0,atoi(Value.c_str()));
-            CellTable->setTextAlignment(Qt::AlignCenter);
-            this->setItem(NewRow - 1, j, CellTable);
+            if (Value != "")
+              {
+              QTableWidgetItem* CellTable = new QTableWidgetItem;
+              CellTable->setData(0,QString::fromStdString(Value).toDouble());
+              CellTable->setTextAlignment(Qt::AlignCenter);
+              this->setItem(NewRow - 1, j, CellTable);
+              }        
             } //ENDIF
           } //ENDFOR
         } //ENDIF
