@@ -81,9 +81,8 @@ QGoContourSegmentationBaseDockWidget(
 
   QWidget* manual_widget = m_ContourManualSegmentation->getWidget();
 
-  this->GetFrame()->layout()->addWidget( manual_widget );
-//  manual_widget->setEnabled(false);
-  manual_widget->setVisible(true);
+  gridLayout->addWidget(manual_widget, 1, 0, 1, -1);
+  manual_widget->setVisible(false);
 
   // connect show/hide
   QObject::connect(this, SIGNAL(ManualSegmentationActivated(bool)),
@@ -101,7 +100,7 @@ QGoContourSegmentationBaseDockWidget(
 
   //----------------------------------------------------------------
   // Semi auto segmentation ( i.e. algo with seed)
-  //----------------------------------------------------------------
+  //---------------------------------------------------------------
 
   m_ContourSemiAutoSegmentation =
       // 0 2D
@@ -111,8 +110,7 @@ QGoContourSegmentationBaseDockWidget(
 
   QWidget* semi_auto_widget = m_ContourSemiAutoSegmentation->getWidget();
 
-  this->GetFrame()->layout()->addWidget( semi_auto_widget );
-//  semi_auto_widget->setEnabled(false);
+  gridLayout->addWidget(semi_auto_widget, 1, 0, 1, -1);
   semi_auto_widget->setVisible(false);
 
   // connect show/hide
@@ -137,16 +135,6 @@ QGoContourSegmentationBaseDockWidget::
 ~QGoContourSegmentationBaseDockWidget()
 {
 }
-//---------------------------------------------------------------------------//
-
-//---------------------------------------------------------------------------//
-QFrame*
-QGoContourSegmentationBaseDockWidget::
-GetFrame()
-{
-  return frame;
-}
-
 //---------------------------------------------------------------------------//
 // one segmentation to another
 //---------------------------------------------------------------------------//

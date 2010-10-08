@@ -43,7 +43,6 @@
 
 #include <QDockWidget>
 #include <QLayout>
-#include <QFrame>
 
 #include "vtkPoints.h"
 #include "vtkImageData.h"
@@ -86,7 +85,6 @@ protected:
   virtual void InitializeWidgetAppearance();
 */
 public slots:
-  QFrame* GetFrame();
   void SegmentationMethod(int);
   void interactorBehavior(bool);
 

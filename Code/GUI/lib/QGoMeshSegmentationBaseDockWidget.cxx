@@ -86,7 +86,7 @@ QGoMeshSegmentationBaseDockWidget(QWidget* iParent, vtkPoints* seeds,
 
   QWidget* manual_widget = m_MeshManualSegmentation->getWidget();
 
-  frame->layout()->addWidget( manual_widget );
+  gridLayout->addWidget(manual_widget, 1, 0, 1, -1);
   manual_widget->setVisible(false);
 
   // connect show/hide
@@ -115,7 +115,7 @@ QGoMeshSegmentationBaseDockWidget(QWidget* iParent, vtkPoints* seeds,
 
   QWidget* semi_auto_widget = m_MeshSemiAutoSegmentation->getWidget();
 
-  frame->layout()->addWidget( semi_auto_widget );
+  gridLayout->addWidget(semi_auto_widget, 1, 0, 1, -1);
   semi_auto_widget->setVisible(false);
 
   // connect show/hide
