@@ -65,6 +65,10 @@ public slots:
   void setIterations(int iIterations);
   void setCurvature(int iCurvature);
 
+protected:
+  void Filter2D( double* iCenter, const int& iOrientation );
+  void Filter3D( double* iCenter );
+
 private:
   int          m_Iterations;
   int          m_Curvature;
