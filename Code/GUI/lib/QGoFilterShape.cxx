@@ -130,33 +130,22 @@ Apply()
 
     if(m_Dimension == 0)
       {
-      // Radius has to be > 0
-      if(getSampling() <= 0)
-        {
-        std::cerr << "Sampling should be > 0 " << std::endl;
-        delete[] center2;
-        return NULL;
-        }
-
       // Extract each slice according top the sampling
       vtkPlane* implicitFunction = vtkPlane::New();
       implicitFunction->SetNormal(0, 0, 1);
+      implicitFunction->SetOrigin(center2[0],center2[1],center2[2]);
 
       vtkCutter* cutter = vtkCutter::New();
       cutter->SetInput(testing);
       cutter->SetCutFunction(implicitFunction);
+      cutter->Update();
 
-      for(int i=0; i<getSampling(); ++i)
-        {
-      // radius
-      ///TODO should use the spacing to make sure the contour in on a slice
-        implicitFunction
-      ->SetOrigin((center2[0]-getRadius()+(i+1)*2*getRadius()/(getSampling()+1)),
-                  (center2[1]-getRadius()+(i+1)*2*getRadius()/(getSampling()+1)),
-                  (center2[2]-getRadius()+(i+1)*2*getRadius()/(getSampling()+1)));
-        cutter->Update();
-        emit ContourCreated(ReorganizeContour(cutter->GetOutput()));
-        }
+      vtkPolyData* output = ReorganizeContour(cutter->GetOutput());
+      emit ContourCreated( output );
+
+      implicitFunction->Delete();
+      cutter->Delete();
+      testing->Delete();
       }
     else // if dimension == 1, create a mesh
       {
@@ -182,8 +171,13 @@ Apply()
                         (center2[1]-getRadius()+(i+1)*2*getRadius()/(getSampling()+1)),
                         (center2[2]-getRadius()+(i+1)*2*getRadius()/(getSampling()+1)));
           cutter->Update();
-          emit AddContourToCurrentMesh(ReorganizeContour(cutter->GetOutput()));
+          vtkPolyData* output = ReorganizeContour(cutter->GetOutput());
+          emit AddContourToCurrentMesh(output);
           }
+
+        implicitFunction->Delete();
+        cutter->Delete();
+        testing->Delete();
         }
       }
     }
@@ -231,7 +225,12 @@ GenerateSphere(double* iCenter)
   sphere->Update();
   sphere->GetOutput()->GetPointData()->SetNormals(NULL);
 
-  return sphere->GetOutput();
+  vtkPolyData* output = vtkPolyData::New();
+  output->DeepCopy(sphere->GetOutput());
+
+  sphere->Delete();
+
+  return output;
 }
 //--------------------------------------------------------------------------
 
@@ -253,8 +252,13 @@ GenerateCube(double* iCenter)
   triangle->SetInput(cube->GetOutput());
   triangle->Update();
 
+  vtkPolyData* output = vtkPolyData::New();
+  output->DeepCopy(triangle->GetOutput());
+
+  triangle->Delete();
   cube->Delete();
-  return triangle->GetOutput();
+
+  return output;
 }
 //--------------------------------------------------------------------------
 
@@ -276,6 +280,12 @@ GenerateCylinder(double* iCenter)
   vtkTriangleFilter* triangle = vtkTriangleFilter::New();
   triangle->SetInput(cylinder->GetOutput());
 
-  return triangle->GetOutput();
+  vtkPolyData* output = vtkPolyData::New();
+  output->DeepCopy(triangle->GetOutput());
+
+  triangle->Delete();
+  cylinder->Delete();
+
+  return output;
 }
 //--------------------------------------------------------------------------

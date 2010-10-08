@@ -372,8 +372,17 @@ ReconstructContour(vtkImageData* iInputImage, const double& iThreshold )
   vtkMarchingSquares* contours = vtkMarchingSquares::New();
   contours->SetInput(iInputImage);
   contours->GenerateValues (1, iThreshold, iThreshold);
+  contours->Update();
 
-  return ReorganizeContour(contours->GetOutput());
+  vtkPolyData* outputToOrganize = vtkPolyData::New();
+  outputToOrganize->DeepCopy(contours->GetOutput());
+
+  vtkPolyData* output = ReorganizeContour(outputToOrganize);
+
+  contours->Delete();
+  outputToOrganize->Delete();
+
+  return output;
 }
 //--------------------------------------------------------------------------
 
@@ -417,8 +426,6 @@ ReorganizeContour(vtkPolyData* iInputImage, bool iDecimate)
   testPolyD->SetPoints(points);
   testPolyD->SetLines(lines);
 
-  lines->Delete();
-
   if(iDecimate)
     {
     //Decimation (has to be after points reorganization)
@@ -427,10 +434,24 @@ ReorganizeContour(vtkPolyData* iInputImage, bool iDecimate)
     /// \todo instead os setting it to 0.9, compute it to make 10 to 20 control points
     decimator->SetTargetReduction(0.9);
     decimator->Update();
-    return decimator->GetOutput();
+
+    vtkPolyData* output = vtkPolyData::New();
+    output->DeepCopy(decimator->GetOutput());
+
+    lines->Delete();
+    points->Delete();
+    stripper->Delete();
+    decimator->Delete();
+    testPolyD->Delete();
+
+    return output;
     }
   else
     {
+    lines->Delete();
+    points->Delete();
+    stripper->Delete();
+
     return testPolyD;
     }
 }
@@ -467,6 +488,12 @@ ReconstructMesh(vtkImageData* iInputImage, const double& iThreshold)
 
   std::cout<< "hopefully not..." << std::endl;
 */
-  return contours->GetOutput();
+
+  vtkPolyData* output = vtkPolyData::New();
+  output->DeepCopy(contours->GetOutput());
+
+  contours->Delete();
+
+  return output;
 }
 //--------------------------------------------------------------------------

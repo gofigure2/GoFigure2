@@ -60,6 +60,7 @@
 
 #include "QGoContourSemiAutoLevelsetWidget.h"
 
+
 //--------------------------------------------------------------------------
 QGoFilterChanAndVes::
 QGoFilterChanAndVes( QObject* iParent, int iDimension ) :
@@ -135,10 +136,11 @@ Apply()
       setCenter(center2);
 
       vtkImageData* slice = vtkImageData::New();
-      slice->DeepCopy(getInput());
 
       // Extract one slice if dimenesion == 2
-      slice->DeepCopy(extractOneSlice(getInput(), center2, orientation));
+      vtkImageData* input = extractOneSlice(getInput(), center2, orientation);
+      slice->DeepCopy(input);
+      input->Delete();
 
       // Recompute new center
       double* newOrigin = slice->GetOrigin();
@@ -211,7 +213,11 @@ Apply()
 
       // Convert output
       //---------------------------------------------------------
-      setOutput(ConvertITK2VTK<float, dimension>(test3));
+      vtkImageData* itk2vtk = ConvertITK2VTK<float, dimension>(test3);
+      setOutput(itk2vtk);
+      itk2vtk->Delete();
+
+      vtkPolyData* reconstructed = ReconstructContour( getOutput(), 0. );
 
       // Translate to real location (i.e. see_pos[])
       vtkTransform* t = vtkTransform::New();
@@ -221,12 +227,18 @@ Apply()
 
       vtkTransformPolyDataFilter* tf = vtkTransformPolyDataFilter::New();
       tf->SetTransform(t);
-      tf->SetInput( ReconstructContour( getOutput(), 0. ) );
+      tf->SetInput( reconstructed );
       tf->Update();
 
-      vtkPolyData* contour = tf->GetOutput();
+      vtkPolyData* contour = vtkPolyData::New();
+      contour->DeepCopy(tf->GetOutput());
 
       emit ContourCreated( contour );
+
+      reconstructed->Delete();
+      slice->Delete();
+      t->Delete();
+      tf->Delete();
       }
     }
   else
@@ -287,11 +299,14 @@ Apply()
 
       // Convert output
       //---------------------------------------------------------
-      setOutput(ConvertITK2VTK<float, dimension>(test3));
+      vtkImageData* itk2vtk = ConvertITK2VTK<float, dimension>(test3);
+      setOutput(itk2vtk);
+      itk2vtk->Delete();
 
       if(m_Dimension == 1)
         {
-        emit MeshCreated( ReconstructMesh( getOutput(), 0. ) );
+        vtkPolyData* output = ReconstructMesh( getOutput(), 0. );
+        emit MeshCreated( output );
         }
       else
         {
@@ -301,8 +316,10 @@ Apply()
         implicitFunction->SetNormal(0, 0, 1);
 
         vtkCutter* cutter = vtkCutter::New();
-        cutter->SetInput( ReconstructMesh( getOutput(), 0. ) );
+        vtkPolyData* reconstructed = ReconstructMesh( getOutput(), 0. );
+        cutter->SetInput( reconstructed );
         cutter->SetCutFunction(implicitFunction);
+        reconstructed->Delete();
 
         for(int i=0; i< getSampling(); ++i)
           {
@@ -312,10 +329,15 @@ Apply()
                         (center2[2]-getRadius()+(i+1)*2*getRadius()/(getSampling()+1)));
           cutter->Update();
           //true: we decimate the contour
-          emit AddContourToCurrentMesh(ReorganizeContour(cutter->GetOutput(), true));
+          vtkPolyData* output = ReorganizeContour(cutter->GetOutput(), true);
+
+          emit AddContourToCurrentMesh(output);
           }
+        implicitFunction->Delete();
+        cutter->Delete();
         }
 
+      slice->Delete();
       }
     }
 
