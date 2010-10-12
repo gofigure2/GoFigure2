@@ -258,11 +258,9 @@ void
 QGoTabImageView3DwT::
 UpdateSeeds()
 {
-  // LEAKS HERE...
-  // delete first
-  //m_Seeds->Delete();
- m_Seeds->DeepCopy(m_ImageView->GetAllSeeds());
- m_ImageView->GetAllSeeds()->Delete();
+ vtkPoints* temp = m_ImageView->GetAllSeeds();
+ m_Seeds->DeepCopy(temp);
+ temp->Delete();
 }
 //-------------------------------------------------------------------------
 

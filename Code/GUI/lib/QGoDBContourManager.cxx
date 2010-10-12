@@ -184,6 +184,8 @@ unsigned int QGoDBContourManager::SaveNewContourFromVisu(
   double* rgba = this->GetVectorFromQColor(iColor.second);
   this->m_TraceContainerInfoForVisu->UpdateCurrentElementFromDB(
     NewContourID, rgba);
+  delete[] rgba;
+
   this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
   return NewContourID;
 }
