@@ -139,6 +139,11 @@ void GoDBTWContainerForMesh::GetValuesForIntensities(
     std::vector<std::vector<std::string> > &ioValuesToFill,
     std::vector<std::string>               &ioSelectFields)
 {
+  if (iVectMeshIDs.empty())
+    {
+    return;
+    }
+  
   if (this->m_ChannelsInfo.empty())
     {
     this->SetChannelsInfo(iDatabaseConnector);

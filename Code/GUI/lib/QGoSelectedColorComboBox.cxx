@@ -42,7 +42,7 @@
 #include <QColorDialog>
 
 QGoSelectedColorComboBox::QGoSelectedColorComboBox(QWidget *iparent)
-:QGoColorComboBox("Add a new color...",iparent,"Delete colors...")
+:QGoColorComboBox("Add a new color...",iparent)//,"Delete colors...")
 {
 }
 //--------------------------------------------------------------------------
