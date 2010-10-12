@@ -122,8 +122,9 @@ QGoImageView::
 //--------------------------------------------------------------------------
 void
 QGoImageView::
-GetBackgroundColor(double& r,
-                                      double& g, double& b)
+GetBackgroundColor( double& r,
+                    double& g,
+                    double& b)
 {
   double* rgb = this->GetBackgroundColor();
   r = rgb[0];
@@ -142,40 +143,48 @@ GetBackgroundColor()
 //-------------------------------------------------------------------------
 void
 QGoImageView::
-SetBackgroundColor(const double& r,
-                                      const double& g,
-                                      const double& b)
+SetBackgroundColor( const double& r,
+                    const double& g,
+                    const double& b)
 {
-  double textcolor[3];
+  double* current_rgb = this->GetBackgroundColor();
 
-  if ((r != 0.5) && (g != 0.5) && (b != 0.5))
+  if( ( current_rgb[0] != r ) &&
+      ( current_rgb[1] != g ) &&
+      ( current_rgb[2] != b ) )
     {
-    textcolor[0] = 1. - r;
-    textcolor[1] = 1. - g;
-    textcolor[2] = 1. - b;
+
+    double textcolor[3];
+
+    if ((r != 0.5) && (g != 0.5) && (b != 0.5))
+      {
+      textcolor[0] = 1. - r;
+      textcolor[1] = 1. - g;
+      textcolor[2] = 1. - b;
+      }
+    else
+      {
+      textcolor[0] = 1.;
+      textcolor[1] = 1.;
+      textcolor[2] = 0.;
+      }
+
+    double rgb[3] = { r, g, b };
+
+    m_Pool->SyncSetBackground(rgb);
+    int n = m_Pool->GetNumberOfItems();
+
+    for (int i = 0; i < n; i++)
+      {
+      vtkTextProperty* tproperty =
+        m_Pool->GetItem(i)->GetTextProperty();
+      tproperty->SetFontFamilyToArial();
+      tproperty->SetFontSize(14);
+      tproperty->SetColor(textcolor);
+      }
+
+    m_Pool->SyncRender();
     }
-  else
-    {
-    textcolor[0] = 1.;
-    textcolor[1] = 1.;
-    textcolor[2] = 0.;
-    }
-
-  double rgb[3] = { r, g, b };
-
-  m_Pool->SyncSetBackground(rgb);
-  int n = m_Pool->GetNumberOfItems();
-
-  for (int i = 0; i < n; i++)
-    {
-    vtkTextProperty* tproperty =
-      m_Pool->GetItem(i)->GetTextProperty();
-    tproperty->SetFontFamilyToArial();
-    tproperty->SetFontSize(14);
-    tproperty->SetColor(textcolor);
-    }
-
-  m_Pool->SyncRender();
 }
 
 //--------------------------------------------------------------------------

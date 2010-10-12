@@ -1605,9 +1605,6 @@ SetTimePoint(const int& iTimePoint)
 
   QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-  // this->m_ContourContainer->RemoveActorsWithGivenTimePoint( m_TCoord );
-  // this->m_MeshContainer->RemoveActorsWithGivenTimePoint( m_TCoord );
-
   if (!m_LSMReader.empty())
     {
     if (iTimePoint >= m_LSMReader[0]->GetNumberOfTimePoints())
@@ -1645,11 +1642,9 @@ SetTimePoint(const int& iTimePoint)
       }
     }
 
-  //this->m_ContourContainer->AddActorsWithGivenTimePoint( m_TCoord );
-  //this->m_MeshContainer->AddActorsWithGivenTimePoint( m_TCoord );
-  //this->ShowTraceDockWidgetForContour(false);
   this->m_ContourContainer->ShowActorsWithGivenTimePoint( m_TCoord );
   this->m_MeshContainer->ShowActorsWithGivenTimePoint( m_TCoord );
+
   Update();
 
   QApplication::restoreOverrideCursor();

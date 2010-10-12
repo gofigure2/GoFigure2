@@ -275,7 +275,8 @@ Update()
   View1->UpdateWindowLevelObservers();
 
   this->m_View3D->Add2DPhantom(0,
-                               View1->GetImageActor(), View1->GetSlicePlane());
+                               View1->GetImageActor(),
+                               View1->GetSlicePlane());
 
   int *range = View1->GetSliceRange();
 
@@ -289,7 +290,8 @@ Update()
   View2->UpdateWindowLevelObservers();
 
   this->m_View3D->Add2DPhantom(1,
-                               View2->GetImageActor(), View2->GetSlicePlane());
+                               View2->GetImageActor(),
+                               View2->GetSlicePlane());
 
   range = View2->GetSliceRange();
 
@@ -302,8 +304,9 @@ Update()
   View3->SetViewOrientation(vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL);
   View3->UpdateWindowLevelObservers();
 
-  this->m_View3D->Add2DPhantom(
-    2, View3->GetImageActor(), View3->GetSlicePlane());
+  this->m_View3D->Add2DPhantom( 2,
+                                View3->GetImageActor(),
+                                View3->GetSlicePlane());
 
   range = View3->GetSliceRange();
   this->SliderYZ->setMinimum(range[0]);
@@ -313,7 +316,6 @@ Update()
   this->m_View3D->SetVolumeRenderingOff();
   this->m_View3D->SetTriPlanarRenderingOn();
   this->m_View3D->SetShowScalarBar(false);
-  this->m_View3D->ResetCamera();
 
   this->m_Pool->SyncSetBackground(this->m_Pool->GetItem(0)->GetBackground());
   this->m_Pool->SyncSetShowAnnotations(m_ShowAnnotations);
@@ -331,7 +333,6 @@ Update()
 
   this->m_Pool->UpdateWindowLevelObservers();
   this->m_Pool->SyncSetShowScalarBar(false);
-  this->m_Pool->SyncRender();
 
   if (m_FirstRender)
     {
@@ -358,6 +359,10 @@ Update()
     InitializePlaneWidget();
 
     m_FirstRender = false;
+    }
+  else
+    {
+    this->m_Pool->SyncRender();
     }
   QGoImageView::Update();
 }
