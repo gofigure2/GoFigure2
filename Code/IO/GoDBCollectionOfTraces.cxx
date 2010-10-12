@@ -980,6 +980,19 @@ std::list<unsigned int> GoDBCollectionOfTraces::GetListTracesIDWithNoPoints(
     iDatabaseConnector,this->m_TracesIDName, this->m_TracesName,
     this->m_TracesIDName, VectorTracesIDs,"points");
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list<unsigned int> GoDBCollectionOfTraces::GetLastCreatedTracesIDs(
+  vtkMySQLDatabase* iDatabaseConnector, int iNumberOfTraces)
+{
+  std::vector<std::string> VectorTracesIDs = GetOrderByWithLimit(
+    iDatabaseConnector,this->m_TracesIDName,this->m_TracesName,
+    "imagingsessionid",ConvertToString<unsigned int>(this->m_ImgSessionID),
+    false,ConvertToString<int> (iNumberOfTraces));
+
+  return this->VectorStringToUnsgInt(VectorTracesIDs);
+}
 //********************************FOR TABLE WIDGET***************************
 //--------------------------------------------------------------------------
 

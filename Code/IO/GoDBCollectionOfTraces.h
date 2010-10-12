@@ -205,8 +205,17 @@ public:
      }
 
     //return this->CreateNewCollection(DatabaseConnector, iNewCollection);
-    return this->CreateNewTraceInDB<T>(iNewCollection,iDatabaseConnector,
-      CoordIDMin,CoordIDMax,iColor,0);//iNewCollection.SaveInDB(iDatabaseConnector);
+    std::string CollectionID = iNewCollection.GetMapValue(this->m_CollectionIDName);
+    if( CollectionID != "0")
+      {
+      return this->CreateNewTraceInDB<T>(iNewCollection,iDatabaseConnector,
+       CoordIDMin,CoordIDMax,iColor,ss_atoi<unsigned int>(CollectionID));
+      }
+    else
+      {
+      return this->CreateNewTraceInDB<T>(iNewCollection,iDatabaseConnector,
+        CoordIDMin,CoordIDMax,iColor,0);//iNewCollection.SaveInDB(iDatabaseConnector);
+      }
   }
   
   /** 
@@ -290,6 +299,9 @@ public:
 
   std::list<unsigned int> GetListTracesIDWithNoPoints(
     std::list<unsigned int> iListTracesIDs, vtkMySQLDatabase* iDatabaseConnector);
+
+  std::list<unsigned int> GetLastCreatedTracesIDs(
+    vtkMySQLDatabase* iDatabaseConnector,int iNumberOfTraces);
 
   //******************************FOR TABLE WIDGET**********************************
   /** \todo find a way to make it ok for all traces, now only for mesh*/

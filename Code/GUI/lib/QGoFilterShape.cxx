@@ -162,7 +162,7 @@ Apply()
         }
       else
         {
-        emit CreateEmptyMesh();
+        //emit CreateEmptyMesh();
         // Extract each slice according top the sampling
         vtkPlane* implicitFunction = vtkPlane::New();
         implicitFunction->SetNormal(0, 0, 1);
@@ -188,6 +188,7 @@ Apply()
         implicitFunction->Delete();
         cutter->Delete();
         testing->Delete();
+        emit CreateCorrespondingMesh(getSampling());
         }
       }
     }

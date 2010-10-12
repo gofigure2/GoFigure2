@@ -312,7 +312,7 @@ public slots:
 
   void VisibilityXYZ();
 
-  void CreateEmptyMesh();
+  //void CreateEmptyMesh();
   void AddContourToCurrentMesh(vtkPolyData* );
 
 protected:

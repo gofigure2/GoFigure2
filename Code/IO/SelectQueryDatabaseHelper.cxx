@@ -2302,3 +2302,26 @@ std::vector<std::string> GetAllSelectedValuesFromTwoTables(
   SelectQuery << SelectWithJoinNullIncluded(QueryStream.str(),iJoinCondition);
   return ExecuteSelectQuery(iDatabaseConnector,SelectQuery.str());
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::vector<std::string> GetOrderByWithLimit(vtkMySQLDatabase* iDatabaseConnector,
+  std::string iColumnName,std::string iTableName,std::string iField,
+  std::string iValue,bool ASC,std::string iNumberLimit)
+{
+  std::stringstream QueryStream;
+  QueryStream << SelectQueryStream(iTableName,iColumnName,iField,iValue);
+  QueryStream << " ORDER BY ";
+  QueryStream << iColumnName;
+  if (ASC)
+    {
+    QueryStream << " ASC LIMIT ";
+    }
+  else
+    {
+    QueryStream << " DESC LIMIT ";
+    }
+  QueryStream << iNumberLimit;
+  return ExecuteSelectQuery(iDatabaseConnector,QueryStream.str());
+}
+

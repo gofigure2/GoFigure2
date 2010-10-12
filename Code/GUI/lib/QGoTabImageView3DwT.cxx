@@ -374,9 +374,12 @@ CreateMeshSegmentationDockWidget()
 
   // signals for manual segmentation
   QObject::connect( m_MeshSegmentationDockWidget,
-                    SIGNAL(CreateEmptyMesh()),
-                    this,
-                    SLOT(CreateEmptyMesh()));
+                    //SIGNAL(CreateEmptyMesh()),
+                    //this,
+                    //SLOT(CreateEmptyMesh()));
+                    SIGNAL (CreateCorrespondingMesh(int)),
+                    this->m_DataBaseTables,
+                    SLOT (SaveNewMeshForContoursToSphere(int)));
 
   QObject::connect( m_MeshSegmentationDockWidget,
                     SIGNAL(AddContourToCurrentMesh(vtkPolyData* )),
@@ -2542,7 +2545,7 @@ SaveMesh(vtkPolyData* iView )//, const int& iMeshID, double iRgba[4], bool NewMe
   // true and iMeshID = 0:
   //IDWithColorData MeshData =
   this->m_DataBaseTables->SaveMeshFromVisuInDB( bounds[0], bounds[2], bounds[4],
-                                              m_TCoord,
+                                              //m_TCoord,
                                               bounds[1], bounds[3], bounds[5],
                                               iView,
                                               &MeshAttributes);
@@ -2592,12 +2595,12 @@ SaveAndVisuMesh(vtkPolyData* iView, unsigned int iTCoord)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
-CreateEmptyMesh()
-{
-  m_DataBaseTables->SaveNewMeshWithNoPointsInDB();
-}
+//void
+//QGoTabImageView3DwT::
+//CreateEmptyMesh()
+//{
+  //m_DataBaseTables->SaveNewMeshWithNoPointsInDB();
+//}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -2606,21 +2609,22 @@ QGoTabImageView3DwT::
 AddContourToCurrentMesh(vtkPolyData* iInput)
 {
   //IDWithColorData ContourData = IDWithColorData(-1, QColor(Qt::white));
+  std::list<unsigned int> ListContourIDs;
   if ((iInput->GetNumberOfPoints() > 2) && (m_TCoord >= 0))
     {
     // Compute Bounding Box
     std::vector<int> bounds = GetBoundingBox(iInput);
     // Save contour in database :
-    this->m_DataBaseTables
-      ->SaveNewContourForContoursToSphere( bounds[0],
-                                           bounds[2],
-                                           bounds[4],
-                                           bounds[1],
-                                           bounds[3],
-                                           bounds[5],
-                                           iInput,
-                                           m_MeshContainer->m_CurrentElement.TraceID
-                                           );
+    ListContourIDs.push_back(this->m_DataBaseTables
+        ->SaveNewContourForContoursToSphere( bounds[0],
+                                             bounds[2],
+                                             bounds[4],
+                                             bounds[1],
+                                             bounds[3],
+                                             bounds[5],
+                                             iInput));
+                                           //m_MeshContainer->m_CurrentElement.TraceID
+                                           //);
 
     // AND VISU!!!
     std::vector<vtkActor*> actors = VisualizeContour( iInput );

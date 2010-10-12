@@ -297,7 +297,7 @@ if(m_Dimension == 1)
   }
 else
   {
-  emit CreateEmptyMesh();
+  //emit CreateEmptyMesh();
   // Extract each slice according top the sampling
   vtkPlane* implicitFunction = vtkPlane::New();
   implicitFunction->SetNormal(0, 0, 1);
@@ -320,6 +320,7 @@ else
 
     emit AddContourToCurrentMesh(output);
     }
+  emit CreateCorrespondingMesh(getSampling());
   implicitFunction->Delete();
   cutter->Delete();
   }

@@ -69,8 +69,10 @@ QGoSeedSegmentationBase( QWidget* parentWidget,
     {
     QObject::connect(m_BaseAlgorithmSegmentationWidget, SIGNAL(Sampling(int)),
                    this, SLOT(setSampling(int)));
-    QObject::connect(m_BaseAlgorithmSegmentationWidget, SIGNAL(CreateEmptyMesh()),
-        this, SIGNAL(CreateEmptyMesh()));
+    //QObject::connect(m_BaseAlgorithmSegmentationWidget, SIGNAL(CreateEmptyMesh()),
+        //this, SIGNAL(CreateEmptyMesh()));
+    QObject::connect(m_BaseAlgorithmSegmentationWidget, SIGNAL(CreateCorrespondingMesh(int)),
+        this, SIGNAL(CreateCorrespondingMesh(int)));
     QObject::connect(m_BaseAlgorithmSegmentationWidget, SIGNAL(AddContourToCurrentMesh(vtkPolyData*)),
         this, SIGNAL(AddContourToCurrentMesh(vtkPolyData*)));
     }

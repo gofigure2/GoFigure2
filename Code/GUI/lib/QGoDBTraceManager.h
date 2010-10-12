@@ -215,6 +215,9 @@ public:
   \param[in] iPos position of the context menu event
   */
   void CreateContextMenu(const QPoint& iPos);
+  
+  std::list<unsigned int> GetLastCreatedTracesIDs(
+    vtkMySQLDatabase* iDatabaseConnector,int iNumberOfTraceIDs);
 
 signals:
   /**

@@ -362,5 +362,11 @@ std::vector<std::string> GetAllSelectedValuesFromTwoTables(
 void GetAllSelectedFields(std::stringstream &ioQueryStream,
                           std::vector<std::string> iSelectedFields);
 
+//select columnname FROM tablename WHERE field = value order by ASC/DESC limit iNumberLimit
+std::vector<std::string> GetOrderByWithLimit(vtkMySQLDatabase* iDatabaseConnector,
+  std::string iColumnName,std::string iTableName,std::string iField,std::string iValue,bool ASC,
+  std::string iNumberLimit);
+
+
 
 #endif

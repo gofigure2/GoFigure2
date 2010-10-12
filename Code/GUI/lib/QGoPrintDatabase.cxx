@@ -450,7 +450,7 @@ QGoPrintDatabase::
 SaveMeshFromVisuInDB( unsigned int iXCoordMin,
                       unsigned int iYCoordMin,
                       unsigned int iZCoordMin,
-                      unsigned int iTCoord,
+                      //unsigned int iTCoord,
                       unsigned int iXCoordMax,
                       unsigned int iYCoordMax,
                       unsigned int iZCoordMax,
@@ -461,20 +461,20 @@ SaveMeshFromVisuInDB( unsigned int iXCoordMin,
   if(!this->m_MeshGenerationMode)
     {
     unsigned int NewMeshID = this->m_MeshesManager->SaveNewMeshFromVisu(iXCoordMin,iYCoordMin,
-      iZCoordMin,iTCoord,iXCoordMax,iYCoordMax,iZCoordMax,iMeshNodes,this->m_DatabaseConnector,
-      this->m_SelectedColorData,ss_atoi<unsigned int>(this->m_SelectedCollectionData.first),
+      iZCoordMin,this->m_SelectedTimePoint,iXCoordMax,iYCoordMax,iZCoordMax,iMeshNodes,
+      this->m_DatabaseConnector,this->m_SelectedColorData,
+      ss_atoi<unsigned int>(this->m_SelectedCollectionData.first),
       iMeshAttributes,this->m_SelectedCellType,this->m_SelectedSubCellType);
-
     std::list<unsigned int> ListNewMeshes;
     ListNewMeshes.push_back(NewMeshID);
     this->m_TracksManager->UpdateBoundingBoxes(this->m_DatabaseConnector,
-      this->m_MeshesManager->GetListCollectionIDs(this->m_DatabaseConnector,ListNewMeshes));
+        this->m_MeshesManager->GetListCollectionIDs(this->m_DatabaseConnector,ListNewMeshes));
     }
-  else
+  else //for mesh generated from contours:
     {
     this->m_MeshesManager->SaveGeneratedMeshFromVisu(iXCoordMin,iYCoordMin,
-      iZCoordMin,iTCoord,iXCoordMax,iYCoordMax,iZCoordMax,iMeshNodes,this->m_DatabaseConnector,
-      iMeshAttributes);
+      iZCoordMin,this->m_SelectedTimePoint,iXCoordMax,iYCoordMax,iZCoordMax,iMeshNodes,
+      this->m_DatabaseConnector,iMeshAttributes);
     //as the mesh is generated from contours, there is no TrackID associated.
     this->m_MeshGenerationMode = false;
     }
@@ -483,31 +483,54 @@ SaveMeshFromVisuInDB( unsigned int iXCoordMin,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::SaveNewMeshWithNoPointsInDB()
+/*void QGoPrintDatabase::SaveNewMeshWithNoPointsInDB()
 {
   this->OpenDBConnection();
   this->m_MeshesManager->CreateNewMeshWithNoContourNoPoints(this->m_DatabaseConnector,
     this->m_SelectedColorData,this->m_SelectedTimePoint,this->m_SelectedCellType,
     this->m_SelectedSubCellType,ss_atoi<unsigned int>(this->m_SelectedCollectionData.first));
   this->CloseDBConnection();
+}*/
+void QGoPrintDatabase::SaveNewMeshForContoursToSphere(int iNumberOfContours)//std::list<unsigned int> iListContourIDs)
+{
+  /*unsigned int MeshID = this->m_MeshesManager->SaveNewMeshFromVisu(iXCoordMin,iYCoordMin,
+      iZCoordMin,this->m_SelectedTimePoint,iXCoordMax,iYCoordMax,iZCoordMax,iMeshNodes,
+      this->m_DatabaseConnector,this->m_SelectedColorData,
+      ss_atoi<unsigned int>(this->m_SelectedCollectionData.first),
+      iMeshAttributes,this->m_SelectedCellType,this->m_SelectedSubCellType);*/
+  this->OpenDBConnection();
+  unsigned int MeshID = this->m_MeshesManager->CreateNewMeshWithNoContourNoPoints(
+    this->m_DatabaseConnector,this->m_SelectedColorData,this->m_SelectedTimePoint,
+    this->m_SelectedCellType,this->m_SelectedSubCellType,
+    ss_atoi<unsigned int>(this->m_SelectedCollectionData.first));
+  std::list<unsigned int> ListLastCreatedContours = 
+    this->m_ContoursManager->GetLastCreatedTracesIDs(this->m_DatabaseConnector,iNumberOfContours);
+  this->AddCheckedTracesToCollection<QGoDBContourManager,QGoDBMeshManager>(
+    this->m_ContoursManager,this->m_MeshesManager,MeshID,ListLastCreatedContours);
+  this->CloseDBConnection();
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::SaveNewContourForContoursToSphere(unsigned int iXCoordMin,
+unsigned int QGoPrintDatabase::SaveNewContourForContoursToSphere(unsigned int iXCoordMin,
                                                          unsigned int iYCoordMin,
                                                          unsigned int iZCoordMin,
                                                          unsigned int iXCoordMax,
                                                          unsigned int iYCoordMax,
                                                          unsigned int iZCoordMax,
-                                                         vtkPolyData* iTraceNodes,
-                                                         unsigned int iMeshID)
+                                                         vtkPolyData* iTraceNodes)
+                                                         //unsigned int iMeshID)
 {
   this->OpenDBConnection();
-  this->m_ContoursManager->SaveNewContourFromVisu(iXCoordMin,iYCoordMin,iZCoordMin,
+  unsigned int ContourID = this->m_ContoursManager->SaveNewContourFromVisu(
+    iXCoordMin,iYCoordMin,iZCoordMin,
     this->m_SelectedTimePoint,iXCoordMax,iYCoordMax,iZCoordMax,iTraceNodes,
-    this->m_DatabaseConnector,this->m_SelectedColorData,iMeshID);
+   // this->m_DatabaseConnector,this->m_SelectedColorData,iMeshID);
+   this->m_DatabaseConnector,this->m_SelectedColorData,0);
+ // this->m_TempContourIDs.push_back(ContourID);
   this->CloseDBConnection();
+  return ContourID;
 }
 //-------------------------------------------------------------------------
 

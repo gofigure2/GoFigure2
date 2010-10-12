@@ -537,3 +537,9 @@ void QGoDBTraceManager::AddToSelectedCollection()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+std::list<unsigned int> QGoDBTraceManager::GetLastCreatedTracesIDs(
+  vtkMySQLDatabase* iDatabaseConnector,int iNumberOfTraceIDs)
+{
+  return this->m_CollectionOfTraces->GetLastCreatedTracesIDs(
+    iDatabaseConnector,iNumberOfTraceIDs); 
+}
