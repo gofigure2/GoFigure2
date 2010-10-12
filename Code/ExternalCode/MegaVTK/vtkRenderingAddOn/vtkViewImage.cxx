@@ -93,7 +93,6 @@
 #include "vtkActor.h"
 #include "vtkPolyDataMapper.h"
 #include "vtkProp3DCollection.h"
-#include "vtkDataSetCollection.h"
 #include "vtkPoints.h"
 #include "vtkIdList.h"
 #include "vtkOutlineSource.h"
@@ -119,7 +118,6 @@ vtkViewImage::vtkViewImage()
   this->LookupTable = vtkLookupTable::New();
   this->ScalarBarActor = vtkScalarBarActor::New();
   this->Prop3DCollection = vtkProp3DCollection::New();
-  this->DataSetCollection = vtkDataSetCollection::New();
   this->OrientationTransform = vtkMatrixToLinearTransform::New();
 
   this->OrientationMatrix->Identity();
@@ -199,7 +197,6 @@ vtkViewImage::~vtkViewImage()
   this->LookupTable->Delete();
   this->ScalarBarActor->Delete();
   this->Prop3DCollection->Delete();
-  this->DataSetCollection->Delete();
   }
 
 //----------------------------------------------------------------------------
@@ -323,7 +320,7 @@ double vtkViewImage::GetValueAtPosition(double worldcoordinates[3],
 //----------------------------------------------------------------------------
 bool vtkViewImage::RemoveDataSet(vtkDataSet* dataset)
 {
-  unsigned int index = this->DataSetCollection->IsItemPresent(dataset);
+  unsigned int index = this->Prop3DCollection->IsItemPresent(dataset);
 
   if (!index)
     {
@@ -333,7 +330,6 @@ bool vtkViewImage::RemoveDataSet(vtkDataSet* dataset)
     {
     this->Renderer->RemoveViewProp (
       vtkProp::SafeDownCast(this->Prop3DCollection->GetItemAsObject(index)));
-    this->DataSetCollection->RemoveItem(index);
     this->Prop3DCollection->RemoveItem(index);
 
     return true;
@@ -344,7 +340,7 @@ void vtkViewImage::RemoveProp(vtkProp* prop)
 {
   this->Renderer->RemoveViewProp(prop);
 
-  unsigned int index = this->DataSetCollection->IsItemPresent(prop);
+  unsigned int index = this->Prop3DCollection->IsItemPresent(prop);
   this->Prop3DCollection->RemoveItem(index);
 }
 

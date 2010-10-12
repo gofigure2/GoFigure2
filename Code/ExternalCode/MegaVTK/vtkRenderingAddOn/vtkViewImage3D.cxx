@@ -98,7 +98,6 @@
 #include "vtkActor.h"
 #include "vtkPolyDataMapper.h"
 #include "vtkProp3DCollection.h"
-#include "vtkDataSetCollection.h"
 #include "vtkPoints.h"
 #include "vtkIdList.h"
 #include "vtkOutlineSource.h"
@@ -709,7 +708,6 @@ vtkViewImage3D::AddDataSet(vtkDataSet* dataset,
 //   actor->SetUserTransform( this->AdjustmentTransform );
 
   this->Renderer->AddViewProp(actor3d);
-  this->DataSetCollection->AddItem(dataset);
   this->Prop3DCollection->AddItem(actor3d);
 
   return actor3d;

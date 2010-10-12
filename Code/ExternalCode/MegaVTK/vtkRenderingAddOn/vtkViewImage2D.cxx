@@ -93,7 +93,6 @@
 #include "vtkActor.h"
 #include "vtkPolyDataMapper.h"
 #include "vtkProp3DCollection.h"
-#include "vtkDataSetCollection.h"
 #include "vtkPoints.h"
 #include "vtkIdList.h"
 #include "vtkOutlineSource.h"
@@ -1022,7 +1021,6 @@ AddDataSet(vtkPolyData* dataset, vtkProperty* property, const bool& intersection
   actor->GetProperty()->BackfaceCullingOn();
 
   this->Renderer->AddViewProp(actor);
-  this->DataSetCollection->AddItem((vtkDataSet*) dataset);
   this->Prop3DCollection->AddItem(actor);
 
   return actor;
@@ -1079,7 +1077,6 @@ AddDataSet(vtkDataSet* dataset, vtkProperty* property, const bool& intersection,
       actor->GetProperty()->BackfaceCullingOn();
 
       this->Renderer->AddViewProp(actor);
-      this->DataSetCollection->AddItem((vtkDataSet*) dataset);
       this->Prop3DCollection->AddItem(actor);
 
       return actor;

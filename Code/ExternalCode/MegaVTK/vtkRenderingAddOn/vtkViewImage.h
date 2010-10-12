@@ -76,7 +76,6 @@
 #include <vtkCornerAnnotation.h>
 #include <vtkActor.h>
 #include <vtkDataSet.h>
-#include <vtkDataSetCollection.h>
 #include <vtkProp3DCollection.h>
 
 #include <vector>
@@ -131,7 +130,6 @@ class vtkDataSet;
 class vtkPolyData;
 class vtkProperty;
 class vtkProp3DCollection;
-class vtkDataSetCollection;
 class vtkMatrixToLinearTransform;
 class vtkRenderWindowInteractor;
 
@@ -251,14 +249,6 @@ public:
   */
   vtkGetObjectMacro(TextProperty, vtkTextProperty);
   virtual void SetTextProperty(vtkTextProperty* textproperty);
-  /**
-     This viewer is able to display not only images but also
-     any vtkPolyData or vtkUnstructuredGrid instance.
-     Use AddDataSet() and RemoveDataSet() for that.
-     All displayed datasets (other than Input (SetInput()) are gathered in 
-     a vtkDataSetCollection for easier access.
-  */
-  vtkGetObjectMacro (DataSetCollection, vtkDataSetCollection);
   /**
    All displayed dataset generates an actor which is added to the renderer.    \sa AddDataSet.
    These actors are gathered in this vtkProp3DCollection for easier access.
@@ -469,14 +459,6 @@ protected:
      of the viewer.
   */
   vtkScalarBarActor* ScalarBarActor;
-  /**
-     This viewer is able to display not only images but also
-     any vtkPolyData or vtkUnstructuredGrid instance.
-     Use AddDataSet() and RemoveDataSet() for that.
-     All displayed datasets (other than Input (SetInput()) are gathered in a vtkDataSetCollection
-     for easier access.
-  */
-  vtkDataSetCollection* DataSetCollection;
   /**
      All displayed dataset generates an actor which is added to the renderer. (See AddDataSet()).
      These actors are gathered in this vtkProp3DCollection for easier access.
