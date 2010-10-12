@@ -889,6 +889,8 @@ ComputeDistancesToSquare(vtkPlanes* planes)
     //  }
     prop_temp = Prop3DCollection->GetNextProp3D();
     }
+
+  planes->Delete();
   // emit signal to say to render
   this->InvokeEvent(vtkViewImage3DCommand::UpdateRenderEvent);
 }
