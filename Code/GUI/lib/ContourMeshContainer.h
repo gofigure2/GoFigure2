@@ -343,9 +343,7 @@ public:
   void RemoveActorsWithGivenTimePoint( const unsigned int& iT );
 
   /**
-    \brief Add elements to the visualization given it TraceID.
-    \param[in] iId TraceID of the element to be displaid
-    \note This method should be used only when changing time point.
+    \brief
   */
   void AddActorsWithGivenTimePoint( const unsigned int& iT );
 
@@ -361,7 +359,6 @@ public:
   /**
     \brief Update element highlighting given it TraceId
     \param[in] iId TraceID of the element to be modified
-    \param[in] iProperty highlighting property
     \return true if the element was present in the container.
   */
   bool UpdateElementHighlightingWithGivenTraceID( const unsigned int& iId );
@@ -435,7 +432,6 @@ public:
   /**
   \brief Update highlighting property of one element given one actor.
   \param[in] iActor Actor of the element to be modified
-  \param[in] iProperty Property to be applied on all actors of the element
   \return true if the element exists
   \return false else
   */
@@ -575,7 +571,7 @@ public:
   /**
   \brief Update highlighting property of one element given one actor.
   \param[in] iActor Actor of the element to be modified
-  \param[in] iProperty Property to be applied on all actors of the element
+  \param[in] iState Visibility to applied to the element
   \return true if the element exists
   \return false else
   */
