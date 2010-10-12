@@ -48,7 +48,6 @@ SET( QGOIO_SRC
   itkMegaCaptureImport.cxx
   itkMegaCaptureReader.cxx
   GoFigureFileInfoMultiIndexContainerHelper.cxx
-#   itkMultiFileReader.cxx
   vtkPolyDataMySQLTextReader.cxx
   vtkPolyDataMySQLTextWriter.cxx
   LSMToMegaCapture.cxx

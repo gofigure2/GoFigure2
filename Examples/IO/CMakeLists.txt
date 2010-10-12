@@ -1,6 +1,5 @@
 SET( QGOIO_EXAMPLES_SRC
   megacaptureimport
-  multifilereader
   gofigurefileinfomultiindexcontainerhelper
   MegaCaptureHeaderReaderTest
   lsm2mha
