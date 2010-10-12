@@ -391,14 +391,13 @@ protected:
       contour_property->SetColor(RGBA[0], RGBA[1], RGBA[2]);
       contour_property->SetOpacity(RGBA[3]);
 
-      /// TODO shallow copy...?
-      // get corresponding actor from visualization
       vtkPolyData* contour_copy = vtkPolyData::New();
-      contour_copy->ShallowCopy( iContour );
+      contour_copy->DeepCopy( iContour );
 
       std::vector<vtkActor*> contour_actor =
         this->AddContour(contour_copy, contour_property);
 
+      contour_copy->Delete();
       contour_property->Delete();
 
       // fill the container

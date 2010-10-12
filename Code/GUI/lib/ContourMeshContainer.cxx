@@ -80,10 +80,10 @@ ContourMeshContainer::
       {
       it->ActorYZ->Delete();
       }
-    //if( it->ActorXYZ )
-    //  {
-    //  it->ActorXYZ->Delete();
-    //  }
+    if( it->ActorXYZ )
+      {
+      it->ActorXYZ->Delete();
+      }
 
     ++it;
     }

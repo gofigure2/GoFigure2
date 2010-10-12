@@ -709,8 +709,6 @@ vtkViewImage3D::AddDataSet(vtkDataSet* dataset,
   this->Renderer->AddViewProp(actor3d);
   this->Prop3DCollection->AddItem(actor3d);
 
-  dataset->Delete();
-
   return actor3d;
 }
 
