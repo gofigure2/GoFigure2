@@ -270,9 +270,6 @@ Update()
 {
   vtkViewImage2D* View1 = this->m_Pool->GetItem(0);
   View1->SetInput(this->m_Image);
-  View1->SetViewOrientation(vtkViewImage2D::VIEW_ORIENTATION_AXIAL);
-  View1->SetViewConvention(vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL);
-  View1->UpdateWindowLevelObservers();
 
   this->m_View3D->Add2DPhantom(0,
                                View1->GetImageActor(),
@@ -285,9 +282,6 @@ Update()
 
   vtkViewImage2D* View2 = this->m_Pool->GetItem(1);
   View2->SetInput(this->m_Image);
-  View2->SetViewConvention(vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL);
-  View2->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_CORONAL);
-  View2->UpdateWindowLevelObservers();
 
   this->m_View3D->Add2DPhantom(1,
                                View2->GetImageActor(),
@@ -300,9 +294,6 @@ Update()
 
   vtkViewImage2D* View3 = this->m_Pool->GetItem(2);
   View3->SetInput(this->m_Image);
-  View3->SetViewConvention(vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL);
-  View3->SetViewOrientation(vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL);
-  View3->UpdateWindowLevelObservers();
 
   this->m_View3D->Add2DPhantom( 2,
                                 View3->GetImageActor(),
@@ -313,9 +304,46 @@ Update()
   this->SliderYZ->setMaximum(range[1]);
 
   this->m_View3D->SetInput(this->m_Image);
+
+  if (m_FirstRender)
+    {
+    UpdateOnFirstRender();
+    }
+  else
+    {
+    this->m_Pool->SyncRender();
+    }
+  QGoImageView::Update();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoImageView3D::
+UpdateOnFirstRender()
+{
+  vtkViewImage2D* View1 = this->m_Pool->GetItem(0);
+  View1->SetViewOrientation(vtkViewImage2D::VIEW_ORIENTATION_AXIAL);
+  View1->SetViewConvention(vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL);
+  View1->UpdateWindowLevelObservers();
+
+  vtkViewImage2D* View2 = this->m_Pool->GetItem(1);
+  View2->SetViewConvention(vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL);
+  View2->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_CORONAL);
+  View2->UpdateWindowLevelObservers();
+
+  vtkViewImage2D* View3 = this->m_Pool->GetItem(2);
+  View3->SetViewConvention(vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL);
+  View3->SetViewOrientation(vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL);
+  View3->UpdateWindowLevelObservers();
+
   this->m_View3D->SetVolumeRenderingOff();
   this->m_View3D->SetTriPlanarRenderingOn();
   this->m_View3D->SetShowScalarBar(false);
+
+  this->SliderXY->setValue((this->SliderXY->minimum() + this->SliderXY->maximum()) / 2);
+  this->SliderXZ->setValue((this->SliderXZ->minimum() + this->SliderXZ->maximum()) / 2);
+  this->SliderYZ->setValue((this->SliderYZ->minimum() + this->SliderYZ->maximum()) / 2);
 
   this->m_Pool->SyncSetBackground(this->m_Pool->GetItem(0)->GetBackground());
   this->m_Pool->SyncSetShowAnnotations(m_ShowAnnotations);
@@ -334,37 +362,25 @@ Update()
   this->m_Pool->UpdateWindowLevelObservers();
   this->m_Pool->SyncSetShowScalarBar(false);
 
-  if (m_FirstRender)
-    {
-    this->m_Pool->SyncReset();
-    this->m_Pool->InitializeAllObservers();
-    this->m_Pool->Initialize();
+  this->m_Pool->SyncReset();
+  this->m_Pool->InitializeAllObservers();
+  this->m_Pool->Initialize();
 
-    this->SliderXY->setValue((this->SliderXY->minimum() + this->SliderXY->maximum()) / 2);
-    this->SliderXZ->setValue((this->SliderXZ->minimum() + this->SliderXZ->maximum()) / 2);
-    this->SliderYZ->setValue((this->SliderYZ->minimum() + this->SliderYZ->maximum()) / 2);
+  // Rotate the camera to show that the view is 3d
+  vtkCamera *camera = this->m_View3D->GetRenderer()->GetActiveCamera();
+  camera->Roll(-135);
+  camera->Azimuth(-45);
 
-    // Rotate the camera to show that the view is 3d
-    vtkCamera *camera = this->m_View3D->GetRenderer()->GetActiveCamera();
-    camera->Roll(-135);
-    camera->Azimuth(-45);
+  this->m_View3D->GetRenderer()->SetActiveCamera(camera);
+  this->m_View3D->ResetCamera();
 
-    this->m_View3D->GetRenderer()->SetActiveCamera(camera);
-    this->m_View3D->ResetCamera();
+  SetupVTKtoQtConnections();
 
-    SetupVTKtoQtConnections();
+  // Initialize widgets which requiere information about the input image
+  InitializeBoxWidget();
+  InitializePlaneWidget();
 
-    // Initialize widgets which requiere information about the input image
-    InitializeBoxWidget();
-    InitializePlaneWidget();
-
-    m_FirstRender = false;
-    }
-  else
-    {
-    this->m_Pool->SyncRender();
-    }
-  QGoImageView::Update();
+  m_FirstRender = false;
 }
 //-------------------------------------------------------------------------
 

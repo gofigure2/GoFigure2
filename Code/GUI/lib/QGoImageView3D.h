@@ -268,6 +268,7 @@ protected:
   virtual void resizeEvent(QResizeEvent* event);
 
   void SetupVTKtoQtConnections();
+  void UpdateOnFirstRender();
 
   void Quadview();
   void FullScreenViewXY();
