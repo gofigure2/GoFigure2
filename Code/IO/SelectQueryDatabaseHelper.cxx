@@ -2152,7 +2152,7 @@ std::list<unsigned int> GetSpecificValuesEqualToZero(
   querystream << " AND ";
   querystream << iFieldTwo;
   querystream << " = 0);";
-  
+
   query->SetQuery(querystream.str().c_str());
   /** \todo check when several meshesID are in the query*/
   if (!query->Execute())
@@ -2176,7 +2176,7 @@ std::list<unsigned int> GetSpecificValuesEqualToZero(
 
   query->Delete();
 
-  return result;  
+  return result;
 }
 //-------------------------------------------------------------------------
 
@@ -2267,8 +2267,8 @@ std::string SelectWithJoinNullIncluded(std::string iSelectQuery,
 void GetAllSelectedFields(std::stringstream &ioQuerystream,
                           std::vector<std::string> iSelectedFields)
 {
-  int i = 0;
-  for(i = 0; i<iSelectedFields.size() - 1;i++)
+  size_t i = 0;
+  for( ; i<iSelectedFields.size() - 1; i++ )
     {
     ioQuerystream << iSelectedFields[i];
     ioQuerystream << ", ";

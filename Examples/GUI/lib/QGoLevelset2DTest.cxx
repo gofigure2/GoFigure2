@@ -93,14 +93,21 @@ int main(int argc, char** argv)
   levelSet2DFilter->setPoints( seeds );
 
   // if there is an output
-  if (levelSet2DFilter->Apply())
+  int oResult;
+
+  vtkPolyData* temp_pd = levelSet2DFilter->Apply();
+  if ( temp_pd )
     {
-    delete levelSet2DFilter;
-    return EXIT_SUCCESS;
+    oResult = EXIT_SUCCESS;
+    temp_pd->Delete();
     }
   else
     {
-    delete levelSet2DFilter;
-    return EXIT_FAILURE;
+    oResult = EXIT_FAILURE;
     }
+
+  delete levelSet2DFilter;
+  seeds->Delete();
+
+  return oResult;
 }
