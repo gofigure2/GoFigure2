@@ -1074,6 +1074,8 @@ void QGoTabImageView3DwT::CreateModeActions()
                          QIcon::Normal, QIcon::Off);
   DistanceAction->setIcon(DistanceIcon);
 
+  group->addAction(DistanceAction);
+
   this->m_ModeActions.push_back(DistanceAction);
 
   QObject::connect(DistanceAction, SIGNAL(toggled(bool)),
@@ -1092,6 +1094,8 @@ void QGoTabImageView3DwT::CreateModeActions()
   AngleIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/Angle.png")),
                       QIcon::Normal, QIcon::Off);
   AngleAction->setIcon(AngleIcon);
+
+  group->addAction(AngleAction);
 
   this->m_ModeActions.push_back(AngleAction);
 

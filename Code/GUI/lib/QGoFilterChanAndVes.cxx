@@ -71,8 +71,16 @@ QGoFilterChanAndVes( QObject* iParent, int iDimension ) :
   m_Curvature = 5;
 
   QString name = "Levelset ";
-  name.append(QString::number(m_Dimension + 2, 10));
-  name.append("D");
+  if (m_Dimension < 2)
+    {
+    name.append(QString::number(m_Dimension + 2, 10));
+    name.append("D");
+    }
+  else
+    {
+    name = "2D Levelset within 1 mesh";
+    }
+
 
   setName(name);
   QGoContourSemiAutoLevelsetWidget* widget = new QGoContourSemiAutoLevelsetWidget;

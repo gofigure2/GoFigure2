@@ -35,11 +35,6 @@
          <string>Cube</string>
         </property>
        </item>
-       <item>
-        <property name="text">
-         <string>Cylinder</string>
-        </property>
-       </item>
       </widget>
      </item>
     </layout>

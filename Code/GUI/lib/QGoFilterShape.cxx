@@ -65,8 +65,15 @@ QGoFilterShape(QObject* iParent, int iDimension) :
   m_Dimension = iDimension;
 
   QString name = "Shape ";
-  name.append(QString::number(m_Dimension + 2, 10));
-  name.append("D");
+  if (m_Dimension < 2)
+    {
+    name.append(QString::number(m_Dimension + 2, 10));
+    name.append("D");
+    }
+  else
+    {
+    name = "2D Shapes within 1 mesh";
+    }
 
   setName(name);
   QGoContourSemiAutoShapeWidget* widget =
@@ -121,9 +128,9 @@ Apply()
       case 1:
         testing = GenerateCube(getCenter());
         break;
-      case 2:
-        testing = GenerateCylinder(getCenter());
-        break;
+      //case 2:
+      //  testing = GenerateCylinder(getCenter());
+      //  break;
       default:
         break;
     }
