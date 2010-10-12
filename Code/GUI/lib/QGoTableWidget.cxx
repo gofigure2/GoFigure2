@@ -294,7 +294,8 @@ void QGoTableWidget::DisplayContent(TWContainerType iTWRowContainer,
               {
               //QTableWidgetItem* CellTable = new QTableWidgetItem;
               std::string       Value = *iter;
-              if (Value != "")
+              //if (Value != "")
+              if (this->CheckValueToDisplayData(Value,HeaderCol))
                 {
                 QTableWidgetItem* CellTable = new QTableWidgetItem;
                 CellTable->setData(0, QString::fromStdString(Value).toDouble());
@@ -417,7 +418,7 @@ void QGoTableWidget::InsertNewRow(TWContainerType iTWRowContainer,
             {
             //QTableWidgetItem* CellTable = new QTableWidgetItem;
             std::string       Value = iTWRowContainer[i].second[0];
-            if (Value != "")
+            if (this->CheckValueToDisplayData(Value,HeaderCol))//(Value != "")
               {
               QTableWidgetItem* CellTable = new QTableWidgetItem;
               CellTable->setData(0,QString::fromStdString(Value).toDouble());
@@ -433,6 +434,21 @@ void QGoTableWidget::InsertNewRow(TWContainerType iTWRowContainer,
     this->SetColorForTable(iTWRowContainer, iIndexColorTraceRowContainer,TraceName, NewRow - 1);
     this->SetColorForTable(iTWRowContainer, iIndexColorCollectionRowContainer,CollectionName, NewRow - 1);
     } //ENDELSE
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+bool QGoTableWidget::CheckValueToDisplayData(std::string iValue,std::string HeaderCol)
+{
+  if(iValue == "")
+    {
+    return false;
+    }
+  if(iValue == "-1" && HeaderCol.compare("T.I.Channel")>0)
+    {
+    return false;
+    }
+  return true;
 }
 //--------------------------------------------------------------------------
 

@@ -2178,3 +2178,127 @@ std::list<unsigned int> GetSpecificValuesEqualToZero(
 
   return result;  
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::vector<std::string> ExecuteSelectQuery(vtkMySQLDatabase* iDatabaseConnector,
+                                            std::string iQuery)
+{
+  vtkSQLQuery* query = iDatabaseConnector->GetQueryInstance();
+  std::vector<std::string> Results;
+  query->SetQuery(iQuery.c_str());
+  if (!query->Execute())
+    {
+    itkGenericExceptionMacro(
+      << "Execute select query failed"
+      << query->GetLastErrorText());
+    iDatabaseConnector->Close();
+    iDatabaseConnector->Delete();
+    query->Delete();
+    return Results;
+    }
+  while (query->NextRow())
+    {
+    for (int k = 0; k < query->GetNumberOfFields(); k++)
+      {
+      Results.push_back(query->DataValue(k).ToString());
+      }
+    }
+
+  query->Delete();
+
+  return Results;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::string SelectWithJoinNullIncluded(std::string iSelectQuery,
+                                       std::string iJoinOn)
+{
+  std::stringstream QueryStream;
+  QueryStream << iSelectQuery;
+  QueryStream << " UNION ";
+  //QueryStream << iSelectQuery;
+  size_t posWhere = iSelectQuery.find("WHERE",0);
+  std::stringstream SecondPart;
+  if (posWhere != std::string::npos)
+    {
+    size_t posCloseBracket = iSelectQuery.find(")",iSelectQuery.size()-1);
+      {
+      //if an end bracket is found, remove it:
+      if(posCloseBracket != std::string::npos)
+        {
+        SecondPart << iSelectQuery.substr(0,posCloseBracket-1);
+        }
+      //if an end bracket is not found, add an opening bracket after where:
+      else
+        {
+        SecondPart << iSelectQuery.substr(0,posWhere+6);
+        SecondPart << "(";
+        size_t BegEndQuery = posWhere+6;
+        size_t Length = iSelectQuery.size() - BegEndQuery;
+        SecondPart << iSelectQuery.substr(posWhere+6,Length);
+        }
+      }
+    }
+  else
+    {
+    SecondPart << iSelectQuery;
+    SecondPart << "WHERE ";
+    }
+  QueryStream << SecondPart.str();
+  QueryStream << " AND ";
+  QueryStream << iJoinOn;
+  QueryStream << " IS NULL";
+  if (posWhere != std::string::npos)
+    {
+    QueryStream << ");";
+    }
+  else
+    {
+    QueryStream << ";";
+    }
+
+  return QueryStream.str();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void GetAllSelectedFields(std::stringstream &ioQuerystream,
+                          std::vector<std::string> iSelectedFields)
+{
+  int i = 0;
+  for(i = 0; i<iSelectedFields.size() - 1;i++)
+    {
+    ioQuerystream << iSelectedFields[i];
+    ioQuerystream << ", ";
+    }
+  ioQuerystream << iSelectedFields[i];
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::vector<std::string> GetAllSelectedValuesFromTwoTables(
+  vtkMySQLDatabase* iDatabaseConnector,std::string iTableOne,std::string iTableTwo,
+  std::vector<std::string> iSelectedFields,std::string iJoinCondition,
+  std::string ifield, std::string ifieldValue)
+{
+  std::stringstream QueryStream;
+  QueryStream << "SELECT ";
+  std::vector<std::string>::iterator iter = iSelectedFields.begin();
+  GetAllSelectedFields(QueryStream,iSelectedFields);
+  QueryStream << " FROM ";
+  QueryStream << iTableOne;
+  QueryStream << " LEFT JOIN ";
+  QueryStream << iTableTwo;
+  QueryStream << " ON ";
+  QueryStream << iJoinCondition;
+  QueryStream << " WHERE ";
+  QueryStream << ifield;
+  QueryStream << " = ";
+  QueryStream << ifieldValue;
+
+  std::stringstream SelectQuery;
+  SelectQuery << SelectWithJoinNullIncluded(QueryStream.str(),iJoinCondition);
+  return ExecuteSelectQuery(iDatabaseConnector,SelectQuery.str());
+}

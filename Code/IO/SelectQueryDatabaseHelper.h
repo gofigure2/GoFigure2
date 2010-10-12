@@ -346,5 +346,21 @@ std::list<unsigned int> GetSpecificValuesEqualToZero(
   std::string iFieldOne, std::vector<std::string> iVectorConditionFieldOne,
   std::string iFieldTwo);
 
+std::vector<std::string> ExecuteSelectQuery(vtkMySQLDatabase* iDatabaseConnector,
+                                            std::string iQuery);
+
+//iselectquery union iselectquery where ijoinon IS NULL (with or without brackets in the
+//where clause, it will work
+std::string SelectWithJoinNullIncluded(std::string iSelectQuery, std::string iJoinOn);
+
+std::vector<std::string> GetAllSelectedValuesFromTwoTables(
+  vtkMySQLDatabase* iDatabaseConnector,std::string iTableOne,std::string iTableTwo,
+  std::vector<std::string> iSelectedFields,std::string iJoinCondition,
+  std::string ifield, std::string ifieldValue);
+
+//add the selected fields separated by ',' to the ioQueryStream
+void GetAllSelectedFields(std::stringstream &ioQueryStream,
+                          std::vector<std::string> iSelectedFields);
+
 
 #endif

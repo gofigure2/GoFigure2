@@ -123,5 +123,28 @@ protected:
     std::vector<std::vector<std::string> > &ioValuesToFill,
     std::vector<std::string>               &ioSelectFields);
 
+  /**
+  \brief get the intensities values from the database,and put them in ioValuesToFill for
+  only one mesh
+  \param[in] iMeshID meshID for the mesh the intensity values are needed
+  \param[in|out] ioValuesToFill vector of the values where the intensities values 
+  will be pushed
+  */
+  void GetIntensityValuesForOneMesh(std::string iMeshID,
+    std::vector<std::vector<std::string> > &ioValuesToFill,
+    vtkMySQLDatabase* iDatabaseConnector);
+
+  /**
+  \brief sort the values in iResultQuery to fill ioValuesToFill
+  \param[in] iResultQuery vector with all the data from the database
+  \param[in] iVectMeshIDs vector of all the meshIDs
+  \param[in] ioValuesToFill vector of the values where the intensities values 
+  will be pushed
+  \param[in] iDatabaseConnector connection to the database
+  */
+  void GetValuesToFillForIntensityFromQueryResults(
+    std::vector<std::string> iResultQuery, std::vector<std::string> iVectMeshIDs,
+    std::vector<std::vector<std::string> > &ioValuesToFill);
+
   };
 #endif

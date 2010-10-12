@@ -241,6 +241,12 @@ protected:
                         std::vector<int> iIndexColorRowContainer,
                         std::string NameGroupColor, unsigned int StartRow);
   QStringList recordHeaderNamesOrder();
+  
+  /** 
+  \brief check if the value is suitable to be displayed, if yes, return true,
+  if not return false so the QTableWidgetChildItem is not created for it
+  */
+  bool CheckValueToDisplayData(std::string iValue,std::string HeaderCol);
 
 protected slots:
   /** \brief sort items given one column and one sort order. */
