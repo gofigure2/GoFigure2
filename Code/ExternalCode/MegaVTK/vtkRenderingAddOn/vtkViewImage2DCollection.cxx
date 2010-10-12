@@ -372,19 +372,6 @@ void vtkViewImage2DCollection::SyncAddDataSet(vtkDataSet* dataset, vtkProperty* 
 //----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
-void vtkViewImage2DCollection::SyncRemoveDataSet(vtkDataSet* dataset)
-{
-  this->InitTraversal();
-  vtkViewImage2D* item = this->GetNextItem();
-  while (item)
-    {
-    item->RemoveDataSet(dataset);
-    item = this->GetNextItem();
-    }
-}
-//----------------------------------------------------------------------------
-
-//----------------------------------------------------------------------------
 void vtkViewImage2DCollection::SyncResetCamera(void)
 {
   this->InitTraversal();

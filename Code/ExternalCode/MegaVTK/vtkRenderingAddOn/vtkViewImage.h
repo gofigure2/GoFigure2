@@ -280,7 +280,6 @@ public:
                                vtkProperty* property = NULL,
                                const bool& intersection = true,
                                const bool& iDataVisibility = true) = 0;
-  virtual bool RemoveDataSet(vtkDataSet* dataset);
 
   virtual void RemoveProp(vtkProp* iProp);
 

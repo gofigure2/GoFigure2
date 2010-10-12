@@ -255,9 +255,6 @@ public:
 
   /// Description: Synchronize dataset addition between views
   virtual void SyncAddDataSet(vtkDataSet* dataset, vtkProperty* property = NULL);
-  /// Description: Synchronize dataset removal between views
-  virtual void SyncRemoveDataSet(vtkDataSet* dataset);
-
   /// Description: Synchronize reset window level between views
   virtual void SyncResetWindowLevel(void);
   /// Description: Synchronize reset camera between views

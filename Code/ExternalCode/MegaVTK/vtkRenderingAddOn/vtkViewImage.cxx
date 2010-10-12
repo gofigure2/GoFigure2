@@ -318,23 +318,6 @@ double vtkViewImage::GetValueAtPosition(double worldcoordinates[3],
 }
 
 //----------------------------------------------------------------------------
-bool vtkViewImage::RemoveDataSet(vtkDataSet* dataset)
-{
-  unsigned int index = this->Prop3DCollection->IsItemPresent(dataset);
-
-  if (!index)
-    {
-    return false;
-    }
-  else
-    {
-    this->Renderer->RemoveViewProp (
-      vtkProp::SafeDownCast(this->Prop3DCollection->GetItemAsObject(index)));
-    this->Prop3DCollection->RemoveItem(index);
-
-    return true;
-    }
-}
 
 void vtkViewImage::RemoveProp(vtkProp* prop)
 {

@@ -86,6 +86,8 @@ QGoConnectServerPage::QGoConnectServerPage(QWidget *iParent)
 QGoConnectServerPage::~QGoConnectServerPage()
   {
   delete lineDBName;
+  // make sure vtkMySQLDatabase* has been deleted
+  CloseServerConnection();
   }
 //-------------------------------------------------------------------------
 
@@ -196,9 +198,12 @@ std::list<std::string> QGoConnectServerPage::ListGofigureDatabases() const
 //-------------------------------------------------------------------------
 void QGoConnectServerPage::CloseServerConnection() const
 {
-  m_ConnectionServer.second->Close();
-  m_ConnectionServer.second->Delete();
-  m_ConnectionServer.second = 0;
+  if(m_ConnectionServer.second)
+    {
+    m_ConnectionServer.second->Close();
+    m_ConnectionServer.second->Delete();
+    m_ConnectionServer.second = 0;
+    }
 }
 //-------------------------------------------------------------------------
 

@@ -413,7 +413,7 @@ public:
   /**
    *
    */
-
+/*
   template<class TContourContainer>
   void RemoveContours(TContourContainer& iContours)
   {
@@ -427,7 +427,7 @@ public:
       ++contour_it;
       }
   }
-
+*/
   /**
    *
    */
