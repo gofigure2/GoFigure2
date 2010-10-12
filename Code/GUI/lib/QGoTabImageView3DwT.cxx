@@ -2061,10 +2061,11 @@ VisualizeMesh( vtkPolyData* iMesh )
   /// TODO shallow copy...?
   // get corresponding actor from visualization
   vtkPolyData* mesh_copy = vtkPolyData::New();
-  mesh_copy->ShallowCopy(iMesh);
+  mesh_copy->DeepCopy(iMesh);
 
   oActors = this->AddContour(mesh_copy, mesh_property);
 
+  mesh_copy->Delete();
   mesh_property->Delete();
 
   m_ImageView->UpdateRenderWindows();
@@ -2595,6 +2596,8 @@ SaveAndVisuMesh(vtkPolyData* iView, unsigned int iTCoord)
                                                  false, // highlighted
                                                  true ); // visible
   m_MeshContainer->InsertCurrentElement();
+
+  iView->Delete();
 }
 //-------------------------------------------------------------------------
 
