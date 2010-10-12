@@ -674,8 +674,7 @@ vtkViewImage3D::AddDataSet(vtkDataSet* dataset,
   //   vtkQuadricLODActor* actor = vtkQuadricLODActor::New();
   //   actor->GetLODFilter()->SetNumberOfDivisions( 3, 3, 3 );
 
-  vtkSmartPointer<vtkActor> actor3d =
-    vtkSmartPointer<vtkActor>::New();
+  vtkActor* actor3d = vtkActor::New();
   actor3d->SetMapper(mapper);
 
   if (property)

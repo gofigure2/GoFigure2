@@ -60,7 +60,6 @@ ContourMeshContainer( QObject* iParent,
 ContourMeshContainer::
 ~ContourMeshContainer( )
 {
-  /*
   MultiIndexContainer::iterator it = m_Container.begin();
 
   while( it != m_Container.end() )
@@ -81,14 +80,13 @@ ContourMeshContainer::
       {
       it->ActorYZ->Delete();
       }
-    //if( it->ActorXYZ )
-    //  {
-    //  it->ActorXYZ->Delete();
-    //  }
+    if( it->ActorXYZ )
+      {
+      it->ActorXYZ->Delete();
+      }
 
     ++it;
     }
-    */
 }
 //-------------------------------------------------------------------------
 

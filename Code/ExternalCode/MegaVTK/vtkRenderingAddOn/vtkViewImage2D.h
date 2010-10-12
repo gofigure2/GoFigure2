@@ -76,6 +76,7 @@
 #include "vtkTransform.h"
 #include "vtkImageActor.h"
 #include "vtkInteractorStyleImage2D.h"
+#include "vtkSmartPointer.h"
 
 class vtkPlane;
 class vtkViewImage2DCommand;
@@ -154,11 +155,6 @@ public:
     };
   //ETX
 
-  /**
-   * \brief The SliceImplicitPlane instance (GetImplicitSlicePlane()) is the
-   * implicit function that cuts every dataset that is added with AddDataSet().
-  */
-  vtkGetObjectMacro(SliceImplicitPlane, vtkPlane);
   /**
      \brief The SlicePlane instance (GetSlicePlane()) is the polygonal
      square corresponding to the slice plane,
@@ -486,7 +482,7 @@ protected:
 
   vtkMatrix4x4* ConventionMatrix;
 
-  vtkPlane* SliceImplicitPlane;
+  vtkSmartPointer<vtkPlane> SliceImplicitPlane;
 
   vtkTransform* AdjustmentTransform;
   /**

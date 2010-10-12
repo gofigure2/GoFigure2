@@ -126,7 +126,7 @@ vtkViewImage2D::
 vtkViewImage2D()
   {
   this->ConventionMatrix = vtkMatrix4x4::New();
-  this->SliceImplicitPlane = vtkPlane::New();
+  this->SliceImplicitPlane = vtkSmartPointer<vtkPlane>::New();
   this->AdjustmentTransform = vtkTransform::New();
   this->SlicePlane = vtkPolyData::New();
   this->Command = vtkViewImage2DCommand::New();
@@ -179,7 +179,6 @@ vtkViewImage2D::
   {
 
   this->ConventionMatrix->Delete();
-  this->SliceImplicitPlane->Delete();
   this->AdjustmentTransform->Delete();
   this->SlicePlane->Delete();
   this->Command->Delete();
@@ -659,7 +658,10 @@ vtkViewImage2D::
 GetSliceForWorldCoordinates(double pos[3])
 {
   int* indices = this->GetImageCoordinatesFromWorldCoordinates(pos);
-  return indices[this->SliceOrientation];
+  int slice = indices[this->SliceOrientation];
+  delete[] indices;
+
+  return slice;
 }
 
 //----------------------------------------------------------------------------

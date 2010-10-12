@@ -196,6 +196,8 @@ vtkViewImage::~vtkViewImage()
   this->CornerAnnotation->Delete();
   this->LookupTable->Delete();
   this->ScalarBarActor->Delete();
+
+  // delete the collection
   this->Prop3DCollection->Delete();
   }
 
