@@ -146,11 +146,11 @@ vtkLSMReader::~vtkLSMReader()
     {
     delete[] Description;
     }
-
-  if(Objective)
-    {
-    delete[] Objective;
-    }
+/// TODO FIX LEAKS
+  //if(Objective)
+  //  {
+  //  delete[] Objective;
+  //  }
 
   }
 
