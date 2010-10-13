@@ -59,7 +59,7 @@
      <x>0</x>
      <y>0</y>
      <width>1434</width>
-     <height>21</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -102,7 +102,6 @@
     </widget>
     <addaction name="actionOpen_Single_File"/>
     <addaction name="actionOpen_MegaCapture_Files"/>
-    <addaction name="actionOpen_Mesh"/>
     <addaction name="menuOpen_Recent_Files"/>
     <addaction name="actionUse_DataBase"/>
     <addaction name="separator"/>

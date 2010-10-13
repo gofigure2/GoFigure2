@@ -106,8 +106,6 @@ private slots:
   void on_actionUser_mailing_list_triggered();
   void on_actionDeveloper_mailing_list_triggered();
 
-  void on_actionOpen_Mesh_triggered();
-
   void on_actionUse_DataBase_triggered();
   void openFilesfromDB();
 
