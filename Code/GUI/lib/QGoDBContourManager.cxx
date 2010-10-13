@@ -47,7 +47,7 @@
 #include "GoDBContourRow.h"
 
 QGoDBContourManager::QGoDBContourManager(int iImgSessionID, QWidget* iparent)
-:QGoDBTraceManager(iImgSessionID,iparent)
+:QGoDBTraceManager()
 {
   this->SetInfo(iImgSessionID,iparent);
   this->m_TWContainer = new GoDBTWContainerForContourMesh(this->m_TraceName,

@@ -44,7 +44,7 @@
 #include <QMenu>
 #include <QMessageBox>
 
-QGoDBTraceManager::QGoDBTraceManager(int iImgSessionID, QWidget* iparent)
+QGoDBTraceManager::QGoDBTraceManager()
 :m_Table(NULL), m_CollectionOfTraces(NULL),m_TraceContainerInfoForVisu(NULL)
 {
 }

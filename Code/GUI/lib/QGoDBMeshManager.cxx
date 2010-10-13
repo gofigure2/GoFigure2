@@ -44,10 +44,10 @@
 #include <sstream>
 
 QGoDBMeshManager::QGoDBMeshManager(int iImgSessionID, QWidget* iparent)
-:QGoDBTraceManager(iImgSessionID,iparent)
+:QGoDBTraceManager()
 {
- this->SetInfo(iImgSessionID,iparent);
- this->m_TWContainer = new GoDBTWContainerForMesh(iImgSessionID);
+  this->SetInfo(iImgSessionID,iparent);
+  this->m_TWContainer = new GoDBTWContainerForMesh(iImgSessionID);
 }
 //-------------------------------------------------------------------------
 

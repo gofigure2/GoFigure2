@@ -882,7 +882,6 @@ void QGoTableWidget::setVisibleStateCheckBox(QTableWidgetItem * iItem,
 bool QGoTableWidget::setCheckStateCheckBox(QTableWidgetItem* iItem,
                                            Qt::CheckState iState)
 {
-  int Row = iItem->row();
   bool oModification = false;
   if(iState == Qt::Checked)
     {

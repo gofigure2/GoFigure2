@@ -60,7 +60,7 @@ class QGOGUILIB_EXPORT QGoDBTraceManager: public QObject
   Q_OBJECT
 
 public:
-  QGoDBTraceManager(int iImgSessionID,QWidget* iparent);
+  QGoDBTraceManager();
   ~QGoDBTraceManager();
 
   typedef GoDBTableWidgetContainer::TWContainerType TWContainerType;
