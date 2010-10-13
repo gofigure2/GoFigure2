@@ -200,6 +200,9 @@ QGoMainWindow::~QGoMainWindow()
   {
 //   m_LSMReader->Delete();
   this->WriteSettings();
+  delete m_TabManager;
+  delete m_DBWizard;
+  delete m_AboutWidget;
   }
 //--------------------------------------------------------------------------
 

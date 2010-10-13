@@ -50,7 +50,7 @@ class QGoContourSemiAutoShapeWidget :
 {
   Q_OBJECT
 public:
-  explicit QGoContourSemiAutoShapeWidget(QWidget* iParent = 0, int iDimension = 2);
+  explicit QGoContourSemiAutoShapeWidget(QWidget* iParent = 0);
   ~QGoContourSemiAutoShapeWidget();
 
 signals:

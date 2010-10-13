@@ -42,7 +42,7 @@
 
 //---------------------------------------------------------------------------//
 QGoContourSemiAutoShapeWidget::
-QGoContourSemiAutoShapeWidget(QWidget* iParent, int iDimension) : QWidget(iParent)
+QGoContourSemiAutoShapeWidget(QWidget* iParent) : QWidget(iParent)
 {
   this->setupUi(this);
 

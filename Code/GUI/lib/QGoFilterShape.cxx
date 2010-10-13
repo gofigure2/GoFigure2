@@ -77,7 +77,7 @@ QGoFilterShape(QObject* iParent, int iDimension) :
 
   setName(name);
   QGoContourSemiAutoShapeWidget* widget =
-      new QGoContourSemiAutoShapeWidget(NULL, m_Dimension);
+      new QGoContourSemiAutoShapeWidget(NULL);
   setWidget(widget);
 
   m_Shape = 0;
