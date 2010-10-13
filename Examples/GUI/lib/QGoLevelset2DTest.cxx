@@ -95,11 +95,9 @@ int main(int argc, char** argv)
   // if there is an output
   int oResult;
 
-  vtkPolyData* temp_pd = levelSet2DFilter->Apply();
-  if ( temp_pd )
+  if ( levelSet2DFilter->getOutput() )
     {
     oResult = EXIT_SUCCESS;
-    temp_pd->Delete();
     }
   else
     {
