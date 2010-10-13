@@ -459,7 +459,6 @@ void QGoTableWidget::UpdateRow(TWContainerType iTWRowContainer,
                                std::string iTraceName, std::string iCollectionName,
                                int iTraceID)
 {
-  //TWContainerType UpdateTraceRowContainer = iLinkToRowContainer->GetRowContainer();
   if (iTWRowContainer.size() == 0 || iTWRowContainer[1].second.size() != 1)
     {
     std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
@@ -491,7 +490,17 @@ void QGoTableWidget::UpdateRow(TWContainerType iTWRowContainer,
 
               if( t_item )
                 {
-                t_item->setData(0, QString::fromStdString(Value).toInt());
+                t_item->setData(0, QString::fromStdString(Value).toDouble());
+                }
+              else
+                {
+                  if (this->CheckValueToDisplayData(Value,HeaderCol))
+                  {
+                  QTableWidgetItem* CellTable = new QTableWidgetItem;
+                  CellTable->setData(0,QString::fromStdString(Value).toDouble());
+                  CellTable->setTextAlignment(Qt::AlignCenter);
+                  this->setItem(UpdateRow, j, CellTable);
+                  }
                 }
               } //ENDIF
             } //ENDFOR
