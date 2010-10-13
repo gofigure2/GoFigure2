@@ -2530,27 +2530,18 @@ CreateContour(vtkPolyData* contour_nodes, vtkPolyData* iView)
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-SaveMesh(vtkPolyData* iView )//, const int& iMeshID, double iRgba[4], bool NewMesh)
+SaveMesh(vtkPolyData* iView )
 {
   // Compute Bounding Box
   std::vector<int> bounds = this->GetBoundingBox(iView);
 
   // Save mesh in database
-  //don't use m_ContourId
   GoFigureMeshAttributes MeshAttributes = ComputeMeshAttributes(iView);
 
-  //if the mesh needs to be updated in the Database, the NewMesh will be false
-  // and the iMeshID will be = 0 if the meshID needs to be gotten from the
-  // trace manual editing widget, if it is a new mesh, the NewMesh will be
-  // true and iMeshID = 0:
-  //IDWithColorData MeshData =
   this->m_DataBaseTables->SaveMeshFromVisuInDB( bounds[0], bounds[2], bounds[4],
-                                              //m_TCoord,
                                               bounds[1], bounds[3], bounds[5],
                                               iView,
                                               &MeshAttributes);
-
-  //return MeshData;
 }
 //-------------------------------------------------------------------------
 

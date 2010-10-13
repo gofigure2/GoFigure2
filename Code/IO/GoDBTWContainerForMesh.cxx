@@ -213,7 +213,7 @@ void GoDBTWContainerForMesh::GetValuesToFillForIntensityFromQueryResults
   //value for channel1....
   std::vector<std::string>::iterator iterMeshID = iVectMeshIDs.begin();
   std::vector<std::string> temp;
-  while(iterMeshID != iVectMeshIDs.end()-1)
+  while(iterMeshID != iVectMeshIDs.end())
     {
     iterResult++;
     std::string Points = *iterResult;
