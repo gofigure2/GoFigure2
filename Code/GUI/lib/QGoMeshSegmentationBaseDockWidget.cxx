@@ -96,13 +96,12 @@ QGoMeshSegmentationBaseDockWidget(QWidget* iParent, vtkPoints* seeds,
   // connect semi-automatic segmentation specific signals
   QObject::connect(m_MeshManualSegmentation, SIGNAL(UpdateSeeds()),
       this, SIGNAL(UpdateSeeds()));
-  //QObject::connect(m_MeshManualSegmentation, SIGNAL(CreateEmptyMesh()),
-      //this, SIGNAL(CreateEmptyMesh()));
+  
   QObject::connect(m_MeshManualSegmentation, SIGNAL(CreateCorrespondingMesh(int)),
       this, SIGNAL(CreateCorrespondingMesh(int)));
 
-  QObject::connect(m_MeshManualSegmentation, SIGNAL(AddContourToCurrentMesh(vtkPolyData*)),
-      this, SIGNAL(AddContourToCurrentMesh(vtkPolyData*)));
+  QObject::connect(m_MeshManualSegmentation, SIGNAL(AddContourForMeshToContours(vtkPolyData*)),
+      this, SIGNAL(AddContourForMeshToContours(vtkPolyData*)));
   QObject::connect(m_MeshManualSegmentation, SIGNAL(SegmentationFinished()),
       this, SIGNAL(ClearAllSeeds()));
 

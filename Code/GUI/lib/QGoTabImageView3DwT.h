@@ -300,10 +300,6 @@ public slots:
   void HighlightYZ();
   void HighlightXYZ();
 
-  /*std::list<int> SelectTraceInTable(
-    ContourMeshStructureMultiIndexContainer& iContainer,
-    std::list<vtkProp3D*>                  iActorList);*/
-
   void Change3DPerspectiveToAxial();
   void Change3DPerspectiveToCoronal();
   void Change3DPerspectiveToSagittal();
@@ -312,8 +308,7 @@ public slots:
 
   void VisibilityXYZ();
 
-  //void CreateEmptyMesh();
-  void AddContourToCurrentMesh(vtkPolyData* );
+  void AddContourForMeshToContours(vtkPolyData* );
 
 protected:
   QHBoxLayout*                                m_HBoxLayout;
@@ -363,8 +358,6 @@ protected:
   ContourMeshContainer* m_MeshContainer;
   ContourMeshContainer* m_TrackContainer;
 
-  // ID + color map, real save+real visu
-  //IDWithColorData SaveContour(vtkPolyData* contour, vtkPolyData* contour_nodes);
   void SaveContour(vtkPolyData* contour, vtkPolyData* contour_nodes);
 
   std::vector<vtkActor*> VisualizeContour( vtkPolyData* contour );
@@ -452,8 +445,7 @@ protected:
    * \param[in] iSaveInDataBase save in data base if true
    * \todo Alpha component is not used at all, it is assumed to be opaque
    */
-  void SaveMesh(vtkPolyData* iView );//, const int& iMeshID,
-                           //double iRGBA[4], bool NewMesh );
+  void SaveMesh(vtkPolyData* iView );
   void GetBackgroundColorFromImageViewer();
   void SetBackgroundColorToImageViewer();
   void CreateAllViewActions();
@@ -480,19 +472,6 @@ protected:
 
   void SetTimePointWithLSMReaders();
   void SetTimePointWithMegaCapture();
-
-  /*
-  void
-  ChangeColorOfSelectedTraces(
-      ContourMeshStructureMultiIndexContainer& ioContainer,
-      ContourMeshStructureMultiIndexContainer* iTbContainer,
-      QColor iSelectedColor );*/
-
-  //void GetTraceColor(double* rgba);
-
-  //ContourMeshContainer::MultiIndexContainerTraceIDIterator
-  //    m_ElementToBeReEdited;
-
   bool m_TraceWidgetRequiered;
 
 protected slots:

@@ -299,12 +299,10 @@ ConnectSignals(int iFilterNumber)
   QObject::connect(  this , SIGNAL(ImageProcessed()),
       w, SIGNAL(ImageProcessed()));
 
-  //QObject::connect(  this , SIGNAL(CreateEmptyMesh()),
-     // w, SIGNAL(CreateEmptyMesh())); 
   QObject::connect(  this , SIGNAL(CreateCorrespondingMesh(int)),
       w, SIGNAL(CreateCorrespondingMesh(int)));
-  QObject::connect(  this , SIGNAL(AddContourToCurrentMesh(vtkPolyData*)),
-      w, SIGNAL(AddContourToCurrentMesh(vtkPolyData*)));
+  QObject::connect(  this , SIGNAL(AddContourForMeshToContours(vtkPolyData*)),
+      w, SIGNAL(AddContourForMeshToContours(vtkPolyData*)));
 
 
   QObject::connect(this, SIGNAL(UpdateSeeds()),

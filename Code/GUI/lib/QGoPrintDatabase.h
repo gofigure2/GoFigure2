@@ -183,14 +183,6 @@ public:
                            unsigned int iXCoordMax, unsigned int iYCoordMax, unsigned int iZCoordMax,
                            vtkPolyData* iMeshNodes, GoFigureMeshAttributes* iMeshAttributes);
 
-  int CreateMeshFromOneClickSegmentation(std::list<int> iListContoursIDs);
-
-  /**
-  \brief save a new mesh in the database, the TW and the container for the contours To sphere
-  action
-  */
-  //void SaveNewMeshWithNoPointsInDB();
-  
   /**
   \brief save a new contour in the database, the TW and the container for the contours to sphere
   action
@@ -204,15 +196,13 @@ public:
   \param[in] iMeshID meshID for the mesh that has just been created
   \return    unsigned int ID of the new created contour
   */
-  unsigned int SaveNewContourForContoursToSphere(unsigned int iXCoordMin,
-                                         unsigned int iYCoordMin,
-                                         unsigned int iZCoordMin,
-                                         unsigned int iXCoordMax,
-                                         unsigned int iYCoordMax,
-                                         unsigned int iZCoordMax,
-                                         vtkPolyData* iTraceNodes);
-                                         //unsigned int iMeshID,
-                                        // GoFigureMeshAttributes iMeshAttributes);
+  unsigned int SaveNewContourForMeshToContours(unsigned int iXCoordMin,
+                                               unsigned int iYCoordMin,
+                                               unsigned int iZCoordMin,
+                                               unsigned int iXCoordMax,
+                                               unsigned int iYCoordMax,
+                                               unsigned int iZCoordMax,
+                                               vtkPolyData* iTraceNodes);
 
   void AddBookmark(int iXCoord, int iYCoord,
                    int iZCoord, int iTCoord);
@@ -284,7 +274,7 @@ public slots:
   void ExportMeshes();
 
   void UpdateSelectedTimePoint(int iTimePoint);
-  void SaveNewMeshForContoursToSphere(int iNumberOfContours);
+  void SaveNewMeshForMeshToContours(int iNumberOfContours);
 
 signals:
   void PrintDBReady();

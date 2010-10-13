@@ -95,9 +95,8 @@ signals:
   void ReinitializeInteractorActivated(bool);
 
   // manual segmentation specific signals
-  //void CreateEmptyMesh();
   void CreateCorrespondingMesh(int);
-  void AddContourToCurrentMesh(vtkPolyData* );
+  void AddContourForMeshToContours(vtkPolyData* );
 
   // semi automatic signals
   void UpdateSeeds();

@@ -73,8 +73,8 @@ QGoSeedSegmentationBase( QWidget* parentWidget,
         //this, SIGNAL(CreateEmptyMesh()));
     QObject::connect(m_BaseAlgorithmSegmentationWidget, SIGNAL(CreateCorrespondingMesh(int)),
         this, SIGNAL(CreateCorrespondingMesh(int)));
-    QObject::connect(m_BaseAlgorithmSegmentationWidget, SIGNAL(AddContourToCurrentMesh(vtkPolyData*)),
-        this, SIGNAL(AddContourToCurrentMesh(vtkPolyData*)));
+    QObject::connect(m_BaseAlgorithmSegmentationWidget, SIGNAL(AddContourForMeshToContours(vtkPolyData*)),
+        this, SIGNAL(AddContourForMeshToContours(vtkPolyData*)));
     }
 
   // connect with 3DwT to add the good number of channels

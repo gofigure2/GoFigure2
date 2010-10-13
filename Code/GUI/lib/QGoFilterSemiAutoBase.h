@@ -139,9 +139,8 @@ signals:
   void UpdateSeeds();
   void SegmentationFinished();
 
-  //void CreateEmptyMesh();
   void CreateCorrespondingMesh(int);
-  void AddContourToCurrentMesh(vtkPolyData* );
+  void AddContourForMeshToContours(vtkPolyData* );
 
 private:
   vtkImageData* m_Output;

@@ -78,9 +78,8 @@ public slots:
     void UpdateSeeds();
     void SegmentationFinished();
 
-    //void CreateEmptyMesh();
     void CreateCorrespondingMesh(int);
-    void AddContourToCurrentMesh(vtkPolyData*);
+    void AddContourForMeshToContours(vtkPolyData*);
   };
 
 #endif

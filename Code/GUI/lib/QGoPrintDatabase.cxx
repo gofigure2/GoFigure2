@@ -483,21 +483,8 @@ SaveMeshFromVisuInDB( unsigned int iXCoordMin,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/*void QGoPrintDatabase::SaveNewMeshWithNoPointsInDB()
+void QGoPrintDatabase::SaveNewMeshForMeshToContours(int iNumberOfContours)
 {
-  this->OpenDBConnection();
-  this->m_MeshesManager->CreateNewMeshWithNoContourNoPoints(this->m_DatabaseConnector,
-    this->m_SelectedColorData,this->m_SelectedTimePoint,this->m_SelectedCellType,
-    this->m_SelectedSubCellType,ss_atoi<unsigned int>(this->m_SelectedCollectionData.first));
-  this->CloseDBConnection();
-}*/
-void QGoPrintDatabase::SaveNewMeshForContoursToSphere(int iNumberOfContours)//std::list<unsigned int> iListContourIDs)
-{
-  /*unsigned int MeshID = this->m_MeshesManager->SaveNewMeshFromVisu(iXCoordMin,iYCoordMin,
-      iZCoordMin,this->m_SelectedTimePoint,iXCoordMax,iYCoordMax,iZCoordMax,iMeshNodes,
-      this->m_DatabaseConnector,this->m_SelectedColorData,
-      ss_atoi<unsigned int>(this->m_SelectedCollectionData.first),
-      iMeshAttributes,this->m_SelectedCellType,this->m_SelectedSubCellType);*/
   this->OpenDBConnection();
   unsigned int MeshID = this->m_MeshesManager->CreateNewMeshWithNoContourNoPoints(
     this->m_DatabaseConnector,this->m_SelectedColorData,this->m_SelectedTimePoint,
@@ -513,69 +500,22 @@ void QGoPrintDatabase::SaveNewMeshForContoursToSphere(int iNumberOfContours)//st
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-unsigned int QGoPrintDatabase::SaveNewContourForContoursToSphere(unsigned int iXCoordMin,
+unsigned int QGoPrintDatabase::SaveNewContourForMeshToContours(
+                                                         unsigned int iXCoordMin,
                                                          unsigned int iYCoordMin,
                                                          unsigned int iZCoordMin,
                                                          unsigned int iXCoordMax,
                                                          unsigned int iYCoordMax,
                                                          unsigned int iZCoordMax,
                                                          vtkPolyData* iTraceNodes)
-                                                         //unsigned int iMeshID)
 {
   this->OpenDBConnection();
   unsigned int ContourID = this->m_ContoursManager->SaveNewContourFromVisu(
     iXCoordMin,iYCoordMin,iZCoordMin,
     this->m_SelectedTimePoint,iXCoordMax,iYCoordMax,iZCoordMax,iTraceNodes,
-   // this->m_DatabaseConnector,this->m_SelectedColorData,iMeshID);
-   this->m_DatabaseConnector,this->m_SelectedColorData,0);
- // this->m_TempContourIDs.push_back(ContourID);
+    this->m_DatabaseConnector,this->m_SelectedColorData,0);
   this->CloseDBConnection();
   return ContourID;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/** \todo check this method for the sphere/contours from one-click*/
-int QGoPrintDatabase::CreateMeshFromOneClickSegmentation(
-  std::list<int> iListContoursIDs)
-{
-  int                 NewMeshID = -1;
-  //TraceInfoStructure* CurrentlyUsedTraceData = this->GetTraceInfoStructure("contour");
-  if (!iListContoursIDs.empty())
-    {
-    OpenDBConnection();
-    //set the color for the new collection:
-    GoDBMeshRow NewMesh;
-    //emit NeedToGetCurrentSelectedColor();
-    //emit NeedCurrentSelectedCollectionID();
-
-    NewMesh.SetColor(this->m_SelectedColorData.second.red(), this->m_SelectedColorData.second.green(),
-                     this->m_SelectedColorData.second.blue(), this->m_SelectedColorData.second.alpha(),
-                     this->m_SelectedColorData.first, this->m_DatabaseConnector);
-    NewMesh.SetCollectionID(atoi(this->m_SelectedCollectionData.first.c_str()));
-    NewMesh.SetField<int>("CellTypeID",
-                          this->m_CellTypeManager->GetTheEntityID(
-                          this->m_SelectedCellType,this->m_DatabaseConnector));
-    NewMesh.SetField<int>("SubCellularID",
-                          this->m_SubCellTypeManager->GetTheEntityID(
-                          this->m_SelectedSubCellType,this->m_DatabaseConnector));
-
-    //create the collection in the database and get the corresponding ID:
-    //refactoring:
-      //NewMeshID = CurrentlyUsedTraceData->CollectionOfTraces->
-      //            CreateNewCollectionFromSelection<GoDBMeshRow>(
-      //  iListContoursIDs, this->m_DatabaseConnector, NewMesh);
-    //end refactoring
-    std::pair<std::string, QColor> NewCollectionInfo(
-      ConvertToString(NewMeshID), this->m_SelectedColorData.second);
-    //refactoring
-    //this->AddListTracesToACollection(iListContoursIDs, NewCollectionInfo, "contour", true);
-
-    CloseDBConnection();
-    QString CollectionIDQString = ConvertToString<int>(NewMeshID).c_str();
-    //emit NewCreatedCollection(this->m_CurrentColorData.second,CollectionIDQString);
-    }
-  return NewMeshID;
 }
 //-------------------------------------------------------------------------
 

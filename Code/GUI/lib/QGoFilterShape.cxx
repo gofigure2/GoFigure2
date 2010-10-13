@@ -182,7 +182,7 @@ Apply()
                 ( center2[2]-getRadius()+static_cast<double>(j+1)* step ) );
           cutter->Update();
           vtkPolyData* output = ReorganizeContour(cutter->GetOutput());
-          emit AddContourToCurrentMesh(output);
+          emit AddContourForMeshToContours(output);
           }
 
         implicitFunction->Delete();

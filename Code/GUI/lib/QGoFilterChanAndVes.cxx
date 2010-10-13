@@ -318,7 +318,7 @@ else
     //true: we decimate the contour
     vtkPolyData* output = ReorganizeContour(cutter->GetOutput(), true);
 
-    emit AddContourToCurrentMesh(output);
+    emit AddContourForMeshToContours(output);
     }
   emit CreateCorrespondingMesh(getSampling());
   implicitFunction->Delete();
