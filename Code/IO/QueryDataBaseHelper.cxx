@@ -372,27 +372,27 @@ void UpdateValueInDB(vtkMySQLDatabase* DatabaseConnector,
 
 //------------------------------------------------------------------------------
 void UpdateValueInDB(vtkMySQLDatabase* DatabaseConnector,
-                     std::string TableName, std::string field, std::string newValue,
-                     std::string ColumnName, std::vector<unsigned int> iVectIDs)
+                     std::string iTableName, std::string ifield, 
+                     std::string inewValue,std::vector<unsigned int> iVectIDs)
 {
   vtkSQLQuery*      query = DatabaseConnector->GetQueryInstance();
   std::stringstream querystream;
   querystream << "UPDATE ";
-  querystream << TableName;
+  querystream << iTableName;
   querystream << " SET ";
-  querystream << field;
+  querystream << ifield;
   querystream << " = '";
-  querystream << newValue;
+  querystream << inewValue;
   querystream << " WHERE (";
   unsigned int i;
   for (i = 0; i < iVectIDs.size() - 1; i++)
     {
-    querystream << field;
+    querystream << ifield;
     querystream << " = '";
     querystream << iVectIDs[i];
     querystream << "' OR ";
     }
-  querystream << field;
+  querystream << ifield;
   querystream << " = '";
   querystream << iVectIDs[i];
   querystream << "');";

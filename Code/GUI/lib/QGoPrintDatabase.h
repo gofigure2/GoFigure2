@@ -146,16 +146,8 @@ public:
   containing the given ZCoord*/
   std::list<unsigned int> GetContoursForAGivenZCoord(unsigned int iZCoord);
 
-  /** \brief Return a multiIndex of all the contours with a bounding box
-  containing the given ZCoord*/
-  /*ContourMeshStructureMultiIndexContainer*
-    GetContoursMultiIndexFromDBForAGivenZCoord(unsigned int iZCoord,
-    std::vector<int> iListIDs= std::vector<int>());*/
-
   /** \brief Return a vector of all the meshes with a bounding box
   containing the given ZCoord*/
- // std::vector<ContourMeshStructure> GetMeshesForAGivenZCoord(
-  //  unsigned int iZCoordPoint);
   std::list<unsigned int> GetMeshesForAGivenZCoord(unsigned int iZCoordPoint);
 
   //useful ???
@@ -179,7 +171,7 @@ public:
   to false
   */
   void SaveMeshFromVisuInDB(unsigned int iXCoordMin,
-                           unsigned int iYCoordMin, unsigned int iZCoordMin,// unsigned int iTCoord,
+                           unsigned int iYCoordMin, unsigned int iZCoordMin,
                            unsigned int iXCoordMax, unsigned int iYCoordMax, unsigned int iZCoordMax,
                            vtkPolyData* iMeshNodes, GoFigureMeshAttributes* iMeshAttributes);
 
@@ -219,8 +211,8 @@ public:
 
   QAction* toggleViewAction();
 
-  void ImportContours(int iTimePoint);
-  void ImportMeshes(ContourMeshContainer* iContainer, int iTimePoint);
+  void ImportContours();
+  void ImportMeshes();
 
 
   void PrintVolumeAreaForMesh(GoFigureMeshAttributes*
@@ -279,13 +271,10 @@ public slots:
 signals:
   void PrintDBReady();
   void DBVariablesSet();
-  //void TableContentChanged();
   void TraceToReEdit(unsigned int);
   void OpenBookmarksToUpdate();
- // void ColorChangedForSelectedTraces(QColor);
   void TableWidgetTabChanged();
   void NewMeshToGenerate(std::list<unsigned int> ListContourIDs,int iNewMeshID);
-  //void MeshGenerationToUpdate(std::list<int> ListContourIDs);
   /**
   \brief signal emitted when a signal is emitted from a m_TraceManager for
   "go to the trace " from the context menu
@@ -310,10 +299,6 @@ protected:
   QGoTraceManualEditingDockWidget* m_TraceManualEditingDockWidget;
   QGoTraceManualEditingWidget*     m_TraceWidget;
 
-  //TraceInfoStructure*              m_ContoursData;
-  //TraceInfoStructure*              m_MeshesData;
-  //TraceInfoStructure*              m_TracksData;
-  //TraceInfoStructure*              m_LineagesData;
   QGoDBContourManager*             m_ContoursManager;
   QGoDBMeshManager*                m_MeshesManager;
   QGoDBTrackManager*               m_TracksManager;
@@ -330,7 +315,6 @@ protected:
 
   bool                             m_ReeditMode;
   bool                             m_MeshGenerationMode;
-  //std::list<unsigned int>          m_TempContourIDs;
 
   QAction* m_VisibilityAction;
 
@@ -406,15 +390,6 @@ protected:
   std::vector<ContourMeshStructure> GetTracesForAGivenTimepoint(
     ContourMeshStructureMultiIndexContainer iAllTraces, unsigned int iTimePoint);
 
-  /** \brief return a vector of all the traces with a bounding box
- * containing the given ZCoord*/
-  //std::vector<ContourMeshStructure> GetTracesForAGivenZCoord(
-  //  ContourMeshStructureMultiIndexContainer iAllTraces, unsigned int iZCoord,
-  //  GoDBCollectionOfTraces* iCollectionOfTraces);
-
-  /**\brief get the columns names and the values of the table (type T)
- * from the database, then display them in the QTableWidgetchild.*/
-  //void GetContentAndDisplayFromDB(std::string iTableName);
   void closeEvent(QCloseEvent* event);
 
   /** 
@@ -438,7 +413,6 @@ protected:
   template<typename T>
   QColor GetQColorFromTraceRow(T iTraceRow,vtkMySQLDatabase* iDatabaseConnector)
   {
-    /** \todo put this method in GoDBTraceRow directly ?*/
     GoDBColorRow ColorRow;
     ColorRow.SetValuesForSpecificID(atoi(iTraceRow.GetMapValue("ColorID").c_str()),
       iDatabaseConnector);

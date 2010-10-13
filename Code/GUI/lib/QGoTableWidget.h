@@ -166,12 +166,6 @@ protected:
   int PrevCol;
   int PrevOrder;
 
-  /** \brief Vector containing the ID of the selected row and the index in the table widget*/
-  //std::vector<std::pair<int, int> >* m_VectorSelectedRows;
-
-  /** \brief Vector containing the ID of the visible row and the index in the table widget*/
-  //std::vector<std::pair<int, int> >* m_VectorVisibleRows;
-
   /** \brief return the row index where the given value is located when specifying
   the column name: */
   int findValueGivenColumn(int Value, QString Column);
@@ -179,9 +173,6 @@ protected:
   /** \brief return the column index who has a column header matching
   ColumnName */
   int findColumnName(QString ColumnName);
-
-  /** \brief Update the m_VectorSelectedRows */
-  //void UpdateVectorCheckedRows(int Row, int Column, std::vector<std::pair<int, int> >* iVectorOfPair);
 
   /** \brief put the text in the cells which are part of the range in a
   QString and insert \n and \t to be read by other applications*/

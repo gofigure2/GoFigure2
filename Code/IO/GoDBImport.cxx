@@ -203,58 +203,6 @@ void GoDBImport::SaveTracesEntities(std::map<int, int> iMapColorIDs,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-/*void GoDBImport::FillContourInfoForVisu(std::vector<int> iListContourIDs)
-{
-  //for (unsigned int i = 0; i < iListContourIDs.size(); i++)
- //   {
-  std::list<ContourMeshStructure> list_of_traces;
-
-  GetTracesInfoFromDBAndModifyContainer(
-        //this->m_NewContourInfoForVisu,
-        list_of_traces,
-        this->m_DatabaseConnector, "contour",
-        "mesh", this->m_ImagingSessionID,
-        // this->m_CurrentTimePoint,iListContourIDs.at(i));
-        this->m_CurrentTimePoint,iListContourIDs);
-
-  std::list<ContourMeshStructure>::iterator it = list_of_traces.begin();
-
-  while( it != list_of_traces.end() )
-    {
-    this->m_NewContourInfoForVisu->Insert( *it );
-    ++it;
-    }
- //   }
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void GoDBImport::FillMeshInfoForVisu(std::vector<int> iListMeshIDs)
-{
-  /** \todo replace with one query only
- // for (unsigned int i = 0; i < iListMeshIDs.size(); i++)
-  //  {
-
-  std::list<ContourMeshStructure> list_of_traces;
-    GetTracesInfoFromDBAndModifyContainer(
-        //this->m_NewMeshInfoForVisu,
-        list_of_traces,
-        this->m_DatabaseConnector,
-      "mesh","track",this->m_ImagingSessionID,this->m_CurrentTimePoint,
-      //iListMeshIDs.at(i));
-      iListMeshIDs);
-
-    std::list<ContourMeshStructure>::iterator it = list_of_traces.begin();
-    while( it != list_of_traces.end() )
-      {
-      this->m_NewMeshInfoForVisu->Insert( *it );
-      ++it;
-      }
-   // }
-}*/
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
 std::string GoDBImport::FindFieldName(std::string iLine)
 {
   size_t      BegName = iLine.find("<", 0) + 1;

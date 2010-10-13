@@ -2609,7 +2609,7 @@ void QGoTabImageView3DwT::ImportContours()
 {
   if (this->m_DataBaseTables->IsDatabaseUsed())
     {
-    this->m_DataBaseTables->ImportContours(this->m_TCoord);
+    this->m_DataBaseTables->ImportContours();
 
     this->GoToDefaultMenu();
 
@@ -2618,49 +2618,6 @@ void QGoTabImageView3DwT::ImportContours()
     this->m_DataBaseTables->InitializeTheComboboxesNotTraceRelated();
     }
 }
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/*
-void
-QGoTabImageView3DwT::
-ChangeColorOfSelectedTraces(ContourMeshStructureMultiIndexContainer& ioContainer,
-                            ContourMeshStructureMultiIndexContainer* iTbContainer,
-                            QColor iSelectedColor)
-{
-  ContourMeshStructureMultiIndexContainer::iterator
-    it = iTbContainer->begin();
-
-  unsigned int trace_id = 0;
-  double       rgba[4];
-  rgba[0] = iSelectedColor.redF();
-  rgba[1] = iSelectedColor.greenF();
-  rgba[2] = iSelectedColor.blueF();
-  rgba[3] = iSelectedColor.alphaF();
-
-  while (it != iTbContainer->end())
-    {
-    trace_id = it->TraceID;
-
-    ContourMeshStructureMultiIndexContainer::index<TraceID>::type::iterator
-      traceid_it = ioContainer.get<TraceID>().find(trace_id);
-
-    if( traceid_it != ioContainer.get<TraceID>().end() )
-      {
-      if (it->Highlighted)
-        {
-        ContourMeshStructure temp(*traceid_it);
-        temp.Highlighted = it->Highlighted;
-        temp.rgba[0] = rgba[0];
-        temp.rgba[1] = rgba[1];
-        temp.rgba[2] = rgba[2];
-        temp.rgba[3] = rgba[3];
-        ioContainer.get<TraceID>().replace(traceid_it, temp);
-        }
-      }
-    ++it;
-    }
-}*/
 //-------------------------------------------------------------------------
 
 /// TODO Bug iMeshID is not the one it is supposed to be
@@ -2714,7 +2671,7 @@ void QGoTabImageView3DwT::ImportMeshes()
 {
   if (this->m_DataBaseTables->IsDatabaseUsed())
     {
-    m_DataBaseTables->ImportMeshes(this->m_MeshContainer,this->m_TCoord );
+    m_DataBaseTables->ImportMeshes();
 
     GoToDefaultMenu();
 

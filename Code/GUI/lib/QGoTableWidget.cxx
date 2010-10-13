@@ -144,7 +144,6 @@ void QGoTableWidget::SetVisibleStateForTraceID(unsigned int iTraceID,
                                             Qt::CheckState iState,
                                             bool EmitSignal)
 {
-  QIcon * Icon = new QIcon;
   unsigned int ColumnIndex = this->findColumnName("Show");
   int RowIndex = this->GetRowForTraceID(iTraceID,iTraceName);
   this->setVisibleStateCheckBox(this->item(RowIndex,ColumnIndex),
@@ -469,8 +468,8 @@ void QGoTableWidget::UpdateRow(TWContainerType iTWRowContainer,
   else
     {
     QString TraceNameID = QString("%1ID").arg(iTraceName.c_str());
-    int     UpdateRow = this->findValueGivenColumn(iTraceID, TraceNameID);
-    if (UpdateRow != -1)
+    int     IndexUpdateRow = this->findValueGivenColumn(iTraceID, TraceNameID);
+    if (IndexUpdateRow != -1)
       {
       QTableWidgetItem* t_item = NULL;
 
@@ -486,7 +485,7 @@ void QGoTableWidget::UpdateRow(TWContainerType iTWRowContainer,
               {
               std::string Value = iTWRowContainer[i].second[0];
 
-              t_item = this->item(UpdateRow, j);
+              t_item = this->item(IndexUpdateRow, j);
 
               if( t_item )
                 {
@@ -499,7 +498,7 @@ void QGoTableWidget::UpdateRow(TWContainerType iTWRowContainer,
                   QTableWidgetItem* CellTable = new QTableWidgetItem;
                   CellTable->setData(0,QString::fromStdString(Value).toDouble());
                   CellTable->setTextAlignment(Qt::AlignCenter);
-                  this->setItem(UpdateRow, j, CellTable);
+                  this->setItem(IndexUpdateRow, j, CellTable);
                   }
                 }
               } //ENDIF
@@ -507,9 +506,9 @@ void QGoTableWidget::UpdateRow(TWContainerType iTWRowContainer,
           } //ENDIF
         } //ENDFOR
       this->SetColorForTable(
-        iTWRowContainer,iIndexColorTraceRowContainer,iTraceName, UpdateRow);
+        iTWRowContainer,iIndexColorTraceRowContainer,iTraceName, IndexUpdateRow);
       this->SetColorForTable(
-        iTWRowContainer,iIndexColorCollectionRowContainer,iCollectionName, UpdateRow);
+        iTWRowContainer,iIndexColorCollectionRowContainer,iCollectionName, IndexUpdateRow);
       }
     else
       {
@@ -520,88 +519,6 @@ void QGoTableWidget::UpdateRow(TWContainerType iTWRowContainer,
       }
     } //ENDELSE
 }
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-/*std::vector<unsigned int> QGoTableWidget::GetListCheckedRows()
-{
-  std::vector<unsigned int> oListCheckedRows;
-  QStringList ListRowsChecked = this->ValuesForSelectedRows("");
-
-  return oListCheckedRows;
-}*/
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-/*void QGoTableWidget::UpdateVectorCheckedRows(int Row, int Column,
-                                                std::vector<std::pair<int, int> >* iVectorOfPair)
-{
-  if (this->item(Row, Column)->checkState() == 0)
-    {
-    int ID = this->item(Row, 1)->text().toInt();
-
-    if (!iVectorOfPair->empty())
-      {
-      std::vector<std::pair<int, int> >::iterator iter = iVectorOfPair->begin();
-
-      //As the initial iterator becomes incompatible once an element of the vector has been
-      //erased, we need a bool to indicate the end of the vector:
-
-      while (iter != iVectorOfPair->end())
-        {
-        if (iter->first == ID)
-          {
-          iVectorOfPair->erase(iter);
-          break;
-          }
-        ++iter;
-        }
-      }
-    }
-  if (this->item(Row, Column)->checkState() == 2)
-    {
-    std::pair<int, int> temp;
-    /** \todo check that the index stays the same even if the user move the columns
-    temp.first = this->item(Row, 1)->text().toInt();
-    temp.second = Row;
-    iVectorOfPair->push_back(temp);
-    }
-}*/
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-/*std::list<int> QGoTableWidget::GetListCheckedTraceID(
-  std::vector<std::pair<int, int> >* iVectorOfPair)
-{
-  if (iVectorOfPair == 0)
-    {
-    iVectorOfPair = this->m_VectorSelectedRows;
-    }
-  std::list<int>                              oListSelectedIDs;
-  std::vector<std::pair<int, int> >::iterator iter = iVectorOfPair->begin();
-  while (iter != iVectorOfPair->end())
-    {
-    oListSelectedIDs.push_back(iter->first);
-    ++iter;
-    }
-  return oListSelectedIDs;
-}*/
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-/*void QGoTableWidget::UpdateIDs(unsigned int iNewCollectionID,
-                                  std::string iCollectionIDName, QColor ColorNewCollection)
-{
-  int                                         IndexCollectionID = this->findColumnName(iCollectionIDName.c_str());
-  std::vector<std::pair<int, int> >::iterator iter = this->m_VectorSelectedRows->begin();
-  while (iter != this->m_VectorSelectedRows->end())
-    {
-    this->item(iter->second, IndexCollectionID)->
-    setText(ConvertToString<unsigned int>(iNewCollectionID).c_str());
-    this->item(iter->second, IndexCollectionID)->setBackgroundColor(ColorNewCollection);
-    iter++;
-    }
-}*/
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -983,8 +900,6 @@ bool QGoTableWidget::setCheckStateCheckBox(QTableWidgetItem* iItem,
     if (iItem->checkState() != Qt::Unchecked)
       {
       iItem->setCheckState(Qt::Unchecked);
-      int row = iItem->row();//for test
-      int column = iItem->column();//for test
       iItem->setText("0");
       oModification = true;
       }

@@ -124,10 +124,10 @@ GoDBMeshRow::GoDBMeshRow(const GoDBMeshRow& iRow) : GoDBTraceRow()
 
 //-------------------------------------------------------------------------
 void GoDBMeshRow::SetTheDataFromTheVisu(vtkMySQLDatabase* DatabaseConnector,
-                                        vtkPolyData* TraceVisu,
-                                        GoDBCoordinateRow iCoordMin,
-                                        GoDBCoordinateRow iCoordMax,
-                                        GoFigureMeshAttributes* iMeshAttributes)
+                                               vtkPolyData* TraceVisu,
+                                               GoDBCoordinateRow iCoordMin,
+                                               GoDBCoordinateRow iCoordMax,
+                                               GoFigureMeshAttributes* iMeshAttributes)
 {
   GoDBTraceRow::SetTheDataFromTheVisu(DatabaseConnector, TraceVisu,iCoordMin,iCoordMax);
 

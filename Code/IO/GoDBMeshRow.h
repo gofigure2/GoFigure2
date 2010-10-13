@@ -94,7 +94,7 @@ public:
   void SetTheDataFromTheVisu(vtkMySQLDatabase* DatabaseConnector,
                              vtkPolyData* TraceVisu,GoDBCoordinateRow iCoordMin,
                              GoDBCoordinateRow iCoordMax,
-                             GoFigureMeshAttributes* iMeshAttributes = 0);
+                             GoFigureMeshAttributes* iMeshAttributes);
 
 protected:
   virtual void InitializeMap();

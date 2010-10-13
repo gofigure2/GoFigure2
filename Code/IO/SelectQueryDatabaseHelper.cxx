@@ -2138,7 +2138,7 @@ std::list<unsigned int> GetColumnForBoundedValue(std::string iColumnName,
 //-------------------------------------------------------------------------
 std::list<unsigned int> GetSpecificValuesEqualToZero(
   vtkMySQLDatabase* iDatabaseConnector,std::string iColumnName, std::string iTableName,
-  std::string iFieldOne, std::vector<std::string> iVectorConditionFieldOne,
+  std::vector<std::string> iVectorConditionFieldOne,
   std::string iFieldTwo)
 {
   std::list<unsigned int> result;

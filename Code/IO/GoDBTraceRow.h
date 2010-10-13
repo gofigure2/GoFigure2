@@ -74,7 +74,7 @@ public:
   std::string GetCollectionName();
 
   //set the data from the visu for an existing Trace
-  virtual void SetTheDataFromTheVisu(vtkMySQLDatabase* DatabaseConnector,
+  void SetTheDataFromTheVisu(vtkMySQLDatabase* DatabaseConnector,
                              vtkPolyData* TraceVisu,
                              GoDBCoordinateRow iCoordMin,
                              GoDBCoordinateRow iCoordMax);

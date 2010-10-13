@@ -108,29 +108,16 @@ public:
   is also a collection of*/
   std::string GetCollectionOf();
 
-  /*GoDBTableWidgetContainer* GetLinkToRowContainer()
-  {
-    return m_LinkToRowContainer;
-  }*/
-
-  /* int CreateNewCollectionFromSelection(
-   std::list<int> iListSelectedTraces, vtkMySQLDatabase* DatabaseConnector,
-     GoDBTraceRow iNewCollection);*/
-
-  //check the use ???????????
-  //QStringList ListCollectionID(vtkMySQLDatabase* DatabaseConnector);
-
-
   /** \brief return the list of IDs for the traces part of the collectionID*/
   std::list<int> GetTracesIDPartOfTheCollection(
     vtkMySQLDatabase* DatabaseConnector, int iCollectionID);
 
-  template<typename T>
+  /*template<typename T>
   int CreateNewCollectionFromSelection(
     std::list<unsigned int> iListSelectedTraces, vtkMySQLDatabase* DatabaseConnector,
     T iNewCollection)
   {
-    /** \todo merge createNewCollectionFromSelection and CreateCollectionWithNotraces*/
+    //todo merge createNewCollectionFromSelection and CreateCollectionWithNotraces
     //the following fields are common to all the collections, the one
     //that are different are specified in QGoPrintDatabase:
     iNewCollection.SetField("ImagingSessionID", this->m_ImgSessionID);
@@ -147,7 +134,7 @@ public:
                                        DatabaseConnector);
 
     return NewCollectionID;
-  }
+  }*/
   //******************************Modif-Refactoring************************************************
   //public:
   //Modif into Database
@@ -192,7 +179,6 @@ public:
                                            NameWithColorData iColor,
                                            T iNewCollection,int iTimePoint = -1)
   {
-    //T NewCollection(this->m_ImgSessionID);
     iNewCollection.SetField("ImagingSessionID", this->m_ImgSessionID);
 
     int CoordIDMax = GetCoordIDMaxForBoundingBoxWithNoTraces(iDatabaseConnector);
@@ -203,8 +189,6 @@ public:
        this->SetTheTimePointCoordinatesForMesh(
        iTimePoint, CoordIDMax,CoordIDMin, iDatabaseConnector);
      }
-
-    //return this->CreateNewCollection(DatabaseConnector, iNewCollection);
     std::string CollectionID = iNewCollection.GetMapValue(this->m_CollectionIDName);
     if( CollectionID != "0")
       {
@@ -214,7 +198,7 @@ public:
     else
       {
       return this->CreateNewTraceInDB<T>(iNewCollection,iDatabaseConnector,
-        CoordIDMin,CoordIDMax,iColor,0);//iNewCollection.SaveInDB(iDatabaseConnector);
+        CoordIDMin,CoordIDMax,iColor,0);
       }
   }
   
@@ -231,10 +215,8 @@ public:
   */
   template<typename T>
   unsigned int CreateNewTraceInDB(T iTrace,vtkMySQLDatabase* iDatabaseConnector,
-    //GoDBCoordinateRow iCoordMin,GoDBCoordinateRow iCoordMax,
     NameWithColorData iColor,unsigned int iCollectionID)
   {
-   //iTrace.SetTheBoundingBox(iDatabaseConnector,coord_min,coord_max);
    iTrace.SetColor(iColor.second.red(), iColor.second.green(),
                          iColor.second.blue(), iColor.second.alpha(), iColor.first,
                          iDatabaseConnector);
@@ -303,40 +285,6 @@ public:
   std::list<unsigned int> GetLastCreatedTracesIDs(
     vtkMySQLDatabase* iDatabaseConnector,int iNumberOfTraces);
 
-  //******************************FOR TABLE WIDGET**********************************
-  /** \todo find a way to make it ok for all traces, now only for mesh*/
-  /** \brief fill the row container with the values calculated and stored in th
-  meshAttributes*/
-  /*void FillRowContainerForComputedValues(
-    GoDBTableWidgetContainer* iLinkToRowContainer,
-    std::vector<std::vector<std::string> >* iComputedValues = 0);*/
-
-   /** \brief get the channels info from the database and set the channels info of the
-  GoDBTableWidgetContainer for mesh*/
-  //void SetChannelsInfo(vtkMySQLDatabase* DatabaseConnector,
-        //               GoDBTableWidgetContainer* iLinkToRowContainer = 0);
-
-  /** \brief get the results of the queries and put them in the row container corresponding
-  to all the data needed to fill the table widget for the updated trace and return the
-  link to the corresponding row container which has only 1 row*/
-  //GoDBTableWidgetContainer* GetLinkToUpdatedTraceContainer(
-   // vtkMySQLDatabase* iDatabaseConnector, int iUpdatedTraceID);
-
-   /** \brief get the results of the queries and put them in the row container corresponding
-  to all the data needed to fill the table widget for the new created trace and return the
-  link to the corresponding row container which has only 1 row*/
-  //GoDBTableWidgetContainer*  GetLinkToNewCreatedTraceContainer(
-  //  vtkMySQLDatabase* iDatabaseConnector, int iTraceID = 0);
-
-   /** \brief Return a map with all the ColumnNames for the table widget to be
-  completed by the value for each column:*/
-  //std::list<std::string> GetListColumnsNamesForTableWidget();
-
-   /** \brief get the results of the queries and put them in the row container corresponding
-  to all the data needed to fill the table widget for the traces and return the corresponding
-  row container*/
-  //DBTableWidgetContainerType GetRowContainer(vtkMySQLDatabase* DatabaseConnector);
-
 protected:
 
   std::string  m_CollectionName;
@@ -347,16 +295,13 @@ protected:
   std::string  m_CollectionOfIDName;
   unsigned int m_ImgSessionID;
 
-  //std::vector<GoDBTraceInfoForTableWidget> m_ColumnsInfos;
-  //DBTableWidgetContainerType               m_RowContainer;
-  //GoDBTableWidgetContainer*                m_LinkToRowContainer;
-
   /** \brief Create a new collection Row in the collection table and
   return the collectionID from the created row: */
   int CreateNewCollection();
 
-  /** \brief create a new collection in the database and return the corresponding
- ID*/
+  /**
+  \brief create a new collection in the database and return the corresponding ID
+  */
   int CreateNewCollection(vtkMySQLDatabase* DatabaseConnector, GoDBTraceRow& myNewObject);
 
  
@@ -474,18 +419,9 @@ protected:
     GetListNameWithColorDataFromResultsQuery(
     std::vector<std::vector<std::string> >iResultsQuery);
   
-  /** \brief return a vector containing a vector of the Channels Name and a vector of
-  the ChannelIDs corresponding to the ImagingSession*/
-  //std::vector<std::vector<std::string> >  GetChannelsInfo(vtkMySQLDatabase* DatabaseConnector);
 
   std::vector<std::string> ListUnsgIntToVectorString(std::list<unsigned int> iList);
   std::list<unsigned int> VectorStringToUnsgInt(std::vector<std::string> iVector);
-
-  //******************FOR TABLE WIDGET****************************************
-
-  /*void FillRowContainerForIntensityValues(vtkMySQLDatabase* DatabaseConnector,
-                                          std::vector<std::string> iVectMeshIDs,
-                                          GoDBTableWidgetContainer* iLinkToRowContainer);*/
 
   };
 #endif

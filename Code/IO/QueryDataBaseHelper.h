@@ -89,8 +89,8 @@ void UpdateValueInDB(vtkMySQLDatabase* DatabaseConnector,
 //query: "UPDATE TableName SET field = newValue WHERE (ColumnName = value or ...)"
 QGOIO_EXPORT
 void UpdateValueInDB(vtkMySQLDatabase* DatabaseConnector,
-                     std::string TableName, std::string field, std::string newValue,
-                     std::string ColumnName, std::vector<unsigned int> iVectIDs);
+                     std::string iTableName, std::string ifield, 
+                     std::string inewValue,std::vector<unsigned int> iVectIDs);
 
 /** \todo to review*/
 //QGOIO_EXPORT
