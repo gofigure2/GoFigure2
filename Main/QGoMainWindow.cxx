@@ -423,6 +423,11 @@ void
 QGoMainWindow::
 LoadAllTracesFromDatabase(const int& iT, const std::string& iTraceName)
 {
+  /// \note let's keep for the time being iT parameter in the case where
+  /// we would only load traces for a given time point (that could be usefule
+  /// somehow).
+  (void) iT;
+
   QGoTabImageView3DwT* w3t =
     dynamic_cast<QGoTabImageView3DwT*>(this->CentralTabWidget->currentWidget());
 
@@ -477,14 +482,6 @@ LoadAllTracesFromDatabase(const int& iT, const std::string& iTraceName)
 
         ++contourmesh_list_it;
         }
-      }
-
-    // if it we are loading contours
-    if (!calculation)
-      {
-/// TODO STH
-      //w3t->ReinitializeContour(); // contour widget is reinitialized...
-     // w3t->ActivateManualSegmentationEditor(false);
       }
     }
 }
@@ -555,97 +552,7 @@ void QGoMainWindow::on_actionClose_triggered()
   m_TabManager->CloseTab(idx);
 }
 //--------------------------------------------------------------------------
-void QGoMainWindow::on_actionOpen_Mesh_triggered()
-{
-  if (this->CentralTabWidget->count() > 0)
-    {
-    int idx = this->CentralTabWidget->currentIndex();
 
-    if (idx >= 0)
-      {
-      QStringList filename = QFileDialog::getOpenFileNames(
-        this,
-        tr("Select meshes or contours"), "",
-        tr("vtk - vtkPolyData (*.vtk);;ply - Polygon File Format (*.ply)"));
-
-      if (!filename.isEmpty())
-        {
-        QStringList::Iterator   it = filename.begin();
-        std::list<vtkPolyData*> mesh_list;
-        std::list<vtkProperty*> property_list;
-        property_list.push_back(0);
-
-        while (it != filename.end())
-          {
-          if (QFile::exists(*it))
-            {
-            QString extension = QFileInfo(*it).suffix();
-
-            vtkPolyData* mesh = vtkPolyData::New();
-
-            if (extension.compare("vtk", Qt::CaseInsensitive) == 0)
-              {
-              vtkSmartPointer<vtkPolyDataReader> mesh_reader =
-                vtkSmartPointer<vtkPolyDataReader>::New();
-              mesh_reader->SetFileName((*it).toAscii().data());
-              mesh_reader->Update();
-
-              mesh->ShallowCopy(mesh_reader->GetOutput());
-              mesh_list.push_back(mesh);
-              }
-            else
-              {
-              if (extension.compare("ply", Qt::CaseInsensitive) == 0)
-                {
-                vtkSmartPointer<vtkPLYReader> mesh_reader =
-                  vtkSmartPointer<vtkPLYReader>::New();
-                mesh_reader->SetFileName((*it).toAscii().data());
-                mesh_reader->Update();
-
-                mesh->ShallowCopy(mesh_reader->GetOutput());
-                mesh_list.push_back(mesh);
-                }
-              }
-            }
-          ++it;
-          }
-
-        if (!mesh_list.empty())
-          {
-          double mesh_bounds[6];
-          mesh_list.front()->GetBounds(mesh_bounds);
-          bool IsContour = false;
-
-          for (int i = 0; (i < 3) && (!IsContour); ++i)
-            {
-            if (mesh_bounds[2 * i] == mesh_bounds[2 * i + 1])
-              {
-              IsContour = true;
-              }
-            }
-          }
-
-        while (!mesh_list.empty())
-          {
-          if (mesh_list.back())
-            {
-            mesh_list.back()->Delete();
-            }
-          mesh_list.pop_back();
-          }
-        }
-      }
-    }
-  else
-    {
-    /// \note Do we need to create a view mesh if there is no opened image?
-    /// \todo this action must be enabled only if there are tabs
-    QMessageBox::warning(this, tr("Open Mesh / Contour Warning"),
-                         tr("One image needs to be opened first to be able to load contours or meshes"));
-    }
-
-}
-//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoMainWindow::
