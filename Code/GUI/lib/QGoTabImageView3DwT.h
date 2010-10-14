@@ -216,9 +216,6 @@ public:
       }
   }
 
-  //void AddMeshFromNodes(const unsigned int& iMeshID, vtkPolyData* iNodes,
-  //                      const double iRgba[4], const unsigned int& iTCoord);
-
   int GetSliceViewXY() const;
   int GetSliceViewXZ() const;
   int GetSliceViewYZ() const;
@@ -338,7 +335,6 @@ protected:
 
   unsigned int                              m_ContourId;
 
-  /// \todo rename as QGoNavigationDockWidget
   QGoNavigationDockWidget*           m_NavigationDockWidget;
 
   // base segmentation dockwidget for contours

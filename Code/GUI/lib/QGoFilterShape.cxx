@@ -118,7 +118,7 @@ Apply()
     setCenter(center2);
 
     // need a switch depending on shape
-    vtkPolyData* testing;
+    vtkPolyData* testing = NULL;
 
     switch(m_Shape)
     {

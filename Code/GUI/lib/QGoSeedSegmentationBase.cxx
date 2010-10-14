@@ -59,7 +59,7 @@ QGoSeedSegmentationBase( QWidget* parentWidget,
 
   m_SeedsPosition[0] = 0.;
   m_SeedsPosition[1] = 0.;
-  m_SeedsPosition[3] = 0.;
+  m_SeedsPosition[2] = 0.;
 
   //Create associated Widget
   m_BaseAlgorithmSegmentationWidget = new QGoSeedBaseWidget(parentWidget, iSampling);

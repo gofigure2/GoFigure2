@@ -214,7 +214,7 @@ QGoTabImageView3DwT::
   m_Image->Delete();
   m_Seeds->Delete();
 
-  
+
   if (!m_LSMReader.empty())
     {
     if (m_LSMReader[0])
@@ -2652,7 +2652,7 @@ CreateMeshFromSelectedContours(
   std::vector<vtkPolyData*> list_contours;
 
   // get the time point
-  unsigned int tcoord;
+  unsigned int tcoord = this->m_TCoord;
 
   while (contourid_it != iListContourIDs.end())
     {
