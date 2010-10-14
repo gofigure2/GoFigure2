@@ -91,10 +91,11 @@ SET( QGoGUILIB_SRC
   QGoSeedBaseWidget.cxx
     QGoContourSemiAutoLevelsetWidget.cxx
     QGoContourSemiAutoShapeWidget.cxx
+    QGoContourSemiAutoWatershedWidget.cxx
   QGoFilterSemiAutoBase.cxx
     QGoFilterChanAndVes.cxx
     QGoFilterShape.cxx
-  #Watershed.h
+    QGoFilterWatershed.cxx
 
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx
@@ -201,10 +202,11 @@ SET( QGoGUILIB_HDRS
   QGoSeedBaseWidget.h
     QGoContourSemiAutoLevelsetWidget.h
     QGoContourSemiAutoShapeWidget.h
+    QGoContourSemiAutoWatershedWidget.h
   QGoFilterSemiAutoBase.h
     QGoFilterChanAndVes.h
     QGoFilterShape.h
-  #Watershed.h
+    QGoFilterWatershed.h
 )
 
 #---------------------------------------------------------------------------
@@ -252,6 +254,7 @@ SET( QGoGUILIB_UI
   # seed segmentation dock widgets
   Resources/BaseAlgoSegmentationDockWidget.ui
   Resources/LevelsetWidget.ui
+  Resources/WatershedWidget.ui
 )
 
 #---------------------------------------------------------------------------

@@ -37,51 +37,20 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __QGoMeshSeedSegmentation_h
-#define __QGoMeshSeedSegmentation_h
 
-#include <QObject>
-#include <QWidget>
-#include "QGoGUILibConfigure.h"
+#include "QGoContourSemiAutoWatershedWidget.h"
 
-#include "QGoSeedSegmentationBase.h"
+//---------------------------------------------------------------------------//
+QGoContourSemiAutoWatershedWidget::
+QGoContourSemiAutoWatershedWidget(QWidget* iParent) : QWidget(iParent)
+{
+  this->setupUi(this);
+}
+//---------------------------------------------------------------------------//
 
-class vtkPoints;
-
-class vtkImageData;
-
-// segmentation filters
-class QGoFilterChanAndVes;
-class QGoFilterShape;
-class QGoFilterWatershed;
-
-/**
- * \class QGoSeedShapeSegmentation
- * \ingroup QGoSeed
- * \brief Class to create pre defined meshes
-*/
-class QGOGUILIB_EXPORT QGoMeshSeedSegmentation : public QGoSeedSegmentationBase
-  {
-  Q_OBJECT
-public:
-  /**
-   * \brief Constructor
-   */
-  explicit QGoMeshSeedSegmentation( QWidget * parentW = 0,
-                                    vtkPoints* seeds = 0,
-                                    std::vector<vtkImageData*>* iOriginalImage = 0,
-                                    int iSampling = 1);
-
-  /**
-   * \brief Destructor
-   */
-  ~QGoMeshSeedSegmentation();
-
-private:
-  QGoFilterChanAndVes* m_LevelSetfilter;
-  QGoFilterShape*      m_ShapeFilter;
-  QGoFilterWatershed*  m_Watershed;
-
-  std::vector<vtkImageData*>*   m_OriginalImage;
-  };
-#endif
+//---------------------------------------------------------------------------//
+QGoContourSemiAutoWatershedWidget::
+~QGoContourSemiAutoWatershedWidget()
+{
+}
+//---------------------------------------------------------------------------//

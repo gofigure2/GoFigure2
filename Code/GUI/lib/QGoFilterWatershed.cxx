@@ -37,7 +37,7 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "QGoFilterChanAndVes.h"
+#include "QGoFilterWatershed.h"
 
 #include "QGoGUILibConfigure.h"
 
@@ -46,7 +46,7 @@
 #include "vtkImageData.h"
 
 // ITK filter
-#include "itkChanAndVeseSegmentationFilter.h"
+#include "itkWatershedBasedCellSegmentation.h"
 #include "itkImage.h"
 #include "itkVTKImageImport.h"
 
@@ -58,19 +58,16 @@
 #include "vtkTransform.h"
 #include "vtkTransformPolyDataFilter.h"
 
-#include "QGoContourSemiAutoLevelsetWidget.h"
-
+#include "QGoContourSemiAutoWatershedWidget.h"
 
 //--------------------------------------------------------------------------
-QGoFilterChanAndVes::
-QGoFilterChanAndVes( QObject* iParent, int iDimension ) :
+QGoFilterWatershed::
+QGoFilterWatershed( QObject* iParent, int iDimension ) :
     QGoFilterSemiAutoBase( iParent )
 {
   m_Dimension = iDimension;
-  m_Iterations = 15;
-  m_Curvature = 5;
 
-  QString name = "Levelset ";
+  QString name = "Watershed ";
   if (m_Dimension < 2)
     {
     name.append(QString::number(m_Dimension + 2, 10));
@@ -78,19 +75,19 @@ QGoFilterChanAndVes( QObject* iParent, int iDimension ) :
     }
   else
     {
-    name = "2D Levelset within 1 mesh";
+    name = "2D Watershed within 1 mesh";
     }
 
 
   setName(name);
-  QGoContourSemiAutoLevelsetWidget* widget = new QGoContourSemiAutoLevelsetWidget;
+  QGoContourSemiAutoWatershedWidget* widget = new QGoContourSemiAutoWatershedWidget;
   setWidget(widget);
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-QGoFilterChanAndVes::
-~QGoFilterChanAndVes()
+QGoFilterWatershed::
+~QGoFilterWatershed()
 {
 
 }
@@ -98,26 +95,9 @@ QGoFilterChanAndVes::
 
 //--------------------------------------------------------------------------
 void
-QGoFilterChanAndVes::
-setIterations(int iIterations)
+QGoFilterWatershed::Filter2D( double* iCenter, const int& iOrientation )
 {
-  m_Iterations = iIterations;
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void
-QGoFilterChanAndVes::
-setCurvature(int iCurvature)
-{
-  m_Curvature = iCurvature;
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void
-QGoFilterChanAndVes::Filter2D( double* iCenter, const int& iOrientation )
-{
+  /*
   const int dimension = 2;
 
   // useful to translate the polydata afterwards
@@ -171,7 +151,6 @@ QGoFilterChanAndVes::Filter2D( double* iCenter, const int& iOrientation )
   //---------------------------------------------------------
   FeatureImageType::Pointer
     itkImage = ConvertVTK2ITK<unsigned char, dimension>( slice );
-  slice->Delete();
 
   // Extract ROI
   //---------------------------------------------------------
@@ -230,13 +209,15 @@ QGoFilterChanAndVes::Filter2D( double* iCenter, const int& iOrientation )
   reconstructed->Delete();
 
   emit ContourCreated( contour );
+  */
 }
 
 //--------------------------------------------------------------------------
 
 void
-QGoFilterChanAndVes::Filter3D( double* iCenter )
+QGoFilterWatershed::Filter3D( double* iCenter )
 {
+
 
   const int dimension = 3;
 
@@ -247,8 +228,19 @@ QGoFilterChanAndVes::Filter3D( double* iCenter )
   slice->DeepCopy(getInput());
 
   // run filter
-  typedef itk::Image<unsigned char, dimension> FeatureImageType;
+  const unsigned int Dimension = 3;
+  typedef itk::Image< unsigned char, Dimension > FeatureImageType;
+  typedef FeatureImageType::Pointer              FeatureImagePointer;
+  typedef itk::Image< double, Dimension >        InputImageType;
+  typedef InputImageType::IndexType              InputImageIndexType;
+  typedef InputImageType::Pointer                InputImagePointer;
+  typedef itk::Image< int, Dimension >           SegmentImageType;
+  typedef SegmentImageType::Pointer              SegmentImagePointer;
+
   typedef itk::Image<float, dimension>         OutputImageType;
+
+  typedef itk::WatershedBasedCellSegmentation< FeatureImageType, InputImageType, SegmentImageType >
+    SegmentationFilterType;
 
   //VTK to ITK
   //---------------------------------------------------------
@@ -264,37 +256,37 @@ QGoFilterChanAndVes::Filter3D( double* iCenter )
   // Apply filter
   // Apply LevelSet segmentation filter
   //---------------------------------------------------------
-  typedef itk::ChanAndVeseSegmentationFilter<FeatureImageType>
-    SegmentationFilterType;
-
-  FeatureImageType::PointType pt;
-
   SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
-
-  filter->SetFeatureImage(test2);
-  filter->SetPreprocess(1);
-
-  pt[0] = iCenter[0];
-  pt[1] = iCenter[1];
-  pt[2] = iCenter[2];
-  filter->SetCenter(pt);
-
-  filter->SetRadius(getRadius());
-  filter->SetNumberOfIterations(m_Iterations);
-  filter->SetCurvatureWeight(m_Curvature);
+  filter->SetInput( test2 );
   filter->Update();
 
-  OutputImageType::Pointer test3 = filter->GetOutput();
+/*
+  SegmentImagePointer test4 = filter->GetOutput();
+
+  // Some post processing
+  //----------------------------------------------------------
+  typedef itk::MorphologicalWatershedImageFilter2<SegmentImageType, SegmentImageType >
+    WatershedFilterType;
+
+  WatershedFilterType::Pointer wshed = WatershedFilterType::New();
+  wshed->SetInput( test4 );
+  wshed->SetMarkWatershedLine( false );
+  // to be chosen by the user
+  wshed->SetLevel( 1.0 );
+  wshed->FullyConnectedOn();
+  wshed->Update();
+*/
+  SegmentImagePointer test3 = filter->GetOutput();
 
   // Convert output
   //---------------------------------------------------------
-  vtkImageData* itk2vtk = ConvertITK2VTK<float, dimension>(test3);
+  vtkImageData* itk2vtk = ConvertITK2VTK<int, dimension>(test3);
   setOutput(itk2vtk);
   itk2vtk->Delete();
 
   if(m_Dimension == 1)
     {
-    vtkPolyData* output = ReconstructMesh( getOutput(), 0. );
+    vtkPolyData* output = ReconstructMesh( getOutput(), .5 );
     emit MeshCreated( output );
     }
   else
@@ -304,7 +296,7 @@ QGoFilterChanAndVes::Filter3D( double* iCenter )
     implicitFunction->SetNormal(0, 0, 1);
 
     vtkCutter* cutter = vtkCutter::New();
-    vtkPolyData* reconstructed = ReconstructMesh( getOutput(), 0. );
+    vtkPolyData* reconstructed = ReconstructMesh( getOutput(), .5 );
     cutter->SetInput( reconstructed );
     cutter->SetCutFunction(implicitFunction);
     reconstructed->Delete();
@@ -329,9 +321,10 @@ QGoFilterChanAndVes::Filter3D( double* iCenter )
 
 //--------------------------------------------------------------------------
 vtkPolyData*
-QGoFilterChanAndVes::
+QGoFilterWatershed::
 Apply()
 {
+
   // Radius has to be > 0
   if(getRadius() <= 0)
     {
@@ -345,7 +338,7 @@ Apply()
 
   if(m_Dimension == 0)
     {
-    int orientation = 0;
+    /*int orientation = 0;
 
     // LOOP  FOR EACH SEED
     for (int i = 0; i < getPoints()->GetNumberOfPoints(); i++)
@@ -354,6 +347,7 @@ Apply()
 
       this->Filter2D( center2, orientation );
       }
+      */
     }
   else
     //if dimension is 3 - i.e. m_Dimension == 1
@@ -372,20 +366,15 @@ Apply()
   delete[] center2;
 
   return NULL;
+
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
-QGoFilterChanAndVes::
+QGoFilterWatershed::
 ConnectSignals(int iFilterNumber)
 {
   QGoFilterSemiAutoBase::ConnectSignals(iFilterNumber);
-
-  // connect specific
-  QObject::connect(getWidget(), SIGNAL(Curvature(int)),
-      this, SLOT(setCurvature(int)));
-  QObject::connect(getWidget(), SIGNAL(Iterations(int)),
-      this, SLOT(setIterations(int)));
 }
 //--------------------------------------------------------------------------

@@ -49,7 +49,7 @@
 // LevelSet algorithm
 #include "QGoFilterChanAndVes.h"
 #include "QGoFilterShape.h"
-//#include "Watershed.h"
+#include "QGoFilterWatershed.h"
 
 //--------------------------------------------------------------------------
 QGoMeshSeedSegmentation::
@@ -90,6 +90,19 @@ QGoMeshSeedSegmentation( QWidget * parentW,
   m_ShapeFilter->setOriginalImageMC(m_OriginalImage);
   m_BaseAlgorithmSegmentationWidget->GetFrame()->addWidget(m_ShapeFilter->getWidget(), 4, 0, 1, -1);
   m_ShapeFilter->ConnectSignals(filter);
+
+  //=============================================================================
+
+    //Add new segmentation method
+
+    m_Watershed = new QGoFilterWatershed(this, iSampling); // 3 i.e. 3D, to create a mesh
+    filter = m_BaseAlgorithmSegmentationWidget->GetNumberOfFilters();
+    m_BaseAlgorithmSegmentationWidget->AddFilter( m_Watershed->getName() );
+    m_Watershed->getWidget()->setParent(m_BaseAlgorithmSegmentationWidget);
+    m_Watershed->setPoints(getSeed());
+    m_Watershed->setOriginalImageMC(m_OriginalImage);
+    m_BaseAlgorithmSegmentationWidget->GetFrame()->addWidget(m_Watershed->getWidget(), 4, 0, 1, -1);
+    m_Watershed->ConnectSignals(filter);
 
 //=============================================================================
 //=============================================================================
