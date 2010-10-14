@@ -62,7 +62,7 @@ typename GaussianProfileMatchingImageFilter< TFeatureImage, TInputImage, TSegmen
 ImagePointer
 GaussianProfileMatchingImageFilter< TFeatureImage, TInputImage, TSegmentImage >
 ::InitializeBlob
-( FeatureImageSpacingType spacing, FeatureImageSizeType m_CellExtent )
+( FeatureImageSpacingType spacing, FeatureImageSizeType CellExtent )
 {
   ImageRegionType blobRegion;
   ImageIndexType blobStart, blobOrigin;
@@ -70,10 +70,10 @@ GaussianProfileMatchingImageFilter< TFeatureImage, TInputImage, TSegmentImage >
 
   for ( i = 0; i < ImageDimension; i++ )
   {
-    blobOrigin[i] = static_cast<ImageSizeValueType> ( m_CellExtent[i]/2 );
+    blobOrigin[i] = static_cast<ImageSizeValueType> ( CellExtent[i]/2 );
     blobStart[i] = 0;
   }
-  blobRegion.SetSize ( m_CellExtent );
+  blobRegion.SetSize ( CellExtent );
   blobRegion.SetIndex ( blobStart );
 
   ImagePointer blob = ImageType::New();

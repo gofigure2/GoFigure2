@@ -1,12 +1,13 @@
 # - Find SIKULI 
 
-FIND_PATH( SIKULI_EXECUTABLE NAMES Sikuli.sh
+FIND_PATH( SIKULI_EXECUTABLE NAMES sikuli-ide.sh
   PATHS
-  "$ENV{ProgramFiles}/Sikuli/"
-  "$ENV{SystemDrive}/Sikuli/"
+  "$ENV{ProgramFiles}/Sikuli-IDE/"
+  "$ENV{SystemDrive}/Sikuli-IDE/"
   PATH_SUFFIXES "bin"
   DOC "Specify the path to sikuli"
 )
+MARK_AS_ADVANCED( SIKULI_EXECUTABLE )
 
 SET( SIKULI_COMMAND "${SIKULI_EXECUTABLE -t " )
 

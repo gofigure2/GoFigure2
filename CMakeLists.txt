@@ -399,6 +399,9 @@ IF( VTK_FOUND )
 
       MARK_AS_ADVANCED( BUILDNAME )
 
+      OPTION( TESTING_USING_SIKULI "Use Sikuli for testing" OFF )
+      MARK_AS_ADVANCED( TESTING_USING_SIKULI )
+
       CONFIGURE_FILE( CMake/CTestCustom.cmake.in
         ${CMAKE_CURRENT_BINARY_DIR}/CTestCustom.cmake
         @ONLY
