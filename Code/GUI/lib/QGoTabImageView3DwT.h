@@ -415,6 +415,9 @@ protected:
 
     if(iMesh)
       {
+      bool visibility =
+          ( static_cast< unsigned int >( m_TCoord ) == iIt->TCoord );
+
       vtkProperty* mesh_property = vtkProperty::New();
       mesh_property->SetColor(iRgba[0], iRgba[1], iRgba[2]);
       mesh_property->SetOpacity(iRgba[3]);
@@ -426,7 +429,7 @@ protected:
       m_MeshContainer->UpdateVisualizationForGivenElement<TIndex>( iIt,
                                                            mesh_actor,
                                                            false,
-                                                           true );
+                                                           visibility );
       }
   }
 

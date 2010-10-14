@@ -62,10 +62,11 @@ inline FunctionData<Degree,Real>::~FunctionData(void)
     if(d2DotTable){delete[] d2DotTable;}
     if( valueTables){delete[]  valueTables;}
     if(dValueTables){delete[] dValueTables;}
+    if(baseFunctions){delete[] baseFunctions;}
   }
   dotTable=dDotTable=d2DotTable=NULL;
   valueTables=dValueTables=NULL;
-  delete[] baseFunctions;
+  baseFunctions=NULL;
   res=0;
 }
 
