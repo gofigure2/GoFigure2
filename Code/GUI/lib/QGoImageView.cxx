@@ -89,6 +89,7 @@ QGoImageView(QWidget* iParent) : QWidget(iParent),
 QGoImageView::
 ~QGoImageView()
   {
+  /*
   std::vector<vtkSeedWidget*>::iterator seedWidgetIterator = m_SeedWidget.begin();
   while (seedWidgetIterator != m_SeedWidget.end())
     {
@@ -111,7 +112,7 @@ QGoImageView::
     (*seedIterator)->Delete();
     ++seedIterator;
     }
-
+*/
   if (m_Pool)
     {
     m_Pool->Delete();
@@ -468,13 +469,13 @@ InitializeSeedWidget()
 
   for (int i = 0; i < N; ++i)
     {
-    this->m_Handle[i] = vtkConstrainedPointHandleRepresentation::New();
+    this->m_Handle[i] = vtkSmartPointer<vtkConstrainedPointHandleRepresentation>::New();
     this->m_Handle[i]->GetProperty()->SetColor(1, 0, 0);
 
-    this->m_SeedRep[i] = vtkSeedRepresentation::New();
+    this->m_SeedRep[i] = vtkSmartPointer<vtkSeedRepresentation>::New();
     this->m_SeedRep[i]->SetHandleRepresentation(this->m_Handle[i]);
 
-    this->m_SeedWidget[i] = vtkSeedWidget::New();
+    this->m_SeedWidget[i] = vtkSmartPointer<vtkSeedWidget>::New();
     this->m_SeedWidget[i]->SetRepresentation(this->m_SeedRep[i]);
     this->m_SeedWidget[i]->SetRepresentation(this->m_SeedRep[i]);
 
@@ -499,7 +500,7 @@ EnableSeedWidget(bool iEnable)
     DefaultMode();
     }
 
-  std::vector<vtkSeedWidget*>::iterator
+  std::vector<vtkSmartPointer<vtkSeedWidget> >::iterator
   it = m_SeedWidget.begin();
   while (it != m_SeedWidget.end())
     {
@@ -588,12 +589,12 @@ QGoImageView::
 EnableDistanceWidget(bool iActive)
 {
   std::cout << "Distance ---Widget---" << iActive <<std::endl;
-  /*
+
   if(iActive)
     {
     DefaultMode();
     }
-*/
+
   int N = this->m_Pool->GetNumberOfItems();
   for (int i = 0; i < N; i++)
   {
@@ -624,12 +625,12 @@ QGoImageView::
 EnableAngleWidget(bool iActive)
 {
   std::cout << "Angle ---Widget---" << iActive <<std::endl;
-/*
+
   if(iActive)
     {
     DefaultMode();
     }
-*/
+
   int N = this->m_Pool->GetNumberOfItems();
   for (int i = 0; i < N; i++)
   {

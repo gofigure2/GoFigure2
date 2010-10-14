@@ -257,9 +257,11 @@ public slots:
 protected:
   vtkViewImage2DCollection* m_Pool;
   vtkImageData*             m_Image;
-  std::vector<vtkSeedWidget*>                           m_SeedWidget;
-  std::vector<vtkConstrainedPointHandleRepresentation*> m_Handle;
-  std::vector<vtkSeedRepresentation*>                   m_SeedRep;
+
+  // Seed Widget specific members
+  std::vector<vtkSmartPointer<vtkSeedWidget> >                           m_SeedWidget;
+  std::vector<vtkSmartPointer<vtkConstrainedPointHandleRepresentation> > m_Handle;
+  std::vector<vtkSmartPointer<vtkSeedRepresentation> >                   m_SeedRep;
 
   // Distance Widget specific members
   std::vector<vtkSmartPointer<vtkDistanceWidget> > m_DistanceWidget;

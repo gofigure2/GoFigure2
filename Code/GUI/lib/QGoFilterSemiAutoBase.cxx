@@ -64,6 +64,8 @@
 #include "vtkPlane.h"
 #include "vtkCutter.h"
 
+#include "vtkImageExport.h"
+
 //--------------------------------------------------------------------------
 QGoFilterSemiAutoBase::
 QGoFilterSemiAutoBase( QObject* iParent ) :
@@ -77,6 +79,7 @@ QGoFilterSemiAutoBase( QObject* iParent ) :
   m_Sampling( 3 )
 {
   m_Output = vtkImageData::New();
+  m_vtk2itkImage = vtkImageExport::New();
 
   m_Center[0] = 0;
   m_Center[1] = 0;
@@ -89,6 +92,7 @@ QGoFilterSemiAutoBase::
 ~QGoFilterSemiAutoBase()
 {
   m_Output->Delete();
+  m_vtk2itkImage->Delete();
 }
 //--------------------------------------------------------------------------
 

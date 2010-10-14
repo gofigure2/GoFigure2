@@ -314,7 +314,7 @@ protected:
   QHBoxLayout*                                m_HBoxLayout;
   QSplitter*                                  m_VSplitter;
   QGoImageView3D*                             m_ImageView;
-  std::vector<vtkLSMReader* >                 m_LSMReader;
+  std::vector<vtkSmartPointer<vtkLSMReader> > m_LSMReader;
   std::vector<vtkImageData*>                  m_InternalImages;
   vtkImageData*                               m_Image;
 

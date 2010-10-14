@@ -1118,6 +1118,8 @@ UpdateCenter(void)
     {
     this->ViewCenter[i] = center[i];
     }
+
+  delete[] center;
 }
 
 //----------------------------------------------------------------------------

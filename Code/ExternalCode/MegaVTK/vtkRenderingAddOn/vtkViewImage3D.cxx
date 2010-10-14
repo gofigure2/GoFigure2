@@ -590,17 +590,6 @@ SetBoundsActorsVisibility(bool iVisibility)
 //----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
-void vtkViewImage3D::UpdateInteractorStyle()
-
-{
-  // the new interactor style
-  vtkInteractorStyleImage3D* interactorStyle = vtkInteractorStyleImage3D::New();
-
-  this->Interactor->SetInteractorStyle(interactorStyle);
-}
-//----------------------------------------------------------------------------
-
-//----------------------------------------------------------------------------
 /**
  *
  */
@@ -764,6 +753,7 @@ void vtkViewImage3D::SetupTextureMapper()
         << "Warning: 3D Texture volume rendering is not supported by your"
         << " hardware, I switch to 2D Texture rendering." << endl);
 
+        ///TODO FIX LEAK
         vtkVolumeTextureMapper2D* newMapper =
           vtkVolumeTextureMapper2D::New();
         newMapper->CroppingOn();

@@ -380,6 +380,8 @@ ReEditContour(const unsigned int& iId)
           int* idx = this->GetImageCoordinatesFromWorldCoordinates(p);
           this->SetSlice(dir, idx);
 
+          delete[] idx;
+
           m_ContourWidget[dir]->Initialize(c_nodes);
           m_ManualSegmentationWidget->setEnabled(true);
           }

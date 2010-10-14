@@ -63,9 +63,8 @@ ConvertVTK2ITK(vtkImageData* iInput)
     }
 
   //Export VTK image to ITK
-  vtkImageExport* vtk2itkImage = vtkImageExport::New();
-  vtk2itkImage->SetInput(iInput);
-  vtk2itkImage->Update();
+  m_vtk2itkImage->SetInput(iInput);
+  m_vtk2itkImage->Update();
 
   // ImageType
   typedef itk::Image<PixelType, VImageDimension> ImageType;
@@ -75,10 +74,13 @@ ConvertVTK2ITK(vtkImageData* iInput)
   ImageImportPointer movingImporter = ImageImportType::New();
 
   ConnectPipelines<vtkImageExport, ImageImportPointer>(
-    vtk2itkImage,
+    m_vtk2itkImage,
     movingImporter);
 
-  return movingImporter->GetOutput();
+  typename ImageType::Pointer itkImage = movingImporter->GetOutput();
+  itkImage->DisconnectPipeline();
+
+  return itkImage;
 }
 //-------------------------------------------------------------------------
 

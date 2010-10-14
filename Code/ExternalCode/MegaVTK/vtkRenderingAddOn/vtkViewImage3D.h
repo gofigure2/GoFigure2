@@ -135,7 +135,6 @@ public:
   // Render the resulting image.
   virtual void Render(void);
 
-  void UpdateInteractorStyle();
   /**
     Add a dataset to the view (has to be subclass of vtkPointSet).
     The dataset will be cut through the implicit slice plane

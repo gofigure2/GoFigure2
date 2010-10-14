@@ -213,8 +213,12 @@ unsigned int QGoDBMeshManager::CreateNewMeshWithNoContourNoPoints(
   unsigned int NewMeshID = 
     this->m_CollectionOfTraces->CreateCollectionWithNoTracesNoPoints<GoDBMeshRow>(
     iDatabaseConnector,iColor,NewMesh,iTimePoint);
+
+  double* color = this->GetVectorFromQColor(iColor.second);
   this->m_TraceContainerInfoForVisu->UpdateCurrentElementFromDB(
-    NewMeshID, this->GetVectorFromQColor(iColor.second));
+    NewMeshID, color);
+  delete[] color;
+
   this->m_TraceContainerInfoForVisu->InsertCurrentElement();
   this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
   return NewMeshID;

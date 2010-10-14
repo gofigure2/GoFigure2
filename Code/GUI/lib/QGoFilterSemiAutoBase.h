@@ -56,6 +56,7 @@
 
 class vtkImageData;
 class vtkPoints;
+class vtkImageExport;
 
 #include "QGoGUILibConfigure.h"
 
@@ -143,6 +144,7 @@ signals:
   void AddContourForMeshToContours(vtkPolyData* );
 
 private:
+  vtkImageExport* m_vtk2itkImage;
   vtkImageData* m_Output;
   QString       m_Name;
   QWidget*      m_Widget;

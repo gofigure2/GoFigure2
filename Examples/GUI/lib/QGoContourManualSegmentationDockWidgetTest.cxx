@@ -79,6 +79,7 @@ int main(int argc, char** argv)
 //   std::cout <<color.red() <<" " <<color.green() <<" " <<color.blue() <<std::endl;
 //   std::cout <<color.hue() <<" " <<color.saturation() <<" " <<color.value() <<std::endl;
 
+  delete timer;
   delete dock;
 
   return output;

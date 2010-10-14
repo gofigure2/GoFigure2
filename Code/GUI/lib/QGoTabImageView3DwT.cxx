@@ -214,7 +214,7 @@ QGoTabImageView3DwT::
   m_Image->Delete();
   m_Seeds->Delete();
 
-  /*
+  
   if (!m_LSMReader.empty())
     {
     if (m_LSMReader[0])
@@ -222,14 +222,14 @@ QGoTabImageView3DwT::
       m_LSMReader[0]->Delete();
       }
     }
-*/
+
   // clean the LSMReader vector
-  while(!m_LSMReader.empty())
+  /*while(!m_LSMReader.empty())
     {
     m_LSMReader.back()->Delete();
     m_LSMReader.pop_back();
     }
-
+*/
   unsigned int minch = m_MegaCaptureReader->GetMinChannel();
   unsigned int maxch = m_MegaCaptureReader->GetMaxChannel();
 
@@ -2477,27 +2477,38 @@ void
 QGoTabImageView3DwT::
 AddContourForMeshToContours(vtkPolyData* iInput)
 {
-  std::list<unsigned int> ListContourIDs;
+  if(!m_DataBaseTables->IsDatabaseUsed())
+    {
+    std::cerr << "Problem with DB" << std::endl;
+    return;
+    }
+
+  vtkPolyData* contour_nodes = vtkPolyData::New();
+  CreateContour( contour_nodes, iInput );
+
+  //std::list<unsigned int> ListContourIDs;
   if ((iInput->GetNumberOfPoints() > 2) && (m_TCoord >= 0))
     {
     // Compute Bounding Box
     std::vector<int> bounds = GetBoundingBox(iInput);
     // Save contour in database :
-    ListContourIDs.push_back(this->m_DataBaseTables
-        ->SaveNewContourForMeshToContours  ( bounds[0],
-                                             bounds[2],
-                                             bounds[4],
-                                             bounds[1],
-                                             bounds[3],
-                                             bounds[5],
-                                             iInput));
+    //ListContourIDs.push_back(
+    this->m_DataBaseTables->SaveNewContourForMeshToContours  ( bounds[0],
+                                                               bounds[2],
+                                                               bounds[4],
+                                                               bounds[1],
+                                                               bounds[3],
+                                                               bounds[5],
+                                                               contour_nodes);
+    //);
 
     // AND VISU!!!
     std::vector<vtkActor*> actors = VisualizeContour( iInput );
+    iInput->Delete();
 
     // update the container
     m_ContourContainer->UpdateCurrentElementFromVisu( actors,
-                                                      iInput,
+                                                      contour_nodes,
                                                       m_TCoord,
                                                       false,//highlighted
                                                       true);//visible
