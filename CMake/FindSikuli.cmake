@@ -1,0 +1,17 @@
+# - Find SIKULI 
+
+FIND_PATH( SIKULI_EXECUTABLE NAMES Sikuli.sh
+  PATHS
+  "$ENV{ProgramFiles}/Sikuli/"
+  "$ENV{SystemDrive}/Sikuli/"
+  PATH_SUFFIXES "bin"
+  DOC "Specify the path to sikuli"
+)
+
+SET( SIKULI_COMMAND "${SIKULI_EXECUTABLE -t " )
+
+IF( SIKULI_EXECUTABLE )
+  SET( SIKULI_FOUND TRUE )
+ELSE( SIKULI_EXECUTABLE )
+  SET( SIKULI_FOUND FALSE )
+ENDIF( SIKULI_EXECUTABLE )
