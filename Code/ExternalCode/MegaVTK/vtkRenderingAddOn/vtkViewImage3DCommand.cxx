@@ -45,88 +45,84 @@
 #include "vtkPlane.h"
 
 //----------------------------------------------------------------------------
-vtkViewImage3DCommand::
-vtkViewImage3DCommand()
-{
-}
-//----------------------------------------------------------------------------
+vtkViewImage3DCommand::vtkViewImage3DCommand()
+{}
 
+//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 vtkViewImage3DCommand::
 ~vtkViewImage3DCommand()
-{
-}
-//----------------------------------------------------------------------------
-
+{}
 
 //----------------------------------------------------------------------------
-vtkViewImage3DCommand*
+
+//----------------------------------------------------------------------------
+vtkViewImage3DCommand *
 vtkViewImage3DCommand::New()
 {
   return new vtkViewImage3DCommand;
 }
-//----------------------------------------------------------------------------
 
+//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void
-vtkViewImage3DCommand::
-Execute(vtkObject *caller, unsigned long event, void *callData)
+vtkViewImage3DCommand::Execute(vtkObject *caller, unsigned long event, void *callData)
 {
   (void)callData;
 
-    if (m_PlaneWidget == static_cast<vtkImplicitPlaneWidget*>(caller))
-     {
-     if (event == vtkCommand::InteractionEvent)
-       {
-       double* n = m_PlaneWidget->GetNormal();
-       double* origin = m_PlaneWidget->GetOrigin();
-       m_vtkViewImage3D->ComputeDistances(n, origin);
-       return;
-       }
-     }
-   else if(m_BoxWidget == static_cast<vtkOrientedBoxWidget*>(caller))
-     {
-     vtkPlanes* planes = vtkPlanes::New();
-     m_BoxWidget->GetPlanes(planes);
-     m_vtkViewImage3D->ComputeDistancesToSquare( planes );
-     return;
-     }
-   else
-     {
-     return;
-     }
-
+  if ( m_PlaneWidget == static_cast< vtkImplicitPlaneWidget * >( caller ) )
+    {
+    if ( event == vtkCommand::InteractionEvent )
+      {
+      double *n = m_PlaneWidget->GetNormal();
+      double *origin = m_PlaneWidget->GetOrigin();
+      m_vtkViewImage3D->ComputeDistances(n, origin);
+      return;
+      }
+    }
+  else if ( m_BoxWidget == static_cast< vtkOrientedBoxWidget * >( caller ) )
+    {
+    vtkPlanes *planes = vtkPlanes::New();
+    m_BoxWidget->GetPlanes(planes);
+    m_vtkViewImage3D->ComputeDistancesToSquare(planes);
+    return;
+    }
+  else
+    {
+    return;
+    }
 }
+
 //----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void
-vtkViewImage3DCommand::
-SetVtkImageView3D(vtkViewImage3D* iViewImage3D)
+vtkViewImage3DCommand::SetVtkImageView3D(vtkViewImage3D *iViewImage3D)
 {
-  if (iViewImage3D)
+  if ( iViewImage3D )
     {
     m_vtkViewImage3D = iViewImage3D;
     }
 }
+
 //----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void
-vtkViewImage3DCommand::
-SetPlaneWidget(vtkImplicitPlaneWidget* test)
+vtkViewImage3DCommand::SetPlaneWidget(vtkImplicitPlaneWidget *test)
 {
   m_PlaneWidget = test;
 }
+
 //----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void
-vtkViewImage3DCommand::
-SetBoxWidget(vtkOrientedBoxWidget* test)
+vtkViewImage3DCommand::SetBoxWidget(vtkOrientedBoxWidget *test)
 {
   m_BoxWidget = test;
 }
+
 //----------------------------------------------------------------------------

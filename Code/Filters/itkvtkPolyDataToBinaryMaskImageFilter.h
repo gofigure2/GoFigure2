@@ -54,15 +54,15 @@
 
 namespace itk
 {
-template<class TInput, class TOutput>
-class vtkPolyDataToBinaryMaskImageFilter :
-  public ImageToImageFilter<TInput, TOutput>
-  {
+template< class TInput, class TOutput >
+class vtkPolyDataToBinaryMaskImageFilter:
+  public ImageToImageFilter< TInput, TOutput >
+{
 public:
-  typedef vtkPolyDataToBinaryMaskImageFilter  Self;
-  typedef ImageToImageFilter<TInput, TOutput> Superclass;
-  typedef SmartPointer<Self>                  Pointer;
-  typedef SmartPointer<const Self>            ConstPointer;
+  typedef vtkPolyDataToBinaryMaskImageFilter    Self;
+  typedef ImageToImageFilter< TInput, TOutput > Superclass;
+  typedef SmartPointer< Self >                  Pointer;
+  typedef SmartPointer< const Self >            ConstPointer;
 
   /** Method for creation through object factory */
   itkNewMacro(Self);
@@ -82,28 +82,27 @@ public:
   typedef TOutput                               BinaryMaskImageType;
   typedef typename BinaryMaskImageType::Pointer BinaryMaskImagePointer;
 
-  typedef VTKImageImport<BinaryMaskImageType> ImageImportType;
-  typedef typename ImageImportType::Pointer   ImageImportPointer;
+  typedef VTKImageImport< BinaryMaskImageType > ImageImportType;
+  typedef typename ImageImportType::Pointer     ImageImportPointer;
 
-  virtual void SetPolyData(vtkPolyData* iMesh);
+  virtual void SetPolyData(vtkPolyData *iMesh);
 
 protected:
   vtkPolyDataToBinaryMaskImageFilter();
   ~vtkPolyDataToBinaryMaskImageFilter();
 
-  vtkPolyData*                               m_Mesh;
-  vtkSmartPointer<vtkImageData>              m_WhiteImage;
-  vtkSmartPointer<vtkPolyDataToImageStencil> m_Pol2stenc;
-  vtkSmartPointer<vtkImageStencil>           m_ImageStencil;
-  vtkSmartPointer<vtkImageExport>            m_VTKExporter;
-  ImageImportPointer                         m_ITKImporter;
+  vtkPolyData *m_Mesh;
+  vtkSmartPointer< vtkImageData >              m_WhiteImage;
+  vtkSmartPointer< vtkPolyDataToImageStencil > m_Pol2stenc;
+  vtkSmartPointer< vtkImageStencil >           m_ImageStencil;
+  vtkSmartPointer< vtkImageExport >            m_VTKExporter;
+  ImageImportPointer m_ITKImporter;
   virtual void GenerateData();
 
 private:
-  vtkPolyDataToBinaryMaskImageFilter(const Self&);
-  void operator =(const Self&);
-  };
-
+  vtkPolyDataToBinaryMaskImageFilter(const Self &);
+  void operator=(const Self &);
+};
 }
 
 #include "itkvtkPolyDataToBinaryMaskImageFilter.txx"

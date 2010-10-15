@@ -43,10 +43,9 @@
 #include <iostream>
 #include <fstream>
 
-MegaCaptureHeaderReader::
-MegaCaptureHeaderReader(const std::string& iFileName) :
+MegaCaptureHeaderReader::MegaCaptureHeaderReader(const std::string & iFileName):
   m_FileName(iFileName)
-  {
+{
   m_TimeInterval = 0.;
   m_VoxelSizeX = 0.;
   m_VoxelSizeY = 0.;
@@ -56,17 +55,15 @@ MegaCaptureHeaderReader(const std::string& iFileName) :
   m_NumberOfChannels = 0;
   m_ChannelDepth = 0;
   m_ChannelColor.resize(0);
-  }
+}
 
 MegaCaptureHeaderReader::
 ~MegaCaptureHeaderReader()
-  {
-  }
+{}
 
-void MegaCaptureHeaderReader::
-SetFileName(const std::string& iFileName)
+void MegaCaptureHeaderReader::SetFileName(const std::string & iFileName)
 {
-  if (iFileName.empty())
+  if ( iFileName.empty() )
     {
     std::cerr << "empty filename" << std::endl;
     return;
@@ -77,12 +74,12 @@ SetFileName(const std::string& iFileName)
     }
 }
 
-void MegaCaptureHeaderReader::
-Read()
+void MegaCaptureHeaderReader::Read()
 {
   std::string   line;
   std::ifstream ifs(m_FileName.c_str(), std::ifstream::in);
-  if (ifs.is_open())
+
+  if ( ifs.is_open() )
     {
     // Skip the 5 first lines, i.e.
     // MegaCapture
@@ -90,7 +87,7 @@ Read()
     // Version 3.0
     // ExperimentTitle
     // ExperimentDescription
-    for (int i = 0; i < 5; i++)
+    for ( int i = 0; i < 5; i++ )
       {
       getline(ifs, line);
 //       std::cout <<i <<" * "<<line <<std::endl;
@@ -117,7 +114,7 @@ Read()
     // DimensionTM 2
     // DimensionZS 4
 
-    for (int i = 0; i < 9; i++)
+    for ( int i = 0; i < 9; i++ )
       {
       getline(ifs, line);
       }
@@ -126,7 +123,7 @@ Read()
 
     m_ChannelColor.resize(m_NumberOfChannels);
     unsigned long color;
-    for (unsigned int i = 0; i < m_NumberOfChannels; i++)
+    for ( unsigned int i = 0; i < m_NumberOfChannels; i++ )
       {
       ifs >> word >> color;
       m_ChannelColor[i] = ConvertUnsignedLongColorToRGBIntColor(color);
@@ -136,8 +133,10 @@ Read()
     // FileType  TIF
     // </ImageSessionData>
     // <Image>
-    // Filename  D:/megacapture/image-PL00-CO00-RO00-ZT00-YT00-XT00-TM0000-ch00-zs0000.png
-    for (int i = 0; i < 5; i++)
+    // Filename
+    //
+    // D:/megacapture/image-PL00-CO00-RO00-ZT00-YT00-XT00-TM0000-ch00-zs0000.png
+    for ( int i = 0; i < 5; i++ )
       {
       getline(ifs, line);
       }
@@ -156,13 +155,12 @@ Read()
     }
 }
 
-std::vector<int> MegaCaptureHeaderReader::
-ConvertUnsignedLongColorToRGBIntColor(const unsigned long& iColor)
+std::vector< int > MegaCaptureHeaderReader::ConvertUnsignedLongColorToRGBIntColor(const unsigned long & iColor)
 {
-  std::vector<int> oRGB(3);
-  oRGB[0] = static_cast<int>((iColor / (256 * 256)) % 256);
-  oRGB[1] = static_cast<int>((iColor / 256) % 256);
-  oRGB[2] = static_cast<int>(iColor % 256);
+  std::vector< int > oRGB(3);
+  oRGB[0] = static_cast< int >( ( iColor / ( 256 * 256 ) ) % 256 );
+  oRGB[1] = static_cast< int >( ( iColor / 256 ) % 256 );
+  oRGB[2] = static_cast< int >( iColor % 256 );
   return oRGB;
 }
 

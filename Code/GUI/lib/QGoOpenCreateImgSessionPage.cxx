@@ -44,34 +44,34 @@
 
 #include <QGridLayout>
 
-QGoOpenCreateImgSessionPage::
-QGoOpenCreateImgSessionPage(QWidget *iParent) :
+QGoOpenCreateImgSessionPage::QGoOpenCreateImgSessionPage(QWidget *iParent):
   QWizardPage(iParent),
   m_DatabaseConnector(0)
-  {
+{
   QFont tfont;
+
   tfont.setBold(false);
   this->setFont(tfont);
 
   CreateImgSessionRadioButton =
-    new QRadioButton(tr("Create a new Imaging Session    "));
+    new QRadioButton( tr("Create a new Imaging Session    ") );
   OpenImgSessionRadioButton   =
-    new QRadioButton(tr("Open an existing Imaging Session"));
+    new QRadioButton( tr("Open an existing Imaging Session") );
 
-  textChoiceImgSession = new QLabel(tr("Imaging Session to open:"));
+  textChoiceImgSession = new QLabel( tr("Imaging Session to open:") );
   ChoiceImgSession  = new QComboBox;
-  textDescription = new QLabel(tr("Description:"));
+  textDescription = new QLabel( tr("Description:") );
   lineDescription  = new QTextEdit;
   lineImgSessionID = new QLineEdit;
   lineImgSessionName = new QLineEdit;
 
-  QVBoxLayout* vlayout = new QVBoxLayout;
-  QVBoxLayout* RadioButtonLayout = new QVBoxLayout;
+  QVBoxLayout *vlayout = new QVBoxLayout;
+  QVBoxLayout *RadioButtonLayout = new QVBoxLayout;
   RadioButtonLayout->addWidget(CreateImgSessionRadioButton);
   RadioButtonLayout->addWidget(OpenImgSessionRadioButton);
   vlayout->addLayout(RadioButtonLayout);
   vlayout->setAlignment(RadioButtonLayout, Qt::AlignHCenter);
-  QGridLayout* gridlayout = new QGridLayout;
+  QGridLayout *gridlayout = new QGridLayout;
   gridlayout->addWidget(textChoiceImgSession, 0, 0);
   gridlayout->addWidget(ChoiceImgSession, 0, 1);
   gridlayout->addWidget(textDescription, 3, 0);
@@ -82,29 +82,31 @@ QGoOpenCreateImgSessionPage(QWidget *iParent) :
   registerField("ImgSessionName", lineImgSessionName);
   registerField("ImgSessionID", lineImgSessionID);
 
-  QObject::connect(this->ChoiceImgSession, SIGNAL(currentIndexChanged(QString)),
-                   this, SLOT(DisplayInfoImgSession(QString)));
+  QObject::connect( this->ChoiceImgSession, SIGNAL( currentIndexChanged(QString) ),
+                    this, SLOT( DisplayInfoImgSession(QString) ) );
 
-  QObject::connect(this->OpenImgSessionRadioButton, SIGNAL(clicked()),
-                   this, SLOT(ChangeToOpenImgSessionDisplay()));
+  QObject::connect( this->OpenImgSessionRadioButton, SIGNAL( clicked() ),
+                    this, SLOT( ChangeToOpenImgSessionDisplay() ) );
 
-  QObject::connect(this->CreateImgSessionRadioButton, SIGNAL(clicked()),
-                   this, SLOT(ChangeToCreateImgSessionDisplay()));
-  }
+  QObject::connect( this->CreateImgSessionRadioButton, SIGNAL( clicked() ),
+                    this, SLOT( ChangeToCreateImgSessionDisplay() ) );
+}
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 QGoOpenCreateImgSessionPage::~QGoOpenCreateImgSessionPage()
-  {
+{
   delete lineImgSessionID;
   delete lineImgSessionName;
-  }
+}
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoOpenCreateImgSessionPage::initializePage()
 {
-  if (!m_ListImgSession.isEmpty())
+  if ( !m_ListImgSession.isEmpty() )
     {
     m_ListImgSession.clear();
     }
@@ -112,7 +114,7 @@ void QGoOpenCreateImgSessionPage::initializePage()
 
   OpenDBConnection();
 
-  if (!GetListImgSession())
+  if ( !GetListImgSession() )
     {
     std::cout << "Pb, there is no existing Img session" << std::endl;
     std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
@@ -123,13 +125,13 @@ void QGoOpenCreateImgSessionPage::initializePage()
     OpenImgSessionRadioButton->setChecked(true);
     ChangeToOpenImgSessionDisplay();
     ChoiceImgSession->addItems(m_ListImgSession);
-    DisplayInfoImgSession(ChoiceImgSession->currentText());
+    DisplayInfoImgSession( ChoiceImgSession->currentText() );
     this->setFinalPage(false);
     }
 
   lineDescription->setReadOnly(true);
-
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -139,45 +141,46 @@ bool QGoOpenCreateImgSessionPage::GetListImgSession()
   ChoiceImgSession->clear();
   m_MapImgSessionIDName.clear();
 
-  m_MapImgSessionIDName = MapTwoColumnsFromTable(m_DatabaseConnector,
-                                                 "Name", "ImagingSessionID", "imagingsession", "ProjectName",
-                                                 field("ProjectName").toString().toStdString());
+  m_MapImgSessionIDName = MapTwoColumnsFromTable( m_DatabaseConnector,
+                                                  "Name", "ImagingSessionID", "imagingsession", "ProjectName",
+                                                  field("ProjectName").toString().toStdString() );
 
-  std::map<std::string, std::string>::iterator it = m_MapImgSessionIDName.begin();
-  if (!m_MapImgSessionIDName.empty())
+  std::map< std::string, std::string >::iterator it = m_MapImgSessionIDName.begin();
+  if ( !m_MapImgSessionIDName.empty() )
     {
-    while (it != m_MapImgSessionIDName.end())
+    while ( it != m_MapImgSessionIDName.end() )
       {
-      m_ListImgSession.append(it->first.c_str());
+      m_ListImgSession.append( it->first.c_str() );
       it++;
       }
     return true;
     }
   return false;
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 int QGoOpenCreateImgSessionPage::nextId() const
 {
-
-  if (m_DatabaseConnector == 0 && !LeavingPage)
+  if ( m_DatabaseConnector == 0 && !LeavingPage )
     {
     OpenDBConnection();
     }
 
-  if (CreateImgSessionRadioButton->isChecked())
+  if ( CreateImgSessionRadioButton->isChecked() )
     {
     return QGoWizardDB::CreateImgSessionPageID;
     }
   return -1;
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 bool QGoOpenCreateImgSessionPage::validatePage()
 {
-  if (CloseDatabaseConnection(m_DatabaseConnector))
+  if ( CloseDatabaseConnection(m_DatabaseConnector) )
     {
     m_DatabaseConnector = 0;
     }
@@ -185,25 +188,27 @@ bool QGoOpenCreateImgSessionPage::validatePage()
 
   //get the imagingsessionID from the selected imagingsession in the combobox
   //in case the user wants to open an imagingsession:
-  if (OpenImgSessionRadioButton->isChecked())
+  if ( OpenImgSessionRadioButton->isChecked() )
     {
     std::string ImgID =
       m_MapImgSessionIDName[ChoiceImgSession->currentText().toStdString()];
-    setField("ImgSessionID", ImgID.c_str());
-    setField("ImgSessionName", ChoiceImgSession->currentText());
+    setField( "ImgSessionID", ImgID.c_str() );
+    setField( "ImgSessionName", ChoiceImgSession->currentText() );
     }
   return true;
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoOpenCreateImgSessionPage::cleanupPage()
 {
-  if (CloseDatabaseConnection(m_DatabaseConnector))
+  if ( CloseDatabaseConnection(m_DatabaseConnector) )
     {
     m_DatabaseConnector = 0;
     }
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -218,6 +223,7 @@ void QGoOpenCreateImgSessionPage::OpenDBConnection() const
 
   LeavingPage = false;
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -226,46 +232,49 @@ void QGoOpenCreateImgSessionPage::DisplayInfoImgSession(
 {
   // First, get the corresponding ImagingSessionID from the map:
   std::string ImagingSessionID = "0";
-  if (ImgSessionName != "")
+
+  if ( ImgSessionName != "" )
     {
-    std::map<std::string, std::string>::iterator it = m_MapImgSessionIDName.begin();
-    while (it != m_MapImgSessionIDName.end() && ImagingSessionID == "0")
+    std::map< std::string, std::string >::iterator it = m_MapImgSessionIDName.begin();
+    while ( it != m_MapImgSessionIDName.end() && ImagingSessionID == "0" )
       {
-      if (it->first == ImgSessionName.toStdString())
+      if ( it->first == ImgSessionName.toStdString() )
         {
         ImagingSessionID = it->second;
         }
       it++;
       }
 
-    std::vector<std::string> ListDescription = ListSpecificValuesForOneColumn(
+    std::vector< std::string > ListDescription = ListSpecificValuesForOneColumn(
       m_DatabaseConnector, "imagingsession", "Description",
       "ImagingSessionID", ImagingSessionID);
-    if (ListDescription.size() != 1)
+    if ( ListDescription.size() != 1 )
       {
-      std::cout << "Pb, the imagingsession " << ImgSessionName.toStdString().c_str() <<
-      "has more than 1 description" << std::endl;
+      std::cout << "Pb, the imagingsession " << ImgSessionName.toStdString().c_str()
+                << "has more than 1 description" << std::endl;
       std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
       std::cout << std::endl;
       }
 
-    lineDescription->setText(ListDescription[0].c_str());
+    lineDescription->setText( ListDescription[0].c_str() );
     }
   this->setFinalPage(false);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoOpenCreateImgSessionPage::ChangeToCreateImgSessionDisplay()
 {
   setSubTitle(
-    tr("Click on 'Next' if you want to import a new dataset\n or choose 'Open an imaging session':"));
+    tr("Click on 'Next' if you want to import a new dataset\n or choose 'Open an imaging session':") );
   textChoiceImgSession->setVisible(false);
   ChoiceImgSession->setVisible(false);
   lineDescription->setVisible(false);
   textDescription->setVisible(false);
   this->setFinalPage(false);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -273,13 +282,14 @@ void QGoOpenCreateImgSessionPage::ChangeToOpenImgSessionDisplay()
 {
   setSubTitle(
     tr(
-      "Select the imaging session you want to open and click on 'Finish' to load the corresponding images or choose 'Create a new imaging session':"));
+      "Select the imaging session you want to open and click on 'Finish' to load the corresponding images or choose 'Create a new imaging session':") );
   textChoiceImgSession->setVisible(true);
   ChoiceImgSession->setVisible(true);
   lineDescription->setVisible(true);
   textDescription->setVisible(true);
   this->setFinalPage(false);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

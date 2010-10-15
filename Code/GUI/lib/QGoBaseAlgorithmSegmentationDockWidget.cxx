@@ -41,75 +41,75 @@
 #include "QGoBaseAlgorithmSegmentationDockWidget.h"
 
 //---------------------------------------------------------------------------//
-QGoBaseAlgorithmSegmentationDockWidget::
-QGoBaseAlgorithmSegmentationDockWidget(QWidget* iParent) : QWidget(iParent)
+QGoBaseAlgorithmSegmentationDockWidget::QGoBaseAlgorithmSegmentationDockWidget(QWidget *iParent):QWidget(iParent)
 {
   this->setupUi(this);
 
   // Connect signals
-  QObject::connect(this->filter, SIGNAL(activated(int)),
-                   this, SIGNAL(Filter(int)));
+  QObject::connect( this->filter, SIGNAL( activated(int) ),
+                    this, SIGNAL( Filter(int) ) );
 
-  QObject::connect(this->apply, SIGNAL(pressed()), this, SIGNAL(Apply()));
+  QObject::connect( this->apply, SIGNAL( pressed() ), this, SIGNAL( Apply() ) );
 
-  QObject::connect(this->radius, SIGNAL(valueChanged(double)),
-                   this, SIGNAL(Radius(double)));
+  QObject::connect( this->radius, SIGNAL( valueChanged(double) ),
+                    this, SIGNAL( Radius(double) ) );
 
-  QObject::connect(this->channel, SIGNAL(activated(int)),
-                   this, SIGNAL(Channel(int)));
+  QObject::connect( this->channel, SIGNAL( activated(int) ),
+                    this, SIGNAL( Channel(int) ) );
 }
+
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
 QGoBaseAlgorithmSegmentationDockWidget::
 ~QGoBaseAlgorithmSegmentationDockWidget()
-{
-}
+{}
+
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
 void
-QGoBaseAlgorithmSegmentationDockWidget::
-AddChannel(QString iChannel)
+QGoBaseAlgorithmSegmentationDockWidget::AddChannel(QString iChannel)
 {
   channel->addItem(iChannel);
 }
+
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
 
 void
-QGoBaseAlgorithmSegmentationDockWidget::
-AddFilter(QString iFilter)
+QGoBaseAlgorithmSegmentationDockWidget::AddFilter(QString iFilter)
 {
   filter->addItem(iFilter);
 }
+
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
 int
-QGoBaseAlgorithmSegmentationDockWidget::
-GetNumberOfFilters()
+QGoBaseAlgorithmSegmentationDockWidget::GetNumberOfFilters()
 {
   return filter->count();
 }
+
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
-QFrame*
-QGoBaseAlgorithmSegmentationDockWidget::
-GetFrame()
+QFrame *
+QGoBaseAlgorithmSegmentationDockWidget::GetFrame()
 {
   return frame;
 }
+
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
 void
-QGoBaseAlgorithmSegmentationDockWidget::
-Initialize()
+QGoBaseAlgorithmSegmentationDockWidget::Initialize()
 {
   filter->setCurrentIndex(0);
   emit Filter(0);
 }
+
 //---------------------------------------------------------------------------//

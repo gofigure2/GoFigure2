@@ -46,7 +46,7 @@
 namespace itk
 {
 //  Software Guide : BeginCodeSnippet
-template< class TFeatureImage,class TInputImage,class TSegmentImage >
+template< class TFeatureImage, class TInputImage, class TSegmentImage >
 GradientWeightedIntensityImageFilter< TFeatureImage, TInputImage, TSegmentImage >
 ::GradientWeightedIntensityImageFilter()
 {
@@ -58,86 +58,85 @@ GradientWeightedIntensityImageFilter< TFeatureImage, TInputImage, TSegmentImage 
 
   m_Blob = 0;
 
-  this->Superclass::SetNumberOfRequiredInputs ( 1 );
-  this->Superclass::SetNumberOfRequiredOutputs ( 1 );
+  this->Superclass::SetNumberOfRequiredInputs (1);
+  this->Superclass::SetNumberOfRequiredOutputs (1);
   this->Superclass::SetNthOutput ( 0, TInputImage::New() );
 }
 
-
-template< class TFeatureImage,class TInputImage,class TSegmentImage >
+template< class TFeatureImage, class TInputImage, class TSegmentImage >
 void
-GradientWeightedIntensityImageFilter< TFeatureImage, TInputImage, TSegmentImage >::
-GenerateData()
+GradientWeightedIntensityImageFilter< TFeatureImage, TInputImage, TSegmentImage >::GenerateData()
 {
   ImagePointer outputImg = ImageType::New();
+
   outputImg->CopyInformation( this->GetInput() );
   outputImg->SetRegions( this->GetInput()->GetLargestPossibleRegion() );
   outputImg->Allocate();
-  outputImg->FillBuffer( 1.0 );
+  outputImg->FillBuffer(1.0);
 
-	IteratorType oIt ( outputImg, outputImg->GetLargestPossibleRegion() );
+  IteratorType oIt( outputImg, outputImg->GetLargestPossibleRegion() );
 
-	double q;
+  double q;
   if ( m_Beta > 0 )
-  {
-  	FIteratorType lIt ( m_Blob, m_Blob->GetLargestPossibleRegion() );
-
-		oIt.GoToBegin();
-		lIt.GoToBegin();
-		while( !oIt.IsAtEnd() )
-		{
-      q = vcl_exp( m_Beta * static_cast<double>( lIt.Get() )/255 );
-		  oIt.Set( q * oIt.Get() );
-		  ++oIt;
-			++lIt;
-		}
-  }
-
-  if ( m_Gamma > 0 )
-  {
-    IteratorType lIt ( m_Form, m_Form->GetLargestPossibleRegion() );
+    {
+    FIteratorType lIt( m_Blob, m_Blob->GetLargestPossibleRegion() );
 
     oIt.GoToBegin();
     lIt.GoToBegin();
-    while( !oIt.IsAtEnd() )
-    {
-      q = vcl_exp( -m_Gamma * static_cast<double>( lIt.Get() ) );
+    while ( !oIt.IsAtEnd() )
+      {
+      q = vcl_exp(m_Beta * static_cast< double >( lIt.Get() ) / 255);
       oIt.Set( q * oIt.Get() );
       ++oIt;
       ++lIt;
+      }
     }
-  }
+
+  if ( m_Gamma > 0 )
+    {
+    IteratorType lIt( m_Form, m_Form->GetLargestPossibleRegion() );
+
+    oIt.GoToBegin();
+    lIt.GoToBegin();
+    while ( !oIt.IsAtEnd() )
+      {
+      q = vcl_exp( -m_Gamma * static_cast< double >( lIt.Get() ) );
+      oIt.Set( q * oIt.Get() );
+      ++oIt;
+      ++lIt;
+      }
+    }
 
   // Compute the gradient magnitude
   if ( m_Alpha > 0 )
-  {
+    {
     GradientFilterPointer m_gradientMagnitude = GradientFilterType::New();
     m_gradientMagnitude->SetInput ( this->GetInput () );
-    m_gradientMagnitude->SetSigma ( m_NucleiSigma );
+    m_gradientMagnitude->SetSigma (m_NucleiSigma);
     m_gradientMagnitude->Update();
 
     RescaleFilterPointer rescale = RescaleFilterType::New();
     rescale->SetInput( m_gradientMagnitude->GetOutput() );
-    rescale->SetOutputMinimum( 0 );
-    rescale->SetOutputMaximum( 1 );
+    rescale->SetOutputMinimum(0);
+    rescale->SetOutputMaximum(1);
     rescale->Update();
 
-		IteratorType gIt ( rescale->GetOutput(),
-	    rescale->GetOutput()->GetLargestPossibleRegion() );
+    IteratorType gIt( rescale->GetOutput(),
+                      rescale->GetOutput()->GetLargestPossibleRegion() );
 
-		oIt.GoToBegin();
-		gIt.GoToBegin();
-		while( !oIt.IsAtEnd() )
-		{
-      q = vcl_exp( m_Alpha * static_cast<double>( gIt.Get() ) );
-		  oIt.Set( q * oIt.Get() );
-		  ++oIt;
-			++gIt;
-		}
-  }
+    oIt.GoToBegin();
+    gIt.GoToBegin();
+    while ( !oIt.IsAtEnd() )
+      {
+      q = vcl_exp( m_Alpha * static_cast< double >( gIt.Get() ) );
+      oIt.Set( q * oIt.Get() );
+      ++oIt;
+      ++gIt;
+      }
+    }
 
-  ConstIteratorType dIt ( this->GetInput(),
-	  this->GetInput()->GetLargestPossibleRegion() );
+  ConstIteratorType dIt( this->GetInput(),
+                         this->GetInput()->GetLargestPossibleRegion() );
 
   ImagePixelType p;
   oIt.GoToBegin();
@@ -146,24 +145,23 @@ GenerateData()
     {
     p = ( 255 - dIt.Get() ) * oIt.Get();
     p = p > 255 ? 255 : p;
-    oIt.Set ( p );
+    oIt.Set (p);
     ++oIt;
     ++dIt;
     }
 
-    this->GraftOutput ( outputImg );
+  this->GraftOutput (outputImg);
 }
 
-template< class TFeatureImage,class TInputImage,class TSegmentImage >
+template< class TFeatureImage, class TInputImage, class TSegmentImage >
 void
-GradientWeightedIntensityImageFilter< TFeatureImage, TInputImage, TSegmentImage >::
-PrintSelf ( std::ostream& os, Indent indent ) const
+GradientWeightedIntensityImageFilter< TFeatureImage, TInputImage, TSegmentImage >::PrintSelf(std::ostream & os,
+                                                                                             Indent indent) const
 {
-  Superclass::PrintSelf ( os,indent );
-  os << indent << "Class Name:              " << this->GetNameOfClass( ) <<
-    std::endl;
+  Superclass::PrintSelf (os, indent);
+  os << indent << "Class Name:              " << this->GetNameOfClass()
+     << std::endl;
 }
-
 } /* end namespace itk */
 
 #endif

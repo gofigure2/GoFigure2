@@ -69,9 +69,9 @@
 #include <QCloseEvent>
 
 //-------------------------------------------------------------------------
-QGoWizardDB::QGoWizardDB(QWidget *iParent)
-  : QWizard(iParent)
-  {
+QGoWizardDB::QGoWizardDB(QWidget *iParent):
+  QWizard(iParent)
+{
   this->m_ImgSessionName = "";
   this->m_ImgSessionID = 0;
   this->m_IsAnOpenRecentFile = false;
@@ -82,14 +82,14 @@ QGoWizardDB::QGoWizardDB(QWidget *iParent)
   QFont font2;
   font2.setBold(false);
 
-  nextButton = new QPushButton(tr("Next"));
+  nextButton = new QPushButton( tr("Next") );
   nextButton->setFont(font2);
   this->setButton (QWizard::NextButton, nextButton);
-  QPushButton* backButton = new QPushButton(tr("Back"));
+  QPushButton *backButton = new QPushButton( tr("Back") );
   backButton->setFont(font2);
   this->setButton (QWizard::BackButton, backButton);
   this->setOptions(QWizard::NoCancelButton);
-  QPushButton* finishButton = new QPushButton(tr("Finish"));
+  QPushButton *finishButton = new QPushButton( tr("Finish") );
   finishButton->setFont(font2);
   this->setButton (QWizard::FinishButton, finishButton);
   this->m_ConnectServerPage = new QGoConnectServerPage;
@@ -98,44 +98,45 @@ QGoWizardDB::QGoWizardDB(QWidget *iParent)
   setPage(OpenOrCreateProjectPageID, new QGoOpenCreateProjectPage);
   setPage(OpenOrCreateImgSessionPageID, new QGoOpenCreateImgSessionPage);
   setPage(CreateImgSessionPageID, new QGoCreateImgSessionPage);
-  setWindowTitle(tr("Use DataBase"));
-  QObject::connect(this->m_ConnectServerPage, SIGNAL(NoGofigureDatabase()),
-                   this, SLOT(hide()));
-  }
+  setWindowTitle( tr("Use DataBase") );
+  QObject::connect( this->m_ConnectServerPage, SIGNAL( NoGofigureDatabase() ),
+                    this, SLOT( hide() ) );
+}
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::vector<std::vector<std::string> > QGoWizardDB::GetFilenamesFromDB()
+std::vector< std::vector< std::string > > QGoWizardDB::GetFilenamesFromDB()
 {
-  std::vector<std::vector<std::string> > oFilenames;
+  std::vector< std::vector< std::string > > oFilenames;
   //first, open a connection to the database:
   std::string Server = field("ServerName").toString().toStdString();
   std::string User = field("User").toString().toStdString();
   std::string Password = field("Password").toString().toStdString();
   std::string DBName = field("DBName").toString().toStdString();
 
-  std::pair<bool, vtkMySQLDatabase*> ConnectionDatabase = ConnectToDatabase(
+  std::pair< bool, vtkMySQLDatabase * > ConnectionDatabase = ConnectToDatabase(
     Server, User, Password, DBName);
 
-  if (!ConnectionDatabase.first)
+  if ( !ConnectionDatabase.first )
     {
     std::cout << "No connection open for QGoOpenOrCreateImgSession" << std::endl;
     std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
     std::cout << std::endl;
     }
 
-  vtkMySQLDatabase* DatabaseConnector = ConnectionDatabase.second;
+  vtkMySQLDatabase *DatabaseConnector = ConnectionDatabase.second;
 
   //Get the number of channels with their id as a map
   //ListChannelsIDNumber[channelID]=ChannelNumber:
-  std::map<std::string, std::string> ListChannelsIDNumber =
-    MapTwoColumnsFromTable(DatabaseConnector, "channelID", "ChannelNumber",
-                           "channel", "ImagingSessionID", field("ImgSessionID").toString().toStdString());
+  std::map< std::string, std::string > ListChannelsIDNumber =
+    MapTwoColumnsFromTable( DatabaseConnector, "channelID", "ChannelNumber",
+                            "channel", "ImagingSessionID", field("ImgSessionID").toString().toStdString() );
 
-  std::map<std::string, std::string>::iterator it = ListChannelsIDNumber.begin();
-  oFilenames.resize(ListChannelsIDNumber.size());
+  std::map< std::string, std::string >::iterator it = ListChannelsIDNumber.begin();
+  oFilenames.resize( ListChannelsIDNumber.size() );
   int i = 0;
-  while (it != ListChannelsIDNumber.end())
+  while ( it != ListChannelsIDNumber.end() )
     {
     std::string ChannelID = it->first;
     //get the filenames of all the images corresponding to ChannelID:
@@ -150,6 +151,7 @@ std::vector<std::vector<std::string> > QGoWizardDB::GetFilenamesFromDB()
   DatabaseConnector->Delete();
   return oFilenames;
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -157,27 +159,29 @@ QString QGoWizardDB::GetNameDB()
 {
   return field("NameDB").toString();
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 int QGoWizardDB::GetImagingSessionID()
 {
-  if (field("ImgSessionID").toInt() != 0)
+  if ( field("ImgSessionID").toInt() != 0 )
     {
     return field("ImgSessionID").toInt();
     }
-  if (this->m_ImgSessionID != 0)
+  if ( this->m_ImgSessionID != 0 )
     {
     return this->m_ImgSessionID;
     }
   return 0;
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 QString QGoWizardDB::GetImagingSessionName()
 {
-  if (this->m_ImgSessionName.empty())
+  if ( this->m_ImgSessionName.empty() )
     {
     return field("ImgSessionName").toString();
     }
@@ -186,6 +190,7 @@ QString QGoWizardDB::GetImagingSessionName()
     return this->m_ImgSessionName.c_str();
     }
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -193,6 +198,7 @@ QString QGoWizardDB::GetServer()
 {
   return field("ServerName").toString();
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -200,6 +206,7 @@ QString QGoWizardDB::GetLogin()
 {
   return field("User").toString();
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -207,32 +214,34 @@ QString QGoWizardDB::GetPassword()
 {
   return field("Password").toString();
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoWizardDB::closeEvent(QCloseEvent* iEvent)
+void QGoWizardDB::closeEvent(QCloseEvent *iEvent)
 {
   int          CurrentPageID = this->currentId();
-  QWizardPage* CurrentPage = this->currentPage();
+  QWizardPage *CurrentPage = this->currentPage();
 
-  if (!field("ImgSessionName").toString().toStdString().empty())
+  if ( !field("ImgSessionName").toString().toStdString().empty() )
     {
     this->m_ImgSessionName =
       field("ImgSessionName").toString().toStdString();
     this->m_ImgSessionID = 0;
     }
-  if (!field("DBName").toString().toStdString().empty())
+  if ( !field("DBName").toString().toStdString().empty() )
     {
     this->SetFirstFileName();
     }
   this->m_ImgSessionName.clear();
   this->m_IsAnOpenRecentFile = false;
   //this->restart();
-  switch (CurrentPageID)
+  switch ( CurrentPageID )
     {
     case 0:
       {
-      //QGoConnectServerPage* ServerPage = dynamic_cast<QGoConnectServerPage*>(CurrentPage);
+      //QGoConnectServerPage* ServerPage =
+      // dynamic_cast<QGoConnectServerPage*>(CurrentPage);
       //ServerPage->m_ConnectionServer.second->Close();
       //ServerPage->m_ConnectionServer.second->Delete();
       //delete ServerPage;
@@ -240,8 +249,8 @@ void QGoWizardDB::closeEvent(QCloseEvent* iEvent)
       }
     case 2:
       {
-      QGoOpenCreateProjectPage* ProjectPage = dynamic_cast<QGoOpenCreateProjectPage*>(CurrentPage);
-      if (ProjectPage->m_DatabaseConnector)
+      QGoOpenCreateProjectPage *ProjectPage = dynamic_cast< QGoOpenCreateProjectPage * >( CurrentPage );
+      if ( ProjectPage->m_DatabaseConnector )
         {
         ProjectPage->m_DatabaseConnector->Close();
         ProjectPage->m_DatabaseConnector = 0;
@@ -250,8 +259,8 @@ void QGoWizardDB::closeEvent(QCloseEvent* iEvent)
       }
     case 3:
       {
-      QGoOpenCreateImgSessionPage* ImgSessionPage = dynamic_cast<QGoOpenCreateImgSessionPage*>(CurrentPage);
-      if (ImgSessionPage->m_DatabaseConnector)
+      QGoOpenCreateImgSessionPage *ImgSessionPage = dynamic_cast< QGoOpenCreateImgSessionPage * >( CurrentPage );
+      if ( ImgSessionPage->m_DatabaseConnector )
         {
         ImgSessionPage->m_DatabaseConnector->Close();
         ImgSessionPage->m_DatabaseConnector = 0;
@@ -260,8 +269,8 @@ void QGoWizardDB::closeEvent(QCloseEvent* iEvent)
       }
     case 4:
       {
-      QGoCreateImgSessionPage* CreateImgSessionPage = dynamic_cast<QGoCreateImgSessionPage*>(CurrentPage);
-      if (CreateImgSessionPage->m_DatabaseConnector)
+      QGoCreateImgSessionPage *CreateImgSessionPage = dynamic_cast< QGoCreateImgSessionPage * >( CurrentPage );
+      if ( CreateImgSessionPage->m_DatabaseConnector )
         {
         CreateImgSessionPage->m_DatabaseConnector->Close();
         CreateImgSessionPage->m_DatabaseConnector = 0;
@@ -269,8 +278,7 @@ void QGoWizardDB::closeEvent(QCloseEvent* iEvent)
       break;
       }
     default:
-      {
-      }
+              {}
     }
 
 /*  QGoOpenCreateImgSessionPage* F = dynamic_cast<QGoOpenCreateImgSessionPage*>(CurrentPage);
@@ -282,17 +290,17 @@ void QGoWizardDB::closeEvent(QCloseEvent* iEvent)
   delete F;*/
   iEvent->accept();
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 GoFigureFileInfoHelperMultiIndexContainer
-QGoWizardDB::
-GetMultiIndexFileContainer()
+QGoWizardDB::GetMultiIndexFileContainer()
 {
-  QGoCreateImgSessionPage* img_page =
-    dynamic_cast<QGoCreateImgSessionPage*>(this->page(CreateImgSessionPageID));
+  QGoCreateImgSessionPage *img_page =
+    dynamic_cast< QGoCreateImgSessionPage * >( this->page(CreateImgSessionPageID) );
 
-  if (img_page)
+  if ( img_page )
     {
     return img_page->GetMultiIndexFileContainer();
     }
@@ -301,25 +309,26 @@ GetMultiIndexFileContainer()
     return GoFigureFileInfoHelperMultiIndexContainer();
     }
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 std::string
-QGoWizardDB::
-GetMegaCaptureHeaderFilename()
+QGoWizardDB::GetMegaCaptureHeaderFilename()
 {
-  QGoCreateImgSessionPage* img_page =
-    dynamic_cast<QGoCreateImgSessionPage*>(this->page(CreateImgSessionPageID));
+  QGoCreateImgSessionPage *img_page =
+    dynamic_cast< QGoCreateImgSessionPage * >( this->page(CreateImgSessionPageID) );
 
   std::string oFilename;
 
-  if (img_page)
+  if ( img_page )
     {
     oFilename = img_page->GetMegaCaptureHeaderFilename();
     }
 
   return oFilename;
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -329,6 +338,7 @@ void QGoWizardDB::setImgSessionName(std::string iImgSessionName)
   this->m_IsAnOpenRecentFile = true;
   this->m_ConnectServerPage->SetImgSessionName(iImgSessionName);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -340,32 +350,33 @@ void QGoWizardDB::SetFirstFileName()
   std::string Password = field("Password").toString().toStdString();
   std::string DBName = field("DBName").toString().toStdString();
 
-  std::pair<bool, vtkMySQLDatabase*> ConnectionDatabase = ConnectToDatabase(
+  std::pair< bool, vtkMySQLDatabase * > ConnectionDatabase = ConnectToDatabase(
     Server, User, Password, DBName);
 
-  if (!ConnectionDatabase.first)
+  if ( !ConnectionDatabase.first )
     {
     std::cout << "No connection open for QGoOpenOrCreateImgSession" << std::endl;
     std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
     std::cout << std::endl;
     }
 
-  vtkMySQLDatabase* DatabaseConnector = ConnectionDatabase.second;
+  vtkMySQLDatabase *DatabaseConnector = ConnectionDatabase.second;
   this->m_ImgSessionID = FindOneID(DatabaseConnector, "imagingsession",
                                    "ImagingSessionID", "Name", this->m_ImgSessionName);
-  this->m_FirstFileName = ReturnOnlyOneValue(DatabaseConnector,
-                                             "image", "Filename", "ImagingSessionID",
-                                             ConvertToString<int>(this->m_ImgSessionID));
+  this->m_FirstFileName = ReturnOnlyOneValue( DatabaseConnector,
+                                              "image", "Filename", "ImagingSessionID",
+                                              ConvertToString< int >(this->m_ImgSessionID) );
 
   DatabaseConnector->Close();
   DatabaseConnector->Delete();
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 std::string QGoWizardDB::GetFirstFileName()
 {
-  if (!this->m_IsAnOpenRecentFile)
+  if ( !this->m_IsAnOpenRecentFile )
     {
     this->m_ImgSessionName =
       field("ImgSessionName").toString().toStdString();
@@ -375,6 +386,7 @@ std::string QGoWizardDB::GetFirstFileName()
   this->m_ConnectServerPage->SetIsAnOpenRecentFile(false);
   return this->m_FirstFileName;
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -382,6 +394,7 @@ bool QGoWizardDB::GetIsAnOpenRecentFile()
 {
   return this->m_IsAnOpenRecentFile;
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

@@ -74,14 +74,14 @@
 
 /**
  */
-class VTK_RENDERINGADDON2_EXPORT vtkFillImageWithPolyData :
+class VTK_RENDERINGADDON2_EXPORT vtkFillImageWithPolyData:
   public vtkThreadedImageAlgorithm
-  {
-
+{
 public:
-  static vtkFillImageWithPolyData *New();
+  static vtkFillImageWithPolyData * New();
+
   vtkTypeRevisionMacro (vtkFillImageWithPolyData, vtkThreadedImageAlgorithm);
-  void PrintSelf(ostream& os, vtkIndent indent);
+  void PrintSelf(ostream & os, vtkIndent indent);
 
   // Set/Get the polyData:
   vtkSetObjectMacro (PolyData, vtkPolyData);
@@ -99,26 +99,24 @@ protected:
   vtkFillImageWithPolyData();
   ~vtkFillImageWithPolyData();
 
-  virtual int RequestInformation (vtkInformation * vtkNotUsed(request),
-                                  vtkInformationVector * *inputVector,
-                                  vtkInformationVector * outputVector);
+  virtual int RequestInformation (vtkInformation *vtkNotUsed(request),
+                                  vtkInformationVector **inputVector,
+                                  vtkInformationVector *outputVector);
 
-  virtual void ThreadedRequestData(vtkInformation * vtkNotUsed(request),
-                                   vtkInformationVector * *vtkNotUsed(inputVector),
-                                   vtkInformationVector * vtkNotUsed(outputVector),
-                                   vtkImageData * **inData,
-                                   vtkImageData * *outData,
+  virtual void ThreadedRequestData(vtkInformation *vtkNotUsed(request),
+                                   vtkInformationVector **vtkNotUsed(inputVector),
+                                   vtkInformationVector *vtkNotUsed(outputVector),
+                                   vtkImageData ***inData,
+                                   vtkImageData **outData,
                                    int extent[6], int threadId);
-
 private:
   vtkFillImageWithPolyData (const vtkFillImageWithPolyData &);
-  void operator =(const vtkFillImageWithPolyData&);
+  void operator=(const vtkFillImageWithPolyData &);
 
-  vtkPolyData* PolyData;
+  vtkPolyData *PolyData;
   double       InsidePixelValue;
   int          ExtractionDirection;
   double       BBox[6];
-
-  };
+};
 
 #endif

@@ -50,9 +50,9 @@
 #include "vtkSeedRepresentation.h"
 #include "vtkProperty.h"
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-  if (argc != 3)
+  if ( argc != 3 )
     {
     std::cout << "Usage: imageview3d(.exe)" << std::endl;
     std::cout << "1- filename (.mha or .mhd)" << std::endl;
@@ -60,68 +60,68 @@ int main(int argc, char** argv)
     return EXIT_FAILURE;
     }
 
-  vtkMetaImageReader* reader = vtkMetaImageReader::New();
+  vtkMetaImageReader *reader = vtkMetaImageReader::New();
   reader->SetFileName(argv[1]);
   reader->Update();
 
-  vtkImageData* image = reader->GetOutput();
+  vtkImageData *image = reader->GetOutput();
 
-  vtkViewImage2DCollection* pool = vtkViewImage2DCollection::New();
+  vtkViewImage2DCollection *pool = vtkViewImage2DCollection::New();
 
-  vtkViewImage3D*            view3d = vtkViewImage3D::New();
-  vtkRenderWindowInteractor* iren3d = vtkRenderWindowInteractor::New();
+  vtkViewImage3D *           view3d = vtkViewImage3D::New();
+  vtkRenderWindowInteractor *iren3d = vtkRenderWindowInteractor::New();
   view3d->SetupInteractor(iren3d);
 
-  vtkViewImage2D*            view = vtkViewImage2D::New();
-  vtkRenderWindowInteractor* iren = vtkRenderWindowInteractor::New();
+  vtkViewImage2D *           view = vtkViewImage2D::New();
+  vtkRenderWindowInteractor *iren = vtkRenderWindowInteractor::New();
   view->SetupInteractor(iren);
   view->SetInput (image);
   view->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_AXIAL);
 
-  view3d->Add2DPhantom(0, view->GetImageActor(), view->GetSlicePlane());
+  view3d->Add2DPhantom( 0, view->GetImageActor(), view->GetSlicePlane() );
   pool->AddItem(view);
 
-  vtkViewImage2D*            view2 = vtkViewImage2D::New();
-  vtkRenderWindowInteractor* iren2 = vtkRenderWindowInteractor::New();
+  vtkViewImage2D *           view2 = vtkViewImage2D::New();
+  vtkRenderWindowInteractor *iren2 = vtkRenderWindowInteractor::New();
   view2->SetupInteractor(iren2);
   view2->SetInput (image);
   view2->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_CORONAL);
-  view3d->Add2DPhantom(1, view2->GetImageActor(), view2->GetSlicePlane());
+  view3d->Add2DPhantom( 1, view2->GetImageActor(), view2->GetSlicePlane() );
   pool->AddItem(view2);
 
-  vtkViewImage2D*            view3 = vtkViewImage2D::New();
-  vtkRenderWindowInteractor* iren3 = vtkRenderWindowInteractor::New();
+  vtkViewImage2D *           view3 = vtkViewImage2D::New();
+  vtkRenderWindowInteractor *iren3 = vtkRenderWindowInteractor::New();
   view3->SetupInteractor(iren3);
   view3->SetInput (image);
   view3->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL);
-  view3d->Add2DPhantom(2, view3->GetImageActor(), view3->GetSlicePlane());
+  view3d->Add2DPhantom( 2, view3->GetImageActor(), view3->GetSlicePlane() );
   pool->AddItem(view3);
 
   view3d->SetTriPlanarRenderingOn();
   view3d->SetInput(image);
 
-  pool->SetExtraRenderWindow(view3d->GetRenderWindow());
+  pool->SetExtraRenderWindow( view3d->GetRenderWindow() );
   pool->InitializeAllObservers();
   pool->Initialize();
-  pool->SyncSetBackground(pool->GetItem(0)->GetBackground());
+  pool->SyncSetBackground( pool->GetItem(0)->GetBackground() );
   pool->SyncSetShowAnnotations(true);
 
-  int size[2] = { 400, 400};
+  int size[2] = { 400, 400 };
   pool->SyncSetSize(size);
   pool->SyncPan();
   pool->SyncRender();
   pool->SyncReset();
 
-  std::vector<vtkSeedWidget*>                           SeedWidget;
-  std::vector<vtkConstrainedPointHandleRepresentation*> Handle;
-  std::vector<vtkSeedRepresentation*>                   SeedRep;
+  std::vector< vtkSeedWidget * >                           SeedWidget;
+  std::vector< vtkConstrainedPointHandleRepresentation * > Handle;
+  std::vector< vtkSeedRepresentation * >                   SeedRep;
 
   // Enable seed interaction
-  Handle.resize(pool->GetNumberOfItems());
-  SeedRep.resize(pool->GetNumberOfItems());
-  SeedWidget.resize(pool->GetNumberOfItems());
+  Handle.resize( pool->GetNumberOfItems() );
+  SeedRep.resize( pool->GetNumberOfItems() );
+  SeedWidget.resize( pool->GetNumberOfItems() );
 
-  for (int i = 0; i < pool->GetNumberOfItems(); i++)
+  for ( int i = 0; i < pool->GetNumberOfItems(); i++ )
     {
     Handle[i] = vtkConstrainedPointHandleRepresentation::New();
     Handle[i]->GetProperty()->SetColor(1, 0, 0);
@@ -142,12 +142,12 @@ int main(int argc, char** argv)
   SeedWidget[1]->SetInteractor(iren2);
   SeedWidget[2]->SetInteractor(iren3);
 
-  for (int i = 0; i < pool->GetNumberOfItems(); i++)
+  for ( int i = 0; i < pool->GetNumberOfItems(); i++ )
     {
     SeedWidget[i]->On();
     }
 
-  if (atoi(argv[2]) == 1)
+  if ( atoi(argv[2]) == 1 )
     {
     iren3d->CreateOneShotTimer(1);
     }
@@ -156,7 +156,7 @@ int main(int argc, char** argv)
     iren3d->Start();
     }
 
-  for (int i = 0; i < pool->GetNumberOfItems(); i++)
+  for ( int i = 0; i < pool->GetNumberOfItems(); i++ )
     {
     Handle[i]->Delete();
     SeedRep[i]->Delete();

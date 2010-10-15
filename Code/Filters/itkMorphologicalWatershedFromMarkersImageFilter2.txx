@@ -31,10 +31,10 @@
 #include "itkConnectedComponentAlgorithm.h"
 // #include "itkFillSides.h"
 
-namespace itk {
-
-template <class TInputImage, class TLabelImage>
-MorphologicalWatershedFromMarkersImageFilter2<TInputImage, TLabelImage>
+namespace itk
+{
+template< class TInputImage, class TLabelImage >
+MorphologicalWatershedFromMarkersImageFilter2< TInputImage, TLabelImage >
 ::MorphologicalWatershedFromMarkersImageFilter2()
 {
   this->SetNumberOfRequiredInputs(2);
@@ -44,10 +44,9 @@ MorphologicalWatershedFromMarkersImageFilter2<TInputImage, TLabelImage>
   m_ForegroundImg = 0;
 }
 
-
-template <class TInputImage, class TLabelImage>
+template< class TInputImage, class TLabelImage >
 void
-MorphologicalWatershedFromMarkersImageFilter2<TInputImage, TLabelImage>
+MorphologicalWatershedFromMarkersImageFilter2< TInputImage, TLabelImage >
 ::GenerateInputRequestedRegion()
 {
   // call the superclass' implementation of this method
@@ -61,29 +60,27 @@ MorphologicalWatershedFromMarkersImageFilter2<TInputImage, TLabelImage>
     const_cast< InputImageType * >( this->GetInput() );
 
   if ( !markerPtr || !inputPtr )
-    { return; }
+                    { return; }
 
   // We need to
   // configure the inputs such that all the data is available.
   //
-  markerPtr->SetRequestedRegion(markerPtr->GetLargestPossibleRegion());
-  inputPtr->SetRequestedRegion(inputPtr->GetLargestPossibleRegion());
+  markerPtr->SetRequestedRegion( markerPtr->GetLargestPossibleRegion() );
+  inputPtr->SetRequestedRegion( inputPtr->GetLargestPossibleRegion() );
 }
 
-
-template <class TInputImage, class TLabelImage>
+template< class TInputImage, class TLabelImage >
 void
-MorphologicalWatershedFromMarkersImageFilter2<TInputImage, TLabelImage>
+MorphologicalWatershedFromMarkersImageFilter2< TInputImage, TLabelImage >
 ::EnlargeOutputRequestedRegion(DataObject *)
 {
   this->GetOutput()->SetRequestedRegion(
     this->GetOutput()->GetLargestPossibleRegion() );
 }
 
-
-template<class TInputImage, class TLabelImage>
+template< class TInputImage, class TLabelImage >
 void
-MorphologicalWatershedFromMarkersImageFilter2<TInputImage, TLabelImage>
+MorphologicalWatershedFromMarkersImageFilter2< TInputImage, TLabelImage >
 ::GenerateData()
 {
   // there is 2 possible cases: with or without watershed lines.
@@ -98,11 +95,11 @@ MorphologicalWatershedFromMarkersImageFilter2<TInputImage, TLabelImage>
   //---------------------------------------------------------------------------
 
   // the label used to find background in the marker image
-  static const LabelImagePixelType bgLabel
-    = NumericTraits< LabelImagePixelType >::Zero;
+  static const LabelImagePixelType bgLabel =
+    NumericTraits< LabelImagePixelType >::Zero;
   // the label used to mark the watershed line in the output image
-  static const LabelImagePixelType wsLabel
-    = NumericTraits< LabelImagePixelType >::Zero;
+  static const LabelImagePixelType wsLabel =
+    NumericTraits< LabelImagePixelType >::Zero;
 
   this->AllocateOutputs();
 
@@ -112,23 +109,23 @@ MorphologicalWatershedFromMarkersImageFilter2<TInputImage, TLabelImage>
     m_ForegroundImg->CopyInformation( this->GetOutput() );
     m_ForegroundImg->SetRegions( this->GetOutput()->GetLargestPossibleRegion() );
     m_ForegroundImg->Allocate();
-    m_ForegroundImg->FillBuffer( 1 );
+    m_ForegroundImg->FillBuffer(1);
     }
 
   LabelImageConstPointer markerImage = this->GetMarkerImage();
   InputImageConstPointer inputImage = this->GetInput();
-  LabelImagePointer outputImage = this->GetOutput();
+  LabelImagePointer      outputImage = this->GetOutput();
 
   // Set up the progress reporter
   // we can't found the exact number of pixel to process in the 2nd pass, so we
   // use the maximum number possible.
   ProgressReporter
-    progress(this, 0, markerImage->GetRequestedRegion().GetNumberOfPixels()*2);
+  progress(this, 0, markerImage->GetRequestedRegion().GetNumberOfPixels() *2);
 
   // mask and marker must have the same size
-  if( markerImage->GetRequestedRegion().GetSize() != inputImage->GetRequestedRegion().GetSize() )
+  if ( markerImage->GetRequestedRegion().GetSize() != inputImage->GetRequestedRegion().GetSize() )
     {
-    itkExceptionMacro( << "Marker and input must have the same size." );
+    itkExceptionMacro(<< "Marker and input must have the same size.");
     }
 
   // FAH (in french: File d'Attente Hierarchique)
@@ -141,43 +138,45 @@ MorphologicalWatershedFromMarkersImageFilter2<TInputImage, TLabelImage>
   radius.Fill(1);
 
   // iterator for the marker image
-  typedef ConstShapedNeighborhoodIterator<LabelImageType> MarkerIteratorType;
+  typedef ConstShapedNeighborhoodIterator< LabelImageType > MarkerIteratorType;
   typename MarkerIteratorType::ConstIterator nmIt;
   MarkerIteratorType
-    markerIt(radius, markerImage, markerImage->GetRequestedRegion());
+  markerIt( radius, markerImage, markerImage->GetRequestedRegion() );
 
-  typedef ShapedNeighborhoodIterator<LabelImageType> ForegroundIteratorType;
+  typedef ShapedNeighborhoodIterator< LabelImageType > ForegroundIteratorType;
   typename ForegroundIteratorType::Iterator fgIt;
   ForegroundIteratorType
-    foregroundIt(radius, m_ForegroundImg, m_ForegroundImg->GetRequestedRegion());
+  foregroundIt( radius, m_ForegroundImg, m_ForegroundImg->GetRequestedRegion() );
 
   // add a boundary constant to avoid adding pixels on the border in the fah
-  ConstantBoundaryCondition<LabelImageType> lcbc;
-  lcbc.SetConstant( NumericTraits<LabelImagePixelType>::max() );
+  ConstantBoundaryCondition< LabelImageType > lcbc;
+  lcbc.SetConstant( NumericTraits< LabelImagePixelType >::max() );
   markerIt.OverrideBoundaryCondition(&lcbc);
-  setConnectivity( &markerIt, m_FullyConnected );
+  setConnectivity(&markerIt, m_FullyConnected);
   foregroundIt.OverrideBoundaryCondition(&lcbc);
-  setConnectivity( &foregroundIt, m_FullyConnected );
+  setConnectivity(&foregroundIt, m_FullyConnected);
 
   // iterator for the input image
-  typedef ConstShapedNeighborhoodIterator<InputImageType> InputIteratorType;
+  typedef ConstShapedNeighborhoodIterator< InputImageType > InputIteratorType;
   InputIteratorType
-    inputIt(radius, inputImage, inputImage->GetRequestedRegion());
+  inputIt( radius, inputImage, inputImage->GetRequestedRegion() );
+
   typename InputIteratorType::ConstIterator niIt;
-  setConnectivity( &inputIt, m_FullyConnected );
+  setConnectivity(&inputIt, m_FullyConnected);
 
   // iterator for the output image
-  typedef ShapedNeighborhoodIterator<LabelImageType> OutputIteratorType;
-  typedef typename OutputIteratorType::OffsetType    OffsetType;
+  typedef ShapedNeighborhoodIterator< LabelImageType > OutputIteratorType;
+  typedef typename OutputIteratorType::OffsetType      OffsetType;
   typename OutputIteratorType::Iterator noIt;
   OutputIteratorType
-    outputIt(radius, outputImage, outputImage->GetRequestedRegion());
-  setConnectivity( &outputIt, m_FullyConnected );
+  outputIt( radius, outputImage, outputImage->GetRequestedRegion() );
+
+  setConnectivity(&outputIt, m_FullyConnected);
 
   //---------------------------------------------------------------------------
   // Meyer's algorithm
   //---------------------------------------------------------------------------
-  if( m_MarkWatershedLine )
+  if ( m_MarkWatershedLine )
     {
     // first stage:
     //  - set markers pixels to already processed status
@@ -185,10 +184,10 @@ MorphologicalWatershedFromMarkersImageFilter2<TInputImage, TLabelImage>
     //  - init FAH with indexes of background pixels with marker pixel(s) in
     //    their neighborhood
 
-    ConstantBoundaryCondition<LabelImageType> lcbc2;
+    ConstantBoundaryCondition< LabelImageType > lcbc2;
     // outside pixel are watershed so they won't be use to find real watershed
     // pixels
-    lcbc2.SetConstant( wsLabel );
+    lcbc2.SetConstant(wsLabel);
     outputIt.OverrideBoundaryCondition(&lcbc2);
 
     // create a temporary image to store the state of each pixel (processed or
@@ -199,25 +198,26 @@ MorphologicalWatershedFromMarkersImageFilter2<TInputImage, TLabelImage>
     statusImage->Allocate();
 
     // iterator for the status image
-    typedef ShapedNeighborhoodIterator<StatusImageType> StatusIteratorType;
+    typedef ShapedNeighborhoodIterator< StatusImageType > StatusIteratorType;
     typename StatusIteratorType::Iterator nsIt;
     StatusIteratorType
-      statusIt(radius, statusImage, outputImage->GetRequestedRegion());
+    statusIt( radius, statusImage, outputImage->GetRequestedRegion() );
+
     ConstantBoundaryCondition< StatusImageType > bcbc;
-    bcbc.SetConstant( true );  // outside pixel are already processed
+    bcbc.SetConstant(true);    // outside pixel are already processed
     statusIt.OverrideBoundaryCondition(&bcbc);
-    setConnectivity( &statusIt, m_FullyConnected );
+    setConnectivity(&statusIt, m_FullyConnected);
 
     // the status image must be initialized before the first stage. In the
     // first stage, the set to true are the neighbors of the marker (and the
     // marker) so it's difficult (impossible ?) to init the status image at
     // the same time
     // the overhead should be small
-    statusImage->FillBuffer( false );
+    statusImage->FillBuffer(false);
 
-    for( markerIt.GoToBegin(), statusIt.GoToBegin(), outputIt.GoToBegin(), inputIt.GoToBegin();
-      !markerIt.IsAtEnd();
-      ++markerIt, ++outputIt)
+    for ( markerIt.GoToBegin(), statusIt.GoToBegin(), outputIt.GoToBegin(), inputIt.GoToBegin();
+          !markerIt.IsAtEnd();
+          ++markerIt, ++outputIt )
       {
       LabelImagePixelType markerPixel = markerIt.GetCenterPixel();
       if ( markerPixel != bgLabel )
@@ -231,26 +231,26 @@ MorphologicalWatershedFromMarkersImageFilter2<TInputImage, TLabelImage>
 
         // this pixel belongs to a marker
         // mark it as already processed
-        statusIt.SetCenterPixel( true );
+        statusIt.SetCenterPixel(true);
         // copy it to the output image
-        outputIt.SetCenterPixel( markerPixel );
+        outputIt.SetCenterPixel(markerPixel);
         // and increase progress because this pixel will not be used in the
         // flooding stage.
         progress.CompletedPixel();
 
         // search the background pixels in the neighborhood
-        for( nmIt= markerIt.Begin(), nsIt= statusIt.Begin(), niIt= inputIt.Begin();
-          nmIt != markerIt.End();
-          nmIt++, nsIt++, niIt++ )
+        for ( nmIt = markerIt.Begin(), nsIt = statusIt.Begin(), niIt = inputIt.Begin();
+              nmIt != markerIt.End();
+              nmIt++, nsIt++, niIt++ )
           {
           if ( !nsIt.Get() && nmIt.Get() == bgLabel )
             {
             // this neighbor is a background pixel and is not already
             // processed; add its index to fah
-            fah[ niIt.Get() ].push( markerIt.GetIndex()
-              + nmIt.GetNeighborhoodOffset() );
+            fah[niIt.Get()].push( markerIt.GetIndex()
+                                  + nmIt.GetNeighborhoodOffset() );
             // mark it as already in the fah to avoid adding it several times
-            nsIt.Set( true );
+            nsIt.Set(true);
             }
           }
         }
@@ -258,7 +258,7 @@ MorphologicalWatershedFromMarkersImageFilter2<TInputImage, TLabelImage>
         {
         // Some pixels may be never processed so, by default, non marked pixels
         // must be marked as watershed
-        outputIt.SetCenterPixel( wsLabel );
+        outputIt.SetCenterPixel(wsLabel);
         }
       // one more pixel done in the init stage
       progress.CompletedPixel();
@@ -282,7 +282,7 @@ MorphologicalWatershedFromMarkersImageFilter2<TInputImage, TLabelImage>
       {
       // store the current vars
       InputImagePixelType currentValue = fah.begin()->first;
-      QueueType currentQueue = fah.begin()->second;
+      QueueType           currentQueue = fah.begin()->second;
       // and remove them from the fah
       fah.erase( fah.begin() );
 
@@ -300,29 +300,29 @@ MorphologicalWatershedFromMarkersImageFilter2<TInputImage, TLabelImage>
         // iterate over the neighbors. If there is only one marker value, give
         // that value to the pixel, else keep it as is (watershed line)
         LabelImagePixelType marker = wsLabel;
-        bool collision = false;
-        for (noIt = outputIt.Begin(); noIt != outputIt.End(); noIt++)
+        bool                collision = false;
+        for ( noIt = outputIt.Begin(); noIt != outputIt.End(); noIt++ )
           {
           LabelImagePixelType o = noIt.Get();
-          if( o != wsLabel )
+          if ( o != wsLabel )
             {
-            if( marker != wsLabel && o != marker )
+            if ( marker != wsLabel && o != marker )
               {
               collision = true;
               break;
               }
             else
-              { marker = o; }
+                              { marker = o; }
             }
           }
-        if( !collision )
+        if ( !collision )
           {
           // set the marker value
-          outputIt.SetCenterPixel( marker );
+          outputIt.SetCenterPixel(marker);
           // and propagate to the neighbors
-          for (niIt = inputIt.Begin(), nsIt = statusIt.Begin();
-            niIt != inputIt.End();
-            niIt++, nsIt++)
+          for ( niIt = inputIt.Begin(), nsIt = statusIt.Begin();
+                niIt != inputIt.End();
+                niIt++, nsIt++ )
             {
             if ( !nsIt.Get() )
               {
@@ -331,15 +331,15 @@ MorphologicalWatershedFromMarkersImageFilter2<TInputImage, TLabelImage>
               if ( GrayVal <= currentValue )
                 {
                 currentQueue.push( inputIt.GetIndex()
-                  + niIt.GetNeighborhoodOffset() );
+                                   + niIt.GetNeighborhoodOffset() );
                 }
               else
                 {
-                fah[ GrayVal ].push( inputIt.GetIndex()
-                  + niIt.GetNeighborhoodOffset() );
+                fah[GrayVal].push( inputIt.GetIndex()
+                                   + niIt.GetNeighborhoodOffset() );
                 }
               // mark it as already in the fah
-              nsIt.Set( true );
+              nsIt.Set(true);
               }
             }
           }
@@ -348,7 +348,6 @@ MorphologicalWatershedFromMarkersImageFilter2<TInputImage, TLabelImage>
         }
       }
     }
-
 
   //---------------------------------------------------------------------------
   // Beucher's algorithm
@@ -360,7 +359,7 @@ MorphologicalWatershedFromMarkersImageFilter2<TInputImage, TLabelImage>
     //  - init FAH with indexes of pixels with background pixel in their
     //    neighborhood
 
-    ConstantBoundaryCondition<LabelImageType> lcbc2;
+    ConstantBoundaryCondition< LabelImageType > lcbc2;
     // outside pixel are watershed so they won't be use to find real watershed
     // pixels
     lcbc2.SetConstant( NumericTraits< LabelImagePixelType >::max() );
@@ -375,18 +374,18 @@ MorphologicalWatershedFromMarkersImageFilter2<TInputImage, TLabelImage>
       LabelImagePixelType fgPixel = foregroundIt.GetCenterPixel();
       if ( ( markerPixel != bgLabel ) && ( fgPixel > 0 ) )
         {
-        IndexType idx = markerIt.GetIndex();
+        IndexType  idx = markerIt.GetIndex();
         OffsetType shift = idx - inputIt.GetIndex();
         inputIt += shift;
 
         // this pixels belongs to a marker
         // copy it to the output image
-        outputIt.SetCenterPixel( markerPixel );
+        outputIt.SetCenterPixel(markerPixel);
         // search if it has background pixel in its neighborhood
         bool haveBgNeighbor = false;
 
         fgIt = foregroundIt.Begin();
-        for ( nmIt= markerIt.Begin(); nmIt != markerIt.End(); nmIt++ )
+        for ( nmIt = markerIt.Begin(); nmIt != markerIt.End(); nmIt++ )
           {
           // check for the m_Foreground pixel only
           if ( ( nmIt.Get() == bgLabel ) && ( fgIt.Get() > 0 ) )
@@ -394,12 +393,12 @@ MorphologicalWatershedFromMarkersImageFilter2<TInputImage, TLabelImage>
             haveBgNeighbor = true;
             break;
             }
-            fgIt++;
+          fgIt++;
           }
         if ( haveBgNeighbor )
           {
-            // there is a background pixel in the neighborhood; add to fah
-            fah[ inputIt.GetCenterPixel() ].push( markerIt.GetIndex() );
+          // there is a background pixel in the neighborhood; add to fah
+          fah[inputIt.GetCenterPixel()].push( markerIt.GetIndex() );
           }
         else
           {
@@ -410,7 +409,7 @@ MorphologicalWatershedFromMarkersImageFilter2<TInputImage, TLabelImage>
         }
       else
         {
-        outputIt.SetCenterPixel( wsLabel );
+        outputIt.SetCenterPixel(wsLabel);
         }
       progress.CompletedPixel();
       ++foregroundIt;
@@ -428,7 +427,7 @@ MorphologicalWatershedFromMarkersImageFilter2<TInputImage, TLabelImage>
       {
       // store the current vars
       InputImagePixelType currentValue = fah.begin()->first;
-      QueueType currentQueue = fah.begin()->second;
+      QueueType           currentQueue = fah.begin()->second;
       // and remove them from the fah
       fah.erase( fah.begin() );
 
@@ -447,25 +446,25 @@ MorphologicalWatershedFromMarkersImageFilter2<TInputImage, TLabelImage>
         // get the current value of the pixel
         // iterate over neighbors to propagate the marker
         fgIt = foregroundIt.Begin();
-        for (noIt = outputIt.Begin(), niIt = inputIt.Begin();
-          noIt != outputIt.End();
-          noIt++, niIt++, fgIt++ )
+        for ( noIt = outputIt.Begin(), niIt = inputIt.Begin();
+              noIt != outputIt.End();
+              noIt++, niIt++, fgIt++ )
           {
           if ( ( noIt.Get() == wsLabel ) && ( fgIt.Get() ) )
             {
             // the pixel is not yet processed. It can be labeled with the
             // current label
-            noIt.Set( currentMarker );
+            noIt.Set(currentMarker);
             InputImagePixelType GrayVal = niIt.Get();
             if ( GrayVal <= currentValue )
               {
               currentQueue.push( inputIt.GetIndex()
-                + noIt.GetNeighborhoodOffset() );
+                                 + noIt.GetNeighborhoodOffset() );
               }
             else
               {
-              fah[ GrayVal ].push( inputIt.GetIndex()
-                + noIt.GetNeighborhoodOffset() );
+              fah[GrayVal].push( inputIt.GetIndex()
+                                 + noIt.GetNeighborhoodOffset() );
               }
             progress.CompletedPixel();
             }
@@ -475,17 +474,15 @@ MorphologicalWatershedFromMarkersImageFilter2<TInputImage, TLabelImage>
     }
 }
 
-
-template<class TInputImage, class TLabelImage>
+template< class TInputImage, class TLabelImage >
 void
-MorphologicalWatershedFromMarkersImageFilter2<TInputImage, TLabelImage>
-::PrintSelf(std::ostream &os, Indent indent) const
+MorphologicalWatershedFromMarkersImageFilter2< TInputImage, TLabelImage >
+::PrintSelf(std::ostream & os, Indent indent) const
 {
   Superclass::PrintSelf(os, indent);
 
   os << indent << "FullyConnected: "  << m_FullyConnected << std::endl;
   os << indent << "MarkWatershedLine: "  << m_MarkWatershedLine << std::endl;
 }
-
-}// end namespace itk
+} // end namespace itk
 #endif

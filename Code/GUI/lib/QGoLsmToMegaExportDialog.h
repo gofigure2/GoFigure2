@@ -53,53 +53,59 @@
 
 #include "QGoGUILibConfigure.h"
 
-class QGOGUILIB_EXPORT QGoLsmToMegaExportDialog :
+class QGOGUILIB_EXPORT QGoLsmToMegaExportDialog:
   public QDialog,
   private Ui::LsmToMegaExportDialog
-  {
+{
   Q_OBJECT
 public:
   /**
    * \brief Constructor
    */
-  explicit QGoLsmToMegaExportDialog(QWidget* parent = 0);
+  explicit QGoLsmToMegaExportDialog(QWidget *parent = 0);
   /**
    * \brief Desctructor
    */
   ~QGoLsmToMegaExportDialog();
 
-  ConversionLsmToMegaThread* ConversionLsmToMegaThreadSend;
-
+  ConversionLsmToMegaThread *ConversionLsmToMegaThreadSend;
 protected slots:
   /**
    * \brief Get the name of the lsm file selected
    */
   void on_selectLsmFile_clicked();
+
   /**
    * \brief Get the location to store MegaCapture file
    */
   void on_selectMegaPath_clicked();
+
   /**
    * \brief Select the output format
    * \param[in] index 0: PNG, 1:TIFF
    */
   void on_outputFormat_activated(int index);
+
   /**
    * \brief Disable buttons and send thread to launch conversion
    */
   void on_convert_clicked();
+
   /**
    * \brief Catch thread, close progress bar and dialog box
    */
   void ConversionTerminatedReceived();
+
   /**
    * \brief Catch thread, initialize the progress bar
    */
   void InitialisationProgressReceived();
+
   /**
    * \brief Catch thread, update the progress bar content
    */
   void ProgressReceived();
+
   /**
    * \brief Catch thread, cancel the conversion
    */
@@ -110,8 +116,7 @@ private:
   QString          m_LsmName;
   QString          m_MegaPath;
   bool             m_FileFormatIsPNG;
-  QProgressDialog* m_ProgressDialog;
+  QProgressDialog *m_ProgressDialog;
   int              m_Counter;
-
-  };
+};
 #endif

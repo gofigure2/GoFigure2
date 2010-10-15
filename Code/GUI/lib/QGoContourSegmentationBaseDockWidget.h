@@ -54,16 +54,16 @@ class QGoContourSeedSegmentation;
 
 #include "ui_SegmentationBaseDockWidget.h"
 
-class QGoContourSegmentationBaseDockWidget :
+class QGoContourSegmentationBaseDockWidget:
   public QDockWidget,
   protected Ui::SegmentationBaseDockWidget
-  {
+{
   Q_OBJECT
 public:
   explicit QGoContourSegmentationBaseDockWidget(
-      QWidget* iParent = 0,
-      vtkPoints* seeds = 0,
-      std::vector<vtkImageData*>* iOriginalImage = 0);
+    QWidget *iParent = 0,
+    vtkPoints *seeds = 0,
+    std::vector< vtkImageData * > *iOriginalImage = 0);
 
   ~QGoContourSegmentationBaseDockWidget();
 
@@ -76,7 +76,8 @@ public:
   void SetChannel(int iChannel);
 
   bool GetReeditMode();
-  void SetReeditMode( bool iEnable);
+
+  void SetReeditMode(bool iEnable);
 
   void Initialize();
 
@@ -86,31 +87,38 @@ protected:
 */
 public slots:
   void SegmentationMethod(int);
+
   void interactorBehavior(bool);
 
 signals:
   void ManualSegmentationActivated(bool);
+
   void SemiAutoSegmentationActivated(bool);
+
   void AutoSegmentationActivated(bool);
+
   void ReinitializeInteractorActivated(bool);
 
   // manual segmentation specific signals
   void ValidateContour();
+
   void ReinitializeContourWidget();
+
   void UpdateContourRepresentationProperties(float, QColor, QColor, QColor);
   void ShowTraceDockWidgetForContour(bool);
 
   // semi automatic signals
   void UpdateSeeds();
-  void SaveAndVisuContour(vtkPolyData*);
+
+  void SaveAndVisuContour(vtkPolyData *);
+
   void ClearAllSeeds();
 
 protected:
-  QGoContourManualSegmentation*      m_ContourManualSegmentation;
-  QGoContourSeedSegmentation*        m_ContourSemiAutoSegmentation;
-
+  QGoContourManualSegmentation *m_ContourManualSegmentation;
+  QGoContourSeedSegmentation *  m_ContourSemiAutoSegmentation;
 private:
-  Q_DISABLE_COPY( QGoContourSegmentationBaseDockWidget );
-  };
+  Q_DISABLE_COPY(QGoContourSegmentationBaseDockWidget);
+};
 
 #endif

@@ -47,30 +47,32 @@
 /**
  * \class QGoFilterChanAndVes
  */
-class QGOGUILIB_EXPORT QGoFilterChanAndVes : public QGoFilterSemiAutoBase
+class QGOGUILIB_EXPORT QGoFilterChanAndVes:public QGoFilterSemiAutoBase
 {
   Q_OBJECT
 public:
   /** \brief Constructor */
-  explicit QGoFilterChanAndVes( QObject* iParent = NULL, int iDimension = 2 );
+  explicit QGoFilterChanAndVes(QObject *iParent = NULL, int iDimension = 2);
 
   /** \brief Destructor */
   ~QGoFilterChanAndVes();
 
-  virtual vtkPolyData* Apply();
+  virtual vtkPolyData * Apply();
 
   virtual void ConnectSignals(int iFilterNumber);
 
 public slots:
   void setIterations(int iIterations);
+
   void setCurvature(int iCurvature);
 
 protected:
-  void Filter2D( double* iCenter, const int& iOrientation );
-  void Filter3D( double* iCenter );
+  void Filter2D(double *iCenter, const int & iOrientation);
+
+  void Filter3D(double *iCenter);
 
 private:
-  int          m_Iterations;
-  int          m_Curvature;
+  int m_Iterations;
+  int m_Curvature;
 };
 #endif

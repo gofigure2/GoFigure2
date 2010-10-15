@@ -56,29 +56,30 @@ vtkStandardNewMacro(vtkPolylineDecimation);
 //---------------------------------------------------------------------
 // Create object with specified reduction of 90%.
 vtkPolylineDecimation::vtkPolylineDecimation()
-  {
+{
   this->TargetReduction = 0.90;
   this->Closed = true;
   this->PriorityQueue = vtkPriorityQueue::New();
-  }
+}
 
 //---------------------------------------------------------------------
 vtkPolylineDecimation::~vtkPolylineDecimation()
-  {
+{
   this->PriorityQueue->Delete();
-  }
+}
 
-double vtkPolylineDecimation::ComputeError(vtkPolyData* input,
+double vtkPolylineDecimation::ComputeError(vtkPolyData *input,
                                            int prev, int id, int next)
 {
-  vtkPoints * inputPoints = input->GetPoints();
+  vtkPoints *inputPoints = input->GetPoints();
 
   double x1[3], x[3], x2[3];
+
   inputPoints->GetPoint(prev, x1);
   inputPoints->GetPoint(id, x);
   inputPoints->GetPoint(next, x2);
 
-  if (vtkMath::Distance2BetweenPoints(x1, x2) == 0.0)
+  if ( vtkMath::Distance2BetweenPoints(x1, x2) == 0.0 )
     {
     return 0.0;
     }
@@ -102,20 +103,20 @@ int vtkPolylineDecimation::RequestData(
 
   // get the input and ouptut
   vtkPolyData *input = vtkPolyData::SafeDownCast(
-    inInfo->Get(vtkDataObject::DATA_OBJECT()));
+    inInfo->Get( vtkDataObject::DATA_OBJECT() ) );
   vtkPolyData *output = vtkPolyData::SafeDownCast(
-    outInfo->Get(vtkDataObject::DATA_OBJECT()));
+    outInfo->Get( vtkDataObject::DATA_OBJECT() ) );
 
   vtkCellArray *inputLines = input->GetLines();
   vtkPoints *   inputPoints = input->GetPoints();
 
-  if (!inputLines || !inputPoints)
+  if ( !inputLines || !inputPoints )
     {
     return 1;
     }
   vtkIdType numLines = inputLines->GetNumberOfCells();
   vtkIdType numPts = inputPoints->GetNumberOfPoints();
-  if (numLines < 1 || numPts < 1)
+  if ( numLines < 1 || numPts < 1 )
     {
     return 1;
     }
@@ -135,14 +136,14 @@ int vtkPolylineDecimation::RequestData(
   vtkIdType i, cellId = 0, newId;
   double    error;
 
-  for (i = 0; i < numPts; i++)
+  for ( i = 0; i < numPts; i++ )
     {
     this->VertexErrorMap[i] = 0.;
     }
 
-  for (i = 0; i < numPts; i++)
+  for ( i = 0; i < numPts; i++ )
     {
-    error = ComputeError(input, GetPrev(i), i, GetNext(i));
+    error = ComputeError( input, GetPrev(i), i, GetNext(i) );
     this->VertexErrorMap[i] = error;
     this->PriorityQueue->Insert(error, i);
     } //for all points in polyline
@@ -150,10 +151,10 @@ int vtkPolylineDecimation::RequestData(
   // Now process structures,
   // deleting points until the decimation target is met.
   vtkIdType currentNumPts = this->PriorityQueue->GetNumberOfItems();
-  while (1.0 - (static_cast<double>(currentNumPts) / static_cast<double>(
-                  numPts))
-         < this->TargetReduction &&
-         currentNumPts > 2)
+  while ( 1.0 - ( static_cast< double >( currentNumPts ) / static_cast< double >(
+                    numPts ) )
+          < this->TargetReduction
+          && currentNumPts > 2 )
     {
     i = this->PriorityQueue->Pop();
     currentNumPts--;
@@ -165,17 +166,17 @@ int vtkPolylineDecimation::RequestData(
   newId = newLines->InsertNextCell(currentNumPts + 1);
   outCD->CopyData(inCD, cellId, newId);
 
-  for (std::map<int, double>::iterator it = this->VertexErrorMap.begin();
-       it != this->VertexErrorMap.end();
-       ++it)
+  for ( std::map< int, double >::iterator it = this->VertexErrorMap.begin();
+        it != this->VertexErrorMap.end();
+        ++it )
     {
-    newId = newPts->InsertNextPoint(inputPoints->GetPoint(it->first));
+    newId = newPts->InsertNextPoint( inputPoints->GetPoint(it->first) );
     newLines->InsertCellPoint(newId);
     outPD->CopyData(inPD, it->first, newId);
     }
-  if (this->Closed)
+  if ( this->Closed )
     {
-    newId = newPts->InsertNextPoint(newPts->GetPoint(0));
+    newId = newPts->InsertNextPoint( newPts->GetPoint(0) );
     newLines->InsertCellPoint(0);
     outPD->CopyData(inPD, this->VertexErrorMap.begin()->first, newId);
     }
@@ -192,21 +193,24 @@ int vtkPolylineDecimation::RequestData(
 
   return 1;
 }
-//---------------------------------------------------------------------
-int vtkPolylineDecimation::GetPrev(const int& iId)
-{
-  std::map<int, double>::iterator it = this->VertexErrorMap.find(iId);
 
-  if (it == this->VertexErrorMap.begin())
+//---------------------------------------------------------------------
+int vtkPolylineDecimation::GetPrev(const int & iId)
+{
+  std::map< int, double >::iterator it = this->VertexErrorMap.find(iId);
+
+  if ( it == this->VertexErrorMap.begin() )
     {
-    if (this->Closed)
+    if ( this->Closed )
       {
       it = this->VertexErrorMap.end();
       it--;
       return it->first;
       }
     else
+      {
       return iId;
+      }
     }
   else
     {
@@ -214,17 +218,20 @@ int vtkPolylineDecimation::GetPrev(const int& iId)
     return it->first;
     }
 }
+
 //---------------------------------------------------------------------
-int vtkPolylineDecimation::GetNext(const int& iId)
+int vtkPolylineDecimation::GetNext(const int & iId)
 {
-  std::map<int, double>::iterator it = this->VertexErrorMap.find(iId);
-  std::map<int, double>::iterator end_it = this->VertexErrorMap.end();
+  std::map< int, double >::iterator it = this->VertexErrorMap.find(iId);
+  std::map< int, double >::iterator end_it = this->VertexErrorMap.end();
   --end_it;
-  if (it == end_it)
+  if ( it == end_it )
     {
-    if (this->Closed) return this->VertexErrorMap.begin()->first;
+    if ( this->Closed ) { return this->VertexErrorMap.begin()->first; }
     else
+      {
       return iId;
+      }
     }
   else
     {
@@ -232,8 +239,9 @@ int vtkPolylineDecimation::GetNext(const int& iId)
     return it->first;
     }
 }
+
 //---------------------------------------------------------------------
-void vtkPolylineDecimation::UpdateError(vtkPolyData* input, const int& iId)
+void vtkPolylineDecimation::UpdateError(vtkPolyData *input, const int & iId)
 {
   int prev = GetPrev(iId);
   int prev_prev = GetPrev(prev);
@@ -241,6 +249,7 @@ void vtkPolylineDecimation::UpdateError(vtkPolyData* input, const int& iId)
   int next_next = GetNext(next);
 
   double prev_error = ComputeError(input, prev_prev, prev, next);
+
   this->VertexErrorMap[prev] = prev_error;
   this->PriorityQueue->DeleteId(prev);
   this->PriorityQueue->Insert(prev_error, prev);
@@ -250,8 +259,9 @@ void vtkPolylineDecimation::UpdateError(vtkPolyData* input, const int& iId)
   this->PriorityQueue->DeleteId(next);
   this->PriorityQueue->Insert(next_error, next);
 }
+
 //---------------------------------------------------------------------
-void vtkPolylineDecimation::PrintSelf(ostream& os, vtkIndent indent)
+void vtkPolylineDecimation::PrintSelf(ostream & os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os, indent);
 

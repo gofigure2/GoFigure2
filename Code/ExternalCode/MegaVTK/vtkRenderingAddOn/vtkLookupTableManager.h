@@ -77,16 +77,14 @@
 /**
  \brief vtkLookupTableManager
  \ingroup MegaVTK
- \brief 
- */ 
-class VTK_RENDERINGADDON2_EXPORT vtkLookupTableManager : public vtkObject
-  {
-
+ \brief
+ */
+class VTK_RENDERINGADDON2_EXPORT vtkLookupTableManager:public vtkObject
+{
 public:
 
   //BTX
-  enum LookupTableIds
-    {
+  enum LookupTableIds {
     LUT_BW = 0,
     LUT_BWINV,
     LUT_SPECTTUM,
@@ -101,41 +99,40 @@ public:
     };
   //ETX
 
-  static vtkLookupTableManager* New();
+  static vtkLookupTableManager * New();
+
   vtkTypeRevisionMacro (vtkLookupTableManager, vtkObject);
 
-  static vtkLookupTable* GetBWLookupTable(void);
+  static vtkLookupTable * GetBWLookupTable(void);
 
-  static vtkLookupTable* GetBWInverseLookupTable(void);
+  static vtkLookupTable * GetBWInverseLookupTable(void);
 
-  static vtkLookupTable* GetSpectrumLookupTable(void);
+  static vtkLookupTable * GetSpectrumLookupTable(void);
 
-  static vtkLookupTable* GetHotMetalLookupTable(void);
+  static vtkLookupTable * GetHotMetalLookupTable(void);
 
-  static vtkLookupTable* GetGEColorLookupTable(void);
+  static vtkLookupTable * GetGEColorLookupTable(void);
 
-  static vtkLookupTable* GetFlowLookupTable(void);
+  static vtkLookupTable * GetFlowLookupTable(void);
 
-  static vtkLookupTable* GetLONILookupTable(void);
+  static vtkLookupTable * GetLONILookupTable(void);
 
-  static vtkLookupTable* GetLONI2LookupTable(void);
+  static vtkLookupTable * GetLONI2LookupTable(void);
 
-  static vtkLookupTable* GetAsymmetryLookupTable(void);
+  static vtkLookupTable * GetAsymmetryLookupTable(void);
 
-  static vtkLookupTable* GetPValueLookupTable(void);
+  static vtkLookupTable * GetPValueLookupTable(void);
 
-  static std::vector<std::string> GetAvailableLookupTables(void);
+  static std::vector< std::string > GetAvailableLookupTables(void);
 
-  static vtkLookupTable* GetROILookupTable(void);
+  static vtkLookupTable * GetROILookupTable(void);
 
-  static vtkLookupTable* GetLookupTable(const int&);
+  static vtkLookupTable * GetLookupTable(const int &);
 
 protected:
   vtkLookupTableManager();
   ~vtkLookupTableManager();
-
 private:
-
-  };
+};
 
 #endif

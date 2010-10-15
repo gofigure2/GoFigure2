@@ -58,71 +58,63 @@
 /**
  * \brief Constructor
  */
-LSMToMegaCapture::LSMToMegaCapture() : m_Plaque(0), m_Row(0),
+LSMToMegaCapture::LSMToMegaCapture():m_Plaque(0), m_Row(0),
   m_Column(0), m_XTile(0), m_YTile(0), m_ZTile(0)
-  {
-  }
+{}
 
 /**
  * \brief Destructor
  */
 LSMToMegaCapture::
 ~LSMToMegaCapture()
-  {
-  if (!m_LSMReaders.empty())
+{
+  if ( !m_LSMReaders.empty() )
     {
-    for (unsigned int i = 0; i < m_LSMReaders.size(); i++)
+    for ( unsigned int i = 0; i < m_LSMReaders.size(); i++ )
       {
       m_LSMReaders[i]->Delete();
       }
     }
-  }
+}
 
 void
-LSMToMegaCapture::
-SetPlaque(const unsigned int& iPlaque)
+LSMToMegaCapture::SetPlaque(const unsigned int & iPlaque)
 {
   m_Plaque = iPlaque;
 }
 
 void
-LSMToMegaCapture::
-SetRow(const unsigned int& iRow)
+LSMToMegaCapture::SetRow(const unsigned int & iRow)
 {
   m_Row = iRow;
 }
 
 void
-LSMToMegaCapture::
-SetColumn(const unsigned int& iCol)
+LSMToMegaCapture::SetColumn(const unsigned int & iCol)
 {
   m_Column = iCol;
 }
 
 void
-LSMToMegaCapture::
-SetXTile(const unsigned int& iXt)
+LSMToMegaCapture::SetXTile(const unsigned int & iXt)
 {
   m_XTile = iXt;
 }
 
 void
-LSMToMegaCapture::
-SetYTile(const unsigned int& iYt)
+LSMToMegaCapture::SetYTile(const unsigned int & iYt)
 {
   m_YTile = iYt;
 }
 
 void
-LSMToMegaCapture::
-SetZTile(const unsigned int& iZt)
+LSMToMegaCapture::SetZTile(const unsigned int & iZt)
 {
   m_ZTile = iZt;
 }
 
 void
-LSMToMegaCapture::
-SetOutputFileType(const GoFigure::FileType& iFileType)
+LSMToMegaCapture::SetOutputFileType(const GoFigure::FileType & iFileType)
 {
   m_FileType = iFileType;
 }
@@ -132,23 +124,22 @@ SetOutputFileType(const GoFigure::FileType& iFileType)
  * \param iFileName
  */
 void
-LSMToMegaCapture::
-SetFileName(const std::string& iFileName)
+LSMToMegaCapture::SetFileName(const std::string & iFileName)
 {
   m_FileName = iFileName;
   size_t point_idx = iFileName.rfind(".lsm");
 
-  if (point_idx != std::string::npos)
+  if ( point_idx != std::string::npos )
     {
     size_t slash_idx = iFileName.rfind('/');
-    if (point_idx != std::string::npos)
+    if ( point_idx != std::string::npos )
       {
       m_BaseName = iFileName.substr(slash_idx, point_idx - slash_idx);
       }
     else
       {
       slash_idx = iFileName.rfind("\\");
-      if (point_idx != std::string::npos)
+      if ( point_idx != std::string::npos )
         {
         m_BaseName = iFileName.substr(slash_idx, point_idx - slash_idx);
         }
@@ -158,26 +149,23 @@ SetFileName(const std::string& iFileName)
         }
       }
 
-    if (!m_LSMReaders.empty())
+    if ( !m_LSMReaders.empty() )
       {
-      for (unsigned int i = 0; i < m_LSMReaders.size(); i++)
+      for ( unsigned int i = 0; i < m_LSMReaders.size(); i++ )
         {
         m_LSMReaders[i]->Delete();
         }
       }
-    m_LSMReaders.push_back(vtkLSMReader::New());
-    m_LSMReaders.front()->SetFileName(iFileName.c_str());
+    m_LSMReaders.push_back( vtkLSMReader::New() );
+    m_LSMReaders.front()->SetFileName( iFileName.c_str() );
     m_LSMReaders.front()->Update();
     }
 }
 
-std::vector<vtkLSMReader*>
-LSMToMegaCapture::
-GetLSMReaders()
+std::vector< vtkLSMReader * >
+LSMToMegaCapture::GetLSMReaders()
 {
-
   return m_LSMReaders;
-
 }
 
 /**
@@ -185,8 +173,7 @@ GetLSMReaders()
  * \param[in] iHeaderFileName
  */
 void
-LSMToMegaCapture::
-Export(const std::string& iDirectoryPath)
+LSMToMegaCapture::Export(const std::string & iDirectoryPath)
 {
   m_NumberOfChannels = m_LSMReaders[0]->GetNumberOfChannels();
   m_NumberOfTimePoints = m_LSMReaders[0]->GetNumberOfTimePoints();
@@ -203,13 +190,13 @@ Export(const std::string& iDirectoryPath)
   headerfilename += m_BaseName;
   headerfilename += ".meg";
 
-  std::ofstream file(headerfilename.c_str());
+  std::ofstream file( headerfilename.c_str() );
   file << "MegaCapture" << std::endl;
   file << "<ImageSessionData>" << std::endl;
   file << "Version 3.0" << std::endl;
   file << "ExperimentTitle " << std::endl;
   file << "ExperimentDescription ";
-  if (m_LSMReaders[0]->GetDescription())
+  if ( m_LSMReaders[0]->GetDescription() )
     {
     file << m_LSMReaders[0]->GetDescription();
     }
@@ -232,7 +219,7 @@ Export(const std::string& iDirectoryPath)
   file << "DimensionCH " << m_NumberOfChannels << std::endl;
 
   unsigned int i, j, k;
-  for (i = 0; i < m_NumberOfChannels; i++)
+  for ( i = 0; i < m_NumberOfChannels; i++ )
     {
     int r = m_LSMReaders[0]->GetChannelColorComponent(i, 0);
     int g = m_LSMReaders[0]->GetChannelColorComponent(i, 1);
@@ -245,12 +232,12 @@ Export(const std::string& iDirectoryPath)
   file << "FileType PNG" << std::endl;
   file << "</ImageSessionData>" << std::endl;
 
-  if (m_NumberOfChannels > 1)
+  if ( m_NumberOfChannels > 1 )
     {
-    for (i = 1; i < m_NumberOfChannels; i++)
+    for ( i = 1; i < m_NumberOfChannels; i++ )
       {
-      m_LSMReaders.push_back(vtkLSMReader::New());
-      m_LSMReaders[i]->SetFileName(m_FileName.c_str());
+      m_LSMReaders.push_back( vtkLSMReader::New() );
+      m_LSMReaders[i]->SetFileName( m_FileName.c_str() );
       m_LSMReaders[i]->SetUpdateChannel(i);
       }
     }
@@ -260,25 +247,25 @@ Export(const std::string& iDirectoryPath)
   char        timeStr[100] = "";
   struct stat buf;
 
-  if (!stat(m_FileName.c_str(), &buf))
+  if ( !stat(m_FileName.c_str(), &buf) )
     {
-    strftime(timeStr, 100, "%Y-%m-%d %H:%M:%S", localtime(&buf.st_mtime));
+    strftime( timeStr, 100, "%Y-%m-%d %H:%M:%S", localtime(&buf.st_mtime) );
     }
 
-  for (i = 0; i < m_NumberOfTimePoints; i++)
+  for ( i = 0; i < m_NumberOfTimePoints; i++ )
     {
-    for (k = 0; k < m_NumberOfChannels; k++)
+    for ( k = 0; k < m_NumberOfChannels; k++ )
       {
       m_LSMReaders[k]->SetUpdateTimePoint(i);
       }
 
-    for (j = 0; j < m_NumberOfChannels; j++)
+    for ( j = 0; j < m_NumberOfChannels; j++ )
       {
       m_LSMReaders[j]->Update();
-      vtkImageData* image3d = m_LSMReaders[j]->GetOutput();
+      vtkImageData *image3d = m_LSMReaders[j]->GetOutput();
       image3d->GetExtent(extent);
 
-      for (k = 0; k < static_cast<unsigned int>(dim[2]); k++)
+      for ( k = 0; k < static_cast< unsigned int >( dim[2] ); k++ )
         {
         std::stringstream filename;
         filename << m_BaseName << "-PL" << setfill('0') << setw(2) << m_Plaque;
@@ -291,7 +278,7 @@ Export(const std::string& iDirectoryPath)
         filename << "-ch" << setfill('0') << setw(2) << j;
         filename << "-zs" << setfill('0') << setw(4) << k;
 
-        switch (m_FileType)
+        switch ( m_FileType )
           {
           default:
           case GoFigure::PNG:
@@ -314,29 +301,29 @@ Export(const std::string& iDirectoryPath)
         file << "Pinhole 44.216" << std::endl;
         file << "</Image>" << std::endl;
 
-        vtkExtractVOI* extract = vtkExtractVOI::New();
+        vtkExtractVOI *extract = vtkExtractVOI::New();
         extract->SetSampleRate(1, 1, 1);
         extract->SetInput(image3d);
 
         extract->SetVOI(extent[0], extent[1], extent[2], extent[3], k, k);
         extract->Update();
 
-        vtkImageData* image2d = extract->GetOutput();
+        vtkImageData *image2d = extract->GetOutput();
 
         std::string final_filename = iDirectoryPath;
         final_filename += filename.str();
 
-        switch (m_FileType)
+        switch ( m_FileType )
           {
           default:
           case GoFigure::PNG:
             {
-            vtkWriteImage<vtkPNGWriter>(image2d, final_filename);
+            vtkWriteImage< vtkPNGWriter >(image2d, final_filename);
             break;
             }
           case GoFigure::TIFF:
             {
-            vtkWriteImage<vtkTIFFWriter>(image2d, final_filename);
+            vtkWriteImage< vtkTIFFWriter >(image2d, final_filename);
             break;
             }
           }

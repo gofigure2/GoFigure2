@@ -41,7 +41,7 @@
 #ifndef __TrackTextFileImport_h
 #define __TrackTextFileImport_h
 
-#if defined(WIN32)
+#if defined( WIN32 )
 #pragma warning( disable: 4251 )
 #endif
 
@@ -59,7 +59,7 @@ class vtkMySQLDatabase;
 class vtkPolyData;
 
 class QGOIO_EXPORT TrackTextFileImport
-  {
+{
 public:
   TrackTextFileImport(const std::string & iServerName, const std::string & iLogin,
                       const std::string & iPassword, const std::string & iDBName,
@@ -67,8 +67,9 @@ public:
 
   ~TrackTextFileImport();
 
-  void SetDirectory(const std::string&);
-  void SetFileName(const std::string&);
+  void SetDirectory(const std::string &);
+
+  void SetFileName(const std::string &);
 
   /**
    * \brief Read the TrackTex file
@@ -83,11 +84,10 @@ private:
   std::string  m_Directory;
   std::string  m_FileName;
 
-  vtkMySQLDatabase* m_DBConnector;
+  vtkMySQLDatabase *m_DBConnector;
 
-  struct InternalMeshStructure
-    {
-    InternalMeshStructure(const unsigned int& iNumberOfChannels) :
+  struct InternalMeshStructure {
+    InternalMeshStructure(const unsigned int & iNumberOfChannels):
       m_AverageIntensity(iNumberOfChannels, 0) {}
 
     unsigned int m_TrackId;
@@ -99,13 +99,12 @@ private:
     unsigned int m_YMax;
     unsigned int m_ZMin;
     unsigned int m_ZMax;
-    vtkPolyData* m_Points;
-    std::vector<double> m_AverageIntensity;
-    };
+    vtkPolyData *m_Points;
+    std::vector< double > m_AverageIntensity;
+  };
 
-  struct InternalTrackStructure
-    {
-    InternalTrackStructure() :
+  struct InternalTrackStructure {
+    InternalTrackStructure():
       m_XMin(VTK_UNSIGNED_INT_MAX), m_XMax(VTK_UNSIGNED_INT_MIN),
       m_YMin(VTK_UNSIGNED_INT_MAX), m_YMax(VTK_UNSIGNED_INT_MIN),
       m_ZMin(VTK_UNSIGNED_INT_MAX), m_ZMax(VTK_UNSIGNED_INT_MIN),
@@ -122,20 +121,21 @@ private:
     unsigned int m_TMin;
     unsigned int m_TMax;
     std::string m_Points;
-    };
-
-  std::list<InternalMeshStructure>  m_ListOfMeshes;
-  std::list<InternalTrackStructure> m_ListOfTracks;
-
-  void SaveMeshInDataBase(const InternalMeshStructure& iMesh);
-  void SaveTrackInDataBase(const InternalTrackStructure& iTrack);
-
-  std::string AddTimePoint(const std::string& iTrackList,
-                           const std::string& iX,
-                           const std::string& iY,
-                           const std::string& iZ,
-                           const std::string& iT,
-                           bool iTimePoint);
   };
+
+  std::list< InternalMeshStructure >  m_ListOfMeshes;
+  std::list< InternalTrackStructure > m_ListOfTracks;
+
+  void SaveMeshInDataBase(const InternalMeshStructure & iMesh);
+
+  void SaveTrackInDataBase(const InternalTrackStructure & iTrack);
+
+  std::string AddTimePoint(const std::string & iTrackList,
+                           const std::string & iX,
+                           const std::string & iY,
+                           const std::string & iZ,
+                           const std::string & iT,
+                           bool iTimePoint);
+};
 
 #endif

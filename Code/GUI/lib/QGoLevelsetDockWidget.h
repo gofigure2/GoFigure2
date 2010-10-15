@@ -44,18 +44,18 @@
 #include <QWidget>
 #include "ui_LevelsetWidget.h"
 
-class QGoLevelsetDockWidget : public QWidget,
-                              protected Ui::LevelsetWidget
+class QGoLevelsetDockWidget:public QWidget,
+  protected Ui::LevelsetWidget
 {
   Q_OBJECT
 public:
-  explicit QGoLevelsetDockWidget(QWidget* iParent = 0);
+  explicit QGoLevelsetDockWidget(QWidget *iParent = 0);
   ~QGoLevelsetDockWidget();
-
 public slots:
-  signals:
-    void Curvature(int);
-    void Iterations(int);
+signals:
+  void Curvature(int);
+
+  void Iterations(int);
 };
 
 #endif

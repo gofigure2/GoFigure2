@@ -74,11 +74,10 @@ class QGoNetworkUtilities;
  * \brief GoFigure2's main window
  * \image html QGoMainWindow.png
  * */
-class QGoMainWindow : public QMainWindow,
+class QGoMainWindow:public QMainWindow,
   private Ui::go_mainwindow
-  {
+{
   Q_OBJECT
-
 public:
   friend class QGoTabManager;
 
@@ -88,57 +87,75 @@ public:
 
 //   typedef itk::MultiFileReader::FILETYPE FILETYPE;
 
-  explicit QGoMainWindow(QWidget* iParent = 0, Qt::WindowFlags iFlags = 0);
+  explicit QGoMainWindow(QWidget *iParent = 0, Qt::WindowFlags iFlags = 0);
   ~QGoMainWindow();
 
-  void SetSingleFileName(const QString& iFileName);
+  void SetSingleFileName(const QString & iFileName);
 
 private slots:
   void on_actionOpen_Single_File_triggered();
+
   void openRecentSingleFile();
+
 //   void on_actionOpen_Multiple_Files_triggered( );
   void on_actionOpen_MegaCapture_Files_triggered();
+
   void openRecentMultipleFile();
+
   void openRecentDatabaseFile();
+
   void openRecentFilesfromDB();
 
   void on_actionGoFigure2_Website_triggered();
+
   void on_actionUser_mailing_list_triggered();
+
   void on_actionDeveloper_mailing_list_triggered();
 
   void on_actionUse_DataBase_triggered();
+
   void openFilesfromDB();
 
   void on_actionExport_LSM_to_MegaFile_triggered();
 
   void on_actionClose_triggered();
+
   void on_actionClose_all_triggered();
+
   void on_actionQuit_triggered();
 
   void on_actionAbout_triggered();
+
   void on_actionAbout_Qt_triggered();
+
   void SetUpDatabase();
 
   void on_actionCheck_For_Updates_triggered();
+
   void DisplayUpdateResults(QString result, bool noerror);
 
   void ApplyImageFilter();
-  void tobedone(std::vector<vtkImageData*> );
+
+  void tobedone(std::vector< vtkImageData * > );
+
   void RemoveSetUpDatabaseMenu();
 
 private:
 
-  std::map<GoFigure::TabDimensionType, std::list<QAction*> >
+  std::map< GoFigure::TabDimensionType, std::list< QAction * > >
   m_TabDimPluginActionMap;
 
   /** \brief */
-  void openRecentFile(const bool& IsSerie);
+  void openRecentFile(const bool & IsSerie);
+
   void DisplayFilesfromDB(std::string iFirst_Filename);
 
   /** \brief */
-  void SetCurrentSingleFile(const QString& fileName);
-  void SetCurrentMultiFile(const QString& fileName);
-  void SetCurrentDatabaseFile(const QString& fileName);
+  void SetCurrentSingleFile(const QString & fileName);
+
+  void SetCurrentMultiFile(const QString & fileName);
+
+  void SetCurrentDatabaseFile(const QString & fileName);
 
   /** \brief */
   enum { MaxRecentFiles = 5 };
@@ -149,38 +166,41 @@ private:
   void UpdateRecentFileActions(QStringList list, QMenu * menu,
                                QAction * recentFileActions[MaxRecentFiles]);
 
-  QGoTabImageView3DwT* CreateNewTabFor3DwtImage(
-    const GoFigureFileInfoHelperMultiIndexContainer& iFileList,
-    const GoFigure::FileType& iFileType,
-    const std::string& iHeader,
-    const int& iTimePoint,
-    const bool& iUseDatabase);
+  QGoTabImageView3DwT * CreateNewTabFor3DwtImage(
+    const GoFigureFileInfoHelperMultiIndexContainer & iFileList,
+    const GoFigure::FileType & iFileType,
+    const std::string & iHeader,
+    const int & iTimePoint,
+    const bool & iUseDatabase);
 
-  QGoTabImageView3DwT* CreateNewTabFor3DwtImage(
-    vtkLSMReader* iReader, const QString& iFile);
-  QGoTabImageView3D* CreateNewTabFor3DImage(vtkImageData*, const QString&);
-  QGoTabImageView2D* CreateNewTabFor2DImage(vtkImageData*, const QString&);
+  QGoTabImageView3DwT * CreateNewTabFor3DwtImage(
+    vtkLSMReader *iReader, const QString & iFile);
+
+  QGoTabImageView3D * CreateNewTabFor3DImage(vtkImageData *, const QString &);
+
+  QGoTabImageView2D * CreateNewTabFor2DImage(vtkImageData *, const QString &);
 
   /** \brief Open Image with given iFileName
   \param[in] iFileName  */
 //   void OpenImageWithITK( const QString& iFileName );
-  void OpenLSMImage(const QString& iFile, const int& iTimePoint);
+  void OpenLSMImage(const QString & iFile, const int & iTimePoint);
 
-  void SetupMenusFromTab(QGoTabElementBase* iT);
+  void SetupMenusFromTab(QGoTabElementBase *iT);
+
   /** \brief get the file container and the header filename for a
   multi file*/
   GoFigureFileInfoHelperMultiIndexContainer GetFileContainerForMultiFiles(
-    std::string& ioHeader_Filename, std::string iFirstFileName);
+    std::string & ioHeader_Filename, std::string iFirstFileName);
 
   /**
    *
    */
-  void LoadAllTracesFromDatabaseManager(const int& iT);
+  void LoadAllTracesFromDatabaseManager(const int & iT);
 
   /**
    *
    */
-  void LoadAllTracesFromDatabase(const int& iT, const std::string& iTrace);
+  void LoadAllTracesFromDatabase(const int & iT, const std::string & iTrace);
 
   /**
    * \brief Compute GoFigure file type from a given filename
@@ -189,25 +209,27 @@ private:
    * @return true if (png, jpeg or tiff)
    * @return false else
    */
-  bool ComputeFileType(const QString& iFileName, GoFigure::FileType& oFileType);
+  bool ComputeFileType(const QString & iFileName, GoFigure::FileType & oFileType);
 
   void LoadPlugins();
+
   void PopulateMenus(QObject *plugin);
-  void AddToMenu(QObject*, const QStringList&, QMenu*,
-                 const char*, QActionGroup*);
 
-  QMenu*                     m_FilteringMenu;
-  QDir                       m_PluginsDir;
-  QStringList                m_PluginFileNames;
-  QGoTabManager*             m_TabManager;
-  QToolBar*                  m_ViewToolBar;
-  QToolBar*                  m_ModeToolBar;
-  std::list<vtkLSMReader*>   m_LSMReader;
-  QGoWizardDB*               m_DBWizard;
-  QGoAboutWidget*            m_AboutWidget;
-  QGoDBInitializationWizard* m_DBInitializationWizard;
+  void AddToMenu(QObject *, const QStringList &, QMenu *,
+                 const char *, QActionGroup *);
 
-  QGoNetworkUtilities* m_NetworkUtilities;
+  QMenu *                     m_FilteringMenu;
+  QDir                        m_PluginsDir;
+  QStringList                 m_PluginFileNames;
+  QGoTabManager *             m_TabManager;
+  QToolBar *                  m_ViewToolBar;
+  QToolBar *                  m_ModeToolBar;
+  std::list< vtkLSMReader * > m_LSMReader;
+  QGoWizardDB *               m_DBWizard;
+  QGoAboutWidget *            m_AboutWidget;
+  QGoDBInitializationWizard * m_DBInitializationWizard;
+
+  QGoNetworkUtilities *m_NetworkUtilities;
   bool                 m_ManualUpdate;
 
   /** \brief */
@@ -227,15 +249,15 @@ private:
   QStringList m_RecentMultipleFiles;
   QStringList m_RecentDatabaseFiles;
   bool        m_DatabaseSetUp;
-  QAction*    actionSet_Up_Database;
+  QAction *   actionSet_Up_Database;
 
   /** \brief current file name */
   QString m_CurrentFile;
 
   /** \brief Remove path from a given FileName*/
-  QString strippedName(const QString& fullFileName);
+  QString strippedName(const QString & fullFileName);
 
 private:
   Q_DISABLE_COPY(QGoMainWindow);
-  };
+};
 #endif

@@ -45,16 +45,16 @@
 #include <string>
 #include <map>
 
-class QGOIO_EXPORT GoDBImageRow : public GoDBRow
-  {
+class QGOIO_EXPORT GoDBImageRow:public GoDBRow
+{
 public:
   GoDBImageRow();
 
   ~GoDBImageRow()
-        {}
-  int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
+  {}
+  int SaveInDB(vtkMySQLDatabase *DatabaseConnector);
+
 protected:
   virtual void InitializeMap();
-
-  };
+};
 #endif

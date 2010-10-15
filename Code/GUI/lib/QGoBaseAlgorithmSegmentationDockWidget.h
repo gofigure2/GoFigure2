@@ -49,33 +49,44 @@
 
 #include "ui_SegmentationSeedBaseWidget.h"
 
-class QGoBaseAlgorithmSegmentationDockWidget :
+class QGoBaseAlgorithmSegmentationDockWidget:
   public QWidget,
   protected Ui::SegmentationSeedBaseWidget
-  {
+{
   Q_OBJECT
 public:
-  explicit QGoBaseAlgorithmSegmentationDockWidget(QWidget* iParent = 0);
+  explicit QGoBaseAlgorithmSegmentationDockWidget(QWidget *iParent = 0);
   ~QGoBaseAlgorithmSegmentationDockWidget();
 
   void Initialize();
 
 public slots:
   void    AddChannel(QString iChannel);
-  void    AddFilter(QString iFilter);
-  int     GetNumberOfFilters();
-  QFrame* GetFrame();
 
-  signals:
-    void Apply();
-    void Radius(double);
-    void Filter(int);
-    void Channel(int);
-    void MeshCreated(vtkPolyData* );
-    void ContourCreated(vtkPolyData* );
-    void ImageProcessed();
-    void UpdateSeeds();
-    void SegmentationFinished();
-  };
+  void    AddFilter(QString iFilter);
+
+  int     GetNumberOfFilters();
+
+  QFrame * GetFrame();
+
+signals:
+  void Apply();
+
+  void Radius(double);
+
+  void Filter(int);
+
+  void Channel(int);
+
+  void MeshCreated(vtkPolyData *);
+
+  void ContourCreated(vtkPolyData *);
+
+  void ImageProcessed();
+
+  void UpdateSeeds();
+
+  void SegmentationFinished();
+};
 
 #endif

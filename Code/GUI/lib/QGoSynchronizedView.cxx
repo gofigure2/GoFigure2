@@ -51,36 +51,36 @@
 * \param iViewName
 * \param iParent
 */
-QGoSynchronizedView::QGoSynchronizedView(QString iViewName, QWidget *iParent)
-  : QWidget                  (iParent),
+QGoSynchronizedView::QGoSynchronizedView(QString iViewName, QWidget *iParent):
+  QWidget                  (iParent),
   m_ViewName       (iViewName),
   m_Image          (NULL),
   m_ViewManager    (NULL)
-  {
+{
   setupUi(this);
 
   // the widget View is just for representing the place of the viewer
   // it is useless
-  delete (View);
+  delete ( View );
 
   gridLayout->setContentsMargins(1, 1, 1, 1);
   gridLayout->setSpacing(1);
 
   this->setWindowTitle(iViewName);
   this->resize(300, 300);
-  }
+}
 
 //--------------------------------------------------------------------------
 QGoSynchronizedView::
 ~QGoSynchronizedView()
-  {}
+{}
 
 //--------------------------------------------------------------------------
 void QGoSynchronizedView::changeEvent(QEvent *e)
 {
   QWidget::changeEvent(e);
 
-  switch (e->type())
+  switch ( e->type() )
     {
     case QEvent::LanguageChange:
       {
@@ -123,9 +123,8 @@ void QGoSynchronizedView::changeEvent(QEvent *e)
 
 //--------------------------------------------------------------------------
 /* get comparer's name */
-QString*
-QGoSynchronizedView::
-GetName()
+QString *
+QGoSynchronizedView::GetName()
 {
   return &m_ViewName;
 }
@@ -133,8 +132,7 @@ GetName()
 //--------------------------------------------------------------------------
 /* Set the address of the manager */
 void
-QGoSynchronizedView::
-SetViewManager(QGoSynchronizedViewManager* iViewManager)
+QGoSynchronizedView::SetViewManager(QGoSynchronizedViewManager *iViewManager)
 {
   m_ViewManager = iViewManager;
 }

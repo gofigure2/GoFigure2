@@ -208,51 +208,65 @@
 
 #include "vtkLSMConfigure.h"
 
-class VTKLSM_EXPORT vtkLSMReader : public vtkImageAlgorithm
-  {
+class VTKLSM_EXPORT vtkLSMReader:public vtkImageAlgorithm
+{
 public:
 
-  static vtkLSMReader *New();
+  static vtkLSMReader * New();
+
   vtkTypeMacro(vtkLSMReader, vtkImageAlgorithm);
-  virtual void PrintSelf(ostream& os, vtkIndent indent);
+  virtual void PrintSelf(ostream & os, vtkIndent indent);
 
   // Description:
   // Get the file extensions for this format.
   // Returns a string with a space separated list of extensions in
   // the format .extension
-  const char* GetFileExtensions()
+  const char * GetFileExtensions()
   {
     return ".lsm .LSM";
   }
 
   int GetHeaderIdentifier();
+
   bool IsValidLSMFile();
+
   bool IsCompressed();
+
   int GetNumberOfTimePoints();
+
   int GetNumberOfChannels();
+
   int OpenFile();
 
   int GetChannelColorComponent(int, int);
-  char* GetChannelName(int);
+
+  char * GetChannelName(int);
+
   void SetFileName(const char *);
+
   //void ExecuteInformation();
   int RequestInformation (
     vtkInformation       * vtkNotUsed(request),
     vtkInformationVector * *vtkNotUsed(inputVector),
     vtkInformationVector * outputVector);
   void SetUpdateTimePoint(int);
+
   void SetUpdateChannel(int);
 
   void SetDataByteOrderToBigEndian();
+
   void SetDataByteOrderToLittleEndian();
+
   void SetDataByteOrder(int);
+
   int GetDataByteOrder();
-  const char *GetDataByteOrderAsString();
+
+  const char * GetDataByteOrderAsString();
 
   // Description:
   // Set/Get the byte swapping to explicitly swap the bytes of a file.
   vtkSetMacro(SwapBytes, int);
-  virtual int GetSwapBytes() { return this->SwapBytes;}
+  virtual int GetSwapBytes() { return this->SwapBytes; }
   vtkBooleanMacro(SwapBytes, int);
 
   int GetDataTypeForChannel(unsigned int channel);
@@ -276,7 +290,8 @@ public:
   vtkGetObjectMacro(ChannelColors, vtkIntArray);
   vtkGetObjectMacro(TrackWavelengths, vtkDoubleArray);
   unsigned int GetUpdateChannel();
-  vtkImageData* GetTimePointOutput(int, int);
+
+  vtkImageData * GetTimePointOutput(int, int);
 
 protected:
 
@@ -284,60 +299,86 @@ protected:
   ~vtkLSMReader();
 
   int TIFF_BYTES(unsigned short);
+
   int BYTES_BY_DATA_TYPE(int);
+
   void ClearFileName();
+
   void Clean();
+
   unsigned long ReadImageDirectory(ifstream *, unsigned long);
+
   int AllocateChannelNames(int);
+
   int SetChannelName(const char *, int);
+
   int ClearChannelNames();
+
   int FindChannelNameStart(const char *, int);
+
   int ReadChannelName(const char *, int, char *);
-  int ReadChannelDataTypes(ifstream*, unsigned long);
+
+  int ReadChannelDataTypes(ifstream *, unsigned long);
+
   int ReadChannelColorsAndNames(ifstream *, unsigned long);
+
   int ReadTimeStampInformation(ifstream *, unsigned long);
+
   int ReadLSMSpecificInfo(ifstream *, unsigned long);
+
   int AnalyzeTag(ifstream *, unsigned long);
-  int ReadScanInformation(ifstream*, unsigned long);
+
+  int ReadScanInformation(ifstream *, unsigned long);
+
   int NeedToReadHeaderInformation();
+
   void NeedToReadHeaderInformationOn();
+
   void NeedToReadHeaderInformationOff();
+
   unsigned long SeekFile(unsigned long);
+
   unsigned long GetOffsetToImage(int, int);
-  ifstream *GetFile();
+
+  ifstream * GetFile();
 
   int RequestUpdateExtent(
-    vtkInformation* request,
-    vtkInformationVector** inputVector,
-    vtkInformationVector* outputVector);
+    vtkInformation *request,
+    vtkInformationVector **inputVector,
+    vtkInformationVector *outputVector);
 
   int RequestData(
-    vtkInformation * vtkNotUsed(request),
-    vtkInformationVector * *vtkNotUsed(inputVector),
-    vtkInformationVector * outputVector);
+    vtkInformation *vtkNotUsed(request),
+    vtkInformationVector **vtkNotUsed(inputVector),
+    vtkInformationVector *outputVector);
 
   //void ExecuteData(vtkDataObject *out);
   void CalculateExtentAndSpacing(int extent[6], double spacing[3]);
   void DecodeHorizontalDifferencing(unsigned char *, int);
-  void DecodeHorizontalDifferencingUnsignedShort(unsigned short*, int);
+
+  void DecodeHorizontalDifferencingUnsignedShort(unsigned short *, int);
+
   void DecodeLZWCompression(unsigned char *, int);
+
   void ConstructSliceOffsets();
+
   unsigned long GetStripByteCount(unsigned int timepoint, unsigned int slice);
+
   unsigned long GetSliceOffset(unsigned int timepoint, unsigned int slice);
 
-  vtkStringArray* LaserNames;
+  vtkStringArray *LaserNames;
 
-  vtkDoubleArray* TrackWavelengths;
-  vtkDoubleArray* DetectorOffsetFirstImage;
-  vtkDoubleArray* DetectorOffsetLastImage;
+  vtkDoubleArray *TrackWavelengths;
+  vtkDoubleArray *DetectorOffsetFirstImage;
+  vtkDoubleArray *DetectorOffsetLastImage;
 
-  vtkUnsignedLongArray* ImageOffsets;
-  vtkUnsignedLongArray* ReadSizes;
-  vtkUnsignedIntArray*  StripOffset;
-  vtkUnsignedIntArray*  ChannelDataTypes;
-  vtkUnsignedIntArray*  StripByteCount;
+  vtkUnsignedLongArray *ImageOffsets;
+  vtkUnsignedLongArray *ReadSizes;
+  vtkUnsignedIntArray *StripOffset;
+  vtkUnsignedIntArray *ChannelDataTypes;
+  vtkUnsignedIntArray *StripByteCount;
 
-  vtkUnsignedShortArray* BitsPerSample;
+  vtkUnsignedShortArray *BitsPerSample;
 
   double VoxelSizes[3];
 
@@ -366,37 +407,48 @@ protected:
   unsigned short ScanType;
 
   ifstream *File;
-  char *    FileName;
+  char *FileName;
 
   double DataSpacing[3];
-  int    DataExtent[6];
-  int    NumberOfScalarComponents;
-  int    DataType;
+  int DataExtent[6];
+  int NumberOfScalarComponents;
+  int DataType;
 
-  vtkIntArray *   ChannelColors;
-  char **         ChannelNames;
+  vtkIntArray *ChannelColors;
+  char **ChannelNames;
   vtkDoubleArray *TimeStampInformation;
-  char*           Objective;
-  char*           Description;
-  double          TimeInterval;
+  char *Objective;
+  char *Description;
+  double TimeInterval;
 
   unsigned char CharPointerToUnsignedChar(char *);
+
   int CharPointerToInt(char *);
+
   unsigned int CharPointerToUnsignedInt(char *);
+
   short CharPointerToShort(char *);
+
   unsigned short CharPointerToUnsignedShort(char *);
+
   double CharPointerToDouble(char *);
 
-  int ReadInt(ifstream *, unsigned long&);
-  unsigned int ReadUnsignedInt(ifstream *, unsigned long&);
-  short ReadShort(ifstream *, unsigned long&);
-  unsigned short ReadUnsignedShort(ifstream *, unsigned long&);
-  double ReadDouble(ifstream *, unsigned long&);
-  std::streamsize ReadFile(ifstream *, unsigned long&, unsigned int, char *, bool swap = false);
-  std::streamsize ReadData(ifstream *, unsigned long&, unsigned int, char *);
+  int ReadInt(ifstream *, unsigned long &);
+
+  unsigned int ReadUnsignedInt(ifstream *, unsigned long &);
+
+  short ReadShort(ifstream *, unsigned long &);
+
+  unsigned short ReadUnsignedShort(ifstream *, unsigned long &);
+
+  double ReadDouble(ifstream *, unsigned long &);
+
+  std::streamsize ReadFile(ifstream *, unsigned long &, unsigned int, char *, bool swap = false);
+
+  std::streamsize ReadData(ifstream *, unsigned long &, unsigned int, char *);
 
 private:
-  vtkLSMReader(const vtkLSMReader &);  // Not implemented.
-  void operator =(const vtkLSMReader&);  // Not implemented.
-  };
+  vtkLSMReader(const vtkLSMReader &);   // Not implemented.
+  void operator=(const vtkLSMReader &); // Not implemented.
+};
 #endif

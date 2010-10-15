@@ -50,62 +50,60 @@
 
 /**
 \class QGoDeleteFromListDialog
-\brief this class displays a list of entities and return the list of the 
+\brief this class displays a list of entities and return the list of the
 ones selected by the user. class based on Qt
 */
-class QGOGUILIB_EXPORT QGoDeleteFromListDialog : public QDialog
-  {
+class QGOGUILIB_EXPORT QGoDeleteFromListDialog:public QDialog
+{
   Q_OBJECT
-
 public:
 
-  typedef std::pair<std::string,QColor> ItemColorComboboxData;
-  
-  explicit QGoDeleteFromListDialog(std::vector<std::string> iVectorEntities,
-                                   QWidget* iParent = 0,     
+  typedef std::pair< std::string, QColor > ItemColorComboboxData;
+
+  explicit QGoDeleteFromListDialog(std::vector< std::string > iVectorEntities,
+                                   QWidget *iParent = 0,
                                    std::string iEntityName = "");
 
   explicit QGoDeleteFromListDialog(std::list< ItemColorComboboxData > iDataListWithColor,
-                                   QWidget* iParent = 0,
+                                   QWidget *iParent = 0,
                                    std::string iEntityName = "");
-                                   
-  virtual ~QGoDeleteFromListDialog();
 
+  virtual ~QGoDeleteFromListDialog();
 protected:
   std::string  m_EntityName;
-  QListWidget* m_ListWidget;
+  QListWidget *m_ListWidget;
 
   /**
   \brief set the layout with all the objects, the connections and
-  the entity name 
+  the entity name
   \param[in] iEntityName name of the entity to be deleted
   */
   void SetUpUi(std::string iEntityName);
-                                    
-  /** 
+
+  /**
   \brief emit a signal which sends vector with the names of the entities
   the user selected to be deleted
   \param[in] iListEntitiesToDelete list of the items selected by the user
   */
   void DeleteSelection(
-    QList<QListWidgetItem*> iListEntitiesToDelete);
+    QList< QListWidgetItem * > iListEntitiesToDelete);
 
-  /** 
+  /**
   \brief create the corresponding QListWidgetItems
-  \param[in] iVectorItems vector with the names of the entities to be 
+  \param[in] iVectorItems vector with the names of the entities to be
   displayed
-  */  
-  void SetItemsFromTheVector(std::vector<std::string> iVectorItems);
-  
-  /** 
+  */
+  void SetItemsFromTheVector(std::vector< std::string > iVectorItems);
+
+  /**
   \brief create the corresponding QListWidgetItems with a QColor
-  \param[in] iDataList list with the names of the entities and their color 
+  \param[in] iDataList list with the names of the entities and their color
   to be displayed
-  */ 
-  void SetItemsInTheListWithColor(std::list<ItemColorComboboxData> iDataList);
+  */
+  void SetItemsInTheListWithColor(std::list< ItemColorComboboxData > iDataList);
 
 protected slots:
-  /** 
+  /**
   \brief ask the user to select at least one item if
   nothying has been selected and ask the user confirmation
   if the selection is not null
@@ -113,9 +111,10 @@ protected slots:
   void SelectionValidation();
 
 signals:
-  
+
   void CancelRequested();
-  void ListEntitiesToDelete(std::vector<std::string>);
-  };
+
+  void ListEntitiesToDelete(std::vector< std::string > );
+};
 
 #endif

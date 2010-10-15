@@ -60,42 +60,45 @@
 celltypes and subcelltypes, and displays the trace and collection name.
 \ingroup GUI
 */
-class QGOGUILIB_EXPORT QGoTraceManualEditingWidget :
+class QGOGUILIB_EXPORT QGoTraceManualEditingWidget:
   public QWidget,
   private Ui::QGoTraceManualEditingWidget
-  {
+{
   Q_OBJECT
-
 public:
-  explicit QGoTraceManualEditingWidget(QWidget* parent = 0);
+  explicit QGoTraceManualEditingWidget(QWidget *parent = 0);
   ~QGoTraceManualEditingWidget();
 
   typedef QGoColorComboBox::ItemColorComboboxData ItemColorComboboxData;
-  typedef std::vector<std::pair<std::string, std::string> >
-    NamesDescrContainerType;
- 
+  typedef std::vector< std::pair< std::string, std::string > >
+  NamesDescrContainerType;
+
   //void SetEnableTraceCollectionColorBoxes(bool Enable);
-  
+
   /**
   \brief get the name of the trace currently displayed in the QLabel
   \return std::string contains the name of the trace
   */
   std::string GetTraceName();
+
   /**
   \brief set the selected celltype in the combobox corresponding to iCellTypeText
   \param[in] iCellTypeText name of the CellType to be selected
   */
   void SetCurrentCellType(std::string iCellTypeText);
+
   /**
   \brief set the selected subcelltype in the combobox corresponding to iSubCellTypeText
   \param[in] iSubCellTypeText name of the SubCellType to be selected
   */
   void SetCurrentSubCellType(std::string iSubCellTypeText);
+
   /**
   \brief set the selected color in the combobox corresponding to iColorText
   \param[in] iColorText name of the Color to be selected
   */
   void SetCurrentColor(std::string iColorText);
+
   /**
   \brief set the selected collectionID in the combobox to iID
   \param[in] iID  ID of the collection to be selected
@@ -120,38 +123,41 @@ public:
   \param[in] iCollectionIDtoSelect ID to be selected in the combobox
   */
   void SetListCollectionID(
-    std::list<ItemColorComboboxData> iListExistingID,
-    std::string iCollectionIDtoSelect="");
-   /** 
-   \brief replace the list of colors with the name and corresponding color
-  in the iListColors and select the color corresponding to iColortoSelect
-  if not empty, if empty, select the 1rst one
-  \param[in] iListColors list of colors with their names and QColor to be displayed
-  \param[in] iColortoSelect name of the color to be selected in the combobox
-  */
-  void SetListColors(std::list<ItemColorComboboxData> iListColors,
-    std::string iColorToSelect = "");
-  /** 
-  \brief replace the list of celltype with the names in the iCellTypesData and 
-  select the celltype corresponding to iCellTypetoSelect if not empty, if empty, 
+    std::list< ItemColorComboboxData > iListExistingID,
+    std::string iCollectionIDtoSelect = "");
+
+  /**
+  \brief replace the list of colors with the name and corresponding color
+ in the iListColors and select the color corresponding to iColortoSelect
+ if not empty, if empty, select the 1rst one
+ \param[in] iListColors list of colors with their names and QColor to be displayed
+ \param[in] iColortoSelect name of the color to be selected in the combobox
+ */
+  void SetListColors(std::list< ItemColorComboboxData > iListColors,
+                     std::string iColorToSelect = "");
+
+  /**
+  \brief replace the list of celltype with the names in the iCellTypesData and
+  select the celltype corresponding to iCellTypetoSelect if not empty, if empty,
   select the 1rst one.
   \param[in] iCellTypesData list of celltypes with their names and description
   to be displayed
   \param[in] iCellTypetoSelect name of the celltype to be selected in the combobox
   */
   void SetListCellTypes(NamesDescrContainerType iCellTypesData,
-    std::string iCellTypeToSelect = "");
-  /** 
-  \brief replace the list of subcelltype with the names in the iSubCellTypesData and 
-  select the subcelltype corresponding to iSubCellTypetoSelect if not empty, if empty, 
+                        std::string iCellTypeToSelect = "");
+
+  /**
+  \brief replace the list of subcelltype with the names in the iSubCellTypesData and
+  select the subcelltype corresponding to iSubCellTypetoSelect if not empty, if empty,
   select the 1rst one.
   \param[in] iSubCellTypesData list of subcelltypes with their names and description
   to be displayed
   \param[in] iSubCellTypetoSelect name of the subcelltype to be selected in the combobox
   */
   void SetListSubCellTypes(NamesDescrContainerType iSubCellData,
-    std::string iSubCellTypeToSelect = "");
-  
+                           std::string iSubCellTypeToSelect = "");
+
   /**
   \brief add a new collection in the collectionColorCombobox and select it
   \param[in] iNewCollectionID ID and QColor of the new item
@@ -160,41 +166,52 @@ public:
 
 signals:
   void AddANewCellType();
+
   void DeleteCellType();
+
   void AddANewSubCellType();
+
   void DeleteSubCellType();
+
   void AddNewColor();
+
   void DeleteColor();
+
   void NewCollectionActivated(ItemColorComboboxData);
   void NewSelectedColorActivated(ItemColorComboboxData);
   void NewSubCellTypeActivated(std::string);
+
   void NewCellTypeActivated(std::string);
+
   void NewCollectionToBeCreated();
 
 protected:
-  QLabel*                           m_TraceName;
-  QLabel*                           m_CollectionName;
-  QGoSelectedColorComboBox*         m_SelectedColorComboBox;
-  QGoCollectionColorComboBox*       m_CollectionColorComboBox;
-  QGoComboBox*                      m_ChoseCellType;
-  QGoComboBox*                      m_ChoseSubCellType;
+  QLabel *                    m_TraceName;
+  QLabel *                    m_CollectionName;
+  QGoSelectedColorComboBox *  m_SelectedColorComboBox;
+  QGoCollectionColorComboBox *m_CollectionColorComboBox;
+  QGoComboBox *               m_ChoseCellType;
+  QGoComboBox *               m_ChoseSubCellType;
 
   /**
   \brief add the SelectedColorCombobox to the layout and make the signal/slot connections
   for it
   */
   void SetSelectedColorComboBox();
+
   /**
   \brief add the CollectionColorCombobox to the layout,set the trace and collection name labels,
   and make the signal/slot connections
   for it
   */
   void SetTraceCollectionColorComboBox();
+
   /**
   \brief add the Celltype QGoCombobox to the layout and make the signal/slot connections
   for it
   */
   void SetCellTypeComboBox();
+
   /**
   \brief add the SubCellType QGoCombobox to the layout and make the signal/slot connections
   for it
@@ -209,14 +226,14 @@ protected:
   \param[in] iTextItemToSelect the item to be selected
   \tparam T could be a QGoComboBox
   */
-  template<typename T>
-  void SetListItemAndSelect(T* iComboBox, NamesDescrContainerType iItemsData,
-    std::string iTextItemToSelect = "")
+  template< typename T >
+  void SetListItemAndSelect(T *iComboBox, NamesDescrContainerType iItemsData,
+                            std::string iTextItemToSelect = "")
   {
-    if (!iTextItemToSelect.empty())
+    if ( !iTextItemToSelect.empty() )
       {
       iComboBox->SetItemsFromList(iItemsData);
-      if(iComboBox->findText(iTextItemToSelect.c_str())!= -1)
+      if ( iComboBox->findText( iTextItemToSelect.c_str() ) != -1 )
         {
         iComboBox->SetCurrentItem(iTextItemToSelect);
         }
@@ -234,14 +251,14 @@ protected:
   /**
   \overload
   */
-  template<typename T>
-  void SetListItemAndSelect(T* iComboBox, std::list<ItemColorComboboxData> iItemsData,
-   std::string iTextItemToSelect = "")
+  template< typename T >
+  void SetListItemAndSelect(T *iComboBox, std::list< ItemColorComboboxData > iItemsData,
+                            std::string iTextItemToSelect = "")
   {
-    if (!iTextItemToSelect.empty())
+    if ( !iTextItemToSelect.empty() )
       {
       iComboBox->SetItemsFromListWithColor(iItemsData);
-      if(iComboBox->findText(iTextItemToSelect.c_str())!= -1)
+      if ( iComboBox->findText( iTextItemToSelect.c_str() ) != -1 )
         {
         iComboBox->SetCurrentItem(iTextItemToSelect);
         }
@@ -255,7 +272,5 @@ protected:
       iComboBox->InitializeTheListWithColor(iItemsData);
       }
   }
-
-
-  };
+};
 #endif

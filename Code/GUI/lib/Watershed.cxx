@@ -59,8 +59,7 @@
 #include "itkImageToVTKImageFilter.h"
 
 //--------------------------------------------------------------------------
-Watershed::
-Watershed()
+Watershed::Watershed()
 {
   /*m_Radius = 3.0;
   m_Iterations = 15;
@@ -69,6 +68,7 @@ Watershed()
   m_Center[1] = 0;
   m_Dimension = 3;*/
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -77,6 +77,7 @@ Watershed::
 {
   //m_Input->Delete();
 }
+
 //--------------------------------------------------------------------------
 /*
 //--------------------------------------------------------------------------
@@ -129,9 +130,8 @@ setDimension(int iDimension)
 */
 
 //--------------------------------------------------------------------------
-vtkImageData*
-Watershed::
-Apply()
+vtkImageData *
+Watershed::Apply()
 {
   //itkWatershedBasedCellSegmentation
 /*
@@ -145,8 +145,9 @@ Apply()
 */
 
   //Export VTK image to ITK
-  vtkImageExport* vtk2itkImage = vtkImageExport::New();
-  vtk2itkImage->SetInput(getInput());
+  vtkImageExport *vtk2itkImage = vtkImageExport::New();
+
+  vtk2itkImage->SetInput( getInput() );
   vtk2itkImage->Update();
 
   // Define the dimension of the images
@@ -165,13 +166,13 @@ Apply()
   SegmentationFilterType;
 
   // ImageType
-  typedef itk::Image<unsigned char, Dimension> ImageType;
+  typedef itk::Image< unsigned char, Dimension > ImageType;
   // Import VTK Image to ITK
-  typedef itk::VTKImageImport<ImageType> ImageImportType;
-  typedef ImageImportType::Pointer       ImageImportPointer;
+  typedef itk::VTKImageImport< ImageType > ImageImportType;
+  typedef ImageImportType::Pointer         ImageImportPointer;
   ImageImportPointer movingImporter = ImageImportType::New();
 
-  ConnectPipelines<vtkImageExport, ImageImportPointer>(
+  ConnectPipelines< vtkImageExport, ImageImportPointer >(
     vtk2itkImage,
     movingImporter);
 
@@ -189,19 +190,20 @@ Apply()
 
   std::cout << "segmentation finished" << std::endl;
 
-  typedef itk::ImageToVTKImageFilter<SegmentImageType> ConverterType;
+  typedef itk::ImageToVTKImageFilter< SegmentImageType > ConverterType;
 
   ConverterType::Pointer converter = ConverterType::New();
-  converter->SetInput(filter->GetOutput());
+  converter->SetInput( filter->GetOutput() );
   converter->Update();
 
   std::cout << "conversion finished" << std::endl;
 
-  vtkImageData* output = vtkImageData::New();
-  output->DeepCopy(converter->GetOutput());
+  vtkImageData *output = vtkImageData::New();
+  output->DeepCopy( converter->GetOutput() );
 
   std::cout << "copy finished" << std::endl;
 
   return output;
 }
+
 //--------------------------------------------------------------------------

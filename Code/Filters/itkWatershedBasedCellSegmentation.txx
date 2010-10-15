@@ -45,7 +45,7 @@
 
 namespace itk
 {
-template < class TFeatureImage, class TInputImage, class TSegmentImage >
+template< class TFeatureImage, class TInputImage, class TSegmentImage >
 WatershedBasedCellSegmentation< TFeatureImage, TInputImage, TSegmentImage >
 ::WatershedBasedCellSegmentation()
 {
@@ -57,87 +57,84 @@ WatershedBasedCellSegmentation< TFeatureImage, TInputImage, TSegmentImage >
   m_MembraneThreshold      = 256;
   m_Alpha = 1.5;
   m_Beta = 3.0;
-  
-  this->Superclass::SetNumberOfRequiredInputs ( 1 );
-  this->Superclass::SetNumberOfRequiredOutputs ( 1 );
 
-  this->Superclass::SetNthOutput ( 0,TSegmentImage::New() );
+  this->Superclass::SetNumberOfRequiredInputs (1);
+  this->Superclass::SetNumberOfRequiredOutputs (1);
+
+  this->Superclass::SetNthOutput ( 0, TSegmentImage::New() );
 }
 
-
-template < class TFeatureImage, class TInputImage, class TSegmentImage >
+template< class TFeatureImage, class TInputImage, class TSegmentImage >
 void
-WatershedBasedCellSegmentation< TFeatureImage, TInputImage, TSegmentImage >::
-GenerateData()
+WatershedBasedCellSegmentation< TFeatureImage, TInputImage, TSegmentImage >::GenerateData()
 {
   FeatureImageConstPointer m_NucleiImg = this->GetInput();
   FeatureImageConstPointer m_MembraneImg = m_NucleiImg;
-  
+
   SegmentImagePointer m_ForegroundImg;
-  {
+
+    {
     // Apply Foreground filter
     ForegroundFilterPointer fgFilter = ForegroundFilterType::New();
-    fgFilter->SetInput ( 0, m_NucleiImg );
-    fgFilter->SetInput ( 1, m_MembraneImg );
-    fgFilter->SetSigmaForm ( m_CorrelationKernelSigma ); // in real coordinates
-    fgFilter->SetThresholdCellmin ( m_NucleusThresholdMin );
-    fgFilter->SetThresholdCellmax ( m_NucleusThresholdMax );
-    fgFilter->SetThresholdMembrane ( m_MembraneThreshold );
-    fgFilter->SetThresholdForm ( m_CorrelationThreshold1 );
-    fgFilter->SetLargestCellRadius ( m_NucleusRadius ); // in real coordinates
+    fgFilter->SetInput (0, m_NucleiImg);
+    fgFilter->SetInput (1, m_MembraneImg);
+    fgFilter->SetSigmaForm (m_CorrelationKernelSigma);   // in real coordinates
+    fgFilter->SetThresholdCellmin (m_NucleusThresholdMin);
+    fgFilter->SetThresholdCellmax (m_NucleusThresholdMax);
+    fgFilter->SetThresholdMembrane (m_MembraneThreshold);
+    fgFilter->SetThresholdForm (m_CorrelationThreshold1);
+    fgFilter->SetLargestCellRadius (m_NucleusRadius);   // in real coordinates
     fgFilter->SetNumberOfThreads( this->GetNumberOfThreads() );
     fgFilter->Update();
     std::cout << "Computed foreground" << std::endl;
-    
+
     m_ForegroundImg = fgFilter->GetOutput();
     m_ForegroundImg->DisconnectPipeline();
-  }
-  
+    }
+
   // Gradient weighted distance -- Todo: extend with blob instead of laplace
   DistanceFilterPointer distFilter = DistanceFilterType::New();
-  distFilter->SetInput ( m_NucleiImg );
-  distFilter->SetUseLevelSet( true );
-  distFilter->SetForeground ( m_ForegroundImg );
-  distFilter->SetLargestCellRadius( m_NucleusRadius );
-  distFilter->SetNucleiSigma ( 0.5 );
-  distFilter->SetAlpha( m_Alpha );
-  distFilter->SetBeta( m_Beta );
+  distFilter->SetInput (m_NucleiImg);
+  distFilter->SetUseLevelSet(true);
+  distFilter->SetForeground (m_ForegroundImg);
+  distFilter->SetLargestCellRadius(m_NucleusRadius);
+  distFilter->SetNucleiSigma (0.5);
+  distFilter->SetAlpha(m_Alpha);
+  distFilter->SetBeta(m_Beta);
   distFilter->Update();
   std::cout << "Computed distance map" << std::endl;
-  
+
   typename MinMaxCalculatorType::Pointer minMax = MinMaxCalculatorType::New();
   minMax->SetImage( distFilter->GetOutput() );
   minMax->ComputeMaximum();
   double max = static_cast< double >( minMax->GetMaximum() );
-  
+
   RInvertPointer idistance = RInvertType::New();
   idistance->SetInput( distFilter->GetOutput() );
-  idistance->SetMaximum( max );
+  idistance->SetMaximum(max);
   idistance->Update();
   std::cout << "Inverted distance map" << std::endl;
-  
+
   WatershedFilterPointer wshed = WatershedFilterType::New();
   wshed->SetInput( idistance->GetOutput() );
-  wshed->SetMarkWatershedLine( false );
-  wshed->SetLevel( 1.0 );
+  wshed->SetMarkWatershedLine(false);
+  wshed->SetLevel(1.0);
   wshed->FullyConnectedOn();
   wshed->SetNumberOfThreads( this->GetNumberOfThreads() );
-  wshed->SetForegroundImage( m_ForegroundImg );
+  wshed->SetForegroundImage(m_ForegroundImg);
   wshed->Update();
-  
+
   SegmentImagePointer output = wshed->GetOutput();
   std::cout << "Computed watershed segmentation" << std::endl;
-  
-  this->GraftOutput( output );
+
+  this->GraftOutput(output);
 }
 
-template < class TFeatureImage, class TInputImage, class TSegmentImage >
+template< class TFeatureImage, class TInputImage, class TSegmentImage >
 void
-WatershedBasedCellSegmentation< TFeatureImage, TInputImage, TSegmentImage >::
-PrintSelf ( std::ostream& os, Indent indent ) const
-{
-}
-
+WatershedBasedCellSegmentation< TFeatureImage, TInputImage, TSegmentImage >::PrintSelf(std::ostream & os,
+                                                                                       Indent indent) const
+{}
 } /* end namespace itk */
 
 #endif

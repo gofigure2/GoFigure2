@@ -43,9 +43,9 @@
 
 #include "QGoContourManualSegmentationWidget.h"
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-  if (argc != 2)
+  if ( argc != 2 )
     {
     std::cerr << "QGoContourManualSegmentationDockWidgetTest requires 1 argument:" << std::endl;
     std::cerr << "1-test (boolean)" << std::endl;
@@ -56,15 +56,15 @@ int main(int argc, char** argv)
   QCoreApplication::setOrganizationName("MegasonLab");
   QCoreApplication::setOrganizationDomain("http://gofigure2.sourceforge.net");
 
-  QGoContourManualSegmentationWidget* dock =
-      new QGoContourManualSegmentationWidget;
+  QGoContourManualSegmentationWidget *dock =
+    new QGoContourManualSegmentationWidget;
   dock->show();
 
-  QTimer* timer = new QTimer;
+  QTimer *timer = new QTimer;
   timer->setSingleShot(true);
-  QObject::connect(timer, SIGNAL(timeout()), dock, SLOT(close()));
+  QObject::connect( timer, SIGNAL( timeout() ), dock, SLOT( close() ) );
 
-  if (atoi(argv[1]) == 1)
+  if ( atoi(argv[1]) == 1 )
     {
     timer->start(100);
     }
@@ -76,8 +76,10 @@ int main(int argc, char** argv)
 //   std::cout <<dock->GetMeshId() <<std::endl;
 //   QColor color = dock->GetValidatedColor();
 
-//   std::cout <<color.red() <<" " <<color.green() <<" " <<color.blue() <<std::endl;
-//   std::cout <<color.hue() <<" " <<color.saturation() <<" " <<color.value() <<std::endl;
+//   std::cout <<color.red() <<" " <<color.green() <<" " <<color.blue()
+// <<std::endl;
+//   std::cout <<color.hue() <<" " <<color.saturation() <<" " <<color.value()
+// <<std::endl;
 
   delete timer;
   delete dock;

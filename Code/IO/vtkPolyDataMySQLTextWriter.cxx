@@ -50,12 +50,12 @@
 vtkCxxRevisionMacro(vtkPolyDataMySQLTextWriter, "$Revision$");
 vtkStandardNewMacro(vtkPolyDataMySQLTextWriter);
 
-std::string vtkPolyDataMySQLTextWriter::GetMySQLText(vtkPolyData* iPolyData)
+std::string vtkPolyDataMySQLTextWriter::GetMySQLText(vtkPolyData *iPolyData)
 {
   m_PolyData = iPolyData;
   IsContour = IsPlanarContour();
 
-  if (IsContour)
+  if ( IsContour )
     {
     return ContourProcessing();
     }
@@ -65,22 +65,22 @@ std::string vtkPolyDataMySQLTextWriter::GetMySQLText(vtkPolyData* iPolyData)
     }
 }
 
-vtkPolyDataMySQLTextWriter::vtkPolyDataMySQLTextWriter() : m_PolyData(0),
+vtkPolyDataMySQLTextWriter::vtkPolyDataMySQLTextWriter():m_PolyData(0),
   IsContour(true)
-  {
-  }
+{}
+
 vtkPolyDataMySQLTextWriter::~vtkPolyDataMySQLTextWriter()
-  {
-  }
+{}
 
 bool vtkPolyDataMySQLTextWriter::IsPlanarContour()
 {
   double bounds[6];
+
   m_PolyData->GetBounds(bounds);
 
-  for (int dim = 0; dim < 3; dim++)
+  for ( int dim = 0; dim < 3; dim++ )
     {
-    if (bounds[2 * dim] == bounds[2 * dim + 1])
+    if ( bounds[2 * dim] == bounds[2 * dim + 1] )
       {
       return true;
       }
@@ -94,9 +94,10 @@ std::string vtkPolyDataMySQLTextWriter::ContourProcessing()
 
   double            pt[3];
   std::stringstream oMyString;
+
   oMyString << N << " ";
 
-  for (vtkIdType i = 0; i < N; i++)
+  for ( vtkIdType i = 0; i < N; i++ )
     {
     m_PolyData->GetPoint(i, pt);
     oMyString << pt[0] << " " << pt[1] << " " << pt[2] << " ";
@@ -110,28 +111,29 @@ std::string vtkPolyDataMySQLTextWriter::MeshProcessing()
   double    pt[3];
 
   std::stringstream oMyString;
+
   oMyString << N << " ";
 
-  for (vtkIdType i = 0; i < N; i++)
+  for ( vtkIdType i = 0; i < N; i++ )
     {
     m_PolyData->GetPoint(i, pt);
     oMyString << pt[0] << " " << pt[1] << " " << pt[2] << " ";
     }
 
-  vtkSmartPointer<vtkIdList>
-  cell_points = vtkSmartPointer<vtkIdList>::New();
+  vtkSmartPointer< vtkIdList >
+  cell_points = vtkSmartPointer< vtkIdList >::New();
 
   vtkIdType NbOfPointsInCell;
   N = m_PolyData->GetNumberOfCells();
   oMyString << N << " ";
 
-  for (vtkIdType i = 0; i < N; i++)
+  for ( vtkIdType i = 0; i < N; i++ )
     {
     m_PolyData->GetCellPoints(i, cell_points);
     NbOfPointsInCell = cell_points->GetNumberOfIds();
     oMyString << NbOfPointsInCell << " ";
 
-    for (vtkIdType k = 0; k < NbOfPointsInCell; k++)
+    for ( vtkIdType k = 0; k < NbOfPointsInCell; k++ )
       {
       oMyString << cell_points->GetId(k) << " ";
       }

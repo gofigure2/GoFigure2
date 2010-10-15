@@ -45,22 +45,22 @@
 
 #include "QGoIOConfigure.h"
 
-class QGOIO_EXPORT GoDBSubCellTypeRow : public GoDBNameDescRow
-  {
+class QGOIO_EXPORT GoDBSubCellTypeRow:public GoDBNameDescRow
+{
 public:
   GoDBSubCellTypeRow();
 
   ~GoDBSubCellTypeRow()
-        {}
-  virtual int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
-  virtual int DoesThisEntityAlreadyExists(
-    vtkMySQLDatabase* DatabaseConnector);
-  //virtual int DoesThisEntityAlreadyExists(
-   // vtkMySQLDatabase* DatabaseConnector, std::string& ioName);
+  {}
+  virtual int SaveInDB(vtkMySQLDatabase *DatabaseConnector);
 
+  virtual int DoesThisEntityAlreadyExists(
+    vtkMySQLDatabase *DatabaseConnector);
+
+  //virtual int DoesThisEntityAlreadyExists(
+  // vtkMySQLDatabase* DatabaseConnector, std::string& ioName);
 protected:
 
   virtual void InitializeMap();
-
-  };
+};
 #endif

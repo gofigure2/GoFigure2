@@ -48,23 +48,20 @@
 on the number of characters the user can enter, that's the reason for
 the creation of this class
 */
-class QTextEditChild : public QTextEdit
-  {
+class QTextEditChild:public QTextEdit
+{
   Q_OBJECT
-
 public:
-  explicit QTextEditChild(QWidget* iParent = 0, int iNumberMaxCharacters = 1000);
+  explicit QTextEditChild(QWidget *iParent = 0, int iNumberMaxCharacters = 1000);
 
   virtual ~QTextEditChild();
-
 protected:
   int m_MaxCharacters;
-
 protected slots:
   void     RestrainInputCharacters();
 
 private:
-  Q_DISABLE_COPY( QTextEditChild );
-  };
+  Q_DISABLE_COPY(QTextEditChild);
+};
 
 #endif

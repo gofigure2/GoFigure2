@@ -50,10 +50,9 @@
 #include "itkSmartPointer.h"
 #include "itkImageFileReader.h"
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-
-  if (argc != 3)
+  if ( argc != 3 )
     {
     std::cout << "Usage : QGoSynchronizedView3DTest(.exe) " << std::endl;
     std::cout << "1-file.mhd" << std::endl;
@@ -67,48 +66,48 @@ int main(int argc, char** argv)
 
 // ITK Typedefs
 // ITK Reader and filters Typedef
-  typedef double                        InputPixelType;
-  typedef itk::Image<InputPixelType, 3> InputImage3DType;
-  typedef InputImage3DType::Pointer     InputImage3DPointer;
+  typedef double                          InputPixelType;
+  typedef itk::Image< InputPixelType, 3 > InputImage3DType;
+  typedef InputImage3DType::Pointer       InputImage3DPointer;
 
   //itk reader
-  typedef itk::ImageFileReader<InputImage3DType> itkReaderType;
+  typedef itk::ImageFileReader< InputImage3DType > itkReaderType;
   itkReaderType::Pointer itkReader = itkReaderType::New();
   itkReader->SetFileName(argv[1]);
   itkReader->Update();
 
   //vtk reader
-  vtkSmartPointer<vtkMetaImageReader> reader =
-    vtkSmartPointer<vtkMetaImageReader>::New();
+  vtkSmartPointer< vtkMetaImageReader > reader =
+    vtkSmartPointer< vtkMetaImageReader >::New();
   reader->SetFileName(argv[1]);
   reader->Update();
 
   QString                cp0 = "itk sync view";
-  QGoSynchronizedView3D* SynchronizedView0 = new QGoSynchronizedView3D(cp0, 0);
+  QGoSynchronizedView3D *SynchronizedView0 = new QGoSynchronizedView3D(cp0, 0);
   QString                cp1 = "vtk sync view";
-  QGoSynchronizedView3D* SynchronizedView1 = new QGoSynchronizedView3D(cp1, 0);
+  QGoSynchronizedView3D *SynchronizedView1 = new QGoSynchronizedView3D(cp1, 0);
 
-  QTimer* timer = new QTimer;
+  QTimer *timer = new QTimer;
   timer->setSingleShot(true);
-  QObject::connect(timer, SIGNAL(timeout()),
-                   SynchronizedView0, SLOT(close()));
-  QObject::connect(timer, SIGNAL(timeout()),
-                   SynchronizedView1, SLOT(close()));
+  QObject::connect( timer, SIGNAL( timeout() ),
+                    SynchronizedView0, SLOT( close() ) );
+  QObject::connect( timer, SIGNAL( timeout() ),
+                    SynchronizedView1, SLOT( close() ) );
 
-  SynchronizedView0->SetImage<InputPixelType>(itkReader->GetOutput());
+  SynchronizedView0->SetImage< InputPixelType >( itkReader->GetOutput() );
   SynchronizedView0->Update();
   SynchronizedView0->show();
 
-  SynchronizedView1->SetImage(reader->GetOutput());
+  SynchronizedView1->SetImage( reader->GetOutput() );
   SynchronizedView1->Update();
   SynchronizedView1->show();
 
-  if (atoi(argv[2]) == 1)
+  if ( atoi(argv[2]) == 1 )
     {
     timer->start(1500);
 
     SynchronizedView0->SetFullScreenView(1);
-    if (SynchronizedView0->GetFullScreenView() != 1)
+    if ( SynchronizedView0->GetFullScreenView() != 1 )
       {
       std::cerr << "SynchronizedView0->GetFullScreenView() = " << SynchronizedView0->GetFullScreenView();
       std::cerr << " != 1" << std::endl;
@@ -122,7 +121,7 @@ int main(int argc, char** argv)
       }
 
     SynchronizedView0->SetFullScreenView(2);
-    if (SynchronizedView0->GetFullScreenView() != 2)
+    if ( SynchronizedView0->GetFullScreenView() != 2 )
       {
       std::cerr << "SynchronizedView0->GetFullScreenView() = " << SynchronizedView0->GetFullScreenView();
       std::cerr << " != 2" << std::endl;
@@ -135,7 +134,7 @@ int main(int argc, char** argv)
       }
 
     SynchronizedView0->SetFullScreenView(3);
-    if (SynchronizedView0->GetFullScreenView() != 3)
+    if ( SynchronizedView0->GetFullScreenView() != 3 )
       {
       std::cerr << "SynchronizedView0->GetFullScreenView() = " << SynchronizedView0->GetFullScreenView();
       std::cerr << " != 3" << std::endl;
@@ -148,7 +147,7 @@ int main(int argc, char** argv)
       }
 
     SynchronizedView0->SetFullScreenView(4);
-    if (SynchronizedView0->GetFullScreenView() != 4)
+    if ( SynchronizedView0->GetFullScreenView() != 4 )
       {
       std::cerr << "SynchronizedView0->GetFullScreenView() = " << SynchronizedView0->GetFullScreenView();
       std::cerr << " != 4" << std::endl;
@@ -161,7 +160,7 @@ int main(int argc, char** argv)
       }
 
     SynchronizedView0->SetFullScreenView(0);
-    if (SynchronizedView0->GetFullScreenView() != 0)
+    if ( SynchronizedView0->GetFullScreenView() != 0 )
       {
       std::cerr << "SynchronizedView0->GetFullScreenView() = " << SynchronizedView0->GetFullScreenView();
       std::cerr << " != 0" << std::endl;
@@ -174,7 +173,7 @@ int main(int argc, char** argv)
       }
 
     SynchronizedView1->SetFullScreenView(1);
-    if (SynchronizedView1->GetFullScreenView() != 1)
+    if ( SynchronizedView1->GetFullScreenView() != 1 )
       {
       std::cerr << "SynchronizedView1->GetFullScreenView() = " << SynchronizedView1->GetFullScreenView();
       std::cerr << " != 1" << std::endl;
@@ -188,7 +187,7 @@ int main(int argc, char** argv)
       }
 
     SynchronizedView1->SetFullScreenView(2);
-    if (SynchronizedView1->GetFullScreenView() != 2)
+    if ( SynchronizedView1->GetFullScreenView() != 2 )
       {
       std::cerr << "SynchronizedView1->GetFullScreenView() = " << SynchronizedView1->GetFullScreenView();
       std::cerr << " != 2" << std::endl;
@@ -201,7 +200,7 @@ int main(int argc, char** argv)
       }
 
     SynchronizedView1->SetFullScreenView(3);
-    if (SynchronizedView1->GetFullScreenView() != 3)
+    if ( SynchronizedView1->GetFullScreenView() != 3 )
       {
       std::cerr << "SynchronizedView1->GetFullScreenView() = " << SynchronizedView1->GetFullScreenView();
       std::cerr << " != 3" << std::endl;
@@ -214,7 +213,7 @@ int main(int argc, char** argv)
       }
 
     SynchronizedView1->SetFullScreenView(4);
-    if (SynchronizedView1->GetFullScreenView() != 4)
+    if ( SynchronizedView1->GetFullScreenView() != 4 )
       {
       std::cerr << "SynchronizedView1->GetFullScreenView() = " << SynchronizedView1->GetFullScreenView();
       std::cerr << " != 4" << std::endl;
@@ -227,7 +226,7 @@ int main(int argc, char** argv)
       }
 
     SynchronizedView1->SetFullScreenView(0);
-    if (SynchronizedView1->GetFullScreenView() != 0)
+    if ( SynchronizedView1->GetFullScreenView() != 0 )
       {
       std::cerr << "SynchronizedView1->GetFullScreenView() = " << SynchronizedView1->GetFullScreenView();
       std::cerr << " != 0" << std::endl;

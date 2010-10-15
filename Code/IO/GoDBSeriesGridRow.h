@@ -43,7 +43,7 @@
 #include <string>
 
 class GoDBSeriesGridRow
-  {
+{
 public:
 
   int         imageID;
@@ -74,7 +74,7 @@ public:
   }
 
   GoDBSeriesGridRow()
-    {
+  {
     imageID = 0;
     experimentID = -1;
     RCoord = -1;
@@ -84,50 +84,50 @@ public:
     XCoord = -1;
     ZCoord = -1;
     filename = "";
-    }
+  }
 
   bool SetFieldValueAsString(unsigned int FieldID, std::string ValueAsString)
   {
-    switch (FieldID)
+    switch ( FieldID )
       {
       case 0:
         {
-        this->imageID = atoi(ValueAsString.c_str());
+        this->imageID = atoi( ValueAsString.c_str() );
         break;
         }
       case 1:
         {
-        this->experimentID = atoi(ValueAsString.c_str());
+        this->experimentID = atoi( ValueAsString.c_str() );
         break;
         }
       case 2:
         {
-        this->RCoord = atoi(ValueAsString.c_str());
+        this->RCoord = atoi( ValueAsString.c_str() );
         break;
         }
       case 3:
         {
-        this->CCoord = atoi(ValueAsString.c_str());
+        this->CCoord = atoi( ValueAsString.c_str() );
         break;
         }
       case 4:
         {
-        this->TCoord = atoi(ValueAsString.c_str());
+        this->TCoord = atoi( ValueAsString.c_str() );
         break;
         }
       case 5:
         {
-        this->YCoord = atoi(ValueAsString.c_str());
+        this->YCoord = atoi( ValueAsString.c_str() );
         break;
         }
       case 6:
         {
-        this->XCoord = atoi(ValueAsString.c_str());
+        this->XCoord = atoi( ValueAsString.c_str() );
         break;
         }
       case 7:
         {
-        this->ZCoord = atoi(ValueAsString.c_str());
+        this->ZCoord = atoi( ValueAsString.c_str() );
         break;
         }
       case 8:
@@ -142,7 +142,6 @@ public:
       }
     return true;
   }
-
-  };
+};
 
 #endif

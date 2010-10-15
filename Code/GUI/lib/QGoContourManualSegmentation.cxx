@@ -43,57 +43,56 @@
 #include "QGoManualSegmentationSettingsDialog.h"
 
 //--------------------------------------------------------------------------
-QGoContourManualSegmentation::
-QGoContourManualSegmentation( QWidget* iParent ) :
-  QObject( iParent ),
-  m_LinesWidth( 2. ),
-  m_LinesColor( Qt::magenta ),
-  m_NodesColor( Qt::yellow ),
-  m_ActiveNodesColor( Qt::cyan ),
-  m_ReeditMode( false )
+QGoContourManualSegmentation::QGoContourManualSegmentation(QWidget *iParent):
+  QObject(iParent),
+  m_LinesWidth(2.),
+  m_LinesColor(Qt::magenta),
+  m_NodesColor(Qt::yellow),
+  m_ActiveNodesColor(Qt::cyan),
+  m_ReeditMode(false)
 {
-  m_ContourSegmentationWidget = new QGoContourManualSegmentationWidget( iParent );
+  m_ContourSegmentationWidget = new QGoContourManualSegmentationWidget(iParent);
 
   QObject::connect(
-      m_ContourSegmentationWidget, SIGNAL(UpdateContourRepresentationProperties()),
-      this, SLOT(GenerateContourRepresentationProperties()) );
+    m_ContourSegmentationWidget, SIGNAL( UpdateContourRepresentationProperties() ),
+    this, SLOT( GenerateContourRepresentationProperties() ) );
 
   QObject::connect(
-      m_ContourSegmentationWidget, SIGNAL(ValidatePressed()),
-      this, SIGNAL(validateContour()) );
+    m_ContourSegmentationWidget, SIGNAL( ValidatePressed() ),
+    this, SIGNAL( validateContour() ) );
 
   QObject::connect(
-      m_ContourSegmentationWidget, SIGNAL(ReinitializePressed()),
-      this, SIGNAL(reinitializeContour()) );
+    m_ContourSegmentationWidget, SIGNAL( ReinitializePressed() ),
+    this, SIGNAL( reinitializeContour() ) );
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QGoContourManualSegmentation::
 ~QGoContourManualSegmentation()
-{
-}
+{}
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-QWidget*
-QGoContourManualSegmentation::
-getWidget()
+QWidget *
+QGoContourManualSegmentation::getWidget()
 {
   return m_ContourSegmentationWidget;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
-QGoContourManualSegmentation::
-GenerateContourRepresentationProperties(bool iModified)
+QGoContourManualSegmentation::GenerateContourRepresentationProperties(bool iModified)
 {
   bool haschanged = iModified;
 
   double temp = m_ContourSegmentationWidget->m_SettingsDialog->GetLineWidth();
 
-  if (m_LinesWidth != temp)
+  if ( m_LinesWidth != temp )
     {
     m_LinesWidth = temp;
     haschanged = true;
@@ -101,7 +100,7 @@ GenerateContourRepresentationProperties(bool iModified)
 
   QColor temp_color = m_ContourSegmentationWidget->m_SettingsDialog->GetLineColor();
 
-  if (m_LinesColor != temp_color)
+  if ( m_LinesColor != temp_color )
     {
     m_LinesColor = temp_color;
     haschanged = true;
@@ -109,46 +108,47 @@ GenerateContourRepresentationProperties(bool iModified)
 
   temp_color = m_ContourSegmentationWidget->m_SettingsDialog->GetNodeColor();
 
-  if (m_NodesColor != temp_color)
+  if ( m_NodesColor != temp_color )
     {
     m_NodesColor = temp_color;
     haschanged = true;
     }
   temp_color = m_ContourSegmentationWidget->m_SettingsDialog->GetActivatedNodeColor();
 
-  if (m_ActiveNodesColor != temp_color)
+  if ( m_ActiveNodesColor != temp_color )
     {
     m_ActiveNodesColor = temp_color;
     haschanged = true;
     }
 
-  if (haschanged)
+  if ( haschanged )
     {
     emit changeContourRepresentationProperty(
-        static_cast<float>(m_LinesWidth),
-        m_LinesColor,
-        m_NodesColor,
-        m_ActiveNodesColor );
+      static_cast< float >( m_LinesWidth ),
+      m_LinesColor,
+      m_NodesColor,
+      m_ActiveNodesColor);
     }
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
-QGoContourManualSegmentation::
-SetReeditMode(bool iReeditMode)
+QGoContourManualSegmentation::SetReeditMode(bool iReeditMode)
 {
   m_ReeditMode = iReeditMode;
   // show enable disable button here
   // or emit a signal
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 bool
-QGoContourManualSegmentation::
-GetReeditMode()
+QGoContourManualSegmentation::GetReeditMode()
 {
   return m_ReeditMode;
 }
+
 //--------------------------------------------------------------------------

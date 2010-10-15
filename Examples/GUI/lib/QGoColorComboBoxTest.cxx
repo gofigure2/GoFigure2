@@ -44,9 +44,9 @@
 #include "QGoSelectedColorComboBox.h"
 #include "QGoPrintDatabase.h"
 
-int main(int argc, char * argv[])
+int main(int argc, char *argv[])
 {
-  if (argc != 3)
+  if ( argc != 3 )
     {
     std::cerr << "QGoColorComboTest requires 2 arguments:" << std::endl;
     std::cerr << "1-test (boolean)" << std::endl;
@@ -57,10 +57,10 @@ int main(int argc, char * argv[])
   QCoreApplication::setOrganizationName("MegasonLab");
   QCoreApplication::setOrganizationDomain("http://gofigure2.sourceforge.net");
 
-  QGoSelectedColorComboBox* win = new QGoSelectedColorComboBox;
-  QGoPrintDatabase* DBTables = new QGoPrintDatabase;
+  QGoSelectedColorComboBox *win = new QGoSelectedColorComboBox;
+  QGoPrintDatabase *        DBTables = new QGoPrintDatabase;
   DBTables->SetDatabaseVariables("gofiguredatabase", "localhost", "gofigure",
-    "gofigure", atoi(argv[1]), argv[2]);
+                                 "gofigure", atoi(argv[1]), argv[2]);
   //win->setItemsWithColorFromDB(DBTables->GetColorComboBoxInfofromDB());
   //DBTables->SetColorComboBoxInfofromDB();
   //QGoPrintDatabase* win = new QGoPrintDatabase;
@@ -68,8 +68,8 @@ int main(int argc, char * argv[])
   //    "gofigure",atoi(argv[2]), argv[3]);
   //win->SetDatabaseVariables(
   //  "gofiguredatabase", "localhost", "gofigure",
- //   "gofigure", 8, "LSM_Converter");
- // win->FillTableFromDatabase(2);
+  //   "gofigure", 8, "LSM_Converter");
+  // win->FillTableFromDatabase(2);
 
   win->show();
 
@@ -87,7 +87,7 @@ int main(int argc, char * argv[])
   app.closeAllWindows();
 
   delete win;
- // delete timer;
+  // delete timer;
 
   return output;
 }

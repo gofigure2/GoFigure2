@@ -44,17 +44,17 @@
 #include <QWidget>
 #include "ui_LevelsetWidget.h"
 
-class QGoContourSemiAutoLevelsetWidget :
-    public QWidget,
-    protected Ui::LevelsetWidget
+class QGoContourSemiAutoLevelsetWidget:
+  public QWidget,
+  protected Ui::LevelsetWidget
 {
   Q_OBJECT
 public:
-  explicit QGoContourSemiAutoLevelsetWidget(QWidget* iParent = 0);
+  explicit QGoContourSemiAutoLevelsetWidget(QWidget *iParent = 0);
   ~QGoContourSemiAutoLevelsetWidget();
-
 signals:
   void Curvature(int);
+
   void Iterations(int);
 };
 

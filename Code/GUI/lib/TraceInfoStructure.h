@@ -46,67 +46,66 @@
 #include "ContourMeshStructureHelper.h"
 #include <QWidget>
 
-struct TraceInfoStructure
-  {
+struct TraceInfoStructure {
   std::string TraceName;
   std::string TraceNameID;
   std::string CollectionName;
   std::string CollectionNameID;
   std::string CollectionOf;
   std::string CollectionOfID;
-  QGoTableWidget* Table;
-  GoDBCollectionOfTraces* CollectionOfTraces;
-  ContourMeshStructureMultiIndexContainer* ListTracesInfoForVisu;
+  QGoTableWidget *Table;
+  GoDBCollectionOfTraces *CollectionOfTraces;
+  ContourMeshStructureMultiIndexContainer *ListTracesInfoForVisu;
 
-  TraceInfoStructure() : CollectionOfTraces(NULL),
+  TraceInfoStructure():CollectionOfTraces(NULL),
     ListTracesInfoForVisu(NULL)
-        {}
+  {}
 
-  TraceInfoStructure(const std::string& iTraceName, QWidget* parent) :
+  TraceInfoStructure(const std::string & iTraceName, QWidget *parent):
     CollectionOfTraces(NULL), ListTracesInfoForVisu(NULL)
-    {
+  {
     SetInfoStructure(iTraceName, parent);
-    }
+  }
 
   ~TraceInfoStructure()
-    {
+  {
     // Table has a parent that is supposed to delete it
-    if( Table )
-       {
-       delete Table;
-       }
-    if (ListTracesInfoForVisu)
+    if ( Table )
+      {
+      delete Table;
+      }
+    if ( ListTracesInfoForVisu )
       {
       delete ListTracesInfoForVisu;
       }
-    if (CollectionOfTraces)
+    if ( CollectionOfTraces )
       {
       delete CollectionOfTraces;
       }
-    }
+  }
 
-  void SetInfoStructure(const std::string& iTraceName, QWidget* iParent)
+  void SetInfoStructure(const std::string & iTraceName, QWidget *iParent)
   {
     TraceName = iTraceName;
     TraceNameID = iTraceName;
     TraceNameID += "ID";
 
-    if (TraceName == "contour")
+    if ( TraceName == "contour" )
       {
       CollectionName = "mesh";
       CollectionOf = "None";
       }
-    if (TraceName == "mesh")
+    if ( TraceName == "mesh" )
       {
       CollectionName = "track";
       CollectionOf = "contour";
       }
-    if (TraceName == "track")
+    if ( TraceName == "track" )
       {
       CollectionName = "lineage";
       CollectionOf = "mesh";
       }
-    if (TraceName == "lineage")
+    if ( TraceName == "lineage" )
       {
       CollectionName = "None";
       CollectionOf = "mesh";
@@ -115,10 +114,10 @@ struct TraceInfoStructure
     CollectionNameID += "ID";
     CollectionOfID = CollectionOf;
     CollectionOfID += "ID";
-    //CollectionOfTraces = new GoDBCollectionOfTraces(CollectionName, TraceName);
+    //CollectionOfTraces = new GoDBCollectionOfTraces(CollectionName,
+    // TraceName);
     CollectionOfTraces = new GoDBCollectionOfTraces();
     Table = new QGoTableWidget(iParent);
   }
-
-  };
+};
 #endif

@@ -41,7 +41,7 @@
 #ifndef __itkGradientWeightedIntensityImageFilter_h
 #define __itkGradientWeightedIntensityImageFilter_h
 
-#if defined(_MSC_VER)
+#if defined( _MSC_VER )
 #pragma warning ( disable : 4786 )
 #endif
 
@@ -66,117 +66,117 @@
 
 namespace itk
 {
-template < class TFeatureImage, class TInputImage, class TSegmentImage >
-class ITK_EXPORT GradientWeightedIntensityImageFilter :
+template< class TFeatureImage, class TInputImage, class TSegmentImage >
+class ITK_EXPORT GradientWeightedIntensityImageFilter:
   public ImageToImageFilter< TFeatureImage, TInputImage >
 {
-  public:
-    typedef GradientWeightedIntensityImageFilter                              Self;
-    typedef ImageToImageFilter< TFeatureImage, TInputImage >  Superclass;
-    typedef SmartPointer<Self>                                Pointer;
-    typedef SmartPointer<const Self>                          ConstPointer;
+public:
+  typedef GradientWeightedIntensityImageFilter             Self;
+  typedef ImageToImageFilter< TFeatureImage, TInputImage > Superclass;
+  typedef SmartPointer< Self >                             Pointer;
+  typedef SmartPointer< const Self >                       ConstPointer;
 
-    itkStaticConstMacro ( ImageDimension, unsigned int,
-      TFeatureImage::ImageDimension );
+  itkStaticConstMacro (ImageDimension, unsigned int,
+                       TFeatureImage::ImageDimension);
 
-    /** Method for creation through object factory */
-    itkNewMacro ( Self );
+  /** Method for creation through object factory */
+  itkNewMacro (Self);
 
-    /** Run-time type information */
-    itkTypeMacro ( GradientWeightedIntensityImageFilter, ImageToImageFilter );
+  /** Run-time type information */
+  itkTypeMacro (GradientWeightedIntensityImageFilter, ImageToImageFilter);
 
-    /** Display */
-    void PrintSelf ( std::ostream& os, Indent indent ) const;
+  /** Display */
+  void PrintSelf(std::ostream & os, Indent indent) const;
 
-    typedef TFeatureImage                           FeatureImageType;
-    typedef typename FeatureImageType::Pointer      FeatureImagePointer;
-    typedef typename FeatureImageType::ConstPointer FeatureImageConstPointer;
-    typedef typename FeatureImageType::PixelType    FeatureImagePixelType;
-    typedef typename FeatureImageType::RegionType   FeatureImageRegionType;
-    typedef typename FeatureImageType::SizeType     FeatureImageSizeType;
-    typedef typename FeatureImageSizeType::SizeValueType FeatureImageSizeValueType;
-    typedef typename FeatureImageType::SpacingType  FeatureImageSpacingType;
-    typedef typename FeatureImageType::IndexType    FeatureImageIndexType;
-    typedef typename FeatureImageType::PointType    FeatureImagePointType;
+  typedef TFeatureImage                                FeatureImageType;
+  typedef typename FeatureImageType::Pointer           FeatureImagePointer;
+  typedef typename FeatureImageType::ConstPointer      FeatureImageConstPointer;
+  typedef typename FeatureImageType::PixelType         FeatureImagePixelType;
+  typedef typename FeatureImageType::RegionType        FeatureImageRegionType;
+  typedef typename FeatureImageType::SizeType          FeatureImageSizeType;
+  typedef typename FeatureImageSizeType::SizeValueType FeatureImageSizeValueType;
+  typedef typename FeatureImageType::SpacingType       FeatureImageSpacingType;
+  typedef typename FeatureImageType::IndexType         FeatureImageIndexType;
+  typedef typename FeatureImageType::PointType         FeatureImagePointType;
 
-    typedef TInputImage                             ImageType;
-    typedef typename ImageType::Pointer             ImagePointer;
-    typedef typename ImageType::ConstPointer        ImageConstPointer;
-    typedef typename ImageType::PixelType           ImagePixelType;
-    typedef typename ImageType::RegionType          ImageRegionType;
-    typedef typename ImageType::SizeType            ImageSizeType;
-    typedef typename ImageSizeType::SizeValueType   ImageSizeValueType;
-    typedef typename ImageType::SpacingType         ImageSpacingType;
-    typedef typename ImageType::IndexType           ImageIndexType;
-    typedef typename ImageType::PointType           ImagePointType;
+  typedef TInputImage                           ImageType;
+  typedef typename ImageType::Pointer           ImagePointer;
+  typedef typename ImageType::ConstPointer      ImageConstPointer;
+  typedef typename ImageType::PixelType         ImagePixelType;
+  typedef typename ImageType::RegionType        ImageRegionType;
+  typedef typename ImageType::SizeType          ImageSizeType;
+  typedef typename ImageSizeType::SizeValueType ImageSizeValueType;
+  typedef typename ImageType::SpacingType       ImageSpacingType;
+  typedef typename ImageType::IndexType         ImageIndexType;
+  typedef typename ImageType::PointType         ImagePointType;
 
-    typedef TSegmentImage                           SegmentImageType;
-    typedef typename SegmentImageType::Pointer      SegmentImagePointer;
-    typedef typename SegmentImageType::ConstPointer SegmentImageConstPointer;
-    typedef typename SegmentImageType::IndexType    SegmentImageIndexType;
-    typedef typename SegmentImageType::PixelType    SegmentImagePixelType;
+  typedef TSegmentImage                           SegmentImageType;
+  typedef typename SegmentImageType::Pointer      SegmentImagePointer;
+  typedef typename SegmentImageType::ConstPointer SegmentImageConstPointer;
+  typedef typename SegmentImageType::IndexType    SegmentImageIndexType;
+  typedef typename SegmentImageType::PixelType    SegmentImagePixelType;
 
-    typedef MultiScaleLoGImageFilter< FeatureImageType, ImageType >
-      MultiScaleLoGFilterType;
-    typedef typename MultiScaleLoGFilterType::Pointer MultiScaleLoGFilterPointer;
-    typedef RescaleIntensityImageFilter< ImageType, ImageType>
-      RescaleFilterType;
-    typedef typename RescaleFilterType::Pointer RescaleFilterPointer;
+  typedef MultiScaleLoGImageFilter< FeatureImageType, ImageType >
+  MultiScaleLoGFilterType;
+  typedef typename MultiScaleLoGFilterType::Pointer MultiScaleLoGFilterPointer;
+  typedef RescaleIntensityImageFilter< ImageType, ImageType >
+  RescaleFilterType;
+  typedef typename RescaleFilterType::Pointer RescaleFilterPointer;
 
-    typedef GradientMagnitudeRecursiveGaussianImageFilter< FeatureImageType, ImageType >
-      GradientFilterType;
-    typedef typename GradientFilterType::Pointer GradientFilterPointer;
-    typedef SigmoidImageFilter< ImageType,ImageType > SigmoidFilterType;
-    typedef typename SigmoidFilterType::Pointer SigmoidFilterPointer;
+  typedef GradientMagnitudeRecursiveGaussianImageFilter< FeatureImageType, ImageType >
+  GradientFilterType;
+  typedef typename GradientFilterType::Pointer       GradientFilterPointer;
+  typedef SigmoidImageFilter< ImageType, ImageType > SigmoidFilterType;
+  typedef typename SigmoidFilterType::Pointer        SigmoidFilterPointer;
 
-    typedef ImageRegionConstIterator< FeatureImageType > ConstIteratorType;
-    typedef ImageRegionIterator< FeatureImageType > FIteratorType;
-    typedef ImageRegionIterator<ImageType> IteratorType;
-    typedef ImageRegionIteratorWithIndex<ImageType> IndexIteratorType;
+  typedef ImageRegionConstIterator< FeatureImageType > ConstIteratorType;
+  typedef ImageRegionIterator< FeatureImageType >      FIteratorType;
+  typedef ImageRegionIterator< ImageType >             IteratorType;
+  typedef ImageRegionIteratorWithIndex< ImageType >    IndexIteratorType;
 
-    void SetBlob( FeatureImagePointer blob )
-    {
-      m_Blob = blob;
-    }
+  void SetBlob(FeatureImagePointer blob)
+  {
+    m_Blob = blob;
+  }
 
-    void SetForm( ImagePointer form )
-    {
-      m_Form = form;
-    }
+  void SetForm(ImagePointer form)
+  {
+    m_Form = form;
+  }
 
-	  itkGetConstMacro ( LargestCellRadius,double );
-    itkSetMacro ( LargestCellRadius,double );
-    itkGetConstMacro ( NucleiSigma,double );
-    itkSetMacro ( NucleiSigma,double );
-    itkGetConstMacro ( Alpha,double );
-    itkSetMacro ( Alpha,double );
-    itkGetConstMacro ( Beta,double );
-    itkSetMacro ( Beta,double );
-    itkGetConstMacro ( Gamma,double );
-    itkSetMacro ( Gamma,double );
+  itkGetConstMacro (LargestCellRadius, double);
+  itkSetMacro (LargestCellRadius, double);
+  itkGetConstMacro (NucleiSigma, double);
+  itkSetMacro (NucleiSigma, double);
+  itkGetConstMacro (Alpha, double);
+  itkSetMacro (Alpha, double);
+  itkGetConstMacro (Beta, double);
+  itkSetMacro (Beta, double);
+  itkGetConstMacro (Gamma, double);
+  itkSetMacro (Gamma, double);
+protected:
+  GradientWeightedIntensityImageFilter();
+  ~GradientWeightedIntensityImageFilter() {}
+  void Normalize();
 
-  protected:
-    GradientWeightedIntensityImageFilter();
-    ~GradientWeightedIntensityImageFilter() {}
-    void Normalize ();
-    void GenerateData();
+  void GenerateData();
 
-    double m_LargestCellRadius;
-    double m_NucleiSigma;
-    double m_Alpha;
-    double m_Beta;
-    double m_Gamma;
+  double m_LargestCellRadius;
+  double m_NucleiSigma;
+  double m_Alpha;
+  double m_Beta;
+  double m_Gamma;
 
-    FeatureImagePointer m_Blob;
-    ImagePointer m_Form;
+  FeatureImagePointer m_Blob;
+  ImagePointer m_Form;
+private:
 
-    private:
-
-      GradientWeightedIntensityImageFilter ( Self& );   // intentionally not implemented
-      void operator= ( const Self& );   // intentionally not implemented
-    };
-
-  } /* namespace itk */
+  GradientWeightedIntensityImageFilter (Self &); // intentionally not
+                                                 // implemented
+  void operator=(const Self &);                  // intentionally not
+                                                 // implemented
+};
+}   /* namespace itk */
 
 #include "itkGradientWeightedIntensityImageFilter.txx"
 #endif

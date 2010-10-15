@@ -43,53 +43,53 @@
 #include "QueryDataBaseHelper.h"
 #include "QGoDeleteFromListDialog.h"
 
-QGoDBNameDescEntityManager::QGoDBNameDescEntityManager(QWidget* iParent,
-                                       std::string iEntityName, int iImgSessionID) :
+QGoDBNameDescEntityManager::QGoDBNameDescEntityManager(QWidget *iParent,
+                                                       std::string iEntityName, int iImgSessionID):
   QWidget(iParent)
-  {
+{
   this->m_EntityName = iEntityName;
   this->m_ImgSessionID = iImgSessionID;
   this->m_NameNewEntity = "";
-  }
+}
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 QGoDBNameDescEntityManager::~QGoDBNameDescEntityManager()
-  {
-  }
+{}
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 std::string QGoDBNameDescEntityManager::AddAnEntity(
-  vtkMySQLDatabase* iDatabaseConnector)
+  vtkMySQLDatabase *iDatabaseConnector)
 {
- this->m_NameDescDialog = new QGoNameDescriptionInputDialog(
-    this, this->m_EntityName.c_str());
+  this->m_NameDescDialog = new QGoNameDescriptionInputDialog(
+    this, this->m_EntityName.c_str() );
 
   this->m_DatabaseConnector = iDatabaseConnector;
-  QObject::connect (this->m_NameDescDialog, SIGNAL(NewNameDescription(std::string,
-                    std::string)),
-                    this, SLOT(ValidateName(std::string,std::string)));
+  QObject::connect ( this->m_NameDescDialog, SIGNAL( NewNameDescription(std::string,
+                                                                        std::string) ),
+                     this, SLOT( ValidateName(std::string, std::string) ) );
   bool ok = this->m_NameDescDialog->exec();
-  if (!ok)
+  if ( !ok )
     {
     this->m_NameNewEntity.clear();
     }
   return this->m_NameNewEntity;
 }
 
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QGoDBNameDescEntityManager::NamesDescrContainerType 
-QGoDBNameDescEntityManager::GetListExistingEntities(vtkMySQLDatabase* iDatabaseConnector)
+QGoDBNameDescEntityManager::NamesDescrContainerType
+QGoDBNameDescEntityManager::GetListExistingEntities(vtkMySQLDatabase *iDatabaseConnector)
 {
-  if (this->m_ImgSessionID != 0)
+  if ( this->m_ImgSessionID != 0 )
     {
     return ListSpecificValuesForTwoColumns(iDatabaseConnector,
                                            this->m_EntityName, "Name", "Description", "ImagingSessionID",
-                                           ConvertToString<int>(this->m_ImgSessionID), "Name");
+                                           ConvertToString< int >(this->m_ImgSessionID), "Name");
     }
   else
     {
@@ -97,37 +97,40 @@ QGoDBNameDescEntityManager::GetListExistingEntities(vtkMySQLDatabase* iDatabaseC
                                      "Description", this->m_EntityName, "Name");
     }
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 bool QGoDBNameDescEntityManager::DeleteEntity(
-  vtkMySQLDatabase* iDatabaseConnector)
+  vtkMySQLDatabase *iDatabaseConnector)
 {
-  QGoDeleteFromListDialog* Dialog = new QGoDeleteFromListDialog(
+  QGoDeleteFromListDialog *Dialog = new QGoDeleteFromListDialog(
     this->GetNameExistingEntities(iDatabaseConnector),
     this, this->m_EntityName);
-  
+
   this->m_DatabaseConnector = iDatabaseConnector;
   QObject::connect(Dialog,
-                   SIGNAL(ListEntitiesToDelete(std::vector<std::string>)),
+                   SIGNAL( ListEntitiesToDelete(std::vector< std::string > ) ),
                    this,
-                   SLOT(DeleteEntitiesFromList(std::vector<std::string>))
+                   SLOT( DeleteEntitiesFromList(std::vector< std::string > ) )
                    );
   Dialog->show();
   return Dialog->exec();
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoDBNameDescEntityManager::DeleteEntitiesFromList(
-    std::vector<std::string> iVectorNamesEntitiesToDelete)
+  std::vector< std::string > iVectorNamesEntitiesToDelete)
 {
-  if (this->m_DatabaseConnector != 0)
+  if ( this->m_DatabaseConnector != 0 )
     {
     DeleteRows(this->m_DatabaseConnector, this->m_EntityName,
                "Name", iVectorNamesEntitiesToDelete);
     }
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -135,21 +138,22 @@ std::string QGoDBNameDescEntityManager::GetNameNewEntity()
 {
   return this->m_NameNewEntity;
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::vector<std::string> QGoDBNameDescEntityManager::
-GetNameExistingEntities(vtkMySQLDatabase* iDatabaseConnector)
+std::vector< std::string > QGoDBNameDescEntityManager::GetNameExistingEntities(vtkMySQLDatabase *iDatabaseConnector)
 {
-  std::vector<std::string> ResultsQuery;
-  if (iDatabaseConnector)
+  std::vector< std::string > ResultsQuery;
+  if ( iDatabaseConnector )
     {
-    // if m_ImgSessionID = 0, the entity name is not related to an imagingsession
-    if (this->m_ImgSessionID != 0)
+    // if m_ImgSessionID = 0, the entity name is not related to an
+    // imagingsession
+    if ( this->m_ImgSessionID != 0 )
       {
       ResultsQuery = ListSpecificValuesForOneColumn(
         iDatabaseConnector, this->m_EntityName, "Name", "ImagingSessionID",
-        ConvertToString<int>(this->m_ImgSessionID), "Name");
+        ConvertToString< int >(this->m_ImgSessionID), "Name");
       }
     else
       {
@@ -159,13 +163,15 @@ GetNameExistingEntities(vtkMySQLDatabase* iDatabaseConnector)
     }
   return ResultsQuery;
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 int QGoDBNameDescEntityManager::GetTheEntityID(std::string iName,
-                                               vtkMySQLDatabase* iDatabaseConnector)
+                                               vtkMySQLDatabase *iDatabaseConnector)
 {
   std::string EntityNameID = this->m_EntityName;
+
   EntityNameID += "ID";
   return FindOneID(iDatabaseConnector,
                    this->m_EntityName, EntityNameID, "Name", iName);

@@ -39,27 +39,28 @@
 =========================================================================*/
 #include "GoDBTWContainerForContourMesh.h"
 
-
 GoDBTWContainerForContourMesh::GoDBTWContainerForContourMesh(
-  std::string iTraceName,std::string iCollectionName,int iImgSessionID)
-  :GoDBTableWidgetContainer(iTraceName,iCollectionName,iImgSessionID)
+  std::string iTraceName, std::string iCollectionName, int iImgSessionID):
+  GoDBTableWidgetContainer(iTraceName, iCollectionName, iImgSessionID)
 {
   m_ColumnsInfos = GetColumnsInfoForTraceTable();
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 GoDBTWContainerForContourMesh::~GoDBTWContainerForContourMesh()
-{
-}
+{}
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void GoDBTWContainerForContourMesh::GetCommonInfoForTwoTracesTable()
 {
   GoDBTraceInfoForTableWidget temp;
-  std::pair<GoDBTraceInfoForTableWidget, std::vector<std::string> > PairTemp;
- 
+
+  std::pair< GoDBTraceInfoForTableWidget, std::vector< std::string > > PairTemp;
+
   //Get the info for the Time Point:
   temp.InfoName = "TimePoint";
   temp.ColumnNameDatabase = "TCoord";

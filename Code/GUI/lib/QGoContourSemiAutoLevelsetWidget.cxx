@@ -41,23 +41,23 @@
 #include "QGoContourSemiAutoLevelsetWidget.h"
 
 //---------------------------------------------------------------------------//
-QGoContourSemiAutoLevelsetWidget::
-QGoContourSemiAutoLevelsetWidget(QWidget* iParent) : QWidget(iParent)
+QGoContourSemiAutoLevelsetWidget::QGoContourSemiAutoLevelsetWidget(QWidget *iParent):QWidget(iParent)
 {
   this->setupUi(this);
 
   // Connect signals
-  QObject::connect(this->curvature, SIGNAL(valueChanged(int)),
-                   this, SIGNAL(Curvature(int)));
+  QObject::connect( this->curvature, SIGNAL( valueChanged(int) ),
+                    this, SIGNAL( Curvature(int) ) );
 
-  QObject::connect(this->iterations, SIGNAL(valueChanged(int)),
-                   this, SIGNAL(Iterations(int)));
+  QObject::connect( this->iterations, SIGNAL( valueChanged(int) ),
+                    this, SIGNAL( Iterations(int) ) );
 }
+
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
 QGoContourSemiAutoLevelsetWidget::
 ~QGoContourSemiAutoLevelsetWidget()
-{
-}
+{}
+
 //---------------------------------------------------------------------------//

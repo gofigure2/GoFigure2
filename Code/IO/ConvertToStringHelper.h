@@ -43,21 +43,22 @@
 #include <string>
 #include <sstream>
 
-template<typename T>
-std::string ConvertToString(const T& ToConvert)
+template< typename T >
+std::string ConvertToString(const T & ToConvert)
 {
   std::stringstream st;
+
   st << ToConvert;
   return st.str();
 }
 
-template<typename RT, typename T, typename Trait, typename Alloc> 
-RT ss_atoi( const std::basic_string<T, Trait, Alloc>& the_string ) 
+template< typename RT, typename T, typename Trait, typename Alloc >
+RT ss_atoi(const std::basic_string< T, Trait, Alloc > & the_string)
 {
-   std::basic_istringstream< T, Trait, Alloc> temp_ss(the_string);
-   RT num;
-   temp_ss >> num;
-   return num;
+  std::basic_istringstream< T, Trait, Alloc > temp_ss(the_string);
+  RT                                          num;
+  temp_ss >> num;
+  return num;
 }
 
 #endif

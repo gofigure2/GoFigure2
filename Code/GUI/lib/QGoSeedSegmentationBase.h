@@ -54,16 +54,16 @@ class vtkPolyData;
  * \brief Base class for all segmentations from seed points
 */
 
-class QGOGUILIB_EXPORT QGoSeedSegmentationBase : public QObject
-  {
+class QGOGUILIB_EXPORT QGoSeedSegmentationBase:public QObject
+{
   Q_OBJECT
 public:
   /**
    * \brief Constructor
    */
-  explicit QGoSeedSegmentationBase( QWidget* parentWidget = 0,
-                                    vtkPoints* seeds = 0,
-                                    int iSampling = 0);
+  explicit QGoSeedSegmentationBase(QWidget *parentWidget = 0,
+                                   vtkPoints *seeds = 0,
+                                   int iSampling = 0);
 
   /**
    * \brief Destructor
@@ -76,16 +76,17 @@ public:
    * \param[in] iSeed Seeds from which the segmentaion will be computed.
    * It can contain more than on seed.
    */
-  void       setSeed(vtkPoints* iSeed);
+  void       setSeed(vtkPoints *iSeed);
+
   /**
    * \brief Get the seeds from which the segmentation will be computed.
    */
-  vtkPoints* getSeed();
+  vtkPoints * getSeed();
 
   /**
    * \brief Get the current seed from which the segmentation will be computed.
    */
-  double* getSeedsPosition();
+  double * getSeedsPosition();
 
   /**
    * \brief Get the radius parameter for the segmentation.
@@ -97,13 +98,13 @@ public:
   /**
    * \brief Get the dockwidget associated to the segmentation method.
    */
-  virtual QWidget* getWidget();
+  virtual QWidget * getWidget();
 
   /**
    * \brief Connect signals/slots to the segmentation dock widget
    * \param[in] iWidget Algorithm segmentation specific dock widget
    */
-  void ConnectSignals(QGoSeedBaseWidget* iWidget);
+  void ConnectSignals(QGoSeedBaseWidget *iWidget);
 
   /**
    * \brief Specify on which one the segmentation will be applied since the input
@@ -119,21 +120,24 @@ public slots:
    * \param[in] iRadius Radius to be used for the segmentation.
    */
   void setRadius(double iRadius);
+
   /**
    * \brief Set the value of the radius.
    * \param[in] iRadius Radius to be used for the segmentation.
    */
   void setSampling(int iSampling);
 
-  signals:
+signals:
   /**
    * \brief Signal sent to update the value of the pointed seeds.
    */
   void  getSeeds();
+
   /**
    * \brief Signal sent when the segmentation is done.
    */
   void  segmentationFinished();
+
   /**
    * \brief Signal to be send to the Widget to add channel to the channel
    * QComboBox
@@ -141,28 +145,31 @@ public slots:
    */
   void addChannel(QString);
 
-  void MeshCreated(vtkPolyData*);
-  void ContourCreated(vtkPolyData*);
+  void MeshCreated(vtkPolyData *);
+
+  void ContourCreated(vtkPolyData *);
+
   void ImageProcessed();
 
   void UpdateSeeds();
+
   void SegmentationFinished();
 
   void CreateCorrespondingMesh(int);
-  void AddContourForMeshToContours(vtkPolyData*);
+
+  void AddContourForMeshToContours(vtkPolyData *);
 
   void Sampling(int);
 
 protected:
-  QGoSeedBaseWidget* m_BaseAlgorithmSegmentationWidget;
-
+  QGoSeedBaseWidget *m_BaseAlgorithmSegmentationWidget;
 private:
   /**
    *
    */
   double     m_Radius;
-  vtkPoints* m_Seeds;
+  vtkPoints *m_Seeds;
   double     m_SeedsPosition[3];
   int        m_Sampling;
-  };
+};
 #endif

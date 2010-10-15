@@ -46,8 +46,7 @@ class QString;
 \class PluginInformationBase
 \brief
 */
-struct PluginInformationBase
-  {
+struct PluginInformationBase {
 public:
   QString Name;
   QString Version;
@@ -56,5 +55,5 @@ public:
   QString Copyright;
   QString License;
   QString Description;
-  };
+};
 #endif

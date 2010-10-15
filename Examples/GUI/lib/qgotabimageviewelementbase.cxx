@@ -43,12 +43,12 @@
 
 #include "vtkImageData.h"
 
-class QGoTabImageViewElementBaseTestHelper :
+class QGoTabImageViewElementBaseTestHelper:
   public QGoTabImageViewElementBase
-  {
+{
 public:
-  explicit QGoTabImageViewElementBaseTestHelper(QWidget* iParent = 0)
-    : QGoTabImageViewElementBase(iParent) {}
+  explicit QGoTabImageViewElementBaseTestHelper(QWidget *iParent = 0):
+    QGoTabImageViewElementBase(iParent) {}
   virtual ~QGoTabImageViewElementBaseTestHelper() {}
 
   GoFigure::TabDimensionType GetTabDimensionType() const
@@ -58,55 +58,58 @@ public:
 
   virtual void WriteSettings() {}
   virtual void ReadSettings() {}
-
 public slots:
   virtual void ShowAllChannels(bool iChecked)
   {
-    (void) iChecked;
+    (void)iChecked;
   }
+
   virtual void ShowOneChannel(int iChannel)
   {
-    (void) iChannel;
+    (void)iChannel;
   }
+
   virtual void TakeSnapshot()
   {}
 protected:
-  virtual void PopulateMenus(QObject* iPlugin)
+  virtual void PopulateMenus(QObject *iPlugin)
   {
-    (void) iPlugin;
+    (void)iPlugin;
   }
+
   virtual void GetBackgroundColorFromImageViewer() {}
   virtual void SetBackgroundColorToImageViewer() {}
-  virtual void SetImageToImageViewer(vtkImageData*) {}
-  virtual int* GetImageCoordinatesFromWorldCoordinates(double iPos[3])
+  virtual void SetImageToImageViewer(vtkImageData *) {}
+  virtual int * GetImageCoordinatesFromWorldCoordinates(double iPos[3])
   {
-    (void) iPos;
+    (void)iPos;
     return 0;
   }
 
-  virtual void RemoveActorFromViewer(const int&, vtkActor*)
+  virtual void RemoveActorFromViewer(const int &, vtkActor *)
   {}
-  virtual void DisplayActorInViewer(const int&, vtkActor*)
+  virtual void DisplayActorInViewer(const int &, vtkActor *)
   {}
 
-  virtual std::vector<vtkActor*> AddContour(vtkPolyData*,
-                                            vtkProperty* iProperty = NULL)
+  virtual std::vector< vtkActor * > AddContour(vtkPolyData *,
+                                               vtkProperty *iProperty = NULL)
   {
-    (void) iProperty;
-    return std::vector<vtkActor*>();
+    (void)iProperty;
+    return std::vector< vtkActor * >();
   }
 
-  virtual void SetSlice(int, int*) {}
-  };
+  virtual void SetSlice(int, int *) {}
+};
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
   QApplication app(argc, argv);
+
   QCoreApplication::setOrganizationName("MegasonLab");
   QCoreApplication::setOrganizationDomain("http://gofigure2.sourceforge.net");
   QCoreApplication::setApplicationName("qgotabimageviewelementbase");
 
-  QGoTabImageViewElementBaseTestHelper* test =
+  QGoTabImageViewElementBaseTestHelper *test =
     new QGoTabImageViewElementBaseTestHelper;
   test->SetColor(true);
 

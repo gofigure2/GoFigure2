@@ -43,9 +43,9 @@
 
 #include "QGoPrintDatabase.h"
 
-int main(int argc, char * argv[])
+int main(int argc, char *argv[])
 {
-  if (argc != 2)
+  if ( argc != 2 )
     {
     std::cerr << "QGoPrintDatabaseTest requires 1 argument:" << std::endl;
     std::cerr << "1-test (boolean)" << std::endl;
@@ -56,7 +56,7 @@ int main(int argc, char * argv[])
   QCoreApplication::setOrganizationName("MegasonLab");
   QCoreApplication::setOrganizationDomain("http://gofigure2.sourceforge.net");
 
-  QGoPrintDatabase* win = new QGoPrintDatabase;
+  QGoPrintDatabase *win = new QGoPrintDatabase;
   // win.FillTableFromDatabase(argv[1],"localhost","gofigure",
   //    "gofigure",atoi(argv[2]), argv[3]);
   win->SetDatabaseVariables(
@@ -65,11 +65,11 @@ int main(int argc, char * argv[])
   win->FillTableFromDatabase();
   win->show();
 
-  QTimer* timer = new QTimer;
+  QTimer *timer = new QTimer;
   timer->setSingleShot(true);
-  QObject::connect(timer, SIGNAL(timeout()), win, SLOT(close()));
+  QObject::connect( timer, SIGNAL( timeout() ), win, SLOT( close() ) );
 
-  if (atoi(argv[1]) == 1)
+  if ( atoi(argv[1]) == 1 )
     {
     timer->start(1000);
     }

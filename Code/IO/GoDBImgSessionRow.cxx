@@ -41,42 +41,44 @@
 #include "SelectQueryDatabaseHelper.h"
 
 GoDBImgSessionRow::GoDBImgSessionRow()
-  {
+{
   this->InitializeMap();
-  }
+}
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void GoDBImgSessionRow::InitializeMap()
 {
-  this->m_MapRow["ImagingSessionID"] = ConvertToString<int>(0);
-  this->m_MapRow["CoordIDMax"] = ConvertToString<int>(0);
-  this->m_MapRow["CoordIDMin"] = ConvertToString<int>(0);
+  this->m_MapRow["ImagingSessionID"] = ConvertToString< int >(0);
+  this->m_MapRow["CoordIDMax"] = ConvertToString< int >(0);
+  this->m_MapRow["CoordIDMin"] = ConvertToString< int >(0);
   this->m_MapRow["Name"] = "";
   this->m_MapRow["Description"] = "";
-  this->m_MapRow["ImagesTimeInterval"] = ConvertToString<float>(0);
-  this->m_MapRow["RealPixelDepth"] = ConvertToString<float>(0);
-  this->m_MapRow["RealPixelHeight"] = ConvertToString<float>(0);
-  this->m_MapRow["RealPixelWidth"] = ConvertToString<float>(0);
+  this->m_MapRow["ImagesTimeInterval"] = ConvertToString< float >(0);
+  this->m_MapRow["RealPixelDepth"] = ConvertToString< float >(0);
+  this->m_MapRow["RealPixelHeight"] = ConvertToString< float >(0);
+  this->m_MapRow["RealPixelWidth"] = ConvertToString< float >(0);
   this->m_MapRow["ProjectName"] = "";
   this->m_MapRow["MicroscopeName"] = "";
   this->m_MapRow["CreationDate"] = "";
-  this->m_MapRow["XImageSize"] = ConvertToString<int>(0);
-  this->m_MapRow["YImageSize"] = ConvertToString<int>(0);
-  this->m_MapRow["XTileOverlap"] = ConvertToString<float>(0);
-  this->m_MapRow["YTileOverlap"] = ConvertToString<float>(0);
-  this->m_MapRow["ZTileOverlap"] = ConvertToString<float>(0);
+  this->m_MapRow["XImageSize"] = ConvertToString< int >(0);
+  this->m_MapRow["YImageSize"] = ConvertToString< int >(0);
+  this->m_MapRow["XTileOverlap"] = ConvertToString< float >(0);
+  this->m_MapRow["YTileOverlap"] = ConvertToString< float >(0);
+  this->m_MapRow["ZTileOverlap"] = ConvertToString< float >(0);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 int GoDBImgSessionRow::DoesThisImagingSessionExist(
-  vtkMySQLDatabase* DatabaseConnector)
+  vtkMySQLDatabase *DatabaseConnector)
 {
   //std::string MicroscopeName = this->GetMapValue("MicroscopeName");
   //std::string CreationDate = this->GetMapValue("CreationDate");
 
-  return FindOneID(DatabaseConnector, "imagingsession", "ImagingSessionID",
-                   "MicroscopeName", this->GetMapValue("MicroscopeName"),
-                   "CreationDate", this->GetMapValue("CreationDate"));
+  return FindOneID( DatabaseConnector, "imagingsession", "ImagingSessionID",
+                    "MicroscopeName", this->GetMapValue("MicroscopeName"),
+                    "CreationDate", this->GetMapValue("CreationDate") );
 }

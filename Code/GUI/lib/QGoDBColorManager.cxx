@@ -42,10 +42,10 @@
 #include <QInputDialog>
 #include "SelectQueryDatabaseHelper.h"
 
-QGoDBColorManager::QGoDBColorManager (QWidget* iParent) :
+QGoDBColorManager::QGoDBColorManager (QWidget *iParent):
   QGoDBNameDescEntityManager(iParent, "color", 0)
-{
-}
+{}
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -54,80 +54,85 @@ QGoDBColorManager::~QGoDBColorManager()
   //this->m_DatabaseConnector->Close();
   //this->m_DatabaseConnector->Delete();
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 QGoDBColorManager::ItemColorComboboxData QGoDBColorManager::AddANewColor(
-  vtkMySQLDatabase* iDatabaseConnector)
+  vtkMySQLDatabase *iDatabaseConnector)
 {
- this->m_NewColorData.first.clear();
- QColor col = QColorDialog::getColor(Qt::white, NULL, "Pick a new color",
-                                          QColorDialog::ShowAlphaChannel);
- if (col.isValid())
-  {
-  this->m_NewColorData.second = col;
-  this->m_NewColorData.first = QGoDBNameDescEntityManager::AddAnEntity(iDatabaseConnector);
-  }
- return this->m_NewColorData;
- }
+  this->m_NewColorData.first.clear();
+  QColor col = QColorDialog::getColor(Qt::white, NULL, "Pick a new color",
+                                      QColorDialog::ShowAlphaChannel);
+  if ( col.isValid() )
+    {
+    this->m_NewColorData.second = col;
+    this->m_NewColorData.first = QGoDBNameDescEntityManager::AddAnEntity(iDatabaseConnector);
+    }
+  return this->m_NewColorData;
+}
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoDBColorManager::SaveNewEntityInDB()
 {
-  if(!this->CheckEntityAlreadyExists<GoDBColorRow>(this->m_NewColor))
+  if ( !this->CheckEntityAlreadyExists< GoDBColorRow >(this->m_NewColor) )
     {
     QColor col = this->m_NewColorData.second;
-    this->m_NewColor.SetField<int>("Red",col.red());
-    this->m_NewColor.SetField<int>("Green",col.green());
-    this->m_NewColor.SetField<int>("Blue",col.blue());
-    this->m_NewColor.SetField<int>("Alpha",col.alpha());
+    this->m_NewColor.SetField< int >( "Red", col.red() );
+    this->m_NewColor.SetField< int >( "Green", col.green() );
+    this->m_NewColor.SetField< int >( "Blue", col.blue() );
+    this->m_NewColor.SetField< int >( "Alpha", col.alpha() );
     this->m_NewColor.SaveInDB(this->m_DatabaseConnector);
     }
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 void QGoDBColorManager::ValidateName(std::string iName, std::string iDescription)
 {
-  this->ValidateNameTemplate<GoDBColorRow>(this->m_NewColor,iName,
-    iDescription);
+  this->ValidateNameTemplate< GoDBColorRow >(this->m_NewColor, iName,
+                                             iDescription);
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-bool QGoDBColorManager::DeleteEntity(vtkMySQLDatabase* iDatabaseConnector)
+bool QGoDBColorManager::DeleteEntity(vtkMySQLDatabase *iDatabaseConnector)
 {
-  QGoDeleteFromListDialog* Dialog = new QGoDeleteFromListDialog(
+  QGoDeleteFromListDialog *Dialog = new QGoDeleteFromListDialog(
     this->GetListExistingColors(iDatabaseConnector),
     this, this->m_EntityName);
 
   this->m_DatabaseConnector = iDatabaseConnector;
   QObject::connect(Dialog,
-                   SIGNAL(ListEntitiesToDelete(std::vector<std::string>)),
+                   SIGNAL( ListEntitiesToDelete(std::vector< std::string > ) ),
                    this,
-                   SLOT(DeleteEntitiesFromList(std::vector<std::string>))
+                   SLOT( DeleteEntitiesFromList(std::vector< std::string > ) )
                    );
 
   Dialog->show();
   return Dialog->exec();
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::list<QGoDBColorManager::ItemColorComboboxData> 
-QGoDBColorManager::GetListExistingColors(vtkMySQLDatabase* iDatabaseConnector)
+std::list< QGoDBColorManager::ItemColorComboboxData >
+QGoDBColorManager::GetListExistingColors(vtkMySQLDatabase *iDatabaseConnector)
 {
-  std::list<ItemColorComboboxData > oInfoColors;
-  std::vector<std::string> ResultsQuery  = ListAllValuesForOneColumn(
-    iDatabaseConnector, "*", "color","name");
+  std::list< ItemColorComboboxData > oInfoColors;
+  std::vector< std::string >         ResultsQuery  = ListAllValuesForOneColumn(
+    iDatabaseConnector, "*", "color", "name");
   unsigned int i = 0;
-  while (i < ResultsQuery.size())
+  while ( i < ResultsQuery.size() )
     {
     ItemColorComboboxData temp;
     temp.first = ResultsQuery[i + 1];
-    QColor tempColor(atoi(ResultsQuery[i + 2].c_str()),atoi(ResultsQuery[i + 3].c_str()),
-      atoi(ResultsQuery[i + 4].c_str()),atoi(ResultsQuery[i + 5].c_str()));
+    QColor tempColor( atoi( ResultsQuery[i + 2].c_str() ), atoi( ResultsQuery[i + 3].c_str() ),
+                      atoi( ResultsQuery[i + 4].c_str() ), atoi( ResultsQuery[i + 5].c_str() ) );
     temp.second = tempColor;
     oInfoColors.push_back(temp);
     i = i + 7;

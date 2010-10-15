@@ -47,48 +47,48 @@
 #include <sstream>
 #include <string>
 
-std::vector<std::string> ListAllValuesForOneColumn(vtkMySQLDatabase* DatabaseConnector,
-                                                   std::string ColumnName, std::string TableName,
-                                                   std::string OrderByColumnName)
+std::vector< std::string > ListAllValuesForOneColumn(vtkMySQLDatabase *DatabaseConnector,
+                                                     std::string ColumnName, std::string TableName,
+                                                     std::string OrderByColumnName)
 {
-  std::vector<std::string> result;
+  std::vector< std::string > result;
 
-  vtkSQLQuery*      query = DatabaseConnector->GetQueryInstance();
+  vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
   std::stringstream querystream;
   querystream << "SELECT ";
   querystream << ColumnName;
   querystream << " FROM ";
   querystream << TableName;
-  if (!OrderByColumnName.empty())
+  if ( !OrderByColumnName.empty() )
     {
     querystream << " ORDER BY ";
     querystream << OrderByColumnName;
     }
   querystream << ";";
 
-  query->SetQuery(querystream.str().c_str());
-  if (!query->Execute())
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
       << "List of all fields query failed"
-      << query->GetLastErrorText());
+      << query->GetLastErrorText() );
     query->Delete();
     return result;
     }
-  if (ColumnName != "*")
+  if ( ColumnName != "*" )
     {
-    while (query->NextRow())
+    while ( query->NextRow() )
       {
-      result.push_back(query->DataValue(0).ToString());
+      result.push_back( query->DataValue(0).ToString() );
       }
     }
   else
     {
-    while (query->NextRow())
+    while ( query->NextRow() )
       {
-      for (int i = 0; i < query->GetNumberOfFields(); i++)
+      for ( int i = 0; i < query->GetNumberOfFields(); i++ )
         {
-        result.push_back(query->DataValue(i).ToString());
+        result.push_back( query->DataValue(i).ToString() );
         }
       }
     }
@@ -97,16 +97,17 @@ std::vector<std::string> ListAllValuesForOneColumn(vtkMySQLDatabase* DatabaseCon
 
   return result;
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::map<std::string, std::string> MapTwoColumnsFromTable(
-  vtkMySQLDatabase* DatabaseConnector, std::string ColumnNameOne,
+std::map< std::string, std::string > MapTwoColumnsFromTable(
+  vtkMySQLDatabase *DatabaseConnector, std::string ColumnNameOne,
   std::string ColumnNameTwo, std::string TableName)
 {
-  std::map<std::string, std::string> Result;
-  vtkSQLQuery*                       query = DatabaseConnector->GetQueryInstance();
-  std::stringstream                  querystream;
+  std::map< std::string, std::string > Result;
+  vtkSQLQuery *                        query = DatabaseConnector->GetQueryInstance();
+  std::stringstream                    querystream;
   querystream << "SELECT ";
   querystream << ColumnNameOne;
   querystream << " , ";
@@ -115,33 +116,34 @@ std::map<std::string, std::string> MapTwoColumnsFromTable(
   querystream << TableName;
   querystream << ";";
 
-  query->SetQuery(querystream.str().c_str());
-  if (!query->Execute())
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
       << "List of all fields query failed"
-      << query->GetLastErrorText());
+      << query->GetLastErrorText() );
     query->Delete();
     return Result;
     }
-  while (query->NextRow())
+  while ( query->NextRow() )
     {
     Result[query->DataValue(0).ToString()] = query->DataValue(1).ToString();
     }
   query->Delete();
   return Result;
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::map<std::string, std::string> MapTwoColumnsFromTable(
-  vtkMySQLDatabase* DatabaseConnector, std::string ColumnNameOne,
+std::map< std::string, std::string > MapTwoColumnsFromTable(
+  vtkMySQLDatabase *DatabaseConnector, std::string ColumnNameOne,
   std::string ColumnNameTwo, std::string TableName,
   std::string field, std::string value)
 {
-  std::map<std::string, std::string> Result;
-  vtkSQLQuery*                       query = DatabaseConnector->GetQueryInstance();
-  std::stringstream                  querystream;
+  std::map< std::string, std::string > Result;
+  vtkSQLQuery *                        query = DatabaseConnector->GetQueryInstance();
+  std::stringstream                    querystream;
   querystream << "SELECT ";
   querystream << ColumnNameOne;
   querystream << " , ";
@@ -154,33 +156,34 @@ std::map<std::string, std::string> MapTwoColumnsFromTable(
   querystream << value;
   querystream << "';";
 
-  query->SetQuery(querystream.str().c_str());
-  if (!query->Execute())
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
       << "List of all fields query failed"
-      << query->GetLastErrorText());
+      << query->GetLastErrorText() );
     query->Delete();
     return Result;
     }
-  while (query->NextRow())
+  while ( query->NextRow() )
     {
     Result[query->DataValue(0).ToString()] = query->DataValue(1).ToString();
     }
   query->Delete();
   return Result;
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::vector<std::pair<std::string, std::string> >
-VectorTwoColumnsFromTable(vtkMySQLDatabase* DatabaseConnector,
+std::vector< std::pair< std::string, std::string > >
+VectorTwoColumnsFromTable(vtkMySQLDatabase *DatabaseConnector,
                           std::string ColumnNameOne, std::string ColumnNameTwo,
                           std::string TableName, std::string ColumnNameOrder)
 {
-  std::vector<std::pair<std::string, std::string> > result;
+  std::vector< std::pair< std::string, std::string > > result;
 
-  vtkSQLQuery*      query = DatabaseConnector->GetQueryInstance();
+  vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
   std::stringstream querystream;
   querystream << "SELECT ";
   querystream << ColumnNameOne;
@@ -192,21 +195,21 @@ VectorTwoColumnsFromTable(vtkMySQLDatabase* DatabaseConnector,
   querystream << ColumnNameOrder;
   querystream << " ASC;";
 
-  query->SetQuery(querystream.str().c_str());
-  if (!query->Execute())
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
       << "select 2 columns query failed"
-      << query->GetLastErrorText());
+      << query->GetLastErrorText() );
     DatabaseConnector->Close();
     DatabaseConnector->Delete();
     query->Delete();
     return result;
     }
 
-  while (query->NextRow())
+  while ( query->NextRow() )
     {
-    std::pair<std::string, std::string> Pair;
+    std::pair< std::string, std::string > Pair;
     Pair.first = query->DataValue(0).ToString();
     Pair.second = query->DataValue(1).ToString();
     result.push_back(Pair);
@@ -216,16 +219,17 @@ VectorTwoColumnsFromTable(vtkMySQLDatabase* DatabaseConnector,
 
   return result;
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::vector<std::string> ListSpecificValuesForRow(
-  vtkMySQLDatabase* DatabaseConnector, std::string TableName, std::string field,
+std::vector< std::string > ListSpecificValuesForRow(
+  vtkMySQLDatabase *DatabaseConnector, std::string TableName, std::string field,
   std::string value)
 {
-  std::vector<std::string> result;
-  vtkSQLQuery*             query = DatabaseConnector->GetQueryInstance();
-  std::stringstream        querystream;
+  std::vector< std::string > result;
+  vtkSQLQuery *              query = DatabaseConnector->GetQueryInstance();
+  std::stringstream          querystream;
   querystream << "SELECT * FROM ";
   querystream << TableName;
   querystream << " WHERE ";
@@ -234,38 +238,40 @@ std::vector<std::string> ListSpecificValuesForRow(
   querystream << value;
   querystream << "';";
 
-  query->SetQuery(querystream.str().c_str());
-  if (!query->Execute())
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
       << "List of all values of ExpID query failed"
-      << query->GetLastErrorText());
+      << query->GetLastErrorText() );
     query->Delete();
     return result;
     }
 
-  while (query->NextRow())
+  while ( query->NextRow() )
     {
-    for (int i = 0; i < query->GetNumberOfFields(); i++)
+    for ( int i = 0; i < query->GetNumberOfFields(); i++ )
       {
-      result.push_back(query->DataValue(i).ToString());
+      result.push_back( query->DataValue(i).ToString() );
       }
     }
   query->Delete();
 
   return result;
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-int FindOneID(vtkMySQLDatabase* DatabaseConnector,
+int FindOneID(vtkMySQLDatabase *DatabaseConnector,
               std::string TableName, std::string ColumnName,
               std::string field, std::string value)
 {
   int ID = -1;
 
-  vtkSQLQuery*      query = DatabaseConnector->GetQueryInstance();
+  vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
   std::stringstream querystream;
+
   querystream << "SELECT ";
   querystream << ColumnName;
   querystream << " FROM ";
@@ -276,19 +282,19 @@ int FindOneID(vtkMySQLDatabase* DatabaseConnector,
   querystream << value;
   querystream << "';";
 
-  query->SetQuery(querystream.str().c_str());
-  if (!query->Execute())
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
       << "The FindOneID query failed"
-      << query->GetLastErrorText());
+      << query->GetLastErrorText() );
     DatabaseConnector->Close();
     DatabaseConnector->Delete();
     query->Delete();
     return ID;
     }
 
-  if (query->NextRow())
+  if ( query->NextRow() )
     {
     ID = query->DataValue(0).ToInt();
     }
@@ -296,10 +302,11 @@ int FindOneID(vtkMySQLDatabase* DatabaseConnector,
 
   return ID;
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-int FindOneID(vtkMySQLDatabase* DatabaseConnector,
+int FindOneID(vtkMySQLDatabase *DatabaseConnector,
               std::string TableName, std::string ColumnName,
               std::string ColumnNameOne, std::string valueOne,
               std::string ColumnNameTwo, std::string valueTwo,
@@ -307,8 +314,9 @@ int FindOneID(vtkMySQLDatabase* DatabaseConnector,
 {
   int ID = -1;
 
-  vtkSQLQuery*      query = DatabaseConnector->GetQueryInstance();
+  vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
   std::stringstream querystream;
+
   querystream << "SELECT ";
   querystream << ColumnName;
   querystream << " FROM ";
@@ -327,19 +335,19 @@ int FindOneID(vtkMySQLDatabase* DatabaseConnector,
   querystream << valueThree;
   querystream << "');";
 
-  query->SetQuery(querystream.str().c_str());
-  if (!query->Execute())
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
       << "The FindOneID query failed"
-      << query->GetLastErrorText());
+      << query->GetLastErrorText() );
     DatabaseConnector->Close();
     DatabaseConnector->Delete();
     query->Delete();
     return ID;
     }
 
-  if (query->NextRow())
+  if ( query->NextRow() )
     {
     ID = query->DataValue(0).ToInt();
     }
@@ -347,17 +355,19 @@ int FindOneID(vtkMySQLDatabase* DatabaseConnector,
 
   return ID;
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-int FindOneID(vtkMySQLDatabase* DatabaseConnector,
+int FindOneID(vtkMySQLDatabase *DatabaseConnector,
               std::string TableName, std::string ColumnName,
               std::string ColumnNameOne, std::string valueOne,
               std::string ColumnNameTwo, std::string valueTwo)
 {
   int               ID = -1;
-  vtkSQLQuery*      query = DatabaseConnector->GetQueryInstance();
+  vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
   std::stringstream querystream;
+
   querystream << "SELECT ";
   querystream << ColumnName;
   querystream << " FROM ";
@@ -372,19 +382,19 @@ int FindOneID(vtkMySQLDatabase* DatabaseConnector,
   querystream << valueTwo;
   querystream << "');";
 
-  query->SetQuery(querystream.str().c_str());
-  if (!query->Execute())
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
       << "The FindOneID query failed"
-      << query->GetLastErrorText());
+      << query->GetLastErrorText() );
     DatabaseConnector->Close();
     DatabaseConnector->Delete();
     query->Delete();
     return ID;
     }
 
-  if (query->NextRow())
+  if ( query->NextRow() )
     {
     ID = query->DataValue(0).ToInt();
     }
@@ -392,17 +402,18 @@ int FindOneID(vtkMySQLDatabase* DatabaseConnector,
 
   return ID;
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::vector<std::string> FindSeveralIDs(vtkMySQLDatabase* DatabaseConnector,
-                                        std::string TableName, std::string ColumnName,
-                                        std::string ColumnNameOne, std::string valueOne,
-                                        std::string ColumnNameTwo, std::string valueTwo)
+std::vector< std::string > FindSeveralIDs(vtkMySQLDatabase *DatabaseConnector,
+                                          std::string TableName, std::string ColumnName,
+                                          std::string ColumnNameOne, std::string valueOne,
+                                          std::string ColumnNameTwo, std::string valueTwo)
 {
-  std::vector<std::string> result;
+  std::vector< std::string > result;
 
-  vtkSQLQuery*      query = DatabaseConnector->GetQueryInstance();
+  vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
   std::stringstream querystream;
   querystream << "SELECT ";
   querystream << ColumnName;
@@ -418,23 +429,23 @@ std::vector<std::string> FindSeveralIDs(vtkMySQLDatabase* DatabaseConnector,
   querystream << valueTwo;
   querystream << "');";
 
-  query->SetQuery(querystream.str().c_str());
-  if (!query->Execute())
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
       << "The FindOneID query failed"
-      << query->GetLastErrorText());
+      << query->GetLastErrorText() );
     DatabaseConnector->Close();
     DatabaseConnector->Delete();
     query->Delete();
     return result;
     }
 
-  while (query->NextRow())
+  while ( query->NextRow() )
     {
-    for (int i = 0; i < query->GetNumberOfFields(); i++)
+    for ( int i = 0; i < query->GetNumberOfFields(); i++ )
       {
-      result.push_back(query->DataValue(i).ToString());
+      result.push_back( query->DataValue(i).ToString() );
       }
     }
 
@@ -442,10 +453,11 @@ std::vector<std::string> FindSeveralIDs(vtkMySQLDatabase* DatabaseConnector,
 
   return result;
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-int FindOneID(vtkMySQLDatabase* DatabaseConnector,
+int FindOneID(vtkMySQLDatabase *DatabaseConnector,
               std::string TableName, std::string ColumnName,
               std::string ColumnNameOne, std::string valueOne,
               std::string ColumnNameTwo, std::string valueTwo,
@@ -455,8 +467,9 @@ int FindOneID(vtkMySQLDatabase* DatabaseConnector,
 {
   int ID = -1;
 
-  vtkSQLQuery*      query = DatabaseConnector->GetQueryInstance();
+  vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
   std::stringstream querystream;
+
   querystream << "SELECT ";
   querystream << ColumnName;
   querystream << " FROM ";
@@ -483,19 +496,19 @@ int FindOneID(vtkMySQLDatabase* DatabaseConnector,
   querystream << valueFive;
   querystream << "');";
 
-  query->SetQuery(querystream.str().c_str());
-  if (!query->Execute())
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
       << "The FindOneID query failed"
-      << query->GetLastErrorText());
+      << query->GetLastErrorText() );
     DatabaseConnector->Close();
     DatabaseConnector->Delete();
     query->Delete();
     return ID;
     }
 
-  if (query->NextRow())
+  if ( query->NextRow() )
     {
     ID = query->DataValue(0).ToInt();
     }
@@ -503,10 +516,11 @@ int FindOneID(vtkMySQLDatabase* DatabaseConnector,
 
   return ID;
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-int FindOneID(vtkMySQLDatabase* DatabaseConnector,
+int FindOneID(vtkMySQLDatabase *DatabaseConnector,
               std::string TableName, std::string ColumnName,
               std::string ColumnNameOne, std::string valueOne,
               std::string ColumnNameTwo, std::string valueTwo,
@@ -521,8 +535,9 @@ int FindOneID(vtkMySQLDatabase* DatabaseConnector,
 {
   int ID = -1;
 
-  vtkSQLQuery*      query = DatabaseConnector->GetQueryInstance();
+  vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
   std::stringstream querystream;
+
   querystream << "SELECT ";
   querystream << ColumnName;
   querystream << " FROM ";
@@ -569,19 +584,19 @@ int FindOneID(vtkMySQLDatabase* DatabaseConnector,
   querystream << valueTen;
   querystream << "');";
 
-  query->SetQuery(querystream.str().c_str());
-  if (!query->Execute())
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
       << "The FindOneID query failed"
-      << query->GetLastErrorText());
+      << query->GetLastErrorText() );
     DatabaseConnector->Close();
     DatabaseConnector->Delete();
     query->Delete();
     return ID;
     }
 
-  if (query->NextRow())
+  if ( query->NextRow() )
     {
     ID = query->DataValue(0).ToInt();
     }
@@ -589,28 +604,29 @@ int FindOneID(vtkMySQLDatabase* DatabaseConnector,
 
   return ID;
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::vector<std::string> ListSpecificValuesForOneColumn(
-  vtkMySQLDatabase* DatabaseConnector,
+std::vector< std::string > ListSpecificValuesForOneColumn(
+  vtkMySQLDatabase *DatabaseConnector,
   std::string TableName, std::string ColumnName,
   std::string field, std::string value, bool Distinct,
   bool ExcludeZero)
 {
-  std::vector<std::string> result;
-  vtkSQLQuery*             query = DatabaseConnector->GetQueryInstance();
+  std::vector< std::string > result;
+  vtkSQLQuery *              query = DatabaseConnector->GetQueryInstance();
 
   std::stringstream querystream;
   querystream << "SELECT ";
-  if (Distinct)
+  if ( Distinct )
     {
     querystream << "DISTINCT ";
     }
   querystream << ColumnName;
   querystream << " FROM ";
   querystream << TableName;
-  if (field.empty())
+  if ( field.empty() )
     {
     querystream << ";";
     }
@@ -623,30 +639,30 @@ std::vector<std::string> ListSpecificValuesForOneColumn(
     //querystream << "';";
     querystream << "'";
     }
-  if (ExcludeZero)
+  if ( ExcludeZero )
     {
     querystream << " AND WHERE ";
     querystream << ColumnName;
     querystream << " <> 0";
     }
 
-  query->SetQuery(querystream.str().c_str());
-  if (!query->Execute())
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
       << "List of all values of ExpID query failed"
-      << query->GetLastErrorText());
+      << query->GetLastErrorText() );
     DatabaseConnector->Close();
     DatabaseConnector->Delete();
     query->Delete();
     return result;
     }
 
-  while (query->NextRow())
+  while ( query->NextRow() )
     {
-    for (int i = 0; i < query->GetNumberOfFields(); i++)
+    for ( int i = 0; i < query->GetNumberOfFields(); i++ )
       {
-      result.push_back(query->DataValue(i).ToString());
+      result.push_back( query->DataValue(i).ToString() );
       }
     }
 
@@ -654,19 +670,20 @@ std::vector<std::string> ListSpecificValuesForOneColumn(
 
   return result;
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 //query: "SELECT ColumnName FROM TableName WHERE field = value
 //ORDER BY ColumnNameOrder ASC"
-std::vector<std::string> ListSpecificValuesForOneColumn(
-  vtkMySQLDatabase* DatabaseConnector,
+std::vector< std::string > ListSpecificValuesForOneColumn(
+  vtkMySQLDatabase *DatabaseConnector,
   std::string TableName, std::string ColumnName,
   std::string field, std::string value, std::string ColumnNameOrder)
 {
-  std::vector<std::string> result;
+  std::vector< std::string > result;
 
-  vtkSQLQuery*      query = DatabaseConnector->GetQueryInstance();
+  vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
   std::stringstream querystream;
   querystream << "SELECT ";
   querystream << ColumnName;
@@ -680,23 +697,23 @@ std::vector<std::string> ListSpecificValuesForOneColumn(
   querystream << ColumnNameOrder;
   querystream << " ASC;";
 
-  query->SetQuery(querystream.str().c_str());
-  if (!query->Execute())
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
-        << "List of all values of ExpID query failed"
-        << query->GetLastErrorText());
+      << "List of all values of ExpID query failed"
+      << query->GetLastErrorText() );
     DatabaseConnector->Close();
     DatabaseConnector->Delete();
     query->Delete();
     return result;
     }
 
-  while (query->NextRow())
+  while ( query->NextRow() )
     {
-    for (int i = 0; i < query->GetNumberOfFields(); i++)
+    for ( int i = 0; i < query->GetNumberOfFields(); i++ )
       {
-      result.push_back(query->DataValue(i).ToString());
+      result.push_back( query->DataValue(i).ToString() );
       }
     }
 
@@ -704,21 +721,22 @@ std::vector<std::string> ListSpecificValuesForOneColumn(
 
   return result;
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::vector<std::string> ListSpecificValuesForOneColumn(
-  vtkMySQLDatabase* DatabaseConnector,
+std::vector< std::string > ListSpecificValuesForOneColumn(
+  vtkMySQLDatabase *DatabaseConnector,
   std::string TableName, std::string ColumnName,
-  std::string field, std::vector<std::string> VectorValues,
+  std::string field, std::vector< std::string > VectorValues,
   bool Distinct, bool ExcludeZero)
 {
-  std::vector<std::string> result;
+  std::vector< std::string > result;
 
-  vtkSQLQuery*      query = DatabaseConnector->GetQueryInstance();
+  vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
   std::stringstream querystream;
   querystream << "SELECT ";
-  if (Distinct)
+  if ( Distinct )
     {
     querystream << "DISTINCT ";
     }
@@ -726,14 +744,14 @@ std::vector<std::string> ListSpecificValuesForOneColumn(
   querystream << " FROM ";
   querystream << TableName;
   querystream << " WHERE (";
-  if (ExcludeZero)
+  if ( ExcludeZero )
     {
     querystream << ColumnName;
     querystream << " <> 0 AND (";
     }
 
   unsigned int i;
-  for (i = 0; i < VectorValues.size() - 1; i++)
+  for ( i = 0; i < VectorValues.size() - 1; i++ )
     {
     querystream << field;
     querystream << " = '";
@@ -746,28 +764,28 @@ std::vector<std::string> ListSpecificValuesForOneColumn(
   //querystream << "');";
   querystream << "'";
   querystream << ")";
-  if (ExcludeZero)
+  if ( ExcludeZero )
     {
     querystream << ")";
     }
 
-  query->SetQuery(querystream.str().c_str());
-  if (!query->Execute())
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
       << "List of all values of ExpID query failed"
-      << query->GetLastErrorText());
+      << query->GetLastErrorText() );
     DatabaseConnector->Close();
     DatabaseConnector->Delete();
     query->Delete();
     return result;
     }
 
-  while (query->NextRow())
+  while ( query->NextRow() )
     {
-    for (int k = 0; k < query->GetNumberOfFields(); k++)
+    for ( int k = 0; k < query->GetNumberOfFields(); k++ )
       {
-      result.push_back(query->DataValue(k).ToString());
+      result.push_back( query->DataValue(k).ToString() );
       }
     }
 
@@ -775,21 +793,22 @@ std::vector<std::string> ListSpecificValuesForOneColumn(
 
   return result;
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::list<unsigned int> ListSpecificValuesForOneColumn(
-  vtkMySQLDatabase* DatabaseConnector,
+std::list< unsigned int > ListSpecificValuesForOneColumn(
+  vtkMySQLDatabase *DatabaseConnector,
   std::string TableName, std::string ColumnName,
-  std::string field, std::vector<unsigned int> ListValues,
+  std::string field, std::vector< unsigned int > ListValues,
   bool Distinct, bool ExcludeZero)
 {
-  std::list<unsigned int> result;
+  std::list< unsigned int > result;
 
-  vtkSQLQuery*      query = DatabaseConnector->GetQueryInstance();
+  vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
   std::stringstream querystream;
   querystream << "SELECT ";
-  if (Distinct)
+  if ( Distinct )
     {
     querystream << "DISTINCT ";
     }
@@ -797,14 +816,14 @@ std::list<unsigned int> ListSpecificValuesForOneColumn(
   querystream << " FROM ";
   querystream << TableName;
   querystream << " WHERE (";
-  if (ExcludeZero)
+  if ( ExcludeZero )
     {
     querystream << ColumnName;
     querystream << " <> 0 AND (";
     }
 
   unsigned int i;
-  for (i = 0; i < ListValues.size() - 1; i++)
+  for ( i = 0; i < ListValues.size() - 1; i++ )
     {
     querystream << field;
     querystream << " = '";
@@ -817,28 +836,28 @@ std::list<unsigned int> ListSpecificValuesForOneColumn(
   //querystream << "');";
   querystream << "'";
   querystream << ")";
-  if (ExcludeZero)
+  if ( ExcludeZero )
     {
     querystream << ")";
     }
 
-  query->SetQuery(querystream.str().c_str());
-  if (!query->Execute())
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
       << "List of all values of ExpID query failed"
-      << query->GetLastErrorText());
+      << query->GetLastErrorText() );
     DatabaseConnector->Close();
     DatabaseConnector->Delete();
     query->Delete();
     return result;
     }
 
-  while (query->NextRow())
+  while ( query->NextRow() )
     {
-    for (int k = 0; k < query->GetNumberOfFields(); k++)
+    for ( int k = 0; k < query->GetNumberOfFields(); k++ )
       {
-      result.push_back(query->DataValue(k).ToUnsignedInt());
+      result.push_back( query->DataValue(k).ToUnsignedInt() );
       }
     }
 
@@ -846,19 +865,20 @@ std::list<unsigned int> ListSpecificValuesForOneColumn(
 
   return result;
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 //query: "SELECT ColumnNameOne,ColumnName2 FROM TableName
 //WHERE field = value ORDER BY ColumnNameOrder ASC"
-std::vector<std::pair<std::string, std::string> >
-ListSpecificValuesForTwoColumns(vtkMySQLDatabase* DatabaseConnector,
+std::vector< std::pair< std::string, std::string > >
+ListSpecificValuesForTwoColumns(vtkMySQLDatabase *DatabaseConnector,
                                 std::string TableName, std::string ColumnNameOne, std::string ColumnNameTwo,
                                 std::string field, std::string value, std::string ColumnNameOrder)
 {
-  std::vector<std::pair<std::string, std::string> > result;
+  std::vector< std::pair< std::string, std::string > > result;
 
-  vtkSQLQuery*      query = DatabaseConnector->GetQueryInstance();
+  vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
   std::stringstream querystream;
   querystream << "SELECT ";
   querystream << ColumnNameOne;
@@ -874,21 +894,21 @@ ListSpecificValuesForTwoColumns(vtkMySQLDatabase* DatabaseConnector,
   querystream << ColumnNameOrder;
   querystream << " ASC;";
 
-  query->SetQuery(querystream.str().c_str());
-  if (!query->Execute())
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
       << "select 2 columns query failed"
-      << query->GetLastErrorText());
+      << query->GetLastErrorText() );
     DatabaseConnector->Close();
     DatabaseConnector->Delete();
     query->Delete();
     return result;
     }
 
-  while (query->NextRow())
+  while ( query->NextRow() )
     {
-    std::pair<std::string, std::string> Pair;
+    std::pair< std::string, std::string > Pair;
     Pair.first = query->DataValue(0).ToString();
     Pair.second = query->DataValue(1).ToString();
     result.push_back(Pair);
@@ -898,17 +918,19 @@ ListSpecificValuesForTwoColumns(vtkMySQLDatabase* DatabaseConnector,
 
   return result;
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::string ReturnOnlyOneValue(vtkMySQLDatabase* DatabaseConnector,
+std::string ReturnOnlyOneValue(vtkMySQLDatabase *DatabaseConnector,
                                std::string TableName, std::string ColumnName, std::string field,
                                std::string value)
 {
   std::string result;
 
-  vtkSQLQuery*      query = DatabaseConnector->GetQueryInstance();
+  vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
   std::stringstream querystream;
+
   querystream << "SELECT ";
   querystream << ColumnName;
   querystream << " FROM ";
@@ -919,21 +941,21 @@ std::string ReturnOnlyOneValue(vtkMySQLDatabase* DatabaseConnector,
   querystream << value;
   querystream << "' LIMIT 1;";
 
-  query->SetQuery(querystream.str().c_str());
-  if (!query->Execute())
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
       << "List of all values of ExpID query failed"
-      << query->GetLastErrorText());
+      << query->GetLastErrorText() );
     DatabaseConnector->Close();
     DatabaseConnector->Delete();
     query->Delete();
     return result;
     }
 
-  while (query->NextRow())
+  while ( query->NextRow() )
     {
-    for (int i = 0; i < query->GetNumberOfFields(); i++)
+    for ( int i = 0; i < query->GetNumberOfFields(); i++ )
       {
       result = query->DataValue(i).ToString();
       }
@@ -943,36 +965,38 @@ std::string ReturnOnlyOneValue(vtkMySQLDatabase* DatabaseConnector,
 
   return result;
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 int MaxValueForOneColumnInTable(
-  vtkMySQLDatabase* DatabaseConnector,
+  vtkMySQLDatabase *DatabaseConnector,
   std::string ColumnName, std::string TableName)
 {
   int MaxValue = -1;
 
-  vtkSQLQuery*      query = DatabaseConnector->GetQueryInstance();
+  vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
   std::stringstream querystream;
+
   querystream << "SELECT MAX(";
   querystream << ColumnName;
   querystream << ") FROM ";
   querystream << TableName;
   querystream << ";";
 
-  query->SetQuery(querystream.str().c_str());
-  if (!query->Execute())
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
       << "find max value query failed"
-      << query->GetLastErrorText());
+      << query->GetLastErrorText() );
     DatabaseConnector->Close();
     DatabaseConnector->Delete();
     query->Delete();
     return MaxValue;
     }
 
-  if (query->NextRow())
+  if ( query->NextRow() )
     {
     MaxValue = query->DataValue(0).ToInt();
     }
@@ -980,17 +1004,19 @@ int MaxValueForOneColumnInTable(
 
   return MaxValue;
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-int MaxValueForOneColumnInTable(vtkMySQLDatabase* DatabaseConnector,
+int MaxValueForOneColumnInTable(vtkMySQLDatabase *DatabaseConnector,
                                 std::string ColumnName, std::string TableName, std::string field,
                                 std::string value)
 {
   int MaxValue = -1;
 
-  vtkSQLQuery*      query = DatabaseConnector->GetQueryInstance();
+  vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
   std::stringstream querystream;
+
   querystream << "SELECT MAX(";
   querystream << ColumnName;
   querystream << ") FROM ";
@@ -1001,19 +1027,19 @@ int MaxValueForOneColumnInTable(vtkMySQLDatabase* DatabaseConnector,
   querystream << value;
   querystream << ";";
 
-  query->SetQuery(querystream.str().c_str());
-  if (!query->Execute())
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
       << "find max value query failed"
-      << query->GetLastErrorText());
+      << query->GetLastErrorText() );
     DatabaseConnector->Close();
     DatabaseConnector->Delete();
     query->Delete();
     return MaxValue;
     }
 
-  if (query->NextRow())
+  if ( query->NextRow() )
     {
     MaxValue = query->DataValue(0).ToInt();
     }
@@ -1021,24 +1047,26 @@ int MaxValueForOneColumnInTable(vtkMySQLDatabase* DatabaseConnector,
 
   return MaxValue;
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-int MaxValueForOneColumnInTable(vtkMySQLDatabase* DatabaseConnector,
+int MaxValueForOneColumnInTable(vtkMySQLDatabase *DatabaseConnector,
                                 std::string ColumnName, std::string TableName, std::string field,
-                                std::vector<std::string> VectorValues)
+                                std::vector< std::string > VectorValues)
 {
   int MaxValue = -1;
 
-  vtkSQLQuery*      query = DatabaseConnector->GetQueryInstance();
+  vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
   std::stringstream querystream;
+
   querystream << "SELECT MAX(";
   querystream << ColumnName;
   querystream << ") FROM ";
   querystream << TableName;
   querystream << " WHERE (";
   unsigned int i;
-  for (i = 0; i < VectorValues.size() - 1; i++)
+  for ( i = 0; i < VectorValues.size() - 1; i++ )
     {
     querystream << field;
     querystream << " = '";
@@ -1050,19 +1078,19 @@ int MaxValueForOneColumnInTable(vtkMySQLDatabase* DatabaseConnector,
   querystream << VectorValues[i];
   querystream << "');";
 
-  query->SetQuery(querystream.str().c_str());
-  if (!query->Execute())
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
       << "find max value query failed"
-      << query->GetLastErrorText());
+      << query->GetLastErrorText() );
     DatabaseConnector->Close();
     DatabaseConnector->Delete();
     query->Delete();
     return MaxValue;
     }
 
-  if (query->NextRow())
+  if ( query->NextRow() )
     {
     MaxValue = query->DataValue(0).ToInt();
     }
@@ -1070,24 +1098,26 @@ int MaxValueForOneColumnInTable(vtkMySQLDatabase* DatabaseConnector,
 
   return MaxValue;
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-int MinValueForOneColumnInTable(vtkMySQLDatabase* DatabaseConnector,
+int MinValueForOneColumnInTable(vtkMySQLDatabase *DatabaseConnector,
                                 std::string ColumnName, std::string TableName, std::string field,
-                                std::vector<std::string> VectorValues)
+                                std::vector< std::string > VectorValues)
 {
   int MinValue = -1;
 
-  vtkSQLQuery*      query = DatabaseConnector->GetQueryInstance();
+  vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
   std::stringstream querystream;
+
   querystream << "SELECT MIN(";
   querystream << ColumnName;
   querystream << ") FROM ";
   querystream << TableName;
   querystream << " WHERE (";
   unsigned int i;
-  for (i = 0; i < VectorValues.size() - 1; i++)
+  for ( i = 0; i < VectorValues.size() - 1; i++ )
     {
     querystream << field;
     querystream << " = '";
@@ -1099,19 +1129,19 @@ int MinValueForOneColumnInTable(vtkMySQLDatabase* DatabaseConnector,
   querystream << VectorValues[i];
   querystream << "');";
 
-  query->SetQuery(querystream.str().c_str());
-  if (!query->Execute())
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
       << "find min value query failed"
-      << query->GetLastErrorText());
+      << query->GetLastErrorText() );
     DatabaseConnector->Close();
     DatabaseConnector->Delete();
     query->Delete();
     return MinValue;
     }
 
-  if (query->NextRow())
+  if ( query->NextRow() )
     {
     MinValue = query->DataValue(0).ToInt();
     }
@@ -1119,19 +1149,21 @@ int MinValueForOneColumnInTable(vtkMySQLDatabase* DatabaseConnector,
 
   return MinValue;
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 int LastInsertID(std::string ServerName, std::string login,
                  std::string Password, std::string DBName)
 {
-  int                ID = -1;
-  vtkMySQLDatabase * DatabaseConnector = vtkMySQLDatabase::New();
-  DatabaseConnector->SetHostName(ServerName.c_str());
-  DatabaseConnector->SetUser(login.c_str());
-  DatabaseConnector->SetPassword(Password.c_str());
-  DatabaseConnector->SetDatabaseName(DBName.c_str());
-  if (!DatabaseConnector->Open())
+  int               ID = -1;
+  vtkMySQLDatabase *DatabaseConnector = vtkMySQLDatabase::New();
+
+  DatabaseConnector->SetHostName( ServerName.c_str() );
+  DatabaseConnector->SetUser( login.c_str() );
+  DatabaseConnector->SetPassword( Password.c_str() );
+  DatabaseConnector->SetDatabaseName( DBName.c_str() );
+  if ( !DatabaseConnector->Open() )
     {
     std::cerr << "Could not open database." << std::endl;
     std::cerr << "Find last insert ID can not be done." << std::endl;
@@ -1140,14 +1172,14 @@ int LastInsertID(std::string ServerName, std::string login,
     return ID;
     }
 
-  vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
+  vtkSQLQuery *query = DatabaseConnector->GetQueryInstance();
   query->SetQuery("SELECT LAST_INSERT_ID();");
 
-  if (!query->Execute())
+  if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
       << "replace value in DB query failed"
-      << query->GetLastErrorText());
+      << query->GetLastErrorText() );
     DatabaseConnector->Close();
     DatabaseConnector->Delete();
     query->Delete();
@@ -1161,20 +1193,21 @@ int LastInsertID(std::string ServerName, std::string login,
 
   return ID;
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 //query: "SELECT TableOne.ColumnOne, TableTwo.ColumnTwo FROM TableOne
 //JOIN TableTwo ON (TableOne.Foreignkey = TableTwo.PrimaryKey)
 //WHERE field = value;
-std::vector<std::pair<int, std::string> > ListSpecificValuesForTwoColumnsAndTwoTables(
-  vtkMySQLDatabase* DatabaseConnector, std::string TableOne, std::string ColumnOne,
+std::vector< std::pair< int, std::string > > ListSpecificValuesForTwoColumnsAndTwoTables(
+  vtkMySQLDatabase *DatabaseConnector, std::string TableOne, std::string ColumnOne,
   std::string TableTwo, std::string ColumnTwo, std::string ForeignKey, std::string PrimaryKey,
   std::string field, std::string value)
 {
-  std::vector<std::pair<int, std::string> > result;
+  std::vector< std::pair< int, std::string > > result;
 
-  vtkSQLQuery*      query = DatabaseConnector->GetQueryInstance();
+  vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
   std::stringstream querystream;
   querystream << "SELECT ";
   querystream << TableOne;
@@ -1202,22 +1235,22 @@ std::vector<std::pair<int, std::string> > ListSpecificValuesForTwoColumnsAndTwoT
   querystream << value;
   querystream << "';";
 
-  query->SetQuery(querystream.str().c_str());
-  if (!query->Execute())
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
       << "join on 2 tables query failed"
-      << query->GetLastErrorText());
+      << query->GetLastErrorText() );
     DatabaseConnector->Close();
     DatabaseConnector->Delete();
     query->Delete();
     return result;
     }
 
-  while (query->NextRow())
+  while ( query->NextRow() )
     {
       {
-      std::pair<int, std::string> temp;
+      std::pair< int, std::string > temp;
       temp.first = query->DataValue(0).ToInt();
       temp.second = query->DataValue(1).ToString();
       result.push_back(temp);
@@ -1226,18 +1259,20 @@ std::vector<std::pair<int, std::string> > ListSpecificValuesForTwoColumnsAndTwoT
   query->Delete();
   return result;
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 void GetTracesInfoFromDBAndModifyContainer(
-    std::list< ContourMeshStructure >& ioContainer,
-    vtkMySQLDatabase* DatabaseConnector, std::string TraceName,
-    std::string CollectionName, unsigned int ImgSessionID, int iTimePoint,
-    std::vector<int> iVectIDs)
+  std::list< ContourMeshStructure > & ioContainer,
+  vtkMySQLDatabase *DatabaseConnector, std::string TraceName,
+  std::string CollectionName, unsigned int ImgSessionID, int iTimePoint,
+  std::vector< int > iVectIDs)
 {
-  vtkSQLQuery* query = DatabaseConnector->GetQueryInstance();
+  vtkSQLQuery *query = DatabaseConnector->GetQueryInstance();
 
   std::stringstream Querystream;
+
   Querystream << "SELECT ";
   Querystream << TraceName;
   Querystream << ".";
@@ -1249,22 +1284,22 @@ void GetTracesInfoFromDBAndModifyContainer(
   Querystream << "ID, ";
   Querystream << TraceName;
   Querystream << ".Points, coordinate.TCoord, color.Red,\
-                 color.Green, color.Blue, color.Alpha from ("                                                          ;
+                 color.Green, color.Blue, color.Alpha from (";
   Querystream << TraceName;
   Querystream << " left join coordinate on coordinate.CoordID = ";
   Querystream << TraceName;
   Querystream << ".coordIDMax) left join color on ";
   Querystream << TraceName;
 
-  Querystream << ".colorID = color.colorID  where ";//(ImagingSessionID = ";
+  Querystream << ".colorID = color.colorID  where "; //(ImagingSessionID = ";
   //Querystream << ImgSessionID;
   //Querystream << " and ";
   //Querystream << TraceName;
   //Querystream << ".Points <> '0' ";
 
-  if (iTimePoint != -1)
+  if ( iTimePoint != -1 )
     {
-    if (!iVectIDs.empty())
+    if ( !iVectIDs.empty() )
       {
       Querystream << "(ImagingSessionID = ";
       Querystream << ImgSessionID;
@@ -1273,7 +1308,7 @@ void GetTracesInfoFromDBAndModifyContainer(
       Querystream << iTimePoint;
       Querystream << " and (";
       unsigned int i;
-      for (i = 0; i < iVectIDs.size() - 1; i++)
+      for ( i = 0; i < iVectIDs.size() - 1; i++ )
         {
         Querystream << TraceName;
         Querystream << "ID = '";
@@ -1288,72 +1323,74 @@ void GetTracesInfoFromDBAndModifyContainer(
     Querystream << ");";
     }
   else
-  {
-  Querystream << "ImagingSessionID = ";
-  Querystream << ImgSessionID;
-  Querystream << ";";
-  }
+    {
+    Querystream << "ImagingSessionID = ";
+    Querystream << ImgSessionID;
+    Querystream << ";";
+    }
 
-  query->SetQuery(Querystream.str().c_str());
-  if (!query->Execute())
+  query->SetQuery( Querystream.str().c_str() );
+  if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
       << "return info Contours query failed"
-      << query->GetLastErrorText());
+      << query->GetLastErrorText() );
     DatabaseConnector->Close();
     DatabaseConnector->Delete();
     query->Delete();
     return;
     }
 
-  while (query->NextRow())
+  while ( query->NextRow() )
     {
       {
       ContourMeshStructure temp;
       temp.TraceID = query->DataValue(0).ToInt();
-      vtkSmartPointer<vtkPolyDataMySQLTextReader> convert_reader =
-        vtkSmartPointer<vtkPolyDataMySQLTextReader>::New();
+      vtkSmartPointer< vtkPolyDataMySQLTextReader > convert_reader =
+        vtkSmartPointer< vtkPolyDataMySQLTextReader >::New();
       std::string polydata_string = query->DataValue(2).ToString();
-      if (!polydata_string.empty())
+      if ( !polydata_string.empty() )
         {
-        if (TraceName.compare("contour") == 0)
+        if ( TraceName.compare("contour") == 0 )
           {
           convert_reader->SetIsContour(true);
           }
         else
           {
-          if (TraceName.compare("mesh") == 0)
+          if ( TraceName.compare("mesh") == 0 )
             {
             convert_reader->SetIsContour(false);
             }
           }
-        vtkPolyData* output = convert_reader->GetPolyData(polydata_string);
+        vtkPolyData *output = convert_reader->GetPolyData(polydata_string);
         temp.Nodes = output;
         }
       temp.TCoord       = query->DataValue(3).ToUnsignedInt();
       /// \note For the visualization rgba values are supposed to be double in
       /// between 0 and 1; whereas in the database these values are in between
       /// 0 and 255.
-      temp.rgba[0]      = (query->DataValue(4).ToDouble()) / 255.;
-      temp.rgba[1]      = (query->DataValue(5).ToDouble()) / 255.;
-      temp.rgba[2]      = (query->DataValue(6).ToDouble()) / 255.;
-      temp.rgba[3]      = (query->DataValue(7).ToDouble()) / 255.;
-      ioContainer.push_back( temp );
+      temp.rgba[0]      = ( query->DataValue(4).ToDouble() ) / 255.;
+      temp.rgba[1]      = ( query->DataValue(5).ToDouble() ) / 255.;
+      temp.rgba[2]      = ( query->DataValue(6).ToDouble() ) / 255.;
+      temp.rgba[3]      = ( query->DataValue(7).ToDouble() ) / 255.;
+      ioContainer.push_back(temp);
       }
     }
   query->Delete();
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 ContourMeshStructure GetTraceInfoFromDB(
-  vtkMySQLDatabase* DatabaseConnector, std::string TraceName,
+  vtkMySQLDatabase *DatabaseConnector, std::string TraceName,
   std::string CollectionName, unsigned int TraceID)
 {
   ContourMeshStructure Results;
-  vtkSQLQuery*         query = DatabaseConnector->GetQueryInstance();
+  vtkSQLQuery *        query = DatabaseConnector->GetQueryInstance();
 
   std::stringstream Querystream;
+
   Querystream << "SELECT ";
   Querystream << TraceName;
   Querystream << ".";
@@ -1361,7 +1398,7 @@ ContourMeshStructure GetTraceInfoFromDB(
   Querystream << "ID, ";
   Querystream << TraceName;
   Querystream << ".Points, coordinate.TCoord, color.Red,\
-                 color.Green, color.Blue, color.Alpha from ("                                                          ;
+                 color.Green, color.Blue, color.Alpha from (";
   Querystream << TraceName;
   Querystream << " left join coordinate on coordinate.CoordID = ";
   Querystream << TraceName;
@@ -1373,41 +1410,41 @@ ContourMeshStructure GetTraceInfoFromDB(
   Querystream << TraceID;
   Querystream << ";";
 
-  query->SetQuery(Querystream.str().c_str());
-  if (!query->Execute())
+  query->SetQuery( Querystream.str().c_str() );
+  if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
       << "return info Contours query failed"
-      << query->GetLastErrorText());
+      << query->GetLastErrorText() );
     DatabaseConnector->Close();
     DatabaseConnector->Delete();
     query->Delete();
     return Results;
     }
 
-  while (query->NextRow())
+  while ( query->NextRow() )
     {
       {
       //temp.TraceID = query->DataValue(0).ToInt();
       Results.TraceID = TraceID;
-      vtkSmartPointer<vtkPolyDataMySQLTextReader> convert_reader =
-        vtkSmartPointer<vtkPolyDataMySQLTextReader>::New();
+      vtkSmartPointer< vtkPolyDataMySQLTextReader > convert_reader =
+        vtkSmartPointer< vtkPolyDataMySQLTextReader >::New();
       //Results.CollectionID = query->DataValue(0).ToUnsignedInt();
       std::string polydata_string = query->DataValue(1).ToString();
-      if (!polydata_string.empty())
+      if ( !polydata_string.empty() )
         {
-        if (TraceName.compare("contour") == 0)
+        if ( TraceName.compare("contour") == 0 )
           {
           convert_reader->SetIsContour(true);
           }
         else
           {
-          if (TraceName.compare("mesh") == 0)
+          if ( TraceName.compare("mesh") == 0 )
             {
             convert_reader->SetIsContour(false);
             }
           }
-        vtkPolyData* output = convert_reader->GetPolyData(polydata_string);
+        vtkPolyData *output = convert_reader->GetPolyData(polydata_string);
         Results.Nodes = output;
         }
       Results.TCoord       = query->DataValue(2).ToUnsignedInt();
@@ -1423,6 +1460,7 @@ ContourMeshStructure GetTraceInfoFromDB(
   query->Delete();
   return Results;
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -1540,22 +1578,22 @@ ContourMeshStructure GetTraceInfoFromDB(
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::vector<std::vector<std::string> > GetValuesFromSeveralTables(
-  vtkMySQLDatabase* DatabaseConnector, std::string MainTable,
-  std::vector<std::string> SelectFields, std::string field,
-  std::string value, std::vector<std::string> JoinTablesOnTraceTable, bool Distinct)
+std::vector< std::vector< std::string > > GetValuesFromSeveralTables(
+  vtkMySQLDatabase *DatabaseConnector, std::string MainTable,
+  std::vector< std::string > SelectFields, std::string field,
+  std::string value, std::vector< std::string > JoinTablesOnTraceTable, bool Distinct)
 {
-  std::vector<std::vector<std::string> > Results;
-  vtkSQLQuery*                           query = DatabaseConnector->GetQueryInstance();
+  std::vector< std::vector< std::string > > Results;
+  vtkSQLQuery *                             query = DatabaseConnector->GetQueryInstance();
 
   std::stringstream Querystream;
   Querystream << "SELECT ";
-  if (Distinct)
+  if ( Distinct )
     {
     Querystream << "DISTINCT ";
     }
   unsigned int i;
-  for (i = 0; i < SelectFields.size() - 1; i++)
+  for ( i = 0; i < SelectFields.size() - 1; i++ )
     {
     Querystream << SelectFields[i];
     Querystream << ",";
@@ -1564,7 +1602,7 @@ std::vector<std::vector<std::string> > GetValuesFromSeveralTables(
   Querystream << " FROM ";
   Querystream << MainTable;
   unsigned int j = 0;
-  while (j < JoinTablesOnTraceTable.size())
+  while ( j < JoinTablesOnTraceTable.size() )
     {
     Querystream << " LEFT JOIN ";
     Querystream << JoinTablesOnTraceTable[j];
@@ -1581,23 +1619,23 @@ std::vector<std::vector<std::string> > GetValuesFromSeveralTables(
   Querystream << value;
   Querystream << ";";
 
-  query->SetQuery(Querystream.str().c_str());
-  if (!query->Execute())
+  query->SetQuery( Querystream.str().c_str() );
+  if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
       << "return info Contours query failed"
-      << query->GetLastErrorText());
+      << query->GetLastErrorText() );
     DatabaseConnector->Close();
     DatabaseConnector->Delete();
     query->Delete();
     return Results;
     }
-  while (query->NextRow())
+  while ( query->NextRow() )
     {
-    std::vector<std::string> ResultsForOneRow;
-    for (int k = 0; k < query->GetNumberOfFields(); k++)
+    std::vector< std::string > ResultsForOneRow;
+    for ( int k = 0; k < query->GetNumberOfFields(); k++ )
       {
-      ResultsForOneRow.push_back(query->DataValue(k).ToString());
+      ResultsForOneRow.push_back( query->DataValue(k).ToString() );
       }
     Results.push_back(ResultsForOneRow);
     }
@@ -1605,27 +1643,27 @@ std::vector<std::vector<std::string> > GetValuesFromSeveralTables(
   query->Delete();
 
   return Results;
-
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::vector<std::vector<std::string> > GetValuesFromSeveralTables(
-  vtkMySQLDatabase* DatabaseConnector, std::string MainTable,
-  std::vector<std::string> SelectFields, std::vector<std::string> WhereAndConditions,
-  std::vector<std::string> JoinTablesOnTraceTable, bool Distinct)
+std::vector< std::vector< std::string > > GetValuesFromSeveralTables(
+  vtkMySQLDatabase *DatabaseConnector, std::string MainTable,
+  std::vector< std::string > SelectFields, std::vector< std::string > WhereAndConditions,
+  std::vector< std::string > JoinTablesOnTraceTable, bool Distinct)
 {
-  std::vector<std::vector<std::string> > Results;
-  vtkSQLQuery*                           query = DatabaseConnector->GetQueryInstance();
+  std::vector< std::vector< std::string > > Results;
+  vtkSQLQuery *                             query = DatabaseConnector->GetQueryInstance();
 
   std::stringstream Querystream;
   Querystream << "SELECT ";
-  if (Distinct)
+  if ( Distinct )
     {
     Querystream << "DISTINCT ";
     }
   unsigned int i;
-  for (i = 0; i < SelectFields.size() - 1; i++)
+  for ( i = 0; i < SelectFields.size() - 1; i++ )
     {
     Querystream << SelectFields[i];
     Querystream << ",";
@@ -1634,7 +1672,7 @@ std::vector<std::vector<std::string> > GetValuesFromSeveralTables(
   Querystream << " FROM (";
   Querystream << MainTable;
   unsigned int j = 0;
-  while (j < JoinTablesOnTraceTable.size() - 1)
+  while ( j < JoinTablesOnTraceTable.size() - 1 )
     {
     Querystream << " LEFT JOIN ";
     Querystream << JoinTablesOnTraceTable[j];
@@ -1646,7 +1684,7 @@ std::vector<std::vector<std::string> > GetValuesFromSeveralTables(
 
   unsigned int k = 0;
   Querystream << ") WHERE (";
-  while (k < WhereAndConditions.size() - 2)
+  while ( k < WhereAndConditions.size() - 2 )
     {
     Querystream << WhereAndConditions[k];
     Querystream << " = ";
@@ -1660,23 +1698,23 @@ std::vector<std::vector<std::string> > GetValuesFromSeveralTables(
   Querystream << WhereAndConditions[k + 1];
   Querystream << ");";
 
-  query->SetQuery(Querystream.str().c_str());
-  if (!query->Execute())
+  query->SetQuery( Querystream.str().c_str() );
+  if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
       << "return info Contours query failed"
-      << query->GetLastErrorText());
+      << query->GetLastErrorText() );
     DatabaseConnector->Close();
     DatabaseConnector->Delete();
     query->Delete();
     return Results;
     }
-  while (query->NextRow())
+  while ( query->NextRow() )
     {
-    std::vector<std::string> ResultsForOneRow;
-    for (int kk = 0; kk < query->GetNumberOfFields(); kk++)
+    std::vector< std::string > ResultsForOneRow;
+    for ( int kk = 0; kk < query->GetNumberOfFields(); kk++ )
       {
-      ResultsForOneRow.push_back(query->DataValue(kk).ToString());
+      ResultsForOneRow.push_back( query->DataValue(kk).ToString() );
       }
     Results.push_back(ResultsForOneRow);
     }
@@ -1684,8 +1722,8 @@ std::vector<std::vector<std::string> > GetValuesFromSeveralTables(
   query->Delete();
 
   return Results;
-
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -1693,6 +1731,7 @@ std::string SelectQueryStream(std::string iTable, std::string iColumn, std::stri
                               std::string iValue)
 {
   std::stringstream querystream;
+
   querystream << "SELECT ";
   querystream << iColumn;
   querystream << " FROM ";
@@ -1704,16 +1743,18 @@ std::string SelectQueryStream(std::string iTable, std::string iColumn, std::stri
   querystream << "'";
   return querystream.str();
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 std::string SelectQueryStreamListConditions(std::string iTable,
                                             std::string iColumn, std::string iField,
-                                            std::vector<std::string> iListValues, bool Distinct)
+                                            std::vector< std::string > iListValues, bool Distinct)
 {
   std::stringstream querystream;
+
   querystream << "SELECT ";
-  if (Distinct)
+  if ( Distinct )
     {
     querystream << "DISTINCT ";
     }
@@ -1722,7 +1763,7 @@ std::string SelectQueryStreamListConditions(std::string iTable,
   querystream << iTable;
   querystream << " WHERE (";
   unsigned int i;
-  for (i = 0; i < iListValues.size() - 1; i++)
+  for ( i = 0; i < iListValues.size() - 1; i++ )
     {
     querystream << iField;
     querystream << " = '";
@@ -1735,31 +1776,33 @@ std::string SelectQueryStreamListConditions(std::string iTable,
   querystream << "')";
   return querystream.str();
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 std::string SelectQueryStreamListConditions(std::string iTable,
-                                            std::vector<std::string> iListColumn, std::string iField,
-                                            std::vector<std::string> iListValues, bool Distinct)
+                                            std::vector< std::string > iListColumn, std::string iField,
+                                            std::vector< std::string > iListValues, bool Distinct)
 {
   std::stringstream querystream;
+
   querystream << "SELECT ";
-  if (Distinct)
+  if ( Distinct )
     {
     querystream << "DISTINCT ";
     }
   unsigned int j;
-  for(j = 0; j<iListColumn.size() - 1;j++)
-  {
+  for ( j = 0; j < iListColumn.size() - 1; j++ )
+    {
     querystream << iListColumn[j];
     querystream << ", ";
-  }
+    }
   querystream << iListColumn[j];
   querystream << " FROM ";
   querystream << iTable;
   querystream << " WHERE (";
   unsigned int i;
-  for (i = 0; i < iListValues.size() - 1; i++)
+  for ( i = 0; i < iListValues.size() - 1; i++ )
     {
     querystream << iField;
     querystream << " = '";
@@ -1772,18 +1815,19 @@ std::string SelectQueryStreamListConditions(std::string iTable,
   querystream << "')";
   return querystream.str();
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::vector<std::string> GetSamefieldFromTwoTables(
-  vtkMySQLDatabase* DatabaseConnector, std::string iTableOne,
+std::vector< std::string > GetSamefieldFromTwoTables(
+  vtkMySQLDatabase *DatabaseConnector, std::string iTableOne,
   std::string iTableTwo, std::string iColumn, std::string iField,
   std::string iValue, std::string iFieldTwo,
-  std::vector<std::string> iListConditionsTwo)
+  std::vector< std::string > iListConditionsTwo)
 {
-  std::vector<std::string> result;
-  vtkSQLQuery*             query = DatabaseConnector->GetQueryInstance();
-  std::stringstream        querystream;
+  std::vector< std::string > result;
+  vtkSQLQuery *              query = DatabaseConnector->GetQueryInstance();
+  std::stringstream          querystream;
   querystream << SelectQueryStream(iTableOne, iColumn, iField, iValue);
   querystream << " UNION ";
   /*querystream << " UNION SELECT ";
@@ -1808,23 +1852,23 @@ std::vector<std::string> GetSamefieldFromTwoTables(
   querystream << SelectQueryStreamListConditions(iTableTwo, iColumn,
                                                  iFieldTwo, iListConditionsTwo);
 
-  query->SetQuery(querystream.str().c_str());
-  if (!query->Execute())
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
       << "List of all values for 2 tables query failed"
-      << query->GetLastErrorText());
+      << query->GetLastErrorText() );
     DatabaseConnector->Close();
     DatabaseConnector->Delete();
     query->Delete();
     return result;
     }
 
-  while (query->NextRow())
+  while ( query->NextRow() )
     {
-    for (int i = 0; i < query->GetNumberOfFields(); i++)
+    for ( int i = 0; i < query->GetNumberOfFields(); i++ )
       {
-      result.push_back(query->DataValue(i).ToString());
+      result.push_back( query->DataValue(i).ToString() );
       }
     }
 
@@ -1832,20 +1876,21 @@ std::vector<std::string> GetSamefieldFromTwoTables(
 
   return result;
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::vector<std::string> GetSamefieldsFromTwoTables(vtkMySQLDatabase* DatabaseConnector,
-                                                    std::string iTableOne,
-                                                    std::string iTableTwo,
-                                                    std::string iColumnOne,
-                                                    std::string iColumnTwo,
-                                                    std::string iField,
-                                                    std::string iValue)
+std::vector< std::string > GetSamefieldsFromTwoTables(vtkMySQLDatabase *DatabaseConnector,
+                                                      std::string iTableOne,
+                                                      std::string iTableTwo,
+                                                      std::string iColumnOne,
+                                                      std::string iColumnTwo,
+                                                      std::string iField,
+                                                      std::string iValue)
 {
-  std::vector<std::string> result;
-  vtkSQLQuery*             query = DatabaseConnector->GetQueryInstance();
-  std::stringstream        querystream;
+  std::vector< std::string > result;
+  vtkSQLQuery *              query = DatabaseConnector->GetQueryInstance();
+  std::stringstream          querystream;
   querystream << SelectQueryStream(iTableOne, iColumnOne, iField, iValue);
   querystream << " UNION ";
   querystream << SelectQueryStream(iTableOne, iColumnTwo, iField, iValue);
@@ -1854,23 +1899,23 @@ std::vector<std::string> GetSamefieldsFromTwoTables(vtkMySQLDatabase* DatabaseCo
   querystream << " UNION ";
   querystream << SelectQueryStream(iTableTwo, iColumnTwo, iField, iValue);
 
-  query->SetQuery(querystream.str().c_str());
-  if (!query->Execute())
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
       << "List of all values for 2 tables query failed"
-      << query->GetLastErrorText());
+      << query->GetLastErrorText() );
     DatabaseConnector->Close();
     DatabaseConnector->Delete();
     query->Delete();
     return result;
     }
 
-  while (query->NextRow())
+  while ( query->NextRow() )
     {
-    for (int i = 0; i < query->GetNumberOfFields(); i++)
+    for ( int i = 0; i < query->GetNumberOfFields(); i++ )
       {
-      result.push_back(query->DataValue(i).ToString());
+      result.push_back( query->DataValue(i).ToString() );
       }
     }
 
@@ -1878,22 +1923,23 @@ std::vector<std::string> GetSamefieldsFromTwoTables(vtkMySQLDatabase* DatabaseCo
 
   return result;
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::vector<std::string> GetSamefieldsFromTwoTables(vtkMySQLDatabase* DatabaseConnector,
-                                                    std::string iTableOne,
-                                                    std::string iTableTwo,
-                                                    std::string iColumnOne,
-                                                    std::string iColumnTwo,
-                                                    std::string iField,
-                                                    std::string iValue,
-                                                    std::string iFieldTwo,
-                                                    std::vector<std::string> iListConditionsTwo)
+std::vector< std::string > GetSamefieldsFromTwoTables(vtkMySQLDatabase *DatabaseConnector,
+                                                      std::string iTableOne,
+                                                      std::string iTableTwo,
+                                                      std::string iColumnOne,
+                                                      std::string iColumnTwo,
+                                                      std::string iField,
+                                                      std::string iValue,
+                                                      std::string iFieldTwo,
+                                                      std::vector< std::string > iListConditionsTwo)
 {
-  std::vector<std::string> result;
-  vtkSQLQuery*             query = DatabaseConnector->GetQueryInstance();
-  std::stringstream        querystream;
+  std::vector< std::string > result;
+  vtkSQLQuery *              query = DatabaseConnector->GetQueryInstance();
+  std::stringstream          querystream;
   querystream << SelectQueryStream(iTableOne, iColumnOne, iField, iValue);
   querystream << " UNION ";
   querystream << SelectQueryStream(iTableOne, iColumnTwo, iField, iValue);
@@ -1904,23 +1950,23 @@ std::vector<std::string> GetSamefieldsFromTwoTables(vtkMySQLDatabase* DatabaseCo
   querystream << SelectQueryStreamListConditions(iTableTwo, iColumnTwo,
                                                  iFieldTwo, iListConditionsTwo);
 
-  query->SetQuery(querystream.str().c_str());
-  if (!query->Execute())
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
       << "List of all values for 2 tables query failed"
-      << query->GetLastErrorText());
+      << query->GetLastErrorText() );
     DatabaseConnector->Close();
     DatabaseConnector->Delete();
     query->Delete();
     return result;
     }
 
-  while (query->NextRow())
+  while ( query->NextRow() )
     {
-    for (int i = 0; i < query->GetNumberOfFields(); i++)
+    for ( int i = 0; i < query->GetNumberOfFields(); i++ )
       {
-      result.push_back(query->DataValue(i).ToString());
+      result.push_back( query->DataValue(i).ToString() );
       }
     }
 
@@ -1928,22 +1974,23 @@ std::vector<std::string> GetSamefieldsFromTwoTables(vtkMySQLDatabase* DatabaseCo
 
   return result;
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::vector<std::string> GetSameFieldsFromSeveralTables(
-  vtkMySQLDatabase* DatabaseConnector, std::vector<std::string> iColumnNames,
-  std::vector<std::string> iVectorTablesNames,
-  std::vector<std::string> iVectorConditionFieldNames,
-  std::vector<std::vector<std::string> > iVectorConditionsValues)
+std::vector< std::string > GetSameFieldsFromSeveralTables(
+  vtkMySQLDatabase *DatabaseConnector, std::vector< std::string > iColumnNames,
+  std::vector< std::string > iVectorTablesNames,
+  std::vector< std::string > iVectorConditionFieldNames,
+  std::vector< std::vector< std::string > > iVectorConditionsValues)
 {
-  std::vector<std::string> result;
-  vtkSQLQuery*             query = DatabaseConnector->GetQueryInstance();
-  std::stringstream        querystream;
-  unsigned int             i = 0;
-  while (i < iVectorTablesNames.size() - 1)
+  std::vector< std::string > result;
+  vtkSQLQuery *              query = DatabaseConnector->GetQueryInstance();
+  std::stringstream          querystream;
+  unsigned int               i = 0;
+  while ( i < iVectorTablesNames.size() - 1 )
     {
-    for (unsigned int j = 0; j < iColumnNames.size(); j++)
+    for ( unsigned int j = 0; j < iColumnNames.size(); j++ )
       {
       querystream << SelectQueryStreamListConditions(
         iVectorTablesNames[i], iColumnNames[j], iVectorConditionFieldNames[i],
@@ -1953,7 +2000,7 @@ std::vector<std::string> GetSameFieldsFromSeveralTables(
     i++;
     }
   unsigned j = 0;
-  while (j < iColumnNames.size() - 1)
+  while ( j < iColumnNames.size() - 1 )
     {
     querystream << SelectQueryStreamListConditions(
       iVectorTablesNames[i], iColumnNames[j], iVectorConditionFieldNames[i],
@@ -1966,23 +2013,23 @@ std::vector<std::string> GetSameFieldsFromSeveralTables(
     iVectorTablesNames[i], iColumnNames[j], iVectorConditionFieldNames[i],
     iVectorConditionsValues[i], true);
 
-  query->SetQuery(querystream.str().c_str());
-  if (!query->Execute())
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
       << "List of same field for different tables query failed"
-      << query->GetLastErrorText());
+      << query->GetLastErrorText() );
     DatabaseConnector->Close();
     DatabaseConnector->Delete();
     query->Delete();
     return result;
     }
 
-  while (query->NextRow())
+  while ( query->NextRow() )
     {
-    for (int k = 0; k < query->GetNumberOfFields(); k++)
+    for ( int k = 0; k < query->GetNumberOfFields(); k++ )
       {
-      result.push_back(query->DataValue(k).ToString());
+      result.push_back( query->DataValue(k).ToString() );
       }
     }
 
@@ -1990,19 +2037,22 @@ std::vector<std::string> GetSameFieldsFromSeveralTables(
 
   return result;
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-//SELECT iColumnName FROM TableName WHERE ( (iFieldOne = iVectorConditionFieldOne(i)
-// OR iFieldOne = iVectorConditionFieldOne(i+1...) AND (iFieldTwo = iVectorConditionFieldTwo(j) OR
+//SELECT iColumnName FROM TableName WHERE ( (iFieldOne =
+// iVectorConditionFieldOne(i)
+// OR iFieldOne = iVectorConditionFieldOne(i+1...) AND (iFieldTwo =
+// iVectorConditionFieldTwo(j) OR
 //iVectorConditionFieldTwo(j+1)... ) );
-std::vector<std::string> GetSpecificValueFromOneTableWithConditionsOnTwoColumns(
-  vtkMySQLDatabase* DatabaseConnector, std::string iColumnName, std::string iTableName,
-  std::string iFieldOne, std::vector<std::string> iVectorConditionFieldOne,
-  std::string iFieldTwo, std::vector<std::string> iVectorConditionFieldTwo)
+std::vector< std::string > GetSpecificValueFromOneTableWithConditionsOnTwoColumns(
+  vtkMySQLDatabase *DatabaseConnector, std::string iColumnName, std::string iTableName,
+  std::string iFieldOne, std::vector< std::string > iVectorConditionFieldOne,
+  std::string iFieldTwo, std::vector< std::string > iVectorConditionFieldTwo)
 {
-  std::vector<std::string> result;
-  vtkSQLQuery*             query = DatabaseConnector->GetQueryInstance();
+  std::vector< std::string > result;
+  vtkSQLQuery *              query = DatabaseConnector->GetQueryInstance();
 
   std::stringstream querystream;
   querystream << "SELECT ";
@@ -2011,7 +2061,7 @@ std::vector<std::string> GetSpecificValueFromOneTableWithConditionsOnTwoColumns(
   querystream << iTableName;
   querystream << " WHERE ((";
   unsigned int i = 0;
-  while (i < iVectorConditionFieldOne.size() - 1)
+  while ( i < iVectorConditionFieldOne.size() - 1 )
     {
     querystream << iFieldOne;
     querystream << " = '";
@@ -2025,7 +2075,7 @@ std::vector<std::string> GetSpecificValueFromOneTableWithConditionsOnTwoColumns(
   querystream << "') AND (";
 
   unsigned j = 0;
-  while (j < iVectorConditionFieldTwo.size() - 1)
+  while ( j < iVectorConditionFieldTwo.size() - 1 )
     {
     querystream << iFieldTwo;
     querystream << " = '";
@@ -2038,23 +2088,23 @@ std::vector<std::string> GetSpecificValueFromOneTableWithConditionsOnTwoColumns(
   querystream << iVectorConditionFieldTwo.at(j);
   querystream << "'))";
 
-  query->SetQuery(querystream.str().c_str());
-  if (!query->Execute())
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
       << "GetSpecificValueFromOneTableWithConditionsOnTwoColumns query failed"
-      << query->GetLastErrorText());
+      << query->GetLastErrorText() );
     DatabaseConnector->Close();
     DatabaseConnector->Delete();
     query->Delete();
     return result;
     }
 
-  while (query->NextRow())
+  while ( query->NextRow() )
     {
-    for (int k = 0; k < query->GetNumberOfFields(); k++)
+    for ( int k = 0; k < query->GetNumberOfFields(); k++ )
       {
-      result.push_back(query->DataValue(k).ToString());
+      result.push_back( query->DataValue(k).ToString() );
       }
     }
 
@@ -2062,15 +2112,19 @@ std::vector<std::string> GetSpecificValueFromOneTableWithConditionsOnTwoColumns(
 
   return result;
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::list<unsigned int> GetColumnForBoundedValue(std::string iColumnName,
-   std::string iTableName, std::string iImgSessionID,std::string iCoordType,
-   std::string iValue, vtkMySQLDatabase* DatabaseConnector)
+std::list< unsigned int > GetColumnForBoundedValue(std::string iColumnName,
+                                                   std::string iTableName,
+                                                   std::string iImgSessionID,
+                                                   std::string iCoordType,
+                                                   std::string iValue,
+                                                   vtkMySQLDatabase *DatabaseConnector)
 {
-  std::list<unsigned int> result;
-  vtkSQLQuery*             query = DatabaseConnector->GetQueryInstance();
+  std::list< unsigned int > result;
+  vtkSQLQuery *             query = DatabaseConnector->GetQueryInstance();
 
   std::stringstream querystream;
   querystream << "SELECT T1.";
@@ -2108,69 +2162,69 @@ std::list<unsigned int> GetColumnForBoundedValue(std::string iColumnName,
   querystream << " = T2.";
   querystream << iColumnName;
 
-  query->SetQuery(querystream.str().c_str());
-  if (!query->Execute())
+  query->SetQuery( querystream.str().c_str() );
+  if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
       << "GetColumnForBoundedValue query failed"
-      << query->GetLastErrorText());
+      << query->GetLastErrorText() );
     DatabaseConnector->Close();
     DatabaseConnector->Delete();
     query->Delete();
     return result;
     }
 
-  while (query->NextRow())
+  while ( query->NextRow() )
     {
-    for (int k = 0; k < query->GetNumberOfFields(); k++)
+    for ( int k = 0; k < query->GetNumberOfFields(); k++ )
       {
-      result.push_back(query->DataValue(k).ToInt());
+      result.push_back( query->DataValue(k).ToInt() );
       }
     }
 
   query->Delete();
 
   return result;
-
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::list<unsigned int> GetSpecificValuesEqualToZero(
-  vtkMySQLDatabase* iDatabaseConnector,std::string iColumnName, std::string iTableName,
-  std::vector<std::string> iVectorConditionFieldOne,
+std::list< unsigned int > GetSpecificValuesEqualToZero(
+  vtkMySQLDatabase *iDatabaseConnector, std::string iColumnName, std::string iTableName,
+  std::vector< std::string > iVectorConditionFieldOne,
   std::string iFieldTwo)
 {
-  std::list<unsigned int> result;
-  vtkSQLQuery*             query = iDatabaseConnector->GetQueryInstance();
-  std::stringstream querystream;
-  std::string temp = SelectQueryStreamListConditions(iTableName,
-                                            iColumnName, iColumnName,
-                                            iVectorConditionFieldOne);
-  temp = temp.substr(0,temp.size()-1);
+  std::list< unsigned int > result;
+  vtkSQLQuery *             query = iDatabaseConnector->GetQueryInstance();
+  std::stringstream         querystream;
+  std::string               temp = SelectQueryStreamListConditions(iTableName,
+                                                                   iColumnName, iColumnName,
+                                                                   iVectorConditionFieldOne);
+  temp = temp.substr(0, temp.size() - 1);
   querystream << temp;
   querystream << " AND ";
   querystream << iFieldTwo;
   querystream << " = 0);";
 
-  query->SetQuery(querystream.str().c_str());
+  query->SetQuery( querystream.str().c_str() );
   /** \todo check when several meshesID are in the query*/
-  if (!query->Execute())
+  if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
       << "GetColumnForBoundedValue query failed"
-      << query->GetLastErrorText());
+      << query->GetLastErrorText() );
     iDatabaseConnector->Close();
     iDatabaseConnector->Delete();
     query->Delete();
     return result;
     }
 
-  while (query->NextRow())
+  while ( query->NextRow() )
     {
-    for (int k = 0; k < query->GetNumberOfFields(); k++)
+    for ( int k = 0; k < query->GetNumberOfFields(); k++ )
       {
-      result.push_back(query->DataValue(k).ToInt());
+      result.push_back( query->DataValue(k).ToInt() );
       }
     }
 
@@ -2178,30 +2232,32 @@ std::list<unsigned int> GetSpecificValuesEqualToZero(
 
   return result;
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::vector<std::string> ExecuteSelectQuery(vtkMySQLDatabase* iDatabaseConnector,
-                                            std::string iQuery)
+std::vector< std::string > ExecuteSelectQuery(vtkMySQLDatabase *iDatabaseConnector,
+                                              std::string iQuery)
 {
-  vtkSQLQuery* query = iDatabaseConnector->GetQueryInstance();
-  std::vector<std::string> Results;
-  query->SetQuery(iQuery.c_str());
-  if (!query->Execute())
+  vtkSQLQuery *query = iDatabaseConnector->GetQueryInstance();
+
+  std::vector< std::string > Results;
+  query->SetQuery( iQuery.c_str() );
+  if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
       << "Execute select query failed"
-      << query->GetLastErrorText());
+      << query->GetLastErrorText() );
     iDatabaseConnector->Close();
     iDatabaseConnector->Delete();
     query->Delete();
     return Results;
     }
-  while (query->NextRow())
+  while ( query->NextRow() )
     {
-    for (int k = 0; k < query->GetNumberOfFields(); k++)
+    for ( int k = 0; k < query->GetNumberOfFields(); k++ )
       {
-      Results.push_back(query->DataValue(k).ToString());
+      Results.push_back( query->DataValue(k).ToString() );
       }
     }
 
@@ -2209,6 +2265,7 @@ std::vector<std::string> ExecuteSelectQuery(vtkMySQLDatabase* iDatabaseConnector
 
   return Results;
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -2216,28 +2273,29 @@ std::string SelectWithJoinNullIncluded(std::string iSelectQuery,
                                        std::string iJoinOn)
 {
   std::stringstream QueryStream;
+
   QueryStream << iSelectQuery;
   QueryStream << " UNION ";
   //QueryStream << iSelectQuery;
-  size_t posWhere = iSelectQuery.find("WHERE",0);
+  size_t            posWhere = iSelectQuery.find("WHERE", 0);
   std::stringstream SecondPart;
-  if (posWhere != std::string::npos)
+  if ( posWhere != std::string::npos )
     {
-    size_t posCloseBracket = iSelectQuery.find(")",iSelectQuery.size()-1);
+    size_t posCloseBracket = iSelectQuery.find(")", iSelectQuery.size() - 1);
       {
       //if an end bracket is found, remove it:
-      if(posCloseBracket != std::string::npos)
+      if ( posCloseBracket != std::string::npos )
         {
-        SecondPart << iSelectQuery.substr(0,posCloseBracket-1);
+        SecondPart << iSelectQuery.substr(0, posCloseBracket - 1);
         }
       //if an end bracket is not found, add an opening bracket after where:
       else
         {
-        SecondPart << iSelectQuery.substr(0,posWhere+6);
+        SecondPart << iSelectQuery.substr(0, posWhere + 6);
         SecondPart << "(";
-        size_t BegEndQuery = posWhere+6;
+        size_t BegEndQuery = posWhere + 6;
         size_t Length = iSelectQuery.size() - BegEndQuery;
-        SecondPart << iSelectQuery.substr(posWhere+6,Length);
+        SecondPart << iSelectQuery.substr(posWhere + 6, Length);
         }
       }
     }
@@ -2250,7 +2308,7 @@ std::string SelectWithJoinNullIncluded(std::string iSelectQuery,
   QueryStream << " AND ";
   QueryStream << iJoinOn;
   QueryStream << " IS NULL";
-  if (posWhere != std::string::npos)
+  if ( posWhere != std::string::npos )
     {
     QueryStream << ");";
     }
@@ -2261,32 +2319,36 @@ std::string SelectWithJoinNullIncluded(std::string iSelectQuery,
 
   return QueryStream.str();
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void GetAllSelectedFields(std::stringstream &ioQuerystream,
-                          std::vector<std::string> iSelectedFields)
+void GetAllSelectedFields(std::stringstream & ioQuerystream,
+                          std::vector< std::string > iSelectedFields)
 {
   size_t i = 0;
-  for( ; i<iSelectedFields.size() - 1; i++ )
+
+  for (; i < iSelectedFields.size() - 1; i++ )
     {
     ioQuerystream << iSelectedFields[i];
     ioQuerystream << ", ";
     }
   ioQuerystream << iSelectedFields[i];
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::vector<std::string> GetAllSelectedValuesFromTwoTables(
-  vtkMySQLDatabase* iDatabaseConnector,std::string iTableOne,std::string iTableTwo,
-  std::vector<std::string> iSelectedFields,std::string iJoinCondition,
+std::vector< std::string > GetAllSelectedValuesFromTwoTables(
+  vtkMySQLDatabase *iDatabaseConnector, std::string iTableOne, std::string iTableTwo,
+  std::vector< std::string > iSelectedFields, std::string iJoinCondition,
   std::string ifield, std::string ifieldValue)
 {
   std::stringstream QueryStream;
+
   QueryStream << "SELECT ";
-  std::vector<std::string>::iterator iter = iSelectedFields.begin();
-  GetAllSelectedFields(QueryStream,iSelectedFields);
+  std::vector< std::string >::iterator iter = iSelectedFields.begin();
+  GetAllSelectedFields(QueryStream, iSelectedFields);
   QueryStream << " FROM ";
   QueryStream << iTableOne;
   QueryStream << " LEFT JOIN ";
@@ -2299,21 +2361,23 @@ std::vector<std::string> GetAllSelectedValuesFromTwoTables(
   QueryStream << ifieldValue;
 
   std::stringstream SelectQuery;
-  SelectQuery << SelectWithJoinNullIncluded(QueryStream.str(),iJoinCondition);
-  return ExecuteSelectQuery(iDatabaseConnector,SelectQuery.str());
+  SelectQuery << SelectWithJoinNullIncluded(QueryStream.str(), iJoinCondition);
+  return ExecuteSelectQuery( iDatabaseConnector, SelectQuery.str() );
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::vector<std::string> GetOrderByWithLimit(vtkMySQLDatabase* iDatabaseConnector,
-  std::string iColumnName,std::string iTableName,std::string iField,
-  std::string iValue,bool ASC,std::string iNumberLimit)
+std::vector< std::string > GetOrderByWithLimit(vtkMySQLDatabase *iDatabaseConnector,
+                                               std::string iColumnName, std::string iTableName, std::string iField,
+                                               std::string iValue, bool ASC, std::string iNumberLimit)
 {
   std::stringstream QueryStream;
-  QueryStream << SelectQueryStream(iTableName,iColumnName,iField,iValue);
+
+  QueryStream << SelectQueryStream(iTableName, iColumnName, iField, iValue);
   QueryStream << " ORDER BY ";
   QueryStream << iColumnName;
-  if (ASC)
+  if ( ASC )
     {
     QueryStream << " ASC LIMIT ";
     }
@@ -2322,6 +2386,5 @@ std::vector<std::string> GetOrderByWithLimit(vtkMySQLDatabase* iDatabaseConnecto
     QueryStream << " DESC LIMIT ";
     }
   QueryStream << iNumberLimit;
-  return ExecuteSelectQuery(iDatabaseConnector,QueryStream.str());
+  return ExecuteSelectQuery( iDatabaseConnector, QueryStream.str() );
 }
-

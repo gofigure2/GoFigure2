@@ -46,24 +46,26 @@
 class vtkImageData;
 
 //-------------------------------------------------------------------------
-template<class TWriter>
-void vtkWriteImage(vtkImageData* iImage, const std::string& iFileName)
+template< class TWriter >
+void vtkWriteImage(vtkImageData *iImage, const std::string & iFileName)
 {
   typedef TWriter WriterType;
-  WriterType* writer = WriterType::New();
+  WriterType *writer = WriterType::New();
   writer->SetInput(iImage);
-  writer->SetFileName(iFileName.c_str());
+  writer->SetFileName( iFileName.c_str() );
   writer->Write();
   writer->Delete();
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-template<class TWriter>
-void vtkWriteImage(vtkImageData* iImage, const QString& iFileName)
+template< class TWriter >
+void vtkWriteImage(vtkImageData *iImage, const QString & iFileName)
 {
-  vtkWriteImage<TWriter>(iImage, iFileName.toStdString());
+  vtkWriteImage< TWriter >( iImage, iFileName.toStdString() );
 }
+
 //-------------------------------------------------------------------------
 
 #endif

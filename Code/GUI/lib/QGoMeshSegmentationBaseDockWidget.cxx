@@ -44,26 +44,26 @@
 #include "QGoMeshSeedSegmentation.h"
 
 //---------------------------------------------------------------------------//
-QGoMeshSegmentationBaseDockWidget::
-QGoMeshSegmentationBaseDockWidget(QWidget* iParent, vtkPoints* seeds,
-    std::vector<vtkImageData*>* iOriginalImage) : QDockWidget(iParent)
+QGoMeshSegmentationBaseDockWidget::QGoMeshSegmentationBaseDockWidget(QWidget *iParent, vtkPoints *seeds,
+                                                                     std::vector< vtkImageData * > *iOriginalImage):
+  QDockWidget(iParent)
 {
   this->setupUi(this);
 
-  this->setWindowTitle(QString::fromUtf8("Mesh Segmentation"));
+  this->setWindowTitle( QString::fromUtf8("Mesh Segmentation") );
 
   QIcon MeshSegmentationIcon;
-  MeshSegmentationIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/meshOneClick.png")),
-                              QIcon::Normal, QIcon::Off);
+  MeshSegmentationIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/meshOneClick.png") ),
+                                 QIcon::Normal, QIcon::Off);
   //MeshSegmentationIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/MeshEditingWidget.png")),
-    //                          QIcon::Normal, QIcon::Off);
-  
+  //                          QIcon::Normal, QIcon::Off);
+
   this->toggleViewAction()->setIcon(MeshSegmentationIcon);
-  this->toggleViewAction()->setToolTip(tr("Mesh Editing"));
+  this->toggleViewAction()->setToolTip( tr("Mesh Editing") );
 
   // update interactor behavior
-  QObject::connect(this->mode, SIGNAL(activated(int)),
-                   this, SLOT(SegmentationMethod(int)));
+  QObject::connect( this->mode, SIGNAL( activated(int) ),
+                    this, SLOT( SegmentationMethod(int) ) );
 
   // ADD BASE WIDGETS FOR EACH SEGMENTATION MODE
 
@@ -79,78 +79,76 @@ QGoMeshSegmentationBaseDockWidget(QWidget* iParent, vtkPoints* seeds,
   //----------------------------------------------------------------
 
   m_MeshManualSegmentation =
-      // 0 2D
-      // 1 3D
-      // 2 2D+3D
-      new QGoMeshSeedSegmentation( this, seeds, iOriginalImage, 2);
+    // 0 2D
+    // 1 3D
+    // 2 2D+3D
+    new QGoMeshSeedSegmentation(this, seeds, iOriginalImage, 2);
 
-  QWidget* manual_widget = m_MeshManualSegmentation->getWidget();
+  QWidget *manual_widget = m_MeshManualSegmentation->getWidget();
 
   gridLayout->addWidget(manual_widget, 1, 0, 1, -1);
   manual_widget->setVisible(false);
 
   // connect show/hide
-  QObject::connect(this, SIGNAL(ManualSegmentationActivated(bool)),
-      manual_widget, SLOT(setVisible(bool)));
+  QObject::connect( this, SIGNAL( ManualSegmentationActivated(bool) ),
+                    manual_widget, SLOT( setVisible(bool) ) );
 
   // connect semi-automatic segmentation specific signals
-  QObject::connect(m_MeshManualSegmentation, SIGNAL(UpdateSeeds()),
-      this, SIGNAL(UpdateSeeds()));
-  
-  QObject::connect(m_MeshManualSegmentation, SIGNAL(CreateCorrespondingMesh(int)),
-      this, SIGNAL(CreateCorrespondingMesh(int)));
+  QObject::connect( m_MeshManualSegmentation, SIGNAL( UpdateSeeds() ),
+                    this, SIGNAL( UpdateSeeds() ) );
 
-  QObject::connect(m_MeshManualSegmentation, SIGNAL(AddContourForMeshToContours(vtkPolyData*)),
-      this, SIGNAL(AddContourForMeshToContours(vtkPolyData*)));
-  QObject::connect(m_MeshManualSegmentation, SIGNAL(SegmentationFinished()),
-      this, SIGNAL(ClearAllSeeds()));
+  QObject::connect( m_MeshManualSegmentation, SIGNAL( CreateCorrespondingMesh(int) ),
+                    this, SIGNAL( CreateCorrespondingMesh(int) ) );
+
+  QObject::connect( m_MeshManualSegmentation, SIGNAL( AddContourForMeshToContours(vtkPolyData *) ),
+                    this, SIGNAL( AddContourForMeshToContours(vtkPolyData *) ) );
+  QObject::connect( m_MeshManualSegmentation, SIGNAL( SegmentationFinished() ),
+                    this, SIGNAL( ClearAllSeeds() ) );
 
   //----------------------------------------------------------------
   // Semi auto segmentation ( i.e. algo with seed)
   //----------------------------------------------------------------
 
   m_MeshSemiAutoSegmentation =
-      new QGoMeshSeedSegmentation( this, seeds, iOriginalImage, 1);
+    new QGoMeshSeedSegmentation(this, seeds, iOriginalImage, 1);
 
-  QWidget* semi_auto_widget = m_MeshSemiAutoSegmentation->getWidget();
+  QWidget *semi_auto_widget = m_MeshSemiAutoSegmentation->getWidget();
 
   gridLayout->addWidget(semi_auto_widget, 1, 0, 1, -1);
   semi_auto_widget->setVisible(false);
 
   // connect show/hide
-  QObject::connect(this, SIGNAL(SemiAutoSegmentationActivated(bool)),
-                   semi_auto_widget, SLOT(setVisible(bool)));
+  QObject::connect( this, SIGNAL( SemiAutoSegmentationActivated(bool) ),
+                    semi_auto_widget, SLOT( setVisible(bool) ) );
 
   // connect semi-automatic segmentation specific signals
-  QObject::connect(m_MeshSemiAutoSegmentation, SIGNAL(UpdateSeeds()),
-      this, SIGNAL(UpdateSeeds()));
-  QObject::connect(m_MeshSemiAutoSegmentation, SIGNAL(MeshCreated(vtkPolyData*)),
-      this, SIGNAL(SaveAndVisuMesh(vtkPolyData*)));
-  QObject::connect(m_MeshSemiAutoSegmentation, SIGNAL(SegmentationFinished()),
-      this, SIGNAL(ClearAllSeeds()));
-
+  QObject::connect( m_MeshSemiAutoSegmentation, SIGNAL( UpdateSeeds() ),
+                    this, SIGNAL( UpdateSeeds() ) );
+  QObject::connect( m_MeshSemiAutoSegmentation, SIGNAL( MeshCreated(vtkPolyData *) ),
+                    this, SIGNAL( SaveAndVisuMesh(vtkPolyData *) ) );
+  QObject::connect( m_MeshSemiAutoSegmentation, SIGNAL( SegmentationFinished() ),
+                    this, SIGNAL( ClearAllSeeds() ) );
 }
+
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
 QGoMeshSegmentationBaseDockWidget::
 ~QGoMeshSegmentationBaseDockWidget()
-{
-}
+{}
 
 //---------------------------------------------------------------------------//
 // one segmentation to another
 //---------------------------------------------------------------------------//
 void
-QGoMeshSegmentationBaseDockWidget::
-SegmentationMethod(int iSegmentationMethod)
+QGoMeshSegmentationBaseDockWidget::SegmentationMethod(int iSegmentationMethod)
 {
   emit ManualSegmentationActivated(false);
   emit SemiAutoSegmentationActivated(false);
   emit AutoSegmentationActivated(false);
 
-  switch(iSegmentationMethod)
-  {
+  switch ( iSegmentationMethod )
+    {
     case 0:
       emit ManualSegmentationActivated(true);
       break;
@@ -163,18 +161,18 @@ SegmentationMethod(int iSegmentationMethod)
     default:
       emit ReinitializeInteractorActivated(true);
       break;
-  }
+    }
 }
+
 //---------------------------------------------------------------------------//
 // show hide widget
 //---------------------------------------------------------------------------//
 void
-QGoMeshSegmentationBaseDockWidget::
-interactorBehavior(bool iSegmentationMethod)
+QGoMeshSegmentationBaseDockWidget::interactorBehavior(bool iSegmentationMethod)
 {
-  if(iSegmentationMethod)
+  if ( iSegmentationMethod )
     {
-    switch ( mode->currentIndex())
+    switch ( mode->currentIndex() )
       {
       case 0:
         emit ManualSegmentationActivated(iSegmentationMethod);
@@ -196,25 +194,25 @@ interactorBehavior(bool iSegmentationMethod)
     emit AutoSegmentationActivated(false);
     emit ReinitializeInteractorActivated(true);
 
-    this->setVisible( false );
+    this->setVisible(false);
     }
 }
+
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
 void
-QGoMeshSegmentationBaseDockWidget::
-SetChannel(int iChannel)
+QGoMeshSegmentationBaseDockWidget::SetChannel(int iChannel)
 {
   m_MeshManualSegmentation->SetChannel(iChannel);
   m_MeshSemiAutoSegmentation->SetChannel(iChannel);
 }
+
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
 void
-QGoMeshSegmentationBaseDockWidget::
-Initialize()
+QGoMeshSegmentationBaseDockWidget::Initialize()
 {
   //m_ContourManualSegmentation->GenerateContourRepresentationProperties(true);
 }

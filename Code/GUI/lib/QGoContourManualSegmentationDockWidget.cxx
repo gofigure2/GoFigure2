@@ -45,32 +45,31 @@
 #include "QGoManualSegmentationSettingsDialog.h"
 
 //---------------------------------------------------------------------------//
-QGoContourManualSegmentationDockWidget::
-QGoContourManualSegmentationDockWidget(QWidget* iParent) :
+QGoContourManualSegmentationDockWidget::QGoContourManualSegmentationDockWidget(QWidget *iParent):
   QWidget(iParent)
-  {
+{
   this->setupUi(this);
 
   m_SettingsDialog = new QGoManualSegmentationSettingsDialog(this);
 
-  QObject::connect(this->ReinitializeBtn, SIGNAL(pressed()),
-                   this, SIGNAL(ReinitializePressed()));
+  QObject::connect( this->ReinitializeBtn, SIGNAL( pressed() ),
+                    this, SIGNAL( ReinitializePressed() ) );
 
-  QObject::connect(this->ValidateBtn, SIGNAL(pressed()),
-                   this, SIGNAL(ValidatePressed()));
+  QObject::connect( this->ValidateBtn, SIGNAL( pressed() ),
+                    this, SIGNAL( ValidatePressed() ) );
 
-  QObject::connect(this->SettingsBtn, SIGNAL(pressed()),
-                   m_SettingsDialog, SLOT (exec()));
+  QObject::connect( this->SettingsBtn, SIGNAL( pressed() ),
+                    m_SettingsDialog, SLOT ( exec() ) );
 
-  QObject::connect(m_SettingsDialog, SIGNAL(accepted()),
-                   this, SIGNAL(UpdateContourRepresentationProperties()));
+  QObject::connect( m_SettingsDialog, SIGNAL( accepted() ),
+                    this, SIGNAL( UpdateContourRepresentationProperties() ) );
+}
 
-  }
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
 QGoContourManualSegmentationDockWidget::
 ~QGoContourManualSegmentationDockWidget()
-  {
-  }
+{}
+
 //---------------------------------------------------------------------------//

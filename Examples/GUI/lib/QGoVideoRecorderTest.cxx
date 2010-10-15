@@ -50,7 +50,7 @@
 
 int main(int argc, char *argv[])
 {
-  if (argc != 2)
+  if ( argc != 2 )
     {
     std::cout << "Usage : ./VideoRecorderTest " << std::endl;
     std::cout << "1-test (boolean)" << std::endl;
@@ -58,10 +58,10 @@ int main(int argc, char *argv[])
     }
 
   QApplication app(argc, argv);
-  QTimer*      timer = new QTimer;
+  QTimer *     timer = new QTimer;
   timer->setSingleShot(true);
 
-  QGoVideoRecorder* window = new QGoVideoRecorder(NULL);
+  QGoVideoRecorder *window = new QGoVideoRecorder(NULL);
 
   // Stupid tests
   window->SetCurrentX(10);
@@ -69,16 +69,16 @@ int main(int argc, char *argv[])
   window->SetCurrentZ(10);
   window->SetCurrentT(10);
 
-  vtkRenderWindow* iRenderingWindow = vtkRenderWindow::New();
+  vtkRenderWindow *iRenderingWindow = vtkRenderWindow::New();
   window->SetRenderingWindow(iRenderingWindow);
   iRenderingWindow->Delete();
 
   window->SetSpecificParametersFrameRate(10);
   window->SetSpecificParametersQuality(2);
 
-  QObject::connect(timer, SIGNAL(timeout()), window, SLOT(close()));
+  QObject::connect( timer, SIGNAL( timeout() ), window, SLOT( close() ) );
 
-  if (atoi(argv[1]) == 1)
+  if ( atoi(argv[1]) == 1 )
     {
     timer->start(1000);
     }

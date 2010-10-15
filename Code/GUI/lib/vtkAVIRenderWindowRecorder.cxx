@@ -46,45 +46,44 @@
 /**
  * \brief Constructor
  */
-vtkAVIRenderWindowRecorder::
-vtkAVIRenderWindowRecorder()
-  {
+vtkAVIRenderWindowRecorder::vtkAVIRenderWindowRecorder()
+{
   m_ImageWriter  = vtkAVIWriter::New();
 
   // initialise values in the writer
-  vtkAVIWriter* tempAVI = vtkAVIWriter::SafeDownCast(m_ImageWriter);
+  vtkAVIWriter *tempAVI = vtkAVIWriter::SafeDownCast(m_ImageWriter);
   tempAVI->SetQuality(m_VideoQuality);
   tempAVI->SetRate(m_FrameRate);
-  }
+}
 
 /**
  * \brief Destructor
  */
 vtkAVIRenderWindowRecorder::
 ~vtkAVIRenderWindowRecorder()
-  {
+{
   m_ImageWriter->Delete();
-  }
+}
 
 void
-vtkAVIRenderWindowRecorder::
-SetSpecificParameters()
+vtkAVIRenderWindowRecorder::SetSpecificParameters()
 {
-  vtkAVIWriter* tempAVI = vtkAVIWriter::SafeDownCast(m_ImageWriter);
+  vtkAVIWriter *tempAVI = vtkAVIWriter::SafeDownCast(m_ImageWriter);
+
   tempAVI->SetQuality(m_VideoQuality);
   tempAVI->SetRate(m_FrameRate);
 }
 
-vtkAVIRenderWindowRecorder*
-vtkAVIRenderWindowRecorder::
-New()
+vtkAVIRenderWindowRecorder *
+vtkAVIRenderWindowRecorder::New()
 {
   // First try to create the object from the vtkObjectFactory
-  vtkObject* ret =
+  vtkObject *ret =
     vtkObjectFactory::CreateInstance("vtkAVIRenderWindowRecorder");
-  if (ret)
+
+  if ( ret )
     {
-    return static_cast<vtkAVIRenderWindowRecorder *>(ret);
+    return static_cast< vtkAVIRenderWindowRecorder * >( ret );
     }
 
   return new vtkAVIRenderWindowRecorder;

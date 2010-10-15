@@ -57,13 +57,12 @@
 \class QGoPlugin
 \brief Abstract class for any kind of plugins used by GoFigure2.
 */
-class QGoPlugin : public QObject
-  {
+class QGoPlugin:public QObject
+{
   Q_OBJECT
-
 public:
   /** \brief Default Constructor.*/
-  explicit QGoPlugin(QObject* iParent = 0x0);
+  explicit QGoPlugin(QObject *iParent = 0x0);
 
   /** \brief Destructor.*/
   virtual ~QGoPlugin(){}
@@ -95,31 +94,31 @@ public:
   /** \brief Read Settings for the plugin.*/
   virtual void ReadSettings() = 0;
 
-  virtual std::list<GoFigure::TabDimensionType> TabElementCompatibility() const = 0;
+  virtual std::list< GoFigure::TabDimensionType > TabElementCompatibility() const = 0;
 
   /** \brief */
-  virtual std::vector<QAction*> Actions() = 0;
+  virtual std::vector< QAction * > Actions() = 0;
 
   /** \brief */
-  virtual QMenu* Menu() = 0;
+  virtual QMenu * Menu() = 0;
 
   /** \brief */
-  virtual QToolBar* ToolBar() = 0;
+  virtual QToolBar * ToolBar() = 0;
 
   /** \brief */
-  virtual QDockWidget* DockWidget() = 0;
+  virtual QDockWidget * DockWidget() = 0;
 
   /** \brief */
-  virtual QWidget* AdditionalWidget() = 0;
+  virtual QWidget * AdditionalWidget() = 0;
 
   /** \brief */
-  virtual void OnTabActivated(const int&) = 0;
+  virtual void OnTabActivated(const int &) = 0;
 
   /** \brief */
-  virtual void OnTabMoved(const int&, const int&) = 0;
+  virtual void OnTabMoved(const int &, const int &) = 0;
 
   /** \brief */
-  virtual void OnTabClosed(const int&) = 0;
+  virtual void OnTabClosed(const int &) = 0;
 
 protected:
   /** \brief contains all information related to the plugin.
@@ -135,7 +134,7 @@ protected:
 
 private:
   Q_DISABLE_COPY(QGoPlugin);
-  };
+};
 
 Q_DECLARE_INTERFACE(QGoPlugin, "GoFigure2.QGoPlugin/1.0")
 

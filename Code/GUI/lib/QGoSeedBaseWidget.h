@@ -49,37 +49,50 @@
 
 #include "ui_SegmentationSeedBaseWidget.h"
 
-class QGoSeedBaseWidget :
+class QGoSeedBaseWidget:
   public QWidget,
   protected Ui::SegmentationSeedBaseWidget
-  {
+{
   Q_OBJECT
 public:
-  explicit QGoSeedBaseWidget(QWidget* iParent = 0, int iSampling = 0);
+  explicit QGoSeedBaseWidget(QWidget *iParent = 0, int iSampling = 0);
   ~QGoSeedBaseWidget();
 
   void Initialize();
 
 public slots:
   void         AddChannel(QString iChannel);
+
   void         AddFilter(QString iFilter);
+
   int          GetNumberOfFilters();
-  QGridLayout* GetFrame();
 
-  signals:
-    void Apply();
-    void Radius(double);
-    void Filter(int);
-    void Channel(int);
-    void Sampling(int);
-    void MeshCreated(vtkPolyData* );
-    void ContourCreated(vtkPolyData* );
-    void ImageProcessed();
-    void UpdateSeeds();
-    void SegmentationFinished();
+  QGridLayout * GetFrame();
 
-    void CreateCorrespondingMesh(int);
-    void AddContourForMeshToContours(vtkPolyData*);
-  };
+signals:
+  void Apply();
+
+  void Radius(double);
+
+  void Filter(int);
+
+  void Channel(int);
+
+  void Sampling(int);
+
+  void MeshCreated(vtkPolyData *);
+
+  void ContourCreated(vtkPolyData *);
+
+  void ImageProcessed();
+
+  void UpdateSeeds();
+
+  void SegmentationFinished();
+
+  void CreateCorrespondingMesh(int);
+
+  void AddContourForMeshToContours(vtkPolyData *);
+};
 
 #endif

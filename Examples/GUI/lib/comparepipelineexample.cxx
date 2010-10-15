@@ -47,7 +47,6 @@
 
 #include "QGoSynchronizedViewManager.h"
 
-
 /* This simple examples shows how to use the high level interface
  * of the QGoSynchronize classes.
  * It takes a list of images as an input and displays the readable ones
@@ -55,9 +54,9 @@
  * It synchronize the visualizations.
  */
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-  if (argc != 2)
+  if ( argc != 2 )
     {
     std::cout << "Usage : QGoSynchronizedViewManagerTest(.exe) " << std::endl;
     std::cout << "1-imagefile" << std::endl;
@@ -71,26 +70,23 @@ int main(int argc, char** argv)
   vtkSmartPointer< vtkImageReader2Factory > imageFactory =
     vtkSmartPointer< vtkImageReader2Factory >::New();
 
-  vtkSmartPointer<vtkImageGaussianSmooth> filter =
-    vtkSmartPointer<vtkImageGaussianSmooth>::New();
-
+  vtkSmartPointer< vtkImageGaussianSmooth > filter =
+    vtkSmartPointer< vtkImageGaussianSmooth >::New();
 
   /* we simply create a new manager that will take care of
    ∗ creation/deletion of visualization and callbacks for us.
    */
-  QGoSynchronizedViewManager* ViewManager	=	new	QGoSynchronizedViewManager ();
+  QGoSynchronizedViewManager *ViewManager = new QGoSynchronizedViewManager ();
 
   QString ViewName;
 
+  vtkImageReader2 *imageReader =
+    imageFactory->CreateImageReader2(argv[1]);
 
-  vtkImageReader2 * imageReader =
-    imageFactory->CreateImageReader2( argv[1] );
-
-  if (imageReader != NULL)
+  if ( imageReader != NULL )
     {
-
     // Image before filtering :
-    imageReader->SetFileName( argv[1] );
+    imageReader->SetFileName(argv[1]);
     imageReader->Update();
 
     ViewName.clear();
@@ -100,18 +96,17 @@ int main(int argc, char** argv)
      * a valid pointer to a VTK image and
      * a string encoding the name of the visualization.
      */
-    ViewManager->newSynchronizedView(ViewName, imageReader->GetOutput() );
+    ViewManager->newSynchronizedView( ViewName, imageReader->GetOutput() );
 
     // Filtered Image :
-    filter->SetInputConnection(imageReader->GetOutputPort());
+    filter->SetInputConnection( imageReader->GetOutputPort() );
     filter->Update();
 
     ViewName.append(" - filtered");
 
-    ViewManager->newSynchronizedView(ViewName, filter->GetOutput() );
+    ViewManager->newSynchronizedView( ViewName, filter->GetOutput() );
     ViewManager->Update();
     ViewManager->show();
-
     }
   else
     {
@@ -120,16 +115,15 @@ int main(int argc, char** argv)
               << std::endl;
     }
 
-
 /* the synchronization manager can synchronize the opened images
 ∗ with a simple function call */
-ViewManager->synchronizeOpenSynchronizedViews();
+  ViewManager->synchronizeOpenSynchronizedViews();
 
-app.processEvents();
+  app.processEvents();
 
-int output = app.exec();
+  int output = app.exec();
 
-delete ViewManager;
+  delete ViewManager;
 
-return output;
+  return output;
 }

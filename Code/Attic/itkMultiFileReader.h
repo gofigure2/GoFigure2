@@ -66,22 +66,21 @@ namespace itk
 *
 *
 */
-class QGOIO_EXPORT MultiFileReader : public LightProcessObject
-  {
+class QGOIO_EXPORT MultiFileReader:public LightProcessObject
+{
 public:
 
   /** Standard class typedefs.      */
-  typedef MultiFileReader          Self;
-  typedef LightProcessObject       Superclass;
-  typedef SmartPointer<Self>       Pointer;
-  typedef SmartPointer<const Self> ConstPointer;
+  typedef MultiFileReader            Self;
+  typedef LightProcessObject         Superclass;
+  typedef SmartPointer< Self >       Pointer;
+  typedef SmartPointer< const Self > ConstPointer;
 
   itkNewMacro(Self);
 
   itkTypeMacro(MultiFileReader, LightProcessObject);
 
-  enum FILETYPE
-    {
+  enum FILETYPE {
     BMP = 0,
     JPEG,
     PNG,
@@ -92,10 +91,11 @@ public:
 
   /** \brief set the time point you want to extract and load in memory the
   corresponding XYZ volume. */
-  void SetTimePoint(const int& UserTimePoint);
+  void SetTimePoint(const int & UserTimePoint);
+
   /** \brief set the z slice you want to extract and load in memory the
   corresponding XYT volume. */
-  void SetZDepth(const int& iZ);
+  void SetZDepth(const int & iZ);
 
   /** \brief */
   itkBooleanMacro(TimeBased);
@@ -103,7 +103,8 @@ public:
 
   /** \brief set the channel you want to extract
       and load in memory. -1 for all channels.         */
-  void SetChannel(const unsigned int& UserChannel);
+  void SetChannel(const unsigned int & UserChannel);
+
   void UpdateChannel();
 
   /** \brief set the input as a GoFigure format file list */
@@ -125,7 +126,7 @@ public:
   itkBooleanMacro(MultiChannelImages);
 
   /** \brief  */
-  vtkImageData* GetOutput() const;
+  vtkImageData * GetOutput() const;
 
   // Fake It. The output is not of itkDataObject type
   // so pipeline mechanism would not work.
@@ -134,21 +135,20 @@ public:
 //   void SetProgressBar( QProgressBar* PB );
 
   /** \brief Mandatory PrintSelf */
-  void PrintSelf(std::ostream& os, Indent indent) const;
+  void PrintSelf(std::ostream & os, Indent indent) const;
 
 protected:
   MultiFileReader();
   virtual ~MultiFileReader();
-
 private:
   void ComputeUpdateFileList();
 
   MultiFileReader(const Self &); //purposely not implemented
-  void operator =(const Self&); //purposely not implemented
+  void operator=(const Self &);  //purposely not implemented
 
-  vtkImageData*                             m_OutputImage;
+  vtkImageData *                            m_OutputImage;
   GoFigureFileInfoHelperMultiIndexContainer m_FileList;
-  std::list<std::string>                    m_UpdateFileList;
+  std::list< std::string >                  m_UpdateFileList;
 //   FileListType   m_UpdateFileList;
   FILETYPE     m_FileType;          // suppose same file format for all files
   int          m_Dimensionality;    // suppose same dimensionality for all files
@@ -167,22 +167,22 @@ private:
 
   virtual void GenerateData();
 
-  template<class TReader>
-  void Copy3DImage(vtkImageData* ioImage, const std::string& iFileName)
+  template< class TReader >
+  void Copy3DImage(vtkImageData *ioImage, const std::string & iFileName)
   {
     typedef TReader ReaderType;
-    ReaderType* reader = ReaderType::New();
-    reader->SetFileName(iFileName.c_str());
+    ReaderType *reader = ReaderType::New();
+    reader->SetFileName( iFileName.c_str() );
     reader->SetFileDimensionality(3);
     reader->Update();
-    ioImage->ShallowCopy(reader->GetOutput());
+    ioImage->ShallowCopy( reader->GetOutput() );
     reader->Delete();
   }
 
   void BuildVolumeFrom2DImages();
-  void CreateVolumeFromOne3DImageFile();
-  };
 
+  void CreateVolumeFromOne3DImageFile();
+};
 } // end of namespace itk
 
 #endif

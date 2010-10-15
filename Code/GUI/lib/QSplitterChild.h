@@ -50,22 +50,20 @@
 not possible to use connect between the QSplitter to synchronize them.
 that's the reason for the creation of QSplitterchild.
 */
-class QSplitterChild : public QSplitter
-  {
+class QSplitterChild:public QSplitter
+{
   Q_OBJECT
-
 public:
-  explicit QSplitterChild(QWidget* parent = 0);
+  explicit QSplitterChild(QWidget *parent = 0);
   explicit QSplitterChild(Qt::Orientation orientation,
-                          QWidget* parent = 0);
+                          QWidget *parent = 0);
   virtual ~QSplitterChild();
-
 public slots:
   void moveSplitter(int pos, int index);
 
 protected:
   int Prevpos;
   int Previndex;
-  };
+};
 
 #endif

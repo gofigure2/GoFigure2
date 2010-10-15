@@ -42,20 +42,17 @@
 
 #include "GoDBTableWidgetContainer.h"
 #include "QGoIOConfigure.h"
-/** 
-\brief 
+/**
+\brief
 */
-class QGOIO_EXPORT GoDBTWContainerForTrackLineage: public GoDBTableWidgetContainer
-  {
-
+class QGOIO_EXPORT GoDBTWContainerForTrackLineage:public GoDBTableWidgetContainer
+{
 public:
   GoDBTWContainerForTrackLineage(std::string iCollectionName, std::string iTracesName,
-    int iImgSessionID);
+                                 int iImgSessionID);
   ~GoDBTWContainerForTrackLineage();
-
 protected:
 
   void GetCommonInfoForTwoTracesTable();
-
-  };
+};
 #endif

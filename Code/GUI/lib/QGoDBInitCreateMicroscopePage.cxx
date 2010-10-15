@@ -50,30 +50,31 @@
 #include <QDir>
 #include <QPushButton>
 
-QGoDBInitCreateMicroscopePage::QGoDBInitCreateMicroscopePage(QWidget *iParent)
-  : QWizardPage(iParent)
-  {
+QGoDBInitCreateMicroscopePage::QGoDBInitCreateMicroscopePage(QWidget *iParent):
+  QWizardPage(iParent)
+{
   QFont tfont;
+
   tfont.setBold(false);
   this->setFont(tfont);
   m_DatabaseConnector = 0;
-  setSubTitle(tr("Create the microscopes for the gofigure projects:"));
+  setSubTitle( tr("Create the microscopes for the gofigure projects:") );
 
-  QFormLayout* formLayout = new QFormLayout;
+  QFormLayout *formLayout = new QFormLayout;
 
   lineMicroscopeName = new QLineEdit;
-  CreateButton   = new QPushButton(tr("Create Microscope"));
+  CreateButton   = new QPushButton( tr("Create Microscope") );
 
   formLayout->addRow(tr("Enter the Microscope Name:"),   lineMicroscopeName);
   formLayout->addWidget(CreateButton);
 
-  QObject::connect(this->CreateButton, SIGNAL(clicked()),
-                   this, SLOT(CreateMicroscope()));
+  QObject::connect( this->CreateButton, SIGNAL( clicked() ),
+                    this, SLOT( CreateMicroscope() ) );
 
   setLayout(formLayout);
   //registerField( "MicroscopeName",  lineMicroscopeName );
+}
 
-  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -81,29 +82,30 @@ bool QGoDBInitCreateMicroscopePage::validatePage()
 {
   this->OpenDBConnection();
   QMessageBox msgBox;
-  if (ListAllValuesForOneColumn(this->m_DatabaseConnector,
-                                "Name", "microscope").empty())
+  if ( ListAllValuesForOneColumn(this->m_DatabaseConnector,
+                                 "Name", "microscope").empty() )
     {
     msgBox.setText(
-      tr("Please create at least one microscope."));
+      tr("Please create at least one microscope.") );
     msgBox.exec();
-    if (CloseDatabaseConnection(m_DatabaseConnector))
+    if ( CloseDatabaseConnection(m_DatabaseConnector) )
       {
       m_DatabaseConnector = 0;
       }
     return false;
     }
-  if (CloseDatabaseConnection(m_DatabaseConnector))
+  if ( CloseDatabaseConnection(m_DatabaseConnector) )
     {
     m_DatabaseConnector = 0;
     }
-  msgBox.setText(QObject::tr(
-                   "The MySql user and the GoFigure Database \n\
+  msgBox.setText( QObject::tr(
+                    "The MySql user and the GoFigure Database \n\
     have been successfully created !!\n\
-    Now you can save the work you do with GoFigure into the Database !!"                                                                                                          ));
+    Now you can save the work you do with GoFigure into the Database !!") );
   msgBox.exec();
   return true;
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -111,33 +113,34 @@ void QGoDBInitCreateMicroscopePage::CreateMicroscope()
 {
   this->OpenDBConnection();
   QMessageBox msgBox;
-  //std::string MicroscopeName = field("MicroscopeName").toString().toStdString();
+  //std::string MicroscopeName =
+  // field("MicroscopeName").toString().toStdString();
   std::string MicroscopeName = this->lineMicroscopeName->text().toStdString();
-  if (MicroscopeName.empty())
+  if ( MicroscopeName.empty() )
     {
     msgBox.setText(
-      tr("Please enter a name for your microscope."));
+      tr("Please enter a name for your microscope.") );
     msgBox.exec();
     return;
     }
 
-  if (ListSpecificValuesForOneColumn(this->m_DatabaseConnector, "microscope",
-                                     "Name", "Name", MicroscopeName).size() > 0)
+  if ( ListSpecificValuesForOneColumn(this->m_DatabaseConnector, "microscope",
+                                      "Name", "Name", MicroscopeName).size() > 0 )
     {
     msgBox.setText(
-      tr("There is already a Microscope with the same name, please choose another one"));
+      tr("There is already a Microscope with the same name, please choose another one") );
     msgBox.exec();
     return;
     }
 
-  vtkSQLQuery*      query = this->m_DatabaseConnector->GetQueryInstance();
+  vtkSQLQuery *     query = this->m_DatabaseConnector->GetQueryInstance();
   std::stringstream queryScript;
   queryScript << "INSERT INTO microscope VALUES ('";
   queryScript << MicroscopeName;
   queryScript << "') ;";
 
-  query->SetQuery(queryScript.str().c_str());
-  if (!query->Execute())
+  query->SetQuery( queryScript.str().c_str() );
+  if ( !query->Execute() )
     {
     std::cout << "Insert Microscope query failed." << std::endl;
     query->Delete();
@@ -145,31 +148,33 @@ void QGoDBInitCreateMicroscopePage::CreateMicroscope()
     }
   query->Delete();
   msgBox.setText(
-    tr("Your microscope has been successfully created"));
+    tr("Your microscope has been successfully created") );
   msgBox.exec();
   emit NewMicroscopeCreated();
 
-  if (CloseDatabaseConnection(m_DatabaseConnector))
+  if ( CloseDatabaseConnection(m_DatabaseConnector) )
     {
     m_DatabaseConnector = 0;
     }
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 void QGoDBInitCreateMicroscopePage::OpenDBConnection()
 {
-  if (this->m_User.empty() || this->m_Password.empty())
+  if ( this->m_User.empty() || this->m_Password.empty() )
     {
-    this->SetDatabaseVariables(field("User").toString().toStdString(),
-                               field("Password").toString().toStdString());
+    this->SetDatabaseVariables( field("User").toString().toStdString(),
+                                field("Password").toString().toStdString() );
     }
-  if (this->m_DatabaseConnector == 0)
+  if ( this->m_DatabaseConnector == 0 )
     {
     m_DatabaseConnector = OpenDatabaseConnection(
       this->m_Server, this->m_User, this->m_Password, this->m_DBName);
     }
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

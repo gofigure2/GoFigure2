@@ -43,22 +43,24 @@
 #include <iostream>
 #include <sstream>
 
-QGoDBMeshManager::QGoDBMeshManager(int iImgSessionID, QWidget* iparent)
-:QGoDBTraceManager()
+QGoDBMeshManager::QGoDBMeshManager(int iImgSessionID, QWidget *iparent):
+  QGoDBTraceManager()
 {
-  this->SetInfo(iImgSessionID,iparent);
+  this->SetInfo(iImgSessionID, iparent);
   this->m_TWContainer = new GoDBTWContainerForMesh(iImgSessionID);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 QGoDBMeshManager::~QGoDBMeshManager()
 {
-  if (this->m_TWContainer)
-      {
-      delete this->m_TWContainer;
-      }
+  if ( this->m_TWContainer )
+    {
+    delete this->m_TWContainer;
+    }
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -68,153 +70,180 @@ void QGoDBMeshManager::SetCollectionsTraceNames()
   this->m_CollectionName = "track";
   this->m_CollectionOf = "contour";
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoDBMeshManager::DisplayInfoAndLoadVisuContainerForAllMeshes(
-  vtkMySQLDatabase* iDatabaseConnector)//,unsigned int iTimePoint)
+  vtkMySQLDatabase *iDatabaseConnector) //,unsigned int iTimePoint)
 {
   //this->DisplayInfoForAllTraces(iDatabaseConnector);
-  this->DisplayInfoAndLoadVisuContainerWithAllTraces<GoDBTWContainerForMesh>
-    (this->m_TWContainer,iDatabaseConnector);//,iTimePoint);
+  this->DisplayInfoAndLoadVisuContainerWithAllTraces< GoDBTWContainerForMesh >
+    (this->m_TWContainer, iDatabaseConnector); //,iTimePoint);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoDBMeshManager::DisplayInfoForAllTraces(
-  vtkMySQLDatabase* iDatabaseConnector)
+  vtkMySQLDatabase *iDatabaseConnector)
 {
-  this->DisplayInfoForAllTracesTemplate<GoDBTWContainerForMesh>(
-     this->m_TWContainer,iDatabaseConnector);
+  this->DisplayInfoForAllTracesTemplate< GoDBTWContainerForMesh >(
+    this->m_TWContainer, iDatabaseConnector);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoDBMeshManager::DisplayInfoForLastCreatedTrace(
-  vtkMySQLDatabase* iDatabaseConnector)
+  vtkMySQLDatabase *iDatabaseConnector)
 {
-  this->DisplayInfoForLastCreatedTraceTemplate<GoDBTWContainerForMesh>(
-    this->m_TWContainer,iDatabaseConnector);
+  this->DisplayInfoForLastCreatedTraceTemplate< GoDBTWContainerForMesh >(
+    this->m_TWContainer, iDatabaseConnector);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoDBMeshManager::DisplayOnlyVolumeAreaForExistingMesh(
-  GoFigureMeshAttributes* iMeshAttributes,unsigned iMeshID)
+  GoFigureMeshAttributes *iMeshAttributes, unsigned iMeshID)
 {
-  if (iMeshAttributes != 0)
+  if ( iMeshAttributes != 0 )
     {
-    std::vector<std::string> ColumnNames (2);
-    std::vector<std::string> Values (2);
+    std::vector< std::string > ColumnNames (2);
+    std::vector< std::string > Values (2);
     ColumnNames.at(0) = "SurfaceArea";
-    Values.at(0) = ConvertToString<double>(iMeshAttributes->m_Area);
+    Values.at(0) = ConvertToString< double >(iMeshAttributes->m_Area);
     ColumnNames.at(1) = "Volume";
-    Values.at(1) = ConvertToString<double>(iMeshAttributes->m_Volume);
-    this->m_Table->AddValuesForID(ColumnNames, Values, iMeshID,"meshID");
+    Values.at(1) = ConvertToString< double >(iMeshAttributes->m_Volume);
+    this->m_Table->AddValuesForID(ColumnNames, Values, iMeshID, "meshID");
     }
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoDBMeshManager::DisplayInfoForLastCreatedMesh(
-  vtkMySQLDatabase* iDatabaseConnector,GoFigureMeshAttributes* iMeshAttributes)
+  vtkMySQLDatabase *iDatabaseConnector, GoFigureMeshAttributes *iMeshAttributes)
 {
   this->m_TWContainer->SetMeshAttributes(iMeshAttributes);
   this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoDBMeshManager::DisplayInfoForExistingTrace(
-  vtkMySQLDatabase* iDatabaseConnector,int iTraceID)
+  vtkMySQLDatabase *iDatabaseConnector, int iTraceID)
 {
-  this->DisplayInfoForExistingTraceTemplate<GoDBTWContainerForMesh>(
-    this->m_TWContainer,iDatabaseConnector,iTraceID);
+  this->DisplayInfoForExistingTraceTemplate< GoDBTWContainerForMesh >(
+    this->m_TWContainer, iDatabaseConnector, iTraceID);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoDBMeshManager::DisplayInfoForExistingTraceForMesh(
-  vtkMySQLDatabase* iDatabaseConnector,int iTraceID,
-  GoFigureMeshAttributes* iMeshAttributes)
+  vtkMySQLDatabase *iDatabaseConnector, int iTraceID,
+  GoFigureMeshAttributes *iMeshAttributes)
 {
   this->m_TWContainer->SetMeshAttributes(iMeshAttributes);
-  this->DisplayInfoForExistingTrace(iDatabaseConnector,iTraceID);
+  this->DisplayInfoForExistingTrace(iDatabaseConnector, iTraceID);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBMeshManager::AddActionsContextMenu(QMenu* iMenu)
+void QGoDBMeshManager::AddActionsContextMenu(QMenu *iMenu)
 {
   QGoDBTraceManager::AddActionsContextMenu(iMenu);
   this->AddSpecificActionsForContourMesh(iMenu);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 unsigned int QGoDBMeshManager::SaveNewMeshFromVisu(
-    unsigned int iXCoordMin, unsigned int iYCoordMin, unsigned int iZCoordMin,
-    unsigned int iTCoord, unsigned int iXCoordMax, unsigned int iYCoordMax,
-    unsigned int iZCoordMax, vtkPolyData* iTraceNodes,
-    vtkMySQLDatabase* iDatabaseConnector,NameWithColorData iColor,
-    unsigned int iTrackID,GoFigureMeshAttributes* iMeshAttributes,
-    std::string iCellType, std::string iSubCellType)
+  unsigned int iXCoordMin, unsigned int iYCoordMin, unsigned int iZCoordMin,
+  unsigned int iTCoord, unsigned int iXCoordMax, unsigned int iYCoordMax,
+  unsigned int iZCoordMax, vtkPolyData *iTraceNodes,
+  vtkMySQLDatabase *iDatabaseConnector, NameWithColorData iColor,
+  unsigned int iTrackID, GoFigureMeshAttributes *iMeshAttributes,
+  std::string iCellType, std::string iSubCellType)
 {
   GoDBMeshRow NewMesh(this->m_ImgSessionID);
-  NewMesh.SetCellType(iDatabaseConnector,iCellType);
-  NewMesh.SetSubCellType(iDatabaseConnector,iSubCellType);
-  this->SetMeshBoundingBoxAndPoints(iXCoordMin, iYCoordMin, iZCoordMin,iTCoord,
-    iXCoordMax, iYCoordMax,iZCoordMax,iTraceNodes,iDatabaseConnector, NewMesh,
-    iMeshAttributes);
+
+  NewMesh.SetCellType(iDatabaseConnector, iCellType);
+  NewMesh.SetSubCellType(iDatabaseConnector, iSubCellType);
+  this->SetMeshBoundingBoxAndPoints(iXCoordMin, iYCoordMin, iZCoordMin, iTCoord,
+                                    iXCoordMax, iYCoordMax, iZCoordMax, iTraceNodes, iDatabaseConnector, NewMesh,
+                                    iMeshAttributes);
   //save the intensities for each channel !!!
-  unsigned int NewMeshID = this->m_CollectionOfTraces->CreateNewTraceInDB<GoDBMeshRow>(
-    NewMesh,iDatabaseConnector,iColor,iTrackID);
-  double* rgba = this->GetVectorFromQColor(iColor.second);
+  unsigned int NewMeshID = this->m_CollectionOfTraces->CreateNewTraceInDB< GoDBMeshRow >(
+    NewMesh, iDatabaseConnector, iColor, iTrackID);
+  double *rgba = this->GetVectorFromQColor(iColor.second);
   this->m_TraceContainerInfoForVisu->UpdateCurrentElementFromDB(
     NewMeshID, rgba);
-  this->DisplayInfoForLastCreatedMesh(iDatabaseConnector,iMeshAttributes);
+  this->DisplayInfoForLastCreatedMesh(iDatabaseConnector, iMeshAttributes);
   return NewMeshID;
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBMeshManager::SaveGeneratedMeshFromVisu(unsigned int iXCoordMin, 
-    unsigned int iYCoordMin,
-    unsigned int iZCoordMin,
-    unsigned int iTCoord, unsigned int iXCoordMax, unsigned int iYCoordMax,
-    unsigned int iZCoordMax, vtkPolyData* iTraceNodes,
-    vtkMySQLDatabase* iDatabaseConnector,GoFigureMeshAttributes* iMeshAttributes)
+void QGoDBMeshManager::SaveGeneratedMeshFromVisu(unsigned int iXCoordMin,
+                                                 unsigned int iYCoordMin,
+                                                 unsigned int iZCoordMin,
+                                                 unsigned int iTCoord,
+                                                 unsigned int iXCoordMax,
+                                                 unsigned int iYCoordMax,
+                                                 unsigned int iZCoordMax,
+                                                 vtkPolyData *iTraceNodes,
+                                                 vtkMySQLDatabase *iDatabaseConnector,
+                                                 GoFigureMeshAttributes *iMeshAttributes)
 {
-  unsigned int TraceID =  
+  unsigned int TraceID =
     this->m_TraceContainerInfoForVisu->m_CurrentElement.TraceID;
   GoDBMeshRow GeneratedMesh;
-  GeneratedMesh.SetValuesForSpecificID(TraceID,iDatabaseConnector);
-  
-  this->SetMeshBoundingBoxAndPoints(iXCoordMin, iYCoordMin, iZCoordMin,iTCoord,iXCoordMax, 
-    iYCoordMax,iZCoordMax, iTraceNodes,iDatabaseConnector,GeneratedMesh,iMeshAttributes);
+
+  GeneratedMesh.SetValuesForSpecificID(TraceID, iDatabaseConnector);
+
+  this->SetMeshBoundingBoxAndPoints(iXCoordMin,
+                                    iYCoordMin,
+                                    iZCoordMin,
+                                    iTCoord,
+                                    iXCoordMax,
+                                    iYCoordMax,
+                                    iZCoordMax,
+                                    iTraceNodes,
+                                    iDatabaseConnector,
+                                    GeneratedMesh,
+                                    iMeshAttributes);
   //save the intensity for each channel !!!
   GeneratedMesh.SaveInDB(iDatabaseConnector);
-  this->DisplayInfoForExistingTraceForMesh(iDatabaseConnector,TraceID,iMeshAttributes);
+  this->DisplayInfoForExistingTraceForMesh(iDatabaseConnector, TraceID, iMeshAttributes);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 unsigned int QGoDBMeshManager::CreateNewMeshWithNoContourNoPoints(
-    vtkMySQLDatabase* iDatabaseConnector,NameWithColorData iColor,unsigned int iTimePoint,
-    std::string iCellType, std::string iSubCellType,unsigned int iTrackID)
+  vtkMySQLDatabase *iDatabaseConnector, NameWithColorData iColor, unsigned int iTimePoint,
+  std::string iCellType, std::string iSubCellType, unsigned int iTrackID)
 {
   GoDBMeshRow NewMesh;
-  NewMesh.SetCellType(iDatabaseConnector,iCellType);
-  NewMesh.SetSubCellType(iDatabaseConnector,iSubCellType);
-  if (iTrackID != 0)
+
+  NewMesh.SetCellType(iDatabaseConnector, iCellType);
+  NewMesh.SetSubCellType(iDatabaseConnector, iSubCellType);
+  if ( iTrackID != 0 )
     {
     NewMesh.SetCollectionID(iTrackID);
     }
-  unsigned int NewMeshID = 
-    this->m_CollectionOfTraces->CreateCollectionWithNoTracesNoPoints<GoDBMeshRow>(
-    iDatabaseConnector,iColor,NewMesh,iTimePoint);
+  unsigned int NewMeshID =
+    this->m_CollectionOfTraces->CreateCollectionWithNoTracesNoPoints< GoDBMeshRow >(
+      iDatabaseConnector, iColor, NewMesh, iTimePoint);
 
-  double* color = this->GetVectorFromQColor(iColor.second);
+  double *color = this->GetVectorFromQColor(iColor.second);
   this->m_TraceContainerInfoForVisu->UpdateCurrentElementFromDB(
     NewMeshID, color);
   delete[] color;
@@ -223,56 +252,67 @@ unsigned int QGoDBMeshManager::CreateNewMeshWithNoContourNoPoints(
   this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
   return NewMeshID;
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::list<unsigned int> QGoDBMeshManager::UpdateTheTracesColor(
-  vtkMySQLDatabase* iDatabaseConnector,NameWithColorData iNewColor)
+std::list< unsigned int > QGoDBMeshManager::UpdateTheTracesColor(
+  vtkMySQLDatabase *iDatabaseConnector, NameWithColorData iNewColor)
 {
-  return this->UpdateTheTracesColorTemplate<GoDBMeshRow>(iDatabaseConnector,
-    iNewColor);
+  return this->UpdateTheTracesColorTemplate< GoDBMeshRow >(iDatabaseConnector,
+                                                           iNewColor);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBMeshManager::UpdateBoundingBoxes(vtkMySQLDatabase* iDatabaseConnector,
-    std::list<unsigned int> iListTracesIDs)
+void QGoDBMeshManager::UpdateBoundingBoxes(vtkMySQLDatabase *iDatabaseConnector,
+                                           std::list< unsigned int > iListTracesIDs)
 {
-  std::list<unsigned int> ListMeshesWithNoPoints =
+  std::list< unsigned int > ListMeshesWithNoPoints =
     this->m_CollectionOfTraces->GetListTracesIDWithNoPoints(
-      iListTracesIDs,iDatabaseConnector);
-  if(!ListMeshesWithNoPoints.empty())
-  {
-  QGoDBTraceManager::UpdateBoundingBoxes(iDatabaseConnector,ListMeshesWithNoPoints);
-  }
+      iListTracesIDs, iDatabaseConnector);
+  if ( !ListMeshesWithNoPoints.empty() )
+    {
+    QGoDBTraceManager::UpdateBoundingBoxes(iDatabaseConnector, ListMeshesWithNoPoints);
+    }
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBMeshManager::SetMeshBoundingBoxAndPoints(unsigned int iXCoordMin, 
-                                                   unsigned int iYCoordMin, 
-    unsigned int iZCoordMin,unsigned int iTCoord, unsigned int iXCoordMax, 
-    unsigned int iYCoordMax,unsigned int iZCoordMax, vtkPolyData* iTraceNodes,
-    vtkMySQLDatabase* iDatabaseConnector,GoDBMeshRow &iMesh,GoFigureMeshAttributes* iMeshAttributes)
+void QGoDBMeshManager::SetMeshBoundingBoxAndPoints(unsigned int iXCoordMin,
+                                                   unsigned int iYCoordMin,
+                                                   unsigned int iZCoordMin,
+                                                   unsigned int iTCoord,
+                                                   unsigned int iXCoordMax,
+                                                   unsigned int iYCoordMax,
+                                                   unsigned int iZCoordMax,
+                                                   vtkPolyData *iTraceNodes,
+                                                   vtkMySQLDatabase *iDatabaseConnector,
+                                                   GoDBMeshRow & iMesh,
+                                                   GoFigureMeshAttributes *iMeshAttributes)
 {
   GoDBCoordinateRow coord_min = this->GetCoordinateFromInt(iXCoordMin,
-      iYCoordMin,iZCoordMin,iTCoord);
+                                                           iYCoordMin, iZCoordMin, iTCoord);
   GoDBCoordinateRow coord_max = this->GetCoordinateFromInt(iXCoordMax,
-      iYCoordMax,iZCoordMax,iTCoord);
-  iMesh.SetTheDataFromTheVisu(iDatabaseConnector,iTraceNodes,
-                                 coord_min,coord_max,iMeshAttributes);
+                                                           iYCoordMax, iZCoordMax, iTCoord);
+
+  iMesh.SetTheDataFromTheVisu(iDatabaseConnector, iTraceNodes,
+                              coord_min, coord_max, iMeshAttributes);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoDBMeshManager::UpdateTWAndContainerForImportedTraces(
-  std::vector<int> iVectorImportedTraces,vtkMySQLDatabase* iDatabaseConnector)
+  std::vector< int > iVectorImportedTraces, vtkMySQLDatabase *iDatabaseConnector)
 {
   this->UpdateTWAndContainerWithImportedTracesTemplate<
-    GoDBTWContainerForMesh>(this->m_TWContainer,
-    iVectorImportedTraces,iDatabaseConnector);
+    GoDBTWContainerForMesh >(this->m_TWContainer,
+                             iVectorImportedTraces, iDatabaseConnector);
   //update the visualization and the data from visu in the container for visu:
   this->m_TraceContainerInfoForVisu->
-    UpdateVisualizationForGivenIDs<std::vector<int> >( 
-      iVectorImportedTraces,false);
+  UpdateVisualizationForGivenIDs< std::vector< int > >(
+    iVectorImportedTraces, false);
 }

@@ -45,11 +45,10 @@
 #include "QGoSeedBaseWidget.h"
 
 //--------------------------------------------------------------------------
-QGoSeedSegmentationBase::
-QGoSeedSegmentationBase( QWidget* parentWidget,
-                         vtkPoints* seeds,
-                         int iSampling) :
-  QObject( parentWidget )
+QGoSeedSegmentationBase::QGoSeedSegmentationBase(QWidget *parentWidget,
+                                                 vtkPoints *seeds,
+                                                 int iSampling):
+  QObject(parentWidget)
 {
   m_Seeds = seeds;
   // initialize to 0 leads to segfaults
@@ -65,138 +64,140 @@ QGoSeedSegmentationBase( QWidget* parentWidget,
   m_BaseAlgorithmSegmentationWidget = new QGoSeedBaseWidget(parentWidget, iSampling);
 
   // CONNECT SAMPLING IF REQUIERED!!!!
-  if(iSampling == 2)
+  if ( iSampling == 2 )
     {
-    QObject::connect(m_BaseAlgorithmSegmentationWidget, SIGNAL(Sampling(int)),
-                   this, SLOT(setSampling(int)));
-    //QObject::connect(m_BaseAlgorithmSegmentationWidget, SIGNAL(CreateEmptyMesh()),
-        //this, SIGNAL(CreateEmptyMesh()));
-    QObject::connect(m_BaseAlgorithmSegmentationWidget, SIGNAL(CreateCorrespondingMesh(int)),
-        this, SIGNAL(CreateCorrespondingMesh(int)));
-    QObject::connect(m_BaseAlgorithmSegmentationWidget, SIGNAL(AddContourForMeshToContours(vtkPolyData*)),
-        this, SIGNAL(AddContourForMeshToContours(vtkPolyData*)));
+    QObject::connect( m_BaseAlgorithmSegmentationWidget, SIGNAL( Sampling(int) ),
+                      this, SLOT( setSampling(int) ) );
+    //QObject::connect(m_BaseAlgorithmSegmentationWidget,
+    // SIGNAL(CreateEmptyMesh()),
+    //this, SIGNAL(CreateEmptyMesh()));
+    QObject::connect( m_BaseAlgorithmSegmentationWidget, SIGNAL( CreateCorrespondingMesh(int) ),
+                      this, SIGNAL( CreateCorrespondingMesh(int) ) );
+    QObject::connect( m_BaseAlgorithmSegmentationWidget, SIGNAL( AddContourForMeshToContours(vtkPolyData *) ),
+                      this, SIGNAL( AddContourForMeshToContours(vtkPolyData *) ) );
     }
 
   // connect with 3DwT to add the good number of channels
-  QObject::connect(this, SIGNAL(addChannel(QString)),
-      m_BaseAlgorithmSegmentationWidget, SLOT(AddChannel(QString)));
+  QObject::connect( this, SIGNAL( addChannel(QString) ),
+                    m_BaseAlgorithmSegmentationWidget, SLOT( AddChannel(QString) ) );
   // mesh has been created by a filter
-  QObject::connect(m_BaseAlgorithmSegmentationWidget,
-                   SIGNAL(MeshCreated(vtkPolyData*)),
-      this, SIGNAL(MeshCreated(vtkPolyData*)));
+  QObject::connect( m_BaseAlgorithmSegmentationWidget,
+                    SIGNAL( MeshCreated(vtkPolyData *) ),
+                    this, SIGNAL( MeshCreated(vtkPolyData *) ) );
   // contour has been created by a filter
-  QObject::connect(m_BaseAlgorithmSegmentationWidget,
-                   SIGNAL(ContourCreated(vtkPolyData*)),
-      this, SIGNAL(ContourCreated(vtkPolyData*)));
+  QObject::connect( m_BaseAlgorithmSegmentationWidget,
+                    SIGNAL( ContourCreated(vtkPolyData *) ),
+                    this, SIGNAL( ContourCreated(vtkPolyData *) ) );
   // image has been processed by a filter
   // should return the new image as argument
-  QObject::connect(m_BaseAlgorithmSegmentationWidget, SIGNAL(ImageProcessed()),
-      this, SIGNAL(ImageProcessed()));
-  QObject::connect(m_BaseAlgorithmSegmentationWidget, SIGNAL(Radius(double)),
-                   this, SLOT(setRadius(double)));
+  QObject::connect( m_BaseAlgorithmSegmentationWidget, SIGNAL( ImageProcessed() ),
+                    this, SIGNAL( ImageProcessed() ) );
+  QObject::connect( m_BaseAlgorithmSegmentationWidget, SIGNAL( Radius(double) ),
+                    this, SLOT( setRadius(double) ) );
 
-  QObject::connect(m_BaseAlgorithmSegmentationWidget, SIGNAL(UpdateSeeds()),
-      this, SIGNAL(UpdateSeeds()));
-  QObject::connect(m_BaseAlgorithmSegmentationWidget, SIGNAL(SegmentationFinished()),
-      this, SIGNAL(SegmentationFinished()));
+  QObject::connect( m_BaseAlgorithmSegmentationWidget, SIGNAL( UpdateSeeds() ),
+                    this, SIGNAL( UpdateSeeds() ) );
+  QObject::connect( m_BaseAlgorithmSegmentationWidget, SIGNAL( SegmentationFinished() ),
+                    this, SIGNAL( SegmentationFinished() ) );
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QGoSeedSegmentationBase::
 ~QGoSeedSegmentationBase()
-{
-}
+{}
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
-QGoSeedSegmentationBase::
-setSeed(vtkPoints* iSeed)
+QGoSeedSegmentationBase::setSeed(vtkPoints *iSeed)
 {
   m_Seeds = iSeed;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-vtkPoints*
-QGoSeedSegmentationBase::
-getSeed()
+vtkPoints *
+QGoSeedSegmentationBase::getSeed()
 {
   return m_Seeds;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
-QGoSeedSegmentationBase::
-setRadius(double iRadius)
+QGoSeedSegmentationBase::setRadius(double iRadius)
 {
   m_Radius = iRadius;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 double
-QGoSeedSegmentationBase::
-getRadius()
+QGoSeedSegmentationBase::getRadius()
 {
   return m_Radius;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
-QGoSeedSegmentationBase::
-setSampling(int iSampling)
+QGoSeedSegmentationBase::setSampling(int iSampling)
 {
   m_Sampling = iSampling;
   emit Sampling(iSampling);
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 int
-QGoSeedSegmentationBase::
-getSampling()
+QGoSeedSegmentationBase::getSampling()
 {
   return m_Sampling;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-double*
-QGoSeedSegmentationBase::
-getSeedsPosition()
+double *
+QGoSeedSegmentationBase::getSeedsPosition()
 {
   return m_SeedsPosition;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
-QGoSeedSegmentationBase::
-ConnectSignals(QGoSeedBaseWidget* iWidget)
+QGoSeedSegmentationBase::ConnectSignals(QGoSeedBaseWidget *iWidget)
 {
-  QObject::connect(this, SIGNAL(addChannel(QString)),
-      iWidget, SLOT(AddChannel(QString)));
+  QObject::connect( this, SIGNAL( addChannel(QString) ),
+                    iWidget, SLOT( AddChannel(QString) ) );
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
-QGoSeedSegmentationBase::
-SetChannel(int i)
+QGoSeedSegmentationBase::SetChannel(int i)
 {
   emit addChannel( QString::number(i, 10) );
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-QWidget*
-QGoSeedSegmentationBase::
-getWidget()
+QWidget *
+QGoSeedSegmentationBase::getWidget()
 {
   return m_BaseAlgorithmSegmentationWidget;
 }
+
 //--------------------------------------------------------------------------

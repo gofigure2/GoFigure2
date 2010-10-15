@@ -50,38 +50,36 @@
 
 /**
  * \class QGoAboutWidget
- * \brief About Widget which includes the list of authors, licenses, 
+ * \brief About Widget which includes the list of authors, licenses,
  * copyrights, dates, versions...
  */
-class QGOGUILIB_EXPORT QGoAboutWidget : public QWidget
-  {
+class QGOGUILIB_EXPORT QGoAboutWidget:public QWidget
+{
   Q_OBJECT
-
 public:
   /** \brief Constructor */
-  explicit QGoAboutWidget( QWidget* iParent = NULL );
+  explicit QGoAboutWidget(QWidget *iParent = NULL);
 
   /** \brief Destructor */
   ~QGoAboutWidget();
-
 protected:
- /** \brief Add one tab (for the license) in the widget.
- * \param[in] iTextLicense License / Copyright
- * \param[in] iTabTitle Title of the tab (Library Name)
- * \param[in] iTabWidget TabWidget to add this element to.
- */
+  /** \brief Add one tab (for the license) in the widget.
+  * \param[in] iTextLicense License / Copyright
+  * \param[in] iTabTitle Title of the tab (Library Name)
+  * \param[in] iTabWidget TabWidget to add this element to.
+  */
   void AddTabAbout(QString iTextLicense, QString iTabTitle,
-                   QTabWidget* iTabWidget);
+                   QTabWidget *iTabWidget);
 
   /** \brief Get the list of contributors. */
   QString GetContributors();
-  
-  /** \brief */
-  void SetTabWidget(QTabWidget* iTabWidget);
 
   /** \brief */
-  void SetTheBackGround(QLabel* iLabel, QTabWidget* TabWidget,
-                        QLabel* iLabeltwo);
+  void SetTabWidget(QTabWidget *iTabWidget);
+
+  /** \brief */
+  void SetTheBackGround(QLabel *iLabel, QTabWidget *TabWidget,
+                        QLabel *iLabeltwo);
 
   /** \brief Read License file.
  * \param[in] iFilename input license filename
@@ -89,12 +87,12 @@ protected:
  * */
   QString ReadLicenseText(QString iFilename);
 
-  /** 
- * \brief 
+  /**
+ * \brief
  */
-  void WriteLicenseText(QTabWidget* iTabWidget);
+  void WriteLicenseText(QTabWidget *iTabWidget);
 
 private:
-  Q_DISABLE_COPY( QGoAboutWidget );
-  };
+  Q_DISABLE_COPY(QGoAboutWidget);
+};
 #endif

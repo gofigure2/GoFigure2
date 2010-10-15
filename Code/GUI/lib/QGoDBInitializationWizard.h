@@ -45,10 +45,9 @@
 #include "QGoGUILibConfigure.h"
 #include "QGoDBInitCreateUserPage.h"
 
-class QGOGUILIB_EXPORT QGoDBInitializationWizard : public QWizard
-  {
+class QGOGUILIB_EXPORT QGoDBInitializationWizard:public QWizard
+{
   Q_OBJECT
-
 public:
   enum {
     CreateUserPageID = 0,
@@ -68,8 +67,7 @@ public:
   QString GetLogin();
   QString GetPassword();*/
 
-  QPushButton* nextButton;
-
+  QPushButton *nextButton;
 protected:
   /*void closeEvent(QCloseEvent* iEvent);
   void SetFirstFileName();
@@ -78,12 +76,10 @@ protected:
   std::string             m_FirstFileName;
   int                     m_ImgSessionID;
   bool                    m_IsAnOpenRecentFile;*/
-  QGoDBInitCreateUserPage* m_CreateUserPage;
-
+  QGoDBInitCreateUserPage *m_CreateUserPage;
 private:
   Q_DISABLE_COPY(QGoDBInitializationWizard);
-
 signals:
   void DatabaseAndUserCreated();
-  };
+};
 #endif

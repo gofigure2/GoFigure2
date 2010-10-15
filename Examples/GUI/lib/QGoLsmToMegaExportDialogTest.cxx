@@ -43,9 +43,9 @@
 
 #include "QGoLsmToMegaExportDialog.h"
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-  if (argc != 2)
+  if ( argc != 2 )
     {
     std::cout << "Usage : ./QGoLsmToMegaExportDialogTest " << std::endl;
     std::cout << "1-test (boolean)" << std::endl;
@@ -56,15 +56,15 @@ int main(int argc, char** argv)
   QCoreApplication::setOrganizationName("MegasonLab");
   QCoreApplication::setOrganizationDomain("http://gofigure2.sourceforge.net");
 
-  QTimer* timer = new QTimer;
+  QTimer *timer = new QTimer;
   timer->setSingleShot(true);
 
-  QGoLsmToMegaExportDialog* dlg =
+  QGoLsmToMegaExportDialog *dlg =
     new QGoLsmToMegaExportDialog;
 
-  QObject::connect(timer, SIGNAL(timeout()), dlg, SLOT(accept()));
+  QObject::connect( timer, SIGNAL( timeout() ), dlg, SLOT( accept() ) );
 
-  if (atoi(argv[1]) == 1)
+  if ( atoi(argv[1]) == 1 )
     {
     timer->start(1000);
     }

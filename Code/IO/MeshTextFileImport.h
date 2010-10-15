@@ -51,7 +51,7 @@ class vtkPolyData;
 class vtkMySQLDatabase;
 
 class QGOGUILIB_EXPORT MeshTextFileImport
-  {
+{
 public:
   MeshTextFileImport(const std::string & iServerName, const std::string & iLogin,
                      const std::string & iPassword, const std::string & iDBName,
@@ -59,8 +59,10 @@ public:
 
   ~MeshTextFileImport();
 
-  void SetDirectory(const std::string&);
-  void SetFileName(const std::string&);
+  void SetDirectory(const std::string &);
+
+  void SetFileName(const std::string &);
+
   void Read();
 
 private:
@@ -71,11 +73,10 @@ private:
   std::string  m_Directory;
   std::string  m_FileName;
 
-  vtkMySQLDatabase* m_DBConnector;
+  vtkMySQLDatabase *m_DBConnector;
 
-  struct InternalMeshStructure
-    {
-    InternalMeshStructure(const unsigned int& iNumberOfChannels) :
+  struct InternalMeshStructure {
+    InternalMeshStructure(const unsigned int & iNumberOfChannels):
       m_AverageIntensity(iNumberOfChannels, 0) {}
 
     unsigned int m_TrackId;
@@ -87,13 +88,12 @@ private:
     unsigned int m_YMax;
     unsigned int m_ZMin;
     unsigned int m_ZMax;
-    vtkPolyData* m_Points;
-    std::vector<double> m_AverageIntensity;
-    };
-
-  std::list<InternalMeshStructure> m_ListOfMeshes;
-
-  void SaveMeshInDataBase(const InternalMeshStructure& iMesh);
-
+    vtkPolyData *m_Points;
+    std::vector< double > m_AverageIntensity;
   };
+
+  std::list< InternalMeshStructure > m_ListOfMeshes;
+
+  void SaveMeshInDataBase(const InternalMeshStructure & iMesh);
+};
 #endif

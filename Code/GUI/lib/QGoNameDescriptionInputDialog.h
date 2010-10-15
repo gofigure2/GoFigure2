@@ -50,15 +50,14 @@
 \brief for the creation of several entities in the database, the name and the
 description are asked to the user.
 */
-class QGoNameDescriptionInputDialog : public QDialog,
+class QGoNameDescriptionInputDialog:public QDialog,
   private Ui::QNameDescriptionInputDialog
-  {
+{
   Q_OBJECT
-
 public:
- 
-  explicit QGoNameDescriptionInputDialog(QWidget* iParent = 0,
-                                       QString iEntityName = "");
+
+  explicit QGoNameDescriptionInputDialog(QWidget *iParent = 0,
+                                         QString iEntityName = "");
 
   virtual ~QGoNameDescriptionInputDialog();
 
@@ -68,21 +67,21 @@ public:
 
 signals:
 
-  void NewNameDescription(std::string,std::string);
-  //void CancelRequested();
+  void NewNameDescription(std::string, std::string);
 
+  //void CancelRequested();
 protected:
-  QTextEditChild* m_DescriptionTextEdit;
+  QTextEditChild *m_DescriptionTextEdit;
   QString         m_EntityName;
 
   std::string GetInputTextForName();
+
   std::string GetInputTextForDescription();
 
 protected slots:
   /** \brief check that the qlineEdit for the name is not
   empty, if so, tell the user he needs to enter a name*/
   void ValidationRequested();
-
-  };
+};
 
 #endif

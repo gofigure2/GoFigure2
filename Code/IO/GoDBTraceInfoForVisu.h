@@ -44,10 +44,9 @@
 
 /**\brief structure to pass the information between the visualization
 and the Database*/
-struct GoDBTraceInfoForVisu
-  {
+struct GoDBTraceInfoForVisu {
   unsigned int TraceID;
-  vtkPolyData* Points;
+  vtkPolyData *Points;
   unsigned int Red;
   unsigned int Green;
   unsigned int Blue;
@@ -56,7 +55,7 @@ struct GoDBTraceInfoForVisu
   bool IsHighLighted;
 
   GoDBTraceInfoForVisu()
-    {
+  {
     TraceID       = 0;
     Red           = 0;
     Green         = 0;
@@ -64,7 +63,6 @@ struct GoDBTraceInfoForVisu
     Alpha         = 255;
     TimePoint     = 0;
     IsHighLighted = false;
-    }
-
-  };
+  }
+};
 #endif

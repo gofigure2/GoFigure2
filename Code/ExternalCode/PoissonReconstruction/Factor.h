@@ -2,7 +2,7 @@
  Authors: Michael Kazhdan and Matthew Bolitho
  at Johns Hopkins University, 2006-10
 
- Copyright (c) 2006-10, Michael Kazhdan and Matthew Bolitho, 
+ Copyright (c) 2006-10, Michael Kazhdan and Matthew Bolitho,
  Johns Hopkins University.
  All rights reserved.
 
@@ -14,8 +14,8 @@
  Redistributions in binary form must reproduce the above copyright notice,
  this list of conditions and the following disclaimer in the documentation
  and/or other materials provided with the distribution.
- Neither the name of the Johns Hopkins University nor the names of its 
- contributors may be used to endorse or promote products derived from this 
+ Neither the name of the Johns Hopkins University nor the names of its
+ contributors may be used to endorse or promote products derived from this
  software without specific prior written permission.
 
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
@@ -41,7 +41,7 @@
 #define SQRT_3 1.7320508075688772935
 
 PoissonReconstruction_EXPORT
-double ArcTan2(const double& y, const double& x);
+double ArcTan2(const double & y, const double & x);
 
 PoissonReconstruction_EXPORT
 void Sqrt(const double in[2], double out[2]);
@@ -55,16 +55,16 @@ PoissonReconstruction_EXPORT
 void Divide(const double in1[2], const double in2[2], double out[2]);
 
 PoissonReconstruction_EXPORT
-int Factor(double a1, double a0, double roots[1][2], const double & EPS);
+int Factor(double a1, double a0, double roots[1][2], const double &EPS);
 PoissonReconstruction_EXPORT
-int Factor(double a2, double a1, double a0, double roots[2][2], const double & EPS);
+int Factor(double a2, double a1, double a0, double roots[2][2], const double &EPS);
 PoissonReconstruction_EXPORT
-int Factor(double a3, double a2, double a1, double a0, double roots[3][2], const double & EPS);
+int Factor(double a3, double a2, double a1, double a0, double roots[3][2], const double &EPS);
 PoissonReconstruction_EXPORT
-int Factor(double a4, double a3, double a2, double a1, double a0, double roots[4][2], const double & EPS);
+int Factor(double a4, double a3, double a2, double a1, double a0, double roots[4][2], const double &EPS);
 
 PoissonReconstruction_EXPORT
-int Solve(const double* eqns, const double* values, double* solutions, const int& dim);
+int Solve(const double *eqns, const double *values, double *solutions, const int & dim);
 
 //ETX
 

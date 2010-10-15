@@ -56,53 +56,58 @@
 #include <map>
 #include <string>
 
-class QCellPreprocess : public QWidget,
+class QCellPreprocess:public QWidget,
   private Ui::CellPreprocessWidget
-  {
+{
   Q_OBJECT
-
 public:
-  typedef itk::Image<unsigned char, 3>                        InputImageType;
-  typedef InputImageType::Pointer                             InputImagePointer;
-  typedef itk::CellPreprocess<InputImageType, InputImageType> PreprocessFilterType;
-  typedef PreprocessFilterType::Pointer                       PreprocessFilterPointer;
-  typedef itk::VTKImageExport<InputImageType>                 ImageExportType;
-  typedef ImageExportType::Pointer                            ImageExportPointer;
-  typedef itk::VTKImageImport<InputImageType>                 ImageImportType;
-  typedef ImageImportType::Pointer                            ImageImportPointer;
+  typedef itk::Image< unsigned char, 3 >                        InputImageType;
+  typedef InputImageType::Pointer                               InputImagePointer;
+  typedef itk::CellPreprocess< InputImageType, InputImageType > PreprocessFilterType;
+  typedef PreprocessFilterType::Pointer                         PreprocessFilterPointer;
+  typedef itk::VTKImageExport< InputImageType >                 ImageExportType;
+  typedef ImageExportType::Pointer                              ImageExportPointer;
+  typedef itk::VTKImageImport< InputImageType >                 ImageImportType;
+  typedef ImageImportType::Pointer                              ImageImportPointer;
 
-  explicit QCellPreprocess(QWidget* iParent = 0);
+  explicit QCellPreprocess(QWidget *iParent = 0);
   virtual ~QCellPreprocess(){}
 
   void SetMembraneDataType(bool x);
 
-  void SetInput(std::vector<vtkImageData*>& iImg);
+  void SetInput(std::vector< vtkImageData * > & iImg);
 
-  std::vector<vtkImageData*> GetOutput();
+  std::vector< vtkImageData * > GetOutput();
 
 signals:
-  void Done(std::vector<vtkImageData*> );
+  void Done(std::vector< vtkImageData * > );
 
-protected slots:
+protected slots :
   void on_RadiusSpinBox_valueChanged();
+
   void on_RadiusSlider_sliderReleased();
+
   void on_GlobalResetButton_clicked();
+
   void on_GlobalApplyButton_clicked();
+
   void on_singleChRadioButton_clicked();
+
   void on_allChRadioButton_clicked();
 
 protected:
   void GetParameters();
+
   void Preprocess(unsigned int i);
+
   double m_CellRadius;
-  bool   m_MembraneData;
+  bool m_MembraneData;
 
-  std::vector<vtkImageData*> m_VTKInput;
-  std::vector<vtkImageData*> m_VTKOutput;
-
+  std::vector< vtkImageData * > m_VTKInput;
+  std::vector< vtkImageData * > m_VTKOutput;
 private:
-  QCellPreprocess(const QCellPreprocess&);
-  QCellPreprocess operator =(const QCellPreprocess&);
-  };
+  QCellPreprocess(const QCellPreprocess &);
+  QCellPreprocess operator=(const QCellPreprocess &);
+};
 
 #endif

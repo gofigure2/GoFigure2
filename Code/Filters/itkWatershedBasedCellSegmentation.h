@@ -41,7 +41,7 @@
 #ifndef __itkWatershedBasedCellSegmentation_h
 #define __itkWatershedBasedCellSegmentation_h
 
-#if defined(_MSC_VER)
+#if defined( _MSC_VER )
 #pragma warning ( disable : 4786 )
 #endif
 
@@ -59,113 +59,110 @@
 
 namespace itk
 {
-template < class TFeatureImage, class TInputImage, class TSegmentImage >
-class ITK_EXPORT WatershedBasedCellSegmentation : public ImageToImageFilter<
-  TFeatureImage, TSegmentImage >
+template< class TFeatureImage, class TInputImage, class TSegmentImage >
+class ITK_EXPORT WatershedBasedCellSegmentation:public ImageToImageFilter<
+    TFeatureImage, TSegmentImage >
 {
-  public:
-    typedef WatershedBasedCellSegmentation                          Self;
-    typedef ImageToImageFilter< TFeatureImage,TSegmentImage > Superclass;
-    typedef SmartPointer< Self >                              Pointer;
-    typedef SmartPointer< const Self >                        ConstPointer;
+public:
+  typedef WatershedBasedCellSegmentation                     Self;
+  typedef ImageToImageFilter< TFeatureImage, TSegmentImage > Superclass;
+  typedef SmartPointer< Self >                               Pointer;
+  typedef SmartPointer< const Self >                         ConstPointer;
 
-    itkStaticConstMacro ( ImageDimension, unsigned int,
-                          TFeatureImage::ImageDimension );
+  itkStaticConstMacro (ImageDimension, unsigned int,
+                       TFeatureImage::ImageDimension);
 
-    /** Method for creation through object factory */
-    itkNewMacro ( Self );
+  /** Method for creation through object factory */
+  itkNewMacro (Self);
 
-    /** Run-time type information */
-    itkTypeMacro ( WatershedBasedCellSegmentation, ImageToImageFilter );
+  /** Run-time type information */
+  itkTypeMacro (WatershedBasedCellSegmentation, ImageToImageFilter);
 
-    /** Display */
-    void PrintSelf ( std::ostream& os, Indent indent ) const;
+  /** Display */
+  void PrintSelf(std::ostream & os, Indent indent) const;
 
-    typedef TFeatureImage                           FeatureImageType;
-    typedef typename FeatureImageType::Pointer      FeatureImagePointer;
-    typedef typename FeatureImageType::ConstPointer FeatureImageConstPointer;
-    typedef typename FeatureImageType::PixelType    FeatureImagePixelType;
-    typedef typename FeatureImageType::RegionType   FeatureImageRegionType;
-    typedef typename FeatureImageType::SizeType     FeatureImageSizeType;
-    typedef typename FeatureImageSizeType::SizeValueType FeatureImageSizeValueType;
-    typedef typename FeatureImageType::SpacingType  FeatureImageSpacingType;
-    typedef typename FeatureImageType::IndexType    FeatureImageIndexType;
-    typedef typename FeatureImageType::PointType    FeatureImagePointType;
+  typedef TFeatureImage                                FeatureImageType;
+  typedef typename FeatureImageType::Pointer           FeatureImagePointer;
+  typedef typename FeatureImageType::ConstPointer      FeatureImageConstPointer;
+  typedef typename FeatureImageType::PixelType         FeatureImagePixelType;
+  typedef typename FeatureImageType::RegionType        FeatureImageRegionType;
+  typedef typename FeatureImageType::SizeType          FeatureImageSizeType;
+  typedef typename FeatureImageSizeType::SizeValueType FeatureImageSizeValueType;
+  typedef typename FeatureImageType::SpacingType       FeatureImageSpacingType;
+  typedef typename FeatureImageType::IndexType         FeatureImageIndexType;
+  typedef typename FeatureImageType::PointType         FeatureImagePointType;
 
-    typedef TInputImage                           InputImageType;
-    typedef typename InputImageType::Pointer      InputImagePointer;
-    typedef typename InputImageType::ConstPointer InputImageConstPointer;
-    typedef typename InputImageType::PixelType    InputImagePixelType;
-    typedef typename InputImageType::RegionType   InputImageRegionType;
-    typedef typename InputImageType::SizeType     InputImageSizeType;
-    typedef typename InputImageSizeType::SizeValueType InputImageSizeValueType;
-    typedef typename InputImageType::SpacingType  InputImageSpacingType;
-    typedef typename InputImageType::IndexType    InputImageIndexType;
-    typedef typename InputImageType::PointType    InputImagePointType;
+  typedef TInputImage                                InputImageType;
+  typedef typename InputImageType::Pointer           InputImagePointer;
+  typedef typename InputImageType::ConstPointer      InputImageConstPointer;
+  typedef typename InputImageType::PixelType         InputImagePixelType;
+  typedef typename InputImageType::RegionType        InputImageRegionType;
+  typedef typename InputImageType::SizeType          InputImageSizeType;
+  typedef typename InputImageSizeType::SizeValueType InputImageSizeValueType;
+  typedef typename InputImageType::SpacingType       InputImageSpacingType;
+  typedef typename InputImageType::IndexType         InputImageIndexType;
+  typedef typename InputImageType::PointType         InputImagePointType;
 
-    typedef TSegmentImage                           SegmentImageType;
-    typedef typename SegmentImageType::Pointer      SegmentImagePointer;
-    typedef typename SegmentImageType::ConstPointer SegmentImageConstPointer;
-    typedef typename SegmentImageType::IndexType    SegmentImageIndexType;
-    typedef typename SegmentImageType::PixelType    SegmentImagePixelType;
+  typedef TSegmentImage                           SegmentImageType;
+  typedef typename SegmentImageType::Pointer      SegmentImagePointer;
+  typedef typename SegmentImageType::ConstPointer SegmentImageConstPointer;
+  typedef typename SegmentImageType::IndexType    SegmentImageIndexType;
+  typedef typename SegmentImageType::PixelType    SegmentImagePixelType;
 
-    typedef CellForegroundExtraction< FeatureImageType, InputImageType, SegmentImageType >
-      ForegroundFilterType;
-    typedef typename ForegroundFilterType::Pointer ForegroundFilterPointer;
-    
-    typedef GradientWeightedDistanceImageFilter< FeatureImageType, InputImageType, SegmentImageType >
-      DistanceFilterType;
-    typedef typename DistanceFilterType::Pointer DistanceFilterPointer;
-    
-    typedef InvertIntensityImageFilter< InputImageType, InputImageType >
-      RInvertType;
-    typedef typename RInvertType::Pointer RInvertPointer;
-    
-    typedef MorphologicalWatershedImageFilter2< InputImageType, SegmentImageType >
-      WatershedFilterType;
-    typedef typename WatershedFilterType::Pointer WatershedFilterPointer;
-    
-    typedef MinimumMaximumImageCalculator< InputImageType >  MinMaxCalculatorType;
-    
-    typedef ImageRegionIterator< FeatureImageType > FeatureIteratorType;
-    typedef ImageRegionIterator< SegmentImageType > SegmentIteratorType;
-    
-    itkGetConstMacro ( NucleusRadius,double );
-    itkSetMacro ( NucleusRadius,double );
-    itkGetConstMacro ( CorrelationKernelSigma,double );
-    itkSetMacro ( CorrelationKernelSigma,double );
-    itkGetConstMacro ( NucleusThresholdMin,double );
-    itkSetMacro ( NucleusThresholdMin,double );
-    itkGetConstMacro ( NucleusThresholdMax,double );
-    itkSetMacro ( NucleusThresholdMax,double );
-    itkGetConstMacro ( CorrelationThreshold1,double );
-    itkSetMacro ( CorrelationThreshold1,double );
-    itkGetConstMacro ( MembraneThreshold,double );
-    itkSetMacro ( MembraneThreshold,double );
-    itkGetConstMacro ( Alpha, float );
-    itkSetMacro ( Alpha, float );
-    itkGetConstMacro ( Beta,float );
-    itkSetMacro ( Beta,float );
-    
-  protected:
-    WatershedBasedCellSegmentation();
-    ~WatershedBasedCellSegmentation() {}
-    void GenerateData();
-    
-    double m_NucleusRadius;
-    double m_CorrelationKernelSigma;
-    int m_NucleusThresholdMin;
-    int m_NucleusThresholdMax;
-    double m_CorrelationThreshold1;
-    int m_MembraneThreshold;
-    float m_Alpha;
-    float m_Beta;
+  typedef CellForegroundExtraction< FeatureImageType, InputImageType, SegmentImageType >
+  ForegroundFilterType;
+  typedef typename ForegroundFilterType::Pointer ForegroundFilterPointer;
 
-  private:
-    WatershedBasedCellSegmentation ( Self& );   // intentionally not implemented
-    void operator= ( const Self& );   // intentionally not implemented
-  };
+  typedef GradientWeightedDistanceImageFilter< FeatureImageType, InputImageType, SegmentImageType >
+  DistanceFilterType;
+  typedef typename DistanceFilterType::Pointer DistanceFilterPointer;
 
+  typedef InvertIntensityImageFilter< InputImageType, InputImageType >
+  RInvertType;
+  typedef typename RInvertType::Pointer RInvertPointer;
+
+  typedef MorphologicalWatershedImageFilter2< InputImageType, SegmentImageType >
+  WatershedFilterType;
+  typedef typename WatershedFilterType::Pointer WatershedFilterPointer;
+
+  typedef MinimumMaximumImageCalculator< InputImageType > MinMaxCalculatorType;
+
+  typedef ImageRegionIterator< FeatureImageType > FeatureIteratorType;
+  typedef ImageRegionIterator< SegmentImageType > SegmentIteratorType;
+
+  itkGetConstMacro (NucleusRadius, double);
+  itkSetMacro (NucleusRadius, double);
+  itkGetConstMacro (CorrelationKernelSigma, double);
+  itkSetMacro (CorrelationKernelSigma, double);
+  itkGetConstMacro (NucleusThresholdMin, double);
+  itkSetMacro (NucleusThresholdMin, double);
+  itkGetConstMacro (NucleusThresholdMax, double);
+  itkSetMacro (NucleusThresholdMax, double);
+  itkGetConstMacro (CorrelationThreshold1, double);
+  itkSetMacro (CorrelationThreshold1, double);
+  itkGetConstMacro (MembraneThreshold, double);
+  itkSetMacro (MembraneThreshold, double);
+  itkGetConstMacro (Alpha, float);
+  itkSetMacro (Alpha, float);
+  itkGetConstMacro (Beta, float);
+  itkSetMacro (Beta, float);
+protected:
+  WatershedBasedCellSegmentation();
+  ~WatershedBasedCellSegmentation() {}
+  void GenerateData();
+
+  double m_NucleusRadius;
+  double m_CorrelationKernelSigma;
+  int m_NucleusThresholdMin;
+  int m_NucleusThresholdMax;
+  double m_CorrelationThreshold1;
+  int m_MembraneThreshold;
+  float m_Alpha;
+  float m_Beta;
+private:
+  WatershedBasedCellSegmentation (Self &); // intentionally not implemented
+  void operator=(const Self &);            // intentionally not implemented
+};
 } /* namespace itk */
 
 #include "itkWatershedBasedCellSegmentation.txx"

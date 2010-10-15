@@ -52,9 +52,9 @@
 
 #include <stdio.h>
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
-  if (argc != 2)
+  if ( argc != 2 )
     {
     std::cerr << "Usage: " << std::endl;
     std::cerr << "" << std::endl;
@@ -73,7 +73,7 @@ int main(int argc, char* argv[])
 
   // map to graphics library
   vtkPolyDataMapper *map = vtkPolyDataMapper::New();
-  map->SetInput(sphere->GetOutput());
+  map->SetInput( sphere->GetOutput() );
 
   // actor creation and properties definition
   vtkActor *aSphere = vtkActor::New();
@@ -104,21 +104,21 @@ int main(int argc, char* argv[])
   testRecorder->SetSpecificParameters();
   testRecorder->StartCapture();
 
-  for (int i = 0; i < 30; i++)
+  for ( int i = 0; i < 30; i++ )
     {
     renWin->Render();
     testRecorder->TakeSnapshot();
     }
 
   ren1->SetBackground(0, 1, 0);
-  for (int i = 0; i < 30; i++)
+  for ( int i = 0; i < 30; i++ )
     {
     renWin->Render();
     testRecorder->TakeSnapshot();
     }
 
   ren1->SetBackground(0, 0, 1);
-  for (int i = 0; i < 30; i++)
+  for ( int i = 0; i < 30; i++ )
     {
     renWin->Render();
     testRecorder->TakeSnapshot();
@@ -129,11 +129,11 @@ int main(int argc, char* argv[])
   std::cout << "End capture" << std::endl;
 
   // Test
-  exists = (int) vtksys::SystemTools::FileExists(argv[1]);
+  exists = (int)vtksys::SystemTools::FileExists(argv[1]);
   length = vtksys::SystemTools::FileLength(argv[1]);
   cout << "TestAVIRecorder file exists: " << exists << endl;
   cout << "TestAVIRecorder file length: " << length << endl;
-  if (!exists)
+  if ( !exists )
     {
     err = 1;
     cerr << "ERROR: 1 - Test failing because TestAVIRecorder file doesn't exist..." << endl;
@@ -142,7 +142,7 @@ int main(int argc, char* argv[])
     {
     vtksys::SystemTools::RemoveFile(argv[1]);
     }
-  if (0 == length)
+  if ( 0 == length )
     {
     err = 2;
     cerr << "ERROR: 2 - Test failing because TestAVIRecorder file has zero length..." << endl;

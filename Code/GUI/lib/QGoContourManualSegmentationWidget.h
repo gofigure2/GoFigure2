@@ -51,25 +51,27 @@ class QGoManualSegmentationSettingsDialog;
 #include "QGoTraceManualEditingWidget.h"
 #include "QGoIOConfigure.h"
 
-class QGOGUILIB_EXPORT QGoContourManualSegmentationWidget :
+class QGOGUILIB_EXPORT QGoContourManualSegmentationWidget:
   public QWidget,
   private Ui::ContourManualSegmentationWidget
-  {
+{
   Q_OBJECT
 public:
-  explicit QGoContourManualSegmentationWidget(QWidget * parent = 0);
+  explicit QGoContourManualSegmentationWidget(QWidget *parent = 0);
   ~QGoContourManualSegmentationWidget();
 
-  QGoManualSegmentationSettingsDialog* m_SettingsDialog;
-
+  QGoManualSegmentationSettingsDialog *m_SettingsDialog;
 signals:
   void ReinitializePressed();
+
   void ValidatePressed();
+
   void SettingsPressed();
+
   void UpdateContourRepresentationProperties();
 
 private:
-  Q_DISABLE_COPY( QGoContourManualSegmentationWidget );
-  };
+  Q_DISABLE_COPY(QGoContourManualSegmentationWidget);
+};
 
 #endif

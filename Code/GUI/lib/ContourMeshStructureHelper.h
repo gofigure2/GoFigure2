@@ -57,89 +57,89 @@ typedef boost::multi_index::multi_index_container<
   ContourMeshStructure,
   boost::multi_index::indexed_by<
     boost::multi_index::ordered_non_unique<
-      boost::multi_index::tag<TCoord>,
+      boost::multi_index::tag< TCoord >,
       BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, unsigned int, TCoord)
       >,
     boost::multi_index::hashed_non_unique<
-      boost::multi_index::tag<ActorXY>,
-      BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, vtkActor*, ActorXY)
+      boost::multi_index::tag< ActorXY >,
+      BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, vtkActor *, ActorXY)
       >,
     boost::multi_index::hashed_non_unique<
-      boost::multi_index::tag<ActorXZ>,
-      BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, vtkActor*, ActorXZ)
+      boost::multi_index::tag< ActorXZ >,
+      BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, vtkActor *, ActorXZ)
       >,
     boost::multi_index::hashed_non_unique<
-      boost::multi_index::tag<ActorYZ>,
-      BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, vtkActor*, ActorYZ)
+      boost::multi_index::tag< ActorYZ >,
+      BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, vtkActor *, ActorYZ)
       >,
     boost::multi_index::hashed_non_unique<
-      boost::multi_index::tag<ActorXYZ>,
-      BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, vtkActor*, ActorXYZ)
+      boost::multi_index::tag< ActorXYZ >,
+      BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, vtkActor *, ActorXYZ)
       >,
     boost::multi_index::hashed_non_unique<
-      boost::multi_index::tag<Nodes>,
-      BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, vtkPolyData*, Nodes)
+      boost::multi_index::tag< Nodes >,
+      BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, vtkPolyData *, Nodes)
       >,
     boost::multi_index::ordered_unique<
-      boost::multi_index::tag<TraceID>,
+      boost::multi_index::tag< TraceID >,
       BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, unsigned int, TraceID)
       >
     >
   > ContourMeshStructureMultiIndexContainer;
 
 typedef boost::multi_index::multi_index_container<
-  ContourMeshStructure*,
+  ContourMeshStructure *,
   boost::multi_index::indexed_by<
     boost::multi_index::ordered_unique<
-      BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, unsigned int, TraceID)>
+      BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, unsigned int, TraceID) >
     >
   > ContourMeshStructureTraceIDViewContainer;
 
 typedef boost::multi_index::multi_index_container<
-  ContourMeshStructure*,
+  ContourMeshStructure *,
   boost::multi_index::indexed_by<
     boost::multi_index::ordered_non_unique<
-      BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, unsigned int, TCoord)>
+      BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, unsigned int, TCoord) >
     >
   > ContourMeshStructureTCoordViewContainer;
 
 typedef boost::multi_index::multi_index_container<
-  ContourMeshStructure*,
+  ContourMeshStructure *,
   boost::multi_index::indexed_by<
     boost::multi_index::hashed_non_unique<
-      BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, vtkActor*, ActorXY)>
+      BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, vtkActor *, ActorXY) >
     >
   > ContourMeshStructureActorXYViewContainer;
 
 typedef boost::multi_index::multi_index_container<
-  ContourMeshStructure*,
+  ContourMeshStructure *,
   boost::multi_index::indexed_by<
     boost::multi_index::hashed_non_unique<
-      BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, vtkActor*, ActorXZ)>
+      BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, vtkActor *, ActorXZ) >
     >
   > ContourMeshStructureActorXZViewContainer;
 
 typedef boost::multi_index::multi_index_container<
-  ContourMeshStructure*,
+  ContourMeshStructure *,
   boost::multi_index::indexed_by<
     boost::multi_index::hashed_non_unique<
-      BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, vtkActor*, ActorYZ)>
+      BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, vtkActor *, ActorYZ) >
     >
   > ContourMeshStructureActorYZViewContainer;
 
 typedef boost::multi_index::multi_index_container<
-  ContourMeshStructure*,
+  ContourMeshStructure *,
   boost::multi_index::indexed_by<
     boost::multi_index::hashed_non_unique<
-      BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, vtkActor*, ActorXYZ)>
+      BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, vtkActor *, ActorXYZ) >
     >
   > ContourMeshStructureActorXYZViewContainer;
 
 typedef boost::multi_index::multi_index_container<
-  ContourMeshStructure*,
+  ContourMeshStructure *,
   boost::multi_index::indexed_by<
     boost::multi_index::hashed_non_unique<
-      BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, vtkPolyData*, Nodes)>
+      BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, vtkPolyData *, Nodes) >
     >
   > ContourMeshStructureNodesViewContainer;
 
@@ -153,18 +153,18 @@ typedef boost::multi_index::multi_index_container<
 */
 QGOIO_EXPORT
 int
-ComputeDirectionFromContour(vtkPolyData* iContour);
+ComputeDirectionFromContour(vtkPolyData *iContour);
 
 QGOIO_EXPORT
 template< typename T >
 int
-ComputeDirectionFromBounds( T* iBounds )
+ComputeDirectionFromBounds(T *iBounds)
 {
   int oDir = -1;
 
-  for (int i = 0; i < 3; i++)
+  for ( int i = 0; i < 3; i++ )
     {
-    if (iBounds[2 * i] == iBounds[2 * i + 1])
+    if ( iBounds[2 * i] == iBounds[2 * i + 1] )
       {
       oDir = 2 - i;
       }
@@ -174,10 +174,10 @@ ComputeDirectionFromBounds( T* iBounds )
 }
 
 QGOIO_EXPORT
-std::list<ContourMeshStructure*>
+std::list< ContourMeshStructure * >
 FindContourGivenTraceID(
-  const ContourMeshStructureMultiIndexContainer& iContainer,
-  const unsigned int& iId);
+  const ContourMeshStructureMultiIndexContainer & iContainer,
+  const unsigned int & iId);
 
 QGOIO_EXPORT
 void DeleteContourMeshStructureElement(

@@ -48,7 +48,7 @@
 
 #include "QGoMainWindow.h"
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
   QApplication app(argc, argv);
 
@@ -59,22 +59,22 @@ int main(int argc, char** argv)
 
   QString inputfilename;
 
-  if (argc > 1)
+  if ( argc > 1 )
     {
-    for (int i = 1; i < argc; i++)
+    for ( int i = 1; i < argc; i++ )
       {
       std::string temp = argv[i];
-      if (temp == "--version")
+      if ( temp == "--version" )
         {
         std::cout << "@GOFIGURE2_VERSION@" << std::endl;
         return EXIT_SUCCESS;
         }
-      if (temp == "--i")
+      if ( temp == "--i" )
         {
         inputfilename = argv[++i];
         std::cout << inputfilename.toStdString().c_str() << std::endl;
         }
-      if (temp == "--help")
+      if ( temp == "--help" )
         {
         std::cout << "GoFigure2 version @GOFIGURE2_VERSION@" << std::endl;
         std::cout << std::endl;
@@ -87,7 +87,8 @@ int main(int argc, char** argv)
       }
     }
 
-  QPixmap pixmap(QString::fromUtf8(":/fig/splash.png"));
+  QPixmap pixmap( QString::fromUtf8(":/fig/splash.png") );
+
   QSplashScreen *splash = new QSplashScreen(
     pixmap.scaledToWidth(800, Qt::SmoothTransformation),
     Qt::WindowStaysOnTopHint);
@@ -98,8 +99,8 @@ int main(int argc, char** argv)
 
   splash->showMessage("Application loading... please wait");
 
-  QGoMainWindow* form = new QGoMainWindow;
-  if ((!inputfilename.isEmpty()) && (!inputfilename.isNull()))
+  QGoMainWindow *form = new QGoMainWindow;
+  if ( ( !inputfilename.isEmpty() ) && ( !inputfilename.isNull() ) )
     {
     form->SetSingleFileName(inputfilename);
     }

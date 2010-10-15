@@ -24,13 +24,12 @@
 
 namespace itk
 {
-
 /**
  * Constructor
  */
-template <typename TInputImage, typename TOutputImage >
+template< typename TInputImage, typename TOutputImage >
 MultiScaleLoGImageFilter
-<TInputImage,TOutputImage>
+< TInputImage, TOutputImage >
 ::MultiScaleLoGImageFilter()
 {
   m_SigmaMin = 0.2;
@@ -40,54 +39,55 @@ MultiScaleLoGImageFilter
   m_LaplacianFilter = LaplacianFilterType::New();
 }
 
-template <typename TInputImage, typename TOutputImage >
+template< typename TInputImage, typename TOutputImage >
 void
 MultiScaleLoGImageFilter
-<TInputImage,TOutputImage>
+< TInputImage, TOutputImage >
 ::GenerateData()
 {
   // Allocate the output
   this->GetOutput()->SetBufferedRegion(
-                 this->GetOutput()->GetRequestedRegion() );
+    this->GetOutput()->GetRequestedRegion() );
   this->GetOutput()->Allocate();
-  this->GetOutput()->FillBuffer( -1000 );
+  this->GetOutput()->FillBuffer(-1000);
 
   InputImageConstPointer input = this->GetInput();
 
-  m_LaplacianFilter->SetInput( input );
-  m_LaplacianFilter->SetNormalizeAcrossScale( false );
+  m_LaplacianFilter->SetInput(input);
+  m_LaplacianFilter->SetNormalizeAcrossScale(false);
 
   double sigma = m_SigmaMin;
-  int scaleLevel = 1;
+  int    scaleLevel = 1;
   while ( sigma <= m_SigmaMax )
     {
     std::cout << "Computing LoG for sigma = " << sigma << std::endl;
-    m_LaplacianFilter->SetSigma( sigma );
+    m_LaplacianFilter->SetSigma(sigma);
     m_LaplacianFilter->Update();
     this->UpdateMaximumResponse();
-    sigma  = this->ComputeSigmaValue( scaleLevel );
+    sigma  = this->ComputeSigmaValue(scaleLevel);
     scaleLevel++;
     }
 }
 
-template <typename TInputImage, typename TOutputImage >
+template< typename TInputImage, typename TOutputImage >
 void
 MultiScaleLoGImageFilter
-<TInputImage,TOutputImage>
+< TInputImage, TOutputImage >
 ::UpdateMaximumResponse()
 {
+  IteratorType oit( this->GetOutput(),
+                    this->GetOutput()->GetLargestPossibleRegion() );
 
-  IteratorType oit(this->GetOutput(),
-    this->GetOutput()->GetLargestPossibleRegion());
   oit.GoToBegin();
 
-  IteratorType it(m_LaplacianFilter->GetOutput(),
-    m_LaplacianFilter->GetOutput()->GetLargestPossibleRegion());
+  IteratorType it( m_LaplacianFilter->GetOutput(),
+                   m_LaplacianFilter->GetOutput()->GetLargestPossibleRegion() );
+
   it.GoToBegin();
 
-  while( !oit.IsAtEnd() )
+  while ( !oit.IsAtEnd() )
     {
-    if( oit.Value() < it.Value() )
+    if ( oit.Value() < it.Value() )
       {
       oit.Value() = it.Value();
       }
@@ -96,36 +96,34 @@ MultiScaleLoGImageFilter
     }
 }
 
-template <typename TInputImage, typename TOutputImage >
+template< typename TInputImage, typename TOutputImage >
 double
 MultiScaleLoGImageFilter
-<TInputImage,TOutputImage>
-::ComputeSigmaValue( int ScaleLevel )
+< TInputImage, TOutputImage >
+::ComputeSigmaValue(int ScaleLevel)
 {
   double stepSize =
-     ( vcl_log( m_SigmaMax )  - vcl_log( m_SigmaMin) ) / m_NumberOfSigmaSteps;
+    ( vcl_log(m_SigmaMax)  - vcl_log(m_SigmaMin) ) / m_NumberOfSigmaSteps;
 
-  if( stepSize <= 1e-10 )
+  if ( stepSize <= 1e-10 )
     {
     stepSize = 1e-10;
     }
 
-  return ( vcl_exp( vcl_log (m_SigmaMin) + stepSize * ScaleLevel) );
+  return ( vcl_exp(vcl_log (m_SigmaMin) + stepSize * ScaleLevel) );
 }
 
-template <typename TInputImage, typename TOutputImage >
+template< typename TInputImage, typename TOutputImage >
 void
 MultiScaleLoGImageFilter
-<TInputImage,TOutputImage>
-::PrintSelf(std::ostream& os, Indent indent) const
+< TInputImage, TOutputImage >
+::PrintSelf(std::ostream & os, Indent indent) const
 {
   Superclass::PrintSelf(os, indent);
 
   os << indent << "SigmaMin:  " << m_SigmaMin << std::endl;
   os << indent << "SigmaMax:  " << m_SigmaMax  << std::endl;
 }
-
-
 } // end namespace itk
 
 #endif

@@ -47,43 +47,41 @@
 
 namespace itk
 {
-template<class TInput, class TOutput>
-vtkPolyDataToBinaryMaskImageFilter<TInput, TOutput>::
-vtkPolyDataToBinaryMaskImageFilter()
-  {
-  m_WhiteImage = vtkSmartPointer<vtkImageData>::New();
-  m_Pol2stenc = vtkSmartPointer<vtkPolyDataToImageStencil>::New();
-  m_ImageStencil = vtkSmartPointer<vtkImageStencil>::New();
-  m_VTKExporter = vtkSmartPointer<vtkImageExport>::New();
+template< class TInput, class TOutput >
+vtkPolyDataToBinaryMaskImageFilter< TInput, TOutput >::vtkPolyDataToBinaryMaskImageFilter()
+{
+  m_WhiteImage = vtkSmartPointer< vtkImageData >::New();
+  m_Pol2stenc = vtkSmartPointer< vtkPolyDataToImageStencil >::New();
+  m_ImageStencil = vtkSmartPointer< vtkImageStencil >::New();
+  m_VTKExporter = vtkSmartPointer< vtkImageExport >::New();
   m_ITKImporter = ImageImportType::New();
-  }
+}
 
-template<class TInput, class TOutput>
-vtkPolyDataToBinaryMaskImageFilter<TInput, TOutput>::
+template< class TInput, class TOutput >
+vtkPolyDataToBinaryMaskImageFilter< TInput, TOutput >::
 ~vtkPolyDataToBinaryMaskImageFilter()
-  {
-  }
+{}
 
-template<class TInput, class TOutput>
+template< class TInput, class TOutput >
 void
-vtkPolyDataToBinaryMaskImageFilter<TInput, TOutput>::
-SetPolyData(vtkPolyData* iMesh)
+vtkPolyDataToBinaryMaskImageFilter< TInput, TOutput >::SetPolyData(vtkPolyData *iMesh)
 {
   m_Mesh = iMesh;
   this->Modified();
 }
 
-template<class TInput, class TOutput>
+template< class TInput, class TOutput >
 void
-vtkPolyDataToBinaryMaskImageFilter<TInput, TOutput>::GenerateData()
+vtkPolyDataToBinaryMaskImageFilter< TInput, TOutput >::GenerateData()
 {
   InputImageConstPointer input = this->GetInput();
 
   double bounds[6];
+
   m_Mesh->GetBounds(bounds);
 
-  if ((m_Mesh->GetNumberOfCells() == 0) &&
-      (m_Mesh->GetNumberOfPoints() == 0))
+  if ( ( m_Mesh->GetNumberOfCells() == 0 )
+       && ( m_Mesh->GetNumberOfPoints() == 0 ) )
     {
     itkExceptionMacro(
       "vtkPolyDataToBinaryMaskImageFilter::GenerateData(): m_Mesh has nor cells nor points");
@@ -98,13 +96,13 @@ vtkPolyDataToBinaryMaskImageFilter<TInput, TOutput>::GenerateData()
 
   // spacing is got from the input image
   InputImageSpacingType itk_spacing = input->GetSpacing();
-  double                vtk_spacing[3] = { 0., 0., 0.};
+  double                vtk_spacing[3] = { 0., 0., 0. };
   int                   vtk_size[3] = { 0, 0, 0 };
 
-  for (unsigned int dim = 0; dim < ImageDimension; dim++)
+  for ( unsigned int dim = 0; dim < ImageDimension; dim++ )
     {
-    vtk_spacing[dim] = static_cast<double>(itk_spacing[dim]);
-    vtk_size[dim] = static_cast<int>(vcl_ceil(bounds[2 * dim + 1] - bounds[2 * dim]) / vtk_spacing[dim]);
+    vtk_spacing[dim] = static_cast< double >(itk_spacing[dim]);
+    vtk_size[dim] = static_cast< int >(vcl_ceil(bounds[2 * dim + 1] - bounds[2 * dim]) / vtk_spacing[dim]);
     }
 
   m_WhiteImage->SetSpacing(vtk_spacing);
@@ -118,7 +116,7 @@ vtkPolyDataToBinaryMaskImageFilter<TInput, TOutput>::GenerateData()
   unsigned char inval = 255;
   unsigned char outval = 0;
   vtkIdType     count = m_WhiteImage->GetNumberOfPoints();
-  for (vtkIdType i = 0; i < count; ++i)
+  for ( vtkIdType i = 0; i < count; ++i )
     {
     m_WhiteImage->GetPointData()->GetScalars()->SetTuple1(i, inval);
     }
@@ -126,28 +124,26 @@ vtkPolyDataToBinaryMaskImageFilter<TInput, TOutput>::GenerateData()
   m_Pol2stenc->SetInput(m_Mesh);
   m_Pol2stenc->SetOutputOrigin(origin);
   m_Pol2stenc->SetOutputSpacing(vtk_spacing);
-  m_Pol2stenc->SetOutputWholeExtent(m_WhiteImage->GetExtent());
+  m_Pol2stenc->SetOutputWholeExtent( m_WhiteImage->GetExtent() );
   m_Pol2stenc->Update();
 
   // cut the corresponding white image and set the background:
   m_ImageStencil->SetInput(m_WhiteImage);
-  m_ImageStencil->SetStencil(m_Pol2stenc->GetOutput());
+  m_ImageStencil->SetStencil( m_Pol2stenc->GetOutput() );
   m_ImageStencil->ReverseStencilOff();
   m_ImageStencil->SetBackgroundValue(outval);
   m_ImageStencil->Update();
 
   //Export VTK image to ITK
-  m_VTKExporter->SetInput(m_ImageStencil->GetOutput());
+  m_VTKExporter->SetInput( m_ImageStencil->GetOutput() );
 
 //   typedef itk::VTKImageImport<ImageType> ImageImportType;
 //   ImageImportType::Pointer m_ITKImporter = ImageImportType::New();
 
-  ConnectPipelines<vtkImageExport, ImageImportPointer>(m_VTKExporter, m_ITKImporter);
+  ConnectPipelines< vtkImageExport, ImageImportPointer >(m_VTKExporter, m_ITKImporter);
 
-  this->GraftOutput(m_ITKImporter->GetOutput());
+  this->GraftOutput( m_ITKImporter->GetOutput() );
 }
-
 }
 
 #endif
-

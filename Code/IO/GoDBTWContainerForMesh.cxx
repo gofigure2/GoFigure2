@@ -39,37 +39,37 @@
 =========================================================================*/
 #include "GoDBTWContainerForMesh.h"
 
-
-GoDBTWContainerForMesh::GoDBTWContainerForMesh(int iImgSessionID)
-  :GoDBTWContainerForContourMesh("mesh","track",iImgSessionID), 
+GoDBTWContainerForMesh::GoDBTWContainerForMesh(int iImgSessionID):
+  GoDBTWContainerForContourMesh("mesh", "track", iImgSessionID),
   m_MeshAttributes(NULL)
-{
-}
+{}
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 GoDBTWContainerForMesh::~GoDBTWContainerForMesh()
-{
-}
+{}
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void GoDBTWContainerForMesh::SetSpecificColumnsInfoForMesh()
 {
   //Get the info for the total intensities per channel:
-  GoDBTraceInfoForTableWidget             temp;
-  std::pair<GoDBTraceInfoForTableWidget, 
-    std::vector<std::string> >            PairTemp;
+  GoDBTraceInfoForTableWidget temp;
+
+  std::pair< GoDBTraceInfoForTableWidget,
+             std::vector< std::string > > PairTemp;
   size_t                                  NumberOfChannels = this->m_ChannelsInfo.size();
 
-  if (this->m_ChannelsInfo.empty())
+  if ( this->m_ChannelsInfo.empty() )
     {
     std::cout << "No info for the channels" << std::endl;
     std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
     std::cout << std::endl;
     return;
     }
-  for (size_t i = 0; i < NumberOfChannels; i++)
+  for ( size_t i = 0; i < NumberOfChannels; i++ )
     {
     std::string InfoName = "TotalIntensityForChannelID";
     InfoName += this->m_ChannelsInfo.at(i).at(1);
@@ -102,6 +102,7 @@ void GoDBTWContainerForMesh::SetSpecificColumnsInfoForMesh()
   m_RowContainer.push_back(PairTemp);
   temp.Clear();
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -114,126 +115,129 @@ void GoDBTWContainerForMesh::SetSpecificColumnsInfoForMesh()
 
 //--------------------------------------------------------------------------
 void GoDBTWContainerForMesh::FillRowContainerForMeshValues(
-  vtkMySQLDatabase* iDatabaseConnector, std::vector<std::string> iVectMeshIDs)
+  vtkMySQLDatabase *iDatabaseConnector, std::vector< std::string > iVectMeshIDs)
 {
-  std::vector<std::vector<std::string> > ValuesToFill;
-  std::vector<std::string>               SelectFields;
-  this->GetValuesForIntensities(iDatabaseConnector,iVectMeshIDs,ValuesToFill,
-    SelectFields);
-  //if the mesh was just created from the visu (so there is only one): 
-  if (this->m_MeshAttributes != 0 && iVectMeshIDs.size() == 1)
+  std::vector< std::vector< std::string > > ValuesToFill;
+  std::vector< std::string >                SelectFields;
+  this->GetValuesForIntensities(iDatabaseConnector, iVectMeshIDs, ValuesToFill,
+                                SelectFields);
+  //if the mesh was just created from the visu (so there is only one):
+  if ( this->m_MeshAttributes != 0 && iVectMeshIDs.size() == 1 )
     {
     this->GetValuesForSurfaceVolume(ValuesToFill,
-      SelectFields);
+                                    SelectFields);
     }
 
   this->FillRowContainer(
     ValuesToFill, SelectFields, "ColumnNameTableWidget");
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void GoDBTWContainerForMesh::GetValuesForIntensities(
-    vtkMySQLDatabase* iDatabaseConnector, 
-    std::vector<std::string> iVectMeshIDs,
-    std::vector<std::vector<std::string> > &ioValuesToFill,
-    std::vector<std::string>               &ioSelectFields)
+  vtkMySQLDatabase *iDatabaseConnector,
+  std::vector< std::string > iVectMeshIDs,
+  std::vector< std::vector< std::string > > & ioValuesToFill,
+  std::vector< std::string >               & ioSelectFields)
 {
-  if (this->m_ChannelsInfo.empty())
+  if ( this->m_ChannelsInfo.empty() )
     {
     this->SetChannelsInfo(iDatabaseConnector);
     }
   //fill the columns names to be filled in the row container:
-  for (unsigned int i = 0; i < this->m_ChannelsInfo.size(); i++)
+  for ( unsigned int i = 0; i < this->m_ChannelsInfo.size(); i++ )
     {
     std::string NameTableWidgetColumn = "T.I.";
     NameTableWidgetColumn += this->m_ChannelsInfo.at(i).at(0);
     ioSelectFields.push_back(NameTableWidgetColumn);
     }
 
-  if (iVectMeshIDs.empty())
+  if ( iVectMeshIDs.empty() )
     {
     return;
     }
   //get the needed data from the database:
-  std::vector<std::string> SelectedFields(3);
+  std::vector< std::string > SelectedFields(3);
   SelectedFields.at(0) = "mesh.meshid";
   SelectedFields.at(1) = "left(points,10) as points";
   SelectedFields.at(2) = "value";
-  std::vector<std::string> ResultQuery;
+  std::vector< std::string > ResultQuery;
 
-  if (iVectMeshIDs.size() == 1)
+  if ( iVectMeshIDs.size() == 1 )
     {
-      this->GetIntensityValuesForOneMesh(iVectMeshIDs.front(),
-        ioValuesToFill,iDatabaseConnector);
+    this->GetIntensityValuesForOneMesh(iVectMeshIDs.front(),
+                                       ioValuesToFill, iDatabaseConnector);
     }
   else
     {
     ResultQuery = GetAllSelectedValuesFromTwoTables(
-      iDatabaseConnector,"mesh","intensity",SelectedFields,
-      "mesh.meshid = intensity.meshid","imagingsessionid", 
-      ConvertToString<int>(this->m_ImgSessionID));
+      iDatabaseConnector, "mesh", "intensity", SelectedFields,
+      "mesh.meshid = intensity.meshid", "imagingsessionid",
+      ConvertToString< int >(this->m_ImgSessionID) );
     this->GetValuesToFillForIntensityFromQueryResults(
-    ResultQuery,iVectMeshIDs,ioValuesToFill);
-    } 
+      ResultQuery, iVectMeshIDs, ioValuesToFill);
+    }
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void GoDBTWContainerForMesh::GetIntensityValuesForOneMesh(std::string iMeshID,
-  std::vector<std::vector<std::string> > &ioValuesToFill,
-  vtkMySQLDatabase* iDatabaseConnector)
+                                                          std::vector< std::vector< std::string > > & ioValuesToFill,
+                                                          vtkMySQLDatabase *iDatabaseConnector)
 {
-  std::vector<std::string> temp;
-  for (unsigned int i = 0; i < this->m_ChannelsInfo.size(); i++)
+  std::vector< std::string > temp;
+  for ( unsigned int i = 0; i < this->m_ChannelsInfo.size(); i++ )
+    {
+    std::string ChannelID = this->m_ChannelsInfo.at(i).at(1);
+    int         ValueIntensity = FindOneID(iDatabaseConnector, "intensity",
+                                           "Value", "MeshID", iMeshID, "ChannelID", ChannelID);
+    if ( ValueIntensity == -1 )
       {
-      std::string ChannelID = this->m_ChannelsInfo.at(i).at(1);
-      int  ValueIntensity = FindOneID(iDatabaseConnector,"intensity", 
-        "Value", "MeshID", iMeshID,"ChannelID", ChannelID);
-      if ( ValueIntensity == -1)
-        {
-        temp.push_back("");
-        }
-      else
-        {
-        temp.push_back(ConvertToString<int>(ValueIntensity));
-        }
+      temp.push_back("");
       }
-    ioValuesToFill.push_back(temp);
+    else
+      {
+      temp.push_back( ConvertToString< int >(ValueIntensity) );
+      }
+    }
+  ioValuesToFill.push_back(temp);
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void GoDBTWContainerForMesh::GetValuesToFillForIntensityFromQueryResults
-(std::vector<std::string> iResultQuery, std::vector<std::string> iVectMeshIDs,
- std::vector<std::vector<std::string> > &ioValuesToFill)
+  (std::vector< std::string > iResultQuery, std::vector< std::string > iVectMeshIDs,
+  std::vector< std::vector< std::string > > & ioValuesToFill)
 {
-  std::vector<std::string>::iterator iterResult = iResultQuery.begin();
+  std::vector< std::string >::iterator iterResult = iResultQuery.begin();
   //iResultQuery has meshid, points, value for channel0, meshid,points,
   //value for channel1....
-  std::vector<std::string>::iterator iterMeshID = iVectMeshIDs.begin();
-  std::vector<std::string> temp;
-  while(iterMeshID != iVectMeshIDs.end())
+  std::vector< std::string >::iterator iterMeshID = iVectMeshIDs.begin();
+  std::vector< std::string >           temp;
+  while ( iterMeshID != iVectMeshIDs.end() )
     {
     iterResult++;
     std::string Points = *iterResult;
     std::string IntensityValue;
-    if(Points == "0")//if the mesh has no points, he has no intensity
+    if ( Points == "0" ) //if the mesh has no points, he has no intensity
       {
       IntensityValue = "";
-      for(unsigned int i = 0; i < this->m_ChannelsInfo.size(); i++)
+      for ( unsigned int i = 0; i < this->m_ChannelsInfo.size(); i++ )
         {
         temp.push_back(IntensityValue);
         }
-      iterResult = iterResult+2;
+      iterResult = iterResult + 2;
       }
     else
       {
       iterResult++;
       unsigned int i;
-      for(i = 0; i < this->m_ChannelsInfo.size()-1; i++)
+      for ( i = 0; i < this->m_ChannelsInfo.size() - 1; i++ )
         {
-        if(iterResult != iResultQuery.end())
+        if ( iterResult != iResultQuery.end() )
           {
           IntensityValue = *iterResult;
           temp.push_back(IntensityValue);
@@ -249,104 +253,110 @@ void GoDBTWContainerForMesh::GetValuesToFillForIntensityFromQueryResults
     iterMeshID++;
     }
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void GoDBTWContainerForMesh::FillRowContainerForMeshValues(
-   vtkMySQLDatabase* iDatabaseConnector, int iMeshID)
+  vtkMySQLDatabase *iDatabaseConnector, int iMeshID)
 {
-  std::vector<std::string> MeshIDs;
-  MeshIDs.push_back(ConvertToString<int>(iMeshID));
-  this->FillRowContainerForMeshValues(iDatabaseConnector,MeshIDs);
+  std::vector< std::string > MeshIDs;
+  MeshIDs.push_back( ConvertToString< int >(iMeshID) );
+  this->FillRowContainerForMeshValues(iDatabaseConnector, MeshIDs);
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void GoDBTWContainerForMesh::GetValuesForSurfaceVolume(
-  std::vector<std::vector<std::string> > &ioValuesToFill,
-  std::vector<std::string>               &ioSelectFields)
+  std::vector< std::vector< std::string > > & ioValuesToFill,
+  std::vector< std::string >               & ioSelectFields)
 {
-  if (this->m_MeshAttributes != 0)
+  if ( this->m_MeshAttributes != 0 )
     {
-    if (ioValuesToFill.size() != 1)
+    if ( ioValuesToFill.size() != 1 )
       {
-      std::cout<<"more than 1 mesh for volume and surface values"<<std::endl;
+      std::cout << "more than 1 mesh for volume and surface values" << std::endl;
       std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
       std::cout << std::endl;
       return;
       }
     else
       {
-      std::vector<std::string> temp = ioValuesToFill.at(0);
+      std::vector< std::string > temp = ioValuesToFill.at(0);
       ioSelectFields.push_back("Volume");
-      temp.push_back(ConvertToString<double>(this->m_MeshAttributes->m_Volume));
+      temp.push_back( ConvertToString< double >(this->m_MeshAttributes->m_Volume) );
       ioSelectFields.push_back("SurfaceArea");
-      temp.push_back(ConvertToString<double>(this->m_MeshAttributes->m_Area));
+      temp.push_back( ConvertToString< double >(this->m_MeshAttributes->m_Area) );
       ioValuesToFill.clear();
       ioValuesToFill.push_back(temp);
       }
     }
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-GoDBTableWidgetContainer::TWContainerType 
+GoDBTableWidgetContainer::TWContainerType
 GoDBTWContainerForMesh::GetContainerLoadedWithAllFromDB(
-  vtkMySQLDatabase* iDatabaseConnector)
+  vtkMySQLDatabase *iDatabaseConnector)
 {
   GoDBTableWidgetContainer::GetContainerLoadedWithAllFromDB(iDatabaseConnector);
-  std::vector<std::string> VectMeshIDs = ListSpecificValuesForOneColumn(
-    iDatabaseConnector, "mesh", "MeshID","ImagingSessionID",
-    ConvertToString<unsigned int>(this->m_ImgSessionID));
- 
-  this->FillRowContainerForMeshValues(iDatabaseConnector,VectMeshIDs);
+  std::vector< std::string > VectMeshIDs = ListSpecificValuesForOneColumn(
+    iDatabaseConnector, "mesh", "MeshID", "ImagingSessionID",
+    ConvertToString< unsigned int >(this->m_ImgSessionID) );
+
+  this->FillRowContainerForMeshValues(iDatabaseConnector, VectMeshIDs);
 
   //what about surfacearea + volume ? FillRowContainerForComputedvalues to check
   return this->m_RowContainer;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void GoDBTWContainerForMesh::SetChannelsInfo(
-  vtkMySQLDatabase* iDatabaseConnector)
+  vtkMySQLDatabase *iDatabaseConnector)
 {
-  if (this->m_ChannelsInfo.empty())
+  if ( this->m_ChannelsInfo.empty() )
     {
-    std::vector<std::string> SelectFields;
+    std::vector< std::string > SelectFields;
     SelectFields.push_back("Name");
     SelectFields.push_back("channel.ChannelID");
-    std::vector<std::string> JoinTablesOnTraceTable;
+    std::vector< std::string > JoinTablesOnTraceTable;
     JoinTablesOnTraceTable.push_back("channel");
     JoinTablesOnTraceTable.push_back("image.ChannelID = channel.ChannelID");
 
     this->m_ChannelsInfo = GetValuesFromSeveralTables(
       iDatabaseConnector, "image", SelectFields, "ImagingSessionID",
-      ConvertToString<unsigned int>(this->m_ImgSessionID), JoinTablesOnTraceTable, true);
+      ConvertToString< unsigned int >(this->m_ImgSessionID), JoinTablesOnTraceTable, true);
     this->SetSpecificColumnsInfoForMesh();
     }
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-GoDBTableWidgetContainer::TWContainerType 
+GoDBTableWidgetContainer::TWContainerType
 GoDBTWContainerForMesh::GetContainerForOneSpecificTrace(
-  vtkMySQLDatabase* iDatabaseConnector, int iTraceID)
+  vtkMySQLDatabase *iDatabaseConnector, int iTraceID)
 {
   GoDBTableWidgetContainer::GetContainerForOneSpecificTrace(iDatabaseConnector,
-    iTraceID);   
-  this->FillRowContainerForMeshValues(iDatabaseConnector,iTraceID); 
+                                                            iTraceID);
+  this->FillRowContainerForMeshValues(iDatabaseConnector, iTraceID);
   this->m_MeshAttributes = 0;
   return this->m_RowContainer;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void GoDBTWContainerForMesh::SetMeshAttributes(
-  GoFigureMeshAttributes* iMeshAttributes)
+  GoFigureMeshAttributes *iMeshAttributes)
 {
   this->m_MeshAttributes = iMeshAttributes;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
- 

@@ -42,9 +42,9 @@
 #include "vtkViewImage3D.h"
 #include "vtkRenderWindowInteractor.h"
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-  if (argc != 3)
+  if ( argc != 3 )
     {
     std::cout << "Usage: imageview2d(.exe)" << std::endl;
     std::cout << "1- file.mha" << std::endl;
@@ -52,20 +52,20 @@ int main(int argc, char** argv)
     return EXIT_FAILURE;
     }
 
-  vtkMetaImageReader* reader = vtkMetaImageReader::New();
+  vtkMetaImageReader *reader = vtkMetaImageReader::New();
   reader->SetFileName(argv[1]);
   reader->Update();
 
-  vtkViewImage3D* view = vtkViewImage3D::New();
+  vtkViewImage3D *view = vtkViewImage3D::New();
 
-  vtkRenderWindowInteractor* iren = vtkRenderWindowInteractor::New();
+  vtkRenderWindowInteractor *iren = vtkRenderWindowInteractor::New();
   view->SetupInteractor(iren);
 
   view->SetTriPlanarRenderingOn();
-  view->SetInput(reader->GetOutput());
+  view->SetInput( reader->GetOutput() );
   view->Render();
 
-  if (atoi(argv[2]) == 1)
+  if ( atoi(argv[2]) == 1 )
     {
     iren->CreateOneShotTimer(1);
     }

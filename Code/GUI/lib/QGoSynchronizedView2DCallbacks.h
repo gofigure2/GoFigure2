@@ -54,37 +54,36 @@ class vtkCallbackCommand;
  * QGoSynchronizedViewManager deal
  * with SynchronizedView synchronization.
  */
-class QGoSynchronizedView2DCallbacks : public QObject
-  {
+class QGoSynchronizedView2DCallbacks:public QObject
+{
   Q_OBJECT
-
 public:
   /** \brief the constructor do most of the work :
    *  add observers & callbacks to QGoSynchronizedViews of the vector
    * \tparam TContainer container of QGoSynchronizedView2D*
    */
   explicit QGoSynchronizedView2DCallbacks(
-      std::vector< QGoSynchronizedView2D* > iOpenSynchronizedViews,
-      QObject* iParent = 0 );
+    std::vector< QGoSynchronizedView2D * > iOpenSynchronizedViews,
+    QObject *iParent = 0);
 
   ~QGoSynchronizedView2DCallbacks();
 
   /** \brief callback function to synchornize cameras (has to be public)
    */
-  static void synchronizeCameras(vtkObject* caller, long unsigned int eventId,
-                                 void* clientData, void* callData);
+  static void synchronizeCameras(vtkObject *caller, long unsigned int eventId,
+                                 void *clientData, void *callData);
 
   /** \brief remove a SynchronizedView from the vector
    * of synchronized SynchronizedViews
    * (this method takes care of removing the callback)
    */
-  void removeSynchronizedView(QGoSynchronizedView2D* ioSynchronizedView);
+  void removeSynchronizedView(QGoSynchronizedView2D *ioSynchronizedView);
 
   /** \brief add a SynchronizedView to the vector
    * of synchronized SynchronizedViews
    * (this method takes care of adding the callback)
    */
-  void addSynchronizedView(QGoSynchronizedView2D* ioSynchronizedView);
+  void addSynchronizedView(QGoSynchronizedView2D *ioSynchronizedView);
 
 private:
   /** \brief setup the callback command object
@@ -95,16 +94,16 @@ private:
   /** \brief callback object to link callback function to
    * SynchronizedView's event
    */
-  vtkCallbackCommand* m_vtkCallBackCamSync;
+  vtkCallbackCommand *m_vtkCallBackCamSync;
 
   /** \brief all open SynchronizedViews are stored in this array,
    *  to transmit it to the callback function
    */
-  std::vector<QGoSynchronizedView2D*> m_openSynchronizedView;
+  std::vector< QGoSynchronizedView2D * > m_openSynchronizedView;
 
   template< typename TIterator >
-  void Initialize ( TIterator iBegin, TIterator iEnd )
-    {
+  void Initialize(TIterator iBegin, TIterator iEnd)
+  {
     m_openSynchronizedView.clear();
 
     // create the callback object
@@ -113,16 +112,16 @@ private:
     TIterator it = iBegin;
 
     // for every opened SynchronizedView :
-    while( it != iEnd )
+    while ( it != iEnd )
       {
-      // add the callback object as an observer of each SynchronizedView's camera
-      (*it)->GetCamera()->AddObserver( vtkCommand::ModifiedEvent,
-                                       QGoSynchronizedView2DCallbacks::m_vtkCallBackCamSync);
-      m_openSynchronizedView.push_back( *it );
+      // add the callback object as an observer of each SynchronizedView's
+      // camera
+      ( *it )->GetCamera()->AddObserver(vtkCommand::ModifiedEvent,
+                                        QGoSynchronizedView2DCallbacks::m_vtkCallBackCamSync);
+      m_openSynchronizedView.push_back(*it);
       ++it;
       }
-    }
-
-  };
+  }
+};
 
 #endif // QGoSynchronizedView2DCallbacks_H

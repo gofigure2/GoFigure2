@@ -46,18 +46,18 @@
 #include <string>
 #include <map>
 
-class QGOIO_EXPORT GoDBImgSessionRow : public GoDBRow
-  {
+class QGOIO_EXPORT GoDBImgSessionRow:public GoDBRow
+{
 public:
   GoDBImgSessionRow(); // : GoDBRow()
 
   ~GoDBImgSessionRow()
-        {}
+  {}
   /**\brief return the ImgSessionID of the imaging session with the same date+time of creation
   and microscope already registered in the DB or -1 if not yet created*/
-  int DoesThisImagingSessionExist(vtkMySQLDatabase* DatabaseConnector);
+  int DoesThisImagingSessionExist(vtkMySQLDatabase *DatabaseConnector);
 
 protected:
   virtual void InitializeMap();
-  };
+};
 #endif

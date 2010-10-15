@@ -42,21 +42,18 @@
 
 #include "GoDBTableWidgetContainer.h"
 #include "QGoIOConfigure.h"
-/** 
-\brief 
+/**
+\brief
 */
-class QGOIO_EXPORT GoDBTWContainerForContourMesh: public GoDBTableWidgetContainer
-  {
-
+class QGOIO_EXPORT GoDBTWContainerForContourMesh:public GoDBTableWidgetContainer
+{
 public:
   GoDBTWContainerForContourMesh();
   GoDBTWContainerForContourMesh(std::string iCollectionName, std::string iTracesName,
-    int iImgSessionID);
+                                int iImgSessionID);
   ~GoDBTWContainerForContourMesh();
-
 protected:
 
   void GetCommonInfoForTwoTracesTable();
-
-  };
+};
 #endif

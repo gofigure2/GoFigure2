@@ -51,17 +51,17 @@
 #include <string>
 #include <map>
 
-class QGOIO_EXPORT GoDBContourRow : public GoDBTraceRow
-  {
+class QGOIO_EXPORT GoDBContourRow:public GoDBTraceRow
+{
 public:
   GoDBContourRow();
 
   ~GoDBContourRow()
-        {}
+  {}
 
-  GoDBContourRow(vtkMySQLDatabase * DatabaseConnector, vtkPolyData * TraceVisu,
+  GoDBContourRow(vtkMySQLDatabase *DatabaseConnector, vtkPolyData *TraceVisu,
                  GoDBCoordinateRow Min, GoDBCoordinateRow Max, unsigned int ImgSessionID,
-                 GoFigureMeshAttributes * iMeshAttributes = 0);
+                 GoFigureMeshAttributes *iMeshAttributes = 0);
   GoDBContourRow(unsigned int ImagingSessionID);
 
   /**\brief fill the contour map with the values gotten from the visualization*/
@@ -74,18 +74,18 @@ public:
 
   /**\brief save the contour in the database and return the ID of the new
   created contour*/
-  int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
+  int SaveInDB(vtkMySQLDatabase *DatabaseConnector);
 
   void SetCollectionID(int iCollectionID);
+
   void ReInitializeMapAfterCast();
 
-  void SetTheDataFromTheVisu(vtkMySQLDatabase* DatabaseConnector, vtkPolyData* TraceVisu,
+  void SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector, vtkPolyData *TraceVisu,
                              GoDBCoordinateRow Min, GoDBCoordinateRow Max);
-                             //GoDBCoordinateRow Min, GoDBCoordinateRow Max, GoFigureMeshAttributes* iMeshAttributes = 0);
-                             
 
+  //GoDBCoordinateRow Min, GoDBCoordinateRow Max, GoFigureMeshAttributes*
+  // iMeshAttributes = 0);
 protected:
   virtual void InitializeMap();
-
-  };
+};
 #endif

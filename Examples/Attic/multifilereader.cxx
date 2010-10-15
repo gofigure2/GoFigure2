@@ -42,9 +42,9 @@
 
 #include "vtkImageData.h"
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-  if (argc != 3)
+  if ( argc != 3 )
     {
     std::cout << "Usage: ./multifilereader(.exe) takes 2 arguments" << std::endl;
     std::cout << "1-filename (.jpg)" << std::endl;

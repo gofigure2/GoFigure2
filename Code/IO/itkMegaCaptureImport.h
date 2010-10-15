@@ -63,21 +63,21 @@ namespace itk
 and that the text of the beginning of the filename (before the values
 to be stored in the database) contains more than 3 numerical groups,
 the files are considered as new megacapture...*/
-class QGOIO_EXPORT MegaCaptureImport : public LightProcessObject
-  {
+class QGOIO_EXPORT MegaCaptureImport:public LightProcessObject
+{
 public:
   //typedef std::list<int>                     IntListType;
-  typedef std::vector<int>                        IntVectorType;
-  typedef std::pair<IntVectorType, IntVectorType> PairIntVectorType;
-  typedef std::vector<std::string>                StringVectorType;
+  typedef std::vector< int >                        IntVectorType;
+  typedef std::pair< IntVectorType, IntVectorType > PairIntVectorType;
+  typedef std::vector< std::string >                StringVectorType;
 
   /** Standard class typedefs.      */
   typedef MegaCaptureImport Self;
 
   typedef LightProcessObject Superclass;
 
-  typedef SmartPointer<Self>       Pointer;
-  typedef SmartPointer<const Self> ConstPointer;
+  typedef SmartPointer< Self >       Pointer;
+  typedef SmartPointer< const Self > ConstPointer;
 
   /** Run-time type information (and related methods). */
   itkTypeMacro(MegaCaptureImport, LightProcessObject);
@@ -85,9 +85,10 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  void SetFileName(const std::string& iName);
+  void SetFileName(const std::string & iName);
 
-  void SetTimeBased(const bool& iBool);
+  void SetTimeBased(const bool & iBool);
+
 //   void SetProgressBar( QProgressBar* PB );
 
   void Glob();
@@ -102,13 +103,16 @@ public:
 
   /** \brief return true if the filename is of new megacapture format,
   false if it is the old one*/
-  static bool IsNewMegaCapture(const std::string& iFilename);
+  static bool IsNewMegaCapture(const std::string & iFilename);
+
   /** \brief return a modified cleaned filename */
-  static std::string CleanFileName(const std::string& iFilename);
+  static std::string CleanFileName(const std::string & iFilename);
+
   /** \brief return the list of the Index and the list of the length of
   all the numerical group present in the filename*/
   static PairIntVectorType GetStartAndLengthOfNumericalGroupFilename(
-    const std::string& iFilename);
+    const std::string & iFilename);
+
   static bool AreTheseNumericalGroupNewMegaCapture(
     PairIntVectorType StartAndLengthNumericalGroup);
 
@@ -117,15 +121,16 @@ protected:
   ~MegaCaptureImport();
 
   /** \brief  Used for the database version1*/
-  void OldMegaCaptureFile(GoFigureFileInfoHelper& ioTempInfo,
-                          const std::vector<unsigned int>& iNumericalValues);
+  void OldMegaCaptureFile(GoFigureFileInfoHelper & ioTempInfo,
+                          const std::vector< unsigned int > & iNumericalValues);
+
   /** \brief  Used for the database version2*/
-  void NewMegaCaptureFile(GoFigureFileInfoHelper& ioTempInfo,
-                          const std::vector<unsigned int>& iNumericalValues);
+  void NewMegaCaptureFile(GoFigureFileInfoHelper & ioTempInfo,
+                          const std::vector< unsigned int > & iNumericalValues);
 
 private:
   MegaCaptureImport (const Self &); //purposely not implemented
-  void operator =(const Self&); //purposely not implemented
+  void operator=(const Self &);     //purposely not implemented
 
   PairIntVectorType                         m_StartAndLengthNumGroup;
   StringVectorType                          m_FileNameS;
@@ -136,9 +141,7 @@ private:
 //   QProgressBar*     m_ProgressBar;
 //   bool              IsProgressBarSet;
   int m_NbSignificantMegaCaptureNumGroup;
-
-  };
-
+};
 }
 
 #endif

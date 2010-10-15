@@ -42,9 +42,9 @@
 #include <cstdlib>
 #include <iostream>
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-  if (argc != 2)
+  if ( argc != 2 )
     {
     std::cerr << "Requires 1 argument: " << std::endl;
     std::cerr << "1-FileName (.meg)" << std::endl;
@@ -63,7 +63,7 @@ int main(int argc, char** argv)
   std::cout << "ChannelDepth * " << reader.m_ChannelDepth << std::endl;
   std::cout << "Number Of Channels * " << reader.m_NumberOfChannels << std::endl;
 
-  for (unsigned int i = 0; i < reader.m_NumberOfChannels; i++)
+  for ( unsigned int i = 0; i < reader.m_NumberOfChannels; i++ )
     {
     std::cout << "Channel Color " << i  << " * [ "
               << reader.m_ChannelColor[i][0]

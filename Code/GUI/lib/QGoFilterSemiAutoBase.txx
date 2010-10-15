@@ -52,12 +52,11 @@
 
 //-------------------------------------------------------------------------
 // Convert vtkImageData to itkData
-template<class PixelType, unsigned int VImageDimension>
-typename itk::Image<PixelType, VImageDimension> ::Pointer
-QGoFilterSemiAutoBase::
-ConvertVTK2ITK(vtkImageData* iInput)
+template< class PixelType, unsigned int VImageDimension >
+typename itk::Image< PixelType, VImageDimension >::Pointer
+QGoFilterSemiAutoBase::ConvertVTK2ITK(vtkImageData *iInput)
 {
-  if(!iInput)
+  if ( !iInput )
     {
     std::cerr << "no input to be converted to itk" << std::endl;
     }
@@ -67,13 +66,13 @@ ConvertVTK2ITK(vtkImageData* iInput)
   m_vtk2itkImage->Update();
 
   // ImageType
-  typedef itk::Image<PixelType, VImageDimension> ImageType;
+  typedef itk::Image< PixelType, VImageDimension > ImageType;
   // Import VTK Image to ITK
-  typedef itk::VTKImageImport<ImageType>    ImageImportType;
+  typedef itk::VTKImageImport< ImageType >  ImageImportType;
   typedef typename ImageImportType::Pointer ImageImportPointer;
   ImageImportPointer movingImporter = ImageImportType::New();
 
-  ConnectPipelines<vtkImageExport, ImageImportPointer>(
+  ConnectPipelines< vtkImageExport, ImageImportPointer >(
     m_vtk2itkImage,
     movingImporter);
 
@@ -82,17 +81,17 @@ ConvertVTK2ITK(vtkImageData* iInput)
 
   return itkImage;
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-template<class PixelType, unsigned int VImageDimension>
-vtkImageData*
-QGoFilterSemiAutoBase::
-ConvertITK2VTK(typename itk::Image<PixelType, VImageDimension>::Pointer iInput)
+template< class PixelType, unsigned int VImageDimension >
+vtkImageData *
+QGoFilterSemiAutoBase::ConvertITK2VTK(typename itk::Image< PixelType, VImageDimension >::Pointer iInput)
 {
-  typedef itk::Image<PixelType, VImageDimension> InternalImageType;
-  typedef itk::ImageToVTKImageFilter<InternalImageType> ConverterType;
-  typedef typename ConverterType::Pointer          ConverterPointer;
+  typedef itk::Image< PixelType, VImageDimension >        InternalImageType;
+  typedef itk::ImageToVTKImageFilter< InternalImageType > ConverterType;
+  typedef typename ConverterType::Pointer                 ConverterPointer;
 
   ConverterPointer converter = ConverterType::New();
   converter->SetInput(iInput);
@@ -101,34 +100,34 @@ ConvertITK2VTK(typename itk::Image<PixelType, VImageDimension>::Pointer iInput)
     {
     converter->Update();
     }
-  catch (itk::ExceptionObject& err)
+  catch (itk::ExceptionObject & err)
     {
     std::cerr << "converter Exception:" << err << std::endl;
     }
 
-  vtkImageData* output = vtkImageData::New();
-  output->DeepCopy(converter->GetOutput());
+  vtkImageData *output = vtkImageData::New();
+  output->DeepCopy( converter->GetOutput() );
 
   return output;
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-template<class PixelType, unsigned int VImageDimension>
-typename itk::Image<PixelType, VImageDimension >::Pointer
-QGoFilterSemiAutoBase::
-ExtractROI(typename itk::Image<PixelType, VImageDimension >::Pointer iInput,
-           double* iCenter, double iRadius)
+template< class PixelType, unsigned int VImageDimension >
+typename itk::Image< PixelType, VImageDimension >::Pointer
+QGoFilterSemiAutoBase::ExtractROI(typename itk::Image< PixelType, VImageDimension >::Pointer iInput,
+                                  double *iCenter, double iRadius)
 {
-  typedef itk::Image<PixelType, VImageDimension>                    InternalImageType;
-  typedef typename InternalImageType::PointType      InternalPointType;
-  typedef typename InternalImageType::IndexType      InternalIndexType;
-  typedef typename InternalImageType::SizeType       InternalSizeType;
-  typedef typename InternalSizeType::SizeValueType   InternalSizeValueType;
-  typedef typename InternalImageType::RegionType     InternalRegionType;
-  typedef typename InternalImageType::SpacingType    InternalSpacingType;
+  typedef itk::Image< PixelType, VImageDimension > InternalImageType;
+  typedef typename InternalImageType::PointType    InternalPointType;
+  typedef typename InternalImageType::IndexType    InternalIndexType;
+  typedef typename InternalImageType::SizeType     InternalSizeType;
+  typedef typename InternalSizeType::SizeValueType InternalSizeValueType;
+  typedef typename InternalImageType::RegionType   InternalRegionType;
+  typedef typename InternalImageType::SpacingType  InternalSpacingType;
 
-  if (iInput.IsNull())
+  if ( iInput.IsNull() )
     {
     std::cerr << "m_FeatureImage is Null" << std::endl;
     }
@@ -137,13 +136,13 @@ ExtractROI(typename itk::Image<PixelType, VImageDimension >::Pointer iInput,
 
   InternalIndexType start;
   InternalPointType origin;
-  InternalSizeType     size;
+  InternalSizeType  size;
   size.Fill(0);
 
-  for (unsigned int j = 0; j < VImageDimension; j++)
+  for ( unsigned int j = 0; j < VImageDimension; j++ )
     {
     size[j] =
-      1 + 4. * static_cast<InternalSizeValueType>(iRadius / spacing[j]);
+      1 + 4. * static_cast< InternalSizeValueType >(iRadius / spacing[j]);
     origin[j] = iCenter[j] - 2 * iRadius;
     }
 
@@ -154,7 +153,7 @@ ExtractROI(typename itk::Image<PixelType, VImageDimension >::Pointer iInput,
   region.SetIndex(start);
 
   typedef itk::RegionOfInterestImageFilter<
-    InternalImageType, InternalImageType>              ROIFilterType;
+    InternalImageType, InternalImageType >              ROIFilterType;
   typedef typename ROIFilterType::Pointer ROIFilterPointer;
 
   ROIFilterPointer roi = ROIFilterType::New();
@@ -164,13 +163,14 @@ ExtractROI(typename itk::Image<PixelType, VImageDimension >::Pointer iInput,
     {
     roi->Update();
     }
-  catch (itk::ExceptionObject& err)
+  catch (itk::ExceptionObject & err)
     {
     std::cerr << "roi Exception:" << err << std::endl;
     }
 
   return roi->GetOutput();
 }
+
 //-------------------------------------------------------------------------
 
 #endif // QGoFilterSemiAutoBase

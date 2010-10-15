@@ -48,9 +48,9 @@
 #include "vtkImageData.h"
 #include "QGoFilterChanAndVes.h"
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-  if (argc != 3)
+  if ( argc != 3 )
     {
     std::cout << "Usage : qgoimageview3d(.exe) " << std::endl;
     std::cout << "1-file.mhd" << std::endl;
@@ -62,19 +62,19 @@ int main(int argc, char** argv)
   QCoreApplication::setOrganizationName("MegasonLab");
   QCoreApplication::setOrganizationDomain("http://gofigure2.sourceforge.net");
 
-  vtkSmartPointer<vtkMetaImageReader> reader =
-    vtkSmartPointer<vtkMetaImageReader>::New();
+  vtkSmartPointer< vtkMetaImageReader > reader =
+    vtkSmartPointer< vtkMetaImageReader >::New();
   reader->SetFileName(argv[1]);
   reader->Update();
 
-  vtkSmartPointer<vtkImageCast> castFilter = vtkSmartPointer<vtkImageCast>::New();
-  castFilter->SetInput(reader->GetOutput());
+  vtkSmartPointer< vtkImageCast > castFilter = vtkSmartPointer< vtkImageCast >::New();
+  castFilter->SetInput( reader->GetOutput() );
   castFilter->SetOutputScalarTypeToUnsignedChar();
   castFilter->Update();
 
   // Initialize the segmentation
-  QGoFilterChanAndVes* levelSet2DFilter = new QGoFilterChanAndVes(NULL, 2);
-  std::vector<vtkImageData*> imagesVector(1);
+  QGoFilterChanAndVes *         levelSet2DFilter = new QGoFilterChanAndVes(NULL, 2);
+  std::vector< vtkImageData * > imagesVector(1);
   imagesVector[0] = castFilter->GetOutput();
   levelSet2DFilter->setOriginalImageMC(&imagesVector);
   levelSet2DFilter->setIterations(50);
@@ -86,11 +86,11 @@ int main(int argc, char** argv)
   seedPos[1] = 5;
   seedPos[2] = 5;
 
-  vtkPoints* seeds = vtkPoints::New();
-  seeds->InsertNextPoint( seedPos );
+  vtkPoints *seeds = vtkPoints::New();
+  seeds->InsertNextPoint(seedPos);
 
   levelSet2DFilter->setCenter(seedPos);
-  levelSet2DFilter->setPoints( seeds );
+  levelSet2DFilter->setPoints(seeds);
 
   // if there is an output
   int oResult;

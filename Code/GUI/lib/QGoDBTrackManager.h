@@ -49,45 +49,45 @@
 
 //#include <QWidget>
 
-class QGOGUILIB_EXPORT QGoDBTrackManager: public QGoDBTraceManager
-  {
+class QGOGUILIB_EXPORT QGoDBTrackManager:public QGoDBTraceManager
+{
   Q_OBJECT
-
 public:
-  QGoDBTrackManager(int iImgSessionID,QWidget* iparent);
+  QGoDBTrackManager(int iImgSessionID, QWidget *iparent);
   ~QGoDBTrackManager();
 
-  virtual void DisplayInfoForLastCreatedTrace(vtkMySQLDatabase* iDatabaseConnector);
-  virtual void DisplayInfoForExistingTrace(vtkMySQLDatabase* iDatabaseConnector,
-    int iTraceID);
+  virtual void DisplayInfoForLastCreatedTrace(vtkMySQLDatabase *iDatabaseConnector);
+
+  virtual void DisplayInfoForExistingTrace(vtkMySQLDatabase *iDatabaseConnector,
+                                           int iTraceID);
 
   void DisplayInfoAndLoadVisuContainerForAllTracks(
-    vtkMySQLDatabase* iDatabaseConnector);
+    vtkMySQLDatabase *iDatabaseConnector);
 
   /**
   \brief create a new track with no mesh and no points in the database, add it in the
   TW and in the visu container
   */
   unsigned int CreateNewTrackWithNoMesh(
-    vtkMySQLDatabase* iDatabaseConnector,NameWithColorData iColor);
+    vtkMySQLDatabase *iDatabaseConnector, NameWithColorData iColor);
 
   /**
   \brief virtual pure method in QGoDBTraceManager
   */
-  std::list<unsigned int> UpdateTheTracesColor(vtkMySQLDatabase* iDatabaseConnector,
-    NameWithColorData iNewColor);
+  std::list< unsigned int > UpdateTheTracesColor(vtkMySQLDatabase *iDatabaseConnector,
+                                                 NameWithColorData iNewColor);
 
   /**
   \brief virtual pure method in QGoDBTraceManager
   */
-  virtual void UpdateTWAndContainerForImportedTraces(std::vector<int> iVectorImportedTraces,
-    vtkMySQLDatabase* iDatabaseConnector);
+  virtual void UpdateTWAndContainerForImportedTraces(std::vector< int > iVectorImportedTraces,
+                                                     vtkMySQLDatabase *iDatabaseConnector);
 
 protected:
-  GoDBTWContainerForTrackLineage*  m_TWContainer;
+  GoDBTWContainerForTrackLineage *m_TWContainer;
 
   virtual void SetCollectionsTraceNames();
-  virtual void DisplayInfoForAllTraces(vtkMySQLDatabase* iDatabaseConnector);
 
-  };
+  virtual void DisplayInfoForAllTraces(vtkMySQLDatabase *iDatabaseConnector);
+};
 #endif

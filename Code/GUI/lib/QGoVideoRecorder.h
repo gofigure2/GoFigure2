@@ -64,16 +64,15 @@ class vtkAVIRenderWindowRecorder;
 /*
  * \brief QGoVideoRecorder to record videos to using AVI or FFMPEG
  */
-class QGOGUILIB_EXPORT QGoVideoRecorder :
+class QGOGUILIB_EXPORT QGoVideoRecorder:
   public QDockWidget, private Ui::NewDockWidgetVideoRecorder
-  {
+{
   Q_OBJECT
-
 public:
   /**
    * \brief Constructor
    */
-  explicit QGoVideoRecorder(QWidget* parent = 0);
+  explicit QGoVideoRecorder(QWidget *parent = 0);
   /**
    * \brief Destructor
    */
@@ -83,15 +82,21 @@ public:
    * \brief Set value X/Y/Z/T Min and Max for a given image (useful for spin boxes)
    * when image is loaded, to know boundaries of the spin box to be used
    */
-  void SetXMinAndMax(const int&, const int&);
-  void SetYMinAndMax(const int&, const int&);
-  void SetZMinAndMax(const int&, const int&);
-  void SetTMinAndMax(const int&, const int&);
+  void SetXMinAndMax(const int &, const int &);
 
-  void SetCurrentX(const int&);
-  void SetCurrentY(const int&);
-  void SetCurrentZ(const int&);
-  void SetCurrentT(const int&);
+  void SetYMinAndMax(const int &, const int &);
+
+  void SetZMinAndMax(const int &, const int &);
+
+  void SetTMinAndMax(const int &, const int &);
+
+  void SetCurrentX(const int &);
+
+  void SetCurrentY(const int &);
+
+  void SetCurrentZ(const int &);
+
+  void SetCurrentT(const int &);
 
   std::ofstream m_OutputVideoFile;
 
@@ -117,19 +122,26 @@ public:
 
   bool m_RenderWindowSelected;
 
-  void SetMovieRecorder(vtkRenderWindowMovieRecorder*);
+  void SetMovieRecorder(vtkRenderWindowMovieRecorder *);
 
 public slots:
   void SetSpecificParametersFrameRate(int iValue);
+
   void SetSpecificParametersQuality(int iValue);
 
 signals:
   void XSliceChanged(int);
+
   void YSliceChanged(int);
+
   void ZSliceChanged(int);
+
   void TSliceChanged(int);
+
   void QualityChanged(int);
+
   void FrameRateChanged(int);
+
   void GetSliceView();
 
 protected:
@@ -140,11 +152,10 @@ protected:
   vtkAVIRenderWindowRecorder *     m_AVIWriter;
   #endif
 #endif
-
 private:
 
   // Video recorder
-  vtkRenderWindowMovieRecorder* m_VideoRecorder;
+  vtkRenderWindowMovieRecorder *m_VideoRecorder;
 
   // Min/Max value of X/Y/ZSlice to set up spin box
   unsigned int m_XMin;
@@ -171,7 +182,7 @@ private:
   **/
   void AcquireWithPause(int);
 
-  void emitChangeSliceSignal(const int&, const int&);
+  void emitChangeSliceSignal(const int &, const int &);
 
 private slots:
 
@@ -181,52 +192,64 @@ private slots:
    * \brief Update starting slice for video (fixed time point)
    */
   void on_tSpinMin_2_valueChanged(int);
+
   /**
    * \brief Update ending slice for video (fixed time point)
    */
   void on_tSpinMax_2_valueChanged(int);
+
   //Video parameters
   /**
    * \brief Create the video from
    */
   void on_createFile_clicked();
+
   /**
    * \brief Function called when FrameRate changes
    */
   void on_frameRate_valueChanged(int);
+
   /**
    * \brief Function called when VideoQuality changes
    */
   void on_videoQuality_valueChanged(int);
+
   //Video parameters
   /**
    * \brief Function called to choose name/path of output file
    */
   void on_createFile_2_clicked();
+
   /**
    * \brief Update value of frame rate
    */
   void on_frameRate_2_valueChanged(int);
+
   /**
    * \brief Update value of video quality
    */
   void on_videoQuality_2_valueChanged(int);
+
   /**
    * \brief Update content of spin box depending of selected slice (X,Y,Z)
    */
   void on_SliceFT_activated(int);
+
   /**
    * \brief Function called when "Create video" clicked in Create tab
   **/
   void onStartVideoClicked();
+
   /**
    * \brief Function called when "Create video" clicked in Record tab
   **/
   void onStartRecordClicked();
+
   /**
     * \brief Function called when "End video" clicked in Record tab
    **/
   void onEndRecordClicked();
+
   /**
     * \brief Function called with the timer to take snapshots
   **/
@@ -236,14 +259,14 @@ private slots:
    * \brief Function called when we want to restart video while it is in pause
   **/
   void on_pauseVideo_clicked();
+
   /**
    * \brief Function called when we want to stop video while it is in pause
   **/
   void on_endVideo_clicked();
 
 public slots:
-  void SetRenderingWindow(vtkRenderWindow*);
-
-  };
+  void SetRenderingWindow(vtkRenderWindow *);
+};
 
 #endif

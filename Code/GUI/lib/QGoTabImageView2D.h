@@ -56,11 +56,11 @@ class QGoImageView2D;
 \brief Element of the QTabWidget to be used to visualized 2D images.
 \example GUI/lib/qgotabimageview2d.cxx
 */
-class QGOGUILIB_EXPORT QGoTabImageView2D : public QGoTabImageViewNDBase
-  {
+class QGOGUILIB_EXPORT QGoTabImageView2D:public QGoTabImageViewNDBase
+{
   Q_OBJECT
 public:
-  explicit QGoTabImageView2D(QWidget* parent = 0);
+  explicit QGoTabImageView2D(QWidget *parent = 0);
   virtual ~QGoTabImageView2D();
 
   typedef QGoTabImageViewNDBase::QGoDockWidgetStatusPair QGoDockWidgetStatusPair;
@@ -69,55 +69,65 @@ public:
 
   virtual void Update();
 
-  void setupUi(QWidget* parent);
+  void setupUi(QWidget *parent);
+
   void retranslateUi(QWidget *parent);
 
   virtual void WriteSettings();
+
   virtual void ReadSettings();
 
 public slots:
   void ChangeLookupTable();
-  void ShowScalarBar(const bool&);
+
+  void ShowScalarBar(const bool &);
+
   void ChangeBackgroundColor();
+
   void TakeSnapshot();
 
   /**
    * \brief Mouse interaction style set as default
    */
   virtual void DefaultInteractorBehavior(bool);
+
   /**
    * \brief Mouse interaction style allows user to zoom in/out volume with all
    * buttons
    */
   virtual void ZoomInteractorBehavior(bool);
+
   /**
    * \brief Mouse interaction style allows user to pan volume with all buttons
    */
   virtual void PanInteractorBehavior(bool);
 
 protected:
-  QGoImageView2D* m_ImageView;
-  QAction*        m_TakeSnapshotAction;
+  QGoImageView2D *m_ImageView;
+  QAction *       m_TakeSnapshotAction;
 
   void GetBackgroundColorFromImageViewer();
+
   void SetBackgroundColorToImageViewer();
 
-  void SetImageToImageViewer(vtkImageData* image);
-  int* GetImageCoordinatesFromWorldCoordinates(double pos[3]);
+  void SetImageToImageViewer(vtkImageData *image);
+
+  int *GetImageCoordinatesFromWorldCoordinates(double pos[3]);
 //   std::vector< vtkQuadricLODActor* >
-  std::vector<vtkActor*> AddContour(vtkPolyData* dataset,
-                                    vtkProperty* property = NULL);
+  std::vector< vtkActor * > AddContour(vtkPolyData *dataset,
+                                       vtkProperty *property = NULL);
 
-  QAction* m_BackgroundColorAction;
+  QAction *m_BackgroundColorAction;
 
-  virtual void RemoveActorFromViewer(const int& iId, vtkActor* iActor);
-  virtual void DisplayActorInViewer(const int& iId, vtkActor* iActor);
+  virtual void RemoveActorFromViewer(const int & iId, vtkActor *iActor);
 
-  virtual void SetSlice(int iDir, int* iIdx);
+  virtual void DisplayActorInViewer(const int & iId, vtkActor *iActor);
+
+  virtual void SetSlice(int iDir, int *iIdx);
 
   void CreateModeActions();
 
 private:
   Q_DISABLE_COPY(QGoTabImageView2D);
-  };
+};
 #endif

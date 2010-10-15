@@ -43,25 +43,27 @@
 #include <iostream>
 
 GoDBLineageRow::GoDBLineageRow()
-  {
+{
   this->InitializeMap();
-  }
+}
+
 //-------------------------------------------------------------------------
 GoDBLineageRow::~GoDBLineageRow ()
-  {
-  }
+{}
+
 //-------------------------------------------------------------------------
-GoDBLineageRow::GoDBLineageRow(vtkMySQLDatabase* DatabaseConnector,
+GoDBLineageRow::GoDBLineageRow(vtkMySQLDatabase *DatabaseConnector,
                                GoDBCoordinateRow Min, GoDBCoordinateRow Max, unsigned int ImgSessionID,
-                               vtkPolyData* TraceVisu)
-  {
+                               vtkPolyData *TraceVisu)
+{
   GoDBTraceRow::GoDBTraceRow(DatabaseConnector, TraceVisu, Min, Max,
                              ImgSessionID);
-  if (this->DoesThisBoundingBoxLineageExist(DatabaseConnector))
+  if ( this->DoesThisBoundingBoxLineageExist(DatabaseConnector) )
     {
     std::cout << "The bounding box alreaady exists for this lineage" << std::endl;
     }
-  }
+}
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -73,24 +75,25 @@ void GoDBLineageRow::InitializeMap()
   this->m_TableIDName = "lineageID";
   this->m_CollectionName = "None";
   this->m_CollectionIDName = "NoneID";
-  this->m_MapRow[this->m_TableIDName] = ConvertToString<int>(0);
-  this->m_MapRow["TrackIDRoot"] = ConvertToString<int>(0);
-
+  this->m_MapRow[this->m_TableIDName] = ConvertToString< int >(0);
+  this->m_MapRow["TrackIDRoot"] = ConvertToString< int >(0);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int GoDBLineageRow::DoesThisBoundingBoxLineageExist(vtkMySQLDatabase* DatabaseConnector)
+int GoDBLineageRow::DoesThisBoundingBoxLineageExist(vtkMySQLDatabase *DatabaseConnector)
 {
-  return FindOneID(DatabaseConnector, "lineage", "lineageID",
-                   "CoordIDMax", this->GetMapValue("CoordIDMax"),
-                   "CoordIDMin", this->GetMapValue("CoordIDMin"));
+  return FindOneID( DatabaseConnector, "lineage", "lineageID",
+                    "CoordIDMax", this->GetMapValue("CoordIDMax"),
+                    "CoordIDMin", this->GetMapValue("CoordIDMin") );
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int GoDBLineageRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
+int GoDBLineageRow::SaveInDB(vtkMySQLDatabase *DatabaseConnector)
 {
-  return AddOnlyOneNewObjectInTable<GoDBLineageRow>(DatabaseConnector,
-                                                    "lineage", *this, "lineageID");
+  return AddOnlyOneNewObjectInTable< GoDBLineageRow >(DatabaseConnector,
+                                                      "lineage", *this, "lineageID");
 }

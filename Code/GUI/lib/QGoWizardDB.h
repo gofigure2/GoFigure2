@@ -71,10 +71,9 @@
  * \sa QGoOpenCreateProjectPage
  * \sa QGoOpenCreateImgSessionPage
  * */
-class QGOGUILIB_EXPORT QGoWizardDB : public QWizard
-  {
+class QGOGUILIB_EXPORT QGoWizardDB:public QWizard
+{
   Q_OBJECT
-
 public:
   enum {
     ConnectServerPageID = 0,
@@ -88,38 +87,48 @@ public:
   ~QGoWizardDB(){}
 
   QString GetNameDB();
+
   QString GetServer();
+
   QString GetLogin();
+
   QString GetPassword();
+
   QString GetImagingSessionName();
+
   int GetImagingSessionID();
+
   bool GetIsAnOpenRecentFile();
 
-  QPushButton* nextButton;
+  QPushButton *nextButton;
 
   /**
    * \brief return a list for each channel of the filenames for the images
    * in the database as a vector of vector
    */
-  std::vector<std::vector<std::string> > GetFilenamesFromDB();
+  std::vector< std::vector< std::string > > GetFilenamesFromDB();
 
   GoFigureFileInfoHelperMultiIndexContainer GetMultiIndexFileContainer();
+
   std::string GetMegaCaptureHeaderFilename();
+
   void setImgSessionName(std::string iImgSessionName);
+
   std::string GetFirstFileName();
+
   void SetIsAnOpenRecentFile(bool iIsAnOpenRecentFile);
 
 protected:
-  void closeEvent(QCloseEvent* iEvent);
+  void closeEvent(QCloseEvent *iEvent);
+
   void SetFirstFileName();
-  QGoConnectServerPage* m_ConnectServerPage;
+
+  QGoConnectServerPage *m_ConnectServerPage;
   std::string           m_ImgSessionName;
   std::string           m_FirstFileName;
   int                   m_ImgSessionID;
   bool                  m_IsAnOpenRecentFile;
-
 private:
   Q_DISABLE_COPY(QGoWizardDB);
-
-  };
+};
 #endif

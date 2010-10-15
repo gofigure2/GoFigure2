@@ -40,27 +40,30 @@
 #include "GoDBSubCellTypeRow.h"
 #include "GoDBRecordSetHelper.h"
 
-GoDBSubCellTypeRow::GoDBSubCellTypeRow() : GoDBNameDescRow()
-  {
+GoDBSubCellTypeRow::GoDBSubCellTypeRow():GoDBNameDescRow()
+{
   this->m_TableName = "subcellulartype";
   this->m_TableIDName = "SubCellularID";
   this->InitializeMap();
-  }
+}
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void GoDBSubCellTypeRow::InitializeMap()
 {
-  this->m_MapRow[this->m_TableIDName] = ConvertToString<int>(0);
+  this->m_MapRow[this->m_TableIDName] = ConvertToString< int >(0);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 int GoDBSubCellTypeRow::DoesThisEntityAlreadyExists(
-  vtkMySQLDatabase* DatabaseConnector)
+  vtkMySQLDatabase *DatabaseConnector)
 {
   return DoesThisNameAlreadyExists(DatabaseConnector);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -79,14 +82,14 @@ int GoDBSubCellTypeRow::DoesThisEntityAlreadyExists(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int GoDBSubCellTypeRow::SaveInDB(vtkMySQLDatabase* iDatabaseConnector)
+int GoDBSubCellTypeRow::SaveInDB(vtkMySQLDatabase *iDatabaseConnector)
 {
- /* int SubCellTypeID = this->DoesThisEntityAlreadyExists(DatabaseConnector);
-  if (SubCellTypeID == -1)
-    {
-    SubCellTypeID = AddOnlyOneNewObjectInTable<GoDBSubCellTypeRow>(DatabaseConnector,
-                                                                   this->m_TableName, *this, this->m_TableIDName);
-    }
-  return SubCellTypeID;*/
-  return this->SaveInDBTemplate<GoDBSubCellTypeRow>(iDatabaseConnector,*this);
+  /* int SubCellTypeID = this->DoesThisEntityAlreadyExists(DatabaseConnector);
+   if (SubCellTypeID == -1)
+     {
+     SubCellTypeID = AddOnlyOneNewObjectInTable<GoDBSubCellTypeRow>(DatabaseConnector,
+                                                                    this->m_TableName, *this, this->m_TableIDName);
+     }
+   return SubCellTypeID;*/
+  return this->SaveInDBTemplate< GoDBSubCellTypeRow >(iDatabaseConnector, *this);
 }

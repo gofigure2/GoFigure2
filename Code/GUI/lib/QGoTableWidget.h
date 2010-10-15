@@ -58,61 +58,61 @@
 so it is not possible to connect it directly with a signal.
 that's the reason for the creation of QGoTableWidget.
 */
-class QGOGUILIB_EXPORT QGoTableWidget : public QTableWidget
-  {
+class QGOGUILIB_EXPORT QGoTableWidget:public QTableWidget
+{
   Q_OBJECT
-
 public:
-  explicit QGoTableWidget(QWidget* parent = 0);
-  explicit QGoTableWidget(int rows, int columns, QWidget * parent = 0);
+  explicit QGoTableWidget(QWidget *parent = 0);
+  explicit QGoTableWidget(int rows, int columns, QWidget *parent = 0);
 
   virtual ~QGoTableWidget();
 
   typedef GoDBTableWidgetContainer::TWContainerType TWContainerType;
 
-  void DisplayColumnNames(QString TableName, std::list<std::string> ColumnNames);
+  void DisplayColumnNames(QString TableName, std::list< std::string > ColumnNames);
+
   void DisplayContent(TWContainerType iTWRowContainer,
-                      std::vector<int> iIndexColorTraceRowContainer,
-                      std::vector<int> iIndexColorCollectionRowContainer,
+                      std::vector< int > iIndexColorTraceRowContainer,
+                      std::vector< int > iIndexColorCollectionRowContainer,
                       std::string iTraceName, std::string iCollectionName,
-                      std::list<std::string> iColumnNames);
+                      std::list< std::string > iColumnNames);
 
   /** \brief Insert a new row and fill the cells with the data
  contained in the RowContainer with the link: iLinkToRowContainer*/
   void InsertNewRow(TWContainerType iTWRowContainer,
-                    std::vector<int> iIndexColorTraceRowContainer,
-                    std::vector<int> iIndexColorCollectionRowContainer,
+                    std::vector< int > iIndexColorTraceRowContainer,
+                    std::vector< int > iIndexColorCollectionRowContainer,
                     std::string iTraceName, std::string iCollectionName);
 
   /** \brief Replace the data in the cells corresponding to the traceID with
   the new data contained in the RowContainer with the link: iLinkToRowContainer*/
   void UpdateRow(TWContainerType iTWRowContainer,
-                 std::vector<int> iIndexColorTraceRowContainer,
-                 std::vector<int> iIndexColorCollectionRowContainer,
+                 std::vector< int > iIndexColorTraceRowContainer,
+                 std::vector< int > iIndexColorCollectionRowContainer,
                  std::string iTraceName, std::string iCollectionName,
                  int iTraceID);
 
-  void DeleteCheckedRows(std::string iTraceNameID, std::list<unsigned int> iTraceIDs);
+  void DeleteCheckedRows(std::string iTraceNameID, std::list< unsigned int > iTraceIDs);
 
   /** \brief Change the CollectionID in the trace table of the TraceIDToUpdate
   with the newCollectionID and set the background with the colorNewCollection*/
   void UpdateIDs(unsigned int iNewCollectionID, std::string iCollectionIDName,
-                 QColor ColorNewCollection, std::string TraceIDName, std::list<int> TraceIDToUpdate);
+                 QColor ColorNewCollection, std::string TraceIDName, std::list< int > TraceIDToUpdate);
 
-  void AddValuesForID(std::vector<std::string> iColumnsNames,
-                      std::vector<std::string> iValues, unsigned int iID,
+  void AddValuesForID(std::vector< std::string > iColumnsNames,
+                      std::vector< std::string > iValues, unsigned int iID,
                       std::string iColumnNameForTraceID);
 
-  /** 
+  /**
   \brief calculate the center of the bounding box for the only selected trace
   and return it as a GoDBCoordinateRow
-  \param[in] iTraceID ID for the trace the center of bounding box 
+  \param[in] iTraceID ID for the trace the center of bounding box
   needs to be calculated
   \param[in] iTraceName name of the trace
   \return GoDBCoordinateRow corresponds to the center of the bounding box for
   the trace
   */
-  GoDBCoordinateRow GetCoordinateCenterBoundingBox(unsigned int iTraceID,std::string iTraceName);
+  GoDBCoordinateRow GetCoordinateCenterBoundingBox(unsigned int iTraceID, std::string iTraceName);
 
   /** \brief get the value in the table for the given iRowIndex and
   for the given column name*/
@@ -125,28 +125,33 @@ public:
   /** \brief set the state of the checkbox for the check/uncheck column and the TraceID row
   to iState*/
   void SetCheckStateForTraceID(unsigned int iTraceID,
-                                               std::string iTraceName,
-                                               Qt::CheckState iState,
-                                               bool EmitSignal = true);
+                               std::string iTraceName,
+                               Qt::CheckState iState,
+                               bool EmitSignal = true);
 
   /** \brief set the state and icon of the checkbox for the IsVisible column and the TraceID row
   to iState*/
   void SetVisibleStateForTraceID(unsigned int iTraceID,
-                                              std::string iTraceName,
-                                              Qt::CheckState iState,
-                                              bool EmitSignal = true);
+                                 std::string iTraceName,
+                                 Qt::CheckState iState,
+                                 bool EmitSignal = true);
 
 public slots:
   /** \brief check the boxes for the rows where at least one cell is selected */
   void CheckSelectedRows(std::string iTraceName,
                          std::string iTraceNameID);
-  /** \brief uncheck the boxes for the rows where at least one cell is selected */
+
+  /** \brief uncheck the boxes for the rows where at least one cell is selected
+    */
   void UncheckSelectedRows(std::string iTraceName,
                            std::string iTraceNameID);
 
-  /** \brief check the visible boxes for the rows where at least one cell is selected */
+  /** \brief check the visible boxes for the rows where at least one cell is
+    selected */
   void ShowSelectedRows(std::string iTraceName, std::string iTraceNameID);
-  /** \brief uncheck the visible boxes for the rows where at least one cell is selected */
+
+  /** \brief uncheck the visible boxes for the rows where at least one cell is
+    selected */
   void HideSelectedRows(std::string iTraceName, std::string iTraceNameID);
 
   /** \brief convert the text in the selection to a QString with \n and \t
@@ -160,6 +165,7 @@ public slots:
 
 signals:
   void CheckedRowsChanged(int iTraceID);
+
   void VisibleRowsChanged(int iTraceID);
 
 protected:
@@ -176,68 +182,70 @@ protected:
 
   /** \brief put the text in the cells which are part of the range in a
   QString and insert \n and \t to be read by other applications*/
-  void PrepareRangeToCopy(QTableWidgetSelectionRange Range, QString& str);
+  void PrepareRangeToCopy(QTableWidgetSelectionRange Range, QString & str);
 
-  /** 
+  /**
   \brief return the RowIndex corresponding to the TraceID
   \param[in] iTraceID ID of the Trace
   \param[in] iTraceName name of the trace
   \return the index of the row where the traceID was found
   */
   int GetRowForTraceID(unsigned int iTraceID,
-                                     std::string iTraceName);
+                       std::string iTraceName);
 
-  /** 
-  \brief change the state for the check/uncheck checkbox to iState and emit a signal 
+  /**
+  \brief change the state for the check/uncheck checkbox to iState and emit a signal
   if EmitSignal = true
-  \param[in] iItem item in the tablewidget where there is a checkbox in the 
+  \param[in] iItem item in the tablewidget where there is a checkbox in the
   "Checked/Unchecked" column
   \param[in] iState state to which the Checkbox needs to be set
   \param[in] EmitSignal if true, a signal will be emitted with the corresponding TraceID
   */
-  void setCheckedUncheckedStateCheckBox(QTableWidgetItem * iItem,
-                                              Qt::CheckState iState, 
-                                              bool EmitSignal);
+  void setCheckedUncheckedStateCheckBox(QTableWidgetItem *iItem,
+                                        Qt::CheckState iState,
+                                        bool EmitSignal);
 
-  /** 
+  /**
   \brief change the state and the icon for the "IsVisible" checkbox depending on iState
   and emit a signal if EmitSignal = true
-  \param[in] iItem item in the tablewidget where there is a checkbox in the 
+  \param[in] iItem item in the tablewidget where there is a checkbox in the
   "IsVisible" column
   \param[in] iState state to which the Checkbox and the icon need to be set
   \param[in] EmitSignal if true, a signal will be emitted with the corresponding TraceID
   */
-  void setVisibleStateCheckBox(QTableWidgetItem * iItem,
-                       Qt::CheckState iState, 
-                       bool EmitSignal = true);
+  void setVisibleStateCheckBox(QTableWidgetItem *iItem,
+                               Qt::CheckState iState,
+                               bool EmitSignal = true);
 
-  /** 
-  \brief change the state for the checkbox to iState and return true if the 
+  /**
+  \brief change the state for the checkbox to iState and return true if the
   state has been changed
   \param[in] iItem item with a checkbox
   \param[in] iState state to which the checkbox needs to be set
   */
-  bool setCheckStateCheckBox(QTableWidgetItem* iItem,Qt::CheckState iState); 
-  
+  bool setCheckStateCheckBox(QTableWidgetItem *iItem, Qt::CheckState iState);
+
   /** \brief return a list of the values of a specific column for the rows where the user
        has selected at least one cell.*/
   QStringList ValuesForSelectedRows(QString ColumnName);
 
-   /** \brief Put checkboxes in the column "Selected" */
+  /** \brief Put checkboxes in the column "Selected" */
   void SetSelectedColumn(unsigned int iNbOfRows, unsigned int StartedRow);
+
   /** \brief Put checkboxes in the column "Show" */
   void SetVisibleColumn(unsigned int iNbOfRows, unsigned int StartedRow);
 
   void SetColorForTable(TWContainerType iTWRowContainer,
-                        std::vector<int> iIndexColorRowContainer,
+                        std::vector< int > iIndexColorRowContainer,
                         std::string NameGroupColor, unsigned int StartRow);
+
   QStringList recordHeaderNamesOrder();
-  
-  /** 
+
+  /**
   \brief check if the value is suitable to be displayed, if yes, return true,
   if not return false so the QTableWidgetChildItem is not created for it
   */
-  bool CheckValueToDisplayData(std::string iValue,std::string HeaderCol);
+  bool CheckValueToDisplayData(std::string iValue, std::string HeaderCol);
 
 protected slots:
   /** \brief sort items given one column and one sort order. */
@@ -246,7 +254,6 @@ protected slots:
   /** \brief check if the cell clicked is from the check/uncheck column
     or the "Show" column and change the state of the boxes correspondingly*/
   void UpdateColumnsWithCheckBoxes(int Row, int Column);
-
-  };
+};
 
 #endif

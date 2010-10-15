@@ -40,10 +40,11 @@
 #include "GoDBCellTypeRow.h"
 #include "GoDBRecordSetHelper.h"
 
-GoDBCellTypeRow::GoDBCellTypeRow() : GoDBNameDescRow()
-  {
+GoDBCellTypeRow::GoDBCellTypeRow():GoDBNameDescRow()
+{
   this->InitializeMap();
-  }
+}
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -51,16 +52,18 @@ void GoDBCellTypeRow::InitializeMap()
 {
   this->m_TableName = "celltype";
   this->m_TableIDName = "CellTypeID";
-  this->m_MapRow[this->m_TableIDName] = ConvertToString<int>(0);
+  this->m_MapRow[this->m_TableIDName] = ConvertToString< int >(0);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 int GoDBCellTypeRow::DoesThisEntityAlreadyExists(
-  vtkMySQLDatabase* DatabaseConnector)
+  vtkMySQLDatabase *DatabaseConnector)
 {
   return DoesThisNameAlreadyExists(DatabaseConnector);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -79,7 +82,7 @@ int GoDBCellTypeRow::DoesThisEntityAlreadyExists(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int GoDBCellTypeRow::SaveInDB(vtkMySQLDatabase* iDatabaseConnector)
+int GoDBCellTypeRow::SaveInDB(vtkMySQLDatabase *iDatabaseConnector)
 {
   /*int CellTypeID = this->DoesThisEntityAlreadyExists(DatabaseConnector);
   if (CellTypeID == -1)
@@ -88,5 +91,5 @@ int GoDBCellTypeRow::SaveInDB(vtkMySQLDatabase* iDatabaseConnector)
                                                              this->m_TableName, *this, this->m_TableIDName);
     }
   return CellTypeID;*/
-  return GoDBNameDescRow::SaveInDBTemplate<GoDBCellTypeRow>(iDatabaseConnector,*this);
+  return GoDBNameDescRow::SaveInDBTemplate< GoDBCellTypeRow >(iDatabaseConnector, *this);
 }

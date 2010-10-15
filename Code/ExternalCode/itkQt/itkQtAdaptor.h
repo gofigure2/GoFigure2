@@ -59,17 +59,15 @@
 
 #include "itkQtConfigure.h"
 
-namespace itk {
-
+namespace itk
+{
 /** Helper class that interface with Qt Signals and Slots */
-class IKTQT_EXPORT QtTranslator : public QObject
-  {
+class IKTQT_EXPORT QtTranslator:public QObject
+{
   Q_OBJECT
-
 public:
   QtTranslator() {}
   virtual ~QtTranslator() {}
-
 signals:
   void Signal();
 
@@ -77,26 +75,24 @@ public slots:
   virtual void Slot() {}
   virtual void Slot(int) {}
   virtual void Slot(double) {}
-
-  };
+};
 
 /** Helper class that interface Methods with Qt Slots */
-template <typename T>
-class IKTQT_EXPORT QtSlotAdaptor : public QtTranslator
-  {
-  typedef  void (T::*TMemberFunctionVoidPointer)();
-  typedef  void (T::*TMemberFunctionIntPointer)(int);
-  typedef  void (T::*TMemberFunctionDoublePointer)(double);
-
+template< typename T >
+class IKTQT_EXPORT QtSlotAdaptor:public QtTranslator
+{
+  typedef  void ( T::*TMemberFunctionVoidPointer )();
+  typedef  void ( T::*TMemberFunctionIntPointer )(int);
+  typedef  void ( T::*TMemberFunctionDoublePointer )(double);
 public:
-  QtSlotAdaptor() : m_MemberFunctionVoid(0),
+  QtSlotAdaptor():m_MemberFunctionVoid(0),
     m_MemberFunctionInt(0),
     m_MemberFunctionDouble(0) {}
 
   virtual ~QtSlotAdaptor() {}
 
   /** Specify the callback function. */
-  void SetCallbackFunction(T* object,
+  void SetCallbackFunction(T *object,
                            TMemberFunctionVoidPointer memberFunction)
   {
     m_This = object;
@@ -104,7 +100,7 @@ public:
   }
 
   /** Specify the callback function. */
-  void SetCallbackFunction(T* object,
+  void SetCallbackFunction(T *object,
                            TMemberFunctionIntPointer memberFunction)
   {
     m_This = object;
@@ -112,7 +108,7 @@ public:
   }
 
   /** Specify the callback function. */
-  void SetCallbackFunction(T* object,
+  void SetCallbackFunction(T *object,
                            TMemberFunctionDoublePointer memberFunction)
   {
     m_This = object;
@@ -122,49 +118,47 @@ public:
   /** Slot to be connected to Qt Signals. */
   void Slot()
   {
-    if (m_MemberFunctionVoid)
+    if ( m_MemberFunctionVoid )
       {
-      ((*m_This).*(m_MemberFunctionVoid))();
+      ( ( *m_This ).*( m_MemberFunctionVoid ) )( );
       }
   }
 
   /** Slot to be connected to Qt Signals. */
   void Slot(int value)
   {
-    if (m_MemberFunctionInt)
+    if ( m_MemberFunctionInt )
       {
-      ((*m_This).*(m_MemberFunctionInt))(value);
+      ( ( *m_This ).*( m_MemberFunctionInt ) )( value );
       }
   }
 
   /** Slot to be connected to Qt Signals. */
   void Slot(double value)
   {
-    if (m_MemberFunctionDouble)
+    if ( m_MemberFunctionDouble )
       {
-      ((*m_This).*(m_MemberFunctionDouble))(value);
+      ( ( *m_This ).*( m_MemberFunctionDouble ) )( value );
       }
   }
 
 protected:
-  T*                           m_This;
+  T *                          m_This;
   TMemberFunctionVoidPointer   m_MemberFunctionVoid;
   TMemberFunctionIntPointer    m_MemberFunctionInt;
   TMemberFunctionDoublePointer m_MemberFunctionDouble;
-
-  };
+};
 
 /** Helper class that interface Observers with Qt Signals */
-class IKTQT_EXPORT QtSignalAdaptor : public QtTranslator
-  {
-  typedef SimpleMemberCommand<QtSignalAdaptor> CommandType;
-
+class IKTQT_EXPORT QtSignalAdaptor:public QtTranslator
+{
+  typedef SimpleMemberCommand< QtSignalAdaptor > CommandType;
 public:
   QtSignalAdaptor()
-    {
+  {
     m_Command = CommandType::New();
     m_Command->SetCallbackFunction(this, &QtSignalAdaptor::EmitSignal);
-    }
+  }
 
   virtual ~QtSignalAdaptor() {}
 
@@ -180,8 +174,7 @@ public:
 
 private:
   CommandType::Pointer m_Command;
-  };
-
+};
 } // end namespace
 
 #endif

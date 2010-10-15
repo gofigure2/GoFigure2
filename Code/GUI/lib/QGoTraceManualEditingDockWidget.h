@@ -44,19 +44,16 @@
 #include <QDockWidget>
 #include "QGoTraceManualEditingWidget.h"
 
-class QGOGUILIB_EXPORT QGoTraceManualEditingDockWidget :
+class QGOGUILIB_EXPORT QGoTraceManualEditingDockWidget:
   public QDockWidget
-  {
+{
   Q_OBJECT
-
 public:
-  explicit QGoTraceManualEditingDockWidget(QWidget* iParent = 0);
+  explicit QGoTraceManualEditingDockWidget(QWidget *iParent = 0);
   ~QGoTraceManualEditingDockWidget();
-  QGoTraceManualEditingWidget* m_TraceWidget;
-
+  QGoTraceManualEditingWidget *m_TraceWidget;
 public slots:
   //void ShowAndUpdate(std::string iTraceName,
-                   //  std::string iCollectionName);
-
-  };
+  //  std::string iCollectionName);
+};
 #endif

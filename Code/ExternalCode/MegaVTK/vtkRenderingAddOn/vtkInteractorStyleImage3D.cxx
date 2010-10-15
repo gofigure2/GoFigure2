@@ -81,26 +81,23 @@ vtkCxxRevisionMacro (vtkInteractorStyleImage3D, "$Revision: 1 $");
 vtkStandardNewMacro (vtkInteractorStyleImage3D);
 
 //----------------------------------------------------------------------------
-vtkInteractorStyleImage3D::
-vtkInteractorStyleImage3D()
-  {
+vtkInteractorStyleImage3D::vtkInteractorStyleImage3D()
+{
   this->m_Mode = InteractionTypeDefault;
 
   m_State = false;
-  }
+}
 
 //----------------------------------------------------------------------------
 vtkInteractorStyleImage3D::
 ~vtkInteractorStyleImage3D()
-  {
-  }
+{}
 
 //----------------------------------------------------------------------------
 void
-vtkInteractorStyleImage3D::
-OnMouseMove()
+vtkInteractorStyleImage3D::OnMouseMove()
 {
-  switch (this->State)
+  switch ( this->State )
     {
     case VTKIS_PICK3D:
       HighlightCurrentActor();
@@ -112,10 +109,9 @@ OnMouseMove()
 
 //----------------------------------------------------------------------------
 void
-vtkInteractorStyleImage3D::
-OnLeftButtonDown()
+vtkInteractorStyleImage3D::OnLeftButtonDown()
 {
-  switch (this->m_Mode)
+  switch ( this->m_Mode )
     {
     case InteractionTypeZoom:
       this->InvokeEvent(vtkViewImage3DCommand::ZoomEvent);
@@ -134,15 +130,14 @@ OnLeftButtonDown()
     default:
       this->Superclass::OnLeftButtonDown();
       break;
-      }
+    }
 }
 
 //----------------------------------------------------------------------------
 void
-vtkInteractorStyleImage3D::
-OnLeftButtonUp()
+vtkInteractorStyleImage3D::OnLeftButtonUp()
 {
-  switch (this->m_Mode)
+  switch ( this->m_Mode )
     {
     case InteractionTypeZoom:
       this->Superclass::OnRightButtonUp();
@@ -162,10 +157,9 @@ OnLeftButtonUp()
 
 //----------------------------------------------------------------------------
 void
-vtkInteractorStyleImage3D::
-OnRightButtonDown()
+vtkInteractorStyleImage3D::OnRightButtonDown()
 {
-  switch (this->m_Mode)
+  switch ( this->m_Mode )
     {
     case InteractionTypePan:
       this->Superclass::OnMiddleButtonDown();
@@ -182,10 +176,9 @@ OnRightButtonDown()
 
 //----------------------------------------------------------------------------
 void
-vtkInteractorStyleImage3D::
-OnRightButtonUp()
+vtkInteractorStyleImage3D::OnRightButtonUp()
 {
-  switch (this->m_Mode)
+  switch ( this->m_Mode )
     {
     case InteractionTypePan:
       this->Superclass::OnMiddleButtonUp();
@@ -202,10 +195,9 @@ OnRightButtonUp()
 
 //----------------------------------------------------------------------------
 void
-vtkInteractorStyleImage3D::
-OnMiddleButtonDown()
+vtkInteractorStyleImage3D::OnMiddleButtonDown()
 {
-  switch (this->m_Mode)
+  switch ( this->m_Mode )
     {
     case InteractionTypeZoom:
       this->Superclass::OnRightButtonDown();
@@ -222,10 +214,9 @@ OnMiddleButtonDown()
 
 //----------------------------------------------------------------------------
 void
-vtkInteractorStyleImage3D::
-OnMiddleButtonUp()
+vtkInteractorStyleImage3D::OnMiddleButtonUp()
 {
-  switch (this->m_Mode)
+  switch ( this->m_Mode )
     {
     case InteractionTypeZoom:
       this->Superclass::OnRightButtonUp();
@@ -242,41 +233,37 @@ OnMiddleButtonUp()
 
 //----------------------------------------------------------------------------
 void
-vtkInteractorStyleImage3D::
-SetCurrentProp(vtkProp* iCurrent)
+vtkInteractorStyleImage3D::SetCurrentProp(vtkProp *iCurrent)
 {
   this->m_CurrentProp = iCurrent;
 }
 
 //----------------------------------------------------------------------------
-vtkProp*
-vtkInteractorStyleImage3D::
-GetCurrentProp()
+vtkProp *
+vtkInteractorStyleImage3D::GetCurrentProp()
 {
   return this->m_CurrentProp;
 }
 
 //----------------------------------------------------------------------------
 void
-vtkInteractorStyleImage3D::
-SetCurrentState(bool iState)
+vtkInteractorStyleImage3D::SetCurrentState(bool iState)
 {
   m_State = iState;
 }
 
 //----------------------------------------------------------------------------
 bool
-vtkInteractorStyleImage3D::
-GetCurrentState()
+vtkInteractorStyleImage3D::GetCurrentState()
 {
   return m_State;
 }
+
 //----------------------------------------------------------------------------
 void
-vtkInteractorStyleImage3D::
-StartPick()
+vtkInteractorStyleImage3D::StartPick()
 {
-  if (this->State != VTKIS_NONE)
+  if ( this->State != VTKIS_NONE )
     {
     return;
     }
@@ -286,43 +273,43 @@ StartPick()
 
 //----------------------------------------------------------------------------
 void
-vtkInteractorStyleImage3D::
-HighlightCurrentActor()
+vtkInteractorStyleImage3D::HighlightCurrentActor()
 {
   vtkRenderWindowInteractor *rwi = this->Interactor;
-  if (this->CurrentRenderer != 0)
+
+  if ( this->CurrentRenderer != 0 )
     {
     vtkAssemblyPath *path = NULL;
     int *            eventPos = rwi->GetEventPosition();
     this->FindPokedRenderer(eventPos[0], eventPos[1]);
     rwi->StartPickCallback();
     vtkAbstractPropPicker *picker =
-      vtkAbstractPropPicker::SafeDownCast(rwi->GetPicker());
-    if (picker != NULL)
+      vtkAbstractPropPicker::SafeDownCast( rwi->GetPicker() );
+    if ( picker != NULL )
       {
       picker->Pick(eventPos[0], eventPos[1],
                    0.0, this->CurrentRenderer);
       path = picker->GetPath();
       }
-    if (path == NULL)
+    if ( path == NULL )
       {
       this->HighlightProp(NULL);
       this->PropPicked = 0;
       }
     else
       {
-     /* // Check dimensionality
-      double* bounds = path->GetFirstNode()->GetViewProp()->GetBounds();
-      if (bounds[0] != bounds[1] && bounds[2] != bounds[3] && bounds[4] != bounds[5])
-        {*/
-        this->HighlightProp(path->GetFirstNode()->GetViewProp());
-        this->PropPicked = 1;
-        /*}
-      else
-        {
-        this->HighlightProp(NULL);
-        this->PropPicked = 0;
-        }*/
+      /* // Check dimensionality
+       double* bounds = path->GetFirstNode()->GetViewProp()->GetBounds();
+       if (bounds[0] != bounds[1] && bounds[2] != bounds[3] && bounds[4] != bounds[5])
+         {*/
+      this->HighlightProp( path->GetFirstNode()->GetViewProp() );
+      this->PropPicked = 1;
+      /*}
+    else
+      {
+      this->HighlightProp(NULL);
+      this->PropPicked = 0;
+      }*/
       }
     rwi->EndPickCallback();
     }
@@ -330,8 +317,7 @@ HighlightCurrentActor()
 
 //----------------------------------------------------------------------------
 void
-vtkInteractorStyleImage3D::
-EnablePickMode()
+vtkInteractorStyleImage3D::EnablePickMode()
 {
   this->State = VTKIS_NONE;
   this->m_Mode = InteractionTypeMeshPicking;
@@ -340,8 +326,7 @@ EnablePickMode()
 
 //----------------------------------------------------------------------------
 void
-vtkInteractorStyleImage3D::
-EnableZoomMode()
+vtkInteractorStyleImage3D::EnableZoomMode()
 {
   this->State = VTKIS_NONE;
   this->m_Mode = InteractionTypeZoom;
@@ -349,8 +334,7 @@ EnableZoomMode()
 
 //----------------------------------------------------------------------------
 void
-vtkInteractorStyleImage3D::
-EnablePanMode()
+vtkInteractorStyleImage3D::EnablePanMode()
 {
   this->State = VTKIS_NONE;
   this->m_Mode = InteractionTypePan;
@@ -358,8 +342,7 @@ EnablePanMode()
 
 //----------------------------------------------------------------------------
 void
-vtkInteractorStyleImage3D::
-EnableDefaultMode()
+vtkInteractorStyleImage3D::EnableDefaultMode()
 {
   this->State = VTKIS_NONE;
   this->m_Mode = InteractionTypeDefault;

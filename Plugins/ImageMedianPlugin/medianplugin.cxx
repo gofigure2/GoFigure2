@@ -44,55 +44,54 @@
 
 Q_EXPORT_PLUGIN2(QGoIdentityImageFilterPlugin, medianplugin)
 
-medianplugin::medianplugin(QObject* iParent) : QGoImageFilterPluginBase(iParent)
-  {
+medianplugin::medianplugin(QObject *iParent):QGoImageFilterPluginBase(iParent)
+{
   this->SetAllRequiredInformation();
   preprocess = new QCellPreprocess();
-  QObject::connect(preprocess, SIGNAL(Done(std::vector<vtkImageData*> )),
-                   this, SIGNAL(Done(std::vector<vtkImageData*> )));
-  }
+  QObject::connect( preprocess, SIGNAL( Done(std::vector< vtkImageData * > ) ),
+                    this, SIGNAL( Done(std::vector< vtkImageData * > ) ) );
+}
 
 medianplugin::~medianplugin()
-  {
-  }
+{}
 
-std::vector<QAction*> medianplugin::Actions()
+std::vector< QAction * > medianplugin::Actions()
 {
-  QAction* action = new QAction(tr("&Median"), this);
+  QAction *action = new QAction(tr("&Median"), this);
 
-  QObject::connect(action, SIGNAL(triggered),
-                   this, SLOT(Process()));
+  QObject::connect( action, SIGNAL(triggered),
+                    this, SLOT( Process() ) );
 
-  std::vector<QAction*> oActionList;
+  std::vector< QAction * > oActionList;
   oActionList.push_back(action);
 
   return oActionList;
 }
 
-QToolBar* medianplugin::ToolBar()
+QToolBar * medianplugin::ToolBar()
 {
   return 0;
 }
 
-QMenu* medianplugin::Menu()
+QMenu * medianplugin::Menu()
 {
   return 0;
 }
 
-QDockWidget* medianplugin::DockWidget()
+QDockWidget * medianplugin::DockWidget()
 {
   return 0;
 }
 
-QWidget* medianplugin::AdditionalWidget()
+QWidget * medianplugin::AdditionalWidget()
 {
   return 0;
 }
 
-std::list<GoFigure::TabDimensionType>
+std::list< GoFigure::TabDimensionType >
 medianplugin::TabElementCompatibility() const
 {
-  std::list<GoFigure::TabDimensionType> oCompatibility;
+  std::list< GoFigure::TabDimensionType > oCompatibility;
   oCompatibility.push_back(GoFigure::TWO_D);
   oCompatibility.push_back(GoFigure::THREE_D);
 

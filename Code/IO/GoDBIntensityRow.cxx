@@ -41,15 +41,16 @@
 #include "GoDBRecordSetHelper.h"
 
 GoDBIntensityRow::GoDBIntensityRow()
-  {
+{
   this->InitializeMap();
-  }
+}
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 GoDBIntensityRow::~GoDBIntensityRow()
-  {
-  }
+{}
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -57,32 +58,36 @@ void GoDBIntensityRow::InitializeMap()
 {
   this->m_TableName = "intensity";
   this->m_TableIDName = "IntensityID";
-  this->m_MapRow["IntensityID"] = ConvertToString<int>(0);
-  this->m_MapRow["Value"] = ConvertToString<int>(0);
-  this->m_MapRow["meshID"] = ConvertToString<int>(0);
-  this->m_MapRow["ChannelID"] = ConvertToString<int>(0);
+  this->m_MapRow["IntensityID"] = ConvertToString< int >(0);
+  this->m_MapRow["Value"] = ConvertToString< int >(0);
+  this->m_MapRow["meshID"] = ConvertToString< int >(0);
+  this->m_MapRow["ChannelID"] = ConvertToString< int >(0);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int GoDBIntensityRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
+int GoDBIntensityRow::SaveInDB(vtkMySQLDatabase *DatabaseConnector)
 {
   int IntensityID = this->DoesThisIntensityAlreadyExists(DatabaseConnector);
-  if (IntensityID == -1)
+
+  if ( IntensityID == -1 )
     {
-    IntensityID = AddOnlyOneNewObjectInTable<GoDBIntensityRow>(
+    IntensityID = AddOnlyOneNewObjectInTable< GoDBIntensityRow >(
       DatabaseConnector, "intensity", this, "IntensityID");
     }
   return IntensityID;
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 int GoDBIntensityRow::DoesThisIntensityAlreadyExists(
-  vtkMySQLDatabase* DatabaseConnector)
+  vtkMySQLDatabase *DatabaseConnector)
 {
   std::string ChannelID = this->GetMapValue("ChannelID");
   std::string MeshID = this->GetMapValue("meshID");
+
   /*return FindOneID(DatabaseConnector,"color", "ColorID","Red",Red,"Green",Green,
   "Blue",Blue,"Alpha",Alpha,"Name",Name);*/
   return FindOneID(DatabaseConnector, "intensity", "IntensityID", "ChannelID",

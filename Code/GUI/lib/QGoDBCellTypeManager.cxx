@@ -39,25 +39,26 @@
 =========================================================================*/
 #include "QGoDBCellTypeManager.h"
 
-QGoDBCellTypeManager::QGoDBCellTypeManager (QWidget* iParent) :
+QGoDBCellTypeManager::QGoDBCellTypeManager (QWidget *iParent):
   QGoDBNameDescEntityManager(iParent, "celltype", 0)
-{
-}
+{}
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 void QGoDBCellTypeManager::SaveNewEntityInDB()
 {
-  if(!this->CheckEntityAlreadyExists<GoDBCellTypeRow>(this->m_NewCellType))
+  if ( !this->CheckEntityAlreadyExists< GoDBCellTypeRow >(this->m_NewCellType) )
     {
     this->m_NewCellType.SaveInDB(this->m_DatabaseConnector);
     }
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 void QGoDBCellTypeManager::ValidateName(std::string iName, std::string iDescription)
 {
-  this->ValidateNameTemplate<GoDBCellTypeRow>(this->m_NewCellType,iName,
-    iDescription);
+  this->ValidateNameTemplate< GoDBCellTypeRow >(this->m_NewCellType, iName,
+                                                iDescription);
 }

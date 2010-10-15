@@ -45,105 +45,106 @@
 
 namespace itk
 {
-template < class TFeatureImage, class TInputImage, class TSegmentImage >
+template< class TFeatureImage, class TInputImage, class TSegmentImage >
 ViscousWatershedTransform< TFeatureImage, TInputImage, TSegmentImage >
 ::ViscousWatershedTransform()
 {
-  this->Superclass::SetNumberOfRequiredInputs ( 1 );
-  this->Superclass::SetNumberOfRequiredOutputs ( 1 );
-  
+  this->Superclass::SetNumberOfRequiredInputs (1);
+  this->Superclass::SetNumberOfRequiredOutputs (1);
+
   m_InitialLevel = 0;
   m_FinalLevel = 255;
   m_Increment = 1;
   m_LargestRadius = 10;
   m_Slope = 10;
 
-  this->Superclass::SetNthOutput ( 0,TFeatureImage::New() );
+  this->Superclass::SetNthOutput ( 0, TFeatureImage::New() );
 }
 
-template < class TFeatureImage, class TInputImage, class TSegmentImage >
+template< class TFeatureImage, class TInputImage, class TSegmentImage >
 void
-ViscousWatershedTransform< TFeatureImage, TInputImage, TSegmentImage >::
-GenerateData()
+ViscousWatershedTransform< TFeatureImage, TInputImage, TSegmentImage >::GenerateData()
 {
   FeatureImageConstPointer m_Input = this->GetInput();
-  FeatureImageRegionType region = m_Input->GetLargestPossibleRegion(); 
+  FeatureImageRegionType   region = m_Input->GetLargestPossibleRegion();
 
   FeatureImagePointer m_Output;
-  {
+
+    {
     ThresholdFilterPointer m_threshold = ThresholdFilterType::New();
-    m_threshold->SetLowerThreshold ( 0 );
-    m_threshold->SetUpperThreshold ( m_InitialLevel );
-    m_threshold->SetInsideValue ( m_InitialLevel );
-    m_threshold->SetOutsideValue ( 0 );
-    m_threshold->SetInput ( m_Input );
+    m_threshold->SetLowerThreshold (0);
+    m_threshold->SetUpperThreshold (m_InitialLevel);
+    m_threshold->SetInsideValue (m_InitialLevel);
+    m_threshold->SetOutsideValue (0);
+    m_threshold->SetInput (m_Input);
     m_threshold->Update();
     m_Output = m_threshold->GetOutput();
     m_Output->DisconnectPipeline();
-  }
-  
+    }
+
   typename StructuringElementType::SizeType ballSize;
-  FeatureIteratorType oIt( m_Output, region );
+  FeatureIteratorType oIt(m_Output, region);
+
   unsigned int radius;
-  for( unsigned int i = m_InitialLevel + m_Increment; i <= m_FinalLevel; i = i + m_Increment )
-  {
+  for ( unsigned int i = m_InitialLevel + m_Increment; i <= m_FinalLevel; i = i + m_Increment )
+    {
     std::cout << i << std::endl;
     // Extract levelset of the function
     ThresholdFilterPointer m_threshold = ThresholdFilterType::New();
-    m_threshold->SetLowerThreshold ( 0 );
-    m_threshold->SetUpperThreshold ( i );
-    m_threshold->SetInsideValue ( 0 );
-    m_threshold->SetOutsideValue ( 1 );
-    m_threshold->SetInput ( m_Input );
+    m_threshold->SetLowerThreshold (0);
+    m_threshold->SetUpperThreshold (i);
+    m_threshold->SetInsideValue (0);
+    m_threshold->SetOutsideValue (1);
+    m_threshold->SetInput (m_Input);
     m_threshold->Update();
-    
+
     // Do closing
     if ( i > m_LargestRadius * m_Slope )
-    {
+      {
       radius = 1;
-    }
+      }
     else
-    {
-      radius = static_cast<unsigned int>( m_LargestRadius  - i/m_Slope );
-    }
-    ballSize.Fill( radius );
+      {
+      radius = static_cast< unsigned int >(m_LargestRadius  - i / m_Slope);
+      }
+    ballSize.Fill(radius);
 
     StructuringElementType structuringElement;
-    structuringElement.SetRadius( ballSize );
+    structuringElement.SetRadius(ballSize);
     structuringElement.CreateStructuringElement();
 
     ClosingFilterPointer close = ClosingFilterType::New();
-    close->SetKernel( structuringElement );
+    close->SetKernel(structuringElement);
     close->SetInput( m_threshold->GetOutput() );
-    close->SetForegroundValue( 1 );
+    close->SetForegroundValue(1);
     close->Update();
 
     // Iterate over the output image
-    FeatureIteratorType iIt( close->GetOutput(), region );
+    FeatureIteratorType iIt(close->GetOutput(), region);
+
     iIt.GoToBegin();
     oIt.GoToBegin();
-    while( !oIt.IsAtEnd() )
-    {
-      if ( ( oIt.Get() == 0 ) && ( iIt.Get() == 0 ) )
+    while ( !oIt.IsAtEnd() )
       {
-        oIt.Set( i );
-      }
+      if ( ( oIt.Get() == 0 ) && ( iIt.Get() == 0 ) )
+        {
+        oIt.Set(i);
+        }
       ++oIt;
       ++iIt;
+      }
     }
-  }
-  
-  this->GraftOutput( m_Output );
+
+  this->GraftOutput(m_Output);
 }
 
-template < class TFeatureImage, class TInputImage, class TSegmentImage >
+template< class TFeatureImage, class TInputImage, class TSegmentImage >
 void
-ViscousWatershedTransform< TFeatureImage, TInputImage, TSegmentImage >::
-PrintSelf ( std::ostream& os, Indent indent ) const
+ViscousWatershedTransform< TFeatureImage, TInputImage, TSegmentImage >::PrintSelf(std::ostream & os,
+                                                                                  Indent indent) const
 {
-  Superclass::PrintSelf ( os,indent );
+  Superclass::PrintSelf (os, indent);
 }
-
 } /* end namespace itk */
 
 #endif

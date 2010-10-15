@@ -44,21 +44,22 @@
 
 /**\brief structure to pass the column information between the Table Widget
 and the Database*/
-struct GoDBTraceInfoForTableWidget
-  {
+struct GoDBTraceInfoForTableWidget {
   std::string InfoName;
-  std::string ColumnNameTableWidget;    //Name of the column in the Table Widget
-  std::string ColumnNameDatabase;    //Name of the field in the database
-  std::string TableNameDatabase;     //name of the table in the database
-  bool SameFieldForDifferentValues;           /*set to true if the same table.field is
+  std::string ColumnNameTableWidget;   //Name of the column in the Table Widget
+  std::string ColumnNameDatabase;      //Name of the field in the database
+  std::string TableNameDatabase;       //name of the table in the database
+  bool SameFieldForDifferentValues;    /*set to true if the same table.field is
                     called several times and corresponds to different values: expl
                     coordinate.TCoord for both CoordIDMin and CoordIDMax*/
-  std::string TableKeyDatabase;     //Name of the primary key of the table "TableNameDatabase"
-  std::string TableForeignKeyDatabase;    //Name of the foreign key corresponding in the trace table
+  std::string TableKeyDatabase;        //Name of the primary key of the table
+                                       // "TableNameDatabase"
+  std::string TableForeignKeyDatabase; //Name of the foreign key corresponding
+                                       // in the trace table
   std::string AccessFromTraceTableThroughWhichTable;
 
   GoDBTraceInfoForTableWidget()
-    {
+  {
     InfoName = "None";
     ColumnNameTableWidget = "None";
     ColumnNameDatabase = "None";
@@ -67,7 +68,8 @@ struct GoDBTraceInfoForTableWidget
     TableForeignKeyDatabase = "None";
     SameFieldForDifferentValues = false;
     AccessFromTraceTableThroughWhichTable = "None";
-    }
+  }
+
   void Clear()
   {
     InfoName = "None";
@@ -79,5 +81,5 @@ struct GoDBTraceInfoForTableWidget
     SameFieldForDifferentValues = false;
     AccessFromTraceTableThroughWhichTable = "None";
   }
-  };
+};
 #endif

@@ -57,15 +57,14 @@
 
 #include "itkQtConfigure.h"
 
-namespace itk {
-
-class IKTQT_EXPORT QtProgressBar : public ::QProgressBar
-  {
-
+namespace itk
+{
+class IKTQT_EXPORT QtProgressBar:public::QProgressBar
+{
 public:
 
   /** Command Class invoked for button redraw */
-  typedef itk::MemberCommand<QtProgressBar> RedrawCommandType;
+  typedef itk::MemberCommand< QtProgressBar > RedrawCommandType;
 
   /** Constructor */
   explicit QtProgressBar(QWidget *parent = 0);
@@ -74,8 +73,9 @@ public:
   RedrawCommandType * GetRedrawCommand(void) const;
 
   /** Manage a Progress event */
-  void ProcessEvent(itk::Object * caller, const itk::EventObject& event);
-  void ConstProcessEvent(const itk::Object * caller, const itk::EventObject& event);
+  void ProcessEvent(itk::Object *caller, const itk::EventObject & event);
+
+  void ConstProcessEvent(const itk::Object *caller, const itk::EventObject & event);
 
   /** Manage a Progress event */
   void Observe(itk::Object *caller);
@@ -83,9 +83,7 @@ public:
 private:
 
   RedrawCommandType::Pointer m_RedrawCommand;
-
-  };
-
+};
 }  // end of namespace
 
 #endif

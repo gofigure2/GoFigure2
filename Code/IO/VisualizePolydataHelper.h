@@ -50,26 +50,26 @@
 
 #include "vtkImageViewer2.h"
 
-void ShowPolyData(vtkPolyData* iPolyData)
+void ShowPolyData(vtkPolyData *iPolyData)
 {
-  vtkSmartPointer<vtkPolyDataMapper> mapper =
-      vtkSmartPointer<vtkPolyDataMapper>::New();
+  vtkSmartPointer< vtkPolyDataMapper > mapper =
+    vtkSmartPointer< vtkPolyDataMapper >::New();
   mapper->SetInput(iPolyData);
 
-  vtkSmartPointer<vtkActor> actor =
-      vtkSmartPointer<vtkActor>::New();
+  vtkSmartPointer< vtkActor > actor =
+    vtkSmartPointer< vtkActor >::New();
   actor->SetMapper(mapper);
 
-  vtkSmartPointer<vtkRenderer> renderer =
-      vtkSmartPointer<vtkRenderer>::New();
+  vtkSmartPointer< vtkRenderer > renderer =
+    vtkSmartPointer< vtkRenderer >::New();
   renderer->AddActor(actor);
 
-  vtkSmartPointer<vtkRenderWindow> renderWindow =
-      vtkSmartPointer<vtkRenderWindow>::New();
+  vtkSmartPointer< vtkRenderWindow > renderWindow =
+    vtkSmartPointer< vtkRenderWindow >::New();
   renderWindow->AddRenderer(renderer);
 
-  vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor =
-      vtkSmartPointer<vtkRenderWindowInteractor>::New();
+  vtkSmartPointer< vtkRenderWindowInteractor > renderWindowInteractor =
+    vtkSmartPointer< vtkRenderWindowInteractor >::New();
   renderWindowInteractor->SetRenderWindow(renderWindow);
 
   renderWindowInteractor->Initialize();
@@ -77,26 +77,26 @@ void ShowPolyData(vtkPolyData* iPolyData)
   renderWindowInteractor->Start();
 }
 
-void ShowImage(vtkImageData* iData)
+void ShowImage(vtkImageData *iData)
 {
   // Create the rendering window
-  vtkSmartPointer<vtkRenderer>     ren1 = vtkSmartPointer<vtkRenderer>::New();
-  vtkSmartPointer<vtkRenderWindow> renWin = vtkSmartPointer<vtkRenderWindow>::New();
-  vtkSmartPointer<vtkRenderWindowInteractor> iren = vtkSmartPointer<vtkRenderWindowInteractor>::New();
+  vtkSmartPointer< vtkRenderer >               ren1 = vtkSmartPointer< vtkRenderer >::New();
+  vtkSmartPointer< vtkRenderWindow >           renWin = vtkSmartPointer< vtkRenderWindow >::New();
+  vtkSmartPointer< vtkRenderWindowInteractor > iren = vtkSmartPointer< vtkRenderWindowInteractor >::New();
 
   // Create the rendering window
   renWin->AddRenderer(ren1);
   iren->SetRenderWindow(renWin);
 
-  vtkSmartPointer<vtkImageViewer2> viewer = vtkSmartPointer<vtkImageViewer2>::New();
+  vtkSmartPointer< vtkImageViewer2 > viewer = vtkSmartPointer< vtkImageViewer2 >::New();
 
-  viewer->SetInput( iData );
-  viewer->SetRenderWindow( renWin );
-  viewer->SetRenderer( ren1 );
+  viewer->SetInput(iData);
+  viewer->SetRenderWindow(renWin);
+  viewer->SetRenderer(ren1);
 
   iren->Initialize();
   viewer->Render();
   iren->Start();
-
 }
+
 #endif

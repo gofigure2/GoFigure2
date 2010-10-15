@@ -49,91 +49,90 @@
 #include <algorithm>
 
 //--------------------------------------------------------------------------
-QGoSynchronizedView3DCallbacks::
-QGoSynchronizedView3DCallbacks(std::vector<QGoSynchronizedView3D*>
-                               ioOpenSynchronizedViews,
-                               QObject* iParent) :
+QGoSynchronizedView3DCallbacks::QGoSynchronizedView3DCallbacks(std::vector< QGoSynchronizedView3D * >
+                                                               ioOpenSynchronizedViews,
+                                                               QObject *iParent):
   QObject                  (iParent)
-  {
-  m_vtkCallBackCamSync.resize( 4 );
+{
+  m_vtkCallBackCamSync.resize(4);
 
   // create the callback object
   SetupCallBack();
 
   // for every opened SynchronizedView :
-  std::vector<QGoSynchronizedView3D*>::iterator
-      SynchronizedViewIt = ioOpenSynchronizedViews.begin();
+  std::vector< QGoSynchronizedView3D * >::iterator
+    SynchronizedViewIt = ioOpenSynchronizedViews.begin();
 
   while ( SynchronizedViewIt != ioOpenSynchronizedViews.end() )
     {
-    m_openSynchronizedView.push_back( *SynchronizedViewIt );
+    m_openSynchronizedView.push_back(*SynchronizedViewIt);
 
-    if ((*SynchronizedViewIt)->HasViewer())
+    if ( ( *SynchronizedViewIt )->HasViewer() )
     // add the callback to the SynchronizedView's camera
       {
-      for( int i = 0; i < 4; i++ )
+      for ( int i = 0; i < 4; i++ )
         {
-        (*SynchronizedViewIt)->GetCamera(i)
+        ( *SynchronizedViewIt )->GetCamera(i)
         ->AddObserver(vtkCommand::ModifiedEvent,
                       QGoSynchronizedView3DCallbacks::
                       m_vtkCallBackCamSync[i]);
         }
 
       // we connect the sliders to the synchronizer (monitor slider changes) :
-      QObject::connect((*SynchronizedViewIt)->GetImageView(),
-                       SIGNAL(SliceViewXYChanged(int)),
-                       this,
-                       SIGNAL(SliceViewXYChanged(int)));
+      QObject::connect( ( *SynchronizedViewIt )->GetImageView(),
+                        SIGNAL( SliceViewXYChanged(int) ),
+                        this,
+                        SIGNAL( SliceViewXYChanged(int) ) );
 
-      QObject::connect((*SynchronizedViewIt)->GetImageView(),
-                       SIGNAL(SliceViewXZChanged(int)),
-                       this,
-                       SIGNAL(SliceViewXZChanged(int)));
+      QObject::connect( ( *SynchronizedViewIt )->GetImageView(),
+                        SIGNAL( SliceViewXZChanged(int) ),
+                        this,
+                        SIGNAL( SliceViewXZChanged(int) ) );
 
-      QObject::connect((*SynchronizedViewIt)->GetImageView(),
-                       SIGNAL(SliceViewYZChanged(int)),
-                       this,
-                       SIGNAL(SliceViewYZChanged(int)));
+      QObject::connect( ( *SynchronizedViewIt )->GetImageView(),
+                        SIGNAL( SliceViewYZChanged(int) ),
+                        this,
+                        SIGNAL( SliceViewYZChanged(int) ) );
 
       // we connect the synchronizer to the SynchronizedView
-      QObject::connect(this,
-                       SIGNAL(SliceViewXYChanged(int)),
-                       (*SynchronizedViewIt)->GetImageView(),
-                       SLOT(SetSliceViewXY(int)));
+      QObject::connect( this,
+                        SIGNAL( SliceViewXYChanged(int) ),
+                        ( *SynchronizedViewIt )->GetImageView(),
+                        SLOT( SetSliceViewXY(int) ) );
 
-      QObject::connect(this,
-                       SIGNAL(SliceViewXZChanged(int)),
-                       (*SynchronizedViewIt)->GetImageView(),
-                       SLOT(SetSliceViewXZ(int)));
+      QObject::connect( this,
+                        SIGNAL( SliceViewXZChanged(int) ),
+                        ( *SynchronizedViewIt )->GetImageView(),
+                        SLOT( SetSliceViewXZ(int) ) );
 
-      QObject::connect(this,
-                       SIGNAL(SliceViewYZChanged(int)),
-                       (*SynchronizedViewIt)->GetImageView(),
-                       SLOT(SetSliceViewYZ(int)));
+      QObject::connect( this,
+                        SIGNAL( SliceViewYZChanged(int) ),
+                        ( *SynchronizedViewIt )->GetImageView(),
+                        SLOT( SetSliceViewYZ(int) ) );
       }
-      ++SynchronizedViewIt;
+    ++SynchronizedViewIt;
     }
-  }
+}
 
 //--------------------------------------------------------------------------
 // the destructor is very important here, we want to leave clean
 // SynchronizedViews behind
 QGoSynchronizedView3DCallbacks::
 ~QGoSynchronizedView3DCallbacks()
-  {
-  std::vector<QGoSynchronizedView3D*>::iterator SynchronizedViewIt;
+{
+  std::vector< QGoSynchronizedView3D * >::iterator SynchronizedViewIt;
 
   // we remove the open synchronized SynchronizedViews
-  while (!m_openSynchronizedView.empty())
+  while ( !m_openSynchronizedView.empty() )
     {
     // remove (AND NOT DELETE, this is the Orchestra's business)
     // all pointers in the vector
 
     // We remove the observer if any
-    if (m_openSynchronizedView.back()->HasViewer())
+    if ( m_openSynchronizedView.back()->HasViewer() )
       {
       // remove the callback object from each object's camera
-      for( int i = 0; i < 4; i++ )
+      for ( int i = 0; i < 4; i++ )
         {
         m_openSynchronizedView.back()->GetCamera(i)
         ->RemoveObserver(QGoSynchronizedView3DCallbacks::
@@ -144,23 +143,22 @@ QGoSynchronizedView3DCallbacks::
     }
 
   // we can now delete the callbacks !
-  for( int i = 0; i < 4; i++ )
+  for ( int i = 0; i < 4; i++ )
     {
     m_vtkCallBackCamSync[i]->Delete();
     }
-  }
+}
 
 //--------------------------------------------------------------------------
 // this is the callback function : do deep copies to keep track of
 // the moving camera's position
 void
-QGoSynchronizedView3DCallbacks::
-synchronizeCameras0(vtkObject* caller,
-                    long unsigned int eventId,
-                    void* clientData,
-                    void* callData)
+QGoSynchronizedView3DCallbacks::synchronizeCameras0(vtkObject *caller,
+                                                    long unsigned int eventId,
+                                                    void *clientData,
+                                                    void *callData)
 {
-  synchronizeCamera( 0, caller, eventId, clientData, callData );
+  synchronizeCamera(0, caller, eventId, clientData, callData);
 }
 
 //--------------------------------------------------------------------------
@@ -168,64 +166,60 @@ synchronizeCameras0(vtkObject* caller,
 //  master's camera position
 //
 void
-QGoSynchronizedView3DCallbacks::
-synchronizeCameras1(vtkObject* caller,
-                    long unsigned int eventId,
-                    void* clientData,
-                    void* callData)
+QGoSynchronizedView3DCallbacks::synchronizeCameras1(vtkObject *caller,
+                                                    long unsigned int eventId,
+                                                    void *clientData,
+                                                    void *callData)
 {
-  synchronizeCamera( 1, caller, eventId, clientData, callData );
+  synchronizeCamera(1, caller, eventId, clientData, callData);
 }
 
 //--------------------------------------------------------------------------
 // this is the callback function : do deep copies to keep track of
 // master's camera position
 void
-QGoSynchronizedView3DCallbacks::
-synchronizeCameras2(vtkObject* caller,
-                    long unsigned int eventId,
-                    void* clientData,
-                    void* callData)
+QGoSynchronizedView3DCallbacks::synchronizeCameras2(vtkObject *caller,
+                                                    long unsigned int eventId,
+                                                    void *clientData,
+                                                    void *callData)
 {
-  synchronizeCamera( 2, caller, eventId, clientData, callData );
+  synchronizeCamera(2, caller, eventId, clientData, callData);
 }
 
 //--------------------------------------------------------------------------
 // this is the callback function : do deep copies to keep track of
 // master's camera position
 void
-QGoSynchronizedView3DCallbacks::
-synchronizeCameras3(vtkObject* caller,
-                    long unsigned int eventId,
-                    void* clientData,
-                    void* callData)
+QGoSynchronizedView3DCallbacks::synchronizeCameras3(vtkObject *caller,
+                                                    long unsigned int eventId,
+                                                    void *clientData,
+                                                    void *callData)
 {
-
-  synchronizeCamera( 3, caller, eventId, clientData, callData );
+  synchronizeCamera(3, caller, eventId, clientData, callData);
 }
+
 //--------------------------------------------------------------------------
 void
-QGoSynchronizedView3DCallbacks::
-synchronizeCamera(  int iCamera,
-                    vtkObject* caller,
-                    long unsigned int eventId,
-                    void* clientData,
-                    void* callData)
+QGoSynchronizedView3DCallbacks::synchronizeCamera(int iCamera,
+                                                  vtkObject *caller,
+                                                  long unsigned int eventId,
+                                                  void *clientData,
+                                                  void *callData)
 {
-  (void) eventId;
-  (void) callData;
+  (void)eventId;
+  (void)callData;
 
   // client data is a pointer to std::vector<QGoImageView2D*>
   // so client data is a std::vector<QGoSynchronizedView3D*>*
   // we get the p_m_QGoSynchronizedView3D array by the following cast :
-  std::vector<QGoSynchronizedView3D*> p_m_QGoSynchronizedView3Ds
-    = *static_cast<std::vector<QGoSynchronizedView3D*>*>(clientData);
+  std::vector< QGoSynchronizedView3D * > p_m_QGoSynchronizedView3Ds =
+    *static_cast< std::vector< QGoSynchronizedView3D * > * >( clientData );
   // the observer are set on cameras, so that the caller is a vtk camera*
-  vtkCamera* movedCamera
-    = static_cast<vtkCamera*>(caller);
+  vtkCamera *movedCamera =
+    static_cast< vtkCamera * >( caller );
   // for every opened SynchronizedView :
-  std::vector<QGoSynchronizedView3D*>::iterator SynchronizedViewIt
-         = p_m_QGoSynchronizedView3Ds.begin();
+  std::vector< QGoSynchronizedView3D * >::iterator SynchronizedViewIt =
+    p_m_QGoSynchronizedView3Ds.begin();
 
   while ( SynchronizedViewIt != p_m_QGoSynchronizedView3Ds.end() )
     {
@@ -243,12 +237,12 @@ synchronizeCamera(  int iCamera,
       {
       // we copy the position of the moved camera
       // into each SynchronizedView's camera
-      if  (((*SynchronizedViewIt)->GetCamera(iCamera) )
-           &&  ((*SynchronizedViewIt)->GetCamera(iCamera) != movedCamera))
+      if  ( ( ( *SynchronizedViewIt )->GetCamera(iCamera) )
+            &&  ( ( *SynchronizedViewIt )->GetCamera(iCamera) != movedCamera ) )
         {
-        (*SynchronizedViewIt)->GetCamera(iCamera)->DeepCopy(movedCamera);
+        ( *SynchronizedViewIt )->GetCamera(iCamera)->DeepCopy(movedCamera);
         // we render all SynchronizedViews
-        (*SynchronizedViewIt)->Render(iCamera);
+        ( *SynchronizedViewIt )->Render(iCamera);
         }
       }
     ++SynchronizedViewIt;
@@ -257,43 +251,41 @@ synchronizeCamera(  int iCamera,
 
 //--------------------------------------------------------------------------
 void
-QGoSynchronizedView3DCallbacks::
-SetupCallBack()
+QGoSynchronizedView3DCallbacks::SetupCallBack()
 {
   // create the callback object (connection event -> function )
-  for( int i = 0; i < 4; i++ )
+  for ( int i = 0; i < 4; i++ )
     {
     m_vtkCallBackCamSync[i] = vtkCallbackCommand::New();
     m_vtkCallBackCamSync[i]->SetClientData(&m_openSynchronizedView);
     }
 
   m_vtkCallBackCamSync[0]->SetCallback(QGoSynchronizedView3DCallbacks::
-                                     synchronizeCameras0);
+                                       synchronizeCameras0);
   m_vtkCallBackCamSync[1]->SetCallback(QGoSynchronizedView3DCallbacks::
-                                     synchronizeCameras1);
+                                       synchronizeCameras1);
   m_vtkCallBackCamSync[2]->SetCallback(QGoSynchronizedView3DCallbacks::
-                                     synchronizeCameras2);
+                                       synchronizeCameras2);
   m_vtkCallBackCamSync[3]->SetCallback(QGoSynchronizedView3DCallbacks::
-                                     synchronizeCameras3);
+                                       synchronizeCameras3);
 }
 
 //--------------------------------------------------------------------------
 void
-QGoSynchronizedView3DCallbacks::
-removeSynchronizedView(QGoSynchronizedView3D* ioSynchronizedView)
+QGoSynchronizedView3DCallbacks::removeSynchronizedView(QGoSynchronizedView3D *ioSynchronizedView)
 {
-  if (ioSynchronizedView ) // this should always be true
+  if ( ioSynchronizedView ) // this should always be true
     {
     // We look for the SynchronizedView
     // in the vector of synchronized SynchronizedViews
-    std::vector<QGoSynchronizedView3D*>::iterator
-    SynchronizedViewIt = std::find(m_openSynchronizedView.begin(),
-                                   m_openSynchronizedView.end(),
-                                   ioSynchronizedView);
-    if (SynchronizedViewIt != m_openSynchronizedView.end()) // if we found it
+    std::vector< QGoSynchronizedView3D * >::iterator
+      SynchronizedViewIt = std::find(m_openSynchronizedView.begin(),
+                                     m_openSynchronizedView.end(),
+                                     ioSynchronizedView);
+    if ( SynchronizedViewIt != m_openSynchronizedView.end() ) // if we found it
       {
       // remove the callback object from each object's camera
-      for( int i = 0; i < 4; i++ )
+      for ( int i = 0; i < 4; i++ )
         {
         ioSynchronizedView->GetCamera(i)
         ->RemoveObserver(QGoSynchronizedView3DCallbacks::
@@ -308,17 +300,16 @@ removeSynchronizedView(QGoSynchronizedView3D* ioSynchronizedView)
 
 //--------------------------------------------------------------------------
 void
-QGoSynchronizedView3DCallbacks::
-addSynchronizedView(QGoSynchronizedView3D* ioSynchronizedView)
+QGoSynchronizedView3DCallbacks::addSynchronizedView(QGoSynchronizedView3D *ioSynchronizedView)
 {
-  if (ioSynchronizedView ) // this should always be true
+  if ( ioSynchronizedView ) // this should always be true
     {
-    if (ioSynchronizedView->HasViewer())
+    if ( ioSynchronizedView->HasViewer() )
     // add the callback to the SynchronizedView's camera
       {
       m_openSynchronizedView.push_back(ioSynchronizedView);
 
-      for( int i = 0; i < 4; i++ )
+      for ( int i = 0; i < 4; i++ )
         {
         ioSynchronizedView->GetCamera(i)
         ->AddObserver(vtkCommand::ModifiedEvent,
@@ -326,31 +317,30 @@ addSynchronizedView(QGoSynchronizedView3D* ioSynchronizedView)
                       m_vtkCallBackCamSync[i]);
         }
 
-
       // we connect the sliders to the synchronizer (monitor slider changes) :
-      QObject::connect(ioSynchronizedView->GetImageView(),
-                       SIGNAL(SliceViewXYChanged(int)),
-                       this,
-                       SIGNAL(SliceViewXYChanged(int)));
-      QObject::connect(ioSynchronizedView->GetImageView(),
-                       SIGNAL(SliceViewXZChanged(int)),
-                       this,
-                       SIGNAL(SliceViewXZChanged(int)));
-      QObject::connect(ioSynchronizedView->GetImageView(),
-                       SIGNAL(SliceViewYZChanged(int)),
-                       this,
-                       SIGNAL(SliceViewYZChanged(int)));
+      QObject::connect( ioSynchronizedView->GetImageView(),
+                        SIGNAL( SliceViewXYChanged(int) ),
+                        this,
+                        SIGNAL( SliceViewXYChanged(int) ) );
+      QObject::connect( ioSynchronizedView->GetImageView(),
+                        SIGNAL( SliceViewXZChanged(int) ),
+                        this,
+                        SIGNAL( SliceViewXZChanged(int) ) );
+      QObject::connect( ioSynchronizedView->GetImageView(),
+                        SIGNAL( SliceViewYZChanged(int) ),
+                        this,
+                        SIGNAL( SliceViewYZChanged(int) ) );
 
       // we connect the synchronizer to the SynchronizedView
-      QObject::connect(this, SIGNAL(SliceViewXYChanged(int)),
-                       ioSynchronizedView->GetImageView(),
-                       SLOT(SetSliceViewXY(int)));
-      QObject::connect(this, SIGNAL(SliceViewXZChanged(int)),
-                       ioSynchronizedView->GetImageView(),
-                       SLOT(SetSliceViewXZ(int)));
-      QObject::connect(this, SIGNAL(SliceViewYZChanged(int)),
-                       ioSynchronizedView->GetImageView(),
-                       SLOT(SetSliceViewYZ(int)));
+      QObject::connect( this, SIGNAL( SliceViewXYChanged(int) ),
+                        ioSynchronizedView->GetImageView(),
+                        SLOT( SetSliceViewXY(int) ) );
+      QObject::connect( this, SIGNAL( SliceViewXZChanged(int) ),
+                        ioSynchronizedView->GetImageView(),
+                        SLOT( SetSliceViewXZ(int) ) );
+      QObject::connect( this, SIGNAL( SliceViewYZChanged(int) ),
+                        ioSynchronizedView->GetImageView(),
+                        SLOT( SetSliceViewYZ(int) ) );
       }
     else
       {

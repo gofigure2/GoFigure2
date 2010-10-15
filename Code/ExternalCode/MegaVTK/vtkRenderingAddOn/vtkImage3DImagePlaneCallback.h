@@ -75,15 +75,14 @@
 
 class vtkViewImage2D;
 
-class VTK_RENDERINGADDON2_EXPORT vtkImage3DImagePlaneCallback : public vtkCommand
-  {
-
+class VTK_RENDERINGADDON2_EXPORT vtkImage3DImagePlaneCallback:public vtkCommand
+{
 public:
 
-  static vtkImage3DImagePlaneCallback* New()
+  static vtkImage3DImagePlaneCallback * New()
   { return new vtkImage3DImagePlaneCallback; }
 
-  virtual void Execute(vtkObject *caller, unsigned long, void*);
+  virtual void Execute(vtkObject *caller, unsigned long, void *);
 
   /*
   void SetViewImage2D (vtkViewImage2D* view)
@@ -92,7 +91,7 @@ public:
     this->FirstRender = true;
     }*/
 
-  vtkImageData* GetOutput(void) const
+  vtkImageData * GetOutput(void) const
   {
     return this->Reslice->GetOutput();
   }
@@ -103,39 +102,40 @@ public:
     //this->FirstRender = true;
   }
 
-  vtkImageReslice* GetReslice()
+  vtkImageReslice * GetReslice()
   {
     return this->Reslice;
   }
-  vtkMatrix4x4* GetMatrix()
+
+  vtkMatrix4x4 * GetMatrix()
   {
     return this->ResliceAxes;
   }
 
 protected:
   vtkImage3DImagePlaneCallback()
-    {
+  {
     /*
     this->ViewImage2D = 0;
     this->FirstRender = true;
     */
     this->Reslice     = vtkImageReslice::New();
     this->ResliceAxes = vtkMatrix4x4::New();
-    }
+  }
+
   ~vtkImage3DImagePlaneCallback()
-    {
+  {
     this->Reslice->Delete();
     this->ResliceAxes->Delete();
-    }
+  }
 
 private:
   /*
   vtkViewImage2D*   ViewImage2D;
   bool              FirstRender;*/
 
-  vtkImageReslice* Reslice;
-  vtkMatrix4x4*    ResliceAxes;
-
-  };
+  vtkImageReslice *Reslice;
+  vtkMatrix4x4 *   ResliceAxes;
+};
 
 #endif

@@ -44,13 +44,13 @@
 #include <QWidget>
 #include "ui_WatershedWidget.h"
 
-class QGoContourSemiAutoWatershedWidget :
-    public QWidget,
-    protected Ui::WatershedWidget
+class QGoContourSemiAutoWatershedWidget:
+  public QWidget,
+  protected Ui::WatershedWidget
 {
   Q_OBJECT
 public:
-  explicit QGoContourSemiAutoWatershedWidget(QWidget* iParent = 0);
+  explicit QGoContourSemiAutoWatershedWidget(QWidget *iParent = 0);
   ~QGoContourSemiAutoWatershedWidget();
 };
 

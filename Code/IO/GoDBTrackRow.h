@@ -46,27 +46,26 @@
 #include <string>
 #include <map>
 
-class QGOIO_EXPORT GoDBTrackRow : public GoDBTraceRow
-  {
+class QGOIO_EXPORT GoDBTrackRow:public GoDBTraceRow
+{
 public:
   GoDBTrackRow();
 
   ~GoDBTrackRow()
-        {}
+  {}
   /**\brief fill the track map with the values gotten from the visualization*/
-  GoDBTrackRow(vtkMySQLDatabase * DatabaseConnector, GoDBCoordinateRow Min,
+  GoDBTrackRow(vtkMySQLDatabase *DatabaseConnector, GoDBCoordinateRow Min,
                GoDBCoordinateRow Max, unsigned int ImgSessionID, std::string TraceVisu);
 
   /**\brief return the TrackID of the Track with the same bounding box
   already registered in the DB or -1 if not yet created*/
-  int DoesThisBoundingBoxTrackExist(vtkMySQLDatabase* DatabaseConnector);
+  int DoesThisBoundingBoxTrackExist(vtkMySQLDatabase *DatabaseConnector);
 
   /**\brief save the track in the database and return the ID of the new
   created track*/
-  int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
+  int SaveInDB(vtkMySQLDatabase *DatabaseConnector);
 
 protected:
   virtual void InitializeMap();
-
-  };
+};
 #endif

@@ -50,55 +50,54 @@
 #include "vtkViewImage2DCollection.h"
 
 //--------------------------------------------------------------------------
-vtkViewImage2DCollectionCommand::
-vtkViewImage2DCollectionCommand()
-  {
-  }
+vtkViewImage2DCollectionCommand::vtkViewImage2DCollectionCommand()
+{}
 
 //--------------------------------------------------------------------------
 vtkViewImage2DCollectionCommand::
 ~vtkViewImage2DCollectionCommand()
-  {
-  }
+{}
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
-vtkViewImage2DCollectionCommand::
-SetCollection(vtkViewImage2DCollection* p)
+vtkViewImage2DCollectionCommand::SetCollection(vtkViewImage2DCollection *p)
 {
   this->Collection = p;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-vtkViewImage2DCollectionCommand*
+vtkViewImage2DCollectionCommand *
 vtkViewImage2DCollectionCommand::New()
 {
   return new vtkViewImage2DCollectionCommand;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-vtkViewImage2DCollection*
-vtkViewImage2DCollectionCommand::
-GetCollection()
+vtkViewImage2DCollection *
+vtkViewImage2DCollectionCommand::GetCollection()
 {
   return this->Collection;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void vtkViewImage2DCollectionCommand::Execute(vtkObject *caller,
-                                              unsigned long event,
-                                              void *vtkNotUsed(callData))
+void vtkViewImage2DCollectionCommand::Execute( vtkObject *caller,
+                                               unsigned long event,
+                                               void *vtkNotUsed(callData) )
 {
-  if (!this->Collection)
+  if ( !this->Collection )
     {
     return;
     }
 
-  if (event == vtkCommand::EndInteractionEvent)
+  if ( event == vtkCommand::EndInteractionEvent )
     {
     this->Collection->SyncRender();
     return;
@@ -107,11 +106,11 @@ void vtkViewImage2DCollectionCommand::Execute(vtkObject *caller,
   vtkInteractorStyleImage2D *isi =
     vtkInteractorStyleImage2D::SafeDownCast(caller);
   this->GetCollection()->InitTraversal();
-  vtkViewImage2D* v = this->GetCollection()->GetNextItem();
-  vtkViewImage2D* viewer = NULL;
-  while (v)
+  vtkViewImage2D *v = this->GetCollection()->GetNextItem();
+  vtkViewImage2D *viewer = NULL;
+  while ( v )
     {
-    if (isi == v->GetInteractorStyle())
+    if ( isi == v->GetInteractorStyle() )
       {
       viewer = v;
       break;
@@ -119,20 +118,20 @@ void vtkViewImage2DCollectionCommand::Execute(vtkObject *caller,
     v = this->GetCollection()->GetNextItem();
     }
 
-  if (!isi || !viewer || !viewer->GetInput())
+  if ( !isi || !viewer || !viewer->GetInput() )
     {
     return;
     }
 
   // Reset
-  if (event == vtkCommand::ResetWindowLevelEvent)
+  if ( event == vtkCommand::ResetWindowLevelEvent )
     {
     this->Collection->SyncResetWindowLevel();
     this->Collection->SyncRender();
     return;
     }
   // Reset
-  if (event == vtkViewImage2DCommand::ResetViewerEvent)
+  if ( event == vtkViewImage2DCommand::ResetViewerEvent )
     {
     this->Collection->SyncReset();
     this->Collection->SyncRender();
@@ -140,20 +139,20 @@ void vtkViewImage2DCollectionCommand::Execute(vtkObject *caller,
     }
 
   // Adjust the window level here
-  if (event == vtkCommand::WindowLevelEvent)
+  if ( event == vtkCommand::WindowLevelEvent )
     {
-    this->Collection->SyncSetColorWindow(viewer->GetColorWindow());
-    this->Collection->SyncSetColorLevel(viewer->GetColorLevel());
+    this->Collection->SyncSetColorWindow( viewer->GetColorWindow() );
+    this->Collection->SyncSetColorLevel( viewer->GetColorLevel() );
     this->Collection->SyncRender();
     }
 
   // Move
-  if (event == vtkViewImage2DCommand::SyncViewsEvent)
+  if ( event == vtkViewImage2DCommand::SyncViewsEvent )
     {
     this->Collection->SyncRender();
     }
 
-  if (event == vtkViewImage2DCommand::ZoomEvent)
+  if ( event == vtkViewImage2DCommand::ZoomEvent )
     {
     double z = viewer->GetZoom();
     double parallel_scale =
@@ -162,7 +161,7 @@ void vtkViewImage2DCollectionCommand::Execute(vtkObject *caller,
     this->Collection->SyncSetZoomAndParallelScale(z, parallel_scale);
     }
 
-  if (event == vtkViewImage2DCommand::PanEvent)
+  if ( event == vtkViewImage2DCommand::PanEvent )
     {
     double motion[3];
     viewer->GetCameraMotionVector(motion);
@@ -172,15 +171,15 @@ void vtkViewImage2DCollectionCommand::Execute(vtkObject *caller,
     double focal[3], pos[3], n[3];
     double dot = 0., u;
 
-    while (v)
+    while ( v )
       {
-      if (v != viewer)
+      if ( v != viewer )
         {
         v->GetCameraFocalAndPosition(focal, pos);
         v->GetRenderer()->GetActiveCamera()->GetViewPlaneNormal(n);
         dot = vtkMath::Dot(n, motion);
 
-        for (int dim = 0; dim < 3; dim++)
+        for ( int dim = 0; dim < 3; dim++ )
           {
           u = motion[dim] - dot * n[dim];
           focal[dim] += u;
@@ -188,7 +187,7 @@ void vtkViewImage2DCollectionCommand::Execute(vtkObject *caller,
           }
         v->SetCameraFocalAndPosition(focal, pos);
 
-        if (v->GetInteractorStyle()->GetInteractor()->GetLightFollowCamera())
+        if ( v->GetInteractorStyle()->GetInteractor()->GetLightFollowCamera() )
           {
           v->GetRenderer()->UpdateLightsGeometryToFollowCamera();
           }
@@ -199,10 +198,10 @@ void vtkViewImage2DCollectionCommand::Execute(vtkObject *caller,
     }
 
   // Position requested
-  if (event == vtkViewImage2DCommand::RequestedPositionEvent)
+  if ( event == vtkViewImage2DCommand::RequestedPositionEvent )
     {
-    double* position = viewer->GetWorldCoordinatesFromDisplayPosition (
-      isi->GetRequestedPosition ());
+    double *position = viewer->GetWorldCoordinatesFromDisplayPosition (
+      isi->GetRequestedPosition () );
     this->Collection->SyncSetWorldCoordinates(position);
     this->Collection->SyncRender();
     }

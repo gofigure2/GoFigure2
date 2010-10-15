@@ -43,12 +43,11 @@
 
 #include "QGoTraceManualEditingWidget.h"
 
-int main(int argc, char * argv[])
+int main(int argc, char *argv[])
 {
-
   QApplication app(argc, argv);
 
-  QGoTraceManualEditingWidget* win = new QGoTraceManualEditingWidget();
+  QGoTraceManualEditingWidget *win = new QGoTraceManualEditingWidget();
 
   //QTimer* timer = new QTimer;
   //timer->setSingleShot( true );

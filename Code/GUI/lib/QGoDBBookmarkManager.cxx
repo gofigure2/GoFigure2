@@ -42,26 +42,27 @@
 #include <QDateTime>
 #include "SelectQueryDatabaseHelper.h"
 
-QGoDBBookmarkManager::QGoDBBookmarkManager(QWidget* iParent,
-                                           int iImgSessionID) :
-  QGoDBNameDescEntityManager(iParent,"bookmark",iImgSessionID)
-{
-}
+QGoDBBookmarkManager::QGoDBBookmarkManager(QWidget *iParent,
+                                           int iImgSessionID):
+  QGoDBNameDescEntityManager(iParent, "bookmark", iImgSessionID)
+{}
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 QGoDBBookmarkManager::~QGoDBBookmarkManager()
-{
-}
+{}
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoDBBookmarkManager::AddABookmark(int iCoordID,
-                                        vtkMySQLDatabase* iDatabaseConnector)
+                                        vtkMySQLDatabase *iDatabaseConnector)
 {
   this->m_CoordIDForNewBookmark = iCoordID;
   this->AddAnEntity(iDatabaseConnector);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -70,55 +71,61 @@ void QGoDBBookmarkManager::SaveNewEntityInDB()
   QDateTime   CreationDate = QDateTime::currentDateTime();
   std::string CreationDateStr =
     CreationDate.toString(Qt::ISODate).toStdString();
-  this->m_NewBookmark.SetField("CreationDate", CreationDateStr);
-  this->m_NewBookmark.SetField<int>("CoordID", this->m_CoordIDForNewBookmark);
-  this->m_NewBookmark.SetField<int>("ImagingSessionID", this->m_ImgSessionID);
 
-  if(!this->CheckEntityAlreadyExists<GoDBBookmarkRow>(this->m_NewBookmark))
+  this->m_NewBookmark.SetField("CreationDate", CreationDateStr);
+  this->m_NewBookmark.SetField< int >("CoordID", this->m_CoordIDForNewBookmark);
+  this->m_NewBookmark.SetField< int >("ImagingSessionID", this->m_ImgSessionID);
+
+  if ( !this->CheckEntityAlreadyExists< GoDBBookmarkRow >(this->m_NewBookmark) )
     {
     this->m_NewBookmark.SaveInDB(this->m_DatabaseConnector);
-      emit ListBookmarksChanged();
+    emit ListBookmarksChanged();
     }
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 GoDBCoordinateRow QGoDBBookmarkManager::GetCoordinatesForBookmark(
-  vtkMySQLDatabase* iDatabaseConnector, std::string iName)
+  vtkMySQLDatabase *iDatabaseConnector, std::string iName)
 {
   GoDBCoordinateRow BookmarkCoord;
+
   BookmarkCoord.SetValuesForSpecificID(
     this->GetCoordIDForBookmark(iDatabaseConnector, iName), iDatabaseConnector);
   return BookmarkCoord;
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 int QGoDBBookmarkManager::GetCoordIDForBookmark(
-  vtkMySQLDatabase* iDatabaseConnector, std::string iName)
+  vtkMySQLDatabase *iDatabaseConnector, std::string iName)
 {
   return FindOneID(iDatabaseConnector, "bookmark",
                    "CoordID", "Name", iName);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBBookmarkManager::ValidateName(std::string iName, 
+void QGoDBBookmarkManager::ValidateName(std::string iName,
                                         std::string iDescription)
 {
-  this->ValidateNameTemplate<GoDBBookmarkRow>(this->m_NewBookmark,
-    iName,iDescription);
+  this->ValidateNameTemplate< GoDBBookmarkRow >(this->m_NewBookmark,
+                                                iName, iDescription);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoDBBookmarkManager::DeleteBookmark(
-  vtkMySQLDatabase* iDatabaseConnector)
+  vtkMySQLDatabase *iDatabaseConnector)
 {
   bool ok = this->DeleteEntity(iDatabaseConnector);
-  if (ok)
-    {
-    emit ListBookmarksChanged();//to update the menu for bookmarks;
-    }
 
+  if ( ok )
+    {
+    emit ListBookmarksChanged(); //to update the menu for bookmarks;
+    }
 }

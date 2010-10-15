@@ -75,23 +75,23 @@ class vtkProp;
 
 /**
  * \class vtkInteractorStyleImage3D
- * \ingroup MegaVTK 
+ * \ingroup MegaVTK
  * \brief Define the interactor behavior withing a vtkImage3D.
  * 4 modes (Default, Zoom, Pan and Pick)
  */
 //MOTION FLAG
 #define VTKIS_PICK3D         1050
 
-class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage3D :
+class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage3D:
   public vtkInteractorStyleTrackballCamera
-  {
+{
 public:
-  static vtkInteractorStyleImage3D *New();
+  static vtkInteractorStyleImage3D * New();
+
   vtkTypeRevisionMacro (vtkInteractorStyleImage3D, vtkInteractorStyleTrackballCamera);
 
   //BTX
-  enum InteractionTypeIds
-    {
+  enum InteractionTypeIds {
     InteractionTypeWindowLevel = 0,
     InteractionTypeZoom,
     InteractionTypePan,
@@ -100,22 +100,28 @@ public:
     };
 
   virtual void OnMouseMove();
+
   virtual void OnLeftButtonDown();
+
   virtual void OnLeftButtonUp();
+
   virtual void OnRightButtonDown();
+
   virtual void OnRightButtonUp();
+
   virtual void OnMiddleButtonDown();
+
   virtual void OnMiddleButtonUp();
 
   /**
    * \brief Store the actor which is pointed by the cursor into "m_CurrentProp"
    */
-  void     SetCurrentProp(vtkProp* iCurrent);
+  void     SetCurrentProp(vtkProp *iCurrent);
 
   /**
    * \brief Return the actor which is pointed by the cursor
    */
-  vtkProp* GetCurrentProp();
+  vtkProp * GetCurrentProp();
 
   /**
    * \brief Store the actor which is pointed by the cursor into "m_CurrentProp"
@@ -142,14 +148,17 @@ public:
     * \brief Start the Default Mode
     */
   void EnableDefaultMode();
+
   /**
     * \brief Start the Zoom Mode
     */
   void EnableZoomMode();
+
   /**
     * \brief Start the Pan Mode
     */
   void EnablePanMode();
+
   /**
     * \brief Start the Pick Mode
     */
@@ -158,15 +167,16 @@ public:
 protected:
   vtkInteractorStyleImage3D();
   ~vtkInteractorStyleImage3D();
-
 private:
 
-  vtkInteractorStyleImage3D(const vtkInteractorStyleImage3D &);  // Not implemented.
-  void operator =(const vtkInteractorStyleImage3D&);  // Not implemented.
+  vtkInteractorStyleImage3D(const vtkInteractorStyleImage3D &); // Not
+                                                                // implemented.
+  void operator=(const vtkInteractorStyleImage3D &);            // Not
+                                                                // implemented.
 
-  vtkProp*     m_CurrentProp;
+  vtkProp *    m_CurrentProp;
   unsigned int m_Mode;
   bool         m_State;
-  };
+};
 
 #endif

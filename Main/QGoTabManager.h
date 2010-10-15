@@ -53,34 +53,40 @@ class QGoTabElementBase;
 \class QGoTabManager
 \brief
 */
-class QGoTabManager : public QObject
-  {
+class QGoTabManager:public QObject
+{
   Q_OBJECT
 public:
 
-  explicit QGoTabManager(QGoMainWindow* iMW = 0, QTabWidget* iTW = 0);
+  explicit QGoTabManager(QGoMainWindow *iMW = 0, QTabWidget *iTW = 0);
   ~QGoTabManager();
 
-  /** \brief Set the MainWindow if it has not been set by calling the constructor.*/
-  void SetMainWindow(QGoMainWindow* iMW);
+  /** \brief Set the MainWindow if it has not been set by calling the
+    constructor.*/
+  void SetMainWindow(QGoMainWindow *iMW);
 
-  /** \brief Set the TabWidget if it has not been set by calling the constructor.*/
-  void SetTabWidget(QTabWidget* iTW);
+  /** \brief Set the TabWidget if it has not been set by calling the
+    constructor.*/
+  void SetTabWidget(QTabWidget *iTW);
 
 public slots:
   void ChangeCurrentTab(int iIdx);
+
   void CloseTab(int idx);
+
   void CloseAllTabs();
-  void UpdateBookmarkMenu(std::vector<QAction*> iBookmarkActions);
+
+  void UpdateBookmarkMenu(std::vector< QAction * > iBookmarkActions);
 
 private:
-  QGoMainWindow* m_MainWindow;
-  QTabWidget*    m_TabWidget;
+  QGoMainWindow *m_MainWindow;
+  QTabWidget *   m_TabWidget;
   int            m_PreviousTabIndex;
 
-  void ClearTabElement(QGoTabElementBase* iE);
-  void SetUpTabElement(QGoTabElementBase* iE);
+  void ClearTabElement(QGoTabElementBase *iE);
+
+  void SetUpTabElement(QGoTabElementBase *iE);
 
   Q_DISABLE_COPY(QGoTabManager);
-  };
+};
 #endif

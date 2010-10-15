@@ -41,7 +41,7 @@
 #ifndef __itkViscousWatershedTransform_h
 #define __itkViscousWatershedTransform_h
 
-#if defined(_MSC_VER)
+#if defined( _MSC_VER )
 #pragma warning ( disable : 4786 )
 #endif
 
@@ -57,92 +57,93 @@
 
 namespace itk
 {
-template < class TFeatureImage, class TInputImage, class TSegmentImage >
-class ITK_EXPORT ViscousWatershedTransform : public ImageToImageFilter<
-  TFeatureImage, TFeatureImage >
+template< class TFeatureImage, class TInputImage, class TSegmentImage >
+class ITK_EXPORT ViscousWatershedTransform:public ImageToImageFilter<
+    TFeatureImage, TFeatureImage >
 {
-  public:
-    typedef ViscousWatershedTransform                          Self;
-    typedef ImageToImageFilter< TFeatureImage,TFeatureImage > Superclass;
-    typedef SmartPointer< Self >                              Pointer;
-    typedef SmartPointer< const Self >                        ConstPointer;
+public:
+  typedef ViscousWatershedTransform                          Self;
+  typedef ImageToImageFilter< TFeatureImage, TFeatureImage > Superclass;
+  typedef SmartPointer< Self >                               Pointer;
+  typedef SmartPointer< const Self >                         ConstPointer;
 
-    itkStaticConstMacro ( ImageDimension, unsigned int,
-                          TFeatureImage::ImageDimension );
+  itkStaticConstMacro (ImageDimension, unsigned int,
+                       TFeatureImage::ImageDimension);
 
-    /** Method for creation through object factory */
-    itkNewMacro ( Self );
+  /** Method for creation through object factory */
+  itkNewMacro (Self);
 
-    /** Run-time type information */
-    itkTypeMacro ( ViscousWatershedTransform, ImageToImageFilter );
+  /** Run-time type information */
+  itkTypeMacro (ViscousWatershedTransform, ImageToImageFilter);
 
-    /** Display */
-    void PrintSelf ( std::ostream& os, Indent indent ) const;
+  /** Display */
+  void PrintSelf(std::ostream & os, Indent indent) const;
 
-    typedef TFeatureImage                           FeatureImageType;
-    typedef typename FeatureImageType::Pointer      FeatureImagePointer;
-    typedef typename FeatureImageType::ConstPointer FeatureImageConstPointer;
-    typedef typename FeatureImageType::PixelType    FeatureImagePixelType;
-    typedef typename FeatureImageType::RegionType   FeatureImageRegionType;
-    typedef typename FeatureImageType::SizeType     FeatureImageSizeType;
-    typedef typename FeatureImageSizeType::SizeValueType FeatureImageSizeValueType;
-    typedef typename FeatureImageType::SpacingType  FeatureImageSpacingType;
-    typedef typename FeatureImageType::IndexType    FeatureImageIndexType;
-    typedef typename FeatureImageType::PointType    FeatureImagePointType;
+  typedef TFeatureImage                                FeatureImageType;
+  typedef typename FeatureImageType::Pointer           FeatureImagePointer;
+  typedef typename FeatureImageType::ConstPointer      FeatureImageConstPointer;
+  typedef typename FeatureImageType::PixelType         FeatureImagePixelType;
+  typedef typename FeatureImageType::RegionType        FeatureImageRegionType;
+  typedef typename FeatureImageType::SizeType          FeatureImageSizeType;
+  typedef typename FeatureImageSizeType::SizeValueType FeatureImageSizeValueType;
+  typedef typename FeatureImageType::SpacingType       FeatureImageSpacingType;
+  typedef typename FeatureImageType::IndexType         FeatureImageIndexType;
+  typedef typename FeatureImageType::PointType         FeatureImagePointType;
 
-    typedef TInputImage                      ImageType;
-    typedef typename ImageType::Pointer      ImagePointer;
-    typedef typename ImageType::ConstPointer ImageConstPointer;
-    typedef typename ImageType::PixelType    ImagePixelType;
-    typedef typename ImageType::RegionType   ImageRegionType;
-    typedef typename ImageType::SizeType     ImageSizeType;
-    typedef typename ImageSizeType::SizeValueType ImageSizeValueType;
-    typedef typename ImageType::SpacingType  ImageSpacingType;
-    typedef typename ImageType::IndexType    ImageIndexType;
-    typedef typename ImageType::PointType    ImagePointType;
+  typedef TInputImage                           ImageType;
+  typedef typename ImageType::Pointer           ImagePointer;
+  typedef typename ImageType::ConstPointer      ImageConstPointer;
+  typedef typename ImageType::PixelType         ImagePixelType;
+  typedef typename ImageType::RegionType        ImageRegionType;
+  typedef typename ImageType::SizeType          ImageSizeType;
+  typedef typename ImageSizeType::SizeValueType ImageSizeValueType;
+  typedef typename ImageType::SpacingType       ImageSpacingType;
+  typedef typename ImageType::IndexType         ImageIndexType;
+  typedef typename ImageType::PointType         ImagePointType;
 
-    typedef TSegmentImage                           SegmentImageType;
-    typedef typename SegmentImageType::Pointer      SegmentImagePointer;
-    typedef typename SegmentImageType::ConstPointer SegmentImageConstPointer;
-    typedef typename SegmentImageType::IndexType    SegmentImageIndexType;
-    typedef typename SegmentImageType::PixelType    SegmentImagePixelType;
+  typedef TSegmentImage                           SegmentImageType;
+  typedef typename SegmentImageType::Pointer      SegmentImagePointer;
+  typedef typename SegmentImageType::ConstPointer SegmentImageConstPointer;
+  typedef typename SegmentImageType::IndexType    SegmentImageIndexType;
+  typedef typename SegmentImageType::PixelType    SegmentImagePixelType;
 
-    typedef BinaryThresholdImageFilter< FeatureImageType, FeatureImageType >
-      ThresholdFilterType;
-    typedef typename ThresholdFilterType::Pointer ThresholdFilterPointer;
-    
-    typedef BinaryBallStructuringElement < int, ImageDimension >  StructuringElementType;
-    typedef BinaryMorphologicalClosingImageFilter< FeatureImageType, FeatureImageType, StructuringElementType > ClosingFilterType;
-    typedef typename ClosingFilterType::Pointer ClosingFilterPointer;
-    typedef ImageRegionIterator< FeatureImageType > FeatureIteratorType;
-    
-    itkSetMacro ( InitialLevel, unsigned int );
-    itkGetConstMacro ( InitialLevel, unsigned int );
-    itkSetMacro ( FinalLevel, unsigned int );
-    itkGetConstMacro ( FinalLevel, unsigned int );
-    itkSetMacro ( Increment, unsigned int );
-    itkGetConstMacro ( Increment,unsigned int );
-    itkSetMacro ( LargestRadius, unsigned int );
-    itkGetConstMacro ( LargestRadius,unsigned int );
-    itkSetMacro ( Slope, unsigned int );
-    itkGetConstMacro ( Slope,unsigned int );
-    
-  protected:
-    ViscousWatershedTransform();
-    ~ViscousWatershedTransform() {}
-    void GenerateData();
+  typedef BinaryThresholdImageFilter< FeatureImageType, FeatureImageType >
+  ThresholdFilterType;
+  typedef typename ThresholdFilterType::Pointer ThresholdFilterPointer;
 
-    unsigned int m_InitialLevel;
-    unsigned int m_FinalLevel;
-    unsigned int m_Increment;
-    unsigned int m_LargestRadius;
-    unsigned int m_Slope;
-    
-  private:
-    ViscousWatershedTransform ( Self& );   // intentionally not implemented
-    void operator= ( const Self& );   // intentionally not implemented
-  };
+  typedef BinaryBallStructuringElement< int,
+                                        ImageDimension >                  StructuringElementType;
+  typedef BinaryMorphologicalClosingImageFilter< FeatureImageType, FeatureImageType,
+                                                 StructuringElementType > ClosingFilterType;
+  typedef typename ClosingFilterType::Pointer
+                                                                          ClosingFilterPointer;
+  typedef ImageRegionIterator< FeatureImageType >
+                                                                          FeatureIteratorType;
 
+  itkSetMacro (InitialLevel, unsigned int);
+  itkGetConstMacro (InitialLevel, unsigned int);
+  itkSetMacro (FinalLevel, unsigned int);
+  itkGetConstMacro (FinalLevel, unsigned int);
+  itkSetMacro (Increment, unsigned int);
+  itkGetConstMacro (Increment, unsigned int);
+  itkSetMacro (LargestRadius, unsigned int);
+  itkGetConstMacro (LargestRadius, unsigned int);
+  itkSetMacro (Slope, unsigned int);
+  itkGetConstMacro (Slope, unsigned int);
+protected:
+  ViscousWatershedTransform();
+  ~ViscousWatershedTransform() {}
+  void GenerateData();
+
+  unsigned int m_InitialLevel;
+  unsigned int m_FinalLevel;
+  unsigned int m_Increment;
+  unsigned int m_LargestRadius;
+  unsigned int m_Slope;
+private:
+  ViscousWatershedTransform (Self &); // intentionally not implemented
+  void operator=(const Self &);       // intentionally not implemented
+};
 } /* namespace itk */
 
 #include "itkViscousWatershedTransform.txx"

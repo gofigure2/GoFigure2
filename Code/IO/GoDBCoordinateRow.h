@@ -46,22 +46,22 @@
 #include <string>
 #include <map>
 
-class QGOIO_EXPORT GoDBCoordinateRow : public GoDBRow
-  {
+class QGOIO_EXPORT GoDBCoordinateRow:public GoDBRow
+{
 public:
   GoDBCoordinateRow();
 
   ~GoDBCoordinateRow()
-        {}
+  {}
   /** \brief return the CoordID of the coordinate with the same attributes
   already registered in the DB or -1 if not yet created*/
-  int DoesThisCoordinateExist(vtkMySQLDatabase* DatabaseConnector);
+  int DoesThisCoordinateExist(vtkMySQLDatabase *DatabaseConnector);
 
   /** \brief save the coordinate in the database and return the ID of the new
  created coordinate or the ID of the existing one*/
-  int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
+  int SaveInDB(vtkMySQLDatabase *DatabaseConnector);
 
 protected:
   virtual void InitializeMap();
-  };
+};
 #endif

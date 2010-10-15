@@ -51,21 +51,21 @@
 
 #include "ContourToMeshFilter.h"
 
-void CreateCircle(const double& iZ,
-                  const double& iRadius,
-                  const int& iResolution,
-                  vtkPolyData* ioContour)
+void CreateCircle(const double & iZ,
+                  const double & iRadius,
+                  const int & iResolution,
+                  vtkPolyData *ioContour)
 {
-  vtkSmartPointer<vtkPoints>    points = vtkSmartPointer<vtkPoints>::New();
-  vtkSmartPointer<vtkCellArray> cells = vtkSmartPointer<vtkCellArray>::New();
+  vtkSmartPointer< vtkPoints >    points = vtkSmartPointer< vtkPoints >::New();
+  vtkSmartPointer< vtkCellArray > cells = vtkSmartPointer< vtkCellArray >::New();
 
   points->SetNumberOfPoints(iResolution);
   cells->Allocate(1, iResolution);
   cells->InsertNextCell(iResolution);
 
-  for (int i = 0; i < iResolution; ++i)
+  for ( int i = 0; i < iResolution; ++i )
     {
-    double theta = vtkMath::RadiansFromDegrees(360. * i / double(iResolution));
+    double theta = vtkMath::RadiansFromDegrees( 360. * i / double(iResolution) );
     double x = iRadius * cos(theta);
     double y = iRadius * sin(theta);
     points->SetPoint(i, x, y, iZ);
@@ -77,9 +77,9 @@ void CreateCircle(const double& iZ,
   ioContour->SetPoints(points);
 }
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
-  if (argc != 2)
+  if ( argc != 2 )
     {
     std::cerr << "./ContourToMeshFilter(.exe) takes 1 arguments" << std::endl;
     std::cerr << "1- boolean value (test)" << std::endl;
@@ -93,17 +93,17 @@ int main(int argc, char* argv[])
   double zmin = -0.9 * sphereRadius;
   double zmax = -zmin;
 
-  std::vector<vtkSmartPointer<vtkPolyData> > contours(20);
+  std::vector< vtkSmartPointer< vtkPolyData > > contours(20);
 
-  for (int i = 0; i < 20; i++)
+  for ( int i = 0; i < 20; i++ )
     {
-    if ((i < 4) || (i > 10))
+    if ( ( i < 4 ) || ( i > 10 ) )
       {
       lastz = z;
-      double u = static_cast<double>(i) / 20.;
-      z = (1. - u) * zmin + u * zmax;
+      double u = static_cast< double >( i ) / 20.;
+      z = ( 1. - u ) * zmin + u * zmax;
       double radius = sqrt(sphereRadius * sphereRadius - z * z);
-      contours[i] = vtkSmartPointer<vtkPolyData>::New();
+      contours[i] = vtkSmartPointer< vtkPolyData >::New();
       CreateCircle(z, radius, resolution, contours[i]);
       }
     else
@@ -112,33 +112,33 @@ int main(int argc, char* argv[])
       }
     }
 
-  typedef itk::ContourToMeshFilter<std::vector<vtkSmartPointer<vtkPolyData> > > FilterType;
+  typedef itk::ContourToMeshFilter< std::vector< vtkSmartPointer< vtkPolyData > > > FilterType;
   FilterType::Pointer filter = FilterType::New();
   filter->ProcessContours(contours);
 
-  vtkSmartPointer<vtkPolyDataMapper> mapper =
-    vtkSmartPointer<vtkPolyDataMapper>::New();
-  mapper->SetInput(filter->GetOutput());
+  vtkSmartPointer< vtkPolyDataMapper > mapper =
+    vtkSmartPointer< vtkPolyDataMapper >::New();
+  mapper->SetInput( filter->GetOutput() );
 
-  vtkSmartPointer<vtkActor> actor =
-    vtkSmartPointer<vtkActor>::New();
+  vtkSmartPointer< vtkActor > actor =
+    vtkSmartPointer< vtkActor >::New();
   actor->SetMapper(mapper);
 
-  vtkSmartPointer<vtkRenderer> renderer =
-    vtkSmartPointer<vtkRenderer>::New();
+  vtkSmartPointer< vtkRenderer > renderer =
+    vtkSmartPointer< vtkRenderer >::New();
   renderer->AddActor(actor);
 
-  vtkSmartPointer<vtkRenderWindow> renwin =
-    vtkSmartPointer<vtkRenderWindow>::New();
+  vtkSmartPointer< vtkRenderWindow > renwin =
+    vtkSmartPointer< vtkRenderWindow >::New();
   renwin->AddRenderer(renderer);
 
-  vtkSmartPointer<vtkRenderWindowInteractor> iren =
-    vtkSmartPointer<vtkRenderWindowInteractor>::New();
+  vtkSmartPointer< vtkRenderWindowInteractor > iren =
+    vtkSmartPointer< vtkRenderWindowInteractor >::New();
   iren->SetRenderWindow(renwin);
 
   renwin->Render();
 
-  if (atoi(argv[1]) == 1)
+  if ( atoi(argv[1]) == 1 )
     {
     iren->CreateOneShotTimer(1);
     }

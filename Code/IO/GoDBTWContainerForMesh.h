@@ -43,38 +43,37 @@
 #include "GoDBTWContainerForContourMesh.h"
 #include "QGoIOConfigure.h"
 #include "GoFigureMeshAttributes.h"
-/** 
-\brief 
+/**
+\brief
 */
-class QGOIO_EXPORT GoDBTWContainerForMesh: public GoDBTWContainerForContourMesh
-  {
-
+class QGOIO_EXPORT GoDBTWContainerForMesh:public GoDBTWContainerForContourMesh
+{
 public:
   GoDBTWContainerForMesh(int iImgSessionID);
   ~GoDBTWContainerForMesh();
 
   virtual TWContainerType GetContainerLoadedWithAllFromDB(
-  vtkMySQLDatabase* iDatabaseConnector);
+    vtkMySQLDatabase *iDatabaseConnector);
 
   virtual TWContainerType GetContainerForOneSpecificTrace(
-  vtkMySQLDatabase* iDatabaseConnector, int iTraceID);
+    vtkMySQLDatabase *iDatabaseConnector, int iTraceID);
 
   /**
   \brief set m_MeshAttributes to iMeshAttributes, needs to be called
   before displaying the volume, area values
   \param[in] iMeshAttributes attributes for the mesh computed from visu
   */
-  void SetMeshAttributes(GoFigureMeshAttributes* iMeshAttributes);
+  void SetMeshAttributes(GoFigureMeshAttributes *iMeshAttributes);
 
 protected:
-  std::vector<std::vector<std::string> >   m_ChannelsInfo;
-  GoFigureMeshAttributes* m_MeshAttributes;
+  std::vector< std::vector< std::string > > m_ChannelsInfo;
+  GoFigureMeshAttributes *                  m_MeshAttributes;
 
   void SetSpecificColumnsInfoForMesh();
 
   //std::vector<std::vector<std::string> > GetChannelsInfo();
 
-  void SetChannelsInfo(vtkMySQLDatabase* iDatabaseConnector);
+  void SetChannelsInfo(vtkMySQLDatabase *iDatabaseConnector);
 
   /**
   \brief fill the row container with intensities values only if there is
@@ -84,67 +83,66 @@ protected:
   when a mesh is created from the visu)but the method SetMeshAttributes
   has to be called before.
   \param[in] iDatabaseConnector connection to the database
-  \param[in] iVectMeshIDs vector of the meshIDs 
+  \param[in] iVectMeshIDs vector of the meshIDs
   */
   void FillRowContainerForMeshValues(
-    vtkMySQLDatabase* iDatabaseConnector, std::vector<std::string> iVectMeshIDs);
+    vtkMySQLDatabase *iDatabaseConnector, std::vector< std::string > iVectMeshIDs);
 
   /**
   \overloaded
   */
   void FillRowContainerForMeshValues(
-   vtkMySQLDatabase* iDatabaseConnector, int iMeshID);
+    vtkMySQLDatabase *iDatabaseConnector, int iMeshID);
 
   /**
   \brief extract the volume and area values from the m_MeshAttributes,put
   them in ioValuesToFill and put the corresponding columns names in ioSelectFields
-  \param[in|out] ioValuesToFill vector of the values where volume and area values 
+  \param[in|out] ioValuesToFill vector of the values where volume and area values
   will be pushed
   \param[in|out] ioSelectFields vector of the selected fields where the volume and
   area columns names in the TW will be pushed
   */
   void GetValuesForSurfaceVolume(
-    std::vector<std::vector<std::string> > &ioValuesToFill,
-    std::vector<std::string>               &ioSelectFields);
+    std::vector< std::vector< std::string > > & ioValuesToFill,
+    std::vector< std::string >               & ioSelectFields);
 
   /**
   \brief get the intensities values from the database,put them in ioValuesToFill,
   and put the corresponding columns names in ioSelectFields (from m_ChannelsInfo)
   \param[in] iDatabaseConnector connection to the database
   \param[in] iVectMeshIDs vector of the meshIDs for which the intensities are needed
-  \param[in|out] ioValuesToFill vector of the values where the intensities values 
+  \param[in|out] ioValuesToFill vector of the values where the intensities values
   will be pushed
   \param[in|out] ioSelectFields vector of the selected fields where the intensities
   columns names in the TW will be pushed
   */
   void GetValuesForIntensities(
-    vtkMySQLDatabase* iDatabaseConnector, 
-    std::vector<std::string> iVectMeshIDs,
-    std::vector<std::vector<std::string> > &ioValuesToFill,
-    std::vector<std::string>               &ioSelectFields);
+    vtkMySQLDatabase *iDatabaseConnector,
+    std::vector< std::string > iVectMeshIDs,
+    std::vector< std::vector< std::string > > & ioValuesToFill,
+    std::vector< std::string >               & ioSelectFields);
 
   /**
   \brief get the intensities values from the database,and put them in ioValuesToFill for
   only one mesh
   \param[in] iMeshID meshID for the mesh the intensity values are needed
-  \param[in|out] ioValuesToFill vector of the values where the intensities values 
+  \param[in|out] ioValuesToFill vector of the values where the intensities values
   will be pushed
   */
   void GetIntensityValuesForOneMesh(std::string iMeshID,
-    std::vector<std::vector<std::string> > &ioValuesToFill,
-    vtkMySQLDatabase* iDatabaseConnector);
+                                    std::vector< std::vector< std::string > > & ioValuesToFill,
+                                    vtkMySQLDatabase *iDatabaseConnector);
 
   /**
   \brief sort the values in iResultQuery to fill ioValuesToFill
   \param[in] iResultQuery vector with all the data from the database
   \param[in] iVectMeshIDs vector of all the meshIDs
-  \param[in] ioValuesToFill vector of the values where the intensities values 
+  \param[in] ioValuesToFill vector of the values where the intensities values
   will be pushed
   \param[in] iDatabaseConnector connection to the database
   */
   void GetValuesToFillForIntensityFromQueryResults(
-    std::vector<std::string> iResultQuery, std::vector<std::string> iVectMeshIDs,
-    std::vector<std::vector<std::string> > &ioValuesToFill);
-
-  };
+    std::vector< std::string > iResultQuery, std::vector< std::string > iVectMeshIDs,
+    std::vector< std::vector< std::string > > & ioValuesToFill);
+};
 #endif

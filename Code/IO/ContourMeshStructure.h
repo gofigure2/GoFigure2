@@ -49,15 +49,14 @@ class vtkPolyData;
 
 #include "QGoIOConfigure.h"
 
-struct QGOIO_EXPORT ContourMeshStructure
-  {
+struct QGOIO_EXPORT ContourMeshStructure {
   unsigned int TraceID;
-  vtkActor* ActorXY;
-  vtkActor* ActorXZ;
-  vtkActor* ActorYZ;
-  vtkActor* ActorXYZ;
+  vtkActor *ActorXY;
+  vtkActor *ActorXZ;
+  vtkActor *ActorYZ;
+  vtkActor *ActorXYZ;
 
-  vtkPolyData* Nodes;
+  vtkPolyData *Nodes;
 
   //unsigned int CollectionID;
   unsigned int TCoord;
@@ -73,49 +72,49 @@ struct QGOIO_EXPORT ContourMeshStructure
   \return -1 else
   */
   int GetDirection();
-  bool IsAContour();
 
+  bool IsAContour();
 
   ContourMeshStructure();
 
   ContourMeshStructure(const unsigned int & iTraceID,
-                       std::vector< vtkActor* > iActors,
-                       vtkPolyData * iNodes,
+                       std::vector< vtkActor * > iActors,
+                       vtkPolyData *iNodes,
                        const unsigned int & iT,
                        const bool & iHighlighted,
                        const bool & iVisible,
                        const double & r,
                        const double & g,
                        const double & b,
-                       const double & alpha );
+                       const double & alpha);
 
   ContourMeshStructure(const unsigned int & iTraceID,
-                       std::vector< vtkActor* > iActors,
-                       vtkPolyData * iNodes,
+                       std::vector< vtkActor * > iActors,
+                       vtkPolyData *iNodes,
                        const unsigned int & iT,
                        const bool & iHighlighted,
                        const bool & iVisible,
-                       double iRgba[4] );
+                       double iRgba[4]);
 
   ContourMeshStructure(const unsigned int & iTraceID,
-                       vtkActor* iActorXY,
-                       vtkActor* iActorYZ,
-                       vtkActor* iActorXZ,
-                       vtkActor* iActorXYZ,
-                       vtkPolyData * iNodes,
+                       vtkActor *iActorXY,
+                       vtkActor *iActorYZ,
+                       vtkActor *iActorXZ,
+                       vtkActor *iActorXYZ,
+                       vtkPolyData *iNodes,
                        const unsigned int & iT,
                        const bool & iHighlighted,
                        const bool & iVisible,
                        const double & r,
                        const double & g,
                        const double & b,
-                       const double & alpha );
+                       const double & alpha);
 
-  ContourMeshStructure(const ContourMeshStructure &iE);
+  ContourMeshStructure(const ContourMeshStructure & iE);
   ~ContourMeshStructure();
 
-  friend std::ostream& operator <<
-      (std::ostream& os, const ContourMeshStructure& c)
+  friend std::ostream & operator<<
+    (std::ostream & os, const ContourMeshStructure & c)
   {
     os << "TraceID " << c.TraceID << std::endl;
     os << "ActorXY " << c.ActorXY << std::endl;
@@ -128,11 +127,11 @@ struct QGOIO_EXPORT ContourMeshStructure
     os << "Highlighted " << c.Highlighted << std::endl;
     os << "Visible " << c.Visible << std::endl;
     os << "RGBA [" << c.rgba[0] << ", " << c.rgba[1] << ", " << c.rgba[2]
-       << ", " << c.rgba[3] << "]" << std::endl;
+    << ", " << c.rgba[3] << "]" << std::endl;
 
     return os;
   }
-  };
+};
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 struct TraceID {};

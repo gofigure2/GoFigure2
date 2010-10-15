@@ -55,14 +55,14 @@ class QGoSeedSegmentation;
 
 #include "ui_SegmentationBaseDockWidget.h"
 
-class QGoSegmentationBaseDockWidget :
+class QGoSegmentationBaseDockWidget:
   public QDockWidget,
   protected Ui::SegmentationBaseDockWidget
-  {
+{
   Q_OBJECT
 public:
-  explicit QGoSegmentationBaseDockWidget(QWidget* iParent = 0, vtkPoints* seeds = 0,
-      std::vector<vtkImageData*>* iOriginalImage = 0);
+  explicit QGoSegmentationBaseDockWidget(QWidget *iParent = 0, vtkPoints *seeds = 0,
+                                         std::vector< vtkImageData * > *iOriginalImage = 0);
   ~QGoSegmentationBaseDockWidget();
 
   /**
@@ -74,9 +74,10 @@ public:
   void SetChannel(int iChannel);
 
   bool GetReeditMode();
-  void SetReeditMode( bool iEnable);
 
-  void EnableAndShow( bool iEnable);
+  void SetReeditMode(bool iEnable);
+
+  void EnableAndShow(bool iEnable);
 
   void Initialize();
 
@@ -85,32 +86,41 @@ protected:
   virtual void InitializeWidgetAppearance();
 */
 public slots:
-  QFrame* GetFrame();
+  QFrame * GetFrame();
+
   void SegmentationMethod(int);
+
   void interactorBehavior(bool);
 
 signals:
   void ManualSegmentation(bool);
+
   void SemiAutoSegmentation(bool);
+
   void AutoSegmentation(bool);
+
   void ReinitializeInteractor(bool);
 
   // manual segmentation specific signals
   void ValidateContour();
+
   void ReinitializeContourWidget();
+
   void UpdateContourRepresentationProperties(float, QColor, QColor, QColor);
   void ShowTraceDockWidgetForContour(bool);
 
   // semi automatic signals
   void UpdateSeeds();
-  void SaveAndVisuContour(vtkPolyData*);
+
+  void SaveAndVisuContour(vtkPolyData *);
+
   void ClearAllSeeds();
 
 private:
-  QGoContourManualSegmentation*      m_ContourManualSegmentation;
-  QGoSeedSegmentation*               m_ContourSemiAutoSegmentation;
+  QGoContourManualSegmentation *m_ContourManualSegmentation;
+  QGoSeedSegmentation *         m_ContourSemiAutoSegmentation;
 
-  Q_DISABLE_COPY( QGoSegmentationBaseDockWidget );
-  };
+  Q_DISABLE_COPY(QGoSegmentationBaseDockWidget);
+};
 
 #endif

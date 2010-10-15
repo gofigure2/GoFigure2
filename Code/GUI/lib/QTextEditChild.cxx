@@ -42,19 +42,19 @@
 #include <QTextEdit>
 
 //--------------------------------------------------------------------------
-QTextEditChild::
-QTextEditChild(QWidget* iParent, int iNumberMaxCharacters) :
-  QTextEdit(iParent), m_MaxCharacters( iNumberMaxCharacters )
-  {
-  QObject::connect(this, SIGNAL(textChanged()),
-                   this, SLOT(RestrainInputCharacters()));
-  }
+QTextEditChild::QTextEditChild(QWidget *iParent, int iNumberMaxCharacters):
+  QTextEdit(iParent), m_MaxCharacters(iNumberMaxCharacters)
+{
+  QObject::connect( this, SIGNAL( textChanged() ),
+                    this, SLOT( RestrainInputCharacters() ) );
+}
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QTextEditChild::~QTextEditChild()
-  {
-  }
+{}
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -63,8 +63,9 @@ void QTextEditChild::RestrainInputCharacters()
   QString text;
   int     leftChar = 0;
   int     sizeText = this->toPlainText().size();
+
   leftChar = this->m_MaxCharacters - sizeText;
-  if (leftChar < 0)
+  if ( leftChar < 0 )
     {
     text = this->toPlainText().left(this->m_MaxCharacters);
     this->setText(text);

@@ -49,20 +49,20 @@
 #include <iostream>
 #include <list>
 
-QGoConnectServerPage::QGoConnectServerPage(QWidget *iParent)
-  : QWizardPage(iParent)
-  {
+QGoConnectServerPage::QGoConnectServerPage(QWidget *iParent):
+  QWizardPage(iParent)
+{
   this->m_ImgSessionName.clear();
   this->m_IsAnOpenRecentFile = false;
   QFont tfont;
   tfont.setBold(false);
   this->setFont(tfont);
-  setSubTitle(tr("Connect to a MySQL DataBase Server:"));
+  setSubTitle( tr("Connect to a MySQL DataBase Server:") );
 
-  QFormLayout* formLayout = new QFormLayout;
-  lineServerName = new QLineEdit(tr("localhost"));
-  lineUserName = new QLineEdit(tr("gofigure"));
-  linePassword = new QLineEdit(tr("gofigure"));
+  QFormLayout *formLayout = new QFormLayout;
+  lineServerName = new QLineEdit( tr("localhost") );
+  lineUserName = new QLineEdit( tr("gofigure") );
+  linePassword = new QLineEdit( tr("gofigure") );
   linePassword->setEchoMode(QLineEdit::Password);
   linePassword->displayText();
   lineDBName = new QLineEdit;
@@ -78,54 +78,55 @@ QGoConnectServerPage::QGoConnectServerPage(QWidget *iParent)
   registerField("User",       lineUserName);
   registerField("Password",   linePassword);
   registerField("DBName",     lineDBName);
+}
 
-  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 QGoConnectServerPage::~QGoConnectServerPage()
-  {
+{
   delete lineDBName;
   // make sure vtkMySQLDatabase* has been deleted
   CloseServerConnection();
-  }
+}
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 bool QGoConnectServerPage::validatePage()
 {
-  if (field("ServerName").toString() == "" ||
-      field("User").toString() == "" ||
-      field("Password").toString() == "")
+  if ( field("ServerName").toString() == ""
+       || field("User").toString() == ""
+       || field("Password").toString() == "" )
     {
     QMessageBox msgBox;
     msgBox.setText(
-      tr("Please fill all the fields."));
+      tr("Please fill all the fields.") );
     msgBox.exec();
     return false;
     }
   this->OpenConnectionToServer();
-  if (!m_ConnectionServer.first)
+  if ( !m_ConnectionServer.first )
     {
     QMessageBox msgBox;
     msgBox.setText(
-      tr("Unable to connect to the server: please make sure you entered the right fields."));
+      tr("Unable to connect to the server: please make sure you entered the right fields.") );
     msgBox.exec();
     return false;
     }
-  std::list<std::string> ListGoDB = ListGofigureDatabases();
-  if (ListGoDB.empty())
+  std::list< std::string > ListGoDB = ListGofigureDatabases();
+  if ( ListGoDB.empty() )
     {
     QMessageBox msgBox;
     msgBox.setText(
       tr(
-        "You have not yet set up your Gofigure Database\nPlease go to the menu 'Settings' and select 'Set Up Database'."));
+        "You have not yet set up your Gofigure Database\nPlease go to the menu 'Settings' and select 'Set Up Database'.") );
     msgBox.exec();
     emit NoGofigureDatabase();
     return false;
     }
 
-  if (ListGoDB.size() > 1)
+  if ( ListGoDB.size() > 1 )
     {
     std::cout << "There is more than one Gofigure DataBase" << std::endl;
     std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
@@ -133,18 +134,19 @@ bool QGoConnectServerPage::validatePage()
     return false;
     }
 
-  std::list<std::string>::iterator i = ListGoDB.begin();
-  std::string                      DBName = *i;
-  this->wizard()->setField("DBName", DBName.c_str());
+  std::list< std::string >::iterator i = ListGoDB.begin();
+  std::string                        DBName = *i;
+  this->wizard()->setField( "DBName", DBName.c_str() );
   std::cout << "the db name to open is: " << field("DBName").toString().toStdString().c_str() << std::endl;
   return true;
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 int QGoConnectServerPage::nextId() const
 {
-  if (!this->m_IsAnOpenRecentFile)
+  if ( !this->m_IsAnOpenRecentFile )
     {
     return QGoWizardDB::OpenOrCreateProjectPageID;
     }
@@ -153,38 +155,40 @@ int QGoConnectServerPage::nextId() const
     return -1;
     }
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::list<std::string> QGoConnectServerPage::ListGofigureDatabases() const
+std::list< std::string > QGoConnectServerPage::ListGofigureDatabases() const
 {
   //Get the list of all the existing databases:
   this->OpenConnectionToServer();
-  std::vector<std::string> vectListDB = ListDatabases(m_ConnectionServer.second);
+  std::vector< std::string > vectListDB = ListDatabases(m_ConnectionServer.second);
   CloseServerConnection();
 
   /*For each existing database, check if they are of Gofigure Type, if so, put them
   in the ListGoDB*/
-  std::list<std::string> ListGoDB;
-  for (unsigned int i = 0; i < vectListDB.size(); ++i)
+  std::list< std::string > ListGoDB;
+  for ( unsigned int i = 0; i < vectListDB.size(); ++i )
     {
-    //First, create the connection to the database named vectListDB[i]and check it is open:
-    std::pair<bool, vtkMySQLDatabase*> DatabaseConnection = ConnectToDatabase(
+    //First, create the connection to the database named vectListDB[i]and check
+    // it is open:
+    std::pair< bool, vtkMySQLDatabase * > DatabaseConnection = ConnectToDatabase(
       field("ServerName").toString().toStdString(),
       field("User").toString().toStdString(),
       field("Password").toString().toStdString(), vectListDB[i]);
-    if (!DatabaseConnection.first)
+    if ( !DatabaseConnection.first )
       {
-      std::cout << "Cannot check if " << vectListDB[i].c_str() <<
-      " is of\
+      std::cout << "Cannot check if " << vectListDB[i].c_str()
+                << " is of\
                   Gofigure Type"
-     <<
+                <<
       std::endl;
       std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
       std::cout << std::endl;
       }
     //test if it is of GofigureType:
-    if (IsDatabaseOfGoFigureType(DatabaseConnection.second))
+    if ( IsDatabaseOfGoFigureType(DatabaseConnection.second) )
       {
       ListGoDB.push_back(vectListDB[i]);
       }
@@ -193,31 +197,34 @@ std::list<std::string> QGoConnectServerPage::ListGofigureDatabases() const
     }
   return ListGoDB;
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoConnectServerPage::CloseServerConnection() const
 {
-  if(m_ConnectionServer.second)
+  if ( m_ConnectionServer.second )
     {
     m_ConnectionServer.second->Close();
     m_ConnectionServer.second->Delete();
     m_ConnectionServer.second = 0;
     }
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoConnectServerPage::OpenConnectionToServer() const
 {
-  if (this->m_ConnectionServer.second == 0)
+  if ( this->m_ConnectionServer.second == 0 )
     {
     m_ConnectionServer = ConnectToServer(
       field("ServerName").toString().toStdString(),
       field("User").toString().toStdString(),
-      field("Password").toString().toStdString());
+      field("Password").toString().toStdString() );
     }
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -226,6 +233,7 @@ void QGoConnectServerPage::SetImgSessionName(std::string iImgSessionName)
   this->m_ImgSessionName = iImgSessionName;
   this->m_IsAnOpenRecentFile = true;
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

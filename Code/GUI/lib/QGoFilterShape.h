@@ -49,32 +49,35 @@ class vtkPolyData;
 /**
  * \class QGoFilterShape
  */
-class QGOGUILIB_EXPORT QGoFilterShape : public QGoFilterSemiAutoBase
+class QGOGUILIB_EXPORT QGoFilterShape:public QGoFilterSemiAutoBase
 {
   Q_OBJECT
 public:
   /** \brief Constructor */
-  explicit QGoFilterShape( QObject* iParent = NULL, int iDimension = 2 );
+  explicit QGoFilterShape(QObject *iParent = NULL, int iDimension = 2);
 
   /** \brief Destructor */
   ~QGoFilterShape();
 
-  virtual vtkPolyData* Apply();
+  virtual vtkPolyData * Apply();
 
   virtual void ConnectSignals(int iFilterNumber);
-
-private:
-  vtkPolyData* GenerateSphere(double* iCenter);
-  vtkPolyData* GenerateCube(double* iCenter);
-  vtkPolyData* GenerateCylinder(double* iCenter);
-
-  int m_Shape;
 
 public slots:
 
   void setShape(int);
 
-private:
+protected:
 
+  int m_Shape;
+
+  vtkPolyData * GenerateSphere(double *iCenter);
+
+  vtkPolyData * GenerateCube(double *iCenter);
+
+  vtkPolyData * GenerateCylinder(double *iCenter);
+
+private:
+  Q_DISABLE_COPY(QGoFilterShape);
 };
 #endif

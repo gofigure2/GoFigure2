@@ -43,22 +43,22 @@
 #include "GoDBNameDescRow.h"
 #include "vtkMySQLDatabase.h"
 
-class QGOIO_EXPORT GoDBCellTypeRow : public GoDBNameDescRow
-  {
+class QGOIO_EXPORT GoDBCellTypeRow:public GoDBNameDescRow
+{
 public:
   GoDBCellTypeRow();
 
   ~GoDBCellTypeRow()
-        {}
-  virtual int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
-  virtual int DoesThisEntityAlreadyExists(
-    vtkMySQLDatabase* DatabaseConnector);
-  //virtual int DoesThisEntityAlreadyExists(
-    //vtkMySQLDatabase* DatabaseConnector, std::string& ioName);
+  {}
+  virtual int SaveInDB(vtkMySQLDatabase *DatabaseConnector);
 
+  virtual int DoesThisEntityAlreadyExists(
+    vtkMySQLDatabase *DatabaseConnector);
+
+  //virtual int DoesThisEntityAlreadyExists(
+  //vtkMySQLDatabase* DatabaseConnector, std::string& ioName);
 protected:
 
   virtual void InitializeMap();
-
-  };
+};
 #endif

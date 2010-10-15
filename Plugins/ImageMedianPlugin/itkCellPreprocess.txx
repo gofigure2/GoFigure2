@@ -45,31 +45,31 @@
 
 namespace itk
 {
-template <class TInputImage, class TOutputImage>
-CellPreprocess<TInputImage, TOutputImage>
-::CellPreprocess() : m_LargestCellRadius (4.0)
-  {
+template< class TInputImage, class TOutputImage >
+CellPreprocess< TInputImage, TOutputImage >
+::CellPreprocess():m_LargestCellRadius (4.0)
+{
   m_MembraneData = false;
   this->Superclass::SetNumberOfRequiredInputs (1);
   this->Superclass::SetNumberOfRequiredOutputs (1);
 
-  this->Superclass::SetNthOutput (0, TOutputImage::New());
-  }
+  this->Superclass::SetNthOutput ( 0, TOutputImage::New() );
+}
 
-template <class TInputImage, class TOutputImage>
+template< class TInputImage, class TOutputImage >
 void
-CellPreprocess<TInputImage, TOutputImage>::
-GenerateData()
+CellPreprocess< TInputImage, TOutputImage >::GenerateData()
 {
   InputCastPointer m_CastInput = InputCastType::New();
-  m_CastInput->SetInput (this->GetInput());
+
+  m_CastInput->SetInput ( this->GetInput() );
   m_CastInput->Update();
 
   ImageSpacingType spacing = this->GetInput()->GetSpacing();
   ImageSizeType    radius;
-  for (unsigned int j = 0; j < ImageDimension; j++)
+  for ( unsigned int j = 0; j < ImageDimension; j++ )
     {
-    radius[j] = static_cast<ImageSizeValueType> (
+    radius[j] = static_cast< ImageSizeValueType >(
       0.3 * m_LargestCellRadius / spacing[j]);
     }
 
@@ -78,18 +78,18 @@ GenerateData()
     MedianFilterPointer m_Median = MedianFilterType::New();
     m_Median = MedianFilterType::New();
     m_Median->SetRadius (radius);
-    m_Median->SetInput (m_CastInput->GetOutput());
+    m_Median->SetInput ( m_CastInput->GetOutput() );
     m_Median->Update();
 
     SmoothingFilterPointer m_smooth = SmoothingFilterType::New();
-    m_smooth->SetInput (m_Median->GetOutput());
+    m_smooth->SetInput ( m_Median->GetOutput() );
     m_smooth->SetNumberOfIterations(5);
     m_smooth->SetTimeStep(0.0125);
     m_smooth->SetConductanceParameter(3);
     m_smooth->UseImageSpacingOn();
     m_smooth->Update();
 
-    if (m_MembraneData)
+    if ( m_MembraneData )
       {
       cellImg = m_smooth->GetOutput();
       cellImg->DisconnectPipeline();
@@ -97,7 +97,7 @@ GenerateData()
     else
       {
       GrayscaleFillholePointer m_fillHole = GrayscaleFillholeFilterType::New();
-      m_fillHole->SetInput (m_smooth->GetOutput());
+      m_fillHole->SetInput ( m_smooth->GetOutput() );
       m_fillHole->SetFullyConnected (0);
       m_fillHole->Update();
       cellImg = m_fillHole->GetOutput();
@@ -106,23 +106,21 @@ GenerateData()
     }
   OutputCastPointer m_CastOutput = OutputCastType::New();
   m_CastOutput->SetInput (cellImg);
-  m_CastOutput->GraftOutput (this->GetOutput());
+  m_CastOutput->GraftOutput ( this->GetOutput() );
   m_CastOutput->Update();
 
-  this->GraftOutput (m_CastOutput->GetOutput());
+  this->GraftOutput ( m_CastOutput->GetOutput() );
 }
 
-template <class TInputImage, class TOutputImage>
+template< class TInputImage, class TOutputImage >
 void
-CellPreprocess<TInputImage, TOutputImage>::
-PrintSelf(std::ostream& os, Indent indent) const
+CellPreprocess< TInputImage, TOutputImage >::PrintSelf(std::ostream & os, Indent indent) const
 {
   Superclass::PrintSelf (os, indent);
   os << indent << "Class Name:        " << GetNameOfClass() << std::endl;
-  os << indent << "Largest cell radius: " << GetLargestCellRadius() <<
-  std::endl;
+  os << indent << "Largest cell radius: " << GetLargestCellRadius()
+     << std::endl;
 }
-
 }   /* end namespace itk */
 
 #endif

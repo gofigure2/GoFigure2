@@ -45,61 +45,62 @@
 #include "vtkActor.h"
 #include "vtkPolyData.h"
 
-int main( int argc, char* argv[] )
+int main(int argc, char *argv[])
 {
   QApplication app(argc, argv);
+
   QCoreApplication::setOrganizationName("MegasonLab");
   QCoreApplication::setOrganizationDomain("http://gofigure2.sourceforge.net");
 
-  QGoImageView3D* viewer = new QGoImageView3D;
+  QGoImageView3D *viewer = new QGoImageView3D;
 
-  ContourMeshContainer container( NULL, viewer );
-  unsigned TimePoint = 0;
-  bool highlighted = true;
-  bool visible = true;
-  unsigned int i = 0;
+  ContourMeshContainer container(NULL, viewer);
+  unsigned             TimePoint = 0;
+  bool                 highlighted = true;
+  bool                 visible = true;
+  unsigned int         i = 0;
 
-  for( ; i < 20; i++ )
+  for (; i < 20; i++ )
     {
-    ContourMeshStructure element( i,
-                                  vtkActor::New(),
-                                  vtkActor::New(),
-                                  vtkActor::New(),
-                                  vtkActor::New(),
-                                  vtkPolyData::New(),
-                                  TimePoint,
-                                  highlighted,
-                                  visible,
-                                  1., 0., 0., 1. );
-    container.Insert( element );
+    ContourMeshStructure element(i,
+                                 vtkActor::New(),
+                                 vtkActor::New(),
+                                 vtkActor::New(),
+                                 vtkActor::New(),
+                                 vtkPolyData::New(),
+                                 TimePoint,
+                                 highlighted,
+                                 visible,
+                                 1., 0., 0., 1.);
+    container.Insert(element);
     }
 
   TimePoint = 1;
-  for( ; i < 30; i++ )
+  for (; i < 30; i++ )
     {
-    ContourMeshStructure element( i,
-                                  vtkActor::New(),
-                                  vtkActor::New(),
-                                  vtkActor::New(),
-                                  vtkActor::New(),
-                                  vtkPolyData::New(),
-                                  TimePoint,
-                                  !highlighted,
-                                  visible,
-                                  0., 1., 0., 1. );
-    container.Insert( element );
+    ContourMeshStructure element(i,
+                                 vtkActor::New(),
+                                 vtkActor::New(),
+                                 vtkActor::New(),
+                                 vtkActor::New(),
+                                 vtkPolyData::New(),
+                                 TimePoint,
+                                 !highlighted,
+                                 visible,
+                                 0., 1., 0., 1.);
+    container.Insert(element);
     }
 
   container.Print();
 
-  container.RemoveActorsWithGivenTimePoint( 0 );
-  container.AddActorsWithGivenTimePoint( 1 );
+  container.RemoveActorsWithGivenTimePoint(0);
+  container.AddActorsWithGivenTimePoint(1);
 
   container.DeleteAllHighlightedElements();
 
-  for( i = 0; i < 30; i++ )
+  for ( i = 0; i < 30; i++ )
     {
-    container.DeleteElement( i );
+    container.DeleteElement(i);
     }
 
   delete viewer;

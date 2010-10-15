@@ -41,7 +41,7 @@
 #ifndef __itkGaussianProfileMatchingImageFilter_h
 #define __itkGaussianProfileMatchingImageFilter_h
 
-#if defined(_MSC_VER)
+#if defined( _MSC_VER )
 #pragma warning ( disable : 4786 )
 #endif
 
@@ -65,101 +65,104 @@
 
 namespace itk
 {
-template < class TFeatureImage, class TInputImage, class TSegmentImage >
-class ITK_EXPORT GaussianProfileMatchingImageFilter : public ImageToImageFilter<
-  TFeatureImage, TInputImage >
+template< class TFeatureImage, class TInputImage, class TSegmentImage >
+class ITK_EXPORT GaussianProfileMatchingImageFilter:public ImageToImageFilter<
+    TFeatureImage, TInputImage >
 {
-  public:
-    typedef GaussianProfileMatchingImageFilter                Self;
-    typedef ImageToImageFilter< TFeatureImage, TInputImage >    Superclass;
-    typedef SmartPointer< Self >                              Pointer;
-    typedef SmartPointer< const Self >                        ConstPointer;
+public:
+  typedef GaussianProfileMatchingImageFilter               Self;
+  typedef ImageToImageFilter< TFeatureImage, TInputImage > Superclass;
+  typedef SmartPointer< Self >                             Pointer;
+  typedef SmartPointer< const Self >                       ConstPointer;
 
-    itkStaticConstMacro ( ImageDimension, unsigned int,
-                          TFeatureImage::ImageDimension );
+  itkStaticConstMacro (ImageDimension, unsigned int,
+                       TFeatureImage::ImageDimension);
 
-    /** Method for creation through object factory */
-    itkNewMacro ( Self );
+  /** Method for creation through object factory */
+  itkNewMacro (Self);
 
-    /** Run-time type information */
-    itkTypeMacro ( GaussianProfileMatchingImageFilter, ImageToImageFilter );
+  /** Run-time type information */
+  itkTypeMacro (GaussianProfileMatchingImageFilter, ImageToImageFilter);
 
-    /** Display */
-    void PrintSelf ( std::ostream& os, Indent indent ) const;
+  /** Display */
+  void PrintSelf(std::ostream & os, Indent indent) const;
 
-    typedef TFeatureImage                           FeatureImageType;
-    typedef typename FeatureImageType::Pointer      FeatureImagePointer;
-    typedef typename FeatureImageType::ConstPointer FeatureImageConstPointer;
-    typedef typename FeatureImageType::PixelType    FeatureImagePixelType;
-    typedef typename FeatureImageType::RegionType   FeatureImageRegionType;
-    typedef typename FeatureImageType::SizeType     FeatureImageSizeType;
-    typedef typename FeatureImageSizeType::SizeValueType FeatureImageSizeValueType;
-    typedef typename FeatureImageType::SpacingType  FeatureImageSpacingType;
-    typedef typename FeatureImageType::IndexType    FeatureImageIndexType;
-    typedef typename FeatureImageType::PointType    FeatureImagePointType;
+  typedef TFeatureImage                                FeatureImageType;
+  typedef typename FeatureImageType::Pointer           FeatureImagePointer;
+  typedef typename FeatureImageType::ConstPointer      FeatureImageConstPointer;
+  typedef typename FeatureImageType::PixelType         FeatureImagePixelType;
+  typedef typename FeatureImageType::RegionType        FeatureImageRegionType;
+  typedef typename FeatureImageType::SizeType          FeatureImageSizeType;
+  typedef typename FeatureImageSizeType::SizeValueType FeatureImageSizeValueType;
+  typedef typename FeatureImageType::SpacingType       FeatureImageSpacingType;
+  typedef typename FeatureImageType::IndexType         FeatureImageIndexType;
+  typedef typename FeatureImageType::PointType         FeatureImagePointType;
 
-    typedef TInputImage                      ImageType;
-    typedef typename ImageType::Pointer      ImagePointer;
-    typedef typename ImageType::ConstPointer ImageConstPointer;
-    typedef typename ImageType::PixelType    ImagePixelType;
-    typedef typename ImageType::RegionType   ImageRegionType;
-    typedef typename ImageType::SizeType     ImageSizeType;
-    typedef typename ImageSizeType::SizeValueType ImageSizeValueType;
-    typedef typename ImageType::SpacingType  ImageSpacingType;
-    typedef typename ImageType::IndexType    ImageIndexType;
-    typedef typename ImageType::PointType    ImagePointType;
+  typedef TInputImage                           ImageType;
+  typedef typename ImageType::Pointer           ImagePointer;
+  typedef typename ImageType::ConstPointer      ImageConstPointer;
+  typedef typename ImageType::PixelType         ImagePixelType;
+  typedef typename ImageType::RegionType        ImageRegionType;
+  typedef typename ImageType::SizeType          ImageSizeType;
+  typedef typename ImageSizeType::SizeValueType ImageSizeValueType;
+  typedef typename ImageType::SpacingType       ImageSpacingType;
+  typedef typename ImageType::IndexType         ImageIndexType;
+  typedef typename ImageType::PointType         ImagePointType;
 
-    typedef TSegmentImage                           SegmentImageType;
-    typedef typename SegmentImageType::Pointer      SegmentImagePointer;
-    typedef typename SegmentImageType::ConstPointer SegmentImageConstPointer;
-    typedef typename SegmentImageType::IndexType    SegmentImageIndexType;
-    typedef typename SegmentImageType::PixelType    SegmentImagePixelType;
+  typedef TSegmentImage                           SegmentImageType;
+  typedef typename SegmentImageType::Pointer      SegmentImagePointer;
+  typedef typename SegmentImageType::ConstPointer SegmentImageConstPointer;
+  typedef typename SegmentImageType::IndexType    SegmentImageIndexType;
+  typedef typename SegmentImageType::PixelType    SegmentImagePixelType;
 
-    typedef RegionOfInterestImageFilter< FeatureImageType, FeatureImageType >
-      ROIFilterType;
-    typedef typename ROIFilterType::Pointer       ROIFilterPointer;
+  typedef RegionOfInterestImageFilter< FeatureImageType, FeatureImageType >
+  ROIFilterType;
+  typedef typename ROIFilterType::Pointer ROIFilterPointer;
 
-    typedef CastImageFilter< FeatureImageType, FeatureImageType > CastFilterType;
-    typedef typename CastFilterType::Pointer CastFilterPointer;
+  typedef CastImageFilter< FeatureImageType, FeatureImageType > CastFilterType;
+  typedef typename CastFilterType::Pointer                      CastFilterPointer;
 
-    typedef ImageRegionConstIterator< FeatureImageType > FeatureConstIteratorType;
-    typedef ImageRegionConstIteratorWithIndex< FeatureImageType > FeatureIndexConstIteratorType;
-    typedef ImageRegionIterator< ImageType > IteratorType;
-    typedef ImageRegionIteratorWithIndex<ImageType > IndexIteratorType;
+  typedef ImageRegionConstIterator< FeatureImageType >          FeatureConstIteratorType;
+  typedef ImageRegionConstIteratorWithIndex< FeatureImageType > FeatureIndexConstIteratorType;
+  typedef ImageRegionIterator< ImageType >                      IteratorType;
+  typedef ImageRegionIteratorWithIndex< ImageType >             IndexIteratorType;
 
-    itkGetConstMacro ( SigmaForm,double );
-    itkSetMacro ( SigmaForm,double );
-    itkGetConstMacro ( LargestCellRadius,double );
-    itkSetMacro ( LargestCellRadius,double );
+  itkGetConstMacro (SigmaForm, double);
+  itkSetMacro (SigmaForm, double);
+  itkGetConstMacro (LargestCellRadius, double);
+  itkSetMacro (LargestCellRadius, double);
+protected:
+  GaussianProfileMatchingImageFilter();
+  ~GaussianProfileMatchingImageFilter() {}
 
-  protected:
-    GaussianProfileMatchingImageFilter();
-    ~GaussianProfileMatchingImageFilter() {}
+  ImagePointer GaussianCorrelation(FeatureImagePointer rawImg);
 
-    ImagePointer GaussianCorrelation ( FeatureImagePointer rawImg );
-    inline ImagePixelType
-    PearsonCorrelation ( ImageRegionType& region );
-    ImagePointer InitializeBlob ( FeatureImageSpacingType spacing, FeatureImageSizeType size );
+  inline ImagePixelType
+  PearsonCorrelation(ImageRegionType & region);
 
-    /** Method for evaluating the implicit function over the image. */
-    virtual void BeforeThreadedGenerateData();
-    virtual void AfterThreadedGenerateData();
-    virtual void ThreadedGenerateData(const ImageRegionType& windowRegion,
-			int threadId);
-	  void GenerateInputRequestedRegion();
-    void EnlargeOutputRequestedRegion(DataObject *itkNotUsed(output));
+  ImagePointer InitializeBlob(FeatureImageSpacingType spacing, FeatureImageSizeType size);
 
-    double m_SigmaForm;
-    double m_LargestCellRadius;
-	  FeatureImageSizeType m_CellExtent;
-	  FeatureImageRegionType m_ImageRegion;
-    ImagePointer m_Blob;
+  /** Method for evaluating the implicit function over the image. */
+  virtual void BeforeThreadedGenerateData();
 
-  private:
-    GaussianProfileMatchingImageFilter ( Self& );   // intentionally not implemented
-    void operator= ( const Self& );   // intentionally not implemented
-  };
+  virtual void AfterThreadedGenerateData();
 
+  virtual void ThreadedGenerateData(const ImageRegionType & windowRegion,
+                                    int threadId);
+
+  void GenerateInputRequestedRegion();
+
+  void EnlargeOutputRequestedRegion( DataObject *itkNotUsed(output) );
+
+  double m_SigmaForm;
+  double m_LargestCellRadius;
+  FeatureImageSizeType m_CellExtent;
+  FeatureImageRegionType m_ImageRegion;
+  ImagePointer m_Blob;
+private:
+  GaussianProfileMatchingImageFilter (Self &); // intentionally not implemented
+  void operator=(const Self &);                // intentionally not implemented
+};
 } /* namespace itk */
 
 #include "itkGaussianProfileMatchingImageFilter.txx"

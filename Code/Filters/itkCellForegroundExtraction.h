@@ -41,7 +41,7 @@
 #ifndef __itkCellForegroundExtraction_h
 #define __itkCellForegroundExtraction_h
 
-#if defined(_MSC_VER)
+#if defined( _MSC_VER )
 #pragma warning ( disable : 4786 )
 #endif
 
@@ -69,140 +69,138 @@
 
 namespace itk
 {
-template < class TFeatureImage, class TInputImage, class TSegmentImage >
-class ITK_EXPORT CellForegroundExtraction : public ImageToImageFilter<
-  TFeatureImage, TSegmentImage >
+template< class TFeatureImage, class TInputImage, class TSegmentImage >
+class ITK_EXPORT CellForegroundExtraction:public ImageToImageFilter<
+    TFeatureImage, TSegmentImage >
 {
-  public:
-    typedef CellForegroundExtraction                          Self;
-    typedef ImageToImageFilter< TFeatureImage,TSegmentImage > Superclass;
-    typedef SmartPointer< Self >                              Pointer;
-    typedef SmartPointer< const Self >                        ConstPointer;
+public:
+  typedef CellForegroundExtraction                           Self;
+  typedef ImageToImageFilter< TFeatureImage, TSegmentImage > Superclass;
+  typedef SmartPointer< Self >                               Pointer;
+  typedef SmartPointer< const Self >                         ConstPointer;
 
-    itkStaticConstMacro ( ImageDimension, unsigned int,
-                          TFeatureImage::ImageDimension );
+  itkStaticConstMacro (ImageDimension, unsigned int,
+                       TFeatureImage::ImageDimension);
 
-    /** Method for creation through object factory */
-    itkNewMacro ( Self );
+  /** Method for creation through object factory */
+  itkNewMacro (Self);
 
-    /** Run-time type information */
-    itkTypeMacro ( CellForegroundExtraction, ImageToImageFilter );
+  /** Run-time type information */
+  itkTypeMacro (CellForegroundExtraction, ImageToImageFilter);
 
-    /** Display */
-    void PrintSelf ( std::ostream& os, Indent indent ) const;
+  /** Display */
+  void PrintSelf(std::ostream & os, Indent indent) const;
 
-    typedef TFeatureImage                           FeatureImageType;
-    typedef typename FeatureImageType::Pointer      FeatureImagePointer;
-    typedef typename FeatureImageType::ConstPointer FeatureImageConstPointer;
-    typedef typename FeatureImageType::PixelType    FeatureImagePixelType;
-    typedef typename FeatureImageType::RegionType   FeatureImageRegionType;
-    typedef typename FeatureImageType::SizeType     FeatureImageSizeType;
-    typedef typename FeatureImageSizeType::SizeValueType FeatureImageSizeValueType;
-    typedef typename FeatureImageType::SpacingType  FeatureImageSpacingType;
-    typedef typename FeatureImageType::IndexType    FeatureImageIndexType;
-    typedef typename FeatureImageType::PointType    FeatureImagePointType;
+  typedef TFeatureImage                                FeatureImageType;
+  typedef typename FeatureImageType::Pointer           FeatureImagePointer;
+  typedef typename FeatureImageType::ConstPointer      FeatureImageConstPointer;
+  typedef typename FeatureImageType::PixelType         FeatureImagePixelType;
+  typedef typename FeatureImageType::RegionType        FeatureImageRegionType;
+  typedef typename FeatureImageType::SizeType          FeatureImageSizeType;
+  typedef typename FeatureImageSizeType::SizeValueType FeatureImageSizeValueType;
+  typedef typename FeatureImageType::SpacingType       FeatureImageSpacingType;
+  typedef typename FeatureImageType::IndexType         FeatureImageIndexType;
+  typedef typename FeatureImageType::PointType         FeatureImagePointType;
 
-    typedef TInputImage                      ImageType;
-    typedef typename ImageType::Pointer      ImagePointer;
-    typedef typename ImageType::ConstPointer ImageConstPointer;
-    typedef typename ImageType::PixelType    ImagePixelType;
-    typedef typename ImageType::RegionType   ImageRegionType;
-    typedef typename ImageType::SizeType     ImageSizeType;
-    typedef typename ImageSizeType::SizeValueType ImageSizeValueType;
-    typedef typename ImageType::SpacingType  ImageSpacingType;
-    typedef typename ImageType::IndexType    ImageIndexType;
-    typedef typename ImageType::PointType    ImagePointType;
+  typedef TInputImage                           ImageType;
+  typedef typename ImageType::Pointer           ImagePointer;
+  typedef typename ImageType::ConstPointer      ImageConstPointer;
+  typedef typename ImageType::PixelType         ImagePixelType;
+  typedef typename ImageType::RegionType        ImageRegionType;
+  typedef typename ImageType::SizeType          ImageSizeType;
+  typedef typename ImageSizeType::SizeValueType ImageSizeValueType;
+  typedef typename ImageType::SpacingType       ImageSpacingType;
+  typedef typename ImageType::IndexType         ImageIndexType;
+  typedef typename ImageType::PointType         ImagePointType;
 
-    typedef TSegmentImage                           SegmentImageType;
-    typedef typename SegmentImageType::Pointer      SegmentImagePointer;
-    typedef typename SegmentImageType::ConstPointer SegmentImageConstPointer;
-    typedef typename SegmentImageType::IndexType    SegmentImageIndexType;
-    typedef typename SegmentImageType::PixelType    SegmentImagePixelType;
+  typedef TSegmentImage                           SegmentImageType;
+  typedef typename SegmentImageType::Pointer      SegmentImagePointer;
+  typedef typename SegmentImageType::ConstPointer SegmentImageConstPointer;
+  typedef typename SegmentImageType::IndexType    SegmentImageIndexType;
+  typedef typename SegmentImageType::PixelType    SegmentImagePixelType;
 
-    typedef RegionOfInterestImageFilter< FeatureImageType, FeatureImageType >
-      ROIFilterType;
-    typedef typename ROIFilterType::Pointer       ROIFilterPointer;
+  typedef RegionOfInterestImageFilter< FeatureImageType, FeatureImageType >
+  ROIFilterType;
+  typedef typename ROIFilterType::Pointer ROIFilterPointer;
 
-    typedef CastImageFilter< FeatureImageType, FeatureImageType > CastFilterType;
-    typedef typename CastFilterType::Pointer CastFilterPointer;
+  typedef CastImageFilter< FeatureImageType, FeatureImageType > CastFilterType;
+  typedef typename CastFilterType::Pointer                      CastFilterPointer;
 
-    typedef ResampleImageFilter< FeatureImageType, FeatureImageType > ResampleFeatureFilterType;
-    typedef typename ResampleFeatureFilterType::Pointer ResampleFeatureFilterPointer;
+  typedef ResampleImageFilter< FeatureImageType, FeatureImageType > ResampleFeatureFilterType;
+  typedef typename ResampleFeatureFilterType::Pointer               ResampleFeatureFilterPointer;
 
-    typedef LinearInterpolateImageFunction< FeatureImageType > InterpolatorFeatureType;
-    typedef typename InterpolatorFeatureType::Pointer InterpolatorFeaturePointer;
+  typedef LinearInterpolateImageFunction< FeatureImageType > InterpolatorFeatureType;
+  typedef typename InterpolatorFeatureType::Pointer          InterpolatorFeaturePointer;
 
-    typedef ResampleImageFilter<ImageType,ImageType > ResampleFilterType;
-    typedef typename ResampleFilterType::Pointer ResampleFilterPointer;
+  typedef ResampleImageFilter< ImageType, ImageType > ResampleFilterType;
+  typedef typename ResampleFilterType::Pointer        ResampleFilterPointer;
 
-    typedef LinearInterpolateImageFunction< ImageType > InterpolatorType;
-    typedef typename InterpolatorType::Pointer InterpolatorPointer;
+  typedef LinearInterpolateImageFunction< ImageType > InterpolatorType;
+  typedef typename InterpolatorType::Pointer          InterpolatorPointer;
 
-    typedef AffineTransform< double, ImageDimension > TransformType;
-    typedef typename TransformType::Pointer TransformPointer;
-    typedef RescaleIntensityImageFilter < ImageType, ImageType >
-      RescaleFilterType;
-    typedef typename RescaleFilterType::Pointer RescaleFilterPointer;
+  typedef AffineTransform< double, ImageDimension > TransformType;
+  typedef typename TransformType::Pointer           TransformPointer;
+  typedef RescaleIntensityImageFilter< ImageType, ImageType >
+  RescaleFilterType;
+  typedef typename RescaleFilterType::Pointer RescaleFilterPointer;
 
-	  typedef GaussianProfileMatchingImageFilter< TFeatureImage,
-			TInputImage, TSegmentImage > GaussProfileFilterType;
-  	typedef typename GaussProfileFilterType::Pointer GaussProfileFilterPointer;
+  typedef GaussianProfileMatchingImageFilter< TFeatureImage,
+                                              TInputImage, TSegmentImage > GaussProfileFilterType;
+  typedef typename GaussProfileFilterType::Pointer GaussProfileFilterPointer;
 
-    typedef ImageRegionConstIterator< FeatureImageType > FeatureConstIteratorType;
-    typedef ImageRegionIteratorWithIndex< FeatureImageType > FeatureIndexIteratorType;
-    typedef ImageRegionIterator< ImageType > IteratorType;
-		typedef ImageRegionIterator< SegmentImageType > SegmentIteratorType;
-    typedef ImageRegionIteratorWithIndex<ImageType > IndexIteratorType;
+  typedef ImageRegionConstIterator< FeatureImageType >     FeatureConstIteratorType;
+  typedef ImageRegionIteratorWithIndex< FeatureImageType > FeatureIndexIteratorType;
+  typedef ImageRegionIterator< ImageType >                 IteratorType;
+  typedef ImageRegionIterator< SegmentImageType >          SegmentIteratorType;
+  typedef ImageRegionIteratorWithIndex< ImageType >        IndexIteratorType;
 
-    itkGetConstMacro ( SigmaForm,double );
-    itkSetMacro ( SigmaForm,double );
-    itkGetConstMacro ( ThresholdCellmin,double );
-    itkSetMacro ( ThresholdCellmin,double );
-    itkGetConstMacro ( ThresholdCellmax,double );
-    itkSetMacro ( ThresholdCellmax,double );
-    itkGetConstMacro ( ThresholdMembrane,double );
-    itkSetMacro ( ThresholdMembrane,double );
-    itkGetConstMacro ( ThresholdForm,double );
-    itkSetMacro ( ThresholdForm,double );
-    itkGetConstMacro ( LargestCellRadius,double );
-    itkSetMacro ( LargestCellRadius,double );
+  itkGetConstMacro (SigmaForm, double);
+  itkSetMacro (SigmaForm, double);
+  itkGetConstMacro (ThresholdCellmin, double);
+  itkSetMacro (ThresholdCellmin, double);
+  itkGetConstMacro (ThresholdCellmax, double);
+  itkSetMacro (ThresholdCellmax, double);
+  itkGetConstMacro (ThresholdMembrane, double);
+  itkSetMacro (ThresholdMembrane, double);
+  itkGetConstMacro (ThresholdForm, double);
+  itkSetMacro (ThresholdForm, double);
+  itkGetConstMacro (LargestCellRadius, double);
+  itkSetMacro (LargestCellRadius, double);
 
-    void SetSampling ( float *sampling )
-    {
-      m_Sampling = sampling;
-    }
+  void SetSampling(float *sampling)
+  {
+    m_Sampling = sampling;
+  }
 
-    ImagePointer GetGaussCorrImage ( void ) const
-    {
-      return gauss;
-    }
+  ImagePointer GetGaussCorrImage(void) const
+  {
+    return gauss;
+  }
 
-  protected:
-    CellForegroundExtraction();
-    ~CellForegroundExtraction() {}
+protected:
+  CellForegroundExtraction();
+  ~CellForegroundExtraction() {}
 
-    FeatureImagePointer ResampleInput ( FeatureImageConstPointer input, FeatureImageSpacingType spacing,
-	    FeatureImageSizeType size, FeatureImagePointType origin );
+  FeatureImagePointer ResampleInput(FeatureImageConstPointer input, FeatureImageSpacingType spacing,
+                                    FeatureImageSizeType size, FeatureImagePointType origin);
 
-    ImagePointer Resample ( ImagePointer input, FeatureImageSpacingType spacing,
-      FeatureImageSizeType size, FeatureImagePointType origin );
+  ImagePointer Resample(ImagePointer input, FeatureImageSpacingType spacing,
+                        FeatureImageSizeType size, FeatureImagePointType origin);
 
-    void GenerateData();
+  void GenerateData();
 
-    double m_SigmaForm;
-    double m_ThresholdCellmin;
-    double m_ThresholdCellmax;
-    double m_ThresholdMembrane; // Change to size threshold
-    double m_ThresholdForm;
-    double m_LargestCellRadius;
-    float *m_Sampling;
-    ImagePointer gauss;
-
-  private:
-    CellForegroundExtraction ( Self& );   // intentionally not implemented
-    void operator= ( const Self& );   // intentionally not implemented
-  };
-
+  double m_SigmaForm;
+  double m_ThresholdCellmin;
+  double m_ThresholdCellmax;
+  double m_ThresholdMembrane;   // Change to size threshold
+  double m_ThresholdForm;
+  double m_LargestCellRadius;
+  float *m_Sampling;
+  ImagePointer gauss;
+private:
+  CellForegroundExtraction (Self &);  // intentionally not implemented
+  void operator=(const Self &);       // intentionally not implemented
+};
 } /* namespace itk */
 
 #include "itkCellForegroundExtraction.txx"

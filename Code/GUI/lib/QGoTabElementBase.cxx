@@ -50,97 +50,105 @@
 #include <iostream>
 
 //--------------------------------------------------------------------------
-QGoTabElementBase::
-QGoTabElementBase(QWidget* iParent) : QWidget(iParent)
-  {
-  }
+QGoTabElementBase::QGoTabElementBase(QWidget *iParent):QWidget(iParent)
+{}
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QGoTabElementBase::~QGoTabElementBase()
-  {
-  }
+{}
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::vector<QAction*> QGoTabElementBase::ViewActions()
+std::vector< QAction * > QGoTabElementBase::ViewActions()
 {
   return m_ViewActions;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::vector<QAction*> QGoTabElementBase::SegmentationActions()
+std::vector< QAction * > QGoTabElementBase::SegmentationActions()
 {
   return m_SegmentationActions;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::vector<QAction*> QGoTabElementBase::ToolsActions()
+std::vector< QAction * > QGoTabElementBase::ToolsActions()
 {
   return m_ToolsActions;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::vector<QAction*> QGoTabElementBase::BookmarkActions()
+std::vector< QAction * > QGoTabElementBase::BookmarkActions()
 {
   return m_BookmarkActions;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::vector<QAction*> QGoTabElementBase::ModeActions()
+std::vector< QAction * > QGoTabElementBase::ModeActions()
 {
   return m_ModeActions;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::list<QGoTabElementBase::QGoDockWidgetStatusPair>&
+std::list< QGoTabElementBase::QGoDockWidgetStatusPair > &
 QGoTabElementBase::DockWidget()
 {
   return m_DockWidgetList;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::list<QAction*> QGoTabElementBase::GetPluginActions()
+std::list< QAction * > QGoTabElementBase::GetPluginActions()
 {
   return m_PluginActionList;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabElementBase::SetPluginActions(std::list<QAction*> iList)
+void QGoTabElementBase::SetPluginActions(std::list< QAction * > iList)
 {
   m_PluginActionList = iList;
 }
+
 //--------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTabElementBase::CreateModeActions(QActionGroup* group)
+void QGoTabElementBase::CreateModeActions(QActionGroup *group)
 {
   //---------------------------------//
   //           default mode          //
   //---------------------------------//
 
   // Create/initialize the default action
-  QAction* DefaultAction = new QAction(tr("Default"), this);
+  QAction *DefaultAction = new QAction(tr("Default"), this);
+
   DefaultAction->setCheckable(true);
   DefaultAction->setChecked(true);
 
   QIcon DefaultIcon;
-  DefaultIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/mouse-cursor.png")),
+  DefaultIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/mouse-cursor.png") ),
                         QIcon::Normal, QIcon::Off);
   DefaultAction->setIcon(DefaultIcon);
 
   group->addAction(DefaultAction);
 
   // it also updates the interactor behaviour
-  QObject::connect(DefaultAction, SIGNAL(toggled(bool)),
-                   this, SLOT(DefaultInteractorBehavior(bool)));
+  QObject::connect( DefaultAction, SIGNAL( toggled(bool) ),
+                    this, SLOT( DefaultInteractorBehavior(bool) ) );
 
   this->m_ModeActions.push_back(DefaultAction);
 
@@ -148,12 +156,12 @@ void QGoTabElementBase::CreateModeActions(QActionGroup* group)
   //            Zoom mode            //
   //---------------------------------//
 
-  QAction* ZoomAction = new QAction(tr("Zoom"), this);
+  QAction *ZoomAction = new QAction(tr("Zoom"), this);
   ZoomAction->setCheckable(true);
   ZoomAction->setChecked(false);
 
   QIcon ZoomIcon;
-  ZoomIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/zoom.png")),
+  ZoomIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/zoom.png") ),
                      QIcon::Normal, QIcon::Off);
   ZoomAction->setIcon(ZoomIcon);
 
@@ -161,19 +169,19 @@ void QGoTabElementBase::CreateModeActions(QActionGroup* group)
 
   this->m_ModeActions.push_back(ZoomAction);
   // it also updates the interactor behaviour
-  QObject::connect(ZoomAction, SIGNAL(toggled(bool)),
-                   this, SLOT(ZoomInteractorBehavior(bool)));
+  QObject::connect( ZoomAction, SIGNAL( toggled(bool) ),
+                    this, SLOT( ZoomInteractorBehavior(bool) ) );
 
   //---------------------------------//
   //            Pan  mode            //
   //---------------------------------//
 
-  QAction* PanAction = new QAction(tr("Pan"), this);
+  QAction *PanAction = new QAction(tr("Pan"), this);
   PanAction->setCheckable(true);
   PanAction->setChecked(false);
 
   QIcon PanIcon;
-  PanIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/Hand.png")),
+  PanIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/Hand.png") ),
                     QIcon::Normal, QIcon::Off);
   PanAction->setIcon(PanIcon);
 
@@ -181,6 +189,6 @@ void QGoTabElementBase::CreateModeActions(QActionGroup* group)
 
   this->m_ModeActions.push_back(PanAction);
   // it also updates the interactor behaviour
-  QObject::connect(PanAction, SIGNAL(toggled(bool)),
-                   this, SLOT(PanInteractorBehavior(bool)));
+  QObject::connect( PanAction, SIGNAL( toggled(bool) ),
+                    this, SLOT( PanInteractorBehavior(bool) ) );
 }

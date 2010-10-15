@@ -54,24 +54,24 @@
 \class GoDBRow
 */
 class QGOIO_EXPORT GoDBRow
-  {
+{
 public:
 
-  typedef std::map<std::string, std::string> StringMapType;
-  typedef StringMapType::iterator            StringMapIterator;
-  typedef StringMapType::const_iterator      StringMapConstIterator;
+  typedef std::map< std::string, std::string > StringMapType;
+  typedef StringMapType::iterator              StringMapIterator;
+  typedef StringMapType::const_iterator        StringMapConstIterator;
 
   GoDBRow();
   virtual ~GoDBRow();
 
-  template<typename T>
+  template< typename T >
   void SetField(std::string key, T value)
   {
     StringMapIterator it = m_MapRow.find(key);
 
-    if (it != m_MapRow.end())
+    if ( it != m_MapRow.end() )
       {
-      it->second = ConvertToString<T>(value);
+      it->second = ConvertToString< T >(value);
       }
     else
       {
@@ -86,16 +86,24 @@ public:
   void SetField(std::string key, std::string value);
 
   std::string GetTableName();
+
   std::string GetTableIDName();
+
   std::string PrintValues();
+
   std::string PrintColumnNames();
-  std::vector<std::string> GetVectorColumnNames();
+
+  std::vector< std::string > GetVectorColumnNames();
+
   //std::list<std::string> GetListColumnNames();
   std::string PrintColumnNamesWithValues();
-  
+
   StringMapIterator MapBegin();
+
   StringMapConstIterator ConstMapBegin();
+
   StringMapIterator MapEnd();
+
   StringMapConstIterator ConstMapEnd();
 
   /**
@@ -104,11 +112,11 @@ public:
   the original value. */
   std::string GetMapValue(std::string key);
 
-  friend std::ostream& operator <<(std::ostream& os, const GoDBRow& c)
+  friend std::ostream & operator<<(std::ostream & os, const GoDBRow & c)
   {
-    for (StringMapConstIterator it = c.m_MapRow.begin();
-         it != c.m_MapRow.end();
-         ++it)
+    for ( StringMapConstIterator it = c.m_MapRow.begin();
+          it != c.m_MapRow.end();
+          ++it )
       {
       os << it->first << " = " << it->second << std::endl;
       }
@@ -116,14 +124,14 @@ public:
     return os;
   }
 
-  virtual void SetValuesForSpecificID(int ID, vtkMySQLDatabase* iDatabaseConnector);
+  virtual void SetValuesForSpecificID(int ID, vtkMySQLDatabase *iDatabaseConnector);
 
 protected:
   virtual void InitializeMap() = 0;
+
   StringMapType m_MapRow;
   std::string   m_TableName;
   std::string   m_TableIDName;
-
-  };
+};
 
 #endif

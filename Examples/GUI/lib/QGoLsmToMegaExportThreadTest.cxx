@@ -59,12 +59,11 @@
 #include <cstdlib>
 #include "LSMToMegaCapture.h"
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-
   QApplication app(argc, argv);
 
-  if (argc != 5)
+  if ( argc != 5 )
     {
     std::cerr << "lsmtomegacapture requires 3 argument:" << std::endl;
     std::cerr << "1-lsm filename (without.lsm)" << std::endl;
@@ -77,7 +76,7 @@ int main(int argc, char** argv)
   // Note: EXIT_SUCCESS = 0
   int err = EXIT_SUCCESS;
 
-  ConversionLsmToMegaThread* ConversionLsmToMegaThreadSend =
+  ConversionLsmToMegaThread *ConversionLsmToMegaThreadSend =
     new ConversionLsmToMegaThread;
 
   QString BaseName(argv[1]);
@@ -86,26 +85,26 @@ int main(int argc, char** argv)
 
   vtksys::SystemTools::MakeDirectory(argv[3]);
 
-  ConversionLsmToMegaThreadSend->SetBaseName(BaseName.toStdString());
-  ConversionLsmToMegaThreadSend->SetLsmPath(LsmPath.toStdString());
+  ConversionLsmToMegaThreadSend->SetBaseName( BaseName.toStdString() );
+  ConversionLsmToMegaThreadSend->SetLsmPath( LsmPath.toStdString() );
   ConversionLsmToMegaThreadSend->SetOutputFileType(GoFigure::PNG);
-  ConversionLsmToMegaThreadSend->SetMegaPath(MegaPath.toStdString());
+  ConversionLsmToMegaThreadSend->SetMegaPath( MegaPath.toStdString() );
 
   ConversionLsmToMegaThreadSend->start();
 
   // Wait until thread finishes running
-  while (ConversionLsmToMegaThreadSend->isRunning())
+  while ( ConversionLsmToMegaThreadSend->isRunning() )
     {
     // waiting loop
     }
 
-  if (atoi(argv[4]) == 1)
+  if ( atoi(argv[4]) == 1 )
     {
     // check if the directory containing Meg files is empty
     unsigned long length = 0;
     length = vtksys::SystemTools::FileLength(argv[3]);
 
-    if (length == 0)
+    if ( length == 0 )
       {
       err = EXIT_FAILURE;
       std::cerr << "ERROR: Test failing because directory is empty..." << std::endl;

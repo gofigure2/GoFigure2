@@ -45,15 +45,15 @@
 #include "QGoSeedSegmentation.h"
 
 //---------------------------------------------------------------------------//
-QGoSegmentationBaseDockWidget::
-QGoSegmentationBaseDockWidget(QWidget* iParent, vtkPoints* seeds,
-    std::vector<vtkImageData*>* iOriginalImage) : QDockWidget(iParent)
+QGoSegmentationBaseDockWidget::QGoSegmentationBaseDockWidget(QWidget *iParent, vtkPoints *seeds,
+                                                             std::vector< vtkImageData * > *iOriginalImage):QDockWidget(
+    iParent)
 {
   this->setupUi(this);
 
   // update interactor behavior
-  QObject::connect(this->mode, SIGNAL(activated(int)),
-                   this, SLOT(SegmentationMethod(int)));
+  QObject::connect( this->mode, SIGNAL( activated(int) ),
+                    this, SLOT( SegmentationMethod(int) ) );
 
   // ADD BASE WIDGETS FOR EACH SEGMENTATION MODE
 
@@ -69,80 +69,78 @@ QGoSegmentationBaseDockWidget(QWidget* iParent, vtkPoints* seeds,
   //----------------------------------------------------------------
 
   m_ContourManualSegmentation = new QGoContourManualSegmentation(this, this);
-  this->GetFrame()->layout()->addWidget(m_ContourManualSegmentation->getDockWidget());
+  this->GetFrame()->layout()->addWidget( m_ContourManualSegmentation->getDockWidget() );
   m_ContourManualSegmentation->getDockWidget()->setEnabled(false);
   m_ContourManualSegmentation->getDockWidget()->setVisible(false);
 
   // connect show/hide
-  QObject::connect(this, SIGNAL(ManualSegmentation(bool)),
-      m_ContourManualSegmentation->getDockWidget(), SLOT(setVisible(bool)));
-  QObject::connect(this, SIGNAL(ManualSegmentation(bool)),
-      m_ContourManualSegmentation->getDockWidget(), SLOT(setEnabled(bool)));
+  QObject::connect( this, SIGNAL( ManualSegmentation(bool) ),
+                    m_ContourManualSegmentation->getDockWidget(), SLOT( setVisible(bool) ) );
+  QObject::connect( this, SIGNAL( ManualSegmentation(bool) ),
+                    m_ContourManualSegmentation->getDockWidget(), SLOT( setEnabled(bool) ) );
 
   // connect specific signals
-  QObject::connect(m_ContourManualSegmentation, SIGNAL(validateContour()),
-                     this, SIGNAL(ValidateContour()));
-  QObject::connect(m_ContourManualSegmentation, SIGNAL(reinitializeContour()),
-                     this, SIGNAL(ReinitializeContourWidget()));
-  QObject::connect(m_ContourManualSegmentation, SIGNAL(changeContourRepresentationProperty(float, QColor, QColor, QColor)),
-      this, SIGNAL(UpdateContourRepresentationProperties(float, QColor, QColor, QColor)));
+  QObject::connect( m_ContourManualSegmentation, SIGNAL( validateContour() ),
+                    this, SIGNAL( ValidateContour() ) );
+  QObject::connect( m_ContourManualSegmentation, SIGNAL( reinitializeContour() ),
+                    this, SIGNAL( ReinitializeContourWidget() ) );
+  QObject::connect( m_ContourManualSegmentation,
+                    SIGNAL( changeContourRepresentationProperty(float, QColor, QColor, QColor) ),
+                    this, SIGNAL( UpdateContourRepresentationProperties(float, QColor, QColor, QColor) ) );
 
   //----------------------------------------------------------------
   // Semi auto segmentation ( i.e. algo with seed)
   //----------------------------------------------------------------
 
   m_ContourSemiAutoSegmentation =
-      new QGoSeedSegmentation(this, this, seeds, iOriginalImage);
-  this->GetFrame()->layout()->addWidget(m_ContourSemiAutoSegmentation->getDockWidget());
-    m_ContourSemiAutoSegmentation->getDockWidget()->setEnabled(false);
-    m_ContourSemiAutoSegmentation->getDockWidget()->setVisible(false);
+    new QGoSeedSegmentation(this, this, seeds, iOriginalImage);
+  this->GetFrame()->layout()->addWidget( m_ContourSemiAutoSegmentation->getDockWidget() );
+  m_ContourSemiAutoSegmentation->getDockWidget()->setEnabled(false);
+  m_ContourSemiAutoSegmentation->getDockWidget()->setVisible(false);
 
-    // connect show/hide
-    QObject::connect(this, SIGNAL(SemiAutoSegmentation(bool)),
-        m_ContourSemiAutoSegmentation->getDockWidget(), SLOT(setVisible(bool)));
-    QObject::connect(this, SIGNAL(SemiAutoSegmentation(bool)),
-        m_ContourSemiAutoSegmentation->getDockWidget(), SLOT(setEnabled(bool)));
+  // connect show/hide
+  QObject::connect( this, SIGNAL( SemiAutoSegmentation(bool) ),
+                    m_ContourSemiAutoSegmentation->getDockWidget(), SLOT( setVisible(bool) ) );
+  QObject::connect( this, SIGNAL( SemiAutoSegmentation(bool) ),
+                    m_ContourSemiAutoSegmentation->getDockWidget(), SLOT( setEnabled(bool) ) );
 
-    // connect semi-automatic segmentation specific signals
-    QObject::connect(m_ContourSemiAutoSegmentation, SIGNAL(UpdateSeeds()),
-        this, SIGNAL(UpdateSeeds()));
-    QObject::connect(m_ContourSemiAutoSegmentation, SIGNAL(ContourCreated(vtkPolyData*)),
-        this, SIGNAL(SaveAndVisuContour(vtkPolyData*)));
-    QObject::connect(m_ContourSemiAutoSegmentation, SIGNAL(SegmentationFinished()),
-        this, SIGNAL(ClearAllSeeds()));
-
+  // connect semi-automatic segmentation specific signals
+  QObject::connect( m_ContourSemiAutoSegmentation, SIGNAL( UpdateSeeds() ),
+                    this, SIGNAL( UpdateSeeds() ) );
+  QObject::connect( m_ContourSemiAutoSegmentation, SIGNAL( ContourCreated(vtkPolyData *) ),
+                    this, SIGNAL( SaveAndVisuContour(vtkPolyData *) ) );
+  QObject::connect( m_ContourSemiAutoSegmentation, SIGNAL( SegmentationFinished() ),
+                    this, SIGNAL( ClearAllSeeds() ) );
 }
+
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
 QGoSegmentationBaseDockWidget::
 ~QGoSegmentationBaseDockWidget()
-{
-}
+{}
+
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
-QFrame*
-QGoSegmentationBaseDockWidget::
-GetFrame()
+QFrame *
+QGoSegmentationBaseDockWidget::GetFrame()
 {
   return frame;
-
 }
 
 //---------------------------------------------------------------------------//
 // one segmentation to another
 //---------------------------------------------------------------------------//
 void
-QGoSegmentationBaseDockWidget::
-SegmentationMethod(int iSegmentationMethod)
+QGoSegmentationBaseDockWidget::SegmentationMethod(int iSegmentationMethod)
 {
   emit ManualSegmentation(false);
   emit SemiAutoSegmentation(false);
   emit AutoSegmentation(false);
 
-  switch(iSegmentationMethod)
-  {
+  switch ( iSegmentationMethod )
+    {
     case 0:
       emit ManualSegmentation(true);
       break;
@@ -155,20 +153,20 @@ SegmentationMethod(int iSegmentationMethod)
     default:
       emit ReinitializeInteractor(true);
       break;
-  }
+    }
 }
+
 //---------------------------------------------------------------------------//
 // show hide widget
 //---------------------------------------------------------------------------//
 void
-QGoSegmentationBaseDockWidget::
-interactorBehavior(bool iSegmentationMethod)
+QGoSegmentationBaseDockWidget::interactorBehavior(bool iSegmentationMethod)
 {
   std::cout << "interactor behavior" << std::endl;
 
-  if(iSegmentationMethod)
+  if ( iSegmentationMethod )
     {
-    switch ( mode->currentIndex())
+    switch ( mode->currentIndex() )
       {
       case 0:
         emit ManualSegmentation(iSegmentationMethod);
@@ -190,41 +188,41 @@ interactorBehavior(bool iSegmentationMethod)
     emit ReinitializeInteractor(true);
     }
 }
+
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
 void
-QGoSegmentationBaseDockWidget::
-SetChannel(int iChannel)
+QGoSegmentationBaseDockWidget::SetChannel(int iChannel)
 {
   m_ContourSemiAutoSegmentation->SetChannel(iChannel);
 }
+
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
 bool
-QGoSegmentationBaseDockWidget::
-GetReeditMode()
+QGoSegmentationBaseDockWidget::GetReeditMode()
 {
   return m_ContourManualSegmentation->GetReeditMode();
 }
+
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
 void
-QGoSegmentationBaseDockWidget::
-SetReeditMode( bool iEnable)
+QGoSegmentationBaseDockWidget::SetReeditMode(bool iEnable)
 {
   m_ContourManualSegmentation->SetReeditMode(iEnable);
 }
+
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
 void
-QGoSegmentationBaseDockWidget::
-EnableAndShow( bool iEnable)
+QGoSegmentationBaseDockWidget::EnableAndShow(bool iEnable)
 {
-  if(iEnable)
+  if ( iEnable )
     {
     m_ContourManualSegmentation->getDockWidget()->show();
     m_ContourManualSegmentation->getDockWidget()->setEnabled(iEnable);
@@ -235,12 +233,12 @@ EnableAndShow( bool iEnable)
     m_ContourManualSegmentation->getDockWidget()->setEnabled(iEnable);
     }
 }
+
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
 void
-QGoSegmentationBaseDockWidget::
-Initialize()
+QGoSegmentationBaseDockWidget::Initialize()
 {
   m_ContourManualSegmentation->GenerateContourRepresentationProperties(true);
 }

@@ -46,19 +46,19 @@
 class vtkImageData;
 class vtkImageAppend;
 
-template<class TReader>
+template< class TReader >
 void AddToVolumeBuilder(
-  const int& iId,
-  const std::string& iFileName,
-  vtkImageAppend* iBuilder)
+  const int & iId,
+  const std::string & iFileName,
+  vtkImageAppend *iBuilder)
 {
   typedef TReader ReaderType;
-  ReaderType* reader = ReaderType::New();
-  reader->SetFileName(iFileName.c_str());
+  ReaderType *reader = ReaderType::New();
+  reader->SetFileName( iFileName.c_str() );
   reader->SetFileDimensionality(2);
   reader->Update();
 
-  iBuilder->SetInput(iId, reader->GetOutput());
+  iBuilder->SetInput( iId, reader->GetOutput() );
   reader->Delete();
 }
 

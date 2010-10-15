@@ -51,10 +51,9 @@
 
 class vtkLSMReader;
 
-class QGOGUILIB_EXPORT ConversionLsmToMegaThread : public QThread
-  {
+class QGOGUILIB_EXPORT ConversionLsmToMegaThread:public QThread
+{
   Q_OBJECT
-
 public:
   /**
    * \brief Constructor
@@ -88,7 +87,7 @@ public:
    * \brief Set the output file type
    * \param[in] iFileType File type: PNG or TIFF
    */
-  void SetOutputFileType(const GoFigure::FileType& iFileType);
+  void SetOutputFileType(const GoFigure::FileType & iFileType);
 
   /**
    * \brief Start the conversion to MegaCapture
@@ -101,11 +100,12 @@ public:
    */
   int  GetNumberOfPoints();
 
-public slots:
-
+public slots :
 signals:
   void ConversionTerminatedSent();
+
   void InitialisationProgressSent();
+
   void ProgressSent();
 
 protected:
@@ -116,24 +116,25 @@ protected:
 
 private:
   ConversionLsmToMegaThread(const ConversionLsmToMegaThread &);
-  ConversionLsmToMegaThread operator =(const ConversionLsmToMegaThread&);
-  std::string                m_BaseName;
-  std::string                m_LsmPath;
-  std::string                m_MegaPath;
-  GoFigure::FileType         m_FileType;
-  std::vector<vtkLSMReader*> m_LSMReaders;
-  unsigned int               m_Plaque;
-  unsigned int               m_Row;
-  unsigned int               m_Column;
-  unsigned int               m_XTile;
-  unsigned int               m_YTile;
-  unsigned int               m_ZTile;
-  double                     m_XOverlap;
-  double                     m_YOverlap;
-  double                     m_ZOverlap;
-  unsigned int               m_NumberOfChannels;
-  unsigned int               m_NumberOfTimePoints;
-  unsigned int               m_Dim;
-  };
+  ConversionLsmToMegaThread operator=(const ConversionLsmToMegaThread &);
+
+  std::string                   m_BaseName;
+  std::string                   m_LsmPath;
+  std::string                   m_MegaPath;
+  GoFigure::FileType            m_FileType;
+  std::vector< vtkLSMReader * > m_LSMReaders;
+  unsigned int                  m_Plaque;
+  unsigned int                  m_Row;
+  unsigned int                  m_Column;
+  unsigned int                  m_XTile;
+  unsigned int                  m_YTile;
+  unsigned int                  m_ZTile;
+  double                        m_XOverlap;
+  double                        m_YOverlap;
+  double                        m_ZOverlap;
+  unsigned int                  m_NumberOfChannels;
+  unsigned int                  m_NumberOfTimePoints;
+  unsigned int                  m_Dim;
+};
 
 #endif

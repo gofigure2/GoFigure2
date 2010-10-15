@@ -47,14 +47,14 @@
 
 namespace itk
 {
-template<class TImage>
-class vtkPolyDataToGoFigureMeshAttributes : public LightObject
-  {
+template< class TImage >
+class vtkPolyDataToGoFigureMeshAttributes:public LightObject
+{
 public:
   typedef vtkPolyDataToGoFigureMeshAttributes Self;
   typedef LightObject                         Superclass;
-  typedef SmartPointer<Self>                  Pointer;
-  typedef SmartPointer<const Self>            ConstPointer;
+  typedef SmartPointer< Self >                Pointer;
+  typedef SmartPointer< const Self >          ConstPointer;
 
   typedef TImage                      ImageType;
   typedef typename ImageType::Pointer ImagePointer;
@@ -65,51 +65,58 @@ public:
   /** Run-time type information */
   itkTypeMacro(vtkPolyDataToGoFigureMeshAttributes, LightObject);
 
-  typedef vtkPolyDataToBinaryMaskImageFilter<ImageType, ImageType>
+  typedef vtkPolyDataToBinaryMaskImageFilter< ImageType, ImageType >
   PolyDataToBinaryMaskImageFilterType;
   typedef typename PolyDataToBinaryMaskImageFilterType::Pointer
   PolyDataToBinaryMaskImageFilterPointer;
 
-  typedef BinaryMaskImageToGoFigureMeshAttributes<ImageType, ImageType>
+  typedef BinaryMaskImageToGoFigureMeshAttributes< ImageType, ImageType >
   BinaryMaskImageToGoFigureMeshAttributesType;
   typedef typename BinaryMaskImageToGoFigureMeshAttributesType::Pointer
   BinaryMaskImageToGoFigureMeshAttributesPointer;
 
-  typedef ImageFileWriter<ImageType> WriterType;
+  typedef ImageFileWriter< ImageType > WriterType;
 
-  virtual void SetImage(ImageType* iImage);
-  virtual void SetPolyData(vtkPolyData* iMesh);
+  virtual void SetImage(ImageType *iImage);
+
+  virtual void SetPolyData(vtkPolyData *iMesh);
+
   virtual void Update();
 
   unsigned int GetSize();
+
   double GetPhysicalSize();
+
   double GetMeanIntensity();
+
   double GetSumIntensity();
+
   double GetArea();
 
 protected:
   vtkPolyDataToGoFigureMeshAttributes();
   ~vtkPolyDataToGoFigureMeshAttributes();
 
-  vtkPolyData* m_Mesh;
+  vtkPolyData *m_Mesh;
   ImagePointer m_Image;
 
-  PolyDataToBinaryMaskImageFilterPointer         m_Binarizer;
+  PolyDataToBinaryMaskImageFilterPointer m_Binarizer;
   BinaryMaskImageToGoFigureMeshAttributesPointer m_AttributeCalculator;
 
   unsigned int m_Size;
-  double       m_PhysicalSize;
-  double       m_Area;
-  double       m_Mean;
-  double       m_Sum;
+  double m_PhysicalSize;
+  double m_Area;
+  double m_Mean;
+  double m_Sum;
 
   virtual void GenerateData();
+
   void ComputeArea();
 
 private:
-  vtkPolyDataToGoFigureMeshAttributes(const Self&);
-  void operator =(const Self&);
-  };
+  vtkPolyDataToGoFigureMeshAttributes(const Self &);
+  void operator=(const Self &);
+};
 }
 
 #include "itkvtkPolyDataToGoFigureMeshAttributes.txx"

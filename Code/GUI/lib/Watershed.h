@@ -52,7 +52,7 @@ class vtkImageData;
  * \brief About Widget which includes the list of authors, licenses,
  * copyrights, dates, versions...
  */
-class QGOGUILIB_EXPORT Watershed : public QGoSeedAlgorithmBase
+class QGOGUILIB_EXPORT Watershed:public QGoSeedAlgorithmBase
 {
   Q_OBJECT
 public:
@@ -62,7 +62,7 @@ public:
   /** \brief Destructor */
   ~Watershed();
 
-  virtual vtkImageData* Apply();
+  virtual vtkImageData * Apply();
 
   /*void setOrigin(double* iOrigin);
   void setSeedPosition(double* iSeedPosition);
@@ -71,7 +71,6 @@ public:
   void setCurvature(int iCurvature);
   void setCenter(double* iCenter);
   void setDimension(int iDimension);*/
-
 private:
   /*double m_Radius;
   int    m_Iterations;

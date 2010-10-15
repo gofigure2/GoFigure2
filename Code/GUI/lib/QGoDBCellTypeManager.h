@@ -50,16 +50,14 @@
 for the celltype DBTable.
 \ingroup DB GUI
 */
-class QGoDBCellTypeManager : public QGoDBNameDescEntityManager
-  {
+class QGoDBCellTypeManager:public QGoDBNameDescEntityManager
+{
   Q_OBJECT
-
 public:
-  explicit QGoDBCellTypeManager (QWidget* iParent = 0);
+  explicit QGoDBCellTypeManager (QWidget *iParent = 0);
 
   ~QGoDBCellTypeManager()
-          {}
-
+  {}
 protected:
   GoDBCellTypeRow m_NewCellType;
   //mother class method
@@ -68,6 +66,5 @@ protected:
 protected slots:
   //mother class method
   virtual void ValidateName(std::string iName, std::string iDescription);
-
-  };
+};
 #endif

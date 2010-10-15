@@ -56,31 +56,29 @@
 /**
  * \brief Constructor
  */
-TrackTextFileImport::
-TrackTextFileImport(const std::string& iServerName, const std::string& iLogin,
-                    const std::string& iPassword, const std::string& iDBName,
-                    const unsigned int& iImagingSessionId) : m_ImagingSessionId(iImagingSessionId)
-  {
+TrackTextFileImport::TrackTextFileImport(const std::string & iServerName, const std::string & iLogin,
+                                         const std::string & iPassword, const std::string & iDBName,
+                                         const unsigned int & iImagingSessionId):m_ImagingSessionId(iImagingSessionId)
+{
   m_DBConnector =
     OpenDatabaseConnection(iServerName, iLogin, iPassword, iDBName);
-  }
+}
 
 /**
  * \brief Destructor
  */
 TrackTextFileImport::
 ~TrackTextFileImport()
-  {
+{
   m_DBConnector->Delete();
-  }
+}
 
 /**
  * \brief Set the directory which contains the TrackText files
  * \param[in]  iDir Name of the directory which contains the TrackText files
  */
 void
-TrackTextFileImport::
-SetDirectory(const std::string& iDir)
+TrackTextFileImport::SetDirectory(const std::string & iDir)
 {
   m_Directory = iDir;
 }
@@ -90,8 +88,7 @@ SetDirectory(const std::string& iDir)
  * \param[in]  iDir Name of the TrackText files
  */
 void
-TrackTextFileImport::
-SetFileName(const std::string& iFileName)
+TrackTextFileImport::SetFileName(const std::string & iFileName)
 {
   m_FileName = iFileName;
 }
@@ -100,15 +97,15 @@ SetFileName(const std::string& iFileName)
  * \brief Read the TrackTex file
  */
 void
-TrackTextFileImport::
-Read()
+TrackTextFileImport::Read()
 {
   std::string filename0 = m_Directory;
+
   filename0 += m_FileName;
 
   std::string   line;
   std::ifstream ifs(filename0.c_str(), std::ifstream::in);
-  if (ifs.is_open())
+  if ( ifs.is_open() )
     {
     //<ImagingSession>
     getline(ifs, line);
@@ -139,7 +136,7 @@ Read()
     ifs >> word >> m_NumberOfTracks;
     getline(ifs, line);
 
-    for (unsigned int j = 0; j < m_NumberOfTracks; j++)
+    for ( unsigned int j = 0; j < m_NumberOfTracks; j++ )
       {
       InternalTrackStructure track;
 
@@ -163,10 +160,10 @@ Read()
       ifs >> word >> numberOfMeshes;
       getline(ifs, line);
 
-      unsigned int                       ch;
-      std::vector<InternalMeshStructure> listofmeshes;
+      unsigned int                         ch;
+      std::vector< InternalMeshStructure > listofmeshes;
 
-      for (unsigned int i = 0; i < numberOfMeshes; i++)
+      for ( unsigned int i = 0; i < numberOfMeshes; i++ )
         {
         InternalMeshStructure mesh(m_NumberOfChannels);
 
@@ -184,11 +181,11 @@ Read()
         ifs >> word >> mesh.m_TCoord;
 
         // Fill the Track structure
-        if (mesh.m_TCoord < track.m_TMin)
+        if ( mesh.m_TCoord < track.m_TMin )
           {
           track.m_TMin = mesh.m_TCoord;
           }
-        if (mesh.m_TCoord > track.m_TMax)
+        if ( mesh.m_TCoord > track.m_TMax )
           {
           track.m_TMax = mesh.m_TCoord;
           }
@@ -215,44 +212,44 @@ Read()
         filename2 += filename;
 
         // Read filename
-        vtkPolyDataReader* reader = vtkPolyDataReader::New();
-        reader->SetFileName(filename2.c_str());
+        vtkPolyDataReader *reader = vtkPolyDataReader::New();
+        reader->SetFileName( filename2.c_str() );
         reader->Update();
 
-        vtkPolyData* vtk_mesh = reader->GetOutput();
+        vtkPolyData *vtk_mesh = reader->GetOutput();
 
         double bounds[6];
         vtk_mesh->GetBounds(bounds);
 
-        mesh.m_XMin = static_cast<unsigned int>(bounds[0] / spacing[0]);
-        mesh.m_XMax = static_cast<unsigned int>(bounds[1] / spacing[0]);
-        mesh.m_YMin = static_cast<unsigned int>(bounds[2] / spacing[1]);
-        mesh.m_YMax = static_cast<unsigned int>(bounds[3] / spacing[1]);
-        mesh.m_ZMin = static_cast<unsigned int>(bounds[4] / spacing[2]);
-        mesh.m_ZMax = static_cast<unsigned int>(bounds[5] / spacing[2]);
+        mesh.m_XMin = static_cast< unsigned int >( bounds[0] / spacing[0] );
+        mesh.m_XMax = static_cast< unsigned int >( bounds[1] / spacing[0] );
+        mesh.m_YMin = static_cast< unsigned int >( bounds[2] / spacing[1] );
+        mesh.m_YMax = static_cast< unsigned int >( bounds[3] / spacing[1] );
+        mesh.m_ZMin = static_cast< unsigned int >( bounds[4] / spacing[2] );
+        mesh.m_ZMax = static_cast< unsigned int >( bounds[5] / spacing[2] );
 
         // Fill the Track Structure
-        if (mesh.m_XMin < track.m_XMin)
+        if ( mesh.m_XMin < track.m_XMin )
           {
           track.m_XMin = mesh.m_XMin;
           }
-        if (mesh.m_XMax > track.m_XMax)
+        if ( mesh.m_XMax > track.m_XMax )
           {
           track.m_XMax = mesh.m_XMax;
           }
-        if (mesh.m_YMin < track.m_YMin)
+        if ( mesh.m_YMin < track.m_YMin )
           {
           track.m_YMin = mesh.m_YMin;
           }
-        if (mesh.m_YMax > track.m_YMax)
+        if ( mesh.m_YMax > track.m_YMax )
           {
           track.m_YMax = mesh.m_YMax;
           }
-        if (mesh.m_ZMin < track.m_ZMin)
+        if ( mesh.m_ZMin < track.m_ZMin )
           {
           track.m_ZMin = mesh.m_ZMin;
           }
-        if (mesh.m_ZMax > track.m_ZMax)
+        if ( mesh.m_ZMax > track.m_ZMax )
           {
           track.m_ZMax = mesh.m_ZMax;
           }
@@ -267,7 +264,7 @@ Read()
 
         points = AddTimePoint(points, centerX, centerY, centerZ, stringTCoord, true);
 
-        for (ch = 0; ch < m_NumberOfChannels; ch++)
+        for ( ch = 0; ch < m_NumberOfChannels; ch++ )
           {
           // <intensity>
           getline(ifs, line);
@@ -310,20 +307,20 @@ Read()
  * \param[in]  iMesh Name of the mesh structure to be saved
  */
 void
-TrackTextFileImport::
-SaveMeshInDataBase(const InternalMeshStructure& iMesh)
+TrackTextFileImport::SaveMeshInDataBase(const InternalMeshStructure & iMesh)
 {
   GoDBCoordinateRow coord_min;
-  coord_min.SetField<unsigned int>("XCoord", iMesh.m_XMin);
-  coord_min.SetField<unsigned int>("YCoord", iMesh.m_YMin);
-  coord_min.SetField<unsigned int>("ZCoord", iMesh.m_ZMin);
-  coord_min.SetField<unsigned int>("TCoord", iMesh.m_TCoord);
+
+  coord_min.SetField< unsigned int >("XCoord", iMesh.m_XMin);
+  coord_min.SetField< unsigned int >("YCoord", iMesh.m_YMin);
+  coord_min.SetField< unsigned int >("ZCoord", iMesh.m_ZMin);
+  coord_min.SetField< unsigned int >("TCoord", iMesh.m_TCoord);
 
   GoDBCoordinateRow coord_max;
-  coord_max.SetField<unsigned int>("XCoord", iMesh.m_XMax);
-  coord_max.SetField<unsigned int>("YCoord", iMesh.m_YMax);
-  coord_max.SetField<unsigned int>("ZCoord", iMesh.m_ZMax);
-  coord_max.SetField<unsigned int>("TCoord", iMesh.m_TCoord);
+  coord_max.SetField< unsigned int >("XCoord", iMesh.m_XMax);
+  coord_max.SetField< unsigned int >("YCoord", iMesh.m_YMax);
+  coord_max.SetField< unsigned int >("ZCoord", iMesh.m_ZMax);
+  coord_max.SetField< unsigned int >("TCoord", iMesh.m_TCoord);
 
   GoDBMeshRow mesh_row(m_DBConnector, iMesh.m_Points, coord_min, coord_max,
                        m_ImagingSessionId);
@@ -337,20 +334,20 @@ SaveMeshInDataBase(const InternalMeshStructure& iMesh)
  * \param[in]  iTrack Name of the track structure to be saved
  */
 void
-TrackTextFileImport::
-SaveTrackInDataBase(const InternalTrackStructure& iTrack)
+TrackTextFileImport::SaveTrackInDataBase(const InternalTrackStructure & iTrack)
 {
   GoDBCoordinateRow coord_min;
-  coord_min.SetField<unsigned int>("XCoord", iTrack.m_XMin);
-  coord_min.SetField<unsigned int>("YCoord", iTrack.m_YMin);
-  coord_min.SetField<unsigned int>("ZCoord", iTrack.m_ZMin);
-  coord_min.SetField<unsigned int>("TCoord", iTrack.m_TMin);
+
+  coord_min.SetField< unsigned int >("XCoord", iTrack.m_XMin);
+  coord_min.SetField< unsigned int >("YCoord", iTrack.m_YMin);
+  coord_min.SetField< unsigned int >("ZCoord", iTrack.m_ZMin);
+  coord_min.SetField< unsigned int >("TCoord", iTrack.m_TMin);
 
   GoDBCoordinateRow coord_max;
-  coord_max.SetField<unsigned int>("XCoord", iTrack.m_YMax);
-  coord_min.SetField<unsigned int>("YCoord", iTrack.m_YMax);
-  coord_min.SetField<unsigned int>("ZCoord", iTrack.m_ZMax);
-  coord_max.SetField<unsigned int>("TCoord", iTrack.m_TMax);
+  coord_max.SetField< unsigned int >("XCoord", iTrack.m_YMax);
+  coord_min.SetField< unsigned int >("YCoord", iTrack.m_YMax);
+  coord_min.SetField< unsigned int >("ZCoord", iTrack.m_ZMax);
+  coord_max.SetField< unsigned int >("TCoord", iTrack.m_TMax);
 
   GoDBTrackRow track_row(m_DBConnector, coord_min, coord_max,
                          m_ImagingSessionId, iTrack.m_Points);
@@ -370,25 +367,25 @@ SaveTrackInDataBase(const InternalTrackStructure& iTrack)
  * \param[in] iTimePoint Bool == "true" if we want the output string to contain time information (iT, which is requiered to add a new point)
  */
 std::string
-TrackTextFileImport::
-AddTimePoint(const std::string& iTrackList,
-             const std::string& iX,
-             const std::string& iY,
-             const std::string& iZ,
-             const std::string& iT,
-             bool iTimePoint)
+TrackTextFileImport::AddTimePoint(const std::string & iTrackList,
+                                  const std::string & iX,
+                                  const std::string & iY,
+                                  const std::string & iZ,
+                                  const std::string & iT,
+                                  bool iTimePoint)
 {
   std::stringstream str(iTrackList);
   std::string       numberOfCoordinatesString;
+
   str >> numberOfCoordinatesString;
 
   unsigned int numberOfCoordinates;
-  numberOfCoordinates = atoi(numberOfCoordinatesString.c_str());
+  numberOfCoordinates = atoi( numberOfCoordinatesString.c_str() );
 
   // Decompose the string into a map
-  std::map<std::string, std::string> mapOfCoordinates;
+  std::map< std::string, std::string > mapOfCoordinates;
 
-  for (unsigned int i = 0; i < numberOfCoordinates; i++)
+  for ( unsigned int i = 0; i < numberOfCoordinates; i++ )
     {
     std::string xOld = "";
     std::string yOld = "";
@@ -407,7 +404,7 @@ AddTimePoint(const std::string& iTrackList,
     }
 
   // Add the new current value in the map
-  if (iTimePoint)
+  if ( iTimePoint )
     {
     std::string xyzNew = "";
     xyzNew += iX;
@@ -419,9 +416,9 @@ AddTimePoint(const std::string& iTrackList,
     mapOfCoordinates[iT] = xyzNew;
     }
   // Fill string with the new map
-  std::map<std::string, std::string>::iterator it;
-  std::string                                  outputString = "";
-  numberOfCoordinates = (int) mapOfCoordinates.size();
+  std::map< std::string, std::string >::iterator it;
+  std::string                                    outputString = "";
+  numberOfCoordinates = (int)mapOfCoordinates.size();
 
   std::stringstream numberOfCoordinatesStream;
   numberOfCoordinatesStream << numberOfCoordinates;
@@ -429,14 +426,14 @@ AddTimePoint(const std::string& iTrackList,
 
   outputString += numberOfCoordinatesString;
 
-  for (it = mapOfCoordinates.begin(); it != mapOfCoordinates.end(); it++)
+  for ( it = mapOfCoordinates.begin(); it != mapOfCoordinates.end(); it++ )
     {
     outputString += " ";
-    outputString += (*it).second;
-    if (iTimePoint)
+    outputString += ( *it ).second;
+    if ( iTimePoint )
       {
       outputString += " ";
-      outputString += (*it).first;
+      outputString += ( *it ).first;
       }
     }
 

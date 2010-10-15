@@ -57,7 +57,7 @@
 
 // construct mesh
 #include "vtkMarchingCubes.h"
-  // and smooth it...!
+// and smooth it...!
 #include "vtkSmoothPolyDataFilter.h"
 
 // to cut
@@ -67,16 +67,15 @@
 #include "vtkImageExport.h"
 
 //--------------------------------------------------------------------------
-QGoFilterSemiAutoBase::
-QGoFilterSemiAutoBase( QObject* iParent ) :
-  QObject( iParent ),
-  m_Widget( NULL ),
-  m_Radius( 3. ),
-  m_Number( 0 ),
-  m_Channel( 0 ),
-  m_Points( NULL ),
-  m_OriginalImageMC( NULL ),
-  m_Sampling( 3 )
+QGoFilterSemiAutoBase::QGoFilterSemiAutoBase(QObject *iParent):
+  QObject(iParent),
+  m_Widget(NULL),
+  m_Radius(3.),
+  m_Number(0),
+  m_Channel(0),
+  m_Points(NULL),
+  m_OriginalImageMC(NULL),
+  m_Sampling(3)
 {
   m_Output = vtkImageData::New();
   m_vtk2itkImage = vtkImageExport::New();
@@ -85,6 +84,7 @@ QGoFilterSemiAutoBase( QObject* iParent ) :
   m_Center[1] = 0;
   m_Center[2] = 0;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -94,262 +94,262 @@ QGoFilterSemiAutoBase::
   m_Output->Delete();
   m_vtk2itkImage->Delete();
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
-QGoFilterSemiAutoBase::
-setName(QString iName)
+QGoFilterSemiAutoBase::setName(QString iName)
 {
   m_Name = iName;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QString
-QGoFilterSemiAutoBase::
-getName()
+QGoFilterSemiAutoBase::getName()
 {
   return m_Name;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
-QGoFilterSemiAutoBase::
-setWidget(QWidget* iWidget)
+QGoFilterSemiAutoBase::setWidget(QWidget *iWidget)
 {
   m_Widget = iWidget;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-QWidget*
-QGoFilterSemiAutoBase::
-getWidget()
+QWidget *
+QGoFilterSemiAutoBase::getWidget()
 {
   return m_Widget;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 // Original data without ROI
-vtkImageData*
-QGoFilterSemiAutoBase::
-getInput()
+vtkImageData *
+QGoFilterSemiAutoBase::getInput()
 {
-  return (*m_OriginalImageMC)[m_Channel];
+  return ( *m_OriginalImageMC )[m_Channel];
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 // Original data without ROI
 void
-QGoFilterSemiAutoBase::
-setOutput(vtkImageData* iOutputImage)
+QGoFilterSemiAutoBase::setOutput(vtkImageData *iOutputImage)
 {
   m_Output->DeepCopy(iOutputImage);
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-vtkImageData*
-QGoFilterSemiAutoBase::
-getOutput()
+vtkImageData *
+QGoFilterSemiAutoBase::getOutput()
 {
   return m_Output;
 }
+
 //--------------------------------------------------------------------------
 // Center of the ROI to apply the segmentation algorithm
 //--------------------------------------------------------------------------
 void
-QGoFilterSemiAutoBase::
-setCenter(double* iCenter)
+QGoFilterSemiAutoBase::setCenter(double *iCenter)
 {
   m_Center[0] = iCenter[0];
   m_Center[1] = iCenter[1];
   m_Center[2] = iCenter[2];
 }
+
 //--------------------------------------------------------------------------
 // Center of the ROI to apply the segmentation algorithm
 //--------------------------------------------------------------------------
-double*
-QGoFilterSemiAutoBase::
-getCenter()
+double *
+QGoFilterSemiAutoBase::getCenter()
 {
   return m_Center;
 }
+
 //--------------------------------------------------------------------------
 // Radius to define ROI
 //--------------------------------------------------------------------------
 void
-QGoFilterSemiAutoBase::
-setRadius(double iRadius)
+QGoFilterSemiAutoBase::setRadius(double iRadius)
 {
   m_Radius = iRadius;
 }
+
 //--------------------------------------------------------------------------
 // Radius to define ROI
 //--------------------------------------------------------------------------
 double
-QGoFilterSemiAutoBase::
-getRadius()
+QGoFilterSemiAutoBase::getRadius()
 {
   return m_Radius;
 }
+
 //--------------------------------------------------------------------------
 // Radius to define ROI
 //--------------------------------------------------------------------------
 void
-QGoFilterSemiAutoBase::
-setSampling(int iSampling)
+QGoFilterSemiAutoBase::setSampling(int iSampling)
 {
   m_Sampling = iSampling;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 int
-QGoFilterSemiAutoBase::
-getSampling()
+QGoFilterSemiAutoBase::getSampling()
 {
   return m_Sampling;
 }
+
 //--------------------------------------------------------------------------
 // Radius to define ROI
 //--------------------------------------------------------------------------
 void
-QGoFilterSemiAutoBase::
-setChannel(int iChannel)
+QGoFilterSemiAutoBase::setChannel(int iChannel)
 {
   m_Channel = iChannel;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-vtkPoints*
-QGoFilterSemiAutoBase::
-getPoints()
+vtkPoints *
+QGoFilterSemiAutoBase::getPoints()
 {
   return m_Points;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
-QGoFilterSemiAutoBase::
-setPoints(vtkPoints* iPoints)
+QGoFilterSemiAutoBase::setPoints(vtkPoints *iPoints)
 {
   m_Points = iPoints;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
-QGoFilterSemiAutoBase::
-setOriginalImageMC(std::vector<vtkImageData*>* iOriginalImage)
+QGoFilterSemiAutoBase::setOriginalImageMC(std::vector< vtkImageData * > *iOriginalImage)
 {
   m_OriginalImageMC = iOriginalImage;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
-QGoFilterSemiAutoBase::
-UpdateVisibility(int iCurrentFilter)
+QGoFilterSemiAutoBase::UpdateVisibility(int iCurrentFilter)
 {
-  QWidget* w = m_Widget->parentWidget();
-  if(m_Number == iCurrentFilter )
+  QWidget *w = m_Widget->parentWidget();
+
+  if ( m_Number == iCurrentFilter )
     {
     m_Widget->show();
-    QObject::connect( w , SIGNAL(Apply()),
-        this, SLOT(Apply()));
+    QObject::connect( w, SIGNAL( Apply() ),
+                      this, SLOT( Apply() ) );
     }
   else
     {
     m_Widget->hide();
-    QObject::disconnect( w, SIGNAL(Apply()),
-        this, SLOT(Apply()));
+    QObject::disconnect( w, SIGNAL( Apply() ),
+                         this, SLOT( Apply() ) );
     }
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
-QGoFilterSemiAutoBase::
-ConnectSignals(int iFilterNumber)
+QGoFilterSemiAutoBase::ConnectSignals(int iFilterNumber)
 {
   m_Number = iFilterNumber;
 
-  QWidget* w = m_Widget->parentWidget();
+  QWidget *w = m_Widget->parentWidget();
 
   // Buttons connections
-  QObject::connect(  w, SIGNAL(Apply()),
-      this, SLOT(Apply()));
-  QObject::connect(  w, SIGNAL(Filter(int)),
-      this, SLOT(UpdateVisibility(int)));
-  QObject::connect(  w, SIGNAL(Radius(double)),
-      this, SLOT(setRadius(double)));
-  QObject::connect(  w, SIGNAL(Channel(int)),
-      this, SLOT(setChannel(int)));
-  QObject::connect(  w, SIGNAL(Sampling(int)),
-      this, SLOT(setSampling(int)));
+  QObject::connect( w, SIGNAL( Apply() ),
+                    this, SLOT( Apply() ) );
+  QObject::connect( w, SIGNAL( Filter(int) ),
+                    this, SLOT( UpdateVisibility(int) ) );
+  QObject::connect( w, SIGNAL( Radius(double) ),
+                    this, SLOT( setRadius(double) ) );
+  QObject::connect( w, SIGNAL( Channel(int) ),
+                    this, SLOT( setChannel(int) ) );
+  QObject::connect( w, SIGNAL( Sampling(int) ),
+                    this, SLOT( setSampling(int) ) );
 
   // End of segmentation signals
-  QObject::connect(  this , SIGNAL(MeshCreated(vtkPolyData*)),
-      w, SIGNAL(MeshCreated(vtkPolyData*)));
-  QObject::connect(  this , SIGNAL(ContourCreated(vtkPolyData*)),
-      w, SIGNAL(ContourCreated(vtkPolyData*)));
-  QObject::connect(  this , SIGNAL(ImageProcessed()),
-      w, SIGNAL(ImageProcessed()));
+  QObject::connect( this, SIGNAL( MeshCreated(vtkPolyData *) ),
+                    w, SIGNAL( MeshCreated(vtkPolyData *) ) );
+  QObject::connect( this, SIGNAL( ContourCreated(vtkPolyData *) ),
+                    w, SIGNAL( ContourCreated(vtkPolyData *) ) );
+  QObject::connect( this, SIGNAL( ImageProcessed() ),
+                    w, SIGNAL( ImageProcessed() ) );
 
-  QObject::connect(  this , SIGNAL(CreateCorrespondingMesh(int)),
-      w, SIGNAL(CreateCorrespondingMesh(int)));
-  QObject::connect(  this , SIGNAL(AddContourForMeshToContours(vtkPolyData*)),
-      w, SIGNAL(AddContourForMeshToContours(vtkPolyData*)));
+  QObject::connect( this, SIGNAL( CreateCorrespondingMesh(int) ),
+                    w, SIGNAL( CreateCorrespondingMesh(int) ) );
+  QObject::connect( this, SIGNAL( AddContourForMeshToContours(vtkPolyData *) ),
+                    w, SIGNAL( AddContourForMeshToContours(vtkPolyData *) ) );
 
-
-  QObject::connect(this, SIGNAL(UpdateSeeds()),
-      w, SIGNAL(UpdateSeeds()));
-  QObject::connect(this, SIGNAL(SegmentationFinished()),
-      w, SIGNAL(SegmentationFinished()));
-
+  QObject::connect( this, SIGNAL( UpdateSeeds() ),
+                    w, SIGNAL( UpdateSeeds() ) );
+  QObject::connect( this, SIGNAL( SegmentationFinished() ),
+                    w, SIGNAL( SegmentationFinished() ) );
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-vtkImageData*
-QGoFilterSemiAutoBase::
-extractOneSlice(vtkImageData* iOriginalImage, double* iOrigin, int iDirection)
+vtkImageData *
+QGoFilterSemiAutoBase::extractOneSlice(vtkImageData *iOriginalImage, double *iOrigin, int iDirection)
 {
   static double elements[3][16] = { {
-                                    1,  0,  0,  0,
-                                    0,  1,  0,  0,
-                                    0,  0,  1,  0,
-                                    0,  0,  0,  1
-                                    },
-                                    {
-                                    1,  0,  0,  0,
-                                    0,  0,  1,  0,
-                                    0, -1,  0,  0,
-                                    0,  0,  0,  1
-                                    },
-                                    {
-                                    0,  0, -1,  0,
-                                    1,  0,  0,  0,
-                                    0, -1,  0,  0,
-                                    0,  0,  0,  1
-                                    }};
+                                      1,  0,  0,  0,
+                                      0,  1,  0,  0,
+                                      0,  0,  1,  0,
+                                      0,  0,  0,  1
+                                      },
+                                      {
+                                      1,  0,  0,  0,
+                                      0,  0,  1,  0,
+                                      0, -1,  0,  0,
+                                      0,  0,  0,  1
+                                      },
+                                      {
+                                      0,  0, -1,  0,
+                                      1,  0,  0,  0,
+                                      0, -1,  0,  0,
+                                      0,  0,  0,  1
+                                      } };
 
   // Set the slice orientation
-  vtkMatrix4x4* resliceAxes = vtkMatrix4x4::New();
+  vtkMatrix4x4 *resliceAxes = vtkMatrix4x4::New();
+
   resliceAxes->DeepCopy(elements[iDirection]);
   // Set the point through which to slice
   resliceAxes->SetElement(0, 3, iOrigin[0]);
   resliceAxes->SetElement(1, 3, iOrigin[1]);
   resliceAxes->SetElement(2, 3, iOrigin[2]);
 
-  vtkImageReslice* reslicer = vtkImageReslice::New();
+  vtkImageReslice *reslicer = vtkImageReslice::New();
   reslicer->SetOutputDimensionality(2);
   reslicer->SetInformationInput(iOriginalImage);
   reslicer->SetInterpolationModeToLinear();
@@ -357,46 +357,48 @@ extractOneSlice(vtkImageData* iOriginalImage, double* iOrigin, int iDirection)
   reslicer->SetResliceAxes(resliceAxes);
   reslicer->Update();
 
-  vtkImageData* output = vtkImageData::New();
-  output->DeepCopy(reslicer->GetOutput());
+  vtkImageData *output = vtkImageData::New();
+  output->DeepCopy( reslicer->GetOutput() );
 
   reslicer->Delete();
   resliceAxes->Delete();
 
   return output;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-vtkPolyData*
-QGoFilterSemiAutoBase::
-ReconstructContour(vtkImageData* iInputImage, const double& iThreshold )
+vtkPolyData *
+QGoFilterSemiAutoBase::ReconstructContour(vtkImageData *iInputImage, const double & iThreshold)
 {
   // create iso-contours
-  vtkMarchingSquares* contours = vtkMarchingSquares::New();
+  vtkMarchingSquares *contours = vtkMarchingSquares::New();
+
   contours->SetInput(iInputImage);
   contours->GenerateValues (1, iThreshold, iThreshold);
   contours->Update();
 
-  vtkPolyData* outputToOrganize = vtkPolyData::New();
-  outputToOrganize->DeepCopy(contours->GetOutput());
+  vtkPolyData *outputToOrganize = vtkPolyData::New();
+  outputToOrganize->DeepCopy( contours->GetOutput() );
 
-  vtkPolyData* output = ReorganizeContour(outputToOrganize);
+  vtkPolyData *output = ReorganizeContour(outputToOrganize);
 
   contours->Delete();
   outputToOrganize->Delete();
 
   return output;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-vtkPolyData*
-QGoFilterSemiAutoBase::
-ReorganizeContour(vtkPolyData* iInputImage, bool iDecimate)
+vtkPolyData *
+QGoFilterSemiAutoBase::ReorganizeContour(vtkPolyData *iInputImage, bool iDecimate)
 {
   // Create reorganize contours
-  vtkStripper* stripper = vtkStripper::New();
+  vtkStripper *stripper = vtkStripper::New();
+
   stripper->SetInput(iInputImage);
   //Is it useful?? Which number is the best suited?
   stripper->SetMaximumLength(999);
@@ -411,36 +413,37 @@ ReorganizeContour(vtkPolyData* iInputImage, bool iDecimate)
   vtkIdType *pts = NULL;
   vtkIdType  npts = 0;
   stripper->GetOutput()->GetLines()->GetNextCell(npts, pts);
-  vtkPoints* points = vtkPoints::New();
+  vtkPoints *points = vtkPoints::New();
 
   vtkCellArray *lines       = vtkCellArray::New();
-  vtkIdType *   lineIndices = new vtkIdType[static_cast<int>(npts + 1)];
+  vtkIdType *   lineIndices = new vtkIdType[static_cast< int >( npts + 1 )];
 
-  for (int k = 0; k < static_cast<int>(npts); k++)
+  for ( int k = 0; k < static_cast< int >( npts ); k++ )
     {
-    points->InsertPoint(k, stripper->GetOutput()->GetPoints()->GetPoint(pts[k]));
+    points->InsertPoint( k, stripper->GetOutput()->GetPoints()->GetPoint(pts[k]) );
     lineIndices[k] = k;
     }
 
-  lineIndices[static_cast<int>(npts)] = 0;
+  lineIndices[static_cast< int >( npts )] = 0;
   lines->InsertNextCell(npts + 1, lineIndices);
   delete[] lineIndices;
 
-  vtkPolyData* testPolyD = vtkPolyData::New();
+  vtkPolyData *testPolyD = vtkPolyData::New();
   testPolyD->SetPoints(points);
   testPolyD->SetLines(lines);
 
-  if(iDecimate)
+  if ( iDecimate )
     {
     //Decimation (has to be after points reorganization)
-    vtkPolylineDecimation* decimator = vtkPolylineDecimation::New();
+    vtkPolylineDecimation *decimator = vtkPolylineDecimation::New();
     decimator->SetInput(testPolyD);
-    /// \todo instead os setting it to 0.9, compute it to make 10 to 20 control points
+    /// \todo instead os setting it to 0.9, compute it to make 10 to 20 control
+    // points
     decimator->SetTargetReduction(0.9);
     decimator->Update();
 
-    vtkPolyData* output = vtkPolyData::New();
-    output->DeepCopy(decimator->GetOutput());
+    vtkPolyData *output = vtkPolyData::New();
+    output->DeepCopy( decimator->GetOutput() );
 
     lines->Delete();
     points->Delete();
@@ -459,15 +462,16 @@ ReorganizeContour(vtkPolyData* iInputImage, bool iDecimate)
     return testPolyD;
     }
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-vtkPolyData*
-QGoFilterSemiAutoBase::
-ReconstructMesh(vtkImageData* iInputImage, const double& iThreshold)
+vtkPolyData *
+QGoFilterSemiAutoBase::ReconstructMesh(vtkImageData *iInputImage, const double & iThreshold)
 {
   // create iso-contours
-  vtkMarchingCubes* contours = vtkMarchingCubes::New();
+  vtkMarchingCubes *contours = vtkMarchingCubes::New();
+
   contours->SetInput(iInputImage);
   contours->GenerateValues (1, iThreshold, iThreshold);
   contours->SetComputeGradients(0);
@@ -493,11 +497,12 @@ ReconstructMesh(vtkImageData* iInputImage, const double& iThreshold)
   std::cout<< "hopefully not..." << std::endl;
 */
 
-  vtkPolyData* output = vtkPolyData::New();
-  output->DeepCopy(contours->GetOutput());
+  vtkPolyData *output = vtkPolyData::New();
+  output->DeepCopy( contours->GetOutput() );
 
   contours->Delete();
 
   return output;
 }
+
 //--------------------------------------------------------------------------

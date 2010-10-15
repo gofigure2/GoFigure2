@@ -40,16 +40,15 @@
 #include <QApplication>
 #include "QGoSynchronizedViewMainWindow.h"
 
-
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
   QApplication app(argc, argv);
+
   QCoreApplication::setOrganizationName("MegasonLab");
   QCoreApplication::setOrganizationDomain("http://gofigure2.sourceforge.net");
 
-
-  QGoSynchronizedViewMainWindow* SynchronizedViewMainWindow
-    = new QGoSynchronizedViewMainWindow();
+  QGoSynchronizedViewMainWindow *SynchronizedViewMainWindow =
+    new QGoSynchronizedViewMainWindow();
 
   SynchronizedViewMainWindow->Update();
   SynchronizedViewMainWindow->show();
@@ -57,5 +56,4 @@ int main(int argc, char** argv)
   app.processEvents();
   int output = app.exec();
   return output;
-
 }

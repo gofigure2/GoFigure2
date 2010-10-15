@@ -42,76 +42,69 @@
 
 namespace itk
 {
+template< class TInput, class TMask >
+BinaryMaskImageToGoFigureMeshAttributes< TInput, TMask >::BinaryMaskImageToGoFigureMeshAttributes()
+{}
 
-template<class TInput, class TMask>
-BinaryMaskImageToGoFigureMeshAttributes<TInput, TMask>::
-BinaryMaskImageToGoFigureMeshAttributes()
-  {
-  }
-
-template<class TInput, class TMask>
-BinaryMaskImageToGoFigureMeshAttributes<TInput, TMask>::
+template< class TInput, class TMask >
+BinaryMaskImageToGoFigureMeshAttributes< TInput, TMask >::
 ~BinaryMaskImageToGoFigureMeshAttributes()
-  {
-  }
+{}
 
-template<class TInput, class TMask>
+template< class TInput, class TMask >
 void
-BinaryMaskImageToGoFigureMeshAttributes<TInput, TMask>::
-SetImage(ImageType* iInput)
+BinaryMaskImageToGoFigureMeshAttributes< TInput, TMask >::SetImage(ImageType *iInput)
 {
   m_InputImage = iInput;
 }
 
-template<class TInput, class TMask>
+template< class TInput, class TMask >
 void
-BinaryMaskImageToGoFigureMeshAttributes<TInput, TMask>::
-SetMaskImage(MaskImageType* iMask)
+BinaryMaskImageToGoFigureMeshAttributes< TInput, TMask >::SetMaskImage(MaskImageType *iMask)
 {
   m_MaskImage = iMask;
 }
 
-template<class TInput, class TMask>
+template< class TInput, class TMask >
 void
-BinaryMaskImageToGoFigureMeshAttributes<TInput, TMask>::
-Update()
+BinaryMaskImageToGoFigureMeshAttributes< TInput, TMask >::Update()
 {
   GenerateData();
 }
 
-template<class TInput, class TMask>
+template< class TInput, class TMask >
 unsigned int
-BinaryMaskImageToGoFigureMeshAttributes<TInput, TMask>::GetSize()
+BinaryMaskImageToGoFigureMeshAttributes< TInput, TMask >::GetSize()
 {
   return m_Size;
 }
 
-template<class TInput, class TMask>
+template< class TInput, class TMask >
 double
-BinaryMaskImageToGoFigureMeshAttributes<TInput, TMask>::GetPhysicalSize()
+BinaryMaskImageToGoFigureMeshAttributes< TInput, TMask >::GetPhysicalSize()
 {
   return m_PhysicalSize;
 }
 
-template<class TInput, class TMask>
-double BinaryMaskImageToGoFigureMeshAttributes<TInput, TMask>::GetMeanIntensity()
+template< class TInput, class TMask >
+double BinaryMaskImageToGoFigureMeshAttributes< TInput, TMask >::GetMeanIntensity()
 {
   return m_Mean;
 }
 
-template<class TInput, class TMask>
-double BinaryMaskImageToGoFigureMeshAttributes<TInput, TMask>::GetSumIntensity()
+template< class TInput, class TMask >
+double BinaryMaskImageToGoFigureMeshAttributes< TInput, TMask >::GetSumIntensity()
 {
   return m_Sum;
 }
 
-template<class TInput, class TMask>
+template< class TInput, class TMask >
 void
-BinaryMaskImageToGoFigureMeshAttributes<TInput, TMask>::
-GenerateData()
+BinaryMaskImageToGoFigureMeshAttributes< TInput, TMask >::GenerateData()
 {
   // shape stuff
   ShapeConverterPointer shapeConverter = ShapeConverterType::New();
+
   shapeConverter->SetInput(m_MaskImage);
   shapeConverter->SetBackgroundValue(0);
   try
@@ -147,7 +140,6 @@ GenerateData()
 
   m_Sum = statObject->GetSum();
 }
-
 }
 
 #endif

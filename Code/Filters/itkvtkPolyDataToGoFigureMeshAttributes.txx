@@ -46,80 +46,74 @@
 
 namespace itk
 {
-template<class TImage>
-vtkPolyDataToGoFigureMeshAttributes<TImage>::
-vtkPolyDataToGoFigureMeshAttributes()
-  {
+template< class TImage >
+vtkPolyDataToGoFigureMeshAttributes< TImage >::vtkPolyDataToGoFigureMeshAttributes()
+{
   m_Binarizer = PolyDataToBinaryMaskImageFilterType::New();
   m_AttributeCalculator = BinaryMaskImageToGoFigureMeshAttributesType::New();
-  }
+}
 
-template<class TImage>
-vtkPolyDataToGoFigureMeshAttributes<TImage>::
+template< class TImage >
+vtkPolyDataToGoFigureMeshAttributes< TImage >::
 ~vtkPolyDataToGoFigureMeshAttributes()
-  {
-  }
+{}
 
-template<class TImage>
+template< class TImage >
 void
-vtkPolyDataToGoFigureMeshAttributes<TImage>::
-SetPolyData(vtkPolyData* iMesh)
+vtkPolyDataToGoFigureMeshAttributes< TImage >::SetPolyData(vtkPolyData *iMesh)
 {
   m_Mesh = iMesh;
 }
 
-template<class TImage>
+template< class TImage >
 void
-vtkPolyDataToGoFigureMeshAttributes<TImage>::
-SetImage(ImageType* iImage)
+vtkPolyDataToGoFigureMeshAttributes< TImage >::SetImage(ImageType *iImage)
 {
   m_Image = iImage;
 }
 
-template<class TImage>
+template< class TImage >
 void
-vtkPolyDataToGoFigureMeshAttributes<TImage>::
-Update()
+vtkPolyDataToGoFigureMeshAttributes< TImage >::Update()
 {
   GenerateData();
 }
 
-template<class TImage>
+template< class TImage >
 unsigned int
-vtkPolyDataToGoFigureMeshAttributes<TImage>::GetSize()
+vtkPolyDataToGoFigureMeshAttributes< TImage >::GetSize()
 {
   return m_Size;
 }
 
-template<class TImage>
+template< class TImage >
 double
-vtkPolyDataToGoFigureMeshAttributes<TImage>::GetPhysicalSize()
+vtkPolyDataToGoFigureMeshAttributes< TImage >::GetPhysicalSize()
 {
   return m_PhysicalSize;
 }
 
-template<class TImage>
-double vtkPolyDataToGoFigureMeshAttributes<TImage>::GetMeanIntensity()
+template< class TImage >
+double vtkPolyDataToGoFigureMeshAttributes< TImage >::GetMeanIntensity()
 {
   return m_Mean;
 }
 
-template<class TImage>
-double vtkPolyDataToGoFigureMeshAttributes<TImage>::GetSumIntensity()
+template< class TImage >
+double vtkPolyDataToGoFigureMeshAttributes< TImage >::GetSumIntensity()
 {
   return m_Sum;
 }
 
-template<class TImage>
-double vtkPolyDataToGoFigureMeshAttributes<TImage>::GetArea()
+template< class TImage >
+double vtkPolyDataToGoFigureMeshAttributes< TImage >::GetArea()
 {
   return m_Area;
 }
 
-template<class TImage>
+template< class TImage >
 void
-vtkPolyDataToGoFigureMeshAttributes<TImage>::
-GenerateData()
+vtkPolyDataToGoFigureMeshAttributes< TImage >::GenerateData()
 {
   m_Binarizer->SetInput(m_Image);
   m_Binarizer->SetPolyData(m_Mesh);
@@ -140,7 +134,7 @@ GenerateData()
 */
 
   m_AttributeCalculator->SetImage(m_Image);
-  m_AttributeCalculator->SetMaskImage(m_Binarizer->GetOutput());
+  m_AttributeCalculator->SetMaskImage( m_Binarizer->GetOutput() );
   m_AttributeCalculator->Update();
 
   m_Size = m_AttributeCalculator->GetSize();
@@ -151,21 +145,20 @@ GenerateData()
   ComputeArea();
 }
 
-template<class TImage>
+template< class TImage >
 void
-vtkPolyDataToGoFigureMeshAttributes<TImage>::
-ComputeArea()
+vtkPolyDataToGoFigureMeshAttributes< TImage >::ComputeArea()
 {
   vtkIdType NbOfCells = m_Mesh->GetNumberOfCells();
+
   m_Area = 0.;
 
-  for (vtkIdType i = 0; i < NbOfCells; ++i)
+  for ( vtkIdType i = 0; i < NbOfCells; ++i )
     {
-    vtkTriangle* t = dynamic_cast<vtkTriangle*>(m_Mesh->GetCell(i));
+    vtkTriangle *t = dynamic_cast< vtkTriangle * >( m_Mesh->GetCell(i) );
     m_Area += t->ComputeArea();
     }
 }
-
 }
 
 #endif

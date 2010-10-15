@@ -39,18 +39,18 @@
 =========================================================================*/
 #include "QGoCreateMeshDialog.h"
 
-QGoCreateMeshDialog::QGoCreateMeshDialog(QWidget* iParent) :
+QGoCreateMeshDialog::QGoCreateMeshDialog(QWidget *iParent):
   QDialog(iParent)
-  {
+{
   /*this->VLayoutLabel       = new QVBoxLayout;
   this->VLayoutCombobox    = new QVBoxLayout;
   this->VLayoutDescription = new QVBoxLayout;
   this->HorizontalLayout   = new QHBoxLayout;*/
   //this->HorizontalSpacer   = new QSpacerItem;
   this->GridLayout         = new QGridLayout;
-  this->LineCellType       = new QLabel(tr("Select the Cell Type:"));
-  this->LineSubCellType    = new QLabel(tr("Select the SubCellular type:"));
-  this->LineColor          = new QLabel(tr("Select the color"));
+  this->LineCellType       = new QLabel( tr("Select the Cell Type:") );
+  this->LineSubCellType    = new QLabel( tr("Select the SubCellular type:") );
+  this->LineColor          = new QLabel( tr("Select the color") );
   this->SelectCellType     = new QComboBox;
   this->SelectSubCellType  = new QComboBox;
   this->SelectColor        = new QComboBox;
@@ -68,11 +68,11 @@ QGoCreateMeshDialog::QGoCreateMeshDialog(QWidget* iParent) :
   //this->DescriptionSubCell = new QTextEdit;
   //this->DescriptionColor   = new QTextEdit;
   this->ButtonBox          = new QDialogButtonBox;
-  this->OkButton           = new QPushButton(tr("OK"));
-  this->CancelButton       = new QPushButton(tr("Cancel"));
-  this->NewCellType        = new QPushButton(tr("New One"));
-  this->NewSubCellType     = new QPushButton(tr("New One"));
-  this->NewColor           = new QPushButton(tr("New One"));
+  this->OkButton           = new QPushButton( tr("OK") );
+  this->CancelButton       = new QPushButton( tr("Cancel") );
+  this->NewCellType        = new QPushButton( tr("New One") );
+  this->NewSubCellType     = new QPushButton( tr("New One") );
+  this->NewColor           = new QPushButton( tr("New One") );
   this->ButtonBox->addButton(OkButton, QDialogButtonBox::AcceptRole);
   this->ButtonBox->addButton(CancelButton, QDialogButtonBox::RejectRole);
 
@@ -117,14 +117,14 @@ QGoCreateMeshDialog::QGoCreateMeshDialog(QWidget* iParent) :
   this->GridLayout->addWidget(this->ButtonBox, 4, 1);
 
   this->setLayout(this->GridLayout);
+}
 
-  }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QGoCreateMeshDialog::~QGoCreateMeshDialog()
-  {
-  }
+{}
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------

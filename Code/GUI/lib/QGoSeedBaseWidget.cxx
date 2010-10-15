@@ -41,99 +41,99 @@
 #include "QGoSeedBaseWidget.h"
 
 //---------------------------------------------------------------------------//
-QGoSeedBaseWidget::
-QGoSeedBaseWidget(QWidget* iParent, int iSampling) : QWidget(iParent)
+QGoSeedBaseWidget::QGoSeedBaseWidget(QWidget *iParent, int iSampling):QWidget(iParent)
 {
   this->setupUi(this);
 
   // Connect signals
-  QObject::connect(this->filter, SIGNAL(activated(int)),
-                   this, SIGNAL(Filter(int)));
+  QObject::connect( this->filter, SIGNAL( activated(int) ),
+                    this, SIGNAL( Filter(int) ) );
 
-  QObject::connect(this->apply, SIGNAL(pressed()), this, SIGNAL(Apply()));
+  QObject::connect( this->apply, SIGNAL( pressed() ), this, SIGNAL( Apply() ) );
 
-  QObject::connect(this->radius, SIGNAL(valueChanged(double)),
-                   this, SIGNAL(Radius(double)));
+  QObject::connect( this->radius, SIGNAL( valueChanged(double) ),
+                    this, SIGNAL( Radius(double) ) );
 
-  QObject::connect(this->channel, SIGNAL(activated(int)),
-                   this, SIGNAL(Channel(int)));
+  QObject::connect( this->channel, SIGNAL( activated(int) ),
+                    this, SIGNAL( Channel(int) ) );
 
   // About the sampling button...
-  if (iSampling == 2)
+  if ( iSampling == 2 )
     {
     // add the button and connect it
-    QLabel* samplingLabel = new QLabel(this);
-    samplingLabel->setObjectName(QString::fromUtf8("samplingLabel"));
+    QLabel *samplingLabel = new QLabel(this);
+    samplingLabel->setObjectName( QString::fromUtf8("samplingLabel") );
     samplingLabel->setText(
-        QApplication::translate("SegmentationSeedBaseWidget", "Sampling",
-            0, QApplication::UnicodeUTF8));
+      QApplication::translate("SegmentationSeedBaseWidget", "Sampling",
+                              0, QApplication::UnicodeUTF8) );
     gridLayout->addWidget(samplingLabel, 3, 0, 1, 2);
     // Add the spin box
-    QSpinBox* sampling = new QSpinBox(this);
-    sampling->setObjectName(QString::fromUtf8("sampling"));
+    QSpinBox *sampling = new QSpinBox(this);
+    sampling->setObjectName( QString::fromUtf8("sampling") );
     sampling->setMinimum(1);
     sampling->setValue(3);
     gridLayout->addWidget(sampling, 3, 2, 1, 1);
 
-    QObject::connect(sampling, SIGNAL(valueChanged(int)),
-                     this, SIGNAL(Sampling(int)));
+    QObject::connect( sampling, SIGNAL( valueChanged(int) ),
+                      this, SIGNAL( Sampling(int) ) );
     }
 
   gridLayout->removeWidget(apply);
   gridLayout->addWidget(apply, 5, 0, 1, -1);
 }
+
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
 QGoSeedBaseWidget::
 ~QGoSeedBaseWidget()
-{
-}
+{}
+
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
 void
-QGoSeedBaseWidget::
-AddChannel(QString iChannel)
+QGoSeedBaseWidget::AddChannel(QString iChannel)
 {
   channel->addItem(iChannel);
 }
+
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
 
 void
-QGoSeedBaseWidget::
-AddFilter(QString iFilter)
+QGoSeedBaseWidget::AddFilter(QString iFilter)
 {
   filter->addItem(iFilter);
 }
+
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
 int
-QGoSeedBaseWidget::
-GetNumberOfFilters()
+QGoSeedBaseWidget::GetNumberOfFilters()
 {
   return filter->count();
 }
+
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
-QGridLayout*
-QGoSeedBaseWidget::
-GetFrame()
+QGridLayout *
+QGoSeedBaseWidget::GetFrame()
 {
   return gridLayout;
 }
+
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
 void
-QGoSeedBaseWidget::
-Initialize()
+QGoSeedBaseWidget::Initialize()
 {
   filter->setCurrentIndex(0);
   emit Filter(0);
 }
+
 //---------------------------------------------------------------------------//

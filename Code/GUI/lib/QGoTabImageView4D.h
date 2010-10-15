@@ -75,11 +75,11 @@ class vtkPolyData;
 \brief
 \example GUI/lib/qgotabimageview4d.cxx
 */
-class QGOGUILIB_EXPORT QGoTabImageView4D : public QGoTabElementBase
-  {
+class QGOGUILIB_EXPORT QGoTabImageView4D:public QGoTabElementBase
+{
   Q_OBJECT
 public:
-  QGoTabImageView4D(QWidget * parent = 0);
+  QGoTabImageView4D(QWidget *parent = 0);
   virtual ~QGoTabImageView4D();
 
   typedef QGoTabElementBase::QGoDockWidgetStatusPair QGoDockWidgetStatusPair;
@@ -87,84 +87,111 @@ public:
   GoFigure::TabDimensionType GetTabDimensionType() const;
 
   void SetMegaCaptureFile(
-    const GoFigureFileInfoHelperMultiIndexContainer& iContainer,
-    const GoFigure::FileType& iFileType,
-    const std::string& iHeader);
+    const GoFigureFileInfoHelperMultiIndexContainer & iContainer,
+    const GoFigure::FileType & iFileType,
+    const std::string & iHeader);
 
   virtual void Update();
 
-  void setupUi(QWidget* parent);
+  void setupUi(QWidget *parent);
+
   void retranslateUi(QWidget *parent);
 
-  virtual std::vector<QAction*> ViewActions();
+  virtual std::vector< QAction * > ViewActions();
 
   virtual void WriteSettings() {}
   virtual void ReadSettings() {}
 
-  virtual void ValidateContour(const int& iId);
+  virtual void ValidateContour(const int & iId);
 
-  QGoPrintDatabase* m_DataBaseTables;
-
+  QGoPrintDatabase *m_DataBaseTables;
 signals:
   void TimePointChanged(int TimePoint);
+
   void ZSliceChanged(int ZSlice);
+
   void YSliceChanged(int YSlice);
+
   void XSliceChanged(int XSlice);
+
   void FullScreenViewChanged(int FullScreen);
 
 public slots:
-  void SetTimePoint(const int&);
-  void SetZSlice(const int&);
-  void SetYSlice(const int&);
-  void SetXSlice(const int&);
+  void SetTimePoint(const int &);
 
-  QString SnapshotViewXY(const GoFigure::FileType& iType,
-                         const QString& iBaseName = QString("snapshot"));
-  QString SnapshotView2(const GoFigure::FileType& iType,
-                        const QString& iBaseName = QString("snapshot"));
-  QString SnapshotView3(const GoFigure::FileType& iType,
-                        const QString& iBaseName = QString("snapshot"));
-  QString SnapshotViewXYZ(const GoFigure::FileType& iType,
-                          const QString& iBaseName = QString("snapshot"));
-  QString SnapshotViewXT(const GoFigure::FileType& iType,
-                         const QString& iBaseName = QString("snapshot"));
-  QString SnapshotViewYT(const GoFigure::FileType& iType,
-                         const QString& iBaseName = QString("snapshot"));
-  QString SnapshotViewXYT(const GoFigure::FileType& iType,
-                          const QString& iBaseName = QString("snapshot"));
+  void SetZSlice(const int &);
 
-  void SetFullScreenView(const int& iS);
+  void SetYSlice(const int &);
+
+  void SetXSlice(const int &);
+
+  QString SnapshotViewXY( const GoFigure::FileType & iType,
+                          const QString & iBaseName = QString("snapshot") );
+
+  QString SnapshotView2( const GoFigure::FileType & iType,
+                         const QString & iBaseName = QString("snapshot") );
+
+  QString SnapshotView3( const GoFigure::FileType & iType,
+                         const QString & iBaseName = QString("snapshot") );
+
+  QString SnapshotViewXYZ( const GoFigure::FileType & iType,
+                           const QString & iBaseName = QString("snapshot") );
+
+  QString SnapshotViewXT( const GoFigure::FileType & iType,
+                          const QString & iBaseName = QString("snapshot") );
+
+  QString SnapshotViewYT( const GoFigure::FileType & iType,
+                          const QString & iBaseName = QString("snapshot") );
+
+  QString SnapshotViewXYT( const GoFigure::FileType & iType,
+                           const QString & iBaseName = QString("snapshot") );
+
+  void SetFullScreenView(const int & iS);
 
   void Octview();
+
   void QuadviewXYZ();
+
   void QuadviewXYT();
+
   void FullScreenViewXY();
+
   void FullScreenViewXZ();
+
   void FullScreenViewYZ();
+
   void FullScreenViewXYZ();
+
   void FullScreenViewXT();
+
   void FullScreenViewYT();
+
   void FullScreenViewXYT();
 
   void ChangeLookupTable();
-  void ShowScalarBar(const bool&);
+
+  void ShowScalarBar(const bool &);
+
   void ChangeBackgroundColor();
 
   void ShowAllChannels(bool iChecked);
+
   void ShowOneChannel(int iChannel);
 
-  void ActivateManualSegmentationEditor(const bool& iActivate);
+  void ActivateManualSegmentationEditor(const bool & iActivate);
+
   void ValidateContour();
+
   void ChangeContourRepresentationProperty();
 
 protected:
-  QSplitter*                                  m_Splitter;
-  QGoImageView3D*                             m_XYZImageView;
-  QGoImageView3D*                             m_XYTImageView;
-  vtkSmartPointer<vtkImageData>               m_XYZImage;
-  vtkSmartPointer<vtkImageData>               m_XYTImage;
-  std::vector<vtkSmartPointer<vtkImageData> > m_XYZInternalImages;
-  std::vector<vtkSmartPointer<vtkImageData> > m_XYTInternalImages;
+  QSplitter *                                    m_Splitter;
+  QGoImageView3D *                               m_XYZImageView;
+  QGoImageView3D *                               m_XYTImageView;
+  vtkSmartPointer< vtkImageData >                m_XYZImage;
+  vtkSmartPointer< vtkImageData >                m_XYTImage;
+  std::vector< vtkSmartPointer< vtkImageData > > m_XYZInternalImages;
+  std::vector< vtkSmartPointer< vtkImageData > > m_XYTInternalImages;
 
   QColor       m_BackgroundColor;
   int          m_TimePoint;
@@ -178,31 +205,35 @@ protected:
   GoFigure::FileType                        m_FileType;
   bool                                      m_FirstUpdate;
 
-  std::vector<QAction*>            m_ViewActions;
-  QGoNavigationDockWidget*         m_NavigationDockWidget;
-  QGoContourManualSegmentationWidget* m_ManualSegmentationWidget;
+  std::vector< QAction * >            m_ViewActions;
+  QGoNavigationDockWidget *           m_NavigationDockWidget;
+  QGoContourManualSegmentationWidget *m_ManualSegmentationWidget;
 
     #ifdef   ENABLEVIDEORECORD
-  QGoVideoRecorder* m_VideoRecorderWidget;
+  QGoVideoRecorder *m_VideoRecorderWidget;
 #endif
 
-  std::vector<vtkSmartPointer<vtkContourWidget> >                      m_ContourWidget;
-  std::vector<vtkSmartPointer<vtkOrientedGlyphContourRepresentation> > m_ContourRepresentation;
+  std::vector< vtkSmartPointer< vtkContourWidget > >                      m_ContourWidget;
+  std::vector< vtkSmartPointer< vtkOrientedGlyphContourRepresentation > > m_ContourRepresentation;
 
   void CreateAllViewActions();
+
   void CreateModeActions();
+
   void CreateVisuDockWidget();
+
   void CreateManualSegmentationdockWidget();
 
   void GetBackgroundColorFromImageViewer();
+
   void SetBackgroundColorToImageViewer();
 
 //    std::vector< vtkQuadricLODActor* >
-  std::vector<vtkActor*> AddContour(vtkPolyData* dataset,
-                                    vtkProperty* property = NULL);
+  std::vector< vtkActor * > AddContour(vtkPolyData *dataset,
+                                       vtkProperty *property = NULL);
 
-  int* GetImageCoordinatesFromWorldCoordinates(double pos[3]);
+  int *GetImageCoordinatesFromWorldCoordinates(double pos[3]);
 
-  virtual void resizeEvent(QResizeEvent* event);
-  };
+  virtual void resizeEvent(QResizeEvent *event);
+};
 #endif

@@ -42,55 +42,59 @@
 #include "GoDBRecordSetHelper.h"
 
 GoDBCoordinateRow::GoDBCoordinateRow()
-  {
+{
   this->InitializeMap();
   this->m_TableName = "coordinate";
   this->m_TableIDName = "CoordID";
-  }
+}
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void GoDBCoordinateRow::InitializeMap()
 {
-  this->m_MapRow["CoordID"]    = ConvertToString<int>(0);
-  this->m_MapRow["PCoord"]     = ConvertToString<int>(0);
-  this->m_MapRow["RCoord"]     = ConvertToString<int>(0);
-  this->m_MapRow["CCoord"]     = ConvertToString<int>(0);
-  this->m_MapRow["XTileCoord"] = ConvertToString<int>(0);
-  this->m_MapRow["YTileCoord"] = ConvertToString<int>(0);
-  this->m_MapRow["ZTileCoord"] = ConvertToString<int>(0);
-  this->m_MapRow["XCoord"]     = ConvertToString<float>(0);
-  this->m_MapRow["YCoord"]     = ConvertToString<float>(0);
-  this->m_MapRow["ZCoord"]     = ConvertToString<float>(0);
-  this->m_MapRow["TCoord"]     = ConvertToString<float>(0);
+  this->m_MapRow["CoordID"]    = ConvertToString< int >(0);
+  this->m_MapRow["PCoord"]     = ConvertToString< int >(0);
+  this->m_MapRow["RCoord"]     = ConvertToString< int >(0);
+  this->m_MapRow["CCoord"]     = ConvertToString< int >(0);
+  this->m_MapRow["XTileCoord"] = ConvertToString< int >(0);
+  this->m_MapRow["YTileCoord"] = ConvertToString< int >(0);
+  this->m_MapRow["ZTileCoord"] = ConvertToString< int >(0);
+  this->m_MapRow["XCoord"]     = ConvertToString< float >(0);
+  this->m_MapRow["YCoord"]     = ConvertToString< float >(0);
+  this->m_MapRow["ZCoord"]     = ConvertToString< float >(0);
+  this->m_MapRow["TCoord"]     = ConvertToString< float >(0);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int GoDBCoordinateRow::DoesThisCoordinateExist(vtkMySQLDatabase* DatabaseConnector)
+int GoDBCoordinateRow::DoesThisCoordinateExist(vtkMySQLDatabase *DatabaseConnector)
 {
-  return FindOneID(DatabaseConnector, "coordinate", "CoordID",
-                   "PCoord", this->GetMapValue("PCoord"),
-                   "RCoord", this->GetMapValue("RCoord"),
-                   "CCoord", this->GetMapValue("CCoord"),
-                   "XTileCoord", this->GetMapValue("XTileCoord"),
-                   "YTileCoord", this->GetMapValue("YTileCoord"),
-                   "ZTileCoord", this->GetMapValue("ZTileCoord"),
-                   "XCoord", this->GetMapValue("XCoord"),
-                   "YCoord", this->GetMapValue("YCoord"),
-                   "ZCoord", this->GetMapValue("ZCoord"),
-                   "TCoord", this->GetMapValue("TCoord"));
+  return FindOneID( DatabaseConnector, "coordinate", "CoordID",
+                    "PCoord", this->GetMapValue("PCoord"),
+                    "RCoord", this->GetMapValue("RCoord"),
+                    "CCoord", this->GetMapValue("CCoord"),
+                    "XTileCoord", this->GetMapValue("XTileCoord"),
+                    "YTileCoord", this->GetMapValue("YTileCoord"),
+                    "ZTileCoord", this->GetMapValue("ZTileCoord"),
+                    "XCoord", this->GetMapValue("XCoord"),
+                    "YCoord", this->GetMapValue("YCoord"),
+                    "ZCoord", this->GetMapValue("ZCoord"),
+                    "TCoord", this->GetMapValue("TCoord") );
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int GoDBCoordinateRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
+int GoDBCoordinateRow::SaveInDB(vtkMySQLDatabase *DatabaseConnector)
 {
   int ID = this->DoesThisCoordinateExist(DatabaseConnector);
-  if (ID == -1)
+
+  if ( ID == -1 )
     {
-    return AddOnlyOneNewObjectInTable<GoDBCoordinateRow>(DatabaseConnector,
-                                                         "coordinate", *this, "CoordID");
+    return AddOnlyOneNewObjectInTable< GoDBCoordinateRow >(DatabaseConnector,
+                                                           "coordinate", *this, "CoordID");
     }
   else
     {

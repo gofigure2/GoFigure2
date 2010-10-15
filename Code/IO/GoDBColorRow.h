@@ -53,25 +53,24 @@
 \brief this class manages the map with the keys matching the fields of the
 color DBTable
 */
-class QGOIO_EXPORT GoDBColorRow : public GoDBNameDescRow
-  {
+class QGOIO_EXPORT GoDBColorRow:public GoDBNameDescRow
+{
 public:
   GoDBColorRow();
 
   ~GoDBColorRow()
-        {}
+  {}
   /**\brief check if the color already exits in the DB, if yes,
   return the existing ID, if not, save it in the DB and return the
   ID for new created color*/
-  virtual int SaveInDB(vtkMySQLDatabase* iDatabaseConnector);
+  virtual int SaveInDB(vtkMySQLDatabase *iDatabaseConnector);
 
 /**\brief check if the color already exits in the database, if yes,
   return the corresponding ID, if not, return -1*/
-  virtual int DoesThisEntityAlreadyExists(vtkMySQLDatabase* iDatabaseConnector);
+  virtual int DoesThisEntityAlreadyExists(vtkMySQLDatabase *iDatabaseConnector);
 
 protected:
   virtual void InitializeMap();
-
-  };
+};
 
 #endif

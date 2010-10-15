@@ -40,7 +40,7 @@
 #ifndef __itkCellPreprocess_h
 #define __itkCellPreprocess_h
 
-#if defined(_MSC_VER)
+#if defined( _MSC_VER )
 #pragma warning ( disable : 4786 )
 #endif
 
@@ -56,23 +56,22 @@
 
 namespace itk
 {
-
 /** \class CellPreprocess
 *  \brief Denoise images - remove median noise and perform morphological
 * reconstruction. Makes it easier to segment and prevents formation of holes
 * in the segmentation.
 * \todo Change class name
 */
-template <class TInputImage, class TOutputImage = TInputImage>
-class ITK_EXPORT CellPreprocess : public ImageToImageFilter<
-    TInputImage, TOutputImage>
-  {
+template< class TInputImage, class TOutputImage = TInputImage >
+class ITK_EXPORT CellPreprocess:public ImageToImageFilter<
+    TInputImage, TOutputImage >
+{
 public:
 
-  typedef CellPreprocess                                Self;
-  typedef ImageToImageFilter<TInputImage, TOutputImage> Superclass;
-  typedef SmartPointer<Self>                            Pointer;
-  typedef SmartPointer<const Self>                      ConstPointer;
+  typedef CellPreprocess                                  Self;
+  typedef ImageToImageFilter< TInputImage, TOutputImage > Superclass;
+  typedef SmartPointer< Self >                            Pointer;
+  typedef SmartPointer< const Self >                      ConstPointer;
 
   itkStaticConstMacro (ImageDimension, unsigned int,
                        TInputImage::ImageDimension);
@@ -84,9 +83,9 @@ public:
   itkTypeMacro (CellPreprocess, ImageToImageFilter);
 
   /** Display */
-  void PrintSelf(std::ostream& os, Indent indent) const;
+  void PrintSelf(std::ostream & os, Indent indent) const;
 
-  typedef Image<float, ImageDimension>          ImageType;
+  typedef Image< float, ImageDimension >        ImageType;
   typedef typename ImageType::Pointer           ImagePointer;
   typedef typename ImageType::ConstPointer      ImageConstPointer;
   typedef typename ImageType::PixelType         ImagePixelType;
@@ -98,22 +97,21 @@ public:
   typedef typename ImageType::IndexType   ImageIndexType;
   typedef typename ImageType::PointType   ImagePointType;
 
-  typedef CastImageFilter<TInputImage, ImageType> InputCastType;
-  typedef typename InputCastType::Pointer         InputCastPointer;
+  typedef CastImageFilter< TInputImage, ImageType > InputCastType;
+  typedef typename InputCastType::Pointer           InputCastPointer;
 
-  typedef MedianImageFilter<ImageType, ImageType> MedianFilterType;
-  typedef typename MedianFilterType::Pointer      MedianFilterPointer;
-  typedef RecursiveGaussianImageFilter<ImageType, ImageType>
+  typedef MedianImageFilter< ImageType, ImageType > MedianFilterType;
+  typedef typename MedianFilterType::Pointer        MedianFilterPointer;
+  typedef RecursiveGaussianImageFilter< ImageType, ImageType >
   SmoothingFilterType;
-  typedef typename SmoothingFilterType::Pointer              SmoothingFilterPointer;
-  typedef GrayscaleFillholeImageFilter<ImageType, ImageType> GrayscaleFillholeFilterType;
-  typedef typename GrayscaleFillholeFilterType::Pointer      GrayscaleFillholePointer;
-  typedef CastImageFilter<ImageType, TOutputImage>           OutputCastType;
-  typedef typename OutputCastType::Pointer                   OutputCastPointer;
+  typedef typename SmoothingFilterType::Pointer                SmoothingFilterPointer;
+  typedef GrayscaleFillholeImageFilter< ImageType, ImageType > GrayscaleFillholeFilterType;
+  typedef typename GrayscaleFillholeFilterType::Pointer        GrayscaleFillholePointer;
+  typedef CastImageFilter< ImageType, TOutputImage >           OutputCastType;
+  typedef typename OutputCastType::Pointer                     OutputCastPointer;
 
   itkGetConstMacro (LargestCellRadius, double);
   itkSetMacro (LargestCellRadius, double);
-
 protected:
 
   CellPreprocess();
@@ -122,12 +120,10 @@ protected:
   void GenerateData();
 
   double m_LargestCellRadius;
-
 private:
   CellPreprocess (Self &);        // intentionally not implemented
-  void operator =(const Self&);         // intentionally not implemented
-  };
-
+  void operator=(const Self &);   // intentionally not implemented
+};
 }   /* namespace itk */
 
 #include "itkCellPreprocess.txx"

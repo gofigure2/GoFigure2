@@ -44,34 +44,33 @@
 #include "vtkPolyData.h"
 
 //--------------------------------------------------------------------------
-ContourMeshStructure::ContourMeshStructure() : TraceID(0),
+ContourMeshStructure::ContourMeshStructure():TraceID(0),
   ActorXY(NULL), ActorXZ(NULL), ActorYZ(NULL), ActorXYZ(NULL), Nodes(NULL),
   TCoord(0), Highlighted(false), Visible(true)
-  {
+{
   this->rgba[0] = 1.;
   this->rgba[1] = 1.;
   this->rgba[2] = 1.;
   this->rgba[3] = 1.;
-  }
-//--------------------------------------------------------------------------
-
+}
 
 //--------------------------------------------------------------------------
-ContourMeshStructure::
-ContourMeshStructure(const unsigned int& iTraceID,
-                     std::vector< vtkActor* > iActors,
-                     vtkPolyData* iNodes,
-                     const unsigned int& iT,
-                     const bool& iHighlighted,
-                     const bool& iVisible,
-                     const double& r,
-                     const double& g,
-                     const double& b,
-                     const double& alpha )
-  : TraceID(iTraceID), Nodes(iNodes),
+
+//--------------------------------------------------------------------------
+ContourMeshStructure::ContourMeshStructure(const unsigned int & iTraceID,
+                                           std::vector< vtkActor * > iActors,
+                                           vtkPolyData *iNodes,
+                                           const unsigned int & iT,
+                                           const bool & iHighlighted,
+                                           const bool & iVisible,
+                                           const double & r,
+                                           const double & g,
+                                           const double & b,
+                                           const double & alpha):
+  TraceID(iTraceID), Nodes(iNodes),
   TCoord(iT), Highlighted(iHighlighted), Visible(iVisible)
-  {
-  if( iActors.size() == 4 )
+{
+  if ( iActors.size() == 4 )
     {
     ActorXY = iActors[0];
     ActorXZ = iActors[1];
@@ -80,29 +79,29 @@ ContourMeshStructure(const unsigned int& iTraceID,
     }
   else
     {
-    std::cerr <<"iActors.size() != 4" <<std::endl;
+    std::cerr << "iActors.size() != 4" << std::endl;
     return;
     }
   this->rgba[0] = r;
   this->rgba[1] = g;
   this->rgba[2] = b;
   this->rgba[3] = alpha;
-  }
+}
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-ContourMeshStructure::
-ContourMeshStructure(const unsigned int& iTraceID,
-                     std::vector< vtkActor* > iActors,
-                     vtkPolyData* iNodes,
-                     const unsigned int& iT,
-                     const bool& iHighlighted,
-                     const bool& iVisible,
-                     double iRgba[4] )
-  : TraceID(iTraceID), Nodes(iNodes), //CollectionID(iCollectionID),
+ContourMeshStructure::ContourMeshStructure(const unsigned int & iTraceID,
+                                           std::vector< vtkActor * > iActors,
+                                           vtkPolyData *iNodes,
+                                           const unsigned int & iT,
+                                           const bool & iHighlighted,
+                                           const bool & iVisible,
+                                           double iRgba[4]):
+  TraceID(iTraceID), Nodes(iNodes),   //CollectionID(iCollectionID),
   TCoord(iT), Highlighted(iHighlighted), Visible(iVisible)
-  {
-  if( iActors.size() == 4 )
+{
+  if ( iActors.size() == 4 )
     {
     ActorXY = iActors[0];
     ActorXZ = iActors[1];
@@ -111,79 +110,83 @@ ContourMeshStructure(const unsigned int& iTraceID,
     }
   else
     {
-    std::cout <<"iActors.size() != 4" <<std::endl;
+    std::cout << "iActors.size() != 4" << std::endl;
     return;
     }
   this->rgba[0] = iRgba[0];
   this->rgba[1] = iRgba[1];
   this->rgba[2] = iRgba[2];
   this->rgba[3] = iRgba[3];
-  }
+}
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-ContourMeshStructure::
-ContourMeshStructure(const unsigned int& iTraceID,
-                     vtkActor* iActorXY,
-                     vtkActor* iActorYZ,
-                     vtkActor* iActorXZ,
-                     vtkActor* iActorXYZ,
-                     vtkPolyData* iNodes,
-                     const unsigned int& iT,
-                     const bool& iHighlighted,
-                     const bool& iVisible,
-                     const double& r,
-                     const double& g,
-                     const double& b,
-                     const double& alpha )
-  : TraceID(iTraceID), ActorXY(iActorXY), ActorXZ(iActorXZ),
+ContourMeshStructure::ContourMeshStructure(const unsigned int & iTraceID,
+                                           vtkActor *iActorXY,
+                                           vtkActor *iActorYZ,
+                                           vtkActor *iActorXZ,
+                                           vtkActor *iActorXYZ,
+                                           vtkPolyData *iNodes,
+                                           const unsigned int & iT,
+                                           const bool & iHighlighted,
+                                           const bool & iVisible,
+                                           const double & r,
+                                           const double & g,
+                                           const double & b,
+                                           const double & alpha):
+  TraceID(iTraceID), ActorXY(iActorXY), ActorXZ(iActorXZ),
   ActorYZ(iActorYZ), ActorXYZ(iActorXYZ), Nodes(iNodes),
   TCoord(iT), Highlighted(iHighlighted), Visible(iVisible)
-  {
+{
   this->rgba[0] = r;
   this->rgba[1] = g;
   this->rgba[2] = b;
   this->rgba[3] = alpha;
-  }
+}
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-ContourMeshStructure::ContourMeshStructure(const ContourMeshStructure& iE) :
+ContourMeshStructure::ContourMeshStructure(const ContourMeshStructure & iE):
   TraceID(iE.TraceID), ActorXY(iE.ActorXY), ActorXZ(iE.ActorXZ),
   ActorYZ(iE.ActorYZ), ActorXYZ(iE.ActorXYZ), Nodes(iE.Nodes),
   TCoord(iE.TCoord), Highlighted(iE.Highlighted), Visible(iE.Visible)
-  {
-  for (int i = 0; i < 4; i++)
+{
+  for ( int i = 0; i < 4; i++ )
     {
     this->rgba[i] = iE.rgba[i];
     }
-  }
+}
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 ContourMeshStructure::~ContourMeshStructure()
-  {
-  }
+{}
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 bool ContourMeshStructure::IsAContour()
-  {
+{
   return ( this->GetDirection() != -1 );
-  }
+}
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 int ContourMeshStructure::GetDirection()
 {
   double bounds[6];
+
   this->Nodes->GetBounds(bounds);
 
   int oDir = -1;
 
-  for (int i = 0; i < 3; i++)
+  for ( int i = 0; i < 3; i++ )
     {
-    if (bounds[2 * i] == bounds[2 * i + 1])
+    if ( bounds[2 * i] == bounds[2 * i + 1] )
       {
       oDir = 2 - i;
       }

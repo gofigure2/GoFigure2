@@ -56,14 +56,14 @@
 
 namespace itk
 {
-template<typename TContainer>
-class ContourToMeshFilter : public LightObject
-  {
+template< typename TContainer >
+class ContourToMeshFilter:public LightObject
+{
 public:
-  typedef ContourToMeshFilter      Self;
-  typedef LightObject              Superclass;
-  typedef SmartPointer<Self>       Pointer;
-  typedef SmartPointer<const Self> ConstPointer;
+  typedef ContourToMeshFilter        Self;
+  typedef LightObject                Superclass;
+  typedef SmartPointer< Self >       Pointer;
+  typedef SmartPointer< const Self > ConstPointer;
 
   /** Method for creation through object factory */
   itkNewMacro(Self);
@@ -74,71 +74,71 @@ public:
   typedef TContainer                             ContainerType;
   typedef typename ContainerType::const_iterator ContainerConstIterator;
 
-  void ProcessContours(const ContainerType& iContainer)
+  void ProcessContours(const ContainerType & iContainer)
   {
-    if (iContainer.empty())
+    if ( iContainer.empty() )
       {
       std::cerr << "error, no contours!" << std::endl;
       return;
       }
     else
       {
-      vtkSmartPointer<vtkAppendPolyData> append =
-        vtkSmartPointer<vtkAppendPolyData>::New();
+      vtkSmartPointer< vtkAppendPolyData > append =
+        vtkSmartPointer< vtkAppendPolyData >::New();
 
       // compute center of mass
       ContainerConstIterator it = iContainer.begin();
 
-      while (it != iContainer.end())
+      while ( it != iContainer.end() )
         {
-        if ((*it))
+        if ( ( *it ) )
           {
           append->AddInput(*it);
           }
         ++it;
         }
 
-      vtkSmartPointer<vtkNormalEstimationFilter> normal_filter =
-        vtkSmartPointer<vtkNormalEstimationFilter>::New();
-      normal_filter->SetInput(append->GetOutput());
+      vtkSmartPointer< vtkNormalEstimationFilter > normal_filter =
+        vtkSmartPointer< vtkNormalEstimationFilter >::New();
+      normal_filter->SetInput( append->GetOutput() );
       normal_filter->Update();
 
       // run the Poisson Reconstruction
-      vtkSmartPointer<vtkPoissonReconstruction> poissonFilter =
-        vtkSmartPointer<vtkPoissonReconstruction>::New();
-      poissonFilter->SetInput(normal_filter->GetOutput());
+      vtkSmartPointer< vtkPoissonReconstruction > poissonFilter =
+        vtkSmartPointer< vtkPoissonReconstruction >::New();
+      poissonFilter->SetInput( normal_filter->GetOutput() );
       poissonFilter->SetDepth(7);
       poissonFilter->SetConfidence(1.);
       poissonFilter->Update();
 
-      if (!m_Output)
+      if ( !m_Output )
         {
         m_Output = vtkPolyData::New();
         }
-      m_Output->ShallowCopy(poissonFilter->GetOutput());
+      m_Output->ShallowCopy( poissonFilter->GetOutput() );
 
       double bounds[6];
       m_Output->GetBounds(bounds);
 
-//        vtkSmartPointer< vtkPolyDataWriter > writer = vtkSmartPointer< vtkPolyDataWriter >::New();
+//        vtkSmartPointer< vtkPolyDataWriter > writer = vtkSmartPointer<
+// vtkPolyDataWriter >::New();
 //        writer->SetInput( m_Output );
 //        writer->SetFileName( "mesh.vtk" );
 //        writer->Write();
       }
   }
 
-  vtkPolyData* GetOutput()
+  vtkPolyData * GetOutput()
   {
     return m_Output;
   }
 
 protected:
-  ContourToMeshFilter() : m_Output(NULL)
-        {}
+  ContourToMeshFilter():m_Output(NULL)
+  {}
   ~ContourToMeshFilter() {}
 
-  vtkPolyData* m_Output;
-  };
-
+  vtkPolyData *m_Output;
+};
 }
 #endif

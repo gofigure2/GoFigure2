@@ -44,25 +44,23 @@
 namespace itk
 {
 Lsm3DSerieImport::Lsm3DSerieImport()
-  {
+{
   m_FileName.clear();
   m_GroupId = 0;
-  }
+}
 
 Lsm3DSerieImport::
 ~Lsm3DSerieImport()
-  {
-  }
+{}
 
 void
-Lsm3DSerieImport::
-SetFileName(std::string name)
+Lsm3DSerieImport::SetFileName(std::string name)
 {
-  if (!m_FileName.empty() && !name.empty() && m_FileName.compare(name) != 0)
+  if ( !m_FileName.empty() && !name.empty() && m_FileName.compare(name) != 0 )
     {
     return;
     }
-  if (name.empty() && m_FileName.empty())
+  if ( name.empty() && m_FileName.empty() )
     {
     return;
     }
@@ -71,31 +69,27 @@ SetFileName(std::string name)
 }
 
 GoFigureFileInfoHelperMultiIndexContainer
-Lsm3DSerieImport::
-GetOutput()
+Lsm3DSerieImport::GetOutput()
 {
   return this->m_OutputFileList;
 }
 
 void
-Lsm3DSerieImport::
-Update(void)
+Lsm3DSerieImport::Update(void)
 {
   Glob();
   CreateOutput();
 }
 
 void
-Lsm3DSerieImport::
-SetGroupId(int Uservalue)
+Lsm3DSerieImport::SetGroupId(int Uservalue)
 {
   this->m_GroupId = Uservalue;
   this->Modified();
 }
 
 void
-Lsm3DSerieImport::
-Glob()
+Lsm3DSerieImport::Glob()
 {
   m_numGroupStart.clear();
   m_numGroupLength.clear();
@@ -103,36 +97,36 @@ Glob()
   // glob all jpeg file names
   std::string unixArchetype = m_FileName;
   itksys::SystemTools::ConvertToUnixSlashes(unixArchetype);
-  if (itksys::SystemTools::FileIsDirectory(unixArchetype.c_str()))
+  if ( itksys::SystemTools::FileIsDirectory( unixArchetype.c_str() ) )
     {
     return;
     }
 
   // Parse the fileNameName and fileNamePath
   std::string origFileName =
-    itksys::SystemTools::GetFilenameName(unixArchetype.c_str());
+    itksys::SystemTools::GetFilenameName( unixArchetype.c_str() );
   std::string fileNamePath =
-    itksys::SystemTools::GetFilenamePath(unixArchetype.c_str());
+    itksys::SystemTools::GetFilenamePath( unixArchetype.c_str() );
   std::string pathPrefix;
 
   // "Clean" the filename by escaping any special characters with backslashes.
   // This allows us to pass in filenames that include these special characters.
   std::string fileName;
-  for (unsigned int j = 0; j < origFileName.length(); j++)
+  for ( unsigned int j = 0; j < origFileName.length(); j++ )
     {
     char oneChar = origFileName[j];
     if (
-      oneChar == '^' ||
-      oneChar == '$' ||
-      oneChar == '.' ||
-      oneChar == '[' ||
-      oneChar == ']' ||
-      oneChar == '-' ||
-      oneChar == '*' ||
-      oneChar == '+' ||
-      oneChar == '?' ||
-      oneChar == '(' ||
-      oneChar == ')')
+      oneChar == '^'
+      || oneChar == '$'
+      || oneChar == '.'
+      || oneChar == '['
+      || oneChar == ']'
+      || oneChar == '-'
+      || oneChar == '*'
+      || oneChar == '+'
+      || oneChar == '?'
+      || oneChar == '('
+      || oneChar == ')' )
       {
       fileName += "\\";
       }
@@ -142,7 +136,7 @@ Glob()
   // If there is no "/" in the name, the directory is not specified.
   // In that case, use the default ".".
   // This is necessary for the RegularExpressionSeriesFileNames.
-  if (fileNamePath == "")
+  if ( fileNamePath == "" )
     {
     fileNamePath = ".";
     pathPrefix = "./";
@@ -156,23 +150,23 @@ Glob()
   int         sIndex;
   // parse and keep it for ouput generation
   std::string::iterator sit;
-  for (sit = fileName.begin(); sit < fileName.end(); sit++)
+  for ( sit = fileName.begin(); sit < fileName.end(); sit++ )
     {
     // If the element is a number, find its starting index and length.
-    if ((*sit) >= '0' && (*sit) <= '9')
+    if ( ( *sit ) >= '0' && ( *sit ) <= '9' )
       {
-      sIndex = static_cast<int>(sit - fileName.begin());
+      sIndex = static_cast< int >( sit - fileName.begin() );
       m_numGroupStart.push_back(sIndex);
 
       // Loop to one past the end of the group of numbers.
-      while (sit != fileName.end() && (*sit) >= '0' && (*sit) <= '9')
+      while ( sit != fileName.end() && ( *sit ) >= '0' && ( *sit ) <= '9' )
         {
         ++sit;
         }
 
-      m_numGroupLength.push_back(static_cast<int>(sit - fileName.begin()) - sIndex);
+      m_numGroupLength.push_back(static_cast< int >( sit - fileName.begin() ) - sIndex);
 
-      if (sit == fileName.end())
+      if ( sit == fileName.end() )
         {
         break;
         }
@@ -184,10 +178,10 @@ Glob()
   IntVectorType::reverse_iterator numGroupLengthItr = m_numGroupLength.rbegin();
   IntVectorType::reverse_iterator numGroupStartItr  = m_numGroupStart.rbegin();
   int                             NumGroupCounter = 0;
-  while (numGroupLengthItr != m_numGroupLength.rend() &&
-         numGroupStartItr != m_numGroupStart.rend())
+  while ( numGroupLengthItr != m_numGroupLength.rend()
+          && numGroupStartItr != m_numGroupStart.rend() )
     {
-    if (NumGroupCounter  == m_GroupId)
+    if ( NumGroupCounter  == m_GroupId )
       {
       regExpFileName.replace(*numGroupStartItr, *numGroupLengthItr, regExpString);
       break;
@@ -204,30 +198,30 @@ Glob()
 
   // Use a RegularExpressionSeriesFileNames to find the files to return
   itk::RegularExpressionSeriesFileNames::Pointer fit = itk::RegularExpressionSeriesFileNames::New();
-  fit->SetDirectory(fileNamePath.c_str());
-  fit->SetRegularExpression(regExpFileName.c_str());
+  fit->SetDirectory( fileNamePath.c_str() );
+  fit->SetRegularExpression( regExpFileName.c_str() );
   fit->SetSubMatch(1);
   fit->NumericSortOn();
   m_FileNameS = fit->GetFileNames();
 
   // re parse the indexes and length without the escape caracters
-  for (sit = origFileName.begin(); sit < origFileName.end(); sit++)
+  for ( sit = origFileName.begin(); sit < origFileName.end(); sit++ )
     {
     // If the element is a number, find its starting index and length.
-    if ((*sit) >= '0' && (*sit) <= '9')
+    if ( ( *sit ) >= '0' && ( *sit ) <= '9' )
       {
-      sIndex = static_cast<int>(sit - origFileName.begin());
+      sIndex = static_cast< int >( sit - origFileName.begin() );
       m_numGroupStart.push_back(sIndex);
 
       // Loop to one past the end of the group of numbers.
-      while (sit != origFileName.end() && (*sit) >= '0' && (*sit) <= '9')
+      while ( sit != origFileName.end() && ( *sit ) >= '0' && ( *sit ) <= '9' )
         {
         ++sit;
         }
 
-      m_numGroupLength.push_back(static_cast<int>(sit - origFileName.begin()) - sIndex);
+      m_numGroupLength.push_back(static_cast< int >( sit - origFileName.begin() ) - sIndex);
 
-      if (sit == origFileName.end())
+      if ( sit == origFileName.end() )
         {
         break;
         }
@@ -236,63 +230,59 @@ Glob()
 }
 
 void
-Lsm3DSerieImport::
-CreateOutput()
+Lsm3DSerieImport::CreateOutput()
 {
-  std::vector<std::string>::iterator nit;
-  for (nit = m_FileNameS.begin();
-       nit != m_FileNameS.end();
-       nit++)
+  std::vector< std::string >::iterator nit;
+  for ( nit = m_FileNameS.begin();
+        nit != m_FileNameS.end();
+        nit++ )
     {
     GoFigureFileInfoHelper tempInfo;
-    tempInfo.m_Filename = (*nit);
+    tempInfo.m_Filename = ( *nit );
     std::string origFileName =
-      itksys::SystemTools::GetFilenameName((*nit).c_str());
+      itksys::SystemTools::GetFilenameName( ( *nit ).c_str() );
 
     IntVectorType::reverse_iterator numGroupLengthItr =
       m_numGroupLength.rbegin();
     IntVectorType::reverse_iterator numGroupStartItr  =
       m_numGroupStart.rbegin();
     int NumGroupCounter = 0;
-    while (numGroupLengthItr != m_numGroupLength.rend() &&
-           numGroupStartItr != m_numGroupStart.rend())
+    while ( numGroupLengthItr != m_numGroupLength.rend()
+            && numGroupStartItr != m_numGroupStart.rend() )
       {
-      if (NumGroupCounter  == m_GroupId)
+      if ( NumGroupCounter  == m_GroupId )
         {
         std::string ValueAsString(
           origFileName,
-          (*numGroupStartItr),
-          (*numGroupLengthItr));
+          ( *numGroupStartItr ),
+          ( *numGroupLengthItr ) );
         tempInfo.m_TCoord =
-          static_cast<unsigned int>(vcl_floor(atof(ValueAsString.c_str())));
+          static_cast< unsigned int >( vcl_floor( atof( ValueAsString.c_str() ) ) );
         m_OutputFileList.insert(tempInfo);
         break;
         }
       ++numGroupLengthItr;
       ++numGroupStartItr;
       ++NumGroupCounter;
-
       } // end for each numerical group
-
-    } // end for each filename
+    }   // end for each filename
 
   m_FileNameS.clear();
 
 //   GoFigureFileInfoHelperTimeBasedCompare comparison;
 //   std::sort( m_OutputFileList.begin(), m_OutputFileList.end(), comparison );
 
-#if !defined(ITK_LEAN_AND_MEAN) && !defined(__BORLANDC__) && !defined(NDEBUG)
+#if !defined( ITK_LEAN_AND_MEAN ) && !defined( __BORLANDC__ ) && !defined( NDEBUG )
   GoFigureFileInfoHelperMultiIndexContainer::iterator myIt = m_OutputFileList.begin();
-  while (myIt != m_OutputFileList.end())
+  while ( myIt != m_OutputFileList.end() )
     {
     itkDebugMacro(
-        << (*myIt).m_Filename \
-        << " " << (*myIt).m_Channel \
-        << " " << (*myIt).m_TCoord \
-        << " " << (*myIt).m_ZCoord);
+      << ( *myIt ).m_Filename       \
+      << " " << ( *myIt ).m_Channel \
+      << " " << ( *myIt ).m_TCoord  \
+      << " " << ( *myIt ).m_ZCoord);
     myIt++;
     }
 #endif
 }
-
 }

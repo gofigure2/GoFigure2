@@ -50,39 +50,37 @@
 
 //--------------------------------------------------------------------------
 QGoSynchronizedView3D::QGoSynchronizedView3D(QString iViewName,
-                                             QWidget *iParent)
-  : QGoSynchronizedView(iViewName, iParent),
+                                             QWidget *iParent):
+  QGoSynchronizedView(iViewName, iParent),
   m_View (NULL)
-  {
-  }
+{}
 
 //--------------------------------------------------------------------------
 QGoSynchronizedView3D::
 ~QGoSynchronizedView3D()
-  {
+{
   // remove the SynchronizedView from the orchestra
-  if (m_ViewManager)
+  if ( m_ViewManager )
     {
     m_ViewManager->removeSynchronizedView3D(this);
     m_ViewManager = NULL;
     }
 
   // delete the view if any
-  if (m_View)
+  if ( m_View )
     {
     // we delete the viewer
-    delete (m_View);
+    delete ( m_View );
     m_View = NULL;
     }
-  }
+}
 
 //--------------------------------------------------------------------------
 /* Update the viewer contained in the widget */
 void
-QGoSynchronizedView3D::
-Update()
+QGoSynchronizedView3D::Update()
 {
-  if (m_View)
+  if ( m_View )
     {
     this->m_View->Update();
     // in addition to standard parameters, we don't want to interpolate data
@@ -92,11 +90,10 @@ Update()
 
 //--------------------------------------------------------------------------
 void
-QGoSynchronizedView3D::
-PrintOs(ostream& os)
+QGoSynchronizedView3D::PrintOs(ostream & os)
 {
   // if we have an imageview, the we print its image information
-  if (m_Image != NULL)
+  if ( m_Image != NULL )
     {
     os << "SynchronizedView 3D " << this << " contains :" << std::endl;
     m_Image->Print(os);
@@ -110,21 +107,19 @@ PrintOs(ostream& os)
 //--------------------------------------------------------------------------
 /*  returns the type of SynchronizedView (2 for 2D, 3 for 3D) */
 int
-QGoSynchronizedView3D::
-GetSynchronizedViewType()
+QGoSynchronizedView3D::GetSynchronizedViewType()
 {
   return 3;
 }
 
 //--------------------------------------------------------------------------
 void
-QGoSynchronizedView3D::
-SetImage(vtkImageData* iImage)
+QGoSynchronizedView3D::SetImage(vtkImageData *iImage)
 {
-  if (iImage)
+  if ( iImage )
     {
     // if there is no viewer, we create one
-    if (!m_View)
+    if ( !m_View )
       {
       createViewer();
       }
@@ -138,8 +133,7 @@ SetImage(vtkImageData* iImage)
 
 //--------------------------------------------------------------------------
 void
-QGoSynchronizedView3D::
-Render()
+QGoSynchronizedView3D::Render()
 {
   if ( HasViewer() )
     {
@@ -152,12 +146,12 @@ Render()
 
 //--------------------------------------------------------------------------
 void
-QGoSynchronizedView3D::
-Render(const int& iId)
+QGoSynchronizedView3D::Render(const int & iId)
 {
   if ( HasViewer() )
     {
-    if ( (iId>=0) && (iId <= 2) )// if we want to render one of the 2D view
+    if ( ( iId >= 0 ) && ( iId <= 2 ) ) // if we want to render one of the 2D
+                                        // view
       {
       m_View->GetImageViewer(iId)->Render();
       }
@@ -170,14 +164,14 @@ Render(const int& iId)
 
 //--------------------------------------------------------------------------
 /* get the camera of the current viewer */
-vtkCamera*
-QGoSynchronizedView3D::
-GetCamera()
+vtkCamera *
+QGoSynchronizedView3D::GetCamera()
 {
-int currentView = GetFullScreenView();
+  int currentView = GetFullScreenView();
+
   if ( HasViewer() )
     {
-    if ( (currentView>=1) && (currentView <= 3) )
+    if ( ( currentView >= 1 ) && ( currentView <= 3 ) )
       {
       return m_View->GetImageViewer(currentView)
              ->GetRenderer()
@@ -195,13 +189,12 @@ int currentView = GetFullScreenView();
 
 //--------------------------------------------------------------------------
 /* get the camera of the current viewer */
-vtkCamera*
-QGoSynchronizedView3D::
-GetCamera(const int& iId)
+vtkCamera *
+QGoSynchronizedView3D::GetCamera(const int & iId)
 {
   if ( HasViewer() )
     {
-    if ( (iId>=0) && (iId <= 2) )
+    if ( ( iId >= 0 ) && ( iId <= 2 ) )
       {
       return m_View->GetImageViewer(iId)
              ->GetRenderer()
@@ -220,17 +213,14 @@ GetCamera(const int& iId)
 //--------------------------------------------------------------------------
 /*  true if the widget has a viewer */
 bool
-QGoSynchronizedView3D::
-HasViewer()
+QGoSynchronizedView3D::HasViewer()
 {
-  return (m_View != NULL);
+  return ( m_View != NULL );
 }
-
 
 //--------------------------------------------------------------------------
 int
-QGoSynchronizedView3D::
-GetFullScreenView()
+QGoSynchronizedView3D::GetFullScreenView()
 {
   if ( HasViewer() )
     {
@@ -243,9 +233,8 @@ GetFullScreenView()
 }
 
 //--------------------------------------------------------------------------
-QGoImageView3D*
-QGoSynchronizedView3D::
-GetImageView()
+QGoImageView3D *
+QGoSynchronizedView3D::GetImageView()
 {
   if ( HasViewer() )
     {
@@ -259,11 +248,11 @@ GetImageView()
 
 //--------------------------------------------------------------------------
 QString
-QGoSynchronizedView3D::
-SnapshotViewXY(const GoFigure::FileType& iType, const QString& iBaseName)
+QGoSynchronizedView3D::SnapshotViewXY(const GoFigure::FileType & iType, const QString & iBaseName)
 {
-  QGoImageView3D* viewer = this->GetImageView();
-  if (HasViewer())
+  QGoImageView3D *viewer = this->GetImageView();
+
+  if ( HasViewer() )
     {
     return viewer->SnapshotViewXY(iType, iBaseName);
     }
@@ -275,11 +264,11 @@ SnapshotViewXY(const GoFigure::FileType& iType, const QString& iBaseName)
 
 //--------------------------------------------------------------------------
 QString
-QGoSynchronizedView3D::
-SnapshotView2(const GoFigure::FileType& iType, const QString& iBaseName)
+QGoSynchronizedView3D::SnapshotView2(const GoFigure::FileType & iType, const QString & iBaseName)
 {
-  QGoImageView3D* viewer = this->GetImageView();
-  if (viewer)
+  QGoImageView3D *viewer = this->GetImageView();
+
+  if ( viewer )
     {
     return viewer->SnapshotView2(iType, iBaseName);
     }
@@ -291,11 +280,11 @@ SnapshotView2(const GoFigure::FileType& iType, const QString& iBaseName)
 
 //--------------------------------------------------------------------------
 QString
-QGoSynchronizedView3D::
-SnapshotView3(const GoFigure::FileType& iType, const QString& iBaseName)
+QGoSynchronizedView3D::SnapshotView3(const GoFigure::FileType & iType, const QString & iBaseName)
 {
-  QGoImageView3D* viewer = this->GetImageView();
-  if (viewer)
+  QGoImageView3D *viewer = this->GetImageView();
+
+  if ( viewer )
     {
     return viewer->SnapshotView3(iType, iBaseName);
     }
@@ -307,11 +296,11 @@ SnapshotView3(const GoFigure::FileType& iType, const QString& iBaseName)
 
 //--------------------------------------------------------------------------
 QString
-QGoSynchronizedView3D::
-SnapshotViewXYZ(const GoFigure::FileType& iType, const QString& iBaseName)
+QGoSynchronizedView3D::SnapshotViewXYZ(const GoFigure::FileType & iType, const QString & iBaseName)
 {
-  QGoImageView3D* viewer = this->GetImageView();
-  if (viewer)
+  QGoImageView3D *viewer = this->GetImageView();
+
+  if ( viewer )
     {
     return viewer->SnapshotViewXYZ(iType, iBaseName);
     }
@@ -323,10 +312,9 @@ SnapshotViewXYZ(const GoFigure::FileType& iType, const QString& iBaseName)
 
 //--------------------------------------------------------------------------
 void
-QGoSynchronizedView3D::
-SetFullScreenView(const int& iId)
+QGoSynchronizedView3D::SetFullScreenView(const int & iId)
 {
-  if (HasViewer())
+  if ( HasViewer() )
     {
     m_View->SetFullScreenView(iId);
     }
@@ -334,40 +322,35 @@ SetFullScreenView(const int& iId)
 
 //--------------------------------------------------------------------------
 void
-QGoSynchronizedView3D::
-SetFullXYScreenView()
+QGoSynchronizedView3D::SetFullXYScreenView()
 {
   SetFullScreenView(1);
 }
 
 //--------------------------------------------------------------------------
 void
-QGoSynchronizedView3D::
-SetFullXZScreenView()
+QGoSynchronizedView3D::SetFullXZScreenView()
 {
   SetFullScreenView(2);
 }
 
 //--------------------------------------------------------------------------
 void
-QGoSynchronizedView3D::
-SetFullYZScreenView()
+QGoSynchronizedView3D::SetFullYZScreenView()
 {
   SetFullScreenView(3);
 }
 
 //--------------------------------------------------------------------------
 void
-QGoSynchronizedView3D::
-SetFullXYZScreenView()
+QGoSynchronizedView3D::SetFullXYZScreenView()
 {
   SetFullScreenView(4);
 }
 
 //--------------------------------------------------------------------------
 void
-QGoSynchronizedView3D::
-SetQuadView()
+QGoSynchronizedView3D::SetQuadView()
 {
   SetFullScreenView(0);
 }
@@ -378,14 +361,13 @@ SetQuadView()
 //--------------------------------------------------------------------------
 /* delete the viewer contained in the widget */
 void
-QGoSynchronizedView3D::
-deleteViewer()
+QGoSynchronizedView3D::deleteViewer()
 {
   // if there is no viewer
-  if (m_View)
+  if ( m_View )
     {
     // delete object
-    delete (m_View);
+    delete ( m_View );
     // set pointer to NULL
     m_View = NULL;
     }
@@ -394,16 +376,15 @@ deleteViewer()
 //--------------------------------------------------------------------------
 /* Create the viewer in the widget */
 void
-QGoSynchronizedView3D::
-createViewer()
+QGoSynchronizedView3D::createViewer()
 {
   // if there is no viewer
   if ( !HasViewer() )
     {
     // we create one
     m_View = new QGoImageView3D(this);
-    dynamic_cast<QGoImageView3D*>
-    (m_View)->setContentsMargins(1, 1, 1, 1);
+    dynamic_cast< QGoImageView3D * >
+    ( m_View )->setContentsMargins(1, 1, 1, 1);
     // setup position of the widget
     gridLayout->addWidget(m_View);
     }

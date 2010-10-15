@@ -48,28 +48,28 @@
 #include "ConvertToStringHelper.h"
 #include "vtkMySQLDatabase.h"
 
-class GoDBLineageRow : public GoDBTraceRow
-  {
+class GoDBLineageRow:public GoDBTraceRow
+{
 public:
   GoDBLineageRow();
 
   ~GoDBLineageRow();
 
-  /** \brief fill the lineage map with the values gotten from the visualization*/
-  GoDBLineageRow(vtkMySQLDatabase* DatabaseConnector, GoDBCoordinateRow Min,
-                 GoDBCoordinateRow Max, unsigned int ImgSessionID, vtkPolyData* TraceVisu);
+  /** \brief fill the lineage map with the values gotten from the
+    visualization*/
+  GoDBLineageRow(vtkMySQLDatabase *DatabaseConnector, GoDBCoordinateRow Min,
+                 GoDBCoordinateRow Max, unsigned int ImgSessionID, vtkPolyData *TraceVisu);
 
   /** \brief return the LineageID of the Lineage with the same bounding box
  already registered in the DB or -1 if not yet created*/
-  int DoesThisBoundingBoxLineageExist(vtkMySQLDatabase* DatabaseConnector);
+  int DoesThisBoundingBoxLineageExist(vtkMySQLDatabase *DatabaseConnector);
 
   /** \brief save the lineage in the database and return the ID of the new
   created lineage*/
-  int SaveInDB(vtkMySQLDatabase* DatabaseConnector);
+  int SaveInDB(vtkMySQLDatabase *DatabaseConnector);
 
 protected:
   virtual void InitializeMap();
-
-  };
+};
 
 #endif

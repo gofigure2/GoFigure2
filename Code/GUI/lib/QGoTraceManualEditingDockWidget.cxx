@@ -40,19 +40,20 @@
 #include "QGoTraceManualEditingDockWidget.h"
 
 QGoTraceManualEditingDockWidget::QGoTraceManualEditingDockWidget(
-  QWidget* iParent) : QDockWidget(iParent)
-  {
+  QWidget *iParent):QDockWidget(iParent)
+{
   this->m_TraceWidget =
     new QGoTraceManualEditingWidget(this);
-  this->setWindowTitle(tr("Trace settings"));
+  this->setWindowTitle( tr("Trace settings") );
   this->setWidget(this->m_TraceWidget);
-  }
+}
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 QGoTraceManualEditingDockWidget::~QGoTraceManualEditingDockWidget()
-  {
-  }
+{}
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

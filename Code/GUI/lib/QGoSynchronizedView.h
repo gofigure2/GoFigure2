@@ -60,11 +60,10 @@ class QGoSynchronizedViewManager;
  * \example GUI/lib/qgosynchronizedview2dtest.cxx
  */
 
-class QGoSynchronizedView : public QWidget,
+class QGoSynchronizedView:public QWidget,
   protected Ui::QGoSynchronizedView
-  {
+{
   Q_OBJECT
-
 public:
   explicit QGoSynchronizedView(QString iViewName, QWidget *iParent = 0);
 
@@ -74,55 +73,55 @@ public:
 
   /** \brief Set image displayed by the SynchronizedView
    */
-  virtual void SetImage(vtkImageData* iImage) = 0;
+  virtual void SetImage(vtkImageData *iImage) = 0;
 
   /** \brief Update the viewer contained in the widget
    */
-  virtual void Update( void ) = 0;
+  virtual void Update(void) = 0;
 
   /** \brief Set the address of the QGoSynchronizedViewManager
    */
-  void SetViewManager(QGoSynchronizedViewManager* iViewManager);
+  void SetViewManager(QGoSynchronizedViewManager *iViewManager);
 
   /** \brief get SynchronizedView's name
    */
-  QString* GetName( void );
+  QString * GetName(void);
 
   /** \brief render the viewer contained in the widget if any
    */
-  virtual void Render( void ) = 0;
+  virtual void Render(void) = 0;
 
   /** \brief get the camera of the current viewer
    */
-  virtual vtkCamera* GetCamera( void ) = 0;
+  virtual vtkCamera * GetCamera(void) = 0;
 
   /** \brief true if the widget has a viewer
    */
-  virtual bool HasViewer( void ) = 0;
+  virtual bool HasViewer(void) = 0;
 
   /** \brief print the SynchronizedView information :
    *  it consists in the image information if any.
    */
-  virtual void PrintOs(ostream& os) = 0;
+  virtual void PrintOs(ostream & os) = 0;
 
   /** \brief returns the type of SynchronizedView (2 for 2D, 3 for 3D)
    */
-  virtual int GetSynchronizedViewType( void ) = 0;
+  virtual int GetSynchronizedViewType(void) = 0;
 
 public slots:
 
   /** \brief Save a snapshot of the displaid view, in a iType file
    */
-  virtual QString SnapshotViewXY(const GoFigure::FileType& iType,
-                                 const QString& iBaseName = tr("Snapshot")) = 0;
+  virtual QString SnapshotViewXY( const GoFigure::FileType & iType,
+                                  const QString & iBaseName = tr("Snapshot") ) = 0;
 
 protected:
 
   QString                     m_ViewName;
-  vtkImageData*               m_Image;
+  vtkImageData *              m_Image;
   QString                     m_ImageName;
-  QGoSynchronizedViewManager* m_ViewManager;
-  vtkEventQtSlotConnect*      m_VTKEventQtConnector;
+  QGoSynchronizedViewManager *m_ViewManager;
+  vtkEventQtSlotConnect *     m_VTKEventQtConnector;
 
   /** \brief Qt change event function
    */
@@ -130,16 +129,15 @@ protected:
 
   /** delete the viewer contained in the widget
    */
-  virtual void deleteViewer( void ) = 0;
+  virtual void deleteViewer(void) = 0;
 
   /** create the viewer contained in the widget
    */
-  virtual void createViewer( void ) = 0;
+  virtual void createViewer(void) = 0;
 
 private:
 
-  Q_DISABLE_COPY( QGoSynchronizedView );
-
-  };
+  Q_DISABLE_COPY(QGoSynchronizedView);
+};
 
 #endif //__QGoSynchronizedView_h

@@ -65,12 +65,12 @@ class QGoContourManualSegmentationWidget;
 \brief
 \example GUI/lib/qgotabimageviewelementbase.cxx
 */
-class QGOGUILIB_EXPORT QGoTabImageViewElementBase : public QGoTabElementBase
-  {
+class QGOGUILIB_EXPORT QGoTabImageViewElementBase:public QGoTabElementBase
+{
   Q_OBJECT
 public:
   /** \brief Constructor */
-  explicit QGoTabImageViewElementBase(QWidget* parent = 0);
+  explicit QGoTabImageViewElementBase(QWidget *parent = 0);
   /** \brief Destructor */
   virtual ~QGoTabImageViewElementBase();
 
@@ -80,15 +80,16 @@ public:
   virtual void Update() = 0;
 
   /** \brief */
-  virtual void SetColor(const bool& iColor);
+  virtual void SetColor(const bool & iColor);
 
   /** \brief Write Settings */
   virtual void WriteSettings();
+
   /** \brief Read Settings */
   virtual void ReadSettings();
 
   /** \brief Validate one contour traced by using the ContourWidget.*/
-  virtual void ValidateContour(const int& iId);
+  virtual void ValidateContour(const int & iId);
 
 public slots:
   /** \brief Change the background color. */
@@ -101,7 +102,7 @@ public slots:
   virtual void ShowOneChannel(int iChannel) = 0;
 
   /** \brief Activate the manual segmentation editor (ContourWidget).*/
-  void ActivateManualSegmentationEditor(const bool& iActivate);
+  void ActivateManualSegmentationEditor(const bool & iActivate);
 
   /** \brief Validate contour traced in the ContourWidget.*/
   virtual void ValidateContour();
@@ -115,7 +116,7 @@ public slots:
   void ChangeContourRepresentationProperty();
 
   /** \brief Re-edit the iId^th contour. */
-  void ReEditContour(const unsigned int& iId);
+  void ReEditContour(const unsigned int & iId);
 
   virtual void TakeSnapshot() = 0;
 
@@ -130,34 +131,37 @@ protected:
   QColor m_NodesColor;
   QColor m_ActiveNodesColor;
 
-  QHBoxLayout* m_LayOut;
-  QAction*     m_TakeSnapshotAction;
+  QHBoxLayout *m_LayOut;
+  QAction *    m_TakeSnapshotAction;
 
-  std::vector<vtkSmartPointer<vtkContourWidget> >                      m_ContourWidget;
-  std::vector<vtkSmartPointer<vtkOrientedGlyphContourRepresentation> > m_ContourRepresentation;
-  ContourMeshContainer*            m_ContourMeshContainer;
+  std::vector< vtkSmartPointer< vtkContourWidget > >                      m_ContourWidget;
+  std::vector< vtkSmartPointer< vtkOrientedGlyphContourRepresentation > > m_ContourRepresentation;
+  ContourMeshContainer *                                                  m_ContourMeshContainer;
 
-  QGoNavigationDockWidget*            m_NavigationDockWidget;
-  QGoContourManualSegmentationWidget* m_ManualSegmentationWidget;
+  QGoNavigationDockWidget *           m_NavigationDockWidget;
+  QGoContourManualSegmentationWidget *m_ManualSegmentationWidget;
 
   virtual void CreateManualSegmentationdockWidget();
+
   virtual void CreateToolsActions();
 
   virtual void GetBackgroundColorFromImageViewer() = 0;
+
   virtual void SetBackgroundColorToImageViewer() = 0;
 
-  virtual int* GetImageCoordinatesFromWorldCoordinates(double pos[3]) = 0;
+  virtual int *GetImageCoordinatesFromWorldCoordinates(double pos[3]) = 0;
 
-  virtual void RemoveActorFromViewer(const int& iId, vtkActor* iActor) = 0;
-  virtual void DisplayActorInViewer(const int& iId, vtkActor* iActor) = 0;
+  virtual void RemoveActorFromViewer(const int & iId, vtkActor *iActor) = 0;
+
+  virtual void DisplayActorInViewer(const int & iId, vtkActor *iActor) = 0;
 
   //   virtual std::vector< vtkQuadricLODActor* >
-  virtual std::vector<vtkActor*>  AddContour(vtkPolyData* dataset,
-                                             vtkProperty* property = NULL) = 0;
+  virtual std::vector< vtkActor * >  AddContour(vtkPolyData *dataset,
+                                                vtkProperty *property = NULL) = 0;
 
-  virtual void SetSlice(int iDir, int* iIdx) = 0;
+  virtual void SetSlice(int iDir, int *iIdx) = 0;
 
 private:
   Q_DISABLE_COPY(QGoTabImageViewElementBase);
-  };
+};
 #endif

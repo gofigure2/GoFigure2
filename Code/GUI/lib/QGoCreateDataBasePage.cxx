@@ -46,47 +46,51 @@
 #include <QVariant>
 #include <iostream>
 
-QGoCreateDataBasePage::QGoCreateDataBasePage(QWidget *iParent)
-  : QWizardPage(iParent)
-  {
+QGoCreateDataBasePage::QGoCreateDataBasePage(QWidget *iParent):
+  QWizardPage(iParent)
+{
   QFont tfont;
+
   tfont.setBold(false);
   this->setFont(tfont);
 
-  QFormLayout* formLayout = new QFormLayout;
+  QFormLayout *formLayout = new QFormLayout;
   lineNewDBName = new QLineEdit;
   formLayout->addRow(tr("Name of the new DB to create:"), lineNewDBName);
 
   setLayout(formLayout);
-  }
+}
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoCreateDataBasePage::initializePage()
 {
-  this->setSubTitle(tr("There is no existing GoFigure Database, please create one:"));
+  this->setSubTitle( tr("There is no existing GoFigure Database, please create one:") );
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 bool QGoCreateDataBasePage::validatePage()
 {
   QString DBName = lineNewDBName->text();
-  if (DBName.isEmpty())
+
+  if ( DBName.isEmpty() )
     {
     QMessageBox msgBox;
     msgBox.setText(
-      tr("Please enter a name for your new DataBase :"));
+      tr("Please enter a name for your new DataBase :") );
     msgBox.exec();
     return false;
     }
   this->wizard()->setField("DBName", DBName);
   std::cout << "the DBName to create is: " << field("DBName").toString().toStdString().c_str() << std::endl;
 
-  CreateGoFigureDataBase(field("ServerName").toString().toStdString(),
-                         field("User").toString().toStdString(),
-                         field("Password").toString().toStdString(),
-                         field("DBName").toString().toStdString());
+  CreateGoFigureDataBase( field("ServerName").toString().toStdString(),
+                          field("User").toString().toStdString(),
+                          field("Password").toString().toStdString(),
+                          field("DBName").toString().toStdString() );
 
   return true;
 }

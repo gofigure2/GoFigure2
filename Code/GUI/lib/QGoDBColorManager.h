@@ -51,30 +51,30 @@
 for the color DBTable (add a new one, delete...).
 \ingroup DB GUI
 */
-class QGoDBColorManager : public QGoDBNameDescEntityManager
-  {
+class QGoDBColorManager:public QGoDBNameDescEntityManager
+{
   Q_OBJECT
-
 public:
-  explicit QGoDBColorManager (QWidget* iParent = 0);
+  explicit QGoDBColorManager (QWidget *iParent = 0);
   typedef  QGoDeleteFromListDialog::ItemColorComboboxData ItemColorComboboxData;
 
   ~QGoDBColorManager();
-  /** 
+  /**
   \brief ask the user the color he wants, the name, description of the new color and
   saves it in the database.
-  \return ItemColorComboboxData with the data for the new color saved or 
+  \return ItemColorComboboxData with the data for the new color saved or
   with the name of the color empty if the user canceled the "add new"
   */
-  ItemColorComboboxData AddANewColor(vtkMySQLDatabase* iDatabaseConnector);
-  virtual bool DeleteEntity(vtkMySQLDatabase* iDatabaseConnector);
+  ItemColorComboboxData AddANewColor(vtkMySQLDatabase *iDatabaseConnector);
+
+  virtual bool DeleteEntity(vtkMySQLDatabase *iDatabaseConnector);
 
   /**
   \brief get the list of the existing colors from the database
   \return a list of pair with the name and the QColor of each color
   */
-  std::list<ItemColorComboboxData> GetListExistingColors(
-    vtkMySQLDatabase* iDatabaseConnector);
+  std::list< ItemColorComboboxData > GetListExistingColors(
+    vtkMySQLDatabase *iDatabaseConnector);
 
 protected:
   GoDBColorRow          m_NewColor;
@@ -82,9 +82,8 @@ protected:
   //mother class method
   virtual void SaveNewEntityInDB();
 
-  
 protected slots:
   //mother class method
   virtual void ValidateName(std::string iName, std::string iDescription);
-  };
+};
 #endif

@@ -49,31 +49,31 @@
 \brief Abstract. manages the map with the keys matching the fields for the
 DBtable containing a name and description fields.
 */
-class QGOIO_EXPORT GoDBNameDescRow : public GoDBRow
-  {
+class QGOIO_EXPORT GoDBNameDescRow:public GoDBRow
+{
 public:
   GoDBNameDescRow();
 
   ~GoDBNameDescRow()
-        {}
+  {}
   /**
   \brief Pure Virtual :check if the entity already exits in the DB, if yes,
   return the existing ID, if not, save it in the DB and return the
   ID for the new created entity
   \return int existing or new created ID for the entity
   */
-  virtual int SaveInDB(vtkMySQLDatabase* iDatabaseConnector) = 0;
+  virtual int SaveInDB(vtkMySQLDatabase *iDatabaseConnector) = 0;
 
-  /** 
+  /**
   \brief Pure Virtual :check if the entity already exists in the database
   based on its own uniqueness definition, return the ID of the
   entity already existing or -1 if not yet created.
   \return int existing ID or -1 if the entity doesn't exists
   */
   virtual int DoesThisEntityAlreadyExists(
-    vtkMySQLDatabase* iDatabaseConnector) = 0;
+    vtkMySQLDatabase *iDatabaseConnector) = 0;
 
-  /** 
+  /**
   \brief check if the entity already exists in the database
   based on its own uniqueness definition, return the ID of the
   entity already exiting or -1 if not yet created and change the
@@ -83,9 +83,9 @@ public:
   \return int existing ID or -1 if the entity doesn't exists
  */
   virtual int DoesThisEntityAlreadyExists2(
-    vtkMySQLDatabase* iDatabaseConnector, std::string& ioName);
+    vtkMySQLDatabase *iDatabaseConnector, std::string & ioName);
 
-  /* 
+  /*
   \brief check if the entity already exists in the database
   based on its own uniqueness definition, return the ID of the
   entity already exiting or -1 if not yet created and change the
@@ -95,7 +95,7 @@ public:
   \return int existing ID or -1 if the entity doesn't exists
  */
   //virtual int DoesThisEntityAlreadyExists(
-   // vtkMySQLDatabase* iDatabaseConnector, std::string& ioName) = 0;
+  // vtkMySQLDatabase* iDatabaseConnector, std::string& ioName) = 0;
 
   /**
   \brief check if the name already exits in the database, if yes,
@@ -103,31 +103,31 @@ public:
   \return int return the ID of the existing entity with the same name
   or -1 if no entity has the same name
   */
-  virtual int DoesThisNameAlreadyExists(vtkMySQLDatabase* iDatabaseConnector);
+  virtual int DoesThisNameAlreadyExists(vtkMySQLDatabase *iDatabaseConnector);
 
 protected:
   //mother class method
   virtual void InitializeMap();
 
   /**
-  \brief check if the GoDBNameDescRow already exists, if yes, return the ID of the 
+  \brief check if the GoDBNameDescRow already exists, if yes, return the ID of the
   existing one, if not, save it in the database and return the new ID
   \param[in] iDatabaseConnector connection to the database
   \tparam iNewEntity children of NameDescRow
   */
-  template<typename T>
-  int SaveInDBTemplate(vtkMySQLDatabase* iDatabaseConnector, T iNewEntity)
+  template< typename T >
+  int SaveInDBTemplate(vtkMySQLDatabase *iDatabaseConnector, T iNewEntity)
   {
     int NewEntityID = iNewEntity.DoesThisEntityAlreadyExists(iDatabaseConnector);
-    if (NewEntityID == -1)
-    {
-    NewEntityID = 
-      AddOnlyOneNewObjectInTable<T>(iDatabaseConnector,
-                                    iNewEntity.m_TableName, 
-                                    iNewEntity, iNewEntity.m_TableIDName);
-    }
-  return NewEntityID;
-  }
 
-  };
+    if ( NewEntityID == -1 )
+      {
+      NewEntityID =
+        AddOnlyOneNewObjectInTable< T >(iDatabaseConnector,
+                                        iNewEntity.m_TableName,
+                                        iNewEntity, iNewEntity.m_TableIDName);
+      }
+    return NewEntityID;
+  }
+};
 #endif

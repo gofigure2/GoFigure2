@@ -50,17 +50,15 @@
 for the SubCellularType DBTable.
 \ingroup DB GUI
 */
-class QGoDBSubCellTypeManager : public QGoDBNameDescEntityManager
-  {
+class QGoDBSubCellTypeManager:public QGoDBNameDescEntityManager
+{
   Q_OBJECT
-
 public:
   /** \todo make a class template for celltype/subcelltype */
-  explicit QGoDBSubCellTypeManager (QWidget* iParent = 0);
+  explicit QGoDBSubCellTypeManager (QWidget *iParent = 0);
 
   ~QGoDBSubCellTypeManager()
-          {}
-
+  {}
 protected:
   GoDBSubCellTypeRow m_NewSubCellType;
   //mother class method
@@ -69,6 +67,5 @@ protected:
 protected slots:
   //mother class method
   virtual void ValidateName(std::string iName, std::string iDescription);
-
-  };
+};
 #endif

@@ -39,28 +39,29 @@
 =========================================================================*/
 #include "GoDBTWContainerForTrackLineage.h"
 
-
 GoDBTWContainerForTrackLineage::GoDBTWContainerForTrackLineage(
-  std::string iTraceName,std::string iCollectionName,int iImgSessionID)
-  :GoDBTableWidgetContainer(iTraceName,iCollectionName,iImgSessionID)
+  std::string iTraceName, std::string iCollectionName, int iImgSessionID):
+  GoDBTableWidgetContainer(iTraceName, iCollectionName, iImgSessionID)
 {
   m_ColumnsInfos = GetColumnsInfoForTraceTable();
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 GoDBTWContainerForTrackLineage::~GoDBTWContainerForTrackLineage()
-{
-}
+{}
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void GoDBTWContainerForTrackLineage::GetCommonInfoForTwoTracesTable()
 {
   GoDBTraceInfoForTableWidget temp;
-  std::pair<GoDBTraceInfoForTableWidget, std::vector<std::string> > PairTemp;
- 
- //Get the info for the Time Point Min:
+
+  std::pair< GoDBTraceInfoForTableWidget, std::vector< std::string > > PairTemp;
+
+  //Get the info for the Time Point Min:
   temp.InfoName = "TimePointMin";
   temp.ColumnNameDatabase = "TCoord";
   temp.ColumnNameTableWidget = "TimePointMin";

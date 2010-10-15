@@ -44,6 +44,6 @@
 #include <QDir>
 #include <QString>
 
-QDir FindPluginDirectory(const QString& iSubdir);
+QDir FindPluginDirectory(const QString & iSubdir);
 
 #endif

@@ -61,73 +61,77 @@ class QGoPluginManager;
 \brief Abstract class for one tab element in GoFigure2.
 \example GUI/lib/qgotabelementbase.cxx
 */
-class QGOGUILIB_EXPORT QGoTabElementBase : public QWidget
-  {
+class QGOGUILIB_EXPORT QGoTabElementBase:public QWidget
+{
   Q_OBJECT
 public:
   /** \brief Constructor */
-  explicit QGoTabElementBase(QWidget* parent = 0);
+  explicit QGoTabElementBase(QWidget *parent = 0);
 
   /** \brief Destructor */
   virtual ~QGoTabElementBase();
 
-  typedef std::pair<QGoDockWidgetStatus*, QDockWidget*> QGoDockWidgetStatusPair;
+  typedef std::pair< QGoDockWidgetStatus *, QDockWidget * > QGoDockWidgetStatusPair;
 
   /** \brief Get the dimension type of the underlying data set.*/
   virtual GoFigure::TabDimensionType GetTabDimensionType() const = 0;
 
   /** \brief Get all actions belonging to View Menu and Toolbar.*/
-  virtual std::vector<QAction*> ViewActions();
+  virtual std::vector< QAction * > ViewActions();
+
   /** \brief Get all actions belonging to Segmentation Menu and Toolbar. */
-  virtual std::vector<QAction*> SegmentationActions();
+  virtual std::vector< QAction * > SegmentationActions();
+
   /** \brief Get all actions belonging to Tools Menu and Toolbar. */
-  virtual std::vector<QAction*> ToolsActions();
+  virtual std::vector< QAction * > ToolsActions();
+
   /** \brief Get all actions belonging to Bookmark Menu and Toolbar. */
-  virtual std::vector<QAction*> BookmarkActions();
+  virtual std::vector< QAction * > BookmarkActions();
+
   /** \brief Get all actions belonging to Mode Menu and Toolbar.*/
-  virtual std::vector<QAction*> ModeActions();
+  virtual std::vector< QAction * > ModeActions();
 
   /** \brief Get all the DockWidgets with its status (visibility, location). */
-  virtual std::list<QGoDockWidgetStatusPair>& DockWidget();
+  virtual std::list< QGoDockWidgetStatusPair > & DockWidget();
 
 //   virtual QStatusBar* StatusBar();
 
-  virtual std::list<QAction*> GetPluginActions();
-  virtual void SetPluginActions(std::list<QAction*> iList);
+  virtual std::list< QAction * > GetPluginActions();
+
+  virtual void SetPluginActions(std::list< QAction * > iList);
 
   /** \brief Write Settings for the tab element. */
   virtual void WriteSettings() = 0;
+
   /** \brief Read Settings for the related tab element.*/
   virtual void ReadSettings() = 0;
 
-  void CreateModeActions( QActionGroup* group );
+  void CreateModeActions(QActionGroup *group);
 
   /**
    * \brief Mouse interaction style set as default
    */
-  virtual void DefaultInteractorBehavior(bool){};
+  virtual void DefaultInteractorBehavior(bool){}
   /**
    * \brief Mouse interaction style allows user to zoom in/out volume with all
    * buttons
    */
-  virtual void ZoomInteractorBehavior(bool){};
+  virtual void ZoomInteractorBehavior(bool){}
   /**
    * \brief Mouse interaction style allows user to pan volume with all buttons
    */
-  virtual void PanInteractorBehavior(bool){};
-
+  virtual void PanInteractorBehavior(bool){}
 protected:
-  std::list<QAction*> m_PluginActionList;
+  std::list< QAction * > m_PluginActionList;
 
-  std::vector<QAction*> m_ViewActions;
-  std::vector<QAction*> m_SegmentationActions;
-  std::vector<QAction*> m_ToolsActions;
-  std::vector<QAction*> m_BookmarkActions;
-  std::vector<QAction*> m_ModeActions;
+  std::vector< QAction * > m_ViewActions;
+  std::vector< QAction * > m_SegmentationActions;
+  std::vector< QAction * > m_ToolsActions;
+  std::vector< QAction * > m_BookmarkActions;
+  std::vector< QAction * > m_ModeActions;
 
-  std::list<QGoDockWidgetStatusPair> m_DockWidgetList;
-
+  std::list< QGoDockWidgetStatusPair > m_DockWidgetList;
 private:
   Q_DISABLE_COPY(QGoTabElementBase);
-  };
+};
 #endif

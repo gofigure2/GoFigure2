@@ -39,10 +39,10 @@
 =========================================================================*/
 #include "GoDBMeshRow.h"
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-  (void) argc;
-  (void) argv;
+  (void)argc;
+  (void)argv;
 
   GoDBMeshRow row;
   std::cout << "std::cout TEST... " << std::endl;
@@ -70,8 +70,8 @@ int main(int argc, char** argv)
   std::cout << std::endl;
 
   std::cout << "iterator TEST... " << std::endl;
-  std::map<std::string, std::string>::iterator it = row.MapBegin();
-  while (it != row.MapEnd())
+  std::map< std::string, std::string >::iterator it = row.MapBegin();
+  while ( it != row.MapEnd() )
     {
     ++it;
     }
@@ -79,10 +79,10 @@ int main(int argc, char** argv)
   std::cout << std::endl;
 
   std::cout << "const iterator TEST... " << std::endl;
-  std::map<std::string, std::string>::const_iterator
-  c_it = row.ConstMapBegin();
+  std::map< std::string, std::string >::const_iterator
+    c_it = row.ConstMapBegin();
 
-  while (c_it != row.ConstMapEnd())
+  while ( c_it != row.ConstMapEnd() )
     {
     ++c_it;
     }

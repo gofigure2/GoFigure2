@@ -42,9 +42,9 @@
 #include "QGoNavigationDockWidget.h"
 #include <iostream>
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-  if (argc != 2)
+  if ( argc != 2 )
     {
     std::cerr << "qgovisualizationdockwidget requires 1 argument1:" << std::endl;
     std::cerr << "1-test (boolean)" << std::endl;
@@ -54,34 +54,34 @@ int main(int argc, char** argv)
   QCoreApplication::setOrganizationName("MegasonLab");
   QCoreApplication::setOrganizationDomain("http://gofigure2.sourceforge.net");
 
-  QGoNavigationDockWidget*
-      dock2d = new QGoNavigationDockWidget(0, GoFigure::TWO_D);
+  QGoNavigationDockWidget *
+  dock2d = new QGoNavigationDockWidget(0, GoFigure::TWO_D);
 
   dock2d->show();
 
-  QGoNavigationDockWidget*
-      dock2dwt = new QGoNavigationDockWidget(0, GoFigure::TWO_D_WITH_T );
+  QGoNavigationDockWidget *
+  dock2dwt = new QGoNavigationDockWidget(0, GoFigure::TWO_D_WITH_T);
 
   dock2dwt->show();
 
-  QGoNavigationDockWidget*
+  QGoNavigationDockWidget *
   dock3d = new QGoNavigationDockWidget(0, GoFigure::THREE_D);
 
   dock3d->show();
 
-  QGoNavigationDockWidget*
-      dock3dwt = new QGoNavigationDockWidget(0, GoFigure::THREE_D_WITH_T);
+  QGoNavigationDockWidget *
+  dock3dwt = new QGoNavigationDockWidget(0, GoFigure::THREE_D_WITH_T);
 
   dock3dwt->show();
 
-  QTimer* timer = new QTimer;
+  QTimer *timer = new QTimer;
   timer->setSingleShot(true);
-  QObject::connect(timer, SIGNAL(timeout()), dock2d, SLOT(close()));
-  QObject::connect(timer, SIGNAL(timeout()), dock2dwt, SLOT(close()));
-  QObject::connect(timer, SIGNAL(timeout()), dock3d, SLOT(close()));
-  QObject::connect(timer, SIGNAL(timeout()), dock3dwt, SLOT(close()));
+  QObject::connect( timer, SIGNAL( timeout() ), dock2d, SLOT( close() ) );
+  QObject::connect( timer, SIGNAL( timeout() ), dock2dwt, SLOT( close() ) );
+  QObject::connect( timer, SIGNAL( timeout() ), dock3d, SLOT( close() ) );
+  QObject::connect( timer, SIGNAL( timeout() ), dock3dwt, SLOT( close() ) );
 
-  if (atoi(argv[1]) == 1)
+  if ( atoi(argv[1]) == 1 )
     {
     timer->start(100);
     }

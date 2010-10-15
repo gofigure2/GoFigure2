@@ -51,46 +51,56 @@
 
 #include <iostream>
 
-QGoAboutWidget::QGoAboutWidget( QWidget* iParent ) : QWidget( iParent )
-  {
+QGoAboutWidget::QGoAboutWidget(QWidget *iParent):QWidget(iParent)
+{
   Q_INIT_RESOURCE(axes);
 
   QString version("@GOFIGURE2_VERSION@");
+
   QString date("Date: @DATE@\n\n");
+
   QString about_gofigure(
-    tr("Description: Software for the visualization and \nthe analysis of biological microscope images.\n"));
+    tr("Description: Software for the visualization and \nthe analysis of biological microscope images.\n") );
+
   QString message = QString("Version: GoFigure2-%1\n\n").arg(version);
   message.append(date);
   message.append(about_gofigure);
-  QVBoxLayout* vlayout = new QVBoxLayout(this);
-  QLabel*      GofigureLabel = new QLabel(message, this);
+  QVBoxLayout *vlayout = new QVBoxLayout(this);
+
+  QLabel *GofigureLabel = new QLabel(message, this);
+
   GofigureLabel->setAlignment(Qt::AlignCenter);
-  QLabel* TabExplanation = new QLabel(
+  QLabel *TabExplanation = new QLabel(
     tr("\nGofigure uses different librairies,click on the tabs bellow to have a look at their copyright:\n"), this);
+
   TabExplanation->setAlignment(Qt::AlignJustify);
 
-  QTabWidget* TabWidget = new QTabWidget(this);
+  QTabWidget *TabWidget = new QTabWidget(this);
+
   this->SetTabWidget(TabWidget);
   this->SetTheBackGround(GofigureLabel, TabWidget, TabExplanation);
   vlayout->addWidget(GofigureLabel);
   vlayout->addWidget(TabExplanation);
   vlayout->addWidget(TabWidget);
   this->setLayout(vlayout);
-  }
+}
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QGoAboutWidget::~QGoAboutWidget()
-  {
-  }
+{}
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoAboutWidget::AddTabAbout(QString iTextLicense, QString iTabTitle,
-                                 QTabWidget* iTabWidget)
+                                 QTabWidget *iTabWidget)
 {
-  QLabel*      TextLicense = new QLabel(iTextLicense);
-  QScrollArea* scrollArea = new QScrollArea;
+  QLabel *TextLicense = new QLabel(iTextLicense);
+
+  QScrollArea *scrollArea = new QScrollArea;
+
   scrollArea->setBackgroundRole(QPalette::Light);
   scrollArea->setWidget(TextLicense);
   TextLicense->setStyleSheet("font-size:6x");
@@ -98,12 +108,13 @@ void QGoAboutWidget::AddTabAbout(QString iTextLicense, QString iTabTitle,
   TextLicense->setAlignment(Qt::AlignJustify);
   iTabWidget->addTab(scrollArea, iTabTitle);
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QString QGoAboutWidget::GetContributors()
 {
-  QString authors(tr("Authors:\n\n"));
+  QString authors( tr("Authors:\n\n") );
 
   authors.append(" * 2008 ~ A. Gelas\n");
   authors.append(" * 2008 ~ L. Souhait\n");
@@ -115,24 +126,28 @@ QString QGoAboutWidget::GetContributors()
 
   return authors;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoAboutWidget::SetTabWidget(QTabWidget* iTabWidget)
+void QGoAboutWidget::SetTabWidget(QTabWidget *iTabWidget)
 {
-  QString TabTitle(tr("Contributors"));
+  QString TabTitle( tr("Contributors") );
+
   this->AddTabAbout(this->GetContributors(), TabTitle, iTabWidget);
   this->WriteLicenseText(iTabWidget);
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoAboutWidget::SetTheBackGround(QLabel* ilabel, QTabWidget* TabWidget,
-                                      QLabel* ilabeltwo)
+void QGoAboutWidget::SetTheBackGround(QLabel *ilabel, QTabWidget *TabWidget,
+                                      QLabel *ilabeltwo)
 {
-  QPixmap Image(QString::fromUtf8(":/fig/splash2.png"));
-  ilabel->setMaximumSize(Image.size());
-  ilabel->setMinimumSize(Image.size());
+  QPixmap Image( QString::fromUtf8(":/fig/splash2.png") );
+
+  ilabel->setMaximumSize( Image.size() );
+  ilabel->setMinimumSize( Image.size() );
   ilabel->setStyleSheet("QLabel{color:rgb(255,255,255);background-image: url(:/fig/splash2.png); font: bold 12px}");
   ilabel->setStyleSheet("color:rgb(255,255,255);background-image: url(:/fig/splash2.png); font: bold 12px");
   int twidth = Image.width();
@@ -142,6 +157,7 @@ void QGoAboutWidget::SetTheBackGround(QLabel* ilabel, QTabWidget* TabWidget,
   ilabeltwo->setMinimumWidth(twidth);
   ilabel->setAlignment(Qt::AlignCenter);
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -149,32 +165,38 @@ QString QGoAboutWidget::ReadLicenseText(QString iFilename)
 {
   QString app_dir = QCoreApplication::applicationDirPath();
   QDir    temp = QDir(app_dir);
+
   temp.cdUp();
   QString app_up_dir = temp.path();
   temp.cdUp();
   QString app_up_up_dir = temp.path();
 
   QStringList search_dir(app_dir + "/Licenses");
+
   search_dir << app_up_dir + "/Licenses";
   search_dir << app_up_dir + "/share/doc/gofigure2/Licenses";
 
   QDir::setSearchPaths("licenses", search_dir);
 
   QString Filename("licenses:");
+
   Filename.append(iFilename);
 
   QFile file(Filename);
+
   file.open(QIODevice::ReadOnly);
 
-  QTextStream textStream(& file);
+  QTextStream textStream( & file);
+
   QString     LicenseText = textStream.readAll();
   std::string test = LicenseText.toStdString();
   return LicenseText;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoAboutWidget::WriteLicenseText(QTabWidget* iTabWidget)
+void QGoAboutWidget::WriteLicenseText(QTabWidget *iTabWidget)
 {
   this->AddTabAbout(this->ReadLicenseText("Copyright.txt"),
                     "Gofigure", iTabWidget);

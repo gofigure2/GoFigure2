@@ -41,20 +41,20 @@
 #include "QGoContourSemiAutoShapeWidget.h"
 
 //---------------------------------------------------------------------------//
-QGoContourSemiAutoShapeWidget::
-QGoContourSemiAutoShapeWidget(QWidget* iParent) : QWidget(iParent)
+QGoContourSemiAutoShapeWidget::QGoContourSemiAutoShapeWidget(QWidget *iParent):QWidget(iParent)
 {
   this->setupUi(this);
 
   // Connect signals
-  QObject::connect(this->shape, SIGNAL(activated(int)),
-                   this, SIGNAL(Shape(int)));
+  QObject::connect( this->shape, SIGNAL( activated(int) ),
+                    this, SIGNAL( Shape(int) ) );
 }
+
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
 QGoContourSemiAutoShapeWidget::
 ~QGoContourSemiAutoShapeWidget()
-{
-}
+{}
+
 //---------------------------------------------------------------------------//

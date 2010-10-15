@@ -43,9 +43,9 @@
 #include "vtkRenderWindowInteractor.h"
 #include "vtkInteractorStyleImage2D.h"
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-  if (argc != 3)
+  if ( argc != 3 )
     {
     std::cout << "Usage: imageview2d(.exe)" << std::endl;
     std::cout << "1- file.png" << std::endl;
@@ -53,16 +53,16 @@ int main(int argc, char** argv)
     return EXIT_FAILURE;
     }
 
-  vtkPNGReader* reader = vtkPNGReader::New();
+  vtkPNGReader *reader = vtkPNGReader::New();
   reader->SetFileName(argv[1]);
   reader->Update();
 
-  vtkViewImage2D* view = vtkViewImage2D::New();
+  vtkViewImage2D *view = vtkViewImage2D::New();
 
-  vtkRenderWindowInteractor* iren = vtkRenderWindowInteractor::New();
+  vtkRenderWindowInteractor *iren = vtkRenderWindowInteractor::New();
   view->SetupInteractor(iren);
 
-  vtkInteractorStyleImage2D* interactorStyle = vtkInteractorStyleImage2D::New();
+  vtkInteractorStyleImage2D *interactorStyle = vtkInteractorStyleImage2D::New();
   iren->SetInteractorStyle(interactorStyle);
   // Studpid tests with interactor style
   interactorStyle->OnMouseMove();
@@ -86,11 +86,11 @@ int main(int argc, char** argv)
   // Generates error on Mac
   //interactorStyle->HighlightCurrentActor();
 
-  view->SetInput(reader->GetOutput());
+  view->SetInput( reader->GetOutput() );
   view->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_AXIAL);
   view->Render();
 
-  if (atoi(argv[2]) == 1)
+  if ( atoi(argv[2]) == 1 )
     {
     iren->CreateOneShotTimer(1);
     }

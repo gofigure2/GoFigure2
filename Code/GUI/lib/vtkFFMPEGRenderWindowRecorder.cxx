@@ -46,53 +46,52 @@
 /**
  * \brief Constructor
  */
-vtkFFMPEGRenderWindowRecorder::
-vtkFFMPEGRenderWindowRecorder()
-  {
+vtkFFMPEGRenderWindowRecorder::vtkFFMPEGRenderWindowRecorder()
+{
   m_ImageWriter  = vtkFFMPEGWriter::New();
 
   // initialise values in the writer
-  vtkFFMPEGWriter* tempFFFFMPEG = vtkFFMPEGWriter::SafeDownCast(m_ImageWriter);
+  vtkFFMPEGWriter *tempFFFFMPEG = vtkFFMPEGWriter::SafeDownCast(m_ImageWriter);
   tempFFFFMPEG->SetQuality(m_VideoQuality);
-#if defined (VTKTRUNK)
-  tempFFFFMPEG->SetBitRate(m_BitRate);
-  tempFFFFMPEG->SetBitRateTolerance(m_BitRate);
-#endif /* VTKTRUNK */
-  tempFFFFMPEG->SetRate(m_FrameRate);
-  }
-
-/**
- * \brief Destructor
- */
-vtkFFMPEGRenderWindowRecorder::
-~vtkFFMPEGRenderWindowRecorder()
-  {
-  m_ImageWriter->Delete();
-  }
-
-void
-vtkFFMPEGRenderWindowRecorder::
-SetSpecificParameters()
-{
-  vtkFFMPEGWriter* tempFFFFMPEG = vtkFFMPEGWriter::SafeDownCast(m_ImageWriter);
-  tempFFFFMPEG->SetQuality(m_VideoQuality);
-#if defined (VTKTRUNK)
+#if defined ( VTKTRUNK )
   tempFFFFMPEG->SetBitRate(m_BitRate);
   tempFFFFMPEG->SetBitRateTolerance(m_BitRate);
 #endif /* VTKTRUNK */
   tempFFFFMPEG->SetRate(m_FrameRate);
 }
 
-vtkFFMPEGRenderWindowRecorder*
+/**
+ * \brief Destructor
+ */
 vtkFFMPEGRenderWindowRecorder::
-New()
+~vtkFFMPEGRenderWindowRecorder()
+{
+  m_ImageWriter->Delete();
+}
+
+void
+vtkFFMPEGRenderWindowRecorder::SetSpecificParameters()
+{
+  vtkFFMPEGWriter *tempFFFFMPEG = vtkFFMPEGWriter::SafeDownCast(m_ImageWriter);
+
+  tempFFFFMPEG->SetQuality(m_VideoQuality);
+#if defined ( VTKTRUNK )
+  tempFFFFMPEG->SetBitRate(m_BitRate);
+  tempFFFFMPEG->SetBitRateTolerance(m_BitRate);
+#endif /* VTKTRUNK */
+  tempFFFFMPEG->SetRate(m_FrameRate);
+}
+
+vtkFFMPEGRenderWindowRecorder *
+vtkFFMPEGRenderWindowRecorder::New()
 {
   // First try to create the object from the vtkObjectFactory
-  vtkObject* ret =
+  vtkObject *ret =
     vtkObjectFactory::CreateInstance("vtkFFMPEGRenderWindowRecorder");
-  if (ret)
+
+  if ( ret )
     {
-    return static_cast<vtkFFMPEGRenderWindowRecorder *>(ret);
+    return static_cast< vtkFFMPEGRenderWindowRecorder * >( ret );
     }
 
   return new vtkFFMPEGRenderWindowRecorder;

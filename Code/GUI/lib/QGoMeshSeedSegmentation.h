@@ -60,28 +60,27 @@ class QGoFilterWatershed;
  * \ingroup QGoSeed
  * \brief Class to create pre defined meshes
 */
-class QGOGUILIB_EXPORT QGoMeshSeedSegmentation : public QGoSeedSegmentationBase
-  {
+class QGOGUILIB_EXPORT QGoMeshSeedSegmentation:public QGoSeedSegmentationBase
+{
   Q_OBJECT
 public:
   /**
    * \brief Constructor
    */
-  explicit QGoMeshSeedSegmentation( QWidget * parentW = 0,
-                                    vtkPoints* seeds = 0,
-                                    std::vector<vtkImageData*>* iOriginalImage = 0,
-                                    int iSampling = 1);
+  explicit QGoMeshSeedSegmentation(QWidget *parentW = 0,
+                                   vtkPoints *seeds = 0,
+                                   std::vector< vtkImageData * > *iOriginalImage = 0,
+                                   int iSampling = 1);
 
   /**
    * \brief Destructor
    */
   ~QGoMeshSeedSegmentation();
-
 private:
-  QGoFilterChanAndVes* m_LevelSetfilter;
-  QGoFilterShape*      m_ShapeFilter;
-  QGoFilterWatershed*  m_Watershed;
+  QGoFilterChanAndVes *m_LevelSetfilter;
+  QGoFilterShape *     m_ShapeFilter;
+  QGoFilterWatershed * m_Watershed;
 
-  std::vector<vtkImageData*>*   m_OriginalImage;
-  };
+  std::vector< vtkImageData * > *m_OriginalImage;
+};
 #endif

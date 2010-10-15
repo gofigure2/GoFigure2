@@ -41,16 +41,16 @@
 #include "QGoContourSemiAutoWatershedWidget.h"
 
 //---------------------------------------------------------------------------//
-QGoContourSemiAutoWatershedWidget::
-QGoContourSemiAutoWatershedWidget(QWidget* iParent) : QWidget(iParent)
+QGoContourSemiAutoWatershedWidget::QGoContourSemiAutoWatershedWidget(QWidget *iParent):QWidget(iParent)
 {
   this->setupUi(this);
 }
+
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
 QGoContourSemiAutoWatershedWidget::
 ~QGoContourSemiAutoWatershedWidget()
-{
-}
+{}
+
 //---------------------------------------------------------------------------//

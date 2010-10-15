@@ -52,9 +52,9 @@
 #include <time.h>
 #include <stdio.h>
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-  if (argc != 5)
+  if ( argc != 5 )
     {
     std::cerr << "1-filename (mha)" << std::endl;
     std::cerr << "2-megacapture header (.meg)" << std::endl;
@@ -63,11 +63,11 @@ int main(int argc, char** argv)
     return EXIT_FAILURE;
     }
 
-  vtkMetaImageReader* reader = vtkMetaImageReader::New();
+  vtkMetaImageReader *reader = vtkMetaImageReader::New();
   reader->SetFileName(argv[1]);
   reader->Update();
 
-  vtkImageData* image = reader->GetOutput();
+  vtkImageData *image = reader->GetOutput();
 
   double spacing[3];
   image->GetSpacing(spacing);
@@ -93,12 +93,12 @@ int main(int argc, char** argv)
   char        timeStr[100] = "";
   struct stat buf;
 
-  if (!stat(argv[1], &buf))
+  if ( !stat(argv[1], &buf) )
     {
-    strftime(timeStr, 100, "%Y-%m-%d %H:%M:%S", localtime(&buf.st_mtime));
+    strftime( timeStr, 100, "%Y-%m-%d %H:%M:%S", localtime(&buf.st_mtime) );
     }
 
-  for (int i = extent[4]; i <= extent[5]; i++)
+  for ( int i = extent[4]; i <= extent[5]; i++ )
     {
     std::stringstream filename;
     filename << "image-PL" << setfill('0') << setw(2) << plaque;
@@ -120,16 +120,16 @@ int main(int argc, char** argv)
     file << "Pinhole 44.216" << std::endl;
     file << "</Image>" << std::endl;
 
-    vtkExtractVOI* extract = vtkExtractVOI::New();
+    vtkExtractVOI *extract = vtkExtractVOI::New();
     extract->SetSampleRate(1, 1, 1);
     extract->SetInput(image);
 
     extract->SetVOI(extent[0], extent[1], extent[2], extent[3], i, i);
     extract->Update();
 
-    vtkPNGWriter* writer2d = vtkPNGWriter::New();
-    writer2d->SetInput(extract->GetOutput());
-    writer2d->SetFileName(filename.str().c_str());
+    vtkPNGWriter *writer2d = vtkPNGWriter::New();
+    writer2d->SetInput( extract->GetOutput() );
+    writer2d->SetFileName( filename.str().c_str() );
     writer2d->Write();
 
     writer2d->Delete();

@@ -41,9 +41,9 @@
 #include <cstdlib>
 #include "LSMToMegaCapture.h"
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-  if (argc != 4)
+  if ( argc != 4 )
     {
     std::cerr << "lsmtomegacapture requires 3 argument:" << std::endl;
     std::cerr << "1-lsm filename" << std::endl;
@@ -55,7 +55,7 @@ int main(int argc, char** argv)
   std::string        type(argv[3]);
   GoFigure::FileType filetype = GoFigure::PNG;
 
-  if (type.compare("tiff") == 0)
+  if ( type.compare("tiff") == 0 )
     {
     filetype = GoFigure::TIFF;
     }

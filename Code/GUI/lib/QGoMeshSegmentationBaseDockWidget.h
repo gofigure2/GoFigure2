@@ -54,16 +54,16 @@ class QGoMeshSeedSegmentation;
 
 #include "ui_SegmentationBaseDockWidget.h"
 
-class QGoMeshSegmentationBaseDockWidget :
+class QGoMeshSegmentationBaseDockWidget:
   public QDockWidget,
   protected Ui::SegmentationBaseDockWidget
-  {
+{
   Q_OBJECT
 public:
   explicit QGoMeshSegmentationBaseDockWidget(
-      QWidget* iParent = 0,
-      vtkPoints* seeds = 0,
-      std::vector<vtkImageData*>* iOriginalImage = 0 );
+    QWidget *iParent = 0,
+    vtkPoints *seeds = 0,
+    std::vector< vtkImageData * > *iOriginalImage = 0);
 
   ~QGoMeshSegmentationBaseDockWidget();
 
@@ -76,7 +76,8 @@ public:
   void SetChannel(int iChannel);
 
   bool GetReeditMode();
-  void SetReeditMode( bool iEnable);
+
+  void SetReeditMode(bool iEnable);
 
   void Initialize();
 
@@ -86,28 +87,35 @@ protected:
 */
 public slots:
   void SegmentationMethod(int);
+
   void interactorBehavior(bool);
 
 signals:
   void ManualSegmentationActivated(bool);
+
   void SemiAutoSegmentationActivated(bool);
+
   void AutoSegmentationActivated(bool);
+
   void ReinitializeInteractorActivated(bool);
 
   // manual segmentation specific signals
   void CreateCorrespondingMesh(int);
-  void AddContourForMeshToContours(vtkPolyData* );
+
+  void AddContourForMeshToContours(vtkPolyData *);
 
   // semi automatic signals
   void UpdateSeeds();
-  void SaveAndVisuMesh(vtkPolyData*);
+
+  void SaveAndVisuMesh(vtkPolyData *);
+
   void ClearAllSeeds();
 
 private:
-  QGoMeshSeedSegmentation*  m_MeshManualSegmentation;
-  QGoMeshSeedSegmentation*  m_MeshSemiAutoSegmentation;
+  QGoMeshSeedSegmentation *m_MeshManualSegmentation;
+  QGoMeshSeedSegmentation *m_MeshSemiAutoSegmentation;
 
-  Q_DISABLE_COPY( QGoMeshSegmentationBaseDockWidget );
-  };
+  Q_DISABLE_COPY(QGoMeshSegmentationBaseDockWidget);
+};
 
 #endif

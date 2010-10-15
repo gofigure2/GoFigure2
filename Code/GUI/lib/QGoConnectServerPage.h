@@ -50,41 +50,43 @@
  * \brief
  * \image html QGoConnectServerPage.png
  * */
-class QGoConnectServerPage : public QWizardPage
-  {
+class QGoConnectServerPage:public QWizardPage
+{
   Q_OBJECT
-
 public:
   explicit QGoConnectServerPage(QWidget *parent = 0);
   ~QGoConnectServerPage();
 
   bool validatePage();
+
   int nextId() const;
-  mutable std::pair<bool, vtkMySQLDatabase*> m_ConnectionServer;
+
+  mutable std::pair< bool, vtkMySQLDatabase * > m_ConnectionServer;
   void SetImgSessionName(std::string iImgSessionName);
+
   void SetIsAnOpenRecentFile(bool iIsAnOpenRecentFile);
 
 private:
   Q_DISABLE_COPY(QGoConnectServerPage);
 
   void OpenConnectionToServer() const;
+
   void CloseServerConnection() const;
 
-  QLineEdit* lineServerName;
-  QLineEdit* lineUserName;
-  QLineEdit* linePassword;
-  QLineEdit* lineDBName;
+  QLineEdit *         lineServerName;
+  QLineEdit *         lineUserName;
+  QLineEdit *         linePassword;
+  QLineEdit *         lineDBName;
   mutable std::string m_ImgSessionName;
-  bool m_IsAnOpenRecentFile;
+  bool                m_IsAnOpenRecentFile;
 
   /**
  * \brief return the list of the names of the databases of
  * gofigure type
  * */
-  std::list<std::string> ListGofigureDatabases() const;
+  std::list< std::string > ListGofigureDatabases() const;
 
 signals:
   void NoGofigureDatabase() const;
-
-  };
+};
 #endif

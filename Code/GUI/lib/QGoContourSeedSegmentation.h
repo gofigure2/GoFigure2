@@ -59,27 +59,26 @@ class QGoFilterShape;
  * \ingroup QGoSeed
  * \brief Class to create pre defined meshes
 */
-class QGOGUILIB_EXPORT QGoContourSeedSegmentation : public QGoSeedSegmentationBase
-  {
+class QGOGUILIB_EXPORT QGoContourSeedSegmentation:public QGoSeedSegmentationBase
+{
   Q_OBJECT
 public:
   /**
    * \brief Constructor
    */
-  explicit QGoContourSeedSegmentation( QWidget * parentW = 0,
-                                       vtkPoints* seeds = 0,
-                                       std::vector<vtkImageData*>* iOriginalImage = 0,
-                                       int iSampling = 0);
+  explicit QGoContourSeedSegmentation(QWidget *parentW = 0,
+                                      vtkPoints *seeds = 0,
+                                      std::vector< vtkImageData * > *iOriginalImage = 0,
+                                      int iSampling = 0);
 
   /**
    * \brief Destructor
    */
   ~QGoContourSeedSegmentation();
-
 private:
-  QGoFilterChanAndVes* m_LevelSetfilter;
-  QGoFilterShape*      m_ShapeFilter;
+  QGoFilterChanAndVes *m_LevelSetfilter;
+  QGoFilterShape *     m_ShapeFilter;
 
-  std::vector<vtkImageData*>*   m_OriginalImage;
-  };
+  std::vector< vtkImageData * > *m_OriginalImage;
+};
 #endif

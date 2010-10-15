@@ -50,8 +50,8 @@
 the first one to add new items and the second one to delete them
 \ingroup GUI
 */
-class QGOGUILIB_EXPORT QGoComboBox : public QComboBox
-  {
+class QGOGUILIB_EXPORT QGoComboBox:public QComboBox
+{
   Q_OBJECT
 public:
   /**
@@ -59,10 +59,10 @@ public:
   a new item at the end of the list
   */
   explicit QGoComboBox(std::string iTextToAddANewOne,
-      QWidget *iparent = 0,std::string iTextToDelete = "");
+                       QWidget *iparent = 0, std::string iTextToDelete = "");
   virtual ~QGoComboBox();
-  typedef std::vector<std::pair<std::string, std::string> > NamesDescrContainerType;
-  
+  typedef std::vector< std::pair< std::string, std::string > > NamesDescrContainerType;
+
   /**
   \brief select the current item located at iIndex and send a signal with the name
   of this item.
@@ -72,7 +72,9 @@ public:
 
 signals:
   void AddANewOneActivated();
+
   void ItemSelected(std::string);
+
   void DeleteActivated();
 
 public slots:
@@ -83,6 +85,7 @@ public slots:
   virtual void InitializeTheList(QStringList iListItems);
 
   virtual void InitializeTheList(NamesDescrContainerType iItemsData);
+
   /**
   \brief clear the items already in the combobox,displayed the one in the QStringList and
   the items to add/delete
@@ -101,7 +104,7 @@ public slots:
   \param[in] iTemText name of the item to be set to activated in the combobox
   */
   void SetCurrentItem(std::string iItemText);
-  
+
 protected:
   std::string m_TextToAddANewOne;
   std::string m_TextToDelete;
@@ -111,6 +114,7 @@ protected:
   \brief Add the "Add a new one..." and "Delete..." text items at the end of the items list
   */
   void AddItemsEndOfList();
+
   /**
   \brief Get a QStringList with the names of the item from a NamesDescrContainerType
   \param[in] iContainer contains all the items with their name and description
@@ -136,8 +140,6 @@ protected slots:
   \param[in] iIndexActivatedItem index of the activated item
   */
   virtual void EmitActivatedItem(int iIndexActivatedItem);
-  
-  };
+};
 
 #endif
-

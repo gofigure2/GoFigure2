@@ -51,20 +51,22 @@
 #include <string>
 #include "vtkMySQLDatabase.h"
 
-class QGoOpenCreateImgSessionPage : public QWizardPage
-  {
+class QGoOpenCreateImgSessionPage:public QWizardPage
+{
   Q_OBJECT
-
 public:
 
   explicit QGoOpenCreateImgSessionPage(QWidget *parent = 0);
   ~QGoOpenCreateImgSessionPage();
   void initializePage();
-  bool validatePage();
-  int nextId() const;
-  void cleanupPage();
-  mutable vtkMySQLDatabase * m_DatabaseConnector;
 
+  bool validatePage();
+
+  int nextId() const;
+
+  void cleanupPage();
+
+  mutable vtkMySQLDatabase *m_DatabaseConnector;
 private:
 
   /**
@@ -76,28 +78,28 @@ private:
 
   void OpenDBConnection() const;
 
-  QLabel*       textDescription;
-  QTextEdit*    lineDescription;
-  QLabel*       textChoiceImgSession;
-  QComboBox*    ChoiceImgSession;
+  QLabel *      textDescription;
+  QTextEdit *   lineDescription;
+  QLabel *      textChoiceImgSession;
+  QComboBox *   ChoiceImgSession;
   QString       OpenOrCreateImgSession;
-  QRadioButton* OpenImgSessionRadioButton;
-  QRadioButton* CreateImgSessionRadioButton;
-  QLineEdit*    lineImgSessionID;
-  QLineEdit*    lineImgSessionName;
-  mutable bool LeavingPage;
+  QRadioButton *OpenImgSessionRadioButton;
+  QRadioButton *CreateImgSessionRadioButton;
+  QLineEdit *   lineImgSessionID;
+  QLineEdit *   lineImgSessionName;
+  mutable bool  LeavingPage;
 
-  QStringList                        m_ListImgSession;
-  std::map<std::string, std::string> m_MapImgSessionIDName;
-
+  QStringList                          m_ListImgSession;
+  std::map< std::string, std::string > m_MapImgSessionIDName;
 protected slots:
   /**
     * \brief display in the description text the existing description stored
     * in the database for a given Imaging Session.
     */
   void DisplayInfoImgSession(QString ImgSessionName);
-  void ChangeToCreateImgSessionDisplay();
-  void ChangeToOpenImgSessionDisplay();
 
-  };
+  void ChangeToCreateImgSessionDisplay();
+
+  void ChangeToOpenImgSessionDisplay();
+};
 #endif

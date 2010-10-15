@@ -47,35 +47,36 @@
 #include "GoDBRecordSetHelper.h"
 #include "GoDBRecordSet.h"
 
-class QGOIO_EXPORT GoDBTraceRow : public GoDBRow
-  {
+class QGOIO_EXPORT GoDBTraceRow:public GoDBRow
+{
 public:
   GoDBTraceRow();
 
   /**\brief fill the trace map with the values gotten from the visualization*/
-  GoDBTraceRow(vtkMySQLDatabase * DatabaseConnector, vtkPolyData * TraceVisu,
+  GoDBTraceRow(vtkMySQLDatabase *DatabaseConnector, vtkPolyData *TraceVisu,
                GoDBCoordinateRow Min, GoDBCoordinateRow Max, unsigned int ImgSessionID);
 
-  GoDBTraceRow(vtkMySQLDatabase * DatabaseConnector, std::string TraceVisu,
+  GoDBTraceRow(vtkMySQLDatabase *DatabaseConnector, std::string TraceVisu,
                GoDBCoordinateRow Min, GoDBCoordinateRow Max, unsigned int ImgSessionID);
   GoDBTraceRow(unsigned int ImgSessionID);
 
   ~GoDBTraceRow()
-        {}
+  {}
 
 /**\brief return the TraceID of the Trace with the same bounding box
   already registered in the DB or -1 if not yet created*/
-  int  DoesThisBoundingBoxExist(vtkMySQLDatabase* DatabaseConnector);
+  int  DoesThisBoundingBoxExist(vtkMySQLDatabase *DatabaseConnector);
 
   void SetColor(unsigned int Red, unsigned int Green, unsigned int Blue,
-                unsigned int Alpha, std::string ColorName, vtkMySQLDatabase* DatabaseConnector);
+                unsigned int Alpha, std::string ColorName, vtkMySQLDatabase *DatabaseConnector);
 
   std::string GetCollectionIDName();
+
   std::string GetCollectionName();
 
   //set the data from the visu for an existing Trace
-  void SetTheDataFromTheVisu(vtkMySQLDatabase* DatabaseConnector,
-                             vtkPolyData* TraceVisu,
+  void SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector,
+                             vtkPolyData *TraceVisu,
                              GoDBCoordinateRow iCoordMin,
                              GoDBCoordinateRow iCoordMax);
 
@@ -83,22 +84,24 @@ public:
   if yes fill the map["CoordIDMin"] and ["CoordIDmax"] with the existing CoordinateID
   if not, create the coordinates in the database and fill the map with the new created ID,
   if the bounding box already exits, a cout is generated*/
-  void SetTheBoundingBox(vtkMySQLDatabase* iDatabaseConnector,
-    GoDBCoordinateRow Min, GoDBCoordinateRow Max);
+  void SetTheBoundingBox(vtkMySQLDatabase *iDatabaseConnector,
+                         GoDBCoordinateRow Min, GoDBCoordinateRow Max);
 
   void SetCollectionID(unsigned int iCollectionID);
 
-  void SetValuesForSpecificID(int ID, vtkMySQLDatabase* iDatabaseConnector);
+  void SetValuesForSpecificID(int ID, vtkMySQLDatabase *iDatabaseConnector);
 
 protected:
 
   virtual void InitializeMap();
+
   /**\brief check in the database if the Coordinate Min adn Max already exits,
   if yes fill the map["CoordIDMin"] and ["CoordIDmax"] with the existing CoordinateID
   if not, create the coordinates in the database and fill the map with the new created ID,
   if the bounding box already exits, a cout is generated*/
- // void CreateBoundingBox(vtkMySQLDatabase* DatabaseConnector, GoDBCoordinateRow Min,
-   //                      GoDBCoordinateRow Max);
+  // void CreateBoundingBox(vtkMySQLDatabase* DatabaseConnector,
+  // GoDBCoordinateRow Min,
+  //                      GoDBCoordinateRow Max);
 
   std::string m_CollectionIDName;
   std::string m_CollectionName;
@@ -108,25 +111,25 @@ protected:
   existing traceRow if the TraceID is <> 0
   \param[in] iDatabaseConnector connection to the database
   */
-  template<typename T>
-  int SaveInDBTemplate (vtkMySQLDatabase* iDatabaseConnector,T iTrace)
+  template< typename T >
+  int SaveInDBTemplate(vtkMySQLDatabase *iDatabaseConnector, T iTrace)
   {
-   int SavedTraceID;
-  //in case the ID is different from 0, this means the values have been
-  //updated for this mesh, so we update it in the database:
-  if (this->m_MapRow[this->m_TableIDName] != "0")
-    {
-    SavedTraceID = UpdateOneNewObjectInTable<T> (iDatabaseConnector,
-                                                          &iTrace);
-    }
-  else
-    {
-    SavedTraceID = AddOnlyOneNewObjectInTable<T>(iDatabaseConnector,
-      this->m_TableName, iTrace, this->m_TableIDName);
-    this->SetField(this->m_TableIDName, SavedTraceID);
-    } 
-  return SavedTraceID;
-  }
+    int SavedTraceID;
 
-  };
+    //in case the ID is different from 0, this means the values have been
+    //updated for this mesh, so we update it in the database:
+    if ( this->m_MapRow[this->m_TableIDName] != "0" )
+      {
+      SavedTraceID = UpdateOneNewObjectInTable< T >(iDatabaseConnector,
+                                                    &iTrace);
+      }
+    else
+      {
+      SavedTraceID = AddOnlyOneNewObjectInTable< T >(iDatabaseConnector,
+                                                     this->m_TableName, iTrace, this->m_TableIDName);
+      this->SetField(this->m_TableIDName, SavedTraceID);
+      }
+    return SavedTraceID;
+  }
+};
 #endif

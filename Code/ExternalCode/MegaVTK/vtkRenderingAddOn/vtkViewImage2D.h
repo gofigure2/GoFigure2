@@ -96,12 +96,12 @@ class vtkActor;
  * \brief Basic class to handle 32d/3D items such as images and polydatas
  * visualization in 2D
  */
-class VTK_RENDERINGADDON2_EXPORT vtkViewImage2D : public vtkViewImage
-  {
-
+class VTK_RENDERINGADDON2_EXPORT vtkViewImage2D:public vtkViewImage
+{
 public:
 
-  static vtkViewImage2D* New();
+  static vtkViewImage2D * New();
+
   vtkTypeRevisionMacro(vtkViewImage2D, vtkViewImage);
   /**
      \brief The orientation of the view is a abstract representation of the object
@@ -125,8 +125,7 @@ public:
      orientation...
   **/
   //BTX
-  enum
-    {
+  enum {
     VIEW_ORIENTATION_SAGITTAL = 0,
     VIEW_ORIENTATION_CORONAL = 1,
     VIEW_ORIENTATION_AXIAL = 2
@@ -136,8 +135,7 @@ public:
      Description:
   **/
   //BTX
-  enum
-    {
+  enum {
     VIEW_CONVENTION_RADIOLOGICAL = 0,
     VIEW_CONVENTION_NEUROLOGICAL = 1
     };
@@ -148,8 +146,7 @@ public:
      of the interactor style.
   */
   //BTX
-  enum
-    {
+  enum {
     INTERACTOR_STYLE_NAVIGATION = 0,
     INTERACTOR_STYLE_RUBBER_ZOOM
     };
@@ -192,7 +189,8 @@ public:
   */
   vtkGetMacro(ViewOrientation, int);
   virtual void SetViewOrientation(int orientation);
-  virtual void SetOrientationMatrix(vtkMatrix4x4* matrix);
+
+  virtual void SetOrientationMatrix(vtkMatrix4x4 *matrix);
 
   /**
    * \brief The ViewConvention instance explains where to place the camera around
@@ -211,7 +209,8 @@ public:
    * \brief Convert an indices coordinate point (image coordinates) into a world
    * coordinate point
   */
-  virtual double* GetWorldCoordinatesForSlice(int slice);
+  virtual double * GetWorldCoordinatesForSlice(int slice);
+
   /**
    * \brief Convert a world coordinate point into an image indices coordinate point
   */
@@ -220,14 +219,17 @@ public:
    * \brief Reset the 3D position to center
   */
   virtual void ResetPosition(void);
+
   /**
    * \brief Reset position - zoom - window/level to default
   */
   virtual void Reset(void);
+
   /**
    * \brief Reset the camera in a nice way for the 2D view
    */
   virtual void ResetCamera(void);
+
   /**
    * \brief Get/Set the zoom factor of the view
    */
@@ -236,9 +238,9 @@ public:
   /**
    * \brief Useful method that transform a display position into a world corrdinate point
   */
-  virtual double* GetWorldCoordinatesFromDisplayPosition(int xy[2]);
-  virtual double* GetWorldCoordinatesFromDisplayPosition(const int& x,
-                                                         const int& y);
+  virtual double *GetWorldCoordinatesFromDisplayPosition(int xy[2]);
+  virtual double * GetWorldCoordinatesFromDisplayPosition(const int & x,
+                                                          const int & y);
 
   //BTX
   /**
@@ -253,8 +255,10 @@ public:
      Get/Set whether or not the interpolation between pixels should be activated.
      It is On by default
   */
-  virtual void SetInterpolate(const int& val);
+  virtual void SetInterpolate(const int & val);
+
   virtual int GetInterpolate();
+
   vtkBooleanMacro (Interpolate, int);
 
   /**
@@ -271,16 +275,16 @@ public:
    * \param[in] iDataVisibility Visibility of the current actor
   */
 //   virtual vtkQuadricLODActor*
-  virtual vtkActor* AddDataSet(vtkDataSet* dataset,
-                               vtkProperty* property = NULL,
-                               const bool& intersection = true,
-                               const bool& iDataVisibility = true);
+  virtual vtkActor * AddDataSet(vtkDataSet *dataset,
+                                vtkProperty *property = NULL,
+                                const bool & intersection = true,
+                                const bool & iDataVisibility = true);
 
   //virtual vtkQuadricLODActor*
-  virtual vtkActor* AddDataSet(vtkPolyData* polydata,
-                               vtkProperty* property = NULL,
-                               const bool& intersection = true,
-                               const bool& iDataVisibility = true);
+  virtual vtkActor * AddDataSet(vtkPolyData *polydata,
+                                vtkProperty *property = NULL,
+                                const bool & intersection = true,
+                                const bool & iDataVisibility = true);
 
   vtkSetVector3Macro(CameraMotionVector, double);
   vtkGetVector3Macro(CameraMotionVector, double);
@@ -296,7 +300,7 @@ public:
   /**
    * \brief Show/Hide the annotations.
   */
-  virtual void SetShowAnnotations(const int&);
+  virtual void SetShowAnnotations(const int &);
 
   void SetCameraFocalAndPosition(double focal[3], double pos[3]);
   void GetCameraFocalAndPosition(double focal[3], double pos[3]);
@@ -320,8 +324,9 @@ public:
   */
   void SetDefaultInteractionStyle(void)
   {
-    vtkInteractorStyleImage2D* t = vtkInteractorStyleImage2D::SafeDownCast (this->InteractorStyle);
-    if (t)
+    vtkInteractorStyleImage2D *t = vtkInteractorStyleImage2D::SafeDownCast (this->InteractorStyle);
+
+    if ( t )
       {
       t->SetDefaultMode();
       }
@@ -333,8 +338,9 @@ public:
   */
   void SetZoomInteractionStyle(void)
   {
-    vtkInteractorStyleImage2D* t = vtkInteractorStyleImage2D::SafeDownCast (this->InteractorStyle);
-    if (t)
+    vtkInteractorStyleImage2D *t = vtkInteractorStyleImage2D::SafeDownCast (this->InteractorStyle);
+
+    if ( t )
       {
       t->SetZoomMode();
       }
@@ -346,8 +352,9 @@ public:
   */
   void SetPanInteractionStyle(void)
   {
-    vtkInteractorStyleImage2D* t = vtkInteractorStyleImage2D::SafeDownCast (this->InteractorStyle);
-    if (t)
+    vtkInteractorStyleImage2D *t = vtkInteractorStyleImage2D::SafeDownCast (this->InteractorStyle);
+
+    if ( t )
       {
       t->SetPanMode();
       }
@@ -359,8 +366,9 @@ public:
   */
   void SetPickInteractionStyle(void)
   {
-    vtkInteractorStyleImage2D* t = vtkInteractorStyleImage2D::SafeDownCast (this->InteractorStyle);
-    if (t)
+    vtkInteractorStyleImage2D *t = vtkInteractorStyleImage2D::SafeDownCast (this->InteractorStyle);
+
+    if ( t )
       {
       t->SetPickMode();
       }
@@ -373,17 +381,16 @@ public:
   vtkGetObjectMacro (Cursor, vtkPointHandleRepresentation2D);
   vtkGetObjectMacro (CursorGenerator, vtkCursor2D);
 
-
   /**
    *
    */
-  template<class TContourContainer,
-           class TPropertyContainer>
-  void AddContours(TContourContainer& iContours,
-                   TPropertyContainer& iProperty,
-                   const bool& iIntersection = true)
+  template< class TContourContainer,
+            class TPropertyContainer >
+  void AddContours(TContourContainer & iContours,
+                   TPropertyContainer & iProperty,
+                   const bool & iIntersection = true)
   {
-    if (iContours.size() != iProperty.size())
+    if ( iContours.size() != iProperty.size() )
       {
       vtkWarningMacro(<< "iContours.size() != iProperty.size()");
       return;
@@ -398,7 +405,7 @@ public:
     PropertyContainerIterator prop_it = iProperty.begin();
     PropertyContainerIterator prop_end = iProperty.end();
 
-    while (contour_it != contour_end)
+    while ( contour_it != contour_end )
       {
       this->AddDataSet(*contour_it, *prop_it, iIntersection);
       ++contour_it;
@@ -424,9 +431,9 @@ public:
       }
   }
 */
-  /**
-   *
-   */
+/**
+ *
+ */
   void UpdateWindowLevelObservers();
 
 protected:
@@ -456,12 +463,16 @@ protected:
    * the CornerAnnotation, and the SliceImplicitPlane are modified.
   */
   virtual void SetImplicitPlaneFromOrientation(void);
+
   /**
    * \brief Update the cursor position and the CornerAnnotation (top-left) according
    * to current mouse position.
   */
-  ///\todo This may has to be modified as with this configuration, the user has no possibility of changing the upper-left corner annotation because it is bypassed by this method at each mouse movement.
+  ///\todo This may has to be modified as with this configuration, the user has
+  // no possibility of changing the upper-left corner annotation because it is
+  // bypassed by this method at each mouse movement.
   virtual void UpdateCursor(void);
+
   /**
    * \brief This method is called each time the orientation changes (SetViewOrientation())
    * and sets the appropriate color to the slice plane.
@@ -470,6 +481,7 @@ protected:
    * Blue: I-S direction --> axial orientation
   */
   virtual void InitializeSlicePlane(void);
+
   /**
    * \brief Overwrite of the Superclass InstallPipeline() method in order to set up the
    * home made InteractorStyle, and make it observe all events we need
@@ -477,50 +489,52 @@ protected:
   virtual void InstallPipeline(void);
 
   virtual int SetCameraToConvention(void);
+
   virtual void SetAnnotationToConvention(void);
+
   virtual void SetSlicePlaneToConvention(unsigned int axis);
 
-  vtkMatrix4x4* ConventionMatrix;
+  vtkMatrix4x4 *ConventionMatrix;
 
-  vtkSmartPointer<vtkPlane> SliceImplicitPlane;
+  vtkSmartPointer< vtkPlane > SliceImplicitPlane;
 
-  vtkTransform* AdjustmentTransform;
+  vtkTransform *AdjustmentTransform;
   /**
    * \brief This polydata instance is a square colored (see InitializeSlicePlane()) according to the
    * orientation of the view. It follows the image actor and is used by other view to display
    * intersections between views.
   */
-  vtkPolyData* SlicePlane;
+  vtkPolyData *SlicePlane;
   /**
    * \brief Get the orientation annotation. This annotation describes the orientation
    * of the slice plane, according to the rule
    * Right(R)-Left(L) Anterior(A)-Posterior(P) Inferior(I)-Superior(S)
   */
-  vtkOrientationAnnotation* OrientationAnnotation;
+  vtkOrientationAnnotation *OrientationAnnotation;
 
-  vtkInteractorStyle* InteractorStyleSwitcher;
+  vtkInteractorStyle *InteractorStyleSwitcher;
   /**
    * \brief InteractorStyle used in this view. It is a vtkInteractorStyleImage2D by default
    * but can be set to vtkInteractorStyleRubberBandZoom with SetInteractorStyleType().
    * Rubber band zoom is in beta. Prefer using default behaviour.
   */
-  vtkInteractorStyleRubberBandZoom* InteractorStyleRubberZoom;
+  vtkInteractorStyleRubberBandZoom *InteractorStyleRubberZoom;
   /**
    * \brief Access to the command of the viewer.
    * This instance is in charge of observing the interactorstyle (GetInteractorStyle())
    * and update things accordingly in the view (i.e. the slice number when moving slice).
   */
-  vtkViewImage2DCommand* Command;
+  vtkViewImage2DCommand *Command;
   /**
    * \brief Access to the actor corresponding to the cursor. It follows the mouse cursor
    * everywhere it goes, and can be activated by pressing 'c'
   */
-  vtkPointHandleRepresentation2D* Cursor;
+  vtkPointHandleRepresentation2D *Cursor;
   /**
    * \brief Access to the actor corresponding to the cursor. It follows the mouse cursor
    * everywhere it goes, and can be activated by pressing 'c'
   */
-  vtkCursor2D* CursorGenerator;
+  vtkCursor2D *CursorGenerator;
 
   int ViewOrientation;
   int ViewConvention;
@@ -533,6 +547,6 @@ protected:
 
   double Zoom;
   double CameraMotionVector[3];
-  };
+};
 
 #endif /* _vtkViewImage2D_h_ */

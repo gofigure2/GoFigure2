@@ -41,9 +41,9 @@
 #include "itkMegaCaptureReader.h"
 #include "vtkImageData.h"
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-  if (argc != 2)
+  if ( argc != 2 )
     {
     std::cout << "Usage: ./itkmegacapturereader(.exe) filename(.png)" << std::endl;
     return EXIT_FAILURE;
@@ -65,9 +65,9 @@ int main(int argc, char** argv)
   unsigned int minch = reader->GetMinChannel();
   unsigned int maxch = reader->GetMaxChannel();
 
-  for (unsigned int ch = minch; ch < maxch; ch++)
+  for ( unsigned int ch = minch; ch < maxch; ch++ )
     {
-    vtkImageData* image = reader->GetOutput(ch);
+    vtkImageData *image = reader->GetOutput(ch);
     image->Delete();
     }
 

@@ -45,72 +45,77 @@
 
 namespace itk
 {
-template < class TFeatureImage, class TInputImage, class TSegmentImage >
+template< class TFeatureImage, class TInputImage, class TSegmentImage >
 GaussianProfileMatchingImageFilter< TFeatureImage, TInputImage, TSegmentImage >
-::GaussianProfileMatchingImageFilter() : m_SigmaForm ( 2.0 ), m_LargestCellRadius ( 4.0 )
+::GaussianProfileMatchingImageFilter():m_SigmaForm (2.0), m_LargestCellRadius (4.0)
 {
   m_Blob = 0;
 
-  this->Superclass::SetNumberOfRequiredInputs ( 1 );
-  this->Superclass::SetNumberOfRequiredOutputs ( 1 );
+  this->Superclass::SetNumberOfRequiredInputs (1);
+  this->Superclass::SetNumberOfRequiredOutputs (1);
 
-  this->Superclass::SetNthOutput ( 0,TInputImage::New() );
+  this->Superclass::SetNthOutput ( 0, TInputImage::New() );
 }
 
-template < class TFeatureImage, class TInputImage, class TSegmentImage >
+template< class TFeatureImage, class TInputImage, class TSegmentImage >
 typename GaussianProfileMatchingImageFilter< TFeatureImage, TInputImage, TSegmentImage >::
 ImagePointer
 GaussianProfileMatchingImageFilter< TFeatureImage, TInputImage, TSegmentImage >
 ::InitializeBlob
-( FeatureImageSpacingType spacing, FeatureImageSizeType CellExtent )
+  (FeatureImageSpacingType spacing, FeatureImageSizeType CellExtent)
 {
   ImageRegionType blobRegion;
-  ImageIndexType blobStart, blobOrigin;
-  unsigned int i;
+  ImageIndexType  blobStart, blobOrigin;
+  unsigned int    i;
 
   for ( i = 0; i < ImageDimension; i++ )
-  {
-    blobOrigin[i] = static_cast<ImageSizeValueType> ( CellExtent[i]/2 );
+    {
+    blobOrigin[i] = static_cast< ImageSizeValueType >(CellExtent[i] / 2);
     blobStart[i] = 0;
-  }
-  blobRegion.SetSize ( CellExtent );
-  blobRegion.SetIndex ( blobStart );
+    }
+  blobRegion.SetSize (CellExtent);
+  blobRegion.SetIndex (blobStart);
 
   ImagePointer blob = ImageType::New();
-  blob->SetRegions ( blobRegion );
+  blob->SetRegions (blobRegion);
   blob->Allocate();
-  blob->SetSpacing ( spacing );
+  blob->SetSpacing (spacing);
 
-  float T = -1./ ( 2.*m_SigmaForm*m_SigmaForm );
+  float          T = -1. / ( 2. * m_SigmaForm * m_SigmaForm );
   ImageIndexType idx;
-  float dx, sum;
+  float          dx, sum;
 
-  IndexIteratorType blobIt ( blob,blob->GetLargestPossibleRegion() );
+  IndexIteratorType blobIt( blob, blob->GetLargestPossibleRegion() );
+
   for ( blobIt.GoToBegin(); !blobIt.IsAtEnd(); ++blobIt )
-  {
+    {
     idx = blobIt.GetIndex();
     sum = 0;
-    for ( i=0; i<ImageDimension; i++ )
-    {
-      dx = ( idx[i]-blobOrigin[i] ) *spacing[i];
-      sum += dx*dx;
+    for ( i = 0; i < ImageDimension; i++ )
+      {
+      dx = ( idx[i] - blobOrigin[i] ) * spacing[i];
+      sum += dx * dx;
+      }
+    blobIt.Set ( static_cast< ImagePixelType >( vcl_exp (sum * T) ) );
     }
-    blobIt.Set ( static_cast<ImagePixelType> ( vcl_exp ( sum * T ) ) );
-  }
   return ( blob );
 }
 
-template < class TFeatureImage, class TInputImage, class TSegmentImage >
+template< class TFeatureImage, class TInputImage, class TSegmentImage >
 typename GaussianProfileMatchingImageFilter< TFeatureImage, TInputImage, TSegmentImage >::ImagePixelType
 GaussianProfileMatchingImageFilter< TFeatureImage, TInputImage, TSegmentImage >
 ::PearsonCorrelation
-( ImageRegionType& region )
+  (ImageRegionType & region)
 {
-  int n ( 0 );
-  float x ( 0 ),y ( 0 ),xy ( 0 ),x2 ( 0 ),y2 ( 0 );
-  IteratorType inputIt1 ( m_Blob, m_Blob->GetLargestPossibleRegion() );
-  FeatureConstIteratorType inputIt2 ( this->GetInput(), region );
-  ImagePixelType p1;
+  int n(0);
+
+  float x(0), y (0), xy (0), x2 (0), y2 (0);
+
+  IteratorType inputIt1( m_Blob, m_Blob->GetLargestPossibleRegion() );
+
+  FeatureConstIteratorType inputIt2(this->GetInput(), region);
+
+  ImagePixelType        p1;
   FeatureImagePixelType p2;
   for ( inputIt1.GoToBegin(), inputIt2.GoToBegin(); !inputIt1.IsAtEnd();
         ++inputIt1, ++inputIt2, ++n )
@@ -119,37 +124,34 @@ GaussianProfileMatchingImageFilter< TFeatureImage, TInputImage, TSegmentImage >
     p2 = inputIt2.Get();
     x += p1;
     y += p2;
-    xy += p1*p2;
-    x2 += p1*p1;
-    y2 += p2*p2;
+    xy += p1 * p2;
+    x2 += p1 * p1;
+    y2 += p2 * p2;
     }
-  float d = ( n*x2 - x*x ) * ( n*y2 - y*y );
+  float d = ( n * x2 - x * x ) * ( n * y2 - y * y );
 
-  if ( d==0 )
-  {
+  if ( d == 0 )
+    {
     return 0;
-  }
+    }
   else
-  {
-    return ( ( n*xy )- ( x*y ) ) /vcl_sqrt ( d );
-  }
+    {
+    return ( ( n * xy ) - ( x * y ) ) / vcl_sqrt (d);
+    }
 }
 
-
-template < class TFeatureImage, class TInputImage, class TSegmentImage >
+template< class TFeatureImage, class TInputImage, class TSegmentImage >
 void
-GaussianProfileMatchingImageFilter< TFeatureImage, TInputImage, TSegmentImage >::
-EnlargeOutputRequestedRegion(DataObject *output)
+GaussianProfileMatchingImageFilter< TFeatureImage, TInputImage, TSegmentImage >::EnlargeOutputRequestedRegion(
+  DataObject *output)
 {
   Superclass::EnlargeOutputRequestedRegion(output);
   output->SetRequestedRegionToLargestPossibleRegion();
 }
 
-
-template < class TFeatureImage, class TInputImage, class TSegmentImage >
+template< class TFeatureImage, class TInputImage, class TSegmentImage >
 void
-GaussianProfileMatchingImageFilter< TFeatureImage, TInputImage, TSegmentImage >::
-GenerateInputRequestedRegion()
+GaussianProfileMatchingImageFilter< TFeatureImage, TInputImage, TSegmentImage >::GenerateInputRequestedRegion()
 {
   Superclass::GenerateInputRequestedRegion();
   if ( this->GetInput() )
@@ -159,114 +161,112 @@ GenerateInputRequestedRegion()
     }
 }
 
-
-template < class TFeatureImage, class TInputImage, class TSegmentImage >
+template< class TFeatureImage, class TInputImage, class TSegmentImage >
 void
-GaussianProfileMatchingImageFilter< TFeatureImage, TInputImage, TSegmentImage >::
-BeforeThreadedGenerateData()
+GaussianProfileMatchingImageFilter< TFeatureImage, TInputImage, TSegmentImage >::BeforeThreadedGenerateData()
 {
   FeatureImageConstPointer input = this->GetInput();
-  FeatureImageSizeType inputSize = input->GetLargestPossibleRegion().GetSize();
-  FeatureImageSpacingType spacing = input->GetSpacing();
+  FeatureImageSizeType     inputSize = input->GetLargestPossibleRegion().GetSize();
+  FeatureImageSpacingType  spacing = input->GetSpacing();
 
   for ( unsigned int i = 0; i < ImageDimension; i++ )
-  {
+    {
     m_CellExtent[i] = static_cast< FeatureImageSizeValueType >
-                      ( 2 * m_LargestCellRadius/spacing[i] );
-    if ( m_CellExtent[i]%2 == 1 )
-       m_CellExtent[i] += 1;
-  }
+                        (2 * m_LargestCellRadius / spacing[i]);
+    if ( m_CellExtent[i] % 2 == 1 )
+      {
+      m_CellExtent[i] += 1;
+      }
+    }
 
-	// Define a image region to run windowing on
+  // Define a image region to run windowing on
   FeatureImageIndexType start;
-  FeatureImageSizeType size;
+  FeatureImageSizeType  size;
   for ( unsigned int i = 0; i < ImageDimension; i++ )
-  {
-    start[i] = static_cast< FeatureImageSizeValueType > ( m_CellExtent[i]/2 );
+    {
+    start[i] = static_cast< FeatureImageSizeValueType >(m_CellExtent[i] / 2);
     size[i] = inputSize[i] - m_CellExtent[i] + 1;
-  }
-  m_ImageRegion.SetSize ( size );
-  m_ImageRegion.SetIndex ( start );
+    }
+  m_ImageRegion.SetSize (size);
+  m_ImageRegion.SetIndex (start);
 
   ImagePointer output = this->GetOutput();
   output->FillBuffer(-1.0);
 
   // Initialize Gaussian blob
-  m_Blob = InitializeBlob ( spacing, m_CellExtent );
+  m_Blob = InitializeBlob (spacing, m_CellExtent);
 }
 
-
-template < class TFeatureImage, class TInputImage, class TSegmentImage >
+template< class TFeatureImage, class TInputImage, class TSegmentImage >
 void
-GaussianProfileMatchingImageFilter< TFeatureImage, TInputImage, TSegmentImage >::
-AfterThreadedGenerateData()
+GaussianProfileMatchingImageFilter< TFeatureImage, TInputImage, TSegmentImage >::AfterThreadedGenerateData()
 {
   ImagePointer output = this->GetOutput();
-  IndexIteratorType outIt ( output, output->GetLargestPossibleRegion() );
+
+  IndexIteratorType outIt( output, output->GetLargestPossibleRegion() );
 
   FeatureImageIndexType idx;
   outIt.GoToBegin();
   while ( !outIt.IsAtEnd() )
-  {
+    {
     idx = outIt.GetIndex();
     if ( !m_ImageRegion.IsInside(idx) )
       {
-      outIt.Set( 0 );
+      outIt.Set(0);
       }
     ++outIt;
-  }
+    }
 }
 
-
-template < class TFeatureImage, class TInputImage, class TSegmentImage >
+template< class TFeatureImage, class TInputImage, class TSegmentImage >
 void
-GaussianProfileMatchingImageFilter< TFeatureImage, TInputImage, TSegmentImage >::
-ThreadedGenerateData(const ImageRegionType& windowRegion, int threadId)
+GaussianProfileMatchingImageFilter< TFeatureImage, TInputImage, TSegmentImage >::ThreadedGenerateData(
+  const ImageRegionType & windowRegion,
+  int threadId)
 {
   ImagePointer output = this->GetOutput();
 
   //Set window region size and start locations
   FeatureImageRegionType kernelRegion;
-  kernelRegion.SetSize ( m_CellExtent );
 
-  IndexIteratorType outIt ( output, windowRegion );
+  kernelRegion.SetSize (m_CellExtent);
+
+  IndexIteratorType outIt(output, windowRegion);
 
   FeatureImageIndexType idx, windowStart;
-  ImagePixelType p;
+  ImagePixelType        p;
 
   outIt.GoToBegin();
   while ( !outIt.IsAtEnd() )
-  {
+    {
     idx = outIt.GetIndex();
-		if ( m_ImageRegion.IsInside(idx) )
-		  {
+    if ( m_ImageRegion.IsInside(idx) )
+      {
       for ( unsigned int i = 0; i < ImageDimension; i++ )
         {
-        windowStart[i] = idx[i]-static_cast<ImageSizeValueType> (
-          m_CellExtent[i]/2 );
+        windowStart[i] = idx[i] - static_cast< ImageSizeValueType >(
+          m_CellExtent[i] / 2);
         }
-      kernelRegion.SetIndex ( windowStart );
+      kernelRegion.SetIndex (windowStart);
 
-      p = PearsonCorrelation ( kernelRegion );
-      outIt.Set( p );
-		  }
+      p = PearsonCorrelation (kernelRegion);
+      outIt.Set(p);
+      }
     ++outIt;
-  }
+    }
 }
 
-
-template < class TFeatureImage, class TInputImage, class TSegmentImage >
+template< class TFeatureImage, class TInputImage, class TSegmentImage >
 void
-GaussianProfileMatchingImageFilter< TFeatureImage, TInputImage, TSegmentImage >::
-PrintSelf ( std::ostream& os, Indent indent ) const
+GaussianProfileMatchingImageFilter< TFeatureImage, TInputImage, TSegmentImage >::PrintSelf(std::ostream & os,
+                                                                                           Indent indent) const
 {
-  Superclass::PrintSelf ( os,indent );
+  Superclass::PrintSelf (os, indent);
   os << indent << "Class Name:        " << GetNameOfClass() << std::endl;
   os << indent << "SigmaForm:         " << GetSigmaForm() << std::endl;
-  os << indent << "Largest cell radius: " << GetLargestCellRadius() <<
-    std::endl;
+  os << indent << "Largest cell radius: " << GetLargestCellRadius()
+     << std::endl;
 }
-
 } /* end namespace itk */
 
 #endif

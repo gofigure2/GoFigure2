@@ -62,13 +62,13 @@ namespace itk
  * \class ChanAndVeseSegmentationFilter
  * \brief
 */
-template<class TFeatureImage>
-class ChanAndVeseSegmentationFilter : public Object
-  {
+template< class TFeatureImage >
+class ChanAndVeseSegmentationFilter:public Object
+{
 public:
   typedef ChanAndVeseSegmentationFilter Self;
-  typedef SmartPointer<Self>            Pointer;
-  typedef SmartPointer<const Self>      ConstPointer;
+  typedef SmartPointer< Self >          Pointer;
+  typedef SmartPointer< const Self >    ConstPointer;
   typedef Object                        Superclass;
 
   /** Run-time type information (and related methods).   */
@@ -78,7 +78,7 @@ public:
 
   itkStaticConstMacro(Dimension, unsigned int, TFeatureImage::ImageDimension);
 
-  typedef Image<float, Dimension>                    InternalImageType;
+  typedef Image< float, Dimension >                  InternalImageType;
   typedef typename InternalImageType::Pointer        InternalImagePointer;
   typedef typename InternalImageType::PointType      InternalPointType;
   typedef typename InternalPointType::CoordRepType   InternalCoordRepType;
@@ -90,7 +90,7 @@ public:
   typedef typename InternalImageType::PixelType      InternalPixelType;
   typedef typename InternalImageType::SpacingType    InternalSpacingType;
 
-  typedef ImageRegionIteratorWithIndex<InternalImageType> InternalRegionIterator;
+  typedef ImageRegionIteratorWithIndex< InternalImageType > InternalRegionIterator;
 
   typedef TFeatureImage                          FeatureImageType;
   typedef typename FeatureImageType::Pointer     FeatureImagePointer;
@@ -100,41 +100,41 @@ public:
   typedef TFeatureImage                     OutputImageType;
   typedef typename OutputImageType::Pointer OutputImagePointer;
 
-  typedef ScalarChanAndVeseLevelSetFunctionData<InternalImageType,
-                                                FeatureImageType> DataHelperType;
+  typedef ScalarChanAndVeseLevelSetFunctionData< InternalImageType,
+                                                 FeatureImageType > DataHelperType;
 
-  typedef ConstrainedRegionBasedLevelSetFunctionSharedData<InternalImageType,
-                                                           FeatureImageType,
-                                                           DataHelperType>                SharedDataHelperType;
+  typedef ConstrainedRegionBasedLevelSetFunctionSharedData< InternalImageType,
+                                                            FeatureImageType,
+                                                            DataHelperType >                SharedDataHelperType;
 
-  typedef ScalarChanAndVeseLevelSetFunction<InternalImageType,
-                                            FeatureImageType, SharedDataHelperType>          FunctionType;
-  typedef ScalarChanAndVeseSparseLevelSetImageFilter<InternalImageType,
-                                                     FeatureImageType, OutputImageType, FunctionType,
-                                                     SharedDataHelperType>
+  typedef ScalarChanAndVeseLevelSetFunction< InternalImageType,
+                                             FeatureImageType, SharedDataHelperType >          FunctionType;
+  typedef ScalarChanAndVeseSparseLevelSetImageFilter< InternalImageType,
+                                                      FeatureImageType, OutputImageType, FunctionType,
+                                                      SharedDataHelperType >
   MultiLevelSetType;
   typedef typename MultiLevelSetType::Pointer MultiLevelSetPointer;
 
-  typedef itk::CellPreprocess<FeatureImageType, FeatureImageType>
+  typedef itk::CellPreprocess< FeatureImageType, FeatureImageType >
   PreprocessFilterType;
   typedef typename PreprocessFilterType::Pointer PreprocessFilterPointer;
 
   typedef RegionOfInterestImageFilter<
-    FeatureImageType, FeatureImageType>              ROIFilterType;
+    FeatureImageType, FeatureImageType >              ROIFilterType;
   typedef typename ROIFilterType::Pointer ROIFilterPointer;
 
-  typedef AtanRegularizedHeavisideStepFunction<InternalPixelType, InternalPixelType>
+  typedef AtanRegularizedHeavisideStepFunction< InternalPixelType, InternalPixelType >
   DomainFunctionType;
   typedef typename DomainFunctionType::Pointer
   DomainFunctionPointer;
 
-  typedef  FastMarchingImageFilter<InternalImageType,
-                                   InternalImageType>                               FastMarchingFilterType;
+  typedef  FastMarchingImageFilter< InternalImageType,
+                                    InternalImageType >                               FastMarchingFilterType;
   typedef typename FastMarchingFilterType::NodeContainer
   NodeContainer;
   typedef typename FastMarchingFilterType::NodeType NodeType;
 
-  void SetCenter(const InternalPointType& iC)
+  void SetCenter(const InternalPointType & iC)
   {
     m_Center = iC;
   }
@@ -144,16 +144,17 @@ public:
     return m_Center;
   }
 
-  void SetRadius(const InternalCoordRepType& iR)
+  void SetRadius(const InternalCoordRepType & iR)
   {
     m_Radius = iR;
   }
+
   InternalCoordRepType GetRadius() const
   {
     return m_Radius;
   }
 
-  void SetFeatureImage(FeatureImageType* iImage)
+  void SetFeatureImage(FeatureImageType *iImage)
   {
     m_FeatureImage = iImage;
   }
@@ -180,22 +181,21 @@ public:
 
   itkGetConstMacro (Preprocess, bool);
   itkSetMacro (Preprocess, bool);
-
 protected:
-  ChanAndVeseSegmentationFilter() : m_FeatureImage(0)
-    {
+  ChanAndVeseSegmentationFilter():m_FeatureImage(0)
+  {
     m_Center.Fill(0.);
     m_Size.Fill(0);
     m_Radius = 0.;
     m_Preprocess = false;
-    }
+  }
 
   ~ChanAndVeseSegmentationFilter()  {}
 
-  FeatureImagePointer  m_FeatureImage;  // Raw image -- very large in size
-  InternalPointType    m_Center;  // Center of the cell/nucleus
-  InternalSizeType     m_Size;  // Level-set image size
-  InternalCoordRepType m_Radius;  // Radius of the cell
+  FeatureImagePointer  m_FeatureImage; // Raw image -- very large in size
+  InternalPointType    m_Center;       // Center of the cell/nucleus
+  InternalSizeType     m_Size;         // Level-set image size
+  InternalCoordRepType m_Radius;       // Radius of the cell
   InternalImagePointer m_Output;
   bool                 m_Preprocess;
   int                  m_NumberOfIterations;
@@ -203,7 +203,7 @@ protected:
 
   void GenerateData()
   {
-    if (m_FeatureImage.IsNull())
+    if ( m_FeatureImage.IsNull() )
       {
       std::cerr << "m_FeatureImage is Null" << std::endl;
       return;
@@ -215,11 +215,11 @@ protected:
     InternalPointType origin;
     InternalIndexType cen;
 
-    for (unsigned int j = 0; j < Dimension; j++)
+    for ( unsigned int j = 0; j < Dimension; j++ )
       {
       m_Size[j] =
-        1 + 4. * static_cast<InternalSizeValueType>(m_Radius / spacing[j]);
-      cen[j] = static_cast<InternalSizeValueType>(2 * m_Radius / spacing[j]);
+        1 + 4. * static_cast< InternalSizeValueType >( m_Radius / spacing[j] );
+      cen[j] = static_cast< InternalSizeValueType >( 2 * m_Radius / spacing[j] );
       origin[j] = m_Center[j] - 2 * m_Radius;
       start2[j] = 0;
       }
@@ -249,7 +249,6 @@ protected:
     image->CopyInformation(m_FeatureImage);
     image->Allocate();
 
-
     //-------------------------------
     // not used
     //-------------------------------
@@ -260,14 +259,14 @@ protected:
     //float or double d;
     double d;
     double r = m_Radius / 2;
-    while (!r_it.IsAtEnd())
+    while ( !r_it.IsAtEnd() )
       {
       idx = r_it.GetIndex();
       d = 0.;
-      for (unsigned int dim = 0; dim < Dimension; dim++)
+      for ( unsigned int dim = 0; dim < Dimension; dim++ )
         {
-        d += (idx[dim] - cen[dim]) * (idx[dim] - cen[dim]) *
-             spacing[dim] * spacing[dim];
+        d += ( idx[dim] - cen[dim] ) * ( idx[dim] - cen[dim] )
+             * spacing[dim] * spacing[dim];
         }
       r_it.Set(vcl_sqrt(d) - r);
       ++r_it;
@@ -276,7 +275,7 @@ protected:
     //-------------------------------
 
     FeatureImagePointer feature;
-    if (m_Preprocess)
+    if ( m_Preprocess )
       {
       PreprocessFilterPointer preprocess = PreprocessFilterType::New();
       preprocess->SetInput (m_FeatureImage);
@@ -285,7 +284,7 @@ protected:
         {
         preprocess->Update();
         }
-      catch (itk::ExceptionObject& err)
+      catch ( itk::ExceptionObject & err )
         {
         std::cerr << "preprocess Exception:" << err << std::endl;
         }
@@ -302,7 +301,7 @@ protected:
     DomainFunctionPointer domainFunction = DomainFunctionType::New();
     domainFunction->SetEpsilon(1.);
 
-    typedef std::vector<unsigned int> VectorType;
+    typedef std::vector< unsigned int > VectorType;
     VectorType lookUp(1, 1);
 
     image->CopyInformation(feature);
@@ -327,7 +326,7 @@ protected:
       {
       LevelSetFilter->Update();
       }
-    catch (itk::ExceptionObject& err)
+    catch ( itk::ExceptionObject & err )
       {
       std::cerr << "levelsetfilter Exception:" << err << std::endl;
       }
@@ -336,8 +335,8 @@ protected:
   }
 
 private:
-  ChanAndVeseSegmentationFilter(const Self&);
-  void operator =(const Self&);
-  };
+  ChanAndVeseSegmentationFilter(const Self &);
+  void operator=(const Self &);
+};
 }
 #endif

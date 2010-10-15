@@ -58,16 +58,15 @@
 //#include "vtkTriangleFilter.h"
 
 //--------------------------------------------------------------------------
-QGoFilterShape::
-QGoFilterShape(QObject* iParent, int iDimension) :
-    QGoFilterSemiAutoBase( iParent )
+QGoFilterShape::QGoFilterShape(QObject *iParent, int iDimension):
+  QGoFilterSemiAutoBase(iParent)
 {
   m_Dimension = iDimension;
 
   QString name = "Shape ";
-  if (m_Dimension < 2)
+  if ( m_Dimension < 2 )
     {
-    name.append(QString::number(m_Dimension + 2, 10));
+    name.append( QString::number(m_Dimension + 2, 10) );
     name.append("D");
     }
   else
@@ -76,41 +75,40 @@ QGoFilterShape(QObject* iParent, int iDimension) :
     }
 
   setName(name);
-  QGoContourSemiAutoShapeWidget* widget =
-      new QGoContourSemiAutoShapeWidget(NULL);
+  QGoContourSemiAutoShapeWidget *widget =
+    new QGoContourSemiAutoShapeWidget(NULL);
   setWidget(widget);
 
   m_Shape = 0;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QGoFilterShape::
 ~QGoFilterShape()
-{
-
-}
-//--------------------------------------------------------------------------
+{}
 
 //--------------------------------------------------------------------------
-vtkPolyData*
-QGoFilterShape::
-Apply()
+
+//--------------------------------------------------------------------------
+vtkPolyData *
+QGoFilterShape::Apply()
 {
   // Radius has to be > 0
-  if(getRadius() <= 0)
+  if ( getRadius() <= 0 )
     {
     std::cerr << "Radius should be > 0 " << std::endl;
     return NULL;
     }
 
-  double* center2 = new double[3];
+  double *center2 = new double[3];
 
   // update the pointed value of the seeds
   emit UpdateSeeds();
 
   // LOOP  FOR EACH SEED
-  for (int i = 0; i < getPoints()->GetNumberOfPoints(); i++)
+  for ( int i = 0; i < getPoints()->GetNumberOfPoints(); i++ )
     {
     getPoints()->GetPoint(i, center2);
 
@@ -118,37 +116,37 @@ Apply()
     setCenter(center2);
 
     // need a switch depending on shape
-    vtkPolyData* testing = NULL;
+    vtkPolyData *testing = NULL;
 
-    switch(m_Shape)
-    {
+    switch ( m_Shape )
+      {
       case 0:
-        testing = GenerateSphere(getCenter());
+        testing = GenerateSphere( getCenter() );
         break;
       case 1:
-        testing = GenerateCube(getCenter());
+        testing = GenerateCube( getCenter() );
         break;
       //case 2:
       //  testing = GenerateCylinder(getCenter());
       //  break;
       default:
         break;
-    }
+      }
 
-    if(m_Dimension == 0)
+    if ( m_Dimension == 0 )
       {
       // Extract each slice according top the sampling
-      vtkPlane* implicitFunction = vtkPlane::New();
+      vtkPlane *implicitFunction = vtkPlane::New();
       implicitFunction->SetNormal(0, 0, 1);
-      implicitFunction->SetOrigin(center2[0],center2[1],center2[2]);
+      implicitFunction->SetOrigin(center2[0], center2[1], center2[2]);
 
-      vtkCutter* cutter = vtkCutter::New();
+      vtkCutter *cutter = vtkCutter::New();
       cutter->SetInput(testing);
       cutter->SetCutFunction(implicitFunction);
       cutter->Update();
 
-      vtkPolyData* output = ReorganizeContour(cutter->GetOutput());
-      emit ContourCreated( output );
+      vtkPolyData *output = ReorganizeContour( cutter->GetOutput() );
+      emit         ContourCreated(output);
 
       implicitFunction->Delete();
       cutter->Delete();
@@ -156,7 +154,7 @@ Apply()
       }
     else // if dimension == 1, create a mesh
       {
-      if(m_Dimension == 1)
+      if ( m_Dimension == 1 )
         {
         emit MeshCreated(testing);
         }
@@ -164,31 +162,31 @@ Apply()
         {
         //emit CreateEmptyMesh();
         // Extract each slice according top the sampling
-        vtkPlane* implicitFunction = vtkPlane::New();
+        vtkPlane *implicitFunction = vtkPlane::New();
         implicitFunction->SetNormal(0, 0, 1);
 
-        vtkCutter* cutter = vtkCutter::New();
+        vtkCutter *cutter = vtkCutter::New();
         cutter->SetInput(testing);
         cutter->SetCutFunction(implicitFunction);
 
-        double step = 2.*getRadius() / static_cast<double>(getSampling()+1);
+        double step = 2. * getRadius() / static_cast< double >( getSampling() + 1 );
 
-        for(int j=0; j< getSampling(); ++j)
+        for ( int j = 0; j < getSampling(); ++j )
           {
           implicitFunction
-            ->SetOrigin(
-                ( center2[0]-getRadius()+static_cast<double>(j+1)* step),
-                ( center2[1]-getRadius()+static_cast<double>(j+1)* step ),
-                ( center2[2]-getRadius()+static_cast<double>(j+1)* step ) );
+          ->SetOrigin(
+            ( center2[0] - getRadius() + static_cast< double >( j + 1 ) * step ),
+            ( center2[1] - getRadius() + static_cast< double >( j + 1 ) * step ),
+            ( center2[2] - getRadius() + static_cast< double >( j + 1 ) * step ) );
           cutter->Update();
-          vtkPolyData* output = ReorganizeContour(cutter->GetOutput());
-          emit AddContourForMeshToContours(output);
+          vtkPolyData *output = ReorganizeContour( cutter->GetOutput() );
+          emit         AddContourForMeshToContours(output);
           }
 
         implicitFunction->Delete();
         cutter->Delete();
         testing->Delete();
-        emit CreateCorrespondingMesh(getSampling());
+        emit CreateCorrespondingMesh( getSampling() );
         }
       }
     }
@@ -198,105 +196,108 @@ Apply()
 
   return NULL;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
-QGoFilterShape::
-ConnectSignals(int iFilterNumber)
+QGoFilterShape::ConnectSignals(int iFilterNumber)
 {
   QGoFilterSemiAutoBase::ConnectSignals(iFilterNumber);
 
   // connect specific
-  QObject::connect(getWidget(), SIGNAL(Shape(int)),
-      this, SLOT(setShape(int)));
+  QObject::connect( getWidget(), SIGNAL( Shape(int) ),
+                    this, SLOT( setShape(int) ) );
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
-QGoFilterShape::
-setShape(int iShape)
+QGoFilterShape::setShape(int iShape)
 {
   m_Shape = iShape;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-vtkPolyData*
-QGoFilterShape::
-GenerateSphere(double* iCenter)
+vtkPolyData *
+QGoFilterShape::GenerateSphere(double *iCenter)
 {
   // create sphere geometry
-  vtkSphereSource* sphere = vtkSphereSource::New();
-  sphere->SetRadius(getRadius());
+  vtkSphereSource *sphere = vtkSphereSource::New();
+
+  sphere->SetRadius( getRadius() );
   sphere->SetThetaResolution(18);
   sphere->SetPhiResolution(18);
   sphere->SetCenter(iCenter);
   sphere->Update();
   sphere->GetOutput()->GetPointData()->SetNormals(NULL);
 
-  vtkPolyData* output = vtkPolyData::New();
-  output->DeepCopy(sphere->GetOutput());
+  vtkPolyData *output = vtkPolyData::New();
+  output->DeepCopy( sphere->GetOutput() );
 
   sphere->Delete();
 
   return output;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-vtkPolyData*
-QGoFilterShape::
-GenerateCube(double* iCenter)
+vtkPolyData *
+QGoFilterShape::GenerateCube(double *iCenter)
 {
   // create cube geometry
-  vtkCubeSource* cube = vtkCubeSource::New();
-  cube->SetXLength(getRadius());
-  cube->SetYLength(getRadius());
-  cube->SetZLength(getRadius());
+  vtkCubeSource *cube = vtkCubeSource::New();
+
+  cube->SetXLength( getRadius() );
+  cube->SetYLength( getRadius() );
+  cube->SetZLength( getRadius() );
   cube->SetCenter(iCenter);
   cube->Update();
   cube->GetOutput()->GetPointData()->SetNormals(NULL);
 
-  vtkTriangleFilter* triangle = vtkTriangleFilter::New();
-  triangle->SetInput(cube->GetOutput());
+  vtkTriangleFilter *triangle = vtkTriangleFilter::New();
+  triangle->SetInput( cube->GetOutput() );
   triangle->Update();
 
-  vtkPolyData* output = vtkPolyData::New();
-  output->DeepCopy(triangle->GetOutput());
+  vtkPolyData *output = vtkPolyData::New();
+  output->DeepCopy( triangle->GetOutput() );
 
   triangle->Delete();
   cube->Delete();
 
   return output;
 }
-//--------------------------------------------------------------------------
-
 
 //--------------------------------------------------------------------------
-vtkPolyData*
-QGoFilterShape::
-GenerateCylinder(double* iCenter)
+
+//--------------------------------------------------------------------------
+vtkPolyData *
+QGoFilterShape::GenerateCylinder(double *iCenter)
 {
   // create cube geometry
-  vtkCylinderSource* cylinder = vtkCylinderSource::New();
-  cylinder->SetHeight(2*getRadius());
-  cylinder->SetRadius(getRadius());
+  vtkCylinderSource *cylinder = vtkCylinderSource::New();
+
+  cylinder->SetHeight( 2 * getRadius() );
+  cylinder->SetRadius( getRadius() );
   cylinder->SetCenter(iCenter);
   cylinder->SetResolution(10);
   cylinder->Update();
   cylinder->GetOutput()->GetPointData()->SetNormals(NULL);
 
-  vtkTriangleFilter* triangle = vtkTriangleFilter::New();
-  triangle->SetInput(cylinder->GetOutput());
+  vtkTriangleFilter *triangle = vtkTriangleFilter::New();
+  triangle->SetInput( cylinder->GetOutput() );
 
-  vtkPolyData* output = vtkPolyData::New();
-  output->DeepCopy(triangle->GetOutput());
+  vtkPolyData *output = vtkPolyData::New();
+  output->DeepCopy( triangle->GetOutput() );
 
   triangle->Delete();
   cylinder->Delete();
 
   return output;
 }
+
 //--------------------------------------------------------------------------

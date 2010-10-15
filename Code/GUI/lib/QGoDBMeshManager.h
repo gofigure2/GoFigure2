@@ -48,27 +48,28 @@
 #include "GoDBMeshRow.h"
 //#include <QWidget>
 
-class QGOGUILIB_EXPORT QGoDBMeshManager: public QGoDBTraceManager
-  {
+class QGOGUILIB_EXPORT QGoDBMeshManager:public QGoDBTraceManager
+{
   Q_OBJECT
 public:
   QGoDBMeshManager(int iImgSessionID,
-    QWidget* iparent);
+                   QWidget *iparent);
   ~QGoDBMeshManager();
 
-  void DisplayInfoAndLoadVisuContainerForAllMeshes(vtkMySQLDatabase* iDatabaseConnector);
-    //unsigned int iTimePoint);
+  void DisplayInfoAndLoadVisuContainerForAllMeshes(vtkMySQLDatabase *iDatabaseConnector);
 
-  virtual void DisplayInfoForLastCreatedTrace(vtkMySQLDatabase* iDatabaseConnector);
+  //unsigned int iTimePoint);
 
-  void DisplayInfoForLastCreatedMesh(vtkMySQLDatabase* iDatabaseConnector,
-    GoFigureMeshAttributes* iMeshAttributes);
+  virtual void DisplayInfoForLastCreatedTrace(vtkMySQLDatabase *iDatabaseConnector);
 
-  virtual void DisplayInfoForExistingTrace(vtkMySQLDatabase* iDatabaseConnector,
-    int iTraceID);
+  void DisplayInfoForLastCreatedMesh(vtkMySQLDatabase *iDatabaseConnector,
+                                     GoFigureMeshAttributes *iMeshAttributes);
 
-  void DisplayInfoForExistingTraceForMesh(vtkMySQLDatabase* iDatabaseConnector,
-    int iTraceID,GoFigureMeshAttributes* iMeshAttributes);
+  virtual void DisplayInfoForExistingTrace(vtkMySQLDatabase *iDatabaseConnector,
+                                           int iTraceID);
+
+  void DisplayInfoForExistingTraceForMesh(vtkMySQLDatabase *iDatabaseConnector,
+                                          int iTraceID, GoFigureMeshAttributes *iMeshAttributes);
 
   /**
   \brief display in the TW the volume and area extracted from iMeshAttributes
@@ -76,58 +77,73 @@ public:
   \param[in] iMeshAttributes computed values for a mesh
   \param[in] iMeshID meshID of the mesh we want to display the volume and area
   */
-  void DisplayOnlyVolumeAreaForExistingMesh(GoFigureMeshAttributes* iMeshAttributes,
-    unsigned iMeshID);
+  void DisplayOnlyVolumeAreaForExistingMesh(GoFigureMeshAttributes *iMeshAttributes,
+                                            unsigned iMeshID);
 
   unsigned int CreateNewMeshWithNoContourNoPoints(
-    vtkMySQLDatabase* iDatabaseConnector,NameWithColorData iColor,
-    unsigned int iTimePoint,std::string iCellType, std::string iSubCellType,
+    vtkMySQLDatabase *iDatabaseConnector, NameWithColorData iColor,
+    unsigned int iTimePoint, std::string iCellType, std::string iSubCellType,
     unsigned int iTrackID = 0);
 
-  unsigned int SaveNewMeshFromVisu(unsigned int iXCoordMin, unsigned int iYCoordMin,
-    unsigned int iZCoordMin,
-    unsigned int iTCoord, unsigned int iXCoordMax, unsigned int iYCoordMax,
-    unsigned int iZCoordMax, vtkPolyData* iTraceNodes,
-    vtkMySQLDatabase* iDatabaseConnector,NameWithColorData iColor,unsigned int iTrackID,
-    GoFigureMeshAttributes* iMeshAttributes,std::string iCellType, std::string iSubCellType);
+  unsigned int SaveNewMeshFromVisu(unsigned int iXCoordMin,
+                                   unsigned int iYCoordMin,
+                                   unsigned int iZCoordMin,
+                                   unsigned int iTCoord,
+                                   unsigned int iXCoordMax,
+                                   unsigned int iYCoordMax,
+                                   unsigned int iZCoordMax,
+                                   vtkPolyData *iTraceNodes,
+                                   vtkMySQLDatabase *iDatabaseConnector,
+                                   NameWithColorData iColor,
+                                   unsigned int iTrackID,
+                                   GoFigureMeshAttributes *iMeshAttributes,
+                                   std::string iCellType,
+                                   std::string iSubCellType);
 
   void SaveGeneratedMeshFromVisu(unsigned int iXCoordMin, unsigned int iYCoordMin,
-    unsigned int iZCoordMin,
-    unsigned int iTCoord, unsigned int iXCoordMax, unsigned int iYCoordMax,
-    unsigned int iZCoordMax, vtkPolyData* iTraceNodes,
-    vtkMySQLDatabase* iDatabaseConnector,GoFigureMeshAttributes* iMeshAttributes);
+                                 unsigned int iZCoordMin,
+                                 unsigned int iTCoord, unsigned int iXCoordMax, unsigned int iYCoordMax,
+                                 unsigned int iZCoordMax, vtkPolyData *iTraceNodes,
+                                 vtkMySQLDatabase *iDatabaseConnector, GoFigureMeshAttributes *iMeshAttributes);
 
   /**
   \brief virtual pure method in QGoDBTraceManager
   */
-  std::list<unsigned int> UpdateTheTracesColor(vtkMySQLDatabase* iDatabaseConnector,
-    NameWithColorData iNewColor);
-  
+  std::list< unsigned int > UpdateTheTracesColor(vtkMySQLDatabase *iDatabaseConnector,
+                                                 NameWithColorData iNewColor);
+
   /**
   \brief update the bounding boxes for the meshes with no points
   */
-  void UpdateBoundingBoxes(vtkMySQLDatabase* iDatabaseConnector,
-    std::list<unsigned int> iListTracesIDs);
+  void UpdateBoundingBoxes(vtkMySQLDatabase *iDatabaseConnector,
+                           std::list< unsigned int > iListTracesIDs);
 
   /**
   \brief virtual pure method in QGoDBTraceManager
   */
-  virtual void UpdateTWAndContainerForImportedTraces(std::vector<int> iVectorImportedTraces,
-    vtkMySQLDatabase* iDatabaseConnector);
+  virtual void UpdateTWAndContainerForImportedTraces(std::vector< int > iVectorImportedTraces,
+                                                     vtkMySQLDatabase *iDatabaseConnector);
 
 protected:
-  GoDBTWContainerForMesh*   m_TWContainer;
+  GoDBTWContainerForMesh *m_TWContainer;
   virtual void SetCollectionsTraceNames();
+
   void PrintValuesForMeshWithNoPoints(unsigned int iTraceID);
 
-  virtual void AddActionsContextMenu(QMenu* iMenu);
-  virtual void DisplayInfoForAllTraces(vtkMySQLDatabase* iDatabaseConnector);
+  virtual void AddActionsContextMenu(QMenu *iMenu);
 
-  void SetMeshBoundingBoxAndPoints(unsigned int iXCoordMin, 
-    unsigned int iYCoordMin, 
-    unsigned int iZCoordMin,unsigned int iTCoord, unsigned int iXCoordMax, 
-    unsigned int iYCoordMax,unsigned int iZCoordMax, vtkPolyData* iTraceNodes,
-    vtkMySQLDatabase* iDatabaseConnector,GoDBMeshRow &iMesh,GoFigureMeshAttributes* iMeshAttributes);
+  virtual void DisplayInfoForAllTraces(vtkMySQLDatabase *iDatabaseConnector);
 
-  };
+  void SetMeshBoundingBoxAndPoints(unsigned int iXCoordMin,
+                                   unsigned int iYCoordMin,
+                                   unsigned int iZCoordMin,
+                                   unsigned int iTCoord,
+                                   unsigned int iXCoordMax,
+                                   unsigned int iYCoordMax,
+                                   unsigned int iZCoordMax,
+                                   vtkPolyData *iTraceNodes,
+                                   vtkMySQLDatabase *iDatabaseConnector,
+                                   GoDBMeshRow & iMesh,
+                                   GoFigureMeshAttributes *iMeshAttributes);
+};
 #endif

@@ -47,15 +47,14 @@
 #include "GoDBRow.h"
 #include "ConvertToStringHelper.h"
 
-class QGOIO_EXPORT GoDBProjectRow : public GoDBRow
-  {
+class QGOIO_EXPORT GoDBProjectRow:public GoDBRow
+{
 public:
   GoDBProjectRow();
   ~GoDBProjectRow()
-        {}
+  {}
 protected:
   virtual void InitializeMap();
-
-  };
+};
 
 #endif

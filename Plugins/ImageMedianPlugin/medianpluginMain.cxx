@@ -43,10 +43,10 @@
 #include <QDir>
 #include <QPluginLoader>
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-  (void) argc;
-  (void) argv;
+  (void)argc;
+  (void)argv;
 //   QDir PluginDir( "plugins/" );
 //
 //   // Here open one image

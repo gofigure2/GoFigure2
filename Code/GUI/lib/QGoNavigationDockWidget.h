@@ -51,48 +51,59 @@
 class QHBoxLayout;
 class QVBoxLayout;
 
-class QGOGUILIB_EXPORT QGoNavigationDockWidget :
+class QGOGUILIB_EXPORT QGoNavigationDockWidget:
   public QDockWidget,
   private Ui::NavigationDockWidget
-  {
+{
   Q_OBJECT
-
 public:
   explicit QGoNavigationDockWidget(
-      QWidget* parent = 0,
-      const GoFigure::TabDimensionType& iDim = GoFigure::THREE_D_WITH_T );
+    QWidget *parent = 0,
+    const GoFigure::TabDimensionType & iDim = GoFigure::THREE_D_WITH_T);
   ~QGoNavigationDockWidget();
 
-  void SetNumberOfChannels(const unsigned int& iN);
+  void SetNumberOfChannels(const unsigned int & iN);
 
   /** \brief */
-  void SetChannel(const unsigned int& i, const QString& iText = QString());
+  void SetChannel( const unsigned int & i, const QString & iText = QString() );
 
-  void SetXMinimumAndMaximum(const int& iMin, const int& iMax);
-  void SetYMinimumAndMaximum(const int& iMin, const int& iMax);
-  void SetZMinimumAndMaximum(const int& iMin, const int& iMax);
-  void SetTMinimumAndMaximum(const int& iMin, const int& iMax);
+  void SetXMinimumAndMaximum(const int & iMin, const int & iMax);
+
+  void SetYMinimumAndMaximum(const int & iMin, const int & iMax);
+
+  void SetZMinimumAndMaximum(const int & iMin, const int & iMax);
+
+  void SetTMinimumAndMaximum(const int & iMin, const int & iMax);
+
   int  GetCurrentChannel() const;
+
   bool ShowAllChannels()   const;
 
-  QString GetChannelName(const int&);
+  QString GetChannelName(const int &);
 
 public slots:
   void SetXSlice(int iSlice);
+
   void SetYSlice(int iSlice);
+
   void SetZSlice(int iSlice);
+
   void SetTSlice(int iSlice);
 
 signals:
   void ShowAllChannelsChanged(bool iChanged);
+
   void ShowOneChannelChanged(int Channel);
 
   void XSliceChanged(int Slice);
+
   void YSliceChanged(int Slice);
+
   void ZSliceChanged(int Slice);
+
   void TSliceChanged(int Slice);
 
 protected:
   GoFigure::TabDimensionType m_Dimension;
-  };
+};
 #endif

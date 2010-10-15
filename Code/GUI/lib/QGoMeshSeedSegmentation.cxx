@@ -52,15 +52,13 @@
 #include "QGoFilterWatershed.h"
 
 //--------------------------------------------------------------------------
-QGoMeshSeedSegmentation::
-QGoMeshSeedSegmentation( QWidget * parentW,
-                         vtkPoints* seeds,
-                         std::vector<vtkImageData*>* iOriginalImage,
-                         int iSampling) :
-  QGoSeedSegmentationBase( parentW, seeds, iSampling ),
-  m_OriginalImage( iOriginalImage )
+QGoMeshSeedSegmentation::QGoMeshSeedSegmentation(QWidget *parentW,
+                                                 vtkPoints *seeds,
+                                                 std::vector< vtkImageData * > *iOriginalImage,
+                                                 int iSampling):
+  QGoSeedSegmentationBase(parentW, seeds, iSampling),
+  m_OriginalImage(iOriginalImage)
 {
-
   // ADD ARG IN CONSTRUCTORS TO ENABLE SAMPLING
 
   int filter = 0;
@@ -69,11 +67,12 @@ QGoMeshSeedSegmentation( QWidget * parentW,
 //=============================================================================
 
   //Add new segmentation method
-  m_LevelSetfilter = new QGoFilterChanAndVes(this, iSampling); // 3 i.e. 3D, to create a mesh
+  m_LevelSetfilter = new QGoFilterChanAndVes(this, iSampling); // 3 i.e. 3D, to
+                                                               // create a mesh
   filter = m_BaseAlgorithmSegmentationWidget->GetNumberOfFilters();
   m_BaseAlgorithmSegmentationWidget->AddFilter( m_LevelSetfilter->getName() );
   m_LevelSetfilter->getWidget()->setParent(m_BaseAlgorithmSegmentationWidget);
-  m_LevelSetfilter->setPoints(getSeed());
+  m_LevelSetfilter->setPoints( getSeed() );
   m_LevelSetfilter->setOriginalImageMC(m_OriginalImage);
   m_BaseAlgorithmSegmentationWidget->GetFrame()->addWidget(m_LevelSetfilter->getWidget(), 4, 0, 1, -1);
   m_LevelSetfilter->ConnectSignals(filter);
@@ -82,27 +81,29 @@ QGoMeshSeedSegmentation( QWidget * parentW,
 
   //Add new segmentation method
 
-  m_ShapeFilter = new QGoFilterShape(this, iSampling); // 3 i.e. 3D, to create a mesh
+  m_ShapeFilter = new QGoFilterShape(this, iSampling); // 3 i.e. 3D, to create a
+                                                       // mesh
   filter = m_BaseAlgorithmSegmentationWidget->GetNumberOfFilters();
   m_BaseAlgorithmSegmentationWidget->AddFilter( m_ShapeFilter->getName() );
   m_ShapeFilter->getWidget()->setParent(m_BaseAlgorithmSegmentationWidget);
-  m_ShapeFilter->setPoints(getSeed());
+  m_ShapeFilter->setPoints( getSeed() );
   m_ShapeFilter->setOriginalImageMC(m_OriginalImage);
   m_BaseAlgorithmSegmentationWidget->GetFrame()->addWidget(m_ShapeFilter->getWidget(), 4, 0, 1, -1);
   m_ShapeFilter->ConnectSignals(filter);
 
   //=============================================================================
 
-    //Add new segmentation method
+  //Add new segmentation method
 /*
-    m_Watershed = new QGoFilterWatershed(this, iSampling); // 3 i.e. 3D, to create a mesh
-    filter = m_BaseAlgorithmSegmentationWidget->GetNumberOfFilters();
-    m_BaseAlgorithmSegmentationWidget->AddFilter( m_Watershed->getName() );
-    m_Watershed->getWidget()->setParent(m_BaseAlgorithmSegmentationWidget);
-    m_Watershed->setPoints(getSeed());
-    m_Watershed->setOriginalImageMC(m_OriginalImage);
-    m_BaseAlgorithmSegmentationWidget->GetFrame()->addWidget(m_Watershed->getWidget(), 4, 0, 1, -1);
-    m_Watershed->ConnectSignals(filter);
+  m_Watershed = new QGoFilterWatershed(this, iSampling);   // 3 i.e. 3D, to
+                                                           // create a mesh
+  filter = m_BaseAlgorithmSegmentationWidget->GetNumberOfFilters();
+  m_BaseAlgorithmSegmentationWidget->AddFilter( m_Watershed->getName() );
+  m_Watershed->getWidget()->setParent(m_BaseAlgorithmSegmentationWidget);
+  m_Watershed->setPoints( getSeed() );
+  m_Watershed->setOriginalImageMC(m_OriginalImage);
+  m_BaseAlgorithmSegmentationWidget->GetFrame()->addWidget(m_Watershed->getWidget(), 4, 0, 1, -1);
+  m_Watershed->ConnectSignals(filter);
 */
 //=============================================================================
 //=============================================================================
@@ -112,11 +113,12 @@ QGoMeshSeedSegmentation( QWidget * parentW,
 //=============================================================================
 //=============================================================================
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QGoMeshSeedSegmentation::
 ~QGoMeshSeedSegmentation()
-{
-}
+{}
+
 //--------------------------------------------------------------------------

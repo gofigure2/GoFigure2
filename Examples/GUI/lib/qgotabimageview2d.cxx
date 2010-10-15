@@ -47,9 +47,9 @@
 
 #include "QGoTabImageView2D.h"
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-  if (argc != 3)
+  if ( argc != 3 )
     {
     std::cerr << "qgotabimageview2d requires 2 arguments:" << std::endl;
     std::cerr << "1-png filename" << std::endl;
@@ -60,33 +60,33 @@ int main(int argc, char** argv)
   QCoreApplication::setOrganizationName("MegasonLab");
   QCoreApplication::setOrganizationDomain("http://gofigure2.sourceforge.net");
 
-  vtkSmartPointer<vtkPNGReader> reader = vtkSmartPointer<vtkPNGReader>::New();
+  vtkSmartPointer< vtkPNGReader > reader = vtkSmartPointer< vtkPNGReader >::New();
   reader->SetFileName(argv[1]);
   reader->Update();
 
-  QGoTabImageView2D* tab = new QGoTabImageView2D;
-  tab->SetImage(reader->GetOutput());
+  QGoTabImageView2D *tab = new QGoTabImageView2D;
+  tab->SetImage( reader->GetOutput() );
   tab->Update();
   tab->ActivateManualSegmentationEditor(true);
   tab->show();
 
-  QMenuBar*             menubar = new QMenuBar;
-  std::vector<QAction*> action_vector = tab->ViewActions();
+  QMenuBar *               menubar = new QMenuBar;
+  std::vector< QAction * > action_vector = tab->ViewActions();
 
-  for (std::vector<QAction*>::iterator q_it = action_vector.begin();
-       q_it != action_vector.end();
-       q_it++)
+  for ( std::vector< QAction * >::iterator q_it = action_vector.begin();
+        q_it != action_vector.end();
+        q_it++ )
     {
     menubar->addAction(*q_it);
     }
   menubar->show();
 
-  QTimer* timer = new QTimer;
+  QTimer *timer = new QTimer;
   timer->setSingleShot(true);
-  QObject::connect(timer, SIGNAL(timeout()), tab, SLOT(close()));
-  QObject::connect(timer, SIGNAL(timeout()), menubar, SLOT(close()));
+  QObject::connect( timer, SIGNAL( timeout() ), tab, SLOT( close() ) );
+  QObject::connect( timer, SIGNAL( timeout() ), menubar, SLOT( close() ) );
 
-  if (atoi(argv[2]) == 1)
+  if ( atoi(argv[2]) == 1 )
     {
     timer->start(1000);
     }

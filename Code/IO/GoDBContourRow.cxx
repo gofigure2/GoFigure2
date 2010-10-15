@@ -42,34 +42,37 @@
 #include "GoDBRecordSetHelper.h"
 #include <iostream>
 
-GoDBContourRow::GoDBContourRow() : GoDBTraceRow()
-  {
+GoDBContourRow::GoDBContourRow():GoDBTraceRow()
+{
   this->InitializeMap();
-  }
+}
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-GoDBContourRow::GoDBContourRow(vtkMySQLDatabase* DatabaseConnector,
-                               vtkPolyData* TraceVisu, GoDBCoordinateRow Min, GoDBCoordinateRow Max,
-                               unsigned int ImgSessionID, GoFigureMeshAttributes* iMeshAttributes) :
+GoDBContourRow::GoDBContourRow(vtkMySQLDatabase *DatabaseConnector,
+                               vtkPolyData *TraceVisu, GoDBCoordinateRow Min, GoDBCoordinateRow Max,
+                               unsigned int ImgSessionID, GoFigureMeshAttributes *iMeshAttributes):
   GoDBTraceRow(DatabaseConnector, TraceVisu, Min, Max, ImgSessionID)
-  {
-  (void) iMeshAttributes;
+{
+  (void)iMeshAttributes;
 
   this->InitializeMap();
-  if (this->DoesThisBoundingBoxExist(DatabaseConnector))
+  if ( this->DoesThisBoundingBoxExist(DatabaseConnector) )
     {
     std::cout << "The bounding box already exists for this contour" << std::endl;
     }
-  }
+}
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-GoDBContourRow::GoDBContourRow(unsigned int ImagingSessionID) :
+GoDBContourRow::GoDBContourRow(unsigned int ImagingSessionID):
   GoDBTraceRow(ImagingSessionID)
-  {
+{
   this->InitializeMap();
-  }
+}
+
 /*GoDBContourRow::GoDBContourRow(vtkMySQLDatabase* DatabaseConnector,
   GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID,
   vtkPolyData* TraceVisu):
@@ -92,23 +95,26 @@ void GoDBContourRow::InitializeMap()
   this->m_CollectionName = "mesh";
   this->m_CollectionIDName = "meshID";
   //this->m_MapRow["ContourID"] = ConvertToString<int>(0);
-  this->m_MapRow[this->m_TableIDName] = ConvertToString<int>(0);
-  this->m_MapRow["meshID"] = ConvertToString<int>(0);
+  this->m_MapRow[this->m_TableIDName] = ConvertToString< int >(0);
+  this->m_MapRow["meshID"] = ConvertToString< int >(0);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int GoDBContourRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
+int GoDBContourRow::SaveInDB(vtkMySQLDatabase *DatabaseConnector)
 {
-  return this->SaveInDBTemplate<GoDBContourRow>(DatabaseConnector,*this);
+  return this->SaveInDBTemplate< GoDBContourRow >(DatabaseConnector, *this);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void GoDBContourRow::SetCollectionID(int iCollectionID)
 {
-  this->SetField<int>("meshID", iCollectionID);
+  this->SetField< int >("meshID", iCollectionID);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -116,20 +122,20 @@ void GoDBContourRow::ReInitializeMapAfterCast()
 {
   GoDBContourRow::InitializeMap();
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void GoDBContourRow::SetTheDataFromTheVisu(
-  vtkMySQLDatabase* DatabaseConnector, vtkPolyData* TraceVisu,
+  vtkMySQLDatabase *DatabaseConnector, vtkPolyData *TraceVisu,
   GoDBCoordinateRow Min, GoDBCoordinateRow Max)
 {
   //(void) iMeshAttributes;
 
-  GoDBTraceRow::SetTheDataFromTheVisu(DatabaseConnector, TraceVisu,Min,Max);
+  GoDBTraceRow::SetTheDataFromTheVisu(DatabaseConnector, TraceVisu, Min, Max);
 
-  if (this->DoesThisBoundingBoxExist(DatabaseConnector))
+  if ( this->DoesThisBoundingBoxExist(DatabaseConnector) )
     {
     std::cout << "The bounding box already exists for this mesh" << std::endl;
     }
 }
-

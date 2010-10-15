@@ -53,18 +53,19 @@ GoDBTableWidgetContainer::GoDBTableWidgetContainer(std::string iTracesName,
   m_TracesIDName     += "ID";
   m_ImgSessionID     = iImgSessionID;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::vector<GoDBTraceInfoForTableWidget> GoDBTableWidgetContainer::
-GetColumnsInfoForTraceTable()
+std::vector< GoDBTraceInfoForTableWidget > GoDBTableWidgetContainer::GetColumnsInfoForTraceTable()
 {
   GoDBTraceInfoForTableWidget temp;
+
   //IsSelected column will correspond to the "IsHighLighted":
   temp.InfoName = "Selected";
   temp.ColumnNameTableWidget = "";
   m_ColumnsInfos.push_back(temp);
-  std::pair<GoDBTraceInfoForTableWidget, std::vector<std::string> > PairTemp;
+  std::pair< GoDBTraceInfoForTableWidget, std::vector< std::string > > PairTemp;
   PairTemp.first = temp;
   m_RowContainer.push_back(PairTemp);
   temp.Clear();
@@ -143,7 +144,7 @@ GetColumnsInfoForTraceTable()
   PairTemp.first = temp;
   m_RowContainer.push_back(PairTemp);
   temp.Clear();
-  
+
   //Get the info for the Alpha value of the trace:
   temp.ColumnNameDatabase = "Alpha";
   temp.TableNameDatabase = "color";
@@ -215,7 +216,7 @@ GetColumnsInfoForTraceTable()
   PairTemp.first = temp;
   m_RowContainer.push_back(PairTemp);
   temp.Clear();
-  
+
   //Get the info for the Alpha value of the collection:
   temp.ColumnNameDatabase = "Alpha";
   temp.TableNameDatabase = "color";
@@ -405,13 +406,15 @@ GetColumnsInfoForTraceTable()
 
   return m_ColumnsInfos;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void GoDBTableWidgetContainer::GetInfoForColumnIsVisible()
 {
   GoDBTraceInfoForTableWidget temp;
-  std::pair<GoDBTraceInfoForTableWidget, std::vector<std::string> > PairTemp;
+
+  std::pair< GoDBTraceInfoForTableWidget, std::vector< std::string > > PairTemp;
   //for the column "is visible or not":
   temp.InfoName = "Show";
   temp.ColumnNameTableWidget = "Show";
@@ -420,76 +423,78 @@ void GoDBTableWidgetContainer::GetInfoForColumnIsVisible()
   m_RowContainer.push_back(PairTemp);
   temp.Clear();
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::list<std::string> GoDBTableWidgetContainer::
-GetListColumnsNamesForTableWidget()
+std::list< std::string > GoDBTableWidgetContainer::GetListColumnsNamesForTableWidget()
 {
-  std::list<std::string> ListColumnNames;
-  for (unsigned int i = 0; i < m_ColumnsInfos.size(); i++)
+  std::list< std::string > ListColumnNames;
+  for ( unsigned int i = 0; i < m_ColumnsInfos.size(); i++ )
     {
-    if (m_ColumnsInfos[i].ColumnNameTableWidget != "None" &&
-        m_ColumnsInfos[i].ColumnNameTableWidget != "NoneID")
+    if ( m_ColumnsInfos[i].ColumnNameTableWidget != "None"
+         && m_ColumnsInfos[i].ColumnNameTableWidget != "NoneID" )
       {
       ListColumnNames.push_back(m_ColumnsInfos[i].ColumnNameTableWidget);
       }
     }
   return ListColumnNames;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::vector<std::string> GoDBTableWidgetContainer::GetNameComputedColumns()
+std::vector< std::string > GoDBTableWidgetContainer::GetNameComputedColumns()
 {
-  std::vector<std::string> ListComputedColumnNames;
-  for (unsigned int i = 0; i < m_ColumnsInfos.size(); i++)
+  std::vector< std::string > ListComputedColumnNames;
+  for ( unsigned int i = 0; i < m_ColumnsInfos.size(); i++ )
     {
-    if (m_ColumnsInfos[i].ColumnNameTableWidget != "None" &&
-        m_ColumnsInfos[i].ColumnNameTableWidget != "NoneID" &&
-        m_ColumnsInfos[i].ColumnNameDatabase == "None" &&
-        m_ColumnsInfos[i].InfoName != "Selected")
+    if ( m_ColumnsInfos[i].ColumnNameTableWidget != "None"
+         && m_ColumnsInfos[i].ColumnNameTableWidget != "NoneID"
+         && m_ColumnsInfos[i].ColumnNameDatabase == "None"
+         && m_ColumnsInfos[i].InfoName != "Selected" )
       {
       ListComputedColumnNames.push_back(m_ColumnsInfos[i].ColumnNameTableWidget);
       }
     }
   return ListComputedColumnNames;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::vector<std::string> GoDBTableWidgetContainer::
-GetQueryStringForSelectFieldsTables(bool SameFieldsInQuery)
+std::vector< std::string > GoDBTableWidgetContainer::GetQueryStringForSelectFieldsTables(bool SameFieldsInQuery)
 {
-  std::vector<std::string> SelectFields;
-  unsigned int             i = 0;
-  while (i < m_ColumnsInfos.size())
+  std::vector< std::string > SelectFields;
+  unsigned int               i = 0;
+  while ( i < m_ColumnsInfos.size() )
     {
     //if there is info to get from the database and to put directly in the
     //table widget, and that the column Name in the table widget is not "NoneID"
     // (that can be found in the lineage table):
-    if (m_ColumnsInfos[i].ColumnNameDatabase != "None" &&
-        //m_ColumnsInfos[i].ColumnNameTableWidget != "None" &&
-        m_ColumnsInfos[i].SameFieldForDifferentValues == SameFieldsInQuery &&
-        m_ColumnsInfos[i].ColumnNameTableWidget != "NoneID" &&
-        m_ColumnsInfos[i].TableNameDatabase != "None" &&
-        m_ColumnsInfos[i].TableNameDatabase != "intensity")
+    if ( m_ColumnsInfos[i].ColumnNameDatabase != "None"
+         && //m_ColumnsInfos[i].ColumnNameTableWidget != "None" &&
+         m_ColumnsInfos[i].SameFieldForDifferentValues == SameFieldsInQuery
+         && m_ColumnsInfos[i].ColumnNameTableWidget != "NoneID"
+         && m_ColumnsInfos[i].TableNameDatabase != "None"
+         && m_ColumnsInfos[i].TableNameDatabase != "intensity" )
       {
-      //record TableNameDatabase.ColumnNameDatabase if it is not already in the vector:
+      //record TableNameDatabase.ColumnNameDatabase if it is not already in the
+      // vector:
       std::string temp = m_ColumnsInfos[i].TableNameDatabase;
       temp += ".";
       temp += m_ColumnsInfos[i].ColumnNameDatabase;
       bool         IsSelectFieldsInTheVector = false;
       unsigned int j = 0;
-      while (IsSelectFieldsInTheVector == false && j < SelectFields.size())
+      while ( IsSelectFieldsInTheVector == false && j < SelectFields.size() )
         {
-        if (SelectFields[j] == temp)
+        if ( SelectFields[j] == temp )
           {
           IsSelectFieldsInTheVector = true;
           }
         j++;
         }
-      if (IsSelectFieldsInTheVector == false)
+      if ( IsSelectFieldsInTheVector == false )
         {
         SelectFields.push_back(temp);
         }
@@ -498,32 +503,35 @@ GetQueryStringForSelectFieldsTables(bool SameFieldsInQuery)
     }
   return SelectFields;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void GoDBTableWidgetContainer::FillRowContainer(
-  std::vector<std::vector<std::string> > iResultsFromQuery,
-  std::vector<std::string> iSelectFields, std::string BaseOn)
+  std::vector< std::vector< std::string > > iResultsFromQuery,
+  std::vector< std::string > iSelectFields, std::string BaseOn)
 {
-  for (unsigned int i = 0; i < iSelectFields.size(); i++)
+  for ( unsigned int i = 0; i < iSelectFields.size(); i++ )
     {
     bool HasBeenFound = false;
-    for (unsigned int j = 0; j < m_RowContainer.size() && HasBeenFound == false; j++)
+    for ( unsigned int j = 0; j < m_RowContainer.size() && HasBeenFound == false; j++ )
       {
-      std::string test = iSelectFields[i];  //for test purpose
-      std::string test2 = m_RowContainer[j].first.ColumnNameDatabase; //for test purpose
-      size_t      PosColumnNameFound;
-      if (BaseOn.empty())
+      std::string test = iSelectFields[i];                            //for test
+                                                                      // purpose
+      std::string test2 = m_RowContainer[j].first.ColumnNameDatabase; //for test
+                                                                      // purpose
+      size_t PosColumnNameFound;
+      if ( BaseOn.empty() )
         {
         PosColumnNameFound =
           iSelectFields[i].find(m_RowContainer[j].first.ColumnNameDatabase);
         }
       else
         {
-        if (BaseOn == "ColumnNameTableWidget")
+        if ( BaseOn == "ColumnNameTableWidget" )
           {
           std::string NameColonne = m_RowContainer[j].first.ColumnNameTableWidget;
-          if (!NameColonne.empty())
+          if ( !NameColonne.empty() )
             {
             PosColumnNameFound =
               iSelectFields[i].find(NameColonne);
@@ -541,46 +549,47 @@ void GoDBTableWidgetContainer::FillRowContainer(
           return;
           }
         }
-      if (PosColumnNameFound != std::string::npos && m_RowContainer[j].second.empty())
+      if ( PosColumnNameFound != std::string::npos && m_RowContainer[j].second.empty() )
         {
         HasBeenFound = true;
-        for (unsigned int RowNumberForQueryResults = 0;
-             RowNumberForQueryResults < iResultsFromQuery.size(); RowNumberForQueryResults++)
+        for ( unsigned int RowNumberForQueryResults = 0;
+              RowNumberForQueryResults < iResultsFromQuery.size(); RowNumberForQueryResults++ )
           {
-          std::vector<std::string> ResultsFromQueryForOneTrace =
+          std::vector< std::string > ResultsFromQueryForOneTrace =
             iResultsFromQuery[RowNumberForQueryResults];
           //j found corresponds to the vector in the row_container to be filled
-          //with the values from the results of the query corresponding to i column:
+          //with the values from the results of the query corresponding to i
+          // column:
           m_RowContainer[j].second.push_back(ResultsFromQueryForOneTrace[i]);
           }
         }
       }
     }
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::vector<std::string> GoDBTableWidgetContainer::
-GetQueryStringForTraceJoinedTables(bool SameFieldsInQuery)
+std::vector< std::string > GoDBTableWidgetContainer::GetQueryStringForTraceJoinedTables(bool SameFieldsInQuery)
 {
-  std::list<std::string>    SelectNamesColumns;
-  std::vector <std::string> SelectJoinTables;
-  unsigned int              i = 0;
+  std::list< std::string >   SelectNamesColumns;
+  std::vector< std::string > SelectJoinTables;
+  unsigned int               i = 0;
   //for all the TableNameDatabase in the m_ColumnsInfos:
-  while (i < m_ColumnsInfos.size())
+  while ( i < m_ColumnsInfos.size() )
     {
-    std::string name = m_ColumnsInfos[i].TableNameDatabase; //for test purpose
+    std::string name = m_ColumnsInfos[i].TableNameDatabase;   //for test purpose
     std::string name2 = m_ColumnsInfos[i].ColumnNameDatabase; //for test purpose
     //check first that the ColumnsInfos has direct infosfrom the database:
-    if (m_ColumnsInfos[i].TableNameDatabase != "None" &&
-        m_ColumnsInfos[i].TableNameDatabase != "intensity")
+    if ( m_ColumnsInfos[i].TableNameDatabase != "None"
+         && m_ColumnsInfos[i].TableNameDatabase != "intensity" )
       {
       //check that the table is not already in the list:
-      std::vector<std::string>::iterator iter = SelectJoinTables.begin();
-      bool                               IsTableInTheList = false;
-      while (iter !=  SelectJoinTables.end() && IsTableInTheList == false)
+      std::vector< std::string >::iterator iter = SelectJoinTables.begin();
+      bool                                 IsTableInTheList = false;
+      while ( iter !=  SelectJoinTables.end() && IsTableInTheList == false )
         {
-        if (*iter == m_ColumnsInfos[i].TableNameDatabase)
+        if ( *iter == m_ColumnsInfos[i].TableNameDatabase )
           {
           IsTableInTheList = true;
           }
@@ -590,11 +599,11 @@ GetQueryStringForTraceJoinedTables(bool SameFieldsInQuery)
       //is accessed during the first query, record the name of the table,
       //and the traceName.tableforeignkey = tableName.primarykey for the
       // "on" condition in the "Join" part of the query
-      if (IsTableInTheList == false &&
-          m_ColumnsInfos[i].TableNameDatabase != this->m_TracesName &&
-          m_ColumnsInfos[i].SameFieldForDifferentValues == SameFieldsInQuery)
+      if ( IsTableInTheList == false
+           && m_ColumnsInfos[i].TableNameDatabase != this->m_TracesName
+           && m_ColumnsInfos[i].SameFieldForDifferentValues == SameFieldsInQuery )
         {
-        if (m_ColumnsInfos[i].AccessFromTraceTableThroughWhichTable == "None")
+        if ( m_ColumnsInfos[i].AccessFromTraceTableThroughWhichTable == "None" )
           {
           SelectJoinTables.push_back(m_ColumnsInfos[i].TableNameDatabase);
           std::string OnQuery = this->m_TracesName;
@@ -608,7 +617,7 @@ GetQueryStringForTraceJoinedTables(bool SameFieldsInQuery)
           }
         else
           {
-          if (m_ColumnsInfos[i].AccessFromTraceTableThroughWhichTable != this->m_CollectionName)
+          if ( m_ColumnsInfos[i].AccessFromTraceTableThroughWhichTable != this->m_CollectionName )
             {
             std::cout << "Pb: access table is different than the Collection Table" << std::endl;
             std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
@@ -616,7 +625,8 @@ GetQueryStringForTraceJoinedTables(bool SameFieldsInQuery)
             }
           else
             {
-            //join the trace table and the collection table (=intermediary table)
+            //join the trace table and the collection table (=intermediary
+            // table)
             SelectJoinTables.push_back(m_ColumnsInfos[i].AccessFromTraceTableThroughWhichTable);
             std::string OnQuery = this->m_TracesName;
             OnQuery += ".";
@@ -626,7 +636,8 @@ GetQueryStringForTraceJoinedTables(bool SameFieldsInQuery)
             OnQuery += ".";
             OnQuery += this->m_CollectionIDName;
             SelectJoinTables.push_back(OnQuery);
-            //join the collection table and the TableNameDatabase of the ColumnsInfo:
+            //join the collection table and the TableNameDatabase of the
+            // ColumnsInfo:
             SelectJoinTables.push_back(m_ColumnsInfos[i].TableNameDatabase);
             std::string OnQuerybis = this->m_CollectionName;
             OnQuerybis += ".";
@@ -638,67 +649,71 @@ GetQueryStringForTraceJoinedTables(bool SameFieldsInQuery)
             SelectJoinTables.push_back(OnQuerybis);
             }
           } //ENDELSE
-        } //ENDIF
-      } //ENDIF
+        }   //ENDIF
+      }     //ENDIF
     i++;
     } //ENDWHILE
 
   return SelectJoinTables;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 int GoDBTableWidgetContainer::GetIndexInsideRowContainer(std::string iInfoName)
 {
-  for (unsigned int i = 0; i < m_RowContainer.size(); i++)
+  for ( unsigned int i = 0; i < m_RowContainer.size(); i++ )
     {
-    if (m_RowContainer[i].first.InfoName == iInfoName)
+    if ( m_RowContainer[i].first.InfoName == iInfoName )
       {
       return i;
       }
     }
   return -1;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-GoDBTableWidgetContainer::TWContainerType 
+GoDBTableWidgetContainer::TWContainerType
 GoDBTableWidgetContainer::GetContainerLoadedWithAllFromDB(
-  vtkMySQLDatabase* iDatabaseConnector)
+  vtkMySQLDatabase *iDatabaseConnector)
 {
   this->ClearRowContainerValues();
-  this->FillRowContainerWithDBValues(iDatabaseConnector,
-    "ImagingsessionID",ConvertToString<unsigned int>(this->m_ImgSessionID));
+  this->FillRowContainerWithDBValues( iDatabaseConnector,
+                                      "ImagingsessionID", ConvertToString< unsigned int >(this->m_ImgSessionID) );
   return this->m_RowContainer;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 GoDBTableWidgetContainer::TWContainerType
 GoDBTableWidgetContainer::GetContainerForOneSpecificTrace(
-  vtkMySQLDatabase* iDatabaseConnector, int iTraceID)
+  vtkMySQLDatabase *iDatabaseConnector, int iTraceID)
 {
   this->ClearRowContainerValues();
-  this->FillRowContainerWithDBValues(iDatabaseConnector,
-    this->m_TracesIDName,ConvertToString<int>(iTraceID));
+  this->FillRowContainerWithDBValues( iDatabaseConnector,
+                                      this->m_TracesIDName, ConvertToString< int >(iTraceID) );
   return this->m_RowContainer;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void GoDBTableWidgetContainer::FillRowContainerWithDBValues(
-  vtkMySQLDatabase* iDatabaseConnector,
-  std::string iRestrictionName,std::string iRestrictionValue)
+  vtkMySQLDatabase *iDatabaseConnector,
+  std::string iRestrictionName, std::string iRestrictionValue)
 {
   /*first, get the right parts of the first query:
   all the fields except the ones where table.field are already in the query:*/
-  std::vector<std::string> JoinFirstTablesOnTraceTable =
+  std::vector< std::string > JoinFirstTablesOnTraceTable =
     this->GetQueryStringForTraceJoinedTables(false);
-  std::vector<std::string> SelectFirstFields =
+  std::vector< std::string > SelectFirstFields =
     this->GetQueryStringForSelectFieldsTables(false);
 
   //then, get the results of the first query:
-  std::vector<std::vector<std::string> > ResultsFirstQuery = GetValuesFromSeveralTables(
+  std::vector< std::vector< std::string > > ResultsFirstQuery = GetValuesFromSeveralTables(
     iDatabaseConnector, this->m_TracesName, SelectFirstFields, iRestrictionName,
     iRestrictionValue, JoinFirstTablesOnTraceTable, true);
 
@@ -706,36 +721,37 @@ void GoDBTableWidgetContainer::FillRowContainerWithDBValues(
   this->FillRowContainer(ResultsFirstQuery, SelectFirstFields);
 
   //Get the right parts of the second query (with only the remaining fields):
-  std::vector<std::string> JoinSecondTablesOnTraceTable =
+  std::vector< std::string > JoinSecondTablesOnTraceTable =
     this->GetQueryStringForTraceJoinedTables(true);
-  std::vector<std::string> SelectSecondFields =
+  std::vector< std::string > SelectSecondFields =
     this->GetQueryStringForSelectFieldsTables(true);
 
   //then, get the results of the second query:
-  std::vector<std::vector<std::string> > ResultsSecondQuery = GetValuesFromSeveralTables(
+  std::vector< std::vector< std::string > > ResultsSecondQuery = GetValuesFromSeveralTables(
     iDatabaseConnector, this->m_TracesName, SelectSecondFields, iRestrictionName,
     iRestrictionValue, JoinSecondTablesOnTraceTable, false);
 
   //fill the row container with the results of the second query:
   this->FillRowContainer(ResultsSecondQuery, SelectSecondFields);
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void GoDBTableWidgetContainer::FillRowContainerForComputedValues(
-  std::vector<std::vector<std::string> >* iComputedValues)
+  std::vector< std::vector< std::string > > *iComputedValues)
 {
-  std::vector<std::string> ListComputedNames =this->GetNameComputedColumns();
-  if (!ListComputedNames.empty())
+  std::vector< std::string > ListComputedNames = this->GetNameComputedColumns();
+  if ( !ListComputedNames.empty() )
     {
-    std::vector<std::vector<std::string> > ComputedValues;
-    if (iComputedValues == 0 && !ListComputedNames.empty())
+    std::vector< std::vector< std::string > > ComputedValues;
+    if ( iComputedValues == 0 && !ListComputedNames.empty() )
       {
-      for (unsigned int j = 0; j < this->GetNumberOfRows(); j++)
+      for ( unsigned int j = 0; j < this->GetNumberOfRows(); j++ )
         {
-        std::vector<std::string> EmptyVector;
+        std::vector< std::string > EmptyVector;
 //         int Size = iLinkToRowContainer->GetNumberOfRows();
-        for (unsigned int i = 0; i < ListComputedNames.size(); i++)
+        for ( unsigned int i = 0; i < ListComputedNames.size(); i++ )
           {
           EmptyVector.push_back("NV");
           }
@@ -747,76 +763,84 @@ void GoDBTableWidgetContainer::FillRowContainerForComputedValues(
       {
       ComputedValues = *iComputedValues;
       }
-   this->FillRowContainer(
+    this->FillRowContainer(
       ComputedValues, ListComputedNames, "ColumnNameTableWidget");
     }
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::vector<int> GoDBTableWidgetContainer::GetIndexForGroupColor(
+std::vector< int > GoDBTableWidgetContainer::GetIndexForGroupColor(
   std::string iGroupName)
 {
-  std::vector<int> oIndexColor;
-  std::string RedInfoName = "RedFor";
+  std::vector< int > oIndexColor;
+  std::string        RedInfoName = "RedFor";
   RedInfoName += iGroupName;
-  oIndexColor.push_back(this->GetIndexInsideRowContainer(RedInfoName));
+  oIndexColor.push_back( this->GetIndexInsideRowContainer(RedInfoName) );
 
   std::string GreenInfoName = "GreenFor";
   GreenInfoName += iGroupName;
-  oIndexColor.push_back(this->GetIndexInsideRowContainer(GreenInfoName));
+  oIndexColor.push_back( this->GetIndexInsideRowContainer(GreenInfoName) );
 
   std::string BlueInfoName = "BlueFor";
   BlueInfoName += iGroupName;
-   oIndexColor.push_back(this->GetIndexInsideRowContainer(BlueInfoName));
+  oIndexColor.push_back( this->GetIndexInsideRowContainer(BlueInfoName) );
 
   std::string AlphaInfoName = "AlphaFor";
   AlphaInfoName += iGroupName;
-  oIndexColor.push_back(this->GetIndexInsideRowContainer(AlphaInfoName));
+  oIndexColor.push_back( this->GetIndexInsideRowContainer(AlphaInfoName) );
 
   return oIndexColor;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void GoDBTableWidgetContainer::ClearRowContainerValues()
 {
   TWContainerType::iterator iter = this->m_RowContainer.begin();
-  while (iter != this->m_RowContainer.end())
+
+  while ( iter != this->m_RowContainer.end() )
     {
     iter->second.clear();
     iter++;
     }
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 size_t GoDBTableWidgetContainer::GetNumberOfRows()
 {
-  if (!this->m_RowContainer.empty())
+  if ( !this->m_RowContainer.empty() )
     {
-    //return the number of traceID in the container which correspond to the 2nd column
+    //return the number of traceID in the container which correspond to the 2nd
+    // column
     return this->m_RowContainer.at(1).second.size();
     }
   return 0;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::vector<int> GoDBTableWidgetContainer::GetAllTraceIDsInContainer()
+std::vector< int > GoDBTableWidgetContainer::GetAllTraceIDsInContainer()
 {
   int IndexColumn = this->GetIndexInsideRowContainer(this->m_TracesIDName);
-  std::vector<std::string> VectorIDsstr = this->m_RowContainer[IndexColumn].second;
-  std::vector<std::string>::iterator iter = VectorIDsstr.begin();
-  std::vector<int> vectorInt;
-  while(iter != VectorIDsstr.end())
+
+  std::vector< std::string >           VectorIDsstr = this->m_RowContainer[IndexColumn].second;
+  std::vector< std::string >::iterator iter = VectorIDsstr.begin();
+  std::vector< int >                   vectorInt;
+  while ( iter != VectorIDsstr.end() )
     {
     std::string intstr = *iter;
-    vectorInt.push_back(ss_atoi<int>(intstr));
+    vectorInt.push_back( ss_atoi< int >(intstr) );
     iter++;
     }
   return vectorInt;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------

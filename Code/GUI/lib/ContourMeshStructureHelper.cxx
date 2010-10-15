@@ -45,13 +45,15 @@
 
 // ---------------------------------------------------------------------------
 int
-ComputeDirectionFromContour(vtkPolyData* iContour)
+ComputeDirectionFromContour(vtkPolyData *iContour)
 {
   double bounds[6];
+
   iContour->GetBounds(bounds);
 
-  return ComputeDirectionFromBounds<double>( bounds );
+  return ComputeDirectionFromBounds< double >(bounds);
 }
+
 // ---------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
@@ -211,40 +213,39 @@ void DeleteContourMeshStructureElement(
   ContourMeshStructureMultiIndexContainer::iterator it = iContainer.begin();
   ContourMeshStructureMultiIndexContainer::iterator end = iContainer.end();
 
-  std::set<vtkPolyData*> NodeSet;
+  std::set< vtkPolyData * > NodeSet;
 
-  while (it != end)
+  while ( it != end )
     {
     NodeSet.insert(it->Nodes);
-    if (it->ActorXY)
+    if ( it->ActorXY )
       {
       it->ActorXY->Delete();
       }
-    if (it->ActorXZ)
+    if ( it->ActorXZ )
       {
       it->ActorXZ->Delete();
       }
-    if (it->ActorYZ)
+    if ( it->ActorYZ )
       {
       it->ActorYZ->Delete();
       }
-    if (it->ActorXYZ)
+    if ( it->ActorXYZ )
       {
       it->ActorXYZ->Delete();
       }
     ++it;
     }
 
-  std::set<vtkPolyData*>::iterator NodeSetIt = NodeSet.begin();
-  std::set<vtkPolyData*>::iterator NodeSetEnd = NodeSet.end();
+  std::set< vtkPolyData * >::iterator NodeSetIt = NodeSet.begin();
+  std::set< vtkPolyData * >::iterator NodeSetEnd = NodeSet.end();
 
-  while (NodeSetIt != NodeSetEnd)
+  while ( NodeSetIt != NodeSetEnd )
     {
-    if ((*NodeSetIt))
+    if ( ( *NodeSetIt ) )
       {
-      (*NodeSetIt)->Delete();
+      ( *NodeSetIt )->Delete();
       }
     ++NodeSetIt;
     }
-
 }

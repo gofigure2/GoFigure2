@@ -48,14 +48,14 @@
 
 namespace itk
 {
-template<class TInput, class TMask>
-class BinaryMaskImageToGoFigureMeshAttributes : public LightObject
-  {
+template< class TInput, class TMask >
+class BinaryMaskImageToGoFigureMeshAttributes:public LightObject
+{
 public:
   typedef BinaryMaskImageToGoFigureMeshAttributes Self;
   typedef LightObject                             Superclass;
-  typedef SmartPointer<Self>                      Pointer;
-  typedef SmartPointer<const Self>                ConstPointer;
+  typedef SmartPointer< Self >                    Pointer;
+  typedef SmartPointer< const Self >              ConstPointer;
 
   typedef TInput                          ImageType;
   typedef typename ImageType::Pointer     ImagePointer;
@@ -79,55 +79,59 @@ public:
 
   typedef bool LabelType;
 
-  typedef ShapeLabelObject<LabelType, ImageDimension> ShapeLabelObjectType;
-  typedef typename ShapeLabelObjectType::Pointer      ShapeLabelObjectPointer;
+  typedef ShapeLabelObject< LabelType, ImageDimension > ShapeLabelObjectType;
+  typedef typename ShapeLabelObjectType::Pointer        ShapeLabelObjectPointer;
 
-  typedef StatisticsLabelObject<LabelType, ImageDimension>
+  typedef StatisticsLabelObject< LabelType, ImageDimension >
   StatLabelObjectType;
   typedef typename StatLabelObjectType::Pointer StatLabelObjectPointer;
 
-  typedef LabelMap<ShapeLabelObjectType>      ShapeLabelMapType;
+  typedef LabelMap< ShapeLabelObjectType >    ShapeLabelMapType;
   typedef typename ShapeLabelMapType::Pointer ShapeLabelMapPointer;
 
-  typedef LabelMap<StatLabelObjectType>      StatLabelMapType;
+  typedef LabelMap< StatLabelObjectType >    StatLabelMapType;
   typedef typename StatLabelMapType::Pointer StatLabelMapPointer;
 
-  typedef LabelImageToShapeLabelMapFilter<MaskImageType, ShapeLabelMapType>
+  typedef LabelImageToShapeLabelMapFilter< MaskImageType, ShapeLabelMapType >
   ShapeConverterType;
   typedef typename ShapeConverterType::Pointer ShapeConverterPointer;
 
-  typedef LabelImageToStatisticsLabelMapFilter<MaskImageType,
-                                               ImageType, StatLabelMapType>               StatConverterType;
+  typedef LabelImageToStatisticsLabelMapFilter< MaskImageType,
+                                                ImageType, StatLabelMapType >               StatConverterType;
   typedef typename StatConverterType::Pointer StatConverterPointer;
 
-  void SetImage(ImageType* iInput);
-  void SetMaskImage(MaskImageType* iMask);
+  void SetImage(ImageType *iInput);
+
+  void SetMaskImage(MaskImageType *iMask);
 
   void Update();
 
   unsigned int GetSize();
+
   double GetPhysicalSize();
+
   double GetMeanIntensity();
+
   double GetSumIntensity();
 
 protected:
   BinaryMaskImageToGoFigureMeshAttributes();
   ~BinaryMaskImageToGoFigureMeshAttributes();
 
-  ImagePointer     m_InputImage;
+  ImagePointer m_InputImage;
   MaskImagePointer m_MaskImage;
 
   unsigned int m_Size;
-  double       m_PhysicalSize;
-  double       m_Mean;
-  double       m_Sum;
+  double m_PhysicalSize;
+  double m_Mean;
+  double m_Sum;
 
   virtual void GenerateData();
 
 private:
-  BinaryMaskImageToGoFigureMeshAttributes(const Self&);
-  void operator =(const Self&);
-  };
+  BinaryMaskImageToGoFigureMeshAttributes(const Self &);
+  void operator=(const Self &);
+};
 }
 #include "itkBinaryMaskImageToGoFigureMeshAttributes.txx"
 #endif

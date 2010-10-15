@@ -43,9 +43,9 @@
 #include <fstream>
 #include <sstream>
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-  if (argc != 6)
+  if ( argc != 6 )
     {
     std::cerr << "1-mha filename" << std::endl;
     std::cerr << "2-megacapture header (*.meg)" << std::endl;
@@ -55,11 +55,11 @@ int main(int argc, char** argv)
     return EXIT_FAILURE;
     }
 
-  vtkMetaImageReader* reader = vtkMetaImageReader::New();
+  vtkMetaImageReader *reader = vtkMetaImageReader::New();
   reader->SetFileName(argv[1]);
   reader->Update();
 
-  vtkImageData* image = reader->GetOutput();
+  vtkImageData *image = reader->GetOutput();
 
   double spacing[3];
   image->GetSpacing(spacing);
@@ -96,7 +96,7 @@ int main(int argc, char** argv)
   file << "DimensionTM " << iNumberOfTimePoints << std::endl;
   file << "DimensionZS " << dim[2] << std::endl;
 
-  if (iNumberOfChannels == 1)
+  if ( iNumberOfChannels == 1 )
     {
     file << "DimensionCH 1" << std::endl;
     int blue = 255;

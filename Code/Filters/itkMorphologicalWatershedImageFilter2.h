@@ -19,8 +19,8 @@
 
 #include "itkImageToImageFilter.h"
 
-namespace itk {
-
+namespace itk
+{
 /** \class MorphologicalWatershedImageFilter2
  * \brief TODO
  *
@@ -41,28 +41,28 @@ namespace itk {
  * \sa WatershedImageFilter, MorphologicalWatershedFromMarkersImageFilter
  * \ingroup ImageEnhancement  MathematicalMorphologyImageFilters
  */
-template<class TInputImage, class TOutputImage>
-class ITK_EXPORT MorphologicalWatershedImageFilter2 :
-    public ImageToImageFilter<TInputImage, TOutputImage>
+template< class TInputImage, class TOutputImage >
+class ITK_EXPORT MorphologicalWatershedImageFilter2:
+  public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:
   /** Standard class typedefs. */
-  typedef MorphologicalWatershedImageFilter2             Self;
-  typedef ImageToImageFilter<TInputImage, TOutputImage> Superclass;
-  typedef SmartPointer<Self>                            Pointer;
-  typedef SmartPointer<const Self>                      ConstPointer;
+  typedef MorphologicalWatershedImageFilter2              Self;
+  typedef ImageToImageFilter< TInputImage, TOutputImage > Superclass;
+  typedef SmartPointer< Self >                            Pointer;
+  typedef SmartPointer< const Self >                      ConstPointer;
 
   /** Some convenient typedefs. */
-  typedef TInputImage                              InputImageType;
-  typedef TOutputImage                             OutputImageType;
-  typedef typename InputImageType::Pointer         InputImagePointer;
-  typedef typename InputImageType::ConstPointer    InputImageConstPointer;
-  typedef typename InputImageType::RegionType      InputImageRegionType;
-  typedef typename InputImageType::PixelType       InputImagePixelType;
-  typedef typename OutputImageType::Pointer        OutputImagePointer;
-  typedef typename OutputImageType::ConstPointer   OutputImageConstPointer;
-  typedef typename OutputImageType::RegionType     OutputImageRegionType;
-  typedef typename OutputImageType::PixelType      OutputImagePixelType;
+  typedef TInputImage                            InputImageType;
+  typedef TOutputImage                           OutputImageType;
+  typedef typename InputImageType::Pointer       InputImagePointer;
+  typedef typename InputImageType::ConstPointer  InputImageConstPointer;
+  typedef typename InputImageType::RegionType    InputImageRegionType;
+  typedef typename InputImageType::PixelType     InputImagePixelType;
+  typedef typename OutputImageType::Pointer      OutputImagePointer;
+  typedef typename OutputImageType::ConstPointer OutputImageConstPointer;
+  typedef typename OutputImageType::RegionType   OutputImageRegionType;
+  typedef typename OutputImageType::PixelType    OutputImagePixelType;
 
   /** ImageDimension constants */
   itkStaticConstMacro(InputImageDimension, unsigned int,
@@ -103,15 +103,14 @@ public:
 
   /** Set the marker image */
   void SetForegroundImage(TOutputImage *fg)
-    {
+  {
     m_ForegroundImg = fg;
-    }
-
+  }
 
 protected:
   MorphologicalWatershedImageFilter2();
-  ~MorphologicalWatershedImageFilter2() {};
-  void PrintSelf(std::ostream& os, Indent indent) const;
+  ~MorphologicalWatershedImageFilter2() {}
+  void PrintSelf(std::ostream & os, Indent indent) const;
 
   /** MorphologicalWatershedImageFilter2 needs the entire input be
    * available. Thus, it needs to provide an implementation of
@@ -119,26 +118,23 @@ protected:
   void GenerateInputRequestedRegion();
 
   /** MorphologicalWatershedImageFilter2 will produce the entire output. */
-  void EnlargeOutputRequestedRegion(DataObject *itkNotUsed(output));
+  void EnlargeOutputRequestedRegion( DataObject *itkNotUsed(output) );
 
   /** Single-threaded version of GenerateData.  This filter delegates
    * to GrayscaleGeodesicErodeImageFilter. */
   void GenerateData();
 
   OutputImagePointer m_ForegroundImg;
-
 private:
-  MorphologicalWatershedImageFilter2(const Self&); //purposely not implemented
-  void operator=(const Self&); //purposely not implemented
+  MorphologicalWatershedImageFilter2(const Self &); //purposely not implemented
+  void operator=(const Self &);                     //purposely not implemented
 
   bool m_FullyConnected;
 
   bool m_MarkWatershedLine;
 
   InputImagePixelType m_Level;
-
 }; // end of class
-
 } // end namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION

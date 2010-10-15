@@ -42,10 +42,11 @@
 #include "SelectQueryDatabaseHelper.h"
 #include "GoDBRecordSetHelper.h"
 
-GoDBNameDescRow::GoDBNameDescRow() : GoDBRow()
-  {
+GoDBNameDescRow::GoDBNameDescRow():GoDBRow()
+{
   this->InitializeMap();
-  }
+}
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -58,27 +59,30 @@ void GoDBNameDescRow::InitializeMap()
   this->SetField("Description", NoDescription);
   this->SetField ("Name", NoName);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 int GoDBNameDescRow::DoesThisNameAlreadyExists(
-  vtkMySQLDatabase* DatabaseConnector)
+  vtkMySQLDatabase *DatabaseConnector)
 {
-  return FindOneID(DatabaseConnector, this->m_TableName,
-                   this->m_TableIDName, "Name", this->GetMapValue("Name"));
+  return FindOneID( DatabaseConnector, this->m_TableName,
+                    this->m_TableIDName, "Name", this->GetMapValue("Name") );
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 int GoDBNameDescRow::DoesThisEntityAlreadyExists2(
-  vtkMySQLDatabase* iDatabaseConnector, std::string& ioName)
+  vtkMySQLDatabase *iDatabaseConnector, std::string & ioName)
 {
   int ID = this->DoesThisEntityAlreadyExists(iDatabaseConnector);
-  if (ID == -1)
+
+  if ( ID == -1 )
     {
     return ID;
     }
-  ioName = ReturnOnlyOneValue(iDatabaseConnector, this->m_TableName, "Name",
-                              this->m_TableIDName, ConvertToString<int>(ID));
+  ioName = ReturnOnlyOneValue( iDatabaseConnector, this->m_TableName, "Name",
+                               this->m_TableIDName, ConvertToString< int >(ID) );
   return ID;
 }

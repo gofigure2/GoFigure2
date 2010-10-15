@@ -63,38 +63,38 @@
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-ConversionLsmToMegaThread::
-ConversionLsmToMegaThread () : m_BaseName(""), m_LsmPath(""), m_MegaPath(""),
+ConversionLsmToMegaThread::ConversionLsmToMegaThread ():m_BaseName(""), m_LsmPath(""), m_MegaPath(""),
   m_FileType(GoFigure::PNG), m_LSMReaders(0), m_Plaque (0), m_Row(0), m_Column (0),
   m_XTile(0), m_YTile(0), m_ZTile (0), m_XOverlap(0), m_YOverlap(0), m_ZOverlap(0),
   m_NumberOfChannels(0), m_NumberOfTimePoints(0), m_Dim(0)
-  {
-  }
+{}
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 ConversionLsmToMegaThread::~ConversionLsmToMegaThread()
-  {
-  if (!m_LSMReaders.empty())
+{
+  if ( !m_LSMReaders.empty() )
     {
-    for (unsigned int i = 0; i < m_LSMReaders.size(); i++)
+    for ( unsigned int i = 0; i < m_LSMReaders.size(); i++ )
       {
       m_LSMReaders[i]->Delete();
       }
     }
-  }
+}
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
-ConversionLsmToMegaThread::
-run()
+ConversionLsmToMegaThread::run()
 {
   // Allocate memory to avoid automatic suppression at the end of this function
   /**
    * \todo Reimplement these methods in this function
    */
-  LSMToMegaCapture* converter = new LSMToMegaCapture;
+  LSMToMegaCapture *converter = new LSMToMegaCapture;
+
   converter->SetFileName(m_LsmPath);
   converter->SetOutputFileType(m_FileType);
 
@@ -116,46 +116,46 @@ run()
 }
 
 void
-ConversionLsmToMegaThread::
-SetBaseName(std::string iBaseName)
+ConversionLsmToMegaThread::SetBaseName(std::string iBaseName)
 {
   m_BaseName = iBaseName;
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
-ConversionLsmToMegaThread::
-SetLsmPath(std::string iLsmPath)
+ConversionLsmToMegaThread::SetLsmPath(std::string iLsmPath)
 {
   m_LsmPath = iLsmPath;
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
-ConversionLsmToMegaThread::
-SetMegaPath(std::string iMegaPath)
+ConversionLsmToMegaThread::SetMegaPath(std::string iMegaPath)
 {
   m_MegaPath = iMegaPath;
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
-ConversionLsmToMegaThread::
-SetOutputFileType(const GoFigure::FileType& iFileType)
+ConversionLsmToMegaThread::SetOutputFileType(const GoFigure::FileType & iFileType)
 {
   m_FileType = iFileType;
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
-ConversionLsmToMegaThread::
-ExportWithReimplemented(std::string iMegaPath)
+ConversionLsmToMegaThread::ExportWithReimplemented(std::string iMegaPath)
 {
   double spacing[3];
+
   m_LSMReaders[0]->GetVoxelSizes(spacing);
 
   int dim[5];
@@ -165,13 +165,13 @@ ExportWithReimplemented(std::string iMegaPath)
   headerfilename += m_BaseName;
   headerfilename += ".meg";
 
-  std::ofstream file(headerfilename.c_str());
+  std::ofstream file( headerfilename.c_str() );
   file << "MegaCapture" << std::endl;
   file << "<ImageSessionData>" << std::endl;
   file << "Version 3.0" << std::endl;
   file << "ExperimentTitle " << std::endl;
   file << "ExperimentDescription ";
-  if (m_LSMReaders[0]->GetDescription())
+  if ( m_LSMReaders[0]->GetDescription() )
     {
     file << m_LSMReaders[0]->GetDescription();
     }
@@ -194,7 +194,7 @@ ExportWithReimplemented(std::string iMegaPath)
   file << "DimensionCH " << m_NumberOfChannels << std::endl;
 
   unsigned int i, j, k;
-  for (i = 0; i < m_NumberOfChannels; i++)
+  for ( i = 0; i < m_NumberOfChannels; i++ )
     {
     int r = m_LSMReaders[0]->GetChannelColorComponent(i, 0);
     int g = m_LSMReaders[0]->GetChannelColorComponent(i, 1);
@@ -210,12 +210,12 @@ ExportWithReimplemented(std::string iMegaPath)
   file << "FileType PNG" << std::endl;
   file << "</ImageSessionData>" << std::endl;
 
-  if (m_NumberOfChannels > 1)
+  if ( m_NumberOfChannels > 1 )
     {
-    for (i = 1; i < m_NumberOfChannels; i++)
+    for ( i = 1; i < m_NumberOfChannels; i++ )
       {
-      m_LSMReaders.push_back(vtkLSMReader::New());
-      m_LSMReaders[i]->SetFileName(m_LsmPath.c_str());
+      m_LSMReaders.push_back( vtkLSMReader::New() );
+      m_LSMReaders[i]->SetFileName( m_LsmPath.c_str() );
       m_LSMReaders[i]->SetUpdateChannel(i);
       //send signal for progress bar
       emit ProgressSent();
@@ -227,26 +227,26 @@ ExportWithReimplemented(std::string iMegaPath)
   char        timeStr[100] = "";
   struct stat buf;
 
-  if (!stat(m_LsmPath.c_str(), &buf))
+  if ( !stat(m_LsmPath.c_str(), &buf) )
     {
-    strftime(timeStr, 100, "%Y-%m-%d %H:%M:%S", localtime(&buf.st_mtime));
+    strftime( timeStr, 100, "%Y-%m-%d %H:%M:%S", localtime(&buf.st_mtime) );
     }
 
-  for (i = 0; i < m_NumberOfTimePoints; i++)
+  for ( i = 0; i < m_NumberOfTimePoints; i++ )
     {
-    for (k = 0; k < m_NumberOfChannels; k++)
+    for ( k = 0; k < m_NumberOfChannels; k++ )
       {
       m_LSMReaders[k]->SetUpdateTimePoint(i);
       //send signal for progress bar
       emit ProgressSent();
       }
-    for (j = 0; j < m_NumberOfChannels; j++)
+    for ( j = 0; j < m_NumberOfChannels; j++ )
       {
       m_LSMReaders[j]->Update();
-      vtkImageData* image3d = m_LSMReaders[j]->GetOutput();
+      vtkImageData *image3d = m_LSMReaders[j]->GetOutput();
       image3d->GetExtent(extent);
 
-      for (k = 0; k < static_cast<unsigned int>(dim[2]); k++)
+      for ( k = 0; k < static_cast< unsigned int >( dim[2] ); k++ )
         {
         std::stringstream filename;
         filename << m_BaseName << "-PL" << setfill('0') << setw(2) << m_Plaque;
@@ -259,7 +259,7 @@ ExportWithReimplemented(std::string iMegaPath)
         filename << "-ch" << setfill('0') << setw(2) << j;
         filename << "-zs" << setfill('0') << setw(4) << k;
 
-        switch (m_FileType)
+        switch ( m_FileType )
           {
           default:
           case GoFigure::PNG:
@@ -282,29 +282,29 @@ ExportWithReimplemented(std::string iMegaPath)
         file << "Pinhole 44.216" << std::endl;
         file << "</Image>" << std::endl;
 
-        vtkSmartPointer<vtkExtractVOI> extract =
-          vtkSmartPointer<vtkExtractVOI>::New();
+        vtkSmartPointer< vtkExtractVOI > extract =
+          vtkSmartPointer< vtkExtractVOI >::New();
         extract->SetSampleRate(1, 1, 1);
         extract->SetInput(image3d);
         extract->SetVOI(extent[0], extent[1], extent[2], extent[3], k, k);
         extract->Update();
 
-        vtkImageData* image2d = extract->GetOutput();
+        vtkImageData *image2d = extract->GetOutput();
 
         std::string final_filename = iMegaPath;
         final_filename += filename.str();
 
-        switch (m_FileType)
+        switch ( m_FileType )
           {
           default:
           case GoFigure::PNG:
             {
-            vtkWriteImage<vtkPNGWriter>(image2d, final_filename);
+            vtkWriteImage< vtkPNGWriter >(image2d, final_filename);
             break;
             }
           case GoFigure::TIFF:
             {
-            vtkWriteImage<vtkTIFFWriter>(image2d, final_filename);
+            vtkWriteImage< vtkTIFFWriter >(image2d, final_filename);
             break;
             }
           }
@@ -315,12 +315,12 @@ ExportWithReimplemented(std::string iMegaPath)
     }
   file.close();
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 int
-ConversionLsmToMegaThread::
-GetNumberOfPoints()
+ConversionLsmToMegaThread::GetNumberOfPoints()
 {
   int total = m_NumberOfChannels * m_NumberOfTimePoints
               + m_NumberOfChannels
@@ -328,4 +328,5 @@ GetNumberOfPoints()
 
   return total;
 }
+
 //-------------------------------------------------------------------------

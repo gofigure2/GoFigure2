@@ -52,41 +52,47 @@
 class vtkRenderWindow;
 class vtkWindowToImageFilter;
 
-class QGOGUILIB_EXPORT vtkRenderWindowMovieRecorder : public vtkProcessObject
-  {
+class QGOGUILIB_EXPORT vtkRenderWindowMovieRecorder:public vtkProcessObject
+{
 public:
   //static vtkRenderWindowMovieRecorder *New();
   vtkTypeMacro(vtkRenderWindowMovieRecorder, vtkProcessObject);
 
   // set the name of the video (can be a path)
-  void SetFileName(const std::string&);
+  void SetFileName(const std::string &);
+
   // set the render window to be observed
-  void SetRenderingWindow(vtkRenderWindow*);
+  void SetRenderingWindow(vtkRenderWindow *);
+
   // start the video acquisition
   void StartCapture();
+
   // end the video acquisition
   void EndCapture();
+
   // take a snapshot of the current render window
   void TakeSnapshot();
 
   virtual void SetSpecificParameters() = 0;
 
   virtual void SetVideoQuality(int);
+
   virtual void SetFrameRate(int);
+
   virtual void SetBitRate(int);
 
 protected:
   vtkRenderWindowMovieRecorder();
   ~vtkRenderWindowMovieRecorder();
 
-  vtkRenderWindow*        m_RenderWindow;
-  vtkWindowToImageFilter* m_ImageFilter;
-  vtkGenericMovieWriter*  m_ImageWriter;
+  vtkRenderWindow *       m_RenderWindow;
+  vtkWindowToImageFilter *m_ImageFilter;
+  vtkGenericMovieWriter * m_ImageWriter;
   std::string             m_FileName;
   bool                    m_ControlIfVideoStarted;
   int                     m_VideoQuality;
   int                     m_FrameRate;
   int                     m_BitRate;
-  };
+};
 
 #endif /* VTKRENDERWINDOWMOVIERECORDER_H_ */

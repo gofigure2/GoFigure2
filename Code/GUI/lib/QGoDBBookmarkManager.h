@@ -53,13 +53,12 @@
 for the Bookmark DBTable.
 \ingroup DB GUI
 */
-class QGOGUILIB_EXPORT QGoDBBookmarkManager :
+class QGOGUILIB_EXPORT QGoDBBookmarkManager:
   public QGoDBNameDescEntityManager
-  {
+{
   Q_OBJECT
-
 public:
-  explicit QGoDBBookmarkManager(QWidget* iParent = 0,
+  explicit QGoDBBookmarkManager(QWidget *iParent = 0,
                                 int iImgSessionID = 0);
 
   ~QGoDBBookmarkManager();
@@ -70,41 +69,40 @@ public:
   and save the bookmark in the DB
   \param[in] iCoordID ID for the coordinate to be saved in the bookmark table
   */
-  void AddABookmark(int iCoordID, vtkMySQLDatabase* iDatabaseConnector);
+  void AddABookmark(int iCoordID, vtkMySQLDatabase *iDatabaseConnector);
 
-  /** 
+  /**
   \brief return the coordinate for the bookmark with the name iName
   \param[in] iName name of the bookmark for which we want to get the coordinate
   \param[out] GoDBCoordinateRow containing the data for the coordinate which name is iName
   */
   GoDBCoordinateRow GetCoordinatesForBookmark(
-    vtkMySQLDatabase* iDatabaseConnector, std::string iName);
+    vtkMySQLDatabase *iDatabaseConnector, std::string iName);
 
-  /** \brief delete the bookmarks from the database from a list the user 
+  /** \brief delete the bookmarks from the database from a list the user
   selects and send a signal to tell that the list has changed*/
-  void DeleteBookmark(vtkMySQLDatabase* iDatabaseConnector);
+  void DeleteBookmark(vtkMySQLDatabase *iDatabaseConnector);
 
 protected:
-  GoDBBookmarkRow              m_NewBookmark;
-  int                          m_CoordIDForNewBookmark;
-
+  GoDBBookmarkRow m_NewBookmark;
+  int             m_CoordIDForNewBookmark;
 protected slots:
   //mother class method
   void SaveNewEntityInDB();
 
-  /** 
+  /**
   \brief get the coordid for the bookmark with the name
   iName
   \param[in] iName Name of the bookmark
   \param[out] int ID for the coordinate in the bookmark DBTable
   */
-  int GetCoordIDForBookmark(vtkMySQLDatabase* iDatabaseConnector,
+  int GetCoordIDForBookmark(vtkMySQLDatabase *iDatabaseConnector,
                             std::string iName);
+
   //mother class method
   void ValidateName(std::string iName, std::string iDescription);
 
 signals:
   void ListBookmarksChanged();
-
-  };
+};
 #endif

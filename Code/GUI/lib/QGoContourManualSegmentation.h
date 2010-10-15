@@ -52,23 +52,24 @@ class QGoContourManualSegmentationWidget;
  * \brief Base class for manual segmentations
 */
 
-class QGOGUILIB_EXPORT QGoContourManualSegmentation : public QObject
-  {
+class QGOGUILIB_EXPORT QGoContourManualSegmentation:public QObject
+{
   Q_OBJECT
 public:
   /**
    * \brief Constructor
    */
-  explicit QGoContourManualSegmentation( QWidget* parent = 0 );
+  explicit QGoContourManualSegmentation(QWidget *parent = 0);
 
   /**
    * \brief Destructor
    */
   ~QGoContourManualSegmentation();
 
-  QWidget* getWidget();
+  QWidget * getWidget();
 
   void SetReeditMode(bool iReeditMode);
+
   bool GetReeditMode();
 
 public slots:
@@ -76,13 +77,16 @@ public slots:
 
 signals:
   void ContourRepresentationPropertiesChanged();
+
   void validateContour();
+
   void reinitializeContour();
-  void changeContourRepresentationProperty(float  iLinewidth, QColor iLinecolor,
-      QColor iNodecolor, QColor iActivenodecolor);
+
+  void changeContourRepresentationProperty(float iLinewidth, QColor iLinecolor,
+                                           QColor iNodecolor, QColor iActivenodecolor);
 
 protected:
-  QGoContourManualSegmentationWidget*   m_ContourSegmentationWidget;
+  QGoContourManualSegmentationWidget *m_ContourSegmentationWidget;
 
   double m_LinesWidth;
   QColor m_LinesColor;
@@ -90,8 +94,7 @@ protected:
   QColor m_ActiveNodesColor;
 
   bool m_ReeditMode;
-
 private:
-    Q_DISABLE_COPY( QGoContourManualSegmentation );
-  };
+  Q_DISABLE_COPY(QGoContourManualSegmentation);
+};
 #endif

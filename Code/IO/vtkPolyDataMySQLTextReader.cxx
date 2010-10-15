@@ -50,24 +50,22 @@
 vtkCxxRevisionMacro(vtkPolyDataMySQLTextReader, "$Revision$");
 vtkStandardNewMacro(vtkPolyDataMySQLTextReader);
 
-vtkPolyDataMySQLTextReader::vtkPolyDataMySQLTextReader() :
+vtkPolyDataMySQLTextReader::vtkPolyDataMySQLTextReader():
   m_Text(""), IsContour(true)
-  {
-  }
+{}
 
 vtkPolyDataMySQLTextReader::~vtkPolyDataMySQLTextReader()
-  {
-  }
+{}
 
-void vtkPolyDataMySQLTextReader::SetIsContour(const bool& iContour)
+void vtkPolyDataMySQLTextReader::SetIsContour(const bool & iContour)
 {
   IsContour = iContour;
 }
 
-vtkPolyData* vtkPolyDataMySQLTextReader::GetPolyData(const std::string& iString)
+vtkPolyData * vtkPolyDataMySQLTextReader::GetPolyData(const std::string & iString)
 {
   m_Text = iString;
-  if (IsContour)
+  if ( IsContour )
     {
     return GetContour();
     }
@@ -77,11 +75,12 @@ vtkPolyData* vtkPolyDataMySQLTextReader::GetPolyData(const std::string& iString)
     }
 }
 
-vtkPolyData* vtkPolyDataMySQLTextReader::GetContour()
+vtkPolyData * vtkPolyDataMySQLTextReader::GetContour()
 {
-  vtkPolyData*               oContour = vtkPolyData::New();
-  vtkSmartPointer<vtkPoints> points =
-    vtkSmartPointer<vtkPoints>::New();
+  vtkPolyData *oContour = vtkPolyData::New();
+
+  vtkSmartPointer< vtkPoints > points =
+    vtkSmartPointer< vtkPoints >::New();
 
   std::stringstream str(m_Text);
 
@@ -98,18 +97,18 @@ vtkPolyData* vtkPolyDataMySQLTextReader::GetContour()
 
   double pt[3];
 
-  for (vtkIdType i = 0; i < N; i++)
+  for ( vtkIdType i = 0; i < N; i++ )
     {
     str >> pt[0] >> pt[1] >> pt[2];
     points->SetPoint(i, pt);
     }
   oContour->SetPoints(points);
 
-  vtkSmartPointer<vtkCellArray> cells =
-    vtkSmartPointer<vtkCellArray>::New();
-  vtkIdType* ids = new vtkIdType[N + 1];
+  vtkSmartPointer< vtkCellArray > cells =
+    vtkSmartPointer< vtkCellArray >::New();
+  vtkIdType *ids = new vtkIdType[N + 1];
 
-  for (vtkIdType i = 0; i < N; i++)
+  for ( vtkIdType i = 0; i < N; i++ )
     {
     ids[i] = i;
     }
@@ -123,46 +122,47 @@ vtkPolyData* vtkPolyDataMySQLTextReader::GetContour()
   return oContour;
 }
 
-vtkPolyData* vtkPolyDataMySQLTextReader::GetMesh()
+vtkPolyData * vtkPolyDataMySQLTextReader::GetMesh()
 {
   std::stringstream str(m_Text);
 
   vtkIdType N;
+
   str >> N;
 
   // if N == 0, the mesh is a collection of contours
-  vtkPolyData* oMesh = NULL;
-  if (N != 0)
+  vtkPolyData *oMesh = NULL;
+  if ( N != 0 )
     {
     oMesh = vtkPolyData::New();
-    vtkSmartPointer<vtkPoints> points =
-      vtkSmartPointer<vtkPoints>::New();
+    vtkSmartPointer< vtkPoints > points =
+      vtkSmartPointer< vtkPoints >::New();
 
     points->SetNumberOfPoints(N);
 
     double pt[3];
 
-    for (vtkIdType i = 0; i < N; i++)
+    for ( vtkIdType i = 0; i < N; i++ )
       {
       str >> pt[0] >> pt[1] >> pt[2];
       points->SetPoint(i, pt);
       }
     oMesh->SetPoints(points);
 
-    vtkSmartPointer<vtkCellArray> cells =
-      vtkSmartPointer<vtkCellArray>::New();
+    vtkSmartPointer< vtkCellArray > cells =
+      vtkSmartPointer< vtkCellArray >::New();
     str >> N;
 
-    vtkSmartPointer<vtkIdList> cell_points =
-      vtkSmartPointer<vtkIdList>::New();
+    vtkSmartPointer< vtkIdList > cell_points =
+      vtkSmartPointer< vtkIdList >::New();
     vtkIdType NbOfPointsInCell;
     vtkIdType id;
 
-    for (vtkIdType i = 0; i < N; i++)
+    for ( vtkIdType i = 0; i < N; i++ )
       {
       str >> NbOfPointsInCell;
       cell_points->Reset();
-      for (vtkIdType k = 0; k < NbOfPointsInCell; k++)
+      for ( vtkIdType k = 0; k < NbOfPointsInCell; k++ )
         {
         str >> id;
         cell_points->InsertNextId(id);

@@ -50,58 +50,56 @@
 the items as an Icon in the combobox
 \ingroup GUI
 */
-class QGOGUILIB_EXPORT QGoColorComboBox : public QGoComboBox
-  {
+class QGOGUILIB_EXPORT QGoColorComboBox:public QGoComboBox
+{
   Q_OBJECT
 public:
   explicit QGoColorComboBox(std::string iTextToAddANewOne,
-      QWidget *iparent = 0,std::string iTextToDelete = "");
+                            QWidget *iparent = 0, std::string iTextToDelete = "");
 
   virtual ~QGoColorComboBox();
 
-  typedef std::pair<std::string, QColor> ItemColorComboboxData;
-  
+  typedef std::pair< std::string, QColor > ItemColorComboboxData;
+
   /**
   \brief call the method setItemsWithColorFromList and send a signal with the current index.
   \param[in] iDataFromList contains the names and the QColor of the items to be displayed
   in the combobox
   */
   void InitializeTheListWithColor(
-    std::list<ItemColorComboboxData> iDataFromList);
+    std::list< ItemColorComboboxData > iDataFromList);
 
   /**
   \brief add an item with color at the end of the list befor the "add new..."
-  if they have already been added to the list and select it if 
-  selectetheaddeditem is set to true. 
+  if they have already been added to the list and select it if
+  selectetheaddeditem is set to true.
   \param[in] iNewItemData name and QColor of the new item to be added
   \param[in] SelectTheAddedItem if true, the new added item will be the selectedone
   in the combobox
   */
   void AddItemWithColor(ItemColorComboboxData iNewItemData,
-    bool SelectTheAddedItem = true);
-  
+                        bool SelectTheAddedItem = true);
+
   /**
   \brief clear the items already in the combobox,displayed the one in the iDataFromList
   and the items to add/delete
-  \param[in] iDataFromList contains the names and QColor of the items to be 
+  \param[in] iDataFromList contains the names and QColor of the items to be
   displayed in the combobox
   \overload from the mother class method
   */
   void SetItemsFromListWithColor(
     std::list< ItemColorComboboxData > iDataFromList);
-  
+
 signals:
   void ItemSelected(ItemColorComboboxData);
-
 protected:
   /**
   \brief get the name and the QColor of the item located at the index iIndex
   \param[in] iIndex index for which the name and QColor are wanted
-  \return ItemColorComboboxData contains the name and QColor of the item 
+  \return ItemColorComboboxData contains the name and QColor of the item
   located at index iIndex
   */
   ItemColorComboboxData GetTheItemColorComboBoxData(int iIndex);
-
 
 protected slots:
 
@@ -112,8 +110,6 @@ protected slots:
 
   //mother class method
   virtual void EmitActivatedItem(int iIndexActivatedItem);
-
-  };
+};
 
 #endif
-

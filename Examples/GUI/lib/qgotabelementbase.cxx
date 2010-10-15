@@ -41,10 +41,10 @@
 
 #include "QGoTabElementBase.h"
 
-class QGoTabElementTestHelper : public QGoTabElementBase
-  {
+class QGoTabElementTestHelper:public QGoTabElementBase
+{
 public:
-  QGoTabElementTestHelper(QWidget* iParent = 0) :
+  QGoTabElementTestHelper(QWidget *iParent = 0):
     QGoTabElementBase(iParent) {}
   virtual ~QGoTabElementTestHelper() {}
 
@@ -53,26 +53,26 @@ public:
 
   virtual GoFigure::TabDimensionType GetTabDimensionType() const
   { return GoFigure::TWO_D; }
-
 protected:
-  virtual void PopulateMenus(QObject* iPlugin)
-  { (void) iPlugin; }
+  virtual void PopulateMenus(QObject *iPlugin)
+  { (void)iPlugin; }
 private:
-  QGoTabElementTestHelper(const QGoTabElementTestHelper&);
-  void operator =(const QGoTabElementTestHelper&);
-  };
+  QGoTabElementTestHelper(const QGoTabElementTestHelper &);
+  void operator=(const QGoTabElementTestHelper &);
+};
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
   QApplication app(argc, argv);
+
   QCoreApplication::setOrganizationName("MegasonLab");
   QCoreApplication::setOrganizationDomain("http://gofigure2.sourceforge.net");
 
-  QGoTabElementTestHelper* test = new QGoTabElementTestHelper;
+  QGoTabElementTestHelper *test = new QGoTabElementTestHelper;
   test->ViewActions();
   test->DockWidget();
   test->GetPluginActions();
-  test->SetPluginActions(std::list<QAction*>());
+  test->SetPluginActions( std::list< QAction * >() );
 
   delete test;
 

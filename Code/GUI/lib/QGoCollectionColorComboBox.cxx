@@ -40,16 +40,16 @@
 #include "QGoCollectionColorComboBox.h"
 #include <iostream>
 
-QGoCollectionColorComboBox::QGoCollectionColorComboBox(QWidget *iparent)
-:QGoColorComboBox("Add a new mesh...",iparent)
-{
-}
+QGoCollectionColorComboBox::QGoCollectionColorComboBox(QWidget *iparent):
+  QGoColorComboBox("Add a new mesh...", iparent)
+{}
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QGoCollectionColorComboBox::~QGoCollectionColorComboBox()
-{
-}
+{}
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -57,28 +57,33 @@ void QGoCollectionColorComboBox::ActionWhenNewOneRequested()
 {
   emit NewCollectionToCreate();
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoCollectionColorComboBox::InitializeTheListWithColor(
-  std::list<ItemColorComboboxData> iDataFromList, std::string iCollectionName)
+  std::list< ItemColorComboboxData > iDataFromList, std::string iCollectionName)
 {
-  this->SetItemsFromListWithColor(iDataFromList,iCollectionName);
-  //if it is the 1rst time for the list to be displayed, there has to be an activated
+  this->SetItemsFromListWithColor(iDataFromList, iCollectionName);
+  //if it is the 1rst time for the list to be displayed, there has to be an
+  // activated
   //item:
   //by default, the one selected by the combobox is the one to stick to:
-  this->EmitActivatedItem(this->currentIndex());
+  this->EmitActivatedItem( this->currentIndex() );
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoCollectionColorComboBox::SetItemsFromListWithColor(
-  std::list<ItemColorComboboxData> iDataFromList, std::string iCollectionName)
+  std::list< ItemColorComboboxData > iDataFromList, std::string iCollectionName)
 {
-  QString TextForNewOne(tr("Add a new %1 ...").arg(iCollectionName.c_str()));
+  QString TextForNewOne( tr("Add a new %1 ...").arg( iCollectionName.c_str() ) );
+
   this->m_TextToAddANewOne = TextForNewOne.toStdString();
   QGoColorComboBox::SetItemsFromListWithColor(iDataFromList);
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------

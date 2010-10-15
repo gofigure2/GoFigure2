@@ -46,7 +46,7 @@
 namespace itk
 {
 //  Software Guide : BeginCodeSnippet
-template< class TFeatureImage,class TInputImage,class TSegmentImage >
+template< class TFeatureImage, class TInputImage, class TSegmentImage >
 GradientWeightedDistanceImageFilter< TFeatureImage, TInputImage, TSegmentImage >
 ::GradientWeightedDistanceImageFilter()
 {
@@ -60,28 +60,29 @@ GradientWeightedDistanceImageFilter< TFeatureImage, TInputImage, TSegmentImage >
   m_DistanceMap = NULL;
   m_Gradient = NULL;
 
-  this->Superclass::SetNumberOfRequiredInputs ( 1 );
-  this->Superclass::SetNumberOfRequiredOutputs ( 1 );
+  this->Superclass::SetNumberOfRequiredInputs (1);
+  this->Superclass::SetNumberOfRequiredOutputs (1);
 
   this->Superclass::SetNthOutput ( 0, TInputImage::New() );
 }
 
-template< class TFeatureImage,class TInputImage,class TSegmentImage >
+template< class TFeatureImage, class TInputImage, class TSegmentImage >
 void
 GradientWeightedDistanceImageFilter< TFeatureImage, TInputImage, TSegmentImage >
 ::DistanceMap()
 {
   MaurerPointer m_Maurer = MaurerType::New();
-  m_Maurer->SetInput ( m_ForegroundMap );
-  m_Maurer->SetSquaredDistance ( 0 );
-  m_Maurer->SetUseImageSpacing ( 1 );
-  m_Maurer->SetInsideIsPositive ( 0 );
+
+  m_Maurer->SetInput (m_ForegroundMap);
+  m_Maurer->SetSquaredDistance (0);
+  m_Maurer->SetUseImageSpacing (1);
+  m_Maurer->SetInsideIsPositive (0);
   m_Maurer->Update();
 
   ImagePointer image;
   if ( m_UseLevelSet )
     {
-    AbsFilterPointer  m_absFilter = AbsFilterType::New();
+    AbsFilterPointer m_absFilter = AbsFilterType::New();
     m_absFilter->SetInput ( m_Maurer->GetOutput() );
     m_absFilter->Update();
     image = m_absFilter->GetOutput();
@@ -89,99 +90,103 @@ GradientWeightedDistanceImageFilter< TFeatureImage, TInputImage, TSegmentImage >
     }
   else
     {
-      image = m_Maurer->GetOutput();
-      image->DisconnectPipeline();
+    image = m_Maurer->GetOutput();
+    image->DisconnectPipeline();
     }
 
   IteratorType It( image, image->GetLargestPossibleRegion() );
+
   It.GoToBegin();
-  while( !It.IsAtEnd() )
+  while ( !It.IsAtEnd() )
     {
     if ( ( !m_UseLevelSet ) && ( It.Get() < 0 ) )
       {
-      It.Set( 0 );
+      It.Set(0);
       }
     if ( vcl_abs( It.Get() ) > m_LargestCellRadius )
-      It.Set( m_LargestCellRadius );
+      {
+      It.Set(m_LargestCellRadius);
+      }
     ++It;
     }
 
   m_DistanceMap = image;
 }
 
-template< class TFeatureImage,class TInputImage,class TSegmentImage >
+template< class TFeatureImage, class TInputImage, class TSegmentImage >
 void
-GradientWeightedDistanceImageFilter< TFeatureImage, TInputImage, TSegmentImage >::
-GenerateData()
+GradientWeightedDistanceImageFilter< TFeatureImage, TInputImage, TSegmentImage >::GenerateData()
 {
   DistanceMap();
 
   ImagePointer outputImg;
 
   if ( m_Beta > 0 )
-  {
+    {
     MultiScaleLoGFilterPointer log = MultiScaleLoGFilterType::New();
     log->SetInput( this->GetInput () );
-    log->SetSigmaMin( 0.4  );
-    log->SetSigmaMax( 2.0 );
-    log->SetNumberOfSigmaSteps( 5 );
+    log->SetSigmaMin(0.4);
+    log->SetSigmaMax(2.0);
+    log->SetNumberOfSigmaSteps(5);
     log->Update();
 
     RescaleFilterPointer rescale = RescaleFilterType::New();
     rescale->SetInput( log->GetOutput() );
-    rescale->SetOutputMinimum( 0 );
-    rescale->SetOutputMaximum( 1 );
+    rescale->SetOutputMinimum(0);
+    rescale->SetOutputMaximum(1);
     rescale->Update();
 
     outputImg = rescale->GetOutput();
     outputImg->DisconnectPipeline();
-  }
+    }
   else
-  {
+    {
     outputImg = ImageType::New();
     outputImg->CopyInformation( this->GetInput() );
     outputImg->SetRegions( this->GetInput()->GetLargestPossibleRegion() );
     outputImg->Allocate();
-    outputImg->FillBuffer( 1.0 );
-  }
+    outputImg->FillBuffer(1.0);
+    }
 
   double gmax, gmin;
 
   // Compute the gradient magnitude
   if ( m_Alpha > 0 )
-  {
+    {
     GradientFilterPointer m_gradientMagnitude = GradientFilterType::New();
     m_gradientMagnitude->SetInput ( this->GetInput () );
-    m_gradientMagnitude->SetSigma ( m_NucleiSigma );
+    m_gradientMagnitude->SetSigma (m_NucleiSigma);
     m_gradientMagnitude->Update();
     m_Gradient = m_gradientMagnitude->GetOutput();
     m_Gradient->DisconnectPipeline();
 
     MinMaxCalculatorPointer minMax3 = MinMaxCalculatorType::New();
-    minMax3->SetImage( m_Gradient );
+    minMax3->SetImage(m_Gradient);
     minMax3->ComputeMaximum();
     gmax = static_cast< double >( minMax3->GetMaximum() );
 
     MinMaxCalculatorPointer minMax4 = MinMaxCalculatorType::New();
-    minMax4->SetImage( m_Gradient );
+    minMax4->SetImage(m_Gradient);
     minMax4->ComputeMinimum();
     gmin = static_cast< double >( minMax4->GetMinimum() );
-  }
+    }
   else
-  {
+    {
     m_Gradient = outputImg;
     gmax = 1;
     gmin = 0;
-  }
+    }
 
   std::cout << gmax << ' ' << gmin << std::endl;
 
-  IteratorType It ( outputImg,
-                    outputImg->GetLargestPossibleRegion() );
-  IteratorType dIt ( m_DistanceMap,
+  IteratorType It( outputImg,
+                   outputImg->GetLargestPossibleRegion() );
+
+  IteratorType dIt( m_DistanceMap,
                     m_DistanceMap->GetLargestPossibleRegion() );
-  IteratorType gIt ( m_Gradient,
-                     m_Gradient->GetLargestPossibleRegion() );
+
+  IteratorType gIt( m_Gradient,
+                    m_Gradient->GetLargestPossibleRegion() );
 
   double p, q;
   gIt.GoToBegin();
@@ -189,30 +194,29 @@ GenerateData()
   It.GoToBegin();
   while ( !It.IsAtEnd() )
     {
-    p = vcl_exp( m_Alpha * (gmax - static_cast<double>(gIt.Get()) )/ ( gmax - gmin ) );
-    q = vcl_exp( - m_Beta * static_cast<double>( It.Get() ) );
+    p = vcl_exp( m_Alpha * ( gmax - static_cast< double >( gIt.Get() ) ) / ( gmax - gmin ) );
+    q = vcl_exp( -m_Beta * static_cast< double >( It.Get() ) );
 
-    It.Set ( dIt.Get() * p * q );
+    It.Set (dIt.Get() * p * q);
 
     ++gIt;
     ++dIt;
     ++It;
     }
 
-    this->GraftOutput ( outputImg );
+  this->GraftOutput (outputImg);
 }
 
-template< class TFeatureImage,class TInputImage,class TSegmentImage >
+template< class TFeatureImage, class TInputImage, class TSegmentImage >
 void
-GradientWeightedDistanceImageFilter< TFeatureImage, TInputImage, TSegmentImage >::
-PrintSelf ( std::ostream& os, Indent indent ) const
+GradientWeightedDistanceImageFilter< TFeatureImage, TInputImage, TSegmentImage >::PrintSelf(std::ostream & os,
+                                                                                            Indent indent) const
 {
-  Superclass::PrintSelf ( os,indent );
-  os << indent << "Class Name:              " << this->GetNameOfClass( ) <<
-    std::endl;
+  Superclass::PrintSelf (os, indent);
+  os << indent << "Class Name:              " << this->GetNameOfClass()
+     << std::endl;
   os << indent << "Use LevelSet:              " << m_UseLevelSet << std::endl;
 }
-
 } /* end namespace itk */
 
 #endif

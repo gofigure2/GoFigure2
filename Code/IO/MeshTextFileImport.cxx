@@ -52,42 +52,39 @@
 #include "GoDBCoordinateRow.h"
 #include "GoDBMeshRow.h"
 
-MeshTextFileImport::
-MeshTextFileImport(const std::string& iServerName, const std::string& iLogin,
-                   const std::string& iPassword, const std::string& iDBName,
-                   const unsigned int& iImagingSessionId) : m_ImagingSessionId(iImagingSessionId)
-  {
+MeshTextFileImport::MeshTextFileImport(const std::string & iServerName, const std::string & iLogin,
+                                       const std::string & iPassword, const std::string & iDBName,
+                                       const unsigned int & iImagingSessionId):m_ImagingSessionId(iImagingSessionId)
+{
   m_DBConnector =
     OpenDatabaseConnection(iServerName, iLogin, iPassword, iDBName);
-  }
+}
 
 MeshTextFileImport::
 ~MeshTextFileImport()
-  {
+{
   m_DBConnector->Delete();
-  }
+}
 
-void MeshTextFileImport::
-SetDirectory(const std::string& iDir)
+void MeshTextFileImport::SetDirectory(const std::string & iDir)
 {
   m_Directory = iDir;
 }
 
-void MeshTextFileImport::
-SetFileName(const std::string& iFileName)
+void MeshTextFileImport::SetFileName(const std::string & iFileName)
 {
   m_FileName = iFileName;
 }
 
-void MeshTextFileImport::
-Read()
+void MeshTextFileImport::Read()
 {
   std::string filename0 = m_Directory;
+
   filename0 += m_FileName;
 
   std::string   line;
   std::ifstream ifs(filename0.c_str(), std::ifstream::in);
-  if (ifs.is_open())
+  if ( ifs.is_open() )
     {
     //<ImagingSession>
     getline(ifs, line);
@@ -120,7 +117,7 @@ Read()
 
     unsigned int ch;
 
-    for (unsigned int i = 0; i < m_NumberOfMeshes; i++)
+    for ( unsigned int i = 0; i < m_NumberOfMeshes; i++ )
       {
       InternalMeshStructure mesh(m_NumberOfChannels);
 
@@ -151,25 +148,25 @@ Read()
       filename2 += filename;
 
       // Read filename
-      vtkPolyDataReader* reader = vtkPolyDataReader::New();
-      reader->SetFileName(filename2.c_str());
+      vtkPolyDataReader *reader = vtkPolyDataReader::New();
+      reader->SetFileName( filename2.c_str() );
       reader->Update();
 
-      vtkPolyData* vtk_mesh = reader->GetOutput();
+      vtkPolyData *vtk_mesh = reader->GetOutput();
 
       double bounds[6];
       vtk_mesh->GetBounds(bounds);
 
-      mesh.m_XMin = static_cast<unsigned int>(bounds[0] / spacing[0]);
-      mesh.m_XMax = static_cast<unsigned int>(bounds[1] / spacing[0]);
-      mesh.m_YMin = static_cast<unsigned int>(bounds[2] / spacing[1]);
-      mesh.m_YMax = static_cast<unsigned int>(bounds[3] / spacing[1]);
-      mesh.m_ZMin = static_cast<unsigned int>(bounds[4] / spacing[2]);
-      mesh.m_ZMax = static_cast<unsigned int>(bounds[5] / spacing[2]);
+      mesh.m_XMin = static_cast< unsigned int >( bounds[0] / spacing[0] );
+      mesh.m_XMax = static_cast< unsigned int >( bounds[1] / spacing[0] );
+      mesh.m_YMin = static_cast< unsigned int >( bounds[2] / spacing[1] );
+      mesh.m_YMax = static_cast< unsigned int >( bounds[3] / spacing[1] );
+      mesh.m_ZMin = static_cast< unsigned int >( bounds[4] / spacing[2] );
+      mesh.m_ZMax = static_cast< unsigned int >( bounds[5] / spacing[2] );
 
       mesh.m_Points = vtk_mesh;
 
-      for (ch = 0; ch < m_NumberOfChannels; ch++)
+      for ( ch = 0; ch < m_NumberOfChannels; ch++ )
         {
         // <intensity>
         getline(ifs, line);
@@ -197,20 +194,20 @@ Read()
 }
 
 void
-MeshTextFileImport::
-SaveMeshInDataBase(const InternalMeshStructure& iMesh)
+MeshTextFileImport::SaveMeshInDataBase(const InternalMeshStructure & iMesh)
 {
   GoDBCoordinateRow coord_min;
-  coord_min.SetField<unsigned int>("XCoord", iMesh.m_XMin);
-  coord_min.SetField<unsigned int>("YCoord", iMesh.m_YMin);
-  coord_min.SetField<unsigned int>("ZCoord", iMesh.m_ZMin);
-  coord_min.SetField<unsigned int>("TCoord", iMesh.m_TCoord);
+
+  coord_min.SetField< unsigned int >("XCoord", iMesh.m_XMin);
+  coord_min.SetField< unsigned int >("YCoord", iMesh.m_YMin);
+  coord_min.SetField< unsigned int >("ZCoord", iMesh.m_ZMin);
+  coord_min.SetField< unsigned int >("TCoord", iMesh.m_TCoord);
 
   GoDBCoordinateRow coord_max;
-  coord_max.SetField<unsigned int>("XCoord", iMesh.m_XMax);
-  coord_max.SetField<unsigned int>("YCoord", iMesh.m_YMax);
-  coord_max.SetField<unsigned int>("ZCoord", iMesh.m_ZMax);
-  coord_max.SetField<unsigned int>("TCoord", iMesh.m_TCoord);
+  coord_max.SetField< unsigned int >("XCoord", iMesh.m_XMax);
+  coord_max.SetField< unsigned int >("YCoord", iMesh.m_YMax);
+  coord_max.SetField< unsigned int >("ZCoord", iMesh.m_ZMax);
+  coord_max.SetField< unsigned int >("TCoord", iMesh.m_TCoord);
 
   GoDBMeshRow mesh_row(m_DBConnector, iMesh.m_Points, coord_min,
                        coord_max, m_ImagingSessionId);

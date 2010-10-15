@@ -49,45 +49,45 @@
 #include <QtDebug>
 #include <iostream>
 
-QGoTraceManualEditingWidget::
-QGoTraceManualEditingWidget(QWidget* iParent) :
+QGoTraceManualEditingWidget::QGoTraceManualEditingWidget(QWidget *iParent):
   QWidget(iParent)
-  {
+{
   this->setupUi(this);
   SetSelectedColorComboBox();
   SetTraceCollectionColorComboBox();
   SetCellTypeComboBox();
   SetSubCellTypeComboBox();
   UpdateTraceAndCollection("contour", "mesh");
-  }
+}
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 QGoTraceManualEditingWidget::
 ~QGoTraceManualEditingWidget()
-  {
-  }
+{}
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
-QGoTraceManualEditingWidget::
-SetListCollectionID(
-  std::list<ItemColorComboboxData> iListExistingID,
+QGoTraceManualEditingWidget::SetListCollectionID(
+  std::list< ItemColorComboboxData > iListExistingID,
   std::string iCollectionIDtoSelect)
 {
-  if (!iCollectionIDtoSelect.empty())
+  if ( !iCollectionIDtoSelect.empty() )
     {
-    this->m_CollectionColorComboBox->SetItemsFromListWithColor(iListExistingID,
-      this->m_CollectionName->text().toStdString());
+    this->m_CollectionColorComboBox->SetItemsFromListWithColor( iListExistingID,
+                                                                this->m_CollectionName->text().toStdString() );
     }
   else
     {
-    this->m_CollectionColorComboBox->InitializeTheListWithColor(iListExistingID,
-      this->m_CollectionName->text().toStdString());
+    this->m_CollectionColorComboBox->InitializeTheListWithColor( iListExistingID,
+                                                                 this->m_CollectionName->text().toStdString() );
     }
   /** \todo when using lineages, remove the following*/
-  if (this->m_CollectionName->text() == "lineage") //at that time we don't show lineages
+  if ( this->m_CollectionName->text() == "lineage" ) //at that time we don't
+                                                     // show lineages
     {
     this->m_CollectionColorComboBox->hide();
     }
@@ -96,78 +96,78 @@ SetListCollectionID(
     this->m_CollectionColorComboBox->show();
     }
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoTraceManualEditingWidget::SetListColors(
-  std::list<ItemColorComboboxData> iListColors,std::string iColorToSelect)
+  std::list< ItemColorComboboxData > iListColors, std::string iColorToSelect)
 {
-  this->SetListItemAndSelect<QGoSelectedColorComboBox>(this->m_SelectedColorComboBox,
-    iListColors,iColorToSelect);
+  this->SetListItemAndSelect< QGoSelectedColorComboBox >(this->m_SelectedColorComboBox,
+                                                         iListColors, iColorToSelect);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
-QGoTraceManualEditingWidget::
-SetListCellTypes(NamesDescrContainerType iCellTypesData, 
-                 std::string iCellTypeToSelect)
+QGoTraceManualEditingWidget::SetListCellTypes(NamesDescrContainerType iCellTypesData,
+                                              std::string iCellTypeToSelect)
 {
-  this->SetListItemAndSelect<QGoComboBox>(this->m_ChoseCellType,
-    iCellTypesData,iCellTypeToSelect);
+  this->SetListItemAndSelect< QGoComboBox >(this->m_ChoseCellType,
+                                            iCellTypesData, iCellTypeToSelect);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
-QGoTraceManualEditingWidget::
-SetListSubCellTypes(NamesDescrContainerType iSubCellTypesData,
-                    std::string iSubCellTypeToSelect)
+QGoTraceManualEditingWidget::SetListSubCellTypes(NamesDescrContainerType iSubCellTypesData,
+                                                 std::string iSubCellTypeToSelect)
 {
-  this->SetListItemAndSelect<QGoComboBox>(this->m_ChoseSubCellType,
-    iSubCellTypesData,iSubCellTypeToSelect);
+  this->SetListItemAndSelect< QGoComboBox >(this->m_ChoseSubCellType,
+                                            iSubCellTypesData, iSubCellTypeToSelect);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
-QGoTraceManualEditingWidget::
-SetSelectedColorComboBox()
+QGoTraceManualEditingWidget::SetSelectedColorComboBox()
 {
   this->m_SelectedColorComboBox = new QGoSelectedColorComboBox;
 
   this->VLayoutColor->addWidget(ColorLbl);
   this->VLayoutColor->addWidget(this->m_SelectedColorComboBox);
 
-  QObject::connect(this->m_SelectedColorComboBox,
-    SIGNAL(ItemSelected(ItemColorComboboxData)),
-    this,SIGNAL(NewSelectedColorActivated(ItemColorComboboxData)));
+  QObject::connect( this->m_SelectedColorComboBox,
+                    SIGNAL( ItemSelected(ItemColorComboboxData) ),
+                    this, SIGNAL( NewSelectedColorActivated(ItemColorComboboxData) ) );
 
-  QObject::connect(this->m_SelectedColorComboBox,
-    SIGNAL(AddNewColorActivated()),
-    this,SIGNAL(AddNewColor()));
+  QObject::connect( this->m_SelectedColorComboBox,
+                    SIGNAL( AddNewColorActivated() ),
+                    this, SIGNAL( AddNewColor() ) );
 
-  QObject::connect(this->m_SelectedColorComboBox,
-    SIGNAL(DeleteActivated()),
-    this,SIGNAL(DeleteColor()));
-  
+  QObject::connect( this->m_SelectedColorComboBox,
+                    SIGNAL( DeleteActivated() ),
+                    this, SIGNAL( DeleteColor() ) );
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
-QGoTraceManualEditingWidget::
-SetTraceCollectionColorComboBox()
+QGoTraceManualEditingWidget::SetTraceCollectionColorComboBox()
 {
-  this->m_TraceName = new QLabel(tr("contour"));
+  this->m_TraceName = new QLabel( tr("contour") );
   QFont ifont;
   ifont.setCapitalization(QFont::AllUppercase);
   ifont.setBold(true);
   this->m_TraceName->setFont(ifont);
-  QHBoxLayout* HLayoutForTrace = new QHBoxLayout;
+  QHBoxLayout *HLayoutForTrace = new QHBoxLayout;
   HLayoutForTrace->addWidget(this->TraceLbl);
   HLayoutForTrace->addWidget(this->m_TraceName);
-  QLabel* CollectionLbl = new QLabel(tr("Current Collection:"));
+  QLabel *CollectionLbl = new QLabel( tr("Current Collection:") );
   ifont.setCapitalization(QFont::Capitalize);
   ifont.setPointSize(8);
   ifont.setUnderline(true);
@@ -175,27 +175,28 @@ SetTraceCollectionColorComboBox()
   ifont.setBold(false);
   CollectionLbl->setFont(ifont);
   this->m_CollectionColorComboBox = new QGoCollectionColorComboBox;
-  this->m_CollectionName = new QLabel (tr("mesh"));
+  this->m_CollectionName = new QLabel ( tr("mesh") );
   ifont.setUnderline(false);
   ifont.setCapitalization(QFont::AllUppercase);
   ifont.setBold(true);
   this->m_CollectionName->setFont(ifont);
- 
-  QHBoxLayout* HLayoutForCollection = new QHBoxLayout;
+
+  QHBoxLayout *HLayoutForCollection = new QHBoxLayout;
   HLayoutForCollection->addWidget(this->m_CollectionName);
   HLayoutForCollection->addWidget(this->m_CollectionColorComboBox);
   this->VLayoutTraceCollection->addLayout(HLayoutForTrace);
   this->VLayoutTraceCollection->addWidget(CollectionLbl);
   this->VLayoutTraceCollection->addLayout(HLayoutForCollection);
 
-  QObject::connect(this->m_CollectionColorComboBox,
-    SIGNAL(ItemSelected(ItemColorComboboxData)),
-    this,SIGNAL(NewCollectionActivated(ItemColorComboboxData)));
+  QObject::connect( this->m_CollectionColorComboBox,
+                    SIGNAL( ItemSelected(ItemColorComboboxData) ),
+                    this, SIGNAL( NewCollectionActivated(ItemColorComboboxData) ) );
 
-  QObject::connect(this->m_CollectionColorComboBox,
-    SIGNAL(NewCollectionToCreate()),
-    this,SIGNAL(NewCollectionToBeCreated()));
+  QObject::connect( this->m_CollectionColorComboBox,
+                    SIGNAL( NewCollectionToCreate() ),
+                    this, SIGNAL( NewCollectionToBeCreated() ) );
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -210,51 +211,51 @@ SetEnableTraceCollectionColorBoxes(bool Enable)
 
 //-------------------------------------------------------------------------
 void
-QGoTraceManualEditingWidget::
-SetCellTypeComboBox()
+QGoTraceManualEditingWidget::SetCellTypeComboBox()
 {
   this->m_ChoseCellType = new QGoComboBox("Add a new celltype...",
-    this,"Delete a celltype...");
-  QHBoxLayout* HLayoutForCellType = new QHBoxLayout;
+                                          this, "Delete a celltype...");
+  QHBoxLayout *HLayoutForCellType = new QHBoxLayout;
   HLayoutForCellType->addWidget(m_ChoseCellType);
   this->VLayoutCellType->addLayout(HLayoutForCellType);
 
-   QObject::connect(this->m_ChoseCellType,
-     SIGNAL(ItemSelected(std::string)),
-    this,SIGNAL(NewCellTypeActivated(std::string)));
+  QObject::connect( this->m_ChoseCellType,
+                    SIGNAL( ItemSelected(std::string) ),
+                    this, SIGNAL( NewCellTypeActivated(std::string) ) );
 
-   QObject::connect(this->m_ChoseCellType,
-    SIGNAL(AddANewOneActivated()),
-    this,SIGNAL(AddANewCellType()));
+  QObject::connect( this->m_ChoseCellType,
+                    SIGNAL( AddANewOneActivated() ),
+                    this, SIGNAL( AddANewCellType() ) );
 
-   QObject::connect(this->m_ChoseCellType,
-    SIGNAL(DeleteActivated()),
-    this,SIGNAL(DeleteCellType()));
+  QObject::connect( this->m_ChoseCellType,
+                    SIGNAL( DeleteActivated() ),
+                    this, SIGNAL( DeleteCellType() ) );
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
-QGoTraceManualEditingWidget::
-SetSubCellTypeComboBox()
+QGoTraceManualEditingWidget::SetSubCellTypeComboBox()
 {
-  this->m_ChoseSubCellType = new QGoComboBox("Add a new subcelltype...",this,
-    "Delete a subcelltype...");
+  this->m_ChoseSubCellType = new QGoComboBox("Add a new subcelltype...", this,
+                                             "Delete a subcelltype...");
   this->VLayoutSubCellType->addWidget(LabelSubCellType);
   this->VLayoutSubCellType->addWidget(m_ChoseSubCellType);
- 
-    QObject::connect(this->m_ChoseSubCellType,
-     SIGNAL(ItemSelected(std::string)),
-    this,SIGNAL(NewSubCellTypeActivated(std::string)));
 
-   QObject::connect(this->m_ChoseSubCellType,
-    SIGNAL(AddANewOneActivated()),
-    this,SIGNAL(AddANewSubCellType()));
+  QObject::connect( this->m_ChoseSubCellType,
+                    SIGNAL( ItemSelected(std::string) ),
+                    this, SIGNAL( NewSubCellTypeActivated(std::string) ) );
 
-   QObject::connect(this->m_ChoseSubCellType,
-    SIGNAL(DeleteActivated()),
-    this,SIGNAL(DeleteSubCellType()));
+  QObject::connect( this->m_ChoseSubCellType,
+                    SIGNAL( AddANewOneActivated() ),
+                    this, SIGNAL( AddANewSubCellType() ) );
+
+  QObject::connect( this->m_ChoseSubCellType,
+                    SIGNAL( DeleteActivated() ),
+                    this, SIGNAL( DeleteSubCellType() ) );
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -263,6 +264,7 @@ void QGoTraceManualEditingWidget::SetCurrentCellType(
 {
   this->m_ChoseCellType->SetCurrentItem(iCellTypeText);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -271,6 +273,7 @@ void QGoTraceManualEditingWidget::SetCurrentSubCellType(
 {
   this->m_ChoseSubCellType->SetCurrentItem(iSubCellTypeText);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -278,6 +281,7 @@ void QGoTraceManualEditingWidget::SetCurrentColor(std::string iColorText)
 {
   this->m_SelectedColorComboBox->SetCurrentItem(iColorText);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -285,6 +289,7 @@ void QGoTraceManualEditingWidget::SetCurrentCollectionID(std::string iID)
 {
   this->m_CollectionColorComboBox->SetCurrentItem(iID);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -293,10 +298,10 @@ void QGoTraceManualEditingWidget::UpdateTraceAndCollection(
 {
   std::cout << iTrace << std::endl;
 
-  this->m_TraceName->setText(iTrace.c_str());
-  this->m_CollectionName->setText(iCollection.c_str());
+  this->m_TraceName->setText( iTrace.c_str() );
+  this->m_CollectionName->setText( iCollection.c_str() );
   //this->m_CollectionColorComboBox->SetTextToAdd(iCollection);
-  if (iTrace == "contour" || iTrace == "mesh")
+  if ( iTrace == "contour" || iTrace == "mesh" )
     {
     this->m_ChoseCellType->show();
     this->LabelCellType->show();
@@ -313,6 +318,7 @@ void QGoTraceManualEditingWidget::UpdateTraceAndCollection(
   // update visualization
   this->show();
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -320,14 +326,16 @@ std::string QGoTraceManualEditingWidget::GetTraceName()
 {
   return this->m_TraceName->text().toStdString();
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoTraceManualEditingWidget::AddANewCollectionID(
   ItemColorComboboxData iNewCollectionID)
 {
-  this->m_CollectionColorComboBox->AddItemWithColor(iNewCollectionID,true);
+  this->m_CollectionColorComboBox->AddItemWithColor(iNewCollectionID, true);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

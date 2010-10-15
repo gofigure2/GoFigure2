@@ -47,7 +47,7 @@
 #include "QGoIOConfigure.h"
 
 class QGOIO_EXPORT GoDBExport
-  {
+{
 public:
 
   GoDBExport(std::string iServerName, std::string iLogin,
@@ -71,7 +71,7 @@ public:
 private:
   //QGoExport( const QGoExport& );
   //QGoExport operator = ( const QGoExport& );
-  vtkMySQLDatabase* m_DatabaseConnector;
+  vtkMySQLDatabase *m_DatabaseConnector;
   std::string       m_ServerName;
   std::string       m_Password;
   std::string       m_Login;
@@ -79,19 +79,20 @@ private:
   std::fstream      m_outfile;
   std::string       m_NameDocXml;
 
-  std::vector<std::string> m_VectorContourIDs;
-  std::vector<std::string> m_VectorMeshIDs;
-  std::vector<std::string> m_VectorTrackIDs;
-  std::vector<std::string> m_VectorLineageIDs;
-  std::vector<std::string> m_VectorChannelIDs;
+  std::vector< std::string > m_VectorContourIDs;
+  std::vector< std::string > m_VectorMeshIDs;
+  std::vector< std::string > m_VectorTrackIDs;
+  std::vector< std::string > m_VectorLineageIDs;
+  std::vector< std::string > m_VectorChannelIDs;
 
   /** \brief return a vector of pair containing the name of the info as .first
   and the info as .second. for Imagingsession such as Name, creation date and
   microscope name*/
-  std::vector<std::pair<std::string, std::string> > GetImagingSessionInfoFromDB();
+  std::vector< std::pair< std::string, std::string > > GetImagingSessionInfoFromDB();
+
   /** \brief return a pair containing as .first the iNameInfo and as.second the
   corresponding info found in the Database for the table imagingsession*/
-  std::pair<std::string, std::string> GetOneInfoFromDBForImgSession(
+  std::pair< std::string, std::string > GetOneInfoFromDBForImgSession(
     std::string iNameInfo);
 
   /** \brief Write the generale info about the textfile*/
@@ -100,56 +101,60 @@ private:
   /** \brief get the info from the database for all the entities from a table or
   with a limitation defined with field and value and write them in the output file
   after having written first the number of entities to be described*/
-  template<typename T>
+  template< typename T >
   void WriteTableInfoFromDB(std::string field, std::string value)
   {
-    T                        TableRow;
-    std::vector<std::string> ListTableIDs = ListSpecificValuesForOneColumn(
+    T TableRow;
+
+    std::vector< std::string > ListTableIDs = ListSpecificValuesForOneColumn(
       this->m_DatabaseConnector, TableRow.GetTableName(),
       TableRow.GetTableIDName(), field, value);
-    std::vector<std::string>::iterator iter = ListTableIDs.begin();
-    while (iter != ListTableIDs.end())
+    std::vector< std::string >::iterator iter = ListTableIDs.begin();
+    while ( iter != ListTableIDs.end() )
       {
-      std::vector<std::pair<std::string, std::string> > EntityInfo =
+      std::vector< std::pair< std::string, std::string > > EntityInfo =
         this->GetOneEntityInfoFromDB(*iter, TableRow);
       this->WriteOnTheOutputFile(TableRow.GetTableName(), EntityInfo);
       iter++;
       }
   }
+
   /** \brief get the info from the database for all the entities from a table
   which IDs are in iListIDs and write them in the output file*/
-  template<typename T>
-  void WriteTableInfoFromDB(std::vector<std::string> iListIDs)
+  template< typename T >
+  void WriteTableInfoFromDB(std::vector< std::string > iListIDs)
   {
     T TableRow;
-    if (iListIDs.empty())
+
+    if ( iListIDs.empty() )
       {
       this->WriteNumberOfEntities(TableRow.GetTableName(), 0);
       return;
       }
-    this->WriteNumberOfEntities(TableRow.GetTableName(), iListIDs.size());
-    std::vector<std::string>::iterator iter = iListIDs.begin();
-    while (iter != iListIDs.end())
+    this->WriteNumberOfEntities( TableRow.GetTableName(), iListIDs.size() );
+    std::vector< std::string >::iterator iter = iListIDs.begin();
+    while ( iter != iListIDs.end() )
       {
-      std::vector<std::pair<std::string, std::string> > EntityInfo =
+      std::vector< std::pair< std::string, std::string > > EntityInfo =
         this->GetOneEntityInfoFromDB(*iter, TableRow);
       this->WriteOnTheOutputFile(TableRow.GetTableName(), EntityInfo);
       iter++;
       }
   }
+
   /** \brief get the info with their names for an entity from the database
   and put them in a vector of pair of string (name of the info + value of the info)*/
-  template<typename T>
-  std::vector<std::pair<std::string, std::string> >
+  template< typename T >
+  std::vector< std::pair< std::string, std::string > >
   GetOneEntityInfoFromDB(std::string iEntityID, T iTableRow)
   {
-    std::vector<std::pair<std::string, std::string> > oEntityInfo;
-    iTableRow.SetValuesForSpecificID(atoi(iEntityID.c_str()), this->m_DatabaseConnector);
-    std::vector<std::string>           FieldNames = iTableRow.GetVectorColumnNames();
-    std::vector<std::string>::iterator iter = FieldNames.begin();
-    while (iter != FieldNames.end())
+    std::vector< std::pair< std::string, std::string > > oEntityInfo;
+    iTableRow.SetValuesForSpecificID(atoi( iEntityID.c_str() ), this->m_DatabaseConnector);
+    std::vector< std::string >           FieldNames = iTableRow.GetVectorColumnNames();
+    std::vector< std::string >::iterator iter = FieldNames.begin();
+    while ( iter != FieldNames.end() )
       {
-      std::pair<std::string, std::string> FieldInfo;
+      std::pair< std::string, std::string > FieldInfo;
       FieldInfo.first = *iter;
       FieldInfo.second = iTableRow.GetMapValue(*iter);
       oEntityInfo.push_back(FieldInfo);
@@ -162,9 +167,9 @@ private:
   depending if the vectors of IDs are empty or not: get the
   tables names, the key for the table and the tracesIDs*/
   void GetVectorsTableNamesTracesIDsAndFields(
-    std::vector<std::string>& ioVectorTableNames,
-    std::vector<std::vector<std::string> >& ioVectorTracesIDs,
-    std::vector<std::string>& ioVectorFields,
+    std::vector< std::string > & ioVectorTableNames,
+    std::vector< std::vector< std::string > > & ioVectorTracesIDs,
+    std::vector< std::string > & ioVectorFields,
     bool IncludeChannelIDs = false);
 
   /** \brief Get the celltype and subcelltype for the needed meshes from
@@ -253,7 +258,7 @@ private:
   /**\ brief write on the output file the info contained in the vector with
   the name of the entity they describe*/
   void WriteOnTheOutputFile(std::string iNameOfEntity,
-                            std::vector<std::pair<std::string, std::string> > iInfoToWrite);
+                            std::vector< std::pair< std::string, std::string > > iInfoToWrite);
 
   /** \brief write on the output file the number of entities that are exported*/
   void WriteNumberOfEntities(std::string iNameOfEntity, size_t iNumber);
@@ -262,7 +267,7 @@ private:
   void AddTabulation();
 
   void OpenDBConnection();
-  void CloseDBConnection();
 
-  };
+  void CloseDBConnection();
+};
 #endif

@@ -45,9 +45,9 @@
 #include "QGoTabImageView4D.h"
 #include "itkMegaCaptureImport.h"
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-  if (argc != 3)
+  if ( argc != 3 )
     {
     std::cerr << "qgotabimageview4d requires 2 arguments:" << std::endl;
     std::cerr << "1-filename(.jpg)" << std::endl;
@@ -61,47 +61,47 @@ int main(int argc, char** argv)
 
   typedef itk::MegaCaptureImport MegaCaptureImportType;
   MegaCaptureImportType::Pointer
-  importFileInfoList = MegaCaptureImportType::New();
+    importFileInfoList = MegaCaptureImportType::New();
   importFileInfoList->SetFileName(argv[1]);
   importFileInfoList->Update();
 
-  QGoTabImageView4D* tab = new QGoTabImageView4D;
-  tab->SetMegaCaptureFile(importFileInfoList->GetOutput(),
-                          GoFigure::PNG, importFileInfoList->GetHeaderFilename());
+  QGoTabImageView4D *tab = new QGoTabImageView4D;
+  tab->SetMegaCaptureFile( importFileInfoList->GetOutput(),
+                           GoFigure::PNG, importFileInfoList->GetHeaderFilename() );
   tab->Update();
   tab->show();
 
-  QMenuBar*             menubar = new QMenuBar;
-  std::vector<QAction*> action_vector = tab->ViewActions();
+  QMenuBar *               menubar = new QMenuBar;
+  std::vector< QAction * > action_vector = tab->ViewActions();
 
-  for (std::vector<QAction*>::iterator q_it = action_vector.begin();
-       q_it != action_vector.end();
-       q_it++)
+  for ( std::vector< QAction * >::iterator q_it = action_vector.begin();
+        q_it != action_vector.end();
+        q_it++ )
     {
     menubar->addAction(*q_it);
     }
   menubar->show();
 
-  QTimer* timer = new QTimer;
+  QTimer *timer = new QTimer;
   timer->setSingleShot(true);
-  QObject::connect(timer, SIGNAL(timeout()), tab, SLOT(close()));
-  QObject::connect(timer, SIGNAL(timeout()), menubar, SLOT(close()));
+  QObject::connect( timer, SIGNAL( timeout() ), tab, SLOT( close() ) );
+  QObject::connect( timer, SIGNAL( timeout() ), menubar, SLOT( close() ) );
 
-  std::list<std::pair<QGoDockWidgetStatus*, QDockWidget*> > dockwidget_list = tab->DockWidget();
+  std::list< std::pair< QGoDockWidgetStatus *, QDockWidget * > > dockwidget_list = tab->DockWidget();
 
-  for (std::list<std::pair<QGoDockWidgetStatus*, QDockWidget*> >::iterator
-       it = dockwidget_list.begin();
-       it != dockwidget_list.end();
-       it++)
+  for ( std::list< std::pair< QGoDockWidgetStatus *, QDockWidget * > >::iterator
+        it = dockwidget_list.begin();
+        it != dockwidget_list.end();
+        it++ )
     {
-    if (it->second)
+    if ( it->second )
       {
       it->second->show();
-      QObject::connect(timer, SIGNAL(timeout()), it->second, SLOT(close()));
+      QObject::connect( timer, SIGNAL( timeout() ), it->second, SLOT( close() ) );
       }
     }
 
-  if (atoi(argv[2]) == 1)
+  if ( atoi(argv[2]) == 1 )
     {
     timer->start(1000);
     }

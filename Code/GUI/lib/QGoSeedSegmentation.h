@@ -62,16 +62,16 @@ class QGoFilterShape;
  * \ingroup QGoSeed
  * \brief Class to create pre defined meshes
 */
-class QGOGUILIB_EXPORT QGoSeedSegmentation : public QGoSeedSegmentationBase
-  {
+class QGOGUILIB_EXPORT QGoSeedSegmentation:public QGoSeedSegmentationBase
+{
   Q_OBJECT
 public:
   /**
    * \brief Constructor
    */
-  explicit QGoSeedSegmentation(QObject* parentO = 0, QWidget * parentW = 0,
-                                    vtkPoints* seeds = 0,
-                                    std::vector<vtkImageData*>* iOriginalImage = 0);
+  explicit QGoSeedSegmentation(QObject *parentO = 0, QWidget *parentW = 0,
+                               vtkPoints *seeds = 0,
+                               std::vector< vtkImageData * > *iOriginalImage = 0);
 
   /**
    * \brief Destructor
@@ -82,7 +82,7 @@ public:
    * \brief Connect signals/slots to the segmentation dock widget
    * \param[in] iDockWidget Algorithm segmentation specific dock widget
    */
-  void ConnectSignals(QGoBaseAlgorithmSegmentationDockWidget* iDockWidget);
+  void ConnectSignals(QGoBaseAlgorithmSegmentationDockWidget *iDockWidget);
 
   /**
    * \brief Specify on which one the segmentation will be applied since the input
@@ -93,11 +93,10 @@ public:
   void SetChannel(int iChannel);
 
   // DOCKWIDGET
-  virtual QWidget* getDockWidget();
+  virtual QWidget * getDockWidget();
 
 public slots:
-
-  signals:
+signals:
   /**
    * \brief Signal to be send to the dockwidget to add channel to the channel
    * QComboBox
@@ -105,11 +104,14 @@ public slots:
    */
   void addChannel(QString);
 
-  void MeshCreated(vtkPolyData*);
-  void ContourCreated(vtkPolyData*);
+  void MeshCreated(vtkPolyData *);
+
+  void ContourCreated(vtkPolyData *);
+
   void ImageProcessed();
 
   void UpdateSeeds();
+
   void SegmentationFinished();
 
 private:
@@ -118,13 +120,13 @@ private:
    * Returns a vtkPolyData* representing the mesh.
    * \param[in] iOriginalImage Input 3D image resulted from segmentation.
    */
-  vtkPolyData*  ReconstructMesh(vtkImageData* iInputImage);
+  vtkPolyData *  ReconstructMesh(vtkImageData *iInputImage);
 
-  QGoBaseAlgorithmSegmentationDockWidget* m_BaseAlgorithmSegmentationDockWidget;
+  QGoBaseAlgorithmSegmentationDockWidget *m_BaseAlgorithmSegmentationDockWidget;
 
-  QGoFilterChanAndVes* m_LevelSet2Dfilter;
-  QGoFilterShape*      m_ShapeFilter;
+  QGoFilterChanAndVes *m_LevelSet2Dfilter;
+  QGoFilterShape *     m_ShapeFilter;
 
-  std::vector<vtkImageData*>*   m_OriginalImage;
-  };
+  std::vector< vtkImageData * > *m_OriginalImage;
+};
 #endif

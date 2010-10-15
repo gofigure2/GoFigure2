@@ -48,9 +48,9 @@
 
 #include "QGoImageView3D.h"
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-  if (argc != 3)
+  if ( argc != 3 )
     {
     std::cout << "Usage : qgoimageview3d(.exe) " << std::endl;
     std::cout << "1-file.mhd" << std::endl;
@@ -61,18 +61,18 @@ int main(int argc, char** argv)
   QCoreApplication::setOrganizationName("MegasonLab");
   QCoreApplication::setOrganizationDomain("http://gofigure2.sourceforge.net");
 
-  QGoImageView3D* viewer = new QGoImageView3D;
+  QGoImageView3D *viewer = new QGoImageView3D;
 
-  vtkSmartPointer<vtkMetaImageReader> reader =
-    vtkSmartPointer<vtkMetaImageReader>::New();
+  vtkSmartPointer< vtkMetaImageReader > reader =
+    vtkSmartPointer< vtkMetaImageReader >::New();
   reader->SetFileName(argv[1]);
   reader->Update();
 
-  vtkImageData* image = reader->GetOutput();
+  vtkImageData *image = reader->GetOutput();
 
-  QTimer* timer = new QTimer;
+  QTimer *timer = new QTimer;
   timer->setSingleShot(true);
-  QObject::connect(timer, SIGNAL(timeout()), viewer, SLOT(close()));
+  QObject::connect( timer, SIGNAL( timeout() ), viewer, SLOT( close() ) );
 
   viewer->SetImage(image);
   std::cout << viewer->GetImage() << std::endl;
@@ -110,16 +110,16 @@ int main(int argc, char** argv)
   viewer->EnableBoxWidget(true);
   viewer->EnableBoxWidget(false);
 
-  vtkPoints* points = viewer->GetAllSeeds();
+  vtkPoints *points = viewer->GetAllSeeds();
   points->Delete();
   viewer->ClearAllSeeds();
 
-  if (atoi(argv[2]) == 1)
+  if ( atoi(argv[2]) == 1 )
     {
     timer->start(1000);
 
     viewer->SetFullScreenView(1);
-    if (viewer->GetFullScreenView() != 1)
+    if ( viewer->GetFullScreenView() != 1 )
       {
       std::cerr << "viewer->GetFullScreenView() = " << viewer->GetFullScreenView();
       std::cerr << " != 1" << std::endl;
@@ -132,7 +132,7 @@ int main(int argc, char** argv)
       }
 
     viewer->SetFullScreenView(2);
-    if (viewer->GetFullScreenView() != 2)
+    if ( viewer->GetFullScreenView() != 2 )
       {
       std::cerr << "viewer->GetFullScreenView() = " << viewer->GetFullScreenView();
       std::cerr << " != 2" << std::endl;
@@ -144,7 +144,7 @@ int main(int argc, char** argv)
       }
 
     viewer->SetFullScreenView(3);
-    if (viewer->GetFullScreenView() != 3)
+    if ( viewer->GetFullScreenView() != 3 )
       {
       std::cerr << "viewer->GetFullScreenView() = " << viewer->GetFullScreenView();
       std::cerr << " != 3" << std::endl;
@@ -156,7 +156,7 @@ int main(int argc, char** argv)
       }
 
     viewer->SetFullScreenView(4);
-    if (viewer->GetFullScreenView() != 4)
+    if ( viewer->GetFullScreenView() != 4 )
       {
       std::cerr << "viewer->GetFullScreenView() = " << viewer->GetFullScreenView();
       std::cerr << " != 4" << std::endl;
@@ -168,7 +168,7 @@ int main(int argc, char** argv)
       }
 
     viewer->SetFullScreenView(0);
-    if (viewer->GetFullScreenView() != 0)
+    if ( viewer->GetFullScreenView() != 0 )
       {
       std::cerr << "viewer->GetFullScreenView() = " << viewer->GetFullScreenView();
       std::cerr << " != 0" << std::endl;
@@ -182,7 +182,7 @@ int main(int argc, char** argv)
     int slice = viewer->GetSliceViewXY();
     viewer->SetSliceViewXY(slice + 1);
 
-    if (viewer->GetSliceViewXY() != slice + 1)
+    if ( viewer->GetSliceViewXY() != slice + 1 )
       {
       std::cerr << "viewer->GetSliceViewXY() = " << viewer->GetSliceViewXY();
       std::cerr << " != slice + 1" << std::endl;
@@ -196,7 +196,7 @@ int main(int argc, char** argv)
     slice = viewer->GetSliceViewXZ();
     viewer->SetSliceViewXZ(slice - 1);
 
-    if (viewer->GetSliceViewXZ() != slice - 1)
+    if ( viewer->GetSliceViewXZ() != slice - 1 )
       {
       std::cerr << "viewer->GetSliceViewXZ() = " << viewer->GetSliceViewXZ();
       std::cerr << " != slice - 1" << std::endl;
@@ -210,7 +210,7 @@ int main(int argc, char** argv)
     slice = viewer->GetSliceViewYZ();
     viewer->SetSliceViewYZ(slice + 1);
 
-    if (viewer->GetSliceViewYZ() != slice + 1)
+    if ( viewer->GetSliceViewYZ() != slice + 1 )
       {
       std::cerr << "viewer->GetSliceViewYZ() = " << viewer->GetSliceViewYZ();
       std::cerr << " != slice + 1" << std::endl;
@@ -224,7 +224,7 @@ int main(int argc, char** argv)
     double r, g, b;
     viewer->SetBackgroundColor(0.5, 0.5, 0.5);
     viewer->GetBackgroundColor(r, g, b);
-    if (r != 0.5 || g != 0.5 || b != 0.5)
+    if ( r != 0.5 || g != 0.5 || b != 0.5 )
       {
       std::cerr << r << " " << g << " " << b << " != {0.5, 0.5, 0.5}" << std::endl;
       app.closeAllWindows();
@@ -236,7 +236,7 @@ int main(int argc, char** argv)
 
     viewer->SetBackgroundColor(0.1, 0.6, 0.7);
     viewer->GetBackgroundColor(r, g, b);
-    if (r != 0.1 || g != 0.6 || b != 0.7)
+    if ( r != 0.1 || g != 0.6 || b != 0.7 )
       {
       std::cerr << r << " " << g << " " << b << " != {0.1, 0.6, 0.7}" << std::endl;
       app.closeAllWindows();
@@ -247,7 +247,7 @@ int main(int argc, char** argv)
       }
     viewer->SetBackgroundColor(0., 0., 0.);
     viewer->GetBackgroundColor(r, g, b);
-    if (r != 0. || g != 0. || b != 0.)
+    if ( r != 0. || g != 0. || b != 0. )
       {
       std::cerr << r << " " << g << " " << b << " != {0., 0., 0.}" << std::endl;
       app.closeAllWindows();

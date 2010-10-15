@@ -44,18 +44,18 @@
 #include <QString>
 
 //--------------------------------------------------------------------------
-QDir FindPluginDirectory(const QString& iSubdir)
+QDir FindPluginDirectory(const QString & iSubdir)
 {
-  QDir dir = QDir(QApplication::applicationDirPath());
+  QDir dir = QDir( QApplication::applicationDirPath() );
 
-#if defined(Q_OS_WIN)
-  if ((dir.dirName().toLower() == "debug") ||
-      (dir.dirName().toLower() == "release"))
+#if defined( Q_OS_WIN )
+  if ( ( dir.dirName().toLower() == "debug" )
+       || ( dir.dirName().toLower() == "release" ) )
     {
     dir.cdUp();
     }
-#elif defined(Q_OS_MAC)
-  if (dir.dirName() == "MacOS")
+#elif defined( Q_OS_MAC )
+  if ( dir.dirName() == "MacOS" )
     {
     dir.cdUp();
     dir.cdUp();
@@ -63,7 +63,7 @@ QDir FindPluginDirectory(const QString& iSubdir)
     }
 #endif
 
-  if (dir.cd(iSubdir))
+  if ( dir.cd(iSubdir) )
     {
     return dir;
     }
@@ -72,7 +72,7 @@ QDir FindPluginDirectory(const QString& iSubdir)
     QString temp = iSubdir;
     temp.toUpper();
 
-    if (dir.cd(temp))
+    if ( dir.cd(temp) )
       {
       return dir;
       }
@@ -85,4 +85,5 @@ QDir FindPluginDirectory(const QString& iSubdir)
       }
     }
 }
+
 //--------------------------------------------------------------------------

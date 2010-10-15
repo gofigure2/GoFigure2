@@ -44,7 +44,7 @@
 
 int main(int argc, char *argv[])
 {
-  if (argc != 1)
+  if ( argc != 1 )
     {
     std::cerr << "QGoDBInitializationWizardTest don't need argument" << std::endl;
     return EXIT_FAILURE;
@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
   //Q_INIT_RESOURCE(qgocreatedb);
   QApplication app(argc, argv);
 
-  QGoDBInitializationWizard* wizard = new QGoDBInitializationWizard;
+  QGoDBInitializationWizard *wizard = new QGoDBInitializationWizard;
   wizard->show();
   wizard->exec();
 

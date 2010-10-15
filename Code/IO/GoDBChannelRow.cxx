@@ -40,10 +40,11 @@
 #include "GoDBChannelRow.h"
 #include "GoDBRecordSetHelper.h"
 
-GoDBChannelRow::GoDBChannelRow() : GoDBRow()
-  {
+GoDBChannelRow::GoDBChannelRow():GoDBRow()
+{
   this->InitializeMap();
-  }
+}
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -51,31 +52,34 @@ void GoDBChannelRow::InitializeMap()
 {
   this->m_TableName = "channel";
   this->m_TableIDName = "ChannelID";
-  this->m_MapRow["ChannelID"] = ConvertToString<int>(0);
+  this->m_MapRow["ChannelID"] = ConvertToString< int >(0);
   this->m_MapRow["Name"] = "";
-  this->m_MapRow["ImagingSessionID"] = ConvertToString<int>(0);
-  this->m_MapRow["ColorID"] = ConvertToString<int>(0);
-  this->m_MapRow["ChannelNumber"] = ConvertToString<int>(0);
-  this->m_MapRow["NumberOfBits"] = ConvertToString<int>(0);
+  this->m_MapRow["ImagingSessionID"] = ConvertToString< int >(0);
+  this->m_MapRow["ColorID"] = ConvertToString< int >(0);
+  this->m_MapRow["ChannelNumber"] = ConvertToString< int >(0);
+  this->m_MapRow["NumberOfBits"] = ConvertToString< int >(0);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int GoDBChannelRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
+int GoDBChannelRow::SaveInDB(vtkMySQLDatabase *DatabaseConnector)
 {
   int ChannelID = this->DoesThisChannelAlreadyExists(DatabaseConnector);
-  if (ChannelID == -1)
+
+  if ( ChannelID == -1 )
     {
-    ChannelID = AddOnlyOneNewObjectInTable<GoDBChannelRow>(
+    ChannelID = AddOnlyOneNewObjectInTable< GoDBChannelRow >(
       DatabaseConnector, "channel", *this, "ChannelID");
     }
   return ChannelID;
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 int GoDBChannelRow::DoesThisChannelAlreadyExists(
-  vtkMySQLDatabase* DatabaseConnector)
+  vtkMySQLDatabase *DatabaseConnector)
 {
   std::string ImagingSessionID = this->GetMapValue("ImagingSessionID");
   std::string ChannelNumber = this->GetMapValue("ChannelNumber");
@@ -85,6 +89,7 @@ int GoDBChannelRow::DoesThisChannelAlreadyExists(
   /** \todo Once we get the channel names from the megacapture file,
   the uniqueness of the channel can be ImagingSessionID + Name*/
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

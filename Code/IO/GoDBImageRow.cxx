@@ -41,28 +41,32 @@
 #include "GoDBRecordSetHelper.h"
 
 GoDBImageRow::GoDBImageRow()
-  {
+{
   this->InitializeMap();
-  }
+}
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void GoDBImageRow::InitializeMap()
 {
-  this->m_MapRow["ImageID"] = ConvertToString<int>(0);
-  this->m_MapRow["ImagingSessionID"] = ConvertToString<int>(0);
-  this->m_MapRow["CoordIDMin"] = ConvertToString<int>(0);
+  this->m_MapRow["ImageID"] = ConvertToString< int >(0);
+  this->m_MapRow["ImagingSessionID"] = ConvertToString< int >(0);
+  this->m_MapRow["CoordIDMin"] = ConvertToString< int >(0);
   this->m_MapRow["Filename"] = "";
-  this->m_MapRow["ChannelID"] = ConvertToString<int>(1); //\todo :change back to 0 or -1
+  this->m_MapRow["ChannelID"] = ConvertToString< int >(1); //\todo :change back
+                                                           // to 0 or -1
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int GoDBImageRow::SaveInDB(vtkMySQLDatabase* DatabaseConnector)
+int GoDBImageRow::SaveInDB(vtkMySQLDatabase *DatabaseConnector)
 {
-  return AddOnlyOneNewObjectInTable<GoDBImageRow>(DatabaseConnector,
-                                                  "image", *this, "ImageID");
+  return AddOnlyOneNewObjectInTable< GoDBImageRow >(DatabaseConnector,
+                                                    "image", *this, "ImageID");
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

@@ -52,86 +52,90 @@
 #include "ConvertToStringHelper.h"
 
 QGoDeleteFromListDialog::QGoDeleteFromListDialog
-                                   (std::vector<std::string> iVectorEntities,
-                                    QWidget* iParent,     
-                                    std::string iEntityName
-                                    ) : QDialog(iParent)
+  (std::vector< std::string > iVectorEntities,
+  QWidget *iParent,
+  std::string iEntityName
+  ):QDialog(iParent)
 {
   this->SetUpUi(iEntityName);
   this->SetItemsFromTheVector(iVectorEntities);
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QGoDeleteFromListDialog::QGoDeleteFromListDialog(
-  std::list<QGoDeleteFromListDialog::ItemColorComboboxData > iDataListWithColor,
-                        QWidget* iParent,
-                        std::string iEntityName
-                        ): QDialog(iParent)
+  std::list< QGoDeleteFromListDialog::ItemColorComboboxData > iDataListWithColor,
+  QWidget *iParent,
+  std::string iEntityName
+  ):QDialog(iParent)
 {
- this->SetUpUi(iEntityName);
- this->SetItemsInTheListWithColor(iDataListWithColor);
+  this->SetUpUi(iEntityName);
+  this->SetItemsInTheListWithColor(iDataListWithColor);
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QGoDeleteFromListDialog::~QGoDeleteFromListDialog()
-  {
-  }
+{}
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoDeleteFromListDialog::SetItemsFromTheVector(
-  std::vector<std::string> iVectorItems)
+  std::vector< std::string > iVectorItems)
 {
   for ( size_t i = 0; i < iVectorItems.size(); ++i )
     {
-    QListWidgetItem* item
-      = new QListWidgetItem(iVectorItems[i].c_str(), this->m_ListWidget);
-    (void) item;
+    QListWidgetItem *item =
+      new QListWidgetItem(iVectorItems[i].c_str(), this->m_ListWidget);
+    (void)item;
     }
 }
+
 //--------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoDeleteFromListDialog::SetItemsInTheListWithColor(
-  std::list<ItemColorComboboxData> iDataList)
+  std::list< ItemColorComboboxData > iDataList)
 {
-  std::list<ItemColorComboboxData>::iterator iter = iDataList.begin();
-  QPixmap  pix(12, 12);
-  QPainter painter(&pix);
-  QIcon Icon;
-  while (iter != iDataList.end())
+  std::list< ItemColorComboboxData >::iterator iter = iDataList.begin();
+  QPixmap                                      pix(12, 12);
+  QPainter                                     painter(&pix);
+  QIcon                                        Icon;
+  while ( iter != iDataList.end() )
     {
-    if (iter->second.isValid())
+    if ( iter->second.isValid() )
       {
       painter.setPen(Qt::gray);
-      painter.setBrush(QBrush(iter->second));
+      painter.setBrush( QBrush(iter->second) );
       painter.drawRect(0, 0, 12, 12);
       }
     Icon.addPixmap(pix);
-    QListWidgetItem* item
-      = new QListWidgetItem(Icon,iter->first.c_str(),this->m_ListWidget);
-    (void) item;
+    QListWidgetItem *item =
+      new QListWidgetItem(Icon, iter->first.c_str(), this->m_ListWidget);
+    (void)item;
     ++iter;
     }
 }
+
 //--------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoDeleteFromListDialog::SelectionValidation()
 {
-  QList<QListWidgetItem*> ListEntitiesToDeleteSelected =
+  QList< QListWidgetItem * > ListEntitiesToDeleteSelected =
     this->m_ListWidget->selectedItems();
-  if (!ListEntitiesToDeleteSelected.empty())
+  if ( !ListEntitiesToDeleteSelected.empty() )
     {
     QMessageBox msgBox;
     msgBox.setText(
       tr("Are you sure you want to delete these %1s ?")
-      .arg(this->m_EntityName.c_str()));
+      .arg( this->m_EntityName.c_str() ) );
     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     int r = msgBox.exec();
-    if (r == 16384)
+    if ( r == 16384 )
       {
       DeleteSelection(ListEntitiesToDeleteSelected);
       this->accept();
@@ -146,23 +150,25 @@ void QGoDeleteFromListDialog::SelectionValidation()
     QMessageBox msgBox;
     msgBox.setText(
       tr("Please select at least one %1.")
-      .arg(this->m_EntityName.c_str()));
+      .arg( this->m_EntityName.c_str() ) );
     msgBox.exec();
     }
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoDeleteFromListDialog::DeleteSelection(
-  QList<QListWidgetItem*> iListEntitiesToDelete)
+  QList< QListWidgetItem * > iListEntitiesToDelete)
 {
-  std::vector<std::string> VectorNamesToDelete;
-  for (int i = 0; i < iListEntitiesToDelete.size(); i++)
+  std::vector< std::string > VectorNamesToDelete;
+  for ( int i = 0; i < iListEntitiesToDelete.size(); i++ )
     {
-    VectorNamesToDelete.push_back(iListEntitiesToDelete.at(i)->text().toStdString());
+    VectorNamesToDelete.push_back( iListEntitiesToDelete.at(i)->text().toStdString() );
     }
-  emit ListEntitiesToDelete(VectorNamesToDelete) ;
+  emit ListEntitiesToDelete(VectorNamesToDelete);
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -172,16 +178,16 @@ void QGoDeleteFromListDialog::SetUpUi(std::string iEntityName)
   this->m_ListWidget = new QListWidget(this);
   this->m_ListWidget->setSelectionMode(QAbstractItemView::MultiSelection);
 
-  QDialogButtonBox* ButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok
+  QDialogButtonBox *ButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok
                                                      | QDialogButtonBox::Cancel);
 
-  QVBoxLayout* vlayout = new QVBoxLayout(this);
+  QVBoxLayout *vlayout = new QVBoxLayout(this);
   vlayout->addWidget(this->m_ListWidget);
   vlayout->addWidget(ButtonBox);
-  this->setWindowTitle(tr("Delete a %1").arg(this->m_EntityName.c_str()));
+  this->setWindowTitle( tr("Delete a %1").arg( this->m_EntityName.c_str() ) );
   this->setLayout(vlayout);
-  
-  QObject::connect(ButtonBox, SIGNAL(rejected()), this, SLOT(reject()));
-  QObject::connect(ButtonBox, SIGNAL(rejected()), this, SIGNAL(CancelRequested()));
-  QObject::connect(ButtonBox, SIGNAL(accepted()), this, SLOT(SelectionValidation()));
+
+  QObject::connect( ButtonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
+  QObject::connect( ButtonBox, SIGNAL( rejected() ), this, SIGNAL( CancelRequested() ) );
+  QObject::connect( ButtonBox, SIGNAL( accepted() ), this, SLOT( SelectionValidation() ) );
 }

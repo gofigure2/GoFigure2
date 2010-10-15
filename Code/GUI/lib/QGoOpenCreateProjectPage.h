@@ -52,17 +52,19 @@
 #include "vtkMySQLDatabase.h"
 #include "QTextEditChild.h"
 
-class QGoOpenCreateProjectPage : public QWizardPage
-  {
+class QGoOpenCreateProjectPage:public QWizardPage
+{
   Q_OBJECT
-
 public:
   QGoOpenCreateProjectPage(QWidget *parent = 0);
-  mutable vtkMySQLDatabase * m_DatabaseConnector;
+  mutable vtkMySQLDatabase *m_DatabaseConnector;
 
   void initializePage();
+
   bool validatePage();
+
   void cleanupPage();
+
   int nextId() const;
 
 private:
@@ -94,26 +96,25 @@ private:
   void BackFromNextPage() const;
 
   std::string     m_DatabaseVersion;
-  QLabel*         textNewProjectName;
-  QLineEdit*      lineNewProjectName;
-  QLabel*         textDescription;
-  QTextEditChild* lineDescription;
-  QLabel*         textChoiceProject;
-  QComboBox*      ChoiceProject;
-  QLabel*         textChoiceAuthor;
-  QPushButton*    NewAuthorButton;
-  QComboBox*      ChoiceAuthor;
-  QLabel*         textAuthor;
-  QLineEdit*      lineAuthor;
+  QLabel *        textNewProjectName;
+  QLineEdit *     lineNewProjectName;
+  QLabel *        textDescription;
+  QTextEditChild *lineDescription;
+  QLabel *        textChoiceProject;
+  QComboBox *     ChoiceProject;
+  QLabel *        textChoiceAuthor;
+  QPushButton *   NewAuthorButton;
+  QComboBox *     ChoiceAuthor;
+  QLabel *        textAuthor;
+  QLineEdit *     lineAuthor;
   QString         OpenOrCreateProject;
-  QRadioButton*   OpenProjectRadioButton;
-  QRadioButton*   CreateProjectRadioButton;
+  QRadioButton *  OpenProjectRadioButton;
+  QRadioButton *  CreateProjectRadioButton;
 
-  mutable QStringList m_ListProject;
-  std::map<std::string, int> m_MapAuthorIDName;
-  bool                       ExistingImgSession;
-  mutable bool LeavingPage;
-
+  mutable QStringList          m_ListProject;
+  std::map< std::string, int > m_MapAuthorIDName;
+  bool                         ExistingImgSession;
+  mutable bool                 LeavingPage;
 protected slots:
   /** \brief  hides/shows the related QLabel,QLineEdit...and enables
   the fields where the user has to enter information to create a project*/
@@ -127,7 +128,7 @@ protected slots:
   void DisplayInfoProject(QString ProjectName);
 
   void AddAuthors();
-  void UpdateListAuthors();
 
-  };
+  void UpdateListAuthors();
+};
 #endif

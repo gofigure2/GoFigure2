@@ -31,7 +31,7 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
  =========================================================================*/
- 
+
 #ifndef __vtkViewImage3DCommand_h
 #define __vtkViewImage3DCommand_h
 
@@ -48,17 +48,16 @@ class vtkOrientedBoxWidget;
  * \ingroup MegaVTK
  * \brief Manage events occuring in 3D view
  */
-class VTK_RENDERINGADDON2_EXPORT vtkViewImage3DCommand :
+class VTK_RENDERINGADDON2_EXPORT vtkViewImage3DCommand:
   public vtkCommand
-  {
+{
 public:
 
-  static vtkViewImage3DCommand* New();
+  static vtkViewImage3DCommand * New();
 
   //BTX
-  enum EventIds
-    {
-    SliceMoveEvent = (vtkCommand::UserEvent + 1),
+  enum EventIds {
+    SliceMoveEvent = ( vtkCommand::UserEvent + 1 ),
     StartSliceMoveEvent,
     EndSliceMoveEvent,
     ZoomEvent,
@@ -88,21 +87,20 @@ public:
    * \brief Set the 3d image related to this 3d event manager
    * \param[in] vtkViewImage3D Target 3D image
    */
-  void SetVtkImageView3D(vtkViewImage3D* vtkViewImage3D);
+  void SetVtkImageView3D(vtkViewImage3D *vtkViewImage3D);
 
-  void SetPlaneWidget(vtkImplicitPlaneWidget* test);
+  void SetPlaneWidget(vtkImplicitPlaneWidget *test);
 
-  void SetBoxWidget(vtkOrientedBoxWidget* test);
+  void SetBoxWidget(vtkOrientedBoxWidget *test);
 
 protected:
 
   vtkViewImage3DCommand();
   ~vtkViewImage3DCommand();
-
 private:
-  vtkViewImage3D*            m_vtkViewImage3D;
-  vtkImplicitPlaneWidget*    m_PlaneWidget;
-  vtkOrientedBoxWidget*      m_BoxWidget;
-  };
+  vtkViewImage3D *        m_vtkViewImage3D;
+  vtkImplicitPlaneWidget *m_PlaneWidget;
+  vtkOrientedBoxWidget *  m_BoxWidget;
+};
 
 #endif

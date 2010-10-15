@@ -47,23 +47,23 @@
 /**
  * \class QGoFilterChanAndVes
  */
-class QGOGUILIB_EXPORT QGoFilterWatershed : public QGoFilterSemiAutoBase
+class QGOGUILIB_EXPORT QGoFilterWatershed:public QGoFilterSemiAutoBase
 {
   Q_OBJECT
 public:
   /** \brief Constructor */
-  explicit QGoFilterWatershed( QObject* iParent = NULL, int iDimension = 2 );
+  explicit QGoFilterWatershed(QObject *iParent = NULL, int iDimension = 2);
 
   /** \brief Destructor */
   ~QGoFilterWatershed();
 
-  virtual vtkPolyData* Apply();
+  virtual vtkPolyData * Apply();
 
   virtual void ConnectSignals(int iFilterNumber);
 
 protected:
-  void Filter2D( double* iCenter, const int& iOrientation );
-  void Filter3D( double* iCenter );
+  void Filter2D(double *iCenter, const int & iOrientation);
 
+  void Filter3D(double *iCenter);
 };
 #endif
