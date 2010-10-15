@@ -57,10 +57,11 @@
 #define __vtkNormalEstimationFilter_h
 
 #include "vtkPolyDataAlgorithm.h"
+#include "PoissonReconstructionConfigure.h"
 
 struct SurfacePoint;
 
-class VTK_IMAGING_EXPORT vtkNormalEstimationFilter:public vtkPolyDataAlgorithm
+class PoissonReconstruction_EXPORT vtkNormalEstimationFilter:public vtkPolyDataAlgorithm
 {
 public:
   vtkTypeMacro(vtkNormalEstimationFilter, vtkPolyDataAlgorithm);
