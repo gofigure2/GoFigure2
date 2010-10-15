@@ -1299,7 +1299,6 @@ void QGoPrintDatabase::CreateNewMeshFromCheckedContours(
   std::list< unsigned int > iListCheckedContours)
 {
   this->OpenDBConnection();
-
   unsigned int NewMeshID =
     this->m_MeshesManager->CreateNewMeshWithNoContourNoPoints(
       this->m_DatabaseConnector, this->m_SelectedColorData,
@@ -1312,7 +1311,6 @@ void QGoPrintDatabase::CreateNewMeshFromCheckedContours(
 
   this->m_MeshGenerationMode = true;
   emit NewMeshToGenerate(iListCheckedContours, NewMeshID);
-
   this->CloseDBConnection();
 }
 

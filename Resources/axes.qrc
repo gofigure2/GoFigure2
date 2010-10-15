@@ -36,10 +36,9 @@
         <file>fig/EyeIcon.png</file>
         <file>fig/BlankIcon.png</file>
         <file>fig/algoOneClick.png</file>
-        <file>fig/contourOneClick.png</file>
-        <file>fig/contourManual.png</file>
         <file>fig/PlaneWidget.png</file>
         <file>fig/MeshEditing.png</file>
         <file>fig/ObjectPicking.png</file>
+        <file>fig/ContourEditing.png</file>
     </qresource>
 </RCC>

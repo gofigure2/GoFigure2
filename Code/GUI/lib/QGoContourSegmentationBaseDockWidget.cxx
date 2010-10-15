@@ -55,9 +55,10 @@ QGoContourSegmentationBaseDockWidget::QGoContourSegmentationBaseDockWidget(
   this->setWindowTitle( QString::fromUtf8("Contour Segmentation") );
 
   QIcon ContourSegmentationIcon;
-  ContourSegmentationIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/contourManual.png") ),
+  ContourSegmentationIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/ContourEditing.png") ),
                                     QIcon::Normal, QIcon::Off);
   this->toggleViewAction()->setIcon(ContourSegmentationIcon);
+  this->toggleViewAction()->setToolTip(tr("Contour Editing"));
 
   // update interactor behavior
   QObject::connect( this->mode, SIGNAL( activated(int) ),
