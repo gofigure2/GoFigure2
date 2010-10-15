@@ -1298,6 +1298,12 @@ void QGoPrintDatabase::CreateNewTrackFromCheckedMeshes(
 void QGoPrintDatabase::CreateNewMeshFromCheckedContours(
   std::list< unsigned int > iListCheckedContours)
 {
+  // make sure that there is a list
+  if(iListCheckedContours.empty())
+    {
+    return;
+    }
+
   this->OpenDBConnection();
 
   unsigned int NewMeshID =
