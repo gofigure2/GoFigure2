@@ -115,6 +115,7 @@ int main(int argc, char** argv)
 
   delete menubar;
   delete tab;
+  delete timer;
 
   return output;
 }
