@@ -222,7 +222,7 @@ void GoDBTWContainerForMesh::GetValuesToFillForIntensityFromQueryResults
     iterResult++;
     std::string Points = *iterResult;
     std::string IntensityValue;
-    if ( Points == "0" ) //if the mesh has no points, he has no intensity
+    if( ( Points == "0" ) || ( Points == "" ) )//if the mesh has no points, he has no intensity
       {
       IntensityValue = "";
       for ( unsigned int i = 0; i < this->m_ChannelsInfo.size(); i++ )
