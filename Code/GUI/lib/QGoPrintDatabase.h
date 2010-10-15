@@ -111,22 +111,22 @@ public:
   data from the database corresponding to iTimePoint and to the list
   of given IDs,if no list of IDs is given, will return the info for all
   the contours*/
-  ContourMeshStructureMultiIndexContainer *
-  GetContoursMultiIndexFromDBForAGivenTimePoint(
-    int iTimePoint, std::vector< int > iListIDs = std::vector< int >() );
+  // ContourMeshStructureMultiIndexContainer *
+  // GetContoursMultiIndexFromDBForAGivenTimePoint(
+  //  int iTimePoint, std::vector< int > iListIDs = std::vector< int >() );
 
   /** \brief return the meshes info for the visu with the data from
   the database corresponding to iTimePoint*/
-  ContourMeshStructureMultiIndexContainer * GetMeshesFromDBForAGivenTimePoint(
-    int iTimePoint);
+  // ContourMeshStructureMultiIndexContainer * GetMeshesFromDBForAGivenTimePoint(
+  //  int iTimePoint);
 
   /** \brief return the multi index container for the meshes with the
    data from the database corresponding to iTimePoint and to the list
    of given IDs,if no list of IDs is given, will return the info for all
    the meshes*/
-  ContourMeshStructureMultiIndexContainer *
-  GetMeshesMultiIndexFromDBForAGivenTimePoint( int iTimePoint,
-                                               std::vector< int > iListIDs = std::vector< int >() );
+  //ContourMeshStructureMultiIndexContainer *
+  //GetMeshesMultiIndexFromDBForAGivenTimePoint( int iTimePoint,
+  //                                             std::vector< int > iListIDs = std::vector< int >() );
 
   /** \brief Add the meshes in the trcaeinfoForvisu and return all the
   meshes data for the given timepoint, included the new ones*/
@@ -402,8 +402,8 @@ protected:
   std::list< ItemColorComboboxData > GetListCollectionIDFromDB(
     vtkMySQLDatabase *iDatabaseConnector);
 
-  std::vector< ContourMeshStructure > GetTracesForAGivenTimepoint(
-    ContourMeshStructureMultiIndexContainer iAllTraces, unsigned int iTimePoint);
+  //std::vector< ContourMeshStructure > GetTracesForAGivenTimepoint(
+  //  ContourMeshStructureMultiIndexContainer iAllTraces, unsigned int iTimePoint);
 
   void closeEvent(QCloseEvent *event);
 

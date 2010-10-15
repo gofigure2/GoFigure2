@@ -48,9 +48,11 @@
 #include "GoDBTraceInfoForVisu.h"
 #include "GoDBTraceInfoForTableWidget.h"
 #include "GoDBTableWidgetContainer.h"
-#include "ContourMeshStructureHelper.h"
 #include "QGoGUILibConfigure.h"
 #include "GoDBCoordinateRow.h"
+
+/// \todo definitively remove this include
+//#include "ContourMeshStructureHelper.h"
 
 /**
 \class QGoTableWidget

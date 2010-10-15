@@ -431,6 +431,7 @@ unsigned int QGoPrintDatabase::SaveNewContourForMeshToContours(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/*
 std::vector< ContourMeshStructure > QGoPrintDatabase::GetTracesForAGivenTimepoint(
   ContourMeshStructureMultiIndexContainer iAllTraces,
   unsigned int iTimePoint)
@@ -448,7 +449,7 @@ std::vector< ContourMeshStructure > QGoPrintDatabase::GetTracesForAGivenTimepoin
     }
   return SelectedTraces;
 }
-
+*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

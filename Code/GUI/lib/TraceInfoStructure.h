@@ -43,7 +43,7 @@
 
 #include "QGoTableWidget.h"
 #include "GoDBCollectionOfTraces.h"
-#include "ContourMeshStructureHelper.h"
+// #include "ContourMeshStructureHelper.h"
 #include <QWidget>
 
 struct TraceInfoStructure {
@@ -55,14 +55,14 @@ struct TraceInfoStructure {
   std::string CollectionOfID;
   QGoTableWidget *Table;
   GoDBCollectionOfTraces *CollectionOfTraces;
-  ContourMeshStructureMultiIndexContainer *ListTracesInfoForVisu;
+  // ContourMeshStructureMultiIndexContainer *ListTracesInfoForVisu;
 
-  TraceInfoStructure():CollectionOfTraces(NULL),
-    ListTracesInfoForVisu(NULL)
+  TraceInfoStructure():CollectionOfTraces(NULL)//,
+  //  ListTracesInfoForVisu(NULL)
   {}
 
   TraceInfoStructure(const std::string & iTraceName, QWidget *parent):
-    CollectionOfTraces(NULL), ListTracesInfoForVisu(NULL)
+    CollectionOfTraces(NULL)//, ListTracesInfoForVisu(NULL)
   {
     SetInfoStructure(iTraceName, parent);
   }
@@ -74,10 +74,11 @@ struct TraceInfoStructure {
       {
       delete Table;
       }
+    /*
     if ( ListTracesInfoForVisu )
       {
       delete ListTracesInfoForVisu;
-      }
+      }*/
     if ( CollectionOfTraces )
       {
       delete CollectionOfTraces;
