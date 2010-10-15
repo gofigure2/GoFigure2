@@ -30,7 +30,6 @@
         <file>fig/seedIcon.png</file>
         <file>fig/navigation.png</file>
         <file>fig/ContourPicking.png</file>
-        <file>fig/MeshPicking.png</file>
         <file>fig/Distance.png</file>
         <file>fig/Angle.png</file>
         <file>fig/Box3DPicking.png</file>
@@ -38,8 +37,9 @@
         <file>fig/BlankIcon.png</file>
         <file>fig/algoOneClick.png</file>
         <file>fig/contourOneClick.png</file>
-        <file>fig/meshOneClick.png</file>
         <file>fig/contourManual.png</file>
         <file>fig/PlaneWidget.png</file>
+        <file>fig/MeshEditing.png</file>
+        <file>fig/ObjectPicking.png</file>
     </qresource>
 </RCC>

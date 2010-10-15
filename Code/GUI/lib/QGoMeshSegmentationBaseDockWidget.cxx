@@ -53,10 +53,10 @@ QGoMeshSegmentationBaseDockWidget::QGoMeshSegmentationBaseDockWidget(QWidget *iP
   this->setWindowTitle( QString::fromUtf8("Mesh Segmentation") );
 
   QIcon MeshSegmentationIcon;
-  MeshSegmentationIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/meshOneClick.png") ),
-                                 QIcon::Normal, QIcon::Off);
-  //MeshSegmentationIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/MeshEditingWidget.png")),
-  //                          QIcon::Normal, QIcon::Off);
+  //MeshSegmentationIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/meshOneClick.png")),
+    //                          QIcon::Normal, QIcon::Off);
+  MeshSegmentationIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/MeshEditing.png")),
+                              QIcon::Normal, QIcon::Off);
 
   this->toggleViewAction()->setIcon(MeshSegmentationIcon);
   this->toggleViewAction()->setToolTip( tr("Mesh Editing") );

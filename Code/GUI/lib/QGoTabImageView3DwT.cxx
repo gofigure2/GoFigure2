@@ -1003,9 +1003,10 @@ void QGoTabImageView3DwT::CreateModeActions()
   ActorPickingAction->setChecked(false);
 
   QIcon ActorPickingIcon;
-  ActorPickingIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/MeshPicking.png") ),
-                             QIcon::Normal, QIcon::Off);
+  ActorPickingIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/ObjectPicking.png")),
+                               QIcon::Normal, QIcon::Off);
   ActorPickingAction->setIcon(ActorPickingIcon);
+  ActorPickingAction->setToolTip(tr("Object Picking"));
 
   group->addAction(ActorPickingAction);
 
