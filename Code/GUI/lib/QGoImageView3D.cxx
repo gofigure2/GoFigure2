@@ -268,18 +268,18 @@ QGoImageView3D::retranslateUi(QWidget *iParent)
 void
 QGoImageView3D::Update()
 {
-  vtkViewImage2D *View1 = this->m_Pool->GetItem(0);
+  int extent[6];
+  this->m_Image->GetExtent( extent );
 
+  vtkViewImage2D *View1 = this->m_Pool->GetItem(0);
   View1->SetInput(this->m_Image);
 
   this->m_View3D->Add2DPhantom( 0,
                                 View1->GetImageActor(),
                                 View1->GetSlicePlane() );
 
-  int *range = View1->GetSliceRange();
-
-  this->SliderXY->setMinimum(range[0]);
-  this->SliderXY->setMaximum(range[1]);
+  this->SliderXY->setMinimum(extent[0]);
+  this->SliderXY->setMaximum(extent[1]);
 
   vtkViewImage2D *View2 = this->m_Pool->GetItem(1);
   View2->SetInput(this->m_Image);
@@ -288,10 +288,8 @@ QGoImageView3D::Update()
                                 View2->GetImageActor(),
                                 View2->GetSlicePlane() );
 
-  range = View2->GetSliceRange();
-
-  this->SliderXZ->setMinimum(range[0]);
-  this->SliderXZ->setMaximum(range[1]);
+  this->SliderXZ->setMinimum(extent[2]);
+  this->SliderXZ->setMaximum(extent[3]);
 
   vtkViewImage2D *View3 = this->m_Pool->GetItem(2);
   View3->SetInput(this->m_Image);
@@ -300,9 +298,8 @@ QGoImageView3D::Update()
                                 View3->GetImageActor(),
                                 View3->GetSlicePlane() );
 
-  range = View3->GetSliceRange();
-  this->SliderYZ->setMinimum(range[0]);
-  this->SliderYZ->setMaximum(range[1]);
+  this->SliderYZ->setMinimum(extent[4]);
+  this->SliderYZ->setMaximum(extent[5]);
 
   this->m_View3D->SetInput(this->m_Image);
 
