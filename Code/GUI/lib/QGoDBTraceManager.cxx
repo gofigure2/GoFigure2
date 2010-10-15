@@ -547,8 +547,19 @@ void QGoDBTraceManager::GoToTheTrace()
 //-------------------------------------------------------------------------
 void QGoDBTraceManager::CreateCorrespondingCollection()
 {
-  emit NewCollectionFromCheckedTraces(
-    this->m_TraceContainerInfoForVisu->GetHighlightedElementsTraceID() );
+  std::list<unsigned int > ListCheckedTraces =
+      this->m_TraceContainerInfoForVisu->GetHighlightedElementsTraceID();
+  if ( ListCheckedTraces.size() != 1 )
+    {
+    QMessageBox msgBox;
+    msgBox.setText(
+      tr("Please select at least one %1 to create the %2")
+      .arg( this->m_TraceName.c_str() )
+      .arg( this->m_CollectionName.c_str()) );
+    msgBox.exec();
+    return;
+    }
+  emit NewCollectionFromCheckedTraces(ListCheckedTraces);
 }
 
 //-------------------------------------------------------------------------
