@@ -273,6 +273,7 @@ QGoImageView3D::Update()
 
   vtkViewImage2D *View1 = this->m_Pool->GetItem(0);
   View1->SetInput(this->m_Image);
+  View1->UpdateWindowLevelObservers();
 
   this->m_View3D->Add2DPhantom( 0,
                                 View1->GetImageActor(),
@@ -283,6 +284,7 @@ QGoImageView3D::Update()
 
   vtkViewImage2D *View2 = this->m_Pool->GetItem(1);
   View2->SetInput(this->m_Image);
+  View2->UpdateWindowLevelObservers();
 
   this->m_View3D->Add2DPhantom( 1,
                                 View2->GetImageActor(),
@@ -293,6 +295,7 @@ QGoImageView3D::Update()
 
   vtkViewImage2D *View3 = this->m_Pool->GetItem(2);
   View3->SetInput(this->m_Image);
+  View3->UpdateWindowLevelObservers();
 
   this->m_View3D->Add2DPhantom( 2,
                                 View3->GetImageActor(),
@@ -309,6 +312,8 @@ QGoImageView3D::Update()
     }
   else
     {
+    this->m_Pool->UpdateWindowLevelObservers();
+    this->m_Pool->SyncSetShowScalarBar(false);
     this->m_Pool->SyncRender();
     }
   QGoImageView::Update();
