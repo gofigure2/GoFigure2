@@ -278,8 +278,10 @@ QGoImageView3D::Update()
                                 View1->GetImageActor(),
                                 View1->GetSlicePlane() );
 
-  this->SliderXY->setMinimum(extent[0]);
-  this->SliderXY->setMaximum(extent[1]);
+  std::cout << "xy: " << extent[0] << " to " << extent[1] << std::endl;
+
+  this->SliderXY->setMinimum(extent[4]);
+  this->SliderXY->setMaximum(extent[5]);
 
   vtkViewImage2D *View2 = this->m_Pool->GetItem(1);
   View2->SetInput(this->m_Image);
@@ -287,6 +289,9 @@ QGoImageView3D::Update()
   this->m_View3D->Add2DPhantom( 1,
                                 View2->GetImageActor(),
                                 View2->GetSlicePlane() );
+
+
+  std::cout << "xz: " << extent[2] << " to " << extent[3] << std::endl;
 
   this->SliderXZ->setMinimum(extent[2]);
   this->SliderXZ->setMaximum(extent[3]);
@@ -298,8 +303,10 @@ QGoImageView3D::Update()
                                 View3->GetImageActor(),
                                 View3->GetSlicePlane() );
 
-  this->SliderYZ->setMinimum(extent[4]);
-  this->SliderYZ->setMaximum(extent[5]);
+  std::cout << "yz: " << extent[4] << " to " << extent[5] << std::endl;
+
+  this->SliderYZ->setMinimum(extent[0]);
+  this->SliderYZ->setMaximum(extent[1]);
 
   this->m_View3D->SetInput(this->m_Image);
 
