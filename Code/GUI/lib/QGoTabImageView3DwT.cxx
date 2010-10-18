@@ -521,17 +521,26 @@ QGoTabImageView3DwT::CreateVisuDockWidget()
   QObject::connect( m_NavigationDockWidget, SIGNAL( XSliceChanged(int) ),
                     this, SLOT( SetSliceViewYZ(int) ) );
 
+  QObject::connect( m_NavigationDockWidget, SIGNAL( XSliceChanged(int) ),
+                    this, SIGNAL( SliceXChanged(int) ) );
+
   QObject::connect( this, SIGNAL( SliceViewYZChanged(int) ),
                     m_NavigationDockWidget, SLOT( SetXSlice(int) ) );
 
   QObject::connect( m_NavigationDockWidget, SIGNAL( YSliceChanged(int) ),
                     this, SLOT( SetSliceViewXZ(int) ) );
 
+  QObject::connect( m_NavigationDockWidget, SIGNAL( YSliceChanged(int) ),
+                    this, SIGNAL( SliceYChanged(int) ) );
+
   QObject::connect( this, SIGNAL( SliceViewXZChanged(int) ),
                     m_NavigationDockWidget, SLOT( SetYSlice(int) ) );
 
   QObject::connect( m_NavigationDockWidget, SIGNAL( ZSliceChanged(int) ),
                     this, SLOT( SetSliceViewXY(int) ) );
+
+  QObject::connect( m_NavigationDockWidget, SIGNAL( ZSliceChanged(int) ),
+                    this, SIGNAL( SliceZChanged(int) ) );
 
   QObject::connect( this, SIGNAL( SliceViewXYChanged(int) ),
                     m_NavigationDockWidget, SLOT( SetZSlice(int) ) );

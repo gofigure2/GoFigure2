@@ -760,6 +760,7 @@ QGoImageView3D::SetSliceViewXY(const int & iSlice)
       {
       this->m_Pool->GetItem(0)->SetSlice(iSlice);
       this->m_Pool->SyncRender();
+      this->SliderXY->setValue(iSlice);
       emit SliceViewXYChanged(iSlice);
       }
     }
@@ -788,6 +789,7 @@ QGoImageView3D::SetSliceViewXZ(const int & iSlice)
       {
       this->m_Pool->GetItem(1)->SetSlice(iSlice);
       this->m_Pool->SyncRender();
+      this->SliderXZ->setValue(iSlice);
       emit SliceViewXZChanged(iSlice);
       }
     }
@@ -816,6 +818,7 @@ QGoImageView3D::SetSliceViewYZ(const int & iSlice)
       {
       this->m_Pool->GetItem(2)->SetSlice(iSlice);
       this->m_Pool->SyncRender();
+      this->SliderYZ->setValue(iSlice);
       emit SliceViewYZChanged(iSlice);
       }
     }
