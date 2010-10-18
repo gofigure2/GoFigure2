@@ -341,6 +341,7 @@ vtkViewImage2D::SetCameraToConvention(void)
 
   double                  conventionview[4];
   double                  focaltoposition[3];
+  double                  abs_focaltoposition[3];
   std::vector< double * > viewupchoices;
   double                  first[3], second[3], third[3], fourth[3];
 
@@ -372,6 +373,7 @@ vtkViewImage2D::SetCameraToConvention(void)
   for ( i = 0; i < 3; i++ )
     {
     focaltoposition[i] = position[i] - focalpoint[i];
+    abs_focaltoposition[i] = fabs( focaltoposition[i] );
     }
 
   // Deal with the position :
@@ -444,7 +446,7 @@ vtkViewImage2D::SetCameraToConvention(void)
   cam->SetFocalPoint(focalpoint[0], focalpoint[1], focalpoint[2]);
   cam->SetViewUp(viewup[0], viewup[1], viewup[2]);
 
-  this->SliceImplicitPlane->SetNormal(focaltoposition);
+  this->SliceImplicitPlane->SetNormal(abs_focaltoposition);
 
   double view_plane_normal[3];
   cam->GetViewPlaneNormal(view_plane_normal);
@@ -1380,7 +1382,7 @@ vtkViewImage2D::SetImplicitPlaneFromOrientation(void)
   // Compute the vector perpendicular to the view
   for ( i = 0; i < 3; i++ )
     {
-    focaltoposition[i] = position[i] - focalpoint[i];
+    focaltoposition[i] = fabs( position[i] - focalpoint[i] );
     }
 
   this->SliceImplicitPlane->SetNormal (focaltoposition);
