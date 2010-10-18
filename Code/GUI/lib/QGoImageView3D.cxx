@@ -273,7 +273,6 @@ QGoImageView3D::Update()
 
   vtkViewImage2D *View1 = this->m_Pool->GetItem(0);
   View1->SetInput(this->m_Image);
-  View1->UpdateWindowLevelObservers();
 
   this->m_View3D->Add2DPhantom( 0,
                                 View1->GetImageActor(),
@@ -284,7 +283,6 @@ QGoImageView3D::Update()
 
   vtkViewImage2D *View2 = this->m_Pool->GetItem(1);
   View2->SetInput(this->m_Image);
-  View2->UpdateWindowLevelObservers();
 
   this->m_View3D->Add2DPhantom( 1,
                                 View2->GetImageActor(),
@@ -295,7 +293,6 @@ QGoImageView3D::Update()
 
   vtkViewImage2D *View3 = this->m_Pool->GetItem(2);
   View3->SetInput(this->m_Image);
-  View3->UpdateWindowLevelObservers();
 
   this->m_View3D->Add2DPhantom( 2,
                                 View3->GetImageActor(),
@@ -312,8 +309,6 @@ QGoImageView3D::Update()
     }
   else
     {
-    this->m_Pool->UpdateWindowLevelObservers();
-    this->m_Pool->SyncSetShowScalarBar(false);
     this->m_Pool->SyncRender();
     }
   QGoImageView::Update();
@@ -329,17 +324,14 @@ QGoImageView3D::UpdateOnFirstRender()
 
   View1->SetViewOrientation(vtkViewImage2D::VIEW_ORIENTATION_AXIAL);
   View1->SetViewConvention(vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL);
-  View1->UpdateWindowLevelObservers();
 
   vtkViewImage2D *View2 = this->m_Pool->GetItem(1);
   View2->SetViewConvention(vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL);
   View2->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_CORONAL);
-  View2->UpdateWindowLevelObservers();
 
   vtkViewImage2D *View3 = this->m_Pool->GetItem(2);
   View3->SetViewConvention(vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL);
   View3->SetViewOrientation(vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL);
-  View3->UpdateWindowLevelObservers();
 
   this->m_View3D->SetVolumeRenderingOff();
   this->m_View3D->SetTriPlanarRenderingOn();
@@ -362,9 +354,6 @@ QGoImageView3D::UpdateOnFirstRender()
     this->m_Pool->GetItem(i)->GetTextProperty()->SetFontFamilyToArial();
     this->m_Pool->GetItem(i)->GetTextProperty()->SetFontSize(14);
     }
-
-  this->m_Pool->UpdateWindowLevelObservers();
-  this->m_Pool->SyncSetShowScalarBar(false);
 
   this->m_Pool->SyncReset();
   this->m_Pool->InitializeAllObservers();

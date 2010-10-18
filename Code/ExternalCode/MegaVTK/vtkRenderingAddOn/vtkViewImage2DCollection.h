@@ -355,11 +355,6 @@ public:
   void SetSplinePlaneActorsVisibility(bool iVisibility);
 
   vtkstd::vector< vtkActor * > SlicePlaneActors;
-  /**
-   * \brief Update the Window Level Observers according to the color of the number
-   *  of channels of the current image.
-   */
-  void UpdateWindowLevelObservers();
 
   /**
    * \brief Change Interaction mode of the collection to DefaultMode()

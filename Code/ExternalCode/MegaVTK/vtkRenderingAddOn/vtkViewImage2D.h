@@ -431,10 +431,6 @@ public:
       }
   }
 */
-/**
- *
- */
-  void UpdateWindowLevelObservers();
 
 protected:
 

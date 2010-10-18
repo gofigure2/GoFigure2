@@ -182,6 +182,7 @@ private:
                                                                 // implemented.
 
   unsigned int m_Mode;
+  bool         m_LeftButtonDown;
 };
 
 #endif

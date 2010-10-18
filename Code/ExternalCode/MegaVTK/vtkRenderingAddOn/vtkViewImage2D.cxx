@@ -862,6 +862,12 @@ vtkViewImage2D::InstallPipeline()
         vtkViewImage2DCommand::ContourPickingEvent, this->Command);
       this->InteractorStyle->AddObserver(
         vtkViewImage2DCommand::MeshPickingEvent, this->Command);
+
+      this->InteractorStyle->AddObserver(
+        vtkCommand::StartWindowLevelEvent, this->Command);
+      this->InteractorStyle->AddObserver(
+        vtkCommand::WindowLevelEvent, this->Command);
+
       }
     this->InteractorStyleSwitcher = this->InteractorStyle;
     this->Interactor->SetInteractorStyle(this->InteractorStyle);
@@ -879,35 +885,6 @@ vtkViewImage2D::InstallPipeline()
   if ( this->ImageActor && this->WindowLevel )
     {
     this->ImageActor->SetInput( this->WindowLevel->GetOutput() );
-    }
-}
-
-//----------------------------------------------------------------------------
-void
-vtkViewImage2D::UpdateWindowLevelObservers()
-{
-  if ( this->Interactor )
-    {
-    if ( !this->IsColor )
-      {
-      if ( !this->InteractorStyle->HasObserver (
-             vtkCommand::WindowLevelEvent, this->Command) )
-        {
-        this->InteractorStyle->AddObserver(
-          vtkCommand::StartWindowLevelEvent, this->Command);
-        this->InteractorStyle->AddObserver(
-          vtkCommand::WindowLevelEvent, this->Command);
-        }
-      }
-    else
-      {
-      if ( this->InteractorStyle->HasObserver (
-             vtkCommand::WindowLevelEvent, this->Command) )
-        {
-        this->InteractorStyle->RemoveObservers(vtkCommand::StartWindowLevelEvent);
-        this->InteractorStyle->RemoveObservers(vtkCommand::WindowLevelEvent);
-        }
-      }
     }
 }
 

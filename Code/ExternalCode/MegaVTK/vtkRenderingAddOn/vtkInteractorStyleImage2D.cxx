@@ -88,6 +88,8 @@ vtkInteractorStyleImage2D::vtkInteractorStyleImage2D()
   this->RequestedPosition = new int[2];
   this->RequestedPosition[0] = this->RequestedPosition[1] = 0;
 
+  this->m_LeftButtonDown = false;
+
   this->m_Mode = InteractionTypeDefault;
 }
 
@@ -130,7 +132,10 @@ vtkInteractorStyleImage2D::OnMouseMove()
     case VTKIS_WINDOW_LEVEL:
       this->Superclass::OnMouseMove();
       // Send event to update Scalar bar in 3D view
-      this->InvokeEvent(vtkViewImage2DCommand::WindowLevelEvent, NULL);
+      if(this->m_LeftButtonDown)
+        {
+        this->InvokeEvent(vtkViewImage2DCommand::WindowLevelEvent, NULL);
+        }
       break;
     default:
       this->Superclass::OnMouseMove();
@@ -147,6 +152,8 @@ vtkInteractorStyleImage2D::OnLeftButtonDown()
 {
   int x = this->Interactor->GetEventPosition()[0];
   int y = this->Interactor->GetEventPosition()[1];
+
+  this->m_LeftButtonDown = true;
 
   this->FindPokedRenderer(x, y);
 
@@ -183,6 +190,9 @@ vtkInteractorStyleImage2D::OnLeftButtonDown()
 void
 vtkInteractorStyleImage2D::OnLeftButtonUp()
 {
+
+  this->m_LeftButtonDown = false;
+
   switch ( this->m_Mode )
     {
     case InteractionTypeZoom:

@@ -151,30 +151,10 @@ vtkViewImage2DCollection::InitializeAllObservers()
     style->AddObserver(vtkViewImage2DCommand::ContourPickingEvent, this->Command);
     style->AddObserver(vtkViewImage2DCommand::MeshPickingEvent, this->Command);
 
-    a = this->GetNextItem();
-    }
-}
+    style->AddObserver(vtkCommand::StartWindowLevelEvent, this->Command);
+    style->AddObserver(vtkCommand::ResetWindowLevelEvent, this->Command);
+    style->AddObserver(vtkCommand::WindowLevelEvent, this->Command);
 
-//----------------------------------------------------------------------------
-void vtkViewImage2DCollection::UpdateWindowLevelObservers()
-{
-  this->InitTraversal();
-  vtkViewImage2D *a = this->GetNextItem();
-  while ( a )
-    {
-    vtkInteractorStyle *style = a->GetInteractorStyle();
-    if ( a->GetIsColor() )
-      {
-      style->RemoveObservers(vtkCommand::StartWindowLevelEvent);
-      style->RemoveObservers(vtkCommand::ResetWindowLevelEvent);
-      style->RemoveObservers(vtkCommand::WindowLevelEvent);
-      }
-    if ( !a->GetIsColor() )
-      {
-      style->AddObserver(vtkCommand::StartWindowLevelEvent, this->Command);
-      style->AddObserver(vtkCommand::ResetWindowLevelEvent, this->Command);
-      style->AddObserver(vtkCommand::WindowLevelEvent, this->Command);
-      }
     a = this->GetNextItem();
     }
 }
