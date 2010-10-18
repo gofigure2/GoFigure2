@@ -81,7 +81,7 @@ vtkStandardNewMacro(vtkNormalEstimationFilter);
 
 vtkNormalEstimationFilter::vtkNormalEstimationFilter()
 {
-  this->NeighborhoodSize = 20;
+  this->RadiusRatio = 0.1;
 }
 
 vtkNormalEstimationFilter::~vtkNormalEstimationFilter()
@@ -189,19 +189,34 @@ int vtkNormalEstimationFilter::RequestInformation(
 void vtkNormalEstimationFilter::BuildLocalConnectivity(vtkDataSet *input)
 {
   vtkPointLocator *locator = vtkPointLocator::New();
-
   locator->SetDataSet(input);
+
+  double bounds[6];
+  input->GetBounds( bounds );
+
+  double p0[3], p1[3];
+  for( int ii = 0; ii < 3; ++ii )
+    {
+    p0[ii] = bounds[2*ii];
+    p1[ii] = bounds[2*ii+1];
+    }
+
+  double sq_diagonal = vtkMath::Distance2BetweenPoints( p0, p1 );
+  double radius = this->RadiusRatio * sqrt( sq_diagonal );
+
   vtkIdList *locals = vtkIdList::New();
 
   const vtkIdType COUNT = input->GetNumberOfPoints();
+  vtkIdType iNeighbor;
 
   // if a pair is close, add each one as a neighbor of the other
   for ( vtkIdType i = 0; i < COUNT; i++ )
     {
     SurfacePoint *p = &m_SurfacePoints[i];
     vtkCopyBToA( p->loc, input->GetPoint(i) );
-    locator->FindClosestNPoints(this->NeighborhoodSize, p->loc, locals);
-    int iNeighbor;
+    //locator->FindClosestNPoints(this->NeighborhoodSize, p->loc, locals);
+    locator->FindClosestNPoints(radius, p->loc, locals);
+
     for ( vtkIdType j = 0; j < locals->GetNumberOfIds(); j++ )
       {
       iNeighbor = locals->GetId(j);
@@ -485,7 +500,7 @@ void vtkNormalEstimationFilter::PrintSelf(ostream & os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os, indent);
 
-  os << indent << "Neighborhood Size:" << this->NeighborhoodSize << "\n";
+  os << indent << "Radius Ratio: " << this->RadiusRatio << "\n";
 }
 
 void vtkSRAddOuterProduct(double **m, double *v)

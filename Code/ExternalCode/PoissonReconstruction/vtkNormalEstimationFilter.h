@@ -72,14 +72,8 @@ public:
   static vtkNormalEstimationFilter * New();
 
   // Description:
-  // Specify the number of neighbors each point has, used for estimating the
-  // local surface orientation.  The default value of 20 should be OK for
-  // most applications, higher values can be specified if the spread of
-  // points is uneven. Values as low as 10 may yield adequate results for
-  // some surfaces. Higher values cause the algorithm to take longer. Higher
-  // values will cause errors on sharp boundaries.
-  vtkGetMacro(NeighborhoodSize, int);
-  vtkSetMacro(NeighborhoodSize, int);
+  vtkGetMacro(RadiusRatio, double);
+  vtkSetMacro(RadiusRatio, double);
 protected:
   vtkNormalEstimationFilter();
   ~vtkNormalEstimationFilter();
@@ -94,7 +88,7 @@ protected:
                           vtkInformationVector **,
                           vtkInformationVector *);
 
-  int NeighborhoodSize;
+  double RadiusRatio;
 
   virtual int FillInputPortInformation(int, vtkInformation *);
 
