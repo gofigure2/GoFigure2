@@ -126,14 +126,12 @@ vtkViewImage2D::vtkViewImage2D()
 {
   this->ConventionMatrix = vtkMatrix4x4::New();
   this->SliceImplicitPlane = vtkSmartPointer< vtkPlane >::New();
-  this->AdjustmentTransform = vtkTransform::New();
   this->SlicePlane = vtkPolyData::New();
   this->Command = vtkViewImage2DCommand::New();
   this->OrientationAnnotation = vtkOrientationAnnotation::New();
 
   this->Command->SetViewer(this);
 
-  this->AdjustmentTransform->Identity();
   this->SliceImplicitPlane->SetOrigin(0, 0, 0);
   this->SliceImplicitPlane->SetNormal(0, 0, 1);
 
@@ -177,7 +175,6 @@ vtkViewImage2D::
 ~vtkViewImage2D()
 {
   this->ConventionMatrix->Delete();
-  this->AdjustmentTransform->Delete();
   this->SlicePlane->Delete();
   this->Command->Delete();
   this->OrientationAnnotation->Delete();
@@ -458,16 +455,6 @@ vtkViewImage2D::SetCameraToConvention(void)
     cam->Roll(-90.);
     }
 
-  // these lines are meant to fix the bug that make the line
-  // actor appear behind the 2D scene...
-  double translation[3];
-  for ( i = 0; i < 3; i++ )
-    {
-    translation[i] = 0.01 * view_plane_normal[i];
-    }
-  this->AdjustmentTransform->Identity();
-  this->AdjustmentTransform->Translate(translation);
-
   return id;
 }
 
@@ -570,42 +557,32 @@ vtkViewImage2D::SetSlicePlaneToConvention(unsigned int axis)
 void
 vtkViewImage2D::SetSlice(int slice)
 {
-  vtkCamera *cam = this->Renderer ? this->Renderer->GetActiveCamera() : NULL;
+  if( slice != this->Slice )
+    {
+    vtkCamera *cam = this->Renderer ? this->Renderer->GetActiveCamera() : NULL;
 
-  if ( !cam )
-    {
-    return;
-    }
-  int *range = this->GetSliceRange();
-  if ( range )
-    {
-    if ( slice < range[0] )
+    if ( !cam )
       {
-      slice = range[0];
+      return;
       }
-    else
+    int *range = this->GetSliceRange();
+    if ( range )
       {
-      if ( slice > range[1] )
+      if ( slice < range[0] )
         {
-        slice = range[1];
+        slice = range[0];
+        }
+      else
+        {
+        if ( slice > range[1] )
+          {
+          slice = range[1];
+          }
         }
       }
-    }
 
-//   if( this->Slice == slice )
-//     {
-//     return;
-//     }
-//   else
-    {
-    double *pos = this->GetWorldCoordinatesForSlice(slice);
-    this->SliceImplicitPlane->SetOrigin(pos);
     this->Superclass::SetSlice(slice);
     this->UpdateSlicePlane();
-
-    // GetWorldCoordinatesForSlice gives pointer to allocated memory :
-    // one has to cleanup after using this function
-    delete[] pos;
     }
 }
 
@@ -633,6 +610,9 @@ vtkViewImage2D::UpdateSlicePlane(void)
     }
   this->OrientationTransform->TransformPoints(oldpoints, points);
   this->SlicePlane->SetPoints(points);
+
+  points->GetPoint( 0, x );
+  this->SliceImplicitPlane->SetOrigin( x );
 }
 
 //----------------------------------------------------------------------------
@@ -664,6 +644,7 @@ vtkViewImage2D::GetWorldCoordinatesForSlice(int slice)
 
   return this->GetWorldCoordinatesFromImageCoordinates(indices);
 }
+//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void
@@ -677,7 +658,7 @@ vtkViewImage2D::ResetPosition(void)
   int *range = this->GetSliceRange();
   if ( range )
     {
-    this->SetSlice( vtkMath::Round( static_cast< double >( 0.5 * ( range[1] + range[0] ) ) ) );
+    this->SetSlice( ( range[1] + range[0] ) / 2 );
     }
 }
 
@@ -915,7 +896,9 @@ vtkViewImage2D::GetInterpolate(void)
 //----------------------------------------------------------------------------
 // vtkQuadricLODActor*
 vtkActor *
-vtkViewImage2D::AddDataSet(vtkPolyData *dataset, vtkProperty *property, const bool & intersection,
+vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
+                           vtkProperty *property,
+                           const bool & intersection,
                            const bool & iDataVisibility)
 {
   vtkCamera *cam = NULL;
@@ -940,9 +923,9 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset, vtkProperty *property, const bo
 
   // check if input data is 2D
   double *bounds = dataset->GetBounds();
+
   //  get normal
-  double *normal;
-  normal = this->SliceImplicitPlane->GetNormal();
+  double *normal = this->SliceImplicitPlane->GetNormal();
 
   // if in 2d
   if ( ( ( bounds[0] == bounds[1] ) && ( normal[1] == 0 ) && ( normal[2] == 0 ) )
@@ -956,18 +939,21 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset, vtkProperty *property, const bo
     mapper->SetInput( extracter->GetOutput() );
     }
   // i.e. if volume
-  else if ( intersection )
-    {
-    //std::cout << "intersection" << std::endl;
-    cutter->SetInput(dataset);
-    cutter->SetCutFunction(this->SliceImplicitPlane);
-    cutter->Update();
-    mapper->SetInput( cutter->GetOutput() );
-    }
   else
     {
-    //std::cout << "else" << std::endl;
-    mapper->SetInput(dataset);
+    if ( intersection )
+      {
+      //std::cout << "intersection" << std::endl;
+      cutter->SetInput(dataset);
+      cutter->SetCutFunction(this->SliceImplicitPlane);
+      cutter->Update();
+      mapper->SetInput( cutter->GetOutput() );
+      }
+    else
+      {
+      //std::cout << "else" << std::endl;
+      mapper->SetInput(dataset);
+      }
     }
 
   mapper->Update();
@@ -988,8 +974,10 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset, vtkProperty *property, const bo
 //----------------------------------------------------------------------------
 //vtkQuadricLODActor*
 vtkActor *
-vtkViewImage2D::AddDataSet(vtkDataSet *dataset, vtkProperty *property, const bool & intersection,
-                           const bool & iDataVisibility)
+vtkViewImage2D::AddDataSet( vtkDataSet *dataset,
+                            vtkProperty *property,
+                            const bool & intersection,
+                            const bool & iDataVisibility )
 {
   /* return this->AddDataSet( vtkPolyData::SafeDownCast( dataset ),
      property, intersection, iDataVisibility );*/
@@ -1386,26 +1374,16 @@ vtkViewImage2D::SetImplicitPlaneFromOrientation(void)
   double *focalpoint = cam->GetFocalPoint();
 
   double focaltoposition[3];
+
+  unsigned int i;
+
   // Compute the vector perpendicular to the view
-  for ( unsigned int i = 0; i < 3; i++ )
+  for ( i = 0; i < 3; i++ )
     {
     focaltoposition[i] = position[i] - focalpoint[i];
     }
 
   this->SliceImplicitPlane->SetNormal (focaltoposition);
-
-  // these lines are meant to fix the bug that make the line
-  // actor (and other added dataset) appear behind the 2D scene...
-  double *normal = cam->GetViewPlaneNormal();
-  double  translation[3];
-  double  spacing[3];
-  this->GetInput()->GetSpacing(spacing);
-  for ( unsigned int i = 0; i < 3; i++ )
-    {
-    translation[i] = spacing[i] * normal[i];
-    }
-  this->AdjustmentTransform->Identity();
-  this->AdjustmentTransform->Translate (translation);
 }
 
 //----------------------------------------------------------------------------

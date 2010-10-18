@@ -494,7 +494,6 @@ protected:
 
   vtkSmartPointer< vtkPlane > SliceImplicitPlane;
 
-  vtkTransform *AdjustmentTransform;
   /**
    * \brief This polydata instance is a square colored (see InitializeSlicePlane()) according to the
    * orientation of the view. It follows the image actor and is used by other view to display
