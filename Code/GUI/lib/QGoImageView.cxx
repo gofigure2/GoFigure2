@@ -733,6 +733,7 @@ QGoImageView::GetContourRepresentationNodePolydata(int iDir)
   vtkPolyData *contour_nodes = vtkPolyData::New();
 
   m_ContourRepresentation[iDir]->GetNodePolyData(contour_nodes);
+
   return contour_nodes;
 }
 
