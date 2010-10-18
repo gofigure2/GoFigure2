@@ -59,7 +59,8 @@ QGoMeshSegmentationBaseDockWidget::QGoMeshSegmentationBaseDockWidget(QWidget *iP
                               QIcon::Normal, QIcon::Off);
 
   this->toggleViewAction()->setIcon(MeshSegmentationIcon);
-  this->toggleViewAction()->setToolTip( tr("Mesh Editing") );
+  this->toggleViewAction()->setToolTip(tr("Mesh Segmentation"));
+  this->toggleViewAction()->setStatusTip( tr("Create meshes manually, semi-automatically or automatically") );
 
   // update interactor behavior
   QObject::connect( this->mode, SIGNAL( activated(int) ),

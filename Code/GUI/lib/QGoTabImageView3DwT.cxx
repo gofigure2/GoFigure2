@@ -952,6 +952,10 @@ void QGoTabImageView3DwT::CreateModeActions()
   // Call superclass
   QGoTabElementBase::CreateModeActions(group);
 
+  QAction *separator6 = new QAction(this);
+  separator6->setSeparator(true);
+  this->m_ModeActions.push_back(separator6);
+
   //--------------------------------//
   //  Contour segmentation mode     //
   //--------------------------------//
@@ -1004,6 +1008,10 @@ void QGoTabImageView3DwT::CreateModeActions()
                     this,
                     SLOT( ShowTraceDockWidgetForMesh(bool) ) );
 
+  QAction *separator5 = new QAction(this);
+  separator5->setSeparator(true);
+  this->m_ModeActions.push_back(separator5);
+
   //---------------------------------//
   //       Actor picking  mode       //
   //---------------------------------//
@@ -1015,7 +1023,7 @@ void QGoTabImageView3DwT::CreateModeActions()
   ActorPickingIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/ObjectPicking.png")),
                                QIcon::Normal, QIcon::Off);
   ActorPickingAction->setIcon(ActorPickingIcon);
-  ActorPickingAction->setToolTip(tr("Object Picking"));
+  ActorPickingAction->setStatusTip( tr("Select an actor (left click when the bounding box of the object of interest is visible)") );
 
   group->addAction(ActorPickingAction);
 
@@ -1027,7 +1035,7 @@ void QGoTabImageView3DwT::CreateModeActions()
   //---------------------------------//
   //       Box 3D picking  mode      //
   //---------------------------------//
-  QAction *Box3DPickingAction = new QAction(tr("Box 3D Picking"), this);
+  QAction *Box3DPickingAction = new QAction(tr("Box Visualization"), this);
   Box3DPickingAction->setCheckable(true);
   Box3DPickingAction->setChecked(false);
 
@@ -1035,6 +1043,7 @@ void QGoTabImageView3DwT::CreateModeActions()
   Box3DPickingIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/Box3DPicking.png") ),
                              QIcon::Normal, QIcon::Off);
   Box3DPickingAction->setIcon(Box3DPickingIcon);
+  Box3DPickingAction->setStatusTip( tr("Display actors in the box") );
 
   group->addAction(Box3DPickingAction);
 
@@ -1046,7 +1055,7 @@ void QGoTabImageView3DwT::CreateModeActions()
   //---------------------------------//
   //        Plane  widget  mode      //
   //---------------------------------//
-  QAction *PlaneWidgetAction = new QAction(tr("Plane Widget"), this);
+  QAction *PlaneWidgetAction = new QAction(tr("Plane Visualization"), this);
   PlaneWidgetAction->setCheckable(true);
   PlaneWidgetAction->setChecked(false);
 
@@ -1054,6 +1063,7 @@ void QGoTabImageView3DwT::CreateModeActions()
   PlaneWidgetIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/PlaneWidget.png") ),
                             QIcon::Normal, QIcon::Off);
   PlaneWidgetAction->setIcon(PlaneWidgetIcon);
+  PlaneWidgetAction->setStatusTip( tr("Display actors in front of the plane") );
 
   group->addAction(PlaneWidgetAction);
 
@@ -1071,7 +1081,7 @@ void QGoTabImageView3DwT::CreateModeActions()
   //---------------------------------//
   //         Distance    mode        //
   //---------------------------------//
-  QAction *DistanceAction = new QAction(tr("Measure Distance"), this);
+  QAction *DistanceAction = new QAction(tr("Measure a Distance"), this);
 
   DistanceAction->setCheckable(true);
   DistanceAction->setChecked(false);
@@ -1080,6 +1090,7 @@ void QGoTabImageView3DwT::CreateModeActions()
   DistanceIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/Distance.png") ),
                          QIcon::Normal, QIcon::Off);
   DistanceAction->setIcon(DistanceIcon);
+  DistanceAction->setStatusTip( tr("Measure a distance between 2 points (left click to place/drag the points)") );
 
   group->addAction(DistanceAction);
 
@@ -1093,7 +1104,7 @@ void QGoTabImageView3DwT::CreateModeActions()
   //---------------------------------//
   //           Angle     mode        //
   //---------------------------------//
-  QAction *AngleAction = new QAction(tr("Measure Angle"), this);
+  QAction *AngleAction = new QAction(tr("Measure an Angle"), this);
   AngleAction->setCheckable(true);
   AngleAction->setChecked(false);
 
@@ -1101,6 +1112,8 @@ void QGoTabImageView3DwT::CreateModeActions()
   AngleIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/Angle.png") ),
                       QIcon::Normal, QIcon::Off);
   AngleAction->setIcon(AngleIcon);
+  AngleAction->setStatusTip( tr("Measure an angle between 3 points (left click to place/drag the points)") );
+
 
   group->addAction(AngleAction);
 
