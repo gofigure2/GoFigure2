@@ -134,7 +134,10 @@ template< class TFeatureImage, class TInputImage, class TSegmentImage >
 void
 WatershedBasedCellSegmentation< TFeatureImage, TInputImage, TSegmentImage >::PrintSelf(std::ostream & os,
                                                                                        Indent indent) const
-{}
+{
+  (void)os;
+  (void)indent;
+}
 } /* end namespace itk */
 
 #endif

@@ -95,6 +95,8 @@ QGoFilterWatershed::
 void
 QGoFilterWatershed::Filter2D(double *iCenter, const int & iOrientation)
 {
+  (void)iCenter;
+  (void)iOrientation;
   /*
   const int dimension = 2;
 

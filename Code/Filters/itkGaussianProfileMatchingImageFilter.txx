@@ -224,6 +224,8 @@ GaussianProfileMatchingImageFilter< TFeatureImage, TInputImage, TSegmentImage >:
   const ImageRegionType & windowRegion,
   int threadId)
 {
+  (void)threadId;
+
   ImagePointer output = this->GetOutput();
 
   //Set window region size and start locations
