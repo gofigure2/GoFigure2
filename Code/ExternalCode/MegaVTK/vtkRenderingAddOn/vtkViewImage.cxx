@@ -361,7 +361,9 @@ double * vtkViewImage::GetWorldCoordinatesFromImageCoordinates(int indices[3])
 
   return position;
 }
+//----------------------------------------------------------------------------
 
+//----------------------------------------------------------------------------
 /// NOTE indices has to be erased
 int * vtkViewImage::GetImageCoordinatesFromWorldCoordinates(double position[3])
 {
@@ -529,34 +531,6 @@ void vtkViewImage::ChangeActorProperty(vtkProp3D *iActor,
       }
     }
 }
-
-//----------------------------------------------------------------------------
-// void vtkViewImage::HighlightContour( vtkProp3D* iProp, const bool& iToDo )
-// {
-//   if( !iProp )
-//     {
-//     return;
-//     }
-//   else
-//     {
-//     vtkActor* temp = dynamic_cast< vtkActor* >( iProp );
-//
-//     if( temp )
-//       {
-//       if( iToDo )
-//         {
-//         temp->GetProperty()->SetColor( 1., 1., 0. );
-//         temp->GetProperty()->SetLineWidth( 3. );
-//         }
-//       else
-//         {
-//         temp->GetProperty()->SetLineWidth( 1. );
-//         temp->GetProperty()->SetColor( 1., 1., 1. );
-//         }
-//       }
-//     }
-// }
-//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void vtkViewImage::Render()
