@@ -431,7 +431,7 @@ public:
     point[2] = this->CurrentPoint[2];
   }
 
-  vtkGetMacro(IsColor, int);
+  vtkGetMacro(IsColor, bool);
 
   virtual void ChangeActorProperty(vtkProp3D *iActor,
                                    vtkProperty *iProperty);

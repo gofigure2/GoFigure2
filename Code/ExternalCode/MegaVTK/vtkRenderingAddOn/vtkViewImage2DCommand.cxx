@@ -198,6 +198,12 @@ vtkViewImage2DCommand::Execute( vtkObject *caller,
 void
 vtkViewImage2DCommand::Windowing(vtkInteractorStyleImage2D *isi)
 {
+  // don't do the window level if the image has more than 1 channel
+  if(this->Viewer->GetIsColor())
+    {
+    return;
+    }
+
   int *  size = this->Viewer->GetRenderWindow()->GetSize();
   double window = this->InitialWindow;
   double level = this->InitialLevel;
