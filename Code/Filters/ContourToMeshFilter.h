@@ -107,7 +107,7 @@ public:
       vtkSmartPointer< vtkPoissonReconstruction > poissonFilter =
         vtkSmartPointer< vtkPoissonReconstruction >::New();
       poissonFilter->SetInput( normal_filter->GetOutput() );
-      poissonFilter->SetDepth(7);
+      poissonFilter->SetDepth(12);
       poissonFilter->SetConfidence(1.);
       poissonFilter->Update();
 
