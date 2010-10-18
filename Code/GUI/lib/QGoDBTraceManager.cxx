@@ -549,7 +549,7 @@ void QGoDBTraceManager::CreateCorrespondingCollection()
 {
   std::list<unsigned int > ListCheckedTraces =
       this->m_TraceContainerInfoForVisu->GetHighlightedElementsTraceID();
-  if ( ListCheckedTraces.size() != 1 )
+  if ( ListCheckedTraces.empty() )
     {
     QMessageBox msgBox;
     msgBox.setText(
