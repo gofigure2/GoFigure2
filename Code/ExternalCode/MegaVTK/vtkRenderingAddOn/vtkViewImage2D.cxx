@@ -567,21 +567,6 @@ vtkViewImage2D::SetSlice(int slice)
       {
       return;
       }
-    int *range = this->GetSliceRange();
-    if ( range )
-      {
-      if ( slice < range[0] )
-        {
-        slice = range[0];
-        }
-      else
-        {
-        if ( slice > range[1] )
-          {
-          slice = range[1];
-          }
-        }
-      }
 
     this->Superclass::SetSlice(slice);
     this->UpdateSlicePlane();

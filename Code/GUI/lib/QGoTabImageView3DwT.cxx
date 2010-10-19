@@ -757,7 +757,7 @@ QGoTabImageView3DwT::CreateAllViewActions()
     new QAction(tr("Display annotations"), this);
   ActionDisplayAnnotations->setCheckable(true);
   ActionDisplayAnnotations->setChecked(true);
-  ActionDisplayAnnotations->setStatusTip( tr(" Display or not annotations in each 2d view") );
+  ActionDisplayAnnotations->setStatusTip( tr(" Display annotations in each 2d view") );
 
   QIcon displayannotationsicon;
   displayannotationsicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/2D_VIEWS_INFOS.png") ),
@@ -773,7 +773,7 @@ QGoTabImageView3DwT::CreateAllViewActions()
     new QAction(tr("Display spline planes"), this);
   ActionDisplaySplinePlanes->setCheckable(true);
   ActionDisplaySplinePlanes->setChecked(true);
-  ActionDisplaySplinePlanes->setStatusTip( tr(" Display or not spline planes on each view") );
+  ActionDisplaySplinePlanes->setStatusTip( tr(" Display spline planes on each view") );
 
   QIcon displaysplineplaneicon;
   displaysplineplaneicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/C_M_L.png") ),
@@ -1693,7 +1693,6 @@ QGoTabImageView3DwT::ChangeLookupTable()
 
   if ( image->GetNumberOfScalarComponents() == 1 )
     {
-    /// \todo there may be one memory leak in here!
     vtkLookupTable *lut = QGoLUTDialog::GetLookupTable( this,
                                                         tr("Choose one look-up table") );
     m_ImageView->SetLookupTable(lut);
