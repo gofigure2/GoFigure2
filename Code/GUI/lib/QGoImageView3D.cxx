@@ -321,17 +321,17 @@ void
 QGoImageView3D::UpdateOnFirstRender()
 {
   vtkViewImage2D *View1 = this->m_Pool->GetItem(0);
-
   View1->SetViewOrientation(vtkViewImage2D::VIEW_ORIENTATION_AXIAL);
   View1->SetViewConvention(vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL);
 
   vtkViewImage2D *View2 = this->m_Pool->GetItem(1);
-  View2->SetViewConvention(vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL);
   View2->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_CORONAL);
+  View2->SetViewConvention(vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL);
+
 
   vtkViewImage2D *View3 = this->m_Pool->GetItem(2);
-  View3->SetViewConvention(vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL);
   View3->SetViewOrientation(vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL);
+  View3->SetViewConvention(vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL);
 
   this->m_View3D->SetVolumeRenderingOff();
   this->m_View3D->SetTriPlanarRenderingOn();
