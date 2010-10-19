@@ -1015,7 +1015,7 @@ void QGoTabImageView3DwT::CreateModeActions()
   //---------------------------------//
   //       Actor picking  mode       //
   //---------------------------------//
-  QAction *ActorPickingAction = new QAction(tr("Actor Picking"), this);
+  QAction *ActorPickingAction = new QAction(tr("Object Picking"), this);
   ActorPickingAction->setCheckable(true);
   ActorPickingAction->setChecked(false);
 
@@ -1023,7 +1023,7 @@ void QGoTabImageView3DwT::CreateModeActions()
   ActorPickingIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/ObjectPicking.png")),
                                QIcon::Normal, QIcon::Off);
   ActorPickingAction->setIcon(ActorPickingIcon);
-  ActorPickingAction->setStatusTip( tr("Select an actor (left click when the bounding box of the object of interest is visible)") );
+  ActorPickingAction->setStatusTip( tr("Select a contour or a mesh (left click when the bounding box of the object of interest is visible)") );
 
   group->addAction(ActorPickingAction);
 
@@ -1035,7 +1035,7 @@ void QGoTabImageView3DwT::CreateModeActions()
   //---------------------------------//
   //       Box 3D picking  mode      //
   //---------------------------------//
-  QAction *Box3DPickingAction = new QAction(tr("Box Visualization"), this);
+  QAction *Box3DPickingAction = new QAction(tr("Show/hide objects using Box"), this);
   Box3DPickingAction->setCheckable(true);
   Box3DPickingAction->setChecked(false);
 
@@ -1043,7 +1043,7 @@ void QGoTabImageView3DwT::CreateModeActions()
   Box3DPickingIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/Box3DPicking.png") ),
                              QIcon::Normal, QIcon::Off);
   Box3DPickingAction->setIcon(Box3DPickingIcon);
-  Box3DPickingAction->setStatusTip( tr("Display actors in the box") );
+  Box3DPickingAction->setStatusTip( tr("Show only the objects in the box") );
 
   group->addAction(Box3DPickingAction);
 
@@ -1055,15 +1055,15 @@ void QGoTabImageView3DwT::CreateModeActions()
   //---------------------------------//
   //        Plane  widget  mode      //
   //---------------------------------//
-  QAction *PlaneWidgetAction = new QAction(tr("Plane Visualization"), this);
+  QAction *PlaneWidgetAction = new QAction(tr("Show/hide objects using Plane"), this);
   PlaneWidgetAction->setCheckable(true);
   PlaneWidgetAction->setChecked(false);
 
   QIcon PlaneWidgetIcon;
-  PlaneWidgetIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/PlaneWidget.png") ),
+  PlaneWidgetIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/PlaneSelection.png") ),
                             QIcon::Normal, QIcon::Off);
   PlaneWidgetAction->setIcon(PlaneWidgetIcon);
-  PlaneWidgetAction->setStatusTip( tr("Display actors in front of the plane") );
+  PlaneWidgetAction->setStatusTip( tr("Show only the objects located in front of the plane") );
 
   group->addAction(PlaneWidgetAction);
 

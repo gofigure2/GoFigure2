@@ -583,6 +583,14 @@ protected slots:
   */
   void CheckTheTraceInTW(unsigned int iTraceID, Qt::CheckState iState);
 
+  /**
+  \brief slot called when a trace has been shown/hidden from the visu, to
+  update the TW "show/hide" column correspondingly
+  \param[in] iTraceID TraceID that has been shown/hidden
+  \param[in] iState state to which the TW needs to be updated
+  */
+  void ShowTheTraceInTW(unsigned int iTraceID, Qt::CheckState iState);
+
   void GoToTheTrace();
 
   /**

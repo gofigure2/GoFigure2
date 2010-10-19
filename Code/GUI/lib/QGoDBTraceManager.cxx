@@ -230,6 +230,11 @@ void QGoDBTraceManager::SetTracesInfoContainerForVisu(
                     SIGNAL( TracePicked(uint, Qt::CheckState) ),
                     this,
                     SLOT( CheckTheTraceInTW(uint, Qt::CheckState) ) );
+
+  QObject::connect( this->m_TraceContainerInfoForVisu,
+                    SIGNAL( TraceVisibilityChanged(uint,Qt::CheckState) ),
+                    this,
+                    SLOT (ShowTheTraceInTW(uint,Qt::CheckState) ) );
 }
 
 //-------------------------------------------------------------------------
@@ -516,6 +521,14 @@ void QGoDBTraceManager::CheckTheTraceInTW(unsigned int iTraceID,
                                          this->m_TraceName, iState, false);
 }
 
+//-------------------------------------------------------------------------
+
+//------------------------------------------------------------------------
+void QGoDBTraceManager::ShowTheTraceInTW(unsigned int iTraceID, Qt::CheckState iState)
+{
+  this->m_Table->SetVisibleStateForTraceID(iTraceID,
+                                           this->m_TraceName,iState,false);
+}
 //-------------------------------------------------------------------------
 
 //------------------------------------------------------------------------
