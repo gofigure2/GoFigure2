@@ -57,6 +57,7 @@
 #include "vtkProperty.h"
 #include "vtkWidgetEvent.h"
 #include "vtkWidgetEventTranslator.h"
+#include "vtkEvent.h"
 
 // For the distance widget...
 #include "vtkDistanceWidget.h"
@@ -463,6 +464,9 @@ QGoImageView::InitializeSeedWidget()
     // to remove right click interaction in the one click widget
     this->m_SeedWidget[i]->GetEventTranslator()->RemoveTranslation(
       vtkCommand::RightButtonPressEvent);
+
+    this->m_SeedWidget[i]->GetEventTranslator()->SetTranslation(
+        vtkCommand::KeyPressEvent,vtkEvent::NoModifier, 100, 0, "d", vtkWidgetEvent::Delete);
     }
 }
 
