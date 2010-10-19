@@ -46,6 +46,7 @@
 #include "itkImage.h"
 #include "QGoSynchronizedView.h"
 #include "vtkSmartPointer.h"
+#include "QGoGUILibConfigure.h"
 
 class vtkCamera;
 class vtkImageData;
@@ -60,7 +61,7 @@ class QGoImageView3D;
  * several GoSynchronizedView3D.
  * \example GUI/lib/qgosynchronizedview3dtest.cxx
  */
-class QGoSynchronizedView3D:public QGoSynchronizedView
+class QGOGUILIB_EXPORT QGoSynchronizedView3D:public QGoSynchronizedView
 {
   Q_OBJECT
 public:

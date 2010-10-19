@@ -120,8 +120,8 @@ public:
   \param[in] iZCoord given Z coordinate
   return std::list<unsigned int> list of the Traces IDs
   */
-  std::list< unsigned int > GetAllTracesIDForAGivenZCoord(
-    vtkMySQLDatabase *iDatabaseConnector, int iZCoord);
+  //std::list< unsigned int > GetAllTracesIDForAGivenZCoord(
+  //  vtkMySQLDatabase *iDatabaseConnector, int iZCoord);
 
   /**
   \brief return the list of IDs for the current selected traces

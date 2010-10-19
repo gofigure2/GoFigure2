@@ -45,6 +45,8 @@
 #include "ui_QGoSynchronizedView.h"
 
 #include "itkImage.h"
+#include "QGoGUILibConfigure.h"
+
 class vtkCamera;
 class vtkImageData;
 class vtkEventQtSlotConnect;
@@ -60,7 +62,7 @@ class QGoSynchronizedViewManager;
  * \example GUI/lib/qgosynchronizedview2dtest.cxx
  */
 
-class QGoSynchronizedView:public QWidget,
+class QGOGUILIB_EXPORT QGoSynchronizedView:public QWidget,
   protected Ui::QGoSynchronizedView
 {
   Q_OBJECT

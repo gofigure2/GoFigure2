@@ -47,6 +47,7 @@
 #include "itkSmartPointer.h"
 
 #include "QGoSynchronizedViewManager.h"
+
 class QGoSynchronizedView;
 class QGoSynchronizedView3D;
 class vtkImageData;

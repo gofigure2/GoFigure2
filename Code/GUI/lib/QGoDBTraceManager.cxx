@@ -114,13 +114,13 @@ int QGoDBTraceManager::GetLastCreatedTraceID(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::list< unsigned int > QGoDBTraceManager::GetAllTracesIDForAGivenZCoord(
+/*std::list< unsigned int > QGoDBTraceManager::GetAllTracesIDForAGivenZCoord(
   vtkMySQLDatabase *iDatabaseConnector, int iZCoord)
 {
   return GetColumnForBoundedValue(this->m_TraceNameID,
                                   this->m_TraceName, ConvertToString< unsigned int >(this->m_ImgSessionID),
                                   "ZCoord", ConvertToString< int >(iZCoord), iDatabaseConnector);
-}
+}*/
 
 //-------------------------------------------------------------------------
 

@@ -143,11 +143,11 @@ public:
 
   /** \brief Return a vector of all the contours with a bounding box
   containing the given ZCoord*/
-  std::list< unsigned int > GetContoursForAGivenZCoord(unsigned int iZCoord);
+  //std::list< unsigned int > GetContoursForAGivenZCoord(unsigned int iZCoord);
 
   /** \brief Return a vector of all the meshes with a bounding box
   containing the given ZCoord*/
-  std::list< unsigned int > GetMeshesForAGivenZCoord(unsigned int iZCoordPoint);
+  //std::list< unsigned int > GetMeshesForAGivenZCoord(unsigned int iZCoordPoint);
 
   //useful ???
   std::pair< std::string, QColor > GetSelectedCollectionData();

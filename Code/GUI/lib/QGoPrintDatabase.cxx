@@ -453,7 +453,7 @@ std::vector< ContourMeshStructure > QGoPrintDatabase::GetTracesForAGivenTimepoin
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::list< unsigned int > QGoPrintDatabase::GetContoursForAGivenZCoord(unsigned int iZCoord)
+/*std::list< unsigned int > QGoPrintDatabase::GetContoursForAGivenZCoord(unsigned int iZCoord)
 {
   this->OpenDBConnection();
   std::list< unsigned int > ContourIDs = this->m_ContoursManager->GetAllTracesIDForAGivenZCoord(
@@ -472,7 +472,7 @@ std::list< unsigned int > QGoPrintDatabase::GetMeshesForAGivenZCoord(unsigned in
     this->m_DatabaseConnector, iZCoord);
   this->CloseDBConnection();
   return MeshesIDs;
-}
+}*/
 
 //-------------------------------------------------------------------------
 

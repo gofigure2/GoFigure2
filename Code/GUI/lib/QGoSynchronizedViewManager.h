@@ -46,6 +46,7 @@
 #include "itkImage.h"
 #include "QGoSynchronizedView3DCallbacks.h"
 #include "QGoSynchronizedView2DCallbacks.h"
+#include "QGoGUILibConfigure.h"
 
 class QGoSynchronizedView2DCallbacks;
 class QGoSynchronizedView3DCallbacks;
@@ -63,7 +64,7 @@ class vtkImageData;
  * and QGoSynchronize.
  * \example GUI/lib/qgosynchronizedviewmanagertest.cxx
  */
-class QGoSynchronizedViewManager:public QObject
+class QGOGUILIB_EXPORT QGoSynchronizedViewManager:public QObject
 {
   Q_OBJECT
 public:
