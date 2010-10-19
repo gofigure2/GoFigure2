@@ -259,6 +259,25 @@ void vtkViewImage2DCollection::SyncRender(void)
     this->ExtraRenderWindow->Render();
     }
 }
+//----------------------------------------------------------------------------
+void vtkViewImage2DCollection::SyncRender(vtkViewImage2D* iV)
+{
+  this->InitTraversal();
+  vtkViewImage2D *item = this->GetNextItem();
+
+  while ( item )
+    {
+    if( item != iV )
+      {
+      item->Render();
+      }
+    item = this->GetNextItem();
+    }
+  if ( this->ExtraRenderWindow )
+    {
+    this->ExtraRenderWindow->Render();
+    }
+}
 
 //----------------------------------------------------------------------------
 void vtkViewImage2DCollection::SyncReset(void)

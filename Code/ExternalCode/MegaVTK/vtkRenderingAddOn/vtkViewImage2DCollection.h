@@ -270,6 +270,10 @@ public:
   /// Description: Synchronize render between views
   virtual void SyncRender();
 
+  /// Description: Synchronize render between views except iV
+  ///(which is already up to date)
+  virtual void SyncRender( vtkViewImage2D* iV );
+
   /// Description: Synchronize reset between views
   virtual void SyncReset(void);
 
