@@ -758,8 +758,9 @@ QGoImageView3D::SetSliceViewXY(const int & iSlice)
 
     if ( iSlice != s )
       {
-      this->m_Pool->GetItem(0)->SetSlice(iSlice);
-      this->m_Pool->SyncRender();
+      vtkViewImage2D* viewer = this->m_Pool->GetItem(0);
+      viewer->SetSlice(iSlice);
+      this->m_Pool->SyncRender( viewer );
       this->SliderXY->setValue(iSlice);
       emit SliceViewXYChanged(iSlice);
       }
@@ -787,8 +788,9 @@ QGoImageView3D::SetSliceViewXZ(const int & iSlice)
 
     if ( s != iSlice )
       {
-      this->m_Pool->GetItem(1)->SetSlice(iSlice);
-      this->m_Pool->SyncRender();
+      vtkViewImage2D* viewer = this->m_Pool->GetItem(1);
+      viewer->SetSlice(iSlice);
+      this->m_Pool->SyncRender( viewer );
       this->SliderXZ->setValue(iSlice);
       emit SliceViewXZChanged(iSlice);
       }
@@ -816,8 +818,9 @@ QGoImageView3D::SetSliceViewYZ(const int & iSlice)
 
     if ( s != iSlice )
       {
-      this->m_Pool->GetItem(2)->SetSlice(iSlice);
-      this->m_Pool->SyncRender();
+      vtkViewImage2D* viewer = this->m_Pool->GetItem(2);
+      viewer->SetSlice(iSlice);
+      this->m_Pool->SyncRender( viewer );
       this->SliderYZ->setValue(iSlice);
       emit SliceViewYZChanged(iSlice);
       }
