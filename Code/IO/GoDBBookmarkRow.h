@@ -55,12 +55,12 @@ public:
 
   ~GoDBBookmarkRow()
   {}
-  /**\brief check if the bookmark already exits in the DB, if yes,
+  /**\brief check if the bookmark already exists in the DB, if yes,
   return the existing ID, if not, save it in the DB and return the
   ID for new created bookmark*/
   virtual int SaveInDB(vtkMySQLDatabase *DatabaseConnector);
 
-  /*\brief check if the bookmark already exits in the database, if yes,
+  /*\brief check if the bookmark already exists in the database, if yes,
   return the corresponding ID, if not, return -1*/
   //int DoesThisBookmarkAlreadyExists(vtkMySQLDatabase* DatabaseConnector);
 
@@ -73,13 +73,13 @@ public:
   virtual int DoesThisNameAlreadyExists(
     vtkMySQLDatabase *DatabaseConnector);
 
-  /*\brief check if the bookmark already exits in the database, if yes,
+  /*\brief check if the bookmark already exists in the database, if yes,
   return the corresponding ID, if not, return -1 and the name of the
   existing bookmark*/
   //int DoesThisBookmarkAlreadyExists(vtkMySQLDatabase* DatabaseConnector,
   //std::string& ioName);
 
-  /*\brief check if the bookmark name already exits in the database, if yes,
+  /*\brief check if the bookmark name already exists in the database, if yes,
   return true, if not, return false*/
   //bool DoesThisBookmarkNameAlreadyExistsInTheDB(
   //vtkMySQLDatabase* DatabaseConnector);

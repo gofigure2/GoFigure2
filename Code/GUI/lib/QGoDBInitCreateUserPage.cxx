@@ -163,7 +163,7 @@ bool QGoDBInitCreateUserPage::CreateUser()
   else
     {
     return this->QuestionToUser(
-             tr("The user you entered already exits, \ndo you want to create a database for this user?") );
+             tr("The user you entered already exists, \ndo you want to create a database for this user?") );
     }
   return false;
 }

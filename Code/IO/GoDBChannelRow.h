@@ -56,7 +56,7 @@ public:
   {}
   int SaveInDB(vtkMySQLDatabase *DatabaseConnector);
 
-  /**\brief check if the channel already exits in the database, if yes,
+  /**\brief check if the channel already exists in the database, if yes,
    return the corresponding ID, if not, return -1*/
   int DoesThisChannelAlreadyExists(vtkMySQLDatabase *DatabaseConnector);
 

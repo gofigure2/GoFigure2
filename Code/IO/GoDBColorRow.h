@@ -60,12 +60,12 @@ public:
 
   ~GoDBColorRow()
   {}
-  /**\brief check if the color already exits in the DB, if yes,
+  /**\brief check if the color already exists in the DB, if yes,
   return the existing ID, if not, save it in the DB and return the
   ID for new created color*/
   virtual int SaveInDB(vtkMySQLDatabase *iDatabaseConnector);
 
-/**\brief check if the color already exits in the database, if yes,
+/**\brief check if the color already exists in the database, if yes,
   return the corresponding ID, if not, return -1*/
   virtual int DoesThisEntityAlreadyExists(vtkMySQLDatabase *iDatabaseConnector);
 

@@ -138,7 +138,7 @@ protected:
   \brief Pure Virtual method : save the new entity in the database, the
   m_DatabaseConnectorForNewEntity needs to be set before
   calling this method. Check that the entity doesn't
-  already exits in the database, if so, give the user
+  already exists in the database, if so, give the user
   the name of the existing entity
   */
   virtual void SaveNewEntityInDB() = 0;

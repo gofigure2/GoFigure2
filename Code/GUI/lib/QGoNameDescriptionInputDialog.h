@@ -62,7 +62,7 @@ public:
   virtual ~QGoNameDescriptionInputDialog();
 
   /** \brief open a messagebox to tell the user that the name he
-  choose already exits*/
+  choose already exists*/
   void NameAlreadyExists();
 
 signals:

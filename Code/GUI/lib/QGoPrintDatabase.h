@@ -165,7 +165,7 @@ public:
 
   /**
   \brief save the mesh into the database for a mesh generated in the
-  visualization, if the mesh is an updated mesh which already exits(for
+  visualization, if the mesh is an updated mesh which already exists(for
   example a new contour is added to this mesh, the NewMesh has to be set
   to false
   */

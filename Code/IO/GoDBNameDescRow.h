@@ -57,7 +57,7 @@ public:
   ~GoDBNameDescRow()
   {}
   /**
-  \brief Pure Virtual :check if the entity already exits in the DB, if yes,
+  \brief Pure Virtual :check if the entity already exists in the DB, if yes,
   return the existing ID, if not, save it in the DB and return the
   ID for the new created entity
   \return int existing or new created ID for the entity
@@ -98,7 +98,7 @@ public:
   // vtkMySQLDatabase* iDatabaseConnector, std::string& ioName) = 0;
 
   /**
-  \brief check if the name already exits in the database, if yes,
+  \brief check if the name already exists in the database, if yes,
   return the corresponding ID, if not -1
   \return int return the ID of the existing entity with the same name
   or -1 if no entity has the same name

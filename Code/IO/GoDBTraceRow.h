@@ -80,10 +80,10 @@ public:
                              GoDBCoordinateRow iCoordMin,
                              GoDBCoordinateRow iCoordMax);
 
-  /**\brief check in the database if the Coordinate Min adn Max already exits,
+  /**\brief check in the database if the Coordinate Min adn Max already exists,
   if yes fill the map["CoordIDMin"] and ["CoordIDmax"] with the existing CoordinateID
   if not, create the coordinates in the database and fill the map with the new created ID,
-  if the bounding box already exits, a cout is generated*/
+  if the bounding box already exists, a cout is generated*/
   void SetTheBoundingBox(vtkMySQLDatabase *iDatabaseConnector,
                          GoDBCoordinateRow Min, GoDBCoordinateRow Max);
 
@@ -95,10 +95,10 @@ protected:
 
   virtual void InitializeMap();
 
-  /**\brief check in the database if the Coordinate Min adn Max already exits,
+  /**\brief check in the database if the Coordinate Min adn Max already exists,
   if yes fill the map["CoordIDMin"] and ["CoordIDmax"] with the existing CoordinateID
   if not, create the coordinates in the database and fill the map with the new created ID,
-  if the bounding box already exits, a cout is generated*/
+  if the bounding box already exists, a cout is generated*/
   // void CreateBoundingBox(vtkMySQLDatabase* DatabaseConnector,
   // GoDBCoordinateRow Min,
   //                      GoDBCoordinateRow Max);

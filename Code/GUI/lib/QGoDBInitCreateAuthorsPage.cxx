@@ -129,7 +129,7 @@ void QGoDBInitCreateAuthorsPage::CreateAuthor()
                  "LastName", LastName, "FirstName", FirstName, "MiddleName", MiddleName) != -1 && !MiddleName.empty() )
     {
     msgBox.setText(
-      tr("This author already exits") );
+      tr("This author already exists") );
     msgBox.exec();
     return;
     }

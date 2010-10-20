@@ -285,7 +285,7 @@ private:
         TraceToSave, iMapColorIDs, iMapCoordIDs, iMapCollectionIDs);
       int OldTraceID = atoi( TraceToSave.GetMapValue( TraceToSave.GetTableIDName() ).c_str() );
       /*in order the query works, the TraceID to be saved has to be set to 0 otherwise
-      if the TraceID already exits,the query will return the error
+      if the TraceID already exists,the query will return the error
       "Duplicate entry TraceID for key primary":*/
       TraceToSave.SetField(TraceToSave.GetTableIDName(), "0");
       int NewTraceID = TraceToSave.DoesThisBoundingBoxExist(this->m_DatabaseConnector);

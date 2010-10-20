@@ -58,7 +58,7 @@ public:
 
   ~GoDBIntensityRow();
 
-  /** \brief check if the intensity already exits in the database, if yes,
+  /** \brief check if the intensity already exists in the database, if yes,
   return the corresponding ID, if not, return -1*/
   int DoesThisIntensityAlreadyExists(vtkMySQLDatabase *DatabaseConnector);
 
