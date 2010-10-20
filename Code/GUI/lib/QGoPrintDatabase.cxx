@@ -78,10 +78,6 @@
 //--------------------------------------------------------------------------
 QGoPrintDatabase::QGoPrintDatabase(QWidget *iParent):
   QWidget(iParent),
-  //m_ContoursData(NULL),
-  //m_MeshesData(NULL),
-  //m_TracksData(NULL),
-  //m_LineagesData(NULL),
   m_ContoursManager(NULL),
   m_MeshesManager(NULL),
   m_TracksManager(NULL),
@@ -510,22 +506,29 @@ void QGoPrintDatabase::SaveNewCollectionFromTraceWidgetInDBAndTW()
   this->OpenDBConnection();
   std::string  TraceName = this->m_TraceWidget->GetTraceName();
   unsigned int NewCollectionID;
-  if ( TraceName == "contour" )
+  if ( TraceName != "contour" && TraceName != "mesh")
     {
-    NewCollectionID = this->m_MeshesManager->CreateNewMeshWithNoContourNoPoints(
-      this->m_DatabaseConnector,
-      this->m_SelectedColorData, this->m_SelectedTimePoint, this->m_SelectedCellType,
-      this->m_SelectedSubCellType);
+    return;
     }
-  if ( TraceName == "mesh" )
+  else
     {
-    NewCollectionID = this->m_TracksManager->CreateNewTrackWithNoMesh(
-      this->m_DatabaseConnector, this->m_SelectedColorData);
+    if ( TraceName == "contour" )
+      {
+      NewCollectionID = this->m_MeshesManager->CreateNewMeshWithNoContourNoPoints(
+        this->m_DatabaseConnector,
+        this->m_SelectedColorData, this->m_SelectedTimePoint, this->m_SelectedCellType,
+        this->m_SelectedSubCellType);
+      }
+    if ( TraceName == "mesh" )
+      {
+      NewCollectionID = this->m_TracksManager->CreateNewTrackWithNoMesh(
+        this->m_DatabaseConnector, this->m_SelectedColorData);
+      }
+    ItemColorComboboxData NewCollectionData;
+    NewCollectionData.first = ConvertToString< unsigned int >(NewCollectionID);
+    NewCollectionData.second = this->m_SelectedColorData.second;
+    this->m_TraceWidget->AddANewCollectionID(NewCollectionData);
     }
-  ItemColorComboboxData NewCollectionData;
-  NewCollectionData.first = ConvertToString< unsigned int >(NewCollectionID);
-  NewCollectionData.second = this->m_SelectedColorData.second;
-  this->m_TraceWidget->AddANewCollectionID(NewCollectionData);
 }
 
 //-------------------------------------------------------------------------
