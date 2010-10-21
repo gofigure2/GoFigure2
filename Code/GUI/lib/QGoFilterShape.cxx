@@ -71,7 +71,7 @@ QGoFilterShape::QGoFilterShape(QObject *iParent, int iDimension):
     }
   else
     {
-    name = "2D Shapes within 1 mesh";
+    name = "2D Shapes in 1 mesh";
     }
 
   setName(name);

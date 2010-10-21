@@ -67,19 +67,6 @@ QGoMeshSeedSegmentation::QGoMeshSeedSegmentation(QWidget *parentW,
 //=============================================================================
 
   //Add new segmentation method
-  m_LevelSetfilter = new QGoFilterChanAndVes(this, iSampling); // 3 i.e. 3D, to
-                                                               // create a mesh
-  filter = m_BaseAlgorithmSegmentationWidget->GetNumberOfFilters();
-  m_BaseAlgorithmSegmentationWidget->AddFilter( m_LevelSetfilter->getName() );
-  m_LevelSetfilter->getWidget()->setParent(m_BaseAlgorithmSegmentationWidget);
-  m_LevelSetfilter->setPoints( getSeed() );
-  m_LevelSetfilter->setOriginalImageMC(m_OriginalImage);
-  m_BaseAlgorithmSegmentationWidget->GetFrame()->addWidget(m_LevelSetfilter->getWidget(), 4, 0, 1, -1);
-  m_LevelSetfilter->ConnectSignals(filter);
-
-//=============================================================================
-
-  //Add new segmentation method
 
   m_ShapeFilter = new QGoFilterShape(this, iSampling); // 3 i.e. 3D, to create a
                                                        // mesh
@@ -92,6 +79,19 @@ QGoMeshSeedSegmentation::QGoMeshSeedSegmentation(QWidget *parentW,
   m_ShapeFilter->ConnectSignals(filter);
 
   //=============================================================================
+
+  //Add new segmentation method
+  m_LevelSetfilter = new QGoFilterChanAndVes(this, iSampling); // 3 i.e. 3D, to
+                                                               // create a mesh
+  filter = m_BaseAlgorithmSegmentationWidget->GetNumberOfFilters();
+  m_BaseAlgorithmSegmentationWidget->AddFilter( m_LevelSetfilter->getName() );
+  m_LevelSetfilter->getWidget()->setParent(m_BaseAlgorithmSegmentationWidget);
+  m_LevelSetfilter->setPoints( getSeed() );
+  m_LevelSetfilter->setOriginalImageMC(m_OriginalImage);
+  m_BaseAlgorithmSegmentationWidget->GetFrame()->addWidget(m_LevelSetfilter->getWidget(), 4, 0, 1, -1);
+  m_LevelSetfilter->ConnectSignals(filter);
+
+//=============================================================================
 
   //Add new segmentation method
 /*

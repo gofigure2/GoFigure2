@@ -76,7 +76,7 @@ QGoFilterChanAndVes::QGoFilterChanAndVes(QObject *iParent, int iDimension):
     }
   else
     {
-    name = "2D Levelset within 1 mesh";
+    name = "2D Levelset in 1 mesh";
     }
 
   setName(name);
