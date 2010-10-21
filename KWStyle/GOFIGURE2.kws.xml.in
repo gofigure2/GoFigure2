@@ -3,7 +3,7 @@
 <ProjectLogo>@GOFIGURE2_SOURCE_DIR@/Resources/fig/splash.jpg</ProjectLogo>
 <KWStyleLogo>/home/ajg23/CVSROOT/KWStyle/Web/images/TitleBar.jpg</KWStyleLogo>
 <Description>
-<LineLength>200</LineLength>
+<LineLength>120</LineLength>
 <DeclarationOrder>
   <public>0</public>
   <protected>1</protected>

@@ -38,7 +38,6 @@
 
 =========================================================================*/
 
-
 /*=========================================================================
 
   Program:   Insight Segmentation & Registration Toolkit
@@ -101,7 +100,7 @@ MorphologicalWatershedFromMarkersImageFilter2< TInputImage, TLabelImage >
     const_cast< InputImageType * >( this->GetInput() );
 
   if ( !markerPtr || !inputPtr )
-                        { return; }
+                            { return; }
 
   // We need to
   // configure the inputs such that all the data is available.
@@ -353,7 +352,7 @@ MorphologicalWatershedFromMarkersImageFilter2< TInputImage, TLabelImage >
               break;
               }
             else
-                                  { marker = o; }
+                                      { marker = o; }
             }
           }
         if ( !collision )
