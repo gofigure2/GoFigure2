@@ -106,15 +106,18 @@ vtkLookupTableManager::~vtkLookupTableManager()
 
 std::vector< std::string > vtkLookupTableManager::GetAvailableLookupTables()
 {
-  std::string lutNames[] =
-            { "B/W", "B/W Inverse", "Spectrum", "HotMetal", "GEColor",
-            "Flow", "LONI", "LONI2", "Asymmetry", "P-Value", "ROI" };
-
   std::vector< std::string > v_lutNames;
-  for ( int i = 0; i < 10; i++ )
-    {
-    v_lutNames.push_back(lutNames[i]);
-    }
+  v_lutNames.push_back("B/W");
+  v_lutNames.push_back("B/W Inverse");
+  v_lutNames.push_back("Spectrum");
+  v_lutNames.push_back("HotMetal");
+  v_lutNames.push_back("GEColor");
+  v_lutNames.push_back("Flow");
+  v_lutNames.push_back("LONI");
+  v_lutNames.push_back("LONI2");
+  v_lutNames.push_back("Asymmetry");
+  v_lutNames.push_back("P-Value");
+  v_lutNames.push_back("ROI");
 
   return v_lutNames;
 }
