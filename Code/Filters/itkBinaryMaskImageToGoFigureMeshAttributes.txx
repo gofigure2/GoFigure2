@@ -114,6 +114,7 @@ BinaryMaskImageToGoFigureMeshAttributes< TInput, TMask >::GenerateData()
   catch(itk::ExceptionObject & e)
     {
     std::cerr << "Exception Caught: " << e << std::endl;
+    std::cerr << "shapeConverter->Update()" << std::endl;
     return;
     }
 
@@ -125,7 +126,16 @@ BinaryMaskImageToGoFigureMeshAttributes< TInput, TMask >::GenerateData()
   statConverter->SetInput(m_MaskImage);
   statConverter->SetFeatureImage(m_InputImage);
   statConverter->SetBackgroundValue(0);
-  statConverter->Update();
+  try
+    {
+    statConverter->Update();
+    }
+  catch(itk::ExceptionObject & e)
+    {
+    std::cerr << "Exception Caught: " << e << std::endl;
+    std::cerr << "statConverter->Update()" << std::endl;
+    return;
+    }
 
   StatLabelMapPointer        statLabelMap = statConverter->GetOutput();
   const StatLabelObjectType *statObject = statLabelMap->GetLabelObject(255);

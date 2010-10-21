@@ -48,6 +48,7 @@
 #include "vtkNormalEstimationFilter.h"
 #include "vtkPoissonReconstruction.h"
 #include "vtkPolyDataWriter.h"
+#include "vtkFillHolesFilter.h"
 
 #include <iostream>
 
@@ -104,20 +105,29 @@ ContourToMeshFilter< TContainer >::ProcessContours(const ContainerType & iContai
     poissonFilter->SetConfidence(1.);
     poissonFilter->Update();
 
+    vtkSmartPointer< vtkFillHolesFilter > fillFilter =
+      vtkSmartPointer< vtkFillHolesFilter >::New();
+    fillFilter->SetInput( poissonFilter->GetOutput() );
+    fillFilter->Update();
+
     if ( !m_Output )
       {
       m_Output = vtkPolyData::New();
       }
-    m_Output->ShallowCopy( poissonFilter->GetOutput() );
+    m_Output->ShallowCopy( fillFilter->GetOutput() );
 
+
+
+/*
     double bounds[6];
     m_Output->GetBounds(bounds);
 
-//        vtkSmartPointer< vtkPolyDataWriter > writer = vtkSmartPointer<
-// vtkPolyDataWriter >::New();
-//        writer->SetInput( m_Output );
-//        writer->SetFileName( "mesh.vtk" );
-//        writer->Write();
+    vtkSmartPointer< vtkPolyDataWriter > writer =
+      vtkSmartPointer< vtkPolyDataWriter >::New();
+    writer->SetInput( m_Output );
+    writer->SetFileName( "mesh.vtk" );
+    writer->Write();
+*/
     }
 }
 
