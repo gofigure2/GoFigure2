@@ -361,6 +361,7 @@ double * vtkViewImage::GetWorldCoordinatesFromImageCoordinates(int indices[3])
 
   return position;
 }
+
 //----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------

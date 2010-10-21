@@ -466,7 +466,7 @@ QGoImageView::InitializeSeedWidget()
       vtkCommand::RightButtonPressEvent);
 
     this->m_SeedWidget[i]->GetEventTranslator()->SetTranslation(
-        vtkCommand::KeyPressEvent,vtkEvent::NoModifier, 100, 0, "d", vtkWidgetEvent::Delete);
+      vtkCommand::KeyPressEvent, vtkEvent::NoModifier, 100, 0, "d", vtkWidgetEvent::Delete);
     }
 }
 

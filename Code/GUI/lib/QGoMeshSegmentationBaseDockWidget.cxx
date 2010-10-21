@@ -54,12 +54,12 @@ QGoMeshSegmentationBaseDockWidget::QGoMeshSegmentationBaseDockWidget(QWidget *iP
 
   QIcon MeshSegmentationIcon;
   //MeshSegmentationIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/meshOneClick.png")),
-    //                          QIcon::Normal, QIcon::Off);
-  MeshSegmentationIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/MeshEditing.png")),
-                              QIcon::Normal, QIcon::Off);
+  //                          QIcon::Normal, QIcon::Off);
+  MeshSegmentationIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/MeshEditing.png") ),
+                                 QIcon::Normal, QIcon::Off);
 
   this->toggleViewAction()->setIcon(MeshSegmentationIcon);
-  this->toggleViewAction()->setToolTip(tr("Mesh Segmentation"));
+  this->toggleViewAction()->setToolTip( tr("Mesh Segmentation") );
   this->toggleViewAction()->setStatusTip( tr("Create meshes manually, semi-automatically or automatically") );
 
   // update interactor behavior

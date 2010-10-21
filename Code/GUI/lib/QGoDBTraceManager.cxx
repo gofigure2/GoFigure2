@@ -232,9 +232,9 @@ void QGoDBTraceManager::SetTracesInfoContainerForVisu(
                     SLOT( CheckTheTraceInTW(uint, Qt::CheckState) ) );
 
   QObject::connect( this->m_TraceContainerInfoForVisu,
-                    SIGNAL( TraceVisibilityChanged(uint,Qt::CheckState) ),
+                    SIGNAL( TraceVisibilityChanged(uint, Qt::CheckState) ),
                     this,
-                    SLOT (ShowTheTraceInTW(uint,Qt::CheckState) ) );
+                    SLOT ( ShowTheTraceInTW(uint, Qt::CheckState) ) );
 }
 
 //-------------------------------------------------------------------------
@@ -527,8 +527,9 @@ void QGoDBTraceManager::CheckTheTraceInTW(unsigned int iTraceID,
 void QGoDBTraceManager::ShowTheTraceInTW(unsigned int iTraceID, Qt::CheckState iState)
 {
   this->m_Table->SetVisibleStateForTraceID(iTraceID,
-                                           this->m_TraceName,iState,false);
+                                           this->m_TraceName, iState, false);
 }
+
 //-------------------------------------------------------------------------
 
 //------------------------------------------------------------------------
@@ -560,15 +561,15 @@ void QGoDBTraceManager::GoToTheTrace()
 //-------------------------------------------------------------------------
 void QGoDBTraceManager::CreateCorrespondingCollection()
 {
-  std::list<unsigned int > ListCheckedTraces =
-      this->m_TraceContainerInfoForVisu->GetHighlightedElementsTraceID();
+  std::list< unsigned int > ListCheckedTraces =
+    this->m_TraceContainerInfoForVisu->GetHighlightedElementsTraceID();
   if ( ListCheckedTraces.empty() )
     {
     QMessageBox msgBox;
     msgBox.setText(
       tr("Please select at least one %1 to create the %2")
       .arg( this->m_TraceName.c_str() )
-      .arg( this->m_CollectionName.c_str()) );
+      .arg( this->m_CollectionName.c_str() ) );
     msgBox.exec();
     return;
     }

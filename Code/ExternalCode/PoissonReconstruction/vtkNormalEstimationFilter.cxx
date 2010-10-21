@@ -189,25 +189,26 @@ int vtkNormalEstimationFilter::RequestInformation(
 void vtkNormalEstimationFilter::BuildLocalConnectivity(vtkDataSet *input)
 {
   vtkPointLocator *locator = vtkPointLocator::New();
+
   locator->SetDataSet(input);
 
   double bounds[6];
-  input->GetBounds( bounds );
+  input->GetBounds(bounds);
 
   double p0[3], p1[3];
-  for( int ii = 0; ii < 3; ++ii )
+  for ( int ii = 0; ii < 3; ++ii )
     {
-    p0[ii] = bounds[2*ii];
-    p1[ii] = bounds[2*ii+1];
+    p0[ii] = bounds[2 * ii];
+    p1[ii] = bounds[2 * ii + 1];
     }
 
-  double sq_diagonal = vtkMath::Distance2BetweenPoints( p0, p1 );
-  double radius = this->RadiusRatio * sqrt( sq_diagonal );
+  double sq_diagonal = vtkMath::Distance2BetweenPoints(p0, p1);
+  double radius = this->RadiusRatio *sqrt(sq_diagonal);
 
   vtkIdList *locals = vtkIdList::New();
 
   const vtkIdType COUNT = input->GetNumberOfPoints();
-  vtkIdType iNeighbor;
+  vtkIdType       iNeighbor;
 
   // if a pair is close, add each one as a neighbor of the other
   for ( vtkIdType i = 0; i < COUNT; i++ )

@@ -199,7 +199,7 @@ void
 vtkViewImage2DCommand::Windowing(vtkInteractorStyleImage2D *isi)
 {
   // don't do the window level if the image has more than 1 channel
-  if(this->Viewer->GetIsColor())
+  if ( this->Viewer->GetIsColor() )
     {
     return;
     }

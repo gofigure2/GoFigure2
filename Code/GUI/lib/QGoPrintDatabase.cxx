@@ -506,7 +506,7 @@ void QGoPrintDatabase::SaveNewCollectionFromTraceWidgetInDBAndTW()
   this->OpenDBConnection();
   std::string  TraceName = this->m_TraceWidget->GetTraceName();
   unsigned int NewCollectionID = 0;
-  if ( TraceName != "contour" && TraceName != "mesh")
+  if ( TraceName != "contour" && TraceName != "mesh" )
     {
     return;
     }

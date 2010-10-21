@@ -43,6 +43,7 @@
 
 #include <map>
 #include <string>
+#include "QGoIOConfigure.h"
 
 struct QGOIO_EXPORT GoFigureMeshAttributes {
   std::map< std::string, int > m_TotalIntensityMap;

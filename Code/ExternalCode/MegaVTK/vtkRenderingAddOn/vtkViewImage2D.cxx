@@ -373,7 +373,7 @@ vtkViewImage2D::SetCameraToConvention(void)
   for ( i = 0; i < 3; i++ )
     {
     focaltoposition[i] = position[i] - focalpoint[i];
-    abs_focaltoposition[i] = fabs( focaltoposition[i] );
+    abs_focaltoposition[i] = fabs(focaltoposition[i]);
     }
 
   // Deal with the position :
@@ -559,7 +559,7 @@ vtkViewImage2D::SetSlicePlaneToConvention(unsigned int axis)
 void
 vtkViewImage2D::SetSlice(int slice)
 {
-  if( slice != this->Slice )
+  if ( slice != this->Slice )
     {
     vtkCamera *cam = this->Renderer ? this->Renderer->GetActiveCamera() : NULL;
 
@@ -598,8 +598,8 @@ vtkViewImage2D::UpdateSlicePlane(void)
   this->OrientationTransform->TransformPoints(oldpoints, points);
   this->SlicePlane->SetPoints(points);
 
-  points->GetPoint( 0, x );
-  this->SliceImplicitPlane->SetOrigin( x );
+  points->GetPoint(0, x);
+  this->SliceImplicitPlane->SetOrigin(x);
 }
 
 //----------------------------------------------------------------------------
@@ -631,6 +631,7 @@ vtkViewImage2D::GetWorldCoordinatesForSlice(int slice)
 
   return this->GetWorldCoordinatesFromImageCoordinates(indices);
 }
+
 //----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
@@ -835,7 +836,6 @@ vtkViewImage2D::InstallPipeline()
         vtkCommand::StartWindowLevelEvent, this->Command);
       this->InteractorStyle->AddObserver(
         vtkCommand::WindowLevelEvent, this->Command);
-
       }
     this->InteractorStyleSwitcher = this->InteractorStyle;
     this->Interactor->SetInteractorStyle(this->InteractorStyle);
@@ -961,10 +961,10 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
 //----------------------------------------------------------------------------
 //vtkQuadricLODActor*
 vtkActor *
-vtkViewImage2D::AddDataSet( vtkDataSet *dataset,
-                            vtkProperty *property,
-                            const bool & intersection,
-                            const bool & iDataVisibility )
+vtkViewImage2D::AddDataSet(vtkDataSet *dataset,
+                           vtkProperty *property,
+                           const bool & intersection,
+                           const bool & iDataVisibility)
 {
   /* return this->AddDataSet( vtkPolyData::SafeDownCast( dataset ),
      property, intersection, iDataVisibility );*/
@@ -1367,7 +1367,7 @@ vtkViewImage2D::SetImplicitPlaneFromOrientation(void)
   // Compute the vector perpendicular to the view
   for ( i = 0; i < 3; i++ )
     {
-    focaltoposition[i] = fabs( position[i] - focalpoint[i] );
+    focaltoposition[i] = fabs(position[i] - focalpoint[i]);
     }
 
   this->SliceImplicitPlane->SetNormal (focaltoposition);

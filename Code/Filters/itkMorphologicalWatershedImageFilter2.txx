@@ -48,7 +48,7 @@ MorphologicalWatershedImageFilter2< TInputImage, TOutputImage >
   // We need all the input.
   InputImagePointer input = const_cast< InputImageType * >( this->GetInput() );
   if ( !input )
-                    { return; }
+                        { return; }
   input->SetRequestedRegion( input->GetLargestPossibleRegion() );
 }
 

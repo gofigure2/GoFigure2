@@ -132,7 +132,7 @@ vtkInteractorStyleImage2D::OnMouseMove()
     case VTKIS_WINDOW_LEVEL:
       this->Superclass::OnMouseMove();
       // Send event to update Scalar bar in 3D view
-      if(this->m_LeftButtonDown)
+      if ( this->m_LeftButtonDown )
         {
         this->InvokeEvent(vtkViewImage2DCommand::WindowLevelEvent, NULL);
         }
@@ -190,7 +190,6 @@ vtkInteractorStyleImage2D::OnLeftButtonDown()
 void
 vtkInteractorStyleImage2D::OnLeftButtonUp()
 {
-
   this->m_LeftButtonDown = false;
 
   switch ( this->m_Mode )

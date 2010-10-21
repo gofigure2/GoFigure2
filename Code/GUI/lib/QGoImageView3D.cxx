@@ -269,7 +269,8 @@ void
 QGoImageView3D::Update()
 {
   int extent[6];
-  this->m_Image->GetExtent( extent );
+
+  this->m_Image->GetExtent(extent);
 
   vtkViewImage2D *View1 = this->m_Pool->GetItem(0);
   View1->SetInput(this->m_Image);
@@ -321,13 +322,13 @@ void
 QGoImageView3D::UpdateOnFirstRender()
 {
   vtkViewImage2D *View1 = this->m_Pool->GetItem(0);
+
   View1->SetViewOrientation(vtkViewImage2D::VIEW_ORIENTATION_AXIAL);
   View1->SetViewConvention(vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL);
 
   vtkViewImage2D *View2 = this->m_Pool->GetItem(1);
   View2->SetViewOrientation (vtkViewImage2D::VIEW_ORIENTATION_CORONAL);
   View2->SetViewConvention(vtkViewImage2D::VIEW_CONVENTION_NEUROLOGICAL);
-
 
   vtkViewImage2D *View3 = this->m_Pool->GetItem(2);
   View3->SetViewOrientation(vtkViewImage2D::VIEW_ORIENTATION_SAGITTAL);
@@ -758,9 +759,9 @@ QGoImageView3D::SetSliceViewXY(const int & iSlice)
 
     if ( iSlice != s )
       {
-      vtkViewImage2D* viewer = this->m_Pool->GetItem(0);
+      vtkViewImage2D *viewer = this->m_Pool->GetItem(0);
       viewer->SetSlice(iSlice);
-      this->m_Pool->SyncRender( viewer );
+      this->m_Pool->SyncRender(viewer);
       this->SliderXY->setValue(iSlice);
       emit SliceViewXYChanged(iSlice);
       }
@@ -788,9 +789,9 @@ QGoImageView3D::SetSliceViewXZ(const int & iSlice)
 
     if ( s != iSlice )
       {
-      vtkViewImage2D* viewer = this->m_Pool->GetItem(1);
+      vtkViewImage2D *viewer = this->m_Pool->GetItem(1);
       viewer->SetSlice(iSlice);
-      this->m_Pool->SyncRender( viewer );
+      this->m_Pool->SyncRender(viewer);
       this->SliderXZ->setValue(iSlice);
       emit SliceViewXZChanged(iSlice);
       }
@@ -818,9 +819,9 @@ QGoImageView3D::SetSliceViewYZ(const int & iSlice)
 
     if ( s != iSlice )
       {
-      vtkViewImage2D* viewer = this->m_Pool->GetItem(2);
+      vtkViewImage2D *viewer = this->m_Pool->GetItem(2);
       viewer->SetSlice(iSlice);
-      this->m_Pool->SyncRender( viewer );
+      this->m_Pool->SyncRender(viewer);
       this->SliderYZ->setValue(iSlice);
       emit SliceViewYZChanged(iSlice);
       }

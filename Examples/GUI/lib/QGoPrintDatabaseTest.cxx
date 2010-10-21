@@ -45,13 +45,13 @@
 
 int main(int argc, char *argv[])
 {
-  if( ( argc != 2 ) && ( argc != 5 ) )
+  if ( ( argc != 2 ) && ( argc != 5 ) )
     {
     std::cerr << "QGoPrintDatabaseTest requires 1 argument:" << std::endl;
     std::cerr << "1- test (boolean)" << std::endl;
-    std::cerr << "2- database name (if not test)" <<std::endl;
-    std::cerr << "3- Imaging Session ID (if not test)" <<std::endl;
-    std::cerr << "4- Imaging Session Name (if not test)" <<std::endl;
+    std::cerr << "2- database name (if not test)" << std::endl;
+    std::cerr << "3- Imaging Session ID (if not test)" << std::endl;
+    std::cerr << "4- Imaging Session Name (if not test)" << std::endl;
     return EXIT_FAILURE;
     }
 
@@ -61,10 +61,10 @@ int main(int argc, char *argv[])
 
   QGoPrintDatabase *win = new QGoPrintDatabase;
 
-  if( atoi( argv[1] ) == 0 )
+  if ( atoi(argv[1]) == 0 )
     {
-    win->SetDatabaseVariables( argv[2], "localhost", "gofigure",
-       "gofigure",atoi(argv[3]), argv[4]);
+    win->SetDatabaseVariables(argv[2], "localhost", "gofigure",
+                              "gofigure", atoi(argv[3]), argv[4]);
     win->FillTableFromDatabase();
     }
   //win->SetDatabaseVariables(
