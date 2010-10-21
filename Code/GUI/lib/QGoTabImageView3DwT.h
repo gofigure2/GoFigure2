@@ -240,12 +240,6 @@ signals:
 
   void SliceViewYZChanged(int Slice);
 
-  void SliceXChanged(int iSlice);
-
-  void SliceYChanged(int iSlice);
-
-  void SliceZChanged(int iSlice);
-
   void FullScreenViewChanged(int FullScreen);
 
   void UpdateBookmarkOpenActions(std::vector< QAction * > );
