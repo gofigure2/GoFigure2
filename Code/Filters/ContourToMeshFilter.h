@@ -56,6 +56,10 @@
 
 namespace itk
 {
+/**
+ * \class ContourToMeshFilter
+ * \brief
+ */
 template< typename TContainer >
 class ContourToMeshFilter:public LightObject
 {
