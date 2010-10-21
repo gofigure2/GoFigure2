@@ -116,8 +116,6 @@ ContourToMeshFilter< TContainer >::ProcessContours(const ContainerType & iContai
       }
     m_Output->ShallowCopy( fillFilter->GetOutput() );
 
-
-
 /*
     double bounds[6];
     m_Output->GetBounds(bounds);

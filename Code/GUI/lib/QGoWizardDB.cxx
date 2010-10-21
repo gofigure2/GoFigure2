@@ -278,7 +278,9 @@ void QGoWizardDB::closeEvent(QCloseEvent *iEvent)
       break;
       }
     default:
-                        {}
+      {
+      break;
+      }
     }
 
 /*  QGoOpenCreateImgSessionPage* F = dynamic_cast<QGoOpenCreateImgSessionPage*>(CurrentPage);
