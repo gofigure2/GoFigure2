@@ -82,8 +82,7 @@ public:
   typedef ShapeLabelObject< LabelType, ImageDimension > ShapeLabelObjectType;
   typedef typename ShapeLabelObjectType::Pointer        ShapeLabelObjectPointer;
 
-  typedef StatisticsLabelObject< LabelType, ImageDimension >
-  StatLabelObjectType;
+  typedef StatisticsLabelObject< LabelType, ImageDimension > StatLabelObjectType;
   typedef typename StatLabelObjectType::Pointer StatLabelObjectPointer;
 
   typedef LabelMap< ShapeLabelObjectType >    ShapeLabelMapType;
@@ -92,13 +91,14 @@ public:
   typedef LabelMap< StatLabelObjectType >    StatLabelMapType;
   typedef typename StatLabelMapType::Pointer StatLabelMapPointer;
 
-  typedef LabelImageToShapeLabelMapFilter< MaskImageType, ShapeLabelMapType >
-  ShapeConverterType;
-  typedef typename ShapeConverterType::Pointer ShapeConverterPointer;
+  typedef LabelImageToShapeLabelMapFilter< MaskImageType,
+                                           ShapeLabelMapType >  ShapeConverterType;
+  typedef typename ShapeConverterType::Pointer                  ShapeConverterPointer;
 
   typedef LabelImageToStatisticsLabelMapFilter< MaskImageType,
-                                                ImageType, StatLabelMapType >               StatConverterType;
-  typedef typename StatConverterType::Pointer StatConverterPointer;
+                                                ImageType,
+                                                StatLabelMapType >  StatConverterType;
+  typedef typename StatConverterType::Pointer                       StatConverterPointer;
 
   void SetImage(ImageType *iInput);
 
@@ -119,9 +119,11 @@ protected:
   ~BinaryMaskImageToGoFigureMeshAttributes();
 
   ImagePointer m_InputImage;
+
   MaskImagePointer m_MaskImage;
 
   unsigned int m_Size;
+
   double m_PhysicalSize;
   double m_Mean;
   double m_Sum;
