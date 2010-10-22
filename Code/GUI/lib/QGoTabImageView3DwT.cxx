@@ -2660,10 +2660,6 @@ void QGoTabImageView3DwT::ImportContours()
     this->m_DataBaseTables->ImportContours();
 
     this->GoToDefaultMenu();
-
-    //as in the import contours file, there are data such as colors,celltype
-    //and subcelltype, the lists may have been updated in the database:
-    this->m_DataBaseTables->InitializeTheComboboxesNotTraceRelated();
     }
 }
 
@@ -2723,8 +2719,6 @@ void QGoTabImageView3DwT::ImportMeshes()
     m_DataBaseTables->ImportMeshes();
 
     GoToDefaultMenu();
-
-    this->m_DataBaseTables->InitializeTheComboboxesNotTraceRelated();
     }
 }
 

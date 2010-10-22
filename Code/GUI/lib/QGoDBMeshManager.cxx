@@ -313,6 +313,6 @@ void QGoDBMeshManager::UpdateTWAndContainerForImportedTraces(
                              iVectorImportedTraces, iDatabaseConnector);
   //update the visualization and the data from visu in the container for visu:
   this->m_TraceContainerInfoForVisu->
-  UpdateVisualizationForGivenIDs< std::vector< int > >(
-    iVectorImportedTraces, false);
+    UpdateVisualizationForGivenIDs< std::vector< int > >(
+      iVectorImportedTraces, false);
 }

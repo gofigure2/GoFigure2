@@ -731,6 +731,9 @@ void QGoPrintDatabase::ImportContours()
     this->m_TracksManager->UpdateTWAndContainerForImportedTraces(NewTrackIDs,
                                                                  this->m_DatabaseConnector);
     this->CloseDBConnection();
+    //as in the import contours file, there are data such as colors,celltype
+    //and subcelltype, the lists may have been updated in the database:
+    this->InitializeTheComboboxesNotTraceRelated();
     }
 }
 
@@ -764,6 +767,7 @@ void QGoPrintDatabase::ImportMeshes()
     this->m_TracksManager->UpdateTWAndContainerForImportedTraces(NewTrackIDs,
                                                                  this->m_DatabaseConnector);
     this->CloseDBConnection();
+    this->InitializeTheComboboxesNotTraceRelated();
     }
 }
 
