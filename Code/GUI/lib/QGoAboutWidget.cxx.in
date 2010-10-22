@@ -214,6 +214,10 @@ void QGoAboutWidget::WriteLicenseText(QTabWidget *iTabWidget)
                     "VtkInria3D", iTabWidget);
   this->AddTabAbout(this->ReadLicenseText("BioimageXDCopyright.txt"),
                     "BioImageXD", iTabWidget);
+  this->AddTabAbout(
+    this->ReadLicenseText("PoissonreconstructionCopyright.txt"),
+    "Poisson Reconstruction", iTabWidget );
+
 #ifdef ENABLEFFMPEG
   this->AddTabAbout(this->ReadLicenseText("FFmpegCopyright.txt"),
                     "FFmpeg", iTabWidget);
