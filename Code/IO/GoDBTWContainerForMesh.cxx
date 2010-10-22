@@ -213,20 +213,26 @@ void GoDBTWContainerForMesh::GetValuesToFillForIntensityFromQueryResults
   std::vector< std::vector< std::string > > & ioValuesToFill)
 {
   std::vector< std::string >::iterator iterResult = iResultQuery.begin();
+
   //iResultQuery has meshid, points, value for channel0, meshid,points,
   //value for channel1....
   std::vector< std::string >::iterator iterMeshID = iVectMeshIDs.begin();
-  std::vector< std::string >           temp;
-  while ( iterMeshID != iVectMeshIDs.end() )
+
+  size_t i;
+
+  while( ( iterMeshID != iVectMeshIDs.end() ) &&
+        ( iterResult != iResultQuery.end() ) )
     {
-    iterResult++;
+    ++iterResult;
+    std::vector< std::string > temp;
     std::string Points = *iterResult;
     std::string IntensityValue;
     if ( ( Points == "0" ) || ( Points == "" ) ) //if the mesh has no points, he
                                                  // has no intensity
       {
       IntensityValue = "";
-      for ( unsigned int i = 0; i < this->m_ChannelsInfo.size(); i++ )
+
+      for ( i = 0; i < this->m_ChannelsInfo.size(); i++ )
         {
         temp.push_back(IntensityValue);
         }
@@ -234,8 +240,8 @@ void GoDBTWContainerForMesh::GetValuesToFillForIntensityFromQueryResults
       }
     else
       {
-      iterResult++;
-      unsigned int i;
+      ++iterResult;
+
       for ( i = 0; i < this->m_ChannelsInfo.size() - 1; i++ )
         {
         if ( iterResult != iResultQuery.end() )
@@ -247,11 +253,28 @@ void GoDBTWContainerForMesh::GetValuesToFillForIntensityFromQueryResults
         }
       IntensityValue = *iterResult;
       temp.push_back(IntensityValue);
-      iterResult++;
+      ++iterResult;
       }
     ioValuesToFill.push_back(temp);
-    temp.clear();
-    iterMeshID++;
+    ++iterMeshID;
+    }
+
+  bool iterMeshID_at_end = ( iterMeshID == iVectMeshIDs.end() );
+  bool iterResult_at_end = ( iterResult == iResultQuery.end() );
+
+  if( iterMeshID_at_end && !iterResult_at_end )
+    {
+    std::cout << "iterMeshID_at_end AND !iterResult_at_end" <<std::endl;
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
+    return;
+    }
+  if( !iterMeshID_at_end && iterResult_at_end )
+    {
+    std::cout << "!iterMeshID_at_end AND iterResult_at_end" <<std::endl;
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
+    return;
     }
 }
 
