@@ -91,5 +91,5 @@ int GoDBIntensityRow::DoesThisIntensityAlreadyExists(
   /*return FindOneID(DatabaseConnector,"color", "ColorID","Red",Red,"Green",Green,
   "Blue",Blue,"Alpha",Alpha,"Name",Name);*/
   return FindOneID(DatabaseConnector, "intensity", "IntensityID", "ChannelID",
-                   ChannelID, "MeshID", MeshID);
+                   ChannelID, "meshID", MeshID);
 }

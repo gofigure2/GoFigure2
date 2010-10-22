@@ -151,7 +151,7 @@ private:
 
   //void FillMeshInfoForVisu(std::vector<int> iListMeshIDs);
 
-  void SaveIntensityForMesh(std::string iLineContent,
+  void SaveIntensityForMesh(std::string & ioLineContent,
                             std::map< int, int > iMapMeshIDs,
                             std::map< int, int > iMapColorIDs);
 

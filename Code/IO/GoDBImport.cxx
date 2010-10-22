@@ -272,28 +272,28 @@ void GoDBImport::CloseDBConnection()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBImport::SaveIntensityForMesh(std::string iLineContent,
+void GoDBImport::SaveIntensityForMesh(std::string & ioLineContent,
                                       std::map< int, int > iMapMeshIDs, std::map< int, int > iMapColorIDs)
 {
   std::map< int, int > MapChannelIDs;
-  while ( this->FindFieldName(iLineContent) != "NumberOfchannel" )
+  while ( this->FindFieldName(ioLineContent) != "NumberOfchannel" )
     {
-    getline (this->m_InFile, iLineContent);
+    getline (this->m_InFile, ioLineContent);
     }
 
-  int EntitiesNumber = atoi( this->GetValueForTheLine(iLineContent).c_str() );
-  getline(this->m_InFile, iLineContent);
+  int EntitiesNumber = atoi( this->GetValueForTheLine(ioLineContent).c_str() );
+  getline(this->m_InFile, ioLineContent);
   if ( EntitiesNumber != 0 )
     {
-    while ( this->FindFieldName(iLineContent) != "NumberOfintensity" )
+    while ( this->FindFieldName(ioLineContent) != "NumberOfintensity" )
       {
-      if ( this->GetValueForTheLine(iLineContent) != "NoValueOnTheLine" )
+      if ( this->GetValueForTheLine(ioLineContent) != "NoValueOnTheLine" )
         {
         std::cout << "There was supposed to be only the name of the entity to save,the entity will not be saved";
         std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
         std::cout << std::endl;
         }
-      std::string NameEntity = this->FindFieldName(iLineContent);
+      std::string NameEntity = this->FindFieldName(ioLineContent);
       if ( NameEntity != "channel" )
         {
         std::cout << "The name of the entity should be channel but is actually different";
@@ -303,7 +303,7 @@ void GoDBImport::SaveIntensityForMesh(std::string iLineContent,
       else
         {
         GoDBChannelRow NewChannel;
-        iLineContent = this->GetValuesFromInfile< GoDBChannelRow >(NewChannel);
+        ioLineContent = this->GetValuesFromInfile< GoDBChannelRow >(NewChannel);
         this->ReplaceTheFieldWithNewIDs< GoDBChannelRow >(
           iMapColorIDs, "ColorID", NewChannel);
         int OldID = atoi( NewChannel.GetMapValue("ChannelID").c_str() );
@@ -313,19 +313,19 @@ void GoDBImport::SaveIntensityForMesh(std::string iLineContent,
         }
       }
     }
-  EntitiesNumber = atoi( this->GetValueForTheLine(iLineContent).c_str() );
-  getline(this->m_InFile, iLineContent);
+  EntitiesNumber = atoi( this->GetValueForTheLine(ioLineContent).c_str() );
+  getline(this->m_InFile, ioLineContent);
   if ( EntitiesNumber != 0 )
     {
-    while ( this->FindFieldName(iLineContent) != "ExportTraces" )
+    while ( this->FindFieldName(ioLineContent) != "ExportTraces" )
       {
-      if ( this->GetValueForTheLine(iLineContent) != "NoValueOnTheLine" )
+      if ( this->GetValueForTheLine(ioLineContent) != "NoValueOnTheLine" )
         {
         std::cout << "There was supposed to be only the name of the entity to save,the entity will not be saved";
         std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
         std::cout << std::endl;
         }
-      std::string NameEntity = this->FindFieldName(iLineContent);
+      std::string NameEntity = this->FindFieldName(ioLineContent);
       if ( NameEntity != "intensity" )
         {
         std::cout << "The name of the entity should be channel but is actually different";
@@ -335,9 +335,9 @@ void GoDBImport::SaveIntensityForMesh(std::string iLineContent,
       else
         {
         GoDBIntensityRow NewIntensity;
-        iLineContent = this->GetValuesFromInfile< GoDBIntensityRow >(NewIntensity);
+        ioLineContent = this->GetValuesFromInfile< GoDBIntensityRow >(NewIntensity);
         this->ReplaceTheFieldWithNewIDs< GoDBIntensityRow >(
-          iMapMeshIDs, "MeshID", NewIntensity);
+          iMapMeshIDs, "meshID", NewIntensity);
         this->ReplaceTheFieldWithNewIDs< GoDBIntensityRow >(
           MapChannelIDs, "ChannelID", NewIntensity);
         NewIntensity.SetField("IntensityID", "0");
