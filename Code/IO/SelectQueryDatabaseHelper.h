@@ -365,7 +365,8 @@ std::vector< std::string > ExecuteSelectQuery(vtkMySQLDatabase *iDatabaseConnect
 //iselectquery union iselectquery where ijoinon IS NULL (with or without
 // brackets in the
 //where clause, it will work
-std::string SelectWithJoinNullIncluded(std::string iSelectQuery, std::string iJoinOn);
+std::string SelectWithJoinNullIncluded(std::string iSelectQuery, std::string iJoinOn,
+                                       bool doublon = true);
 
 std::vector< std::string > GetAllSelectedValuesFromTwoTables(
   vtkMySQLDatabase *iDatabaseConnector, std::string iTableOne, std::string iTableTwo,

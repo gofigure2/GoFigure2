@@ -2270,12 +2270,17 @@ std::vector< std::string > ExecuteSelectQuery(vtkMySQLDatabase *iDatabaseConnect
 
 //-------------------------------------------------------------------------
 std::string SelectWithJoinNullIncluded(std::string iSelectQuery,
-                                       std::string iJoinOn)
+                                       std::string iJoinOn,
+                                       bool doublon)
 {
   std::stringstream QueryStream;
 
   QueryStream << iSelectQuery;
   QueryStream << " UNION ";
+  if (doublon)
+    {
+    QueryStream << " ALL ";
+    }
   //QueryStream << iSelectQuery;
   size_t            posWhere = iSelectQuery.find("WHERE", 0);
   std::stringstream SecondPart;
