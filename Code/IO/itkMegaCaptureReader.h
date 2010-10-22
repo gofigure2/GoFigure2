@@ -49,6 +49,7 @@
 #include "QGoIOConfigure.h"
 
 class vtkImageData;
+class vtkImageAppend;
 
 namespace itk
 {
@@ -95,6 +96,9 @@ public:
 
   vtkImageData * GetOutput(const unsigned int & iChannel);
 
+  vtkImageData * GetImage( const unsigned int & iChannel,
+                           const unsigned int & iT );
+
   std::map< unsigned int, vtkImageData * > GetOutputs();
 
 protected:
@@ -102,6 +106,9 @@ protected:
   ~MegaCaptureReader();
 
   void ComputeBounds();
+  void AddToVTKVolumeBuilder( const int& iCounter,
+                           const std::string& iFileName,
+                           vtkImageAppend * iBuilder );
 
   std::map< unsigned int, vtkImageData * >     m_OutputImageMap;
   GoFigureFileInfoHelperMultiIndexContainer m_FileList;
@@ -121,6 +128,7 @@ protected:
 
   bool m_TimeBased;
   bool m_Modified;
+
 private:
   MegaCaptureReader(const Self &);
   void operator=(const Self &);

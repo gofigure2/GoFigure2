@@ -51,6 +51,7 @@
 #include <sstream>
 #include <list>
 #include <map>
+#include <set>
 
 #include "QGoIOConfigure.h"
 
@@ -190,5 +191,13 @@ std::list< std::string > GetAllFileNamesForGivenZCoordPointAndChannel(
   const GoFigureFileInfoHelperMultiIndexContainer & iContainer,
   const unsigned int & iZ,
   const unsigned int & iCh);
+
+QGOIO_EXPORT
+std::map< unsigned int, std::list< std::string > >
+GetAllFileNamesForGivenChannelAndTCoords(
+    const GoFigureFileInfoHelperMultiIndexContainer & iContainer,
+    const unsigned int & iCh,
+    const std::set< unsigned int > & iT
+    );
 
 #endif

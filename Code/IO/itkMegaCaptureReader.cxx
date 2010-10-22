@@ -56,10 +56,11 @@
 
 namespace itk
 {
-/**
- *
- */
-MegaCaptureReader::MegaCaptureReader():m_FileType(GoFigure::PNG), m_TimeBased(true),
+//--------------------------------------------------------------------------
+MegaCaptureReader::
+MegaCaptureReader() :
+  m_FileType(GoFigure::PNG),
+  m_TimeBased(true),
   m_Modified(true)
 {
   m_HeaderReader = new MegaCaptureHeaderReader("");
@@ -73,20 +74,17 @@ MegaCaptureReader::MegaCaptureReader():m_FileType(GoFigure::PNG), m_TimeBased(tr
   m_MinChannel = max_uint;
   m_MaxChannel = max_uint;
 }
+//--------------------------------------------------------------------------
 
-/**
- *
- */
+//--------------------------------------------------------------------------
 MegaCaptureReader::
 ~MegaCaptureReader()
 {
   delete m_HeaderReader;
 }
+//--------------------------------------------------------------------------
 
-/**
- *
- * \param iT
- */
+//--------------------------------------------------------------------------
 void
 MegaCaptureReader::SetTimePoint(const unsigned int & iT)
 {
@@ -109,11 +107,9 @@ MegaCaptureReader::SetTimePoint(const unsigned int & iT)
       }
     }
 }
+//--------------------------------------------------------------------------
 
-/**
- *
- * \param iZs
- */
+//--------------------------------------------------------------------------
 void
 MegaCaptureReader::SetZSlice(const unsigned int & iZs)
 {
@@ -136,11 +132,9 @@ MegaCaptureReader::SetZSlice(const unsigned int & iZs)
       }
     }
 }
+//--------------------------------------------------------------------------
 
-/**
- *
- * \param iHeader
- */
+//--------------------------------------------------------------------------
 void
 MegaCaptureReader::SetMegaCaptureHeader(const std::string & iHeader)
 {
@@ -148,11 +142,9 @@ MegaCaptureReader::SetMegaCaptureHeader(const std::string & iHeader)
   m_HeaderReader->Read();
   m_Modified = true;
 }
+//--------------------------------------------------------------------------
 
-/**
- *
- * \param iUserFileList
- */
+//--------------------------------------------------------------------------
 void
 MegaCaptureReader::SetInput(const GoFigureFileInfoHelperMultiIndexContainer & iUserFileList)
 {
@@ -167,10 +159,9 @@ MegaCaptureReader::SetInput(const GoFigureFileInfoHelperMultiIndexContainer & iU
 
   ComputeBounds();
 }
+//--------------------------------------------------------------------------
 
-/**
- *
- */
+//--------------------------------------------------------------------------
 void
 MegaCaptureReader::ComputeBounds()
 {
@@ -210,10 +201,57 @@ MegaCaptureReader::ComputeBounds()
 
   m_MaxChannel = ( *r_ch_it ).m_Channel;
 }
+//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------
+void
+MegaCaptureReader::
+AddToVTKVolumeBuilder( const int& iCounter,
+                    const std::string& iFileName,
+                    vtkImageAppend *iBuilder )
+{
+  switch ( this->m_FileType )
+    {
+    case GoFigure::JPEG:
+      {
+      AddToVolumeBuilder< vtkJPEGReader >( iCounter, iFileName, iBuilder);
+      break;
+      }
+    case GoFigure::BMP:
+      {
+      AddToVolumeBuilder< vtkBMPReader >(iCounter, iFileName, iBuilder);
+      break;
+      }
+    case GoFigure::PNG:
+      {
+      AddToVolumeBuilder< vtkPNGReader >(iCounter, iFileName, iBuilder);
+      break;
+      }
+    case GoFigure::TIFF:
+      {
+      AddToVolumeBuilder< vtkTIFFReader >(iCounter, iFileName, iBuilder);
+      break;
+      }
+    case GoFigure::MHA:
+      {
+      AddToVolumeBuilder< vtkMetaImageReader >(iCounter, iFileName,
+                                               iBuilder);
+      break;
+      }
+    case GoFigure::LSM:
+      {
+      itkGenericExceptionMacro(<< "stacks of 2D LSM are not supported at this time.");
+      break;
+      }
+    default:
+      {
+      itkGenericExceptionMacro(<< "unsupported type: " << m_FileType << ".");
+      break;
+      }
+    }
+}
+//--------------------------------------------------------------------------
 
-/**
- *
- */
+//--------------------------------------------------------------------------
 void
 MegaCaptureReader::Update()
 {
@@ -254,45 +292,7 @@ MegaCaptureReader::Update()
 
       while ( f_it != f_end )
         {
-        switch ( m_FileType )
-          {
-          case GoFigure::JPEG:
-            {
-            AddToVolumeBuilder< vtkJPEGReader >(counter, ( *f_it ), volumeBuilder);
-            break;
-            }
-          case GoFigure::BMP:
-            {
-            AddToVolumeBuilder< vtkBMPReader >(counter, ( *f_it ), volumeBuilder);
-            break;
-            }
-          case GoFigure::PNG:
-            {
-            AddToVolumeBuilder< vtkPNGReader >(counter, ( *f_it ), volumeBuilder);
-            break;
-            }
-          case GoFigure::TIFF:
-            {
-            AddToVolumeBuilder< vtkTIFFReader >(counter, ( *f_it ), volumeBuilder);
-            break;
-            }
-          case GoFigure::MHA:
-            {
-            AddToVolumeBuilder< vtkMetaImageReader >(counter, ( *f_it ),
-                                                     volumeBuilder);
-            break;
-            }
-          case GoFigure::LSM:
-            {
-            itkGenericExceptionMacro(<< "stacks of 2D LSM are not supported at this time.");
-            break;
-            }
-          default:
-            {
-            itkGenericExceptionMacro(<< "unsupported type: " << m_FileType << ".");
-            break;
-            }
-          }
+        AddToVTKVolumeBuilder( counter, *f_it, volumeBuilder );
 
         ++f_it;
         ++counter;
@@ -331,7 +331,9 @@ MegaCaptureReader::Update()
       }
     }
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
 vtkImageData *
 MegaCaptureReader::GetOutput(const unsigned int & iChannel)
 {
@@ -347,7 +349,47 @@ MegaCaptureReader::GetOutput(const unsigned int & iChannel)
     return NULL;
     }
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
+vtkImageData *
+MegaCaptureReader::
+GetImage( const unsigned int & iCh,
+          const unsigned int & iT )
+{
+  std::list< std::string > filenames =
+    GetAllFileNamesForGivenTCoordAndChannel( this->m_FileList, iT, iCh );
+
+  if( filenames.empty() )
+    {
+    return NULL;
+    }
+  else
+    {
+    vtkSmartPointer< vtkImageAppend > volumeBuilder =
+      vtkSmartPointer< vtkImageAppend >::New();
+    volumeBuilder->SetAppendAxis(2);
+
+    std::list< std::string >::iterator f_it = filenames.begin();
+    std::list< std::string >::iterator f_end = filenames.end();
+    int counter = 0;
+
+    while( f_it != f_end )
+      {
+      this->AddToVTKVolumeBuilder( counter, *f_it, volumeBuilder );
+      ++f_it;
+      }
+    volumeBuilder->Update();
+    vtkImageData *temp_output = volumeBuilder->GetOutput();
+    temp_output->SetSpacing(m_HeaderReader->m_VoxelSizeX,
+                            m_HeaderReader->m_VoxelSizeY,
+                            m_HeaderReader->m_VoxelSizeZ);
+    return temp_output;
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 std::map< unsigned int, vtkImageData * >
 MegaCaptureReader::GetOutputs()
 {
