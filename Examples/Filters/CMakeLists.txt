@@ -17,9 +17,7 @@ ADD_TEST( itkvtkPolyDatatoBinaryMaskImageFilterTest
 ADD_EXECUTABLE( itkBinaryMaskImageToGoFigureMeshAttributesTest
  itkBinaryMaskImageToGoFigureMeshAttributesTest.cxx )
 TARGET_LINK_LIBRARIES( itkBinaryMaskImageToGoFigureMeshAttributesTest
-  ITKIO
-  ITKCommon
-  ITKStatistics
+  QGoGui
 )
 
 ADD_TEST( itkBinaryMaskImageToGoFigureMeshAttributesTest
@@ -31,9 +29,7 @@ ADD_TEST( itkBinaryMaskImageToGoFigureMeshAttributesTest
 ADD_EXECUTABLE( itkvtkPolyDataToGoFigureMeshAttributesTest
  itkvtkPolyDataToGoFigureMeshAttributesTest.cxx )
 TARGET_LINK_LIBRARIES( itkvtkPolyDataToGoFigureMeshAttributesTest
-  ITKIO
-  ITKCommon
-  ITKStatistics
+  QGoGui
   vtkGraphics
   vtkHybrid
 )
