@@ -40,10 +40,7 @@
 
 #include "ContourMeshContainer.h"
 
-#include "QGoImageView3D.h"
-#include "vtkProperty.h"
 #include "vtkActor.h"
-#include "vtkPolyData.h"
 
 //-------------------------------------------------------------------------
 ContourMeshContainer::ContourMeshContainer(QObject *iParent,

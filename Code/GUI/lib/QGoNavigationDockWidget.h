@@ -90,6 +90,10 @@ public slots:
 
   void SetTSlice(int iSlice);
 
+  void MoveToPreviousTimePoint();
+
+  void MoveToNextTimePoint();
+
 signals:
   void ShowAllChannelsChanged(bool iChanged);
 

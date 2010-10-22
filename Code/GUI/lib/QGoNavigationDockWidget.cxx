@@ -42,6 +42,7 @@
 #include <QLabel>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QShortcut>
 
 QGoNavigationDockWidget::QGoNavigationDockWidget(QWidget *iParent, const GoFigure::TabDimensionType & iDim):
   QDockWidget(iParent),
@@ -113,6 +114,10 @@ QGoNavigationDockWidget::QGoNavigationDockWidget(QWidget *iParent, const GoFigur
 
   QObject::connect( this->ChannelComboBox, SIGNAL( currentIndexChanged(int) ),
                     this, SIGNAL( ShowOneChannelChanged(int) ) );
+
+  // shortcuts to move through time
+  (void) new QShortcut(QKeySequence(tr("Shift+A", "Move to previous")), this, SLOT(MoveToPreviousTimePoint()));
+  (void) new QShortcut(QKeySequence(tr("Shift+D", "Move to next")), this, SLOT(MoveToNextTimePoint()));
 }
 
 //-------------------------------------------------------------------------
@@ -270,6 +275,29 @@ bool QGoNavigationDockWidget::ShowAllChannels() const
 QString QGoNavigationDockWidget::GetChannelName(const int & iIdx)
 {
   return this->ChannelComboBox->itemText(iIdx);
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoNavigationDockWidget::MoveToPreviousTimePoint()
+{
+  if(TSliceSpinBox->value() > TSliceSpinBox->minimum())
+  {
+  emit TSliceChanged(TSliceSpinBox->value() - 1);
+  }
+
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoNavigationDockWidget::MoveToNextTimePoint()
+{
+  if(TSliceSpinBox->value() < TSliceSpinBox->maximum())
+  {
+  emit TSliceChanged(TSliceSpinBox->value() + 1);
+  }
 }
 
 //-------------------------------------------------------------------------
