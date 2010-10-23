@@ -119,8 +119,25 @@ BinaryMaskImageToGoFigureMeshAttributes< TInput, TMask >::GenerateData()
     }
 
   ShapeLabelMapPointer        shapeLabelMap = shapeConverter->GetOutput();
-  const ShapeLabelObjectType *shapeObject = shapeLabelMap->GetLabelObject(255);
-
+  if ( shapeLabelMap->HasLabel( 255 ) )
+  {
+    const ShapeLabelObjectType *shapeObject = shapeLabelMap->GetLabelObject(255);
+    
+    // Number of voxels;
+    m_Size = shapeObject->Size();
+    
+    // Volume or area in um^3
+    m_PhysicalSize = shapeObject->GetPhysicalSize();
+  }
+  else
+  {
+    // Number of voxels;
+    m_Size = 0;
+    
+    // Volume or area in um^3
+    m_PhysicalSize = 0;
+  }
+  
   // stat stuff
   StatConverterPointer statConverter = StatConverterType::New();
   statConverter->SetInput(m_MaskImage);
@@ -138,17 +155,20 @@ BinaryMaskImageToGoFigureMeshAttributes< TInput, TMask >::GenerateData()
     }
 
   StatLabelMapPointer        statLabelMap = statConverter->GetOutput();
+  
+  if ( statLabelMap->HasLabel( 255 ) )
+  {
   const StatLabelObjectType *statObject = statLabelMap->GetLabelObject(255);
-
-  // Number of voxels;
-  m_Size = shapeObject->Size();
-
-  // Volume or area in um^3
-  m_PhysicalSize = shapeObject->GetPhysicalSize();
 
   m_Mean = statObject->GetMean();
 
   m_Sum = statObject->GetSum();
+  }
+  else
+  {
+    m_Mean = 0;
+    m_Sum = 0;
+  }
 }
 }
 
