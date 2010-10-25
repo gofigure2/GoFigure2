@@ -88,5 +88,6 @@ private:
 
 signals:
   void NoGofigureDatabase() const;
+  void GofigureDatabaseExists() const;
 };
 #endif

@@ -179,7 +179,7 @@ QGoMainWindow::QGoMainWindow(QWidget *iParent, Qt::WindowFlags iFlags):
   // ---------------------------------------
 
   // Database set up
-  this->m_DatabaseSetUp = false;
+  //this->m_DatabaseSetUp = false;
   if ( !this->m_DatabaseSetUp )
     {
     actionSet_Up_Database = new QAction(
@@ -191,6 +191,9 @@ QGoMainWindow::QGoMainWindow(QWidget *iParent, Qt::WindowFlags iFlags):
                       SLOT( SetUpDatabase() ) );
     QObject::connect( this->m_DBInitializationWizard, SIGNAL( DatabaseAndUserCreated() ),
                       this, SLOT( RemoveSetUpDatabaseMenu() ) );
+    QObject::connect( this->m_DBWizard, SIGNAL( GofigureDatabaseExists() ),
+                      this, SLOT(RemoveSetUpDatabaseMenu() ) );
+  
     }
   // LoadPlugins();
 }

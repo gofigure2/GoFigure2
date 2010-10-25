@@ -118,6 +118,9 @@ public:
 
   void SetIsAnOpenRecentFile(bool iIsAnOpenRecentFile);
 
+signals:
+  void GofigureDatabaseExists();
+
 protected:
   void closeEvent(QCloseEvent *iEvent);
 
