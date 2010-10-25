@@ -965,12 +965,14 @@ ChannelTimeModeBool( bool iEnable )
   // if we leave the time mode, go back to the classic mode automatically
   if(m_ChannelClassicMode)
     {
-    SetTimePointWithMegaCapture();
-
-    // Update navigation widget
     unsigned int min_ch = m_MegaCaptureReader->GetMinChannel();
     unsigned int max_ch = m_MegaCaptureReader->GetMaxChannel();
     unsigned int NumberOfChannels = max_ch - min_ch + 1;
+    // resize internal and update the internal image
+    m_InternalImages.resize(NumberOfChannels, NULL);
+    SetTimePointWithMegaCapture();
+
+    // Update navigation widget
     // Initialize the widgets with the good number of channels
     // it will update the size of the related combobox
     m_NavigationDockWidget->SetNumberOfChannels(NumberOfChannels);
@@ -984,7 +986,8 @@ ChannelTimeModeBool( bool iEnable )
         m_NavigationDockWidget->SetChannel(i);
         }
       }
-    // update visu
+
+    // update visualization
     Update();
     }
 }
@@ -1706,40 +1709,42 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureExperimental( int iChannel )
     t2 = t0;
     }
 
-    vtkSmartPointer< vtkImageAppendComponents > append_filter =
-      vtkSmartPointer< vtkImageAppendComponents >::New();
+  // resize internal image
+  m_InternalImages.resize(3, NULL);
 
-    m_InternalImages[0] = m_MegaCaptureReader->GetImage(iChannel, t0);
-    append_filter->AddInput(m_InternalImages[0]);
+  vtkSmartPointer< vtkImageAppendComponents > append_filter =
+    vtkSmartPointer< vtkImageAppendComponents >::New();
+  m_InternalImages[0] = m_MegaCaptureReader->GetImage(iChannel, t0);
+  append_filter->AddInput(m_InternalImages[0]);
 
-    m_InternalImages[1] = m_MegaCaptureReader->GetImage(iChannel, t1);
-    append_filter->AddInput(m_InternalImages[1]);
+  m_InternalImages[1] = m_MegaCaptureReader->GetImage(iChannel, t1);
+  append_filter->AddInput(m_InternalImages[1]);
 
-    m_InternalImages[2] = m_MegaCaptureReader->GetImage(iChannel, t2 );
-    append_filter->AddInput(m_InternalImages[2]);
+  m_InternalImages[2] = m_MegaCaptureReader->GetImage(iChannel, t2 );
+  append_filter->AddInput(m_InternalImages[2]);
 
-    append_filter->Update();
+  append_filter->Update();
 
-    if ( this->m_NavigationDockWidget->ShowAllChannels() )
+  if ( this->m_NavigationDockWidget->ShowAllChannels() )
+    {
+    m_Image->ShallowCopy( append_filter->GetOutput() );
+    }
+  else
+    {
+    int ch = this->m_NavigationDockWidget->GetCurrentChannel();
+    if ( ch != -1 )
       {
-      m_Image->ShallowCopy( append_filter->GetOutput() );
+      m_Image->ShallowCopy(m_InternalImages[ch]);
       }
-    else
-      {
-      int ch = this->m_NavigationDockWidget->GetCurrentChannel();
-      if ( ch != -1 )
-        {
-        m_Image->ShallowCopy(m_InternalImages[ch]);
-        }
-      }
+    }
 
-    // update channels in DockWidget
-    m_NavigationDockWidget->SetNumberOfChannels(3);
-    m_NavigationDockWidget->blockSignals(true);
-    m_NavigationDockWidget->SetChannel(0, "t-1");
-    m_NavigationDockWidget->SetChannel(1, "t");
-    m_NavigationDockWidget->SetChannel(2, "t+1");
-    m_NavigationDockWidget->blockSignals(false);
+  // update channels in DockWidget
+  m_NavigationDockWidget->SetNumberOfChannels(3);
+  m_NavigationDockWidget->blockSignals(true);
+  m_NavigationDockWidget->SetChannel(0, "t-1");
+  m_NavigationDockWidget->SetChannel(1, "t");
+  m_NavigationDockWidget->SetChannel(2, "t+1");
+  m_NavigationDockWidget->blockSignals(false);
 }
 
 //-------------------------------------------------------------------------
