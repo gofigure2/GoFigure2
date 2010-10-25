@@ -44,12 +44,26 @@ namespace itk
 {
 template< class TInput, class TMask >
 BinaryMaskImageToGoFigureMeshAttributes< TInput, TMask >::BinaryMaskImageToGoFigureMeshAttributes()
-{}
+{
+  m_IntensityComputation = true;
+  m_Mean = 0;
+  m_Sum = 0;
+  m_Size = 0;
+  m_PhysicalSize = 0;
+}
 
 template< class TInput, class TMask >
 BinaryMaskImageToGoFigureMeshAttributes< TInput, TMask >::
 ~BinaryMaskImageToGoFigureMeshAttributes()
 {}
+
+template< class TInput, class TMask >
+void
+BinaryMaskImageToGoFigureMeshAttributes< TInput, TMask >::
+SetIntensityBasedComputation( const bool& iComputation )
+{
+  m_IntensityComputation = iComputation;
+}
 
 template< class TInput, class TMask >
 void
@@ -120,56 +134,59 @@ BinaryMaskImageToGoFigureMeshAttributes< TInput, TMask >::GenerateData()
 
   ShapeLabelMapPointer        shapeLabelMap = shapeConverter->GetOutput();
   if ( shapeLabelMap->HasLabel( 255 ) )
-  {
+    {
     const ShapeLabelObjectType *shapeObject = shapeLabelMap->GetLabelObject(255);
-    
+
     // Number of voxels;
     m_Size = shapeObject->Size();
-    
+
     // Volume or area in um^3
     m_PhysicalSize = shapeObject->GetPhysicalSize();
-  }
+    }
   else
-  {
+    {
     // Number of voxels;
     m_Size = 0;
-    
+
     // Volume or area in um^3
     m_PhysicalSize = 0;
-  }
-  
-  // stat stuff
-  StatConverterPointer statConverter = StatConverterType::New();
-  statConverter->SetInput(m_MaskImage);
-  statConverter->SetFeatureImage(m_InputImage);
-  statConverter->SetBackgroundValue(0);
-  try
-    {
-    statConverter->Update();
-    }
-  catch(itk::ExceptionObject & e)
-    {
-    std::cerr << "Exception Caught: " << e << std::endl;
-    std::cerr << "statConverter->Update()" << std::endl;
-    return;
     }
 
-  StatLabelMapPointer        statLabelMap = statConverter->GetOutput();
-  
-  if ( statLabelMap->HasLabel( 255 ) )
-  {
-  const StatLabelObjectType *statObject = statLabelMap->GetLabelObject(255);
+  if( m_IntensityComputation )
+    {
+    // stat stuff
+    StatConverterPointer statConverter = StatConverterType::New();
+    statConverter->SetInput(m_MaskImage);
+    statConverter->SetFeatureImage(m_InputImage);
+    statConverter->SetBackgroundValue(0);
+    try
+      {
+      statConverter->Update();
+      }
+    catch(itk::ExceptionObject & e)
+      {
+      std::cerr << "Exception Caught: " << e << std::endl;
+      std::cerr << "statConverter->Update()" << std::endl;
+      return;
+      }
 
-  m_Mean = statObject->GetMean();
+    StatLabelMapPointer        statLabelMap = statConverter->GetOutput();
 
-  m_Sum = statObject->GetSum();
-  }
-  else
-  {
-    m_Mean = 0;
-    m_Sum = 0;
-  }
+    if ( statLabelMap->HasLabel( 255 ) )
+      {
+      const StatLabelObjectType *statObject = statLabelMap->GetLabelObject(255);
+
+      m_Mean = statObject->GetMean();
+      m_Sum = statObject->GetSum();
+      }
+    else
+      {
+      m_Mean = 0;
+      m_Sum = 0;
+      }
+    }
 }
+
 }
 
 #endif
