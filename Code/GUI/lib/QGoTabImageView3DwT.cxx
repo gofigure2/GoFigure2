@@ -1002,7 +1002,7 @@ void QGoTabImageView3DwT::handleChannelTimeMode()
   unsigned int maxch = m_MegaCaptureReader->GetMaxChannel();
   maxch += maxch;
 
-  for(int i = minch; i < maxch; ++i)
+  for(unsigned int i = minch; i < maxch; ++i)
     {
     channel << QString::number(i, 10);
     }
@@ -1691,8 +1691,8 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
 void
 QGoTabImageView3DwT::SetTimePointWithMegaCaptureExperimental( int iChannel )
 {
-  unsigned int min_t = m_MegaCaptureReader->GetMinTimePoint();
-  unsigned int max_t = m_MegaCaptureReader->GetMaxTimePoint();
+  int min_t = m_MegaCaptureReader->GetMinTimePoint();
+  int max_t = m_MegaCaptureReader->GetMaxTimePoint();
 
   int t0 = m_TCoord - 1;
   int t1 = m_TCoord;
@@ -2874,7 +2874,7 @@ QGoTabImageView3DwT::CreateMeshFromSelectedContours(
   std::vector< vtkPolyData * > list_contours;
 
   // get the time point
-  unsigned int tcoord = this->m_TCoord;
+  int tcoord = this->m_TCoord;
 
   while ( contourid_it != iListContourIDs.end() )
     {
