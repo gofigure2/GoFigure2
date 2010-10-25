@@ -46,7 +46,7 @@
 //--------------------------------------------------------------------------
 TrackStructure::TrackStructure():TraceID(0),
   ActorXY(NULL), ActorXZ(NULL), ActorYZ(NULL), ActorXYZ(NULL),
-  TCoord(0), Highlighted(false), Visible(true)
+  Highlighted(false), Visible(true)
 {
   this->rgba[0] = 1.;
   this->rgba[1] = 1.;
@@ -59,7 +59,7 @@ TrackStructure::TrackStructure():TraceID(0),
 //--------------------------------------------------------------------------
 TrackStructure::TrackStructure(const unsigned int & iTraceID,
                                            std::vector< vtkActor * > iActors,
-                                           const unsigned int & iT,
+                                           std::map<int, vtkPolyData*> iNodes,
                                            const bool & iHighlighted,
                                            const bool & iVisible,
                                            const double & r,
@@ -67,7 +67,7 @@ TrackStructure::TrackStructure(const unsigned int & iTraceID,
                                            const double & b,
                                            const double & alpha):
   TraceID(iTraceID),
-  TCoord(iT), Highlighted(iHighlighted), Visible(iVisible)
+  Highlighted(iHighlighted), Visible(iVisible)
 {
   if ( iActors.size() == 4 )
     {
@@ -81,6 +81,10 @@ TrackStructure::TrackStructure(const unsigned int & iTraceID,
     std::cerr << "iActors.size() != 4" << std::endl;
     return;
     }
+
+  // NEED A DEEPCOPY??
+  Nodes = iNodes;
+
   this->rgba[0] = r;
   this->rgba[1] = g;
   this->rgba[2] = b;
@@ -88,7 +92,7 @@ TrackStructure::TrackStructure(const unsigned int & iTraceID,
 }
 
 //--------------------------------------------------------------------------
-
+/*
 //--------------------------------------------------------------------------
 TrackStructure::TrackStructure(const unsigned int & iTraceID,
                                            std::vector< vtkActor * > iActors,
@@ -97,7 +101,7 @@ TrackStructure::TrackStructure(const unsigned int & iTraceID,
                                            const bool & iVisible,
                                            double iRgba[4]):
   TraceID(iTraceID),   //CollectionID(iCollectionID),
-  TCoord(iT), Highlighted(iHighlighted), Visible(iVisible)
+  TCoordMin(iT), Highlighted(iHighlighted), Visible(iVisible)
 {
   if ( iActors.size() == 4 )
     {
@@ -134,7 +138,7 @@ TrackStructure::TrackStructure(const unsigned int & iTraceID,
                                            const double & alpha):
   TraceID(iTraceID), ActorXY(iActorXY), ActorXZ(iActorXZ),
   ActorYZ(iActorYZ), ActorXYZ(iActorXYZ),
-  TCoord(iT), Highlighted(iHighlighted), Visible(iVisible)
+  TCoordMin(iT), Highlighted(iHighlighted), Visible(iVisible)
 {
   this->rgba[0] = r;
   this->rgba[1] = g;
@@ -143,12 +147,13 @@ TrackStructure::TrackStructure(const unsigned int & iTraceID,
 }
 
 //--------------------------------------------------------------------------
+*/
 
 //--------------------------------------------------------------------------
 TrackStructure::TrackStructure(const TrackStructure & iE):
   TraceID(iE.TraceID), ActorXY(iE.ActorXY), ActorXZ(iE.ActorXZ),
-  ActorYZ(iE.ActorYZ), ActorXYZ(iE.ActorXYZ),
-  TCoord(iE.TCoord), Highlighted(iE.Highlighted), Visible(iE.Visible)
+  ActorYZ(iE.ActorYZ), ActorXYZ(iE.ActorXYZ), Nodes(iE.Nodes),
+  Highlighted(iE.Highlighted), Visible(iE.Visible)
 {
   for ( int i = 0; i < 4; i++ )
     {
