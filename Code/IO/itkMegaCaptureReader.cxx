@@ -50,8 +50,6 @@
 #include "vtkTIFFReader.h"
 #include "vtkMetaImageReader.h"
 
-#include "vtkSmartPointer.h"
-
 #include "VolumeBuilderHelper.h"
 
 namespace itk
@@ -352,7 +350,7 @@ MegaCaptureReader::GetOutput(const unsigned int & iChannel)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-vtkImageData *
+vtkSmartPointer<vtkImageData>
 MegaCaptureReader::
 GetImage( const unsigned int & iCh,
           const unsigned int & iT )
@@ -381,8 +379,8 @@ GetImage( const unsigned int & iCh,
       ++f_it;
       }
     volumeBuilder->Update();
-    vtkImageData *temp_output = vtkImageData::New();
-    temp_output->DeepCopy(volumeBuilder->GetOutput());
+    vtkSmartPointer<vtkImageData> temp_output = vtkSmartPointer<vtkImageData>::New();
+    temp_output->ShallowCopy(volumeBuilder->GetOutput());
     temp_output->SetSpacing(m_HeaderReader->m_VoxelSizeX,
                             m_HeaderReader->m_VoxelSizeY,
                             m_HeaderReader->m_VoxelSizeZ);

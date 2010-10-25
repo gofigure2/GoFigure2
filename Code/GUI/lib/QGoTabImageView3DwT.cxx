@@ -1714,13 +1714,16 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureExperimental( int iChannel )
 
   vtkSmartPointer< vtkImageAppendComponents > append_filter =
     vtkSmartPointer< vtkImageAppendComponents >::New();
-  m_InternalImages[0] = m_MegaCaptureReader->GetImage(iChannel, t0);
+  vtkSmartPointer<vtkImageData> i0 = m_MegaCaptureReader->GetImage(iChannel, t0);
+  m_InternalImages[0] = i0;
   append_filter->AddInput(m_InternalImages[0]);
 
-  m_InternalImages[1] = m_MegaCaptureReader->GetImage(iChannel, t1);
+  vtkSmartPointer<vtkImageData> i1 = m_MegaCaptureReader->GetImage(iChannel, t1);
+  m_InternalImages[1] = i1;
   append_filter->AddInput(m_InternalImages[1]);
 
-  m_InternalImages[2] = m_MegaCaptureReader->GetImage(iChannel, t2 );
+  vtkSmartPointer<vtkImageData> i2 = m_MegaCaptureReader->GetImage(iChannel, t2);
+  m_InternalImages[2] = i2;
   append_filter->AddInput(m_InternalImages[2]);
 
   append_filter->Update();
