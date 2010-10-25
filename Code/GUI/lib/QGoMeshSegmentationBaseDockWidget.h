@@ -75,6 +75,8 @@ public:
    */
   void SetChannel(int iChannel);
 
+  void SetNumberOfChannels(int iNumberOfChannels);
+
   bool GetReeditMode();
 
   void SetReeditMode(bool iEnable);

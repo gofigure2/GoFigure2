@@ -114,6 +114,8 @@ public:
    */
   void SetChannel(int iChannel);
 
+  void SetNumberOfChannels(int iNumberOfChannels);
+
 public slots:
   /**
    * \brief Set the value of the radius.
@@ -144,6 +146,8 @@ signals:
    * \param[in] iQString Name of the channel.
    */
   void addChannel(QString);
+
+  void setNumberOfChannels(int);
 
   void MeshCreated(vtkPolyData *);
 
