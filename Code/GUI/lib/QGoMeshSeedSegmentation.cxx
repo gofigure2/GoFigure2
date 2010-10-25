@@ -94,7 +94,6 @@ QGoMeshSeedSegmentation::QGoMeshSeedSegmentation(QWidget *parentW,
 //=============================================================================
 
   //Add new segmentation method
-/*
   m_Watershed = new QGoFilterWatershed(this, iSampling);   // 3 i.e. 3D, to
                                                            // create a mesh
   filter = m_BaseAlgorithmSegmentationWidget->GetNumberOfFilters();
@@ -104,7 +103,7 @@ QGoMeshSeedSegmentation::QGoMeshSeedSegmentation(QWidget *parentW,
   m_Watershed->setOriginalImageMC(m_OriginalImage);
   m_BaseAlgorithmSegmentationWidget->GetFrame()->addWidget(m_Watershed->getWidget(), 4, 0, 1, -1);
   m_Watershed->ConnectSignals(filter);
-*/
+
 //=============================================================================
 //=============================================================================
 
