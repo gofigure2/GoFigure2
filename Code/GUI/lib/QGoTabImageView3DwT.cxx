@@ -884,9 +884,9 @@ QGoTabImageView3DwT::CreateAllViewActions()
 
   this->m_ViewActions.push_back( m_NavigationDockWidget->toggleViewAction() );
 
-  QAction *separator3 = new QAction(this);
-  separator3->setSeparator(true);
-  this->m_ViewActions.push_back(separator3);
+  QAction *separator5 = new QAction(this);
+  separator5->setSeparator(true);
+  this->m_ViewActions.push_back(separator5);
 
   this->m_ViewActions.push_back( m_DataBaseTables->toggleViewAction() );
 
@@ -894,9 +894,9 @@ QGoTabImageView3DwT::CreateAllViewActions()
   QObject::connect( m_DataBaseTables->toggleViewAction(), SIGNAL( toggled(bool) ),
                     this, SLOT( CloseTabRequest(bool) ) );
 
-  QAction *separator5 = new QAction(this);
-  separator5->setSeparator(true);
-  this->m_ViewActions.push_back(separator5);
+  QAction *separator6 = new QAction(this);
+  separator6->setSeparator(true);
+  this->m_ViewActions.push_back(separator6);
 
   ///TODO create group actions for views changing
   QAction *Change3DPerspectiveToAxialAction =
@@ -935,9 +935,9 @@ QGoTabImageView3DwT::CreateAllViewActions()
   QObject::connect( Change3DPerspectiveToSagittalAction, SIGNAL( triggered() ),
                     this, SLOT( Change3DPerspectiveToSagittal() ) );
 
-  QAction *separator6 = new QAction(this);
-  separator6->setSeparator(true);
-  this->m_ViewActions.push_back(separator6);
+  QAction *separator7 = new QAction(this);
+  separator7->setSeparator(true);
+  this->m_ViewActions.push_back(separator7);
 
   // Enable volume rendering
   QAction *VolumeRenderingAction =
