@@ -57,6 +57,10 @@
 
 // construct mesh
 #include "vtkMarchingCubes.h"
+// keep the largest region
+#include "vtkPolyDataConnectivityFilter.h"
+// fill the holes!
+#include "vtkFillHolesFilter.h"
 // and smooth it...!
 #include "vtkSmoothPolyDataFilter.h"
 
@@ -478,29 +482,32 @@ QGoFilterSemiAutoBase::ReconstructMesh(vtkImageData *iInputImage, const double &
   contours->SetComputeNormals(0);
   contours->SetComputeScalars(0);
   contours->SetNumberOfContours(1);
-
-  //Update required here!!
   contours->Update();
 
-  // smooth the output mesh..?
-/*
-  std::cout<< "time consumming??" << std::endl;
+  // fill holes
+  vtkFillHolesFilter* fillFilter = vtkFillHolesFilter::New();
+  fillFilter->SetInput( contours->GetOutput() );
+  fillFilter->Update();
 
   vtkSmoothPolyDataFilter* smoother =
       vtkSmoothPolyDataFilter::New();
-  smoother->SetInput(contours->GetOutput());
+  smoother->SetInput(fillFilter->GetOutput());
   smoother->SetNumberOfIterations(400);
-
-  //Update required here!!
   smoother->Update();
 
-  std::cout<< "hopefully not..." << std::endl;
-*/
+  // keep the larget region
+  vtkPolyDataConnectivityFilter* connectivityFilter = vtkPolyDataConnectivityFilter::New();
+  connectivityFilter->SetInput(smoother->GetOutputDataObject(0));
+  connectivityFilter->SetExtractionModeToLargestRegion();
+  connectivityFilter->Update();
 
   vtkPolyData *output = vtkPolyData::New();
-  output->DeepCopy( contours->GetOutput() );
+  output->DeepCopy( connectivityFilter->GetOutput() );
 
+  smoother->Delete();
+  connectivityFilter->Delete();
   contours->Delete();
+  fillFilter->Delete();
 
   return output;
 }
