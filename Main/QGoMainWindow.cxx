@@ -182,7 +182,7 @@ QGoMainWindow::QGoMainWindow(QWidget *iParent, Qt::WindowFlags iFlags):
   //this->m_DatabaseSetUp = false;
   if ( !this->m_DatabaseSetUp )
     {
-    actionSet_Up_Database = new QAction(
+    /*actionSet_Up_Database = new QAction(
       tr("Set Up Database"), this->menuDatabase);
     this->menuDatabase->addAction(actionSet_Up_Database);
     m_DBInitializationWizard = new QGoDBInitializationWizard(this);
@@ -192,8 +192,13 @@ QGoMainWindow::QGoMainWindow(QWidget *iParent, Qt::WindowFlags iFlags):
     QObject::connect( this->m_DBInitializationWizard, SIGNAL( DatabaseAndUserCreated() ),
                       this, SLOT( RemoveSetUpDatabaseMenu() ) );
     QObject::connect( this->m_DBWizard, SIGNAL( GofigureDatabaseExists() ),
-                      this, SLOT(RemoveSetUpDatabaseMenu() ) );
-  
+                      this, SLOT(RemoveSetUpDatabaseMenu() ) ); */
+    this->AddSetUpDatabaseMenu();
+    }
+  else
+    {
+    QObject::connect(this->m_DBWizard, SIGNAL ( NoGofigureDatabase () ),
+                     this, SLOT(AddSetUpDatabaseMenu() ) );
     }
   // LoadPlugins();
 }
@@ -1150,7 +1155,24 @@ void QGoMainWindow::RemoveSetUpDatabaseMenu()
   this->actionSet_Up_Database->setEnabled(false);
   this->m_DatabaseSetUp = true;
 }
+//--------------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------------
+void QGoMainWindow::AddSetUpDatabaseMenu()
+{
+  actionSet_Up_Database = new QAction(
+      tr("Set Up Database"), this->menuDatabase);
+    this->menuDatabase->addAction(actionSet_Up_Database);
+  this->actionSet_Up_Database->setEnabled(true);
+  m_DBInitializationWizard = new QGoDBInitializationWizard(this);
+  this->m_DBInitializationWizard->hide();
+  QObject::connect( this->actionSet_Up_Database, SIGNAL( triggered() ),
+                    SLOT( SetUpDatabase() ) );
+  QObject::connect( this->m_DBInitializationWizard, SIGNAL( DatabaseAndUserCreated() ),
+                    this, SLOT( RemoveSetUpDatabaseMenu() ) );
+  QObject::connect( this->m_DBWizard, SIGNAL( GofigureDatabaseExists() ),
+                    this, SLOT(RemoveSetUpDatabaseMenu() ) );  
+}
 //--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------

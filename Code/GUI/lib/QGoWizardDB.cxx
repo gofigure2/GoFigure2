@@ -101,6 +101,8 @@ QGoWizardDB::QGoWizardDB(QWidget *iParent):
   setWindowTitle( tr("Use DataBase") );
   QObject::connect( this->m_ConnectServerPage, SIGNAL( NoGofigureDatabase() ),
                     this, SLOT( hide() ) );
+  QObject::connect( this->m_ConnectServerPage, SIGNAL( NoGofigureDatabase() ),
+                    this, SIGNAL( NoGofigureDatabase() ) );
   QObject::connect( this->m_ConnectServerPage, SIGNAL( GofigureDatabaseExists() ),
                     this, SIGNAL ( GofigureDatabaseExists() ) );
 }

@@ -139,6 +139,7 @@ private slots:
   void tobedone(std::vector< vtkImageData * > );
 
   void RemoveSetUpDatabaseMenu();
+  void AddSetUpDatabaseMenu();
 
 private:
 

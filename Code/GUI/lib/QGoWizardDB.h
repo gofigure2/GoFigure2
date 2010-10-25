@@ -120,6 +120,7 @@ public:
 
 signals:
   void GofigureDatabaseExists();
+  void NoGofigureDatabase();
 
 protected:
   void closeEvent(QCloseEvent *iEvent);
