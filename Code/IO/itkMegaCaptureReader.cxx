@@ -377,10 +377,12 @@ GetImage( const unsigned int & iCh,
     while( f_it != f_end )
       {
       this->AddToVTKVolumeBuilder( counter, *f_it, volumeBuilder );
+      ++ counter;
       ++f_it;
       }
     volumeBuilder->Update();
-    vtkImageData *temp_output = volumeBuilder->GetOutput();
+    vtkImageData *temp_output = vtkImageData::New();
+    temp_output->DeepCopy(volumeBuilder->GetOutput());
     temp_output->SetSpacing(m_HeaderReader->m_VoxelSizeX,
                             m_HeaderReader->m_VoxelSizeY,
                             m_HeaderReader->m_VoxelSizeZ);

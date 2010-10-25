@@ -97,6 +97,7 @@
 #include <QSpinBox>
 #include <QVBoxLayout>
 #include <QColorDialog>
+#include <QInputDialog>
 
 #include <set>
 
@@ -123,6 +124,9 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent):
 {
   m_Image = vtkImageData::New();
   m_Seeds = vtkPoints::New();
+
+  m_ChannelClassicMode = true;
+  m_ChannelOfInterest = 0;
 
   m_HighlightedContoursProperty = vtkProperty::New();
   m_HighlightedContoursProperty->SetColor(1., 0., 0.);
@@ -661,6 +665,48 @@ QGoTabImageView3DwT::SetRendererWindow(int iValue)
 void
 QGoTabImageView3DwT::CreateAllViewActions()
 {
+  QActionGroup *groupMode = new QActionGroup(this);
+
+  QAction *ChannelClassic = new QAction(tr("Classic-View"), this);
+
+  ChannelClassic->setCheckable(true);
+  ChannelClassic->setChecked(true);
+
+  groupMode->addAction(ChannelClassic);
+
+  this->m_ViewActions.push_back(ChannelClassic);
+
+  //-------------------------
+  //
+  //-------------------------
+
+  QAction *ChannelTime = new QAction(tr("Time-View"), this);
+
+  ChannelTime->setCheckable(true);
+  ChannelTime->setChecked(false);
+
+  groupMode->addAction(ChannelTime);
+
+  this->m_ViewActions.push_back(ChannelTime);
+
+  QObject::connect( ChannelTime, SIGNAL( triggered() ),
+                    this, SLOT( handleChannelTimeMode() ) );
+
+  QObject::connect( ChannelTime, SIGNAL( toggled( bool ) ),
+                    this, SLOT( ChannelTimeModeBool( bool ) ) );
+
+  //-------------------------
+  //
+  //-------------------------
+
+  QAction *separator44 = new QAction(this);
+  separator44->setSeparator(true);
+  this->m_ViewActions.push_back(separator44);
+
+  //-------------------------
+  //
+  //-------------------------
+
   QActionGroup *group = new QActionGroup(this);
 
   QAction *QuadViewAction = new QAction(tr("Quad-View"), this);
@@ -910,7 +956,75 @@ QGoTabImageView3DwT::CreateAllViewActions()
 }
 
 //-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+ChannelTimeMode( int iEnable )
+{
+ //Update internal images
+  if(m_ChannelClassicMode)
+    {
+    SetTimePointWithMegaCapture();
+    }
+  else
+    {
+    SetTimePointWithMegaCaptureExperimental( m_ChannelOfInterest );
+    }
+  Update();
+}
 
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+ChannelTimeModeBool( bool iEnable )
+{
+  m_ChannelClassicMode = !iEnable;
+}
+
+//-------------------------------------------------------------------------
+
+void QGoTabImageView3DwT::handleChannelTimeMode()
+{
+  bool ok;
+  QStringList channel;
+  unsigned int minch = m_MegaCaptureReader->GetMinChannel();
+  unsigned int maxch = m_MegaCaptureReader->GetMaxChannel();
+  maxch += maxch;
+
+  for(int i = minch; i < maxch; ++i)
+    {
+    channel << QString::number(i, 10);
+    }
+
+  QString item = QInputDialog::getItem(this,
+      tr("Channel selection"),
+      tr("Please select the channel you want to track"),
+      channel, 0, false, &ok);
+
+  if ( ok )
+    {
+      std::cout << "user selected an item and pressed OK" << std::endl;
+      // use the item
+      int value = item.toInt(&ok, 10);
+      std::cout << "value: " << value << std::endl;
+      // emit with channel...
+      m_ChannelOfInterest = m_ChannelOfInterest;
+      ChannelTimeMode( value );
+    }
+  else
+    {
+    std::cout << "user selected an item and pressed CANCEL" << std::endl;
+    }
+
+  // connect signal
+  //value change
+  //close to update visu
+
+  //QObject::connect( ChannelTime, SIGNAL( toggled(bool) ),
+    //                  this, SLOT( ChannelTimeMode(bool) ) );
+
+  //QObject::connect( ChannelTime, SIGNAL( toggled(bool) ),
+  //                  this, SLOT( ChannelTimeMode(bool) ) );
+}
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::CreateToolsActions()
@@ -1519,6 +1633,8 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
 void
 QGoTabImageView3DwT::SetTimePointWithMegaCapture()
 {
+  /// todo check if we are in classic visu mode
+  /// or in "channel through time" mode
   m_MegaCaptureReader->SetTimePoint(m_TCoord);
 
   unsigned int min_ch = m_MegaCaptureReader->GetMinChannel();
@@ -1563,6 +1679,66 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
     m_Image->ShallowCopy( m_MegaCaptureReader->GetOutput(min_ch) );
     m_Image->SetNumberOfScalarComponents(1);
     }
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::SetTimePointWithMegaCaptureExperimental( int iChannel )
+{
+  unsigned int min_t = m_MegaCaptureReader->GetMinTimePoint();
+  unsigned int max_t = m_MegaCaptureReader->GetMaxTimePoint();
+
+  int t0 = m_TCoord - 1;
+  int t1 = m_TCoord;
+  int t2 = m_TCoord + 1;
+
+  // special case if we are at the borders
+  if(m_TCoord == min_t)
+    {
+    t0 = t2;
+    }
+
+  if(m_TCoord == max_t)
+    {
+    t2 = t0;
+    }
+
+    vtkSmartPointer< vtkImageAppendComponents > append_filter =
+      vtkSmartPointer< vtkImageAppendComponents >::New();
+
+    m_InternalImages[0] = m_MegaCaptureReader->GetImage(iChannel, t0);
+    append_filter->AddInput(m_InternalImages[0]);
+
+    m_InternalImages[1] = m_MegaCaptureReader->GetImage(iChannel, t1);
+    append_filter->AddInput(m_InternalImages[1]);
+
+    m_InternalImages[2] = m_MegaCaptureReader->GetImage(iChannel, t2 );
+    append_filter->AddInput(m_InternalImages[2]);
+
+    append_filter->Update();
+
+    if ( this->m_NavigationDockWidget->ShowAllChannels() )
+      {
+      m_Image->ShallowCopy( append_filter->GetOutput() );
+      }
+    else
+      {
+      int ch = this->m_NavigationDockWidget->GetCurrentChannel();
+      if ( ch != -1 )
+        {
+        m_Image->ShallowCopy(m_InternalImages[ch]);
+        }
+      }
+
+    // update channels in DockWidget
+    m_NavigationDockWidget->SetNumberOfChannels(3);
+    m_NavigationDockWidget->blockSignals(true);
+    m_NavigationDockWidget->SetChannel(0, "t-1");
+    m_NavigationDockWidget->SetChannel(1, "t");
+    m_NavigationDockWidget->SetChannel(2, "t+1");
+    m_NavigationDockWidget->blockSignals(false);
 }
 
 //-------------------------------------------------------------------------
@@ -1650,7 +1826,14 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
       else
         {
         m_TCoord = iTimePoint;
-        SetTimePointWithMegaCapture();
+        if(m_ChannelClassicMode)
+          {
+          SetTimePointWithMegaCapture();
+          }
+        else
+          {
+          SetTimePointWithMegaCaptureExperimental( m_ChannelOfInterest );
+          }
         emit TimePointChanged(m_TCoord);
         }
       }
@@ -1922,10 +2105,12 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
         append_filter->AddInput(m_InternalImages[0]);
         }
       }
+
     append_filter->Update();
 
     m_Image->ShallowCopy( append_filter->GetOutput() );
     Update();
+
     }
   else
     {

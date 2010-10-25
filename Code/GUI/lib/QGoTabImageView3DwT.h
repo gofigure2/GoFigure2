@@ -518,6 +518,8 @@ protected:
 
   void SetTimePointWithMegaCapture();
 
+  void SetTimePointWithMegaCaptureExperimental(int channel);
+
   bool m_TraceWidgetRequiered;
 protected slots:
   void AddBookmark();
@@ -596,7 +598,17 @@ protected slots:
   */
   void SetTheContainersForDB();
 
+  void ChannelTimeMode( int );
+
+  void ChannelTimeModeBool( bool );
+
+  void handleChannelTimeMode();
+
 private:
+
+  bool m_ChannelClassicMode;
+  int  m_ChannelOfInterest;
+
   Q_DISABLE_COPY(QGoTabImageView3DwT);
 };
 
