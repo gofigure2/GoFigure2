@@ -958,26 +958,35 @@ QGoTabImageView3DwT::CreateAllViewActions()
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-ChannelTimeMode( int iEnable )
-{
- //Update internal images
-  if(m_ChannelClassicMode)
-    {
-    SetTimePointWithMegaCapture();
-    }
-  else
-    {
-    SetTimePointWithMegaCaptureExperimental( m_ChannelOfInterest );
-    }
-  Update();
-}
-
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
 ChannelTimeModeBool( bool iEnable )
 {
   m_ChannelClassicMode = !iEnable;
+
+  // if we leave the time mode, go back to the classic mode automatically
+  if(m_ChannelClassicMode)
+    {
+    SetTimePointWithMegaCapture();
+
+    // Update navigation widget
+    unsigned int min_ch = m_MegaCaptureReader->GetMinChannel();
+    unsigned int max_ch = m_MegaCaptureReader->GetMaxChannel();
+    unsigned int NumberOfChannels = max_ch - min_ch + 1;
+    // Initialize the widgets with the good number of channels
+    // it will update the size of the related combobox
+    m_NavigationDockWidget->SetNumberOfChannels(NumberOfChannels);
+
+    // Set up QSpinBox in m_VideoRecorderWidget
+    if ( NumberOfChannels > 1 )
+      {
+      m_NavigationDockWidget->SetChannel(0);
+      for ( unsigned int i = 1; i < NumberOfChannels; i++ )
+        {
+        m_NavigationDockWidget->SetChannel(i);
+        }
+      }
+    // update visu
+    Update();
+    }
 }
 
 //-------------------------------------------------------------------------
@@ -1007,23 +1016,15 @@ void QGoTabImageView3DwT::handleChannelTimeMode()
       int value = item.toInt(&ok, 10);
       std::cout << "value: " << value << std::endl;
       // emit with channel...
-      m_ChannelOfInterest = m_ChannelOfInterest;
-      ChannelTimeMode( value );
+      // keep track of channel of interest when we move through time
+      m_ChannelOfInterest = value;
+      SetTimePointWithMegaCaptureExperimental( value );
+      Update();
     }
   else
     {
     std::cout << "user selected an item and pressed CANCEL" << std::endl;
     }
-
-  // connect signal
-  //value change
-  //close to update visu
-
-  //QObject::connect( ChannelTime, SIGNAL( toggled(bool) ),
-    //                  this, SLOT( ChannelTimeMode(bool) ) );
-
-  //QObject::connect( ChannelTime, SIGNAL( toggled(bool) ),
-  //                  this, SLOT( ChannelTimeMode(bool) ) );
 }
 //-------------------------------------------------------------------------
 void
@@ -1828,10 +1829,13 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
         m_TCoord = iTimePoint;
         if(m_ChannelClassicMode)
           {
+          std::cout << "CLASSIC mode" << std::endl;
           SetTimePointWithMegaCapture();
           }
         else
           {
+          std::cout << "TRACK mode" << std::endl;
+          std::cout << "CHANNEL: " << m_ChannelOfInterest << std::endl;
           SetTimePointWithMegaCaptureExperimental( m_ChannelOfInterest );
           }
         emit TimePointChanged(m_TCoord);

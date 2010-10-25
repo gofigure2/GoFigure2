@@ -598,8 +598,6 @@ protected slots:
   */
   void SetTheContainersForDB();
 
-  void ChannelTimeMode( int );
-
   void ChannelTimeModeBool( bool );
 
   void handleChannelTimeMode();
