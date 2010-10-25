@@ -690,18 +690,18 @@ QGoTabImageView3DwT::CreateAllViewActions()
   this->m_ViewActions.push_back(ChannelTime);
 
   QObject::connect( ChannelTime, SIGNAL( triggered() ),
-                    this, SLOT( handleChannelTimeMode() ) );
+                    this, SLOT( LoadChannelTime() ) );
 
   QObject::connect( ChannelTime, SIGNAL( toggled( bool ) ),
-                    this, SLOT( ChannelTimeModeBool( bool ) ) );
+                    this, SLOT( ChannelTimeMode( bool ) ) );
 
   //-------------------------
   //
   //-------------------------
 
-  QAction *separator44 = new QAction(this);
-  separator44->setSeparator(true);
-  this->m_ViewActions.push_back(separator44);
+  QAction *separator1 = new QAction(this);
+  separator1->setSeparator(true);
+  this->m_ViewActions.push_back(separator1);
 
   //-------------------------
   //
@@ -786,9 +786,9 @@ QGoTabImageView3DwT::CreateAllViewActions()
   QObject::connect( FullScreenXYZAction, SIGNAL( triggered() ),
                     this, SLOT( FullScreenViewXYZ() ) );
 
-  QAction *separator5 = new QAction(this);
-  separator5->setSeparator(true);
-  this->m_ViewActions.push_back(separator5);
+  QAction *separator2 = new QAction(this);
+  separator2->setSeparator(true);
+  this->m_ViewActions.push_back(separator2);
 
   QAction *ActionDisplayAnnotations =
     new QAction(tr("Display annotations"), this);
@@ -837,10 +837,10 @@ QGoTabImageView3DwT::CreateAllViewActions()
 
   this->m_ViewActions.push_back(DisplayCube3D);
 
-  QAction *separator = new QAction(this);
-  separator->setSeparator(true);
+  QAction *separator3 = new QAction(this);
+  separator3->setSeparator(true);
 
-  this->m_ViewActions.push_back(separator);
+  this->m_ViewActions.push_back(separator3);
 
   QAction *LookupTableAction = new QAction(tr("Lookup Table"), this);
   LookupTableAction->setStatusTip( tr(" Change the associated lookup table") );
@@ -878,9 +878,9 @@ QGoTabImageView3DwT::CreateAllViewActions()
   QObject::connect( m_BackgroundColorAction, SIGNAL( triggered() ),
                     this, SLOT( ChangeBackgroundColor() ) );
 
-  QAction *separator2 = new QAction(this);
-  separator2->setSeparator(true);
-  this->m_ViewActions.push_back(separator2);
+  QAction *separator4 = new QAction(this);
+  separator4->setSeparator(true);
+  this->m_ViewActions.push_back(separator4);
 
   this->m_ViewActions.push_back( m_NavigationDockWidget->toggleViewAction() );
 
@@ -894,9 +894,9 @@ QGoTabImageView3DwT::CreateAllViewActions()
   QObject::connect( m_DataBaseTables->toggleViewAction(), SIGNAL( toggled(bool) ),
                     this, SLOT( CloseTabRequest(bool) ) );
 
-  QAction *separator4 = new QAction(this);
-  separator4->setSeparator(true);
-  this->m_ViewActions.push_back(separator4);
+  QAction *separator5 = new QAction(this);
+  separator5->setSeparator(true);
+  this->m_ViewActions.push_back(separator5);
 
   ///TODO create group actions for views changing
   QAction *Change3DPerspectiveToAxialAction =
@@ -958,7 +958,7 @@ QGoTabImageView3DwT::CreateAllViewActions()
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-ChannelTimeModeBool( bool iEnable )
+ChannelTimeMode( bool iEnable )
 {
   m_ChannelClassicMode = !iEnable;
 
@@ -994,7 +994,7 @@ ChannelTimeModeBool( bool iEnable )
 
 //-------------------------------------------------------------------------
 
-void QGoTabImageView3DwT::handleChannelTimeMode()
+void QGoTabImageView3DwT::LoadChannelTime()
 {
   bool ok;
   QStringList channel;
@@ -1021,7 +1021,7 @@ void QGoTabImageView3DwT::handleChannelTimeMode()
       // emit with channel...
       // keep track of channel of interest when we move through time
       m_ChannelOfInterest = value;
-      SetTimePointWithMegaCaptureExperimental( value );
+      SetTimePointWithMegaCaptureTimeChannels( value );
       Update();
     }
   else
@@ -1061,9 +1061,9 @@ void QGoTabImageView3DwT::CreateModeActions()
   // Call superclass
   QGoTabElementBase::CreateModeActions(group);
 
-  QAction *separator6 = new QAction(this);
-  separator6->setSeparator(true);
-  this->m_ModeActions.push_back(separator6);
+  QAction *separator1 = new QAction(this);
+  separator1->setSeparator(true);
+  this->m_ModeActions.push_back(separator1);
 
   //--------------------------------//
   //  Contour segmentation mode     //
@@ -1117,9 +1117,9 @@ void QGoTabImageView3DwT::CreateModeActions()
                     this,
                     SLOT( ShowTraceDockWidgetForMesh(bool) ) );
 
-  QAction *separator5 = new QAction(this);
-  separator5->setSeparator(true);
-  this->m_ModeActions.push_back(separator5);
+  QAction *separator2 = new QAction(this);
+  separator2->setSeparator(true);
+  this->m_ModeActions.push_back(separator2);
 
   //---------------------------------//
   //       Actor picking  mode       //
@@ -1184,9 +1184,9 @@ void QGoTabImageView3DwT::CreateModeActions()
 
   // NOT A MODE: ANNOTATION
 
-  QAction *separator = new QAction(this);
-  separator->setSeparator(true);
-  this->m_ModeActions.push_back(separator);
+  QAction *separator3 = new QAction(this);
+  separator3->setSeparator(true);
+  this->m_ModeActions.push_back(separator3);
 
   //---------------------------------//
   //         Distance    mode        //
@@ -1689,7 +1689,7 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SetTimePointWithMegaCaptureExperimental( int iChannel )
+QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels( int iChannel )
 {
   int min_t = m_MegaCaptureReader->GetMinTimePoint();
   int max_t = m_MegaCaptureReader->GetMaxTimePoint();
@@ -1844,7 +1844,7 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
           {
           std::cout << "TRACK mode" << std::endl;
           std::cout << "CHANNEL: " << m_ChannelOfInterest << std::endl;
-          SetTimePointWithMegaCaptureExperimental( m_ChannelOfInterest );
+          SetTimePointWithMegaCaptureTimeChannels( m_ChannelOfInterest );
           }
         emit TimePointChanged(m_TCoord);
         }

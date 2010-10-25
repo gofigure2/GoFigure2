@@ -380,14 +380,23 @@ protected:
 
   vtkPoints *m_Seeds;
 
+  ContourMeshContainer *m_ContourContainer;
+  ContourMeshContainer *m_MeshContainer;
+  ContourMeshContainer *m_TrackContainer;
+
+  bool m_TraceWidgetRequiered;
+
+  /** \brief We are in the regular visualization mode (true) or in the time
+   * visualization mode (false) */
+  bool m_ChannelClassicMode;
+  /** \brief ID of the channel that we want to visualize in the time
+   * visualization mode */
+  int  m_ChannelOfInterest;
+
   /// \todo remove m_FFMPEGWriter and m_AVIWriter from this class
   #if defined ENABLEFFMPEG || defined ENABLEAVI
   QGoVideoRecorder *m_VideoRecorderWidget;
   #endif /* ENABLEFFMPEG || ENABLEAVI */
-
-  ContourMeshContainer *m_ContourContainer;
-  ContourMeshContainer *m_MeshContainer;
-  ContourMeshContainer *m_TrackContainer;
 
   void SaveContour(vtkPolyData *contour, vtkPolyData *contour_nodes);
 
@@ -518,9 +527,8 @@ protected:
 
   void SetTimePointWithMegaCapture();
 
-  void SetTimePointWithMegaCaptureExperimental(int channel);
+  void SetTimePointWithMegaCaptureTimeChannels(int channel);
 
-  bool m_TraceWidgetRequiered;
 protected slots:
   void AddBookmark();
 
@@ -598,15 +606,20 @@ protected slots:
   */
   void SetTheContainersForDB();
 
-  void ChannelTimeModeBool( bool );
-
-  void handleChannelTimeMode();
+  /**
+  \brief switch between the 2 visualization modes:
+  -classic mode where a channel is an entity (nuclei, membrane) of interest.
+  -time mode where a channel represents the same entity through the time. (t-1, t and t+1).
+    updates the navigation widget.
+  */
+  void ChannelTimeMode( bool );
+  /**
+  \brief access to the megacapture reader to get the entity of interest images through time.
+  updates the navigation widget.
+  */
+  void LoadChannelTime();
 
 private:
-
-  bool m_ChannelClassicMode;
-  int  m_ChannelOfInterest;
-
   Q_DISABLE_COPY(QGoTabImageView3DwT);
 };
 
