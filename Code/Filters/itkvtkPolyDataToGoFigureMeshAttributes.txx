@@ -49,6 +49,7 @@ namespace itk
 template< class TImage >
 vtkPolyDataToGoFigureMeshAttributes< TImage >::vtkPolyDataToGoFigureMeshAttributes()
 {
+  m_IntensityComputation = true;
   m_Binarizer = PolyDataToBinaryMaskImageFilterType::New();
   m_AttributeCalculator = BinaryMaskImageToGoFigureMeshAttributesType::New();
 }
@@ -57,6 +58,14 @@ template< class TImage >
 vtkPolyDataToGoFigureMeshAttributes< TImage >::
 ~vtkPolyDataToGoFigureMeshAttributes()
 {}
+
+template< class TImage >
+void
+vtkPolyDataToGoFigureMeshAttributes< TImage >::
+SetIntensityBasedComputation( const bool& iComputation )
+{
+  this->m_IntensityComputation = iComputation;
+}
 
 template< class TImage >
 void
@@ -135,6 +144,7 @@ vtkPolyDataToGoFigureMeshAttributes< TImage >::GenerateData()
 
   m_AttributeCalculator->SetImage(m_Image);
   m_AttributeCalculator->SetMaskImage( m_Binarizer->GetOutput() );
+  m_AttributeCalculator->SetIntensityBasedComputation( this->m_IntensityComputation );
   m_AttributeCalculator->Update();
 
   m_Size = m_AttributeCalculator->GetSize();

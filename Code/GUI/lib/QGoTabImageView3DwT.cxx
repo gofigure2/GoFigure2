@@ -2448,7 +2448,7 @@ QGoTabImageView3DwT::SaveMesh(vtkPolyData *iView)
   std::vector< int > bounds = this->GetBoundingBox(iView);
 
   // Save mesh in database
-  GoFigureMeshAttributes MeshAttributes = ComputeMeshAttributes(iView);
+  GoFigureMeshAttributes MeshAttributes = ComputeMeshAttributes(iView, true );
 
   this->m_DataBaseTables->SaveMeshFromVisuInDB(bounds[0], bounds[2], bounds[4],
                                                bounds[1], bounds[3], bounds[5],
@@ -2611,7 +2611,8 @@ void QGoTabImageView3DwT::GoToDefaultMenu(bool iEnable)
 
 //-------------------------------------------------------------------------
 GoFigureMeshAttributes
-QGoTabImageView3DwT::ComputeMeshAttributes(vtkPolyData *iMesh)
+QGoTabImageView3DwT::ComputeMeshAttributes( vtkPolyData *iMesh,
+                                            const bool& iIntensity)
 {
   typedef unsigned char PixelType;
   const unsigned int Dimension = 3;
@@ -2620,28 +2621,38 @@ QGoTabImageView3DwT::ComputeMeshAttributes(vtkPolyData *iMesh)
   itk::vtkPolyDataToGoFigureMeshAttributes< ImageType >::Pointer
     calculator = itk::vtkPolyDataToGoFigureMeshAttributes< ImageType >::New();
   calculator->SetPolyData(iMesh);
+  calculator->SetIntensityBasedComputation( iIntensity );
 
   GoFigureMeshAttributes oAttributes;
 
-  for ( size_t i = 0; i < m_InternalImages.size(); i++ )
+  if( !iIntensity )
     {
-    vtkSmartPointer< vtkImageExport > vtk_exporter =
-      vtkSmartPointer< vtkImageExport >::New();
-    itk::VTKImageImport< ImageType >::Pointer itk_importer =
-      itk::VTKImageImport< ImageType >::New();
-    vtk_exporter->SetInput(m_InternalImages[i]);
+    for ( size_t i = 0; i < m_InternalImages.size(); i++ )
+      {
+      vtkSmartPointer< vtkImageExport > vtk_exporter =
+        vtkSmartPointer< vtkImageExport >::New();
+      itk::VTKImageImport< ImageType >::Pointer itk_importer =
+        itk::VTKImageImport< ImageType >::New();
+      vtk_exporter->SetInput(m_InternalImages[i]);
 
-    ConnectPipelines< vtkImageExport, itk::VTKImageImport< ImageType >::Pointer >(
-      vtk_exporter, itk_importer);
-    calculator->SetImage( itk_importer->GetOutput() );
-    calculator->Update();
+      ConnectPipelines< vtkImageExport, itk::VTKImageImport< ImageType >::Pointer >(
+        vtk_exporter, itk_importer);
+      calculator->SetImage( itk_importer->GetOutput() );
+      calculator->Update();
 
-    QString     q_channelname = this->m_NavigationDockWidget->GetChannelName(i);
-    std::string channelname = q_channelname.toStdString();
+      QString     q_channelname = this->m_NavigationDockWidget->GetChannelName(i);
+      std::string channelname = q_channelname.toStdString();
 
-    oAttributes.m_TotalIntensityMap[channelname] =
-      static_cast< int >( calculator->GetSumIntensity() );
-    oAttributes.m_MeanIntensityMap[channelname] = calculator->GetMeanIntensity();
+      oAttributes.m_TotalIntensityMap[channelname] =
+        static_cast< int >( calculator->GetSumIntensity() );
+      oAttributes.m_MeanIntensityMap[channelname] = calculator->GetMeanIntensity();
+      oAttributes.m_Volume = calculator->GetPhysicalSize();
+      oAttributes.m_Area = calculator->GetArea();
+      oAttributes.m_Size = calculator->GetSize();
+      }
+    }
+  else
+    {
     oAttributes.m_Volume = calculator->GetPhysicalSize();
     oAttributes.m_Area = calculator->GetArea();
     oAttributes.m_Size = calculator->GetSize();
