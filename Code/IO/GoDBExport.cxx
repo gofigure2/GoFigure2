@@ -159,7 +159,7 @@ std::pair< std::string, std::string > GoDBExport::GetOneInfoFromDBForImgSession(
 void GoDBExport::UpdateVectorContourIDsForExportContours()
 {
   this->m_VectorContourIDs = ListSpecificValuesForOneColumn(
-    this->m_DatabaseConnector, "contour", "ContourID", "imagingsessionID",
+    this->m_DatabaseConnector, "contour", "contourID", "imagingsessionID",
     ConvertToString< int >(this->m_ImagingSessionID) );
 }
 
@@ -177,7 +177,7 @@ void GoDBExport::UpdateVectorContourIDsForExportMeshes()
 void GoDBExport::UpdateVectorMeshIDsForExportContours()
 {
   this->m_VectorMeshIDs = ListSpecificValuesForOneColumn(
-    this->m_DatabaseConnector, "contour", "meshID", "ContourID",
+    this->m_DatabaseConnector, "contour", "meshID", "contourID",
     this->m_VectorContourIDs, true, true);
 }
 
@@ -187,7 +187,7 @@ void GoDBExport::UpdateVectorMeshIDsForExportContours()
 void GoDBExport::UpdateVectorMeshIDsForExportMeshes()
 {
   this->m_VectorMeshIDs = FindSeveralIDs(this->m_DatabaseConnector,
-                                         "mesh", "MeshID", "ImagingSessionID",
+                                         "mesh", "meshID", "ImagingSessionID",
                                          ConvertToString< int >(this->m_ImagingSessionID), "Points", "0");
 }
 
@@ -209,7 +209,7 @@ void GoDBExport::UpdateVectorTrackIDsToExportInfo()
   if ( !this->m_VectorMeshIDs.empty() )
     {
     this->m_VectorTrackIDs = ListSpecificValuesForOneColumn(
-      this->m_DatabaseConnector, "mesh", "TrackID", "MeshID",
+      this->m_DatabaseConnector, "mesh", "trackID", "meshID",
       this->m_VectorMeshIDs, true, true);
     }
 }
@@ -222,7 +222,7 @@ void GoDBExport::UpdateVectorLineageIDsToExportInfo()
   if ( !this->m_VectorTrackIDs.empty() )
     {
     this->m_VectorLineageIDs = ListSpecificValuesForOneColumn(
-      this->m_DatabaseConnector, "track", "LineageID", "TrackID",
+      this->m_DatabaseConnector, "track", "lineageID", "trackID",
       this->m_VectorTrackIDs, true, true);
     }
 }
@@ -275,12 +275,12 @@ void GoDBExport::WriteTheColorsInfoFromDatabase()
 void GoDBExport::WriteCellTypeAndSubCellTypeInfoFromDatabase()
 {
   std::vector< std::string > ListCellTypeIDs = ListSpecificValuesForOneColumn(
-    this->m_DatabaseConnector, "mesh", "CellTypeID", "MeshID",
+    this->m_DatabaseConnector, "mesh", "CellTypeID", "meshID",
     this->m_VectorMeshIDs, true, true);
   this->WriteTableInfoFromDB< GoDBCellTypeRow >(ListCellTypeIDs);
   std::vector< std::string > ListSubCellTypeIDs =
     ListSpecificValuesForOneColumn(this->m_DatabaseConnector,
-                                   "mesh", "SubCellularID", "MeshID", this->m_VectorMeshIDs, true, true);
+                                   "mesh", "SubCellularID", "meshID", this->m_VectorMeshIDs, true, true);
   this->WriteTableInfoFromDB< GoDBSubCellTypeRow >(ListSubCellTypeIDs);
 }
 
@@ -343,7 +343,7 @@ void GoDBExport::WriteIntensityInfoFromDatabase()
   std::vector< std::string > VectorIntensityIDs =
     GetSpecificValueFromOneTableWithConditionsOnTwoColumns(
       this->m_DatabaseConnector, "IntensityID", "intensity",
-      "MeshID", this->m_VectorMeshIDs, "ChannelID", this->m_VectorChannelIDs);
+      "meshID", this->m_VectorMeshIDs, "ChannelID", this->m_VectorChannelIDs);
   this->WriteTableInfoFromDB< GoDBIntensityRow >(VectorIntensityIDs);
 }
 
@@ -453,25 +453,25 @@ void GoDBExport::GetVectorsTableNamesTracesIDsAndFields(
   if ( !this->m_VectorContourIDs.empty() )
     {
     ioVectorTableNames.push_back("contour");
-    ioVectorFields.push_back("ContourID");
+    ioVectorFields.push_back("contourID");
     ioVectorTracesIDs.push_back(this->m_VectorContourIDs);
     }
   if ( !this->m_VectorMeshIDs.empty() )
     {
     ioVectorTableNames.push_back("mesh");
-    ioVectorFields.push_back("MeshID");
+    ioVectorFields.push_back("meshID");
     ioVectorTracesIDs.push_back(this->m_VectorMeshIDs);
     }
   if ( !this->m_VectorTrackIDs.empty() )
     {
     ioVectorTableNames.push_back("track");
-    ioVectorFields.push_back("TrackID");
+    ioVectorFields.push_back("trackID");
     ioVectorTracesIDs.push_back(this->m_VectorTrackIDs);
     }
   if ( !this->m_VectorLineageIDs.empty() )
     {
     ioVectorTableNames.push_back("lineage");
-    ioVectorFields.push_back("LineageID");
+    ioVectorFields.push_back("lineageID");
     ioVectorTracesIDs.push_back(this->m_VectorLineageIDs);
     }
   if ( IncludeChannelIDs )
