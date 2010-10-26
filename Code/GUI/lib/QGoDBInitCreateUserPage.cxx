@@ -125,7 +125,7 @@ bool QGoDBInitCreateUserPage::CreateUser()
   DataBaseConnector->SetUser("root");
   bool    ok;
   QString text = QInputDialog::getText(0, "Enter your root password for MySQL:",
-                                       "Root Password:", QLineEdit::Password,
+                                       "Root Password for MySQL:", QLineEdit::Password,
                                        QDir::home().dirName(), &ok);
   if ( ok )
     {
