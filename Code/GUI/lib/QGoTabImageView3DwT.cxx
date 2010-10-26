@@ -672,6 +672,11 @@ QGoTabImageView3DwT::CreateAllViewActions()
   ChannelClassic->setCheckable(true);
   ChannelClassic->setChecked(true);
 
+  QIcon ChannelClassicIcon;
+  ChannelClassicIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/VisuClassic.png") ),
+                         QIcon::Normal, QIcon::Off);
+  ChannelClassic->setIcon(ChannelClassicIcon);
+
   groupMode->addAction(ChannelClassic);
 
   this->m_ViewActions.push_back(ChannelClassic);
@@ -684,6 +689,11 @@ QGoTabImageView3DwT::CreateAllViewActions()
 
   ChannelTime->setCheckable(true);
   ChannelTime->setChecked(false);
+
+  QIcon ChannelTimeIcon;
+  ChannelTimeIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/VisuTime.png") ),
+                         QIcon::Normal, QIcon::Off);
+  ChannelTime->setIcon(ChannelTimeIcon);
 
   groupMode->addAction(ChannelTime);
 
