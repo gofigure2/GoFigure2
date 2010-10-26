@@ -146,8 +146,11 @@ bool QGoDBInitCreateUserPage::CreateUser()
       return false;
       }
     }
-  if ( !this->UserNameAlreadyExits(DataBaseConnector, Login,
-                                   this->m_ServerName, Password) )
+  else //the user clicks on something else than ok when asking for the mysql root password:
+	{
+	return false;
+	}
+  if ( !this->UserNameAlreadyExits(DataBaseConnector, Login))
     {
     if ( this->QuestionToUser(
            tr("Do you want to create this new user with a new database?") ) )
@@ -219,12 +222,8 @@ bool QGoDBInitCreateUserPage::CreateGofigureUserWithDatabaseConnector(
 //-------------------------------------------------------------------------
 bool
 QGoDBInitCreateUserPage::UserNameAlreadyExits(vtkMySQLDatabase *DatabaseConnector,
-                                              std::string iLogin, std::string iServerName, std::string iPassword)
+                                              std::string iLogin)
 {
-  // unused parameters
-  (void)iServerName;
-  (void)iPassword;
-
   vtkSQLQuery *     queryUserExist = DatabaseConnector->GetQueryInstance();
   std::stringstream UserExistScript;
   UserExistScript << "SELECT USER FROM mysql.user WHERE user = '";
