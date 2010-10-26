@@ -53,7 +53,6 @@ class QGoImageView2D;
  * a vtkimagedata* or an itkimage*.
  * QGoSynchronizedView2D provide the interface to synchronize cameras among
  * several GoSynchronizedView2D.
- * \example GUI/lib/qgosynchronizedview2dtest.cxx
  */
 class QGoSynchronizedView2D:public QGoSynchronizedView
 {
