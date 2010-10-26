@@ -74,6 +74,9 @@ QGoSeedSegmentationBase::QGoSeedSegmentationBase(QWidget *parentWidget,
   // connect with 3DwT to add the good number of channels
   QObject::connect( this, SIGNAL( addChannel(QString) ),
                     m_BaseAlgorithmSegmentationWidget, SLOT( AddChannel(QString) ) );
+  // connect with 3DwT to add the good number of channels
+  QObject::connect( this, SIGNAL( setNumberOfChannels(int) ),
+                    m_BaseAlgorithmSegmentationWidget, SLOT( setNumberOfChannels(int) ) );
   // mesh has been created by a filter
   QObject::connect( m_BaseAlgorithmSegmentationWidget,
                     SIGNAL( MeshCreated(vtkPolyData *) ),
@@ -180,9 +183,18 @@ QGoSeedSegmentationBase::ConnectSignals(QGoSeedBaseWidget *iWidget)
 
 //--------------------------------------------------------------------------
 void
-QGoSeedSegmentationBase::SetChannel(int i)
+QGoSeedSegmentationBase::SetChannel(const QString & iText)
 {
-  emit addChannel( QString::number(i, 10) );
+  emit addChannel( iText );
+}
+
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+QGoSeedSegmentationBase::SetNumberOfChannels(int iNumberOfChannels)
+{
+  emit setNumberOfChannels( iNumberOfChannels );
 }
 
 //--------------------------------------------------------------------------

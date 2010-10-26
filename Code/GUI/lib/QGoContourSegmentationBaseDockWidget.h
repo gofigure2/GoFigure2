@@ -41,6 +41,7 @@
 #include "vtkPoints.h"
 #include "vtkImageData.h"
 #include "vtkPolyData.h"
+#include "vtkSmartPointer.h"
 
 // base widgets
 class QGoContourManualSegmentation;
@@ -57,7 +58,7 @@ public:
   explicit QGoContourSegmentationBaseDockWidget(
     QWidget *iParent = 0,
     vtkPoints *seeds = 0,
-    std::vector< vtkImageData * > *iOriginalImage = 0);
+    std::vector< vtkSmartPointer<vtkImageData> > *iOriginalImage = 0);
 
   ~QGoContourSegmentationBaseDockWidget();
 
@@ -67,7 +68,9 @@ public:
    * \param[in] iChannel Channel on which want we want to apply the segmentation
    * algorithm
    */
-  void SetChannel(int iChannel);
+  void SetChannel(int iChannel, const QString & iText = QString());
+
+  void SetNumberOfChannels(int iNumberOfChannels);
 
   bool GetReeditMode();
 

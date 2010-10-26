@@ -42,6 +42,8 @@
 
 #include "QGoIOConfigure.h"
 
+#include "vtkSmartPointer.h"
+
 class vtkImageData;
 class vtkImageAppend;
 
@@ -88,9 +90,9 @@ public:
 
   void Update();
 
-  vtkImageData * GetOutput(const unsigned int & iChannel);
+  vtkSmartPointer<vtkImageData> GetOutput(const unsigned int & iChannel);
 
-  vtkImageData * GetImage( const unsigned int & iChannel,
+  vtkSmartPointer<vtkImageData> GetImage( const unsigned int & iChannel,
                            const unsigned int & iT );
 
   std::map< unsigned int, vtkImageData * > GetOutputs();

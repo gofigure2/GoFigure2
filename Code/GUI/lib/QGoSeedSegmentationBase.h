@@ -106,7 +106,9 @@ public:
    * \param[in] iChannel Channel on which want we want to apply the segmentation
    * algorithm
    */
-  void SetChannel(int iChannel);
+  void SetChannel(const QString & iText);
+
+  void SetNumberOfChannels(int iNumberOfChannels);
 
 public slots:
   /**
@@ -138,6 +140,8 @@ signals:
    * \param[in] iQString Name of the channel.
    */
   void addChannel(QString);
+
+  void setNumberOfChannels(int);
 
   void MeshCreated(vtkPolyData *);
 

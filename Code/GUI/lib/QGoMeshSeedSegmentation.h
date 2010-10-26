@@ -40,6 +40,8 @@
 
 #include "QGoSeedSegmentationBase.h"
 
+#include "vtkSmartPointer.h"
+
 class vtkPoints;
 
 class vtkImageData;
@@ -63,7 +65,7 @@ public:
    */
   explicit QGoMeshSeedSegmentation(QWidget *parentW = 0,
                                    vtkPoints *seeds = 0,
-                                   std::vector< vtkImageData * > *iOriginalImage = 0,
+                                   std::vector< vtkSmartPointer<vtkImageData> > *iOriginalImage = 0,
                                    int iSampling = 1);
 
   /**
@@ -75,6 +77,6 @@ private:
   QGoFilterShape *     m_ShapeFilter;
   QGoFilterWatershed * m_Watershed;
 
-  std::vector< vtkImageData * > *m_OriginalImage;
+  std::vector< vtkSmartPointer<vtkImageData> > *m_OriginalImage;
 };
 #endif
