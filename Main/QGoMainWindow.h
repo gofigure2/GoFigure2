@@ -138,6 +138,9 @@ private slots:
 
   void tobedone(std::vector< vtkImageData * > );
 
+  /**
+  \brief remove the action 'Set up Database' from the Database menu.
+  */
   void RemoveSetUpDatabaseMenu();
 
   /** 

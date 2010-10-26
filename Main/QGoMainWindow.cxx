@@ -1138,7 +1138,6 @@ void QGoMainWindow::openRecentFilesfromDB()
 //--------------------------------------------------------------------------------
 void QGoMainWindow::RemoveSetUpDatabaseMenu()
 {
-  //this->actionSet_Up_Database->setEnabled(false);
   this->menuDatabase->removeAction(this->actionSet_Up_Database);
   this->m_DatabaseSetUp = true;
 }
@@ -1147,7 +1146,9 @@ void QGoMainWindow::RemoveSetUpDatabaseMenu()
 //--------------------------------------------------------------------------------
 void QGoMainWindow::AddSetUpDatabaseMenu()
 {
+  //enter number of actions in the Database menu here:
   unsigned int NumberOfActionsIfSetUpDB = 1;
+
   unsigned int NumberOfCurrentActions = this->menuDatabase->actions().size();
   if (NumberOfCurrentActions != NumberOfActionsIfSetUpDB)
     {
