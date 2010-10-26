@@ -160,7 +160,7 @@ public:
   /**
   \brief save the collection in the database after getting an empty bounding box
   and return the corresponding ID
-  \parma[in] iDatabaseConnector connection to the database
+  \param[in] iDatabaseConnector connection to the database
   \param[in] iNewCollection collection with all the fields set except bounding box
   \param[in] iTimePoint timepoint for the collection (only for mesh)
   \tparam T child of GoDBTraceRow
