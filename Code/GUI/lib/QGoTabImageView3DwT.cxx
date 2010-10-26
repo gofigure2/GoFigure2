@@ -847,6 +847,7 @@ QGoTabImageView3DwT::CreateAllViewActions()
   this->m_ViewActions.push_back(separator3);
 
   QAction *LookupTableAction = new QAction(tr("Lookup Table"), this);
+  LookupTableAction->setEnabled(false);
   LookupTableAction->setStatusTip( tr(" Change the associated lookup table") );
 
   //take
@@ -862,6 +863,7 @@ QGoTabImageView3DwT::CreateAllViewActions()
   this->m_ViewActions.push_back(LookupTableAction);
 
   QAction *ScalarBarAction = new QAction(tr("Display Scalar Bar"), this);
+  ScalarBarAction->setEnabled(false);
   ScalarBarAction->setCheckable(true);
 
   QIcon scalarbaricon;
@@ -1689,6 +1691,10 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
     if ( this->m_NavigationDockWidget->ShowAllChannels() )
       {
       m_Image->ShallowCopy( append_filter->GetOutput() );
+
+      // LUT DISABLED
+      m_ViewActions[13]->setEnabled(false);
+      m_ViewActions[14]->setEnabled(false);
       }
     else
       {
@@ -1697,12 +1703,19 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
         {
         m_Image->ShallowCopy(m_InternalImages[ch]);
         }
+      // LUT ENABLED
+      m_ViewActions[13]->setEnabled(true);
+      m_ViewActions[14]->setEnabled(true);
       }
     }
   else
     {
     m_Image->ShallowCopy( m_MegaCaptureReader->GetOutput(min_ch) );
     m_Image->SetNumberOfScalarComponents(1);
+
+    // LUT ENABLED
+    m_ViewActions[13]->setEnabled(true);
+    m_ViewActions[14]->setEnabled(true);
     }
 }
 
@@ -1757,6 +1770,10 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels( int iChannel )
   if ( this->m_NavigationDockWidget->ShowAllChannels() )
     {
     m_Image->ShallowCopy( append_filter->GetOutput() );
+
+    // LUT DISABLED
+    m_ViewActions[13]->setEnabled(false);
+    m_ViewActions[14]->setEnabled(false);
     }
   else
     {
@@ -1765,6 +1782,9 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels( int iChannel )
       {
       m_Image->ShallowCopy(m_InternalImages[ch]);
       }
+    // LUT ENABLED
+    m_ViewActions[13]->setEnabled(true);
+    m_ViewActions[14]->setEnabled(true);
     }
 
   // update channels in navigation DockWidget
@@ -1785,8 +1805,6 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels( int iChannel )
   m_MeshSegmentationDockWidget->SetChannel(0, "t-1");
   m_MeshSegmentationDockWidget->SetChannel(1, "t");
   m_MeshSegmentationDockWidget->SetChannel(2, "t+1");
-
-
 }
 
 //-------------------------------------------------------------------------
@@ -2162,6 +2180,9 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
     m_Image->ShallowCopy( append_filter->GetOutput() );
     Update();
 
+    // Update LUT
+    m_ViewActions[13]->setEnabled(false);
+    m_ViewActions[14]->setEnabled(false);
     }
   else
     {
@@ -2171,6 +2192,9 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
       m_Image->ShallowCopy(m_InternalImages[ch]);
       Update();
       }
+      // Update LUT
+      m_ViewActions[13]->setEnabled(true);
+      m_ViewActions[14]->setEnabled(true);
     }
 }
 
@@ -2185,6 +2209,10 @@ QGoTabImageView3DwT::ShowOneChannel(int iChannel)
     m_Image->ShallowCopy(m_InternalImages[iChannel]);
     Update();
     }
+
+  // Update lut
+  m_ViewActions[13]->setEnabled(true);
+  m_ViewActions[14]->setEnabled(true);
 }
 
 //-------------------------------------------------------------------------
