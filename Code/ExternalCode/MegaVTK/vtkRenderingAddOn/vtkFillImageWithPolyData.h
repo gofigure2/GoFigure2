@@ -73,6 +73,9 @@
 #include "MegaVTK2Configure.h"
 
 /**
+ * \class vtkFillImageWithPolyData
+ * \brief
+ * \ingroup MegaVTK
  */
 class VTK_RENDERINGADDON2_EXPORT vtkFillImageWithPolyData:
   public vtkThreadedImageAlgorithm

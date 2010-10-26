@@ -72,6 +72,11 @@
 #include "vtkLookupTable.h"
 #include "MegaVTK2Configure.h"
 
+/**
+ * \class vtkImageBlendWithMask
+ * \brief
+ * \ingroup MegaVTK
+ */
 class VTK_RENDERINGADDON2_EXPORT vtkImageBlendWithMask:
   public vtkThreadedImageAlgorithm
 {

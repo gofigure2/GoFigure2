@@ -74,6 +74,11 @@
 #include <vtkObjectFactory.h>
 #include "MegaVTK2Configure.h"
 
+/**
+ * \class vtkImage3DCroppingBoxCallback
+ * \brief
+ * \ingroup MegaVTK
+ */
 class VTK_RENDERINGADDON2_EXPORT vtkImage3DCroppingBoxCallback:
   public vtkCommand
 {

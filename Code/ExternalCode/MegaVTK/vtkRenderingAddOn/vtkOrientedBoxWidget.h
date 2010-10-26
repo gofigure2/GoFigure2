@@ -74,8 +74,8 @@
 class vtkMatrix4x4;
 
 /**
-   \author Nicolas Toussaint
    \class vtkOrientedBoxWidget
+   \ingroup MegaVTK
    \brief orthogonal hexahedron 3D widget with pre-defined orientation
 
    Description

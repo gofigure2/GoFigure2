@@ -75,6 +75,11 @@
 
 class vtkViewImage2D;
 
+/**
+ * \class vtkImage3DImagePlaneCallback
+ * \brief
+ * \ingroup MegaVTK
+ */
 class VTK_RENDERINGADDON2_EXPORT vtkImage3DImagePlaneCallback:public vtkCommand
 {
 public:

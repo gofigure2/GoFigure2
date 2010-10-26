@@ -79,6 +79,11 @@
 #include "vtkCornerAnnotation.h"
 #include "MegaVTK2Configure.h"
 
+/**
+ * \class vtkOrientationAnnotation
+ * \brief
+ * \ingroup MegaVTK
+ */
 class VTK_RENDERINGADDON2_EXPORT vtkOrientationAnnotation:
   public vtkCornerAnnotation
 {
