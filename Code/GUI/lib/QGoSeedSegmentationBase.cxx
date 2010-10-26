@@ -189,9 +189,9 @@ QGoSeedSegmentationBase::ConnectSignals(QGoSeedBaseWidget *iWidget)
 
 //--------------------------------------------------------------------------
 void
-QGoSeedSegmentationBase::SetChannel(int i)
+QGoSeedSegmentationBase::SetChannel(const QString & iText)
 {
-  emit addChannel( QString::number(i, 10) );
+  emit addChannel( iText );
 }
 
 //--------------------------------------------------------------------------

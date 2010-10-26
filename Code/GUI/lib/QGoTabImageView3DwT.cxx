@@ -1642,8 +1642,6 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
 void
 QGoTabImageView3DwT::SetTimePointWithMegaCapture()
 {
-  /// todo check if we are in classic visu mode
-  /// or in "channel through time" mode
   m_MegaCaptureReader->SetTimePoint(m_TCoord);
 
   unsigned int min_ch = m_MegaCaptureReader->GetMinChannel();
@@ -1663,9 +1661,8 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
 
     for ( unsigned int i = min_ch; i <= max_ch; i++ )
       {
-    /// TO BE ENHANCED - shouldn't use raw pointer
-
-      vtkSmartPointer< vtkImageData > input = m_MegaCaptureReader->GetOutput(i);
+      vtkSmartPointer< vtkImageData > input = vtkSmartPointer< vtkImageData >::New();
+      input->ShallowCopy(m_MegaCaptureReader->GetOutput(i));
       m_InternalImages[i] = input;
       append_filter->AddInput(m_InternalImages[i]);
       }
@@ -1729,15 +1726,19 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels( int iChannel )
 
   vtkSmartPointer< vtkImageAppendComponents > append_filter =
     vtkSmartPointer< vtkImageAppendComponents >::New();
-  vtkSmartPointer<vtkImageData> i0 = m_MegaCaptureReader->GetImage(iChannel, t0);
+
+  vtkSmartPointer<vtkImageData> i0 = vtkSmartPointer<vtkImageData>::New();
+  i0->ShallowCopy(m_MegaCaptureReader->GetImage(iChannel, t0));
   m_InternalImages[0] = i0;
   append_filter->AddInput(m_InternalImages[0]);
 
-  vtkSmartPointer<vtkImageData> i1 = m_MegaCaptureReader->GetImage(iChannel, t1);
+  vtkSmartPointer<vtkImageData> i1 = vtkSmartPointer<vtkImageData>::New();
+  i1->ShallowCopy(m_MegaCaptureReader->GetImage(iChannel, t1));
   m_InternalImages[1] = i1;
   append_filter->AddInput(m_InternalImages[1]);
 
-  vtkSmartPointer<vtkImageData> i2 = m_MegaCaptureReader->GetImage(iChannel, t2);
+  vtkSmartPointer<vtkImageData> i2 = vtkSmartPointer<vtkImageData>::New();
+  i2->ShallowCopy(m_MegaCaptureReader->GetImage(iChannel, t2));
   m_InternalImages[2] = i2;
   append_filter->AddInput(m_InternalImages[2]);
 
@@ -1765,8 +1766,10 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels( int iChannel )
   m_NavigationDockWidget->blockSignals(false);
 
   //update channels in segmentation widgets
-  m_MeshSegmentationDockWidget->SetNumberOfChannels(1);
-  m_MeshSegmentationDockWidget->SetChannel(1);
+  m_MeshSegmentationDockWidget->SetNumberOfChannels(3);
+  m_MeshSegmentationDockWidget->SetChannel(0, "t-1");
+  m_MeshSegmentationDockWidget->SetChannel(1, "t");
+  m_MeshSegmentationDockWidget->SetChannel(2, "t+1");
 
 
 }

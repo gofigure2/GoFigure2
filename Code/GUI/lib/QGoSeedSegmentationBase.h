@@ -112,7 +112,7 @@ public:
    * \param[in] iChannel Channel on which want we want to apply the segmentation
    * algorithm
    */
-  void SetChannel(int iChannel);
+  void SetChannel(const QString & iText);
 
   void SetNumberOfChannels(int iNumberOfChannels);
 

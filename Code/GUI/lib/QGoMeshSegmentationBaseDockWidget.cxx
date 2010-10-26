@@ -203,10 +203,21 @@ QGoMeshSegmentationBaseDockWidget::interactorBehavior(bool iSegmentationMethod)
 
 //---------------------------------------------------------------------------//
 void
-QGoMeshSegmentationBaseDockWidget::SetChannel(int iChannel)
+QGoMeshSegmentationBaseDockWidget::SetChannel(int iChannel,const QString & iText)
 {
-  m_MeshManualSegmentation->SetChannel(iChannel);
-  m_MeshSemiAutoSegmentation->SetChannel(iChannel);
+  QString input;
+
+  if ( !iText.isEmpty() )
+    {
+    input = iText;
+    }
+  else
+    {
+    input = QString("Channel %1").arg(iChannel);
+    }
+
+  m_MeshManualSegmentation->SetChannel(input);
+  m_MeshSemiAutoSegmentation->SetChannel(input);
 }
 
 //---------------------------------------------------------------------------//
