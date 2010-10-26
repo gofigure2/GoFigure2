@@ -9,21 +9,6 @@ IF( COMMAND CMAKE_POLICY )
   CMAKE_POLICY( SET CMP0003 NEW )
 ENDIF(COMMAND CMAKE_POLICY)
 
-#-------------------------------------------------------------------------
-# Subversion
-IF( EXISTS ${CMAKE_SOURCE_DIR}/.svn/ )
-  FIND_PACKAGE( Subversion )
-
-  IF( Subversion_FOUND )
-    Subversion_WC_INFO( ${GOFIGURE2_SOURCE_DIR} GOFIGURE2 )
-  ELSE( Subversion_FOUND )
-    SET( GOFIGURE2_WC_REVISION 0 )
-  ENDIF( Subversion_FOUND )
-ELSE( EXISTS ${CMAKE_SOURCE_DIR}/.svn/ )
-  SET( GOFIGURE2_WC_REVISION 0 )
-ENDIF( EXISTS ${CMAKE_SOURCE_DIR}/.svn/ )
-#-------------------------------------------------------------------------
-
 # When making one release: update GOFIGURE2_*_VERSION,
 # GOFIGURE2_WC_REVISION and the date of the release
 SET( GOFIGURE2_MAJOR_VERSION "0" )
