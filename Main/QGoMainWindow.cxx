@@ -1154,6 +1154,7 @@ void QGoMainWindow::AddSetUpDatabaseMenu()
     {
     actionSet_Up_Database = new QAction(
         tr("Set Up Database"), this->menuDatabase);
+	this->m_DatabaseSetUp = false;
     this->menuDatabase->addAction(actionSet_Up_Database);
     this->actionSet_Up_Database->setEnabled(true);
     m_DBInitializationWizard = new QGoDBInitializationWizard(this);
