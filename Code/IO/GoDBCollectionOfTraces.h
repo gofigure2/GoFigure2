@@ -338,9 +338,9 @@ protected:
   \brief modify the timepoint to iTimePoint for the coordmax and coordmin and
   replace the ioCoordIDMax/Min with the new saved coordinates in the database
   \param[in] iTimePoint TCoord to be replaced with for the coordmin and max
-  \param[in|out] ioCoordIDMax in: ID for the coordinate max with the timepoint
+  \param[in,out] ioCoordIDMax in: ID for the coordinate max with the timepoint
   to be modified, out: ID of the coordinate max with the timepoint set as itimepoint
-  \param[in|out] ioCoordIDMin in: ID for the coordinate min with the timepoint
+  \param[in,out] ioCoordIDMin in: ID for the coordinate min with the timepoint
   to be modified, out: ID of the coordinate min with the timepoint set as itimepoint
   \param[in] iDatabaseConnector connection to the database
   */
@@ -351,7 +351,7 @@ protected:
 
   /**
   \brief return the CoordIDMax for a minimum bounding box
-  \param [in] iDatabaseConnector connection to the database
+  \param[in] iDatabaseConnector connection to the database
   \return the ID for the coordinate Max of the bounding box
   */
   int GetCoordIDMaxForBoundingBoxWithNoTraces(
@@ -359,7 +359,7 @@ protected:
 
   /**
   \brief return the CoordIDMin for a minimum bounding box
-  \param [in] iDatabaseConnector connection to the database
+  \param[in] iDatabaseConnector connection to the database
   \return the ID for the coordinate min of the bounding box
   */
   int GetCoordIDMinForBoundingBoxWithNoTraces(
@@ -388,8 +388,8 @@ protected:
   /**
   \brief get all the different parts needed for the query to get the color of traces
   from the database
-  \param[in|out] ioSelectedFields will be filed with the attributes of the color DBtable
-  \param[in|out] ioJoinTablesOnTraceTable will be filled with the conditions to link the
+  \param[in,out] ioSelectedFields will be filed with the attributes of the color DBtable
+  \param[in,out] ioJoinTablesOnTraceTable will be filled with the conditions to link the
   color table and the trace table
   */
   void GetFieldsNeededForQueryForColorData(

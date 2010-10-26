@@ -72,7 +72,7 @@ public:
   based on its own uniqueness definition, return the ID of the
   entity already exiting or -1 if not yet created and change the
   ioName with the name of the existing entity
-  \param[in|out] ioName modified if the entity already exists with the
+  \param[in,out] ioName modified if the entity already exists with the
   name of the existing entity
   \return int existing ID or -1 if the entity doesn't exists
  */
@@ -84,7 +84,7 @@ public:
   based on its own uniqueness definition, return the ID of the
   entity already exiting or -1 if not yet created and change the
   ioName with the name of the existing entity
-  \param[in|out] ioName modified if the entity already exists with the
+  \param[in,out] ioName modified if the entity already exists with the
   name of the existing entity
   \return int existing ID or -1 if the entity doesn't exists
  */
