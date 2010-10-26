@@ -2173,19 +2173,19 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
   else
     {
     int ch = this->m_NavigationDockWidget->GetCurrentChannel();
-
-    // Update LUT
-    m_ViewActions[13]->setEnabled(true);
-    m_ViewActions[14]->setEnabled(true);
-
-    bool showScalarBar = m_ViewActions[14]->isChecked();
-    m_Image->ShowScalarBar(showScalarBar);
-
     if ( ch != -1 )
       {
       m_Image->ShallowCopy(m_InternalImages[ch]);
       Update();
       }
+
+    // Update LUT
+    m_ViewActions[13]->setEnabled(true);
+    m_ViewActions[14]->setEnabled(true);
+
+    // show the scalarbar automatically if the button is checked
+    bool showScalarBar = m_ViewActions[14]->isChecked();
+    m_ImageView->ShowScalarBar(showScalarBar);
     }
 }
 
@@ -2203,9 +2203,6 @@ QGoTabImageView3DwT::ShowOneChannel(int iChannel)
 
     m_Image->ShallowCopy(m_InternalImages[iChannel]);
     Update();
-
-    bool showScalarBar = m_ViewActions[14]->isChecked();
-    m_ImageView->ShowScalarBar(showScalarBar);
     }
 }
 
