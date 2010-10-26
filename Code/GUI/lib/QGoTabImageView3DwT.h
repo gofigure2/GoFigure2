@@ -465,17 +465,10 @@ protected:
   void CreateContour(vtkPolyData *contour_nodes, vtkPolyData *iView);
 
   /**
-   * \param[in] iMeshID
-   * \param[in] iDir
-   * \param[in] iHighlighted
-   * \param[in] iR red component in [0,1]
-   * \param[in] iG green component in [0,1]
-   * \param[in] iB blue component in [0,1]
-   * \param[in] iA alpha component in [0,1]
-   * \param[in] iSaveInDataBase save in data base if true
-   * \todo Alpha component is not used at all, it is assumed to be opaque
+   * \brief Save mesh in Database
+   * \param[in] iMesh
    */
-  void SaveMesh(vtkPolyData *iView);
+  void SaveMesh(vtkPolyData *iMesh);
 
   void GetBackgroundColorFromImageViewer();
 
