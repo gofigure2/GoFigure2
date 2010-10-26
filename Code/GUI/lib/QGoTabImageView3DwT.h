@@ -291,8 +291,6 @@ public slots:
 
   void ChangeLookupTable();
 
-  void ShowScalarBar(const bool &);
-
   void ChangeBackgroundColor();
 
   void ShowAllChannels(bool iChecked);

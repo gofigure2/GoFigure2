@@ -874,7 +874,7 @@ QGoTabImageView3DwT::CreateAllViewActions()
   this->m_ViewActions.push_back(ScalarBarAction);
 
   QObject::connect( ScalarBarAction, SIGNAL( toggled(bool) ),
-                    this, SLOT( ShowScalarBar(bool) ) );
+                    m_ImageView, SLOT( ShowScalarBar(bool) ) );
 
   QPixmap Pix(16, 16);
   Pix.fill(Qt::black);
@@ -1948,20 +1948,6 @@ QGoTabImageView3DwT::ChangeLookupTable()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::ShowScalarBar(const bool & iShow)
-{
-  vtkImageData *image = m_ImageView->GetImage();
-
-  if ( image->GetNumberOfScalarComponents() == 1 )
-    {
-    m_ImageView->ShowScalarBar(iShow);
-    }
-}
-
-//------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 QString
 QGoTabImageView3DwT::SnapshotViewXY(
   const GoFigure::FileType & iType,
@@ -2187,14 +2173,19 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
   else
     {
     int ch = this->m_NavigationDockWidget->GetCurrentChannel();
+
+    // Update LUT
+    m_ViewActions[13]->setEnabled(true);
+    m_ViewActions[14]->setEnabled(true);
+
+    bool showScalarBar = m_ViewActions[14]->isChecked();
+    m_Image->ShowScalarBar(showScalarBar);
+
     if ( ch != -1 )
       {
       m_Image->ShallowCopy(m_InternalImages[ch]);
       Update();
       }
-      // Update LUT
-      m_ViewActions[13]->setEnabled(true);
-      m_ViewActions[14]->setEnabled(true);
     }
 }
 
@@ -2206,13 +2197,16 @@ QGoTabImageView3DwT::ShowOneChannel(int iChannel)
 {
   if ( ( iChannel != -1 ) && ( !m_InternalImages.empty() ) )
     {
+    // Update lut
+    m_ViewActions[13]->setEnabled(true);
+    m_ViewActions[14]->setEnabled(true);
+
     m_Image->ShallowCopy(m_InternalImages[iChannel]);
     Update();
-    }
 
-  // Update lut
-  m_ViewActions[13]->setEnabled(true);
-  m_ViewActions[14]->setEnabled(true);
+    bool showScalarBar = m_ViewActions[14]->isChecked();
+    m_ImageView->ShowScalarBar(showScalarBar);
+    }
 }
 
 //-------------------------------------------------------------------------
