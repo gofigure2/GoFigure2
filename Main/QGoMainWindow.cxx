@@ -177,22 +177,8 @@ QGoMainWindow::QGoMainWindow(QWidget *iParent, Qt::WindowFlags iFlags):
 
   m_NetworkUtilities->CheckForUpdates();
   // ---------------------------------------
-
-  // Database set up
-  //this->m_DatabaseSetUp = false;
   if ( !this->m_DatabaseSetUp )
     {
-    /*actionSet_Up_Database = new QAction(
-      tr("Set Up Database"), this->menuDatabase);
-    this->menuDatabase->addAction(actionSet_Up_Database);
-    m_DBInitializationWizard = new QGoDBInitializationWizard(this);
-    this->m_DBInitializationWizard->hide();
-    QObject::connect( this->actionSet_Up_Database, SIGNAL( triggered() ),
-                      SLOT( SetUpDatabase() ) );
-    QObject::connect( this->m_DBInitializationWizard, SIGNAL( DatabaseAndUserCreated() ),
-                      this, SLOT( RemoveSetUpDatabaseMenu() ) );
-    QObject::connect( this->m_DBWizard, SIGNAL( GofigureDatabaseExists() ),
-                      this, SLOT(RemoveSetUpDatabaseMenu() ) ); */
     this->AddSetUpDatabaseMenu();
     }
   else
@@ -1152,7 +1138,8 @@ void QGoMainWindow::openRecentFilesfromDB()
 //--------------------------------------------------------------------------------
 void QGoMainWindow::RemoveSetUpDatabaseMenu()
 {
-  this->actionSet_Up_Database->setEnabled(false);
+  //this->actionSet_Up_Database->setEnabled(false);
+  this->menuDatabase->removeAction(this->actionSet_Up_Database);
   this->m_DatabaseSetUp = true;
 }
 //--------------------------------------------------------------------------------
