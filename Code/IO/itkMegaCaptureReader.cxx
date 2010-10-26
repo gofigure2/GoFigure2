@@ -332,14 +332,17 @@ MegaCaptureReader::Update()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-vtkImageData *
-MegaCaptureReader::GetOutput(const unsigned int & iChannel)
+vtkSmartPointer< vtkImageData >
+MegaCaptureReader::
+GetOutput(const unsigned int & iChannel)
 {
   std::map< unsigned int, vtkImageData * >::iterator
     it = m_OutputImageMap.find(iChannel);
 
   if ( it != m_OutputImageMap.end() )
     {
+    //vtkSmartPointer< vtkImageData > output = vtkSmartPointer<vtkImageData>::New();
+    //output->ShallowCopy(it->second);
     return it->second;
     }
   else

@@ -347,7 +347,7 @@ protected:
   QSplitter *                                    m_VSplitter;
   QGoImageView3D *                               m_ImageView;
   std::vector< vtkSmartPointer< vtkLSMReader > > m_LSMReader;
-  std::vector< vtkImageData * >                  m_InternalImages;
+  std::vector< vtkSmartPointer< vtkImageData > > m_InternalImages;
   vtkImageData *                                 m_Image;
 
   vtkProperty *m_HighlightedContoursProperty;

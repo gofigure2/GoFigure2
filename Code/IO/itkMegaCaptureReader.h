@@ -96,7 +96,7 @@ public:
 
   void Update();
 
-  vtkImageData * GetOutput(const unsigned int & iChannel);
+  vtkSmartPointer<vtkImageData> GetOutput(const unsigned int & iChannel);
 
   vtkSmartPointer<vtkImageData> GetImage( const unsigned int & iChannel,
                            const unsigned int & iT );

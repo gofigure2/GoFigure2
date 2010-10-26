@@ -1648,6 +1648,12 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
 
   unsigned int min_ch = m_MegaCaptureReader->GetMinChannel();
   unsigned int max_ch = m_MegaCaptureReader->GetMaxChannel();
+
+  unsigned int NumberOfChannels = max_ch - min_ch + 1;
+  // delete the preivous pointers
+  // and reassign it
+  m_InternalImages.resize(NumberOfChannels, NULL);
+
   m_MegaCaptureReader->Update();
 
   if ( max_ch != min_ch )
@@ -1657,7 +1663,10 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
 
     for ( unsigned int i = min_ch; i <= max_ch; i++ )
       {
-      m_InternalImages[i] = m_MegaCaptureReader->GetOutput(i);
+    /// TO BE ENHANCED - shouldn't use raw pointer
+
+      vtkSmartPointer< vtkImageData > input = m_MegaCaptureReader->GetOutput(i);
+      m_InternalImages[i] = input;
       append_filter->AddInput(m_InternalImages[i]);
       }
     // This is really stupid!!!
@@ -1715,6 +1724,7 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels( int iChannel )
     }
 
   // resize internal image
+  // clean the vector since is is a vector of smartpointers
   m_InternalImages.resize(3, NULL);
 
   vtkSmartPointer< vtkImageAppendComponents > append_filter =

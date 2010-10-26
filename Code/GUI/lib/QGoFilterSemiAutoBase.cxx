@@ -41,6 +41,7 @@
 
 #include "QGoGUILibConfigure.h"
 
+#include "vtkSmartPointer.h"
 #include "vtkImageData.h"
 
 #include "QGoSeedBaseWidget.h"
@@ -135,7 +136,7 @@ QGoFilterSemiAutoBase::getWidget()
 
 //--------------------------------------------------------------------------
 // Original data without ROI
-vtkImageData *
+vtkSmartPointer< vtkImageData >
 QGoFilterSemiAutoBase::getInput()
 {
   return ( *m_OriginalImageMC )[m_Channel];
@@ -247,7 +248,7 @@ QGoFilterSemiAutoBase::setPoints(vtkPoints *iPoints)
 
 //--------------------------------------------------------------------------
 void
-QGoFilterSemiAutoBase::setOriginalImageMC(std::vector< vtkImageData * > *iOriginalImage)
+QGoFilterSemiAutoBase::setOriginalImageMC(std::vector< vtkSmartPointer<vtkImageData> > *iOriginalImage)
 {
   m_OriginalImageMC = iOriginalImage;
 }

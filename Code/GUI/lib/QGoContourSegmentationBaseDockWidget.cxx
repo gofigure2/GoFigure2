@@ -48,7 +48,7 @@
 QGoContourSegmentationBaseDockWidget::QGoContourSegmentationBaseDockWidget(
   QWidget *iParent,
   vtkPoints *seeds,
-  std::vector< vtkImageData * > *iOriginalImage):QDockWidget(iParent)
+  std::vector< vtkSmartPointer<vtkImageData> > *iOriginalImage):QDockWidget(iParent)
 {
   this->setupUi(this);
 

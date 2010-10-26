@@ -47,6 +47,7 @@
 #include "vtkPoints.h"
 #include "vtkImageData.h"
 #include "vtkPolyData.h"
+#include "vtkSmartPointer.h"
 
 // base widgets
 class QGoContourManualSegmentation;
@@ -63,7 +64,7 @@ public:
   explicit QGoContourSegmentationBaseDockWidget(
     QWidget *iParent = 0,
     vtkPoints *seeds = 0,
-    std::vector< vtkImageData * > *iOriginalImage = 0);
+    std::vector< vtkSmartPointer<vtkImageData> > *iOriginalImage = 0);
 
   ~QGoContourSegmentationBaseDockWidget();
 
