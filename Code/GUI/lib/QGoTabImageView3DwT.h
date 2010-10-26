@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -229,7 +223,8 @@ public:
 
   QGoPrintDatabase *m_DataBaseTables;
 
-  GoFigureMeshAttributes ComputeMeshAttributes(vtkPolyData *iMesh);
+  GoFigureMeshAttributes ComputeMeshAttributes(vtkPolyData *iMesh,
+                                               const bool& iIntensity );
 
 signals:
   void TimePointChanged(int TimePoint);

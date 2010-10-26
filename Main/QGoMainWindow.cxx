@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Revision$  // Revision of last commit
-  Date: $Date$  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -468,7 +462,9 @@ QGoMainWindow::LoadAllTracesFromDatabase(const int & iT, const std::string & iTr
           if ( contourmesh_list_it->Nodes )
             {
             GoFigureMeshAttributes attributes =
-              w3t->ComputeMeshAttributes(contourmesh_list_it->Nodes);
+              w3t->ComputeMeshAttributes(
+                  contourmesh_list_it->Nodes, // mesh
+                  false ); // do not need to compute intensity based measure
             w3t->m_DataBaseTables->PrintVolumeAreaForMesh(
               &attributes, contourmesh_list_it->TraceID);
             }
