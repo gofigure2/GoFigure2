@@ -217,6 +217,13 @@ QGoContourSegmentationBaseDockWidget::SetChannel(int iChannel,const QString & iT
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
+void
+QGoContourSegmentationBaseDockWidget::SetNumberOfChannels(int iNumberOfChannels)
+{
+  m_ContourSemiAutoSegmentation->SetNumberOfChannels(iNumberOfChannels);
+}
+
+//---------------------------------------------------------------------------//
 bool
 QGoContourSegmentationBaseDockWidget::GetReeditMode()
 {

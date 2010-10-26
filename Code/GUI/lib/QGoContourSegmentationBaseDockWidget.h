@@ -76,6 +76,8 @@ public:
    */
   void SetChannel(int iChannel, const QString & iText = QString());
 
+  void SetNumberOfChannels(int iNumberOfChannels);
+
   bool GetReeditMode();
 
   void SetReeditMode(bool iEnable);

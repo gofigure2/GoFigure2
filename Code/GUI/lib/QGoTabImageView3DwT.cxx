@@ -977,15 +977,19 @@ ChannelTimeMode( bool iEnable )
     // it will update the size of the related combobox
     m_NavigationDockWidget->blockSignals(true);
     m_NavigationDockWidget->SetNumberOfChannels(NumberOfChannels);
+    m_ContourSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
     m_MeshSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
+
 
     if ( NumberOfChannels > 1 )
       {
       m_NavigationDockWidget->SetChannel(0);
+      m_ContourSegmentationDockWidget->SetChannel(0);
       m_MeshSegmentationDockWidget->SetChannel(0);
       for ( unsigned int i = 1; i < NumberOfChannels; i++ )
         {
         m_NavigationDockWidget->SetChannel(i);
+        m_ContourSegmentationDockWidget->SetChannel(i);
         m_MeshSegmentationDockWidget->SetChannel(i);
         }
       }
@@ -1507,6 +1511,7 @@ QGoTabImageView3DwT::SetLSMReader(vtkLSMReader *iReader, const int & iTimePoint)
     // Initialize the widgets with the good number of channels
     // it will update the size of the related combobox
     m_NavigationDockWidget->SetNumberOfChannels(NumberOfChannels);
+    m_ContourSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
     m_MeshSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
 
     if ( NumberOfChannels > 1 )
@@ -1589,6 +1594,7 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
   // Initialize the widgets with the good number of channels
   // it will update the size of the related combobox
   m_NavigationDockWidget->SetNumberOfChannels(NumberOfChannels);
+  m_ContourSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
   m_MeshSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
 
   // Set up QSpinBox in m_VideoRecorderWidget
@@ -1766,6 +1772,11 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels( int iChannel )
   m_NavigationDockWidget->blockSignals(false);
 
   //update channels in segmentation widgets
+  m_ContourSegmentationDockWidget->SetNumberOfChannels(3);
+  m_ContourSegmentationDockWidget->SetChannel(0, "t-1");
+  m_ContourSegmentationDockWidget->SetChannel(1, "t");
+  m_ContourSegmentationDockWidget->SetChannel(2, "t+1");
+
   m_MeshSegmentationDockWidget->SetNumberOfChannels(3);
   m_MeshSegmentationDockWidget->SetChannel(0, "t-1");
   m_MeshSegmentationDockWidget->SetChannel(1, "t");
