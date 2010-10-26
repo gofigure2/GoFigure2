@@ -388,7 +388,7 @@ protected:
   /**
   \brief get all the different parts needed for the query to get the color of traces
   from the database
-  \param[in|ou] ioSelectedFields will be filed with the attributes of the color DBtable
+  \param[in|out] ioSelectedFields will be filed with the attributes of the color DBtable
   \param[in|out] ioJoinTablesOnTraceTable will be filled with the conditions to link the
   color table and the trace table
   */
