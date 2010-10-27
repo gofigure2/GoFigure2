@@ -256,20 +256,19 @@ public slots:
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
   void SetRendererWindow(int);
-
 #endif /* ENABLEVIDEORECORD */
 
   QString SnapshotViewXY( const GoFigure::FileType & iType,
-                          const QString & iBaseName = QString("snapshot") );
+                          const QString & iBaseName = QString("snapshot-xy-") );
 
-  QString SnapshotView2( const GoFigure::FileType & iType,
-                         const QString & iBaseName = QString("snapshot") );
+  QString SnapshotViewXZ( const GoFigure::FileType & iType,
+                         const QString & iBaseName = QString("snapshot-xz-") );
 
-  QString SnapshotView3( const GoFigure::FileType & iType,
-                         const QString & iBaseName = QString("snapshot") );
+  QString SnapshotViewYZ( const GoFigure::FileType & iType,
+                         const QString & iBaseName = QString("snapshot-yz-") );
 
   QString SnapshotViewXYZ( const GoFigure::FileType & iType,
-                           const QString & iBaseName = QString("snapshot") );
+                           const QString & iBaseName = QString("snapshot-xyz-") );
 
   void SetSliceViewXY(const int &);
 
@@ -387,6 +386,7 @@ protected:
   int  m_ChannelOfInterest;
 
   /// \todo remove m_FFMPEGWriter and m_AVIWriter from this class
+
   #if defined ENABLEFFMPEG || defined ENABLEAVI
   QGoVideoRecorder *m_VideoRecorderWidget;
   #endif /* ENABLEFFMPEG || ENABLEAVI */
@@ -456,7 +456,7 @@ protected:
       mesh_property->SetColor(iRgba[0], iRgba[1], iRgba[2]);
       mesh_property->SetOpacity(iRgba[3]);
 
-      /// TODO fix bug, shouldn't be required
+      /// \todo fix bug, shouldn't be required
       std::vector< vtkActor * > mesh_actor = this->AddContour(iMesh, mesh_property);
       mesh_property->Delete();
 
@@ -472,17 +472,10 @@ protected:
   void CreateContour(vtkPolyData *contour_nodes, vtkPolyData *iView);
 
   /**
-   * \param[in] iMeshID
-   * \param[in] iDir
-   * \param[in] iHighlighted
-   * \param[in] iR red component in [0,1]
-   * \param[in] iG green component in [0,1]
-   * \param[in] iB blue component in [0,1]
-   * \param[in] iA alpha component in [0,1]
-   * \param[in] iSaveInDataBase save in data base if true
-   * \todo Alpha component is not used at all, it is assumed to be opaque
+   * \brief Save mesh in Database
+   * \param[in] iMesh
    */
-  void SaveMesh(vtkPolyData *iView);
+  void SaveMesh(vtkPolyData *iMesh);
 
   void GetBackgroundColorFromImageViewer();
 

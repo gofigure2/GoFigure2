@@ -390,7 +390,7 @@ void QGoCreateImgSessionPage::CreateChannels(vtkMySQLDatabase *DatabaseConnector
     std::string  ChannelName = "Channel " + StringChannelNumber;
     std::string  ColorName = "ColorFor";
     ColorName += ChannelName;
-    /** \todo take the channel names from the header file*/
+    /** \todo Lydie: take the channel names from the header file*/
     int Red   = m_HeaderFileInfo.m_ChannelColor[i][0];
     int Green = m_HeaderFileInfo.m_ChannelColor[i][1];
     int Blue  = m_HeaderFileInfo.m_ChannelColor[i][2];

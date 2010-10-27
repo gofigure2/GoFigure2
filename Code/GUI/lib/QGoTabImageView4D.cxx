@@ -288,12 +288,9 @@ void QGoTabImageView4D::CreateModeActions()
   //QObject::connect( DefaultAction, SIGNAL( triggered() ),
   // this, SLOT( DefaultMode() ) );
 }
+//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-//-------------------------------------------------------------------------
-/**
- *
- */
 void QGoTabImageView4D::CreateVisuDockWidget()
 {
   m_NavigationDockWidget = new QGoNavigationDockWidget(this, GoFigure::FOUR_D);
@@ -332,9 +329,6 @@ void QGoTabImageView4D::CreateVisuDockWidget()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- * \brief
- */
 void QGoTabImageView4D::CreateManualSegmentationdockWidget()
 {
   m_ManualSegmentationWidget = new QGoContourManualSegmentationWidget(this);
@@ -349,7 +343,7 @@ void QGoTabImageView4D::CreateManualSegmentationdockWidget()
   QObject::connect( m_ManualSegmentationWidget,
                     SIGNAL( ContourRepresentationPropertiesChanged() ),
                     this, SLOT( ChangeContourRepresentationProperty() ) );
-/// TODO fix it is not a dock widget anymore
+/// \todo fix it is not a dock widget anymore
 //  this->m_SegmentationActions.push_back(
 //    m_ManualSegmentationWidget->toggleViewAction());
 }
@@ -719,20 +713,20 @@ QGoTabImageView4D::SnapshotViewXY(const GoFigure::FileType & iType,
 
 //--------------------------------------------------------------------------
 QString
-QGoTabImageView4D::SnapshotView2(const GoFigure::FileType & iType,
+QGoTabImageView4D::SnapshotViewXZ(const GoFigure::FileType & iType,
                                  const QString & iBaseName)
 {
-  return m_XYZImageView->SnapshotView2(iType, iBaseName);
+  return m_XYZImageView->SnapshotViewXZ(iType, iBaseName);
 }
 
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QString
-QGoTabImageView4D::SnapshotView3(const GoFigure::FileType & iType,
+QGoTabImageView4D::SnapshotViewYZ(const GoFigure::FileType & iType,
                                  const QString & iBaseName)
 {
-  return m_XYZImageView->SnapshotView3(iType, iBaseName);
+  return m_XYZImageView->SnapshotViewYZ(iType, iBaseName);
 }
 
 //--------------------------------------------------------------------------
@@ -752,7 +746,7 @@ QString
 QGoTabImageView4D::SnapshotViewXT(const GoFigure::FileType & iType,
                                   const QString & iBaseName)
 {
-  return m_XYTImageView->SnapshotView2(iType, iBaseName);
+  return m_XYTImageView->SnapshotViewXZ(iType, iBaseName);
 }
 
 //--------------------------------------------------------------------------
@@ -762,7 +756,7 @@ QString
 QGoTabImageView4D::SnapshotViewYT(const GoFigure::FileType & iType,
                                   const QString & iBaseName)
 {
-  return m_XYTImageView->SnapshotView3(iType, iBaseName);
+  return m_XYTImageView->SnapshotViewYZ(iType, iBaseName);
 }
 
 //--------------------------------------------------------------------------
@@ -1011,10 +1005,6 @@ void QGoTabImageView4D::resizeEvent(QResizeEvent *iEvent)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- * \param iChecked
- */
 void QGoTabImageView4D::ShowAllChannels(bool iChecked)
 {
   if ( iChecked )
@@ -1061,10 +1051,6 @@ void QGoTabImageView4D::ShowAllChannels(bool iChecked)
 //------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- * \brief
- * \param[in] iChannel
- */
 void
 QGoTabImageView4D::ShowOneChannel(int iChannel)
 {
@@ -1079,10 +1065,6 @@ QGoTabImageView4D::ShowOneChannel(int iChannel)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- * \param iActivate
- */
 void
 QGoTabImageView4D::ActivateManualSegmentationEditor(const bool & iActivate)
 {
@@ -1105,9 +1087,6 @@ QGoTabImageView4D::ActivateManualSegmentationEditor(const bool & iActivate)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- */
 void
 QGoTabImageView4D::ChangeContourRepresentationProperty()
 {
@@ -1140,9 +1119,6 @@ QGoTabImageView4D::ChangeContourRepresentationProperty()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- */
 void
 QGoTabImageView4D::ValidateContour()
 {
@@ -1155,10 +1131,7 @@ QGoTabImageView4D::ValidateContour()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- * \param iId
- */
+
 void
 QGoTabImageView4D::ValidateContour(const int & iId)
 {
@@ -1175,7 +1148,6 @@ QGoTabImageView4D::ValidateContour(const int & iId)
 
     vtkProperty *contour_property = vtkProperty::New();
     contour_property->SetRepresentationToWireframe();
-    /** \todo: how to get the color*/
     contour_property->SetColor(r, g, b);
 
     // Compute Bounding Box
@@ -1245,11 +1217,6 @@ QGoTabImageView4D::ValidateContour(const int & iId)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- * \param[in] pos[]
- * \return
- */
 int *
 QGoTabImageView4D::GetImageCoordinatesFromWorldCoordinates(double iPos[3])
 {
@@ -1259,13 +1226,6 @@ QGoTabImageView4D::GetImageCoordinatesFromWorldCoordinates(double iPos[3])
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- * \param iId
- * \param dataset
- * \param property
- * \return
- */
 // std::vector< vtkQuadricLODActor* >
 std::vector< vtkActor * >
 QGoTabImageView4D::AddContour(vtkPolyData *dataset,
@@ -1291,9 +1251,6 @@ QGoTabImageView4D::AddContour(vtkPolyData *dataset,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/**
- *
- */
 void
 QGoTabImageView4D::ChangeBackgroundColor()
 {

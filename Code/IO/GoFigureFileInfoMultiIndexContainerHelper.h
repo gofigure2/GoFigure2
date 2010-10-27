@@ -97,8 +97,10 @@ struct m_TCoord {};
 struct m_Channel {};
 #endif
 
-/// \todo Since we are not yet using all information, the unused one are
-/// commented for performance issue.
+/** \todo (Arnaud) Since we are not yet using all information
+ * the unused one are commented for performance issues
+ * (PCoord, RCoord, CCoord, XTileCoord, YTileCoord, ZTileCoord)
+ */
 typedef boost::multi_index::multi_index_container<
   GoFigureFileInfoHelper,
   boost::multi_index::indexed_by<

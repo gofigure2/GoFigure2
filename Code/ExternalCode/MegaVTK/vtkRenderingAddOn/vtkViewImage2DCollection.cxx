@@ -219,7 +219,7 @@ void vtkViewImage2DCollection::Initialize()
         plane_property, ( i != j ) );
       //store all slice actors
       this->SlicePlaneActors.push_back(temp);
-      /// TODO Check if delete makes sense here
+      /// \todo Check if delete makes sense here
       temp->Delete();
       }
     }

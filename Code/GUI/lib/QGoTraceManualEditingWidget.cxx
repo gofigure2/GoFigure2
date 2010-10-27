@@ -79,7 +79,7 @@ QGoTraceManualEditingWidget::SetListCollectionID(
     this->m_CollectionColorComboBox->InitializeTheListWithColor( iListExistingID,
                                                                  this->m_CollectionName->text().toStdString() );
     }
-  /** \todo when using lineages, remove the following*/
+  /** \todo Lydie: when using lineages, remove the following*/
   if ( this->m_CollectionName->text() == "lineage" ) //at that time we don't
                                                      // show lineages
     {

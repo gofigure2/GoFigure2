@@ -50,7 +50,10 @@
 
 /**
   \class ContourMeshContainer
-  \brief
+  \brief Wraps a boost multi index container of ContourMeshStructure.
+  This class intends to synchronize Contour and Mesh representation in
+  the Visualization and in the TableWidget
+  \sa ContourMeshStructure QGoTableWidget QGoImageView3D
   */
 class ContourMeshContainer:public QObject
 {
@@ -126,7 +129,7 @@ public:
   typedef MultiIndexContainer::index< Visible >::type::iterator
   MultiIndexContainerVisibleIterator;
 
-  //-------------------------------------------------------------------------
+  //------------------------------------------------------------------------
 
   /** \brief Constructor. */
   explicit ContourMeshContainer(QObject *iParent,
@@ -141,13 +144,15 @@ public:
   /** \brief Link to the visualization. */
   QGoImageView3D *m_ImageView;
 
+  /** \brief Current Element to be inserted in the container */
   ContourMeshStructure m_CurrentElement;
 
+  /** */
   void SetTimePoint(const unsigned int & iT);
 
-  /**
-    \brief Print the container content in the application output
-    */
+  // ----------------------------------------------------------------------
+
+  /** \brief Print the container content in the application output */
   template< class TIterator >
   void Print(TIterator iBegin, TIterator iEnd)
   {
@@ -163,8 +168,8 @@ public:
   }
 
   /**
-    \brief Print the container content in the application output according to
-    the template parameter.
+    \brief Print the container content in the application output according
+    to the template parameter.
     \tparam TIndex
     */
   template< class TIndex >
@@ -174,11 +179,16 @@ public:
                  m_Container.get< TIndex >().end() );
   }
 
-  /**
-    \brief Print the container content in the application output.
-    */
+  /** \brief Print the container content in the application output. */
   void Print();
+  // ----------------------------------------------------------------------
 
+  /**
+    \brief Update Visualization of the given TraceIDs
+    \tparam TContainer Container of TraceIDs
+    \param[in] iList input container of TraceIDs
+    \param[in] iContour
+  */
   template< class TContainer >
   void UpdateVisualizationForGivenIDs(TContainer iList,
                                       const bool & iContour)
@@ -265,14 +275,33 @@ public:
       }
   }
 
+  /** \brief Display all elements for a given time point
+  *   \param[in] iT time point
+  */
   void ShowActorsWithGivenTimePoint(const unsigned int & iT);
 
+  /**
+ *  \brief Change elements (in between iBegin and iEnd ) visibility
+ *  \param[in] iBegin first element
+ *  \param[in] iEnd last element
+ *  \param[in] iVisibility
+ */
   void
   ChangeActorsVisibility(
     MultiIndexContainerTCoordIterator iBegin,
     MultiIndexContainerTCoordIterator iEnd,
     const bool & iVisibility);
 
+  /**
+ * \brief Update Actors, Highlighted, Visibility (properties) of given
+ * a element
+ * \tparam TIndex Index Type (referring to multi index container's indices)
+ * \param[in] iIt element to update
+ * \param[in] iActors its actors
+ * \param[in] iHighlighted
+ * \param[in] iVisibility if false remove the element from the scene, else
+ * add it
+ */
   template< class TIndex >
   void UpdateVisualizationForGivenElement(
     typename MultiIndexContainer::index< TIndex >::type::iterator iIt,
@@ -318,26 +347,41 @@ public:
   */
   void Insert(const ContourMeshStructure & iE);
 
+  /** \brief Insert Current Element in the container */
   void InsertCurrentElement();
 
+  /** \brief Reset Current Element to a default state */
   void ResetCurrentElement();
 
+  /** \brief Update Current Element by providing all required informations
+  from the visualization.
+  \param[in] iActors
+  \param[in] iNodes
+  \param[in] iT
+  \param[in] iHighlighted
+  \param[in] iVisible
+  \see ContourMeshStructure
+  */
   void UpdateCurrentElementFromVisu(std::vector< vtkActor * > iActors,
                                     vtkPolyData *iNodes,
                                     const unsigned int & iT,
                                     const bool & iHighlighted,
                                     const bool & iVisible);
 
+  /** \brief Update Current Element from the database.
+  \param[in] iTraceID
+  \param[in] irgba
+  */
   void UpdateCurrentElementFromDB(unsigned int iTraceID, double irgba[4]);
 
   /**
-  \brief Remove all actors for a given time point
+  \brief Remove all actors (elements) from the scene for a given time point
   \param[in] iT
   */
   void RemoveActorsWithGivenTimePoint(const unsigned int & iT);
 
   /**
-    \brief
+    \brief Add all actors (elements) from the scene for a given time point
   */
   void AddActorsWithGivenTimePoint(const unsigned int & iT);
 
@@ -506,6 +550,12 @@ public:
     return false;
   }
 
+  /** \brief Update element Visibility property given one actor.
+  \tparam TActor either ActorXY, ActorXZ, ActorYZ, ActorXYZ depending on the view
+  \param[in] iActor provided actor
+  \return true if iActor is in the container
+  \return false else
+  */
   template< class TActor >
   bool UpdateElementVisibilityWithGivenActor(vtkActor *iActor)
   {
@@ -629,6 +679,13 @@ public:
   }
 
   //-------------------------------------------------------------------------
+  /**
+  \brief Change element visibility in the scene
+  \tparam TIndex refers to any index from the multi index container indices
+  \param[in] iBegin first element
+  \param[in] iEnd last element
+  \param[in] iVisibility
+  */
   template< class TIndex >
   void ChangeActorsVisibility(
     typename MultiIndexContainer::index< TIndex >::type::iterator iBegin,
@@ -704,6 +761,9 @@ public:
   */
   bool DeleteElement(const unsigned int & iId);
 
+  /** \brief Delete all highlighted elements
+  \return the list of TraceIDs of such elements
+  */
   std::list< unsigned int > DeleteAllHighlightedElements();
 
   /**
@@ -732,8 +792,10 @@ public:
   vtkProperty * GetHighlightedProperty();
 
 signals:
+  /** \brief When one contour / mesh has been picked (highlighted) from the visualization */
   void TracePicked(unsigned int, Qt::CheckState);
 
+  /** \brief When one contour / mesh's visibility has been changed from the visualization */
   void TraceVisibilityChanged(unsigned int, Qt::CheckState);
 
 protected:

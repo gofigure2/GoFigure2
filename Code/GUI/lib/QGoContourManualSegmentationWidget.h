@@ -45,6 +45,12 @@ class QGoManualSegmentationSettingsDialog;
 #include "QGoTraceManualEditingWidget.h"
 #include "QGoIOConfigure.h"
 
+/**
+ * \class QGoContourManualSegmentationWidget
+ * \ingroup QGoContourManual
+ * \brief Define the manual segmentation dockwidget behavior
+*/
+
 class QGOGUILIB_EXPORT QGoContourManualSegmentationWidget:
   public QWidget,
   private Ui::ContourManualSegmentationWidget
@@ -54,14 +60,29 @@ public:
   explicit QGoContourManualSegmentationWidget(QWidget *parent = 0);
   ~QGoContourManualSegmentationWidget();
 
+  /*
+   * \brief Pop up dialog to choose the contour properties
+   */
   QGoManualSegmentationSettingsDialog *m_SettingsDialog;
 signals:
+/*
+ * \brief Signal sent if "Reinitialize" button clicked
+ */
   void ReinitializePressed();
 
+  /*
+   * \brief Signal sent if "Validate" button clicked
+   */
   void ValidatePressed();
 
+  /*
+   * \brief Signal sent if we "Setting" button clicked
+   */
   void SettingsPressed();
 
+  /*
+   * \brief Signal sent if leave the m_SettingsDialog by clicking "OK"
+   */
   void UpdateContourRepresentationProperties();
 
 private:

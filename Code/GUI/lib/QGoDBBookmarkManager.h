@@ -62,19 +62,24 @@ public:
   description, validates the name, set the m_DatabaseConnectorForNewBkmrk
   and save the bookmark in the DB
   \param[in] iCoordID ID for the coordinate to be saved in the bookmark table
+  \param[in] iDatabaseConnector connection to the database
   */
   void AddABookmark(int iCoordID, vtkMySQLDatabase *iDatabaseConnector);
 
   /**
   \brief return the coordinate for the bookmark with the name iName
+  \param[in] iDatabaseConnector connection to the database
   \param[in] iName name of the bookmark for which we want to get the coordinate
-  \param[out] GoDBCoordinateRow containing the data for the coordinate which name is iName
+  \return GoDBCoordinateRow containing the data for the coordinate which name is iName
   */
   GoDBCoordinateRow GetCoordinatesForBookmark(
     vtkMySQLDatabase *iDatabaseConnector, std::string iName);
 
-  /** \brief delete the bookmarks from the database from a list the user
-  selects and send a signal to tell that the list has changed*/
+  /** 
+  \brief delete the bookmarks from the database from a list the user
+  selects and send a signal to tell that the list has changed
+  \param[in] iDatabaseConnector connection to the database
+  */
   void DeleteBookmark(vtkMySQLDatabase *iDatabaseConnector);
 
 protected:
@@ -87,8 +92,9 @@ protected slots:
   /**
   \brief get the coordid for the bookmark with the name
   iName
+  \param[in] iDatabaseConnector connection to the database
   \param[in] iName Name of the bookmark
-  \param[out] int ID for the coordinate in the bookmark DBTable
+  \return ID for the coordinate in the bookmark DBTable
   */
   int GetCoordIDForBookmark(vtkMySQLDatabase *iDatabaseConnector,
                             std::string iName);

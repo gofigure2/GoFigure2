@@ -570,7 +570,7 @@ QGoImageView3D::SnapshotViewXY(const GoFigure::FileType & iType,
 
 //-------------------------------------------------------------------------
 QString
-QGoImageView3D::SnapshotView2(const GoFigure::FileType & iType,
+QGoImageView3D::SnapshotViewXZ(const GoFigure::FileType & iType,
                               const QString & iBaseName)
 {
   QString filename = SnapshotView(QvtkWidget_XZ, iType,
@@ -584,7 +584,7 @@ QGoImageView3D::SnapshotView2(const GoFigure::FileType & iType,
 
 //-------------------------------------------------------------------------
 QString
-QGoImageView3D::SnapshotView3(
+QGoImageView3D::SnapshotViewYZ(
   const GoFigure::FileType & iType,
   const QString & iBaseName)
 {
@@ -909,12 +909,12 @@ QGoImageView3D::GetImageViewer3D()
 
 //--------------------------------------------------------------------------
 std::vector< vtkActor * >
-QGoImageView3D::AddContour(vtkPolyData *dataset, vtkProperty *iProperty)
+QGoImageView3D::AddContour(vtkPolyData *iDataset, vtkProperty *iProperty)
 {
   std::vector< vtkActor * > oList =
-    QGoImageView::AddContour(dataset, iProperty);
+    QGoImageView::AddContour(iDataset, iProperty);
 
-  vtkActor *temp = m_View3D->AddDataSet( (vtkDataSet *)dataset,
+  vtkActor *temp = m_View3D->AddDataSet( (vtkDataSet *)iDataset,
                                          iProperty, false, false );
 
   //m_View3D->Render();
@@ -1275,7 +1275,7 @@ QGoImageView3D::InitializePlaneWidget()
 }
 
 //-------------------------------------------------------------------------
-/// TODO Add button to enable/disable tri planar rendering
+/// \todo Add button to enable/disable tri planar rendering
 //-------------------------------------------------------------------------
 void
 QGoImageView3D::EnableVolumeRendering(bool iValue)

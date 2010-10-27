@@ -112,6 +112,10 @@ public:
 
   void SetIsAnOpenRecentFile(bool iIsAnOpenRecentFile);
 
+signals:
+  void GofigureDatabaseExists();
+  void NoGofigureDatabase();
+
 protected:
   void closeEvent(QCloseEvent *iEvent);
 

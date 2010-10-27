@@ -41,18 +41,29 @@
 class QNetworkAccessManager;
 class QNetworkReply;
 
+/**\class QGoNetworkUtilities
+ * \brief As of now, the main purpose of this class is to check for updates
+ * on the official download site of gofigure
+ */
 class QGOGUILIB_EXPORT QGoNetworkUtilities:public QObject
 {
   Q_OBJECT
 public:
+  /** \brief Constructor */
   explicit QGoNetworkUtilities(QObject *parent = 0);
+
+  /** \brief Destructor */
   ~QGoNetworkUtilities();
+
+  /** \brief Check for updates */
   void CheckForUpdates();
 
 signals:
+  /** \brief checking for udpate task is complete */
   void CheckForUpdatesDone(QString msg, bool error);
 
 public slots:
+  /** \brief display the result of query (Is it up-to-date?) */
   virtual void DisplayResults(QNetworkReply *reply);
 
 protected:

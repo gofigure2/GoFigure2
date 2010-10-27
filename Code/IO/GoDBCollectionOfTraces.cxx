@@ -779,7 +779,7 @@ int GoDBCollectionOfTraces::CreateNewCollection(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::list< unsigned int > GoDBCollectionOfTraces::UpdateDBDataForAddedTracesToExistingCollection(
+/*std::list< unsigned int > GoDBCollectionOfTraces::UpdateDBDataForAddedTracesToExistingCollection(
   std::list< unsigned int > iListSelectedTraces, int iNewCollectionID,
   vtkMySQLDatabase *iDatabaseConnector)
 {
@@ -859,7 +859,7 @@ std::list< unsigned int > GoDBCollectionOfTraces::UpdateDBDataForAddedTracesToEx
                               iDatabaseConnector);
 
   return ListTraceIDWithBoundingBoxUpdated;
-}
+}*/
 
 //--------------------------------------------------------------------------
 

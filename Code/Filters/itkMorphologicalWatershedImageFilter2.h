@@ -57,9 +57,9 @@
 namespace itk
 {
 /** \class MorphologicalWatershedImageFilter2
- * \brief TODO
+ * \brief
  *
- * TODO
+ * \todo (Kishore) write a brief documentation!
  *
  * Watershed pixel are labeled 0.
  * TOutputImage should be an integer type.

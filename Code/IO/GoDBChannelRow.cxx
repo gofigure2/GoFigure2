@@ -80,7 +80,7 @@ int GoDBChannelRow::DoesThisChannelAlreadyExists(
 
   return FindOneID(DatabaseConnector, "channel", "ChannelID", "ImagingSessionID",
                    ImagingSessionID, "ChannelNumber", ChannelNumber);
-  /** \todo Once we get the channel names from the megacapture file,
+  /** \todo Lydie: Once we get the channel names from the megacapture file,
   the uniqueness of the channel can be ImagingSessionID + Name*/
 }
 

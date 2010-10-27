@@ -38,6 +38,12 @@
 #include <QWidget>
 #include "ui_ContourSemiAutoShapeWidget.h"
 
+/**
+ * \class QGoContourSemiAutoShapeWidget
+ * \ingroup QGoContourSeed
+ * \brief Widget suited for the shape segmentation. Shape can be a sphere, a cube, etc.
+*/
+
 class QGoContourSemiAutoShapeWidget:
   public QWidget,
   protected Ui::ContourSemiAutoShapeWidget
@@ -47,6 +53,9 @@ public:
   explicit QGoContourSemiAutoShapeWidget(QWidget *iParent = 0);
   ~QGoContourSemiAutoShapeWidget();
 signals:
+  /*
+   * \brief Signal sent when the shape is modified
+   */
   void Shape(int);
 };
 

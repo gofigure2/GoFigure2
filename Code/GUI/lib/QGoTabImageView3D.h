@@ -87,16 +87,16 @@ signals:
 
 public slots:
   QString SnapshotViewXY( const GoFigure::FileType & iType,
-                          const QString & iBaseName = QString("snapshot") );
+                          const QString & iBaseName = QString("snapshot-xy-") );
 
-  QString SnapshotView2( const GoFigure::FileType & iType,
-                         const QString & iBaseName = QString("snapshot") );
+  QString SnapshotViewXZ( const GoFigure::FileType & iType,
+                         const QString & iBaseName = QString("snapshot-xz-") );
 
-  QString SnapshotView3( const GoFigure::FileType & iType,
-                         const QString & iBaseName = QString("snapshot") );
+  QString SnapshotViewYZ( const GoFigure::FileType & iType,
+                         const QString & iBaseName = QString("snapshot-yz-") );
 
   QString SnapshotViewXYZ( const GoFigure::FileType & iType,
-                           const QString & iBaseName = QString("snapshot") );
+                           const QString & iBaseName = QString("snapshot-xyz-") );
 
   void SetSliceViewXY(const int &);
 

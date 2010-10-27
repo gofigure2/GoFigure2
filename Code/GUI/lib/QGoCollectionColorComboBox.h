@@ -60,7 +60,8 @@ public slots:
   \param[in] iDataFromList contains the names and QColor of the items to be
   displayed in the combobox
   \param[in] iCollectionName name to use in the add an item
-  \overload from the mother class method
+  \overload QGoColorComboBox::SetItemsFromListWithColor(
+  std::list< ItemColorComboboxData > iDataFromList)
   */
   void SetItemsFromListWithColor(std::list< ItemColorComboboxData > iDataFromList,
                                  std::string iCollectionName);
@@ -69,7 +70,8 @@ public slots:
   \brief
   \param[in] iCollectionName name of the collection to add in the text to add a new
   collection
-  \overload from mother class method
+  \overload QGoColorComboBox::InitializeTheListWithColor(
+  std::list< ItemColorComboboxData > iDataFromList)
   */
   void InitializeTheListWithColor(std::list< ItemColorComboboxData > iDataFromList,
                                   std::string iCollectionName);

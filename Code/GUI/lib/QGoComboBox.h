@@ -78,24 +78,31 @@ public slots:
   */
   virtual void InitializeTheList(QStringList iListItems);
 
+  /**
+  \overload InitializeTheList(QStringList iListItems)
+  \param[in] iItemsData contains the name and the description of the items to be 
+  displayed in the combobox
+  */
   virtual void InitializeTheList(NamesDescrContainerType iItemsData);
 
   /**
   \brief clear the items already in the combobox,displayed the one in the QStringList and
   the items to add/delete
-  \param[in] iListItems contains the names of the items to be displayed in the combobox
+  \param[in] iDataFromList contains the names of the items to be displayed in the combobox
   */
   virtual void SetItemsFromList(QStringList iDataFromList);
 
   /**
-  \overload
+  \overload SetItemsFromList(QStringList iDataFromList)
+  \param[in] iItemsData contains the name and the description of the items to be 
+  displayed in the combobox
   */
   virtual void SetItemsFromList(NamesDescrContainerType iItemsData);
 
   /**
   \brief set the activated item corresponding to the iTemText (no need to emit the signal
   ItemSelected)
-  \param[in] iTemText name of the item to be set to activated in the combobox
+  \param[in] iItemText name of the item to be set to activated in the combobox
   */
   void SetCurrentItem(std::string iItemText);
 

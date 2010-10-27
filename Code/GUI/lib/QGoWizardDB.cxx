@@ -95,6 +95,10 @@ QGoWizardDB::QGoWizardDB(QWidget *iParent):
   setWindowTitle( tr("Use DataBase") );
   QObject::connect( this->m_ConnectServerPage, SIGNAL( NoGofigureDatabase() ),
                     this, SLOT( hide() ) );
+  QObject::connect( this->m_ConnectServerPage, SIGNAL( NoGofigureDatabase() ),
+                    this, SIGNAL( NoGofigureDatabase() ) );
+  QObject::connect( this->m_ConnectServerPage, SIGNAL( GofigureDatabaseExists() ),
+                    this, SIGNAL ( GofigureDatabaseExists() ) );
 }
 
 //-------------------------------------------------------------------------
@@ -340,7 +344,7 @@ void QGoWizardDB::setImgSessionName(std::string iImgSessionName)
 //-------------------------------------------------------------------------
 void QGoWizardDB::SetFirstFileName()
 {
-  /** \todo redundant, create an OpenDBConnection....*/
+  /** \todo Lydie: redundant, create an OpenDBConnection....*/
   std::string Server = field("ServerName").toString().toStdString();
   std::string User = field("User").toString().toStdString();
   std::string Password = field("Password").toString().toStdString();

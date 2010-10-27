@@ -111,18 +111,18 @@ vtkViewImage3DCommand::SetVtkImageView3D(vtkViewImage3D *iViewImage3D)
 
 //----------------------------------------------------------------------------
 void
-vtkViewImage3DCommand::SetPlaneWidget(vtkImplicitPlaneWidget *test)
+vtkViewImage3DCommand::SetPlaneWidget(vtkImplicitPlaneWidget *iPlaneWidget)
 {
-  m_PlaneWidget = test;
+  m_PlaneWidget = iPlaneWidget;
 }
 
 //----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void
-vtkViewImage3DCommand::SetBoxWidget(vtkOrientedBoxWidget *test)
+vtkViewImage3DCommand::SetBoxWidget(vtkOrientedBoxWidget *iBoxWidget)
 {
-  m_BoxWidget = test;
+  m_BoxWidget = iBoxWidget;
 }
 
 //----------------------------------------------------------------------------
