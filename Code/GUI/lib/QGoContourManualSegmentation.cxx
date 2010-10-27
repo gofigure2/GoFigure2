@@ -132,8 +132,6 @@ void
 QGoContourManualSegmentation::SetReeditMode(bool iReeditMode)
 {
   m_ReeditMode = iReeditMode;
-  // show enable disable button here
-  // or emit a signal
 }
 
 //--------------------------------------------------------------------------

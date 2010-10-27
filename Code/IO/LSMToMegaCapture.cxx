@@ -164,7 +164,7 @@ LSMToMegaCapture::GetLSMReaders()
 
 /**
  * \brief Export as MegaCapture
- * \param[in] iHeaderFileName
+ * \param[in] iDirectoryPath
  */
 void
 LSMToMegaCapture::Export(const std::string & iDirectoryPath)
