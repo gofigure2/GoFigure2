@@ -88,7 +88,7 @@ public slots:
   /**
   \brief clear the items already in the combobox,displayed the one in the QStringList and
   the items to add/delete
-  \param[in] iListItems contains the names of the items to be displayed in the combobox
+  \param[in] iDataFromList contains the names of the items to be displayed in the combobox
   */
   virtual void SetItemsFromList(QStringList iDataFromList);
 
@@ -102,7 +102,7 @@ public slots:
   /**
   \brief set the activated item corresponding to the iTemText (no need to emit the signal
   ItemSelected)
-  \param[in] iTemText name of the item to be set to activated in the combobox
+  \param[in] iItemText name of the item to be set to activated in the combobox
   */
   void SetCurrentItem(std::string iItemText);
 
