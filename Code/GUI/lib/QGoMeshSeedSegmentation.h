@@ -50,10 +50,11 @@ class QGoFilterShape;
 class QGoFilterWatershed;
 
 /**
- * \class QGoSeedShapeSegmentation
- * \ingroup QGoSeed
- * \brief Class to create pre defined meshes
+ * \class QGoMeshSeedSegmentation
+ * \ingroup QGoMeshSeed
+ * \brief Interface between the seed segmentation filters and the base seed dockwidget
 */
+
 class QGOGUILIB_EXPORT QGoMeshSeedSegmentation:public QGoSeedSegmentationBase
 {
   Q_OBJECT
