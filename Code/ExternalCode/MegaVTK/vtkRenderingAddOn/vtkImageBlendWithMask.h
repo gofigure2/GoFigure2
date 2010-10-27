@@ -74,34 +74,48 @@
 
 /**
  * \class vtkImageBlendWithMask
- * \brief
+ * \brief TO BE FILLED
  * \ingroup MegaVTK
  */
 class VTK_RENDERINGADDON2_EXPORT vtkImageBlendWithMask:
   public vtkThreadedImageAlgorithm
 {
 public:
+    /*
+     * \brief Convenient method to access the constructor
+     */
   static vtkImageBlendWithMask * New();
 
   vtkTypeRevisionMacro (vtkImageBlendWithMask, vtkThreadedImageAlgorithm);
   void PrintSelf(ostream & os, vtkIndent indent);
 
-  // Set/Get the LUT to map the mask
+  /*
+   * \brief Set the LUT to map the mask
+   */
   vtkSetObjectMacro (LookupTable, vtkLookupTable);
+
+  /*
+   * \brief Get the LUT to map the mask
+   */
   vtkGetObjectMacro (LookupTable, vtkLookupTable);
 
-  // Description:
-  // Set the input to be masked.
+  /*
+   * \brief Set the input to be masked
+   * \param[in] in vtkImageData pointer to the input image
+   */
   void SetImageInput(vtkImageData *in);
 
-  // Description:
-  // Set the mask to be used.
+  /*
+   * \brief Set the mask to be used
+   * \param[in] in vtkImageData pointer to the input mask
+   */
   void SetMaskInput(vtkImageData *in);
 
-  // Description:
-  // Set the two inputs to this filter
+   // Set the input volume 1 for this filter
   virtual void SetInput1(vtkDataObject *in) { this->SetInput(0, in); }
+   // Set the input volume 2 for this filter
   virtual void SetInput2(vtkDataObject *in) { this->SetInput(1, in); }
+
 protected:
   vtkImageBlendWithMask();
   ~vtkImageBlendWithMask();

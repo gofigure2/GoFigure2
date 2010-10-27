@@ -844,6 +844,11 @@ vtkViewImage2D::InstallPipeline()
 
   if ( this->Renderer && this->ImageActor )
     {
+    this->ImageActor->SetInterpolate(false);
+    }
+
+  if ( this->Renderer && this->ImageActor )
+    {
     if ( !this->Renderer->GetActors()->IsItemPresent(this->ImageActor) )
       {
       this->Renderer->AddViewProp(this->ImageActor);

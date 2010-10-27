@@ -91,11 +91,18 @@ class VTK_RENDERINGADDON2_EXPORT vtkOrientedBoxWidget:public vtkBoxWidget
 {
 public:
 
+  /**
+   * \brief Convenient method to access the constructor.
+   */
   static vtkOrientedBoxWidget * New();
 
   vtkTypeRevisionMacro(vtkOrientedBoxWidget, vtkBoxWidget);
 
+  /**
+   * \brief Get the orientation matrix of the vtkBoxWidget
+   */
   vtkGetObjectMacro (OrientationMatrix, vtkMatrix4x4);
+  // Set the orientation matrix of the vtkBoxWidget
   virtual void SetOrientationMatrix(vtkMatrix4x4 *matrix);
 
 protected:

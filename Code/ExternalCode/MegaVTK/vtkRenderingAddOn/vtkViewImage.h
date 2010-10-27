@@ -185,8 +185,6 @@ class vtkScalarsToColors;
 class VTK_RENDERINGADDON2_EXPORT vtkViewImage:public vtkImageViewer2
 {
 public:
-
-  //static vtkViewImage* New();
   vtkTypeRevisionMacro(vtkViewImage, vtkImageViewer2);
 
   virtual void SetInput(vtkImageData *input);
@@ -211,8 +209,6 @@ public:
   /**
    \brief Get the scalar bar actor. This instance follows the color
    window/level of the viewer.
-   \todo make this scalar bar actually follow the WindowLevel filter.
-   It does not seems to work yet
   */
   vtkGetObjectMacro(ScalarBarActor, vtkScalarBarActor);
   /**
@@ -244,25 +240,34 @@ public:
   virtual void SetLookupTable(vtkLookupTable *lookuptable);
 
   /**
-   \brief  The TextProperty instance (GetTextProperty()) describes the font
-    and other settings of the CornerAnnotation instance
-    (GetCornerAnnotation())
+   * \brief Get a pointer to the current vtkTextProperty
+   *
+   * The TextProperty instance (GetTextProperty()) describes the font
+   * and other settings of the CornerAnnotation instance
+   * (GetCornerAnnotation())
   */
   vtkGetObjectMacro(TextProperty, vtkTextProperty);
   virtual void SetTextProperty(vtkTextProperty *textproperty);
 
   /**
-   All displayed dataset generates an actor which is added to the renderer.    \sa AddDataSet.
-   These actors are gathered in this vtkProp3DCollection for easier access.
+   * \brief Get a pointer to the current vtkProp3DCollection
+   *
+   * All displayed dataset generates an actor which is added to the renderer.
+   * These actors are gathered in this vtkProp3DCollection for easier access.
   */
   vtkGetObjectMacro (Prop3DCollection, vtkProp3DCollection);
 
   /**
-   \brief The world is not always what we think it is ...
-   Use this method to move the viewer slice such that the position
-   (in world coordinates) given by the arguments is contained by
-   the slice plane. If the given position is outside the bounds
-   of the image, then the slice will be as close as possible.
+   * \brief Set the world coordinates
+   * \param[in] x x value
+   * \param[in] y y value
+   * \param[in] z z value
+   *
+   * The world is not always what we think it is ...
+   * Use this method to move the viewer slice such that the position
+   * (in world coordinates) given by the arguments is contained by
+   * the slice plane. If the given position is outside the bounds
+   * of the image, then the slice will be as close as possible.
   */
   void SetWorldCoordinates(const double & x,
                            const double & y, const double & z);
@@ -278,7 +283,6 @@ public:
     as triangles, triangles as lines, lines as points.
     A vtkProperty of the dataset can be specified.
   */
-  //virtual vtkQuadricLODActor*
   virtual vtkActor * AddDataSet(vtkDataSet *dataset,
                                 vtkProperty *property = NULL,
                                 const bool & intersection = true,
@@ -287,7 +291,7 @@ public:
   virtual void RemoveProp(vtkProp *iProp);
 
   /**
-     Set/Get the current slice to display (depending on the orientation
+     \brief Set/Get the current slice to display (depending on the orientation
      this can be in X, Y or Z).
 
      This method has been overriden in order to generalize the use of this class
@@ -333,31 +337,55 @@ public:
   virtual void ResetCamera(void);
 
   /**
-     Get/Set the camera settings, position
+   * \brief Set the camera position
+   * \param[in] arg pointer to a double[3] containing the new position of the camera
   */
   void SetCameraPosition(double *arg);
 
+  /**
+   * \brief Get the camera position
+   * \return pointer to a double[3] containing the position of the camera
+  */
   double * GetCameraPosition(void);
 
   /**
-     Get/Set the camera settings, focal point
+   * \brief Set the camera focal point
+   * \param[in] arg pointer to a double[3] containing the new focal point of the
+   *  camera
   */
   void SetCameraFocalPoint(double *arg);
 
+  /**
+   * \brief Get the camera focal point
+   * \return pointer to a double[3] containing the new focal point of the
+   *  camera
+  */
   double * GetCameraFocalPoint(void);
 
   /**
-     Get/Set the camera settings, ViewUp
+   * \brief Set the camera view up
+   * \param[in] pointer to a double[3] containing the new view up of the
+   *  camera
   */
   void SetCameraViewUp(double *arg);
 
+  /**
+   * \brief Get the camera view up
+   * \return pointer to a double[3] containing the new view up of the
+   *  camera
+  */
   double * GetCameraViewUp(void);
 
   /**
-     Get/Set the camera settings, parallel scale
+   * \brief Set the camera parallel scale
+   * \param[in] double containing the new parallel scale
   */
   void SetCameraParallelScale(double arg);
 
+  /**
+   * \brief Get the camera parallel scale
+   * \return double containing the new parallel scale
+  */
   double GetCameraParallelScale(void);
 
   /**
@@ -366,18 +394,26 @@ public:
   virtual void Reset(void);
 
   /**
-     Show/Hide the annotations.
+   * \brief Set the annotation status.
+   * 0: annotations are not visible
+   * 1: annotations are visible
+  */
+  vtkBooleanMacro (ShowAnnotations, int);
+
+  /**
+   * \brief Get the annotation status.
+   * 0: annotations are not visible
+   * 1: annotations are visible
   */
   vtkGetMacro (ShowAnnotations, int);
   /**
-     Show/Hide the annotations.
+   * \brief Change the visibility of the annotations
+   * \param[in] int
+   * 0: annotations are not visible
+   * 1: annotations are visible
   */
   virtual void SetShowAnnotations(const int &);
 
-  /**
-     Show/Hide the annotations.
-  */
-  vtkBooleanMacro (ShowAnnotations, int);
   /**
      \brief Enable or Disable interaction on the view.
   */
@@ -394,18 +430,22 @@ public:
   virtual bool GetEnabled(void);
 
   /**
-     \brief Show/Hide scalar bar.
+   * \brief Set the visibility of the scalar bar.
+   * 0: scalar bar is not visible
+   * 1: scalar bar is visible
+  */
+  vtkBooleanMacro(ShowScalarBar, int);
+
+  /**
+   * \brief Get the visibility of the scalar bar.
+   * 0: scalar bar is not visible
+   * 1: scalar bar is visible
   */
   vtkGetMacro(ShowScalarBar, int);
   /**
      \brief Show/Hide scalar bar.
   */
   virtual void SetShowScalarBar(const bool &);
-
-  /**
-     \brief Show/Hide scalar bar.
-  */
-  vtkBooleanMacro(ShowScalarBar, int);
 
   /** \brief Set window and level for mapping pixels to colors. */
   virtual void SetColorWindow(double s);
@@ -418,12 +458,22 @@ public:
   virtual void ResetWindowLevel(void);
 
   /**
-     Get the current position in world coordinate.
-     This framework is only used in vtkViewImage2D to
-     update corner annotations and cursor position.
+   * \brief Get the current position in world coordinate.
+   * \return double pointer to the current position in world coordinates
+   *
+   * This framework is only used in vtkViewImage2D to
+   * update corner annotations and cursor position.
   */
   double * GetCurrentPoint(void)
   { return this->CurrentPoint; }
+
+  /**
+   * \brief Get the current position in world coordinate.
+   * \param[in,out] double pointer to the current position in world coordinates (double[3])
+   *
+   * This framework is only used in vtkViewImage2D to
+   * update corner annotations and cursor position.
+  */
   void GetCurrentPoint(double point[3])
   {
     point[0] = this->CurrentPoint[0];
@@ -431,12 +481,22 @@ public:
     point[2] = this->CurrentPoint[2];
   }
 
+  /**
+   * \brief Get information about the color of the image.
+   * true: multi-channels image (i.e. color)
+   * false: single-channel image (i.e. black and white)
+  */
   vtkGetMacro(IsColor, bool);
 
+  /**
+   * \brief Change the property of an actor
+   * \param[in] iActor vtkProp3D pointer to the actor to be modified
+   * \param[in] iProperty vtkProperty pointer containing the new property to
+   * be applied
+  */
   virtual void ChangeActorProperty(vtkProp3D *iActor,
                                    vtkProperty *iProperty);
 
-//   virtual void HighlightContour( vtkProp3D* iProp, const bool& iToDo );
 protected:
 
   vtkViewImage();

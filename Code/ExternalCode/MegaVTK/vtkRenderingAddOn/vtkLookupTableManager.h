@@ -75,14 +75,18 @@
 #include "MegaVTK2Configure.h"
 
 /**
- \brief vtkLookupTableManager
+ \class vtkLookupTableManager
  \ingroup MegaVTK
- \brief
+ \brief Define and manage all the lookup tables available in GoFigure2
  */
 class VTK_RENDERINGADDON2_EXPORT vtkLookupTableManager:public vtkObject
 {
 public:
 
+
+  /*
+   * \brief Name of all the lookup tables
+   */
   //BTX
   enum LookupTableIds {
     LUT_BW = 0,
@@ -99,34 +103,91 @@ public:
     };
   //ETX
 
+  /**
+   * \brief Convenient method to access the constructor
+   */
   static vtkLookupTableManager * New();
 
   vtkTypeRevisionMacro (vtkLookupTableManager, vtkObject);
 
+  /**
+   * \brief Get the BW lookup table
+   * \return vtkLookupTable pointer to the BW lookup table
+   */
   static vtkLookupTable * GetBWLookupTable(void);
 
+  /**
+   * \brief Get the BWInverse lookup table
+   * \return vtkLookupTable pointer to the BWInverse lookup table
+   */
   static vtkLookupTable * GetBWInverseLookupTable(void);
 
+  /**
+   * \brief Get the Spectrum lookup table
+   * \return vtkLookupTable pointer to the Spectrum lookup table
+   */
   static vtkLookupTable * GetSpectrumLookupTable(void);
 
+  /**
+   * \brief Get the Hot Metal lookup table
+   * \return vtkLookupTable pointer to the Hot Metal lookup table
+   */
   static vtkLookupTable * GetHotMetalLookupTable(void);
 
+  /**
+   * \brief Get the GE Color lookup table
+   * \return vtkLookupTable pointer to the GE Color lookup table
+   */
   static vtkLookupTable * GetGEColorLookupTable(void);
 
+  /**
+   * \brief Get the Spectrum lookup table
+   * \return vtkLookupTable pointer to the Spectrum lookup table
+   */
   static vtkLookupTable * GetFlowLookupTable(void);
 
+  /**
+   * \brief Get the LONI lookup table
+   * \return vtkLookupTable pointer to the LONI lookup table
+   */
   static vtkLookupTable * GetLONILookupTable(void);
 
+  /**
+   * \brief Get the LONI2 lookup table
+   * \return vtkLookupTable pointer to the LONI2 lookup table
+   */
   static vtkLookupTable * GetLONI2LookupTable(void);
 
+  /**
+   * \brief Get the Asymmetry lookup table
+   * \return vtkLookupTable pointer to the Asymmetry lookup table
+   */
   static vtkLookupTable * GetAsymmetryLookupTable(void);
 
+  /**
+   * \brief Get the PValue lookup table
+   * \return vtkLookupTable pointer to the PValue lookup table
+   */
   static vtkLookupTable * GetPValueLookupTable(void);
 
+  /**
+   * \brief Get the available lookup table
+   * \return Vector of strings where the strings are the name of the available
+   * lookup tables
+   */
   static std::vector< std::string > GetAvailableLookupTables(void);
 
+  /**
+   * \brief Get the ROI lookup table
+   * \return vtkLookupTable pointer to the ROI lookup table
+   */
   static vtkLookupTable * GetROILookupTable(void);
 
+  /**
+   * \brief Get the indexed lookup table
+   * \param[in] index of the lookup table
+   * \return vtkLookupTable pointer to the indexed lookup table
+   */
   static vtkLookupTable * GetLookupTable(const int &);
 
 protected:

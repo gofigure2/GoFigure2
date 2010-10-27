@@ -100,6 +100,9 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2D:public vtkViewImage
 {
 public:
 
+  /**
+   * \brief Convenient method to access the constructor.
+   */
   static vtkViewImage2D * New();
 
   vtkTypeRevisionMacro(vtkViewImage2D, vtkViewImage);
@@ -153,15 +156,19 @@ public:
   //ETX
 
   /**
-     \brief The SlicePlane instance (GetSlicePlane()) is the polygonal
-     square corresponding to the slice plane,
-     it is updated each time the slice changes,
-     and is color-coded according to conventions
+   * \brief Get the polydata representing the Slice Plane
+   *
+   * The SlicePlane instance (GetSlicePlane()) is the polygonal
+   * square corresponding to the slice plane,
+   * it is updated each time the slice changes,
+   * and is color-coded according to conventions
   */
   vtkGetObjectMacro(SlicePlane, vtkPolyData);
+
   /**
-   * \brief Get the orientation annotation. This annotation describes the
-   * orientation of the slice plane, according to the rule
+   * \brief Get the orientation annotation.
+   * This annotation describes the orientation of the slice plane,
+   * according to the rule
    * Right(R)-Left(L) Anterior(A)-Posterior(P) Inferior(I)-Superior(S)
  */
   vtkGetObjectMacro(OrientationAnnotation, vtkOrientationAnnotation);
@@ -182,25 +189,30 @@ public:
   virtual void SetSlice(int s);
 
   /**
-   * \brief Instead of setting the slice orientation to an axis (YZ - XZ - XY),
+   * \brief Get the view orientation
+   * \return 0: radiological, 1: anatomic
+   *
+   * Instead of setting the slice orientation to an axis (YZ - XZ - XY),
    * you can force the view to be axial (foot-head), coronal (front-back),
    * or sagittal (left-right). It will just use the OrientationMatrix
    * (GetOrientationMatrix()) to check which slice orientation to pick.
   */
   vtkGetMacro(ViewOrientation, int);
+
   virtual void SetViewOrientation(int orientation);
 
   virtual void SetOrientationMatrix(vtkMatrix4x4 *matrix);
 
   /**
-   * \brief The ViewConvention instance explains where to place the camera around
+   * \brief Get the view orientation
+   * \return 0: sagittal, 1: coronal, 2: axial
+   *
+   * The ViewConvention instance explains where to place the camera around
    * the patient. Default behaviour is Radiological convention, meaning
    * we respectively look at the patient from his feet, his face and his left
    * ear.
    * For Neurological convention, we respectively look from the top of his head,
    * the the back of his head, and his left ear.
-   * \todo Why not adding cardiologic conventions where we look at the patient in
-   * oblique angles ?
    */
   vtkGetMacro(ViewConvention, int);
   virtual void SetViewConvention(int convention);
@@ -231,10 +243,16 @@ public:
   virtual void ResetCamera(void);
 
   /**
-   * \brief Get/Set the zoom factor of the view
+   * \brief Set the zoom factor in the views
    */
   vtkSetMacro(Zoom, double);
+
+  /**
+   * \brief Get the zoom factor in the views
+   * \return double representing the zoom factor
+   */
   vtkGetMacro(Zoom, double);
+
   /**
    * \brief Useful method that transform a display position into a world corrdinate point
   */
@@ -252,11 +270,17 @@ public:
   //ETX
 
   /**
-     Get/Set whether or not the interpolation between pixels should be activated.
-     It is On by default
+   * \brief Set whether or not the interpolation between pixels should be activated.
+   * It is Off by default
+   * \param[in] val 0: interpolation off, 1: interpolation on
   */
   virtual void SetInterpolate(const int & val);
 
+  /**
+   * \brief Get whether or not the interpolation between pixels should be activated.
+   * It is Off by default
+   * \return val 0: interpolation off, 1: interpolation on
+  */
   virtual int GetInterpolate();
 
   vtkBooleanMacro (Interpolate, int);
@@ -286,23 +310,45 @@ public:
                                 const bool & intersection = true,
                                 const bool & iDataVisibility = true);
 
+  /**
+   * \brief Set the camera motion vector
+   * \param[in] double[3] containing the motion vector
+  */
   vtkSetVector3Macro(CameraMotionVector, double);
+
+  /**
+   * \brief Get the camera motion vector
+   * \return double[3] containing the motion vector
+  */
   vtkGetVector3Macro(CameraMotionVector, double);
 
   /**
-   * \brief Show/Hide the annotations.
+   * \brief Set the annotation visibility
+   * \param[in] 0: not visible, 1:visible
+  */
+  virtual void SetShowAnnotations(const int &);
+  /**
+   * \brief Get the annotation visibility
+   * \return 0: not visible, 1:visible
   */
   vtkGetMacro(ShowAnnotations, int);
   /**
    * \brief Show/Hide the annotations.
   */
   vtkBooleanMacro(ShowAnnotations, int);
-  /**
-   * \brief Show/Hide the annotations.
-  */
-  virtual void SetShowAnnotations(const int &);
 
+  /**
+   * \brief Set camera focal point and position
+   * \param[in] focal double[3] containing the focal point of the camera
+   * \param[in] pos double[3] containing the position of the camera
+  */
   void SetCameraFocalAndPosition(double focal[3], double pos[3]);
+
+  /**
+   * \brief Set camera focal point and position
+   * \param[out] focal double[3] containing the focal point of the camera
+   * \param[out] pos double[3] containing the position of the camera
+  */
   void GetCameraFocalAndPosition(double focal[3], double pos[3]);
 
   /**
@@ -310,8 +356,15 @@ public:
      CAUTION: for the moment this feature is de-activated because updating it
      slows down the visualization process.
   */
+  /**
+   * \brief Get the view center
+   * \return double[3] containing the center of the view
+  */
   vtkGetVector3Macro (ViewCenter, double);
 
+  /**
+   * \brief Update the orientation
+  */
   virtual void Update(void)
   { this->UpdateOrientation(); }
 
@@ -382,7 +435,10 @@ public:
   vtkGetObjectMacro (CursorGenerator, vtkCursor2D);
 
   /**
-   *
+   * \brief Add contours with specific properties to the view
+   * \param[in] iContour Contour Container
+   * \param[in] iProperty Properties Container
+   * \param[in] iIntersection Visibility of the intersections (default is true)
    */
   template< class TContourContainer,
             class TPropertyContainer >

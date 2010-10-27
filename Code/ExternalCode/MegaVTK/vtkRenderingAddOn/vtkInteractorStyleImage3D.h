@@ -86,6 +86,9 @@ class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage3D:
   public vtkInteractorStyleTrackballCamera
 {
 public:
+    /**
+     * \brief Convenient method to access the constructor
+     */
   static vtkInteractorStyleImage3D * New();
 
   vtkTypeRevisionMacro (vtkInteractorStyleImage3D, vtkInteractorStyleTrackballCamera);

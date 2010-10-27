@@ -76,23 +76,34 @@
 
 /**
  * \class vtkImage3DCroppingBoxCallback
- * \brief
+ * \brief Callback to be called by the box widget to render only what is inside the box widget.
  * \ingroup MegaVTK
  */
 class VTK_RENDERINGADDON2_EXPORT vtkImage3DCroppingBoxCallback:
   public vtkCommand
 {
 public:
+    /*
+     * \brief Convenient method to access the constructor
+     */
   static vtkImage3DCroppingBoxCallback * New()
   { return new vtkImage3DCroppingBoxCallback; }
 
   virtual void Execute(vtkObject *caller, unsigned long, void *);
 
+  /*
+   * \brief Set the volume mapper
+   * \param[in] mapper Volume mapper
+   */
   void SetVolumeMapper(vtkVolumeMapper *mapper)
   {
     this->VolumeMapper = mapper;
   }
 
+  /*
+   * \brief Get the volume mapper
+   * \return A pointer to the volume mapper
+   */
   vtkVolumeMapper * GetVolumeMapper(void) const
   {
     return this->VolumeMapper;
@@ -103,6 +114,9 @@ protected:
   ~vtkImage3DCroppingBoxCallback(){}
 private:
 
+  /*
+   * \brief Pointer to the volume mapper
+   */
   vtkVolumeMapper *VolumeMapper;
 };
 
