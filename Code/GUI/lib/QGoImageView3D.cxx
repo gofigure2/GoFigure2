@@ -1275,7 +1275,7 @@ QGoImageView3D::InitializePlaneWidget()
 }
 
 //-------------------------------------------------------------------------
-/// TODO Add button to enable/disable tri planar rendering
+/// \todo Add button to enable/disable tri planar rendering
 //-------------------------------------------------------------------------
 void
 QGoImageView3D::EnableVolumeRendering(bool iValue)

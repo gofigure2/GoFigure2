@@ -343,7 +343,7 @@ void QGoTabImageView4D::CreateManualSegmentationdockWidget()
   QObject::connect( m_ManualSegmentationWidget,
                     SIGNAL( ContourRepresentationPropertiesChanged() ),
                     this, SLOT( ChangeContourRepresentationProperty() ) );
-/// TODO fix it is not a dock widget anymore
+/// \todo fix it is not a dock widget anymore
 //  this->m_SegmentationActions.push_back(
 //    m_ManualSegmentationWidget->toggleViewAction());
 }
