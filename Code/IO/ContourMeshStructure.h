@@ -43,19 +43,49 @@ class vtkPolyData;
 
 #include "QGoIOConfigure.h"
 
+/**
+ * \struct ContourMeshStructure
+ * \brief  Structure which represent a contour or a mesh, and used for
+ * interaction between Visualization and TableWidget
+ *
+ * \sa ContourMeshContainer
+ */
 struct QGOIO_EXPORT ContourMeshStructure {
+  /** TraceID */
   unsigned int TraceID;
+
+  /** Actor in the XY View */
   vtkActor *ActorXY;
+
+  /** Actor in the XZ View */
   vtkActor *ActorXZ;
+
+  /** Actor in the YZ View */
   vtkActor *ActorYZ;
+
+  /** Actor in the XYZ View */
   vtkActor *ActorXYZ;
 
+  /**
+  * In the case of contours, Nodes represent the control points.
+  *   In the case of meshes, Nodes represent the triangular mesh.
+  */
   vtkPolyData *Nodes;
 
   //unsigned int CollectionID;
+
+  /** Time point of the contour / mesh */
   unsigned int TCoord;
+
+  /** Is the contour / mesh Highlighted in the Visualization ? */
   bool Highlighted;
+
+  /** Is the contour / mesh Visible (appears on the screen)
+  * in the Visualization ?
+  */
   bool Visible;
+
+  /** color of the contour / mesh. \note each component is in [0,1] */
   double rgba[4];
 
   /**
@@ -67,10 +97,17 @@ struct QGOIO_EXPORT ContourMeshStructure {
   */
   int GetDirection();
 
+  /**
+  \brief Is it a contour or a mesh ?
+  \return true if it is a contour
+  \return false else
+  */
   bool IsAContour();
 
+  /** Default Constructor */
   ContourMeshStructure();
 
+  /** Constructor */
   ContourMeshStructure(const unsigned int & iTraceID,
                        std::vector< vtkActor * > iActors,
                        vtkPolyData *iNodes,
@@ -82,6 +119,7 @@ struct QGOIO_EXPORT ContourMeshStructure {
                        const double & b,
                        const double & alpha);
 
+  /** Constructor */
   ContourMeshStructure(const unsigned int & iTraceID,
                        std::vector< vtkActor * > iActors,
                        vtkPolyData *iNodes,
@@ -90,6 +128,7 @@ struct QGOIO_EXPORT ContourMeshStructure {
                        const bool & iVisible,
                        double iRgba[4]);
 
+  /** Constructor */
   ContourMeshStructure(const unsigned int & iTraceID,
                        vtkActor *iActorXY,
                        vtkActor *iActorYZ,
@@ -104,9 +143,13 @@ struct QGOIO_EXPORT ContourMeshStructure {
                        const double & b,
                        const double & alpha);
 
+  /** Constructor by copy */
   ContourMeshStructure(const ContourMeshStructure & iE);
+
+  /** Destructor */
   ~ContourMeshStructure();
 
+  /** Printing one element. std::cout << element << std::endl; */
   friend std::ostream & operator<<
     (std::ostream & os, const ContourMeshStructure & c)
   {
