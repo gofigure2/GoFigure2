@@ -245,11 +245,6 @@ QGoImageView::AddContour(vtkPolyData *iDataset, vtkProperty *iProperty)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-/**
- * \brief Highlight contour (or not).
- * \param[in] iProp contour
- * \param[in] iToDo to be highlighted
- */
 void
 QGoImageView::ChangeActorProperty(vtkProp3D *iActor,
                                   vtkProperty *iProperty)

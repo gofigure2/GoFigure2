@@ -99,8 +99,8 @@ public:
   virtual void AddActor(const int & iId, vtkActor *iActor);
 
 //   std::vector< vtkQuadricLODActor* >
-  std::vector< vtkActor * > AddContour(vtkPolyData *dataset,
-                                       vtkProperty *property = NULL);
+  std::vector< vtkActor * > AddContour(vtkPolyData *iDataset,
+                                       vtkProperty *iProperty = NULL);
 
   virtual void setupUi(QWidget *parent);
 
@@ -229,12 +229,6 @@ public slots:
 
   void UpdateCurrentActorVisibility(vtkObject *caller);
 
-//   void HighLightContours();
-
-  /**
-   *
-   * @param
-   */
   virtual void SetLookupTable(vtkLookupTable *);
 
   virtual void ShowScalarBar(const bool &);
