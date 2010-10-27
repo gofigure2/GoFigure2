@@ -265,12 +265,19 @@ public:
   }
   vtkBooleanMacro (PlaneWidgetVisibility, int);*/
 
-  /** Set the cube widget on */
+  /**
+   * \brief Set the cube visibility
+   * \param[in] a true: visible, false: not visible
+   * */
   void SetCubeVisibility(const bool & a)
   {
     if ( this->Interactor ) { this->Marker->SetEnabled (a); }
   }
 
+  /**
+   * \brief Get the cube visibility
+   * \return true: visible, false: not visible
+   * */
   bool GetCubeVisibility(void)
   {
     return ( this->Marker->GetEnabled() == 1 );
@@ -278,11 +285,19 @@ public:
 
   vtkBooleanMacro (CubeVisibility, int);
 
+  /**
+   * \brief Set the shade
+   * \param[in] a true: enable, false: disable
+   * */
   void SetShade(const bool & a)
   {
     this->VolumeProperty->SetShade (a);
   }
 
+  /**
+   * \brief Get the shade
+   * \return a true: enable, false: disable
+   * */
   bool GetShade(void)
   {
     return ( this->VolumeProperty->GetShade() == 1 );
@@ -298,14 +313,31 @@ public:
 
   virtual void SetWorldCoordinates(double pos[3]) { (void)pos; }
 
+  /**
+   * \brief Set the bounds actors visibility
+   * \param true: visible, false: not visible
+   * */
   void SetBoundsActorsVisibility(bool);
 
+  /**
+   * \brief Get the interactor style for the vtkViewImage3D
+   * \return pointer to the current vtkInteractorStyleImage3D
+   * */
   vtkInteractorStyleImage3D * GetInteractorStyle3D();
 
   vtkGetObjectMacro (Command, vtkViewImage3DCommand);
 
+  /**
+   * \brief Compute the distance between 2 points
+   * \param[in] n double pointer to the first point (double[3])
+   * \param[in] origin double pointer to the second point (double[3])
+   * */
   void ComputeDistances(double *n, double *origin);
 
+  /**
+   * \brief Compute the disctance from the actors to the surface
+   * \param[in] planes vtkPlanes pointer to the surface of interest
+   * */
   void ComputeDistancesToSquare(vtkPlanes *planes);
 
 protected:
