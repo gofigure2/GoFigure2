@@ -448,7 +448,7 @@ protected:
       mesh_property->SetColor(iRgba[0], iRgba[1], iRgba[2]);
       mesh_property->SetOpacity(iRgba[3]);
 
-      /// TODO fix bug, shouldn't be required
+      /// \todo fix bug, shouldn't be required
       std::vector< vtkActor * > mesh_actor = this->AddContour(iMesh, mesh_property);
       mesh_property->Delete();
 

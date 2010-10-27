@@ -857,7 +857,7 @@ QGoTabImageView3D::TakeSnapshot()
   // Get the current view displayed in full screen
   int FullScreenView = m_ImageView->GetFullScreenView();
 
-  // TODO enhance the name of the files
+  /// \todo enhance the name of the files
 
   switch ( FullScreenView )
     {

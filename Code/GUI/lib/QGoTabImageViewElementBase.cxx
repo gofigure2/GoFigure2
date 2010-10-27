@@ -70,7 +70,7 @@ QGoTabImageViewElementBase::QGoTabImageViewElementBase(QWidget *iParent):
 
   CreateToolsActions();
 
-  /// TODO fix it is not a dockwidget anymore
+  /// \todo fix it is not a dockwidget anymore
   //m_DockWidgetList.push_back(
   //  std::pair<QGoDockWidgetStatus*, QDockWidget*>(
   //    new QGoDockWidgetStatus(m_ManualSegmentationWidget,
