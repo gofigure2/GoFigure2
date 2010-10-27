@@ -52,7 +52,9 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage3DCommand:
   public vtkCommand
 {
 public:
-
+    /**
+     * \brief Convenient method to access the constructor.
+     */
   static vtkViewImage3DCommand * New();
 
   //BTX
@@ -89,9 +91,17 @@ public:
    */
   void SetVtkImageView3D(vtkViewImage3D *vtkViewImage3D);
 
-  void SetPlaneWidget(vtkImplicitPlaneWidget *test);
+  /**
+   * \brief Set the plane widget
+   * \param[in] iPlaneWidget vtkImplicitPlaneWidget pointer to the plane widget
+   */
+  void SetPlaneWidget(vtkImplicitPlaneWidget *iPlaneWidget);
 
-  void SetBoxWidget(vtkOrientedBoxWidget *test);
+  /**
+   * \brief Set the box widget
+   * \param[in] iPlaneWidget vtkOrientedBoxWidget pointer to the box widget
+   */
+  void SetBoxWidget(vtkOrientedBoxWidget *iBoxWidget);
 
 protected:
 

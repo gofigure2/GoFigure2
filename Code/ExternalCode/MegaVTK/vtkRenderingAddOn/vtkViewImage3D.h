@@ -120,12 +120,15 @@ class vtkPlanes;
 /**
  * \class vtkViewImage3D
  * \ingroup MegaVTK
- * \brief 3D view
+ * \brief Basic class to handle items such as images and polydatas
+ * visualization in 3D
  */
 class VTK_RENDERINGADDON2_EXPORT vtkViewImage3D:public vtkViewImage
 {
 public:
-
+  /**
+   * \brief Convenient method to access the constructor.
+   */
   static vtkViewImage3D * New();
 
   vtkTypeRevisionMacro(vtkViewImage3D, vtkViewImage);
@@ -175,32 +178,58 @@ public:
 
   virtual void SetOrientationMatrix(vtkMatrix4x4 *matrix);
 
-  void SetVolumeRenderingOff();
-
+  /*
+   * \brief Set volume rendering on
+   */
   void SetVolumeRenderingOn();
 
+  /*
+   * \brief Set volume rendering off
+   */
+  void SetVolumeRenderingOff();
+
+  /*
+   * \brief Set TriPlanar rendering on
+   */
   void SetTriPlanarRenderingOn();
 
+  /*
+   * \brief Set TriPlanar rendering off
+   */
   void SetTriPlanarRenderingOff();
 
+  /*
+   * \brief Set the volume mapper to texture (for volume rendering purpose)
+   */
   void SetVolumeMapperToTexture(void)
   {
     this->VolumeActor->SetMapper (this->VolumeMapper3D);
     this->Callback->SetVolumeMapper (this->VolumeMapper3D);
   }
 
+  /*
+   * \brief Set the volume mapper to ray cast (for volume rendering purpose)
+   */
   void SetVolumeMapperToRayCast(void)
   {
     this->VolumeActor->SetMapper (this->VolumeRayCastMapper);
     this->Callback->SetVolumeMapper (this->VolumeRayCastMapper);
   }
 
+  /*
+   * \brief Set the volume ray cast function to composite
+   * (for volume rendering purpose)
+   */
   void SetVolumeRayCastFunctionToComposite(void)
   {
     this->VolumeRayCastMapper->SetVolumeRayCastFunction
       (this->VolumeRayCastCompositeFunction);
   }
 
+  /*
+   * \brief Set the volume ray cast function to MIP
+   * (for volume rendering purpose)
+   */
   void SetVolumeRayCastFunctionToMIP(void)
   {
     this->VolumeRayCastMapper->SetVolumeRayCastFunction
@@ -236,12 +265,19 @@ public:
   }
   vtkBooleanMacro (PlaneWidgetVisibility, int);*/
 
-  /** Set the cube widget on */
+  /**
+   * \brief Set the cube visibility
+   * \param[in] a true: visible, false: not visible
+   * */
   void SetCubeVisibility(const bool & a)
   {
     if ( this->Interactor ) { this->Marker->SetEnabled (a); }
   }
 
+  /**
+   * \brief Get the cube visibility
+   * \return true: visible, false: not visible
+   * */
   bool GetCubeVisibility(void)
   {
     return ( this->Marker->GetEnabled() == 1 );
@@ -249,11 +285,19 @@ public:
 
   vtkBooleanMacro (CubeVisibility, int);
 
+  /**
+   * \brief Set the shade
+   * \param[in] a true: enable, false: disable
+   * */
   void SetShade(const bool & a)
   {
     this->VolumeProperty->SetShade (a);
   }
 
+  /**
+   * \brief Get the shade
+   * \return a true: enable, false: disable
+   * */
   bool GetShade(void)
   {
     return ( this->VolumeProperty->GetShade() == 1 );
@@ -269,14 +313,31 @@ public:
 
   virtual void SetWorldCoordinates(double pos[3]) { (void)pos; }
 
+  /**
+   * \brief Set the bounds actors visibility
+   * \param true: visible, false: not visible
+   * */
   void SetBoundsActorsVisibility(bool);
 
+  /**
+   * \brief Get the interactor style for the vtkViewImage3D
+   * \return pointer to the current vtkInteractorStyleImage3D
+   * */
   vtkInteractorStyleImage3D * GetInteractorStyle3D();
 
   vtkGetObjectMacro (Command, vtkViewImage3DCommand);
 
+  /**
+   * \brief Compute the distance between 2 points
+   * \param[in] n double pointer to the first point (double[3])
+   * \param[in] origin double pointer to the second point (double[3])
+   * */
   void ComputeDistances(double *n, double *origin);
 
+  /**
+   * \brief Compute the disctance from the actors to the surface
+   * \param[in] planes vtkPlanes pointer to the surface of interest
+   * */
   void ComputeDistancesToSquare(vtkPlanes *planes);
 
 protected:
