@@ -39,8 +39,8 @@
 #include "QGoComboBox.h"
 
 /**
-\class QGoColorCombobox
-\brief inherits from QGoCombobox, display not ony the names but also the QColor of
+\class QGoColorComboBox
+\brief inherits from QGoComboBox, display not ony the names but also the QColor of
 the items as an Icon in the combobox
 \ingroup GUI
 */
