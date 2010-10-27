@@ -126,11 +126,9 @@ public:
 
   /**
    * \brief Add contour with given property into the visualization.
-   * \param[in] iId direction
    * \param[in] iDataset contour
    * \param[in] iProperty
    * \return vector of vtkActor rendered in each 2D viewer.
-   * \todo check the utility of iId.
    */
 
   virtual std::vector< vtkActor * > AddContour(vtkPolyData *dataset,
