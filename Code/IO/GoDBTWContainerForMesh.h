@@ -37,8 +37,11 @@
 #include "GoDBTWContainerForContourMesh.h"
 #include "QGoIOConfigure.h"
 #include "GoFigureMeshAttributes.h"
-/**
-\brief
+
+/** 
+\class GoDBTWContainerForMesh 
+\brief This class describes the specificities of the GoDBTWContainerForContourMesh for mesh
+\ingroup DB
 */
 class QGOIO_EXPORT GoDBTWContainerForMesh:public GoDBTWContainerForContourMesh
 {
@@ -46,9 +49,10 @@ public:
   GoDBTWContainerForMesh(int iImgSessionID);
   ~GoDBTWContainerForMesh();
 
+  //from mother class
   virtual TWContainerType GetContainerLoadedWithAllFromDB(
     vtkMySQLDatabase *iDatabaseConnector);
-
+  //from mother class
   virtual TWContainerType GetContainerForOneSpecificTrace(
     vtkMySQLDatabase *iDatabaseConnector, int iTraceID);
 
@@ -83,7 +87,8 @@ protected:
     vtkMySQLDatabase *iDatabaseConnector, std::vector< std::string > iVectMeshIDs);
 
   /**
-  \overload
+  \overload FillRowContainerForMeshValues(
+    vtkMySQLDatabase *iDatabaseConnector, std::vector< std::string > iVectMeshIDs);
   */
   void FillRowContainerForMeshValues(
     vtkMySQLDatabase *iDatabaseConnector, int iMeshID);
@@ -122,6 +127,7 @@ protected:
   \param[in] iMeshID meshID for the mesh the intensity values are needed
   \param[in,out] ioValuesToFill vector of the values where the intensities values
   will be pushed
+  \param[in] iDatabaseConnector connection to the database
   */
   void GetIntensityValuesForOneMesh(std::string iMeshID,
                                     std::vector< std::vector< std::string > > & ioValuesToFill,
@@ -133,7 +139,6 @@ protected:
   \param[in] iVectMeshIDs vector of all the meshIDs
   \param[in] ioValuesToFill vector of the values where the intensities values
   will be pushed
-  \param[in] iDatabaseConnector connection to the database
   */
   void GetValuesToFillForIntensityFromQueryResults(
     std::vector< std::string > iResultQuery, std::vector< std::string > iVectMeshIDs,
