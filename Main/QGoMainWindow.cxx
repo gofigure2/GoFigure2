@@ -518,9 +518,6 @@ QGoMainWindow::GetFileContainerForMultiFiles(std::string & ioHeader_Filename,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-/**
- * \brief Open dialog window to set the file output path and format
- */
 void
 QGoMainWindow::on_actionExport_LSM_to_MegaFile_triggered()
 {
@@ -653,14 +650,6 @@ void QGoMainWindow::OpenLSMImage(const QString & iFile, const int & iTimePoint)
 }
 
 //--------------------------------------------------------------------------
-/**
- *
- * @param iFileList
- * @param iFileType
- * @param iHeader
- * @param iTimePoint
- * @param iUseDatabase
- */
 QGoTabImageView3DwT *
 QGoMainWindow::CreateNewTabFor3DwtImage(
   const GoFigureFileInfoHelperMultiIndexContainer & iFileList,
@@ -1160,7 +1149,7 @@ void QGoMainWindow::AddSetUpDatabaseMenu()
     QObject::connect( this->m_DBInitializationWizard, SIGNAL( DatabaseAndUserCreated() ),
                       this, SLOT( RemoveSetUpDatabaseMenu() ) );
     QObject::connect( this->m_DBWizard, SIGNAL( GofigureDatabaseExists() ),
-                      this, SLOT(RemoveSetUpDatabaseMenu() ) );  
+                      this, SLOT(RemoveSetUpDatabaseMenu() ) );
     }
 }
 //--------------------------------------------------------------------------------
