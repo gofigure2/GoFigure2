@@ -131,10 +131,14 @@ public:
    * \return vector of vtkActor rendered in each 2D viewer.
    */
 
-  virtual std::vector< vtkActor * > AddContour(vtkPolyData *dataset,
-                                               vtkProperty *property = NULL);
+  virtual std::vector< vtkActor * > AddContour(vtkPolyData *iDataset,
+                                               vtkProperty *iProperty = NULL);
 
-  /** \brief Highlight a given contour (iProp) if iToDo is true. */
+  /**
+   * \brief Highlight contour (or not).
+   * \param[in] iActor contour
+   * \param[in] iProperty to be highlighted
+   */
   virtual void ChangeActorProperty(vtkProp3D *iActor, vtkProperty *iProperty);
 
   /**

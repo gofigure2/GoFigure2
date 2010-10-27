@@ -117,7 +117,7 @@ public slots:
 
   /**
    * \brief Set the value of the radius.
-   * \param[in] iRadius Radius to be used for the segmentation.
+   * \param[in] iSampling Radius to be used for the segmentation.
    */
   void setSampling(int iSampling);
 
@@ -137,7 +137,7 @@ signals:
    * QComboBox
    * \param[in] iQString Name of the channel.
    */
-  void addChannel(QString);
+  void addChannel(QString iQString);
 
   void MeshCreated(vtkPolyData *);
 

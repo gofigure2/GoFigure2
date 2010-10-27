@@ -909,12 +909,12 @@ QGoImageView3D::GetImageViewer3D()
 
 //--------------------------------------------------------------------------
 std::vector< vtkActor * >
-QGoImageView3D::AddContour(vtkPolyData *dataset, vtkProperty *iProperty)
+QGoImageView3D::AddContour(vtkPolyData *iDataset, vtkProperty *iProperty)
 {
   std::vector< vtkActor * > oList =
-    QGoImageView::AddContour(dataset, iProperty);
+    QGoImageView::AddContour(iDataset, iProperty);
 
-  vtkActor *temp = m_View3D->AddDataSet( (vtkDataSet *)dataset,
+  vtkActor *temp = m_View3D->AddDataSet( (vtkDataSet *)iDataset,
                                          iProperty, false, false );
 
   //m_View3D->Render();
