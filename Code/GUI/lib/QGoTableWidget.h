@@ -217,14 +217,14 @@ public slots:
   void HideSelectedRows(std::string iTraceName, std::string iTraceNameID);
 
   /** 
-  \brief convert the text in the selection to a QString with \n and \t
+  \brief convert the text in the selection to a QString with '\n' and '\t'
   and put it in the Clipboard to be pasted in other applications
   */
   void CopySelection();
 
   /** 
   \brief convert the text in the all table and the columns namse
-  to a QString with \n and \t and put it in the Clipboard to be
+  to a QString with '\n' and '\t' and put it in the Clipboard to be
   pasted in other applications
   */
   void CopyTable();
@@ -285,7 +285,7 @@ protected:
 
   /** 
   \brief put the text in the cells which are part of the range in a
-  QString and insert \n and \t to be read by other applications
+  QString and insert '\n' and '\t' to be read by other applications
   \param[in] iRange selected cells
   \param[in,out] istr text of the selected cells
   */
