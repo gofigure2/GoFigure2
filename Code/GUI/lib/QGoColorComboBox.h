@@ -79,7 +79,6 @@ public:
   and the items to add/delete
   \param[in] iDataFromList contains the names and QColor of the items to be
   displayed in the combobox
-  \overload from the mother class method
   */
   void SetItemsFromListWithColor(
     std::list< ItemColorComboboxData > iDataFromList);
