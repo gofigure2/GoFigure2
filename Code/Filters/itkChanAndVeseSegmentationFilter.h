@@ -237,7 +237,7 @@ protected:
     region2.SetSize(m_Size);
     region2.SetIndex(start2);
 
-    ///TODO Allocate image
+    /// \todo Allocate image
     InternalImagePointer image = InternalImageType::New();
     image->SetRegions(region2);
     image->CopyInformation(m_FeatureImage);
