@@ -87,11 +87,6 @@ void UpdateValueInDB(vtkMySQLDatabase *DatabaseConnector,
                      std::string iTableName, std::string ifield,
                      std::string inewValue, std::vector< unsigned int > iVectIDs);
 
-/** \todo to review*/
-//QGOIO_EXPORT
-//void UpdateContourInDB(vtkMySQLDatabase* DatabaseConnector,
-//                     GoDBContourRow UpdatedContour);
-
 QGOIO_EXPORT
 void DropDatabase(
   vtkMySQLDatabase *ServerConnector,
