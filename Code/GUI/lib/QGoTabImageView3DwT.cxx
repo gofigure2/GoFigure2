@@ -397,9 +397,6 @@ QGoTabImageView3DwT::CreateMeshSegmentationDockWidget()
                     SIGNAL( ClearAllSeeds() ),
                     m_ImageView,
                     SLOT( ClearAllSeeds() ) );
-
-  // intialize the widget
-  m_MeshSegmentationDockWidget->Initialize();
 }
 
 //-------------------------------------------------------------------------

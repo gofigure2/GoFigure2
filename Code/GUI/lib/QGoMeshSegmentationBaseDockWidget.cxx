@@ -230,3 +230,4 @@ QGoMeshSegmentationBaseDockWidget::Initialize()
 {
   //m_ContourManualSegmentation->GenerateContourRepresentationProperties(true);
 }
+
