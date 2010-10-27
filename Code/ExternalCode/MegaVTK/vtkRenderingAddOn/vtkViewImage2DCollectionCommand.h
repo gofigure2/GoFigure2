@@ -72,7 +72,7 @@ public:
 
   /**
    * \brief Set the current collection
-   * \param[in] vtkViewImage2DCollection pointer to the current collection
+   * \param[in] p vtkViewImage2DCollection pointer to the current collection
    */
   void SetCollection(vtkViewImage2DCollection *p);
 

@@ -188,7 +188,7 @@ public:
    * \param[in] index of the lookup table
    * \return vtkLookupTable pointer to the indexed lookup table
    */
-  static vtkLookupTable * GetLookupTable(const int &);
+  static vtkLookupTable * GetLookupTable(const int & iIndex);
 
 protected:
   vtkLookupTableManager();

@@ -364,7 +364,7 @@ public:
 
   /**
    * \brief Set the camera view up
-   * \param[in] pointer to a double[3] containing the new view up of the
+   * \param[in] arg pointer to a double[3] containing the new view up of the
    *  camera
   */
   void SetCameraViewUp(double *arg);
@@ -378,7 +378,7 @@ public:
 
   /**
    * \brief Set the camera parallel scale
-   * \param[in] double containing the new parallel scale
+   * \param[in] arg double containing the new parallel scale
   */
   void SetCameraParallelScale(double arg);
 
@@ -408,11 +408,11 @@ public:
   vtkGetMacro (ShowAnnotations, int);
   /**
    * \brief Change the visibility of the annotations
-   * \param[in] int
+   * \param[in] iShowAnnotations int
    * 0: annotations are not visible
    * 1: annotations are visible
   */
-  virtual void SetShowAnnotations(const int &);
+  virtual void SetShowAnnotations(const int & iShowAnnotations);
 
   /**
      \brief Enable or Disable interaction on the view.
@@ -469,7 +469,7 @@ public:
 
   /**
    * \brief Get the current position in world coordinate.
-   * \param[in,out] double pointer to the current position in world coordinates (double[3])
+   * \param[in,out] point double pointer to the current position in world coordinates (double[3])
    *
    * This framework is only used in vtkViewImage2D to
    * update corner annotations and cursor position.

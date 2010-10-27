@@ -315,9 +315,9 @@ public:
 
   /**
    * \brief Set the bounds actors visibility
-   * \param true: visible, false: not visible
+   * \param iVisibility true: visible, false: not visible
    * */
-  void SetBoundsActorsVisibility(bool);
+  void SetBoundsActorsVisibility(bool iVisibility);
 
   /**
    * \brief Get the interactor style for the vtkViewImage3D

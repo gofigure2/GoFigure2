@@ -312,7 +312,6 @@ public:
 
   /**
    * \brief Set the camera motion vector
-   * \param[in] double[3] containing the motion vector
   */
   vtkSetVector3Macro(CameraMotionVector, double);
 
@@ -324,9 +323,8 @@ public:
 
   /**
    * \brief Set the annotation visibility
-   * \param[in] 0: not visible, 1:visible
   */
-  virtual void SetShowAnnotations(const int &);
+  virtual void SetShowAnnotations(const int & iShowAnnotations);
   /**
    * \brief Get the annotation visibility
    * \return 0: not visible, 1:visible
@@ -436,9 +434,6 @@ public:
 
   /**
    * \brief Add contours with specific properties to the view
-   * \param[in] iContour Contour Container
-   * \param[in] iProperty Properties Container
-   * \param[in] iIntersection Visibility of the intersections (default is true)
    */
   template< class TContourContainer,
             class TPropertyContainer >

@@ -99,7 +99,7 @@ public:
 
   /**
    * \brief Set the box widget
-   * \param[in] iPlaneWidget vtkOrientedBoxWidget pointer to the box widget
+   * \param[in] iBoxWidget vtkOrientedBoxWidget pointer to the box widget
    */
   void SetBoxWidget(vtkOrientedBoxWidget *iBoxWidget);
 
