@@ -214,15 +214,15 @@ QStringList QGoTableWidget::ValuesForSelectedRows(QString ColumnName)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTableWidget::DisplayColumnNames(QString TableName,
-                                        std::list< std::string > ColumnNames)
+void QGoTableWidget::DisplayColumnNames(QString iTableName,
+                                        std::list< std::string > iColumnNames)
 {
-  size_t numberCol = ColumnNames.size();
+  size_t numberCol = iColumnNames.size();
 
   this->setColumnCount( static_cast< int >( numberCol ) );
   int i = 0;
-  for ( std::list< std::string >::iterator iter = ColumnNames.begin();
-        iter != ColumnNames.end();
+  for ( std::list< std::string >::iterator iter = iColumnNames.begin();
+        iter != iColumnNames.end();
         ++iter, ++i )
     {
     QTableWidgetItem *HeaderCol = new QTableWidgetItem;
@@ -232,7 +232,7 @@ void QGoTableWidget::DisplayColumnNames(QString TableName,
     HeaderCol->setText( NameHeader.c_str() );
     if ( NameHeader.empty() )
       {
-      HeaderCol->setToolTip( tr("Check/Uncheck %1").arg(TableName) );
+      HeaderCol->setToolTip( tr("Check/Uncheck %1").arg(iTableName) );
       }
     if ( NameHeader.find("T.I.") != std::string::npos )
       {
@@ -245,8 +245,8 @@ void QGoTableWidget::DisplayColumnNames(QString TableName,
     }
 
   this->horizontalHeader()->setSortIndicatorShown(true);
-  /*Need to disabled the Sorting while printing the values from the database in
-  the table widget as the sorting is making trouble*/
+  //Need to disabled the Sorting while printing the values from the database in
+  // the table widget as the sorting is making trouble
   this->setSortingEnabled(false);
   this->horizontalHeader()->setMovable(true);
 
@@ -302,9 +302,7 @@ void QGoTableWidget::DisplayContent(TWContainerType iTWRowContainer,
             int                                  k = 0;
             while ( iter != iTWRowContainer[i].second.end() )
               {
-              //QTableWidgetItem* CellTable = new QTableWidgetItem;
               std::string Value = *iter;
-              //if (Value != "")
               if ( this->CheckValueToDisplayData(Value, HeaderCol) )
                 {
                 QTableWidgetItem *CellTable = new QTableWidgetItem;
@@ -545,7 +543,7 @@ void QGoTableWidget::UpdateRow(TWContainerType iTWRowContainer,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTableWidget::UpdateIDs(unsigned int iNewCollectionID,
+/*void QGoTableWidget::UpdateIDs(unsigned int iNewCollectionID,
                                std::string iCollectionIDName, QColor ColorNewCollection,
                                std::string TraceIDName, std::list< int > TraceIDToUpdate)
 {
@@ -560,7 +558,7 @@ void QGoTableWidget::UpdateIDs(unsigned int iNewCollectionID,
     this->item(RowIndex, IndexCollectionID)->setBackgroundColor(ColorNewCollection);
     iter++;
     }
-}
+}*/
 
 //--------------------------------------------------------------------------
 

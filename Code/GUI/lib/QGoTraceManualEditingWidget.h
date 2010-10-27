@@ -243,7 +243,7 @@ protected:
   }
 
   /**
-  \overload
+  \overload SetListItemAndSelect
   */
   template< typename T >
   void SetListItemAndSelect(T *iComboBox, std::list< ItemColorComboboxData > iItemsData,

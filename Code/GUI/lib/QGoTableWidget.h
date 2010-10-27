@@ -47,9 +47,9 @@
 
 /**
 \class QGoTableWidget
-\brief in the QTableWidget class, the method sorItems is a public function, not a public slots,
-so it is not possible to connect it directly with a signal.
-that's the reason for the creation of QGoTableWidget.
+\brief inherits from the Qt class QTableWidget, manages all the interactions between
+the user and the data related to the traces
+\ingroup GUI
 */
 class QGOGUILIB_EXPORT QGoTableWidget:public QTableWidget
 {
@@ -62,36 +62,86 @@ public:
 
   typedef GoDBTableWidgetContainer::TWContainerType TWContainerType;
 
-  void DisplayColumnNames(QString TableName, std::list< std::string > ColumnNames);
+  /** \todo Lydie: check the code redondancies between DisplayContent,
+  InsertNewRow and UpdateRow*/
 
+  /**
+  \brief display the columns names and the content of iTWRowContainer in the 
+  table
+  \param[in] iTWRowContainer contains the data to be displayed and the 
+  corresponding info to know how to display them
+  \param[in] iIndexColorTraceRowContainer index to know where to find the 
+  color of the trace in the iTWRowContainer
+  \param[in] iIndexColorCollectionRowContainer index to know where to find 
+  the color of the collection in the iTWRowContainer
+  \param[in] iTraceName name of the trace
+  \param[in] iCollectionName name of the collection
+  \param[in] iColumnNames list of the column names to be displayed
+  */
   void DisplayContent(TWContainerType iTWRowContainer,
                       std::vector< int > iIndexColorTraceRowContainer,
                       std::vector< int > iIndexColorCollectionRowContainer,
                       std::string iTraceName, std::string iCollectionName,
                       std::list< std::string > iColumnNames);
 
-  /** \brief Insert a new row and fill the cells with the data
- contained in the RowContainer with the link: iLinkToRowContainer*/
+  /** 
+  \brief Insert a new row and fill the cells with the data
+  contained in the RowContainer 
+  \param[in] iTWRowContainer contains the data to be displayed and the 
+  corresponding info to know how to display them for one row only
+  \param[in] iIndexColorTraceRowContainer index to know where to find the 
+  color of the trace in the iTWRowContainer
+  \param[in] iIndexColorCollectionRowContainer index to know where to find 
+  the color of the collection in the iTWRowContainer
+  \param[in] iTraceName name of the trace
+  \param[in] iCollectionName name of the collection
+ */
   void InsertNewRow(TWContainerType iTWRowContainer,
                     std::vector< int > iIndexColorTraceRowContainer,
                     std::vector< int > iIndexColorCollectionRowContainer,
                     std::string iTraceName, std::string iCollectionName);
 
-  /** \brief Replace the data in the cells corresponding to the traceID with
-  the new data contained in the RowContainer with the link: iLinkToRowContainer*/
+  /** 
+  \brief Replace the data in the cells corresponding to the traceID with
+  the new data contained in the RowContainer
+  \param[in] iTWRowContainer contains the data to be displayed and the 
+  corresponding info to know how to display them for one row only
+  \param[in] iIndexColorTraceRowContainer index to know where to find the 
+  color of the trace in the iTWRowContainer
+  \param[in] iIndexColorCollectionRowContainer index to know where to find 
+  the color of the collection in the iTWRowContainer
+  \param[in] iTraceName name of the trace
+  \param[in] iCollectionName name of the collection
+  \param[in] iTraceID ID of the trace to be updated
+  */
   void UpdateRow(TWContainerType iTWRowContainer,
                  std::vector< int > iIndexColorTraceRowContainer,
                  std::vector< int > iIndexColorCollectionRowContainer,
                  std::string iTraceName, std::string iCollectionName,
                  int iTraceID);
 
+  /**
+  \brief delete the rows previously checked by the user
+  \param[in] iTraceNameID name of the traceID displayed in the table
+  \param[in] iTraceIDs list of the traceIDs for which the rows need to be
+  deleted
+  */
   void DeleteCheckedRows(std::string iTraceNameID, std::list< unsigned int > iTraceIDs);
 
-  /** \brief Change the CollectionID in the trace table of the TraceIDToUpdate
-  with the newCollectionID and set the background with the colorNewCollection*/
-  void UpdateIDs(unsigned int iNewCollectionID, std::string iCollectionIDName,
-                 QColor ColorNewCollection, std::string TraceIDName, std::list< int > TraceIDToUpdate);
+  /** 
+  \brief Change the CollectionID in the trace table of the TraceIDToUpdate
+  with the newCollectionID and set the background with the colorNewCollection
+  */
+  //void UpdateIDs(unsigned int iNewCollectionID, std::string iCollectionIDName,
+  //               QColor ColorNewCollection, std::string TraceIDName, std::list< int > TraceIDToUpdate);
 
+  /**
+  \brief add values in the table for the corresponding traceID and column names
+  \param[in] iColumnsNames names of the columns to display the values
+  \param[in] iValues vector containing the values in the same order as the column names
+  \param[in] iID ID of the trace where to display the values
+  \param[in] iColumnNameForTraceID name of the traceID
+  */
   void AddValuesForID(std::vector< std::string > iColumnsNames,
                       std::vector< std::string > iValues, unsigned int iID,
                       std::string iColumnNameForTraceID);
@@ -164,6 +214,15 @@ signals:
 protected:
   int PrevCol;
   int PrevOrder;
+
+  /**
+  \brief create the table widget items for the columns Header and set the 
+  corresponding tooltips for them
+  \param[in] iTableName name of the trace to be displayed in the tooltip check/uncheck
+  \param[in] iColumnNames list of all the names of the columns to be displayed in the 
+  table
+  */
+  void DisplayColumnNames(QString iTableName, std::list< std::string > iColumnNames);
 
   /** \brief return the row index where the given value is located when specifying
   the column name: */
