@@ -48,6 +48,12 @@ class QGoContourSeedSegmentation;
 
 #include "ui_SegmentationBaseDockWidget.h"
 
+/**
+ * \class QGoContourSegmentationBaseDockWidget
+ * \ingroup QGoContour
+ * \brief Base dockwidget for the contours segmentation
+*/
+
 class QGoContourSegmentationBaseDockWidget:
   public QDockWidget,
   protected Ui::SegmentationBaseDockWidget
@@ -62,50 +68,100 @@ public:
   ~QGoContourSegmentationBaseDockWidget();
 
   /**
-   * \brief Specify on which one the segmentation will be applied since the input
-   * data is multichannel.
+   * \brief Specify on which one the segmentation will be applied
    * \param[in] iChannel Channel on which want we want to apply the segmentation
    * algorithm
    */
   void SetChannel(int iChannel);
 
+  /**
+   * \brief Get reedit mode. Provides a way to know if the reedit mode in on or of
+   * \return true: reedit mode ON, false: reedit mode OFF
+   */
   bool GetReeditMode();
 
+  /**
+   * \brief Set reedit mode. Provides a way to set the reedit mode to on or of
+   * \param[in] iEnable true: reedit mode ON, false: reedit mode OFF
+   */
   void SetReeditMode(bool iEnable);
 
+  /**
+   * \brief Initialize the dockwidget
+   */
   void Initialize();
 
-/*
-protected:
-  virtual void InitializeWidgetAppearance();
-*/
 public slots:
+  /**
+   * \brief Slot to know if we are in Manual, Semi Automatic ou Automatic segmentation
+   */
   void SegmentationMethod(int);
 
+  /**
+   * \brief Slot to update the interactor behavior, depending on if we are
+   * in Manual, Semi Automatic ou Automatic segmentation
+   */
   void interactorBehavior(bool);
 
 signals:
-  void ManualSegmentationActivated(bool);
+  /**
+   * \brief Signal sent when we enter/leave the Manual segmentation mode
+   * \param[in] iActivated true: enter, false: leave
+   */
+  void ManualSegmentationActivated(bool iActivated);
 
+  /**
+   * \brief Signal sent when we enter/leave the Semi Automatic segmentation mode
+   * \param[in] iActivated true: enter, false: leave
+   */
   void SemiAutoSegmentationActivated(bool);
 
+  /**
+   * \brief Signal sent when we enter/leave the Automatic segmentation mode
+   * \param[in] iActivated true: enter, false: leave
+   */
   void AutoSegmentationActivated(bool);
 
+  /**
+   * \brief Signal sent to go to the default interactor behavior
+   */
   void ReinitializeInteractorActivated(bool);
 
   // manual segmentation specific signals
+  /**
+   * \brief Signal sent when a contour has been validated in manual segmentation
+   */
   void ValidateContour();
 
+  /**
+   * \brief Signal sent when a contour has been reinitialized in manual segmentation
+   */
   void ReinitializeContourWidget();
 
+  /**
+   * \brief Signal sent to update the contour properties in the visualization
+   */
   void UpdateContourRepresentationProperties(float, QColor, QColor, QColor);
-  void ShowTraceDockWidgetForContour(bool);
+
+
+  //void ShowTraceDockWidgetForContour(bool);
 
   // semi automatic signals
+  /**
+   * \brief Signal sent before starting a "seed segmentation" to update the
+   * value of the seeds
+   */
   void UpdateSeeds();
 
+  /**
+   * \brief Signal sent after a seed segmentation to save the contour and
+   * update the visualization
+   */
   void SaveAndVisuContour(vtkPolyData *);
 
+  /**
+   * \brief Signal sent after a seed segmentation to delete the seeds
+   */
   void ClearAllSeeds();
 
 protected:
