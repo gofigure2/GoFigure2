@@ -41,7 +41,6 @@
 #include <list>
 #include "itkMacro.h"
 #include "vtkMySQLDatabase.h"
-//#include "GoDBContourRow.h"
 
 #include "QGoIOConfigure.h"
 

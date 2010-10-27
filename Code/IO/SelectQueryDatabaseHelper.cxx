@@ -2202,7 +2202,7 @@ std::list< unsigned int > GetSpecificValuesEqualToZero(
   querystream << " = 0);";
 
   query->SetQuery( querystream.str().c_str() );
-  /** \todo check when several meshesID are in the query*/
+  /** \todo Lydie: check when several meshesID are in the query*/
   if ( !query->Execute() )
     {
     itkGenericExceptionMacro(

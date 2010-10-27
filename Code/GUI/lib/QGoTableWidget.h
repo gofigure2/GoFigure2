@@ -45,9 +45,6 @@
 #include "QGoGUILibConfigure.h"
 #include "GoDBCoordinateRow.h"
 
-/// \todo definitively remove this include
-//#include "ContourMeshStructureHelper.h"
-
 /**
 \class QGoTableWidget
 \brief in the QTableWidget class, the method sorItems is a public function, not a public slots,

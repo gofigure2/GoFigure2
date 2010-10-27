@@ -134,7 +134,7 @@ protected:
     vtkMySQLDatabase *iDatabaseConnector, std::string iRestrictionName,
     std::string iRestrictionValue);
 
-  /** \todo find a way to make it ok for all traces, now only for mesh*/
+  /** \todo Lydie: find a way to make it ok for all traces, now only for mesh*/
   /** \brief fill the row container with the values calculated and stored in th
   meshAttributes*/
   void FillRowContainerForComputedValues(
