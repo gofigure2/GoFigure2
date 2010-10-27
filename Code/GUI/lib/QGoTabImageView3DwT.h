@@ -375,7 +375,6 @@ protected:
 
   vtkPoints *m_Seeds;
 
-  /// \todo remove m_FFMPEGWriter and m_AVIWriter from this class
   #if defined ENABLEFFMPEG || defined ENABLEAVI
   QGoVideoRecorder *m_VideoRecorderWidget;
   #endif /* ENABLEFFMPEG || ENABLEAVI */
