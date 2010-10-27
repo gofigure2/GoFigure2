@@ -93,7 +93,7 @@ class vtkActor;
 /**
  * \class vtkViewImage2D
  * \ingroup MegaVTK
- * \brief Basic class to handle 32d/3D items such as images and polydatas
+ * \brief Basic class to handle 2D/3D items such as images and polydatas
  * visualization in 2D
  */
 class VTK_RENDERINGADDON2_EXPORT vtkViewImage2D:public vtkViewImage

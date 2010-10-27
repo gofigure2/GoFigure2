@@ -120,12 +120,15 @@ class vtkPlanes;
 /**
  * \class vtkViewImage3D
  * \ingroup MegaVTK
- * \brief 3D view
+ * \brief Basic class to handle items such as images and polydatas
+ * visualization in 3D
  */
 class VTK_RENDERINGADDON2_EXPORT vtkViewImage3D:public vtkViewImage
 {
 public:
-
+  /**
+   * \brief Convenient method to access the constructor.
+   */
   static vtkViewImage3D * New();
 
   vtkTypeRevisionMacro(vtkViewImage3D, vtkViewImage);
@@ -175,32 +178,58 @@ public:
 
   virtual void SetOrientationMatrix(vtkMatrix4x4 *matrix);
 
-  void SetVolumeRenderingOff();
-
+  /*
+   * \brief Set volume rendering on
+   */
   void SetVolumeRenderingOn();
 
+  /*
+   * \brief Set volume rendering off
+   */
+  void SetVolumeRenderingOff();
+
+  /*
+   * \brief Set TriPlanar rendering on
+   */
   void SetTriPlanarRenderingOn();
 
+  /*
+   * \brief Set TriPlanar rendering off
+   */
   void SetTriPlanarRenderingOff();
 
+  /*
+   * \brief Set the volume mapper to texture (for volume rendering purpose)
+   */
   void SetVolumeMapperToTexture(void)
   {
     this->VolumeActor->SetMapper (this->VolumeMapper3D);
     this->Callback->SetVolumeMapper (this->VolumeMapper3D);
   }
 
+  /*
+   * \brief Set the volume mapper to ray cast (for volume rendering purpose)
+   */
   void SetVolumeMapperToRayCast(void)
   {
     this->VolumeActor->SetMapper (this->VolumeRayCastMapper);
     this->Callback->SetVolumeMapper (this->VolumeRayCastMapper);
   }
 
+  /*
+   * \brief Set the volume ray cast function to composite
+   * (for volume rendering purpose)
+   */
   void SetVolumeRayCastFunctionToComposite(void)
   {
     this->VolumeRayCastMapper->SetVolumeRayCastFunction
       (this->VolumeRayCastCompositeFunction);
   }
 
+  /*
+   * \brief Set the volume ray cast function to MIP
+   * (for volume rendering purpose)
+   */
   void SetVolumeRayCastFunctionToMIP(void)
   {
     this->VolumeRayCastMapper->SetVolumeRayCastFunction

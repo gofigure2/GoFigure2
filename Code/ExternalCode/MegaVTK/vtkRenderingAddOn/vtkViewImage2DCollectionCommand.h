@@ -52,18 +52,28 @@ class vtkProp3D;
 /**
  * \class vtkViewImage2DCollectionCommand
  * \ingroup MegaVTK
- * \brief Manage events occuring in a 2D view and aapply it to a collec
+ * \brief Manage events occuring in a 2D view and apply it to a collection
  */
 
 class VTK_RENDERINGADDON2_EXPORT vtkViewImage2DCollectionCommand:
   public vtkCommand
 {
 public:
-
+    /**
+     * \brief Convenient method to access the constructor.
+     */
   static vtkViewImage2DCollectionCommand * New();
 
+  /**
+   * \brief Get the current collection
+   * \return vtkViewImage2DCollection pointer to the current collection
+   */
   vtkViewImage2DCollection * GetCollection();
 
+  /**
+   * \brief Set the current collection
+   * \param[in] vtkViewImage2DCollection pointer to the current collection
+   */
   void SetCollection(vtkViewImage2DCollection *p);
 
   // Description:
@@ -74,7 +84,6 @@ public:
   virtual void Execute( vtkObject * caller, unsigned long event,
                         void *vtkNotUsed(callData) );
 protected:
-
   vtkViewImage2DCollectionCommand();
   ~vtkViewImage2DCollectionCommand();
 private:
