@@ -1223,30 +1223,27 @@ QGoTabImageView3DwT::TakeSnapshot()
   // Get the current view displayed in full screen
   int FullScreenView = m_ImageView->GetFullScreenView();
 
-  /// \todo enhance the name of the files
   QString filename = QDir::toNativeSeparators( QDir::homePath() );
-
-  filename.append("snapshot_");
 
   switch ( FullScreenView )
     {
     case 1:
-      // X Slice
+      filename.append( "snapshot-xy-" );
       m_ImageView->SnapshotViewXY(GoFigure::PNG, filename);
       break;
 
     case 2:
-      // Y Slice
-      m_ImageView->SnapshotView2(GoFigure::PNG, filename);
+      filename.append( "snapshot-xz-" );
+      m_ImageView->SnapshotViewXZ(GoFigure::PNG, filename);
       break;
 
     case 3:
-      // Z Slice
-      m_ImageView->SnapshotView3(GoFigure::PNG, filename);
+      filename.append( "snapshot-yz-" );
+      m_ImageView->SnapshotViewYZ(GoFigure::PNG, filename);
       break;
 
     default:
-      // 3D view
+      filename.append( "snapshot-xyz-" );
       m_ImageView->SnapshotViewXYZ(GoFigure::PNG, filename);
       break;
     }
@@ -1716,22 +1713,22 @@ QGoTabImageView3DwT::SnapshotViewXY(
 
 //-------------------------------------------------------------------------
 QString
-QGoTabImageView3DwT::SnapshotView2(
+QGoTabImageView3DwT::SnapshotViewXZ(
   const GoFigure::FileType & iType,
   const QString & iBaseName)
 {
-  return m_ImageView->SnapshotView2(iType, iBaseName);
+  return m_ImageView->SnapshotViewXZ(iType, iBaseName);
 }
 
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 QString
-QGoTabImageView3DwT::SnapshotView3(
+QGoTabImageView3DwT::SnapshotViewYZ(
   const GoFigure::FileType & iType,
   const QString & iBaseName)
 {
-  return m_ImageView->SnapshotView3(iType, iBaseName);
+  return m_ImageView->SnapshotViewYZ(iType, iBaseName);
 }
 
 //-------------------------------------------------------------------------

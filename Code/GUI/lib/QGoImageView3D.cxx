@@ -570,7 +570,7 @@ QGoImageView3D::SnapshotViewXY(const GoFigure::FileType & iType,
 
 //-------------------------------------------------------------------------
 QString
-QGoImageView3D::SnapshotView2(const GoFigure::FileType & iType,
+QGoImageView3D::SnapshotViewXZ(const GoFigure::FileType & iType,
                               const QString & iBaseName)
 {
   QString filename = SnapshotView(QvtkWidget_XZ, iType,
@@ -584,7 +584,7 @@ QGoImageView3D::SnapshotView2(const GoFigure::FileType & iType,
 
 //-------------------------------------------------------------------------
 QString
-QGoImageView3D::SnapshotView3(
+QGoImageView3D::SnapshotViewYZ(
   const GoFigure::FileType & iType,
   const QString & iBaseName)
 {
