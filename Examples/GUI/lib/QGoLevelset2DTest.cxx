@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author: arnaudgelas $  // Author of last commit
-  Version: $Rev: 1150 $  // Revision of last commit
-  Date: $Date: 2010-03-30 15:00:47 -0400 (Tue, 30 Mar 2010) $  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009
 
@@ -74,7 +68,7 @@ int main(int argc, char **argv)
 
   // Initialize the segmentation
   QGoFilterChanAndVes *         levelSet2DFilter = new QGoFilterChanAndVes(NULL, 2);
-  std::vector< vtkImageData * > imagesVector(1);
+  std::vector< vtkSmartPointer< vtkImageData > > imagesVector(1);
   imagesVector[0] = castFilter->GetOutput();
   levelSet2DFilter->setOriginalImageMC(&imagesVector);
   levelSet2DFilter->setIterations(50);

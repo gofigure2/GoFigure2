@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -2208,7 +2202,7 @@ std::list< unsigned int > GetSpecificValuesEqualToZero(
   querystream << " = 0);";
 
   query->SetQuery( querystream.str().c_str() );
-  /** \todo check when several meshesID are in the query*/
+  /** \todo Lydie: check when several meshesID are in the query*/
   if ( !query->Execute() )
     {
     itkGenericExceptionMacro(

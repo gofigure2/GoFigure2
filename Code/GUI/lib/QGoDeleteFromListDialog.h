@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author: lsouhait $  // Author of last commit
-  Version: $Rev: 1910 $  // Revision of last commit
-  Date: $Date: 2010-08-06 18:43:09 -0400 (Fri, 06 Aug 2010) $  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -52,6 +46,7 @@
 \class QGoDeleteFromListDialog
 \brief this class displays a list of entities and return the list of the
 ones selected by the user. class based on Qt
+\ingroup GUI
 */
 class QGOGUILIB_EXPORT QGoDeleteFromListDialog:public QDialog
 {
@@ -69,6 +64,7 @@ public:
                                    std::string iEntityName = "");
 
   virtual ~QGoDeleteFromListDialog();
+
 protected:
   std::string  m_EntityName;
   QListWidget *m_ListWidget;

@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -51,47 +45,83 @@
 class QHBoxLayout;
 class QVBoxLayout;
 
+/** \class QGoNavigationDockWidget
+ *  \brief Dock Widget for browsing images (changing slice, time point...)
+ *  \ingroup GUI
+ */
 class QGOGUILIB_EXPORT QGoNavigationDockWidget:
   public QDockWidget,
   private Ui::NavigationDockWidget
 {
   Q_OBJECT
 public:
+  /** \brief Constructor */
   explicit QGoNavigationDockWidget(
     QWidget *parent = 0,
     const GoFigure::TabDimensionType & iDim = GoFigure::THREE_D_WITH_T);
+
+  /** \brief Destructor */
   ~QGoNavigationDockWidget();
 
+  /** \brief Set the number of channels */
   void SetNumberOfChannels(const unsigned int & iN);
 
-  /** \brief */
+  /** \brief Set channel name
+  *    \param[in] i channel id
+  *    \param[in] iText channel name
+  */
   void SetChannel( const unsigned int & i, const QString & iText = QString() );
 
+ /** \brief Set the extent of the images in the X direction
+ * \param[in] iMin XMin
+ * \param[in] iMax XMax
+ */
   void SetXMinimumAndMaximum(const int & iMin, const int & iMax);
 
+ /** \brief Set the extent of the images in the Y direction
+ * \param[in] iMin YMin
+ * \param[in] iMax YMax
+ */
   void SetYMinimumAndMaximum(const int & iMin, const int & iMax);
 
-  void SetZMinimumAndMaximum(const int & iMin, const int & iMax);
+  /** \brief Set the extent of the images in the Z direction
+ * \param[in] iMin ZMin
+ * \param[in] iMax ZMax
+ */
+ void SetZMinimumAndMaximum(const int & iMin, const int & iMax);
 
+ /** \brief Set the extent of the images in the Time
+ * \param[in] iMin TMin
+ * \param[in] iMax TMax
+ */
   void SetTMinimumAndMaximum(const int & iMin, const int & iMax);
 
+  /** \brief Get the selected channel id */
   int  GetCurrentChannel() const;
 
+  /** \brief Select and show all channels */
   bool ShowAllChannels()   const;
 
+  /** \brief Get the channel name */
   QString GetChannelName(const int &);
 
 public slots:
+  /** Set X Slice */
   void SetXSlice(int iSlice);
 
+  /** Set Y Slice */
   void SetYSlice(int iSlice);
 
+  /** Set Z Slice */
   void SetZSlice(int iSlice);
 
+  /** Set Time Point */
   void SetTSlice(int iSlice);
 
+  /** \todo (Nicolas) to document */
   void MoveToPreviousTimePoint();
 
+  /** \todo (Nicolas) to document */
   void MoveToNextTimePoint();
 
 signals:

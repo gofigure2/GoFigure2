@@ -73,30 +73,72 @@
 #include "MegaVTK2Configure.h"
 
 /**
+ * \class vtkFillImageWithPolyData
+ * \brief TO BE FILLED
+ * \ingroup MegaVTK
  */
 class VTK_RENDERINGADDON2_EXPORT vtkFillImageWithPolyData:
   public vtkThreadedImageAlgorithm
 {
 public:
+    /**
+     * \brief Convenient method to access the constructor
+     */
   static vtkFillImageWithPolyData * New();
 
   vtkTypeRevisionMacro (vtkFillImageWithPolyData, vtkThreadedImageAlgorithm);
   void PrintSelf(ostream & os, vtkIndent indent);
 
-  // Set/Get the polyData:
+  /**
+   * \brief Set the Polydata
+   */
   vtkSetObjectMacro (PolyData, vtkPolyData);
+
+  /**
+   * \brief Get the Polydata
+   */
   vtkGetObjectMacro (PolyData, vtkPolyData);
 
+  /**
+   * \brief Set the value of the pixel inside
+   */
+
   vtkSetMacro (InsidePixelValue, double);
+
+  /**
+   * \brief Get the value of the pixel inside
+   */
   vtkGetMacro (InsidePixelValue, double);
 
-  vtkSetMacro (ExtractionDirection, int); //0: X, 1:Y, 2:Z
+  /**
+   * \brief Set the direction of extraction.
+   * 0: X, 1: Y, 2: Z
+   */
+  vtkSetMacro (ExtractionDirection, int);
+
+  /**
+   * \brief Set the direction of extraction.
+   * 0: X, 1: Y, 2: Z
+   */
   vtkGetMacro (ExtractionDirection, int);
 
+  /**
+   * \brief Compute the angle between the 2 input points.
+   * \param[in] dp1 Position of the first point.
+   * \param[in] dp2 Position of the second point.
+   * \return The angle between the 2 input points.
+   */
   double Angle2D(const double dp1[2], const double dp2[2]);
 
 protected:
+  /**
+   * \fn vtkFillImageWithPolyData::vtkFillImageWithPolyData()
+   * \brief Constructor
+   */
   vtkFillImageWithPolyData();
+  /**
+   * \brief Destructor
+   */
   ~vtkFillImageWithPolyData();
 
   virtual int RequestInformation (vtkInformation *vtkNotUsed(request),
@@ -110,6 +152,10 @@ protected:
                                    vtkImageData **outData,
                                    int extent[6], int threadId);
 private:
+  /**
+   * \overload vtkFillImageWithPolyData::vtkFillImageWithPolyData(const vtkFillImageWithPolyData &)
+   * \brief Constructor
+   */
   vtkFillImageWithPolyData (const vtkFillImageWithPolyData &);
   void operator=(const vtkFillImageWithPolyData &);
 

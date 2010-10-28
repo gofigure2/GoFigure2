@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -103,8 +97,10 @@ struct m_TCoord {};
 struct m_Channel {};
 #endif
 
-/// \todo Since we are not yet using all information, the unused one are
-/// commented for performance issue.
+/** \todo (Arnaud) Since we are not yet using all information
+ * the unused one are commented for performance issues
+ * (PCoord, RCoord, CCoord, XTileCoord, YTileCoord, ZTileCoord)
+ */
 typedef boost::multi_index::multi_index_container<
   GoFigureFileInfoHelper,
   boost::multi_index::indexed_by<

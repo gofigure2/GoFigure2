@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -59,7 +53,6 @@ class QGoImageView2D;
  * a vtkimagedata* or an itkimage*.
  * QGoSynchronizedView2D provide the interface to synchronize cameras among
  * several GoSynchronizedView2D.
- * \example GUI/lib/qgosynchronizedview2dtest.cxx
  */
 class QGoSynchronizedView2D:public QGoSynchronizedView
 {

@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -49,8 +43,6 @@
 #include "vtkPNGReader.h"
 #include "vtkTIFFReader.h"
 #include "vtkMetaImageReader.h"
-
-#include "vtkSmartPointer.h"
 
 #include "VolumeBuilderHelper.h"
 
@@ -334,14 +326,17 @@ MegaCaptureReader::Update()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-vtkImageData *
-MegaCaptureReader::GetOutput(const unsigned int & iChannel)
+vtkSmartPointer< vtkImageData >
+MegaCaptureReader::
+GetOutput(const unsigned int & iChannel)
 {
   std::map< unsigned int, vtkImageData * >::iterator
     it = m_OutputImageMap.find(iChannel);
 
   if ( it != m_OutputImageMap.end() )
     {
+    //vtkSmartPointer< vtkImageData > output = vtkSmartPointer<vtkImageData>::New();
+    //output->ShallowCopy(it->second);
     return it->second;
     }
   else
@@ -352,7 +347,7 @@ MegaCaptureReader::GetOutput(const unsigned int & iChannel)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-vtkImageData *
+vtkSmartPointer<vtkImageData>
 MegaCaptureReader::
 GetImage( const unsigned int & iCh,
           const unsigned int & iT )
@@ -377,10 +372,12 @@ GetImage( const unsigned int & iCh,
     while( f_it != f_end )
       {
       this->AddToVTKVolumeBuilder( counter, *f_it, volumeBuilder );
+      ++ counter;
       ++f_it;
       }
     volumeBuilder->Update();
-    vtkImageData *temp_output = volumeBuilder->GetOutput();
+    vtkSmartPointer<vtkImageData> temp_output = vtkSmartPointer<vtkImageData>::New();
+    temp_output->ShallowCopy(volumeBuilder->GetOutput());
     temp_output->SetSpacing(m_HeaderReader->m_VoxelSizeX,
                             m_HeaderReader->m_VoxelSizeY,
                             m_HeaderReader->m_VoxelSizeZ);

@@ -263,7 +263,7 @@ void vtkViewImage2DCommand::PrintInformation()
   this->Viewer->GetInput()->GetSpacing(spacing);
 
   std::ostringstream os;
-  ///TODO dims and spacing must be computed from the orientation of the
+  /// \todo dims and spacing must be computed from the orientation of the
   /// image.
   os << "Size: " << "[ " << dims[0] << " x " << dims[1] << " x " << dims[2]
      << " ]" << std::endl;

@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Revision$  // Revision of last commit
-  Date: $Date$  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -81,6 +75,7 @@ public:
 
   virtual void SetPolyData(vtkPolyData *iMesh);
 
+  void SetIntensityBasedComputation( const bool& iComputation );
   virtual void Update();
 
   unsigned int GetSize();
@@ -108,6 +103,7 @@ protected:
   double m_Area;
   double m_Mean;
   double m_Sum;
+  bool m_IntensityComputation;
 
   virtual void GenerateData();
 

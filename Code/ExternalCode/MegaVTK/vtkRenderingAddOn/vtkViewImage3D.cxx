@@ -683,7 +683,7 @@ vtkViewImage3D::AddDataSet(vtkDataSet *dataset,
 
   if( intersection )
     {
-    //TODO to be implemented
+    /// \todo to be implemented
 //     cutter->SetInputConnection( 0, dataset->GetProducerPort());
 //     cutter->SetClipFunction( this->SliceImplicitPlane );
 //     cutter->InsideOutOn();
@@ -753,7 +753,7 @@ void vtkViewImage3D::SetupTextureMapper()
           << "Warning: 3D Texture volume rendering is not supported by your"
           << " hardware, I switch to 2D Texture rendering." << endl);
 
-        ///TODO FIX LEAK
+        /// \todo FIX LEAK
         vtkVolumeTextureMapper2D *newMapper =
           vtkVolumeTextureMapper2D::New();
         newMapper->CroppingOn();

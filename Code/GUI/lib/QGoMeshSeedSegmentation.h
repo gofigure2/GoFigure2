@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author: nicolasrannou $  // Author of last commit
-  Version: $Rev: 2037 $  // Revision of last commit
-  Date: $Date: 2010-08-23 16:33:20 -0400 (Mon, 23 Aug 2010) $  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -46,6 +40,8 @@
 
 #include "QGoSeedSegmentationBase.h"
 
+#include "vtkSmartPointer.h"
+
 class vtkPoints;
 
 class vtkImageData;
@@ -56,10 +52,11 @@ class QGoFilterShape;
 class QGoFilterWatershed;
 
 /**
- * \class QGoSeedShapeSegmentation
- * \ingroup QGoSeed
- * \brief Class to create pre defined meshes
+ * \class QGoMeshSeedSegmentation
+ * \ingroup QGoMeshSeed
+ * \brief Interface between the seed segmentation filters and the base seed dockwidget
 */
+
 class QGOGUILIB_EXPORT QGoMeshSeedSegmentation:public QGoSeedSegmentationBase
 {
   Q_OBJECT
@@ -69,7 +66,7 @@ public:
    */
   explicit QGoMeshSeedSegmentation(QWidget *parentW = 0,
                                    vtkPoints *seeds = 0,
-                                   std::vector< vtkImageData * > *iOriginalImage = 0,
+                                   std::vector< vtkSmartPointer<vtkImageData> > *iOriginalImage = 0,
                                    int iSampling = 1);
 
   /**
@@ -81,6 +78,6 @@ private:
   QGoFilterShape *     m_ShapeFilter;
   QGoFilterWatershed * m_Watershed;
 
-  std::vector< vtkImageData * > *m_OriginalImage;
+  std::vector< vtkSmartPointer<vtkImageData> > *m_OriginalImage;
 };
 #endif

@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Revision$  // Revision of last commit
-  Date: $Date$  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -177,20 +171,14 @@ QGoMainWindow::QGoMainWindow(QWidget *iParent, Qt::WindowFlags iFlags):
 
   m_NetworkUtilities->CheckForUpdates();
   // ---------------------------------------
-
-  // Database set up
-  this->m_DatabaseSetUp = false;
   if ( !this->m_DatabaseSetUp )
     {
-    actionSet_Up_Database = new QAction(
-      tr("Set Up Database"), this->menuDatabase);
-    this->menuDatabase->addAction(actionSet_Up_Database);
-    m_DBInitializationWizard = new QGoDBInitializationWizard(this);
-    this->m_DBInitializationWizard->hide();
-    QObject::connect( this->actionSet_Up_Database, SIGNAL( triggered() ),
-                      SLOT( SetUpDatabase() ) );
-    QObject::connect( this->m_DBInitializationWizard, SIGNAL( DatabaseAndUserCreated() ),
-                      this, SLOT( RemoveSetUpDatabaseMenu() ) );
+    this->AddSetUpDatabaseMenu();
+    }
+  else
+    {
+    QObject::connect(this->m_DBWizard, SIGNAL ( NoGofigureDatabase () ),
+                     this, SLOT(AddSetUpDatabaseMenu() ) );
     }
   // LoadPlugins();
 }
@@ -474,7 +462,9 @@ QGoMainWindow::LoadAllTracesFromDatabase(const int & iT, const std::string & iTr
           if ( contourmesh_list_it->Nodes )
             {
             GoFigureMeshAttributes attributes =
-              w3t->ComputeMeshAttributes(contourmesh_list_it->Nodes);
+              w3t->ComputeMeshAttributes(
+                  contourmesh_list_it->Nodes, // mesh
+                  false ); // do not need to compute intensity based measure
             w3t->m_DataBaseTables->PrintVolumeAreaForMesh(
               &attributes, contourmesh_list_it->TraceID);
             }
@@ -528,9 +518,6 @@ QGoMainWindow::GetFileContainerForMultiFiles(std::string & ioHeader_Filename,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-/**
- * \brief Open dialog window to set the file output path and format
- */
 void
 QGoMainWindow::on_actionExport_LSM_to_MegaFile_triggered()
 {
@@ -663,14 +650,6 @@ void QGoMainWindow::OpenLSMImage(const QString & iFile, const int & iTimePoint)
 }
 
 //--------------------------------------------------------------------------
-/**
- *
- * @param iFileList
- * @param iFileType
- * @param iHeader
- * @param iTimePoint
- * @param iUseDatabase
- */
 QGoTabImageView3DwT *
 QGoMainWindow::CreateNewTabFor3DwtImage(
   const GoFigureFileInfoHelperMultiIndexContainer & iFileList,
@@ -1144,10 +1123,35 @@ void QGoMainWindow::openRecentFilesfromDB()
 //--------------------------------------------------------------------------------
 void QGoMainWindow::RemoveSetUpDatabaseMenu()
 {
-  this->actionSet_Up_Database->setEnabled(false);
+  this->menuDatabase->removeAction(this->actionSet_Up_Database);
   this->m_DatabaseSetUp = true;
 }
+//--------------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------------
+void QGoMainWindow::AddSetUpDatabaseMenu()
+{
+  //enter number of actions in the Database menu here:
+  unsigned int NumberOfActionsIfSetUpDB = 1;
+
+  unsigned int NumberOfCurrentActions = this->menuDatabase->actions().size();
+  if (NumberOfCurrentActions != NumberOfActionsIfSetUpDB)
+    {
+    actionSet_Up_Database = new QAction(
+        tr("Set Up Database"), this->menuDatabase);
+	this->m_DatabaseSetUp = false;
+    this->menuDatabase->addAction(actionSet_Up_Database);
+    this->actionSet_Up_Database->setEnabled(true);
+    m_DBInitializationWizard = new QGoDBInitializationWizard(this);
+    this->m_DBInitializationWizard->hide();
+    QObject::connect( this->actionSet_Up_Database, SIGNAL( triggered() ),
+                      SLOT( SetUpDatabase() ) );
+    QObject::connect( this->m_DBInitializationWizard, SIGNAL( DatabaseAndUserCreated() ),
+                      this, SLOT( RemoveSetUpDatabaseMenu() ) );
+    QObject::connect( this->m_DBWizard, SIGNAL( GofigureDatabaseExists() ),
+                      this, SLOT(RemoveSetUpDatabaseMenu() ) );
+    }
+}
 //--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------

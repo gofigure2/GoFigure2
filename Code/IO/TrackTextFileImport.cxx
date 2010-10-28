@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -85,7 +79,7 @@ TrackTextFileImport::SetDirectory(const std::string & iDir)
 
 /**
  * \brief Set the name of the TrackText files
- * \param[in]  iDir Name of the TrackText files
+ * \param[in] iFileName Name of the TrackText files
  */
 void
 TrackTextFileImport::SetFileName(const std::string & iFileName)

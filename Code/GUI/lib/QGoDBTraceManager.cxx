@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author: lsouhait $  // Author of last commit
-  Version: $Rev: 1972 $  // Revision of last commit
-  Date: $Date: 2010-08-16 12:23:05 -0400 (Mon, 16 Aug 2010) $  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -306,12 +300,12 @@ void QGoDBTraceManager::AddGeneralActionsContextMenu(QMenu *iMenu)
 //-------------------------------------------------------------------------
 void QGoDBTraceManager::AddSpecificActionsForContourMesh(QMenu *iMenu)
 {
-  /** \todo when using lineages, remove the following*/
+  /** \todo Lydie: when using lineages, remove the following*/
   //for the time being, as we don't use lineages
   iMenu->addAction( tr("Go to this %1")
                     .arg( this->m_TraceName.c_str() ),
                     this, SLOT( GoToTheTrace() ) );
-  /** \todo when using lineage, put it in the generalActionsContextMenu*/
+  /** \todo Lydie: when using lineage, put it in the generalActionsContextMenu*/
   this->AddActionForCreateNewCollectionFromCheckedTraces(iMenu);
   /*iMenu->addAction(
       tr("Add to selected %1 : %2").arg(this->m_CollectionName.c_str())
