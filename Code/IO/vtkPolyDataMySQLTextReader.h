@@ -42,16 +42,41 @@ class vtkPolyData;
 
 #include "QGoIOConfigure.h"
 
+/**
+\defgroup MySQLReader MySQLReader
+\defgroup Contours Contours
+\defgroup Meshes Meshes
+\defgroup Trace Trace
+*/
+
+/**
+\class vtkPolyDataMySQLTrackReader
+\brief Reads a string and convert it into a contour/mesh polydata
+\ingroup MySQLReader Contours Meshes Trace
+*/
+
 class QGOIO_EXPORT vtkPolyDataMySQLTextReader:public vtkObject
 {
 public:
+  /*
+   * \brief Public constructor
+   */
   static vtkPolyDataMySQLTextReader * New();
 
   vtkTypeRevisionMacro(vtkPolyDataMySQLTextReader, vtkObject);
 
+  /*
+   * \brief Generate a contour/mesh from a string
+   * \param[in] iString base string to generate the polydata
+   * \return pointer to the generated contour/mesh
+   */
   vtkPolyData * GetPolyData(const std::string & iString);
 
-  void SetIsContour(const bool &);
+  /*
+   * \brief Set a contour or a mesh
+   * \param[in] iContour true: generate a contour, false: generate a mesh
+   */
+  void SetIsContour(const bool & iContour);
 
 protected:
   vtkPolyDataMySQLTextReader();

@@ -45,15 +45,15 @@
 #include "QGoIOConfigure.h"
 
 /**
-\defgroup MySqlReader MySqlReader
+\defgroup MySQLWriter MySQLWriter
 \defgroup Tracks Tracks
 \defgroup Trace Trace
 */
 
 /**
 \class vtkPolyDataMySQLTrackWriter
-\brief Reads a string and convert it into a "track vtkPolyData".
-\ingroup MySqlWriter Tracks Trace
+\brief Reads a string and convert it into a track polydata
+\ingroup MySQLWriter Tracks Trace
 */
 
 class QGOIO_EXPORT vtkPolyDataMySQLTrackWriter:public vtkObject
@@ -67,9 +67,9 @@ public:
   vtkTypeRevisionMacro(vtkPolyDataMySQLTrackWriter, vtkObject);
 
   /*
-   * \brief Generate a string from a "Track Polydata"
+   * \brief Generate a string from a track polydata
    * \param[in] iPolyData Polydata to generate the string
-   * \return string containing the "Track Polydata" information
+   * \return string containing the track polydata information
    */
   std::string GetMySQLText(vtkPolyData *iPolyData);
 
