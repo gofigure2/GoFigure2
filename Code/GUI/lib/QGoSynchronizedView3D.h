@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -154,16 +148,16 @@ public:
 
 public slots:
   QString SnapshotViewXY( const GoFigure::FileType & iType,
-                          const QString & iBaseName = tr("Snapshot") );
+                          const QString & iBaseName = tr("Snapshot-xy-") );
 
-  QString SnapshotView2( const GoFigure::FileType & iType,
-                         const QString & iBaseName = QString("snapshot") );
+  QString SnapshotViewXZ( const GoFigure::FileType & iType,
+                         const QString & iBaseName = QString("snapshot-xz-") );
 
-  QString SnapshotView3( const GoFigure::FileType & iType,
-                         const QString & iBaseName = QString("snapshot") );
+  QString SnapshotViewYZ( const GoFigure::FileType & iType,
+                         const QString & iBaseName = QString("snapshot-yz-") );
 
   QString SnapshotViewXYZ( const GoFigure::FileType & iType,
-                           const QString & iBaseName = QString("snapshot") );
+                           const QString & iBaseName = QString("snapshot-xyz-") );
 
   /** Set the fullscreen view : iId = [0-4]
    *  0 : Quadview (all 4 views)

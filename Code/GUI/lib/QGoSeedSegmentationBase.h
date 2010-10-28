@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author: nicolasrannou $  // Author of last commit
-  Version: $Rev: 2037 $  // Revision of last commit
-  Date: $Date: 2010-08-23 16:33:20 -0400 (Mon, 23 Aug 2010) $  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -112,7 +106,9 @@ public:
    * \param[in] iChannel Channel on which want we want to apply the segmentation
    * algorithm
    */
-  void SetChannel(int iChannel);
+  void SetChannel(const QString & iText);
+
+  void SetNumberOfChannels(int iNumberOfChannels);
 
 public slots:
   /**
@@ -123,7 +119,7 @@ public slots:
 
   /**
    * \brief Set the value of the radius.
-   * \param[in] iRadius Radius to be used for the segmentation.
+   * \param[in] iSampling Radius to be used for the segmentation.
    */
   void setSampling(int iSampling);
 
@@ -143,7 +139,9 @@ signals:
    * QComboBox
    * \param[in] iQString Name of the channel.
    */
-  void addChannel(QString);
+  void addChannel(QString iQString);
+
+  void setNumberOfChannels(int);
 
   void MeshCreated(vtkPolyData *);
 

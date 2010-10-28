@@ -1,5 +1,8 @@
 *~
 
+#BUILD directory
+BUILD/
+
 #QT creator specifics
 CMakeLists.txt.user
 qtcreator-build/

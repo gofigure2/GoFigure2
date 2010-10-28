@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -76,7 +70,7 @@ QGoTabImageViewElementBase::QGoTabImageViewElementBase(QWidget *iParent):
 
   CreateToolsActions();
 
-  /// TODO fix it is not a dockwidget anymore
+  /// \todo fix it is not a dockwidget anymore
   //m_DockWidgetList.push_back(
   //  std::pair<QGoDockWidgetStatus*, QDockWidget*>(
   //    new QGoDockWidgetStatus(m_ManualSegmentationWidget,

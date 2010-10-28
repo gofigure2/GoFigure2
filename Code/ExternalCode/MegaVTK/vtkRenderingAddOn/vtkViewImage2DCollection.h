@@ -135,6 +135,9 @@ class VTK_RENDERINGADDON2_EXPORT vtkViewImage2DCollection:public vtkCollection
 {
 public:
 
+  /**
+   * \brief Convenient method to access the constructor.
+   */
   static vtkViewImage2DCollection * New();
 
   vtkTypeRevisionMacro(vtkViewImage2DCollection, vtkCollection);
@@ -142,6 +145,7 @@ public:
   /*
    * \bief Get the next vtkViewImage2D in the list. Return NULL when at the end of
    * the list
+   * \return vtkViewImage2D pointer to the next vtkViewImage2D in the collection
    */
   vtkViewImage2D * GetNextItem()
   {
@@ -151,6 +155,8 @@ public:
   /*
    * \bief Get the next vtkViewImage2D2D in the list. Return NULL when at the end of
    * the list
+   * \param[in] i index of the element we are looking for in the collection
+   * \return vtkViewImage2D pointer to the selected element
    */
   vtkViewImage2D * GetItem(int i)
   {
@@ -159,16 +165,21 @@ public:
 
   /*
    * \bief Add an object to the list. Does not prevent duplicate entries.
+   * \param[in] vtkViewImage2D pointer to the element to be added in the collection
    */
   void AddItem(vtkViewImage2D *);
 
   /*
    * \bief Replace the i'th item in the collection with another 2D image
+   * \param[in] i index of the element we want to remplace
+   * \param[in] vtkViewImage2D pointer to the element to be added in the collection
    */
   void ReplaceItem(int i, vtkViewImage2D *);
 
   /*
    * \brief Remove the i'th item in the list.
+   * \param[in] i index of the element we want to removed
+   *
    * Be careful if using this function during traversal of the list using
    * GetNextItemAsObject (or GetNextItem in derived class).  The list WILL
    * be shortened if a valid index is given!  If this->Current is equal to the
@@ -177,7 +188,9 @@ public:
   void RemoveItem(int i);
 
   /*
-   * \brief Remove an object from the list. Removes the first object found, not
+   * \brief Remove an object from the list.
+   * \param[in] vtkViewImage2D pointer to the element to be removed
+   * Removes the first object found, not
    * all occurrences. If no object found, list is unaffected.  See warning
    * in description of RemoveItem(int).
    */
@@ -198,7 +211,16 @@ public:
    */
   void InitializeAllObservers();
 
+  /*
+    * \brief Get the callbacks associated to the collection
+    * \return vtkViewImage2DCollectionCommand pointer
+    */
   vtkGetObjectMacro (Command, vtkViewImage2DCollectionCommand);
+
+  /*
+    * \brief Get the ExtraRenderWindow associated to the collection (3D)
+    * \return vtkRenderWindow pointer to the ExtraRenderWindow
+    */
   vtkGetObjectMacro (ExtraRenderWindow, vtkRenderWindow);
 
   /*
@@ -228,35 +250,6 @@ public:
 
   /// Description: Synchronize interpolate between views
   vtkSyncSetMacro (Interpolate, int, vtkViewImage2D);
-
-  /*/// Description: Synchronize background color between views
-  vtkSyncSetObjectMacro (Background, double, vtkViewImage2D);
-  /// Description: Synchronize camera position between views
-  vtkSyncSetObjectMacro (CameraPosition, double,vtkViewImage2D);
-  /// Description: Synchronize camera focal point between views
-  vtkSyncSetObjectMacro (CameraFocalPoint, double, vtkViewImage2D);
-  /// Description: Synchronize camera view up between views
-  vtkSyncSetObjectMacro (CameraViewUp, double, vtkViewImage2D);
-  /// Description: Synchronize camera parallel scale between views
-  vtkSyncSetMacro (CameraParallelScale, double, vtkViewImage2D);
-
-  /// Description: Synchronize view orientation between views (also see SyncSetSliceOrientation())
-  vtkSyncSet2DMacro (ViewOrientation, int);
-  /// Description: Synchronize view convention between views
-  vtkSyncSet2DMacro (ViewConvention, int);
-
-  /// Description: Synchronize interactor style type between views
-  vtkSyncSet2DMacro (InteractorStyleType, int);
-  /// Description: Synchronize mouse interaction between views
-  vtkSyncSet2DMacro (LeftButtonInteractionStyle, int);
-  /// Description: Synchronize mouse interaction between views
-  vtkSyncSet2DMacro (RightButtonInteractionStyle, int);
-  /// Description: Synchronize mouse interaction between views
-  vtkSyncSet2DMacro (MiddleButtonInteractionStyle, int);
-  /// Description: Synchronize mouse interaction between views
-  vtkSyncSet2DMacro (WheelInteractionStyle, int);
-  /// Description: Synchronize mouse interaction between views
-  vtkSyncSet2DMacro (InteractionStyle, int);*/
 
   /// Description: Synchronize dataset addition between views
   virtual void SyncAddDataSet(vtkDataSet *dataset, vtkProperty *property = NULL);
@@ -358,8 +351,6 @@ public:
    */
   void SetSplinePlaneActorsVisibility(bool iVisibility);
 
-  vtkstd::vector< vtkActor * > SlicePlaneActors;
-
   /**
    * \brief Change Interaction mode of the collection to DefaultMode()
    */
@@ -387,6 +378,8 @@ protected:
 
   vtkViewImage2DCollectionCommand *Command;
   vtkRenderWindow *                ExtraRenderWindow;
+
+  vtkstd::vector< vtkActor * > SlicePlaneActors;
 
   unsigned int LinkSliceMove;
   unsigned int LinkColorWindowLevel;

@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -492,11 +486,11 @@ QString QGoTabImageView3D::SnapshotViewXY(
  * @param iBaseName
  * @return
  */
-QString QGoTabImageView3D::SnapshotView2(
+QString QGoTabImageView3D::SnapshotViewXZ(
   const GoFigure::FileType & iType,
   const QString & iBaseName)
 {
-  return m_ImageView->SnapshotView2(iType, iBaseName);
+  return m_ImageView->SnapshotViewXZ(iType, iBaseName);
 }
 
 //--------------------------------------------------------------------------
@@ -508,11 +502,11 @@ QString QGoTabImageView3D::SnapshotView2(
  * @param iBaseName
  * @return
  */
-QString QGoTabImageView3D::SnapshotView3(
+QString QGoTabImageView3D::SnapshotViewYZ(
   const GoFigure::FileType & iType,
   const QString & iBaseName)
 {
-  return m_ImageView->SnapshotView3(iType, iBaseName);
+  return m_ImageView->SnapshotViewYZ(iType, iBaseName);
 }
 
 //--------------------------------------------------------------------------
@@ -863,28 +857,28 @@ QGoTabImageView3D::TakeSnapshot()
   // Get the current view displayed in full screen
   int FullScreenView = m_ImageView->GetFullScreenView();
 
-  // TODO enhance the name of the files
+  QString filename = QDir::toNativeSeparators( QDir::homePath() );
 
   switch ( FullScreenView )
     {
     case 1:
-      // X Slice
-      SnapshotViewXY(GoFigure::PNG, "snapshot_");
+      filename.append( "snapshot-xy-" );
+      m_ImageView->SnapshotViewXY(GoFigure::PNG, filename);
       break;
 
     case 2:
-      // Y Slice
-      SnapshotView2(GoFigure::PNG, "snapshot_");
+      filename.append( "snapshot-xz-" );
+      m_ImageView->SnapshotViewXZ(GoFigure::PNG, filename);
       break;
 
     case 3:
-      // Z Slice
-      SnapshotView3(GoFigure::PNG, "snapshot_");
+      filename.append( "snapshot-yz-" );
+      m_ImageView->SnapshotViewYZ(GoFigure::PNG, filename);
       break;
 
     default:
-      // 3D view
-      SnapshotViewXYZ(GoFigure::PNG, "snapshot_");
+      filename.append( "snapshot-xyz-" );
+      m_ImageView->SnapshotViewXYZ(GoFigure::PNG, filename);
       break;
     }
 }

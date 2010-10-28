@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Revision$  // Revision of last commit
-  Date: $Date$  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -785,7 +779,7 @@ int GoDBCollectionOfTraces::CreateNewCollection(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::list< unsigned int > GoDBCollectionOfTraces::UpdateDBDataForAddedTracesToExistingCollection(
+/*std::list< unsigned int > GoDBCollectionOfTraces::UpdateDBDataForAddedTracesToExistingCollection(
   std::list< unsigned int > iListSelectedTraces, int iNewCollectionID,
   vtkMySQLDatabase *iDatabaseConnector)
 {
@@ -865,7 +859,7 @@ std::list< unsigned int > GoDBCollectionOfTraces::UpdateDBDataForAddedTracesToEx
                               iDatabaseConnector);
 
   return ListTraceIDWithBoundingBoxUpdated;
-}
+}*/
 
 //--------------------------------------------------------------------------
 

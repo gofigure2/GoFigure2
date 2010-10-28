@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -47,6 +41,8 @@
 #include "MegaCaptureHeaderReader.h"
 
 #include "QGoIOConfigure.h"
+
+#include "vtkSmartPointer.h"
 
 class vtkImageData;
 class vtkImageAppend;
@@ -94,9 +90,9 @@ public:
 
   void Update();
 
-  vtkImageData * GetOutput(const unsigned int & iChannel);
+  vtkSmartPointer<vtkImageData> GetOutput(const unsigned int & iChannel);
 
-  vtkImageData * GetImage( const unsigned int & iChannel,
+  vtkSmartPointer<vtkImageData> GetImage( const unsigned int & iChannel,
                            const unsigned int & iT );
 
   std::map< unsigned int, vtkImageData * > GetOutputs();

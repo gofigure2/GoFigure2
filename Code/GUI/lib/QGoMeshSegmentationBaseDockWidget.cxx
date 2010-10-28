@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author: nicolasrannou $  // Author of last commit
-  Version: $Rev: 2037 $  // Revision of last commit
-  Date: $Date: 2010-08-23 16:33:20 -0400 (Mon, 23 Aug 2010) $  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -45,7 +39,7 @@
 
 //---------------------------------------------------------------------------//
 QGoMeshSegmentationBaseDockWidget::QGoMeshSegmentationBaseDockWidget(QWidget *iParent, vtkPoints *seeds,
-                                                                     std::vector< vtkImageData * > *iOriginalImage):
+                                                                     std::vector< vtkSmartPointer<vtkImageData> > *iOriginalImage):
   QDockWidget(iParent)
 {
   this->setupUi(this);
@@ -203,17 +197,37 @@ QGoMeshSegmentationBaseDockWidget::interactorBehavior(bool iSegmentationMethod)
 
 //---------------------------------------------------------------------------//
 void
-QGoMeshSegmentationBaseDockWidget::SetChannel(int iChannel)
+QGoMeshSegmentationBaseDockWidget::SetChannel(int iChannel,const QString & iText)
 {
-  m_MeshManualSegmentation->SetChannel(iChannel);
-  m_MeshSemiAutoSegmentation->SetChannel(iChannel);
+  QString input;
+
+  if ( !iText.isEmpty() )
+    {
+    input = iText;
+    }
+  else
+    {
+    input = QString("Channel %1").arg(iChannel);
+    }
+
+  m_MeshManualSegmentation->SetChannel(input);
+  m_MeshSemiAutoSegmentation->SetChannel(input);
 }
 
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
 void
+QGoMeshSegmentationBaseDockWidget::SetNumberOfChannels(int iNumberOfChannels)
+{
+  m_MeshManualSegmentation->SetNumberOfChannels(iNumberOfChannels);
+  m_MeshSemiAutoSegmentation->SetNumberOfChannels(iNumberOfChannels);
+}
+
+//---------------------------------------------------------------------------//
+/*void
 QGoMeshSegmentationBaseDockWidget::Initialize()
 {
   //m_ContourManualSegmentation->GenerateContourRepresentationProperties(true);
 }
+*/

@@ -122,11 +122,11 @@ std::vector< std::string > vtkLookupTableManager::GetAvailableLookupTables()
   return v_lutNames;
 }
 
-vtkLookupTable * vtkLookupTableManager::GetLookupTable(const int & n)
+vtkLookupTable * vtkLookupTableManager::GetLookupTable(const int & iIndex)
 {
   vtkLookupTable *lut = 0;
 
-  switch ( n )
+  switch ( iIndex )
     {
     case LUT_BW:
       lut = vtkLookupTableManager::GetBWLookupTable();

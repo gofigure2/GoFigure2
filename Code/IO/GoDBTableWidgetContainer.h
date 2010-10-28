@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author: lydiesouhait$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -140,7 +134,7 @@ protected:
     vtkMySQLDatabase *iDatabaseConnector, std::string iRestrictionName,
     std::string iRestrictionValue);
 
-  /** \todo find a way to make it ok for all traces, now only for mesh*/
+  /** \todo Lydie: find a way to make it ok for all traces, now only for mesh*/
   /** \brief fill the row container with the values calculated and stored in th
   meshAttributes*/
   void FillRowContainerForComputedValues(

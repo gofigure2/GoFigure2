@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author: nicolasrannou $  // Author of last commit
-  Version: $Rev: 2037 $  // Revision of last commit
-  Date: $Date: 2010-08-23 16:33:20 -0400 (Mon, 23 Aug 2010) $  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -41,6 +35,7 @@
 
 #include "QGoGUILibConfigure.h"
 
+#include "vtkSmartPointer.h"
 #include "vtkImageData.h"
 
 #include "QGoSeedBaseWidget.h"
@@ -139,7 +134,7 @@ QGoFilterSemiAutoBase::getWidget()
 
 //--------------------------------------------------------------------------
 // Original data without ROI
-vtkImageData *
+vtkSmartPointer< vtkImageData >
 QGoFilterSemiAutoBase::getInput()
 {
   return ( *m_OriginalImageMC )[m_Channel];
@@ -251,7 +246,7 @@ QGoFilterSemiAutoBase::setPoints(vtkPoints *iPoints)
 
 //--------------------------------------------------------------------------
 void
-QGoFilterSemiAutoBase::setOriginalImageMC(std::vector< vtkImageData * > *iOriginalImage)
+QGoFilterSemiAutoBase::setOriginalImageMC(std::vector< vtkSmartPointer<vtkImageData> > *iOriginalImage)
 {
   m_OriginalImageMC = iOriginalImage;
 }

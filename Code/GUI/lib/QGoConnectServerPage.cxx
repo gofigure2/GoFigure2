@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -137,7 +131,8 @@ bool QGoConnectServerPage::validatePage()
   std::list< std::string >::iterator i = ListGoDB.begin();
   std::string                        DBName = *i;
   this->wizard()->setField( "DBName", DBName.c_str() );
-  std::cout << "the db name to open is: " << field("DBName").toString().toStdString().c_str() << std::endl;
+  emit GofigureDatabaseExists();
+  //std::cout << "the db name to open is: " << field("DBName").toString().toStdString().c_str() << std::endl;
   return true;
 }
 

@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -48,6 +42,7 @@
 \class GoDBNameDescRow
 \brief Abstract. manages the map with the keys matching the fields for the
 DBtable containing a name and description fields.
+\ingroup DB
 */
 class QGOIO_EXPORT GoDBNameDescRow:public GoDBRow
 {
@@ -60,6 +55,7 @@ public:
   \brief Pure Virtual :check if the entity already exists in the DB, if yes,
   return the existing ID, if not, save it in the DB and return the
   ID for the new created entity
+  \param[in] iDatabaseConnector connection to the database
   \return int existing or new created ID for the entity
   */
   virtual int SaveInDB(vtkMySQLDatabase *iDatabaseConnector) = 0;
@@ -68,6 +64,7 @@ public:
   \brief Pure Virtual :check if the entity already exists in the database
   based on its own uniqueness definition, return the ID of the
   entity already existing or -1 if not yet created.
+  \param[in] iDatabaseConnector connection to the database
   \return int existing ID or -1 if the entity doesn't exists
   */
   virtual int DoesThisEntityAlreadyExists(
@@ -78,7 +75,8 @@ public:
   based on its own uniqueness definition, return the ID of the
   entity already exiting or -1 if not yet created and change the
   ioName with the name of the existing entity
-  \param[in|out] ioName modified if the entity already exists with the
+  \param[in] iDatabaseConnector connection to the database
+  \param[in,out] ioName modified if the entity already exists with the
   name of the existing entity
   \return int existing ID or -1 if the entity doesn't exists
  */
@@ -90,7 +88,7 @@ public:
   based on its own uniqueness definition, return the ID of the
   entity already exiting or -1 if not yet created and change the
   ioName with the name of the existing entity
-  \param[in|out] ioName modified if the entity already exists with the
+  \param[in,out] ioName modified if the entity already exists with the
   name of the existing entity
   \return int existing ID or -1 if the entity doesn't exists
  */
@@ -100,6 +98,7 @@ public:
   /**
   \brief check if the name already exists in the database, if yes,
   return the corresponding ID, if not -1
+  \param[in] iDatabaseConnector connection to the database
   \return int return the ID of the existing entity with the same name
   or -1 if no entity has the same name
   */
@@ -113,6 +112,7 @@ protected:
   \brief check if the GoDBNameDescRow already exists, if yes, return the ID of the
   existing one, if not, save it in the database and return the new ID
   \param[in] iDatabaseConnector connection to the database
+  \param[in] iNewEntity new entity to be saved
   \tparam iNewEntity children of NameDescRow
   */
   template< typename T >

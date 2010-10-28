@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -132,17 +126,19 @@ public:
 
   /**
    * \brief Add contour with given property into the visualization.
-   * \param[in] iId direction
    * \param[in] iDataset contour
    * \param[in] iProperty
    * \return vector of vtkActor rendered in each 2D viewer.
-   * \todo check the utility of iId.
    */
 
-  virtual std::vector< vtkActor * > AddContour(vtkPolyData *dataset,
-                                               vtkProperty *property = NULL);
+  virtual std::vector< vtkActor * > AddContour(vtkPolyData *iDataset,
+                                               vtkProperty *iProperty = NULL);
 
-  /** \brief Highlight a given contour (iProp) if iToDo is true. */
+  /**
+   * \brief Highlight contour (or not).
+   * \param[in] iActor contour
+   * \param[in] iProperty to be highlighted
+   */
   virtual void ChangeActorProperty(vtkProp3D *iActor, vtkProperty *iProperty);
 
   /**

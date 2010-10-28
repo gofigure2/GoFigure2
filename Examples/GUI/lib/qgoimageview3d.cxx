@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009
 
@@ -85,7 +79,7 @@ int main(int argc, char **argv)
   viewer->ShowSplinePlane();
   viewer->ShowCube3D();
   viewer->UpdateRenderWindows();
-  /// TODO Fix it
+  /// \todo Fix it
   //viewer->SetCamera(1);
   //viewer->SetCamera(2);
   //viewer->SetCamera(3);

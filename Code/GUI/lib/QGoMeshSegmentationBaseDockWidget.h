@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author: nicolasrannou $  // Author of last commit
-  Version: $Rev: 2037 $  // Revision of last commit
-  Date: $Date: 2010-08-23 16:33:20 -0400 (Mon, 23 Aug 2010) $  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -47,12 +41,18 @@
 #include "vtkPoints.h"
 #include "vtkImageData.h"
 #include "vtkPolyData.h"
+#include "vtkSmartPointer.h"
 
 // base widgets
-//class QGoContourManualSegmentation;
 class QGoMeshSeedSegmentation;
 
 #include "ui_SegmentationBaseDockWidget.h"
+
+/**
+ * \class QGoMeshSegmentationBaseDockWidget
+ * \ingroup QGoMesh
+ * \brief Base dockwidget for the meshes segmentation
+*/
 
 class QGoMeshSegmentationBaseDockWidget:
   public QDockWidget,
@@ -63,7 +63,7 @@ public:
   explicit QGoMeshSegmentationBaseDockWidget(
     QWidget *iParent = 0,
     vtkPoints *seeds = 0,
-    std::vector< vtkImageData * > *iOriginalImage = 0);
+    std::vector< vtkSmartPointer<vtkImageData> > *iOriginalImage = 0);
 
   ~QGoMeshSegmentationBaseDockWidget();
 
@@ -73,42 +73,74 @@ public:
    * \param[in] iChannel Channel on which want we want to apply the segmentation
    * algorithm
    */
-  void SetChannel(int iChannel);
+  void SetChannel(int iChannel, const QString & iText = QString());
 
-  bool GetReeditMode();
+  void SetNumberOfChannels(int iNumberOfChannels);
 
-  void SetReeditMode(bool iEnable);
-
-  void Initialize();
-
-/*
-protected:
-  virtual void InitializeWidgetAppearance();
-*/
 public slots:
+/**
+ * \brief Slot to know if we are in Manual, Semi Automatic ou Automatic segmentation
+ */
   void SegmentationMethod(int);
 
+  /**
+   * \brief Slot to update the interactor behavior, depending on if we are
+   * in Manual, Semi Automatic ou Automatic segmentation
+   */
   void interactorBehavior(bool);
 
 signals:
-  void ManualSegmentationActivated(bool);
+/**
+ * \brief Signal sent when we enter/leave the Manual segmentation mode
+ * \param[in] iActivated true: enter, false: leave
+ */
+  void ManualSegmentationActivated(bool iActivated);
 
-  void SemiAutoSegmentationActivated(bool);
+  /**
+   * \brief Signal sent when we enter/leave the Semi Automatic segmentation mode
+   * \param[in] iActivated true: enter, false: leave
+   */
+  void SemiAutoSegmentationActivated(bool iActivated);
 
-  void AutoSegmentationActivated(bool);
+  /**
+   * \brief Signal sent when we enter/leave the Automatic segmentation mode
+   * \param[in] iActivated true: enter, false: leave
+   */
+  void AutoSegmentationActivated(bool iActivated);
 
+  /**
+   * \brief Signal sent to go to the default interactor behavior
+   */
   void ReinitializeInteractorActivated(bool);
 
   // manual segmentation specific signals
+  /**
+   * \brief Signal sent if we want to create a structure mesh composed of
+   * multiple contours
+   */
   void CreateCorrespondingMesh(int);
 
+  /**
+   * \brief Signal sent to add a contour to an mesh created with CreateCorrespondingMesh()
+   */
   void AddContourForMeshToContours(vtkPolyData *);
 
   // semi automatic signals
+  /**
+   * \brief Signal sent before starting a "seed segmentation" to update the
+   * value of the seeds
+   */
   void UpdateSeeds();
 
+  /**
+   * \brief Signal sent after a seed segmentation to save the contour and
+   * update the visualization
+   */
   void SaveAndVisuMesh(vtkPolyData *);
 
+  /**
+   * \brief Signal sent after a seed segmentation to delete the seeds
+   */
   void ClearAllSeeds();
 
 private:
