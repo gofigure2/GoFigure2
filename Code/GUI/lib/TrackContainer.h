@@ -63,10 +63,6 @@ public:
   typedef boost::multi_index::multi_index_container<
     TrackStructure,
     boost::multi_index::indexed_by<
-      boost::multi_index::ordered_non_unique<
-        boost::multi_index::tag< TCoord >,
-        BOOST_MULTI_INDEX_MEMBER(TrackStructure, unsigned int, TCoord)
-        >,
       boost::multi_index::hashed_non_unique<
         boost::multi_index::tag< ActorXY >,
         BOOST_MULTI_INDEX_MEMBER(TrackStructure, vtkActor *, ActorXY)
@@ -101,9 +97,6 @@ public:
         >
       >
     > MultiIndexContainer;
-
-  typedef MultiIndexContainer::index< TCoord >::type::iterator
-  MultiIndexContainerTCoordIterator;
 
   typedef MultiIndexContainer::index< ActorXY >::type::iterator
   MultiIndexContainerActorXYIterator;
@@ -146,9 +139,6 @@ public:
 
   /** \brief Current Element to be inserted in the container */
   TrackStructure m_CurrentElement;
-
-  /** */
-  void SetTimePoint(const unsigned int & iT);
 
   // ----------------------------------------------------------------------
 
@@ -213,8 +203,8 @@ public:
         vtkPolyData *nodes = id_it->Nodes;
         if ( nodes )
           {
-          temp.Visible =
-            ( static_cast< unsigned int >( m_TCoord ) == id_it->TCoord );
+          temp.Visible = true;
+            //( static_cast< unsigned int >( m_TCoord ) == id_it->TCoord );
 
           std::vector< vtkActor * > actor;
 
@@ -257,18 +247,6 @@ public:
   *   \param[in] iT time point
   */
   void ShowActorsWithGivenTimePoint(const unsigned int & iT);
-
-  /**
- *  \brief Change elements (in between iBegin and iEnd ) visibility
- *  \param[in] iBegin first element
- *  \param[in] iEnd last element
- *  \param[in] iVisibility
- */
-  void
-  ChangeActorsVisibility(
-    MultiIndexContainerTCoordIterator iBegin,
-    MultiIndexContainerTCoordIterator iEnd,
-    const bool & iVisibility);
 
   /**
  * \brief Update Actors, Highlighted, Visibility (properties) of given
@@ -342,7 +320,6 @@ public:
   */
   void UpdateCurrentElementFromVisu(std::vector< vtkActor * > iActors,
                                     vtkPolyData *iNodes,
-                                    const unsigned int & iT,
                                     const bool & iHighlighted,
                                     const bool & iVisible);
 
@@ -710,7 +687,6 @@ signals:
   void TraceVisibilityChanged(unsigned int, Qt::CheckState);
 
 protected:
-  unsigned int m_TCoord;
   vtkProperty *m_HighlightedProperty;
 private:
   Q_DISABLE_COPY(TrackContainer);

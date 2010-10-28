@@ -71,25 +71,19 @@ struct QGOIO_EXPORT TrackStructure {
   vtkActor *ActorXYZ;
 
   /**
-  * In the case of contours, Nodes represent the control points.
-  *   In the case of meshes, Nodes represent the triangular mesh.
+  * Polydata representing the track (a line)
   */
   vtkPolyData *Nodes;
 
-  //unsigned int CollectionID;
-
-  /** Time point of the contour / mesh */
-  unsigned int TCoord;
-
-  /** Is the contour / mesh Highlighted in the Visualization ? */
+  /** Is the track Highlighted in the Visualization ? */
   bool Highlighted;
 
-  /** Is the contour / mesh Visible (appears on the screen)
+  /** Is the track Visible (appears on the screen)
   * in the Visualization ?
   */
   bool Visible;
 
-  /** color of the contour / mesh. \note each component is in [0,1] */
+  /** color of the track. \note each component is in [0,1] */
   double rgba[4];
 
   /** Default Constructor */
@@ -99,7 +93,6 @@ struct QGOIO_EXPORT TrackStructure {
   TrackStructure(const unsigned int & iTraceID,
                        std::vector< vtkActor * > iActors,
                        vtkPolyData *iNodes,
-                       const unsigned int & iT,
                        const bool & iHighlighted,
                        const bool & iVisible,
                        const double & r,
@@ -111,7 +104,6 @@ struct QGOIO_EXPORT TrackStructure {
   TrackStructure(const unsigned int & iTraceID,
                        std::vector< vtkActor * > iActors,
                        vtkPolyData *iNodes,
-                       const unsigned int & iT,
                        const bool & iHighlighted,
                        const bool & iVisible,
                        double iRgba[4]);
@@ -123,7 +115,6 @@ struct QGOIO_EXPORT TrackStructure {
                        vtkActor *iActorXZ,
                        vtkActor *iActorXYZ,
                        vtkPolyData *iNodes,
-                       const unsigned int & iT,
                        const bool & iHighlighted,
                        const bool & iVisible,
                        const double & r,
@@ -147,8 +138,6 @@ struct QGOIO_EXPORT TrackStructure {
     os << "ActorYZ " << c.ActorYZ << std::endl;
     os << "ActorXYZ " << c.ActorXYZ << std::endl;
     os << "Nodes " << c.Nodes << std::endl;
-    //os << "CollectionID " << c.CollectionID << std::endl;
-    os << "TCoord " << c.TCoord << std::endl;
     os << "Highlighted " << c.Highlighted << std::endl;
     os << "Visible " << c.Visible << std::endl;
     os << "RGBA [" << c.rgba[0] << ", " << c.rgba[1] << ", " << c.rgba[2]
@@ -165,7 +154,6 @@ struct ActorXZ {};
 struct ActorYZ {};
 struct ActorXYZ {};
 struct Nodes {};
-struct TCoord {};
 struct Highlighted {};
 struct Visible {};
 #endif

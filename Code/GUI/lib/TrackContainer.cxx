@@ -41,7 +41,6 @@ TrackContainer::
 TrackContainer(QObject *iParent,QGoImageView3D *iView):QObject(iParent),
   m_ImageView(iView),
   m_CurrentElement(),
-  m_TCoord( std::numeric_limits< unsigned int >::max() ),
   m_HighlightedProperty(NULL)
 {}
 //-------------------------------------------------------------------------
@@ -78,17 +77,6 @@ TrackContainer::
     ++it;
     }
 }
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-TrackContainer::
-SetTimePoint(const unsigned int & iT)
-{
-  this->m_TCoord = iT;
-}
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -116,7 +104,6 @@ void
 TrackContainer::
 UpdateCurrentElementFromVisu(std::vector< vtkActor * > iActors,
                                                         vtkPolyData *iNodes,
-                                                        const unsigned int & iT,
                                                         const bool & iHighlighted,
                                                         const bool & iVisible)
 {
@@ -133,7 +120,6 @@ UpdateCurrentElementFromVisu(std::vector< vtkActor * > iActors,
     this->m_CurrentElement.ActorXYZ = iActors[3];
     }
   this->m_CurrentElement.Nodes = iNodes;
-  this->m_CurrentElement.TCoord = iT;
   this->m_CurrentElement.Highlighted = iHighlighted;
   this->m_CurrentElement.Visible = iVisible;
 
@@ -188,13 +174,7 @@ void
 TrackContainer::
 RemoveActorsWithGivenTimePoint(const unsigned int & iT)
 {
-  MultiIndexContainerTCoordIterator it0, it1;
-
-  boost::tuples::tie(it0, it1) = m_Container.get< TCoord >().equal_range(iT);
-
-  ChangeActorsVisibility< TCoord >(it0, it1, false);
-
-  m_ImageView->UpdateRenderWindows();
+/// TODO FILL IT
 }
 
 //-------------------------------------------------------------------------
@@ -204,18 +184,7 @@ void
 TrackContainer::
 ShowActorsWithGivenTimePoint(const unsigned int & iT)
 {
-  if ( iT != m_TCoord )
-    {
-    MultiIndexContainerTCoordIterator it, it0, it1;
-
-    boost::tuples::tie(it0, it1) = m_Container.get< TCoord >().equal_range(iT);
-
-    ChangeActorsVisibility< TCoord >(m_Container.get< TCoord >().begin(), it0, false);
-    ChangeActorsVisibility< TCoord >(it0, it1, true);
-    ChangeActorsVisibility< TCoord >(it1, m_Container.get< TCoord >().end(), false);
-
-    m_TCoord = iT;
-    }
+  /// TODO FILL IT
 }
 
 //-------------------------------------------------------------------------
@@ -225,13 +194,7 @@ void
 TrackContainer::
 AddActorsWithGivenTimePoint(const unsigned int & iT)
 {
-  MultiIndexContainerTCoordIterator it0, it1;
-
-  boost::tuples::tie(it0, it1) = m_Container.get< TCoord >().equal_range(iT);
-
-  ChangeActorsVisibility< TCoord >(it0, it1, true);
-
-  m_ImageView->UpdateRenderWindows();
+  /// TODO FILL IT
 }
 
 //-------------------------------------------------------------------------
@@ -350,33 +313,31 @@ UpdateElementVisibilityWithGivenTraceID(const unsigned int & iId)
 
   if ( it != m_Container.get< TraceID >().end() )
     {
-    if ( it->TCoord != m_TCoord )
-      {
-      if ( it->Visible )
-        {
-        f = &QGoImageView3D::RemoveActor;
-        }
-      else
-        {
-        f = &QGoImageView3D::AddActor;
-        }
 
-      if ( it->ActorXY )
-        {
-        ( m_ImageView->*f )(0, it->ActorXY);
-        }
-      if ( it->ActorXZ )
-        {
-        ( m_ImageView->*f )(1, it->ActorXZ);
-        }
-      if ( it->ActorYZ )
-        {
-        ( m_ImageView->*f )(2, it->ActorYZ);
-        }
-      if ( it->ActorXYZ )
-        {
-        ( m_ImageView->*f )(3, it->ActorXYZ);
-        }
+    if ( it->Visible )
+      {
+      f = &QGoImageView3D::RemoveActor;
+      }
+    else
+      {
+      f = &QGoImageView3D::AddActor;
+      }
+
+    if ( it->ActorXY )
+      {
+      ( m_ImageView->*f )(0, it->ActorXY);
+      }
+    if ( it->ActorXZ )
+      {
+      ( m_ImageView->*f )(1, it->ActorXZ);
+      }
+    if ( it->ActorYZ )
+      {
+      ( m_ImageView->*f )(2, it->ActorYZ);
+      }
+    if ( it->ActorXYZ )
+      {
+      ( m_ImageView->*f )(3, it->ActorXYZ);
       }
 
     if ( it->ActorXY )
