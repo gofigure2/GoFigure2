@@ -38,6 +38,8 @@
 #include "vtkPolyLine.h"
 #include "vtkCellArray.h"
 #include "vtkPolyData.h"
+#include "vtkIntArray.h"
+#include "vtkFieldData.h"
 
 #include <map>
 #include <sstream>
@@ -71,6 +73,9 @@ GetPolyData(const std::string & iString)
   std::map<int, double*> orderedPoints;
   double* pt;
   int    time;
+  vtkSmartPointer<vtkIntArray> temporalArray = vtkSmartPointer<vtkIntArray>::New();
+  temporalArray->SetNumberOfComponents(1);
+  temporalArray->SetName("TemporalInformation");
 
   // fill a map so the points will be ordered automatically
   for ( vtkIdType i = 0; i < N; i++ )
@@ -87,6 +92,7 @@ GetPolyData(const std::string & iString)
 
   while(it != orderedPoints.end())
     {
+    temporalArray->InsertNextValue( it->first );
     points->InsertNextPoint(it->second);
     ++it;
     }
@@ -122,6 +128,9 @@ GetPolyData(const std::string & iString)
 
   //add the lines to the dataset
   polyData->SetLines(cells);
+
+  //add the temporal information
+  polyData->GetFieldData()->AddArray(temporalArray);
 
   return polyData;
 }
