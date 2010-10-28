@@ -41,51 +41,88 @@ class vtkPolyData;
 #include <ostream>
 #include <vector>
 
-// map to store the meshes and the related time point
-#include <map>
-
 #include "QGoIOConfigure.h"
+/**
+\defgroup Track Track
+\defgroup Trace Trace
+\defgroup Structure Structure
+*/
 
+/**
+ * \struct TrackStructure
+ * \brief  Structure which represent a track, and used for
+ * interaction between Visualization and TableWidget
+ * \ingroup Track Trace Structure
+ */
 struct QGOIO_EXPORT TrackStructure {
+  /** TraceID */
   unsigned int TraceID;
+
+  /** Actor in the XY View */
   vtkActor *ActorXY;
+
+  /** Actor in the XZ View */
   vtkActor *ActorXZ;
+
+  /** Actor in the YZ View */
   vtkActor *ActorYZ;
+
+  /** Actor in the XYZ View */
   vtkActor *ActorXYZ;
 
-  /// \todo initialize map in all the constructors
-  std::map<int, vtkPolyData*> Nodes;
+  /**
+  * In the case of contours, Nodes represent the control points.
+  *   In the case of meshes, Nodes represent the triangular mesh.
+  */
+  vtkPolyData *Nodes;
 
   //unsigned int CollectionID;
+
+  /** Time point of the contour / mesh */
   unsigned int TCoord;
+
+  /** Is the contour / mesh Highlighted in the Visualization ? */
   bool Highlighted;
+
+  /** Is the contour / mesh Visible (appears on the screen)
+  * in the Visualization ?
+  */
   bool Visible;
+
+  /** color of the contour / mesh. \note each component is in [0,1] */
   double rgba[4];
 
+  /** Default Constructor */
   TrackStructure();
 
+  /** Constructor */
   TrackStructure(const unsigned int & iTraceID,
                        std::vector< vtkActor * > iActors,
-                       std::map<int, vtkPolyData*> iNodes,
+                       vtkPolyData *iNodes,
+                       const unsigned int & iT,
                        const bool & iHighlighted,
                        const bool & iVisible,
                        const double & r,
                        const double & g,
                        const double & b,
                        const double & alpha);
-/*
+
+  /** Constructor */
   TrackStructure(const unsigned int & iTraceID,
                        std::vector< vtkActor * > iActors,
+                       vtkPolyData *iNodes,
                        const unsigned int & iT,
                        const bool & iHighlighted,
                        const bool & iVisible,
                        double iRgba[4]);
 
+  /** Constructor */
   TrackStructure(const unsigned int & iTraceID,
                        vtkActor *iActorXY,
                        vtkActor *iActorYZ,
                        vtkActor *iActorXZ,
                        vtkActor *iActorXYZ,
+                       vtkPolyData *iNodes,
                        const unsigned int & iT,
                        const bool & iHighlighted,
                        const bool & iVisible,
@@ -93,11 +130,14 @@ struct QGOIO_EXPORT TrackStructure {
                        const double & g,
                        const double & b,
                        const double & alpha);
-*/
 
+  /** Constructor by copy */
   TrackStructure(const TrackStructure & iE);
+
+  /** Destructor */
   ~TrackStructure();
 
+  /** Printing one element. std::cout << element << std::endl; */
   friend std::ostream & operator<<
     (std::ostream & os, const TrackStructure & c)
   {
@@ -106,6 +146,7 @@ struct QGOIO_EXPORT TrackStructure {
     os << "ActorXZ " << c.ActorXZ << std::endl;
     os << "ActorYZ " << c.ActorYZ << std::endl;
     os << "ActorXYZ " << c.ActorXYZ << std::endl;
+    os << "Nodes " << c.Nodes << std::endl;
     //os << "CollectionID " << c.CollectionID << std::endl;
     os << "TCoord " << c.TCoord << std::endl;
     os << "Highlighted " << c.Highlighted << std::endl;
@@ -124,6 +165,7 @@ struct ActorXZ {};
 struct ActorYZ {};
 struct ActorXYZ {};
 struct Nodes {};
+struct TCoord {};
 struct Highlighted {};
 struct Visible {};
 #endif

@@ -44,9 +44,18 @@ class vtkPolyData;
 #include "QGoIOConfigure.h"
 
 /**
+\defgroup Contour Contour
+\defgroup Mesh Mesh
+\defgroup Trace Trace
+\defgroup Structure Structure
+*/
+
+
+/**
  * \struct ContourMeshStructure
  * \brief  Structure which represent a contour or a mesh, and used for
  * interaction between Visualization and TableWidget
+ * \ingroup Contour Mesh Trace Structure
  *
  * \sa ContourMeshContainer
  */
