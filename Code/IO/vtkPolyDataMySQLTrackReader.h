@@ -43,6 +43,7 @@
 #include "QGoIOConfigure.h"
 
 class vtkPolyData;
+
 /**
 \defgroup MySqlReader MySqlReader
 \defgroup Tracks Tracks
@@ -67,6 +68,7 @@ public:
 
   /*
    * \brief Generate a "Track Polydata" from a string
+   * \param[in] iString base string to generate the polydata
    * \return pointer to the generated "Track Polydata"
    */
   vtkSmartPointer<vtkPolyData> GetPolyData(const std::string & iString);
