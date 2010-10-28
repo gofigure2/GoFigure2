@@ -38,7 +38,10 @@
 
 #include "GoFigureFileInfoMultiIndexContainerHelper.h"
 #include "itkMegaCaptureReader.h"
+
 #include "ContourMeshContainer.h"
+#include "TrackContainer.h"
+
 #include "QGoPrintDatabase.h"
 
 #include "GoFigureMeshAttributes.h"
@@ -312,6 +315,8 @@ public slots:
   \todo to be renamed */
   void  SaveAndVisuMesh(vtkPolyData *iView);
 
+  void  SaveAndVisuTrack(vtkPolyData *iView, unsigned int iTCoord);
+
   void ReEditContour(const unsigned int & iId);
 
   void HighlightXY();
@@ -374,7 +379,7 @@ protected:
 
   ContourMeshContainer *m_ContourContainer;
   ContourMeshContainer *m_MeshContainer;
-  ContourMeshContainer *m_TrackContainer;
+  TrackContainer       *m_TrackContainer;
 
   bool m_TraceWidgetRequiered;
 
@@ -393,9 +398,9 @@ protected:
 
   void SaveContour(vtkPolyData *contour, vtkPolyData *contour_nodes);
 
-  std::vector< vtkActor * > VisualizeContour(vtkPolyData *contour);
-
+  std::vector< vtkActor * > VisualizeContour(vtkPolyData *iContour);
   std::vector< vtkActor * > VisualizeMesh(vtkPolyData *iMesh);
+  std::vector< vtkActor * > VisualizeTrack(vtkPolyData *iTrack);
 
   //int VisualizeContour(const int& iContourID,
   //    const unsigned int& iTCoord, vtkPolyData* contour,

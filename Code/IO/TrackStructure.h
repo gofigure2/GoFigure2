@@ -42,6 +42,11 @@ class vtkPolyData;
 #include <vector>
 
 #include "QGoIOConfigure.h"
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#include "StructureHelper.h"
+#endif
+
 /**
 \defgroup Track Track
 \defgroup Trace Trace
@@ -71,7 +76,7 @@ struct QGOIO_EXPORT TrackStructure {
   vtkActor *ActorXYZ;
 
   /**
-  * Polydata representing the track (a line)
+  * Polydata representing the track (a line). It also contains the temporal information.
   */
   vtkPolyData *Nodes;
 
@@ -146,16 +151,5 @@ struct QGOIO_EXPORT TrackStructure {
     return os;
   }
 };
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-struct TraceID {};
-struct ActorXY {};
-struct ActorXZ {};
-struct ActorYZ {};
-struct ActorXYZ {};
-struct Nodes {};
-struct Highlighted {};
-struct Visible {};
-#endif
 
 #endif

@@ -184,7 +184,14 @@ void
 TrackContainer::
 ShowActorsWithGivenTimePoint(const unsigned int & iT)
 {
-  /// TODO FILL IT
+  /*
+  MultiIndexContainerTCoordIterator it0, it1;
+
+  boost::tuples::tie(it0, it1) = m_Container.get< TCoord >().equal_range(iT);
+
+  ChangeActorsVisibility< TCoord >(it0, it1, false);
+*/
+  m_ImageView->UpdateRenderWindows();
 }
 
 //-------------------------------------------------------------------------

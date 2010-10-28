@@ -180,8 +180,7 @@ public:
     \param[in] iContour
   */
   template< class TContainer >
-  void UpdateVisualizationForGivenIDs(TContainer iList,
-                                      const bool & iContour)
+  void UpdateVisualizationForGivenIDs(TContainer iList)
   {
     typename TContainer::iterator it = iList.begin();
 
@@ -203,8 +202,7 @@ public:
         vtkPolyData *nodes = id_it->Nodes;
         if ( nodes )
           {
-          temp.Visible = true;
-            //( static_cast< unsigned int >( m_TCoord ) == id_it->TCoord );
+          temp.Visible = id_it->Visible;
 
           std::vector< vtkActor * > actor;
 

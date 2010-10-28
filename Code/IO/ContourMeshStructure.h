@@ -43,6 +43,10 @@ class vtkPolyData;
 
 #include "QGoIOConfigure.h"
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#include "StructureHelper.h"
+#endif
+
 /**
 \defgroup Contour Contour
 \defgroup Mesh Mesh
@@ -178,17 +182,4 @@ struct QGOIO_EXPORT ContourMeshStructure {
     return os;
   }
 };
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-struct TraceID {};
-struct ActorXY {};
-struct ActorXZ {};
-struct ActorYZ {};
-struct ActorXYZ {};
-struct Nodes {};
-struct TCoord {};
-struct Highlighted {};
-struct Visible {};
-#endif
-
 #endif
