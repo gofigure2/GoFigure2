@@ -39,6 +39,10 @@
 #include "vtkObjectFactory.h"
 #include "vtkMath.h"
 #include "vtkIdList.h"
+
+#include "vtkIntArray.h"
+#include "vtkFieldData.h"
+
 #include "vtkSmartPointer.h"
 
 vtkCxxRevisionMacro(vtkPolyDataMySQLTrackWriter, "$Revision$");
@@ -61,40 +65,26 @@ std::string
 vtkPolyDataMySQLTrackWriter::
 GetMySQLText(vtkPolyData *iPolyData)
 {
-  /*
   vtkIdType N = iPolyData->GetNumberOfPoints();
-  double    pt[3];
+  double*    pt = NULL;
+  int        time = 0;
 
   std::stringstream oMyString;
 
   oMyString << N << " ";
 
-  for ( vtkIdType i = 0; i < N; i++ )
-    {
-    iPolyData->GetPoint(i, pt);
-    oMyString << pt[0] << " " << pt[1] << " " << pt[2] << " ";
-    }
-
-  vtkSmartPointer< vtkIdList >
-  cell_points = vtkSmartPointer< vtkIdList >::New();
-
-  vtkIdType NbOfPointsInCell;
-  N = iPolyData->GetNumberOfCells();
-  oMyString << N << " ";
+  vtkSmartPointer<vtkPoints> points = iPolyData->GetPoints();
+  // Might create problems because of the safedowncast
+  vtkSmartPointer<vtkIntArray> temporalArray =
+      vtkIntArray::SafeDownCast(iPolyData->GetFieldData()->GetArray("TemporalInformation"));
 
   for ( vtkIdType i = 0; i < N; i++ )
     {
-    iPolyData->GetCellPoints(i, cell_points);
-    NbOfPointsInCell = cell_points->GetNumberOfIds();
-    oMyString << NbOfPointsInCell << " ";
-
-    for ( vtkIdType k = 0; k < NbOfPointsInCell; k++ )
-      {
-      oMyString << cell_points->GetId(k) << " ";
-      }
+    pt = points->GetPoint(i);
+    time = temporalArray->GetValue(i);
+    oMyString << pt[0] << " " << pt[1] << " " << pt[2] << " " << time << " ";
     }
-    oMyString.str();
-*/
-  return NULL;
+
+  return oMyString.str();
 }
 //--------------------------------------------------------------------------

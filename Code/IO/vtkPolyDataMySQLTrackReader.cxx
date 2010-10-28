@@ -71,8 +71,8 @@ GetPolyData(const std::string & iString)
   str >> N;
 
   std::map<int, double*> orderedPoints;
-  double* pt;
-  int    time;
+  double* pt = NULL;
+  int    time = 0;
   vtkSmartPointer<vtkIntArray> temporalArray = vtkSmartPointer<vtkIntArray>::New();
   temporalArray->SetNumberOfComponents(1);
   temporalArray->SetName("TemporalInformation");
