@@ -32,8 +32,8 @@
 
 =========================================================================*/
 
-#ifndef __vtkPolyDataMySQLTextWriter_h
-#define __vtkPolyDataMySQLTextWriter_h
+#ifndef __vtkPolyDataMySQLTrackWriter_h
+#define __vtkPolyDataMySQLTrackWriter_h
 
 #include <string>
 #include <sstream>
@@ -46,55 +46,39 @@
 
 /**
 \defgroup MySQLWriter MySQLWriter
-\defgroup Contours Contours
-\defgroup Meshes Meshes
+\defgroup Tracks Tracks
 \defgroup Trace Trace
 */
 
 /**
-\class vtkPolyDataMySQLTextWriter
-\brief Reads a string and convert it into a contour/mesh polydata
-\ingroup MySQLWriter Contours Meshes Trace
+\class vtkPolyDataMySQLTrackWriter
+\brief Reads a string and convert it into a track polydata
+\ingroup MySQLWriter Tracks Trace
 */
 
-class QGOIO_EXPORT vtkPolyDataMySQLTextWriter:public vtkObject
+class QGOIO_EXPORT vtkPolyDataMySQLTrackWriter:public vtkObject
 {
 public:
   /*
    * \brief Public constructor
    */
-  static vtkPolyDataMySQLTextWriter * New();
+  static vtkPolyDataMySQLTrackWriter * New();
 
-  vtkTypeRevisionMacro(vtkPolyDataMySQLTextWriter, vtkObject);
+  vtkTypeRevisionMacro(vtkPolyDataMySQLTrackWriter, vtkObject);
 
   /*
-   * \brief Generate a string from a contour/mesh plolydata
+   * \brief Generate a string from a track polydata
    * \param[in] iPolyData Polydata to generate the string
-   * \return string containing the contour/mesh polydata information
+   * \return string containing the track polydata information
    */
   std::string GetMySQLText(vtkPolyData *iPolyData);
 
-  /*
-   * \brief Get a contour or a mesh
-   * \return true: generate a contour, false: generate a mesh
-   */
-  bool GetIsContour() const { return IsContour; }
-
 protected:
-  vtkPolyDataMySQLTextWriter();
-  ~vtkPolyDataMySQLTextWriter();
-
-  vtkPolyData *m_PolyData;
-  bool IsContour;
-
-  bool IsPlanarContour();
-
-  std::string ContourProcessing();
-
-  std::string MeshProcessing();
+  vtkPolyDataMySQLTrackWriter();
+  ~vtkPolyDataMySQLTrackWriter();
 
 private:
-  vtkPolyDataMySQLTextWriter(const vtkPolyDataMySQLTextWriter &);
-  void operator=(const vtkPolyDataMySQLTextWriter &);
+  vtkPolyDataMySQLTrackWriter(const vtkPolyDataMySQLTrackWriter &);
+  void operator=(const vtkPolyDataMySQLTrackWriter &);
 };
 #endif

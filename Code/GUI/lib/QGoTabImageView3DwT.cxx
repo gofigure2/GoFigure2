@@ -62,7 +62,6 @@
 #include "vtkContourWidget.h"
 #include "vtkProperty.h"
 #include "vtkPolyData.h"
-#include "vtkPolyDataMySQLTextReader.h"
 #include "vtkImageActorPointPlacer.h"
 #include "SelectQueryDatabaseHelper.h"
 #include "ConvertToStringHelper.h"

@@ -73,23 +73,13 @@
 #include "itkMegaCaptureImport.h"
 
 // vtk includes
-// #include "vtkImageAppendComponents.h"
-// #include "vtkMarchingCubes.h"
 #include "vtkLSMReader.h"
-#include "vtkPolyDataReader.h"
-#include "vtkPolyDataMySQLTextReader.h"
-#include "vtkPolyDataMySQLTextWriter.h"
 #include "vtkPLYReader.h"
-#include "vtkPolyData.h"
-#include "vtkProperty.h"
 
 #include "vtkImageData.h"
 #include "vtkImageReader2Factory.h"
 #include "vtkImageReader2.h"
-#include "vtkPolyDataWriter.h"
 #include "vtkSmartPointer.h"
-#include "vtkCell.h"
-#include "vtkPoints.h"
 
 #include "QGoTabManager.h"
 #include "QGoWizardDB.h"

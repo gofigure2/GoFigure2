@@ -32,69 +32,59 @@
 
 =========================================================================*/
 
-#ifndef __vtkPolyDataMySQLTextWriter_h
-#define __vtkPolyDataMySQLTextWriter_h
+#include "vtkPolyDataMySQLTrackWriter.h"
 
-#include <string>
 #include <sstream>
 
-#include "vtkPolyData.h"
+#include "vtkObjectFactory.h"
 #include "vtkMath.h"
 #include "vtkIdList.h"
 
-#include "QGoIOConfigure.h"
+#include "vtkIntArray.h"
+#include "vtkFieldData.h"
 
-/**
-\defgroup MySQLWriter MySQLWriter
-\defgroup Contours Contours
-\defgroup Meshes Meshes
-\defgroup Trace Trace
-*/
+#include "vtkSmartPointer.h"
 
-/**
-\class vtkPolyDataMySQLTextWriter
-\brief Reads a string and convert it into a contour/mesh polydata
-\ingroup MySQLWriter Contours Meshes Trace
-*/
+vtkCxxRevisionMacro(vtkPolyDataMySQLTrackWriter, "$Revision$");
+vtkStandardNewMacro(vtkPolyDataMySQLTrackWriter);
 
-class QGOIO_EXPORT vtkPolyDataMySQLTextWriter:public vtkObject
+//--------------------------------------------------------------------------
+vtkPolyDataMySQLTrackWriter::
+vtkPolyDataMySQLTrackWriter()
+{}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+vtkPolyDataMySQLTrackWriter::
+~vtkPolyDataMySQLTrackWriter()
+{}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::string
+vtkPolyDataMySQLTrackWriter::
+GetMySQLText(vtkPolyData *iPolyData)
 {
-public:
-  /*
-   * \brief Public constructor
-   */
-  static vtkPolyDataMySQLTextWriter * New();
+  vtkIdType N = iPolyData->GetNumberOfPoints();
+  double*    pt = NULL;
+  int        time = 0;
 
-  vtkTypeRevisionMacro(vtkPolyDataMySQLTextWriter, vtkObject);
+  std::stringstream oMyString;
 
-  /*
-   * \brief Generate a string from a contour/mesh plolydata
-   * \param[in] iPolyData Polydata to generate the string
-   * \return string containing the contour/mesh polydata information
-   */
-  std::string GetMySQLText(vtkPolyData *iPolyData);
+  oMyString << N << " ";
 
-  /*
-   * \brief Get a contour or a mesh
-   * \return true: generate a contour, false: generate a mesh
-   */
-  bool GetIsContour() const { return IsContour; }
+  vtkSmartPointer<vtkPoints> points = iPolyData->GetPoints();
+  // Might create problems because of the safedowncast
+  vtkSmartPointer<vtkIntArray> temporalArray =
+      vtkIntArray::SafeDownCast(iPolyData->GetFieldData()->GetArray("TemporalInformation"));
 
-protected:
-  vtkPolyDataMySQLTextWriter();
-  ~vtkPolyDataMySQLTextWriter();
+  for ( vtkIdType i = 0; i < N; i++ )
+    {
+    pt = points->GetPoint(i);
+    time = temporalArray->GetValue(i);
+    oMyString << pt[0] << " " << pt[1] << " " << pt[2] << " " << time << " ";
+    }
 
-  vtkPolyData *m_PolyData;
-  bool IsContour;
-
-  bool IsPlanarContour();
-
-  std::string ContourProcessing();
-
-  std::string MeshProcessing();
-
-private:
-  vtkPolyDataMySQLTextWriter(const vtkPolyDataMySQLTextWriter &);
-  void operator=(const vtkPolyDataMySQLTextWriter &);
-};
-#endif
+  return oMyString.str();
+}
+//--------------------------------------------------------------------------
