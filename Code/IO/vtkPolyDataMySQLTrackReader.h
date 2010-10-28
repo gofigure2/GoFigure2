@@ -46,14 +46,14 @@ class vtkPolyData;
 
 /**
 \defgroup MySQLReader MySQLReader
-\defgroup Tracks Tracks
+\defgroup Track Track
 \defgroup Trace Trace
 */
 
 /**
 \class vtkPolyDataMySQLTrackReader
 \brief Reads a string and convert it into a track polydata
-\ingroup MySQLReader Tracks Trace
+\ingroup MySQLReader Track Trace
 */
 
 class QGOIO_EXPORT vtkPolyDataMySQLTrackReader:public vtkObject

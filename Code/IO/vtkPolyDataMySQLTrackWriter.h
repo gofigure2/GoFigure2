@@ -46,14 +46,14 @@
 
 /**
 \defgroup MySQLWriter MySQLWriter
-\defgroup Tracks Tracks
+\defgroup Track Track
 \defgroup Trace Trace
 */
 
 /**
 \class vtkPolyDataMySQLTrackWriter
 \brief Reads a string and convert it into a track polydata
-\ingroup MySQLWriter Tracks Trace
+\ingroup MySQLWriter Track Trace
 */
 
 class QGOIO_EXPORT vtkPolyDataMySQLTrackWriter:public vtkObject

@@ -44,15 +44,15 @@ class vtkPolyData;
 
 /**
 \defgroup MySQLReader MySQLReader
-\defgroup Contours Contours
-\defgroup Meshes Meshes
+\defgroup Contour Contour
+\defgroup Mesh Mesh
 \defgroup Trace Trace
 */
 
 /**
 \class vtkPolyDataMySQLTrackReader
 \brief Reads a string and convert it into a contour/mesh polydata
-\ingroup MySQLReader Contours Meshes Trace
+\ingroup MySQLReader Contour Mesh Trace
 */
 
 class QGOIO_EXPORT vtkPolyDataMySQLTextReader:public vtkObject

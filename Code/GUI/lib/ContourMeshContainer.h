@@ -299,7 +299,7 @@ public:
  * \param[in] iIt element to update
  * \param[in] iActors its actors
  * \param[in] iHighlighted
- * \param[in] iVisibility if false remove the element from the scene, else
+ * \param[in] iVisible if false remove the element from the scene, else
  * add it
  */
   template< class TIndex >

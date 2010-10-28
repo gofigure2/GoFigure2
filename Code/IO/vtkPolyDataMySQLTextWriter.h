@@ -46,15 +46,15 @@
 
 /**
 \defgroup MySQLWriter MySQLWriter
-\defgroup Contours Contours
-\defgroup Meshes Meshes
+\defgroup Contour Contour
+\defgroup Mesh Mesh
 \defgroup Trace Trace
 */
 
 /**
 \class vtkPolyDataMySQLTextWriter
 \brief Reads a string and convert it into a contour/mesh polydata
-\ingroup MySQLWriter Contours Meshes Trace
+\ingroup MySQLWriter Contour Mesh Trace
 */
 
 class QGOIO_EXPORT vtkPolyDataMySQLTextWriter:public vtkObject
