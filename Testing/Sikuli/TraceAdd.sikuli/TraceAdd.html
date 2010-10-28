@@ -1,0 +1,142 @@
+
+<html>
+   <head>
+      <style type="text/css">
+         .sikuli-code {
+            font-size: 20px;
+            font-family: "Osaka-mono", Monospace;
+            line-height: 1.5em;
+            display:table-cell;
+            white-space: pre-wrap;       /* css-3 */
+            white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+            white-space: -pre-wrap;      /* Opera 4-6 */
+            white-space: -o-pre-wrap;    /* Opera 7 */
+            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+            width: 99%;   /* remove horizontal scroll-bar when viewing in IE7 */
+         }
+         .sikuli-code img {
+            vertical-align: middle;
+            margin: 2px;
+            border: 1px solid #ccc;
+            padding: 2px;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            -moz-box-shadow: 1px 1px 1px gray;
+            -webkit-box-shadow: 1px 1px 2px gray;
+         }
+         .kw {
+            color: blue;
+         }
+         .skw {
+            color: rgb(63, 127, 127);
+         }
+
+         .str {
+            color: rgb(128, 0, 0);
+         }
+
+         .dig {
+            color: rgb(128, 64, 0);
+         }
+
+         .cmt {
+            color: rgb(200, 0, 200);
+         }
+
+         h2 {
+            display: inline;
+            font-weight: normal;
+         }  
+         
+         .info {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+            display: none;
+         }
+
+         a {
+            color: #9D2900;
+         }
+
+         body {
+            font-family: "Trebuchet MS", Arial, Sans-Serif;
+         }
+
+      </style>
+   </head>
+<body>
+<div class="info">
+<h2>Sikuli-IDE.sikuli</h2> <a href="Sikuli-IDE.zip">(Download this script)</a>
+</div>
+<pre class="sikuli-code">
+setBundlePath(<span class="str">"/home/es1076/SVNROOT/evan/sikuli/TraceAdd.sikuli"</span>)
+
+start = time.time()
+
+<span class="kw">def</span> AddNew(Region):
+<span class="cmt">#       """ TraceWidget for Color, CellType, SubCellType. """
+</span>        <span class="skw">find</span>(Region)
+        a = getLastMatch()
+        <span class="kw">print</span> a, <span class="str">"this is a"</span>
+        <span class="skw">click</span>(a.below(<span class="dig">20</span>))
+
+        <span class="skw">click</span>(<img src="1287656896225.png" />)
+
+<span class="cmt">#x = find("Cell Contour")
+</span><span class="cmt">#print x
+</span>TraceObject = (<img src="1285599876548.png" />,<img src="1287655664410.png" />,<img src="1287655672392.png" />)
+Action = (<span class="str">"Add New"</span>, <span class="str">"Cancel"</span>, <span class="str">"No Name"</span>, <span class="str">"Existing Name"</span>)
+<span class="cmt">#test 1: Add a new...
+</span><span class="kw">for</span> a <span class="kw">in</span> Action:
+                <span class="kw">for</span> i <span class="kw">in</span> TraceObject:
+                        AddNew(i)
+                        <span class="kw">if</span> i == (<img src="1285599876548.png" />) :
+                                <span class="skw">click</span>(<img src="1288125548622.png" />)
+                                <span class="skw">click</span>(<img src="1285598278725.png" />)
+                        <span class="kw">if</span> a == <span class="str">"Add New"</span>:
+                                <span class="skw">wait</span>(<span class="dig">1</span>)
+                                <span class="skw">type</span>(<span class="str">"Widget Test"</span>)
+                                <span class="skw">click</span>(<img src="1285598344252.png" />)
+                                <span class="cmt">#assert new name comes up on widget with correct color
+</span>                                <span class="cmt">#assert new name and color comes up in mysql
+</span>                        <span class="kw">if</span> a == <span class="str">"Cancel"</span>:
+                                <span class="skw">click</span>(<img src="1287654735420.png" />)
+                                <span class="cmt">#assert previous state is found
+</span>                        <span class="kw">if</span> a == <span class="str">"No Name"</span>:
+                                <span class="skw">click</span>(<img src="1285598344252.png" />)
+                                <span class="skw">wait</span>(<span class="dig">1</span>)
+                                <span class="cmt">#cannot use assertExist in sikuli editor
+</span>                                <span class="skw">assertExist</span>(<img src="1287741083818.png" />)
+                                <span class="skw">click</span>(<img src="1285598344252.png" />)
+                                <span class="skw">click</span>(<img src="1288125769063.png" />)
+                        <span class="kw">if</span> a == <span class="str">"Existing Name"</span>:
+                                <span class="skw">type</span>(<span class="str">"Widget Test"</span>)
+                                <span class="skw">click</span>(<img src="1285598344252.png" />)
+                                <span class="cmt">#cannot use assertExist in sikuli editor
+</span>                                <span class="skw">assertExist</span>(<img src="1287741123199.png" />)
+                                <span class="skw">click</span>(<img src="1285598344252.png" />)
+                                <span class="skw">click</span>(<img src="1288125769063.png" />)
+<span class="cmt">#call time elapse function
+</span>
+<span class="cmt">#test 2: Add a new... and click cancel
+</span>
+<span class="cmt">#for i in tests:
+</span><span class="cmt">#       AddNew(i)
+</span><span class="cmt">#               if i == ("1285599876548.png") :
+</span><span class="cmt">#                       click("1287653361098.png")
+</span><span class="cmt">#                       click("1285598278725.png")
+</span>
+<span class="cmt">#       click("1287654735420.png")
+</span>        <span class="cmt">#assertExists( previous state )
+</span><span class="cmt">#test 3: Add a new... with no name entered
+</span><span class="cmt">#click("1285598344252.png")
+</span>
+<span class="cmt">#test 4: Add a new... with same name entered
+</span>
+end = time.time()
+elapsedSec = end - start
+<span class="kw">print</span> elapsedSec, <span class="str">"sec"</span>
+</pre>
+</body>
+</html>
