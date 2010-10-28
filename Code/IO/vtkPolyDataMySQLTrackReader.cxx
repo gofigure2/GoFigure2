@@ -38,6 +38,7 @@
 #include "vtkCellArray.h"
 #include "vtkPolyData.h"
 
+#include <map>
 #include <sstream>
 
 vtkCxxRevisionMacro(vtkPolyDataMySQLTrackReader, "$Revision$");
@@ -45,7 +46,7 @@ vtkStandardNewMacro(vtkPolyDataMySQLTrackReader);
 
 //--------------------------------------------------------------------------
 vtkPolyDataMySQLTrackReader::
-vtkPolyDataMySQLTrackReader():m_Text("")
+vtkPolyDataMySQLTrackReader()
 {}
 //--------------------------------------------------------------------------
 
@@ -60,60 +61,71 @@ vtkSmartPointer<vtkPolyData>
 vtkPolyDataMySQLTrackReader::
 GetPolyData(const std::string & iString)
 {
-  /*
-  m_Text = iString;
-  std::stringstream str(m_Text);
+  std::stringstream str(iString);
 
+  // Might not be useful
   vtkIdType N;
-
   str >> N;
 
-  vtkPolyData *oMesh = NULL;
-    oMesh = vtkPolyData::New();
-    vtkSmartPointer< vtkPoints > points =
-      vtkSmartPointer< vtkPoints >::New();
+  points->SetNumberOfPoints(N);
 
-    points->SetNumberOfPoints(N);
+  //map here...
+  std::map<int, double*> orderedPoints;
+  double* pt;
+  int    time;
 
-    double pt[3];
 
-    for ( vtkIdType i = 0; i < N; i++ )
-      {
-      str >> pt[0] >> pt[1] >> pt[2];
-      points->SetPoint(i, pt);
-      }
-    oMesh->SetPoints(points);
+  // fill a map so the points will be ordered automatically
+  for ( vtkIdType i = 0; i < N; i++ )
+    {
+    pt = new double[3];
+    str >> pt[0] >> pt[1] >> pt[2];
+    str >> time;
+    orderedPoints.insert(time, pt);
+    }
 
-    vtkSmartPointer< vtkCellArray > cells =
-      vtkSmartPointer< vtkCellArray >::New();
-    str >> N;
+  // read map and fill points
+  vtkSmartPointer< vtkPoints > points = vtkSmartPointer< vtkPoints >::New();
+  std::map<int, double*>::iterator it = orderedPoints.begin();
 
-    vtkSmartPointer< vtkIdList > cell_points =
-      vtkSmartPointer< vtkIdList >::New();
-    vtkIdType NbOfPointsInCell;
-    vtkIdType id;
+  while(it != orderedPoints.end())
+    {
+    points->InsertNextPoint(it->second);
+    ++it;
+    }
 
-    for ( vtkIdType i = 0; i < N; i++ )
-      {
-      str >> NbOfPointsInCell;
-      cell_points->Reset();
-      for ( vtkIdType k = 0; k < NbOfPointsInCell; k++ )
-        {
-        str >> id;
-        cell_points->InsertNextId(id);
-        }
-      cells->InsertNextCell(cell_points);
-      }
-    oMesh->SetPolys(cells);
-*/
+  // Clean the map
+  for (it = orderedPoints.begin(); it != orderedPoints.end(); ++p)
+    {
+    delete[] it->second;
+    }
+  orderedPoints.clear();
 
-  // Re order the points
 
-  // explain how strings are ordered
+  // Create a line from points
+  vtkSmartPointer<vtkPolyLine> polyLine =
+      vtkSmartPointer<vtkPolyLine>::New();
+  polyLine->GetPointIds()->SetNumberOfIds( points->GetNumberOfPoints() );
+  for(unsigned int i = 0; i < points->GetNumberOfPoints(); i++)
+    {
+    polyLine->GetPointIds()->SetId(i,i);
+    }
 
-  // Create the polydata (line)
-  // No nodes (nodes will be meshes)
-  // return it
-  return NULL;
+  //Create a cell array to store the lines in and add the lines to it
+  vtkSmartPointer<vtkCellArray> cells =
+      vtkSmartPointer<vtkCellArray>::New();
+  cells->InsertNextCell(polyLine);
+
+  //Create a polydata to store everything in
+  vtkSmartPointer<vtkPolyData> polyData =
+      vtkSmartPointer<vtkPolyData>::New();
+
+  //add the points to the dataset
+  polyData->SetPoints(points);
+
+  //add the lines to the dataset
+  polyData->SetLines(cells);
+
+  return polyData;
 }
 //--------------------------------------------------------------------------

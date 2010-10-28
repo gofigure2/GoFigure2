@@ -67,7 +67,6 @@ public:
 
   /*
    * \brief Generate a "Track Polydata" from a string
-   * \param[in] iString input string which contains the points to generate the track
    * \return pointer to the generated "Track Polydata"
    */
   vtkSmartPointer<vtkPolyData> GetPolyData(const std::string & iString);
@@ -75,8 +74,6 @@ public:
 protected:
   vtkPolyDataMySQLTrackReader();
   ~vtkPolyDataMySQLTrackReader();
-
-  std::string m_Text;
 
 private:
   vtkPolyDataMySQLTrackReader(const vtkPolyDataMySQLTrackReader &);
