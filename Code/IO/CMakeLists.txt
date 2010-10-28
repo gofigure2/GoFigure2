@@ -49,6 +49,7 @@ SET( QGOIO_SRC
   vtkPolyDataMySQLTextReader.cxx
   vtkPolyDataMySQLTrackReader.cxx
   vtkPolyDataMySQLTextWriter.cxx
+  vtkPolyDataMySQLTrackWriter.cxx
   LSMToMegaCapture.cxx
   MeshTextFileImport.cxx
   TrackTextFileImport.cxx

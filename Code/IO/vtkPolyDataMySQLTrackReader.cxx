@@ -35,6 +35,7 @@
 #include "vtkPolyDataMySQLTrackReader.h"
 
 #include "vtkObjectFactory.h"
+#include "vtkPolyLine.h"
 #include "vtkCellArray.h"
 #include "vtkPolyData.h"
 
@@ -67,13 +68,9 @@ GetPolyData(const std::string & iString)
   vtkIdType N;
   str >> N;
 
-  points->SetNumberOfPoints(N);
-
-  //map here...
   std::map<int, double*> orderedPoints;
   double* pt;
   int    time;
-
 
   // fill a map so the points will be ordered automatically
   for ( vtkIdType i = 0; i < N; i++ )
@@ -81,7 +78,7 @@ GetPolyData(const std::string & iString)
     pt = new double[3];
     str >> pt[0] >> pt[1] >> pt[2];
     str >> time;
-    orderedPoints.insert(time, pt);
+    orderedPoints.insert( std::pair<int,double*>(time, pt) );
     }
 
   // read map and fill points
@@ -95,7 +92,7 @@ GetPolyData(const std::string & iString)
     }
 
   // Clean the map
-  for (it = orderedPoints.begin(); it != orderedPoints.end(); ++p)
+  for (it = orderedPoints.begin(); it != orderedPoints.end(); ++it)
     {
     delete[] it->second;
     }
