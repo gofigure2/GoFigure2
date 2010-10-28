@@ -71,32 +71,6 @@ int GoDBBookmarkRow::DoesThisNameAlreadyExists(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/*bool GoDBBookmarkRow::DoesThisBookmarkNameAlreadyExistsInTheDB(
-    vtkMySQLDatabase* DatabaseConnector)
-{
-  int ID = FindOneID(DatabaseConnector, "bookmark", "BookmarkID",
-                     "ImagingSessionID", this->GetMapValue("ImagingSessionID"), "Name",
-                     this->GetMapValue("Name"));
-  if (ID == -1)
-    {
-    return false;
-    }
-  return true;
-}*/
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/*int GoDBBookmarkRow::DoesThisBookmarkAlreadyExists(
-  vtkMySQLDatabase* DatabaseConnector)
-{
-  int ID = FindOneID(DatabaseConnector, "bookmark", "BookmarkID",
-                     "ImagingSessionID", this->GetMapValue("ImagingSessionID"), "CoordID",
-                     this->GetMapValue("CoordID"));
-  return ID;
-}*/
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 int GoDBBookmarkRow::DoesThisEntityAlreadyExists(
   vtkMySQLDatabase *iDatabaseConnector)
 {
@@ -110,50 +84,7 @@ int GoDBBookmarkRow::DoesThisEntityAlreadyExists(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/*int GoDBBookmarkRow::DoesThisBookmarkAlreadyExists(
-  vtkMySQLDatabase* DatabaseConnector, std::string& ioName)
-{
-  int ID = FindOneID(DatabaseConnector, "bookmark", "BookmarkID",
-                     "ImagingSessionID", this->GetMapValue("ImagingSessionID"), "CoordID",
-                     this->GetMapValue("CoordID"));
-  if (ID == -1)
-    {
-    return ID;
-    }
-  ioName = ReturnOnlyOneValue(DatabaseConnector, "bookmark", "Name",
-                              "BookmarkID", ConvertToString<int>(ID));
-  return ID;
-}*/
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/*int GoDBBookmarkRow::DoesThisEntityAlreadyExists(
-    vtkMySQLDatabase* iDatabaseConnector, std::string& ioName)
-{
-  // int ID = FindOneID(iDatabaseConnector, "bookmark", "BookmarkID",
-  //  "ImagingSessionID", this->GetMapValue("ImagingSessionID"), "CoordID",
-  //  this->GetMapValue("CoordID"));
-  int ID = this->DoesThisEntityAlreadyExists(iDatabaseConnector);
-  if (ID == -1)
-    {
-    return ID;
-    }
-  ioName = ReturnOnlyOneValue(iDatabaseConnector, "bookmark", "Name",
-                              "BookmarkID", ConvertToString<int>(ID));
-  return ID;
-}*/
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 int GoDBBookmarkRow::SaveInDB(vtkMySQLDatabase *iDatabaseConnector)
 {
-  //int BookmarkID = this->DoesThisBookmarkAlreadyExists(DatabaseConnector);
-  /* int BookmarkID = this->DoesThisEntityAlreadyExists(DatabaseConnector);
-   if (BookmarkID == -1)
-     {
-     BookmarkID = AddOnlyOneNewObjectInTable<GoDBBookmarkRow>(DatabaseConnector,
-                                                              "bookmark", *this, "BookmarkID");
-     }
-   return BookmarkID;*/
   return this->SaveInDBTemplate< GoDBBookmarkRow >(iDatabaseConnector, *this);
 }

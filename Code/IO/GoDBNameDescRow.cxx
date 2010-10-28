@@ -67,7 +67,7 @@ int GoDBNameDescRow::DoesThisNameAlreadyExists(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int GoDBNameDescRow::DoesThisEntityAlreadyExists2(
+int GoDBNameDescRow::DoesThisEntityAlreadyExistsAndReturnName(
   vtkMySQLDatabase *iDatabaseConnector, std::string & ioName)
 {
   int ID = this->DoesThisEntityAlreadyExists(iDatabaseConnector);
