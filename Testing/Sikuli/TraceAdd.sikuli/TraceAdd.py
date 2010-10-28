@@ -1,5 +1,8 @@
-
-setBundlePath("/home/es1076/SVNROOT/evan/sikuli/TraceAdd.sikuli")
+import os
+address = os.getcwd()
+address = address+"/TraceAdd.sikuli"
+print address
+setBundlePath(address)
 
 start = time.time()
 
@@ -10,7 +13,7 @@ def AddNew(Region):
 	print a, "this is a"
 	click(a.below(20))
 
-	click("1287656896225.png")
+	click("add_a_new.png")
 
 #x = find("Cell Contour")
 #print x
@@ -21,19 +24,19 @@ for a in Action:
 		for i in TraceObject:
 			AddNew(i)
 			if i == ("1285599876548.png") :
-				click("1288125548622.png")
-				click("1285598278725.png")
+				click("colortable.png")
+				click("ok.png")
 			if a == "Add New":
 				wait(1)
 				type("Widget Test")
-				click("1285598344252.png")
+				click("ok.png")
 				#assert new name comes up on widget with correct color
 				#assert new name and color comes up in mysql
 			if a == "Cancel":
-				click("1287654735420.png")
+				click("cancel.png")
 				#assert previous state is found
 			if a == "No Name":
-				click("1285598344252.png")
+				click("ok.png")
 				wait(1)
 				#cannot use assertExist in sikuli editor
 				assertExist("1287741083818.png")
