@@ -50,6 +50,7 @@ ADD_EXECUTABLE( ContourToMeshFilterTest
 TARGET_LINK_LIBRARIES( ContourToMeshFilterTest
   PoissonReconstruction
   vtkHybrid
+  vtkRenderingAddOn2
   ITKCommon
   )
 

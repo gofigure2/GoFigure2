@@ -70,6 +70,10 @@ protected:
   ~ContourToMeshFilter();
 
   vtkPolyData *m_Output;
+
+  vtkIdType m_ThresholdNumberOfPoints;
+  int m_TargetNumberOfPoints;
+
 };
 }
 #include "ContourToMeshFilter.txx"
