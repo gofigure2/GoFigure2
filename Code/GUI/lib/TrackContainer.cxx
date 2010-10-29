@@ -676,3 +676,24 @@ AddPointToCurrentElement(double* iPoint)
   // MOVE TO SMARTPOINTER AND SHALLOW COPY....
   this->m_CurrentElement.Nodes->DeepCopy(polyData.GetPointer());
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+vtkPolyData*
+TrackContainer::
+GetCurrentElementNodes()
+{
+  return this->m_CurrentElement.Nodes;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateCurrentElementActorsFromVisu(std::vector< vtkActor * > iActors)
+{
+  this->m_CurrentElement.ActorXY = iActors[0];
+  this->m_CurrentElement.ActorXZ = iActors[1];
+  this->m_CurrentElement.ActorYZ = iActors[2];
+  this->m_CurrentElement.ActorXYZ = iActors[3];
+}

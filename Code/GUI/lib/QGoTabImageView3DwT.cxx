@@ -2786,13 +2786,18 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord)
     }
   point[3] = iTCoord;
 
+  // SAY TO THE DB TO DELETE PREVIOUS CONTAINER IF SAME ID
+  // SAY TO CREATE A CURRENT ONE ANYWAY
+
   // Update the track polydata with the new center
   m_TrackContainer->AddPointToCurrentElement( point );
+  vtkPolyData* track = m_TrackContainer->GetCurrentElementNodes();
+  // TO BE MODIFIED (color will be wrong and not optimized)
+  std::vector< vtkActor * > trackActors =  VisualizeMesh(track);
+  m_TrackContainer->UpdateCurrentElementActorsFromVisu(trackActors);
   m_TrackContainer->InsertCurrentElement();
-  // GIVE THE NEW POINTS TO THE DB
-  // get polydata from the container
-  // convert it into string with the reader
-  // STH LIKE THAT?
+
+  // UPDATE THE DATABASE WITH THE CURRENT ELEMENT
   //this->m_DataBaseTables->UpdateTackPoints();
 
   delete point;
