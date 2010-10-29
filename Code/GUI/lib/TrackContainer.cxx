@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -43,8 +37,8 @@
 #include "vtkActor.h"
 
 //-------------------------------------------------------------------------
-TrackContainer::TrackContainer(QObject *iParent,
-                               QGoImageView3D *iView):QObject(iParent),
+TrackContainer::
+TrackContainer(QObject *iParent,QGoImageView3D *iView):QObject(iParent),
   m_ImageView(iView),
   m_CurrentElement(),
   m_HighlightedProperty(NULL)
@@ -59,13 +53,10 @@ TrackContainer::
 
   while ( it != m_Container.end() )
     {
-/*
-    std::map<int, vtkPolyData*>::iterator mapIt;
-    for ( mapIt=it->Nodes.begin() ; mapIt != it->Nodes.end(); mapIt++ )
+    if ( it->Nodes )
       {
-    it->Nodes.erase(mapIt);
+      it->Nodes->Delete();
       }
-*/
     if ( it->ActorXY )
       {
       it->ActorXY->Delete();
@@ -86,12 +77,12 @@ TrackContainer::
     ++it;
     }
 }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
-TrackContainer::Print()
+TrackContainer::
+Print()
 {
   this->Print( m_Container.begin(), m_Container.end() );
 }
@@ -100,7 +91,8 @@ TrackContainer::Print()
 
 //-------------------------------------------------------------------------
 void
-TrackContainer::InsertCurrentElement()
+TrackContainer::
+InsertCurrentElement()
 {
   m_Container.insert(m_CurrentElement);
 }
@@ -108,9 +100,10 @@ TrackContainer::InsertCurrentElement()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void TrackContainer::UpdateCurrentElementFromVisu(std::vector< vtkActor * > iActors,
+void
+TrackContainer::
+UpdateCurrentElementFromVisu(std::vector< vtkActor * > iActors,
                                                         vtkPolyData *iNodes,
-                                                        const unsigned int & iT,
                                                         const bool & iHighlighted,
                                                         const bool & iVisible)
 {
@@ -126,14 +119,7 @@ void TrackContainer::UpdateCurrentElementFromVisu(std::vector< vtkActor * > iAct
     this->m_CurrentElement.ActorYZ = iActors[2];
     this->m_CurrentElement.ActorXYZ = iActors[3];
     }
-
-  // add a polydata in the map
-  // unique time autorized yet
-  //std::map<int, vtkPolyData*>::iterator it;
-  //it = this->m_CurrentElement.Nodes.begin();
-
-  //this->m_CurrentElement.Nodes[iT]=iNodes;//.insert(it, std::pair<int,vtkPolyData*>(iT,iNodes));
-
+  this->m_CurrentElement.Nodes = iNodes;
   this->m_CurrentElement.Highlighted = iHighlighted;
   this->m_CurrentElement.Visible = iVisible;
 
@@ -149,8 +135,10 @@ void TrackContainer::UpdateCurrentElementFromVisu(std::vector< vtkActor * > iAct
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void TrackContainer::UpdateCurrentElementFromDB(unsigned int iTraceID,
-                                                      double irgba[4])
+void
+TrackContainer::
+UpdateCurrentElementFromDB(unsigned int iTraceID,
+                           double irgba[4])
 {
   this->m_CurrentElement.TraceID = iTraceID;
   this->m_CurrentElement.rgba[0] = irgba[0];
@@ -163,7 +151,8 @@ void TrackContainer::UpdateCurrentElementFromDB(unsigned int iTraceID,
 
 //-------------------------------------------------------------------------
 void
-TrackContainer::Insert(const TrackStructure & iE)
+TrackContainer::
+Insert(const TrackStructure & iE)
 {
   m_Container.insert(iE);
 }
@@ -172,7 +161,8 @@ TrackContainer::Insert(const TrackStructure & iE)
 
 //-------------------------------------------------------------------------
 void
-TrackContainer::ResetCurrentElement()
+TrackContainer::
+ResetCurrentElement()
 {
   m_CurrentElement = TrackStructure();
 }
@@ -181,38 +171,37 @@ TrackContainer::ResetCurrentElement()
 
 //-------------------------------------------------------------------------
 void
-TrackContainer::ShowActorsWithGivenTimePoint(const unsigned int & iT)
+TrackContainer::
+RemoveActorsWithGivenTimePoint(const unsigned int & iT)
 {
-  /*
-  if ( iT != m_TCoordMinMin )
-    {
-    MultiIndexContainerTCoordMinMinIterator it, it0, it1;
-
-    boost::tuples::tie(it0, it1) = m_Container.get< TCoordMinMin >().equal_range(iT);
-
-    ChangeActorsVisibility< TCoordMinMin >(m_Container.get< TCoordMinMin >().begin(), it0, false);
-    ChangeActorsVisibility< TCoordMinMin >(it0, it1, true);
-    ChangeActorsVisibility< TCoordMinMin >(it1, m_Container.get< TCoordMinMin >().end(), false);
-
-    m_TCoordMin = iT;
-    }*/
+/// TODO FILL IT
 }
 
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
-TrackContainer::AddActorsWithGivenTimePoint(const unsigned int & iT)
+TrackContainer::
+ShowActorsWithGivenTimePoint(const unsigned int & iT)
 {
   /*
-  MultiIndexContainerTCoordMinIterator it0, it1;
+  MultiIndexContainerTCoordIterator it0, it1;
 
-  boost::tuples::tie(it0, it1) = m_Container.get< TCoordMin >().equal_range(iT);
+  boost::tuples::tie(it0, it1) = m_Container.get< TCoord >().equal_range(iT);
 
-  ChangeActorsVisibility< TCoordMin >(it0, it1, true);
-
+  ChangeActorsVisibility< TCoord >(it0, it1, false);
+*/
   m_ImageView->UpdateRenderWindows();
-  */
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+AddActorsWithGivenTimePoint(const unsigned int & iT)
+{
+  /// TODO FILL IT
 }
 
 //-------------------------------------------------------------------------
@@ -259,7 +248,8 @@ TrackContainer::RemoveElementFromVisualizationWithGivenTraceID(
 
 //-------------------------------------------------------------------------
 bool
-TrackContainer::UpdateElementHighlightingWithGivenTraceID(const unsigned int & iId)
+TrackContainer::
+UpdateElementHighlightingWithGivenTraceID(const unsigned int & iId)
 {
   MultiIndexContainerTraceIDIterator
     it = m_Container.get< TraceID >().find(iId);
@@ -319,7 +309,8 @@ TrackContainer::UpdateElementHighlightingWithGivenTraceID(const unsigned int & i
 
 //-------------------------------------------------------------------------
 bool
-TrackContainer::UpdateElementVisibilityWithGivenTraceID(const unsigned int & iId)
+TrackContainer::
+UpdateElementVisibilityWithGivenTraceID(const unsigned int & iId)
 {
   MultiIndexContainerTraceIDIterator
     it = m_Container.get< TraceID >().find(iId);
@@ -329,6 +320,7 @@ TrackContainer::UpdateElementVisibilityWithGivenTraceID(const unsigned int & iId
 
   if ( it != m_Container.get< TraceID >().end() )
     {
+
     if ( it->Visible )
       {
       f = &QGoImageView3D::RemoveActor;
@@ -388,7 +380,8 @@ TrackContainer::UpdateElementVisibilityWithGivenTraceID(const unsigned int & iId
 
 //-------------------------------------------------------------------------
 bool
-TrackContainer::DeleteElement(const unsigned int & iId)
+TrackContainer::
+DeleteElement(const unsigned int & iId)
 {
   MultiIndexContainerTraceIDIterator
     it = m_Container.get< TraceID >().find(iId);
@@ -416,12 +409,10 @@ TrackContainer::DeleteElement(const unsigned int & iId)
       it->ActorXYZ->Delete();
       }
 
-    /*
     if ( it->Nodes )
       {
       it->Nodes->Delete();
       }
-      */
 
     m_Container.get< TraceID >().erase(it);
 
@@ -436,7 +427,8 @@ TrackContainer::DeleteElement(const unsigned int & iId)
 
 //-------------------------------------------------------------------------
 std::list< unsigned int >
-TrackContainer::DeleteAllHighlightedElements()
+TrackContainer::
+DeleteAllHighlightedElements()
 {
   MultiIndexContainerHighlightedIterator it0, it1, it_t;
 
@@ -469,12 +461,10 @@ TrackContainer::DeleteAllHighlightedElements()
       this->m_ImageView->RemoveActor(3, it0->ActorXYZ);
       it0->ActorXYZ->Delete();
       }
-    /*
     if ( it0->Nodes )
       {
       it0->Nodes->Delete();
       }
-      */
 
     it_t = it0;
     ++it0;
@@ -491,7 +481,8 @@ TrackContainer::DeleteAllHighlightedElements()
 
 //-------------------------------------------------------------------------
 std::list< unsigned int >
-TrackContainer::GetHighlightedElementsTraceID()
+TrackContainer::
+GetHighlightedElementsTraceID()
 {
   MultiIndexContainerHighlightedIterator it0, it1;
 
@@ -509,7 +500,8 @@ TrackContainer::GetHighlightedElementsTraceID()
 
 //-------------------------------------------------------------------------
 std::list< unsigned int >
-TrackContainer::UpdateAllHighlightedElementsWithGivenColor(QColor iColor)
+TrackContainer::
+UpdateAllHighlightedElementsWithGivenColor(QColor iColor)
 {
   MultiIndexContainerHighlightedIterator it0, it1;
 
@@ -545,7 +537,8 @@ TrackContainer::UpdateAllHighlightedElementsWithGivenColor(QColor iColor)
 
 //-------------------------------------------------------------------------
 void
-TrackContainer::SetHighlightedProperty(vtkProperty *iProperty)
+TrackContainer::
+SetHighlightedProperty(vtkProperty *iProperty)
 {
   this->m_HighlightedProperty = iProperty;
 
@@ -583,7 +576,8 @@ TrackContainer::SetHighlightedProperty(vtkProperty *iProperty)
 
 //-------------------------------------------------------------------------
 vtkProperty *
-TrackContainer::GetHighlightedProperty()
+TrackContainer::
+GetHighlightedProperty()
 {
   return m_HighlightedProperty;
 }
