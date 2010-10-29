@@ -595,11 +595,21 @@ AddPointToCurrentElement(double* iPoint)
 {
   if(!this->m_CurrentElement.Nodes)
     {
-    std::cout<< "Polydata pointer is NULL... Create a polydata" << std::endl;
-    std::cout<< "File: " << __FILE__ << std::endl;
-    std::cout<< "Line: " << __LINE__ << std::endl;
-
+    // Create a new polydata
+    // no actors to be removed then
     this->m_CurrentElement.Nodes = vtkPolyData::New();
+    }
+  else
+    {
+    // remove and delete the actors from th visu
+    this->m_ImageView->RemoveActor(0, this->m_CurrentElement.ActorXY);
+    this->m_CurrentElement.ActorXY->Delete();
+    this->m_ImageView->RemoveActor(1, this->m_CurrentElement.ActorXZ);
+    this->m_CurrentElement.ActorXZ->Delete();
+    this->m_ImageView->RemoveActor(2, this->m_CurrentElement.ActorYZ);
+    this->m_CurrentElement.ActorYZ->Delete();
+    this->m_ImageView->RemoveActor(3, this->m_CurrentElement.ActorXYZ);
+    this->m_CurrentElement.ActorXYZ->Delete();
     }
 
   vtkIdType N = this->m_CurrentElement.Nodes->GetNumberOfPoints();
