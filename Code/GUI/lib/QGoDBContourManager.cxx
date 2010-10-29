@@ -82,11 +82,10 @@ void QGoDBContourManager::SetCollectionsTraceNames()
 
 //-------------------------------------------------------------------------
 void QGoDBContourManager::DisplayInfoAndLoadVisuContainerForAllContours(
-  vtkMySQLDatabase *iDatabaseConnector) //,unsigned int iTimePoint)
+  vtkMySQLDatabase *iDatabaseConnector)
 {
-  //this->DisplayInfoForAllTraces(iDatabaseConnector);
   this->DisplayInfoAndLoadVisuContainerWithAllTraces< 
-    GoDBTWContainerForContourMesh >(this->m_TWContainer, iDatabaseConnector); //,iTimePoint);
+    GoDBTWContainerForContourMesh >(this->m_TWContainer, iDatabaseConnector);
 }
 
 //-------------------------------------------------------------------------
