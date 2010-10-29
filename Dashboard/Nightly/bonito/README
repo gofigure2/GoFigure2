@@ -2,4 +2,5 @@
 # These scripts can be taken as examples to set-up nightly builds on linux
 # Static / Shared
 # Debug / Release
-
+#
+# See ../../Continuous/bonito/README how to launch it

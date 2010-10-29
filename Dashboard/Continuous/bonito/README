@@ -1,4 +1,11 @@
 # Here are the scripts to be launched for bonito.megason-lab.hms
 # These scripts can be taken as examples to set-up continuous builds on 
 # linux
-
+#
+# You can create a bash file that will be launched by cron every day,
+# as follows:
+#
+# #!/bin/bash
+# export DISPLAY=:0.0 ;
+# cd /home/dv12/Dashboard/GoFigure2/Nightly;
+# /usr/local/bin/ctest -S gf2_develop_static_debug.cmake -V > develop_static_debug.log 2>&1;
