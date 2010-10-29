@@ -2366,39 +2366,6 @@ VisualizeTrack(vtkPolyData *iMesh)
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::
-SaveAndVisuTrack(vtkPolyData *iView, unsigned int iTCoord)
-{
-  /*
-  if ( !m_DataBaseTables->IsDatabaseUsed() )
-    {
-    std::cerr << "Problem with DB" << std::endl;
-    return;
-    }
-
-  if ( !iView )
-    {
-    std::cerr << "Input Mesh is NULL" << std::endl;
-    return;
-    }
-
-  SaveMesh(iView);
-
-  std::vector< vtkActor * > actors =  VisualizeMesh(iView);
-
-  // update container since a new mesh is created
-  m_MeshContainer->UpdateCurrentElementFromVisu(actors,
-                                                iView,
-                                                iTCoord,
-                                                false,  // highlighted
-                                                true);  // visible
-  m_MeshContainer->InsertCurrentElement();
-  */
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
 QGoTabImageView3DwT::ValidateContour()
 {
   bool re_edit = m_ContourSegmentationDockWidget->GetReeditMode();
@@ -2807,6 +2774,28 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord)
                                                 false,  // highlighted
                                                 true);  // visible
   m_MeshContainer->InsertCurrentElement();
+
+  // UPDATE THE TRACKS IN THE CONTAINER
+
+  // get the center of the mesh
+  double * point = new double[4];
+  std::vector< int > boundingBox = GetBoundingBox(iView);
+  for(int i = 0; i<3; ++i)
+    {
+    point[i] = (boundingBox[2*i] + boundingBox[2*i+1])/2;
+    }
+  point[3] = iTCoord;
+
+  // Update the track polydata with the new center
+  m_TrackContainer->AddPointToCurrentElement( point );
+  m_TrackContainer->InsertCurrentElement();
+  // GIVE THE NEW POINTS TO THE DB
+  // get polydata from the container
+  // convert it into string with the reader
+  // STH LIKE THAT?
+  //this->m_DataBaseTables->UpdateTackPoints();
+
+  delete point;
 }
 //-------------------------------------------------------------------------
 

@@ -677,6 +677,15 @@ public:
   */
   vtkProperty * GetHighlightedProperty();
 
+  /**
+    \brief Add a point in the current track.
+    If there is already a point existing at the same time point, we don't do anything.
+    We could add a variable to either override or not the point who already
+    exists at a current time point.
+    \param[in] iPoint new point to be added in the track
+  */
+  void AddPointToCurrentElement(double* iPoint);
+
 signals:
   /** \brief When one contour / mesh has been picked (highlighted) from the visualization */
   void TracePicked(unsigned int, Qt::CheckState);

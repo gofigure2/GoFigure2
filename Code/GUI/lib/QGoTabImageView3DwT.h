@@ -315,8 +315,6 @@ public slots:
   \todo to be renamed */
   void  SaveAndVisuMesh(vtkPolyData *iView);
 
-  void  SaveAndVisuTrack(vtkPolyData *iView, unsigned int iTCoord);
-
   void ReEditContour(const unsigned int & iId);
 
   void HighlightXY();
