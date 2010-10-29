@@ -198,6 +198,13 @@ public:
     VisualizeMesh< TIndex >(iIt);
   }
 
+  template< class TIndex >
+  void AddTrackFromNodes(
+    typename TrackContainer::MultiIndexContainer::index< TIndex >::type::iterator iIt)
+  {
+    VisualizeTrack< TIndex >(iIt);
+  }
+
   //-------------------------------------------------------------------------
   template< class TIndex >
   void
@@ -474,6 +481,39 @@ protected:
       mesh_property->Delete();
 
       m_MeshContainer->UpdateVisualizationForGivenElement< TIndex >(iIt,
+                                                                    mesh_actor,
+                                                                    false,
+                                                                    visibility);
+      }
+  }
+
+  template< class TIndex >
+  void
+  VisualizeTrack(
+    typename TrackContainer::MultiIndexContainer::index< TIndex >::type::iterator iIt)
+  {
+    const double *iRgba = iIt->rgba;
+    vtkPolyData * iMesh = iIt->Nodes;
+
+    if ( iMesh )
+      {
+      bool visibility = true;
+
+      vtkProperty *mesh_property = vtkProperty::New();
+      mesh_property->SetColor(iRgba[0], iRgba[1], iRgba[2]);
+      mesh_property->SetOpacity(iRgba[3]);
+
+      /// \todo fix bug, shouldn't be required
+      std::vector< vtkActor * > mesh_actor;
+      mesh_actor.resize(4);
+      if(iMesh->GetNumberOfPoints() > 1)
+        {
+        mesh_actor = this->AddContour(iMesh, mesh_property);
+        }
+
+      mesh_property->Delete();
+
+      m_TrackContainer->UpdateVisualizationForGivenElement< TIndex >(iIt,
                                                                     mesh_actor,
                                                                     false,
                                                                     visibility);
