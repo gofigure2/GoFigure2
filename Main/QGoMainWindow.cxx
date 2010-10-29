@@ -86,6 +86,10 @@
 
 #include <list>
 
+//////////
+#include "VisualizePolydataHelper.h"
+//////////
+
 //--------------------------------------------------------------------------
 QGoMainWindow::QGoMainWindow(QWidget *iParent, Qt::WindowFlags iFlags):
   QMainWindow(iParent, iFlags)
@@ -501,20 +505,22 @@ QGoMainWindow::LoadTracksFromDatabase(const int & iT, const std::string & iTrace
   if ( w3t )
     {
     TrackContainer *temp = w3t->GetTrackContainer();
+    temp->Print();
 
     if ( temp )
       {
       // let's iterate on the container with increasing TraceID
       TrackContainer::MultiIndexContainer::index< TraceID >::type::iterator
-        contourmesh_list_it = temp->m_Container.get< TraceID >().begin();
+        track_list_it = temp->m_Container.get< TraceID >().begin();
+
+      //ShowPolyData(track_list_it->Nodes);
 
       // we don't need here to save this contour in the database,
       // since they have just been extracted from it!
-      while ( contourmesh_list_it != temp->m_Container.get< TraceID >().end() )
+      while ( track_list_it != temp->m_Container.get< TraceID >().end() )
         {
-        w3t->AddTrackFromNodes< TraceID >(contourmesh_list_it);// Name of the trace to add
-
-        ++contourmesh_list_it;
+        w3t->AddTrackFromNodes< TraceID >(track_list_it);// Name of the trace to add
+        ++track_list_it;
         }
       }
     }

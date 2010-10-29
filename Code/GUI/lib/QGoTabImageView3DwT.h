@@ -506,10 +506,10 @@ protected:
       /// \todo fix bug, shouldn't be required
       std::vector< vtkActor * > mesh_actor;
       mesh_actor.resize(4);
-      if(iMesh->GetNumberOfPoints() > 1)
-        {
+      //if(iMesh->GetNumberOfPoints() > 1)
+      //  {
         mesh_actor = this->AddContour(iMesh, mesh_property);
-        }
+      //  }
 
       mesh_property->Delete();
 

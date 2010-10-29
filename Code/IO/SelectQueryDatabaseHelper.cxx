@@ -2371,7 +2371,8 @@ void GetTracesInfoFromDBAndModifyContainer(
             convert_reader->SetIsContour(false);
             }
           }
-        vtkPolyData *output = convert_reader->GetPolyData(polydata_string);
+        vtkPolyData *output = vtkPolyData::New();
+        output->DeepCopy(convert_reader->GetPolyData(polydata_string));
         temp.Nodes = output;
         }
       temp.TCoord       = query->DataValue(3).ToUnsignedInt();
@@ -2454,7 +2455,8 @@ void GetTracesInfoFromDBAndModifyContainer(
       std::string polydata_string = query->DataValue(2).ToString();
       if ( !polydata_string.empty() )
         {
-        vtkPolyData *output = convert_reader->GetPolyData(polydata_string);
+        vtkPolyData *output = vtkPolyData::New();
+        output->DeepCopy(convert_reader->GetPolyData(polydata_string));
         temp.Nodes = output;
         }
       /// \note For the visualization rgba values are supposed to be double in

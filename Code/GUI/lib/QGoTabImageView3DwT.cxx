@@ -100,7 +100,7 @@
 
 // TESTS
 #include "vtkPolyDataWriter.h"
-#include "VisualizePolydataHelper.h";
+
 //-------------------------------------------------------------------------
 QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent):
   QGoTabElementBase(iParent),
