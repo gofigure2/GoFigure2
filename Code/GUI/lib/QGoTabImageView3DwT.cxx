@@ -100,6 +100,7 @@
 
 // TESTS
 #include "vtkPolyDataWriter.h"
+#include "VisualizePolydataHelper.h";
 //-------------------------------------------------------------------------
 QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent):
   QGoTabElementBase(iParent),
@@ -2780,6 +2781,7 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord)
   // UPDATE THE TRACKS IN THE CONTAINER
 
   // get the center of the mesh
+  // is deleted in AddPointToCurrentElement
   double * point = new double[4];
   std::vector< int > boundingBox = GetBoundingBox(iView);
   for(int i = 0; i<3; ++i)
@@ -2795,16 +2797,16 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord)
   // Update the track polydata with the new center
   m_TrackContainer->AddPointToCurrentElement( point );
   vtkPolyData* track = m_TrackContainer->GetCurrentElementNodes();
-  // Create new actors and visu it
-  std::vector< vtkActor * > trackActors =  VisualizeTrack(track);
-  // Add new actors in the container
-  m_TrackContainer->UpdateCurrentElementActorsFromVisu(trackActors);
+  // Create new actors and visu it if there is more than one point
+  if(track->GetNumberOfPoints() > 1)
+    {
+    std::vector< vtkActor * > trackActors =  VisualizeTrack(track);
+    // Add new actors in the container
+    m_TrackContainer->UpdateCurrentElementActorsFromVisu(trackActors);
+    }
   m_TrackContainer->InsertCurrentElement();
-
   // UPDATE THE DATABASE WITH THE CURRENT ELEMENT
   //this->m_DataBaseTables->UpdateTackPoints();
-
-  delete point;
 }
 //-------------------------------------------------------------------------
 
