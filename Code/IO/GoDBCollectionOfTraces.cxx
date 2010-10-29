@@ -779,7 +779,7 @@ int GoDBCollectionOfTraces::CreateNewCollection(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::list< unsigned int > GoDBCollectionOfTraces::UpdateDBDataForAddedTracesToExistingCollection(
+/*std::list< unsigned int > GoDBCollectionOfTraces::UpdateDBDataForAddedTracesToExistingCollection(
   std::list< unsigned int > iListSelectedTraces, int iNewCollectionID,
   vtkMySQLDatabase *iDatabaseConnector)
 {
@@ -859,7 +859,7 @@ std::list< unsigned int > GoDBCollectionOfTraces::UpdateDBDataForAddedTracesToEx
                               iDatabaseConnector);
 
   return ListTraceIDWithBoundingBoxUpdated;
-}
+}*/
 
 //--------------------------------------------------------------------------
 
@@ -1011,9 +1011,17 @@ std::list< unsigned int > GoDBCollectionOfTraces::GetListTracesIDWithNoPoints(
 {
   std::vector< std::string > VectorTracesIDs =
     this->ListUnsgIntToVectorString(iListTracesIDs);
-  return GetSpecificValuesEqualToZero(
+
+  if( !VectorTracesIDs.empty() )
+    {
+    return GetSpecificValuesEqualToZero(
            iDatabaseConnector, this->m_TracesIDName, this->m_TracesName,
            VectorTracesIDs, "points");
+    }
+  else
+    {
+    return std::list< unsigned int >();
+    }
 }
 
 //-------------------------------------------------------------------------
