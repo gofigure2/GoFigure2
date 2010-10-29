@@ -36,6 +36,11 @@
 
 #include "vtkActor.h"
 
+// reconstruct the polydata
+#include "vtkFieldData.h"
+#include "vtkPolyLine.h"
+#include "vtkCellArray.h"
+
 //-------------------------------------------------------------------------
 TrackContainer::
 TrackContainer(QObject *iParent,QGoImageView3D *iView):QObject(iParent),
@@ -581,5 +586,124 @@ GetHighlightedProperty()
 {
   return m_HighlightedProperty;
 }
+//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void
+TrackContainer::
+AddPointToCurrentElement(double* iPoint)
+{
+  if(!this->m_CurrentElement.Nodes)
+    {
+    // Create a new polydata
+    // no actors to be removed then
+    this->m_CurrentElement.Nodes = vtkPolyData::New();
+    }
+  else
+    {
+    // remove and delete the actors from th visu
+    this->m_ImageView->RemoveActor(0, this->m_CurrentElement.ActorXY);
+    this->m_CurrentElement.ActorXY->Delete();
+    this->m_ImageView->RemoveActor(1, this->m_CurrentElement.ActorXZ);
+    this->m_CurrentElement.ActorXZ->Delete();
+    this->m_ImageView->RemoveActor(2, this->m_CurrentElement.ActorYZ);
+    this->m_CurrentElement.ActorYZ->Delete();
+    this->m_ImageView->RemoveActor(3, this->m_CurrentElement.ActorXYZ);
+    this->m_CurrentElement.ActorXYZ->Delete();
+    }
+
+  vtkIdType N = this->m_CurrentElement.Nodes->GetNumberOfPoints();
+  vtkSmartPointer<vtkPoints> points = this->m_CurrentElement.Nodes->GetPoints();
+
+  std::map<int, double*> orderedPoints;
+  double* pt = NULL;
+  int    time = 0;
+
+  vtkSmartPointer<vtkIntArray> temporalArray =
+      vtkIntArray::SafeDownCast(this->m_CurrentElement.Nodes->GetFieldData()
+          ->GetArray("TemporalInformation"));
+
+  // fill a map so the points will be ordered automatically
+  for ( vtkIdType i = 0; i < N; i++ )
+    {
+    pt = points->GetPoint(i);
+    time = temporalArray->GetValue(i);
+    orderedPoints.insert( std::pair<int,double*>(time, pt) );
+    }
+
+  // insert the new mesh
+  orderedPoints.insert( std::pair<int,double*>(iPoint[3], iPoint) );
+
+  //Reconstruct from the map
+  // read map and fill points
+  vtkSmartPointer< vtkPoints > newPoints = vtkSmartPointer< vtkPoints >::New();
+  vtkSmartPointer<vtkIntArray> newArray = vtkSmartPointer<vtkIntArray>::New();
+  newArray->SetNumberOfComponents(1);
+  newArray->SetName("TemporalInformation");
+  std::map<int, double*>::iterator it = orderedPoints.begin();
+
+  while(it != orderedPoints.end())
+    {
+    newArray->InsertNextValue( it->first );
+    newPoints->InsertNextPoint(it->second);
+    ++it;
+    }
+
+  // Clean the map
+  for (it = orderedPoints.begin(); it != orderedPoints.end(); ++it)
+    {
+    delete[] it->second;
+    }
+  orderedPoints.clear();
+
+  // Create a line from points
+  vtkSmartPointer<vtkPolyLine> polyLine =
+      vtkSmartPointer<vtkPolyLine>::New();
+  polyLine->GetPointIds()->SetNumberOfIds( newPoints->GetNumberOfPoints() );
+  for(unsigned int i = 0; i < newPoints->GetNumberOfPoints(); i++)
+    {
+    polyLine->GetPointIds()->SetId(i,i);
+    }
+
+  //Create a cell array to store the lines in and add the lines to it
+  vtkSmartPointer<vtkCellArray> cells =
+      vtkSmartPointer<vtkCellArray>::New();
+  cells->InsertNextCell(polyLine);
+
+  //Create a polydata to store everything in
+  vtkSmartPointer<vtkPolyData> polyData =
+      vtkSmartPointer<vtkPolyData>::New();
+
+  //add the points to the dataset
+  polyData->SetPoints(points);
+
+  //add the lines to the dataset
+  polyData->SetLines(cells);
+
+  //add the temporal information
+  polyData->GetFieldData()->AddArray(newArray);
+
+  // MOVE TO SMARTPOINTER AND SHALLOW COPY....
+  this->m_CurrentElement.Nodes->DeepCopy(polyData.GetPointer());
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+vtkPolyData*
+TrackContainer::
+GetCurrentElementNodes()
+{
+  return this->m_CurrentElement.Nodes;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateCurrentElementActorsFromVisu(std::vector< vtkActor * > iActors)
+{
+  this->m_CurrentElement.ActorXY = iActors[0];
+  this->m_CurrentElement.ActorXZ = iActors[1];
+  this->m_CurrentElement.ActorYZ = iActors[2];
+  this->m_CurrentElement.ActorXYZ = iActors[3];
+}

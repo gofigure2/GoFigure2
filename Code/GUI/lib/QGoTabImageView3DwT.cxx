@@ -100,6 +100,7 @@
 
 // TESTS
 #include "vtkPolyDataWriter.h"
+#include "VisualizePolydataHelper.h";
 //-------------------------------------------------------------------------
 QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent):
   QGoTabElementBase(iParent),
@@ -144,7 +145,7 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent):
   m_MeshContainer->SetHighlightedProperty(m_HighlightedMeshesProperty);
 
   m_TrackContainer = new TrackContainer(this, this->m_ImageView);
-  //m_TrackContainer->SetHighlightedProperty(m_HighlightedMeshesProperty);
+  m_TrackContainer->SetHighlightedProperty(m_HighlightedMeshesProperty);
 
   CreateVisuDockWidget();
 
@@ -247,6 +248,10 @@ QGoTabImageView3DwT::
   if ( m_MeshContainer )
     {
     delete m_MeshContainer;
+    }
+  if ( m_TrackContainer )
+    {
+    delete m_TrackContainer;
     }
 }
 
@@ -2337,11 +2342,9 @@ std::vector< vtkActor * >
 QGoTabImageView3DwT::
 VisualizeTrack(vtkPolyData *iMesh)
 {
-
-
   std::vector< vtkActor * > oActors;
-/*
-  double *RGBA = this->m_MeshContainer->m_CurrentElement.rgba;
+
+  double *RGBA = this->m_TrackContainer->m_CurrentElement.rgba;
 
   vtkProperty *mesh_property = vtkProperty::New();
   mesh_property->SetColor(RGBA[0], RGBA[1], RGBA[2]);
@@ -2358,41 +2361,8 @@ VisualizeTrack(vtkPolyData *iMesh)
   mesh_property->Delete();
 
   m_ImageView->UpdateRenderWindows();
-*/
+
   return oActors;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
-SaveAndVisuTrack(vtkPolyData *iView, unsigned int iTCoord)
-{
-  /*
-  if ( !m_DataBaseTables->IsDatabaseUsed() )
-    {
-    std::cerr << "Problem with DB" << std::endl;
-    return;
-    }
-
-  if ( !iView )
-    {
-    std::cerr << "Input Mesh is NULL" << std::endl;
-    return;
-    }
-
-  SaveMesh(iView);
-
-  std::vector< vtkActor * > actors =  VisualizeMesh(iView);
-
-  // update container since a new mesh is created
-  m_MeshContainer->UpdateCurrentElementFromVisu(actors,
-                                                iView,
-                                                iTCoord,
-                                                false,  // highlighted
-                                                true);  // visible
-  m_MeshContainer->InsertCurrentElement();
-  */
 }
 //-------------------------------------------------------------------------
 
@@ -2806,6 +2776,36 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord)
                                                 false,  // highlighted
                                                 true);  // visible
   m_MeshContainer->InsertCurrentElement();
+
+  // UPDATE THE TRACKS IN THE CONTAINER
+
+  // get the center of the mesh
+  // is deleted in AddPointToCurrentElement
+  double * point = new double[4];
+  std::vector< int > boundingBox = GetBoundingBox(iView);
+  for(int i = 0; i<3; ++i)
+    {
+    point[i] = (boundingBox[2*i] + boundingBox[2*i+1])/2;
+    }
+  point[3] = iTCoord;
+
+  // SAY TO THE DB TO DELETE PREVIOUS CONTAINER IF SAME ID
+  // SAY TO CREATE A CURRENT ONE ANYWAY
+
+  // Clean the actors (remove from visu + delete)
+  // Update the track polydata with the new center
+  m_TrackContainer->AddPointToCurrentElement( point );
+  vtkPolyData* track = m_TrackContainer->GetCurrentElementNodes();
+  // Create new actors and visu it if there is more than one point
+  if(track->GetNumberOfPoints() > 1)
+    {
+    std::vector< vtkActor * > trackActors =  VisualizeTrack(track);
+    // Add new actors in the container
+    m_TrackContainer->UpdateCurrentElementActorsFromVisu(trackActors);
+    }
+  m_TrackContainer->InsertCurrentElement();
+  // UPDATE THE DATABASE WITH THE CURRENT ELEMENT
+  //this->m_DataBaseTables->UpdateTackPoints();
 }
 //-------------------------------------------------------------------------
 

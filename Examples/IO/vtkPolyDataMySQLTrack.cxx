@@ -43,7 +43,7 @@ int main(int argc, char **argv)
   vtkSmartPointer<vtkPolyDataMySQLTrackReader> track_reader =
       vtkSmartPointer<vtkPolyDataMySQLTrackReader>::New();
 
-  std::string stringFromDB = "2 1 1 1 1 2 2 2 2 ";
+  std::string stringFromDB = "2 1 1 1 1 2 2 2 1 ";
 
   vtkSmartPointer<vtkPolyData> input = vtkSmartPointer<vtkPolyData>::New();
   input->ShallowCopy(track_reader->GetPolyData(stringFromDB));
@@ -51,6 +51,9 @@ int main(int argc, char **argv)
   vtkSmartPointer<vtkPolyDataMySQLTrackWriter> track_writer =
       vtkSmartPointer<vtkPolyDataMySQLTrackWriter>::New();
   std::string output = track_writer->GetMySQLText(input);
+
+  std::cout << "before: " << stringFromDB << std::endl;
+  std::cout << "after: " << output << std::endl;
 
   if(stringFromDB.compare(output) != 0)
     {

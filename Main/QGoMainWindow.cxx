@@ -391,9 +391,11 @@ QGoMainWindow::LoadAllTracesFromDatabaseManager(const int & iT)
   QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
 
   // Loads contours
-  LoadAllTracesFromDatabase(iT, "contour");
+  LoadContoursFromDatabase(iT, "contour");
   // Loads meshes
-  LoadAllTracesFromDatabase(iT, "mesh");
+  LoadMeshesFromDatabase(iT, "mesh");
+  // Loads tracks
+  LoadTracksFromDatabase(iT, "track");
 
   QApplication::restoreOverrideCursor();
 }
@@ -402,7 +404,7 @@ QGoMainWindow::LoadAllTracesFromDatabaseManager(const int & iT)
 
 //--------------------------------------------------------------------------
 void
-QGoMainWindow::LoadAllTracesFromDatabase(const int & iT, const std::string & iTraceName)
+QGoMainWindow::LoadContoursFromDatabase(const int & iT, const std::string & iTraceName)
 {
   /// \note let's keep for the time being iT parameter in the case where
   /// we would only load traces for a given time point (that could be usefule
@@ -414,27 +416,7 @@ QGoMainWindow::LoadAllTracesFromDatabase(const int & iT, const std::string & iTr
 
   if ( w3t )
     {
-    ContourMeshContainer *temp = 0;
-    bool                  calculation = false;
-
-    if ( iTraceName.compare("contour") == 0 )
-      {
-      temp = w3t->GetContourContainer();
-      }
-    else
-      {
-      if ( iTraceName.compare("mesh") == 0 )
-        {
-        temp = w3t->GetMeshContainer();
-        calculation = true;
-        }
-      else
-        {
-        std::cerr << "iTraceName should be either contour, either mesh"
-                  << std::endl;
-        return;
-        }
-      }
+    ContourMeshContainer *temp = w3t->GetContourContainer();
 
     if ( temp )
       {
@@ -446,19 +428,6 @@ QGoMainWindow::LoadAllTracesFromDatabase(const int & iT, const std::string & iTr
       // since they have just been extracted from it!
       while ( contourmesh_list_it != temp->m_Container.get< TraceID >().end() )
         {
-        // note here it only makes sense when the trace is a mesh (for now)
-        if ( calculation )
-          {
-          if ( contourmesh_list_it->Nodes )
-            {
-            GoFigureMeshAttributes attributes =
-              w3t->ComputeMeshAttributes(
-                  contourmesh_list_it->Nodes, // mesh
-                  false ); // do not need to compute intensity based measure
-            w3t->m_DataBaseTables->PrintVolumeAreaForMesh(
-              &attributes, contourmesh_list_it->TraceID);
-            }
-          }
         w3t->AddTraceFromNodesManager< TraceID >(
           contourmesh_list_it,
           iTraceName);     // Name of the trace to add
@@ -469,6 +438,87 @@ QGoMainWindow::LoadAllTracesFromDatabase(const int & iT, const std::string & iTr
     }
 }
 
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+QGoMainWindow::LoadMeshesFromDatabase(const int & iT, const std::string & iTraceName)
+{
+  /// \note let's keep for the time being iT parameter in the case where
+  /// we would only load traces for a given time point (that could be usefule
+  /// somehow).
+  (void)iT;
+
+  QGoTabImageView3DwT *w3t =
+    dynamic_cast< QGoTabImageView3DwT * >( this->CentralTabWidget->currentWidget() );
+
+  if ( w3t )
+    {
+    ContourMeshContainer *temp =  w3t->GetMeshContainer();
+    if ( temp )
+      {
+      // let's iterate on the container with increasing TraceID
+      ContourMeshContainer::MultiIndexContainer::index< TraceID >::type::iterator
+        contourmesh_list_it = temp->m_Container.get< TraceID >().begin();
+      // we don't need here to save this contour in the database,
+      // since they have just been extracted from it!
+      while ( contourmesh_list_it != temp->m_Container.get< TraceID >().end() )
+        {
+        // note here it only makes sense when the trace is a mesh (for now)
+        if ( contourmesh_list_it->Nodes )
+          {
+          GoFigureMeshAttributes attributes =
+            w3t->ComputeMeshAttributes(
+                contourmesh_list_it->Nodes, // mesh
+                false ); // do not need to compute intensity based measure
+          w3t->m_DataBaseTables->PrintVolumeAreaForMesh(
+            &attributes, contourmesh_list_it->TraceID);
+          }
+
+        w3t->AddTraceFromNodesManager< TraceID >(
+          contourmesh_list_it,
+          iTraceName);     // Name of the trace to add
+
+        ++contourmesh_list_it;
+        }
+      }
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+QGoMainWindow::LoadTracksFromDatabase(const int & iT, const std::string & iTraceName)
+{
+  /// \note let's keep for the time being iT parameter in the case where
+  /// we would only load traces for a given time point (that could be usefule
+  /// somehow).
+  (void)iT;
+
+  QGoTabImageView3DwT *w3t =
+    dynamic_cast< QGoTabImageView3DwT * >( this->CentralTabWidget->currentWidget() );
+
+  if ( w3t )
+    {
+    TrackContainer *temp = w3t->GetTrackContainer();
+
+    if ( temp )
+      {
+      // let's iterate on the container with increasing TraceID
+      TrackContainer::MultiIndexContainer::index< TraceID >::type::iterator
+        contourmesh_list_it = temp->m_Container.get< TraceID >().begin();
+
+      // we don't need here to save this contour in the database,
+      // since they have just been extracted from it!
+      while ( contourmesh_list_it != temp->m_Container.get< TraceID >().end() )
+        {
+        w3t->AddTrackFromNodes< TraceID >(contourmesh_list_it);// Name of the trace to add
+
+        ++contourmesh_list_it;
+        }
+      }
+    }
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
