@@ -2338,11 +2338,9 @@ std::vector< vtkActor * >
 QGoTabImageView3DwT::
 VisualizeTrack(vtkPolyData *iMesh)
 {
-
-
   std::vector< vtkActor * > oActors;
-/*
-  double *RGBA = this->m_MeshContainer->m_CurrentElement.rgba;
+
+  double *RGBA = this->m_TrackContainer->m_CurrentElement.rgba;
 
   vtkProperty *mesh_property = vtkProperty::New();
   mesh_property->SetColor(RGBA[0], RGBA[1], RGBA[2]);
@@ -2359,7 +2357,7 @@ VisualizeTrack(vtkPolyData *iMesh)
   mesh_property->Delete();
 
   m_ImageView->UpdateRenderWindows();
-*/
+
   return oActors;
 }
 //-------------------------------------------------------------------------
@@ -2793,7 +2791,7 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord)
   m_TrackContainer->AddPointToCurrentElement( point );
   vtkPolyData* track = m_TrackContainer->GetCurrentElementNodes();
   // TO BE MODIFIED (color will be wrong and not optimized)
-  std::vector< vtkActor * > trackActors =  VisualizeMesh(track);
+  std::vector< vtkActor * > trackActors =  VisualizeTrack(track);
   m_TrackContainer->UpdateCurrentElementActorsFromVisu(trackActors);
   m_TrackContainer->InsertCurrentElement();
 
