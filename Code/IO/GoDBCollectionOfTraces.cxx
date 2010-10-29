@@ -1011,9 +1011,17 @@ std::list< unsigned int > GoDBCollectionOfTraces::GetListTracesIDWithNoPoints(
 {
   std::vector< std::string > VectorTracesIDs =
     this->ListUnsgIntToVectorString(iListTracesIDs);
-  return GetSpecificValuesEqualToZero(
+
+  if( !VectorTracesIDs.empty() )
+    {
+    return GetSpecificValuesEqualToZero(
            iDatabaseConnector, this->m_TracesIDName, this->m_TracesName,
            VectorTracesIDs, "points");
+    }
+  else
+    {
+    return std::list< unsigned int >();
+    }
 }
 
 //-------------------------------------------------------------------------
