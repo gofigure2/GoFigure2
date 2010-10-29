@@ -144,7 +144,7 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent):
   m_MeshContainer->SetHighlightedProperty(m_HighlightedMeshesProperty);
 
   m_TrackContainer = new TrackContainer(this, this->m_ImageView);
-  //m_TrackContainer->SetHighlightedProperty(m_HighlightedMeshesProperty);
+  m_TrackContainer->SetHighlightedProperty(m_HighlightedMeshesProperty);
 
   CreateVisuDockWidget();
 
@@ -247,6 +247,10 @@ QGoTabImageView3DwT::
   if ( m_MeshContainer )
     {
     delete m_MeshContainer;
+    }
+  if ( m_TrackContainer )
+    {
+    delete m_TrackContainer;
     }
 }
 

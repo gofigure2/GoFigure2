@@ -164,6 +164,11 @@ public:
     return m_MeshContainer;
   }
 
+  TrackContainer * GetTrackContainer()
+  {
+    return m_TrackContainer;
+  }
+
   template< class TIndex >
   void AddTraceFromNodesManager(
     typename ContourMeshContainer::MultiIndexContainer::index< TIndex >::type::iterator iIt,
@@ -176,6 +181,11 @@ public:
       }
     // If we want to add a mesh
     if ( iTrace.compare("mesh") == 0 )
+      {
+      AddMeshFromNodes< TIndex >(iIt);
+      }
+    // If we want to add a track
+    if ( iTrace.compare("track") == 0 )
       {
       AddMeshFromNodes< TIndex >(iIt);
       }

@@ -394,6 +394,8 @@ QGoMainWindow::LoadAllTracesFromDatabaseManager(const int & iT)
   LoadAllTracesFromDatabase(iT, "contour");
   // Loads meshes
   LoadAllTracesFromDatabase(iT, "mesh");
+  // Loads Tracks
+  //LoadAllTracesFromDatabase(iT, "track");
 
   QApplication::restoreOverrideCursor();
 }
@@ -430,9 +432,17 @@ QGoMainWindow::LoadAllTracesFromDatabase(const int & iT, const std::string & iTr
         }
       else
         {
-        std::cerr << "iTraceName should be either contour, either mesh"
-                  << std::endl;
-        return;
+        if ( iTraceName.compare("track") == 0 )
+          {
+          // Should be enough...
+          temp = (ContourMeshContainer*)w3t->GetTrackContainer();
+          }
+        else
+          {
+          std::cerr << "iTraceName should be either contour, mesh or track"
+                    << std::endl;
+          return;
+          }
         }
       }
 
