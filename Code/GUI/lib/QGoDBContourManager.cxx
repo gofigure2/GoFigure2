@@ -41,7 +41,7 @@
 #include "GoDBContourRow.h"
 
 QGoDBContourManager::QGoDBContourManager(int iImgSessionID, QWidget *iparent):
-  QGoDBTraceManager()
+  QGoDBTraceManager(),m_ContourContainerInfoForVisu(NULL)
 {
   this->SetInfo(iImgSessionID, iparent);
   this->m_TWContainer = new GoDBTWContainerForContourMesh(this->m_TraceName,
@@ -62,6 +62,15 @@ QGoDBContourManager::~QGoDBContourManager()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoDBContourManager::SetContoursInfoContainerForVisu(
+  ContourMeshContainer *iContainerForVisu)
+{
+  this->SetTracesInfoContainerForVisuTemplate<ContourMeshContainer>(
+    iContainerForVisu,&this->m_ContourContainerInfoForVisu);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void QGoDBContourManager::SetCollectionsTraceNames()
 {
   this->m_TraceName = "contour";
@@ -76,8 +85,8 @@ void QGoDBContourManager::DisplayInfoAndLoadVisuContainerForAllContours(
   vtkMySQLDatabase *iDatabaseConnector) //,unsigned int iTimePoint)
 {
   //this->DisplayInfoForAllTraces(iDatabaseConnector);
-  this->DisplayInfoAndLoadVisuContainerWithAllTraces< GoDBTWContainerForContourMesh >
-    (this->m_TWContainer, iDatabaseConnector); //,iTimePoint);
+  this->DisplayInfoAndLoadVisuContainerWithAllTraces< 
+    GoDBTWContainerForContourMesh >(this->m_TWContainer, iDatabaseConnector); //,iTimePoint);
 }
 
 //-------------------------------------------------------------------------
@@ -167,8 +176,8 @@ void QGoDBContourManager::ChangeTraceColor()
 std::list< unsigned int > QGoDBContourManager::UpdateTheTracesColor(
   vtkMySQLDatabase *iDatabaseConnector, NameWithColorData iNewColor)
 {
-  return this->UpdateTheTracesColorTemplate< GoDBContourRow >(
-           iDatabaseConnector, iNewColor);
+  return this->UpdateTheTracesColorTemplate< GoDBContourRow,ContourMeshContainer >(
+    iDatabaseConnector, this->m_ContourContainerInfoForVisu,iNewColor);
 }
 
 //-------------------------------------------------------------------------
@@ -191,7 +200,7 @@ unsigned int QGoDBContourManager::SaveNewContourFromVisu(
 
   double *rgba = this->GetVectorFromQColor(iColor.second);
 
-  this->m_TraceContainerInfoForVisu->UpdateCurrentElementFromDB(
+  this->m_ContourContainerInfoForVisu->UpdateCurrentElementFromDB(
     NewContourID, rgba);
   delete[] rgba;
 
@@ -213,7 +222,7 @@ unsigned int QGoDBContourManager::SaveReeditedContourFromVisu(unsigned int iXCoo
                                                               vtkMySQLDatabase *iDatabaseConnector)
 {
   unsigned int TraceID =
-    this->m_TraceContainerInfoForVisu->m_CurrentElement.TraceID;
+    this->m_ContourContainerInfoForVisu->m_CurrentElement.TraceID;
   GoDBContourRow ReeditedContour;
 
   ReeditedContour.SetValuesForSpecificID(TraceID, iDatabaseConnector);
@@ -230,7 +239,7 @@ unsigned int QGoDBContourManager::SaveReeditedContourFromVisu(unsigned int iXCoo
 void QGoDBContourManager::ReEditTrace()
 {
   std::list< unsigned int > ListCheckedTraces =
-    this->m_TraceContainerInfoForVisu->GetHighlightedElementsTraceID();
+    this->m_ContourContainerInfoForVisu->GetHighlightedElementsTraceID();
   if ( ListCheckedTraces.empty() )
     {
     QMessageBox msgBox;
@@ -255,7 +264,6 @@ void QGoDBContourManager::ReEditTrace()
       }
     }
 }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -263,10 +271,62 @@ void QGoDBContourManager::UpdateTWAndContainerForImportedTraces(
   std::vector< int > iVectorImportedTraces, vtkMySQLDatabase *iDatabaseConnector)
 {
   this->UpdateTWAndContainerWithImportedTracesTemplate<
-    GoDBTWContainerForContourMesh >(this->m_TWContainer,
-                                    iVectorImportedTraces, iDatabaseConnector);
+    GoDBTWContainerForContourMesh>(
+    this->m_TWContainer,iVectorImportedTraces, iDatabaseConnector);
   //update the visualization and the data from visu in the container for visu:
-  this->m_TraceContainerInfoForVisu->
+  this->m_ContourContainerInfoForVisu->
   UpdateVisualizationForGivenIDs< std::vector< int > >(
     iVectorImportedTraces, true);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBContourManager::DeleteTraces(vtkMySQLDatabase *iDatabaseConnector)
+{
+  this->DeleteTracesTemplate<ContourMeshContainer>(iDatabaseConnector,
+    this->m_ContourContainerInfoForVisu);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list< unsigned int > QGoDBContourManager::GetListHighlightedIDs()
+{
+  return this->m_ContourContainerInfoForVisu->GetHighlightedElementsTraceID();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBContourManager::UpdateHighlightedElementsInVisuContainer(
+  int iTraceID)
+{
+  this->m_ContourContainerInfoForVisu->
+    UpdateElementHighlightingWithGivenTraceID(iTraceID);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBContourManager::UpdateVisibleElementsInVisuContainer(int iTraceID)
+{
+  this->m_ContourContainerInfoForVisu->
+    UpdateElementVisibilityWithGivenTraceID(iTraceID);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBContourManager::GetTracesInfoFromDBAndModifyContainerForVisu(
+  vtkMySQLDatabase* iDatabaseConnector,std::vector<int> iVectIDs)
+{
+  std::list<ContourMeshStructure> list_of_traces;
+  GetTracesInfoFromDBAndModifyContainer(
+      list_of_traces,
+      iDatabaseConnector, this->m_TraceName, this->m_CollectionName,
+      this->m_ImgSessionID, -1, iVectIDs);
+
+  std::list< ContourMeshStructure >::iterator it = list_of_traces.begin();
+
+  while ( it != list_of_traces.end() )
+    {
+    this->m_ContourContainerInfoForVisu->Insert(*it);
+    ++it;
+    }
 }

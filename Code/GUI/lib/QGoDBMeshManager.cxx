@@ -38,7 +38,7 @@
 #include <sstream>
 
 QGoDBMeshManager::QGoDBMeshManager(int iImgSessionID, QWidget *iparent):
-  QGoDBTraceManager()
+QGoDBTraceManager(),m_MeshContainerInfoForVisu(NULL)
 {
   this->SetInfo(iImgSessionID, iparent);
   this->m_TWContainer = new GoDBTWContainerForMesh(iImgSessionID);
@@ -54,10 +54,19 @@ QGoDBMeshManager::~QGoDBMeshManager()
     delete this->m_TWContainer;
     }
 }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoDBMeshManager::SetMeshesInfoContainerForVisu(
+  ContourMeshContainer *iContainerForVisu)
+{
+  this->SetTracesInfoContainerForVisuTemplate<ContourMeshContainer>(
+    iContainerForVisu,&this->m_MeshContainerInfoForVisu);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+
 void QGoDBMeshManager::SetCollectionsTraceNames()
 {
   this->m_TraceName = "mesh";
@@ -72,8 +81,10 @@ void QGoDBMeshManager::DisplayInfoAndLoadVisuContainerForAllMeshes(
   vtkMySQLDatabase *iDatabaseConnector) //,unsigned int iTimePoint)
 {
   //this->DisplayInfoForAllTraces(iDatabaseConnector);
-  this->DisplayInfoAndLoadVisuContainerWithAllTraces< GoDBTWContainerForMesh >
-    (this->m_TWContainer, iDatabaseConnector); //,iTimePoint);
+  //this->DisplayInfoAndLoadVisuContainerWithAllTraces< GoDBTWContainerForMesh >
+  //  (this->m_TWContainer, iDatabaseConnector); //,iTimePoint);
+  this->DisplayInfoAndLoadVisuContainerWithAllTraces< 
+    GoDBTWContainerForMesh >(this->m_TWContainer,iDatabaseConnector);
 }
 
 //-------------------------------------------------------------------------
@@ -85,7 +96,6 @@ void QGoDBMeshManager::DisplayInfoForAllTraces(
   this->DisplayInfoForAllTracesTemplate< GoDBTWContainerForMesh >(
     this->m_TWContainer, iDatabaseConnector);
 }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -176,7 +186,7 @@ unsigned int QGoDBMeshManager::SaveNewMeshFromVisu(
   unsigned int NewMeshID = this->m_CollectionOfTraces->CreateNewTraceInDB< GoDBMeshRow >(
     NewMesh, iDatabaseConnector, iColor, iTrackID);
   double *rgba = this->GetVectorFromQColor(iColor.second);
-  this->m_TraceContainerInfoForVisu->UpdateCurrentElementFromDB(
+  this->m_MeshContainerInfoForVisu->UpdateCurrentElementFromDB(
     NewMeshID, rgba);
   this->DisplayInfoForLastCreatedMesh(iDatabaseConnector, iMeshAttributes);
   return NewMeshID;
@@ -197,7 +207,7 @@ void QGoDBMeshManager::SaveGeneratedMeshFromVisu(unsigned int iXCoordMin,
                                                  GoFigureMeshAttributes *iMeshAttributes)
 {
   unsigned int TraceID =
-    this->m_TraceContainerInfoForVisu->m_CurrentElement.TraceID;
+    this->m_MeshContainerInfoForVisu->m_CurrentElement.TraceID;
   GoDBMeshRow GeneratedMesh;
 
   GeneratedMesh.SetValuesForSpecificID(TraceID, iDatabaseConnector);
@@ -238,11 +248,11 @@ unsigned int QGoDBMeshManager::CreateNewMeshWithNoContourNoPoints(
       iDatabaseConnector, iColor, NewMesh, iTimePoint);
 
   double *color = this->GetVectorFromQColor(iColor.second);
-  this->m_TraceContainerInfoForVisu->UpdateCurrentElementFromDB(
+  this->m_MeshContainerInfoForVisu->UpdateCurrentElementFromDB(
     NewMeshID, color);
   delete[] color;
 
-  this->m_TraceContainerInfoForVisu->InsertCurrentElement();
+  this->m_MeshContainerInfoForVisu->InsertCurrentElement();
   this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
   return NewMeshID;
 }
@@ -253,8 +263,8 @@ unsigned int QGoDBMeshManager::CreateNewMeshWithNoContourNoPoints(
 std::list< unsigned int > QGoDBMeshManager::UpdateTheTracesColor(
   vtkMySQLDatabase *iDatabaseConnector, NameWithColorData iNewColor)
 {
-  return this->UpdateTheTracesColorTemplate< GoDBMeshRow >(iDatabaseConnector,
-                                                           iNewColor);
+  return this->UpdateTheTracesColorTemplate< GoDBMeshRow,ContourMeshContainer >(
+    iDatabaseConnector,this->m_MeshContainerInfoForVisu,iNewColor);
 }
 
 //-------------------------------------------------------------------------
@@ -303,10 +313,62 @@ void QGoDBMeshManager::UpdateTWAndContainerForImportedTraces(
   std::vector< int > iVectorImportedTraces, vtkMySQLDatabase *iDatabaseConnector)
 {
   this->UpdateTWAndContainerWithImportedTracesTemplate<
-    GoDBTWContainerForMesh >(this->m_TWContainer,
-                             iVectorImportedTraces, iDatabaseConnector);
+    GoDBTWContainerForMesh>(this->m_TWContainer,
+   iVectorImportedTraces, iDatabaseConnector);
   //update the visualization and the data from visu in the container for visu:
-  this->m_TraceContainerInfoForVisu->
+  this->m_MeshContainerInfoForVisu->
     UpdateVisualizationForGivenIDs< std::vector< int > >(
       iVectorImportedTraces, false);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBMeshManager::DeleteTraces(vtkMySQLDatabase *iDatabaseConnector)
+{
+  this->DeleteTracesTemplate<ContourMeshContainer>(iDatabaseConnector,
+    this->m_MeshContainerInfoForVisu);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list< unsigned int > QGoDBMeshManager::GetListHighlightedIDs()
+{
+  return this->m_MeshContainerInfoForVisu->GetHighlightedElementsTraceID();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBMeshManager::UpdateHighlightedElementsInVisuContainer(
+  int iTraceID)
+{
+  this->m_MeshContainerInfoForVisu->
+    UpdateElementHighlightingWithGivenTraceID(iTraceID);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBMeshManager::UpdateVisibleElementsInVisuContainer(int iTraceID)
+{
+  this->m_MeshContainerInfoForVisu->
+    UpdateElementVisibilityWithGivenTraceID(iTraceID);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBMeshManager::GetTracesInfoFromDBAndModifyContainerForVisu(
+  vtkMySQLDatabase* iDatabaseConnector,std::vector<int> iVectIDs)
+{
+  std::list<ContourMeshStructure> list_of_traces;
+  GetTracesInfoFromDBAndModifyContainer(
+      list_of_traces,
+      iDatabaseConnector, this->m_TraceName, this->m_CollectionName,
+      this->m_ImgSessionID, -1, iVectIDs);
+
+  std::list< ContourMeshStructure >::iterator it = list_of_traces.begin();
+
+  while ( it != list_of_traces.end() )
+    {
+    this->m_MeshContainerInfoForVisu->Insert(*it);
+    ++it;
+    }
 }

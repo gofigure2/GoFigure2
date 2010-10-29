@@ -245,7 +245,7 @@ std::string QGoPrintDatabase::InWhichTableAreWe()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::AddContoursFromDBForAGivenTimePoint(std::vector< int > iListIDs)
+/*void QGoPrintDatabase::AddContoursFromDBForAGivenTimePoint(std::vector< int > iListIDs)
 {
   this->OpenDBConnection();
   std::list< unsigned int > ListIDs( iListIDs.begin(), iListIDs.end() );
@@ -254,11 +254,9 @@ void QGoPrintDatabase::AddContoursFromDBForAGivenTimePoint(std::vector< int > iL
 
   this->CloseDBConnection();
 }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/** todo useful ? */
 void QGoPrintDatabase::AddMeshesFromDBForAGivenTimePoint(std::vector< int > iListIDs)
 {
   this->OpenDBConnection();
@@ -268,7 +266,7 @@ void QGoPrintDatabase::AddMeshesFromDBForAGivenTimePoint(std::vector< int > iLis
 
   this->CloseDBConnection();
 }
-
+*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -1166,7 +1164,7 @@ void QGoPrintDatabase::PrintVolumeAreaForMesh(GoFigureMeshAttributes *
 void
 QGoPrintDatabase::SetContoursContainer(ContourMeshContainer *iContainer)
 {
-  this->m_ContoursManager->SetTracesInfoContainerForVisu(iContainer);
+  this->m_ContoursManager->SetContoursInfoContainerForVisu(iContainer);
 }
 
 //--------------------------------------------------------------------------
@@ -1175,16 +1173,16 @@ QGoPrintDatabase::SetContoursContainer(ContourMeshContainer *iContainer)
 void
 QGoPrintDatabase::SetMeshesContainer(ContourMeshContainer *iContainer)
 {
-  this->m_MeshesManager->SetTracesInfoContainerForVisu(iContainer);
+  this->m_MeshesManager->SetMeshesInfoContainerForVisu(iContainer);
 }
 
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
-QGoPrintDatabase::SetTracksContainer(ContourMeshContainer *iContainer)
+QGoPrintDatabase::SetTracksContainer(TrackContainer *iContainer)
 {
-  this->m_TracksManager->SetTracesInfoContainerForVisu(iContainer);
+  this->m_TracksManager->SetTracksInfoContainerForVisu(iContainer);
 }
 
 //--------------------------------------------------------------------------

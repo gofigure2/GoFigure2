@@ -83,7 +83,7 @@ public:
   and update the container for the visu
   \param[in] iDatabaseConnector connection to the database
   */
-  void UpdateTWAndContainerForAllTraces(vtkMySQLDatabase *iDatabaseConnector);
+  //void UpdateTWAndContainerForAllTraces(vtkMySQLDatabase *iDatabaseConnector);
 
   /**
   \brief get the data needed from the database for the
@@ -92,15 +92,15 @@ public:
   \param[in] iDatabaseConnector connection to the database
   \param[in] iTraceIDs vector of the IDs for which the objects need to be updated
   */
-  void UpdateTWAndContainerForExistingTraces(
-    vtkMySQLDatabase *iDatabaseConnector, std::list< unsigned int > iTraceIDs);
+  //void UpdateTWAndContainerForExistingTraces(
+  //  vtkMySQLDatabase *iDatabaseConnector, std::list< unsigned int > iTraceIDs);
 
   /**
   \overload UpdateTWAndContainerForExistingTraces(
     vtkMySQLDatabase *iDatabaseConnector, std::list< unsigned int > iTraceIDs)
   */
-  void UpdateTWAndContainerForExistingTraces(
-    vtkMySQLDatabase *iDatabaseConnector, int iTraceID);
+  //void UpdateTWAndContainerForExistingTraces(
+  //  vtkMySQLDatabase *iDatabaseConnector, int iTraceID);
 
   /**
   \brief delete the corresponding traces in the table widget and in the 
@@ -131,16 +131,19 @@ public:
   //  vtkMySQLDatabase *iDatabaseConnector, int iZCoord);
 
   /**
-  \brief return the list of IDs for the current selected traces
-  \return a list of selected TraceIDs
+  \brief
+  \return the list of traceIDs that have highlighted set to true in the
+  ContainerForVisu.
   */
-  std::list< unsigned int > GetListHighlightedIDs();
+  virtual std::list< unsigned int > GetListHighlightedIDs()= 0;
 
   /**
   \brief set the m_TraceContainerInfoForVisu to the iContainerForVisu
   \param[in] iContainerForVisu common container for the visu and database
+  \tparam T ContourMeshContainer or TrackContainer
   */
-  void SetTracesInfoContainerForVisu(ContourMeshContainer *iContainerForVisu);
+  //template<typename T>
+  //virtual void SetTracesInfoContainerForVisu(T *iContainerForVisu) = 0;
 
   /**
   \brief virtual pure. update the color of the checked traces in the database,
@@ -160,7 +163,7 @@ public:
   container for visu
   \param[in] iDatabaseConnector connection to the database
   */
-  void DeleteTraces(vtkMySQLDatabase *iDatabaseConnector);
+  virtual void DeleteTraces(vtkMySQLDatabase *iDatabaseConnector) = 0;
 
   /**
   \brief update the collectionID of the tracesIDs in the list with
@@ -231,6 +234,7 @@ public:
   std::list< unsigned int > GetLastCreatedTracesIDs(
     vtkMySQLDatabase *iDatabaseConnector, int iNumberOfTraceIDs);
 
+
 signals:
   /**
   \brief signal emitted when the user click on the action "change color" from
@@ -271,7 +275,7 @@ protected:
   QGoTableWidget *        m_Table;
   GoDBCollectionOfTraces *m_CollectionOfTraces;
 
-  ContourMeshContainer *m_TraceContainerInfoForVisu;
+  //ContourMeshContainer   *m_TraceContainerInfoForVisu;
 
   /**
   \brief Virtual pure method: get the data needed from the database and
@@ -475,27 +479,44 @@ protected:
                                  coord_min, coord_max);
   }
 
-  template< typename T >
-  void DisplayInfoAndLoadVisuContainerWithAllTraces(T *iTWContainer,
+  /**
+  \brief get all the data from the database to load all the traces for the imagingsession
+  into the table widget and the container for the visu
+  \param[in] iTWContainer contains all the description of its columns to
+  get the data from the database and to display them in the m_Table but has
+  no value yet
+  \param[in] iContainerInfoForVisu info needed for the visu
+  \param[in] iDatabaseConnector connection to the database
+  \tparam T  only children of GoDBTableWidgetContainer as type T
+  \tparam C  ContourMeshContainer or TrackContainer
+  \tparam S  ContourMeshStructure or TrackStructure
+  */
+  template< typename T > //,typename C,typename S >
+  void DisplayInfoAndLoadVisuContainerWithAllTraces(T *iTWContainer,//C *iContainerInfoForVisu,
                                                     vtkMySQLDatabase *iDatabaseConnector)
   {
     this->DisplayInfoForAllTraces(iDatabaseConnector);
     std::vector< int >           VectorIDs = iTWContainer->GetAllTraceIDsInContainer();
     std::vector< int >::iterator iter = VectorIDs.begin();
 
-    std::list< ContourMeshStructure > list_of_traces;
-    GetTracesInfoFromDBAndModifyContainer(
+    this->GetTracesInfoFromDBAndModifyContainerForVisu(iDatabaseConnector,VectorIDs);
+
+    //std::list< ContourMeshStructure > list_of_traces;
+    /*std::list<S> list_of_traces;
+    GetTracesInfoFromDBAndModifyContainer<S>(
       list_of_traces,
       iDatabaseConnector, this->m_TraceName, this->m_CollectionName,
       this->m_ImgSessionID, -1, VectorIDs);
 
-    std::list< ContourMeshStructure >::iterator it = list_of_traces.begin();
+    //std::list< ContourMeshStructure >::iterator it = list_of_traces.begin();
+    std::list< S >::iterator it = list_of_traces.begin();
 
     while ( it != list_of_traces.end() )
       {
-      this->m_TraceContainerInfoForVisu->Insert(*it);
+      //this->m_TraceContainerInfoForVisu->Insert(*it);
+      iContainerInfoForVisu->Insert(*it);
       ++it;
-      }
+      }*/
   }
 
   /**
@@ -504,27 +525,36 @@ protected:
   \param[in] iTWContainer contains all the description of its columns to
   get the data from the database and to display them in the m_Table but has
   no value yet
+  \param[in] iContainerInfoForVisu info needed for the visu
   \param[in] iVectorTraceIDs vector of the imported TracesIDs
   \param[in] iDatabaseConnector connection to the database
   \tparam T this method takes only children of GoDBTableWidgetContainer
+  \tparam C  ContourMeshContainer or TrackContainer
+  \tparam S  ContourMeshStructure or TrackStructure
   */
-  template< typename T >
+  template< typename T >//,typename C,typename S >
   void UpdateTWAndContainerWithImportedTracesTemplate(T *iTWContainer,
+                                                      //C *iContainerForVisu, 
                                                       std::vector< int > iVectorTraceIDs,
                                                       vtkMySQLDatabase *iDatabaseConnector)
   {
     //insert the info from the database for the traces into the container
     //for visu:
-    std::list< ContourMeshStructure > ListOfTraces;
+    //std::list< ContourMeshStructure > ListOfTraces;
+    /*std::list<S> ListOfTraces;
     GetTracesInfoFromDBAndModifyContainer(
       ListOfTraces, iDatabaseConnector, this->m_TraceName, this->m_CollectionName,
       this->m_ImgSessionID, -1, iVectorTraceIDs);
-    std::list< ContourMeshStructure >::iterator it = ListOfTraces.begin();
+    //std::list< ContourMeshStructure >::iterator it = ListOfTraces.begin();
+    std::list< S >::iterator it = ListOfTraces.begin();
     while ( it != ListOfTraces.end() )
       {
-      this->m_TraceContainerInfoForVisu->Insert(*it);
+      //this->m_TraceContainerInfoForVisu->Insert(*it);
+      iContainerForVisu->Insert(*it);
       ++it;
-      }
+      }*/
+    this->GetTracesInfoFromDBAndModifyContainerForVisu(
+      iDatabaseConnector,iVectorTraceIDs);
     //insert the new rows into the TW:
     std::vector< int >::iterator iter = iVectorTraceIDs.begin();
     this->m_Table->setSortingEnabled(false);
@@ -546,21 +576,25 @@ protected:
   \brief update the visu container, the database and the TW with the new color
   for the highlighted traces
   \param[in] iDatabaseConnector connection to the database
+  \param[in] iContainerInfoForVisu info needed for the visu
   \param[in] iNewColor color to be the new one for the highlighted traces
   \return a list of the tracesIDs, part of the collection
   represented by the checked traces
   \tparam T children of GoDBTraceRow
+  \tparam C  ContourMeshContainer or TrackContainer
   */
-  template< typename T >
+  template< typename T,typename C >
   std::list< unsigned int > UpdateTheTracesColorTemplate(
-    vtkMySQLDatabase *iDatabaseConnector, NameWithColorData iNewColor)
+    vtkMySQLDatabase *iDatabaseConnector, C *iContainerForVisu,
+    NameWithColorData iNewColor)
   {
     std::list< unsigned int > oListOfCollectionOfIDs = std::list< unsigned int >();
     std::list< unsigned int > ListTracesIDs;
 
-    ListTracesIDs = this->m_TraceContainerInfoForVisu->
+    //ListTracesIDs = this->m_TraceContainerInfoForVisu->
+                   // UpdateAllHighlightedElementsWithGivenColor(iNewColor.second);
+    ListTracesIDs = iContainerForVisu->
                     UpdateAllHighlightedElementsWithGivenColor(iNewColor.second);
-
     if ( ListTracesIDs.empty() )
       {
       QMessageBox msgBox;
@@ -585,6 +619,48 @@ protected:
     return oListOfCollectionOfIDs;
   }
 
+  /**
+  \brief set the iMemberContainerInfoForVisu to the iContainerForVisu and
+  create the connections SLOT/SIGNAL
+  \param[in] iContainerForVisu common container for the visu and database
+  \param[in] iMemberContainerForVisu m_TraceContainerInfoForVisu
+  \tparam T ContourMeshContainer or TrackContainer
+  */
+  template< typename T >
+  void SetTracesInfoContainerForVisuTemplate(T *iContainerForVisu, 
+    T **iMemberContainerForVisu)
+  {
+    *iMemberContainerForVisu = iContainerForVisu;
+    QObject::connect( *iMemberContainerForVisu,
+                      SIGNAL( TracePicked(uint, Qt::CheckState) ),
+                      this,
+                      SLOT( CheckTheTraceInTW(uint, Qt::CheckState) ) );
+
+    QObject::connect( *iMemberContainerForVisu,
+                      SIGNAL( TraceVisibilityChanged(uint, Qt::CheckState) ),
+                      this,
+                      SLOT ( ShowTheTraceInTW(uint, Qt::CheckState) ) );
+  }
+  
+  /**
+  \brief delete the selected traces from the database, the TW and the
+  container for visu
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iContainerForVisu common container for the visu and database
+  \tparam T ContourMeshContainer or TrackContainer
+  */
+  template<typename T>
+  void DeleteTracesTemplate(vtkMySQLDatabase *iDatabaseConnector,
+    T *iContainerForVisu)
+  {
+    std::list< unsigned int > ListTracesIDs =
+      iContainerForVisu->GetHighlightedElementsTraceID();
+    this->m_CollectionOfTraces->DeleteTracesInDB(
+      ListTracesIDs, iDatabaseConnector);
+    iContainerForVisu->DeleteAllHighlightedElements();
+    this->m_Table->DeleteCheckedRows(this->m_TraceNameID, ListTracesIDs);
+  }
+
   virtual void AddActionsContextMenu(QMenu *iMenu);
 
   void AddGeneralActionsContextMenu(QMenu *iMenu);
@@ -592,6 +668,13 @@ protected:
   void AddSpecificActionsForContourMesh(QMenu *iMenu);
 
   virtual void AddActionForCreateNewCollectionFromCheckedTraces(QMenu *iMenu);
+
+  /**
+  \brief get the info needed from the database to update the container 
+  for visu
+  */
+  virtual void GetTracesInfoFromDBAndModifyContainerForVisu(
+    vtkMySQLDatabase* iDatabaseConnector,std::vector<int> iVectIDs = std::vector< int >())= 0;
 
 protected slots:
   //context menu:
@@ -639,8 +722,19 @@ protected slots:
 
   void AddToSelectedCollection();
 
-  void UpdateHighlightedElementsInVisuContainer(int iTraceID);
+  /**
+  \brief modify to the opposite one the highlighted property of the corresponding 
+  trace base on traceID in the container for visu
+  \param[in] iTraceID ID of the trace for the property to be modified
+  */
+  virtual void UpdateHighlightedElementsInVisuContainer(int iTraceID) = 0;
 
-  void UpdateVisibleElementsInVisuContainer(int iTraceID);
+  /**
+  \brief modify to the opposite one the Visible property of the corresponding 
+  trace base on traceID in the container for visu
+  \param[in] iTraceID ID of the trace for the property to be modified
+  */
+  virtual void UpdateVisibleElementsInVisuContainer(int iTraceID) = 0;
+
 };
 #endif

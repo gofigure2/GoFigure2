@@ -37,7 +37,7 @@
 #include "vtkStdString.h"
 #include "vtkSmartPointer.h"
 #include "vtkVariant.h"
-#include "vtkPolyDataMySQLTextReader.h"
+#include "vtkPolyDataMySQLTrackReader.h"
 #include <sstream>
 #include <string>
 
@@ -1257,125 +1257,6 @@ std::vector< std::pair< int, std::string > > ListSpecificValuesForTwoColumnsAndT
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void GetTracesInfoFromDBAndModifyContainer(
-  std::list< ContourMeshStructure > & ioContainer,
-  vtkMySQLDatabase *DatabaseConnector, std::string TraceName,
-  std::string CollectionName, unsigned int ImgSessionID, int iTimePoint,
-  std::vector< int > iVectIDs)
-{
-  vtkSQLQuery *query = DatabaseConnector->GetQueryInstance();
-
-  std::stringstream Querystream;
-
-  Querystream << "SELECT ";
-  Querystream << TraceName;
-  Querystream << ".";
-  Querystream << TraceName;
-  Querystream << "ID, ";
-  Querystream << TraceName;
-  Querystream << ".";
-  Querystream << CollectionName;
-  Querystream << "ID, ";
-  Querystream << TraceName;
-  Querystream << ".Points, coordinate.TCoord, color.Red,\
-                 color.Green, color.Blue, color.Alpha from (";
-  Querystream << TraceName;
-  Querystream << " left join coordinate on coordinate.CoordID = ";
-  Querystream << TraceName;
-  Querystream << ".coordIDMax) left join color on ";
-  Querystream << TraceName;
-
-  Querystream << ".colorID = color.colorID  where "; //(ImagingSessionID = ";
-  //Querystream << ImgSessionID;
-  //Querystream << " and ";
-  //Querystream << TraceName;
-  //Querystream << ".Points <> '0' ";
-
-  if ( iTimePoint != -1 )
-    {
-    if ( !iVectIDs.empty() )
-      {
-      Querystream << "(ImagingSessionID = ";
-      Querystream << ImgSessionID;
-      Querystream << " and ";
-      Querystream << "coordinate.TCoord = ";
-      Querystream << iTimePoint;
-      Querystream << " and (";
-      unsigned int i;
-      for ( i = 0; i < iVectIDs.size() - 1; i++ )
-        {
-        Querystream << TraceName;
-        Querystream << "ID = '";
-        Querystream << iVectIDs[i];
-        Querystream << "' OR ";
-        }
-      Querystream << TraceName;
-      Querystream << "ID = '";
-      Querystream << iVectIDs[i];
-      Querystream << "')";
-      }
-    Querystream << ");";
-    }
-  else
-    {
-    Querystream << "ImagingSessionID = ";
-    Querystream << ImgSessionID;
-    Querystream << ";";
-    }
-
-  query->SetQuery( Querystream.str().c_str() );
-  if ( !query->Execute() )
-    {
-    itkGenericExceptionMacro(
-      << "return info Contours query failed"
-      << query->GetLastErrorText() );
-    DatabaseConnector->Close();
-    DatabaseConnector->Delete();
-    query->Delete();
-    return;
-    }
-
-  while ( query->NextRow() )
-    {
-      {
-      ContourMeshStructure temp;
-      temp.TraceID = query->DataValue(0).ToInt();
-      vtkSmartPointer< vtkPolyDataMySQLTextReader > convert_reader =
-        vtkSmartPointer< vtkPolyDataMySQLTextReader >::New();
-      std::string polydata_string = query->DataValue(2).ToString();
-      if ( !polydata_string.empty() )
-        {
-        if ( TraceName.compare("contour") == 0 )
-          {
-          convert_reader->SetIsContour(true);
-          }
-        else
-          {
-          if ( TraceName.compare("mesh") == 0 )
-            {
-            convert_reader->SetIsContour(false);
-            }
-          }
-        vtkPolyData *output = convert_reader->GetPolyData(polydata_string);
-        temp.Nodes = output;
-        }
-      temp.TCoord       = query->DataValue(3).ToUnsignedInt();
-      /// \note For the visualization rgba values are supposed to be double in
-      /// between 0 and 1; whereas in the database these values are in between
-      /// 0 and 255.
-      temp.rgba[0]      = ( query->DataValue(4).ToDouble() ) / 255.;
-      temp.rgba[1]      = ( query->DataValue(5).ToDouble() ) / 255.;
-      temp.rgba[2]      = ( query->DataValue(6).ToDouble() ) / 255.;
-      temp.rgba[3]      = ( query->DataValue(7).ToDouble() ) / 255.;
-      ioContainer.push_back(temp);
-      }
-    }
-  query->Delete();
-}
-
-//------------------------------------------------------------------------------
-
-//------------------------------------------------------------------------------
 ContourMeshStructure GetTraceInfoFromDB(
   vtkMySQLDatabase *DatabaseConnector, std::string TraceName,
   std::string CollectionName, unsigned int TraceID)
@@ -1824,25 +1705,6 @@ std::vector< std::string > GetSamefieldFromTwoTables(
   std::stringstream          querystream;
   querystream << SelectQueryStream(iTableOne, iColumn, iField, iValue);
   querystream << " UNION ";
-  /*querystream << " UNION SELECT ";
-  querystream << iColumn;
-  querystream << " FROM ";
-  querystream << iTableTwo;
-  //querystream << SelectQueryStream(iTableTwo,iColumn,iField,iValue);
-
-  querystream << " WHERE (";
-  unsigned int i;
-  for( i=0;i < iListConditionsTwo.size()-1; i++ )
-    {
-    querystream << iFieldTwo;
-    querystream << " = '";
-    querystream << iListConditionsTwo[i];
-    querystream << "' OR ";
-    }
-  querystream << iFieldTwo;
-  querystream << " = '";
-  querystream << iListConditionsTwo[i];
-  querystream << "');";*/
   querystream << SelectQueryStreamListConditions(iTableTwo, iColumn,
                                                  iFieldTwo, iListConditionsTwo);
 
@@ -2386,4 +2248,252 @@ std::vector< std::string > GetOrderByWithLimit(vtkMySQLDatabase *iDatabaseConnec
     }
   QueryStream << iNumberLimit;
   return ExecuteSelectQuery( iDatabaseConnector, QueryStream.str() );
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string GetFirstPartQueryForTracesInfo(std::string iTraceName,std::string iCollectionName)
+{
+  std::stringstream Querystream;
+  Querystream << "SELECT ";
+  Querystream << iTraceName;
+  Querystream << ".";
+  Querystream << iTraceName;
+  Querystream << "ID, ";
+  Querystream << iTraceName;
+  Querystream << ".";
+  Querystream << iCollectionName;
+  Querystream << "ID, ";
+  Querystream << iTraceName;
+  Querystream << ".Points, coordinate.TCoord, color.Red,\
+                 color.Green, color.Blue, color.Alpha from (";
+  Querystream << iTraceName;
+  Querystream << " left join coordinate on coordinate.CoordID = ";
+  Querystream << iTraceName;
+  Querystream << ".coordIDMax) left join color on ";
+  Querystream << iTraceName;
+
+  Querystream << ".colorID = color.colorID  where ";
+  return Querystream.str().c_str();
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string GetSecondPartQueryForTracesInfo(std::string TraceName,
+                                            std::vector<int> iVectIDs)
+{
+  std::stringstream Querystream;
+  unsigned int i;
+  for ( i = 0; i < iVectIDs.size() - 1; i++ )
+    {
+    Querystream << TraceName;
+    Querystream << "ID = '";
+    Querystream << iVectIDs[i];
+    Querystream << "' OR ";
+    }
+  Querystream << TraceName;
+  Querystream << "ID = '";
+  Querystream << iVectIDs[i];
+  Querystream << "')";
+return Querystream.str().c_str();
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+void GetTracesInfoFromDBAndModifyContainer(
+  std::list< ContourMeshStructure > & ioContainer,
+  vtkMySQLDatabase *DatabaseConnector, std::string TraceName,
+  std::string CollectionName, unsigned int ImgSessionID, int iTimePoint,
+  std::vector< int > iVectIDs)
+{
+  vtkSQLQuery *query = DatabaseConnector->GetQueryInstance();
+
+  std::stringstream Querystream;
+  Querystream << GetFirstPartQueryForTracesInfo(TraceName,CollectionName);
+  /*Querystream << "SELECT ";
+  Querystream << TraceName;
+  Querystream << ".";
+  Querystream << TraceName;
+  Querystream << "ID, ";
+  Querystream << TraceName;
+  Querystream << ".";
+  Querystream << CollectionName;
+  Querystream << "ID, ";
+  Querystream << TraceName;
+  Querystream << ".Points, coordinate.TCoord, color.Red,\
+                 color.Green, color.Blue, color.Alpha from (";
+  Querystream << TraceName;
+  Querystream << " left join coordinate on coordinate.CoordID = ";
+  Querystream << TraceName;
+  Querystream << ".coordIDMax) left join color on ";
+  Querystream << TraceName;
+
+  Querystream << ".colorID = color.colorID  where "; //(ImagingSessionID = ";*/
+
+  //if ( iTimePoint != -1 )
+   // {
+    if ( !iVectIDs.empty() )
+      {
+      Querystream << "(ImagingSessionID = ";
+      Querystream << ImgSessionID;
+      //Querystream << " and ";
+      //Querystream << "coordinate.TCoord = ";
+      //Querystream << iTimePoint;
+      Querystream << " and (";
+      /*unsigned int i;
+      for ( i = 0; i < iVectIDs.size() - 1; i++ )
+        {
+        Querystream << TraceName;
+        Querystream << "ID = '";
+        Querystream << iVectIDs[i];
+        Querystream << "' OR ";
+        }
+      Querystream << TraceName;
+      Querystream << "ID = '";
+      Querystream << iVectIDs[i];*/
+     Querystream << GetSecondPartQueryForTracesInfo(TraceName,iVectIDs);
+     //Querystream << "')";
+    // }
+    Querystream << ");";
+    }
+  else
+    {
+    Querystream << "ImagingSessionID = ";
+    Querystream << ImgSessionID;
+    Querystream << ";";
+    }
+
+  query->SetQuery( Querystream.str().c_str() );
+  if ( !query->Execute() )
+    {
+    itkGenericExceptionMacro(
+      << "return info ContoursMesh query failed"
+      << query->GetLastErrorText() );
+    DatabaseConnector->Close();
+    DatabaseConnector->Delete();
+    query->Delete();
+    return;
+    }
+
+  while ( query->NextRow() )
+    {
+      {
+      ContourMeshStructure temp;
+      temp.TraceID = query->DataValue(0).ToInt();
+      vtkSmartPointer< vtkPolyDataMySQLTextReader > convert_reader =
+        vtkSmartPointer< vtkPolyDataMySQLTextReader >::New();
+      std::string polydata_string = query->DataValue(2).ToString();
+      if ( !polydata_string.empty() )
+        {
+        if ( TraceName.compare("contour") == 0 )
+          {
+          convert_reader->SetIsContour(true);
+          }
+        else
+          {
+          if ( TraceName.compare("mesh") == 0 )
+            {
+            convert_reader->SetIsContour(false);
+            }
+          }
+        vtkPolyData *output = convert_reader->GetPolyData(polydata_string);
+        temp.Nodes = output;
+        }
+      temp.TCoord       = query->DataValue(3).ToUnsignedInt();
+      /// \note For the visualization rgba values are supposed to be double in
+      /// between 0 and 1; whereas in the database these values are in between
+      /// 0 and 255.
+      temp.rgba[0]      = ( query->DataValue(4).ToDouble() ) / 255.;
+      temp.rgba[1]      = ( query->DataValue(5).ToDouble() ) / 255.;
+      temp.rgba[2]      = ( query->DataValue(6).ToDouble() ) / 255.;
+      temp.rgba[3]      = ( query->DataValue(7).ToDouble() ) / 255.;
+      ioContainer.push_back(temp);
+      }
+    }
+  query->Delete();
+}
+
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+void GetTracesInfoFromDBAndModifyContainer(
+  std::list< TrackStructure > & ioContainer,
+  vtkMySQLDatabase *DatabaseConnector, std::string TraceName,
+  std::string CollectionName, unsigned int ImgSessionID,
+  std::vector< int > iVectIDs)
+{
+  vtkSQLQuery *query = DatabaseConnector->GetQueryInstance();
+  std::stringstream Querystream;
+  Querystream << "SELECT ";
+  Querystream << TraceName;
+  Querystream << ".";
+  Querystream << TraceName;
+  Querystream << "ID, ";
+  Querystream << TraceName;
+  Querystream << ".";
+  Querystream << CollectionName;
+  Querystream << "ID, ";
+  Querystream << TraceName;
+  Querystream << ".Points,color.Red,\
+                 color.Green, color.Blue, color.Alpha from ";
+  Querystream << TraceName;
+  Querystream << " left join color on ";
+  Querystream << TraceName;
+
+  Querystream << ".colorID = color.colorID  where ";
+  Querystream << "ImagingSessionID = ";
+  Querystream << ImgSessionID;
+  Querystream << ";";
+
+  if ( !iVectIDs.empty() )
+      {
+      Querystream << "(ImagingSessionID = ";
+      Querystream << ImgSessionID;
+      Querystream << " and (";
+      GetSecondPartQueryForTracesInfo(TraceName,iVectIDs);
+      Querystream << "')";
+     }
+  else
+    {
+    Querystream << "ImagingSessionID = ";
+    Querystream << ImgSessionID;
+    Querystream << ";";
+    }
+
+  query->SetQuery( Querystream.str().c_str() );
+  if ( !query->Execute() )
+    {
+    itkGenericExceptionMacro(
+      << "return info tracks query failed"
+      << query->GetLastErrorText() );
+    DatabaseConnector->Close();
+    DatabaseConnector->Delete();
+    query->Delete();
+    return;
+    }
+
+  while ( query->NextRow() )
+    {
+      {
+      TrackStructure temp;
+      temp.TraceID = query->DataValue(0).ToInt();
+      vtkSmartPointer< vtkPolyDataMySQLTrackReader > convert_reader =
+        vtkSmartPointer< vtkPolyDataMySQLTrackReader >::New();
+      std::string polydata_string = query->DataValue(2).ToString();
+      if ( !polydata_string.empty() )
+        {
+        vtkPolyData *output = convert_reader->GetPolyData(polydata_string);
+        temp.Nodes = output;
+        }
+      /// \note For the visualization rgba values are supposed to be double in
+      /// between 0 and 1; whereas in the database these values are in between
+      /// 0 and 255.
+      temp.rgba[0]      = ( query->DataValue(3).ToDouble() ) / 255.;
+      temp.rgba[1]      = ( query->DataValue(4).ToDouble() ) / 255.;
+      temp.rgba[2]      = ( query->DataValue(5).ToDouble() ) / 255.;
+      temp.rgba[3]      = ( query->DataValue(6).ToDouble() ) / 255.;
+      ioContainer.push_back(temp);
+      }
+    }
+  query->Delete();
 }

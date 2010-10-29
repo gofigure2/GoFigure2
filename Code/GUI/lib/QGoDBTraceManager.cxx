@@ -39,7 +39,7 @@
 #include <QMessageBox>
 
 QGoDBTraceManager::QGoDBTraceManager():
-  m_Table(NULL), m_CollectionOfTraces(NULL), m_TraceContainerInfoForVisu(NULL)
+  m_Table(NULL), m_CollectionOfTraces(NULL)//, m_TraceContainerInfoForVisu(NULL)
 {}
 
 //-------------------------------------------------------------------------
@@ -114,7 +114,7 @@ int QGoDBTraceManager::GetLastCreatedTraceID(
   return GetColumnForBoundedValue(this->m_TraceNameID,
                                   this->m_TraceName, ConvertToString< unsigned int >(this->m_ImgSessionID),
                                   "ZCoord", ConvertToString< int >(iZCoord), iDatabaseConnector);
-}*/
+}
 
 //-------------------------------------------------------------------------
 
@@ -172,10 +172,12 @@ void QGoDBTraceManager::UpdateTWAndContainerForExistingTraces(
     TraceIDs.push_back(*iter);
     iter++;
     }
+  this->GetTracesInfoFromDBAndModifyContainerForVisu(iDatabaseConnector,
+    iTraceIDs);
   //GetTracesInfoFromDBAndModifyContainer(this->m_TraceContainerInfoForVisu,iDatabaseConnector,
   //  this->m_TraceName,this->m_CollectionName,
   // this->m_ImgSessionID,-1,iTraceIDs);
-}
+}*/
 
 //-------------------------------------------------------------------------
 
@@ -194,7 +196,7 @@ void QGoDBTraceManager::UpdateTWAndContainerForExistingTraces(
   //GetTracesInfoFromDBAndModifyContainer(this->m_TraceContainerInfoForVisu,
   //  iDatabaseConnector, this->m_TraceName,
   //  this->m_CollectionName, this->m_ImgSessionID,-1,ListIDs);
-}*/
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -204,19 +206,19 @@ void QGoDBTraceManager::UpdateTWAndContainerForDeletedTraces(
   this->m_TraceContainerInfoForVisu->DeleteAllHighlightedElements();
   this->m_Table->DeleteCheckedRows(this->m_TraceNameID, iTraceIDs);
 }
-
+*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::list< unsigned int > QGoDBTraceManager::GetListHighlightedIDs()
+/*std::list< unsigned int > QGoDBTraceManager::GetListHighlightedIDs()
 {
   return this->m_TraceContainerInfoForVisu->GetHighlightedElementsTraceID();
 }
-
+*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBTraceManager::SetTracesInfoContainerForVisu(
+/*void QGoDBTraceManager::SetTracesInfoContainerForVisu(
   ContourMeshContainer *iContainerForVisu)
 {
   this->m_TraceContainerInfoForVisu = iContainerForVisu;
@@ -229,7 +231,7 @@ void QGoDBTraceManager::SetTracesInfoContainerForVisu(
                     SIGNAL( TraceVisibilityChanged(uint, Qt::CheckState) ),
                     this,
                     SLOT ( ShowTheTraceInTW(uint, Qt::CheckState) ) );
-}
+}*/
 
 //-------------------------------------------------------------------------
 
@@ -253,21 +255,21 @@ void QGoDBTraceManager::AddActionsContextMenu(QMenu *iMenu)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBTraceManager::UpdateHighlightedElementsInVisuContainer(int iTraceID)
+/*void QGoDBTraceManager::UpdateHighlightedElementsInVisuContainer(int iTraceID)
 {
   this->m_TraceContainerInfoForVisu->
   UpdateElementHighlightingWithGivenTraceID(iTraceID);
-}
+}*/
 
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBTraceManager::UpdateVisibleElementsInVisuContainer(int iTraceID)
+/*void QGoDBTraceManager::UpdateVisibleElementsInVisuContainer(int iTraceID)
 {
   this->m_TraceContainerInfoForVisu->
-  UpdateElementVisibilityWithGivenTraceID(iTraceID);
+    UpdateElementVisibilityWithGivenTraceID(iTraceID);
 }
-
+*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -399,7 +401,8 @@ void QGoDBTraceManager::DisplayInfoForExistingTraces(vtkMySQLDatabase *
 void QGoDBTraceManager::DeleteTracesFromContextMenu()
 {
   std::list< unsigned int > ListTracesIDToDelete =
-    this->m_TraceContainerInfoForVisu->GetHighlightedElementsTraceID();
+    this->GetListHighlightedIDs();
+    //this->m_TraceContainerInfoForVisu->GetHighlightedElementsTraceID();
 
   if ( ListTracesIDToDelete.empty() )
     {
@@ -428,7 +431,7 @@ void QGoDBTraceManager::DeleteTracesFromContextMenu()
 //-------------------------------------------------------------------------
 
 //------------------------------------------------------------------------
-void QGoDBTraceManager::DeleteTraces(
+/*void QGoDBTraceManager::DeleteTraces(
   vtkMySQLDatabase *iDatabaseConnector)
 {
   std::list< unsigned int > ListTracesIDs =
@@ -436,7 +439,7 @@ void QGoDBTraceManager::DeleteTraces(
   this->m_CollectionOfTraces->DeleteTracesInDB(
     ListTracesIDs, iDatabaseConnector);
   this->UpdateTWAndContainerForDeletedTraces(ListTracesIDs);
-}
+}*/
 
 //-------------------------------------------------------------------------
 
@@ -466,7 +469,7 @@ void QGoDBTraceManager::UpdateBoundingBoxes(vtkMySQLDatabase *iDatabaseConnector
                                             std::list< unsigned int > iListTracesIDs)
 {
   this->m_CollectionOfTraces->
-  RecalculateDBBoundingBox(iDatabaseConnector, iListTracesIDs);
+    RecalculateDBBoundingBox(iDatabaseConnector, iListTracesIDs);
   this->DisplayInfoForExistingTraces(iDatabaseConnector, iListTracesIDs);
 }
 
@@ -518,7 +521,8 @@ void QGoDBTraceManager::CheckTheTraceInTW(unsigned int iTraceID,
 //-------------------------------------------------------------------------
 
 //------------------------------------------------------------------------
-void QGoDBTraceManager::ShowTheTraceInTW(unsigned int iTraceID, Qt::CheckState iState)
+void QGoDBTraceManager::ShowTheTraceInTW(unsigned int iTraceID, 
+                                         Qt::CheckState iState)
 {
   this->m_Table->SetVisibleStateForTraceID(iTraceID,
                                            this->m_TraceName, iState, false);
@@ -530,7 +534,8 @@ void QGoDBTraceManager::ShowTheTraceInTW(unsigned int iTraceID, Qt::CheckState i
 void QGoDBTraceManager::GoToTheTrace()
 {
   std::list< unsigned int > ListCheckedTraces =
-    this->m_TraceContainerInfoForVisu->GetHighlightedElementsTraceID();
+    //this->m_TraceContainerInfoForVisu->GetHighlightedElementsTraceID();
+    this->GetListHighlightedIDs();
   if ( ListCheckedTraces.size() != 1 )
     {
     QMessageBox msgBox;
@@ -556,7 +561,8 @@ void QGoDBTraceManager::GoToTheTrace()
 void QGoDBTraceManager::CreateCorrespondingCollection()
 {
   std::list< unsigned int > ListCheckedTraces =
-    this->m_TraceContainerInfoForVisu->GetHighlightedElementsTraceID();
+    //this->m_TraceContainerInfoForVisu->GetHighlightedElementsTraceID();
+    this->GetListHighlightedIDs();
   if ( ListCheckedTraces.empty() )
     {
     QMessageBox msgBox;
@@ -591,7 +597,8 @@ GoDBCoordinateRow QGoDBTraceManager::GetCoordinateFromInt(int iXCoord,
 void QGoDBTraceManager::AddToSelectedCollection()
 {
   emit CheckedTracesToAddToSelectedCollection(
-    this->m_TraceContainerInfoForVisu->GetHighlightedElementsTraceID() );
+    //this->m_TraceContainerInfoForVisu->GetHighlightedElementsTraceID() );
+    this->GetListHighlightedIDs() );
 }
 
 //-------------------------------------------------------------------------

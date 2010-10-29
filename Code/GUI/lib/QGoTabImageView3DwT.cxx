@@ -606,8 +606,7 @@ QGoTabImageView3DwT::SetTheContainersForDB()
 {
   m_DataBaseTables->SetContoursContainer(m_ContourContainer);
   m_DataBaseTables->SetMeshesContainer(m_MeshContainer);
-  /// TODO fix
-  //m_DataBaseTables->SetTracksContainer(m_TrackContainer);
+  m_DataBaseTables->SetTracksContainer(m_TrackContainer);
 }
 
 //-------------------------------------------------------------------------
