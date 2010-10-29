@@ -1628,27 +1628,31 @@ std::string SelectQueryStreamListConditions(std::string iTable,
 {
   std::stringstream querystream;
 
-  querystream << "SELECT ";
-  if ( Distinct )
+  if( !iListValues.empty() )
     {
-    querystream << "DISTINCT ";
-    }
-  querystream << iColumn;
-  querystream << " FROM ";
-  querystream << iTable;
-  querystream << " WHERE (";
-  unsigned int i;
-  for ( i = 0; i < iListValues.size() - 1; i++ )
-    {
+    querystream << "SELECT ";
+    if ( Distinct )
+      {
+      querystream << "DISTINCT ";
+      }
+    querystream << iColumn;
+    querystream << " FROM ";
+    querystream << iTable;
+    querystream << " WHERE (";
+    unsigned int i;
+    for ( i = 0; i < iListValues.size() - 1; i++ )
+      {
+      querystream << iField;
+      querystream << " = '";
+      querystream << iListValues[i];
+      querystream << "' OR ";
+      }
     querystream << iField;
     querystream << " = '";
     querystream << iListValues[i];
-    querystream << "' OR ";
+    querystream << "')";
     }
-  querystream << iField;
-  querystream << " = '";
-  querystream << iListValues[i];
-  querystream << "')";
+
   return querystream.str();
 }
 
