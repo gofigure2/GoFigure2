@@ -78,11 +78,8 @@ void QGoDBMeshManager::SetCollectionsTraceNames()
 
 //-------------------------------------------------------------------------
 void QGoDBMeshManager::DisplayInfoAndLoadVisuContainerForAllMeshes(
-  vtkMySQLDatabase *iDatabaseConnector) //,unsigned int iTimePoint)
+  vtkMySQLDatabase *iDatabaseConnector)
 {
-  //this->DisplayInfoForAllTraces(iDatabaseConnector);
-  //this->DisplayInfoAndLoadVisuContainerWithAllTraces< GoDBTWContainerForMesh >
-  //  (this->m_TWContainer, iDatabaseConnector); //,iTimePoint);
   this->DisplayInfoAndLoadVisuContainerWithAllTraces< 
     GoDBTWContainerForMesh >(this->m_TWContainer,iDatabaseConnector);
 }
