@@ -2284,6 +2284,10 @@ std::string GetSecondPartQueryForTracesInfo(std::string TraceName,
 {
   std::stringstream Querystream;
   unsigned int i;
+  if (iVectIDs.size()>1)
+    {
+    Querystream << "(";
+    }
   for ( i = 0; i < iVectIDs.size() - 1; i++ )
     {
     Querystream << TraceName;
@@ -2294,7 +2298,13 @@ std::string GetSecondPartQueryForTracesInfo(std::string TraceName,
   Querystream << TraceName;
   Querystream << "ID = '";
   Querystream << iVectIDs[i];
-  Querystream << "')";
+  if (iVectIDs.size()>1)
+    {
+    Querystream << "')";
+    }
+  else
+    Querystream << "'";
+  //Querystream << "')";
 return Querystream.str().c_str();
 }
 //------------------------------------------------------------------------------
@@ -2339,7 +2349,7 @@ void GetTracesInfoFromDBAndModifyContainer(
       //Querystream << " and ";
       //Querystream << "coordinate.TCoord = ";
       //Querystream << iTimePoint;
-      Querystream << " and (";
+      Querystream << " and ";
       /*unsigned int i;
       for ( i = 0; i < iVectIDs.size() - 1; i++ )
         {
@@ -2353,6 +2363,7 @@ void GetTracesInfoFromDBAndModifyContainer(
       Querystream << iVectIDs[i];*/
      Querystream << GetSecondPartQueryForTracesInfo(TraceName,iVectIDs);
      //Querystream << "')";
+     //Querystream << "')";
     // }
     Querystream << ");";
     }
@@ -2362,7 +2373,7 @@ void GetTracesInfoFromDBAndModifyContainer(
     Querystream << ImgSessionID;
     Querystream << ";";
     }
-
+  
   query->SetQuery( Querystream.str().c_str() );
   if ( !query->Execute() )
     {
@@ -2441,17 +2452,17 @@ void GetTracesInfoFromDBAndModifyContainer(
   Querystream << TraceName;
 
   Querystream << ".colorID = color.colorID  where ";
-  Querystream << "ImagingSessionID = ";
-  Querystream << ImgSessionID;
-  Querystream << ";";
+  //Querystream << "ImagingSessionID = ";
+  //Querystream << ImgSessionID;
+  //Querystream << ";";
 
   if ( !iVectIDs.empty() )
       {
       Querystream << "(ImagingSessionID = ";
       Querystream << ImgSessionID;
-      Querystream << " and (";
-      GetSecondPartQueryForTracesInfo(TraceName,iVectIDs);
-      Querystream << "')";
+      Querystream << " and ";
+      Querystream << GetSecondPartQueryForTracesInfo(TraceName,iVectIDs);
+      Querystream << ")";
      }
   else
     {
