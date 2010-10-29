@@ -622,8 +622,6 @@ AddPointToCurrentElement(double* iPoint)
   vtkSmartPointer<vtkIntArray> temporalArray =
       vtkIntArray::SafeDownCast(this->m_CurrentElement.Nodes->GetFieldData()
           ->GetArray("TemporalInformation"));
-  temporalArray->SetNumberOfComponents(1);
-  temporalArray->SetName("TemporalInformation");
 
   // fill a map so the points will be ordered automatically
   for ( vtkIdType i = 0; i < N; i++ )
@@ -640,6 +638,8 @@ AddPointToCurrentElement(double* iPoint)
   // read map and fill points
   vtkSmartPointer< vtkPoints > newPoints = vtkSmartPointer< vtkPoints >::New();
   vtkSmartPointer<vtkIntArray> newArray = vtkSmartPointer<vtkIntArray>::New();
+  newArray->SetNumberOfComponents(1);
+  newArray->SetName("TemporalInformation");
   std::map<int, double*>::iterator it = orderedPoints.begin();
 
   while(it != orderedPoints.end())
