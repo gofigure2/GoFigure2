@@ -67,7 +67,7 @@ GetPolyData(const std::string & iString)
   str >> N;
 
   // if N == 0, the mesh is a collection of contours
-  vtkSmartPointer<vtkPolyData> oMesh = NULL;
+  vtkSmartPointer<vtkPolyData> oMesh;
   if ( N != 0 )
     {
     oMesh = vtkSmartPointer<vtkPolyData>::New();

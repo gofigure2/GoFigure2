@@ -35,15 +35,15 @@
 #include "vtkPolyDataReader.h"
 #include "vtkPolyDataWriter.h"
 #include "vtkPolyData.h"
-#include "vtkPolyDataMySQLTextWriter.h"
-#include "vtkPolyDataMySQLTextReader.h"
+#include "vtkPolyDataMySQLMeshWriter.h"
+#include "vtkPolyDataMySQLMeshReader.h"
 
 int main(int argc, char **argv)
 {
   if ( argc != 2 )
     {
     std::cout << "Usage:" << std::endl;
-    std::cout << "./vtkPolyDataMySQLTextReader vtkfile" << std::endl;
+    std::cout << "./vtkPolyDataMySQLMeshWriter vtkfile" << std::endl;
     return EXIT_FAILURE;
     }
 
@@ -53,14 +53,14 @@ int main(int argc, char **argv)
 
   vtkPolyData *input = vtk_reader->GetOutput();
 
-  vtkPolyDataMySQLTextWriter *convert_writer =
-    vtkPolyDataMySQLTextWriter::New();
+  vtkPolyDataMySQLMeshWriter *convert_writer =
+      vtkPolyDataMySQLMeshWriter::New();
   std::string polydata_string = convert_writer->GetMySQLText(input);
 
-  vtkPolyDataMySQLTextReader *convert_reader =
-    vtkPolyDataMySQLTextReader::New();
-  convert_reader->SetIsContour( convert_writer->GetIsContour() );
-  vtkPolyData *output = convert_reader->GetPolyData(polydata_string);
+  vtkPolyDataMySQLMeshReader *convert_reader =
+      vtkPolyDataMySQLMeshReader::New();
+  vtkPolyData *output = vtkPolyData::New();
+  output->DeepCopy(convert_reader->GetPolyData(polydata_string));
 
   if ( output->GetNumberOfPoints() != input->GetNumberOfPoints() )
     {

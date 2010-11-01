@@ -35,14 +35,14 @@
 #include "vtkPolyDataReader.h"
 #include "vtkPolyData.h"
 
-#include "vtkPolyDataMySQLTextWriter.h"
+#include "vtkPolyDataMySQLContourWriter.h"
 
 int main(int argc, char **argv)
 {
   if ( argc != 2 )
     {
     std::cout << "Usage:" << std::endl;
-    std::cout << "./vtkPolyDataMySQLTextWriter vtkfile" << std::endl;
+    std::cout << "./vtkPolyDataMySQLContourWriter vtkfile" << std::endl;
     return EXIT_FAILURE;
     }
 
@@ -52,7 +52,7 @@ int main(int argc, char **argv)
 
   vtkPolyData *contour = reader->GetOutput();
 
-  vtkPolyDataMySQLTextWriter *convert = vtkPolyDataMySQLTextWriter::New();
+  vtkPolyDataMySQLContourWriter *convert = vtkPolyDataMySQLContourWriter::New();
   std::cout << convert->GetMySQLText(contour) << std::endl;
 
   convert->Delete();

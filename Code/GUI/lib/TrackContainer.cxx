@@ -648,7 +648,7 @@ void
 TrackContainer::
 AddPointToCurrentElement(double* iPoint)
 {
-  if(!this->m_CurrentElement.Nodes)
+  if(!this->m_CurrentElement.ActorXY)
     {
     // Create a new polydata
     // no actors to be removed then

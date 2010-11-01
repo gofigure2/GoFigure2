@@ -512,7 +512,7 @@ QGoMainWindow::LoadTracksFromDatabase(const int & iT, const std::string & iTrace
       TrackContainer::MultiIndexContainer::index< TraceID >::type::iterator
         track_list_it = temp->m_Container.get< TraceID >().begin();
 
-      ShowPolyData(track_list_it->Nodes);
+      //ShowPolyData(track_list_it->Nodes);
 
       // we don't need here to save this contour in the database,
       // since they have just been extracted from it!
