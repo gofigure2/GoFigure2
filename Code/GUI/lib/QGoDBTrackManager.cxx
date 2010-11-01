@@ -43,11 +43,6 @@ QGoDBTrackManager::QGoDBTrackManager(int iImgSessionID, QWidget *iparent):
   this->SetInfo(iImgSessionID, iparent);
   this->m_TWContainer = new GoDBTWContainerForTrackLineage(this->m_TraceName,
                                                            this->m_CollectionName, iImgSessionID);
-
-  QObject::connect(this->m_TrackContainerInfoForVisu,
-                    SIGNAL(CurrentTrackToSave()),
-                    this,
-                    SLOT(SaveTrackCurrentElement()));
 }
 
 //-------------------------------------------------------------------------
@@ -68,6 +63,12 @@ void QGoDBTrackManager::SetTracksInfoContainerForVisu(
 {
   this->SetTracesInfoContainerForVisuTemplate<TrackContainer>(
     iContainerForVisu,&this->m_TrackContainerInfoForVisu);
+
+  // Connect the signals once we have the container
+  QObject::connect(this->m_TrackContainerInfoForVisu,
+                    SIGNAL(CurrentTrackToSave()),
+                    this,
+                    SLOT(SaveTrackCurrentElement()));
 }
 //-------------------------------------------------------------------------
 
