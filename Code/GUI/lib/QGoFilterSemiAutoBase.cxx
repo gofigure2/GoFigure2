@@ -49,6 +49,7 @@
 #include "vtkCellArray.h"
 #include "vtkPolylineDecimation.h"
 #include "vtkStripper.h"
+#include "vtkFeatureEdges.h"
 
 // construct mesh
 #include "vtkMarchingCubes.h"
@@ -58,6 +59,7 @@
 #include "vtkFillHolesFilter.h"
 // and smooth it...!
 #include "vtkSmoothPolyDataFilter.h"
+#include "vtkPolyDataWriter.h"
 
 // to cut
 #include "vtkPlane.h"
@@ -479,14 +481,45 @@ QGoFilterSemiAutoBase::ReconstructMesh(vtkImageData *iInputImage, const double &
   contours->SetNumberOfContours(1);
   contours->Update();
 
-  // fill holes
+//   vtkSmartPointer< vtkPolyDataWriter > pWriter = vtkSmartPointer< vtkPolyDataWriter >::New();
+//   pWriter->SetFileName( "test1.vtk" );
+//   pWriter->SetInput( contours->GetOutput() );
+//   pWriter->Write();
+  
+  vtkSmartPointer<vtkFeatureEdges> feature = vtkSmartPointer<vtkFeatureEdges>::New();
+  feature->SetInputConnection( contours->GetOutputPort() );
+  feature->BoundaryEdgesOn();
+  feature->FeatureEdgesOff();
+  feature->NonManifoldEdgesOff();
+  feature->ManifoldEdgesOff();
+  feature->Update(); 
+  
+  std::cout << feature->GetOutput()->GetNumberOfCells() << std::endl;
+  
+  vtkSmartPointer< vtkPolyData > temp;
   vtkFillHolesFilter* fillFilter = vtkFillHolesFilter::New();
-  fillFilter->SetInput( contours->GetOutput() );
-  fillFilter->Update();
-
+  
+  if ( feature->GetOutput()->GetNumberOfCells() > 0 )
+    {
+    // fill holes
+    fillFilter->SetInputConnection( contours->GetOutputPort() );
+    fillFilter->Update();
+    
+    temp = fillFilter->GetOutput();
+    }
+  else
+    {
+    temp = contours->GetOutput();
+    }
+  
+/*  vtkSmartPointer< vtkPolyDataWriter > pWriter = vtkSmartPointer< vtkPolyDataWriter >::New();
+  pWriter->SetFileName( "test.vtk" );
+  pWriter->SetInput( contours->GetOutput() );
+  pWriter->Write();*/
+  
   vtkSmoothPolyDataFilter* smoother =
       vtkSmoothPolyDataFilter::New();
-  smoother->SetInput(fillFilter->GetOutput());
+  smoother->SetInput( temp );
   smoother->SetNumberOfIterations(400);
   smoother->Update();
 
