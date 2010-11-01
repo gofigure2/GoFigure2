@@ -422,13 +422,13 @@ unsigned int QGoPrintDatabase::SaveNewContourForMeshToContours(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::SaveTrackCurrentElement()
+/*void QGoPrintDatabase::SaveTrackCurrentElement()
 {
   this->OpenDBConnection();
   this->m_TracksManager->SaveTrackCurrentElement(this->m_DatabaseConnector);
   this->CloseDBConnection();
 }
-/*
+
 std::vector< ContourMeshStructure > QGoPrintDatabase::GetTracesForAGivenTimepoint(
   ContourMeshStructureMultiIndexContainer iAllTraces,
   unsigned int iTimePoint)
@@ -1125,20 +1125,6 @@ void QGoPrintDatabase::DeleteTracks()
   this->DeleteTraces< QGoDBTrackManager, QGoDBMeshManager, QGoDBMeshManager >(
     this->m_TracksManager, this->m_MeshesManager, this->m_MeshesManager, true);
 }
-
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void QGoPrintDatabase::SetTracksManager()
-{
-  this->m_TracksManager = new QGoDBTrackManager(m_ImgSessionID, this);
-  QObject::connect( this->m_TracksManager,
-                    SIGNAL( TraceColorToChange() ),
-                    this, SLOT( ChangeTrackColor() ) );
-  QObject::connect( this->m_TracksManager, SIGNAL( TracesToDelete() ),
-                    this, SLOT( DeleteTracks() ) );
-}
-
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -1232,6 +1218,10 @@ void QGoPrintDatabase::SetContoursManager()
                     SIGNAL( CheckedTracesToAddToSelectedCollection(
                               std::list< unsigned int > ) ), this,
                     SLOT( AddCheckedContoursToSelectedMesh(std::list< unsigned int > ) ) );
+  QObject::connect( this->m_ContoursManager,
+                    SIGNAL(DBConnectionNotNeededAnymore() ),
+                    this,
+                    SLOT(this->CloseDBConnection() ) );
 }
 
 //--------------------------------------------------------------------------
@@ -1257,7 +1247,26 @@ void QGoPrintDatabase::SetMeshesManager()
                               std::list< unsigned int > ) ), this,
                     SLOT( AddCheckedMeshesToSelectedTrack(std::list< unsigned int > ) ) );
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
+void QGoPrintDatabase::SetTracksManager()
+{
+  this->m_TracksManager = new QGoDBTrackManager(m_ImgSessionID, this);
+  QObject::connect( this->m_TracksManager,
+                    SIGNAL( TraceColorToChange() ),
+                    this, SLOT( ChangeTrackColor() ) );
+  QObject::connect( this->m_TracksManager, SIGNAL( TracesToDelete() ),
+                    this, SLOT( DeleteTracks() ) );
+
+  QObject::connect( this->m_TracksManager,
+                    SIGNAL(DBConnectionNotNeededAnymore() ),
+                    this,
+                    SLOT(this->CloseDBConnection() ) );
+
+  QObject::connect( this->m_TracksManager, SIGNAL( NeedToGetDatabaseConnection() ),
+                    this, SLOT( PassDBConnectionToTracksManager() ) );
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -1266,7 +1275,14 @@ void QGoPrintDatabase::PassDBConnectionToContoursManager()
   this->OpenDBConnection();
   this->m_ContoursManager->SetDatabaseConnection(this->m_DatabaseConnector);
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
+void QGoPrintDatabase::PassDBConnectionToTracksManager()
+{
+  this->OpenDBConnection();
+  this->m_TracksManager->SetDatabaseConnection(this->m_DatabaseConnector);
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
