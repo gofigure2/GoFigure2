@@ -34,5 +34,6 @@ set( dashboard_cache "
   "
   )
 
+set(ENV{DISPLAY} ":0")
 
 include(${CTEST_SCRIPT_DIRECTORY}/gofigure2_common.cmake)
