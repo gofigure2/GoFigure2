@@ -55,10 +55,12 @@ GoDBMeshRow::~GoDBMeshRow()
 GoDBMeshRow::GoDBMeshRow(vtkMySQLDatabase *DatabaseConnector,
                          vtkPolyData *TraceVisu, GoDBCoordinateRow Min, GoDBCoordinateRow Max,
                          unsigned int ImgSessionID, GoFigureMeshAttributes *iMeshAttributes):
-  GoDBTraceRow(DatabaseConnector, TraceVisu, Min, Max, ImgSessionID)
+  GoDBTraceRow()
+  //GoDBTraceRow(DatabaseConnector, TraceVisu, Min, Max, ImgSessionID)
 {
   this->InitializeMap();
   //this->SetTheBoundingBox(DatabaseConnector, Min, Max);
+  this->SetCollectionID(ImgSessionID);
   this->SetTheDataFromTheVisu(DatabaseConnector, TraceVisu, Min, Max, iMeshAttributes);
   /*if (this->DoesThisBoundingBoxExist(DatabaseConnector))
     {
@@ -77,9 +79,10 @@ GoDBMeshRow::GoDBMeshRow(vtkMySQLDatabase *DatabaseConnector,
 
 //-------------------------------------------------------------------------
 GoDBMeshRow::GoDBMeshRow(unsigned int ImagingSessionID):
-  GoDBTraceRow(ImagingSessionID)
+  GoDBTraceRow()
 {
   this->InitializeMap();
+  this->SetCollectionID(ImagingSessionID);
 }
 
 //-------------------------------------------------------------------------
