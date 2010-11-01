@@ -32,27 +32,29 @@ for a in Action:
 				wait(1)
 				type("Widget Test")
 				click("ok.png")
-				#assert new name comes up on widget with correct color
+				assert exists("previousStateWidgetTest.png")
+
 				#assert new name and color comes up in mysql
 			if a == "Cancel":
 				click("cancel.png")
-				
+				assert exists("previousStateWidgetTest.png")
 			if a == "No Name":
 				click("ok.png")
 				wait(1)
 				
-				#onAppear("errorPopUp.png")
+				assert exists("errorPopUp.png")
 				click("ok.png")
 				click("cancel.png")
-				#assert exists()
+				assert exists("previousStateWidgetTest.png")
 			if a == "Existing Name":
 				type("Widget Test")
 				wait(1)
 				click("ok.png")
-				#cannot use assertExist in sikuli editor
-				#onAppear("errorPopUp.png")
+				
+				assert exists("errorPopUp.png")
 				click("ok.png")
 				click("cancel.png")
+				assert exists("previousStateWidgetTest.png")
 #call time elapse function
 
 #test 2: Add a new... and click cancel
