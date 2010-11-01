@@ -35,6 +35,7 @@
 #include "GoDBColorRow.h"
 #include "SelectQueryDatabaseHelper.h"
 #include "GoDBRecordSetHelper.h"
+#include "vtkPolyDataMySQLContourWriter.h"
 #include "vtkSmartPointer.h"
 
 GoDBTraceRow::GoDBTraceRow()
@@ -72,12 +73,13 @@ GoDBTraceRow::GoDBTraceRow(vtkMySQLDatabase *DatabaseConnector,
                            std::string TraceVisu, GoDBCoordinateRow Min, GoDBCoordinateRow Max,
                            unsigned int ImgSessionID)
 {
+  /*
   this->InitializeMap();
   this->SetTheBoundingBox(DatabaseConnector, Min, Max);
   this->m_MapRow["ImagingSessionID"] =
     ConvertToString< unsigned int >(ImgSessionID);
 
-  this->SetField("Points", TraceVisu);
+  this->SetField("Points", TraceVisu);*/
 }
 //-------------------------------------------------------------------------
 
@@ -87,14 +89,13 @@ void GoDBTraceRow::SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector,
                                          GoDBCoordinateRow iCoordMin,
                                          GoDBCoordinateRow iCoordMax)
 {
-  /*
   this->SetTheBoundingBox(DatabaseConnector, iCoordMin, iCoordMax);
 
-  vtkSmartPointer< vtkPolyDataMySQLTextWriter > convert =
-    vtkSmartPointer< vtkPolyDataMySQLTextWriter >::New();
+  vtkSmartPointer< vtkPolyDataMySQLContourWriter > convert =
+    vtkSmartPointer< vtkPolyDataMySQLContourWriter >::New();
   std::string PointsString = convert->GetMySQLText(TraceVisu);
 
-  this->SetField("Points", PointsString);*/
+  this->SetField("Points", PointsString);
 }
 //-------------------------------------------------------------------------
 

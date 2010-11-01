@@ -34,6 +34,10 @@
 #include "GoDBContourRow.h"
 #include "SelectQueryDatabaseHelper.h"
 #include "GoDBRecordSetHelper.h"
+
+#include "vtkPolyDataMySQLContourWriter.h"
+#include "vtkSmartPointer.h"
+
 #include <iostream>
 
 GoDBContourRow::GoDBContourRow():GoDBTraceRow()
@@ -134,3 +138,24 @@ void GoDBContourRow::SetTheDataFromTheVisu(
     std::cout << "The bounding box already exists for this mesh" << std::endl;
     }
 }*/
+//-------------------------------------------------------------------------
+void GoDBContourRow::SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector,
+                                        vtkPolyData *TraceVisu,
+                                        GoDBCoordinateRow iCoordMin,
+                                        GoDBCoordinateRow iCoordMax)
+{
+  this->SetTheBoundingBox(DatabaseConnector, iCoordMin, iCoordMax);
+
+  vtkSmartPointer< vtkPolyDataMySQLContourWriter > convert =
+    vtkSmartPointer< vtkPolyDataMySQLContourWriter >::New();
+  std::string PointsString = convert->GetMySQLText(TraceVisu);
+
+  std::cout << "output string: " << PointsString << std::endl;
+
+  this->SetField("Points", PointsString);
+
+  if ( this->DoesThisBoundingBoxExist(DatabaseConnector) )
+    {
+    std::cout << "The bounding box already exists for this mesh" << std::endl;
+    }
+}

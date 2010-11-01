@@ -140,6 +140,8 @@ void GoDBMeshRow::SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector,
     vtkSmartPointer< vtkPolyDataMySQLMeshWriter >::New();
   std::string PointsString = convert->GetMySQLText(TraceVisu);
 
+  std::cout << "output string: " << PointsString << std::endl;
+
   this->SetField("Points", PointsString);
 
   if ( this->DoesThisBoundingBoxExist(DatabaseConnector) )
