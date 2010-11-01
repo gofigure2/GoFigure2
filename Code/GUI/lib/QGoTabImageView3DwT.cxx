@@ -2804,8 +2804,9 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord)
     m_TrackContainer->UpdateCurrentElementActorsFromVisu(trackActors);
     }
   m_TrackContainer->InsertCurrentElement();
+
   // UPDATE THE DATABASE WITH THE CURRENT ELEMENT
-  //this->m_DataBaseTables->UpdateTackPoints();
+  // emit UpdateTrackPoints();
 }
 //-------------------------------------------------------------------------
 

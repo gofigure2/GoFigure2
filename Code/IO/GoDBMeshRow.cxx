@@ -36,6 +36,10 @@
 #include "SelectQueryDatabaseHelper.h"
 #include "GoDBRecordSetHelper.h"
 #include "GoDBIntensityRow.h"
+#include "vtkPolyDataMySQLMeshWriter.h"
+
+#include "vtkSmartPointer.h"
+
 #include <iostream>
 
 //-------------------------------------------------------------------------
@@ -125,7 +129,15 @@ void GoDBMeshRow::SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector,
                                         GoDBCoordinateRow iCoordMax,
                                         GoFigureMeshAttributes *iMeshAttributes)
 {
-  GoDBTraceRow::SetTheDataFromTheVisu(DatabaseConnector, TraceVisu, iCoordMin, iCoordMax);
+  //GoDBTraceRow::SetTheDataFromTheVisu(DatabaseConnector, TraceVisu, iCoordMin, iCoordMax);
+
+  this->SetTheBoundingBox(DatabaseConnector, iCoordMin, iCoordMax);
+
+  vtkSmartPointer< vtkPolyDataMySQLMeshWriter > convert =
+    vtkSmartPointer< vtkPolyDataMySQLMeshWriter >::New();
+  std::string PointsString = convert->GetMySQLText(TraceVisu);
+
+  this->SetField("Points", PointsString);
 
   if ( this->DoesThisBoundingBoxExist(DatabaseConnector) )
     {

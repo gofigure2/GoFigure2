@@ -37,9 +37,20 @@
 #include "vtkStdString.h"
 #include "vtkSmartPointer.h"
 #include "vtkVariant.h"
+#include "vtkPolyDataMySQLContourReader.h"
+#include "vtkPolyDataMySQLMeshReader.h"
 #include "vtkPolyDataMySQLTrackReader.h"
 #include <sstream>
 #include <string>
+
+/////////
+#include <vtkPolyData.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkActor.h>
+#include <vtkRenderWindow.h>
+#include <vtkRenderer.h>
+#include <vtkRenderWindowInteractor.h>
+
 
 std::vector< std::string > ListAllValuesForOneColumn(vtkMySQLDatabase *DatabaseConnector,
                                                      std::string ColumnName, std::string TableName,
@@ -1302,24 +1313,25 @@ ContourMeshStructure GetTraceInfoFromDB(
       {
       //temp.TraceID = query->DataValue(0).ToInt();
       Results.TraceID = TraceID;
-      vtkSmartPointer< vtkPolyDataMySQLTextReader > convert_reader =
-        vtkSmartPointer< vtkPolyDataMySQLTextReader >::New();
-      //Results.CollectionID = query->DataValue(0).ToUnsignedInt();
-      std::string polydata_string = query->DataValue(1).ToString();
+      vtkPolyData *output = vtkPolyData::New();
+            std::string polydata_string = query->DataValue(1).ToString();
       if ( !polydata_string.empty() )
         {
         if ( TraceName.compare("contour") == 0 )
           {
-          convert_reader->SetIsContour(true);
+          vtkSmartPointer< vtkPolyDataMySQLContourReader > convert_reader =
+            vtkSmartPointer< vtkPolyDataMySQLContourReader >::New();
+          output->DeepCopy(convert_reader->GetPolyData(polydata_string));
           }
         else
           {
           if ( TraceName.compare("mesh") == 0 )
             {
-            convert_reader->SetIsContour(false);
+            vtkSmartPointer< vtkPolyDataMySQLMeshReader > convert_reader =
+              vtkSmartPointer< vtkPolyDataMySQLMeshReader >::New();
+            output->DeepCopy(convert_reader->GetPolyData(polydata_string));
             }
           }
-        vtkPolyData *output = convert_reader->GetPolyData(polydata_string);
         Results.Nodes = output;
         }
       Results.TCoord       = query->DataValue(2).ToUnsignedInt();
@@ -2355,24 +2367,25 @@ void GetTracesInfoFromDBAndModifyContainer(
       {
       ContourMeshStructure temp;
       temp.TraceID = query->DataValue(0).ToInt();
-      vtkSmartPointer< vtkPolyDataMySQLTextReader > convert_reader =
-        vtkSmartPointer< vtkPolyDataMySQLTextReader >::New();
       std::string polydata_string = query->DataValue(2).ToString();
+      vtkPolyData *output = vtkPolyData::New();
       if ( !polydata_string.empty() )
         {
         if ( TraceName.compare("contour") == 0 )
           {
-          convert_reader->SetIsContour(true);
+          vtkSmartPointer< vtkPolyDataMySQLContourReader > convert_reader =
+            vtkSmartPointer< vtkPolyDataMySQLContourReader >::New();
+          output->DeepCopy(convert_reader->GetPolyData(polydata_string));
           }
         else
           {
           if ( TraceName.compare("mesh") == 0 )
             {
-            convert_reader->SetIsContour(false);
+            vtkSmartPointer< vtkPolyDataMySQLMeshReader > convert_reader =
+              vtkSmartPointer< vtkPolyDataMySQLMeshReader >::New();
+            output->DeepCopy(convert_reader->GetPolyData(polydata_string));
             }
           }
-        vtkPolyData *output = vtkPolyData::New();
-        output->DeepCopy(convert_reader->GetPolyData(polydata_string));
         temp.Nodes = output;
         }
       temp.TCoord       = query->DataValue(3).ToUnsignedInt();
@@ -2453,11 +2466,40 @@ void GetTracesInfoFromDBAndModifyContainer(
       vtkSmartPointer< vtkPolyDataMySQLTrackReader > convert_reader =
         vtkSmartPointer< vtkPolyDataMySQLTrackReader >::New();
       std::string polydata_string = query->DataValue(2).ToString();
+
+      std::cout << "string to be converted: " << polydata_string << std::endl;
       if ( !polydata_string.empty() )
         {
         vtkPolyData *output = vtkPolyData::New();
         output->DeepCopy(convert_reader->GetPolyData(polydata_string));
         temp.Nodes = output;
+        std::cout << "GOT THE POLYDATA" << std::endl;
+
+        //setup actor and mapper
+        vtkSmartPointer<vtkPolyDataMapper> mapper =
+            vtkSmartPointer<vtkPolyDataMapper>::New();
+        mapper->SetInput(output);
+
+        vtkSmartPointer<vtkActor> actor =
+            vtkSmartPointer<vtkActor>::New();
+        actor->SetMapper(mapper);
+
+        //setup render window, renderer, and interactor
+        vtkSmartPointer<vtkRenderer> renderer =
+            vtkSmartPointer<vtkRenderer>::New();
+        vtkSmartPointer<vtkRenderWindow> renderWindow =
+            vtkSmartPointer<vtkRenderWindow>::New();
+        renderWindow->AddRenderer(renderer);
+        vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor =
+            vtkSmartPointer<vtkRenderWindowInteractor>::New();
+        renderWindowInteractor->SetRenderWindow(renderWindow);
+        renderer->AddActor(actor);
+
+        renderWindow->Render();
+        renderWindowInteractor->Start();
+
+
+
         }
       /// \note For the visualization rgba values are supposed to be double in
       /// between 0 and 1; whereas in the database these values are in between

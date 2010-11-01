@@ -41,6 +41,12 @@
 #include "vtkIntArray.h"
 #include "vtkFieldData.h"
 
+#include "vtkPolyDataMapper.h"
+#include "vtkActor.h"
+#include "vtkRenderer.h"
+#include "vtkRenderWindow.h"
+#include "vtkRenderWindowInteractor.h"
+
 #include <map>
 #include <sstream>
 
@@ -92,6 +98,10 @@ GetPolyData(const std::string & iString)
 
   while(it != orderedPoints.end())
     {
+    std::cout << "Insert point" << std::endl;
+    std::cout << " x: " << it->second[0]
+              << " y: " << it->second[1]
+              << " z: " << it->second[2] << std::endl;
     temporalArray->InsertNextValue( it->first );
     points->InsertNextPoint(it->second);
     ++it;
@@ -108,6 +118,9 @@ GetPolyData(const std::string & iString)
   // Create a line from points
   vtkSmartPointer<vtkPolyLine> polyLine =
       vtkSmartPointer<vtkPolyLine>::New();
+
+  std::cout << "Number of points: " << points->GetNumberOfPoints() << std::endl;
+
   polyLine->GetPointIds()->SetNumberOfIds( points->GetNumberOfPoints() );
   for(unsigned int i = 0; i < points->GetNumberOfPoints(); i++)
     {

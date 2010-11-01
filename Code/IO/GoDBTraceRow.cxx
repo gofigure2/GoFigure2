@@ -87,13 +87,14 @@ void GoDBTraceRow::SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector,
                                          GoDBCoordinateRow iCoordMin,
                                          GoDBCoordinateRow iCoordMax)
 {
+  /*
   this->SetTheBoundingBox(DatabaseConnector, iCoordMin, iCoordMax);
 
   vtkSmartPointer< vtkPolyDataMySQLTextWriter > convert =
     vtkSmartPointer< vtkPolyDataMySQLTextWriter >::New();
   std::string PointsString = convert->GetMySQLText(TraceVisu);
 
-  this->SetField("Points", PointsString);
+  this->SetField("Points", PointsString);*/
 }
 //-------------------------------------------------------------------------
 

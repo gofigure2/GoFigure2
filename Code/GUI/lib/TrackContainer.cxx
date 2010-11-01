@@ -685,6 +685,8 @@ AddPointToCurrentElement(double* iPoint)
 
   // MOVE TO SMARTPOINTER AND SHALLOW COPY....
   this->m_CurrentElement.Nodes->DeepCopy(polyData.GetPointer());
+
+  emit CurrentTrackToSave();
 }
 //-------------------------------------------------------------------------
 

@@ -51,7 +51,7 @@
 /**
   \class TrackContainer
   \brief Wraps a boost multi index container of TrackStructure.
-  This class intends to synchronize Contour and Mesh representation in
+  This class intends to synchronize Track representation in
   the Visualization and in the TableWidget
   \sa TrackStructure QGoTableWidget QGoImageView3D
   */
@@ -177,7 +177,6 @@ public:
     \brief Update Visualization of the given TraceIDs
     \tparam TContainer Container of TraceIDs
     \param[in] iList input container of TraceIDs
-    \param[in] iContour
   */
   template< class TContainer >
   void UpdateVisualizationForGivenIDs(TContainer iList)
@@ -699,11 +698,14 @@ public:
   void UpdateCurrentElementActorsFromVisu(std::vector< vtkActor * > iActors);
 
 signals:
-  /** \brief When one contour / mesh has been picked (highlighted) from the visualization */
+  /** \brief When one track has been picked (highlighted) from the visualization */
   void TracePicked(unsigned int, Qt::CheckState);
 
-  /** \brief When one contour / mesh's visibility has been changed from the visualization */
+  /** \brief When one track's visibility has been changed from the visualization */
   void TraceVisibilityChanged(unsigned int, Qt::CheckState);
+
+  /** \brief When a point is added to the track, update the database */
+  void CurrentTrackToSave();
 
 protected:
   vtkProperty *m_HighlightedProperty;

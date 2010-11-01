@@ -37,7 +37,6 @@
 #include "vtkMySQLDatabase.h"
 #include "GoDBCoordinateRow.h"
 #include "vtkPolyData.h"
-#include "vtkPolyDataMySQLTextWriter.h"
 #include "GoDBRecordSetHelper.h"
 #include "GoDBRecordSet.h"
 

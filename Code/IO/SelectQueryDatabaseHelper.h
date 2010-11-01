@@ -43,7 +43,6 @@
 #include "GoDBTraceInfoForVisu.h"
 #include "ContourMeshStructure.h"
 #include "TrackStructure.h"
-#include "vtkPolyDataMySQLTextReader.h"
 
 #include "QGoIOConfigure.h"
 
