@@ -307,7 +307,7 @@ public:
   /** \brief Reset Current Element to a default state */
   void ResetCurrentElement();
 
-  /** \brief Update Current Element by providing all required informations
+  /** \brief Update Current Element by providing all required information
   from the visualization.
   \param[in] iActors
   \param[in] iNodes
@@ -321,11 +321,20 @@ public:
                                     const bool & iHighlighted,
                                     const bool & iVisible);
 
-  /** \brief Update Current Element from the database.
+  /** 
+  \brief Update Current Element from the database.
   \param[in] iTraceID
   \param[in] irgba
   */
   void UpdateCurrentElementFromDB(unsigned int iTraceID, double irgba[4]);
+
+  /**
+  \brief put the information of the existing element into m_CurrentElement
+  and remove the existing element from the container,the visu and the memory
+  \param[in] iTraceID ID of the existing element
+  \return true if the element was found in the container, false if not
+  */
+  bool UpdateCurrentElementFromExistingOne(unsigned int iTraceID);
 
   /**
   \brief Remove all actors (elements) from the scene for a given time point
@@ -646,6 +655,11 @@ public:
     \return true if the element was present in the container.
   */
   bool DeleteElement(const unsigned int & iId);
+
+  /**
+  \overload DeleteElement(const unsigned int & iId)
+  */
+  bool DeleteElement(MultiIndexContainerTraceIDIterator iIter); 
 
   /** \brief Delete all highlighted elements
   \return the list of TraceIDs of such elements
