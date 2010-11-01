@@ -8,7 +8,7 @@ setBundlePath(address)
 
 start = time.time()
 
-def Delete(Region):
+def ClickDelete(Region):
 #	"""Clicks on add a new... in dropdown menu of TraceWidget for Color, CellType, SubCellType. """
 	find(Region)
 	a = getLastMatch()
@@ -16,23 +16,34 @@ def Delete(Region):
 	click(a.below(20))
 
 	click("delete.png")
+	wait(1)
+
+def ChooseDeleteWidgetTest(Region):
+	find(Region)
+	a = getLastMatch()
+	a.inside().click("WidgetTestDelete.png")
+	
 	
 TraceObject = ("SelectedColor.png","SelectedCellType.png","SelectedSubCellType.png")
-Action = ("DeleteFields","Cancel")
-for a in action:
+Action = ("Cancel","DeleteFields")
+for a in Action:
 	for i in TraceObject:
-		Delete(i)
-
-		if a = "DeleteFields":
-			
+		ClickDelete(i)
 		
-	
-			click("WidgetTestDelete.png")
+		if a == "Cancel":
+			
+			click("cancel.png")
+			#assert that same state is there.
+		
+		if a == "DeleteFields":
+			
+			onChange(getCenter().click("WidgetTestDelete.png"))
+					
 			click("ok.png")
 			click("yes.png")
 			#assert that previous state is there
 
-		if a = "Cancel":
-			click("WidgetTestDelete.png")
-			click("cancel.png")
-			#assert that same state is there.
+end = time.time()
+elapsedSec = start - end
+print elapsedSec, "sec"
+			

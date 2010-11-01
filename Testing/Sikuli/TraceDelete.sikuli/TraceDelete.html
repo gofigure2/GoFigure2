@@ -80,7 +80,7 @@ setBundlePath(address)
 
 start = time.time()
 
-<span class="kw">def</span> Delete(Region):
+<span class="kw">def</span> ClickDelete(Region):
 <span class="cmt">#       """Clicks on add a new... in dropdown menu of TraceWidget for Color, CellType, SubCellType. """
 </span>        <span class="skw">find</span>(Region)
         a = getLastMatch()
@@ -88,26 +88,36 @@ start = time.time()
         <span class="skw">click</span>(a.below(<span class="dig">20</span>))
 
         <span class="skw">click</span>(<img src="delete.png" />)
+        <span class="skw">wait</span>(<span class="dig">1</span>)
+
+<span class="kw">def</span> ChooseDeleteWidgetTest(Region):
+        <span class="skw">find</span>(Region)
+        a = getLastMatch()
+        a.inside().<span class="skw">click</span>(<img src="WidgetTestDelete.png" />)
+
 
 TraceObject = (<img src="SelectedColor.png" />,<img src="SelectedCellType.png" />,<img src="SelectedSubCellType.png" />)
-Action = (<span class="str">"DeleteFields"</span>,<span class="str">"Cancel"</span>)
-<span class="kw">for</span> a <span class="kw">in</span> action:
+Action = (<span class="str">"Cancel"</span>,<span class="str">"DeleteFields"</span>)
+<span class="kw">for</span> a <span class="kw">in</span> Action:
         <span class="kw">for</span> i <span class="kw">in</span> TraceObject:
-                Delete(i)
+                ClickDelete(i)
 
-                <span class="kw">if</span> a = <span class="str">"DeleteFields"</span>:
+                <span class="kw">if</span> a == <span class="str">"Cancel"</span>:
 
+                        <span class="skw">click</span>(<img src="cancel.png" />)
+                        <span class="cmt">#assert that same state is there.
+</span>
+                <span class="kw">if</span> a == <span class="str">"DeleteFields"</span>:
 
+                        onChange(getCenter().<span class="skw">click</span>(<img src="WidgetTestDelete.png" />))
 
-                        <span class="skw">click</span>(<img src="WidgetTestDelete.png" />)
                         <span class="skw">click</span>(<img src="ok.png" />)
                         <span class="skw">click</span>(<img src="yes.png" />)
                         <span class="cmt">#assert that previous state is there
 </span>
-                <span class="kw">if</span> a = <span class="str">"Cancel"</span>:
-                        <span class="skw">click</span>(<img src="WidgetTestDelete.png" />)
-                        <span class="skw">click</span>(<img src="cancel.png" />)
-                        <span class="cmt">#assert that same state is there.</span>
+end = time.time()
+elapsedSec = start - end
+<span class="kw">print</span> elapsedSec, <span class="str">"sec"</span>
 </pre>
 </body>
 </html>
