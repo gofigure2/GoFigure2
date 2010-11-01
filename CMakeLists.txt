@@ -97,6 +97,7 @@ SET( CMAKE_LIBRARY_OUTPUT_DIRECTORY
 #  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/plugins
    ${GOFIGURE2_BINARY_DIR}/lib
 )
+SET( GOFIGURE2_LIBRARY_DIRS ${GOFIGURE2_BINARY_DIR}/lib )
 
 #---------------------------------------------------------------------------
 # Define TESTING_DATA_PATH
@@ -405,6 +406,8 @@ IF( VTK_FOUND )
     ELSE( BUILD_EXAMPLES )
       SET( BUILD_TESTING OFF )
     ENDIF( BUILD_EXAMPLES )
+
+    INCLUDE( GoFigure2IncludeDirectories.cmake )
 
     CONFIGURE_FILE(
       "${CMAKE_CURRENT_SOURCE_DIR}/UseGoFigure2.cmake.in"
