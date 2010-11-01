@@ -38,7 +38,7 @@ for a in Action:
 				click("cancel.png")
 				
 			if a == "No Name":
-				click("ok.png)
+				click("ok.png")
 				wait(1)
 				
 				onAppear("errorPopUp.png")
