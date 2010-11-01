@@ -9,7 +9,7 @@ setBundlePath(address)
 start = time.time()
 
 def AddNew(Region):
-#	""" TraceWidget for Color, CellType, SubCellType. """
+#	"""Clicks on add a new... in dropdown menu of TraceWidget for Color, CellType, SubCellType. """
 	find(Region)
 	a = getLastMatch()
 	print a, "this is a"
@@ -17,27 +17,30 @@ def AddNew(Region):
 
 	click("add_a_new.png")
 
-#x = find("Cell Contour")
-#print x
+#three trace widget buttons
 TraceObject = ("SelectedColor.png","SelectedCellType.png","SelectedSubCellType.png")
+#four add a new... tests for each trace widget button
 Action = ("Add New", "Cancel", "No Name", "Existing Name")
 #test 1: Add a new...
 for a in Action:
 		for i in TraceObject:
 			AddNew(i)
 			if i == ("SelectedColor.png") :
+			#chooses a color first, just for this button
 				click("colortable.png")
 				click("ok.png")
+				
 			if a == "Add New":
 				wait(1)
 				type("Widget Test")
 				click("ok.png")
 				assert exists("previousStateWidgetTest.png")
 
-				#assert new name and color comes up in mysql
+				#need assert new name and color comes up in mysql
 			if a == "Cancel":
 				click("cancel.png")
 				assert exists("previousStateWidgetTest.png")
+				
 			if a == "No Name":
 				click("ok.png")
 				wait(1)
@@ -46,6 +49,7 @@ for a in Action:
 				click("ok.png")
 				click("cancel.png")
 				assert exists("previousStateWidgetTest.png")
+				
 			if a == "Existing Name":
 				wait(1)
 				type("Widget Test")
@@ -55,22 +59,7 @@ for a in Action:
 				click("ok.png")
 				click("cancel.png")
 				assert exists("previousStateWidgetTest.png")
-#call time elapse function
 
-#test 2: Add a new... and click cancel
-
-#for i in tests:
-#	AddNew(i)
-#		if i == ("1285599876548.png") :
-#			click("1287653361098.png")
-#			click("1285598278725.png")
-
-#	click("1287654735420.png")
-	#assertExists( previous state )
-#test 3: Add a new... with no name entered
-#click("1285598344252.png")
-
-#test 4: Add a new... with same name entered
 
 end = time.time()
 elapsedSec = end - start
