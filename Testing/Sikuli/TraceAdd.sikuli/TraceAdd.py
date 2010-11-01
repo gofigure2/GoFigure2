@@ -44,9 +44,10 @@ for a in Action:
 				#onAppear("errorPopUp.png")
 				click("ok.png")
 				click("cancel.png")
-				assert exists()
+				#assert exists()
 			if a == "Existing Name":
 				type("Widget Test")
+				wait(1)
 				click("ok.png")
 				#cannot use assertExist in sikuli editor
 				#onAppear("errorPopUp.png")
