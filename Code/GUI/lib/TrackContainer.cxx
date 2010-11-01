@@ -146,7 +146,25 @@ UpdateCurrentElementFromDB(unsigned int iTraceID,
   this->m_CurrentElement.rgba[2] = irgba[2];
   this->m_CurrentElement.rgba[3] = irgba[3];
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+bool TrackContainer::
+UpdateCurrentElementFromExistingOne(unsigned int iTraceID)
+{
+  MultiIndexContainerTraceIDIterator
+    it = m_Container.get< TraceID >().find(iTraceID);
+  if ( it != m_Container.get< TraceID >().end() )
+    {
+    this->m_CurrentElement = *it;
+    this->DeleteElement(it);
+    return true;
+    }
+  else
+    {
+    return false;
+    }
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -385,8 +403,8 @@ DeleteElement(const unsigned int & iId)
 {
   MultiIndexContainerTraceIDIterator
     it = m_Container.get< TraceID >().find(iId);
-
-  if ( it != m_Container.get< TraceID >().end() )
+  return DeleteElement(it);
+  /*if ( it != m_Container.get< TraceID >().end() )
     {
     if ( it->ActorXY )
       {
@@ -419,11 +437,48 @@ DeleteElement(const unsigned int & iId)
     m_ImageView->UpdateRenderWindows();
     return true;
     }
-
-  return false;
+  return false;*/
 }
 
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+ bool TrackContainer::DeleteElement(MultiIndexContainerTraceIDIterator iIter)
+ {
+    if ( iIter != m_Container.get< TraceID >().end() )
+    {
+    if ( iIter->ActorXY )
+      {
+      this->m_ImageView->RemoveActor(0, iIter->ActorXY);
+      iIter->ActorXY->Delete();
+      }
+    if ( iIter->ActorXZ )
+      {
+      this->m_ImageView->RemoveActor(1, iIter->ActorXZ);
+      iIter->ActorXZ->Delete();
+      }
+    if ( iIter->ActorYZ )
+      {
+      this->m_ImageView->RemoveActor(2, iIter->ActorYZ);
+      iIter->ActorYZ->Delete();
+      }
+    if ( iIter->ActorXYZ )
+      {
+      this->m_ImageView->RemoveActor(3, iIter->ActorXYZ);
+      iIter->ActorXYZ->Delete();
+      }
+
+    if ( iIter->Nodes )
+      {
+      iIter->Nodes->Delete();
+      }
+    m_Container.get< TraceID >().erase(iIter);
+    m_ImageView->UpdateRenderWindows();
+    return true;
+    }
+    return false;
+ }
+ //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 std::list< unsigned int >

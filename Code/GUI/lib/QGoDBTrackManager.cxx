@@ -203,3 +203,15 @@ void QGoDBTrackManager::GetTracesInfoFromDBAndModifyContainerForVisu(
     ++it;
     }
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTrackManager::UpdateCurrentElementTrackContainer(
+  unsigned int iTrackID)
+{
+  this->m_TrackContainerInfoForVisu->UpdateCurrentElementFromExistingOne(
+    iTrackID);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------

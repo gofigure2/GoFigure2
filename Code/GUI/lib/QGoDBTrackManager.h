@@ -88,6 +88,8 @@ public:
    //virtual pure method in QGoDBTraceManager
   virtual std::list< unsigned int > GetListHighlightedIDs();
 
+  void UpdateCurrentElementTrackContainer(unsigned int iTrackID);
+
 protected:
   GoDBTWContainerForTrackLineage *m_TWContainer;
   TrackContainer                 *m_TrackContainerInfoForVisu;

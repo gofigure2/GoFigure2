@@ -359,6 +359,8 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
     this->m_TracksManager->UpdateBoundingBoxes( this->m_DatabaseConnector,
                                                 this->m_MeshesManager->GetListCollectionIDs(this->m_DatabaseConnector,
                                                                                             ListNewMeshes) );
+    //here update the CurrentElement for trackContainer with the data from the database corresponding to the selected trackID:
+    this->m_TracksManager->UpdateCurrentElementTrackContainer(atoi(this->m_SelectedCollectionData.first.c_str()));
     }
   else //for mesh generated from contours:
     {
@@ -392,6 +394,7 @@ void QGoPrintDatabase::SaveNewMeshForMeshToContours(int iNumberOfContours)
     this->m_ContoursManager->GetLastCreatedTracesIDs(this->m_DatabaseConnector, iNumberOfContours);
   this->AddCheckedTracesToCollection< QGoDBContourManager, QGoDBMeshManager >(
     this->m_ContoursManager, this->m_MeshesManager, MeshID, ListLastCreatedContours);
+  //need to update the trackid ?? points ??
   this->CloseDBConnection();
 }
 
