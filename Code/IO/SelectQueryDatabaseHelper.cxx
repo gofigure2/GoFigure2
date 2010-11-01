@@ -2381,7 +2381,7 @@ void GetTracesInfoFromDBAndModifyContainer(
           {
           if ( TraceName.compare("mesh") == 0 )
             {
-            vtkSmartPointer< vtkPolyDataMySQLMeshReader > convert_reader =
+           vtkSmartPointer < vtkPolyDataMySQLMeshReader > convert_reader =
               vtkSmartPointer< vtkPolyDataMySQLMeshReader >::New();
             output->DeepCopy(convert_reader->GetPolyData(polydata_string));
             }
@@ -2473,7 +2473,7 @@ void GetTracesInfoFromDBAndModifyContainer(
         vtkPolyData *output = vtkPolyData::New();
         output->DeepCopy(convert_reader->GetPolyData(polydata_string));
         temp.Nodes = output;
-        std::cout << "GOT THE POLYDATA" << std::endl;
+        /*std::cout << "GOT THE POLYDATA" << std::endl;
 
         //setup actor and mapper
         vtkSmartPointer<vtkPolyDataMapper> mapper =
@@ -2496,10 +2496,7 @@ void GetTracesInfoFromDBAndModifyContainer(
         renderer->AddActor(actor);
 
         renderWindow->Render();
-        renderWindowInteractor->Start();
-
-
-
+        renderWindowInteractor->Start();*/
         }
       /// \note For the visualization rgba values are supposed to be double in
       /// between 0 and 1; whereas in the database these values are in between
