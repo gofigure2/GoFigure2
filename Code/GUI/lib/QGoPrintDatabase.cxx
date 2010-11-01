@@ -1221,7 +1221,7 @@ void QGoPrintDatabase::SetContoursManager()
   QObject::connect( this->m_ContoursManager,
                     SIGNAL(DBConnectionNotNeededAnymore() ),
                     this,
-                    SLOT(this->CloseDBConnection() ) );
+                    SLOT(CloseDBConnection() ) );
 }
 
 //--------------------------------------------------------------------------
@@ -1262,7 +1262,7 @@ void QGoPrintDatabase::SetTracksManager()
   QObject::connect( this->m_TracksManager,
                     SIGNAL(DBConnectionNotNeededAnymore() ),
                     this,
-                    SLOT(this->CloseDBConnection() ) );
+                    SLOT(CloseDBConnection() ) );
 
   QObject::connect( this->m_TracksManager, SIGNAL( NeedToGetDatabaseConnection() ),
                     this, SLOT( PassDBConnectionToTracksManager() ) );

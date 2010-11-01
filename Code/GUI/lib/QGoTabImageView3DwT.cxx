@@ -2789,9 +2789,6 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord)
     }
   point[3] = iTCoord;
 
-  // SAY TO THE DB TO DELETE PREVIOUS CONTAINER IF SAME ID
-  // SAY TO CREATE A CURRENT ONE ANYWAY
-
   // Clean the actors (remove from visu + delete)
   // Update the track polydata with the new center
   m_TrackContainer->AddPointToCurrentElement( point );
@@ -2805,8 +2802,6 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord)
     }
   m_TrackContainer->InsertCurrentElement();
 
-  // UPDATE THE DATABASE WITH THE CURRENT ELEMENT
-  // emit UpdateTrackPoints();
 }
 //-------------------------------------------------------------------------
 

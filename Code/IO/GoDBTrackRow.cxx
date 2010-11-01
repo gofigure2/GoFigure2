@@ -37,6 +37,8 @@
 #include "vtkPolyDataMySQLTrackWriter.h"
 #include <iostream>
 
+#include "vtkSmartPointer.h"
+
 GoDBTrackRow::GoDBTrackRow():GoDBTraceRow()
 {
   this->InitializeMap();
@@ -142,10 +144,10 @@ void GoDBTrackRow::SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector,
 //-------------------------------------------------------------------------
 void GoDBTrackRow::SetThePointsFromPolydata(vtkPolyData * iTrackVisu)
 {
-  //vtkSmartPointer< vtkPolyDataMySQLTrackWriter > convert =
-    //vtkSmartPointer< vtkPolyDataMySQLTrackWriter >::New();
-  vtkPolyDataMySQLTextWriter *convert = vtkPolyDataMySQLTextWriter::New();
+  vtkSmartPointer< vtkPolyDataMySQLTrackWriter > convert =
+    vtkSmartPointer< vtkPolyDataMySQLTrackWriter >::New();
+  //vtkPolyDataMySQLTextWriter *convert = vtkPolyDataMySQLTextWriter::New();
   std::string PointsString = convert->GetMySQLText(iTrackVisu);
-  convert->Delete();
+  //convert->Delete();
   this->SetField("Points", PointsString);
 }
