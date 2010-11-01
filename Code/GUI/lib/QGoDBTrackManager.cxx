@@ -43,6 +43,11 @@ QGoDBTrackManager::QGoDBTrackManager(int iImgSessionID, QWidget *iparent):
   this->SetInfo(iImgSessionID, iparent);
   this->m_TWContainer = new GoDBTWContainerForTrackLineage(this->m_TraceName,
                                                            this->m_CollectionName, iImgSessionID);
+
+  QObject::connect(this->m_TrackContainerInfoForVisu,
+                    SIGNAL(CurrentTrackToSave()),
+                    this,
+                    SLOT(SaveTrackCurrentElement()));
 }
 
 //-------------------------------------------------------------------------
@@ -202,4 +207,47 @@ void QGoDBTrackManager::GetTracesInfoFromDBAndModifyContainerForVisu(
     this->m_TrackContainerInfoForVisu->Insert(*it);
     ++it;
     }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTrackManager::UpdateCurrentElementTrackContainer(
+  unsigned int iTrackID)
+{
+  this->m_TrackContainerInfoForVisu->UpdateCurrentElementFromExistingOne(
+    iTrackID);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTrackManager::SaveTrackCurrentElement()
+{
+  emit NeedToGetDatabaseConnection();
+  GoDBTrackRow TrackToSave(this->m_ImgSessionID);
+  unsigned int TrackID = this->m_TrackContainerInfoForVisu->m_CurrentElement.TraceID;
+  if (TrackID != 0)
+    {
+    TrackToSave.SetValuesForSpecificID(TrackID,this->m_DatabaseConnector);
+    }
+
+  //save the track into the database
+  TrackToSave.SetThePointsFromPolydata(
+    this->m_TrackContainerInfoForVisu->m_CurrentElement.Nodes);
+  TrackID = TrackToSave.SaveInDB(this->m_DatabaseConnector);
+  
+  //save the track into the container:
+  this->m_TrackContainerInfoForVisu->InsertCurrentElement();
+
+  if (TrackID == 0)
+    {
+    this->DisplayInfoForLastCreatedTrace(this->m_DatabaseConnector);
+    }
+
+  //update its bounding box with the new mesh into the database
+  //and the table widget:
+  std::list<unsigned int> ListTrackID;
+  ListTrackID.push_back(TrackID);
+  UpdateBoundingBoxes(this->m_DatabaseConnector,ListTrackID);
+  emit DBConnectionNotNeededAnymore();
+
 }

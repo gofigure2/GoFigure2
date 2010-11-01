@@ -330,8 +330,6 @@ protected:
 
   void OpenDBConnection();
 
-  void CloseDBConnection();
-
   /**
   \brief create the m_ContoursManager and its SLOT/SIGNAL connection
   */
@@ -559,6 +557,9 @@ protected slots:
 
   void PassSelectedColorToContoursManager();
 
+  void PassDBConnectionToTracksManager();
+
+  void CloseDBConnection();
   /**
   \brief slot connected to the TraceColorToChange(0 emitted by the
   m_MeshesManager

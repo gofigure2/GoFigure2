@@ -65,6 +65,12 @@ public:
   */
   QGoTableWidget * GetTableWidget();
 
+
+  /**
+  \brief set the m_DatabaseConnection to iDatabaseConnector
+  */
+  void SetDatabaseConnection(vtkMySQLDatabase *iDatabaseConnector);
+
   /**
   \brief return the distinct traces with their color for the imagingsession,
   for all timepoints if the timepoint is set to the default one or for the
@@ -262,6 +268,10 @@ signals:
 
   void CheckedTracesToAddToSelectedCollection(std::list< unsigned int > );
 
+  void NeedToGetDatabaseConnection();
+
+  void DBConnectionNotNeededAnymore();
+
 protected:
   std::string m_TraceName;
   std::string m_TraceNameID;
@@ -274,6 +284,7 @@ protected:
   int                     m_ImgSessionID;
   QGoTableWidget *        m_Table;
   GoDBCollectionOfTraces *m_CollectionOfTraces;
+  vtkMySQLDatabase *      m_DatabaseConnector;
 
   /**
   \brief Virtual pure method: get the data needed from the database and

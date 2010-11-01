@@ -143,12 +143,12 @@ void QGoDBContourManager::AddActionForCreateNewCollectionFromCheckedTraces(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBContourManager::SetDatabaseConnection(
+/*void QGoDBContourManager::SetDatabaseConnection(
   vtkMySQLDatabase *iDatabaseConnector)
 {
   this->m_DatabaseConnector = iDatabaseConnector;
 }
-
+*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -167,6 +167,8 @@ void QGoDBContourManager::ChangeTraceColor()
 
   this->UpdateTheTracesColor(this->m_DatabaseConnector,
                              this->m_SelectedColor);
+
+  emit DBConnectionNotNeededAnymore();
 }
 
 //-------------------------------------------------------------------------

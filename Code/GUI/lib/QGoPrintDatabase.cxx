@@ -359,6 +359,8 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
     this->m_TracksManager->UpdateBoundingBoxes( this->m_DatabaseConnector,
                                                 this->m_MeshesManager->GetListCollectionIDs(this->m_DatabaseConnector,
                                                                                             ListNewMeshes) );
+    //here update the CurrentElement for trackContainer with the data from the database corresponding to the selected trackID:
+    this->m_TracksManager->UpdateCurrentElementTrackContainer(atoi(this->m_SelectedCollectionData.first.c_str()));
     }
   else //for mesh generated from contours:
     {
@@ -392,6 +394,7 @@ void QGoPrintDatabase::SaveNewMeshForMeshToContours(int iNumberOfContours)
     this->m_ContoursManager->GetLastCreatedTracesIDs(this->m_DatabaseConnector, iNumberOfContours);
   this->AddCheckedTracesToCollection< QGoDBContourManager, QGoDBMeshManager >(
     this->m_ContoursManager, this->m_MeshesManager, MeshID, ListLastCreatedContours);
+  //need to update the trackid ?? points ??
   this->CloseDBConnection();
 }
 
@@ -419,7 +422,13 @@ unsigned int QGoPrintDatabase::SaveNewContourForMeshToContours(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/*
+/*void QGoPrintDatabase::SaveTrackCurrentElement()
+{
+  this->OpenDBConnection();
+  this->m_TracksManager->SaveTrackCurrentElement(this->m_DatabaseConnector);
+  this->CloseDBConnection();
+}
+
 std::vector< ContourMeshStructure > QGoPrintDatabase::GetTracesForAGivenTimepoint(
   ContourMeshStructureMultiIndexContainer iAllTraces,
   unsigned int iTimePoint)
@@ -1116,20 +1125,6 @@ void QGoPrintDatabase::DeleteTracks()
   this->DeleteTraces< QGoDBTrackManager, QGoDBMeshManager, QGoDBMeshManager >(
     this->m_TracksManager, this->m_MeshesManager, this->m_MeshesManager, true);
 }
-
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void QGoPrintDatabase::SetTracksManager()
-{
-  this->m_TracksManager = new QGoDBTrackManager(m_ImgSessionID, this);
-  QObject::connect( this->m_TracksManager,
-                    SIGNAL( TraceColorToChange() ),
-                    this, SLOT( ChangeTrackColor() ) );
-  QObject::connect( this->m_TracksManager, SIGNAL( TracesToDelete() ),
-                    this, SLOT( DeleteTracks() ) );
-}
-
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -1223,6 +1218,10 @@ void QGoPrintDatabase::SetContoursManager()
                     SIGNAL( CheckedTracesToAddToSelectedCollection(
                               std::list< unsigned int > ) ), this,
                     SLOT( AddCheckedContoursToSelectedMesh(std::list< unsigned int > ) ) );
+  QObject::connect( this->m_ContoursManager,
+                    SIGNAL(DBConnectionNotNeededAnymore() ),
+                    this,
+                    SLOT(this->CloseDBConnection() ) );
 }
 
 //--------------------------------------------------------------------------
@@ -1248,7 +1247,26 @@ void QGoPrintDatabase::SetMeshesManager()
                               std::list< unsigned int > ) ), this,
                     SLOT( AddCheckedMeshesToSelectedTrack(std::list< unsigned int > ) ) );
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
+void QGoPrintDatabase::SetTracksManager()
+{
+  this->m_TracksManager = new QGoDBTrackManager(m_ImgSessionID, this);
+  QObject::connect( this->m_TracksManager,
+                    SIGNAL( TraceColorToChange() ),
+                    this, SLOT( ChangeTrackColor() ) );
+  QObject::connect( this->m_TracksManager, SIGNAL( TracesToDelete() ),
+                    this, SLOT( DeleteTracks() ) );
+
+  QObject::connect( this->m_TracksManager,
+                    SIGNAL(DBConnectionNotNeededAnymore() ),
+                    this,
+                    SLOT(this->CloseDBConnection() ) );
+
+  QObject::connect( this->m_TracksManager, SIGNAL( NeedToGetDatabaseConnection() ),
+                    this, SLOT( PassDBConnectionToTracksManager() ) );
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -1257,7 +1275,14 @@ void QGoPrintDatabase::PassDBConnectionToContoursManager()
   this->OpenDBConnection();
   this->m_ContoursManager->SetDatabaseConnection(this->m_DatabaseConnector);
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
+void QGoPrintDatabase::PassDBConnectionToTracksManager()
+{
+  this->OpenDBConnection();
+  this->m_TracksManager->SetDatabaseConnection(this->m_DatabaseConnector);
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
