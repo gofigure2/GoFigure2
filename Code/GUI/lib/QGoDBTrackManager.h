@@ -90,14 +90,6 @@ public:
 
   void UpdateCurrentElementTrackContainer(unsigned int iTrackID);
 
-  /**
-  \brief create or update the track contained in the current element of the
-  track container into the database, the table widget and insert the current
-  element into the track container
-  \param[in] iDatabaseConnector connection to the database
-  */
-  void SaveTrackCurrentElement(vtkMySQLDatabase* iDatabaseConnector);
-
 protected:
   GoDBTWContainerForTrackLineage *m_TWContainer;
   TrackContainer                 *m_TrackContainerInfoForVisu;
@@ -118,5 +110,13 @@ protected slots:
 
   //virtual pure method in QGoDBTraceManager
   virtual void UpdateVisibleElementsInVisuContainer(int iTraceID);
+
+  /**
+  \brief create or update the track contained in the current element of the
+  track container into the database, the table widget and insert the current
+  element into the track container
+  \param[in] iDatabaseConnector connection to the database
+  */
+  void SaveTrackCurrentElement();
 };
 #endif

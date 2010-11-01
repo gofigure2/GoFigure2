@@ -49,7 +49,7 @@ public:
   ~QGoDBContourManager();
   typedef std::pair< std::string, QColor > NameWithColorData;
 
-  void SetDatabaseConnection(vtkMySQLDatabase *iDatabaseConnector);
+  //void SetDatabaseConnection(vtkMySQLDatabase *iDatabaseConnector);
 
   void SetSelectedColor(NameWithColorData iSelectedColor);
 
@@ -118,8 +118,6 @@ public:
   virtual std::list< unsigned int > GetListHighlightedIDs();
 
 signals:
-  void NeedToGetDatabaseConnection();
-
   void NeedToGetCurrentSelectedColor();
 
   //void NeedToGetCurrentSelectedCollection();

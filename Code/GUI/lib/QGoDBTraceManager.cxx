@@ -39,7 +39,7 @@
 #include <QMessageBox>
 
 QGoDBTraceManager::QGoDBTraceManager():
-  m_Table(NULL), m_CollectionOfTraces(NULL)//, m_TraceContainerInfoForVisu(NULL)
+  m_Table(NULL), m_CollectionOfTraces(NULL),m_DatabaseConnector(NULL)//, m_TraceContainerInfoForVisu(NULL)
 {}
 
 //-------------------------------------------------------------------------
@@ -50,6 +50,11 @@ QGoDBTraceManager::~QGoDBTraceManager()
   if ( this->m_CollectionOfTraces )
     {
     delete this->m_CollectionOfTraces;
+    }
+  if ( this->m_DatabaseConnector )
+    {
+    this->m_DatabaseConnector->Close();
+    this->m_DatabaseConnector->Delete();
     }
 }
 
@@ -609,4 +614,12 @@ std::list< unsigned int > QGoDBTraceManager::GetLastCreatedTracesIDs(
 {
   return this->m_CollectionOfTraces->GetLastCreatedTracesIDs(
            iDatabaseConnector, iNumberOfTraceIDs);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTraceManager::SetDatabaseConnection(
+  vtkMySQLDatabase *iDatabaseConnector)
+{
+  this->m_DatabaseConnector = iDatabaseConnector;
 }
