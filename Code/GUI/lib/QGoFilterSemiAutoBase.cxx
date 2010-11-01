@@ -49,11 +49,17 @@
 #include "vtkCellArray.h"
 #include "vtkPolylineDecimation.h"
 #include "vtkStripper.h"
+#include "vtkFeatureEdges.h"
 
 // construct mesh
 #include "vtkMarchingCubes.h"
+// keep the largest region
+#include "vtkPolyDataConnectivityFilter.h"
+// fill the holes!
+#include "vtkFillHolesFilter.h"
 // and smooth it...!
 #include "vtkSmoothPolyDataFilter.h"
+#include "vtkPolyDataWriter.h"
 
 // to cut
 #include "vtkPlane.h"
@@ -473,29 +479,63 @@ QGoFilterSemiAutoBase::ReconstructMesh(vtkImageData *iInputImage, const double &
   contours->SetComputeNormals(0);
   contours->SetComputeScalars(0);
   contours->SetNumberOfContours(1);
-
-  //Update required here!!
   contours->Update();
 
-  // smooth the output mesh..?
-/*
-  std::cout<< "time consumming??" << std::endl;
-
+//   vtkSmartPointer< vtkPolyDataWriter > pWriter = vtkSmartPointer< vtkPolyDataWriter >::New();
+//   pWriter->SetFileName( "test1.vtk" );
+//   pWriter->SetInput( contours->GetOutput() );
+//   pWriter->Write();
+  
+  vtkSmartPointer<vtkFeatureEdges> feature = vtkSmartPointer<vtkFeatureEdges>::New();
+  feature->SetInputConnection( contours->GetOutputPort() );
+  feature->BoundaryEdgesOn();
+  feature->FeatureEdgesOff();
+  feature->NonManifoldEdgesOff();
+  feature->ManifoldEdgesOff();
+  feature->Update(); 
+  
+  std::cout << feature->GetOutput()->GetNumberOfCells() << std::endl;
+  
+  vtkSmartPointer< vtkPolyData > temp;
+  vtkFillHolesFilter* fillFilter = vtkFillHolesFilter::New();
+  
+  if ( feature->GetOutput()->GetNumberOfCells() > 0 )
+    {
+    // fill holes
+    fillFilter->SetInputConnection( contours->GetOutputPort() );
+    fillFilter->Update();
+    
+    temp = fillFilter->GetOutput();
+    }
+  else
+    {
+    temp = contours->GetOutput();
+    }
+  
+/*  vtkSmartPointer< vtkPolyDataWriter > pWriter = vtkSmartPointer< vtkPolyDataWriter >::New();
+  pWriter->SetFileName( "test.vtk" );
+  pWriter->SetInput( contours->GetOutput() );
+  pWriter->Write();*/
+  
   vtkSmoothPolyDataFilter* smoother =
       vtkSmoothPolyDataFilter::New();
-  smoother->SetInput(contours->GetOutput());
+  smoother->SetInput( temp );
   smoother->SetNumberOfIterations(400);
-
-  //Update required here!!
   smoother->Update();
 
-  std::cout<< "hopefully not..." << std::endl;
-*/
+  // keep the larget region
+  vtkPolyDataConnectivityFilter* connectivityFilter = vtkPolyDataConnectivityFilter::New();
+  connectivityFilter->SetInput(smoother->GetOutputDataObject(0));
+  connectivityFilter->SetExtractionModeToLargestRegion();
+  connectivityFilter->Update();
 
   vtkPolyData *output = vtkPolyData::New();
-  output->DeepCopy( contours->GetOutput() );
+  output->DeepCopy( connectivityFilter->GetOutput() );
 
+  smoother->Delete();
+  connectivityFilter->Delete();
   contours->Delete();
+  fillFilter->Delete();
 
   return output;
 }
