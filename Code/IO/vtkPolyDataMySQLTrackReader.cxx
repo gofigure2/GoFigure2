@@ -76,75 +76,80 @@ GetPolyData(const std::string & iString)
   vtkIdType N;
   str >> N;
 
-  std::map<int, double*> orderedPoints;
-  double* pt = NULL;
-  int    time = 0;
-  vtkSmartPointer<vtkIntArray> temporalArray = vtkSmartPointer<vtkIntArray>::New();
-  temporalArray->SetNumberOfComponents(1);
-  temporalArray->SetName("TemporalInformation");
-
-  // fill a map so the points will be ordered automatically
-  for ( vtkIdType i = 0; i < N; i++ )
+  if ( N != 0 )
     {
-    pt = new double[3];
-    str >> pt[0] >> pt[1] >> pt[2];
-    str >> time;
-    orderedPoints.insert( std::pair<int,double*>(time, pt) );
+    std::map<int, double*> orderedPoints;
+    double* pt = NULL;
+    int    time = 0;
+    vtkSmartPointer<vtkIntArray> temporalArray = vtkSmartPointer<vtkIntArray>::New();
+    temporalArray->SetNumberOfComponents(1);
+    temporalArray->SetName("TemporalInformation");
+
+    // fill a map so the points will be ordered automatically
+    for ( vtkIdType i = 0; i < N; i++ )
+      {
+      pt = new double[3];
+      str >> pt[0] >> pt[1] >> pt[2];
+      str >> time;
+      orderedPoints.insert( std::pair<int,double*>(time, pt) );
+      }
+
+    // read map and fill points
+    vtkSmartPointer< vtkPoints > points = vtkSmartPointer< vtkPoints >::New();
+    std::map<int, double*>::iterator it = orderedPoints.begin();
+
+    while(it != orderedPoints.end())
+      {
+      std::cout << "Insert point" << std::endl;
+      std::cout << " x: " << it->second[0]
+                << " y: " << it->second[1]
+                << " z: " << it->second[2] << std::endl;
+      temporalArray->InsertNextValue( it->first );
+      points->InsertNextPoint(it->second);
+      ++it;
+      }
+
+    // Clean the map
+    for (it = orderedPoints.begin(); it != orderedPoints.end(); ++it)
+      {
+      delete[] it->second;
+      }
+    orderedPoints.clear();
+
+
+    // Create a line from points
+    vtkSmartPointer<vtkPolyLine> polyLine =
+        vtkSmartPointer<vtkPolyLine>::New();
+
+    std::cout << "Number of points: " << points->GetNumberOfPoints() << std::endl;
+
+    polyLine->GetPointIds()->SetNumberOfIds( points->GetNumberOfPoints() );
+    for(unsigned int i = 0; i < points->GetNumberOfPoints(); i++)
+      {
+      polyLine->GetPointIds()->SetId(i,i);
+      }
+
+    //Create a cell array to store the lines in and add the lines to it
+    vtkSmartPointer<vtkCellArray> cells =
+        vtkSmartPointer<vtkCellArray>::New();
+    cells->InsertNextCell(polyLine);
+
+    //Create a polydata to store everything in
+    vtkSmartPointer<vtkPolyData> polyData =
+        vtkSmartPointer<vtkPolyData>::New();
+
+    //add the points to the dataset
+    polyData->SetPoints(points);
+
+    //add the lines to the dataset
+    polyData->SetLines(cells);
+
+    //add the temporal information
+    polyData->GetFieldData()->AddArray(temporalArray);
+
+    return polyData;
     }
 
-  // read map and fill points
-  vtkSmartPointer< vtkPoints > points = vtkSmartPointer< vtkPoints >::New();
-  std::map<int, double*>::iterator it = orderedPoints.begin();
-
-  while(it != orderedPoints.end())
-    {
-    std::cout << "Insert point" << std::endl;
-    std::cout << " x: " << it->second[0]
-              << " y: " << it->second[1]
-              << " z: " << it->second[2] << std::endl;
-    temporalArray->InsertNextValue( it->first );
-    points->InsertNextPoint(it->second);
-    ++it;
-    }
-
-  // Clean the map
-  for (it = orderedPoints.begin(); it != orderedPoints.end(); ++it)
-    {
-    delete[] it->second;
-    }
-  orderedPoints.clear();
-
-
-  // Create a line from points
-  vtkSmartPointer<vtkPolyLine> polyLine =
-      vtkSmartPointer<vtkPolyLine>::New();
-
-  std::cout << "Number of points: " << points->GetNumberOfPoints() << std::endl;
-
-  polyLine->GetPointIds()->SetNumberOfIds( points->GetNumberOfPoints() );
-  for(unsigned int i = 0; i < points->GetNumberOfPoints(); i++)
-    {
-    polyLine->GetPointIds()->SetId(i,i);
-    }
-
-  //Create a cell array to store the lines in and add the lines to it
-  vtkSmartPointer<vtkCellArray> cells =
-      vtkSmartPointer<vtkCellArray>::New();
-  cells->InsertNextCell(polyLine);
-
-  //Create a polydata to store everything in
-  vtkSmartPointer<vtkPolyData> polyData =
-      vtkSmartPointer<vtkPolyData>::New();
-
-  //add the points to the dataset
-  polyData->SetPoints(points);
-
-  //add the lines to the dataset
-  polyData->SetLines(cells);
-
-  //add the temporal information
-  polyData->GetFieldData()->AddArray(temporalArray);
-
-  return polyData;
+  return NULL;
 }
 //--------------------------------------------------------------------------

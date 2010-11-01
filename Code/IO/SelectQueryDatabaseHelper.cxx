@@ -32,6 +32,7 @@
 
 =========================================================================*/
 #include "SelectQueryDatabaseHelper.h"
+
 #include "vtkMySQLDatabase.h"
 #include "vtkSQLQuery.h"
 #include "vtkStdString.h"
@@ -40,17 +41,9 @@
 #include "vtkPolyDataMySQLContourReader.h"
 #include "vtkPolyDataMySQLMeshReader.h"
 #include "vtkPolyDataMySQLTrackReader.h"
+
 #include <sstream>
 #include <string>
-
-/////////
-#include <vtkPolyData.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkActor.h>
-#include <vtkRenderWindow.h>
-#include <vtkRenderer.h>
-#include <vtkRenderWindowInteractor.h>
-
 
 std::vector< std::string > ListAllValuesForOneColumn(vtkMySQLDatabase *DatabaseConnector,
                                                      std::string ColumnName, std::string TableName,
@@ -1327,9 +1320,21 @@ ContourMeshStructure GetTraceInfoFromDB(
           {
           if ( TraceName.compare("mesh") == 0 )
             {
-            vtkSmartPointer< vtkPolyDataMySQLMeshReader > convert_reader =
-              vtkSmartPointer< vtkPolyDataMySQLMeshReader >::New();
-            output->DeepCopy(convert_reader->GetPolyData(polydata_string));
+            vtkIdType N;
+            std::stringstream str(polydata_string);
+            str >> N;
+
+            if( N > 0 )
+              {
+              vtkSmartPointer< vtkPolyDataMySQLMeshReader > convert_reader =
+                vtkSmartPointer< vtkPolyDataMySQLMeshReader >::New();
+              output->DeepCopy(convert_reader->GetPolyData(polydata_string));
+              }
+            else
+              {
+              output->Delete();
+              output = NULL;
+              }
             }
           }
         Results.Nodes = output;
@@ -2381,9 +2386,21 @@ void GetTracesInfoFromDBAndModifyContainer(
           {
           if ( TraceName.compare("mesh") == 0 )
             {
-            vtkSmartPointer< vtkPolyDataMySQLMeshReader > convert_reader =
-              vtkSmartPointer< vtkPolyDataMySQLMeshReader >::New();
-            output->DeepCopy(convert_reader->GetPolyData(polydata_string));
+            vtkIdType N;
+            std::stringstream str(polydata_string);
+            str >> N;
+
+            if( N > 0 )
+              {
+              vtkSmartPointer< vtkPolyDataMySQLMeshReader > convert_reader =
+                vtkSmartPointer< vtkPolyDataMySQLMeshReader >::New();
+              output->DeepCopy(convert_reader->GetPolyData(polydata_string));
+              }
+            else
+              {
+              output->Delete();
+              output = NULL;
+              }
             }
           }
         temp.Nodes = output;
@@ -2468,38 +2485,20 @@ void GetTracesInfoFromDBAndModifyContainer(
       std::string polydata_string = query->DataValue(2).ToString();
 
       std::cout << "string to be converted: " << polydata_string << std::endl;
-      if ( !polydata_string.empty() )
+
+      vtkIdType N;
+      std::stringstream str(polydata_string);
+      str >> N;
+
+      if ( (N > 0) && (!polydata_string.empty()) )
         {
         vtkPolyData *output = vtkPolyData::New();
         output->DeepCopy(convert_reader->GetPolyData(polydata_string));
         temp.Nodes = output;
-        std::cout << "GOT THE POLYDATA" << std::endl;
-
-        //setup actor and mapper
-        vtkSmartPointer<vtkPolyDataMapper> mapper =
-            vtkSmartPointer<vtkPolyDataMapper>::New();
-        mapper->SetInput(output);
-
-        vtkSmartPointer<vtkActor> actor =
-            vtkSmartPointer<vtkActor>::New();
-        actor->SetMapper(mapper);
-
-        //setup render window, renderer, and interactor
-        vtkSmartPointer<vtkRenderer> renderer =
-            vtkSmartPointer<vtkRenderer>::New();
-        vtkSmartPointer<vtkRenderWindow> renderWindow =
-            vtkSmartPointer<vtkRenderWindow>::New();
-        renderWindow->AddRenderer(renderer);
-        vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor =
-            vtkSmartPointer<vtkRenderWindowInteractor>::New();
-        renderWindowInteractor->SetRenderWindow(renderWindow);
-        renderer->AddActor(actor);
-
-        renderWindow->Render();
-        renderWindowInteractor->Start();
-
-
-
+        }
+      else
+        {
+        temp.Nodes = NULL;
         }
       /// \note For the visualization rgba values are supposed to be double in
       /// between 0 and 1; whereas in the database these values are in between
