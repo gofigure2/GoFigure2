@@ -2,7 +2,7 @@ import os
 address = os.getcwd()
 #address should be ~/GITROOT/GoFigure2/Testing/Sikuli
 
-address = address+"/gofigure2_images"
+#address = address+"/gofigure2_images"
 print address
 setBundlePath(address)
 
@@ -41,7 +41,7 @@ for a in Action:
 				click("ok.png")
 				wait(1)
 				
-				onAppear("errorPopUp.png")
+				#onAppear("errorPopUp.png")
 				click("ok.png")
 				click("cancel.png")
 				assert exists()
@@ -49,7 +49,7 @@ for a in Action:
 				type("Widget Test")
 				click("ok.png")
 				#cannot use assertExist in sikuli editor
-				onAppear("errorPopUp.png")
+				#onAppear("errorPopUp.png")
 				click("ok.png")
 				click("cancel.png")
 #call time elapse function

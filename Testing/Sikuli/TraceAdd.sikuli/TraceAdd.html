@@ -74,8 +74,8 @@
 address = os.getcwd()
 <span class="cmt">#address should be ~/GITROOT/GoFigure2/Testing/Sikuli
 </span>
-address = address+<span class="str">"/gofigure2_images"</span>
-<span class="kw">print</span> address
+<span class="cmt">#address = address+"/gofigure2_images"
+</span><span class="kw">print</span> address
 setBundlePath(address)
 
 start = time.time()
@@ -113,16 +113,16 @@ Action = (<span class="str">"Add New"</span>, <span class="str">"Cancel"</span>,
                                 <span class="skw">click</span>(<img src="ok.png" />)
                                 <span class="skw">wait</span>(<span class="dig">1</span>)
 
-                                onAppear(<img src="errorPopUp.png" />)
-                                <span class="skw">click</span>(<img src="ok.png" />)
+                                <span class="cmt">#onAppear("errorPopUp.png")
+</span>                                <span class="skw">click</span>(<img src="ok.png" />)
                                 <span class="skw">click</span>(<img src="cancel.png" />)
                                 <span class="kw">assert</span> exists()
                         <span class="kw">if</span> a == <span class="str">"Existing Name"</span>:
                                 <span class="skw">type</span>(<span class="str">"Widget Test"</span>)
                                 <span class="skw">click</span>(<img src="ok.png" />)
                                 <span class="cmt">#cannot use assertExist in sikuli editor
-</span>                                onAppear(<img src="errorPopUp.png" />)
-                                <span class="skw">click</span>(<img src="ok.png" />)
+</span>                                <span class="cmt">#onAppear("errorPopUp.png")
+</span>                                <span class="skw">click</span>(<img src="ok.png" />)
                                 <span class="skw">click</span>(<img src="cancel.png" />)
 <span class="cmt">#call time elapse function
 </span>
