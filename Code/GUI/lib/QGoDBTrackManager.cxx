@@ -215,3 +215,33 @@ void QGoDBTrackManager::UpdateCurrentElementTrackContainer(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoDBTrackManager::SaveTrackCurrentElement(
+  vtkMySQLDatabase* iDatabaseConnector)
+{
+  GoDBTrackRow TrackToSave(this->m_ImgSessionID);
+  unsigned int TrackID = this->m_TrackContainerInfoForVisu->m_CurrentElement.TraceID;
+  if (TrackID != 0)
+    {
+    TrackToSave.SetValuesForSpecificID(TrackID,iDatabaseConnector);
+    }
+
+  //save the track into the database
+  TrackToSave.SetThePointsFromPolydata(
+    this->m_TrackContainerInfoForVisu->m_CurrentElement.Nodes);
+  TrackID = TrackToSave.SaveInDB(iDatabaseConnector);
+  
+  //save the track into the container:
+  this->m_TrackContainerInfoForVisu->InsertCurrentElement();
+
+  if (TrackID == 0)
+    {
+    this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
+    }
+
+  //update its bounding box with the new mesh into the database
+  //and the table widget:
+  std::list<unsigned int> ListTrackID;
+  ListTrackID.push_back(TrackID);
+  UpdateBoundingBoxes(iDatabaseConnector,ListTrackID);
+
+}

@@ -422,6 +422,12 @@ unsigned int QGoPrintDatabase::SaveNewContourForMeshToContours(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoPrintDatabase::SaveTrackCurrentElement()
+{
+  this->OpenDBConnection();
+  this->m_TracksManager->SaveTrackCurrentElement(this->m_DatabaseConnector);
+  this->CloseDBConnection();
+}
 /*
 std::vector< ContourMeshStructure > QGoPrintDatabase::GetTracesForAGivenTimepoint(
   ContourMeshStructureMultiIndexContainer iAllTraces,

@@ -124,7 +124,7 @@ public:
   \param[in] iCoordMin coordinate row for the minimum of the bounding box
   \param[in] iCoordMax coordinate row for the maximum of the bounding box
   */
-  void SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector,
+  virtual void SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector,
                              vtkPolyData *TraceVisu,
                              GoDBCoordinateRow iCoordMin,
                              GoDBCoordinateRow iCoordMax);

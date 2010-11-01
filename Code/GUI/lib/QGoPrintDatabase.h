@@ -272,6 +272,8 @@ public slots:
 
   void SaveNewMeshForMeshToContours(int iNumberOfContours);
 
+  void SaveTrackCurrentElement();
+
 signals:
   void PrintDBReady();
 
