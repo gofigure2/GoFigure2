@@ -132,6 +132,13 @@ public:
                                  Qt::CheckState iState,
                                  bool EmitSignal = true);
 
+  /**
+  \brief 
+  \return a map with all the traceIDs and the values of the column for which a 
+  cell of a column is selected
+  */
+  std::map<unsigned int, double> GetTraceIDAndColumnsValues(std::string iTraceID);
+
 public slots:
   /** \brief check the boxes for the rows where at least one cell is selected */
   void CheckSelectedRows(std::string iTraceName,

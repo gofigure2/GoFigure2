@@ -307,6 +307,10 @@ void QGoDBTraceManager::AddSpecificActionsForContourMesh(QMenu *iMenu)
                     this, SLOT( GoToTheTrace() ) );
   /** \todo when using lineage, put it in the generalActionsContextMenu*/
   this->AddActionForCreateNewCollectionFromCheckedTraces(iMenu);
+
+  iMenu->addAction( tr("ColorCode your %1s base on the selected column")
+                    .arg(this->m_TraceName.c_str() ),
+                    this, SLOT( ColorCoding() ) );
   /*iMenu->addAction(
       tr("Add to selected %1 : %2").arg(this->m_CollectionName.c_str())
       .arg(this->m_SelectedCollectionData.first.c_str()), this, SLOT(AddToSelectedCollection()));
@@ -602,4 +606,14 @@ std::list< unsigned int > QGoDBTraceManager::GetLastCreatedTracesIDs(
 {
   return this->m_CollectionOfTraces->GetLastCreatedTracesIDs(
            iDatabaseConnector, iNumberOfTraceIDs);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTraceManager::ColorCoding()
+{
+  //todo reimplement it :
+  //this->m_TraceContainerInfoForVisu->SetColorCode( const std::string& iColumnName,
+    //                 const std::map< unsigned int, TValue >& iValues )
+ // this->m_Table->GetTraceIDAndColumnsValues(this->m_TraceID);
 }

@@ -599,5 +599,11 @@ protected slots:
   void UpdateHighlightedElementsInVisuContainer(int iTraceID);
 
   void UpdateVisibleElementsInVisuContainer(int iTraceID);
+
+  /**
+  \brief ColorCode the traces base on a selected column in the table widget
+  */
+  void ColorCoding();
+
 };
 #endif

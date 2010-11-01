@@ -41,6 +41,7 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QToolButton>
+#include <QMessageBox>
 
 QGoTableWidget::QGoTableWidget(QWidget *iParent):QTableWidget(iParent)
 {
@@ -953,4 +954,31 @@ bool QGoTableWidget::setCheckStateCheckBox(QTableWidgetItem *iItem,
       }
     }
   return oModification;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::map<unsigned int, double> QGoTableWidget::
+GetTraceIDAndColumnsValues(std::string iTraceID)
+{
+  std::map<unsigned int,double> oMapValues = 
+    std::map<unsigned int,double>();
+  QList<QTableWidgetSelectionRange> Ranges = this->selectedRanges();
+  if ( Ranges.size()>1 || Ranges[0].columnCount()>1 )
+    {
+    QMessageBox msgBox;
+    msgBox.setText(
+      tr("Please choose only one column to color code") );
+    msgBox.exec();
+    return oMapValues;
+    }
+  unsigned int ColumnIndex = Ranges[0].leftColumn();
+  unsigned int NbOfRows = this->rowCount();
+  unsigned int IndexTraceID = this->findColumnName(iTraceID.c_str());
+  for( int i = 0; i<NbOfRows; i++ )
+    {
+    oMapValues[this->item(i,IndexTraceID)->text().toUInt()] = 
+      this->item(i,ColumnIndex)->text().toDouble();
+    }
+  return oMapValues;
 }
