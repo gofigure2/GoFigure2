@@ -47,8 +47,8 @@ for a in Action:
 				click("cancel.png")
 				assert exists("previousStateWidgetTest.png")
 			if a == "Existing Name":
-				type("Widget Test")
 				wait(1)
+				type("Widget Test")
 				click("ok.png")
 				
 				assert exists("errorPopUp.png")
