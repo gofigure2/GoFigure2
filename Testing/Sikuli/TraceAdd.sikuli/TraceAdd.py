@@ -1,6 +1,6 @@
 import os
 address = os.getcwd()
-#address should be ~/GITROOT/GoFigure2/Testing/Sikuli
+#address should be ~/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images
 
 #address = address+"/gofigure2_images"
 print address
@@ -21,7 +21,7 @@ def AddNew(Region):
 TraceObject = ("SelectedColor.png","SelectedCellType.png","SelectedSubCellType.png")
 #four add a new... tests for each trace widget button
 Action = ("Add New", "Cancel", "No Name", "Existing Name")
-#test 1: Add a new...
+
 for a in Action:
 		for i in TraceObject:
 			AddNew(i)

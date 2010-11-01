@@ -72,7 +72,7 @@
 <pre class="sikuli-code">
 <span class="kw">import</span> os
 address = os.getcwd()
-<span class="cmt">#address should be ~/GITROOT/GoFigure2/Testing/Sikuli
+<span class="cmt">#address should be ~/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images
 </span>
 <span class="cmt">#address = address+"/gofigure2_images"
 </span><span class="kw">print</span> address
@@ -93,8 +93,8 @@ start = time.time()
 </span>TraceObject = (<img src="SelectedColor.png" />,<img src="SelectedCellType.png" />,<img src="SelectedSubCellType.png" />)
 <span class="cmt">#four add a new... tests for each trace widget button
 </span>Action = (<span class="str">"Add New"</span>, <span class="str">"Cancel"</span>, <span class="str">"No Name"</span>, <span class="str">"Existing Name"</span>)
-<span class="cmt">#test 1: Add a new...
-</span><span class="kw">for</span> a <span class="kw">in</span> Action:
+
+<span class="kw">for</span> a <span class="kw">in</span> Action:
                 <span class="kw">for</span> i <span class="kw">in</span> TraceObject:
                         AddNew(i)
                         <span class="kw">if</span> i == (<img src="SelectedColor.png" />) :
