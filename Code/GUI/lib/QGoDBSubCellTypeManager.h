@@ -48,7 +48,7 @@ class QGoDBSubCellTypeManager:public QGoDBNameDescEntityManager
 {
   Q_OBJECT
 public:
-  /** \todo make a class template for celltype/subcelltype */
+  /** \todo Lydie: make a class template for celltype/subcelltype */
   explicit QGoDBSubCellTypeManager (QWidget *iParent = 0);
 
   ~QGoDBSubCellTypeManager()

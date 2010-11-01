@@ -233,10 +233,10 @@ vtkViewImage2D::SetViewConvention(int convention)
 
 //----------------------------------------------------------------------------
 void
-vtkViewImage2D::SetShowAnnotations(const int & val)
+vtkViewImage2D::SetShowAnnotations(const int & iShowAnnotations)
 {
-  this->Superclass::SetShowAnnotations (val);
-  this->OrientationAnnotation->SetVisibility (val);
+  this->Superclass::SetShowAnnotations (iShowAnnotations);
+  this->OrientationAnnotation->SetVisibility (iShowAnnotations);
 }
 
 //----------------------------------------------------------------------------
@@ -840,6 +840,11 @@ vtkViewImage2D::InstallPipeline()
     this->InteractorStyleSwitcher = this->InteractorStyle;
     this->Interactor->SetInteractorStyle(this->InteractorStyle);
     this->Interactor->SetRenderWindow(this->RenderWindow);
+    }
+
+  if ( this->Renderer && this->ImageActor )
+    {
+    this->ImageActor->SetInterpolate(false);
     }
 
   if ( this->Renderer && this->ImageActor )

@@ -35,6 +35,7 @@
 #include "QGoSeedBaseWidget.h"
 
 #include <QShortcut>
+#include <QDebug>
 
 //---------------------------------------------------------------------------//
 QGoSeedBaseWidget::QGoSeedBaseWidget(QWidget *iParent, int iSampling):QWidget(iParent)
@@ -94,7 +95,20 @@ QGoSeedBaseWidget::
 void
 QGoSeedBaseWidget::AddChannel(QString iChannel)
 {
+  std::cout << "ADD ITEM" << std::endl;
   channel->addItem(iChannel);
+}
+
+//---------------------------------------------------------------------------//
+
+//---------------------------------------------------------------------------//
+
+void
+QGoSeedBaseWidget::setNumberOfChannels(int iNumberOfChannels)
+{
+  std::cout << "Number Of Items" << std::endl;
+  channel->clear();
+  channel->setMaxCount(iNumberOfChannels);
 }
 
 //---------------------------------------------------------------------------//

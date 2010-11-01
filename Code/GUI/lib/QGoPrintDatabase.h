@@ -66,7 +66,9 @@
 
 /**
 \class QGoPrintDatabase
-\brief Ensure the connection with the Database
+\brief manages all the database components: table widget, trace manual editing widdet,
+QGoDBTraceManager...
+\ingroup DB GUI
 */
 class QGOGUILIB_EXPORT QGoPrintDatabase:public QWidget,
   private Ui::WidgetPrintDatabase
@@ -251,7 +253,7 @@ public:
   /**
   \brief set the pointer m_TraceInfoForVisu of the TracksManager to
   iTracksContainer
-  \param[in] iTrackssContainer pointer for the container of tracks
+  \param[in] iContainer pointer for the container of tracks
   for the visu
   */
   void SetTracksContainer(ContourMeshContainer *iContainer);
@@ -416,7 +418,8 @@ protected:
   /**
   \brief get the RGB Alpha values from the iTraceRow and set a QColor with them
   \tparam T any children of GoDBTraceRow
-  \param[in] iTraceRow the trace from which the QColor is created
+  \param[in] iTraceRow the trace from which the QColor is created  
+  \param[in] iDatabaseConnector connection to the database
   \return QColor with the values corresponding to the color values of the iTraceRow
   */
   template< typename T >
@@ -435,7 +438,7 @@ protected:
 
   /**
   \brief set the color of the traceRow according to the iColor
-  \param[in|out] ioRow traceRow with the color to be set up
+  \param[in,out] ioRow traceRow with the color to be set up
   \param[in] iColor color for the traceRow
   \tparam T children of GoDBTraceRow
   */
@@ -598,7 +601,7 @@ protected slots:
   the m_ContoursManager, emit the signal NewMeshToGenerate for the visu
   after creating a new mesh and calling the AddCheckedTracesToCollection
   template method.
-  \param[in] iListCheckedMeshes list of the meshIDs of the checked meshes in the TW
+  \param[in] iListCheckedContours list of the meshIDs of the checked meshes in the TW
   */
   void CreateNewMeshFromCheckedContours(std::list< unsigned int > iListCheckedContours);
 
@@ -640,13 +643,13 @@ protected slots:
 
   /**
   \brief set the m_SelectedCelltype to iSelectedCelltype
-  \param[in] iSelectedCelltype name of the celltype
+  \param[in] iSelectedCellType name of the celltype
   */
   void UpdateSelectedCellType(std::string iSelectedCellType);
 
   /**
   \brief set the m_SelectedSubCelltype to iSelectedSubCelltype
-  \param[in] iSelectedSubCelltype name of the subcelltype
+  \param[in] iSelectedSubCellType name of the subcelltype
   */
   void UpdateSelectedSubCellType(std::string iSelectedSubCellType);
 

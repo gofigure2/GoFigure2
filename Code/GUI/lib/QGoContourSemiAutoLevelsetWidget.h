@@ -38,6 +38,12 @@
 #include <QWidget>
 #include "ui_LevelsetWidget.h"
 
+/**
+ * \class QGoContourSemiAutoLevelsetWidget
+ * \ingroup QGoContourSeed
+ * \brief Widget suited for the levelset segmentation
+*/
+
 class QGoContourSemiAutoLevelsetWidget:
   public QWidget,
   protected Ui::LevelsetWidget
@@ -47,8 +53,14 @@ public:
   explicit QGoContourSemiAutoLevelsetWidget(QWidget *iParent = 0);
   ~QGoContourSemiAutoLevelsetWidget();
 signals:
+  /*
+   * \brief Signal sent when the curvature is modified
+   */
   void Curvature(int);
 
+  /*
+   * \brief Signal sent when the number of iterations is modified
+   */
   void Iterations(int);
 };
 

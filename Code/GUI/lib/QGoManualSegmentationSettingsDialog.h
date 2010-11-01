@@ -47,6 +47,15 @@ class vtkContourWidget;
 class vtkRenderer;
 class vtkPolyData;
 
+/**
+ * \class QGoManualSegmentationSettingsDialog
+ * \ingroup QGoContourManual
+ * \brief Settings dialog for the contour widget. Useful to define the color
+ * of the line, the color of the nodes,the color of the active nodes and the
+ * thickness of the line
+*/
+
+
 class QGOGUILIB_EXPORT QGoManualSegmentationSettingsDialog:
   public QDialog,
   private Ui::ManualSegmentationSettingsDlg
@@ -60,21 +69,51 @@ public:
                                                const QColor & iActivatedNodeColor = Qt::yellow);
   virtual ~QGoManualSegmentationSettingsDialog();
 
+  /**
+   * \brief Get the width of the line
+   * \return double containing the selected width
+  */
   double GetLineWidth() const;
 
+  /**
+   * \brief Get the color of the line
+   * \return QColor containing the selected color
+  */
   QColor GetLineColor() const;
 
+  /**
+   * \brief Get the color of the Node
+   * \return QColor containing the selected color
+  */
   QColor GetNodeColor() const;
 
+  /**
+   * \brief Get the color of the Active Node
+   * \return QColor containing the selected color
+  */
   QColor GetActivatedNodeColor() const;
 
 public slots:
-  void SetLineWidth(const double &);
 
+/**
+ * \brief Set the width of the line
+ * \param[in] iWidth double containing the selected width
+*/
+  void SetLineWidth(const double & iWidth);
+
+  /**
+   * \brief Open a dialog to choose the color of the lines
+  */
   void SelectLineColor();
 
+  /**
+   * \brief Open a dialog to choose the color of the node
+  */
   void SelectNodeColor();
 
+  /**
+   * \brief Open a dialog to choose the color of the activated node
+  */
   void SelectActivatedNodeColor();
 
 protected:

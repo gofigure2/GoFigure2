@@ -110,6 +110,9 @@ private slots:
 
   void openFilesfromDB();
 
+  /**
+  * \brief Open dialog window to set the file output path and format
+  */
   void on_actionExport_LSM_to_MegaFile_triggered();
 
   void on_actionClose_triggered();
@@ -137,7 +140,7 @@ private slots:
   */
   void RemoveSetUpDatabaseMenu();
 
-  /** 
+  /**
   \brief add the action 'Set up Database' to the Database menu if it doesn't
   have been already added.
   */
@@ -169,6 +172,15 @@ private:
   void UpdateRecentFileActions(QStringList list, QMenu * menu,
                                QAction * recentFileActions[MaxRecentFiles]);
 
+   /**
+    * \brief Create a new tab in the TabWidget for a 3DwT image from one megacapture
+    * (from the database, or from the filesystem directly).
+    * \param[in] iFileList    Megacapture files Container
+    * \param[in] iFileType    Type of images
+    * \param[in] iHeader      Megacapture header (*.meg)
+    * \param[in] iTimePoint   Time point to show
+    * \param[in] iUseDatabase Use the database
+  */
   QGoTabImageView3DwT * CreateNewTabFor3DwtImage(
     const GoFigureFileInfoHelperMultiIndexContainer & iFileList,
     const GoFigure::FileType & iFileType,
@@ -176,6 +188,11 @@ private:
     const int & iTimePoint,
     const bool & iUseDatabase);
 
+  /**
+   * \brief Create a new tab in the TabWidget for a 3DwT LSM file.
+   * \param[in] iReader the vtkLSMReader to be duplicated
+   * \param[in] iFile filename
+  */
   QGoTabImageView3DwT * CreateNewTabFor3DwtImage(
     vtkLSMReader *iReader, const QString & iFile);
 
@@ -183,17 +200,28 @@ private:
 
   QGoTabImageView2D * CreateNewTabFor2DImage(vtkImageData *, const QString &);
 
-  /** \brief Open Image with given iFileName
+  /* \brief Open Image with given iFileName
   \param[in] iFileName  */
 //   void OpenImageWithITK( const QString& iFileName );
+
+  /** \brief Open LSM image
+ * \param[in] iFile filename
+ * \param[in] iTimePoint time point
+ * */
   void OpenLSMImage(const QString & iFile, const int & iTimePoint);
 
   void SetupMenusFromTab(QGoTabElementBase *iT);
 
-  /** \brief get the file container and the header filename for a
-  multi file*/
-  GoFigureFileInfoHelperMultiIndexContainer GetFileContainerForMultiFiles(
-    std::string & ioHeader_Filename, std::string iFirstFileName);
+  /** \brief get the file container and the header filename for one file
+ * part of a megacapture imaging session
+ * \param[in,out] ioHeader_Filename detected *.meg file
+ * \param[in] iFirstFileName one file part of a megacapture imaging session
+ * \return multi index container with all file names
+ * */
+  GoFigureFileInfoHelperMultiIndexContainer
+  GetFileContainerForMultiFiles(
+    std::string & ioHeader_Filename,
+    std::string iFirstFileName);
 
   /**
    *
@@ -207,10 +235,10 @@ private:
 
   /**
    * \brief Compute GoFigure file type from a given filename
-   * @param iFileName
-   * @param oFileType
-   * @return true if (png, jpeg or tiff)
-   * @return false else
+   * \param[in] iFileName filename
+   * \param[out] oFileType file type
+   * \return true if (png, jpeg or tiff)
+   * \return false else
    */
   bool ComputeFileType(const QString & iFileName, GoFigure::FileType & oFileType);
 

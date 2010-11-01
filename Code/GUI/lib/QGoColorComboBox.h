@@ -39,8 +39,8 @@
 #include "QGoComboBox.h"
 
 /**
-\class QGoColorCombobox
-\brief inherits from QGoCombobox, display not ony the names but also the QColor of
+\class QGoColorComboBox
+\brief inherits from QGoComboBox, display not ony the names but also the QColor of
 the items as an Icon in the combobox
 \ingroup GUI
 */
@@ -79,7 +79,6 @@ public:
   and the items to add/delete
   \param[in] iDataFromList contains the names and QColor of the items to be
   displayed in the combobox
-  \overload from the mother class method
   */
   void SetItemsFromListWithColor(
     std::list< ItemColorComboboxData > iDataFromList);

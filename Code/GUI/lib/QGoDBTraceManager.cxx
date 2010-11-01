@@ -300,12 +300,12 @@ void QGoDBTraceManager::AddGeneralActionsContextMenu(QMenu *iMenu)
 //-------------------------------------------------------------------------
 void QGoDBTraceManager::AddSpecificActionsForContourMesh(QMenu *iMenu)
 {
-  /** \todo when using lineages, remove the following*/
+  /** \todo Lydie: when using lineages, remove the following*/
   //for the time being, as we don't use lineages
   iMenu->addAction( tr("Go to this %1")
                     .arg( this->m_TraceName.c_str() ),
                     this, SLOT( GoToTheTrace() ) );
-  /** \todo when using lineage, put it in the generalActionsContextMenu*/
+  /** \todo Lydie: when using lineage, put it in the generalActionsContextMenu*/
   this->AddActionForCreateNewCollectionFromCheckedTraces(iMenu);
   /*iMenu->addAction(
       tr("Add to selected %1 : %2").arg(this->m_CollectionName.c_str())

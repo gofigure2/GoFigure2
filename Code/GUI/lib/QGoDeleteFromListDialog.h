@@ -46,6 +46,7 @@
 \class QGoDeleteFromListDialog
 \brief this class displays a list of entities and return the list of the
 ones selected by the user. class based on Qt
+\ingroup GUI
 */
 class QGOGUILIB_EXPORT QGoDeleteFromListDialog:public QDialog
 {
@@ -63,6 +64,7 @@ public:
                                    std::string iEntityName = "");
 
   virtual ~QGoDeleteFromListDialog();
+
 protected:
   std::string  m_EntityName;
   QListWidget *m_ListWidget;

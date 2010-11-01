@@ -38,6 +38,12 @@
 #include <QWidget>
 #include "ui_WatershedWidget.h"
 
+/**
+ * \class QGoContourSemiAutoWatershedWidget
+ * \ingroup QGoContourSeed
+ * \brief Widget suited for the watershed segmentation
+*/
+
 class QGoContourSemiAutoWatershedWidget:
   public QWidget,
   protected Ui::WatershedWidget

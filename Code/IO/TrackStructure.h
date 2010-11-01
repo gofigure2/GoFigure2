@@ -53,7 +53,7 @@ struct QGOIO_EXPORT TrackStructure {
   vtkActor *ActorYZ;
   vtkActor *ActorXYZ;
 
-  /// TODO initialize map in all the constructors
+  /// \todo initialize map in all the constructors
   std::map<int, vtkPolyData*> Nodes;
 
   //unsigned int CollectionID;

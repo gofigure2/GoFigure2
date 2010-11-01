@@ -79,7 +79,7 @@ TrackTextFileImport::SetDirectory(const std::string & iDir)
 
 /**
  * \brief Set the name of the TrackText files
- * \param[in]  iDir Name of the TrackText files
+ * \param[in] iFileName Name of the TrackText files
  */
 void
 TrackTextFileImport::SetFileName(const std::string & iFileName)

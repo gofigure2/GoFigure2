@@ -41,12 +41,19 @@
 #include "GoDBRecordSetHelper.h"
 #include "GoDBRecordSet.h"
 
+/**
+\class GoDBTraceRow
+\brief abstract class to be inherited by Contour,Mesh,Track and GoDBLineageRow
+\ingroup DB
+*/
 class QGOIO_EXPORT GoDBTraceRow:public GoDBRow
 {
 public:
   GoDBTraceRow();
 
-  /**\brief fill the trace map with the values gotten from the visualization*/
+  /**
+  \brief fill the trace map with the values gotten from the visualization
+  */
   GoDBTraceRow(vtkMySQLDatabase *DatabaseConnector, vtkPolyData *TraceVisu,
                GoDBCoordinateRow Min, GoDBCoordinateRow Max, unsigned int ImgSessionID);
 
@@ -57,32 +64,76 @@ public:
   ~GoDBTraceRow()
   {}
 
-/**\brief return the TraceID of the Trace with the same bounding box
-  already registered in the DB or -1 if not yet created*/
+  /**
+  \brief check if a trace already has the same bounding box
+  \param[in] DatabaseConnector connection to the database
+  \return the TraceID of the Trace with the same bounding box
+  already registered in the DB or -1 if not yet created 
+  */
   int  DoesThisBoundingBoxExist(vtkMySQLDatabase *DatabaseConnector);
 
+
+  /**
+  \brief get the colorID corresponding to the rgba values and set the colorID
+  field of the trace with it
+  \param[in] Red
+  \param[in] Green
+  \param[in] Blue
+  \param[in] Alpha
+  \param[in] ColorName
+  \param[in] DatabaseConnector connection to the database
+  */
   void SetColor(unsigned int Red, unsigned int Green, unsigned int Blue,
                 unsigned int Alpha, std::string ColorName, vtkMySQLDatabase *DatabaseConnector);
 
+  /**
+  \brief
+  \return the collectionID name
+  */
   std::string GetCollectionIDName();
 
+  /**
+  \brief
+  \return the collection name
+  */
   std::string GetCollectionName();
 
-  //set the data from the visu for an existing Trace
+  /**
+  \brief set the data from the visu for an existing Trace
+  \param[in] DatabaseConnector connection to the database
+  \param[in] TraceVisu vtkPolyData the points will be extracted from
+  \param[in] iCoordMin coordinate row for the minimum of the bounding box
+  \param[in] iCoordMax coordinate row for the maximum of the bounding box
+  */
   void SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector,
                              vtkPolyData *TraceVisu,
                              GoDBCoordinateRow iCoordMin,
                              GoDBCoordinateRow iCoordMax);
 
-  /**\brief check in the database if the Coordinate Min adn Max already exists,
+  /**
+  \brief check in the database if the Coordinate Min and Max already exists,
   if yes fill the map["CoordIDMin"] and ["CoordIDmax"] with the existing CoordinateID
   if not, create the coordinates in the database and fill the map with the new created ID,
-  if the bounding box already exists, a cout is generated*/
+  if the bounding box already exists, a cout is generated
+  \param[in] DatabaseConnector connection to the database
+  \param[in] Min coordinate row for the minimum of the bounding box
+  \param[in] Max coordinate row for the maximum of the bounding box
+  */
   void SetTheBoundingBox(vtkMySQLDatabase *iDatabaseConnector,
                          GoDBCoordinateRow Min, GoDBCoordinateRow Max);
 
+  /**
+  \brief set the collectionID field to iCollectionID
+  \param[in] iCollectionID collectionID to be set to
+  */
   void SetCollectionID(unsigned int iCollectionID);
 
+  /**
+  \brief get the data from the database for a specific ID and fill the GoDBTraceRow
+  with it
+  \param[in] ID ID of the trace the data will be fetched for
+  \param[in] iDatabaseConnector connection to the database
+  */
   void SetValuesForSpecificID(int ID, vtkMySQLDatabase *iDatabaseConnector);
 
 protected:
@@ -104,6 +155,9 @@ protected:
   \brief save the row in the database if the TraceID is set to "0", update the
   existing traceRow if the TraceID is <> 0
   \param[in] iDatabaseConnector connection to the database
+  \param[in] iTrace trace to be saved
+  \tparam T children of GoDBTraceRow
+  \return the ID of the updated or saved trace
   */
   template< typename T >
   int SaveInDBTemplate(vtkMySQLDatabase *iDatabaseConnector, T iTrace)

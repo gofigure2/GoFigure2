@@ -256,20 +256,19 @@ public slots:
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
   void SetRendererWindow(int);
-
 #endif /* ENABLEVIDEORECORD */
 
   QString SnapshotViewXY( const GoFigure::FileType & iType,
-                          const QString & iBaseName = QString("snapshot") );
+                          const QString & iBaseName = QString("snapshot-xy-") );
 
-  QString SnapshotView2( const GoFigure::FileType & iType,
-                         const QString & iBaseName = QString("snapshot") );
+  QString SnapshotViewXZ( const GoFigure::FileType & iType,
+                         const QString & iBaseName = QString("snapshot-xz-") );
 
-  QString SnapshotView3( const GoFigure::FileType & iType,
-                         const QString & iBaseName = QString("snapshot") );
+  QString SnapshotViewYZ( const GoFigure::FileType & iType,
+                         const QString & iBaseName = QString("snapshot-yz-") );
 
   QString SnapshotViewXYZ( const GoFigure::FileType & iType,
-                           const QString & iBaseName = QString("snapshot") );
+                           const QString & iBaseName = QString("snapshot-xyz-") );
 
   void SetSliceViewXY(const int &);
 
@@ -290,8 +289,6 @@ public slots:
   void FullScreenViewXYZ();
 
   void ChangeLookupTable();
-
-  void ShowScalarBar(const bool &);
 
   void ChangeBackgroundColor();
 
@@ -342,7 +339,7 @@ protected:
   QSplitter *                                    m_VSplitter;
   QGoImageView3D *                               m_ImageView;
   std::vector< vtkSmartPointer< vtkLSMReader > > m_LSMReader;
-  std::vector< vtkImageData * >                  m_InternalImages;
+  std::vector< vtkSmartPointer< vtkImageData > > m_InternalImages;
   vtkImageData *                                 m_Image;
 
   vtkProperty *m_HighlightedContoursProperty;
@@ -375,14 +372,24 @@ protected:
 
   vtkPoints *m_Seeds;
 
-  /// \todo remove m_FFMPEGWriter and m_AVIWriter from this class
-  #if defined ENABLEFFMPEG || defined ENABLEAVI
-  QGoVideoRecorder *m_VideoRecorderWidget;
-  #endif /* ENABLEFFMPEG || ENABLEAVI */
-
   ContourMeshContainer *m_ContourContainer;
   ContourMeshContainer *m_MeshContainer;
   ContourMeshContainer *m_TrackContainer;
+
+  bool m_TraceWidgetRequiered;
+
+  /** \brief We are in the regular visualization mode (true) or in the time
+   * visualization mode (false) */
+  bool m_ChannelClassicMode;
+  /** \brief ID of the channel that we want to visualize in the time
+   * visualization mode */
+  int  m_ChannelOfInterest;
+
+  /// \todo remove m_FFMPEGWriter and m_AVIWriter from this class
+
+  #if defined ENABLEFFMPEG || defined ENABLEAVI
+  QGoVideoRecorder *m_VideoRecorderWidget;
+  #endif /* ENABLEFFMPEG || ENABLEAVI */
 
   void SaveContour(vtkPolyData *contour, vtkPolyData *contour_nodes);
 
@@ -449,7 +456,7 @@ protected:
       mesh_property->SetColor(iRgba[0], iRgba[1], iRgba[2]);
       mesh_property->SetOpacity(iRgba[3]);
 
-      /// TODO fix bug, shouldn't be required
+      /// \todo fix bug, shouldn't be required
       std::vector< vtkActor * > mesh_actor = this->AddContour(iMesh, mesh_property);
       mesh_property->Delete();
 
@@ -465,17 +472,10 @@ protected:
   void CreateContour(vtkPolyData *contour_nodes, vtkPolyData *iView);
 
   /**
-   * \param[in] iMeshID
-   * \param[in] iDir
-   * \param[in] iHighlighted
-   * \param[in] iR red component in [0,1]
-   * \param[in] iG green component in [0,1]
-   * \param[in] iB blue component in [0,1]
-   * \param[in] iA alpha component in [0,1]
-   * \param[in] iSaveInDataBase save in data base if true
-   * \todo Alpha component is not used at all, it is assumed to be opaque
+   * \brief Save mesh in Database
+   * \param[in] iMesh
    */
-  void SaveMesh(vtkPolyData *iView);
+  void SaveMesh(vtkPolyData *iMesh);
 
   void GetBackgroundColorFromImageViewer();
 
@@ -513,7 +513,8 @@ protected:
 
   void SetTimePointWithMegaCapture();
 
-  bool m_TraceWidgetRequiered;
+  void SetTimePointWithMegaCaptureTimeChannels(int channel);
+
 protected slots:
   void AddBookmark();
 
@@ -590,6 +591,19 @@ protected slots:
   once the database variables have been set for the QGoPrintDatabase
   */
   void SetTheContainersForDB();
+
+  /**
+  \brief switch between the 2 visualization modes:
+  -classic mode where a channel is an entity (nuclei, membrane) of interest.
+  -time mode where a channel represents the same entity through the time. (t-1, t and t+1).
+    updates the navigation widget.
+  */
+  void ChannelTimeMode( bool );
+  /**
+  \brief access to the megacapture reader to get the entity of interest images through time.
+  updates the navigation widget.
+  */
+  void LoadChannelTime();
 
 private:
   Q_DISABLE_COPY(QGoTabImageView3DwT);

@@ -68,7 +68,7 @@ int main(int argc, char **argv)
 
   // Initialize the segmentation
   QGoFilterChanAndVes *         levelSet2DFilter = new QGoFilterChanAndVes(NULL, 2);
-  std::vector< vtkImageData * > imagesVector(1);
+  std::vector< vtkSmartPointer< vtkImageData > > imagesVector(1);
   imagesVector[0] = castFilter->GetOutput();
   levelSet2DFilter->setOriginalImageMC(&imagesVector);
   levelSet2DFilter->setIterations(50);
