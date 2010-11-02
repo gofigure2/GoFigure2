@@ -609,6 +609,17 @@ protected:
                       SIGNAL( TraceVisibilityChanged(uint, Qt::CheckState) ),
                       this,
                       SLOT ( ShowTheTraceInTW(uint, Qt::CheckState) ) );
+
+    QObject::connect( this->m_Table,
+                      SIGNAL( ModifyHighlightListTraces(QStringList,Qt::CheckState) ),
+                      *iMemberContainerForVisu,
+                      SLOT ( UpdateElementHighlightingWithGivenTraceIDs(QStringList,
+                                                   Qt::CheckState) ) );
+    QObject::connect( this->m_Table,
+                      SIGNAL( ModifyVisibilityListTraces(QStringList,Qt::CheckState) ),
+                      *iMemberContainerForVisu,
+                      SLOT ( UpdateElementVisibilityWithGivenTraceIDs(QStringList,
+                                                   Qt::CheckState) ) );
   }
   
   /**
