@@ -754,8 +754,8 @@ void QGoTableWidget::ChangeCheckStateSelectedRows(std::string iTraceName,
       {
       this->SetCheckStateForTraceID(ListSelectedTracesID.at(i).toUInt(),
                                     iTraceName, iState,false);
-      emit ModifyHighlightListTraces(ListSelectedTracesID,iState);
       }
+    emit ModifyHighlightListTraces(ListSelectedTracesID,iState);
     }
   else
     {

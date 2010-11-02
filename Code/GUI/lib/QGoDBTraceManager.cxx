@@ -229,6 +229,13 @@ void QGoDBTraceManager::SetTracesInfoContainerForVisu(
                     SIGNAL( TraceVisibilityChanged(uint, Qt::CheckState) ),
                     this,
                     SLOT ( ShowTheTraceInTW(uint, Qt::CheckState) ) );
+
+  //to change for track container
+  QObject::connect( this->m_Table,
+                    SIGNAL( ModifyHighlightListTraces(QStringList,Qt::CheckState) ),
+                    this->m_TraceContainerInfoForVisu,
+                    SLOT ( UpdateElementHighlightingWithGivenTraceIDs(QStringList,
+                                                   Qt::CheckState) ) );
 }
 
 //-------------------------------------------------------------------------

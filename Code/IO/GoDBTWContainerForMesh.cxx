@@ -253,7 +253,7 @@ void GoDBTWContainerForMesh::GetValuesToFillForIntensityFromQueryResults
     ++iterMeshID;
     }
 
-  bool iterMeshID_at_end = ( iterMeshID == iVectMeshIDs.end() );
+ /* bool iterMeshID_at_end = ( iterMeshID == iVectMeshIDs.end() );
   bool iterResult_at_end = ( iterResult == iResultQuery.end() );
 
   if( iterMeshID_at_end && !iterResult_at_end )
@@ -269,7 +269,7 @@ void GoDBTWContainerForMesh::GetValuesToFillForIntensityFromQueryResults
     std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
     std::cout << std::endl;
     return;
-    }
+    }*/
 }
 
 //--------------------------------------------------------------------------
