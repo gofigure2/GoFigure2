@@ -100,6 +100,7 @@
 
 // TESTS
 #include "vtkPolyDataWriter.h"
+#include "vtkViewImage3D.h"
 
 //-------------------------------------------------------------------------
 QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent):
@@ -2344,27 +2345,32 @@ std::vector< vtkActor * >
 QGoTabImageView3DwT::
 VisualizeTrack(vtkPolyData *iMesh)
 {
-  std::vector< vtkActor * > oActors;
-
   double *RGBA = this->m_TrackContainer->m_CurrentElement.rgba;
+  std::vector< vtkActor * > mesh_actor;
 
-  vtkProperty *mesh_property = vtkProperty::New();
-  mesh_property->SetColor(RGBA[0], RGBA[1], RGBA[2]);
-  mesh_property->SetOpacity(RGBA[3]);
+  if ( iMesh )
+    {
+    bool visibility = true;
 
-  /// \todo shallow copy...?
-  // get corresponding actor from visualization
-  vtkPolyData *mesh_copy = vtkPolyData::New();
-  mesh_copy->DeepCopy(iMesh);
+    vtkProperty *mesh_property = vtkProperty::New();
+    mesh_property->SetColor(RGBA[0], RGBA[1], RGBA[2]);
+    mesh_property->SetOpacity(RGBA[3]);
 
-  oActors = this->AddContour(mesh_copy, mesh_property);
+    /// \todo fix bug, shouldn't be required
 
-  mesh_copy->Delete();
-  mesh_property->Delete();
+    mesh_actor.resize(4);
+    mesh_actor = this->AddContour(iMesh, mesh_property);
 
-  m_ImageView->UpdateRenderWindows();
+    mesh_property->Delete();
 
-  return oActors;
+    /*m_TrackContainer->UpdateVisualizationForGivenElement< TIndex >(iIt,
+                                                                  mesh_actor,
+                                                                  false,
+                                                                  visibility);
+    */
+    }
+
+  return mesh_actor;
 }
 //-------------------------------------------------------------------------
 

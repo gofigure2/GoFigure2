@@ -166,7 +166,8 @@ UpdateCurrentElementFromExistingOne(unsigned int iTraceID)
   if ( it != m_Container.get< TraceID >().end() )
     {
     this->m_CurrentElement = *it;
-    this->DeleteElement(it);
+    //Don't have to delete since we keep the same addresses for all the variables
+    //this->DeleteElement(it);
     return true;
     }
   else
@@ -666,7 +667,7 @@ AddPointToCurrentElement(double* iPoint)
     newArray->SetNumberOfComponents(1);
     newArray->SetName("TemporalInformation");
 
-    newArray->InsertNextValue( iPoint[3] );
+    newArray->InsertValue( 0, iPoint[3] );
     newPoints->InsertPoint( 0, iPoint );
 
     //add the points to the dataset
@@ -742,8 +743,6 @@ AddPointToCurrentElement(double* iPoint)
     delete[] it->second;
     }
   orderedPoints.clear();
-
-  delete iPoint;
 
   // Create a line from points
   vtkSmartPointer<vtkPolyLine> polyLine =
