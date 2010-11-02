@@ -690,7 +690,7 @@ void QGoTableWidget::PrepareRangeToCopy(QTableWidgetSelectionRange iRange,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTableWidget::CheckSelectedRows(std::string iTraceName,
+/*void QGoTableWidget::CheckSelectedRows(std::string iTraceName,
                                        std::string iTraceNameID)
 {
   QStringList ListSelectedTracesID = this->ValuesForSelectedRows(
@@ -701,7 +701,8 @@ void QGoTableWidget::CheckSelectedRows(std::string iTraceName,
     for ( int i = 0; i < ListSelectedTracesID.size(); i++ )
       {
       this->SetCheckStateForTraceID(ListSelectedTracesID.at(i).toUInt(),
-                                    iTraceName, Qt::Checked);
+                                    iTraceName, Qt::Checked,false);
+      emit ModifyHighlightListTraces(ListSelectedTracesID,Qt::Checked);
       }
     }
   else
@@ -726,7 +727,8 @@ void QGoTableWidget::UncheckSelectedRows(std::string iTraceName,
     for ( int i = 0; i < ListSelectedTracesID.size(); i++ )
       {
       this->SetCheckStateForTraceID(ListSelectedTracesID.at(i).toUInt(),
-                                    iTraceName, Qt::Unchecked);
+                                    iTraceName, Qt::Unchecked,false);
+      emit ModifyHighlightListTraces(ListSelectedTracesID,Qt::Unchecked);
       }
     }
   else
@@ -736,7 +738,32 @@ void QGoTableWidget::UncheckSelectedRows(std::string iTraceName,
     std::cout << std::endl;
     }
 }
+*/
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
+void QGoTableWidget::ChangeCheckStateSelectedRows(std::string iTraceName,
+   std::string iTraceNameID,Qt::CheckState iState)
+{
+  QStringList ListSelectedTracesID = this->ValuesForSelectedRows(
+    iTraceNameID.c_str() );
+
+  if ( !ListSelectedTracesID.empty() )
+    {
+    for ( int i = 0; i < ListSelectedTracesID.size(); i++ )
+      {
+      this->SetCheckStateForTraceID(ListSelectedTracesID.at(i).toUInt(),
+                                    iTraceName, iState,false);
+      }
+    emit ModifyHighlightListTraces(ListSelectedTracesID,iState);
+    }
+  else
+    {
+    std::cout << "The list of selected Traces ID is empty";
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
+    }
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
