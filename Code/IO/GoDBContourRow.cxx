@@ -55,7 +55,7 @@ GoDBContourRow::GoDBContourRow(vtkMySQLDatabase *DatabaseConnector,
   GoDBTraceRow()
 {
   this->InitializeMap();
-  this->SetCollectionID(ImgSessionID);
+  this->SetImgSessionID(ImgSessionID);
   this->SetTheDataFromTheVisu(DatabaseConnector, TraceVisu, Min, Max);
 
   if ( this->DoesThisBoundingBoxExist(DatabaseConnector) )
@@ -71,7 +71,7 @@ GoDBContourRow::GoDBContourRow(unsigned int ImagingSessionID):
   GoDBTraceRow()
 {
   this->InitializeMap();
-  this->SetCollectionID(ImagingSessionID);
+  this->SetImgSessionID(ImagingSessionID);
 }
 
 /*GoDBContourRow::GoDBContourRow(vtkMySQLDatabase* DatabaseConnector,

@@ -165,6 +165,12 @@ protected:
   std::string m_CollectionIDName;
   std::string m_CollectionName;
 
+   /**
+  \brief set the ImagingSessionID field to iImgSessionID
+  \param[in] iImgSessionID collectionID to be set to
+  */
+  void SetImgSessionID(unsigned int iImgSessionID);
+
   /**
   \brief save the row in the database if the TraceID is set to "0", update the
   existing traceRow if the TraceID is <> 0
