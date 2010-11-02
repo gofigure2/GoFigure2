@@ -41,6 +41,10 @@
 #include "vtkPolyLine.h"
 #include "vtkCellArray.h"
 
+
+//////////
+#include "VisualizePolydataHelper.h"
+//////////
 //-------------------------------------------------------------------------
 TrackContainer::
 TrackContainer(QObject *iParent,QGoImageView3D *iView):QObject(iParent),
@@ -648,11 +652,36 @@ void
 TrackContainer::
 AddPointToCurrentElement(double* iPoint)
 {
+  // check time point too
+
+
   if(!this->m_CurrentElement.Nodes)
     {
     // Create a new polydata
     // no actors to be removed then
     this->m_CurrentElement.Nodes = vtkPolyData::New();
+
+    vtkSmartPointer< vtkPoints > newPoints = vtkSmartPointer< vtkPoints >::New();
+    vtkSmartPointer<vtkIntArray> newArray = vtkSmartPointer<vtkIntArray>::New();
+    newArray->SetNumberOfComponents(1);
+    newArray->SetName("TemporalInformation");
+
+    newArray->InsertNextValue( iPoint[3] );
+    newPoints->InsertPoint( 0, iPoint );
+
+    //add the points to the dataset
+    this->m_CurrentElement.Nodes->SetPoints(newPoints);
+
+    //add the temporal information
+    this->m_CurrentElement.Nodes->GetFieldData()->AddArray(newArray);
+
+    ShowPolyData(this->m_CurrentElement.Nodes);
+
+    delete iPoint;
+
+    emit CurrentTrackToSave();
+
+    return;
     }
   else
     {
@@ -714,6 +743,8 @@ AddPointToCurrentElement(double* iPoint)
     }
   orderedPoints.clear();
 
+  delete iPoint;
+
   // Create a line from points
   vtkSmartPointer<vtkPolyLine> polyLine =
       vtkSmartPointer<vtkPolyLine>::New();
@@ -729,11 +760,10 @@ AddPointToCurrentElement(double* iPoint)
   cells->InsertNextCell(polyLine);
 
   //Create a polydata to store everything in
-  vtkSmartPointer<vtkPolyData> polyData =
-      vtkSmartPointer<vtkPolyData>::New();
+  vtkPolyData* polyData = vtkPolyData::New();
 
   //add the points to the dataset
-  polyData->SetPoints(points);
+  polyData->SetPoints(newPoints);
 
   //add the lines to the dataset
   polyData->SetLines(cells);
@@ -742,7 +772,10 @@ AddPointToCurrentElement(double* iPoint)
   polyData->GetFieldData()->AddArray(newArray);
 
   // MOVE TO SMARTPOINTER AND SHALLOW COPY....
-  this->m_CurrentElement.Nodes->DeepCopy(polyData.GetPointer());
+  this->m_CurrentElement.Nodes->DeepCopy(polyData);
+  polyData->Delete();
+
+  ShowPolyData(this->m_CurrentElement.Nodes);
 
   emit CurrentTrackToSave();
 }

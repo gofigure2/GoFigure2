@@ -354,6 +354,7 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
                                                                         iMeshAttributes,
                                                                         this->m_SelectedCellType,
                                                                         this->m_SelectedSubCellType);
+    std::cout << "new mesh id: " << NewMeshID << std::endl;
     std::list< unsigned int > ListNewMeshes;
     ListNewMeshes.push_back(NewMeshID);
     this->m_TracksManager->UpdateBoundingBoxes( this->m_DatabaseConnector,

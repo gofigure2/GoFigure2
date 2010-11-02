@@ -60,23 +60,10 @@ GoDBMeshRow::GoDBMeshRow(vtkMySQLDatabase *DatabaseConnector,
                          vtkPolyData *TraceVisu, GoDBCoordinateRow Min, GoDBCoordinateRow Max,
                          unsigned int ImgSessionID, GoFigureMeshAttributes *iMeshAttributes):
   GoDBTraceRow()
-  //GoDBTraceRow(DatabaseConnector, TraceVisu, Min, Max, ImgSessionID)
 {
   this->InitializeMap();
-  //this->SetTheBoundingBox(DatabaseConnector, Min, Max);
-  this->SetCollectionID(ImgSessionID);
+  this->SetImgSessionID(ImgSessionID);
   this->SetTheDataFromTheVisu(DatabaseConnector, TraceVisu, Min, Max, iMeshAttributes);
-  /*if (this->DoesThisBoundingBoxExist(DatabaseConnector))
-    {
-    std::cout << "The bounding box already exists for this mesh" << std::endl;
-    }
-
-  m_NameChannelWithValues.clear();
-
-  if( iMeshAttributes )
-    {
-    this->m_NameChannelWithValues = iMeshAttributes->m_TotalIntensityMap;
-    }*/
 }
 
 //-------------------------------------------------------------------------
@@ -86,25 +73,9 @@ GoDBMeshRow::GoDBMeshRow(unsigned int ImagingSessionID):
   GoDBTraceRow()
 {
   this->InitializeMap();
-  this->SetCollectionID(ImagingSessionID);
+  this->SetImgSessionID(ImagingSessionID);
+  this->m_MapRow["ImagingSessionID"] = ConvertToString<int>(ImagingSessionID);
 }
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/*GoDBMeshRow::GoDBMeshRow(vtkMySQLDatabase* DatabaseConnector,
-  GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID,
-  vtkPolyData* TraceVisu,GoFigureMeshAttributes* iMeshAttributes)
-  :GoDBTraceRow(DatabaseConnector,TraceVisu,Min,Max,ImgSessionID)
-{
-  this->InitializeMap();
-  if (this->DoesThisBoundingBoxExist(DatabaseConnector))
-    {
-    std::cout<<"The bounding box already exists for this Mesh"<<std::endl;
-    }
-  this->m_NameChannelWithValues = iMeshAttributes->m_TotalIntensityMap;
-}*/
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 
@@ -122,7 +93,6 @@ GoDBMeshRow::GoDBMeshRow(const GoDBMeshRow & iRow):GoDBTraceRow()
     m_NameChannelWithValues = iRow.m_NameChannelWithValues;
     }
 }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -132,8 +102,6 @@ void GoDBMeshRow::SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector,
                                         GoDBCoordinateRow iCoordMax,
                                         GoFigureMeshAttributes *iMeshAttributes)
 {
-  //GoDBTraceRow::SetTheDataFromTheVisu(DatabaseConnector, TraceVisu, iCoordMin, iCoordMax);
-
   this->SetTheBoundingBox(DatabaseConnector, iCoordMin, iCoordMax);
 
   vtkSmartPointer< vtkPolyDataMySQLMeshWriter > convert =
@@ -156,7 +124,6 @@ void GoDBMeshRow::SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector,
     this->m_NameChannelWithValues = iMeshAttributes->m_TotalIntensityMap;
     }
 }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -171,7 +138,6 @@ GoDBMeshRow::SafeDownCast(GoDBTraceRow & iRow)
     ++iRowIt;
     }
 }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -186,15 +152,14 @@ void GoDBMeshRow::InitializeMap()
   this->m_MapRow["SubCellularID"] = ConvertToString< int >(0);
   this->m_MapRow["trackID"] = ConvertToString< int >(0);
 }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 int GoDBMeshRow::SaveInDB(vtkMySQLDatabase *DatabaseConnector)
 {
-  //int SavedMeshID =
-  // this->SaveInDBTemplate<GoDBMeshRow>(DatabaseConnector,*this);
   int SavedMeshID = GoDBTraceRow::SaveInDBTemplate< GoDBMeshRow >(DatabaseConnector, this);
+
+  //int SavedMeshID = GoDBTraceRow::SaveInDBTemplate< GoDBMeshRow >(DatabaseConnector, *this);
 
   if ( !this->m_NameChannelWithValues.empty() )
     {
@@ -224,15 +189,6 @@ void GoDBMeshRow::SetSubCellType(vtkMySQLDatabase *DatabaseConnector,
   this->SetField< int >( "SubCellularID", FindOneID(DatabaseConnector,
                                                     "subcellulartype", "SubCellularID", "Name", SubCellTypeName) );
 }
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/*void GoDBMeshRow::ReInitializeMapAfterCast()
-{
-  GoDBMeshRow::InitializeMap();
-}*/
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -263,7 +219,6 @@ void GoDBMeshRow::SaveInDBTotalIntensityPerChannel(
     iter++;
     }
 }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
