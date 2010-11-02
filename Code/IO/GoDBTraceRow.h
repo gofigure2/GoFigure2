@@ -53,12 +53,31 @@ public:
 
   /**
   \brief fill the trace map with the values gotten from the visualization
+  \param[in] DatabaseConnector connection to the database
+  \param[in] TraceVisu vtkPolyData the points will be extracted from to create 
+  a string for "Points"
+  \param[in] Min coordinate row for the minimum of the bounding box
+  \param[in] Max coordinate row for the maximum of the bounding box
+  \param[in] ImgSessionID ID of the current imagingsession
   */
   GoDBTraceRow(vtkMySQLDatabase *DatabaseConnector, vtkPolyData *TraceVisu,
                GoDBCoordinateRow Min, GoDBCoordinateRow Max, unsigned int ImgSessionID);
 
+  /**
+  \brief constructor
+  \param[in] DatabaseConnector connection to the database
+  \param[in] TraceVisu vtkPolyData the points will be extracted from
+  \param[in] Min coordinate row for the minimum of the bounding box
+  \param[in] Max coordinate row for the maximum of the bounding box
+  \param[in] ImgSessionID ID of the current imagingsession
+  */
   GoDBTraceRow(vtkMySQLDatabase *DatabaseConnector, std::string TraceVisu,
                GoDBCoordinateRow Min, GoDBCoordinateRow Max, unsigned int ImgSessionID);
+
+  /**
+  \brief 
+  \param[in] ImgSessionID ID of the current imagingsession
+  */
   GoDBTraceRow(unsigned int ImgSessionID);
 
   ~GoDBTraceRow()
@@ -135,6 +154,14 @@ public:
   \param[in] iDatabaseConnector connection to the database
   */
   void SetValuesForSpecificID(int ID, vtkMySQLDatabase *iDatabaseConnector);
+
+  /**
+  \brief save the row in the database if the TraceID is set to "0", update the
+  existing traceRow if the TraceID is <> 0
+  \param[in] DatabaseConnector connection to the database
+  \return the ID of the updated or saved trace
+  */
+  virtual int SaveInDB(vtkMySQLDatabase *DatabaseConnector) = 0;
 
 protected:
 

@@ -9,6 +9,7 @@ SET( QGOIO_EXAMPLES_SRC
   mhatomegacapture
   vtkPolyDataMySQLTextReader
   vtkPolyDataMySQLTextWriter
+  vtkPolyDataMySQLTrack
   kishmeshtextfilereader
   trackTextFilesReader
 )
@@ -52,6 +53,10 @@ ADD_TEST( vtkPolyDataMySQLTextReaderTest1
 ADD_TEST( vtkPolyDataMySQLTextReaderTest2
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/vtkPolyDataMySQLTextReader
   ${TESTING_DATA_PATH}/sphere.vtk
+)
+
+ADD_TEST( vtkPolyDataMySQLTrackTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/vtkPolyDataMySQLTrack
 )
 
 ADD_TEST( vtkPolyDataMySQLTextWriterTest1

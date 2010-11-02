@@ -166,7 +166,7 @@ protected:
   {
     std::string Name = iNewEntity.GetMapValue("Name");
 
-    if ( iNewEntity.DoesThisEntityAlreadyExists2(
+    if ( iNewEntity.DoesThisEntityAlreadyExistsAndReturnName(
            this->m_DatabaseConnector, Name) != -1 )
       {
       QMessageBox msgBox;

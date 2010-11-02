@@ -80,20 +80,8 @@ public:
   name of the existing entity
   \return int existing ID or -1 if the entity doesn't exists
  */
-  virtual int DoesThisEntityAlreadyExists2(
+  virtual int DoesThisEntityAlreadyExistsAndReturnName(
     vtkMySQLDatabase *iDatabaseConnector, std::string & ioName);
-
-  /*
-  \brief check if the entity already exists in the database
-  based on its own uniqueness definition, return the ID of the
-  entity already exiting or -1 if not yet created and change the
-  ioName with the name of the existing entity
-  \param[in,out] ioName modified if the entity already exists with the
-  name of the existing entity
-  \return int existing ID or -1 if the entity doesn't exists
- */
-  //virtual int DoesThisEntityAlreadyExists(
-  // vtkMySQLDatabase* iDatabaseConnector, std::string& ioName) = 0;
 
   /**
   \brief check if the name already exists in the database, if yes,

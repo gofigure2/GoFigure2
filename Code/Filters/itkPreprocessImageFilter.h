@@ -31,8 +31,8 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __itkCellPreprocess_h
-#define __itkCellPreprocess_h
+#ifndef __itkPreprocessImageFilter_h
+#define __itkPreprocessImageFilter_h
 
 #if defined( _MSC_VER )
 #pragma warning ( disable : 4786 )
@@ -50,19 +50,18 @@
 
 namespace itk
 {
-/** \class CellPreprocess
+/** \class PreprocessImageFilter
 *  \brief Denoise images - remove median noise and perform morphological
 * reconstruction. Makes it easier to segment and prevents formation of holes
 * in the segmentation.
-* \todo (Kishore) Change class name
 */
 template< class TInputImage, class TOutputImage = TInputImage >
-class ITK_EXPORT CellPreprocess:public ImageToImageFilter<
+class ITK_EXPORT PreprocessImageFilter:public ImageToImageFilter<
     TInputImage, TOutputImage >
 {
 public:
 
-  typedef CellPreprocess                                  Self;
+  typedef PreprocessImageFilter                                  Self;
   typedef ImageToImageFilter< TInputImage, TOutputImage > Superclass;
   typedef SmartPointer< Self >                            Pointer;
   typedef SmartPointer< const Self >                      ConstPointer;
@@ -74,7 +73,7 @@ public:
   itkNewMacro (Self);
 
   /** Run-time type information */
-  itkTypeMacro (CellPreprocess, ImageToImageFilter);
+  itkTypeMacro (PreprocessImageFilter, ImageToImageFilter);
 
   /** Display */
   void PrintSelf(std::ostream & os, Indent indent) const;
@@ -108,17 +107,17 @@ public:
   itkSetMacro (LargestCellRadius, double);
 protected:
 
-  CellPreprocess();
-  ~CellPreprocess() {}
+  PreprocessImageFilter();
+  ~PreprocessImageFilter() {}
 
   void GenerateData();
 
   double m_LargestCellRadius;
 private:
-  CellPreprocess (Self &);        // intentionally not implemented
+  PreprocessImageFilter (Self &);        // intentionally not implemented
   void operator=(const Self &);   // intentionally not implemented
 };
 }   /* namespace itk */
 
-#include "itkCellPreprocess.txx"
+#include "itkPreprocessImageFilter.txx"
 #endif

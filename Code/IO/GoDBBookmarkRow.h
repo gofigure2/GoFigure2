@@ -42,6 +42,12 @@
 #include "ConvertToStringHelper.h"
 #include "vtkMySQLDatabase.h"
 
+/**
+\class GoDBBookmarkRow
+\brief manages a map with keys matching fields of the gofiguredatabase Bookmark table
+and values of the map matching a row of the Bookmark table
+\ingroup DB
+*/
 class QGOIO_EXPORT GoDBBookmarkRow:public GoDBNameDescRow
 {
 public:
@@ -49,34 +55,17 @@ public:
 
   ~GoDBBookmarkRow()
   {}
-  /**\brief check if the bookmark already exists in the DB, if yes,
-  return the existing ID, if not, save it in the DB and return the
-  ID for new created bookmark*/
+  //mother class method
   virtual int SaveInDB(vtkMySQLDatabase *DatabaseConnector);
 
-  /*\brief check if the bookmark already exists in the database, if yes,
-  return the corresponding ID, if not, return -1*/
-  //int DoesThisBookmarkAlreadyExists(vtkMySQLDatabase* DatabaseConnector);
-
+  //mother class method: here based on the name and the imagingsessionid
   virtual int DoesThisEntityAlreadyExists(
     vtkMySQLDatabase *DatabaseConnector);
 
-  //virtual int DoesThisEntityAlreadyExists(
-  //vtkMySQLDatabase* DatabaseConnector, std::string& ioName);
-
+  //mother class method:here based on the name and the imagingsessionid
   virtual int DoesThisNameAlreadyExists(
     vtkMySQLDatabase *DatabaseConnector);
 
-  /*\brief check if the bookmark already exists in the database, if yes,
-  return the corresponding ID, if not, return -1 and the name of the
-  existing bookmark*/
-  //int DoesThisBookmarkAlreadyExists(vtkMySQLDatabase* DatabaseConnector,
-  //std::string& ioName);
-
-  /*\brief check if the bookmark name already exists in the database, if yes,
-  return true, if not, return false*/
-  //bool DoesThisBookmarkNameAlreadyExistsInTheDB(
-  //vtkMySQLDatabase* DatabaseConnector);
 protected:
   virtual void InitializeMap();
 };

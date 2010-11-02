@@ -44,7 +44,7 @@
 #endif
 
 #include "itkImageToImageFilter.h"
-#include "itkCellPreprocess.h"
+#include "itkPreprocessImageFilter.h"
 #include "itkCellForegroundExtraction.h"
 #include "itkGradientWeightedDistanceImageFilter.h"
 #include "itkInvertIntensityImageFilter.h"
@@ -106,7 +106,7 @@ public:
   typedef typename SegmentImageType::SizeType    SegmentImageSizeType;
   typedef typename SegmentImageIndexType::IndexValueType SegmentImageIndexValueType;
   
-  typedef CellPreprocess< FeatureImageType, FeatureImageType > 
+  typedef PreprocessImageFilter< FeatureImageType, FeatureImageType > 
     PreprocessFilterType;
   typedef typename PreprocessFilterType::Pointer PreprocessFilterPointer;
   

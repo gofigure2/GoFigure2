@@ -186,7 +186,6 @@ GoDBRow::ConstMapEnd()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-// std::string GoDBRow::GetMapValue( const std::string& key )
 std::string GoDBRow::GetMapValue(std::string key)
 {
   std::string oMapValue = "noValue";
@@ -217,34 +216,6 @@ std::string GoDBRow::GetMapValue(std::string key)
 
     return oMapValue;
     }
-
-//   for( std::map<std::string, std::string>::iterator iter = this->MapBegin();
-//     iter != this->MapEnd(); ++iter )
-//     {
-//      //if the key has been found in the map:
-//       if (iter->first == key)
-//       {
-//       oMapValue = iter->second;
-//       // Need to test if the value is not a string previously put in the map
-// by SetField
-//       // if so, the value will be ""value"" and need to be transformed to
-// "value". First,
-//       // find the 1rst character and save it as CharacterToCompare:
-//       std::string CharacterToCompare = oMapValue.substr(0,1);
-//
-//       //test if it is equal to " :
-//       if (CharacterToCompare == "\"")
-//         {
-//         //if yes, remove the " at the beginning of the string and at the end:
-//         oMapValue = oMapValue.substr(1,oMapValue.size()-2);
-//         return oMapValue;
-//         }
-//       std::cout<<oMapValue.c_str()<<std::endl;
-//
-//       return oMapValue;
-//       }
-//     }
-//   return oMapValue;
 }
 
 //-------------------------------------------------------------------------

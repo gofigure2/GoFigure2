@@ -31,55 +31,60 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __GoDBLineageRow_h
-#define __GoDBLineageRow_h
 
-#include <string>
-#include <map>
-#include <iostream>
+#include "vtkPolyDataMySQLTrackWriter.h"
+
 #include <sstream>
-#include "GoDBTraceRow.h"
-#include "ConvertToStringHelper.h"
-#include "vtkMySQLDatabase.h"
 
-/**
-\class GoDBLineageRow
-\brief this class manages the map with the keys matching the fields of the
-Lineage gofiguredatabase table and values of the map matching a row of the Lineage table
-\ingroup DB
-*/
-class GoDBLineageRow:public GoDBTraceRow
+#include "vtkObjectFactory.h"
+#include "vtkMath.h"
+#include "vtkIdList.h"
+
+#include "vtkIntArray.h"
+#include "vtkFieldData.h"
+
+#include "vtkSmartPointer.h"
+
+vtkCxxRevisionMacro(vtkPolyDataMySQLTrackWriter, "$Revision$");
+vtkStandardNewMacro(vtkPolyDataMySQLTrackWriter);
+
+//--------------------------------------------------------------------------
+vtkPolyDataMySQLTrackWriter::
+vtkPolyDataMySQLTrackWriter()
+{}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+vtkPolyDataMySQLTrackWriter::
+~vtkPolyDataMySQLTrackWriter()
+{}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::string
+vtkPolyDataMySQLTrackWriter::
+GetMySQLText(vtkPolyData *iPolyData)
 {
-public:
-  GoDBLineageRow();
+  vtkIdType N = iPolyData->GetNumberOfPoints();
+  double*    pt = NULL;
+  int        time = 0;
 
-  ~GoDBLineageRow();
+  std::stringstream oMyString;
 
-  /**
-  \brief fill the track map with the values gotten from the visualization
-  \param[in] DatabaseConnector connection to the database
-  \param[in] TraceVisu vtkPolyData the points will be extracted from to create 
-  a string for "Points"
-  \param[in] Min coordinate row for the minimum of the bounding box
-  \param[in] Max coordinate row for the maximum of the bounding box
-  \param[in] ImgSessionID ID of the current imagingsession
-  */
-  GoDBLineageRow(vtkMySQLDatabase *DatabaseConnector, GoDBCoordinateRow Min,
-                 GoDBCoordinateRow Max, unsigned int ImgSessionID, vtkPolyData *TraceVisu);
+  oMyString << N << " ";
 
-  /**
-  \brief 
-  \return the TrackID of the Track with the same bounding box
-  already registered in the DB or -1 if not yet created
-  */
-  int DoesThisBoundingBoxLineageExist(vtkMySQLDatabase *DatabaseConnector);
+  vtkSmartPointer<vtkPoints> points = iPolyData->GetPoints();
+  // Might create problems because of the safedowncast
+  vtkSmartPointer<vtkIntArray> temporalArray =
+      vtkIntArray::SafeDownCast(iPolyData->GetFieldData()->GetArray("TemporalInformation"));
 
-  //mother class method
-  virtual int SaveInDB(vtkMySQLDatabase *DatabaseConnector);
+  for ( vtkIdType i = 0; i < N; i++ )
+    {
+    pt = points->GetPoint(i);
+    time = temporalArray->GetValue(i);
+    oMyString << pt[0] << " " << pt[1] << " " << pt[2] << " " << time << " ";
+    }
 
-protected:
-  //mother class method
-  virtual void InitializeMap();
-};
-
-#endif
+  return oMyString.str();
+}
+//--------------------------------------------------------------------------

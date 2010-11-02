@@ -31,55 +31,54 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __GoDBLineageRow_h
-#define __GoDBLineageRow_h
+
+#ifndef __vtkPolyDataMySQLTrackWriter_h
+#define __vtkPolyDataMySQLTrackWriter_h
 
 #include <string>
-#include <map>
-#include <iostream>
 #include <sstream>
-#include "GoDBTraceRow.h"
-#include "ConvertToStringHelper.h"
-#include "vtkMySQLDatabase.h"
+
+#include "vtkPolyData.h"
+#include "vtkMath.h"
+#include "vtkIdList.h"
+
+#include "QGoIOConfigure.h"
 
 /**
-\class GoDBLineageRow
-\brief this class manages the map with the keys matching the fields of the
-Lineage gofiguredatabase table and values of the map matching a row of the Lineage table
-\ingroup DB
+\defgroup MySQLWriter MySQLWriter
+\defgroup Track Track
+\defgroup Trace Trace
 */
-class GoDBLineageRow:public GoDBTraceRow
+
+/**
+\class vtkPolyDataMySQLTrackWriter
+\brief Reads a string and convert it into a track polydata
+\ingroup MySQLWriter Track Trace
+*/
+
+class QGOIO_EXPORT vtkPolyDataMySQLTrackWriter:public vtkObject
 {
 public:
-  GoDBLineageRow();
+  /*
+   * \brief Public constructor
+   */
+  static vtkPolyDataMySQLTrackWriter * New();
 
-  ~GoDBLineageRow();
+  vtkTypeRevisionMacro(vtkPolyDataMySQLTrackWriter, vtkObject);
 
-  /**
-  \brief fill the track map with the values gotten from the visualization
-  \param[in] DatabaseConnector connection to the database
-  \param[in] TraceVisu vtkPolyData the points will be extracted from to create 
-  a string for "Points"
-  \param[in] Min coordinate row for the minimum of the bounding box
-  \param[in] Max coordinate row for the maximum of the bounding box
-  \param[in] ImgSessionID ID of the current imagingsession
-  */
-  GoDBLineageRow(vtkMySQLDatabase *DatabaseConnector, GoDBCoordinateRow Min,
-                 GoDBCoordinateRow Max, unsigned int ImgSessionID, vtkPolyData *TraceVisu);
-
-  /**
-  \brief 
-  \return the TrackID of the Track with the same bounding box
-  already registered in the DB or -1 if not yet created
-  */
-  int DoesThisBoundingBoxLineageExist(vtkMySQLDatabase *DatabaseConnector);
-
-  //mother class method
-  virtual int SaveInDB(vtkMySQLDatabase *DatabaseConnector);
+  /*
+   * \brief Generate a string from a track polydata
+   * \param[in] iPolyData Polydata to generate the string
+   * \return string containing the track polydata information
+   */
+  std::string GetMySQLText(vtkPolyData *iPolyData);
 
 protected:
-  //mother class method
-  virtual void InitializeMap();
-};
+  vtkPolyDataMySQLTrackWriter();
+  ~vtkPolyDataMySQLTrackWriter();
 
+private:
+  vtkPolyDataMySQLTrackWriter(const vtkPolyDataMySQLTrackWriter &);
+  void operator=(const vtkPolyDataMySQLTrackWriter &);
+};
 #endif

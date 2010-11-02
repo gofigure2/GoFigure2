@@ -211,10 +211,10 @@ void GoDBMeshRow::SetSubCellType(vtkMySQLDatabase *DatabaseConnector,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void GoDBMeshRow::ReInitializeMapAfterCast()
+/*void GoDBMeshRow::ReInitializeMapAfterCast()
 {
   GoDBMeshRow::InitializeMap();
-}
+}*/
 
 //-------------------------------------------------------------------------
 

@@ -117,13 +117,13 @@ signals:
    * \brief Signal sent when we enter/leave the Semi Automatic segmentation mode
    * \param[in] iActivated true: enter, false: leave
    */
-  void SemiAutoSegmentationActivated(bool);
+  void SemiAutoSegmentationActivated(bool iActivated);
 
   /**
    * \brief Signal sent when we enter/leave the Automatic segmentation mode
    * \param[in] iActivated true: enter, false: leave
    */
-  void AutoSegmentationActivated(bool);
+  void AutoSegmentationActivated(bool iActivated);
 
   /**
    * \brief Signal sent to go to the default interactor behavior

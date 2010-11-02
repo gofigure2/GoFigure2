@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,55 +31,33 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __GoDBLineageRow_h
-#define __GoDBLineageRow_h
-
 #include <string>
-#include <map>
-#include <iostream>
-#include <sstream>
-#include "GoDBTraceRow.h"
-#include "ConvertToStringHelper.h"
-#include "vtkMySQLDatabase.h"
+#include "vtkSmartPointer.h"
+#include "vtkPolyDataWriter.h"
+#include "vtkPolyData.h"
+#include "vtkPolyDataMySQLTrackReader.h"
+#include "vtkPolyDataMySQLTrackWriter.h"
 
-/**
-\class GoDBLineageRow
-\brief this class manages the map with the keys matching the fields of the
-Lineage gofiguredatabase table and values of the map matching a row of the Lineage table
-\ingroup DB
-*/
-class GoDBLineageRow:public GoDBTraceRow
+int main(int argc, char **argv)
 {
-public:
-  GoDBLineageRow();
+  vtkSmartPointer<vtkPolyDataMySQLTrackReader> track_reader =
+      vtkSmartPointer<vtkPolyDataMySQLTrackReader>::New();
 
-  ~GoDBLineageRow();
+  std::string stringFromDB = "2 1 1 1 1 2 2 2 2 ";
 
-  /**
-  \brief fill the track map with the values gotten from the visualization
-  \param[in] DatabaseConnector connection to the database
-  \param[in] TraceVisu vtkPolyData the points will be extracted from to create 
-  a string for "Points"
-  \param[in] Min coordinate row for the minimum of the bounding box
-  \param[in] Max coordinate row for the maximum of the bounding box
-  \param[in] ImgSessionID ID of the current imagingsession
-  */
-  GoDBLineageRow(vtkMySQLDatabase *DatabaseConnector, GoDBCoordinateRow Min,
-                 GoDBCoordinateRow Max, unsigned int ImgSessionID, vtkPolyData *TraceVisu);
+  vtkSmartPointer<vtkPolyData> input = vtkSmartPointer<vtkPolyData>::New();
+  input->ShallowCopy(track_reader->GetPolyData(stringFromDB));
 
-  /**
-  \brief 
-  \return the TrackID of the Track with the same bounding box
-  already registered in the DB or -1 if not yet created
-  */
-  int DoesThisBoundingBoxLineageExist(vtkMySQLDatabase *DatabaseConnector);
+  vtkSmartPointer<vtkPolyDataMySQLTrackWriter> track_writer =
+      vtkSmartPointer<vtkPolyDataMySQLTrackWriter>::New();
+  std::string output = track_writer->GetMySQLText(input);
 
-  //mother class method
-  virtual int SaveInDB(vtkMySQLDatabase *DatabaseConnector);
-
-protected:
-  //mother class method
-  virtual void InitializeMap();
-};
-
-#endif
+  if(stringFromDB.compare(output) != 0)
+    {
+    return EXIT_FAILURE;
+    }
+  else
+    {
+    return EXIT_SUCCESS;
+    }
+}
