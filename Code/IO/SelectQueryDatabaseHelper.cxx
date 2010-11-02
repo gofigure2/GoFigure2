@@ -2242,9 +2242,10 @@ std::vector< std::string > GetAllSelectedValuesFromTwoTables(
   QueryStream << " = ";
   QueryStream << ifieldValue;
 
-  std::stringstream SelectQuery;
-  SelectQuery << SelectWithJoinNullIncluded(QueryStream.str(), iJoinCondition);
-  return ExecuteSelectQuery( iDatabaseConnector, SelectQuery.str() );
+  //std::stringstream SelectQuery;
+  //SelectQuery << SelectWithJoinNullIncluded(QueryStream.str(), iJoinCondition);
+  //return ExecuteSelectQuery( iDatabaseConnector, SelectQuery.str() );
+  return ExecuteSelectQuery( iDatabaseConnector, QueryStream.str() );
 }
 
 //-------------------------------------------------------------------------

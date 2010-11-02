@@ -45,9 +45,9 @@ WatershedBasedCellSegmentation< TFeatureImage, TInputImage, TSegmentImage >
 {
   m_NucleusRadius          = 4.0;
   m_CorrelationKernelSigma = 4.0;
-  m_NucleusThresholdMin    = 5;
+  m_NucleusThresholdMin    = 10;
   m_NucleusThresholdMax    = 30;
-  m_CorrelationThreshold1  = 0.45;
+  m_CorrelationThreshold1  = 0.50;
   m_MembraneThreshold      = 256;
   m_Alpha = 1.5;
   m_Beta = 3.0;
@@ -62,11 +62,15 @@ template< class TFeatureImage, class TInputImage, class TSegmentImage >
 void
 WatershedBasedCellSegmentation< TFeatureImage, TInputImage, TSegmentImage >::GenerateData()
 {
-  FeatureImageConstPointer m_NucleiImg = this->GetInput();
+  PreprocessFilterPointer preprocess = PreprocessFilterType::New();
+  preprocess->SetInput( this->GetInput() );
+  preprocess->SetLargestCellRadius ( m_NucleusRadius );
+  preprocess->Update();
+  
+  FeatureImageConstPointer m_NucleiImg = preprocess->GetOutput();
   FeatureImageConstPointer m_MembraneImg = m_NucleiImg;
 
   SegmentImagePointer m_ForegroundImg;
-
     {
     // Apply Foreground filter
     ForegroundFilterPointer fgFilter = ForegroundFilterType::New();
@@ -88,13 +92,13 @@ WatershedBasedCellSegmentation< TFeatureImage, TInputImage, TSegmentImage >::Gen
 
   // Gradient weighted distance -- Todo: extend with blob instead of laplace
   DistanceFilterPointer distFilter = DistanceFilterType::New();
-  distFilter->SetInput (m_NucleiImg);
-  distFilter->SetUseLevelSet(true);
-  distFilter->SetForeground (m_ForegroundImg);
-  distFilter->SetLargestCellRadius(m_NucleusRadius);
-  distFilter->SetNucleiSigma (0.5);
-  distFilter->SetAlpha(m_Alpha);
-  distFilter->SetBeta(m_Beta);
+  distFilter->SetInput ( m_NucleiImg );
+  distFilter->SetUseLevelSet( true );
+  distFilter->SetForeground ( m_ForegroundImg );
+  distFilter->SetLargestCellRadius( m_NucleusRadius );
+  distFilter->SetNucleiSigma ( 0.5 );
+  distFilter->SetAlpha( m_Alpha );
+  distFilter->SetBeta( m_Beta );
   distFilter->Update();
   std::cout << "Computed distance map" << std::endl;
 
@@ -112,13 +116,43 @@ WatershedBasedCellSegmentation< TFeatureImage, TInputImage, TSegmentImage >::Gen
   WatershedFilterPointer wshed = WatershedFilterType::New();
   wshed->SetInput( idistance->GetOutput() );
   wshed->SetMarkWatershedLine(false);
-  wshed->SetLevel(1.0);
+  wshed->SetLevel( 1.0 );
   wshed->FullyConnectedOn();
   wshed->SetNumberOfThreads( this->GetNumberOfThreads() );
   wshed->SetForegroundImage(m_ForegroundImg);
   wshed->Update();
 
   SegmentImagePointer output = wshed->GetOutput();
+  output->DisconnectPipeline();
+  
+  SegmentImageSizeType size = output->GetLargestPossibleRegion().GetSize();
+  SegmentImageIndexType index;
+  for( unsigned int i = 0; i < ImageDimension; i++ )
+  {
+    index[i] = static_cast<SegmentImageIndexValueType>( size[i]/2 );
+  }
+  SegmentImagePixelType label = output->GetPixel( index );
+  
+  std::cout << "label: " << label << std::endl;
+  
+  if ( label > 0 )
+  {
+    SegmentIteratorType It( output, output->GetLargestPossibleRegion() );
+    It.GoToBegin();
+    while( !It.IsAtEnd() )
+    {
+      if (It.Get() ==  label )
+      {
+        It.Set( 1 );
+      }
+      else
+      {
+        It.Set( 0 );
+      }
+      
+      ++It;
+    }
+  }
   std::cout << "Computed watershed segmentation" << std::endl;
 
   this->GraftOutput(output);
@@ -127,11 +161,12 @@ WatershedBasedCellSegmentation< TFeatureImage, TInputImage, TSegmentImage >::Gen
 template< class TFeatureImage, class TInputImage, class TSegmentImage >
 void
 WatershedBasedCellSegmentation< TFeatureImage, TInputImage, TSegmentImage >::PrintSelf(std::ostream & os,
-                                                                                       Indent indent) const
+  Indent indent) const
 {
-  (void)os;
-  (void)indent;
+  (void) os;
+  (void) indent;
 }
+
 } /* end namespace itk */
 
 #endif
