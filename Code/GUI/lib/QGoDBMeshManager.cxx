@@ -174,7 +174,6 @@ unsigned int QGoDBMeshManager::SaveNewMeshFromVisu(
   std::string iCellType, std::string iSubCellType)
 {
   GoDBMeshRow NewMesh(this->m_ImgSessionID);
-
   NewMesh.SetCellType(iDatabaseConnector, iCellType);
   NewMesh.SetSubCellType(iDatabaseConnector, iSubCellType);
   this->SetMeshBoundingBoxAndPoints(iXCoordMin, iYCoordMin, iZCoordMin, iTCoord,

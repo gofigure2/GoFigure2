@@ -165,6 +165,12 @@ protected:
   std::string m_CollectionIDName;
   std::string m_CollectionName;
 
+   /**
+  \brief set the ImagingSessionID field to iImgSessionID
+  \param[in] iImgSessionID collectionID to be set to
+  */
+  void SetImgSessionID(unsigned int iImgSessionID);
+
   /**
   \brief save the row in the database if the TraceID is set to "0", update the
   existing traceRow if the TraceID is <> 0
@@ -174,7 +180,7 @@ protected:
   \return the ID of the updated or saved trace
   */
   template< typename T >
-  int SaveInDBTemplate(vtkMySQLDatabase *iDatabaseConnector, T iTrace)
+  int SaveInDBTemplate(vtkMySQLDatabase *iDatabaseConnector, T* iTrace)
   {
     int SavedTraceID;
 
@@ -183,7 +189,7 @@ protected:
     if ( this->m_MapRow[this->m_TableIDName] != "0" )
       {
       SavedTraceID = UpdateOneNewObjectInTable< T >(iDatabaseConnector,
-                                                    &iTrace);
+                                                    iTrace);
       }
     else
       {

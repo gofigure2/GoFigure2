@@ -177,6 +177,14 @@ void GoDBTraceRow::SetCollectionID(unsigned int iCollectionID)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void GoDBTraceRow::SetImgSessionID(unsigned int iImgSessionID)
+{
+   this->SetField< int >("ImagingSessionID", iImgSessionID);
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void GoDBTraceRow::SetValuesForSpecificID(int ID, vtkMySQLDatabase *iDatabaseConnector)
 {
   GoDBRow::SetValuesForSpecificID(ID, iDatabaseConnector);

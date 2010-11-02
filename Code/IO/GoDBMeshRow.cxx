@@ -62,7 +62,7 @@ GoDBMeshRow::GoDBMeshRow(vtkMySQLDatabase *DatabaseConnector,
   GoDBTraceRow()
 {
   this->InitializeMap();
-  this->SetCollectionID(ImgSessionID);
+  this->SetImgSessionID(ImgSessionID);
   this->SetTheDataFromTheVisu(DatabaseConnector, TraceVisu, Min, Max, iMeshAttributes);
 }
 
@@ -73,7 +73,8 @@ GoDBMeshRow::GoDBMeshRow(unsigned int ImagingSessionID):
   GoDBTraceRow()
 {
   this->InitializeMap();
-  this->SetCollectionID(ImagingSessionID);
+  this->SetImgSessionID(ImagingSessionID);
+  this->m_MapRow["ImagingSessionID"] = ConvertToString<int>(ImagingSessionID);
 }
 
 //-------------------------------------------------------------------------
@@ -156,7 +157,9 @@ void GoDBMeshRow::InitializeMap()
 //-------------------------------------------------------------------------
 int GoDBMeshRow::SaveInDB(vtkMySQLDatabase *DatabaseConnector)
 {
-  int SavedMeshID = GoDBTraceRow::SaveInDBTemplate< GoDBMeshRow >(DatabaseConnector, *this);
+  int SavedMeshID = GoDBTraceRow::SaveInDBTemplate< GoDBMeshRow >(DatabaseConnector, this);
+
+  //int SavedMeshID = GoDBTraceRow::SaveInDBTemplate< GoDBMeshRow >(DatabaseConnector, *this);
 
   if ( !this->m_NameChannelWithValues.empty() )
     {
