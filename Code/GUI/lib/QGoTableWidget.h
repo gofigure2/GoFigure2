@@ -188,8 +188,8 @@ public slots:
   \param[in] iTraceName name of the trace
   \param[in] iTraceNameID name of the traceID
   */
-  void CheckSelectedRows(std::string iTraceName,
-                         std::string iTraceNameID);
+  //void CheckSelectedRows(std::string iTraceName,
+                         //std::string iTraceNameID);
 
   /** 
   \brief uncheck the boxes in the check/uncheck columnfor the rows where at 
@@ -197,8 +197,11 @@ public slots:
   \param[in] iTraceName name of the trace
   \param[in] iTraceNameID name of the traceID
   */
-  void UncheckSelectedRows(std::string iTraceName,
-                           std::string iTraceNameID);
+  //void UncheckSelectedRows(std::string iTraceName,
+                           //std::string iTraceNameID);
+
+  void ChangeCheckStateSelectedRows(std::string iTraceName,std::string iTraceNameID,
+    Qt::CheckState iState);
 
   /** 
   \brief check the visible boxes for the rows where at least one cell is
@@ -233,6 +236,8 @@ signals:
   void CheckedRowsChanged(int iTraceID);
 
   void VisibleRowsChanged(int iTraceID);
+
+  void ModifyHighlightListTraces(QStringList,Qt::CheckState);
 
 protected:
   int PrevCol;
