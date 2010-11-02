@@ -119,7 +119,7 @@ int GoDBTrackRow::DoesThisBoundingBoxTrackExist(
 //-------------------------------------------------------------------------
 int GoDBTrackRow::SaveInDB(vtkMySQLDatabase *DatabaseConnector)
 {
-  return this->SaveInDBTemplate< GoDBTrackRow >(DatabaseConnector, *this);
+  return this->SaveInDBTemplate< GoDBTrackRow >(DatabaseConnector, this);
 }
 //-------------------------------------------------------------------------
 

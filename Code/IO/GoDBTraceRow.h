@@ -186,7 +186,7 @@ protected:
   \return the ID of the updated or saved trace
   */
   template< typename T >
-  int SaveInDBTemplate(vtkMySQLDatabase *iDatabaseConnector, T iTrace)
+  int SaveInDBTemplate(vtkMySQLDatabase *iDatabaseConnector, T* iTrace)
   {
     int SavedTraceID;
 
@@ -195,7 +195,7 @@ protected:
     if ( this->m_MapRow[this->m_TableIDName] != "0" )
       {
       SavedTraceID = UpdateOneNewObjectInTable< T >(iDatabaseConnector,
-                                                    &iTrace);
+                                                    iTrace);
       }
     else
       {

@@ -104,7 +104,7 @@ void GoDBContourRow::InitializeMap()
 //-------------------------------------------------------------------------
 int GoDBContourRow::SaveInDB(vtkMySQLDatabase *DatabaseConnector)
 {
-  return this->SaveInDBTemplate< GoDBContourRow >(DatabaseConnector, *this);
+  return this->SaveInDBTemplate< GoDBContourRow >(DatabaseConnector, this);
 }
 
 //-------------------------------------------------------------------------

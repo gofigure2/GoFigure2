@@ -194,7 +194,7 @@ int GoDBMeshRow::SaveInDB(vtkMySQLDatabase *DatabaseConnector)
 {
   //int SavedMeshID =
   // this->SaveInDBTemplate<GoDBMeshRow>(DatabaseConnector,*this);
-  int SavedMeshID = GoDBTraceRow::SaveInDBTemplate< GoDBMeshRow >(DatabaseConnector, *this);
+  int SavedMeshID = GoDBTraceRow::SaveInDBTemplate< GoDBMeshRow >(DatabaseConnector, this);
 
   if ( !this->m_NameChannelWithValues.empty() )
     {
