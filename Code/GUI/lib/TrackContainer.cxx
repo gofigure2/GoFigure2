@@ -166,10 +166,8 @@ UpdateCurrentElementFromExistingOne(unsigned int iTraceID)
   if ( it != m_Container.get< TraceID >().end() )
     {
     this->m_CurrentElement = *it;
-    this->DeleteElement(it);
-    std::cout << "Current element: " << std::endl;
-    std::cout << this->m_CurrentElement << std::endl;
-    ShowPolyData(this->m_CurrentElement.Nodes);
+    //Don't have to delete since we keep the same addresses for all the variables
+    //this->DeleteElement(it);
     return true;
     }
   else
@@ -461,28 +459,28 @@ DeleteElement(const unsigned int & iId)
     {
     if ( iIter->ActorXY )
       {
-      //this->m_ImageView->RemoveActor(0, iIter->ActorXY);
-      //iIter->ActorXY->Delete();
+      this->m_ImageView->RemoveActor(0, iIter->ActorXY);
+      iIter->ActorXY->Delete();
       }
     if ( iIter->ActorXZ )
       {
-      //this->m_ImageView->RemoveActor(1, iIter->ActorXZ);
-      //iIter->ActorXZ->Delete();
+      this->m_ImageView->RemoveActor(1, iIter->ActorXZ);
+      iIter->ActorXZ->Delete();
       }
     if ( iIter->ActorYZ )
       {
-      //this->m_ImageView->RemoveActor(2, iIter->ActorYZ);
-      //iIter->ActorYZ->Delete();
+      this->m_ImageView->RemoveActor(2, iIter->ActorYZ);
+      iIter->ActorYZ->Delete();
       }
     if ( iIter->ActorXYZ )
       {
-      //this->m_ImageView->RemoveActor(3, iIter->ActorXYZ);
-      //iIter->ActorXYZ->Delete();
+      this->m_ImageView->RemoveActor(3, iIter->ActorXYZ);
+      iIter->ActorXYZ->Delete();
       }
 
     if ( iIter->Nodes )
       {
-      //iIter->Nodes->Delete();
+      iIter->Nodes->Delete();
       }
     m_Container.get< TraceID >().erase(iIter);
     m_ImageView->UpdateRenderWindows();
