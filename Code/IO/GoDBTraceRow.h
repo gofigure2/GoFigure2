@@ -117,18 +117,6 @@ public:
   std::string GetCollectionName();
 
   /**
-  \brief set the data from the visu for an existing Trace
-  \param[in] DatabaseConnector connection to the database
-  \param[in] TraceVisu vtkPolyData the points will be extracted from
-  \param[in] iCoordMin coordinate row for the minimum of the bounding box
-  \param[in] iCoordMax coordinate row for the maximum of the bounding box
-  */
-  virtual void SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector,
-                             vtkPolyData *TraceVisu,
-                             GoDBCoordinateRow iCoordMin,
-                             GoDBCoordinateRow iCoordMax);
-
-  /**
   \brief check in the database if the Coordinate Min and Max already exists,
   if yes fill the map["CoordIDMin"] and ["CoordIDmax"] with the existing CoordinateID
   if not, create the coordinates in the database and fill the map with the new created ID,

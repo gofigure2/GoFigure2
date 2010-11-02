@@ -2780,7 +2780,7 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord)
   // UPDATE THE TRACKS IN THE CONTAINER
 
   // get the center of the mesh
-  // is deleted in AddPointToCurrentElement
+  // pointer to double is deleted in AddPointToCurrentElement
   double * point = new double[4];
   std::vector< int > boundingBox = GetBoundingBox(iView);
   for(int i = 0; i<3; ++i)
@@ -2801,7 +2801,6 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord)
     m_TrackContainer->UpdateCurrentElementActorsFromVisu(trackActors);
     }
   m_TrackContainer->InsertCurrentElement();
-
 }
 //-------------------------------------------------------------------------
 
@@ -2932,7 +2931,7 @@ QGoTabImageView3DwT::ComputeMeshAttributes( vtkPolyData *iMesh,
 
   GoFigureMeshAttributes oAttributes;
 
-  if( !iIntensity )
+  if( iIntensity )
     {
     for ( size_t i = 0; i < m_InternalImages.size(); i++ )
       {
@@ -2954,6 +2953,7 @@ QGoTabImageView3DwT::ComputeMeshAttributes( vtkPolyData *iMesh,
         static_cast< int >( calculator->GetSumIntensity() );
       oAttributes.m_MeanIntensityMap[channelname] = calculator->GetMeanIntensity();
       oAttributes.m_Volume = calculator->GetPhysicalSize();
+      std::cout << "volume: " << oAttributes.m_Volume << std::endl;
       oAttributes.m_Area = calculator->GetArea();
       oAttributes.m_Size = calculator->GetSize();
       }
