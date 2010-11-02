@@ -913,6 +913,9 @@ public:
 public slots:
   void UpdateElementHighlightingWithGivenTraceIDs( const QStringList& iList,
                                                    const Qt::CheckState& iCheck );
+  void UpdateElementVisibilityWithGivenTraceIDs( const QStringList& iList,
+                                                 const Qt::CheckState& iCheck );
+
 signals:
   /** \brief When one contour / mesh has been picked (highlighted) from the visualization */
   void TracePicked(unsigned int, Qt::CheckState);
