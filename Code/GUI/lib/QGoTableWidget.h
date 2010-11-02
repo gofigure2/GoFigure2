@@ -194,22 +194,6 @@ public slots:
     Qt::CheckState iState);
 
   /** 
-  \brief check the visible boxes for the rows where at least one cell is
-  selected 
-  \param[in] iTraceName name of the trace
-  \param[in] iTraceNameID name of the traceID
-  */
-  //void ShowSelectedRows(std::string iTraceName, std::string iTraceNameID);
-
-  /** 
-  \brief uncheck the visible boxes for the rows where at least one cell is
-  selected 
-  \param[in] iTraceName name of the trace
-  \param[in] iTraceNameID name of the traceID
-  */
-  //void HideSelectedRows(std::string iTraceName, std::string iTraceNameID);
-
-  /** 
   \brief check/uncheck the visible boxes for the rows where at least one cell is
   selected 
   \param[in] iTraceName name of the trace
