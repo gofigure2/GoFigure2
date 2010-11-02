@@ -77,6 +77,7 @@ GetMySQLText(vtkPolyData *iPolyData)
   vtkSmartPointer< vtkIdList >
     cell_points = vtkSmartPointer< vtkIdList >::New();
 
+//<<<<<<< HEAD:Code/IO/vtkPolyDataMySQLMeshWriter.cxx
   vtkIdType NbOfPointsInCell;
   N = iPolyData->GetNumberOfCells();
   oMyString << N << " ";
@@ -86,13 +87,32 @@ GetMySQLText(vtkPolyData *iPolyData)
     iPolyData->GetCellPoints(i, cell_points);
     NbOfPointsInCell = cell_points->GetNumberOfIds();
     oMyString << NbOfPointsInCell << " ";
+/*=======
+  N = m_PolyData->GetNumberOfCells();
+  if( N > 0 )
+    {
+    vtkIdType NbOfPointsInCell;
+    oMyString << N << " ";
+>>>>>>> d6482b13c0e9cb6353b829ac85f8ead21200c67e:Code/IO/vtkPolyDataMySQLTextWriter.cxx*/
 
-    for ( vtkIdType k = 0; k < NbOfPointsInCell; k++ )
+    for ( vtkIdType i = 0; i < N; i++ )
       {
-      oMyString << cell_points->GetId(k) << " ";
-      }
-    }
+      m_PolyData->GetCellPoints(i, cell_points);
+      NbOfPointsInCell = cell_points->GetNumberOfIds();
+      oMyString << NbOfPointsInCell << " ";
 
-  return oMyString.str();
+      for ( vtkIdType k = 0; k < NbOfPointsInCell; k++ )
+        {
+        oMyString << cell_points->GetId(k) << " ";
+        }
+      }
+
+    return oMyString.str();
+    }
+  else
+    {
+    std::cout << "CAUTION: the input mesh has no cells (triangles)" <<std::endl;
+    return std::string();
+    }
 }
 //--------------------------------------------------------------------------
