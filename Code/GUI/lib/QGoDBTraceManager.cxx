@@ -229,6 +229,18 @@ void QGoDBTraceManager::SetTracesInfoContainerForVisu(
                     SIGNAL( TraceVisibilityChanged(uint, Qt::CheckState) ),
                     this,
                     SLOT ( ShowTheTraceInTW(uint, Qt::CheckState) ) );
+
+  //to change for track container
+  QObject::connect( this->m_Table,
+                    SIGNAL( ModifyHighlightListTraces(QStringList,Qt::CheckState) ),
+                    this->m_TraceContainerInfoForVisu,
+                    SLOT ( UpdateElementHighlightingWithGivenTraceIDs(QStringList,
+                                                   Qt::CheckState) ) );
+  QObject::connect( this->m_Table,
+                    SIGNAL( ModifyVisibilityListTraces(QStringList,Qt::CheckState) ),
+                    this->m_TraceContainerInfoForVisu,
+                    SLOT ( UpdateElementVisibilityWithGivenTraceIDs(QStringList,
+                                                   Qt::CheckState) ) );
 }
 
 //-------------------------------------------------------------------------
@@ -331,7 +343,8 @@ void QGoDBTraceManager::AddActionForCreateNewCollectionFromCheckedTraces(
 //-------------------------------------------------------------------------
 void QGoDBTraceManager::CheckSelectedRows()
 {
-  this->m_Table->CheckSelectedRows(this->m_TraceName, this->m_TraceNameID);
+  this->m_Table->ChangeCheckStateSelectedRows(this->m_TraceName,
+    this->m_TraceNameID,Qt::Checked);
 }
 
 //-------------------------------------------------------------------------
@@ -339,7 +352,8 @@ void QGoDBTraceManager::CheckSelectedRows()
 //------------------------------------------------------------------------
 void QGoDBTraceManager::UncheckSelectedRows()
 {
-  this->m_Table->UncheckSelectedRows(this->m_TraceName, this->m_TraceNameID);
+  this->m_Table->ChangeCheckStateSelectedRows(this->m_TraceName,
+    this->m_TraceNameID,Qt::Unchecked);
 }
 
 //-------------------------------------------------------------------------
@@ -347,7 +361,8 @@ void QGoDBTraceManager::UncheckSelectedRows()
 //------------------------------------------------------------------------
 void QGoDBTraceManager::ShowSelectedRows()
 {
-  this->m_Table->ShowSelectedRows(this->m_TraceName, this->m_TraceNameID);
+  this->m_Table->ChangeVisibilityStateSelectedRows(this->m_TraceName,
+    this->m_TraceNameID,Qt::Checked);
 }
 
 //-------------------------------------------------------------------------
@@ -355,7 +370,8 @@ void QGoDBTraceManager::ShowSelectedRows()
 //------------------------------------------------------------------------
 void QGoDBTraceManager::HideSelectedRows()
 {
-  this->m_Table->HideSelectedRows(this->m_TraceName, this->m_TraceNameID);
+  this->m_Table->ChangeVisibilityStateSelectedRows(this->m_TraceName,
+    this->m_TraceNameID,Qt::Unchecked);
 }
 
 //-------------------------------------------------------------------------
