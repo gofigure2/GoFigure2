@@ -389,10 +389,92 @@ UpdateElementHighlightingWithGivenTraceIDs( const QStringList& iList,
     m_ImageView->UpdateRenderWindows();
     }
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+ContourMeshContainer::
+UpdateElementVisibilityWithGivenTraceIDs( const QStringList& iList,
+                                          const Qt::CheckState& iCheck )
+{
+  if( !iList.empty() )
+    {
+    MultiIndexContainerTraceIDIterator it;
+
+    typedef void ( QGoImageView3D::*ImageViewMember )(const int &, vtkActor *);
+    ImageViewMember f;
+
+    QStringList::const_iterator constIterator = iList.begin();
+
+    while( constIterator != iList.end() )
+      {
+      it = m_Container.get< TraceID >().find((*constIterator).toUInt());
+
+      if ( it != m_Container.get< TraceID >().end() )
+        {
+        if ( it->TCoord != m_TCoord )
+          {
+          if ( iCheck )
+            {
+            f = &QGoImageView3D::RemoveActor;
+            }
+          else
+            {
+            f = &QGoImageView3D::AddActor;
+            }
+
+          if ( it->ActorXY )
+            {
+            ( m_ImageView->*f )(0, it->ActorXY);
+            }
+          if ( it->ActorXZ )
+            {
+            ( m_ImageView->*f )(1, it->ActorXZ);
+            }
+          if ( it->ActorYZ )
+            {
+            ( m_ImageView->*f )(2, it->ActorYZ);
+            }
+          if ( it->ActorXYZ )
+            {
+            ( m_ImageView->*f )(3, it->ActorXYZ);
+            }
+          }
+
+        if ( it->ActorXY )
+          {
+          it->ActorXY->SetVisibility(iCheck);
+          }
+        if ( it->ActorXZ )
+          {
+          it->ActorXZ->SetVisibility(iCheck);
+          }
+        if ( it->ActorYZ )
+          {
+          it->ActorYZ->SetVisibility(iCheck);
+          }
+        if ( it->ActorXYZ )
+          {
+          it->ActorXYZ->SetVisibility(iCheck);
+          }
+
+        ContourMeshStructure tempStructure(*it);
+        tempStructure.Visible = iCheck;
+
+        m_Container.get< TraceID >().replace(it, tempStructure);
+        }
+
+      ++constIterator;
+      }
+    m_ImageView->UpdateRenderWindows();
+    }
+}
+//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 bool
-ContourMeshContainer::UpdateElementVisibilityWithGivenTraceID(const unsigned int & iId)
+ContourMeshContainer::
+UpdateElementVisibilityWithGivenTraceID(const unsigned int & iId)
 {
   MultiIndexContainerTraceIDIterator
     it = m_Container.get< TraceID >().find(iId);
