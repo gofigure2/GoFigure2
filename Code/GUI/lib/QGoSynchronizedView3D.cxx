@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -264,13 +258,13 @@ QGoSynchronizedView3D::SnapshotViewXY(const GoFigure::FileType & iType, const QS
 
 //--------------------------------------------------------------------------
 QString
-QGoSynchronizedView3D::SnapshotView2(const GoFigure::FileType & iType, const QString & iBaseName)
+QGoSynchronizedView3D::SnapshotViewXZ(const GoFigure::FileType & iType, const QString & iBaseName)
 {
   QGoImageView3D *viewer = this->GetImageView();
 
   if ( viewer )
     {
-    return viewer->SnapshotView2(iType, iBaseName);
+    return viewer->SnapshotViewXZ(iType, iBaseName);
     }
   else
     {
@@ -280,13 +274,13 @@ QGoSynchronizedView3D::SnapshotView2(const GoFigure::FileType & iType, const QSt
 
 //--------------------------------------------------------------------------
 QString
-QGoSynchronizedView3D::SnapshotView3(const GoFigure::FileType & iType, const QString & iBaseName)
+QGoSynchronizedView3D::SnapshotViewYZ(const GoFigure::FileType & iType, const QString & iBaseName)
 {
   QGoImageView3D *viewer = this->GetImageView();
 
   if ( viewer )
     {
-    return viewer->SnapshotView3(iType, iBaseName);
+    return viewer->SnapshotViewYZ(iType, iBaseName);
     }
   else
     {

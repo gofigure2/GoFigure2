@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -69,8 +63,7 @@ private:
     std::string iServerName, std::string iPassword);
 
   bool UserNameAlreadyExits(
-    vtkMySQLDatabase *DatabaseConnector, std::string iLogin,
-    std::string iServerName, std::string iPassword);
+    vtkMySQLDatabase *DatabaseConnector, std::string iLogin);
 
   /** \brief create a dialog with OK and Cancel button asking iquestion to the
   user, return true if the user press OK, false if press Cancel*/

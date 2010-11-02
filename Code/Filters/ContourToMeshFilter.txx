@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author: arnaudgelas $  // Author of last commit
-  Version: $Rev: 2337 $  // Revision of last commit
-  Date: $Date: 2010-10-21 10:06:20 -0400 (Thu, 21 Oct 2010) $  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -49,6 +43,7 @@
 #include "vtkPoissonReconstruction.h"
 #include "vtkPolyDataWriter.h"
 #include "vtkFillHolesFilter.h"
+#include "vtkPolylineDecimation.h"
 
 #include <iostream>
 
@@ -59,7 +54,11 @@ namespace itk
  * \brief
  */
 template< class TContainer >
-ContourToMeshFilter< TContainer >::ContourToMeshFilter():m_Output(NULL)
+ContourToMeshFilter< TContainer >::
+ContourToMeshFilter():
+  m_Output(NULL),
+  m_ThresholdNumberOfPoints( 20 ),
+  m_TargetNumberOfPoints( 20 )
 {}
 
 template< class TContainer >
@@ -83,13 +82,33 @@ ContourToMeshFilter< TContainer >::ProcessContours(const ContainerType & iContai
     // compute center of mass
     ContainerConstIterator it = iContainer.begin();
 
+    std::vector< vtkSmartPointer< vtkPolylineDecimation > >
+      decimate( iContainer.size() );
+
+    size_t i = 0;
+
     while ( it != iContainer.end() )
       {
       if ( ( *it ) )
         {
-        append->AddInput(*it);
+        if( (*it)->GetNumberOfPoints() > m_ThresholdNumberOfPoints )
+          {
+          decimate[i] = vtkSmartPointer< vtkPolylineDecimation >::New();
+          decimate[i]->SetInput( *it );
+          decimate[i]->SetTargetReduction( 1. -
+            static_cast< double >( m_TargetNumberOfPoints ) /
+            static_cast< double >( (*it)->GetNumberOfPoints() ) );
+          decimate[i]->Update();
+
+          append->AddInput( decimate[i]->GetOutput() );
+          }
+        else
+          {
+          append->AddInput(*it);
+          }
         }
       ++it;
+      ++i;
       }
 
     vtkSmartPointer< vtkNormalEstimationFilter > normal_filter =

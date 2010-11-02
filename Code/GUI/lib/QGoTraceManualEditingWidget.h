@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -142,7 +136,7 @@ public:
   select the 1rst one.
   \param[in] iCellTypesData list of celltypes with their names and description
   to be displayed
-  \param[in] iCellTypetoSelect name of the celltype to be selected in the combobox
+  \param[in] iCellTypeToSelect name of the celltype to be selected in the combobox
   */
   void SetListCellTypes(NamesDescrContainerType iCellTypesData,
                         std::string iCellTypeToSelect = "");
@@ -151,9 +145,9 @@ public:
   \brief replace the list of subcelltype with the names in the iSubCellTypesData and
   select the subcelltype corresponding to iSubCellTypetoSelect if not empty, if empty,
   select the 1rst one.
-  \param[in] iSubCellTypesData list of subcelltypes with their names and description
+  \param[in] iSubCellData list of subcelltypes with their names and description
   to be displayed
-  \param[in] iSubCellTypetoSelect name of the subcelltype to be selected in the combobox
+  \param[in] iSubCellTypeToSelect name of the subcelltype to be selected in the combobox
   */
   void SetListSubCellTypes(NamesDescrContainerType iSubCellData,
                            std::string iSubCellTypeToSelect = "");
@@ -249,7 +243,7 @@ protected:
   }
 
   /**
-  \overload
+  \overload SetListItemAndSelect
   */
   template< typename T >
   void SetListItemAndSelect(T *iComboBox, std::list< ItemColorComboboxData > iItemsData,

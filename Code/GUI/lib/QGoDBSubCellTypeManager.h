@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -54,7 +48,7 @@ class QGoDBSubCellTypeManager:public QGoDBNameDescEntityManager
 {
   Q_OBJECT
 public:
-  /** \todo make a class template for celltype/subcelltype */
+  /** \todo Lydie: make a class template for celltype/subcelltype */
   explicit QGoDBSubCellTypeManager (QWidget *iParent = 0);
 
   ~QGoDBSubCellTypeManager()

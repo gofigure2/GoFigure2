@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Revision$  // Revision of last commit
-  Date: $Date$  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -40,9 +34,6 @@
 #ifndef __GoDBCollectionOfTraces_h
 #define __GoDBCollectionOfTraces_h
 
-//#include <QString>
-//#include <QStringList>
-//#include <QObject>
 #include "MegaVTK2Configure.h"
 #include "GoDBRecordSetHelper.h"
 #include "vtkMySQLDatabase.h"
@@ -50,10 +41,15 @@
 #include "GoDBCoordinateRow.h"
 #include "GoDBTraceInfoForTableWidget.h"
 #include "GoDBTableWidgetContainer.h"
-//#include <QStringList>
 #include <map>
 #include <QColor>
 
+/**
+\class GoDBCollectionOfTraces
+\brief this class handles the interaction between the database and the children
+of QGoDBTraceManager
+\ingroup DB
+*/
 class QGOIO_EXPORT GoDBCollectionOfTraces
 {
 public:
@@ -68,80 +64,94 @@ public:
   typedef GoDBTableWidgetContainer::TWContainerType TWContainerType;
   typedef std::pair< std::string, QColor >          NameWithColorData;
 
-  /** \brief fill the global values for the collection of traces,
-  the databaseconnector is only useful if
-  the trace is a mesh*/
+  /** 
+  \brief fill the global values for the collection of traces.
+  \param[in] iCollectionName name of the collection exp: track
+  \param[in] iTracesName name of the trace exp:mesh
+  \param[in] iCollectionOfName name of the collectionOf exp: contour
+  */
   void SetCollectionInfo(std::string iCollectionName,
                          std::string iTracesName,
                          std::string iCollectionOfName);
 
+  /**
+  \brief set m_ImgSessionID to iImgSessionID
+  */
   void SetImgSessionID(unsigned int iImgSessionID);
 
   //Modif into Database
-  /** \brief Delete the corresponding trace in the database*/
+  /** 
+  \brief Delete the corresponding trace in the database
+  \param[in] DatabaseConnector connection to the database
+  */
   void DeleteTraceInDB(int TraceToDelete, vtkMySQLDatabase *DatabaseConnector);
 
   //Modif into Database
-  /** \brief Delete in the Database all the traces listed in the list of int */
+  /** 
+  \brief Delete in the Database all the traces listed in the list of int 
+  \param[in] TracesToDelete delete from the database the traces with the
+  ID listed in it
+  \param[in] DatabaseConnector connection to the database
+  */
   void DeleteTracesInDB(std::list< unsigned int > TracesToDelete,
                         vtkMySQLDatabase *DatabaseConnector);
 
-  /** \brief Update the collectionID of the selected traces in the DB trace table,
+  /** 
+  \brief Update the collectionID of the selected traces in the DB trace table,
   update the bounding box of the collection, update the bounding boxes of the
   previous collections the traces belonged to and return the list of the
-  previous collection with an updated bounding box*/
-  std::list< unsigned int > UpdateDBDataForAddedTracesToExistingCollection(
-    std::list< unsigned int > ListSelectedTraces, int iNewCollectionID,
-    vtkMySQLDatabase *DatabaseConnector);
+  previous collection with an updated bounding box
+  */
+  //std::list< unsigned int > UpdateDBDataForAddedTracesToExistingCollection(
+  //  std::list< unsigned int > ListSelectedTraces, int iNewCollectionID,
+  //  vtkMySQLDatabase *DatabaseConnector);
 
   //Modif into Database
-  /** \brief Update the collectionID of the selected traces in the DB traces table
-  with the new collectionID: */
+  /** 
+  \brief Update the collectionID of the selected traces in the DB traces table
+  with the new collectionID
+  \param[in] iListSelectedTraces IDs of the traces the collectionID need to 
+  be updated
+  \param[in] iCollectionID new collectionID
+  \param[in] DatabaseConnector connection to the database
+  */
   void UpdateCollectionIDOfSelectedTraces(
     std::list< unsigned int > iListSelectedTraces, unsigned int iCollectionID,
     vtkMySQLDatabase *iDatabaseConnector);
 
-  /** \brief return the name of the trace of the current collection which
-  is also a collection of*/
+  /** 
+  \brief 
+  \return the name of the trace of the current collection which
+  is also a collection of
+  */
   std::string GetCollectionOf();
 
-  /** \brief return the list of IDs for the traces part of the collectionID*/
+  /** 
+  \brief get the IDs of the traces part of the collection with iCollectionID
+  \param[in] DatabaseConnector connection to the database
+  \param[in] iCollectionID ID of the collection the traces needed are part of
+  \return the list of IDs for the traces part of the collectionID
+  */
   std::list< int > GetTracesIDPartOfTheCollection(
     vtkMySQLDatabase *DatabaseConnector, int iCollectionID);
 
-  /*template<typename T>
-  int CreateNewCollectionFromSelection(
-    std::list<unsigned int> iListSelectedTraces, vtkMySQLDatabase* DatabaseConnector,
-    T iNewCollection)
-  {
-    //todo merge createNewCollectionFromSelection and CreateCollectionWithNotraces
-    //the following fields are common to all the collections, the one
-    //that are different are specified in QGoPrintDatabase:
-    iNewCollection.SetField("ImagingSessionID", this->m_ImgSessionID);
-    //the CollectionID is set to 0 as it is a new Collection that will be created, not
-    //contours to be added to an existing collection:
-    iNewCollection.SetField("CoordIDMax", this->GetCoordMaxID(
-                              DatabaseConnector, 0, iListSelectedTraces));
-    iNewCollection.SetField("CoordIDMin", this->GetCoordMinID(
-                              DatabaseConnector, 0, iListSelectedTraces));
-
-    int NewCollectionID = this->CreateNewCollection(DatabaseConnector, iNewCollection);
-
-    UpdateCollectionIDOfSelectedTraces(iListSelectedTraces, NewCollectionID,
-                                       DatabaseConnector);
-
-    return NewCollectionID;
-  }*/
   //******************************Modif-Refactoring************************************************
   //public:
   //Modif into Database
-  /** \brief Calculate the bounding box of the corresponding collection and update
-  it in the database*/
+  /** 
+  \brief Calculate the bounding box of the corresponding collection and update
+  it in the database
+  \param[in] DatabaseConnector connection to the database
+  \param[in] iCollectionID ID of the collection the bounding box is calculated
+  */
   void RecalculateDBBoundingBox(
     vtkMySQLDatabase *iDatabaseConnector, int iCollectionID);
 
-  /** \brief Get the list of all the collectionIDs, distinct and different from zero for the
+  /** 
+  \brief Get the list of all the collectionIDs, distinct and different from zero for the
   corresponding traces IDs and recalculate the bounding boxes for them.
+  \param[in] DatabaseConnector connection to the database
+  \param[in] iListTracesIDs list of the tracesIDs the collection need to be recalculated
   */
   void RecalculateDBBoundingBox(
     vtkMySQLDatabase *iDatabaseConnector, std::list< unsigned int > iListTracesIDs);
@@ -166,7 +176,8 @@ public:
   /**
   \brief save the collection in the database after getting an empty bounding box
   and return the corresponding ID
-  \parma[in] iDatabaseConnector connection to the database
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iColor color for the new collection
   \param[in] iNewCollection collection with all the fields set except bounding box
   \param[in] iTimePoint timepoint for the collection (only for mesh)
   \tparam T child of GoDBTraceRow
@@ -204,10 +215,9 @@ public:
   the database and return the new TraceID created
   \param[in] iTrace
   \param[in] iDatabaseConnector connection to the database
-  \param[in] iCoordMin coordinate of the minimum of the bounding box
-  \param[in] iCoordMax coordinate of the maximum of the bounding box
   \param[in] iColor QColor and Name of the color for the trace
   \param[in] iCollectionID ID of the collection for the trace
+  \tparam T children of GoDBTraceRow
   \return unsigned int New created TraceID
   */
   template< typename T >
@@ -223,7 +233,10 @@ public:
   }
 
   /**
-  \brief overloaded method
+  \overload CreateNewTraceInDB(T iTrace, vtkMySQLDatabase *iDatabaseConnector,
+                                  NameWithColorData iColor, unsigned int iCollectionID)
+  \param[in] iCoordIDMin coordinateID of the minimum of the bounding box
+  \param[in] iCoordIDMax coordinateID of the maximum of the bounding box
   */
   template< typename T >
   unsigned int CreateNewTraceInDB(T iTrace, vtkMySQLDatabase *iDatabaseConnector,
@@ -272,15 +285,27 @@ public:
   /**
  \brief get the list of IDs that are collection of iListTraces
  \param[in] iDatabaseConnector connection to the database
- \param[in] iListTraces list of traces IDs for which we need the collectionIDs
+ \param[in] iListTracesIDs list of traces IDs for which we need the collectionIDs
  \return std::list<unsigned int> list of the tracesIDs
  */
   std::list< unsigned int > GetListCollectionIDs(
     vtkMySQLDatabase *iDatabaseConnector, std::list< unsigned int > iListTracesIDs);
 
+  /**
+  \brief get the list of tracesIDs that have no points
+  \param[in] iListTracesIDs list of the tracesIDs to be checked
+  \param[in] iDatabaseConnector connection to the database
+  \return list of IDs for the traces that have no point and that are in iListTracesIDs
+  */
   std::list< unsigned int > GetListTracesIDWithNoPoints(
     std::list< unsigned int > iListTracesIDs, vtkMySQLDatabase *iDatabaseConnector);
 
+  /**
+  \brief get the IDs of the last saved traces in the database
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iNumberOfTraces number of IDs to get
+  \return list of last created IDs
+  */
   std::list< unsigned int > GetLastCreatedTracesIDs(
     vtkMySQLDatabase *iDatabaseConnector, int iNumberOfTraces);
 
@@ -344,9 +369,9 @@ protected:
   \brief modify the timepoint to iTimePoint for the coordmax and coordmin and
   replace the ioCoordIDMax/Min with the new saved coordinates in the database
   \param[in] iTimePoint TCoord to be replaced with for the coordmin and max
-  \param[in|out] ioCoordIDMax in: ID for the coordinate max with the timepoint
+  \param[in,out] ioCoordIDMax in: ID for the coordinate max with the timepoint
   to be modified, out: ID of the coordinate max with the timepoint set as itimepoint
-  \param[in|out] ioCoordIDMin in: ID for the coordinate min with the timepoint
+  \param[in,out] ioCoordIDMin in: ID for the coordinate min with the timepoint
   to be modified, out: ID of the coordinate min with the timepoint set as itimepoint
   \param[in] iDatabaseConnector connection to the database
   */
@@ -357,7 +382,7 @@ protected:
 
   /**
   \brief return the CoordIDMax for a minimum bounding box
-  \param [in] iDatabaseConnector connection to the database
+  \param[in] iDatabaseConnector connection to the database
   \return the ID for the coordinate Max of the bounding box
   */
   int GetCoordIDMaxForBoundingBoxWithNoTraces(
@@ -365,7 +390,7 @@ protected:
 
   /**
   \brief return the CoordIDMin for a minimum bounding box
-  \param [in] iDatabaseConnector connection to the database
+  \param[in] iDatabaseConnector connection to the database
   \return the ID for the coordinate min of the bounding box
   */
   int GetCoordIDMinForBoundingBoxWithNoTraces(
@@ -394,8 +419,8 @@ protected:
   /**
   \brief get all the different parts needed for the query to get the color of traces
   from the database
-  \param[in|ou] ioSelectedFields will be filed with the attributes of the color DBtable
-  \param[in|out] ioJoinTablesOnTraceTable will be filled with the conditions to link the
+  \param[in,out] ioSelectedFields will be filed with the attributes of the color DBtable
+  \param[in,out] ioJoinTablesOnTraceTable will be filled with the conditions to link the
   color table and the trace table
   */
   void GetFieldsNeededForQueryForColorData(

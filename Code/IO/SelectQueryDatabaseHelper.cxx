@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -1753,27 +1747,31 @@ std::string SelectQueryStreamListConditions(std::string iTable,
 {
   std::stringstream querystream;
 
-  querystream << "SELECT ";
-  if ( Distinct )
+  if( !iListValues.empty() )
     {
-    querystream << "DISTINCT ";
-    }
-  querystream << iColumn;
-  querystream << " FROM ";
-  querystream << iTable;
-  querystream << " WHERE (";
-  unsigned int i;
-  for ( i = 0; i < iListValues.size() - 1; i++ )
-    {
+    querystream << "SELECT ";
+    if ( Distinct )
+      {
+      querystream << "DISTINCT ";
+      }
+    querystream << iColumn;
+    querystream << " FROM ";
+    querystream << iTable;
+    querystream << " WHERE (";
+    unsigned int i;
+    for ( i = 0; i < iListValues.size() - 1; i++ )
+      {
+      querystream << iField;
+      querystream << " = '";
+      querystream << iListValues[i];
+      querystream << "' OR ";
+      }
     querystream << iField;
     querystream << " = '";
     querystream << iListValues[i];
-    querystream << "' OR ";
+    querystream << "')";
     }
-  querystream << iField;
-  querystream << " = '";
-  querystream << iListValues[i];
-  querystream << "')";
+
   return querystream.str();
 }
 
@@ -2208,7 +2206,7 @@ std::list< unsigned int > GetSpecificValuesEqualToZero(
   querystream << " = 0);";
 
   query->SetQuery( querystream.str().c_str() );
-  /** \todo check when several meshesID are in the query*/
+  /** \todo Lydie: check when several meshesID are in the query*/
   if ( !query->Execute() )
     {
     itkGenericExceptionMacro(

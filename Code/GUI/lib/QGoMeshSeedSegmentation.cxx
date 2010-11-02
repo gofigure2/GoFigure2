@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author: nicolasrannou $  // Author of last commit
-  Version: $Rev: 2037 $  // Revision of last commit
-  Date: $Date: 2010-08-23 16:33:20 -0400 (Mon, 23 Aug 2010) $  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -54,7 +48,7 @@
 //--------------------------------------------------------------------------
 QGoMeshSeedSegmentation::QGoMeshSeedSegmentation(QWidget *parentW,
                                                  vtkPoints *seeds,
-                                                 std::vector< vtkImageData * > *iOriginalImage,
+                                                 std::vector< vtkSmartPointer<vtkImageData> > *iOriginalImage,
                                                  int iSampling):
   QGoSeedSegmentationBase(parentW, seeds, iSampling),
   m_OriginalImage(iOriginalImage)
@@ -92,9 +86,8 @@ QGoMeshSeedSegmentation::QGoMeshSeedSegmentation(QWidget *parentW,
   m_LevelSetfilter->ConnectSignals(filter);
 
 //=============================================================================
-
-  //Add new segmentation method
 /*
+  //Add new segmentation method
   m_Watershed = new QGoFilterWatershed(this, iSampling);   // 3 i.e. 3D, to
                                                            // create a mesh
   filter = m_BaseAlgorithmSegmentationWidget->GetNumberOfFilters();
