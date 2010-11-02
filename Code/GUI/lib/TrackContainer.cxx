@@ -667,7 +667,7 @@ AddPointToCurrentElement(double* iPoint)
     newArray->SetName("TemporalInformation");
 
     newArray->InsertNextValue( iPoint[3] );
-    newPoints->InsertNextPoint( iPoint );
+    newPoints->InsertPoint( 0, iPoint );
 
     //add the points to the dataset
     this->m_CurrentElement.Nodes->SetPoints(newPoints);
