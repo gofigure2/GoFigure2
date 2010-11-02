@@ -661,6 +661,9 @@ QGoTabImageView3DwT::SetRendererWindow(int iValue)
 void
 QGoTabImageView3DwT::CreateAllViewActions()
 {
+  /*
+   * COMMENTED FROM HOTFIXES
+   *
   QActionGroup *groupMode = new QActionGroup(this);
 
   QAction *ChannelClassic = new QAction(tr("Classic-View"), this);
@@ -708,6 +711,8 @@ QGoTabImageView3DwT::CreateAllViewActions()
   QAction *separator1 = new QAction(this);
   separator1->setSeparator(true);
   this->m_ViewActions.push_back(separator1);
+
+  */
 
   //-------------------------
   //
@@ -1692,8 +1697,8 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
       m_Image->ShallowCopy( append_filter->GetOutput() );
 
       // LUT DISABLED
-      m_ViewActions[13]->setEnabled(false);
-      m_ViewActions[14]->setEnabled(false);
+      m_ViewActions[11]->setEnabled(false);
+      m_ViewActions[10]->setEnabled(false);
       }
     else
       {
@@ -1703,8 +1708,8 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
         m_Image->ShallowCopy(m_InternalImages[ch]);
         }
       // LUT ENABLED
-      m_ViewActions[13]->setEnabled(true);
-      m_ViewActions[14]->setEnabled(true);
+      m_ViewActions[11]->setEnabled(true);
+      m_ViewActions[10]->setEnabled(true);
       }
     }
   else
@@ -1713,8 +1718,8 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
     m_Image->SetNumberOfScalarComponents(1);
 
     // LUT ENABLED
-    m_ViewActions[13]->setEnabled(true);
-    m_ViewActions[14]->setEnabled(true);
+    m_ViewActions[11]->setEnabled(true);
+    m_ViewActions[10]->setEnabled(true);
     }
 }
 
@@ -1771,8 +1776,8 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels( int iChannel )
     m_Image->ShallowCopy( append_filter->GetOutput() );
 
     // LUT DISABLED
-    m_ViewActions[13]->setEnabled(false);
-    m_ViewActions[14]->setEnabled(false);
+    m_ViewActions[11]->setEnabled(false);
+    m_ViewActions[10]->setEnabled(false);
     }
   else
     {
@@ -1782,8 +1787,8 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels( int iChannel )
       m_Image->ShallowCopy(m_InternalImages[ch]);
       }
     // LUT ENABLED
-    m_ViewActions[13]->setEnabled(true);
-    m_ViewActions[14]->setEnabled(true);
+    m_ViewActions[11]->setEnabled(true);
+    m_ViewActions[10]->setEnabled(true);
     }
 
   // update channels in navigation DockWidget
@@ -2141,9 +2146,6 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
 {
   if ( iChecked )
     {
-    // Reset the window level
-    m_ImageView->ResetWindowLevel();
-
     vtkSmartPointer< vtkImageAppendComponents > append_filter =
       vtkSmartPointer< vtkImageAppendComponents >::New();
 
@@ -2167,8 +2169,8 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
     Update();
 
     // Update LUT
-    m_ViewActions[13]->setEnabled(false);
-    m_ViewActions[14]->setEnabled(false);
+    m_ViewActions[11]->setEnabled(false);
+    m_ViewActions[10]->setEnabled(false);
     }
   else
     {
@@ -2180,11 +2182,11 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
       }
 
     // Update LUT
-    m_ViewActions[13]->setEnabled(true);
-    m_ViewActions[14]->setEnabled(true);
+    m_ViewActions[11]->setEnabled(true);
+    m_ViewActions[10]->setEnabled(true);
 
     // show the scalarbar automatically if the button is checked
-    bool showScalarBar = m_ViewActions[14]->isChecked();
+    bool showScalarBar = m_ViewActions[11]->isChecked();
     m_ImageView->ShowScalarBar(showScalarBar);
     }
 }
@@ -2198,8 +2200,8 @@ QGoTabImageView3DwT::ShowOneChannel(int iChannel)
   if ( ( iChannel != -1 ) && ( !m_InternalImages.empty() ) )
     {
     // Update lut
-    m_ViewActions[13]->setEnabled(true);
-    m_ViewActions[14]->setEnabled(true);
+    m_ViewActions[11]->setEnabled(true);
+    m_ViewActions[10]->setEnabled(true);
 
     m_Image->ShallowCopy(m_InternalImages[iChannel]);
     Update();
