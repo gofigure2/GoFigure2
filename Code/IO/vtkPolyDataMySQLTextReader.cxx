@@ -119,6 +119,9 @@ vtkPolyData * vtkPolyDataMySQLTextReader::GetContour()
 vtkPolyData * vtkPolyDataMySQLTextReader::GetMesh()
 {
   std::stringstream str(m_Text);
+  str.exceptions( std::stringstream::eofbit |
+                  std::stringstream::failbit |
+                  std::stringstream::badbit );
 
   vtkIdType N;
 
@@ -143,9 +146,18 @@ vtkPolyData * vtkPolyDataMySQLTextReader::GetMesh()
       }
     oMesh->SetPoints(points);
 
+    try
+      {
+      str >> N;
+      }
+    catch( std::stringstream::failure& e )
+      {
+      std::cout << "Exception caught in vtkPolyDataMySQLTextReader::GetMesh" <<std::endl;
+      return oMesh;
+      }
+
     vtkSmartPointer< vtkCellArray > cells =
       vtkSmartPointer< vtkCellArray >::New();
-    str >> N;
 
     vtkSmartPointer< vtkIdList > cell_points =
       vtkSmartPointer< vtkIdList >::New();

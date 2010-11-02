@@ -117,21 +117,29 @@ std::string vtkPolyDataMySQLTextWriter::MeshProcessing()
   vtkSmartPointer< vtkIdList >
   cell_points = vtkSmartPointer< vtkIdList >::New();
 
-  vtkIdType NbOfPointsInCell;
   N = m_PolyData->GetNumberOfCells();
-  oMyString << N << " ";
-
-  for ( vtkIdType i = 0; i < N; i++ )
+  if( N > 0 )
     {
-    m_PolyData->GetCellPoints(i, cell_points);
-    NbOfPointsInCell = cell_points->GetNumberOfIds();
-    oMyString << NbOfPointsInCell << " ";
+    vtkIdType NbOfPointsInCell;
+    oMyString << N << " ";
 
-    for ( vtkIdType k = 0; k < NbOfPointsInCell; k++ )
+    for ( vtkIdType i = 0; i < N; i++ )
       {
-      oMyString << cell_points->GetId(k) << " ";
-      }
-    }
+      m_PolyData->GetCellPoints(i, cell_points);
+      NbOfPointsInCell = cell_points->GetNumberOfIds();
+      oMyString << NbOfPointsInCell << " ";
 
-  return oMyString.str();
+      for ( vtkIdType k = 0; k < NbOfPointsInCell; k++ )
+        {
+        oMyString << cell_points->GetId(k) << " ";
+        }
+      }
+
+    return oMyString.str();
+    }
+  else
+    {
+    std::cout << "CAUTION: the input mesh has no cells (triangles)" <<std::endl;
+    return std::string();
+    }
 }
