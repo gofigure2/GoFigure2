@@ -182,42 +182,27 @@ public:
                                  bool EmitSignal = true);
 
 public slots:
+  
   /** 
-  \brief check the boxes in the check/uncheck column for the rows where at least 
-  one cell is selected
-  \param[in] iTraceName name of the trace
-  \param[in] iTraceNameID name of the traceID
-  */
-  //void CheckSelectedRows(std::string iTraceName,
-                         //std::string iTraceNameID);
-
-  /** 
-  \brief uncheck the boxes in the check/uncheck columnfor the rows where at 
+  \brief uncheck/check the boxes in the check/uncheck column for the rows where at 
   least one cell is selected
   \param[in] iTraceName name of the trace
   \param[in] iTraceNameID name of the traceID
+  \param[in] iState state to which the checkboxes need to be modified
   */
-  //void UncheckSelectedRows(std::string iTraceName,
-                           //std::string iTraceNameID);
-
   void ChangeCheckStateSelectedRows(std::string iTraceName,std::string iTraceNameID,
     Qt::CheckState iState);
 
   /** 
-  \brief check the visible boxes for the rows where at least one cell is
+  \brief check/uncheck the visible boxes for the rows where at least one cell is
   selected 
   \param[in] iTraceName name of the trace
   \param[in] iTraceNameID name of the traceID
+  \param[in] iState state to which the visibility need to be modified
   */
-  void ShowSelectedRows(std::string iTraceName, std::string iTraceNameID);
-
-  /** 
-  \brief uncheck the visible boxes for the rows where at least one cell is
-  selected 
-  \param[in] iTraceName name of the trace
-  \param[in] iTraceNameID name of the traceID
-  */
-  void HideSelectedRows(std::string iTraceName, std::string iTraceNameID);
+  void ChangeVisibilityStateSelectedRows(std::string iTraceName,
+                                                       std::string iTraceNameID,
+                                                       Qt::CheckState iState);
 
   /** 
   \brief convert the text in the selection to a QString with '\n' and '\t'
@@ -238,6 +223,8 @@ signals:
   void VisibleRowsChanged(int iTraceID);
 
   void ModifyHighlightListTraces(QStringList,Qt::CheckState);
+
+  void ModifyVisibilityListTraces(QStringList,Qt::CheckState);
 
 protected:
   int PrevCol;
