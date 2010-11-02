@@ -2802,7 +2802,7 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord)
     // Add new actors in the container
     m_TrackContainer->UpdateCurrentElementActorsFromVisu(trackActors);
     }
-  m_TrackContainer->InsertCurrentElement();
+ // m_TrackContainer->InsertCurrentElement();
 }
 //-------------------------------------------------------------------------
 

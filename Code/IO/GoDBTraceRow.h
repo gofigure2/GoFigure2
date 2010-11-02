@@ -199,5 +199,27 @@ protected:
       }
     return SavedTraceID;
   }
+
+  template< typename T >
+  void SetTheDataFromTheVisuTemplate(vtkMySQLDatabase *DatabaseConnector,
+                                        vtkPolyData *TraceVisu,
+                                        GoDBCoordinateRow iCoordMin,
+                                        GoDBCoordinateRow iCoordMax)
+  {
+    this->SetTheBoundingBox(DatabaseConnector, iCoordMin, iCoordMax);
+
+    vtkSmartPointer< T > convert =
+      vtkSmartPointer< T >::New();
+    std::string PointsString = convert->GetMySQLText(TraceVisu);
+
+    std::cout << "output string: " << PointsString << std::endl;
+
+    this->SetField("Points", PointsString);
+
+    if ( this->DoesThisBoundingBoxExist(DatabaseConnector) )
+      {
+      std::cout << "The bounding box already exists for this mesh" << std::endl;
+      }
+  }
 };
 #endif

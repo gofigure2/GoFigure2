@@ -129,7 +129,7 @@ void GoDBTrackRow::SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector,
                                          GoDBCoordinateRow iCoordMin,
                                          GoDBCoordinateRow iCoordMax)
 {
-  this->SetTheBoundingBox(DatabaseConnector, iCoordMin, iCoordMax);
+ /* this->SetTheBoundingBox(DatabaseConnector, iCoordMin, iCoordMax);
 
   this->SetThePointsFromPolydata(TrackVisu);
 
@@ -137,7 +137,9 @@ void GoDBTrackRow::SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector,
   if ( this->DoesThisBoundingBoxExist(DatabaseConnector) )
     {
     std::cout << "The bounding box already exists for this mesh" << std::endl;
-    }
+    }*/
+  this->SetTheDataFromTheVisuTemplate < vtkPolyDataMySQLTrackWriter > (
+    DatabaseConnector,TrackVisu,iCoordMin,iCoordMax);
 }
 //-------------------------------------------------------------------------
 

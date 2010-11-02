@@ -144,7 +144,7 @@ void GoDBContourRow::SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector,
                                         GoDBCoordinateRow iCoordMin,
                                         GoDBCoordinateRow iCoordMax)
 {
-  this->SetTheBoundingBox(DatabaseConnector, iCoordMin, iCoordMax);
+  /*this->SetTheBoundingBox(DatabaseConnector, iCoordMin, iCoordMax);
 
   vtkSmartPointer< vtkPolyDataMySQLContourWriter > convert =
     vtkSmartPointer< vtkPolyDataMySQLContourWriter >::New();
@@ -157,5 +157,7 @@ void GoDBContourRow::SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector,
   if ( this->DoesThisBoundingBoxExist(DatabaseConnector) )
     {
     std::cout << "The bounding box already exists for this mesh" << std::endl;
-    }
+    }*/
+  this->SetTheDataFromTheVisuTemplate < vtkPolyDataMySQLContourWriter > (
+    DatabaseConnector,TraceVisu,iCoordMin,iCoordMax);
 }
