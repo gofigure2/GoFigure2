@@ -471,10 +471,6 @@ QGoMainWindow::LoadMeshesFromDatabase(const int & iT, const std::string & iTrace
 
         if ( contourmesh_list_it->Nodes )
           {
-<<<<<<< HEAD
-=======
-          //ShowPolyData(contourmesh_list_it->Nodes);
->>>>>>> feature_trackContainer
           GoFigureMeshAttributes attributes =
             w3t->ComputeMeshAttributes(
                 contourmesh_list_it->Nodes, // mesh
