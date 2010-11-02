@@ -32,35 +32,56 @@
 
 =========================================================================*/
 #include <string>
-#include "vtkSmartPointer.h"
+#include "vtkPolyDataReader.h"
 #include "vtkPolyDataWriter.h"
 #include "vtkPolyData.h"
-#include "vtkPolyDataMySQLTrackReader.h"
-#include "vtkPolyDataMySQLTrackWriter.h"
+#include "vtkPolyDataMySQLContourWriter.h"
+#include "vtkPolyDataMySQLContourReader.h"
 
 int main(int argc, char **argv)
 {
-  vtkSmartPointer<vtkPolyDataMySQLTrackReader> track_reader =
-      vtkSmartPointer<vtkPolyDataMySQLTrackReader>::New();
-
-  std::string stringFromDB = "2 1 1 1 1 2 2 2 1 ";
-
-  vtkSmartPointer<vtkPolyData> input = vtkSmartPointer<vtkPolyData>::New();
-  input->ShallowCopy(track_reader->GetPolyData(stringFromDB));
-
-  vtkSmartPointer<vtkPolyDataMySQLTrackWriter> track_writer =
-      vtkSmartPointer<vtkPolyDataMySQLTrackWriter>::New();
-  std::string output = track_writer->GetMySQLText(input);
-
-  std::cout << "before: " << stringFromDB << std::endl;
-  std::cout << "after: " << output << std::endl;
-
-  if(stringFromDB.compare(output) != 0)
+  if ( argc != 2 )
     {
+    std::cout << "Usage:" << std::endl;
+    std::cout << "./vtkPolyDataMySQLContourWriter vtkfile" << std::endl;
     return EXIT_FAILURE;
     }
-  else
+
+  vtkPolyDataReader *vtk_reader = vtkPolyDataReader::New();
+  vtk_reader->SetFileName(argv[1]);
+  vtk_reader->Update();
+
+  vtkPolyData *input = vtk_reader->GetOutput();
+
+  vtkPolyDataMySQLContourWriter *convert_writer =
+      vtkPolyDataMySQLContourWriter::New();
+  std::string polydata_string = convert_writer->GetMySQLText(input);
+
+  vtkPolyDataMySQLContourReader *convert_reader =
+      vtkPolyDataMySQLContourReader::New();
+  vtkPolyData *output = vtkPolyData::New();
+  output->DeepCopy(convert_reader->GetPolyData(polydata_string));
+
+  if ( output->GetNumberOfPoints() != input->GetNumberOfPoints() )
     {
-    return EXIT_SUCCESS;
+    std::cout << "Number of points have changed!!!" << std::endl;
+    std::cout << "output->GetNumberOfPoints() " << output->GetNumberOfPoints()
+              << std::endl;
+    std::cout << "input->GetNumberOfPoints() " << input->GetNumberOfPoints()
+              << std::endl;
+
+    output->Delete();
+    convert_reader->Delete();
+    convert_writer->Delete();
+    vtk_reader->Delete();
+
+    return EXIT_FAILURE;
     }
+
+  output->Delete();
+  convert_reader->Delete();
+  convert_writer->Delete();
+  vtk_reader->Delete();
+
+  return EXIT_SUCCESS;
 }

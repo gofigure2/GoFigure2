@@ -31,57 +31,32 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include <string>
+#include <iostream>
 #include "vtkPolyDataReader.h"
-#include "vtkPolyDataWriter.h"
 #include "vtkPolyData.h"
-#include "vtkPolyDataMySQLTextWriter.h"
-#include "vtkPolyDataMySQLTextReader.h"
+
+#include "vtkPolyDataMySQLMeshWriter.h"
 
 int main(int argc, char **argv)
 {
   if ( argc != 2 )
     {
     std::cout << "Usage:" << std::endl;
-    std::cout << "./vtkPolyDataMySQLTextReader vtkfile" << std::endl;
+    std::cout << "./vtkPolyDataMySQLMeshWriter vtkfile" << std::endl;
     return EXIT_FAILURE;
     }
 
-  vtkPolyDataReader *vtk_reader = vtkPolyDataReader::New();
-  vtk_reader->SetFileName(argv[1]);
-  vtk_reader->Update();
+  vtkPolyDataReader *reader = vtkPolyDataReader::New();
+  reader->SetFileName(argv[1]);
+  reader->Update();
 
-  vtkPolyData *input = vtk_reader->GetOutput();
+  vtkPolyData *contour = reader->GetOutput();
 
-  vtkPolyDataMySQLTextWriter *convert_writer =
-    vtkPolyDataMySQLTextWriter::New();
-  std::string polydata_string = convert_writer->GetMySQLText(input);
+  vtkPolyDataMySQLMeshWriter *convert = vtkPolyDataMySQLMeshWriter::New();
+  std::cout << convert->GetMySQLText(contour) << std::endl;
 
-  vtkPolyDataMySQLTextReader *convert_reader =
-    vtkPolyDataMySQLTextReader::New();
-  convert_reader->SetIsContour( convert_writer->GetIsContour() );
-  vtkPolyData *output = convert_reader->GetPolyData(polydata_string);
-
-  if ( output->GetNumberOfPoints() != input->GetNumberOfPoints() )
-    {
-    std::cout << "Number of points have changed!!!" << std::endl;
-    std::cout << "output->GetNumberOfPoints() " << output->GetNumberOfPoints()
-              << std::endl;
-    std::cout << "input->GetNumberOfPoints() " << input->GetNumberOfPoints()
-              << std::endl;
-
-    output->Delete();
-    convert_reader->Delete();
-    convert_writer->Delete();
-    vtk_reader->Delete();
-
-    return EXIT_FAILURE;
-    }
-
-  output->Delete();
-  convert_reader->Delete();
-  convert_writer->Delete();
-  vtk_reader->Delete();
+  convert->Delete();
+  reader->Delete();
 
   return EXIT_SUCCESS;
 }

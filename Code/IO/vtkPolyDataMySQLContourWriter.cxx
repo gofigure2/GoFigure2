@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-10, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,36 +31,48 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include <string>
+
+#include "vtkPolyDataMySQLContourWriter.h"
+
+#include <sstream>
+
+#include "vtkObjectFactory.h"
+#include "vtkMath.h"
+#include "vtkIdList.h"
 #include "vtkSmartPointer.h"
-#include "vtkPolyDataWriter.h"
-#include "vtkPolyData.h"
-#include "vtkPolyDataMySQLTrackReader.h"
-#include "vtkPolyDataMySQLTrackWriter.h"
 
-int main(int argc, char **argv)
+vtkCxxRevisionMacro(vtkPolyDataMySQLContourWriter, "$Revision$");
+vtkStandardNewMacro(vtkPolyDataMySQLContourWriter);
+
+//--------------------------------------------------------------------------
+vtkPolyDataMySQLContourWriter::
+vtkPolyDataMySQLContourWriter()
+{}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+vtkPolyDataMySQLContourWriter::
+~vtkPolyDataMySQLContourWriter()
+{}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::string
+vtkPolyDataMySQLContourWriter::
+GetMySQLText(vtkPolyData *iPolyData)
 {
-  vtkSmartPointer<vtkPolyDataMySQLTrackReader> track_reader =
-      vtkSmartPointer<vtkPolyDataMySQLTrackReader>::New();
+  vtkIdType N = iPolyData->GetNumberOfPoints();
 
-  std::string stringFromDB = "2 1 1 1 1 2 2 2 1 ";
+  double            pt[3];
+  std::stringstream oMyString;
 
-  vtkSmartPointer<vtkPolyData> input = vtkSmartPointer<vtkPolyData>::New();
-  input->ShallowCopy(track_reader->GetPolyData(stringFromDB));
+  oMyString << N << " ";
 
-  vtkSmartPointer<vtkPolyDataMySQLTrackWriter> track_writer =
-      vtkSmartPointer<vtkPolyDataMySQLTrackWriter>::New();
-  std::string output = track_writer->GetMySQLText(input);
-
-  std::cout << "before: " << stringFromDB << std::endl;
-  std::cout << "after: " << output << std::endl;
-
-  if(stringFromDB.compare(output) != 0)
+  for ( vtkIdType i = 0; i < N; i++ )
     {
-    return EXIT_FAILURE;
+    iPolyData->GetPoint(i, pt);
+    oMyString << pt[0] << " " << pt[1] << " " << pt[2] << " ";
     }
-  else
-    {
-    return EXIT_SUCCESS;
-    }
+  return oMyString.str();
 }
+//--------------------------------------------------------------------------

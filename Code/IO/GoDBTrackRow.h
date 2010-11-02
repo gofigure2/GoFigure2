@@ -62,8 +62,30 @@ public:
   \param[in] Max coordinate row for the maximum of the bounding box
   \param[in] ImgSessionID ID of the current imagingsession
   */
-  GoDBTrackRow(vtkMySQLDatabase *DatabaseConnector, GoDBCoordinateRow Min,
-               GoDBCoordinateRow Max, unsigned int ImgSessionID, std::string TraceVisu);
+  GoDBTrackRow(vtkMySQLDatabase *DatabaseConnector, vtkPolyData *TraceVisu,
+    GoDBCoordinateRow Min,GoDBCoordinateRow Max, unsigned int ImgSessionID);
+
+  GoDBTrackRow(vtkMySQLDatabase *DatabaseConnector,GoDBCoordinateRow Min,
+    GoDBCoordinateRow Max, unsigned int ImgSessionID,std::string iPoints);
+
+  /**
+  \param[in] ImagingSessionID current imagingsession the track belongs to
+  */
+  GoDBTrackRow(unsigned int ImagingSessionID);
+
+  //mother class method
+  void SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector,
+                                         vtkPolyData *TrackVisu,
+                                         GoDBCoordinateRow iCoordMin,
+                                         GoDBCoordinateRow iCoordMax);
+
+  /**
+  \brief convert the iTrackVisu into a string and
+  set the field 'points' of the map 
+  \param[in] iTrackVisu vtkPolyData the points will be extracted from to create 
+  a string for "Points"
+  */
+  void SetThePointsFromPolydata(vtkPolyData * iTrackVisu);
 
   /**
   \brief 
@@ -78,5 +100,6 @@ public:
 protected:
   //mother class method
   virtual void InitializeMap();
+
 };
 #endif

@@ -100,6 +100,8 @@
 
 // TESTS
 #include "vtkPolyDataWriter.h"
+#include "vtkViewImage3D.h"
+
 //-------------------------------------------------------------------------
 QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent):
   QGoTabElementBase(iParent),
@@ -143,7 +145,8 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent):
   m_MeshContainer = new ContourMeshContainer(this, this->m_ImageView);
   m_MeshContainer->SetHighlightedProperty(m_HighlightedMeshesProperty);
 
-  m_TrackContainer = new ContourMeshContainer(this, this->m_ImageView);
+  m_TrackContainer = new TrackContainer(this, this->m_ImageView);
+  m_TrackContainer->SetHighlightedProperty(m_HighlightedMeshesProperty);
 
   CreateVisuDockWidget();
 
@@ -246,6 +249,10 @@ QGoTabImageView3DwT::
   if ( m_MeshContainer )
     {
     delete m_MeshContainer;
+    }
+  if ( m_TrackContainer )
+    {
+    delete m_TrackContainer;
     }
 }
 
@@ -1913,6 +1920,7 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
 
   this->m_ContourContainer->ShowActorsWithGivenTimePoint(m_TCoord);
   this->m_MeshContainer->ShowActorsWithGivenTimePoint(m_TCoord);
+  this->m_TrackContainer->ShowActorsWithGivenTimePoint(m_TCoord);
 
   Update();
 
@@ -2330,7 +2338,40 @@ QGoTabImageView3DwT::VisualizeMesh(vtkPolyData *iMesh)
 
   return oActors;
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+std::vector< vtkActor * >
+QGoTabImageView3DwT::
+VisualizeTrack(vtkPolyData *iMesh)
+{
+  double *RGBA = this->m_TrackContainer->m_CurrentElement.rgba;
+  std::vector< vtkActor * > mesh_actor;
+
+  if ( iMesh )
+    {
+    bool visibility = true;
+
+    vtkProperty *mesh_property = vtkProperty::New();
+    mesh_property->SetColor(RGBA[0], RGBA[1], RGBA[2]);
+    mesh_property->SetOpacity(RGBA[3]);
+
+    /// \todo fix bug, shouldn't be required
+
+    mesh_actor.resize(4);
+    mesh_actor = this->AddContour(iMesh, mesh_property);
+
+    mesh_property->Delete();
+
+    /*m_TrackContainer->UpdateVisualizationForGivenElement< TIndex >(iIt,
+                                                                  mesh_actor,
+                                                                  false,
+                                                                  visibility);
+    */
+    }
+
+  return mesh_actor;
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -2743,8 +2784,32 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord)
                                                 false,  // highlighted
                                                 true);  // visible
   m_MeshContainer->InsertCurrentElement();
-}
 
+  // UPDATE THE TRACKS IN THE CONTAINER
+
+  // get the center of the mesh
+  // pointer to double is deleted in AddPointToCurrentElement
+  double * point = new double[4];
+  std::vector< int > boundingBox = GetBoundingBox(iView);
+  for(int i = 0; i<3; ++i)
+    {
+    point[i] = (boundingBox[2*i] + boundingBox[2*i+1])/2;
+    }
+  point[3] = iTCoord;
+
+  // Clean the actors (remove from visu + delete)
+  // Update the track polydata with the new center
+  m_TrackContainer->AddPointToCurrentElement( point );
+  vtkPolyData* track = m_TrackContainer->GetCurrentElementNodes();
+  // Create new actors and visu it if there is more than one point
+  if(track->GetNumberOfPoints() > 1)
+    {
+    std::vector< vtkActor * > trackActors =  VisualizeTrack(track);
+    // Add new actors in the container
+    m_TrackContainer->UpdateCurrentElementActorsFromVisu(trackActors);
+    }
+ // m_TrackContainer->InsertCurrentElement();
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -2874,7 +2939,7 @@ QGoTabImageView3DwT::ComputeMeshAttributes( vtkPolyData *iMesh,
 
   GoFigureMeshAttributes oAttributes;
 
-  if( !iIntensity )
+  if( iIntensity )
     {
     for ( size_t i = 0; i < m_InternalImages.size(); i++ )
       {
@@ -2896,6 +2961,7 @@ QGoTabImageView3DwT::ComputeMeshAttributes( vtkPolyData *iMesh,
         static_cast< int >( calculator->GetSumIntensity() );
       oAttributes.m_MeanIntensityMap[channelname] = calculator->GetMeanIntensity();
       oAttributes.m_Volume = calculator->GetPhysicalSize();
+      std::cout << "volume: " << oAttributes.m_Volume << std::endl;
       oAttributes.m_Area = calculator->GetArea();
       oAttributes.m_Size = calculator->GetSize();
       }

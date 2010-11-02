@@ -34,7 +34,10 @@
 #include "GoDBTrackRow.h"
 #include "SelectQueryDatabaseHelper.h"
 #include "GoDBRecordSetHelper.h"
+#include "vtkPolyDataMySQLTrackWriter.h"
 #include <iostream>
+
+#include "vtkSmartPointer.h"
 
 GoDBTrackRow::GoDBTrackRow():GoDBTraceRow()
 {
@@ -45,12 +48,15 @@ GoDBTrackRow::GoDBTrackRow():GoDBTraceRow()
 
 //-------------------------------------------------------------------------
 GoDBTrackRow::GoDBTrackRow(vtkMySQLDatabase *DatabaseConnector,
-                           GoDBCoordinateRow Min, GoDBCoordinateRow Max, unsigned int ImgSessionID,
-                           std::string TraceVisu):
-  GoDBTraceRow(DatabaseConnector, TraceVisu, Min, Max, ImgSessionID)
+                           GoDBCoordinateRow Min, GoDBCoordinateRow Max, 
+                           unsigned int ImgSessionID,
+                           std::string TraceVisu):GoDBTraceRow()
+  //GoDBTraceRow(DatabaseConnector, TraceVisu, Min, Max, ImgSessionID)
 {
-  //GoDBTraceRow::GoDBTraceRow(DatabaseConnector,TraceVisu,Min,Max,
-  //ImgSessionID);
+  this->InitializeMap();
+  this->SetImgSessionID(ImgSessionID);
+  this->SetTheBoundingBox(DatabaseConnector,Min,Max);
+  this->SetField("Points", TraceVisu);
 
   cout << "Track ID found: " << this->DoesThisBoundingBoxTrackExist(DatabaseConnector) << endl;
 
@@ -60,6 +66,27 @@ GoDBTrackRow::GoDBTrackRow(vtkMySQLDatabase *DatabaseConnector,
     }
 }
 
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+  GoDBTrackRow::GoDBTrackRow(unsigned int ImagingSessionID):
+  GoDBTraceRow()
+{
+  this->InitializeMap();
+  this->SetImgSessionID(ImagingSessionID);
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+  GoDBTrackRow::GoDBTrackRow(vtkMySQLDatabase *DatabaseConnector, 
+    vtkPolyData *TraceVisu,GoDBCoordinateRow Min,GoDBCoordinateRow Max, 
+    unsigned int ImgSessionID):GoDBTraceRow()
+{
+  this->InitializeMap();
+  this->SetImgSessionID(ImgSessionID);
+  this->SetTheDataFromTheVisu(DatabaseConnector,TraceVisu,Min,Max);
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -92,5 +119,37 @@ int GoDBTrackRow::DoesThisBoundingBoxTrackExist(
 //-------------------------------------------------------------------------
 int GoDBTrackRow::SaveInDB(vtkMySQLDatabase *DatabaseConnector)
 {
-  return this->SaveInDBTemplate< GoDBTrackRow >(DatabaseConnector, *this);
+  return this->SaveInDBTemplate< GoDBTrackRow >(DatabaseConnector, this);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void GoDBTrackRow::SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector,
+                                         vtkPolyData *TrackVisu,
+                                         GoDBCoordinateRow iCoordMin,
+                                         GoDBCoordinateRow iCoordMax)
+{
+ /* this->SetTheBoundingBox(DatabaseConnector, iCoordMin, iCoordMax);
+
+  this->SetThePointsFromPolydata(TrackVisu);
+
+
+  if ( this->DoesThisBoundingBoxExist(DatabaseConnector) )
+    {
+    std::cout << "The bounding box already exists for this mesh" << std::endl;
+    }*/
+  this->SetTheDataFromTheVisuTemplate < vtkPolyDataMySQLTrackWriter > (
+    DatabaseConnector,TrackVisu,iCoordMin,iCoordMax);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void GoDBTrackRow::SetThePointsFromPolydata(vtkPolyData * iTrackVisu)
+{
+  vtkSmartPointer< vtkPolyDataMySQLTrackWriter > convert =
+    vtkSmartPointer< vtkPolyDataMySQLTrackWriter >::New();
+  //vtkPolyDataMySQLTextWriter *convert = vtkPolyDataMySQLTextWriter::New();
+  std::string PointsString = convert->GetMySQLText(iTrackVisu);
+  //convert->Delete();
+  this->SetField("Points", PointsString);
 }
