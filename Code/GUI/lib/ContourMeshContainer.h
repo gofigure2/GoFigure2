@@ -405,6 +405,8 @@ public:
     \return true if the element was present in the container.
   */
   bool UpdateElementHighlightingWithGivenTraceID(const unsigned int & iId);
+  void UpdateElementHighlightingWithGivenTraceIDs( const QStringList& iList,
+                                                   const Qt::CheckState& iCheck );
 
   /**
   \brief Returns the direction of a given contour vtkPolyData.

@@ -323,6 +323,72 @@ ContourMeshContainer::UpdateElementHighlightingWithGivenTraceID(const unsigned i
 }
 
 //-------------------------------------------------------------------------
+void
+ContourMeshContainer::
+UpdateElementHighlightingWithGivenTraceIDs( const QStringList& iList,
+                                            const Qt::CheckState& iCheck )
+{
+  if( !iList.empty() )
+    {
+    MultiIndexContainerTraceIDIterator it;
+
+    vtkProperty *temp_property = NULL;
+
+    QStringList::const_iterator constIterator = iList.begin();
+
+    while( constIterator != iList.end() )
+      {
+      it = m_Container.get< TraceID >().find((*constIterator).toUInt());
+
+      if ( it != m_Container.get< TraceID >().end() )
+        {
+        if ( !iCheck )
+          {
+          temp_property = vtkProperty::New();
+          temp_property->SetColor(it->rgba[0],
+                                  it->rgba[1],
+                                  it->rgba[2]);
+          temp_property->SetOpacity(it->rgba[3]);
+          }
+        else
+          {
+          temp_property = this->m_HighlightedProperty;
+          }
+
+        if ( it->ActorXY )
+          {
+          it->ActorXY->SetProperty(temp_property);
+          }
+        if ( it->ActorXZ )
+          {
+          it->ActorXZ->SetProperty(temp_property);
+          }
+        if ( it->ActorYZ )
+          {
+          it->ActorYZ->SetProperty(temp_property);
+          }
+        if ( it->ActorXYZ )
+          {
+          it->ActorXYZ->SetProperty(temp_property);
+          }
+
+        if ( !iCheck )
+          {
+          temp_property->Delete();
+          }
+
+        ContourMeshStructure tempStructure(*it);
+        tempStructure.Highlighted = iCheck;
+
+        m_Container.get< TraceID >().replace(it, tempStructure);
+        }
+
+      ++constIterator;
+      }
+
+    m_ImageView->UpdateRenderWindows();
+    }
+}
 
 //-------------------------------------------------------------------------
 bool
