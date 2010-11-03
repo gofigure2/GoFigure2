@@ -118,5 +118,8 @@ protected slots:
   \param[in] iDatabaseConnector connection to the database
   */
   void SaveTrackCurrentElement();
+
+  //virtual pure method in QGoDBTraceManager
+  void SetColorCoding();
 };
 #endif

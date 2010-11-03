@@ -641,6 +641,23 @@ protected:
     this->m_Table->DeleteCheckedRows(this->m_TraceNameID, ListTracesIDs);
   }
 
+  /**
+  \brief get a map with the tracesIDs as keys and the values of the 
+  selected columns as values for all traces in the table widget and 
+  update the color of the traces in the visu
+  \param[in] iContainerForVisu common container for the visu and database
+  \tparam ContourMeshContainer or TrackContainer
+  */
+  template<typename T>
+  void SetColorCodingTemplate( T* iContainerForVisu)
+  {
+    std::string ColumnName;
+    std::map<unsigned int, double> Values = 
+      this->m_Table->GetTraceIDAndColumnsValues(this->m_TraceNameID,
+      ColumnName);
+    iContainerForVisu->SetColorCode<double>( ColumnName,Values );
+  }
+
   virtual void AddActionsContextMenu(QMenu *iMenu);
 
   void AddGeneralActionsContextMenu(QMenu *iMenu);
@@ -716,12 +733,12 @@ protected slots:
   */
   virtual void UpdateVisibleElementsInVisuContainer(int iTraceID) = 0;
 
-/*
-  void UpdateVisibleElementsInVisuContainer(int iTraceID);
-
-  /**
-  \brief ColorCode the traces base on a selected column in the table widget
   
-  void ColorCoding();*/
+  /**
+  \brief ColorCode the traces in the visualization base on a selected column 
+  in the table widget
+  */
+  virtual void SetColorCoding()= 0;
+
 };
 #endif

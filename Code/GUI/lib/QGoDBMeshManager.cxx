@@ -369,3 +369,11 @@ void QGoDBMeshManager::GetTracesInfoFromDBAndModifyContainerForVisu(
     ++it;
     }
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBMeshManager::SetColorCoding()
+{
+  this->SetColorCodingTemplate<ContourMeshContainer>(
+    this->m_MeshContainerInfoForVisu);
+}

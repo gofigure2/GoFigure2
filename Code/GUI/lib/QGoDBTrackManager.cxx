@@ -253,3 +253,11 @@ void QGoDBTrackManager::SaveTrackCurrentElement()
   emit DBConnectionNotNeededAnymore();
 
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTrackManager::SetColorCoding()
+{
+  this->SetColorCodingTemplate<TrackContainer>(
+    this->m_TrackContainerInfoForVisu);
+}

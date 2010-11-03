@@ -331,3 +331,11 @@ void QGoDBContourManager::GetTracesInfoFromDBAndModifyContainerForVisu(
     ++it;
     }
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBContourManager::SetColorCoding()
+{
+  this->SetColorCodingTemplate<ContourMeshContainer>(
+    this->m_ContourContainerInfoForVisu);
+}
