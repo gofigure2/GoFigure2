@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-10, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,36 +31,54 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
+
+#ifndef __vtkPolyDataMySQLMeshWriter_h
+#define __vtkPolyDataMySQLMeshWriter_h
+
 #include <string>
-#include "vtkSmartPointer.h"
-#include "vtkPolyDataWriter.h"
+#include <sstream>
+
 #include "vtkPolyData.h"
-#include "vtkPolyDataMySQLTrackReader.h"
-#include "vtkPolyDataMySQLTrackWriter.h"
+#include "vtkMath.h"
+#include "vtkIdList.h"
 
-int main(int argc, char **argv)
+#include "QGoIOConfigure.h"
+
+/**
+\defgroup MySQLWriter MySQLWriter
+\defgroup Mesh Mesh
+\defgroup Trace Trace
+*/
+
+/**
+\class vtkPolyDataMySQLMeshWriter
+\brief Reads a string and convert it into a mesh polydata
+\ingroup MySQLWriter Mesh Trace
+*/
+
+class QGOIO_EXPORT vtkPolyDataMySQLMeshWriter:public vtkObject
 {
-  vtkSmartPointer<vtkPolyDataMySQLTrackReader> track_reader =
-      vtkSmartPointer<vtkPolyDataMySQLTrackReader>::New();
+public:
+  /*
+   * \brief Public constructor
+   */
+  static vtkPolyDataMySQLMeshWriter * New();
 
-  std::string stringFromDB = "2 1 1 1 1 2 2 2 1 ";
+  vtkTypeRevisionMacro(vtkPolyDataMySQLMeshWriter, vtkObject);
 
-  vtkSmartPointer<vtkPolyData> input = vtkSmartPointer<vtkPolyData>::New();
-  input->ShallowCopy(track_reader->GetPolyData(stringFromDB));
+  /*
+   * \brief Generate a string from a mesh plolydata
+   * \param[in] iPolyData Polydata to generate the string
+   * \return string containing the mesh polydata information
+   */
+  std::string GetMySQLText(vtkPolyData *iPolyData);
 
-  vtkSmartPointer<vtkPolyDataMySQLTrackWriter> track_writer =
-      vtkSmartPointer<vtkPolyDataMySQLTrackWriter>::New();
-  std::string output = track_writer->GetMySQLText(input);
+protected:
+  vtkPolyDataMySQLMeshWriter();
+  ~vtkPolyDataMySQLMeshWriter();
 
-  std::cout << "before: " << stringFromDB << std::endl;
-  std::cout << "after: " << output << std::endl;
-
-  if(stringFromDB.compare(output) != 0)
-    {
-    return EXIT_FAILURE;
-    }
-  else
-    {
-    return EXIT_SUCCESS;
-    }
-}
+private:
+  vtkPolyDataMySQLMeshWriter(const vtkPolyDataMySQLMeshWriter &);
+  void operator=(const vtkPolyDataMySQLMeshWriter &);
+};
+#endif

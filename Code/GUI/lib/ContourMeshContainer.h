@@ -32,8 +32,8 @@
 
 =========================================================================*/
 
-#ifndef CONTOURMESHCONTAINER_H
-#define CONTOURMESHCONTAINER_H
+#ifndef __ContourMeshContainer_h
+#define __ContourMeshContainer_h
 
 #include <QObject>
 

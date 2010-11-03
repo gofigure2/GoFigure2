@@ -32,106 +32,47 @@
 
 =========================================================================*/
 
-#include "vtkPolyDataMySQLTextReader.h"
+#include "vtkPolyDataMySQLMeshReader.h"
 
 #include "vtkObjectFactory.h"
 #include "vtkCellArray.h"
 #include "vtkPolyData.h"
-#include "vtkSmartPointer.h"
 
 #include <sstream>
 
-vtkCxxRevisionMacro(vtkPolyDataMySQLTextReader, "$Revision$");
-vtkStandardNewMacro(vtkPolyDataMySQLTextReader);
+vtkCxxRevisionMacro(vtkPolyDataMySQLMeshReader, "$Revision$");
+vtkStandardNewMacro(vtkPolyDataMySQLMeshReader);
 
-vtkPolyDataMySQLTextReader::vtkPolyDataMySQLTextReader():
-  m_Text(""), IsContour(true)
+//--------------------------------------------------------------------------
+vtkPolyDataMySQLMeshReader::
+vtkPolyDataMySQLMeshReader()
 {}
+//--------------------------------------------------------------------------
 
-vtkPolyDataMySQLTextReader::~vtkPolyDataMySQLTextReader()
+//--------------------------------------------------------------------------
+vtkPolyDataMySQLMeshReader::
+~vtkPolyDataMySQLMeshReader()
 {}
+//--------------------------------------------------------------------------
 
-void vtkPolyDataMySQLTextReader::SetIsContour(const bool & iContour)
+//--------------------------------------------------------------------------
+vtkSmartPointer<vtkPolyData>
+vtkPolyDataMySQLMeshReader::
+GetPolyData(const std::string & iString)
 {
-  IsContour = iContour;
-}
-
-vtkPolyData * vtkPolyDataMySQLTextReader::GetPolyData(const std::string & iString)
-{
-  m_Text = iString;
-  if ( IsContour )
-    {
-    return GetContour();
-    }
-  else
-    {
-    return GetMesh();
-    }
-}
-
-vtkPolyData * vtkPolyDataMySQLTextReader::GetContour()
-{
-  vtkPolyData *oContour = vtkPolyData::New();
-
-  vtkSmartPointer< vtkPoints > points =
-    vtkSmartPointer< vtkPoints >::New();
-
-  std::stringstream str(m_Text);
-
-  vtkIdType N;
-  // NOTE ALEX:
-  // As expected the problem is here in the Reader ....
-  // the following line takes the first char of the string off
-  // str >> quote >> N;
-  // in the case I m dealing with, there is no characters to skip
-  // Thus resulting dropping the frist 1 of 111 to make it eleven.
-  // great ...
-  str >> N;
-  points->SetNumberOfPoints(N);
-
-  double pt[3];
-
-  for ( vtkIdType i = 0; i < N; i++ )
-    {
-    str >> pt[0] >> pt[1] >> pt[2];
-    points->SetPoint(i, pt);
-    }
-  oContour->SetPoints(points);
-
-  vtkSmartPointer< vtkCellArray > cells =
-    vtkSmartPointer< vtkCellArray >::New();
-  vtkIdType *ids = new vtkIdType[N + 1];
-
-  for ( vtkIdType i = 0; i < N; i++ )
-    {
-    ids[i] = i;
-    }
-
-  ids[N] = 0;
-  cells->InsertNextCell(N + 1, ids);
-  oContour->SetLines(cells);
-
-  delete[] ids;
-
-  return oContour;
-}
-
-vtkPolyData * vtkPolyDataMySQLTextReader::GetMesh()
-{
-  std::stringstream str(m_Text);
-  str.exceptions( std::stringstream::eofbit |
-                  std::stringstream::failbit |
-                  std::stringstream::badbit );
+  std::stringstream str(iString);
 
   vtkIdType N;
 
   str >> N;
 
   // if N == 0, the mesh is a collection of contours
-  vtkPolyData *oMesh = NULL;
+
   if ( N != 0 )
     {
-    oMesh = vtkPolyData::New();
+    vtkSmartPointer<vtkPolyData> oMesh;
+
+    oMesh = vtkSmartPointer<vtkPolyData>::New();
     vtkSmartPointer< vtkPoints > points =
       vtkSmartPointer< vtkPoints >::New();
 
@@ -146,18 +87,9 @@ vtkPolyData * vtkPolyDataMySQLTextReader::GetMesh()
       }
     oMesh->SetPoints(points);
 
-    try
-      {
-      str >> N;
-      }
-    catch( std::stringstream::failure& e )
-      {
-      std::cout << "Exception caught in vtkPolyDataMySQLTextReader::GetMesh" <<std::endl;
-      return oMesh;
-      }
-
     vtkSmartPointer< vtkCellArray > cells =
       vtkSmartPointer< vtkCellArray >::New();
+    str >> N;
 
     vtkSmartPointer< vtkIdList > cell_points =
       vtkSmartPointer< vtkIdList >::New();
@@ -176,7 +108,10 @@ vtkPolyData * vtkPolyDataMySQLTextReader::GetMesh()
       cells->InsertNextCell(cell_points);
       }
     oMesh->SetPolys(cells);
+
+    return oMesh;
     }
 
-  return oMesh;
+  return NULL;
 }
+//--------------------------------------------------------------------------
