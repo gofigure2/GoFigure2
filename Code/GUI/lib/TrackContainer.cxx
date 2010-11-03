@@ -455,9 +455,9 @@ DeleteElement(const unsigned int & iId)
 //-------------------------------------------------------------------------
  bool TrackContainer::DeleteElement(MultiIndexContainerTraceIDIterator iIter)
  {
-   /*
+
     if ( iIter != m_Container.get< TraceID >().end() )
-    {
+    {/*
     if ( iIter->ActorXY )
       {
       this->m_ImageView->RemoveActor(0, iIter->ActorXY);
@@ -654,10 +654,9 @@ GetHighlightedProperty()
 //-------------------------------------------------------------------------
 void
 TrackContainer::
-AddPointToCurrentElement(double* iPoint)
+AddPointToCurrentElement(double* iPoint, double iTime)
 {
   // check time point too
-
 
   if(!this->m_CurrentElement.Nodes)
     {
@@ -670,7 +669,7 @@ AddPointToCurrentElement(double* iPoint)
     newArray->SetNumberOfComponents(1);
     newArray->SetName("TemporalInformation");
 
-    newArray->InsertValue( 0, iPoint[3] );
+    newArray->InsertValue( 0, iTime );
     newPoints->InsertPoint( 0, iPoint );
 
     //add the points to the dataset
@@ -679,15 +678,11 @@ AddPointToCurrentElement(double* iPoint)
     //add the temporal information
     this->m_CurrentElement.Nodes->GetFieldData()->AddArray(newArray);
 
-    ShowPolyData(this->m_CurrentElement.Nodes);
-
-    delete iPoint;
-
     emit CurrentTrackToSave();
 
     return;
     }
-  else
+  /*else
     {
     if(this->m_CurrentElement.ActorXY)
       {
@@ -702,12 +697,13 @@ AddPointToCurrentElement(double* iPoint)
       this->m_CurrentElement.ActorXYZ->Delete();
       }
     }
+*/
 
   vtkIdType N = this->m_CurrentElement.Nodes->GetNumberOfPoints();
   vtkSmartPointer<vtkPoints> points = this->m_CurrentElement.Nodes->GetPoints();
 
-  std::map<int, double*> orderedPoints;
-  double* pt = NULL;
+  std::map<int, double[3]> orderedPoints;
+  /*double* pt = NULL;
   int    time = 0;
 
   vtkSmartPointer<vtkIntArray> temporalArray =
@@ -779,7 +775,7 @@ AddPointToCurrentElement(double* iPoint)
 
   ShowPolyData(this->m_CurrentElement.Nodes);
 
-  emit CurrentTrackToSave();
+  emit CurrentTrackToSave();*/
 }
 //-------------------------------------------------------------------------
 

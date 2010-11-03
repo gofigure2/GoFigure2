@@ -34,11 +34,14 @@
 #ifndef __GoDBTraceRow_h
 #define __GoDBTraceRow_h
 
-#include "vtkMySQLDatabase.h"
+
 #include "GoDBCoordinateRow.h"
-#include "vtkPolyData.h"
 #include "GoDBRecordSetHelper.h"
 #include "GoDBRecordSet.h"
+
+#include "vtkSmartPointer.h"
+#include "vtkPolyData.h"
+#include "vtkMySQLDatabase.h"
 
 /**
 \class GoDBTraceRow
