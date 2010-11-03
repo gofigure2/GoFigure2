@@ -413,9 +413,7 @@ protected:
 
   void SaveContour(vtkPolyData *contour, vtkPolyData *contour_nodes);
 
-  std::vector< vtkActor * > VisualizeContour(vtkPolyData *iContour);
-  std::vector< vtkActor * > VisualizeMesh(vtkPolyData *iMesh);
-  std::vector< vtkActor * > VisualizeTrack(vtkPolyData *iTrack);
+  std::vector< vtkActor * > VisualizeTrace(vtkPolyData *iTrace, double* iRGBA);
 
   //int VisualizeContour(const int& iContourID,
   //    const unsigned int& iTCoord, vtkPolyData* contour,

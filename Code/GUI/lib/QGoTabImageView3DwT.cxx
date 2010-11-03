@@ -2220,13 +2220,6 @@ QGoTabImageView3DwT::SaveContour(vtkPolyData *contour, vtkPolyData *contour_node
                                                      bounds[5],
                                                      contour_nodes);
     }
-  //else
-  //  {
-  //  std::cerr << "(contour->GetNumberOfPoints() < 2) or  (m_TCoord < 0)" <<
-  // std::endl;
-  //  }
-  //useful ??
-  //return ContourData;
 }
 
 //-------------------------------------------------------------------------
@@ -2274,94 +2267,31 @@ QGoTabImageView3DwT::GetBoundingBox(vtkPolyData *iElement)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::vector< vtkActor * > QGoTabImageView3DwT::VisualizeContour(vtkPolyData *contour)
-{
-  std::vector< vtkActor * > oActors;
-
-  if ( contour->GetNumberOfPoints() > 2 )
-    {
-    double *RGBA = this->m_ContourContainer->m_CurrentElement.rgba;
-
-    vtkProperty *contour_property = vtkProperty::New();
-    contour_property->SetColor(RGBA[0], RGBA[1], RGBA[2]);
-    contour_property->SetOpacity(RGBA[3]);
-
-    vtkPolyData *contour_copy = vtkPolyData::New();
-    contour_copy->DeepCopy(contour);
-
-    oActors =
-      this->AddContour(contour_copy, contour_property);
-
-    contour_copy->Delete();
-    contour_property->Delete();
-    }
-
-  m_ImageView->UpdateRenderWindows();
-
-  return oActors;
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-std::vector< vtkActor * >
-QGoTabImageView3DwT::VisualizeMesh(vtkPolyData *iMesh)
-{
-  std::vector< vtkActor * > oActors;
-
-  double *RGBA = this->m_MeshContainer->m_CurrentElement.rgba;
-
-  vtkProperty *mesh_property = vtkProperty::New();
-  mesh_property->SetColor(RGBA[0], RGBA[1], RGBA[2]);
-  mesh_property->SetOpacity(RGBA[3]);
-
-  /// \todo shallow copy...?
-  // get corresponding actor from visualization
-  vtkPolyData *mesh_copy = vtkPolyData::New();
-  mesh_copy->DeepCopy(iMesh);
-
-  oActors = this->AddContour(mesh_copy, mesh_property);
-
-  mesh_copy->Delete();
-  mesh_property->Delete();
-
-  m_ImageView->UpdateRenderWindows();
-
-  return oActors;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 std::vector< vtkActor * >
 QGoTabImageView3DwT::
-VisualizeTrack(vtkPolyData *iMesh)
+VisualizeTrace(vtkPolyData * iTrace, double* iRGBA)
 {
-  double *RGBA = this->m_TrackContainer->m_CurrentElement.rgba;
-  std::vector< vtkActor * > mesh_actor;
+  std::vector< vtkActor * > oActors;
 
-  if ( iMesh )
+  if ( iTrace->GetNumberOfPoints() > 2 )
     {
-    bool visibility = true;
+    vtkProperty * trace_property = vtkProperty::New();
+    trace_property->SetColor(iRGBA[0], iRGBA[1], iRGBA[2]);
+    trace_property->SetOpacity(iRGBA[3]);
 
-    vtkProperty *mesh_property = vtkProperty::New();
-    mesh_property->SetColor(RGBA[0], RGBA[1], RGBA[2]);
-    mesh_property->SetOpacity(RGBA[3]);
+    vtkPolyData * trace_copy = vtkPolyData::New();
+    trace_copy->DeepCopy(iTrace);
 
-    /// \todo fix bug, shouldn't be required
+    oActors =
+      this->AddContour(trace_copy, trace_property);
 
-    mesh_actor.resize(4);
-    mesh_actor = this->AddContour(iMesh, mesh_property);
-
-    mesh_property->Delete();
-
-    /*m_TrackContainer->UpdateVisualizationForGivenElement< TIndex >(iIt,
-                                                                  mesh_actor,
-                                                                  false,
-                                                                  visibility);
-    */
+    trace_copy->Delete();
+    trace_property->Delete();
     }
 
-  return mesh_actor;
+  m_ImageView->UpdateRenderWindows();
+
+  return oActors;
 }
 //-------------------------------------------------------------------------
 
@@ -2386,7 +2316,9 @@ QGoTabImageView3DwT::ValidateContour()
       SaveContour(contour, nodes);
 
       // polydata
-      std::vector< vtkActor * > actors = VisualizeContour(contour);
+      std::vector< vtkActor * > actors =
+          VisualizeTrace(contour,
+                           this->m_ContourContainer->m_CurrentElement.rgba);
       contour->Delete();
 
       //nodes
@@ -2677,7 +2609,9 @@ QGoTabImageView3DwT::SaveAndVisuContour(vtkPolyData *iView)
   SaveContour(iView, contour_nodes);
 
   // should be polydata
-  std::vector< vtkActor * > actors = VisualizeContour(iView);
+  std::vector< vtkActor * > actors =
+      VisualizeTrace(iView,
+                       this->m_ContourContainer->m_CurrentElement.rgba);
   iView->Delete();
 
   // should be nodes
@@ -2766,7 +2700,9 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord)
 
   SaveMesh(iView);
 
-  std::vector< vtkActor * > actors =  VisualizeMesh(iView);
+  std::vector< vtkActor * > actors =
+      VisualizeTrace(iView,
+                    this->m_MeshContainer->m_CurrentElement.rgba);
 
   // update container since a new mesh is created
   m_MeshContainer->UpdateCurrentElementFromVisu(actors,
@@ -2799,7 +2735,9 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord)
   // Create new actors and visu it if there is more than one point
   if(track->GetNumberOfPoints() > 1)
     {
-    std::vector< vtkActor * > trackActors =  VisualizeTrack(track);
+    std::vector< vtkActor * > trackActors =
+        VisualizeTrace(track,
+            this->m_TrackContainer->m_CurrentElement.rgba);
     // Add new actors in the container
     m_TrackContainer->UpdateCurrentElementActorsFromVisu(trackActors);
     }
@@ -2836,7 +2774,9 @@ QGoTabImageView3DwT::AddContourForMeshToContours(vtkPolyData *iInput)
     //);
 
     // AND VISU!!!
-    std::vector< vtkActor * > actors = VisualizeContour(iInput);
+    std::vector< vtkActor * > actors =
+        VisualizeTrace(iInput,
+                         this->m_ContourContainer->m_CurrentElement.rgba);
     iInput->Delete();
 
     // update the container

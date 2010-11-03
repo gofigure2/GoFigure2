@@ -101,7 +101,6 @@ GetPolyData(const std::string & iString)
       }
     orderedPoints.clear();
 
-
     // Create a line from points
     vtkSmartPointer<vtkPolyLine> polyLine =
         vtkSmartPointer<vtkPolyLine>::New();
