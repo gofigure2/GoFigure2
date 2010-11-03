@@ -159,5 +159,44 @@ TrackStructure(const TrackStructure & iE):
 TrackStructure::
 ~TrackStructure()
 {}
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
+bool
+TrackStructure::
+InsertElement(int iTime, double* iPoint)
+{
+  // check if there is something at the iTime time point
+  std::map<int,double*>::iterator pointsMap = this->PointsMap.find(iTime);;
+
+  // if there is no point, insert it
+  if ( pointsMap == this->PointsMap.end() )
+    {
+    this->PointsMap.insert( std::pair<int,double*>(iTime, iPoint) );
+    return true;
+    }
+  // else do nothing
+  else
+    {
+    return false;
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+bool
+TrackStructure::
+DeleteElement(int iTime, double* iPoint)
+{
+
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+bool
+TrackStructure::
+ReplaceElement(int iTime, double* iPoint)
+{
+
+}
 //--------------------------------------------------------------------------

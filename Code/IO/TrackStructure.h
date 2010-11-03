@@ -137,6 +137,29 @@ struct QGOIO_EXPORT TrackStructure {
   /** Destructor */
   ~TrackStructure();
 
+  /**
+   * \brief Insert a point at the current time point.
+   * \return true is element has been inserted, false if not (i.e. there
+   * is already a point associated to this time point). If you want to override
+   * this point, call ReplaceElement(int iTime, double* iPoint) instead.
+   */
+  bool InsertElement(int iTime, double* iPoint);
+
+  /**
+   * \brief Delete the point at the current time point.
+   * \return true is element has been deleted, false if there where no point at
+   * the specified time point.
+   */
+  bool DeleteElement(int iTime, double* iPoint);
+
+  /**
+   * \brief Replace the point at the current time point.
+   * \return true is element has been replaced, false if there is no point at the
+   * specified time point. If you want to add this point, call
+   * InsertElement(int iTime, double* iPoint) instead.
+   */
+  bool ReplaceElement(int iTime, double* iPoint);
+
   /** Printing one element. std::cout << element << std::endl; */
   friend std::ostream & operator<<
     (std::ostream & os, const TrackStructure & c)
