@@ -159,6 +159,7 @@ TrackStructure(const TrackStructure & iE):
 TrackStructure::
 ~TrackStructure()
 {
+  /*
   std::map<int,double*>::iterator it;
 
   // Clean the map
@@ -167,6 +168,7 @@ TrackStructure::
     delete[] it->second;
     }
   this->PointsMap.clear();
+  */
 }
 //--------------------------------------------------------------------------
 
