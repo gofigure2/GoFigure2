@@ -2511,7 +2511,7 @@ void GetTracesInfoFromDBAndModifyContainer(
       std::cout << "Print before push: " << std::endl;
       std::cout << temp << std::endl;
 
-      ioContainer.push_back(temp);
+      ioContainer.push_front(temp);
       }
     }
   query->Delete();

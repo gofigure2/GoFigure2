@@ -145,7 +145,7 @@ TrackStructure::
 TrackStructure(const TrackStructure & iE):
   TraceID(iE.TraceID), ActorXY(iE.ActorXY), ActorXZ(iE.ActorXZ),
   ActorYZ(iE.ActorYZ), ActorXYZ(iE.ActorXYZ), Nodes(iE.Nodes),
-  Highlighted(iE.Highlighted), Visible(iE.Visible)
+  PointsMap(iE.PointsMap), Highlighted(iE.Highlighted), Visible(iE.Visible)
 {
   for ( int i = 0; i < 4; i++ )
     {
