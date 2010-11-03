@@ -167,7 +167,7 @@ UpdateCurrentElementFromExistingOne(unsigned int iTraceID)
     {
     this->m_CurrentElement = *it;
     //Don't have to delete since we keep the same addresses for all the variables
-    //this->DeleteElement(it);
+    this->DeleteElement(it);
     return true;
     }
   else
@@ -455,6 +455,7 @@ DeleteElement(const unsigned int & iId)
 //-------------------------------------------------------------------------
  bool TrackContainer::DeleteElement(MultiIndexContainerTraceIDIterator iIter)
  {
+   /*
     if ( iIter != m_Container.get< TraceID >().end() )
     {
     if ( iIter->ActorXY )
@@ -482,6 +483,8 @@ DeleteElement(const unsigned int & iId)
       {
       iIter->Nodes->Delete();
       }
+      */
+
     m_Container.get< TraceID >().erase(iIter);
     m_ImageView->UpdateRenderWindows();
     return true;
