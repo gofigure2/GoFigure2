@@ -40,6 +40,7 @@ class vtkPolyData;
 
 #include <ostream>
 #include <vector>
+#include <map>
 
 #include "QGoIOConfigure.h"
 
@@ -79,6 +80,11 @@ struct QGOIO_EXPORT TrackStructure {
   * Polydata representing the track (a line). It also contains the temporal information.
   */
   vtkPolyData *Nodes;
+
+  /*
+   * Map containing all the polydata points ordered by time
+   */
+  std::map<int, double*> PointsMap;
 
   /** Is the track Highlighted in the Visualization ? */
   bool Highlighted;

@@ -656,8 +656,10 @@ void
 TrackContainer::
 AddPointToCurrentElement(double* iPoint, int iTime)
 {
-  // check time point too
+  //add the point in the map
+  this->m_CurrentElement.PointsMap.insert( std::pair<int,double*>(iTime, iPoint) );
 
+  // check time point too
   if(!this->m_CurrentElement.Nodes)
     {
     // Create a new polydata
@@ -674,7 +676,6 @@ AddPointToCurrentElement(double* iPoint, int iTime)
 
     //add the points to the dataset
     this->m_CurrentElement.Nodes->SetPoints(newPoints);
-
     //add the temporal information
     this->m_CurrentElement.Nodes->GetFieldData()->AddArray(newArray);
 
@@ -699,47 +700,20 @@ AddPointToCurrentElement(double* iPoint, int iTime)
     }
 */
 
-  vtkIdType N = this->m_CurrentElement.Nodes->GetNumberOfPoints();
-  vtkSmartPointer<vtkPoints> points = this->m_CurrentElement.Nodes->GetPoints();
-
-  std::map<int, double*> orderedPoints;
-  int time(0);
-  double* pt(NULL);
-
-  vtkSmartPointer<vtkIntArray> temporalArray =
-      vtkIntArray::SafeDownCast(this->m_CurrentElement.Nodes->GetFieldData()
-          ->GetArray("TemporalInformation"));
-
-  // fill a map so the points will be ordered automatically
-  for ( vtkIdType i = 0; i < N; i++ )
-    {
-    pt[0] = points->GetPoint(i)[0];
-    pt[1] = points->GetPoint(i)[1];
-    pt[2] = points->GetPoint(i)[2];
-    time = temporalArray->GetValue(i);
-    orderedPoints.insert( std::pair<int,double*>(time, pt) );
-    }
-
-  // insert the new mesh
-  orderedPoints.insert( std::pair<int,double*>(iTime, iPoint) );
-
   //Reconstruct from the map
   // read map and fill points
   vtkSmartPointer< vtkPoints > newPoints = vtkSmartPointer< vtkPoints >::New();
   vtkSmartPointer<vtkIntArray> newArray = vtkSmartPointer<vtkIntArray>::New();
   newArray->SetNumberOfComponents(1);
   newArray->SetName("TemporalInformation");
-  std::map<int, double*>::iterator it = orderedPoints.begin();
+  std::map<int, double*>::iterator it = this->m_CurrentElement.PointsMap.begin();
 
-  while(it != orderedPoints.end())
+  while(it != this->m_CurrentElement.PointsMap.end())
     {
     newArray->InsertNextValue( it->first );
     newPoints->InsertNextPoint(it->second);
     ++it;
     }
-
-  // will be deleted automatically
-  //orderedPoints.clear();
 
   // Create a line from points
   vtkSmartPointer<vtkPolyLine> polyLine =
