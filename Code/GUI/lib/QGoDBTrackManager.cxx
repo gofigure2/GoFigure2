@@ -205,8 +205,6 @@ void QGoDBTrackManager::GetTracesInfoFromDBAndModifyContainerForVisu(
 
   while ( it != list_of_traces.end() )
     {
-    std::cout << "Print before insert: " << std::endl;
-    std::cout << *it << std::endl;
     this->m_TrackContainerInfoForVisu->Insert(*it);
     ++it;
     }

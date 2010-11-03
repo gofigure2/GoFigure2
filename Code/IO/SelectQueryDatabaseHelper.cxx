@@ -2508,10 +2508,7 @@ void GetTracesInfoFromDBAndModifyContainer(
       temp.rgba[2]      = ( query->DataValue(5).ToDouble() ) / 255.;
       temp.rgba[3]      = ( query->DataValue(6).ToDouble() ) / 255.;
 
-      std::cout << "Print before push: " << std::endl;
-      std::cout << temp << std::endl;
-
-      ioContainer.push_front(temp);
+      ioContainer.push_back(temp);
       }
     }
   query->Delete();
