@@ -134,9 +134,10 @@ QGoFilterSemiAutoBase::ExtractROI(typename itk::Image< PixelType, VImageDimensio
 
   InternalSpacingType spacing = iInput->GetSpacing();
 
-  InternalIndexType start;
+  InternalIndexType startOfROI, endOfROI;
   InternalPointType origin;
   InternalSizeType  size;
+  InternalSizeType sizeOfLargeImage = iInput->GetLargestPossibleRegion().GetSize();
   size.Fill(0);
 
   for ( unsigned int j = 0; j < VImageDimension; j++ )
@@ -146,11 +147,26 @@ QGoFilterSemiAutoBase::ExtractROI(typename itk::Image< PixelType, VImageDimensio
     origin[j] = iCenter[j] - 2 * iRadius;
     }
 
-  iInput->TransformPhysicalPointToIndex(origin, start);
+  iInput->TransformPhysicalPointToIndex(origin, startOfROI);
 
+  for ( unsigned int j = 0; j < VImageDimension; j++ )
+  {
+    if ( startOfROI[j] < 0 )
+    {
+      startOfROI[j] = 0;
+    }
+    
+    endOfROI[j] = startOfROI[j] + size[j] - 1;
+    
+    if ( endOfROI[j] > sizeOfLargeImage[j] - 1 )
+    {
+      size[j] = sizeOfLargeImage[j] - startOfROI[j];
+    }
+  }
+  
   InternalRegionType region;
   region.SetSize(size);
-  region.SetIndex(start);
+  region.SetIndex(startOfROI);
 
   typedef itk::RegionOfInterestImageFilter<
     InternalImageType, InternalImageType >              ROIFilterType;

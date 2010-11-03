@@ -690,8 +690,8 @@ void QGoTableWidget::PrepareRangeToCopy(QTableWidgetSelectionRange iRange,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTableWidget::CheckSelectedRows(std::string iTraceName,
-                                       std::string iTraceNameID)
+void QGoTableWidget::ChangeCheckStateSelectedRows(std::string iTraceName,
+   std::string iTraceNameID,Qt::CheckState iState)
 {
   QStringList ListSelectedTracesID = this->ValuesForSelectedRows(
     iTraceNameID.c_str() );
@@ -701,8 +701,9 @@ void QGoTableWidget::CheckSelectedRows(std::string iTraceName,
     for ( int i = 0; i < ListSelectedTracesID.size(); i++ )
       {
       this->SetCheckStateForTraceID(ListSelectedTracesID.at(i).toUInt(),
-                                    iTraceName, Qt::Checked);
+                                    iTraceName, iState,false);
       }
+    emit ModifyHighlightListTraces(ListSelectedTracesID,iState);
     }
   else
     {
@@ -711,37 +712,12 @@ void QGoTableWidget::CheckSelectedRows(std::string iTraceName,
     std::cout << std::endl;
     }
 }
-
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTableWidget::UncheckSelectedRows(std::string iTraceName,
-                                         std::string iTraceNameID)
-{
-  QStringList ListSelectedTracesID = this->ValuesForSelectedRows(
-    iTraceNameID.c_str() );
-
-  if ( !ListSelectedTracesID.empty() )
-    {
-    for ( int i = 0; i < ListSelectedTracesID.size(); i++ )
-      {
-      this->SetCheckStateForTraceID(ListSelectedTracesID.at(i).toUInt(),
-                                    iTraceName, Qt::Unchecked);
-      }
-    }
-  else
-    {
-    std::cout << "The list of selected Traces ID is empty";
-    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-    std::cout << std::endl;
-    }
-}
-
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void QGoTableWidget::ShowSelectedRows(std::string iTraceName,
-                                      std::string iTraceNameID)
+void QGoTableWidget::ChangeVisibilityStateSelectedRows(std::string iTraceName,
+                                                       std::string iTraceNameID,
+                                                       Qt::CheckState iState)
 {
   QStringList ListSelectedTracesID = this->ValuesForSelectedRows(
     iTraceNameID.c_str() );
@@ -751,33 +727,9 @@ void QGoTableWidget::ShowSelectedRows(std::string iTraceName,
     for ( int i = 0; i < ListSelectedTracesID.size(); i++ )
       {
       this->SetVisibleStateForTraceID(ListSelectedTracesID.at(i).toUInt(), iTraceName,
-                                      Qt::Checked);
+                                      iState,false);
       }
-    }
-  else
-    {
-    std::cout << "The list of selected Traces ID is empty";
-    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-    std::cout << std::endl;
-    }
-}
-
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void QGoTableWidget::HideSelectedRows(std::string iTraceName,
-                                      std::string iTraceNameID)
-{
-  QStringList ListSelectedTracesID = this->ValuesForSelectedRows(
-    iTraceNameID.c_str() );
-
-  if ( !ListSelectedTracesID.empty() )
-    {
-    for ( int i = 0; i < ListSelectedTracesID.size(); i++ )
-      {
-      this->SetVisibleStateForTraceID(ListSelectedTracesID.at(i).toUInt(), iTraceName,
-                                      Qt::Unchecked);
-      }
+    emit ModifyVisibilityListTraces(ListSelectedTracesID,iState);
     }
   else
     {
