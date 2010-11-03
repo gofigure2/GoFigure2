@@ -654,7 +654,7 @@ GetHighlightedProperty()
 //-------------------------------------------------------------------------
 void
 TrackContainer::
-AddPointToCurrentElement(double* iPoint, double iTime)
+AddPointToCurrentElement(double* iPoint, int iTime)
 {
   // check time point too
 
@@ -702,9 +702,9 @@ AddPointToCurrentElement(double* iPoint, double iTime)
   vtkIdType N = this->m_CurrentElement.Nodes->GetNumberOfPoints();
   vtkSmartPointer<vtkPoints> points = this->m_CurrentElement.Nodes->GetPoints();
 
-  std::map<int, double[3]> orderedPoints;
-  /*double* pt = NULL;
-  int    time = 0;
+  std::map<int, double*> orderedPoints;
+  int time(0);
+  double* pt(NULL);
 
   vtkSmartPointer<vtkIntArray> temporalArray =
       vtkIntArray::SafeDownCast(this->m_CurrentElement.Nodes->GetFieldData()
@@ -713,13 +713,15 @@ AddPointToCurrentElement(double* iPoint, double iTime)
   // fill a map so the points will be ordered automatically
   for ( vtkIdType i = 0; i < N; i++ )
     {
-    pt = points->GetPoint(i);
+    pt[0] = points->GetPoint(i)[0];
+    pt[1] = points->GetPoint(i)[1];
+    pt[2] = points->GetPoint(i)[2];
     time = temporalArray->GetValue(i);
     orderedPoints.insert( std::pair<int,double*>(time, pt) );
     }
 
   // insert the new mesh
-  orderedPoints.insert( std::pair<int,double*>(iPoint[3], iPoint) );
+  orderedPoints.insert( std::pair<int,double*>(iTime, iPoint) );
 
   //Reconstruct from the map
   // read map and fill points
@@ -736,12 +738,8 @@ AddPointToCurrentElement(double* iPoint, double iTime)
     ++it;
     }
 
-  // Clean the map
-  for (it = orderedPoints.begin(); it != orderedPoints.end(); ++it)
-    {
-    delete[] it->second;
-    }
-  orderedPoints.clear();
+  // will be deleted automatically
+  //orderedPoints.clear();
 
   // Create a line from points
   vtkSmartPointer<vtkPolyLine> polyLine =
@@ -775,7 +773,7 @@ AddPointToCurrentElement(double* iPoint, double iTime)
 
   ShowPolyData(this->m_CurrentElement.Nodes);
 
-  emit CurrentTrackToSave();*/
+  emit CurrentTrackToSave();
 }
 //-------------------------------------------------------------------------
 

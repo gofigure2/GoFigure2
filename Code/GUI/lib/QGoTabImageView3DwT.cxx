@@ -2790,7 +2790,7 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord)
   // get the center of the mesh
   // pointer to double is deleted in AddPointToCurrentElement
   double point[3] = {0.0, 0.0, 0.0};
-  double time(0);
+  int time(0);
 
   double bounds[6];
   iView->GetBounds(bounds);
@@ -2799,7 +2799,7 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord)
     {
     point[i] = (bounds[2*i] + bounds[2*i+1])/2;
     }
-  time = (double)iTCoord;
+  time = iTCoord;
 
   // Clean the actors (remove from visu + delete)
   // Update the track polydata with the new center

@@ -697,7 +697,7 @@ public:
     exists at a current time point.
     \param[in] iPoint new point to be added in the track
   */
-  void AddPointToCurrentElement(double* iPoint, double iTime);
+  void AddPointToCurrentElement(double* iPoint, int iTime);
 
   /**
     \brief Get the polydata representing the current element track
