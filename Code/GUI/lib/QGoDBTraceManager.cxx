@@ -318,9 +318,9 @@ void QGoDBTraceManager::AddSpecificActionsForContourMesh(QMenu *iMenu)
   /** \todo Lydie: when using lineage, put it in the generalActionsContextMenu*/
   this->AddActionForCreateNewCollectionFromCheckedTraces(iMenu);
 
-  iMenu->addAction( tr("ColorCode your %1s base on the selected column")
-                    .arg(this->m_TraceName.c_str() ),
-                    this, SLOT( ColorCoding() ) );
+ // iMenu->addAction( tr("ColorCode your %1s base on the selected column")
+ //                   .arg(this->m_TraceName.c_str() ),
+ //                   this, SLOT( ColorCoding() ) );
   /*iMenu->addAction(
       tr("Add to selected %1 : %2").arg(this->m_CollectionName.c_str())
       .arg(this->m_SelectedCollectionData.first.c_str()), this, SLOT(AddToSelectedCollection()));
