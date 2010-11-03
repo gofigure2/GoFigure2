@@ -2789,6 +2789,7 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord)
 
   // get the center of the mesh
   // pointer to double is deleted in AddPointToCurrentElement
+/*
   double * point = new double[4];
   std::vector< int > boundingBox = GetBoundingBox(iView);
   for(int i = 0; i<3; ++i)
@@ -2809,6 +2810,7 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord)
     m_TrackContainer->UpdateCurrentElementActorsFromVisu(trackActors);
     }
  // m_TrackContainer->InsertCurrentElement();
+*/
 }
 //-------------------------------------------------------------------------
 

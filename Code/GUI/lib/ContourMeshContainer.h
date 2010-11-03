@@ -818,6 +818,22 @@ public:
       while( t_it != m_Container.end() )
         {
         t_it->Nodes->GetPointData()->SetActiveScalars( NULL );
+        if( t_it->ActorXY )
+          {
+          t_it->ActorXY->GetMapper()->SetScalarVisibility( false );
+          }
+        if( t_it->ActorXZ )
+          {
+          t_it->ActorXY->GetMapper()->SetScalarVisibility( false );
+          }
+        if( t_it->ActorYZ )
+          {
+          t_it->ActorXY->GetMapper()->SetScalarVisibility( false );
+          }
+        if( t_it->ActorXYZ )
+          {
+          t_it->ActorXY->GetMapper()->SetScalarVisibility( false );
+          }
         ++t_it;
         }
       return;
@@ -828,7 +844,7 @@ public:
     double temp = 0.;
     try
       {
-      boost::numeric_cast< double >( it->second );
+      temp = boost::numeric_cast< double >( it->second );
       }
     catch( boost::numeric::bad_numeric_cast& e )
       {
@@ -851,11 +867,11 @@ public:
         // Here let's make sure you are not passing crazy values!
         try
           {
-          boost::numeric_cast< double >( it->second );
+          temp = boost::numeric_cast< double >( it->second );
           }
         catch( boost::numeric::bad_numeric_cast& e )
           {
-          std::cout <<  e.what() <<std::endl;
+          std::cout << e.what() <<std::endl;
           return;
           }
 
@@ -891,18 +907,22 @@ public:
       if( t_it->ActorXY )
         {
         t_it->ActorXY->GetMapper()->SetScalarRange( min_value, max_value );
+        t_it->ActorXY->GetMapper()->SetScalarVisibility( true );
         }
       if( t_it->ActorXZ )
         {
         t_it->ActorXZ->GetMapper()->SetScalarRange( min_value, max_value );
+        t_it->ActorXY->GetMapper()->SetScalarVisibility( true );
         }
       if( t_it->ActorYZ )
         {
         t_it->ActorYZ->GetMapper()->SetScalarRange( min_value, max_value );
+        t_it->ActorXY->GetMapper()->SetScalarVisibility( true );
         }
       if( t_it->ActorXYZ )
         {
         t_it->ActorXYZ->GetMapper()->SetScalarRange( min_value, max_value );
+        t_it->ActorXY->GetMapper()->SetScalarVisibility( true );
         }
       ++t_it;
       }
