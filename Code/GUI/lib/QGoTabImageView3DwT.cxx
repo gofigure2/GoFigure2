@@ -2735,6 +2735,9 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord)
   // Create new actors and visu it if there is more than one point
   if(track->GetNumberOfPoints() > 1)
     {
+    // remove actors
+    m_TrackContainer->RemoveCurrentActorsFromVisu();
+    // create new actors and see it
     std::vector< vtkActor * > trackActors =
         VisualizeTrace(track,
             this->m_TrackContainer->m_CurrentElement.rgba);

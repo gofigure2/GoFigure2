@@ -210,6 +210,34 @@ RemoveActorsWithGivenTimePoint(const unsigned int & iT)
 //-------------------------------------------------------------------------
 void
 TrackContainer::
+RemoveCurrentActorsFromVisu()
+{
+  if ( m_CurrentElement.ActorXY )
+    {
+    this->m_ImageView->RemoveActor(0, m_CurrentElement.ActorXY);
+    m_CurrentElement.ActorXY->Delete();
+    }
+  if ( m_CurrentElement.ActorXZ )
+    {
+    this->m_ImageView->RemoveActor(1, m_CurrentElement.ActorXZ);
+    m_CurrentElement.ActorXZ->Delete();
+    }
+  if ( m_CurrentElement.ActorYZ )
+    {
+    this->m_ImageView->RemoveActor(2, m_CurrentElement.ActorYZ);
+    m_CurrentElement.ActorYZ->Delete();
+    }
+  if ( m_CurrentElement.ActorXYZ )
+    {
+    this->m_ImageView->RemoveActor(3, m_CurrentElement.ActorXYZ);
+    m_CurrentElement.ActorXYZ->Delete();
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
 ShowActorsWithGivenTimePoint(const unsigned int & iT)
 {
   /*

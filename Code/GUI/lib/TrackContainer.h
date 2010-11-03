@@ -348,6 +348,11 @@ public:
   void RemoveActorsWithGivenTimePoint(const unsigned int & iT);
 
   /**
+  \brief Remove all actors of the current element. Useful to update a track.
+  */
+  void RemoveCurrentActorsFromVisu();
+
+  /**
     \brief Add all actors (elements) from the scene for a given time point
   */
   void AddActorsWithGivenTimePoint(const unsigned int & iT);
