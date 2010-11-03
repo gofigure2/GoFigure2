@@ -167,28 +167,44 @@ TrackStructure::
 InsertElement(int iTime, double* iPoint)
 {
   // check if there is something at the iTime time point
-  std::map<int,double*>::iterator pointsMap = this->PointsMap.find(iTime);;
+  std::map<int,double*>::iterator pointsMapIterator = this->PointsMap.find(iTime);
 
-  // if there is no point, insert it
-  if ( pointsMap == this->PointsMap.end() )
+  // if there is no point, insert it and return true
+  if ( pointsMapIterator == this->PointsMap.end() )
     {
     this->PointsMap.insert( std::pair<int,double*>(iTime, iPoint) );
     return true;
     }
-  // else do nothing
-  else
-    {
-    return false;
-    }
+
+  // else do nothing and return false
+  std::cout << "in: " << __FILE__ << " at line: " << __LINE__ << std::endl;
+  std::cout << "can't insert a point at this time point" << std::endl;
+  return false;
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 bool
 TrackStructure::
-DeleteElement(int iTime, double* iPoint)
+DeleteElement(int iTime)
 {
+  // check if there is something at the iTime time point
+  std::map<int,double*>::iterator pointsMapIterator = this->PointsMap.find(iTime);
 
+  // if there is a point, delete it and return true
+  if ( pointsMapIterator == this->PointsMap.end() )
+    {
+    // free memory
+    delete[] pointsMapIterator->second;
+    // clear map
+    this->PointsMap.erase(pointsMapIterator);
+    return true;
+    }
+
+  // else do nothing and return false
+  std::cout << "in: " << __FILE__ << " at line: " << __LINE__ << std::endl;
+  std::cout << "can't delete a point at this time point" << std::endl;
+  return false;
 }
 //--------------------------------------------------------------------------
 
@@ -197,6 +213,18 @@ bool
 TrackStructure::
 ReplaceElement(int iTime, double* iPoint)
 {
+  // delete the existing element
+  bool deleteElement = DeleteElement(iTime);
 
+  // if sth has been deleted, insert the point and return true
+  if(deleteElement)
+    {
+    return InsertElement(iTime,iPoint);
+    }
+
+  // else do nothing and return false
+  std::cout << "in: " << __FILE__ << " at line: " << __LINE__ << std::endl;
+  std::cout << "can't replace a point at this time point" << std::endl;
+  return deleteElement;
 }
 //--------------------------------------------------------------------------

@@ -139,6 +139,8 @@ struct QGOIO_EXPORT TrackStructure {
 
   /**
    * \brief Insert a point at the current time point.
+   * \param[in] iTime time point where we want to insert the point
+   * \param[in] iPoint new point to be inserted
    * \return true is element has been inserted, false if not (i.e. there
    * is already a point associated to this time point). If you want to override
    * this point, call ReplaceElement(int iTime, double* iPoint) instead.
@@ -147,13 +149,16 @@ struct QGOIO_EXPORT TrackStructure {
 
   /**
    * \brief Delete the point at the current time point.
+   * \param[in] iTime time point where we want to delete the mesh
    * \return true is element has been deleted, false if there where no point at
    * the specified time point.
    */
-  bool DeleteElement(int iTime, double* iPoint);
+  bool DeleteElement(int iTime);
 
   /**
    * \brief Replace the point at the current time point.
+   * \param[in] iTime time point where we want to replace the point
+   * \param[in] iPoint new point to be added
    * \return true is element has been replaced, false if there is no point at the
    * specified time point. If you want to add this point, call
    * InsertElement(int iTime, double* iPoint) instead.
