@@ -252,24 +252,6 @@ void GoDBTWContainerForMesh::GetValuesToFillForIntensityFromQueryResults
     ioValuesToFill.push_back(temp);
     ++iterMeshID;
     }
-
-  bool iterMeshID_at_end = ( iterMeshID == iVectMeshIDs.end() );
-  bool iterResult_at_end = ( iterResult == iResultQuery.end() );
-
-  if( iterMeshID_at_end && !iterResult_at_end )
-    {
-    std::cout << "iterMeshID_at_end AND !iterResult_at_end" <<std::endl;
-    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-    std::cout << std::endl;
-    return;
-    }
-  if( !iterMeshID_at_end && iterResult_at_end )
-    {
-    std::cout << "!iterMeshID_at_end AND iterResult_at_end" <<std::endl;
-    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-    std::cout << std::endl;
-    return;
-    }
 }
 
 //--------------------------------------------------------------------------
