@@ -656,9 +656,6 @@ void
 TrackContainer::
 AddPointToCurrentElement(double* iPoint, int iTime)
 {
-  // check if point exists to deal with memory
-  //(delete the double)
-
   //add the point in the map
   bool pointInserted = this->m_CurrentElement.InsertElement( iTime, iPoint );
  (void)pointInserted;
@@ -687,24 +684,7 @@ AddPointToCurrentElement(double* iPoint, int iTime)
 
     return;
     }
-  /*else
-    {
-    if(this->m_CurrentElement.ActorXY)
-      {
-      // remove and delete the actors from th visu
-      this->m_ImageView->RemoveActor(0, this->m_CurrentElement.ActorXY);
-      this->m_CurrentElement.ActorXY->Delete();
-      this->m_ImageView->RemoveActor(1, this->m_CurrentElement.ActorXZ);
-      this->m_CurrentElement.ActorXZ->Delete();
-      this->m_ImageView->RemoveActor(2, this->m_CurrentElement.ActorYZ);
-      this->m_CurrentElement.ActorYZ->Delete();
-      this->m_ImageView->RemoveActor(3, this->m_CurrentElement.ActorXYZ);
-      this->m_CurrentElement.ActorXYZ->Delete();
-      }
-    }
-*/
 
-  //Reconstruct from the map
   // read map and fill points
   vtkSmartPointer< vtkPoints > newPoints = vtkSmartPointer< vtkPoints >::New();
   vtkSmartPointer<vtkIntArray> newArray = vtkSmartPointer<vtkIntArray>::New();
@@ -748,8 +728,6 @@ AddPointToCurrentElement(double* iPoint, int iTime)
   // MOVE TO SMARTPOINTER AND SHALLOW COPY....
   this->m_CurrentElement.Nodes->DeepCopy(polyData);
   polyData->Delete();
-
-  ShowPolyData(this->m_CurrentElement.Nodes);
 
   emit CurrentTrackToSave();
 }
