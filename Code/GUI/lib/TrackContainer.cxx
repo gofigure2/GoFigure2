@@ -656,8 +656,22 @@ void
 TrackContainer::
 AddPointToCurrentElement(double* iPoint, int iTime)
 {
+  std::cout << "map size before: " << this->m_CurrentElement.PointsMap.size() << std::endl;
+
+  std::map<int,double*>::iterator end = this->m_CurrentElement.PointsMap.end();
+  for (std::map<int,double*>::iterator it = this->m_CurrentElement.PointsMap.begin(); it != end; ++it)
+  {
+      std::cout << "Who(key = first): " << it->first;
+      std::cout << " Score(value = second): " << it->second << '\n';
+  }
+
+  // check if point exists to deal with memory
+  //(delete the double)
+
   //add the point in the map
   this->m_CurrentElement.PointsMap.insert( std::pair<int,double*>(iTime, iPoint) );
+
+  std::cout << "map size after: " << this->m_CurrentElement.PointsMap.size() << std::endl;
 
   // check time point too
   if(!this->m_CurrentElement.Nodes)

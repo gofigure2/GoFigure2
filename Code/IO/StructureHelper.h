@@ -44,5 +44,6 @@ struct Nodes {};
 struct TCoord {};
 struct Highlighted {};
 struct Visible {};
+struct PointsMap {};
 
 #endif

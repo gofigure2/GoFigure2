@@ -38,6 +38,7 @@
 #include "vtkSmartPointer.h"
 #include "vtkObject.h"
 
+#include <map>
 #include <string>
 
 #include "QGoIOConfigure.h"
@@ -72,6 +73,13 @@ public:
    * \return pointer to the generated "Track Polydata"
    */
   vtkSmartPointer<vtkPolyData> GetPolyData(const std::string & iString);
+
+  /*
+   * \brief Generate a "Track Polydata" from a string
+   * \param[in] iString base string to generate the polydata
+   * \return pointer to the generated "Track Polydata"
+   */
+  std::map<int, double*> GetMap(const std::string & iString);
 
 protected:
   vtkPolyDataMySQLTrackReader();

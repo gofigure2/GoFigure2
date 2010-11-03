@@ -2789,7 +2789,7 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord)
 
   // get the center of the mesh
   // pointer to double is deleted in AddPointToCurrentElement
-  double point[3] = {0.0, 0.0, 0.0};
+  double* point = new double[3];
   int time(0);
 
   double bounds[6];

@@ -60,6 +60,8 @@ class TrackContainer:public QObject
   Q_OBJECT
 public:
 
+  typedef std::map< int, double*> PointsMapType;
+
   typedef boost::multi_index::multi_index_container<
     TrackStructure,
     boost::multi_index::indexed_by<
@@ -82,6 +84,10 @@ public:
       boost::multi_index::hashed_non_unique<
         boost::multi_index::tag< Nodes >,
         BOOST_MULTI_INDEX_MEMBER(TrackStructure, vtkPolyData *, Nodes)
+        >,
+      boost::multi_index::hashed_non_unique<
+        boost::multi_index::tag< PointsMap >,
+        BOOST_MULTI_INDEX_MEMBER(TrackStructure, PointsMapType, PointsMap)
         >,
       boost::multi_index::ordered_unique<
         boost::multi_index::tag< TraceID >,

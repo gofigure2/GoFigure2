@@ -47,7 +47,6 @@
 #include "vtkRenderWindow.h"
 #include "vtkRenderWindowInteractor.h"
 
-#include <map>
 #include <sstream>
 
 vtkCxxRevisionMacro(vtkPolyDataMySQLTrackReader, "$Revision$");
@@ -78,21 +77,11 @@ GetPolyData(const std::string & iString)
 
   if ( N != 0 )
     {
-    std::map<int, double*> orderedPoints;
-    double* pt = NULL;
-    int    time = 0;
+    std::map<int, double*> orderedPoints = GetMap(iString);
+
     vtkSmartPointer<vtkIntArray> temporalArray = vtkSmartPointer<vtkIntArray>::New();
     temporalArray->SetNumberOfComponents(1);
     temporalArray->SetName("TemporalInformation");
-
-    // fill a map so the points will be ordered automatically
-    for ( vtkIdType i = 0; i < N; i++ )
-      {
-      pt = new double[3];
-      str >> pt[0] >> pt[1] >> pt[2];
-      str >> time;
-      orderedPoints.insert( std::pair<int,double*>(time, pt) );
-      }
 
     // read map and fill points
     vtkSmartPointer< vtkPoints > points = vtkSmartPointer< vtkPoints >::New();
@@ -153,3 +142,32 @@ GetPolyData(const std::string & iString)
   return NULL;
 }
 //--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::map<int, double*>
+vtkPolyDataMySQLTrackReader::
+GetMap(const std::string & iString)
+{
+  std::stringstream str(iString);
+  std::map<int, double*> orderedPoints;
+
+  // Might not be useful
+  vtkIdType N;
+  str >> N;
+
+  if ( N != 0 )
+    {
+    double* pt = NULL;
+    int    time = 0;
+
+    // fill a map so the points will be ordered automatically
+    for ( vtkIdType i = 0; i < N; i++ )
+      {
+      pt = new double[3];
+      str >> pt[0] >> pt[1] >> pt[2];
+      str >> time;
+      orderedPoints.insert( std::pair<int,double*>(time, pt) );
+      }
+    }
+  return orderedPoints;
+}

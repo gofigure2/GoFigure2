@@ -2485,8 +2485,6 @@ void GetTracesInfoFromDBAndModifyContainer(
         vtkSmartPointer< vtkPolyDataMySQLTrackReader >::New();
       std::string polydata_string = query->DataValue(2).ToString();
 
-      std::cout << "string to be converted: " << polydata_string << std::endl;
-
       vtkIdType N;
       std::stringstream str(polydata_string);
       str >> N;
@@ -2496,6 +2494,7 @@ void GetTracesInfoFromDBAndModifyContainer(
         vtkPolyData *output = vtkPolyData::New();
         output->DeepCopy(convert_reader->GetPolyData(polydata_string));
         temp.Nodes = output;
+        temp.PointsMap = convert_reader->GetMap(polydata_string);
         }
       else
         {
@@ -2508,6 +2507,10 @@ void GetTracesInfoFromDBAndModifyContainer(
       temp.rgba[1]      = ( query->DataValue(4).ToDouble() ) / 255.;
       temp.rgba[2]      = ( query->DataValue(5).ToDouble() ) / 255.;
       temp.rgba[3]      = ( query->DataValue(6).ToDouble() ) / 255.;
+
+      std::cout << "Print before push: " << std::endl;
+      std::cout << temp << std::endl;
+
       ioContainer.push_back(temp);
       }
     }

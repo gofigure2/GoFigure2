@@ -76,9 +76,7 @@ struct QGOIO_EXPORT TrackStructure {
   /** Actor in the XYZ View */
   vtkActor *ActorXYZ;
 
-  /**
-  * Polydata representing the track (a line). It also contains the temporal information.
-  */
+  /** Polydata representing the track (a line). It also contains the temporal information. */
   vtkPolyData *Nodes;
 
   /*
@@ -149,6 +147,16 @@ struct QGOIO_EXPORT TrackStructure {
     os << "ActorYZ " << c.ActorYZ << std::endl;
     os << "ActorXYZ " << c.ActorXYZ << std::endl;
     os << "Nodes " << c.Nodes << std::endl;
+    os << "Map " << std::endl;
+    std::map<int, double*>::const_iterator end = c.PointsMap.end();
+    for (std::map<int, double*>::const_iterator it = c.PointsMap.begin(); it != end; ++it)
+    {
+        os << "Time: " << it->first << std::endl;
+        os << " Coordinate X: " << (it->second)[0] << std::endl;
+        os << " Coordinate Y: " << (it->second)[1] << std::endl;
+        os << " Coordinate Z: " << (it->second)[2] << std::endl;
+    }
+
     os << "Highlighted " << c.Highlighted << std::endl;
     os << "Visible " << c.Visible << std::endl;
     os << "RGBA [" << c.rgba[0] << ", " << c.rgba[1] << ", " << c.rgba[2]
