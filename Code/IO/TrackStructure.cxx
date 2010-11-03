@@ -50,7 +50,7 @@ TrackStructure():TraceID(0),
 }
 
 //--------------------------------------------------------------------------
-
+/*
 //--------------------------------------------------------------------------
 TrackStructure::
 TrackStructure(const unsigned int & iTraceID,
@@ -139,7 +139,7 @@ TrackStructure(const unsigned int & iTraceID,
 }
 
 //--------------------------------------------------------------------------
-
+*/
 //--------------------------------------------------------------------------
 TrackStructure::
 TrackStructure(const TrackStructure & iE):

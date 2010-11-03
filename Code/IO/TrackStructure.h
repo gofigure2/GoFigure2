@@ -99,7 +99,7 @@ struct QGOIO_EXPORT TrackStructure {
   TrackStructure();
 
   /** Constructor */
-  TrackStructure(const unsigned int & iTraceID,
+  /*TrackStructure(const unsigned int & iTraceID,
                        std::vector< vtkActor * > iActors,
                        vtkPolyData *iNodes,
                        const bool & iHighlighted,
@@ -107,18 +107,18 @@ struct QGOIO_EXPORT TrackStructure {
                        const double & r,
                        const double & g,
                        const double & b,
-                       const double & alpha);
+                       const double & alpha);*/
 
   /** Constructor */
-  TrackStructure(const unsigned int & iTraceID,
+  /*TrackStructure(const unsigned int & iTraceID,
                        std::vector< vtkActor * > iActors,
                        vtkPolyData *iNodes,
                        const bool & iHighlighted,
                        const bool & iVisible,
-                       double iRgba[4]);
+                       double iRgba[4]);*/
 
   /** Constructor */
-  TrackStructure(const unsigned int & iTraceID,
+  /*TrackStructure(const unsigned int & iTraceID,
                        vtkActor *iActorXY,
                        vtkActor *iActorYZ,
                        vtkActor *iActorXZ,
@@ -129,7 +129,7 @@ struct QGOIO_EXPORT TrackStructure {
                        const double & r,
                        const double & g,
                        const double & b,
-                       const double & alpha);
+                       const double & alpha);*/
 
   /** Constructor by copy */
   TrackStructure(const TrackStructure & iE);
