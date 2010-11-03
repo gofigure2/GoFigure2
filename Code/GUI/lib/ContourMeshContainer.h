@@ -803,6 +803,8 @@ public:
     \param[in] iColumnName Name of data provided
     \param[in] ivalues is a map where the key is the TraceID and the Value is
     the actual data used to color.
+    \note if iColumnName and/or iValues are empty traces will be then rendered
+    with their original colors.
   */
   template< typename TValue >
   void SetColorCode( const std::string& iColumnName,
@@ -931,8 +933,18 @@ public:
     }
 
 public slots:
+
+  /** \brief Change elements highlighting property given a list of TraceIDs
+  and the new status.
+    \param[in] iList list of TraceIDs
+    \param[in] iCheck */
   void UpdateElementHighlightingWithGivenTraceIDs( const QStringList& iList,
                                                    const Qt::CheckState& iCheck );
+
+  /** \brief Change elements visibility property given a list of TraceIDs
+  and the new status.
+    \param[in] iList list of TraceIDs
+    \param[in] iCheck */
   void UpdateElementVisibilityWithGivenTraceIDs( const QStringList& iList,
                                                  const Qt::CheckState& iCheck );
 
