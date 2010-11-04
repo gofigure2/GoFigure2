@@ -785,7 +785,7 @@ signals:
   void CurrentTrackToSave();
 
   /** \brief When we want to import meshes into a track */
-  void NeedMeshesInfoForImportedTrack(int);
+  void NeedMeshesInfoForImportedTrack(unsigned int);
 
 protected:
   vtkProperty *m_HighlightedProperty;

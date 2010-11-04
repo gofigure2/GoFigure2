@@ -1279,6 +1279,7 @@ void QGoTabImageView3DwT::GetTheRelatedToDBActions()
   QAction *ImportTracksAction = new QAction(tr("Tracks"), this);
   ImportMenu->addAction(ImportContoursAction);
   ImportMenu->addAction(ImportMeshesAction);
+  ImportMenu->addAction(ImportTracksAction);
   QMenu *  ExportMenu = new QMenu(tr("Export"), this);
   QAction *ExportContoursAction = new QAction(tr("Contours"), this);
   QAction *ExportMeshesAction = new QAction(tr("3DMeshes"), this);
