@@ -33,7 +33,6 @@ for i in Tests:
 		Key.TAB
 		type("Test Description")
 		click("ok.png")
-		#assert that bookmark description comes up in lower left corner
 		#assert that bookmark is in dropdown menu
 		#assert that bookmark is in database
 
@@ -64,7 +63,9 @@ click("ok.png")
 #To test deletion of bookmark
 click("Delete_a_bookmark.png")
 click("Open_a_bookmark.png")
-
+hover("Test_Bookmark.png")
+x = Region(4,990,200,10).find("Bookmark_Description.png")
+assert exists(x)
 
 
 

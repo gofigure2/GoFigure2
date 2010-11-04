@@ -105,8 +105,7 @@ Tests = (<span class="str">"Cancel"</span>,<span class="str">"No Name"</span>,<s
                 Key.TAB
                 <span class="skw">type</span>(<span class="str">"Test Description"</span>)
                 <span class="skw">click</span>(<img src="ok.png" />)
-                <span class="cmt">#assert that bookmark description comes up in lower left corner
-</span>                <span class="cmt">#assert that bookmark is in dropdown menu
+                <span class="cmt">#assert that bookmark is in dropdown menu
 </span>                <span class="cmt">#assert that bookmark is in database
 </span>
         <span class="kw">if</span> i == <span class="str">"Existing Name"</span>:
@@ -136,7 +135,9 @@ Tests = (<span class="str">"Cancel"</span>,<span class="str">"No Name"</span>,<s
 <span class="cmt">#To test deletion of bookmark
 </span><span class="skw">click</span>(<img src="Delete_a_bookmark.png" />)
 <span class="skw">click</span>(<img src="Open_a_bookmark.png" />)
-
+hover(<img src="Test_Bookmark.png" />)
+x = Region(<span class="dig">4</span>,<span class="dig">990</span>,<span class="dig">200</span>,<span class="dig">10</span>).<span class="skw">find</span>(<img src="Bookmark_Description.png" />)
+<span class="kw">assert</span> exists(x)
 
 
 
