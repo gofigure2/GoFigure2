@@ -168,9 +168,7 @@ UpdateCurrentElementFromExistingOne(unsigned int iTraceID)
 
     // clean the container but don't erase the pointers since we still have the
     // adresses in the m_CurrentElement
-    MultiIndexContainerTraceIDIterator
-      it2 = m_Container.get< TraceID >().find(it);
-    m_Container.get< TraceID >().erase(it2);
+    m_Container.get< TraceID >().erase(it);
 
     return true;
     }
@@ -487,7 +485,6 @@ DeleteElement(const unsigned int & iId)
 //-------------------------------------------------------------------------
  bool TrackContainer::DeleteElement(MultiIndexContainerTraceIDIterator iIter)
  {
-
     if ( iIter != m_Container.get< TraceID >().end() )
     {
     if ( iIter->ActorXY )
@@ -516,6 +513,17 @@ DeleteElement(const unsigned int & iId)
       iIter->Nodes->Delete();
       }
 
+    if ( iIter->PointsMap.size() )
+      {
+      std::map< unsigned int, double* >::const_iterator begin = (iIter->PointsMap).begin();
+      std::map< unsigned int, double* >::const_iterator end = (iIter->PointsMap).end();
+
+      while( begin != end )
+        {
+        delete[] begin->second;
+        ++begin;
+        }
+      }
 
     m_Container.get< TraceID >().erase(iIter);
     m_ImageView->UpdateRenderWindows();
@@ -1008,31 +1016,35 @@ void
 TrackContainer::
 UpdateCurrentElementMap( std::map< unsigned int, double* > iMeshes)
 {
-  std::map< unsigned int, double* >::const_iterator end = iMeshes.end();
-  for (std::map< unsigned int, double* >::const_iterator it = iMeshes.begin(); it != end; ++it)
-  {
-      std::cout << "Who(key = first): " << it->first;
-      std::cout << " Score(value = second): " << it->second << '\n';
-  }
+  // add points to existing map, not erasing
+  std::map< unsigned int,double*>::iterator iMesh = this->m_CurrentElement.PointsMap.begin();
+  std::map< unsigned int,double*>::iterator endMesh = this->m_CurrentElement.PointsMap.end();
 
-  // clean map
-  std::map< unsigned int,double*>::iterator it;
-
-  /*
-  // Clean the map
-  for ( it = this->m_CurrentElement.PointsMap.begin(); it != this->m_CurrentElement.PointsMap.end(); ++it)
+  while( iMesh != endMesh)
     {
-    delete[] it->second;
+    bool addPoint = this->m_CurrentElement.InsertElement( iMesh->first, iMesh->second );
+
+    if(addPoint)
+      {
+      // Point has been added
+      }
+    else
+      {
+      // there is already sth at this time point, delete the point (should replace??)
+      delete[] iMesh->second;
+      this->m_CurrentElement.PointsMap.erase(iMesh);
+      }
+
+    ++iMesh;
     }
-  this->m_CurrentElement.PointsMap.clear();
-  */
 
   // add new one
   this->m_CurrentElement.PointsMap = iMeshes;
 
+  // Create a new polydata if there is no polydata
   if(!this->m_CurrentElement.Nodes)
     {
-    // Create a new polydata
+
     this->m_CurrentElement.Nodes = vtkPolyData::New();
     }
 
