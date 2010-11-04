@@ -1346,15 +1346,25 @@ void QGoPrintDatabase::PassMeshesInfoForImportedTrack(unsigned int iTrackID)
 	std::list<unsigned int> TrackIDs;
 	TrackIDs.push_back(iTrackID);
 	this->OpenDBConnection();
-	std::list<unsigned int> ListmeshIDs = 
+	//get the meshesID that have iTrackID as a collectionID:
+	std::list<unsigned int> ListMeshesIDs = 
 		this->m_TracksManager->GetListTracesIDsFromThisCollectionOf(
 		this->m_DatabaseConnector,TrackIDs);
 	this->CloseDBConnection();
 	
-	std::map<unsigned int,double*> MeshesInfo = this->m_MeshesManager->
-	GetMeshesInfoForImportedMesh(ListMeshesIDs);
-	this->m_TracksManager->UpdatePointsOfCurrentElementForImportedTrack(
-		ListMeshesIDs);
+	if (!ListMeshesIDs.empty())
+		{
+		//get the coordinate info from the meshes:
+		std::map<unsigned int,double*> MeshesInfo = this->m_MeshesManager->
+		GetMeshesInfoForImportedMesh(ListMeshesIDs);
+		if (!MeshesInfo.empty())
+			{
+			//pass the coordinate info from the meshes in order to calculate the
+			//points/string of the track:
+			this->m_TracksManager->UpdatePointsOfCurrentElementForImportedTrack(
+				MeshesInfo);
+			}
+		}
 }
 //--------------------------------------------------------------------------
 

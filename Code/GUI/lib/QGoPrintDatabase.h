@@ -646,8 +646,8 @@ protected slots:
   void ReEditTrace(unsigned int iTraceID);
 
   /**
-  \brief get the info needed for track from the meshcontainer
-  and give them to the track container (for import tracks)
+  \brief get the info needed for track from the meshcontainer,
+  and update the points of the track container (for imported tracks)
   \param[in] iTrackID track ID for which the points will 
   be recalculated
   */
