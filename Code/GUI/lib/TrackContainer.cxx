@@ -169,7 +169,6 @@ UpdateCurrentElementFromExistingOne(unsigned int iTraceID)
     }
   else
     {
-    m_CurrentElement = TrackStructure();
     return false;
     }
 }
@@ -1024,36 +1023,9 @@ UpdateCurrentElementMap( std::map< unsigned int, double* > iMeshes)
   // add new one
   this->m_CurrentElement.PointsMap = iMeshes;
 
-  /*
-  // check time point too
   if(!this->m_CurrentElement.Nodes)
     {
     // Create a new polydata
-    // no actors to be removed then
-    this->m_CurrentElement.Nodes = vtkPolyData::New();
-
-    vtkSmartPointer< vtkPoints > newPoints = vtkSmartPointer< vtkPoints >::New();
-    vtkSmartPointer<vtkIntArray> newArray = vtkSmartPointer<vtkIntArray>::New();
-    newArray->SetNumberOfComponents(1);
-    newArray->SetName("TemporalInformation");
-
-    newArray->InsertValue( 0, iTime );
-    newPoints->InsertPoint( 0, iPoint );
-
-    //add the points to the dataset
-    this->m_CurrentElement.Nodes->SetPoints(newPoints);
-    //add the temporal information
-    this->m_CurrentElement.Nodes->GetFieldData()->AddArray(newArray);
-
-    emit CurrentTrackToSave();
-
-    return pointInserted;
-    }*/
-
-  if(!this->m_CurrentElement.Nodes)
-    {
-    // Create a new polydata
-    // no actors to be removed then
     this->m_CurrentElement.Nodes = vtkPolyData::New();
     }
 
