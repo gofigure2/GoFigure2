@@ -290,11 +290,10 @@ void QGoDBTraceManager::AddGeneralActionsContextMenu(QMenu *iMenu)
 
   QMenu* ColorMenu = new QMenu(tr("Change color of your %1s").arg(this->m_TraceName.c_str() ) );
 
-  ColorMenu->addAction( tr("Change the color for the checked %1 to the selected color")
+  ColorMenu->addAction( tr("To the selected color for the checked %1s")
                     .arg( this->m_TraceName.c_str() ),
                     this, SLOT( ChangeTraceColor() ) );
-  ColorMenu->addAction( tr("Change the color in the quadview of the %1 based on the selected column")
-                    .arg(this->m_TraceName.c_str() ),
+  ColorMenu->addAction( tr("Based on the selected column"),
                     this, SLOT(SetColorCoding() ) );
   ColorMenu->addAction( tr("Go back to the original color"),this, SLOT(BackFromColorCoding() ) );
 
