@@ -288,12 +288,23 @@ void QGoDBTraceManager::AddGeneralActionsContextMenu(QMenu *iMenu)
   iMenu->addAction( tr("Hide the selected %1s")
                     .arg( this->m_TraceName.c_str() ), this, SLOT( HideSelectedRows() ) );
 
-  iMenu->addAction( tr("Change the color for the checked %1 to the selected color")
+  QMenu* ColorMenu = new QMenu(tr("Change color of your %1s").arg(this->m_TraceName.c_str() ) );
+
+  /*iMenu->addAction( tr("Change the color for the checked %1 to the selected color")
                     .arg( this->m_TraceName.c_str() ),
                     this, SLOT( ChangeTraceColor() ) );
   iMenu->addAction( tr("Change the color in the quadview of the %1 based on the selected column")
                     .arg(this->m_TraceName.c_str() ),
+                    this, SLOT(SetColorCoding() ) );*/
+  ColorMenu->addAction( tr("Change the color for the checked %1 to the selected color")
+                    .arg( this->m_TraceName.c_str() ),
+                    this, SLOT( ChangeTraceColor() ) );
+  ColorMenu->addAction( tr("Change the color in the quadview of the %1 based on the selected column")
+                    .arg(this->m_TraceName.c_str() ),
                     this, SLOT(SetColorCoding() ) );
+
+  iMenu->addAction(ColorMenu->menuAction());
+
   iMenu->addAction( tr("Delete checked %1s").arg( this->m_TraceName.c_str() ),
                     this, SLOT( DeleteTracesFromContextMenu() ) );
 

@@ -60,7 +60,7 @@
   the Visualization and in the TableWidget
   \sa TrackStructure QGoTableWidget QGoImageView3D
   */
-class TrackContainer:public QObject
+class QGOGUILIB_EXPORT TrackContainer:public QObject
 {
   Q_OBJECT
 public:
@@ -148,6 +148,7 @@ public:
   // ----------------------------------------------------------------------
 
   /** \brief Print the container content in the application output */
+  
   template< class TIterator >
   void Print(TIterator iBegin, TIterator iEnd)
   {
