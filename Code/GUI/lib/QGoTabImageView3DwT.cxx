@@ -2998,6 +2998,7 @@ void QGoTabImageView3DwT::ImportTracks()
 		m_DataBaseTables->ImportTracks();
 	//call the method of the trackContainer to update the points :argument
 	// NewTrackIDs
+	this->m_TrackContainer->UpdateTracksStrings(NewTrackIDs);
     GoToDefaultMenu();
     }
 }

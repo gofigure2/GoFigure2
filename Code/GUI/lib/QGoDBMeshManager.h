@@ -132,6 +132,15 @@ public:
    //virtual pure method in QGoDBTraceManager
   virtual std::list< unsigned int > GetListHighlightedIDs();
 
+  /**
+  \brief get the coordinate info for meshes needed for the visu
+  for imported tracks
+  \param[in] iMeshesIDs list of meshes IDs the info are needed
+  \return a map with IDs as keys and info as value
+  */
+  std::map<unsigned int,double*> GetMeshesInfoForImportedMesh(
+	std::list<unsigned int> iMeshesIDs);
+
 protected:
   GoDBTWContainerForMesh *m_TWContainer;
   ContourMeshContainer   *m_MeshContainerInfoForVisu;

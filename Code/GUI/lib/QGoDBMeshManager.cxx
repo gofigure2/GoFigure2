@@ -369,3 +369,11 @@ void QGoDBMeshManager::GetTracesInfoFromDBAndModifyContainerForVisu(
     ++it;
     }
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::map<unsigned int,double*> QGoDBMeshManager::GetMeshesInfoForImportedMesh(
+	std::list<unsigned int> iMeshesIDs)
+{
+	this->m_MeshContainerInfoForVisu->GetMeshesPoints(ListmeshIDs);
+}

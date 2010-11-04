@@ -258,3 +258,11 @@ void QGoDBTrackManager::SaveTrackCurrentElement()
   emit DBConnectionNotNeededAnymore();
 
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTrackManager::UpdatePointsOfCurrentElementForImportedTrack(
+	  std::map<unsigned int,double*> iMeshesInfo)
+{
+	//this->m_TrackManager
+}

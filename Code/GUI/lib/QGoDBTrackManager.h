@@ -90,6 +90,13 @@ public:
 
   void UpdateCurrentElementTrackContainer(unsigned int iTrackID);
 
+  /**
+  \brief update the points of the imported track in current_element
+  with the info from the meshes
+  */
+  void UpdatePointsOfCurrentElementForImportedTrack(
+	  std::map<unsigned int,double*> iMeshesInfo);
+
 signals:
   void NeedMeshesInfoForImportedTrack(unsigned int iTrackID);
 

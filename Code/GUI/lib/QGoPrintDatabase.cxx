@@ -1211,7 +1211,7 @@ void
 QGoPrintDatabase::SetTracksContainer(TrackContainer *iContainer)
 {
   this->m_TracksManager->SetTracksInfoContainerForVisu(iContainer);
-  QObject::connect(this->m_TracksManager,
+  QObject::connect(	this->m_TracksManager,
 					SIGNAL (NeedMeshesInfoForImportedTrack(unsigned int) ),
 					this,
 					SLOT (PassMeshesInfoForImportedTrack(unsigned int) ) );
@@ -1351,9 +1351,10 @@ void QGoPrintDatabase::PassMeshesInfoForImportedTrack(unsigned int iTrackID)
 		this->m_DatabaseConnector,TrackIDs);
 	this->CloseDBConnection();
 	
-	//std::map<unsigned int,double*> MeshesInfo = this->m_MeshesManager->
-	//get the new method
-	//this->m_TracksManager-> pass the info for the track to be updated
+	std::map<unsigned int,double*> MeshesInfo = this->m_MeshesManager->
+	GetMeshesInfoForImportedMesh(ListMeshesIDs);
+	this->m_TracksManager->UpdatePointsOfCurrentElementForImportedTrack(
+		ListMeshesIDs);
 }
 //--------------------------------------------------------------------------
 
