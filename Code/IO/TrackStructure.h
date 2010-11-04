@@ -82,7 +82,7 @@ struct QGOIO_EXPORT TrackStructure {
   /*
    * Map containing all the polydata points ordered by time
    */
-  std::map<int, double*> PointsMap;
+  std::map< unsigned int, double*> PointsMap;
 
   /** Is the track Highlighted in the Visualization ? */
   bool Highlighted;
@@ -176,8 +176,8 @@ struct QGOIO_EXPORT TrackStructure {
     os << "ActorXYZ " << c.ActorXYZ << std::endl;
     os << "Nodes " << c.Nodes << std::endl;
     os << "Map " << std::endl;
-    std::map<int, double*>::const_iterator end = c.PointsMap.end();
-    for (std::map<int, double*>::const_iterator it = c.PointsMap.begin(); it != end; ++it)
+    std::map< unsigned int, double*>::const_iterator end = c.PointsMap.end();
+    for (std::map< unsigned int, double*>::const_iterator it = c.PointsMap.begin(); it != end; ++it)
     {
         os << "Time: " << it->first << std::endl;
         os << " Coordinate X: " << (it->second)[0] << std::endl;

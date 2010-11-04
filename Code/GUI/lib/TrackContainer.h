@@ -60,7 +60,7 @@ class TrackContainer:public QObject
   Q_OBJECT
 public:
 
-  typedef std::map< int, double*> PointsMapType;
+  typedef std::map< unsigned int, double*> PointsMapType;
 
   typedef boost::multi_index::multi_index_container<
     TrackStructure,
@@ -760,6 +760,12 @@ public:
     \param[in] iTrackList List containing IDs of the track of interest
   */
   void UpdateTracksStrings( std::vector<int> iTrackList);
+
+  /*
+   * \brief Update the current element map then polydata
+   * \param[in] iMeshes meshes to be added in the map
+   */
+  void UpdateCurrentElementMap( std::map< unsigned int, double* > iMeshes);
 
 public slots:
 
