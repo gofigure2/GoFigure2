@@ -43,7 +43,6 @@
 #include "ConvertToStringHelper.h"
 #include "vtkMySQLDatabase.h"
 #include "vtkPolyData.h"
-#include "vtkPolyDataMySQLTextWriter.h"
 #include "GoFigureMeshAttributes.h"
 
 /**

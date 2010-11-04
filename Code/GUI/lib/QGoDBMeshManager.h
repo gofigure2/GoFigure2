@@ -40,7 +40,7 @@
 #include "GoDBTWContainerForMesh.h"
 #include "QGoDBTraceManager.h"
 #include "GoDBMeshRow.h"
-//#include <QWidget>
+#include "ContourMeshContainer.h"
 
 class QGOGUILIB_EXPORT QGoDBMeshManager:public QGoDBTraceManager
 {
@@ -49,7 +49,18 @@ public:
   QGoDBMeshManager(int iImgSessionID,
                    QWidget *iparent);
   ~QGoDBMeshManager();
+  
+  /**
+  \brief set the m_MeshContainerInfoForVisu to the iContainerForVisu
+  \param[in] iContainerForVisu common container for the visu and database
+  */
+  void SetMeshesInfoContainerForVisu(ContourMeshContainer *iContainerForVisu);
 
+  /**
+  \brief get all the data from the database to load all the meshes for the imagingsession
+  into the table widget and the container for the visu
+  \param[in] iDatabaseConnector connection to the database
+  */
   void DisplayInfoAndLoadVisuContainerForAllMeshes(vtkMySQLDatabase *iDatabaseConnector);
 
   //unsigned int iTimePoint);
@@ -112,20 +123,27 @@ public:
   void UpdateBoundingBoxes(vtkMySQLDatabase *iDatabaseConnector,
                            std::list< unsigned int > iListTracesIDs);
 
-  /**
-  \brief virtual pure method in QGoDBTraceManager
-  */
+  //virtual pure method in QGoDBTraceManager
   virtual void UpdateTWAndContainerForImportedTraces(std::vector< int > iVectorImportedTraces,
                                                      vtkMySQLDatabase *iDatabaseConnector);
+  //virtual pure method in QGoDBTraceManager
+  virtual void DeleteTraces(vtkMySQLDatabase *iDatabaseConnector);
+
+   //virtual pure method in QGoDBTraceManager
+  virtual std::list< unsigned int > GetListHighlightedIDs();
 
 protected:
   GoDBTWContainerForMesh *m_TWContainer;
+  ContourMeshContainer   *m_MeshContainerInfoForVisu;
+
+  //virtual pure method in QGoDBTraceManager
   virtual void SetCollectionsTraceNames();
 
   void PrintValuesForMeshWithNoPoints(unsigned int iTraceID);
 
   virtual void AddActionsContextMenu(QMenu *iMenu);
 
+  //virtual pure method in QGoDBTraceManager
   virtual void DisplayInfoForAllTraces(vtkMySQLDatabase *iDatabaseConnector);
 
   void SetMeshBoundingBoxAndPoints(unsigned int iXCoordMin,
@@ -139,5 +157,15 @@ protected:
                                    vtkMySQLDatabase *iDatabaseConnector,
                                    GoDBMeshRow & iMesh,
                                    GoFigureMeshAttributes *iMeshAttributes);
+  //virtual pure method in QGoDBTraceManager
+  virtual void GetTracesInfoFromDBAndModifyContainerForVisu(
+    vtkMySQLDatabase* iDatabaseConnector,std::vector<int> iVectIDs = std::vector< int >());
+
+protected slots:
+  //virtual pure method in QGoDBTraceManager
+  virtual void UpdateHighlightedElementsInVisuContainer(int iTraceID);
+
+  //virtual pure method in QGoDBTraceManager
+  virtual void UpdateVisibleElementsInVisuContainer(int iTraceID);
 };
 #endif

@@ -45,15 +45,22 @@
 #include "vtkImageReslice.h"
 
 // construct contour
+#include "vtkContourFilter.h"
 #include "vtkMarchingSquares.h"
 #include "vtkCellArray.h"
 #include "vtkPolylineDecimation.h"
 #include "vtkStripper.h"
+#include "vtkFeatureEdges.h"
 
 // construct mesh
 #include "vtkMarchingCubes.h"
+// keep the largest region
+#include "vtkPolyDataConnectivityFilter.h"
+// fill the holes!
+#include "vtkFillHolesFilter.h"
 // and smooth it...!
 #include "vtkSmoothPolyDataFilter.h"
+#include "vtkPolyDataWriter.h"
 
 // to cut
 #include "vtkPlane.h"
@@ -465,37 +472,69 @@ vtkPolyData *
 QGoFilterSemiAutoBase::ReconstructMesh(vtkImageData *iInputImage, const double & iThreshold)
 {
   // create iso-contours
-  vtkMarchingCubes *contours = vtkMarchingCubes::New();
+  // Problem[Kishore]: Creates holes in some meshes although image has no hole 
+//   vtkMarchingCubes *contours = vtkMarchingCubes::New();
+// 
+//   contours->SetInput(iInputImage);
+//   contours->GenerateValues (1, iThreshold, iThreshold);
+//   contours->SetComputeGradients(0);
+//   contours->SetComputeNormals(1);
+//   contours->SetComputeScalars(0);
+//   contours->SetNumberOfContours(1);
+//   contours->Update();
 
-  contours->SetInput(iInputImage);
-  contours->GenerateValues (1, iThreshold, iThreshold);
+  vtkSmartPointer<vtkContourFilter> contours = vtkSmartPointer<vtkContourFilter>::New();
+  contours->SetInput( iInputImage );
   contours->SetComputeGradients(0);
   contours->SetComputeNormals(0);
   contours->SetComputeScalars(0);
   contours->SetNumberOfContours(1);
-
-  //Update required here!!
+  contours->SetValue(0, 0.5);
   contours->Update();
 
-  // smooth the output mesh..?
-/*
-  std::cout<< "time consumming??" << std::endl;
-
   vtkSmoothPolyDataFilter* smoother =
-      vtkSmoothPolyDataFilter::New();
-  smoother->SetInput(contours->GetOutput());
+  vtkSmoothPolyDataFilter::New();
+  smoother->SetInput( contours->GetOutput() );
   smoother->SetNumberOfIterations(400);
-
-  //Update required here!!
   smoother->Update();
-
-  std::cout<< "hopefully not..." << std::endl;
-*/
+    
+  vtkSmartPointer<vtkFeatureEdges> feature = vtkSmartPointer<vtkFeatureEdges>::New();
+  feature->SetInputConnection( smoother->GetOutputPort() );
+  feature->BoundaryEdgesOn();
+  feature->FeatureEdgesOff();
+  feature->NonManifoldEdgesOn();
+  feature->ManifoldEdgesOff();
+  feature->Update(); 
+    
+  vtkSmartPointer< vtkPolyData > temp;
+  vtkFillHolesFilter* fillFilter = vtkFillHolesFilter::New();
+  
+  if ( feature->GetOutput()->GetNumberOfCells() > 0 )
+    {
+    // fill holes
+    fillFilter->SetInputConnection( contours->GetOutputPort() );
+    fillFilter->Update();
+    
+    temp = fillFilter->GetOutput();
+    }
+  else
+    {
+      temp = smoother->GetOutput();
+    }
+    
+  // keep the largest region
+  vtkPolyDataConnectivityFilter* connectivityFilter = vtkPolyDataConnectivityFilter::New();
+  connectivityFilter->SetInput( temp );
+  connectivityFilter->SetExtractionModeToLargestRegion();
+  connectivityFilter->Update();
 
   vtkPolyData *output = vtkPolyData::New();
-  output->DeepCopy( contours->GetOutput() );
+  output->DeepCopy( connectivityFilter->GetOutput() );
 
-  contours->Delete();
+  smoother->Delete();
+  connectivityFilter->Delete();
+//   contours->Delete();
+  fillFilter->Delete();
 
   return output;
 }

@@ -42,7 +42,7 @@
 #include "vtkMySQLDatabase.h"
 #include "GoDBTraceInfoForVisu.h"
 #include "ContourMeshStructure.h"
-#include "ContourMeshContainer.h"
+#include "TrackStructure.h"
 
 #include "QGoIOConfigure.h"
 
@@ -231,10 +231,24 @@ std::vector< std::pair< int, std::string > > ListSpecificValuesForTwoColumnsAndT
 
 QGOIO_EXPORT
 void GetTracesInfoFromDBAndModifyContainer(
-  std::list< ContourMeshStructure > & ioList,
+  std::list< ContourMeshStructure > & ioContainer,
   vtkMySQLDatabase *DatabaseConnector, std::string TraceName,
   std::string CollectionName, unsigned int ImgSessionID, int iTimePoint = -1,
   std::vector< int > iListIDs = std::vector< int >() );
+
+QGOIO_EXPORT
+void GetTracesInfoFromDBAndModifyContainer(
+  std::list< TrackStructure > & ioContainer,
+  vtkMySQLDatabase *DatabaseConnector, std::string TraceName,
+  std::string CollectionName, unsigned int ImgSessionID,
+  std::vector< int > iVectIDs = std::vector< int >() );
+
+QGOIO_EXPORT
+std::string GetFirstPartQueryForTracesInfo(std::string iTraceName,std::string iCollectionName);
+
+QGOIO_EXPORT
+std::string GetSecondPartQueryForTracesInfo(std::string TraceName,
+                                            std::vector<int> iVectIDs);
 
 QGOIO_EXPORT
 ContourMeshStructure GetTraceInfoFromDB(

@@ -43,10 +43,23 @@ class vtkPolyData;
 
 #include "QGoIOConfigure.h"
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#include "StructureHelper.h"
+#endif
+
+/**
+\defgroup Contour Contour
+\defgroup Mesh Mesh
+\defgroup Trace Trace
+\defgroup Structure Structure
+*/
+
+
 /**
  * \struct ContourMeshStructure
  * \brief  Structure which represent a contour or a mesh, and used for
  * interaction between Visualization and TableWidget
+ * \ingroup Contour Mesh Trace Structure
  *
  * \sa ContourMeshContainer
  */
@@ -169,17 +182,4 @@ struct QGOIO_EXPORT ContourMeshStructure {
     return os;
   }
 };
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-struct TraceID {};
-struct ActorXY {};
-struct ActorXZ {};
-struct ActorYZ {};
-struct ActorXYZ {};
-struct Nodes {};
-struct TCoord {};
-struct Highlighted {};
-struct Visible {};
-#endif
-
 #endif

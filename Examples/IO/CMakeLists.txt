@@ -7,8 +7,10 @@ SET( QGOIO_EXAMPLES_SRC
   itkmegacapturereader
   GenerateImagingSessionPartInMegaCaptureHeaderFromMHA
   mhatomegacapture
-  vtkPolyDataMySQLTextReader
-  vtkPolyDataMySQLTextWriter
+  vtkPolyDataMySQLContourReader
+  vtkPolyDataMySQLMeshReader
+  vtkPolyDataMySQLContourWriter
+  vtkPolyDataMySQLMeshWriter
   vtkPolyDataMySQLTrack
   kishmeshtextfilereader
   trackTextFilesReader
@@ -45,13 +47,13 @@ ENDFOREACH( var ${QGOIO_EXAMPLES_SRC} )
 ADD_TEST( gofigurefileinfomultiindexcontainerhelperTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/gofigurefileinfomultiindexcontainerhelper )
 
-ADD_TEST( vtkPolyDataMySQLTextReaderTest1
-  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/vtkPolyDataMySQLTextReader
+ADD_TEST( vtkPolyDataMySQLContourReaderTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/vtkPolyDataMySQLContourReader
   ${TESTING_DATA_PATH}/contour.vtk
 )
 
-ADD_TEST( vtkPolyDataMySQLTextReaderTest2
-  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/vtkPolyDataMySQLTextReader
+ADD_TEST( vtkPolyDataMySQLMeshReaderTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/vtkPolyDataMySQLMeshReader
   ${TESTING_DATA_PATH}/sphere.vtk
 )
 
@@ -59,13 +61,13 @@ ADD_TEST( vtkPolyDataMySQLTrackTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/vtkPolyDataMySQLTrack
 )
 
-ADD_TEST( vtkPolyDataMySQLTextWriterTest1
-  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/vtkPolyDataMySQLTextWriter
+ADD_TEST( vtkPolyDataMySQLContourWriterTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/vtkPolyDataMySQLContourWriter
   ${TESTING_DATA_PATH}/contour.vtk
 )
 
-ADD_TEST( vtkPolyDataMySQLTextWriterTest2
-  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/vtkPolyDataMySQLTextWriter
+ADD_TEST( vtkPolyDataMySQLMeshWriterTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/vtkPolyDataMySQLMeshWriter
   ${TESTING_DATA_PATH}/sphere.vtk
 )
 

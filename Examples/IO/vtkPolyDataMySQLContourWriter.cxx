@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,70 +31,32 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-
-#ifndef __vtkPolyDataMySQLTextWriter_h
-#define __vtkPolyDataMySQLTextWriter_h
-
-#include <string>
-#include <sstream>
-
+#include <iostream>
+#include "vtkPolyDataReader.h"
 #include "vtkPolyData.h"
-#include "vtkMath.h"
-#include "vtkIdList.h"
 
-#include "QGoIOConfigure.h"
+#include "vtkPolyDataMySQLContourWriter.h"
 
-/**
-\defgroup MySQLWriter MySQLWriter
-\defgroup Contours Contours
-\defgroup Meshes Meshes
-\defgroup Trace Trace
-*/
-
-/**
-\class vtkPolyDataMySQLTextWriter
-\brief Reads a string and convert it into a contour/mesh polydata
-\ingroup MySQLWriter Contours Meshes Trace
-*/
-
-class QGOIO_EXPORT vtkPolyDataMySQLTextWriter:public vtkObject
+int main(int argc, char **argv)
 {
-public:
-  /*
-   * \brief Public constructor
-   */
-  static vtkPolyDataMySQLTextWriter * New();
+  if ( argc != 2 )
+    {
+    std::cout << "Usage:" << std::endl;
+    std::cout << "./vtkPolyDataMySQLContourWriter vtkfile" << std::endl;
+    return EXIT_FAILURE;
+    }
 
-  vtkTypeRevisionMacro(vtkPolyDataMySQLTextWriter, vtkObject);
+  vtkPolyDataReader *reader = vtkPolyDataReader::New();
+  reader->SetFileName(argv[1]);
+  reader->Update();
 
-  /*
-   * \brief Generate a string from a contour/mesh plolydata
-   * \param[in] iPolyData Polydata to generate the string
-   * \return string containing the contour/mesh polydata information
-   */
-  std::string GetMySQLText(vtkPolyData *iPolyData);
+  vtkPolyData *contour = reader->GetOutput();
 
-  /*
-   * \brief Get a contour or a mesh
-   * \return true: generate a contour, false: generate a mesh
-   */
-  bool GetIsContour() const { return IsContour; }
+  vtkPolyDataMySQLContourWriter *convert = vtkPolyDataMySQLContourWriter::New();
+  std::cout << convert->GetMySQLText(contour) << std::endl;
 
-protected:
-  vtkPolyDataMySQLTextWriter();
-  ~vtkPolyDataMySQLTextWriter();
+  convert->Delete();
+  reader->Delete();
 
-  vtkPolyData *m_PolyData;
-  bool IsContour;
-
-  bool IsPlanarContour();
-
-  std::string ContourProcessing();
-
-  std::string MeshProcessing();
-
-private:
-  vtkPolyDataMySQLTextWriter(const vtkPolyDataMySQLTextWriter &);
-  void operator=(const vtkPolyDataMySQLTextWriter &);
-};
-#endif
+  return EXIT_SUCCESS;
+}

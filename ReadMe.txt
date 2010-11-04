@@ -21,19 +21,17 @@ create lineages.
 
   User or developpers should first install the following libraries and
 softwares:
-      * CMake (>=2.6) visit http://www.cmake.org
+      * CMake (>=2.8.2) visit http://www.cmake.org
       * Qt  (>=4.5)   visit http://www.qtsoftware.com
       * MySQL (=5.1) visit http://www.mysql.com
-      * FFMPEG (Linux or Mac) visit visit http://www.ffmpeg.org
+      * FFMPEG (optional Linux or Mac) visit visit http://www.ffmpeg.org
       * VTK with Qt and MYSQL (>=5.6)   visit http://www.vtk.org 
-      * ITK (>=3.18)  visit http://www.itk.org
-
+      * ITK (>=3.20)  visit http://www.itk.org
+      * Boost (>=1.38) visit http://www.boost.org
 
     2.2.2 Configuration
 
-      * On Linux:
-
-$ cd gofigure2/trunk/
+      * On Linux and Mac:
 
 Create a build directory where GoFigure will be compiled
 $ mkdir BUILD
@@ -43,7 +41,7 @@ $ cd BUILD
 $ ccmake path/to/source/directory
 
 Build
-$ make -j2
+$ make -j8
 
 Install
 # make install
