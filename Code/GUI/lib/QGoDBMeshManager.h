@@ -169,6 +169,9 @@ protected slots:
   virtual void UpdateVisibleElementsInVisuContainer(int iTraceID);
 
   //virtual pure method in QGoDBTraceManager
-  void SetColorCoding();
+  virtual void SetColorCoding();
+
+  //virtual pure method in QGoDBTraceManager
+  virtual void BackFromColorCoding();
 };
 #endif

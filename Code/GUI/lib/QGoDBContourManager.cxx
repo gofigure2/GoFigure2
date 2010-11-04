@@ -339,3 +339,11 @@ void QGoDBContourManager::SetColorCoding()
   this->SetColorCodingTemplate<ContourMeshContainer>(
     this->m_ContourContainerInfoForVisu);
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBContourManager::BackFromColorCoding()
+{
+	this->SetBackFromColorCodingTemplate<ContourMeshContainer>(
+    this->m_ContourContainerInfoForVisu);
+}

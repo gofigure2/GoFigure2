@@ -377,3 +377,11 @@ void QGoDBMeshManager::SetColorCoding()
   this->SetColorCodingTemplate<ContourMeshContainer>(
     this->m_MeshContainerInfoForVisu);
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBMeshManager::BackFromColorCoding()
+{
+	this->SetBackFromColorCodingTemplate<ContourMeshContainer>(
+    this->m_MeshContainerInfoForVisu);
+}

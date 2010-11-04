@@ -261,3 +261,11 @@ void QGoDBTrackManager::SetColorCoding()
   this->SetColorCodingTemplate<TrackContainer>(
     this->m_TrackContainerInfoForVisu);
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTrackManager::BackFromColorCoding()
+{
+	this->SetBackFromColorCodingTemplate<TrackContainer>(
+    this->m_TrackContainerInfoForVisu);
+}

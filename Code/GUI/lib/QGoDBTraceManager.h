@@ -659,6 +659,19 @@ protected:
     iContainerForVisu->SetColorCode( ColumnName,Values );
   }
 
+  /**
+  \brief return to the color saved in the database for the traces
+  \param[in] iContainerForVisu common container for the visu and database
+  \tparam ContourMeshContainer or TrackContainer
+  */
+  template<typename T>
+  void SetBackFromColorCodingTemplate( T* iContainerForVisu)
+  {
+    std::string ColumnName = "";
+	std::map<unsigned int, double> Values = std::map<unsigned int, double>();
+    iContainerForVisu->SetColorCode( ColumnName,Values );
+  }
+
   virtual void AddActionsContextMenu(QMenu *iMenu);
 
   void AddGeneralActionsContextMenu(QMenu *iMenu);
@@ -740,6 +753,12 @@ protected slots:
   in the table widget
   */
   virtual void SetColorCoding()= 0;
+
+  /**
+  \brief return to the color saved in the database for the traces in the
+  visualization
+  */
+  virtual void BackFromColorCoding() = 0;
 
 };
 #endif
