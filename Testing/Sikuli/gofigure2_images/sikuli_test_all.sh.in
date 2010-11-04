@@ -1,0 +1,9 @@
+#!/bin/bash
+cd @SIKULI_SCRIPTS_DIR@;
+
+for var in TraceAdd TraceDelete
+do
+	echo "$var"
+	@SIKULI_EXECUTABLE@ -t ../$var.sikuli > @GOFIGURE2_BINARY_DIR@/Testing/$var.log;
+	echo "Done!"
+done
