@@ -264,5 +264,5 @@ void QGoDBTrackManager::SaveTrackCurrentElement()
 void QGoDBTrackManager::UpdatePointsOfCurrentElementForImportedTrack(
 	  std::map<unsigned int,double*> iMeshesInfo)
 {
-	this->m_TrackManager->UpdateCurrentElementMap(iMeshesInfo);
+	this->m_TrackContainerInfoForVisu->UpdateCurrentElementMap(iMeshesInfo);
 }
