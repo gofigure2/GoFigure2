@@ -916,8 +916,7 @@ TrackContainer::
 UpdateElementVisibilityWithGivenTraceIDs( const QStringList& iList,
                                           const Qt::CheckState& iCheck )
 {
-  //need to be reimplemented
-  /*if( !iList.empty() )
+  if( !iList.empty() )
     {
     MultiIndexContainerTraceIDIterator it;
 
@@ -932,34 +931,32 @@ UpdateElementVisibilityWithGivenTraceIDs( const QStringList& iList,
 
       if ( it != m_Container.get< TraceID >().end() )
         {
-        if ( it->TCoord != m_TCoord )
+        if ( iCheck )
           {
-          if ( iCheck )
-            {
-            f = &QGoImageView3D::RemoveActor;
-            }
-          else
-            {
-            f = &QGoImageView3D::AddActor;
-            }
-
-          if ( it->ActorXY )
-            {
-            ( m_ImageView->*f )(0, it->ActorXY);
-            }
-          if ( it->ActorXZ )
-            {
-            ( m_ImageView->*f )(1, it->ActorXZ);
-            }
-          if ( it->ActorYZ )
-            {
-            ( m_ImageView->*f )(2, it->ActorYZ);
-            }
-          if ( it->ActorXYZ )
-            {
-            ( m_ImageView->*f )(3, it->ActorXYZ);
-            }
+          f = &QGoImageView3D::RemoveActor;
           }
+        else
+          {
+          f = &QGoImageView3D::AddActor;
+          }
+
+        if ( it->ActorXY )
+          {
+          ( m_ImageView->*f )(0, it->ActorXY);
+          }
+        if ( it->ActorXZ )
+          {
+          ( m_ImageView->*f )(1, it->ActorXZ);
+          }
+        if ( it->ActorYZ )
+          {
+          ( m_ImageView->*f )(2, it->ActorYZ);
+          }
+        if ( it->ActorXYZ )
+          {
+          ( m_ImageView->*f )(3, it->ActorXYZ);
+          }
+
 
         if ( it->ActorXY )
           {
@@ -987,7 +984,7 @@ UpdateElementVisibilityWithGivenTraceIDs( const QStringList& iList,
       ++constIterator;
       }
     m_ImageView->UpdateRenderWindows();
-    }*/
+    }
 }
 //-------------------------------------------------------------------------
 
