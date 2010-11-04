@@ -744,6 +744,23 @@ public:
   */
   void UpdateCurrentElementActorsFromVisu(std::vector< vtkActor * > iActors);
 
+  /**
+    \brief Update the points strings of the tracks
+    for each element of the list
+    {
+    1 -Add trackID to current element
+    2- Remove old element
+    3- Get corresponding meshes centers
+    4- convert coordinates
+    5- fill map
+    6- generate new polydata
+    7- emit signal (to save in DB + insert element)
+    8- update the visu
+    }
+    \param[in] iTrackList List containing IDs of the track of interest
+  */
+  void UpdateTracksStrings( std::vector<int> iTrackList);
+
 public slots:
 
   void UpdateElementHighlightingWithGivenTraceIDs( const QStringList& iList,
@@ -760,6 +777,9 @@ signals:
 
   /** \brief When a point is added to the track, update the database */
   void CurrentTrackToSave();
+
+  /** \brief When we want to import meshes into a track */
+  void NeedMeshesInfoForImportedTrack(int);
 
 protected:
   vtkProperty *m_HighlightedProperty;

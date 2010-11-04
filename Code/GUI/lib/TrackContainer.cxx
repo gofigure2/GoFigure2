@@ -41,10 +41,8 @@
 #include "vtkPolyLine.h"
 #include "vtkCellArray.h"
 
-
-//////////
-#include "VisualizePolydataHelper.h"
-//////////
+// mesh container to update the tracks if import
+#include "ContourMeshContainer.h"
 //-------------------------------------------------------------------------
 TrackContainer::
 TrackContainer(QObject *iParent,QGoImageView3D *iView):QObject(iParent),
@@ -166,7 +164,6 @@ UpdateCurrentElementFromExistingOne(unsigned int iTraceID)
   if ( it != m_Container.get< TraceID >().end() )
     {
     this->m_CurrentElement = *it;
-    //Don't have to delete since we keep the same addresses for all the variables
     this->DeleteElement(it);
     return true;
     }
@@ -979,4 +976,22 @@ UpdateElementVisibilityWithGivenTraceIDs( const QStringList& iList,
 }
 //-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateTracksStrings( std::vector<int> iTrackList )
+{
+  std::vector<int>::iterator it = iTrackList.begin();
+
+  while( it != iTrackList.end() )
+    {
+    // update the current element
+    UpdateCurrentElementFromExistingOne( *it );
+
+    // emit signal to get the meshes informations
+    emit NeedMeshesInfoForImportedTrack( (*it) );
+
+    ++it;
+    }
+}
 //-------------------------------------------------------------------------

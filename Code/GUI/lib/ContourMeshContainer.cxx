@@ -737,9 +737,46 @@ ContourMeshContainer::SetHighlightedProperty(vtkProperty *iProperty)
 
 //-------------------------------------------------------------------------
 vtkProperty *
-ContourMeshContainer::GetHighlightedProperty()
+ContourMeshContainer::
+GetHighlightedProperty()
 {
   return m_HighlightedProperty;
 }
 
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::map< unsigned int, double* >
+ContourMeshContainer::
+GetMeshesPoints( std::list< unsigned int> iMeshID )
+{
+  std::map< unsigned int, double* > meshPosition;
+  std::list< unsigned int>::iterator listIt = iMeshID.begin();
+  MultiIndexContainerTraceIDIterator containerIt;
+
+  while( listIt != iMeshID.end() )
+    {
+    containerIt = m_Container.get< TraceID >().find( *listIt );
+
+    //if element found
+    if( containerIt != m_Container.get< TraceID >().end() )
+      {
+      unsigned int time = containerIt->TCoord;
+      double* point = new double[3];
+
+      double bounds[6];
+      containerIt->Nodes->GetBounds(bounds);
+
+      for(int i = 0; i<3; ++i)
+        {
+        point[i] = (bounds[2*i] + bounds[2*i+1])/2;
+        }
+
+      meshPosition.insert( std::pair<unsigned int, double*>(time, point) );
+      }
+    ++listIt;
+    }
+
+  return meshPosition;
+}
 //-------------------------------------------------------------------------
