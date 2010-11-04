@@ -81,7 +81,7 @@ setBundlePath(address)
 start = time.time()
 
 <span class="kw">def</span> ClickDelete(Region):
-<span class="cmt">#       """Clicks on add a new... in dropdown menu of TraceWidget for Color, CellType, SubCellType. """
+<span class="cmt">#       """Clicks on delete a... in dropdown menu of TraceWidget for Color, CellType, SubCellType. """
 </span>        <span class="skw">find</span>(Region)
         a = getLastMatch()
         <span class="kw">print</span> a, <span class="str">"this is a"</span>
@@ -109,14 +109,17 @@ Action = (<span class="str">"Cancel"</span>,<span class="str">"DeleteFields"</sp
 </span>
                 <span class="kw">if</span> a == <span class="str">"DeleteFields"</span>:
 
-                        onChange(getCenter().<span class="skw">click</span>(<img src="WidgetTestDelete.png" />))
+                        Region(<span class="dig">500</span>,<span class="dig">282</span>,<span class="dig">283</span>,<span class="dig">271</span>).<span class="skw">click</span>(<img src="WidgetTestDelete.png" />)
 
+
+                        <span class="cmt">#onChange(getCenter().click("WidgetTestDelete.png"))
+</span>
                         <span class="skw">click</span>(<img src="ok.png" />)
                         <span class="skw">click</span>(<img src="yes.png" />)
                         <span class="cmt">#assert that previous state is there
 </span>
 end = time.time()
-elapsedSec = start - end
+elapsedSec = end - start
 <span class="kw">print</span> elapsedSec, <span class="str">"sec"</span>
 </pre>
 </body>
