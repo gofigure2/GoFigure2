@@ -2426,6 +2426,9 @@ QGoTabImageView3DwT::HighlightXY()
      {*/
     m_MeshContainer->UpdateElementHighlightingWithGivenActor< ActorXY >(
       temp_actor);
+
+    m_TrackContainer->UpdateElementHighlightingWithGivenActor< ActorXY >(
+      temp_actor);
     /*}
   }*/
     }
@@ -2445,6 +2448,8 @@ QGoTabImageView3DwT::HighlightXZ()
       temp_actor);
     m_MeshContainer->UpdateElementHighlightingWithGivenActor< ActorXZ >(
       temp_actor);
+    m_TrackContainer->UpdateElementHighlightingWithGivenActor< ActorXZ >(
+      temp_actor);
     }
 }
 
@@ -2462,6 +2467,8 @@ QGoTabImageView3DwT::HighlightYZ()
       temp_actor);
     m_MeshContainer->UpdateElementHighlightingWithGivenActor< ActorYZ >(
       temp_actor);
+    m_TrackContainer->UpdateElementHighlightingWithGivenActor< ActorYZ >(
+      temp_actor);
     }
 }
 
@@ -2478,6 +2485,8 @@ QGoTabImageView3DwT::HighlightXYZ()
     m_ContourContainer->UpdateElementHighlightingWithGivenActor< ActorXYZ >(
       temp_actor);
     m_MeshContainer->UpdateElementHighlightingWithGivenActor< ActorXYZ >(
+      temp_actor);
+    m_TrackContainer->UpdateElementHighlightingWithGivenActor< ActorXYZ >(
       temp_actor);
     }
 }
