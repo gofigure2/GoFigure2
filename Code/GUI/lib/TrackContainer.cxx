@@ -163,8 +163,15 @@ UpdateCurrentElementFromExistingOne(unsigned int iTraceID)
     it = m_Container.get< TraceID >().find(iTraceID);
   if ( it != m_Container.get< TraceID >().end() )
     {
+    // update current element
     this->m_CurrentElement = *it;
-    this->DeleteElement(it);
+
+    // clean the container but don't erase the pointers since we still have the
+    // adresses in the m_CurrentElement
+    MultiIndexContainerTraceIDIterator
+      it2 = m_Container.get< TraceID >().find(it);
+    m_Container.get< TraceID >().erase(it2);
+
     return true;
     }
   else
@@ -482,7 +489,7 @@ DeleteElement(const unsigned int & iId)
  {
 
     if ( iIter != m_Container.get< TraceID >().end() )
-    {/*
+    {
     if ( iIter->ActorXY )
       {
       this->m_ImageView->RemoveActor(0, iIter->ActorXY);
@@ -508,7 +515,7 @@ DeleteElement(const unsigned int & iId)
       {
       iIter->Nodes->Delete();
       }
-      */
+
 
     m_Container.get< TraceID >().erase(iIter);
     m_ImageView->UpdateRenderWindows();
@@ -1032,10 +1039,16 @@ UpdateCurrentElementMap( std::map< unsigned int, double* > iMeshes)
   // should we do it here??
   UpdateTrackStructurePolyData(this->m_CurrentElement);
 
-  /* LATER
+  /*
+
+  LATER
+
   // clean actors
 
-  //(visu outside...?)
+  // update visu
+
+  //add actors in the container
+
   */
 
   emit CurrentTrackToSave();

@@ -203,7 +203,7 @@ DeleteElement(int iTime)
   std::map< unsigned int,double*>::iterator pointsMapIterator = this->PointsMap.find(iTime);
 
   // if there is a point, delete it and return true
-  if ( pointsMapIterator == this->PointsMap.end() )
+  if ( pointsMapIterator != this->PointsMap.end() )
     {
     // free memory
     delete[] pointsMapIterator->second;
