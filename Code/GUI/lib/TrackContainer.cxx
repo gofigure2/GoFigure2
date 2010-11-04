@@ -680,47 +680,108 @@ GetHighlightedProperty()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void
+bool
 TrackContainer::
-AddPointToCurrentElement(double* iPoint, int iTime)
+AddPointToCurrentElement(int iTime, double* iPoint)
 {
   //add the point in the map
   bool pointInserted = this->m_CurrentElement.InsertElement( iTime, iPoint );
- (void)pointInserted;
 
-  // check time point too
-  if(!this->m_CurrentElement.Nodes)
+  if(pointInserted)
     {
-    // Create a new polydata
-    // no actors to be removed then
-    this->m_CurrentElement.Nodes = vtkPolyData::New();
+    // check time point too
+    if(!this->m_CurrentElement.Nodes)
+      {
+      // Create a new polydata
+      // no actors to be removed then
+      this->m_CurrentElement.Nodes = vtkPolyData::New();
 
-    vtkSmartPointer< vtkPoints > newPoints = vtkSmartPointer< vtkPoints >::New();
-    vtkSmartPointer<vtkIntArray> newArray = vtkSmartPointer<vtkIntArray>::New();
-    newArray->SetNumberOfComponents(1);
-    newArray->SetName("TemporalInformation");
+      vtkSmartPointer< vtkPoints > newPoints = vtkSmartPointer< vtkPoints >::New();
+      vtkSmartPointer<vtkIntArray> newArray = vtkSmartPointer<vtkIntArray>::New();
+      newArray->SetNumberOfComponents(1);
+      newArray->SetName("TemporalInformation");
 
-    newArray->InsertValue( 0, iTime );
-    newPoints->InsertPoint( 0, iPoint );
+      newArray->InsertValue( 0, iTime );
+      newPoints->InsertPoint( 0, iPoint );
 
-    //add the points to the dataset
-    this->m_CurrentElement.Nodes->SetPoints(newPoints);
-    //add the temporal information
-    this->m_CurrentElement.Nodes->GetFieldData()->AddArray(newArray);
+      //add the points to the dataset
+      this->m_CurrentElement.Nodes->SetPoints(newPoints);
+      //add the temporal information
+      this->m_CurrentElement.Nodes->GetFieldData()->AddArray(newArray);
+
+      emit CurrentTrackToSave();
+
+      return pointInserted;
+      }
+
+    UpdateTrackStructurePolyData( this->m_CurrentElement );
 
     emit CurrentTrackToSave();
+    }
+  return pointInserted;
+}
+//-------------------------------------------------------------------------
 
-    return;
+//-------------------------------------------------------------------------
+bool
+TrackContainer::
+DeletePointFromCurrentElement(int iTime)
+{
+  //add the point in the map
+  bool pointDeleted = this->m_CurrentElement.DeleteElement( iTime );
+
+  // build the new
+  if(pointDeleted)
+    {
+    UpdateTrackStructurePolyData( this->m_CurrentElement );
     }
 
+  return pointDeleted;
+}
+//-------------------------------------------------------------------------
+/*
+ * \todo Nicolas - might not be efficient enough
+ */
+//-------------------------------------------------------------------------
+bool
+TrackContainer::
+ReplacePointFromCurrentElement(int iTime, double* iPoint)
+{
+  // replace the existing element
+  bool pointReplaced = DeleteElement(iTime);
+
+  // if sth has been deleted, insert the point and return true
+  if(pointReplaced)
+    {
+    return AddPointToCurrentElement(iTime,iPoint);
+    }
+
+  return pointReplaced;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+vtkPolyData*
+TrackContainer::
+GetCurrentElementNodes()
+{
+  return this->m_CurrentElement.Nodes;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateTrackStructurePolyData( TrackStructure& iTrackStructure)
+{
   // read map and fill points
   vtkSmartPointer< vtkPoints > newPoints = vtkSmartPointer< vtkPoints >::New();
   vtkSmartPointer<vtkIntArray> newArray = vtkSmartPointer<vtkIntArray>::New();
   newArray->SetNumberOfComponents(1);
   newArray->SetName("TemporalInformation");
-  std::map<int, double*>::iterator it = this->m_CurrentElement.PointsMap.begin();
+  std::map<int, double*>::iterator it = iTrackStructure.PointsMap.begin();
 
-  while(it != this->m_CurrentElement.PointsMap.end())
+  while(it != iTrackStructure.PointsMap.end())
     {
     newArray->InsertNextValue( it->first );
     newPoints->InsertNextPoint(it->second);
@@ -742,31 +803,16 @@ AddPointToCurrentElement(double* iPoint, int iTime)
   cells->InsertNextCell(polyLine);
 
   //Create a polydata to store everything in
-  vtkPolyData* polyData = vtkPolyData::New();
+  vtkSmartPointer< vtkPolyData > polyData = vtkSmartPointer< vtkPolyData >::New();
 
   //add the points to the dataset
   polyData->SetPoints(newPoints);
-
   //add the lines to the dataset
   polyData->SetLines(cells);
-
   //add the temporal information
   polyData->GetFieldData()->AddArray(newArray);
 
-  // MOVE TO SMARTPOINTER AND SHALLOW COPY....
-  this->m_CurrentElement.Nodes->DeepCopy(polyData);
-  polyData->Delete();
-
-  emit CurrentTrackToSave();
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-vtkPolyData*
-TrackContainer::
-GetCurrentElementNodes()
-{
-  return this->m_CurrentElement.Nodes;
+  iTrackStructure.Nodes->DeepCopy(polyData);
 }
 //-------------------------------------------------------------------------
 

@@ -707,8 +707,30 @@ public:
     We could add a variable to either override or not the point who already
     exists at a current time point.
     \param[in] iPoint new point to be added in the track
+    \param[in] iTime time coordinate of the new point
   */
-  void AddPointToCurrentElement(double* iPoint, int iTime);
+  bool AddPointToCurrentElement(int iTime, double* iPoint);
+
+  /**
+    \brief Delete a point from the current track.
+    \param[in] iTime time point to clear
+    \return true: a point has been deleted, false: no point has been deleted
+  */
+  bool DeletePointFromCurrentElement(int iTime);
+
+  /**
+    \brief Replace a point from the current track.
+    \param[in] iPoint new point to be added in the track
+    \param[in] iTime time point to update
+    \return true: a point has been replace, false: no point has been replaced
+  */
+  bool ReplacePointFromCurrentElement(int iTime, double* iPoint);
+
+  /**
+    \brief Update the TrackStructure polydata according to the current map.
+    \param[in] iTrackStructure Structure to be updated
+  */
+  void UpdateTrackStructurePolyData( TrackStructure& iTrackStructure);
 
   /**
     \brief Get the polydata representing the current element track
