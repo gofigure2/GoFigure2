@@ -2732,8 +2732,8 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord)
   time = iTCoord;
 
   // Clean the actors (remove from visu + delete)
-  // Update the track polydata with the new center
-  m_TrackContainer->AddPointToCurrentElement( point, time );
+  // Update the track polydata and the map with the new center
+  m_TrackContainer->AddPointToCurrentElement( time, point);
   vtkPolyData* track = m_TrackContainer->GetCurrentElementNodes();
   // Create new actors and visu it if there is more than one point
   if(track->GetNumberOfPoints() > 1)
