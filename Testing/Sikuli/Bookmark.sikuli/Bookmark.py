@@ -75,18 +75,24 @@ print "I found it"
 
 
 #Test bookmark deletion
+
+#Delete + cancel
 click("File.png")
 click("Bookmarks.png")
 click("Delete_a_bookmark.png")
 Region(500,282,283,271).click("Test_Bookmark.png")
 click("cancel.png")
 
+
+#Delete + ok
 click("File.png")
 click("Bookmarks.png")
 click("Delete_a_bookmark.png")
 Region(500,282,283,271).click("Test_Bookmark.png")
 click("ok.png")
 click("yes.png")
+
+#finally need to click on a different bookmark to see that quadview changes
 
 
 end = time.time()
