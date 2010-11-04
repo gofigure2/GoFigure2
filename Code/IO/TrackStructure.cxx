@@ -160,7 +160,7 @@ TrackStructure::
 ~TrackStructure()
 {
   /*
-  std::map<int,double*>::iterator it;
+  std::map< unsigned int,double*>::iterator it;
 
   // Clean the map
   for (it = this->PointsMap.begin(); it != this->PointsMap.end(); ++it)
@@ -178,12 +178,12 @@ TrackStructure::
 InsertElement(int iTime, double* iPoint)
 {
   // check if there is something at the iTime time point
-  std::map<int,double*>::iterator pointsMapIterator = this->PointsMap.find(iTime);
+  std::map< unsigned int,double*>::iterator pointsMapIterator = this->PointsMap.find(iTime);
 
   // if there is no point, insert it and return true
   if ( pointsMapIterator == this->PointsMap.end() )
     {
-    this->PointsMap.insert( std::pair<int,double*>(iTime, iPoint) );
+    this->PointsMap.insert( std::pair< unsigned int,double*>(iTime, iPoint) );
     return true;
     }
 
@@ -200,7 +200,7 @@ TrackStructure::
 DeleteElement(int iTime)
 {
   // check if there is something at the iTime time point
-  std::map<int,double*>::iterator pointsMapIterator = this->PointsMap.find(iTime);
+  std::map< unsigned int,double*>::iterator pointsMapIterator = this->PointsMap.find(iTime);
 
   // if there is a point, delete it and return true
   if ( pointsMapIterator == this->PointsMap.end() )

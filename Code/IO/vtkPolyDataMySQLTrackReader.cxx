@@ -77,7 +77,7 @@ GetPolyData(const std::string & iString)
 
   if ( N != 0 )
     {
-    std::map<int, double*> orderedPoints = GetMap(iString);
+    std::map<unsigned int, double*> orderedPoints = GetMap(iString);
 
     vtkSmartPointer<vtkIntArray> temporalArray = vtkSmartPointer<vtkIntArray>::New();
     temporalArray->SetNumberOfComponents(1);
@@ -85,7 +85,7 @@ GetPolyData(const std::string & iString)
 
     // read map and fill points
     vtkSmartPointer< vtkPoints > points = vtkSmartPointer< vtkPoints >::New();
-    std::map<int, double*>::iterator it = orderedPoints.begin();
+    std::map<unsigned int, double*>::iterator it = orderedPoints.begin();
 
     while(it != orderedPoints.end())
       {
@@ -137,12 +137,12 @@ GetPolyData(const std::string & iString)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::map< int, double* >
+std::map< unsigned int, double* >
 vtkPolyDataMySQLTrackReader::
 GetMap(const std::string & iString)
 {
   std::stringstream str(iString);
-  std::map< int, double* > orderedPoints;
+  std::map< unsigned int, double* > orderedPoints;
 
   // Might not be useful
   vtkIdType N;
@@ -159,7 +159,7 @@ GetMap(const std::string & iString)
       pt = new double[3];
       str >> pt[0] >> pt[1] >> pt[2];
       str >> time;
-      orderedPoints.insert( std::pair< int,double* >(time, pt) );
+      orderedPoints.insert( std::pair< unsigned int,double* >(time, pt) );
       }
     }
   return orderedPoints;

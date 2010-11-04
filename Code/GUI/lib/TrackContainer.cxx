@@ -776,7 +776,7 @@ UpdateTrackStructurePolyData( TrackStructure& iTrackStructure)
   vtkSmartPointer<vtkIntArray> newArray = vtkSmartPointer<vtkIntArray>::New();
   newArray->SetNumberOfComponents(1);
   newArray->SetName("TemporalInformation");
-  std::map<int, double*>::iterator it = iTrackStructure.PointsMap.begin();
+  std::map< unsigned int, double*>::iterator it = iTrackStructure.PointsMap.begin();
 
   while(it != iTrackStructure.PointsMap.end())
     {
@@ -993,5 +993,36 @@ UpdateTracksStrings( std::vector<int> iTrackList )
 
     ++it;
     }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateCurrentElementMap( std::map< unsigned int, double* > iMeshes)
+{
+  // clean map
+  std::map< unsigned int,double*>::iterator it;
+
+  // Clean the map
+  for ( it = this->m_CurrentElement.PointsMap.begin(); it != this->m_CurrentElement.PointsMap.end(); ++it)
+    {
+    delete[] it->second;
+    }
+  this->m_CurrentElement.PointsMap.clear();
+
+  // add new one
+  this->m_CurrentElement.PointsMap = iMeshes;
+
+  // should we do it here??
+  UpdateTrackStructurePolyData(this->m_CurrentElement);
+
+  /* LATER
+  // clean actors
+
+  //(visu outside...?)
+  */
+
+  emit CurrentTrackToSave();
 }
 //-------------------------------------------------------------------------

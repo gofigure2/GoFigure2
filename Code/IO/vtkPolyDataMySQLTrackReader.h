@@ -79,7 +79,7 @@ public:
    * \param[in] iString base string to generate the polydata
    * \return pointer to the generated "Track Polydata"
    */
-  std::map< int, double* > GetMap(const std::string & iString);
+  std::map< unsigned int, double* > GetMap(const std::string & iString);
 
 protected:
   vtkPolyDataMySQLTrackReader();
