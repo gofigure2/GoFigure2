@@ -910,6 +910,13 @@ public:
     this->m_ImageView->UpdateRenderWindows();
     }
 
+  /*
+   * \brief Returns the meshes positions
+   * \param[in] iMeshID IDs of the meshes of interest
+   * \return map containing the coordinates of the meshes of interest
+   */
+  std::map< unsigned int, double* > GetMeshesPoints( std::list< unsigned int> iMeshID );
+
 public slots:
   void UpdateElementHighlightingWithGivenTraceIDs( const QStringList& iList,
                                                    const Qt::CheckState& iCheck );
