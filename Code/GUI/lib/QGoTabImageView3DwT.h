@@ -637,6 +637,7 @@ protected slots:
 
   void ImportMeshes();
 
+  void ImportTracks();
   /**
   \brief give the adress for the contours and meshes container to the QGoPrintDatabase,
   once the database variables have been set for the QGoPrintDatabase

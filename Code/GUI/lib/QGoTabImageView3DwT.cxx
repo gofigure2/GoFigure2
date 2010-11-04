@@ -1276,6 +1276,7 @@ void QGoTabImageView3DwT::GetTheRelatedToDBActions()
   QMenu *  ImportMenu = new QMenu(tr("Import"), this);
   QAction *ImportContoursAction = new QAction(tr("Contours"), this);
   QAction *ImportMeshesAction = new QAction(tr("3DMeshes"), this);
+  QAction *ImportTracksAction = new QAction(tr("Tracks"), this);
   ImportMenu->addAction(ImportContoursAction);
   ImportMenu->addAction(ImportMeshesAction);
   QMenu *  ExportMenu = new QMenu(tr("Export"), this);
@@ -1293,6 +1294,8 @@ void QGoTabImageView3DwT::GetTheRelatedToDBActions()
                     this->m_DataBaseTables, SLOT( ExportMeshes() ) );
   QObject::connect( ImportMeshesAction, SIGNAL ( triggered() ),
                     this, SLOT ( ImportMeshes() ) );
+  QObject::connect( ImportTracksAction, SIGNAL ( triggered() ),
+                    this, SLOT ( ImportTracks() ) );
 }
 
 //-------------------------------------------------------------------------
@@ -2984,6 +2987,20 @@ void QGoTabImageView3DwT::ImportMeshes()
     }
 }
 
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTabImageView3DwT::ImportTracks()
+{
+  if ( this->m_DataBaseTables->IsDatabaseUsed() )
+    {
+	std::vector<int> NewTrackIDs = 
+		m_DataBaseTables->ImportTracks();
+	//call the method of the trackContainer to update the points :argument
+	// NewTrackIDs
+    GoToDefaultMenu();
+    }
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

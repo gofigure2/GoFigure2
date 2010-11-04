@@ -209,9 +209,25 @@ public:
 
   QAction * toggleViewAction();
 
+  /**
+  \brief get the info from a textfile, save it into the database, 
+  update the container for visu and the TW
+  */
   void ImportContours();
 
+  /**
+  \brief get the info from a textfile, save it into the database, 
+  update the container for visu and the TW
+  */
   void ImportMeshes();
+
+  /**
+  \brief get the info from a textfile, save it into the database, 
+  update the container for visu and the TW and recalculate the points
+  for the tracks
+  \return all the new trackIDs
+  */
+  std::vector<int> ImportTracks();
 
   void PrintVolumeAreaForMesh(GoFigureMeshAttributes *
                               iMeshAttributes, unsigned int iMeshID);
@@ -628,6 +644,14 @@ protected slots:
   \param[in] iTraceID ID of the trace to reedit
   */
   void ReEditTrace(unsigned int iTraceID);
+
+  /**
+  \brief get the info needed for track from the meshcontainer
+  and give them to the track container (for import tracks)
+  \param[in] iTrackID track ID for which the points will 
+  be recalculated
+  */
+  void PassMeshesInfoForImportedTrack(unsigned int iTrackID);
 
   //*********************Slots for
   // TraceManualEditingWidget:**************************

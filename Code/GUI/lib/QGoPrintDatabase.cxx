@@ -706,7 +706,7 @@ void QGoPrintDatabase::ExportMeshes()
 void QGoPrintDatabase::ImportContours()
 {
   QString p = QFileDialog::getOpenFileName( this,
-                                            tr("Open Contour Export File"), "",
+                                            tr("Open Contours Export File"), "",
                                             tr("TextFile (*.txt)") );
 
   //refactoring
@@ -744,7 +744,7 @@ void QGoPrintDatabase::ImportContours()
 void QGoPrintDatabase::ImportMeshes()
 {
   QString p = QFileDialog::getOpenFileName( this,
-                                            tr("Open Contour Export File"), "",
+                                            tr("Open Meshes Export File"), "",
                                             tr("TextFile (*.txt)") );
 
   //refactoring
@@ -771,7 +771,40 @@ void QGoPrintDatabase::ImportMeshes()
     this->InitializeTheComboboxesNotTraceRelated();
     }
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+std::vector<int> QGoPrintDatabase::ImportTracks()
+ {
+	QString p = QFileDialog::getOpenFileName( this,
+                                            tr("Open Tracks Export File"), "",
+                                            tr("TextFile (*.txt)") );
+
+	std::vector<int> NewTrackIDs = std::vector<int>();
+
+  if ( !p.isNull() )
+    {
+    QFileInfo   pathInfo(p);
+    std::string filename = p.toStdString();
+    //import into the database:
+    GoDBImport ImportHelper(this->m_Server, this->m_User,
+                            this->m_Password, this->m_ImgSessionID, filename,
+                            this->m_SelectedTimePoint);
+    ImportHelper.ImportTracks();
+
+    std::vector< int > NewMeshIDs = ImportHelper.GetVectorNewMeshIDs();
+    NewTrackIDs = ImportHelper.GetVectorNewTracksIDs();
+
+    this->OpenDBConnection();
+    this->m_MeshesManager->UpdateTWAndContainerForImportedTraces(NewMeshIDs,
+                                                                 this->m_DatabaseConnector);
+    this->m_TracksManager->UpdateTWAndContainerForImportedTraces(NewTrackIDs,
+                                                                 this->m_DatabaseConnector);
+    this->CloseDBConnection();
+    this->InitializeTheComboboxesNotTraceRelated();
+    }
+  return NewTrackIDs;
+ }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -1178,6 +1211,10 @@ void
 QGoPrintDatabase::SetTracksContainer(TrackContainer *iContainer)
 {
   this->m_TracksManager->SetTracksInfoContainerForVisu(iContainer);
+  QObject::connect(this->m_TracksManager,
+					SIGNAL (NeedMeshesInfoForImportedTrack(unsigned int) ),
+					this,
+					SLOT (PassMeshesInfoForImportedTrack(unsigned int) ) );
 }
 
 //--------------------------------------------------------------------------
@@ -1301,6 +1338,23 @@ void QGoPrintDatabase::ReEditTrace(unsigned int iTraceID)
   emit TraceToReEdit(iTraceID);
 }
 
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoPrintDatabase::PassMeshesInfoForImportedTrack(unsigned int iTrackID)
+{
+	std::list<unsigned int> TrackIDs;
+	TrackIDs.push_back(iTrackID);
+	this->OpenDBConnection();
+	std::list<unsigned int> ListmeshIDs = 
+		this->m_TracksManager->GetListTracesIDsFromThisCollectionOf(
+		this->m_DatabaseConnector,TrackIDs);
+	this->CloseDBConnection();
+	
+	//std::map<unsigned int,double*> MeshesInfo = this->m_MeshesManager->
+	//get the new method
+	//this->m_TracksManager-> pass the info for the track to be updated
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------

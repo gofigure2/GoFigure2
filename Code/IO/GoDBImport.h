@@ -60,7 +60,24 @@ public:
   needed info for the visu to add these new contours*/
   void ImportContours();
 
+  /** 
+  \brief get the data needed from the import file to
+  save the meshes listed in it, including the color,their
+  intensities,the tracks they belong to, the lineages the 
+  previous tracks belong to, etc...and fill the vectors of 
+  new IDs and the needed info for the visu to add these new 
+  meshes
+  */
   void ImportMeshes();
+
+  /**
+  \brief get the data needed from the import file to
+  save the tracks listed in it, including the color,their
+  meshes and intensities,the lineages they belong to etc...
+  and fill the vectors of new IDs and the needed info for 
+  the visu to add these new tracks and meshes.
+  */
+  void ImportTracks();
 
   /** \brief return a vector of the IDs for the meshes read from
   the import file and saved in the database*/

@@ -69,6 +69,11 @@ void QGoDBTrackManager::SetTracksInfoContainerForVisu(
                     SIGNAL(CurrentTrackToSave()),
                     this,
                     SLOT(SaveTrackCurrentElement()));
+
+  QObject::connect(this->m_TrackContainerInfoForVisu,
+					SIGNAL(NeedMeshesInfoForImportedTrack(unsigned int) ),
+					this,
+					SIGNAL(NeedMeshesInfoForImportedTrack(unsigned int) ) );
 }
 //-------------------------------------------------------------------------
 
@@ -156,6 +161,7 @@ void QGoDBTrackManager::UpdateTWAndContainerForImportedTraces(
   this->UpdateTWAndContainerWithImportedTracesTemplate<
     GoDBTWContainerForTrackLineage>(this->m_TWContainer,
     iVectorImportedTraces, iDatabaseConnector);
+  //call the TrackContainer to give him iVectorImportedTraces
 }
 //-------------------------------------------------------------------------
 

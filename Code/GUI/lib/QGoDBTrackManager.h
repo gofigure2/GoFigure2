@@ -90,6 +90,9 @@ public:
 
   void UpdateCurrentElementTrackContainer(unsigned int iTrackID);
 
+signals:
+  void NeedMeshesInfoForImportedTrack(unsigned int iTrackID);
+
 protected:
   GoDBTWContainerForTrackLineage *m_TWContainer;
   TrackContainer                 *m_TrackContainerInfoForVisu;
@@ -118,5 +121,7 @@ protected slots:
   \param[in] iDatabaseConnector connection to the database
   */
   void SaveTrackCurrentElement();
+
+	
 };
 #endif
