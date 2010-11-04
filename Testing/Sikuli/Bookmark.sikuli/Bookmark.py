@@ -1,6 +1,6 @@
 import os
 address = os.getcwd()
-#address should be ~/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images
+#address = "/home/es1076/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images"
 
 #address = address+"/gofigure2_images"
 print address
@@ -11,7 +11,7 @@ start = time.time()
 #Need to get to a new book mark spot in the easiest way to add a new one.
 
 
-Tests = ("Cancel","No Name","Add New","Existing Name")
+Tests = ("Cancel","No Name","Add New","Existing Name","Bookmark exists")
 for i in Tests:
 	
 	click("Bookmarks.png")
@@ -30,7 +30,7 @@ for i in Tests:
 	if i == "Add New":
 		wait(1)
 		type("Test Bookmark")
-		Key.TAB
+		type(Key.TAB+Key.TAB+Key.TAB)
 		type("Test Description")
 		click("ok.png")
 		#assert that bookmark is in dropdown menu
@@ -40,34 +40,47 @@ for i in Tests:
 		wait(1)
 		type("Test Bookmark")
 		#first tab goes to cancel, then ok then description box
-		Key.TAB
-		Key.TAB
-		Key.TAB
+		type(Key.TAB+Key.TAB+Key.TAB)
 		type("Test Description")
 		click("ok.png")
 		#assert popup message exists
 		click("ok.png")
 		click("cancel.png")
 
+	if i == "Bookmark exists":
+#To test that this bookmark already exists.
 
-
-#To test that this bookmark already exists.		
-click("Bookmarks.png")
-click("Open_a_bookmark.png")
-click("Test_Bookmark.png")
-#assert popup message exists
-click("ok.png")		
+		click("Test_Bookmark.png")
+		type("This book mark already exists")
+		click("ok.png")
+		#assert popup message exists
+		click("ok.png")
 		#need to select an existing bookmark and then add new book mark with different name
 
 
-#To test deletion of bookmark
-click("Delete_a_bookmark.png")
+
+#To test bookmark description shows up
+click("Bookmarks.png")
 click("Open_a_bookmark.png")
+wait(2)
 hover("Test_Bookmark.png")
-x = Region(4,990,200,10).find("Bookmark_Description.png")
-assert exists(x)
+wait(5)
+
+print "I'm waiting to find the description below"
+#x = Region(4,990,200,10).find("Bookmark_Description.png")
+assert exists("Bookmark_Description.png")
+print "I found it"
 
 
+
+
+#Test bookmark deletion
+click("File.png")
+click("Bookmarks.png")
+click("Delete_a_bookmark.png")
+Region(500,282,283,271).click("Test_Bookmark.png")
+click("ok.png")
+click("yes.png")
 
 
 end = time.time()
