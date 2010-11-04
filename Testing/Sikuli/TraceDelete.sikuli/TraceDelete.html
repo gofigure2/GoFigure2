@@ -90,11 +90,11 @@ start = time.time()
         <span class="skw">click</span>(<img src="delete.png" />)
         <span class="skw">wait</span>(<span class="dig">1</span>)
 
-<span class="kw">def</span> ChooseDeleteWidgetTest(Region):
-        <span class="skw">find</span>(Region)
-        a = getLastMatch()
-        a.inside().<span class="skw">click</span>(<img src="WidgetTestDelete.png" />)
-
+<span class="cmt">#def ChooseDeleteWidgetTest(Region):
+</span><span class="cmt">#       find(Region)
+</span><span class="cmt">#       a = getLastMatch()
+</span><span class="cmt">#       a.inside().click("WidgetTestDelete.png")
+</span>
 
 TraceObject = (<img src="SelectedColor.png" />,<img src="SelectedCellType.png" />,<img src="SelectedSubCellType.png" />)
 Action = (<span class="str">"Cancel"</span>,<span class="str">"DeleteFields"</span>)
@@ -117,8 +117,9 @@ Action = (<span class="str">"Cancel"</span>,<span class="str">"DeleteFields"</sp
                         <span class="skw">click</span>(<img src="ok.png" />)
                         <span class="skw">click</span>(<img src="yes.png" />)
                         <span class="cmt">#assert that previous state is there
-</span>
-end = time.time()
+</span>                        <span class="cmt">#assert selects the last selected one if not deleted, 
+</span>                        <span class="cmt">#       if deleted, select the 1rst one of the list.
+</span>end = time.time()
 elapsedSec = end - start
 <span class="kw">print</span> elapsedSec, <span class="str">"sec"</span>
 </pre>

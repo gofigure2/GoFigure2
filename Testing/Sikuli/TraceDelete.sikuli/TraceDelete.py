@@ -18,10 +18,10 @@ def ClickDelete(Region):
 	click("delete.png")
 	wait(1)
 
-def ChooseDeleteWidgetTest(Region):
-	find(Region)
-	a = getLastMatch()
-	a.inside().click("WidgetTestDelete.png")
+#def ChooseDeleteWidgetTest(Region):
+#	find(Region)
+#	a = getLastMatch()
+#	a.inside().click("WidgetTestDelete.png")
 	
 	
 TraceObject = ("SelectedColor.png","SelectedCellType.png","SelectedSubCellType.png")
@@ -45,7 +45,8 @@ for a in Action:
 			click("ok.png")
 			click("yes.png")
 			#assert that previous state is there
-
+			#assert selects the last selected one if not deleted, 
+			#	if deleted, select the 1rst one of the list.
 end = time.time()
 elapsedSec = end - start
 print elapsedSec, "sec"
