@@ -64,6 +64,7 @@ TrackContainer::
       {
       it->Nodes->Delete();
       }
+    /*
     if ( it->ActorXY )
       {
       it->ActorXY->Delete();
@@ -80,7 +81,7 @@ TrackContainer::
       {
       it->ActorXYZ->Delete();
       }
-
+*/
     ++it;
     }
 }
@@ -724,20 +725,29 @@ AddPointToCurrentElement(int iTime, double* iPoint)
       emit CurrentTrackToSave();
 
       //Create new actors (new address)
-      /*vtkProperty * trace_property = vtkProperty::New();
-      trace_property->SetColor( this->m_CurrentElement.rgba[0],
-                                this->m_CurrentElement.rgba[1],
-                                this->m_CurrentElement.rgba[2]);
-      trace_property->SetOpacity( this->m_CurrentElement.rgba[3] );*/
-/*
+      vtkProperty * trace_property = vtkProperty::New();
+      double test0 = this->m_CurrentElement.rgba[0];
+      double test1 = this->m_CurrentElement.rgba[1];
+      double test2 = this->m_CurrentElement.rgba[2];
+      double test3 = this->m_CurrentElement.rgba[3];
+
+      trace_property->SetColor( test0,
+                                test1,
+                                test2);
+      trace_property->SetOpacity( test3 );
+
       // Add contour
+      vtkPolyData* temp = vtkPolyData::New();
+      temp->DeepCopy( this->m_CurrentElement.Nodes );
       std::vector< vtkActor * > trackActors =
-          m_ImageView->AddContour(this->m_CurrentElement.Nodes, trace_property);
+          m_ImageView->AddContour( temp, trace_property );
+
+      temp->Delete();
 
       //update container actors addresses
       UpdateCurrentElementActorsFromVisu(trackActors);
-*/
-      //trace_property->Delete();
+
+      trace_property->Delete();
 
       // save in DB and insert current element
       return pointInserted;
