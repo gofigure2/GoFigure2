@@ -256,16 +256,16 @@ void QGoDBTrackManager::SaveTrackCurrentElement()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBTrackManager::SetColorCoding()
+void QGoDBTrackManager::SetColorCoding(bool IsChecked)
 {
   this->SetColorCodingTemplate<TrackContainer>(
-    this->m_TrackContainerInfoForVisu);
+    this->m_TrackContainerInfoForVisu,IsChecked);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBTrackManager::BackFromColorCoding()
+/*void QGoDBTrackManager::BackFromColorCoding()
 {
 	this->SetBackFromColorCodingTemplate<TrackContainer>(
     this->m_TrackContainerInfoForVisu);
-}
+}*/

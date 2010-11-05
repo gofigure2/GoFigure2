@@ -649,13 +649,16 @@ protected:
   \tparam ContourMeshContainer or TrackContainer
   */
   template<typename T>
-  void SetColorCodingTemplate( T* iContainerForVisu)
+  void SetColorCodingTemplate( T* iContainerForVisu,bool IsChecked)
   {
-    std::string ColumnName;
-    std::map<unsigned int, double> Values =
-      this->m_Table->GetTraceIDAndColumnsValues(this->m_TraceNameID,
-      ColumnName);
+    std::string ColumnName = "";
+    std::map<unsigned int, double> Values = std::map<unsigned int, double>();
+	if (IsChecked)
+	{
+      Values = this->m_Table->GetTraceIDAndColumnsValues(
+		  this->m_TraceNameID,ColumnName);
     //iContainerForVisu->SetColorCode<double>( ColumnName,Values );
+	}
     iContainerForVisu->SetColorCode( ColumnName,Values );
   }
 
@@ -664,13 +667,13 @@ protected:
   \param[in] iContainerForVisu common container for the visu and database
   \tparam ContourMeshContainer or TrackContainer
   */
-  template<typename T>
+  /*template<typename T>
   void SetBackFromColorCodingTemplate( T* iContainerForVisu)
   {
     std::string ColumnName = "";
 	std::map<unsigned int, double> Values = std::map<unsigned int, double>();
     iContainerForVisu->SetColorCode( ColumnName,Values );
-  }
+  }*/
 
   virtual void AddActionsContextMenu(QMenu *iMenu);
 
@@ -752,13 +755,13 @@ protected slots:
   \brief ColorCode the traces in the visualization base on a selected column
   in the table widget
   */
-  virtual void SetColorCoding()= 0;
+  virtual void SetColorCoding(bool IsChecked)= 0;
 
   /**
   \brief return to the color saved in the database for the traces in the
   visualization
   */
-  virtual void BackFromColorCoding() = 0;
+  //virtual void BackFromColorCoding() = 0;
 
 };
 #endif

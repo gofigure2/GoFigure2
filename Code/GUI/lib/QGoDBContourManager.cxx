@@ -334,16 +334,16 @@ void QGoDBContourManager::GetTracesInfoFromDBAndModifyContainerForVisu(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBContourManager::SetColorCoding()
+void QGoDBContourManager::SetColorCoding(bool IsChecked)
 {
   this->SetColorCodingTemplate<ContourMeshContainer>(
-    this->m_ContourContainerInfoForVisu);
+    this->m_ContourContainerInfoForVisu,IsChecked);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBContourManager::BackFromColorCoding()
+/*void QGoDBContourManager::BackFromColorCoding()
 {
 	this->SetBackFromColorCodingTemplate<ContourMeshContainer>(
     this->m_ContourContainerInfoForVisu);
-}
+}*/

@@ -293,9 +293,12 @@ void QGoDBTraceManager::AddGeneralActionsContextMenu(QMenu *iMenu)
   ColorMenu->addAction( tr("To the selected color for the checked %1s")
                     .arg( this->m_TraceName.c_str() ),
                     this, SLOT( ChangeTraceColor() ) );
-  ColorMenu->addAction( tr("Based on the selected column"),
-                    this, SLOT(SetColorCoding() ) );
-  ColorMenu->addAction( tr("Go back to the original color"),this, SLOT(BackFromColorCoding() ) );
+  //ColorMenu->addAction( tr("Based on the selected column"),
+  //                  this, SLOT(SetColorCoding() ) );
+  //ColorMenu->addAction( tr("Go back to the original color"),this, SLOT(BackFromColorCoding() ) );
+  QAction* ColorCoding = new QAction(tr("Based on the selected column"),ColorMenu);
+  ColorCoding->setCheckable(true);
+  QObject::connect(ColorCoding,SIGNAL(toggled ( bool ) ),this,SLOT(SetColorCoding(bool))); 
 
   iMenu->addAction(ColorMenu->menuAction());
 

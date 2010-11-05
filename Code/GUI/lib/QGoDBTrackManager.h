@@ -120,9 +120,9 @@ protected slots:
   void SaveTrackCurrentElement();
 
  //virtual pure method in QGoDBTraceManager
-  virtual void SetColorCoding();
+  virtual void SetColorCoding(bool IsChecked);
 
   //virtual pure method in QGoDBTraceManager
-  virtual void BackFromColorCoding();
+  //virtual void BackFromColorCoding();
 };
 #endif
