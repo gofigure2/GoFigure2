@@ -126,22 +126,31 @@ WatershedBasedCellSegmentation< TFeatureImage, TInputImage, TSegmentImage >::Gen
   output->DisconnectPipeline();
   
   SegmentImageSizeType size = output->GetLargestPossibleRegion().GetSize();
-  SegmentImageIndexType index;
+  SegmentImageIndexType index, index2;
+  SegmentImageSizeType size2;
   for( unsigned int i = 0; i < ImageDimension; i++ )
   {
     index[i] = static_cast<SegmentImageIndexValueType>( size[i]/2 );
+    index2[i] = 1;
+    size2[i] = size[i] - 2;
   }
   SegmentImagePixelType label = output->GetPixel( index );
   
+  SegmentImageRegionType region;
+  region.SetIndex( index2 );
+  region.SetSize( size2 );
+  
   std::cout << "label: " << label << std::endl;
   
+  SegmentIteratorType It( output, output->GetLargestPossibleRegion() );
+  It.GoToBegin();
   if ( label > 0 )
   {
-    SegmentIteratorType It( output, output->GetLargestPossibleRegion() );
-    It.GoToBegin();
     while( !It.IsAtEnd() )
     {
-      if (It.Get() ==  label )
+      index = It.GetIndex();
+      
+      if ( (It.Get() ==  label ) && ( region.IsInside( index ) ) )
       {
         It.Set( 1 );
       }
@@ -155,7 +164,33 @@ WatershedBasedCellSegmentation< TFeatureImage, TInputImage, TSegmentImage >::Gen
   }
   std::cout << "Computed watershed segmentation" << std::endl;
 
-  this->GraftOutput(output);
+//   InputImagePointer smooth;
+//   {
+//     AntiAliasFilterPointer antialiaser = AntiAliasFilterType::New();
+//     antialiaser->SetInput( output );//
+//     antialiaser->SetMaximumRMSError( 1.0 );
+//     antialiaser->SetNumberOfIterations( 100 );
+//     antialiaser->SetInterpolateSurfaceLocation( true );
+//     antialiaser->UseImageSpacingOn();
+//     antialiaser->Update();
+//     smooth = antialiaser->GetOutput();
+//     smooth->DisconnectPipeline();
+//   }
+//   
+//   InputIteratorType iIt( smooth, smooth->GetLargestPossibleRegion() );
+//   for( iIt.GoToBegin(), It.GoToBegin(); !It.IsAtEnd(); ++iIt, ++It )
+//   {
+//     if ( iIt.Get() > 0 )
+//     {
+//       It.Set( 1 );
+//     }
+//     else
+//     {
+//       It.Set( 0 );
+//     }
+//   }
+  
+  this->GraftOutput( output );
 }
 
 template< class TFeatureImage, class TInputImage, class TSegmentImage >

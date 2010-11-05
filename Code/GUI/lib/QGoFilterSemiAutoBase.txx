@@ -119,13 +119,14 @@ typename itk::Image< PixelType, VImageDimension >::Pointer
 QGoFilterSemiAutoBase::ExtractROI(typename itk::Image< PixelType, VImageDimension >::Pointer iInput,
                                   double *iCenter, double iRadius)
 {
-  typedef itk::Image< PixelType, VImageDimension > InternalImageType;
-  typedef typename InternalImageType::PointType    InternalPointType;
-  typedef typename InternalImageType::IndexType    InternalIndexType;
-  typedef typename InternalImageType::SizeType     InternalSizeType;
-  typedef typename InternalSizeType::SizeValueType InternalSizeValueType;
-  typedef typename InternalImageType::RegionType   InternalRegionType;
-  typedef typename InternalImageType::SpacingType  InternalSpacingType;
+  typedef itk::Image< PixelType, VImageDimension >    InternalImageType;
+  typedef typename InternalImageType::PointType       InternalPointType;
+  typedef typename InternalImageType::IndexType       InternalIndexType;
+  typedef typename InternalImageType::IndexValueType  InternalIndexValueType;
+  typedef typename InternalImageType::SizeType        InternalSizeType;
+  typedef typename InternalImageType::SizeValueType   InternalSizeValueType;
+  typedef typename InternalImageType::RegionType      InternalRegionType;
+  typedef typename InternalImageType::SpacingType     InternalSpacingType;
 
   if ( iInput.IsNull() )
     {
@@ -134,23 +135,43 @@ QGoFilterSemiAutoBase::ExtractROI(typename itk::Image< PixelType, VImageDimensio
 
   InternalSpacingType spacing = iInput->GetSpacing();
 
-  InternalIndexType start;
+  InternalIndexType startOfROI, endOfROI;
   InternalPointType origin;
   InternalSizeType  size;
+  InternalSizeType sizeOfLargeImage = iInput->GetLargestPossibleRegion().GetSize();
   size.Fill(0);
 
-  for ( unsigned int j = 0; j < VImageDimension; j++ )
+  unsigned int j;
+
+  for ( j = 0; j < VImageDimension; j++ )
     {
     size[j] =
       1 + 4. * static_cast< InternalSizeValueType >(iRadius / spacing[j]);
     origin[j] = iCenter[j] - 2 * iRadius;
     }
 
-  iInput->TransformPhysicalPointToIndex(origin, start);
+  iInput->TransformPhysicalPointToIndex(origin, startOfROI);
+
+  for ( j = 0; j < VImageDimension; j++ )
+    {
+    if ( startOfROI[j] < 0 )
+      {
+      startOfROI[j] = 0;
+      }
+
+    endOfROI[j] = startOfROI[j] +
+      static_cast< InternalIndexValueType >( size[j] ) - 1;
+
+    if ( endOfROI[j] >
+         static_cast< InternalIndexValueType >( sizeOfLargeImage[j] - 1 ) )
+      {
+      size[j] = sizeOfLargeImage[j] - startOfROI[j];
+      }
+  }
 
   InternalRegionType region;
   region.SetSize(size);
-  region.SetIndex(start);
+  region.SetIndex(startOfROI);
 
   typedef itk::RegionOfInterestImageFilter<
     InternalImageType, InternalImageType >              ROIFilterType;

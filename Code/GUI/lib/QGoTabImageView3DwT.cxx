@@ -33,6 +33,7 @@
 =========================================================================*/
 
 #include "QGoTabImageView3DwT.h"
+#include "QDebug"
 
 #include "QGoImageView3D.h"
 #include "QGoLUTDialog.h"
@@ -1035,10 +1036,10 @@ void QGoTabImageView3DwT::LoadChannelTime()
 
   if ( ok )
     {
-      std::cout << "user selected an item and pressed OK" << std::endl;
+      qDebug() << "user selected an item and pressed OK";
       // use the item
       int value = item.toInt(&ok, 10);
-      std::cout << "value: " << value << std::endl;
+      qDebug() << "value:" << value;
       // emit with channel...
       // keep track of channel of interest when we move through time
       m_ChannelOfInterest = value;
@@ -1047,7 +1048,7 @@ void QGoTabImageView3DwT::LoadChannelTime()
     }
   else
     {
-    std::cout << "user selected an item and pressed CANCEL" << std::endl;
+    qDebug() << "user selected an item and pressed CANCEL";
     }
 }
 //-------------------------------------------------------------------------
@@ -1899,13 +1900,13 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
         m_TCoord = iTimePoint;
         if(m_ChannelClassicMode)
           {
-          std::cout << "CLASSIC mode" << std::endl;
+          qDebug() << "CLASSIC mode";
           SetTimePointWithMegaCapture();
           }
         else
           {
-          std::cout << "TRACK mode" << std::endl;
-          std::cout << "CHANNEL: " << m_ChannelOfInterest << std::endl;
+          qDebug() << "TRACK mode";
+          qDebug() << "CHANNEL: " << m_ChannelOfInterest;
           SetTimePointWithMegaCaptureTimeChannels( m_ChannelOfInterest );
           }
         emit TimePointChanged(m_TCoord);
@@ -1914,7 +1915,7 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
     else
       {
       // no lsm reader, no file list. did you really provide any input?
-      std::cerr << "No lsm reader. No file list" << std::endl;
+      qWarning() << "No lsm reader. No file list";
       }
     }
 
@@ -2789,25 +2790,25 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord)
 
   // get the center of the mesh
   // pointer to double is deleted in AddPointToCurrentElement
-  double * point = new double[4];
-  std::vector< int > boundingBox = GetBoundingBox(iView);
-  for(int i = 0; i<3; ++i)
-    {
-    point[i] = (boundingBox[2*i] + boundingBox[2*i+1])/2;
-    }
-  point[3] = iTCoord;
+  //double * point = new double[4];
+  //std::vector< int > boundingBox = GetBoundingBox(iView);
+  //for(int i = 0; i<3; ++i)
+  //  {
+  //  point[i] = (boundingBox[2*i] + boundingBox[2*i+1])/2;
+  //  }
+  //point[3] = iTCoord;
 
   // Clean the actors (remove from visu + delete)
   // Update the track polydata with the new center
-  m_TrackContainer->AddPointToCurrentElement( point );
-  vtkPolyData* track = m_TrackContainer->GetCurrentElementNodes();
+  //m_TrackContainer->AddPointToCurrentElement( point );
+  //vtkPolyData* track = m_TrackContainer->GetCurrentElementNodes();
   // Create new actors and visu it if there is more than one point
-  if(track->GetNumberOfPoints() > 1)
-    {
-    std::vector< vtkActor * > trackActors =  VisualizeTrack(track);
+  //if(track->GetNumberOfPoints() > 1)
+  //  {
+  //  std::vector< vtkActor * > trackActors =  VisualizeTrack(track);
     // Add new actors in the container
-    m_TrackContainer->UpdateCurrentElementActorsFromVisu(trackActors);
-    }
+  //  m_TrackContainer->UpdateCurrentElementActorsFromVisu(trackActors);
+  //  }
  // m_TrackContainer->InsertCurrentElement();
 }
 //-------------------------------------------------------------------------
@@ -2961,7 +2962,7 @@ QGoTabImageView3DwT::ComputeMeshAttributes( vtkPolyData *iMesh,
         static_cast< int >( calculator->GetSumIntensity() );
       oAttributes.m_MeanIntensityMap[channelname] = calculator->GetMeanIntensity();
       oAttributes.m_Volume = calculator->GetPhysicalSize();
-      std::cout << "volume: " << oAttributes.m_Volume << std::endl;
+      qDebug() << "volume:" << oAttributes.m_Volume;
       oAttributes.m_Area = calculator->GetArea();
       oAttributes.m_Size = calculator->GetSize();
       }
