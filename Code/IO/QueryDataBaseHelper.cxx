@@ -70,8 +70,12 @@ std::pair< bool, vtkMySQLDatabase * > ConnectToServer(std::string ServerName, st
 std::pair< bool, vtkMySQLDatabase * > ConnectToDatabase(std::string ServerName, std::string login,
                                                         std::string Password, std::string DBName)
 {
+<<<<<<< HEAD
 //  std::pair< bool, vtkMySQLDatabase * > ConnectionDatabase(false, NULL);
   std::pair< bool, vtkMySQLDatabase * > ConnectionDatabase(false, (vtkMySQLDatabase*)0);
+=======
+  std::pair< bool, vtkMySQLDatabase * > ConnectionDatabase(false, (vtkMySQLDatabase *)0);
+>>>>>>> d1d06a8... fix error for msvc2010
   vtkMySQLDatabase *                    DatabaseConnector = vtkMySQLDatabase::New();
   DatabaseConnector->SetHostName( ServerName.c_str() );
   DatabaseConnector->SetUser( login.c_str() );
