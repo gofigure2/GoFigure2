@@ -2725,8 +2725,6 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord)
                                                 true);  // visible
   m_MeshContainer->InsertCurrentElement();
 
-  // UPDATE THE TRACKS IN THE CONTAINER
-
   // get the center of the mesh
   // pointer to double is deleted in AddPointToCurrentElement
   double* point = new double[3];
@@ -2741,22 +2739,9 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord)
     }
   time = iTCoord;
 
-  // Clean the actors (remove from visu + delete)
-  // Update the track polydata and the map with the new center
+  // Update the track polydata and the map, the actors and the visu
+  // with the new center
   m_TrackContainer->AddPointToCurrentElement( time, point);
-  vtkPolyData* track = m_TrackContainer->GetCurrentElementNodes();
-  // Create new actors and visu it if there is more than one point
-  if(track->GetNumberOfPoints() > 1)
-    {
-    // remove actors
-    m_TrackContainer->RemoveCurrentActorsFromVisu();
-    // create new actors and see it
-    std::vector< vtkActor * > trackActors =
-        VisualizeTrace(track,
-            this->m_TrackContainer->m_CurrentElement.rgba);
-    // Add new actors in the container
-    m_TrackContainer->UpdateCurrentElementActorsFromVisu(trackActors);
-    }
 }
 //-------------------------------------------------------------------------
 

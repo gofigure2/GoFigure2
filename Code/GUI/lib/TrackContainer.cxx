@@ -216,22 +216,22 @@ RemoveCurrentActorsFromVisu()
 {
   if ( m_CurrentElement.ActorXY )
     {
-    this->m_ImageView->RemoveActor(0, m_CurrentElement.ActorXY);
+    //this->m_ImageView->RemoveActor(0, m_CurrentElement.ActorXY);
     m_CurrentElement.ActorXY->Delete();
     }
   if ( m_CurrentElement.ActorXZ )
     {
-    this->m_ImageView->RemoveActor(1, m_CurrentElement.ActorXZ);
+    //this->m_ImageView->RemoveActor(1, m_CurrentElement.ActorXZ);
     m_CurrentElement.ActorXZ->Delete();
     }
   if ( m_CurrentElement.ActorYZ )
     {
-    this->m_ImageView->RemoveActor(2, m_CurrentElement.ActorYZ);
+    //this->m_ImageView->RemoveActor(2, m_CurrentElement.ActorYZ);
     m_CurrentElement.ActorYZ->Delete();
     }
   if ( m_CurrentElement.ActorXYZ )
     {
-    this->m_ImageView->RemoveActor(3, m_CurrentElement.ActorXYZ);
+    //this->m_ImageView->RemoveActor(3, m_CurrentElement.ActorXYZ);
     m_CurrentElement.ActorXYZ->Delete();
     }
 }
@@ -723,6 +723,23 @@ AddPointToCurrentElement(int iTime, double* iPoint)
 
       emit CurrentTrackToSave();
 
+      //Create new actors (new address)
+      /*vtkProperty * trace_property = vtkProperty::New();
+      trace_property->SetColor( this->m_CurrentElement.rgba[0],
+                                this->m_CurrentElement.rgba[1],
+                                this->m_CurrentElement.rgba[2]);
+      trace_property->SetOpacity( this->m_CurrentElement.rgba[3] );*/
+/*
+      // Add contour
+      std::vector< vtkActor * > trackActors =
+          m_ImageView->AddContour(this->m_CurrentElement.Nodes, trace_property);
+
+      //update container actors addresses
+      UpdateCurrentElementActorsFromVisu(trackActors);
+*/
+      //trace_property->Delete();
+
+      // save in DB and insert current element
       return pointInserted;
       }
 
@@ -822,6 +839,10 @@ UpdateTrackStructurePolyData( TrackStructure& iTrackStructure)
   //add the lines to the dataset
   polyData->SetLines(cells);
   //add the temporal information
+
+  /*
+   * \todo getPoint data Nicolas
+   */
   polyData->GetFieldData()->AddArray(newArray);
 
   iTrackStructure.Nodes->DeepCopy(polyData);
@@ -916,6 +937,7 @@ TrackContainer::
 UpdateElementVisibilityWithGivenTraceIDs( const QStringList& iList,
                                           const Qt::CheckState& iCheck )
 {
+  /*
   if( !iList.empty() )
     {
     MultiIndexContainerTraceIDIterator it;
@@ -984,7 +1006,7 @@ UpdateElementVisibilityWithGivenTraceIDs( const QStringList& iList,
       ++constIterator;
       }
     m_ImageView->UpdateRenderWindows();
-    }
+    }*/
 }
 //-------------------------------------------------------------------------
 
@@ -1045,20 +1067,7 @@ UpdateCurrentElementMap( std::map< unsigned int, double* > iMeshes)
     this->m_CurrentElement.Nodes = vtkPolyData::New();
     }
 
-  // should we do it here??
   UpdateTrackStructurePolyData(this->m_CurrentElement);
-
-  /*
-
-  LATER
-
-  // clean actors
-
-  // update visu
-
-  //add actors in the container
-
-  */
 
   emit CurrentTrackToSave();
 }
