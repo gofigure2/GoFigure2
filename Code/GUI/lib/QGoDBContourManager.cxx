@@ -79,11 +79,12 @@ void QGoDBContourManager::SetCollectionsTraceNames()
 
 //-------------------------------------------------------------------------
 void QGoDBContourManager::DisplayInfoAndLoadVisuContainerForAllContours(
-  vtkMySQLDatabase *iDatabaseConnector) //,unsigned int iTimePoint)
+  vtkMySQLDatabase *iDatabaseConnector,unsigned int iTimePoint)
 {
   //this->DisplayInfoForAllTraces(iDatabaseConnector);
   this->DisplayInfoAndLoadVisuContainerWithAllTraces< GoDBTWContainerForContourMesh >
-    (this->m_TWContainer, iDatabaseConnector); //,iTimePoint);
+    (this->m_TWContainer, iDatabaseConnector);
+  this->UpdateTracesVisibilityForGivenTimePoint(iTimePoint);
 }
 
 //-------------------------------------------------------------------------
@@ -94,12 +95,24 @@ void QGoDBContourManager::DisplayInfoForAllTraces(
 
 {
   this->DisplayInfoForAllTracesTemplate< GoDBTWContainerForContourMesh >(
-    this->m_TWContainer, iDatabaseConnector);
+    this->m_TWContainer, iDatabaseConnector,Qt::Unchecked);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBContourManager::UpdateTracesVisibilityForGivenTimePoint(unsigned int iTimePoint)
+{
+  std::list<unsigned int> ListContours = 
+    this->m_TraceContainerInfoForVisu->GetElementsTraceIDForGivenTimePoint(
+    iTimePoint);
+  this->m_Table->SetVisibleStateForListTraceIDs(
+    ListContours,Qt::Checked,this->m_TraceName);
 }
 
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+
 void QGoDBContourManager::DisplayInfoForLastCreatedTrace(
   vtkMySQLDatabase *iDatabaseConnector)
 {

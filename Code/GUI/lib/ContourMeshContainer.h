@@ -726,6 +726,12 @@ public:
     */
   std::list< unsigned int > GetHighlightedElementsTraceID();
 
+   /**
+    \return the traceIDs with TCoord = iTimePoint
+    \param[in] iTimePoint timepoint for which the traceIDs are needed
+    */
+  std::list< unsigned int > GetElementsTraceIDForGivenTimePoint(unsigned int iTimePoint);
+
   /**
     \brief Set property whenever the trace is highlighted
     \param[in] iProperty

@@ -332,7 +332,8 @@ protected:
   */
   template< typename T >
   void DisplayInfoForAllTracesTemplate(T *iTWContainer,
-                                       vtkMySQLDatabase *iDatabaseConnector)
+                                       vtkMySQLDatabase *iDatabaseConnector,
+                                       Qt::CheckState iState)
   {
     TWContainerType RowContainer =
       iTWContainer->GetContainerLoadedWithAllFromDB(iDatabaseConnector);
@@ -343,7 +344,7 @@ protected:
       RowContainer,
       iTWContainer->GetIndexForGroupColor(this->m_TraceName),
       iTWContainer->GetIndexForGroupColor(this->m_CollectionName),
-      this->m_TraceName, this->m_CollectionName, ColumnNames);
+      this->m_TraceName, this->m_CollectionName, ColumnNames,iState);
     this->m_Table->setSortingEnabled(true);
   }
 

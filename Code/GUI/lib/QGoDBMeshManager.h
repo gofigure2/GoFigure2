@@ -56,9 +56,8 @@ public:
                    QWidget *iparent);
   ~QGoDBMeshManager();
 
-  void DisplayInfoAndLoadVisuContainerForAllMeshes(vtkMySQLDatabase *iDatabaseConnector);
-
-  //unsigned int iTimePoint);
+  void DisplayInfoAndLoadVisuContainerForAllMeshes(
+    vtkMySQLDatabase *iDatabaseConnector,unsigned int iTimePoint);
 
   virtual void DisplayInfoForLastCreatedTrace(vtkMySQLDatabase *iDatabaseConnector);
 
@@ -145,5 +144,7 @@ protected:
                                    vtkMySQLDatabase *iDatabaseConnector,
                                    GoDBMeshRow & iMesh,
                                    GoFigureMeshAttributes *iMeshAttributes);
+
+  void UpdateTracesVisibilityForGivenTimePoint(unsigned int iTimePoint);
 };
 #endif

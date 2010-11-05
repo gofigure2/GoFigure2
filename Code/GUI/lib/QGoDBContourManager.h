@@ -87,7 +87,7 @@ public:
                                             vtkPolyData *iContourNodes,
                                             vtkMySQLDatabase *iDatabaseConnector);
 
-  void DisplayInfoAndLoadVisuContainerForAllContours(vtkMySQLDatabase *iDatabaseConnector);
+  void DisplayInfoAndLoadVisuContainerForAllContours(vtkMySQLDatabase *iDatabaseConnector,unsigned int iTimePoint);
 
   /**
   \brief is called when the user choses the change color action in the
@@ -142,6 +142,8 @@ protected:
                                            int iTraceID);
 
   virtual void DisplayInfoForAllTraces(vtkMySQLDatabase *iDatabaseConnector);
+
+  void UpdateTracesVisibilityForGivenTimePoint(unsigned int iTimePoint);
 
 protected slots:
   /**
