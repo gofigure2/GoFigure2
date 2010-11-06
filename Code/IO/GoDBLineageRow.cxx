@@ -64,8 +64,6 @@ GoDBLineageRow::GoDBLineageRow(vtkMySQLDatabase *DatabaseConnector,
 //-------------------------------------------------------------------------
 void GoDBLineageRow::InitializeMap()
 {
-  //GoDBTraceRow::InitializeMap();
-  //this->m_MapRow["LineageID"] = ConvertToString<int>(0);
   this->m_TableName = "lineage";
   this->m_TableIDName = "lineageID";
   this->m_CollectionName = "None";

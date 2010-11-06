@@ -38,7 +38,6 @@
 #include "vtkPolyData.h"
 
 #include "MegaCaptureHeaderReader.h"
-#include "vtkPolyDataMySQLTextWriter.h"
 
 #include "vtkMySQLDatabase.h"
 #include "QueryDataBaseHelper.h"

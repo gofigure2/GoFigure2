@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,44 +31,57 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-
-#ifndef __vtkPolyDataMySQLTextWriter_h
-#define __vtkPolyDataMySQLTextWriter_h
-
 #include <string>
-#include <sstream>
-
+#include "vtkPolyDataReader.h"
+#include "vtkPolyDataWriter.h"
 #include "vtkPolyData.h"
-#include "vtkMath.h"
-#include "vtkIdList.h"
+#include "vtkPolyDataMySQLMeshWriter.h"
+#include "vtkPolyDataMySQLMeshReader.h"
 
-#include "QGoIOConfigure.h"
-
-class QGOIO_EXPORT vtkPolyDataMySQLTextWriter:public vtkObject
+int main(int argc, char **argv)
 {
-public:
-  static vtkPolyDataMySQLTextWriter * New();
+  if ( argc != 2 )
+    {
+    std::cout << "Usage:" << std::endl;
+    std::cout << "./vtkPolyDataMySQLMeshWriter vtkfile" << std::endl;
+    return EXIT_FAILURE;
+    }
 
-  vtkTypeRevisionMacro(vtkPolyDataMySQLTextWriter, vtkObject);
+  vtkPolyDataReader *vtk_reader = vtkPolyDataReader::New();
+  vtk_reader->SetFileName(argv[1]);
+  vtk_reader->Update();
 
-  std::string GetMySQLText(vtkPolyData *iPolyData);
+  vtkPolyData *input = vtk_reader->GetOutput();
 
-  bool GetIsContour() const { return IsContour; }
-protected:
-  vtkPolyDataMySQLTextWriter();
-  ~vtkPolyDataMySQLTextWriter();
+  vtkPolyDataMySQLMeshWriter *convert_writer =
+      vtkPolyDataMySQLMeshWriter::New();
+  std::string polydata_string = convert_writer->GetMySQLText(input);
 
-  vtkPolyData *m_PolyData;
-  bool IsContour;
+  vtkPolyDataMySQLMeshReader *convert_reader =
+      vtkPolyDataMySQLMeshReader::New();
+  vtkPolyData *output = vtkPolyData::New();
+  output->DeepCopy(convert_reader->GetPolyData(polydata_string));
 
-  bool IsPlanarContour();
+  if ( output->GetNumberOfPoints() != input->GetNumberOfPoints() )
+    {
+    std::cout << "Number of points have changed!!!" << std::endl;
+    std::cout << "output->GetNumberOfPoints() " << output->GetNumberOfPoints()
+              << std::endl;
+    std::cout << "input->GetNumberOfPoints() " << input->GetNumberOfPoints()
+              << std::endl;
 
-  std::string ContourProcessing();
+    output->Delete();
+    convert_reader->Delete();
+    convert_writer->Delete();
+    vtk_reader->Delete();
 
-  std::string MeshProcessing();
+    return EXIT_FAILURE;
+    }
 
-private:
-  vtkPolyDataMySQLTextWriter(const vtkPolyDataMySQLTextWriter &);
-  void operator=(const vtkPolyDataMySQLTextWriter &);
-};
-#endif
+  output->Delete();
+  convert_reader->Delete();
+  convert_writer->Delete();
+  vtk_reader->Delete();
+
+  return EXIT_SUCCESS;
+}

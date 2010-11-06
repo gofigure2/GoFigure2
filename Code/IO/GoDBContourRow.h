@@ -37,14 +37,16 @@
 #include "ConvertToStringHelper.h"
 #include "GoDBTraceRow.h"
 #include "GoFigureMeshAttributes.h"
-//#include "GoDBCoordinateRow.h"
-//#include "vtkMySQLDatabase.h"
-//#include "vtkPolyData.h"
-//#include "vtkPolyDataMySQLTextWriter.h"
 
 #include <string>
 #include <map>
 
+/**
+\class GoDBContourRow
+\brief this class manages the map with the keys matching the fields of the
+Contour gofiguredatabase table and values of the map matching a row of the Contour table
+\ingroup DB
+*/
 class QGOIO_EXPORT GoDBContourRow:public GoDBTraceRow
 {
 public:
@@ -52,10 +54,23 @@ public:
 
   ~GoDBContourRow()
   {}
-
+  
+ /**
+  \brief fill the contour map with the values gotten from the visualization
+  \param[in] DatabaseConnector connection to the database
+  \param[in] TraceVisu vtkPolyData the points will be extracted from to create 
+  a string for "Points"
+  \param[in] Min coordinate row for the minimum of the bounding box
+  \param[in] Max coordinate row for the maximum of the bounding box
+  \param[in] ImgSessionID ID of the current imagingsession
+  */
   GoDBContourRow(vtkMySQLDatabase *DatabaseConnector, vtkPolyData *TraceVisu,
-                 GoDBCoordinateRow Min, GoDBCoordinateRow Max, unsigned int ImgSessionID,
-                 GoFigureMeshAttributes *iMeshAttributes = 0);
+                 GoDBCoordinateRow Min, GoDBCoordinateRow Max, unsigned int ImgSessionID);
+
+  /**
+  \brief 
+  \param[in] ImgSessionID ID of the current imagingsession
+  */
   GoDBContourRow(unsigned int ImagingSessionID);
 
   /**\brief fill the contour map with the values gotten from the visualization*/
@@ -66,13 +81,13 @@ public:
   already registered in the DB or -1 if not yet created*/
   //int DoesThisBoundingBoxContourExist(vtkMySQLDatabase* DatabaseConnector);
 
-  /**\brief save the contour in the database and return the ID of the new
-  created contour*/
-  int SaveInDB(vtkMySQLDatabase *DatabaseConnector);
+  //mother class method
+  virtual int SaveInDB(vtkMySQLDatabase *DatabaseConnector);
 
-  void SetCollectionID(int iCollectionID);
 
-  void ReInitializeMapAfterCast();
+  //void SetCollectionID(int iCollectionID);
+
+  //void ReInitializeMapAfterCast();
 
   void SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector, vtkPolyData *TraceVisu,
                              GoDBCoordinateRow Min, GoDBCoordinateRow Max);
@@ -80,6 +95,7 @@ public:
   //GoDBCoordinateRow Min, GoDBCoordinateRow Max, GoFigureMeshAttributes*
   // iMeshAttributes = 0);
 protected:
+  //mother class method
   virtual void InitializeMap();
 };
 #endif

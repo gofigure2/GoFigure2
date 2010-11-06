@@ -38,7 +38,10 @@
 
 #include "GoFigureFileInfoMultiIndexContainerHelper.h"
 #include "itkMegaCaptureReader.h"
+
 #include "ContourMeshContainer.h"
+#include "TrackContainer.h"
+
 #include "QGoPrintDatabase.h"
 
 #include "GoFigureMeshAttributes.h"
@@ -161,6 +164,11 @@ public:
     return m_MeshContainer;
   }
 
+  TrackContainer * GetTrackContainer()
+  {
+    return m_TrackContainer;
+  }
+
   template< class TIndex >
   void AddTraceFromNodesManager(
     typename ContourMeshContainer::MultiIndexContainer::index< TIndex >::type::iterator iIt,
@@ -176,6 +184,11 @@ public:
       {
       AddMeshFromNodes< TIndex >(iIt);
       }
+    // If we want to add a track
+    if ( iTrace.compare("track") == 0 )
+      {
+      AddMeshFromNodes< TIndex >(iIt);
+      }
   }
 
   template< class TIndex >
@@ -183,6 +196,13 @@ public:
     typename ContourMeshContainer::MultiIndexContainer::index< TIndex >::type::iterator iIt)
   {
     VisualizeMesh< TIndex >(iIt);
+  }
+
+  template< class TIndex >
+  void AddTrackFromNodes(
+    typename TrackContainer::MultiIndexContainer::index< TIndex >::type::iterator iIt)
+  {
+    VisualizeTrack< TIndex >(iIt);
   }
 
   //-------------------------------------------------------------------------
@@ -374,7 +394,7 @@ protected:
 
   ContourMeshContainer *m_ContourContainer;
   ContourMeshContainer *m_MeshContainer;
-  ContourMeshContainer *m_TrackContainer;
+  TrackContainer       *m_TrackContainer;
 
   bool m_TraceWidgetRequiered;
 
@@ -393,9 +413,9 @@ protected:
 
   void SaveContour(vtkPolyData *contour, vtkPolyData *contour_nodes);
 
-  std::vector< vtkActor * > VisualizeContour(vtkPolyData *contour);
-
+  std::vector< vtkActor * > VisualizeContour(vtkPolyData *iContour);
   std::vector< vtkActor * > VisualizeMesh(vtkPolyData *iMesh);
+  std::vector< vtkActor * > VisualizeTrack(vtkPolyData *iTrack);
 
   //int VisualizeContour(const int& iContourID,
   //    const unsigned int& iTCoord, vtkPolyData* contour,
@@ -461,6 +481,39 @@ protected:
       mesh_property->Delete();
 
       m_MeshContainer->UpdateVisualizationForGivenElement< TIndex >(iIt,
+                                                                    mesh_actor,
+                                                                    false,
+                                                                    visibility);
+      }
+  }
+
+  template< class TIndex >
+  void
+  VisualizeTrack(
+    typename TrackContainer::MultiIndexContainer::index< TIndex >::type::iterator iIt)
+  {
+    const double *iRgba = iIt->rgba;
+    vtkPolyData * iMesh = iIt->Nodes;
+
+    if ( iMesh )
+      {
+      bool visibility = true;
+
+      vtkProperty *mesh_property = vtkProperty::New();
+      mesh_property->SetColor(iRgba[0], iRgba[1], iRgba[2]);
+      mesh_property->SetOpacity(iRgba[3]);
+
+      /// \todo fix bug, shouldn't be required
+      std::vector< vtkActor * > mesh_actor;
+      mesh_actor.resize(4);
+      //if(iMesh->GetNumberOfPoints() > 1)
+      //  {
+        mesh_actor = this->AddContour(iMesh, mesh_property);
+      //  }
+
+      mesh_property->Delete();
+
+      m_TrackContainer->UpdateVisualizationForGivenElement< TIndex >(iIt,
                                                                     mesh_actor,
                                                                     false,
                                                                     visibility);

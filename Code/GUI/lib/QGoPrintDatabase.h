@@ -59,6 +59,7 @@
 #include "QGoDBContourManager.h"
 #include "QGoDBTrackManager.h"
 #include "ContourMeshContainer.h"
+#include "TrackContainer.h"
 /**
 \defgroup DB Database
 \defgroup GUI GUI
@@ -100,8 +101,8 @@ public:
 
   /** \brief Add the contours in the traceinfoForvisu and return all the
   contours data for the given timepoint, included the new ones*/
-  void AddContoursFromDBForAGivenTimePoint(
-    std::vector< int > iListIDs = std::vector< int >() );
+  //void AddContoursFromDBForAGivenTimePoint(
+    //std::vector< int > iListIDs = std::vector< int >() );
 
   /** \brief return the multi index container for the contours with the
   data from the database corresponding to iTimePoint and to the list
@@ -126,8 +127,8 @@ public:
 
   /** \brief Add the meshes in the trcaeinfoForvisu and return all the
   meshes data for the given timepoint, included the new ones*/
-  void
-  AddMeshesFromDBForAGivenTimePoint(std::vector< int > iListIDs);
+  //void
+ // AddMeshesFromDBForAGivenTimePoint(std::vector< int > iListIDs);
 
   /** \brief Return a vector of all the contours for the given timepoint*/
   std::vector< ContourMeshStructure > GetContoursForAGivenTimepoint(
@@ -251,12 +252,12 @@ public:
   void SetMeshesContainer(ContourMeshContainer *iMeshesContainer);
 
   /**
-  \brief set the pointer m_TraceInfoForVisu of the TracksManager to
+  \brief set the pointer m_TrackInfoForVisu of the TracksManager to
   iTracksContainer
   \param[in] iContainer pointer for the container of tracks
   for the visu
   */
-  void SetTracksContainer(ContourMeshContainer *iContainer);
+  void SetTracksContainer(TrackContainer *iContainer);
 
 public slots:
   void DeleteBookmarks();
@@ -328,8 +329,6 @@ protected:
   QAction *m_VisibilityAction;
 
   void OpenDBConnection();
-
-  void CloseDBConnection();
 
   /**
   \brief create the m_ContoursManager and its SLOT/SIGNAL connection
@@ -558,6 +557,9 @@ protected slots:
 
   void PassSelectedColorToContoursManager();
 
+  void PassDBConnectionToTracksManager();
+
+  void CloseDBConnection();
   /**
   \brief slot connected to the TraceColorToChange(0 emitted by the
   m_MeshesManager

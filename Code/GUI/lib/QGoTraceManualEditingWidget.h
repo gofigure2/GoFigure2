@@ -125,7 +125,7 @@ public:
  in the iListColors and select the color corresponding to iColortoSelect
  if not empty, if empty, select the 1rst one
  \param[in] iListColors list of colors with their names and QColor to be displayed
- \param[in] iColortoSelect name of the color to be selected in the combobox
+ \param[in] iColorToSelect name of the color to be selected in the combobox
  */
   void SetListColors(std::list< ItemColorComboboxData > iListColors,
                      std::string iColorToSelect = "");

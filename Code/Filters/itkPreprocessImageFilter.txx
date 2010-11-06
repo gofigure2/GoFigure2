@@ -31,16 +31,16 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __itkCellPreprocess_txx
-#define __itkCellPreprocess_txx
+#ifndef __itkPreprocessImageFilter_txx
+#define __itkPreprocessImageFilter_txx
 
-#include "itkCellPreprocess.h"
+#include "itkPreprocessImageFilter.h"
 
 namespace itk
 {
 template< class TInputImage, class TOutputImage >
-CellPreprocess< TInputImage, TOutputImage >
-::CellPreprocess():m_LargestCellRadius (4.0)
+PreprocessImageFilter< TInputImage, TOutputImage >
+::PreprocessImageFilter():m_LargestCellRadius (4.0)
 {
   this->Superclass::SetNumberOfRequiredInputs (1);
   this->Superclass::SetNumberOfRequiredOutputs (1);
@@ -50,7 +50,7 @@ CellPreprocess< TInputImage, TOutputImage >
 
 template< class TInputImage, class TOutputImage >
 void
-CellPreprocess< TInputImage, TOutputImage >::GenerateData()
+PreprocessImageFilter< TInputImage, TOutputImage >::GenerateData()
 {
   InputCastPointer m_CastInput = InputCastType::New();
 
@@ -94,7 +94,7 @@ CellPreprocess< TInputImage, TOutputImage >::GenerateData()
 
 template< class TInputImage, class TOutputImage >
 void
-CellPreprocess< TInputImage, TOutputImage >::PrintSelf(std::ostream & os, Indent indent) const
+PreprocessImageFilter< TInputImage, TOutputImage >::PrintSelf(std::ostream & os, Indent indent) const
 {
   Superclass::PrintSelf (os, indent);
   os << indent << "Class Name:        " << GetNameOfClass() << std::endl;

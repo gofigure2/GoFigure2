@@ -32,41 +32,59 @@
 
 =========================================================================*/
 
-#ifndef __vtkPolyDataMySQLTextReader_h
-#define __vtkPolyDataMySQLTextReader_h
+#include "vtkPolyDataMySQLTrackWriter.h"
 
-class vtkPolyData;
+#include <sstream>
 
-#include "vtkObject.h"
-#include <string>
+#include "vtkObjectFactory.h"
+#include "vtkMath.h"
+#include "vtkIdList.h"
 
-#include "QGoIOConfigure.h"
+#include "vtkIntArray.h"
+#include "vtkFieldData.h"
 
-class QGOIO_EXPORT vtkPolyDataMySQLTextReader:public vtkObject
+#include "vtkSmartPointer.h"
+
+vtkCxxRevisionMacro(vtkPolyDataMySQLTrackWriter, "$Revision$");
+vtkStandardNewMacro(vtkPolyDataMySQLTrackWriter);
+
+//--------------------------------------------------------------------------
+vtkPolyDataMySQLTrackWriter::
+vtkPolyDataMySQLTrackWriter()
+{}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+vtkPolyDataMySQLTrackWriter::
+~vtkPolyDataMySQLTrackWriter()
+{}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::string
+vtkPolyDataMySQLTrackWriter::
+GetMySQLText(vtkPolyData *iPolyData)
 {
-public:
-  static vtkPolyDataMySQLTextReader * New();
+  vtkIdType N = iPolyData->GetNumberOfPoints();
+  double*    pt = NULL;
+  int        time = 0;
 
-  vtkTypeRevisionMacro(vtkPolyDataMySQLTextReader, vtkObject);
+  std::stringstream oMyString;
 
-  vtkPolyData * GetPolyData(const std::string & iString);
+  oMyString << N << " ";
 
-  void SetIsContour(const bool &);
+  vtkSmartPointer<vtkPoints> points = iPolyData->GetPoints();
+  // Might create problems because of the safedowncast
+  vtkSmartPointer<vtkIntArray> temporalArray =
+      vtkIntArray::SafeDownCast(iPolyData->GetFieldData()->GetArray("TemporalInformation"));
 
-protected:
-  vtkPolyDataMySQLTextReader();
-  ~vtkPolyDataMySQLTextReader();
+  for ( vtkIdType i = 0; i < N; i++ )
+    {
+    pt = points->GetPoint(i);
+    time = temporalArray->GetValue(i);
+    oMyString << pt[0] << " " << pt[1] << " " << pt[2] << " " << time << " ";
+    }
 
-  std::string m_Text;
-  bool IsContour;
-
-  vtkPolyData * GetContour();
-
-  vtkPolyData * GetMesh();
-
-private:
-  vtkPolyDataMySQLTextReader(const vtkPolyDataMySQLTextReader &);
-  void operator=(const vtkPolyDataMySQLTextReader &);
-};
-
-#endif
+  return oMyString.str();
+}
+//--------------------------------------------------------------------------

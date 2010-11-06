@@ -13,7 +13,7 @@ CONFIGURE_FILE(${GOFIGURE2_SOURCE_DIR}/Code/IO/QGoIOConfigure.h.in
 
 SET( QGOIO_SRC
   ContourMeshStructure.cxx
-# TrackStructure.cxx
+  TrackStructure.cxx
   CreateDataBaseHelper.cxx
   GoDBChannelRow.cxx
   GoDBCollectionOfTraces.cxx
@@ -46,8 +46,12 @@ SET( QGOIO_SRC
   itkMegaCaptureImport.cxx
   itkMegaCaptureReader.cxx
   GoFigureFileInfoMultiIndexContainerHelper.cxx
-  vtkPolyDataMySQLTextReader.cxx
-  vtkPolyDataMySQLTextWriter.cxx
+  vtkPolyDataMySQLContourReader.cxx
+  vtkPolyDataMySQLMeshReader.cxx
+  vtkPolyDataMySQLTrackReader.cxx
+  vtkPolyDataMySQLContourWriter.cxx
+  vtkPolyDataMySQLMeshWriter.cxx
+  vtkPolyDataMySQLTrackWriter.cxx
   LSMToMegaCapture.cxx
   MeshTextFileImport.cxx
   TrackTextFileImport.cxx

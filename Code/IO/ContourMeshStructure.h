@@ -37,16 +37,30 @@
 
 class vtkActor;
 class vtkPolyData;
+class vtkProperty;
 
 #include <ostream>
 #include <vector>
 
 #include "QGoIOConfigure.h"
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#include "StructureHelper.h"
+#endif
+
+/**
+\defgroup Contour Contour
+\defgroup Mesh Mesh
+\defgroup Trace Trace
+\defgroup Structure Structure
+*/
+
+
 /**
  * \struct ContourMeshStructure
  * \brief  Structure which represent a contour or a mesh, and used for
  * interaction between Visualization and TableWidget
+ * \ingroup Contour Mesh Trace Structure
  *
  * \sa ContourMeshContainer
  */
@@ -149,6 +163,14 @@ struct QGOIO_EXPORT ContourMeshStructure {
   /** Destructor */
   ~ContourMeshStructure();
 
+  /** \brief Set Property for all actors
+      \param[in] iProperty */
+  void SetActorProperties( vtkProperty* iProperty ) const;
+
+  /** \brief Set Visibility for all actors
+      \param[in] iVisible */
+  void SetActorVisibility( const bool& iVisible ) const;
+
   /** Printing one element. std::cout << element << std::endl; */
   friend std::ostream & operator<<
     (std::ostream & os, const ContourMeshStructure & c)
@@ -169,17 +191,4 @@ struct QGOIO_EXPORT ContourMeshStructure {
     return os;
   }
 };
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-struct TraceID {};
-struct ActorXY {};
-struct ActorXZ {};
-struct ActorYZ {};
-struct ActorXYZ {};
-struct Nodes {};
-struct TCoord {};
-struct Highlighted {};
-struct Visible {};
-#endif
-
 #endif

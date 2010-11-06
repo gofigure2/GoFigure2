@@ -123,6 +123,9 @@ QGoMeshSegmentationBaseDockWidget::QGoMeshSegmentationBaseDockWidget(QWidget *iP
                     this, SIGNAL( SaveAndVisuMesh(vtkPolyData *) ) );
   QObject::connect( m_MeshSemiAutoSegmentation, SIGNAL( SegmentationFinished() ),
                     this, SIGNAL( ClearAllSeeds() ) );
+
+  // set default segmentation as semi auto segmentation
+  this->mode->setCurrentIndex(1);
 }
 
 //---------------------------------------------------------------------------//
