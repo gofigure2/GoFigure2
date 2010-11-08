@@ -1104,9 +1104,9 @@ void QGoPrintDatabase::GetContentAndDisplayAllTracesInfo(
   vtkMySQLDatabase *iDatabaseConnector)
 {
   this->m_ContoursManager->DisplayInfoAndLoadVisuContainerForAllContours(
-    iDatabaseConnector);
+    iDatabaseConnector,this->m_SelectedTimePoint);
   this->m_MeshesManager->DisplayInfoAndLoadVisuContainerForAllMeshes(
-    iDatabaseConnector);
+    iDatabaseConnector,this->m_SelectedTimePoint);
   this->m_TracksManager->DisplayInfoAndLoadVisuContainerForAllTracks(
     iDatabaseConnector);
 }

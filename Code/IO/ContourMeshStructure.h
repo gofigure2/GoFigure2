@@ -37,6 +37,7 @@
 
 class vtkActor;
 class vtkPolyData;
+class vtkProperty;
 
 #include <ostream>
 #include <vector>
@@ -161,6 +162,14 @@ struct QGOIO_EXPORT ContourMeshStructure {
 
   /** Destructor */
   ~ContourMeshStructure();
+
+  /** \brief Set Property for all actors
+      \param[in] iProperty */
+  void SetActorProperties( vtkProperty* iProperty ) const;
+
+  /** \brief Set Visibility for all actors
+      \param[in] iVisible */
+  void SetActorVisibility( const bool& iVisible ) const;
 
   /** Printing one element. std::cout << element << std::endl; */
   friend std::ostream & operator<<

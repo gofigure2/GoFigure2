@@ -254,11 +254,11 @@ QGoFilterWatershed::Filter3D(double *iCenter)
   filter->Update();
   SegmentImagePointer test3 = filter->GetOutput();
   
-//   typedef itk::ImageFileWriter< SegmentImageType > WriterType;
-//   WriterType::Pointer writer = WriterType::New();
-//   writer->SetFileName( "test.mha" );
-//   writer->SetInput( test3 );
-//   writer->Update();
+  typedef itk::ImageFileWriter< SegmentImageType > WriterType;
+  WriterType::Pointer writer = WriterType::New();
+  writer->SetFileName( "output.mha" );
+  writer->SetInput( test3 );
+  writer->Update();
 
   // Convert output
   //---------------------------------------------------------
