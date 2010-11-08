@@ -172,6 +172,9 @@ void QGoDBContourManager::ChangeTraceColor()
   this->UpdateTheTracesColor(this->m_DatabaseConnector,
                              this->m_SelectedColor);
 
+  /*
+   * \todo Nicolas - shouldn't "m_DatabaseConnector" be desallocated here...?
+   */
   emit DBConnectionNotNeededAnymore();
 }
 
