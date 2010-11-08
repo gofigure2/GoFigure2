@@ -506,22 +506,7 @@ public:
           temp_property = this->m_HighlightedProperty;
           }
 
-        if ( it->ActorXY )
-          {
-          it->ActorXY->SetProperty(temp_property);
-          }
-        if ( it->ActorXZ )
-          {
-          it->ActorXZ->SetProperty(temp_property);
-          }
-        if ( it->ActorYZ )
-          {
-          it->ActorYZ->SetProperty(temp_property);
-          }
-        if ( it->ActorXYZ )
-          {
-          it->ActorXYZ->SetProperty(temp_property);
-          }
+        it->SetActorProperties( temp_property );
 
         if ( it->Highlighted )
           {
@@ -571,10 +556,14 @@ public:
       IteratorType it = m_Container.get< TActor >().find(iActor);
 
       vtkProperty *temp_property = NULL;
+      bool t_visible = false;
 
       if ( it != m_Container.get< TActor >().end() )
         {
-        if ( it->ActorXY )
+        t_visible = !it->Visible;
+        it->SetActorVisibility( t_visible );
+
+        /*if ( it->ActorXY )
           {
           it->ActorXY->SetVisibility(!it->Visible);
           }
@@ -589,15 +578,15 @@ public:
         if ( it->ActorXYZ )
           {
           it->ActorXYZ->SetVisibility(!it->Visible);
-          }
+          }*/
 
         ContourMeshStructure tempStructure(*it);
-        tempStructure.Visible = !it->Visible;
+        tempStructure.Visible = t_visible;
 
         Qt::CheckState State;
 
         // Note: it->Highlighted is the status before picking the actor
-        if ( !it->Visible )
+        if ( t_visible )
           {
           State = Qt::Checked;
           }
@@ -638,7 +627,8 @@ public:
         {
         if ( it->Visible != iState )
           {
-          if ( it->ActorXY )
+          it->SetActorVisibility( iState );
+          /*if ( it->ActorXY )
             {
             it->ActorXY->SetVisibility(iState);
             }
@@ -653,7 +643,7 @@ public:
           if ( it->ActorXYZ )
             {
             it->ActorXYZ->SetVisibility(iState);
-            }
+            }*/
 
           ContourMeshStructure tempStructure(*it);
           tempStructure.Visible = iState;
@@ -715,24 +705,22 @@ public:
       {
       if ( it->Visible != iVisibility )
         {
+        it->SetActorVisibility( iVisibility );
+
         if ( it->ActorXY )
           {
-          it->ActorXY->SetVisibility(iVisibility);
           ( m_ImageView->*f )(0, it->ActorXY);
           }
         if ( it->ActorXZ )
           {
-          it->ActorXZ->SetVisibility(iVisibility);
           ( m_ImageView->*f )(1, it->ActorXZ);
           }
         if ( it->ActorYZ )
           {
-          it->ActorYZ->SetVisibility(iVisibility);
           ( m_ImageView->*f )(2, it->ActorYZ);
           }
         if ( it->ActorXYZ )
           {
-          it->ActorXYZ->SetVisibility(iVisibility);
           ( m_ImageView->*f )(3, it->ActorXYZ);
           }
 
@@ -784,6 +772,12 @@ public:
     \brief Get the list of highlighted elements TraceID.
     */
   std::list< unsigned int > GetHighlightedElementsTraceID();
+
+   /**
+    \return the traceIDs with TCoord = iTimePoint
+    \param[in] iTimePoint timepoint for which the traceIDs are needed
+    */
+  std::list< unsigned int > GetElementsTraceIDForGivenTimePoint(unsigned int iTimePoint);
 
   /**
     \brief Set property whenever the trace is highlighted

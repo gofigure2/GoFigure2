@@ -33,6 +33,7 @@
 =========================================================================*/
 
 #include "QGoTabImageView3DwT.h"
+#include "QDebug"
 
 #include "QGoImageView3D.h"
 #include "QGoLUTDialog.h"
@@ -1035,13 +1036,19 @@ void QGoTabImageView3DwT::LoadChannelTime()
 
   if ( ok )
     {
+      qDebug() << "user selected an item and pressed OK";
       // use the item
       int value = item.toInt(&ok, 10);
+      qDebug() << "value:" << value;
       // emit with channel...
       // keep track of channel of interest when we move through time
       m_ChannelOfInterest = value;
       SetTimePointWithMegaCaptureTimeChannels( value );
       Update();
+    }
+  else
+    {
+    qDebug() << "user selected an item and pressed CANCEL";
     }
 }
 //-------------------------------------------------------------------------
@@ -1897,10 +1904,13 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
         m_TCoord = iTimePoint;
         if(m_ChannelClassicMode)
           {
+          qDebug() << "CLASSIC mode";
           SetTimePointWithMegaCapture();
           }
         else
           {
+          qDebug() << "TRACK mode";
+          qDebug() << "CHANNEL: " << m_ChannelOfInterest;
           SetTimePointWithMegaCaptureTimeChannels( m_ChannelOfInterest );
           }
         emit TimePointChanged(m_TCoord);
@@ -1909,7 +1919,7 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
     else
       {
       // no lsm reader, no file list. did you really provide any input?
-      std::cerr << "No lsm reader. No file list" << std::endl;
+      qWarning() << "No lsm reader. No file list";
       }
     }
 
@@ -2874,8 +2884,6 @@ QGoTabImageView3DwT::ComputeMeshAttributes( vtkPolyData *iMesh,
 
   GoFigureMeshAttributes oAttributes;
 
-  if( iIntensity )
-    {
     for ( size_t i = 0; i < m_InternalImages.size(); i++ )
       {
       vtkSmartPointer< vtkImageExport > vtk_exporter =
@@ -2889,24 +2897,21 @@ QGoTabImageView3DwT::ComputeMeshAttributes( vtkPolyData *iMesh,
       calculator->SetImage( itk_importer->GetOutput() );
       calculator->Update();
 
-      QString     q_channelname = this->m_NavigationDockWidget->GetChannelName(i);
+      oAttributes.m_Volume = calculator->GetPhysicalSize();
+      qDebug() << "volume:" << oAttributes.m_Volume;
+      oAttributes.m_Area = calculator->GetArea();
+      oAttributes.m_Size = calculator->GetSize();
+
+  if(iIntensity )
+   {
+   QString     q_channelname = this->m_NavigationDockWidget->GetChannelName(i);
       std::string channelname = q_channelname.toStdString();
 
       oAttributes.m_TotalIntensityMap[channelname] =
         static_cast< int >( calculator->GetSumIntensity() );
       oAttributes.m_MeanIntensityMap[channelname] = calculator->GetMeanIntensity();
-      oAttributes.m_Volume = calculator->GetPhysicalSize();
-      oAttributes.m_Area = calculator->GetArea();
-      oAttributes.m_Size = calculator->GetSize();
-      }
+   }
     }
-  else
-    {
-    oAttributes.m_Volume = calculator->GetPhysicalSize();
-    oAttributes.m_Area = calculator->GetArea();
-    oAttributes.m_Size = calculator->GetSize();
-    }
-
   return oAttributes;
 }
 

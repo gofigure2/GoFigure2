@@ -93,7 +93,7 @@ void QGoDBTrackManager::DisplayInfoForAllTraces(
   vtkMySQLDatabase *iDatabaseConnector)
 {
   this->DisplayInfoForAllTracesTemplate< GoDBTWContainerForTrackLineage >(
-    this->m_TWContainer, iDatabaseConnector);
+    this->m_TWContainer, iDatabaseConnector,Qt::Unchecked);
 }
 //-------------------------------------------------------------------------
 

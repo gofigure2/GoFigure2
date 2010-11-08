@@ -134,10 +134,7 @@ void ContourMeshContainer::UpdateCurrentElementFromVisu(std::vector< vtkActor * 
 
   if ( iHighlighted )
     {
-    this->m_CurrentElement.ActorXY->SetProperty(this->m_HighlightedProperty);
-    this->m_CurrentElement.ActorXZ->SetProperty(this->m_HighlightedProperty);
-    this->m_CurrentElement.ActorYZ->SetProperty(this->m_HighlightedProperty);
-    this->m_CurrentElement.ActorXYZ->SetProperty(this->m_HighlightedProperty);
+    this->m_CurrentElement.SetActorProperties( this->m_HighlightedProperty );
     }
 }
 
@@ -288,22 +285,7 @@ ContourMeshContainer::UpdateElementHighlightingWithGivenTraceID(const unsigned i
       temp_property = this->m_HighlightedProperty;
       }
 
-    if ( it->ActorXY )
-      {
-      it->ActorXY->SetProperty(temp_property);
-      }
-    if ( it->ActorXZ )
-      {
-      it->ActorXZ->SetProperty(temp_property);
-      }
-    if ( it->ActorYZ )
-      {
-      it->ActorYZ->SetProperty(temp_property);
-      }
-    if ( it->ActorXYZ )
-      {
-      it->ActorXYZ->SetProperty(temp_property);
-      }
+    it->SetActorProperties( temp_property );
 
     if ( it->Highlighted )
       {
@@ -355,22 +337,7 @@ UpdateElementHighlightingWithGivenTraceIDs( const QStringList& iList,
           temp_property = this->m_HighlightedProperty;
           }
 
-        if ( it->ActorXY )
-          {
-          it->ActorXY->SetProperty(temp_property);
-          }
-        if ( it->ActorXZ )
-          {
-          it->ActorXZ->SetProperty(temp_property);
-          }
-        if ( it->ActorYZ )
-          {
-          it->ActorYZ->SetProperty(temp_property);
-          }
-        if ( it->ActorXYZ )
-          {
-          it->ActorXYZ->SetProperty(temp_property);
-          }
+        it->SetActorProperties( temp_property );
 
         if ( !iCheck )
           {
@@ -441,22 +408,7 @@ UpdateElementVisibilityWithGivenTraceIDs( const QStringList& iList,
             }
           }
 
-        if ( it->ActorXY )
-          {
-          it->ActorXY->SetVisibility(iCheck);
-          }
-        if ( it->ActorXZ )
-          {
-          it->ActorXZ->SetVisibility(iCheck);
-          }
-        if ( it->ActorYZ )
-          {
-          it->ActorYZ->SetVisibility(iCheck);
-          }
-        if ( it->ActorXYZ )
-          {
-          it->ActorXYZ->SetVisibility(iCheck);
-          }
+        it->SetActorVisibility( iCheck );
 
         ContourMeshStructure tempStructure(*it);
         tempStructure.Visible = iCheck;
@@ -513,22 +465,7 @@ UpdateElementVisibilityWithGivenTraceID(const unsigned int & iId)
         }
       }
 
-    if ( it->ActorXY )
-      {
-      it->ActorXY->SetVisibility(!it->Visible);
-      }
-    if ( it->ActorXZ )
-      {
-      it->ActorXZ->SetVisibility(!it->Visible);
-      }
-    if ( it->ActorYZ )
-      {
-      it->ActorYZ->SetVisibility(!it->Visible);
-      }
-    if ( it->ActorXYZ )
-      {
-      it->ActorXYZ->SetVisibility(!it->Visible);
-      }
+    it->SetActorVisibility( !it->Visible );
 
     ContourMeshStructure tempStructure(*it);
     tempStructure.Visible = !it->Visible;
@@ -660,6 +597,27 @@ ContourMeshContainer::GetHighlightedElementsTraceID()
     }
   return oList;
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list< unsigned int >
+ContourMeshContainer:: GetElementsTraceIDForGivenTimePoint(unsigned int iTimePoint)
+{
+  MultiIndexContainerTCoordIterator it0, it1;
+
+  boost::tuples::tie(it0, it1) =
+    m_Container.get< TCoord >().equal_range(iTimePoint);
+
+  std::list< unsigned int > oList;
+  while ( it0 != it1 )
+    {
+    oList.push_back(it0->TraceID);
+    ++it0;
+    }
+  return oList;
+
+}
+//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 std::list< unsigned int >
@@ -711,24 +669,8 @@ ContourMeshContainer::SetHighlightedProperty(vtkProperty *iProperty)
     {
     if ( it0->Highlighted )
       {
-      if ( it0->ActorXY )
-        {
-        it0->ActorXY->SetProperty(this->m_HighlightedProperty);
-        }
-      if ( it0->ActorXZ )
-        {
-        it0->ActorXZ->SetProperty(this->m_HighlightedProperty);
-        }
-      if ( it0->ActorYZ )
-        {
-        it0->ActorYZ->SetProperty(this->m_HighlightedProperty);
-        }
-      if ( it0->ActorXYZ )
-        {
-        it0->ActorXYZ->SetProperty(this->m_HighlightedProperty);
-        }
+      it0->SetActorVisibility( this->m_HighlightedProperty );
       }
-
     ++it0;
     }
 }
