@@ -106,7 +106,7 @@ void QGoDBContourManager::UpdateTracesVisibilityForGivenTimePoint(
   unsigned int iTimePoint)
 {
   std::list<unsigned int> ListContours = 
-    this->m_TraceContainerInfoForVisu->GetElementsTraceIDForGivenTimePoint(
+    this->m_ContourContainerInfoForVisu->GetElementsTraceIDForGivenTimePoint(
     iTimePoint);
   this->m_Table->SetVisibleStateForListTraceIDs(
     ListContours,Qt::Checked,this->m_TraceName);

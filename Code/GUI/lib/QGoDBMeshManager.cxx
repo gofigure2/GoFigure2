@@ -101,7 +101,7 @@ void QGoDBMeshManager::DisplayInfoForAllTraces(
 void QGoDBMeshManager::UpdateTracesVisibilityForGivenTimePoint(unsigned int iTimePoint)
 {
   std::list<unsigned int> ListMeshes = 
-    this->m_TraceContainerInfoForVisu->GetElementsTraceIDForGivenTimePoint(
+    this->m_MeshContainerInfoForVisu->GetElementsTraceIDForGivenTimePoint(
     iTimePoint);
   this->m_Table->SetVisibleStateForListTraceIDs(
     ListMeshes,Qt::Checked,this->m_TraceName);
