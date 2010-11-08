@@ -37,7 +37,7 @@
 #include "vtkActor.h"
 
 // reconstruct the polydata
-#include "vtkFieldData.h"
+#include "vtkPointData.h"
 #include "vtkPolyLine.h"
 #include "vtkCellArray.h"
 
@@ -720,7 +720,7 @@ AddPointToCurrentElement(int iTime, double* iPoint)
       //add the points to the dataset
       this->m_CurrentElement.Nodes->SetPoints(newPoints);
       //add the temporal information
-      this->m_CurrentElement.Nodes->GetFieldData()->AddArray(newArray);
+      this->m_CurrentElement.Nodes->GetPointData()->AddArray(newArray);
 
       //Create new actors (new address)
       vtkProperty * trace_property = vtkProperty::New();
@@ -849,7 +849,7 @@ UpdateTrackStructurePolyData( TrackStructure& iTrackStructure)
   /*
    * \todo getPoint data Nicolas
    */
-  polyData->GetFieldData()->AddArray(newArray);
+  polyData->GetPointData()->AddArray(newArray);
 
   iTrackStructure.Nodes->DeepCopy(polyData);
 }

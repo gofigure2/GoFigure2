@@ -39,7 +39,7 @@
 #include "vtkCellArray.h"
 #include "vtkPolyData.h"
 #include "vtkIntArray.h"
-#include "vtkFieldData.h"
+#include "vtkPointData.h"
 
 #include "vtkPolyDataMapper.h"
 #include "vtkActor.h"
@@ -127,7 +127,7 @@ GetPolyData(const std::string & iString)
     polyData->SetLines(cells);
 
     //add the temporal information
-    polyData->GetFieldData()->AddArray(temporalArray);
+    polyData->GetPointData()->AddArray(temporalArray);
 
     return polyData;
     }
