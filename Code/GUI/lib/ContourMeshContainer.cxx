@@ -597,6 +597,27 @@ ContourMeshContainer::GetHighlightedElementsTraceID()
     }
   return oList;
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list< unsigned int >
+ContourMeshContainer:: GetElementsTraceIDForGivenTimePoint(unsigned int iTimePoint)
+{
+  MultiIndexContainerTCoordIterator it0, it1;
+
+  boost::tuples::tie(it0, it1) =
+    m_Container.get< TCoord >().equal_range(iTimePoint);
+
+  std::list< unsigned int > oList;
+  while ( it0 != it1 )
+    {
+    oList.push_back(it0->TraceID);
+    ++it0;
+    }
+  return oList;
+
+}
+//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 std::list< unsigned int >
