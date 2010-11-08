@@ -188,6 +188,10 @@ void QGoPrintDatabase::OpenDBConnection()
     this->m_DatabaseConnector = OpenDatabaseConnection(m_Server, m_User,
                                                        m_Password, m_DBName);
     }
+  else
+    {
+    std::cout << "connector already exists!!!" << std::endl;
+    }
 }
 
 //--------------------------------------------------------------------------
@@ -198,6 +202,10 @@ void QGoPrintDatabase::CloseDBConnection()
   if ( CloseDatabaseConnection(m_DatabaseConnector) )
     {
     this->m_DatabaseConnector = NULL;
+    }
+  else
+    {
+    std::cout << "connector not deleted!!!" << std::endl;
     }
 }
 

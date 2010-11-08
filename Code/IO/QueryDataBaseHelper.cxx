@@ -119,7 +119,7 @@ vtkMySQLDatabase * OpenDatabaseConnection(
 bool CloseDatabaseConnection(
   vtkMySQLDatabase *DatabaseConnector)
 {
-  if ( DatabaseConnector != 0 )
+  if ( DatabaseConnector != NULL )
     {
     DatabaseConnector->Close();
     DatabaseConnector->Delete();

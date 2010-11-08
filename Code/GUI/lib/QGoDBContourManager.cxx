@@ -158,7 +158,11 @@ void QGoDBContourManager::SetSelectedColor(NameWithColorData iSelectedColor)
 }
 
 //-------------------------------------------------------------------------
-
+/*
+ * \todo Nicolas
+ * is it safe?? emit and process we don't know if the emit did what it was
+ *  supposed to do
+ */
 //-------------------------------------------------------------------------
 void QGoDBContourManager::ChangeTraceColor()
 {

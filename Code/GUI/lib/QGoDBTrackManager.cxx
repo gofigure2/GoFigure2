@@ -226,11 +226,16 @@ void QGoDBTrackManager::UpdateCurrentElementTrackContainer(
     iTrackID);
 }
 //-------------------------------------------------------------------------
-
+/*
+ * \todo Nicolas
+ * is it safe?? emit and process we don't know if the emit did what it was
+ *  supposed to do
+ */
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::SaveTrackCurrentElement()
 {
   emit NeedToGetDatabaseConnection();
+
   GoDBTrackRow TrackToSave(this->m_ImgSessionID);
   unsigned int TrackID = this->m_TrackContainerInfoForVisu->m_CurrentElement.TraceID;
   if (TrackID != 0)
@@ -257,7 +262,10 @@ void QGoDBTrackManager::SaveTrackCurrentElement()
   ListTrackID.push_back(TrackID);
   UpdateBoundingBoxes(this->m_DatabaseConnector,ListTrackID);
 
-  //emit DBConnectionNotNeededAnymore();
+  // Pointer not usefull anymore
+  this->m_DatabaseConnector = NULL;
+  //Free memory
+  emit DBConnectionNotNeededAnymore();
 
 }
 //-------------------------------------------------------------------------
