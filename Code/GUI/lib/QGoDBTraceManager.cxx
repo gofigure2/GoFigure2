@@ -69,7 +69,9 @@ void QGoDBTraceManager::SetInfo(unsigned int iImgSessionID, QWidget *iParent)
   this->m_CollectionOfID = this->GetTheNameIDFromName(this->m_CollectionOf);
 
   this->m_CollectionOfTraces = new GoDBCollectionOfTraces(this->m_CollectionName,
-                                                          this->m_TraceName, this->m_CollectionOf, iImgSessionID);
+                                                          this->m_TraceName,
+                                                          this->m_CollectionOf,
+                                                          iImgSessionID);
 
   this->m_Table = new QGoTableWidget(iParent);
   QObject::connect( this->m_Table, SIGNAL( CheckedRowsChanged(int) ),

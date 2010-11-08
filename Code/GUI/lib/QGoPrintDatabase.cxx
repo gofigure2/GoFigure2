@@ -183,7 +183,7 @@ void QGoPrintDatabase::SetDatabaseVariables(
 //--------------------------------------------------------------------------
 void QGoPrintDatabase::OpenDBConnection()
 {
-  if ( m_DatabaseConnector == 0 )
+  if ( m_DatabaseConnector == NULL )
     {
     this->m_DatabaseConnector = OpenDatabaseConnection(m_Server, m_User,
                                                        m_Password, m_DBName);
@@ -197,7 +197,7 @@ void QGoPrintDatabase::CloseDBConnection()
 {
   if ( CloseDatabaseConnection(m_DatabaseConnector) )
     {
-    this->m_DatabaseConnector = 0;
+    this->m_DatabaseConnector = NULL;
     }
 }
 
@@ -505,6 +505,7 @@ QGoPrintDatabase::GetListCollectionIDFromDB(vtkMySQLDatabase *iDatabaseConnector
 void QGoPrintDatabase::SaveNewCollectionFromTraceWidgetInDBAndTW()
 {
   this->OpenDBConnection();
+
   std::string  TraceName = this->m_TraceWidget->GetTraceName();
   unsigned int NewCollectionID = 0;
   if ( TraceName != "contour" && TraceName != "mesh" )
@@ -530,6 +531,8 @@ void QGoPrintDatabase::SaveNewCollectionFromTraceWidgetInDBAndTW()
     NewCollectionData.second = this->m_SelectedColorData.second;
     this->m_TraceWidget->AddANewCollectionID(NewCollectionData);
     }
+
+  this->CloseDBConnection();
 }
 
 //-------------------------------------------------------------------------
@@ -1267,6 +1270,7 @@ void QGoPrintDatabase::SetContoursManager()
 void QGoPrintDatabase::SetMeshesManager()
 {
   this->m_MeshesManager = new QGoDBMeshManager(m_ImgSessionID, this);
+
   QObject::connect( this->m_MeshesManager,
                     SIGNAL( TraceColorToChange() ),
                     this, SLOT( ChangeMeshColor() ) );
@@ -1290,19 +1294,21 @@ void QGoPrintDatabase::SetMeshesManager()
 void QGoPrintDatabase::SetTracksManager()
 {
   this->m_TracksManager = new QGoDBTrackManager(m_ImgSessionID, this);
+
   QObject::connect( this->m_TracksManager,
                     SIGNAL( TraceColorToChange() ),
                     this, SLOT( ChangeTrackColor() ) );
+
   QObject::connect( this->m_TracksManager, SIGNAL( TracesToDelete() ),
                     this, SLOT( DeleteTracks() ) );
+
+  QObject::connect( this->m_TracksManager, SIGNAL( NeedToGetDatabaseConnection() ),
+                    this, SLOT( PassDBConnectionToTracksManager() ) );
 
   QObject::connect( this->m_TracksManager,
                     SIGNAL(DBConnectionNotNeededAnymore() ),
                     this,
                     SLOT(CloseDBConnection() ) );
-
-  QObject::connect( this->m_TracksManager, SIGNAL( NeedToGetDatabaseConnection() ),
-                    this, SLOT( PassDBConnectionToTracksManager() ) );
 }
 //--------------------------------------------------------------------------
 

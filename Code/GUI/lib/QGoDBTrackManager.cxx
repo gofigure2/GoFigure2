@@ -42,7 +42,8 @@ QGoDBTrackManager::QGoDBTrackManager(int iImgSessionID, QWidget *iparent):
 {
   this->SetInfo(iImgSessionID, iparent);
   this->m_TWContainer = new GoDBTWContainerForTrackLineage(this->m_TraceName,
-                                                           this->m_CollectionName, iImgSessionID);
+                                                           this->m_CollectionName,
+                                                           iImgSessionID);
 }
 
 //-------------------------------------------------------------------------
@@ -71,9 +72,9 @@ void QGoDBTrackManager::SetTracksInfoContainerForVisu(
                     SLOT(SaveTrackCurrentElement()));
 
   QObject::connect(this->m_TrackContainerInfoForVisu,
-					SIGNAL(NeedMeshesInfoForImportedTrack(unsigned int) ),
-					this,
-					SIGNAL(NeedMeshesInfoForImportedTrack(unsigned int) ) );
+                   SIGNAL(NeedMeshesInfoForImportedTrack(unsigned int) ),
+                   this,
+                   SIGNAL(NeedMeshesInfoForImportedTrack(unsigned int) ) );
 }
 //-------------------------------------------------------------------------
 
@@ -255,7 +256,8 @@ void QGoDBTrackManager::SaveTrackCurrentElement()
   std::list<unsigned int> ListTrackID;
   ListTrackID.push_back(TrackID);
   UpdateBoundingBoxes(this->m_DatabaseConnector,ListTrackID);
-  emit DBConnectionNotNeededAnymore();
+
+  //emit DBConnectionNotNeededAnymore();
 
 }
 //-------------------------------------------------------------------------
