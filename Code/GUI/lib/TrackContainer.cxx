@@ -82,6 +82,17 @@ TrackContainer::
       it->ActorXYZ->Delete();
       }
 
+    std::map< unsigned int,double*>::const_iterator begin = it->PointsMap.begin();
+    std::map< unsigned int,double*>::const_iterator end = it->PointsMap.end();
+    // if there is a point, delete it and return true
+    if ( begin != end )
+      {
+      // free memory
+      delete[] begin->second;
+
+      ++begin;
+      }
+
     ++it;
     }
 }
@@ -208,34 +219,6 @@ RemoveActorsWithGivenTimePoint(const unsigned int & iT)
 /// TODO FILL IT
 }
 
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-TrackContainer::
-RemoveCurrentActorsFromVisu()
-{
-  if ( m_CurrentElement.ActorXY )
-    {
-    //this->m_ImageView->RemoveActor(0, m_CurrentElement.ActorXY);
-    m_CurrentElement.ActorXY->Delete();
-    }
-  if ( m_CurrentElement.ActorXZ )
-    {
-    //this->m_ImageView->RemoveActor(1, m_CurrentElement.ActorXZ);
-    m_CurrentElement.ActorXZ->Delete();
-    }
-  if ( m_CurrentElement.ActorYZ )
-    {
-    //this->m_ImageView->RemoveActor(2, m_CurrentElement.ActorYZ);
-    m_CurrentElement.ActorYZ->Delete();
-    }
-  if ( m_CurrentElement.ActorXYZ )
-    {
-    //this->m_ImageView->RemoveActor(3, m_CurrentElement.ActorXYZ);
-    m_CurrentElement.ActorXYZ->Delete();
-    }
-}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -445,40 +428,6 @@ DeleteElement(const unsigned int & iId)
   MultiIndexContainerTraceIDIterator
     it = m_Container.get< TraceID >().find(iId);
   return DeleteElement(it);
-  /*if ( it != m_Container.get< TraceID >().end() )
-    {
-    if ( it->ActorXY )
-      {
-      this->m_ImageView->RemoveActor(0, it->ActorXY);
-      it->ActorXY->Delete();
-      }
-    if ( it->ActorXZ )
-      {
-      this->m_ImageView->RemoveActor(1, it->ActorXZ);
-      it->ActorXZ->Delete();
-      }
-    if ( it->ActorYZ )
-      {
-      this->m_ImageView->RemoveActor(2, it->ActorYZ);
-      it->ActorYZ->Delete();
-      }
-    if ( it->ActorXYZ )
-      {
-      this->m_ImageView->RemoveActor(3, it->ActorXYZ);
-      it->ActorXYZ->Delete();
-      }
-
-    if ( it->Nodes )
-      {
-      it->Nodes->Delete();
-      }
-
-    m_Container.get< TraceID >().erase(it);
-
-    m_ImageView->UpdateRenderWindows();
-    return true;
-    }
-  return false;*/
 }
 
 //-------------------------------------------------------------------------
@@ -774,9 +723,7 @@ DeletePointFromCurrentElement(int iTime)
   return pointDeleted;
 }
 //-------------------------------------------------------------------------
-/*
- * \todo Nicolas - might not be efficient enough
- */
+
 //-------------------------------------------------------------------------
 bool
 TrackContainer::
