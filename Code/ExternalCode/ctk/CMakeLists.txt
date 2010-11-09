@@ -16,26 +16,32 @@ SET( ctk_SRCS
   ctkRangeSlider.cpp
   ctkDoubleSlider.cpp
   ctkDoubleRangeSlider.cpp
+  ctkRangeSlider.h
+  ctkDoubleSlider.h
+  ctkDoubleRangeSlider.h
   )
 
-ADD_LIBRARY( ctk
+#Headers that should run through moc
+SET(ctk_MOC_SRCS
+  ctkRangeSlider.h
+  ctkDoubleSlider.h
+  ctkDoubleRangeSlider.h
+  )
+
+ # Wrap
+QT4_WRAP_CPP(MY_MOC_CPP ${ctk_MOC_SRCS})
+
+ADD_LIBRARY(ctk
   ${ctk_SRCS}
+  ${MY_MOC_CPP}
   )
-
-SET(ctk_LIBS
-  vtkCommon
-  vtkRendering
-  vtkWidgets
-  vtkVolumeRendering
-  vtkHybrid
-  vtkImaging
-  )
+  
+  INCLUDE(${QT_USE_FILE})
+  ADD_DEFINITIONS(${QT_DEFINITIONS})
 
 TARGET_LINK_LIBRARIES( ctk
-  ${ctk_LIBS}
-  )
-
-SET_TARGET_PROPERTIES( ctk PROPERTIES VERSION ${GOFIGURE2_LIB_VERSION} SOVERSION ${GOFIGURE2_LIB_VERSION} )
+  ${QT_LIBRARIES}
+)
 
 # Runtime
 INSTALL( TARGETS ctk
