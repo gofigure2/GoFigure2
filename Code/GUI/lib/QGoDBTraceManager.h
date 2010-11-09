@@ -37,6 +37,7 @@
 
 #include <QObject>
 #include <QMessageBox>
+#include <QMenu>
 #include "QGoTableWidget.h"
 #include "GoDBCollectionOfTraces.h"
 #include "GoDBTableWidgetContainer.h"
@@ -285,6 +286,7 @@ protected:
   QGoTableWidget *        m_Table;
   GoDBCollectionOfTraces *m_CollectionOfTraces;
   vtkMySQLDatabase *      m_DatabaseConnector;
+  bool                    IsColorCodingOn;
 
   /**
   \brief Virtual pure method: get the data needed from the database and
@@ -654,12 +656,13 @@ protected:
   {
     std::string ColumnName = "";
     std::map<unsigned int, double> Values = std::map<unsigned int, double>();
-	if (IsChecked)
-	  {
-    Values = this->m_Table->GetTraceIDAndColumnsValues(
-		  this->m_TraceNameID,ColumnName);
-	  }
+	  if (IsChecked)
+	    {
+      Values = this->m_Table->GetTraceIDAndColumnsValues(
+		    this->m_TraceNameID,ColumnName);
+	    }
     iContainerForVisu->SetColorCode<double>( ColumnName,Values );
+    IsColorCodingOn = IsChecked;
   }
 
   /**

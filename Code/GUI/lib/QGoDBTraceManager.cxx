@@ -298,7 +298,15 @@ void QGoDBTraceManager::AddGeneralActionsContextMenu(QMenu *iMenu)
   //ColorMenu->addAction( tr("Go back to the original color"),this, SLOT(BackFromColorCoding() ) );
   QAction* ColorCoding = new QAction(tr("Based on the selected column"),ColorMenu);
   ColorCoding->setCheckable(true);
-  QObject::connect(ColorCoding,SIGNAL(toggled ( bool ) ),this,SLOT(SetColorCoding(bool))); 
+  ColorCoding->setChecked(IsColorCodingOn);
+  //m_ColorCoding->setChecked(false);
+  //this->m_ColorCoding->setChecked(true);
+  //QObject::connect(m_ColorCoding,SIGNAL(toggled (bool) ),m_ColorCoding,SLOT(setChecked(bool) ));
+  QObject::connect(ColorCoding,SIGNAL(triggered ( bool ) ),this,SLOT(SetColorCoding(bool))); 
+  //QObject::connect(m_ColorCoding,SIGNAL(triggered(bool) ),this,SLOT(toggle() ));
+ // QObject::connect(m_ColorCoding,SIGNAL(triggered( bool ) ),this,SLOT(SetColorCoding(bool))); 
+
+
   ColorMenu->addAction(ColorCoding);
 
   iMenu->addAction(ColorMenu->menuAction());
