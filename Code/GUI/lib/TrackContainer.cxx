@@ -989,12 +989,12 @@ TrackContainer::
 UpdateCurrentElementMap( std::map< unsigned int, double* > iMeshes)
 {
   // add points to existing map, not erasing
-  std::map< unsigned int,double*>::iterator iMesh = this->m_CurrentElement.PointsMap.begin();
-  std::map< unsigned int,double*>::iterator endMesh = this->m_CurrentElement.PointsMap.end();
+  std::map< unsigned int,double*>::iterator beginMesh = iMeshes.begin();
+  std::map< unsigned int,double*>::iterator endMesh = iMeshes.end();
 
-  while( iMesh != endMesh)
+  while( beginMesh != endMesh)
     {
-    bool addPoint = this->m_CurrentElement.InsertElement( iMesh->first, iMesh->second );
+    bool addPoint = this->m_CurrentElement.InsertElement( beginMesh->first, beginMesh->second );
 
     if(addPoint)
       {
@@ -1003,21 +1003,21 @@ UpdateCurrentElementMap( std::map< unsigned int, double* > iMeshes)
     else
       {
       // there is already sth at this time point, delete the point (should replace??)
-      delete[] iMesh->second;
-      this->m_CurrentElement.PointsMap.erase(iMesh);
+      delete[] beginMesh->second;
+      //this->m_CurrentElement.PointsMap.erase(beginMesh);
       }
-
-    ++iMesh;
+    ++beginMesh;
     }
 
   // add new one
-  this->m_CurrentElement.PointsMap = iMeshes;
+  //this->m_CurrentElement.PointsMap = iMeshes;
 
   // Create a new polydata if there is no polydata
   if(!this->m_CurrentElement.Nodes)
     {
-
     this->m_CurrentElement.Nodes = vtkPolyData::New();
+    // Create actors
+    //...
     }
 
   UpdateTrackStructurePolyData(this->m_CurrentElement);
