@@ -1004,20 +1004,42 @@ UpdateCurrentElementMap( std::map< unsigned int, double* > iMeshes)
       {
       // there is already sth at this time point, delete the point (should replace??)
       delete[] beginMesh->second;
-      //this->m_CurrentElement.PointsMap.erase(beginMesh);
       }
     ++beginMesh;
     }
 
-  // add new one
-  //this->m_CurrentElement.PointsMap = iMeshes;
-
-  // Create a new polydata if there is no polydata
+  // Create a new polydata and new actors if it is a new track
   if(!this->m_CurrentElement.Nodes)
     {
+    //Create new polydata (new address)
     this->m_CurrentElement.Nodes = vtkPolyData::New();
-    // Create actors
-    //...
+
+    UpdateTrackStructurePolyData(this->m_CurrentElement);
+
+    //Create new actors (new address)
+    vtkProperty * trace_property = vtkProperty::New();
+    double test0 = this->m_CurrentElement.rgba[0];
+    double test1 = this->m_CurrentElement.rgba[1];
+    double test2 = this->m_CurrentElement.rgba[2];
+    double test3 = this->m_CurrentElement.rgba[3];
+
+    trace_property->SetColor( test0,
+                              test1,
+                              test2);
+    trace_property->SetOpacity( test3 );
+
+    // Add contour
+    std::vector< vtkActor * > trackActors =
+        m_ImageView->AddContour( this->m_CurrentElement.Nodes, trace_property );
+
+    //update container actors addresses
+    UpdateCurrentElementActorsFromVisu(trackActors);
+
+    trace_property->Delete();
+
+    emit CurrentTrackToSave();
+
+    return;
     }
 
   UpdateTrackStructurePolyData(this->m_CurrentElement);
