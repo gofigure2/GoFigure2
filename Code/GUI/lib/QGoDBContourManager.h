@@ -143,7 +143,7 @@ protected:
 
   virtual void DisplayInfoForAllTraces(vtkMySQLDatabase *iDatabaseConnector);
 
-  void UpdateTracesVisibilityForGivenTimePoint(unsigned int iTimePoint);
+  //void UpdateTracesVisibilityForGivenTimePoint(unsigned int iTimePoint);
 
 protected slots:
   /**

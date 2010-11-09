@@ -127,3 +127,10 @@ void GoDBTWContainerForContourMesh::FillColumnShowHide(vtkMySQLDatabase* iDataba
     this->FillRowContainer(Values,Fields,"ColumnNameTableWidget");
     }
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+int GoDBTWContainerForContourMesh::GetIndexShowColumn()
+{
+  return this->GetIndexInsideRowContainer("Show");
+}

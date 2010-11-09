@@ -78,7 +78,8 @@ public:
                       std::vector< int > iIndexColorCollectionRowContainer,
                       std::string iTraceName, std::string iCollectionName,
                       std::list< std::string > iColumnNames,
-                      Qt::CheckState iState);
+                      Qt::CheckState iState,
+                      int iIndexShowColumn = 0);
 
   /** \brief Insert a new row and fill the cells with the data
  contained in the RowContainer with the link: iLinkToRowContainer*/
@@ -247,6 +248,10 @@ protected:
   /** \brief Put checkboxes in the column "Show" */
   void SetVisibleColumn(unsigned int iNbOfRows, unsigned int StartedRow,
     Qt::CheckState iState = Qt::Checked);
+
+  void SetVisibleColumn(unsigned int iNbOfRows,
+                                      unsigned int StartedRows,
+                                      std::vector<std::string> iListState);
 
   void SetColorForTable(TWContainerType iTWRowContainer,
                         std::vector< int > iIndexColorRowContainer,

@@ -145,6 +145,6 @@ protected:
                                    GoDBMeshRow & iMesh,
                                    GoFigureMeshAttributes *iMeshAttributes);
 
-  void UpdateTracesVisibilityForGivenTimePoint(unsigned int iTimePoint);
+ // void UpdateTracesVisibilityForGivenTimePoint(unsigned int iTimePoint);
 };
 #endif
