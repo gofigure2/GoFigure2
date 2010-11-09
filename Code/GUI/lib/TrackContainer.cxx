@@ -64,7 +64,6 @@ TrackContainer::
       {
       it->Nodes->Delete();
       }
-
     if ( it->ActorXY )
       {
       it->ActorXY->Delete();
@@ -644,7 +643,7 @@ GetHighlightedProperty()
 //-------------------------------------------------------------------------
 bool
 TrackContainer::
-AddPointToCurrentElement(int iTime, double* iPoint)
+AddPointToCurrentElement(int iTime, double* iPoint, bool iReconstructPolyData)
 {
   //add the point in the map
   bool pointInserted = this->m_CurrentElement.InsertElement( iTime, iPoint );
@@ -679,7 +678,10 @@ AddPointToCurrentElement(int iTime, double* iPoint)
       return pointInserted;
       }
 
-    UpdateTrackStructurePolyData( this->m_CurrentElement );
+    if(iReconstructPolyData)
+      {
+      UpdateTrackStructurePolyData( this->m_CurrentElement );
+      }
 
     emit CurrentTrackToSave();
     }
@@ -690,13 +692,13 @@ AddPointToCurrentElement(int iTime, double* iPoint)
 //-------------------------------------------------------------------------
 bool
 TrackContainer::
-DeletePointFromCurrentElement(int iTime)
+DeletePointFromCurrentElement(int iTime, bool iReconstructPolyData)
 {
   //add the point in the map
   bool pointDeleted = this->m_CurrentElement.DeleteElement( iTime );
 
-  // build the new
-  if(pointDeleted)
+  // build the new polydata if a point has been deleted
+  if(pointDeleted && iReconstructPolyData)
     {
     UpdateTrackStructurePolyData( this->m_CurrentElement );
     }
@@ -993,7 +995,7 @@ UpdateCurrentElementMap( std::map< unsigned int, double* > iMeshes)
 
     UpdateTrackStructurePolyData(this->m_CurrentElement);
 
-    CreateCurrentTraceActors();
+    CreateCurrentTrackActors();
 
     emit CurrentTrackToSave();
 
@@ -1031,5 +1033,31 @@ CreateCurrentTrackActors()
   UpdateCurrentElementActorsFromVisu(trackActors);
 
   trace_property->Delete();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+DeleteListFromCurrentElement( std::list<int> iTimeList )
+{
+  std::list<int>::iterator begin = iTimeList.begin();
+  std::list<int>::iterator end = iTimeList.end();
+
+  while( begin != end )
+    {
+    bool succeed = DeletePointFromCurrentElement( *begin,
+                                                   false ); // update the polydata
+
+    if(succeed)
+      {
+      std::cout << "Time point: " << *begin << " can't be deleted" << std::endl;
+      }
+
+    ++begin;
+    }
+
+  // Reconstruct the polydata
+  UpdateTrackStructurePolyData( this->m_CurrentElement );
 }
 //-------------------------------------------------------------------------

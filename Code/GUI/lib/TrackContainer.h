@@ -703,15 +703,17 @@ public:
     exists at a current time point.
     \param[in] iPoint new point to be added in the track
     \param[in] iTime time coordinate of the new point
+    \param[in] iReconstructPolyData should we reconstruct the polydata
   */
-  bool AddPointToCurrentElement(int iTime, double* iPoint);
+  bool AddPointToCurrentElement(int iTime, double* iPoint, bool iReconstructPolyData = true);
 
   /**
     \brief Delete a point from the current track.
     \param[in] iTime time point to clear
+    \param[in] iReconstructPolyData should we reconstruct the polydata
     \return true: a point has been deleted, false: no point has been deleted
   */
-  bool DeletePointFromCurrentElement(int iTime);
+  bool DeletePointFromCurrentElement(int iTime, bool iReconstructPolyData = true);
 
   /**
     \brief Replace a point from the current track.
@@ -767,6 +769,13 @@ public:
    *  the current actors
    */
   void CreateCurrentTrackActors();
+
+  /*
+   * \brief Delete the points which are at the selected time point from the
+   * current element.
+   * \param[in] iTimeList List of the time points to be deleted.
+   */
+  void DeleteListFromCurrentElement( std::list<int> iTimeList );
 
 public slots:
 
