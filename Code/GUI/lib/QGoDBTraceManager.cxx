@@ -39,7 +39,7 @@
 #include <QMessageBox>
 
 QGoDBTraceManager::QGoDBTraceManager():
-  m_Table(NULL), m_CollectionOfTraces(NULL),m_DatabaseConnector(NULL)//, m_TraceContainerInfoForVisu(NULL)
+  m_Table(NULL), m_CollectionOfTraces(NULL),m_DatabaseConnector(NULL),IsColorCodingOn(false)//, m_TraceContainerInfoForVisu(NULL)
 {}
 
 //-------------------------------------------------------------------------
@@ -292,21 +292,11 @@ void QGoDBTraceManager::AddGeneralActionsContextMenu(QMenu *iMenu)
 
   ColorMenu->addAction( tr("To the selected color for the checked %1s")
                     .arg( this->m_TraceName.c_str() ),
-                    this, SLOT( ChangeTraceColor() ) );
-  //ColorMenu->addAction( tr("Based on the selected column"),
-  //                  this, SLOT(SetColorCoding() ) );
-  //ColorMenu->addAction( tr("Go back to the original color"),this, SLOT(BackFromColorCoding() ) );
+                    this, SLOT( ChangeTraceColor() ) ); 
   QAction* ColorCoding = new QAction(tr("Based on the selected column"),ColorMenu);
   ColorCoding->setCheckable(true);
   ColorCoding->setChecked(IsColorCodingOn);
-  //m_ColorCoding->setChecked(false);
-  //this->m_ColorCoding->setChecked(true);
-  //QObject::connect(m_ColorCoding,SIGNAL(toggled (bool) ),m_ColorCoding,SLOT(setChecked(bool) ));
-  QObject::connect(ColorCoding,SIGNAL(triggered ( bool ) ),this,SLOT(SetColorCoding(bool))); 
-  //QObject::connect(m_ColorCoding,SIGNAL(triggered(bool) ),this,SLOT(toggle() ));
- // QObject::connect(m_ColorCoding,SIGNAL(triggered( bool ) ),this,SLOT(SetColorCoding(bool))); 
-
-
+  QObject::connect(ColorCoding,SIGNAL(triggered ( bool ) ),this,SLOT( SetColorCoding(bool) ) ); 
   ColorMenu->addAction(ColorCoding);
 
   iMenu->addAction(ColorMenu->menuAction());
