@@ -78,11 +78,11 @@ void QGoDBMeshManager::SetCollectionsTraceNames()
 
 //-------------------------------------------------------------------------
 void QGoDBMeshManager::DisplayInfoAndLoadVisuContainerForAllMeshes(
-  vtkMySQLDatabase *iDatabaseConnector)
+  vtkMySQLDatabase *iDatabaseConnector,unsigned int iTimePoint)
 {
-  this->DisplayInfoAndLoadVisuContainerWithAllTraces< 
-    GoDBTWContainerForMesh >(this->m_TWContainer,iDatabaseConnector);
-
+  this->DisplayInfoAndLoadVisuContainerWithAllTraces< GoDBTWContainerForMesh >
+    (this->m_TWContainer, iDatabaseConnector);
+  this->UpdateTracesVisibilityForGivenTimePoint(iTimePoint);
 }
 
 //-------------------------------------------------------------------------
@@ -92,7 +92,19 @@ void QGoDBMeshManager::DisplayInfoForAllTraces(
   vtkMySQLDatabase *iDatabaseConnector)
 {
   this->DisplayInfoForAllTracesTemplate< GoDBTWContainerForMesh >(
-    this->m_TWContainer, iDatabaseConnector);
+    this->m_TWContainer, iDatabaseConnector,Qt::Unchecked);
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBMeshManager::UpdateTracesVisibilityForGivenTimePoint(unsigned int iTimePoint)
+{
+  std::list<unsigned int> ListMeshes = 
+    this->m_MeshContainerInfoForVisu->GetElementsTraceIDForGivenTimePoint(
+    iTimePoint);
+  this->m_Table->SetVisibleStateForListTraceIDs(
+    ListMeshes,Qt::Checked,this->m_TraceName);
 }
 //-------------------------------------------------------------------------
 

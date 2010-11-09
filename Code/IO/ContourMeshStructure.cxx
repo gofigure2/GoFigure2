@@ -36,6 +36,8 @@
 
 #include <iostream>
 #include "vtkPolyData.h"
+#include "vtkProperty.h"
+#include "vtkActor.h"
 
 //--------------------------------------------------------------------------
 ContourMeshStructure::ContourMeshStructure():TraceID(0),
@@ -188,5 +190,50 @@ int ContourMeshStructure::GetDirection()
 
   return oDir;
 }
+//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+void ContourMeshStructure::SetActorProperties( vtkProperty* iProperty ) const
+  {
+  if( iProperty )
+    {
+    if( this->ActorXY )
+      {
+      this->ActorXY->SetProperty( iProperty );
+      }
+    if( this->ActorXZ )
+      {
+      this->ActorXZ->SetProperty( iProperty );
+      }
+    if( this->ActorYZ )
+      {
+      this->ActorYZ->SetProperty( iProperty );
+      }
+    if( this->ActorXYZ )
+      {
+      this->ActorXYZ->SetProperty( iProperty );
+      }
+    }
+  }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void ContourMeshStructure::SetActorVisibility( const bool& iVisible ) const
+{
+  if ( this->ActorXY )
+    {
+    this->ActorXY->SetVisibility(iVisible);
+    }
+  if ( this->ActorXZ )
+    {
+    this->ActorXZ->SetVisibility(iVisible);
+    }
+  if ( this->ActorYZ )
+    {
+    this->ActorYZ->SetVisibility(iVisible);
+    }
+  if ( this->ActorXYZ )
+    {
+    this->ActorXYZ->SetVisibility(iVisible);
+    }
+}

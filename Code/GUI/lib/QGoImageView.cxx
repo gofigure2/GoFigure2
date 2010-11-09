@@ -32,6 +32,7 @@
 
 =========================================================================*/
 #include "QGoImageView.h"
+#include "QDebug"
 
 #include "QVTKWidget.h"
 #include "vtkEventQtSlotConnect.h"
@@ -288,7 +289,7 @@ QGoImageView::AddActor(const int & iId, vtkActor *iActor)
 void
 QGoImageView::DefaultMode()
 {
-  //std::cout << "Default Mode" << std::endl;
+  qDebug() << "Default Mode";
   //Change cursor
   ChangeCursorShape(Qt::ArrowCursor);
 
@@ -300,7 +301,7 @@ QGoImageView::DefaultMode()
 void
 QGoImageView::ZoomMode()
 {
-  //std::cout << "Zoom Mode" << std::endl;
+  qDebug() << "Zoom Mode";
   //Change cursors
   QCursor zoomCursor(QPixmap( QString::fromUtf8(":/fig/zoom.png") ), -1, -1);
   ChangeCursorShape(zoomCursor);
@@ -313,7 +314,7 @@ QGoImageView::ZoomMode()
 void
 QGoImageView::PanMode()
 {
-  //std::cout << "Pan Mode" << std::endl;
+  qDebug() << "Pan Mode";
   //Change cursor
   ChangeCursorShape(Qt::OpenHandCursor);
 
@@ -410,7 +411,7 @@ QGoImageView::SetInterpolate(const int & val)
 void
 QGoImageView::EnableContourPickingMode()
 {
-  //std::cout << "Contour Picking Mode" << std::endl;
+  qDebug() << "Contour Picking Mode";
   //Change cursor
   ChangeCursorShape(Qt::ArrowCursor);
   // Change mode in the collection
@@ -463,7 +464,7 @@ QGoImageView::InitializeSeedWidget()
 void
 QGoImageView::EnableSeedWidget(bool iEnable)
 {
- // std::cout << "Seed ---Widget---" << iEnable << std::endl;
+  qDebug() << "Seed ---Widget---" << iEnable;
 
   if ( iEnable )
     {
@@ -499,7 +500,7 @@ QGoImageView::GetAllSeeds()
       // Get indexes of the closest point
       int *index = this->m_Pool->GetItem(i)->GetImageCoordinatesFromWorldCoordinates(worldPosition);
       // Convert it back into world position
-     // std::cout << "SLICE NUMBER: " << this->m_Pool->GetItem(i)->GetSlice() << std::endl;
+      //qDebug() << "SLICE NUMBER: " << this->m_Pool->GetItem(i)->GetSlice();
       double spacing[3] = { 0., 0., 0. };
       this->m_Pool->GetItem(i)->GetInput()->GetSpacing(spacing);
       double correctedPosition[3];
@@ -507,9 +508,9 @@ QGoImageView::GetAllSeeds()
       correctedPosition[1] = static_cast< double >( index[1] ) * spacing[1];
       correctedPosition[2] = static_cast< double >( index[2] ) * spacing[2];
 
-     // std::cout << "CORRECTED: " << correctedPosition[0] << " - "
+      //qDebug() << "CORRECTED: " << correctedPosition[0] << " - "
       //          << correctedPosition[1] << " - "
-       //         << correctedPosition[2] << std::endl;
+      //          << correctedPosition[2];
 
       oPoints->InsertNextPoint(correctedPosition);
       delete[] index;
@@ -556,7 +557,7 @@ QGoImageView::InitializeDistanceWidget()
 void
 QGoImageView::EnableDistanceWidget(bool iActive)
 {
-  //std::cout << "Distance ---Widget---" << iActive << std::endl;
+  qDebug() << "Distance ---Widget---" << iActive;
 
   if ( iActive )
     {
@@ -591,7 +592,7 @@ QGoImageView::InitializeAngleWidget()
 void
 QGoImageView::EnableAngleWidget(bool iActive)
 {
-  //std::cout << "Angle ---Widget---" << iActive << std::endl;
+  qDebug() << "Angle ---Widget---" << iActive;
 
   if ( iActive )
     {
@@ -644,7 +645,7 @@ QGoImageView::InitializeContourWidget()
 void
 QGoImageView::EnableContourWidget(bool iActivate)
 {
-  //std::cout << "Contour ---Widget---" << iActivate << std::endl;
+  qDebug() << "Contour ---Widget---" << iActivate;
 
   if ( iActivate )
     {

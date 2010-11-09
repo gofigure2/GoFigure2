@@ -676,7 +676,7 @@ AddPointToCurrentElement(double* iPoint)
     //add the temporal information
     this->m_CurrentElement.Nodes->GetFieldData()->AddArray(newArray);
 
-    //ShowPolyData(this->m_CurrentElement.Nodes);
+   // ShowPolyData(this->m_CurrentElement.Nodes);
 
     delete iPoint;
 

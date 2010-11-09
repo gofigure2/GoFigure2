@@ -85,7 +85,8 @@ public:
                       std::vector< int > iIndexColorTraceRowContainer,
                       std::vector< int > iIndexColorCollectionRowContainer,
                       std::string iTraceName, std::string iCollectionName,
-                      std::list< std::string > iColumnNames);
+                      std::list< std::string > iColumnNames,
+                      Qt::CheckState iState);
 
   /** 
   \brief Insert a new row and fill the cells with the data
@@ -190,6 +191,15 @@ public:
   */
   std::map<unsigned int, double> GetTraceIDAndColumnsValues(
     std::string iTraceIDName, std::string &ioColumnName);
+
+/**
+  \brief update the checkboxes and icon of the visible column for the iListTraceIDs following iState
+  \param[in] iListTraceIDs list of the IDs for the traces with visiblity to be set to iState
+  \param[in] iState state to which the column IsVisible needs to be modified for iListTraceIDs
+  \param[in] iTraceName name of the trace
+  */
+  void SetVisibleStateForListTraceIDs( std::list<unsigned int> iListTraceIDs,
+    Qt::CheckState iState,std::string iTraceName);
 
 public slots:
   
@@ -354,8 +364,10 @@ protected:
   \brief Put checkboxes and icons in the column "Show" 
   \param[in] iNbOfRows number of rows for which to put a checkbox and an icon
   \param[in] iStartedRow index of the first row where to put a checkbox and an icon
+  \param[in] iState state to which the checkboxes need to be set, default parameter to checked
   */
-  void SetVisibleColumn(unsigned int iNbOfRows, unsigned int iStartedRow);
+  void SetVisibleColumn(unsigned int iNbOfRows, unsigned int iStartedRow,
+	Qt::CheckState iState = Qt::Checked);
 
   /**
   \brief get the rgba values from the iTWRowContainer and display them in the
