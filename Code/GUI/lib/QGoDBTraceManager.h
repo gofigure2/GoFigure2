@@ -367,7 +367,7 @@ protected:
                                        vtkMySQLDatabase *iDatabaseConnector)
   {
     TWContainerType RowContainer =
-      iTWContainer->GetContainerLoadedWithAllFromDB(iDatabaseConnector);
+    iTWContainer->GetContainerLoadedWithAllFromDB(iDatabaseConnector);
 
     std::list< std::string > ColumnNames =
       iTWContainer->GetListColumnsNamesForTableWidget();

@@ -1305,22 +1305,22 @@ QGoImageView3D::UpdateCurrentActorSelection(vtkObject *caller)
 
   if ( t == m_Pool->GetItem(0)->GetInteractorStyle() )
     {
-    std::cout << "in XY" << std::endl;
+    //std::cout << "in XY" << std::endl;
     emit SelectionXYChanged();
     }
   else if ( t == m_Pool->GetItem(1)->GetInteractorStyle() )
     {
-    std::cout << "in XZ" << std::endl;
+    //std::cout << "in XZ" << std::endl;
     emit SelectionXZChanged();
     }
   else if ( t == m_Pool->GetItem(2)->GetInteractorStyle() )
     {
-    std::cout << "in YZ" << std::endl;
+   // std::cout << "in YZ" << std::endl;
     emit SelectionYZChanged();
     }
   else if ( t == (vtkInteractorStyleImage2D *)this->m_View3D->GetInteractorStyle3D() )
     {
-    std::cout << "in 3D" << std::endl;
+    //std::cout << "in 3D" << std::endl;
     emit SelectionXYZChanged();
     }
   else

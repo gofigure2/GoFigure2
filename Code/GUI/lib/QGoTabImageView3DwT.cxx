@@ -1035,10 +1035,10 @@ void QGoTabImageView3DwT::LoadChannelTime()
 
   if ( ok )
     {
-      std::cout << "user selected an item and pressed OK" << std::endl;
+      //std::cout << "user selected an item and pressed OK" << std::endl;
       // use the item
       int value = item.toInt(&ok, 10);
-      std::cout << "value: " << value << std::endl;
+      //std::cout << "value: " << value << std::endl;
       // emit with channel...
       // keep track of channel of interest when we move through time
       m_ChannelOfInterest = value;
@@ -1047,7 +1047,7 @@ void QGoTabImageView3DwT::LoadChannelTime()
     }
   else
     {
-    std::cout << "user selected an item and pressed CANCEL" << std::endl;
+    //std::cout << "user selected an item and pressed CANCEL" << std::endl;
     }
 }
 //-------------------------------------------------------------------------
@@ -1899,13 +1899,13 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
         m_TCoord = iTimePoint;
         if(m_ChannelClassicMode)
           {
-          std::cout << "CLASSIC mode" << std::endl;
+          //std::cout << "CLASSIC mode" << std::endl;
           SetTimePointWithMegaCapture();
           }
         else
           {
-          std::cout << "TRACK mode" << std::endl;
-          std::cout << "CHANNEL: " << m_ChannelOfInterest << std::endl;
+          //std::cout << "TRACK mode" << std::endl;
+          //std::cout << "CHANNEL: " << m_ChannelOfInterest << std::endl;
           SetTimePointWithMegaCaptureTimeChannels( m_ChannelOfInterest );
           }
         emit TimePointChanged(m_TCoord);
@@ -2963,7 +2963,7 @@ QGoTabImageView3DwT::ComputeMeshAttributes( vtkPolyData *iMesh,
         static_cast< int >( calculator->GetSumIntensity() );
       oAttributes.m_MeanIntensityMap[channelname] = calculator->GetMeanIntensity();
       oAttributes.m_Volume = calculator->GetPhysicalSize();
-      std::cout << "volume: " << oAttributes.m_Volume << std::endl;
+      //std::cout << "volume: " << oAttributes.m_Volume << std::endl;
       oAttributes.m_Area = calculator->GetArea();
       oAttributes.m_Size = calculator->GetSize();
       }
