@@ -75,3 +75,55 @@ void GoDBTWContainerForContourMesh::GetCommonInfoForTwoTracesTable()
 
   this->GetInfoForColumnIsVisible();
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBTWContainerForContourMesh::FillRowContainerWithDBValues(
+    vtkMySQLDatabase *iDatabaseConnector, std::string iRestrictionName,
+    std::string iRestrictionValue)
+{
+  GoDBTableWidgetContainer::FillRowContainerWithDBValues(iDatabaseConnector,
+    iRestrictionName,iRestrictionValue);
+  this->FillColumnShowHide(iDatabaseConnector);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBTWContainerForContourMesh::FillColumnShowHide(vtkMySQLDatabase* iDatabaseConnector)
+{
+  //get the current timepoint which is also the min timepoint for the imagingsession:
+  std::vector<std::string> SelectedFields;
+  SelectedFields.push_back("TCoord");
+  std::string JoinCondition = "imagingsession.CoordIDMin = coordinate.CoordID";
+  std::vector<std::string> VectorMinTimePoint = GetAllSelectedValuesFromTwoTables(
+    iDatabaseConnector, "imagingsession", "coordinate",SelectedFields, JoinCondition,
+    "imagingsessionID", ConvertToString<int>(this->m_ImgSessionID));
+
+  std::string MinTimePoint = VectorMinTimePoint.at(0);
+  std::vector<std::vector<std::string> > Values;
+  std::vector<std::string> ShowHideValue;
+
+  int IndexTimePoint = this->GetIndexInsideRowContainer("TimePoint");
+  std::vector<std::string>::iterator iter = this->m_RowContainer.at(IndexTimePoint).second.begin();
+  while(iter != this->m_RowContainer.at(IndexTimePoint).second.end() )
+    {
+      if (*iter == MinTimePoint)
+        {
+        ShowHideValue.push_back("true");
+        }
+      else
+        {
+         ShowHideValue.push_back("false");
+        }
+      Values.push_back(ShowHideValue);
+      ShowHideValue.clear();
+      iter++;
+    }
+  
+  std::vector<std::string> Fields;
+  Fields.push_back("Show");
+  if (!Values.empty())
+    {
+    this->FillRowContainer(Values,Fields,"ColumnNameTableWidget");
+    }
+}

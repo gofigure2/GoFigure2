@@ -55,5 +55,11 @@ public:
 protected:
 
   void GetCommonInfoForTwoTracesTable();
+  void FillColumnShowHide(vtkMySQLDatabase* iDatabaseConnector);
+
+  void FillRowContainerWithDBValues(
+    vtkMySQLDatabase *iDatabaseConnector, std::string iRestrictionName,
+    std::string iRestrictionValue);
+
 };
 #endif
