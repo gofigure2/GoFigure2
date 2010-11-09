@@ -671,26 +671,7 @@ AddPointToCurrentElement(int iTime, double* iPoint)
       //add the temporal information
       this->m_CurrentElement.Nodes->GetPointData()->AddArray(newArray);
 
-      //Create new actors (new address)
-      vtkProperty * trace_property = vtkProperty::New();
-      double test0 = this->m_CurrentElement.rgba[0];
-      double test1 = this->m_CurrentElement.rgba[1];
-      double test2 = this->m_CurrentElement.rgba[2];
-      double test3 = this->m_CurrentElement.rgba[3];
-
-      trace_property->SetColor( test0,
-                                test1,
-                                test2);
-      trace_property->SetOpacity( test3 );
-
-      // Add contour
-      std::vector< vtkActor * > trackActors =
-          m_ImageView->AddContour( this->m_CurrentElement.Nodes, trace_property );
-
-      //update container actors addresses
-      UpdateCurrentElementActorsFromVisu(trackActors);
-
-      trace_property->Delete();
+      CreateCurrentTrackActors();
 
       emit CurrentTrackToSave();
 
@@ -792,10 +773,6 @@ UpdateTrackStructurePolyData( TrackStructure& iTrackStructure)
   //add the lines to the dataset
   polyData->SetLines(cells);
   //add the temporal information
-
-  /*
-   * \todo getPoint data Nicolas
-   */
   polyData->GetPointData()->AddArray(newArray);
 
   iTrackStructure.Nodes->DeepCopy(polyData);
@@ -1016,26 +993,7 @@ UpdateCurrentElementMap( std::map< unsigned int, double* > iMeshes)
 
     UpdateTrackStructurePolyData(this->m_CurrentElement);
 
-    //Create new actors (new address)
-    vtkProperty * trace_property = vtkProperty::New();
-    double test0 = this->m_CurrentElement.rgba[0];
-    double test1 = this->m_CurrentElement.rgba[1];
-    double test2 = this->m_CurrentElement.rgba[2];
-    double test3 = this->m_CurrentElement.rgba[3];
-
-    trace_property->SetColor( test0,
-                              test1,
-                              test2);
-    trace_property->SetOpacity( test3 );
-
-    // Add contour
-    std::vector< vtkActor * > trackActors =
-        m_ImageView->AddContour( this->m_CurrentElement.Nodes, trace_property );
-
-    //update container actors addresses
-    UpdateCurrentElementActorsFromVisu(trackActors);
-
-    trace_property->Delete();
+    CreateCurrentTraceActors();
 
     emit CurrentTrackToSave();
 
@@ -1045,5 +1003,33 @@ UpdateCurrentElementMap( std::map< unsigned int, double* > iMeshes)
   UpdateTrackStructurePolyData(this->m_CurrentElement);
 
   emit CurrentTrackToSave();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+CreateCurrentTrackActors()
+{
+  //Create new actors (new address)
+  vtkProperty * trace_property = vtkProperty::New();
+  double r = this->m_CurrentElement.rgba[0];
+  double g = this->m_CurrentElement.rgba[1];
+  double b = this->m_CurrentElement.rgba[2];
+  double a = this->m_CurrentElement.rgba[3];
+
+  trace_property->SetColor( r,
+                            g,
+                            b);
+  trace_property->SetOpacity( a );
+
+  // Add contour
+  std::vector< vtkActor * > trackActors =
+      m_ImageView->AddContour( this->m_CurrentElement.Nodes, trace_property );
+
+  //update container actors addresses
+  UpdateCurrentElementActorsFromVisu(trackActors);
+
+  trace_property->Delete();
 }
 //-------------------------------------------------------------------------

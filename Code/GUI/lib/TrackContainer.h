@@ -762,6 +762,12 @@ public:
    */
   void UpdateCurrentElementMap( std::map< unsigned int, double* > iMeshes);
 
+  /*
+   * \brief Create new actors for the current polydata and update and visualize
+   *  the current actors
+   */
+  void CreateCurrentTrackActors();
+
 public slots:
 
   void UpdateElementHighlightingWithGivenTraceIDs( const QStringList& iList,
