@@ -813,23 +813,26 @@ public:
       typename MultiIndexContainer::iterator t_it = m_Container.begin();
       while( t_it != m_Container.end() )
         {
-        t_it->Nodes->GetPointData()->SetActiveScalars( NULL );
-        if( t_it->ActorXY )
+          if (t_it->Nodes) //make sure the trace has points !!!
           {
-          t_it->ActorXY->GetMapper()->SetScalarVisibility( false );
-          }
-        if( t_it->ActorXZ )
-          {
-          t_it->ActorXY->GetMapper()->SetScalarVisibility( false );
-          }
-        if( t_it->ActorYZ )
-          {
-          t_it->ActorXY->GetMapper()->SetScalarVisibility( false );
-          }
-        if( t_it->ActorXYZ )
-          {
-          t_it->ActorXY->GetMapper()->SetScalarVisibility( false );
-          }
+          t_it->Nodes->GetPointData()->SetActiveScalars( NULL );
+          if( t_it->ActorXY )
+            {
+            t_it->ActorXY->GetMapper()->SetScalarVisibility( false );
+            }
+          if( t_it->ActorXZ )
+            {
+            t_it->ActorXY->GetMapper()->SetScalarVisibility( false );
+            }
+          if( t_it->ActorYZ )
+            {
+            t_it->ActorXY->GetMapper()->SetScalarVisibility( false );
+            }
+          if( t_it->ActorXYZ )
+            {
+            t_it->ActorXY->GetMapper()->SetScalarVisibility( false );
+            }
+          } //end make sure the trace has points !!!
         ++t_it;
         }
       return;
@@ -858,41 +861,44 @@ public:
 
       if( trace_it != this->m_Container.get<TraceID>().end() )
         {
-        vtkPolyData* pd = trace_it->Nodes;
-
-        // Here let's make sure you are not passing crazy values!
-        try
+          if (trace_it->Nodes) //make sure the trace has points !!!
           {
-          temp = boost::numeric_cast< double >( it->second );
-          }
-        catch( boost::numeric::bad_numeric_cast& e )
-          {
-          std::cout << e.what() <<std::endl;
-          return;
-          }
+          vtkPolyData* pd = trace_it->Nodes;
 
-        if( temp > max_value )
-          {
-          max_value = temp;
-          }
-        if( temp < min_value )
-          {
-          min_value = temp;
-          }
+          // Here let's make sure you are not passing crazy values!
+          try
+            {
+            temp = boost::numeric_cast< double >( it->second );
+            }
+          catch( boost::numeric::bad_numeric_cast& e )
+            {
+            std::cout << e.what() <<std::endl;
+            return;
+            }
 
-        vtkIdType NbOfPoints = pd->GetNumberOfPoints();
-        vtkDoubleArray* data = vtkDoubleArray::New();
-        data->SetNumberOfComponents( 1 );
-        data->SetName( iColumnName.c_str() );
+          if( temp > max_value )
+            {
+            max_value = temp;
+            }
+          if( temp < min_value )
+            {
+            min_value = temp;
+            }
 
-        for( vtkIdType i = 0; i < NbOfPoints; ++i )
-          {
-          data->InsertNextValue( temp );
+          vtkIdType NbOfPoints = pd->GetNumberOfPoints();
+          vtkDoubleArray* data = vtkDoubleArray::New();
+          data->SetNumberOfComponents( 1 );
+          data->SetName( iColumnName.c_str() );
+
+          for( vtkIdType i = 0; i < NbOfPoints; ++i )
+            {
+            data->InsertNextValue( temp );
+            }
+
+          pd->GetPointData()->SetScalars( data );
+          pd->GetPointData()->SetActiveScalars( iColumnName.c_str() );
           }
-
-        pd->GetPointData()->SetScalars( data );
-        pd->GetPointData()->SetActiveScalars( iColumnName.c_str() );
-        }
+        } //end make sure the trace has points !!!
       ++it;
       }
 

@@ -655,12 +655,11 @@ protected:
     std::string ColumnName = "";
     std::map<unsigned int, double> Values = std::map<unsigned int, double>();
 	if (IsChecked)
-	{
-      Values = this->m_Table->GetTraceIDAndColumnsValues(
+	  {
+    Values = this->m_Table->GetTraceIDAndColumnsValues(
 		  this->m_TraceNameID,ColumnName);
-    //iContainerForVisu->SetColorCode<double>( ColumnName,Values );
-	}
-    iContainerForVisu->SetColorCode( ColumnName,Values );
+	  }
+    iContainerForVisu->SetColorCode<double>( ColumnName,Values );
   }
 
   /**
