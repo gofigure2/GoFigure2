@@ -226,10 +226,10 @@ void GoDBTWContainerForMesh::GetValuesToFillForIntensityFromQueryResults
       {
       IntensityValue = "";
 
-      //for ( i = 0; i < this->m_ChannelsInfo.size(); i++ )
-      //  {
+      for ( i = 0; i < this->m_ChannelsInfo.size(); i++ )
+        {
         temp.push_back(IntensityValue);
-      //  }
+        }
       iterResult = iterResult + 2;
       }
     else

@@ -2810,7 +2810,6 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord)
   //  m_TrackContainer->UpdateCurrentElementActorsFromVisu(trackActors);
   //  }
  // m_TrackContainer->InsertCurrentElement();
-*/
 }
 //-------------------------------------------------------------------------
 
@@ -2955,7 +2954,7 @@ QGoTabImageView3DwT::ComputeMeshAttributes( vtkPolyData *iMesh,
       calculator->Update();
 
       oAttributes.m_Volume = calculator->GetPhysicalSize();
-      qDebug() << "volume:" << oAttributes.m_Volume;
+      //qDebug() << "volume:" << oAttributes.m_Volume;
       oAttributes.m_Area = calculator->GetArea();
       oAttributes.m_Size = calculator->GetSize();
 

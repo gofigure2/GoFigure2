@@ -299,6 +299,7 @@ void QGoDBTraceManager::AddGeneralActionsContextMenu(QMenu *iMenu)
   QAction* ColorCoding = new QAction(tr("Based on the selected column"),ColorMenu);
   ColorCoding->setCheckable(true);
   QObject::connect(ColorCoding,SIGNAL(toggled ( bool ) ),this,SLOT(SetColorCoding(bool))); 
+  ColorMenu->addAction(ColorCoding);
 
   iMenu->addAction(ColorMenu->menuAction());
 
