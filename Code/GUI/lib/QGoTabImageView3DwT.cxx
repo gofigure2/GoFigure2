@@ -986,6 +986,25 @@ QGoTabImageView3DwT::CreateAllViewActions()
 
   QObject::connect( VolumeRenderingAction, SIGNAL( toggled(bool) ),
                     this->m_ImageView, SLOT( EnableVolumeRendering(bool) ) );
+
+  QAction *separator8 = new QAction(this);
+  separator8->setSeparator(true);
+  this->m_ViewActions.push_back(separator8);
+
+  // Enable volume rendering
+  QAction *TrackAction =
+    new QAction(tr("Change tracks appearance"), this);
+  TrackAction->setCheckable(true);
+  TrackAction->setChecked(false);
+  this->m_ViewActions.push_back(TrackAction);
+
+  QIcon trackicon;
+  trackicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/BlankIcon.png") ),
+                                QIcon::Normal, QIcon::Off);
+  TrackAction->setIcon(trackicon);
+
+  QObject::connect( TrackAction, SIGNAL( toggled(bool) ),
+                    this->m_TrackDockWidget, SLOT( setVisible(bool) ) );
 }
 
 //-------------------------------------------------------------------------
