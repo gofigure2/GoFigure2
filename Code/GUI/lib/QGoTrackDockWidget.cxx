@@ -33,6 +33,8 @@
 =========================================================================*/
 #include "QGoTrackDockWidget.h"
 
+#include "ctkDoubleRangeSlider.h"
+
 //-------------------------------------------------------------------------
 QGoTrackDockWidget::QGoTrackDockWidget(
   QWidget *iParent):QDockWidget(iParent)
@@ -44,6 +46,11 @@ QGoTrackDockWidget::QGoTrackDockWidget(
       this, SLOT( GlyphChanged(bool) ) );
   QObject::connect( this->tube, SIGNAL( toggled(bool) ),
       this, SLOT( TubeChanged(bool) ) );
+
+  // double slider
+  ctkDoubleRangeSlider *rangeSlider =
+      new ctkDoubleRangeSlider(Qt::Horizontal , this->dockWidgetContents);
+  gridLayout->addWidget(rangeSlider, 2, 0, 1, 1);
 }
 //-------------------------------------------------------------------------
 
