@@ -41,8 +41,15 @@
 #include "vtkPolyLine.h"
 #include "vtkCellArray.h"
 
-// mesh container to update the tracks if import
-#include "ContourMeshContainer.h"
+// tubes and glyph
+#include "vtkGlyph3D.h"
+#include "vtkSphereSource.h"
+#include "vtkTubeFilter.h"
+#include "vtkAppendPolyData.h"
+
+// FOR TESTING
+#include "VisualizePolydataHelper.h"
+
 //-------------------------------------------------------------------------
 TrackContainer::
 TrackContainer(QObject *iParent,QGoImageView3D *iView):QObject(iParent),
@@ -737,14 +744,15 @@ GetCurrentElementNodes()
 //-------------------------------------------------------------------------
 void
 TrackContainer::
-UpdateTrackStructurePolyData( TrackStructure& iTrackStructure)
+UpdateTrackStructurePolyData( const TrackStructure& iTrackStructure)
 {
   // read map and fill points
   vtkSmartPointer< vtkPoints > newPoints = vtkSmartPointer< vtkPoints >::New();
   vtkSmartPointer<vtkIntArray> newArray = vtkSmartPointer<vtkIntArray>::New();
   newArray->SetNumberOfComponents(1);
   newArray->SetName("TemporalInformation");
-  std::map< unsigned int, double*>::iterator it = iTrackStructure.PointsMap.begin();
+  std::map< unsigned int, double*>::const_iterator it
+      = iTrackStructure.PointsMap.begin();
 
   while(it != iTrackStructure.PointsMap.end())
     {
@@ -1061,3 +1069,79 @@ DeleteListFromCurrentElement( std::list<int> iTimeList )
   UpdateTrackStructurePolyData( this->m_CurrentElement );
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateTracksReprensentation( bool iGlyph, bool iTube )
+{
+  MultiIndexContainer::iterator it = m_Container.begin();
+
+  while ( it != m_Container.end() )
+    {
+    vtkGlyph3D* barycentersGlyph;
+    vtkTubeFilter* splineTubes;
+
+    UpdateTrackStructurePolyData( (*it) );
+
+    // Create glyphs
+    if(iGlyph)
+      {
+      // Glyph shape
+      vtkSphereSource* sphere = vtkSphereSource::New();
+      sphere->SetThetaResolution( 8 );
+      sphere->SetPhiResolution( 8 );
+
+      barycentersGlyph = vtkGlyph3D::New();
+      barycentersGlyph->SetInput( it->Nodes );
+      barycentersGlyph->SetSource( sphere->GetOutput() );
+      barycentersGlyph->Update();
+
+      sphere->Delete();
+      }
+
+    // Create tubes
+    if( iTube )
+      {
+      splineTubes = vtkTubeFilter::New();
+      splineTubes->SetNumberOfSides( 8 );
+      splineTubes->SetInput( it->Nodes );
+      splineTubes->SetRadius( .3 );
+      splineTubes->Update();
+      }
+
+    // Combine polydatas into 1
+    if( iGlyph && iTube )
+      {
+      // append both polydata sets
+      vtkAppendPolyData* apd = vtkAppendPolyData::New();;
+      apd->AddInput( barycentersGlyph->GetOutput() );
+      apd->AddInput( splineTubes->GetOutput() );
+      apd->Update();
+
+      it->Nodes->DeepCopy( apd->GetOutput() );
+
+      apd->Delete();
+      }
+
+    if( iGlyph && !iTube )
+      {
+      it->Nodes->DeepCopy( barycentersGlyph->GetOutput() );
+      }
+
+    if( !iGlyph && iTube )
+      {
+      it->Nodes->DeepCopy( splineTubes->GetOutput() );
+      }
+
+    if( !iGlyph && !iTube )
+      {
+      // DO NOTHING
+      }
+
+    ++it;
+
+    barycentersGlyph->Delete();
+    splineTubes->Delete();
+  }
+}

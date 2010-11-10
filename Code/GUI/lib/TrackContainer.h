@@ -727,7 +727,7 @@ public:
     \brief Update the TrackStructure polydata according to the current map.
     \param[in] iTrackStructure Structure to be updated
   */
-  void UpdateTrackStructurePolyData( TrackStructure& iTrackStructure);
+  void UpdateTrackStructurePolyData( const TrackStructure& iTrackStructure);
 
   /**
     \brief Get the polydata representing the current element track
@@ -776,6 +776,13 @@ public:
    * \param[in] iTimeList List of the time points to be deleted.
    */
   void DeleteListFromCurrentElement( std::list<int> iTimeList );
+
+  /*
+   * \brief Define the appareance of a track (line/tubes, glyph/no glyph)
+   * \param[in] iGlyph Do we want to see glyph(true)/no glyph(false)
+   * \param[in] iTube Do we want to see a tube(true)/polyline(false)
+   */
+  void UpdateTracksReprensentation( bool iGlyph, bool iTube );
 
 public slots:
 

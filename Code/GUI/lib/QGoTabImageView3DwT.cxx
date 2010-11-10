@@ -2752,6 +2752,7 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord)
   // Update the track polydata and the map, the actors and the visu
   // with the new center
   m_TrackContainer->AddPointToCurrentElement( time, point);
+  m_TrackContainer->UpdateTracksReprensentation( true, true);
 }
 //-------------------------------------------------------------------------
 
