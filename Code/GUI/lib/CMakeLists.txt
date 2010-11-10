@@ -98,6 +98,9 @@ SET( QGoGUILIB_SRC
     QGoFilterShape.cxx
     QGoFilterWatershed.cxx
 
+  # for the tracks
+  QGoTrackDockWidget.cxx
+
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx
 )
@@ -209,6 +212,9 @@ SET( QGoGUILIB_HDRS
     QGoFilterChanAndVes.h
     QGoFilterShape.h
     QGoFilterWatershed.h
+    
+  # for the tracks
+  QGoTrackDockWidget.h
 )
 
 #---------------------------------------------------------------------------
@@ -257,6 +263,9 @@ SET( QGoGUILIB_UI
   Resources/BaseAlgoSegmentationDockWidget.ui
   Resources/LevelsetWidget.ui
   Resources/WatershedWidget.ui
+  
+  # for tracks
+  Resources/TrackDockWidget.ui
 )
 
 #---------------------------------------------------------------------------
