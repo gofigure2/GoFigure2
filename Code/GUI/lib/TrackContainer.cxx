@@ -1079,8 +1079,8 @@ UpdateTracksReprensentation( bool iGlyph, bool iTube )
 
   while ( it != m_Container.end() )
     {
-    vtkGlyph3D* barycentersGlyph;
-    vtkTubeFilter* splineTubes;
+    vtkGlyph3D* glyph;
+    vtkTubeFilter* tube;
 
     UpdateTrackStructurePolyData( (*it) );
 
@@ -1092,10 +1092,10 @@ UpdateTracksReprensentation( bool iGlyph, bool iTube )
       sphere->SetThetaResolution( 8 );
       sphere->SetPhiResolution( 8 );
 
-      barycentersGlyph = vtkGlyph3D::New();
-      barycentersGlyph->SetInput( it->Nodes );
-      barycentersGlyph->SetSource( sphere->GetOutput() );
-      barycentersGlyph->Update();
+      glyph = vtkGlyph3D::New();
+      glyph->SetInput( it->Nodes );
+      glyph->SetSource( sphere->GetOutput() );
+      glyph->Update();
 
       sphere->Delete();
       }
@@ -1103,11 +1103,11 @@ UpdateTracksReprensentation( bool iGlyph, bool iTube )
     // Create tubes
     if( iTube )
       {
-      splineTubes = vtkTubeFilter::New();
-      splineTubes->SetNumberOfSides( 8 );
-      splineTubes->SetInput( it->Nodes );
-      splineTubes->SetRadius( .3 );
-      splineTubes->Update();
+      tube = vtkTubeFilter::New();
+      tube->SetNumberOfSides( 8 );
+      tube->SetInput( it->Nodes );
+      tube->SetRadius( .3  );
+      tube->Update();
       }
 
     // Combine polydatas into 1
@@ -1115,8 +1115,8 @@ UpdateTracksReprensentation( bool iGlyph, bool iTube )
       {
       // append both polydata sets
       vtkAppendPolyData* apd = vtkAppendPolyData::New();;
-      apd->AddInput( barycentersGlyph->GetOutput() );
-      apd->AddInput( splineTubes->GetOutput() );
+      apd->AddInput( glyph->GetOutput() );
+      apd->AddInput( tube->GetOutput() );
       apd->Update();
 
       it->Nodes->DeepCopy( apd->GetOutput() );
@@ -1126,12 +1126,12 @@ UpdateTracksReprensentation( bool iGlyph, bool iTube )
 
     if( iGlyph && !iTube )
       {
-      it->Nodes->DeepCopy( barycentersGlyph->GetOutput() );
+      it->Nodes->DeepCopy( glyph->GetOutput() );
       }
 
     if( !iGlyph && iTube )
       {
-      it->Nodes->DeepCopy( splineTubes->GetOutput() );
+      it->Nodes->DeepCopy( tube->GetOutput() );
       }
 
     if( !iGlyph && !iTube )
@@ -1141,7 +1141,7 @@ UpdateTracksReprensentation( bool iGlyph, bool iTube )
 
     ++it;
 
-    barycentersGlyph->Delete();
-    splineTubes->Delete();
+    glyph->Delete();
+    tube->Delete();
   }
 }
