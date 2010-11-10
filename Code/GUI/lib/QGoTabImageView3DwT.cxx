@@ -99,6 +99,9 @@
 #include "QGoContourSegmentationBaseDockWidget.h"
 #include "QGoMeshSegmentationBaseDockWidget.h"
 
+// track dockwidget
+#include "QGoTrackDockWidget.h"
+
 // TESTS
 #include "vtkPolyDataWriter.h"
 #include "vtkViewImage3D.h"
@@ -155,6 +158,15 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent):
   CreateContourSegmentationDockWidget();
   CreateMeshSegmentationDockWidget();
 
+  // track dock widget
+  m_TrackDockWidget = new QGoTrackDockWidget(this);
+
+  QObject::connect( m_TrackDockWidget,
+                    SIGNAL( UpdateTracksAppearance(bool, bool) ),
+                    this,
+                    SLOT( UpdateTracksAppearance(bool, bool) ) );
+
+
   CreateDataBaseTablesConnection();
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
@@ -194,6 +206,12 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent):
       new QGoDockWidgetStatus(this->m_DataBaseTables->GetTraceManualEditingDockWidget(),
                               Qt::LeftDockWidgetArea, true, true),
       this->m_DataBaseTables->GetTraceManualEditingDockWidget() ) );
+
+  m_DockWidgetList.push_back(
+    std::pair< QGoDockWidgetStatus *, QDockWidget * >(
+      new QGoDockWidgetStatus(this->m_TrackDockWidget,
+                              Qt::LeftDockWidgetArea, true, true),
+      this->m_TrackDockWidget ) );
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
   m_DockWidgetList.push_back(
@@ -2752,7 +2770,6 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord)
   // Update the track polydata and the map, the actors and the visu
   // with the new center
   m_TrackContainer->AddPointToCurrentElement( time, point);
-  m_TrackContainer->UpdateTracksReprensentation( true, true);
 }
 //-------------------------------------------------------------------------
 
@@ -3016,3 +3033,9 @@ QGoTabImageView3DwT::GoToLocation(int iX, int iY, int iZ, int iT)
 }
 
 //-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+UpdateTracksAppearance(bool iGlyph, bool iTube)
+{
+  m_TrackContainer->UpdateTracksReprensentation( iGlyph, iTube );
+}

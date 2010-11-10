@@ -56,6 +56,9 @@
 class QGoContourSegmentationBaseDockWidget;
 class QGoMeshSegmentationBaseDockWidget;
 
+//track dockwidget
+class QGoTrackDockWidget;
+
 class QGoImageView3D;
 class QGoNavigationDockWidget;
 class QGoPrintDatabase;
@@ -390,6 +393,8 @@ protected:
   // base segmentation dockwidget for meshes
   QGoMeshSegmentationBaseDockWidget *m_MeshSegmentationDockWidget;
 
+  QGoTrackDockWidget* m_TrackDockWidget;
+
   vtkPoints *m_Seeds;
 
   ContourMeshContainer *m_ContourContainer;
@@ -656,6 +661,8 @@ protected slots:
   updates the navigation widget.
   */
   void LoadChannelTime();
+
+  void UpdateTracksAppearance(bool, bool);
 
 private:
   Q_DISABLE_COPY(QGoTabImageView3DwT);

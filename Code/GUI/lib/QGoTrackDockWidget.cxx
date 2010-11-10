@@ -40,10 +40,10 @@ QGoTrackDockWidget::QGoTrackDockWidget(
   this->setupUi(this);
 
   // Connect signals
-  QObject::connect( this->glyph, SIGNAL( toggle() ),
-      this, SLOT( GlyphChanged() ) );
-  QObject::connect( this, SIGNAL( toggle() ),
-      this, SLOT( TubeChanged() ) );
+  QObject::connect( this->glyph, SIGNAL( toggled(bool) ),
+      this, SLOT( GlyphChanged(bool) ) );
+  QObject::connect( this->tube, SIGNAL( toggled(bool) ),
+      this, SLOT( TubeChanged(bool) ) );
 }
 //-------------------------------------------------------------------------
 
@@ -57,17 +57,17 @@ QGoTrackDockWidget::
 //-------------------------------------------------------------------------
 void
 QGoTrackDockWidget::
-GlyphChanged()
+GlyphChanged( bool iState )
 {
-  emit UpdateTracksAppearance( this->glyph->isChecked(), this->tube->isChecked());
+  emit UpdateTracksAppearance( iState, this->tube->isChecked() );
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
 QGoTrackDockWidget::
-TubeChanged()
+TubeChanged( bool iState )
 {
-  emit UpdateTracksAppearance( this->glyph->isChecked(), this->tube->isChecked());
+  emit UpdateTracksAppearance( this->glyph->isChecked(), iState );
 }
 //-------------------------------------------------------------------------
