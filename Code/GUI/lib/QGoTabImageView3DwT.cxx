@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-13
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-13, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -681,9 +681,6 @@ QGoTabImageView3DwT::SetRendererWindow(int iValue)
 void
 QGoTabImageView3DwT::CreateAllViewActions()
 {
-  /*
-   * COMMENTED FROM HOTFIXES
-   *
   QActionGroup *groupMode = new QActionGroup(this);
 
   QAction *ChannelClassic = new QAction(tr("Classic-View"), this);
@@ -732,7 +729,7 @@ QGoTabImageView3DwT::CreateAllViewActions()
   separator1->setSeparator(true);
   this->m_ViewActions.push_back(separator1);
 
-  */
+
 
   //-------------------------
   //
@@ -1063,7 +1060,7 @@ void QGoTabImageView3DwT::LoadChannelTime()
 
   for(unsigned int i = minch; i < maxch; ++i)
     {
-    channel << QString::number(i, 10);
+    channel << QString::number(i, 13);
     }
 
   QString item = QInputDialog::getItem(this,
@@ -1075,7 +1072,7 @@ void QGoTabImageView3DwT::LoadChannelTime()
     {
       qDebug() << "user selected an item and pressed OK";
       // use the item
-      int value = item.toInt(&ok, 10);
+      int value = item.toInt(&ok, 13);
       qDebug() << "value:" << value;
       // emit with channel...
       // keep track of channel of interest when we move through time
@@ -1740,8 +1737,8 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
       m_Image->ShallowCopy( append_filter->GetOutput() );
 
       // LUT DISABLED
-      m_ViewActions[11]->setEnabled(false);
-      m_ViewActions[10]->setEnabled(false);
+      m_ViewActions[14]->setEnabled(false);
+      m_ViewActions[13]->setEnabled(false);
       }
     else
       {
@@ -1751,8 +1748,8 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
         m_Image->ShallowCopy(m_InternalImages[ch]);
         }
       // LUT ENABLED
-      m_ViewActions[11]->setEnabled(true);
-      m_ViewActions[10]->setEnabled(true);
+      m_ViewActions[14]->setEnabled(true);
+      m_ViewActions[13]->setEnabled(true);
       }
     }
   else
@@ -1761,8 +1758,8 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
     m_Image->SetNumberOfScalarComponents(1);
 
     // LUT ENABLED
-    m_ViewActions[11]->setEnabled(true);
-    m_ViewActions[10]->setEnabled(true);
+    m_ViewActions[14]->setEnabled(true);
+    m_ViewActions[13]->setEnabled(true);
     }
 }
 
@@ -1819,8 +1816,8 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels( int iChannel )
     m_Image->ShallowCopy( append_filter->GetOutput() );
 
     // LUT DISABLED
-    m_ViewActions[11]->setEnabled(false);
-    m_ViewActions[10]->setEnabled(false);
+    m_ViewActions[14]->setEnabled(false);
+    m_ViewActions[13]->setEnabled(false);
     }
   else
     {
@@ -1830,8 +1827,8 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels( int iChannel )
       m_Image->ShallowCopy(m_InternalImages[ch]);
       }
     // LUT ENABLED
-    m_ViewActions[11]->setEnabled(true);
-    m_ViewActions[10]->setEnabled(true);
+    m_ViewActions[14]->setEnabled(true);
+    m_ViewActions[13]->setEnabled(true);
     }
 
   // update channels in navigation DockWidget
@@ -2212,8 +2209,8 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
     Update();
 
     // Update LUT
-    m_ViewActions[11]->setEnabled(false);
-    m_ViewActions[10]->setEnabled(false);
+    m_ViewActions[14]->setEnabled(false);
+    m_ViewActions[13]->setEnabled(false);
     }
   else
     {
@@ -2225,11 +2222,11 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
       }
 
     // Update LUT
-    m_ViewActions[11]->setEnabled(true);
-    m_ViewActions[10]->setEnabled(true);
+    m_ViewActions[14]->setEnabled(true);
+    m_ViewActions[13]->setEnabled(true);
 
     // show the scalarbar automatically if the button is checked
-    bool showScalarBar = m_ViewActions[11]->isChecked();
+    bool showScalarBar = m_ViewActions[14]->isChecked();
     m_ImageView->ShowScalarBar(showScalarBar);
     }
 }
@@ -2243,8 +2240,8 @@ QGoTabImageView3DwT::ShowOneChannel(int iChannel)
   if ( ( iChannel != -1 ) && ( !m_InternalImages.empty() ) )
     {
     // Update lut
-    m_ViewActions[11]->setEnabled(true);
-    m_ViewActions[10]->setEnabled(true);
+    m_ViewActions[14]->setEnabled(true);
+    m_ViewActions[13]->setEnabled(true);
 
     m_Image->ShallowCopy(m_InternalImages[iChannel]);
     Update();

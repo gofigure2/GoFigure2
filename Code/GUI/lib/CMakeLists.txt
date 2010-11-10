@@ -318,6 +318,7 @@ SET( QGoGUI_LIBS
   QGoIO
   vtkRenderingAddOn2
   PoissonReconstruction
+  ctk
   ITKIO
   ITKCommon
   ITKBasicFilters
