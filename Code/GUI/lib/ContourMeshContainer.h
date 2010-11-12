@@ -802,31 +802,7 @@ public:
 
     if( iColumnName.empty() || iValues.empty() )
       {
-      typename MultiIndexContainer::iterator t_it = m_Container.begin();
-      while( t_it != m_Container.end() )
-        {
-          if (t_it->Nodes) //make sure the trace has points !!!
-          {
-          t_it->Nodes->GetPointData()->SetActiveScalars( NULL );
-          if( t_it->ActorXY )
-            {
-            t_it->ActorXY->GetMapper()->SetScalarVisibility( false );
-            }
-          if( t_it->ActorXZ )
-            {
-            t_it->ActorXY->GetMapper()->SetScalarVisibility( false );
-            }
-          if( t_it->ActorYZ )
-            {
-            t_it->ActorXY->GetMapper()->SetScalarVisibility( false );
-            }
-          if( t_it->ActorXYZ )
-            {
-            t_it->ActorXY->GetMapper()->SetScalarVisibility( false );
-            }
-          } //end make sure the trace has points !!!
-        ++t_it;
-        }
+      RenderWithOriginalColors();
       return;
       }
 
@@ -977,31 +953,7 @@ public:
 
     if( iColumnName.empty() || iValues.empty() )
       {
-      typename MultiIndexContainer::iterator t_it = m_Container.begin();
-      while( t_it != m_Container.end() )
-        {
-          if (t_it->Nodes) //make sure the trace has points !!!
-          {
-          t_it->Nodes->GetPointData()->SetActiveScalars( NULL );
-          if( t_it->ActorXY )
-            {
-            t_it->ActorXY->GetMapper()->SetScalarVisibility( false );
-            }
-          if( t_it->ActorXZ )
-            {
-            t_it->ActorXY->GetMapper()->SetScalarVisibility( false );
-            }
-          if( t_it->ActorYZ )
-            {
-            t_it->ActorXY->GetMapper()->SetScalarVisibility( false );
-            }
-          if( t_it->ActorXYZ )
-            {
-            t_it->ActorXY->GetMapper()->SetScalarVisibility( false );
-            }
-          } //end make sure the trace has points !!!
-        ++t_it;
-        }
+      RenderWithOriginalColors();
       return;
       }
 
@@ -1125,6 +1077,35 @@ signals:
 protected:
   unsigned int m_TCoord;
   vtkProperty *m_HighlightedProperty;
+
+  void RenderWithOriginalColors()
+    {
+    typename MultiIndexContainer::iterator t_it = m_Container.begin();
+    while( t_it != m_Container.end() )
+      {
+        if (t_it->Nodes) //make sure the trace has points !!!
+        {
+        t_it->Nodes->GetPointData()->SetActiveScalars( NULL );
+        if( t_it->ActorXY )
+          {
+          t_it->ActorXY->GetMapper()->SetScalarVisibility( false );
+          }
+        if( t_it->ActorXZ )
+          {
+          t_it->ActorXY->GetMapper()->SetScalarVisibility( false );
+          }
+        if( t_it->ActorYZ )
+          {
+          t_it->ActorXY->GetMapper()->SetScalarVisibility( false );
+          }
+        if( t_it->ActorXYZ )
+          {
+          t_it->ActorXY->GetMapper()->SetScalarVisibility( false );
+          }
+        } //end make sure the trace has points !!!
+      ++t_it;
+      }
+    }
 private:
   Q_DISABLE_COPY(ContourMeshContainer);
 };
