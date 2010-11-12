@@ -726,8 +726,9 @@ public:
   /**
     \brief Update the TrackStructure polydata according to the current map.
     \param[in] iTrackStructure Structure to be updated
+    \return true if the polydata has been updated, false if it hasn't (i.e. mesh without point)
   */
-  void UpdateTrackStructurePolyData( const TrackStructure& iTrackStructure);
+  bool UpdateTrackStructurePolyData( const TrackStructure& iTrackStructure);
 
   /**
     \brief Get the polydata representing the current element track

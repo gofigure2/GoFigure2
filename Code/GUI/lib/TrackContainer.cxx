@@ -742,7 +742,7 @@ GetCurrentElementNodes()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void
+bool
 TrackContainer::
 UpdateTrackStructurePolyData( const TrackStructure& iTrackStructure)
 {
@@ -754,7 +754,13 @@ UpdateTrackStructurePolyData( const TrackStructure& iTrackStructure)
   std::map< unsigned int, double*>::const_iterator it
       = iTrackStructure.PointsMap.begin();
 
-  while(it != iTrackStructure.PointsMap.end())
+  if( iTrackStructure.PointsMap.empty() )
+    {
+    std::cout << "No points in the map, can't update the representation" << std::endl;
+    return false;
+    }
+
+  while( it != iTrackStructure.PointsMap.end() )
     {
     newArray->InsertNextValue( it->first );
     newPoints->InsertNextPoint(it->second);
@@ -786,6 +792,8 @@ UpdateTrackStructurePolyData( const TrackStructure& iTrackStructure)
   polyData->GetPointData()->AddArray(newArray);
 
   iTrackStructure.Nodes->DeepCopy(polyData);
+
+  return true;
 }
 //-------------------------------------------------------------------------
 
@@ -1081,40 +1089,42 @@ UpdateTracksReprensentation( bool iGlyph, bool iTube )
     {
     while ( it != m_Container.end() )
       {
-      UpdateTrackStructurePolyData( (*it) );
 
-      // Glyph shape
-      vtkSphereSource* sphere = vtkSphereSource::New();
-      sphere->SetThetaResolution( 8 );
-      sphere->SetPhiResolution( 8 );
+      bool update = UpdateTrackStructurePolyData( (*it) );
 
-      vtkGlyph3D* glyph = vtkGlyph3D::New();
-      glyph->SetInput( it->Nodes );
-      glyph->SetSource( sphere->GetOutput() );
-      glyph->Update();
+      if( update )
+        {
+        // Glyph shape
+        vtkSphereSource* sphere = vtkSphereSource::New();
+        sphere->SetThetaResolution( 8 );
+        sphere->SetPhiResolution( 8 );
 
-      sphere->Delete();
+        vtkGlyph3D* glyph = vtkGlyph3D::New();
+        glyph->SetInput( it->Nodes );
+        glyph->SetSource( sphere->GetOutput() );
+        glyph->Update();
 
-      vtkTubeFilter* tube = vtkTubeFilter::New();
-      tube->SetNumberOfSides( 8 );
-      tube->SetInput( it->Nodes );
-      tube->SetRadius( .2  );
-      tube->Update();
+        sphere->Delete();
 
-      // append both polydata sets
-      vtkAppendPolyData* apd = vtkAppendPolyData::New();;
-      apd->AddInput( glyph->GetOutput() );
-      apd->AddInput( tube->GetOutput() );
-      apd->Update();
+        vtkTubeFilter* tube = vtkTubeFilter::New();
+        tube->SetNumberOfSides( 8 );
+        tube->SetInput( it->Nodes );
+        tube->SetRadius( .2  );
+        tube->Update();
 
-      it->Nodes->DeepCopy( apd->GetOutput() );
+        // append both polydata sets
+        vtkAppendPolyData* apd = vtkAppendPolyData::New();;
+        apd->AddInput( glyph->GetOutput() );
+        apd->AddInput( tube->GetOutput() );
+        apd->Update();
 
-      apd->Delete();
+        it->Nodes->DeepCopy( apd->GetOutput() );
 
+        glyph->Delete();
+        tube->Delete();
+        apd->Delete();
+        }
       ++it;
-
-      glyph->Delete();
-      tube->Delete();
     }
   }
 
@@ -1122,33 +1132,34 @@ UpdateTracksReprensentation( bool iGlyph, bool iTube )
     {
     while ( it != m_Container.end() )
       {
-      UpdateTrackStructurePolyData( (*it) );
+      bool update = UpdateTrackStructurePolyData( (*it) );
 
-      // Glyph shape
-      vtkSphereSource* sphere = vtkSphereSource::New();
-      sphere->SetThetaResolution( 8 );
-      sphere->SetPhiResolution( 8 );
+      if( update )
+        {
+        // Glyph shape
+        vtkSphereSource* sphere = vtkSphereSource::New();
+        sphere->SetThetaResolution( 8 );
+        sphere->SetPhiResolution( 8 );
 
-      vtkGlyph3D* glyph = vtkGlyph3D::New();
-      glyph->SetInput( it->Nodes );
-      glyph->SetSource( sphere->GetOutput() );
-      glyph->Update();
+        vtkGlyph3D* glyph = vtkGlyph3D::New();
+        glyph->SetInput( it->Nodes );
+        glyph->SetSource( sphere->GetOutput() );
+        glyph->Update();
 
-      sphere->Delete();
+        sphere->Delete();
 
-      // append both polydata sets
-      vtkAppendPolyData* apd = vtkAppendPolyData::New();;
-      apd->AddInput( glyph->GetOutput() );
-      apd->AddInput( it->Nodes );
-      apd->Update();
+        // append both polydata sets
+        vtkAppendPolyData* apd = vtkAppendPolyData::New();;
+        apd->AddInput( glyph->GetOutput() );
+        apd->AddInput( it->Nodes );
+        apd->Update();
 
-      it->Nodes->DeepCopy( apd->GetOutput() );
+        it->Nodes->DeepCopy( apd->GetOutput() );
 
-      apd->Delete();
-
+        apd->Delete();
+        glyph->Delete();
+        }
       ++it;
-
-      glyph->Delete();
     }
   }
 
@@ -1156,19 +1167,21 @@ UpdateTracksReprensentation( bool iGlyph, bool iTube )
     {
     while ( it != m_Container.end() )
       {
-      UpdateTrackStructurePolyData( (*it) );
+      bool update = UpdateTrackStructurePolyData( (*it) );
 
-      vtkTubeFilter* tube = vtkTubeFilter::New();
-      tube->SetNumberOfSides( 8 );
-      tube->SetInput( it->Nodes );
-      tube->SetRadius( .2  );
-      tube->Update();
+      if( update )
+        {
+        vtkTubeFilter* tube = vtkTubeFilter::New();
+        tube->SetNumberOfSides( 8 );
+        tube->SetInput( it->Nodes );
+        tube->SetRadius( .2  );
+        tube->Update();
 
-      it->Nodes->DeepCopy( tube->GetOutput() );
+        it->Nodes->DeepCopy( tube->GetOutput() );
 
+        tube->Delete();
+        }
       ++it;
-
-      tube->Delete();
     }
   }
 
@@ -1177,6 +1190,7 @@ UpdateTracksReprensentation( bool iGlyph, bool iTube )
     while ( it != m_Container.end() )
     {
     UpdateTrackStructurePolyData( (*it) );
+
     ++it;
     }
   }
