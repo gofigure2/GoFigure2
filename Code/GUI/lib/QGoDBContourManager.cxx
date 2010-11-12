@@ -103,12 +103,7 @@ void QGoDBContourManager::DisplayInfoForAllTraces(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-<<<<<<< HEAD
-void QGoDBContourManager::UpdateTracesVisibilityForGivenTimePoint(
-  unsigned int iTimePoint)
-=======
 /*void QGoDBContourManager::UpdateTracesVisibilityForGivenTimePoint(unsigned int iTimePoint)
->>>>>>> HotFixes
 {
   std::list<unsigned int> ListContours = 
     this->m_ContourContainerInfoForVisu->GetElementsTraceIDForGivenTimePoint(

@@ -106,12 +106,8 @@ void QGoDBMeshManager::DisplayInfoForAllTraces(
     iTimePoint);
   this->m_Table->SetVisibleStateForListTraceIDs(
     ListMeshes,Qt::Checked,this->m_TraceName);
-<<<<<<< HEAD
-}
-=======
 }*/
 
->>>>>>> HotFixes
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
