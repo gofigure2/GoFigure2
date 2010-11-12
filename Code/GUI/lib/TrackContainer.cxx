@@ -557,6 +557,7 @@ GetHighlightedElementsTraceID()
   while ( it0 != it1 )
     {
     oList.push_back(it0->TraceID);
+    std::cout<< "highlighted track ID: " << it0->TraceID << std::endl;
     ++it0;
     }
   return oList;
@@ -709,6 +710,30 @@ DeletePointFromCurrentElement(int iTime, bool iReconstructPolyData)
     {
     UpdateTrackStructurePolyData( this->m_CurrentElement );
     }
+
+  return pointDeleted;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+bool
+TrackContainer::
+DeletePointFromElement( MultiIndexContainerTraceIDIterator iTrackStructure, int iTime, bool iReconstructPolyData )
+{
+  // Create temp structure
+  TrackStructure tempStructure(*iTrackStructure);
+
+  //add the point in the map
+  bool pointDeleted = tempStructure.DeleteElement( iTime );
+
+  // build the new polydata if a point has been deleted
+  if(pointDeleted && iReconstructPolyData)
+    {
+    UpdateTrackStructurePolyData( tempStructure );
+    }
+
+  // Replace
+  m_Container.get< TraceID >().replace(iTrackStructure, tempStructure);
 
   return pointDeleted;
 }
@@ -1065,7 +1090,7 @@ DeleteListFromCurrentElement( std::list<int> iTimeList )
     bool succeed = DeletePointFromCurrentElement( *begin,
                                                    false ); // update the polydata
 
-    if(succeed)
+    if(!succeed)
       {
       std::cout << "Time point: " << *begin << " can't be deleted" << std::endl;
       }
@@ -1196,4 +1221,53 @@ UpdateTracksReprensentation( bool iGlyph, bool iTube )
   }
 
   m_ImageView->UpdateRenderWindows();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+DeleteListOfTracks(
+    std::list< std::pair< unsigned int , std::list< unsigned int > > >
+               iPointsToBeDeleted)
+{
+  if(iPointsToBeDeleted.empty())
+    {
+    std::cout << "list of tracks to be deleted is empty" << std::endl;
+    }
+
+  // iterate through tracks IDs
+  std::list< std::pair< unsigned int , std::list< unsigned int > > >::iterator
+      trackIDIterator = iPointsToBeDeleted.begin();
+  while( trackIDIterator != iPointsToBeDeleted.end() )
+    {
+    // Get associated structure
+    MultiIndexContainerTraceIDIterator
+    it = m_Container.get< TraceID >().find( trackIDIterator->first );
+
+    // if we find the stucture, update it!
+    if ( it != m_Container.get< TraceID >().end() )
+      {
+      std::list<unsigned int>::iterator begin = trackIDIterator->second.begin();
+      std::list<unsigned int>::iterator end = trackIDIterator->second.end();
+
+      while( begin != end )
+        {
+        bool succeed = DeletePointFromElement( it, *begin, false );
+
+        if( !succeed )
+          {
+          std::cout << "In track: " << trackIDIterator->first << std::endl;
+          std::cout << "Time point: " << *begin << " can't be deleted" << std::endl;
+          }
+
+        ++begin;
+        }
+
+      // Reconstruct the polydata
+      UpdateTrackStructurePolyData( *it );
+      }
+
+    ++trackIDIterator;
+    }
 }

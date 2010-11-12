@@ -785,6 +785,19 @@ public:
    */
   void UpdateTracksReprensentation( bool iGlyph, bool iTube );
 
+
+  /*
+   * \brief Delete a list of tracks.
+   * \param[in] iPointsToBeDeleted a list containing pairs.
+   * Each pair is composed by a track ID and a list of the time points to be
+   * deleted in this track ID.
+   */
+  void DeleteListOfTracks(
+      std::list< std::pair< unsigned int , std::list< unsigned int > > >
+                 iPointsToBeDeleted);
+
+  bool DeletePointFromElement( MultiIndexContainerTraceIDIterator iTrackStructure, int iTime, bool iReconstructPolyData );
+
 public slots:
 
   void UpdateElementHighlightingWithGivenTraceIDs( const QStringList& iList,

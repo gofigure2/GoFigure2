@@ -47,10 +47,12 @@ QGoTrackDockWidget::QGoTrackDockWidget(
   QObject::connect( this->tube, SIGNAL( toggled(bool) ),
       this, SLOT( TubeChanged(bool) ) );
 
+  /*
   // double slider
   ctkDoubleRangeSlider *rangeSlider =
       new ctkDoubleRangeSlider(Qt::Horizontal , this->dockWidgetContents);
   gridLayout->addWidget(rangeSlider, 2, 0, 1, 1);
+  */
 }
 //-------------------------------------------------------------------------
 

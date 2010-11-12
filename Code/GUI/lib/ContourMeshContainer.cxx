@@ -593,6 +593,7 @@ ContourMeshContainer::GetHighlightedElementsTraceID()
   while ( it0 != it1 )
     {
     oList.push_back(it0->TraceID);
+    std::cout<< "highlighted contour/mesh ID:" << it0->TraceID << std::endl;
     ++it0;
     }
   return oList;
