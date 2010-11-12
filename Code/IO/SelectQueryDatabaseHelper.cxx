@@ -2484,9 +2484,6 @@ void GetTracesInfoFromDBAndModifyContainer(
       vtkSmartPointer< vtkPolyDataMySQLTrackReader > convert_reader =
         vtkSmartPointer< vtkPolyDataMySQLTrackReader >::New();
       std::string polydata_string = query->DataValue(2).ToString();
-
-      std::cout << "string to be converted: " << polydata_string << std::endl;
-
       vtkIdType N;
       std::stringstream str(polydata_string);
       str >> N;

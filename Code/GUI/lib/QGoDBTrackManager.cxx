@@ -208,7 +208,6 @@ void QGoDBTrackManager::GetTracesInfoFromDBAndModifyContainerForVisu(
     this->m_TrackContainerInfoForVisu->Insert(*it);
     ++it;
     }
-  this->m_TrackContainerInfoForVisu->Print();
 }
 //-------------------------------------------------------------------------
 
