@@ -718,30 +718,6 @@ DeletePointFromCurrentElement(int iTime, bool iReconstructPolyData)
 //-------------------------------------------------------------------------
 bool
 TrackContainer::
-DeletePointFromElement( MultiIndexContainerTraceIDIterator iTrackStructure, int iTime, bool iReconstructPolyData )
-{
-  // Create temp structure
-  TrackStructure tempStructure(*iTrackStructure);
-
-  //add the point in the map
-  bool pointDeleted = tempStructure.DeleteElement( iTime );
-
-  // build the new polydata if a point has been deleted
-  if(pointDeleted && iReconstructPolyData)
-    {
-    UpdateTrackStructurePolyData( tempStructure );
-    }
-
-  // Replace
-  m_Container.get< TraceID >().replace(iTrackStructure, tempStructure);
-
-  return pointDeleted;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-bool
-TrackContainer::
 ReplacePointFromCurrentElement(int iTime, double* iPoint)
 {
   // replace the existing element
@@ -1270,4 +1246,38 @@ DeleteListOfTracks(
 
     ++trackIDIterator;
     }
+}
+
+
+//-------------------------------------------------------------------------
+bool
+TrackContainer::
+DeletePointFromElement( MultiIndexContainerTraceIDIterator iTrackStructureIterator,
+                        int iTime, bool iReconstructPolyData )
+{
+  // Create temp structure
+  TrackStructure tempStructure(*iTrackStructureIterator);
+
+  //add the point in the map
+  bool pointDeleted = tempStructure.DeleteElement( iTime );
+
+  // build the new polydata if a point has been deleted
+  if(pointDeleted && iReconstructPolyData)
+    {
+    UpdateTrackStructurePolyData( tempStructure );
+    }
+
+  // Replace
+  m_Container.get< TraceID >().replace(iTrackStructureIterator, tempStructure);
+
+  return pointDeleted;
+}
+//-------------------------------------------------------------------------
+
+bool
+TrackContainer::
+UpdatePointsFromBBForGivenTrack( unsigned int iTrackID,
+                                 std::list<std::vector<unsigned int> > iBoundingBox)
+{
+
 }

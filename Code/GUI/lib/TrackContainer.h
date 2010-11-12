@@ -803,7 +803,16 @@ public:
     \param[in] iReconstructPolyData should we reconstruct the polydata
     \return true: a point has been deleted, false: no point has been deleted
   */
-  bool DeletePointFromElement( MultiIndexContainerTraceIDIterator iTrackStructure, int iTime, bool iReconstructPolyData );
+  bool DeletePointFromElement( MultiIndexContainerTraceIDIterator iTrackStructureIterator, int iTime, bool iReconstructPolyData );
+
+  /**
+    \brief Delete a point from a track.
+    \param[in] iTrackStructure trackstructure which will be modified
+    \param[in] iTime time point to clear
+    \param[in] iReconstructPolyData should we reconstruct the polydata
+    \return true: a point has been deleted, false: no point has been deleted
+  */
+  bool UpdatePointsFromBBForGivenTrack( unsigned int iTrackID, std::list<std::vector<unsigned int> > iBoundingBox);
 
 public slots:
 
