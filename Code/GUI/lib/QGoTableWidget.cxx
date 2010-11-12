@@ -375,7 +375,7 @@ void QGoTableWidget::SetSelectedColumn(unsigned int iNbOfRows,
 
 //--------------------------------------------------------------------------
 void QGoTableWidget::SetVisibleColumn(unsigned int iNbOfRows,
-                                      unsigned int StartedRow,
+                                      unsigned int iStartedRow,
                                       Qt::CheckState iState)
 {
   int indexCol = findColumnName("Show");

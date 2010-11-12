@@ -1343,7 +1343,7 @@ void GetTracesInfoFromDBAndModifyContainer(
       vtkSmartPointer< vtkPolyDataMySQLTextReader > convert_reader =
         vtkSmartPointer< vtkPolyDataMySQLTextReader >::New();
       std::string polydata_string = query->DataValue(2).ToString();
-      if ( !polydata_string.empty() )
+      if ( !polydata_string.empty() && polydata_string != "0" )
         {
         if ( TraceName.compare("contour") == 0 )
           {
