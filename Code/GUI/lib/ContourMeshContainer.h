@@ -44,6 +44,7 @@
 #include "boost/multi_index/hashed_index.hpp"
 #include "boost/multi_index/ordered_index.hpp"
 #include "boost/numeric/conversion/cast.hpp"
+#include "boost/lexical_cast.hpp"
 
 #include "vtkProperty.h"
 #include "vtkPolyData.h"
@@ -790,6 +791,172 @@ public:
   */
   vtkProperty * GetHighlightedProperty();
 
+
+  void SetColorCode( const std::string& iColumnName,
+                     const std::map< unsigned int, std::string >& iValues )
+  {
+    typedef typename std::map< unsigned int, std::string > MapType;
+    typedef typename MapType::const_iterator MapConstIterator;
+
+    std::map< std::string, double > stringmap;
+
+    if( iColumnName.empty() || iValues.empty() )
+      {
+      typename MultiIndexContainer::iterator t_it = m_Container.begin();
+      while( t_it != m_Container.end() )
+        {
+          if (t_it->Nodes) //make sure the trace has points !!!
+          {
+          t_it->Nodes->GetPointData()->SetActiveScalars( NULL );
+          if( t_it->ActorXY )
+            {
+            t_it->ActorXY->GetMapper()->SetScalarVisibility( false );
+            }
+          if( t_it->ActorXZ )
+            {
+            t_it->ActorXY->GetMapper()->SetScalarVisibility( false );
+            }
+          if( t_it->ActorYZ )
+            {
+            t_it->ActorXY->GetMapper()->SetScalarVisibility( false );
+            }
+          if( t_it->ActorXYZ )
+            {
+            t_it->ActorXY->GetMapper()->SetScalarVisibility( false );
+            }
+          } //end make sure the trace has points !!!
+        ++t_it;
+        }
+      return;
+      }
+
+    MapConstIterator it = iValues.begin();
+
+    double temp = 0.;
+    try
+      {
+      temp = boost::lexical_cast< double >( it->second );
+      }
+    catch( boost::bad_lexical_cast& )
+      {
+        if( stringmap.empty() )
+          {
+          stringmap[ it->second ] = 0.;
+          }
+        else
+          {
+          std::map< std::string, double >::iterator m_it = stringmap.find( it->second );
+
+          if( m_it != stringmap.end() )
+            {
+            temp = m_it->second;
+            }
+          else
+            {
+            std::map< std::string, double >::reverse_iterator r_it = stringmap.rbegin();
+            temp = r_it->second;
+            temp += 1.0;
+            }
+          }
+      }
+
+    double min_value = temp;
+    double max_value = temp;
+
+    while( it != iValues.end() )
+      {
+      MultiIndexContainerTraceIDIterator
+          trace_it = this->m_Container.get<TraceID>().find( it->first );
+
+      if( trace_it != this->m_Container.get<TraceID>().end() )
+        {
+          if (trace_it->Nodes) //make sure the trace has points !!!
+          {
+          vtkPolyData* pd = trace_it->Nodes;
+
+          // Here let's make sure you are not passing crazy values!
+          try
+            {
+            temp = boost::lexical_cast< double >( it->second );
+            }
+          catch( boost::bad_lexical_cast& )
+            {
+              if( stringmap.empty() )
+                {
+                stringmap[ it->second ] = 0.;
+                }
+              else
+                {
+                std::map< std::string, double >::iterator m_it = stringmap.find( it->second );
+
+                if( m_it != stringmap.end() )
+                  {
+                  temp = m_it->second;
+                  }
+                else
+                  {
+                  std::map< std::string, double >::reverse_iterator r_it = stringmap.rbegin();
+                  temp = r_it->second;
+                  temp += 1.0;
+                  }
+                }
+            }
+
+          if( temp > max_value )
+            {
+            max_value = temp;
+            }
+          if( temp < min_value )
+            {
+            min_value = temp;
+            }
+
+          vtkIdType NbOfPoints = pd->GetNumberOfPoints();
+          vtkDoubleArray* data = vtkDoubleArray::New();
+          data->SetNumberOfComponents( 1 );
+          data->SetName( iColumnName.c_str() );
+
+          for( vtkIdType i = 0; i < NbOfPoints; ++i )
+            {
+            data->InsertNextValue( temp );
+            }
+
+          pd->GetPointData()->SetScalars( data );
+          pd->GetPointData()->SetActiveScalars( iColumnName.c_str() );
+          }
+        } //end make sure the trace has points !!!
+      ++it;
+      }
+
+    // Let's set the scalar range (in order to get nice colors)
+    typename MultiIndexContainer::iterator t_it = m_Container.begin();
+    while( t_it != m_Container.end() )
+      {
+      if( t_it->ActorXY )
+        {
+        t_it->ActorXY->GetMapper()->SetScalarRange( min_value, max_value );
+        t_it->ActorXY->GetMapper()->SetScalarVisibility( true );
+        }
+      if( t_it->ActorXZ )
+        {
+        t_it->ActorXZ->GetMapper()->SetScalarRange( min_value, max_value );
+        t_it->ActorXY->GetMapper()->SetScalarVisibility( true );
+        }
+      if( t_it->ActorYZ )
+        {
+        t_it->ActorYZ->GetMapper()->SetScalarRange( min_value, max_value );
+        t_it->ActorXY->GetMapper()->SetScalarVisibility( true );
+        }
+      if( t_it->ActorXYZ )
+        {
+        t_it->ActorXYZ->GetMapper()->SetScalarRange( min_value, max_value );
+        t_it->ActorXY->GetMapper()->SetScalarVisibility( true );
+        }
+      ++t_it;
+      }
+
+    this->m_ImageView->UpdateRenderWindows();
+  }
 
   /**
     \brief Color code contour / mesh according to values provided
