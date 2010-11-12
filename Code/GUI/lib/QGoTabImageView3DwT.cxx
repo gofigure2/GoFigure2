@@ -2351,7 +2351,7 @@ VisualizeTrack(vtkPolyData *iMesh)
 
   if ( iMesh )
     {
-    bool visibility = true;
+    //bool visibility = true;
 
     vtkProperty *mesh_property = vtkProperty::New();
     mesh_property->SetColor(RGBA[0], RGBA[1], RGBA[2]);

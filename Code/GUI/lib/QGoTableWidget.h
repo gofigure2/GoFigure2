@@ -69,13 +69,13 @@ public:
   and a method to return TraceNameID from TraceName*/
 
   /**
-  \brief display the columns names and the content of iTWRowContainer in the 
+  \brief display the columns names and the content of iTWRowContainer in the
   table
-  \param[in] iTWRowContainer contains the data to be displayed and the 
+  \param[in] iTWRowContainer contains the data to be displayed and the
   corresponding info to know how to display them
-  \param[in] iIndexColorTraceRowContainer index to know where to find the 
+  \param[in] iIndexColorTraceRowContainer index to know where to find the
   color of the trace in the iTWRowContainer
-  \param[in] iIndexColorCollectionRowContainer index to know where to find 
+  \param[in] iIndexColorCollectionRowContainer index to know where to find
   the color of the collection in the iTWRowContainer
   \param[in] iTraceName name of the trace
   \param[in] iCollectionName name of the collection
@@ -89,14 +89,14 @@ public:
                       Qt::CheckState iState,
                       int iIndexShowColumn = 0);
 
-  /** 
+  /**
   \brief Insert a new row and fill the cells with the data
-  contained in the RowContainer 
-  \param[in] iTWRowContainer contains the data to be displayed and the 
+  contained in the RowContainer
+  \param[in] iTWRowContainer contains the data to be displayed and the
   corresponding info to know how to display them for one row only
-  \param[in] iIndexColorTraceRowContainer index to know where to find the 
+  \param[in] iIndexColorTraceRowContainer index to know where to find the
   color of the trace in the iTWRowContainer
-  \param[in] iIndexColorCollectionRowContainer index to know where to find 
+  \param[in] iIndexColorCollectionRowContainer index to know where to find
   the color of the collection in the iTWRowContainer
   \param[in] iTraceName name of the trace
   \param[in] iCollectionName name of the collection
@@ -106,14 +106,14 @@ public:
                     std::vector< int > iIndexColorCollectionRowContainer,
                     std::string iTraceName, std::string iCollectionName);
 
-  /** 
+  /**
   \brief Replace the data in the cells corresponding to the traceID with
   the new data contained in the RowContainer
-  \param[in] iTWRowContainer contains the data to be displayed and the 
+  \param[in] iTWRowContainer contains the data to be displayed and the
   corresponding info to know how to display them for one row only
-  \param[in] iIndexColorTraceRowContainer index to know where to find the 
+  \param[in] iIndexColorTraceRowContainer index to know where to find the
   color of the trace in the iTWRowContainer
-  \param[in] iIndexColorCollectionRowContainer index to know where to find 
+  \param[in] iIndexColorCollectionRowContainer index to know where to find
   the color of the collection in the iTWRowContainer
   \param[in] iTraceName name of the trace
   \param[in] iCollectionName name of the collection
@@ -155,7 +155,7 @@ public:
   */
   GoDBCoordinateRow GetCoordinateCenterBoundingBox(unsigned int iTraceID, std::string iTraceName);
 
-  /** 
+  /**
   \brief set the state of the checkbox for the check/uncheck column and the TraceID row
   to iState
   \param[in] iTraceID traceID for which the checkbox state needs to be set
@@ -169,7 +169,7 @@ public:
                                Qt::CheckState iState,
                                bool EmitSignal = true);
 
-  /** 
+  /**
   \brief set the state and icon of the checkbox for the IsVisible column and the TraceID row
   to iState
   \param[in] iTraceID traceID for which the IsVisible checkbox state needs to be set
@@ -193,9 +193,9 @@ public:
     Qt::CheckState iState,std::string iTraceName);
 
 public slots:
-  
-  /** 
-  \brief uncheck/check the boxes in the check/uncheck column for the rows where at 
+
+  /**
+  \brief uncheck/check the boxes in the check/uncheck column for the rows where at
   least one cell is selected
   \param[in] iTraceName name of the trace
   \param[in] iTraceNameID name of the traceID
@@ -204,9 +204,9 @@ public slots:
   void ChangeCheckStateSelectedRows(std::string iTraceName,std::string iTraceNameID,
     Qt::CheckState iState);
 
-  /** 
+  /**
   \brief check/uncheck the visible boxes for the rows where at least one cell is
-  selected 
+  selected
   \param[in] iTraceName name of the trace
   \param[in] iTraceNameID name of the traceID
   \param[in] iState state to which the visibility need to be modified
@@ -215,13 +215,13 @@ public slots:
                                                        std::string iTraceNameID,
                                                        Qt::CheckState iState);
 
-  /** 
+  /**
   \brief convert the text in the selection to a QString with '\n' and '\t'
   and put it in the Clipboard to be pasted in other applications
   */
   void CopySelection();
 
-  /** 
+  /**
   \brief convert the text in the all table and the columns namse
   to a QString with '\n' and '\t' and put it in the Clipboard to be
   pasted in other applications
@@ -242,15 +242,15 @@ protected:
   int PrevOrder;
 
   /**
-  \brief create the table widget items for the columns Header and set the 
+  \brief create the table widget items for the columns Header and set the
   corresponding tooltips for them
   \param[in] iTableName name of the trace to be displayed in the tooltip check/uncheck
-  \param[in] iColumnNames list of all the names of the columns to be displayed in the 
+  \param[in] iColumnNames list of all the names of the columns to be displayed in the
   table
   */
   void DisplayColumnNames(QString iTableName, std::list< std::string > iColumnNames);
 
-  /** 
+  /**
   \brief get the value in the table for the given iRowIndex and
   for the given column name
   \param[in] iColumnName name of the column for which the value is needed
@@ -259,7 +259,7 @@ protected:
   */
   int GetValueForItem(std::string iColumnName, int iRowIndex);
 
-  /** 
+  /**
   \brief calculate the mean value for both columns in the given row
   \param[in] iColumnNameOne name of the first column
   \param[in] iColumnNameTwo name of the second column
@@ -269,24 +269,24 @@ protected:
   std::string GetMeanValue(std::string iColumnNameOne,
                            std::string iColumnNameTwo, unsigned int iRowIndex);
 
-  /** 
+  /**
   \brief return the row index where the given value is located when specifying
-  the column name. 
+  the column name.
   \param[in] iValue value to be look for
   \param[in] iColumn name of the column in which to look for
   \return the row index where the value was found
   */
   int findValueGivenColumn(int iValue, QString iColumn);
 
-  /** 
+  /**
   \brief return the column index who has a column header matching
-  ColumnName 
+  ColumnName
   \param[in] iColumnName name of the column the index is needed
   \return index of the column
   */
   int findColumnName(QString iColumnName);
 
-  /** 
+  /**
   \brief put the text in the cells which are part of the range in a
   QString and insert '\n' and '\t' to be read by other applications
   \param[in] iRange selected cells
@@ -335,7 +335,7 @@ protected:
   */
   bool setCheckStateCheckBox(QTableWidgetItem *iItem, Qt::CheckState iState);
 
-  /** 
+  /**
   \brief return a list of the values of a specific column for the rows where the user
   has selected at least one cell.
   \param[in] iColummName name of the column to look for value
@@ -344,38 +344,38 @@ protected:
   */
   QStringList ValuesForSelectedRows(QString iColumnName);
 
-  /** 
-  \brief Put checkboxes in the column "check/uncheck" 
+  /**
+  \brief Put checkboxes in the column "check/uncheck"
   \param[in] iNbOfRows number of rows for which to put a checkbox
   \param[in] iStartedRow index of the first row where to put a checkbox
   */
   void SetSelectedColumn(unsigned int iNbOfRows, unsigned int iStartedRow);
 
-  /** 
-  \brief Put checkboxes and icons in the column "Show" 
+  /**
+  \brief Put checkboxes and icons in the column "Show"
   \param[in] iNbOfRows number of rows for which to put a checkbox and an icon
   \param[in] iStartedRow index of the first row where to put a checkbox and an icon
   \param[in] iListState list of states to which the checkboxes need to be set
   */
   void SetVisibleColumn(unsigned int iNbOfRows, unsigned int iStartedRow,
-	std::vector<std::string> iListState);
+  std::vector<std::string> iListState);
 
-  /** 
-  \brief Put checkboxes and icons in the column "Show" 
+  /**
+  \brief Put checkboxes and icons in the column "Show"
   \param[in] iNbOfRows number of rows for which to put a checkbox and an icon
   \param[in] iStartedRow index of the first row where to put a checkbox and an icon
   \param[in] iState state to which the checkboxes need to be set
   */
-  void QGoTableWidget::SetVisibleColumn(unsigned int iNbOfRows,
-                                        unsigned int iStartedRow,
-                                        Qt::CheckState iState = Qt::Checked);
+  void SetVisibleColumn( unsigned int iNbOfRows,
+                         unsigned int iStartedRow,
+                         Qt::CheckState iState = Qt::Checked);
 
   /**
   \brief get the rgba values from the iTWRowContainer and display them in the
   column NameGroupColorID
   \param[in] iIndexColorRowContainer index of the iTWRowContainer to find the
   rgba values
-  \param[in] iNameGroupColor name of the trace for which the color needs to 
+  \param[in] iNameGroupColor name of the trace for which the color needs to
   be displayed
   \param[in] iStartRow index of the first row where to display the color
   */
@@ -395,14 +395,14 @@ protected:
   bool CheckValueToDisplayData(std::string iValue, std::string iHeaderCol);
 
 protected slots:
-  /** 
-  \brief sort items given one column and one sort order. 
+  /**
+  \brief sort items given one column and one sort order.
   \param[in] iColumn index of the column to be sorted
   \param[in] iOrder order for the column to be sorted
   */
   void sortItems(int iColumn, Qt::SortOrder iOrder);
 
-  /** 
+  /**
   \brief check if the cell clicked is from the check/uncheck column
   or the "Show" column,change the state of the boxes correspondingly
   and emit the corresponding signal
