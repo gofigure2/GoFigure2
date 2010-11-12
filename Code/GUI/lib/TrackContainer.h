@@ -796,6 +796,13 @@ public:
       std::list< std::pair< unsigned int , std::list< unsigned int > > >
                  iPointsToBeDeleted);
 
+  /**
+    \brief Delete a point from a track.
+    \param[in] iTrackStructure trackstructure which will be modified
+    \param[in] iTime time point to clear
+    \param[in] iReconstructPolyData should we reconstruct the polydata
+    \return true: a point has been deleted, false: no point has been deleted
+  */
   bool DeletePointFromElement( MultiIndexContainerTraceIDIterator iTrackStructure, int iTime, bool iReconstructPolyData );
 
 public slots:
