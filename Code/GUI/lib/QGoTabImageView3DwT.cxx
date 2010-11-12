@@ -1070,10 +1070,10 @@ void QGoTabImageView3DwT::LoadChannelTime()
 
   if ( ok )
     {
-      qDebug() << "user selected an item and pressed OK";
+     // qDebug() << "user selected an item and pressed OK";
       // use the item
-      int value = item.toInt(&ok, 13);
-      qDebug() << "value:" << value;
+      int value = item.toInt(&ok, 10);
+      //qDebug() << "value:" << value;
       // emit with channel...
       // keep track of channel of interest when we move through time
       m_ChannelOfInterest = value;
@@ -1082,7 +1082,7 @@ void QGoTabImageView3DwT::LoadChannelTime()
     }
   else
     {
-    qDebug() << "user selected an item and pressed CANCEL";
+    //qDebug() << "user selected an item and pressed CANCEL";
     }
 }
 //-------------------------------------------------------------------------
@@ -1938,13 +1938,13 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
         m_TCoord = iTimePoint;
         if(m_ChannelClassicMode)
           {
-          qDebug() << "CLASSIC mode";
+          //qDebug() << "CLASSIC mode";
           SetTimePointWithMegaCapture();
           }
         else
           {
-          qDebug() << "TRACK mode";
-          qDebug() << "CHANNEL: " << m_ChannelOfInterest;
+          //qDebug() << "TRACK mode";
+         // qDebug() << "CHANNEL: " << m_ChannelOfInterest;
           SetTimePointWithMegaCaptureTimeChannels( m_ChannelOfInterest );
           }
         emit TimePointChanged(m_TCoord);
@@ -2932,7 +2932,7 @@ QGoTabImageView3DwT::ComputeMeshAttributes( vtkPolyData *iMesh,
       calculator->Update();
 
       oAttributes.m_Volume = calculator->GetPhysicalSize();
-      qDebug() << "volume:" << oAttributes.m_Volume;
+      //qDebug() << "volume:" << oAttributes.m_Volume;
       oAttributes.m_Area = calculator->GetArea();
       oAttributes.m_Size = calculator->GetSize();
 

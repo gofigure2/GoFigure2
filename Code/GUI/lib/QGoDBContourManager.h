@@ -159,7 +159,7 @@ protected:
   on after setting all contoursIDs visibility off
   \param[in] iTimePoint current timepoint
   */
-  void UpdateTracesVisibilityForGivenTimePoint(unsigned int iTimePoint);
+  //void UpdateTracesVisibilityForGivenTimePoint(unsigned int iTimePoint);
   
   //virtual pure method in QGoDBTraceManager
   virtual void GetTracesInfoFromDBAndModifyContainerForVisu(

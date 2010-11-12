@@ -102,20 +102,6 @@ void GoDBMeshRow::SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector,
                                         GoDBCoordinateRow iCoordMax,
                                         GoFigureMeshAttributes *iMeshAttributes)
 {
-  /*this->SetTheBoundingBox(DatabaseConnector, iCoordMin, iCoordMax);
-
-  vtkSmartPointer< vtkPolyDataMySQLMeshWriter > convert =
-    vtkSmartPointer< vtkPolyDataMySQLMeshWriter >::New();
-  std::string PointsString = convert->GetMySQLText(TraceVisu);
-
-  std::cout << "output string: " << PointsString << std::endl;
-
-  this->SetField("Points", PointsString);
-
-  if ( this->DoesThisBoundingBoxExist(DatabaseConnector) )
-    {
-    std::cout << "The bounding box already exists for this mesh" << std::endl;
-    }*/
   this->SetTheDataFromTheVisuTemplate < vtkPolyDataMySQLMeshWriter > (
     DatabaseConnector,TraceVisu,iCoordMin,iCoordMax);
 
