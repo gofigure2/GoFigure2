@@ -499,6 +499,7 @@ QGoImageView::GetAllSeeds()
       this->m_SeedRep[i]->GetSeedWorldPosition(j, worldPosition);
       // Get indexes of the closest point
       int *index = this->m_Pool->GetItem(i)->GetImageCoordinatesFromWorldCoordinates(worldPosition);
+
       // Convert it back into world position
      // qDebug() << "SLICE NUMBER: " << this->m_Pool->GetItem(i)->GetSlice();
       double spacing[3] = { 0., 0., 0. };
