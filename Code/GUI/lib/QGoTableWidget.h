@@ -360,6 +360,16 @@ protected:
   void SetVisibleColumn(unsigned int iNbOfRows, unsigned int iStartedRow,
 	std::vector<std::string> iListState);
 
+  /** 
+  \brief Put checkboxes and icons in the column "Show" 
+  \param[in] iNbOfRows number of rows for which to put a checkbox and an icon
+  \param[in] iStartedRow index of the first row where to put a checkbox and an icon
+  \param[in] iState state to which the checkboxes need to be set
+  */
+  void QGoTableWidget::SetVisibleColumn(unsigned int iNbOfRows,
+                                        unsigned int iStartedRow,
+                                        Qt::CheckState iState = Qt::Checked);
+
   /**
   \brief get the rgba values from the iTWRowContainer and display them in the
   column NameGroupColorID

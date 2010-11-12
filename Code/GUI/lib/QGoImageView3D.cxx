@@ -1147,7 +1147,7 @@ QGoImageView3D::EnableSeedWidget(bool iActivate)
 void
 QGoImageView3D::EnableBoxWidget(bool iValue)
 {
-  qDebug() << "Box ---Widget---";
+  //qDebug() << "Box ---Widget---";
   DefaultMode();
   m_BoxWidget->SetEnabled(iValue);
 
@@ -1164,7 +1164,7 @@ QGoImageView3D::EnableBoxWidget(bool iValue)
 void
 QGoImageView3D::EnablePlaneWidget(bool iValue)
 {
-  qDebug() << "Plane ---Widget---";
+  //qDebug() << "Plane ---Widget---";
   DefaultMode();
   m_PlaneWidget->SetEnabled(iValue);
 
@@ -1306,22 +1306,22 @@ QGoImageView3D::UpdateCurrentActorSelection(vtkObject *caller)
 
   if ( t == m_Pool->GetItem(0)->GetInteractorStyle() )
     {
-    qDebug() << "in XY";
+    //qDebug() << "in XY";
     emit SelectionXYChanged();
     }
   else if ( t == m_Pool->GetItem(1)->GetInteractorStyle() )
     {
-    qDebug() << "in XZ";
+   // qDebug() << "in XZ";
     emit SelectionXZChanged();
     }
   else if ( t == m_Pool->GetItem(2)->GetInteractorStyle() )
     {
-    qDebug() << "in YZ";
+    //qDebug() << "in YZ";
     emit SelectionYZChanged();
     }
   else if ( t == (vtkInteractorStyleImage2D *)this->m_View3D->GetInteractorStyle3D() )
     {
-    qDebug() << "in 3D";
+   // qDebug() << "in 3D";
     emit SelectionXYZChanged();
     }
   else

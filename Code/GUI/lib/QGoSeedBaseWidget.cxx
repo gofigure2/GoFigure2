@@ -95,7 +95,7 @@ QGoSeedBaseWidget::
 void
 QGoSeedBaseWidget::AddChannel(QString iChannel)
 {
-  qDebug() << "AddChannel(" <<iChannel << ")";
+ // qDebug() << "AddChannel(" <<iChannel << ")";
   channel->addItem(iChannel);
 }
 
@@ -106,7 +106,7 @@ QGoSeedBaseWidget::AddChannel(QString iChannel)
 void
 QGoSeedBaseWidget::setNumberOfChannels(int iNumberOfChannels)
 {
-  qDebug() << "setNumberOfChannels" << iNumberOfChannels;
+  //qDebug() << "setNumberOfChannels" << iNumberOfChannels;
   channel->clear();
   channel->setMaxCount(iNumberOfChannels);
 }
