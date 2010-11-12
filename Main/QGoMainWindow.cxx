@@ -454,9 +454,11 @@ QGoMainWindow::LoadMeshesFromDatabase(const int & iT, const std::string & iTrace
 
   if ( w3t )
     {
+ // std::cout << "IN W3T" << std::endl;
     ContourMeshContainer *temp =  w3t->GetMeshContainer();
     if ( temp )
       {
+    //std::cout << "IN TEMP" << std::endl;
       // let's iterate on the container with increasing TraceID
       ContourMeshContainer::MultiIndexContainer::index< TraceID >::type::iterator
         contourmesh_list_it = temp->m_Container.get< TraceID >().begin();
@@ -465,6 +467,8 @@ QGoMainWindow::LoadMeshesFromDatabase(const int & iT, const std::string & iTrace
       while ( contourmesh_list_it != temp->m_Container.get< TraceID >().end() )
         {
         // note here it only makes sense when the trace is a mesh (for now)
+      //std::cout << "IN WHILE" << std::endl;
+
         if ( contourmesh_list_it->Nodes )
           {
           GoFigureMeshAttributes attributes =
@@ -501,6 +505,7 @@ QGoMainWindow::LoadTracksFromDatabase(const int & iT, const std::string & iTrace
   if ( w3t )
     {
     TrackContainer *temp = w3t->GetTrackContainer();
+    //temp->Print();
     if ( temp )
       {
       // let's iterate on the container with increasing TraceID
