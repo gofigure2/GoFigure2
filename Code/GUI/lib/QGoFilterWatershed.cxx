@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author: nicolasrannou $  // Author of last commit
-  Version: $Rev: 2037 $  // Revision of last commit
-  Date: $Date: 2010-08-23 16:33:20 -0400 (Mon, 23 Aug 2010) $  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -44,8 +38,9 @@
 // for apply method
 #include "vtkImageExport.h"
 #include "vtkImageData.h"
-
+#include "vtkMetaImageWriter.h"
 // ITK filter
+#include "itkImageFileWriter.h"
 #include "itkWatershedBasedCellSegmentation.h"
 #include "itkImage.h"
 #include "itkVTKImageImport.h"
@@ -238,7 +233,7 @@ QGoFilterWatershed::Filter3D(double *iCenter)
   typedef itk::Image< float, dimension > OutputImageType;
 
   typedef itk::WatershedBasedCellSegmentation< FeatureImageType, InputImageType, SegmentImageType >
-  SegmentationFilterType;
+    SegmentationFilterType;
 
   //VTK to ITK
   //---------------------------------------------------------
@@ -252,29 +247,18 @@ QGoFilterWatershed::Filter3D(double *iCenter)
     test2 = ExtractROI< unsigned char, dimension >( itkImage, iCenter, getRadius() );
 
   // Apply filter
-  // Apply LevelSet segmentation filter
+  // Apply watershed segmentation filter
   //---------------------------------------------------------
   SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
   filter->SetInput(test2);
   filter->Update();
-
-/*
-  SegmentImagePointer test4 = filter->GetOutput();
-
-  // Some post processing
-  //----------------------------------------------------------
-  typedef itk::MorphologicalWatershedImageFilter2<SegmentImageType, SegmentImageType >
-    WatershedFilterType;
-
-  WatershedFilterType::Pointer wshed = WatershedFilterType::New();
-  wshed->SetInput( test4 );
-  wshed->SetMarkWatershedLine( false );
-  // to be chosen by the user
-  wshed->SetLevel( 1.0 );
-  wshed->FullyConnectedOn();
-  wshed->Update();
-*/
   SegmentImagePointer test3 = filter->GetOutput();
+  
+//   typedef itk::ImageFileWriter< SegmentImageType > WriterType;
+//   WriterType::Pointer writer = WriterType::New();
+//   writer->SetFileName( "test.mha" );
+//   writer->SetInput( test3 );
+//   writer->Update();
 
   // Convert output
   //---------------------------------------------------------
@@ -282,6 +266,14 @@ QGoFilterWatershed::Filter3D(double *iCenter)
   setOutput(itk2vtk);
   itk2vtk->Delete();
 
+//   vtkSmartPointer< vtkMetaImageWriter > writer = vtkSmartPointer< vtkMetaImageWriter >::New(); 
+//   writer->SetFileDimensionality( 3 ); 
+//   writer->SetInput( getOutput() ); 
+//   writer->SetFileName("test.mha"); 
+//   writer->Write(); 
+  
+  // 3D when m_Dimension = 1
+  /// \todo rename m_Dimension
   if ( m_Dimension == 1 )
     {
     vtkPolyData *output = ReconstructMesh(getOutput(), .5);

@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author: lsouhait $  // Author of last commit
-  Version: $Rev: 1972 $  // Revision of last commit
-  Date: $Date: 2010-08-16 12:23:05 -0400 (Mon, 16 Aug 2010) $  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -235,6 +229,18 @@ void QGoDBTraceManager::SetTracesInfoContainerForVisu(
                     SIGNAL( TraceVisibilityChanged(uint, Qt::CheckState) ),
                     this,
                     SLOT ( ShowTheTraceInTW(uint, Qt::CheckState) ) );
+
+  //to change for track container
+  QObject::connect( this->m_Table,
+                    SIGNAL( ModifyHighlightListTraces(QStringList,Qt::CheckState) ),
+                    this->m_TraceContainerInfoForVisu,
+                    SLOT ( UpdateElementHighlightingWithGivenTraceIDs(QStringList,
+                                                   Qt::CheckState) ) );
+  QObject::connect( this->m_Table,
+                    SIGNAL( ModifyVisibilityListTraces(QStringList,Qt::CheckState) ),
+                    this->m_TraceContainerInfoForVisu,
+                    SLOT ( UpdateElementVisibilityWithGivenTraceIDs(QStringList,
+                                                   Qt::CheckState) ) );
 }
 
 //-------------------------------------------------------------------------
@@ -306,12 +312,12 @@ void QGoDBTraceManager::AddGeneralActionsContextMenu(QMenu *iMenu)
 //-------------------------------------------------------------------------
 void QGoDBTraceManager::AddSpecificActionsForContourMesh(QMenu *iMenu)
 {
-  /** \todo when using lineages, remove the following*/
+  /** \todo Lydie: when using lineages, remove the following*/
   //for the time being, as we don't use lineages
   iMenu->addAction( tr("Go to this %1")
                     .arg( this->m_TraceName.c_str() ),
                     this, SLOT( GoToTheTrace() ) );
-  /** \todo when using lineage, put it in the generalActionsContextMenu*/
+  /** \todo Lydie: when using lineage, put it in the generalActionsContextMenu*/
   this->AddActionForCreateNewCollectionFromCheckedTraces(iMenu);
   /*iMenu->addAction(
       tr("Add to selected %1 : %2").arg(this->m_CollectionName.c_str())
@@ -337,7 +343,8 @@ void QGoDBTraceManager::AddActionForCreateNewCollectionFromCheckedTraces(
 //-------------------------------------------------------------------------
 void QGoDBTraceManager::CheckSelectedRows()
 {
-  this->m_Table->CheckSelectedRows(this->m_TraceName, this->m_TraceNameID);
+  this->m_Table->ChangeCheckStateSelectedRows(this->m_TraceName,
+    this->m_TraceNameID,Qt::Checked);
 }
 
 //-------------------------------------------------------------------------
@@ -345,7 +352,8 @@ void QGoDBTraceManager::CheckSelectedRows()
 //------------------------------------------------------------------------
 void QGoDBTraceManager::UncheckSelectedRows()
 {
-  this->m_Table->UncheckSelectedRows(this->m_TraceName, this->m_TraceNameID);
+  this->m_Table->ChangeCheckStateSelectedRows(this->m_TraceName,
+    this->m_TraceNameID,Qt::Unchecked);
 }
 
 //-------------------------------------------------------------------------
@@ -353,7 +361,8 @@ void QGoDBTraceManager::UncheckSelectedRows()
 //------------------------------------------------------------------------
 void QGoDBTraceManager::ShowSelectedRows()
 {
-  this->m_Table->ShowSelectedRows(this->m_TraceName, this->m_TraceNameID);
+  this->m_Table->ChangeVisibilityStateSelectedRows(this->m_TraceName,
+    this->m_TraceNameID,Qt::Checked);
 }
 
 //-------------------------------------------------------------------------
@@ -361,7 +370,8 @@ void QGoDBTraceManager::ShowSelectedRows()
 //------------------------------------------------------------------------
 void QGoDBTraceManager::HideSelectedRows()
 {
-  this->m_Table->HideSelectedRows(this->m_TraceName, this->m_TraceNameID);
+  this->m_Table->ChangeVisibilityStateSelectedRows(this->m_TraceName,
+    this->m_TraceNameID,Qt::Unchecked);
 }
 
 //-------------------------------------------------------------------------

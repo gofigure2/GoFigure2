@@ -79,15 +79,22 @@
 #include "vtkCornerAnnotation.h"
 #include "MegaVTK2Configure.h"
 
+/**
+ * \class vtkOrientationAnnotation
+ * \brief Text annotation in four corners
+ * \ingroup MegaVTK
+ */
 class VTK_RENDERINGADDON2_EXPORT vtkOrientationAnnotation:
   public vtkCornerAnnotation
 {
 public:
   vtkTypeRevisionMacro(vtkOrientationAnnotation, vtkCornerAnnotation);
 
-  // Description:
-  // Instantiate object with a rectangle in normaled view coordinates
-  // of (0.2,0.85, 0.8, 0.95).
+  /**
+   * \brief Convenient method to access the constructor.
+   * Instantiate object with a rectangle in normaled view coordinates
+   * of (0.2,0.85, 0.8, 0.95).
+   */
   static vtkOrientationAnnotation * New();
 
 protected:

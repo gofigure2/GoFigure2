@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author: nicolasrannou $  // Author of last commit
-  Version: $Rev: 2037 $  // Revision of last commit
-  Date: $Date: 2010-08-23 16:33:20 -0400 (Mon, 23 Aug 2010) $  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -43,6 +37,12 @@
 
 #include <QWidget>
 #include "ui_WatershedWidget.h"
+
+/**
+ * \class QGoContourSemiAutoWatershedWidget
+ * \ingroup QGoContourSeed
+ * \brief Widget suited for the watershed segmentation
+*/
 
 class QGoContourSemiAutoWatershedWidget:
   public QWidget,

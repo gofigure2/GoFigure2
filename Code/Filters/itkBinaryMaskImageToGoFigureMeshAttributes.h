@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -48,6 +42,13 @@
 
 namespace itk
 {
+/** \class BinaryMaskImageToGoFigureMeshAttributes
+ *  \brief Compute Mesh Attributes from a binary mask image
+ *  \tparam TInput Input Image Type (depends on the kind of images used, 
+ *  but one channel)
+ *  \tparam TMask Mast Image Type
+ *  \sa GoFigureMeshAttributes
+ * */
 template< class TInput, class TMask >
 class BinaryMaskImageToGoFigureMeshAttributes:public LightObject
 {
@@ -100,22 +101,35 @@ public:
                                                 StatLabelMapType >  StatConverterType;
   typedef typename StatConverterType::Pointer                       StatConverterPointer;
 
+  /** \brief Set the Image */
   void SetImage(ImageType *iInput);
 
+  /** \brief Set the binary mask which corresponds to the input mesh */
   void SetMaskImage(MaskImageType *iMask);
 
+  /** \brief Do you need to compute any intensity related attributes */
+  void SetIntensityBasedComputation( const bool& iComputation );
+
+  /** \brief Here make all the computation */
   void Update();
 
+  /** \brief Get the number of voxels inside the mesh */
   unsigned int GetSize();
 
+  /** \brief Get the volume inside the mesh */
   double GetPhysicalSize();
 
+  /** \brief Get the mean intensity inside the mesh */
   double GetMeanIntensity();
 
+  /** \brief Get the total intensity inside the mesh */
   double GetSumIntensity();
 
 protected:
+  /** \brief Constructor */
   BinaryMaskImageToGoFigureMeshAttributes();
+
+  /** \brief Destructor*/
   ~BinaryMaskImageToGoFigureMeshAttributes();
 
   ImagePointer m_InputImage;
@@ -127,6 +141,7 @@ protected:
   double m_PhysicalSize;
   double m_Mean;
   double m_Sum;
+  bool m_IntensityComputation;
 
   virtual void GenerateData();
 

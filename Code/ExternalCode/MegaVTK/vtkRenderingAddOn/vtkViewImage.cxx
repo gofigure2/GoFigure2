@@ -683,8 +683,8 @@ double vtkViewImage::GetCameraParallelScale(void)
 }
 
 //----------------------------------------------------------------------------
-void vtkViewImage::SetShowAnnotations(const int & val)
+void vtkViewImage::SetShowAnnotations(const int & iShowAnnotations)
 {
-  this->ShowAnnotations = val;
-  this->CornerAnnotation->SetVisibility (val);
+  this->ShowAnnotations = iShowAnnotations;
+  this->CornerAnnotation->SetVisibility (iShowAnnotations);
 }

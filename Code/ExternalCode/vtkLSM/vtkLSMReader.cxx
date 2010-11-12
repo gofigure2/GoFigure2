@@ -142,7 +142,7 @@ vtkLSMReader::~vtkLSMReader()
     this->TimeStampInformation->Delete();
     }
 
-/// TODO Fix leaks
+/// \todo Fix leaks
 /*
 if(Description)
     {

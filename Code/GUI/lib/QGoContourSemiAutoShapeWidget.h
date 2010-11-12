@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author: nicolasrannou $  // Author of last commit
-  Version: $Rev: 2037 $  // Revision of last commit
-  Date: $Date: 2010-08-23 16:33:20 -0400 (Mon, 23 Aug 2010) $  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -44,6 +38,12 @@
 #include <QWidget>
 #include "ui_ContourSemiAutoShapeWidget.h"
 
+/**
+ * \class QGoContourSemiAutoShapeWidget
+ * \ingroup QGoContourSeed
+ * \brief Widget suited for the shape segmentation. Shape can be a sphere, a cube, etc.
+*/
+
 class QGoContourSemiAutoShapeWidget:
   public QWidget,
   protected Ui::ContourSemiAutoShapeWidget
@@ -53,6 +53,9 @@ public:
   explicit QGoContourSemiAutoShapeWidget(QWidget *iParent = 0);
   ~QGoContourSemiAutoShapeWidget();
 signals:
+  /*
+   * \brief Signal sent when the shape is modified
+   */
   void Shape(int);
 };
 

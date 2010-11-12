@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -427,21 +421,6 @@ void UpdateValueInDB(vtkMySQLDatabase *DatabaseConnector,
     }
   query->Delete();
 }
-
-//------------------------------------------------------------------------------
-
-//------------------------------------------------------------------------------
-/*void UpdateContourInDB(vtkMySQLDatabase* DatabaseConnector,
-                       GoDBContourRow UpdatedContour)
-{
-  std::string contourID = UpdatedContour.GetMapValue("ContourID");
-  UpdateValueInDB(DatabaseConnector, "contour", "CoordIDMin", UpdatedContour.GetMapValue("CoordIDMin"),
-                  "contourID", contourID);
-  UpdateValueInDB(DatabaseConnector, "contour", "CoordIDMax", UpdatedContour.GetMapValue("CoordIDMax"),
-                  "contourID", contourID);
-  UpdateValueInDB(DatabaseConnector, "contour", "Points", UpdatedContour.GetMapValue("Points"),
-                  "contourID", contourID);
-}*/
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------

@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author: nicolasrannou $  // Author of last commit
-  Version: $Rev: 2037 $  // Revision of last commit
-  Date: $Date: 2010-08-23 16:33:20 -0400 (Mon, 23 Aug 2010) $  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -48,7 +42,7 @@
 QGoContourSegmentationBaseDockWidget::QGoContourSegmentationBaseDockWidget(
   QWidget *iParent,
   vtkPoints *seeds,
-  std::vector< vtkImageData * > *iOriginalImage):QDockWidget(iParent)
+  std::vector< vtkSmartPointer<vtkImageData> > *iOriginalImage):QDockWidget(iParent)
 {
   this->setupUi(this);
 
@@ -198,12 +192,30 @@ QGoContourSegmentationBaseDockWidget::interactorBehavior(bool iSegmentationMetho
 
 //---------------------------------------------------------------------------//
 void
-QGoContourSegmentationBaseDockWidget::SetChannel(int iChannel)
+QGoContourSegmentationBaseDockWidget::SetChannel(int iChannel,const QString & iText)
 {
-  m_ContourSemiAutoSegmentation->SetChannel(iChannel);
+  QString input;
+
+  if ( !iText.isEmpty() )
+    {
+    input = iText;
+    }
+  else
+    {
+    input = QString("Channel %1").arg(iChannel);
+    }
+
+  m_ContourSemiAutoSegmentation->SetChannel(input);
 }
 
 //---------------------------------------------------------------------------//
+
+//---------------------------------------------------------------------------//
+void
+QGoContourSegmentationBaseDockWidget::SetNumberOfChannels(int iNumberOfChannels)
+{
+  m_ContourSemiAutoSegmentation->SetNumberOfChannels(iNumberOfChannels);
+}
 
 //---------------------------------------------------------------------------//
 bool

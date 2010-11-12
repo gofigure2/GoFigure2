@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author: nicolasrannou $  // Author of last commit
-  Version: $Rev: 2037 $  // Revision of last commit
-  Date: $Date: 2010-08-23 16:33:20 -0400 (Mon, 23 Aug 2010) $  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -51,13 +45,14 @@
 #include "itkVTKImageImport.h"
 #include "itkImage.h"
 
+#include "vtkSmartPointer.h"
+
 // for the signals
 #include "vtkPolyData.h"
 
 class vtkImageData;
 class vtkPoints;
 class vtkImageExport;
-
 #include "QGoGUILibConfigure.h"
 
 class QGOGUILIB_EXPORT QGoFilterSemiAutoBase:public QObject
@@ -78,7 +73,7 @@ public:
 
   QWidget *      getWidget();
 
-  vtkImageData * getInput();
+  vtkSmartPointer<vtkImageData> getInput();
 
   void          setOutput(vtkImageData *iOutput);
 
@@ -96,7 +91,7 @@ public:
 
   vtkPoints *    getPoints();
 
-  void          setOriginalImageMC(std::vector< vtkImageData * > *iOriginalImage);
+  void          setOriginalImageMC(std::vector< vtkSmartPointer<vtkImageData> > *iOriginalImage);
 
   vtkImageData * extractOneSlice(vtkImageData *iOriginalImage, double *iOrigin, int iDirection);
 
@@ -157,17 +152,17 @@ signals:
   void AddContourForMeshToContours(vtkPolyData *);
 
 private:
-  vtkImageExport *               m_vtk2itkImage;
-  vtkImageData *                 m_Output;
-  QString                        m_Name;
-  QWidget *                      m_Widget;
-  double                         m_Center[3];
-  double                         m_Radius;
-  int                            m_Number;
-  int                            m_Channel;
-  vtkPoints *                    m_Points;
-  std::vector< vtkImageData * > *m_OriginalImageMC;
-  int                            m_Sampling;
+  vtkImageExport *                              m_vtk2itkImage;
+  vtkImageData *                                m_Output;
+  QString                                       m_Name;
+  QWidget *                                     m_Widget;
+  double                                        m_Center[3];
+  double                                        m_Radius;
+  int                                           m_Number;
+  int                                           m_Channel;
+  vtkPoints *                                   m_Points;
+  std::vector< vtkSmartPointer<vtkImageData> > *m_OriginalImageMC;
+  int                                           m_Sampling;
 };
 
 #include "QGoFilterSemiAutoBase.txx"

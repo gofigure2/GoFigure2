@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -105,8 +99,8 @@ public:
   virtual void AddActor(const int & iId, vtkActor *iActor);
 
 //   std::vector< vtkQuadricLODActor* >
-  std::vector< vtkActor * > AddContour(vtkPolyData *dataset,
-                                       vtkProperty *property = NULL);
+  std::vector< vtkActor * > AddContour(vtkPolyData *iDataset,
+                                       vtkProperty *iProperty = NULL);
 
   virtual void setupUi(QWidget *parent);
 
@@ -199,16 +193,16 @@ signals:
 
 public slots:
   QString SnapshotViewXY( const GoFigure::FileType & iType,
-                          const QString & iBaseName = QString("snapshot") );
+                          const QString & iBaseName = QString("snapshot-xy-") );
 
-  QString SnapshotView2( const GoFigure::FileType & iType,
-                         const QString & iBaseName = QString("snapshot") );
+  QString SnapshotViewXZ( const GoFigure::FileType & iType,
+                         const QString & iBaseName = QString("snapshot-xz-") );
 
-  QString SnapshotView3( const GoFigure::FileType & iType,
-                         const QString & iBaseName = QString("snapshot") );
+  QString SnapshotViewYZ( const GoFigure::FileType & iType,
+                         const QString & iBaseName = QString("snapshot-yz") );
 
   QString SnapshotViewXYZ( const GoFigure::FileType & iType,
-                           const QString & iBaseName = QString("snapshot") );
+                           const QString & iBaseName = QString("snapshot-xyz-") );
 
   void SetSliceViewXY(const int &);
 
@@ -235,12 +229,6 @@ public slots:
 
   void UpdateCurrentActorVisibility(vtkObject *caller);
 
-//   void HighLightContours();
-
-  /**
-   *
-   * @param
-   */
   virtual void SetLookupTable(vtkLookupTable *);
 
   virtual void ShowScalarBar(const bool &);

@@ -83,7 +83,9 @@ class vtkViewImage2D;
 class VTK_RENDERINGADDON2_EXPORT vtkViewImage2DCommand:public vtkCommand
 {
 public:
-
+  /**
+   * \brief Convenient method to access the constructor.
+   */
   static vtkViewImage2DCommand * New()
   { return new vtkViewImage2DCommand; }
 

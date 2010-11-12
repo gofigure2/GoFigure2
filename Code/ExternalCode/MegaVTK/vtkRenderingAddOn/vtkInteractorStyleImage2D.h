@@ -84,6 +84,9 @@ class VTK_RENDERINGADDON2_EXPORT vtkInteractorStyleImage2D:
   public vtkInteractorStyleImage
 {
 public:
+    /**
+     * \brief Convenient method to access the constructor
+     */
   static vtkInteractorStyleImage2D * New();
 
   vtkTypeRevisionMacro (vtkInteractorStyleImage2D, vtkInteractorStyleImage);

@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author: krm15 $  // Author of last commit
-  Version: $Rev: 1550 $  // Revision of last commit
-  Date: $Date: 2010-06-06 23:50:34 -0400 (Sun, 06 Jun 2010) $  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -50,6 +44,7 @@
 #endif
 
 #include "itkImageToImageFilter.h"
+#include "itkCellPreprocess.h"
 #include "itkCellForegroundExtraction.h"
 #include "itkGradientWeightedDistanceImageFilter.h"
 #include "itkInvertIntensityImageFilter.h"
@@ -108,7 +103,13 @@ public:
   typedef typename SegmentImageType::ConstPointer SegmentImageConstPointer;
   typedef typename SegmentImageType::IndexType    SegmentImageIndexType;
   typedef typename SegmentImageType::PixelType    SegmentImagePixelType;
-
+  typedef typename SegmentImageType::SizeType    SegmentImageSizeType;
+  typedef typename SegmentImageIndexType::IndexValueType SegmentImageIndexValueType;
+  
+  typedef CellPreprocess< FeatureImageType, FeatureImageType > 
+    PreprocessFilterType;
+  typedef typename PreprocessFilterType::Pointer PreprocessFilterPointer;
+  
   typedef CellForegroundExtraction< FeatureImageType, InputImageType, SegmentImageType >
   ForegroundFilterType;
   typedef typename ForegroundFilterType::Pointer ForegroundFilterPointer;

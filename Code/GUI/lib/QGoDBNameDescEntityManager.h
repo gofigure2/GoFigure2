@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author: lsouhait $  // Author of last commit
-  Version: $Rev: 1902 $  // Revision of last commit
-  Date: $Date: 2010-08-05 15:24:47 -0400 (Thu, 05 Aug 2010) $  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -62,7 +56,7 @@ public:
   /**
   \param[in] iParent QWidget parent
   \param[in] iEntityName Name of the DBTable
-  \param[in] iImagingSessionID ID of the current imagingsession
+  \param[in] iImgSessionID ID of the current imagingsession
   */
   explicit QGoDBNameDescEntityManager (QWidget *iParent = 0,
                                        std::string iEntityName = "", int iImgSessionID = 0);
@@ -76,14 +70,16 @@ public:
   \brief execute the dialog asking the user to enter a name and a
   description, validates the name, set the m_DatabaseConnector,
   save the entity in the DB and return the name of the new entity
-  \return std::string Name of the new entity, empty if the user canceled the adding
+  \param[in] iDatabaseConnector connection to the database
+  \return Name of the new entity, empty if the user canceled the adding
   */
   std::string AddAnEntity(vtkMySQLDatabase *iDatabaseConnector);
 
   /**
   \brief return the list of all the existing entities stored
   in the database
-  \return NamesDescrContainerType vector of all the names associated with their description
+  \param[in] iDatabaseConnector connection to the database
+  \return a vector of all the names associated with their description
   */
   NamesDescrContainerType GetListExistingEntities(
     vtkMySQLDatabase *iDatabaseConnector);
@@ -92,17 +88,24 @@ public:
   \brief show the list of the existing entities so the user can
   choose the ones he wants to delete, then delete them from the
   database
-  \return bool is true if the user chooses to delete an entity,
+  \param[in] iDatabaseConnector connection to the database
+  \return true if the user chooses to delete an entity,
   false if he canceled the deleting
   */
   virtual bool DeleteEntity(vtkMySQLDatabase *iDatabaseConnector);
 
   /**
   \brief return the name of the new entity added
-  \return std::string name of the new entity
+  \return name of the new entity
   */
   std::string GetNameNewEntity();
 
+  /**
+  \brief get the ID of the entity based on the name
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iName name of the entity
+  \return ID of the entity
+  */
   int GetTheEntityID(std::string iName, vtkMySQLDatabase *iDatabaseConnector);
 
 protected slots:
@@ -145,7 +148,8 @@ protected:
 
   /**
   \brief return the names of all the entities stored in the database
-  \return vector of the names
+  \param[in] iDatabaseConnector connection to the database
+  \return a vector of the names
   */
   std::vector< std::string > GetNameExistingEntities(vtkMySQLDatabase *iDatabaseConnector);
 
@@ -186,7 +190,7 @@ protected:
   \tparam T this method takes only children of GoDBNameDescRow as type
   \param[in] iName name for the new entity entered by the user
   \param[in] iDescription description for the new entity entered by the user
-  \param[in|out] ioNewEntity fields name and description modified by the method
+  \param[in,out] ioNewEntity fields name and description modified by the method
   */
   template< typename T >
   void ValidateNameTemplate(T & ioNewEntity, std::string iName, std::string iDescription)

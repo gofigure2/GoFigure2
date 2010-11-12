@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -47,7 +41,6 @@
 #include <list>
 #include "itkMacro.h"
 #include "vtkMySQLDatabase.h"
-//#include "GoDBContourRow.h"
 
 #include "QGoIOConfigure.h"
 
@@ -92,11 +85,6 @@ QGOIO_EXPORT
 void UpdateValueInDB(vtkMySQLDatabase *DatabaseConnector,
                      std::string iTableName, std::string ifield,
                      std::string inewValue, std::vector< unsigned int > iVectIDs);
-
-/** \todo to review*/
-//QGOIO_EXPORT
-//void UpdateContourInDB(vtkMySQLDatabase* DatabaseConnector,
-//                     GoDBContourRow UpdatedContour);
 
 QGOIO_EXPORT
 void DropDatabase(

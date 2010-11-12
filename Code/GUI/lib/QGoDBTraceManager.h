@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author: lsouhait $  // Author of last commit
-  Version: $Revision: 1972 $  // Revision of last commit
-  Date: $Date: 2010-08-16 12:23:05 -0400 (Mon, 16 Aug 2010) $  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -48,11 +42,10 @@
 #include "GoDBTableWidgetContainer.h"
 #include "QGoGUILibConfigure.h"
 #include "ContourMeshContainer.h"
-//#include <QWidget>
 
 /**
-\class QGoDBTraceManager
-\brief Abstract class
+\class QGoDBTraceManager 
+\brief Abstract class inherited by QGoDBContourManager,Mesh,Track,Lineage
 \ingroup DB GUI
 */
 class QGOGUILIB_EXPORT QGoDBTraceManager:public QObject
@@ -77,7 +70,8 @@ public:
   for all timepoints if the timepoint is set to the default one or for the
   corresponding timepoint if not
   \param[in] iDatabaseConnector connection to the database
-  \return std::list<NameWithColorData> list of the tracesIDs with their
+  \param[in] iTimePoint timepoint to get the tracesIDs for if different from -1
+  \return a list of the tracesIDs with their
   corresponding QColor
   */
   std::list< NameWithColorData > GetAllTraceIDsWithColor(
@@ -102,14 +96,27 @@ public:
     vtkMySQLDatabase *iDatabaseConnector, std::list< unsigned int > iTraceIDs);
 
   /**
-  \overload
+  \overload UpdateTWAndContainerForExistingTraces(
+    vtkMySQLDatabase *iDatabaseConnector, std::list< unsigned int > iTraceIDs)
   */
   void UpdateTWAndContainerForExistingTraces(
     vtkMySQLDatabase *iDatabaseConnector, int iTraceID);
 
+  /**
+  \brief delete the corresponding traces in the table widget and in the 
+  container for visu
+  \param[in] iTraceIDs list of the IDs for the traces to be deleted
+  */
   void UpdateTWAndContainerForDeletedTraces(
     std::list< unsigned int > iTraceIDs);
 
+  /**
+  \brief get the data needed from the database for the
+  imported traces,display them in new inserted rows of the m_Table and
+  update the container for the visu. 
+  \param[in] iVectorImportedTraces IDs of the imported traces
+  \param[in] iDatabaseConnector connection to the database
+  */
   virtual void UpdateTWAndContainerForImportedTraces(std::vector< int > iVectorImportedTraces,
                                                      vtkMySQLDatabase *iDatabaseConnector) = 0;
 
@@ -125,7 +132,7 @@ public:
 
   /**
   \brief return the list of IDs for the current selected traces
-  \return std::list<unsigned int> list of selected TraceIDs
+  \return a list of selected TraceIDs
   */
   std::list< unsigned int > GetListHighlightedIDs();
 
@@ -142,7 +149,7 @@ public:
   if the trace is a mesh)
   \param[in] iDatabaseConnector connection to the database
   \param[in] iColor new color for the traces
-  \return std::list<unsigned int> list of the tracesIDs, part of the collection
+  \return a list of the tracesIDs, part of the collection
   represented by the checked traces
   */
   virtual std::list< unsigned int > UpdateTheTracesColor(
@@ -183,7 +190,7 @@ public:
   \param[in] iDatabaseConnector connection to the database
   \param[in] iListTracesIDs list of the tracesIDs from which the
   collectionID is needed
-  \return std::list<unsigned int> list of the collectionIDs distinct and
+  \return a list of the collectionIDs distinct and
   different from zero found in the database for these tracesIDs
   */
   std::list< unsigned int > GetListCollectionIDs(
@@ -194,7 +201,7 @@ public:
   \param[in] iDatabaseConnector connection to the database
   \param[in] iListTraces list of the tracesIDs from which the collectionOf IDs
   are needed
-  return std::list<unsigned int> list of the corresponding CollectionOf IDs
+  \return a list of the corresponding CollectionOf IDs
   (exp: return a list of ContourIDs belonging to the meshesIDs listed in iListTraces)
   */
   std::list< unsigned int > GetListTracesIDsFromThisCollectionOf(
@@ -215,6 +222,12 @@ public:
   */
   void CreateContextMenu(const QPoint & iPos);
 
+  /**
+  \brief get the last saved traces in the database
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iNumberOfTracesIDs number of the last tracesIDs required
+  \return a list of the IDs
+  */
   std::list< unsigned int > GetLastCreatedTracesIDs(
     vtkMySQLDatabase *iDatabaseConnector, int iNumberOfTraceIDs);
 
@@ -252,14 +265,12 @@ protected:
   std::string m_CollectionNameID;
   std::string m_CollectionOf;
   std::string m_CollectionOfID;
-  //IDWithColorData            m_SelectedColor;
+
   int                     m_SelectedCollectionID;
   int                     m_ImgSessionID;
   QGoTableWidget *        m_Table;
   GoDBCollectionOfTraces *m_CollectionOfTraces;
 
-  //to be changed:
-  //ContourMeshStructureMultiIndexContainer* ListTracesInfoForVisu;
   ContourMeshContainer *m_TraceContainerInfoForVisu;
 
   /**
@@ -288,7 +299,7 @@ protected:
   /**
   \brief transform the iName into iNameID
   \param[in] iName
-  \return std::string iNameID
+  \return iNameID
   */
   std::string GetTheNameIDFromName(std::string iName);
 
@@ -314,10 +325,18 @@ protected:
   /**
   \brief return a double rgba[4] from a QColor
   \param[in] iColor QColor
-  \return double* rgba[4]
+  \return a double* rgba[4]
   */
   double * GetVectorFromQColor(QColor iColor);
 
+  /**
+  \brief create a GoDBCoordinateRow and set its fields X,Y,Z,Tcoord
+  \param[in] iXCoord
+  \param[in] iYCoord
+  \param[in] iZCoord
+  \param[in] iTCoord
+  \return a new created GoDBCooordinateRow with coordinates
+  */
   GoDBCoordinateRow GetCoordinateFromInt(int iXCoord, int iYCoord, int iZCoord,
                                          int iTCoord);
 
@@ -382,6 +401,7 @@ protected:
   get the data from the database and to display them in the m_Table but has
   no value yet
   \param[in] iDatabaseConnector connection to the database
+  \param[in] iTraceID ID for the trace the info will be displayed
   \tparam T this method takes only children of GoDBTableWidgetContainer as type
   */
   template< typename T >
@@ -398,9 +418,25 @@ protected:
                              this->m_TraceName, this->m_CollectionName, iTraceID);
   }
 
-  /** \brief create the trace row with the related data provided by
+  /** 
+  \brief create the trace row with the related data provided by
   the visu, iTCoordMax is equal to 0 as for contour and mesh, it is the
-  same as TCoord*/
+  same as TCoord
+  \param[in] iXCoordMin X coord min of the bounding box
+  \param[in] iYCoordMin Y coord min of the bounding box
+  \param[in] iZCoordMin Z coord min of the bounding box
+  \param[in] iTCoord    T coord min of the bounding box and max if iTCoordMax = 0
+  \param[in] iXCoordMax X coord max of the bounding box
+  \param[in] iYCoordMax Y coord max of the bounding box
+  \param[in] iZCoordMax Z coord max of the bounding box
+  \param[in] iTraceNodes polydata from which the points will be extracted
+  \param[in] iColor color of the trace
+  \param[in] iDatabaseConnector connection to the database
+  \param[in,out] iTrace GoDBTraceRow with the fields to be set
+  \param[in] iCollectionID collection ID of the trace
+  \param[in] iTCoordMax T coord max of the bounding box
+  \tparam
+  */
   template< typename T >
   unsigned int CreateNewTraceInDBFromVisu(
     unsigned int iXCoordMin, unsigned int iYCoordMin, unsigned int iZCoordMin,
@@ -513,8 +549,9 @@ protected:
   for the highlighted traces
   \param[in] iDatabaseConnector connection to the database
   \param[in] iNewColor color to be the new one for the highlighted traces
-  \return std::list<unsigned int> list of the tracesIDs, part of the collection
+  \return a list of the tracesIDs, part of the collection
   represented by the checked traces
+  \tparam T children of GoDBTraceRow
   */
   template< typename T >
   std::list< unsigned int > UpdateTheTracesColorTemplate(

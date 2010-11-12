@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Revision$  // Revision of last commit
-  Date: $Date$  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -60,7 +54,7 @@ namespace itk
 *  \brief Denoise images - remove median noise and perform morphological
 * reconstruction. Makes it easier to segment and prevents formation of holes
 * in the segmentation.
-* \todo Change class name
+* \todo (Kishore) Change class name
 */
 template< class TInputImage, class TOutputImage = TInputImage >
 class ITK_EXPORT CellPreprocess:public ImageToImageFilter<

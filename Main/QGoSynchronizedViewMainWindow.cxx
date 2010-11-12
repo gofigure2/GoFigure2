@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author$  // Author of last commit
-  Version: $Rev$  // Revision of last commit
-  Date: $Date$  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -297,11 +291,11 @@ QGoSynchronizedViewMainWindow::SaveSnapshotInFile(QString & iFile, QGoSynchroniz
           break;
 
         case 2:
-          temp3DSynchronizedView->SnapshotView2(iType, iFile);
+          temp3DSynchronizedView->SnapshotViewXZ(iType, iFile);
           break;
 
         case 3:
-          temp3DSynchronizedView->SnapshotView3(iType, iFile);
+          temp3DSynchronizedView->SnapshotViewYZ(iType, iFile);
           break;
 
         case 4:

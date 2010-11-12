@@ -1,10 +1,4 @@
 /*=========================================================================
-  Author: $Author: nicolasrannou $  // Author of last commit
-  Version: $Rev: 2037 $  // Revision of last commit
-  Date: $Date: 2010-08-23 16:33:20 -0400 (Mon, 23 Aug 2010) $  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
@@ -97,12 +91,13 @@ public:
 
 public slots:
 signals:
+
   /**
    * \brief Signal to be send to the dockwidget to add channel to the channel
    * QComboBox
    * \param[in] iQString Name of the channel.
    */
-  void addChannel(QString);
+  void addChannel(QString iQString);
 
   void MeshCreated(vtkPolyData *);
 
@@ -118,7 +113,7 @@ private:
   /**
    * \brief Reconstruct a 3D mesh from a vtkImageData using MarchingCubes.
    * Returns a vtkPolyData* representing the mesh.
-   * \param[in] iOriginalImage Input 3D image resulted from segmentation.
+   * \param[in] iInputImage Input 3D image resulted from segmentation.
    */
   vtkPolyData *  ReconstructMesh(vtkImageData *iInputImage);
 
