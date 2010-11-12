@@ -1893,13 +1893,13 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
         m_TCoord = iTimePoint;
         if(m_ChannelClassicMode)
           {
-          std::cout << "CLASSIC mode" << std::endl;
+          //std::cout << "CLASSIC mode" << std::endl;
           SetTimePointWithMegaCapture();
           }
         else
           {
-          std::cout << "TRACK mode" << std::endl;
-          std::cout << "CHANNEL: " << m_ChannelOfInterest << std::endl;
+          //std::cout << "TRACK mode" << std::endl;
+          //std::cout << "CHANNEL: " << m_ChannelOfInterest << std::endl;
           SetTimePointWithMegaCaptureTimeChannels( m_ChannelOfInterest );
           }
         emit TimePointChanged(m_TCoord);
@@ -2875,7 +2875,7 @@ QGoTabImageView3DwT::ComputeMeshAttributes( vtkPolyData *iMesh,
 
   GoFigureMeshAttributes oAttributes;
 
-  if( !iIntensity )
+  if( iIntensity )
     {
     for ( size_t i = 0; i < m_InternalImages.size(); i++ )
       {
@@ -2903,6 +2903,17 @@ QGoTabImageView3DwT::ComputeMeshAttributes( vtkPolyData *iMesh,
     }
   else
     {
+    vtkSmartPointer< vtkImageExport > vtk_exporter =
+      vtkSmartPointer< vtkImageExport >::New();
+    itk::VTKImageImport< ImageType >::Pointer itk_importer =
+      itk::VTKImageImport< ImageType >::New();
+    vtk_exporter->SetInput(m_InternalImages[0]);
+
+    ConnectPipelines< vtkImageExport, itk::VTKImageImport< ImageType >::Pointer >(
+      vtk_exporter, itk_importer);
+    calculator->SetImage( itk_importer->GetOutput() );
+    calculator->Update();
+
     oAttributes.m_Volume = calculator->GetPhysicalSize();
     oAttributes.m_Area = calculator->GetArea();
     oAttributes.m_Size = calculator->GetSize();
