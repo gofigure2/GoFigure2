@@ -655,13 +655,14 @@ protected:
   void SetColorCodingTemplate( T* iContainerForVisu,bool IsChecked)
   {
     std::string ColumnName = "";
-    std::map<unsigned int, double> Values = std::map<unsigned int, double>();
+    std::map<unsigned int, double> Values;
+
 	  if (IsChecked)
 	    {
       Values = this->m_Table->GetTraceIDAndColumnsValues(
 		    this->m_TraceNameID,ColumnName);
 	    }
-    iContainerForVisu->SetColorCode<double>( ColumnName,Values );
+    iContainerForVisu->SetColorCode( ColumnName,Values );
     IsColorCodingOn = IsChecked;
   }
 
