@@ -46,8 +46,20 @@ public:
   GoDBTWContainerForContourMesh(std::string iCollectionName, std::string iTracesName,
                                 int iImgSessionID);
   ~GoDBTWContainerForContourMesh();
+
+  /**
+  \brief return the index of the column in the RowContainer corresponding to
+  the show/hide column
+  */
+  int GetIndexShowColumn();
 protected:
 
   void GetCommonInfoForTwoTracesTable();
+  void FillColumnShowHide(vtkMySQLDatabase* iDatabaseConnector);
+
+  void FillRowContainerWithDBValues(
+    vtkMySQLDatabase *iDatabaseConnector, std::string iRestrictionName,
+    std::string iRestrictionValue);
+
 };
 #endif

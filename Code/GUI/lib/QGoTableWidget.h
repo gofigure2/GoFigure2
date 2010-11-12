@@ -86,7 +86,8 @@ public:
                       std::vector< int > iIndexColorCollectionRowContainer,
                       std::string iTraceName, std::string iCollectionName,
                       std::list< std::string > iColumnNames,
-                      Qt::CheckState iState);
+                      Qt::CheckState iState,
+                      int iIndexShowColumn = 0);
 
   /** 
   \brief Insert a new row and fill the cells with the data
@@ -354,10 +355,10 @@ protected:
   \brief Put checkboxes and icons in the column "Show" 
   \param[in] iNbOfRows number of rows for which to put a checkbox and an icon
   \param[in] iStartedRow index of the first row where to put a checkbox and an icon
-  \param[in] iState state to which the checkboxes need to be set, default parameter to checked
+  \param[in] iListState list of states to which the checkboxes need to be set
   */
   void SetVisibleColumn(unsigned int iNbOfRows, unsigned int iStartedRow,
-	Qt::CheckState iState = Qt::Checked);
+	std::vector<std::string> iListState);
 
   /**
   \brief get the rgba values from the iTWRowContainer and display them in the

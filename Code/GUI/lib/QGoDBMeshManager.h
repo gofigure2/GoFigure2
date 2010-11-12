@@ -161,6 +161,7 @@ protected:
   virtual void GetTracesInfoFromDBAndModifyContainerForVisu(
     vtkMySQLDatabase* iDatabaseConnector,std::vector<int> iVectIDs = std::vector< int >());
 
+<<<<<<< HEAD
   /**
   \brief get the meshesIDs belonging to iTimePoint and set their visibility
   on after setting all meshesIDs visibility off
@@ -174,5 +175,8 @@ protected slots:
 
   //virtual pure method in QGoDBTraceManager
   virtual void UpdateVisibleElementsInVisuContainer(int iTraceID);
+=======
+ // void UpdateTracesVisibilityForGivenTimePoint(unsigned int iTimePoint);
+>>>>>>> HotFixes
 };
 #endif

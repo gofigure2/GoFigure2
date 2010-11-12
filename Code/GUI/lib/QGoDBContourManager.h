@@ -154,6 +154,7 @@ protected:
   //virtual pure method in QGoDBTraceManager
   virtual void DisplayInfoForAllTraces(vtkMySQLDatabase *iDatabaseConnector);
 
+<<<<<<< HEAD
   /**
   \brief get the contoursIDs belonging to iTimePoint and set their visibility
   on after setting all contoursIDs visibility off
@@ -164,6 +165,9 @@ protected:
   //virtual pure method in QGoDBTraceManager
   virtual void GetTracesInfoFromDBAndModifyContainerForVisu(
     vtkMySQLDatabase* iDatabaseConnector,std::vector<int> iVectIDs = std::vector< int >());
+=======
+  //void UpdateTracesVisibilityForGivenTimePoint(unsigned int iTimePoint);
+>>>>>>> HotFixes
 
 protected slots:
   /**
