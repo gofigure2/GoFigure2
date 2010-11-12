@@ -169,5 +169,6 @@ private:
   vtkPoints *m_Seeds;
   double     m_SeedsPosition[3];
   int        m_Sampling;
+  int        m_NumberOfChannels;
 };
 #endif
