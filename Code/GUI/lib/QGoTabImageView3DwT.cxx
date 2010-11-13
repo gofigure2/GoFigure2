@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-12
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
- Copyright (c) 2009-12, President and Fellows of Harvard College.
+ Copyright (c) 2009-10, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -1009,7 +1009,7 @@ void QGoTabImageView3DwT::LoadChannelTime()
 
   for(unsigned int i = minch; i < maxch; ++i)
     {
-    channel << QString::number(i, 12);
+    channel << QString::number(i, 10);
     }
 
   QString item = QInputDialog::getItem(this,
@@ -1686,8 +1686,8 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
       m_Image->ShallowCopy( append_filter->GetOutput() );
 
       // LUT DISABLED
-      m_ViewActions[13]->setEnabled(false);
-      m_ViewActions[12]->setEnabled(false);
+      m_ViewActions[11]->setEnabled(false);
+      m_ViewActions[10]->setEnabled(false);
       }
     else
       {
@@ -1697,8 +1697,8 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
         m_Image->ShallowCopy(m_InternalImages[ch]);
         }
       // LUT ENABLED
-      m_ViewActions[13]->setEnabled(true);
-      m_ViewActions[12]->setEnabled(true);
+      m_ViewActions[11]->setEnabled(true);
+      m_ViewActions[10]->setEnabled(true);
       }
     }
   else
@@ -1707,8 +1707,8 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
     m_Image->SetNumberOfScalarComponents(1);
 
     // LUT ENABLED
-    m_ViewActions[13]->setEnabled(true);
-    m_ViewActions[12]->setEnabled(true);
+    m_ViewActions[11]->setEnabled(true);
+    m_ViewActions[10]->setEnabled(true);
     }
 }
 
@@ -1765,8 +1765,8 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels( int iChannel )
     m_Image->ShallowCopy( append_filter->GetOutput() );
 
     // LUT DISABLED
-    m_ViewActions[13]->setEnabled(false);
-    m_ViewActions[12]->setEnabled(false);
+    m_ViewActions[11]->setEnabled(false);
+    m_ViewActions[10]->setEnabled(false);
     }
   else
     {
@@ -1776,8 +1776,8 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels( int iChannel )
       m_Image->ShallowCopy(m_InternalImages[ch]);
       }
     // LUT ENABLED
-    m_ViewActions[13]->setEnabled(true);
-    m_ViewActions[12]->setEnabled(true);
+    m_ViewActions[11]->setEnabled(true);
+    m_ViewActions[10]->setEnabled(true);
     }
 
   // update channels in navigation DockWidget
@@ -2158,8 +2158,8 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
     Update();
 
     // Update LUT
-    m_ViewActions[13]->setEnabled(false);
-    m_ViewActions[12]->setEnabled(false);
+    m_ViewActions[11]->setEnabled(false);
+    m_ViewActions[10]->setEnabled(false);
     }
   else
     {
@@ -2171,11 +2171,11 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
       }
 
     // Update LUT
-    m_ViewActions[13]->setEnabled(true);
-    m_ViewActions[12]->setEnabled(true);
+    m_ViewActions[11]->setEnabled(true);
+    m_ViewActions[10]->setEnabled(true);
 
     // show the scalarbar automatically if the button is checked
-    bool showScalarBar = m_ViewActions[13]->isChecked();
+    bool showScalarBar = m_ViewActions[11]->isChecked();
     m_ImageView->ShowScalarBar(showScalarBar);
     }
 }
@@ -2189,8 +2189,8 @@ QGoTabImageView3DwT::ShowOneChannel(int iChannel)
   if ( ( iChannel != -1 ) && ( !m_InternalImages.empty() ) )
     {
     // Update lut
-    m_ViewActions[13]->setEnabled(true);
-    m_ViewActions[12]->setEnabled(true);
+    m_ViewActions[11]->setEnabled(true);
+    m_ViewActions[10]->setEnabled(true);
 
     m_Image->ShallowCopy(m_InternalImages[iChannel]);
     Update();
