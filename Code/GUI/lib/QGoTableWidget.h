@@ -366,9 +366,8 @@ protected:
   \param[in] iStartedRow index of the first row where to put a checkbox and an icon
   \param[in] iState state to which the checkboxes need to be set
   */
-  void QGoTableWidget::SetVisibleColumn(unsigned int iNbOfRows,
-                                        unsigned int iStartedRow,
-                                        Qt::CheckState iState = Qt::Checked);
+  void SetVisibleColumn(unsigned int iNbOfRows, unsigned int iStartedRow,
+                        Qt::CheckState iState = Qt::Checked);
 
   /**
   \brief get the rgba values from the iTWRowContainer and display them in the
