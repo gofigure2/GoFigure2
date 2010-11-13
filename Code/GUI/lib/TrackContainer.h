@@ -812,7 +812,7 @@ public:
     \param[in] iReconstructPolyData should we reconstruct the polydata
     \return true: a point has been deleted, false: no point has been deleted
   */
-  bool UpdatePointsFromBBForGivenTrack( unsigned int iTrackID, std::list<std::vector<unsigned int> > iBoundingBox);
+  void UpdatePointsFromBBForGivenTrack( unsigned int iTrackID, std::list<std::vector<unsigned int> > iBoundingBox);
 
 public slots:
 

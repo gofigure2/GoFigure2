@@ -47,6 +47,9 @@
 #include "vtkTubeFilter.h"
 #include "vtkAppendPolyData.h"
 
+// to convert coordinates
+#include "vtkViewImage2D.h"
+
 // FOR TESTING
 #include "VisualizePolydataHelper.h"
 
@@ -1274,10 +1277,54 @@ DeletePointFromElement( MultiIndexContainerTraceIDIterator iTrackStructureIterat
 }
 //-------------------------------------------------------------------------
 
-bool
+//-------------------------------------------------------------------------
+void
 TrackContainer::
 UpdatePointsFromBBForGivenTrack( unsigned int iTrackID,
                                  std::list<std::vector<unsigned int> > iBoundingBox)
 {
+  if(iBoundingBox.empty())
+      {
+      std::cout << "list of points to be added is empty" << std::endl;
+      }
 
+  MultiIndexContainerTraceIDIterator
+  it = m_Container.get< TraceID >().find( iTrackID );
+
+  // if we find the stucture, update it!
+  if ( it != m_Container.get< TraceID >().end() )
+    {
+    std::list< std::vector<unsigned int> >::iterator begin = iBoundingBox.begin();
+    std::list< std::vector<unsigned int> >::iterator end = iBoundingBox.end();
+
+    //add the point in the map
+    TrackStructure tempStructure(*it);
+
+    while( begin != end )
+      {
+      int xBB = ((*begin)[0] + (*begin)[1])/2;
+      int yBB = ((*begin)[2] + (*begin)[3])/2;
+      int zBB = ((*begin)[4] + (*begin)[5])/2;
+
+      int xyzBB[3] = {xBB, yBB, zBB};
+
+      double time = (*begin)[6];
+
+      // convert xyz coordinates
+      double* xyz = m_ImageView->GetImageViewer(0)
+          ->GetWorldCoordinatesFromImageCoordinates(xyzBB);
+
+      bool added = tempStructure.InsertElement( time, xyz );
+      if( !added )
+        {
+        std::cout << "Element at a time point: " << time
+                  << "could not be added." << std::endl;
+        }
+      ++begin;
+      }
+    m_Container.get< TraceID >().replace(it, tempStructure);
+
+    // Reconstruct the polydata
+    UpdateTrackStructurePolyData( *it );
+    }
 }
