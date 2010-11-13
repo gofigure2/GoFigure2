@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-13
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-12
 
- Copyright (c) 2009-13, President and Fellows of Harvard College.
+ Copyright (c) 2009-12, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -567,6 +567,9 @@ QGoTabImageView3DwT::CreateVisuDockWidget()
 
   QObject::connect( m_NavigationDockWidget, SIGNAL( ShowOneChannelChanged(int) ),
                     this, SLOT( ShowOneChannel(int) ) );
+
+  QObject::connect( m_NavigationDockWidget, SIGNAL( ModeChanged(int) ),
+                    this, SLOT( ModeChanged(int) ) );
 }
 
 //-------------------------------------------------------------------------
@@ -681,60 +684,6 @@ QGoTabImageView3DwT::SetRendererWindow(int iValue)
 void
 QGoTabImageView3DwT::CreateAllViewActions()
 {
-  QActionGroup *groupMode = new QActionGroup(this);
-
-  QAction *ChannelClassic = new QAction(tr("Classic-View"), this);
-
-  ChannelClassic->setCheckable(true);
-  ChannelClassic->setChecked(true);
-
-  QIcon ChannelClassicIcon;
-  ChannelClassicIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/VisuClassic.png") ),
-                         QIcon::Normal, QIcon::Off);
-  ChannelClassic->setIcon(ChannelClassicIcon);
-
-  groupMode->addAction(ChannelClassic);
-
-  this->m_ViewActions.push_back(ChannelClassic);
-
-  //-------------------------
-  //
-  //-------------------------
-
-  QAction *ChannelTime = new QAction(tr("Time-View"), this);
-
-  ChannelTime->setCheckable(true);
-  ChannelTime->setChecked(false);
-
-  QIcon ChannelTimeIcon;
-  ChannelTimeIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/VisuTime.png") ),
-                         QIcon::Normal, QIcon::Off);
-  ChannelTime->setIcon(ChannelTimeIcon);
-
-  groupMode->addAction(ChannelTime);
-
-  this->m_ViewActions.push_back(ChannelTime);
-
-  QObject::connect( ChannelTime, SIGNAL( triggered() ),
-                    this, SLOT( LoadChannelTime() ) );
-
-  QObject::connect( ChannelTime, SIGNAL( toggled( bool ) ),
-                    this, SLOT( ChannelTimeMode( bool ) ) );
-
-  //-------------------------
-  //
-  //-------------------------
-
-  QAction *separator1 = new QAction(this);
-  separator1->setSeparator(true);
-  this->m_ViewActions.push_back(separator1);
-
-
-
-  //-------------------------
-  //
-  //-------------------------
-
   QActionGroup *group = new QActionGroup(this);
 
   QAction *QuadViewAction = new QAction(tr("Quad-View"), this);
@@ -1060,7 +1009,7 @@ void QGoTabImageView3DwT::LoadChannelTime()
 
   for(unsigned int i = minch; i < maxch; ++i)
     {
-    channel << QString::number(i, 13);
+    channel << QString::number(i, 12);
     }
 
   QString item = QInputDialog::getItem(this,
@@ -1737,8 +1686,8 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
       m_Image->ShallowCopy( append_filter->GetOutput() );
 
       // LUT DISABLED
-      m_ViewActions[14]->setEnabled(false);
       m_ViewActions[13]->setEnabled(false);
+      m_ViewActions[12]->setEnabled(false);
       }
     else
       {
@@ -1748,8 +1697,8 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
         m_Image->ShallowCopy(m_InternalImages[ch]);
         }
       // LUT ENABLED
-      m_ViewActions[14]->setEnabled(true);
       m_ViewActions[13]->setEnabled(true);
+      m_ViewActions[12]->setEnabled(true);
       }
     }
   else
@@ -1758,8 +1707,8 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
     m_Image->SetNumberOfScalarComponents(1);
 
     // LUT ENABLED
-    m_ViewActions[14]->setEnabled(true);
     m_ViewActions[13]->setEnabled(true);
+    m_ViewActions[12]->setEnabled(true);
     }
 }
 
@@ -1816,8 +1765,8 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels( int iChannel )
     m_Image->ShallowCopy( append_filter->GetOutput() );
 
     // LUT DISABLED
-    m_ViewActions[14]->setEnabled(false);
     m_ViewActions[13]->setEnabled(false);
+    m_ViewActions[12]->setEnabled(false);
     }
   else
     {
@@ -1827,8 +1776,8 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels( int iChannel )
       m_Image->ShallowCopy(m_InternalImages[ch]);
       }
     // LUT ENABLED
-    m_ViewActions[14]->setEnabled(true);
     m_ViewActions[13]->setEnabled(true);
+    m_ViewActions[12]->setEnabled(true);
     }
 
   // update channels in navigation DockWidget
@@ -2209,8 +2158,8 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
     Update();
 
     // Update LUT
-    m_ViewActions[14]->setEnabled(false);
     m_ViewActions[13]->setEnabled(false);
+    m_ViewActions[12]->setEnabled(false);
     }
   else
     {
@@ -2222,11 +2171,11 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
       }
 
     // Update LUT
-    m_ViewActions[14]->setEnabled(true);
     m_ViewActions[13]->setEnabled(true);
+    m_ViewActions[12]->setEnabled(true);
 
     // show the scalarbar automatically if the button is checked
-    bool showScalarBar = m_ViewActions[14]->isChecked();
+    bool showScalarBar = m_ViewActions[13]->isChecked();
     m_ImageView->ShowScalarBar(showScalarBar);
     }
 }
@@ -2240,14 +2189,28 @@ QGoTabImageView3DwT::ShowOneChannel(int iChannel)
   if ( ( iChannel != -1 ) && ( !m_InternalImages.empty() ) )
     {
     // Update lut
-    m_ViewActions[14]->setEnabled(true);
     m_ViewActions[13]->setEnabled(true);
+    m_ViewActions[12]->setEnabled(true);
 
     m_Image->ShallowCopy(m_InternalImages[iChannel]);
     Update();
     }
 }
+//------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::ModeChanged(int iChannel)
+{
+  std::cout << "channel: " << iChannel << std::endl;
+
+  if(iChannel == 1)
+    {
+    LoadChannelTime();
+    }
+
+  ChannelTimeMode( iChannel );
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

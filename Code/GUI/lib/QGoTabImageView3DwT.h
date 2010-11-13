@@ -319,6 +319,8 @@ public slots:
 
   void ShowOneChannel(int iChannel);
 
+  void ModeChanged(int iChannel);
+
   void ValidateContour();
 
   int SaveAndVisuContour(vtkPolyData *iView = NULL);
