@@ -941,7 +941,7 @@ QGoTabImageView3DwT::CreateAllViewActions()
   QAction *TrackAction =
     new QAction(tr("Change tracks appearance"), this);
   TrackAction->setCheckable(true);
-  TrackAction->setChecked(false);
+  TrackAction->setChecked(true);
   this->m_ViewActions.push_back(TrackAction);
 
   QIcon trackicon;
