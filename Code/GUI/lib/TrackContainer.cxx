@@ -398,22 +398,7 @@ UpdateElementVisibilityWithGivenTraceID(const unsigned int & iId)
       ( m_ImageView->*f )(3, it->ActorXYZ);
       }
 
-    if ( it->ActorXY )
-      {
-      it->ActorXY->SetVisibility(!it->Visible);
-      }
-    if ( it->ActorXZ )
-      {
-      it->ActorXZ->SetVisibility(!it->Visible);
-      }
-    if ( it->ActorYZ )
-      {
-      it->ActorYZ->SetVisibility(!it->Visible);
-      }
-    if ( it->ActorXYZ )
-      {
-      it->ActorXYZ->SetVisibility(!it->Visible);
-      }
+    it->SetActorVisibility( !it->Visible );
 
     TrackStructure tempStructure(*it);
     tempStructure.Visible = !it->Visible;
@@ -442,9 +427,9 @@ DeleteElement(const unsigned int & iId)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
- bool TrackContainer::DeleteElement(MultiIndexContainerTraceIDIterator iIter)
- {
-    if ( iIter != m_Container.get< TraceID >().end() )
+bool TrackContainer::DeleteElement(MultiIndexContainerTraceIDIterator iIter)
+{
+  if ( iIter != m_Container.get< TraceID >().end() )
     {
     if ( iIter->ActorXY )
       {
@@ -488,9 +473,9 @@ DeleteElement(const unsigned int & iId)
     m_ImageView->UpdateRenderWindows();
     return true;
     }
-    return false;
- }
- //-------------------------------------------------------------------------
+  return false;
+}
+//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 std::list< unsigned int >
@@ -618,24 +603,8 @@ SetHighlightedProperty(vtkProperty *iProperty)
     {
     if ( it0->Highlighted )
       {
-      if ( it0->ActorXY )
-        {
-        it0->ActorXY->SetProperty(this->m_HighlightedProperty);
-        }
-      if ( it0->ActorXZ )
-        {
-        it0->ActorXZ->SetProperty(this->m_HighlightedProperty);
-        }
-      if ( it0->ActorYZ )
-        {
-        it0->ActorYZ->SetProperty(this->m_HighlightedProperty);
-        }
-      if ( it0->ActorXYZ )
-        {
-        it0->ActorXYZ->SetProperty(this->m_HighlightedProperty);
-        }
+      it0->SetActorProperties( this->m_HighlightedProperty );
       }
-
     ++it0;
     }
 }
@@ -1393,7 +1362,7 @@ RecomputeCurrentElementMap( std::list< double* > iPoints)
 
 //-------------------------------------------------------------------------
 void
-TrackContainer::UpdatePointsForATrack(unsigned int iTrackID, 
+TrackContainer::UpdatePointsForATrack(unsigned int iTrackID,
 std::list< double*> iListCenterBoundingBoxes)
 {
   this->UpdateCurrentElementFromExistingOne(iTrackID);

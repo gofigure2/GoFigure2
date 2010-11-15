@@ -37,6 +37,7 @@
 
 class vtkActor;
 class vtkPolyData;
+class vtkProperty;
 
 #include <ostream>
 #include <vector>
@@ -165,6 +166,14 @@ struct QGOIO_EXPORT TrackStructure {
    */
   bool ReplaceElement(int iTime, double* iPoint);
 
+  /** \brief Set Property for all actors
+      \param[in] iProperty */
+  void SetActorProperties( vtkProperty* iProperty ) const;
+
+  /** \brief Set Visibility for all actors
+      \param[in] iVisible */
+  void SetActorVisibility( const bool& iVisible ) const;
+
   /** Printing one element. std::cout << element << std::endl; */
   friend std::ostream & operator<<
     (std::ostream & os, const TrackStructure & c)
@@ -176,14 +185,18 @@ struct QGOIO_EXPORT TrackStructure {
     os << "ActorXYZ " << c.ActorXYZ << std::endl;
     os << "Nodes " << c.Nodes << std::endl;
     os << "Map " << std::endl;
+
     std::map< unsigned int, double*>::const_iterator end = c.PointsMap.end();
-    for (std::map< unsigned int, double*>::const_iterator it = c.PointsMap.begin(); it != end; ++it)
-    {
-        os << "Time: " << it->first << std::endl;
-        os << " Coordinate X: " << (it->second)[0] << std::endl;
-        os << " Coordinate Y: " << (it->second)[1] << std::endl;
-        os << " Coordinate Z: " << (it->second)[2] << std::endl;
-    }
+    std::map< unsigned int, double*>::const_iterator it = c.PointsMap.begin();
+
+    while( it != end )
+      {
+      os << "Time: " << it->first << std::endl;
+      os << " Coordinate X: " << (it->second)[0] << std::endl;
+      os << " Coordinate Y: " << (it->second)[1] << std::endl;
+      os << " Coordinate Z: " << (it->second)[2] << std::endl;
+      ++it;
+      }
 
     os << "Highlighted " << c.Highlighted << std::endl;
     os << "Visible " << c.Visible << std::endl;
