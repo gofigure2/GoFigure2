@@ -97,6 +97,10 @@ public:
   void UpdatePointsOfCurrentElementForImportedTrack(
 	  std::map<unsigned int,double*> iMeshesInfo);
 
+  //method in QGoDbTraceManager
+  void UpdateBoundingBoxes(
+  vtkMySQLDatabase *iDatabaseConnector,std::list< unsigned int > iListTracesIDs);
+
 signals:
   void NeedMeshesInfoForImportedTrack(unsigned int iTrackID);
 
@@ -113,6 +117,14 @@ protected:
   //virtual pure method in QGoDBTraceManager
   virtual void GetTracesInfoFromDBAndModifyContainerForVisu(
     vtkMySQLDatabase* iDatabaseConnector,std::vector<int> iVectIDs = std::vector< int >());
+
+  /**
+  \brief get the center of bounding boxes from the database for the meshes 
+  belonging to the iTrackID and update the polydata in the container for visu
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iTrackID ID for the track the polydata needs to be recalculated
+  */
+  void UpdateTrackPolydata(vtkMySQLDatabase *iDatabaseConnector,unsigned int iTrackID);
 
 protected slots:
   //virtual pure method in QGoDBTraceManager

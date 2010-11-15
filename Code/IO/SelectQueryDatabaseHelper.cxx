@@ -2331,6 +2331,32 @@ return Querystream.str().c_str();
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
+std::string GetCoordinateValuesQueryString(std::string iTableName, std::string iField,
+  std::string iValue,bool iMin)
+{
+  std::stringstream Querystream;
+  Querystream << "SELECT XCoord,YCoord,ZCoord,TCoord from ";
+  Querystream << iTableName;
+  Querystream << " LEFT JOIN coordinate on ";
+  Querystream << iTableName;
+  Querystream << ".coordID";
+  if (iMin)
+    {
+    Querystream <<"Min = coordinate.coordID WHERE ";
+    }
+  else
+    {
+    Querystream <<"Max = coordinate.coordID WHERE ";
+    }
+  Querystream << iField;
+  Querystream << " = ";
+  Querystream << iValue;
+
+  return Querystream.str();
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 void GetTracesInfoFromDBAndModifyContainer(
   std::list< ContourMeshStructure > & ioContainer,
   vtkMySQLDatabase *DatabaseConnector, std::string TraceName,
@@ -2511,4 +2537,63 @@ void GetTracesInfoFromDBAndModifyContainer(
       }
     }
   query->Delete();
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::list< double* > GetCenterBoundingBoxes(vtkMySQLDatabase *DatabaseConnector,
+  std::string iTableName,std::string iField,std::string iValue)
+{
+  std::list< double* > Results =  std::list< double* >();
+  vtkSQLQuery *query = DatabaseConnector->GetQueryInstance();
+  std::stringstream Querystream;
+  Querystream << "SELECT XCoord,YCoord,ZCoord,TCoord FROM (";
+  Querystream << GetCoordinateValuesQueryString(iTableName, iField,iValue,true);
+  Querystream << " UNION ";
+  Querystream << GetCoordinateValuesQueryString(iTableName, iField,iValue,false);
+  Querystream << " ORDER BY ";
+  Querystream << iTableName;
+  Querystream << "ID ASC ) AS T1";
+
+  query->SetQuery( Querystream.str().c_str() );
+  if ( !query->Execute() )
+    {
+    itkGenericExceptionMacro(
+      << "return coordmin and max query failed"
+      << query->GetLastErrorText() );
+    DatabaseConnector->Close();
+    DatabaseConnector->Delete();
+    query->Delete();
+    return Results;
+    }
+
+  while ( query->NextRow() )
+    {
+    double* Center = new double[4];
+    double minx,miny,minz,mint,maxx,maxy,maxz,maxt;
+    minx = query->DataValue(0).ToDouble();
+    miny = query->DataValue(1).ToDouble();
+    minz = query->DataValue(2).ToDouble();
+    mint = query->DataValue(3).ToDouble();
+    if (query->NextRow() )
+      {
+      maxx = query->DataValue(0).ToDouble();
+      maxy = query->DataValue(1).ToDouble();
+      maxz = query->DataValue(2).ToDouble();
+      maxt = query->DataValue(3).ToDouble();
+      }
+    else
+      {
+      std::cout << "pb query to return center bounding box";
+      std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+      std::cout << std::endl;
+      return Results;
+     }
+    Center[0] = (minx + maxx)/2;
+    Center[1] = (miny + maxy)/2;
+    Center[2] = (minz + maxz)/2;
+    Center[3] = (mint + maxt)/2;
+    Results.push_back(Center);
+    }
+  return Results;
 }

@@ -973,7 +973,8 @@ std::list< unsigned int > GoDBCollectionOfTraces::GetListCollectionIDs(
 //-------------------------------------------------------------------------
 
 //------------------------------------------------------------------------
-std::vector< std::string > GoDBCollectionOfTraces::ListUnsgIntToVectorString(std::list< unsigned int > iList)
+std::vector< std::string > GoDBCollectionOfTraces::ListUnsgIntToVectorString(
+  std::list< unsigned int > iList)
 {
   std::list< unsigned int >::iterator iter = iList.begin();
   std::vector< std::string >          oVector;
@@ -989,7 +990,8 @@ std::vector< std::string > GoDBCollectionOfTraces::ListUnsgIntToVectorString(std
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::list< unsigned int > GoDBCollectionOfTraces::VectorStringToUnsgInt(std::vector< std::string > iVector)
+std::list< unsigned int > GoDBCollectionOfTraces::VectorStringToUnsgInt(
+  std::vector< std::string > iVector)
 {
   std::vector< std::string >::iterator iter = iVector.begin();
   std::list< unsigned int >            oList;
@@ -1036,4 +1038,13 @@ std::list< unsigned int > GoDBCollectionOfTraces::GetLastCreatedTracesIDs(
     false, ConvertToString< int >(iNumberOfTraces) );
 
   return this->VectorStringToUnsgInt(VectorTracesIDs);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list<double*> GoDBCollectionOfTraces::GetCoordinateCenterBoundingBox(
+ vtkMySQLDatabase *iDatabaseConnector,unsigned int iTraceID)
+{
+  return GetCenterBoundingBoxes(iDatabaseConnector,
+    this->m_CollectionOfName,this->m_TracesIDName,ConvertToString<unsigned int>(iTraceID));
 }

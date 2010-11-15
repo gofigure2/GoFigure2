@@ -309,6 +309,16 @@ public:
   std::list< unsigned int > GetLastCreatedTracesIDs(
     vtkMySQLDatabase *iDatabaseConnector, int iNumberOfTraces);
 
+  /**
+  \brief return a list of the coordinates of all the centers of the bounding boxes
+  for all the collectionOf corresponding to the iTraceID
+  \param[in] iTraceID ID for the trace the bounding boxes of its collectionof traces
+  are needed
+  \return a list of x,y,z,t for all centers of bounding boxes
+  */
+  std::list<double*> GetCoordinateCenterBoundingBox(vtkMySQLDatabase *iDatabaseConnector,
+    unsigned int iTraceID);
+
 protected:
 
   std::string  m_CollectionName;

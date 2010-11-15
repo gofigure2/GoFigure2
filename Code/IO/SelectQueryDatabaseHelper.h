@@ -395,4 +395,11 @@ std::vector< std::string > GetOrderByWithLimit(vtkMySQLDatabase *iDatabaseConnec
                                                bool ASC,
                                                std::string iNumberLimit);
 
+std::string GetCoordinateValuesQueryString(std::string iTableName, std::string iField,
+  std::string iValue,bool iMin);
+
+//get the center of the bounding boxes for tableName with restriction of iField = iValue
+std::list< double* > GetCenterBoundingBoxes(vtkMySQLDatabase *DatabaseConnector,
+  std::string iTableName,std::string iField,std::string iValue);
+
 #endif

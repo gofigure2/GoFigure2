@@ -276,3 +276,28 @@ void QGoDBTrackManager::UpdatePointsOfCurrentElementForImportedTrack(
 {
 	this->m_TrackContainerInfoForVisu->UpdateCurrentElementMap(iMeshesInfo);
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTrackManager::UpdateTrackPolydata(vtkMySQLDatabase *iDatabaseConnector,
+  unsigned int iTrackID)
+{
+  std::list<double*> ListCenters = 
+    this->m_CollectionOfTraces->GetCoordinateCenterBoundingBox(
+    iDatabaseConnector,iTrackID);
+  //update the polydata in the trackcontainer for visu
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTrackManager::UpdateBoundingBoxes(
+  vtkMySQLDatabase *iDatabaseConnector,std::list< unsigned int > iListTracesIDs)
+{
+  QGoDBTraceManager::UpdateBoundingBoxes(iDatabaseConnector,iListTracesIDs);
+  std::list<unsigned int>::iterator iter = iListTracesIDs.begin();
+  while(iter != iListTracesIDs.end())
+    {
+    this->UpdateTrackPolydata(iDatabaseConnector,*iter);
+    iter++;
+    }
+}
