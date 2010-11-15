@@ -2335,7 +2335,9 @@ std::string GetCoordinateValuesQueryString(std::string iTableName, std::string i
   std::string iValue,bool iMin)
 {
   std::stringstream Querystream;
-  Querystream << "SELECT XCoord,YCoord,ZCoord,TCoord from ";
+  Querystream << "SELECT XCoord,YCoord,ZCoord,TCoord,";
+  Querystream << iTableName;
+  Querystream << "ID from ";
   Querystream << iTableName;
   Querystream << " LEFT JOIN coordinate on ";
   Querystream << iTableName;
