@@ -285,10 +285,7 @@ void QGoDBTrackManager::UpdateTrackPolydata(vtkMySQLDatabase *iDatabaseConnector
   std::list<double*> ListCenters = 
     this->m_CollectionOfTraces->GetCoordinateCenterBoundingBox(
     iDatabaseConnector,iTrackID);
-  if (!ListCenters.empty())
-    {
-    this->m_TrackContainerInfoForVisu->UpdatePointsForATrack(iTrackID,ListCenters);
-    }
+  this->m_TrackContainerInfoForVisu->UpdatePointsForATrack(iTrackID,ListCenters);
 }
 //-------------------------------------------------------------------------
 
