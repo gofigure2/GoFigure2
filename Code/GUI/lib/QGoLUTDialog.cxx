@@ -124,17 +124,13 @@ void QGoLUTDialog::setupUi(QDialog *LUTDialog)
   this->LUTComboBox->setEditable(false);
   this->LUTComboBox->setFrame(true);
 
-  int k = 0;
-  this->LUTComboBox->insertItem( k++, tr("B/W") );
-  this->LUTComboBox->insertItem( k++, tr("B/W Inverse") );
-  this->LUTComboBox->insertItem( k++, tr("Spectrum") );
-  this->LUTComboBox->insertItem( k++, tr("Hot Metal") );
-  this->LUTComboBox->insertItem( k++, tr("GE Color") );
-  this->LUTComboBox->insertItem( k++, tr("Flow") );
-  this->LUTComboBox->insertItem( k++, tr("LONI") );
-  this->LUTComboBox->insertItem( k++, tr("LONI2") );
-  this->LUTComboBox->insertItem( k++, tr("Asymmetry") );
-  this->LUTComboBox->insertItem( k++, tr("P-Value") );
+  std::vector< std::string > lut_names =
+      vtkLookupTableManager::GetAvailableLookupTables();
+
+  for( size_t k = 0; k < lut_names.size(); k++ )
+    {
+    this->LUTComboBox->insertItem( k, QString::fromStdString( lut_names[k] ) );
+    }
 
   this->HorizontalLayout->addWidget(this->LUTComboBox);
 

@@ -95,6 +95,7 @@ vtkStandardNewMacro(vtkLookupTableManager);
 #include "lut/LONI.h"
 #include "lut/LONI2.h"
 #include "lut/Asymmetry.h"
+#include "lut/Random.h"
 
 #include <time.h>
 
@@ -118,6 +119,7 @@ std::vector< std::string > vtkLookupTableManager::GetAvailableLookupTables()
   v_lutNames.push_back("Asymmetry");
   v_lutNames.push_back("P-Value");
   v_lutNames.push_back("ROI");
+  v_lutNames.push_back("Random");
 
   return v_lutNames;
 }
@@ -172,7 +174,12 @@ vtkLookupTable * vtkLookupTableManager::GetLookupTable(const int & iIndex)
       lut = vtkLookupTableManager::GetROILookupTable();
       break;
 
+    case LUT_RANDOM:
+      lut = vtkLookupTableManager::GetRandomLookupTable();
+      break;
+
     default:
+      std::cout << "Unknown Lookup Table" <<std::endl;
       break;
     }
 
@@ -446,6 +453,32 @@ vtkLookupTable * vtkLookupTableManager::GetROILookupTable()
       {
       lut->SetTableValue (i, 1.0, 0.5, 1.0, 0.5);
       }
+    }
+
+  return lut;
+}
+
+
+vtkLookupTable * vtkLookupTableManager::GetRandomLookupTable()
+{
+  vtkLookupTable *lut = vtkLookupTable::New();
+
+  lut->SetNumberOfTableValues(30);
+  lut->Build();
+
+  int k = 0;
+  int r, g, b;
+
+  for ( int i = 0; i < 30; i++ )
+    {
+    r = RandomColors[k++];
+    g = RandomColors[k++];
+    b = RandomColors[k++];
+    lut->SetTableValue( i,
+                        static_cast< double >( r ) / 255.,
+                        static_cast< double >( g ) / 255.,
+                        static_cast< double >( b ) / 255.,
+                        1.0 );
     }
 
   return lut;
