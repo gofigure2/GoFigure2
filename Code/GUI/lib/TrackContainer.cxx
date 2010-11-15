@@ -1345,7 +1345,6 @@ RecomputeCurrentElementMap( std::list< std::vector< double > > iPoints)
   std::map< unsigned int,double*>::const_iterator end
       = this->m_CurrentElement.PointsMap.end();
 
-  // if there is a point, delete it and return true
   if ( begin != end )
     {
     // free memory

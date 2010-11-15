@@ -41,7 +41,7 @@
 TrackStructure::
 TrackStructure():TraceID(0),
   ActorXY(NULL), ActorXZ(NULL), ActorYZ(NULL), ActorXYZ(NULL), Nodes(NULL),
-  Highlighted(false), Visible(true)
+  Highlighted(false), Visible(false)
 {
   this->rgba[0] = 1.;
   this->rgba[1] = 1.;
