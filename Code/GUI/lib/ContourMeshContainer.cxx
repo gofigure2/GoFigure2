@@ -37,6 +37,7 @@
 #include "vtkActor.h"
 #include "vtkPointData.h"
 #include "vtkDoubleArray.h"
+#include "vtkLookupTableManager.h"
 
 //-------------------------------------------------------------------------
 ContourMeshContainer::ContourMeshContainer(QObject *iParent,
@@ -816,6 +817,63 @@ SetColorCode( const std::string& iColumnName,
     }
 
   SetScalarRangeForAllElements( min_value, max_value );
+
+  this->m_ImageView->UpdateRenderWindows();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+ContourMeshContainer::
+SetRandomColor( const std::string& iColumnName,
+                const std::map< unsigned int, unsigned int >& iIds )
+{
+  typedef typename std::map< unsigned int, unsigned int > MapType;
+  typedef typename MapType::const_iterator MapConstIterator;
+
+  if( iColumnName.empty() || iIds.empty() )
+    {
+    RenderAllElementsWithOriginalColors();
+    return;
+    }
+
+  MapConstIterator it = iIds.begin();
+
+  double temp = static_cast< double >( it->second % 30 );
+
+  double min_value = temp;
+  double max_value = temp;
+
+  while( it != iIds.end() )
+    {
+    MultiIndexContainerTraceIDIterator
+        trace_it = this->m_Container.get<TraceID>().find( it->first );
+
+    if( trace_it != this->m_Container.get<TraceID>().end() )
+      {
+        if (trace_it->Nodes) //make sure the trace has points !!!
+        {
+        // Here let's make sure you are not passing crazy values!
+        temp = boost::numeric_cast< double >( it->second % 30 );
+
+        if( temp > max_value )
+          {
+          max_value = temp;
+          }
+        if( temp < min_value )
+          {
+          min_value = temp;
+          }
+
+        trace_it->SetScalarData( iColumnName, temp );
+        }
+      } //end make sure the trace has points !!!
+    ++it;
+    }
+
+  this->SetScalarRangeForAllElements( min_value, max_value );
+  this->SetLookupTableForColorCoding(
+      vtkLookupTableManager::GetRandomLookupTable() );
 
   this->m_ImageView->UpdateRenderWindows();
 }

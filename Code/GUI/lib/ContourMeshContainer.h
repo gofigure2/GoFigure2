@@ -806,6 +806,9 @@ public:
   void SetColorCode( const std::string& iColumnName,
                      const std::map< unsigned int, std::string >& iValues );
 
+  void SetRandomColor( const std::string& iColumnName,
+                       const std::map< unsigned int, unsigned int >& iIds );
+
   /**
     \brief Color code contour / mesh according to values provided
     \tparam TValue numerical type that can be converted into double
