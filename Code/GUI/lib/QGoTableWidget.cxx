@@ -163,7 +163,7 @@ void  QGoTableWidget::SetVisibleStateForListTraceIDs(
   std::list<unsigned int>::iterator iter = iListTraceIDs.begin();
   while (iter != iListTraceIDs.end())
   {
-  this->SetVisibleStateForTraceID(*iter,iTraceName,iState,false);                                              
+  this->SetVisibleStateForTraceID(*iter,iTraceName,iState,false);
   iter++;
   }
 }
@@ -954,7 +954,7 @@ bool QGoTableWidget::setCheckStateCheckBox(QTableWidgetItem *iItem,
 std::map<unsigned int, double> QGoTableWidget::
 GetTraceIDAndColumnsValues(std::string iTraceIDName,std::string &ioColumnName)
 {
-  std::map<unsigned int,double> oMapValues = 
+  std::map<unsigned int,double> oMapValues =
     std::map<unsigned int,double>();
   QList<QTableWidgetSelectionRange> Ranges = this->selectedRanges();
   if ( Ranges.size()>1 || Ranges[0].columnCount()>1 )
@@ -967,11 +967,11 @@ GetTraceIDAndColumnsValues(std::string iTraceIDName,std::string &ioColumnName)
     }
   unsigned int ColumnIndex = Ranges[0].leftColumn();
   ioColumnName = this->horizontalHeaderItem(ColumnIndex)->text().toStdString();
-  unsigned int NbOfRows = this->rowCount();
+  int NbOfRows = this->rowCount();
   unsigned int IndexTraceID = this->findColumnName(iTraceIDName.c_str());
   for( int i = 0; i<NbOfRows; i++ )
     {
-    oMapValues[this->item(i,IndexTraceID)->text().toUInt()] = 
+    oMapValues[this->item(i,IndexTraceID)->text().toUInt()] =
       this->item(i,ColumnIndex)->text().toDouble();
     }
   return oMapValues;
