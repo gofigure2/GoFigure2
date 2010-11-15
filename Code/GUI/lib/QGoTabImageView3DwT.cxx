@@ -2747,10 +2747,6 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord)
     point[i] = (bounds[2*i] + bounds[2*i+1])/2;
     }
   time = iTCoord;
-
-  // Update the track polydata and the map, the actors and the visu
-  // with the new center
-  m_TrackContainer->AddPointToCurrentElement( time, point);
 }
 //-------------------------------------------------------------------------
 
