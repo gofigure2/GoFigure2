@@ -814,6 +814,12 @@ public:
   */
   void UpdatePointsFromBBForGivenTrack( unsigned int iTrackID, std::list<std::vector<unsigned int> > iBoundingBox);
 
+  /**
+    \brief Generate a new polydata from a list for the current element
+    \param[in] iPoints list of points to generate the new polydata
+  */
+  void RecomputeCurrentElementMap( std::list< std::vector< double > > iPoints);
+
 public slots:
 
   void UpdateElementHighlightingWithGivenTraceIDs( const QStringList& iList,

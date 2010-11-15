@@ -1302,13 +1302,9 @@ UpdatePointsFromBBForGivenTrack( unsigned int iTrackID,
 
     while( begin != end )
       {
-      int xBB = ((*begin)[0] + (*begin)[1])/2;
-      int yBB = ((*begin)[2] + (*begin)[3])/2;
-      int zBB = ((*begin)[4] + (*begin)[5])/2;
+      int xyzBB[3] = {(*begin)[0], (*begin)[1], (*begin)[2]};
 
-      int xyzBB[3] = {xBB, yBB, zBB};
-
-      double time = (*begin)[6];
+      double time = (*begin)[3];
 
       // convert xyz coordinates
       double* xyz = m_ImageView->GetImageViewer(0)
@@ -1328,3 +1324,70 @@ UpdatePointsFromBBForGivenTrack( unsigned int iTrackID,
     UpdateTrackStructurePolyData( *it );
     }
 }
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+RecomputeCurrentElementMap( std::list< std::vector< double > > iPoints)
+{
+  if( iPoints.empty() )
+    {
+    std::cout << "the list is empty, nothing is done to the current polydata"
+        << std::endl;
+    return;
+    }
+
+  // empty current element map
+  std::map< unsigned int,double*>::const_iterator begin
+      = this->m_CurrentElement.PointsMap.begin();
+  std::map< unsigned int,double*>::const_iterator end
+      = this->m_CurrentElement.PointsMap.end();
+
+  // if there is a point, delete it and return true
+  if ( begin != end )
+    {
+    // free memory
+    delete[] begin->second;
+    ++begin;
+    }
+
+  this->m_CurrentElement.PointsMap.clear();
+
+  if( !(this->m_CurrentElement.PointsMap.empty()) )
+    {
+    std::cout << "Current element map is not empty whereas it should be"
+        << std::endl;
+    return;
+    }
+
+  // add points to the map
+  std::list< std::vector< double > >::iterator beginList = iPoints.begin();
+  std::list< std::vector< double > >::iterator endList = iPoints.end();
+
+  while( beginList != endList)
+    {
+    int xyzBB[3] = {(*beginList)[0], (*beginList)[1], (*beginList)[2]};
+    double time = (*beginList)[3];
+    // convert xyz coordinates
+    double* xyz = m_ImageView->GetImageViewer(0)
+        ->GetWorldCoordinatesFromImageCoordinates(xyzBB);
+
+    bool addPoint = this->m_CurrentElement.InsertElement( time, xyz );
+
+    if(!addPoint)
+      {
+      std::cout << "problem while inserting element in the map" << std::endl;
+      std::cout << " x: " << xyz[0] << " y: " << xyz[1] << " z: " << xyz[2]
+                << " t: " << xyz[3] << std::endl;
+      }
+
+    ++beginList;
+    }
+
+  UpdateTrackStructurePolyData(this->m_CurrentElement);
+
+  emit CurrentTrackToSave();
+}
+//-------------------------------------------------------------------------
