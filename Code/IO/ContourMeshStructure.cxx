@@ -38,6 +38,7 @@
 #include "vtkPolyData.h"
 #include "vtkProperty.h"
 #include "vtkActor.h"
+#include "vtkMapper.h"
 #include "vtkDoubleArray.h"
 #include "vtkPointData.h"
 
@@ -261,5 +262,33 @@ SetScalarData( const std::string& iName,
 
     this->Nodes->GetPointData()->SetScalars( data );
     this->Nodes->GetPointData()->SetActiveScalars( iName.c_str() );
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+ContourMeshStructure::
+SetScalarRange( const double& iMin, const double& iMax ) const
+{
+  if( this->ActorXY )
+    {
+    this->ActorXY->GetMapper()->SetScalarRange( iMin, iMax );
+    this->ActorXY->GetMapper()->SetScalarVisibility( true );
+    }
+  if( this->ActorXZ )
+    {
+    this->ActorXZ->GetMapper()->SetScalarRange( iMin, iMax );
+    this->ActorXY->GetMapper()->SetScalarVisibility( true );
+    }
+  if( this->ActorYZ )
+    {
+    this->ActorYZ->GetMapper()->SetScalarRange( iMin, iMax );
+    this->ActorXY->GetMapper()->SetScalarVisibility( true );
+    }
+  if( this->ActorXYZ )
+    {
+    this->ActorXYZ->GetMapper()->SetScalarRange( iMin, iMax );
+    this->ActorXYZ->GetMapper()->SetScalarVisibility( true );
     }
 }

@@ -733,26 +733,7 @@ SetScalarRangeForAllElements( const double& iMin, const double& iMax )
   MultiIndexContainerIterator t_it = m_Container.begin();
   while( t_it != m_Container.end() )
     {
-    if( t_it->ActorXY )
-      {
-      t_it->ActorXY->GetMapper()->SetScalarRange( iMin, iMax );
-      t_it->ActorXY->GetMapper()->SetScalarVisibility( true );
-      }
-    if( t_it->ActorXZ )
-      {
-      t_it->ActorXZ->GetMapper()->SetScalarRange( iMin, iMax );
-      t_it->ActorXY->GetMapper()->SetScalarVisibility( true );
-      }
-    if( t_it->ActorYZ )
-      {
-      t_it->ActorYZ->GetMapper()->SetScalarRange( iMin, iMax );
-      t_it->ActorXY->GetMapper()->SetScalarVisibility( true );
-      }
-    if( t_it->ActorXYZ )
-      {
-      t_it->ActorXYZ->GetMapper()->SetScalarRange( iMin, iMax );
-      t_it->ActorXYZ->GetMapper()->SetScalarVisibility( true );
-      }
+    t_it->SetScalarRange( iMin, iMax );
     ++t_it;
     }
 }
