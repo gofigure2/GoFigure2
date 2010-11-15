@@ -1354,6 +1354,21 @@ RecomputeCurrentElementMap( std::list< double* > iPoints)
     ++beginList;
     }
 
+  // Create a new polydata and new actors if it is a new track
+  if(!this->m_CurrentElement.Nodes)
+    {
+    //Create new polydata (new address)
+    this->m_CurrentElement.Nodes = vtkPolyData::New();
+
+    UpdateTrackStructurePolyData(this->m_CurrentElement);
+
+    CreateCurrentTrackActors();
+
+    emit CurrentTrackToSave();
+
+    return;
+    }
+
   UpdateTrackStructurePolyData(this->m_CurrentElement);
 
   emit CurrentTrackToSave();
