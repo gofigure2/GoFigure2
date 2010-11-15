@@ -888,6 +888,8 @@ public:
     this->m_ImageView->UpdateRenderWindows();
     }
 
+  /** \brief Apply the given lookup table to all traces in the container
+      \param[in] iLut lookup table */
   void SetLookupTableForColorCoding( vtkLookupTable* iLut );
 
 public slots:

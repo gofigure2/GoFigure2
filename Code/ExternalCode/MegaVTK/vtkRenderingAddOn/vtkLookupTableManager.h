@@ -197,6 +197,11 @@ public:
    */
   static vtkLookupTable * GetLookupTable(const int & iIndex);
 
+  /**
+   * \brief Get one HSV based lookup table
+   * \param[in] iRGB input color to be used to generate the lookup table
+   * \return vtkLookupTable pointer to one HSV based lookup table
+   */
   static vtkLookupTable* GetHSVBasedLookupTable( double iRGB[3] );
 
 
