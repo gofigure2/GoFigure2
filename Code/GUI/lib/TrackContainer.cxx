@@ -1304,7 +1304,7 @@ UpdatePointsFromBBForGivenTrack( unsigned int iTrackID,
       {
       int xyzBB[3] = {(*begin)[0], (*begin)[1], (*begin)[2]};
 
-      double time = (*begin)[3];
+      unsigned int time = (*begin)[3];
 
       // convert xyz coordinates
       double* xyz = m_ImageView->GetImageViewer(0)
@@ -1330,7 +1330,7 @@ UpdatePointsFromBBForGivenTrack( unsigned int iTrackID,
 //-------------------------------------------------------------------------
 void
 TrackContainer::
-RecomputeCurrentElementMap( std::list< std::vector< double > > iPoints)
+RecomputeCurrentElementMap( std::list< double* > iPoints)
 {
   if( iPoints.empty() )
     {
@@ -1362,13 +1362,13 @@ RecomputeCurrentElementMap( std::list< std::vector< double > > iPoints)
     }
 
   // add points to the map
-  std::list< std::vector< double > >::iterator beginList = iPoints.begin();
-  std::list< std::vector< double > >::iterator endList = iPoints.end();
+  std::list< double* >::iterator beginList = iPoints.begin();
+  std::list< double* >::iterator endList = iPoints.end();
 
   while( beginList != endList)
     {
     int xyzBB[3] = {(*beginList)[0], (*beginList)[1], (*beginList)[2]};
-    double time = (*beginList)[3];
+    unsigned int time = (*beginList)[3];
     // convert xyz coordinates
     double* xyz = m_ImageView->GetImageViewer(0)
         ->GetWorldCoordinatesFromImageCoordinates(xyzBB);

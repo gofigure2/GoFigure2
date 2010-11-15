@@ -818,7 +818,7 @@ public:
     \brief Generate a new polydata from a list for the current element
     \param[in] iPoints list of points to generate the new polydata
   */
-  void RecomputeCurrentElementMap( std::list< std::vector< double > > iPoints);
+  void RecomputeCurrentElementMap( std::list< double* > iPoints);
 
 public slots:
 
