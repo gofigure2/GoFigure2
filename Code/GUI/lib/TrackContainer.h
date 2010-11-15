@@ -815,10 +815,14 @@ public:
   void UpdatePointsFromBBForGivenTrack( unsigned int iTrackID, std::list<std::vector<unsigned int> > iBoundingBox);
 
   /**
-    \brief Generate a new polydata from a list for the current element
-    \param[in] iPoints list of points to generate the new polydata
+  \brief get the element with iTrackID into the current element, remove it from the container, 
+  recalculate the points from the iListCenterBoundingBox and emit a signal for the current element
+  to be saved into the database
+  \param[in] iTrackID  ID for the track to be updated
+  \param[in] iListCenterBoundingBox list of the center of the bounding boxes for the meshes belonging
+  to this track
   */
-  void RecomputeCurrentElementMap( std::list< double* > iPoints);
+  void UpdatePointsForATrack(unsigned int iTrackID, std::list< double*> iListCenterBoundingBoxes);
 
 public slots:
 
@@ -842,6 +846,13 @@ signals:
 
 protected:
   vtkProperty *m_HighlightedProperty;
+
+  /**
+    \brief Generate a new polydata from a list for the current element
+    \param[in] iPoints list of points to generate the new polydata
+  */
+  void RecomputeCurrentElementMap( std::list< double* > iPoints);
+
 private:
   Q_DISABLE_COPY(TrackContainer);
 };

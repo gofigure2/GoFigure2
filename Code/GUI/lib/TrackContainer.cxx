@@ -1390,3 +1390,12 @@ RecomputeCurrentElementMap( std::list< double* > iPoints)
   emit CurrentTrackToSave();
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::UpdatePointsForATrack(unsigned int iTrackID, 
+std::list< double*> iListCenterBoundingBoxes)
+{
+  this->UpdateCurrentElementFromExistingOne(iTrackID);
+  this->RecomputeCurrentElementMap(iListCenterBoundingBoxes);
+}

@@ -258,9 +258,9 @@ void QGoDBTrackManager::SaveTrackCurrentElement()
 
   //update its bounding box with the new mesh into the database
   //and the table widget:
-  std::list<unsigned int> ListTrackID;
-  ListTrackID.push_back(TrackID);
-  UpdateBoundingBoxes(this->m_DatabaseConnector,ListTrackID);
+ // std::list<unsigned int> ListTrackID;
+ // ListTrackID.push_back(TrackID);
+ // UpdateBoundingBoxes(this->m_DatabaseConnector,ListTrackID);
 
   // Pointer not usefull anymore
   this->m_DatabaseConnector = NULL;
@@ -285,7 +285,7 @@ void QGoDBTrackManager::UpdateTrackPolydata(vtkMySQLDatabase *iDatabaseConnector
   std::list<double*> ListCenters = 
     this->m_CollectionOfTraces->GetCoordinateCenterBoundingBox(
     iDatabaseConnector,iTrackID);
-  //update the polydata in the trackcontainer for visu
+  this->m_TrackContainerInfoForVisu->UpdatePointsForATrack(iTrackID,ListCenters);
 }
 //-------------------------------------------------------------------------
 
