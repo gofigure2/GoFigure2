@@ -483,3 +483,44 @@ vtkLookupTable * vtkLookupTableManager::GetRandomLookupTable()
 
   return lut;
 }
+
+
+vtkLookupTable*
+vtkLookupTableManager::GetHSVBasedLookupTable( double iHSV[3] )
+{
+  vtkLookupTable* lut = vtkLookupTable::New();
+  lut->SetTableRange (0., 1.);
+  if( ( iHSV[0] >= 0. ) && ( iHSV[0] <= 1. ) )
+    {
+    lut->SetHueRange (iHSV[0], iHSV[0]);
+    }
+  else
+    {
+    std::cout << "iHSV[0] < 0 or > 1" <<std::endl;
+    return NULL;
+    }
+
+  if( ( iHSV[1] >= 0. ) && ( iHSV[1] <= 1. ) )
+    {
+    lut->SetSaturationRange (iHSV[1], iHSV[1]);
+    }
+  else
+    {
+    std::cout << "iHSV[1] < 0 or > 1" <<std::endl;
+    return NULL;
+    }
+
+  if( ( iHSV[2] >= 0. ) && ( iHSV[2] <= 1. ) )
+    {
+    lut->SetValueRange (0., iHSV[2]);
+    }
+  else
+    {
+    std::cout << "iHSV[2] < 0 or > 1" <<std::endl;
+    return NULL;
+    }
+
+  lut->Build();
+
+  return lut;
+}

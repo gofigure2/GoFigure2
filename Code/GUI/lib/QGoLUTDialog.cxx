@@ -33,6 +33,8 @@
 =========================================================================*/
 
 #include "QGoLUTDialog.h"
+#include "QDebug"
+#include "QColorDialog"
 
 #include "vtkLookupTable.h"
 #include "vtkScalarBarActor.h"
@@ -103,7 +105,10 @@ vtkLookupTable * QGoLUTDialog::GetLookupTable(QWidget *iiParent,
 
 void QGoLUTDialog::setupUi(QDialog *LUTDialog)
 {
-  if ( LUTDialog->objectName().isEmpty() ) { LUTDialog->setObjectName( QString::fromUtf8("LUTDialog") ); }
+  if ( LUTDialog->objectName().isEmpty() )
+    {
+    LUTDialog->setObjectName( QString::fromUtf8("LUTDialog") );
+    }
 
   LUTDialog->resize(321, 183);
   LUTDialog->setMinimumSize(200, 150);
@@ -134,10 +139,12 @@ void QGoLUTDialog::setupUi(QDialog *LUTDialog)
   std::vector< std::string > lut_names =
       vtkLookupTableManager::GetAvailableLookupTables();
 
-  for( size_t k = 0; k < lut_names.size(); k++ )
+  size_t k = 0;
+  for( ; k < lut_names.size(); k++ )
     {
     this->LUTComboBox->insertItem( k, QString::fromStdString( lut_names[k] ) );
     }
+  this->LUTComboBox->insertItem( k, tr( "HSV Based" ) );
 
   this->HorizontalLayout->addWidget(this->LUTComboBox);
 
@@ -184,8 +191,33 @@ void QGoLUTDialog::setupUi(QDialog *LUTDialog)
 void QGoLUTDialog::ChangeLookupTable(const int & idx)
 {
   this->LUT->Delete();
-  this->LUT = vtkLookupTableManager::GetLookupTable(idx);
-  this->LUTActor->SetLookupTable(this->LUT);
+  int N = this->LUTComboBox->count();
 
-  this->QvtkWidget->GetRenderWindow()->Render();
+  if( ( idx >= N ) || ( idx < 0 ) )
+    {
+    qWarning() << "QGoLUTDialog idx is out of range";
+    return;
+    }
+  else
+    {
+    if( idx == N-1 )
+      {
+      QColor color = QColorDialog::getColor( Qt::green );
+
+      double hsv[3];
+      hsv[0] = color.hueF();
+      hsv[1] = color.saturationF();
+      hsv[2] = color.valueF();
+
+      this->LUT = vtkLookupTableManager::GetHSVBasedLookupTable( hsv );
+      }
+    else
+      {
+      this->LUT = vtkLookupTableManager::GetLookupTable(idx);
+      }
+
+    this->LUTActor->SetLookupTable(this->LUT);
+    this->QvtkWidget->GetRenderWindow()->Render();
+
+    }
 }
