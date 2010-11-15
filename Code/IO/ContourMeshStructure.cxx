@@ -38,6 +38,8 @@
 #include "vtkPolyData.h"
 #include "vtkProperty.h"
 #include "vtkActor.h"
+#include "vtkDoubleArray.h"
+#include "vtkPointData.h"
 
 //--------------------------------------------------------------------------
 ContourMeshStructure::ContourMeshStructure():TraceID(0),
@@ -235,5 +237,29 @@ void ContourMeshStructure::SetActorVisibility( const bool& iVisible ) const
   if ( this->ActorXYZ )
     {
     this->ActorXYZ->SetVisibility(iVisible);
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+ContourMeshStructure::
+SetScalarData( const std::string& iName,
+               const double& iValue ) const
+{
+  if( this->Nodes )
+    {
+    vtkIdType NbOfPoints = this->Nodes->GetNumberOfPoints();
+    vtkDoubleArray* data = vtkDoubleArray::New();
+    data->SetNumberOfComponents( 1 );
+    data->SetName( iName.c_str() );
+
+    for( vtkIdType i = 0; i < NbOfPoints; ++i )
+      {
+      data->InsertNextValue( iValue );
+      }
+
+    this->Nodes->GetPointData()->SetScalars( data );
+    this->Nodes->GetPointData()->SetActiveScalars( iName.c_str() );
     }
 }

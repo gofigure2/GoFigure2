@@ -171,6 +171,8 @@ struct QGOIO_EXPORT ContourMeshStructure {
       \param[in] iVisible */
   void SetActorVisibility( const bool& iVisible ) const;
 
+  void SetScalarData( const std::string& iName, const double& iValue ) const;
+
   /** Printing one element. std::cout << element << std::endl; */
   friend std::ostream & operator<<
     (std::ostream & os, const ContourMeshStructure & c)

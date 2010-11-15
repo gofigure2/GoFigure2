@@ -35,6 +35,8 @@
 #include "ContourMeshContainer.h"
 
 #include "vtkActor.h"
+#include "vtkPointData.h"
+#include "vtkDoubleArray.h"
 
 //-------------------------------------------------------------------------
 ContourMeshContainer::ContourMeshContainer(QObject *iParent,
@@ -811,8 +813,6 @@ SetColorCode( const std::string& iColumnName,
       {
         if (trace_it->Nodes) //make sure the trace has points !!!
         {
-        vtkPolyData* pd = trace_it->Nodes;
-
         // Here let's make sure you are not passing crazy values!
         try
           {
@@ -843,19 +843,7 @@ SetColorCode( const std::string& iColumnName,
           {
           min_value = temp;
           }
-
-        vtkIdType NbOfPoints = pd->GetNumberOfPoints();
-        vtkDoubleArray* data = vtkDoubleArray::New();
-        data->SetNumberOfComponents( 1 );
-        data->SetName( iColumnName.c_str() );
-
-        for( vtkIdType i = 0; i < NbOfPoints; ++i )
-          {
-          data->InsertNextValue( temp );
-          }
-
-        pd->GetPointData()->SetScalars( data );
-        pd->GetPointData()->SetActiveScalars( iColumnName.c_str() );
+        trace_it->SetScalarData( iColumnName, temp );
         }
       } //end make sure the trace has points !!!
     ++it;
