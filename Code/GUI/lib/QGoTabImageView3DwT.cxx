@@ -1945,10 +1945,13 @@ QGoTabImageView3DwT::ChangeLookupTable()
     {
     vtkLookupTable *lut = QGoLUTDialog::GetLookupTable( this,
                                                         tr("Choose one look-up table") );
-    m_ImageView->SetLookupTable(lut);
+    if( lut )
+      {
+      m_ImageView->SetLookupTable(lut);
 
-    // free memory since it is not freed in the QGoLUTDialog
-    lut->Delete();
+      // free memory since it is not freed in the QGoLUTDialog
+      lut->Delete();
+      }
     }
 }
 

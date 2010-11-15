@@ -90,8 +90,15 @@ vtkLookupTable * QGoLUTDialog::GetLookupTable(QWidget *iiParent,
     dlg.setWindowTitle(iTitle);
     }
   dlg.ChangeLookupTable(iIdx);
-  dlg.exec();
-  return dlg.GetLookupTable();
+  if( dlg.exec() == QDialog::Accepted )
+    {
+    return dlg.GetLookupTable();
+    }
+  else
+    {
+    dlg.GetLookupTable()->Delete();
+    return NULL;
+    }
 }
 
 void QGoLUTDialog::setupUi(QDialog *LUTDialog)
