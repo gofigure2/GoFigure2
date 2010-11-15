@@ -32,23 +32,29 @@
 
 =========================================================================*/
 
-#include "TrackStructure.h"
+#include "TraceStructure.h"
 
 #include <iostream>
 #include "vtkPolyData.h"
 #include "vtkActor.h"
 
 //--------------------------------------------------------------------------
-TrackStructure::
-TrackStructure():TraceStructure()
+TraceStructure::
+TraceStructure():TraceID(0),
+  ActorXY(NULL), ActorXZ(NULL), ActorYZ(NULL), ActorXYZ(NULL), Nodes(NULL),
+  Highlighted(false), Visible(false)
 {
+  this->rgba[0] = 1.;
+  this->rgba[1] = 1.;
+  this->rgba[2] = 1.;
+  this->rgba[3] = 1.;
 }
 
 //--------------------------------------------------------------------------
-/*
+
 //--------------------------------------------------------------------------
-TrackStructure::
-TrackStructure(const unsigned int & iTraceID,
+TraceStructure::
+TraceStructure(const unsigned int & iTraceID,
                                            std::vector< vtkActor * > iActors,
                                            vtkPolyData *iNodes,
                                            const bool & iHighlighted,
@@ -80,13 +86,13 @@ TrackStructure(const unsigned int & iTraceID,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-TrackStructure::
-TrackStructure(const unsigned int & iTraceID,
-                                           std::vector< vtkActor * > iActors,
-                                           vtkPolyData *iNodes,
-                                           const bool & iHighlighted,
-                                           const bool & iVisible,
-                                           double iRgba[4]):
+TraceStructure::
+TraceStructure( const unsigned int & iTraceID,
+                std::vector< vtkActor * > iActors,
+                vtkPolyData *iNodes,
+                const bool & iHighlighted,
+                const bool & iVisible,
+                double iRgba[4]):
   TraceID(iTraceID), Nodes(iNodes), Highlighted(iHighlighted), Visible(iVisible)
 {
   if ( iActors.size() == 4 )
@@ -110,19 +116,19 @@ TrackStructure(const unsigned int & iTraceID,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-TrackStructure::
-TrackStructure(const unsigned int & iTraceID,
-                                           vtkActor *iActorXY,
-                                           vtkActor *iActorYZ,
-                                           vtkActor *iActorXZ,
-                                           vtkActor *iActorXYZ,
-                                           vtkPolyData *iNodes,
-                                           const bool & iHighlighted,
-                                           const bool & iVisible,
-                                           const double & r,
-                                           const double & g,
-                                           const double & b,
-                                           const double & alpha):
+TraceStructure::
+TraceStructure( const unsigned int & iTraceID,
+                vtkActor *iActorXY,
+                vtkActor *iActorYZ,
+                vtkActor *iActorXZ,
+                vtkActor *iActorXYZ,
+                vtkPolyData *iNodes,
+                const bool & iHighlighted,
+                const bool & iVisible,
+                const double & r,
+                const double & g,
+                const double & b,
+                const double & alpha):
   TraceID(iTraceID), ActorXY(iActorXY), ActorXZ(iActorXZ),
   ActorYZ(iActorYZ), ActorXYZ(iActorXYZ), Nodes(iNodes),
   Highlighted(iHighlighted), Visible(iVisible)
@@ -134,86 +140,71 @@ TrackStructure(const unsigned int & iTraceID,
 }
 
 //--------------------------------------------------------------------------
-*/
-//--------------------------------------------------------------------------
-TrackStructure::
-TrackStructure(const TrackStructure & iE):
-  TraceStructure( iE ), PointsMap(iE.PointsMap)
-{}
 
 //--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-TrackStructure::
-~TrackStructure()
+TraceStructure::
+TraceStructure(const TraceStructure & iE):
+  TraceID(iE.TraceID), ActorXY(iE.ActorXY), ActorXZ(iE.ActorXZ),
+  ActorYZ(iE.ActorYZ), ActorXYZ(iE.ActorXYZ), Nodes(iE.Nodes),
+  Highlighted(iE.Highlighted), Visible(iE.Visible)
 {
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-bool
-TrackStructure::
-InsertElement(int iTime, double* iPoint)
-{
-  // check if there is something at the iTime time point
-  std::map< unsigned int,double*>::iterator pointsMapIterator = this->PointsMap.find(iTime);
-
-  // if there is no point, insert it and return true
-  if ( pointsMapIterator == this->PointsMap.end() )
+  for ( int i = 0; i < 4; i++ )
     {
-    this->PointsMap.insert( std::pair< unsigned int,double*>(iTime, iPoint) );
-    return true;
+    this->rgba[i] = iE.rgba[i];
     }
-
-  // else do nothing and return false
-  std::cout << "in: " << __FILE__ << " at line: " << __LINE__ << std::endl;
-  std::cout << "can't insert a point at this time point" << std::endl;
-  return false;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-bool
-TrackStructure::
-DeleteElement(int iTime)
+TraceStructure::
+~TraceStructure()
 {
-  // check if there is something at the iTime time point
-  std::map< unsigned int,double*>::iterator pointsMapIterator = this->PointsMap.find(iTime);
-
-  // if there is a point, delete it and return true
-  if ( pointsMapIterator != this->PointsMap.end() )
-    {
-    // free memory
-    delete[] pointsMapIterator->second;
-    // clear map
-    this->PointsMap.erase(pointsMapIterator);
-    return true;
-    }
-
-  // else do nothing and return false
-  std::cout << "in: " << __FILE__ << " at line: " << __LINE__ << std::endl;
-  std::cout << "can't delete a point at this time point" << std::endl;
-  return false;
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-bool
-TrackStructure::
-ReplaceElement(int iTime, double* iPoint)
+void TraceStructure::SetActorProperties( vtkProperty* iProperty ) const
+  {
+  if( iProperty )
+    {
+    if( this->ActorXY )
+      {
+      this->ActorXY->SetProperty( iProperty );
+      }
+    if( this->ActorXZ )
+      {
+      this->ActorXZ->SetProperty( iProperty );
+      }
+    if( this->ActorYZ )
+      {
+      this->ActorYZ->SetProperty( iProperty );
+      }
+    if( this->ActorXYZ )
+      {
+      this->ActorXYZ->SetProperty( iProperty );
+      }
+    }
+  }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void TraceStructure::SetActorVisibility( const bool& iVisible ) const
 {
-  // delete the existing element
-  bool deleteElement = DeleteElement(iTime);
-
-  // if sth has been deleted, insert the point and return true
-  if(deleteElement)
+  if ( this->ActorXY )
     {
-    return InsertElement(iTime,iPoint);
+    this->ActorXY->SetVisibility(iVisible);
     }
-
-  // else do nothing and return false
-  std::cout << "in: " << __FILE__ << " at line: " << __LINE__ << std::endl;
-  std::cout << "can't replace a point at this time point" << std::endl;
-  return deleteElement;
+  if ( this->ActorXZ )
+    {
+    this->ActorXZ->SetVisibility(iVisible);
+    }
+  if ( this->ActorYZ )
+    {
+    this->ActorYZ->SetVisibility(iVisible);
+    }
+  if ( this->ActorXYZ )
+    {
+    this->ActorXYZ->SetVisibility(iVisible);
+    }
 }
-//--------------------------------------------------------------------------

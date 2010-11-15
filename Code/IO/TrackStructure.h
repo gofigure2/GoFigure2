@@ -35,15 +35,10 @@
 #ifndef __TrackStructure_h
 #define __TrackStructure_h
 
-class vtkActor;
-class vtkPolyData;
-class vtkProperty;
-
-#include <ostream>
-#include <vector>
-#include <map>
-
+#include "TraceStructure.h"
 #include "QGoIOConfigure.h"
+
+#include <map>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 #include "StructureHelper.h"
@@ -61,40 +56,14 @@ class vtkProperty;
  * interaction between Visualization and TableWidget
  * \ingroup Track Trace Structure
  */
-struct QGOIO_EXPORT TrackStructure {
-  /** TraceID */
-  unsigned int TraceID;
+class QGOIO_EXPORT TrackStructure : public TraceStructure
+{
+public:
 
-  /** Actor in the XY View */
-  vtkActor *ActorXY;
-
-  /** Actor in the XZ View */
-  vtkActor *ActorXZ;
-
-  /** Actor in the YZ View */
-  vtkActor *ActorYZ;
-
-  /** Actor in the XYZ View */
-  vtkActor *ActorXYZ;
-
-  /** Polydata representing the track (a line). It also contains the temporal information. */
-  vtkPolyData *Nodes;
-
-  /*
+  /**
    * Map containing all the polydata points ordered by time
    */
   std::map< unsigned int, double*> PointsMap;
-
-  /** Is the track Highlighted in the Visualization ? */
-  bool Highlighted;
-
-  /** Is the track Visible (appears on the screen)
-  * in the Visualization ?
-  */
-  bool Visible;
-
-  /** color of the track. \note each component is in [0,1] */
-  double rgba[4];
 
   /** Default Constructor */
   TrackStructure();
@@ -165,14 +134,6 @@ struct QGOIO_EXPORT TrackStructure {
    * InsertElement(int iTime, double* iPoint) instead.
    */
   bool ReplaceElement(int iTime, double* iPoint);
-
-  /** \brief Set Property for all actors
-      \param[in] iProperty */
-  void SetActorProperties( vtkProperty* iProperty ) const;
-
-  /** \brief Set Visibility for all actors
-      \param[in] iVisible */
-  void SetActorVisibility( const bool& iVisible ) const;
 
   /** Printing one element. std::cout << element << std::endl; */
   friend std::ostream & operator<<

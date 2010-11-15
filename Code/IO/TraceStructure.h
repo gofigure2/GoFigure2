@@ -32,8 +32,8 @@
 
 =========================================================================*/
 
-#ifndef __ContourMeshStructure_h
-#define __ContourMeshStructure_h
+#ifndef TRACESTRUCTURE_H
+#define TRACESTRUCTURE_H
 
 class vtkActor;
 class vtkPolyData;
@@ -44,84 +44,73 @@ class vtkProperty;
 
 #include "QGoIOConfigure.h"
 
-#include "TraceStructure.h"
-
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 #include "StructureHelper.h"
 #endif
 
-/**
-\defgroup Contour Contour
-\defgroup Mesh Mesh
-\defgroup Trace Trace
-\defgroup Structure Structure
-*/
 
-
-/**
- * \struct ContourMeshStructure
- * \brief  Structure which represent a contour or a mesh, and used for
- * interaction between Visualization and TableWidget
- * \ingroup Contour Mesh Trace Structure
- *
- * \sa ContourMeshContainer
- */
-class QGOIO_EXPORT ContourMeshStructure : public TraceStructure
+class QGOIO_EXPORT TraceStructure
 {
 public:
-  //unsigned int CollectionID;
 
-  /** Time point of the contour / mesh */
-  unsigned int TCoord;
+  /** TraceID */
+  unsigned int TraceID;
 
-  /**
-  \brief Return the direction of a given contour iContour
-  \return 0 if z coordinates are constant
-  \return 1 if y coordinates are constant
-  \return 2 if x coordinates are constant
-  \return -1 else
+  /** Actor in the XY View */
+  vtkActor *ActorXY;
+
+  /** Actor in the XZ View */
+  vtkActor *ActorXZ;
+
+  /** Actor in the YZ View */
+  vtkActor *ActorYZ;
+
+  /** Actor in the XYZ View */
+  vtkActor *ActorXYZ;
+
+
+  vtkPolyData *Nodes;
+
+  /** Is the track Highlighted in the Visualization ? */
+  bool Highlighted;
+
+  /** Is the track Visible (appears on the screen)
+  * in the Visualization ?
   */
-  int GetDirection();
+  bool Visible;
 
-  /**
-  \brief Is it a contour or a mesh ?
-  \return true if it is a contour
-  \return false else
-  */
-  bool IsAContour();
-
-  /** Default Constructor */
-  ContourMeshStructure();
+  /** color of the track. \note each component is in [0,1] */
+  double rgba[4];
 
   /** Constructor */
-  ContourMeshStructure(const unsigned int & iTraceID,
-                       std::vector< vtkActor * > iActors,
-                       vtkPolyData *iNodes,
-                       const unsigned int & iT,
-                       const bool & iHighlighted,
-                       const bool & iVisible,
-                       const double & r,
-                       const double & g,
-                       const double & b,
-                       const double & alpha);
+  TraceStructure();
 
   /** Constructor */
-  ContourMeshStructure(const unsigned int & iTraceID,
+  TraceStructure( const unsigned int & iTraceID,
+                  std::vector< vtkActor * > iActors,
+                  vtkPolyData *iNodes,
+                  const bool & iHighlighted,
+                  const bool & iVisible,
+                  const double & r,
+                  const double & g,
+                  const double & b,
+                  const double & alpha);
+
+  /** Constructor */
+  TraceStructure(const unsigned int & iTraceID,
                        std::vector< vtkActor * > iActors,
                        vtkPolyData *iNodes,
-                       const unsigned int & iT,
                        const bool & iHighlighted,
                        const bool & iVisible,
                        double iRgba[4]);
 
   /** Constructor */
-  ContourMeshStructure(const unsigned int & iTraceID,
+  TraceStructure(const unsigned int & iTraceID,
                        vtkActor *iActorXY,
                        vtkActor *iActorYZ,
                        vtkActor *iActorXZ,
                        vtkActor *iActorXYZ,
                        vtkPolyData *iNodes,
-                       const unsigned int & iT,
                        const bool & iHighlighted,
                        const bool & iVisible,
                        const double & r,
@@ -129,30 +118,37 @@ public:
                        const double & b,
                        const double & alpha);
 
-  /** Constructor by copy */
-  ContourMeshStructure(const ContourMeshStructure & iE);
+  /** Constructor */
+  TraceStructure( const TraceStructure& iE );
+  virtual ~TraceStructure();
 
-  /** Destructor */
-  ~ContourMeshStructure();
+  /** \brief Set Property for all actors
+      \param[in] iProperty */
+  void SetActorProperties( vtkProperty* iProperty ) const;
+
+  /** \brief Set Visibility for all actors
+      \param[in] iVisible */
+  void SetActorVisibility( const bool& iVisible ) const;
 
   /** Printing one element. std::cout << element << std::endl; */
   friend std::ostream & operator<<
-    (std::ostream & os, const ContourMeshStructure & c)
+    (std::ostream & os, const TraceStructure & c)
   {
     os << "TraceID " << c.TraceID << std::endl;
-    os << "ActorXY " << c.ActorXY << std::endl;
-    os << "ActorXZ " << c.ActorXZ << std::endl;
-    os << "ActorYZ " << c.ActorYZ << std::endl;
-    os << "ActorXYZ " << c.ActorXYZ << std::endl;
-    os << "Nodes " << c.Nodes << std::endl;
-    //os << "CollectionID " << c.CollectionID << std::endl;
-    os << "TCoord " << c.TCoord << std::endl;
+
     os << "Highlighted " << c.Highlighted << std::endl;
     os << "Visible " << c.Visible << std::endl;
     os << "RGBA [" << c.rgba[0] << ", " << c.rgba[1] << ", " << c.rgba[2]
     << ", " << c.rgba[3] << "]" << std::endl;
 
+    os << "ActorXY " << c.ActorXY << std::endl;
+    os << "ActorXZ " << c.ActorXZ << std::endl;
+    os << "ActorYZ " << c.ActorYZ << std::endl;
+    os << "ActorXYZ " << c.ActorXYZ << std::endl;
+    os << "Nodes " << c.Nodes << std::endl;
+
     return os;
   }
 };
-#endif
+
+#endif // TRACESTRUCTURE_H

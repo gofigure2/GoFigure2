@@ -74,35 +74,35 @@ public:
         >,
       boost::multi_index::hashed_non_unique<
         boost::multi_index::tag< ActorXY >,
-        BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, vtkActor *, ActorXY)
+        BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorXY)
         >,
       boost::multi_index::hashed_non_unique<
         boost::multi_index::tag< ActorXZ >,
-        BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, vtkActor *, ActorXZ)
+        BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorXZ)
         >,
       boost::multi_index::hashed_non_unique<
         boost::multi_index::tag< ActorYZ >,
-        BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, vtkActor *, ActorYZ)
+        BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorYZ)
         >,
       boost::multi_index::hashed_non_unique<
         boost::multi_index::tag< ActorXYZ >,
-        BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, vtkActor *, ActorXYZ)
+        BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorXYZ)
         >,
       boost::multi_index::hashed_non_unique<
         boost::multi_index::tag< Nodes >,
-        BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, vtkPolyData *, Nodes)
+        BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkPolyData *, Nodes)
         >,
       boost::multi_index::ordered_unique<
         boost::multi_index::tag< TraceID >,
-        BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, unsigned int, TraceID)
+        BOOST_MULTI_INDEX_MEMBER(TraceStructure, unsigned int, TraceID)
         >,
       boost::multi_index::ordered_non_unique<
         boost::multi_index::tag< Highlighted >,
-        BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, bool, Highlighted)
+        BOOST_MULTI_INDEX_MEMBER(TraceStructure, bool, Highlighted)
         >,
       boost::multi_index::ordered_non_unique<
         boost::multi_index::tag< Visible >,
-        BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, bool, Visible)
+        BOOST_MULTI_INDEX_MEMBER(TraceStructure, bool, Visible)
         >
       >
     > MultiIndexContainer;
