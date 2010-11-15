@@ -58,6 +58,10 @@ ContourMeshContainer::
     {
     if ( it->Nodes )
       {
+      if( it->Nodes->GetPointData()->GetScalars() )
+        {
+        it->Nodes->GetPointData()->GetScalars()->Delete();
+        }
       it->Nodes->Delete();
       }
     if ( it->ActorXY )
@@ -747,7 +751,7 @@ SetScalarRangeForAllElements( const double& iMin, const double& iMax )
     if( t_it->ActorXYZ )
       {
       t_it->ActorXYZ->GetMapper()->SetScalarRange( iMin, iMax );
-      t_it->ActorXY->GetMapper()->SetScalarVisibility( true );
+      t_it->ActorXYZ->GetMapper()->SetScalarVisibility( true );
       }
     ++t_it;
     }
