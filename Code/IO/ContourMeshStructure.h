@@ -38,6 +38,7 @@
 class vtkActor;
 class vtkPolyData;
 class vtkProperty;
+class vtkLookupTable;
 
 #include <ostream>
 #include <vector>
@@ -174,6 +175,7 @@ struct QGOIO_EXPORT ContourMeshStructure {
   void SetScalarData( const std::string& iName, const double& iValue ) const;
   void SetScalarRange( const double& iMin, const double& iMax ) const;
   void RenderWithOriginalColors() const;
+  void SetLookupTable( vtkLookupTable* iLut ) const;
 
   /** Printing one element. std::cout << element << std::endl; */
   friend std::ostream & operator<<

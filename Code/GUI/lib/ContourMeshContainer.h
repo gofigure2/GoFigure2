@@ -52,6 +52,8 @@
 #include "vtkMapper.h"
 #include "QGoImageView3D.h"
 
+class vtkLookupTable;
+
 /**
   \class ContourMeshContainer
   \brief Wraps a boost multi index container of ContourMeshStructure.
@@ -882,6 +884,8 @@ public:
 
     this->m_ImageView->UpdateRenderWindows();
     }
+
+  void SetLookupTableForColorCoding( vtkLookupTable* iLut );
 
 public slots:
 

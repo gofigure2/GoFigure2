@@ -820,3 +820,22 @@ SetColorCode( const std::string& iColumnName,
   this->m_ImageView->UpdateRenderWindows();
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+ContourMeshContainer::
+SetLookupTableForColorCoding( vtkLookupTable* iLut )
+{
+  if( iLut )
+    {
+    MultiIndexContainerIterator it = m_Container.begin();
+
+    while( it != m_Container.end() )
+      {
+      it->SetLookupTable( iLut );
+      ++it;
+      }
+    this->m_ImageView->UpdateRenderWindows();
+    }
+}
+//-------------------------------------------------------------------------

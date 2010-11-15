@@ -41,6 +41,7 @@
 #include "vtkMapper.h"
 #include "vtkDoubleArray.h"
 #include "vtkPointData.h"
+#include "vtkLookupTable.h"
 
 //--------------------------------------------------------------------------
 ContourMeshStructure::ContourMeshStructure():TraceID(0),
@@ -321,3 +322,32 @@ RenderWithOriginalColors() const
     this->ActorXY->GetMapper()->SetScalarVisibility( false );
     }
 }
+//--------------------------------------------------------------------------
+
+
+//--------------------------------------------------------------------------
+void
+ContourMeshStructure::
+SetLookupTable( vtkLookupTable* iLut ) const
+{
+  if( iLut )
+    {
+    if( this->ActorXY )
+      {
+      this->ActorXY->GetMapper()->SetLookupTable( iLut );
+      }
+    if( this->ActorXZ )
+      {
+      this->ActorXY->GetMapper()->SetLookupTable( iLut );
+      }
+    if( this->ActorYZ )
+      {
+      this->ActorXY->GetMapper()->SetLookupTable( iLut );
+      }
+    if( this->ActorXYZ )
+      {
+      this->ActorXY->GetMapper()->SetLookupTable( iLut );
+      }
+    }
+}
+//--------------------------------------------------------------------------
