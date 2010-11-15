@@ -50,7 +50,7 @@ ContourMeshContainer::ContourMeshContainer(QObject *iParent,
 ContourMeshContainer::
 ~ContourMeshContainer()
 {
-  MultiIndexContainer::iterator it = m_Container.begin();
+  MultiIndexContainerIterator it = m_Container.begin();
 
   while ( it != m_Container.end() )
     {
@@ -690,7 +690,7 @@ void
 ContourMeshContainer::
 RenderWithOriginalColors()
   {
-  typename MultiIndexContainer::iterator t_it = m_Container.begin();
+  MultiIndexContainerIterator t_it = m_Container.begin();
   while( t_it != m_Container.end() )
     {
       if (t_it->Nodes) //make sure the trace has points !!!
@@ -724,7 +724,7 @@ ContourMeshContainer::
 SetScalarRangeForAllElements( const double& iMin, const double& iMax )
 {
   // Let's set the scalar range (in order to get nice colors)
-  typename MultiIndexContainer::iterator t_it = m_Container.begin();
+  MultiIndexContainerIterator t_it = m_Container.begin();
   while( t_it != m_Container.end() )
     {
     if( t_it->ActorXY )

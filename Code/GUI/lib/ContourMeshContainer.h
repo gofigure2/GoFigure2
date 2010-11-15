@@ -108,6 +108,9 @@ public:
       >
     > MultiIndexContainer;
 
+  typedef MultiIndexContainer::iterator
+  MultiIndexContainerIterator;
+
   typedef MultiIndexContainer::index< TCoord >::type::iterator
   MultiIndexContainerTCoordIterator;
 
