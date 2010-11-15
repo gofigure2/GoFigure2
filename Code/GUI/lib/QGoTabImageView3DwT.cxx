@@ -2732,6 +2732,8 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord)
                                                 true);  // visible
   m_MeshContainer->InsertCurrentElement();
 
+  // UPDATE THE TRACKS IN THE CONTAINER
+
   // get the center of the mesh
   // pointer to double is deleted in AddPointToCurrentElement
   double* point = new double[3];

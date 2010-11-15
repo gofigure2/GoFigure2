@@ -42,7 +42,8 @@
 QGoSeedSegmentationBase::QGoSeedSegmentationBase(QWidget *parentWidget,
                                                  vtkPoints *seeds,
                                                  int iSampling):
-  QObject(parentWidget)
+  QObject(parentWidget),
+  m_NumberOfChannels( 0 )
 {
   m_Seeds = seeds;
   // initialize to 0 leads to segfaults
@@ -194,7 +195,11 @@ QGoSeedSegmentationBase::SetChannel(const QString & iText)
 void
 QGoSeedSegmentationBase::SetNumberOfChannels(int iNumberOfChannels)
 {
-  emit setNumberOfChannels( iNumberOfChannels );
+  if( m_NumberOfChannels != iNumberOfChannels )
+    {
+    m_NumberOfChannels = iNumberOfChannels;
+    emit setNumberOfChannels( iNumberOfChannels );
+    }
 }
 
 //--------------------------------------------------------------------------
