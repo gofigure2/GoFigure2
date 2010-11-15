@@ -823,7 +823,7 @@ public:
 
     if( iColumnName.empty() || iValues.empty() )
       {
-      RenderWithOriginalColors();
+      RenderAllElementsWithOriginalColors();
       return;
       }
 
@@ -911,7 +911,7 @@ protected:
   vtkProperty *m_HighlightedProperty;
 
   /** \brief Render with original colors */
-  void RenderWithOriginalColors();
+  void RenderAllElementsWithOriginalColors();
 
   /** \brief Set the scalar range */
   void SetScalarRangeForAllElements(const double& iMin, const double& iMax );

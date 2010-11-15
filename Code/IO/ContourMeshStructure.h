@@ -173,6 +173,7 @@ struct QGOIO_EXPORT ContourMeshStructure {
 
   void SetScalarData( const std::string& iName, const double& iValue ) const;
   void SetScalarRange( const double& iMin, const double& iMax ) const;
+  void RenderWithOriginalColors() const;
 
   /** Printing one element. std::cout << element << std::endl; */
   friend std::ostream & operator<<

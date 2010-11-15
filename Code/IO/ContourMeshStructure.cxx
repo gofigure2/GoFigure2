@@ -292,3 +292,32 @@ SetScalarRange( const double& iMin, const double& iMax ) const
     this->ActorXYZ->GetMapper()->SetScalarVisibility( true );
     }
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+ContourMeshStructure::
+RenderWithOriginalColors() const
+{
+  if( this->Nodes )
+    {
+    this->Nodes->GetPointData()->SetActiveScalars( NULL );
+    }
+
+  if( this->ActorXY )
+    {
+    this->ActorXY->GetMapper()->SetScalarVisibility( false );
+    }
+  if( this->ActorXZ )
+    {
+    this->ActorXY->GetMapper()->SetScalarVisibility( false );
+    }
+  if( this->ActorYZ )
+    {
+    this->ActorXY->GetMapper()->SetScalarVisibility( false );
+    }
+  if( this->ActorXYZ )
+    {
+    this->ActorXY->GetMapper()->SetScalarVisibility( false );
+    }
+}

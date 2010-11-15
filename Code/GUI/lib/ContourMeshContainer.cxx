@@ -694,31 +694,12 @@ ContourMeshContainer::GetHighlightedProperty()
 //-------------------------------------------------------------------------
 void
 ContourMeshContainer::
-RenderWithOriginalColors()
+RenderAllElementsWithOriginalColors()
   {
   MultiIndexContainerIterator t_it = m_Container.begin();
   while( t_it != m_Container.end() )
     {
-      if (t_it->Nodes) //make sure the trace has points !!!
-      {
-      t_it->Nodes->GetPointData()->SetActiveScalars( NULL );
-      if( t_it->ActorXY )
-        {
-        t_it->ActorXY->GetMapper()->SetScalarVisibility( false );
-        }
-      if( t_it->ActorXZ )
-        {
-        t_it->ActorXY->GetMapper()->SetScalarVisibility( false );
-        }
-      if( t_it->ActorYZ )
-        {
-        t_it->ActorXY->GetMapper()->SetScalarVisibility( false );
-        }
-      if( t_it->ActorXYZ )
-        {
-        t_it->ActorXY->GetMapper()->SetScalarVisibility( false );
-        }
-      } //end make sure the trace has points !!!
+    t_it->RenderWithOriginalColors();
     ++t_it;
     }
   }
@@ -752,7 +733,7 @@ SetColorCode( const std::string& iColumnName,
 
   if( iColumnName.empty() || iValues.empty() )
     {
-    RenderWithOriginalColors();
+    this->RenderAllElementsWithOriginalColors();
     return;
     }
 
