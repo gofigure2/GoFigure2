@@ -454,7 +454,7 @@ QGoMainWindow::LoadMeshesFromDatabase(const int & iT, const std::string & iTrace
 
   if ( w3t )
     {
-  //std::cout << "IN W3T" << std::endl;
+ // std::cout << "IN W3T" << std::endl;
     ContourMeshContainer *temp =  w3t->GetMeshContainer();
     if ( temp )
       {

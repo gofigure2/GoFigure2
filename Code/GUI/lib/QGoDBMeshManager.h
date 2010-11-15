@@ -166,7 +166,7 @@ protected:
   on after setting all meshesIDs visibility off
   \param[in] iTimePoint current timepoint
   */
-  void UpdateTracesVisibilityForGivenTimePoint(unsigned int iTimePoint);
+  //void UpdateTracesVisibilityForGivenTimePoint(unsigned int iTimePoint);
 
 protected slots:
   //virtual pure method in QGoDBTraceManager

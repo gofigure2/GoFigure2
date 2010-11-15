@@ -1147,7 +1147,7 @@ QGoImageView3D::EnableSeedWidget(bool iActivate)
 void
 QGoImageView3D::EnableBoxWidget(bool iValue)
 {
-  qDebug() << "Box ---Widget---";
+  //qDebug() << "Box ---Widget---";
   DefaultMode();
   m_BoxWidget->SetEnabled(iValue);
 
@@ -1164,7 +1164,7 @@ QGoImageView3D::EnableBoxWidget(bool iValue)
 void
 QGoImageView3D::EnablePlaneWidget(bool iValue)
 {
-  qDebug() << "Plane ---Widget---";
+  //qDebug() << "Plane ---Widget---";
   DefaultMode();
   m_PlaneWidget->SetEnabled(iValue);
 

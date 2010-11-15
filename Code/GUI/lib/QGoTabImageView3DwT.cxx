@@ -2354,7 +2354,7 @@ VisualizeTrack(vtkPolyData *iMesh)
 
   if ( iMesh )
     {
-    bool visibility = true;
+    //bool visibility = true;
 
     vtkProperty *mesh_property = vtkProperty::New();
     mesh_property->SetColor(RGBA[0], RGBA[1], RGBA[2]);
@@ -2943,6 +2943,8 @@ QGoTabImageView3DwT::ComputeMeshAttributes( vtkPolyData *iMesh,
 
   GoFigureMeshAttributes oAttributes;
 
+  if( iIntensity )
+    {
     for ( size_t i = 0; i < m_InternalImages.size(); i++ )
       {
       vtkSmartPointer< vtkImageExport > vtk_exporter =
@@ -2956,21 +2958,35 @@ QGoTabImageView3DwT::ComputeMeshAttributes( vtkPolyData *iMesh,
       calculator->SetImage( itk_importer->GetOutput() );
       calculator->Update();
 
-      oAttributes.m_Volume = calculator->GetPhysicalSize();
-      //qDebug() << "volume:" << oAttributes.m_Volume;
-      oAttributes.m_Area = calculator->GetArea();
-      oAttributes.m_Size = calculator->GetSize();
-
-  if(iIntensity )
-   {
-   QString     q_channelname = this->m_NavigationDockWidget->GetChannelName(i);
+      QString     q_channelname = this->m_NavigationDockWidget->GetChannelName(i);
       std::string channelname = q_channelname.toStdString();
 
       oAttributes.m_TotalIntensityMap[channelname] =
         static_cast< int >( calculator->GetSumIntensity() );
       oAttributes.m_MeanIntensityMap[channelname] = calculator->GetMeanIntensity();
-   }
+      oAttributes.m_Volume = calculator->GetPhysicalSize();
+      oAttributes.m_Area = calculator->GetArea();
+      oAttributes.m_Size = calculator->GetSize();
+      }
     }
+  else
+    {
+    vtkSmartPointer< vtkImageExport > vtk_exporter =
+      vtkSmartPointer< vtkImageExport >::New();
+    itk::VTKImageImport< ImageType >::Pointer itk_importer =
+      itk::VTKImageImport< ImageType >::New();
+    vtk_exporter->SetInput(m_InternalImages[0]);
+
+    ConnectPipelines< vtkImageExport, itk::VTKImageImport< ImageType >::Pointer >(
+      vtk_exporter, itk_importer);
+    calculator->SetImage( itk_importer->GetOutput() );
+    calculator->Update();
+
+    oAttributes.m_Volume = calculator->GetPhysicalSize();
+    oAttributes.m_Area = calculator->GetArea();
+    oAttributes.m_Size = calculator->GetSize();
+    }
+
   return oAttributes;
 }
 
