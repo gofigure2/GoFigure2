@@ -52,6 +52,7 @@
 
 // FOR TESTING
 #include "VisualizePolydataHelper.h"
+#include "vtkPolyDataWriter.h"
 
 //-------------------------------------------------------------------------
 TrackContainer::
@@ -719,6 +720,22 @@ bool
 TrackContainer::
 UpdateTrackStructurePolyData( const TrackStructure& iTrackStructure)
 {
+  if( iTrackStructure.PointsMap.empty() )
+    {
+    std::cout << "No points in the map, erase polydata and actors" << std::endl;
+
+    // delete polydata and actors
+    if ( iTrackStructure.Nodes )
+      {
+      iTrackStructure.Nodes->GetPointData()->Reset();
+      iTrackStructure.Nodes->GetPoints()->Reset();
+      iTrackStructure.Nodes->GetLines()->Reset();
+      iTrackStructure.Nodes->Reset();
+      }
+
+    return false;
+    }
+
   // read map and fill points
   vtkSmartPointer< vtkPoints > newPoints = vtkSmartPointer< vtkPoints >::New();
   vtkSmartPointer<vtkIntArray> newArray = vtkSmartPointer<vtkIntArray>::New();
@@ -726,12 +743,6 @@ UpdateTrackStructurePolyData( const TrackStructure& iTrackStructure)
   newArray->SetName("TemporalInformation");
   std::map< unsigned int, double*>::const_iterator it
       = iTrackStructure.PointsMap.begin();
-
-  if( iTrackStructure.PointsMap.empty() )
-    {
-    std::cout << "No points in the map, can't update the representation" << std::endl;
-    return false;
-    }
 
   while( it != iTrackStructure.PointsMap.end() )
     {
@@ -1301,13 +1312,6 @@ void
 TrackContainer::
 RecomputeCurrentElementMap( std::list< double* > iPoints)
 {
-  if( iPoints.empty() )
-    {
-    std::cout << "the list is empty, nothing is done to the current polydata"
-        << std::endl;
-    return;
-    }
-
   // empty current element map
   std::map< unsigned int,double*>::const_iterator begin
       = this->m_CurrentElement.PointsMap.begin();
