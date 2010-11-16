@@ -509,7 +509,7 @@ QGoMainWindow::LoadTracksFromDatabase(const int & iT, const std::string & iTrace
     if ( temp )
       {
       // let's iterate on the container with increasing TraceID
-      TrackContainer::MultiIndexContainer::index< TraceID >::type::iterator
+      TrackContainer::MultiIndexContainerType::index< TraceID >::type::iterator
         track_list_it = temp->m_Container.get< TraceID >().begin();
 
       // we don't need here to save this contour in the database,
@@ -1182,7 +1182,7 @@ void QGoMainWindow::AddSetUpDatabaseMenu()
     {
     actionSet_Up_Database = new QAction(
         tr("Set Up Database"), this->menuDatabase);
-	this->m_DatabaseSetUp = false;
+  this->m_DatabaseSetUp = false;
     this->menuDatabase->addAction(actionSet_Up_Database);
     this->actionSet_Up_Database->setEnabled(true);
     m_DBInitializationWizard = new QGoDBInitializationWizard(this);

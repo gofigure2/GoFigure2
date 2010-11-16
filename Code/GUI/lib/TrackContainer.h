@@ -38,6 +38,9 @@
 #include <QObject>
 
 #include "TrackStructure.h"
+#include "StructureHelper.h"
+
+#include "TraceContainerBase.h"
 
 #include "boost/multi_index_container.hpp"
 #include "boost/multi_index/member.hpp"
@@ -48,21 +51,9 @@
 #include "vtkPolyData.h"
 #include "QGoImageView3D.h"
 
-/**
-  \class TrackContainer
-  \brief Wraps a boost multi index container of TrackStructure.
-  This class intends to synchronize Track representation in
-  the Visualization and in the TableWidget
-  \sa TrackStructure QGoTableWidget QGoImageView3D
-  */
-class TrackContainer:public QObject
+namespace boost
 {
-  Q_OBJECT
-public:
-
-  typedef std::map< unsigned int, double*> PointsMapType;
-
-  typedef boost::multi_index::multi_index_container<
+  typedef multi_index::multi_index_container<
     TrackStructure,
     boost::multi_index::indexed_by<
       boost::multi_index::hashed_non_unique<
@@ -85,10 +76,6 @@ public:
         boost::multi_index::tag< Nodes >,
         BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkPolyData *, Nodes)
         >,
-      //boost::multi_index::hashed_non_unique<
-      //  boost::multi_index::tag< PointsMap >,
-      //  BOOST_MULTI_INDEX_MEMBER(TrackStructure, PointsMapType, PointsMap)
-      //  >,
       boost::multi_index::ordered_unique<
         boost::multi_index::tag< TraceID >,
         BOOST_MULTI_INDEX_MEMBER(TraceStructure, unsigned int, TraceID)
@@ -102,82 +89,35 @@ public:
         BOOST_MULTI_INDEX_MEMBER(TraceStructure, bool, Visible)
         >
       >
-    > MultiIndexContainer;
+    > MultiIndexTrackContainer;
+}
 
-  typedef MultiIndexContainer::index< ActorXY >::type::iterator
-  MultiIndexContainerActorXYIterator;
+/**
+  \class TrackContainer
+  \brief Wraps a boost multi index container of TrackStructure.
+  This class intends to synchronize Track representation in
+  the Visualization and in the TableWidget
+  \sa TrackStructure QGoTableWidget QGoImageView3D
+  */
+class TrackContainer:
+    public TraceContainerBase< typename boost::MultiIndexTrackContainer >
+{
+  Q_OBJECT
+public:
 
-  typedef MultiIndexContainer::index< ActorXZ >::type::iterator
-  MultiIndexContainerActorXZIterator;
+  typedef TraceContainerBase< typename boost::MultiIndexTrackContainer > Superclass;
+  typedef Superclass::MultiIndexContainerType MultiIndexContainerType;
 
-  typedef MultiIndexContainer::index< ActorYZ >::type::iterator
-  MultiIndexContainerActorYZIterator;
-
-  typedef MultiIndexContainer::index< ActorXYZ >::type::iterator
-  MultiIndexContainerActorXYZIterator;
-
-  typedef MultiIndexContainer::index< Nodes >::type::iterator
-  MultiIndexContainerNodesIterator;
-
-  typedef MultiIndexContainer::index< TraceID >::type::iterator
-  MultiIndexContainerTraceIDIterator;
-
-  typedef MultiIndexContainer::index< Highlighted >::type::iterator
-  MultiIndexContainerHighlightedIterator;
-
-  typedef MultiIndexContainer::index< Visible >::type::iterator
-  MultiIndexContainerVisibleIterator;
+  typedef std::map< unsigned int, double*> PointsMapType;
 
   //------------------------------------------------------------------------
 
   /** \brief Constructor. */
-  explicit TrackContainer(QObject *iParent,
-                                QGoImageView3D *iView);
+  explicit TrackContainer( QObject *iParent,
+                           QGoImageView3D *iView);
 
   /** \brief Destructor. */
   ~TrackContainer();
-
-  /** \brief Underlying container. */
-  MultiIndexContainer m_Container;
-
-  /** \brief Link to the visualization. */
-  QGoImageView3D *m_ImageView;
-
-  /** \brief Current Element to be inserted in the container */
-  TrackStructure m_CurrentElement;
-
-  // ----------------------------------------------------------------------
-
-  /** \brief Print the container content in the application output */
-  template< class TIterator >
-  void Print(TIterator iBegin, TIterator iEnd)
-  {
-    TIterator it = iBegin;
-
-    while ( it != iEnd )
-      {
-      std::cout << *it;
-      std::cout << "***" << std::endl;
-      std::cout << std::endl;
-      ++it;
-      }
-  }
-
-  /**
-    \brief Print the container content in the application output according
-    to the template parameter.
-    \tparam TIndex
-    */
-  template< class TIndex >
-  void Print()
-  {
-    this->Print( m_Container.get< TIndex >().begin(),
-                 m_Container.get< TIndex >().end() );
-  }
-
-  /** \brief Print the container content in the application output. */
-  void Print();
-  // ----------------------------------------------------------------------
 
   /**
     \brief Update Visualization of the given TraceIDs
@@ -249,55 +189,6 @@ public:
   *   \param[in] iT time point
   */
   void ShowActorsWithGivenTimePoint(const unsigned int & iT);
-
-  /**
- * \brief Update Actors, Highlighted, Visibility (properties) of given
- * a element
- * \tparam TIndex Index Type (referring to multi index container's indices)
- * \param[in] iIt element to update
- * \param[in] iActors its actors
- * \param[in] iHighlighted
- * \param[in] iVisible if false remove the element from the scene, else
- * add it
- */
-  template< class TIndex >
-  void UpdateVisualizationForGivenElement(
-    typename MultiIndexContainer::index< TIndex >::type::iterator iIt,
-    std::vector< vtkActor * > iActors,
-    const bool & iHighlighted,
-    const bool & iVisible)
-  {
-    TrackStructure temp = *iIt;
-
-    if ( iActors.size() == 4 )
-      {
-      temp.ActorXY = iActors[0];
-      temp.ActorXZ = iActors[1];
-      temp.ActorYZ = iActors[2];
-      temp.ActorXYZ = iActors[3];
-      }
-    temp.Highlighted = iHighlighted;
-    temp.Visible = iVisible;
-
-    typedef void ( QGoImageView3D::*ImageViewMember )(const int &, vtkActor *);
-    ImageViewMember f;
-
-    if ( iVisible )
-      {
-      f = &QGoImageView3D::AddActor;
-      }
-    else
-      {
-      f = &QGoImageView3D::RemoveActor;
-      }
-
-    for ( int i = 0; i < 4; i++ )
-      {
-      ( m_ImageView->*f )(i, iActors[i]);
-      }
-
-    m_Container.get< TIndex >().replace(iIt, temp);
-  }
 
   /**
   \brief Insert one element in the container
@@ -378,7 +269,7 @@ public:
   {
     if ( iActor )
       {
-      typedef typename MultiIndexContainer::index< TActor >::type::iterator
+      typedef typename MultiIndexContainerType::template index< TActor >::type::iterator
       IteratorType;
       IteratorType it = m_Container.get< TActor >().find(iActor);
 
@@ -445,7 +336,7 @@ public:
   {
     if ( iActor )
       {
-      typedef typename MultiIndexContainer::index< TActor >::type::iterator
+      typedef typename MultiIndexContainerType::template index< TActor >::type::iterator
       IteratorType;
       IteratorType it = m_Container.get< TActor >().find(iActor);
 
@@ -494,7 +385,7 @@ public:
   {
     if ( iActor )
       {
-      typedef typename MultiIndexContainer::index< TActor >::type::iterator
+      typedef typename MultiIndexContainerType::template index< TActor >::type::iterator
       IteratorType;
       IteratorType it = m_Container.get< TActor >().find(iActor);
 
@@ -542,11 +433,11 @@ public:
   */
   template< class TIndex >
   void ChangeActorsVisibility(
-    typename MultiIndexContainer::index< TIndex >::type::iterator iBegin,
-    typename MultiIndexContainer::index< TIndex >::type::iterator iEnd,
+    typename MultiIndexContainerType::template index< TIndex >::type::iterator iBegin,
+    typename MultiIndexContainerType::template index< TIndex >::type::iterator iEnd,
     const bool & iVisibility)
   {
-    typename MultiIndexContainer::index< TIndex >::type::iterator it = iBegin;
+    typename MultiIndexContainerType::template index< TIndex >::type::iterator it = iBegin;
 
     typedef void ( QGoImageView3D::*ImageViewMember )(const int &, vtkActor *);
     ImageViewMember f;

@@ -203,7 +203,7 @@ public:
 
   template< class TIndex >
   void AddTrackFromNodes(
-    typename TrackContainer::MultiIndexContainer::index< TIndex >::type::iterator iIt)
+    typename TrackContainer::MultiIndexContainerType::template index< TIndex >::type::iterator iIt)
   {
     VisualizeTrack< TIndex >(iIt);
   }
@@ -495,7 +495,7 @@ protected:
   template< class TIndex >
   void
   VisualizeTrack(
-    typename TrackContainer::MultiIndexContainer::index< TIndex >::type::iterator iIt)
+    typename TrackContainer::MultiIndexContainerType::template index< TIndex >::type::iterator iIt)
   {
     const double *iRgba = iIt->rgba;
     vtkPolyData * iMesh = iIt->Nodes;

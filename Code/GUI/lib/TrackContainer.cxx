@@ -55,10 +55,7 @@
 
 //-------------------------------------------------------------------------
 TrackContainer::
-TrackContainer(QObject *iParent,QGoImageView3D *iView):QObject(iParent),
-  m_ImageView(iView),
-  m_CurrentElement(),
-  m_HighlightedProperty(NULL)
+TrackContainer(QObject *iParent,QGoImageView3D *iView):Superclass(iParent, iView)
 {}
 //-------------------------------------------------------------------------
 
@@ -66,7 +63,7 @@ TrackContainer(QObject *iParent,QGoImageView3D *iView):QObject(iParent),
 TrackContainer::
 ~TrackContainer()
 {
-  MultiIndexContainer::iterator it = m_Container.begin();
+  MultiIndexContainerType::iterator it = m_Container.begin();
 
   while ( it != m_Container.end() )
     {
@@ -105,16 +102,6 @@ TrackContainer::
     ++it;
     }
 }
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-TrackContainer::
-Print()
-{
-  this->Print( m_Container.begin(), m_Container.end() );
-}
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -1056,7 +1043,7 @@ void
 TrackContainer::
 UpdateTracksReprensentation( bool iGlyph, bool iTube )
 {
-  MultiIndexContainer::iterator it = m_Container.begin();
+  MultiIndexContainerType::iterator it = m_Container.begin();
 
   if( iGlyph && iTube )
     {
