@@ -70,12 +70,11 @@ GoDBMeshRow::GoDBMeshRow(vtkMySQLDatabase *DatabaseConnector,
 
 //-------------------------------------------------------------------------
 GoDBMeshRow::GoDBMeshRow(unsigned int ImagingSessionID):
-  //GoDBTraceRow()
-GoDBTraceRow(ImagingSessionID)
+  GoDBTraceRow()
 {
-  //this->InitializeMap();
-  //this->SetImgSessionID(ImagingSessionID);
-  //this->m_MapRow["ImagingSessionID"] = ConvertToString<int>(ImagingSessionID);
+  this->InitializeMap();
+  this->SetImgSessionID(ImagingSessionID);
+  this->m_MapRow["ImagingSessionID"] = ConvertToString<int>(ImagingSessionID);
 }
 
 //-------------------------------------------------------------------------
@@ -83,9 +82,10 @@ GoDBTraceRow(ImagingSessionID)
 //-------------------------------------------------------------------------
 GoDBMeshRow::GoDBMeshRow(unsigned int iExistingID,
   vtkMySQLDatabase *iDatabaseConnector):
-  GoDBTraceRow(iExistingID,iDatabaseConnector)
+  GoDBTraceRow()
 {
-
+  this->InitializeMap();
+  this->SetValuesForSpecificID(iExistingID,iDatabaseConnector);
 }
 //-------------------------------------------------------------------------
 

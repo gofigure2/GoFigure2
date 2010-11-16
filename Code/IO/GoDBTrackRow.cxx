@@ -69,19 +69,20 @@ GoDBTrackRow::GoDBTrackRow(vtkMySQLDatabase *DatabaseConnector,
 
 //-------------------------------------------------------------------------
   GoDBTrackRow::GoDBTrackRow(unsigned int ImagingSessionID):
-  //GoDBTraceRow()
   GoDBTraceRow(ImagingSessionID)
 {
-  //this->InitializeMap();
-  //this->SetImgSessionID(ImagingSessionID);
+  this->InitializeMap();
+  this->SetImgSessionID(ImagingSessionID);
 }
 
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 GoDBTrackRow::GoDBTrackRow(unsigned int iExistingID,
-  vtkMySQLDatabase *iDatabaseConnector):GoDBTraceRow(iExistingID,iDatabaseConnector)
+  vtkMySQLDatabase *iDatabaseConnector):GoDBTraceRow()
 {
+  this->InitializeMap();
+  this->SetValuesForSpecificID(iExistingID,iDatabaseConnector);
 }
 //-------------------------------------------------------------------------
 

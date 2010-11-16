@@ -415,7 +415,7 @@ std::map<unsigned int,double*> QGoDBMeshManager::GetMeshesInfoForImportedMesh(
     return oExistingMeshID;
     }
    oExistingMeshID = ExistingMeshID.front();
-   GoDBMeshRow ExistingMesh(oExistingMeshID);
+   GoDBMeshRow ExistingMesh(oExistingMeshID,iDatabaseConnector);
    ExistingMesh.SetCollectionID(0); //reassign the track ID to 0:
    ExistingMesh.SaveInDB(iDatabaseConnector);
    this->DisplayInfoForExistingTrace(iDatabaseConnector,oExistingMeshID); //update the TW    

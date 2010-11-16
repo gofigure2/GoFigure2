@@ -68,20 +68,19 @@ GoDBContourRow::GoDBContourRow(vtkMySQLDatabase *DatabaseConnector,
 
 //-------------------------------------------------------------------------
 GoDBContourRow::GoDBContourRow(unsigned int ImagingSessionID):
-  //GoDBTraceRow()
-  GoDBTraceRow(ImagingSessionID)
+  GoDBTraceRow()
 {
-  //this->InitializeMap();
-  //this->SetImgSessionID(ImagingSessionID);
+  this->InitializeMap();
+  this->SetImgSessionID(ImagingSessionID);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
  GoDBContourRow::GoDBContourRow(unsigned int iExistingID,
-   vtkMySQLDatabase *iDatabaseConnector):
-  GoDBTraceRow(iExistingID,iDatabaseConnector)
+   vtkMySQLDatabase *iDatabaseConnector):GoDBTraceRow()
  {
-
+  this->InitializeMap();
+  this->SetValuesForSpecificID(iExistingID,iDatabaseConnector);
  }
 /*GoDBContourRow::GoDBContourRow(vtkMySQLDatabase* DatabaseConnector,
   GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID,

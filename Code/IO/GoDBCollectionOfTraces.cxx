@@ -1056,7 +1056,7 @@ std::list<unsigned int>  GoDBCollectionOfTraces::
   unsigned int iCollectionID,unsigned int iTimePoint)
 {
   std::vector<std::string> TraceIDField(1);
-  TraceIDField.push_back(this->m_TracesIDName);
+  TraceIDField[0] = this->m_TracesIDName;
   std::string LinkCoordinate = this->m_TracesName;
   LinkCoordinate += ".CoordIDMin = coordinate.coordID";
   std::vector<std::string> Conditions(4);
