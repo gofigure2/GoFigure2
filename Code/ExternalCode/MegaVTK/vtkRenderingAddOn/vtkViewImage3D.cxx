@@ -643,14 +643,19 @@ vtkViewImage3D::AddDataSet(vtkDataSet *dataset,
 
   if ( !this->Renderer )
     {
-    return 0;
+    return NULL;
     }
 
   vtkCamera *cam = this->Renderer->GetActiveCamera();
 
   if ( !cam )
     {
-    return 0;
+    return NULL;
+    }
+
+  if( dataset )
+    {
+    return NULL;
     }
 
   vtkSmartPointer< vtkPolyDataMapper > mapper =
