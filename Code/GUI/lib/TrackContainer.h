@@ -85,10 +85,10 @@ public:
         boost::multi_index::tag< Nodes >,
         BOOST_MULTI_INDEX_MEMBER(TrackStructure, vtkPolyData *, Nodes)
         >,
-      boost::multi_index::hashed_non_unique<
-        boost::multi_index::tag< PointsMap >,
-        BOOST_MULTI_INDEX_MEMBER(TrackStructure, PointsMapType, PointsMap)
-        >,
+      //boost::multi_index::hashed_non_unique<
+      //  boost::multi_index::tag< PointsMap >,
+      //  BOOST_MULTI_INDEX_MEMBER(TrackStructure, PointsMapType, PointsMap)
+      //  >,
       boost::multi_index::ordered_unique<
         boost::multi_index::tag< TraceID >,
         BOOST_MULTI_INDEX_MEMBER(TrackStructure, unsigned int, TraceID)
@@ -209,9 +209,8 @@ public:
           {
           temp.Visible = id_it->Visible;
 
-          std::vector< vtkActor * > actor;
-
-          actor = this->m_ImageView->AddContour(nodes, tproperty);
+          std::vector< vtkActor * > actor =
+              this->m_ImageView->AddContour(nodes, tproperty);
 
           temp.ActorXY = actor[0];
           temp.ActorXZ = actor[1];
@@ -326,7 +325,7 @@ public:
                                     const bool & iHighlighted,
                                     const bool & iVisible);
 
-  /** 
+  /**
   \brief Update Current Element from the database.
   \param[in] iTraceID
   \param[in] irgba
@@ -401,22 +400,7 @@ public:
           temp_property = this->m_HighlightedProperty;
           }
 
-        if ( it->ActorXY )
-          {
-          it->ActorXY->SetProperty(temp_property);
-          }
-        if ( it->ActorXZ )
-          {
-          it->ActorXZ->SetProperty(temp_property);
-          }
-        if ( it->ActorYZ )
-          {
-          it->ActorYZ->SetProperty(temp_property);
-          }
-        if ( it->ActorXYZ )
-          {
-          it->ActorXYZ->SetProperty(temp_property);
-          }
+        it->SetActorProperties( temp_property );
 
         if ( it->Highlighted )
           {
@@ -469,22 +453,7 @@ public:
 
       if ( it != m_Container.get< TActor >().end() )
         {
-        if ( it->ActorXY )
-          {
-          it->ActorXY->SetVisibility(!it->Visible);
-          }
-        if ( it->ActorXZ )
-          {
-          it->ActorXZ->SetVisibility(!it->Visible);
-          }
-        if ( it->ActorYZ )
-          {
-          it->ActorYZ->SetVisibility(!it->Visible);
-          }
-        if ( it->ActorXYZ )
-          {
-          it->ActorXYZ->SetVisibility(!it->Visible);
-          }
+        it->SetActorVisibility( !it->Visible );
 
         TrackStructure tempStructure(*it);
         tempStructure.Visible = !it->Visible;
@@ -533,22 +502,7 @@ public:
         {
         if ( it->Visible != iState )
           {
-          if ( it->ActorXY )
-            {
-            it->ActorXY->SetVisibility(iState);
-            }
-          if ( it->ActorXZ )
-            {
-            it->ActorXZ->SetVisibility(iState);
-            }
-          if ( it->ActorYZ )
-            {
-            it->ActorYZ->SetVisibility(iState);
-            }
-          if ( it->ActorXYZ )
-            {
-            it->ActorXYZ->SetVisibility(iState);
-            }
+          it->SetActorVisibility( iState );
 
           TrackStructure tempStructure(*it);
           tempStructure.Visible = iState;
@@ -610,24 +564,22 @@ public:
       {
       if ( it->Visible != iVisibility )
         {
+        it->SetActorVisibility( iVisibility );
+
         if ( it->ActorXY )
           {
-          it->ActorXY->SetVisibility(iVisibility);
           ( m_ImageView->*f )(0, it->ActorXY);
           }
         if ( it->ActorXZ )
           {
-          it->ActorXZ->SetVisibility(iVisibility);
           ( m_ImageView->*f )(1, it->ActorXZ);
           }
         if ( it->ActorYZ )
           {
-          it->ActorYZ->SetVisibility(iVisibility);
           ( m_ImageView->*f )(2, it->ActorYZ);
           }
         if ( it->ActorXYZ )
           {
-          it->ActorXYZ->SetVisibility(iVisibility);
           ( m_ImageView->*f )(3, it->ActorXYZ);
           }
 
@@ -664,7 +616,7 @@ public:
   /**
   \overload DeleteElement(const unsigned int & iId)
   */
-  bool DeleteElement(MultiIndexContainerTraceIDIterator iIter); 
+  bool DeleteElement(MultiIndexContainerTraceIDIterator iIter);
 
   /** \brief Delete all highlighted elements
   \return the list of TraceIDs of such elements
@@ -815,7 +767,7 @@ public:
   void UpdatePointsFromBBForGivenTrack( unsigned int iTrackID, std::list<std::vector<unsigned int> > iBoundingBox);
 
   /**
-  \brief get the element with iTrackID into the current element, remove it from the container, 
+  \brief get the element with iTrackID into the current element, remove it from the container,
   recalculate the points from the iListCenterBoundingBox and emit a signal for the current element
   to be saved into the database
   \param[in] iTrackID  ID for the track to be updated
