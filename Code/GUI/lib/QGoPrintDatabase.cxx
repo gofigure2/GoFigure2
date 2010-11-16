@@ -365,8 +365,12 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
     std::list< unsigned int > ListNewMeshes;
     ListNewMeshes.push_back(NewMeshID);
     //here update the CurrentElement for trackContainer with the data from the database corresponding to the selected trackID:
-    this->m_TracksManager->UpdateCurrentElementTrackContainer(atoi(this->m_SelectedCollectionData.first.c_str()));
+    unsigned int TrackID = ss_atoi<unsigned int>(this->m_SelectedCollectionData.first);
+    this->m_TracksManager->UpdateCurrentElementTrackContainer(TrackID);
+    //check that there isn't an existing mesh with the same timepoint in the track,if so, set the trackID to 0:
+    this->m_MeshesManager->ReassignTrackIDForPreviousMeshWithSameTimePoint(this->m_DatabaseConnector,TrackID,this->m_SelectedTimePoint);
 
+    //update the bounding box and the visu for the tracks:
     this->m_TracksManager->UpdateBoundingBoxes( this->m_DatabaseConnector,
                                                 this->m_MeshesManager->GetListCollectionIDs(this->m_DatabaseConnector,
                                                                                             ListNewMeshes) );

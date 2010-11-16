@@ -141,6 +141,20 @@ public:
   std::map<unsigned int,double*> GetMeshesInfoForImportedMesh(
 	std::list<unsigned int> iMeshesIDs);
 
+  /**
+  \brief check in the database if there is an existing mesh belonging
+  to iTrackID with iTimePoint, if yes, reassign the trackID to 0 and 
+  return the ID of the mesh with the new trackID set to 0.
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iTrackID ID of the track 
+  \param[in] iTimePoint timepoint to be checked
+  \return meshID of the mesh on the same timepoint which trackID is
+  reassigned to 0
+  */
+  unsigned int ReassignTrackIDForPreviousMeshWithSameTimePoint( 
+    vtkMySQLDatabase *iDatabaseConnector,unsigned int iTrackID,
+    unsigned int iTimePoint);
+
 protected:
   GoDBTWContainerForMesh *m_TWContainer;
   ContourMeshContainer   *m_MeshContainerInfoForVisu;

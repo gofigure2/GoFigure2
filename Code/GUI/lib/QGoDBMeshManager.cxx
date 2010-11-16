@@ -391,3 +391,33 @@ std::map<unsigned int,double*> QGoDBMeshManager::GetMeshesInfoForImportedMesh(
 {
 	return this->m_MeshContainerInfoForVisu->GetMeshesPoints(iMeshesIDs);
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+ unsigned int QGoDBMeshManager::
+   ReassignTrackIDForPreviousMeshWithSameTimePoint( vtkMySQLDatabase *iDatabaseConnector,
+    unsigned int iTrackID,unsigned int iTimePoint)
+ {
+   unsigned int oExistingMeshID = 0;
+   //get meshID with same timepoint and same TrackID:
+   std::list<unsigned int> ExistingMeshID = 
+     this->m_CollectionOfTraces->GetTraceIDsWithTimePointAndCollectionID(
+     iDatabaseConnector,iTrackID, iTimePoint);
+   if (ExistingMeshID.empty())
+    {
+    return oExistingMeshID;
+    }
+   if (ExistingMeshID.size() > 1)
+    {
+    std::cout<<"there is more than 1 existing mesh for this track at this timepoint ";
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
+    return oExistingMeshID;
+    }
+   oExistingMeshID = ExistingMeshID.front();
+   GoDBMeshRow ExistingMesh(oExistingMeshID);
+   ExistingMesh.SetCollectionID(0); //reassign the track ID to 0:
+   ExistingMesh.SaveInDB(iDatabaseConnector);
+   this->DisplayInfoForExistingTrace(iDatabaseConnector,oExistingMeshID); //update the TW    
+   return oExistingMeshID;
+ }

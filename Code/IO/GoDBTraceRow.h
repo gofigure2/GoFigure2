@@ -82,6 +82,14 @@ public:
   */
   GoDBTraceRow(unsigned int ImgSessionID);
 
+  /**
+  \brief get the data from the database corresponding to the iExistingID
+  and set the values of the map with them
+  \param[in] iExistingID ID of the existing trace
+  \param[in] DatabaseConnector connection to the database
+  */
+  GoDBTraceRow(unsigned int iExistingID,vtkMySQLDatabase *iDatabaseConnector);
+
   ~GoDBTraceRow()
   {}
 

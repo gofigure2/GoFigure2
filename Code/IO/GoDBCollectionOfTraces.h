@@ -312,6 +312,7 @@ public:
   /**
   \brief return a list of the coordinates of all the centers of the bounding boxes
   for all the collectionOf corresponding to the iTraceID
+  \param[in] iDatabaseConnector connection to the database
   \param[in] iTraceID ID for the trace the bounding boxes of its collectionof traces
   are needed
   \return a list of x,y,z,t for all centers of bounding boxes
@@ -319,6 +320,16 @@ public:
   std::list<double*> GetCoordinateCenterBoundingBox(vtkMySQLDatabase *iDatabaseConnector,
     unsigned int iTraceID);
 
+  /**
+  \brief get the tracesIDs from the database which have iTimePoint as TCoordMin and iCollectionID
+  as collectionID
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iCollectionID ID of the collection
+  \param[in] iTimePoint timepoint for which the traces IDs are needed
+  \return a list of the traces IDs corresponding to this iTimePoint and iCollectionID
+  */
+  std::list<unsigned int> GetTraceIDsWithTimePointAndCollectionID(vtkMySQLDatabase *iDatabaseConnector,
+  unsigned int iCollectionID,unsigned int iTimePoint);
 protected:
 
   std::string  m_CollectionName;

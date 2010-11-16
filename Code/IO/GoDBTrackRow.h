@@ -73,6 +73,9 @@ public:
   */
   GoDBTrackRow(unsigned int ImagingSessionID);
 
+  //constructor GoDBTraceRow
+  GoDBTrackRow(unsigned int iExistingID,vtkMySQLDatabase *iDatabaseConnector);
+
   //mother class method
   void SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector,
                                          vtkPolyData *TrackVisu,

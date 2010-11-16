@@ -78,6 +78,9 @@ public:
   */
   GoDBMeshRow(unsigned int ImagingSessionID);
 
+  //constructor GoDBTraceRow
+  GoDBMeshRow(unsigned int iExistingID,vtkMySQLDatabase *iDatabaseConnector);
+
   ~GoDBMeshRow();
 
   //int DoesThisBoundingBoxMeshExist(vtkMySQLDatabase* DatabaseConnector);

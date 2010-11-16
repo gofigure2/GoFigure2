@@ -1619,6 +1619,47 @@ std::vector< std::vector< std::string > > GetValuesFromSeveralTables(
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
+std::string WhereAndOrConditions(std::vector<std::string> iWhereAndConditions, 
+  bool iAnd)
+{  unsigned int i = 0;
+  std::stringstream oQueryStream;
+  if (iWhereAndConditions.size() > 2)
+  {
+  std::string Connector = " AND ";
+  oQueryStream << " WHERE (";
+  if (!iAnd)
+    {
+    Connector = " OR ";
+    }
+  while ( i < iWhereAndConditions.size() - 2 )
+    {
+    oQueryStream << iWhereAndConditions[i];
+    oQueryStream << " = ";
+    oQueryStream << iWhereAndConditions[i + 1];
+    //Querystream << " AND ";
+    oQueryStream << Connector;
+    i = i + 2;
+    }
+  }
+  else
+    {
+    oQueryStream << " WHERE ";
+    }
+
+  oQueryStream << iWhereAndConditions[i];
+  oQueryStream << " = ";
+  oQueryStream << iWhereAndConditions[i + 1];
+
+  if (iWhereAndConditions.size() > 2)
+    {
+    oQueryStream << ")";
+    }
+
+  return oQueryStream.str();
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 std::string SelectQueryStream(std::string iTable, std::string iColumn, std::string iField,
                               std::string iValue)
 {
@@ -2224,7 +2265,8 @@ void GetAllSelectedFields(std::stringstream & ioQuerystream,
 std::vector< std::string > GetAllSelectedValuesFromTwoTables(
   vtkMySQLDatabase *iDatabaseConnector, std::string iTableOne, std::string iTableTwo,
   std::vector< std::string > iSelectedFields, std::string iJoinCondition,
-  std::string ifield, std::string ifieldValue)
+  //td::string ifield, std::string ifieldValue)
+  std::vector<std::string> iFieldsWithValues)
 {
   std::stringstream QueryStream;
 
@@ -2237,10 +2279,13 @@ std::vector< std::string > GetAllSelectedValuesFromTwoTables(
   QueryStream << iTableTwo;
   QueryStream << " ON ";
   QueryStream << iJoinCondition;
-  QueryStream << " WHERE ";
-  QueryStream << ifield;
-  QueryStream << " = ";
-  QueryStream << ifieldValue;
+
+  QueryStream << WhereAndOrConditions(iFieldsWithValues);
+ // QueryStream << " WHERE ";
+  //QueryStream << ifield;
+  //QueryStream << " = ";
+ // QueryStream << ifieldValue;
+ 
 
   //std::stringstream SelectQuery;
   //SelectQuery << SelectWithJoinNullIncluded(QueryStream.str(), iJoinCondition);
@@ -2599,3 +2644,6 @@ std::list< double* > GetCenterBoundingBoxes(vtkMySQLDatabase *DatabaseConnector,
     }
   return Results;
 }
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------

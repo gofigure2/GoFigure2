@@ -70,13 +70,23 @@ GoDBMeshRow::GoDBMeshRow(vtkMySQLDatabase *DatabaseConnector,
 
 //-------------------------------------------------------------------------
 GoDBMeshRow::GoDBMeshRow(unsigned int ImagingSessionID):
-  GoDBTraceRow()
+  //GoDBTraceRow()
+GoDBTraceRow(ImagingSessionID)
 {
-  this->InitializeMap();
-  this->SetImgSessionID(ImagingSessionID);
-  this->m_MapRow["ImagingSessionID"] = ConvertToString<int>(ImagingSessionID);
+  //this->InitializeMap();
+  //this->SetImgSessionID(ImagingSessionID);
+  //this->m_MapRow["ImagingSessionID"] = ConvertToString<int>(ImagingSessionID);
 }
 
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+GoDBMeshRow::GoDBMeshRow(unsigned int iExistingID,
+  vtkMySQLDatabase *iDatabaseConnector):
+  GoDBTraceRow(iExistingID,iDatabaseConnector)
+{
+
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -131,6 +141,7 @@ GoDBMeshRow::SafeDownCast(GoDBTraceRow & iRow)
 //-------------------------------------------------------------------------
 void GoDBMeshRow::InitializeMap()
 {
+  GoDBTraceRow::InitializeMap();
   this->m_TableName = "mesh";
   this->m_TableIDName = "meshID";
   this->m_CollectionName = "track";
