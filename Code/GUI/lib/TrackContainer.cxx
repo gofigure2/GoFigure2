@@ -727,10 +727,22 @@ UpdateTrackStructurePolyData( const TrackStructure& iTrackStructure)
     // delete polydata and actors
     if ( iTrackStructure.Nodes )
       {
-      iTrackStructure.Nodes->GetPointData()->Reset();
-      iTrackStructure.Nodes->GetPoints()->Reset();
-      iTrackStructure.Nodes->GetLines()->Reset();
-      iTrackStructure.Nodes->Reset();
+      if( iTrackStructure.Nodes->GetPointData() )
+        {
+        iTrackStructure.Nodes->GetPointData()->Reset();
+        }
+      if( iTrackStructure.Nodes->GetPoints() )
+        {
+        iTrackStructure.Nodes->GetPoints()->Reset();
+        }
+      if( iTrackStructure.Nodes->GetLines() )
+        {
+        iTrackStructure.Nodes->GetLines()->Reset();
+        }
+      if( iTrackStructure.Nodes )
+        {
+        iTrackStructure.Nodes->Reset();
+        }
       }
 
     return false;
