@@ -146,10 +146,12 @@ void GoDBTrackRow::SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector,
 //-------------------------------------------------------------------------
 void GoDBTrackRow::SetThePointsFromPolydata(vtkPolyData * iTrackVisu)
 {
-  vtkSmartPointer< vtkPolyDataMySQLTrackWriter > convert =
-    vtkSmartPointer< vtkPolyDataMySQLTrackWriter >::New();
-  //vtkPolyDataMySQLTextWriter *convert = vtkPolyDataMySQLTextWriter::New();
-  std::string PointsString = convert->GetMySQLText(iTrackVisu);
-  //convert->Delete();
+  std::string PointsString = "0"; //in case the track has no more meshes
+  if (iTrackVisu)
+    {
+    vtkSmartPointer< vtkPolyDataMySQLTrackWriter > convert =
+      vtkSmartPointer< vtkPolyDataMySQLTrackWriter >::New();
+     PointsString = convert->GetMySQLText(iTrackVisu);
+    }
   this->SetField("Points", PointsString);
 }
