@@ -347,6 +347,15 @@ public:
       }
   }
 
+  /**
+    \brief Update all highlighted elements in the container with a given color.
+    \note Elements remain highlighted as long as it is checked in the Table Widget.
+    \param[in] iColor
+    \return list of highlighted elements
+  */
+  std::list< unsigned int > UpdateAllHighlightedElementsWithGivenColor(
+    QColor iColor);
+
 public slots:
 
   /** \brief Change elements highlighting property given a list of TraceIDs

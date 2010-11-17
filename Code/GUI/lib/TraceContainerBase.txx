@@ -345,4 +345,45 @@ UpdateElementVisibilityWithGivenTraceIDs( const QStringList& iList,
     }
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+template< class TContainer >
+std::list< unsigned int >
+TraceContainerBase<TContainer>::
+UpdateAllHighlightedElementsWithGivenColor(QColor iColor)
+{
+  using boost::multi_index::get;
+
+  MultiIndexContainerHighlightedIterator it0, it1;
+
+  boost::tuples::tie(it0, it1) =
+    m_Container.get< Highlighted >().equal_range(true);
+
+  double r(1.), g(1.), b(1.), a(1.);
+  if ( iColor.isValid() )
+    {
+    iColor.getRgbF(&r, &g, &b, &a);
+    }
+
+  std::list< unsigned int > oList;
+  while ( it0 != it1 )
+    {
+    MultiIndexContainerElementType temp(*it0);
+    temp.rgba[0] = r;
+    temp.rgba[1] = g;
+    temp.rgba[2] = b;
+    temp.rgba[3] = a;
+
+    m_Container.get< Highlighted >().replace(it0, temp);
+
+    oList.push_back(it0->TraceID);
+
+    ++it0;
+    }
+
+  return oList;
+}
+
+//-------------------------------------------------------------------------
+
 #endif

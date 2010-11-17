@@ -437,15 +437,6 @@ public:
   std::list< unsigned int > DeleteAllHighlightedElements();
 
   /**
-    \brief Update all highlighted elements in the container with a given color.
-    \note Elements remain highlighted as long as it is checked in the Table Widget.
-    \param[in] iColor
-    \return list of highlighted elements
-  */
-  std::list< unsigned int > UpdateAllHighlightedElementsWithGivenColor(
-    QColor iColor);
-
-  /**
     \brief Get the list of highlighted elements TraceID.
     */
   std::list< unsigned int > GetHighlightedElementsTraceID();
