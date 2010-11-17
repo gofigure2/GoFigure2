@@ -51,7 +51,6 @@ GoDBTrackRow::GoDBTrackRow(vtkMySQLDatabase *DatabaseConnector,
                            GoDBCoordinateRow Min, GoDBCoordinateRow Max, 
                            unsigned int ImgSessionID,
                            std::string TraceVisu):GoDBTraceRow()
-  //GoDBTraceRow(DatabaseConnector, TraceVisu, Min, Max, ImgSessionID)
 {
   this->InitializeMap();
   this->SetImgSessionID(ImgSessionID);
@@ -70,12 +69,21 @@ GoDBTrackRow::GoDBTrackRow(vtkMySQLDatabase *DatabaseConnector,
 
 //-------------------------------------------------------------------------
   GoDBTrackRow::GoDBTrackRow(unsigned int ImagingSessionID):
-  GoDBTraceRow()
+  GoDBTraceRow(ImagingSessionID)
 {
   this->InitializeMap();
   this->SetImgSessionID(ImagingSessionID);
 }
 
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+GoDBTrackRow::GoDBTrackRow(unsigned int iExistingID,
+  vtkMySQLDatabase *iDatabaseConnector):GoDBTraceRow()
+{
+  this->InitializeMap();
+  this->SetValuesForSpecificID(iExistingID,iDatabaseConnector);
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -92,8 +100,6 @@ GoDBTrackRow::GoDBTrackRow(vtkMySQLDatabase *DatabaseConnector,
 //-------------------------------------------------------------------------
 void GoDBTrackRow::InitializeMap()
 {
-  //GoDBTraceRow::InitializeMap();
-  //this->m_MapRow["TrackID"] = ConvertToString<int>(0);
   this->m_TableName = "track";
   this->m_TableIDName = "trackID";
   this->m_CollectionName = "lineage";
@@ -129,15 +135,6 @@ void GoDBTrackRow::SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector,
                                          GoDBCoordinateRow iCoordMin,
                                          GoDBCoordinateRow iCoordMax)
 {
- /* this->SetTheBoundingBox(DatabaseConnector, iCoordMin, iCoordMax);
-
-  this->SetThePointsFromPolydata(TrackVisu);
-
-
-  if ( this->DoesThisBoundingBoxExist(DatabaseConnector) )
-    {
-    std::cout << "The bounding box already exists for this mesh" << std::endl;
-    }*/
   this->SetTheDataFromTheVisuTemplate < vtkPolyDataMySQLTrackWriter > (
     DatabaseConnector,TrackVisu,iCoordMin,iCoordMax);
 }

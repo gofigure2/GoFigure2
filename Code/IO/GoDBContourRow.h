@@ -71,7 +71,11 @@ public:
   \brief 
   \param[in] ImgSessionID ID of the current imagingsession
   */
+  //constructor in GoDBTraceRow
   GoDBContourRow(unsigned int ImagingSessionID);
+
+  //constructor in GoDBTraceRow
+  GoDBContourRow(unsigned int iExistingID,vtkMySQLDatabase *iDatabaseConnector);
 
   /**\brief fill the contour map with the values gotten from the visualization*/
   /* GoDBContourRow(vtkMySQLDatabase* DatabaseConnector,GoDBCoordinateRow Min,

@@ -43,6 +43,7 @@
 #include <QMenu>
 #include <QCloseEvent>
 #include <QPixmap>
+#include <QStatusBar>
 
 #include <iostream>
 
@@ -346,6 +347,12 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
   OpenDBConnection();
   if ( !this->m_MeshGenerationMode )
     {
+    unsigned int TrackID = ss_atoi<unsigned int>(this->m_SelectedCollectionData.first);
+     //check that there isn't an existing mesh with the same timepoint in the track,if so, set its trackID to 0:
+    emit PrintMessage(
+      this->m_MeshesManager->CheckExistingMeshesForTheTrack(TrackID,this->m_SelectedTimePoint,
+      this->m_DatabaseConnector));
+
     unsigned int NewMeshID = this->m_MeshesManager->SaveNewMeshFromVisu(iXCoordMin,
                                                                         iYCoordMin,
                                                                         iZCoordMin,
@@ -365,8 +372,8 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
     std::list< unsigned int > ListNewMeshes;
     ListNewMeshes.push_back(NewMeshID);
     //here update the CurrentElement for trackContainer with the data from the database corresponding to the selected trackID:
-    this->m_TracksManager->UpdateCurrentElementTrackContainer(atoi(this->m_SelectedCollectionData.first.c_str()));
-
+    this->m_TracksManager->UpdateCurrentElementTrackContainer(TrackID);
+    //update the bounding box and the visu for the tracks:
     this->m_TracksManager->UpdateBoundingBoxes( this->m_DatabaseConnector,
                                                 this->m_MeshesManager->GetListCollectionIDs(this->m_DatabaseConnector,
                                                                                             ListNewMeshes) );
@@ -395,6 +402,7 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
 void QGoPrintDatabase::SaveNewMeshForMeshToContours(int iNumberOfContours)
 {
   this->OpenDBConnection();
+
   unsigned int MeshID = this->m_MeshesManager->CreateNewMeshWithNoContourNoPoints(
     this->m_DatabaseConnector, this->m_SelectedColorData, this->m_SelectedTimePoint,
     this->m_SelectedCellType, this->m_SelectedSubCellType,
@@ -403,7 +411,7 @@ void QGoPrintDatabase::SaveNewMeshForMeshToContours(int iNumberOfContours)
     this->m_ContoursManager->GetLastCreatedTracesIDs(this->m_DatabaseConnector, iNumberOfContours);
   this->AddCheckedTracesToCollection< QGoDBContourManager, QGoDBMeshManager >(
     this->m_ContoursManager, this->m_MeshesManager, MeshID, ListLastCreatedContours);
-  //need to update the trackid ?? points ??
+
   this->CloseDBConnection();
 }
 

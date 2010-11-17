@@ -307,6 +307,8 @@ signals:
   */
   void NeedToGoToTheLocation(int XCoord, int YCoord, int ZCoord, int TCoord);
 
+  void PrintMessage(QString iMessage, int iTimeOut = 0);
+
 protected:
   //updated by the TraceManualEditing Widget:
   ItemColorComboboxData m_SelectedColorData;
@@ -560,7 +562,6 @@ protected:
     iCollectionManager->UpdateBoundingBoxes(this->m_DatabaseConnector,
                                             ListCollectionIDsToUpdate);
   }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

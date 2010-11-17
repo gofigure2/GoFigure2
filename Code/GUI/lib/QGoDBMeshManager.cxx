@@ -407,3 +407,50 @@ void QGoDBMeshManager::SetColorCoding(bool IsChecked)
 	this->SetBackFromColorCodingTemplate<ContourMeshContainer>(
     this->m_MeshContainerInfoForVisu);
 }*/
+
+ unsigned int QGoDBMeshManager::
+   ReassignTrackIDForPreviousMeshWithSameTimePoint( vtkMySQLDatabase *iDatabaseConnector,
+    unsigned int iTrackID,unsigned int iTimePoint)
+ {
+   unsigned int oExistingMeshID = 0;
+   //get meshID with same timepoint and same TrackID:
+   std::list<unsigned int> ExistingMeshID =
+     this->m_CollectionOfTraces->GetTraceIDsWithTimePointAndCollectionID(
+     iDatabaseConnector,iTrackID, iTimePoint);
+   if (ExistingMeshID.empty())
+    {
+    return oExistingMeshID;
+    }
+   if (ExistingMeshID.size() > 1)
+    {
+    std::cout<<"there is more than 1 existing mesh for this track at this timepoint ";
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
+    return oExistingMeshID;
+    }
+   oExistingMeshID = ExistingMeshID.front();
+   GoDBMeshRow ExistingMesh(oExistingMeshID,iDatabaseConnector);
+   ExistingMesh.SetCollectionID(0); //reassign the track ID to 0:
+   ExistingMesh.SaveInDB(iDatabaseConnector);
+   this->DisplayInfoForExistingTrace(iDatabaseConnector,oExistingMeshID); //update the TW
+   return oExistingMeshID;
+ }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+ QString QGoDBMeshManager::CheckExistingMeshesForTheTrack(
+   unsigned int iTrackID,int iTimePoint,vtkMySQLDatabase* iDatabaseConnector)
+{
+  QString MessageToPrint("");
+  unsigned int MeshIDKickedOut =
+    this->ReassignTrackIDForPreviousMeshWithSameTimePoint(
+      iDatabaseConnector, iTrackID,iTimePoint);
+  if (MeshIDKickedOut != 0)
+    {
+      MessageToPrint =
+        tr("Warning: existing mesh at this timepoint for this track !!The track of the mesh with the meshID %1 has been reassigned to 0")
+      .arg(MeshIDKickedOut);
+    }
+  return MessageToPrint;
+}
+//-------------------------------------------------------------------------

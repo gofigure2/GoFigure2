@@ -702,7 +702,7 @@ QGoMainWindow::CreateNewTabFor3DwtImage(
   // note: do not need to call w3t->Update() since it is internally called in
   // w3t->SetMegaCaptureFile
   QGoTabImageView3DwT *w3t = new QGoTabImageView3DwT;
-
+  w3t->SetStatusBarPointer(this->statusBar());
   w3t->SetMegaCaptureFile(iFileList, iFileType, iHeader, iTimePoint);
 
   if ( iUseDatabase )
@@ -795,6 +795,7 @@ QGoMainWindow::CreateNewTabFor3DwtImage(vtkLSMReader *iReader, const QString & i
   SetupMenusFromTab(w3t);
 
   // w3t->m_DataBaseTables->hide();
+  w3t->SetStatusBarPointer(this->statusBar());
 
   return w3t;
 }

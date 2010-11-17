@@ -1048,3 +1048,24 @@ std::list<double*> GoDBCollectionOfTraces::GetCoordinateCenterBoundingBox(
   return GetCenterBoundingBoxes(iDatabaseConnector,
     this->m_CollectionOfName,this->m_TracesIDName,ConvertToString<unsigned int>(iTraceID));
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list<unsigned int>  GoDBCollectionOfTraces::
+  GetTraceIDsWithTimePointAndCollectionID( vtkMySQLDatabase *iDatabaseConnector,
+  unsigned int iCollectionID,unsigned int iTimePoint)
+{
+  std::vector<std::string> TraceIDField(1);
+  TraceIDField[0] = this->m_TracesIDName;
+  std::string LinkCoordinate = this->m_TracesName;
+  LinkCoordinate += ".CoordIDMin = coordinate.coordID";
+  std::vector<std::string> Conditions(4);
+  Conditions[0]= this->m_CollectionIDName;
+  Conditions[1] = ConvertToString<unsigned int>(iCollectionID);
+  Conditions[2] = "TCoord";
+  Conditions[3]= ConvertToString<unsigned int>(iTimePoint);
+  std::vector<std::string> VectorTraceIDs = GetAllSelectedValuesFromTwoTables(
+    iDatabaseConnector,this->m_TracesName, "coordinate",TraceIDField, LinkCoordinate,Conditions);
+
+  return this->VectorStringToUnsgInt(VectorTraceIDs);
+}

@@ -45,6 +45,7 @@
 
 //--------------------------------------------------------------------------
 QGoTabElementBase::QGoTabElementBase(QWidget *iParent):QWidget(iParent)
+  ,m_StatusBar(NULL)
 {}
 
 //--------------------------------------------------------------------------
@@ -185,4 +186,11 @@ void QGoTabElementBase::CreateModeActions(QActionGroup *group)
   // it also updates the interactor behaviour
   QObject::connect( PanAction, SIGNAL( toggled(bool) ),
                     this, SLOT( PanInteractorBehavior(bool) ) );
+}
+//--------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTabElementBase::SetStatusBarPointer(QStatusBar* iStatusbar)
+{
+  this->m_StatusBar = iStatusbar;
 }

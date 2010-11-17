@@ -376,10 +376,18 @@ std::vector< std::string > ExecuteSelectQuery(vtkMySQLDatabase *iDatabaseConnect
 std::string SelectWithJoinNullIncluded(std::string iSelectQuery, std::string iJoinOn,
                                        bool doublon = true);
 
+// WHERE (iWhereAndConditions[i] = iWhereAndConditions[i+1] and/or ....)
+//if only 1 condition: WHERE iWhereAndConditions[i] = iWhereAndConditions[i+1]
+std::string WhereAndOrConditions(std::vector<std::string> iWhereAndConditions,
+  bool iAnd = true);
+
+//select iselectedfields from itableone left join itabletwo on ijoincondition where
+// (iFieldsWithValues(i) = iFieldsWithValues(i+1)...);
 std::vector< std::string > GetAllSelectedValuesFromTwoTables(
   vtkMySQLDatabase *iDatabaseConnector, std::string iTableOne, std::string iTableTwo,
   std::vector< std::string > iSelectedFields, std::string iJoinCondition,
-  std::string ifield, std::string ifieldValue);
+  //std::string ifield, std::string ifieldValue);
+  std::vector<std::string> iFieldsWithValues);
 
 //add the selected fields separated by ',' to the ioQueryStream
 void GetAllSelectedFields(std::stringstream & ioQueryStream,
