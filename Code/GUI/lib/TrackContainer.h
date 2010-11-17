@@ -240,171 +240,6 @@ public:
   */
   void AddActorsWithGivenTimePoint(const unsigned int & iT);
 
-  /**
-  \brief Update highlighting property of one element given one actor.
-  \param[in] iActor Actor of the element to be modified
-  \return true if the element exists
-  \return false else
-  */
-  template< class TActor >
-  bool UpdateElementHighlightingWithGivenActor(vtkActor *iActor)
-  {
-    if ( iActor )
-      {
-      typedef typename MultiIndexContainerType::template index< TActor >::type::iterator
-      IteratorType;
-      IteratorType it = m_Container.get< TActor >().find(iActor);
-
-      vtkProperty *temp_property = NULL;
-
-      if ( it != m_Container.get< TActor >().end() )
-        {
-        if ( it->Highlighted )
-          {
-          temp_property = vtkProperty::New();
-          temp_property->SetColor(it->rgba[0],
-                                  it->rgba[1],
-                                  it->rgba[2]);
-          temp_property->SetOpacity(it->rgba[3]);
-          temp_property->SetLineWidth(1.);
-          }
-        else
-          {
-          temp_property = this->m_HighlightedProperty;
-          }
-
-        it->SetActorProperties( temp_property );
-
-        if ( it->Highlighted )
-          {
-          temp_property->Delete();
-          }
-
-        TrackStructure tempStructure(*it);
-        tempStructure.Highlighted = !it->Highlighted;
-
-        Qt::CheckState State;
-
-        // Note: it->Highlighted is the status before picking the actor
-        if ( !it->Highlighted )
-          {
-          State = Qt::Checked;
-          }
-        else
-          {
-          State = Qt::Unchecked;
-          }
-
-        m_Container.get< TActor >().replace(it, tempStructure);
-        m_ImageView->UpdateRenderWindows();
-
-        emit TracePicked(it->TraceID, State);
-
-        return true;
-        }
-      }
-
-    return false;
-  }
-
-  /** \brief Update element Visibility property given one actor.
-  \tparam TActor either ActorXY, ActorXZ, ActorYZ, ActorXYZ depending on the view
-  \param[in] iActor provided actor
-  \return true if iActor is in the container
-  \return false else
-  */
-  template< class TActor >
-  bool UpdateElementVisibilityWithGivenActor(vtkActor *iActor)
-  {
-    if ( iActor )
-      {
-      typedef typename MultiIndexContainerType::template index< TActor >::type::iterator
-      IteratorType;
-      IteratorType it = m_Container.get< TActor >().find(iActor);
-
-      vtkProperty *temp_property = NULL;
-
-      if ( it != m_Container.get< TActor >().end() )
-        {
-        it->SetActorVisibility( !it->Visible );
-
-        TrackStructure tempStructure(*it);
-        tempStructure.Visible = !it->Visible;
-
-        Qt::CheckState State;
-
-        // Note: it->Highlighted is the status before picking the actor
-        if ( !it->Visible )
-          {
-          State = Qt::Checked;
-          }
-        else
-          {
-          State = Qt::Unchecked;
-          }
-
-        m_Container.get< TActor >().replace(it, tempStructure);
-        m_ImageView->UpdateRenderWindows();
-
-        emit TraceVisibilityChanged(it->TraceID, State);
-
-        return true;
-        }
-      }
-
-    return false;
-  }
-
-  /**
-  \brief Update highlighting property of one element given one actor.
-  \param[in] iActor Actor of the element to be modified
-  \param[in] iState Visibility to applied to the element
-  \return true if the element exists
-  \return false else
-  */
-  template< class TActor >
-  bool UpdateElementVisibilityWithGivenActor(vtkActor *iActor, bool iState)
-  {
-    if ( iActor )
-      {
-      typedef typename MultiIndexContainerType::template index< TActor >::type::iterator
-      IteratorType;
-      IteratorType it = m_Container.get< TActor >().find(iActor);
-
-      if ( it != m_Container.get< TActor >().end() )
-        {
-        if ( it->Visible != iState )
-          {
-          it->SetActorVisibility( iState );
-
-          TrackStructure tempStructure(*it);
-          tempStructure.Visible = iState;
-
-          Qt::CheckState State;
-
-          // Note: it->Highlighted is the status before picking the actor
-          if ( iState )
-            {
-            State = Qt::Checked;
-            }
-          else
-            {
-            State = Qt::Unchecked;
-            }
-
-          m_Container.get< TActor >().replace(it, tempStructure);
-          //m_ImageView->UpdateRenderWindows();
-
-          emit TraceVisibilityChanged(it->TraceID, State);
-          }
-
-        return true;
-        }
-      }
-
-    return false;
-  }
-
   //-------------------------------------------------------------------------
 
   /**
@@ -564,12 +399,59 @@ public:
   */
   void UpdatePointsForATrack(unsigned int iTrackID, std::list< double*> iListCenterBoundingBoxes);
 
+  /**
+  \brief Update highlighting property of one element given one actor.
+  \param[in] iActor Actor of the element to be modified
+  \return true if the element exists
+  \return false else
+  */
+  template< class TActor >
+  bool UpdateElementHighlightingWithGivenActor(vtkActor *iActor)
+    {
+    unsigned TraceId;
+    Qt::CheckState state;
+    bool oValue =
+        Superclass::UpdateElementHighlightingWithGivenActor< TActor >( iActor,
+                                                                 TraceId,
+                                                                 state );
+    if( oValue )
+      {
+      emit TracePicked(TraceId, state);
+      }
+    return oValue;
+    }
+
+  /**
+  \brief Update highlighting property of one element given one actor.
+  \param[in] iActor Actor of the element to be modified
+  \param[in] iState Visibility to applied to the element
+  \return true if the element exists
+  \return false else
+  */
+  template< class TActor >
+  bool UpdateElementVisibilityWithGivenActor(
+      vtkActor *iActor )
+    {
+    unsigned TraceId;
+    Qt::CheckState state;
+    bool oValue =
+        Superclass::UpdateElementVisibilityWithGivenActor< TActor >( iActor,
+                                                                 TraceId,
+                                                                 state );
+    if( oValue )
+      {
+      emit TraceVisibilityChanged(TraceId, state);
+      }
+    return oValue;
+    }
+
 signals:
   /** \brief When one track has been picked (highlighted) from the visualization */
   void TracePicked(unsigned int, Qt::CheckState);
 
   /** \brief When one track's visibility has been changed from the visualization */
   void TraceVisibilityChanged(unsigned int, Qt::CheckState);
+
 
   /** \brief When a point is added to the track, update the database */
   void CurrentTrackToSave();

@@ -35,7 +35,10 @@
 #ifndef TRACECONTAINERBASE_H
 #define TRACECONTAINERBASE_H
 
+#include <Qt>
+#include <QObject>
 #include "QGoImageView3D.h"
+
 #include "vtkProperty.h"
 #include "StructureHelper.h"
 
@@ -352,10 +355,6 @@ public:
     */
   std::list< unsigned int > GetHighlightedElementsTraceID();
 
-  /** \brief Delete all highlighted elements
-  \return the list of TraceIDs of such elements */
-  virtual std::list< unsigned int > DeleteAllHighlightedElements() = 0;
-
   /**
     \brief Remove the element which TraceId = iId
     <ul>
@@ -372,6 +371,11 @@ public:
   \overload DeleteElement(const unsigned int & iId)
   */
   virtual bool DeleteElement(MultiIndexContainerTraceIDIterator iIter) = 0;
+
+  /** \brief Delete all highlighted elements
+  \return the list of TraceIDs of such elements
+  */
+  virtual std::list< unsigned int > DeleteAllHighlightedElements() = 0;
 
   /**
     \brief Update all highlighted elements in the container with a given color.
@@ -398,8 +402,185 @@ public slots:
   virtual void UpdateElementVisibilityWithGivenTraceIDs( const QStringList& iList,
                                                  const Qt::CheckState& iCheck );
 
+
+
 protected:
   vtkProperty *m_HighlightedProperty;
+
+  /**
+  \brief Update highlighting property of one element given one actor.
+  \param[in] iActor Actor of the element to be modified
+  \return true if the element exists
+  \return false else
+  */
+  template< class TActor >
+  bool UpdateElementHighlightingWithGivenActor(
+      vtkActor *iActor,
+      unsigned int& oTraceId,
+      Qt::CheckState& oState )
+  {
+    using boost::multi_index::get;
+
+    if ( iActor )
+      {
+      typedef typename MultiIndexContainerType::template index< TActor >::type::iterator
+      IteratorType;
+      IteratorType it = m_Container.get< TActor >().find(iActor);
+
+      vtkProperty *temp_property = NULL;
+
+      if ( it != m_Container.get< TActor >().end() )
+        {
+        if ( it->Highlighted )
+          {
+          temp_property = vtkProperty::New();
+          temp_property->SetColor(it->rgba[0],
+                                  it->rgba[1],
+                                  it->rgba[2]);
+          temp_property->SetOpacity(it->rgba[3]);
+          temp_property->SetLineWidth(1.);
+          }
+        else
+          {
+          temp_property = this->m_HighlightedProperty;
+          }
+
+        it->SetActorProperties( temp_property );
+
+        if ( it->Highlighted )
+          {
+          temp_property->Delete();
+          }
+
+        TrackStructure tempStructure(*it);
+        tempStructure.Highlighted = !it->Highlighted;
+
+        // Note: it->Highlighted is the status before picking the actor
+        if ( !it->Highlighted )
+          {
+          oState = Qt::Checked;
+          }
+        else
+          {
+          oState = Qt::Unchecked;
+          }
+
+        m_Container.get< TActor >().replace(it, tempStructure);
+        m_ImageView->UpdateRenderWindows();
+
+        oTraceId = it->TraceID;
+
+        return true;
+        }
+      }
+
+    return false;
+  }
+
+  /** \brief Update element Visibility property given one actor.
+  \tparam TActor either ActorXY, ActorXZ, ActorYZ, ActorXYZ depending on the view
+  \param[in] iActor provided actor
+  \return true if iActor is in the container
+  \return false else
+  */
+  template< class TActor >
+  bool UpdateElementVisibilityWithGivenActor(
+      vtkActor *iActor,
+      unsigned int& oTraceId,
+      Qt::CheckState& oState )
+  {
+    using boost::multi_index::get;
+
+    if ( iActor )
+      {
+      typedef typename MultiIndexContainerType::template index< TActor >::type::iterator
+      IteratorType;
+      IteratorType it = m_Container.get< TActor >().find(iActor);
+
+      vtkProperty *temp_property = NULL;
+
+      if ( it != m_Container.get< TActor >().end() )
+        {
+        it->SetActorVisibility( !it->Visible );
+
+        TrackStructure tempStructure(*it);
+        tempStructure.Visible = !it->Visible;
+
+        // Note: it->Highlighted is the status before picking the actor
+        if ( !it->Visible )
+          {
+          oState = Qt::Checked;
+          }
+        else
+          {
+          oState = Qt::Unchecked;
+          }
+
+        m_Container.get< TActor >().replace(it, tempStructure);
+        m_ImageView->UpdateRenderWindows();
+
+        oTraceId = it->TraceID;
+
+        return true;
+        }
+      }
+
+    return false;
+  }
+
+  /**
+  \brief Update highlighting property of one element given one actor.
+  \param[in] iActor Actor of the element to be modified
+  \param[in] iState Visibility to applied to the element
+  \return true if the element exists
+  \return false else
+  */
+  template< class TActor >
+  bool UpdateElementVisibilityWithGivenActor(
+      vtkActor *iActor,
+      bool iState,
+      unsigned int& oTraceID,
+      Qt::CheckState& oState )
+  {
+    using boost::multi_index::get;
+
+    if ( iActor )
+      {
+      typedef typename MultiIndexContainerType::template index< TActor >::type::iterator
+      IteratorType;
+      IteratorType it = m_Container.get< TActor >().find(iActor);
+
+      if ( it != m_Container.get< TActor >().end() )
+        {
+        if ( it->Visible != iState )
+          {
+          it->SetActorVisibility( iState );
+
+          TrackStructure tempStructure(*it);
+          tempStructure.Visible = iState;
+
+          // Note: it->Highlighted is the status before picking the actor
+          if ( iState )
+            {
+            oState = Qt::Checked;
+            }
+          else
+            {
+            oState = Qt::Unchecked;
+            }
+
+          m_Container.get< TActor >().replace(it, tempStructure);
+          //m_ImageView->UpdateRenderWindows();
+
+          oTraceID = it->TraceID;
+          }
+
+        return true;
+        }
+      }
+
+    return false;
+  }
 };
 
 #include "TraceContainerBase.txx"
