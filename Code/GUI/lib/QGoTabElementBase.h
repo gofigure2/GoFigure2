@@ -37,6 +37,7 @@
 
 #include <QWidget>
 #include <QDir>
+#include <QStatusbar>
 
 #include "QGoPlugin.h"
 #include "QGoDockWidgetStatus.h"
@@ -115,6 +116,9 @@ public:
    * \brief Mouse interaction style allows user to pan volume with all buttons
    */
   virtual void PanInteractorBehavior(bool){}
+
+  void SetStatusBarPointer(QStatusBar* iStatusbar);
+
 protected:
   std::list< QAction * > m_PluginActionList;
 
@@ -125,6 +129,7 @@ protected:
   std::vector< QAction * > m_ModeActions;
 
   std::list< QGoDockWidgetStatusPair > m_DockWidgetList;
+  QStatusBar*              m_StatusBar;
 private:
   Q_DISABLE_COPY(QGoTabElementBase);
 };

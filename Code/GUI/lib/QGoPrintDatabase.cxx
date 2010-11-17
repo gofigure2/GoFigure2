@@ -43,6 +43,7 @@
 #include <QMenu>
 #include <QCloseEvent>
 #include <QPixmap>
+#include <QStatusBar>
 
 #include <iostream>
 
@@ -348,8 +349,10 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
     {
     unsigned int TrackID = ss_atoi<unsigned int>(this->m_SelectedCollectionData.first);
      //check that there isn't an existing mesh with the same timepoint in the track,if so, set its trackID to 0:
-    this->m_MeshesManager->ReassignTrackIDForPreviousMeshWithSameTimePoint(this->m_DatabaseConnector,
-      TrackID,this->m_SelectedTimePoint);
+    unsigned int MeshIDKickedOut = this->m_MeshesManager->ReassignTrackIDForPreviousMeshWithSameTimePoint(
+      this->m_DatabaseConnector, TrackID,this->m_SelectedTimePoint);
+    //emit a signal for a message to be print out in the status bar
+
     unsigned int NewMeshID = this->m_MeshesManager->SaveNewMeshFromVisu(iXCoordMin,
                                                                         iYCoordMin,
                                                                         iZCoordMin,
