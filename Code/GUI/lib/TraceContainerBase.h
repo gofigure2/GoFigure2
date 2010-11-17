@@ -352,6 +352,27 @@ public:
     */
   std::list< unsigned int > GetHighlightedElementsTraceID();
 
+  /** \brief Delete all highlighted elements
+  \return the list of TraceIDs of such elements */
+  virtual std::list< unsigned int > DeleteAllHighlightedElements() = 0;
+
+  /**
+    \brief Remove the element which TraceId = iId
+    <ul>
+      <li>from the visualization
+      <li>from the container
+      <li>from memory (release memory)
+    </ul>
+    \param[in] iId TraceID of the element to be deleted
+    \return true if the element was present in the container.
+  */
+  virtual bool DeleteElement(const unsigned int & iId) = 0;
+
+  /**
+  \overload DeleteElement(const unsigned int & iId)
+  */
+  virtual bool DeleteElement(MultiIndexContainerTraceIDIterator iIter) = 0;
+
   /**
     \brief Update all highlighted elements in the container with a given color.
     \note Elements remain highlighted as long as it is checked in the Table Widget.
