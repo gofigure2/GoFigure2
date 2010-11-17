@@ -349,11 +349,9 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
     {
     unsigned int TrackID = ss_atoi<unsigned int>(this->m_SelectedCollectionData.first);
      //check that there isn't an existing mesh with the same timepoint in the track,if so, set its trackID to 0:
-    unsigned int MeshIDKickedOut = this->m_MeshesManager->ReassignTrackIDForPreviousMeshWithSameTimePoint(
-      this->m_DatabaseConnector, TrackID,this->m_SelectedTimePoint);
     emit PrintMessage(
-      tr("Warning: existing mesh at this timepoint for this track !!The track of the mesh with the meshID %1 has been reassigned to 0")
-      .arg(MeshIDKickedOut) );
+      this->m_MeshesManager->CheckExistingMeshesForTheTrack(TrackID,this->m_SelectedTimePoint,
+      this->m_DatabaseConnector));
 
     unsigned int NewMeshID = this->m_MeshesManager->SaveNewMeshFromVisu(iXCoordMin,
                                                                         iYCoordMin,
@@ -404,6 +402,7 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
 void QGoPrintDatabase::SaveNewMeshForMeshToContours(int iNumberOfContours)
 {
   this->OpenDBConnection();
+
   unsigned int MeshID = this->m_MeshesManager->CreateNewMeshWithNoContourNoPoints(
     this->m_DatabaseConnector, this->m_SelectedColorData, this->m_SelectedTimePoint,
     this->m_SelectedCellType, this->m_SelectedSubCellType,
@@ -412,7 +411,7 @@ void QGoPrintDatabase::SaveNewMeshForMeshToContours(int iNumberOfContours)
     this->m_ContoursManager->GetLastCreatedTracesIDs(this->m_DatabaseConnector, iNumberOfContours);
   this->AddCheckedTracesToCollection< QGoDBContourManager, QGoDBMeshManager >(
     this->m_ContoursManager, this->m_MeshesManager, MeshID, ListLastCreatedContours);
-  //need to update the trackid ?? points ??
+ 
   this->CloseDBConnection();
 }
 

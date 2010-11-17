@@ -421,3 +421,24 @@ std::map<unsigned int,double*> QGoDBMeshManager::GetMeshesInfoForImportedMesh(
    this->DisplayInfoForExistingTrace(iDatabaseConnector,oExistingMeshID); //update the TW    
    return oExistingMeshID;
  }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+ QString QGoDBMeshManager::CheckExistingMeshesForTheTrack(
+   unsigned int iTrackID,int iTimePoint,vtkMySQLDatabase* iDatabaseConnector)
+{
+  QString MessageToPrint("");
+  unsigned int MeshIDKickedOut = 
+    this->ReassignTrackIDForPreviousMeshWithSameTimePoint(
+      iDatabaseConnector, iTrackID,iTimePoint);
+  if (MeshIDKickedOut != 0)
+    {
+      MessageToPrint = 
+        tr("Warning: existing mesh at this timepoint for this track !!The track of the mesh with the meshID %1 has been reassigned to 0")
+      .arg(MeshIDKickedOut);
+    }
+  return MessageToPrint;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------

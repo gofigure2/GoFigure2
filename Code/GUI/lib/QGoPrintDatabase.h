@@ -562,7 +562,6 @@ protected:
     iCollectionManager->UpdateBoundingBoxes(this->m_DatabaseConnector,
                                             ListCollectionIDsToUpdate);
   }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
