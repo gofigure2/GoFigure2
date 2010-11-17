@@ -135,6 +135,8 @@ public:
    */
   bool ReplaceElement(int iTime, double* iPoint);
 
+  void ReleaseData();
+
   /** Printing one element. std::cout << element << std::endl; */
   friend std::ostream & operator<<
     (std::ostream & os, const TrackStructure & c)

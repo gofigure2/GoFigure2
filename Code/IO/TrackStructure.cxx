@@ -217,3 +217,10 @@ ReplaceElement(int iTime, double* iPoint)
   return deleteElement;
 }
 //--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+TrackStructure::ReleaseData()
+{
+  TraceStructure::ReleaseData();
+}

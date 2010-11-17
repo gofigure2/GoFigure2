@@ -344,62 +344,17 @@ public:
   template< class TActor >
   bool UpdateElementHighlightingWithGivenActor(vtkActor *iActor)
   {
-    if ( iActor )
+    unsigned TraceId;
+    Qt::CheckState state;
+    bool oValue =
+        Superclass::UpdateElementHighlightingWithGivenActor< TActor >( iActor,
+                                                                 TraceId,
+                                                                 state );
+    if( oValue )
       {
-      typedef typename MultiIndexContainerType::index< TActor >::type::iterator
-      IteratorType;
-      IteratorType it = m_Container.get< TActor >().find(iActor);
-
-      vtkProperty *temp_property = NULL;
-
-      if ( it != m_Container.get< TActor >().end() )
-        {
-        if ( it->Highlighted )
-          {
-          temp_property = vtkProperty::New();
-          temp_property->SetColor(it->rgba[0],
-                                  it->rgba[1],
-                                  it->rgba[2]);
-          temp_property->SetOpacity(it->rgba[3]);
-          temp_property->SetLineWidth(1.);
-          }
-        else
-          {
-          temp_property = this->m_HighlightedProperty;
-          }
-
-        it->SetActorProperties( temp_property );
-
-        if ( it->Highlighted )
-          {
-          temp_property->Delete();
-          }
-
-        ContourMeshStructure tempStructure(*it);
-        tempStructure.Highlighted = !it->Highlighted;
-
-        Qt::CheckState State;
-
-        // Note: it->Highlighted is the status before picking the actor
-        if ( !it->Highlighted )
-          {
-          State = Qt::Checked;
-          }
-        else
-          {
-          State = Qt::Unchecked;
-          }
-
-        m_Container.get< TActor >().replace(it, tempStructure);
-        m_ImageView->UpdateRenderWindows();
-
-        emit TracePicked(it->TraceID, State);
-
-        return true;
-        }
+      emit TracePicked(TraceId, state);
       }
-
-    return false;
+    return oValue;
   }
 
   /** \brief Update element Visibility property given one actor.
@@ -411,45 +366,18 @@ public:
   template< class TActor >
   bool UpdateElementVisibilityWithGivenActor(vtkActor *iActor)
   {
-    if ( iActor )
+    unsigned TraceId;
+    Qt::CheckState state;
+    bool oValue =
+      Superclass::UpdateElementVisibilityWithGivenActor< TActor >( iActor,
+                                                                   TraceId,
+                                                                   state );
+    if( oValue )
       {
-      typedef typename MultiIndexContainerType::index< TActor >::type::iterator
-      IteratorType;
-      IteratorType it = m_Container.get< TActor >().find(iActor);
-
-      vtkProperty *temp_property = NULL;
-      bool t_visible = false;
-
-      if ( it != m_Container.get< TActor >().end() )
-        {
-        t_visible = !it->Visible;
-        it->SetActorVisibility( t_visible );
-
-        ContourMeshStructure tempStructure(*it);
-        tempStructure.Visible = t_visible;
-
-        Qt::CheckState State;
-
-        // Note: it->Highlighted is the status before picking the actor
-        if ( t_visible )
-          {
-          State = Qt::Checked;
-          }
-        else
-          {
-          State = Qt::Unchecked;
-          }
-
-        m_Container.get< TActor >().replace(it, tempStructure);
-        m_ImageView->UpdateRenderWindows();
-
-        emit TraceVisibilityChanged(it->TraceID, State);
-
-        return true;
-        }
+      emit TraceVisibilityChanged(TraceId, state);
       }
 
-    return false;
+    return oValue;
   }
 
   /**
@@ -533,109 +461,12 @@ public:
   std::list< unsigned int > GetElementsTraceIDForGivenTimePoint(unsigned int iTimePoint);
 
 
-  /**
-    \brief Color code contour / mesh according to values provided
-    \param[in] iColumnName Name of data provided
-    \param[in] ivalues is a map where the key is the TraceID and the Value is
-    a string that can be either converted to a double, or not
-    \note if iColumnName and/or iValues are empty traces will be then rendered
-    with their original colors.
-  */
-  void SetColorCode( const std::string& iColumnName,
-                     const std::map< unsigned int, std::string >& iValues );
-
-  void SetRandomColor( const std::string& iColumnName,
-                       const std::map< unsigned int, unsigned int >& iIds );
-
-  /**
-    \brief Color code contour / mesh according to values provided
-    \tparam TValue numerical type that can be converted into double
-    \param[in] iColumnName Name of data provided
-    \param[in] ivalues is a map where the key is the TraceID and the Value is
-    the actual data used to color.
-    \note if iColumnName and/or iValues are empty traces will be then rendered
-    with their original colors.
-  */
-  template< typename TValue >
-  void SetColorCode( const std::string& iColumnName,
-                     const std::map< unsigned int, TValue >& iValues )
-    {
-    typedef TValue ValueType;
-    typedef typename std::map< unsigned int, ValueType > MapType;
-    typedef typename MapType::const_iterator MapConstIterator;
-
-    if( iColumnName.empty() || iValues.empty() )
-      {
-      RenderAllElementsWithOriginalColors();
-      return;
-      }
-
-    MapConstIterator it = iValues.begin();
-
-    double temp = 0.;
-    try
-      {
-      temp = boost::numeric_cast< double >( it->second );
-      }
-    catch( boost::numeric::bad_numeric_cast& e )
-      {
-      std::cout <<  e.what() <<std::endl;
-      return;
-      }
-
-    double min_value = temp;
-    double max_value = temp;
-
-    while( it != iValues.end() )
-      {
-      MultiIndexContainerTraceIDIterator
-          trace_it = this->m_Container.get<TraceID>().find( it->first );
-
-      if( trace_it != this->m_Container.get<TraceID>().end() )
-        {
-          if (trace_it->Nodes) //make sure the trace has points !!!
-          {
-          // Here let's make sure you are not passing crazy values!
-          try
-            {
-            temp = boost::numeric_cast< double >( it->second );
-            }
-          catch( boost::numeric::bad_numeric_cast& e )
-            {
-            std::cout << e.what() <<std::endl;
-            return;
-            }
-
-          if( temp > max_value )
-            {
-            max_value = temp;
-            }
-          if( temp < min_value )
-            {
-            min_value = temp;
-            }
-
-          trace_it->SetScalarData( iColumnName, temp );
-          }
-        } //end make sure the trace has points !!!
-      ++it;
-      }
-
-    SetScalarRangeForAllElements( min_value, max_value );
-
-    this->m_ImageView->UpdateRenderWindows();
-    }
-
   /*
    * \brief Returns the meshes positions
    * \param[in] iMeshID IDs of the meshes of interest
    * \return map containing the coordinates of the meshes of interest
    */
   std::map< unsigned int, double* > GetMeshesPoints( std::list< unsigned int> iMeshID );
-
-  /** \brief Apply the given lookup table to all traces in the container
-      \param[in] iLut lookup table */
-  void SetLookupTableForColorCoding( vtkLookupTable* iLut );
 
 public slots:
 
@@ -662,12 +493,6 @@ signals:
 
 protected:
   unsigned int m_TCoord;
-
-  /** \brief Render with original colors */
-  void RenderAllElementsWithOriginalColors();
-
-  /** \brief Set the scalar range */
-  void SetScalarRangeForAllElements(const double& iMin, const double& iMax );
 
 private:
   Q_DISABLE_COPY(ContourMeshContainer);

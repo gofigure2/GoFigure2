@@ -46,6 +46,8 @@
 #include "boost/multi_index/member.hpp"
 #include "boost/multi_index/hashed_index.hpp"
 #include "boost/multi_index/ordered_index.hpp"
+#include "boost/numeric/conversion/cast.hpp"
+#include "boost/lexical_cast.hpp"
 
 template< class TContainer >
 class TraceContainerBase : public QObject
@@ -409,6 +411,105 @@ public:
   std::list< unsigned int > UpdateAllHighlightedElementsWithGivenColor(
     QColor iColor);
 
+  /**
+    \brief Color code contour / mesh according to values provided
+    \param[in] iColumnName Name of data provided
+    \param[in] ivalues is a map where the key is the TraceID and the Value is
+    a string that can be either converted to a double, or not
+    \note if iColumnName and/or iValues are empty traces will be then rendered
+    with their original colors.
+  */
+  void SetColorCode( const std::string& iColumnName,
+                     const std::map< unsigned int, std::string >& iValues );
+
+  void SetRandomColor( const std::string& iColumnName,
+                       const std::map< unsigned int, unsigned int >& iIds );
+
+  /**
+    \brief Color code contour / mesh according to values provided
+    \tparam TValue numerical type that can be converted into double
+    \param[in] iColumnName Name of data provided
+    \param[in] ivalues is a map where the key is the TraceID and the Value is
+    the actual data used to color.
+    \note if iColumnName and/or iValues are empty traces will be then rendered
+    with their original colors.
+  */
+  template< typename TValue >
+  void SetColorCode( const std::string& iColumnName,
+                     const std::map< unsigned int, TValue >& iValues )
+    {
+    typedef TValue ValueType;
+    typedef typename std::map< unsigned int, ValueType > MapType;
+    typedef typename MapType::const_iterator MapConstIterator;
+
+    using boost::multi_index::get;
+
+    if( iColumnName.empty() || iValues.empty() )
+      {
+      RenderAllElementsWithOriginalColors();
+      return;
+      }
+
+    MapConstIterator it = iValues.begin();
+
+    double temp = 0.;
+    try
+      {
+      temp = boost::numeric_cast< double >( it->second );
+      }
+    catch( boost::numeric::bad_numeric_cast& e )
+      {
+      std::cout <<  e.what() <<std::endl;
+      return;
+      }
+
+    double min_value = temp;
+    double max_value = temp;
+
+    while( it != iValues.end() )
+      {
+      MultiIndexContainerTraceIDIterator
+          trace_it = this->m_Container.get<TraceID>().find( it->first );
+
+      if( trace_it != this->m_Container.get<TraceID>().end() )
+        {
+          if (trace_it->Nodes) //make sure the trace has points !!!
+          {
+          // Here let's make sure you are not passing crazy values!
+          try
+            {
+            temp = boost::numeric_cast< double >( it->second );
+            }
+          catch( boost::numeric::bad_numeric_cast& e )
+            {
+            std::cout << e.what() <<std::endl;
+            return;
+            }
+
+          if( temp > max_value )
+            {
+            max_value = temp;
+            }
+          if( temp < min_value )
+            {
+            min_value = temp;
+            }
+
+          trace_it->SetScalarData( iColumnName, temp );
+          }
+        } //end make sure the trace has points !!!
+      ++it;
+      }
+
+    SetScalarRangeForAllElements( min_value, max_value );
+
+    this->m_ImageView->UpdateRenderWindows();
+    }
+
+  /** \brief Apply the given lookup table to all traces in the container
+      \param[in] iLut lookup table */
+  void SetLookupTableForColorCoding( vtkLookupTable* iLut );
+
 public slots:
 
   /** \brief Change elements highlighting property given a list of TraceIDs
@@ -429,6 +530,12 @@ public slots:
 
 protected:
   vtkProperty *m_HighlightedProperty;
+
+  /** \brief Render with original colors */
+  void RenderAllElementsWithOriginalColors();
+
+  /** \brief Set the scalar range */
+  void SetScalarRangeForAllElements(const double& iMin, const double& iMax );
 
   /**
   \brief Update highlighting property of one element given one actor.
