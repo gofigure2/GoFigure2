@@ -182,51 +182,8 @@ ContourMeshContainer::
 UpdateElementHighlightingWithGivenTraceIDs( const QStringList& iList,
                                             const Qt::CheckState& iCheck )
 {
-  if( !iList.empty() )
-    {
-    MultiIndexContainerTraceIDIterator it;
-
-    vtkProperty *temp_property = NULL;
-
-    QStringList::const_iterator constIterator = iList.begin();
-
-    while( constIterator != iList.end() )
-      {
-      it = m_Container.get< TraceID >().find((*constIterator).toUInt());
-
-      if ( it != m_Container.get< TraceID >().end() )
-        {
-        if ( !iCheck )
-          {
-          temp_property = vtkProperty::New();
-          temp_property->SetColor(it->rgba[0],
-                                  it->rgba[1],
-                                  it->rgba[2]);
-          temp_property->SetOpacity(it->rgba[3]);
-          }
-        else
-          {
-          temp_property = this->m_HighlightedProperty;
-          }
-
-        it->SetActorProperties( temp_property );
-
-        if ( !iCheck )
-          {
-          temp_property->Delete();
-          }
-
-        ContourMeshStructure tempStructure(*it);
-        tempStructure.Highlighted = iCheck;
-
-        m_Container.get< TraceID >().replace(it, tempStructure);
-        }
-
-      ++constIterator;
-      }
-
-    m_ImageView->UpdateRenderWindows();
-    }
+  Superclass::UpdateElementHighlightingWithGivenTraceIDsBase( iList,
+                                                              iCheck );
 }
 //-------------------------------------------------------------------------
 
@@ -236,62 +193,7 @@ ContourMeshContainer::
 UpdateElementVisibilityWithGivenTraceIDs( const QStringList& iList,
                                           const Qt::CheckState& iCheck )
 {
-  if( !iList.empty() )
-    {
-    MultiIndexContainerTraceIDIterator it;
-
-    typedef void ( QGoImageView3D::*ImageViewMember )(const int &, vtkActor *);
-    ImageViewMember f;
-
-    QStringList::const_iterator constIterator = iList.begin();
-
-    while( constIterator != iList.end() )
-      {
-      it = m_Container.get< TraceID >().find((*constIterator).toUInt());
-
-      if ( it != m_Container.get< TraceID >().end() )
-        {
-        if ( it->TCoord != m_TCoord )
-          {
-          if ( iCheck )
-            {
-            f = &QGoImageView3D::RemoveActor;
-            }
-          else
-            {
-            f = &QGoImageView3D::AddActor;
-            }
-
-          if ( it->ActorXY )
-            {
-            ( m_ImageView->*f )(0, it->ActorXY);
-            }
-          if ( it->ActorXZ )
-            {
-            ( m_ImageView->*f )(1, it->ActorXZ);
-            }
-          if ( it->ActorYZ )
-            {
-            ( m_ImageView->*f )(2, it->ActorYZ);
-            }
-          if ( it->ActorXYZ )
-            {
-            ( m_ImageView->*f )(3, it->ActorXYZ);
-            }
-          }
-
-        it->SetActorVisibility( iCheck );
-
-        ContourMeshStructure tempStructure(*it);
-        tempStructure.Visible = iCheck;
-
-        m_Container.get< TraceID >().replace(it, tempStructure);
-        }
-
-      ++constIterator;
-      }
-    m_ImageView->UpdateRenderWindows();
-    }
+  Superclass::UpdateElementVisibilityWithGivenTraceIDsBase( iList, iCheck );
 }
 //-------------------------------------------------------------------------
 

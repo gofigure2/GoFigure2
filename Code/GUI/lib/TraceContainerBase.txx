@@ -268,7 +268,7 @@ UpdateElementHighlightingWithGivenTraceID(const unsigned int & iId)
 template< class TContainer >
 void
 TraceContainerBase<TContainer>::
-UpdateElementHighlightingWithGivenTraceIDs( const QStringList& iList,
+UpdateElementHighlightingWithGivenTraceIDsBase( const QStringList& iList,
                                             const Qt::CheckState& iCheck )
 {
   using boost::multi_index::get;
@@ -325,7 +325,7 @@ UpdateElementHighlightingWithGivenTraceIDs( const QStringList& iList,
 template< class TContainer >
 void
 TraceContainerBase<TContainer>::
-UpdateElementVisibilityWithGivenTraceIDs( const QStringList& iList,
+UpdateElementVisibilityWithGivenTraceIDsBase( const QStringList& iList,
                                           const Qt::CheckState& iCheck )
 {
   using boost::multi_index::get;

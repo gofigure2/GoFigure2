@@ -510,26 +510,24 @@ public:
       \param[in] iLut lookup table */
   void SetLookupTableForColorCoding( vtkLookupTable* iLut );
 
-public slots:
+
+protected:
+  vtkProperty *m_HighlightedProperty;
 
   /** \brief Change elements highlighting property given a list of TraceIDs
   and the new status.
     \param[in] iList list of TraceIDs
     \param[in] iCheck */
-  virtual void UpdateElementHighlightingWithGivenTraceIDs( const QStringList& iList,
+  virtual void UpdateElementHighlightingWithGivenTraceIDsBase( const QStringList& iList,
                                                    const Qt::CheckState& iCheck );
 
   /** \brief Change elements visibility property given a list of TraceIDs
   and the new status.
     \param[in] iList list of TraceIDs
     \param[in] iCheck */
-  virtual void UpdateElementVisibilityWithGivenTraceIDs( const QStringList& iList,
+  virtual void UpdateElementVisibilityWithGivenTraceIDsBase( const QStringList& iList,
                                                  const Qt::CheckState& iCheck );
 
-
-
-protected:
-  vtkProperty *m_HighlightedProperty;
 
   /** \brief Render with original colors */
   void RenderAllElementsWithOriginalColors();

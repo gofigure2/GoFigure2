@@ -952,3 +952,24 @@ std::list< double*> iListCenterBoundingBoxes)
   this->UpdateCurrentElementFromExistingOne(iTrackID);
   this->RecomputeCurrentElementMap(iListCenterBoundingBoxes);
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateElementHighlightingWithGivenTraceIDs( const QStringList& iList,
+                                            const Qt::CheckState& iCheck )
+{
+  Superclass::UpdateElementHighlightingWithGivenTraceIDsBase( iList,
+                                                              iCheck );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateElementVisibilityWithGivenTraceIDs( const QStringList& iList,
+                                          const Qt::CheckState& iCheck )
+{
+  Superclass::UpdateElementVisibilityWithGivenTraceIDsBase( iList, iCheck );
+}
