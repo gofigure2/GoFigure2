@@ -460,38 +460,6 @@ UpdateAllHighlightedElementsWithGivenColor(QColor iColor)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void
-TrackContainer::
-SetHighlightedProperty(vtkProperty *iProperty)
-{
-  this->m_HighlightedProperty = iProperty;
-
-  MultiIndexContainerHighlightedIterator it0, it1;
-  boost::tuples::tie(it0, it1) =
-    m_Container.get< Highlighted >().equal_range(true);
-
-  while ( it0 != it1 )
-    {
-    if ( it0->Highlighted )
-      {
-      it0->SetActorProperties( this->m_HighlightedProperty );
-      }
-    ++it0;
-    }
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-vtkProperty *
-TrackContainer::
-GetHighlightedProperty()
-{
-  return m_HighlightedProperty;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 bool
 TrackContainer::
 AddPointToCurrentElement(int iTime, double* iPoint, bool iReconstructPolyData)

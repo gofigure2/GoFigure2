@@ -59,6 +59,41 @@ Print()
   this->Print( m_Container.begin(), m_Container.end() );
 }
 
+//-------------------------------------------------------------------------
+template< class TContainer >
+void
+TraceContainerBase< TContainer >::
+SetHighlightedProperty(vtkProperty *iProperty)
+{
+  using boost::multi_index::get;
+
+  this->m_HighlightedProperty = iProperty;
+
+  MultiIndexContainerHighlightedIterator it0, it1;
+  boost::tuples::tie(it0, it1) =
+    m_Container.get< Highlighted >().equal_range(true);
+
+  while ( it0 != it1 )
+    {
+    if ( it0->Highlighted )
+      {
+      it0->SetActorProperties( this->m_HighlightedProperty );
+      }
+    ++it0;
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+template< class TContainer >
+vtkProperty *
+TraceContainerBase< TContainer >::
+GetHighlightedProperty()
+{
+  return m_HighlightedProperty;
+}
+//-------------------------------------------------------------------------
+
 template< class TContainer >
 void
 TraceContainerBase< TContainer >::
