@@ -348,6 +348,11 @@ public:
   }
 
   /**
+    \brief Get the list of highlighted elements TraceID.
+    */
+  std::list< unsigned int > GetHighlightedElementsTraceID();
+
+  /**
     \brief Update all highlighted elements in the container with a given color.
     \note Elements remain highlighted as long as it is checked in the Table Widget.
     \param[in] iColor

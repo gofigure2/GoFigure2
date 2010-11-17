@@ -399,28 +399,7 @@ DeleteAllHighlightedElements()
 
   return oList;
 }
-
 //-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-std::list< unsigned int >
-TrackContainer::
-GetHighlightedElementsTraceID()
-{
-  MultiIndexContainerHighlightedIterator it0, it1;
-
-  boost::tuples::tie(it0, it1) =
-    m_Container.get< Highlighted >().equal_range(true);
-
-  std::list< unsigned int > oList;
-  while ( it0 != it1 )
-    {
-    oList.push_back(it0->TraceID);
-    std::cout<< "highlighted track ID: " << it0->TraceID << std::endl;
-    ++it0;
-    }
-  return oList;
-}
 
 //-------------------------------------------------------------------------
 bool

@@ -437,11 +437,6 @@ public:
   std::list< unsigned int > DeleteAllHighlightedElements();
 
   /**
-    \brief Get the list of highlighted elements TraceID.
-    */
-  std::list< unsigned int > GetHighlightedElementsTraceID();
-
-  /**
     \brief Add a point in the current track.
     If there is already a point existing at the same time point, we don't do anything.
     We could add a variable to either override or not the point who already
