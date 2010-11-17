@@ -150,20 +150,6 @@ UpdateCurrentElementFromVisu(std::vector< vtkActor * > iActors,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void
-TrackContainer::
-UpdateCurrentElementFromDB(unsigned int iTraceID,
-                           double irgba[4])
-{
-  this->m_CurrentElement.TraceID = iTraceID;
-  this->m_CurrentElement.rgba[0] = irgba[0];
-  this->m_CurrentElement.rgba[1] = irgba[1];
-  this->m_CurrentElement.rgba[2] = irgba[2];
-  this->m_CurrentElement.rgba[3] = irgba[3];
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 bool TrackContainer::
 UpdateCurrentElementFromExistingOne(unsigned int iTraceID)
 {
@@ -241,108 +227,6 @@ AddActorsWithGivenTimePoint(const unsigned int & iT)
 {
   /// TODO FILL IT
 }
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-bool
-TrackContainer::RemoveElementFromVisualizationWithGivenTraceID(
-  const unsigned int & iId)
-{
-  MultiIndexContainerTraceIDIterator
-    it = m_Container.get< TraceID >().find(iId);
-
-  if ( it != m_Container.get< TraceID >().end() )
-    {
-    if ( it->ActorXY )
-      {
-      this->m_ImageView->RemoveActor(0, it->ActorXY);
-      }
-    if ( it->ActorXZ )
-      {
-      this->m_ImageView->RemoveActor(1, it->ActorXZ);
-      }
-    if ( it->ActorYZ )
-      {
-      this->m_ImageView->RemoveActor(2, it->ActorYZ);
-      }
-    if ( it->ActorXYZ )
-      {
-      this->m_ImageView->RemoveActor(3, it->ActorXYZ);
-      }
-
-    this->m_CurrentElement = *it;
-
-    m_Container.get< TraceID >().erase(it);
-
-    m_ImageView->UpdateRenderWindows();
-
-    return true;
-    }
-  return false;
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-bool
-TrackContainer::
-UpdateElementHighlightingWithGivenTraceID(const unsigned int & iId)
-{
-  MultiIndexContainerTraceIDIterator
-    it = m_Container.get< TraceID >().find(iId);
-
-  vtkProperty *temp_property = NULL;
-
-  if ( it != m_Container.get< TraceID >().end() )
-    {
-    if ( it->Highlighted )
-      {
-      temp_property = vtkProperty::New();
-      temp_property->SetColor(it->rgba[0],
-                              it->rgba[1],
-                              it->rgba[2]);
-      temp_property->SetOpacity(it->rgba[3]);
-      }
-    else
-      {
-      temp_property = this->m_HighlightedProperty;
-      }
-
-    if ( it->ActorXY )
-      {
-      it->ActorXY->SetProperty(temp_property);
-      }
-    if ( it->ActorXZ )
-      {
-      it->ActorXZ->SetProperty(temp_property);
-      }
-    if ( it->ActorYZ )
-      {
-      it->ActorYZ->SetProperty(temp_property);
-      }
-    if ( it->ActorXYZ )
-      {
-      it->ActorXYZ->SetProperty(temp_property);
-      }
-
-    if ( it->Highlighted )
-      {
-      temp_property->Delete();
-      }
-
-    TrackStructure tempStructure(*it);
-    tempStructure.Highlighted = !it->Highlighted;
-
-    m_Container.get< TraceID >().replace(it, tempStructure);
-    m_ImageView->UpdateRenderWindows();
-
-    return true;
-    }
-
-  return false;
-}
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

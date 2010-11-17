@@ -222,13 +222,6 @@ public:
                                     const bool & iVisible);
 
   /**
-  \brief Update Current Element from the database.
-  \param[in] iTraceID
-  \param[in] irgba
-  */
-  void UpdateCurrentElementFromDB(unsigned int iTraceID, double irgba[4]);
-
-  /**
   \brief put the information of the existing element into m_CurrentElement
   and remove the existing element from the container,the visu and the memory
   \param[in] iTraceID ID of the existing element
@@ -246,22 +239,6 @@ public:
     \brief Add all actors (elements) from the scene for a given time point
   */
   void AddActorsWithGivenTimePoint(const unsigned int & iT);
-
-  /**
-    \brief Remove element from visualization
-    \param[in] iId TraceID of the element to be removed
-    \return true if the element was present in the container.
-  */
-  bool
-  RemoveElementFromVisualizationWithGivenTraceID(
-    const unsigned int & iId);
-
-  /**
-    \brief Update element highlighting given it TraceId
-    \param[in] iId TraceID of the element to be modified
-    \return true if the element was present in the container.
-  */
-  bool UpdateElementHighlightingWithGivenTraceID(const unsigned int & iId);
 
   /**
   \brief Update highlighting property of one element given one actor.
@@ -693,7 +670,6 @@ signals:
   void NeedMeshesInfoForImportedTrack(unsigned int);
 
 protected:
-  vtkProperty *m_HighlightedProperty;
 
   /**
     \brief Generate a new polydata from a list for the current element

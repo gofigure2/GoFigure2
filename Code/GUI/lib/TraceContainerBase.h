@@ -75,8 +75,8 @@ public:
   typedef typename MultiIndexContainerType::template index< Visible >::type::iterator
   MultiIndexContainerVisibleIterator;
 
-  explicit TraceContainerBase( QObject* iParent, QGoImageView3D* iView ) : QObject( iParent ), m_ImageView( iView ) {}
-  virtual ~TraceContainerBase() {}
+  explicit TraceContainerBase( QObject* iParent, QGoImageView3D* iView );
+  virtual ~TraceContainerBase();
 
 
   MultiIndexContainerType m_Container;
@@ -118,10 +118,7 @@ public:
   }
 
   /** \brief Print the container content in the application output. */
-  void Print()
-    {
-    this->Print( m_Container.begin(), m_Container.end() );
-    }
+  void Print();
 
   // ----------------------------------------------------------------------
 
@@ -254,7 +251,33 @@ public:
   /** \brief Reset Current Element to a default state */
   void ResetCurrentElement();
 
+  /**
+  \brief Update Current Element from te database.
+  \param[in] iTraceID
+  \param[in] irgba
+  */
+  void UpdateCurrentElementFromDB(unsigned int iTraceID, double irgba[4]);
 
+  /**
+    \brief Remove element from visualization
+    \param[in] iId TraceID of the element to be removed
+    \return true if the element was present in the container.
+  */
+  bool
+  RemoveElementFromVisualizationWithGivenTraceID(
+    const unsigned int & iId);
+
+  /**
+    \brief Update element highlighting given it TraceId
+    \param[in] iId TraceID of the element to be modified
+    \return true if the element was present in the container.
+  */
+  bool UpdateElementHighlightingWithGivenTraceID(const unsigned int & iId);
+
+protected:
+  vtkProperty *m_HighlightedProperty;
 };
+
+#include "TraceContainerBase.txx"
 
 #endif // TRACECONTAINERBASE_H
