@@ -349,6 +349,7 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
     {
     unsigned int TrackID = ss_atoi<unsigned int>(this->m_SelectedCollectionData.first);
      //check that there isn't an existing mesh with the same timepoint in the track,if so, set its trackID to 0:
+    /** \todo print a different message if several meshes are created at the same timepoint*/
     emit PrintMessage(
       this->m_MeshesManager->CheckExistingMeshesForTheTrack(TrackID,this->m_SelectedTimePoint,
       this->m_DatabaseConnector));
@@ -372,7 +373,7 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
     std::list< unsigned int > ListNewMeshes;
     ListNewMeshes.push_back(NewMeshID);
     //here update the CurrentElement for trackContainer with the data from the database corresponding to the selected trackID:   
-    this->m_TracksManager->UpdateCurrentElementTrackContainer(TrackID);
+   // this->m_TracksManager->UpdateCurrentElementTrackContainer(TrackID);
     //update the bounding box and the visu for the tracks:
     this->m_TracksManager->UpdateBoundingBoxes( this->m_DatabaseConnector,
                                                 this->m_MeshesManager->GetListCollectionIDs(this->m_DatabaseConnector,
@@ -403,15 +404,27 @@ void QGoPrintDatabase::SaveNewMeshForMeshToContours(int iNumberOfContours)
 {
   this->OpenDBConnection();
 
+  unsigned int TrackID = ss_atoi< unsigned int >(this->m_SelectedCollectionData.first);
+  emit PrintMessage(
+      this->m_MeshesManager->CheckExistingMeshesForTheTrack(TrackID,this->m_SelectedTimePoint,
+      this->m_DatabaseConnector));
+
   unsigned int MeshID = this->m_MeshesManager->CreateNewMeshWithNoContourNoPoints(
     this->m_DatabaseConnector, this->m_SelectedColorData, this->m_SelectedTimePoint,
-    this->m_SelectedCellType, this->m_SelectedSubCellType,
-    ss_atoi< unsigned int >(this->m_SelectedCollectionData.first) );
+    this->m_SelectedCellType, this->m_SelectedSubCellType,TrackID );
+
   std::list< unsigned int > ListLastCreatedContours =
     this->m_ContoursManager->GetLastCreatedTracesIDs(this->m_DatabaseConnector, iNumberOfContours);
   this->AddCheckedTracesToCollection< QGoDBContourManager, QGoDBMeshManager >(
     this->m_ContoursManager, this->m_MeshesManager, MeshID, ListLastCreatedContours);
- 
+
+  std::list< unsigned int > ListNewMeshes;
+    ListNewMeshes.push_back(MeshID);
+    //here update the CurrentElement for trackContainer with the data from the database corresponding to the selected trackID:   
+    //update the bounding box and the visu for the tracks:
+    this->m_TracksManager->UpdateBoundingBoxes( this->m_DatabaseConnector,
+                                                this->m_MeshesManager->GetListCollectionIDs(this->m_DatabaseConnector,
+                                                                                            ListNewMeshes) );
   this->CloseDBConnection();
 }
 

@@ -124,7 +124,7 @@ protected:
   \param[in] iDatabaseConnector connection to the database
   \param[in] iTrackID ID for the track the polydata needs to be recalculated
   */
-  void UpdateTrackPolydata(vtkMySQLDatabase *iDatabaseConnector,unsigned int iTrackID);
+  void UpdateTrackPolydataForVisu(vtkMySQLDatabase *iDatabaseConnector,unsigned int iTrackID);
 
 protected slots:
   //virtual pure method in QGoDBTraceManager
@@ -139,7 +139,7 @@ protected slots:
   element into the track container
   \param[in] iDatabaseConnector connection to the database
   */
-  void SaveTrackCurrentElement();
+  void SaveTrackCurrentElement(vtkMySQLDatabase* iDatabaseConnector);
 
 	
 };

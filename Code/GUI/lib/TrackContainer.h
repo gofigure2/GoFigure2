@@ -657,7 +657,7 @@ public:
     \param[in] iTime time coordinate of the new point
     \param[in] iReconstructPolyData should we reconstruct the polydata
   */
-  bool AddPointToCurrentElement(int iTime, double* iPoint, bool iReconstructPolyData = true);
+  //bool AddPointToCurrentElement(int iTime, double* iPoint, bool iReconstructPolyData = true);
 
   /**
     \brief Delete a point from the current track.
@@ -673,7 +673,7 @@ public:
     \param[in] iTime time point to update
     \return true: a point has been replace, false: no point has been replaced
   */
-  bool ReplacePointFromCurrentElement(int iTime, double* iPoint);
+  //bool ReplacePointFromCurrentElement(int iTime, double* iPoint);
 
   /**
     \brief Update the TrackStructure polydata according to the current map.

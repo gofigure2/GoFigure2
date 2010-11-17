@@ -622,7 +622,7 @@ GetHighlightedProperty()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-bool
+/*bool
 TrackContainer::
 AddPointToCurrentElement(int iTime, double* iPoint, bool iReconstructPolyData)
 {
@@ -667,7 +667,7 @@ AddPointToCurrentElement(int iTime, double* iPoint, bool iReconstructPolyData)
     emit CurrentTrackToSave();
     }
   return pointInserted;
-}
+}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -689,7 +689,7 @@ DeletePointFromCurrentElement(int iTime, bool iReconstructPolyData)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-bool
+/*bool
 TrackContainer::
 ReplacePointFromCurrentElement(int iTime, double* iPoint)
 {
@@ -703,7 +703,7 @@ ReplacePointFromCurrentElement(int iTime, double* iPoint)
     }
 
   return pointReplaced;
-}
+}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -1380,14 +1380,14 @@ RecomputeCurrentElementMap( std::list< double* > iPoints)
 
     CreateCurrentTrackActors();
 
-    emit CurrentTrackToSave();
+    //emit CurrentTrackToSave();
 
     return;
     }
 
   UpdateTrackStructurePolyData(this->m_CurrentElement);
 
-  emit CurrentTrackToSave();
+  //emit CurrentTrackToSave();
 }
 //-------------------------------------------------------------------------
 

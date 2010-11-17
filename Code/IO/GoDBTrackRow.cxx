@@ -69,7 +69,7 @@ GoDBTrackRow::GoDBTrackRow(vtkMySQLDatabase *DatabaseConnector,
 
 //-------------------------------------------------------------------------
   GoDBTrackRow::GoDBTrackRow(unsigned int ImagingSessionID):
-  GoDBTraceRow(ImagingSessionID)
+  GoDBTraceRow()
 {
   this->InitializeMap();
   this->SetImgSessionID(ImagingSessionID);

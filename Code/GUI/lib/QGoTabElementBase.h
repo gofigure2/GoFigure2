@@ -37,7 +37,7 @@
 
 #include <QWidget>
 #include <QDir>
-#include <QStatusbar>
+#include <QStatusBar>
 
 #include "QGoPlugin.h"
 #include "QGoDockWidgetStatus.h"
