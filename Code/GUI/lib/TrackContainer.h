@@ -46,9 +46,14 @@
 #include "boost/multi_index/member.hpp"
 #include "boost/multi_index/hashed_index.hpp"
 #include "boost/multi_index/ordered_index.hpp"
+#include "boost/numeric/conversion/cast.hpp"
 
 #include "vtkProperty.h"
 #include "vtkPolyData.h"
+#include "vtkActor.h"
+#include "vtkMapper.h"
+#include "vtkPointData.h"
+#include "vtkDoubleArray.h"
 #include "QGoImageView3D.h"
 
 namespace boost

@@ -44,14 +44,15 @@
 #include "boost/multi_index/hashed_index.hpp"
 #include "boost/multi_index/ordered_index.hpp"
 #include "boost/numeric/conversion/cast.hpp"
+#include "boost/lexical_cast.hpp"
 
 #include "vtkProperty.h"
 #include "vtkPolyData.h"
 #include "vtkActor.h"
 #include "vtkMapper.h"
-#include "vtkPointData.h"
-#include "vtkDoubleArray.h"
 #include "QGoImageView3D.h"
+
+class vtkLookupTable;
 
 /**
   \class ContourMeshContainer
@@ -106,6 +107,9 @@ public:
         >
       >
     > MultiIndexContainer;
+
+  typedef MultiIndexContainer::iterator
+  MultiIndexContainerIterator;
 
   typedef MultiIndexContainer::index< TCoord >::type::iterator
   MultiIndexContainerTCoordIterator;
@@ -793,10 +797,26 @@ public:
 
   /**
     \brief Color code contour / mesh according to values provided
+    \param[in] iColumnName Name of data provided
+    \param[in] ivalues is a map where the key is the TraceID and the Value is
+    a string that can be either converted to a double, or not
+    \note if iColumnName and/or iValues are empty traces will be then rendered
+    with their original colors.
+  */
+  void SetColorCode( const std::string& iColumnName,
+                     const std::map< unsigned int, std::string >& iValues );
+
+  void SetRandomColor( const std::string& iColumnName,
+                       const std::map< unsigned int, unsigned int >& iIds );
+
+  /**
+    \brief Color code contour / mesh according to values provided
     \tparam TValue numerical type that can be converted into double
     \param[in] iColumnName Name of data provided
     \param[in] ivalues is a map where the key is the TraceID and the Value is
     the actual data used to color.
+    \note if iColumnName and/or iValues are empty traces will be then rendered
+    with their original colors.
   */
   template< typename TValue >
   void SetColorCode( const std::string& iColumnName,
@@ -808,12 +828,7 @@ public:
 
     if( iColumnName.empty() || iValues.empty() )
       {
-      typename MultiIndexContainer::iterator t_it = m_Container.begin();
-      while( t_it != m_Container.end() )
-        {
-        t_it->Nodes->GetPointData()->SetActiveScalars( NULL );
-        ++t_it;
-        }
+      RenderAllElementsWithOriginalColors();
       return;
       }
 
@@ -822,7 +837,7 @@ public:
     double temp = 0.;
     try
       {
-      boost::numeric_cast< double >( it->second );
+      temp = boost::numeric_cast< double >( it->second );
       }
     catch( boost::numeric::bad_numeric_cast& e )
       {
@@ -840,66 +855,35 @@ public:
 
       if( trace_it != this->m_Container.get<TraceID>().end() )
         {
-        vtkPolyData* pd = trace_it->Nodes;
-
-        // Here let's make sure you are not passing crazy values!
-        try
+          if (trace_it->Nodes) //make sure the trace has points !!!
           {
-          boost::numeric_cast< double >( it->second );
-          }
-        catch( boost::numeric::bad_numeric_cast& e )
-          {
-          std::cout <<  e.what() <<std::endl;
-          return;
-          }
+          // Here let's make sure you are not passing crazy values!
+          try
+            {
+            temp = boost::numeric_cast< double >( it->second );
+            }
+          catch( boost::numeric::bad_numeric_cast& e )
+            {
+            std::cout << e.what() <<std::endl;
+            return;
+            }
 
-        if( temp > max_value )
-          {
-          max_value = temp;
-          }
-        if( temp < min_value )
-          {
-          min_value = temp;
-          }
+          if( temp > max_value )
+            {
+            max_value = temp;
+            }
+          if( temp < min_value )
+            {
+            min_value = temp;
+            }
 
-        vtkIdType NbOfPoints = pd->GetNumberOfPoints();
-        vtkDoubleArray* data = vtkDoubleArray::New();
-        data->SetNumberOfComponents( 1 );
-        data->SetName( iColumnName.c_str() );
-
-        for( vtkIdType i = 0; i < NbOfPoints; ++i )
-          {
-          data->InsertNextValue( temp );
+          trace_it->SetScalarData( iColumnName, temp );
           }
-
-        pd->GetPointData()->SetScalars( data );
-        pd->GetPointData()->SetActiveScalars( iColumnName.c_str() );
-        }
+        } //end make sure the trace has points !!!
       ++it;
       }
 
-    // Let's set the scalar range (in order to get nice colors)
-    typename MultiIndexContainer::iterator t_it = m_Container.begin();
-    while( t_it != m_Container.end() )
-      {
-      if( t_it->ActorXY )
-        {
-        t_it->ActorXY->GetMapper()->SetScalarRange( min_value, max_value );
-        }
-      if( t_it->ActorXZ )
-        {
-        t_it->ActorXZ->GetMapper()->SetScalarRange( min_value, max_value );
-        }
-      if( t_it->ActorYZ )
-        {
-        t_it->ActorYZ->GetMapper()->SetScalarRange( min_value, max_value );
-        }
-      if( t_it->ActorXYZ )
-        {
-        t_it->ActorXYZ->GetMapper()->SetScalarRange( min_value, max_value );
-        }
-      ++t_it;
-      }
+    SetScalarRangeForAllElements( min_value, max_value );
 
     this->m_ImageView->UpdateRenderWindows();
     }
@@ -911,9 +895,23 @@ public:
    */
   std::map< unsigned int, double* > GetMeshesPoints( std::list< unsigned int> iMeshID );
 
+  /** \brief Apply the given lookup table to all traces in the container
+      \param[in] iLut lookup table */
+  void SetLookupTableForColorCoding( vtkLookupTable* iLut );
+
 public slots:
+
+  /** \brief Change elements highlighting property given a list of TraceIDs
+  and the new status.
+    \param[in] iList list of TraceIDs
+    \param[in] iCheck */
   void UpdateElementHighlightingWithGivenTraceIDs( const QStringList& iList,
                                                    const Qt::CheckState& iCheck );
+
+  /** \brief Change elements visibility property given a list of TraceIDs
+  and the new status.
+    \param[in] iList list of TraceIDs
+    \param[in] iCheck */
   void UpdateElementVisibilityWithGivenTraceIDs( const QStringList& iList,
                                                  const Qt::CheckState& iCheck );
 
@@ -927,6 +925,13 @@ signals:
 protected:
   unsigned int m_TCoord;
   vtkProperty *m_HighlightedProperty;
+
+  /** \brief Render with original colors */
+  void RenderAllElementsWithOriginalColors();
+
+  /** \brief Set the scalar range */
+  void SetScalarRangeForAllElements(const double& iMin, const double& iMax );
+
 private:
   Q_DISABLE_COPY(ContourMeshContainer);
 };

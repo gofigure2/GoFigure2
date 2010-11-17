@@ -184,6 +184,16 @@ public:
                                  bool EmitSignal = true);
 
   /**
+  \brief
+  \return a map with all the traceIDs and the values of the column
+  for which a cell of a column is selected
+  \param[in] iTraceIDName name of the column for TraceID
+  \param[in,out] ioColumnName name of the column of the values
+  */
+  std::map<unsigned int, double> GetTraceIDAndColumnsValues(
+    std::string iTraceIDName, std::string &ioColumnName);
+
+/**
   \brief update the checkboxes and icon of the visible column for the iListTraceIDs following iState
   \param[in] iListTraceIDs list of the IDs for the traces with visiblity to be set to iState
   \param[in] iState state to which the column IsVisible needs to be modified for iListTraceIDs

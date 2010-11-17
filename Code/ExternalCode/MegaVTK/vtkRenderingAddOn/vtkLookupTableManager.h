@@ -99,7 +99,8 @@ public:
     LUT_LONI2,
     LUT_ASYMETRY,
     LUT_PVALUE,
-    LUT_ROI
+    LUT_ROI,
+    LUT_RANDOM
     };
   //ETX
 
@@ -171,6 +172,12 @@ public:
   static vtkLookupTable * GetPValueLookupTable(void);
 
   /**
+   * \brief Get the Random lookup table
+   * \return vtkLookupTable pointer to the Random lookup table
+   */
+  static vtkLookupTable* GetRandomLookupTable();
+
+  /**
    * \brief Get the available lookup table
    * \return Vector of strings where the strings are the name of the available
    * lookup tables
@@ -189,6 +196,14 @@ public:
    * \return vtkLookupTable pointer to the indexed lookup table
    */
   static vtkLookupTable * GetLookupTable(const int & iIndex);
+
+  /**
+   * \brief Get one HSV based lookup table
+   * \param[in] iRGB input color to be used to generate the lookup table
+   * \return vtkLookupTable pointer to one HSV based lookup table
+   */
+  static vtkLookupTable* GetHSVBasedLookupTable( double iRGB[3] );
+
 
 protected:
   vtkLookupTableManager();
