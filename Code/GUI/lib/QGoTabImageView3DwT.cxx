@@ -581,7 +581,8 @@ QGoTabImageView3DwT::CreateDataBaseTablesConnection()
   QObject::connect ( this->m_DataBaseTables,
                      SIGNAL( DBVariablesSet() ),
                      this,
-                     SLOT( SetTheContainersForDB() ) );
+                     //SLOT( SetTheContainersForDB() ) );
+                     SLOT( SetDatabaseContainersAndDelayedConnections() ) );
 
   QObject::connect( this,
                     SIGNAL( TimePointChanged(int) ),
@@ -627,6 +628,19 @@ QGoTabImageView3DwT::RequieresTraceWidget(bool iTable)
 {
   m_TraceWidgetRequiered = iTable;
 }
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTabImageView3DwT::SetDatabaseContainersAndDelayedConnections()
+{
+  this->SetTheContainersForDB();
+  QObject::connect( this->m_DataBaseTables, 
+                    SIGNAL( PrintMessage(QString,int) ),
+                    this->m_StatusBar, 
+                    SLOT(showMessage(QString,int) ) );
+}
+//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void

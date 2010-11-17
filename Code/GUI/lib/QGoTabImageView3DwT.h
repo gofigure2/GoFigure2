@@ -573,6 +573,12 @@ protected:
 
   void SetTimePointWithMegaCaptureTimeChannels(int channel);
 
+  /**
+  \brief give the adress for the contours, meshes and tracks container to the 
+  QGoPrintDatabase
+  */
+  void SetTheContainersForDB();
+
 protected slots:
   void AddBookmark();
 
@@ -645,11 +651,6 @@ protected slots:
   void ImportMeshes();
 
   void ImportTracks();
-  /**
-  \brief give the adress for the contours and meshes container to the QGoPrintDatabase,
-  once the database variables have been set for the QGoPrintDatabase
-  */
-  void SetTheContainersForDB();
 
   /**
   \brief switch between the 2 visualization modes:
@@ -665,6 +666,13 @@ protected slots:
   void LoadChannelTime();
 
   void UpdateTracksAppearance(bool, bool);
+
+  /**
+  \brief give the adress for the contours, meshes and tracks container to the 
+  QGoPrintDatabase, and make the connection for the status bar once the database 
+  variables have been set for the QGoPrintDatabase
+  */
+  void SetDatabaseContainersAndDelayedConnections();
 
 private:
   Q_DISABLE_COPY(QGoTabImageView3DwT);
