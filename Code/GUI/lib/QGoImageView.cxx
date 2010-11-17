@@ -230,14 +230,17 @@ QGoImageView::AddContour(vtkPolyData *iDataset, vtkProperty *iProperty)
 {
   int n = m_Pool->GetNumberOfItems();
 
-  std::vector< vtkActor * > oActorVector(n);
+  std::vector< vtkActor * > oActorVector(n, NULL);
 
-  for ( int i = 0; i < n; i++ )
+  if( iDataset )
     {
-    vtkViewImage2D *viewer = m_Pool->GetItem(i);
-    vtkActor *      temp = viewer->AddDataSet(iDataset, iProperty);
-    //viewer->Render();
-    oActorVector[i] = temp;
+    for ( int i = 0; i < n; i++ )
+      {
+      vtkViewImage2D *viewer = m_Pool->GetItem(i);
+      vtkActor *      temp = viewer->AddDataSet(iDataset, iProperty);
+      //viewer->Render();
+      oActorVector[i] = temp;
+      }
     }
 
   return oActorVector;
