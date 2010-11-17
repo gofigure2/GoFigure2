@@ -487,15 +487,6 @@ ReplacePointFromCurrentElement(int iTime, double* iPoint)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-vtkPolyData*
-TrackContainer::
-GetCurrentElementNodes()
-{
-  return this->m_CurrentElement.Nodes;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 bool
 TrackContainer::
 UpdateTrackStructurePolyData( const TrackStructure& iTrackStructure)

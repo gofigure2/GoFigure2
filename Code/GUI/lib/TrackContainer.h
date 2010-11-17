@@ -306,12 +306,6 @@ public:
   bool UpdateTrackStructurePolyData( const TrackStructure& iTrackStructure);
 
   /**
-    \brief Get the polydata representing the current element track
-    \return Pointer to the current element track
-  */
-  vtkPolyData* GetCurrentElementNodes();
-
-  /**
     \brief Update the current element actors from the visualization.
     \param[in] iActors Vector container an actor pointer for each view
   */

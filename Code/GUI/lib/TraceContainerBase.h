@@ -273,6 +273,12 @@ public:
   void UpdateCurrentElementFromDB(unsigned int iTraceID, double irgba[4]);
 
   /**
+    \brief Get the polydata representing the current element track
+    \return Pointer to the current element track
+  */
+  vtkPolyData* GetCurrentElementNodes();
+
+  /**
     \brief Remove element from visualization
     \param[in] iId TraceID of the element to be removed
     \return true if the element was present in the container.

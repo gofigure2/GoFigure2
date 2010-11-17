@@ -133,6 +133,16 @@ UpdateCurrentElementFromDB( unsigned int iTraceID,
 
 //-------------------------------------------------------------------------
 template< class TContainer >
+vtkPolyData*
+TraceContainerBase< TContainer >::
+GetCurrentElementNodes()
+{
+  return this->m_CurrentElement.Nodes;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+template< class TContainer >
 bool
 TraceContainerBase< TContainer >::
 RemoveElementFromVisualizationWithGivenTraceID( const unsigned int & iId)
