@@ -351,7 +351,9 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
      //check that there isn't an existing mesh with the same timepoint in the track,if so, set its trackID to 0:
     unsigned int MeshIDKickedOut = this->m_MeshesManager->ReassignTrackIDForPreviousMeshWithSameTimePoint(
       this->m_DatabaseConnector, TrackID,this->m_SelectedTimePoint);
-    emit PrintMessage(tr("Test mesh kicked out"));
+    emit PrintMessage(
+      tr("Warning: existing mesh at this timepoint for this track !!The track of the mesh with the meshID %1 has been reassigned to 0")
+      .arg(MeshIDKickedOut) );
 
     unsigned int NewMeshID = this->m_MeshesManager->SaveNewMeshFromVisu(iXCoordMin,
                                                                         iYCoordMin,
