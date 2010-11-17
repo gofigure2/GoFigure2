@@ -274,6 +274,22 @@ public:
   */
   bool UpdateElementHighlightingWithGivenTraceID(const unsigned int & iId);
 
+public slots:
+
+  /** \brief Change elements highlighting property given a list of TraceIDs
+  and the new status.
+    \param[in] iList list of TraceIDs
+    \param[in] iCheck */
+  virtual void UpdateElementHighlightingWithGivenTraceIDs( const QStringList& iList,
+                                                   const Qt::CheckState& iCheck );
+
+  /** \brief Change elements visibility property given a list of TraceIDs
+  and the new status.
+    \param[in] iList list of TraceIDs
+    \param[in] iCheck */
+  virtual void UpdateElementVisibilityWithGivenTraceIDs( const QStringList& iList,
+                                                 const Qt::CheckState& iCheck );
+
 protected:
   vtkProperty *m_HighlightedProperty;
 };

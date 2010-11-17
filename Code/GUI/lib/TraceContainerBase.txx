@@ -186,4 +186,128 @@ UpdateElementHighlightingWithGivenTraceID(const unsigned int & iId)
 }
 //-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+template< class TContainer >
+void
+TraceContainerBase<TContainer>::
+UpdateElementHighlightingWithGivenTraceIDs( const QStringList& iList,
+                                            const Qt::CheckState& iCheck )
+{
+  using boost::multi_index::get;
+
+  if( !iList.empty() )
+    {
+    MultiIndexContainerTraceIDIterator it;
+
+    vtkProperty *temp_property = NULL;
+
+    QStringList::const_iterator constIterator = iList.begin();
+
+    while( constIterator != iList.end() )
+      {
+      it = m_Container.get< TraceID >().find((*constIterator).toUInt());
+
+      if ( it != m_Container.get< TraceID >().end() )
+        {
+        if ( !iCheck )
+          {
+          temp_property = vtkProperty::New();
+          temp_property->SetColor(it->rgba[0],
+                                  it->rgba[1],
+                                  it->rgba[2]);
+          temp_property->SetOpacity(it->rgba[3]);
+          }
+        else
+          {
+          temp_property = this->m_HighlightedProperty;
+          }
+
+        it->SetActorProperties( temp_property );
+
+        if ( !iCheck )
+          {
+          temp_property->Delete();
+          }
+
+        MultiIndexContainerElementType tempStructure(*it);
+        tempStructure.Highlighted = iCheck;
+
+        m_Container.get< TraceID >().replace(it, tempStructure);
+        }
+
+      ++constIterator;
+      }
+
+    m_ImageView->UpdateRenderWindows();
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+template< class TContainer >
+void
+TraceContainerBase<TContainer>::
+UpdateElementVisibilityWithGivenTraceIDs( const QStringList& iList,
+                                          const Qt::CheckState& iCheck )
+{
+  using boost::multi_index::get;
+
+  if( !iList.empty() )
+    {
+    MultiIndexContainerTraceIDIterator it;
+
+    typedef void ( QGoImageView3D::*ImageViewMember )(const int &, vtkActor *);
+    ImageViewMember f;
+
+    QStringList::const_iterator constIterator = iList.begin();
+
+    while( constIterator != iList.end() )
+      {
+      it = m_Container.get< TraceID >().find((*constIterator).toUInt());
+
+      if ( it != m_Container.get< TraceID >().end() )
+        {
+        // if ( it->TCoord != m_TCoord )
+          {
+          if ( iCheck )
+            {
+            f = &QGoImageView3D::RemoveActor;
+            }
+          else
+            {
+            f = &QGoImageView3D::AddActor;
+            }
+
+          if ( it->ActorXY )
+            {
+            ( m_ImageView->*f )(0, it->ActorXY);
+            }
+          if ( it->ActorXZ )
+            {
+            ( m_ImageView->*f )(1, it->ActorXZ);
+            }
+          if ( it->ActorYZ )
+            {
+            ( m_ImageView->*f )(2, it->ActorYZ);
+            }
+          if ( it->ActorXYZ )
+            {
+            ( m_ImageView->*f )(3, it->ActorXYZ);
+            }
+          }
+
+        it->SetActorVisibility( iCheck );
+
+        MultiIndexContainerElementType tempStructure(*it);
+        tempStructure.Visible = iCheck;
+
+        m_Container.get< TraceID >().replace(it, tempStructure);
+        }
+
+      ++constIterator;
+      }
+    m_ImageView->UpdateRenderWindows();
+    }
+}
+//-------------------------------------------------------------------------
 #endif
