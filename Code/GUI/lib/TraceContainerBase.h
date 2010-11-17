@@ -279,6 +279,23 @@ public:
   vtkPolyData* GetCurrentElementNodes();
 
   /**
+  \brief put the information of the existing element into m_CurrentElement
+  and remove the existing element from the container,the visu and the memory
+  \param[in] iTraceID ID of the existing element
+  \return true if the element was found in the container, false if not
+  */
+  bool UpdateCurrentElementFromExistingOne(unsigned int iTraceID);
+
+  /**
+    \brief Update element visibility given it TraceId
+    \param[in] iId TraceID of the element to be modified
+    \return true if the element was present in the container.
+  */
+  bool UpdateElementVisibilityWithGivenTraceID(const unsigned int & iId);
+
+  //-------------------------------------------------------------------------
+
+  /**
     \brief Remove element from visualization
     \param[in] iId TraceID of the element to be removed
     \return true if the element was present in the container.
@@ -458,7 +475,7 @@ protected:
           temp_property->Delete();
           }
 
-        TrackStructure tempStructure(*it);
+        MultiIndexContainerElementType tempStructure(*it);
         tempStructure.Highlighted = !it->Highlighted;
 
         // Note: it->Highlighted is the status before picking the actor
@@ -509,7 +526,7 @@ protected:
         {
         it->SetActorVisibility( !it->Visible );
 
-        TrackStructure tempStructure(*it);
+        MultiIndexContainerElementType tempStructure(*it);
         tempStructure.Visible = !it->Visible;
 
         // Note: it->Highlighted is the status before picking the actor
@@ -562,7 +579,7 @@ protected:
           {
           it->SetActorVisibility( iState );
 
-          TrackStructure tempStructure(*it);
+          MultiIndexContainerElementType tempStructure(*it);
           tempStructure.Visible = iState;
 
           // Note: it->Highlighted is the status before picking the actor

@@ -173,37 +173,17 @@ public:
   }
 
   template< class TIndex >
-  void AddTraceFromNodesManager(
-    typename ContourMeshContainer::MultiIndexContainer::index< TIndex >::type::iterator iIt,
-    const std::string & iTrace)
-  {
-    // If we want to add a contour
-    if ( iTrace.compare("contour") == 0 )
-      {
-      AddContourFromNodes< TIndex >(iIt);
-      }
-    // If we want to add a mesh
-    if ( iTrace.compare("mesh") == 0 )
-      {
-      AddMeshFromNodes< TIndex >(iIt);
-      }
-    // If we want to add a track
-    if ( iTrace.compare("track") == 0 )
-      {
-      AddMeshFromNodes< TIndex >(iIt);
-      }
-  }
-
-  template< class TIndex >
   void AddMeshFromNodes(
-    typename ContourMeshContainer::MultiIndexContainer::index< TIndex >::type::iterator iIt)
+    typename ContourMeshContainer::MultiIndexContainerType::index< TIndex >::type::iterator
+      iIt )
   {
     VisualizeMesh< TIndex >(iIt);
   }
 
   template< class TIndex >
   void AddTrackFromNodes(
-    typename TrackContainer::MultiIndexContainerType::template index< TIndex >::type::iterator iIt)
+    typename TrackContainer::MultiIndexContainerType::index< TIndex >::type::iterator
+      iIt )
   {
     VisualizeTrack< TIndex >(iIt);
   }
@@ -212,7 +192,8 @@ public:
   template< class TIndex >
   void
   AddContourFromNodes(
-    typename ContourMeshContainer::MultiIndexContainer::index< TIndex >::type::iterator iIt)
+    typename ContourMeshContainer::MultiIndexContainerType::index< TIndex >::type::iterator
+      iIt )
   {
     vtkPolyData *nodes = iIt->Nodes;
 
@@ -428,7 +409,7 @@ protected:
 
   template< class TIndex >
   void VisualizeContour(
-    typename ContourMeshContainer::MultiIndexContainer::index< TIndex >::type::iterator iIt,
+    typename ContourMeshContainer::MultiIndexContainerType::template index< TIndex >::type::iterator iIt,
     vtkPolyData *iContour)
   {
     if ( ( iContour->GetNumberOfPoints() > 2 ) && ( m_TCoord >= 0 ) )
@@ -467,7 +448,7 @@ protected:
   template< class TIndex >
   void
   VisualizeMesh(
-    typename ContourMeshContainer::MultiIndexContainer::index< TIndex >::type::iterator iIt)
+    typename ContourMeshContainer::MultiIndexContainerType::template index< TIndex >::type::iterator iIt)
   {
     const double *iRgba = iIt->rgba;
     vtkPolyData * iMesh = iIt->Nodes;

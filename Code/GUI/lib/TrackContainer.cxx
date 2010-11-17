@@ -107,16 +107,6 @@ TrackContainer::
 //-------------------------------------------------------------------------
 void
 TrackContainer::
-InsertCurrentElement()
-{
-  m_Container.insert(m_CurrentElement);
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-TrackContainer::
 UpdateCurrentElementFromVisu(std::vector< vtkActor * > iActors,
                                                         vtkPolyData *iNodes,
                                                         const bool & iHighlighted,
@@ -145,50 +135,6 @@ UpdateCurrentElementFromVisu(std::vector< vtkActor * > iActors,
     this->m_CurrentElement.ActorYZ->SetProperty(this->m_HighlightedProperty);
     this->m_CurrentElement.ActorXYZ->SetProperty(this->m_HighlightedProperty);
     }
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-bool TrackContainer::
-UpdateCurrentElementFromExistingOne(unsigned int iTraceID)
-{
-  MultiIndexContainerTraceIDIterator
-    it = m_Container.get< TraceID >().find(iTraceID);
-  if ( it != m_Container.get< TraceID >().end() )
-    {
-    // update current element
-    this->m_CurrentElement = *it;
-
-    // clean the container but don't erase the pointers since we still have the
-    // adresses in the m_CurrentElement
-    m_Container.get< TraceID >().erase(it);
-
-    return true;
-    }
-  else
-    {
-    return false;
-    }
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-TrackContainer::
-Insert(const TrackStructure & iE)
-{
-  m_Container.insert(iE);
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-TrackContainer::
-ResetCurrentElement()
-{
-  m_CurrentElement = TrackStructure();
 }
 
 //-------------------------------------------------------------------------

@@ -38,6 +38,9 @@
 #include <QObject>
 
 #include "ContourMeshStructure.h"
+#include "StructureHelper.h"
+
+#include "TraceContainerBase.h"
 
 #include "boost/multi_index_container.hpp"
 #include "boost/multi_index/member.hpp"
@@ -54,6 +57,51 @@
 
 class vtkLookupTable;
 
+namespace boost
+{
+  typedef multi_index::multi_index_container<
+      ContourMeshStructure,
+      boost::multi_index::indexed_by<
+        boost::multi_index::ordered_non_unique<
+          boost::multi_index::tag< TCoord >,
+          BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, unsigned int, TCoord)
+          >,
+        boost::multi_index::hashed_non_unique<
+          boost::multi_index::tag< ActorXY >,
+          BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorXY)
+          >,
+        boost::multi_index::hashed_non_unique<
+          boost::multi_index::tag< ActorXZ >,
+          BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorXZ)
+          >,
+        boost::multi_index::hashed_non_unique<
+          boost::multi_index::tag< ActorYZ >,
+          BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorYZ)
+          >,
+        boost::multi_index::hashed_non_unique<
+          boost::multi_index::tag< ActorXYZ >,
+          BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorXYZ)
+          >,
+        boost::multi_index::hashed_non_unique<
+          boost::multi_index::tag< Nodes >,
+          BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkPolyData *, Nodes)
+          >,
+        boost::multi_index::ordered_unique<
+          boost::multi_index::tag< TraceID >,
+          BOOST_MULTI_INDEX_MEMBER(TraceStructure, unsigned int, TraceID)
+          >,
+        boost::multi_index::ordered_non_unique<
+          boost::multi_index::tag< Highlighted >,
+          BOOST_MULTI_INDEX_MEMBER(TraceStructure, bool, Highlighted)
+          >,
+        boost::multi_index::ordered_non_unique<
+          boost::multi_index::tag< Visible >,
+          BOOST_MULTI_INDEX_MEMBER(TraceStructure, bool, Visible)
+          >
+        >
+      > MultiIndexContourMeshContainer;
+}
+
 /**
   \class ContourMeshContainer
   \brief Wraps a boost multi index container of ContourMeshStructure.
@@ -61,82 +109,17 @@ class vtkLookupTable;
   the Visualization and in the TableWidget
   \sa ContourMeshStructure QGoTableWidget QGoImageView3D
   */
-class ContourMeshContainer:public QObject
+class ContourMeshContainer:
+    public TraceContainerBase< typename boost::MultiIndexContourMeshContainer >
 {
   Q_OBJECT
 public:
 
-  typedef boost::multi_index::multi_index_container<
-    ContourMeshStructure,
-    boost::multi_index::indexed_by<
-      boost::multi_index::ordered_non_unique<
-        boost::multi_index::tag< TCoord >,
-        BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, unsigned int, TCoord)
-        >,
-      boost::multi_index::hashed_non_unique<
-        boost::multi_index::tag< ActorXY >,
-        BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorXY)
-        >,
-      boost::multi_index::hashed_non_unique<
-        boost::multi_index::tag< ActorXZ >,
-        BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorXZ)
-        >,
-      boost::multi_index::hashed_non_unique<
-        boost::multi_index::tag< ActorYZ >,
-        BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorYZ)
-        >,
-      boost::multi_index::hashed_non_unique<
-        boost::multi_index::tag< ActorXYZ >,
-        BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorXYZ)
-        >,
-      boost::multi_index::hashed_non_unique<
-        boost::multi_index::tag< Nodes >,
-        BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkPolyData *, Nodes)
-        >,
-      boost::multi_index::ordered_unique<
-        boost::multi_index::tag< TraceID >,
-        BOOST_MULTI_INDEX_MEMBER(TraceStructure, unsigned int, TraceID)
-        >,
-      boost::multi_index::ordered_non_unique<
-        boost::multi_index::tag< Highlighted >,
-        BOOST_MULTI_INDEX_MEMBER(TraceStructure, bool, Highlighted)
-        >,
-      boost::multi_index::ordered_non_unique<
-        boost::multi_index::tag< Visible >,
-        BOOST_MULTI_INDEX_MEMBER(TraceStructure, bool, Visible)
-        >
-      >
-    > MultiIndexContainer;
+  typedef TraceContainerBase< typename boost::MultiIndexContourMeshContainer > Superclass;
+  typedef Superclass::MultiIndexContainerType MultiIndexContainerType;
 
-  typedef MultiIndexContainer::iterator
-  MultiIndexContainerIterator;
-
-  typedef MultiIndexContainer::index< TCoord >::type::iterator
-  MultiIndexContainerTCoordIterator;
-
-  typedef MultiIndexContainer::index< ActorXY >::type::iterator
-  MultiIndexContainerActorXYIterator;
-
-  typedef MultiIndexContainer::index< ActorXZ >::type::iterator
-  MultiIndexContainerActorXZIterator;
-
-  typedef MultiIndexContainer::index< ActorYZ >::type::iterator
-  MultiIndexContainerActorYZIterator;
-
-  typedef MultiIndexContainer::index< ActorXYZ >::type::iterator
-  MultiIndexContainerActorXYZIterator;
-
-  typedef MultiIndexContainer::index< Nodes >::type::iterator
-  MultiIndexContainerNodesIterator;
-
-  typedef MultiIndexContainer::index< TraceID >::type::iterator
-  MultiIndexContainerTraceIDIterator;
-
-  typedef MultiIndexContainer::index< Highlighted >::type::iterator
-  MultiIndexContainerHighlightedIterator;
-
-  typedef MultiIndexContainer::index< Visible >::type::iterator
-  MultiIndexContainerVisibleIterator;
+  typedef MultiIndexContainerType::index< TCoord >::type::iterator
+    MultiIndexContainerTCoordIterator;
 
   //------------------------------------------------------------------------
 
@@ -147,50 +130,8 @@ public:
   /** \brief Destructor. */
   ~ContourMeshContainer();
 
-  /** \brief Underlying container. */
-  MultiIndexContainer m_Container;
-
-  /** \brief Link to the visualization. */
-  QGoImageView3D *m_ImageView;
-
-  /** \brief Current Element to be inserted in the container */
-  ContourMeshStructure m_CurrentElement;
-
   /** */
   void SetTimePoint(const unsigned int & iT);
-
-  // ----------------------------------------------------------------------
-
-  /** \brief Print the container content in the application output */
-  template< class TIterator >
-  void Print(TIterator iBegin, TIterator iEnd)
-  {
-    TIterator it = iBegin;
-
-    while ( it != iEnd )
-      {
-      std::cout << *it;
-      std::cout << "***" << std::endl;
-      std::cout << std::endl;
-      ++it;
-      }
-  }
-
-  /**
-    \brief Print the container content in the application output according
-    to the template parameter.
-    \tparam TIndex
-    */
-  template< class TIndex >
-  void Print()
-  {
-    this->Print( m_Container.get< TIndex >().begin(),
-                 m_Container.get< TIndex >().end() );
-  }
-
-  /** \brief Print the container content in the application output. */
-  void Print();
-  // ----------------------------------------------------------------------
 
   /**
     \brief Update Visualization of the given TraceIDs
@@ -301,67 +242,6 @@ public:
     MultiIndexContainerTCoordIterator iEnd,
     const bool & iVisibility);
 
-  /**
- * \brief Update Actors, Highlighted, Visibility (properties) of given
- * a element
- * \tparam TIndex Index Type (referring to multi index container's indices)
- * \param[in] iIt element to update
- * \param[in] iActors its actors
- * \param[in] iHighlighted
- * \param[in] iVisible if false remove the element from the scene, else
- * add it
- */
-  template< class TIndex >
-  void UpdateVisualizationForGivenElement(
-    typename MultiIndexContainer::index< TIndex >::type::iterator iIt,
-    std::vector< vtkActor * > iActors,
-    const bool & iHighlighted,
-    const bool & iVisible)
-  {
-    ContourMeshStructure temp = *iIt;
-
-    if ( iActors.size() == 4 )
-      {
-      temp.ActorXY = iActors[0];
-      temp.ActorXZ = iActors[1];
-      temp.ActorYZ = iActors[2];
-      temp.ActorXYZ = iActors[3];
-      }
-    temp.Highlighted = iHighlighted;
-    temp.Visible = iVisible;
-
-    typedef void ( QGoImageView3D::*ImageViewMember )(const int &, vtkActor *);
-    ImageViewMember f;
-
-    if ( iVisible )
-      {
-      f = &QGoImageView3D::AddActor;
-      }
-    else
-      {
-      f = &QGoImageView3D::RemoveActor;
-      }
-
-    for ( int i = 0; i < 4; i++ )
-      {
-      ( m_ImageView->*f )(i, iActors[i]);
-      }
-
-    m_Container.get< TIndex >().replace(iIt, temp);
-  }
-
-  /**
-  \brief Insert one element in the container
-  \param[in] iE element to be insert in the container
-  */
-  void Insert(const ContourMeshStructure & iE);
-
-  /** \brief Insert Current Element in the container */
-  void InsertCurrentElement();
-
-  /** \brief Reset Current Element to a default state */
-  void ResetCurrentElement();
-
   /** \brief Update Current Element by providing all required informations
   from the visualization.
   \param[in] iActors
@@ -377,12 +257,6 @@ public:
                                     const bool & iHighlighted,
                                     const bool & iVisible);
 
-  /** \brief Update Current Element from the database.
-  \param[in] iTraceID
-  \param[in] irgba
-  */
-  void UpdateCurrentElementFromDB(unsigned int iTraceID, double irgba[4]);
-
   /**
   \brief Remove all actors (elements) from the scene for a given time point
   \param[in] iT
@@ -393,22 +267,6 @@ public:
     \brief Add all actors (elements) from the scene for a given time point
   */
   void AddActorsWithGivenTimePoint(const unsigned int & iT);
-
-  /**
-    \brief Remove element from visualization
-    \param[in] iId TraceID of the element to be removed
-    \return true if the element was present in the container.
-  */
-  bool
-  RemoveElementFromVisualizationWithGivenTraceID(
-    const unsigned int & iId);
-
-  /**
-    \brief Update element highlighting given it TraceId
-    \param[in] iId TraceID of the element to be modified
-    \return true if the element was present in the container.
-  */
-  bool UpdateElementHighlightingWithGivenTraceID(const unsigned int & iId);
 
   /**
   \brief Returns the direction of a given contour vtkPolyData.
@@ -488,7 +346,7 @@ public:
   {
     if ( iActor )
       {
-      typedef typename MultiIndexContainer::index< TActor >::type::iterator
+      typedef typename MultiIndexContainerType::index< TActor >::type::iterator
       IteratorType;
       IteratorType it = m_Container.get< TActor >().find(iActor);
 
@@ -555,7 +413,7 @@ public:
   {
     if ( iActor )
       {
-      typedef typename MultiIndexContainer::index< TActor >::type::iterator
+      typedef typename MultiIndexContainerType::index< TActor >::type::iterator
       IteratorType;
       IteratorType it = m_Container.get< TActor >().find(iActor);
 
@@ -566,23 +424,6 @@ public:
         {
         t_visible = !it->Visible;
         it->SetActorVisibility( t_visible );
-
-        /*if ( it->ActorXY )
-          {
-          it->ActorXY->SetVisibility(!it->Visible);
-          }
-        if ( it->ActorXZ )
-          {
-          it->ActorXZ->SetVisibility(!it->Visible);
-          }
-        if ( it->ActorYZ )
-          {
-          it->ActorYZ->SetVisibility(!it->Visible);
-          }
-        if ( it->ActorXYZ )
-          {
-          it->ActorXYZ->SetVisibility(!it->Visible);
-          }*/
 
         ContourMeshStructure tempStructure(*it);
         tempStructure.Visible = t_visible;
@@ -623,7 +464,7 @@ public:
   {
     if ( iActor )
       {
-      typedef typename MultiIndexContainer::index< TActor >::type::iterator
+      typedef typename MultiIndexContainerType::index< TActor >::type::iterator
       IteratorType;
       IteratorType it = m_Container.get< TActor >().find(iActor);
 
@@ -632,22 +473,6 @@ public:
         if ( it->Visible != iState )
           {
           it->SetActorVisibility( iState );
-          /*if ( it->ActorXY )
-            {
-            it->ActorXY->SetVisibility(iState);
-            }
-          if ( it->ActorXZ )
-            {
-            it->ActorXZ->SetVisibility(iState);
-            }
-          if ( it->ActorYZ )
-            {
-            it->ActorYZ->SetVisibility(iState);
-            }
-          if ( it->ActorXYZ )
-            {
-            it->ActorXYZ->SetVisibility(iState);
-            }*/
 
           ContourMeshStructure tempStructure(*it);
           tempStructure.Visible = iState;
@@ -678,73 +503,6 @@ public:
   }
 
   //-------------------------------------------------------------------------
-  /**
-  \brief Change element visibility in the scene
-  \tparam TIndex refers to any index from the multi index container indices
-  \param[in] iBegin first element
-  \param[in] iEnd last element
-  \param[in] iVisibility
-  */
-  template< class TIndex >
-  void ChangeActorsVisibility(
-    typename MultiIndexContainer::index< TIndex >::type::iterator iBegin,
-    typename MultiIndexContainer::index< TIndex >::type::iterator iEnd,
-    const bool & iVisibility)
-  {
-    typename MultiIndexContainer::index< TIndex >::type::iterator it = iBegin;
-
-    typedef void ( QGoImageView3D::*ImageViewMember )(const int &, vtkActor *);
-    ImageViewMember f;
-
-    if ( iVisibility )
-      {
-      f = &QGoImageView3D::AddActor;
-      }
-    else
-      {
-      f = &QGoImageView3D::RemoveActor;
-      }
-
-    while ( it != iEnd )
-      {
-      if ( it->Visible != iVisibility )
-        {
-        it->SetActorVisibility( iVisibility );
-
-        if ( it->ActorXY )
-          {
-          ( m_ImageView->*f )(0, it->ActorXY);
-          }
-        if ( it->ActorXZ )
-          {
-          ( m_ImageView->*f )(1, it->ActorXZ);
-          }
-        if ( it->ActorYZ )
-          {
-          ( m_ImageView->*f )(2, it->ActorYZ);
-          }
-        if ( it->ActorXYZ )
-          {
-          ( m_ImageView->*f )(3, it->ActorXYZ);
-          }
-
-        ContourMeshStructure tempStructure(*it);
-        tempStructure.Visible = iVisibility;
-
-        m_Container.get< TIndex >().replace(it, tempStructure);
-        }
-      ++it;
-      }
-  }
-
-  //-------------------------------------------------------------------------
-
-  /**
-    \brief Update element visibility given it TraceId
-    \param[in] iId TraceID of the element to be modified
-    \return true if the element was present in the container.
-  */
-  bool UpdateElementVisibilityWithGivenTraceID(const unsigned int & iId);
 
   /**
     \brief Remove the element which TraceId = iId
@@ -758,41 +516,21 @@ public:
   */
   bool DeleteElement(const unsigned int & iId);
 
+  /**
+  \overload DeleteElement(const unsigned int & iId)
+  */
+  bool DeleteElement(MultiIndexContainerTraceIDIterator iIter);
+
   /** \brief Delete all highlighted elements
   \return the list of TraceIDs of such elements
   */
   std::list< unsigned int > DeleteAllHighlightedElements();
-
-  /**
-    \brief Update all highlighted elements in the container with a given color.
-    \note Elements remain highlighted as long as it is checked in the Table Widget.
-    \param[in] iColor
-    \return list of highlighted elements
-  */
-  std::list< unsigned int > UpdateAllHighlightedElementsWithGivenColor(
-    QColor iColor);
-
-  /**
-    \brief Get the list of highlighted elements TraceID.
-    */
-  std::list< unsigned int > GetHighlightedElementsTraceID();
 
    /**
     \return the traceIDs with TCoord = iTimePoint
     \param[in] iTimePoint timepoint for which the traceIDs are needed
     */
   std::list< unsigned int > GetElementsTraceIDForGivenTimePoint(unsigned int iTimePoint);
-
-  /**
-    \brief Set property whenever the trace is highlighted
-    \param[in] iProperty
-  */
-  void SetHighlightedProperty(vtkProperty *iProperty);
-
-  /**
-    \brief Get property for highlighted traces
-  */
-  vtkProperty * GetHighlightedProperty();
 
 
   /**
@@ -924,7 +662,6 @@ signals:
 
 protected:
   unsigned int m_TCoord;
-  vtkProperty *m_HighlightedProperty;
 
   /** \brief Render with original colors */
   void RenderAllElementsWithOriginalColors();

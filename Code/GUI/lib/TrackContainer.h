@@ -195,18 +195,6 @@ public:
   */
   void ShowActorsWithGivenTimePoint(const unsigned int & iT);
 
-  /**
-  \brief Insert one element in the container
-  \param[in] iE element to be insert in the container
-  */
-  void Insert(const TrackStructure & iE);
-
-  /** \brief Insert Current Element in the container */
-  void InsertCurrentElement();
-
-  /** \brief Reset Current Element to a default state */
-  void ResetCurrentElement();
-
   /** \brief Update Current Element by providing all required information
   from the visualization.
   \param[in] iActors
@@ -221,13 +209,6 @@ public:
                                     const bool & iHighlighted,
                                     const bool & iVisible);
 
-  /**
-  \brief put the information of the existing element into m_CurrentElement
-  and remove the existing element from the container,the visu and the memory
-  \param[in] iTraceID ID of the existing element
-  \return true if the element was found in the container, false if not
-  */
-  bool UpdateCurrentElementFromExistingOne(unsigned int iTraceID);
 
   /**
   \brief Remove all actors (elements) from the scene for a given time point

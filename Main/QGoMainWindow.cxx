@@ -391,11 +391,11 @@ QGoMainWindow::LoadAllTracesFromDatabaseManager(const int & iT)
   QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
 
   // Loads contours
-  LoadContoursFromDatabase(iT, "contour");
+  LoadContoursFromDatabase( iT );
   // Loads meshes
-  LoadMeshesFromDatabase(iT, "mesh");
+  LoadMeshesFromDatabase( iT );
   // Loads tracks
-  LoadTracksFromDatabase(iT, "track");
+  LoadTracksFromDatabase( iT );
 
   QApplication::restoreOverrideCursor();
 }
@@ -404,7 +404,7 @@ QGoMainWindow::LoadAllTracesFromDatabaseManager(const int & iT)
 
 //--------------------------------------------------------------------------
 void
-QGoMainWindow::LoadContoursFromDatabase(const int & iT, const std::string & iTraceName)
+QGoMainWindow::LoadContoursFromDatabase( const int & iT )
 {
   /// \note let's keep for the time being iT parameter in the case where
   /// we would only load traces for a given time point (that could be usefule
@@ -421,16 +421,15 @@ QGoMainWindow::LoadContoursFromDatabase(const int & iT, const std::string & iTra
     if ( temp )
       {
       // let's iterate on the container with increasing TraceID
-      ContourMeshContainer::MultiIndexContainer::index< TraceID >::type::iterator
+      ContourMeshContainer::MultiIndexContainerType::index< TraceID >::type::iterator
         contourmesh_list_it = temp->m_Container.get< TraceID >().begin();
 
       // we don't need here to save this contour in the database,
       // since they have just been extracted from it!
       while ( contourmesh_list_it != temp->m_Container.get< TraceID >().end() )
         {
-        w3t->AddTraceFromNodesManager< TraceID >(
-          contourmesh_list_it,
-          iTraceName);     // Name of the trace to add
+        w3t->AddContourFromNodes< TraceID >(
+          contourmesh_list_it );
 
         ++contourmesh_list_it;
         }
@@ -442,7 +441,7 @@ QGoMainWindow::LoadContoursFromDatabase(const int & iT, const std::string & iTra
 
 //--------------------------------------------------------------------------
 void
-QGoMainWindow::LoadMeshesFromDatabase(const int & iT, const std::string & iTraceName)
+QGoMainWindow::LoadMeshesFromDatabase( const int & iT )
 {
   /// \note let's keep for the time being iT parameter in the case where
   /// we would only load traces for a given time point (that could be usefule
@@ -460,7 +459,7 @@ QGoMainWindow::LoadMeshesFromDatabase(const int & iT, const std::string & iTrace
       {
     //std::cout << "IN TEMP" << std::endl;
       // let's iterate on the container with increasing TraceID
-      ContourMeshContainer::MultiIndexContainer::index< TraceID >::type::iterator
+      ContourMeshContainer::MultiIndexContainerType::index< TraceID >::type::iterator
         contourmesh_list_it = temp->m_Container.get< TraceID >().begin();
       // we don't need here to save this contour in the database,
       // since they have just been extracted from it!
@@ -479,9 +478,8 @@ QGoMainWindow::LoadMeshesFromDatabase(const int & iT, const std::string & iTrace
             &attributes, contourmesh_list_it->TraceID);
           }
 
-        w3t->AddTraceFromNodesManager< TraceID >(
-          contourmesh_list_it,
-          iTraceName);     // Name of the trace to add
+        w3t->AddMeshFromNodes< TraceID >(
+          contourmesh_list_it );
 
         ++contourmesh_list_it;
         }
@@ -492,7 +490,7 @@ QGoMainWindow::LoadMeshesFromDatabase(const int & iT, const std::string & iTrace
 
 //--------------------------------------------------------------------------
 void
-QGoMainWindow::LoadTracksFromDatabase(const int & iT, const std::string & iTraceName)
+QGoMainWindow::LoadTracksFromDatabase( const int & iT )
 {
   /// \note let's keep for the time being iT parameter in the case where
   /// we would only load traces for a given time point (that could be usefule

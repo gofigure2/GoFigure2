@@ -94,6 +94,36 @@ GetHighlightedProperty()
 }
 //-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+template< class TContainer >
+bool
+TraceContainerBase< TContainer >::
+UpdateCurrentElementFromExistingOne(unsigned int iTraceID)
+{
+  using boost::multi_index::get;
+
+  MultiIndexContainerTraceIDIterator
+    it = m_Container.get< TraceID >().find(iTraceID);
+
+  if ( it != m_Container.get< TraceID >().end() )
+    {
+    // update current element
+    this->m_CurrentElement = *it;
+
+    // clean the container but don't erase the pointers since we still have the
+    // adresses in the m_CurrentElement
+    m_Container.get< TraceID >().erase(it);
+
+    return true;
+    }
+  else
+    {
+    return false;
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 template< class TContainer >
 void
 TraceContainerBase< TContainer >::
@@ -416,6 +446,65 @@ GetHighlightedElementsTraceID()
     }
   return oList;
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+template< class TContainer >
+bool
+TraceContainerBase<TContainer>::
+UpdateElementVisibilityWithGivenTraceID(const unsigned int & iId)
+{
+  using boost::multi_index::get;
+
+  MultiIndexContainerTraceIDIterator
+    it = m_Container.get< TraceID >().find(iId);
+
+  typedef void ( QGoImageView3D::*ImageViewMember )(const int &, vtkActor *);
+  ImageViewMember f;
+
+  if ( it != m_Container.get< TraceID >().end() )
+    {
+
+    if ( it->Visible )
+      {
+      f = &QGoImageView3D::RemoveActor;
+      }
+    else
+      {
+      f = &QGoImageView3D::AddActor;
+      }
+
+    if ( it->ActorXY )
+      {
+      ( m_ImageView->*f )(0, it->ActorXY);
+      }
+    if ( it->ActorXZ )
+      {
+      ( m_ImageView->*f )(1, it->ActorXZ);
+      }
+    if ( it->ActorYZ )
+      {
+      ( m_ImageView->*f )(2, it->ActorYZ);
+      }
+    if ( it->ActorXYZ )
+      {
+      ( m_ImageView->*f )(3, it->ActorXYZ);
+      }
+
+    it->SetActorVisibility( !it->Visible );
+
+    MultiIndexContainerElementType tempStructure(*it);
+    tempStructure.Visible = !it->Visible;
+
+    m_Container.get< TraceID >().replace(it, tempStructure);
+
+    m_ImageView->UpdateRenderWindows();
+    return true;
+    }
+
+  return false;
+}
+
 //-------------------------------------------------------------------------
 
 #endif
