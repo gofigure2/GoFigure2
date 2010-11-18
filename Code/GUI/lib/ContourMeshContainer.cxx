@@ -134,7 +134,7 @@ ContourMeshContainer::RemoveActorsWithGivenTimePoint(const unsigned int & iT)
 
   boost::tuples::tie(it0, it1) = m_Container.get< TCoord >().equal_range(iT);
 
-  Superclass::ChangeActorsVisibility< TCoord >(it0, it1, false);
+  ChangeActorsVisibility< TCoord >(it0, it1, false);
 
   m_ImageView->UpdateRenderWindows();
 }
@@ -151,9 +151,9 @@ ContourMeshContainer::ShowActorsWithGivenTimePoint(const unsigned int & iT)
 
     boost::tuples::tie(it0, it1) = m_Container.get< TCoord >().equal_range(iT);
 
-    Superclass::ChangeActorsVisibility< TCoord >(m_Container.get< TCoord >().begin(), it0, false);
-    Superclass::ChangeActorsVisibility< TCoord >(it0, it1, true);
-    Superclass::ChangeActorsVisibility< TCoord >(it1, m_Container.get< TCoord >().end(), false);
+    ChangeActorsVisibility< TCoord >(m_Container.get< TCoord >().begin(), it0, false);
+    ChangeActorsVisibility< TCoord >(it0, it1, true);
+    ChangeActorsVisibility< TCoord >(it1, m_Container.get< TCoord >().end(), false);
 
     m_TCoord = iT;
     }
@@ -169,7 +169,7 @@ ContourMeshContainer::AddActorsWithGivenTimePoint(const unsigned int & iT)
 
   boost::tuples::tie(it0, it1) = m_Container.get< TCoord >().equal_range(iT);
 
-  Superclass::ChangeActorsVisibility< TCoord >(it0, it1, true);
+  ChangeActorsVisibility< TCoord >(it0, it1, true);
 
   m_ImageView->UpdateRenderWindows();
 }

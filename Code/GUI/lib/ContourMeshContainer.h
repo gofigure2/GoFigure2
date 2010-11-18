@@ -468,6 +468,80 @@ public:
    */
   std::map< unsigned int, double* > GetMeshesPoints( std::list< unsigned int> iMeshID );
 
+  /**
+  \brief Change element visibility in the scene
+  \tparam TIndex refers to any index from the multi index container indices
+  \param[in] iBegin first element
+  \param[in] iEnd last element
+  \param[in] iVisibility
+  */
+  template< class TIndex >
+  void ChangeActorsVisibility(
+    typename MultiIndexContainerType::template index< TIndex >::type::iterator iBegin,
+    typename MultiIndexContainerType::template index< TIndex >::type::iterator iEnd,
+    const bool & iVisibility)
+  {
+    typename MultiIndexContainerType::template index< TIndex >::type::iterator
+        it = iBegin;
+
+    typedef void ( QGoImageView3D::*ImageViewMember )(const int &, vtkActor *);
+    ImageViewMember f;
+
+    if ( iVisibility )
+      {
+      f = &QGoImageView3D::AddActor;
+      }
+    else
+      {
+      f = &QGoImageView3D::RemoveActor;
+      }
+
+    while ( it != iEnd )
+      {
+      if ( it->Visible != iVisibility )
+        {
+        it->SetActorVisibility( iVisibility );
+
+        if ( it->ActorXY )
+          {
+          ( m_ImageView->*f )(0, it->ActorXY);
+          }
+        if ( it->ActorXZ )
+          {
+          ( m_ImageView->*f )(1, it->ActorXZ);
+          }
+        if ( it->ActorYZ )
+          {
+          ( m_ImageView->*f )(2, it->ActorYZ);
+          }
+        if ( it->ActorXYZ )
+          {
+          ( m_ImageView->*f )(3, it->ActorXYZ);
+          }
+
+        MultiIndexContainerElementType tempStructure(*it);
+        tempStructure.Visible = iVisibility;
+
+        using boost::multi_index::get;
+        m_Container.get< TIndex >().replace(it, tempStructure);
+
+        Qt::CheckState State;
+
+        if ( iVisibility )
+          {
+          State = Qt::Checked;
+          }
+        else
+          {
+          State = Qt::Unchecked;
+          }
+
+        emit TraceVisibilityChanged( it->TraceID, State );
+        }
+      ++it;
+      }
+  }
+
 public slots:
 
   /** \brief Change elements highlighting property given a list of TraceIDs
