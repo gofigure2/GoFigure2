@@ -740,6 +740,19 @@ public:
         tempStructure.Visible = iVisibility;
 
         m_Container.get< TIndex >().replace(it, tempStructure);
+
+        Qt::CheckState State;
+
+        if ( iVisibility )
+          {
+          State = Qt::Checked;
+          }
+        else
+          {
+          State = Qt::Unchecked;
+          }
+
+        emit TraceVisibilityChanged( it->TraceID, State );
         }
       ++it;
       }
