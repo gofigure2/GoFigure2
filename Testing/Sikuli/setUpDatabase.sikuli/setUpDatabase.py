@@ -1,6 +1,6 @@
 import os
 address = os.getcwd()
-#address should be ~/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images
+#address = "home/es1076/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images"
 
 #address = address+"/gofigure2_images"
 print address
@@ -29,3 +29,6 @@ click("Next_arrow.png")
 wait(1)
 type("microscope")
 Key.TAB+Key.ENTER
+click("ok.png")
+click("Finish.png")
+click("ok.png")
