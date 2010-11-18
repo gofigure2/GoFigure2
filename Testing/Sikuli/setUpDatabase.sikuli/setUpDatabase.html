@@ -70,14 +70,37 @@
 <h2>setUpDatabase.sikuli</h2> <a href="setUpDatabase.zip">(Download this script)</a>
 </div>
 <pre class="sikuli-code">
-<span class="skw">click</span>(<img src="1290103471275.png" />)
-<span class="skw">click</span>(<img src="1290103511231.png" />)
-<span class="skw">click</span>(<img src="1290103522252.png" />)
+<span class="kw">import</span> os
+address = os.getcwd()
+<span class="cmt">#address should be ~/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images
+</span>
+<span class="cmt">#address = address+"/gofigure2_images"
+</span><span class="kw">print</span> address
+setBundlePath(address)
+
+
+<span class="skw">click</span>(<img src="Settings.png" />)
+<span class="skw">click</span>(<img src="Database_arrow.png" />)
+<span class="skw">click</span>(<img src="Set_up_database.png" />)
+<span class="skw">wait</span>(<span class="dig">1</span>)
 <span class="skw">type</span>(<span class="str">"gofigure"</span>)
 Key.TAB
 <span class="skw">type</span>(<span class="str">"gofigure"</span>)
-<span class="skw">click</span>(<img src="1290103664404.png" />)
+<span class="skw">click</span>(<img src="Next_arrow.png" />)
 <span class="skw">click</span>(<img src="ok.png" />)
+Key.BACKSPACE
+<span class="skw">click</span>(<img src="ok.png" />)
+<span class="skw">click</span>(<img src="ok.png" />)
+Key.TAB+Key.TAB
+<span class="skw">type</span>(<span class="str">"First"</span>)
+Key.TAB+Key.TAB
+<span class="skw">type</span>(<span class="str">"Last"</span>)
+Key.TAB+Key.ENTER
+<span class="skw">click</span>(<img src="ok.png" />)
+<span class="skw">click</span>(<img src="Next_arrow.png" />)
+<span class="skw">wait</span>(<span class="dig">1</span>)
+<span class="skw">type</span>(<span class="str">"microscope"</span>)
+Key.TAB+Key.ENTER
 </pre>
 </body>
 </html>
