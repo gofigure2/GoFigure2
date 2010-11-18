@@ -80,27 +80,21 @@ setBundlePath(address)
 
 
 <span class="skw">click</span>(<img src="Settings.png" />)
-<span class="skw">click</span>(<img src="Database_arrow.png" />)
+hover(<img src="Database_arrow.png" />)
 <span class="skw">click</span>(<img src="Set_up_database.png" />)
 <span class="skw">wait</span>(<span class="dig">1</span>)
-<span class="skw">type</span>(<span class="str">"gofigure"</span>)
-Key.TAB
-<span class="skw">type</span>(<span class="str">"gofigure"</span>)
+<span class="skw">type</span>(<span class="str">"gofigure"</span> +Key.TAB + <span class="str">"gofigure"</span>)
 <span class="skw">click</span>(<img src="Next_arrow.png" />)
+<span class="skw">wait</span>(<span class="dig">1</span>)
+<span class="skw">type</span>(Key.BACKSPACE)<span class="cmt">#+Key.BACKSPACE+Key.BACKSPACE+Key.BACKSPACE+Key.BACKSPACE+Key.BACKSPACE)</span>
 <span class="skw">click</span>(<img src="ok.png" />)
-Key.BACKSPACE
 <span class="skw">click</span>(<img src="ok.png" />)
-<span class="skw">click</span>(<img src="ok.png" />)
-Key.TAB+Key.TAB
-<span class="skw">type</span>(<span class="str">"First"</span>)
-Key.TAB+Key.TAB
-<span class="skw">type</span>(<span class="str">"Last"</span>)
-Key.TAB+Key.ENTER
+<span class="skw">wait</span>(<span class="dig">3</span>)
+<span class="skw">type</span>(<span class="str">"First"</span>+Key.TAB+Key.TAB+<span class="str">"Last"</span>+Key.TAB+Key.ENTER)
 <span class="skw">click</span>(<img src="ok.png" />)
 <span class="skw">click</span>(<img src="Next_arrow.png" />)
 <span class="skw">wait</span>(<span class="dig">1</span>)
-<span class="skw">type</span>(<span class="str">"microscope"</span>)
-Key.TAB+Key.ENTER
+<span class="skw">type</span>(<span class="str">"microscope"</span>+Key.TAB+Key.ENTER)
 <span class="skw">click</span>(<img src="ok.png" />)
 <span class="skw">click</span>(<img src="Finish.png" />)
 <span class="skw">click</span>(<img src="ok.png" />)
