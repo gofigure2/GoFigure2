@@ -87,7 +87,7 @@ void QGoDBTrackManager::DisplayInfoForAllTraces(
   vtkMySQLDatabase *iDatabaseConnector)
 {
   this->DisplayInfoForAllTracesTemplate< GoDBTWContainerForTrackLineage >(
-    this->m_TWContainer, iDatabaseConnector);
+    this->m_TWContainer, iDatabaseConnector,Qt::Unchecked);
 }
 //-------------------------------------------------------------------------
 
@@ -208,7 +208,6 @@ void QGoDBTrackManager::GetTracesInfoFromDBAndModifyContainerForVisu(
     this->m_TrackContainerInfoForVisu->Insert(*it);
     ++it;
     }
-  this->m_TrackContainerInfoForVisu->Print();
 }
 //-------------------------------------------------------------------------
 

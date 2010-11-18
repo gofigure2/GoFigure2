@@ -60,10 +60,10 @@ public:
   \brief get all the data from the database to load all the meshes for the imagingsession
   into the table widget and the container for the visu
   \param[in] iDatabaseConnector connection to the database
+  \param[in] iTimePoint current timepoint
   */
-  void DisplayInfoAndLoadVisuContainerForAllMeshes(vtkMySQLDatabase *iDatabaseConnector);
-
-  //unsigned int iTimePoint);
+  void DisplayInfoAndLoadVisuContainerForAllMeshes(vtkMySQLDatabase *iDatabaseConnector,
+	unsigned int iTimePoint);
 
   virtual void DisplayInfoForLastCreatedTrace(vtkMySQLDatabase *iDatabaseConnector);
 
@@ -160,6 +160,13 @@ protected:
   //virtual pure method in QGoDBTraceManager
   virtual void GetTracesInfoFromDBAndModifyContainerForVisu(
     vtkMySQLDatabase* iDatabaseConnector,std::vector<int> iVectIDs = std::vector< int >());
+
+  /**
+  \brief get the meshesIDs belonging to iTimePoint and set their visibility
+  on after setting all meshesIDs visibility off
+  \param[in] iTimePoint current timepoint
+  */
+  //void UpdateTracesVisibilityForGivenTimePoint(unsigned int iTimePoint);
 
 protected slots:
   //virtual pure method in QGoDBTraceManager

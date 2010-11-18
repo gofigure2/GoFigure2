@@ -1036,10 +1036,10 @@ void QGoTabImageView3DwT::LoadChannelTime()
 
   if ( ok )
     {
-      qDebug() << "user selected an item and pressed OK";
+     // qDebug() << "user selected an item and pressed OK";
       // use the item
       int value = item.toInt(&ok, 10);
-      qDebug() << "value:" << value;
+      //qDebug() << "value:" << value;
       // emit with channel...
       // keep track of channel of interest when we move through time
       m_ChannelOfInterest = value;
@@ -1048,7 +1048,7 @@ void QGoTabImageView3DwT::LoadChannelTime()
     }
   else
     {
-    qDebug() << "user selected an item and pressed CANCEL";
+    //qDebug() << "user selected an item and pressed CANCEL";
     }
 }
 //-------------------------------------------------------------------------
@@ -1900,13 +1900,13 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
         m_TCoord = iTimePoint;
         if(m_ChannelClassicMode)
           {
-          qDebug() << "CLASSIC mode";
+          //qDebug() << "CLASSIC mode";
           SetTimePointWithMegaCapture();
           }
         else
           {
-          qDebug() << "TRACK mode";
-          qDebug() << "CHANNEL: " << m_ChannelOfInterest;
+          //qDebug() << "TRACK mode";
+         // qDebug() << "CHANNEL: " << m_ChannelOfInterest;
           SetTimePointWithMegaCaptureTimeChannels( m_ChannelOfInterest );
           }
         emit TimePointChanged(m_TCoord);
@@ -2351,7 +2351,7 @@ VisualizeTrack(vtkPolyData *iMesh)
 
   if ( iMesh )
     {
-    bool visibility = true;
+    //bool visibility = true;
 
     vtkProperty *mesh_property = vtkProperty::New();
     mesh_property->SetColor(RGBA[0], RGBA[1], RGBA[2]);
@@ -2962,13 +2962,23 @@ QGoTabImageView3DwT::ComputeMeshAttributes( vtkPolyData *iMesh,
         static_cast< int >( calculator->GetSumIntensity() );
       oAttributes.m_MeanIntensityMap[channelname] = calculator->GetMeanIntensity();
       oAttributes.m_Volume = calculator->GetPhysicalSize();
-      qDebug() << "volume:" << oAttributes.m_Volume;
       oAttributes.m_Area = calculator->GetArea();
       oAttributes.m_Size = calculator->GetSize();
       }
     }
   else
     {
+    vtkSmartPointer< vtkImageExport > vtk_exporter =
+      vtkSmartPointer< vtkImageExport >::New();
+    itk::VTKImageImport< ImageType >::Pointer itk_importer =
+      itk::VTKImageImport< ImageType >::New();
+    vtk_exporter->SetInput(m_InternalImages[0]);
+
+    ConnectPipelines< vtkImageExport, itk::VTKImageImport< ImageType >::Pointer >(
+      vtk_exporter, itk_importer);
+    calculator->SetImage( itk_importer->GetOutput() );
+    calculator->Update();
+
     oAttributes.m_Volume = calculator->GetPhysicalSize();
     oAttributes.m_Area = calculator->GetArea();
     oAttributes.m_Size = calculator->GetSize();

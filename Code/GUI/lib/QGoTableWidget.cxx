@@ -155,6 +155,21 @@ void QGoTableWidget::SetVisibleStateForTraceID(unsigned int iTraceID,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+void  QGoTableWidget::SetVisibleStateForListTraceIDs(
+  std::list<unsigned int> iListTraceIDs,Qt::CheckState iState,
+  std::string iTraceName)
+{
+  std::list<unsigned int>::iterator iter = iListTraceIDs.begin();
+  while (iter != iListTraceIDs.end())
+  {
+  this->SetVisibleStateForTraceID(*iter,iTraceName,iState,false);                                              
+  iter++;
+  }
+}
+
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 void QGoTableWidget::SetCheckStateForTraceID(unsigned int iTraceID,
                                              std::string iTraceName,
                                              Qt::CheckState iState,
@@ -267,7 +282,9 @@ void QGoTableWidget::DisplayContent(TWContainerType iTWRowContainer,
                                     std::vector< int > iIndexColorTraceRowContainer,
                                     std::vector< int > iIndexColorCollectionRowContainer,
                                     std::string iTraceName, std::string iCollectionName,
-                                    std::list< std::string > iColumnNames)
+                                    std::list< std::string > iColumnNames,
+                                    Qt::CheckState iState,
+                                    int iIndexShowColumn)
 {
   this->DisplayColumnNames(iTraceName.c_str(), iColumnNames);
   if ( iTWRowContainer.empty() )
@@ -318,7 +335,15 @@ void QGoTableWidget::DisplayContent(TWContainerType iTWRowContainer,
         }       //ENDIF
       }         //ENDFOR
     SetSelectedColumn(static_cast< unsigned int >( NbofRows ), 0);
-    SetVisibleColumn(static_cast< unsigned int >( NbofRows ), 0);
+    if (iIndexShowColumn == 0 || iTWRowContainer[iIndexShowColumn].second.empty()) //track and lineage
+      {
+      this->SetVisibleColumn(static_cast< unsigned int >( NbofRows ),0,iState);
+      }
+    else //mesh and contour
+      {
+      this->SetVisibleColumn(static_cast< unsigned int >( NbofRows ), 0,iTWRowContainer[iIndexShowColumn].second);
+      }
+
     this->SetColorForTable(iTWRowContainer, iIndexColorTraceRowContainer, iTraceName, 0);
     this->SetColorForTable(iTWRowContainer, iIndexColorCollectionRowContainer, iCollectionName, 0);
     } //ENDELSE
@@ -350,7 +375,8 @@ void QGoTableWidget::SetSelectedColumn(unsigned int iNbOfRows,
 
 //--------------------------------------------------------------------------
 void QGoTableWidget::SetVisibleColumn(unsigned int iNbOfRows,
-                                      unsigned int iStartedRow)
+                                      unsigned int iStartedRow,
+                                      Qt::CheckState iState)
 {
   int indexCol = findColumnName("Show");
 
@@ -363,10 +389,47 @@ void QGoTableWidget::SetVisibleColumn(unsigned int iNbOfRows,
     QColor WhiteColor(Qt::white);
     Checkbox->setTextColor(WhiteColor);
     this->setItem(i, indexCol, Checkbox);
-    this->setVisibleStateCheckBox(Checkbox, Qt::Checked, false);
+    //this->setVisibleStateCheckBox(Checkbox, Qt::Checked, false);
+    this->setVisibleStateCheckBox(Checkbox, iState, false);
     }
 }
 
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTableWidget::SetVisibleColumn(unsigned int iNbOfRows,
+                                      unsigned int StartedRow,
+                                      std::vector<std::string> iListState)
+{
+  int indexCol = findColumnName("Show");
+  if(iNbOfRows != iListState.size())
+    {
+    std::cout<<"can not fill the isVisible column ";
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
+    return;
+    }
+
+  for ( unsigned int i = StartedRow; i < iNbOfRows + StartedRow; i++ )
+    {
+    QTableWidgetItem *Checkbox = new QTableWidgetItem;
+    //Checkbox->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable |
+    // Qt::ItemIsUserCheckable);
+    Checkbox->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+    QColor WhiteColor(Qt::white);
+    Checkbox->setTextColor(WhiteColor);
+    this->setItem(i, indexCol, Checkbox);
+    if(iListState.at(i) == "true")
+      {
+      this->setVisibleStateCheckBox(Checkbox, Qt::Checked, false);
+      }
+    else
+      {
+        this->setVisibleStateCheckBox(Checkbox, Qt::Unchecked, false);
+      }
+    }
+
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------

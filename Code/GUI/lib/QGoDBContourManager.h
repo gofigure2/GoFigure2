@@ -91,8 +91,10 @@ public:
   \brief get all the data from the database to load all the contours for the imagingsession
   into the table widget and the container for the visu
   \param[in] iDatabaseConnector connection to the database
+  \param[in] iTimePoint current timepoint
   */
-  void DisplayInfoAndLoadVisuContainerForAllContours(vtkMySQLDatabase *iDatabaseConnector);
+  void DisplayInfoAndLoadVisuContainerForAllContours(vtkMySQLDatabase *iDatabaseConnector,
+    unsigned int iTimePoint);
 
   /**
   \brief is called when the user choses the change color action in the
@@ -152,6 +154,13 @@ protected:
   //virtual pure method in QGoDBTraceManager
   virtual void DisplayInfoForAllTraces(vtkMySQLDatabase *iDatabaseConnector);
 
+  /**
+  \brief get the contoursIDs belonging to iTimePoint and set their visibility
+  on after setting all contoursIDs visibility off
+  \param[in] iTimePoint current timepoint
+  */
+  //void UpdateTracesVisibilityForGivenTimePoint(unsigned int iTimePoint);
+  
   //virtual pure method in QGoDBTraceManager
   virtual void GetTracesInfoFromDBAndModifyContainerForVisu(
     vtkMySQLDatabase* iDatabaseConnector,std::vector<int> iVectIDs = std::vector< int >());
