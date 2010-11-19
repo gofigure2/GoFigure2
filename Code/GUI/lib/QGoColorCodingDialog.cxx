@@ -112,6 +112,7 @@ QGoColorCodingDialog::ColorWay QGoColorCodingDialog::GetColorWay(
       {
       oNameWay = (ColorWay)3;
       *ioLUT = ColorDialog->m_LUT;
+      ColorDialog->accept();
       }
     }
   else
