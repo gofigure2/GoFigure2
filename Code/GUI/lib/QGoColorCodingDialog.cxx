@@ -40,8 +40,9 @@
 QGoColorCodingDialog::QGoColorCodingDialog(std::string iTraceName,QWidget *iParent):
   QDialog(iParent)
 {
-  QLabel* ChooseYourWay = new QLabel(tr("Choose how you want to color your %1s").arg(iTraceName.c_str()) );
+  QLabel* ChooseYourWay = new QLabel(tr("Choose how you want to color your %1s :").arg(iTraceName.c_str()) );
   QRadioButton* DefaultButton = new QRadioButton(tr("Default"),this);
+  DefaultButton->setChecked(true);
   QRadioButton* LUTButton = new QRadioButton(tr("Choose a range of colors"),this);
   QRadioButton* RandomButton = new QRadioButton(tr("Randomly"),this);
 
@@ -66,4 +67,6 @@ QGoColorCodingDialog::~QGoColorCodingDialog()
 //-------------------------------------------------------------------------
 void QGoColorCodingDialog::OpenLUTDialog()
 {
+ vtkLookupTable* LUT = QGoLUTDialog::GetLookupTable(this,
+                                         tr("Choose your range of colors"));
 }
