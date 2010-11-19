@@ -81,7 +81,21 @@ setBundlePath(address)
 <span class="skw">click</span>(<img src="File.png" />)
 <span class="skw">click</span>(<img src="Use_database.png" />)
 <span class="skw">click</span>(<img src="Next.png" />)
-<span class="skw">click</span>(<img src="Name_of_project.png" />.right(<span class="dig">100</span>))
+<span class="cmt">#click("text_box.png")
+</span>keyDown(Key.SHIFT)
+<span class="skw">type</span>(Key.TAB+Key.TAB+Key.TAB+Key.TAB)
+keyUp(Key.SHIFT)
+<span class="skw">wait</span>(<span class="dig">1</span>)
+<span class="skw">type</span>(<span class="str">"Project Name"</span>)
+<span class="skw">click</span>(<img src="Next.png" />)
+keyDown(Key.SHIFT)
+<span class="skw">type</span>(Key.TAB+Key.TAB+Key.TAB+Key.TAB+Key.TAB)
+keyUp(Key.SHIFT)
+<span class="skw">wait</span>(<span class="dig">1</span>)
+<span class="skw">type</span>(<span class="str">"ImagingSession1"</span>)
+<span class="skw">type</span>(Key.TAB+Key.TAB)
+
+<span class="skw">click</span>(<img src="Finish.png" />)
 </pre>
 </body>
 </html>
