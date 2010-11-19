@@ -128,102 +128,10 @@ public:
                                 QGoImageView3D *iView);
 
   /** \brief Destructor. */
-  ~ContourMeshContainer();
+  virtual ~ContourMeshContainer();
 
   /** */
   void SetTimePoint(const unsigned int & iT);
-
-  /**
-    \brief Update Visualization of the given TraceIDs
-    \tparam TContainer Container of TraceIDs
-    \param[in] iList input container of TraceIDs
-    \param[in] iContour
-  */
-  template< class TContainer >
-  void UpdateVisualizationForGivenIDs(TContainer iList,
-                                      const bool & iContour)
-  {
-    typename TContainer::iterator it = iList.begin();
-
-    while ( it != iList.end() )
-      {
-      MultiIndexContainerTraceIDIterator id_it =
-        m_Container.get< TraceID >().find( static_cast< unsigned int >( *it ) );
-
-      if ( id_it != m_Container.get< TraceID >().end() )
-        {
-        ContourMeshStructure temp(*id_it);
-        temp.Highlighted = false;
-        temp.Visible = false;
-
-        vtkProperty *tproperty = vtkProperty::New();
-        tproperty->SetColor(id_it->rgba[0], id_it->rgba[1], id_it->rgba[2]);
-        tproperty->SetOpacity(id_it->rgba[3]);
-
-        vtkPolyData *nodes = id_it->Nodes;
-        if ( nodes )
-          {
-          temp.Visible =
-            ( static_cast< unsigned int >( m_TCoord ) == id_it->TCoord );
-
-          std::vector< vtkActor * > actor;
-
-          if ( iContour )
-            {
-            int dir = ComputeDirectionFromContour(nodes);
-
-            if ( dir != -1 )
-              {
-              m_ImageView->EnableContourWidget(true);
-              m_ImageView->InitializeContourWidgetNodes(dir, nodes);
-
-              vtkPolyData *trace = vtkPolyData::New();
-              trace->ShallowCopy(
-                m_ImageView->GetContourRepresentationAsPolydata(dir) );
-
-              actor = this->m_ImageView->AddContour(trace, tproperty);
-
-              m_ImageView->ReinitializeContourWidget();
-              m_ImageView->EnableContourWidget(false);
-              }
-            }
-          else
-            {
-            actor = this->m_ImageView->AddContour(nodes, tproperty);
-            }
-
-          temp.ActorXY = actor[0];
-          temp.ActorXZ = actor[1];
-          temp.ActorYZ = actor[2];
-          temp.ActorXYZ = actor[3];
-
-          typedef void ( QGoImageView3D::*ImageViewMember )(const int &, vtkActor *);
-          ImageViewMember f;
-
-          if ( temp.Visible )
-            {
-            f = &QGoImageView3D::AddActor;
-            }
-          else
-            {
-            f = &QGoImageView3D::RemoveActor;
-            }
-
-          for ( int i = 0; i < 4; i++ )
-            {
-            ( m_ImageView->*f )(i, actor[i]);
-            }
-          }
-        else
-          {
-          temp.Visible = false;
-          }
-
-        m_Container.get< TraceID >().replace(id_it, temp);
-        }
-      ++it;
-      }
-  }
 
   /** \brief Display all elements for a given time point
   *   \param[in] iT time point

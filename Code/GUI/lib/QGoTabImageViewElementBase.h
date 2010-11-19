@@ -42,7 +42,8 @@
 
 #include "QGoGUILibConfigure.h"
 
-class ContourMeshContainer;
+class ContourContainer;
+class MeshContainer;
 class vtkPolyData;
 class vtkContourWidget;
 class vtkOrientedGlyphContourRepresentation;
@@ -130,7 +131,9 @@ protected:
 
   std::vector< vtkSmartPointer< vtkContourWidget > >                      m_ContourWidget;
   std::vector< vtkSmartPointer< vtkOrientedGlyphContourRepresentation > > m_ContourRepresentation;
-  ContourMeshContainer *                                                  m_ContourMeshContainer;
+
+  ContourContainer * m_ContourContainer;
+  MeshContainer * m_MeshContainer;
 
   QGoNavigationDockWidget *           m_NavigationDockWidget;
   QGoContourManualSegmentationWidget *m_ManualSegmentationWidget;

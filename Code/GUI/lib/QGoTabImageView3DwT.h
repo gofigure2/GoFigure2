@@ -157,12 +157,12 @@ public:
    */
   virtual void ReadSettings() {}
 
-  ContourMeshContainer * GetContourContainer()
+  ContourContainer * GetContourContainer()
   {
     return m_ContourContainer;
   }
 
-  ContourMeshContainer * GetMeshContainer()
+  MeshContainer * GetMeshContainer()
   {
     return m_MeshContainer;
   }
@@ -380,9 +380,9 @@ protected:
 
   vtkPoints *m_Seeds;
 
-  ContourMeshContainer *m_ContourContainer;
-  ContourMeshContainer *m_MeshContainer;
-  TrackContainer       *m_TrackContainer;
+  ContourContainer *m_ContourContainer;
+  MeshContainer    *m_MeshContainer;
+  TrackContainer   *m_TrackContainer;
 
   bool m_TraceWidgetRequiered;
 

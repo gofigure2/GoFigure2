@@ -40,7 +40,7 @@
 #include "GoDBTWContainerForMesh.h"
 #include "QGoDBTraceManager.h"
 #include "GoDBMeshRow.h"
-#include "ContourMeshContainer.h"
+#include "MeshContainer.h"
 
 class QGOGUILIB_EXPORT QGoDBMeshManager:public QGoDBTraceManager
 {
@@ -49,12 +49,12 @@ public:
   QGoDBMeshManager(int iImgSessionID,
                    QWidget *iparent);
   ~QGoDBMeshManager();
-  
+
   /**
   \brief set the m_MeshContainerInfoForVisu to the iContainerForVisu
   \param[in] iContainerForVisu common container for the visu and database
   */
-  void SetMeshesInfoContainerForVisu(ContourMeshContainer *iContainerForVisu);
+  void SetMeshesInfoContainerForVisu(MeshContainer *iContainerForVisu);
 
   /**
   \brief get all the data from the database to load all the meshes for the imagingsession
@@ -63,7 +63,7 @@ public:
   \param[in] iTimePoint current timepoint
   */
   void DisplayInfoAndLoadVisuContainerForAllMeshes(vtkMySQLDatabase *iDatabaseConnector,
-	unsigned int iTimePoint);
+  unsigned int iTimePoint);
 
   virtual void DisplayInfoForLastCreatedTrace(vtkMySQLDatabase *iDatabaseConnector);
 
@@ -139,7 +139,7 @@ public:
   \return a map with IDs as keys and info as value
   */
   std::map<unsigned int,double*> GetMeshesInfoForImportedMesh(
-	std::list<unsigned int> iMeshesIDs);
+  std::list<unsigned int> iMeshesIDs);
 
   /**
   \brief check in the database if there is an existing mesh belonging
@@ -170,7 +170,7 @@ public:
 
 protected:
   GoDBTWContainerForMesh *m_TWContainer;
-  ContourMeshContainer   *m_MeshContainerInfoForVisu;
+  MeshContainer   *m_MeshContainerInfoForVisu;
 
   //virtual pure method in QGoDBTraceManager
   virtual void SetCollectionsTraceNames();

@@ -458,6 +458,8 @@ protected:
   */
   void RecomputeCurrentElementMap( std::list< double* > iPoints);
 
+  std::vector< vtkActor* > AddTrace( vtkPolyData* , vtkProperty* );
+
 private:
   Q_DISABLE_COPY(TrackContainer);
 };

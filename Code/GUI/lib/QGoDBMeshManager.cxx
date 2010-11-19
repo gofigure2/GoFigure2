@@ -58,9 +58,9 @@ QGoDBMeshManager::~QGoDBMeshManager()
 
 //-------------------------------------------------------------------------
 void QGoDBMeshManager::SetMeshesInfoContainerForVisu(
-  ContourMeshContainer *iContainerForVisu)
+  MeshContainer *iContainerForVisu)
 {
-  this->SetTracesInfoContainerForVisuTemplate<ContourMeshContainer>(
+  this->SetTracesInfoContainerForVisuTemplate<MeshContainer>(
     iContainerForVisu,&this->m_MeshContainerInfoForVisu);
 }
 //-------------------------------------------------------------------------
@@ -101,7 +101,7 @@ void QGoDBMeshManager::DisplayInfoForAllTraces(
 //-------------------------------------------------------------------------
 /*void QGoDBMeshManager::UpdateTracesVisibilityForGivenTimePoint(unsigned int iTimePoint)
 {
-  std::list<unsigned int> ListMeshes = 
+  std::list<unsigned int> ListMeshes =
     this->m_MeshContainerInfoForVisu->GetElementsTraceIDForGivenTimePoint(
     iTimePoint);
   this->m_Table->SetVisibleStateForListTraceIDs(
@@ -329,7 +329,7 @@ void QGoDBMeshManager::UpdateTWAndContainerForImportedTraces(
   //update the visualization and the data from visu in the container for visu:
   this->m_MeshContainerInfoForVisu->
     UpdateVisualizationForGivenIDs< std::vector< int > >(
-      iVectorImportedTraces, false);
+      iVectorImportedTraces );
 }
 //-------------------------------------------------------------------------
 
@@ -404,7 +404,7 @@ void QGoDBMeshManager::SetColorCoding(bool IsChecked)
 //-------------------------------------------------------------------------
 /*void QGoDBMeshManager::BackFromColorCoding()
 {
-	this->SetBackFromColorCodingTemplate<ContourMeshContainer>(
+  this->SetBackFromColorCodingTemplate<ContourMeshContainer>(
     this->m_MeshContainerInfoForVisu);
 }*/
 

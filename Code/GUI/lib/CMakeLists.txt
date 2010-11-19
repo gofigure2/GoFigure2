@@ -18,6 +18,8 @@ CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx.in
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx @ONLY IMMEDIATE )
 
 SET( QGoGUILIB_SRC
+  ContourContainer.cxx
+  MeshContainer.cxx
   ContourMeshContainer.cxx
   TrackContainer.cxx
   QGoConnectServerPage.cxx
@@ -132,6 +134,8 @@ ENDIF( ENABLE_VIDEO_RECORD_AVI )
 #---------------------------------------------------------------------------
 
 SET( QGoGUILIB_HDRS
+  ContourContainer.h
+  MeshContainer.h
   ContourMeshContainer.h
   TrackContainer.h
   QGoConnectServerPage.h

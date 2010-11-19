@@ -143,10 +143,10 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent):
 
   m_MegaCaptureReader = itk::MegaCaptureReader::New();
 
-  m_ContourContainer = new ContourMeshContainer(this, this->m_ImageView);
+  m_ContourContainer = new ContourContainer(this, this->m_ImageView);
   m_ContourContainer->SetHighlightedProperty(m_HighlightedContoursProperty);
 
-  m_MeshContainer = new ContourMeshContainer(this, this->m_ImageView);
+  m_MeshContainer = new MeshContainer(this, this->m_ImageView);
   m_MeshContainer->SetHighlightedProperty(m_HighlightedMeshesProperty);
 
   m_TrackContainer = new TrackContainer(this, this->m_ImageView);
@@ -3006,11 +3006,11 @@ void QGoTabImageView3DwT::ImportTracks()
 {
   if ( this->m_DataBaseTables->IsDatabaseUsed() )
     {
-	std::vector<int> NewTrackIDs = 
-		m_DataBaseTables->ImportTracks();
-	//call the method of the trackContainer to update the points :argument
-	// NewTrackIDs
-	this->m_TrackContainer->UpdateTracksStrings(NewTrackIDs);
+  std::vector<int> NewTrackIDs =
+    m_DataBaseTables->ImportTracks();
+  //call the method of the trackContainer to update the points :argument
+  // NewTrackIDs
+  this->m_TrackContainer->UpdateTracksStrings(NewTrackIDs);
     GoToDefaultMenu();
     }
 }

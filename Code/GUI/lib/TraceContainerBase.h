@@ -171,7 +171,7 @@ public:
           temp.Visible = id_it->Visible;
 
           std::vector< vtkActor * > actor =
-              this->m_ImageView->AddContour(nodes, tproperty);
+              this->AddTrace( nodes, tproperty );
 
           temp.ActorXY = actor[0];
           temp.ActorXZ = actor[1];
@@ -453,6 +453,8 @@ public:
 
 protected:
   vtkProperty *m_HighlightedProperty;
+
+  virtual std::vector< vtkActor* > AddTrace( vtkPolyData* , vtkProperty* ) = 0;
 
   /** \brief Change elements highlighting property given a list of TraceIDs
   and the new status.

@@ -989,3 +989,13 @@ UpdateElementVisibilityWithGivenTraceIDs( const QStringList& iList,
 {
   Superclass::UpdateElementVisibilityWithGivenTraceIDsBase( iList, iCheck );
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::vector< vtkActor* >
+TrackContainer::
+AddTrace( vtkPolyData* iNode, vtkProperty* iProperty )
+{
+  return this->m_ImageView->AddContour(iNode, iProperty);
+}
+//-------------------------------------------------------------------------
