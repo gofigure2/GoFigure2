@@ -37,24 +37,11 @@
 #include <QVBoxLayout>
 
 
-QGoColorCodingDialog::QGoColorCodingDialog(std::string iTraceName,QWidget *iParent):
-  QDialog(iParent)
+QGoColorCodingDialog::QGoColorCodingDialog(std::string iTraceName,bool iRandomIncluded,
+    QWidget *iParent):QDialog(iParent)
 {
-  QLabel* ChooseYourWay = new QLabel(tr("Choose how you want to color your %1s :").arg(iTraceName.c_str()) );
-  QRadioButton* DefaultButton = new QRadioButton(tr("Default"),this);
-  DefaultButton->setChecked(true);
-  QRadioButton* LUTButton = new QRadioButton(tr("Choose a range of colors"),this);
-  QRadioButton* RandomButton = new QRadioButton(tr("Randomly"),this);
-
-  QVBoxLayout* VLayout = new QVBoxLayout(this);
-  VLayout->addWidget(ChooseYourWay);
-  VLayout->addWidget(DefaultButton);
-  VLayout->addWidget(LUTButton);
-  VLayout->addWidget(RandomButton);
-
-  QObject::connect(LUTButton,SIGNAL(clicked()),this,SLOT(OpenLUTDialog()));
-
-  this->setLayout(VLayout);
+ 
+  this->SetUpUi(iTraceName,iRandomIncluded);
 }
 //-------------------------------------------------------------------------
 
@@ -67,6 +54,69 @@ QGoColorCodingDialog::~QGoColorCodingDialog()
 //-------------------------------------------------------------------------
 void QGoColorCodingDialog::OpenLUTDialog()
 {
- vtkLookupTable* LUT = QGoLUTDialog::GetLookupTable(this,
+ this->m_LUT = QGoLUTDialog::GetLookupTable(this,
                                          tr("Choose your range of colors"));
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoColorCodingDialog::SetUpUi(std::string iTraceName,
+  bool iRandomIncluded)
+{
+  QLabel* ChooseYourWay = new QLabel(tr("Choose how you want to color your %1s :").arg(iTraceName.c_str()) );
+  m_DefaultButton = new QRadioButton(tr("Default"),this);
+  m_DefaultButton->setChecked(true);
+  m_LUTButton = new QRadioButton(tr("Choose a range of colors"),this);
+
+  QVBoxLayout* VLayout = new QVBoxLayout(this);
+  VLayout->addWidget(ChooseYourWay);
+  VLayout->addWidget(m_DefaultButton);
+  VLayout->addWidget(m_LUTButton);
+
+  if (iRandomIncluded)
+    {
+    m_RandomButton = new QRadioButton(tr("Randomly"),this);  
+    VLayout->addWidget(m_RandomButton);
+    }
+
+  QDialogButtonBox* ButtonBox = new QDialogButtonBox(this);
+  ButtonBox->setStandardButtons(QDialogButtonBox::Cancel
+                                      | QDialogButtonBox::Ok);
+  VLayout->addWidget(ButtonBox);
+
+  QObject::connect(this->m_LUTButton,SIGNAL(clicked()),this,SLOT(OpenLUTDialog()));
+  QObject::connect(ButtonBox, SIGNAL( accepted() ),
+                    this, SLOT( accept() ) );
+  QObject::connect( ButtonBox, SIGNAL( rejected() ),
+                    this, SLOT( reject() ) );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+QGoColorCodingDialog::ColorWay QGoColorCodingDialog::GetColorWay(
+    std::string iTraceName, vtkLookupTable **ioLUT,
+    bool iRandomIncluded, QWidget *iiParent)
+{
+  QGoColorCodingDialog* ColorDialog = new QGoColorCodingDialog(iTraceName, iRandomIncluded, iiParent);
+  ColorWay oNameWay;
+  if( ColorDialog->exec() == QDialog::Accepted )
+    {
+      if(ColorDialog->m_DefaultButton->isChecked() == true)
+      oNameWay = (ColorWay)1;
+    if (iRandomIncluded)
+      {
+      if(ColorDialog->m_RandomButton->isChecked() == true)
+        oNameWay = (ColorWay)2;
+      }
+    if(ColorDialog->m_LUTButton->isChecked() == true)
+      {
+      oNameWay = (ColorWay)3;
+      *ioLUT = ColorDialog->m_LUT;
+      }
+    }
+  else
+    {
+    oNameWay = (ColorWay)0;
+    }
+  return oNameWay;
 }

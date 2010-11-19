@@ -43,6 +43,9 @@
 #include "GoDBTableWidgetContainer.h"
 #include "QGoGUILibConfigure.h"
 #include "ContourMeshContainer.h"
+#include "QGoColorCodingDialog.h"
+#include "vtkLookupTable.h"
+#include "vtkLookupTableManager.h"
 
 /**
 \class QGoDBTraceManager
@@ -657,14 +660,43 @@ protected:
   {
     std::string ColumnName = "";
     std::map<unsigned int, double> Values;
+    IsColorCodingOn = IsChecked;
 
 	  if (IsChecked)
 	    {
       Values = this->m_Table->GetTraceIDAndColumnsValues(
-		    this->m_TraceNameID,ColumnName);
+		        this->m_TraceNameID,ColumnName);
+      vtkLookupTable *ioLUT = vtkLookupTableManager::GetBWLookupTable();
+      bool IsRandomIncluded;
+      if (ColumnName == this->m_TraceNameID || ColumnName == this->m_CollectionNameID)
+        IsRandomIncluded = true;
+      else
+        IsRandomIncluded = false;
+
+      QGoColorCodingDialog::ColorWay UserColorway = 
+        QGoColorCodingDialog::GetColorWay(this->m_TraceName, &ioLUT, 
+        IsRandomIncluded,this->m_Table);
+
+      switch ( UserColorway )
+        {
+        case QGoColorCodingDialog::Default:
+          iContainerForVisu->SetColorCode( ColumnName,Values );
+          break;
+        case QGoColorCodingDialog::Nothing:
+          IsColorCodingOn = !IsChecked;
+          return;
+          break;
+        case QGoColorCodingDialog::Random:        
+          break;
+        case QGoColorCodingDialog::LUT:
+          break;
+        }
 	    }
-    iContainerForVisu->SetColorCode( ColumnName,Values );
-    IsColorCodingOn = IsChecked;
+    else
+      {
+      IsColorCodingOn = IsChecked;
+      }
+    //iContainerForVisu->SetColorCode( ColumnName,Values );  
   }
 
   /**

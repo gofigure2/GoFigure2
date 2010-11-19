@@ -37,21 +37,54 @@
 
 #include <QtGui/QDialog>
 #include <QtGui/QDialogButtonBox>
+#include <QRadioButton>
 #include "QGoGUILibConfigure.h"
 #include "QGoLUTDialog.h"
 
 class QGOGUILIB_EXPORT QGoColorCodingDialog:public QDialog
 {
   Q_OBJECT
+
 public:
-  /** \brief Constructor */
-  explicit QGoColorCodingDialog(std::string iTraceName,
-    QWidget *parent = 0);
+
+  /** 
+  \brief Constructor
+  \param[in] iTraceName name of the trace to be colorcoded
+  \param[in] iParent parent of the widget
+ */
+  explicit QGoColorCodingDialog(std::string iTraceName,bool iRandomIncluded,
+    QWidget *iParent = 0);
+
+  enum ColorWay{Nothing,Default,Random,LUT};
 
    /** \brief Destructor */
   virtual ~QGoColorCodingDialog();
 
+  /** 
+  \brief get the way the user wants its traces to be colorcoded
+  and the LUT if he chooses the LUT
+  \param[in] iTraceName name of the trace to be colorcoded
+  \param[in,out] ioLUT lookup table choosen by the user
+  \param[in] iParent parent of the widget
+  */
+  static ColorWay GetColorWay(std::string iTraceName,
+   vtkLookupTable **ioLUT,bool iRandomIncluded, QWidget *iiParent = 0);
+
+protected:
+  QRadioButton*   m_DefaultButton;
+  QRadioButton*   m_LUTButton;
+  QRadioButton*   m_RandomButton;
+  vtkLookupTable* m_LUT;
+  /** 
+  \brief set the components of the widget and the connection
+  \param[in] iTraceName name of the trace to be colorcoded
+  */
+  void SetUpUi(std::string iTraceName, bool iRandomIncluded);
+
 protected slots:
+  /**
+  \brief open tha QGoLUTDialog to let the user choose a LUT
+  */
   void OpenLUTDialog();
 };
 #endif
