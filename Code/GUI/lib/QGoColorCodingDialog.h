@@ -47,7 +47,7 @@ class QGOGUILIB_EXPORT QGoColorCodingDialog:public QDialog
 
 public:
 
-  /** 
+  /**
   \brief Constructor
   \param[in] iTraceName name of the trace to be colorcoded
   \param[in] iParent parent of the widget
@@ -60,7 +60,7 @@ public:
    /** \brief Destructor */
   virtual ~QGoColorCodingDialog();
 
-  /** 
+  /**
   \brief get the way the user wants its traces to be colorcoded
   and the LUT if he chooses the LUT
   \param[in] iTraceName name of the trace to be colorcoded
@@ -75,7 +75,7 @@ protected:
   QRadioButton*   m_LUTButton;
   QRadioButton*   m_RandomButton;
   vtkLookupTable* m_LUT;
-  /** 
+  /**
   \brief set the components of the widget and the connection
   \param[in] iTraceName name of the trace to be colorcoded
   */
@@ -86,5 +86,7 @@ protected slots:
   \brief open tha QGoLUTDialog to let the user choose a LUT
   */
   void OpenLUTDialog();
+private:
+  Q_DISABLE_COPY( QGoColorCodingDialog );
 };
 #endif

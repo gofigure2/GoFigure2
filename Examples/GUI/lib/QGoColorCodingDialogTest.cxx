@@ -47,9 +47,9 @@ int main(int argc, char *argv[])
     }
 
   QApplication app(argc, argv);
-  
-  QGoColorCodingDialog *win = new QGoColorCodingDialog(argv[1]);
-  
+
+  QGoColorCodingDialog *win = new QGoColorCodingDialog(std::string("Contour"), true);
+
   win->show();
 
 
