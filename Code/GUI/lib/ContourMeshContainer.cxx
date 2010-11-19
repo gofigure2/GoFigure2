@@ -727,8 +727,8 @@ ContourMeshContainer::
 SetColorCode( const std::string& iColumnName,
               const std::map< unsigned int, std::string >& iValues )
 {
-  typedef typename std::map< unsigned int, std::string > MapType;
-  typedef typename MapType::const_iterator MapConstIterator;
+  typedef std::map< unsigned int, std::string > MapType;
+  typedef MapType::const_iterator MapConstIterator;
 
   std::map< std::string, double > stringmap;
 
@@ -828,8 +828,8 @@ ContourMeshContainer::
 SetRandomColor( const std::string& iColumnName,
                 const std::map< unsigned int, unsigned int >& iIds )
 {
-  typedef typename std::map< unsigned int, unsigned int > MapType;
-  typedef typename MapType::const_iterator MapConstIterator;
+  typedef std::map< unsigned int, unsigned int > MapType;
+  typedef MapType::const_iterator MapConstIterator;
 
   if( iColumnName.empty() || iIds.empty() )
     {
