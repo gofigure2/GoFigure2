@@ -52,7 +52,7 @@
 #include "vtkMapper.h"
 #include "QGoImageView3D.h"
 
-class vtkLookupTable;
+#include "vtkLookupTableManager.h"
 
 /**
   \class ContourMeshContainer
@@ -806,8 +806,87 @@ public:
   void SetColorCode( const std::string& iColumnName,
                      const std::map< unsigned int, std::string >& iValues );
 
+  template< typename TValue >
   void SetRandomColor( const std::string& iColumnName,
-                       const std::map< unsigned int, unsigned int >& iIds );
+                       const std::map< unsigned int, TValue >& iIds )
+    {
+    typedef TValue ValueType;
+    typedef typename std::map< unsigned int, ValueType > MapType;
+    typedef typename MapType::const_iterator MapConstIterator;
+
+    if( iColumnName.empty() || iIds.empty() )
+      {
+      RenderAllElementsWithOriginalColors();
+      return;
+      }
+
+    MapConstIterator it = iIds.begin();
+
+    unsigned int val;
+    try
+      {
+      val = boost::numeric_cast< unsigned int >( it->second );
+      }
+    catch( boost::numeric::bad_numeric_cast& e )
+      {
+      std::cout <<  e.what() <<std::endl;
+      return;
+      }
+
+    unsigned int modulo = val % 30;
+
+    double temp = static_cast< double >( modulo );
+
+    double min_value = temp;
+    double max_value = temp;
+
+    while( it != iIds.end() )
+      {
+      MultiIndexContainerTraceIDIterator
+          trace_it = this->m_Container.get<TraceID>().find( it->first );
+
+      if( trace_it != this->m_Container.get<TraceID>().end() )
+        {
+          if (trace_it->Nodes) //make sure the trace has points !!!
+          {
+          // Here let's make sure you are not passing crazy values!
+          val = boost::numeric_cast< unsigned int >( it->second );
+
+          try
+            {
+            val = boost::numeric_cast< unsigned int >( it->second );
+            }
+          catch( boost::numeric::bad_numeric_cast& e )
+            {
+            std::cout <<  e.what() <<std::endl;
+            return;
+            }
+
+          modulo = val % 30;
+
+          temp = static_cast< double >( modulo );
+
+          if( temp > max_value )
+            {
+            max_value = temp;
+            }
+          if( temp < min_value )
+            {
+            min_value = temp;
+            }
+
+          trace_it->SetScalarData( iColumnName, temp );
+          }
+        } //end make sure the trace has points !!!
+      ++it;
+      }
+
+    this->SetScalarRangeForAllElements( min_value, max_value );
+    this->SetLookupTableForColorCoding(
+        vtkLookupTableManager::GetRandomLookupTable() );
+
+    this->m_ImageView->UpdateRenderWindows();
+    }
 
   /**
     \brief Color code contour / mesh according to values provided

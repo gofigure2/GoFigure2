@@ -39,7 +39,9 @@
 #include <QMessageBox>
 
 QGoDBTraceManager::QGoDBTraceManager():
-  m_Table(NULL), m_CollectionOfTraces(NULL),m_DatabaseConnector(NULL),IsColorCodingOn(false)//, m_TraceContainerInfoForVisu(NULL)
+  m_Table(NULL), m_CollectionOfTraces(NULL),
+  m_DatabaseConnector(NULL), IsColorCodingOn(false)
+  //, m_TraceContainerInfoForVisu(NULL)
 {}
 
 //-------------------------------------------------------------------------
@@ -292,11 +294,11 @@ void QGoDBTraceManager::AddGeneralActionsContextMenu(QMenu *iMenu)
 
   ColorMenu->addAction( tr("To the selected color for the checked %1s")
                     .arg( this->m_TraceName.c_str() ),
-                    this, SLOT( ChangeTraceColor() ) ); 
+                    this, SLOT( ChangeTraceColor() ) );
   QAction* ColorCoding = new QAction(tr("Based on the selected column"),ColorMenu);
   ColorCoding->setCheckable(true);
   ColorCoding->setChecked(IsColorCodingOn);
-  QObject::connect(ColorCoding,SIGNAL(triggered ( bool ) ),this,SLOT( SetColorCoding(bool) ) ); 
+  QObject::connect(ColorCoding,SIGNAL(triggered ( bool ) ),this,SLOT( SetColorCoding(bool) ) );
   ColorMenu->addAction(ColorCoding);
 
   iMenu->addAction(ColorMenu->menuAction());
@@ -544,7 +546,7 @@ void QGoDBTraceManager::CheckTheTraceInTW(unsigned int iTraceID,
 //-------------------------------------------------------------------------
 
 //------------------------------------------------------------------------
-void QGoDBTraceManager::ShowTheTraceInTW(unsigned int iTraceID, 
+void QGoDBTraceManager::ShowTheTraceInTW(unsigned int iTraceID,
                                          Qt::CheckState iState)
 {
   this->m_Table->SetVisibleStateForTraceID(iTraceID,

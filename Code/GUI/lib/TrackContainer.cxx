@@ -953,3 +953,49 @@ UpdateElementVisibilityWithGivenTraceIDs( const QStringList& iList,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void
+TrackContainer::
+RenderAllElementsWithOriginalColors()
+  {
+  MultiIndexContainerIterator t_it = m_Container.begin();
+  while( t_it != m_Container.end() )
+    {
+    t_it->RenderWithOriginalColors();
+    ++t_it;
+    }
+  }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+SetScalarRangeForAllElements( const double& iMin, const double& iMax )
+{
+  // Let's set the scalar range (in order to get nice colors)
+  MultiIndexContainerIterator t_it = m_Container.begin();
+  while( t_it != m_Container.end() )
+    {
+    t_it->SetScalarRange( iMin, iMax );
+    ++t_it;
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+SetLookupTableForColorCoding( vtkLookupTable* iLut )
+{
+  if( iLut )
+    {
+    MultiIndexContainerIterator it = m_Container.begin();
+
+    while( it != m_Container.end() )
+      {
+      it->SetLookupTable( iLut );
+      ++it;
+      }
+    this->m_ImageView->UpdateRenderWindows();
+    }
+}
+//-------------------------------------------------------------------------

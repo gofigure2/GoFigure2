@@ -662,19 +662,19 @@ protected:
     std::map<unsigned int, double> Values;
     IsColorCodingOn = IsChecked;
 
-	  if (IsChecked)
-	    {
-      Values = this->m_Table->GetTraceIDAndColumnsValues(
-		        this->m_TraceNameID,ColumnName);
-      vtkLookupTable *LUT = vtkLookupTableManager::GetBWLookupTable();
-      bool IsRandomIncluded;
-      if (ColumnName == this->m_TraceNameID || ColumnName == this->m_CollectionNameID)
-        IsRandomIncluded = true;
-      else
-        IsRandomIncluded = false;
+		if (IsChecked)
+			{
+			Values = this->m_Table->GetTraceIDAndColumnsValues(
+						this->m_TraceNameID,ColumnName);
+			vtkLookupTable *LUT = vtkLookupTableManager::GetBWLookupTable();
+			bool IsRandomIncluded;
+			if (ColumnName == this->m_TraceNameID || ColumnName == this->m_CollectionNameID)
+				IsRandomIncluded = true;
+			else
+				IsRandomIncluded = false;
 
-      QGoColorCodingDialog::ColorWay UserColorway = 
-        QGoColorCodingDialog::GetColorWay(this->m_TraceName, &LUT, 
+      QGoColorCodingDialog::ColorWay UserColorway =
+        QGoColorCodingDialog::GetColorWay(this->m_TraceName, &LUT,
         IsRandomIncluded,this->m_Table);
 
       switch ( UserColorway )
@@ -686,18 +686,18 @@ protected:
           IsColorCodingOn = !IsChecked;
           return;
           break;
-        case QGoColorCodingDialog::Random:  
-          //iContainerForVisu->SetRandomColor(ColumnName,Values );
+        case QGoColorCodingDialog::Random:
+          iContainerForVisu->SetRandomColor(ColumnName,Values );
           break;
         case QGoColorCodingDialog::LUT:
-          //iContainerForVisu->SetLookupTableForColorCoding(LUT);
+          iContainerForVisu->SetLookupTableForColorCoding(LUT);
           break;
         }
-	    }
+      }
     else
       {
       IsColorCodingOn = IsChecked;
-      iContainerForVisu->SetColorCode( ColumnName,Values );  
+      iContainerForVisu->SetColorCode( ColumnName,Values );
       }
   }
 
@@ -710,7 +710,7 @@ protected:
   void SetBackFromColorCodingTemplate( T* iContainerForVisu)
   {
     std::string ColumnName = "";
-	std::map<unsigned int, double> Values = std::map<unsigned int, double>();
+  std::map<unsigned int, double> Values = std::map<unsigned int, double>();
     iContainerForVisu->SetColorCode( ColumnName,Values );
   }*/
 
