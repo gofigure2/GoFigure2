@@ -666,7 +666,7 @@ protected:
 	    {
       Values = this->m_Table->GetTraceIDAndColumnsValues(
 		        this->m_TraceNameID,ColumnName);
-      vtkLookupTable *ioLUT = vtkLookupTableManager::GetBWLookupTable();
+      vtkLookupTable *LUT = vtkLookupTableManager::GetBWLookupTable();
       bool IsRandomIncluded;
       if (ColumnName == this->m_TraceNameID || ColumnName == this->m_CollectionNameID)
         IsRandomIncluded = true;
@@ -674,7 +674,7 @@ protected:
         IsRandomIncluded = false;
 
       QGoColorCodingDialog::ColorWay UserColorway = 
-        QGoColorCodingDialog::GetColorWay(this->m_TraceName, &ioLUT, 
+        QGoColorCodingDialog::GetColorWay(this->m_TraceName, &LUT, 
         IsRandomIncluded,this->m_Table);
 
       switch ( UserColorway )
@@ -686,9 +686,11 @@ protected:
           IsColorCodingOn = !IsChecked;
           return;
           break;
-        case QGoColorCodingDialog::Random:        
+        case QGoColorCodingDialog::Random:  
+          //iContainerForVisu->SetRandomColor(ColumnName,Values );
           break;
         case QGoColorCodingDialog::LUT:
+          //iContainerForVisu->SetLookupTableForColorCoding(LUT);
           break;
         }
 	    }
