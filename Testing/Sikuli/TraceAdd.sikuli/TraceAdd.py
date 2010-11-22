@@ -15,7 +15,7 @@ def AddNew(Region):
 	print a, "this is a"
 	click(a.below(20))
 
-	click("add_a_new.png")
+#	click("add_a_new.png")
 
 #three trace widget buttons
 TraceObject = ("SelectedColor.png","SelectedCellType.png","SelectedSubCellType.png")
@@ -26,9 +26,17 @@ for a in Action:
 		for i in TraceObject:
 			AddNew(i)
 			if i == ("SelectedColor.png") :
+				click("Add_new_color.png")
 			#chooses a color first, just for this button
 				click("colortable.png")
 				click("ok.png")
+			elif i != ("SelectedColor.png") :
+				if a == "Add New":
+					click("Add_a_new_BLUE.png")
+				if i == ("SelectedCellType.png"):
+					click("Add_a_new_celltype.png") 
+				else:
+					click("Add_a_new_subcelltype.png")	
 				
 			if a == "Add New":
 				wait(1)
