@@ -695,8 +695,8 @@ protected:
     else
       {
       IsColorCodingOn = IsChecked;
+      iContainerForVisu->SetColorCode( ColumnName,Values );  
       }
-    //iContainerForVisu->SetColorCode( ColumnName,Values );  
   }
 
   /**

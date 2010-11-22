@@ -56,6 +56,10 @@ void QGoColorCodingDialog::OpenLUTDialog()
 {
  this->m_LUT = QGoLUTDialog::GetLookupTable(this,
                                          tr("Choose your range of colors"));
+ if (this->m_LUT != NULL)
+  {
+  this->accept();
+  }
 }
 //-------------------------------------------------------------------------
 
