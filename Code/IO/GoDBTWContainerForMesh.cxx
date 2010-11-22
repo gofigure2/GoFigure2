@@ -187,6 +187,7 @@ void GoDBTWContainerForMesh::SetSpecificInfoForTraceTable()
   temp.TableForeignKeyDatabase = "CellTypeID";
   temp.TableKeyDatabase = "CellTypeID";
   m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
   m_RowContainer.push_back(PairTemp);
   temp.Clear();
 
@@ -209,6 +210,7 @@ void GoDBTWContainerForMesh::SetSpecificInfoForTraceTable()
   temp.TableForeignKeyDatabase = "SubCellularID";
   temp.TableKeyDatabase = "SubCellularID";
   m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
   m_RowContainer.push_back(PairTemp);
   temp.Clear();
 }
