@@ -95,6 +95,48 @@ void GoDBTWContainerForMesh::SetSpecificColumnsInfoForMesh()
   PairTemp.first = temp;
   m_RowContainer.push_back(PairTemp);
   temp.Clear();
+
+  //Get the info for CelltypeID:
+  temp.InfoName = "CellTypeID";
+  temp.ColumnNameDatabase = "CellTypeID";
+  temp.TableNameDatabase = this->m_TracesName;
+  temp.TableForeignKeyDatabase = "CellTypeID";
+  temp.TableKeyDatabase = "CellTypeID";
+  m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
+
+  //Get the info for the celltype name:
+  temp.ColumnNameTableWidget = "CellType";
+  temp.ColumnNameDatabase = "Name";
+  temp.TableNameDatabase = "celltype";
+  temp.InfoName = "CellTypeName";
+  temp.TableForeignKeyDatabase = "CellTypeID";
+  temp.TableKeyDatabase = "CellTypeID";
+  m_ColumnsInfos.push_back(temp);
+  m_RowContainer.push_back(PairTemp);
+  temp.Clear();
+
+  //Get the info for SubCelltypeID:
+  temp.InfoName = "SubCellTypeID";
+  temp.ColumnNameDatabase = "SubCellTypeID";
+  temp.TableNameDatabase = this->m_TracesName;
+  temp.TableForeignKeyDatabase = "SubCellularID";
+  temp.TableKeyDatabase = "SubCellularID";
+  m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
+
+   //Get the info for the SubCellType name:
+  temp.ColumnNameTableWidget = "SubCellType";
+  temp.ColumnNameDatabase = "Name";
+  temp.TableNameDatabase = "subcellulartype";
+  temp.InfoName = "SubCellTypeName";
+  temp.TableForeignKeyDatabase = "SubCellularID";
+  temp.TableKeyDatabase = "SubCellularID";
+  m_ColumnsInfos.push_back(temp);
+  m_RowContainer.push_back(PairTemp);
+  temp.Clear();
 }
 
 //--------------------------------------------------------------------------
