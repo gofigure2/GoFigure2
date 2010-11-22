@@ -911,8 +911,6 @@ public:
     this->SetScalarRangeForAllElements( min_value, max_value );
     this->SetLookupTableForColorCoding(
         vtkLookupTableManager::GetRandomLookupTable() );
-
-    this->m_ImageView->UpdateRenderWindows();
     }
 
   /** \brief Apply the given lookup table to all traces in the container

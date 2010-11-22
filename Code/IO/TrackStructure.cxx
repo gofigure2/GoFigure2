@@ -208,15 +208,15 @@ RenderWithOriginalColors() const
     }
   if( this->ActorXZ )
     {
-    this->ActorXY->GetMapper()->SetScalarVisibility( false );
+    this->ActorXZ->GetMapper()->SetScalarVisibility( false );
     }
   if( this->ActorYZ )
     {
-    this->ActorXY->GetMapper()->SetScalarVisibility( false );
+    this->ActorYZ->GetMapper()->SetScalarVisibility( false );
     }
   if( this->ActorXYZ )
     {
-    this->ActorXY->GetMapper()->SetScalarVisibility( false );
+    this->ActorXYZ->GetMapper()->SetScalarVisibility( false );
     }
 }
 //--------------------------------------------------------------------------
@@ -262,15 +262,15 @@ SetLookupTable( vtkLookupTable* iLut ) const
       }
     if( this->ActorXZ )
       {
-      this->ActorXY->GetMapper()->SetLookupTable( iLut );
+      this->ActorXZ->GetMapper()->SetLookupTable( iLut );
       }
     if( this->ActorYZ )
       {
-      this->ActorXY->GetMapper()->SetLookupTable( iLut );
+      this->ActorYZ->GetMapper()->SetLookupTable( iLut );
       }
     if( this->ActorXYZ )
       {
-      this->ActorXY->GetMapper()->SetLookupTable( iLut );
+      this->ActorXYZ->GetMapper()->SetLookupTable( iLut );
       }
     }
 }

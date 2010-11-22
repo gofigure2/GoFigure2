@@ -37,10 +37,12 @@
 #include <QVBoxLayout>
 
 
-QGoColorCodingDialog::QGoColorCodingDialog(std::string iTraceName,bool iRandomIncluded,
-    QWidget *iParent):QDialog(iParent)
+QGoColorCodingDialog::
+QGoColorCodingDialog( std::string iTraceName,
+                     bool iRandomIncluded,
+                     QWidget *iParent) : QDialog(iParent)
 {
- 
+
   this->SetUpUi(iTraceName,iRandomIncluded);
 }
 //-------------------------------------------------------------------------
@@ -79,7 +81,7 @@ void QGoColorCodingDialog::SetUpUi(std::string iTraceName,
 
   if (iRandomIncluded)
     {
-    m_RandomButton = new QRadioButton(tr("Randomly"),this);  
+    m_RandomButton = new QRadioButton(tr("Randomly"),this);
     VLayout->addWidget(m_RandomButton);
     }
 
@@ -97,31 +99,36 @@ void QGoColorCodingDialog::SetUpUi(std::string iTraceName,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QGoColorCodingDialog::ColorWay QGoColorCodingDialog::GetColorWay(
+QGoColorCodingDialog::ColorWay
+QGoColorCodingDialog::GetColorWay(
     std::string iTraceName, vtkLookupTable **ioLUT,
     bool iRandomIncluded, QWidget *iiParent)
 {
-  QGoColorCodingDialog* ColorDialog = new QGoColorCodingDialog(iTraceName, iRandomIncluded, iiParent);
-  ColorWay oNameWay;
+  QGoColorCodingDialog* ColorDialog =
+      new QGoColorCodingDialog(iTraceName, iRandomIncluded, iiParent);
+
+  ColorWay oNameWay = QGoColorCodingDialog::Nothing;
+
   if( ColorDialog->exec() == QDialog::Accepted )
     {
-      if(ColorDialog->m_DefaultButton->isChecked() == true)
-      oNameWay = (ColorWay)1;
+    if( ColorDialog->m_DefaultButton->isChecked() )
+      {
+      oNameWay = QGoColorCodingDialog::Default;
+      }
     if (iRandomIncluded)
       {
-      if(ColorDialog->m_RandomButton->isChecked() == true)
-        oNameWay = (ColorWay)2;
+      if( ColorDialog->m_RandomButton->isChecked() )
+        {
+        oNameWay = QGoColorCodingDialog::Random;
+        }
       }
-    if(ColorDialog->m_LUTButton->isChecked() == true)
+    if( ColorDialog->m_LUTButton->isChecked() )
       {
-      oNameWay = (ColorWay)3;
+      oNameWay = QGoColorCodingDialog::LUT;
       *ioLUT = ColorDialog->m_LUT;
       ColorDialog->accept();
       }
     }
-  else
-    {
-    oNameWay = (ColorWay)0;
-    }
+
   return oNameWay;
 }

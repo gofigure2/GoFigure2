@@ -67,8 +67,8 @@ public:
   \param[in,out] ioLUT lookup table choosen by the user
   \param[in] iParent parent of the widget
   */
-  static ColorWay GetColorWay(std::string iTraceName,
-   vtkLookupTable **ioLUT,bool iRandomIncluded, QWidget *iiParent = 0);
+  static ColorWay GetColorWay( std::string iTraceName,
+   vtkLookupTable **ioLUT, bool iRandomIncluded, QWidget *iiParent = 0 );
 
 protected:
   QRadioButton*   m_DefaultButton;

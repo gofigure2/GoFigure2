@@ -884,8 +884,6 @@ public:
     this->SetScalarRangeForAllElements( min_value, max_value );
     this->SetLookupTableForColorCoding(
         vtkLookupTableManager::GetRandomLookupTable() );
-
-    this->m_ImageView->UpdateRenderWindows();
     }
 
   /**

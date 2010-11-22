@@ -666,30 +666,34 @@ protected:
 			{
 			Values = this->m_Table->GetTraceIDAndColumnsValues(
 						this->m_TraceNameID,ColumnName);
-			vtkLookupTable *LUT = vtkLookupTableManager::GetBWLookupTable();
-			bool IsRandomIncluded;
-			if (ColumnName == this->m_TraceNameID || ColumnName == this->m_CollectionNameID)
-				IsRandomIncluded = true;
-			else
-				IsRandomIncluded = false;
+
+			vtkLookupTable* LUT = NULL;
+
+			bool IsRandomIncluded =
+					(ColumnName == this->m_TraceNameID) ||
+					(ColumnName == this->m_CollectionNameID);
 
       QGoColorCodingDialog::ColorWay UserColorway =
-        QGoColorCodingDialog::GetColorWay(this->m_TraceName, &LUT,
-        IsRandomIncluded,this->m_Table);
+        QGoColorCodingDialog::GetColorWay( this->m_TraceName, &LUT,
+        IsRandomIncluded, this->m_Table );
 
       switch ( UserColorway )
         {
         case QGoColorCodingDialog::Default:
           iContainerForVisu->SetColorCode( ColumnName,Values );
           break;
+
+        default:
         case QGoColorCodingDialog::Nothing:
           IsColorCodingOn = !IsChecked;
-          return;
           break;
+
         case QGoColorCodingDialog::Random:
           iContainerForVisu->SetRandomColor(ColumnName,Values );
           break;
+
         case QGoColorCodingDialog::LUT:
+          iContainerForVisu->SetColorCode( ColumnName,Values );
           iContainerForVisu->SetLookupTableForColorCoding(LUT);
           break;
         }
@@ -697,7 +701,7 @@ protected:
     else
       {
       IsColorCodingOn = IsChecked;
-      iContainerForVisu->SetColorCode( ColumnName,Values );
+      iContainerForVisu->SetColorCode( ColumnName, Values );
       }
   }
 
