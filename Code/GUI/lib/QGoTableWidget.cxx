@@ -324,7 +324,14 @@ void QGoTableWidget::DisplayContent(TWContainerType iTWRowContainer,
               if ( this->CheckValueToDisplayData(Value, HeaderCol) )
                 {
                 QTableWidgetItem *CellTable = new QTableWidgetItem;
-                CellTable->setData( 0, QString::fromStdString(Value).toDouble() );
+                if(iTWRowContainer[i].first.TypeName == "string")
+                  {
+                  CellTable->setData( 0, QString::fromStdString(Value) );
+                  }
+                else
+                  {
+                  CellTable->setData( 0, QString::fromStdString(Value).toDouble() );
+                  }
                 CellTable->setTextAlignment(Qt::AlignCenter);
                 this->setItem(k, j, CellTable);
                 }
