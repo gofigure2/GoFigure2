@@ -177,6 +177,7 @@ void GoDBTWContainerForMesh::SetSpecificInfoForTraceTable()
   m_ColumnsInfos.push_back(temp);
   PairTemp.first = temp;
   m_RowContainer.push_back(PairTemp);
+  temp.Clear();
 
   //Get the info for the celltype name:
   temp.ColumnNameTableWidget = "CellType";
@@ -198,6 +199,7 @@ void GoDBTWContainerForMesh::SetSpecificInfoForTraceTable()
   m_ColumnsInfos.push_back(temp);
   PairTemp.first = temp;
   m_RowContainer.push_back(PairTemp);
+  temp.Clear();
 
    //Get the info for the SubCellType name:
   temp.ColumnNameTableWidget = "SubCellType";
