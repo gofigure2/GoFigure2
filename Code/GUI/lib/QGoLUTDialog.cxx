@@ -205,9 +205,20 @@ void QGoLUTDialog::ChangeLookupTable(const int & idx)
       QColor color = QColorDialog::getColor( Qt::green );
 
       double hsv[3];
-      hsv[0] = color.hueF();
-      hsv[1] = color.saturationF();
-      hsv[2] = color.valueF();
+
+      if( color.isValid() )
+        {
+        hsv[0] = color.hueF();
+        hsv[1] = color.saturationF();
+        hsv[2] = color.valueF();
+        }
+      else
+        {
+        color = Qt::green;
+        hsv[0] = color.hueF();
+        hsv[1] = color.saturationF();
+        hsv[2] = color.valueF();
+        }
 
       this->LUT = vtkLookupTableManager::GetHSVBasedLookupTable( hsv );
       }
