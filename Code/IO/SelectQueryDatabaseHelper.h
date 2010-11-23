@@ -244,13 +244,6 @@ void GetTracesInfoFromDBAndModifyContainer(
   std::vector< int > iVectIDs = std::vector< int >() );
 
 QGOIO_EXPORT
-std::string GetFirstPartQueryForTracesInfo(std::string iTraceName,std::string iCollectionName);
-
-QGOIO_EXPORT
-std::string GetSecondPartQueryForTracesInfo(std::string TraceName,
-                                            std::vector<int> iVectIDs);
-
-QGOIO_EXPORT
 ContourMeshStructure GetTraceInfoFromDB(
   vtkMySQLDatabase *DatabaseConnector, std::string TraceName,
   std::string CollectionName, unsigned int TraceID);
@@ -278,20 +271,6 @@ std::vector< std::vector< std::string > > GetValuesFromSeveralTables(
   vtkMySQLDatabase *DatabaseConnector, std::string MainTable,
   std::vector< std::string > SelectFields, std::vector< std::string > WhereAndConditions,
   std::vector< std::string > JoinTablesOnTraceTable, bool Distinct);
-
-QGOIO_EXPORT
-std::string SelectQueryStream(std::string iTable, std::string iColumn, std::string iField,
-                              std::string iValue);
-
-QGOIO_EXPORT
-std::string SelectQueryStreamListConditions(std::string iTable,
-                                            std::string iColumn, std::string iField,
-                                            std::vector< std::string > iListValues, bool Distinct = false);
-
-QGOIO_EXPORT
-std::string SelectQueryStreamListConditions(std::string iTable,
-                                            std::vector< std::string > iListColumn, std::string iField,
-                                            std::vector< std::string > iListValues, bool Distinct = false);
 
 //query: SELECT where condition1 UNION SELECT where condition1 and condition2
 QGOIO_EXPORT
@@ -369,12 +348,6 @@ std::list< unsigned int > GetSpecificValuesEqualToZero(
 
 std::vector< std::string > ExecuteSelectQuery(vtkMySQLDatabase *iDatabaseConnector,
                                               std::string iQuery);
-
-//iselectquery union iselectquery where ijoinon IS NULL (with or without
-// brackets in the
-//where clause, it will work
-std::string SelectWithJoinNullIncluded(std::string iSelectQuery, std::string iJoinOn,
-                                       bool doublon = true);
 
 std::vector< std::string > GetAllSelectedValuesFromTwoTables(
   vtkMySQLDatabase *iDatabaseConnector, std::string iTableOne, std::string iTableTwo,

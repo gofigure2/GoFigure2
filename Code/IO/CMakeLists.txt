@@ -42,6 +42,7 @@ SET( QGOIO_SRC
   MegaCaptureHeaderReader.cxx
   QueryDataBaseHelper.cxx
   SelectQueryDatabaseHelper.cxx
+  QueryBuilderHelper.cxx
   itkLsm3DSerieImport.cxx
   itkMegaCaptureImport.cxx
   itkMegaCaptureReader.cxx
