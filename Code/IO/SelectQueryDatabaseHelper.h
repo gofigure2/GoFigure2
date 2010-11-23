@@ -46,6 +46,14 @@
 
 #include "QGoIOConfigure.h"
 
+/**
+\brief SELECT ColumnName from TableName ORDER BY OrderbyColumnName
+\param[in] DatabaseConnector connection to the database
+\param[in] ColumnName name of the field in the database
+\param[in] TableName name of the database table
+\param{in] orderByColumn sorting
+\return all the values for the column sorted or not
+*/
 QGOIO_EXPORT
 std::vector< std::string > ListAllValuesForOneColumn(
   vtkMySQLDatabase *DatabaseConnector,

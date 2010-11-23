@@ -108,8 +108,13 @@ VectorTwoColumnsFromTable(vtkMySQLDatabase *DatabaseConnector,
 {
   std::vector< std::pair< std::string, std::string > > result;
 
+  std::vector<std::string> ColumnNames(2);
+  ColumnNames[0] = ColumnNameOne;
+  ColumnNames[1] = ColumnNameTwo;
+  std::string QueryString = SelectQueryStream(TableName, ColumnNames,
+                              ColumnNameOrder);
   vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
-  std::stringstream querystream;
+ /* std::stringstream querystream;
   querystream << "SELECT ";
   querystream << ColumnNameOne;
   querystream << ",";
@@ -120,7 +125,8 @@ VectorTwoColumnsFromTable(vtkMySQLDatabase *DatabaseConnector,
   querystream << ColumnNameOrder;
   querystream << " ASC;";
 
-  query->SetQuery( querystream.str().c_str() );
+  query->SetQuery( querystream.str().c_str() );*/
+  query->SetQuery(QueryString.c_str());
   if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
