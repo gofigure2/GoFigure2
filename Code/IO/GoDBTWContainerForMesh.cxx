@@ -36,7 +36,10 @@
 GoDBTWContainerForMesh::GoDBTWContainerForMesh(int iImgSessionID):
   GoDBTWContainerForContourMesh("mesh", "track", iImgSessionID),
   m_MeshAttributes(NULL)
-{}
+{
+  this->SetSpecificInfoForTraceTable();
+  //checker the columnsinfo
+}
 
 //--------------------------------------------------------------------------
 
@@ -47,7 +50,7 @@ GoDBTWContainerForMesh::~GoDBTWContainerForMesh()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBTWContainerForMesh::SetSpecificColumnsInfoForMesh()
+void GoDBTWContainerForMesh::SetColumnsInfoBasedOnChannelsInfo()
 {
   //Get the info for the total intensities per channel:
   GoDBTraceInfoForTableWidget temp;
@@ -80,7 +83,7 @@ void GoDBTWContainerForMesh::SetSpecificColumnsInfoForMesh()
     m_RowContainer.push_back(PairTemp);
     temp.Clear();
     }
-  //Get the info for the Volume:
+ /* //Get the info for the Volume:
   temp.InfoName = "Volume";
   temp.ColumnNameTableWidget = "Volume";
   m_ColumnsInfos.push_back(temp);
@@ -95,16 +98,124 @@ void GoDBTWContainerForMesh::SetSpecificColumnsInfoForMesh()
   PairTemp.first = temp;
   m_RowContainer.push_back(PairTemp);
   temp.Clear();
+
+  //Get the info for CelltypeID:
+  temp.InfoName = "CellTypeID";
+  temp.ColumnNameDatabase = "CellTypeID";
+  temp.TableNameDatabase = this->m_TracesName;
+  temp.TableForeignKeyDatabase = "CellTypeID";
+  temp.TableKeyDatabase = "CellTypeID";
+  m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
+
+  //Get the info for the celltype name:
+  temp.ColumnNameTableWidget = "CellType";
+  temp.ColumnNameDatabase = "Name";
+  temp.TableNameDatabase = "celltype";
+  temp.InfoName = "CellTypeName";
+  temp.TableForeignKeyDatabase = "CellTypeID";
+  temp.TableKeyDatabase = "CellTypeID";
+  m_ColumnsInfos.push_back(temp);
+  m_RowContainer.push_back(PairTemp);
+  temp.Clear();
+
+  //Get the info for SubCelltypeID:
+  temp.InfoName = "SubCellTypeID";
+  temp.ColumnNameDatabase = "SubCellTypeID";
+  temp.TableNameDatabase = this->m_TracesName;
+  temp.TableForeignKeyDatabase = "SubCellularID";
+  temp.TableKeyDatabase = "SubCellularID";
+  m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
+
+   //Get the info for the SubCellType name:
+  temp.ColumnNameTableWidget = "SubCellType";
+  temp.ColumnNameDatabase = "Name";
+  temp.TableNameDatabase = "subcellulartype";
+  temp.InfoName = "SubCellTypeName";
+  temp.TableForeignKeyDatabase = "SubCellularID";
+  temp.TableKeyDatabase = "SubCellularID";
+  m_ColumnsInfos.push_back(temp);
+  m_RowContainer.push_back(PairTemp);
+  temp.Clear();*/
 }
 
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-//std::vector<std::vector<std::string> > GoDBTWContainerForMesh::
-//GetChannelsInfo()
-//{
-//  return this->m_ChannelsInfo;
-//}
+void GoDBTWContainerForMesh::SetSpecificInfoForTraceTable()
+{
+  GoDBTraceInfoForTableWidget temp;
+
+  std::pair< GoDBTraceInfoForTableWidget,
+             std::vector< std::string > > PairTemp;
+
+   //Get the info for the Volume:
+  temp.InfoName = "Volume";
+  temp.ColumnNameTableWidget = "Volume";
+  m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
+  temp.Clear();
+
+  //Get the info for the Surface Area:
+  temp.InfoName = "SurfaceArea";
+  temp.ColumnNameTableWidget = "SurfaceArea";
+  m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
+  temp.Clear();
+
+  //Get the info for CelltypeID:
+  temp.InfoName = "CellTypeID";
+  temp.ColumnNameDatabase = "CellTypeID";
+  temp.TableNameDatabase = this->m_TracesName;
+  temp.TableForeignKeyDatabase = "CellTypeID";
+  temp.TableKeyDatabase = "CellTypeID";
+  m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
+  temp.Clear();
+
+  //Get the info for the celltype name:
+  temp.ColumnNameTableWidget = "CellType";
+  temp.ColumnNameDatabase = "Name";
+  temp.TypeName = "string";
+  temp.TableNameDatabase = "celltype";
+  temp.InfoName = "CellTypeName";
+  temp.TableForeignKeyDatabase = "CellTypeID";
+  temp.TableKeyDatabase = "CellTypeID";
+  m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
+  temp.Clear();
+
+  //Get the info for SubCelltypeID:
+  temp.InfoName = "SubCellTypeID";
+  temp.ColumnNameDatabase = "SubCellularID";
+  temp.TableNameDatabase = this->m_TracesName;
+  temp.TableForeignKeyDatabase = "SubCellularID";
+  temp.TableKeyDatabase = "SubCellularID";
+  m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
+  temp.Clear();
+
+   //Get the info for the SubCellType name:
+  temp.ColumnNameTableWidget = "SubCellType";
+  temp.ColumnNameDatabase = "Name";
+  temp.TypeName = "string";
+  temp.TableNameDatabase = "subcellulartype";
+  temp.InfoName = "SubCellTypeName";
+  temp.TableForeignKeyDatabase = "SubCellularID";
+  temp.TableKeyDatabase = "SubCellularID";
+  m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
+  temp.Clear();
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -309,8 +420,6 @@ GoDBTWContainerForMesh::GetContainerLoadedWithAllFromDB(
     ConvertToString< unsigned int >(this->m_ImgSessionID) );
 
   this->FillRowContainerForMeshValues(iDatabaseConnector, VectMeshIDs);
-
-  //what about surfacearea + volume ? FillRowContainerForComputedvalues to check
   return this->m_RowContainer;
 }
 
@@ -332,7 +441,8 @@ void GoDBTWContainerForMesh::SetChannelsInfo(
     this->m_ChannelsInfo = GetValuesFromSeveralTables(
       iDatabaseConnector, "image", SelectFields, "ImagingSessionID",
       ConvertToString< unsigned int >(this->m_ImgSessionID), JoinTablesOnTraceTable, true);
-    this->SetSpecificColumnsInfoForMesh();
+    //this->SetSpecificColumnsInfoForMesh();
+    this->SetColumnsInfoBasedOnChannelsInfo();
     }
 }
 

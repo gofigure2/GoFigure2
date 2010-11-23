@@ -324,7 +324,14 @@ void QGoTableWidget::DisplayContent(TWContainerType iTWRowContainer,
               if ( this->CheckValueToDisplayData(Value, HeaderCol) )
                 {
                 QTableWidgetItem *CellTable = new QTableWidgetItem;
-                CellTable->setData( 0, QString::fromStdString(Value).toDouble() );
+                if(iTWRowContainer[i].first.TypeName == "string")
+                  {
+                  CellTable->setData( 0, QString::fromStdString(Value) );
+                  }
+                else
+                  {
+                  CellTable->setData( 0, QString::fromStdString(Value).toDouble() );
+                  }
                 CellTable->setTextAlignment(Qt::AlignCenter);
                 this->setItem(k, j, CellTable);
                 }
@@ -951,11 +958,11 @@ bool QGoTableWidget::setCheckStateCheckBox(QTableWidgetItem *iItem,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::map<unsigned int, double> QGoTableWidget::
+std::map<unsigned int, std::string> QGoTableWidget::
 GetTraceIDAndColumnsValues(std::string iTraceIDName,std::string &ioColumnName)
 {
-  std::map<unsigned int,double> oMapValues =
-    std::map<unsigned int,double>();
+  std::map<unsigned int,std::string> oMapValues =
+    std::map<unsigned int,std::string>();
   QList<QTableWidgetSelectionRange> Ranges = this->selectedRanges();
   if ( Ranges.size()>1 || Ranges[0].columnCount()>1 )
     {
@@ -970,9 +977,17 @@ GetTraceIDAndColumnsValues(std::string iTraceIDName,std::string &ioColumnName)
   int NbOfRows = this->rowCount();
   unsigned int IndexTraceID = this->findColumnName(iTraceIDName.c_str());
   for( int i = 0; i<NbOfRows; i++ )
-    {
-    oMapValues[this->item(i,IndexTraceID)->text().toUInt()] =
-      this->item(i,ColumnIndex)->text().toDouble();
-    }
+      {     
+      if (this->item(i,ColumnIndex))
+        {
+        std::string Text = this->item(i,ColumnIndex)->text().toStdString();  //for test purpose
+        oMapValues[this->item(i,IndexTraceID)->text().toUInt()] =
+          this->item(i,ColumnIndex)->text().toStdString();     
+        }
+      else
+        {
+        oMapValues[this->item(i,IndexTraceID)->text().toUInt()] = "";
+        }
+      }
   return oMapValues;
 }

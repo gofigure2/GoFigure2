@@ -55,7 +55,7 @@
 #include "vtkMapper.h"
 #include "QGoImageView3D.h"
 
-class vtkLookupTable;
+#include "vtkLookupTableManager.h"
 
 namespace boost
 {

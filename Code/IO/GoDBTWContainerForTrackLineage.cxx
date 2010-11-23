@@ -49,7 +49,7 @@ GoDBTWContainerForTrackLineage::~GoDBTWContainerForTrackLineage()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBTWContainerForTrackLineage::GetCommonInfoForTwoTracesTable()
+void GoDBTWContainerForTrackLineage::SetCommonInfoForTwoTracesTable()
 {
   GoDBTraceInfoForTableWidget temp;
 
@@ -79,5 +79,5 @@ void GoDBTWContainerForTrackLineage::GetCommonInfoForTwoTracesTable()
   PairTemp.first = temp;
   m_RowContainer.push_back(PairTemp);
 
-  this->GetInfoForColumnIsVisible();
+  this->SetInfoForColumnIsVisible();
 }

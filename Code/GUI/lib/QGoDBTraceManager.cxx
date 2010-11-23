@@ -39,7 +39,9 @@
 #include <QMessageBox>
 
 QGoDBTraceManager::QGoDBTraceManager():
-  m_Table(NULL), m_CollectionOfTraces(NULL),m_DatabaseConnector(NULL),IsColorCodingOn(false)//, m_TraceContainerInfoForVisu(NULL)
+  m_Table(NULL), m_CollectionOfTraces(NULL),
+  m_DatabaseConnector(NULL), IsColorCodingOn(false)
+  //, m_TraceContainerInfoForVisu(NULL)
 {}
 
 //-------------------------------------------------------------------------
@@ -546,7 +548,7 @@ void QGoDBTraceManager::CheckTheTraceInTW(unsigned int iTraceID,
 //-------------------------------------------------------------------------
 
 //------------------------------------------------------------------------
-void QGoDBTraceManager::ShowTheTraceInTW(unsigned int iTraceID, 
+void QGoDBTraceManager::ShowTheTraceInTW(unsigned int iTraceID,
                                          Qt::CheckState iState)
 {
   this->m_Table->SetVisibleStateForTraceID(iTraceID,

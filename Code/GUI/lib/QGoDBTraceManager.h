@@ -43,6 +43,9 @@
 #include "GoDBTableWidgetContainer.h"
 #include "QGoGUILibConfigure.h"
 #include "ContourMeshContainer.h"
+#include "QGoColorCodingDialog.h"
+#include "vtkLookupTable.h"
+#include "vtkLookupTableManager.h"
 
 /**
 \class QGoDBTraceManager
@@ -656,17 +659,51 @@ protected:
   void SetColorCodingTemplate( T* iContainerForVisu,bool IsChecked)
   {
     std::string ColumnName = "";
-    std::map<unsigned int, double> Values;
+    std::map<unsigned int, std::string> Values;
+    IsColorCodingOn = IsChecked;
 
-		if (IsChecked)
-			{
-			Values = this->m_Table->GetTraceIDAndColumnsValues(
-				this->m_TraceNameID,ColumnName);
-			}
-		/// \todo uncomment this one!!!
-		//iContainerForVisu->SetColorCode( ColumnName,Values );
-		IsColorCodingOn = IsChecked;
-	}
+    if (IsChecked)
+      {
+      Values = this->m_Table->GetTraceIDAndColumnsValues(
+						this->m_TraceNameID, ColumnName);
+
+        vtkLookupTable* LUT = NULL;
+
+		bool IsRandomIncluded =
+    	    (ColumnName == this->m_TraceNameID) ||
+			(ColumnName == this->m_CollectionNameID);
+
+      QGoColorCodingDialog::ColorWay UserColorway =
+        QGoColorCodingDialog::GetColorWay( this->m_TraceName, &LUT,
+        IsRandomIncluded, this->m_Table );
+
+      switch ( UserColorway )
+        {
+        case QGoColorCodingDialog::Default:
+          iContainerForVisu->SetColorCode( ColumnName,Values );
+          break;
+
+        case QGoColorCodingDialog::Random:
+          iContainerForVisu->SetRandomColor(ColumnName,Values );
+          break;
+
+        case QGoColorCodingDialog::LUT:
+          iContainerForVisu->SetColorCode( ColumnName,Values );
+          iContainerForVisu->SetLookupTableForColorCoding(LUT);
+          break;
+
+        default:
+        case QGoColorCodingDialog::Nothing:
+          IsColorCodingOn = !IsChecked;
+          break;
+        }
+      }
+    else
+      {
+      IsColorCodingOn = IsChecked;
+      iContainerForVisu->SetColorCode( ColumnName, Values );
+      }
+  }
 
   /**
   \brief return to the color saved in the database for the traces
