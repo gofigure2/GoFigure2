@@ -38,6 +38,11 @@
 #include "vtkPolyData.h"
 #include "vtkActor.h"
 
+#include "vtkSphereSource.h"
+#include "vtkGlyph3D.h"
+#include "vtkTubeFilter.h"
+#include "vtkAppendPolyData.h"
+
 //--------------------------------------------------------------------------
 TrackStructure::
 TrackStructure():TraceStructure()
@@ -231,5 +236,100 @@ TrackStructure::ReleaseData() const
     {
     delete[] begin->second;
     ++begin;
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+TrackStructure::
+UpdateTracksRepresentation( bool iGlyph, bool iTube ) const
+{
+  vtkPolyData* glyph_pd = NULL;
+  vtkSphereSource* sphere = NULL;
+  vtkGlyph3D* glyph = NULL;
+
+  if( iGlyph )
+    {
+    // Glyph shape
+    sphere = vtkSphereSource::New();
+    sphere->SetThetaResolution( 8 );
+    sphere->SetPhiResolution( 8 );
+
+    glyph = vtkGlyph3D::New();
+    glyph->SetInput( this->Nodes );
+    glyph->SetSource( sphere->GetOutput() );
+    glyph->Update();
+
+    glyph_pd = glyph->GetOutput();
+    }
+
+  vtkPolyData* tube_pd = NULL;
+  vtkTubeFilter* tube = NULL;
+
+  if( iTube )
+    {
+    tube = vtkTubeFilter::New();
+    tube->SetNumberOfSides( 8 );
+    tube->SetInput( this->Nodes );
+    tube->SetRadius( .2  );
+    tube->Update();
+
+    tube_pd = tube->GetOutput();
+    }
+  else
+    {
+    tube_pd = this->Nodes;
+    }
+
+  vtkPolyData* temp = NULL;
+  vtkAppendPolyData* apd = NULL;
+
+  if( glyph_pd && tube_pd )
+    {
+    // append both polydata sets
+    apd = vtkAppendPolyData::New();;
+    apd->AddInput( glyph_pd );
+    apd->AddInput( tube_pd );
+    apd->Update();
+
+    temp = apd->GetOutput();
+    }
+  else
+    {
+    if( glyph_pd )
+      {
+      temp = glyph_pd;
+      }
+    else
+      {
+      if( tube_pd )
+        {
+        temp = tube_pd;
+        }
+      else
+        {
+        temp = this->Nodes;
+        }
+      }
+    }
+
+  this->Nodes->DeepCopy( temp );
+
+  if( sphere )
+    {
+    sphere->Delete();
+    }
+  if( glyph )
+    {
+    glyph->Delete();
+    }
+  if( tube )
+    {
+    tube->Delete();
+    }
+  if( apd )
+    {
+    apd->Delete();
     }
 }

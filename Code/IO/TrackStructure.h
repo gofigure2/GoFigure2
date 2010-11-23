@@ -171,6 +171,7 @@ public:
     return os;
   }
 
+  void UpdateTracksRepresentation( bool iGlyph, bool iTube ) const;
 
 };
 

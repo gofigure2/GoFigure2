@@ -593,114 +593,15 @@ UpdateTracksReprensentation( bool iGlyph, bool iTube )
 {
   MultiIndexContainerType::iterator it = m_Container.begin();
 
-  if( iGlyph && iTube )
+  while ( it != m_Container.end() )
     {
-    while ( it != m_Container.end() )
+    bool update = UpdateTrackStructurePolyData( (*it) );
+
+    if( update )
       {
-
-      bool update = UpdateTrackStructurePolyData( (*it) );
-
-      if( update )
-        {
-        // Glyph shape
-        vtkSphereSource* sphere = vtkSphereSource::New();
-        sphere->SetThetaResolution( 8 );
-        sphere->SetPhiResolution( 8 );
-
-        vtkGlyph3D* glyph = vtkGlyph3D::New();
-        glyph->SetInput( it->Nodes );
-        glyph->SetSource( sphere->GetOutput() );
-        glyph->Update();
-
-        sphere->Delete();
-
-        vtkTubeFilter* tube = vtkTubeFilter::New();
-        tube->SetNumberOfSides( 8 );
-        tube->SetInput( it->Nodes );
-        tube->SetRadius( .2  );
-        tube->Update();
-
-        // append both polydata sets
-        vtkAppendPolyData* apd = vtkAppendPolyData::New();;
-        apd->AddInput( glyph->GetOutput() );
-        apd->AddInput( tube->GetOutput() );
-        apd->Update();
-
-        it->Nodes->DeepCopy( apd->GetOutput() );
-
-        glyph->Delete();
-        tube->Delete();
-        apd->Delete();
-        }
-      ++it;
-    }
-  }
-
-  if( iGlyph && !iTube )
-    {
-    while ( it != m_Container.end() )
-      {
-      bool update = UpdateTrackStructurePolyData( (*it) );
-
-      if( update )
-        {
-        // Glyph shape
-        vtkSphereSource* sphere = vtkSphereSource::New();
-        sphere->SetThetaResolution( 8 );
-        sphere->SetPhiResolution( 8 );
-
-        vtkGlyph3D* glyph = vtkGlyph3D::New();
-        glyph->SetInput( it->Nodes );
-        glyph->SetSource( sphere->GetOutput() );
-        glyph->Update();
-
-        sphere->Delete();
-
-        // append both polydata sets
-        vtkAppendPolyData* apd = vtkAppendPolyData::New();;
-        apd->AddInput( glyph->GetOutput() );
-        apd->AddInput( it->Nodes );
-        apd->Update();
-
-        it->Nodes->DeepCopy( apd->GetOutput() );
-
-        apd->Delete();
-        glyph->Delete();
-        }
-      ++it;
-    }
-  }
-
-  if( !iGlyph && iTube )
-    {
-    while ( it != m_Container.end() )
-      {
-      bool update = UpdateTrackStructurePolyData( (*it) );
-
-      if( update )
-        {
-        vtkTubeFilter* tube = vtkTubeFilter::New();
-        tube->SetNumberOfSides( 8 );
-        tube->SetInput( it->Nodes );
-        tube->SetRadius( .2  );
-        tube->Update();
-
-        it->Nodes->DeepCopy( tube->GetOutput() );
-
-        tube->Delete();
-        }
-      ++it;
-    }
-  }
-
-  if( !iGlyph && !iTube )
-    {
-    while ( it != m_Container.end() )
-    {
-    UpdateTrackStructurePolyData( (*it) );
-
+      it->UpdateTracksRepresentation( iGlyph, iTube );
+      }
     ++it;
-    }
   }
 
   m_ImageView->UpdateRenderWindows();
