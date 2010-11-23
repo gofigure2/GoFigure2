@@ -36,7 +36,7 @@
 #include <sstream>
 
 
-std::string SelectGeneralQueryCondition(std::string iWhat, std::string iWhere, std::string iConditions)
+std::string SelectGeneralQueryConditions(std::string iWhat, std::string iWhere, std::string iConditions)
 {
   std::stringstream querystream;
   querystream << "SELECT ";
@@ -136,7 +136,16 @@ std::string SelectQueryStream(std::string iTable, std::string iColumn,
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::string SelectQueryStreamConditions(std::string iTable, std::string iColumn, std::string iField,
+std::string SelectQueryStream(std::string iTable, std::vector<std::string > iListAttributes,
+                              std::string iOrderByColumnName, std::string iAscDesc)
+{
+  std::string SelectedFields = GetSelectedAttributes(iListAttributes);
+  return SelectQueryStream(iTable,SelectedFields,iOrderByColumnName,iAscDesc);
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string SelectQueryStreamCondition(std::string iTable, std::string iColumn, std::string iField,
                               std::string iValue, bool iOrderBy, std::string iAscDesc)
 {
   std::stringstream Conditions;
@@ -145,9 +154,19 @@ std::string SelectQueryStreamConditions(std::string iTable, std::string iColumn,
   Conditions << iValue;
   Conditions << AddOrderBy(iColumn,iAscDesc);
 
-  return SelectGeneralQuery(iColumn, iTable, Conditions.str());
+  return SelectGeneralQueryConditions(iColumn, iTable, Conditions.str());
 }
 
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string SelectQueryStreamCondition(std::string iTable, std::vector<std::string> iListAttributes,
+                                       std::string iField, std::string iValue, bool iOrderBy, 
+                                       std::string iAscDesc)
+{
+  std::string What = GetSelectedAttributes(iListAttributes);
+  return SelectQueryStreamCondition(iTable,What,iField,iValue,iOrderBy,iAscDesc);
+}
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -163,9 +182,22 @@ std::string SelectQueryStreamListConditions(std::string iTable,
     }
   std::string Conditions = GetConditions(iField, iListValues,iConditionConnector);
 
-  return SelectGeneralQuery(What,iTable,Conditions);
+  return SelectGeneralQueryConditions(What,iTable,Conditions);
 }
 
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string SelectQueryStreamListConditions(std::string iTable,
+                                            std::vector<std::string> iListAttributes, 
+                                            std::string iField,
+                                            std::vector< std::string > iListValues, 
+                                            bool Distinct,
+                                            std::string iConditionConnector)
+{
+  std::string What = GetSelectedAttributes(iListAttributes);
+  return SelectQueryStreamListConditions(iTable,What,iField,iListValues,Distinct,iConditionConnector);
+}
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -227,20 +259,6 @@ std::string GetSelectedAttributes(std::vector<std::string> iListAttributes)
     }
   oQueryStream << iListAttributes[i];
   return oQueryStream.str();
-}
-//------------------------------------------------------------------------------
-
-//------------------------------------------------------------------------------
-std::string SelectQueryStreamListConditions(std::string iTable,
-                                            std::vector< std::string > iListAttributes, 
-                                            std::string iField,
-                                            std::vector< std::string > iListValues, 
-                                            bool Distinct,
-                                            std::string iConditionConnector)
-{
-  std::string What = GetSelectedAttributes(iListAttributes);
-  std::string Conditions = GetConditions(iField,iListValues,iConditionConnector);
-  return SelectGeneralQuery(What,iTable,Conditions);
 }
 //------------------------------------------------------------------------------
 

@@ -52,52 +52,6 @@ std::vector< std::string > ListAllValuesForOneColumn(vtkMySQLDatabase *DatabaseC
 {
   std::string QueryString = SelectQueryStream(TableName, ColumnName,OrderByColumnName);
   return ExecuteSelectQuery(DatabaseConnector,QueryString);
-  /*std::vector< std::string > result;
-
-  //vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
-  std::stringstream querystream;
-  querystream << "SELECT ";
-  querystream << ColumnName;
-  querystream << " FROM ";
-  querystream << TableName;
-  if ( !OrderByColumnName.empty() )
-    {
-    querystream << " ORDER BY ";
-    querystream << OrderByColumnName;
-    }
-  querystream << ";";
-
-  
-  query->SetQuery( querystream.str().c_str() );
-  if ( !query->Execute() )
-    {
-    itkGenericExceptionMacro(
-      << "List of all fields query failed"
-      << query->GetLastErrorText() );
-    query->Delete();
-    return result;
-    }
-  if ( ColumnName != "*" )
-    {
-    while ( query->NextRow() )
-      {
-      result.push_back( query->DataValue(0).ToString() );
-      }
-    }
-  else
-    {
-    while ( query->NextRow() )
-      {
-      for ( int i = 0; i < query->GetNumberOfFields(); i++ )
-        {
-        result.push_back( query->DataValue(i).ToString() );
-        }
-      }
-    }
-
-  query->Delete();*/
-
-  //return result;
 }
 
 //------------------------------------------------------------------------------
@@ -175,6 +129,50 @@ std::map< std::string, std::string > MapTwoColumnsFromTable(
   return Result;
 }
 
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::map< std::string, std::string > MapTwoColumnsFromTable(
+  vtkMySQLDatabase *DatabaseConnector,std::vector<std::string> iColumnNames,
+  std::string iTableName, std::string iField, std::string iValue)
+{
+  std::map< std::string, std::string > Result = std::map<std::string,std::string>();
+  if (iColumnNames.size() != 2)
+    {
+    std::cout<<"can not map if the size of the vector for the selected fields is different than 2 ";
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
+    return Result;
+    }
+  std::string  QueryString;
+  if (!iField.empty())
+    {
+    QueryString = SelectQueryStream(iTableName,iColumnNames);
+    }
+  else
+    {
+    QueryString = SelectQueryStreamCondition(iTableName,iColumnNames,iField,iValue);
+    }
+
+  vtkSQLQuery * query = DatabaseConnector->GetQueryInstance();
+  query->SetQuery( QueryString.c_str() );
+
+  if ( !query->Execute() )
+    {
+    itkGenericExceptionMacro(
+      << "List of all fields query failed"
+      << query->GetLastErrorText() );
+    query->Delete();
+    return Result;
+    }
+  while ( query->NextRow() )
+    {
+    Result[query->DataValue(0).ToString()] = query->DataValue(1).ToString();
+    }
+  query->Delete();
+
+  return Result;
+}
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -1632,7 +1630,7 @@ std::vector< std::string > GetSamefieldFromTwoTables(
   std::vector< std::string > result;
   vtkSQLQuery *              query = DatabaseConnector->GetQueryInstance();
   std::stringstream          querystream;
-  querystream << SelectQueryStreamConditions(iTableOne, iColumn, iField, iValue);
+  querystream << SelectQueryStreamCondition(iTableOne, iColumn, iField, iValue);
   querystream << " UNION ";
   querystream << SelectQueryStreamListConditions(iTableTwo, iColumn,
                                                  iFieldTwo, iListConditionsTwo);
@@ -1676,13 +1674,13 @@ std::vector< std::string > GetSamefieldsFromTwoTables(vtkMySQLDatabase *Database
   std::vector< std::string > result;
   vtkSQLQuery *              query = DatabaseConnector->GetQueryInstance();
   std::stringstream          querystream;
-  querystream << SelectQueryStreamConditions(iTableOne, iColumnOne, iField, iValue);
+  querystream << SelectQueryStreamCondition(iTableOne, iColumnOne, iField, iValue);
   querystream << " UNION ";
-  querystream << SelectQueryStreamConditions(iTableOne, iColumnTwo, iField, iValue);
+  querystream << SelectQueryStreamCondition(iTableOne, iColumnTwo, iField, iValue);
   querystream << " UNION ";
-  querystream << SelectQueryStreamConditions(iTableTwo, iColumnOne, iField, iValue);
+  querystream << SelectQueryStreamCondition(iTableTwo, iColumnOne, iField, iValue);
   querystream << " UNION ";
-  querystream << SelectQueryStreamConditions(iTableTwo, iColumnTwo, iField, iValue);
+  querystream << SelectQueryStreamCondition(iTableTwo, iColumnTwo, iField, iValue);
 
   query->SetQuery( querystream.str().c_str() );
   if ( !query->Execute() )
@@ -1725,9 +1723,9 @@ std::vector< std::string > GetSamefieldsFromTwoTables(vtkMySQLDatabase *Database
   std::vector< std::string > result;
   vtkSQLQuery *              query = DatabaseConnector->GetQueryInstance();
   std::stringstream          querystream;
-  querystream << SelectQueryStreamConditions(iTableOne, iColumnOne, iField, iValue);
+  querystream << SelectQueryStreamCondition(iTableOne, iColumnOne, iField, iValue);
   querystream << " UNION ";
-  querystream << SelectQueryStreamConditions(iTableOne, iColumnTwo, iField, iValue);
+  querystream << SelectQueryStreamCondition(iTableOne, iColumnTwo, iField, iValue);
   querystream << " UNION ";
   querystream << SelectQueryStreamListConditions(iTableTwo, iColumnOne,
                                                  iFieldTwo, iListConditionsTwo);
@@ -2106,7 +2104,7 @@ std::vector< std::string > GetOrderByWithLimit(vtkMySQLDatabase *iDatabaseConnec
 {
   std::stringstream QueryStream;
 
-  QueryStream << SelectQueryStreamConditions(iTableName, iColumnName, iField, iValue);
+  QueryStream << SelectQueryStreamCondition(iTableName, iColumnName, iField, iValue);
   QueryStream << " ORDER BY ";
   QueryStream << iColumnName;
   if ( ASC )

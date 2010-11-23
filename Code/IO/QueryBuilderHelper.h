@@ -93,15 +93,39 @@ std::string GetFirstPartQueryForTracesInfo(std::string iTraceName,std::string iC
 std::string GetSecondPartQueryForTracesInfo(std::string TraceName,
                                             std::vector<int> iVectIDs);
 
+/**
+\brief SELECT iColumn FROM iTable ORDER BY iOrderByColumnName iAscDesc;
+\param[in] iTable name of the database table
+\param[in] iColumn name of the attribute to select
+\param[in] iOrderByColumnName name of the column by which the results will be sorted, if
+empty, no sorting 
+\param[in] iAscDesc order to sort the results, ascendent by default
+\return the string corresponding to the query part
+*/
 std::string SelectQueryStream(std::string iTable, std::string iColumn,
                               std::string iOrderByColumnname = "", std::string iAscDesc = "ASC");
+
+/**
+\brief SELECT iColumn[i],iColumn[i=1]... FROM iTable ORDER BY iOrderByColumnName iAscDesc;
+\param[in] iTable name of the database table
+\param[in] iListAttributes name of the attributes to select
+\param[in] iOrderByColumnName name of the column by which the results will be sorted, if
+empty, no sorting 
+\param[in] iAscDesc order to sort the results, ascendent by default
+\return the string corresponding to the query part
+*/
+std::string SelectQueryStream(std::string iTable, std::vector<std::string > iListAttributes,
+                              std::string iOrderByColumnName = "", std::string iAscDesc = "ASC");
 //basic
 /**
 \brief SELECT iColumn FROM iTable WHERE iField = iValue ORDER BY iColumn iAscDesc;
 */
-std::string SelectQueryStreamConditions(std::string iTable, std::string iColumn, std::string iField,
+std::string SelectQueryStreamCondition(std::string iTable, std::string iColumn, std::string iField,
                               std::string iValue,bool iOrderBy = false, std::string iAscDesc = "ASC");
 
+std::string SelectQueryStreamCondition(std::string iTable, std::vector<std::string> iListAttributes,
+                                       std::string iField, std::string iValue, bool iOrderBy = false, 
+                                       std::string iAscDesc = "ASC");
 
 std::string SelectQueryStreamListConditions(std::string iTable,
                                             std::string iColumn, std::string iField,
@@ -109,8 +133,17 @@ std::string SelectQueryStreamListConditions(std::string iTable,
                                             std::string iConditionConnector = "OR");
 
 std::string SelectQueryStreamListConditions(std::string iTable,
-                                            std::vector< std::string > iListColumn, std::string iField,
-                                            std::vector< std::string > iListValues, bool Distinct = false,
+                                            std::vector<std::string> iListAttributes, 
+                                            std::string iField,
+                                            std::vector< std::string > iListValues, 
+                                            bool Distinct = false,
+                                            std::string iConditionConnector = "OR");
+
+std::string SelectQueryStreamListConditions(std::string iTable,
+                                            std::vector<std::string> iListAttributes, 
+                                            std::string iField,
+                                            std::string iValue, 
+                                            bool Distinct = false,
                                             std::string iConditionConnector = "OR");
 
 //iselectquery union iselectquery where ijoinon IS NULL (with or without

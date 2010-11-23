@@ -76,6 +76,11 @@ std::map< std::string, std::string > MapTwoColumnsFromTable(
   std::string ColumnNameTwo, std::string TableName,
   std::string field, std::string value);
 
+QGOIO_EXPORT
+std::map< std::string, std::string > MapTwoColumnsFromTable(
+  vtkMySQLDatabase *DatabaseConnector,std::vector<std::string> iColumnNames,
+  std::string iTableName, std::string iField = "", std::string iValue = "");
+
 //query: "SELECT * FROM TableName WHERE field = value"
 //if field is a primary key, will return only the values for
 //one row
