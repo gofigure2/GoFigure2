@@ -36,6 +36,20 @@
 #include <sstream>
 
 
+std::string SelectGeneralQuery(std::string iWhat, std::string iWhere, std::string iConditions)
+{
+  std::stringstream querystream;
+  querystream << "SELECT ";
+  querystream << iWhat;
+  querystream << " FROM ";
+  querystream << iWhere;
+  querystream << " WHERE ";
+  querystream << iConditions;
+  return querystream.str();
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 std::string GetFirstPartQueryForTracesInfo(std::string iTraceName,std::string iCollectionName)
 {
   std::stringstream Querystream;
@@ -96,8 +110,13 @@ return Querystream.str().c_str();
 std::string SelectQueryStream(std::string iTable, std::string iColumn, std::string iField,
                               std::string iValue)
 {
-  std::stringstream querystream;
+  std::stringstream Conditions;
+  Conditions << iField;
+  Conditions <<  " = '";
+  Conditions << iValue;
+  return SelectGeneralQuery(iColumn, iTable, Conditions.str());
 
+  /* std::stringstream querystream;
   querystream << "SELECT ";
   querystream << iColumn;
   querystream << " FROM ";
@@ -107,7 +126,7 @@ std::string SelectQueryStream(std::string iTable, std::string iColumn, std::stri
   querystream << " = '";
   querystream << iValue;
   querystream << "'";
-  return querystream.str();
+  return querystream.str();*/
 }
 
 //------------------------------------------------------------------------------
@@ -115,9 +134,18 @@ std::string SelectQueryStream(std::string iTable, std::string iColumn, std::stri
 //------------------------------------------------------------------------------
 std::string SelectQueryStreamListConditions(std::string iTable,
                                             std::string iColumn, std::string iField,
-                                            std::vector< std::string > iListValues, bool Distinct)
+                                            std::vector< std::string > iListValues, bool Distinct,
+                                            std::string iConditionConnector)
 {
-  std::stringstream querystream;
+  std::string What = iColumn;
+  if (Distinct)
+    {
+    What = AddDistinctToWhat (What);
+    }
+  std::string Conditions = GetConditions(iField, iListValues,iConditionConnector);
+
+  return SelectGeneralQuery(What,iTable,Conditions);
+  /*std::stringstream querystream;
 
   if( !iListValues.empty() )
     {
@@ -144,17 +172,73 @@ std::string SelectQueryStreamListConditions(std::string iTable,
     querystream << "')";
     }
 
-  return querystream.str();
+  return querystream.str();*/
 }
 
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::string SelectQueryStreamListConditions(std::string iTable,
-                                            std::vector< std::string > iListColumn, std::string iField,
-                                            std::vector< std::string > iListValues, bool Distinct)
+std::string AddDistinctToWhat(std::string iWhat)
 {
-  std::stringstream querystream;
+  std::string oWhat = "DISTINCT ";
+  oWhat += iWhat;
+  return oWhat;
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string GetConditions(std::string iField,
+                          std::vector< std::string > iListValues,
+                          std::string iConditionConnector)
+{
+  std::stringstream oConditions;
+  oConditions << "(";
+  unsigned int i;
+    for ( i = 0; i < iListValues.size() - 1; i++ )
+      {
+      oConditions << iField;
+      oConditions << " = '";
+      oConditions << iListValues[i];
+      oConditions << "' ";
+      oConditions << iConditionConnector;
+      oConditions  << " ";
+      }
+    oConditions << iField;
+    oConditions << " = '";
+    oConditions << iListValues[i];
+    oConditions << "')";
+
+  return oConditions.str();
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string GetSelectedAttributes(std::vector<std::string> iListAttributes)
+{
+  std::stringstream oQueryStream;
+  unsigned int i;
+  for ( i = 0; i < iListAttributes.size() - 1; i++ )
+    {
+    oQueryStream << iListAttributes[i];
+    oQueryStream << ", ";
+    }
+  oQueryStream << iListAttributes[i];
+  return oQueryStream.str();
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string SelectQueryStreamListConditions(std::string iTable,
+                                            std::vector< std::string > iListAttributes, 
+                                            std::string iField,
+                                            std::vector< std::string > iListValues, 
+                                            bool Distinct,
+                                            std::string iConditionConnector)
+{
+  std::string What = GetSelectedAttributes(iListAttributes);
+  std::string Conditions = GetConditions(iField,iListValues,iConditionConnector);
+  return SelectGeneralQuery(What,iTable,Conditions);
+  /*std::stringstream querystream;
 
   querystream << "SELECT ";
   if ( Distinct )
@@ -183,12 +267,12 @@ std::string SelectQueryStreamListConditions(std::string iTable,
   querystream << " = '";
   querystream << iListValues[i];
   querystream << "')";
-  return querystream.str();
+  return querystream.str();*/
 }
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::string SelectWithJoinNullIncluded(std::string iSelectQuery,
+/*std::string SelectWithJoinNullIncluded(std::string iSelectQuery,
                                        std::string iJoinOn,
                                        bool doublon)
 {
@@ -242,7 +326,7 @@ std::string SelectWithJoinNullIncluded(std::string iSelectQuery,
     }
 
   return QueryStream.str();
-}
+}*/
 
 //-------------------------------------------------------------------------
 
