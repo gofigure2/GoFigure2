@@ -95,9 +95,11 @@ GetPolyData(const std::string & iString)
       }
 
     // Clean the map
-    for (it = orderedPoints.begin(); it != orderedPoints.end(); ++it)
+    it = orderedPoints.begin();
+    while ( it != orderedPoints.end() )
       {
       delete[] it->second;
+      ++it;
       }
     orderedPoints.clear();
 
@@ -106,7 +108,7 @@ GetPolyData(const std::string & iString)
         vtkSmartPointer<vtkPolyLine>::New();
 
     polyLine->GetPointIds()->SetNumberOfIds( points->GetNumberOfPoints() );
-    for(unsigned int i = 0; i < points->GetNumberOfPoints(); i++)
+    for( vtkIdType i = 0; i < points->GetNumberOfPoints(); i++ )
       {
       polyLine->GetPointIds()->SetId(i,i);
       }
@@ -151,7 +153,7 @@ GetMap(const std::string & iString)
   if ( N != 0 )
     {
     double* pt = NULL;
-    int    time = 0;
+    unsigned int    time = 0;
 
     // fill a map so the points will be ordered automatically
     for ( vtkIdType i = 0; i < N; i++ )
@@ -159,7 +161,7 @@ GetMap(const std::string & iString)
       pt = new double[3];
       str >> pt[0] >> pt[1] >> pt[2];
       str >> time;
-      orderedPoints.insert( std::pair< unsigned int,double* >(time, pt) );
+      orderedPoints.insert( std::pair< unsigned int, double* >(time, pt) );
       }
     }
   return orderedPoints;

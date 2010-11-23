@@ -111,9 +111,13 @@ class TrackContainer:
 public:
 
   typedef TraceContainerBase< typename boost::MultiIndexTrackContainer > Superclass;
-  typedef Superclass::MultiIndexContainerType MultiIndexContainerType;
 
-  typedef std::map< unsigned int, double*> PointsMapType;
+  typedef Superclass::MultiIndexContainerType MultiIndexContainerType;
+  typedef Superclass::MultiIndexContainerElementType TrackType;
+
+  typedef TrackType::PointsMapType PointsMapType;
+  typedef TrackType::PointsMapIterator PointsMapIterator;
+  typedef TrackType::PointsMapConstIterator PointsMapConstIterator;
 
   //------------------------------------------------------------------------
 
@@ -214,12 +218,12 @@ public:
   \brief Remove all actors (elements) from the scene for a given time point
   \param[in] iT
   */
-  void RemoveActorsWithGivenTimePoint(const unsigned int & iT);
+  // void RemoveActorsWithGivenTimePoint(const unsigned int & iT);
 
   /**
     \brief Add all actors (elements) from the scene for a given time point
   */
-  void AddActorsWithGivenTimePoint(const unsigned int & iT);
+  // void AddActorsWithGivenTimePoint(const unsigned int & iT);
 
   //-------------------------------------------------------------------------
 

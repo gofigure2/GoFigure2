@@ -49,7 +49,16 @@ class vtkLookupTable;
 #include "StructureHelper.h"
 #endif
 
+/**
+\defgroup Trace Trace
+*/
 
+/**
+ * \struct TraceStructure
+ * \brief  Structure which represent a trace (contour, mesh, track, lineage),
+ * and used for interaction between Visualization and TableWidget
+ * \ingroup Trace
+ */
 class QGOIO_EXPORT TraceStructure
 {
 public:

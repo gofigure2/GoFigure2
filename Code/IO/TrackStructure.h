@@ -46,15 +46,13 @@
 
 /**
 \defgroup Track Track
-\defgroup Trace Trace
-\defgroup Structure Structure
 */
 
 /**
  * \struct TrackStructure
  * \brief  Structure which represent a track, and used for
  * interaction between Visualization and TableWidget
- * \ingroup Track Trace Structure
+ * \ingroup Track Trace
  */
 class QGOIO_EXPORT TrackStructure : public TraceStructure
 {
@@ -63,7 +61,11 @@ public:
   /**
    * Map containing all the polydata points ordered by time
    */
-  std::map< unsigned int, double*> PointsMap;
+  typedef std::map< unsigned int, double* > PointsMapType;
+  typedef PointsMapType::iterator PointsMapIterator;
+  typedef PointsMapType::const_iterator PointsMapConstIterator;
+
+  PointsMapType PointsMap;
 
   /** Default Constructor */
   TrackStructure();

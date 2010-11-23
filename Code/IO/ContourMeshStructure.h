@@ -53,8 +53,6 @@ class vtkProperty;
 /**
 \defgroup Contour Contour
 \defgroup Mesh Mesh
-\defgroup Trace Trace
-\defgroup Structure Structure
 */
 
 
@@ -62,7 +60,7 @@ class vtkProperty;
  * \struct ContourMeshStructure
  * \brief  Structure which represent a contour or a mesh, and used for
  * interaction between Visualization and TableWidget
- * \ingroup Contour Mesh Trace Structure
+ * \ingroup Contour Mesh Trace
  *
  * \sa ContourMeshContainer
  */

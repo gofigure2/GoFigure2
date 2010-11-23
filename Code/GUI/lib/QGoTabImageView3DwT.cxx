@@ -1922,7 +1922,7 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
 
   this->m_ContourContainer->ShowActorsWithGivenTimePoint(m_TCoord);
   this->m_MeshContainer->ShowActorsWithGivenTimePoint(m_TCoord);
-  this->m_TrackContainer->ShowActorsWithGivenTimePoint(m_TCoord);
+  //this->m_TrackContainer->ShowActorsWithGivenTimePoint(m_TCoord);
 
   Update();
 

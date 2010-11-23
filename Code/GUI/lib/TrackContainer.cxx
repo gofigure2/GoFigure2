@@ -89,10 +89,10 @@ TrackContainer::
       it->ActorXYZ->Delete();
       }
 
-    std::map< unsigned int,double*>::const_iterator begin = it->PointsMap.begin();
-    std::map< unsigned int,double*>::const_iterator end = it->PointsMap.end();
-    // if there is a point, delete it and return true
-    if ( begin != end )
+    PointsMapConstIterator begin = it->PointsMap.begin();
+    PointsMapConstIterator end = it->PointsMap.end();
+
+    while ( begin != end )
       {
       // free memory
       delete[] begin->second;
@@ -141,39 +141,38 @@ UpdateCurrentElementFromVisu(std::vector< vtkActor * > iActors,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void
-TrackContainer::
-RemoveActorsWithGivenTimePoint(const unsigned int & iT)
-{
+//void
+//TrackContainer::
+//RemoveActorsWithGivenTimePoint(const unsigned int & iT)
+//{
 /// TODO FILL IT
-}
-
+//}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void
-TrackContainer::
-ShowActorsWithGivenTimePoint(const unsigned int & iT)
-{
-  /*
-  MultiIndexContainerTCoordIterator it0, it1;
-
-  boost::tuples::tie(it0, it1) = m_Container.get< TCoord >().equal_range(iT);
-
-  ChangeActorsVisibility< TCoord >(it0, it1, false);
-*/
-  m_ImageView->UpdateRenderWindows();
-}
-
+//void
+//TrackContainer::
+//ShowActorsWithGivenTimePoint(const unsigned int & iT)
+//{
+//
+//  MultiIndexContainerTCoordIterator it0, it1;
+//
+//  boost::tuples::tie(it0, it1) = m_Container.get< TCoord >().equal_range(iT);
+//
+//  ChangeActorsVisibility< TCoord >(it0, it1, false);
+//
+//  m_ImageView->UpdateRenderWindows();
+//}
+//
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void
-TrackContainer::
-AddActorsWithGivenTimePoint(const unsigned int & iT)
-{
-  /// TODO FILL IT
-}
+//void
+//TrackContainer::
+//AddActorsWithGivenTimePoint(const unsigned int & iT)
+//{
+//  /// TODO FILL IT
+//}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
