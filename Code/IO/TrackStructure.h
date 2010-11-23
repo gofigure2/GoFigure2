@@ -137,7 +137,7 @@ public:
    */
   bool ReplaceElement(int iTime, double* iPoint);
 
-  void ReleaseData();
+  void ReleaseData() const;
 
   /** Printing one element. std::cout << element << std::endl; */
   friend std::ostream & operator<<
@@ -170,6 +170,8 @@ public:
 
     return os;
   }
+
+
 };
 
 #endif

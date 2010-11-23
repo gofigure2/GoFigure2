@@ -133,10 +133,10 @@ public:
     \tparam TContainer Container of TraceIDs
     \param[in] iList input container of TraceIDs
   */
-  template< class TContainer >
-  void UpdateVisualizationForGivenIDs(TContainer iList)
+  /*template< class TList >
+  void UpdateVisualizationForGivenIDs(TList iList)
   {
-    typename TContainer::iterator it = iList.begin();
+    typename TList::iterator it = iList.begin();
 
     while ( it != iList.end() )
       {
@@ -192,12 +192,12 @@ public:
         }
       ++it;
       }
-  }
+  }*/
 
   /** \brief Display all elements for a given time point
   *   \param[in] iT time point
   */
-  void ShowActorsWithGivenTimePoint(const unsigned int & iT);
+  // void ShowActorsWithGivenTimePoint(const unsigned int & iT);
 
   /** \brief Update Current Element by providing all required information
   from the visualization.
@@ -265,7 +265,9 @@ public:
     \param[in] iTime time coordinate of the new point
     \param[in] iReconstructPolyData should we reconstruct the polydata
   */
-  bool AddPointToCurrentElement(int iTime, double* iPoint, bool iReconstructPolyData = true);
+  bool AddPointToCurrentElement( unsigned int iTime,
+                                 double* iPoint,
+                                 bool iReconstructPolyData = true );
 
   /**
     \brief Delete a point from the current track.
@@ -273,7 +275,8 @@ public:
     \param[in] iReconstructPolyData should we reconstruct the polydata
     \return true: a point has been deleted, false: no point has been deleted
   */
-  bool DeletePointFromCurrentElement(int iTime, bool iReconstructPolyData = true);
+  bool DeletePointFromCurrentElement( unsigned int iTime,
+                                     bool iReconstructPolyData = true);
 
   /**
     \brief Replace a point from the current track.
@@ -281,7 +284,8 @@ public:
     \param[in] iTime time point to update
     \return true: a point has been replace, false: no point has been replaced
   */
-  bool ReplacePointFromCurrentElement(int iTime, double* iPoint);
+  bool ReplacePointFromCurrentElement( unsigned int iTime,
+                                       double* iPoint);
 
   /**
     \brief Update the TrackStructure polydata according to the current map.
@@ -311,7 +315,24 @@ public:
     }
     \param[in] iTrackList List containing IDs of the track of interest
   */
-  void UpdateTracksStrings( std::vector<int> iTrackList);
+  template< class TList >
+  void UpdateTracksStrings( const TList& iTrackList)
+    {
+    typename TList::const_iterator it = iTrackList.begin();
+    unsigned int temp = 0;
+
+    while( it != iTrackList.end() )
+      {
+      temp = static_cast< unsigned int >( * it );
+      // update the current element
+      UpdateCurrentElementFromExistingOne( temp );
+
+      // emit signal to get the meshes informations
+      emit NeedMeshesInfoForImportedTrack( temp );
+
+      ++it;
+      }
+    }
 
   /*
    * \brief Update the current element map then polydata
@@ -330,7 +351,7 @@ public:
    * current element.
    * \param[in] iTimeList List of the time points to be deleted.
    */
-  void DeleteListFromCurrentElement( std::list<int> iTimeList );
+  void DeleteListFromCurrentElement( std::list<unsigned int> iTimeList );
 
   /*
    * \brief Define the appareance of a track (line/tubes, glyph/no glyph)

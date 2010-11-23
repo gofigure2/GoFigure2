@@ -36,6 +36,7 @@
 
 #include <iostream>
 #include "vtkPolyData.h"
+#include "vtkCellArray.h"
 #include "vtkActor.h"
 #include "vtkMapper.h"
 #include "vtkDoubleArray.h"
@@ -323,7 +324,7 @@ SetLookupTable( vtkLookupTable* iLut ) const
 
 //--------------------------------------------------------------------------
 void
-TraceStructure::ReleaseData()
+TraceStructure::ReleaseData() const
 {
   if( this->ActorXY )
     {
@@ -347,3 +348,28 @@ TraceStructure::ReleaseData()
     }
 }
 //--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+TraceStructure::ResetNodes() const
+{
+  if( this->Nodes )
+    {
+    if( this->Nodes->GetPointData() )
+      {
+      this->Nodes->GetPointData()->Reset();
+      }
+    if( this->Nodes->GetPoints() )
+      {
+      this->Nodes->GetPoints()->Reset();
+      }
+    if( this->Nodes->GetLines() )
+      {
+      this->Nodes->GetLines()->Reset();
+      }
+    if( this->Nodes )
+      {
+      this->Nodes->Reset();
+      }
+    }
+}

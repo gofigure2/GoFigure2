@@ -220,7 +220,16 @@ ReplaceElement(int iTime, double* iPoint)
 
 //--------------------------------------------------------------------------
 void
-TrackStructure::ReleaseData()
+TrackStructure::ReleaseData() const
 {
   TraceStructure::ReleaseData();
+
+  PointsMapConstIterator begin = this->PointsMap.begin();
+  PointsMapConstIterator end = this->PointsMap.end();
+
+  while( begin != end )
+    {
+    delete[] begin->second;
+    ++begin;
+    }
 }

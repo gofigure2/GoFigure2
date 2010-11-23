@@ -158,7 +158,7 @@ public:
       \param[in] iLut */
   void SetLookupTable( vtkLookupTable* iLut ) const;
 
-  virtual void ReleaseData();
+  virtual void ReleaseData() const;
 
   /** Printing one element. std::cout << element << std::endl; */
   friend std::ostream & operator<<
@@ -179,6 +179,9 @@ public:
 
     return os;
   }
+
+  void ResetNodes() const;
+
 };
 
 #endif // TRACESTRUCTURE_H
