@@ -978,8 +978,16 @@ GetTraceIDAndColumnsValues(std::string iTraceIDName,std::string &ioColumnName)
   unsigned int IndexTraceID = this->findColumnName(iTraceIDName.c_str());
   for( int i = 0; i<NbOfRows; i++ )
       {     
-      oMapValues[this->item(i,IndexTraceID)->text().toUInt()] =
-        this->item(i,ColumnIndex)->text().toStdString();     
+      if (this->item(i,ColumnIndex))
+        {
+        std::string Text = this->item(i,ColumnIndex)->text().toStdString();  //for test purpose
+        oMapValues[this->item(i,IndexTraceID)->text().toUInt()] =
+          this->item(i,ColumnIndex)->text().toStdString();     
+        }
+      else
+        {
+        oMapValues[this->item(i,IndexTraceID)->text().toUInt()] = "";
+        }
       }
   return oMapValues;
 }
