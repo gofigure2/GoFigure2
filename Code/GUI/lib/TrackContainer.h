@@ -44,6 +44,7 @@
 #include "boost/multi_index/hashed_index.hpp"
 #include "boost/multi_index/ordered_index.hpp"
 #include "boost/numeric/conversion/cast.hpp"
+#include "boost/lexical_cast.hpp"
 
 #include "vtkProperty.h"
 #include "vtkPolyData.h"
@@ -719,6 +720,9 @@ public:
     \param[in] iActors Vector container an actor pointer for each view
   */
   void UpdateCurrentElementActorsFromVisu(std::vector< vtkActor * > iActors);
+
+  void SetColorCode( const std::string& iColumnName,
+                     const std::map< unsigned int, std::string >& iValues );
 
   /**
     \brief Color code contour / mesh according to values provided

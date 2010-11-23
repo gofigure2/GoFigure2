@@ -806,6 +806,9 @@ public:
   void SetColorCode( const std::string& iColumnName,
                      const std::map< unsigned int, std::string >& iValues );
 
+  void SetRandomColor( const std::string& iColumnName,
+                      const std::map< unsigned int, std::string >& iIds );
+
   template< typename TValue >
   void SetRandomColor( const std::string& iColumnName,
                        const std::map< unsigned int, TValue >& iIds )
