@@ -383,13 +383,14 @@ public:
   bool DeletePointFromElement( MultiIndexContainerTraceIDIterator iTrackStructureIterator, int iTime, bool iReconstructPolyData );
 
   /**
-    \brief Delete a point from a track.
-    \param[in] iTrackStructure trackstructure which will be modified
-    \param[in] iTime time point to clear
-    \param[in] iReconstructPolyData should we reconstruct the polydata
-    \return true: a point has been deleted, false: no point has been deleted
+    \brief Add traces (collections of contours / meshes) to a track, given their
+    bounding box.
+    \param[in] iTrackID track id
+    \param[in] iBoundingBox list of bounding boxes
   */
-  void UpdatePointsFromBBForGivenTrack( unsigned int iTrackID, std::list<std::vector<unsigned int> > iBoundingBox);
+  void UpdatePointsFromBBForGivenTrack(
+    unsigned int iTrackID,
+    std::list<std::vector<unsigned int> > iBoundingBox);
 
   /**
   \brief get the element with iTrackID into the current element, remove it from the container,
@@ -480,7 +481,9 @@ public slots:
 protected:
 
   /**
-    \brief Generate a new polydata from a list for the current element
+    \brief Recompute a polydata from a list of point (coordinates) for the
+    current element. If the current element is a new track, then the polydata,
+    actors are allocated and added in consequence.
     \param[in] iPoints list of points to generate the new polydata
   */
   void RecomputeCurrentElementMap( std::list< double* > iPoints);

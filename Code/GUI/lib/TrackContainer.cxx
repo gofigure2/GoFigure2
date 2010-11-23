@@ -689,12 +689,12 @@ UpdatePointsFromBBForGivenTrack( unsigned int iTrackID,
                                  std::list<std::vector<unsigned int> > iBoundingBox)
 {
   if(iBoundingBox.empty())
-      {
-      std::cout << "list of points to be added is empty" << std::endl;
-      }
+    {
+    qDebug() << "list of points to be added is empty";
+    }
 
   MultiIndexContainerTraceIDIterator
-  it = m_Container.get< TraceID >().find( iTrackID );
+    it = m_Container.get< TraceID >().find( iTrackID );
 
   // if we find the stucture, update it!
   if ( it != m_Container.get< TraceID >().end() )
@@ -707,7 +707,9 @@ UpdatePointsFromBBForGivenTrack( unsigned int iTrackID,
 
     while( begin != end )
       {
-      int xyzBB[3] = {(*begin)[0], (*begin)[1], (*begin)[2]};
+      int xyzBB[3] = { static_cast< int >( (*begin)[0] ),
+                       static_cast< int >( (*begin)[1] ),
+                       static_cast< int >( (*begin)[2] ) };
 
       unsigned int time = (*begin)[3];
 
@@ -738,12 +740,10 @@ TrackContainer::
 RecomputeCurrentElementMap( std::list< double* > iPoints)
 {
   // empty current element map
-  std::map< unsigned int,double*>::const_iterator begin
-      = this->m_CurrentElement.PointsMap.begin();
-  std::map< unsigned int,double*>::const_iterator end
-      = this->m_CurrentElement.PointsMap.end();
+  PointsMapConstIterator begin = this->m_CurrentElement.PointsMap.begin();
+  PointsMapConstIterator end = this->m_CurrentElement.PointsMap.end();
 
-  if ( begin != end )
+  while ( begin != end )
     {
     // free memory
     delete[] begin->second;
@@ -752,21 +752,19 @@ RecomputeCurrentElementMap( std::list< double* > iPoints)
 
   this->m_CurrentElement.PointsMap.clear();
 
-  if( !(this->m_CurrentElement.PointsMap.empty()) )
-    {
-    std::cout << "Current element map is not empty whereas it should be"
-        << std::endl;
-    return;
-    }
-
   // add points to the map
   std::list< double* >::iterator beginList = iPoints.begin();
   std::list< double* >::iterator endList = iPoints.end();
 
   while( beginList != endList)
     {
-    int xyzBB[3] = {(*beginList)[0], (*beginList)[1], (*beginList)[2]};
-    unsigned int time = (*beginList)[3];
+    int xyzBB[3] = {
+      static_cast< int >( (*beginList)[0] ),
+      static_cast< int >( (*beginList)[1] ),
+      static_cast< int >( (*beginList)[2] ) };
+
+    unsigned int time = static_cast< unsigned int >( (*beginList)[3] );
+
     // convert xyz coordinates
     double* xyz = m_ImageView->GetImageViewer(0)
         ->GetWorldCoordinatesFromImageCoordinates(xyzBB);
@@ -783,22 +781,23 @@ RecomputeCurrentElementMap( std::list< double* > iPoints)
     ++beginList;
     }
 
+  bool IsANewTrack = ( this->m_CurrentElement.Nodes == NULL );
   // Create a new polydata and new actors if it is a new track
-  if(!this->m_CurrentElement.Nodes)
+  if( IsANewTrack )
     {
     //Create new polydata (new address)
     this->m_CurrentElement.Nodes = vtkPolyData::New();
-
-    UpdateTrackStructurePolyData(this->m_CurrentElement);
-
-    CreateCurrentTrackActors();
-
-    emit CurrentTrackToSave();
-
-    return;
     }
 
+  // update the polydata (which represents the current track)
   UpdateTrackStructurePolyData(this->m_CurrentElement);
+
+  // if it is a new track, we need to add the actors in viewer / scene
+  if( IsANewTrack )
+    {
+    // add actors in the visualization with given property
+    CreateCurrentTrackActors();
+    }
 
   emit CurrentTrackToSave();
 }

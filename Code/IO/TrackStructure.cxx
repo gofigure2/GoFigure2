@@ -166,7 +166,8 @@ InsertElement(int iTime, double* iPoint)
   // if there is no point, insert it and return true
   if ( pointsMapIterator == this->PointsMap.end() )
     {
-    this->PointsMap.insert( std::pair< unsigned int,double*>(iTime, iPoint) );
+    this->PointsMap.insert(
+          std::pair< unsigned int, double* >( iTime, iPoint ) );
     return true;
     }
 
