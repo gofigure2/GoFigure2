@@ -190,7 +190,7 @@ public:
   \param[in] iTraceIDName name of the column for TraceID
   \param[in,out] ioColumnName name of the column of the values
   */
-  std::map<unsigned int, double> GetTraceIDAndColumnsValues(
+  std::map<unsigned int, std::string> GetTraceIDAndColumnsValues(
     std::string iTraceIDName, std::string &ioColumnName);
 
 /**

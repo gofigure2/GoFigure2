@@ -958,11 +958,11 @@ bool QGoTableWidget::setCheckStateCheckBox(QTableWidgetItem *iItem,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::map<unsigned int, double> QGoTableWidget::
+std::map<unsigned int, std::string> QGoTableWidget::
 GetTraceIDAndColumnsValues(std::string iTraceIDName,std::string &ioColumnName)
 {
-  std::map<unsigned int,double> oMapValues =
-    std::map<unsigned int,double>();
+  std::map<unsigned int,std::string> oMapValues =
+    std::map<unsigned int,std::string>();
   QList<QTableWidgetSelectionRange> Ranges = this->selectedRanges();
   if ( Ranges.size()>1 || Ranges[0].columnCount()>1 )
     {
@@ -977,9 +977,9 @@ GetTraceIDAndColumnsValues(std::string iTraceIDName,std::string &ioColumnName)
   int NbOfRows = this->rowCount();
   unsigned int IndexTraceID = this->findColumnName(iTraceIDName.c_str());
   for( int i = 0; i<NbOfRows; i++ )
-    {
-    oMapValues[this->item(i,IndexTraceID)->text().toUInt()] =
-      this->item(i,ColumnIndex)->text().toDouble();
-    }
+      {     
+      oMapValues[this->item(i,IndexTraceID)->text().toUInt()] =
+        this->item(i,ColumnIndex)->text().toStdString();     
+      }
   return oMapValues;
 }

@@ -659,7 +659,7 @@ protected:
   void SetColorCodingTemplate( T* iContainerForVisu,bool IsChecked)
   {
     std::string ColumnName = "";
-    std::map<unsigned int, double> Values;
+    std::map<unsigned int, std::string> Values;
     IsColorCodingOn = IsChecked;
 
 		if (IsChecked)
@@ -683,11 +683,6 @@ protected:
           iContainerForVisu->SetColorCode( ColumnName,Values );
           break;
 
-        default:
-        case QGoColorCodingDialog::Nothing:
-          IsColorCodingOn = !IsChecked;
-          break;
-
         case QGoColorCodingDialog::Random:
           iContainerForVisu->SetRandomColor(ColumnName,Values );
           break;
@@ -695,6 +690,11 @@ protected:
         case QGoColorCodingDialog::LUT:
           iContainerForVisu->SetColorCode( ColumnName,Values );
           iContainerForVisu->SetLookupTableForColorCoding(LUT);
+          break;
+
+        default:
+        case QGoColorCodingDialog::Nothing:
+          IsColorCodingOn = !IsChecked;
           break;
         }
       }
