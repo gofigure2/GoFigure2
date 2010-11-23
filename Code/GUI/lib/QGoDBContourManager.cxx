@@ -63,9 +63,9 @@ QGoDBContourManager::~QGoDBContourManager()
 
 //-------------------------------------------------------------------------
 void QGoDBContourManager::SetContoursInfoContainerForVisu(
-  ContourMeshContainer *iContainerForVisu)
+  ContourContainer *iContainerForVisu)
 {
-  this->SetTracesInfoContainerForVisuTemplate<ContourMeshContainer>(
+  this->SetTracesInfoContainerForVisuTemplate<ContourContainer>(
     iContainerForVisu,&this->m_ContourContainerInfoForVisu);
 }
 //-------------------------------------------------------------------------
@@ -105,7 +105,7 @@ void QGoDBContourManager::DisplayInfoForAllTraces(
 //-------------------------------------------------------------------------
 /*void QGoDBContourManager::UpdateTracesVisibilityForGivenTimePoint(unsigned int iTimePoint)
 {
-  std::list<unsigned int> ListContours = 
+  std::list<unsigned int> ListContours =
     this->m_ContourContainerInfoForVisu->GetElementsTraceIDForGivenTimePoint(
     iTimePoint);
   this->m_Table->SetVisibleStateForListTraceIDs(
@@ -298,7 +298,7 @@ void QGoDBContourManager::UpdateTWAndContainerForImportedTraces(
   //update the visualization and the data from visu in the container for visu:
   this->m_ContourContainerInfoForVisu->
   UpdateVisualizationForGivenIDs< std::vector< int > >(
-    iVectorImportedTraces, true);
+    iVectorImportedTraces );
 }
 //-------------------------------------------------------------------------
 
@@ -352,3 +352,19 @@ void QGoDBContourManager::GetTracesInfoFromDBAndModifyContainerForVisu(
     ++it;
     }
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBContourManager::SetColorCoding(bool IsChecked)
+{
+  this->SetColorCodingTemplate<ContourMeshContainer>(
+    this->m_ContourContainerInfoForVisu,IsChecked);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+/*void QGoDBContourManager::BackFromColorCoding()
+{
+  this->SetBackFromColorCodingTemplate<ContourMeshContainer>(
+    this->m_ContourContainerInfoForVisu);
+}*/

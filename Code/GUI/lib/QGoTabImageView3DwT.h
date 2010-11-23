@@ -157,12 +157,12 @@ public:
    */
   virtual void ReadSettings() {}
 
-  ContourMeshContainer * GetContourContainer()
+  ContourContainer * GetContourContainer()
   {
     return m_ContourContainer;
   }
 
-  ContourMeshContainer * GetMeshContainer()
+  MeshContainer * GetMeshContainer()
   {
     return m_MeshContainer;
   }
@@ -173,37 +173,17 @@ public:
   }
 
   template< class TIndex >
-  void AddTraceFromNodesManager(
-    typename ContourMeshContainer::MultiIndexContainer::index< TIndex >::type::iterator iIt,
-    const std::string & iTrace)
-  {
-    // If we want to add a contour
-    if ( iTrace.compare("contour") == 0 )
-      {
-      AddContourFromNodes< TIndex >(iIt);
-      }
-    // If we want to add a mesh
-    if ( iTrace.compare("mesh") == 0 )
-      {
-      AddMeshFromNodes< TIndex >(iIt);
-      }
-    // If we want to add a track
-    if ( iTrace.compare("track") == 0 )
-      {
-      AddMeshFromNodes< TIndex >(iIt);
-      }
-  }
-
-  template< class TIndex >
   void AddMeshFromNodes(
-    typename ContourMeshContainer::MultiIndexContainer::index< TIndex >::type::iterator iIt)
+    typename ContourMeshContainer::MultiIndexContainerType::index< TIndex >::type::iterator
+      iIt )
   {
     VisualizeMesh< TIndex >(iIt);
   }
 
   template< class TIndex >
   void AddTrackFromNodes(
-    typename TrackContainer::MultiIndexContainer::index< TIndex >::type::iterator iIt)
+    typename TrackContainer::MultiIndexContainerType::index< TIndex >::type::iterator
+      iIt )
   {
     VisualizeTrack< TIndex >(iIt);
   }
@@ -212,7 +192,8 @@ public:
   template< class TIndex >
   void
   AddContourFromNodes(
-    typename ContourMeshContainer::MultiIndexContainer::index< TIndex >::type::iterator iIt)
+    typename ContourMeshContainer::MultiIndexContainerType::index< TIndex >::type::iterator
+      iIt )
   {
     vtkPolyData *nodes = iIt->Nodes;
 
@@ -399,9 +380,9 @@ protected:
 
   vtkPoints *m_Seeds;
 
-  ContourMeshContainer *m_ContourContainer;
-  ContourMeshContainer *m_MeshContainer;
-  TrackContainer       *m_TrackContainer;
+  ContourContainer *m_ContourContainer;
+  MeshContainer    *m_MeshContainer;
+  TrackContainer   *m_TrackContainer;
 
   bool m_TraceWidgetRequiered;
 
@@ -428,7 +409,7 @@ protected:
 
   template< class TIndex >
   void VisualizeContour(
-    typename ContourMeshContainer::MultiIndexContainer::index< TIndex >::type::iterator iIt,
+    typename ContourContainer::MultiIndexContainerType::template index< TIndex >::type::iterator iIt,
     vtkPolyData *iContour)
   {
     if ( ( iContour->GetNumberOfPoints() > 2 ) && ( m_TCoord >= 0 ) )
@@ -467,7 +448,7 @@ protected:
   template< class TIndex >
   void
   VisualizeMesh(
-    typename ContourMeshContainer::MultiIndexContainer::index< TIndex >::type::iterator iIt)
+    typename MeshContainer::MultiIndexContainerType::template index< TIndex >::type::iterator iIt)
   {
     const double *iRgba = iIt->rgba;
     vtkPolyData * iMesh = iIt->Nodes;
@@ -495,7 +476,7 @@ protected:
   template< class TIndex >
   void
   VisualizeTrack(
-    typename TrackContainer::MultiIndexContainer::index< TIndex >::type::iterator iIt)
+    typename TrackContainer::MultiIndexContainerType::template index< TIndex >::type::iterator iIt)
   {
     const double *iRgba = iIt->rgba;
     vtkPolyData * iMesh = iIt->Nodes;
@@ -574,7 +555,7 @@ protected:
   void SetTimePointWithMegaCaptureTimeChannels(int channel);
 
   /**
-  \brief give the adress for the contours, meshes and tracks container to the 
+  \brief give the adress for the contours, meshes and tracks container to the
   QGoPrintDatabase
   */
   void SetTheContainersForDB();
@@ -668,8 +649,8 @@ protected slots:
   void UpdateTracksAppearance(bool, bool);
 
   /**
-  \brief give the adress for the contours, meshes and tracks container to the 
-  QGoPrintDatabase, and make the connection for the status bar once the database 
+  \brief give the adress for the contours, meshes and tracks container to the
+  QGoPrintDatabase, and make the connection for the status bar once the database
   variables have been set for the QGoPrintDatabase
   */
   void SetDatabaseContainersAndDelayedConnections();

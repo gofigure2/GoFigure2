@@ -39,6 +39,23 @@
 #include "vtkActor.h"
 #include "vtkPolyData.h"
 
+class ContourMeshContainerTestHelper :
+    public ContourMeshContainer
+{
+public:
+  explicit ContourMeshContainerTestHelper( QObject* iParent,
+                                           QGoImageView3D* iViewer ) :
+    ContourMeshContainer( iParent, iViewer ) {}
+
+  ~ContourMeshContainerTestHelper() {}
+
+protected:
+  std::vector< vtkActor* > AddTrace( vtkPolyData*, vtkProperty* )
+    {
+    return std::vector< vtkActor* >();
+    }
+};
+
 int main(int argc, char *argv[])
 {
   QApplication app(argc, argv);
@@ -48,7 +65,7 @@ int main(int argc, char *argv[])
 
   QGoImageView3D *viewer = new QGoImageView3D;
 
-  ContourMeshContainer container(NULL, viewer);
+  ContourMeshContainerTestHelper container(NULL, viewer);
   unsigned             TimePoint = 0;
   bool                 highlighted = true;
   bool                 visible = true;

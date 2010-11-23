@@ -39,7 +39,9 @@
 #include <QMessageBox>
 
 QGoDBTraceManager::QGoDBTraceManager():
-  m_Table(NULL), m_CollectionOfTraces(NULL),m_DatabaseConnector(NULL)//, m_TraceContainerInfoForVisu(NULL)
+  m_Table(NULL), m_CollectionOfTraces(NULL),
+  m_DatabaseConnector(NULL), IsColorCodingOn(false)
+  //, m_TraceContainerInfoForVisu(NULL)
 {}
 
 //-------------------------------------------------------------------------
@@ -290,8 +292,19 @@ void QGoDBTraceManager::AddGeneralActionsContextMenu(QMenu *iMenu)
   iMenu->addAction( tr("Hide the selected %1s")
                     .arg( this->m_TraceName.c_str() ), this, SLOT( HideSelectedRows() ) );
 
-  iMenu->addAction( tr("Change the color for the checked %1 to the selected color").arg( this->m_TraceName.c_str() ),
+  QMenu* ColorMenu = new QMenu(tr("Change color of your %1s").arg(this->m_TraceName.c_str() ) );
+
+  ColorMenu->addAction( tr("To the selected color for the checked %1s")
+                    .arg( this->m_TraceName.c_str() ),
                     this, SLOT( ChangeTraceColor() ) );
+  QAction* ColorCoding = new QAction(tr("Based on the selected column"),ColorMenu);
+  ColorCoding->setCheckable(true);
+  ColorCoding->setChecked(IsColorCodingOn);
+  QObject::connect(ColorCoding,SIGNAL(triggered ( bool ) ),this,SLOT( SetColorCoding(bool) ) );
+  ColorMenu->addAction(ColorCoding);
+
+  iMenu->addAction(ColorMenu->menuAction());
+
   iMenu->addAction( tr("Delete checked %1s").arg( this->m_TraceName.c_str() ),
                     this, SLOT( DeleteTracesFromContextMenu() ) );
 
@@ -315,6 +328,10 @@ void QGoDBTraceManager::AddSpecificActionsForContourMesh(QMenu *iMenu)
                     this, SLOT( GoToTheTrace() ) );
   /** \todo Lydie: when using lineage, put it in the generalActionsContextMenu*/
   this->AddActionForCreateNewCollectionFromCheckedTraces(iMenu);
+
+ // iMenu->addAction( tr("ColorCode your %1s base on the selected column")
+ //                   .arg(this->m_TraceName.c_str() ),
+ //                   this, SLOT( ColorCoding() ) );
   /*iMenu->addAction(
       tr("Add to selected %1 : %2").arg(this->m_CollectionName.c_str())
       .arg(this->m_SelectedCollectionData.first.c_str()), this, SLOT(AddToSelectedCollection()));
@@ -531,7 +548,7 @@ void QGoDBTraceManager::CheckTheTraceInTW(unsigned int iTraceID,
 //-------------------------------------------------------------------------
 
 //------------------------------------------------------------------------
-void QGoDBTraceManager::ShowTheTraceInTW(unsigned int iTraceID, 
+void QGoDBTraceManager::ShowTheTraceInTW(unsigned int iTraceID,
                                          Qt::CheckState iState)
 {
   this->m_Table->SetVisibleStateForTraceID(iTraceID,
@@ -620,6 +637,16 @@ std::list< unsigned int > QGoDBTraceManager::GetLastCreatedTracesIDs(
   return this->m_CollectionOfTraces->GetLastCreatedTracesIDs(
            iDatabaseConnector, iNumberOfTraceIDs);
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+/*
+void QGoDBTraceManager::ColorCoding()
+{
+  //todo reimplement it :
+  //this->m_TraceContainerInfoForVisu->SetColorCode( const std::string& iColumnName,
+    //                 const std::map< unsigned int, TValue >& iValues )
+ // this->m_Table->GetTraceIDAndColumnsValues(this->m_TraceID);*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

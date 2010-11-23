@@ -38,15 +38,66 @@
 #include <QObject>
 
 #include "TrackStructure.h"
+#include "StructureHelper.h"
+
+#include "TraceContainerBase.h"
 
 #include "boost/multi_index_container.hpp"
 #include "boost/multi_index/member.hpp"
 #include "boost/multi_index/hashed_index.hpp"
 #include "boost/multi_index/ordered_index.hpp"
+#include "boost/numeric/conversion/cast.hpp"
+#include "boost/lexical_cast.hpp"
 
 #include "vtkProperty.h"
 #include "vtkPolyData.h"
+#include "vtkActor.h"
+#include "vtkMapper.h"
+#include "vtkPointData.h"
+#include "vtkDoubleArray.h"
 #include "QGoImageView3D.h"
+#include "vtkLookupTableManager.h"
+
+namespace boost
+{
+  typedef multi_index::multi_index_container<
+    TrackStructure,
+    boost::multi_index::indexed_by<
+      boost::multi_index::hashed_non_unique<
+        boost::multi_index::tag< ActorXY >,
+        BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorXY)
+        >,
+      boost::multi_index::hashed_non_unique<
+        boost::multi_index::tag< ActorXZ >,
+        BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorXZ)
+        >,
+      boost::multi_index::hashed_non_unique<
+        boost::multi_index::tag< ActorYZ >,
+        BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorYZ)
+        >,
+      boost::multi_index::hashed_non_unique<
+        boost::multi_index::tag< ActorXYZ >,
+        BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorXYZ)
+        >,
+      boost::multi_index::hashed_non_unique<
+        boost::multi_index::tag< Nodes >,
+        BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkPolyData *, Nodes)
+        >,
+      boost::multi_index::ordered_unique<
+        boost::multi_index::tag< TraceID >,
+        BOOST_MULTI_INDEX_MEMBER(TraceStructure, unsigned int, TraceID)
+        >,
+      boost::multi_index::ordered_non_unique<
+        boost::multi_index::tag< Highlighted >,
+        BOOST_MULTI_INDEX_MEMBER(TraceStructure, bool, Highlighted)
+        >,
+      boost::multi_index::ordered_non_unique<
+        boost::multi_index::tag< Visible >,
+        BOOST_MULTI_INDEX_MEMBER(TraceStructure, bool, Visible)
+        >
+      >
+    > MultiIndexTrackContainer;
+}
 
 /**
   \class TrackContainer
@@ -55,139 +106,39 @@
   the Visualization and in the TableWidget
   \sa TrackStructure QGoTableWidget QGoImageView3D
   */
-class TrackContainer:public QObject
+class TrackContainer:
+    public TraceContainerBase< typename boost::MultiIndexTrackContainer >
 {
   Q_OBJECT
 public:
 
-  typedef std::map< unsigned int, double*> PointsMapType;
+  typedef TraceContainerBase< typename boost::MultiIndexTrackContainer > Superclass;
 
-  typedef boost::multi_index::multi_index_container<
-    TrackStructure,
-    boost::multi_index::indexed_by<
-      boost::multi_index::hashed_non_unique<
-        boost::multi_index::tag< ActorXY >,
-        BOOST_MULTI_INDEX_MEMBER(TrackStructure, vtkActor *, ActorXY)
-        >,
-      boost::multi_index::hashed_non_unique<
-        boost::multi_index::tag< ActorXZ >,
-        BOOST_MULTI_INDEX_MEMBER(TrackStructure, vtkActor *, ActorXZ)
-        >,
-      boost::multi_index::hashed_non_unique<
-        boost::multi_index::tag< ActorYZ >,
-        BOOST_MULTI_INDEX_MEMBER(TrackStructure, vtkActor *, ActorYZ)
-        >,
-      boost::multi_index::hashed_non_unique<
-        boost::multi_index::tag< ActorXYZ >,
-        BOOST_MULTI_INDEX_MEMBER(TrackStructure, vtkActor *, ActorXYZ)
-        >,
-      boost::multi_index::hashed_non_unique<
-        boost::multi_index::tag< Nodes >,
-        BOOST_MULTI_INDEX_MEMBER(TrackStructure, vtkPolyData *, Nodes)
-        >,
-      //boost::multi_index::hashed_non_unique<
-      //  boost::multi_index::tag< PointsMap >,
-      //  BOOST_MULTI_INDEX_MEMBER(TrackStructure, PointsMapType, PointsMap)
-      //  >,
-      boost::multi_index::ordered_unique<
-        boost::multi_index::tag< TraceID >,
-        BOOST_MULTI_INDEX_MEMBER(TrackStructure, unsigned int, TraceID)
-        >,
-      boost::multi_index::ordered_non_unique<
-        boost::multi_index::tag< Highlighted >,
-        BOOST_MULTI_INDEX_MEMBER(TrackStructure, bool, Highlighted)
-        >,
-      boost::multi_index::ordered_non_unique<
-        boost::multi_index::tag< Visible >,
-        BOOST_MULTI_INDEX_MEMBER(TrackStructure, bool, Visible)
-        >
-      >
-    > MultiIndexContainer;
+  typedef Superclass::MultiIndexContainerType MultiIndexContainerType;
+  typedef Superclass::MultiIndexContainerElementType TrackType;
 
-  typedef MultiIndexContainer::index< ActorXY >::type::iterator
-  MultiIndexContainerActorXYIterator;
-
-  typedef MultiIndexContainer::index< ActorXZ >::type::iterator
-  MultiIndexContainerActorXZIterator;
-
-  typedef MultiIndexContainer::index< ActorYZ >::type::iterator
-  MultiIndexContainerActorYZIterator;
-
-  typedef MultiIndexContainer::index< ActorXYZ >::type::iterator
-  MultiIndexContainerActorXYZIterator;
-
-  typedef MultiIndexContainer::index< Nodes >::type::iterator
-  MultiIndexContainerNodesIterator;
-
-  typedef MultiIndexContainer::index< TraceID >::type::iterator
-  MultiIndexContainerTraceIDIterator;
-
-  typedef MultiIndexContainer::index< Highlighted >::type::iterator
-  MultiIndexContainerHighlightedIterator;
-
-  typedef MultiIndexContainer::index< Visible >::type::iterator
-  MultiIndexContainerVisibleIterator;
+  typedef TrackType::PointsMapType PointsMapType;
+  typedef TrackType::PointsMapIterator PointsMapIterator;
+  typedef TrackType::PointsMapConstIterator PointsMapConstIterator;
 
   //------------------------------------------------------------------------
 
   /** \brief Constructor. */
-  explicit TrackContainer(QObject *iParent,
-                                QGoImageView3D *iView);
+  explicit TrackContainer( QObject *iParent,
+                           QGoImageView3D *iView);
 
   /** \brief Destructor. */
   ~TrackContainer();
-
-  /** \brief Underlying container. */
-  MultiIndexContainer m_Container;
-
-  /** \brief Link to the visualization. */
-  QGoImageView3D *m_ImageView;
-
-  /** \brief Current Element to be inserted in the container */
-  TrackStructure m_CurrentElement;
-
-  // ----------------------------------------------------------------------
-
-  /** \brief Print the container content in the application output */
-  template< class TIterator >
-  void Print(TIterator iBegin, TIterator iEnd)
-  {
-    TIterator it = iBegin;
-
-    while ( it != iEnd )
-      {
-      std::cout << *it;
-      std::cout << "***" << std::endl;
-      std::cout << std::endl;
-      ++it;
-      }
-  }
-
-  /**
-    \brief Print the container content in the application output according
-    to the template parameter.
-    \tparam TIndex
-    */
-  template< class TIndex >
-  void Print()
-  {
-    this->Print( m_Container.get< TIndex >().begin(),
-                 m_Container.get< TIndex >().end() );
-  }
-
-  /** \brief Print the container content in the application output. */
-  void Print();
-  // ----------------------------------------------------------------------
 
   /**
     \brief Update Visualization of the given TraceIDs
     \tparam TContainer Container of TraceIDs
     \param[in] iList input container of TraceIDs
   */
-  template< class TContainer >
-  void UpdateVisualizationForGivenIDs(TContainer iList)
+  /*template< class TList >
+  void UpdateVisualizationForGivenIDs(TList iList)
   {
-    typename TContainer::iterator it = iList.begin();
+    typename TList::iterator it = iList.begin();
 
     while ( it != iList.end() )
       {
@@ -243,73 +194,12 @@ public:
         }
       ++it;
       }
-  }
+  }*/
 
   /** \brief Display all elements for a given time point
   *   \param[in] iT time point
   */
-  void ShowActorsWithGivenTimePoint(const unsigned int & iT);
-
-  /**
- * \brief Update Actors, Highlighted, Visibility (properties) of given
- * a element
- * \tparam TIndex Index Type (referring to multi index container's indices)
- * \param[in] iIt element to update
- * \param[in] iActors its actors
- * \param[in] iHighlighted
- * \param[in] iVisible if false remove the element from the scene, else
- * add it
- */
-  template< class TIndex >
-  void UpdateVisualizationForGivenElement(
-    typename MultiIndexContainer::index< TIndex >::type::iterator iIt,
-    std::vector< vtkActor * > iActors,
-    const bool & iHighlighted,
-    const bool & iVisible)
-  {
-    TrackStructure temp = *iIt;
-
-    if ( iActors.size() == 4 )
-      {
-      temp.ActorXY = iActors[0];
-      temp.ActorXZ = iActors[1];
-      temp.ActorYZ = iActors[2];
-      temp.ActorXYZ = iActors[3];
-      }
-    temp.Highlighted = iHighlighted;
-    temp.Visible = iVisible;
-
-    typedef void ( QGoImageView3D::*ImageViewMember )(const int &, vtkActor *);
-    ImageViewMember f;
-
-    if ( iVisible )
-      {
-      f = &QGoImageView3D::AddActor;
-      }
-    else
-      {
-      f = &QGoImageView3D::RemoveActor;
-      }
-
-    for ( int i = 0; i < 4; i++ )
-      {
-      ( m_ImageView->*f )(i, iActors[i]);
-      }
-
-    m_Container.get< TIndex >().replace(iIt, temp);
-  }
-
-  /**
-  \brief Insert one element in the container
-  \param[in] iE element to be insert in the container
-  */
-  void Insert(const TrackStructure & iE);
-
-  /** \brief Insert Current Element in the container */
-  void InsertCurrentElement();
-
-  /** \brief Reset Current Element to a default state */
-  void ResetCurrentElement();
+  // void ShowActorsWithGivenTimePoint(const unsigned int & iT);
 
   /** \brief Update Current Element by providing all required information
   from the visualization.
@@ -325,272 +215,17 @@ public:
                                     const bool & iHighlighted,
                                     const bool & iVisible);
 
-  /**
-  \brief Update Current Element from the database.
-  \param[in] iTraceID
-  \param[in] irgba
-  */
-  void UpdateCurrentElementFromDB(unsigned int iTraceID, double irgba[4]);
-
-  /**
-  \brief put the information of the existing element into m_CurrentElement
-  and remove the existing element from the container,the visu and the memory
-  \param[in] iTraceID ID of the existing element
-  \return true if the element was found in the container, false if not
-  */
-  bool UpdateCurrentElementFromExistingOne(unsigned int iTraceID);
 
   /**
   \brief Remove all actors (elements) from the scene for a given time point
   \param[in] iT
   */
-  void RemoveActorsWithGivenTimePoint(const unsigned int & iT);
+  // void RemoveActorsWithGivenTimePoint(const unsigned int & iT);
 
   /**
     \brief Add all actors (elements) from the scene for a given time point
   */
-  void AddActorsWithGivenTimePoint(const unsigned int & iT);
-
-  /**
-    \brief Remove element from visualization
-    \param[in] iId TraceID of the element to be removed
-    \return true if the element was present in the container.
-  */
-  bool
-  RemoveElementFromVisualizationWithGivenTraceID(
-    const unsigned int & iId);
-
-  /**
-    \brief Update element highlighting given it TraceId
-    \param[in] iId TraceID of the element to be modified
-    \return true if the element was present in the container.
-  */
-  bool UpdateElementHighlightingWithGivenTraceID(const unsigned int & iId);
-
-  /**
-  \brief Update highlighting property of one element given one actor.
-  \param[in] iActor Actor of the element to be modified
-  \return true if the element exists
-  \return false else
-  */
-  template< class TActor >
-  bool UpdateElementHighlightingWithGivenActor(vtkActor *iActor)
-  {
-    if ( iActor )
-      {
-      typedef typename MultiIndexContainer::index< TActor >::type::iterator
-      IteratorType;
-      IteratorType it = m_Container.get< TActor >().find(iActor);
-
-      vtkProperty *temp_property = NULL;
-
-      if ( it != m_Container.get< TActor >().end() )
-        {
-        if ( it->Highlighted )
-          {
-          temp_property = vtkProperty::New();
-          temp_property->SetColor(it->rgba[0],
-                                  it->rgba[1],
-                                  it->rgba[2]);
-          temp_property->SetOpacity(it->rgba[3]);
-          temp_property->SetLineWidth(1.);
-          }
-        else
-          {
-          temp_property = this->m_HighlightedProperty;
-          }
-
-        it->SetActorProperties( temp_property );
-
-        if ( it->Highlighted )
-          {
-          temp_property->Delete();
-          }
-
-        TrackStructure tempStructure(*it);
-        tempStructure.Highlighted = !it->Highlighted;
-
-        Qt::CheckState State;
-
-        // Note: it->Highlighted is the status before picking the actor
-        if ( !it->Highlighted )
-          {
-          State = Qt::Checked;
-          }
-        else
-          {
-          State = Qt::Unchecked;
-          }
-
-        m_Container.get< TActor >().replace(it, tempStructure);
-        m_ImageView->UpdateRenderWindows();
-
-        emit TracePicked(it->TraceID, State);
-
-        return true;
-        }
-      }
-
-    return false;
-  }
-
-  /** \brief Update element Visibility property given one actor.
-  \tparam TActor either ActorXY, ActorXZ, ActorYZ, ActorXYZ depending on the view
-  \param[in] iActor provided actor
-  \return true if iActor is in the container
-  \return false else
-  */
-  template< class TActor >
-  bool UpdateElementVisibilityWithGivenActor(vtkActor *iActor)
-  {
-    if ( iActor )
-      {
-      typedef typename MultiIndexContainer::index< TActor >::type::iterator
-      IteratorType;
-      IteratorType it = m_Container.get< TActor >().find(iActor);
-
-      vtkProperty *temp_property = NULL;
-
-      if ( it != m_Container.get< TActor >().end() )
-        {
-        it->SetActorVisibility( !it->Visible );
-
-        TrackStructure tempStructure(*it);
-        tempStructure.Visible = !it->Visible;
-
-        Qt::CheckState State;
-
-        // Note: it->Highlighted is the status before picking the actor
-        if ( !it->Visible )
-          {
-          State = Qt::Checked;
-          }
-        else
-          {
-          State = Qt::Unchecked;
-          }
-
-        m_Container.get< TActor >().replace(it, tempStructure);
-        m_ImageView->UpdateRenderWindows();
-
-        emit TraceVisibilityChanged(it->TraceID, State);
-
-        return true;
-        }
-      }
-
-    return false;
-  }
-
-  /**
-  \brief Update highlighting property of one element given one actor.
-  \param[in] iActor Actor of the element to be modified
-  \param[in] iState Visibility to applied to the element
-  \return true if the element exists
-  \return false else
-  */
-  template< class TActor >
-  bool UpdateElementVisibilityWithGivenActor(vtkActor *iActor, bool iState)
-  {
-    if ( iActor )
-      {
-      typedef typename MultiIndexContainer::index< TActor >::type::iterator
-      IteratorType;
-      IteratorType it = m_Container.get< TActor >().find(iActor);
-
-      if ( it != m_Container.get< TActor >().end() )
-        {
-        if ( it->Visible != iState )
-          {
-          it->SetActorVisibility( iState );
-
-          TrackStructure tempStructure(*it);
-          tempStructure.Visible = iState;
-
-          Qt::CheckState State;
-
-          // Note: it->Highlighted is the status before picking the actor
-          if ( iState )
-            {
-            State = Qt::Checked;
-            }
-          else
-            {
-            State = Qt::Unchecked;
-            }
-
-          m_Container.get< TActor >().replace(it, tempStructure);
-          //m_ImageView->UpdateRenderWindows();
-
-          emit TraceVisibilityChanged(it->TraceID, State);
-          }
-
-        return true;
-        }
-      }
-
-    return false;
-  }
-
-  //-------------------------------------------------------------------------
-  /**
-  \brief Change element visibility in the scene
-  \tparam TIndex refers to any index from the multi index container indices
-  \param[in] iBegin first element
-  \param[in] iEnd last element
-  \param[in] iVisibility
-  */
-  template< class TIndex >
-  void ChangeActorsVisibility(
-    typename MultiIndexContainer::index< TIndex >::type::iterator iBegin,
-    typename MultiIndexContainer::index< TIndex >::type::iterator iEnd,
-    const bool & iVisibility)
-  {
-    typename MultiIndexContainer::index< TIndex >::type::iterator it = iBegin;
-
-    typedef void ( QGoImageView3D::*ImageViewMember )(const int &, vtkActor *);
-    ImageViewMember f;
-
-    if ( iVisibility )
-      {
-      f = &QGoImageView3D::AddActor;
-      }
-    else
-      {
-      f = &QGoImageView3D::RemoveActor;
-      }
-
-    while ( it != iEnd )
-      {
-      if ( it->Visible != iVisibility )
-        {
-        it->SetActorVisibility( iVisibility );
-
-        if ( it->ActorXY )
-          {
-          ( m_ImageView->*f )(0, it->ActorXY);
-          }
-        if ( it->ActorXZ )
-          {
-          ( m_ImageView->*f )(1, it->ActorXZ);
-          }
-        if ( it->ActorYZ )
-          {
-          ( m_ImageView->*f )(2, it->ActorYZ);
-          }
-        if ( it->ActorXYZ )
-          {
-          ( m_ImageView->*f )(3, it->ActorXYZ);
-          }
-
-        TrackStructure tempStructure(*it);
-        tempStructure.Visible = iVisibility;
-
-        m_Container.get< TIndex >().replace(it, tempStructure);
-        }
-      ++it;
-      }
-  }
+  // void AddActorsWithGivenTimePoint(const unsigned int & iT);
 
   //-------------------------------------------------------------------------
 
@@ -624,31 +259,6 @@ public:
   std::list< unsigned int > DeleteAllHighlightedElements();
 
   /**
-    \brief Update all highlighted elements in the container with a given color.
-    \note Elements remain highlighted as long as it is checked in the Table Widget.
-    \param[in] iColor
-    \return list of highlighted elements
-  */
-  std::list< unsigned int > UpdateAllHighlightedElementsWithGivenColor(
-    QColor iColor);
-
-  /**
-    \brief Get the list of highlighted elements TraceID.
-    */
-  std::list< unsigned int > GetHighlightedElementsTraceID();
-
-  /**
-    \brief Set property whenever the trace is highlighted
-    \param[in] iProperty
-  */
-  void SetHighlightedProperty(vtkProperty *iProperty);
-
-  /**
-    \brief Get property for highlighted traces
-  */
-  vtkProperty * GetHighlightedProperty();
-
-  /**
     \brief Add a point in the current track.
     If there is already a point existing at the same time point, we don't do anything.
     We could add a variable to either override or not the point who already
@@ -657,7 +267,9 @@ public:
     \param[in] iTime time coordinate of the new point
     \param[in] iReconstructPolyData should we reconstruct the polydata
   */
-  bool AddPointToCurrentElement(int iTime, double* iPoint, bool iReconstructPolyData = true);
+  bool AddPointToCurrentElement( unsigned int iTime,
+                                 double* iPoint,
+                                 bool iReconstructPolyData = true );
 
   /**
     \brief Delete a point from the current track.
@@ -665,7 +277,8 @@ public:
     \param[in] iReconstructPolyData should we reconstruct the polydata
     \return true: a point has been deleted, false: no point has been deleted
   */
-  bool DeletePointFromCurrentElement(int iTime, bool iReconstructPolyData = true);
+  bool DeletePointFromCurrentElement( unsigned int iTime,
+                                     bool iReconstructPolyData = true);
 
   /**
     \brief Replace a point from the current track.
@@ -673,7 +286,8 @@ public:
     \param[in] iTime time point to update
     \return true: a point has been replace, false: no point has been replaced
   */
-  bool ReplacePointFromCurrentElement(int iTime, double* iPoint);
+  bool ReplacePointFromCurrentElement( unsigned int iTime,
+                                       double* iPoint);
 
   /**
     \brief Update the TrackStructure polydata according to the current map.
@@ -681,12 +295,6 @@ public:
     \return true if the polydata has been updated, false if it hasn't (i.e. mesh without point)
   */
   bool UpdateTrackStructurePolyData( const TrackStructure& iTrackStructure);
-
-  /**
-    \brief Get the polydata representing the current element track
-    \return Pointer to the current element track
-  */
-  vtkPolyData* GetCurrentElementNodes();
 
   /**
     \brief Update the current element actors from the visualization.
@@ -709,7 +317,24 @@ public:
     }
     \param[in] iTrackList List containing IDs of the track of interest
   */
-  void UpdateTracksStrings( std::vector<int> iTrackList);
+  template< class TList >
+  void UpdateTracksStrings( const TList& iTrackList)
+    {
+    typename TList::const_iterator it = iTrackList.begin();
+    unsigned int temp = 0;
+
+    while( it != iTrackList.end() )
+      {
+      temp = static_cast< unsigned int >( * it );
+      // update the current element
+      UpdateCurrentElementFromExistingOne( temp );
+
+      // emit signal to get the meshes informations
+      emit NeedMeshesInfoForImportedTrack( temp );
+
+      ++it;
+      }
+    }
 
   /*
    * \brief Update the current element map then polydata
@@ -728,7 +353,7 @@ public:
    * current element.
    * \param[in] iTimeList List of the time points to be deleted.
    */
-  void DeleteListFromCurrentElement( std::list<int> iTimeList );
+  void DeleteListFromCurrentElement( std::list<unsigned int> iTimeList );
 
   /*
    * \brief Define the appareance of a track (line/tubes, glyph/no glyph)
@@ -758,13 +383,14 @@ public:
   bool DeletePointFromElement( MultiIndexContainerTraceIDIterator iTrackStructureIterator, int iTime, bool iReconstructPolyData );
 
   /**
-    \brief Delete a point from a track.
-    \param[in] iTrackStructure trackstructure which will be modified
-    \param[in] iTime time point to clear
-    \param[in] iReconstructPolyData should we reconstruct the polydata
-    \return true: a point has been deleted, false: no point has been deleted
+    \brief Add traces (collections of contours / meshes) to a track, given their
+    bounding box.
+    \param[in] iTrackID track id
+    \param[in] iBoundingBox list of bounding boxes
   */
-  void UpdatePointsFromBBForGivenTrack( unsigned int iTrackID, std::list<std::vector<unsigned int> > iBoundingBox);
+  void UpdatePointsFromBBForGivenTrack(
+    unsigned int iTrackID,
+    std::list<std::vector<unsigned int> > iBoundingBox);
 
   /**
   \brief get the element with iTrackID into the current element, remove it from the container,
@@ -776,12 +402,51 @@ public:
   */
   void UpdatePointsForATrack(unsigned int iTrackID, std::list< double*> iListCenterBoundingBoxes);
 
-public slots:
+  /**
+  \brief Update highlighting property of one element given one actor.
+  \param[in] iActor Actor of the element to be modified
+  \return true if the element exists
+  \return false else
+  */
+  template< class TActor >
+  bool UpdateElementHighlightingWithGivenActor(vtkActor *iActor)
+    {
+    unsigned TraceId;
+    Qt::CheckState state;
+    bool oValue =
+        Superclass::UpdateElementHighlightingWithGivenActor< TActor >( iActor,
+                                                                 TraceId,
+                                                                 state );
+    if( oValue )
+      {
+      emit TracePicked(TraceId, state);
+      }
+    return oValue;
+    }
 
-  void UpdateElementHighlightingWithGivenTraceIDs( const QStringList& iList,
-                                                   const Qt::CheckState& iCheck );
-  void UpdateElementVisibilityWithGivenTraceIDs( const QStringList& iList,
-                                                 const Qt::CheckState& iCheck );
+  /**
+  \brief Update highlighting property of one element given one actor.
+  \param[in] iActor Actor of the element to be modified
+  \param[in] iState Visibility to applied to the element
+  \return true if the element exists
+  \return false else
+  */
+  template< class TActor >
+  bool UpdateElementVisibilityWithGivenActor(
+      vtkActor *iActor )
+    {
+    unsigned TraceId;
+    Qt::CheckState state;
+    bool oValue =
+        Superclass::UpdateElementVisibilityWithGivenActor< TActor >( iActor,
+                                                                 TraceId,
+                                                                 state );
+    if( oValue )
+      {
+      emit TraceVisibilityChanged(TraceId, state);
+      }
+    return oValue;
+    }
 
 signals:
   /** \brief When one track has been picked (highlighted) from the visualization */
@@ -790,20 +455,40 @@ signals:
   /** \brief When one track's visibility has been changed from the visualization */
   void TraceVisibilityChanged(unsigned int, Qt::CheckState);
 
+
   /** \brief When a point is added to the track, update the database */
   void CurrentTrackToSave();
 
   /** \brief When we want to import meshes into a track */
   void NeedMeshesInfoForImportedTrack(unsigned int);
 
+public slots:
+
+  /** \brief Change elements highlighting property given a list of TraceIDs
+  and the new status.
+    \param[in] iList list of TraceIDs
+    \param[in] iCheck */
+  void UpdateElementHighlightingWithGivenTraceIDs( const QStringList& iList,
+                                                   const Qt::CheckState& iCheck );
+
+  /** \brief Change elements visibility property given a list of TraceIDs
+  and the new status.
+    \param[in] iList list of TraceIDs
+    \param[in] iCheck */
+  void UpdateElementVisibilityWithGivenTraceIDs( const QStringList& iList,
+                                                 const Qt::CheckState& iCheck );
+
 protected:
-  vtkProperty *m_HighlightedProperty;
 
   /**
-    \brief Generate a new polydata from a list for the current element
+    \brief Recompute a polydata from a list of point (coordinates) for the
+    current element. If the current element is a new track, then the polydata,
+    actors are allocated and added in consequence.
     \param[in] iPoints list of points to generate the new polydata
   */
   void RecomputeCurrentElementMap( std::list< double* > iPoints);
+
+  std::vector< vtkActor* > AddTrace( vtkPolyData* , vtkProperty* );
 
 private:
   Q_DISABLE_COPY(TrackContainer);

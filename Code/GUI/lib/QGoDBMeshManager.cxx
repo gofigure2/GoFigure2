@@ -58,9 +58,9 @@ QGoDBMeshManager::~QGoDBMeshManager()
 
 //-------------------------------------------------------------------------
 void QGoDBMeshManager::SetMeshesInfoContainerForVisu(
-  ContourMeshContainer *iContainerForVisu)
+  MeshContainer *iContainerForVisu)
 {
-  this->SetTracesInfoContainerForVisuTemplate<ContourMeshContainer>(
+  this->SetTracesInfoContainerForVisuTemplate<MeshContainer>(
     iContainerForVisu,&this->m_MeshContainerInfoForVisu);
 }
 //-------------------------------------------------------------------------
@@ -101,7 +101,7 @@ void QGoDBMeshManager::DisplayInfoForAllTraces(
 //-------------------------------------------------------------------------
 /*void QGoDBMeshManager::UpdateTracesVisibilityForGivenTimePoint(unsigned int iTimePoint)
 {
-  std::list<unsigned int> ListMeshes = 
+  std::list<unsigned int> ListMeshes =
     this->m_MeshContainerInfoForVisu->GetElementsTraceIDForGivenTimePoint(
     iTimePoint);
   this->m_Table->SetVisibleStateForListTraceIDs(
@@ -329,7 +329,7 @@ void QGoDBMeshManager::UpdateTWAndContainerForImportedTraces(
   //update the visualization and the data from visu in the container for visu:
   this->m_MeshContainerInfoForVisu->
     UpdateVisualizationForGivenIDs< std::vector< int > >(
-      iVectorImportedTraces, false);
+      iVectorImportedTraces );
 }
 //-------------------------------------------------------------------------
 
@@ -394,13 +394,27 @@ std::map<unsigned int,double*> QGoDBMeshManager::GetMeshesInfoForImportedMesh(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoDBMeshManager::SetColorCoding(bool IsChecked)
+{
+  this->SetColorCodingTemplate<ContourMeshContainer>(
+    this->m_MeshContainerInfoForVisu,IsChecked);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+/*void QGoDBMeshManager::BackFromColorCoding()
+{
+  this->SetBackFromColorCodingTemplate<ContourMeshContainer>(
+    this->m_MeshContainerInfoForVisu);
+}*/
+
  unsigned int QGoDBMeshManager::
    ReassignTrackIDForPreviousMeshWithSameTimePoint( vtkMySQLDatabase *iDatabaseConnector,
     unsigned int iTrackID,unsigned int iTimePoint)
  {
    unsigned int oExistingMeshID = 0;
    //get meshID with same timepoint and same TrackID:
-   std::list<unsigned int> ExistingMeshID = 
+   std::list<unsigned int> ExistingMeshID =
      this->m_CollectionOfTraces->GetTraceIDsWithTimePointAndCollectionID(
      iDatabaseConnector,iTrackID, iTimePoint);
    if (ExistingMeshID.empty())
@@ -418,7 +432,7 @@ std::map<unsigned int,double*> QGoDBMeshManager::GetMeshesInfoForImportedMesh(
    GoDBMeshRow ExistingMesh(oExistingMeshID,iDatabaseConnector);
    ExistingMesh.SetCollectionID(0); //reassign the track ID to 0:
    ExistingMesh.SaveInDB(iDatabaseConnector);
-   this->DisplayInfoForExistingTrace(iDatabaseConnector,oExistingMeshID); //update the TW    
+   this->DisplayInfoForExistingTrace(iDatabaseConnector,oExistingMeshID); //update the TW
    return oExistingMeshID;
  }
 //-------------------------------------------------------------------------
@@ -428,17 +442,15 @@ std::map<unsigned int,double*> QGoDBMeshManager::GetMeshesInfoForImportedMesh(
    unsigned int iTrackID,int iTimePoint,vtkMySQLDatabase* iDatabaseConnector)
 {
   QString MessageToPrint("");
-  unsigned int MeshIDKickedOut = 
+  unsigned int MeshIDKickedOut =
     this->ReassignTrackIDForPreviousMeshWithSameTimePoint(
       iDatabaseConnector, iTrackID,iTimePoint);
   if (MeshIDKickedOut != 0)
     {
-      MessageToPrint = 
+      MessageToPrint =
         tr("Warning: existing mesh at this timepoint for this track !!The track of the mesh with the meshID %1 has been reassigned to 0")
       .arg(MeshIDKickedOut);
     }
   return MessageToPrint;
 }
-//-------------------------------------------------------------------------
-
 //-------------------------------------------------------------------------

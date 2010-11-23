@@ -38,16 +38,15 @@
 #include "vtkPolyData.h"
 #include "vtkActor.h"
 
+#include "vtkSphereSource.h"
+#include "vtkGlyph3D.h"
+#include "vtkTubeFilter.h"
+#include "vtkAppendPolyData.h"
+
 //--------------------------------------------------------------------------
 TrackStructure::
-TrackStructure():TraceID(0),
-  ActorXY(NULL), ActorXZ(NULL), ActorYZ(NULL), ActorXYZ(NULL), Nodes(NULL),
-  Highlighted(false), Visible(false)
+TrackStructure():TraceStructure()
 {
-  this->rgba[0] = 1.;
-  this->rgba[1] = 1.;
-  this->rgba[2] = 1.;
-  this->rgba[3] = 1.;
 }
 
 //--------------------------------------------------------------------------
@@ -144,15 +143,8 @@ TrackStructure(const unsigned int & iTraceID,
 //--------------------------------------------------------------------------
 TrackStructure::
 TrackStructure(const TrackStructure & iE):
-  TraceID(iE.TraceID), ActorXY(iE.ActorXY), ActorXZ(iE.ActorXZ),
-  ActorYZ(iE.ActorYZ), ActorXYZ(iE.ActorXYZ), Nodes(iE.Nodes),
-  PointsMap(iE.PointsMap), Highlighted(iE.Highlighted), Visible(iE.Visible)
-{
-  for ( int i = 0; i < 4; i++ )
-    {
-    this->rgba[i] = iE.rgba[i];
-    }
-}
+  TraceStructure( iE ), PointsMap(iE.PointsMap)
+{}
 
 //--------------------------------------------------------------------------
 
@@ -169,12 +161,13 @@ TrackStructure::
 InsertElement(int iTime, double* iPoint)
 {
   // check if there is something at the iTime time point
-  std::map< unsigned int,double*>::iterator pointsMapIterator = this->PointsMap.find(iTime);
+  PointsMapIterator pointsMapIterator = this->PointsMap.find(iTime);
 
   // if there is no point, insert it and return true
   if ( pointsMapIterator == this->PointsMap.end() )
     {
-    this->PointsMap.insert( std::pair< unsigned int,double*>(iTime, iPoint) );
+    this->PointsMap.insert(
+          std::pair< unsigned int, double* >( iTime, iPoint ) );
     return true;
     }
 
@@ -191,7 +184,7 @@ TrackStructure::
 DeleteElement(int iTime)
 {
   // check if there is something at the iTime time point
-  std::map< unsigned int,double*>::iterator pointsMapIterator = this->PointsMap.find(iTime);
+  PointsMapIterator pointsMapIterator = this->PointsMap.find(iTime);
 
   // if there is a point, delete it and return true
   if ( pointsMapIterator != this->PointsMap.end() )
@@ -232,47 +225,112 @@ ReplaceElement(int iTime, double* iPoint)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void TrackStructure::SetActorProperties( vtkProperty* iProperty ) const
-  {
-  if( iProperty )
+void
+TrackStructure::ReleaseData() const
+{
+  TraceStructure::ReleaseData();
+
+  PointsMapConstIterator begin = this->PointsMap.begin();
+  PointsMapConstIterator end = this->PointsMap.end();
+
+  while( begin != end )
     {
-    if( this->ActorXY )
-      {
-      this->ActorXY->SetProperty( iProperty );
-      }
-    if( this->ActorXZ )
-      {
-      this->ActorXZ->SetProperty( iProperty );
-      }
-    if( this->ActorYZ )
-      {
-      this->ActorYZ->SetProperty( iProperty );
-      }
-    if( this->ActorXYZ )
-      {
-      this->ActorXYZ->SetProperty( iProperty );
-      }
+    delete[] begin->second;
+    ++begin;
     }
-  }
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void TrackStructure::SetActorVisibility( const bool& iVisible ) const
+void
+TrackStructure::
+UpdateTracksRepresentation( bool iGlyph, bool iTube ) const
 {
-  if ( this->ActorXY )
+  vtkPolyData* glyph_pd = NULL;
+  vtkSphereSource* sphere = NULL;
+  vtkGlyph3D* glyph = NULL;
+
+  if( iGlyph )
     {
-    this->ActorXY->SetVisibility(iVisible);
+    // Glyph shape
+    sphere = vtkSphereSource::New();
+    sphere->SetThetaResolution( 8 );
+    sphere->SetPhiResolution( 8 );
+
+    glyph = vtkGlyph3D::New();
+    glyph->SetInput( this->Nodes );
+    glyph->SetSource( sphere->GetOutput() );
+    glyph->Update();
+
+    glyph_pd = glyph->GetOutput();
     }
-  if ( this->ActorXZ )
+
+  vtkPolyData* tube_pd = NULL;
+  vtkTubeFilter* tube = NULL;
+
+  if( iTube )
     {
-    this->ActorXZ->SetVisibility(iVisible);
+    tube = vtkTubeFilter::New();
+    tube->SetNumberOfSides( 8 );
+    tube->SetInput( this->Nodes );
+    tube->SetRadius( .2  );
+    tube->Update();
+
+    tube_pd = tube->GetOutput();
     }
-  if ( this->ActorYZ )
+  else
     {
-    this->ActorYZ->SetVisibility(iVisible);
+    tube_pd = this->Nodes;
     }
-  if ( this->ActorXYZ )
+
+  vtkPolyData* temp = NULL;
+  vtkAppendPolyData* apd = NULL;
+
+  if( glyph_pd && tube_pd )
     {
-    this->ActorXYZ->SetVisibility(iVisible);
+    // append both polydata sets
+    apd = vtkAppendPolyData::New();;
+    apd->AddInput( glyph_pd );
+    apd->AddInput( tube_pd );
+    apd->Update();
+
+    temp = apd->GetOutput();
+    }
+  else
+    {
+    if( glyph_pd )
+      {
+      temp = glyph_pd;
+      }
+    else
+      {
+      if( tube_pd )
+        {
+        temp = tube_pd;
+        }
+      else
+        {
+        temp = this->Nodes;
+        }
+      }
+    }
+
+  this->Nodes->DeepCopy( temp );
+
+  if( sphere )
+    {
+    sphere->Delete();
+    }
+  if( glyph )
+    {
+    glyph->Delete();
+    }
+  if( tube )
+    {
+    tube->Delete();
+    }
+  if( apd )
+    {
+    apd->Delete();
     }
 }

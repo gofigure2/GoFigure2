@@ -33,16 +33,17 @@
 =========================================================================*/
 
 #include "ContourMeshContainer.h"
+#include "StructureHelper.h"
 
 #include "vtkActor.h"
 
+
 //-------------------------------------------------------------------------
-ContourMeshContainer::ContourMeshContainer(QObject *iParent,
-                                           QGoImageView3D *iView):QObject(iParent),
-  m_ImageView(iView),
-  m_CurrentElement(),
-  m_TCoord( std::numeric_limits< unsigned int >::max() ),
-  m_HighlightedProperty(NULL)
+ContourMeshContainer::
+ContourMeshContainer( QObject *iParent,
+                      QGoImageView3D *iView) :
+  Superclass(iParent, iView),
+  m_TCoord( std::numeric_limits< unsigned int >::max() )
 {}
 //-------------------------------------------------------------------------
 
@@ -50,12 +51,16 @@ ContourMeshContainer::ContourMeshContainer(QObject *iParent,
 ContourMeshContainer::
 ~ContourMeshContainer()
 {
-  MultiIndexContainer::iterator it = m_Container.begin();
+  MultiIndexContainerType::iterator it = m_Container.begin();
 
   while ( it != m_Container.end() )
     {
     if ( it->Nodes )
       {
+      if( it->Nodes->GetPointData()->GetScalars() )
+        {
+        it->Nodes->GetPointData()->GetScalars()->Delete();
+        }
       it->Nodes->Delete();
       }
     if ( it->ActorXY )
@@ -91,24 +96,6 @@ ContourMeshContainer::SetTimePoint(const unsigned int & iT)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void
-ContourMeshContainer::Print()
-{
-  this->Print( m_Container.begin(), m_Container.end() );
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-ContourMeshContainer::InsertCurrentElement()
-{
-  m_Container.insert(m_CurrentElement);
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 void ContourMeshContainer::UpdateCurrentElementFromVisu(std::vector< vtkActor * > iActors,
                                                         vtkPolyData *iNodes,
                                                         const unsigned int & iT,
@@ -136,37 +123,6 @@ void ContourMeshContainer::UpdateCurrentElementFromVisu(std::vector< vtkActor * 
     {
     this->m_CurrentElement.SetActorProperties( this->m_HighlightedProperty );
     }
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void ContourMeshContainer::UpdateCurrentElementFromDB(unsigned int iTraceID,
-                                                      double irgba[4])
-{
-  this->m_CurrentElement.TraceID = iTraceID;
-  this->m_CurrentElement.rgba[0] = irgba[0];
-  this->m_CurrentElement.rgba[1] = irgba[1];
-  this->m_CurrentElement.rgba[2] = irgba[2];
-  this->m_CurrentElement.rgba[3] = irgba[3];
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-ContourMeshContainer::Insert(const ContourMeshStructure & iE)
-{
-  m_Container.insert(iE);
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-ContourMeshContainer::ResetCurrentElement()
-{
-  m_CurrentElement = ContourMeshStructure();
 }
 
 //-------------------------------------------------------------------------
@@ -222,139 +178,13 @@ ContourMeshContainer::AddActorsWithGivenTimePoint(const unsigned int & iT)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-bool
-ContourMeshContainer::RemoveElementFromVisualizationWithGivenTraceID(
-  const unsigned int & iId)
-{
-  MultiIndexContainerTraceIDIterator
-    it = m_Container.get< TraceID >().find(iId);
-
-  if ( it != m_Container.get< TraceID >().end() )
-    {
-    if ( it->ActorXY )
-      {
-      this->m_ImageView->RemoveActor(0, it->ActorXY);
-      }
-    if ( it->ActorXZ )
-      {
-      this->m_ImageView->RemoveActor(1, it->ActorXZ);
-      }
-    if ( it->ActorYZ )
-      {
-      this->m_ImageView->RemoveActor(2, it->ActorYZ);
-      }
-    if ( it->ActorXYZ )
-      {
-      this->m_ImageView->RemoveActor(3, it->ActorXYZ);
-      }
-
-    this->m_CurrentElement = *it;
-
-    m_Container.get< TraceID >().erase(it);
-
-    m_ImageView->UpdateRenderWindows();
-
-    return true;
-    }
-  return false;
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-bool
-ContourMeshContainer::UpdateElementHighlightingWithGivenTraceID(const unsigned int & iId)
-{
-  MultiIndexContainerTraceIDIterator
-    it = m_Container.get< TraceID >().find(iId);
-
-  vtkProperty *temp_property = NULL;
-
-  if ( it != m_Container.get< TraceID >().end() )
-    {
-    if ( it->Highlighted )
-      {
-      temp_property = vtkProperty::New();
-      temp_property->SetColor(it->rgba[0],
-                              it->rgba[1],
-                              it->rgba[2]);
-      temp_property->SetOpacity(it->rgba[3]);
-      }
-    else
-      {
-      temp_property = this->m_HighlightedProperty;
-      }
-
-    it->SetActorProperties( temp_property );
-
-    if ( it->Highlighted )
-      {
-      temp_property->Delete();
-      }
-
-    ContourMeshStructure tempStructure(*it);
-    tempStructure.Highlighted = !it->Highlighted;
-
-    m_Container.get< TraceID >().replace(it, tempStructure);
-    m_ImageView->UpdateRenderWindows();
-
-    return true;
-    }
-
-  return false;
-}
-
-//-------------------------------------------------------------------------
 void
 ContourMeshContainer::
 UpdateElementHighlightingWithGivenTraceIDs( const QStringList& iList,
                                             const Qt::CheckState& iCheck )
 {
-  if( !iList.empty() )
-    {
-    MultiIndexContainerTraceIDIterator it;
-
-    vtkProperty *temp_property = NULL;
-
-    QStringList::const_iterator constIterator = iList.begin();
-
-    while( constIterator != iList.end() )
-      {
-      it = m_Container.get< TraceID >().find((*constIterator).toUInt());
-
-      if ( it != m_Container.get< TraceID >().end() )
-        {
-        if ( !iCheck )
-          {
-          temp_property = vtkProperty::New();
-          temp_property->SetColor(it->rgba[0],
-                                  it->rgba[1],
-                                  it->rgba[2]);
-          temp_property->SetOpacity(it->rgba[3]);
-          }
-        else
-          {
-          temp_property = this->m_HighlightedProperty;
-          }
-
-        it->SetActorProperties( temp_property );
-
-        if ( !iCheck )
-          {
-          temp_property->Delete();
-          }
-
-        ContourMeshStructure tempStructure(*it);
-        tempStructure.Highlighted = iCheck;
-
-        m_Container.get< TraceID >().replace(it, tempStructure);
-        }
-
-      ++constIterator;
-      }
-
-    m_ImageView->UpdateRenderWindows();
-    }
+  Superclass::UpdateElementHighlightingWithGivenTraceIDsBase( iList,
+                                                              iCheck );
 }
 //-------------------------------------------------------------------------
 
@@ -364,121 +194,8 @@ ContourMeshContainer::
 UpdateElementVisibilityWithGivenTraceIDs( const QStringList& iList,
                                           const Qt::CheckState& iCheck )
 {
-  if( !iList.empty() )
-    {
-    MultiIndexContainerTraceIDIterator it;
-
-    typedef void ( QGoImageView3D::*ImageViewMember )(const int &, vtkActor *);
-    ImageViewMember f;
-
-    QStringList::const_iterator constIterator = iList.begin();
-
-    while( constIterator != iList.end() )
-      {
-      it = m_Container.get< TraceID >().find((*constIterator).toUInt());
-
-      if ( it != m_Container.get< TraceID >().end() )
-        {
-        if ( it->TCoord != m_TCoord )
-          {
-          if ( iCheck )
-            {
-            f = &QGoImageView3D::RemoveActor;
-            }
-          else
-            {
-            f = &QGoImageView3D::AddActor;
-            }
-
-          if ( it->ActorXY )
-            {
-            ( m_ImageView->*f )(0, it->ActorXY);
-            }
-          if ( it->ActorXZ )
-            {
-            ( m_ImageView->*f )(1, it->ActorXZ);
-            }
-          if ( it->ActorYZ )
-            {
-            ( m_ImageView->*f )(2, it->ActorYZ);
-            }
-          if ( it->ActorXYZ )
-            {
-            ( m_ImageView->*f )(3, it->ActorXYZ);
-            }
-          }
-
-        it->SetActorVisibility( iCheck );
-
-        ContourMeshStructure tempStructure(*it);
-        tempStructure.Visible = iCheck;
-
-        m_Container.get< TraceID >().replace(it, tempStructure);
-        }
-
-      ++constIterator;
-      }
-    m_ImageView->UpdateRenderWindows();
-    }
+  Superclass::UpdateElementVisibilityWithGivenTraceIDsBase( iList, iCheck );
 }
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-bool
-ContourMeshContainer::
-UpdateElementVisibilityWithGivenTraceID(const unsigned int & iId)
-{
-  MultiIndexContainerTraceIDIterator
-    it = m_Container.get< TraceID >().find(iId);
-
-  typedef void ( QGoImageView3D::*ImageViewMember )(const int &, vtkActor *);
-  ImageViewMember f;
-
-  if ( it != m_Container.get< TraceID >().end() )
-    {
-    if ( it->TCoord != m_TCoord )
-      {
-      if ( it->Visible )
-        {
-        f = &QGoImageView3D::RemoveActor;
-        }
-      else
-        {
-        f = &QGoImageView3D::AddActor;
-        }
-
-      if ( it->ActorXY )
-        {
-        ( m_ImageView->*f )(0, it->ActorXY);
-        }
-      if ( it->ActorXZ )
-        {
-        ( m_ImageView->*f )(1, it->ActorXZ);
-        }
-      if ( it->ActorYZ )
-        {
-        ( m_ImageView->*f )(2, it->ActorYZ);
-        }
-      if ( it->ActorXYZ )
-        {
-        ( m_ImageView->*f )(3, it->ActorXYZ);
-        }
-      }
-
-    it->SetActorVisibility( !it->Visible );
-
-    ContourMeshStructure tempStructure(*it);
-    tempStructure.Visible = !it->Visible;
-
-    m_Container.get< TraceID >().replace(it, tempStructure);
-
-    m_ImageView->UpdateRenderWindows();
-    return true;
-    }
-
-  return false;
-}
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -488,43 +205,49 @@ ContourMeshContainer::DeleteElement(const unsigned int & iId)
   MultiIndexContainerTraceIDIterator
     it = m_Container.get< TraceID >().find(iId);
 
-  if ( it != m_Container.get< TraceID >().end() )
+  return DeleteElement( it );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+bool
+ContourMeshContainer::
+DeleteElement(MultiIndexContainerTraceIDIterator iIter)
+{
+  if ( iIter != m_Container.get< TraceID >().end() )
     {
-    if ( it->ActorXY )
+    if ( iIter->ActorXY )
       {
-      this->m_ImageView->RemoveActor(0, it->ActorXY);
-      it->ActorXY->Delete();
+      this->m_ImageView->RemoveActor(0, iIter->ActorXY);
+      iIter->ActorXY->Delete();
       }
-    if ( it->ActorXZ )
+    if ( iIter->ActorXZ )
       {
-      this->m_ImageView->RemoveActor(1, it->ActorXZ);
-      it->ActorXZ->Delete();
+      this->m_ImageView->RemoveActor(1, iIter->ActorXZ);
+      iIter->ActorXZ->Delete();
       }
-    if ( it->ActorYZ )
+    if ( iIter->ActorYZ )
       {
-      this->m_ImageView->RemoveActor(2, it->ActorYZ);
-      it->ActorYZ->Delete();
+      this->m_ImageView->RemoveActor(2, iIter->ActorYZ);
+      iIter->ActorYZ->Delete();
       }
-    if ( it->ActorXYZ )
+    if ( iIter->ActorXYZ )
       {
-      this->m_ImageView->RemoveActor(3, it->ActorXYZ);
-      it->ActorXYZ->Delete();
-      }
-
-    if ( it->Nodes )
-      {
-      it->Nodes->Delete();
+      this->m_ImageView->RemoveActor(3, iIter->ActorXYZ);
+      iIter->ActorXYZ->Delete();
       }
 
-    m_Container.get< TraceID >().erase(it);
+    if ( iIter->Nodes )
+      {
+      iIter->Nodes->Delete();
+      }
 
+    m_Container.get< TraceID >().erase(iIter);
     m_ImageView->UpdateRenderWindows();
     return true;
     }
-
   return false;
 }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -582,26 +305,6 @@ ContourMeshContainer::DeleteAllHighlightedElements()
 
 //-------------------------------------------------------------------------
 std::list< unsigned int >
-ContourMeshContainer::GetHighlightedElementsTraceID()
-{
-  MultiIndexContainerHighlightedIterator it0, it1;
-
-  boost::tuples::tie(it0, it1) =
-    m_Container.get< Highlighted >().equal_range(true);
-
-  std::list< unsigned int > oList;
-  while ( it0 != it1 )
-    {
-    oList.push_back(it0->TraceID);
-    std::cout<< "highlighted contour/mesh ID:" << it0->TraceID << std::endl;
-    ++it0;
-    }
-  return oList;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-std::list< unsigned int >
 ContourMeshContainer:: GetElementsTraceIDForGivenTimePoint(unsigned int iTimePoint)
 {
   MultiIndexContainerTCoordIterator it0, it1;
@@ -618,74 +321,6 @@ ContourMeshContainer:: GetElementsTraceIDForGivenTimePoint(unsigned int iTimePoi
   return oList;
 
 }
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-std::list< unsigned int >
-ContourMeshContainer::UpdateAllHighlightedElementsWithGivenColor(QColor iColor)
-{
-  MultiIndexContainerHighlightedIterator it0, it1;
-
-  boost::tuples::tie(it0, it1) =
-    m_Container.get< Highlighted >().equal_range(true);
-
-  double r(1.), g(1.), b(1.), a(1.);
-  if ( iColor.isValid() )
-    {
-    iColor.getRgbF(&r, &g, &b, &a);
-    }
-
-  std::list< unsigned int > oList;
-  while ( it0 != it1 )
-    {
-    ContourMeshStructure temp(*it0);
-    temp.rgba[0] = r;
-    temp.rgba[1] = g;
-    temp.rgba[2] = b;
-    temp.rgba[3] = a;
-
-    m_Container.get< Highlighted >().replace(it0, temp);
-
-    oList.push_back(it0->TraceID);
-
-    ++it0;
-    }
-
-  return oList;
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-ContourMeshContainer::SetHighlightedProperty(vtkProperty *iProperty)
-{
-  this->m_HighlightedProperty = iProperty;
-
-  MultiIndexContainerHighlightedIterator it0, it1;
-  boost::tuples::tie(it0, it1) =
-    m_Container.get< Highlighted >().equal_range(true);
-
-  while ( it0 != it1 )
-    {
-    if ( it0->Highlighted )
-      {
-      it0->SetActorVisibility( this->m_HighlightedProperty );
-      }
-    ++it0;
-    }
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-vtkProperty *
-ContourMeshContainer::
-GetHighlightedProperty()
-{
-  return m_HighlightedProperty;
-}
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

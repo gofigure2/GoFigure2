@@ -143,10 +143,10 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent):
 
   m_MegaCaptureReader = itk::MegaCaptureReader::New();
 
-  m_ContourContainer = new ContourMeshContainer(this, this->m_ImageView);
+  m_ContourContainer = new ContourContainer(this, this->m_ImageView);
   m_ContourContainer->SetHighlightedProperty(m_HighlightedContoursProperty);
 
-  m_MeshContainer = new ContourMeshContainer(this, this->m_ImageView);
+  m_MeshContainer = new MeshContainer(this, this->m_ImageView);
   m_MeshContainer->SetHighlightedProperty(m_HighlightedMeshesProperty);
 
   m_TrackContainer = new TrackContainer(this, this->m_ImageView);
@@ -635,9 +635,9 @@ QGoTabImageView3DwT::RequieresTraceWidget(bool iTable)
 void QGoTabImageView3DwT::SetDatabaseContainersAndDelayedConnections()
 {
   this->SetTheContainersForDB();
-  QObject::connect( this->m_DataBaseTables, 
+  QObject::connect( this->m_DataBaseTables,
                     SIGNAL( PrintMessage(QString,int) ),
-                    this->m_StatusBar, 
+                    this->m_StatusBar,
                     SLOT(showMessage(QString,int) ) );
 }
 //-------------------------------------------------------------------------
@@ -1033,7 +1033,7 @@ void QGoTabImageView3DwT::LoadChannelTime()
 
   if ( ok )
     {
-     // qDebug() << "user selected an item and pressed OK";
+      //qDebug() << "user selected an item and pressed OK";
       // use the item
       int value = item.toInt(&ok, 10);
       //qDebug() << "value:" << value;
@@ -1907,7 +1907,7 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
         else
           {
           //qDebug() << "TRACK mode";
-         // qDebug() << "CHANNEL: " << m_ChannelOfInterest;
+          //qDebug() << "CHANNEL: " << m_ChannelOfInterest;
           SetTimePointWithMegaCaptureTimeChannels( m_ChannelOfInterest );
           }
         emit TimePointChanged(m_TCoord);
@@ -1922,7 +1922,7 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
 
   this->m_ContourContainer->ShowActorsWithGivenTimePoint(m_TCoord);
   this->m_MeshContainer->ShowActorsWithGivenTimePoint(m_TCoord);
-  this->m_TrackContainer->ShowActorsWithGivenTimePoint(m_TCoord);
+  //this->m_TrackContainer->ShowActorsWithGivenTimePoint(m_TCoord);
 
   Update();
 
@@ -1946,10 +1946,13 @@ QGoTabImageView3DwT::ChangeLookupTable()
     {
     vtkLookupTable *lut = QGoLUTDialog::GetLookupTable( this,
                                                         tr("Choose one look-up table") );
-    m_ImageView->SetLookupTable(lut);
+    if( lut )
+      {
+      m_ImageView->SetLookupTable(lut);
 
-    // free memory since it is not freed in the QGoLUTDialog
-    lut->Delete();
+      // free memory since it is not freed in the QGoLUTDialog
+      lut->Delete();
+      }
     }
 }
 
@@ -3003,11 +3006,11 @@ void QGoTabImageView3DwT::ImportTracks()
 {
   if ( this->m_DataBaseTables->IsDatabaseUsed() )
     {
-	std::vector<int> NewTrackIDs = 
-		m_DataBaseTables->ImportTracks();
-	//call the method of the trackContainer to update the points :argument
-	// NewTrackIDs
-	this->m_TrackContainer->UpdateTracksStrings(NewTrackIDs);
+  std::vector<int> NewTrackIDs =
+    m_DataBaseTables->ImportTracks();
+  //call the method of the trackContainer to update the points :argument
+  // NewTrackIDs
+  this->m_TrackContainer->UpdateTracksStrings(NewTrackIDs);
     GoToDefaultMenu();
     }
 }

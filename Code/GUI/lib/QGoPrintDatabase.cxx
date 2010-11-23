@@ -371,7 +371,7 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
                                                                         this->m_SelectedSubCellType);
     std::list< unsigned int > ListNewMeshes;
     ListNewMeshes.push_back(NewMeshID);
-    //here update the CurrentElement for trackContainer with the data from the database corresponding to the selected trackID:   
+    //here update the CurrentElement for trackContainer with the data from the database corresponding to the selected trackID:
     this->m_TracksManager->UpdateCurrentElementTrackContainer(TrackID);
     //update the bounding box and the visu for the tracks:
     this->m_TracksManager->UpdateBoundingBoxes( this->m_DatabaseConnector,
@@ -411,7 +411,7 @@ void QGoPrintDatabase::SaveNewMeshForMeshToContours(int iNumberOfContours)
     this->m_ContoursManager->GetLastCreatedTracesIDs(this->m_DatabaseConnector, iNumberOfContours);
   this->AddCheckedTracesToCollection< QGoDBContourManager, QGoDBMeshManager >(
     this->m_ContoursManager, this->m_MeshesManager, MeshID, ListLastCreatedContours);
- 
+
   this->CloseDBConnection();
 }
 
@@ -796,11 +796,11 @@ void QGoPrintDatabase::ImportMeshes()
 //-------------------------------------------------------------------------
 std::vector<int> QGoPrintDatabase::ImportTracks()
  {
-	QString p = QFileDialog::getOpenFileName( this,
+  QString p = QFileDialog::getOpenFileName( this,
                                             tr("Open Tracks Export File"), "",
                                             tr("TextFile (*.txt)") );
 
-	std::vector<int> NewTrackIDs = std::vector<int>();
+  std::vector<int> NewTrackIDs = std::vector<int>();
 
   if ( !p.isNull() )
     {
@@ -1210,7 +1210,7 @@ void QGoPrintDatabase::PrintVolumeAreaForMesh(GoFigureMeshAttributes *
 
 //--------------------------------------------------------------------------
 void
-QGoPrintDatabase::SetContoursContainer(ContourMeshContainer *iContainer)
+QGoPrintDatabase::SetContoursContainer(ContourContainer *iContainer)
 {
   this->m_ContoursManager->SetContoursInfoContainerForVisu(iContainer);
 }
@@ -1219,7 +1219,7 @@ QGoPrintDatabase::SetContoursContainer(ContourMeshContainer *iContainer)
 
 //--------------------------------------------------------------------------
 void
-QGoPrintDatabase::SetMeshesContainer(ContourMeshContainer *iContainer)
+QGoPrintDatabase::SetMeshesContainer(MeshContainer *iContainer)
 {
   this->m_MeshesManager->SetMeshesInfoContainerForVisu(iContainer);
 }
@@ -1232,9 +1232,9 @@ QGoPrintDatabase::SetTracksContainer(TrackContainer *iContainer)
 {
   this->m_TracksManager->SetTracksInfoContainerForVisu(iContainer);
   QObject::connect(	this->m_TracksManager,
-					SIGNAL (NeedMeshesInfoForImportedTrack(unsigned int) ),
-					this,
-					SLOT (PassMeshesInfoForImportedTrack(unsigned int) ) );
+          SIGNAL (NeedMeshesInfoForImportedTrack(unsigned int) ),
+          this,
+          SLOT (PassMeshesInfoForImportedTrack(unsigned int) ) );
 }
 
 //--------------------------------------------------------------------------
@@ -1370,11 +1370,11 @@ void QGoPrintDatabase::PassMeshesInfoForImportedTrack(unsigned int iTrackID)
 	TrackIDs.push_back(iTrackID);
 	this->OpenDBConnection();
 	//get the meshesID that have iTrackID as a collectionID:
-	std::list<unsigned int> ListMeshesIDs = 
+	std::list<unsigned int> ListMeshesIDs =
 		this->m_TracksManager->GetListTracesIDsFromThisCollectionOf(
 		this->m_DatabaseConnector,TrackIDs);
 	this->CloseDBConnection();
-	
+
 	if (!ListMeshesIDs.empty())
 		{
 		//get the coordinate info from the meshes:

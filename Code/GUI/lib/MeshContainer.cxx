@@ -31,23 +31,21 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __GoDBTWContainerForTrackLineage_h
-#define __GoDBTWContainerForTrackLineage_h
 
-#include "GoDBTableWidgetContainer.h"
-#include "QGoIOConfigure.h"
-/**
-\brief
-*/
-class QGOIO_EXPORT GoDBTWContainerForTrackLineage:public GoDBTableWidgetContainer
+#include "MeshContainer.h"
+
+MeshContainer::
+MeshContainer(QObject* iParent,
+              QGoImageView3D *iView) : ContourMeshContainer( iParent, iView )
 {
-public:
-  GoDBTWContainerForTrackLineage(std::string iCollectionName, std::string iTracesName,
-                                 int iImgSessionID);
-  ~GoDBTWContainerForTrackLineage();
-protected:
+}
 
-  //GoDBTableWidgetContainer method
-  void SetCommonInfoForTwoTracesTable();
-};
-#endif
+MeshContainer::~MeshContainer()
+{}
+
+std::vector< vtkActor* >
+MeshContainer::
+AddTrace( vtkPolyData* iNode, vtkProperty* iProperty )
+{
+  return this->m_ImageView->AddContour(iNode, iProperty);
+}

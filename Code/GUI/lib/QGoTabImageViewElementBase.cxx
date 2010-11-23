@@ -45,7 +45,8 @@
 #include "vtkActor.h"
 #include "vtkProperty.h"
 
-#include "ContourMeshContainer.h"
+#include "ContourContainer.h"
+#include "MeshContainer.h"
 
 #include "QGoNavigationDockWidget.h"
 #include "QGoContourManualSegmentationWidget.h"
@@ -64,7 +65,8 @@ QGoTabImageViewElementBase::QGoTabImageViewElementBase(QWidget *iParent):
   m_NavigationDockWidget(0)
 {
   /// \todo fix this
-  m_ContourMeshContainer = new ContourMeshContainer(this, NULL);
+  m_ContourContainer = new ContourContainer(this, NULL);
+  m_MeshContainer = new MeshContainer(this, NULL);
 
   CreateManualSegmentationdockWidget();
 
@@ -354,9 +356,9 @@ void
 QGoTabImageViewElementBase::ReEditContour(const unsigned int & iId)
 {
   ContourMeshContainer::MultiIndexContainerTraceIDIterator
-    it = m_ContourMeshContainer->m_Container.get< TraceID >().find(iId);
+    it = m_ContourContainer->m_Container.get< TraceID >().find(iId);
 
-  if ( it != m_ContourMeshContainer->m_Container.get< TraceID >().end() )
+  if ( it != m_ContourContainer->m_Container.get< TraceID >().end() )
     {
     vtkPolyData *c_nodes = NULL;
 
@@ -367,7 +369,7 @@ QGoTabImageViewElementBase::ReEditContour(const unsigned int & iId)
 //
 //          RemoveActorFromViewer(c_dir, c_actor);
 
-    m_ContourMeshContainer->m_Container.erase(iId);
+    m_ContourContainer->m_Container.erase(iId);
 
     if ( m_ContourWidget.size() > 1 )
       {
