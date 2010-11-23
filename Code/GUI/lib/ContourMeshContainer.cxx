@@ -695,14 +695,15 @@ ContourMeshContainer::GetHighlightedProperty()
 void
 ContourMeshContainer::
 RenderAllElementsWithOriginalColors()
-  {
+{
   MultiIndexContainerIterator t_it = m_Container.begin();
   while( t_it != m_Container.end() )
     {
     t_it->RenderWithOriginalColors();
     ++t_it;
     }
-  }
+  this->m_ImageView->UpdateRenderWindows();
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
