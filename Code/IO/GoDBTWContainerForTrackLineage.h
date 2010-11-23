@@ -47,6 +47,7 @@ public:
   ~GoDBTWContainerForTrackLineage();
 protected:
 
-  void GetCommonInfoForTwoTracesTable();
+  //GoDBTableWidgetContainer method
+  void SetCommonInfoForTwoTracesTable();
 };
 #endif
