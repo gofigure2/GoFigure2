@@ -36,7 +36,7 @@
 #include <sstream>
 
 
-std::string SelectGeneralQuery(std::string iWhat, std::string iWhere, std::string iConditions)
+std::string SelectGeneralQueryCondition(std::string iWhat, std::string iWhere, std::string iConditions)
 {
   std::stringstream querystream;
   querystream << "SELECT ";
@@ -45,6 +45,22 @@ std::string SelectGeneralQuery(std::string iWhat, std::string iWhere, std::strin
   querystream << iWhere;
   querystream << " WHERE ";
   querystream << iConditions;
+  return querystream.str();
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string SelectGeneralQuery(std::string iWhat, std::string iWhere,std::string iOrderByQuery)
+{
+  std::stringstream querystream;
+  querystream << "SELECT ";
+  querystream << iWhat;
+  querystream << " FROM ";
+  querystream << iWhere;
+  if (!iOrderByQuery.empty())
+    {
+    querystream << iOrderByQuery;
+    }
   return querystream.str();
 }
 //------------------------------------------------------------------------------
@@ -107,26 +123,29 @@ return Querystream.str().c_str();
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::string SelectQueryStream(std::string iTable, std::string iColumn, std::string iField,
-                              std::string iValue)
+std::string SelectQueryStream(std::string iTable, std::string iColumn,
+                              std::string iOrderByColumnName, std::string iAscDesc)
+{
+  std::string OrderBy;
+  if (!iOrderByColumnName.empty())
+    {
+    OrderBy = AddOrderBy(iOrderByColumnName,iAscDesc);
+    }
+  return SelectGeneralQuery(iColumn,iTable,OrderBy);
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string SelectQueryStreamConditions(std::string iTable, std::string iColumn, std::string iField,
+                              std::string iValue, bool iOrderBy, std::string iAscDesc)
 {
   std::stringstream Conditions;
   Conditions << iField;
   Conditions <<  " = '";
   Conditions << iValue;
-  return SelectGeneralQuery(iColumn, iTable, Conditions.str());
+  Conditions << AddOrderBy(iColumn,iAscDesc);
 
-  /* std::stringstream querystream;
-  querystream << "SELECT ";
-  querystream << iColumn;
-  querystream << " FROM ";
-  querystream << iTable;
-  querystream << " WHERE ";
-  querystream << iField;
-  querystream << " = '";
-  querystream << iValue;
-  querystream << "'";
-  return querystream.str();*/
+  return SelectGeneralQuery(iColumn, iTable, Conditions.str());
 }
 
 //------------------------------------------------------------------------------
@@ -145,34 +164,6 @@ std::string SelectQueryStreamListConditions(std::string iTable,
   std::string Conditions = GetConditions(iField, iListValues,iConditionConnector);
 
   return SelectGeneralQuery(What,iTable,Conditions);
-  /*std::stringstream querystream;
-
-  if( !iListValues.empty() )
-    {
-    querystream << "SELECT ";
-    if ( Distinct )
-      {
-      querystream << "DISTINCT ";
-      }
-    querystream << iColumn;
-    querystream << " FROM ";
-    querystream << iTable;
-    querystream << " WHERE (";
-    unsigned int i;
-    for ( i = 0; i < iListValues.size() - 1; i++ )
-      {
-      querystream << iField;
-      querystream << " = '";
-      querystream << iListValues[i];
-      querystream << "' OR ";
-      }
-    querystream << iField;
-    querystream << " = '";
-    querystream << iListValues[i];
-    querystream << "')";
-    }
-
-  return querystream.str();*/
 }
 
 //------------------------------------------------------------------------------
@@ -183,6 +174,18 @@ std::string AddDistinctToWhat(std::string iWhat)
   std::string oWhat = "DISTINCT ";
   oWhat += iWhat;
   return oWhat;
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string AddOrderBy(std::string iAttribute,std::string iAscDesc)
+{
+  std::string oOrderBy = " ORDER BY ";
+  oOrderBy += iAttribute;
+  oOrderBy += " ";
+  oOrderBy += iAscDesc;
+  oOrderBy += " ";
+  return oOrderBy;
 }
 //------------------------------------------------------------------------------
 
@@ -238,36 +241,6 @@ std::string SelectQueryStreamListConditions(std::string iTable,
   std::string What = GetSelectedAttributes(iListAttributes);
   std::string Conditions = GetConditions(iField,iListValues,iConditionConnector);
   return SelectGeneralQuery(What,iTable,Conditions);
-  /*std::stringstream querystream;
-
-  querystream << "SELECT ";
-  if ( Distinct )
-    {
-    querystream << "DISTINCT ";
-    }
-  unsigned int j;
-  for ( j = 0; j < iListColumn.size() - 1; j++ )
-    {
-    querystream << iListColumn[j];
-    querystream << ", ";
-    }
-  querystream << iListColumn[j];
-  querystream << " FROM ";
-  querystream << iTable;
-  querystream << " WHERE (";
-  unsigned int i;
-  for ( i = 0; i < iListValues.size() - 1; i++ )
-    {
-    querystream << iField;
-    querystream << " = '";
-    querystream << iListValues[i];
-    querystream << "' OR ";
-    }
-  querystream << iField;
-  querystream << " = '";
-  querystream << iListValues[i];
-  querystream << "')";
-  return querystream.str();*/
 }
 //------------------------------------------------------------------------------
 

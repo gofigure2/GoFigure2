@@ -44,7 +44,16 @@
 \param[in] iConditions list of conditions
 \return the string corresponding to the query part
 */
-std::string SelectGeneralQuery(std::string iWhat, std::string iWhere, std::string iConditions);
+std::string SelectGeneralQueryConditions(std::string iWhat, std::string iWhere, std::string iConditions);
+
+/**
+\brief SELECT iWhat FROM iWhere iOrderByQuery
+\param[in] iWhat list of attributes separated by commas
+\param[in] iWhere list of tables, included joined tables
+\param[in] iOrderByQuery part of the query to order by
+\return the string corresponding to the query part
+*/
+std::string SelectGeneralQuery(std::string iWhat, std::string iWhere,std::string iOrderByQuery = "");
 
 /**
 \brief DISTINCT iWhat
@@ -52,6 +61,14 @@ std::string SelectGeneralQuery(std::string iWhat, std::string iWhere, std::strin
 \return part of the query to make iWhat distinct
 */
 std::string AddDistinctToWhat(std::string iWhat);
+
+/**
+\brief ORDER BY iAttributes iAscDesc
+\param[in] iAttribute attribute to be sorted
+\param[in] iAscDesc ascendent or descendent sorting 
+\return the string corresponding to the query part
+*/
+std::string AddOrderBy(std::string iAttribute,std::string iAscDesc = "ASC");
 
 /**
 \brief iListAttributes[i], iListAttributes[i+1]...
@@ -76,12 +93,14 @@ std::string GetFirstPartQueryForTracesInfo(std::string iTraceName,std::string iC
 std::string GetSecondPartQueryForTracesInfo(std::string TraceName,
                                             std::vector<int> iVectIDs);
 
+std::string SelectQueryStream(std::string iTable, std::string iColumn,
+                              std::string iOrderByColumnname = "", std::string iAscDesc = "ASC");
 //basic
 /**
-\brief SELECT iColumn FROM iTable WHERE iField = iValue;
+\brief SELECT iColumn FROM iTable WHERE iField = iValue ORDER BY iColumn iAscDesc;
 */
-std::string SelectQueryStream(std::string iTable, std::string iColumn, std::string iField,
-                              std::string iValue);
+std::string SelectQueryStreamConditions(std::string iTable, std::string iColumn, std::string iField,
+                              std::string iValue,bool iOrderBy = false, std::string iAscDesc = "ASC");
 
 
 std::string SelectQueryStreamListConditions(std::string iTable,
