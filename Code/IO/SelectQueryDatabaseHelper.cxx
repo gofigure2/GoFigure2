@@ -58,81 +58,6 @@ std::vector< std::string > ListAllValuesForOneColumn(vtkMySQLDatabase *DatabaseC
 
 //------------------------------------------------------------------------------
 std::map< std::string, std::string > MapTwoColumnsFromTable(
-  vtkMySQLDatabase *DatabaseConnector, std::string ColumnNameOne,
-  std::string ColumnNameTwo, std::string TableName)
-{
-  std::map< std::string, std::string > Result;
-  vtkSQLQuery *                        query = DatabaseConnector->GetQueryInstance();
-  std::stringstream                    querystream;
-  querystream << "SELECT ";
-  querystream << ColumnNameOne;
-  querystream << " , ";
-  querystream << ColumnNameTwo;
-  querystream << " FROM ";
-  querystream << TableName;
-  querystream << ";";
-
-  query->SetQuery( querystream.str().c_str() );
-  if ( !query->Execute() )
-    {
-    itkGenericExceptionMacro(
-      << "List of all fields query failed"
-      << query->GetLastErrorText() );
-    query->Delete();
-    return Result;
-    }
-  while ( query->NextRow() )
-    {
-    Result[query->DataValue(0).ToString()] = query->DataValue(1).ToString();
-    }
-  query->Delete();
-  return Result;
-}
-
-//------------------------------------------------------------------------------
-
-//------------------------------------------------------------------------------
-std::map< std::string, std::string > MapTwoColumnsFromTable(
-  vtkMySQLDatabase *DatabaseConnector, std::string ColumnNameOne,
-  std::string ColumnNameTwo, std::string TableName,
-  std::string field, std::string value)
-{
-  std::map< std::string, std::string > Result;
-  vtkSQLQuery *                        query = DatabaseConnector->GetQueryInstance();
-  std::stringstream                    querystream;
-  querystream << "SELECT ";
-  querystream << ColumnNameOne;
-  querystream << " , ";
-  querystream << ColumnNameTwo;
-  querystream << " FROM ";
-  querystream << TableName;
-  querystream << " WHERE ";
-  querystream << field;
-  querystream << " = '";
-  querystream << value;
-  querystream << "';";
-
-  query->SetQuery( querystream.str().c_str() );
-  if ( !query->Execute() )
-    {
-    itkGenericExceptionMacro(
-      << "List of all fields query failed"
-      << query->GetLastErrorText() );
-    query->Delete();
-    return Result;
-    }
-  while ( query->NextRow() )
-    {
-    Result[query->DataValue(0).ToString()] = query->DataValue(1).ToString();
-    }
-  query->Delete();
-  return Result;
-}
-
-//------------------------------------------------------------------------------
-
-//------------------------------------------------------------------------------
-std::map< std::string, std::string > MapTwoColumnsFromTable(
   vtkMySQLDatabase *DatabaseConnector,std::vector<std::string> iColumnNames,
   std::string iTableName, std::string iField, std::string iValue)
 {
@@ -145,7 +70,7 @@ std::map< std::string, std::string > MapTwoColumnsFromTable(
     return Result;
     }
   std::string  QueryString;
-  if (!iField.empty())
+  if (iField.empty())
     {
     QueryString = SelectQueryStream(iTableName,iColumnNames);
     }

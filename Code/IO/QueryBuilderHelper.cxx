@@ -152,6 +152,7 @@ std::string SelectQueryStreamCondition(std::string iTable, std::string iColumn, 
   Conditions << iField;
   Conditions <<  " = '";
   Conditions << iValue;
+  Conditions << "'";
   Conditions << AddOrderBy(iColumn,iAscDesc);
 
   return SelectGeneralQueryConditions(iColumn, iTable, Conditions.str());

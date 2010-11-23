@@ -60,22 +60,16 @@ VectorTwoColumnsFromTable(vtkMySQLDatabase *DatabaseConnector,
                           std::string ColumnNameOne, std::string ColumnNameTwo,
                           std::string TableName, std::string ColumnNameOrder);
 
-//query: "SELECT ColumnName1, ColumnName2 FROM TableName"
-//return map[Value from ColumnName1] = Value from ColumnName2
-QGOIO_EXPORT
-std::map< std::string, std::string > MapTwoColumnsFromTable(
-  vtkMySQLDatabase *DatabaseConnector, std::string ColumnNameOne,
-  std::string ColumnNameTwo, std::string TableName);
-
-//query: "SELECT ColumnName1, ColumnName2 FROM TableName
-//WHERE field = value"
-//return map[Value from ColumnName1] = Value from ColumnName2
-QGOIO_EXPORT
-std::map< std::string, std::string > MapTwoColumnsFromTable(
-  vtkMySQLDatabase *DatabaseConnector, std::string ColumnNameOne,
-  std::string ColumnNameTwo, std::string TableName,
-  std::string field, std::string value);
-
+/**
+\brief query: "SELECT ColumnName1, ColumnName2 FROM TableName"
+\param[in] DatabaseConnector connection to the database
+\param[in] iColumnNames vector[0] = ColumnName1, vector[1] = ColumnName2
+\param[in] iTableName name of the database table
+\param[in] iField field for the condition if there is ons
+\param[in] iValue value of the condition if there is one
+\return map[Value from ColumnName1] = Value from ColumnName2
+*/
+//
 QGOIO_EXPORT
 std::map< std::string, std::string > MapTwoColumnsFromTable(
   vtkMySQLDatabase *DatabaseConnector,std::vector<std::string> iColumnNames,
