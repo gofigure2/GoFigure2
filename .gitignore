@@ -4,7 +4,7 @@
 BUILD/
 
 #QT creator specifics
-CMakeLists.txt.user
+CMakeLists.txt.user*
 qtcreator-build/
 
 
