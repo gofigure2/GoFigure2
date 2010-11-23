@@ -362,9 +362,6 @@ public:
   void SetColorCode( const std::string& iColumnName,
                      const std::map< unsigned int, std::string >& iValues );
 
-  void SetRandomColor( const std::string& iColumnName,
-                       const std::map< unsigned int, unsigned int >& iIds );
-
   /**
     \brief Color code contour / mesh according to values provided
     \tparam TValue numerical type that can be converted into double
@@ -445,6 +442,12 @@ public:
 
     this->m_ImageView->UpdateRenderWindows();
     }
+
+  void SetRandomColor( const std::string& iColumnName,
+                       const std::map< unsigned int, unsigned int >& iIds );
+
+  void SetRandomColor( const std::string& iColumnName,
+                       const std::map< unsigned int, std::string >& iValues );
 
   /** \brief Apply the given lookup table to all traces in the container
       \param[in] iLut lookup table */
