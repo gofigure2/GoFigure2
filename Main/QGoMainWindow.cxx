@@ -454,12 +454,12 @@ QGoMainWindow::LoadMeshesFromDatabase( const int & iT )
   if ( w3t )
     {
  // std::cout << "IN W3T" << std::endl;
-    ContourMeshContainer *temp =  w3t->GetMeshContainer();
+    MeshContainer *temp =  w3t->GetMeshContainer();
     if ( temp )
       {
     //std::cout << "IN TEMP" << std::endl;
       // let's iterate on the container with increasing TraceID
-      ContourMeshContainer::MultiIndexContainerType::index< TraceID >::type::iterator
+      MeshContainer::MultiIndexContainerType::index< TraceID >::type::iterator
         contourmesh_list_it = temp->m_Container.get< TraceID >().begin();
       // we don't need here to save this contour in the database,
       // since they have just been extracted from it!

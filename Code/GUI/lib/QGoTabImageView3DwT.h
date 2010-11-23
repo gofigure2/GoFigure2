@@ -409,7 +409,7 @@ protected:
 
   template< class TIndex >
   void VisualizeContour(
-    typename ContourMeshContainer::MultiIndexContainerType::template index< TIndex >::type::iterator iIt,
+    typename ContourContainer::MultiIndexContainerType::template index< TIndex >::type::iterator iIt,
     vtkPolyData *iContour)
   {
     if ( ( iContour->GetNumberOfPoints() > 2 ) && ( m_TCoord >= 0 ) )
@@ -448,7 +448,7 @@ protected:
   template< class TIndex >
   void
   VisualizeMesh(
-    typename ContourMeshContainer::MultiIndexContainerType::template index< TIndex >::type::iterator iIt)
+    typename MeshContainer::MultiIndexContainerType::template index< TIndex >::type::iterator iIt)
   {
     const double *iRgba = iIt->rgba;
     vtkPolyData * iMesh = iIt->Nodes;

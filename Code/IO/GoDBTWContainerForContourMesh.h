@@ -52,9 +52,12 @@ public:
   the show/hide column
   */
   int GetIndexShowColumn();
+
 protected:
 
-  void GetCommonInfoForTwoTracesTable();
+  //GoDBTableWidgetContainer method
+  void SetCommonInfoForTwoTracesTable();
+
   void FillColumnShowHide(vtkMySQLDatabase* iDatabaseConnector);
 
   void FillRowContainerWithDBValues(

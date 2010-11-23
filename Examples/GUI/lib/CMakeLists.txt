@@ -15,6 +15,7 @@ SET( QGOGUILIB_EXAMPLE_SRC
   ContourMeshContainerTest
   QGoWizardDBTest
   QGoPrintDatabaseTest
+  QGoColorCodingDialogTest
   qgocreatemeshdialogtest
   QGoLsmToMegaExportDialogTest
   QGoLsmToMegaExportThreadTest
