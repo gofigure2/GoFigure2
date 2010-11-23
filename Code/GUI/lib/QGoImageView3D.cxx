@@ -1311,7 +1311,7 @@ QGoImageView3D::UpdateCurrentActorSelection(vtkObject *caller)
     }
   else if ( t == m_Pool->GetItem(1)->GetInteractorStyle() )
     {
-   // qDebug() << "in XZ";
+    //qDebug() << "in XZ";
     emit SelectionXZChanged();
     }
   else if ( t == m_Pool->GetItem(2)->GetInteractorStyle() )
@@ -1321,7 +1321,7 @@ QGoImageView3D::UpdateCurrentActorSelection(vtkObject *caller)
     }
   else if ( t == (vtkInteractorStyleImage2D *)this->m_View3D->GetInteractorStyle3D() )
     {
-   // qDebug() << "in 3D";
+    //qDebug() << "in 3D";
     emit SelectionXYZChanged();
     }
   else

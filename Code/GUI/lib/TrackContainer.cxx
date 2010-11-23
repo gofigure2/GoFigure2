@@ -953,3 +953,260 @@ UpdateElementVisibilityWithGivenTraceIDs( const QStringList& iList,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void
+TrackContainer::
+RenderAllElementsWithOriginalColors()
+  {
+  MultiIndexContainerIterator t_it = m_Container.begin();
+  while( t_it != m_Container.end() )
+    {
+    t_it->RenderWithOriginalColors();
+    ++t_it;
+    }
+  }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+SetScalarRangeForAllElements( const double& iMin, const double& iMax )
+{
+  // Let's set the scalar range (in order to get nice colors)
+  MultiIndexContainerIterator t_it = m_Container.begin();
+  while( t_it != m_Container.end() )
+    {
+    t_it->SetScalarRange( iMin, iMax );
+    ++t_it;
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+SetRandomColor( const std::string& iColumnName,
+                const std::map< unsigned int, std::string >& iValues )
+{
+  typedef std::map< unsigned int, std::string > MapType;
+  typedef MapType::const_iterator MapConstIterator;
+
+  std::map< std::string, double > stringmap;
+
+  if( iColumnName.empty() || iValues.empty() )
+    {
+    this->RenderAllElementsWithOriginalColors();
+    return;
+    }
+
+  MapConstIterator it = iValues.begin();
+
+  double temp = 0.;
+  try
+    {
+    temp = boost::lexical_cast< double >( it->second );
+    }
+  catch( boost::bad_lexical_cast& )
+    {
+    if( stringmap.empty() )
+      {
+      stringmap[ it->second ] = 0.;
+      }
+    else
+      {
+      std::map< std::string, double >::iterator m_it = stringmap.find( it->second );
+
+      if( m_it != stringmap.end() )
+        {
+        temp = m_it->second;
+        }
+      else
+        {
+        std::map< std::string, double >::reverse_iterator r_it = stringmap.rbegin();
+        temp = r_it->second;
+        temp += 1.0;
+        }
+      }
+    }
+
+  unsigned int val = static_cast< unsigned int >( temp );
+  unsigned int modulo = val % 30;
+
+  temp = static_cast< double >( modulo );
+
+  double min_value = temp;
+  double max_value = temp;
+
+  while( it != iValues.end() )
+    {
+    MultiIndexContainerTraceIDIterator
+        trace_it = this->m_Container.get<TraceID>().find( it->first );
+
+    if( trace_it != this->m_Container.get<TraceID>().end() )
+      {
+        if (trace_it->Nodes) //make sure the trace has points !!!
+        {
+        // Here let's make sure you are not passing crazy values!
+        try
+          {
+          temp = boost::lexical_cast< double >( it->second );
+          }
+        catch( boost::bad_lexical_cast& )
+          {
+          // stringmap is not empty and has at least one element
+          std::map< std::string, double >::iterator m_it = stringmap.find( it->second );
+
+          if( m_it != stringmap.end() )
+            {
+            temp = m_it->second;
+            }
+          else
+            {
+            std::map< std::string, double >::reverse_iterator r_it = stringmap.rbegin();
+            temp = r_it->second;
+            temp += 1.0;
+            }
+          }
+
+        val = static_cast< unsigned int >( temp );
+        modulo = val % 30;
+
+        temp = static_cast< double >( modulo );
+
+        if( temp > max_value )
+          {
+          max_value = temp;
+          }
+        if( temp < min_value )
+          {
+          min_value = temp;
+          }
+        trace_it->SetScalarData( iColumnName, temp );
+        }
+      } //end make sure the trace has points !!!
+    ++it;
+    }
+
+  SetScalarRangeForAllElements( min_value, max_value );
+
+  this->m_ImageView->UpdateRenderWindows();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+SetLookupTableForColorCoding( vtkLookupTable* iLut )
+{
+  if( iLut )
+    {
+    MultiIndexContainerIterator it = m_Container.begin();
+
+    while( it != m_Container.end() )
+      {
+      it->SetLookupTable( iLut );
+      ++it;
+      }
+    this->m_ImageView->UpdateRenderWindows();
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+SetColorCode( const std::string& iColumnName,
+              const std::map< unsigned int, std::string >& iValues )
+{
+  typedef std::map< unsigned int, std::string > MapType;
+  typedef MapType::const_iterator MapConstIterator;
+
+  std::map< std::string, double > stringmap;
+
+  if( iColumnName.empty() || iValues.empty() )
+    {
+    this->RenderAllElementsWithOriginalColors();
+    return;
+    }
+
+  MapConstIterator it = iValues.begin();
+
+  double temp = 0.;
+  try
+    {
+    temp = boost::lexical_cast< double >( it->second );
+    }
+  catch( boost::bad_lexical_cast& )
+    {
+    if( stringmap.empty() )
+      {
+      stringmap[ it->second ] = 0.;
+      }
+    else
+      {
+      std::map< std::string, double >::iterator m_it = stringmap.find( it->second );
+
+      if( m_it != stringmap.end() )
+        {
+        temp = m_it->second;
+        }
+      else
+        {
+        std::map< std::string, double >::reverse_iterator r_it = stringmap.rbegin();
+        temp = r_it->second;
+        temp += 1.0;
+        }
+      }
+    }
+
+  double min_value = temp;
+  double max_value = temp;
+
+  while( it != iValues.end() )
+    {
+    MultiIndexContainerTraceIDIterator
+        trace_it = this->m_Container.get<TraceID>().find( it->first );
+
+    if( trace_it != this->m_Container.get<TraceID>().end() )
+      {
+        if (trace_it->Nodes) //make sure the trace has points !!!
+        {
+        // Here let's make sure you are not passing crazy values!
+        try
+          {
+          temp = boost::lexical_cast< double >( it->second );
+          }
+        catch( boost::bad_lexical_cast& )
+          {
+          // stringmap is not empty and has at least one element
+          std::map< std::string, double >::iterator m_it = stringmap.find( it->second );
+
+          if( m_it != stringmap.end() )
+            {
+            temp = m_it->second;
+            }
+          else
+            {
+            std::map< std::string, double >::reverse_iterator r_it = stringmap.rbegin();
+            temp = r_it->second;
+            temp += 1.0;
+            }
+          }
+
+        if( temp > max_value )
+          {
+          max_value = temp;
+          }
+        if( temp < min_value )
+          {
+          min_value = temp;
+          }
+        trace_it->SetScalarData( iColumnName, temp );
+        }
+      } //end make sure the trace has points !!!
+    ++it;
+    }
+
+  SetScalarRangeForAllElements( min_value, max_value );
+
+  this->m_ImageView->UpdateRenderWindows();
+}

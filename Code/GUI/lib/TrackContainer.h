@@ -43,10 +43,17 @@
 #include "boost/multi_index/member.hpp"
 #include "boost/multi_index/hashed_index.hpp"
 #include "boost/multi_index/ordered_index.hpp"
+#include "boost/numeric/conversion/cast.hpp"
+#include "boost/lexical_cast.hpp"
 
 #include "vtkProperty.h"
 #include "vtkPolyData.h"
+#include "vtkActor.h"
+#include "vtkMapper.h"
+#include "vtkPointData.h"
+#include "vtkDoubleArray.h"
 #include "QGoImageView3D.h"
+#include "vtkLookupTableManager.h"
 
 /**
   \class TrackContainer
@@ -55,7 +62,7 @@
   the Visualization and in the TableWidget
   \sa TrackStructure QGoTableWidget QGoImageView3D
   */
-class TrackContainer:public QObject
+class QGOGUILIB_EXPORT TrackContainer:public QObject
 {
   Q_OBJECT
 public:
@@ -97,6 +104,8 @@ public:
         >
       >
     > MultiIndexContainer;
+
+  typedef MultiIndexContainer::iterator MultiIndexContainerIterator;
 
   typedef MultiIndexContainer::index< ActorXY >::type::iterator
   MultiIndexContainerActorXYIterator;
@@ -143,6 +152,7 @@ public:
   // ----------------------------------------------------------------------
 
   /** \brief Print the container content in the application output */
+
   template< class TIterator >
   void Print(TIterator iBegin, TIterator iEnd)
   {
@@ -320,7 +330,7 @@ public:
                                     const bool & iHighlighted,
                                     const bool & iVisible);
 
-  /** 
+  /**
   \brief Update Current Element from the database.
   \param[in] iTraceID
   \param[in] irgba
@@ -658,7 +668,7 @@ public:
   /**
   \overload DeleteElement(const unsigned int & iId)
   */
-  bool DeleteElement(MultiIndexContainerTraceIDIterator iIter); 
+  bool DeleteElement(MultiIndexContainerTraceIDIterator iIter);
 
   /** \brief Delete all highlighted elements
   \return the list of TraceIDs of such elements
@@ -711,6 +721,209 @@ public:
   */
   void UpdateCurrentElementActorsFromVisu(std::vector< vtkActor * > iActors);
 
+  void SetColorCode( const std::string& iColumnName,
+                     const std::map< unsigned int, std::string >& iValues );
+
+  /**
+    \brief Color code contour / mesh according to values provided
+    \tparam TValue numerical type that can be converted into double
+    \param[in] iColumnName Name of data provided
+    \param[in] ivalues is a map where the key is the TraceID and the Value is
+    the actual data used to color.
+  */
+  template< typename TValue >
+  void SetColorCode( const std::string& iColumnName,
+                     const std::map< unsigned int, TValue >& iValues )
+    {
+    typedef TValue ValueType;
+    typedef typename std::map< unsigned int, ValueType > MapType;
+    typedef typename MapType::const_iterator MapConstIterator;
+
+    if( iColumnName.empty() || iValues.empty() )
+      {
+      typename MultiIndexContainer::iterator t_it = m_Container.begin();
+      while( t_it != m_Container.end() )
+        {
+        t_it->Nodes->GetPointData()->SetActiveScalars( NULL );
+        ++t_it;
+        }
+      return;
+      }
+
+    MapConstIterator it = iValues.begin();
+
+    double temp = 0.;
+    try
+      {
+      boost::numeric_cast< double >( it->second );
+      }
+    catch( boost::numeric::bad_numeric_cast& e )
+      {
+      std::cout <<  e.what() <<std::endl;
+      return;
+      }
+
+    double min_value = temp;
+    double max_value = temp;
+
+    while( it != iValues.end() )
+      {
+      MultiIndexContainerTraceIDIterator
+          trace_it = this->m_Container.get<TraceID>().find( it->first );
+
+      if( trace_it != this->m_Container.get<TraceID>().end() )
+        {
+        vtkPolyData* pd = trace_it->Nodes;
+
+        // Here let's make sure you are not passing crazy values!
+        try
+          {
+          boost::numeric_cast< double >( it->second );
+          }
+        catch( boost::numeric::bad_numeric_cast& e )
+          {
+          std::cout <<  e.what() <<std::endl;
+          return;
+          }
+
+        if( temp > max_value )
+          {
+          max_value = temp;
+          }
+        if( temp < min_value )
+          {
+          min_value = temp;
+          }
+
+        vtkIdType NbOfPoints = pd->GetNumberOfPoints();
+        vtkDoubleArray* data = vtkDoubleArray::New();
+        data->SetNumberOfComponents( 1 );
+        data->SetName( iColumnName.c_str() );
+
+        for( vtkIdType i = 0; i < NbOfPoints; ++i )
+          {
+          data->InsertNextValue( temp );
+          }
+
+        pd->GetPointData()->SetScalars( data );
+        pd->GetPointData()->SetActiveScalars( iColumnName.c_str() );
+        }
+      ++it;
+      }
+
+    // Let's set the scalar range (in order to get nice colors)
+    typename MultiIndexContainer::iterator t_it = m_Container.begin();
+    while( t_it != m_Container.end() )
+      {
+      if( t_it->ActorXY )
+        {
+        t_it->ActorXY->GetMapper()->SetScalarRange( min_value, max_value );
+        }
+      if( t_it->ActorXZ )
+        {
+        t_it->ActorXZ->GetMapper()->SetScalarRange( min_value, max_value );
+        }
+      if( t_it->ActorYZ )
+        {
+        t_it->ActorYZ->GetMapper()->SetScalarRange( min_value, max_value );
+        }
+      if( t_it->ActorXYZ )
+        {
+        t_it->ActorXYZ->GetMapper()->SetScalarRange( min_value, max_value );
+        }
+      ++t_it;
+      }
+
+    this->m_ImageView->UpdateRenderWindows();
+    }
+
+  void SetRandomColor( const std::string& iColumnName,
+                    const std::map< unsigned int, std::string >& iIds );
+
+  template< typename TValue >
+  void SetRandomColor( const std::string& iColumnName,
+                       const std::map< unsigned int, TValue >& iIds )
+    {
+    typedef TValue ValueType;
+    typedef typename std::map< unsigned int, ValueType > MapType;
+    typedef typename MapType::const_iterator MapConstIterator;
+
+    if( iColumnName.empty() || iIds.empty() )
+      {
+      RenderAllElementsWithOriginalColors();
+      return;
+      }
+
+    MapConstIterator it = iIds.begin();
+
+    unsigned int val;
+    try
+      {
+      val = boost::numeric_cast< unsigned int >( it->second );
+      }
+    catch( boost::numeric::bad_numeric_cast& e )
+      {
+      std::cout <<  e.what() <<std::endl;
+      return;
+      }
+
+    unsigned int modulo = val % 30;
+
+    double temp = static_cast< double >( modulo );
+
+    double min_value = temp;
+    double max_value = temp;
+
+    while( it != iIds.end() )
+      {
+      MultiIndexContainerTraceIDIterator
+          trace_it = this->m_Container.get<TraceID>().find( it->first );
+
+      if( trace_it != this->m_Container.get<TraceID>().end() )
+        {
+          if (trace_it->Nodes) //make sure the trace has points !!!
+          {
+          // Here let's make sure you are not passing crazy values!
+          val = boost::numeric_cast< unsigned int >( it->second );
+
+          try
+            {
+            val = boost::numeric_cast< unsigned int >( it->second );
+            }
+          catch( boost::numeric::bad_numeric_cast& e )
+            {
+            std::cout <<  e.what() <<std::endl;
+            return;
+            }
+
+          modulo = val % 30;
+
+          temp = static_cast< double >( modulo );
+
+          if( temp > max_value )
+            {
+            max_value = temp;
+            }
+          if( temp < min_value )
+            {
+            min_value = temp;
+            }
+
+          trace_it->SetScalarData( iColumnName, temp );
+          }
+        } //end make sure the trace has points !!!
+      ++it;
+      }
+
+    this->SetScalarRangeForAllElements( min_value, max_value );
+    this->SetLookupTableForColorCoding(
+        vtkLookupTableManager::GetRandomLookupTable() );
+    }
+
+  /** \brief Apply the given lookup table to all traces in the container
+      \param[in] iLut lookup table */
+  void SetLookupTableForColorCoding( vtkLookupTable* iLut );
+
 public slots:
 
   void UpdateElementHighlightingWithGivenTraceIDs( const QStringList& iList,
@@ -730,6 +943,13 @@ signals:
 
 protected:
   vtkProperty *m_HighlightedProperty;
+
+  /** \brief Render with original colors */
+  void RenderAllElementsWithOriginalColors();
+
+  /** \brief Set the scalar range */
+  void SetScalarRangeForAllElements(const double& iMin, const double& iMax );
+
 private:
   Q_DISABLE_COPY(TrackContainer);
 };

@@ -36,6 +36,12 @@
 
 #include <iostream>
 #include "vtkPolyData.h"
+#include "vtkDoubleArray.h"
+#include "vtkPointData.h"
+#include "vtkActor.h"
+#include "vtkMapper.h"
+#include "vtkLookupTable.h"
+
 
 //--------------------------------------------------------------------------
 TrackStructure::
@@ -160,4 +166,112 @@ TrackStructure::
 ~TrackStructure()
 {}
 
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+TrackStructure::
+SetScalarData( const std::string& iName,
+               const double& iValue ) const
+{
+  if( this->Nodes )
+    {
+    vtkIdType NbOfPoints = this->Nodes->GetNumberOfPoints();
+    vtkDoubleArray* data = vtkDoubleArray::New();
+    data->SetNumberOfComponents( 1 );
+    data->SetName( iName.c_str() );
+
+    for( vtkIdType i = 0; i < NbOfPoints; ++i )
+      {
+      data->InsertNextValue( iValue );
+      }
+
+    this->Nodes->GetPointData()->SetScalars( data );
+    this->Nodes->GetPointData()->SetActiveScalars( iName.c_str() );
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+TrackStructure::
+RenderWithOriginalColors() const
+{
+  if( this->Nodes )
+    {
+    this->Nodes->GetPointData()->SetActiveScalars( NULL );
+    }
+
+  if( this->ActorXY )
+    {
+    this->ActorXY->GetMapper()->SetScalarVisibility( false );
+    }
+  if( this->ActorXZ )
+    {
+    this->ActorXZ->GetMapper()->SetScalarVisibility( false );
+    }
+  if( this->ActorYZ )
+    {
+    this->ActorYZ->GetMapper()->SetScalarVisibility( false );
+    }
+  if( this->ActorXYZ )
+    {
+    this->ActorXYZ->GetMapper()->SetScalarVisibility( false );
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+TrackStructure::
+SetScalarRange( const double& iMin, const double& iMax ) const
+{
+  if( this->ActorXY )
+    {
+    this->ActorXY->GetMapper()->SetScalarRange( iMin, iMax );
+    this->ActorXY->GetMapper()->SetScalarVisibility( true );
+    }
+  if( this->ActorXZ )
+    {
+    this->ActorXZ->GetMapper()->SetScalarRange( iMin, iMax );
+    this->ActorXY->GetMapper()->SetScalarVisibility( true );
+    }
+  if( this->ActorYZ )
+    {
+    this->ActorYZ->GetMapper()->SetScalarRange( iMin, iMax );
+    this->ActorXY->GetMapper()->SetScalarVisibility( true );
+    }
+  if( this->ActorXYZ )
+    {
+    this->ActorXYZ->GetMapper()->SetScalarRange( iMin, iMax );
+    this->ActorXYZ->GetMapper()->SetScalarVisibility( true );
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+TrackStructure::
+SetLookupTable( vtkLookupTable* iLut ) const
+{
+  if( iLut )
+    {
+    if( this->ActorXY )
+      {
+      this->ActorXY->GetMapper()->SetLookupTable( iLut );
+      }
+    if( this->ActorXZ )
+      {
+      this->ActorXZ->GetMapper()->SetLookupTable( iLut );
+      }
+    if( this->ActorYZ )
+      {
+      this->ActorYZ->GetMapper()->SetLookupTable( iLut );
+      }
+    if( this->ActorXYZ )
+      {
+      this->ActorXYZ->GetMapper()->SetLookupTable( iLut );
+      }
+    }
+}
 //--------------------------------------------------------------------------
