@@ -73,14 +73,10 @@ int GoDBAuthorRow::SaveInDB(vtkMySQLDatabase *DatabaseConnector)
 int GoDBAuthorRow::DoesThisAuthorAlreadyExists(
   vtkMySQLDatabase *DatabaseConnector)
 {
-  std::vector<FieldWithValue> Conditions(3);
-  FieldWithValue FirstName ("FirstName",this->GetMapValue("FirstName") );
-  FieldWithValue MiddleName ("MiddleName",this->GetMapValue("MiddleName") );
-  FieldWithValue LastName ("LastName",this->GetMapValue("LastName") );
-  Conditions[0] = FirstName;
-  Conditions[1] = MiddleName;
-  Conditions[2] = LastName;
-
+  std::vector<FieldWithValue> Conditions;
+  this->AddConditions("FirstName",Conditions);
+  this->AddConditions("LastName",Conditions);
+  this->AddConditions("MiddleName",Conditions);
   return FindOneID(DatabaseConnector, "author", "authorID",Conditions);
 }
 
