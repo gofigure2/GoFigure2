@@ -175,6 +175,15 @@ public:
 
 };
 
-TrackStructure TrackMerge( const TrackStructure& iT1, const TrackStructure& iT2 );
+/**
+  \brief merge 2 tracks (if they do not overlap) into oMerged
+  \param[in] iT1 track1
+  \param[in] iT2 track2
+  \param[out] oMerged merged track (take attributes from the earliest track in time)
+  \return true if iT1 and iT2 don't overlap
+*/
+bool TrackMerge( const TrackStructure& iT1,
+                 const TrackStructure& iT2,
+                 TrackStructure& oMerged );
 
 #endif

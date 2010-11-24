@@ -738,3 +738,63 @@ AddTrace( vtkPolyData* iNode, vtkProperty* iProperty )
   return this->m_ImageView->AddContour(iNode, iProperty);
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::MergeTrack( const unsigned int& iId1, const unsigned int& iId2 )
+{
+  MultiIndexContainerTraceIDIterator it1 =
+      m_Container.get< TraceID >().find( iId1 );
+
+  MultiIndexContainerTraceIDIterator it2 =
+      m_Container.get< TraceID >().find( iId2 );
+
+  MultiIndexContainerTraceIDIterator end_it = m_Container.get< TraceID >().end();
+
+  if( ( it1 != end_it ) && ( it2 != end_it ) )
+    {
+    MultiIndexContainerTraceIDIterator t_modified;
+    MultiIndexContainerTraceIDIterator t_erased;
+
+    TrackStructure temp;
+
+    if( TrackMerge( *it1, *it2, temp ) )
+      {
+      if( temp.TraceID == it1->TraceID )
+        {
+        t_modified = it1;
+        t_erased = it2;
+        }
+      else
+        {
+        t_modified = it2;
+        t_erased = it1;
+        }
+      this->UpdateTrackStructurePolyData( temp );
+
+      this->m_Container.get< TraceID >().replace( t_modified, temp );
+
+      // update in the database
+
+      this->DeleteElement( t_erased );
+
+      // delete in the database
+      }
+    else
+      {
+      std::cout << "These 2 tracks can't be merged!" <<std::endl;
+      }
+    }
+  else
+    {
+    if( it1 != end_it )
+      {
+      std::cout << "Wrong TrackId " << iId2 <<std::endl;
+      }
+    else
+      {
+      std::cout << "Wrong TrackId " << iId1 <<std::endl;
+      }
+    }
+}
+//-------------------------------------------------------------------------

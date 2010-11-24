@@ -373,13 +373,15 @@ bool TrackMerge( const TrackStructure& iT1,
       TrackStructure::PointsMapConstIterator p_start, p_end;
       if( min1 )
         {
-        oMerged.PointsMap = iT1.PointsMap;
+        oMerged = iT2;
+
         p_start = iT2.PointsMap.begin();
         p_end = iT2.PointsMap.end();
         }
       else
         {
-        oMerged.PointsMap = iT2.PointsMap;
+        oMerged = iT2;
+
         p_start = iT1.PointsMap.begin();
         p_end = iT1.PointsMap.end();
         }
