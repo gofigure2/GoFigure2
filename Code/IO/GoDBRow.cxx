@@ -271,6 +271,6 @@ std::string GoDBRow::GetTableIDName()
 void GoDBRow::AddConditions(
   std::string iNameOfField, std::vector<FieldWithValue> &ioFieldWithValue)
 {
-  FieldWithValue temp(iNameOfField,this->GetMapValue(iNameOfField) );
+  FieldWithValue temp = {iNameOfField,this->GetMapValue(iNameOfField),"=" };
   ioFieldWithValue.push_back(temp);
 }

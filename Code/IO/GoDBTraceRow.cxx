@@ -119,19 +119,12 @@ void GoDBTraceRow::SetTheBoundingBox(vtkMySQLDatabase *DatabaseConnector,
 int GoDBTraceRow::DoesThisBoundingBoxExist(
   vtkMySQLDatabase *DatabaseConnector)
 {
-  std::vector<FieldWithValue> Conditions(3);
-  FieldWithValue CoordMax ("CoordIDMax",this->GetMapValue("CoordIDMax") );
-  Conditions[0] = CoordMax;
-  FieldWithValue CoordMin ("CoordIDMin",this->GetMapValue("CoordIDMin") );
-  Conditions[1] = CoordMin;
-  FieldWithValue ImgSession ("ImagingSessionID",this->GetMapValue("ImagingSessionID") );
-  Conditions[2] = ImgSession;
+  std::vector<FieldWithValue> Conditions;
+  this->AddConditions("CoordIDMax",Conditions);
+  this->AddConditions("CoordIDMin",Conditions);
+  this->AddConditions("ImagingSessionID",Conditions);
 
   return FindOneID(DatabaseConnector,this->m_TableName, this->m_TableIDName,Conditions);
- // return FindOneID( DatabaseConnector, this->m_TableName,
- //                   this->m_TableIDName, "CoordIDMax", this->GetMapValue("CoordIDMax"),
- //                   "CoordIDMin", this->GetMapValue("CoordIDMin"), "ImagingSessionID",
- //                   this->GetMapValue("ImagingSessionID") );
 }
 
 //-------------------------------------------------------------------------

@@ -196,50 +196,14 @@ int FindOneID(vtkMySQLDatabase *DatabaseConnector,
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-/*int FindOneID(vtkMySQLDatabase *DatabaseConnector,
-              std::string TableName, std::string ColumnName,
-              std::string ColumnNameOne, std::string valueOne,
-              std::string ColumnNameTwo, std::string valueTwo)
+std::vector< std::string > FindSeveralIDs(vtkMySQLDatabase * iDatabaseConnector,
+  std::string TableName, std::string ColumnName, std::vector<FieldWithValue> iConditions)
 {
-  int               ID = -1;
-  vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
-  std::stringstream querystream;
-
-  querystream << "SELECT ";
-  querystream << ColumnName;
-  querystream << " FROM ";
-  querystream << TableName;
-  querystream << " WHERE (";
-  querystream << ColumnNameOne;
-  querystream << " = '";
-  querystream << valueOne;
-  querystream << "' AND ";
-  querystream << ColumnNameTwo;
-  querystream << " = '";
-  querystream << valueTwo;
-  querystream << "');";
-
-  query->SetQuery( querystream.str().c_str() );
-  if ( !query->Execute() )
-    {
-    itkGenericExceptionMacro(
-      << "The FindOneID query failed"
-      << query->GetLastErrorText() );
-    DatabaseConnector->Close();
-    DatabaseConnector->Delete();
-    query->Delete();
-    return ID;
-    }
-
-  if ( query->NextRow() )
-    {
-    ID = query->DataValue(0).ToInt();
-    }
-  query->Delete();
-
-  return ID;
-}*/
-
+  std::string QueryString = SelectQueryStreamListConditions(TableName,
+                            ColumnName, iConditions,"AND");
+ 
+  return ExecuteSelectQuery(iDatabaseConnector,QueryString);
+}
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------

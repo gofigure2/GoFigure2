@@ -198,7 +198,7 @@ void GoDBMeshRow::SaveInDBTotalIntensityPerChannel(
     {
     std::vector<FieldWithValue> Conditions;
     this->AddConditions("ImagingSessionID",Conditions);
-    FieldWithValue Name("Name",iter->first);
+    FieldWithValue Name = {"Name",iter->first,"="};
     Conditions.push_back(Name);
     int ChannelID = FindOneID( DatabaseConnector, "channel", "ChannelID", Conditions);
 

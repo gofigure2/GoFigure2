@@ -47,7 +47,6 @@
 
 #include "QGoIOConfigure.h"
 
-typedef std::pair<std::string,std::string> FieldWithValue;
 /**
 \brief SELECT ColumnName from TableName ORDER BY OrderbyColumnName
 \param[in] DatabaseConnector connection to the database
@@ -115,18 +114,27 @@ int FindOneID(vtkMySQLDatabase *DatabaseConnector,
               std::string TableName, std::string ColumnName,
               std::string field, std::string value);
 
+/**
+\overload 
+\param[in] iConditions vector of fields = values
+*/
 QGOIO_EXPORT
 int FindOneID(vtkMySQLDatabase *DatabaseConnector,
               std::string TableName, std::string ColumnName,
               std::vector<FieldWithValue> iConditions);
 
-//query: "SELECT ColumnName FROM TableName WHERE (field1 = value1
-//AND field2 = value2);
-//QGOIO_EXPORT
-//int FindOneID(vtkMySQLDatabase *DatabaseConnector,
- //             std::string TableName, std::string ColumnName,
- //             std::string ColumnNameOne, std::string valueOne,
- //             std::string ColumnNameTwo, std::string valueTwo);
+/**
+\brief "SELECT ColumnName FROM TableName WHERE (field1 = value1
+AND field2 = value2...);
+\param[in] DatabaseConnector connection to the database
+\param[in] TableName name of the database table
+\param[in] ColumnName name of the field in the database
+\param[in] iConditions vector of fields = values
+*/
+QGOIO_EXPORT
+std::vector< std::string > FindSeveralIDs(
+  vtkMySQLDatabase * iDatabaseConnector,std::string TableName, 
+  std::string ColumnName, std::vector<FieldWithValue> iConditions);
 
 //query: "SELECT ColumnName FROM TableName WHERE (field1 = value1
 //AND field2 = value2);

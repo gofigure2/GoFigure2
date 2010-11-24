@@ -256,11 +256,11 @@ QStringList QGoOpenCreateProjectPage::GetListAuthors()
       AuthorTotalName << ListMiddleNames[i];
 
       std::vector<FieldWithValue> Conditions(3);
-      FieldWithValue FirstName ("FirstName",ListFirstNames[i]);
+      FieldWithValue FirstName ={"FirstName",ListFirstNames[i],"="};
       Conditions[0] = FirstName;
-      FieldWithValue MiddleName ("MiddleName",ListMiddleNames[i]);
+      FieldWithValue MiddleName = {"MiddleName",ListMiddleNames[i], "="};
       Conditions[1] = MiddleName;
-      FieldWithValue LastName ("LastName",ListLastNames[i]);
+      FieldWithValue LastName = {"LastName",ListLastNames[i], "="};
       Conditions[2] = LastName;
 
        m_MapAuthorIDName[AuthorTotalName.str()] = FindOneID(m_DatabaseConnector,

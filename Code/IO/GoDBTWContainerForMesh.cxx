@@ -297,8 +297,8 @@ void GoDBTWContainerForMesh::GetIntensityValuesForOneMesh(std::string iMeshID,
     {
     std::string ChannelIDValue = this->m_ChannelsInfo.at(i).at(1);
     std::vector<FieldWithValue> Conditions(2);
-    FieldWithValue MeshID ("MeshID",iMeshID);
-    FieldWithValue ChannelID ("ChannelID",ChannelIDValue);
+    FieldWithValue MeshID = {"MeshID",iMeshID, "="};
+    FieldWithValue ChannelID = {"ChannelID",ChannelIDValue,"="};
     Conditions[0] = MeshID;
     Conditions[1] = ChannelID;
 

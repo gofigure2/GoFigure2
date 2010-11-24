@@ -270,16 +270,18 @@ std::string GetConditions(std::vector<FieldWithValue> iConditions,
   unsigned int i;
     for ( i = 0; i < iConditions.size() - 1; i++ )
       {
-      oConditions << iConditions[i].first;
-      oConditions << " = '";
-      oConditions << iConditions[i].second;
+      oConditions << iConditions[i].Field;
+      oConditions << iConditions[i].Operator;
+      oConditions << " '";
+      oConditions << iConditions[i].Value;
       oConditions << "' ";
       oConditions << iConditionConnector;
       oConditions  << " ";
       }
-    oConditions << iConditions[i].first;
-    oConditions << " = '";
-    oConditions << iConditions[i].second;
+    oConditions << iConditions[i].Field;
+    oConditions << iConditions[i].Operator;
+    oConditions << " '";
+    oConditions << iConditions[i].Value;
     oConditions << "')";
   return oConditions.str();
 }

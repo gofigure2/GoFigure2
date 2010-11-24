@@ -493,8 +493,8 @@ int QGoCreateImgSessionPage::FindChannelIDForImage(vtkMySQLDatabase *DatabaseCon
                                                    int ImagingSessionID, int ChannelNumber)
 {
   std::vector<FieldWithValue> Conditions(2);
-    FieldWithValue ImgSession ("ImagingSessionID",ConvertToString< int >(ImagingSessionID) );
-    FieldWithValue Channel ("ChannelNumber",ConvertToString< int >(ChannelNumber) );
+  FieldWithValue ImgSession ={"ImagingSessionID",ConvertToString< int >(ImagingSessionID),"="};
+  FieldWithValue Channel ={"ChannelNumber",ConvertToString< int >(ChannelNumber),"="};
     Conditions[0] = ImgSession;
     Conditions[1] = Channel;
   

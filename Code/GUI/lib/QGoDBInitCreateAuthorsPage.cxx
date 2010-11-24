@@ -120,8 +120,8 @@ void QGoDBInitCreateAuthorsPage::CreateAuthor()
     }
 
   std::vector<FieldWithValue> Conditions;
-  FieldWithValue FirstName ("FirstName",FirstNameValue);
-  FieldWithValue LastName ("LastName",LastNameValue);
+  FieldWithValue FirstName = {"FirstName",FirstNameValue, "="};
+  FieldWithValue LastName = {"LastName",LastNameValue, "="};
   Conditions.push_back(FirstName);
   Conditions.push_back(LastName);
   

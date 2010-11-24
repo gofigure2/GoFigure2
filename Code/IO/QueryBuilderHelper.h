@@ -37,7 +37,12 @@
 #include <vector>
 #include <string>
 
-typedef std::pair<std::string,std::string> FieldWithValue;
+struct FieldWithValue
+  {
+    std::string Field;
+    std::string Value;
+    std::string Operator;
+  };
 /**
 \brief SELECT iWhat FROM iWhere WHERE iConditions
 \param[in] iWhat list of attributes separated by commas
