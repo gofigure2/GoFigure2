@@ -96,33 +96,16 @@ ContourMeshContainer::SetTimePoint(const unsigned int & iT)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void ContourMeshContainer::UpdateCurrentElementFromVisu(std::vector< vtkActor * > iActors,
-                                                        vtkPolyData *iNodes,
-                                                        const unsigned int & iT,
-                                                        const bool & iHighlighted,
-                                                        const bool & iVisible)
+void
+ContourMeshContainer::
+UpdateCurrentElementFromVisu( std::vector< vtkActor * > iActors,
+                              vtkPolyData *iNodes,
+                              const unsigned int & iT,
+                              const bool & iHighlighted,
+                              const bool & iVisible )
 {
-  if ( iActors.size() != 4 )
-    {
-    std::cerr << "iActors.size() != 4" << std::endl;
-    return;
-    }
-  else
-    {
-    this->m_CurrentElement.ActorXY = iActors[0];
-    this->m_CurrentElement.ActorXZ = iActors[1];
-    this->m_CurrentElement.ActorYZ = iActors[2];
-    this->m_CurrentElement.ActorXYZ = iActors[3];
-    }
-  this->m_CurrentElement.Nodes = iNodes;
-  this->m_CurrentElement.TCoord = iT;
-  this->m_CurrentElement.Highlighted = iHighlighted;
-  this->m_CurrentElement.Visible = iVisible;
-
-  if ( iHighlighted )
-    {
-    this->m_CurrentElement.SetActorProperties( this->m_HighlightedProperty );
-    }
+  this->UpdateCurrentElementFromVisuBase( iActors, iNodes,
+                                          iHighlighted, iVisible );
 }
 
 //-------------------------------------------------------------------------
