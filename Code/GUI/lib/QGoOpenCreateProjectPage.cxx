@@ -265,11 +265,6 @@ QStringList QGoOpenCreateProjectPage::GetListAuthors()
 
        m_MapAuthorIDName[AuthorTotalName.str()] = FindOneID(m_DatabaseConnector,
          "author", "AuthorID",Conditions);
-
-     // m_MapAuthorIDName[AuthorTotalName.str()] = FindOneID(
-     //   m_DatabaseConnector, "author", "AuthorID",
-     //   "FirstName", ListFirstNames[i], "MiddleName", ListMiddleNames[i],
-     //   "LastName", ListLastNames[i]);
       }
     for ( std::map< std::string, int >::iterator iter = m_MapAuthorIDName.begin();
           iter != m_MapAuthorIDName.end(); ++iter )

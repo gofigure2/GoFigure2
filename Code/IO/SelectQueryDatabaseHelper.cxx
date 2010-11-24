@@ -207,7 +207,7 @@ std::vector< std::string > FindSeveralIDs(vtkMySQLDatabase * iDatabaseConnector,
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::vector< std::string > FindSeveralIDs(vtkMySQLDatabase *DatabaseConnector,
+/*std::vector< std::string > FindSeveralIDs(vtkMySQLDatabase *DatabaseConnector,
                                           std::string TableName, std::string ColumnName,
                                           std::string ColumnNameOne, std::string valueOne,
                                           std::string ColumnNameTwo, std::string valueTwo)
@@ -253,7 +253,7 @@ std::vector< std::string > FindSeveralIDs(vtkMySQLDatabase *DatabaseConnector,
   query->Delete();
 
   return result;
-}
+}*/
 
 //------------------------------------------------------------------------------
 

@@ -138,10 +138,10 @@ std::vector< std::string > FindSeveralIDs(
 
 //query: "SELECT ColumnName FROM TableName WHERE (field1 = value1
 //AND field2 = value2);
-std::vector< std::string > FindSeveralIDs(vtkMySQLDatabase *DatabaseConnector,
-                                          std::string TableName, std::string ColumnName,
-                                          std::string ColumnNameOne, std::string valueOne,
-                                          std::string ColumnNameTwo, std::string valueTwo);
+//std::vector< std::string > FindSeveralIDs(vtkMySQLDatabase *DatabaseConnector,
+ //                                         std::string TableName, std::string ColumnName,
+ //                                         std::string ColumnNameOne, std::string valueOne,
+ //                                         std::string ColumnNameTwo, std::string valueTwo);
 
 //query: "SELECT ColumnName FROM TableName WHERE (field1 = value1
 //AND field2 = value2 AND field3 = value3 AND field4 = value4);
