@@ -121,10 +121,10 @@ std::string SelectQueryStream(std::string iTable, std::vector<std::string > iLis
 \brief SELECT iColumn FROM iTable WHERE iField = iValue ORDER BY iColumn iAscDesc;
 */
 std::string SelectQueryStreamCondition(std::string iTable, std::string iColumn, std::string iField,
-                              std::string iValue,bool iOrderBy = false, std::string iAscDesc = "ASC");
+                              std::string iValue,std::string iOrderByColumnName = "", std::string iAscDesc = "ASC");
 
 std::string SelectQueryStreamCondition(std::string iTable, std::vector<std::string> iListAttributes,
-                                       std::string iField, std::string iValue, bool iOrderBy = false, 
+                                       std::string iField, std::string iValue, std::string iOrderByColumnName = "",
                                        std::string iAscDesc = "ASC");
 
 std::string SelectQueryStreamListConditions(std::string iTable,

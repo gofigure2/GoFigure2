@@ -146,15 +146,17 @@ std::string SelectQueryStream(std::string iTable, std::vector<std::string > iLis
 
 //------------------------------------------------------------------------------
 std::string SelectQueryStreamCondition(std::string iTable, std::string iColumn, std::string iField,
-                              std::string iValue, bool iOrderBy, std::string iAscDesc)
+                              std::string iValue, std::string iOrderByColumnName, std::string iAscDesc)
 {
   std::stringstream Conditions;
   Conditions << iField;
   Conditions <<  " = '";
   Conditions << iValue;
   Conditions << "'";
-  Conditions << AddOrderBy(iColumn,iAscDesc);
-
+  if (!iOrderByColumnName.empty())
+    {
+    Conditions << AddOrderBy(iOrderByColumnName,iAscDesc);
+    }
   return SelectGeneralQueryConditions(iColumn, iTable, Conditions.str());
 }
 
@@ -162,11 +164,11 @@ std::string SelectQueryStreamCondition(std::string iTable, std::string iColumn, 
 
 //------------------------------------------------------------------------------
 std::string SelectQueryStreamCondition(std::string iTable, std::vector<std::string> iListAttributes,
-                                       std::string iField, std::string iValue, bool iOrderBy, 
+                                       std::string iField, std::string iValue, std::string iOrderByColumnName,
                                        std::string iAscDesc)
 {
   std::string What = GetSelectedAttributes(iListAttributes);
-  return SelectQueryStreamCondition(iTable,What,iField,iValue,iOrderBy,iAscDesc);
+  return SelectQueryStreamCondition(iTable,What,iField,iValue,iOrderByColumnName,iAscDesc);
 }
 //------------------------------------------------------------------------------
 

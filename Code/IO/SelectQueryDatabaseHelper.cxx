@@ -146,37 +146,8 @@ std::vector< std::string > ListSpecificValuesForRow(
   vtkMySQLDatabase *DatabaseConnector, std::string TableName, std::string field,
   std::string value)
 {
-  std::vector< std::string > result;
-  vtkSQLQuery *              query = DatabaseConnector->GetQueryInstance();
-  std::stringstream          querystream;
-  querystream << "SELECT * FROM ";
-  querystream << TableName;
-  querystream << " WHERE ";
-  querystream << field;
-  querystream << " = '";
-  querystream << value;
-  querystream << "';";
-
-  query->SetQuery( querystream.str().c_str() );
-  if ( !query->Execute() )
-    {
-    itkGenericExceptionMacro(
-      << "List of all values of ExpID query failed"
-      << query->GetLastErrorText() );
-    query->Delete();
-    return result;
-    }
-
-  while ( query->NextRow() )
-    {
-    for ( int i = 0; i < query->GetNumberOfFields(); i++ )
-      {
-      result.push_back( query->DataValue(i).ToString() );
-      }
-    }
-  query->Delete();
-
-  return result;
+  std::string QueryString = SelectQueryStreamCondition(TableName,"*",field,value);
+  return ExecuteSelectQuery(DatabaseConnector,QueryString);
 }
 
 //------------------------------------------------------------------------------
@@ -188,37 +159,18 @@ int FindOneID(vtkMySQLDatabase *DatabaseConnector,
 {
   int ID = -1;
 
-  vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
-  std::stringstream querystream;
-
-  querystream << "SELECT ";
-  querystream << ColumnName;
-  querystream << " FROM ";
-  querystream << TableName;
-  querystream << " WHERE ";
-  querystream << field;
-  querystream << " = '";
-  querystream << value;
-  querystream << "';";
-
-  query->SetQuery( querystream.str().c_str() );
-  if ( !query->Execute() )
+  std::string QueryString = 
+    SelectQueryStreamCondition(TableName,ColumnName,field,value);
+  std::vector<std::string> Results = ExecuteSelectQuery(
+    DatabaseConnector,QueryString);
+  if (Results.size() > 1)
     {
-    itkGenericExceptionMacro(
-      << "The FindOneID query failed"
-      << query->GetLastErrorText() );
-    DatabaseConnector->Close();
-    DatabaseConnector->Delete();
-    query->Delete();
+    std::cout<<"there is not an unique ID";
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
     return ID;
     }
-
-  if ( query->NextRow() )
-    {
-    ID = query->DataValue(0).ToInt();
-    }
-  query->Delete();
-
+  ID = atoi( Results[0].c_str() );
   return ID;
 }
 

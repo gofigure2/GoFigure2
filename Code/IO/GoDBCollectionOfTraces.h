@@ -328,33 +328,9 @@ protected:
   */
   int CreateNewCollection(vtkMySQLDatabase *DatabaseConnector, GoDBTraceRow & myNewObject);
 
-  //get from Database and/or Modif into Database
-  /** \brief get the max of all the coordinates in the ListSelectedTraces, compare it
-  to the max of the existing collection and update the max coordinate of the bounding
-  box of the collection if necessary*/
-  int GetCoordMaxID(vtkMySQLDatabase *DatabaseConnector,
-                    int CollectionID, std::list< unsigned int > ListSelectedTraces);
-
-  //get from Database and/or Modif into Database
-  /** \brief get the min of all the coordinates in the ListSelectedTraces, compare it
-  to the min of the existing collection and update the min coordinate of the bounding
-  box of the collection if necessary*/
-  int GetCoordMinID(vtkMySQLDatabase *DatabaseConnector,
-                    int CollectionID, std::list< unsigned int > ListSelectedTraces);
-
   /** \brief Update in the database the coordid max and min of the trace*/
   void UpdateBoundingBoxInDB(int iCoordIDMin, int iCoordIDMax,
                              int iTraceID, vtkMySQLDatabase *iDatabaseConnector);
-
-  /** \brief return the coordinate min for the existing Collection*/
-  GoDBCoordinateRow GetExistingCoordMin(
-    vtkMySQLDatabase *DatabaseConnector, int CollectionCoordIDMin,
-    int CollectionID);
-
-  /** \brief return the coordinate max for the existing Collection*/
-  GoDBCoordinateRow GetExistingCoordMax(
-    vtkMySQLDatabase *DatabaseConnector, int CollectionCoordIDMax,
-    int CollectionID);
 
   //Modif into Database
   /** \brief change the collection ID of the trace*/
