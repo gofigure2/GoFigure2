@@ -208,66 +208,23 @@ std::vector< std::string > FindSeveralIDs(vtkMySQLDatabase * iDatabaseConnector,
 
 //------------------------------------------------------------------------------
 std::vector< std::string > ListSpecificValuesForOneColumn(
-  vtkMySQLDatabase *DatabaseConnector,
+  vtkMySQLDatabase *iDatabaseConnector,
   std::string TableName, std::string ColumnName,
   std::string field, std::string value, bool Distinct,
   bool ExcludeZero)
 {
-  std::vector< std::string > result;
-  vtkSQLQuery *              query = DatabaseConnector->GetQueryInstance();
+  std::vector<FieldWithValue> VectorConditions;
+  FieldWithValue EqualValue = {field,value, "="};
+  VectorConditions.push_back(EqualValue);
+  if (ExcludeZero)
+    {
+    FieldWithValue DiffZero = {ColumnName,"0", "<>"};
+    VectorConditions.push_back(DiffZero);
+    }
+  std::string QueryString = SelectQueryStreamListConditions(TableName,
+                            ColumnName, VectorConditions,"AND");
 
-  std::stringstream querystream;
-  querystream << "SELECT ";
-  if ( Distinct )
-    {
-    querystream << "DISTINCT ";
-    }
-  querystream << ColumnName;
-  querystream << " FROM ";
-  querystream << TableName;
-  if ( field.empty() )
-    {
-    querystream << ";";
-    }
-  else
-    {
-    querystream << " WHERE ";
-    querystream << field;
-    querystream << " = '";
-    querystream << value;
-    //querystream << "';";
-    querystream << "'";
-    }
-  if ( ExcludeZero )
-    {
-    querystream << " AND WHERE ";
-    querystream << ColumnName;
-    querystream << " <> 0";
-    }
-
-  query->SetQuery( querystream.str().c_str() );
-  if ( !query->Execute() )
-    {
-    itkGenericExceptionMacro(
-      << "List of all values of ExpID query failed"
-      << query->GetLastErrorText() );
-    DatabaseConnector->Close();
-    DatabaseConnector->Delete();
-    query->Delete();
-    return result;
-    }
-
-  while ( query->NextRow() )
-    {
-    for ( int i = 0; i < query->GetNumberOfFields(); i++ )
-      {
-      result.push_back( query->DataValue(i).ToString() );
-      }
-    }
-
-  query->Delete();
-
-  return result;
+  return ExecuteSelectQuery(iDatabaseConnector,QueryString);
 }
 
 //------------------------------------------------------------------------------
@@ -276,11 +233,13 @@ std::vector< std::string > ListSpecificValuesForOneColumn(
 //query: "SELECT ColumnName FROM TableName WHERE field = value
 //ORDER BY ColumnNameOrder ASC"
 std::vector< std::string > ListSpecificValuesForOneColumn(
-  vtkMySQLDatabase *DatabaseConnector,
+  vtkMySQLDatabase *iDatabaseConnector,
   std::string TableName, std::string ColumnName,
   std::string field, std::string value, std::string ColumnNameOrder)
 {
-  std::vector< std::string > result;
+  std::string QueryString = SelectQueryStreamCondition(TableName,ColumnName,field,value,ColumnNameOrder);
+  return ExecuteSelectQuery(iDatabaseConnector,QueryString); 
+  /*std::vector< std::string > result;
 
   vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
   std::stringstream querystream;
@@ -318,19 +277,42 @@ std::vector< std::string > ListSpecificValuesForOneColumn(
 
   query->Delete();
 
-  return result;
+  return result;*/
 }
 
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 std::vector< std::string > ListSpecificValuesForOneColumn(
-  vtkMySQLDatabase *DatabaseConnector,
+  vtkMySQLDatabase *iDatabaseConnector,
   std::string TableName, std::string ColumnName,
   std::string field, std::vector< std::string > VectorValues,
   bool Distinct, bool ExcludeZero)
 {
-  std::vector< std::string > result;
+  std::string Conditions;
+  if (ExcludeZero)
+    {
+    std::vector<FieldWithValue> VectorConditions(1);
+    FieldWithValue DiffZero = {ColumnName,"0", "<>"};
+    VectorConditions[0] = DiffZero;
+    Conditions = GetConditions(VectorConditions,"AND");
+
+    //QueryString = SelectQueryStreamListConditions(TableName,
+    //                        ColumnName, VectorConditions,"AND");
+    Conditions = Conditions.substr(0,Conditions.size()-1);
+    Conditions += " AND ";
+    }
+   
+  Conditions += GetConditions(field,VectorValues,"OR");
+  if (ExcludeZero)
+    {
+    Conditions += ")";
+    }
+  std::string QueryString = SelectQueryStreamCondition(TableName, ColumnName, Conditions,Distinct);
+  return ExecuteSelectQuery(iDatabaseConnector,QueryString); 
+
+
+  /*std::vector< std::string > result;
 
   vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
   std::stringstream querystream;
@@ -390,7 +372,7 @@ std::vector< std::string > ListSpecificValuesForOneColumn(
 
   query->Delete();
 
-  return result;
+  return result;*/
 }
 
 //------------------------------------------------------------------------------

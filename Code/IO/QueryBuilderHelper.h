@@ -125,40 +125,85 @@ empty, no sorting
 */
 std::string SelectQueryStream(std::string iTable, std::vector<std::string > iListAttributes,
                               std::string iOrderByColumnName = "", std::string iAscDesc = "ASC");
-//basic
-/**
-\brief SELECT iColumn FROM iTable WHERE iField = iValue ORDER BY iColumn iAscDesc;
-*/
-std::string SelectQueryStreamCondition(std::string iTable, std::string iColumn, std::string iField,
-                              std::string iValue,std::string iOrderByColumnName = "", std::string iAscDesc = "ASC");
 
-std::string SelectQueryStreamCondition(std::string iTable, std::vector<std::string> iListAttributes,
-                                       std::string iField, std::string iValue, std::string iOrderByColumnName = "",
+/**
+\brief SELECT (Distinct) iColumn FROM iTable WHERE iConditions 
+(ORDER BY irderByColumnName iAscDesc);
+\param[in] iTable name of the database table
+\param[in] iColumn name of the attribute to select
+\param[in] iOrderByColumnName name of the column by which the results will be sorted, if
+empty, no sorting 
+\param[in] iAscDesc order to sort the results, ascendent by default
+\return the string corresponding to the query part 
+*/
+std::string SelectQueryStreamCondition(std::string iTable, 
+                                       std::string iColumn, 
+                                       std::string iConditions,
+                                       bool Distinct = false,
+                                       std::string iOrderByColumnName = "", 
+                                       std::string iAscDesc = "ASC");
+/**
+\overload
+*/
+std::string SelectQueryStreamCondition(std::string iTable, 
+                                       std::string iColumn, 
+                                       std::string iField,
+                                       std::string iValue, 
+                                       std::string iOrderByColumnName = "", 
+                                       std::string iAscDesc = "ASC",
+                                       bool Distinct = false);
+
+/**
+\overload
+*/
+std::string SelectQueryStreamCondition(std::string iTable, 
+                                       std::vector<std::string> iListAttributes,
+                                       std::string iField, 
+                                       std::string iValue, 
+                                       std::string iOrderByColumnName = "",
                                        std::string iAscDesc = "ASC");
 
+/**
+\brief SELECT (Distinct) iColumn FROM iTable WHERE iField = iValue Or/And...
+\param[in] iTable name of the database table
+\param[in] iColumn name of the attribute to select
+\param[in] iField name of the condition
+\param[in] iListValues values of the condition
+\param[in] Distinct if set to true no doublon allowed
+\param[in] iConditionConnector or/and
+\return the string corresponding to the query part 
+*/
 std::string SelectQueryStreamListConditions(std::string iTable,
                                             std::string iColumn, std::string iField,
                                             std::vector< std::string > iListValues, bool Distinct = false,
                                             std::string iConditionConnector = "OR");
 
+/**
+\overload
+*/
 std::string SelectQueryStreamListConditions(std::string iTable,
                                             std::vector<std::string> iListAttributes, 
                                             std::string iField,
                                             std::vector< std::string > iListValues, 
                                             bool Distinct = false,
                                             std::string iConditionConnector = "OR");
-
+/**
+\overload
+*/
 std::string SelectQueryStreamListConditions(std::string iTable,
                                             std::vector<std::string> iListAttributes, 
                                             std::string iField,
                                             std::string iValue, 
                                             bool Distinct = false,
                                             std::string iConditionConnector = "OR");
-
+/**
+\overload
+*/
 std::string SelectQueryStreamListConditions(std::string iTable,
                                             std::string iColumn, 
                                             std::vector<FieldWithValue> iConditions,
-                                            std::string iConditionConnector = "OR");
+                                            std::string iConditionConnector = "OR",
+                                            bool Distinct = false);
 
 //iselectquery union iselectquery where ijoinon IS NULL (with or without
 // brackets in the

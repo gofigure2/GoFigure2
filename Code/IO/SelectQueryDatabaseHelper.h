@@ -91,7 +91,9 @@ std::map< std::string, std::string > MapTwoColumnsFromTable(
   vtkMySQLDatabase *DatabaseConnector,std::vector<std::string> iColumnNames,
   std::string iTableName, std::string iField = "", std::string iValue = "");
 
-//query: "SELECT * FROM TableName WHERE field = value"
+/**
+\brief SELECT * FROM TableName WHERE field = value
+*/
 //if field is a primary key, will return only the values for
 //one row
 //not used
@@ -130,26 +132,42 @@ AND field2 = value2...);
 \param[in] TableName name of the database table
 \param[in] ColumnName name of the field in the database
 \param[in] iConditions vector of fields = values
+\return all the values in ColumnName that fit the conditions
 */
 QGOIO_EXPORT
 std::vector< std::string > FindSeveralIDs(
   vtkMySQLDatabase * iDatabaseConnector,std::string TableName, 
   std::string ColumnName, std::vector<FieldWithValue> iConditions);
 
-//query: "SELECT ColumnName FROM TableName WHERE field = value"
-//query: "SELECT ColumnName FROM TableName" if field == ""
+/**
+\brief SELECT ColumnName FROM TableName WHERE field = value and 
+ColumnName <> 0 (if excludezero)
+\param[in] iDatabaseConnector connection to the database
+\param[in] TableName name of the database table
+\param[in] ColumnName name of the field in the database
+\param[in] field field for the condition
+\param[in] value value of the condition
+\param[in] distinct set to true if doublon are not allowed
+\param[in] ExcludeZero set to true if ColumnName has to be 
+different than 0
+\return all the values in ColumnName that fit the conditions
+*/
 QGOIO_EXPORT
 std::vector< std::string > ListSpecificValuesForOneColumn(
-  vtkMySQLDatabase *DatabaseConnector,
+  vtkMySQLDatabase *iDatabaseConnector,
   std::string TableName, std::string ColumnName,
   std::string field, std::string value, bool Distinct = false,
   bool ExcludeZero = false);
 
-//query: "SELECT ColumnName FROM TableName WHERE field = value
-//ORDER BY ColumnNameOrder ASC"
+/**
+\brief SELECT ColumnName FROM TableName WHERE field = value
+ORDER BY ColumnNameOrder ASC
+\overload
+\param[in] ColumnNameOrder name of the column for sorting
+*/
 QGOIO_EXPORT
 std::vector< std::string > ListSpecificValuesForOneColumn(
-  vtkMySQLDatabase *DatabaseConnector,
+  vtkMySQLDatabase *iDatabaseConnector,
   std::string TableName, std::string ColumnName,
   std::string field, std::string value, std::string ColumnNameOrder);
 
@@ -157,7 +175,7 @@ std::vector< std::string > ListSpecificValuesForOneColumn(
 //or field = value2....)"
 QGOIO_EXPORT
 std::vector< std::string > ListSpecificValuesForOneColumn(
-  vtkMySQLDatabase *DatabaseConnector,
+  vtkMySQLDatabase *iDatabaseConnector,
   std::string TableName, std::string ColumnName,
   std::string field, std::vector< std::string > VectorValues,
   bool Distinct = false, bool ExcludeZero = false);
