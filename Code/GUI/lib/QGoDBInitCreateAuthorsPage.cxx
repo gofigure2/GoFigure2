@@ -37,6 +37,7 @@
 #include "vtkSQLQuery.h"
 #include "QueryDataBaseHelper.h"
 #include "SelectQueryDatabaseHelper.h"
+#include "GoDBAuthorRow.h"
 #include <QFormLayout>
 #include <QMessageBox>
 #include <QVariant>
@@ -124,8 +125,6 @@ void QGoDBInitCreateAuthorsPage::CreateAuthor()
   Conditions.push_back(FirstName);
   Conditions.push_back(LastName);
   
-  //if ( FindOneID(this->m_DatabaseConnector, "author", "AuthorID",
-  //               "LastName", LastName, "FirstName", FirstName) != -1 && MiddleName.empty() )
   if( FindOneID(this->m_DatabaseConnector,"author", "AuthorID",Conditions) != -1 && MiddleNameValue.empty() )
     {
     msgBox.setText(
@@ -134,44 +133,20 @@ void QGoDBInitCreateAuthorsPage::CreateAuthor()
     return;
     }
 
-  FieldWithValue MiddleName ("MiddleName",MiddleNameValue);
-  Conditions.push_back(MiddleName);  
-  //if ( FindOneID(this->m_DatabaseConnector, "author", "AuthorID",
-   //              "LastName", LastName, "FirstName", FirstName, "MiddleName", MiddleName) != -1 && !MiddleName.empty() )
-  if( FindOneID(this->m_DatabaseConnector,"author", "AuthorID",Conditions) != -1 && MiddleNameValue.empty() )
+  GoDBAuthorRow NewAuthor;
+  NewAuthor.SetField("FirstName", lineFirstName->text().toStdString() );
+  NewAuthor.SetField("LastName", lineLastName->text().toStdString() );
+  NewAuthor.SetField("MiddleName",lineMiddleName->text().toStdString() );
+
+  if (NewAuthor.DoesThisAuthorAlreadyExists(this->m_DatabaseConnector) != -1)
     {
-    msgBox.setText(
+     msgBox.setText(
       tr("This author already exists") );
     msgBox.exec();
     return;
     }
-
-  vtkSQLQuery *query = this->m_DatabaseConnector->GetQueryInstance();
-
-  std::stringstream queryScript;
-  queryScript << "INSERT INTO author (LastName,FirstName,MiddleName) VALUES ('";
-  queryScript << LastNameValue;
-  queryScript << "','";
-  queryScript << FirstNameValue;
-  if ( MiddleNameValue == "" )
-    {
-    queryScript << "',default) ;";
-    }
-  else
-    {
-    queryScript << "', '";
-    queryScript << MiddleNameValue;
-    queryScript << "') ;";
-    }
-  query->SetQuery( queryScript.str().c_str() );
-  if ( !query->Execute() )
-    {
-    std::cout << "Insert Author query failed." << std::endl;
-    query->Delete();
-    return;
-    }
-
-  query->Delete();
+  NewAuthor.SaveInDB(this->m_DatabaseConnector) ;
+ 
   msgBox.setText(
     tr("Your author has been successfully created") );
   msgBox.exec();

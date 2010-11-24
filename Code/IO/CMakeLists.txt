@@ -15,6 +15,7 @@ SET( QGOIO_SRC
   ContourMeshStructure.cxx
   TrackStructure.cxx
   CreateDataBaseHelper.cxx
+  GoDBAuthorRow.cxx
   GoDBChannelRow.cxx
   GoDBCollectionOfTraces.cxx
   GoDBColorRow.cxx

@@ -186,14 +186,7 @@ int FindOneID(vtkMySQLDatabase *DatabaseConnector,
 
   std::vector<std::string> Results = ExecuteSelectQuery(
     DatabaseConnector,QueryString);
-  if (Results.size() > 1)
-    {
-    std::cout<<"there is not an unique ID";
-    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-    std::cout << std::endl;
-    return ID;
-    }
-
+  
   if (!Results.empty())
     {
     ID = atoi( Results[0].c_str() );
