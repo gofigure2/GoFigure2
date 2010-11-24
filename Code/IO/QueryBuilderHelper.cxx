@@ -204,6 +204,17 @@ std::string SelectQueryStreamListConditions(std::string iTable,
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
+std::string SelectQueryStreamListConditions(std::string iTable,
+                                            std::string iColumn, 
+                                            std::vector<FieldWithValue> iConditions,
+                                            std::string iConditionConnector)
+{
+  std::string Conditions = GetConditions(iConditions,iConditionConnector);
+  return SelectGeneralQueryConditions(iColumn,iTable,Conditions);
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 std::string AddDistinctToWhat(std::string iWhat)
 {
   std::string oWhat = "DISTINCT ";
@@ -246,6 +257,30 @@ std::string GetConditions(std::string iField,
     oConditions << iListValues[i];
     oConditions << "')";
 
+  return oConditions.str();
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string GetConditions(std::vector<FieldWithValue> iConditions,
+  std::string iConditionConnector)
+{
+  std::stringstream oConditions;
+  oConditions << "(";
+  unsigned int i;
+    for ( i = 0; i < iConditions.size() - 1; i++ )
+      {
+      oConditions << iConditions[i].first;
+      oConditions << " = '";
+      oConditions << iConditions[i].second;
+      oConditions << "' ";
+      oConditions << iConditionConnector;
+      oConditions  << " ";
+      }
+    oConditions << iConditions[i].first;
+    oConditions << " = '";
+    oConditions << iConditions[i].second;
+    oConditions << "')";
   return oConditions.str();
 }
 //------------------------------------------------------------------------------

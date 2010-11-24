@@ -41,7 +41,6 @@
 #include "vtkPolyDataMySQLContourReader.h"
 #include "vtkPolyDataMySQLMeshReader.h"
 #include "vtkPolyDataMySQLTrackReader.h"
-#include "QueryBuilderHelper.h"
 
 #include <sstream>
 #include <string>
@@ -174,6 +173,29 @@ int FindOneID(vtkMySQLDatabase *DatabaseConnector,
   return ID;
 }
 
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+int FindOneID(vtkMySQLDatabase *DatabaseConnector,
+              std::string TableName, std::string ColumnName,
+              std::vector<FieldWithValue> iConditions)
+{
+  std::string QueryString = SelectQueryStreamListConditions(TableName,
+                            ColumnName, iConditions,"AND");
+  int ID = -1;
+
+  std::vector<std::string> Results = ExecuteSelectQuery(
+    DatabaseConnector,QueryString);
+  if (Results.size() > 1)
+    {
+    std::cout<<"there is not an unique ID";
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
+    return ID;
+    }
+  ID = atoi( Results[0].c_str() );
+  return ID;
+}
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------

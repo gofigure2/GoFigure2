@@ -43,9 +43,11 @@
 #include "GoDBTraceInfoForVisu.h"
 #include "ContourMeshStructure.h"
 #include "TrackStructure.h"
+#include "QueryBuilderHelper.h"
 
 #include "QGoIOConfigure.h"
 
+typedef std::pair<std::string,std::string> FieldWithValue;
 /**
 \brief SELECT ColumnName from TableName ORDER BY OrderbyColumnName
 \param[in] DatabaseConnector connection to the database
@@ -112,6 +114,11 @@ QGOIO_EXPORT
 int FindOneID(vtkMySQLDatabase *DatabaseConnector,
               std::string TableName, std::string ColumnName,
               std::string field, std::string value);
+
+QGOIO_EXPORT
+int FindOneID(vtkMySQLDatabase *DatabaseConnector,
+              std::string TableName, std::string ColumnName,
+              std::vector<FieldWithValue> iConditions);
 
 //query: "SELECT ColumnName FROM TableName WHERE (field1 = value1
 //AND field2 = value2 AND field3 = value3);

@@ -37,6 +37,7 @@
 #include <vector>
 #include <string>
 
+typedef std::pair<std::string,std::string> FieldWithValue;
 /**
 \brief SELECT iWhat FROM iWhere WHERE iConditions
 \param[in] iWhat list of attributes separated by commas
@@ -86,6 +87,9 @@ std::string GetSelectedAttributes(std::vector<std::string> iListAttributes);
 */
 std::string GetConditions(std::string iAttribute,
                           std::vector< std::string > iListValues,
+                          std::string iConditionConnector);
+
+std::string GetConditions(std::vector<FieldWithValue> iConditions,
                           std::string iConditionConnector);
 
 std::string GetFirstPartQueryForTracesInfo(std::string iTraceName,std::string iCollectionName);
@@ -144,6 +148,11 @@ std::string SelectQueryStreamListConditions(std::string iTable,
                                             std::string iField,
                                             std::string iValue, 
                                             bool Distinct = false,
+                                            std::string iConditionConnector = "OR");
+
+std::string SelectQueryStreamListConditions(std::string iTable,
+                                            std::string iColumn, 
+                                            std::vector<FieldWithValue> iConditions,
                                             std::string iConditionConnector = "OR");
 
 //iselectquery union iselectquery where ijoinon IS NULL (with or without
