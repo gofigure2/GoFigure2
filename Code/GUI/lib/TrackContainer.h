@@ -130,72 +130,6 @@ public:
   /** \brief Destructor. */
   ~TrackContainer();
 
-  /**
-    \brief Update Visualization of the given TraceIDs
-    \tparam TContainer Container of TraceIDs
-    \param[in] iList input container of TraceIDs
-  */
-  /*template< class TList >
-  void UpdateVisualizationForGivenIDs(TList iList)
-  {
-    typename TList::iterator it = iList.begin();
-
-    while ( it != iList.end() )
-      {
-      MultiIndexContainerTraceIDIterator id_it =
-        m_Container.get< TraceID >().find( static_cast< unsigned int >( *it ) );
-
-      if ( id_it != m_Container.get< TraceID >().end() )
-        {
-        TrackStructure temp(*id_it);
-        temp.Highlighted = false;
-        temp.Visible = false;
-
-        vtkProperty *tproperty = vtkProperty::New();
-        tproperty->SetColor(id_it->rgba[0], id_it->rgba[1], id_it->rgba[2]);
-        tproperty->SetOpacity(id_it->rgba[3]);
-
-        vtkPolyData *nodes = id_it->Nodes;
-        if ( nodes )
-          {
-          temp.Visible = id_it->Visible;
-
-          std::vector< vtkActor * > actor =
-              this->m_ImageView->AddContour(nodes, tproperty);
-
-          temp.ActorXY = actor[0];
-          temp.ActorXZ = actor[1];
-          temp.ActorYZ = actor[2];
-          temp.ActorXYZ = actor[3];
-
-          typedef void ( QGoImageView3D::*ImageViewMember )(const int &, vtkActor *);
-          ImageViewMember f;
-
-          if ( temp.Visible )
-            {
-            f = &QGoImageView3D::AddActor;
-            }
-          else
-            {
-            f = &QGoImageView3D::RemoveActor;
-            }
-
-          for ( int i = 0; i < 4; i++ )
-            {
-            ( m_ImageView->*f )(i, actor[i]);
-            }
-          }
-        else
-          {
-          temp.Visible = false;
-          }
-
-        m_Container.get< TraceID >().replace(id_it, temp);
-        }
-      ++it;
-      }
-  }*/
-
   /** \brief Display all elements for a given time point
   *   \param[in] iT time point
   */
@@ -216,25 +150,18 @@ public:
                                     const bool & iVisible);
 
 
-  /**
+  /*
   \brief Remove all actors (elements) from the scene for a given time point
   \param[in] iT
   */
   // void RemoveActorsWithGivenTimePoint(const unsigned int & iT);
 
-  /**
+  /*
     \brief Add all actors (elements) from the scene for a given time point
   */
   // void AddActorsWithGivenTimePoint(const unsigned int & iT);
 
   //-------------------------------------------------------------------------
-
-  /**
-    \brief Update element visibility given it TraceId
-    \param[in] iId TraceID of the element to be modified
-    \return true if the element was present in the container.
-  */
-  bool UpdateElementVisibilityWithGivenTraceID(const unsigned int & iId);
 
   /**
     \brief Remove the element which TraceId = iId
@@ -336,26 +263,26 @@ public:
       }
     }
 
-  /*
+  /**
    * \brief Update the current element map then polydata
    * \param[in] iMeshes meshes to be added in the map
    */
   void UpdateCurrentElementMap( std::map< unsigned int, double* > iMeshes);
 
-  /*
+  /**
    * \brief Create new actors for the current polydata and update and visualize
    *  the current actors
    */
   void CreateCurrentTrackActors();
 
-  /*
+  /**
    * \brief Delete the points which are at the selected time point from the
    * current element.
    * \param[in] iTimeList List of the time points to be deleted.
    */
   void DeleteListFromCurrentElement( std::list<unsigned int> iTimeList );
 
-  /*
+  /**
    * \brief Define the appareance of a track (line/tubes, glyph/no glyph)
    * \param[in] iGlyph Do we want to see glyph(true)/no glyph(false)
    * \param[in] iTube Do we want to see a tube(true)/polyline(false)
@@ -363,7 +290,7 @@ public:
   void UpdateTracksReprensentation( bool iGlyph, bool iTube );
 
 
-  /*
+  /**
    * \brief Delete a list of tracks.
    * \param[in] iPointsToBeDeleted a list containing pairs.
    * Each pair is composed by a track ID and a list of the time points to be

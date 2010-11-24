@@ -128,61 +128,6 @@ UpdateCurrentElementFromVisu( std::vector< vtkActor * > iActors,
 //-------------------------------------------------------------------------
 bool
 TrackContainer::
-UpdateElementVisibilityWithGivenTraceID(const unsigned int & iId)
-{
-  MultiIndexContainerTraceIDIterator
-    it = m_Container.get< TraceID >().find(iId);
-
-  typedef void ( QGoImageView3D::*ImageViewMember )(const int &, vtkActor *);
-  ImageViewMember f;
-
-  if ( it != m_Container.get< TraceID >().end() )
-    {
-    if ( it->Visible )
-      {
-      f = &QGoImageView3D::RemoveActor;
-      }
-    else
-      {
-      f = &QGoImageView3D::AddActor;
-      }
-
-    if ( it->ActorXY )
-      {
-      ( m_ImageView->*f )(0, it->ActorXY);
-      }
-    if ( it->ActorXZ )
-      {
-      ( m_ImageView->*f )(1, it->ActorXZ);
-      }
-    if ( it->ActorYZ )
-      {
-      ( m_ImageView->*f )(2, it->ActorYZ);
-      }
-    if ( it->ActorXYZ )
-      {
-      ( m_ImageView->*f )(3, it->ActorXYZ);
-      }
-
-    it->SetActorVisibility( !it->Visible );
-
-    TrackStructure tempStructure(*it);
-    tempStructure.Visible = !it->Visible;
-
-    m_Container.get< TraceID >().replace(it, tempStructure);
-
-    m_ImageView->UpdateRenderWindows();
-    return true;
-    }
-
-  return false;
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-bool
-TrackContainer::
 DeleteElement(const unsigned int & iId)
 {
   MultiIndexContainerTraceIDIterator

@@ -467,7 +467,6 @@ UpdateElementVisibilityWithGivenTraceID(const unsigned int & iId)
 
   if ( it != m_Container.get< TraceID >().end() )
     {
-
     if ( it->Visible )
       {
       f = &QGoImageView3D::RemoveActor;
