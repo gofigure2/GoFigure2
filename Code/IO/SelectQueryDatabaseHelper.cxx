@@ -193,13 +193,17 @@ int FindOneID(vtkMySQLDatabase *DatabaseConnector,
     std::cout << std::endl;
     return ID;
     }
-  ID = atoi( Results[0].c_str() );
+
+  if (!Results.empty())
+    {
+    ID = atoi( Results[0].c_str() );
+    } 
   return ID;
 }
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-int FindOneID(vtkMySQLDatabase *DatabaseConnector,
+/*int FindOneID(vtkMySQLDatabase *DatabaseConnector,
               std::string TableName, std::string ColumnName,
               std::string ColumnNameOne, std::string valueOne,
               std::string ColumnNameTwo, std::string valueTwo,
@@ -248,7 +252,7 @@ int FindOneID(vtkMySQLDatabase *DatabaseConnector,
 
   return ID;
 }
-
+*/
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------

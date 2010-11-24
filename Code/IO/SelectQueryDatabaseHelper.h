@@ -122,12 +122,12 @@ int FindOneID(vtkMySQLDatabase *DatabaseConnector,
 
 //query: "SELECT ColumnName FROM TableName WHERE (field1 = value1
 //AND field2 = value2 AND field3 = value3);
-QGOIO_EXPORT
-int FindOneID(vtkMySQLDatabase *DatabaseConnector,
-              std::string TableName, std::string ColumnName,
-              std::string ColumnNameOne, std::string valueOne,
-              std::string ColumnNameTwo, std::string valueTwo,
-              std::string ColumnNameThree, std::string valueThree);
+//QGOIO_EXPORT
+//int FindOneID(vtkMySQLDatabase *DatabaseConnector,
+//              std::string TableName, std::string ColumnName,
+//              std::string ColumnNameOne, std::string valueOne,
+//              std::string ColumnNameTwo, std::string valueTwo,
+//              std::string ColumnNameThree, std::string valueThree);
 
 //query: "SELECT ColumnName FROM TableName WHERE (field1 = value1
 //AND field2 = value2);
