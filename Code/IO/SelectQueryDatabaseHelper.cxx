@@ -239,45 +239,6 @@ std::vector< std::string > ListSpecificValuesForOneColumn(
 {
   std::string QueryString = SelectQueryStreamCondition(TableName,ColumnName,field,value,ColumnNameOrder);
   return ExecuteSelectQuery(iDatabaseConnector,QueryString); 
-  /*std::vector< std::string > result;
-
-  vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
-  std::stringstream querystream;
-  querystream << "SELECT ";
-  querystream << ColumnName;
-  querystream << " FROM ";
-  querystream << TableName;
-  querystream << " WHERE ";
-  querystream << field;
-  querystream << " = '";
-  querystream << value;
-  querystream << "' ORDER BY ";
-  querystream << ColumnNameOrder;
-  querystream << " ASC;";
-
-  query->SetQuery( querystream.str().c_str() );
-  if ( !query->Execute() )
-    {
-    itkGenericExceptionMacro(
-      << "List of all values of ExpID query failed"
-      << query->GetLastErrorText() );
-    DatabaseConnector->Close();
-    DatabaseConnector->Delete();
-    query->Delete();
-    return result;
-    }
-
-  while ( query->NextRow() )
-    {
-    for ( int i = 0; i < query->GetNumberOfFields(); i++ )
-      {
-      result.push_back( query->DataValue(i).ToString() );
-      }
-    }
-
-  query->Delete();
-
-  return result;*/
 }
 
 //------------------------------------------------------------------------------
@@ -297,8 +258,6 @@ std::vector< std::string > ListSpecificValuesForOneColumn(
     VectorConditions[0] = DiffZero;
     Conditions = GetConditions(VectorConditions,"AND");
 
-    //QueryString = SelectQueryStreamListConditions(TableName,
-    //                        ColumnName, VectorConditions,"AND");
     Conditions = Conditions.substr(0,Conditions.size()-1);
     Conditions += " AND ";
     }
