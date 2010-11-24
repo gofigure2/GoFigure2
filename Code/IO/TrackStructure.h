@@ -186,4 +186,9 @@ bool TrackMerge( const TrackStructure& iT1,
                  const TrackStructure& iT2,
                  TrackStructure& oMerged );
 
+bool TrackSplit( const TrackStructure& iTrack,
+                 const unsigned int& iTime,
+                 TrackStructure& oT1,
+                 TrackStructure& oT2 );
+
 #endif

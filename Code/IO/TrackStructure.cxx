@@ -397,3 +397,43 @@ bool TrackMerge( const TrackStructure& iT1,
     }
 }
 //--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+bool TrackSplit( const TrackStructure& iTrack,
+                 const unsigned int& iTime,
+                 TrackStructure& oT1,
+                 TrackStructure& oT2 )
+{
+  TrackStructure::PointsMapConstIterator
+      it = iTrack.PointsMap.lower_bound( iTime );
+
+  if( it != iTrack.PointsMap.end() )
+    {
+    TrackStructure::PointsMapConstIterator begin = iTrack.PointsMap.begin();
+
+    oT1 = iTrack;
+
+    oT2.Highlighted = iTrack.Highlighted;
+    oT2.Visible = iTrack.Visible;
+    oT2.rgba[0] = iTrack.rgba[0];
+    oT2.rgba[1] = iTrack.rgba[1];
+    oT2.rgba[2] = iTrack.rgba[2];
+    oT2.rgba[3] = iTrack.rgba[3];
+
+    while( begin != it )
+      {
+      oT1.PointsMap[ begin->first ] = begin->second;
+      ++begin;
+      }
+    while( begin != iTrack.PointsMap.end() )
+      {
+      oT2.PointsMap[ begin->first ] = begin->second;
+      ++begin;
+      }
+
+    return true;
+    }
+
+  return false;
+}
+//--------------------------------------------------------------------------
