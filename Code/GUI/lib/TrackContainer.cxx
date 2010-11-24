@@ -250,10 +250,10 @@ AddPointToCurrentElement( unsigned int iTime,
 
       CreateCurrentTrackActors();
 
-      emit CurrentTrackToSave();
+      //emit CurrentTrackToSave();
 
       // save in DB and insert current element
-      return pointInserted;
+      //return pointInserted;
       }
 
     if(iReconstructPolyData)
@@ -270,7 +270,7 @@ AddPointToCurrentElement( unsigned int iTime,
 //-------------------------------------------------------------------------
 bool
 TrackContainer::
-DeletePointFromCurrentElement( unsigned int iTime, bool iReconstructPolyData)
+DeletePointFromCurrentElement( unsigned int iTime, bool iReconstructPolyData )
 {
   //add the point in the map
   bool pointDeleted = this->m_CurrentElement.DeleteElement( iTime );
@@ -296,7 +296,7 @@ ReplacePointFromCurrentElement( unsigned int iTime, double* iPoint)
   // if sth has been deleted, insert the point and return true
   if(pointReplaced)
     {
-    return AddPointToCurrentElement(iTime,iPoint);
+    return AddPointToCurrentElement( iTime, iPoint, true );
     }
 
   return pointReplaced;
@@ -502,7 +502,7 @@ UpdateTracksReprensentation( bool iGlyph, bool iTube )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void
+/*void
 TrackContainer::
 DeleteListOfTracks(
     std::list< std::pair< unsigned int , std::list< unsigned int > > >
@@ -547,7 +547,7 @@ DeleteListOfTracks(
 
     ++trackIDIterator;
     }
-}
+}*/
 
 
 //-------------------------------------------------------------------------

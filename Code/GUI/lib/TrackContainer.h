@@ -196,7 +196,7 @@ public:
   */
   bool AddPointToCurrentElement( unsigned int iTime,
                                  double* iPoint,
-                                 bool iReconstructPolyData = true );
+                                 bool iReconstructPolyData );
 
   /**
     \brief Delete a point from the current track.
@@ -205,7 +205,7 @@ public:
     \return true: a point has been deleted, false: no point has been deleted
   */
   bool DeletePointFromCurrentElement( unsigned int iTime,
-                                     bool iReconstructPolyData = true);
+                                      bool iReconstructPolyData );
 
   /**
     \brief Replace a point from the current track.
@@ -295,10 +295,14 @@ public:
    * \param[in] iPointsToBeDeleted a list containing pairs.
    * Each pair is composed by a track ID and a list of the time points to be
    * deleted in this track ID.
+   *
+   * \todo Why does this method exist? \sa DeleteElement
+   * \todo Let's assume this method is useful, why not using a map or
+   * multi_map instead?
    */
-  void DeleteListOfTracks(
+  /*void DeleteListOfTracks(
       std::list< std::pair< unsigned int , std::list< unsigned int > > >
-                 iPointsToBeDeleted);
+                 iPointsToBeDeleted);*/
 
   /**
     \brief Delete a point from a track.
