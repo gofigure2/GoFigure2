@@ -175,4 +175,6 @@ public:
 
 };
 
+TrackStructure TrackMerge( const TrackStructure& iT1, const TrackStructure& iT2 );
+
 #endif

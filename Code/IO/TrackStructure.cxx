@@ -334,3 +334,64 @@ UpdateTracksRepresentation( bool iGlyph, bool iTube ) const
     apd->Delete();
     }
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+bool TrackMerge( const TrackStructure& iT1,
+                 const TrackStructure& iT2,
+                 TrackStructure& oMerged )
+{
+  unsigned int t_min1 = iT1.PointsMap.begin()->first;
+  unsigned int t_max1 = iT1.PointsMap.rbegin()->first;
+
+  unsigned int t_min2 = iT2.PointsMap.begin()->first;
+  unsigned int t_max2 = iT2.PointsMap.rbegin()->first;
+
+  bool min1 = ( t_min1 <= t_min2 );
+  bool min2 = ( t_min2 <= t_min1 );
+
+  bool max1 = ( t_max2 <= t_max1 );
+  bool max2 = ( t_max1 <= t_max2 );
+
+  if( ( min1 && max1 ) || ( min2 && max2 ) )
+    {
+    std::cout << "one track is totally included into the other one" <<std::endl;
+    return false;
+    }
+  else
+    {
+    if( ( ( min1 && max2 ) && ( t_min2 < t_max1 ) ) ||
+        ( ( min2 && max1 ) && ( t_min1 < t_max2 ) ) )
+      {
+      std::cout << "these two tracks overlap" << std::endl;
+      return false;
+      }
+    else
+      {
+      std::cout << "optimal case" <<std::endl;
+
+      TrackStructure::PointsMapConstIterator p_start, p_end;
+      if( min1 )
+        {
+        oMerged.PointsMap = iT1.PointsMap;
+        p_start = iT2.PointsMap.begin();
+        p_end = iT2.PointsMap.end();
+        }
+      else
+        {
+        oMerged.PointsMap = iT2.PointsMap;
+        p_start = iT1.PointsMap.begin();
+        p_end = iT1.PointsMap.end();
+        }
+
+      // here the code can be optimized!!!
+      while( p_start != p_end )
+        {
+        oMerged.PointsMap[p_start->first] = p_start->second;
+        ++p_start;
+        }
+      return true;
+      }
+    }
+}
+//--------------------------------------------------------------------------
