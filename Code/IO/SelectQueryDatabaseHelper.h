@@ -51,7 +51,7 @@
 \param[in] DatabaseConnector connection to the database
 \param[in] ColumnName name of the field in the database
 \param[in] TableName name of the database table
-\param{in] orderByColumn sorting
+\param{in] OrderByColumnName sorting
 \return all the values for the column sorted or not
 */
 QGOIO_EXPORT
@@ -60,13 +60,21 @@ std::vector< std::string > ListAllValuesForOneColumn(
   std::string ColumnName, std::string TableName,
   std::string OrderByColumnName = "");
 
-//query: "SELECT ColumnNameOne,ColumnNameTwo FROM TableName ORDER BY
-//ColumnName ASC"
+/**
+\brief SELECT ColumnNameOne,ColumnNameTwo FROM TableName ORDER BY
+ColumnName ASC
+\param[in] DatabaseConnector connection to the database
+\param[in] ColumnNameOne first value of the pair
+\param[in] ColumnNameTwo second value of the pair
+\param[in] TableName name of the database table
+\param{in] OrderByColumnName sorting
+\return all the values sorted by OrderByColumnName in a vector of pair 
+*/
 QGOIO_EXPORT
 std::vector< std::pair< std::string, std::string > >
 VectorTwoColumnsFromTable(vtkMySQLDatabase *DatabaseConnector,
                           std::string ColumnNameOne, std::string ColumnNameTwo,
-                          std::string TableName, std::string ColumnNameOrder);
+                          std::string TableName, std::string OrderByColumnName);
 
 /**
 \brief query: "SELECT ColumnName1, ColumnName2 FROM TableName"

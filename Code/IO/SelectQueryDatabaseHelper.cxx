@@ -104,7 +104,7 @@ std::map< std::string, std::string > MapTwoColumnsFromTable(
 std::vector< std::pair< std::string, std::string > >
 VectorTwoColumnsFromTable(vtkMySQLDatabase *DatabaseConnector,
                           std::string ColumnNameOne, std::string ColumnNameTwo,
-                          std::string TableName, std::string ColumnNameOrder)
+                          std::string TableName, std::string OrderByColumnName)
 {
   std::vector< std::pair< std::string, std::string > > result;
 
@@ -112,20 +112,8 @@ VectorTwoColumnsFromTable(vtkMySQLDatabase *DatabaseConnector,
   ColumnNames[0] = ColumnNameOne;
   ColumnNames[1] = ColumnNameTwo;
   std::string QueryString = SelectQueryStream(TableName, ColumnNames,
-                              ColumnNameOrder);
+                              OrderByColumnName);
   vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
- /* std::stringstream querystream;
-  querystream << "SELECT ";
-  querystream << ColumnNameOne;
-  querystream << ",";
-  querystream << ColumnNameTwo;
-  querystream << " FROM ";
-  querystream << TableName;
-  querystream << " ORDER BY ";
-  querystream << ColumnNameOrder;
-  querystream << " ASC;";
-
-  query->SetQuery( querystream.str().c_str() );*/
   query->SetQuery(QueryString.c_str());
   if ( !query->Execute() )
     {
