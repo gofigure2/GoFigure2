@@ -280,7 +280,7 @@ public:
    * current element.
    * \param[in] iTimeList List of the time points to be deleted.
    */
-  void DeleteListFromCurrentElement( std::list<unsigned int> iTimeList );
+  void DeleteListFromCurrentElement( const std::list<unsigned int>& iTimeList );
 
   /**
    * \brief Define the appareance of a track (line/tubes, glyph/no glyph)
@@ -306,12 +306,15 @@ public:
 
   /**
     \brief Delete a point from a track.
-    \param[in] iTrackStructure trackstructure which will be modified
+    \param[in] iIterator trackstructure which will be modified
     \param[in] iTime time point to clear
     \param[in] iReconstructPolyData should we reconstruct the polydata
     \return true: a point has been deleted, false: no point has been deleted
   */
-  bool DeletePointFromElement( MultiIndexContainerTraceIDIterator iTrackStructureIterator, int iTime, bool iReconstructPolyData );
+  bool DeletePointFromElement(
+    MultiIndexContainerTraceIDIterator iIterator,
+    unsigned int iTime,
+    bool iReconstructPolyData );
 
   /**
     \brief Add traces (collections of contours / meshes) to a track, given their
@@ -331,7 +334,8 @@ public:
   \param[in] iListCenterBoundingBox list of the center of the bounding boxes for the meshes belonging
   to this track
   */
-  void UpdatePointsForATrack(unsigned int iTrackID, std::list< double*> iListCenterBoundingBoxes);
+  void UpdatePointsForATrack(unsigned int iTrackID,
+                             std::list< double*> iListCenterBoundingBoxes);
 
   /**
   \brief Update highlighting property of one element given one actor.

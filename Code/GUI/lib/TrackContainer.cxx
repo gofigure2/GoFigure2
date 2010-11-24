@@ -456,19 +456,21 @@ CreateCurrentTrackActors()
 //-------------------------------------------------------------------------
 void
 TrackContainer::
-DeleteListFromCurrentElement( std::list<unsigned int> iTimeList )
+DeleteListFromCurrentElement( const std::list<unsigned int>& iTimeList )
 {
-  std::list<unsigned int>::iterator begin = iTimeList.begin();
-  std::list<unsigned int>::iterator end = iTimeList.end();
+  std::list<unsigned int>::const_iterator begin = iTimeList.begin();
+  std::list<unsigned int>::const_iterator end = iTimeList.end();
+
+  bool succeed = true;
 
   while( begin != end )
     {
-    bool succeed = DeletePointFromCurrentElement( *begin,
-                                                   false ); // update the polydata
+    succeed = DeletePointFromCurrentElement( *begin,
+                                             false ); // update the polydata
 
     if(!succeed)
       {
-      std::cout << "Time point: " << *begin << " can't be deleted" << std::endl;
+      qDebug() << "Time point: " << *begin << " can't be deleted";
       }
 
     ++begin;
@@ -553,11 +555,12 @@ DeleteListOfTracks(
 //-------------------------------------------------------------------------
 bool
 TrackContainer::
-DeletePointFromElement( MultiIndexContainerTraceIDIterator iTrackStructureIterator,
-                        int iTime, bool iReconstructPolyData )
+DeletePointFromElement( MultiIndexContainerTraceIDIterator iIterator,
+                        unsigned int iTime,
+                       bool iReconstructPolyData )
 {
   // Create temp structure
-  TrackStructure tempStructure(*iTrackStructureIterator);
+  TrackStructure tempStructure(*iIterator);
 
   //add the point in the map
   bool pointDeleted = tempStructure.DeleteElement( iTime );
@@ -569,7 +572,7 @@ DeletePointFromElement( MultiIndexContainerTraceIDIterator iTrackStructureIterat
     }
 
   // Replace
-  m_Container.get< TraceID >().replace(iTrackStructureIterator, tempStructure);
+  m_Container.get< TraceID >().replace(iIterator, tempStructure);
 
   return pointDeleted;
 }

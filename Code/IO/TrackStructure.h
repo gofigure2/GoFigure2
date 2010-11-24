@@ -117,7 +117,7 @@ public:
    * is already a point associated to this time point). If you want to override
    * this point, call ReplaceElement(int iTime, double* iPoint) instead.
    */
-  bool InsertElement(int iTime, double* iPoint);
+  bool InsertElement(const unsigned int& iTime, double* iPoint);
 
   /**
    * \brief Delete the point at the current time point.
@@ -125,7 +125,7 @@ public:
    * \return true is element has been deleted, false if there where no point at
    * the specified time point.
    */
-  bool DeleteElement(int iTime);
+  bool DeleteElement(const unsigned int& iTime);
 
   /**
    * \brief Replace the point at the current time point.
@@ -135,7 +135,7 @@ public:
    * specified time point. If you want to add this point, call
    * InsertElement(int iTime, double* iPoint) instead.
    */
-  bool ReplaceElement(int iTime, double* iPoint);
+  bool ReplaceElement(const unsigned int& iTime, double* iPoint);
 
   void ReleaseData() const;
 

@@ -158,7 +158,7 @@ TrackStructure::
 //--------------------------------------------------------------------------
 bool
 TrackStructure::
-InsertElement(int iTime, double* iPoint)
+InsertElement(const unsigned int& iTime, double* iPoint)
 {
   // check if there is something at the iTime time point
   PointsMapIterator pointsMapIterator = this->PointsMap.find(iTime);
@@ -181,7 +181,7 @@ InsertElement(int iTime, double* iPoint)
 //--------------------------------------------------------------------------
 bool
 TrackStructure::
-DeleteElement(int iTime)
+DeleteElement(const unsigned int& iTime)
 {
   // check if there is something at the iTime time point
   PointsMapIterator pointsMapIterator = this->PointsMap.find(iTime);
@@ -206,7 +206,7 @@ DeleteElement(int iTime)
 //--------------------------------------------------------------------------
 bool
 TrackStructure::
-ReplaceElement(int iTime, double* iPoint)
+ReplaceElement(const unsigned int& iTime, double* iPoint)
 {
   // delete the existing element
   bool deleteElement = DeleteElement(iTime);
