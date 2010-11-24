@@ -196,8 +196,12 @@ void GoDBMeshRow::SaveInDBTotalIntensityPerChannel(
   std::map< std::string, int >::iterator iter = iNameChannelWithValues.begin();
   while ( iter != iNameChannelWithValues.end() )
     {
-    int ChannelID = FindOneID( DatabaseConnector, "channel", "ChannelID", "Name",
-                               iter->first, "ImagingSessionID", this->GetMapValue("ImagingSessionID") );
+    std::vector<FieldWithValue> Conditions;
+    this->AddConditions("ImagingSessionID",Conditions);
+    FieldWithValue Name("Name",iter->first);
+    Conditions.push_back(Name);
+    int ChannelID = FindOneID( DatabaseConnector, "channel", "ChannelID", Conditions);
+
     GoDBIntensityRow NewIntensity;
     NewIntensity.SetField("ChannelID", ChannelID);
     NewIntensity.SetField("Value", iter->second);
