@@ -65,17 +65,18 @@ void GoDBCoordinateRow::InitializeMap()
 //-------------------------------------------------------------------------
 int GoDBCoordinateRow::DoesThisCoordinateExist(vtkMySQLDatabase *DatabaseConnector)
 {
-  return FindOneID( DatabaseConnector, "coordinate", "CoordID",
-                    "PCoord", this->GetMapValue("PCoord"),
-                    "RCoord", this->GetMapValue("RCoord"),
-                    "CCoord", this->GetMapValue("CCoord"),
-                    "XTileCoord", this->GetMapValue("XTileCoord"),
-                    "YTileCoord", this->GetMapValue("YTileCoord"),
-                    "ZTileCoord", this->GetMapValue("ZTileCoord"),
-                    "XCoord", this->GetMapValue("XCoord"),
-                    "YCoord", this->GetMapValue("YCoord"),
-                    "ZCoord", this->GetMapValue("ZCoord"),
-                    "TCoord", this->GetMapValue("TCoord") );
+  std::vector<FieldWithValue> Conditions;
+  this->AddConditions("PCoord",Conditions);
+  this->AddConditions("RCoord",Conditions);
+  this->AddConditions("CCoord",Conditions);
+  this->AddConditions("XTileCoord",Conditions);
+  this->AddConditions("YTileCoord",Conditions);
+  this->AddConditions("ZTileCoord",Conditions);
+  this->AddConditions("XCoord",Conditions);
+  this->AddConditions("YCoord",Conditions);
+  this->AddConditions("ZCoord",Conditions);
+  this->AddConditions("TCoord",Conditions);
+  return FindOneID( DatabaseConnector, "coordinate", "CoordID", Conditions);
 }
 
 //-------------------------------------------------------------------------

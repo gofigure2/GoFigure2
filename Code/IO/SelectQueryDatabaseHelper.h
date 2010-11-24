@@ -136,40 +136,6 @@ std::vector< std::string > FindSeveralIDs(
   vtkMySQLDatabase * iDatabaseConnector,std::string TableName, 
   std::string ColumnName, std::vector<FieldWithValue> iConditions);
 
-//query: "SELECT ColumnName FROM TableName WHERE (field1 = value1
-//AND field2 = value2);
-//std::vector< std::string > FindSeveralIDs(vtkMySQLDatabase *DatabaseConnector,
- //                                         std::string TableName, std::string ColumnName,
- //                                         std::string ColumnNameOne, std::string valueOne,
- //                                         std::string ColumnNameTwo, std::string valueTwo);
-
-//query: "SELECT ColumnName FROM TableName WHERE (field1 = value1
-//AND field2 = value2 AND field3 = value3 AND field4 = value4);
-QGOIO_EXPORT
-int FindOneID(vtkMySQLDatabase *DatabaseConnector,
-              std::string TableName, std::string ColumnName,
-              std::string ColumnNameOne, std::string valueOne,
-              std::string ColumnNameTwo, std::string valueTwo,
-              std::string ColumnNameThree, std::string valueThree,
-              std::string ColumnNameFour, std::string valueFour,
-              std::string ColumnNameFive, std::string valueFive);
-
-//query: "SELECT ColumnName FROM TableName WHERE (field1 = value1
-//AND field2 = value2 AND field3 = value3 AND field4 = value4);
-QGOIO_EXPORT
-int FindOneID(vtkMySQLDatabase *DatabaseConnector,
-              std::string TableName, std::string ColumnName,
-              std::string ColumnNameOne, std::string valueOne,
-              std::string ColumnNameTwo, std::string valueTwo,
-              std::string ColumnNameThree, std::string valueThree,
-              std::string ColumnNameFour, std::string valueFour,
-              std::string ColumnNameFive, std::string valueFive,
-              std::string ColumnNameSix, std::string valueSix,
-              std::string ColumnNameSeven, std::string valueSeven,
-              std::string ColumnNameEight, std::string valueEight,
-              std::string ColumnNameNine, std::string valueNine,
-              std::string ColumnNameTen, std::string valueTen);
-
 //query: "SELECT ColumnName FROM TableName WHERE field = value"
 //query: "SELECT ColumnName FROM TableName" if field == ""
 QGOIO_EXPORT

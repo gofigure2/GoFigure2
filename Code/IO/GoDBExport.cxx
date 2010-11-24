@@ -181,7 +181,8 @@ void GoDBExport::UpdateVectorMeshIDsForExportContours()
 void GoDBExport::UpdateVectorMeshIDsForExportMeshes()
 {
   std::vector<FieldWithValue> Conditions(2);
-  FieldWithValue ImgSession = {"ImagingSessionID",ConvertToString< int >(this->m_ImagingSessionID),"="};
+  FieldWithValue ImgSession = {"ImagingSessionID",
+    ConvertToString< int >(this->m_ImagingSessionID),"="};
   FieldWithValue Points = {"Points","0","<>"};
   Conditions[0] = ImgSession;
   Conditions[1] = Points;
