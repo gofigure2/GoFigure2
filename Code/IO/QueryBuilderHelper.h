@@ -36,6 +36,7 @@
 
 #include <vector>
 #include <string>
+#include <list>
 
 struct FieldWithValue
   {
@@ -90,9 +91,30 @@ std::string GetSelectedAttributes(std::vector<std::string> iListAttributes);
 \param[in] iConditionConnector AND/OR 
 \return the string corresponding to the query part
 */
-std::string GetConditions(std::string iAttribute,
-                          std::vector< std::string > iListValues,
-                          std::string iConditionConnector);
+template< typename T >
+std::string GetConditions(std::string iField,
+                          std::vector<T> iVectorValues,
+                          std::string iConditionConnector)
+{
+  std::stringstream oConditions;
+  oConditions << "(";
+  unsigned int i;
+    for ( i = 0; i < iVectorValues.size() - 1; i++ )
+      {
+      oConditions << iField;
+      oConditions << " = '";
+      oConditions << iVectorValues[i];
+      oConditions << "' ";
+      oConditions << iConditionConnector;
+      oConditions  << " ";
+      }
+    oConditions << iField;
+    oConditions << " = '";
+    oConditions << iVectorValues[i];
+    oConditions << "')";
+
+  return oConditions.str();
+}
 
 std::string GetConditions(std::vector<FieldWithValue> iConditions,
                           std::string iConditionConnector);
@@ -204,6 +226,12 @@ std::string SelectQueryStreamListConditions(std::string iTable,
                                             std::vector<FieldWithValue> iConditions,
                                             std::string iConditionConnector = "OR",
                                             bool Distinct = false);
+
+std::vector< std::string > ListUnsgIntToVectorString(std::list< unsigned int > iList);
+
+std::list< unsigned int > VectorStringToUnsgInt(std::vector< std::string > iVector);
+
+std::vector< std::string > VectorUnsgIntToVectorString(std::vector<unsigned int> iVector);
 
 //iselectquery union iselectquery where ijoinon IS NULL (with or without
 // brackets in the

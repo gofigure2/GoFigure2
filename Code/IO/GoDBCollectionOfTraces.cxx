@@ -335,7 +335,7 @@ int GoDBCollectionOfTraces::GetCoordMinID(vtkMySQLDatabase *iDatabaseConnector,
     {
     //Get the min of the traces:
     std::vector< std::string > VectorCollectionOfTraces =
-      this->ListUnsgIntToVectorString(ListCollectionOfTraces);
+      ListUnsgIntToVectorString(ListCollectionOfTraces);
     GoDBCoordinateRow TracesCoordMin = this->GetCollectionOfTracesCoordMin(
       iDatabaseConnector, VectorCollectionOfTraces);
     return TracesCoordMin.SaveInDB(iDatabaseConnector);
@@ -363,7 +363,7 @@ int GoDBCollectionOfTraces::GetCoordMaxID(vtkMySQLDatabase *iDatabaseConnector,
     {
     //Get the max of the traces:
     std::vector< std::string > VectorCollectionOfTraces =
-      this->ListUnsgIntToVectorString(ListCollectionOfTraces);
+      ListUnsgIntToVectorString(ListCollectionOfTraces);
     GoDBCoordinateRow TracesCoordMax = this->GetCollectionOfTracesCoordMax(
       iDatabaseConnector, VectorCollectionOfTraces);
     return TracesCoordMax.SaveInDB(iDatabaseConnector);
@@ -699,13 +699,13 @@ std::list< unsigned int > GoDBCollectionOfTraces::GetListCollectionIDs(
       iDatabaseConnector, this->m_TracesName, this->m_CollectionIDName,
       this->m_TracesIDName, VectorValues, true, true);
     }
-  return this->VectorStringToUnsgInt(VectorCollectionIDs);
+  return VectorStringToUnsgInt(VectorCollectionIDs);
 }
 
 //-------------------------------------------------------------------------
 
 //------------------------------------------------------------------------
-std::vector< std::string > GoDBCollectionOfTraces::ListUnsgIntToVectorString(std::list< unsigned int > iList)
+/*std::vector< std::string > GoDBCollectionOfTraces::ListUnsgIntToVectorString(std::list< unsigned int > iList)
 {
   std::list< unsigned int >::iterator iter = iList.begin();
   std::vector< std::string >          oVector;
@@ -733,7 +733,7 @@ std::list< unsigned int > GoDBCollectionOfTraces::VectorStringToUnsgInt(std::vec
     iter++;
     }
   return oList;
-}
+}*/
 
 //-------------------------------------------------------------------------
 
@@ -742,7 +742,7 @@ std::list< unsigned int > GoDBCollectionOfTraces::GetListTracesIDWithNoPoints(
   std::list< unsigned int > iListTracesIDs, vtkMySQLDatabase *iDatabaseConnector)
 {
   std::vector< std::string > VectorTracesIDs =
-    this->ListUnsgIntToVectorString(iListTracesIDs);
+    ListUnsgIntToVectorString(iListTracesIDs);
 
   if( !VectorTracesIDs.empty() )
     {
@@ -767,5 +767,5 @@ std::list< unsigned int > GoDBCollectionOfTraces::GetLastCreatedTracesIDs(
     "imagingsessionid", ConvertToString< unsigned int >(this->m_ImgSessionID),
     false, ConvertToString< int >(iNumberOfTraces) );
 
-  return this->VectorStringToUnsgInt(VectorTracesIDs);
+  return VectorStringToUnsgInt(VectorTracesIDs);
 }

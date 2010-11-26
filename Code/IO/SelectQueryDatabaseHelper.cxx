@@ -44,13 +44,14 @@
 
 #include <sstream>
 #include <string>
+#include <algorithm>
 
 std::vector< std::string > ListAllValuesForOneColumn(vtkMySQLDatabase *DatabaseConnector,
                                                      std::string ColumnName, std::string TableName,
                                                      std::string OrderByColumnName)
 {
   std::string QueryString = SelectQueryStream(TableName, ColumnName,OrderByColumnName);
-  return ExecuteSelectQuery(DatabaseConnector,QueryString);
+  return ExecuteSelectQuery<std::vector<std::string> > (DatabaseConnector,QueryString);
 }
 
 //------------------------------------------------------------------------------
@@ -146,7 +147,7 @@ std::vector< std::string > ListSpecificValuesForRow(
   std::string value)
 {
   std::string QueryString = SelectQueryStreamCondition(TableName,"*",field,value);
-  return ExecuteSelectQuery(DatabaseConnector,QueryString);
+  return ExecuteSelectQuery<std::vector<std::string> >(DatabaseConnector,QueryString);
 }
 
 //------------------------------------------------------------------------------
@@ -160,7 +161,7 @@ int FindOneID(vtkMySQLDatabase *DatabaseConnector,
 
   std::string QueryString = 
     SelectQueryStreamCondition(TableName,ColumnName,field,value);
-  std::vector<std::string> Results = ExecuteSelectQuery(
+  std::vector<std::string> Results = ExecuteSelectQuery <std::vector<std::string> >(
     DatabaseConnector,QueryString);
   if (Results.size() > 1)
     {
@@ -184,12 +185,13 @@ int FindOneID(vtkMySQLDatabase *DatabaseConnector,
                             ColumnName, iConditions,"AND");
   int ID = -1;
 
-  std::vector<std::string> Results = ExecuteSelectQuery(
+  std::vector<int> Results = ExecuteSelectQuery<std::vector<int> >(
     DatabaseConnector,QueryString);
   
   if (!Results.empty())
     {
-    ID = atoi( Results[0].c_str() );
+    //ID = atoi( Results[0].c_str() );
+    ID = Results[0];
     } 
   return ID;
 }
@@ -202,7 +204,7 @@ std::vector< std::string > FindSeveralIDs(vtkMySQLDatabase * iDatabaseConnector,
   std::string QueryString = SelectQueryStreamListConditions(TableName,
                             ColumnName, iConditions,"AND");
  
-  return ExecuteSelectQuery(iDatabaseConnector,QueryString);
+  return ExecuteSelectQuery<std::vector<std::string> >(iDatabaseConnector,QueryString);
 }
 //------------------------------------------------------------------------------
 
@@ -224,7 +226,7 @@ std::vector< std::string > ListSpecificValuesForOneColumn(
   std::string QueryString = SelectQueryStreamListConditions(TableName,
                             ColumnName, VectorConditions,"AND");
 
-  return ExecuteSelectQuery(iDatabaseConnector,QueryString);
+  return ExecuteSelectQuery<std::vector<std::string> >(iDatabaseConnector,QueryString);
 }
 
 //------------------------------------------------------------------------------
@@ -238,7 +240,7 @@ std::vector< std::string > ListSpecificValuesForOneColumn(
   std::string field, std::string value, std::string ColumnNameOrder)
 {
   std::string QueryString = SelectQueryStreamCondition(TableName,ColumnName,field,value,ColumnNameOrder);
-  return ExecuteSelectQuery(iDatabaseConnector,QueryString); 
+  return ExecuteSelectQuery<std::vector<std::string> >(iDatabaseConnector,QueryString); 
 }
 
 //------------------------------------------------------------------------------
@@ -268,19 +270,40 @@ std::vector< std::string > ListSpecificValuesForOneColumn(
     Conditions += ")";
     }
   std::string QueryString = SelectQueryStreamCondition(TableName, ColumnName, Conditions,Distinct);
-  return ExecuteSelectQuery(iDatabaseConnector,QueryString); 
+  return ExecuteSelectQuery<std::vector<std::string> >(iDatabaseConnector,QueryString); 
 }
 
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 std::list< unsigned int > ListSpecificValuesForOneColumn(
-  vtkMySQLDatabase *DatabaseConnector,
+  vtkMySQLDatabase *iDatabaseConnector,
   std::string TableName, std::string ColumnName,
-  std::string field, std::vector< unsigned int > ListValues,
+  std::string field, std::vector< unsigned int > VectorValues,
   bool Distinct, bool ExcludeZero)
 {
-  std::list< unsigned int > result;
+  std::string Conditions;
+  if (ExcludeZero)
+    {
+    std::vector<FieldWithValue> VectorConditions(1);
+    FieldWithValue DiffZero = {ColumnName,"0", "<>"};
+    VectorConditions[0] = DiffZero;
+    Conditions = GetConditions(VectorConditions,"AND");
+
+    Conditions = Conditions.substr(0,Conditions.size()-1);
+    Conditions += " AND ";
+    }
+  
+  Conditions += GetConditions(field,VectorValues,"OR");
+  if (ExcludeZero)
+    {
+    Conditions += ")";
+    }
+  std::string QueryString = SelectQueryStreamCondition(TableName, 
+    ColumnName, Conditions,Distinct);
+
+  return ExecuteSelectQuery<std::list<unsigned int> >(iDatabaseConnector,QueryString); 
+  /*std::list< unsigned int > result;
 
   vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
   std::stringstream querystream;
@@ -340,7 +363,7 @@ std::list< unsigned int > ListSpecificValuesForOneColumn(
 
   query->Delete();
 
-  return result;
+  return result;*/
 }
 
 //------------------------------------------------------------------------------
@@ -1496,7 +1519,7 @@ std::list< unsigned int > GetSpecificValuesEqualToZero(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::vector< std::string > ExecuteSelectQuery(vtkMySQLDatabase *iDatabaseConnector,
+/*std::vector< std::string > ExecuteSelectQuery(vtkMySQLDatabase *iDatabaseConnector,
                                               std::string iQuery)
 {
   vtkSQLQuery *query = iDatabaseConnector->GetQueryInstance();
@@ -1525,7 +1548,7 @@ std::vector< std::string > ExecuteSelectQuery(vtkMySQLDatabase *iDatabaseConnect
 
   return Results;
 }
-
+*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -1569,7 +1592,7 @@ std::vector< std::string > GetAllSelectedValuesFromTwoTables(
   //std::stringstream SelectQuery;
   //SelectQuery << SelectWithJoinNullIncluded(QueryStream.str(), iJoinCondition);
   //return ExecuteSelectQuery( iDatabaseConnector, SelectQuery.str() );
-  return ExecuteSelectQuery( iDatabaseConnector, QueryStream.str() );
+  return ExecuteSelectQuery<std::vector<std::string> >( iDatabaseConnector, QueryStream.str() );
 }
 
 //-------------------------------------------------------------------------
@@ -1593,7 +1616,7 @@ std::vector< std::string > GetOrderByWithLimit(vtkMySQLDatabase *iDatabaseConnec
     QueryStream << " DESC LIMIT ";
     }
   QueryStream << iNumberLimit;
-  return ExecuteSelectQuery( iDatabaseConnector, QueryStream.str() );
+  return ExecuteSelectQuery<std::vector<std::string> >( iDatabaseConnector, QueryStream.str() );
 }
 //------------------------------------------------------------------------------
 

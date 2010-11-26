@@ -44,6 +44,7 @@
 #include "ContourMeshStructure.h"
 #include "TrackStructure.h"
 #include "QueryBuilderHelper.h"
+#include "ConvertToStringHelper.h"
 
 #include "QGoIOConfigure.h"
 
@@ -185,9 +186,9 @@ std::vector< std::string > ListSpecificValuesForOneColumn(
 
 QGOIO_EXPORT
 std::list< unsigned int > ListSpecificValuesForOneColumn(
-  vtkMySQLDatabase *DatabaseConnector,
+  vtkMySQLDatabase *iDatabaseConnector,
   std::string TableName, std::string ColumnName,
-  std::string field, std::vector< unsigned int > ListValues,
+  std::string field, std::vector< unsigned int > VectorValues,
   bool Distinct = false, bool ExcludeZero = false);
 
 //query: "SELECT ColumnNameOne,ColumnName2 FROM TableName
@@ -362,8 +363,40 @@ std::list< unsigned int > GetSpecificValuesEqualToZero(
   std::vector< std::string > iVectorConditionFieldOne,
   std::string iFieldTwo);
 
-std::vector< std::string > ExecuteSelectQuery(vtkMySQLDatabase *iDatabaseConnector,
-                                              std::string iQuery);
+template <class TResultsQuery>
+TResultsQuery ExecuteSelectQuery(vtkMySQLDatabase *iDatabaseConnector,
+                                              std::string iQuery)
+{
+  vtkSQLQuery *query = iDatabaseConnector->GetQueryInstance();
+
+  TResultsQuery oResults;
+  typedef typename TResultsQuery::value_type ValueType;
+  query->SetQuery( iQuery.c_str() );
+  if ( !query->Execute() )
+    {
+    itkGenericExceptionMacro(
+      << "Execute select query failed"
+      << query->GetLastErrorText() );
+    iDatabaseConnector->Close();
+    iDatabaseConnector->Delete();
+    query->Delete();
+    return oResults;
+    }
+  while ( query->NextRow() )
+    {
+    for ( int k = 0; k < query->GetNumberOfFields(); k++ )
+      {
+      ValueType temp = ss_atoi<ValueType>(query->DataValue(k).ToString());
+      oResults.push_back( temp );
+      }
+    }
+
+  query->Delete();
+
+  return oResults;
+}
+
+
 
 std::vector< std::string > GetAllSelectedValuesFromTwoTables(
   vtkMySQLDatabase *iDatabaseConnector, std::string iTableOne, std::string iTableTwo,

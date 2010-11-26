@@ -32,6 +32,7 @@
 
 =========================================================================*/
 #include "QueryBuilderHelper.h"
+#include "ConvertToStringHelper.h"
 
 #include <sstream>
 
@@ -251,32 +252,6 @@ std::string AddOrderBy(std::string iAttribute,std::string iAscDesc)
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::string GetConditions(std::string iField,
-                          std::vector< std::string > iListValues,
-                          std::string iConditionConnector)
-{
-  std::stringstream oConditions;
-  oConditions << "(";
-  unsigned int i;
-    for ( i = 0; i < iListValues.size() - 1; i++ )
-      {
-      oConditions << iField;
-      oConditions << " = '";
-      oConditions << iListValues[i];
-      oConditions << "' ";
-      oConditions << iConditionConnector;
-      oConditions  << " ";
-      }
-    oConditions << iField;
-    oConditions << " = '";
-    oConditions << iListValues[i];
-    oConditions << "')";
-
-  return oConditions.str();
-}
-//------------------------------------------------------------------------------
-
-//------------------------------------------------------------------------------
 std::string GetConditions(std::vector<FieldWithValue> iConditions,
   std::string iConditionConnector)
 {
@@ -318,6 +293,52 @@ std::string GetSelectedAttributes(std::vector<std::string> iListAttributes)
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
+std::vector< std::string > ListUnsgIntToVectorString(std::list< unsigned int > iList)
+{
+  std::list< unsigned int >::iterator iter = iList.begin();
+  std::vector< std::string >          oVector;
+  while ( iter != iList.end() )
+    {
+    unsigned int temp = *iter;
+    oVector.push_back( ConvertToString< unsigned int >(temp) );
+    iter++;
+    }
+  return oVector;
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list< unsigned int > VectorStringToUnsgInt(std::vector< std::string > iVector)
+{
+  std::vector< std::string >::iterator iter = iVector.begin();
+  std::list< unsigned int >            oList;
+  while ( iter != iVector.end() )
+    {
+    std::string  temp = *iter;
+    unsigned int tempint = ss_atoi< unsigned int >(temp);
+    oList.push_back(tempint);
+    iter++;
+    }
+  return oList;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::vector< std::string > VectorUnsgIntToVectorString(
+  std::vector<unsigned int> iVector)
+{
+  std::vector< unsigned int >::iterator iter = iVector.begin();
+  std::vector< std::string >          oVector;
+  while ( iter != iVector.end() )
+    {
+    unsigned int temp = *iter;
+    oVector.push_back( ConvertToString< unsigned int >(temp) );
+    iter++;
+    }
+  return oVector;
+}
+
 /*std::string SelectWithJoinNullIncluded(std::string iSelectQuery,
                                        std::string iJoinOn,
                                        bool doublon)

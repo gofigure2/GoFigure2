@@ -404,8 +404,8 @@ protected:
   GetListNameWithColorDataFromResultsQuery(
     std::vector< std::vector< std::string > > iResultsQuery);
 
-  std::vector< std::string > ListUnsgIntToVectorString(std::list< unsigned int > iList);
+  //std::vector< std::string > ListUnsgIntToVectorString(std::list< unsigned int > iList);
 
-  std::list< unsigned int > VectorStringToUnsgInt(std::vector< std::string > iVector);
+  //std::list< unsigned int > VectorStringToUnsgInt(std::vector< std::string > iVector);
 };
 #endif
