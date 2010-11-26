@@ -43,186 +43,239 @@
 #include "GoDBTraceInfoForVisu.h"
 #include "ContourMeshStructure.h"
 #include "TrackStructure.h"
+#include "QueryBuilderHelper.h"
+#include "ConvertToStringHelper.h"
 
 #include "QGoIOConfigure.h"
 
+/**
+\brief SELECT ColumnName from TableName ORDER BY OrderbyColumnName
+\param[in] DatabaseConnector connection to the database
+\param[in] ColumnName name of the field in the database
+\param[in] TableName name of the database table
+\param{in] OrderByColumnName sorting
+\return all the values for the column sorted or not
+*/
 QGOIO_EXPORT
 std::vector< std::string > ListAllValuesForOneColumn(
   vtkMySQLDatabase *DatabaseConnector,
   std::string ColumnName, std::string TableName,
   std::string OrderByColumnName = "");
 
-//query: "SELECT ColumnNameOne,ColumnNameTwo FROM TableName ORDER BY
-//ColumnName ASC"
+/**
+\brief SELECT ColumnNameOne,ColumnNameTwo FROM TableName ORDER BY
+ColumnName ASC
+\param[in] DatabaseConnector connection to the database
+\param[in] ColumnNameOne first value of the pair
+\param[in] ColumnNameTwo second value of the pair
+\param[in] TableName name of the database table
+\param{in] OrderByColumnName sorting
+\return all the values sorted by OrderByColumnName in a vector of pair 
+*/
 QGOIO_EXPORT
 std::vector< std::pair< std::string, std::string > >
 VectorTwoColumnsFromTable(vtkMySQLDatabase *DatabaseConnector,
                           std::string ColumnNameOne, std::string ColumnNameTwo,
-                          std::string TableName, std::string ColumnNameOrder);
+                          std::string TableName, std::string OrderByColumnName);
 
-//query: "SELECT ColumnName1, ColumnName2 FROM TableName"
-//return map[Value from ColumnName1] = Value from ColumnName2
+/**
+\brief query: "SELECT ColumnName1, ColumnName2 FROM TableName"
+\param[in] DatabaseConnector connection to the database
+\param[in] iColumnNames vector[0] = ColumnName1, vector[1] = ColumnName2
+\param[in] iTableName name of the database table
+\param[in] iField field for the condition if there is one
+\param[in] iValue value of the condition if there is one
+\return map[Value from ColumnName1] = Value from ColumnName2
+*/
 QGOIO_EXPORT
 std::map< std::string, std::string > MapTwoColumnsFromTable(
-  vtkMySQLDatabase *DatabaseConnector, std::string ColumnNameOne,
-  std::string ColumnNameTwo, std::string TableName);
+  vtkMySQLDatabase *DatabaseConnector,std::vector<std::string> iColumnNames,
+  std::string iTableName, std::string iField = "", std::string iValue = "");
 
-//query: "SELECT ColumnName1, ColumnName2 FROM TableName
-//WHERE field = value"
-//return map[Value from ColumnName1] = Value from ColumnName2
-QGOIO_EXPORT
-std::map< std::string, std::string > MapTwoColumnsFromTable(
-  vtkMySQLDatabase *DatabaseConnector, std::string ColumnNameOne,
-  std::string ColumnNameTwo, std::string TableName,
-  std::string field, std::string value);
-
-//query: "SELECT * FROM TableName WHERE field = value"
+/**
+\brief SELECT * FROM TableName WHERE field = value
+*/
 //if field is a primary key, will return only the values for
 //one row
+//not used
 QGOIO_EXPORT
 std::vector< std::string > ListSpecificValuesForRow(
   vtkMySQLDatabase *DatabaseConnector,
   std::string TableName, std::string field, std::string value);
 
-//query: "SELECT ColumnName FROM TableName WHERE field = value"
+/**
+\brief SELECT ColumnName FROM TableName WHERE field = value
+\param[in] DatabaseConnector connection to the database
+\param[in] TableName name of the database table
+\param[in] ColumnName name of the field in the database
+\param[in] field field for the condition
+\param[in] value value of the condition
+\return only one ID 
+*/
 QGOIO_EXPORT
 int FindOneID(vtkMySQLDatabase *DatabaseConnector,
               std::string TableName, std::string ColumnName,
               std::string field, std::string value);
 
-//query: "SELECT ColumnName FROM TableName WHERE (field1 = value1
-//AND field2 = value2 AND field3 = value3);
+/**
+\overload 
+\param[in] iConditions vector of fields = values
+*/
 QGOIO_EXPORT
 int FindOneID(vtkMySQLDatabase *DatabaseConnector,
               std::string TableName, std::string ColumnName,
-              std::string ColumnNameOne, std::string valueOne,
-              std::string ColumnNameTwo, std::string valueTwo,
-              std::string ColumnNameThree, std::string valueThree);
+              std::vector<FieldWithValue> iConditions);
 
-//query: "SELECT ColumnName FROM TableName WHERE (field1 = value1
-//AND field2 = value2);
+/**
+\brief "SELECT ColumnName FROM TableName WHERE (field1 = value1
+AND field2 = value2...);
+\param[in] DatabaseConnector connection to the database
+\param[in] TableName name of the database table
+\param[in] ColumnName name of the field in the database
+\param[in] iConditions vector of fields = values
+\return all the values in ColumnName that fit the conditions
+*/
 QGOIO_EXPORT
-int FindOneID(vtkMySQLDatabase *DatabaseConnector,
-              std::string TableName, std::string ColumnName,
-              std::string ColumnNameOne, std::string valueOne,
-              std::string ColumnNameTwo, std::string valueTwo);
+std::vector< std::string > FindSeveralIDs(
+  vtkMySQLDatabase * iDatabaseConnector,std::string TableName, 
+  std::string ColumnName, std::vector<FieldWithValue> iConditions);
 
-//query: "SELECT ColumnName FROM TableName WHERE (field1 = value1
-//AND field2 = value2);
-std::vector< std::string > FindSeveralIDs(vtkMySQLDatabase *DatabaseConnector,
-                                          std::string TableName, std::string ColumnName,
-                                          std::string ColumnNameOne, std::string valueOne,
-                                          std::string ColumnNameTwo, std::string valueTwo);
-
-//query: "SELECT ColumnName FROM TableName WHERE (field1 = value1
-//AND field2 = value2 AND field3 = value3 AND field4 = value4);
-QGOIO_EXPORT
-int FindOneID(vtkMySQLDatabase *DatabaseConnector,
-              std::string TableName, std::string ColumnName,
-              std::string ColumnNameOne, std::string valueOne,
-              std::string ColumnNameTwo, std::string valueTwo,
-              std::string ColumnNameThree, std::string valueThree,
-              std::string ColumnNameFour, std::string valueFour,
-              std::string ColumnNameFive, std::string valueFive);
-
-//query: "SELECT ColumnName FROM TableName WHERE (field1 = value1
-//AND field2 = value2 AND field3 = value3 AND field4 = value4);
-QGOIO_EXPORT
-int FindOneID(vtkMySQLDatabase *DatabaseConnector,
-              std::string TableName, std::string ColumnName,
-              std::string ColumnNameOne, std::string valueOne,
-              std::string ColumnNameTwo, std::string valueTwo,
-              std::string ColumnNameThree, std::string valueThree,
-              std::string ColumnNameFour, std::string valueFour,
-              std::string ColumnNameFive, std::string valueFive,
-              std::string ColumnNameSix, std::string valueSix,
-              std::string ColumnNameSeven, std::string valueSeven,
-              std::string ColumnNameEight, std::string valueEight,
-              std::string ColumnNameNine, std::string valueNine,
-              std::string ColumnNameTen, std::string valueTen);
-
-//query: "SELECT ColumnName FROM TableName WHERE field = value"
-//query: "SELECT ColumnName FROM TableName" if field == ""
+/**
+\brief SELECT ColumnName FROM TableName WHERE field = value and 
+ColumnName <> 0 (if excludezero)
+\param[in] iDatabaseConnector connection to the database
+\param[in] TableName name of the database table
+\param[in] ColumnName name of the field in the database
+\param[in] field field for the condition
+\param[in] value value of the condition
+\param[in] distinct set to true if doublon are not allowed
+\param[in] ExcludeZero set to true if ColumnName has to be 
+different than 0
+\return all the values in ColumnName that fit the conditions
+*/
 QGOIO_EXPORT
 std::vector< std::string > ListSpecificValuesForOneColumn(
-  vtkMySQLDatabase *DatabaseConnector,
+  vtkMySQLDatabase *iDatabaseConnector,
   std::string TableName, std::string ColumnName,
   std::string field, std::string value, bool Distinct = false,
   bool ExcludeZero = false);
 
-//query: "SELECT ColumnName FROM TableName WHERE field = value
-//ORDER BY ColumnNameOrder ASC"
+/**
+\brief SELECT ColumnName FROM TableName WHERE field = value
+ORDER BY ColumnNameOrder ASC
+\overload
+\param[in] ColumnNameOrder name of the column for sorting
+*/
 QGOIO_EXPORT
 std::vector< std::string > ListSpecificValuesForOneColumn(
-  vtkMySQLDatabase *DatabaseConnector,
+  vtkMySQLDatabase *iDatabaseConnector,
   std::string TableName, std::string ColumnName,
   std::string field, std::string value, std::string ColumnNameOrder);
 
-//query: "SELECT ColumnName FROM TableName WHERE (field = value1
-//or field = value2....)"
+/**
+\brief SELECT ColumnName FROM TableName WHERE (field = value1
+or field = value2 AND ColumnName <> 0 (if excludezero))
+\overload
+*/
 QGOIO_EXPORT
 std::vector< std::string > ListSpecificValuesForOneColumn(
-  vtkMySQLDatabase *DatabaseConnector,
+  vtkMySQLDatabase *iDatabaseConnector,
   std::string TableName, std::string ColumnName,
   std::string field, std::vector< std::string > VectorValues,
   bool Distinct = false, bool ExcludeZero = false);
 
+/**
+\brief SELECT ColumnName FROM TableName WHERE (field = value1
+or field = value2 AND ColumnName <> 0 (if excludezero))
+\overload
+*/
 QGOIO_EXPORT
 std::list< unsigned int > ListSpecificValuesForOneColumn(
-  vtkMySQLDatabase *DatabaseConnector,
+  vtkMySQLDatabase *iDatabaseConnector,
   std::string TableName, std::string ColumnName,
-  std::string field, std::vector< unsigned int > ListValues,
+  std::string field, std::list< unsigned int > VectorValues,
   bool Distinct = false, bool ExcludeZero = false);
 
-//query: "SELECT ColumnNameOne,ColumnName2 FROM TableName
-//WHERE field = value ORDER BY ColumnNameOrder ASC"
+/**
+\brief SELECT ColumnNameOne,ColumnName2 FROM TableName
+WHERE field = value ORDER BY ColumnNameOrder ASC"
+\param[in] iDatabaseConnector connection to the database
+\param[in] TableName name of the database table
+\param[in] ColumnNameOne name of the first field in the database
+\param[in] ColumnNameTwo name of the second field in the database
+\param[in] field field for the condition
+\param[in] value value of the condition
+\param{in] OrderByColumnName sorting
+\return a vector of pair with the values of each Column
+*/
 QGOIO_EXPORT
 std::vector< std::pair< std::string, std::string > >
 ListSpecificValuesForTwoColumns(vtkMySQLDatabase *DatabaseConnector,
                                 std::string TableName, std::string ColumnNameOne, std::string ColumnNameTwo,
                                 std::string field, std::string value, std::string ColumnNameOrder);
 
-//query: "SELECT MAX(ColumnName) FROM TableName WHERE (field =
-//value1 or field = value2...."
+/**
+\brief SELECT MAX(ColumnName) FROM TableName WHERE (field =
+value1 or field = value2...."
+\param[in] DatabaseConnector connection to the database
+\param[in] TableName name of the database table
+\param[in] ColumnName name of the field in the database
+\param[in] field field for the condition
+\param[in] VectorValues values of the condition
+\return the max value
+*/
 QGOIO_EXPORT
 int MaxValueForOneColumnInTable(vtkMySQLDatabase *DatabaseConnector,
                                 std::string ColumnName, std::string TableName, std::string field,
                                 std::vector< std::string > VectorValues);
 
-//query: "SELECT MIN(ColumnName) FROM TableName WHERE (field =
-//value1 or field = value2...."
-QGOIO_EXPORT
-int MinValueForOneColumnInTable(vtkMySQLDatabase *DatabaseConnector,
-                                std::string ColumnName, std::string TableName, std::string field,
-                                std::vector< std::string > VectorValues);
-
-//query: "SELECT ColunmName FROM TableName WHERE field=value top 1"
-//return only the first value if several are selected
-QGOIO_EXPORT
-std::string ReturnOnlyOneValue(vtkMySQLDatabase *DatabaseConnector,
-                               std::string TableName, std::string ColumnName, std::string field,
-                               std::string value);
-
-//query: "SELECT LAST_INSERT_ID()"
-QGOIO_EXPORT
-int LastInsertID(std::string ServerName, std::string login,
-                 std::string Password, std::string DBName);
-
-//query: "SELECT MAX(ColumnName) FROM TableName"
+/**
+\brief SELECT MAX(ColumnName) FROM TableName
+\overload
+*/
 QGOIO_EXPORT
 int MaxValueForOneColumnInTable(
   vtkMySQLDatabase *DatabaseConnector,
   std::string ColumnName, std::string TableName);
 
-//query: "SELECT MAX(ColumnName) FROM TableName WHERE field = value;"
+/**
+\brief SELECT MAX(ColumnName) FROM TableName WHERE field = value
+\overload
+*/
 QGOIO_EXPORT
 int MaxValueForOneColumnInTable(vtkMySQLDatabase *DatabaseConnector,
                                 std::string ColumnName, std::string TableName, std::string field,
                                 std::string value);
 
-//query: "SELECT TableOne.ColumnOne, TableTwo.ColumnTwo FROM TableOne
-//JOIN TableTwo ON (TableOne.Foreignkey = TableTwo.PrimaryKey)
-//WHERE field = value;
+/**
+\brief SELECT MIN(ColumnName) FROM TableName WHERE (field =
+value1 or field = value2...."
+\param[in] DatabaseConnector connection to the database
+\param[in] TableName name of the database table
+\param[in] ColumnName name of the field in the database
+\param[in] field field for the condition
+\param[in] VectorValues values of the condition
+\return the minimum value
+*/
+QGOIO_EXPORT
+int MinValueForOneColumnInTable(vtkMySQLDatabase *DatabaseConnector,
+                                std::string ColumnName, std::string TableName, std::string field,
+                                std::vector< std::string > VectorValues);
+
+/**
+\brief SELECT ColunmName FROM TableName WHERE field=value limit 1
+\param[in] iDatabaseConnector connection to the database
+\param[in] TableName name of the database table
+\param[in] ColumnName name of the field in the database
+\param[in] field field for the condition
+\param[in] value value of the condition
+\return only one value if several are selected
+*/
+QGOIO_EXPORT
+std::string ReturnOnlyOneValue(vtkMySQLDatabase *DatabaseConnector,
+                               std::string TableName, std::string ColumnName, std::string field,
+                               std::string value);
+
 QGOIO_EXPORT
 std::vector< std::pair< int, std::string > > ListSpecificValuesForTwoColumnsAndTwoTables(
   vtkMySQLDatabase *DatabaseConnector, std::string TableOne, std::string ColumnOne,
@@ -242,13 +295,6 @@ void GetTracesInfoFromDBAndModifyContainer(
   vtkMySQLDatabase *DatabaseConnector, std::string TraceName,
   std::string CollectionName, unsigned int ImgSessionID,
   std::vector< int > iVectIDs = std::vector< int >() );
-
-QGOIO_EXPORT
-std::string GetFirstPartQueryForTracesInfo(std::string iTraceName,std::string iCollectionName);
-
-QGOIO_EXPORT
-std::string GetSecondPartQueryForTracesInfo(std::string TraceName,
-                                            std::vector<int> iVectIDs);
 
 QGOIO_EXPORT
 ContourMeshStructure GetTraceInfoFromDB(
@@ -278,20 +324,6 @@ std::vector< std::vector< std::string > > GetValuesFromSeveralTables(
   vtkMySQLDatabase *DatabaseConnector, std::string MainTable,
   std::vector< std::string > SelectFields, std::vector< std::string > WhereAndConditions,
   std::vector< std::string > JoinTablesOnTraceTable, bool Distinct);
-
-QGOIO_EXPORT
-std::string SelectQueryStream(std::string iTable, std::string iColumn, std::string iField,
-                              std::string iValue);
-
-QGOIO_EXPORT
-std::string SelectQueryStreamListConditions(std::string iTable,
-                                            std::string iColumn, std::string iField,
-                                            std::vector< std::string > iListValues, bool Distinct = false);
-
-QGOIO_EXPORT
-std::string SelectQueryStreamListConditions(std::string iTable,
-                                            std::vector< std::string > iListColumn, std::string iField,
-                                            std::vector< std::string > iListValues, bool Distinct = false);
 
 //query: SELECT where condition1 UNION SELECT where condition1 and condition2
 QGOIO_EXPORT
@@ -367,14 +399,64 @@ std::list< unsigned int > GetSpecificValuesEqualToZero(
   std::vector< std::string > iVectorConditionFieldOne,
   std::string iFieldTwo);
 
-std::vector< std::string > ExecuteSelectQuery(vtkMySQLDatabase *iDatabaseConnector,
-                                              std::string iQuery);
+template <class TResultsQuery>
+TResultsQuery ExecuteSelectQuery(vtkMySQLDatabase *iDatabaseConnector,
+                                              std::string iQuery)
+{
+  vtkSQLQuery *query = iDatabaseConnector->GetQueryInstance();
 
-//iselectquery union iselectquery where ijoinon IS NULL (with or without
-// brackets in the
-//where clause, it will work
-std::string SelectWithJoinNullIncluded(std::string iSelectQuery, std::string iJoinOn,
-                                       bool doublon = true);
+  TResultsQuery oResults;
+  typedef typename TResultsQuery::value_type ValueType;
+  query->SetQuery( iQuery.c_str() );
+  if ( !query->Execute() )
+    {
+    itkGenericExceptionMacro(
+      << "Execute select query failed"
+      << query->GetLastErrorText() );
+    iDatabaseConnector->Close();
+    iDatabaseConnector->Delete();
+    query->Delete();
+    return oResults;
+    }
+  while ( query->NextRow() )
+    {
+    for ( int k = 0; k < query->GetNumberOfFields(); k++ )
+      {
+      ValueType temp = ss_atoi<ValueType>(query->DataValue(k).ToString());
+      oResults.push_back( temp );
+      }
+    }
+
+  query->Delete();
+  return oResults;
+}
+
+template <class T>
+T ExecuteSelectQueryOneValue(vtkMySQLDatabase *iDatabaseConnector,
+                                              std::string iQuery)
+{
+  vtkSQLQuery *query = iDatabaseConnector->GetQueryInstance();
+  T oResults = ss_atoi<T>("-1");
+  query->SetQuery( iQuery.c_str() );
+  if ( !query->Execute() )
+    {
+    itkGenericExceptionMacro(
+      << "Execute select query failed"
+      << query->GetLastErrorText() );
+    iDatabaseConnector->Close();
+    iDatabaseConnector->Delete();
+    query->Delete();
+    return oResults;
+    }
+
+  if ( query->NextRow() )
+    {
+    oResults = ss_atoi<T>(query->DataValue(0).ToString() );
+    }
+
+  query->Delete();
+  return oResults;
+}
 
 std::vector< std::string > GetAllSelectedValuesFromTwoTables(
   vtkMySQLDatabase *iDatabaseConnector, std::string iTableOne, std::string iTableTwo,

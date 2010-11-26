@@ -492,9 +492,13 @@ int QGoCreateImgSessionPage::CreateImageCoordMin(vtkMySQLDatabase *DatabaseConne
 int QGoCreateImgSessionPage::FindChannelIDForImage(vtkMySQLDatabase *DatabaseConnector,
                                                    int ImagingSessionID, int ChannelNumber)
 {
-  return FindOneID( DatabaseConnector, "channel", "channelID",
-                    "ImagingSessionID", ConvertToString< int >(ImagingSessionID), "ChannelNumber",
-                    ConvertToString< int >(ChannelNumber) );
+  std::vector<FieldWithValue> Conditions(2);
+  FieldWithValue ImgSession ={"ImagingSessionID",ConvertToString< int >(ImagingSessionID),"="};
+  FieldWithValue Channel ={"ChannelNumber",ConvertToString< int >(ChannelNumber),"="};
+    Conditions[0] = ImgSession;
+    Conditions[1] = Channel;
+  
+  return FindOneID( DatabaseConnector, "channel", "channelID", Conditions);
 }
 
 //-------------------------------------------------------------------------

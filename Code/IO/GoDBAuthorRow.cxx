@@ -31,68 +31,55 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "GoDBCoordinateRow.h"
-#include "SelectQueryDatabaseHelper.h"
+#include "GoDBAuthorRow.h"
 #include "GoDBRecordSetHelper.h"
 
-GoDBCoordinateRow::GoDBCoordinateRow()
+GoDBAuthorRow::GoDBAuthorRow():GoDBRow()
 {
   this->InitializeMap();
-  this->m_TableName = "coordinate";
-  this->m_TableIDName = "CoordID";
 }
 
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void GoDBCoordinateRow::InitializeMap()
+void GoDBAuthorRow::InitializeMap()
 {
-  this->m_MapRow["CoordID"]    = ConvertToString< int >(0);
-  this->m_MapRow["PCoord"]     = ConvertToString< int >(0);
-  this->m_MapRow["RCoord"]     = ConvertToString< int >(0);
-  this->m_MapRow["CCoord"]     = ConvertToString< int >(0);
-  this->m_MapRow["XTileCoord"] = ConvertToString< int >(0);
-  this->m_MapRow["YTileCoord"] = ConvertToString< int >(0);
-  this->m_MapRow["ZTileCoord"] = ConvertToString< int >(0);
-  this->m_MapRow["XCoord"]     = ConvertToString< float >(0);
-  this->m_MapRow["YCoord"]     = ConvertToString< float >(0);
-  this->m_MapRow["ZCoord"]     = ConvertToString< float >(0);
-  this->m_MapRow["TCoord"]     = ConvertToString< float >(0);
+  this->m_TableName = "author";
+  this->m_TableIDName = "authorID";
+  this->m_MapRow["authorID"] = ConvertToString< int >(0);
+  this->m_MapRow["LastName"] = "";
+  this->m_MapRow["FirstName"] = ConvertToString< int >(0);
+  this->m_MapRow["MiddleName"] = "<none>";
 }
 
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int GoDBCoordinateRow::DoesThisCoordinateExist(vtkMySQLDatabase *DatabaseConnector)
+int GoDBAuthorRow::SaveInDB(vtkMySQLDatabase *DatabaseConnector)
+{
+  int AuthorID = this->DoesThisAuthorAlreadyExists(DatabaseConnector);
+
+  if ( AuthorID == -1 )
+    {
+    AuthorID = AddOnlyOneNewObjectInTable< GoDBAuthorRow >(
+      DatabaseConnector, "author", *this, "authorID");
+    }
+  return AuthorID;
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int GoDBAuthorRow::DoesThisAuthorAlreadyExists(
+  vtkMySQLDatabase *DatabaseConnector)
 {
   std::vector<FieldWithValue> Conditions;
-  this->AddConditions("PCoord",Conditions);
-  this->AddConditions("RCoord",Conditions);
-  this->AddConditions("CCoord",Conditions);
-  this->AddConditions("XTileCoord",Conditions);
-  this->AddConditions("YTileCoord",Conditions);
-  this->AddConditions("ZTileCoord",Conditions);
-  this->AddConditions("XCoord",Conditions);
-  this->AddConditions("YCoord",Conditions);
-  this->AddConditions("ZCoord",Conditions);
-  this->AddConditions("TCoord",Conditions);
-  return FindOneID( DatabaseConnector, "coordinate", "CoordID", Conditions);
+  this->AddConditions("FirstName",Conditions);
+  this->AddConditions("LastName",Conditions);
+  this->AddConditions("MiddleName",Conditions);
+  return FindOneID(DatabaseConnector, "author", "authorID",Conditions);
 }
 
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int GoDBCoordinateRow::SaveInDB(vtkMySQLDatabase *DatabaseConnector)
-{
-  int ID = this->DoesThisCoordinateExist(DatabaseConnector);
-
-  if ( ID == -1 )
-    {
-    return AddOnlyOneNewObjectInTable< GoDBCoordinateRow >(DatabaseConnector,
-                                                           "coordinate", *this, "CoordID");
-    }
-  else
-    {
-    return ID;
-    }
-}

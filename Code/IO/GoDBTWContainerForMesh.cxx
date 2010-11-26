@@ -295,9 +295,15 @@ void GoDBTWContainerForMesh::GetIntensityValuesForOneMesh(std::string iMeshID,
   std::vector< std::string > temp;
   for ( unsigned int i = 0; i < this->m_ChannelsInfo.size(); i++ )
     {
-    std::string ChannelID = this->m_ChannelsInfo.at(i).at(1);
+    std::string ChannelIDValue = this->m_ChannelsInfo.at(i).at(1);
+    std::vector<FieldWithValue> Conditions(2);
+    FieldWithValue MeshID = {"MeshID",iMeshID, "="};
+    FieldWithValue ChannelID = {"ChannelID",ChannelIDValue,"="};
+    Conditions[0] = MeshID;
+    Conditions[1] = ChannelID;
+
     int         ValueIntensity = FindOneID(iDatabaseConnector, "intensity",
-                                           "Value", "MeshID", iMeshID, "ChannelID", ChannelID);
+                                           "Value", Conditions);
     if ( ValueIntensity == -1 )
       {
       temp.push_back("");

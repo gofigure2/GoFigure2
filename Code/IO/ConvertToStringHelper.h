@@ -36,6 +36,8 @@
 
 #include <string>
 #include <sstream>
+#include <iostream>
+#include "boost/lexical_cast.hpp"
 
 template< typename T >
 std::string ConvertToString(const T & ToConvert)
@@ -46,13 +48,21 @@ std::string ConvertToString(const T & ToConvert)
   return st.str();
 }
 
-template< typename RT, typename T, typename Trait, typename Alloc >
-RT ss_atoi(const std::basic_string< T, Trait, Alloc > & the_string)
+template< typename T >
+T ss_atoi(const std::string & the_string)
 {
-  std::basic_istringstream< T, Trait, Alloc > temp_ss(the_string);
-  RT                                          num;
-  temp_ss >> num;
-  return num;
+  T temp;
+  try
+    {
+    temp = boost::lexical_cast< T >( the_string );
+    }
+  catch( boost::bad_lexical_cast& )
+    {
+    std::cout<<"Bad Conversion";
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
+    }
+  return temp;
 }
 
 #endif
