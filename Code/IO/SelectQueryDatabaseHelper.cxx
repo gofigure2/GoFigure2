@@ -422,50 +422,6 @@ int MinValueForOneColumnInTable(vtkMySQLDatabase *DatabaseConnector,
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-int LastInsertID(std::string ServerName, std::string login,
-                 std::string Password, std::string DBName)
-{
-  int               ID = -1;
-  vtkMySQLDatabase *DatabaseConnector = vtkMySQLDatabase::New();
-
-  DatabaseConnector->SetHostName( ServerName.c_str() );
-  DatabaseConnector->SetUser( login.c_str() );
-  DatabaseConnector->SetPassword( Password.c_str() );
-  DatabaseConnector->SetDatabaseName( DBName.c_str() );
-  if ( !DatabaseConnector->Open() )
-    {
-    std::cerr << "Could not open database." << std::endl;
-    std::cerr << "Find last insert ID can not be done." << std::endl;
-    DatabaseConnector->Close();
-    DatabaseConnector->Delete();
-    return ID;
-    }
-
-  vtkSQLQuery *query = DatabaseConnector->GetQueryInstance();
-  query->SetQuery("SELECT LAST_INSERT_ID();");
-
-  if ( !query->Execute() )
-    {
-    itkGenericExceptionMacro(
-      << "replace value in DB query failed"
-      << query->GetLastErrorText() );
-    DatabaseConnector->Close();
-    DatabaseConnector->Delete();
-    query->Delete();
-    return ID;
-    }
-
-  ID = query->DataValue(0).ToInt();
-  DatabaseConnector->Close();
-  DatabaseConnector->Delete();
-  query->Delete();
-
-  return ID;
-}
-
-//------------------------------------------------------------------------------
-
-//------------------------------------------------------------------------------
 //query: "SELECT TableOne.ColumnOne, TableTwo.ColumnTwo FROM TableOne
 //JOIN TableTwo ON (TableOne.Foreignkey = TableTwo.PrimaryKey)
 //WHERE field = value;

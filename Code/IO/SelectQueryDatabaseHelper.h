@@ -276,14 +276,6 @@ std::string ReturnOnlyOneValue(vtkMySQLDatabase *DatabaseConnector,
                                std::string TableName, std::string ColumnName, std::string field,
                                std::string value);
 
-//query: "SELECT LAST_INSERT_ID()"
-QGOIO_EXPORT
-int LastInsertID(std::string ServerName, std::string login,
-                 std::string Password, std::string DBName);
-
-//query: "SELECT TableOne.ColumnOne, TableTwo.ColumnTwo FROM TableOne
-//JOIN TableTwo ON (TableOne.Foreignkey = TableTwo.PrimaryKey)
-//WHERE field = value;
 QGOIO_EXPORT
 std::vector< std::pair< int, std::string > > ListSpecificValuesForTwoColumnsAndTwoTables(
   vtkMySQLDatabase *DatabaseConnector, std::string TableOne, std::string ColumnOne,
