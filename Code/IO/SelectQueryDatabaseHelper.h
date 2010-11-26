@@ -171,8 +171,11 @@ std::vector< std::string > ListSpecificValuesForOneColumn(
   std::string TableName, std::string ColumnName,
   std::string field, std::string value, std::string ColumnNameOrder);
 
-//query: "SELECT ColumnName FROM TableName WHERE (field = value1
-//or field = value2....)"
+/**
+\brief SELECT ColumnName FROM TableName WHERE (field = value1
+or field = value2 AND ColumnName <> 0 (if excludezero))
+\overload
+*/
 QGOIO_EXPORT
 std::vector< std::string > ListSpecificValuesForOneColumn(
   vtkMySQLDatabase *iDatabaseConnector,

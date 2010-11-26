@@ -664,28 +664,10 @@ void GoDBCollectionOfTraces::UpdateBoundingBoxInDB(int iCoordIDMin,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::list< int > GoDBCollectionOfTraces::GetTracesIDPartOfTheCollection(
-  vtkMySQLDatabase *DatabaseConnector, int iCollectionID)
-{
-  std::vector< std::string > ResultsQuery = ListSpecificValuesForOneColumn(
-    DatabaseConnector, this->m_TracesName, this->m_TracesIDName,
-    this->m_CollectionIDName, ConvertToString< int >(iCollectionID) );
-
-  std::list< int > ListIDs;
-  for ( unsigned int i = 0; i < ResultsQuery.size(); i++ )
-    {
-    ListIDs.push_back( atoi( ResultsQuery.at(i).c_str() ) );
-    }
-  return ListIDs;
-}
-
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
 std::list< unsigned int > GoDBCollectionOfTraces::GetListTracesIDsFromThisCollectionOf(
   vtkMySQLDatabase *iDatabaseConnector, std::list< unsigned int > iListTraces)
 {
-  std::list< unsigned int > ListTracesFromCollectionOf;
+  std::list< unsigned int > ListTracesFromCollectionOf = std::list< unsigned int >();
   if ( this->m_CollectionOfName != "None" )
     {
     std::vector< unsigned int > iVectorTraces( iListTraces.begin(), iListTraces.end() );
@@ -702,18 +684,21 @@ std::list< unsigned int > GoDBCollectionOfTraces::GetListTracesIDsFromThisCollec
 std::list< unsigned int > GoDBCollectionOfTraces::GetListCollectionIDs(
   vtkMySQLDatabase *iDatabaseConnector, std::list< unsigned int > iListTracesIDs)
 {
-  std::vector< std::string >          VectorValues;
-  std::list< unsigned int >::iterator iter = iListTracesIDs.begin();
-  while ( iter != iListTracesIDs.end() )
+  std::vector< std::string > VectorCollectionIDs = std::vector< std::string >();
+  if (this->m_CollectionName != "None")
     {
-    int TraceID = *iter;
-    VectorValues.push_back( ConvertToString< unsigned int >(TraceID) );
-    iter++;
+    std::vector< std::string >          VectorValues;
+    std::list< unsigned int >::iterator iter = iListTracesIDs.begin();
+    while ( iter != iListTracesIDs.end() )
+      {
+      int TraceID = *iter;
+      VectorValues.push_back( ConvertToString< unsigned int >(TraceID) );
+      iter++;
+      }
+    VectorCollectionIDs = ListSpecificValuesForOneColumn(
+      iDatabaseConnector, this->m_TracesName, this->m_CollectionIDName,
+      this->m_TracesIDName, VectorValues, true, true);
     }
-  std::vector< std::string > VectorCollectionIDs = ListSpecificValuesForOneColumn(
-    iDatabaseConnector, this->m_TracesName, this->m_CollectionIDName,
-    this->m_TracesIDName, VectorValues, true, true);
-
   return this->VectorStringToUnsgInt(VectorCollectionIDs);
 }
 

@@ -269,69 +269,6 @@ std::vector< std::string > ListSpecificValuesForOneColumn(
     }
   std::string QueryString = SelectQueryStreamCondition(TableName, ColumnName, Conditions,Distinct);
   return ExecuteSelectQuery(iDatabaseConnector,QueryString); 
-
-
-  /*std::vector< std::string > result;
-
-  vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
-  std::stringstream querystream;
-  querystream << "SELECT ";
-  if ( Distinct )
-    {
-    querystream << "DISTINCT ";
-    }
-  querystream << ColumnName;
-  querystream << " FROM ";
-  querystream << TableName;
-  querystream << " WHERE (";
-  if ( ExcludeZero )
-    {
-    querystream << ColumnName;
-    querystream << " <> 0 AND (";
-    }
-
-  unsigned int i;
-  for ( i = 0; i < VectorValues.size() - 1; i++ )
-    {
-    querystream << field;
-    querystream << " = '";
-    querystream << VectorValues[i];
-    querystream << "' OR ";
-    }
-  querystream << field;
-  querystream << " = '";
-  querystream << VectorValues[i];
-  //querystream << "');";
-  querystream << "'";
-  querystream << ")";
-  if ( ExcludeZero )
-    {
-    querystream << ")";
-    }
-
-  query->SetQuery( querystream.str().c_str() );
-  if ( !query->Execute() )
-    {
-    itkGenericExceptionMacro(
-      << "List of all values of ExpID query failed"
-      << query->GetLastErrorText() );
-    DatabaseConnector->Close();
-    DatabaseConnector->Delete();
-    query->Delete();
-    return result;
-    }
-
-  while ( query->NextRow() )
-    {
-    for ( int k = 0; k < query->GetNumberOfFields(); k++ )
-      {
-      result.push_back( query->DataValue(k).ToString() );
-      }
-    }
-
-  query->Delete();
-
-  return result;*/
 }
 
 //------------------------------------------------------------------------------

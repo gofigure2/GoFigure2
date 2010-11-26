@@ -126,15 +126,6 @@ public:
   */
   std::string GetCollectionOf();
 
-  /** 
-  \brief get the IDs of the traces part of the collection with iCollectionID
-  \param[in] DatabaseConnector connection to the database
-  \param[in] iCollectionID ID of the collection the traces needed are part of
-  \return the list of IDs for the traces part of the collectionID
-  */
-  std::list< int > GetTracesIDPartOfTheCollection(
-    vtkMySQLDatabase *DatabaseConnector, int iCollectionID);
-
   //******************************Modif-Refactoring************************************************
   //public:
   //Modif into Database
