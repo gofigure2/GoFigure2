@@ -11,6 +11,10 @@ IF( LINK_EXTERNAL_DOC )
     ${GOFIGURE2_BINARY_DIR}/Documentation/vtkNightlyDoc.tag
   )
 
+  FILE( DOWNLOAD http://www.itk.org/files/nightly/InsightDoxygen.tag
+    ${GOFIGURE2_BINARY_DIR}/Documentation/InsightDoxygen.tag
+  )
+
   FILE( COPY ${QT_DOC_DIR}/html/qt.tags
     DESTINATION ${GOFIGURE2_BINARY_DIR}/Documentation/
   )
