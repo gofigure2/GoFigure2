@@ -95,7 +95,7 @@ std::string GetSelectedAttributes(std::vector<std::string> iListAttributes);
 template< typename T >
 std::string GetConditions(std::string iField,
                           std::vector<T> iVectorValues,
-                          std::string iConditionConnector)
+                          std::string iConditionConnector = "AND")
 {
   std::stringstream oConditions;
   oConditions << "(";
@@ -118,7 +118,9 @@ std::string GetConditions(std::string iField,
 }
 
 std::string GetConditions(std::vector<FieldWithValue> iConditions,
-                          std::string iConditionConnector);
+                          std::string iConditionConnector = "AND");
+
+std::string GetConditions(std::string iField, std::string iValue,std::string iOperator = "=");
 
 std::string GetFirstPartQueryForTracesInfo(std::string iTraceName,std::string iCollectionName);
 

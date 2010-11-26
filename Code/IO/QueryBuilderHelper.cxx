@@ -278,6 +278,16 @@ std::string GetConditions(std::vector<FieldWithValue> iConditions,
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
+std::string GetConditions(std::string iField, std::string iValue,std::string iConnector)
+{
+  std::vector<FieldWithValue> Condition(1);
+  FieldWithValue Field = {iField,iValue,iConnector};
+  Condition[0] = Field;
+  return GetConditions(Condition);
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 std::string GetSelectedAttributes(std::vector<std::string> iListAttributes)
 {
   std::stringstream oQueryStream;

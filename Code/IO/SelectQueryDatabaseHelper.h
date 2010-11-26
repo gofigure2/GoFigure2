@@ -222,6 +222,7 @@ value1 or field = value2...."
 \param[in] ColumnName name of the field in the database
 \param[in] field field for the condition
 \param[in] VectorValues values of the condition
+\return the max value
 */
 QGOIO_EXPORT
 int MaxValueForOneColumnInTable(vtkMySQLDatabase *DatabaseConnector,
@@ -254,14 +255,22 @@ value1 or field = value2...."
 \param[in] ColumnName name of the field in the database
 \param[in] field field for the condition
 \param[in] VectorValues values of the condition
+\return the minimum value
 */
 QGOIO_EXPORT
 int MinValueForOneColumnInTable(vtkMySQLDatabase *DatabaseConnector,
                                 std::string ColumnName, std::string TableName, std::string field,
                                 std::vector< std::string > VectorValues);
 
-//query: "SELECT ColunmName FROM TableName WHERE field=value top 1"
-//return only the first value if several are selected
+/**
+\brief SELECT ColunmName FROM TableName WHERE field=value limit 1
+\param[in] iDatabaseConnector connection to the database
+\param[in] TableName name of the database table
+\param[in] ColumnName name of the field in the database
+\param[in] field field for the condition
+\param[in] value value of the condition
+\return only one value if several are selected
+*/
 QGOIO_EXPORT
 std::string ReturnOnlyOneValue(vtkMySQLDatabase *DatabaseConnector,
                                std::string TableName, std::string ColumnName, std::string field,
@@ -450,7 +459,7 @@ T ExecuteSelectQueryOneValue(vtkMySQLDatabase *iDatabaseConnector,
 
   if ( query->NextRow() )
     {
-    oResults = query->DataValue(0).ToInt();
+    oResults = ss_atoi<T>(query->DataValue(0).ToString() );
     }
 
   query->Delete();

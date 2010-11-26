@@ -357,43 +357,10 @@ std::string ReturnOnlyOneValue(vtkMySQLDatabase *DatabaseConnector,
                                std::string value)
 {
   std::string result;
-
-  vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
-  std::stringstream querystream;
-
-  querystream << "SELECT ";
-  querystream << ColumnName;
-  querystream << " FROM ";
-  querystream << TableName;
-  querystream << " WHERE ";
-  querystream << field;
-  querystream << " = '";
-  querystream << value;
-  querystream << "' LIMIT 1;";
-
-  query->SetQuery( querystream.str().c_str() );
-  if ( !query->Execute() )
-    {
-    itkGenericExceptionMacro(
-      << "List of all values of ExpID query failed"
-      << query->GetLastErrorText() );
-    DatabaseConnector->Close();
-    DatabaseConnector->Delete();
-    query->Delete();
-    return result;
-    }
-
-  while ( query->NextRow() )
-    {
-    for ( int i = 0; i < query->GetNumberOfFields(); i++ )
-      {
-      result = query->DataValue(i).ToString();
-      }
-    }
-
-  query->Delete();
-
-  return result;
+  std::string Conditions = GetConditions(field,value);
+  Conditions += " LIMIT 1";
+  std::string QueryString = SelectGeneralQueryConditions(ColumnName,TableName,Conditions);
+  return ExecuteSelectQueryOneValue<std::string>(DatabaseConnector,QueryString);
 }
 
 //------------------------------------------------------------------------------
