@@ -376,12 +376,12 @@ protected:
   /** \brief return the coordinate max of all the coordinates of the
   collectionOf traces*/
   GoDBCoordinateRow GetCollectionOfTracesCoordMax(
-    vtkMySQLDatabase *DatabaseConnector, std::vector< std::string > iListCollectionOfTracesID);
+    vtkMySQLDatabase *DatabaseConnector, std::list< unsigned int > iListCollectionOfTracesID);
 
   /** \brief return the coordinate min of all the coordinates of the
   selected traces*/
   GoDBCoordinateRow GetCollectionOfTracesCoordMin(
-    vtkMySQLDatabase *DatabaseConnector, std::vector< std::string > iListCollectionOfTracesID);
+    vtkMySQLDatabase *DatabaseConnector, std::list< unsigned int > iListCollectionOfTracesID);
 
   /**
   \brief get all the different parts needed for the query to get the color of traces

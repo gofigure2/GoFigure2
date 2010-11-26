@@ -89,6 +89,7 @@ std::string GetSelectedAttributes(std::vector<std::string> iListAttributes);
 \param[in] iAttribute attribute who has to be equal to the iListValues
 \param[in] iListValues list of all the values iAttribute can be equal to
 \param[in] iConditionConnector AND/OR 
+\tparam T  
 \return the string corresponding to the query part
 */
 template< typename T >

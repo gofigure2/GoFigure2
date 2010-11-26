@@ -190,7 +190,6 @@ int FindOneID(vtkMySQLDatabase *DatabaseConnector,
   
   if (!Results.empty())
     {
-    //ID = atoi( Results[0].c_str() );
     ID = Results[0];
     } 
   return ID;
@@ -279,9 +278,11 @@ std::vector< std::string > ListSpecificValuesForOneColumn(
 std::list< unsigned int > ListSpecificValuesForOneColumn(
   vtkMySQLDatabase *iDatabaseConnector,
   std::string TableName, std::string ColumnName,
-  std::string field, std::vector< unsigned int > VectorValues,
+  std::string field, std::list< unsigned int > iListValues,
   bool Distinct, bool ExcludeZero)
 {
+  std::vector< unsigned int> VectorValues( 
+    iListValues.begin(), iListValues.end() );
   std::string Conditions;
   if (ExcludeZero)
     {
@@ -1516,39 +1517,6 @@ std::list< unsigned int > GetSpecificValuesEqualToZero(
   return result;
 }
 
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/*std::vector< std::string > ExecuteSelectQuery(vtkMySQLDatabase *iDatabaseConnector,
-                                              std::string iQuery)
-{
-  vtkSQLQuery *query = iDatabaseConnector->GetQueryInstance();
-
-  std::vector< std::string > Results;
-  query->SetQuery( iQuery.c_str() );
-  if ( !query->Execute() )
-    {
-    itkGenericExceptionMacro(
-      << "Execute select query failed"
-      << query->GetLastErrorText() );
-    iDatabaseConnector->Close();
-    iDatabaseConnector->Delete();
-    query->Delete();
-    return Results;
-    }
-  while ( query->NextRow() )
-    {
-    for ( int k = 0; k < query->GetNumberOfFields(); k++ )
-      {
-      Results.push_back( query->DataValue(k).ToString() );
-      }
-    }
-
-  query->Delete();
-
-  return Results;
-}
-*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

@@ -184,11 +184,16 @@ std::vector< std::string > ListSpecificValuesForOneColumn(
   std::string field, std::vector< std::string > VectorValues,
   bool Distinct = false, bool ExcludeZero = false);
 
+/**
+\brief SELECT ColumnName FROM TableName WHERE (field = value1
+or field = value2 AND ColumnName <> 0 (if excludezero))
+\overload
+*/
 QGOIO_EXPORT
 std::list< unsigned int > ListSpecificValuesForOneColumn(
   vtkMySQLDatabase *iDatabaseConnector,
   std::string TableName, std::string ColumnName,
-  std::string field, std::vector< unsigned int > VectorValues,
+  std::string field, std::list< unsigned int > VectorValues,
   bool Distinct = false, bool ExcludeZero = false);
 
 //query: "SELECT ColumnNameOne,ColumnName2 FROM TableName
@@ -395,8 +400,6 @@ TResultsQuery ExecuteSelectQuery(vtkMySQLDatabase *iDatabaseConnector,
 
   return oResults;
 }
-
-
 
 std::vector< std::string > GetAllSelectedValuesFromTwoTables(
   vtkMySQLDatabase *iDatabaseConnector, std::string iTableOne, std::string iTableTwo,
