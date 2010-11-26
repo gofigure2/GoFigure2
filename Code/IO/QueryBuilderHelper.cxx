@@ -157,7 +157,7 @@ std::string SelectQueryStreamCondition(std::string iTable, std::string iColumn, 
     }
   if (!iOrderByColumnName.empty())
     {
-    iConditions += AddOrderBy(iOrderByColumnName,iAscDesc);
+    Condition += AddOrderBy(iOrderByColumnName,iAscDesc);
     }
   return SelectGeneralQueryConditions(What,iTable,Condition);
 }

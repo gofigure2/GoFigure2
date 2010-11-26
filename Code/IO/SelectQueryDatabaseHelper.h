@@ -196,8 +196,18 @@ std::list< unsigned int > ListSpecificValuesForOneColumn(
   std::string field, std::list< unsigned int > VectorValues,
   bool Distinct = false, bool ExcludeZero = false);
 
-//query: "SELECT ColumnNameOne,ColumnName2 FROM TableName
-//WHERE field = value ORDER BY ColumnNameOrder ASC"
+/**
+\brief SELECT ColumnNameOne,ColumnName2 FROM TableName
+WHERE field = value ORDER BY ColumnNameOrder ASC"
+\param[in] iDatabaseConnector connection to the database
+\param[in] TableName name of the database table
+\param[in] ColumnNameOne name of the first field in the database
+\param[in] ColumnNameTwo name of the second field in the database
+\param[in] field field for the condition
+\param[in] value value of the condition
+\param{in] OrderByColumnName sorting
+\return a vector of pair with the values of each Column
+*/
 QGOIO_EXPORT
 std::vector< std::pair< std::string, std::string > >
 ListSpecificValuesForTwoColumns(vtkMySQLDatabase *DatabaseConnector,

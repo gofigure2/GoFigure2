@@ -170,7 +170,10 @@ int FindOneID(vtkMySQLDatabase *DatabaseConnector,
     std::cout << std::endl;
     return ID;
     }
-  ID = atoi( Results[0].c_str() );
+  if (!Results.empty())
+    {
+    ID = atoi( Results[0].c_str() );
+    }
   return ID;
 }
 
@@ -304,67 +307,6 @@ std::list< unsigned int > ListSpecificValuesForOneColumn(
     ColumnName, Conditions,Distinct);
 
   return ExecuteSelectQuery<std::list<unsigned int> >(iDatabaseConnector,QueryString); 
-  /*std::list< unsigned int > result;
-
-  vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
-  std::stringstream querystream;
-  querystream << "SELECT ";
-  if ( Distinct )
-    {
-    querystream << "DISTINCT ";
-    }
-  querystream << ColumnName;
-  querystream << " FROM ";
-  querystream << TableName;
-  querystream << " WHERE (";
-  if ( ExcludeZero )
-    {
-    querystream << ColumnName;
-    querystream << " <> 0 AND (";
-    }
-
-  unsigned int i;
-  for ( i = 0; i < ListValues.size() - 1; i++ )
-    {
-    querystream << field;
-    querystream << " = '";
-    querystream << ListValues[i];
-    querystream << "' OR ";
-    }
-  querystream << field;
-  querystream << " = '";
-  querystream << ListValues[i];
-  //querystream << "');";
-  querystream << "'";
-  querystream << ")";
-  if ( ExcludeZero )
-    {
-    querystream << ")";
-    }
-
-  query->SetQuery( querystream.str().c_str() );
-  if ( !query->Execute() )
-    {
-    itkGenericExceptionMacro(
-      << "List of all values of ExpID query failed"
-      << query->GetLastErrorText() );
-    DatabaseConnector->Close();
-    DatabaseConnector->Delete();
-    query->Delete();
-    return result;
-    }
-
-  while ( query->NextRow() )
-    {
-    for ( int k = 0; k < query->GetNumberOfFields(); k++ )
-      {
-      result.push_back( query->DataValue(k).ToUnsignedInt() );
-      }
-    }
-
-  query->Delete();
-
-  return result;*/
 }
 
 //------------------------------------------------------------------------------
@@ -378,24 +320,15 @@ ListSpecificValuesForTwoColumns(vtkMySQLDatabase *DatabaseConnector,
                                 std::string field, std::string value, std::string ColumnNameOrder)
 {
   std::vector< std::pair< std::string, std::string > > result;
-
+  std::vector<std::string> SelectedColumns(2);
+  SelectedColumns[0] = ColumnNameOne;
+  SelectedColumns[1] = ColumnNameTwo;
+  std::string QueryString = SelectQueryStreamCondition(TableName, SelectedColumns,
+     field, value, ColumnNameOrder);
+  
   vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
-  std::stringstream querystream;
-  querystream << "SELECT ";
-  querystream << ColumnNameOne;
-  querystream << ",";
-  querystream << ColumnNameTwo;
-  querystream << " FROM ";
-  querystream << TableName;
-  querystream << " WHERE ";
-  querystream << field;
-  querystream << " = '";
-  querystream << value;
-  querystream << "' ORDER BY ";
-  querystream << ColumnNameOrder;
-  querystream << " ASC;";
 
-  query->SetQuery( querystream.str().c_str() );
+  query->SetQuery( QueryString.c_str() );
   if ( !query->Execute() )
     {
     itkGenericExceptionMacro(
