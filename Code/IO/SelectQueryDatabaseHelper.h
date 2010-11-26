@@ -214,15 +214,47 @@ ListSpecificValuesForTwoColumns(vtkMySQLDatabase *DatabaseConnector,
                                 std::string TableName, std::string ColumnNameOne, std::string ColumnNameTwo,
                                 std::string field, std::string value, std::string ColumnNameOrder);
 
-//query: "SELECT MAX(ColumnName) FROM TableName WHERE (field =
-//value1 or field = value2...."
+/**
+\brief SELECT MAX(ColumnName) FROM TableName WHERE (field =
+value1 or field = value2...."
+\param[in] DatabaseConnector connection to the database
+\param[in] TableName name of the database table
+\param[in] ColumnName name of the field in the database
+\param[in] field field for the condition
+\param[in] VectorValues values of the condition
+*/
 QGOIO_EXPORT
 int MaxValueForOneColumnInTable(vtkMySQLDatabase *DatabaseConnector,
                                 std::string ColumnName, std::string TableName, std::string field,
                                 std::vector< std::string > VectorValues);
 
-//query: "SELECT MIN(ColumnName) FROM TableName WHERE (field =
-//value1 or field = value2...."
+/**
+\brief SELECT MAX(ColumnName) FROM TableName
+\overload
+*/
+QGOIO_EXPORT
+int MaxValueForOneColumnInTable(
+  vtkMySQLDatabase *DatabaseConnector,
+  std::string ColumnName, std::string TableName);
+
+/**
+\brief SELECT MAX(ColumnName) FROM TableName WHERE field = value
+\overload
+*/
+QGOIO_EXPORT
+int MaxValueForOneColumnInTable(vtkMySQLDatabase *DatabaseConnector,
+                                std::string ColumnName, std::string TableName, std::string field,
+                                std::string value);
+
+/**
+\brief SELECT MIN(ColumnName) FROM TableName WHERE (field =
+value1 or field = value2...."
+\param[in] DatabaseConnector connection to the database
+\param[in] TableName name of the database table
+\param[in] ColumnName name of the field in the database
+\param[in] field field for the condition
+\param[in] VectorValues values of the condition
+*/
 QGOIO_EXPORT
 int MinValueForOneColumnInTable(vtkMySQLDatabase *DatabaseConnector,
                                 std::string ColumnName, std::string TableName, std::string field,
@@ -239,18 +271,6 @@ std::string ReturnOnlyOneValue(vtkMySQLDatabase *DatabaseConnector,
 QGOIO_EXPORT
 int LastInsertID(std::string ServerName, std::string login,
                  std::string Password, std::string DBName);
-
-//query: "SELECT MAX(ColumnName) FROM TableName"
-QGOIO_EXPORT
-int MaxValueForOneColumnInTable(
-  vtkMySQLDatabase *DatabaseConnector,
-  std::string ColumnName, std::string TableName);
-
-//query: "SELECT MAX(ColumnName) FROM TableName WHERE field = value;"
-QGOIO_EXPORT
-int MaxValueForOneColumnInTable(vtkMySQLDatabase *DatabaseConnector,
-                                std::string ColumnName, std::string TableName, std::string field,
-                                std::string value);
 
 //query: "SELECT TableOne.ColumnOne, TableTwo.ColumnTwo FROM TableOne
 //JOIN TableTwo ON (TableOne.Foreignkey = TableTwo.PrimaryKey)
@@ -407,7 +427,33 @@ TResultsQuery ExecuteSelectQuery(vtkMySQLDatabase *iDatabaseConnector,
     }
 
   query->Delete();
+  return oResults;
+}
 
+template <class T>
+T ExecuteSelectQueryOneValue(vtkMySQLDatabase *iDatabaseConnector,
+                                              std::string iQuery)
+{
+  vtkSQLQuery *query = iDatabaseConnector->GetQueryInstance();
+  T oResults = ss_atoi<T>("-1");
+  query->SetQuery( iQuery.c_str() );
+  if ( !query->Execute() )
+    {
+    itkGenericExceptionMacro(
+      << "Execute select query failed"
+      << query->GetLastErrorText() );
+    iDatabaseConnector->Close();
+    iDatabaseConnector->Delete();
+    query->Delete();
+    return oResults;
+    }
+
+  if ( query->NextRow() )
+    {
+    oResults = query->DataValue(0).ToInt();
+    }
+
+  query->Delete();
   return oResults;
 }
 
