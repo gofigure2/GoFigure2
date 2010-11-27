@@ -36,6 +36,7 @@
 
 #include <vector>
 #include <string>
+#include <sstream>
 #include <list>
 
 struct FieldWithValue
