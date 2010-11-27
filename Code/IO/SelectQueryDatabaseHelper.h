@@ -40,6 +40,7 @@
 #include <list>
 #include "itkMacro.h"
 #include "vtkMySQLDatabase.h"
+#include "vtkSQLQuery.h"
 #include "GoDBTraceInfoForVisu.h"
 #include "ContourMeshStructure.h"
 #include "TrackStructure.h"
