@@ -31,23 +31,31 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __GoDBTWContainerForTrackLineage_h
-#define __GoDBTWContainerForTrackLineage_h
+#ifndef __GoDBAuthorRow_h
+#define __GoDBAuthorRow_h
 
-#include "GoDBTableWidgetContainer.h"
-#include "QGoIOConfigure.h"
-/**
-\brief
-*/
-class QGOIO_EXPORT GoDBTWContainerForTrackLineage:public GoDBTableWidgetContainer
+#include <string>
+#include <map>
+#include <iostream>
+#include <sstream>
+#include "GoDBRow.h"
+#include "ConvertToStringHelper.h"
+
+class QGOIO_EXPORT GoDBAuthorRow:public GoDBRow
 {
 public:
-  GoDBTWContainerForTrackLineage(std::string iCollectionName, std::string iTracesName,
-                                 int iImgSessionID);
-  ~GoDBTWContainerForTrackLineage();
-protected:
+  GoDBAuthorRow(); 
 
-  //GoDBTableWidgetContainer method
-  void SetCommonInfoForTwoTracesTable();
+  ~GoDBAuthorRow()
+  {}
+  int SaveInDB(vtkMySQLDatabase *DatabaseConnector);
+
+  /**\brief check if the author already exists in the database, if yes,
+   return the corresponding ID, if not, return -1*/
+  int DoesThisAuthorAlreadyExists(vtkMySQLDatabase *DatabaseConnector);
+
+protected:
+  virtual void InitializeMap();
 };
+
 #endif

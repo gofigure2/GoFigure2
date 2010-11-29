@@ -127,9 +127,17 @@ std::vector< std::vector< std::string > > QGoWizardDB::GetFilenamesFromDB()
 
   //Get the number of channels with their id as a map
   //ListChannelsIDNumber[channelID]=ChannelNumber:
+  std::vector<std::string> ChannelAttributes (2);
+  ChannelAttributes[0] = "channelID";
+  ChannelAttributes[1] = "ChannelNumber";
+
   std::map< std::string, std::string > ListChannelsIDNumber =
-    MapTwoColumnsFromTable( DatabaseConnector, "channelID", "ChannelNumber",
-                            "channel", "ImagingSessionID", field("ImgSessionID").toString().toStdString() );
+    MapTwoColumnsFromTable( DatabaseConnector, ChannelAttributes,"channel", 
+    "ImagingSessionID", field("ImgSessionID").toString().toStdString() );
+
+ // std::map< std::string, std::string > ListChannelsIDNumber =
+  //  MapTwoColumnsFromTable( DatabaseConnector, "channelID", "ChannelNumber",
+   //                         "channel", "ImagingSessionID", field("ImgSessionID").toString().toStdString() );
 
   std::map< std::string, std::string >::iterator it = ListChannelsIDNumber.begin();
   oFilenames.resize( ListChannelsIDNumber.size() );

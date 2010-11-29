@@ -67,10 +67,21 @@ protected:
   std::vector< std::vector< std::string > > m_ChannelsInfo;
   GoFigureMeshAttributes *                  m_MeshAttributes;
 
-  void SetSpecificColumnsInfoForMesh();
+  /**
+  \brief add the specific info for a trace to the columns description
+  */
+  void SetSpecificInfoForTraceTable();
 
-  //std::vector<std::vector<std::string> > GetChannelsInfo();
+  /**
+  \brief add as many columns with their description as there is Channels
+  */
+  void SetColumnsInfoBasedOnChannelsInfo();
 
+  /**
+  \brief get the info for the channels from the database and set the corresponding
+  columns for the intensities values
+  \param[in] iDatabaseConnector connection to the database
+  */
   void SetChannelsInfo(vtkMySQLDatabase *iDatabaseConnector);
 
   /**
@@ -143,5 +154,12 @@ protected:
   void GetValuesToFillForIntensityFromQueryResults(
     std::vector< std::string > iResultQuery, std::vector< std::string > iVectMeshIDs,
     std::vector< std::vector< std::string > > & ioValuesToFill);
+
+  /**
+  \brief set the columns and their description for the specific columns for mesh
+  except the ones related to channels as a connection to the database is needed
+  to know the number of channels
+  */
+  void SetSpecificColumnsInfoForMesh();
 };
 #endif

@@ -126,15 +126,6 @@ public:
   */
   std::string GetCollectionOf();
 
-  /** 
-  \brief get the IDs of the traces part of the collection with iCollectionID
-  \param[in] DatabaseConnector connection to the database
-  \param[in] iCollectionID ID of the collection the traces needed are part of
-  \return the list of IDs for the traces part of the collectionID
-  */
-  std::list< int > GetTracesIDPartOfTheCollection(
-    vtkMySQLDatabase *DatabaseConnector, int iCollectionID);
-
   //******************************Modif-Refactoring************************************************
   //public:
   //Modif into Database
@@ -328,33 +319,9 @@ protected:
   */
   int CreateNewCollection(vtkMySQLDatabase *DatabaseConnector, GoDBTraceRow & myNewObject);
 
-  //get from Database and/or Modif into Database
-  /** \brief get the max of all the coordinates in the ListSelectedTraces, compare it
-  to the max of the existing collection and update the max coordinate of the bounding
-  box of the collection if necessary*/
-  int GetCoordMaxID(vtkMySQLDatabase *DatabaseConnector,
-                    int CollectionID, std::list< unsigned int > ListSelectedTraces);
-
-  //get from Database and/or Modif into Database
-  /** \brief get the min of all the coordinates in the ListSelectedTraces, compare it
-  to the min of the existing collection and update the min coordinate of the bounding
-  box of the collection if necessary*/
-  int GetCoordMinID(vtkMySQLDatabase *DatabaseConnector,
-                    int CollectionID, std::list< unsigned int > ListSelectedTraces);
-
   /** \brief Update in the database the coordid max and min of the trace*/
   void UpdateBoundingBoxInDB(int iCoordIDMin, int iCoordIDMax,
                              int iTraceID, vtkMySQLDatabase *iDatabaseConnector);
-
-  /** \brief return the coordinate min for the existing Collection*/
-  GoDBCoordinateRow GetExistingCoordMin(
-    vtkMySQLDatabase *DatabaseConnector, int CollectionCoordIDMin,
-    int CollectionID);
-
-  /** \brief return the coordinate max for the existing Collection*/
-  GoDBCoordinateRow GetExistingCoordMax(
-    vtkMySQLDatabase *DatabaseConnector, int CollectionCoordIDMax,
-    int CollectionID);
 
   //Modif into Database
   /** \brief change the collection ID of the trace*/
@@ -409,12 +376,12 @@ protected:
   /** \brief return the coordinate max of all the coordinates of the
   collectionOf traces*/
   GoDBCoordinateRow GetCollectionOfTracesCoordMax(
-    vtkMySQLDatabase *DatabaseConnector, std::vector< std::string > iListCollectionOfTracesID);
+    vtkMySQLDatabase *DatabaseConnector, std::list< unsigned int > iListCollectionOfTracesID);
 
   /** \brief return the coordinate min of all the coordinates of the
   selected traces*/
   GoDBCoordinateRow GetCollectionOfTracesCoordMin(
-    vtkMySQLDatabase *DatabaseConnector, std::vector< std::string > iListCollectionOfTracesID);
+    vtkMySQLDatabase *DatabaseConnector, std::list< unsigned int > iListCollectionOfTracesID);
 
   /**
   \brief get all the different parts needed for the query to get the color of traces
@@ -437,8 +404,8 @@ protected:
   GetListNameWithColorDataFromResultsQuery(
     std::vector< std::vector< std::string > > iResultsQuery);
 
-  std::vector< std::string > ListUnsgIntToVectorString(std::list< unsigned int > iList);
+  //std::vector< std::string > ListUnsgIntToVectorString(std::list< unsigned int > iList);
 
-  std::list< unsigned int > VectorStringToUnsgInt(std::vector< std::string > iVector);
+  //std::list< unsigned int > VectorStringToUnsgInt(std::vector< std::string > iVector);
 };
 #endif
