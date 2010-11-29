@@ -78,18 +78,36 @@ address = os.getcwd()
 </span><span class="kw">print</span> address
 setBundlePath(address)
 
+<span class="kw">for</span> create <span class="kw">in</span> <span class="dig">3</span>:
+        <span class="skw">click</span>(<img src="Settings.png" />)
+        hover(<img src="Database_arrow.png" />)
+        <span class="skw">click</span>(<img src="Set_up_database.png" />)
+        <span class="kw">assert</span> exists(<img src="Create_user_for_MySQL_DB.png" />)
+        <span class="kw">if</span> create == <span class="dig">1</span>:
+                <span class="skw">click</span>(<img src="cancel.png" />)
+                <span class="kw">assert</span> <span class="kw">not</span> exists(<img src="Create_user_for_MySQL_DB.png" />)
+        <span class="kw">if</span> create == <span class="dig">2</span>:
+                <span class="skw">click</span>(<img src="Next_arrow.png" />)
+                <span class="kw">assert</span> exists(<img src="Please_fill_all_fields.png" />)
+                <span class="skw">click</span>(<img src="ok.png" />)
+        <span class="kw">if</span> create == <span class="dig">3</span>:
+                <span class="skw">wait</span>(<span class="dig">1</span>)
+                <span class="skw">type</span>(<span class="str">"gofigure"</span> +Key.TAB + <span class="str">"gofigure"</span>)
+                <span class="skw">click</span>(<img src="Next_arrow.png" />)
+                <span class="kw">assert</span> exists(<img src="Root_Password.png" />)
 
-<span class="skw">click</span>(<img src="Settings.png" />)
-hover(<img src="Database_arrow.png" />)
-<span class="skw">click</span>(<img src="Set_up_database.png" />)
-<span class="skw">wait</span>(<span class="dig">1</span>)
-<span class="skw">type</span>(<span class="str">"gofigure"</span> +Key.TAB + <span class="str">"gofigure"</span>)
-<span class="skw">click</span>(<img src="Next_arrow.png" />)
-<span class="skw">wait</span>(<span class="dig">1</span>)
-<span class="skw">type</span>(Key.BACKSPACE)<span class="cmt">#+Key.BACKSPACE+Key.BACKSPACE+Key.BACKSPACE+Key.BACKSPACE+Key.BACKSPACE)</span>
-<span class="skw">click</span>(<img src="ok.png" />)
-<span class="skw">click</span>(<img src="ok.png" />)
-<span class="skw">wait</span>(<span class="dig">3</span>)
+                <span class="kw">for</span> root <span class="kw">in</span> <span class="dig">2</span>
+                        <span class="kw">if</span> root == <span class="dig">1</span>
+                                <span class="skw">click</span>(<img src="cancel.png" />)
+                                <span class="kw">assert</span> exists(<img src="There_is_problem_existing_users.png" />)
+                                <span class="kw">assert</span> <span class="kw">not</span> exists(<img src="Root_Password.png" />)
+                        <span class="kw">if</span> root == <span class="dig">2</span>
+                                <span class="skw">wait</span>(<span class="dig">1</span>)
+                                <span class="skw">type</span>(Key.BACKSPACE)<span class="cmt">#+Key.BACKSPACE+Key.BACKSPACE+Key.BACKSPACE+Key.BACKSPACE+Key.BACKSPACE)</span>
+                                <span class="skw">click</span>(<img src="ok.png" />)
+                                <span class="skw">click</span>(<img src="ok.png" />)
+
+<img src="1291065478425.png" /><span class="skw">wait</span>(<span class="dig">3</span>)
 <span class="skw">type</span>(<span class="str">"First"</span>+Key.TAB+Key.TAB+<span class="str">"Last"</span>+Key.TAB+Key.ENTER)
 <span class="skw">click</span>(<img src="ok.png" />)
 <span class="skw">click</span>(<img src="Next_arrow.png" />)
