@@ -287,6 +287,7 @@ void QGoDBTrackManager::UpdateTrackPolydataForVisu(vtkMySQLDatabase *iDatabaseCo
     this->m_CollectionOfTraces->GetCoordinateCenterBoundingBox(
     iDatabaseConnector,iTrackID);
   this->m_TrackContainerInfoForVisu->UpdatePointsForATrack(iTrackID,ListCenters);
+  this->SaveTrackCurrentElement(iDatabaseConnector);
 }
 //-------------------------------------------------------------------------
 
@@ -299,7 +300,7 @@ void QGoDBTrackManager::UpdateBoundingBoxes(
   while(iter != iListTracesIDs.end())
     {
     this->UpdateTrackPolydataForVisu(iDatabaseConnector,*iter);
-    this->SaveTrackCurrentElement(iDatabaseConnector);
+    //this->SaveTrackCurrentElement(iDatabaseConnector);
     iter++;
     }
 }

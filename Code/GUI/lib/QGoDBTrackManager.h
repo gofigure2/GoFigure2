@@ -120,7 +120,8 @@ protected:
 
   /**
   \brief get the center of bounding boxes from the database for the meshes 
-  belonging to the iTrackID and update the polydata in the container for visu
+  belonging to the iTrackID, update the polydata in the container for visu and save it in
+  the database
   \param[in] iDatabaseConnector connection to the database
   \param[in] iTrackID ID for the track the polydata needs to be recalculated
   */
