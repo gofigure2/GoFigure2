@@ -231,11 +231,30 @@ std::string SelectQueryStreamListConditions(std::string iTable,
                                             std::string iConditionConnector = "OR",
                                             bool Distinct = false);
 
+/**
+\overload
+*/
+std::string SelectQueryStreamListConditions(std::string iTable,
+                                            std::vector<std::string> iListAttributes, 
+                                            std::vector<FieldWithValue> iConditions,
+                                            std::string iConditionConnector = "OR",
+                                            bool Distinct = false);
+
 std::vector< std::string > ListUnsgIntToVectorString(std::list< unsigned int > iList);
 
 std::list< unsigned int > VectorStringToUnsgInt(std::vector< std::string > iVector);
 
 std::vector< std::string > VectorUnsgIntToVectorString(std::vector<unsigned int> iVector);
+
+/**
+\brief iTableOne LEFT JOIN iTableTwo ON iTableOne.iOnCondition/Field = iTableTwo.iOnCondition/Value
+\param[in] iTableOne table to be joined
+\param[in] iTableTwo table to be joined to
+\param[in] iOnCondition join on which condition
+\return the string corresponding to the query part 
+*/
+std::string GetLeftJoinTwoTables(std::string iTableOne,std::string iTableTwo,
+  FieldWithValue iOnCondition);
 
 //iselectquery union iselectquery where ijoinon IS NULL (with or without
 // brackets in the

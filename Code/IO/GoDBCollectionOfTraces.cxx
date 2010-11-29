@@ -789,17 +789,25 @@ std::list<unsigned int>  GoDBCollectionOfTraces::
   GetTraceIDsWithTimePointAndCollectionID( vtkMySQLDatabase *iDatabaseConnector,
   unsigned int iCollectionID,unsigned int iTimePoint)
 {
-  std::vector<std::string> TraceIDField(1);
-  TraceIDField[0] = this->m_TracesIDName;
-  std::string LinkCoordinate = this->m_TracesName;
-  LinkCoordinate += ".CoordIDMin = coordinate.coordID";
-  std::vector<std::string> Conditions(4);
-  Conditions[0]= this->m_CollectionIDName;
-  Conditions[1] = ConvertToString<unsigned int>(iCollectionID);
-  Conditions[2] = "TCoord";
-  Conditions[3]= ConvertToString<unsigned int>(iTimePoint);
-  std::vector<std::string> VectorTraceIDs = GetAllSelectedValuesFromTwoTables(
-    iDatabaseConnector,this->m_TracesName, "coordinate",TraceIDField, LinkCoordinate,Conditions);
+  //std::vector<std::string> TraceIDField(1);
+  //TraceIDField[0] = this->m_TracesIDName;
+  //std::string LinkCoordinate = this->m_TracesName;
+  //LinkCoordinate += ".CoordIDMin = coordinate.coordID";
+  //std::vector<std::string> Conditions(4);
+  //Conditions[0]= this->m_CollectionIDName;
+ // Conditions[1] = ConvertToString<unsigned int>(iCollectionID);
+ // Conditions[2] = "TCoord";
+  //Conditions[3]= ConvertToString<unsigned int>(iTimePoint);
+ // std::vector<std::string> VectorTraceIDs = GetAllSelectedValuesFromTwoTables(
+ //   iDatabaseConnector,this->m_TracesName, "coordinate",TraceIDField, LinkCoordinate,Conditions);
+  FieldWithValue JoinCondition = {"CoordIDMin", "CoordID", "="};
+  std::vector<FieldWithValue> Conditions(2);
+  FieldWithValue CollectionID = {this->m_CollectionIDName, ConvertToString<unsigned int>(iCollectionID), "="};
+  Conditions[0] = CollectionID;
+  FieldWithValue TimePoint = {"TCoord", ConvertToString<unsigned int>(iTimePoint), "="};
+  Conditions[1] = TimePoint;
+   
 
-  return this->VectorStringToUnsgInt(VectorTraceIDs);
+  return GetAllSelectedValuesFromTwoTables(
+    iDatabaseConnector,this->m_TracesName,"coordinate", this->m_TracesIDName, JoinCondition,Conditions);
 }

@@ -402,12 +402,6 @@ void QGoDBMeshManager::SetColorCoding(bool IsChecked)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/*void QGoDBMeshManager::BackFromColorCoding()
-{
-  this->SetBackFromColorCodingTemplate<ContourMeshContainer>(
-    this->m_MeshContainerInfoForVisu);
-}*/
-
  unsigned int QGoDBMeshManager::
    ReassignTrackIDForPreviousMeshWithSameTimePoint( vtkMySQLDatabase *iDatabaseConnector,
     unsigned int iTrackID,unsigned int iTimePoint)

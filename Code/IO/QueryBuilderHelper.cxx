@@ -231,6 +231,19 @@ std::string SelectQueryStreamListConditions(std::string iTable,
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
+std::string SelectQueryStreamListConditions(std::string iTable,
+                                            std::vector<std::string> iListAttributes, 
+                                            std::vector<FieldWithValue> iConditions,
+                                            std::string iConditionConnector,
+                                            bool Distinct )
+{
+  std::string What = GetSelectedAttributes(iListAttributes);
+  return SelectQueryStreamListConditions(iTable,What, iConditions,iConditionConnector,
+                                         Distinct);
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 std::string AddDistinctToWhat(std::string iWhat)
 {
   std::string oWhat = "DISTINCT ";
@@ -348,7 +361,27 @@ std::vector< std::string > VectorUnsgIntToVectorString(
     }
   return oVector;
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+std::string GetLeftJoinTwoTables(std::string iTableOne,std::string iTableTwo,
+  FieldWithValue iOnCondition)
+{
+  std::stringstream oQueryStream;
+  oQueryStream << iTableOne;
+  oQueryStream << " LEFT JOIN ";
+  oQueryStream << iTableTwo;
+  oQueryStream << " ON ";
+  oQueryStream << iTableOne;
+  oQueryStream << ".";
+  oQueryStream << iOnCondition.Field;
+  oQueryStream << iOnCondition.Operator;
+  oQueryStream << iTableTwo;
+  oQueryStream << ".";
+  oQueryStream << iOnCondition.Value;
+
+  return oQueryStream.str();
+}
 /*std::string SelectWithJoinNullIncluded(std::string iSelectQuery,
                                        std::string iJoinOn,
                                        bool doublon)

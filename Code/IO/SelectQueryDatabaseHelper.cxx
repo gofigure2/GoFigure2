@@ -1244,7 +1244,7 @@ std::list< unsigned int > GetSpecificValuesEqualToZero(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void GetAllSelectedFields(std::stringstream & ioQuerystream,
+/*void GetAllSelectedFields(std::stringstream & ioQuerystream,
                           std::vector< std::string > iSelectedFields)
 {
   size_t i = 0;
@@ -1256,17 +1256,21 @@ void GetAllSelectedFields(std::stringstream & ioQuerystream,
     }
   ioQuerystream << iSelectedFields[i];
 }
-
+*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::vector< std::string > GetAllSelectedValuesFromTwoTables(
+std::list<unsigned int> GetAllSelectedValuesFromTwoTables(
   vtkMySQLDatabase *iDatabaseConnector, std::string iTableOne, std::string iTableTwo,
-  std::vector< std::string > iSelectedFields, std::string iJoinCondition,
+  std::string iColumn, FieldWithValue iJoinCondition,
   //td::string ifield, std::string ifieldValue)
-  std::vector<std::string> iFieldsWithValues)
+  std::vector<FieldWithValue> iFieldsWithValues)
 {
-  std::stringstream QueryStream;
+  std::string Where = GetLeftJoinTwoTables(iTableOne,iTableTwo,iJoinCondition);
+  std::string QueryString = SelectQueryStreamListConditions(Where,iColumn,
+                                            iFieldsWithValues, false,"AND");
+  return ExecuteSelectQuery <std::list<unsigned int> >( iDatabaseConnector, QueryString );
+ /* std::stringstream QueryStream;
 
   QueryStream << "SELECT ";
   std::vector< std::string >::iterator iter = iSelectedFields.begin();
@@ -1279,17 +1283,23 @@ std::vector< std::string > GetAllSelectedValuesFromTwoTables(
   QueryStream << iJoinCondition;
 
   QueryStream << WhereAndOrConditions(iFieldsWithValues);
- // QueryStream << " WHERE ";
-  //QueryStream << ifield;
-  //QueryStream << " = ";
- // QueryStream << ifieldValue;
 
-  //std::stringstream SelectQuery;
-  //SelectQuery << SelectWithJoinNullIncluded(QueryStream.str(), iJoinCondition);
-  //return ExecuteSelectQuery( iDatabaseConnector, SelectQuery.str() );
-  return ExecuteSelectQuery<std::vector<std::string> >( iDatabaseConnector, QueryStream.str() );
+  return ExecuteSelectQuery<std::vector<std::string> >( iDatabaseConnector, QueryStream.str() );*/
 }
 
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::vector< std::string > GetAllSelectedValuesFromTwoTables(
+  vtkMySQLDatabase *iDatabaseConnector, std::string iTableOne, std::string iTableTwo,
+  std::vector< std::string > iSelectedFields, FieldWithValue iJoinCondition,
+  std::vector<FieldWithValue> iFieldsWithValues)
+{
+  std::string Where = GetLeftJoinTwoTables(iTableOne,iTableTwo,iJoinCondition);
+  std::string QueryString = SelectQueryStreamListConditions(Where,iSelectedFields, 
+                                            iFieldsWithValues,"AND");
+  return ExecuteSelectQuery< std::vector<std::string> >( iDatabaseConnector, QueryString );
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

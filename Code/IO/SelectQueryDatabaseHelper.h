@@ -466,11 +466,20 @@ std::string WhereAndOrConditions(std::vector<std::string> iWhereAndConditions,
 
 //select iselectedfields from itableone left join itabletwo on ijoincondition where
 // (iFieldsWithValues(i) = iFieldsWithValues(i+1)...);
-std::vector< std::string > GetAllSelectedValuesFromTwoTables(
+//std::vector< std::string > GetAllSelectedValuesFromTwoTables(
+//  vtkMySQLDatabase *iDatabaseConnector, std::string iTableOne, std::string iTableTwo,
+//  std::vector< std::string > iSelectedFields, std::string iJoinCondition,
+//  std::vector<std::string> iFieldsWithValues);
+
+std::list<unsigned int> GetAllSelectedValuesFromTwoTables(
   vtkMySQLDatabase *iDatabaseConnector, std::string iTableOne, std::string iTableTwo,
-  std::vector< std::string > iSelectedFields, std::string iJoinCondition,
-  //std::string ifield, std::string ifieldValue);
-  std::vector<std::string> iFieldsWithValues);
+  std::string iColumn, FieldWithValue iJoinCondition,
+  std::vector<FieldWithValue> iFieldsWithValues);
+
+std::vector<std::string> GetAllSelectedValuesFromTwoTables(
+  vtkMySQLDatabase *iDatabaseConnector, std::string iTableOne, std::string iTableTwo,
+  std::vector<std::string> iListAttributes, FieldWithValue iJoinCondition,
+  std::vector<FieldWithValue> iFieldsWithValues);
 
 //add the selected fields separated by ',' to the ioQueryStream
 void GetAllSelectedFields(std::stringstream & ioQueryStream,

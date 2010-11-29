@@ -276,14 +276,19 @@ void GoDBTWContainerForMesh::GetValuesForIntensities(
     }
   else
     {
-    std::vector<std::string> Conditions(2);
-    Conditions[0] = "imagingsessionid";
-    Conditions[1] = ConvertToString< int >(this->m_ImgSessionID);
+    //std::vector<std::string> Conditions(2);
+    //Conditions[0] = "imagingsessionid";
+    //Conditions[1] = ConvertToString< int >(this->m_ImgSessionID);
+    std::vector<FieldWithValue> Condition(1);
+    FieldWithValue ImgSession = {"ImagingSessionID", ConvertToString< int >(this->m_ImgSessionID), "="};
+    Condition[0] = ImgSession;
+    FieldWithValue JoinCondition = {this->m_TracesIDName, this->m_TracesIDName, "="};
     ResultQuery = GetAllSelectedValuesFromTwoTables(
-      iDatabaseConnector, "mesh", "intensity", SelectedFields,
-      "mesh.meshid = intensity.meshid", Conditions);
+      iDatabaseConnector, this->m_TracesName, "intensity", SelectedFields,
+      JoinCondition, Condition);
     this->GetValuesToFillForIntensityFromQueryResults(
       ResultQuery, iVectMeshIDs, ioValuesToFill);
+
     }
 }
 
