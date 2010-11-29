@@ -23,21 +23,28 @@ for create in [1,2]:
 		type(Key.TAB+Key.TAB)
 		wait(2)
 		type("gofigure" +Key.TAB + "gofigure")
-		click("Next_arrow.png")
-		assert exists("Root_Password.png")
+
+		#click("Next_arrow.png")
+		#assert exists("Root_Password.png")
+		#type(Key.TAB+Key.ENTER)
+		#assert exists("There_is_problem_existing_users.png")
+		#click("ok.png")
+			#gofigure crashes at this step
+		#assert not exists("Root_Password.png")
 	
-		for root in [1,2]:
-			if root == 1:
-				type(Key.TAB+Key.ENTER)
-				assert exists("There_is_problem_existing_users.png")
+		for i in [1,2]:
+			click("Next_arrow.png")
+			assert exists("Root_Password.png")
+			wait(1)
+			type(Key.BACKSPACE)#+Key.BACKSPACE+Key.BACKSPACE+Key.BACKSPACE+Key.BACKSPACE+Key.BACKSPACE)
+			click("ok.png")
+			assert exists("create_database_for_this_user.png")
+			if i == 1:
+				type(Key.ENTER)
+				assert not exists("create_database_for_this_user.png")
+			if i == 2:
 				click("ok.png")
-				#gofigure crashes after this step
-				assert not exists("Root_Password.png")
-			if root == 2:
-				wait(1)
-				type(Key.BACKSPACE)#+Key.BACKSPACE+Key.BACKSPACE+Key.BACKSPACE+Key.BACKSPACE+Key.BACKSPACE)
-				click("ok.png")
-				click("ok.png")
+
 
 wait(3)
 type("First"+Key.TAB+Key.TAB+"Last"+Key.TAB+Key.ENTER)
