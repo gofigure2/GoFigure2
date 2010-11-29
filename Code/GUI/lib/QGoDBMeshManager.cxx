@@ -432,7 +432,7 @@ void QGoDBMeshManager::SetColorCoding(bool IsChecked)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
- QString QGoDBMeshManager::CheckExistingMeshesForTheTrack(
+QString QGoDBMeshManager::CheckExistingMeshesForTheTrack(
    unsigned int iTrackID,int iTimePoint,vtkMySQLDatabase* iDatabaseConnector)
 {
   QString MessageToPrint("");
@@ -448,3 +448,14 @@ void QGoDBMeshManager::SetColorCoding(bool IsChecked)
   return MessageToPrint;
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list<unsigned int> QGoDBMeshManager::CheckListMeshesAndReassignTrackID(
+  vtkMySQLDatabase *iDatabaseConnector,std::list< unsigned int > iListMeshIDs)
+{
+  std::list< unsigned int > TimePoints = 
+    this->m_CollectionOfTraces->GetTimePointWithSeveralTracesFromTheList(
+    iDatabaseConnector,iListMeshIDs);
+  //must return list of meshes with traceIDs reassigned to 0:
+  return TimePoints;
+}

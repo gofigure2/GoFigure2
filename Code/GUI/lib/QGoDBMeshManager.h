@@ -168,6 +168,13 @@ public:
   QString CheckExistingMeshesForTheTrack(
    unsigned int iTrackID,int iTimePoint,vtkMySQLDatabase* iDatabaseConnector);
 
+  /**
+  \brief check if in the iListMeshIDs, several have the same timepoint, if so,
+  replace all tracesIDs with zero except the max one
+  */
+  std::list<unsigned int> CheckListMeshesAndReassignTrackID(
+    vtkMySQLDatabase *iDatabaseConnector,std::list< unsigned int > iListMeshIDs);
+
 protected:
   GoDBTWContainerForMesh *m_TWContainer;
   MeshContainer   *m_MeshContainerInfoForVisu;

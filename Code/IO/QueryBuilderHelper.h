@@ -256,6 +256,7 @@ std::vector< std::string > VectorUnsgIntToVectorString(std::vector<unsigned int>
 std::string GetLeftJoinTwoTables(std::string iTableOne,std::string iTableTwo,
   FieldWithValue iOnCondition);
 
+std::string GetGroupBy(std::string iColumn, unsigned int iNumberDoublons);
 //iselectquery union iselectquery where ijoinon IS NULL (with or without
 // brackets in the
 //where clause, it will work

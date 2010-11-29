@@ -321,6 +321,13 @@ public:
   */
   std::list<unsigned int> GetTraceIDsWithTimePointAndCollectionID(vtkMySQLDatabase *iDatabaseConnector,
   unsigned int iCollectionID,unsigned int iTimePoint);
+
+  /**
+  \brief get the list of minimum timepoint for the list of traces
+  
+  */
+  std::list<unsigned int> GetTimePointWithSeveralTracesFromTheList(
+    vtkMySQLDatabase *iDatabaseConnector, std::list< unsigned int > iListTraceIDs);
 protected:
 
   std::string  m_CollectionName;

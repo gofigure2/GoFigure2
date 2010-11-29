@@ -789,17 +789,6 @@ std::list<unsigned int>  GoDBCollectionOfTraces::
   GetTraceIDsWithTimePointAndCollectionID( vtkMySQLDatabase *iDatabaseConnector,
   unsigned int iCollectionID,unsigned int iTimePoint)
 {
-  //std::vector<std::string> TraceIDField(1);
-  //TraceIDField[0] = this->m_TracesIDName;
-  //std::string LinkCoordinate = this->m_TracesName;
-  //LinkCoordinate += ".CoordIDMin = coordinate.coordID";
-  //std::vector<std::string> Conditions(4);
-  //Conditions[0]= this->m_CollectionIDName;
- // Conditions[1] = ConvertToString<unsigned int>(iCollectionID);
- // Conditions[2] = "TCoord";
-  //Conditions[3]= ConvertToString<unsigned int>(iTimePoint);
- // std::vector<std::string> VectorTraceIDs = GetAllSelectedValuesFromTwoTables(
- //   iDatabaseConnector,this->m_TracesName, "coordinate",TraceIDField, LinkCoordinate,Conditions);
   FieldWithValue JoinCondition = {"CoordIDMin", "CoordID", "="};
   std::vector<FieldWithValue> Conditions(2);
   FieldWithValue CollectionID = {this->m_CollectionIDName, ConvertToString<unsigned int>(iCollectionID), "="};
@@ -810,4 +799,22 @@ std::list<unsigned int>  GoDBCollectionOfTraces::
 
   return GetAllSelectedValuesFromTwoTables(
     iDatabaseConnector,this->m_TracesName,"coordinate", this->m_TracesIDName, JoinCondition,Conditions);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list<unsigned int> GoDBCollectionOfTraces::GetTimePointWithSeveralTracesFromTheList(
+  vtkMySQLDatabase *iDatabaseConnector,std::list< unsigned int > iListTraceIDs)
+{
+  std::list< unsigned int> TimePoints = std::list<unsigned int>();
+  if (!iListTraceIDs.empty())
+    {
+    FieldWithValue JoinCondition = {"CoordIDMin", "CoordID", "="};
+    std::vector<std::string> VectTraceIDs = ListUnsgIntToVectorString(iListTraceIDs);
+
+    TimePoints = GetDoublonValuesFromTwoTables(
+      iDatabaseConnector, this->m_TracesName, "coordinate",
+      "TCoord", JoinCondition,this->m_TracesIDName,VectTraceIDs,"TCoord");
+    }
+  return TimePoints;
 }
