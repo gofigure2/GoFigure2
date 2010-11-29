@@ -16,6 +16,7 @@ SET( QGOIO_SRC
   ContourMeshStructure.cxx
   TrackStructure.cxx
   CreateDataBaseHelper.cxx
+  GoDBAuthorRow.cxx
   GoDBChannelRow.cxx
   GoDBCollectionOfTraces.cxx
   GoDBColorRow.cxx
@@ -43,6 +44,7 @@ SET( QGOIO_SRC
   MegaCaptureHeaderReader.cxx
   QueryDataBaseHelper.cxx
   SelectQueryDatabaseHelper.cxx
+  QueryBuilderHelper.cxx
   itkLsm3DSerieImport.cxx
   itkMegaCaptureImport.cxx
   itkMegaCaptureReader.cxx

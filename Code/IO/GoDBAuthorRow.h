@@ -31,57 +31,31 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "GoDBIntensityRow.h"
-#include "GoDBRecordSetHelper.h"
+#ifndef __GoDBAuthorRow_h
+#define __GoDBAuthorRow_h
 
-GoDBIntensityRow::GoDBIntensityRow()
+#include <string>
+#include <map>
+#include <iostream>
+#include <sstream>
+#include "GoDBRow.h"
+#include "ConvertToStringHelper.h"
+
+class QGOIO_EXPORT GoDBAuthorRow:public GoDBRow
 {
-  this->InitializeMap();
-}
+public:
+  GoDBAuthorRow(); 
 
-//-------------------------------------------------------------------------
+  ~GoDBAuthorRow()
+  {}
+  int SaveInDB(vtkMySQLDatabase *DatabaseConnector);
 
-//-------------------------------------------------------------------------
-GoDBIntensityRow::~GoDBIntensityRow()
-{}
+  /**\brief check if the author already exists in the database, if yes,
+   return the corresponding ID, if not, return -1*/
+  int DoesThisAuthorAlreadyExists(vtkMySQLDatabase *DatabaseConnector);
 
-//-------------------------------------------------------------------------
+protected:
+  virtual void InitializeMap();
+};
 
-//-------------------------------------------------------------------------
-void GoDBIntensityRow::InitializeMap()
-{
-  this->m_TableName = "intensity";
-  this->m_TableIDName = "IntensityID";
-  this->m_MapRow["IntensityID"] = ConvertToString< int >(0);
-  this->m_MapRow["Value"] = ConvertToString< int >(0);
-  this->m_MapRow["meshID"] = ConvertToString< int >(0);
-  this->m_MapRow["ChannelID"] = ConvertToString< int >(0);
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-int GoDBIntensityRow::SaveInDB(vtkMySQLDatabase *DatabaseConnector)
-{
-  int IntensityID = this->DoesThisIntensityAlreadyExists(DatabaseConnector);
-
-  if ( IntensityID == -1 )
-    {
-    IntensityID = AddOnlyOneNewObjectInTable< GoDBIntensityRow >(
-      DatabaseConnector, "intensity", this, "IntensityID");
-    }
-  return IntensityID;
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-int GoDBIntensityRow::DoesThisIntensityAlreadyExists(
-  vtkMySQLDatabase *DatabaseConnector)
-{ 
-  std::vector<FieldWithValue> Conditions;
-  this->AddConditions("ChannelID",Conditions);
-  this->AddConditions("meshID",Conditions);
-
-  return FindOneID(DatabaseConnector, "intensity", "IntensityID", Conditions);
-}
+#endif

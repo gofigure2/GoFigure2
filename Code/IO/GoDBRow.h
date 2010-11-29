@@ -43,6 +43,7 @@
 #include <vector>
 
 #include "QGoIOConfigure.h"
+#include "SelectQueryDatabaseHelper.h"
 
 /**
 \class GoDBRow
@@ -186,7 +187,19 @@ public:
   virtual void SetValuesForSpecificID(int ID, vtkMySQLDatabase *iDatabaseConnector);
 
 protected:
+
+  /**
+  \brief virtual pure. initialize all the values of the map
+  */
   virtual void InitializeMap() = 0;
+
+  /**
+  \brief add as an element of ioFieldWithValue the name and value of the map with the key
+  iNameOfField
+  \param[in] iNameOfField key of the map
+  \param[in,out] ioFieldWithValue vector of FieldWithValue
+  */
+  void AddConditions(std::string iNameOfField, std::vector<FieldWithValue> &ioFieldWithValue);
 
   StringMapType m_MapRow;
   std::string   m_TableName;

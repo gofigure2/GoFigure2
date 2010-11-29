@@ -115,9 +115,12 @@ void GoDBTrackRow::InitializeMap()
 int GoDBTrackRow::DoesThisBoundingBoxTrackExist(
   vtkMySQLDatabase *DatabaseConnector)
 {
-  return FindOneID( DatabaseConnector, "track", "trackID",
-                    "CoordIDMax", this->GetMapValue("CoordIDMax"),
-                    "CoordIDMin", this->GetMapValue("CoordIDMin") );
+  std::vector<FieldWithValue> Conditions;
+  this->AddConditions("ImagingSessionID",Conditions);
+  this->AddConditions("CoordIDMax",Conditions);
+  this->AddConditions("CoordIDMin",Conditions);
+
+  return FindOneID( DatabaseConnector, "track", "trackID", Conditions);
 }
 
 //-------------------------------------------------------------------------
