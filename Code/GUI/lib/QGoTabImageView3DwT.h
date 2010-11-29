@@ -483,7 +483,8 @@ protected:
 
     if ( iMesh )
       {
-      bool visibility = true;
+      bool highlighted = false;
+      bool visibility = false;
 
       vtkProperty *mesh_property = vtkProperty::New();
       mesh_property->SetColor(iRgba[0], iRgba[1], iRgba[2]);
@@ -501,7 +502,7 @@ protected:
 
       m_TrackContainer->UpdateVisualizationForGivenElement< TIndex >(iIt,
                                                                     mesh_actor,
-                                                                    false,
+                                                                    highlighted,
                                                                     visibility);
       }
   }
