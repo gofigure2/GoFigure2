@@ -51,18 +51,18 @@ std::string ConvertToString(const T & ToConvert)
 template< typename T >
 T ss_atoi(const std::string & the_string)
 {
-  T temp;
   try
     {
-    temp = boost::lexical_cast< T >( the_string );
+    return boost::lexical_cast< T >( the_string );
     }
   catch( boost::bad_lexical_cast& )
     {
     std::cout<<"Bad Conversion";
     std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
     std::cout << std::endl;
+
+    return T();
     }
-  return temp;
 }
 
 #endif
