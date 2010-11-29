@@ -378,7 +378,7 @@ std::string SelectWithJoinNullIncluded(std::string iSelectQuery, std::string iJo
 
 // WHERE (iWhereAndConditions[i] = iWhereAndConditions[i+1] and/or ....)
 //if only 1 condition: WHERE iWhereAndConditions[i] = iWhereAndConditions[i+1]
-std::string WhereAndOrConditions(std::vector<std::string> iWhereAndConditions, 
+std::string WhereAndOrConditions(std::vector<std::string> iWhereAndConditions,
   bool iAnd = true);
 
 //select iselectedfields from itableone left join itabletwo on ijoincondition where

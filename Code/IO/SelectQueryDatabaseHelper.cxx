@@ -1619,7 +1619,7 @@ std::vector< std::vector< std::string > > GetValuesFromSeveralTables(
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::string WhereAndOrConditions(std::vector<std::string> iWhereAndConditions, 
+std::string WhereAndOrConditions(std::vector<std::string> iWhereAndConditions,
   bool iAnd)
 {  unsigned int i = 0;
   std::stringstream oQueryStream;
@@ -2285,7 +2285,6 @@ std::vector< std::string > GetAllSelectedValuesFromTwoTables(
   //QueryStream << ifield;
   //QueryStream << " = ";
  // QueryStream << ifieldValue;
- 
 
   //std::stringstream SelectQuery;
   //SelectQuery << SelectWithJoinNullIncluded(QueryStream.str(), iJoinCondition);

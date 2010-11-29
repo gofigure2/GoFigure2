@@ -49,7 +49,7 @@ GoDBTWContainerForContourMesh::~GoDBTWContainerForContourMesh()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBTWContainerForContourMesh::GetCommonInfoForTwoTracesTable()
+void GoDBTWContainerForContourMesh::SetCommonInfoForTwoTracesTable()
 {
   GoDBTraceInfoForTableWidget temp;
 
@@ -67,7 +67,7 @@ void GoDBTWContainerForContourMesh::GetCommonInfoForTwoTracesTable()
   m_RowContainer.push_back(PairTemp);
   temp.Clear();
 
-  this->GetInfoForColumnIsVisible();
+  this->SetInfoForColumnIsVisible();
 }
 //--------------------------------------------------------------------------
 
@@ -115,7 +115,7 @@ void GoDBTWContainerForContourMesh::FillColumnShowHide(vtkMySQLDatabase* iDataba
       ShowHideValue.clear();
       iter++;
     }
-  
+
   std::vector<std::string> Fields;
   Fields.push_back("Show");
   if (!Values.empty())

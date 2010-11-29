@@ -504,7 +504,7 @@ QGoImageView::GetAllSeeds()
       int *index = this->m_Pool->GetItem(i)->GetImageCoordinatesFromWorldCoordinates(worldPosition);
 
       // Convert it back into world position
-     // qDebug() << "SLICE NUMBER: " << this->m_Pool->GetItem(i)->GetSlice();
+      //qDebug() << "SLICE NUMBER: " << this->m_Pool->GetItem(i)->GetSlice();
       double spacing[3] = { 0., 0., 0. };
       this->m_Pool->GetItem(i)->GetInput()->GetSpacing(spacing);
       double correctedPosition[3];
@@ -513,7 +513,7 @@ QGoImageView::GetAllSeeds()
       correctedPosition[2] = static_cast< double >( index[2] ) * spacing[2];
 
       //qDebug() << "CORRECTED: " << correctedPosition[0] << " - "
-     //           << correctedPosition[1] << " - "
+      //          << correctedPosition[1] << " - "
       //          << correctedPosition[2];
 
       oPoints->InsertNextPoint(correctedPosition);

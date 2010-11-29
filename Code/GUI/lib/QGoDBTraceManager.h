@@ -37,14 +37,18 @@
 
 #include <QObject>
 #include <QMessageBox>
+#include <QMenu>
 #include "QGoTableWidget.h"
 #include "GoDBCollectionOfTraces.h"
 #include "GoDBTableWidgetContainer.h"
 #include "QGoGUILibConfigure.h"
 #include "ContourMeshContainer.h"
+#include "QGoColorCodingDialog.h"
+#include "vtkLookupTable.h"
+#include "vtkLookupTableManager.h"
 
 /**
-\class QGoDBTraceManager 
+\class QGoDBTraceManager
 \brief Abstract class inherited by QGoDBContourManager,Mesh,Track,Lineage
 \ingroup DB GUI
 */
@@ -109,7 +113,7 @@ public:
   //  vtkMySQLDatabase *iDatabaseConnector, int iTraceID);
 
   /**
-  \brief delete the corresponding traces in the table widget and in the 
+  \brief delete the corresponding traces in the table widget and in the
   container for visu
   \param[in] iTraceIDs list of the IDs for the traces to be deleted
   */
@@ -119,7 +123,7 @@ public:
   /**
   \brief get the data needed from the database for the
   imported traces,display them in new inserted rows of the m_Table and
-  update the container for the visu. 
+  update the container for the visu.
   \param[in] iVectorImportedTraces IDs of the imported traces
   \param[in] iDatabaseConnector connection to the database
   */
@@ -285,6 +289,7 @@ protected:
   QGoTableWidget *        m_Table;
   GoDBCollectionOfTraces *m_CollectionOfTraces;
   vtkMySQLDatabase *      m_DatabaseConnector;
+  bool                    IsColorCodingOn;
 
   /**
   \brief Virtual pure method: get the data needed from the database and
@@ -369,7 +374,7 @@ protected:
                                        int iIndexShowColumn = 0)
   {
     TWContainerType RowContainer =
-      iTWContainer->GetContainerLoadedWithAllFromDB(iDatabaseConnector);
+    iTWContainer->GetContainerLoadedWithAllFromDB(iDatabaseConnector);
 
     std::list< std::string > ColumnNames =
       iTWContainer->GetListColumnsNamesForTableWidget();
@@ -431,7 +436,7 @@ protected:
                              this->m_TraceName, this->m_CollectionName, iTraceID);
   }
 
-  /** 
+  /**
   \brief create the trace row with the related data provided by
   the visu, iTCoordMax is equal to 0 as for contour and mesh, it is the
   same as TCoord
@@ -598,7 +603,7 @@ protected:
   \tparam T ContourMeshContainer or TrackContainer
   */
   template< typename T >
-  void SetTracesInfoContainerForVisuTemplate(T *iContainerForVisu, 
+  void SetTracesInfoContainerForVisuTemplate(T *iContainerForVisu,
     T **iMemberContainerForVisu)
   {
     *iMemberContainerForVisu = iContainerForVisu;
@@ -623,7 +628,7 @@ protected:
                       SLOT ( UpdateElementVisibilityWithGivenTraceIDs(QStringList,
                                                    Qt::CheckState) ) );
   }
-  
+
   /**
   \brief delete the selected traces from the database, the TW and the
   container for visu
@@ -643,6 +648,76 @@ protected:
     this->m_Table->DeleteCheckedRows(this->m_TraceNameID, ListTracesIDs);
   }
 
+  /**
+  \brief get a map with the tracesIDs as keys and the values of the
+  selected columns as values for all traces in the table widget and
+  update the color of the traces in the visu
+  \param[in] iContainerForVisu common container for the visu and database
+  \tparam ContourMeshContainer or TrackContainer
+  */
+  template<typename T>
+  void SetColorCodingTemplate( T* iContainerForVisu,bool IsChecked)
+  {
+    std::string ColumnName = "";
+    std::map<unsigned int, std::string> Values;
+    IsColorCodingOn = IsChecked;
+
+    if (IsChecked)
+      {
+      Values = this->m_Table->GetTraceIDAndColumnsValues(
+						this->m_TraceNameID, ColumnName);
+
+        vtkLookupTable* LUT = NULL;
+
+		bool IsRandomIncluded =
+    	    (ColumnName == this->m_TraceNameID) ||
+			(ColumnName == this->m_CollectionNameID);
+
+      QGoColorCodingDialog::ColorWay UserColorway =
+        QGoColorCodingDialog::GetColorWay( this->m_TraceName, &LUT,
+        IsRandomIncluded, this->m_Table );
+
+      switch ( UserColorway )
+        {
+        case QGoColorCodingDialog::Default:
+          iContainerForVisu->SetColorCode( ColumnName,Values );
+          break;
+
+        case QGoColorCodingDialog::Random:
+          iContainerForVisu->SetRandomColor(ColumnName,Values );
+          break;
+
+        case QGoColorCodingDialog::LUT:
+          iContainerForVisu->SetColorCode( ColumnName,Values );
+          iContainerForVisu->SetLookupTableForColorCoding(LUT);
+          break;
+
+        default:
+        case QGoColorCodingDialog::Nothing:
+          IsColorCodingOn = !IsChecked;
+          break;
+        }
+      }
+    else
+      {
+      IsColorCodingOn = IsChecked;
+      iContainerForVisu->SetColorCode( ColumnName, Values );
+      }
+  }
+
+  /**
+  \brief return to the color saved in the database for the traces
+  \param[in] iContainerForVisu common container for the visu and database
+  \tparam ContourMeshContainer or TrackContainer
+  */
+  /*template<typename T>
+  void SetBackFromColorCodingTemplate( T* iContainerForVisu)
+  {
+    std::string ColumnName = "";
+  std::map<unsigned int, double> Values = std::map<unsigned int, double>();
+    iContainerForVisu->SetColorCode( ColumnName,Values );
+  }*/
+
   virtual void AddActionsContextMenu(QMenu *iMenu);
 
   void AddGeneralActionsContextMenu(QMenu *iMenu);
@@ -652,7 +727,7 @@ protected:
   virtual void AddActionForCreateNewCollectionFromCheckedTraces(QMenu *iMenu);
 
   /**
-  \brief get the info needed from the database to update the container 
+  \brief get the info needed from the database to update the container
   for visu
   */
   virtual void GetTracesInfoFromDBAndModifyContainerForVisu(
@@ -705,18 +780,31 @@ protected slots:
   void AddToSelectedCollection();
 
   /**
-  \brief modify to the opposite one the highlighted property of the corresponding 
+  \brief modify to the opposite one the highlighted property of the corresponding
   trace base on traceID in the container for visu
   \param[in] iTraceID ID of the trace for the property to be modified
   */
   virtual void UpdateHighlightedElementsInVisuContainer(int iTraceID) = 0;
 
   /**
-  \brief modify to the opposite one the Visible property of the corresponding 
+  \brief modify to the opposite one the Visible property of the corresponding
   trace base on traceID in the container for visu
   \param[in] iTraceID ID of the trace for the property to be modified
   */
   virtual void UpdateVisibleElementsInVisuContainer(int iTraceID) = 0;
+
+
+  /**
+  \brief ColorCode the traces in the visualization base on a selected column
+  in the table widget
+  */
+  virtual void SetColorCoding(bool IsChecked)= 0;
+
+  /**
+  \brief return to the color saved in the database for the traces in the
+  visualization
+  */
+  //virtual void BackFromColorCoding() = 0;
 
 };
 #endif

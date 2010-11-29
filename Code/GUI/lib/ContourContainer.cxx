@@ -31,23 +31,46 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __GoDBTWContainerForTrackLineage_h
-#define __GoDBTWContainerForTrackLineage_h
 
-#include "GoDBTableWidgetContainer.h"
-#include "QGoIOConfigure.h"
-/**
-\brief
-*/
-class QGOIO_EXPORT GoDBTWContainerForTrackLineage:public GoDBTableWidgetContainer
+#include "ContourContainer.h"
+
+#include <QDebug>
+
+ContourContainer::
+ContourContainer(QObject* iParent,
+                 QGoImageView3D *iView) : ContourMeshContainer( iParent, iView )
 {
-public:
-  GoDBTWContainerForTrackLineage(std::string iCollectionName, std::string iTracesName,
-                                 int iImgSessionID);
-  ~GoDBTWContainerForTrackLineage();
-protected:
+}
 
-  //GoDBTableWidgetContainer method
-  void SetCommonInfoForTwoTracesTable();
-};
-#endif
+ContourContainer::
+~ContourContainer()
+{}
+
+std::vector< vtkActor* >
+ContourContainer::
+AddTrace( vtkPolyData* iNode, vtkProperty* iProperty )
+{
+  std::vector< vtkActor* > oActors;
+
+  int dir = this->ComputeDirectionFromContour(iNode);
+
+  if ( dir != -1 )
+    {
+    m_ImageView->EnableContourWidget(true);
+    m_ImageView->InitializeContourWidgetNodes(dir, iNode);
+
+    vtkPolyData *trace = vtkPolyData::New();
+    trace->ShallowCopy(
+      m_ImageView->GetContourRepresentationAsPolydata(dir) );
+
+    oActors = this->m_ImageView->AddContour(trace, iProperty);
+
+    m_ImageView->ReinitializeContourWidget();
+    m_ImageView->EnableContourWidget(false);
+    }
+  else
+    {
+    qWarning() << "iNodes is not an axis-aligned contour";
+    }
+  return oActors;
+}

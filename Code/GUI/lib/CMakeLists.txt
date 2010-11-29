@@ -18,6 +18,8 @@ CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx.in
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx @ONLY IMMEDIATE )
 
 SET( QGoGUILIB_SRC
+  ContourContainer.cxx
+  MeshContainer.cxx
   ContourMeshContainer.cxx
   TrackContainer.cxx
   QGoConnectServerPage.cxx
@@ -76,11 +78,12 @@ SET( QGoGUILIB_SRC
   QGoDBContourManager.cxx
   QGoDBMeshManager.cxx
   QGoDBTrackManager.cxx
+  QGoColorCodingDialog.cxx
 
   # base segmentation widgets
   QGoContourSegmentationBaseDockWidget.cxx
   QGoMeshSegmentationBaseDockWidget.cxx
-  
+
   #--manual segmentation--
   QGoContourManualSegmentation.cxx
   QGoContourManualSegmentationWidget.cxx
@@ -132,6 +135,8 @@ ENDIF( ENABLE_VIDEO_RECORD_AVI )
 #---------------------------------------------------------------------------
 
 SET( QGoGUILIB_HDRS
+  ContourContainer.h
+  MeshContainer.h
   ContourMeshContainer.h
   TrackContainer.h
   QGoConnectServerPage.h
@@ -191,11 +196,12 @@ SET( QGoGUILIB_HDRS
   QGoDBContourManager.h
   QGoDBMeshManager.h
   QGoDBTrackManager.h
+  QGoColorCodingDialog.h
 
   # base segmentation widgets
   QGoContourSegmentationBaseDockWidget.h
   QGoMeshSegmentationBaseDockWidget.h
-  
+
   #--manual segmentation--
   QGoContourManualSegmentation.h
   QGoContourManualSegmentationWidget.h
@@ -212,7 +218,7 @@ SET( QGoGUILIB_HDRS
     QGoFilterChanAndVes.h
     QGoFilterShape.h
     QGoFilterWatershed.h
-    
+
   # for the tracks
   QGoTrackDockWidget.h
 )
@@ -249,7 +255,7 @@ SET( QGoGUILIB_UI
   Resources/ContourManualSegmentationDockWidget.ui
   Resources/ContourManualSegmentationWidget.ui
   Resources/ContourSemiAutoShapeWidget.ui
-  
+
 # other
   Resources/NavigationDockWidget.ui
   Resources/QGoPrintDatabase.ui
@@ -263,7 +269,7 @@ SET( QGoGUILIB_UI
   Resources/BaseAlgoSegmentationDockWidget.ui
   Resources/LevelsetWidget.ui
   Resources/WatershedWidget.ui
-  
+
   # for tracks
   Resources/TrackDockWidget.ui
 )

@@ -35,15 +35,10 @@
 #ifndef __TrackStructure_h
 #define __TrackStructure_h
 
-class vtkActor;
-class vtkPolyData;
-class vtkProperty;
-
-#include <ostream>
-#include <vector>
-#include <map>
-
+#include "TraceStructure.h"
 #include "QGoIOConfigure.h"
+
+#include <map>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 #include "StructureHelper.h"
@@ -51,50 +46,26 @@ class vtkProperty;
 
 /**
 \defgroup Track Track
-\defgroup Trace Trace
-\defgroup Structure Structure
 */
 
 /**
  * \struct TrackStructure
  * \brief  Structure which represent a track, and used for
  * interaction between Visualization and TableWidget
- * \ingroup Track Trace Structure
+ * \ingroup Track Trace
  */
-struct QGOIO_EXPORT TrackStructure {
-  /** TraceID */
-  unsigned int TraceID;
+class QGOIO_EXPORT TrackStructure : public TraceStructure
+{
+public:
 
-  /** Actor in the XY View */
-  vtkActor *ActorXY;
-
-  /** Actor in the XZ View */
-  vtkActor *ActorXZ;
-
-  /** Actor in the YZ View */
-  vtkActor *ActorYZ;
-
-  /** Actor in the XYZ View */
-  vtkActor *ActorXYZ;
-
-  /** Polydata representing the track (a line). It also contains the temporal information. */
-  vtkPolyData *Nodes;
-
-  /*
+  /**
    * Map containing all the polydata points ordered by time
    */
-  std::map< unsigned int, double*> PointsMap;
+  typedef std::map< unsigned int, double* > PointsMapType;
+  typedef PointsMapType::iterator PointsMapIterator;
+  typedef PointsMapType::const_iterator PointsMapConstIterator;
 
-  /** Is the track Highlighted in the Visualization ? */
-  bool Highlighted;
-
-  /** Is the track Visible (appears on the screen)
-  * in the Visualization ?
-  */
-  bool Visible;
-
-  /** color of the track. \note each component is in [0,1] */
-  double rgba[4];
+  PointsMapType PointsMap;
 
   /** Default Constructor */
   TrackStructure();
@@ -146,7 +117,7 @@ struct QGOIO_EXPORT TrackStructure {
    * is already a point associated to this time point). If you want to override
    * this point, call ReplaceElement(int iTime, double* iPoint) instead.
    */
-  bool InsertElement(int iTime, double* iPoint);
+  bool InsertElement(const unsigned int& iTime, double* iPoint);
 
   /**
    * \brief Delete the point at the current time point.
@@ -154,7 +125,7 @@ struct QGOIO_EXPORT TrackStructure {
    * \return true is element has been deleted, false if there where no point at
    * the specified time point.
    */
-  bool DeleteElement(int iTime);
+  bool DeleteElement(const unsigned int& iTime);
 
   /**
    * \brief Replace the point at the current time point.
@@ -164,15 +135,9 @@ struct QGOIO_EXPORT TrackStructure {
    * specified time point. If you want to add this point, call
    * InsertElement(int iTime, double* iPoint) instead.
    */
-  bool ReplaceElement(int iTime, double* iPoint);
+  bool ReplaceElement(const unsigned int& iTime, double* iPoint);
 
-  /** \brief Set Property for all actors
-      \param[in] iProperty */
-  void SetActorProperties( vtkProperty* iProperty ) const;
-
-  /** \brief Set Visibility for all actors
-      \param[in] iVisible */
-  void SetActorVisibility( const bool& iVisible ) const;
+  void ReleaseData() const;
 
   /** Printing one element. std::cout << element << std::endl; */
   friend std::ostream & operator<<
@@ -205,6 +170,25 @@ struct QGOIO_EXPORT TrackStructure {
 
     return os;
   }
+
+  void UpdateTracksRepresentation( bool iGlyph, bool iTube ) const;
+
 };
+
+/**
+  \brief merge 2 tracks (if they do not overlap) into oMerged
+  \param[in] iT1 track1
+  \param[in] iT2 track2
+  \param[out] oMerged merged track (take attributes from the earliest track in time)
+  \return true if iT1 and iT2 don't overlap
+*/
+bool TrackMerge( const TrackStructure& iT1,
+                 const TrackStructure& iT2,
+                 TrackStructure& oMerged );
+
+bool TrackSplit( const TrackStructure& iTrack,
+                 const unsigned int& iTime,
+                 TrackStructure& oT1,
+                 TrackStructure& oT2 );
 
 #endif

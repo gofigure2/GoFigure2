@@ -38,16 +38,15 @@
 #include "vtkPolyData.h"
 #include "vtkActor.h"
 
+#include "vtkSphereSource.h"
+#include "vtkGlyph3D.h"
+#include "vtkTubeFilter.h"
+#include "vtkAppendPolyData.h"
+
 //--------------------------------------------------------------------------
 TrackStructure::
-TrackStructure():TraceID(0),
-  ActorXY(NULL), ActorXZ(NULL), ActorYZ(NULL), ActorXYZ(NULL), Nodes(NULL),
-  Highlighted(false), Visible(false)
+TrackStructure():TraceStructure()
 {
-  this->rgba[0] = 1.;
-  this->rgba[1] = 1.;
-  this->rgba[2] = 1.;
-  this->rgba[3] = 1.;
 }
 
 //--------------------------------------------------------------------------
@@ -144,15 +143,8 @@ TrackStructure(const unsigned int & iTraceID,
 //--------------------------------------------------------------------------
 TrackStructure::
 TrackStructure(const TrackStructure & iE):
-  TraceID(iE.TraceID), ActorXY(iE.ActorXY), ActorXZ(iE.ActorXZ),
-  ActorYZ(iE.ActorYZ), ActorXYZ(iE.ActorXYZ), Nodes(iE.Nodes),
-  PointsMap(iE.PointsMap), Highlighted(iE.Highlighted), Visible(iE.Visible)
-{
-  for ( int i = 0; i < 4; i++ )
-    {
-    this->rgba[i] = iE.rgba[i];
-    }
-}
+  TraceStructure( iE ), PointsMap(iE.PointsMap)
+{}
 
 //--------------------------------------------------------------------------
 
@@ -166,15 +158,16 @@ TrackStructure::
 //--------------------------------------------------------------------------
 bool
 TrackStructure::
-InsertElement(int iTime, double* iPoint)
+InsertElement(const unsigned int& iTime, double* iPoint)
 {
   // check if there is something at the iTime time point
-  std::map< unsigned int,double*>::iterator pointsMapIterator = this->PointsMap.find(iTime);
+  PointsMapIterator pointsMapIterator = this->PointsMap.find(iTime);
 
   // if there is no point, insert it and return true
   if ( pointsMapIterator == this->PointsMap.end() )
     {
-    this->PointsMap.insert( std::pair< unsigned int,double*>(iTime, iPoint) );
+    this->PointsMap.insert(
+          std::pair< unsigned int, double* >( iTime, iPoint ) );
     return true;
     }
 
@@ -188,10 +181,10 @@ InsertElement(int iTime, double* iPoint)
 //--------------------------------------------------------------------------
 bool
 TrackStructure::
-DeleteElement(int iTime)
+DeleteElement(const unsigned int& iTime)
 {
   // check if there is something at the iTime time point
-  std::map< unsigned int,double*>::iterator pointsMapIterator = this->PointsMap.find(iTime);
+  PointsMapIterator pointsMapIterator = this->PointsMap.find(iTime);
 
   // if there is a point, delete it and return true
   if ( pointsMapIterator != this->PointsMap.end() )
@@ -213,7 +206,7 @@ DeleteElement(int iTime)
 //--------------------------------------------------------------------------
 bool
 TrackStructure::
-ReplaceElement(int iTime, double* iPoint)
+ReplaceElement(const unsigned int& iTime, double* iPoint)
 {
   // delete the existing element
   bool deleteElement = DeleteElement(iTime);
@@ -232,47 +225,215 @@ ReplaceElement(int iTime, double* iPoint)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void TrackStructure::SetActorProperties( vtkProperty* iProperty ) const
-  {
-  if( iProperty )
+void
+TrackStructure::ReleaseData() const
+{
+  TraceStructure::ReleaseData();
+
+  PointsMapConstIterator begin = this->PointsMap.begin();
+  PointsMapConstIterator end = this->PointsMap.end();
+
+  while( begin != end )
     {
-    if( this->ActorXY )
-      {
-      this->ActorXY->SetProperty( iProperty );
-      }
-    if( this->ActorXZ )
-      {
-      this->ActorXZ->SetProperty( iProperty );
-      }
-    if( this->ActorYZ )
-      {
-      this->ActorYZ->SetProperty( iProperty );
-      }
-    if( this->ActorXYZ )
-      {
-      this->ActorXYZ->SetProperty( iProperty );
-      }
+    delete[] begin->second;
+    ++begin;
     }
-  }
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void TrackStructure::SetActorVisibility( const bool& iVisible ) const
+void
+TrackStructure::
+UpdateTracksRepresentation( bool iGlyph, bool iTube ) const
 {
-  if ( this->ActorXY )
+  vtkPolyData* glyph_pd = NULL;
+  vtkSphereSource* sphere = NULL;
+  vtkGlyph3D* glyph = NULL;
+
+  if( iGlyph )
     {
-    this->ActorXY->SetVisibility(iVisible);
+    // Glyph shape
+    sphere = vtkSphereSource::New();
+    sphere->SetThetaResolution( 8 );
+    sphere->SetPhiResolution( 8 );
+
+    glyph = vtkGlyph3D::New();
+    glyph->SetInput( this->Nodes );
+    glyph->SetSource( sphere->GetOutput() );
+    glyph->Update();
+
+    glyph_pd = glyph->GetOutput();
     }
-  if ( this->ActorXZ )
+
+  vtkPolyData* tube_pd = NULL;
+  vtkTubeFilter* tube = NULL;
+
+  if( iTube )
     {
-    this->ActorXZ->SetVisibility(iVisible);
+    tube = vtkTubeFilter::New();
+    tube->SetNumberOfSides( 8 );
+    tube->SetInput( this->Nodes );
+    tube->SetRadius( .2  );
+    tube->Update();
+
+    tube_pd = tube->GetOutput();
     }
-  if ( this->ActorYZ )
+  else
     {
-    this->ActorYZ->SetVisibility(iVisible);
+    tube_pd = this->Nodes;
     }
-  if ( this->ActorXYZ )
+
+  vtkPolyData* temp = NULL;
+  vtkAppendPolyData* apd = NULL;
+
+  if( glyph_pd && tube_pd )
     {
-    this->ActorXYZ->SetVisibility(iVisible);
+    // append both polydata sets
+    apd = vtkAppendPolyData::New();;
+    apd->AddInput( glyph_pd );
+    apd->AddInput( tube_pd );
+    apd->Update();
+
+    temp = apd->GetOutput();
+    }
+  else
+    {
+    if( glyph_pd )
+      {
+      temp = glyph_pd;
+      }
+    else
+      {
+      if( tube_pd )
+        {
+        temp = tube_pd;
+        }
+      else
+        {
+        temp = this->Nodes;
+        }
+      }
+    }
+
+  this->Nodes->DeepCopy( temp );
+
+  if( sphere )
+    {
+    sphere->Delete();
+    }
+  if( glyph )
+    {
+    glyph->Delete();
+    }
+  if( tube )
+    {
+    tube->Delete();
+    }
+  if( apd )
+    {
+    apd->Delete();
     }
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+bool TrackMerge( const TrackStructure& iT1,
+                 const TrackStructure& iT2,
+                 TrackStructure& oMerged )
+{
+  unsigned int t_min1 = iT1.PointsMap.begin()->first;
+  unsigned int t_max1 = iT1.PointsMap.rbegin()->first;
+
+  unsigned int t_min2 = iT2.PointsMap.begin()->first;
+  unsigned int t_max2 = iT2.PointsMap.rbegin()->first;
+
+  bool min1 = ( t_min1 <= t_min2 );
+  bool min2 = ( t_min2 <= t_min1 );
+
+  bool max1 = ( t_max2 <= t_max1 );
+  bool max2 = ( t_max1 <= t_max2 );
+
+  if( ( min1 && max1 ) || ( min2 && max2 ) )
+    {
+    std::cout << "one track is totally included into the other one" <<std::endl;
+    return false;
+    }
+  else
+    {
+    if( ( ( min1 && max2 ) && ( t_min2 < t_max1 ) ) ||
+        ( ( min2 && max1 ) && ( t_min1 < t_max2 ) ) )
+      {
+      std::cout << "these two tracks overlap" << std::endl;
+      return false;
+      }
+    else
+      {
+      std::cout << "optimal case" <<std::endl;
+
+      TrackStructure::PointsMapConstIterator p_start, p_end;
+      if( min1 )
+        {
+        oMerged = iT2;
+
+        p_start = iT2.PointsMap.begin();
+        p_end = iT2.PointsMap.end();
+        }
+      else
+        {
+        oMerged = iT2;
+
+        p_start = iT1.PointsMap.begin();
+        p_end = iT1.PointsMap.end();
+        }
+
+      // here the code can be optimized!!!
+      while( p_start != p_end )
+        {
+        oMerged.PointsMap[p_start->first] = p_start->second;
+        ++p_start;
+        }
+      return true;
+      }
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+bool TrackSplit( const TrackStructure& iTrack,
+                 const unsigned int& iTime,
+                 TrackStructure& oT1,
+                 TrackStructure& oT2 )
+{
+  TrackStructure::PointsMapConstIterator
+      it = iTrack.PointsMap.lower_bound( iTime );
+
+  if( it != iTrack.PointsMap.end() )
+    {
+    TrackStructure::PointsMapConstIterator begin = iTrack.PointsMap.begin();
+
+    oT1 = iTrack;
+
+    oT2.Highlighted = iTrack.Highlighted;
+    oT2.Visible = iTrack.Visible;
+    oT2.rgba[0] = iTrack.rgba[0];
+    oT2.rgba[1] = iTrack.rgba[1];
+    oT2.rgba[2] = iTrack.rgba[2];
+    oT2.rgba[3] = iTrack.rgba[3];
+
+    while( begin != it )
+      {
+      oT1.PointsMap[ begin->first ] = begin->second;
+      ++begin;
+      }
+    while( begin != iTrack.PointsMap.end() )
+      {
+      oT2.PointsMap[ begin->first ] = begin->second;
+      ++begin;
+      }
+
+    return true;
+    }
+
+  return false;
+}
+//--------------------------------------------------------------------------
