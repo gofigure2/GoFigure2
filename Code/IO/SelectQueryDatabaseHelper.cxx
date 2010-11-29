@@ -1268,7 +1268,7 @@ std::list<unsigned int> GetAllSelectedValuesFromTwoTables(
 {
   std::string Where = GetLeftJoinTwoTables(iTableOne,iTableTwo,iJoinCondition);
   std::string QueryString = SelectQueryStreamListConditions(Where,iColumn,
-                                            iFieldsWithValues, false,"AND");
+                                            iFieldsWithValues,"AND",false);
   return ExecuteSelectQuery <std::list<unsigned int> >( iDatabaseConnector, QueryString );
  /* std::stringstream QueryStream;
 

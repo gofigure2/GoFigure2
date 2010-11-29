@@ -205,8 +205,8 @@ std::string SelectQueryStreamListConditions(std::string iTable,
                                             std::vector<std::string> iListAttributes, 
                                             std::string iField,
                                             std::vector< std::string > iListValues, 
-                                            bool Distinct,
-                                            std::string iConditionConnector)
+                                            std::string iConditionConnector,
+                                            bool Distinct)
 {
   std::string What = GetSelectedAttributes(iListAttributes);
   return SelectQueryStreamListConditions(iTable,What,iField,iListValues,Distinct,iConditionConnector);
