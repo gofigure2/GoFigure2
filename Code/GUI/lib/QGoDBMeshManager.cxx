@@ -450,11 +450,12 @@ QString QGoDBMeshManager::CheckExistingMeshesForTheTrack(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::list<unsigned int> QGoDBMeshManager::CheckListMeshesAndReassignTrackID(
+std::list<unsigned int> QGoDBMeshManager::CheckListMeshesFromDifferentTimePoints(
   vtkMySQLDatabase *iDatabaseConnector,std::list< unsigned int > iListMeshIDs,
   std::list<unsigned int> & ioListMeshIDsToBePartOfTrack)
 {
   std::list< unsigned int> TraceIDsToReassign = std::list< unsigned int >();
+  ioListMeshIDsToBePartOfTrack = iListMeshIDs;
   std::list< unsigned int > TimePointsWithSeveralMeshes = 
     this->m_CollectionOfTraces->GetTimePointWithSeveralTracesFromTheList(
     iDatabaseConnector,iListMeshIDs);
@@ -466,15 +467,21 @@ std::list<unsigned int> QGoDBMeshManager::CheckListMeshesAndReassignTrackID(
       iDatabaseConnector,iListMeshIDs,*iter);
     if (MaxMeshIDForTimePoint != -1)
       {
-      ioListMeshIDsToBePartOfTrack.push_back(MaxMeshIDForTimePoint);
       std::list<unsigned int> TraceIDs = 
         this->m_CollectionOfTraces->GetNonMaxTraceIDsForSpecificTimePoint(
         iDatabaseConnector, iListMeshIDs, *iter,MaxMeshIDForTimePoint);
-      std::copy(TraceIDs.begin(),TraceIDs.end(),std::back_inserter(TraceIDsToReassign));
+      std::copy(TraceIDs.begin(),TraceIDs.end(),std::back_inserter(TraceIDsToReassign) );
+      std::list<unsigned int>::iterator iterTraceIDToRemove = TraceIDs.begin();
+      while (iterTraceIDToRemove != TraceIDs.end())
+        {
+        std::list <unsigned int>::iterator Find = 
+          std::find(ioListMeshIDsToBePartOfTrack.begin(), ioListMeshIDsToBePartOfTrack.end(),
+          *iterTraceIDToRemove);
+        ioListMeshIDsToBePartOfTrack.erase(Find);
+        iterTraceIDToRemove++;
+        }
       }
     iter++;
     }
-  //std::list< unsigned int > MeshesIDsToKeep = 
-  //must return list of meshes with traceIDs reassigned to 0:
   return TraceIDsToReassign;
 }

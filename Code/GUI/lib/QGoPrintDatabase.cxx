@@ -1459,10 +1459,12 @@ void QGoPrintDatabase::AddCheckedMeshesToSelectedTrack(std::list< unsigned int >
   this->OpenDBConnection();
   std::list<unsigned int> ListMeshToBelongToTheTrack;
   std::list<unsigned int> ListMeshToReassign = 
-    this->m_MeshesManager->CheckListMeshesAndReassignTrackID(
+    this->m_MeshesManager->CheckListMeshesFromDifferentTimePoints(
       this->m_DatabaseConnector,iListCheckedMeshes,ListMeshToBelongToTheTrack);
+  
+
   this->AddCheckedTracesToCollection< QGoDBMeshManager, QGoDBTrackManager >
     (this->m_MeshesManager, this->m_TracksManager,
-    ss_atoi< unsigned int >(this->m_SelectedCollectionData.first), iListCheckedMeshes);
+    ss_atoi< unsigned int >(this->m_SelectedCollectionData.first), ListMeshToBelongToTheTrack);
   this->CloseDBConnection();
 }
