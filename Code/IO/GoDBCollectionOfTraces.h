@@ -323,11 +323,38 @@ public:
   unsigned int iCollectionID,unsigned int iTimePoint);
 
   /**
-  \brief get the list of minimum timepoint for the list of traces
-  
+  \brief get the list of timepoints where several traces from the list of traces
+  have the same ones
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iListTraceIDs list of the IDs of the traces to be checked
+  \return list of timepoints with several traces from the list
   */
   std::list<unsigned int> GetTimePointWithSeveralTracesFromTheList(
     vtkMySQLDatabase *iDatabaseConnector, std::list< unsigned int > iListTraceIDs);
+
+  /**
+  \brief get the max of the IDs for the traceIDs in iListTraceIDs that have a
+  timepoint equal to iTimePoint
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iListTraceIDs list of the IDs of the traces to be checked
+  \param[in] iTimePoint timepoint for which the traceIDs are checked
+  \return the max of the traceIDs for this timepoint
+  */
+  int GetMaxTraceIDsForSpecificTimePoint(vtkMySQLDatabase *iDatabaseConnector,
+    std::list<unsigned int> iListTraceIDs,unsigned int iTimePoint);
+
+  /**
+  \brief get all the traceIDs except the iMaxTraceID for the timepoint
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iListTraceIDs list of the IDs of the traces to be checked
+  \param[in] iTimePoint timepoint for which the traceIDs are checked
+  \param[in] iMaxTraceID max of the traceIDs for this timepoint
+  \return all the traceIDs for this timepoint different than the max one
+  */
+  std::list<unsigned int> GetNonMaxTraceIDsForSpecificTimePoint(
+    vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTraceIDs,
+    unsigned int iTimePoint,unsigned int iMaxTraceID);
+
 protected:
 
   std::string  m_CollectionName;

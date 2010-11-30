@@ -173,7 +173,9 @@ public:
   replace all tracesIDs with zero except the max one
   */
   std::list<unsigned int> CheckListMeshesAndReassignTrackID(
-    vtkMySQLDatabase *iDatabaseConnector,std::list< unsigned int > iListMeshIDs);
+    vtkMySQLDatabase *iDatabaseConnector,
+    std::list< unsigned int > iListMeshIDs,
+    std::list<unsigned int> & ioListMeshIDsToBePartOfTrack);
 
 protected:
   GoDBTWContainerForMesh *m_TWContainer;

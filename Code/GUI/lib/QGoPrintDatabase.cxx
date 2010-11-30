@@ -1457,8 +1457,10 @@ void QGoPrintDatabase::AddCheckedContoursToSelectedMesh(std::list< unsigned int 
 void QGoPrintDatabase::AddCheckedMeshesToSelectedTrack(std::list< unsigned int > iListCheckedMeshes)
 {
   this->OpenDBConnection();
-  this->m_MeshesManager->CheckListMeshesAndReassignTrackID(
-    this->m_DatabaseConnector,iListCheckedMeshes);
+  std::list<unsigned int> ListMeshToBelongToTheTrack;
+  std::list<unsigned int> ListMeshToReassign = 
+    this->m_MeshesManager->CheckListMeshesAndReassignTrackID(
+      this->m_DatabaseConnector,iListCheckedMeshes,ListMeshToBelongToTheTrack);
   this->AddCheckedTracesToCollection< QGoDBMeshManager, QGoDBTrackManager >
     (this->m_MeshesManager, this->m_TracksManager,
     ss_atoi< unsigned int >(this->m_SelectedCollectionData.first), iListCheckedMeshes);

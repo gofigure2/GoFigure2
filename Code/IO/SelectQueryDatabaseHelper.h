@@ -486,10 +486,20 @@ std::list< unsigned int > GetAllSelectedValuesFromTwoTables(vtkMySQLDatabase *iD
   std::string iColumn, FieldWithValue iJoinCondition,
   std::string iField, std::vector<std::string> iVectorValues, bool Distinct = false);
 
+std::list< unsigned int > GetAllSelectedValuesFromTwoTables(vtkMySQLDatabase *iDatabaseConnector, 
+  std::string iTableOne, std::string iTableTwo,
+  std::string iColumn, FieldWithValue iJoinCondition,
+  std::string iField, std::vector<std::string> iVectorValues,FieldWithValue iAndCondition);
+
 std::list< unsigned int > GetDoublonValuesFromTwoTables(
       vtkMySQLDatabase* iDatabaseConnector, std::string iTableOne, std::string iTableTwo,
       std::string iColumn, FieldWithValue iJoinCondition,std::string iField,
       std::vector<std::string> iVectValues, std::string GroupByColumn = "");
+
+int GetMaxValueFromTwoTables(vtkMySQLDatabase *iDatabaseConnector, 
+  std::string iTableOne, std::string iTableTwo,std::string iColumn, 
+  FieldWithValue iJoinCondition,std::string iField, 
+  std::vector<std::string> iVectorValues,FieldWithValue iAndCondition);
 
 //add the selected fields separated by ',' to the ioQueryStream
 //void GetAllSelectedFields(std::stringstream & ioQueryStream,

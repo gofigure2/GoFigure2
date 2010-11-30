@@ -1284,6 +1284,49 @@ std::list< unsigned int > GetAllSelectedValuesFromTwoTables(vtkMySQLDatabase *iD
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+std::list< unsigned int > GetAllSelectedValuesFromTwoTables(vtkMySQLDatabase *iDatabaseConnector, 
+  std::string iTableOne, std::string iTableTwo,
+  std::string iColumn, FieldWithValue iJoinCondition,
+  std::string iField, std::vector<std::string> iVectorValues,FieldWithValue iAndCondition)
+{
+  std::string Where = GetLeftJoinTwoTables(iTableOne,iTableTwo,iJoinCondition);
+  std::string Conditions = "(";
+  Conditions += GetConditions<std::string>(iField,iVectorValues,"OR");
+  Conditions += " AND ";
+  std::vector<FieldWithValue> AndCondition(1);
+  AndCondition[0] = iAndCondition;
+  Conditions += GetConditions(AndCondition);
+  Conditions += ")";
+  std::string QueryString = SelectGeneralQueryConditions(iColumn,Where,Conditions);
+
+  return ExecuteSelectQuery<std::list<unsigned int> >(iDatabaseConnector,QueryString);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int GetMaxValueFromTwoTables(vtkMySQLDatabase *iDatabaseConnector, 
+  std::string iTableOne, std::string iTableTwo,
+  std::string iColumn, FieldWithValue iJoinCondition,
+  std::string iField, std::vector<std::string> iVectorValues,
+  FieldWithValue iAndCondition)
+{
+  std::string What = "MAX(";
+  What += iColumn;
+  What += ")";
+  std::string Where = GetLeftJoinTwoTables(iTableOne,iTableTwo,iJoinCondition);
+  std::string Conditions = "(";
+  Conditions += GetConditions<std::string>(iField,iVectorValues,"OR");
+  Conditions += " AND ";
+  std::vector<FieldWithValue> AndCondition(1);
+  AndCondition[0] = iAndCondition;
+  Conditions += GetConditions(AndCondition);
+  Conditions += ")";
+  std::string QueryString = SelectGeneralQueryConditions(What,Where,Conditions);
+  return ExecuteSelectQueryOneValue<int>(iDatabaseConnector,QueryString);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 std::list< unsigned int > GetDoublonValuesFromTwoTables(
       vtkMySQLDatabase* iDatabaseConnector, std::string iTableOne, std::string iTableTwo,
       std::string iColumn, FieldWithValue iJoinCondition,std::string iField,

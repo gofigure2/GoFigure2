@@ -45,6 +45,7 @@
 #include <QString>
 #include <string>
 #include <map>
+#include <algorithm>
 
 GoDBCollectionOfTraces::GoDBCollectionOfTraces()
 {
@@ -817,4 +818,45 @@ std::list<unsigned int> GoDBCollectionOfTraces::GetTimePointWithSeveralTracesFro
       "TCoord", JoinCondition,this->m_TracesIDName,VectTraceIDs,"TCoord");
     }
   return TimePoints;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int GoDBCollectionOfTraces::GetMaxTraceIDsForSpecificTimePoint(
+  vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTraceIDs,
+  unsigned int iTimePoint)
+{
+  int oMaxTraceID = -1;
+  if (!iListTraceIDs.empty())
+    {
+    FieldWithValue JoinCondition = {"CoordIDMin", "CoordID", "="};
+    std::vector<std::string> VectTraceIDs = ListUnsgIntToVectorString(iListTraceIDs);
+    FieldWithValue TCoord = {"TCoord",ConvertToString<unsigned int> (iTimePoint), "="};
+    oMaxTraceID = GetMaxValueFromTwoTables(iDatabaseConnector, this->m_TracesName, "coordinate",
+      this->m_TracesIDName, JoinCondition,this->m_TracesIDName, VectTraceIDs,TCoord); 
+    }
+  return oMaxTraceID;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list<unsigned int> GoDBCollectionOfTraces::
+  GetNonMaxTraceIDsForSpecificTimePoint(
+  vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTraceIDs,
+    unsigned int iTimePoint,unsigned int iMaxTraceID)
+{
+  std::list< unsigned int >::iterator iter = std::find(iListTraceIDs.begin(),
+    iListTraceIDs.end(),iMaxTraceID);
+  iListTraceIDs.erase(iter);
+  std::list<unsigned int> oListTraceIDs = std::list<unsigned int>();
+  if (!iListTraceIDs.empty())
+  {
+    FieldWithValue JoinCondition = {"CoordIDMin", "CoordID", "="};
+    std::vector<std::string> VectTraceIDs = ListUnsgIntToVectorString(iListTraceIDs);
+    FieldWithValue TCoord = {"TCoord",ConvertToString<unsigned int> (iTimePoint), "="};
+    oListTraceIDs = GetAllSelectedValuesFromTwoTables(iDatabaseConnector, 
+      this->m_TracesName, "coordinate",this->m_TracesIDName, JoinCondition,
+      this->m_TracesIDName, VectTraceIDs,TCoord);
+  }
+  return oListTraceIDs;
 }
