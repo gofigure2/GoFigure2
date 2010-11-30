@@ -474,16 +474,36 @@ std::string WhereAndOrConditions(std::vector<std::string> iWhereAndConditions,
 std::list<unsigned int> GetAllSelectedValuesFromTwoTables(
   vtkMySQLDatabase *iDatabaseConnector, std::string iTableOne, std::string iTableTwo,
   std::string iColumn, FieldWithValue iJoinCondition,
-  std::vector<FieldWithValue> iFieldsWithValues);
+  std::vector<FieldWithValue> iFieldsWithValues, bool Distinct = false);
 
 std::vector<std::string> GetAllSelectedValuesFromTwoTables(
   vtkMySQLDatabase *iDatabaseConnector, std::string iTableOne, std::string iTableTwo,
   std::vector<std::string> iListAttributes, FieldWithValue iJoinCondition,
   std::vector<FieldWithValue> iFieldsWithValues);
 
+std::list< unsigned int > GetAllSelectedValuesFromTwoTables(vtkMySQLDatabase *iDatabaseConnector, 
+  std::string iTableOne, std::string iTableTwo,
+  std::string iColumn, FieldWithValue iJoinCondition,
+  std::string iField, std::vector<std::string> iVectorValues, bool Distinct = false);
+
+std::list< unsigned int > GetAllSelectedValuesFromTwoTables(vtkMySQLDatabase *iDatabaseConnector, 
+  std::string iTableOne, std::string iTableTwo,
+  std::string iColumn, FieldWithValue iJoinCondition,
+  std::string iField, std::vector<std::string> iVectorValues,FieldWithValue iAndCondition);
+
+std::list< unsigned int > GetDoublonValuesFromTwoTables(
+      vtkMySQLDatabase* iDatabaseConnector, std::string iTableOne, std::string iTableTwo,
+      std::string iColumn, FieldWithValue iJoinCondition,std::string iField,
+      std::vector<std::string> iVectValues, std::string GroupByColumn = "");
+
+int GetMaxValueFromTwoTables(vtkMySQLDatabase *iDatabaseConnector, 
+  std::string iTableOne, std::string iTableTwo,std::string iColumn, 
+  FieldWithValue iJoinCondition,std::string iField, 
+  std::vector<std::string> iVectorValues,FieldWithValue iAndCondition);
+
 //add the selected fields separated by ',' to the ioQueryStream
-void GetAllSelectedFields(std::stringstream & ioQueryStream,
-                          std::vector< std::string > iSelectedFields);
+//void GetAllSelectedFields(std::stringstream & ioQueryStream,
+//                          std::vector< std::string > iSelectedFields);
 
 //select columnname FROM tablename WHERE field = value order by ASC/DESC limit
 // iNumberLimit

@@ -276,9 +276,6 @@ void GoDBTWContainerForMesh::GetValuesForIntensities(
     }
   else
     {
-    //std::vector<std::string> Conditions(2);
-    //Conditions[0] = "imagingsessionid";
-    //Conditions[1] = ConvertToString< int >(this->m_ImgSessionID);
     std::vector<FieldWithValue> Condition(1);
     FieldWithValue ImgSession = {"ImagingSessionID", ConvertToString< int >(this->m_ImgSessionID), "="};
     Condition[0] = ImgSession;

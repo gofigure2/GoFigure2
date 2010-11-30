@@ -168,6 +168,31 @@ public:
   QString CheckExistingMeshesForTheTrack(
    unsigned int iTrackID,int iTimePoint,vtkMySQLDatabase* iDatabaseConnector);
 
+  /**
+  \overload
+  */
+  QString CheckExistingMeshesForTheTrack(
+   unsigned int iTrackID,vtkMySQLDatabase* iDatabaseConnector,
+   std::list<unsigned int> iListMeshIDs);
+
+  /**
+  \brief check if in the iListMeshIDs, several have the same timepoint, if so,
+  return the list of meshIDs that need to be reassigned to 0 and modify the 
+  ioListMeshIDsToBePartOfTrack with only one meshid (the max one of several
+  meshid for the same timepoint) per timepoint
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iListMeshIDs list of the meshIDs to be checked
+  \param[in,out] ioListMeshIDsToBePartOfTrack list of meshIDs with only
+  one per timepoint
+  \return message to be printed in the status bar with the list of meshIDs
+  that won't be part of the selected trackid
+  */
+  std::string CheckListMeshesFromDifferentTimePoints(
+    vtkMySQLDatabase *iDatabaseConnector,
+    std::list< unsigned int > iListMeshIDs,
+    std::list<unsigned int> & ioListMeshIDsToBePartOfTrack,
+    std::list<unsigned int> & ioListMeshIDsToReassign);
+
 protected:
   GoDBTWContainerForMesh *m_TWContainer;
   MeshContainer   *m_MeshContainerInfoForVisu;

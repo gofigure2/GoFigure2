@@ -383,7 +383,7 @@ protected:
       iTWContainer->GetIndexForGroupColor(this->m_TraceName),
       iTWContainer->GetIndexForGroupColor(this->m_CollectionName),
       this->m_TraceName, this->m_CollectionName, ColumnNames,iState,iIndexShowColumn);
-    this->m_Table->setSortingEnabled(true);
+    //this->m_Table->setSortingEnabled(true);
   }
 
   /**
@@ -404,12 +404,12 @@ protected:
       iTWContainer->GetContainerForOneSpecificTrace(iDatabaseConnector,
                                                     TraceID);
 
-    this->m_Table->setSortingEnabled(false);
+    //this->m_Table->setSortingEnabled(false);
     this->m_Table->InsertNewRow(RowContainer,
                                 iTWContainer->GetIndexForGroupColor(this->m_TraceName),
                                 iTWContainer->GetIndexForGroupColor(this->m_CollectionName),
                                 this->m_TraceName, this->m_CollectionName);
-    this->m_Table->setSortingEnabled(true);
+    //this->m_Table->setSortingEnabled(true);
   }
 
   /**

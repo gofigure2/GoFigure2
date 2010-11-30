@@ -382,6 +382,24 @@ std::string GetLeftJoinTwoTables(std::string iTableOne,std::string iTableTwo,
 
   return oQueryStream.str();
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::string GetGroupBy(std::string iColumn,unsigned int iNumberDoublons)
+{
+  std::stringstream oQueryStream;
+  oQueryStream << " group by ";
+  oQueryStream << iColumn;
+  if (iNumberDoublons != 0)
+    {
+    oQueryStream << " HAVING COUNT(";
+    oQueryStream << iColumn;
+    oQueryStream << ") > ";
+    oQueryStream << iNumberDoublons;
+    }
+
+  return oQueryStream.str();
+}
 /*std::string SelectWithJoinNullIncluded(std::string iSelectQuery,
                                        std::string iJoinOn,
                                        bool doublon)

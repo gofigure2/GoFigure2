@@ -350,9 +350,12 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
     unsigned int TrackID = ss_atoi<unsigned int>(this->m_SelectedCollectionData.first);
      //check that there isn't an existing mesh with the same timepoint in the track,if so, set its trackID to 0:
     /** \todo print a different message if several meshes are created at the same timepoint*/
-    emit PrintMessage(
-      this->m_MeshesManager->CheckExistingMeshesForTheTrack(TrackID,this->m_SelectedTimePoint,
-      this->m_DatabaseConnector));
+    QString MessageToPrint = this->m_MeshesManager->CheckExistingMeshesForTheTrack(TrackID,this->m_SelectedTimePoint,
+      this->m_DatabaseConnector);
+    if (MessageToPrint != "")
+      {
+      emit PrintMessage(MessageToPrint);
+      }
 
     unsigned int NewMeshID = this->m_MeshesManager->SaveNewMeshFromVisu(iXCoordMin,
                                                                         iYCoordMin,
@@ -405,9 +408,12 @@ void QGoPrintDatabase::SaveNewMeshForMeshToContours(int iNumberOfContours)
   this->OpenDBConnection();
 
   unsigned int TrackID = ss_atoi< unsigned int >(this->m_SelectedCollectionData.first);
-  emit PrintMessage(
-      this->m_MeshesManager->CheckExistingMeshesForTheTrack(TrackID,this->m_SelectedTimePoint,
-      this->m_DatabaseConnector));
+  QString MessageToPrint =  this->m_MeshesManager->CheckExistingMeshesForTheTrack(TrackID,this->m_SelectedTimePoint,
+      this->m_DatabaseConnector);
+  if (MessageToPrint != "")
+    {
+    emit PrintMessage(MessageToPrint);
+    }
 
   unsigned int MeshID = this->m_MeshesManager->CreateNewMeshWithNoContourNoPoints(
     this->m_DatabaseConnector, this->m_SelectedColorData, this->m_SelectedTimePoint,
@@ -1411,9 +1417,20 @@ void QGoPrintDatabase::CreateNewTrackFromCheckedMeshes(
   this->OpenDBConnection();
   unsigned int NewTrackID = this->m_TracksManager->CreateNewTrackWithNoMesh(
     this->m_DatabaseConnector, this->m_SelectedColorData);
+  std::list<unsigned int> ListMeshToBelongToTheTrack;
+  std::list<unsigned int> ListMeshToReassign;
+  std::string MessageToPrint = this->m_MeshesManager->CheckListMeshesFromDifferentTimePoints(
+      this->m_DatabaseConnector,iListCheckedMeshes,ListMeshToBelongToTheTrack,ListMeshToReassign);
+  //at that moment, do nothing for the checked meshes not selected to be part of the track
+  if (MessageToPrint != "")
+    {
+    emit PrintMessage(MessageToPrint.c_str());
+    }
   this->AddCheckedTracesToCollection< QGoDBMeshManager, QGoDBTrackManager >
-    (this->m_MeshesManager, this->m_TracksManager,
-    NewTrackID, iListCheckedMeshes);
+    (this->m_MeshesManager, this->m_TracksManager,NewTrackID, ListMeshToBelongToTheTrack); 
+  //this->AddCheckedTracesToCollection< QGoDBMeshManager, QGoDBTrackManager >
+  //  (this->m_MeshesManager, this->m_TracksManager,
+  //  NewTrackID, iListCheckedMeshes);
   this->CloseDBConnection();
 }
 
@@ -1457,9 +1474,22 @@ void QGoPrintDatabase::AddCheckedContoursToSelectedMesh(std::list< unsigned int 
 void QGoPrintDatabase::AddCheckedMeshesToSelectedTrack(std::list< unsigned int > iListCheckedMeshes)
 {
   this->OpenDBConnection();
-  this->AddCheckedTracesToCollection< QGoDBMeshManager, QGoDBTrackManager >
-    (this->m_MeshesManager, this->m_TracksManager,
-    ss_atoi< unsigned int >(this->m_SelectedCollectionData.first), iListCheckedMeshes);
+  unsigned int SelectedTrackID = ss_atoi< unsigned int >(this->m_SelectedCollectionData.first);
+  std::list<unsigned int> ListMeshToBelongToTheTrack;
+  std::list<unsigned int> ListMeshToReassign;
+  //at that moment, do nothing for the checked meshes not selected to be part of the track
+  std::string MessageToPrint = this->m_MeshesManager->CheckListMeshesFromDifferentTimePoints(
+      this->m_DatabaseConnector,iListCheckedMeshes,ListMeshToBelongToTheTrack,ListMeshToReassign);
 
+  //check for the existing ones:
+  MessageToPrint += this->m_MeshesManager->CheckExistingMeshesForTheTrack(SelectedTrackID,
+    this->m_DatabaseConnector, iListCheckedMeshes).toStdString();
+  
+  if (MessageToPrint != "")
+    {
+    emit PrintMessage(MessageToPrint.c_str());
+    }
+  this->AddCheckedTracesToCollection< QGoDBMeshManager, QGoDBTrackManager >
+    (this->m_MeshesManager, this->m_TracksManager,SelectedTrackID, ListMeshToBelongToTheTrack); 
   this->CloseDBConnection();
 }

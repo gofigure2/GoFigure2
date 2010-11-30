@@ -414,12 +414,14 @@ std::list< unsigned int > QGoDBTraceManager::GetListTracesIDsFromThisCollectionO
 void QGoDBTraceManager::DisplayInfoForExistingTraces(vtkMySQLDatabase *
                                                      iDatabaseConnector, std::list< unsigned int > iListTraces)
 {
+  this->m_Table->setSortingEnabled(false);
   std::list< unsigned int >::iterator iter = iListTraces.begin();
   while ( iter != iListTraces.end() )
     {
     this->DisplayInfoForExistingTrace(iDatabaseConnector, *iter);
     iter++;
     }
+  this->m_Table->setSortingEnabled(true);
 }
 
 //-------------------------------------------------------------------------

@@ -1244,47 +1244,15 @@ std::list< unsigned int > GetSpecificValuesEqualToZero(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/*void GetAllSelectedFields(std::stringstream & ioQuerystream,
-                          std::vector< std::string > iSelectedFields)
-{
-  size_t i = 0;
-
-  for (; i < iSelectedFields.size() - 1; i++ )
-    {
-    ioQuerystream << iSelectedFields[i];
-    ioQuerystream << ", ";
-    }
-  ioQuerystream << iSelectedFields[i];
-}
-*/
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 std::list<unsigned int> GetAllSelectedValuesFromTwoTables(
   vtkMySQLDatabase *iDatabaseConnector, std::string iTableOne, std::string iTableTwo,
   std::string iColumn, FieldWithValue iJoinCondition,
-  //td::string ifield, std::string ifieldValue)
-  std::vector<FieldWithValue> iFieldsWithValues)
+  std::vector<FieldWithValue> iFieldsWithValues,bool Distinct)
 {
   std::string Where = GetLeftJoinTwoTables(iTableOne,iTableTwo,iJoinCondition);
   std::string QueryString = SelectQueryStreamListConditions(Where,iColumn,
-                                            iFieldsWithValues,"AND",false);
+                                            iFieldsWithValues,"AND",Distinct);
   return ExecuteSelectQuery <std::list<unsigned int> >( iDatabaseConnector, QueryString );
- /* std::stringstream QueryStream;
-
-  QueryStream << "SELECT ";
-  std::vector< std::string >::iterator iter = iSelectedFields.begin();
-  GetAllSelectedFields(QueryStream, iSelectedFields);
-  QueryStream << " FROM ";
-  QueryStream << iTableOne;
-  QueryStream << " LEFT JOIN ";
-  QueryStream << iTableTwo;
-  QueryStream << " ON ";
-  QueryStream << iJoinCondition;
-
-  QueryStream << WhereAndOrConditions(iFieldsWithValues);
-
-  return ExecuteSelectQuery<std::vector<std::string> >( iDatabaseConnector, QueryStream.str() );*/
 }
 
 //-------------------------------------------------------------------------
@@ -1299,6 +1267,79 @@ std::vector< std::string > GetAllSelectedValuesFromTwoTables(
   std::string QueryString = SelectQueryStreamListConditions(Where,iSelectedFields, 
                                             iFieldsWithValues,"AND");
   return ExecuteSelectQuery< std::vector<std::string> >( iDatabaseConnector, QueryString );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list< unsigned int > GetAllSelectedValuesFromTwoTables(vtkMySQLDatabase *iDatabaseConnector, 
+  std::string iTableOne, std::string iTableTwo,
+  std::string iColumn, FieldWithValue iJoinCondition,
+  std::string iField, std::vector<std::string> iVectorValues,bool Distinct)
+{
+  std::string Where = GetLeftJoinTwoTables(iTableOne,iTableTwo,iJoinCondition);
+  std::string QueryString = SelectQueryStreamListConditions(Where,iColumn,iField,iVectorValues,Distinct);
+
+  return ExecuteSelectQuery< std::list< unsigned int> > (iDatabaseConnector, QueryString);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list< unsigned int > GetAllSelectedValuesFromTwoTables(vtkMySQLDatabase *iDatabaseConnector, 
+  std::string iTableOne, std::string iTableTwo,
+  std::string iColumn, FieldWithValue iJoinCondition,
+  std::string iField, std::vector<std::string> iVectorValues,FieldWithValue iAndCondition)
+{
+  std::string Where = GetLeftJoinTwoTables(iTableOne,iTableTwo,iJoinCondition);
+  std::string Conditions = "(";
+  Conditions += GetConditions<std::string>(iField,iVectorValues,"OR");
+  Conditions += " AND ";
+  std::vector<FieldWithValue> AndCondition(1);
+  AndCondition[0] = iAndCondition;
+  Conditions += GetConditions(AndCondition);
+  Conditions += ")";
+  std::string QueryString = SelectGeneralQueryConditions(iColumn,Where,Conditions);
+
+  return ExecuteSelectQuery<std::list<unsigned int> >(iDatabaseConnector,QueryString);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int GetMaxValueFromTwoTables(vtkMySQLDatabase *iDatabaseConnector, 
+  std::string iTableOne, std::string iTableTwo,
+  std::string iColumn, FieldWithValue iJoinCondition,
+  std::string iField, std::vector<std::string> iVectorValues,
+  FieldWithValue iAndCondition)
+{
+  std::string What = "MAX(";
+  What += iColumn;
+  What += ")";
+  std::string Where = GetLeftJoinTwoTables(iTableOne,iTableTwo,iJoinCondition);
+  std::string Conditions = "(";
+  Conditions += GetConditions<std::string>(iField,iVectorValues,"OR");
+  Conditions += " AND ";
+  std::vector<FieldWithValue> AndCondition(1);
+  AndCondition[0] = iAndCondition;
+  Conditions += GetConditions(AndCondition);
+  Conditions += ")";
+  std::string QueryString = SelectGeneralQueryConditions(What,Where,Conditions);
+  return ExecuteSelectQueryOneValue<int>(iDatabaseConnector,QueryString);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list< unsigned int > GetDoublonValuesFromTwoTables(
+      vtkMySQLDatabase* iDatabaseConnector, std::string iTableOne, std::string iTableTwo,
+      std::string iColumn, FieldWithValue iJoinCondition,std::string iField,
+      std::vector<std::string> iVectValues, std::string GroupByColumn)
+
+{
+
+  std::string Where = GetLeftJoinTwoTables(iTableOne,iTableTwo,iJoinCondition);
+  std::string Conditions = GetConditions<std::string>(iField,iVectValues,"OR");
+  Conditions += GetGroupBy(iColumn,1);
+  std::string QueryString = SelectQueryStreamCondition(Where,iColumn,Conditions);
+
+  return ExecuteSelectQuery< std::list< unsigned int> > (iDatabaseConnector, QueryString);
 }
 //-------------------------------------------------------------------------
 

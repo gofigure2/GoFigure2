@@ -432,7 +432,7 @@ void QGoDBMeshManager::SetColorCoding(bool IsChecked)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
- QString QGoDBMeshManager::CheckExistingMeshesForTheTrack(
+QString QGoDBMeshManager::CheckExistingMeshesForTheTrack(
    unsigned int iTrackID,int iTimePoint,vtkMySQLDatabase* iDatabaseConnector)
 {
   QString MessageToPrint("");
@@ -448,3 +448,106 @@ void QGoDBMeshManager::SetColorCoding(bool IsChecked)
   return MessageToPrint;
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+QString QGoDBMeshManager::CheckExistingMeshesForTheTrack(
+   unsigned int iTrackID,vtkMySQLDatabase* iDatabaseConnector,std::list<unsigned int> iListMeshIDs)
+{
+  QString MessageQString("");
+  std::string MessageToPrint = "";
+  std::list<unsigned int> ListTimePoints = 
+    this->m_CollectionOfTraces->GetListTimePointsFromTraceIDs(iDatabaseConnector,iListMeshIDs);
+  if (!ListTimePoints.empty())
+  {
+  std::string MeshIDToPrint = "";
+  std::list<unsigned int>::iterator iter = ListTimePoints.begin();
+  while(iter!= ListTimePoints.end())
+    {
+    unsigned int MeshIDKickedOut =
+      this->ReassignTrackIDForPreviousMeshWithSameTimePoint(
+        iDatabaseConnector, iTrackID,*iter);
+    if (MeshIDKickedOut != 0)
+      {
+        MeshIDToPrint += ConvertToString<unsigned int>(MeshIDKickedOut);
+        MeshIDToPrint += ", ";
+      }
+    iter++;
+    }
+  if (!MeshIDToPrint.empty())
+    {
+      MeshIDToPrint = MeshIDToPrint.substr(0, MeshIDToPrint.size()-2);
+      MessageToPrint += "The trackID of the meshes ";
+      MessageToPrint += MeshIDToPrint;
+      MessageToPrint += " have been reassigned to 0";
+    }
+  }
+  MessageQString = MessageToPrint.c_str();
+  return MessageQString;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::string QGoDBMeshManager::CheckListMeshesFromDifferentTimePoints(
+  vtkMySQLDatabase *iDatabaseConnector,std::list< unsigned int > iListMeshIDs,
+  std::list<unsigned int> & ioListMeshIDsToBePartOfTrack,
+  std::list<unsigned int> & ioListMeshIDsToReassign)
+{
+  std::string MessageToPrint = "";
+  ioListMeshIDsToBePartOfTrack = iListMeshIDs;
+  if (!iListMeshIDs.empty())
+    {
+    std::list< unsigned int > TimePointsWithSeveralMeshes = 
+      this->m_CollectionOfTraces->GetTimePointWithSeveralTracesFromTheList(
+      iDatabaseConnector,iListMeshIDs);
+    std::list< unsigned int >::iterator iter = TimePointsWithSeveralMeshes.begin();
+    while (iter != TimePointsWithSeveralMeshes.end())
+      {
+      int MaxMeshIDForTimePoint = 
+        this->m_CollectionOfTraces->GetMaxTraceIDsForSpecificTimePoint(
+        iDatabaseConnector,iListMeshIDs,*iter);
+      if (MaxMeshIDForTimePoint != -1)
+        {
+        std::list<unsigned int> TraceIDs = 
+          this->m_CollectionOfTraces->GetNonMaxTraceIDsForSpecificTimePoint(
+          iDatabaseConnector, iListMeshIDs, *iter,MaxMeshIDForTimePoint);
+        std::copy(TraceIDs.begin(),TraceIDs.end(),std::back_inserter(ioListMeshIDsToReassign) );
+        std::list<unsigned int>::iterator iterTraceIDToRemove = TraceIDs.begin();
+        while (iterTraceIDToRemove != TraceIDs.end())
+          {
+          std::list <unsigned int>::iterator Find = 
+            std::find(ioListMeshIDsToBePartOfTrack.begin(), ioListMeshIDsToBePartOfTrack.end(),
+            *iterTraceIDToRemove);
+          ioListMeshIDsToBePartOfTrack.erase(Find);
+          iterTraceIDToRemove++;
+          }
+        }
+      iter++;
+       }
+    if (!ioListMeshIDsToReassign.empty())
+      {
+        MessageToPrint = "Warning: the meshIDs ";
+        std::list<unsigned int>::iterator iterIDs = ioListMeshIDsToReassign.begin();
+        while (iterIDs != ioListMeshIDsToReassign.end() )
+          {
+          std::string temp = ConvertToString<unsigned int>(*iterIDs);
+          MessageToPrint += temp;
+          MessageToPrint += ", ";
+          iterIDs++;
+          }
+        MessageToPrint  = MessageToPrint.substr(0,MessageToPrint.size()-1);
+        MessageToPrint  += "have not been reassigned ";
+        MessageToPrint += "to the trackID because several meshes were selected for the same ";
+        MessageToPrint += "timepoints ";
+        std::list<unsigned int>::iterator iter = TimePointsWithSeveralMeshes.begin();
+        while(iter != TimePointsWithSeveralMeshes.end())
+          {
+          std::string temp = ConvertToString<unsigned int>(*iter);
+          MessageToPrint += temp;
+          MessageToPrint += ", ";
+          iter++;
+          }
+        MessageToPrint = MessageToPrint.substr(0,MessageToPrint.size()-2);
+      }
+     }
+  return MessageToPrint;
+}
