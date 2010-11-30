@@ -35,7 +35,6 @@
 #include "GoDBRow.h"
 #include <map>
 #include <iostream>
-#include "SelectQueryDatabaseHelper.h"
 
 GoDBRow::GoDBRow()
 {}
@@ -265,4 +264,13 @@ std::string GoDBRow::GetTableName()
 std::string GoDBRow::GetTableIDName()
 {
   return this->m_TableIDName;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void GoDBRow::AddConditions(
+  std::string iNameOfField, std::vector<FieldWithValue> &ioFieldWithValue)
+{
+  FieldWithValue temp = {iNameOfField,this->GetMapValue(iNameOfField),"=" };
+  ioFieldWithValue.push_back(temp);
 }

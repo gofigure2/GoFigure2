@@ -151,5 +151,30 @@ protected slots:
   void AddMicroscopes();
 
   void UpdateListMicroscopes();
+
+private:
+  unsigned int m_PCoordMin;
+  unsigned int m_PCoordMax;
+
+  unsigned int m_RCoordMin;
+  unsigned int m_RCoordMax;
+
+  unsigned int m_CCoordMin;
+  unsigned int m_CCoordMax;
+
+  unsigned int m_XTileCoordMin;
+  unsigned int m_XTileCoordMax;
+
+  unsigned int m_YTileCoordMin;
+  unsigned int m_YTileCoordMax;
+
+  unsigned int m_ZTileCoordMin;
+  unsigned int m_ZTileCoordMax;
+
+  unsigned int m_ZCoordMin;
+  unsigned int m_ZCoordMax;
+
+  unsigned int m_TCoordMin;
+  unsigned int m_TCoordMax;
 };
 #endif

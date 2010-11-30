@@ -38,6 +38,7 @@
 class vtkActor;
 class vtkPolyData;
 class vtkProperty;
+class vtkLookupTable;
 
 #include <ostream>
 #include <vector>
@@ -170,6 +171,24 @@ struct QGOIO_EXPORT ContourMeshStructure {
   /** \brief Set Visibility for all actors
       \param[in] iVisible */
   void SetActorVisibility( const bool& iVisible ) const;
+
+  /** \brief Set Scalar Data associated to the elements (use for color coding)
+      \param[in] iName data name
+      \param[in] iValue value
+  */
+  void SetScalarData( const std::string& iName, const double& iValue ) const;
+
+  /** \brief Set the scalar range (use for color coding)
+      \param[in] iMin
+      \param[in] iMax */
+  void SetScalarRange( const double& iMin, const double& iMax ) const;
+
+  /** \brief Render with original colors (Remove the active scalars data).*/
+  void RenderWithOriginalColors() const;
+
+  /** \brief Set the lookup table
+      \param[in] iLut */
+  void SetLookupTable( vtkLookupTable* iLut ) const;
 
   /** Printing one element. std::cout << element << std::endl; */
   friend std::ostream & operator<<

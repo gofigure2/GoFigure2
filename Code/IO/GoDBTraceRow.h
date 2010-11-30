@@ -38,6 +38,7 @@
 #include "GoDBCoordinateRow.h"
 #include "vtkSmartPointer.h"
 #include "vtkPolyData.h"
+#include "vtkSmartPointer.h"
 #include "GoDBRecordSetHelper.h"
 #include "GoDBRecordSet.h"
 
@@ -54,7 +55,7 @@ public:
   /**
   \brief fill the trace map with the values gotten from the visualization
   \param[in] DatabaseConnector connection to the database
-  \param[in] TraceVisu vtkPolyData the points will be extracted from to create 
+  \param[in] TraceVisu vtkPolyData the points will be extracted from to create
   a string for "Points"
   \param[in] Min coordinate row for the minimum of the bounding box
   \param[in] Max coordinate row for the maximum of the bounding box
@@ -75,7 +76,7 @@ public:
                GoDBCoordinateRow Min, GoDBCoordinateRow Max, unsigned int ImgSessionID);
 
   /**
-  \brief 
+  \brief
   \param[in] ImgSessionID ID of the current imagingsession
   */
   GoDBTraceRow(unsigned int ImgSessionID);
@@ -87,7 +88,7 @@ public:
   \brief check if a trace already has the same bounding box
   \param[in] DatabaseConnector connection to the database
   \return the TraceID of the Trace with the same bounding box
-  already registered in the DB or -1 if not yet created 
+  already registered in the DB or -1 if not yet created
   */
   int  DoesThisBoundingBoxExist(vtkMySQLDatabase *DatabaseConnector);
 

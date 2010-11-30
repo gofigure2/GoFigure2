@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,23 +31,33 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __GoDBTWContainerForTrackLineage_h
-#define __GoDBTWContainerForTrackLineage_h
+#include <QApplication>
+#include <QTimer>
+#include <iostream>
 
-#include "GoDBTableWidgetContainer.h"
-#include "QGoIOConfigure.h"
-/**
-\brief
-*/
-class QGOIO_EXPORT GoDBTWContainerForTrackLineage:public GoDBTableWidgetContainer
+#include "QGoColorCodingDialog.h"
+
+int main(int argc, char *argv[])
 {
-public:
-  GoDBTWContainerForTrackLineage(std::string iCollectionName, std::string iTracesName,
-                                 int iImgSessionID);
-  ~GoDBTWContainerForTrackLineage();
-protected:
+  if ( argc != 2 )
+    {
+    std::cerr << "QGoColorComboTest requires 1 arguments:" << std::endl;
+    std::cerr << "1-test (boolean)" << std::endl;
+    return EXIT_FAILURE;
+    }
 
-  //GoDBTableWidgetContainer method
-  void SetCommonInfoForTwoTracesTable();
-};
-#endif
+  QApplication app(argc, argv);
+
+  QGoColorCodingDialog *win = new QGoColorCodingDialog(std::string("Contour"), true);
+
+  win->show();
+
+
+  int output = app.exec();
+
+  app.closeAllWindows();
+
+  delete win;
+
+  return output;
+}
