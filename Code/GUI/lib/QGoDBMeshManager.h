@@ -177,12 +177,14 @@ public:
   \param[in] iListMeshIDs list of the meshIDs to be checked
   \param[in,out] ioListMeshIDsToBePartOfTrack list of meshIDs with only
   one per timepoint
-  \return list of the meshes that are not kept for the selected trackid
+  \return message to be printed in the status bar with the list of meshIDs
+  that won't be part of the selected trackid
   */
-  std::list<unsigned int> CheckListMeshesFromDifferentTimePoints(
+  std::string CheckListMeshesFromDifferentTimePoints(
     vtkMySQLDatabase *iDatabaseConnector,
     std::list< unsigned int > iListMeshIDs,
-    std::list<unsigned int> & ioListMeshIDsToBePartOfTrack);
+    std::list<unsigned int> & ioListMeshIDsToBePartOfTrack,
+    std::list<unsigned int> & ioListMeshIDsToReassign);
 
 protected:
   GoDBTWContainerForMesh *m_TWContainer;

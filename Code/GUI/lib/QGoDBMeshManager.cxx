@@ -450,38 +450,67 @@ QString QGoDBMeshManager::CheckExistingMeshesForTheTrack(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::list<unsigned int> QGoDBMeshManager::CheckListMeshesFromDifferentTimePoints(
+std::string QGoDBMeshManager::CheckListMeshesFromDifferentTimePoints(
   vtkMySQLDatabase *iDatabaseConnector,std::list< unsigned int > iListMeshIDs,
-  std::list<unsigned int> & ioListMeshIDsToBePartOfTrack)
+  std::list<unsigned int> & ioListMeshIDsToBePartOfTrack,
+  std::list<unsigned int> & ioListMeshIDsToReassign)
 {
-  std::list< unsigned int> TraceIDsToReassign = std::list< unsigned int >();
+  std::string MessageToPrint = "";
   ioListMeshIDsToBePartOfTrack = iListMeshIDs;
-  std::list< unsigned int > TimePointsWithSeveralMeshes = 
-    this->m_CollectionOfTraces->GetTimePointWithSeveralTracesFromTheList(
-    iDatabaseConnector,iListMeshIDs);
-  std::list< unsigned int >::iterator iter = TimePointsWithSeveralMeshes.begin();
-  while (iter != TimePointsWithSeveralMeshes.end())
+  if (!iListMeshIDs.empty())
     {
-    int MaxMeshIDForTimePoint = 
-      this->m_CollectionOfTraces->GetMaxTraceIDsForSpecificTimePoint(
-      iDatabaseConnector,iListMeshIDs,*iter);
-    if (MaxMeshIDForTimePoint != -1)
+    std::list< unsigned int > TimePointsWithSeveralMeshes = 
+      this->m_CollectionOfTraces->GetTimePointWithSeveralTracesFromTheList(
+      iDatabaseConnector,iListMeshIDs);
+    std::list< unsigned int >::iterator iter = TimePointsWithSeveralMeshes.begin();
+    while (iter != TimePointsWithSeveralMeshes.end())
       {
-      std::list<unsigned int> TraceIDs = 
-        this->m_CollectionOfTraces->GetNonMaxTraceIDsForSpecificTimePoint(
-        iDatabaseConnector, iListMeshIDs, *iter,MaxMeshIDForTimePoint);
-      std::copy(TraceIDs.begin(),TraceIDs.end(),std::back_inserter(TraceIDsToReassign) );
-      std::list<unsigned int>::iterator iterTraceIDToRemove = TraceIDs.begin();
-      while (iterTraceIDToRemove != TraceIDs.end())
+      int MaxMeshIDForTimePoint = 
+        this->m_CollectionOfTraces->GetMaxTraceIDsForSpecificTimePoint(
+        iDatabaseConnector,iListMeshIDs,*iter);
+      if (MaxMeshIDForTimePoint != -1)
         {
-        std::list <unsigned int>::iterator Find = 
-          std::find(ioListMeshIDsToBePartOfTrack.begin(), ioListMeshIDsToBePartOfTrack.end(),
-          *iterTraceIDToRemove);
-        ioListMeshIDsToBePartOfTrack.erase(Find);
-        iterTraceIDToRemove++;
+        std::list<unsigned int> TraceIDs = 
+          this->m_CollectionOfTraces->GetNonMaxTraceIDsForSpecificTimePoint(
+          iDatabaseConnector, iListMeshIDs, *iter,MaxMeshIDForTimePoint);
+        std::copy(TraceIDs.begin(),TraceIDs.end(),std::back_inserter(ioListMeshIDsToReassign) );
+        std::list<unsigned int>::iterator iterTraceIDToRemove = TraceIDs.begin();
+        while (iterTraceIDToRemove != TraceIDs.end())
+          {
+          std::list <unsigned int>::iterator Find = 
+            std::find(ioListMeshIDsToBePartOfTrack.begin(), ioListMeshIDsToBePartOfTrack.end(),
+            *iterTraceIDToRemove);
+          ioListMeshIDsToBePartOfTrack.erase(Find);
+          iterTraceIDToRemove++;
+          }
         }
+      iter++;
+       }
+    if (!ioListMeshIDsToReassign.empty())
+      {
+        MessageToPrint = "Warning: the meshIDs ";
+        std::list<unsigned int>::iterator iterIDs = ioListMeshIDsToReassign.begin();
+        while (iterIDs != ioListMeshIDsToReassign.end() )
+          {
+          std::string temp = ConvertToString<unsigned int>(*iterIDs);
+          MessageToPrint += temp;
+          MessageToPrint += ", ";
+          iterIDs++;
+          }
+        MessageToPrint  = MessageToPrint.substr(0,MessageToPrint.size()-1);
+        MessageToPrint  += "have not been reassigned ";
+        MessageToPrint += "to the trackID because several meshes were selected for the same ";
+        MessageToPrint += "timepoints ";
+        std::list<unsigned int>::iterator iter = TimePointsWithSeveralMeshes.begin();
+        while(iter != TimePointsWithSeveralMeshes.end())
+          {
+          std::string temp = ConvertToString<unsigned int>(*iter);
+          MessageToPrint += temp;
+          MessageToPrint += ", ";
+          iter++;
+          }
+        MessageToPrint = MessageToPrint.substr(0,MessageToPrint.size()-1);
       }
-    iter++;
-    }
-  return TraceIDsToReassign;
+     }
+  return MessageToPrint;
 }
