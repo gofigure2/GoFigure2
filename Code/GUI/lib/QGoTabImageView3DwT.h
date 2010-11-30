@@ -39,8 +39,10 @@
 #include "GoFigureFileInfoMultiIndexContainerHelper.h"
 #include "itkMegaCaptureReader.h"
 
-#include "ContourMeshContainer.h"
+#include "ContourContainer.h"
+#include "MeshContainer.h"
 #include "TrackContainer.h"
+#include "TraceContainerBase.h"
 
 #include "QGoPrintDatabase.h"
 
@@ -192,7 +194,7 @@ public:
   template< class TIndex >
   void
   AddContourFromNodes(
-    typename ContourMeshContainer::MultiIndexContainerType::index< TIndex >::type::iterator
+    typename ContourContainer::MultiIndexContainerType::index< TIndex >::type::iterator
       iIt )
   {
     vtkPolyData *nodes = iIt->Nodes;
@@ -366,8 +368,6 @@ protected:
   int m_ZTileCoord;
   int m_TCoord;
 
-  unsigned int m_ContourId;
-
   QGoNavigationDockWidget *m_NavigationDockWidget;
 
   // base segmentation dockwidget for contours
@@ -414,34 +414,18 @@ protected:
   {
     if ( ( iContour->GetNumberOfPoints() > 2 ) && ( m_TCoord >= 0 ) )
       {
-      m_ContourId = iIt->TraceID;
-      const double *RGBA = iIt->rgba;
-
       bool visibility =
         ( static_cast< unsigned int >( m_TCoord ) == iIt->TCoord );
-
-      vtkProperty *contour_property = vtkProperty::New();
-      contour_property->SetColor(RGBA[0], RGBA[1], RGBA[2]);
-      contour_property->SetOpacity(RGBA[3]);
+      bool highlighted = false;
 
       vtkPolyData *contour_copy = vtkPolyData::New();
       contour_copy->DeepCopy(iContour);
 
-      std::vector< vtkActor * > contour_actor =
-        this->AddContour(contour_copy, contour_property);
+      VisualizeTraceBase< ContourContainer, TIndex >( m_ContourContainer, iIt,
+                                                      highlighted, visibility,
+                                                      contour_copy );
 
       contour_copy->Delete();
-      contour_property->Delete();
-
-      // fill the container
-      m_ContourContainer->UpdateVisualizationForGivenElement< TIndex >(
-        iIt,
-        contour_actor,
-        false,       //highlighted
-        visibility); //visible
-
-      // to increase accurately
-      ++m_ContourId;
       }
   }
 
@@ -450,26 +434,14 @@ protected:
   VisualizeMesh(
     typename MeshContainer::MultiIndexContainerType::template index< TIndex >::type::iterator iIt)
   {
-    const double *iRgba = iIt->rgba;
-    vtkPolyData * iMesh = iIt->Nodes;
-
-    if ( iMesh )
+    if ( iIt->Nodes )
       {
+      bool highlighted = false;
       bool visibility =
         ( static_cast< unsigned int >( m_TCoord ) == iIt->TCoord );
 
-      vtkProperty *mesh_property = vtkProperty::New();
-      mesh_property->SetColor(iRgba[0], iRgba[1], iRgba[2]);
-      mesh_property->SetOpacity(iRgba[3]);
-
-      /// \todo fix bug, shouldn't be required
-      std::vector< vtkActor * > mesh_actor = this->AddContour(iMesh, mesh_property);
-      mesh_property->Delete();
-
-      m_MeshContainer->UpdateVisualizationForGivenElement< TIndex >(iIt,
-                                                                    mesh_actor,
-                                                                    false,
-                                                                    visibility);
+      VisualizeTraceBase< MeshContainer, TIndex >( m_MeshContainer, iIt,
+                                                   highlighted, visibility );
       }
   }
 
@@ -478,34 +450,46 @@ protected:
   VisualizeTrack(
     typename TrackContainer::MultiIndexContainerType::template index< TIndex >::type::iterator iIt)
   {
-    const double *iRgba = iIt->rgba;
-    vtkPolyData * iMesh = iIt->Nodes;
-
-    if ( iMesh )
+    if ( iIt->Nodes )
       {
       bool highlighted = false;
       bool visibility = false;
 
-      vtkProperty *mesh_property = vtkProperty::New();
-      mesh_property->SetColor(iRgba[0], iRgba[1], iRgba[2]);
-      mesh_property->SetOpacity(iRgba[3]);
-
-      /// \todo fix bug, shouldn't be required
-      std::vector< vtkActor * > mesh_actor;
-      mesh_actor.resize(4);
-      //if(iMesh->GetNumberOfPoints() > 1)
-      //  {
-        mesh_actor = this->AddContour(iMesh, mesh_property);
-      //  }
-
-      mesh_property->Delete();
-
-      m_TrackContainer->UpdateVisualizationForGivenElement< TIndex >(iIt,
-                                                                    mesh_actor,
-                                                                    highlighted,
-                                                                    visibility);
+      VisualizeTraceBase< TrackContainer, TIndex >( m_TrackContainer, iIt,
+                                                   highlighted, visibility );
       }
   }
+
+  template< class TContainer, class TIndex >
+  void
+  VisualizeTraceBase(
+    TContainer* iContainer,
+    typename TContainer::MultiIndexContainerType::template index< TIndex >::type::iterator iIt,
+    const double & iHighlighted,
+    const double & iVisible,
+    vtkPolyData* iContour = NULL )
+    {
+    const double *iRgba = iIt->rgba;
+
+    vtkProperty *mesh_property = vtkProperty::New();
+    mesh_property->SetColor(iRgba[0], iRgba[1], iRgba[2]);
+    mesh_property->SetOpacity(iRgba[3]);
+
+    vtkPolyData* temp = iIt->Nodes;
+
+    if( iContour )
+      {
+      temp = iContour;
+      }
+
+    std::vector< vtkActor * > mesh_actor = this->AddContour( temp, mesh_property );
+    mesh_property->Delete();
+
+    iContainer->template UpdateVisualizationForGivenElement< TIndex >( iIt,
+                                                              mesh_actor,
+                                                              iHighlighted,
+                                                              iVisible );
+    }
 
   std::vector< int > GetBoundingBox(vtkPolyData *contour);
 
