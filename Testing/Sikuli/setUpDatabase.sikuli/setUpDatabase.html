@@ -104,29 +104,64 @@ setBundlePath(address)
 </span>                        <span class="cmt">#gofigure crashes at this step
 </span>                <span class="cmt">#assert not exists("Root_Password.png")
 </span>
-                <span class="kw">for</span> i <span class="kw">in</span> [<span class="dig">1</span>,<span class="dig">2</span>]:
-                        <span class="skw">click</span>(<img src="Next_arrow.png" />)
-                        <span class="kw">assert</span> exists(<img src="Root_Password.png" />)
-                        <span class="skw">wait</span>(<span class="dig">1</span>)
-                        <span class="skw">type</span>(Key.BACKSPACE)<span class="cmt">#+Key.BACKSPACE+Key.BACKSPACE+Key.BACKSPACE+Key.BACKSPACE+Key.BACKSPACE)</span>
-                        <span class="skw">click</span>(<img src="ok.png" />)
-                        <span class="kw">assert</span> exists(<img src="create_database_for_this_user.png" />)
-                        <span class="kw">if</span> i == <span class="dig">1</span>:
-                                <span class="skw">type</span>(Key.ENTER)
-                                <span class="kw">assert</span> <span class="kw">not</span> exists(<img src="create_database_for_this_user.png" />)
-                        <span class="kw">if</span> i == <span class="dig">2</span>:
-                                <span class="skw">click</span>(<img src="ok.png" />)
+<span class="kw">for</span> i <span class="kw">in</span> [<span class="dig">1</span>,<span class="dig">2</span>]:
+        <span class="skw">click</span>(<img src="Next_arrow.png" />)
+        <span class="kw">assert</span> exists(<img src="Root_Password.png" />)
+        <span class="skw">wait</span>(<span class="dig">2</span>)
+        <span class="skw">type</span>(Key.BACKSPACE)<span class="cmt">#+Key.BACKSPACE+Key.BACKSPACE+Key.BACKSPACE+Key.BACKSPACE+Key.BACKSPACE)</span>
+        <span class="skw">click</span>(<img src="ok.png" />)
+        <span class="kw">assert</span> exists(<img src="create_database_for_this_user.png" />)
+        <span class="kw">if</span> i == <span class="dig">1</span>:
+                <span class="skw">type</span>(Key.ENTER) <span class="cmt">#cancel confirmation</span>
+                <span class="kw">assert</span> <span class="kw">not</span> exists(<img src="create_database_for_this_user.png" />)
+        <span class="kw">if</span> i == <span class="dig">2</span>:
+                <span class="skw">click</span>(<img src="ok.png" />)
+                <span class="skw">wait</span>(<span class="dig">5</span>)
+                <span class="skw">click</span>(<img src="Back_arrow.png" />)
+                <span class="skw">click</span>(<img src="Next_arrow.png" />)
+                <span class="skw">type</span>(Key.BACKSPACE)<span class="cmt">#+Key.BACKSPACE+Key.BACKSPACE+Key.BACKSPACE+Key.BACKSPACE+Key.BACKSPACE)</span>
+                <span class="skw">click</span>(<img src="ok.png" />)
+                <span class="skw">click</span>(<img src="ok.png" />)
 
 
-<span class="skw">wait</span>(<span class="dig">3</span>)
-<span class="skw">type</span>(<span class="str">"First"</span>+Key.TAB+Key.TAB+<span class="str">"Last"</span>+Key.TAB+Key.ENTER)
+<span class="skw">wait</span>(<span class="dig">5</span>)
+<span class="skw">click</span>(<img src="Next_arrow.png" />)
+<span class="kw">assert</span> exists(<img src="Please_create_one_author.png" />)
+<span class="skw">click</span>(<img src="ok.png" />)
+
+<span class="skw">type</span>(Key.TAB+Key.TAB+<span class="str">"First"</span>+Key.TAB+Key.TAB+<span class="str">"Last"</span>+Key.TAB+Key.ENTER)
 <span class="skw">click</span>(<img src="ok.png" />)
 <span class="skw">click</span>(<img src="Next_arrow.png" />)
+<span class="skw">click</span>(<img src="Back_arrow.png" />)
+<span class="skw">type</span>(Key.TAB+Key.TAB+Key.TAB+Key.ENTER)
+<span class="kw">assert</span> exists(<img src="There_is_already_an_Author.png" />)
+<span class="skw">click</span>(<img src="ok.png" />)
+<span class="skw">click</span>(<img src="Next_arrow.png" />)
+
+<span class="skw">click</span>(<img src="Create_microscope.png" />)
+<span class="kw">assert</span> exists(<img src="Please_enter_name_of_microscope.png" />)
+<span class="skw">click</span>(<img src="ok.png" />)
+
+keyDown(Key.SHIFT)
+<span class="skw">type</span>(Key.TAB)
+keyUp(Key.SHIFT)
+
 <span class="skw">wait</span>(<span class="dig">1</span>)
 <span class="skw">type</span>(<span class="str">"microscope"</span>+Key.TAB+Key.ENTER)
+<span class="kw">assert</span> exists(<img src="Your_microscope_created.png" />)
+<span class="skw">click</span>(<img src="ok.png" />)
+<span class="skw">click</span>(<img src="Create_microscope.png" />)
+<span class="kw">assert</span> exists(<img src="There_is_already_microscope_name.png" />)
 <span class="skw">click</span>(<img src="ok.png" />)
 <span class="skw">click</span>(<img src="Finish.png" />)
+<span class="kw">assert</span> exists(<img src="MySQL_user_and_DB_created.png" />)
 <span class="skw">click</span>(<img src="ok.png" />)
+<span class="kw">assert</span> <span class="kw">not</span> exists(<img src="Create_microscopes_for_gofigure_projects_page.png" />,<span class="dig">0</span>)
+
+<span class="skw">click</span>(<img src="Settings.png" />)
+hover(<img src="Database_arrow.png" />)
+<span class="skw">click</span>(<img src="Set_up_database.png" />)
+<span class="kw">assert</span> <span class="kw">not</span> exists(<img src="Create_user_for_MySQL_DB.png" />)
 </pre>
 </body>
 </html>
