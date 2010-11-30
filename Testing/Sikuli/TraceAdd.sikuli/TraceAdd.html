@@ -87,8 +87,8 @@ start = time.time()
         <span class="kw">print</span> a, <span class="str">"this is a"</span>
         <span class="skw">click</span>(a.below(<span class="dig">20</span>))
 
-        <span class="skw">click</span>(<img src="add_a_new.png" />)
-
+<span class="cmt">#       click("add_a_new.png")
+</span>
 <span class="cmt">#three trace widget buttons
 </span>TraceObject = (<img src="SelectedColor.png" />,<img src="SelectedCellType.png" />,<img src="SelectedSubCellType.png" />)
 <span class="cmt">#four add a new... tests for each trace widget button
@@ -98,9 +98,17 @@ start = time.time()
                 <span class="kw">for</span> i <span class="kw">in</span> TraceObject:
                         AddNew(i)
                         <span class="kw">if</span> i == (<img src="SelectedColor.png" />) :
+                                <span class="skw">click</span>(<img src="Add_new_color.png" />)
                         <span class="cmt">#chooses a color first, just for this button
 </span>                                <span class="skw">click</span>(<img src="colortable.png" />)
                                 <span class="skw">click</span>(<img src="ok.png" />)
+                        <span class="kw">elif</span> i != (<img src="SelectedColor.png" />) :
+                                <span class="kw">if</span> a == <span class="str">"Add New"</span>:
+                                        <span class="skw">click</span>(<img src="Add_a_new_BLUE.png" />)
+                                <span class="kw">if</span> i == (<img src="SelectedCellType.png" />):
+                                        <span class="skw">click</span>(<img src="Add_a_new_celltype.png" />)
+                                <span class="kw">else</span>:
+                                        <span class="skw">click</span>(<img src="Add_a_new_subcelltype.png" />)
 
                         <span class="kw">if</span> a == <span class="str">"Add New"</span>:
                                 <span class="skw">wait</span>(<span class="dig">1</span>)

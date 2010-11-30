@@ -77,9 +77,13 @@ void GoDBLineageRow::InitializeMap()
 //-------------------------------------------------------------------------
 int GoDBLineageRow::DoesThisBoundingBoxLineageExist(vtkMySQLDatabase *DatabaseConnector)
 {
+  std::vector<FieldWithValue> Conditions;
+  this->AddConditions("ImagingSessionID",Conditions);
+  this->AddConditions("CoordIDMax",Conditions);
+  this->AddConditions("CoordIDMin",Conditions);
+
   return FindOneID( DatabaseConnector, "lineage", "lineageID",
-                    "CoordIDMax", this->GetMapValue("CoordIDMax"),
-                    "CoordIDMin", this->GetMapValue("CoordIDMin") );
+                   Conditions);
 }
 
 //-------------------------------------------------------------------------

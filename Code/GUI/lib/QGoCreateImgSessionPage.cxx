@@ -288,6 +288,30 @@ void QGoCreateImgSessionPage::ImportImages(vtkMySQLDatabase *DatabaseConnector)
       GoFigureFileInfoHelperMultiIndexContainer
         filelist = GetMultiIndexFileContainer();
 
+      m_PCoordMin = filelist.get< m_PCoord >().begin()->m_PCoord;
+      m_PCoordMax = filelist.get< m_PCoord >().rbegin()->m_PCoord;
+
+      m_RCoordMin = filelist.get< m_RCoord >().begin()->m_RCoord;
+      m_RCoordMax = filelist.get< m_RCoord >().rbegin()->m_RCoord;
+
+      m_CCoordMin = filelist.get< m_CCoord >().begin()->m_CCoord;
+      m_CCoordMax = filelist.get< m_CCoord >().rbegin()->m_CCoord;
+
+      m_XTileCoordMin = filelist.get< m_XTileCoord >().begin()->m_XTileCoord;
+      m_XTileCoordMax = filelist.get< m_XTileCoord >().rbegin()->m_XTileCoord;
+
+      m_YTileCoordMin = filelist.get< m_YTileCoord >().begin()->m_YTileCoord;
+      m_YTileCoordMax = filelist.get< m_YTileCoord >().rbegin()->m_YTileCoord;
+
+      m_ZTileCoordMin = filelist.get< m_ZTileCoord >().begin()->m_ZTileCoord;
+      m_ZTileCoordMax = filelist.get< m_ZTileCoord >().rbegin()->m_ZTileCoord;
+
+      m_TCoordMin = filelist.get< m_TCoord >().begin()->m_TCoord;
+      m_TCoordMax = filelist.get< m_TCoord >().rbegin()->m_TCoord;
+
+      m_ZCoordMin = filelist.get< m_ZCoord >().begin()->m_ZCoord;
+      m_ZCoordMax = filelist.get< m_ZCoord >().rbegin()->m_ZCoord;
+
       MultiIndexContainerIteratorType f_it  = filelist.begin();
       MultiIndexContainerIteratorType f_end = filelist.end();
 
@@ -436,21 +460,28 @@ int QGoCreateImgSessionPage::CreateImageCoordMin(vtkMySQLDatabase *DatabaseConne
   myNewImageCoordMin.SetField("ZCoord", It->m_ZCoord);
   myNewImageCoordMin.SetField("TCoord", It->m_TCoord);
 
-  std::map< std::string, std::string >::iterator IterNewCoord = myNewImageCoordMin.MapBegin();
-  std::map< std::string, std::string >::iterator IterNewCoordEnd = myNewImageCoordMin.MapEnd();
-  std::map< std::string, std::string >::iterator IterMinCoord = m_ImgSessionCoordMin.MapBegin();
-  std::map< std::string, std::string >::iterator IterMaxCoord = m_ImgSessionCoordMax.MapBegin();
+  /*std::map< std::string, std::string >::iterator
+      IterNewCoord = myNewImageCoordMin.MapBegin();
+  std::map< std::string, std::string >::iterator
+      IterNewCoordEnd = myNewImageCoordMin.MapEnd();
+
+  std::map< std::string, std::string >::iterator
+      IterMinCoord = m_ImgSessionCoordMin.MapBegin();
+  std::map< std::string, std::string >::iterator
+      IterMaxCoord = m_ImgSessionCoordMax.MapBegin();
 
   while ( IterNewCoord != IterNewCoordEnd )
     {
-    IterMinCoord->second = ConvertToString< int >( std::min( atoi( IterNewCoord->second.c_str() ),
-                                                             atoi( IterMinCoord->second.c_str() ) ) );
-    IterMaxCoord->second = ConvertToString< int >( std::max( atoi( IterNewCoord->second.c_str() ),
-                                                             atoi( IterMaxCoord->second.c_str() ) ) );
-    IterMinCoord++;
-    IterNewCoord++;
-    IterMaxCoord++;
-    }
+    IterMinCoord->second =
+      ConvertToString< int >( std::min( temp,
+                                        atoi( IterMinCoord->second.c_str() ) ) );
+    IterMaxCoord->second =
+      ConvertToString< int >( std::max( temp,
+                                        atoi( IterMaxCoord->second.c_str() ) ) );
+    ++IterMinCoord;
+    ++IterNewCoord;
+    ++IterMaxCoord;
+    }*/
 
   return myNewImageCoordMin.SaveInDB(DatabaseConnector);
 }
@@ -461,9 +492,13 @@ int QGoCreateImgSessionPage::CreateImageCoordMin(vtkMySQLDatabase *DatabaseConne
 int QGoCreateImgSessionPage::FindChannelIDForImage(vtkMySQLDatabase *DatabaseConnector,
                                                    int ImagingSessionID, int ChannelNumber)
 {
-  return FindOneID( DatabaseConnector, "channel", "channelID",
-                    "ImagingSessionID", ConvertToString< int >(ImagingSessionID), "ChannelNumber",
-                    ConvertToString< int >(ChannelNumber) );
+  std::vector<FieldWithValue> Conditions(2);
+  FieldWithValue ImgSession ={"ImagingSessionID",ConvertToString< int >(ImagingSessionID),"="};
+  FieldWithValue Channel ={"ChannelNumber",ConvertToString< int >(ChannelNumber),"="};
+    Conditions[0] = ImgSession;
+    Conditions[1] = Channel;
+  
+  return FindOneID( DatabaseConnector, "channel", "channelID", Conditions);
 }
 
 //-------------------------------------------------------------------------
@@ -500,9 +535,19 @@ GoDBImageRow QGoCreateImgSessionPage::CreateImage(vtkMySQLDatabase *DatabaseConn
 void QGoCreateImgSessionPage::CreateImgSessionCoord(
   vtkMySQLDatabase *DatabaseConnector, int ImagingSessionID)
 {
+  std::string imgsessionid = ConvertToString< int >(ImagingSessionID);
+
   int XImageSize = m_HeaderFileInfo.m_DimensionX;
   int YImageSize = m_HeaderFileInfo.m_DimensionY;
 
+  m_ImgSessionCoordMax.SetField("PCoord", m_PCoordMax);
+  m_ImgSessionCoordMax.SetField("RCoord", m_RCoordMax);
+  m_ImgSessionCoordMax.SetField("CCoord", m_CCoordMax);
+  m_ImgSessionCoordMax.SetField("XTileCoord", m_XTileCoordMax);
+  m_ImgSessionCoordMax.SetField("YTileCoord", m_YTileCoordMax);
+  m_ImgSessionCoordMax.SetField("ZTileCoord", m_ZTileCoordMax);
+  m_ImgSessionCoordMax.SetField("TCoord", m_TCoordMax);
+  m_ImgSessionCoordMax.SetField("ZCoord", m_ZCoordMax);
   m_ImgSessionCoordMax.SetField("XCoord", XImageSize);
   m_ImgSessionCoordMax.SetField("YCoord", YImageSize);
 
@@ -510,17 +555,34 @@ void QGoCreateImgSessionPage::CreateImgSessionCoord(
   int CoordIDMax = m_ImgSessionCoordMax.SaveInDB(DatabaseConnector);
 
   //update the CoordMaxID in Imgsession with the new created coordinate
-  UpdateValueInDB( DatabaseConnector, "imagingsession",
-                   "CoordIDMax", ConvertToString< int >(CoordIDMax), "ImagingSessionID",
-                   ConvertToString< int >(ImagingSessionID) );
+  UpdateValueInDB( DatabaseConnector,
+                   "imagingsession",
+                   "CoordIDMax",
+                   ConvertToString< int >(CoordIDMax),
+                   "ImagingSessionID",
+                    imgsessionid);
+
+  m_ImgSessionCoordMin.SetField("PCoord", m_PCoordMin);
+  m_ImgSessionCoordMin.SetField("RCoord", m_RCoordMin);
+  m_ImgSessionCoordMin.SetField("CCoord", m_CCoordMin);
+  m_ImgSessionCoordMin.SetField("XTileCoord", m_XTileCoordMin);
+  m_ImgSessionCoordMin.SetField("YTileCoord", m_YTileCoordMin);
+  m_ImgSessionCoordMin.SetField("ZTileCoord", m_ZTileCoordMin);
+  m_ImgSessionCoordMin.SetField("TCoord", m_TCoordMin);
+  m_ImgSessionCoordMin.SetField("ZCoord", m_ZCoordMin);
+  m_ImgSessionCoordMin.SetField("XCoord", 0);
+  m_ImgSessionCoordMin.SetField("YCoord", 0);
 
   //add a new coordinate to enter the info for ImgSession CoordMin
   int CoordIDMin = m_ImgSessionCoordMin.SaveInDB(DatabaseConnector);
 
   //update the CoordMaxID in Imgsession with the new created coordinate
-  UpdateValueInDB( DatabaseConnector, "imagingsession",
-                   "CoordIDMin", ConvertToString< int >(CoordIDMin), "ImagingSessionID",
-                   ConvertToString< int >(ImagingSessionID) );
+  UpdateValueInDB( DatabaseConnector,
+                   "imagingsession",
+                   "CoordIDMin",
+                   ConvertToString< int >(CoordIDMin),
+                   "ImagingSessionID",
+                   imgsessionid );
 }
 
 //-------------------------------------------------------------------------

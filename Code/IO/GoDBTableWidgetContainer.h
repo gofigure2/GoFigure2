@@ -43,38 +43,68 @@
 #include <list>
 
 #include "QGoIOConfigure.h"
-/** \brief this class describes the columns of the table widget with the corresponding info
+/** 
+\brief this class describes the columns of the table widget with the corresponding info
 to find their values in the database if the columns refer to data stored in the database and
 provides methods to fill the rows of the table widget and to get the right queries to
-find the data in the database*/
+find the data in the database
+\ingroup DB
+*/
 class QGOIO_EXPORT GoDBTableWidgetContainer
 {
 public:
   GoDBTableWidgetContainer();
+  /**
+  \brief constructor
+  \param[in] iCollectionName name of the collection
+  \param[in] iTracesName name of the traces
+  \pram[in] iImgSessionID ID of the imagingsession
+  */
   explicit GoDBTableWidgetContainer(std::string iCollectionName, std::string iTracesName,
                                     int iImgSessionID);
+  /**
+  \brief desctructor
+  */
   virtual ~GoDBTableWidgetContainer(){}
 
   typedef  std::vector< std::pair< GoDBTraceInfoForTableWidget, std::vector< std::string > > >
   TWContainerType;
 
-  /** \brief Return a list with all the ColumnNames to be displayed in the
-  tableWidget:*/
+  /** 
+  \brief Return a list with all the ColumnNames to be displayed in the
+  tableWidget
+  \return a list with all the ColumnNames to be displayed in the
+  tableWidget
+  */
   std::list< std::string > GetListColumnsNamesForTableWidget();
 
-  /** \brief Return a list with all the ColumnNames for computed values displayed in the
-  tableWidget:*/
+  /** 
+  \brief Return a list with all the ColumnNames for computed values displayed in the
+  tableWidget
+  \return a list with all the ColumnNames for computed values displayed in the
+  tableWidget
+  */
   std::vector< std::string > GetNameComputedColumns();
 
-  /** \brief get the results of the queries and put them in the row container corresponding
+  /** 
+  \brief get the results of the queries and put them in the row container corresponding
   to all the data needed to fill the table widget for the traces and return the corresponding
-  row container*/
+  row container
+  \param[in] iDatabaseConnector connection to the database
+  \return all the values needed from the database and the description of the info to know 
+  how to display them in the table widget
+  */
   virtual TWContainerType GetContainerLoadedWithAllFromDB(
     vtkMySQLDatabase *iDatabaseConnector);
 
-  /** \brief get the results of the queries and put them in the row container corresponding
+  /** 
+  \brief get the results of the queries and put them in the row container corresponding
   to all the data needed to fill the table widget for the updated trace and return the
-  link to the corresponding row container which has only 1 row*/
+  link to the corresponding row container which has only 1 row
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iTraceID traceID the data are needed for
+  \return the row container with all the data for the specific trace
+  */
   virtual TWContainerType GetContainerForOneSpecificTrace(vtkMySQLDatabase *iDatabaseConnector,
                                                           int iTraceID);
 
@@ -120,15 +150,21 @@ protected:
   std::vector< GoDBTraceInfoForTableWidget > m_ColumnsInfos;
   TWContainerType                            m_RowContainer;
 
-  /** \brief Fill a vector of GoDBTraceInfoForTableWidget with the info
- needed to fill the table widget for all the traces*/
-  std::vector< GoDBTraceInfoForTableWidget > GetColumnsInfoForTraceTable();
+  /** 
+  \brief Fill a vector of GoDBTraceInfoForTableWidget with the info
+  needed to fill the table widget for all the traces
+  \return a vector with all the info to fill the table widget for 
+  all the traces
+  */
+  virtual std::vector< GoDBTraceInfoForTableWidget > GetColumnsInfoForTraceTable();
 
-  /** \brief Fill the vector of GoDBTraceInfoForTableWidget with the info
-  common to 2 traces only*/
-  virtual void GetCommonInfoForTwoTracesTable() = 0;
+  /** 
+  \brief Virtual Pure method Fill the vector of GoDBTraceInfoForTableWidget with the info
+  common to 2 traces only
+  */
+  virtual void SetCommonInfoForTwoTracesTable() = 0;
 
-  void GetInfoForColumnIsVisible();
+  void SetInfoForColumnIsVisible();
 
   virtual void FillRowContainerWithDBValues(
     vtkMySQLDatabase *iDatabaseConnector, std::string iRestrictionName,

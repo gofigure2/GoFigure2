@@ -51,7 +51,8 @@ GoDBTableWidgetContainer::GoDBTableWidgetContainer(std::string iTracesName,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::vector< GoDBTraceInfoForTableWidget > GoDBTableWidgetContainer::GetColumnsInfoForTraceTable()
+std::vector< GoDBTraceInfoForTableWidget > 
+  GoDBTableWidgetContainer::GetColumnsInfoForTraceTable()
 {
   GoDBTraceInfoForTableWidget temp;
 
@@ -395,8 +396,7 @@ std::vector< GoDBTraceInfoForTableWidget > GoDBTableWidgetContainer::GetColumnsI
   m_RowContainer.push_back(PairTemp);
   temp.Clear();
 
-  this->GetCommonInfoForTwoTracesTable();
-  //this->GetSpecificInfoForTraceTable();
+  this->SetCommonInfoForTwoTracesTable();
 
   return m_ColumnsInfos;
 }
@@ -404,7 +404,7 @@ std::vector< GoDBTraceInfoForTableWidget > GoDBTableWidgetContainer::GetColumnsI
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBTableWidgetContainer::GetInfoForColumnIsVisible()
+void GoDBTableWidgetContainer::SetInfoForColumnIsVisible()
 {
   GoDBTraceInfoForTableWidget temp;
 
@@ -834,7 +834,3 @@ std::vector< int > GoDBTableWidgetContainer::GetAllTraceIDsInContainer()
     }
   return vectorInt;
 }
-
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
