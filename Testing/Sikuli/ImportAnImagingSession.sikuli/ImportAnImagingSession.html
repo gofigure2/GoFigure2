@@ -90,8 +90,12 @@ setBundlePath(address)
 
 <span class="skw">click</span>(<img src="Add_author.png" />)
 <span class="skw">type</span>(<span class="str">"Second"</span>+Key.TAB+Key.TAB+<span class="str">"Author"</span>)
-<span class="skw">click</span>(<img src="Create_author.png" />)
-<span class="skw">click</span>(<img src="ok.png" />)
+<span class="skw">click</span>(<img src="Create_Author.png" />)
+<span class="cmt">#user cannot press enter for Create Author button 
+</span><span class="skw">click</span>(<img src="ok.png" />)
+<span class="cmt">#BUG: the create author popup does not disappear after you create one author. Need to x out
+</span><span class="skw">click</span>(<img src="blue_x.png" />)
+
 
 keyDown(Key.SHIFT)
 <span class="skw">type</span>(Key.TAB+Key.TAB+Key.TAB+Key.TAB)

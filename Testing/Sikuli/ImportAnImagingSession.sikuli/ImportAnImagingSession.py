@@ -18,8 +18,12 @@ click("ok.png")
 
 click("Add_author.png")
 type("Second"+Key.TAB+Key.TAB+"Author")
-click("Create_author.png")
+click("Create_Author.png")
+#user cannot press enter for Create Author button 
 click("ok.png")
+#BUG: the create author popup does not disappear after you create one author. Need to x out
+click("blue_x.png")
+
 
 keyDown(Key.SHIFT)
 type(Key.TAB+Key.TAB+Key.TAB+Key.TAB)
