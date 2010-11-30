@@ -509,7 +509,7 @@ std::string QGoDBMeshManager::CheckListMeshesFromDifferentTimePoints(
           MessageToPrint += ", ";
           iter++;
           }
-        MessageToPrint = MessageToPrint.substr(0,MessageToPrint.size()-1);
+        MessageToPrint = MessageToPrint.substr(0,MessageToPrint.size()-2);
       }
      }
   return MessageToPrint;

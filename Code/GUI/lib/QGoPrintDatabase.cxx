@@ -1417,9 +1417,20 @@ void QGoPrintDatabase::CreateNewTrackFromCheckedMeshes(
   this->OpenDBConnection();
   unsigned int NewTrackID = this->m_TracksManager->CreateNewTrackWithNoMesh(
     this->m_DatabaseConnector, this->m_SelectedColorData);
+  std::list<unsigned int> ListMeshToBelongToTheTrack;
+  std::list<unsigned int> ListMeshToReassign;
+  std::string MessageToPrint = this->m_MeshesManager->CheckListMeshesFromDifferentTimePoints(
+      this->m_DatabaseConnector,iListCheckedMeshes,ListMeshToBelongToTheTrack,ListMeshToReassign);
+  //at that moment, do nothing for the checked meshes not selected to be part of the track
+  if (MessageToPrint != "")
+    {
+    emit PrintMessage(MessageToPrint.c_str());
+    }
   this->AddCheckedTracesToCollection< QGoDBMeshManager, QGoDBTrackManager >
-    (this->m_MeshesManager, this->m_TracksManager,
-    NewTrackID, iListCheckedMeshes);
+    (this->m_MeshesManager, this->m_TracksManager,NewTrackID, ListMeshToBelongToTheTrack); 
+  //this->AddCheckedTracesToCollection< QGoDBMeshManager, QGoDBTrackManager >
+  //  (this->m_MeshesManager, this->m_TracksManager,
+  //  NewTrackID, iListCheckedMeshes);
   this->CloseDBConnection();
 }
 
