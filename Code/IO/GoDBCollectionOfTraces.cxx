@@ -860,3 +860,16 @@ std::list<unsigned int> GoDBCollectionOfTraces::
   }
   return oListTraceIDs;
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list<unsigned int> GoDBCollectionOfTraces::
+  GetListTimePointsFromTraceIDs(
+    vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTraceIDs)
+{
+  FieldWithValue JoinCondition = {"CoordIDMin", "CoordID", "="};
+  std::vector<std::string> VectTraceIDs = ListUnsgIntToVectorString(iListTraceIDs);
+  return GetAllSelectedValuesFromTwoTables(iDatabaseConnector, 
+    this->m_TracesName, "coordinate","TCoord", JoinCondition,
+   this->m_TracesIDName, VectTraceIDs,true);
+}

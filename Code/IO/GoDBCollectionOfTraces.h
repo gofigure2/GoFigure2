@@ -355,6 +355,9 @@ public:
     vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTraceIDs,
     unsigned int iTimePoint,unsigned int iMaxTraceID);
 
+  std::list<unsigned int> GetListTimePointsFromTraceIDs(
+    vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTraceIDs);
+
 protected:
 
   std::string  m_CollectionName;

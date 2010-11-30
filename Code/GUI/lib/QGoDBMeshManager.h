@@ -169,6 +169,13 @@ public:
    unsigned int iTrackID,int iTimePoint,vtkMySQLDatabase* iDatabaseConnector);
 
   /**
+  \overload
+  */
+  QString CheckExistingMeshesForTheTrack(
+   unsigned int iTrackID,vtkMySQLDatabase* iDatabaseConnector,
+   std::list<unsigned int> iListMeshIDs);
+
+  /**
   \brief check if in the iListMeshIDs, several have the same timepoint, if so,
   return the list of meshIDs that need to be reassigned to 0 and modify the 
   ioListMeshIDsToBePartOfTrack with only one meshid (the max one of several

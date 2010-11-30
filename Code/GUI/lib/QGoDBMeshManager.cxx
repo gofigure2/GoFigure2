@@ -450,6 +450,43 @@ QString QGoDBMeshManager::CheckExistingMeshesForTheTrack(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+QString QGoDBMeshManager::CheckExistingMeshesForTheTrack(
+   unsigned int iTrackID,vtkMySQLDatabase* iDatabaseConnector,std::list<unsigned int> iListMeshIDs)
+{
+  QString MessageQString("");
+  std::string MessageToPrint = "";
+  std::list<unsigned int> ListTimePoints = 
+    this->m_CollectionOfTraces->GetListTimePointsFromTraceIDs(iDatabaseConnector,iListMeshIDs);
+  if (!ListTimePoints.empty())
+  {
+  std::string MeshIDToPrint = "";
+  std::list<unsigned int>::iterator iter = ListTimePoints.begin();
+  while(iter!= ListTimePoints.end())
+    {
+    unsigned int MeshIDKickedOut =
+      this->ReassignTrackIDForPreviousMeshWithSameTimePoint(
+        iDatabaseConnector, iTrackID,*iter);
+    if (MeshIDKickedOut != 0)
+      {
+        MeshIDToPrint += ConvertToString<unsigned int>(MeshIDKickedOut);
+        MeshIDToPrint += ", ";
+      }
+    iter++;
+    }
+  if (!MeshIDToPrint.empty())
+    {
+      MeshIDToPrint = MeshIDToPrint.substr(0, MeshIDToPrint.size()-2);
+      MessageToPrint += "The trackID of the meshes ";
+      MessageToPrint += MeshIDToPrint;
+      MessageToPrint += " have been reassigned to 0";
+    }
+  }
+  MessageQString = MessageToPrint.c_str();
+  return MessageQString;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 std::string QGoDBMeshManager::CheckListMeshesFromDifferentTimePoints(
   vtkMySQLDatabase *iDatabaseConnector,std::list< unsigned int > iListMeshIDs,
   std::list<unsigned int> & ioListMeshIDsToBePartOfTrack,
