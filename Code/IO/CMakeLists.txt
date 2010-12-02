@@ -44,7 +44,7 @@ SET( QGOIO_SRC
   QueryDataBaseHelper.cxx
   SelectQueryDatabaseHelper.cxx
   QueryBuilderHelper.cxx
-  itkLsm3DSerieImport.cxx
+  # itkLsm3DSerieImport.cxx
   itkMegaCaptureImport.cxx
   itkMegaCaptureReader.cxx
   GoFigureFileInfoMultiIndexContainerHelper.cxx
