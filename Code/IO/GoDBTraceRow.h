@@ -214,7 +214,7 @@ protected:
       vtkSmartPointer< T >::New();
     std::string PointsString = convert->GetMySQLText(TraceVisu);
 
-    std::cout << "output string: " << PointsString << std::endl;
+//    std::cout << "output string: " << PointsString << std::endl;
 
     this->SetField("Points", PointsString);
 
