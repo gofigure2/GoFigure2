@@ -281,14 +281,14 @@ void QGoDBTraceManager::AddActionsContextMenu(QMenu *iMenu)
 //-------------------------------------------------------------------------
 void QGoDBTraceManager::AddGeneralActionsContextMenu(QMenu *iMenu)
 {
-  QMenu* CheckedTracesMenu = new QMenu(tr("With the selected %1s").arg(this->m_TraceName.c_str() ) );
-  CheckedTracesMenu->addAction( tr("Check the selected %1s")
+  m_SelectedTracesMenu = new QMenu(tr("With the selected %1s").arg(this->m_TraceName.c_str() ) );
+  m_SelectedTracesMenu->addAction( tr("Check the selected %1s")
                     .arg( this->m_TraceName.c_str() ), this, SLOT( CheckSelectedRows() ) );
-  CheckedTracesMenu->addAction( tr("Uncheck the selected %1s")
+  m_SelectedTracesMenu->addAction( tr("Uncheck the selected %1s")
                     .arg( this->m_TraceName.c_str() ), this, SLOT( UncheckSelectedRows() ) );
-  CheckedTracesMenu->addAction( tr("Show the selected %1s")
+  m_SelectedTracesMenu->addAction( tr("Show the selected %1s")
                     .arg( this->m_TraceName.c_str() ), this, SLOT( ShowSelectedRows() ) );
-  CheckedTracesMenu->addAction( tr("Hide the selected %1s")
+  m_SelectedTracesMenu->addAction( tr("Hide the selected %1s")
                     .arg( this->m_TraceName.c_str() ), this, SLOT( HideSelectedRows() ) );
   /*iMenu->addAction( tr("Check the selected %1s")
                     .arg( this->m_TraceName.c_str() ), this, SLOT( CheckSelectedRows() ) );
@@ -298,7 +298,7 @@ void QGoDBTraceManager::AddGeneralActionsContextMenu(QMenu *iMenu)
                     .arg( this->m_TraceName.c_str() ), this, SLOT( ShowSelectedRows() ) );
   iMenu->addAction( tr("Hide the selected %1s")
                     .arg( this->m_TraceName.c_str() ), this, SLOT( HideSelectedRows() ) );*/
-  iMenu->addAction(CheckedTracesMenu->menuAction());
+  iMenu->addAction(m_SelectedTracesMenu->menuAction());
 
   QMenu* ColorMenu = new QMenu(tr("Change color of your %1s").arg(this->m_TraceName.c_str() ) );
 
