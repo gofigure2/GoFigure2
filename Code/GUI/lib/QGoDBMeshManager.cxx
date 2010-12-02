@@ -174,6 +174,8 @@ void QGoDBMeshManager::AddActionsContextMenu(QMenu *iMenu)
 {
   QGoDBTraceManager::AddActionsContextMenu(iMenu);
   this->AddSpecificActionsForContourMesh(iMenu);
+  iMenu->addAction( tr("Add the selected CellType to these meshes"), 
+   this->m_Table, SLOT( AddCellType() ) );
 }
 
 //-------------------------------------------------------------------------
@@ -394,6 +396,17 @@ void QGoDBMeshManager::SetColorCoding(bool IsChecked)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoDBMeshManager::UpdateSelectedCellType(std::string iCellType)
+{
+  this->m_SelectedCellType = iCellType;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBMeshManager::UpdateSelectedSubCellType(std::string iSubCellType)
+{
+  this->m_SelectedSubCellType = iSubCellType;
+}
 /*void QGoDBMeshManager::BackFromColorCoding()
 {
 	this->SetBackFromColorCodingTemplate<ContourMeshContainer>(

@@ -796,15 +796,15 @@ void QGoPrintDatabase::CreateConnectionsForTraceManualEditingWidget()
                     this,
                     SLOT( UpdateSelectedCollectionID(ItemColorComboboxData) ) );
 
-  QObject::connect( this->m_TraceWidget,
+ /* QObject::connect( this->m_TraceWidget,
                     SIGNAL( NewCellTypeActivated(std::string) ),
-                    this,
+                    this->m_MeshesManager,
                     SLOT( UpdateSelectedCellType(std::string) ) );
 
   QObject::connect( this->m_TraceWidget,
                     SIGNAL( NewSubCellTypeActivated(std::string) ),
-                    this,
-                    SLOT( UpdateSelectedSubCellType(std::string) ) );
+                    this->m_MeshesManager,
+                    SLOT( UpdateSelectedSubCellType(std::string) ) );*/
 
   QObject::connect( this->m_TraceWidget,
                     SIGNAL( AddNewColor() ),
@@ -941,7 +941,7 @@ void QGoPrintDatabase::UpdateSelectedCollectionID(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::UpdateSelectedCellType(std::string iSelectedCellType)
+/*void QGoPrintDatabase::UpdateSelectedCellType(std::string iSelectedCellType)
 {
   this->m_SelectedCellType = iSelectedCellType;
 }
@@ -952,7 +952,7 @@ void QGoPrintDatabase::UpdateSelectedCellType(std::string iSelectedCellType)
 void QGoPrintDatabase::UpdateSelectedSubCellType(std::string iSelectedSubCellType)
 {
   this->m_SelectedSubCellType = iSelectedSubCellType;
-}
+}*/
 
 //-------------------------------------------------------------------------
 
@@ -964,7 +964,7 @@ void QGoPrintDatabase::AddNewCellType()
     this->m_DatabaseConnector);
   if ( !NewCellType.empty() )
     {
-    this->UpdateSelectedCellType(NewCellType);
+    this->m_MeshesManager->UpdateSelectedCellType(NewCellType);
     this->SetTMListCellTypes(NewCellType);
     }
   else //if the NewCellType is empty, go to the last selected one:
@@ -984,7 +984,7 @@ void QGoPrintDatabase::AddNewSubCellType()
     this->m_SubCellTypeManager->AddAnEntity(this->m_DatabaseConnector);
   if ( !NewSubCellType.empty() )
     {
-    this->UpdateSelectedSubCellType(NewSubCellType);
+    this->m_MeshesManager->UpdateSelectedSubCellType(NewSubCellType);
     this->SetTMListSubCellTypes(NewSubCellType);
     }
   else //if the NewSubCellType is empty, go to the last selected one:
@@ -1246,6 +1246,15 @@ void QGoPrintDatabase::SetMeshesManager()
                     SIGNAL( CheckedTracesToAddToSelectedCollection(
                               std::list< unsigned int > ) ), this,
                     SLOT( AddCheckedMeshesToSelectedTrack(std::list< unsigned int > ) ) );
+  //related to traceEditingWidget and meshes_manager (celltype + subcelltype)
+  QObject::connect( this->m_TraceWidget,
+                    SIGNAL( NewCellTypeActivated(std::string) ),
+                    this->m_MeshesManager,
+                    SLOT( UpdateSelectedCellType(std::string) ) );
+  QObject::connect( this->m_TraceWidget,
+                    SIGNAL( NewSubCellTypeActivated(std::string) ),
+                    this->m_MeshesManager,
+                    SLOT( UpdateSelectedSubCellType(std::string) ) );
 }
 //--------------------------------------------------------------------------
 

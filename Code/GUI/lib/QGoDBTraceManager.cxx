@@ -290,14 +290,7 @@ void QGoDBTraceManager::AddGeneralActionsContextMenu(QMenu *iMenu)
                     .arg( this->m_TraceName.c_str() ), this, SLOT( ShowSelectedRows() ) );
   m_SelectedTracesMenu->addAction( tr("Hide the selected %1s")
                     .arg( this->m_TraceName.c_str() ), this, SLOT( HideSelectedRows() ) );
-  /*iMenu->addAction( tr("Check the selected %1s")
-                    .arg( this->m_TraceName.c_str() ), this, SLOT( CheckSelectedRows() ) );
-  iMenu->addAction( tr("Uncheck the selected %1s")
-                    .arg( this->m_TraceName.c_str() ), this, SLOT( UncheckSelectedRows() ) );
-  iMenu->addAction( tr("Show the selected %1s")
-                    .arg( this->m_TraceName.c_str() ), this, SLOT( ShowSelectedRows() ) );
-  iMenu->addAction( tr("Hide the selected %1s")
-                    .arg( this->m_TraceName.c_str() ), this, SLOT( HideSelectedRows() ) );*/
+  
   iMenu->addAction(m_SelectedTracesMenu->menuAction());
 
   QMenu* ColorMenu = new QMenu(tr("Change color of your %1s").arg(this->m_TraceName.c_str() ) );
