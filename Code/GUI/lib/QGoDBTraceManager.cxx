@@ -281,14 +281,24 @@ void QGoDBTraceManager::AddActionsContextMenu(QMenu *iMenu)
 //-------------------------------------------------------------------------
 void QGoDBTraceManager::AddGeneralActionsContextMenu(QMenu *iMenu)
 {
-  iMenu->addAction( tr("Check the selected %1s")
+  QMenu* CheckedTracesMenu = new QMenu(tr("With the selected %1s").arg(this->m_TraceName.c_str() ) );
+  CheckedTracesMenu->addAction( tr("Check the selected %1s")
+                    .arg( this->m_TraceName.c_str() ), this, SLOT( CheckSelectedRows() ) );
+  CheckedTracesMenu->addAction( tr("Uncheck the selected %1s")
+                    .arg( this->m_TraceName.c_str() ), this, SLOT( UncheckSelectedRows() ) );
+  CheckedTracesMenu->addAction( tr("Show the selected %1s")
+                    .arg( this->m_TraceName.c_str() ), this, SLOT( ShowSelectedRows() ) );
+  CheckedTracesMenu->addAction( tr("Hide the selected %1s")
+                    .arg( this->m_TraceName.c_str() ), this, SLOT( HideSelectedRows() ) );
+  /*iMenu->addAction( tr("Check the selected %1s")
                     .arg( this->m_TraceName.c_str() ), this, SLOT( CheckSelectedRows() ) );
   iMenu->addAction( tr("Uncheck the selected %1s")
                     .arg( this->m_TraceName.c_str() ), this, SLOT( UncheckSelectedRows() ) );
   iMenu->addAction( tr("Show the selected %1s")
                     .arg( this->m_TraceName.c_str() ), this, SLOT( ShowSelectedRows() ) );
   iMenu->addAction( tr("Hide the selected %1s")
-                    .arg( this->m_TraceName.c_str() ), this, SLOT( HideSelectedRows() ) );
+                    .arg( this->m_TraceName.c_str() ), this, SLOT( HideSelectedRows() ) );*/
+  iMenu->addAction(CheckedTracesMenu->menuAction());
 
   QMenu* ColorMenu = new QMenu(tr("Change color of your %1s").arg(this->m_TraceName.c_str() ) );
 
@@ -326,15 +336,6 @@ void QGoDBTraceManager::AddSpecificActionsForContourMesh(QMenu *iMenu)
                     this, SLOT( GoToTheTrace() ) );
   /** \todo Lydie: when using lineage, put it in the generalActionsContextMenu*/
   this->AddActionForCreateNewCollectionFromCheckedTraces(iMenu);
-
- // iMenu->addAction( tr("ColorCode your %1s base on the selected column")
- //                   .arg(this->m_TraceName.c_str() ),
- //                   this, SLOT( ColorCoding() ) );
-  /*iMenu->addAction(
-      tr("Add to selected %1 : %2").arg(this->m_CollectionName.c_str())
-      .arg(this->m_SelectedCollectionData.first.c_str()), this, SLOT(AddToSelectedCollection()));
-  iMenu->addAction(tr("ReEdit the checked %1").arg(this->m_TraceName.c_str()),
-                           this, SLOT(ReEditTrace()));*/
 }
 
 //-------------------------------------------------------------------------
