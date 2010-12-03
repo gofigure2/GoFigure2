@@ -297,6 +297,7 @@ protected:
   QColor                                                                  m_NodesColor;
   QColor                                                                  m_ActiveNodesColor;
 
+  float        m_IntersectionLineWidth;
   unsigned int m_SnapshotId;
   bool         m_ShowAnnotations;
   bool         m_ShowSplinePlane;

@@ -168,7 +168,6 @@ vtkViewImage2D::vtkViewImage2D()
   this->InitializeSlicePlane();
   this->Zoom = 1.;
   this->Slice = -1;
-  LineWidth = 1.0;
 }
 
 //----------------------------------------------------------------------------
@@ -957,7 +956,7 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
     actor->SetProperty(property);
     }
   actor->GetProperty()->BackfaceCullingOn();
-  actor->GetProperty()->SetLineWidth( this->LineWidth );
+  actor->GetProperty()->SetLineWidth( this->IntersectionLineWidth );
 
   this->Renderer->AddViewProp(actor);
   this->Prop3DCollection->AddItem(actor);
@@ -1015,6 +1014,7 @@ vtkViewImage2D::AddDataSet(vtkDataSet *dataset,
     actor->SetProperty(property);
     }
   actor->GetProperty()->BackfaceCullingOn();
+  actor->GetProperty()->SetLineWidth( this->IntersectionLineWidth );
 
   this->Renderer->AddViewProp(actor);
   this->Prop3DCollection->AddItem(actor);

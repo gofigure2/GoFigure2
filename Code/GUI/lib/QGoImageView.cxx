@@ -73,6 +73,7 @@
 QGoImageView::QGoImageView(QWidget *iParent):QWidget(iParent),
   m_Pool(0),
   m_Image(0),
+  m_IntersectionLineWidth(1.),
   m_SnapshotId(0),
   m_ShowAnnotations(true),
   m_ShowSplinePlane(true)

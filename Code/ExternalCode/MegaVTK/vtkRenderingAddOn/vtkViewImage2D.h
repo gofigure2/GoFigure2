@@ -253,12 +253,6 @@ public:
    */
   vtkGetMacro(Zoom, double);
 
-  /** \brief Set the linewidth for added dataset in the scene (when using AddDataSet) */
-  vtkSetMacro( LineWidth, float );
-
-  /** \brief Get the linewidth for added dataset in the scene (when using AddDataSet) */
-  vtkGetMacro( LineWidth, float );
-
   /**
    * \brief Useful method that transform a display position into a world corrdinate point
   */
@@ -599,8 +593,6 @@ protected:
 
   double Zoom;
   double CameraMotionVector[3];
-
-  float LineWidth;
 };
 
 #endif /* _vtkViewImage2D_h_ */
