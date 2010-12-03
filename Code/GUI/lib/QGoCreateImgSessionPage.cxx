@@ -41,7 +41,6 @@
 #include "GoDBColorRow.h"
 #include "GoDBRecordSetHelper.h"
 #include "itkMegaCaptureImport.h"
-#include "itkLsm3DSerieImport.h"
 #include "ConvertToStringHelper.h"
 #include "QGoDBInitCreateMicroscopePage.h"
 
@@ -497,7 +496,7 @@ int QGoCreateImgSessionPage::FindChannelIDForImage(vtkMySQLDatabase *DatabaseCon
   FieldWithValue Channel ={"ChannelNumber",ConvertToString< int >(ChannelNumber),"="};
     Conditions[0] = ImgSession;
     Conditions[1] = Channel;
-  
+
   return FindOneID( DatabaseConnector, "channel", "channelID", Conditions);
 }
 

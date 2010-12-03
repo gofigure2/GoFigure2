@@ -43,7 +43,7 @@ int main(int argc, char **argv)
   vtkSmartPointer<vtkPolyDataMySQLTrackReader> track_reader =
       vtkSmartPointer<vtkPolyDataMySQLTrackReader>::New();
 
-  std::string stringFromDB = "2 1 1 1 1 2 2 2 1 ";
+  std::string stringFromDB = "2 1 1 1 1 2 2 2 2 ";
 
   vtkSmartPointer<vtkPolyData> input = vtkSmartPointer<vtkPolyData>::New();
   input->ShallowCopy(track_reader->GetPolyData(stringFromDB));

@@ -44,7 +44,7 @@ SET( QGOIO_SRC
   QueryDataBaseHelper.cxx
   SelectQueryDatabaseHelper.cxx
   QueryBuilderHelper.cxx
-  itkLsm3DSerieImport.cxx
+  # itkLsm3DSerieImport.cxx
   itkMegaCaptureImport.cxx
   itkMegaCaptureReader.cxx
   GoFigureFileInfoMultiIndexContainerHelper.cxx
@@ -55,8 +55,8 @@ SET( QGOIO_SRC
   vtkPolyDataMySQLMeshWriter.cxx
   vtkPolyDataMySQLTrackWriter.cxx
   LSMToMegaCapture.cxx
-  MeshTextFileImport.cxx
-  TrackTextFileImport.cxx
+#  MeshTextFileImport.cxx
+#  TrackTextFileImport.cxx
 )
 
 ADD_LIBRARY( QGoIO

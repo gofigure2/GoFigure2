@@ -61,6 +61,12 @@ std::string
 vtkPolyDataMySQLMeshWriter::
 GetMySQLText(vtkPolyData *iPolyData)
 {
+  std::cout<<"___Mesh PolyData Writer Debug___"<< std::endl;
+  std::cout << "File: " << __FILE__<< std::endl;
+  std::cout << "Line: " << __LINE__<< std::endl;
+  std::cout << "Number Of Cells: " << iPolyData->GetNumberOfCells()<< std::endl;
+  std::cout << "Number Of Points: " << iPolyData->GetNumberOfPoints()<< std::endl;
+
   vtkIdType N = iPolyData->GetNumberOfPoints();
   double    pt[3];
 

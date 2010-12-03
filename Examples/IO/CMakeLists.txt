@@ -12,8 +12,8 @@ SET( QGOIO_EXAMPLES_SRC
   vtkPolyDataMySQLContourWriter
   vtkPolyDataMySQLMeshWriter
   vtkPolyDataMySQLTrack
-  kishmeshtextfilereader
-  trackTextFilesReader
+#  kishmeshtextfilereader
+#  trackTextFilesReader
 )
 
 SET( GODB_SRC
