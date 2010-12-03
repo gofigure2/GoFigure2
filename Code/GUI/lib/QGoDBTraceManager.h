@@ -244,6 +244,8 @@ public:
   std::list< unsigned int > GetLastCreatedTracesIDs(
     vtkMySQLDatabase *iDatabaseConnector, int iNumberOfTraceIDs);
 
+  void SetSelectedCollection (NameWithColorData iCollectionData);
+
 
 signals:
   /**
@@ -284,12 +286,13 @@ protected:
   std::string m_CollectionOf;
   std::string m_CollectionOfID;
 
-  int                     m_SelectedCollectionID;
+  NameWithColorData       m_SelectedCollectionData;
   int                     m_ImgSessionID;
   QGoTableWidget *        m_Table;
   GoDBCollectionOfTraces *m_CollectionOfTraces;
   vtkMySQLDatabase *      m_DatabaseConnector;
   bool                    IsColorCodingOn;
+  QMenu*                  m_CheckedTracesMenu;
 
   /**
   \brief Virtual pure method: get the data needed from the database and

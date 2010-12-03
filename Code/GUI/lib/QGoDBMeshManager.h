@@ -132,9 +132,24 @@ public:
    //virtual pure method in QGoDBTraceManager
   virtual std::list< unsigned int > GetListHighlightedIDs();
 
+public slots:
+  /**
+  \brief set the m_SelectedCelltype to iCelltype
+  \param[in] iCellType name of the celltype
+  */
+  void UpdateSelectedCellType(std::string iCellType);
+
+  /**
+  \brief set the m_SelectedSubCelltype to iSubCelltype
+  \param[in] iSubCellType name of the subcelltype
+  */
+  void UpdateSelectedSubCellType(std::string iSubCellType);
+
 protected:
   GoDBTWContainerForMesh *m_TWContainer;
   ContourMeshContainer   *m_MeshContainerInfoForVisu;
+  std::string             m_SelectedCellType;
+  std::string             m_SelectedSubCellType;
 
   //virtual pure method in QGoDBTraceManager
   virtual void SetCollectionsTraceNames();
@@ -177,6 +192,16 @@ protected slots:
 
   //virtual pure method in QGoDBTraceManager
   virtual void SetColorCoding(bool IsChecked);
+
+  /**
+  \brief update the celltype of the checked meshes with the selected one
+  */
+  void UpdateCellType();
+
+   /**
+  \brief update the subcelltype of the checked meshes with the selected one
+  */
+  void UpdateSubCellType();
 
   //virtual pure method in QGoDBTraceManager
   //virtual void BackFromColorCoding();

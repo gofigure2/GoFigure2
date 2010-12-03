@@ -140,7 +140,7 @@ void QGoDBContourManager::AddActionsContextMenu(QMenu *iMenu)
 {
   QGoDBTraceManager::AddActionsContextMenu(iMenu);
   this->AddSpecificActionsForContourMesh(iMenu);
-  iMenu->addAction( tr("ReEdit the checked %1").arg( this->m_TraceName.c_str() ),
+  this->m_CheckedTracesMenu->addAction( tr("ReEdit the checked %1").arg( this->m_TraceName.c_str() ),
                     this, SLOT( ReEditTrace() ) );
 }
 
@@ -150,19 +150,10 @@ void QGoDBContourManager::AddActionsContextMenu(QMenu *iMenu)
 void QGoDBContourManager::AddActionForCreateNewCollectionFromCheckedTraces(
   QMenu *iMenu)
 {
-  iMenu->addAction( tr("Generate a new mesh from checked contours"),
-                    this, SLOT( CreateCorrespondingCollection() ) );
+  this->m_CheckedTracesMenu->addAction( tr("Generate a new mesh from checked contours"),
+         this, SLOT( CreateCorrespondingCollection() ) );
 }
 
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/*void QGoDBContourManager::SetDatabaseConnection(
-  vtkMySQLDatabase *iDatabaseConnector)
-{
-  this->m_DatabaseConnector = iDatabaseConnector;
-}
-*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

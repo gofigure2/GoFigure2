@@ -41,7 +41,6 @@
 QGoDBTraceManager::QGoDBTraceManager():
   m_Table(NULL), m_CollectionOfTraces(NULL),
   m_DatabaseConnector(NULL), IsColorCodingOn(false)
-  //, m_TraceContainerInfoForVisu(NULL)
 {}
 
 //-------------------------------------------------------------------------
@@ -52,11 +51,6 @@ QGoDBTraceManager::~QGoDBTraceManager()
   if ( this->m_CollectionOfTraces )
     {
     delete this->m_CollectionOfTraces;
-    }
-  if ( this->m_DatabaseConnector )
-    {
-    this->m_DatabaseConnector->Close();
-    this->m_DatabaseConnector->Delete();
     }
 }
 
@@ -281,14 +275,17 @@ void QGoDBTraceManager::AddActionsContextMenu(QMenu *iMenu)
 //-------------------------------------------------------------------------
 void QGoDBTraceManager::AddGeneralActionsContextMenu(QMenu *iMenu)
 {
-  iMenu->addAction( tr("Check the selected %1s")
+  QMenu* SelectedTracesMenu = new QMenu(tr("With the selected %1s").arg(this->m_TraceName.c_str() ) );
+  SelectedTracesMenu->addAction( tr("Check the selected %1s")
                     .arg( this->m_TraceName.c_str() ), this, SLOT( CheckSelectedRows() ) );
-  iMenu->addAction( tr("Uncheck the selected %1s")
+  SelectedTracesMenu->addAction( tr("Uncheck the selected %1s")
                     .arg( this->m_TraceName.c_str() ), this, SLOT( UncheckSelectedRows() ) );
-  iMenu->addAction( tr("Show the selected %1s")
+  SelectedTracesMenu->addAction( tr("Show the selected %1s")
                     .arg( this->m_TraceName.c_str() ), this, SLOT( ShowSelectedRows() ) );
-  iMenu->addAction( tr("Hide the selected %1s")
+  SelectedTracesMenu->addAction( tr("Hide the selected %1s")
                     .arg( this->m_TraceName.c_str() ), this, SLOT( HideSelectedRows() ) );
+  
+  iMenu->addAction(SelectedTracesMenu->menuAction());
 
   QMenu* ColorMenu = new QMenu(tr("Change color of your %1s").arg(this->m_TraceName.c_str() ) );
 
@@ -300,14 +297,17 @@ void QGoDBTraceManager::AddGeneralActionsContextMenu(QMenu *iMenu)
   ColorCoding->setChecked(IsColorCodingOn);
   QObject::connect(ColorCoding,SIGNAL(triggered ( bool ) ),this,SLOT( SetColorCoding(bool) ) );
   ColorMenu->addAction(ColorCoding);
-
   iMenu->addAction(ColorMenu->menuAction());
 
-  iMenu->addAction( tr("Delete checked %1s").arg( this->m_TraceName.c_str() ),
+  m_CheckedTracesMenu = new QMenu(tr("With the checked %1s").arg(this->m_TraceName.c_str() ) );
+  m_CheckedTracesMenu->addAction( tr("Delete them"),
                     this, SLOT( DeleteTracesFromContextMenu() ) );
-
-  iMenu->addAction( tr("Add to selected %1%2").arg( this->m_CollectionName.c_str() )
-                    .arg("ID"), this, SLOT( AddToSelectedCollection() ) );
+  m_CheckedTracesMenu->addAction( tr("Add to selected %1%2").arg( this->m_CollectionName.c_str() )
+                      .arg(this->m_SelectedCollectionData.first.c_str()), this, SLOT( AddToSelectedCollection() ) );
+  m_CheckedTracesMenu->addAction( tr("Change their color to the selected one")
+                    .arg( this->m_TraceName.c_str() ),
+                    this, SLOT( ChangeTraceColor() ) );
+  iMenu->addAction(this->m_CheckedTracesMenu->menuAction() );
 
   iMenu->addAction( tr("Copy Selection"),
                     this->m_Table, SLOT( CopySelection() ) );
@@ -326,15 +326,6 @@ void QGoDBTraceManager::AddSpecificActionsForContourMesh(QMenu *iMenu)
                     this, SLOT( GoToTheTrace() ) );
   /** \todo Lydie: when using lineage, put it in the generalActionsContextMenu*/
   this->AddActionForCreateNewCollectionFromCheckedTraces(iMenu);
-
- // iMenu->addAction( tr("ColorCode your %1s base on the selected column")
- //                   .arg(this->m_TraceName.c_str() ),
- //                   this, SLOT( ColorCoding() ) );
-  /*iMenu->addAction(
-      tr("Add to selected %1 : %2").arg(this->m_CollectionName.c_str())
-      .arg(this->m_SelectedCollectionData.first.c_str()), this, SLOT(AddToSelectedCollection()));
-  iMenu->addAction(tr("ReEdit the checked %1").arg(this->m_TraceName.c_str()),
-                           this, SLOT(ReEditTrace()));*/
 }
 
 //-------------------------------------------------------------------------
@@ -343,7 +334,7 @@ void QGoDBTraceManager::AddSpecificActionsForContourMesh(QMenu *iMenu)
 void QGoDBTraceManager::AddActionForCreateNewCollectionFromCheckedTraces(
   QMenu *iMenu)
 {
-  iMenu->addAction( tr("Create a new %1 from checked %2s")
+  this->m_CheckedTracesMenu->addAction(tr("Create a new %1 from checked %2s")
                     .arg( this->m_CollectionName.c_str() )
                     .arg( this->m_TraceName.c_str() ),
                     this, SLOT( CreateCorrespondingCollection() ) );
@@ -427,7 +418,6 @@ void QGoDBTraceManager::DeleteTracesFromContextMenu()
 {
   std::list< unsigned int > ListTracesIDToDelete =
     this->GetListHighlightedIDs();
-    //this->m_TraceContainerInfoForVisu->GetHighlightedElementsTraceID();
 
   if ( ListTracesIDToDelete.empty() )
     {
@@ -559,7 +549,6 @@ void QGoDBTraceManager::ShowTheTraceInTW(unsigned int iTraceID,
 void QGoDBTraceManager::GoToTheTrace()
 {
   std::list< unsigned int > ListCheckedTraces =
-    //this->m_TraceContainerInfoForVisu->GetHighlightedElementsTraceID();
     this->GetListHighlightedIDs();
   if ( ListCheckedTraces.size() != 1 )
     {
@@ -586,7 +575,6 @@ void QGoDBTraceManager::GoToTheTrace()
 void QGoDBTraceManager::CreateCorrespondingCollection()
 {
   std::list< unsigned int > ListCheckedTraces =
-    //this->m_TraceContainerInfoForVisu->GetHighlightedElementsTraceID();
     this->GetListHighlightedIDs();
   if ( ListCheckedTraces.empty() )
     {
@@ -622,7 +610,6 @@ GoDBCoordinateRow QGoDBTraceManager::GetCoordinateFromInt(int iXCoord,
 void QGoDBTraceManager::AddToSelectedCollection()
 {
   emit CheckedTracesToAddToSelectedCollection(
-    //this->m_TraceContainerInfoForVisu->GetHighlightedElementsTraceID() );
     this->GetListHighlightedIDs() );
 }
 
@@ -638,18 +625,15 @@ std::list< unsigned int > QGoDBTraceManager::GetLastCreatedTracesIDs(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/*
-void QGoDBTraceManager::ColorCoding()
-{
-  //todo reimplement it :
-  //this->m_TraceContainerInfoForVisu->SetColorCode( const std::string& iColumnName,
-    //                 const std::map< unsigned int, TValue >& iValues )
- // this->m_Table->GetTraceIDAndColumnsValues(this->m_TraceID);*/
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 void QGoDBTraceManager::SetDatabaseConnection(
   vtkMySQLDatabase *iDatabaseConnector)
 {
   this->m_DatabaseConnector = iDatabaseConnector;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTraceManager::SetSelectedCollection (NameWithColorData iCollectionData)
+{
+  this->m_SelectedCollectionData = iCollectionData;
 }

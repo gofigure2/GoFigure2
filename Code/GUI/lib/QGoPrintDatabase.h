@@ -553,21 +553,32 @@ protected slots:
 
   void TheTabIsChanged(int iIndex);
 
+  /**
+  \brief open the connection to the database and pass it to the ContoursManager
+  */
   void PassDBConnectionToContoursManager();
 
   void PassSelectedColorToContoursManager();
 
+   /**
+  \brief open the connection to the database and pass it to the MeshesManager
+  */
+  void PassDBConnectionToMeshesManager();
+
+   /**
+  \brief open the connection to the database and pass it to the TracksManager
+  */
   void PassDBConnectionToTracksManager();
 
   void CloseDBConnection();
   /**
-  \brief slot connected to the TraceColorToChange(0 emitted by the
+  \brief slot connected to the TraceColorToChange() emitted by the
   m_MeshesManager
   */
   void ChangeMeshColor();
 
   /**
-  \brief slot connected to the TraceColorToChange(0 emitted by the
+  \brief slot connected to the TraceColorToChange() emitted by the
   m_MeshesManager
   */
   void ChangeTrackColor();
@@ -647,13 +658,13 @@ protected slots:
   \brief set the m_SelectedCelltype to iSelectedCelltype
   \param[in] iSelectedCellType name of the celltype
   */
-  void UpdateSelectedCellType(std::string iSelectedCellType);
+  //void UpdateSelectedCellType(std::string iSelectedCellType);
 
   /**
   \brief set the m_SelectedSubCelltype to iSelectedSubCelltype
   \param[in] iSelectedSubCellType name of the subcelltype
   */
-  void UpdateSelectedSubCellType(std::string iSelectedSubCellType);
+  //void UpdateSelectedSubCellType(std::string iSelectedSubCellType);
 
   /**
   \brief Add the new collection in the database,add a row in TW

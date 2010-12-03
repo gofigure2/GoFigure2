@@ -509,7 +509,15 @@ void QGoTableWidget::InsertNewRow(TWContainerType iTWRowContainer,
                                                                    // "")
               {
               QTableWidgetItem *CellTable = new QTableWidgetItem;
-              CellTable->setData( 0, QString::fromStdString(Value).toDouble() );
+              //CellTable->setData( 0, QString::fromStdString(Value).toDouble() );
+              if(iTWRowContainer[i].first.TypeName == "string")
+                    {
+                    CellTable->setData( 0, QString::fromStdString(Value) );
+                    }
+                  else
+                    {
+                    CellTable->setData( 0, QString::fromStdString(Value).toDouble() );
+                    }
               CellTable->setTextAlignment(Qt::AlignCenter);
               this->setItem(NewRow - 1, j, CellTable);
               }
@@ -580,14 +588,30 @@ void QGoTableWidget::UpdateRow(TWContainerType iTWRowContainer,
 
               if ( t_item )
                 {
-                t_item->setData( 0, QString::fromStdString(Value).toDouble() );
+                //t_item->setData( 0, QString::fromStdString(Value).toDouble() );
+                if(iTWRowContainer[i].first.TypeName == "string")
+                  {
+                  t_item->setData( 0, QString::fromStdString(Value) );
+                  }
+                else
+                  {
+                  t_item->setData( 0, QString::fromStdString(Value).toDouble() );
+                  }
                 }
               else
                 {
                 if ( this->CheckValueToDisplayData(Value, HeaderCol) )
                   {
                   QTableWidgetItem *CellTable = new QTableWidgetItem;
-                  CellTable->setData( 0, QString::fromStdString(Value).toDouble() );
+                  //CellTable->setData( 0, QString::fromStdString(Value).toDouble() );
+                  if(iTWRowContainer[i].first.TypeName == "string")
+                    {
+                    CellTable->setData( 0, QString::fromStdString(Value) );
+                    }
+                  else
+                    {
+                    CellTable->setData( 0, QString::fromStdString(Value).toDouble() );
+                    }
                   CellTable->setTextAlignment(Qt::AlignCenter);
                   this->setItem(IndexUpdateRow, j, CellTable);
                   }

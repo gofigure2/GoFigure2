@@ -86,6 +86,10 @@ void UpdateValueInDB(vtkMySQLDatabase *DatabaseConnector,
                      std::string iTableName, std::string ifield,
                      std::string inewValue, std::vector< unsigned int > iVectIDs);
 
+void UpdateValueInDB(vtkMySQLDatabase *DatabaseConnector,std::string iTableName,
+  std::string iColumnName, std::string iNewValue, std::string iField, 
+  std::vector<unsigned int> iVectIDs);
+
 QGOIO_EXPORT
 void DropDatabase(
   vtkMySQLDatabase *ServerConnector,
@@ -124,5 +128,7 @@ bool DoesTableExist(
 QGOIO_EXPORT
 std::vector< std::string > GetFieldNames(std::string TableName,
                                          vtkMySQLDatabase *ServerConnector);
+
+void ExecuteQuery(vtkMySQLDatabase * iDatabaseConnector, std::string iQuery);
 
 #endif
