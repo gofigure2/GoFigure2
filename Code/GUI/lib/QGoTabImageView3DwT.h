@@ -499,7 +499,7 @@ protected:
 
     if ( iMesh )
       {
-      bool visibility = true;
+      bool visibility = false;
 
       vtkProperty *mesh_property = vtkProperty::New();
       mesh_property->SetColor(iRgba[0], iRgba[1], iRgba[2]);
