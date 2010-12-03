@@ -133,7 +133,7 @@ bool CloseDatabaseConnection(
 
 //------------------------------------------------------------------------------
 void ExecuteQuery(vtkMySQLDatabase * iDatabaseConnector, std::string iQuery)
-{ 
+{
   vtkSQLQuery *query = iDatabaseConnector->GetQueryInstance();
   query->SetQuery( iQuery.c_str() );
   if ( !query->Execute() )
@@ -256,7 +256,6 @@ void DropTable(vtkMySQLDatabase *DatabaseConnector, std::string TableName)
 void DeleteRow(vtkMySQLDatabase *DatabaseConnector,
                std::string TableName, std::string field, std::string value)
 {
-  vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
   std::stringstream querystream;
 
   querystream << "DELETE FROM ";
@@ -276,7 +275,6 @@ void DeleteRow(vtkMySQLDatabase *DatabaseConnector,
 void DeleteRows(vtkMySQLDatabase *DatabaseConnector, std::string TableName,
                 std::string field, std::vector< std::string > VectorValues)
 {
-  vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
   std::stringstream querystream;
 
   querystream << "DELETE FROM ";
@@ -345,7 +343,7 @@ bool DoesTableExist(vtkMySQLDatabase *DatabaseConnector,
 
 //------------------------------------------------------------------------------
 void UpdateValueInDB(vtkMySQLDatabase *DatabaseConnector,std::string iTableName,
-  std::string iColumnName, std::string iNewValue, std::string iField, 
+  std::string iColumnName, std::string iNewValue, std::string iField,
   std::vector<unsigned int> iVectIDs)
 {
   std::stringstream querystream;
@@ -367,7 +365,6 @@ void UpdateValueInDB(vtkMySQLDatabase *DatabaseConnector,
                      std::string ColumnName, std::string value)
 
 {
-  vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
   std::stringstream querystream;
 
   querystream << "UPDATE ";
@@ -392,7 +389,6 @@ void UpdateValueInDB(vtkMySQLDatabase *DatabaseConnector,
                      std::string iTableName, std::string ifield,
                      std::string inewValue, std::vector< unsigned int > iVectIDs)
 {
-  vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
   std::stringstream querystream;
   querystream << "UPDATE ";
   querystream << iTableName;
