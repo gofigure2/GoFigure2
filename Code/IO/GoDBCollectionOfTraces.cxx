@@ -165,8 +165,8 @@ void GoDBCollectionOfTraces::UpdateValueForListTraces(
 {
   std::vector<unsigned int> VectIDs;
   std::copy(iListTraceIDs.begin(), iListTraceIDs.end(), std::back_inserter(VectIDs) );
-  UpdateValueInDB(iDatabaseConnector, iNameValue, this->m_TracesIDName,
-                     iValue, VectIDs);
+  UpdateValueInDB(iDatabaseConnector, this->m_TracesName, iNameValue, 
+    iValue, this->m_TracesIDName, VectIDs);
 }
 //--------------------------------------------------------------------------
 

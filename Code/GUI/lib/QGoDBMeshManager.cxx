@@ -420,5 +420,6 @@ void QGoDBMeshManager::AddCellType()
   this->m_CollectionOfTraces->UpdateValueForListTraces(
     this->m_DatabaseConnector,"CellTypeID",ConvertToString<int>(CellTypeID),
     ListCheckedMeshes);
+  this->DisplayInfoForExistingTraces(this->m_DatabaseConnector,ListCheckedMeshes);
   emit DBConnectionNotNeededAnymore();
 }
