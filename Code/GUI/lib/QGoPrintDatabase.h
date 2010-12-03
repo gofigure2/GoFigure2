@@ -293,10 +293,10 @@ signals:
 
 protected:
   //updated by the TraceManualEditing Widget:
-  ItemColorComboboxData m_SelectedColorData;
-  ItemColorComboboxData m_SelectedCollectionData;
-  std::string           m_SelectedCellType;
-  std::string           m_SelectedSubCellType;
+  ItemColorComboboxData* m_SelectedColorData;
+  ItemColorComboboxData* m_SelectedCollectionData;
+  std::string            m_SelectedCellType;
+  std::string            m_SelectedSubCellType;
 
   //related to 3dwt:
   int                   m_SelectedTimePoint;
@@ -387,6 +387,9 @@ protected:
   */
   void SetTMListColors(std::string iColorToSelect = "");
 
+  void SetPointerCollectionData(ItemColorComboboxData* iCollectionData);
+  void SetPointerSelectedColorData(ItemColorComboboxData* iColorData);
+
   //******************End of Methods related to Trace Manual Editing
   // Widget***********
 
@@ -466,7 +469,7 @@ protected:
     //update everything for the traces and get the list of collection ID they
     //are collection of:
     std::list< unsigned int > ListCollectionOfIDsToUpdate =
-      iTraceManager->UpdateTheTracesColor(this->m_DatabaseConnector, this->m_SelectedColorData);
+      iTraceManager->UpdateTheTracesColor(this->m_DatabaseConnector, *this->m_SelectedColorData);
     iCollectionOfManager->DisplayInfoForExistingTraces(this->m_DatabaseConnector,
                                                        ListCollectionOfIDsToUpdate);
     this->CloseDBConnection();
@@ -646,13 +649,13 @@ protected slots:
   \brief set the m_SelectedColorData to iSelectedColorData
   \param[in] iSelectedColorData name and QColor of the color
   */
-  void UpdateSelectedColorData(ItemColorComboboxData iSelectedColorData);
+  //void UpdateSelectedColorData(ItemColorComboboxData iSelectedColorData);
 
   /**
   \brief set the m_SelectedCollectionData to iSelectedCollectionData
   \param[in] iSelectedCollectionData ID and QColor of the collection
   */
-  void UpdateSelectedCollectionID(ItemColorComboboxData iSelectedCollectionData);
+  //void UpdateSelectedCollectionID(ItemColorComboboxData iSelectedCollectionData);
 
   /**
   \brief set the m_SelectedCelltype to iSelectedCelltype

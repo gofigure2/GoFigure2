@@ -158,6 +158,11 @@ public:
   */
   void AddANewCollectionID(ItemColorComboboxData iNewCollectionID);
 
+  std::string* GetPointerSelectedCellType();
+  std::string* GetPointerSelectedSubCellType();
+  ItemColorComboboxData* GetPointerCollectionData();
+  ItemColorComboboxData* GetPointerColorData();
+
 signals:
   void AddANewCellType();
 
@@ -171,11 +176,11 @@ signals:
 
   void DeleteColor();
 
-  void NewCollectionActivated(ItemColorComboboxData);
-  void NewSelectedColorActivated(ItemColorComboboxData);
-  void NewSubCellTypeActivated(std::string);
+  //void NewCollectionActivated(ItemColorComboboxData);
+  //void NewSelectedColorActivated(ItemColorComboboxData);
+  //void NewSubCellTypeActivated(std::string);
 
-  void NewCellTypeActivated(std::string);
+  //void NewCellTypeActivated(std::string);
 
   void NewCollectionToBeCreated();
 
@@ -186,6 +191,10 @@ protected:
   QGoCollectionColorComboBox *m_CollectionColorComboBox;
   QGoComboBox *               m_ChoseCellType;
   QGoComboBox *               m_ChoseSubCellType;
+  std::string *               m_SelectedCellType;
+  std::string *               m_SelectedSubCellType;
+  ItemColorComboboxData *     m_SelectedCollectionData;
+  ItemColorComboboxData *     m_SelectedColorData;
 
   /**
   \brief add the SelectedColorCombobox to the layout and make the signal/slot connections
@@ -266,5 +275,11 @@ protected:
       iComboBox->InitializeTheListWithColor(iItemsData);
       }
   }
+
+protected slots:
+  void UpdateValueSelectedCollection(ItemColorComboboxData iCollectionData);
+  void UpdateValueSelectedCellType(std::string iCellType);
+  void UpdateValueSelectedSubCellType(std::string iSubCellType);
+  void UpdateValueSelectedColor(ItemColorComboboxData iColorData);
 };
 #endif
