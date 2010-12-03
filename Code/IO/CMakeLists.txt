@@ -56,7 +56,7 @@ SET( QGOIO_SRC
   vtkPolyDataMySQLTrackWriter.cxx
   LSMToMegaCapture.cxx
   MeshTextFileImport.cxx
-  TrackTextFileImport.cxx
+#  TrackTextFileImport.cxx
 )
 
 ADD_LIBRARY( QGoIO

@@ -13,7 +13,7 @@ SET( QGOIO_EXAMPLES_SRC
   vtkPolyDataMySQLMeshWriter
   vtkPolyDataMySQLTrack
   kishmeshtextfilereader
-  trackTextFilesReader
+#  trackTextFilesReader
 )
 
 SET( GODB_SRC
