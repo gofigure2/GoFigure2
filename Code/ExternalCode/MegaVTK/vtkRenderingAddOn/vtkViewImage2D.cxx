@@ -956,6 +956,7 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
     actor->SetProperty(property);
     }
   actor->GetProperty()->BackfaceCullingOn();
+  actor->GetProperty()->SetLineWidth( this->IntersectionLineWidth );
 
   this->Renderer->AddViewProp(actor);
   this->Prop3DCollection->AddItem(actor);
@@ -1013,6 +1014,7 @@ vtkViewImage2D::AddDataSet(vtkDataSet *dataset,
     actor->SetProperty(property);
     }
   actor->GetProperty()->BackfaceCullingOn();
+  actor->GetProperty()->SetLineWidth( this->IntersectionLineWidth );
 
   this->Renderer->AddViewProp(actor);
   this->Prop3DCollection->AddItem(actor);

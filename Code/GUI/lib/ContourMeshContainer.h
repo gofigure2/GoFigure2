@@ -984,6 +984,7 @@ public:
   /** \brief Apply the given lookup table to all traces in the container
       \param[in] iLut lookup table */
   void SetLookupTableForColorCoding( vtkLookupTable* iLut );
+  void SetIntersectionLineWidth( float iWidth );
 
 public slots:
 
@@ -1010,6 +1011,7 @@ signals:
 
 protected:
   unsigned int m_TCoord;
+  float        m_IntersectionLineWidth;
   vtkProperty *m_HighlightedProperty;
 
   /** \brief Render with original colors */

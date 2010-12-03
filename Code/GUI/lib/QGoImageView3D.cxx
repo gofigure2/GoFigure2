@@ -269,6 +269,7 @@ QGoImageView3D::Update()
 
   vtkViewImage2D *View1 = this->m_Pool->GetItem(0);
   View1->SetInput(this->m_Image);
+  View1->SetIntersectionLineWidth(this->m_IntersectionLineWidth);
 
   this->m_View3D->Add2DPhantom( 0,
                                 View1->GetImageActor(),
@@ -279,6 +280,7 @@ QGoImageView3D::Update()
 
   vtkViewImage2D *View2 = this->m_Pool->GetItem(1);
   View2->SetInput(this->m_Image);
+  View2->SetIntersectionLineWidth(this->m_IntersectionLineWidth);
 
   this->m_View3D->Add2DPhantom( 1,
                                 View2->GetImageActor(),
@@ -289,6 +291,7 @@ QGoImageView3D::Update()
 
   vtkViewImage2D *View3 = this->m_Pool->GetItem(2);
   View3->SetInput(this->m_Image);
+  View3->SetIntersectionLineWidth(this->m_IntersectionLineWidth);
 
   this->m_View3D->Add2DPhantom( 2,
                                 View3->GetImageActor(),
@@ -298,6 +301,7 @@ QGoImageView3D::Update()
   this->SliderYZ->setMaximum(extent[1]);
 
   this->m_View3D->SetInput(this->m_Image);
+  this->m_View3D->SetIntersectionLineWidth(this->m_IntersectionLineWidth);
 
   if ( m_FirstRender )
     {

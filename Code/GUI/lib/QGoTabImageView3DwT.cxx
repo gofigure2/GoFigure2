@@ -136,6 +136,8 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent):
   m_HighlightedMeshesProperty->SetLineWidth(3.);
   m_HighlightedMeshesProperty->SetInterpolationToPhong();
 
+  m_IntersectionLineWidth = 2.;
+
   setupUi(this);
 
   m_MegaCaptureReader = itk::MegaCaptureReader::New();
@@ -1412,6 +1414,7 @@ QGoTabImageView3DwT::setupUi(QWidget *iParent)
   m_DataBaseTables->hide();
 
   m_ImageView = new QGoImageView3D;
+  m_ImageView->SetIntersectionLineWidth( this->m_IntersectionLineWidth );
   m_ImageView->SetBackgroundColor(m_BackgroundColor);
   m_VSplitter->addWidget(m_ImageView);
 

@@ -372,6 +372,8 @@ protected:
   QAction *                                 m_BackgroundColorAction;
   QAction *                                 m_TakeSnapshotAction;
 
+  float m_IntersectionLineWidth;
+
   int m_PCoord;
   int m_RCoord;
   int m_CCoord;

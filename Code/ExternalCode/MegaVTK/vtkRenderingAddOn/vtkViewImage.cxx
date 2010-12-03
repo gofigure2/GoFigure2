@@ -147,6 +147,8 @@ vtkViewImage::vtkViewImage()
 
   this->Renderer->AddViewProp (this->ScalarBarActor);
 
+  this->IntersectionLineWidth = 1.;
+
   this->IsColor = false;
 
   // default DirectionAnnotation
