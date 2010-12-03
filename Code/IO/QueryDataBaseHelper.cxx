@@ -267,15 +267,6 @@ void DeleteRow(vtkMySQLDatabase *DatabaseConnector,
   querystream << value;
   querystream << "';";
 
-  /*query->SetQuery( querystream.str().c_str() );
-
-  if ( !query->Execute() )
-    {
-    itkGenericExceptionMacro(
-      << "Delete row query failed"
-      << query->GetLastErrorText() );
-    }
-  query->Delete();*/
   ExecuteQuery(DatabaseConnector,querystream.str() );
 }
 
@@ -305,17 +296,6 @@ void DeleteRows(vtkMySQLDatabase *DatabaseConnector, std::string TableName,
   querystream << "');";
 
   ExecuteQuery(DatabaseConnector,querystream.str() );
-  /*query->SetQuery( querystream.str().c_str() );
-  if ( !query->Execute() )
-    {
-    itkGenericExceptionMacro(
-      << "Delete rows query failed"
-      << query->GetLastErrorText() );
-    DatabaseConnector->Close();
-    DatabaseConnector->Delete();
-    query->Delete();
-    }
-  query->Delete();*/
 }
 
 //------------------------------------------------------------------------------
@@ -402,18 +382,6 @@ void UpdateValueInDB(vtkMySQLDatabase *DatabaseConnector,
   querystream << value;
   querystream << "';";
 
-  /*query->SetQuery( querystream.str().c_str() );
-  if ( !query->Execute() )
-    {
-    itkGenericExceptionMacro(
-      << "replace value in DB query failed"
-      << query->GetLastErrorText() );
-    DatabaseConnector->Close();
-    DatabaseConnector->Delete();
-    query->Delete();
-    return;
-    }
-  query->Delete();*/
   ExecuteQuery(DatabaseConnector,querystream.str() );
 }
 
@@ -446,18 +414,6 @@ void UpdateValueInDB(vtkMySQLDatabase *DatabaseConnector,
   querystream << iVectIDs[i];
   querystream << "');";
 
-  /*query->SetQuery( querystream.str().c_str() );
-  if ( !query->Execute() )
-    {
-    itkGenericExceptionMacro(
-      << "replace value in DB query failed"
-      << query->GetLastErrorText() );
-    DatabaseConnector->Close();
-    DatabaseConnector->Delete();
-    query->Delete();
-    return;
-    }
-  query->Delete();*/
   ExecuteQuery(DatabaseConnector,querystream.str() );
 }
 //------------------------------------------------------------------------------

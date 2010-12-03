@@ -52,11 +52,6 @@ QGoDBTraceManager::~QGoDBTraceManager()
     {
     delete this->m_CollectionOfTraces;
     }
-  if ( this->m_DatabaseConnector )
-    {
-    this->m_DatabaseConnector->Close();
-    this->m_DatabaseConnector->Delete();
-    }
 }
 
 //-------------------------------------------------------------------------
@@ -302,14 +297,17 @@ void QGoDBTraceManager::AddGeneralActionsContextMenu(QMenu *iMenu)
   ColorCoding->setChecked(IsColorCodingOn);
   QObject::connect(ColorCoding,SIGNAL(triggered ( bool ) ),this,SLOT( SetColorCoding(bool) ) );
   ColorMenu->addAction(ColorCoding);
-
   iMenu->addAction(ColorMenu->menuAction());
 
-  iMenu->addAction( tr("Delete checked %1s").arg( this->m_TraceName.c_str() ),
+  m_CheckedTracesMenu = new QMenu(tr("With the checked %1s").arg(this->m_TraceName.c_str() ) );
+  m_CheckedTracesMenu->addAction( tr("Delete checked %1s").arg( this->m_TraceName.c_str() ),
                     this, SLOT( DeleteTracesFromContextMenu() ) );
-
-  iMenu->addAction( tr("Add to selected %1%2").arg( this->m_CollectionName.c_str() )
+  m_CheckedTracesMenu->addAction( tr("Add to selected %1%2").arg( this->m_CollectionName.c_str() )
                     .arg("ID"), this, SLOT( AddToSelectedCollection() ) );
+  m_CheckedTracesMenu->addAction( tr("To the selected color for the checked %1s")
+                    .arg( this->m_TraceName.c_str() ),
+                    this, SLOT( ChangeTraceColor() ) );
+  iMenu->addAction(this->m_CheckedTracesMenu->menuAction() );
 
   iMenu->addAction( tr("Copy Selection"),
                     this->m_Table, SLOT( CopySelection() ) );
@@ -323,7 +321,10 @@ void QGoDBTraceManager::AddSpecificActionsForContourMesh(QMenu *iMenu)
 {
   /** \todo Lydie: when using lineages, remove the following*/
   //for the time being, as we don't use lineages
-  iMenu->addAction( tr("Go to this %1")
+  //iMenu->addAction( tr("Go to this %1")
+                    //.arg( this->m_TraceName.c_str() ),
+                    //this, SLOT( GoToTheTrace() ) );
+  this->m_CheckedTracesMenu->addAction( tr("Go to this %1")
                     .arg( this->m_TraceName.c_str() ),
                     this, SLOT( GoToTheTrace() ) );
   /** \todo Lydie: when using lineage, put it in the generalActionsContextMenu*/
@@ -336,7 +337,11 @@ void QGoDBTraceManager::AddSpecificActionsForContourMesh(QMenu *iMenu)
 void QGoDBTraceManager::AddActionForCreateNewCollectionFromCheckedTraces(
   QMenu *iMenu)
 {
-  iMenu->addAction( tr("Create a new %1 from checked %2s")
+  //iMenu->addAction( tr("Create a new %1 from checked %2s")
+  //                  .arg( this->m_CollectionName.c_str() )
+  //                  .arg( this->m_TraceName.c_str() ),
+   //                 this, SLOT( CreateCorrespondingCollection() ) );
+  this->m_CheckedTracesMenu->addAction(tr("Create a new %1 from checked %2s")
                     .arg( this->m_CollectionName.c_str() )
                     .arg( this->m_TraceName.c_str() ),
                     this, SLOT( CreateCorrespondingCollection() ) );

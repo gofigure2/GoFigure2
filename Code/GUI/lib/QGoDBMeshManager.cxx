@@ -174,8 +174,14 @@ void QGoDBMeshManager::AddActionsContextMenu(QMenu *iMenu)
 {
   QGoDBTraceManager::AddActionsContextMenu(iMenu);
   this->AddSpecificActionsForContourMesh(iMenu);
-  iMenu->addAction( tr("Add the selected CellType to these meshes"), 
-   this, SLOT( AddCellType() ) );
+  //iMenu->addAction( tr("Add the selected CellType to the checked meshes"), 
+   //this, SLOT( UpdateCellType() ) );
+  //iMenu->addAction( tr("Add the selected SubCellType to the checked meshes"), 
+  // this, SLOT( UpdateSubCellType() ) );
+  this->m_CheckedTracesMenu->addAction( tr("Add the selected CellType to the checked meshes"), 
+   this, SLOT( UpdateCellType() ) );
+  this->m_CheckedTracesMenu->addAction( tr("Add the selected SubCellType to the checked meshes"), 
+   this, SLOT( UpdateSubCellType() ) );
 }
 
 //-------------------------------------------------------------------------
@@ -410,7 +416,7 @@ void QGoDBMeshManager::UpdateSelectedSubCellType(std::string iSubCellType)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBMeshManager::AddCellType()
+void QGoDBMeshManager::UpdateCellType()
 {
   emit NeedToGetDatabaseConnection();
   std::list<unsigned int> ListCheckedMeshes =
@@ -419,6 +425,22 @@ void QGoDBMeshManager::AddCellType()
     this->m_SelectedCellType);
   this->m_CollectionOfTraces->UpdateValueForListTraces(
     this->m_DatabaseConnector,"CellTypeID",ConvertToString<int>(CellTypeID),
+    ListCheckedMeshes);
+  this->DisplayInfoForExistingTraces(this->m_DatabaseConnector,ListCheckedMeshes);
+  emit DBConnectionNotNeededAnymore();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBMeshManager::UpdateSubCellType()
+{
+  emit NeedToGetDatabaseConnection();
+  std::list<unsigned int> ListCheckedMeshes =
+    this->m_MeshContainerInfoForVisu->GetHighlightedElementsTraceID();
+  int SubCellTypeID = GoDBMeshRow::GetSubCellTypeID(this->m_DatabaseConnector, 
+    this->m_SelectedSubCellType);
+  this->m_CollectionOfTraces->UpdateValueForListTraces(
+    this->m_DatabaseConnector,"SubCellularID",ConvertToString<int>(SubCellTypeID),
     ListCheckedMeshes);
   this->DisplayInfoForExistingTraces(this->m_DatabaseConnector,ListCheckedMeshes);
   emit DBConnectionNotNeededAnymore();

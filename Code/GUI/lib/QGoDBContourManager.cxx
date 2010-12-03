@@ -140,8 +140,10 @@ void QGoDBContourManager::AddActionsContextMenu(QMenu *iMenu)
 {
   QGoDBTraceManager::AddActionsContextMenu(iMenu);
   this->AddSpecificActionsForContourMesh(iMenu);
-  iMenu->addAction( tr("ReEdit the checked %1").arg( this->m_TraceName.c_str() ),
+  //iMenu->removeAction(this->m_CheckedTracesMenu->menuAction() );
+  this->m_CheckedTracesMenu->addAction( tr("ReEdit the checked %1").arg( this->m_TraceName.c_str() ),
                     this, SLOT( ReEditTrace() ) );
+  //iMenu->addAction(this->m_CheckedTracesMenu->menuAction() );
 }
 
 //-------------------------------------------------------------------------
@@ -150,8 +152,10 @@ void QGoDBContourManager::AddActionsContextMenu(QMenu *iMenu)
 void QGoDBContourManager::AddActionForCreateNewCollectionFromCheckedTraces(
   QMenu *iMenu)
 {
-  iMenu->addAction( tr("Generate a new mesh from checked contours"),
-                    this, SLOT( CreateCorrespondingCollection() ) );
+  //iMenu->addAction( tr("Generate a new mesh from checked contours"),
+                    //this, SLOT( CreateCorrespondingCollection() ) );
+  this->m_CheckedTracesMenu->addAction( tr("Generate a new mesh from checked contours"),
+         this, SLOT( CreateCorrespondingCollection() ) );
 }
 
 //-------------------------------------------------------------------------

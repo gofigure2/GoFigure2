@@ -193,7 +193,15 @@ protected slots:
   //virtual pure method in QGoDBTraceManager
   virtual void SetColorCoding(bool IsChecked);
 
-  void AddCellType();
+  /**
+  \brief update the celltype of the checked meshes with the selected one
+  */
+  void UpdateCellType();
+
+   /**
+  \brief update the subcelltype of the checked meshes with the selected one
+  */
+  void UpdateSubCellType();
 
   //virtual pure method in QGoDBTraceManager
   //virtual void BackFromColorCoding();
