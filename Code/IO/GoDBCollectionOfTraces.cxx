@@ -164,7 +164,6 @@ void GoDBCollectionOfTraces::UpdateValueForListTraces(
   std::string iValue, std::list<unsigned int> iListTraceIDs)
 {
   std::vector<unsigned int> VectIDs;
-  //GoDBMeshRow::
   std::copy(iListTraceIDs.begin(), iListTraceIDs.end(), std::back_inserter(VectIDs) );
   UpdateValueInDB(iDatabaseConnector, iNameValue, this->m_TracesIDName,
                      iValue, VectIDs);

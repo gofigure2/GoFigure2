@@ -415,8 +415,10 @@ void QGoDBMeshManager::AddCellType()
   emit NeedToGetDatabaseConnection();
   std::list<unsigned int> ListCheckedMeshes =
     this->m_MeshContainerInfoForVisu->GetHighlightedElementsTraceID();
+  int CellTypeID = GoDBMeshRow::GetCellTypeID(this->m_DatabaseConnector, 
+    this->m_SelectedCellType);
   this->m_CollectionOfTraces->UpdateValueForListTraces(
-    this->m_DatabaseConnector,"CellType",this->m_SelectedCellType,
+    this->m_DatabaseConnector,"CellTypeID",ConvertToString<int>(CellTypeID),
     ListCheckedMeshes);
   emit DBConnectionNotNeededAnymore();
 }
