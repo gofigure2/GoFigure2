@@ -41,5 +41,16 @@ type(Key.TAB+Key.TAB)
 length = len(address) -50
 user = address[0:length]
 
+
+#this info should be input to function
 type(user+"/Data/t00-09/image-PL00-CO00-RO00-ZT00-YT00-XT00-TM0009-ch01-zs0070.png")
+click("Add_microscope.png")
+type("microscope2")
+click("Create_microscope.png")
+click("ok.png")
+click("blue_x.png")
+
+
+
+
 click("Finish.png")
