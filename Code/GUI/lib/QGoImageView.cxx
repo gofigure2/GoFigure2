@@ -115,6 +115,11 @@ QGoImageView::
     m_Pool = 0;
     }
 }
+//--------------------------------------------------------------------------
+void QGoImageView::SetIntersectionLineWidth( const float& iWidth )
+{
+  m_IntersectionLineWidth = iWidth;
+}
 
 //--------------------------------------------------------------------------
 void

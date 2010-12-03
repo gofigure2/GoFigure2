@@ -44,6 +44,7 @@ ContourMeshContainer::ContourMeshContainer(QObject *iParent,
   m_ImageView(iView),
   m_CurrentElement(),
   m_TCoord( std::numeric_limits< unsigned int >::max() ),
+  m_IntersectionLineWidth( 2 ),
   m_HighlightedProperty(NULL)
 {}
 //-------------------------------------------------------------------------
@@ -84,7 +85,14 @@ ContourMeshContainer::
     ++it;
     }
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+void
+ContourMeshContainer::SetIntersectionLineWidth( float iWidth )
+{
+  m_IntersectionLineWidth = iWidth;
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -285,6 +293,7 @@ ContourMeshContainer::UpdateElementHighlightingWithGivenTraceID(const unsigned i
                               it->rgba[1],
                               it->rgba[2]);
       temp_property->SetOpacity(it->rgba[3]);
+      temp_property->SetLineWidth( m_IntersectionLineWidth );
       }
     else
       {
@@ -337,6 +346,7 @@ UpdateElementHighlightingWithGivenTraceIDs( const QStringList& iList,
                                   it->rgba[1],
                                   it->rgba[2]);
           temp_property->SetOpacity(it->rgba[3]);
+          temp_property->SetLineWidth( m_IntersectionLineWidth );
           }
         else
           {

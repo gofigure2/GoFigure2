@@ -93,6 +93,8 @@ public:
 
   void Update();
 
+  void SetIntersectionLineWidth( const float& iWidth );
+
   /** \brief Returns the interactor for one given view. */
   virtual QVTKInteractor * GetInteractor(const int &) = 0;
 
