@@ -748,7 +748,7 @@ AddPointToCurrentElement(double* iPoint)
   vtkSmartPointer<vtkPolyLine> polyLine =
       vtkSmartPointer<vtkPolyLine>::New();
   polyLine->GetPointIds()->SetNumberOfIds( newPoints->GetNumberOfPoints() );
-  for(unsigned int i = 0; i < newPoints->GetNumberOfPoints(); i++)
+  for(vtkIdType i = 0; i < newPoints->GetNumberOfPoints(); i++)
     {
     polyLine->GetPointIds()->SetId(i,i);
     }
