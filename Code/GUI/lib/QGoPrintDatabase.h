@@ -553,10 +553,21 @@ protected slots:
 
   void TheTabIsChanged(int iIndex);
 
+  /**
+  \brief open the connection to the database and pass it to the ContoursManager
+  */
   void PassDBConnectionToContoursManager();
 
   void PassSelectedColorToContoursManager();
 
+   /**
+  \brief open the connection to the database and pass it to the MeshesManager
+  */
+  void PassDBConnectionToMeshesManager();
+
+   /**
+  \brief open the connection to the database and pass it to the TracksManager
+  */
   void PassDBConnectionToTracksManager();
 
   void CloseDBConnection();

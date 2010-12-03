@@ -45,6 +45,7 @@
 #include <QString>
 #include <string>
 #include <map>
+#include <algorithm>
 
 GoDBCollectionOfTraces::GoDBCollectionOfTraces()
 {
@@ -155,6 +156,19 @@ void GoDBCollectionOfTraces::UpdateCollectionIDOfSelectedTrace(
                    ConvertToString< int >(iSelectedTraceID) );
 }
 
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBCollectionOfTraces::UpdateValueForListTraces(
+  vtkMySQLDatabase *iDatabaseConnector,std::string iNameValue,
+  std::string iValue, std::list<unsigned int> iListTraceIDs)
+{
+  std::vector<unsigned int> VectIDs;
+  //GoDBMeshRow::
+  std::copy(iListTraceIDs.begin(), iListTraceIDs.end(), std::back_inserter(VectIDs) );
+  UpdateValueInDB(iDatabaseConnector, iNameValue, this->m_TracesIDName,
+                     iValue, VectIDs);
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -690,14 +704,6 @@ std::list< unsigned int > GoDBCollectionOfTraces::GetListCollectionIDs(
   std::list< unsigned int > ListCollectionIDs = std::list< unsigned int >();
   if (this->m_CollectionName != "None")
     {
-    //std::vector< std::string >          VectorValues;
-    //std::list< unsigned int >::iterator iter = iListTracesIDs.begin();
-    //while ( iter != iListTracesIDs.end() )
-   //   {
-   //   int TraceID = *iter;
-   //   VectorValues.push_back( ConvertToString< unsigned int >(TraceID) );
-   //   iter++;
-   //   }
     ListCollectionIDs = ListSpecificValuesForOneColumn(
       iDatabaseConnector, this->m_TracesName, this->m_CollectionIDName,
       this->m_TracesIDName, iListTracesIDs, true, true);
@@ -708,39 +714,6 @@ std::list< unsigned int > GoDBCollectionOfTraces::GetListCollectionIDs(
 //-------------------------------------------------------------------------
 
 //------------------------------------------------------------------------
-/*std::vector< std::string > GoDBCollectionOfTraces::ListUnsgIntToVectorString(std::list< unsigned int > iList)
-{
-  std::list< unsigned int >::iterator iter = iList.begin();
-  std::vector< std::string >          oVector;
-  while ( iter != iList.end() )
-    {
-    unsigned int temp = *iter;
-    oVector.push_back( ConvertToString< unsigned int >(temp) );
-    iter++;
-    }
-  return oVector;
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-std::list< unsigned int > GoDBCollectionOfTraces::VectorStringToUnsgInt(std::vector< std::string > iVector)
-{
-  std::vector< std::string >::iterator iter = iVector.begin();
-  std::list< unsigned int >            oList;
-  while ( iter != iVector.end() )
-    {
-    std::string  temp = *iter;
-    unsigned int tempint = ss_atoi< unsigned int >(temp);
-    oList.push_back(tempint);
-    iter++;
-    }
-  return oList;
-}*/
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 std::list< unsigned int > GoDBCollectionOfTraces::GetListTracesIDWithNoPoints(
   std::list< unsigned int > iListTracesIDs, vtkMySQLDatabase *iDatabaseConnector)
 {

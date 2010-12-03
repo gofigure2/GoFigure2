@@ -290,7 +290,6 @@ protected:
   GoDBCollectionOfTraces *m_CollectionOfTraces;
   vtkMySQLDatabase *      m_DatabaseConnector;
   bool                    IsColorCodingOn;
-  QMenu*                  m_SelectedTracesMenu;
 
   /**
   \brief Virtual pure method: get the data needed from the database and

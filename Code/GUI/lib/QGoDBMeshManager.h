@@ -193,6 +193,8 @@ protected slots:
   //virtual pure method in QGoDBTraceManager
   virtual void SetColorCoding(bool IsChecked);
 
+  void AddCellType();
+
   //virtual pure method in QGoDBTraceManager
   //virtual void BackFromColorCoding();
 };

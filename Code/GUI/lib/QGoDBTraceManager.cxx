@@ -41,7 +41,6 @@
 QGoDBTraceManager::QGoDBTraceManager():
   m_Table(NULL), m_CollectionOfTraces(NULL),
   m_DatabaseConnector(NULL), IsColorCodingOn(false)
-  //, m_TraceContainerInfoForVisu(NULL)
 {}
 
 //-------------------------------------------------------------------------
@@ -281,17 +280,17 @@ void QGoDBTraceManager::AddActionsContextMenu(QMenu *iMenu)
 //-------------------------------------------------------------------------
 void QGoDBTraceManager::AddGeneralActionsContextMenu(QMenu *iMenu)
 {
-  m_SelectedTracesMenu = new QMenu(tr("With the selected %1s").arg(this->m_TraceName.c_str() ) );
-  m_SelectedTracesMenu->addAction( tr("Check the selected %1s")
+  QMenu* SelectedTracesMenu = new QMenu(tr("With the selected %1s").arg(this->m_TraceName.c_str() ) );
+  SelectedTracesMenu->addAction( tr("Check the selected %1s")
                     .arg( this->m_TraceName.c_str() ), this, SLOT( CheckSelectedRows() ) );
-  m_SelectedTracesMenu->addAction( tr("Uncheck the selected %1s")
+  SelectedTracesMenu->addAction( tr("Uncheck the selected %1s")
                     .arg( this->m_TraceName.c_str() ), this, SLOT( UncheckSelectedRows() ) );
-  m_SelectedTracesMenu->addAction( tr("Show the selected %1s")
+  SelectedTracesMenu->addAction( tr("Show the selected %1s")
                     .arg( this->m_TraceName.c_str() ), this, SLOT( ShowSelectedRows() ) );
-  m_SelectedTracesMenu->addAction( tr("Hide the selected %1s")
+  SelectedTracesMenu->addAction( tr("Hide the selected %1s")
                     .arg( this->m_TraceName.c_str() ), this, SLOT( HideSelectedRows() ) );
   
-  iMenu->addAction(m_SelectedTracesMenu->menuAction());
+  iMenu->addAction(SelectedTracesMenu->menuAction());
 
   QMenu* ColorMenu = new QMenu(tr("Change color of your %1s").arg(this->m_TraceName.c_str() ) );
 

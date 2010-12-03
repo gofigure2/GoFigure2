@@ -300,6 +300,19 @@ public:
   std::list< unsigned int > GetLastCreatedTracesIDs(
     vtkMySQLDatabase *iDatabaseConnector, int iNumberOfTraces);
 
+  /**
+  \brief update in the database the iNameValue with iValue for
+  the traces from iListTraceIDs
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iNameValue name of the field in the database
+  \param[in] iValue value of the field
+  \param[in] iListTraceIDs list of the traces with the 
+  value to be updated
+  */
+  void UpdateValueForListTraces(
+    vtkMySQLDatabase *iDatabaseConnector,std::string iNamevalue,
+    std::string iValue, std::list<unsigned int> iListTraceIDs);
+
 protected:
 
   std::string  m_CollectionName;

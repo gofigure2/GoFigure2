@@ -796,16 +796,6 @@ void QGoPrintDatabase::CreateConnectionsForTraceManualEditingWidget()
                     this,
                     SLOT( UpdateSelectedCollectionID(ItemColorComboboxData) ) );
 
- /* QObject::connect( this->m_TraceWidget,
-                    SIGNAL( NewCellTypeActivated(std::string) ),
-                    this->m_MeshesManager,
-                    SLOT( UpdateSelectedCellType(std::string) ) );
-
-  QObject::connect( this->m_TraceWidget,
-                    SIGNAL( NewSubCellTypeActivated(std::string) ),
-                    this->m_MeshesManager,
-                    SLOT( UpdateSelectedSubCellType(std::string) ) );*/
-
   QObject::connect( this->m_TraceWidget,
                     SIGNAL( AddNewColor() ),
                     this,
@@ -937,22 +927,6 @@ void QGoPrintDatabase::UpdateSelectedCollectionID(
 {
   this->m_SelectedCollectionData = iSelectedCollectionData;
 }
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/*void QGoPrintDatabase::UpdateSelectedCellType(std::string iSelectedCellType)
-{
-  this->m_SelectedCellType = iSelectedCellType;
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoPrintDatabase::UpdateSelectedSubCellType(std::string iSelectedSubCellType)
-{
-  this->m_SelectedSubCellType = iSelectedSubCellType;
-}*/
 
 //-------------------------------------------------------------------------
 
@@ -1230,6 +1204,8 @@ void QGoPrintDatabase::SetContoursManager()
 void QGoPrintDatabase::SetMeshesManager()
 {
   this->m_MeshesManager = new QGoDBMeshManager(m_ImgSessionID, this);
+  QObject::connect( this->m_MeshesManager, SIGNAL( NeedToGetDatabaseConnection() ),
+                    this, SLOT( PassDBConnectionToMeshesManager() ) );
   QObject::connect( this->m_MeshesManager,
                     SIGNAL( TraceColorToChange() ),
                     this, SLOT( ChangeMeshColor() ) );
@@ -1246,6 +1222,10 @@ void QGoPrintDatabase::SetMeshesManager()
                     SIGNAL( CheckedTracesToAddToSelectedCollection(
                               std::list< unsigned int > ) ), this,
                     SLOT( AddCheckedMeshesToSelectedTrack(std::list< unsigned int > ) ) );
+  QObject::connect( this->m_MeshesManager,
+                    SIGNAL(DBConnectionNotNeededAnymore() ),
+                    this,
+                    SLOT(CloseDBConnection() ) );
   //related to traceEditingWidget and meshes_manager (celltype + subcelltype)
   QObject::connect( this->m_TraceWidget,
                     SIGNAL( NewCellTypeActivated(std::string) ),
@@ -1275,6 +1255,11 @@ void QGoPrintDatabase::SetTracksManager()
 
   QObject::connect( this->m_TracksManager, SIGNAL( NeedToGetDatabaseConnection() ),
                     this, SLOT( PassDBConnectionToTracksManager() ) );
+
+  QObject::connect( this->m_TracksManager,
+                    SIGNAL(DBConnectionNotNeededAnymore() ),
+                    this,
+                    SLOT(CloseDBConnection() ) );
 }
 //--------------------------------------------------------------------------
 
@@ -1283,6 +1268,14 @@ void QGoPrintDatabase::PassDBConnectionToContoursManager()
 {
   this->OpenDBConnection();
   this->m_ContoursManager->SetDatabaseConnection(this->m_DatabaseConnector);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoPrintDatabase::PassDBConnectionToMeshesManager()
+{
+  this->OpenDBConnection();
+  this->m_MeshesManager->SetDatabaseConnection(this->m_DatabaseConnector);
 }
 //--------------------------------------------------------------------------
 
