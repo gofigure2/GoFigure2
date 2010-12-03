@@ -124,7 +124,7 @@ GetPolyData(const std::string & iString)
     std::cout << "Number of points: " << points->GetNumberOfPoints() << std::endl;
 
     polyLine->GetPointIds()->SetNumberOfIds( points->GetNumberOfPoints() );
-    for(unsigned int i = 0; i < points->GetNumberOfPoints(); i++)
+    for(vtkIdType i = 0; i < points->GetNumberOfPoints(); i++)
       {
       polyLine->GetPointIds()->SetId(i,i);
       }
