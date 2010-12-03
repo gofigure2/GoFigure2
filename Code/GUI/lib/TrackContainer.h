@@ -107,12 +107,12 @@ namespace boost
   \sa TrackStructure QGoTableWidget QGoImageView3D
   */
 class TrackContainer:
-    public TraceContainerBase< typename boost::MultiIndexTrackContainer >
+    public TraceContainerBase< boost::MultiIndexTrackContainer >
 {
   Q_OBJECT
 public:
 
-  typedef TraceContainerBase< typename boost::MultiIndexTrackContainer > Superclass;
+  typedef TraceContainerBase< boost::MultiIndexTrackContainer > Superclass;
 
   typedef Superclass::MultiIndexContainerType MultiIndexContainerType;
   typedef Superclass::MultiIndexContainerElementType TrackType;

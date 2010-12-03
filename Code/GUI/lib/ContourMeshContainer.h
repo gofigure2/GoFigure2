@@ -110,12 +110,12 @@ namespace boost
   \sa ContourMeshStructure QGoTableWidget QGoImageView3D
   */
 class ContourMeshContainer:
-    public TraceContainerBase< typename boost::MultiIndexContourMeshContainer >
+    public TraceContainerBase< boost::MultiIndexContourMeshContainer >
 {
   Q_OBJECT
 public:
 
-  typedef TraceContainerBase< typename boost::MultiIndexContourMeshContainer > Superclass;
+  typedef TraceContainerBase< boost::MultiIndexContourMeshContainer > Superclass;
   typedef Superclass::MultiIndexContainerType MultiIndexContainerType;
 
   typedef MultiIndexContainerType::index< TCoord >::type::iterator
