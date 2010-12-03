@@ -61,6 +61,12 @@ QGoFilterWatershed::QGoFilterWatershed(QObject *iParent, int iDimension):
 {
   m_Dimension = iDimension;
 
+  m_TreshMin  = 10;
+  m_TreshMax  = 30;
+  m_CorrTresh = 0.50;
+  m_Alpha = 1.5;
+  m_Beta = 3.0;
+
   QString name = "Watershed ";
   if ( m_Dimension < 2 )
     {
@@ -251,14 +257,23 @@ QGoFilterWatershed::Filter3D(double *iCenter)
   //---------------------------------------------------------
   SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
   filter->SetInput(test2);
+  //set up parameters
+  filter->SetNucleusThresholdMin( m_TreshMin );
+  filter->SetNucleusThresholdMax( m_TreshMax );
+  filter->SetCorrelationThreshold1( m_CorrTresh );
+  filter->SetAlpha( m_Alpha );
+  filter->SetBeta( m_Beta );
+  // run the filter
   filter->Update();
   SegmentImagePointer test3 = filter->GetOutput();
   
+/*
   typedef itk::ImageFileWriter< SegmentImageType > WriterType;
   WriterType::Pointer writer = WriterType::New();
   writer->SetFileName( "output.mha" );
   writer->SetInput( test3 );
   writer->Update();
+*/
 
   // Convert output
   //---------------------------------------------------------
@@ -363,6 +378,58 @@ void
 QGoFilterWatershed::ConnectSignals(int iFilterNumber)
 {
   QGoFilterSemiAutoBase::ConnectSignals(iFilterNumber);
+
+  // connect specific
+  QObject::connect( getWidget(), SIGNAL( TreshMin(int) ),
+                    this, SLOT( setTreshMin(int) ) );
+  QObject::connect( getWidget(), SIGNAL( TreshMax(int) ),
+                    this, SLOT( setTreshMax(int) ) );
+  QObject::connect( getWidget(), SIGNAL( CorrTresh(double) ),
+                    this, SLOT( setCorrTresh(double) ) );
+  QObject::connect( getWidget(), SIGNAL( Alpha(double) ),
+                    this, SLOT( setAlpha(double) ) );
+  QObject::connect( getWidget(), SIGNAL( Beta(double) ),
+                    this, SLOT( setBeta(double) ) );
 }
 
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+QGoFilterWatershed::setTreshMin(int iTreshmin)
+{
+  m_TreshMin = iTreshmin;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+QGoFilterWatershed::setTreshMax(int iTreshmax)
+{
+  m_TreshMax = iTreshmax;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+QGoFilterWatershed::setCorrTresh(double iCorrTresh)
+{
+  m_CorrTresh = iCorrTresh;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+QGoFilterWatershed::setAlpha(double iAlpha)
+{
+ m_Alpha = iAlpha;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+QGoFilterWatershed::setBeta(double iBeta)
+{
+  m_Beta = iBeta;
+}
 //--------------------------------------------------------------------------

@@ -55,6 +55,24 @@ public:
 
   virtual void ConnectSignals(int iFilterNumber);
 
+  int m_TreshMin;
+  int m_TreshMax;
+
+  double m_CorrTresh;
+  double m_Alpha;
+  double m_Beta;
+
+public slots:
+  void setTreshMin(int);
+
+  void setTreshMax(int);
+
+  void setCorrTresh(double);
+
+  void setAlpha(double);
+
+  void setBeta(double);
+
 protected:
   void Filter2D(double *iCenter, const int & iOrientation);
 

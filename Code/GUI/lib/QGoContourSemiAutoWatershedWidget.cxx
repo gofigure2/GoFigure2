@@ -38,6 +38,22 @@
 QGoContourSemiAutoWatershedWidget::QGoContourSemiAutoWatershedWidget(QWidget *iParent):QWidget(iParent)
 {
   this->setupUi(this);
+
+  // Connect signals
+  QObject::connect( this->tresholdMinSpinBox, SIGNAL( valueChanged(int) ),
+                    this, SIGNAL( TreshMin(int) ) );
+
+  QObject::connect( this->tresholdMaxSpinBox, SIGNAL( valueChanged(int) ),
+                    this, SIGNAL( TreshMax(int) ) );
+
+  QObject::connect( this->correlationDoubleSpinBox, SIGNAL( valueChanged(double) ),
+                    this, SIGNAL( CorrTresh(double) ) );
+
+  QObject::connect( this->alphaDoubleSpinBox, SIGNAL( valueChanged(double) ),
+                    this, SIGNAL( Alpha(double) ) );
+
+  QObject::connect( this->betaDoubleSpinBox, SIGNAL( valueChanged(double) ),
+                    this, SIGNAL( Beta(double) ) );
 }
 
 //---------------------------------------------------------------------------//
