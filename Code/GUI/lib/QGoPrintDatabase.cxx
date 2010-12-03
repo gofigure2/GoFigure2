@@ -791,10 +791,10 @@ void QGoPrintDatabase::CreateConnectionsForTraceManualEditingWidget()
                     this,
                     SLOT( UpdateSelectedColorData(ItemColorComboboxData) ) );
 
-  QObject::connect( this->m_TraceWidget,
-                    SIGNAL( NewCollectionActivated(ItemColorComboboxData) ),
-                    this,
-                    SLOT( UpdateSelectedCollectionID(ItemColorComboboxData) ) );
+  //QObject::connect( this->m_TraceWidget,
+    //                SIGNAL( NewCollectionActivated(ItemColorComboboxData) ),
+      //              this,
+        //            SLOT( UpdateSelectedCollectionID(ItemColorComboboxData) ) );
 
   QObject::connect( this->m_TraceWidget,
                     SIGNAL( AddNewColor() ),
@@ -1196,6 +1196,11 @@ void QGoPrintDatabase::SetContoursManager()
                     SIGNAL(DBConnectionNotNeededAnymore() ),
                     this,
                     SLOT(CloseDBConnection() ) );
+
+  QObject::connect( this->m_TraceWidget, 
+                    SIGNAL( NewCollectionActivated(ItemColorComboboxData) ),
+                    this->m_ContoursManager, 
+                    SLOT(SetSelectedCollection(ItemColorComboboxData) ) );
 }
 
 //--------------------------------------------------------------------------
@@ -1235,6 +1240,10 @@ void QGoPrintDatabase::SetMeshesManager()
                     SIGNAL( NewSubCellTypeActivated(std::string) ),
                     this->m_MeshesManager,
                     SLOT( UpdateSelectedSubCellType(std::string) ) );
+  QObject::connect( this->m_TraceWidget, 
+                    SIGNAL( NewCollectionActivated(ItemColorComboboxData) ),
+                    this->m_MeshesManager, 
+                    SLOT(SetSelectedCollection(ItemColorComboboxData) ) );
 }
 //--------------------------------------------------------------------------
 
@@ -1260,6 +1269,10 @@ void QGoPrintDatabase::SetTracksManager()
                     SIGNAL(DBConnectionNotNeededAnymore() ),
                     this,
                     SLOT(CloseDBConnection() ) );
+  QObject::connect( this->m_TraceWidget, 
+                    SIGNAL( NewCollectionActivated(ItemColorComboboxData) ),
+                    this->m_TracksManager, 
+                    SLOT(SetSelectedCollection(ItemColorComboboxData) ) );
 }
 //--------------------------------------------------------------------------
 

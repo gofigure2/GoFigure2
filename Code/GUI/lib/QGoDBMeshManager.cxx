@@ -174,14 +174,12 @@ void QGoDBMeshManager::AddActionsContextMenu(QMenu *iMenu)
 {
   QGoDBTraceManager::AddActionsContextMenu(iMenu);
   this->AddSpecificActionsForContourMesh(iMenu);
-  //iMenu->addAction( tr("Add the selected CellType to the checked meshes"), 
-   //this, SLOT( UpdateCellType() ) );
-  //iMenu->addAction( tr("Add the selected SubCellType to the checked meshes"), 
-  // this, SLOT( UpdateSubCellType() ) );
-  this->m_CheckedTracesMenu->addAction( tr("Add the selected CellType to the checked meshes"), 
-   this, SLOT( UpdateCellType() ) );
-  this->m_CheckedTracesMenu->addAction( tr("Add the selected SubCellType to the checked meshes"), 
-   this, SLOT( UpdateSubCellType() ) );
+  this->m_CheckedTracesMenu->addAction( 
+    tr("Add the selected CellType '%1' to the checked meshes")
+    .arg(this->m_SelectedCellType.c_str()), this, SLOT( UpdateCellType() ) );
+  this->m_CheckedTracesMenu->addAction( 
+    tr("Add the selected SubCellType '%1' to the checked meshes")
+    .arg(this->m_SelectedSubCellType.c_str()), this, SLOT( UpdateSubCellType() ) );
 }
 
 //-------------------------------------------------------------------------
