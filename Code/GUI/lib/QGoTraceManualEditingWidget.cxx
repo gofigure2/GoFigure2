@@ -151,6 +151,7 @@ QGoTraceManualEditingWidget::SetSelectedColorComboBox()
   this->VLayoutColor->addWidget(ColorLbl);
   this->VLayoutColor->addWidget(this->m_SelectedColorComboBox);
 
+  this->m_SelectedColorData = new ItemColorComboboxData;
   //QObject::connect( this->m_SelectedColorComboBox,
    //                 SIGNAL( ItemSelected(ItemColorComboboxData) ),
     //                this, SIGNAL( NewSelectedColorActivated(ItemColorComboboxData) ) );
@@ -243,7 +244,7 @@ QGoTraceManualEditingWidget::SetCellTypeComboBox()
  // QObject::connect( this->m_ChoseCellType,
     //                SIGNAL( ItemSelected(std::string) ),
         //            this, SIGNAL( NewCellTypeActivated(std::string) ) );
-  QObject::connect( this->m_ChoseSubCellType,
+  QObject::connect( this->m_ChoseCellType,
                     SIGNAL( ItemSelected(std::string) ),
                     this, SLOT( UpdateValueSelectedCellType(std::string ) ) );
 
@@ -274,7 +275,7 @@ QGoTraceManualEditingWidget::SetSubCellTypeComboBox()
                    // this, SIGNAL( NewSubCellTypeActivated(std::string) ) );
   QObject::connect( this->m_ChoseSubCellType,
                     SIGNAL( ItemSelected(std::string) ),
-                    this, SLOT( UpdateValueSelectedCellType(std::string ) ) );
+                    this, SLOT( UpdateValueSelectedSubCellType(std::string ) ) );
 
   QObject::connect( this->m_ChoseSubCellType,
                     SIGNAL( AddANewOneActivated() ),
