@@ -116,6 +116,7 @@ void QGoTraceManualEditingWidget::SetListColors(
 {
   this->SetListItemAndSelect< QGoSelectedColorComboBox >(this->m_SelectedColorComboBox,
                                                          iListColors, iColorToSelect);
+  this->m_SelectedColorData->first = iColorToSelect;
 }
 //-------------------------------------------------------------------------
 
@@ -134,6 +135,7 @@ QGoTraceManualEditingWidget::SetListCellTypes(NamesDescrContainerType iCellTypes
 {
   this->SetListItemAndSelect< QGoComboBox >(this->m_ChoseCellType,
                                             iCellTypesData, iCellTypeToSelect);
+  *this->m_SelectedCellType = iCellTypeToSelect;
 }
 
 //-------------------------------------------------------------------------
@@ -154,6 +156,7 @@ QGoTraceManualEditingWidget::SetListSubCellTypes(NamesDescrContainerType iSubCel
 {
   this->SetListItemAndSelect< QGoComboBox >(this->m_ChoseSubCellType,
                                             iSubCellTypesData, iSubCellTypeToSelect);
+  *this->m_SelectedSubCellType = iSubCellTypeToSelect;
 }
 //-------------------------------------------------------------------------
 

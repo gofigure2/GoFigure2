@@ -789,16 +789,6 @@ QGoTraceManualEditingDockWidget * QGoPrintDatabase::GetTraceManualEditingDockWid
 //-------------------------------------------------------------------------
 void QGoPrintDatabase::CreateConnectionsForTraceManualEditingWidget()
 {
-  //QObject::connect( this->m_TraceWidget,
-    //                SIGNAL( NewSelectedColorActivated(ItemColorComboboxData) ),
-      //              this,
-                    //SLOT( UpdateSelectedColorData(ItemColorComboboxData) ) );
-
-  //QObject::connect( this->m_TraceWidget,
-    //                SIGNAL( NewCollectionActivated(ItemColorComboboxData) ),
-      //              this,
-        //            SLOT( UpdateSelectedCollectionID(ItemColorComboboxData) ) );
-
   QObject::connect( this->m_TraceWidget,
                     SIGNAL( AddNewColor() ),
                     this,
@@ -946,24 +936,6 @@ void QGoPrintDatabase::SetTMListSubCellTypesWithPreviousSelectedOne()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/*void QGoPrintDatabase::UpdateSelectedColorData(
-  ItemColorComboboxData iSelectedColorData)
-{
-  this->m_SelectedColorData = iSelectedColorData;
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoPrintDatabase::UpdateSelectedCollectionID(
-  ItemColorComboboxData iSelectedCollectionData)
-{
-  this->m_SelectedCollectionData = iSelectedCollectionData;
-}
-*/
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 void QGoPrintDatabase::AddNewCellType()
 {
   this->OpenDBConnection();
@@ -971,12 +943,10 @@ void QGoPrintDatabase::AddNewCellType()
     this->m_DatabaseConnector);
   if ( !NewCellType.empty() )
     {
-    //this->m_MeshesManager->UpdateSelectedCellType(NewCellType);
     this->SetTMListCellTypes(NewCellType);
     }
   else //if the NewCellType is empty, go to the last selected one:
     {
-    //this->m_TraceWidget->SetCurrentCellType(this->m_SelectedCellType);
     this->m_TraceWidget->SetCurrentCellTypeToSelectedOne();
     }
   this->CloseDBConnection();
