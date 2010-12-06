@@ -56,8 +56,8 @@ class QGOGUILIB_EXPORT QGoDBTraceManager:public QObject
 {
   Q_OBJECT
 public:
-  QGoDBTraceManager();
-  ~QGoDBTraceManager();
+  explicit QGoDBTraceManager( QObject* iParent = NULL );
+  virtual ~QGoDBTraceManager();
 
   typedef GoDBTableWidgetContainer::TWContainerType TWContainerType;
   typedef std::pair< std::string, QColor >          NameWithColorData;

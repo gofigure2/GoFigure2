@@ -72,13 +72,15 @@
 //--------------------------------------------------------------------------
 QGoPrintDatabase::QGoPrintDatabase(QWidget *iParent):
   QWidget(iParent),
+  m_SelectedColorData(NULL),
+  m_SelectedCollectionData(NULL),
   m_ContoursManager(NULL),
   m_MeshesManager(NULL),
   m_TracksManager(NULL),
   m_DatabaseConnector(NULL),
-  m_SelectedCollectionData(NULL),
-  m_SelectedColorData(NULL),
-  m_IsDatabaseUsed(false)
+  m_IsDatabaseUsed(false),
+  m_ReeditMode( false ),
+  m_MeshGenerationMode( false )
 {
   this->setupUi(this);
   DBTabWidget->setTabShape(QTabWidget::Triangular);
@@ -108,8 +110,6 @@ QGoPrintDatabase::QGoPrintDatabase(QWidget *iParent):
   this->m_ColorManager = new QGoDBColorManager(this);
 
   this->CreateConnectionsForTraceManualEditingWidget();
-  this->m_ReeditMode = false;
-  this->m_MeshGenerationMode = false;
 
   QObject::connect( m_VisibilityAction, SIGNAL( toggled(bool) ),
                     this, SLOT( setVisible(bool) ) );
@@ -354,7 +354,7 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
                                                                         *this->m_SelectedColorData,
                                                                         ss_atoi< unsigned int >(this->
                                                                         m_SelectedCollectionData->first),
-                                                                        iMeshAttributes);                                             
+                                                                        iMeshAttributes);
     std::list< unsigned int > ListNewMeshes;
     ListNewMeshes.push_back(NewMeshID);
     this->m_TracksManager->UpdateBoundingBoxes( this->m_DatabaseConnector,
@@ -1175,7 +1175,7 @@ void QGoPrintDatabase::SetContoursManager()
 void QGoPrintDatabase::SetMeshesManager()
 {
   this->m_MeshesManager = new QGoDBMeshManager(m_ImgSessionID, this);
- 
+
   QObject::connect( this->m_MeshesManager, SIGNAL( NeedToGetDatabaseConnection() ),
                     this, SLOT( PassDBConnectionToMeshesManager() ) );
   QObject::connect( this->m_MeshesManager,

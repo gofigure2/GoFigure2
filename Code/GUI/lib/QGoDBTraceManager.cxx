@@ -38,10 +38,10 @@
 #include <QMenu>
 #include <QMessageBox>
 
-QGoDBTraceManager::QGoDBTraceManager():
+QGoDBTraceManager::QGoDBTraceManager( QObject* iParent ):
+  QObject( iParent ), m_SelectedCollectionData(NULL),
   m_Table(NULL), m_CollectionOfTraces(NULL),
-  m_DatabaseConnector(NULL), IsColorCodingOn(false),
-  m_SelectedCollectionData(NULL)
+  m_DatabaseConnector(NULL), IsColorCodingOn(false)
 {}
 
 //-------------------------------------------------------------------------
@@ -285,7 +285,7 @@ void QGoDBTraceManager::AddGeneralActionsContextMenu(QMenu *iMenu)
                     .arg( this->m_TraceName.c_str() ), this, SLOT( ShowSelectedRows() ) );
   SelectedTracesMenu->addAction( tr("Hide the selected %1s")
                     .arg( this->m_TraceName.c_str() ), this, SLOT( HideSelectedRows() ) );
-  
+
   iMenu->addAction(SelectedTracesMenu->menuAction());
 
   QMenu* ColorMenu = new QMenu(tr("Change color of your %1s").arg(this->m_TraceName.c_str() ) );
