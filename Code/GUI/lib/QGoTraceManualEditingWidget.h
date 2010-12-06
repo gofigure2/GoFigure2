@@ -82,16 +82,34 @@ public:
   void SetCurrentCellType(std::string iCellTypeText);
 
   /**
+  \brief set the selected subcelltype in the combobox corresponding to the previous
+  selected one, stored in m_SelectedSubCellType
+  */
+  void SetCurrentCellTypeToSelectedOne();
+
+  /**
   \brief set the selected subcelltype in the combobox corresponding to iSubCellTypeText
   \param[in] iSubCellTypeText name of the SubCellType to be selected
   */
   void SetCurrentSubCellType(std::string iSubCellTypeText);
 
   /**
+  \brief set the selected subcelltype in the combobox corresponding to the previous
+  selected one, stored in m_SelectedSubCellType
+  */
+  void SetCurrentSubCellTypeToSelectedOne();
+
+  /**
   \brief set the selected color in the combobox corresponding to iColorText
   \param[in] iColorText name of the Color to be selected
   */
   void SetCurrentColor(std::string iColorText);
+
+  /**
+  \brief set the selected color in the combobox corresponding to the previous
+  selected one, stored in m_SelectedColorData
+  */
+  void SetCurrentColorToSelectedOne();
 
   /**
   \brief set the selected collectionID in the combobox to iID
@@ -120,8 +138,8 @@ public:
     std::list< ItemColorComboboxData > iListExistingID,
     std::string iCollectionIDtoSelect = "");
 
-  /**
-  \brief replace the list of colors with the name and corresponding color
+ /**
+ \brief replace the list of colors with the name and corresponding color
  in the iListColors and select the color corresponding to iColortoSelect
  if not empty, if empty, select the 1rst one
  \param[in] iListColors list of colors with their names and QColor to be displayed
@@ -129,6 +147,13 @@ public:
  */
   void SetListColors(std::list< ItemColorComboboxData > iListColors,
                      std::string iColorToSelect = "");
+
+ /**
+ \brief replace the list of colors with the name and corresponding color
+ in the iListColors and select the color corresponding to m_SelectedColorData
+ \param[in] iListColors list of colors with their names and QColor to be displayed
+ */
+  void SetListColorsWithSelectedOne(std::list< ItemColorComboboxData > iListColors);
 
   /**
   \brief replace the list of celltype with the names in the iCellTypesData and
@@ -141,6 +166,14 @@ public:
   void SetListCellTypes(NamesDescrContainerType iCellTypesData,
                         std::string iCellTypeToSelect = "");
 
+ /**
+ \brief replace the list of celltype with the name in the iCellTypesData
+ and select the celltype corresponding to m_SelectedCelltype
+ \param[in] iCellTypesData list of celltypes with their names and description
+  to be displayed
+ */
+  void SetListCellTypeWithSelectedOne(NamesDescrContainerType iCellTypesData);
+
   /**
   \brief replace the list of subcelltype with the names in the iSubCellTypesData and
   select the subcelltype corresponding to iSubCellTypetoSelect if not empty, if empty,
@@ -151,6 +184,14 @@ public:
   */
   void SetListSubCellTypes(NamesDescrContainerType iSubCellData,
                            std::string iSubCellTypeToSelect = "");
+
+ /**
+ \brief replace the list of subcelltype with the name in the iSubCellTypesData
+ and select the subcelltype corresponding to m_SelectedSubCelltype
+ \param[in] iSubCellTypesData list of subcelltypes with their names and description
+  to be displayed
+ */
+  void SetListSubCellTypeWithSelectedOne(NamesDescrContainerType iSubCellTypesData);
 
   /**
   \brief add a new collection in the collectionColorCombobox and select it

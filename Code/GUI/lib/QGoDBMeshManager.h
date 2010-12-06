@@ -87,7 +87,7 @@ public:
 
   unsigned int CreateNewMeshWithNoContourNoPoints(
     vtkMySQLDatabase *iDatabaseConnector, NameWithColorData iColor,
-    unsigned int iTimePoint, std::string iCellType, std::string iSubCellType,
+    unsigned int iTimePoint, //std::string iCellType, std::string iSubCellType,
     unsigned int iTrackID = 0);
 
   unsigned int SaveNewMeshFromVisu(unsigned int iXCoordMin,
@@ -101,9 +101,9 @@ public:
                                    vtkMySQLDatabase *iDatabaseConnector,
                                    NameWithColorData iColor,
                                    unsigned int iTrackID,
-                                   GoFigureMeshAttributes *iMeshAttributes,
-                                   std::string iCellType,
-                                   std::string iSubCellType);
+                                   GoFigureMeshAttributes *iMeshAttributes);
+                                   //std::string iCellType,
+                                  // std::string iSubCellType);
 
   void SaveGeneratedMeshFromVisu(unsigned int iXCoordMin, unsigned int iYCoordMin,
                                  unsigned int iZCoordMin,

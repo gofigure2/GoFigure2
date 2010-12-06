@@ -295,8 +295,8 @@ protected:
   //updated by the TraceManualEditing Widget:
   ItemColorComboboxData* m_SelectedColorData;
   ItemColorComboboxData* m_SelectedCollectionData;
-  std::string            m_SelectedCellType;
-  std::string            m_SelectedSubCellType;
+  //std::string            m_SelectedCellType;
+  //std::string            m_SelectedSubCellType;
 
   //related to 3dwt:
   int                   m_SelectedTimePoint;
@@ -362,12 +362,26 @@ protected:
   void SetTMListCellTypes(std::string iCellTypeToSelect = "");
 
   /**
+  \brief get the list of celltypes from the database, put them in
+  the Trace Manual combobox and the combobox will have as selected item the one
+  previously selected
+  */
+  void SetTMListCellTypesWithPreviousSelectedOne();
+
+  /**
   \brief get the list of subcelltypes from the database, put them in
   the Trace Manual combobox and if the string is not empty, the combobox will have as
   selected item the string
   \param[in] iSubCellTypeToSelect name of the subcelltype to be selected
   */
   void SetTMListSubCellTypes(std::string iSubCellTypeToSelect = "");
+
+  /**
+  \brief get the list of subcelltypes from the database, put them in
+  the Trace Manual combobox and the combobox will have as selected item the one
+  previously selected
+  */
+  void SetTMListSubCellTypesWithPreviousSelectedOne();
 
   /**
   \brief get a list of the IDs with their colors for the collection corresponding to
@@ -386,6 +400,14 @@ protected:
   \param[in] iColorToSelect name of the color to be selected in the combobox
   */
   void SetTMListColors(std::string iColorToSelect = "");
+
+  /**
+  \brief get the list of colors from the database, put them in
+  the Trace Manual combobox and the combobox will have as selected item the one
+  previously selected
+  */
+  void SetTMListColorsWithPreviousSelectedOne();
+
 
   void SetPointerCollectionData(ItemColorComboboxData* iCollectionData);
   void SetPointerSelectedColorData(ItemColorComboboxData* iColorData);
