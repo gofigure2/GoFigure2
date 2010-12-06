@@ -192,11 +192,8 @@ unsigned int QGoDBMeshManager::SaveNewMeshFromVisu(
   unsigned int iZCoordMax, vtkPolyData *iTraceNodes,
   vtkMySQLDatabase *iDatabaseConnector, NameWithColorData iColor,
   unsigned int iTrackID, GoFigureMeshAttributes *iMeshAttributes)
-  //std::string iCellType, std::string iSubCellType)
 {
   GoDBMeshRow NewMesh(this->m_ImgSessionID);
-  //NewMesh.SetCellType(iDatabaseConnector, iCellType);
-  //NewMesh.SetSubCellType(iDatabaseConnector, iSubCellType);
   NewMesh.SetCellType(iDatabaseConnector, *this->m_SelectedCellType);
   NewMesh.SetSubCellType(iDatabaseConnector, *this->m_SelectedSubCellType);
   this->SetMeshBoundingBoxAndPoints(iXCoordMin, iYCoordMin, iZCoordMin, iTCoord,
