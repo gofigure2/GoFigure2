@@ -40,7 +40,8 @@
 
 QGoDBTraceManager::QGoDBTraceManager():
   m_Table(NULL), m_CollectionOfTraces(NULL),
-  m_DatabaseConnector(NULL), IsColorCodingOn(false)
+  m_DatabaseConnector(NULL), IsColorCodingOn(false),
+  m_SelectedCollectionData(NULL)
 {}
 
 //-------------------------------------------------------------------------
@@ -303,7 +304,7 @@ void QGoDBTraceManager::AddGeneralActionsContextMenu(QMenu *iMenu)
   m_CheckedTracesMenu->addAction( tr("Delete them"),
                     this, SLOT( DeleteTracesFromContextMenu() ) );
   m_CheckedTracesMenu->addAction( tr("Add to selected %1%2").arg( this->m_CollectionName.c_str() )
-                      .arg(this->m_SelectedCollectionData.first.c_str()), this, SLOT( AddToSelectedCollection() ) );
+                      .arg(this->m_SelectedCollectionData->first.c_str()), this, SLOT( AddToSelectedCollection() ) );
   m_CheckedTracesMenu->addAction( tr("Change their color to the selected one")
                     .arg( this->m_TraceName.c_str() ),
                     this, SLOT( ChangeTraceColor() ) );
@@ -633,7 +634,7 @@ void QGoDBTraceManager::SetDatabaseConnection(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBTraceManager::SetSelectedCollection (NameWithColorData iCollectionData)
+void QGoDBTraceManager::SetSelectedCollection (NameWithColorData* iCollectionData)
 {
   this->m_SelectedCollectionData = iCollectionData;
 }

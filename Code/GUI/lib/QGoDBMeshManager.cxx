@@ -38,7 +38,8 @@
 #include <sstream>
 
 QGoDBMeshManager::QGoDBMeshManager(int iImgSessionID, QWidget *iparent):
-QGoDBTraceManager(),m_MeshContainerInfoForVisu(NULL)
+QGoDBTraceManager(),m_MeshContainerInfoForVisu(NULL),m_SelectedCellType(NULL),
+m_SelectedSubCellType(NULL)
 {
   this->SetInfo(iImgSessionID, iparent);
   this->m_TWContainer = new GoDBTWContainerForMesh(iImgSessionID);
@@ -176,10 +177,10 @@ void QGoDBMeshManager::AddActionsContextMenu(QMenu *iMenu)
   this->AddSpecificActionsForContourMesh(iMenu);
   this->m_CheckedTracesMenu->addAction( 
     tr("Add the selected CellType '%1' to the checked meshes")
-    .arg(this->m_SelectedCellType.c_str()), this, SLOT( UpdateCellType() ) );
+    .arg(this->m_SelectedCellType->c_str() ), this, SLOT( UpdateCellType() ) );
   this->m_CheckedTracesMenu->addAction( 
     tr("Add the selected SubCellType '%1' to the checked meshes")
-    .arg(this->m_SelectedSubCellType.c_str()), this, SLOT( UpdateSubCellType() ) );
+    .arg(this->m_SelectedSubCellType->c_str() ), this, SLOT( UpdateSubCellType() ) );
 }
 
 //-------------------------------------------------------------------------
@@ -190,12 +191,11 @@ unsigned int QGoDBMeshManager::SaveNewMeshFromVisu(
   unsigned int iTCoord, unsigned int iXCoordMax, unsigned int iYCoordMax,
   unsigned int iZCoordMax, vtkPolyData *iTraceNodes,
   vtkMySQLDatabase *iDatabaseConnector, NameWithColorData iColor,
-  unsigned int iTrackID, GoFigureMeshAttributes *iMeshAttributes,
-  std::string iCellType, std::string iSubCellType)
+  unsigned int iTrackID, GoFigureMeshAttributes *iMeshAttributes)
 {
   GoDBMeshRow NewMesh(this->m_ImgSessionID);
-  NewMesh.SetCellType(iDatabaseConnector, iCellType);
-  NewMesh.SetSubCellType(iDatabaseConnector, iSubCellType);
+  NewMesh.SetCellType(iDatabaseConnector, *this->m_SelectedCellType);
+  NewMesh.SetSubCellType(iDatabaseConnector, *this->m_SelectedSubCellType);
   this->SetMeshBoundingBoxAndPoints(iXCoordMin, iYCoordMin, iZCoordMin, iTCoord,
                                     iXCoordMax, iYCoordMax, iZCoordMax, iTraceNodes, iDatabaseConnector, NewMesh,
                                     iMeshAttributes);
@@ -250,12 +250,15 @@ void QGoDBMeshManager::SaveGeneratedMeshFromVisu(unsigned int iXCoordMin,
 //-------------------------------------------------------------------------
 unsigned int QGoDBMeshManager::CreateNewMeshWithNoContourNoPoints(
   vtkMySQLDatabase *iDatabaseConnector, NameWithColorData iColor, unsigned int iTimePoint,
-  std::string iCellType, std::string iSubCellType, unsigned int iTrackID)
+  //std::string iCellType, std::string iSubCellType, 
+  unsigned int iTrackID)
 {
   GoDBMeshRow NewMesh;
 
-  NewMesh.SetCellType(iDatabaseConnector, iCellType);
-  NewMesh.SetSubCellType(iDatabaseConnector, iSubCellType);
+ // NewMesh.SetCellType(iDatabaseConnector, iCellType);
+  //NewMesh.SetSubCellType(iDatabaseConnector, iSubCellType);
+  NewMesh.SetCellType(iDatabaseConnector, *this->m_SelectedCellType);
+  NewMesh.SetSubCellType(iDatabaseConnector, *this->m_SelectedSubCellType);
   if ( iTrackID != 0 )
     {
     NewMesh.SetCollectionID(iTrackID);
@@ -400,14 +403,14 @@ void QGoDBMeshManager::SetColorCoding(bool IsChecked)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBMeshManager::UpdateSelectedCellType(std::string iCellType)
+void QGoDBMeshManager::SetSelectedCellType(std::string* iCellType)
 {
   this->m_SelectedCellType = iCellType;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBMeshManager::UpdateSelectedSubCellType(std::string iSubCellType)
+void QGoDBMeshManager::SetSelectedSubCellType(std::string* iSubCellType)
 {
   this->m_SelectedSubCellType = iSubCellType;
 }
@@ -420,7 +423,7 @@ void QGoDBMeshManager::UpdateCellType()
   std::list<unsigned int> ListCheckedMeshes =
     this->m_MeshContainerInfoForVisu->GetHighlightedElementsTraceID();
   int CellTypeID = GoDBMeshRow::GetCellTypeID(this->m_DatabaseConnector, 
-    this->m_SelectedCellType);
+    *this->m_SelectedCellType);
   this->m_CollectionOfTraces->UpdateValueForListTraces(
     this->m_DatabaseConnector,"CellTypeID",ConvertToString<int>(CellTypeID),
     ListCheckedMeshes);
@@ -436,7 +439,7 @@ void QGoDBMeshManager::UpdateSubCellType()
   std::list<unsigned int> ListCheckedMeshes =
     this->m_MeshContainerInfoForVisu->GetHighlightedElementsTraceID();
   int SubCellTypeID = GoDBMeshRow::GetSubCellTypeID(this->m_DatabaseConnector, 
-    this->m_SelectedSubCellType);
+    *this->m_SelectedSubCellType);
   this->m_CollectionOfTraces->UpdateValueForListTraces(
     this->m_DatabaseConnector,"SubCellularID",ConvertToString<int>(SubCellTypeID),
     ListCheckedMeshes);

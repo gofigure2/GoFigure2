@@ -87,7 +87,7 @@ public:
 
   unsigned int CreateNewMeshWithNoContourNoPoints(
     vtkMySQLDatabase *iDatabaseConnector, NameWithColorData iColor,
-    unsigned int iTimePoint, std::string iCellType, std::string iSubCellType,
+    unsigned int iTimePoint, //std::string iCellType, std::string iSubCellType,
     unsigned int iTrackID = 0);
 
   unsigned int SaveNewMeshFromVisu(unsigned int iXCoordMin,
@@ -101,9 +101,9 @@ public:
                                    vtkMySQLDatabase *iDatabaseConnector,
                                    NameWithColorData iColor,
                                    unsigned int iTrackID,
-                                   GoFigureMeshAttributes *iMeshAttributes,
-                                   std::string iCellType,
-                                   std::string iSubCellType);
+                                   GoFigureMeshAttributes *iMeshAttributes);
+                                   //std::string iCellType,
+                                  // std::string iSubCellType);
 
   void SaveGeneratedMeshFromVisu(unsigned int iXCoordMin, unsigned int iYCoordMin,
                                  unsigned int iZCoordMin,
@@ -132,24 +132,36 @@ public:
    //virtual pure method in QGoDBTraceManager
   virtual std::list< unsigned int > GetListHighlightedIDs();
 
-public slots:
   /**
   \brief set the m_SelectedCelltype to iCelltype
   \param[in] iCellType name of the celltype
   */
-  void UpdateSelectedCellType(std::string iCellType);
+  void SetSelectedCellType(std::string* iCellType);
 
   /**
   \brief set the m_SelectedSubCelltype to iSubCelltype
   \param[in] iSubCellType name of the subcelltype
   */
-  void UpdateSelectedSubCellType(std::string iSubCellType);
+  void SetSelectedSubCellType(std::string* iSubCellType);
+
+public slots:
+  /**
+  \brief set the m_SelectedCelltype to iCelltype
+  \param[in] iCellType name of the celltype
+  */
+  //void UpdateSelectedCellType(std::string iCellType);
+
+  /**
+  \brief set the m_SelectedSubCelltype to iSubCelltype
+  \param[in] iSubCellType name of the subcelltype
+  */
+  //void UpdateSelectedSubCellType(std::string iSubCellType);
 
 protected:
   GoDBTWContainerForMesh *m_TWContainer;
   ContourMeshContainer   *m_MeshContainerInfoForVisu;
-  std::string             m_SelectedCellType;
-  std::string             m_SelectedSubCellType;
+  std::string*            m_SelectedCellType;
+  std::string*            m_SelectedSubCellType;
 
   //virtual pure method in QGoDBTraceManager
   virtual void SetCollectionsTraceNames();

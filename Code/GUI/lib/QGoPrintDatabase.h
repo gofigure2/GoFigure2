@@ -229,7 +229,8 @@ public:
   updated also
   */
   void UpdateWidgetsForCorrespondingTrace(std::string iTraceName,
-                                          std::string iCollectionName, bool UpdateTableWidget = true);
+                                          std::string iCollectionName, 
+                                          bool UpdateTableWidget = true);
 
   /** \brief Initialize or reinitialized the celltype,subcelltype
   and color list from the database into the tracemanualeditingwidget*/
@@ -293,10 +294,8 @@ signals:
 
 protected:
   //updated by the TraceManualEditing Widget:
-  ItemColorComboboxData m_SelectedColorData;
-  ItemColorComboboxData m_SelectedCollectionData;
-  std::string           m_SelectedCellType;
-  std::string           m_SelectedSubCellType;
+  ItemColorComboboxData* m_SelectedColorData;
+  ItemColorComboboxData* m_SelectedCollectionData;
 
   //related to 3dwt:
   int                   m_SelectedTimePoint;
@@ -362,12 +361,26 @@ protected:
   void SetTMListCellTypes(std::string iCellTypeToSelect = "");
 
   /**
+  \brief get the list of celltypes from the database, put them in
+  the Trace Manual combobox and the combobox will have as selected item the one
+  previously selected
+  */
+  void SetTMListCellTypesWithPreviousSelectedOne();
+
+  /**
   \brief get the list of subcelltypes from the database, put them in
   the Trace Manual combobox and if the string is not empty, the combobox will have as
   selected item the string
   \param[in] iSubCellTypeToSelect name of the subcelltype to be selected
   */
   void SetTMListSubCellTypes(std::string iSubCellTypeToSelect = "");
+
+  /**
+  \brief get the list of subcelltypes from the database, put them in
+  the Trace Manual combobox and the combobox will have as selected item the one
+  previously selected
+  */
+  void SetTMListSubCellTypesWithPreviousSelectedOne();
 
   /**
   \brief get a list of the IDs with their colors for the collection corresponding to
@@ -386,6 +399,27 @@ protected:
   \param[in] iColorToSelect name of the color to be selected in the combobox
   */
   void SetTMListColors(std::string iColorToSelect = "");
+
+  /**
+  \brief get the list of colors from the database, put them in
+  the Trace Manual combobox and the combobox will have as selected item the one
+  previously selected
+  */
+  void SetTMListColorsWithPreviousSelectedOne();
+
+  /**
+  \brief set the pointer for the selected collection to iCollectionData
+  \param[in] iCollectionData pointer to the ID and color of the 
+  selected collection
+  */
+  void SetPointerCollectionData(ItemColorComboboxData* iCollectionData);
+
+  /**
+  \brief set the pointer for the selected color to iColorData
+  \param[in] iColorData pointer to the name and color of the selected
+  color
+  */
+  void SetPointerSelectedColorData(ItemColorComboboxData* iColorData);
 
   //******************End of Methods related to Trace Manual Editing
   // Widget***********
@@ -466,7 +500,7 @@ protected:
     //update everything for the traces and get the list of collection ID they
     //are collection of:
     std::list< unsigned int > ListCollectionOfIDsToUpdate =
-      iTraceManager->UpdateTheTracesColor(this->m_DatabaseConnector, this->m_SelectedColorData);
+      iTraceManager->UpdateTheTracesColor(this->m_DatabaseConnector, *this->m_SelectedColorData);
     iCollectionOfManager->DisplayInfoForExistingTraces(this->m_DatabaseConnector,
                                                        ListCollectionOfIDsToUpdate);
     this->CloseDBConnection();
@@ -642,30 +676,6 @@ protected slots:
 
   //*********************Slots for
   // TraceManualEditingWidget:**************************
-  /**
-  \brief set the m_SelectedColorData to iSelectedColorData
-  \param[in] iSelectedColorData name and QColor of the color
-  */
-  void UpdateSelectedColorData(ItemColorComboboxData iSelectedColorData);
-
-  /**
-  \brief set the m_SelectedCollectionData to iSelectedCollectionData
-  \param[in] iSelectedCollectionData ID and QColor of the collection
-  */
-  void UpdateSelectedCollectionID(ItemColorComboboxData iSelectedCollectionData);
-
-  /**
-  \brief set the m_SelectedCelltype to iSelectedCelltype
-  \param[in] iSelectedCellType name of the celltype
-  */
-  //void UpdateSelectedCellType(std::string iSelectedCellType);
-
-  /**
-  \brief set the m_SelectedSubCelltype to iSelectedSubCelltype
-  \param[in] iSelectedSubCellType name of the subcelltype
-  */
-  //void UpdateSelectedSubCellType(std::string iSelectedSubCellType);
-
   /**
   \brief Add the new collection in the database,add a row in TW
   and update the colorcombobox

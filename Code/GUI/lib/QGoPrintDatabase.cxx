@@ -76,6 +76,8 @@ QGoPrintDatabase::QGoPrintDatabase(QWidget *iParent):
   m_MeshesManager(NULL),
   m_TracksManager(NULL),
   m_DatabaseConnector(NULL),
+  m_SelectedCollectionData(NULL),
+  m_SelectedColorData(NULL),
   m_IsDatabaseUsed(false)
 {
   this->setupUi(this);
@@ -96,6 +98,8 @@ QGoPrintDatabase::QGoPrintDatabase(QWidget *iParent):
 
   this->m_TraceWidget =
     this->m_TraceManualEditingDockWidget->m_TraceWidget;
+  this->SetPointerCollectionData (this->m_TraceWidget->GetPointerCollectionData());
+  this->SetPointerSelectedColorData (this->m_TraceWidget->GetPointerColorData());
 
   this->m_CellTypeManager = new QGoDBCellTypeManager(this);
 
@@ -285,10 +289,10 @@ QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
   if ( !this->m_ReeditMode )
     {
     unsigned int MeshID = 0;
-    std::string  test = this->m_SelectedCollectionData.first;
-    if ( this->m_SelectedCollectionData.first != "Add a new mesh ..." )
+    std::string  test = this->m_SelectedCollectionData->first;
+    if ( this->m_SelectedCollectionData->first != "Add a new mesh ..." )
       {
-      MeshID = ss_atoi< unsigned int >(this->m_SelectedCollectionData.first);
+      MeshID = ss_atoi< unsigned int >(this->m_SelectedCollectionData->first);
       }
     ContourID = this->m_ContoursManager->SaveNewContourFromVisu(iXCoordMin,
                                                                 iYCoordMin,
@@ -299,7 +303,7 @@ QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
                                                                 iZCoordMax,
                                                                 iContourNodes,
                                                                 this->m_DatabaseConnector,
-                                                                this->m_SelectedColorData,
+                                                                *this->m_SelectedColorData,
                                                                 MeshID);
     }
   else
@@ -347,20 +351,17 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
                                                                         iZCoordMax,
                                                                         iMeshNodes,
                                                                         this->m_DatabaseConnector,
-                                                                        this->m_SelectedColorData,
+                                                                        *this->m_SelectedColorData,
                                                                         ss_atoi< unsigned int >(this->
-                                                                                                m_SelectedCollectionData
-                                                                                                .first),
-                                                                        iMeshAttributes,
-                                                                        this->m_SelectedCellType,
-                                                                        this->m_SelectedSubCellType);
+                                                                        m_SelectedCollectionData->first),
+                                                                        iMeshAttributes);                                             
     std::list< unsigned int > ListNewMeshes;
     ListNewMeshes.push_back(NewMeshID);
     this->m_TracksManager->UpdateBoundingBoxes( this->m_DatabaseConnector,
                                                 this->m_MeshesManager->GetListCollectionIDs(this->m_DatabaseConnector,
                                                                                             ListNewMeshes) );
     //here update the CurrentElement for trackContainer with the data from the database corresponding to the selected trackID:
-    this->m_TracksManager->UpdateCurrentElementTrackContainer(atoi(this->m_SelectedCollectionData.first.c_str()));
+    this->m_TracksManager->UpdateCurrentElementTrackContainer(atoi(this->m_SelectedCollectionData->first.c_str()));
     }
   else //for mesh generated from contours:
     {
@@ -387,14 +388,12 @@ void QGoPrintDatabase::SaveNewMeshForMeshToContours(int iNumberOfContours)
 {
   this->OpenDBConnection();
   unsigned int MeshID = this->m_MeshesManager->CreateNewMeshWithNoContourNoPoints(
-    this->m_DatabaseConnector, this->m_SelectedColorData, this->m_SelectedTimePoint,
-    this->m_SelectedCellType, this->m_SelectedSubCellType,
-    ss_atoi< unsigned int >(this->m_SelectedCollectionData.first) );
+    this->m_DatabaseConnector, *this->m_SelectedColorData, this->m_SelectedTimePoint,
+    ss_atoi< unsigned int >(this->m_SelectedCollectionData->first) );
   std::list< unsigned int > ListLastCreatedContours =
     this->m_ContoursManager->GetLastCreatedTracesIDs(this->m_DatabaseConnector, iNumberOfContours);
   this->AddCheckedTracesToCollection< QGoDBContourManager, QGoDBMeshManager >(
     this->m_ContoursManager, this->m_MeshesManager, MeshID, ListLastCreatedContours);
-  //need to update the trackid ?? points ??
   this->CloseDBConnection();
 }
 
@@ -414,39 +413,11 @@ unsigned int QGoPrintDatabase::SaveNewContourForMeshToContours(
   unsigned int ContourID = this->m_ContoursManager->SaveNewContourFromVisu(
     iXCoordMin, iYCoordMin, iZCoordMin,
     this->m_SelectedTimePoint, iXCoordMax, iYCoordMax, iZCoordMax, iTraceNodes,
-    this->m_DatabaseConnector, this->m_SelectedColorData, 0);
+    this->m_DatabaseConnector, *this->m_SelectedColorData, 0);
   this->CloseDBConnection();
   return ContourID;
 }
 
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/*void QGoPrintDatabase::SaveTrackCurrentElement()
-{
-  this->OpenDBConnection();
-  this->m_TracksManager->SaveTrackCurrentElement(this->m_DatabaseConnector);
-  this->CloseDBConnection();
-}
-
-std::vector< ContourMeshStructure > QGoPrintDatabase::GetTracesForAGivenTimepoint(
-  ContourMeshStructureMultiIndexContainer iAllTraces,
-  unsigned int iTimePoint)
-{
-  std::vector< ContourMeshStructure >               SelectedTraces;
-  ContourMeshStructureMultiIndexContainer::iterator iter = iAllTraces.begin();
-
-  while ( iter != iAllTraces.end() )
-    {
-    if ( iter->TCoord == iTimePoint )
-      {
-      SelectedTraces.push_back(*iter);
-      }
-    ++iter;
-    }
-  return SelectedTraces;
-}
-*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -517,17 +488,16 @@ void QGoPrintDatabase::SaveNewCollectionFromTraceWidgetInDBAndTW()
       {
       NewCollectionID = this->m_MeshesManager->CreateNewMeshWithNoContourNoPoints(
         this->m_DatabaseConnector,
-        this->m_SelectedColorData, this->m_SelectedTimePoint, this->m_SelectedCellType,
-        this->m_SelectedSubCellType);
+        *this->m_SelectedColorData, this->m_SelectedTimePoint);
       }
     if ( TraceName == "mesh" )
       {
       NewCollectionID = this->m_TracksManager->CreateNewTrackWithNoMesh(
-        this->m_DatabaseConnector, this->m_SelectedColorData);
+        this->m_DatabaseConnector, *this->m_SelectedColorData);
       }
     ItemColorComboboxData NewCollectionData;
     NewCollectionData.first = ConvertToString< unsigned int >(NewCollectionID);
-    NewCollectionData.second = this->m_SelectedColorData.second;
+    NewCollectionData.second = this->m_SelectedColorData->second;
     this->m_TraceWidget->AddANewCollectionID(NewCollectionData);
     }
 }
@@ -537,7 +507,7 @@ void QGoPrintDatabase::SaveNewCollectionFromTraceWidgetInDBAndTW()
 //-------------------------------------------------------------------------
 std::pair< std::string, QColor > QGoPrintDatabase::GetSelectedCollectionData()
 {
-  return this->m_SelectedCollectionData;
+  return *this->m_SelectedCollectionData;
 }
 
 //-------------------------------------------------------------------------
@@ -787,16 +757,6 @@ QGoTraceManualEditingDockWidget * QGoPrintDatabase::GetTraceManualEditingDockWid
 void QGoPrintDatabase::CreateConnectionsForTraceManualEditingWidget()
 {
   QObject::connect( this->m_TraceWidget,
-                    SIGNAL( NewSelectedColorActivated(ItemColorComboboxData) ),
-                    this,
-                    SLOT( UpdateSelectedColorData(ItemColorComboboxData) ) );
-
-  //QObject::connect( this->m_TraceWidget,
-    //                SIGNAL( NewCollectionActivated(ItemColorComboboxData) ),
-      //              this,
-        //            SLOT( UpdateSelectedCollectionID(ItemColorComboboxData) ) );
-
-  QObject::connect( this->m_TraceWidget,
                     SIGNAL( AddNewColor() ),
                     this,
                     SLOT( AddNewColor() ) );
@@ -877,6 +837,16 @@ void QGoPrintDatabase::SetTMListColors(std::string iNewColorToSelect)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoPrintDatabase::SetTMListColorsWithPreviousSelectedOne()
+{
+  this->OpenDBConnection();
+  this->m_TraceWidget->SetListColorsWithSelectedOne(
+    this->m_ColorManager->GetListExistingColors(this->m_DatabaseConnector) );
+  this->CloseDBConnection();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void QGoPrintDatabase::SetTMListCollectionID(std::string iIDToSelect)
 {
   this->OpenDBConnection();
@@ -897,6 +867,16 @@ void QGoPrintDatabase::SetTMListCellTypes(std::string iCellTypeToSelect)
     iCellTypeToSelect);
   this->CloseDBConnection();
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::SetTMListCellTypesWithPreviousSelectedOne()
+{
+  this->OpenDBConnection();
+  this->m_TraceWidget->SetListCellTypeWithSelectedOne(
+    this->m_CellTypeManager->GetListExistingEntities(this->m_DatabaseConnector));
+  this->CloseDBConnection();
+}
 
 //-------------------------------------------------------------------------
 
@@ -909,23 +889,15 @@ void QGoPrintDatabase::SetTMListSubCellTypes(std::string iSubCellTypeToSelect)
     iSubCellTypeToSelect);
   this->CloseDBConnection();
 }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::UpdateSelectedColorData(
-  ItemColorComboboxData iSelectedColorData)
+void QGoPrintDatabase::SetTMListSubCellTypesWithPreviousSelectedOne()
 {
-  this->m_SelectedColorData = iSelectedColorData;
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoPrintDatabase::UpdateSelectedCollectionID(
-  ItemColorComboboxData iSelectedCollectionData)
-{
-  this->m_SelectedCollectionData = iSelectedCollectionData;
+  this->OpenDBConnection();
+  this->m_TraceWidget->SetListSubCellTypeWithSelectedOne(
+    this->m_CellTypeManager->GetListExistingEntities(this->m_DatabaseConnector));
+  this->CloseDBConnection();
 }
 
 //-------------------------------------------------------------------------
@@ -938,12 +910,11 @@ void QGoPrintDatabase::AddNewCellType()
     this->m_DatabaseConnector);
   if ( !NewCellType.empty() )
     {
-    this->m_MeshesManager->UpdateSelectedCellType(NewCellType);
     this->SetTMListCellTypes(NewCellType);
     }
   else //if the NewCellType is empty, go to the last selected one:
     {
-    this->m_TraceWidget->SetCurrentCellType(this->m_SelectedCellType);
+    this->m_TraceWidget->SetCurrentCellTypeToSelectedOne();
     }
   this->CloseDBConnection();
 }
@@ -958,12 +929,11 @@ void QGoPrintDatabase::AddNewSubCellType()
     this->m_SubCellTypeManager->AddAnEntity(this->m_DatabaseConnector);
   if ( !NewSubCellType.empty() )
     {
-    this->m_MeshesManager->UpdateSelectedSubCellType(NewSubCellType);
     this->SetTMListSubCellTypes(NewSubCellType);
     }
   else //if the NewSubCellType is empty, go to the last selected one:
     {
-    this->m_TraceWidget->SetCurrentSubCellType(this->m_SelectedSubCellType);
+    this->m_TraceWidget->SetCurrentSubCellTypeToSelectedOne();
     }
   this->CloseDBConnection();
 }
@@ -978,12 +948,11 @@ void QGoPrintDatabase::AddNewColor()
     this->m_DatabaseConnector);
   if ( !NewColor.first.empty() )
     {
-    this->UpdateSelectedColorData(NewColor);
     this->SetTMListColors(NewColor.first);
     }
   else //if the NewColor name is empty, go to the last selected one:
     {
-    this->m_TraceWidget->SetCurrentColor(this->m_SelectedColorData.first);
+    this->m_TraceWidget->SetCurrentColorToSelectedOne();
     }
   this->CloseDBConnection();
 }
@@ -996,11 +965,11 @@ void QGoPrintDatabase::DeleteCellType()
   this->OpenDBConnection();
   if ( this->m_CellTypeManager->DeleteEntity(this->m_DatabaseConnector) )
     {
-    this->SetTMListCellTypes(this->m_SelectedCellType);
+    this->SetTMListCellTypesWithPreviousSelectedOne();
     }
   else //if the user cancelled, go to the last selected one:
     {
-    this->m_TraceWidget->SetCurrentCellType(this->m_SelectedCellType);
+    this->m_TraceWidget->SetCurrentCellTypeToSelectedOne();
     }
   this->CloseDBConnection();
 }
@@ -1013,11 +982,11 @@ void QGoPrintDatabase::DeleteColor()
   this->OpenDBConnection();
   if ( this->m_ColorManager->DeleteEntity(this->m_DatabaseConnector) )
     {
-    this->SetTMListColors(this->m_SelectedColorData.first);
+    this->SetTMListColorsWithPreviousSelectedOne();
     }
   else //if the user cancelled, go to the last selected one:
     {
-    this->m_TraceWidget->SetCurrentColor(this->m_SelectedColorData.first);
+    this->m_TraceWidget->SetCurrentColorToSelectedOne();
     }
   this->CloseDBConnection();
 }
@@ -1030,11 +999,11 @@ void QGoPrintDatabase::DeleteSubCellType()
   this->OpenDBConnection();
   if ( this->m_SubCellTypeManager->DeleteEntity(this->m_DatabaseConnector) )
     {
-    this->SetTMListSubCellTypes(this->m_SelectedSubCellType);
+    this->SetTMListSubCellTypesWithPreviousSelectedOne();
     }
   else //if the user cancelled, go to the last selected one:
     {
-    this->m_TraceWidget->SetCurrentSubCellType(this->m_SelectedSubCellType);
+    this->m_TraceWidget->SetCurrentSubCellTypeToSelectedOne();
     }
   this->CloseDBConnection();
 }
@@ -1170,6 +1139,8 @@ void QGoPrintDatabase::SetTracesManager()
 void QGoPrintDatabase::SetContoursManager()
 {
   this->m_ContoursManager = new QGoDBContourManager(m_ImgSessionID, this);
+  this->m_ContoursManager->SetSelectedCollection (
+    this->m_TraceWidget->GetPointerCollectionData());
 
   QObject::connect( this->m_ContoursManager, SIGNAL( NeedToGetDatabaseConnection() ),
                     this, SLOT( PassDBConnectionToContoursManager() ) );
@@ -1196,11 +1167,6 @@ void QGoPrintDatabase::SetContoursManager()
                     SIGNAL(DBConnectionNotNeededAnymore() ),
                     this,
                     SLOT(CloseDBConnection() ) );
-
-  QObject::connect( this->m_TraceWidget, 
-                    SIGNAL( NewCollectionActivated(ItemColorComboboxData) ),
-                    this->m_ContoursManager, 
-                    SLOT(SetSelectedCollection(ItemColorComboboxData) ) );
 }
 
 //--------------------------------------------------------------------------
@@ -1209,6 +1175,7 @@ void QGoPrintDatabase::SetContoursManager()
 void QGoPrintDatabase::SetMeshesManager()
 {
   this->m_MeshesManager = new QGoDBMeshManager(m_ImgSessionID, this);
+ 
   QObject::connect( this->m_MeshesManager, SIGNAL( NeedToGetDatabaseConnection() ),
                     this, SLOT( PassDBConnectionToMeshesManager() ) );
   QObject::connect( this->m_MeshesManager,
@@ -1231,19 +1198,14 @@ void QGoPrintDatabase::SetMeshesManager()
                     SIGNAL(DBConnectionNotNeededAnymore() ),
                     this,
                     SLOT(CloseDBConnection() ) );
-  //related to traceEditingWidget and meshes_manager (celltype + subcelltype)
-  QObject::connect( this->m_TraceWidget,
-                    SIGNAL( NewCellTypeActivated(std::string) ),
-                    this->m_MeshesManager,
-                    SLOT( UpdateSelectedCellType(std::string) ) );
-  QObject::connect( this->m_TraceWidget,
-                    SIGNAL( NewSubCellTypeActivated(std::string) ),
-                    this->m_MeshesManager,
-                    SLOT( UpdateSelectedSubCellType(std::string) ) );
-  QObject::connect( this->m_TraceWidget, 
-                    SIGNAL( NewCollectionActivated(ItemColorComboboxData) ),
-                    this->m_MeshesManager, 
-                    SLOT(SetSelectedCollection(ItemColorComboboxData) ) );
+
+  //related to traceEditingWidget and meshes_manager (celltype + subcelltype + collectionData):
+  this->m_MeshesManager->SetSelectedCollection (
+    this->m_TraceWidget->GetPointerCollectionData());
+  this->m_MeshesManager->SetSelectedCellType(
+    this->m_TraceWidget->GetPointerSelectedCellType());
+  this->m_MeshesManager->SetSelectedSubCellType(
+    this->m_TraceWidget->GetPointerSelectedSubCellType());
 }
 //--------------------------------------------------------------------------
 
@@ -1269,10 +1231,6 @@ void QGoPrintDatabase::SetTracksManager()
                     SIGNAL(DBConnectionNotNeededAnymore() ),
                     this,
                     SLOT(CloseDBConnection() ) );
-  QObject::connect( this->m_TraceWidget, 
-                    SIGNAL( NewCollectionActivated(ItemColorComboboxData) ),
-                    this->m_TracksManager, 
-                    SLOT(SetSelectedCollection(ItemColorComboboxData) ) );
 }
 //--------------------------------------------------------------------------
 
@@ -1303,7 +1261,7 @@ void QGoPrintDatabase::PassDBConnectionToTracksManager()
 //--------------------------------------------------------------------------
 void QGoPrintDatabase::PassSelectedColorToContoursManager()
 {
-  this->m_ContoursManager->SetSelectedColor(this->m_SelectedColorData);
+  this->m_ContoursManager->SetSelectedColor(*this->m_SelectedColorData);
 }
 
 //--------------------------------------------------------------------------
@@ -1324,7 +1282,7 @@ void QGoPrintDatabase::CreateNewTrackFromCheckedMeshes(
 {
   this->OpenDBConnection();
   unsigned int NewTrackID = this->m_TracksManager->CreateNewTrackWithNoMesh(
-    this->m_DatabaseConnector, this->m_SelectedColorData);
+    this->m_DatabaseConnector, *this->m_SelectedColorData);
   this->AddCheckedTracesToCollection< QGoDBMeshManager, QGoDBTrackManager >
     (this->m_MeshesManager, this->m_TracksManager,
     NewTrackID, iListCheckedMeshes);
@@ -1340,9 +1298,8 @@ void QGoPrintDatabase::CreateNewMeshFromCheckedContours(
   this->OpenDBConnection();
   unsigned int NewMeshID =
     this->m_MeshesManager->CreateNewMeshWithNoContourNoPoints(
-      this->m_DatabaseConnector, this->m_SelectedColorData,
-      this->m_SelectedTimePoint, this->m_SelectedCellType,
-      this->m_SelectedSubCellType);
+      this->m_DatabaseConnector, *this->m_SelectedColorData,
+      this->m_SelectedTimePoint);
 
   this->AddCheckedTracesToCollection< QGoDBContourManager, QGoDBMeshManager >
     (this->m_ContoursManager, this->m_MeshesManager,
@@ -1361,7 +1318,7 @@ void QGoPrintDatabase::AddCheckedContoursToSelectedMesh(std::list< unsigned int 
   this->OpenDBConnection();
   this->AddCheckedTracesToCollection< QGoDBContourManager, QGoDBMeshManager >
     (this->m_ContoursManager, this->m_MeshesManager,
-    ss_atoi< unsigned int >(this->m_SelectedCollectionData.first), iListCheckedContours);
+    ss_atoi< unsigned int >(this->m_SelectedCollectionData->first), iListCheckedContours);
   this->CloseDBConnection();
 }
 
@@ -1373,7 +1330,21 @@ void QGoPrintDatabase::AddCheckedMeshesToSelectedTrack(std::list< unsigned int >
   this->OpenDBConnection();
   this->AddCheckedTracesToCollection< QGoDBMeshManager, QGoDBTrackManager >
     (this->m_MeshesManager, this->m_TracksManager,
-    ss_atoi< unsigned int >(this->m_SelectedCollectionData.first), iListCheckedMeshes);
+    ss_atoi< unsigned int >(this->m_SelectedCollectionData->first), iListCheckedMeshes);
 
   this->CloseDBConnection();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoPrintDatabase::SetPointerCollectionData (ItemColorComboboxData* iCollectionData)
+{
+  this->m_SelectedCollectionData = iCollectionData;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoPrintDatabase::SetPointerSelectedColorData(ItemColorComboboxData* iColorData)
+{
+  this->m_SelectedColorData = iColorData;
 }
