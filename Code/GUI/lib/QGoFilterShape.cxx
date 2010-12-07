@@ -301,9 +301,9 @@ QGoFilterShape::GenerateCube(double *iCenter)
   // create cube geometry
   vtkCubeSource *cube = vtkCubeSource::New();
   cube->SetCenter( iCenter );
-  cube->SetXLength( this->getRadius() );
-  cube->SetYLength( this->getRadius() );
-  cube->SetZLength( this->getRadius() );
+  cube->SetXLength( 2*this->getRadius() );
+  cube->SetYLength( 2*this->getRadius() );
+  cube->SetZLength( 2*this->getRadius() );
   cube->Update();
   cube->GetOutput()->GetPointData()->SetNormals(NULL);
 
