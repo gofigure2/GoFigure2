@@ -4,7 +4,7 @@ make gofigure -j2;
 cd @SIKULI_SCRIPTS_DIR@;
 
 # first let's launch gofigure
-@GOFIGURE2_BINARY_DIR@/bin/gofigure
+@GOFIGURE2_BINARY_DIR@/bin/gofigure &
 
 # set up database
 @SIKULI_EXECUTABLE@ -t ../setUpDatabase.sikuli;
