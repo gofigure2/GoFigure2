@@ -1,0 +1,131 @@
+
+<html>
+   <head>
+      <style type="text/css">
+         .sikuli-code {
+            font-size: 20px;
+            font-family: "Osaka-mono", Monospace;
+            line-height: 1.5em;
+            display:table-cell;
+            white-space: pre-wrap;       /* css-3 */
+            white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+            white-space: -pre-wrap;      /* Opera 4-6 */
+            white-space: -o-pre-wrap;    /* Opera 7 */
+            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+            width: 99%;   /* remove horizontal scroll-bar when viewing in IE7 */
+         }
+         .sikuli-code img {
+            vertical-align: middle;
+            margin: 2px;
+            border: 1px solid #ccc;
+            padding: 2px;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            -moz-box-shadow: 1px 1px 1px gray;
+            -webkit-box-shadow: 1px 1px 2px gray;
+         }
+         .kw {
+            color: blue;
+         }
+         .skw {
+            color: rgb(63, 127, 127);
+         }
+
+         .str {
+            color: rgb(128, 0, 0);
+         }
+
+         .dig {
+            color: rgb(128, 64, 0);
+         }
+
+         .cmt {
+            color: rgb(200, 0, 200);
+         }
+
+         h2 {
+            display: inline;
+            font-weight: normal;
+         }  
+         
+         .info {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+            display: none;
+         }
+
+         a {
+            color: #9D2900;
+         }
+
+         body {
+            font-family: "Trebuchet MS", Arial, Sans-Serif;
+         }
+
+      </style>
+   </head>
+<body>
+<div class="info">
+<h2>ImportAnImagingSession.sikuli</h2> <a href="ImportAnImagingSession.zip">(Download this script)</a>
+</div>
+<pre class="sikuli-code">
+<span class="kw">import</span> os
+address = os.getcwd()
+<span class="cmt">#address = "/home/es1076/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images"
+</span>
+<span class="cmt">#address = address+"/gofigure2_images"
+</span><span class="kw">print</span> address
+setBundlePath(address)
+
+<span class="skw">click</span>(<img src="File.png" />)
+<span class="skw">click</span>(<img src="Use_database.png" />)
+<span class="skw">click</span>(<img src="Next.png" />)
+<span class="cmt">#click("text_box.png")
+</span><span class="cmt">#click on create new project
+</span><span class="skw">wait</span>(<span class="dig">1</span>)
+<span class="skw">click</span>(<img src="Next.png" />)
+<span class="kw">assert</span> exists(<img src="Please_enter_name_of_project.png" />)
+<span class="skw">click</span>(<img src="ok.png" />)
+
+<span class="skw">click</span>(<img src="Add_author.png" />)
+<span class="skw">type</span>(<span class="str">"Second"</span>+Key.TAB+Key.TAB+<span class="str">"Author"</span>)
+<span class="skw">click</span>(<img src="Create_Author.png" />)
+<span class="cmt">#user cannot press enter for Create Author button 
+</span><span class="skw">click</span>(<img src="ok.png" />)
+<span class="cmt">#BUG: the create author popup does not disappear after you create one author. Need to x out
+</span><span class="skw">click</span>(<img src="blue_x.png" />)
+
+
+keyDown(Key.SHIFT)
+<span class="skw">type</span>(Key.TAB+Key.TAB+Key.TAB+Key.TAB)
+keyUp(Key.SHIFT)
+<span class="skw">wait</span>(<span class="dig">1</span>)
+<span class="skw">type</span>(<span class="str">"Project Name"</span>)
+<span class="skw">click</span>(<img src="Next.png" />)
+keyDown(Key.SHIFT)
+<span class="skw">type</span>(Key.TAB+Key.TAB+Key.TAB+Key.TAB+Key.TAB)
+keyUp(Key.SHIFT)
+<span class="skw">wait</span>(<span class="dig">1</span>)
+<span class="skw">type</span>(<span class="str">"ImagingSession1"</span>)
+<span class="skw">type</span>(Key.TAB+Key.TAB)
+
+length = len(address) -<span class="dig">50</span>
+user = address[<span class="dig">0</span>:length]
+
+
+<span class="cmt">#this info should be input to function
+</span><span class="skw">type</span>(user+<img src="/Data/t00-09/image-PL00-CO00-RO00-ZT00-YT00-XT00-TM0009-ch01-zs0070.png" />)
+<span class="skw">click</span>(<img src="Add_microscope.png" />)
+<span class="skw">type</span>(<span class="str">"microscope2"</span>)
+<span class="skw">click</span>(<img src="Create_microscope.png" />)
+<span class="skw">click</span>(<img src="ok.png" />)
+<span class="skw">click</span>(<img src="blue_x.png" />)
+
+
+
+
+<span class="skw">click</span>(<img src="Finish.png" />)
+</pre>
+</body>
+</html>

@@ -173,6 +173,8 @@ public:
 
   void UpdateTracksRepresentation( bool iGlyph, bool iTube ) const;
 
+  void ComputeAttributes();
+
 };
 
 /**
@@ -182,6 +184,7 @@ public:
   \param[out] oMerged merged track (take attributes from the earliest track in time)
   \return true if iT1 and iT2 don't overlap
 */
+/*
 bool TrackMerge( const TrackStructure& iT1,
                  const TrackStructure& iT2,
                  TrackStructure& oMerged );
@@ -189,6 +192,6 @@ bool TrackMerge( const TrackStructure& iT1,
 bool TrackSplit( const TrackStructure& iTrack,
                  const unsigned int& iTime,
                  TrackStructure& oT1,
-                 TrackStructure& oT2 );
+                 TrackStructure& oT2 );*/
 
 #endif
