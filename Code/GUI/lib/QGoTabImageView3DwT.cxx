@@ -2748,7 +2748,7 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord)
                                                 false,  // highlighted
                                                 true);  // visible
   m_MeshContainer->InsertCurrentElement();
-
+/*
   // UPDATE THE TRACKS IN THE CONTAINER
 
   // get the center of the mesh
@@ -2763,7 +2763,7 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord)
     {
     point[i] = (bounds[2*i] + bounds[2*i+1])/2;
     }
-  time = iTCoord;
+  time = iTCoord;*/
 }
 //-------------------------------------------------------------------------
 
