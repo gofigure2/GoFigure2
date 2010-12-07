@@ -40,8 +40,12 @@
 // Shapes to be generated
 #include "vtkPolyData.h"
 #include "vtkPointData.h"
- #include "vtkPlane.h"
- #include "vtkCutter.h"
+#include "vtkPlane.h"
+// To deal with borders is mesh is on a border
+#include "vtkExtractPolyDataGeometry.h"
+// To extract 2D contours
+#include "vtkCutter.h"
+#include "vtkBox.h"
 //Sphere
 #include "vtkSphereSource.h"
 //Cube
@@ -223,15 +227,26 @@ QGoFilterShape::GenerateSphere(double *iCenter)
   vtkSphereSource *sphere = vtkSphereSource::New();
 
   sphere->SetRadius( getRadius() );
-  sphere->SetThetaResolution(18);
-  sphere->SetPhiResolution(18);
+  sphere->SetThetaResolution(30);
+  sphere->SetPhiResolution(30);
   sphere->SetCenter(iCenter);
   sphere->Update();
   sphere->GetOutput()->GetPointData()->SetNormals(NULL);
 
-  vtkPolyData *output = vtkPolyData::New();
-  output->DeepCopy( sphere->GetOutput() );
+  // Deal with borders
+  vtkBox *implicitFunction = vtkBox::New();
+  implicitFunction->SetBounds( this->getInput()->GetBounds() );
 
+  vtkExtractPolyDataGeometry *cutter = vtkExtractPolyDataGeometry::New();
+  cutter->SetInput( sphere->GetOutput() );
+  cutter->SetImplicitFunction( implicitFunction );
+  cutter->Update();
+
+  vtkPolyData *output = vtkPolyData::New();
+  output->DeepCopy( cutter->GetOutput() );
+
+  implicitFunction->Delete();
+  cutter->Delete();
   sphere->Delete();
 
   return output;
@@ -257,9 +272,20 @@ QGoFilterShape::GenerateCube(double *iCenter)
   triangle->SetInput( cube->GetOutput() );
   triangle->Update();
 
-  vtkPolyData *output = vtkPolyData::New();
-  output->DeepCopy( triangle->GetOutput() );
+  // Deal with borders
+  vtkBox *implicitFunction = vtkBox::New();
+  implicitFunction->SetBounds( this->getInput()->GetBounds() );
 
+  vtkExtractPolyDataGeometry *cutter = vtkExtractPolyDataGeometry::New();
+  cutter->SetInput( triangle->GetOutput() );
+  cutter->SetImplicitFunction( implicitFunction );
+  cutter->Update();
+
+  vtkPolyData *output = vtkPolyData::New();
+  output->DeepCopy( cutter->GetOutput() );
+
+  implicitFunction->Delete();
+  cutter->Delete();
   triangle->Delete();
   cube->Delete();
 
