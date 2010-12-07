@@ -42,7 +42,7 @@ QGoDBTraceManager::QGoDBTraceManager( QObject* iParent ):
   QObject( iParent ), m_SelectedCollectionData(NULL),
   m_Table(NULL), m_CollectionOfTraces(NULL),
   m_DatabaseConnector(NULL), IsColorCodingOn(false),
-  m_CurrentTimePoint(NULL)
+  m_CurrentTimePoint(NULL),m_SelectedColor(NULL)
 {}
 
 //-------------------------------------------------------------------------
@@ -642,7 +642,14 @@ void QGoDBTraceManager::SetSelectedCollection (NameWithColorData* iCollectionDat
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBTraceManager::SetCurrentTimePoint(unsigned int* iTimPoint)
+void QGoDBTraceManager::SetSelectedTimePoint(unsigned int* iTimePoint)
 {
   this->m_CurrentTimePoint = iTimePoint;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTraceManager::SetCurrentColor(NameWithColorData* iColorData)
+{
+  this->m_SelectedColorData = iColorData;
 }

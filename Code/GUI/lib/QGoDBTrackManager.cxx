@@ -212,11 +212,12 @@ void QGoDBTrackManager::GetTracesInfoFromDBAndModifyContainerForVisu(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBTrackManager::UpdateCurrentElementTrackContainer(
-  unsigned int iTrackID)
+void QGoDBTrackManager::UpdateCurrentElementTrackContainer()
+  //unsigned int iTrackID)
 {
   this->m_TrackContainerInfoForVisu->UpdateCurrentElementFromExistingOne(
-    iTrackID);
+    //iTrackID);
+    this->m_SelectedCollection->first);
 }
 //-------------------------------------------------------------------------
 

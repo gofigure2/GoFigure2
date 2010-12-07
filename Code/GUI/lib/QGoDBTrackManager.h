@@ -71,9 +71,11 @@ public:
   /**
   \brief create a new track with no mesh and no points in the database, add it in the
   TW and in the visu container
+  \param[in] iDatabaseConnector connection to the database
+  \return the ID of the new track just created
   */
   unsigned int CreateNewTrackWithNoMesh(
-    vtkMySQLDatabase *iDatabaseConnector, NameWithColorData iColor);
+    vtkMySQLDatabase *iDatabaseConnector);//, NameWithColorData iColor);
 
   //virtual pure method in QGoDBTraceManager
   std::list< unsigned int > UpdateTheTracesColor(vtkMySQLDatabase *iDatabaseConnector,
@@ -88,7 +90,11 @@ public:
    //virtual pure method in QGoDBTraceManager
   virtual std::list< unsigned int > GetListHighlightedIDs();
 
-  void UpdateCurrentElementTrackContainer(unsigned int iTrackID);
+  /**
+  \brief get the data from the TrackContainer corresponding to the user selected TrackID
+  and put them in the current element of the track container
+  */
+  void UpdateCurrentElementTrackContainer();//unsigned int iTrackID);
 
 protected:
   GoDBTWContainerForTrackLineage *m_TWContainer;

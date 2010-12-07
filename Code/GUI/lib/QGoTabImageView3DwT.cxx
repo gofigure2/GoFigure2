@@ -565,9 +565,9 @@ QGoTabImageView3DwT::CreateDataBaseTablesConnection()
                      SLOT( SetTheContainersForDB() ) );
 
   QObject::connect( this,
-                    SIGNAL( TimePointChanged(int) ),
+                    SIGNAL( TimePointChanged(unsigned int) ),
                     this->m_DataBaseTables,
-                    SLOT( UpdateSelectedTimePoint(int) ) );
+                    SLOT( UpdateSelectedTimePoint(unsigned int) ) );
 
   QObject::connect( this->m_DataBaseTables,
                     SIGNAL( TraceToReEdit(unsigned int) ),

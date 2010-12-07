@@ -256,6 +256,12 @@ public:
   */
   void SetCurrentTimePoint(unsigned int* iTimePoint);
 
+  /**
+  \brief set the pointer to the current selected color
+  \param[in] iTimePoint pointer to the current timepoint
+  */
+  void SetSelectedColor(NameWithColorData* iColorData);
+
 signals:
   /**
   \brief signal emitted when the user click on the action "change color" from
@@ -296,6 +302,7 @@ protected:
   std::string m_CollectionOfID;
 
   NameWithColorData*      m_SelectedCollectionData;
+  NameWithColorData*      m_SelectedColorData;
   unsigned int*           m_CurrentTimePoint;
 
   int                     m_ImgSessionID;

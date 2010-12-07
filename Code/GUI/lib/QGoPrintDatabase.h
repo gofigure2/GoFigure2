@@ -269,7 +269,7 @@ public slots:
 
   void ExportMeshes();
 
-  void UpdateSelectedTimePoint(int iTimePoint);
+  void UpdateSelectedTimePoint(unsigned int iTimePoint);
 
   void SaveNewMeshForMeshToContours(int iNumberOfContours);
 
@@ -298,22 +298,22 @@ protected:
   ItemColorComboboxData* m_SelectedCollectionData;
 
   //related to 3dwt:
-  int                   m_SelectedTimePoint;
-  QGoDBBookmarkManager *m_BookmarkManager;
+  unsigned int*         m_SelectedTimePoint;
+  QGoDBBookmarkManager* m_BookmarkManager;
 
   //related to TraceManualEditing Widget:
-  QGoDBCellTypeManager *           m_CellTypeManager;
-  QGoDBSubCellTypeManager *        m_SubCellTypeManager;
-  QGoDBColorManager *              m_ColorManager;
-  QGoTraceManualEditingDockWidget *m_TraceManualEditingDockWidget;
-  QGoTraceManualEditingWidget *    m_TraceWidget;
+  QGoDBCellTypeManager*             m_CellTypeManager;
+  QGoDBSubCellTypeManager*          m_SubCellTypeManager;
+  QGoDBColorManager*                m_ColorManager;
+  QGoTraceManualEditingDockWidget*  m_TraceManualEditingDockWidget;
+  QGoTraceManualEditingWidget*      m_TraceWidget;
 
-  QGoDBContourManager *m_ContoursManager;
-  QGoDBMeshManager *   m_MeshesManager;
-  QGoDBTrackManager *  m_TracksManager;
+  QGoDBContourManager*              m_ContoursManager;
+  QGoDBMeshManager*                 m_MeshesManager;
+  QGoDBTrackManager*                m_TracksManager;
 
   //Database variables:
-  vtkMySQLDatabase *m_DatabaseConnector;
+  vtkMySQLDatabase* m_DatabaseConnector;
   std::string       m_Server;
   std::string       m_User;
   std::string       m_Password;
@@ -325,7 +325,7 @@ protected:
   bool m_ReeditMode;
   bool m_MeshGenerationMode;
 
-  QAction *m_VisibilityAction;
+  QAction*  m_VisibilityAction;
 
   void OpenDBConnection();
 

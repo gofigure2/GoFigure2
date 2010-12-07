@@ -86,28 +86,29 @@ public:
                                             unsigned iMeshID);
 
   unsigned int CreateNewMeshWithNoContourNoPoints(
-    vtkMySQLDatabase *iDatabaseConnector, NameWithColorData iColor,
-    unsigned int iTimePoint, //std::string iCellType, std::string iSubCellType,
-    unsigned int iTrackID = 0);
+    vtkMySQLDatabase *iDatabaseConnector);//, NameWithColorData iColor,
+    //unsigned int iTimePoint); //,std::string iCellType, std::string iSubCellType,
+    //unsigned int iTrackID = 0);
 
   unsigned int SaveNewMeshFromVisu(unsigned int iXCoordMin,
                                    unsigned int iYCoordMin,
                                    unsigned int iZCoordMin,
-                                   unsigned int iTCoord,
+                                   //unsigned int iTCoord,
                                    unsigned int iXCoordMax,
                                    unsigned int iYCoordMax,
                                    unsigned int iZCoordMax,
                                    vtkPolyData *iTraceNodes,
                                    vtkMySQLDatabase *iDatabaseConnector,
-                                   NameWithColorData iColor,
-                                   unsigned int iTrackID,
+                                   //NameWithColorData iColor,
+                                   //unsigned int iTrackID,
                                    GoFigureMeshAttributes *iMeshAttributes);
                                    //std::string iCellType,
                                   // std::string iSubCellType);
 
   void SaveGeneratedMeshFromVisu(unsigned int iXCoordMin, unsigned int iYCoordMin,
                                  unsigned int iZCoordMin,
-                                 unsigned int iTCoord, unsigned int iXCoordMax, unsigned int iYCoordMax,
+                                 //unsigned int iTCoord, 
+                                 unsigned int iXCoordMax, unsigned int iYCoordMax,
                                  unsigned int iZCoordMax, vtkPolyData *iTraceNodes,
                                  vtkMySQLDatabase *iDatabaseConnector, GoFigureMeshAttributes *iMeshAttributes);
 
