@@ -343,7 +343,7 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
   OpenDBConnection();
   if ( !this->m_MeshGenerationMode )
     {
-    unsigned int TrackID = ss_atoi<unsigned int>(this->m_SelectedCollectionData.first);
+    unsigned int TrackID = ss_atoi<unsigned int>(this->m_SelectedCollectionData->first);
      //check that there isn't an existing mesh with the same timepoint in the track,if so, set its trackID to 0:
     /** \todo print a different message if several meshes are created at the same timepoint*/
     QString MessageToPrint = this->m_MeshesManager->CheckExistingMeshesForTheTrack(TrackID,this->m_SelectedTimePoint,
@@ -400,7 +400,7 @@ void QGoPrintDatabase::SaveNewMeshForMeshToContours(int iNumberOfContours)
 {
   this->OpenDBConnection();
 
-  unsigned int TrackID = ss_atoi< unsigned int >(this->m_SelectedCollectionData.first);
+  unsigned int TrackID = ss_atoi< unsigned int >(this->m_SelectedCollectionData->first);
   QString MessageToPrint =  this->m_MeshesManager->CheckExistingMeshesForTheTrack(TrackID,this->m_SelectedTimePoint,
       this->m_DatabaseConnector);
   if (MessageToPrint != "")
@@ -421,8 +421,9 @@ void QGoPrintDatabase::SaveNewMeshForMeshToContours(int iNumberOfContours)
     ListNewMeshes.push_back(MeshID);
     //here update the CurrentElement for trackContainer with the data from the database corresponding to the selected trackID:
     //update the bounding box and the visu for the tracks:
-    this->m_TracksManager->UpdateBoundingBoxes( this->m_DatabaseConnector,
-                                                this->m_MeshesManager->GetListCollectionIDs(this->m_DatabaseConnector,
+    this->m_TracksManager->UpdateBoundingBoxes(
+          this->m_DatabaseConnector,
+          this->m_MeshesManager->GetListCollectionIDs(this->m_DatabaseConnector, ListNewMeshes ) );
   this->CloseDBConnection();
 }
 
@@ -975,7 +976,6 @@ void QGoPrintDatabase::AddNewCellType()
     this->m_DatabaseConnector);
   if ( !NewCellType.empty() )
     {
-    *this->m_SelectedCellType = NewCellType;
     this->SetTMListCellTypes(NewCellType);
     }
   else //if the NewCellType is empty, go to the last selected one:
@@ -995,7 +995,6 @@ void QGoPrintDatabase::AddNewSubCellType()
     this->m_SubCellTypeManager->AddAnEntity(this->m_DatabaseConnector);
   if ( !NewSubCellType.empty() )
     {
-    *this->m_SelectedSubCellType = NewSubCellType;
     this->SetTMListSubCellTypes(NewSubCellType);
     }
   else //if the NewSubCellType is empty, go to the last selected one:
@@ -1444,7 +1443,7 @@ void QGoPrintDatabase::AddCheckedContoursToSelectedMesh(std::list< unsigned int 
 void QGoPrintDatabase::AddCheckedMeshesToSelectedTrack(std::list< unsigned int > iListCheckedMeshes)
 {
   this->OpenDBConnection();
-  unsigned int SelectedTrackID = ss_atoi< unsigned int >(this->m_SelectedCollectionData.first);
+  unsigned int SelectedTrackID = ss_atoi< unsigned int >(this->m_SelectedCollectionData->first);
   std::list<unsigned int> ListMeshToBelongToTheTrack;
   std::list<unsigned int> ListMeshToReassign;
   //at that moment, do nothing for the checked meshes not selected to be part of the track

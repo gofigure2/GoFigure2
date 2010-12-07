@@ -220,7 +220,7 @@ public slots:
 
 protected:
   GoDBTWContainerForMesh *m_TWContainer;
-  ContourMeshContainer   *m_MeshContainerInfoForVisu;
+  MeshContainer          *m_MeshContainerInfoForVisu;
   std::string*            m_SelectedCellType;
   std::string*            m_SelectedSubCellType;
 
