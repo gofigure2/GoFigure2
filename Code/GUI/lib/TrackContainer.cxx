@@ -749,6 +749,7 @@ AddTrace( vtkPolyData* iNode, vtkProperty* iProperty )
 void
 TrackContainer::MergeTrack( const unsigned int& iId1, const unsigned int& iId2 )
 {
+/*
   MultiIndexContainerTraceIDIterator it1 =
       m_Container.get< TraceID >().find( iId1 );
 
@@ -801,6 +802,6 @@ TrackContainer::MergeTrack( const unsigned int& iId1, const unsigned int& iId2 )
       {
       std::cout << "Wrong TrackId " << iId1 <<std::endl;
       }
-    }
+    }*/
 }
 //-------------------------------------------------------------------------
