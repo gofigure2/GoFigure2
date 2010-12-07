@@ -16,9 +16,11 @@ SET( ctk_SRCS
   ctkRangeSlider.cpp
   ctkDoubleSlider.cpp
   ctkDoubleRangeSlider.cpp
+  ctkCollapsibleGroupBox.cpp
   ctkRangeSlider.h
   ctkDoubleSlider.h
   ctkDoubleRangeSlider.h
+  ctkCollapsibleGroupBox.h
   )
 
 #Headers that should run through moc
@@ -26,6 +28,7 @@ SET(ctk_MOC_SRCS
   ctkRangeSlider.h
   ctkDoubleSlider.h
   ctkDoubleRangeSlider.h
+  ctkCollapsibleGroupBox.h
   )
 
  # Wrap

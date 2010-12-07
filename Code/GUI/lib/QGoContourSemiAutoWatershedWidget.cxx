@@ -37,7 +37,17 @@
 //---------------------------------------------------------------------------//
 QGoContourSemiAutoWatershedWidget::QGoContourSemiAutoWatershedWidget(QWidget *iParent):QWidget(iParent)
 {
-  this->setupUi(this);
+  //this->setWindowTitle(QApplication::translate("WatershedWidget", "Form", 0, QApplication::UnicodeUTF8));
+  //QVBoxLayout *vbox = new QVBoxLayout;
+  gridLayout2 = new QVBoxLayout(this);
+  gridLayout2->setObjectName(QString::fromUtf8("gridLayout2"));
+
+  groupBox = new ctkCollapsibleGroupBox(QObject::tr("Advanced Parameters"), this);
+  gridLayout2->addWidget(groupBox);
+
+  this->setupUi(groupBox);
+
+  groupBox->setCollapsed(true);
 
   // Connect signals
   QObject::connect( this->tresholdMinSpinBox, SIGNAL( valueChanged(int) ),
