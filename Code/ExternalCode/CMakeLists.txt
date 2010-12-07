@@ -3,4 +3,5 @@ SUBDIRS(
   MegaVTK
   vtkLSM
   PoissonReconstruction
+  ctk
 )

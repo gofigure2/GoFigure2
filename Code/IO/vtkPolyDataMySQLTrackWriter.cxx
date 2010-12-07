@@ -41,7 +41,7 @@
 #include "vtkIdList.h"
 
 #include "vtkIntArray.h"
-#include "vtkFieldData.h"
+#include "vtkPointData.h"
 
 #include "vtkSmartPointer.h"
 
@@ -76,7 +76,7 @@ GetMySQLText(vtkPolyData *iPolyData)
   vtkSmartPointer<vtkPoints> points = iPolyData->GetPoints();
   // Might create problems because of the safedowncast
   vtkSmartPointer<vtkIntArray> temporalArray =
-      vtkIntArray::SafeDownCast(iPolyData->GetFieldData()->GetArray("TemporalInformation"));
+      vtkIntArray::SafeDownCast(iPolyData->GetPointData()->GetArray("TemporalInformation"));
 
   for ( vtkIdType i = 0; i < N; i++ )
     {

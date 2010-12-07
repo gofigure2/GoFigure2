@@ -904,6 +904,11 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
     return NULL;
     }
 
+  if( !dataset )
+    {
+    return NULL;
+    }
+
   vtkSmartPointer< vtkPolyDataMapper > mapper =
     vtkSmartPointer< vtkPolyDataMapper >::New();
   mapper->SetScalarVisibility(iDataVisibility);
@@ -981,6 +986,11 @@ vtkViewImage2D::AddDataSet(vtkDataSet *dataset,
     cam = this->Renderer->GetActiveCamera();
     }
   else
+    {
+    return NULL;
+    }
+
+  if( !dataset )
     {
     return NULL;
     }

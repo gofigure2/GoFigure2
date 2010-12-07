@@ -66,7 +66,9 @@ void QGoDBTraceManager::SetInfo(unsigned int iImgSessionID, QWidget *iParent)
   this->m_CollectionOfID = this->GetTheNameIDFromName(this->m_CollectionOf);
 
   this->m_CollectionOfTraces = new GoDBCollectionOfTraces(this->m_CollectionName,
-                                                          this->m_TraceName, this->m_CollectionOf, iImgSessionID);
+                                                          this->m_TraceName,
+                                                          this->m_CollectionOf,
+                                                          iImgSessionID);
 
   this->m_Table = new QGoTableWidget(iParent);
   QObject::connect( this->m_Table, SIGNAL( CheckedRowsChanged(int) ),
@@ -404,12 +406,14 @@ std::list< unsigned int > QGoDBTraceManager::GetListTracesIDsFromThisCollectionO
 void QGoDBTraceManager::DisplayInfoForExistingTraces(vtkMySQLDatabase *
                                                      iDatabaseConnector, std::list< unsigned int > iListTraces)
 {
+  this->m_Table->setSortingEnabled(false);
   std::list< unsigned int >::iterator iter = iListTraces.begin();
   while ( iter != iListTraces.end() )
     {
     this->DisplayInfoForExistingTrace(iDatabaseConnector, *iter);
     iter++;
     }
+  this->m_Table->setSortingEnabled(true);
 }
 
 //-------------------------------------------------------------------------

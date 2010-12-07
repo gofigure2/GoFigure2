@@ -43,6 +43,7 @@
 #include <QMenu>
 #include <QCloseEvent>
 #include <QPixmap>
+#include <QStatusBar>
 
 #include <iostream>
 
@@ -187,7 +188,7 @@ void QGoPrintDatabase::SetDatabaseVariables(
 //--------------------------------------------------------------------------
 void QGoPrintDatabase::OpenDBConnection()
 {
-  if ( m_DatabaseConnector == 0 )
+  if ( m_DatabaseConnector == NULL )
     {
     this->m_DatabaseConnector = OpenDatabaseConnection(m_Server, m_User,
                                                        m_Password, m_DBName);
@@ -201,7 +202,7 @@ void QGoPrintDatabase::CloseDBConnection()
 {
   if ( CloseDatabaseConnection(m_DatabaseConnector) )
     {
-    this->m_DatabaseConnector = 0;
+    this->m_DatabaseConnector = NULL;
     }
 }
 
@@ -342,6 +343,16 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
   OpenDBConnection();
   if ( !this->m_MeshGenerationMode )
     {
+    unsigned int TrackID = ss_atoi<unsigned int>(this->m_SelectedCollectionData.first);
+     //check that there isn't an existing mesh with the same timepoint in the track,if so, set its trackID to 0:
+    /** \todo print a different message if several meshes are created at the same timepoint*/
+    QString MessageToPrint = this->m_MeshesManager->CheckExistingMeshesForTheTrack(TrackID,this->m_SelectedTimePoint,
+      this->m_DatabaseConnector);
+    if (MessageToPrint != "")
+      {
+      emit PrintMessage(MessageToPrint);
+      }
+
     unsigned int NewMeshID = this->m_MeshesManager->SaveNewMeshFromVisu(iXCoordMin,
                                                                         iYCoordMin,
                                                                         iZCoordMin,
@@ -357,11 +368,12 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
                                                                         iMeshAttributes);
     std::list< unsigned int > ListNewMeshes;
     ListNewMeshes.push_back(NewMeshID);
+    //here update the CurrentElement for trackContainer with the data from the database corresponding to the selected trackID:
+   // this->m_TracksManager->UpdateCurrentElementTrackContainer(TrackID);
+    //update the bounding box and the visu for the tracks:
     this->m_TracksManager->UpdateBoundingBoxes( this->m_DatabaseConnector,
                                                 this->m_MeshesManager->GetListCollectionIDs(this->m_DatabaseConnector,
                                                                                             ListNewMeshes) );
-    //here update the CurrentElement for trackContainer with the data from the database corresponding to the selected trackID:
-    this->m_TracksManager->UpdateCurrentElementTrackContainer(atoi(this->m_SelectedCollectionData->first.c_str()));
     }
   else //for mesh generated from contours:
     {
@@ -387,13 +399,30 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
 void QGoPrintDatabase::SaveNewMeshForMeshToContours(int iNumberOfContours)
 {
   this->OpenDBConnection();
+
+  unsigned int TrackID = ss_atoi< unsigned int >(this->m_SelectedCollectionData.first);
+  QString MessageToPrint =  this->m_MeshesManager->CheckExistingMeshesForTheTrack(TrackID,this->m_SelectedTimePoint,
+      this->m_DatabaseConnector);
+  if (MessageToPrint != "")
+    {
+    emit PrintMessage(MessageToPrint);
+    }
+
   unsigned int MeshID = this->m_MeshesManager->CreateNewMeshWithNoContourNoPoints(
     this->m_DatabaseConnector, *this->m_SelectedColorData, this->m_SelectedTimePoint,
     ss_atoi< unsigned int >(this->m_SelectedCollectionData->first) );
+
   std::list< unsigned int > ListLastCreatedContours =
     this->m_ContoursManager->GetLastCreatedTracesIDs(this->m_DatabaseConnector, iNumberOfContours);
   this->AddCheckedTracesToCollection< QGoDBContourManager, QGoDBMeshManager >(
     this->m_ContoursManager, this->m_MeshesManager, MeshID, ListLastCreatedContours);
+
+  std::list< unsigned int > ListNewMeshes;
+    ListNewMeshes.push_back(MeshID);
+    //here update the CurrentElement for trackContainer with the data from the database corresponding to the selected trackID:
+    //update the bounding box and the visu for the tracks:
+    this->m_TracksManager->UpdateBoundingBoxes( this->m_DatabaseConnector,
+                                                this->m_MeshesManager->GetListCollectionIDs(this->m_DatabaseConnector,
   this->CloseDBConnection();
 }
 
@@ -476,6 +505,7 @@ QGoPrintDatabase::GetListCollectionIDFromDB(vtkMySQLDatabase *iDatabaseConnector
 void QGoPrintDatabase::SaveNewCollectionFromTraceWidgetInDBAndTW()
 {
   this->OpenDBConnection();
+
   std::string  TraceName = this->m_TraceWidget->GetTraceName();
   unsigned int NewCollectionID = 0;
   if ( TraceName != "contour" && TraceName != "mesh" )
@@ -500,6 +530,8 @@ void QGoPrintDatabase::SaveNewCollectionFromTraceWidgetInDBAndTW()
     NewCollectionData.second = this->m_SelectedColorData->second;
     this->m_TraceWidget->AddANewCollectionID(NewCollectionData);
     }
+
+  this->CloseDBConnection();
 }
 
 //-------------------------------------------------------------------------
@@ -676,7 +708,7 @@ void QGoPrintDatabase::ExportMeshes()
 void QGoPrintDatabase::ImportContours()
 {
   QString p = QFileDialog::getOpenFileName( this,
-                                            tr("Open Contour Export File"), "",
+                                            tr("Open Contours Export File"), "",
                                             tr("TextFile (*.txt)") );
 
   //refactoring
@@ -714,7 +746,7 @@ void QGoPrintDatabase::ImportContours()
 void QGoPrintDatabase::ImportMeshes()
 {
   QString p = QFileDialog::getOpenFileName( this,
-                                            tr("Open Contour Export File"), "",
+                                            tr("Open Meshes Export File"), "",
                                             tr("TextFile (*.txt)") );
 
   //refactoring
@@ -741,7 +773,40 @@ void QGoPrintDatabase::ImportMeshes()
     this->InitializeTheComboboxesNotTraceRelated();
     }
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+std::vector<int> QGoPrintDatabase::ImportTracks()
+ {
+  QString p = QFileDialog::getOpenFileName( this,
+                                            tr("Open Tracks Export File"), "",
+                                            tr("TextFile (*.txt)") );
+
+  std::vector<int> NewTrackIDs = std::vector<int>();
+
+  if ( !p.isNull() )
+    {
+    QFileInfo   pathInfo(p);
+    std::string filename = p.toStdString();
+    //import into the database:
+    GoDBImport ImportHelper(this->m_Server, this->m_User,
+                            this->m_Password, this->m_ImgSessionID, filename,
+                            this->m_SelectedTimePoint);
+    ImportHelper.ImportTracks();
+
+    std::vector< int > NewMeshIDs = ImportHelper.GetVectorNewMeshIDs();
+    NewTrackIDs = ImportHelper.GetVectorNewTracksIDs();
+
+    this->OpenDBConnection();
+    this->m_MeshesManager->UpdateTWAndContainerForImportedTraces(NewMeshIDs,
+                                                                 this->m_DatabaseConnector);
+    this->m_TracksManager->UpdateTWAndContainerForImportedTraces(NewTrackIDs,
+                                                                 this->m_DatabaseConnector);
+    this->CloseDBConnection();
+    this->InitializeTheComboboxesNotTraceRelated();
+    }
+  return NewTrackIDs;
+ }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -910,6 +975,7 @@ void QGoPrintDatabase::AddNewCellType()
     this->m_DatabaseConnector);
   if ( !NewCellType.empty() )
     {
+    *this->m_SelectedCellType = NewCellType;
     this->SetTMListCellTypes(NewCellType);
     }
   else //if the NewCellType is empty, go to the last selected one:
@@ -929,6 +995,7 @@ void QGoPrintDatabase::AddNewSubCellType()
     this->m_SubCellTypeManager->AddAnEntity(this->m_DatabaseConnector);
   if ( !NewSubCellType.empty() )
     {
+    *this->m_SelectedSubCellType = NewSubCellType;
     this->SetTMListSubCellTypes(NewSubCellType);
     }
   else //if the NewSubCellType is empty, go to the last selected one:
@@ -948,6 +1015,7 @@ void QGoPrintDatabase::AddNewColor()
     this->m_DatabaseConnector);
   if ( !NewColor.first.empty() )
     {
+    *this->m_SelectedColorData = NewColor;
     this->SetTMListColors(NewColor.first);
     }
   else //if the NewColor name is empty, go to the last selected one:
@@ -1100,7 +1168,7 @@ void QGoPrintDatabase::PrintVolumeAreaForMesh(GoFigureMeshAttributes *
 
 //--------------------------------------------------------------------------
 void
-QGoPrintDatabase::SetContoursContainer(ContourMeshContainer *iContainer)
+QGoPrintDatabase::SetContoursContainer(ContourContainer *iContainer)
 {
   this->m_ContoursManager->SetContoursInfoContainerForVisu(iContainer);
 }
@@ -1109,7 +1177,7 @@ QGoPrintDatabase::SetContoursContainer(ContourMeshContainer *iContainer)
 
 //--------------------------------------------------------------------------
 void
-QGoPrintDatabase::SetMeshesContainer(ContourMeshContainer *iContainer)
+QGoPrintDatabase::SetMeshesContainer(MeshContainer *iContainer)
 {
   this->m_MeshesManager->SetMeshesInfoContainerForVisu(iContainer);
 }
@@ -1121,6 +1189,10 @@ void
 QGoPrintDatabase::SetTracksContainer(TrackContainer *iContainer)
 {
   this->m_TracksManager->SetTracksInfoContainerForVisu(iContainer);
+  QObject::connect(	this->m_TracksManager,
+          SIGNAL (NeedMeshesInfoForImportedTrack(unsigned int) ),
+          this,
+          SLOT (PassMeshesInfoForImportedTrack(unsigned int) ) );
 }
 
 //--------------------------------------------------------------------------
@@ -1213,11 +1285,16 @@ void QGoPrintDatabase::SetMeshesManager()
 void QGoPrintDatabase::SetTracksManager()
 {
   this->m_TracksManager = new QGoDBTrackManager(m_ImgSessionID, this);
+
   QObject::connect( this->m_TracksManager,
                     SIGNAL( TraceColorToChange() ),
                     this, SLOT( ChangeTrackColor() ) );
+
   QObject::connect( this->m_TracksManager, SIGNAL( TracesToDelete() ),
                     this, SLOT( DeleteTracks() ) );
+
+  QObject::connect( this->m_TracksManager, SIGNAL( NeedToGetDatabaseConnection() ),
+                    this, SLOT( PassDBConnectionToTracksManager() ) );
 
   QObject::connect( this->m_TracksManager,
                     SIGNAL(DBConnectionNotNeededAnymore() ),
@@ -1277,15 +1354,54 @@ void QGoPrintDatabase::ReEditTrace(unsigned int iTraceID)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+void QGoPrintDatabase::PassMeshesInfoForImportedTrack(unsigned int iTrackID)
+{
+	std::list<unsigned int> TrackIDs;
+	TrackIDs.push_back(iTrackID);
+	this->OpenDBConnection();
+	//get the meshesID that have iTrackID as a collectionID:
+	std::list<unsigned int> ListMeshesIDs =
+		this->m_TracksManager->GetListTracesIDsFromThisCollectionOf(
+		this->m_DatabaseConnector,TrackIDs);
+	this->CloseDBConnection();
+
+	if (!ListMeshesIDs.empty())
+		{
+		//get the coordinate info from the meshes:
+		std::map<unsigned int,double*> MeshesInfo = this->m_MeshesManager->
+		GetMeshesInfoForImportedMesh(ListMeshesIDs);
+		if (!MeshesInfo.empty())
+			{
+			//pass the coordinate info from the meshes in order to calculate the
+			//points/string of the track:
+			this->m_TracksManager->UpdatePointsOfCurrentElementForImportedTrack(
+				MeshesInfo);
+			}
+		}
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 void QGoPrintDatabase::CreateNewTrackFromCheckedMeshes(
   std::list< unsigned int > iListCheckedMeshes)
 {
   this->OpenDBConnection();
   unsigned int NewTrackID = this->m_TracksManager->CreateNewTrackWithNoMesh(
     this->m_DatabaseConnector, *this->m_SelectedColorData);
+  std::list<unsigned int> ListMeshToBelongToTheTrack;
+  std::list<unsigned int> ListMeshToReassign;
+  std::string MessageToPrint = this->m_MeshesManager->CheckListMeshesFromDifferentTimePoints(
+      this->m_DatabaseConnector,iListCheckedMeshes,ListMeshToBelongToTheTrack,ListMeshToReassign);
+  //at that moment, do nothing for the checked meshes not selected to be part of the track
+  if (MessageToPrint != "")
+    {
+    emit PrintMessage(MessageToPrint.c_str());
+    }
   this->AddCheckedTracesToCollection< QGoDBMeshManager, QGoDBTrackManager >
-    (this->m_MeshesManager, this->m_TracksManager,
-    NewTrackID, iListCheckedMeshes);
+    (this->m_MeshesManager, this->m_TracksManager,NewTrackID, ListMeshToBelongToTheTrack);
+  //this->AddCheckedTracesToCollection< QGoDBMeshManager, QGoDBTrackManager >
+  //  (this->m_MeshesManager, this->m_TracksManager,
+  //  NewTrackID, iListCheckedMeshes);
   this->CloseDBConnection();
 }
 
@@ -1328,10 +1444,24 @@ void QGoPrintDatabase::AddCheckedContoursToSelectedMesh(std::list< unsigned int 
 void QGoPrintDatabase::AddCheckedMeshesToSelectedTrack(std::list< unsigned int > iListCheckedMeshes)
 {
   this->OpenDBConnection();
+  unsigned int SelectedTrackID = ss_atoi< unsigned int >(this->m_SelectedCollectionData.first);
+  std::list<unsigned int> ListMeshToBelongToTheTrack;
+  std::list<unsigned int> ListMeshToReassign;
+  //at that moment, do nothing for the checked meshes not selected to be part of the track
+  std::string MessageToPrint = this->m_MeshesManager->CheckListMeshesFromDifferentTimePoints(
+      this->m_DatabaseConnector,iListCheckedMeshes,ListMeshToBelongToTheTrack,ListMeshToReassign);
+
+  //check for the existing ones:
+  MessageToPrint += this->m_MeshesManager->CheckExistingMeshesForTheTrack(SelectedTrackID,
+    this->m_DatabaseConnector, iListCheckedMeshes).toStdString();
+
+  if (MessageToPrint != "")
+    {
+    emit PrintMessage(MessageToPrint.c_str());
+    }
   this->AddCheckedTracesToCollection< QGoDBMeshManager, QGoDBTrackManager >
     (this->m_MeshesManager, this->m_TracksManager,
     ss_atoi< unsigned int >(this->m_SelectedCollectionData->first), iListCheckedMeshes);
-
   this->CloseDBConnection();
 }
 //--------------------------------------------------------------------------

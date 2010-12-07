@@ -86,14 +86,22 @@ void GoDBTWContainerForContourMesh::FillRowContainerWithDBValues(
 void GoDBTWContainerForContourMesh::FillColumnShowHide(vtkMySQLDatabase* iDatabaseConnector)
 {
   //get the current timepoint which is also the min timepoint for the imagingsession:
-  std::vector<std::string> SelectedFields;
-  SelectedFields.push_back("TCoord");
-  std::string JoinCondition = "imagingsession.CoordIDMin = coordinate.CoordID";
-  std::vector<std::string> VectorMinTimePoint = GetAllSelectedValuesFromTwoTables(
-    iDatabaseConnector, "imagingsession", "coordinate",SelectedFields, JoinCondition,
-    "imagingsessionID", ConvertToString<int>(this->m_ImgSessionID));
+  //std::vector<std::string> SelectedFields;
+  //SelectedFields.push_back("TCoord");
+  //std::string JoinCondition = "imagingsession.CoordIDMin = coordinate.CoordID";
+  //std::vector<std::string> Conditions(2);
+  //Conditions[0]="imagingsessionID";
+  //Conditions[1] = ConvertToString<int>(this->m_ImgSessionID);
+  //std::list<unsigned int> VectorMinTimePoint = GetAllSelectedValuesFromTwoTables(
+  //  iDatabaseConnector, "imagingsession", "coordinate",SelectedFields, JoinCondition,Conditions);
+  FieldWithValue JoinCondition = {"CoordIDMin", "CoordID", "="};
+  std::vector<FieldWithValue> Condition (1);
+  FieldWithValue ImgSession = {"ImagingsessionID", ConvertToString<int>(this->m_ImgSessionID), "="};
+  Condition[0] = ImgSession;
+  std::list<unsigned int> VectorMinTimePoint = GetAllSelectedValuesFromTwoTables(
+    iDatabaseConnector,"imagingsession","coordinate","TCoord",JoinCondition,Condition);
 
-  std::string MinTimePoint = VectorMinTimePoint.at(0);
+  std::string MinTimePoint = ConvertToString<unsigned int> (VectorMinTimePoint.front());
   std::vector<std::vector<std::string> > Values;
   std::vector<std::string> ShowHideValue;
 

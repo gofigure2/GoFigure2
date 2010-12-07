@@ -1249,8 +1249,6 @@ QGoImageView3D::InitializePlaneWidget()
   imageData->GetExtent(extent);
   imageData->GetSpacing(spacing);
 
-  //imageData->Print(cout);
-
   m_PlaneWidget->SetInteractor( m_View3D->GetInteractor() );
   m_PlaneWidget->SetInput(imageData);
   m_PlaneWidget->SetPlaceFactor(1);

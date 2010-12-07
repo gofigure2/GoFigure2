@@ -226,7 +226,16 @@ std::string SelectQueryStreamListConditions(std::string iTable,
 \overload
 */
 std::string SelectQueryStreamListConditions(std::string iTable,
-                                            std::string iColumn, 
+                                            std::string iColumn,
+                                            std::vector<FieldWithValue> iConditions,
+                                            std::string iConditionConnector = "OR",
+                                            bool Distinct = false);
+
+/**
+\overload
+*/
+std::string SelectQueryStreamListConditions(std::string iTable,
+                                            std::vector<std::string> iListAttributes,
                                             std::vector<FieldWithValue> iConditions,
                                             std::string iConditionConnector = "OR",
                                             bool Distinct = false);
@@ -237,6 +246,17 @@ std::list< unsigned int > VectorStringToUnsgInt(std::vector< std::string > iVect
 
 std::vector< std::string > VectorUnsgIntToVectorString(std::vector<unsigned int> iVector);
 
+/**
+\brief iTableOne LEFT JOIN iTableTwo ON iTableOne.iOnCondition/Field = iTableTwo.iOnCondition/Value
+\param[in] iTableOne table to be joined
+\param[in] iTableTwo table to be joined to
+\param[in] iOnCondition join on which condition
+\return the string corresponding to the query part
+*/
+std::string GetLeftJoinTwoTables(std::string iTableOne,std::string iTableTwo,
+  FieldWithValue iOnCondition);
+
+std::string GetGroupBy(std::string iColumn, unsigned int iNumberDoublons);
 //iselectquery union iselectquery where ijoinon IS NULL (with or without
 // brackets in the
 //where clause, it will work

@@ -184,9 +184,9 @@ public:
                                  bool EmitSignal = true);
 
   /**
-  \brief 
-  \return a map with all the traceIDs and the values of the column for which a 
-  cell of a column is selected
+  \brief
+  \return a map with all the traceIDs and the values of the column
+  for which a cell of a column is selected
   \param[in] iTraceIDName name of the column for TraceID
   \param[in,out] ioColumnName name of the column of the values
   */
