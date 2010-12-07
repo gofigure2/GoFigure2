@@ -80,6 +80,16 @@ GoDBMeshRow::GoDBMeshRow(unsigned int ImagingSessionID):
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+GoDBMeshRow::GoDBMeshRow(unsigned int iExistingID,
+  vtkMySQLDatabase *iDatabaseConnector):
+  GoDBTraceRow()
+{
+  this->InitializeMap();
+  this->SetValuesForSpecificID(iExistingID,iDatabaseConnector);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 GoDBMeshRow::GoDBMeshRow(const GoDBMeshRow & iRow):GoDBTraceRow()
 {
   this->m_TableName = iRow.m_TableName;
@@ -131,6 +141,7 @@ GoDBMeshRow::SafeDownCast(GoDBTraceRow & iRow)
 //-------------------------------------------------------------------------
 void GoDBMeshRow::InitializeMap()
 {
+  GoDBTraceRow::InitializeMap();
   this->m_TableName = "mesh";
   this->m_TableIDName = "meshID";
   this->m_CollectionName = "track";
@@ -161,21 +172,43 @@ int GoDBMeshRow::SaveInDB(vtkMySQLDatabase *DatabaseConnector)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void GoDBMeshRow::SetCellType(vtkMySQLDatabase *DatabaseConnector,
-                              std::string CellTypeName)
+int GoDBMeshRow::GetCellTypeID(vtkMySQLDatabase *iDatabaseConnector,
+                              std::string iCellTypeName)
 {
-  this->SetField< int >( "CellTypeID", FindOneID(DatabaseConnector,
-                                                 "celltype", "CellTypeID", "Name", CellTypeName) );
+  return FindOneID(iDatabaseConnector,"celltype", "CellTypeID", 
+    "Name", iCellTypeName);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void GoDBMeshRow::SetCellType(vtkMySQLDatabase *iDatabaseConnector,
+                              std::string iCellTypeName)
+{
+ // this->SetField< int >( "CellTypeID", FindOneID(DatabaseConnector,
+                                               //  "celltype", "CellTypeID", "Name", CellTypeName) );
+  this->SetField< int >( "CellTypeID",
+    GoDBMeshRow::GetCellTypeID(iDatabaseConnector,iCellTypeName) );
 }
 
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void GoDBMeshRow::SetSubCellType(vtkMySQLDatabase *DatabaseConnector,
-                                 std::string SubCellTypeName)
+int GoDBMeshRow::GetSubCellTypeID(vtkMySQLDatabase *iDatabaseConnector,
+                                 std::string iSubCellTypeName)
 {
-  this->SetField< int >( "SubCellularID", FindOneID(DatabaseConnector,
-                                                    "subcellulartype", "SubCellularID", "Name", SubCellTypeName) );
+ return  FindOneID(iDatabaseConnector,"subcellulartype", "SubCellularID", 
+    "Name", iSubCellTypeName);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void GoDBMeshRow::SetSubCellType(vtkMySQLDatabase *iDatabaseConnector,
+                                 std::string iSubCellTypeName)
+{
+ // this->SetField< int >( "SubCellularID", FindOneID(DatabaseConnector,
+                                           //         "subcellulartype", "SubCellularID", "Name", SubCellTypeName) );
+   this->SetField< int >( "SubCellularID",
+     GoDBMeshRow::GetSubCellTypeID(iDatabaseConnector,iSubCellTypeName) );
 }
 //-------------------------------------------------------------------------
 

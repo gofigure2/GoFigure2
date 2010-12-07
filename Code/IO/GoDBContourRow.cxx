@@ -73,7 +73,15 @@ GoDBContourRow::GoDBContourRow(unsigned int ImagingSessionID):
   this->InitializeMap();
   this->SetImgSessionID(ImagingSessionID);
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+ GoDBContourRow::GoDBContourRow(unsigned int iExistingID,
+   vtkMySQLDatabase *iDatabaseConnector):GoDBTraceRow()
+ {
+  this->InitializeMap();
+  this->SetValuesForSpecificID(iExistingID,iDatabaseConnector);
+ }
 /*GoDBContourRow::GoDBContourRow(vtkMySQLDatabase* DatabaseConnector,
   GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID,
   vtkPolyData* TraceVisu):
@@ -91,6 +99,7 @@ GoDBContourRow::GoDBContourRow(unsigned int ImagingSessionID):
 //-------------------------------------------------------------------------
 void GoDBContourRow::InitializeMap()
 {
+  GoDBTraceRow::InitializeMap();
   this->m_TableName = "contour";
   this->m_TableIDName = "contourID";
   this->m_CollectionName = "mesh";

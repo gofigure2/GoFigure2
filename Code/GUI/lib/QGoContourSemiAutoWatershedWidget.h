@@ -52,6 +52,32 @@ class QGoContourSemiAutoWatershedWidget:
 public:
   explicit QGoContourSemiAutoWatershedWidget(QWidget *iParent = 0);
   ~QGoContourSemiAutoWatershedWidget();
+
+  signals:
+    /*
+     * \brief Signal sent when the treshmin is modified
+     */
+    void TreshMin(int);
+
+    /*
+     * \brief Signal sent when the treshmax is modified
+     */
+    void TreshMax(int);
+
+    /*
+     * \brief Signal sent when the corTresh is modified
+     */
+    void CorrTresh(double);
+
+    /*
+     * \brief Signal sent when the Alpha is modified
+     */
+    void Alpha(double);
+
+    /*
+     * \brief Signal sent when the Beta is modified
+     */
+    void Beta(double);
 };
 
 #endif

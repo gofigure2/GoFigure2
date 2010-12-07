@@ -202,7 +202,7 @@ void QGoTabManager::SetUpTabElement(QGoTabElementBase *iE)
       {
       ///\todo: Check if there is a connection with database to update
       // import/export in menu
-      std::cout << "Check if there is a connection with database to update import/export in menu" << std::endl;
+      //std::cout << "Check if there is a connection with database to update import/export in menu" << std::endl;
       }
 
     std::map< GoFigure::TabDimensionType, std::list< QAction * > >::iterator

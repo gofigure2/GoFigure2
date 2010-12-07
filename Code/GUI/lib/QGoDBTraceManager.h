@@ -56,8 +56,8 @@ class QGOGUILIB_EXPORT QGoDBTraceManager:public QObject
 {
   Q_OBJECT
 public:
-  QGoDBTraceManager();
-  ~QGoDBTraceManager();
+  explicit QGoDBTraceManager( QObject* iParent = NULL );
+  virtual ~QGoDBTraceManager();
 
   typedef GoDBTableWidgetContainer::TWContainerType TWContainerType;
   typedef std::pair< std::string, QColor >          NameWithColorData;
@@ -244,6 +244,12 @@ public:
   std::list< unsigned int > GetLastCreatedTracesIDs(
     vtkMySQLDatabase *iDatabaseConnector, int iNumberOfTraceIDs);
 
+  /**
+  \brief set the pointer to the selected collection data
+  \param[in] iCollectionData pointer to the selected collection data
+  */
+  void SetSelectedCollection (NameWithColorData* iCollectionData);
+
 
 signals:
   /**
@@ -284,12 +290,14 @@ protected:
   std::string m_CollectionOf;
   std::string m_CollectionOfID;
 
-  int                     m_SelectedCollectionID;
+  NameWithColorData*      m_SelectedCollectionData;
+
   int                     m_ImgSessionID;
   QGoTableWidget *        m_Table;
   GoDBCollectionOfTraces *m_CollectionOfTraces;
   vtkMySQLDatabase *      m_DatabaseConnector;
   bool                    IsColorCodingOn;
+  QMenu*                  m_CheckedTracesMenu;
 
   /**
   \brief Virtual pure method: get the data needed from the database and
@@ -383,7 +391,7 @@ protected:
       iTWContainer->GetIndexForGroupColor(this->m_TraceName),
       iTWContainer->GetIndexForGroupColor(this->m_CollectionName),
       this->m_TraceName, this->m_CollectionName, ColumnNames,iState,iIndexShowColumn);
-    this->m_Table->setSortingEnabled(true);
+    //this->m_Table->setSortingEnabled(true);
   }
 
   /**
@@ -404,12 +412,12 @@ protected:
       iTWContainer->GetContainerForOneSpecificTrace(iDatabaseConnector,
                                                     TraceID);
 
-    this->m_Table->setSortingEnabled(false);
+    //this->m_Table->setSortingEnabled(false);
     this->m_Table->InsertNewRow(RowContainer,
                                 iTWContainer->GetIndexForGroupColor(this->m_TraceName),
                                 iTWContainer->GetIndexForGroupColor(this->m_CollectionName),
                                 this->m_TraceName, this->m_CollectionName);
-    this->m_Table->setSortingEnabled(true);
+    //this->m_Table->setSortingEnabled(true);
   }
 
   /**
@@ -662,16 +670,16 @@ protected:
     std::map<unsigned int, std::string> Values;
     IsColorCodingOn = IsChecked;
 
-		if (IsChecked)
-			{
-			Values = this->m_Table->GetTraceIDAndColumnsValues(
-						this->m_TraceNameID,ColumnName);
+    if (IsChecked)
+      {
+      Values = this->m_Table->GetTraceIDAndColumnsValues(
+						this->m_TraceNameID, ColumnName);
 
-			vtkLookupTable* LUT = NULL;
+        vtkLookupTable* LUT = NULL;
 
-			bool IsRandomIncluded =
-					(ColumnName == this->m_TraceNameID) ||
-					(ColumnName == this->m_CollectionNameID);
+		bool IsRandomIncluded =
+      (ColumnName == this->m_TraceNameID) ||
+      (ColumnName == this->m_CollectionNameID);
 
       QGoColorCodingDialog::ColorWay UserColorway =
         QGoColorCodingDialog::GetColorWay( this->m_TraceName, &LUT,

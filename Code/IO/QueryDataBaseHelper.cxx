@@ -36,6 +36,7 @@
 #include "vtkSQLQuery.h"
 #include "vtkStdString.h"
 #include "vtkVariant.h"
+#include "QueryBuilderHelper.h"
 #include <sstream>
 #include <string>
 
@@ -119,7 +120,7 @@ vtkMySQLDatabase * OpenDatabaseConnection(
 bool CloseDatabaseConnection(
   vtkMySQLDatabase *DatabaseConnector)
 {
-  if ( DatabaseConnector != 0 )
+  if ( DatabaseConnector != NULL )
     {
     DatabaseConnector->Close();
     DatabaseConnector->Delete();
@@ -128,6 +129,23 @@ bool CloseDatabaseConnection(
   return false;
 }
 
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+void ExecuteQuery(vtkMySQLDatabase * iDatabaseConnector, std::string iQuery)
+{
+  vtkSQLQuery *query = iDatabaseConnector->GetQueryInstance();
+  query->SetQuery( iQuery.c_str() );
+  if ( !query->Execute() )
+    {
+    itkGenericExceptionMacro(
+      << "Execute query failed"
+      << query->GetLastErrorText() );
+    iDatabaseConnector->Close();
+    iDatabaseConnector->Delete();
+    }
+  query->Delete();
+}
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -238,7 +256,6 @@ void DropTable(vtkMySQLDatabase *DatabaseConnector, std::string TableName)
 void DeleteRow(vtkMySQLDatabase *DatabaseConnector,
                std::string TableName, std::string field, std::string value)
 {
-  vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
   std::stringstream querystream;
 
   querystream << "DELETE FROM ";
@@ -249,15 +266,7 @@ void DeleteRow(vtkMySQLDatabase *DatabaseConnector,
   querystream << value;
   querystream << "';";
 
-  query->SetQuery( querystream.str().c_str() );
-
-  if ( !query->Execute() )
-    {
-    itkGenericExceptionMacro(
-      << "Delete row query failed"
-      << query->GetLastErrorText() );
-    }
-  query->Delete();
+  ExecuteQuery(DatabaseConnector,querystream.str() );
 }
 
 //------------------------------------------------------------------------------
@@ -266,7 +275,6 @@ void DeleteRow(vtkMySQLDatabase *DatabaseConnector,
 void DeleteRows(vtkMySQLDatabase *DatabaseConnector, std::string TableName,
                 std::string field, std::vector< std::string > VectorValues)
 {
-  vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
   std::stringstream querystream;
 
   querystream << "DELETE FROM ";
@@ -285,17 +293,7 @@ void DeleteRows(vtkMySQLDatabase *DatabaseConnector, std::string TableName,
   querystream << VectorValues[i];
   querystream << "');";
 
-  query->SetQuery( querystream.str().c_str() );
-  if ( !query->Execute() )
-    {
-    itkGenericExceptionMacro(
-      << "Delete rows query failed"
-      << query->GetLastErrorText() );
-    DatabaseConnector->Close();
-    DatabaseConnector->Delete();
-    query->Delete();
-    }
-  query->Delete();
+  ExecuteQuery(DatabaseConnector,querystream.str() );
 }
 
 //------------------------------------------------------------------------------
@@ -344,12 +342,29 @@ bool DoesTableExist(vtkMySQLDatabase *DatabaseConnector,
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
+void UpdateValueInDB(vtkMySQLDatabase *DatabaseConnector,std::string iTableName,
+  std::string iColumnName, std::string iNewValue, std::string iField,
+  std::vector<unsigned int> iVectIDs)
+{
+  std::stringstream querystream;
+  querystream << "UPDATE ";
+  querystream << iTableName;
+  querystream << " SET ";
+  querystream << iColumnName;
+  querystream << " = '";
+  querystream << iNewValue;
+  querystream << "' WHERE ";
+  querystream << GetConditions<unsigned int>(iField,iVectIDs,"OR");
+  ExecuteQuery(DatabaseConnector,querystream.str() );
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 void UpdateValueInDB(vtkMySQLDatabase *DatabaseConnector,
                      std::string TableName, std::string field, std::string newValue,
                      std::string ColumnName, std::string value)
 
 {
-  vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
   std::stringstream querystream;
 
   querystream << "UPDATE ";
@@ -364,18 +379,7 @@ void UpdateValueInDB(vtkMySQLDatabase *DatabaseConnector,
   querystream << value;
   querystream << "';";
 
-  query->SetQuery( querystream.str().c_str() );
-  if ( !query->Execute() )
-    {
-    itkGenericExceptionMacro(
-      << "replace value in DB query failed"
-      << query->GetLastErrorText() );
-    DatabaseConnector->Close();
-    DatabaseConnector->Delete();
-    query->Delete();
-    return;
-    }
-  query->Delete();
+  ExecuteQuery(DatabaseConnector,querystream.str() );
 }
 
 //------------------------------------------------------------------------------
@@ -385,9 +389,7 @@ void UpdateValueInDB(vtkMySQLDatabase *DatabaseConnector,
                      std::string iTableName, std::string ifield,
                      std::string inewValue, std::vector< unsigned int > iVectIDs)
 {
-  vtkSQLQuery *     query = DatabaseConnector->GetQueryInstance();
   std::stringstream querystream;
-
   querystream << "UPDATE ";
   querystream << iTableName;
   querystream << " SET ";
@@ -408,18 +410,7 @@ void UpdateValueInDB(vtkMySQLDatabase *DatabaseConnector,
   querystream << iVectIDs[i];
   querystream << "');";
 
-  query->SetQuery( querystream.str().c_str() );
-  if ( !query->Execute() )
-    {
-    itkGenericExceptionMacro(
-      << "replace value in DB query failed"
-      << query->GetLastErrorText() );
-    DatabaseConnector->Close();
-    DatabaseConnector->Delete();
-    query->Delete();
-    return;
-    }
-  query->Delete();
+  ExecuteQuery(DatabaseConnector,querystream.str() );
 }
 //------------------------------------------------------------------------------
 

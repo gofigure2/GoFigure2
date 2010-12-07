@@ -35,14 +35,10 @@
 #ifndef __TrackStructure_h
 #define __TrackStructure_h
 
-class vtkActor;
-class vtkPolyData;
-class vtkLookupTable;
-
-#include <ostream>
-#include <vector>
-
+#include "TraceStructure.h"
 #include "QGoIOConfigure.h"
+
+#include <map>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 #include "StructureHelper.h"
@@ -50,53 +46,32 @@ class vtkLookupTable;
 
 /**
 \defgroup Track Track
-\defgroup Trace Trace
-\defgroup Structure Structure
 */
 
 /**
  * \struct TrackStructure
  * \brief  Structure which represent a track, and used for
  * interaction between Visualization and TableWidget
- * \ingroup Track Trace Structure
+ * \ingroup Track Trace
  */
-struct QGOIO_EXPORT TrackStructure {
-  /** TraceID */
-  unsigned int TraceID;
-
-  /** Actor in the XY View */
-  vtkActor *ActorXY;
-
-  /** Actor in the XZ View */
-  vtkActor *ActorXZ;
-
-  /** Actor in the YZ View */
-  vtkActor *ActorYZ;
-
-  /** Actor in the XYZ View */
-  vtkActor *ActorXYZ;
+class QGOIO_EXPORT TrackStructure : public TraceStructure
+{
+public:
 
   /**
-  * Polydata representing the track (a line). It also contains the temporal information.
-  */
-  vtkPolyData *Nodes;
+   * Map containing all the polydata points ordered by time
+   */
+  typedef std::map< unsigned int, double* > PointsMapType;
+  typedef PointsMapType::iterator PointsMapIterator;
+  typedef PointsMapType::const_iterator PointsMapConstIterator;
 
-  /** Is the track Highlighted in the Visualization ? */
-  bool Highlighted;
-
-  /** Is the track Visible (appears on the screen)
-  * in the Visualization ?
-  */
-  bool Visible;
-
-  /** color of the track. \note each component is in [0,1] */
-  double rgba[4];
+  PointsMapType PointsMap;
 
   /** Default Constructor */
   TrackStructure();
 
   /** Constructor */
-  TrackStructure(const unsigned int & iTraceID,
+  /*TrackStructure(const unsigned int & iTraceID,
                        std::vector< vtkActor * > iActors,
                        vtkPolyData *iNodes,
                        const bool & iHighlighted,
@@ -104,18 +79,18 @@ struct QGOIO_EXPORT TrackStructure {
                        const double & r,
                        const double & g,
                        const double & b,
-                       const double & alpha);
+                       const double & alpha);*/
 
   /** Constructor */
-  TrackStructure(const unsigned int & iTraceID,
+  /*TrackStructure(const unsigned int & iTraceID,
                        std::vector< vtkActor * > iActors,
                        vtkPolyData *iNodes,
                        const bool & iHighlighted,
                        const bool & iVisible,
-                       double iRgba[4]);
+                       double iRgba[4]);*/
 
   /** Constructor */
-  TrackStructure(const unsigned int & iTraceID,
+  /*TrackStructure(const unsigned int & iTraceID,
                        vtkActor *iActorXY,
                        vtkActor *iActorYZ,
                        vtkActor *iActorXZ,
@@ -126,7 +101,7 @@ struct QGOIO_EXPORT TrackStructure {
                        const double & r,
                        const double & g,
                        const double & b,
-                       const double & alpha);
+                       const double & alpha);*/
 
   /** Constructor by copy */
   TrackStructure(const TrackStructure & iE);
@@ -134,23 +109,35 @@ struct QGOIO_EXPORT TrackStructure {
   /** Destructor */
   ~TrackStructure();
 
-  /** \brief Render with original colors (Remove the active scalars data).*/
-  void RenderWithOriginalColors() const;
+  /**
+   * \brief Insert a point at the current time point.
+   * \param[in] iTime time point where we want to insert the point
+   * \param[in] iPoint new point to be inserted
+   * \return true is element has been inserted, false if not (i.e. there
+   * is already a point associated to this time point). If you want to override
+   * this point, call ReplaceElement(int iTime, double* iPoint) instead.
+   */
+  bool InsertElement(const unsigned int& iTime, double* iPoint);
 
-  /** \brief Set Scalar Data associated to the elements (use for color coding)
-      \param[in] iName data name
-      \param[in] iValue value
-  */
-  void SetScalarData( const std::string& iName, const double& iValue ) const;
+  /**
+   * \brief Delete the point at the current time point.
+   * \param[in] iTime time point where we want to delete the mesh
+   * \return true is element has been deleted, false if there where no point at
+   * the specified time point.
+   */
+  bool DeleteElement(const unsigned int& iTime);
 
-  /** \brief Set the scalar range (use for color coding)
-      \param[in] iMin
-      \param[in] iMax */
-  void SetScalarRange( const double& iMin, const double& iMax ) const;
+  /**
+   * \brief Replace the point at the current time point.
+   * \param[in] iTime time point where we want to replace the point
+   * \param[in] iPoint new point to be added
+   * \return true is element has been replaced, false if there is no point at the
+   * specified time point. If you want to add this point, call
+   * InsertElement(int iTime, double* iPoint) instead.
+   */
+  bool ReplaceElement(const unsigned int& iTime, double* iPoint);
 
-  /** \brief Set the lookup table
-      \param[in] iLut */
-  void SetLookupTable( vtkLookupTable* iLut ) const;
+  void ReleaseData() const;
 
   /** Printing one element. std::cout << element << std::endl; */
   friend std::ostream & operator<<
@@ -162,6 +149,20 @@ struct QGOIO_EXPORT TrackStructure {
     os << "ActorYZ " << c.ActorYZ << std::endl;
     os << "ActorXYZ " << c.ActorXYZ << std::endl;
     os << "Nodes " << c.Nodes << std::endl;
+    os << "Map " << std::endl;
+
+    std::map< unsigned int, double*>::const_iterator end = c.PointsMap.end();
+    std::map< unsigned int, double*>::const_iterator it = c.PointsMap.begin();
+
+    while( it != end )
+      {
+      os << "Time: " << it->first << std::endl;
+      os << " Coordinate X: " << (it->second)[0] << std::endl;
+      os << " Coordinate Y: " << (it->second)[1] << std::endl;
+      os << " Coordinate Z: " << (it->second)[2] << std::endl;
+      ++it;
+      }
+
     os << "Highlighted " << c.Highlighted << std::endl;
     os << "Visible " << c.Visible << std::endl;
     os << "RGBA [" << c.rgba[0] << ", " << c.rgba[1] << ", " << c.rgba[2]
@@ -169,6 +170,28 @@ struct QGOIO_EXPORT TrackStructure {
 
     return os;
   }
+
+  void UpdateTracksRepresentation( bool iGlyph, bool iTube ) const;
+
+  void ComputeAttributes();
+
 };
+
+/**
+  \brief merge 2 tracks (if they do not overlap) into oMerged
+  \param[in] iT1 track1
+  \param[in] iT2 track2
+  \param[out] oMerged merged track (take attributes from the earliest track in time)
+  \return true if iT1 and iT2 don't overlap
+*/
+/*
+bool TrackMerge( const TrackStructure& iT1,
+                 const TrackStructure& iT2,
+                 TrackStructure& oMerged );
+
+bool TrackSplit( const TrackStructure& iTrack,
+                 const unsigned int& iTime,
+                 TrackStructure& oT1,
+                 TrackStructure& oT2 );*/
 
 #endif

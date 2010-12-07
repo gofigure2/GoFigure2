@@ -39,7 +39,7 @@
 #include "GoDBCollectionOfTraces.h"
 #include "GoDBTWContainerForContourMesh.h"
 #include "QGoDBTraceManager.h"
-#include "ContourMeshContainer.h"
+#include "ContourContainer.h"
 
 class QGOGUILIB_EXPORT QGoDBContourManager:public QGoDBTraceManager
 {
@@ -59,7 +59,7 @@ public:
   \brief set the m_ContourContainerInfoForVisu to the iContainerForVisu
   \param[in] iContainerForVisu common container for the visu and database
   */
-  void SetContoursInfoContainerForVisu(ContourMeshContainer *iContainerForVisu);
+  void SetContoursInfoContainerForVisu(ContourContainer *iContainerForVisu);
 
   unsigned int SaveNewContourFromVisu(unsigned int iXCoordMin,
                                       unsigned int iYCoordMin,
@@ -130,7 +130,7 @@ signals:
 
 protected:
   GoDBTWContainerForContourMesh *m_TWContainer;
-  ContourMeshContainer          *m_ContourContainerInfoForVisu;
+  ContourContainer              *m_ContourContainerInfoForVisu;
   NameWithColorData              m_SelectedColor;
   NameWithColorData              m_SelectedCollection;
   vtkMySQLDatabase *             m_DatabaseConnector;
@@ -160,7 +160,7 @@ protected:
   \param[in] iTimePoint current timepoint
   */
   //void UpdateTracesVisibilityForGivenTimePoint(unsigned int iTimePoint);
-  
+
   //virtual pure method in QGoDBTraceManager
   virtual void GetTracesInfoFromDBAndModifyContainerForVisu(
     vtkMySQLDatabase* iDatabaseConnector,std::vector<int> iVectIDs = std::vector< int >());

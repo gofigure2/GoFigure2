@@ -42,7 +42,8 @@ QGoDBTrackManager::QGoDBTrackManager(int iImgSessionID, QWidget *iparent):
 {
   this->SetInfo(iImgSessionID, iparent);
   this->m_TWContainer = new GoDBTWContainerForTrackLineage(this->m_TraceName,
-                                                           this->m_CollectionName, iImgSessionID);
+                                                           this->m_CollectionName,
+                                                           iImgSessionID);
 }
 
 //-------------------------------------------------------------------------
@@ -65,10 +66,15 @@ void QGoDBTrackManager::SetTracksInfoContainerForVisu(
     iContainerForVisu,&this->m_TrackContainerInfoForVisu);
 
   // Connect the signals once we have the container
+  //QObject::connect(this->m_TrackContainerInfoForVisu,
+  //                  SIGNAL(CurrentTrackToSave()),
+  //                  this,
+  //                  SLOT(SaveTrackCurrentElement()));
+
   QObject::connect(this->m_TrackContainerInfoForVisu,
-                    SIGNAL(CurrentTrackToSave()),
-                    this,
-                    SLOT(SaveTrackCurrentElement()));
+                   SIGNAL(NeedMeshesInfoForImportedTrack(unsigned int) ),
+                   this,
+                   SIGNAL(NeedMeshesInfoForImportedTrack(unsigned int) ) );
 }
 //-------------------------------------------------------------------------
 
@@ -156,6 +162,7 @@ void QGoDBTrackManager::UpdateTWAndContainerForImportedTraces(
   this->UpdateTWAndContainerWithImportedTracesTemplate<
     GoDBTWContainerForTrackLineage>(this->m_TWContainer,
     iVectorImportedTraces, iDatabaseConnector);
+  //call the TrackContainer to give him iVectorImportedTraces
 }
 //-------------------------------------------------------------------------
 
@@ -212,48 +219,91 @@ void QGoDBTrackManager::GetTracesInfoFromDBAndModifyContainerForVisu(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBTrackManager::UpdateCurrentElementTrackContainer(
+/*void QGoDBTrackManager::UpdateCurrentElementTrackContainer(
   unsigned int iTrackID)
 {
   this->m_TrackContainerInfoForVisu->UpdateCurrentElementFromExistingOne(
     iTrackID);
-}
+}*/
 //-------------------------------------------------------------------------
-
+/*
+ * \todo Nicolas
+ * is it safe?? emit and process we don't know if the emit did what it was
+ *  supposed to do
+ */
 //-------------------------------------------------------------------------
-void QGoDBTrackManager::SaveTrackCurrentElement()
+void QGoDBTrackManager::SaveTrackCurrentElement(
+  vtkMySQLDatabase* iDatabaseConnector)
 {
-  emit NeedToGetDatabaseConnection();
+  //emit NeedToGetDatabaseConnection();
+
   GoDBTrackRow TrackToSave(this->m_ImgSessionID);
   unsigned int TrackID = this->m_TrackContainerInfoForVisu->m_CurrentElement.TraceID;
   if (TrackID != 0)
     {
-    TrackToSave.SetValuesForSpecificID(TrackID,this->m_DatabaseConnector);
+    TrackToSave.SetValuesForSpecificID(TrackID,iDatabaseConnector);
     }
 
   //save the track into the database
   TrackToSave.SetThePointsFromPolydata(
     this->m_TrackContainerInfoForVisu->m_CurrentElement.Nodes);
-  TrackID = TrackToSave.SaveInDB(this->m_DatabaseConnector);
+  TrackID = TrackToSave.SaveInDB(iDatabaseConnector);
   
   //save the track into the container:
   this->m_TrackContainerInfoForVisu->InsertCurrentElement();
 
   if (TrackID == 0)
     {
-    this->DisplayInfoForLastCreatedTrace(this->m_DatabaseConnector);
+    this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
     }
 
   //update its bounding box with the new mesh into the database
   //and the table widget:
-  std::list<unsigned int> ListTrackID;
-  ListTrackID.push_back(TrackID);
-  UpdateBoundingBoxes(this->m_DatabaseConnector,ListTrackID);
-  emit DBConnectionNotNeededAnymore();
+ // std::list<unsigned int> ListTrackID;
+ // ListTrackID.push_back(TrackID);
+ // UpdateBoundingBoxes(this->m_DatabaseConnector,ListTrackID);
+
+  // Pointer not usefull anymore
+  //this->m_DatabaseConnector = NULL;
+  //Free memory
+ // emit DBConnectionNotNeededAnymore();
 
 }
 //-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+void QGoDBTrackManager::UpdatePointsOfCurrentElementForImportedTrack(
+	  std::map<unsigned int,double*> iMeshesInfo)
+{
+	this->m_TrackContainerInfoForVisu->UpdateCurrentElementMap(iMeshesInfo);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTrackManager::UpdateTrackPolydataForVisu(vtkMySQLDatabase *iDatabaseConnector,
+  unsigned int iTrackID)
+{
+  std::list<double*> ListCenters =
+    this->m_CollectionOfTraces->GetCoordinateCenterBoundingBox(
+    iDatabaseConnector,iTrackID);
+  this->m_TrackContainerInfoForVisu->UpdatePointsForATrack(iTrackID,ListCenters);
+  this->SaveTrackCurrentElement(iDatabaseConnector);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTrackManager::UpdateBoundingBoxes(
+  vtkMySQLDatabase *iDatabaseConnector,std::list< unsigned int > iListTracesIDs)
+{
+  QGoDBTraceManager::UpdateBoundingBoxes(iDatabaseConnector,iListTracesIDs);
+  std::list<unsigned int>::iterator iter = iListTracesIDs.begin();
+  while(iter != iListTracesIDs.end())
+    {
+    this->UpdateTrackPolydataForVisu(iDatabaseConnector,*iter);
+    //this->SaveTrackCurrentElement(iDatabaseConnector);
+    iter++;
+    }
+}
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::SetColorCoding(bool IsChecked)
 {

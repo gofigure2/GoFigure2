@@ -73,6 +73,7 @@
 QGoImageView::QGoImageView(QWidget *iParent):QWidget(iParent),
   m_Pool(0),
   m_Image(0),
+  m_IntersectionLineWidth(1.),
   m_SnapshotId(0),
   m_ShowAnnotations(true),
   m_ShowSplinePlane(true)
@@ -113,6 +114,11 @@ QGoImageView::
     m_Pool->Delete();
     m_Pool = 0;
     }
+}
+//--------------------------------------------------------------------------
+void QGoImageView::SetIntersectionLineWidth( const float& iWidth )
+{
+  m_IntersectionLineWidth = iWidth;
 }
 
 //--------------------------------------------------------------------------
@@ -230,14 +236,17 @@ QGoImageView::AddContour(vtkPolyData *iDataset, vtkProperty *iProperty)
 {
   int n = m_Pool->GetNumberOfItems();
 
-  std::vector< vtkActor * > oActorVector(n);
+  std::vector< vtkActor * > oActorVector(n, (vtkActor*) NULL );
 
-  for ( int i = 0; i < n; i++ )
+  if( iDataset )
     {
-    vtkViewImage2D *viewer = m_Pool->GetItem(i);
-    vtkActor *      temp = viewer->AddDataSet(iDataset, iProperty);
-    //viewer->Render();
-    oActorVector[i] = temp;
+    for ( int i = 0; i < n; i++ )
+      {
+      vtkViewImage2D *viewer = m_Pool->GetItem(i);
+      vtkActor *      temp = viewer->AddDataSet(iDataset, iProperty);
+      //viewer->Render();
+      oActorVector[i] = temp;
+      }
     }
 
   return oActorVector;

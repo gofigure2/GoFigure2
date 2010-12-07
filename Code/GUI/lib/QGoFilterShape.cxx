@@ -40,8 +40,12 @@
 // Shapes to be generated
 #include "vtkPolyData.h"
 #include "vtkPointData.h"
- #include "vtkPlane.h"
- #include "vtkCutter.h"
+#include "vtkPlane.h"
+// To deal with borders is mesh is on a border
+#include "vtkClipPolyData.h"
+// To extract 2D contours
+#include "vtkCutter.h"
+#include "vtkBox.h"
 //Sphere
 #include "vtkSphereSource.h"
 //Cube
@@ -223,15 +227,27 @@ QGoFilterShape::GenerateSphere(double *iCenter)
   vtkSphereSource *sphere = vtkSphereSource::New();
 
   sphere->SetRadius( getRadius() );
-  sphere->SetThetaResolution(18);
-  sphere->SetPhiResolution(18);
+  sphere->SetThetaResolution(30);
+  sphere->SetPhiResolution(30);
   sphere->SetCenter(iCenter);
   sphere->Update();
   sphere->GetOutput()->GetPointData()->SetNormals(NULL);
 
-  vtkPolyData *output = vtkPolyData::New();
-  output->DeepCopy( sphere->GetOutput() );
+  // Deal with borders
+  vtkBox *implicitFunction = vtkBox::New();
+  implicitFunction->SetBounds( this->getInput()->GetBounds() );
 
+  vtkClipPolyData *cutter = vtkClipPolyData::New();
+  cutter->SetInput( sphere->GetOutput() );
+  cutter->InsideOutOn();
+  cutter->SetClipFunction( implicitFunction );
+  cutter->Update();
+
+  vtkPolyData *output = vtkPolyData::New();
+  output->DeepCopy( cutter->GetOutput() );
+
+  implicitFunction->Delete();
+  cutter->Delete();
   sphere->Delete();
 
   return output;
@@ -243,13 +259,51 @@ QGoFilterShape::GenerateSphere(double *iCenter)
 vtkPolyData *
 QGoFilterShape::GenerateCube(double *iCenter)
 {
+  // time consuming
+  /*
+  double* bounds = this->getInput()->GetBounds();
+  double radius = this->getRadius();
+
+  double xmin = iCenter[0] - radius;
+  double xmax = iCenter[0] + radius;
+  double ymin = iCenter[1] - radius;
+  double ymax = iCenter[1] + radius;
+  double zmin = iCenter[2] - radius;
+  double zmax = iCenter[2] + radius;
+
+  // Check Borders
+  if( xmin < bounds[0])
+    {
+    xmin = bounds[0];
+    }
+  if( ymin < bounds[2])
+    {
+    ymin = bounds[2];
+    }
+  if( zmin < bounds[4])
+    {
+    zmin = bounds[4];
+    }
+  if( xmax > bounds[1])
+    {
+    xmax = bounds[1];
+    }
+  if( ymax > bounds[3])
+    {
+    ymax = bounds[3];
+    }
+  if( zmax > bounds[5])
+    {
+    zmax = bounds[5];
+    }
+*/
+
   // create cube geometry
   vtkCubeSource *cube = vtkCubeSource::New();
-
-  cube->SetXLength( getRadius() );
-  cube->SetYLength( getRadius() );
-  cube->SetZLength( getRadius() );
-  cube->SetCenter(iCenter);
+  cube->SetCenter( iCenter );
+  cube->SetXLength( 2*this->getRadius() );
+  cube->SetYLength( 2*this->getRadius() );
+  cube->SetZLength( 2*this->getRadius() );
   cube->Update();
   cube->GetOutput()->GetPointData()->SetNormals(NULL);
 
@@ -257,9 +311,21 @@ QGoFilterShape::GenerateCube(double *iCenter)
   triangle->SetInput( cube->GetOutput() );
   triangle->Update();
 
-  vtkPolyData *output = vtkPolyData::New();
-  output->DeepCopy( triangle->GetOutput() );
+  // Deal with borders
+  vtkBox *implicitFunction = vtkBox::New();
+  implicitFunction->SetBounds( this->getInput()->GetBounds() );
 
+  vtkClipPolyData *cutter = vtkClipPolyData::New();
+  cutter->SetInput( triangle->GetOutput() );
+  cutter->InsideOutOn();
+  cutter->SetClipFunction( implicitFunction );
+  cutter->Update();
+
+  vtkPolyData *output = vtkPolyData::New();
+  output->DeepCopy( cutter->GetOutput() );
+
+  implicitFunction->Delete();
+  cutter->Delete();
   triangle->Delete();
   cube->Delete();
 

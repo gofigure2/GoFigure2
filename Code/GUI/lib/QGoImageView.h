@@ -93,6 +93,8 @@ public:
 
   void Update();
 
+  void SetIntersectionLineWidth( const float& iWidth );
+
   /** \brief Returns the interactor for one given view. */
   virtual QVTKInteractor * GetInteractor(const int &) = 0;
 
@@ -297,6 +299,7 @@ protected:
   QColor                                                                  m_NodesColor;
   QColor                                                                  m_ActiveNodesColor;
 
+  float        m_IntersectionLineWidth;
   unsigned int m_SnapshotId;
   bool         m_ShowAnnotations;
   bool         m_ShowSplinePlane;

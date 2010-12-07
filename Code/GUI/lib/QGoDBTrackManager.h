@@ -90,6 +90,20 @@ public:
 
   void UpdateCurrentElementTrackContainer(unsigned int iTrackID);
 
+  /**
+  \brief update the points of the imported track in current_element
+  with the info from the meshes
+  */
+  void UpdatePointsOfCurrentElementForImportedTrack(
+	  std::map<unsigned int,double*> iMeshesInfo);
+
+  //method in QGoDbTraceManager
+  void UpdateBoundingBoxes(
+  vtkMySQLDatabase *iDatabaseConnector,std::list< unsigned int > iListTracesIDs);
+
+signals:
+  void NeedMeshesInfoForImportedTrack(unsigned int iTrackID);
+
 protected:
   GoDBTWContainerForTrackLineage *m_TWContainer;
   TrackContainer                 *m_TrackContainerInfoForVisu;
@@ -104,6 +118,15 @@ protected:
   virtual void GetTracesInfoFromDBAndModifyContainerForVisu(
     vtkMySQLDatabase* iDatabaseConnector,std::vector<int> iVectIDs = std::vector< int >());
 
+  /**
+  \brief get the center of bounding boxes from the database for the meshes
+  belonging to the iTrackID, update the polydata in the container for visu and save it in
+  the database
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iTrackID ID for the track the polydata needs to be recalculated
+  */
+  void UpdateTrackPolydataForVisu(vtkMySQLDatabase *iDatabaseConnector,unsigned int iTrackID);
+
 protected slots:
   //virtual pure method in QGoDBTraceManager
   virtual void UpdateHighlightedElementsInVisuContainer(int iTraceID);
@@ -117,7 +140,7 @@ protected slots:
   element into the track container
   \param[in] iDatabaseConnector connection to the database
   */
-  void SaveTrackCurrentElement();
+  void SaveTrackCurrentElement(vtkMySQLDatabase* iDatabaseConnector);
 
  //virtual pure method in QGoDBTraceManager
   virtual void SetColorCoding(bool IsChecked);

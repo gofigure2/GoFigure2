@@ -109,6 +109,14 @@ void GoDBImport::ImportMeshes()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+void GoDBImport::ImportTracks()
+{
+	this->ImportMeshes();
+}
+
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 std::string GoDBImport::SaveNoTracesEntities(std::map< int, int > & ioMapColorIDs,
                                              std::map< int, int > & ioMapCellTypeIDs,
                                              std::map< int, int > & ioMapSubCellTypeIDs,

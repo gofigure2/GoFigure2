@@ -109,6 +109,9 @@ QGoNavigationDockWidget::QGoNavigationDockWidget(QWidget *iParent, const GoFigur
   QObject::connect( this->ChannelComboBox, SIGNAL( currentIndexChanged(int) ),
                     this, SIGNAL( ShowOneChannelChanged(int) ) );
 
+  QObject::connect( this->ModeComboBox, SIGNAL( activated(int) ),
+                    this, SIGNAL( ModeChanged(int) ) );
+
   // shortcuts to move through time
   (void) new QShortcut(QKeySequence(tr("Shift+A", "Move to previous")), this, SLOT(MoveToPreviousTimePoint()));
   (void) new QShortcut(QKeySequence(tr("Shift+D", "Move to next")), this, SLOT(MoveToNextTimePoint()));

@@ -1244,17 +1244,15 @@ std::list< unsigned int > GetSpecificValuesEqualToZero(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void GetAllSelectedFields(std::stringstream & ioQuerystream,
-                          std::vector< std::string > iSelectedFields)
+std::list<unsigned int> GetAllSelectedValuesFromTwoTables(
+  vtkMySQLDatabase *iDatabaseConnector, std::string iTableOne, std::string iTableTwo,
+  std::string iColumn, FieldWithValue iJoinCondition,
+  std::vector<FieldWithValue> iFieldsWithValues,bool Distinct)
 {
-  size_t i = 0;
-
-  for (; i < iSelectedFields.size() - 1; i++ )
-    {
-    ioQuerystream << iSelectedFields[i];
-    ioQuerystream << ", ";
-    }
-  ioQuerystream << iSelectedFields[i];
+  std::string Where = GetLeftJoinTwoTables(iTableOne,iTableTwo,iJoinCondition);
+  std::string QueryString = SelectQueryStreamListConditions(Where,iColumn,
+                                            iFieldsWithValues,"AND",Distinct);
+  return ExecuteSelectQuery <std::list<unsigned int> >( iDatabaseConnector, QueryString );
 }
 
 //-------------------------------------------------------------------------
@@ -1262,31 +1260,87 @@ void GetAllSelectedFields(std::stringstream & ioQuerystream,
 //-------------------------------------------------------------------------
 std::vector< std::string > GetAllSelectedValuesFromTwoTables(
   vtkMySQLDatabase *iDatabaseConnector, std::string iTableOne, std::string iTableTwo,
-  std::vector< std::string > iSelectedFields, std::string iJoinCondition,
-  std::string ifield, std::string ifieldValue)
+  std::vector< std::string > iSelectedFields, FieldWithValue iJoinCondition,
+  std::vector<FieldWithValue> iFieldsWithValues)
 {
-  std::stringstream QueryStream;
-
-  QueryStream << "SELECT ";
-  std::vector< std::string >::iterator iter = iSelectedFields.begin();
-  GetAllSelectedFields(QueryStream, iSelectedFields);
-  QueryStream << " FROM ";
-  QueryStream << iTableOne;
-  QueryStream << " LEFT JOIN ";
-  QueryStream << iTableTwo;
-  QueryStream << " ON ";
-  QueryStream << iJoinCondition;
-  QueryStream << " WHERE ";
-  QueryStream << ifield;
-  QueryStream << " = ";
-  QueryStream << ifieldValue;
-
-  //std::stringstream SelectQuery;
-  //SelectQuery << SelectWithJoinNullIncluded(QueryStream.str(), iJoinCondition);
-  //return ExecuteSelectQuery( iDatabaseConnector, SelectQuery.str() );
-  return ExecuteSelectQuery<std::vector<std::string> >( iDatabaseConnector, QueryStream.str() );
+  std::string Where = GetLeftJoinTwoTables(iTableOne,iTableTwo,iJoinCondition);
+  std::string QueryString = SelectQueryStreamListConditions(Where,iSelectedFields,
+                                            iFieldsWithValues,"AND");
+  return ExecuteSelectQuery< std::vector<std::string> >( iDatabaseConnector, QueryString );
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+std::list< unsigned int > GetAllSelectedValuesFromTwoTables(vtkMySQLDatabase *iDatabaseConnector,
+  std::string iTableOne, std::string iTableTwo,
+  std::string iColumn, FieldWithValue iJoinCondition,
+  std::string iField, std::vector<std::string> iVectorValues,bool Distinct)
+{
+  std::string Where = GetLeftJoinTwoTables(iTableOne,iTableTwo,iJoinCondition);
+  std::string QueryString = SelectQueryStreamListConditions(Where,iColumn,iField,iVectorValues,Distinct);
+
+  return ExecuteSelectQuery< std::list< unsigned int> > (iDatabaseConnector, QueryString);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list< unsigned int > GetAllSelectedValuesFromTwoTables(vtkMySQLDatabase *iDatabaseConnector,
+  std::string iTableOne, std::string iTableTwo,
+  std::string iColumn, FieldWithValue iJoinCondition,
+  std::string iField, std::vector<std::string> iVectorValues,FieldWithValue iAndCondition)
+{
+  std::string Where = GetLeftJoinTwoTables(iTableOne,iTableTwo,iJoinCondition);
+  std::string Conditions = "(";
+  Conditions += GetConditions<std::string>(iField,iVectorValues,"OR");
+  Conditions += " AND ";
+  std::vector<FieldWithValue> AndCondition(1);
+  AndCondition[0] = iAndCondition;
+  Conditions += GetConditions(AndCondition);
+  Conditions += ")";
+  std::string QueryString = SelectGeneralQueryConditions(iColumn,Where,Conditions);
+
+  return ExecuteSelectQuery<std::list<unsigned int> >(iDatabaseConnector,QueryString);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int GetMaxValueFromTwoTables(vtkMySQLDatabase *iDatabaseConnector,
+  std::string iTableOne, std::string iTableTwo,
+  std::string iColumn, FieldWithValue iJoinCondition,
+  std::string iField, std::vector<std::string> iVectorValues,
+  FieldWithValue iAndCondition)
+{
+  std::string What = "MAX(";
+  What += iColumn;
+  What += ")";
+  std::string Where = GetLeftJoinTwoTables(iTableOne,iTableTwo,iJoinCondition);
+  std::string Conditions = "(";
+  Conditions += GetConditions<std::string>(iField,iVectorValues,"OR");
+  Conditions += " AND ";
+  std::vector<FieldWithValue> AndCondition(1);
+  AndCondition[0] = iAndCondition;
+  Conditions += GetConditions(AndCondition);
+  Conditions += ")";
+  std::string QueryString = SelectGeneralQueryConditions(What,Where,Conditions);
+  return ExecuteSelectQueryOneValue<int>(iDatabaseConnector,QueryString);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list< unsigned int > GetDoublonValuesFromTwoTables(
+      vtkMySQLDatabase* iDatabaseConnector, std::string iTableOne, std::string iTableTwo,
+      std::string iColumn, FieldWithValue iJoinCondition,std::string iField,
+      std::vector<std::string> iVectValues, std::string GroupByColumn)
+
+{
+
+  std::string Where = GetLeftJoinTwoTables(iTableOne,iTableTwo,iJoinCondition);
+  std::string Conditions = GetConditions<std::string>(iField,iVectValues,"OR");
+  Conditions += GetGroupBy(iColumn,1);
+  std::string QueryString = SelectQueryStreamCondition(Where,iColumn,Conditions);
+
+  return ExecuteSelectQuery< std::list< unsigned int> > (iDatabaseConnector, QueryString);
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -1309,6 +1363,34 @@ std::vector< std::string > GetOrderByWithLimit(vtkMySQLDatabase *iDatabaseConnec
     }
   QueryStream << iNumberLimit;
   return ExecuteSelectQuery<std::vector<std::string> >( iDatabaseConnector, QueryStream.str() );
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string GetCoordinateValuesQueryString(std::string iTableName, std::string iField,
+  std::string iValue,bool iMin)
+{
+  std::stringstream Querystream;
+  Querystream << "SELECT XCoord,YCoord,ZCoord,TCoord,";
+  Querystream << iTableName;
+  Querystream << "ID from ";
+  Querystream << iTableName;
+  Querystream << " LEFT JOIN coordinate on ";
+  Querystream << iTableName;
+  Querystream << ".coordID";
+  if (iMin)
+    {
+    Querystream <<"Min = coordinate.coordID WHERE ";
+    }
+  else
+    {
+    Querystream <<"Max = coordinate.coordID WHERE ";
+    }
+  Querystream << iField;
+  Querystream << " = ";
+  Querystream << iValue;
+
+  return Querystream.str();
 }
 //------------------------------------------------------------------------------
 
@@ -1475,6 +1557,7 @@ void GetTracesInfoFromDBAndModifyContainer(
         vtkPolyData *output = vtkPolyData::New();
         output->DeepCopy(convert_reader->GetPolyData(polydata_string));
         temp.Nodes = output;
+        temp.PointsMap = convert_reader->GetMap(polydata_string);
         }
       else
         {
@@ -1487,8 +1570,71 @@ void GetTracesInfoFromDBAndModifyContainer(
       temp.rgba[1]      = ( query->DataValue(4).ToDouble() ) / 255.;
       temp.rgba[2]      = ( query->DataValue(5).ToDouble() ) / 255.;
       temp.rgba[3]      = ( query->DataValue(6).ToDouble() ) / 255.;
+
       ioContainer.push_back(temp);
       }
     }
   query->Delete();
 }
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::list< double* > GetCenterBoundingBoxes(vtkMySQLDatabase *DatabaseConnector,
+  std::string iTableName,std::string iField,std::string iValue)
+{
+  std::list< double* > Results =  std::list< double* >();
+  vtkSQLQuery *query = DatabaseConnector->GetQueryInstance();
+  std::stringstream Querystream;
+  Querystream << "SELECT XCoord,YCoord,ZCoord,TCoord FROM (";
+  Querystream << GetCoordinateValuesQueryString(iTableName, iField,iValue,true);
+  Querystream << " UNION ";
+  Querystream << GetCoordinateValuesQueryString(iTableName, iField,iValue,false);
+  Querystream << " ORDER BY ";
+  Querystream << iTableName;
+  Querystream << "ID ASC ) AS T1";
+
+  query->SetQuery( Querystream.str().c_str() );
+  if ( !query->Execute() )
+    {
+    itkGenericExceptionMacro(
+      << "return coordmin and max query failed"
+      << query->GetLastErrorText() );
+    DatabaseConnector->Close();
+    DatabaseConnector->Delete();
+    query->Delete();
+    return Results;
+    }
+
+  while ( query->NextRow() )
+    {
+    double* Center = new double[4];
+    double minx,miny,minz,mint,maxx,maxy,maxz,maxt;
+    minx = query->DataValue(0).ToDouble();
+    miny = query->DataValue(1).ToDouble();
+    minz = query->DataValue(2).ToDouble();
+    mint = query->DataValue(3).ToDouble();
+    if (query->NextRow() )
+      {
+      maxx = query->DataValue(0).ToDouble();
+      maxy = query->DataValue(1).ToDouble();
+      maxz = query->DataValue(2).ToDouble();
+      maxt = query->DataValue(3).ToDouble();
+      }
+    else
+      {
+      std::cout << "pb query to return center bounding box";
+      std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+      std::cout << std::endl;
+      return Results;
+     }
+    Center[0] = (minx + maxx)/2;
+    Center[1] = (miny + maxy)/2;
+    Center[2] = (minz + maxz)/2;
+    Center[3] = (mint + maxt)/2;
+    Results.push_back(Center);
+    }
+  return Results;
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------

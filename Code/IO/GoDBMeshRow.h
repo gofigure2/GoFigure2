@@ -78,6 +78,9 @@ public:
   */
   GoDBMeshRow(unsigned int ImagingSessionID);
 
+  //constructor GoDBTraceRow
+  GoDBMeshRow(unsigned int iExistingID,vtkMySQLDatabase *iDatabaseConnector);
+
   ~GoDBMeshRow();
 
   //int DoesThisBoundingBoxMeshExist(vtkMySQLDatabase* DatabaseConnector);
@@ -130,6 +133,24 @@ public:
                              vtkPolyData *TraceVisu, GoDBCoordinateRow iCoordMin,
                              GoDBCoordinateRow iCoordMax,
                              GoFigureMeshAttributes *iMeshAttributes);
+
+  /**
+  \brief static method.get the CellTypeID base on the name of the celltype
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iCellTypeName name of the celltype
+  \return the ID of the celltype
+  */
+  static int GetCellTypeID(vtkMySQLDatabase *iDatabaseConnector,
+                                 std::string iCellTypeName);
+
+  /**
+  \brief static method.get the SubCellTypeID base on the name of the subcelltype
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iSubCellTypeName name of the subcelltype
+  \return the ID of the subcelltype
+  */
+  static int GetSubCellTypeID(vtkMySQLDatabase *iDatabaseConnector,
+                                 std::string iSubCellTypeName);
 
 protected:
   //mother class method

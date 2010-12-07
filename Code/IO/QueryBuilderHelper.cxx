@@ -205,8 +205,8 @@ std::string SelectQueryStreamListConditions(std::string iTable,
                                             std::vector<std::string> iListAttributes, 
                                             std::string iField,
                                             std::vector< std::string > iListValues, 
-                                            bool Distinct,
-                                            std::string iConditionConnector)
+                                            std::string iConditionConnector,
+                                            bool Distinct)
 {
   std::string What = GetSelectedAttributes(iListAttributes);
   return SelectQueryStreamListConditions(iTable,What,iField,iListValues,Distinct,iConditionConnector);
@@ -227,6 +227,19 @@ std::string SelectQueryStreamListConditions(std::string iTable,
     }
   std::string Conditions = GetConditions(iConditions,iConditionConnector);
   return SelectQueryStreamCondition(iTable,iColumn,Conditions,Distinct);
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::string SelectQueryStreamListConditions(std::string iTable,
+                                            std::vector<std::string> iListAttributes,
+                                            std::vector<FieldWithValue> iConditions,
+                                            std::string iConditionConnector,
+                                            bool Distinct )
+{
+  std::string What = GetSelectedAttributes(iListAttributes);
+  return SelectQueryStreamListConditions(iTable,What, iConditions,iConditionConnector,
+                                         Distinct);
 }
 //------------------------------------------------------------------------------
 
@@ -348,7 +361,45 @@ std::vector< std::string > VectorUnsgIntToVectorString(
     }
   return oVector;
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+std::string GetLeftJoinTwoTables(std::string iTableOne,std::string iTableTwo,
+  FieldWithValue iOnCondition)
+{
+  std::stringstream oQueryStream;
+  oQueryStream << iTableOne;
+  oQueryStream << " LEFT JOIN ";
+  oQueryStream << iTableTwo;
+  oQueryStream << " ON ";
+  oQueryStream << iTableOne;
+  oQueryStream << ".";
+  oQueryStream << iOnCondition.Field;
+  oQueryStream << iOnCondition.Operator;
+  oQueryStream << iTableTwo;
+  oQueryStream << ".";
+  oQueryStream << iOnCondition.Value;
+
+  return oQueryStream.str();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::string GetGroupBy(std::string iColumn,unsigned int iNumberDoublons)
+{
+  std::stringstream oQueryStream;
+  oQueryStream << " group by ";
+  oQueryStream << iColumn;
+  if (iNumberDoublons != 0)
+    {
+    oQueryStream << " HAVING COUNT(";
+    oQueryStream << iColumn;
+    oQueryStream << ") > ";
+    oQueryStream << iNumberDoublons;
+    }
+
+  return oQueryStream.str();
+}
 /*std::string SelectWithJoinNullIncluded(std::string iSelectQuery,
                                        std::string iJoinOn,
                                        bool doublon)

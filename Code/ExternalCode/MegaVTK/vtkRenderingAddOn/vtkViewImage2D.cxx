@@ -904,6 +904,11 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
     return NULL;
     }
 
+  if( !dataset )
+    {
+    return NULL;
+    }
+
   vtkSmartPointer< vtkPolyDataMapper > mapper =
     vtkSmartPointer< vtkPolyDataMapper >::New();
   mapper->SetScalarVisibility(iDataVisibility);
@@ -956,6 +961,7 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
     actor->SetProperty(property);
     }
   actor->GetProperty()->BackfaceCullingOn();
+  actor->GetProperty()->SetLineWidth( this->IntersectionLineWidth );
 
   this->Renderer->AddViewProp(actor);
   this->Prop3DCollection->AddItem(actor);
@@ -980,6 +986,11 @@ vtkViewImage2D::AddDataSet(vtkDataSet *dataset,
     cam = this->Renderer->GetActiveCamera();
     }
   else
+    {
+    return NULL;
+    }
+
+  if( !dataset )
     {
     return NULL;
     }
@@ -1013,6 +1024,7 @@ vtkViewImage2D::AddDataSet(vtkDataSet *dataset,
     actor->SetProperty(property);
     }
   actor->GetProperty()->BackfaceCullingOn();
+  actor->GetProperty()->SetLineWidth( this->IntersectionLineWidth );
 
   this->Renderer->AddViewProp(actor);
   this->Prop3DCollection->AddItem(actor);

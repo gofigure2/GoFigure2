@@ -57,7 +57,9 @@ T ss_atoi(const std::string & the_string)
     }
   catch( boost::bad_lexical_cast& )
     {
-    std::cout<<"Bad Conversion";
+    std::cout <<"***" <<std::endl;
+    std::cout << "Bad Conversion: " <<std::endl;
+    std::cout << "the_string = " << the_string <<std::endl;
     std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
     std::cout << std::endl;
 
