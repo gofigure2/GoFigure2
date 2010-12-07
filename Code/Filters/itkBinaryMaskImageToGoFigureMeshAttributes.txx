@@ -115,6 +115,7 @@ BinaryMaskImageToGoFigureMeshAttributes< TInput, TMask >::GenerateData()
 
   shapeConverter->SetInput(m_MaskImage);
   shapeConverter->SetBackgroundValue(0);
+  shapeConverter->SetComputePerimeter(false);
   try
     {
     shapeConverter->Update();

@@ -415,22 +415,22 @@ QGoMainWindow::LoadContoursFromDatabase( const int & iT )
 
   if ( w3t )
     {
-    ContourMeshContainer *temp = w3t->GetContourContainer();
+    ContourContainer *temp = w3t->GetContourContainer();
 
     if ( temp )
       {
       // let's iterate on the container with increasing TraceID
-      ContourMeshContainer::MultiIndexContainerType::index< TraceID >::type::iterator
-        contourmesh_list_it = temp->m_Container.get< TraceID >().begin();
+      ContourContainer::MultiIndexContainerType::index< TraceID >::type::iterator
+        contour_list_it = temp->m_Container.get< TraceID >().begin();
 
       // we don't need here to save this contour in the database,
       // since they have just been extracted from it!
-      while ( contourmesh_list_it != temp->m_Container.get< TraceID >().end() )
+      while ( contour_list_it != temp->m_Container.get< TraceID >().end() )
         {
         w3t->AddContourFromNodes< TraceID >(
-          contourmesh_list_it );
+          contour_list_it );
 
-        ++contourmesh_list_it;
+        ++contour_list_it;
         }
       }
     }
@@ -452,35 +452,33 @@ QGoMainWindow::LoadMeshesFromDatabase( const int & iT )
 
   if ( w3t )
     {
- // std::cout << "IN W3T" << std::endl;
     MeshContainer *temp =  w3t->GetMeshContainer();
     if ( temp )
       {
-    //std::cout << "IN TEMP" << std::endl;
       // let's iterate on the container with increasing TraceID
       MeshContainer::MultiIndexContainerType::index< TraceID >::type::iterator
-        contourmesh_list_it = temp->m_Container.get< TraceID >().begin();
+        mesh_list_it = temp->m_Container.get< TraceID >().begin();
+
       // we don't need here to save this contour in the database,
       // since they have just been extracted from it!
-      while ( contourmesh_list_it != temp->m_Container.get< TraceID >().end() )
+      while ( mesh_list_it != temp->m_Container.get< TraceID >().end() )
         {
         // note here it only makes sense when the trace is a mesh (for now)
       //std::cout << "IN WHILE" << std::endl;
 
-        if ( contourmesh_list_it->Nodes )
+        if ( mesh_list_it->Nodes )
           {
           GoFigureMeshAttributes attributes =
             w3t->ComputeMeshAttributes(
-                contourmesh_list_it->Nodes, // mesh
+                mesh_list_it->Nodes, // mesh
                 false ); // do not need to compute intensity based measure
           w3t->m_DataBaseTables->PrintVolumeAreaForMesh(
-            &attributes, contourmesh_list_it->TraceID);
+            &attributes, mesh_list_it->TraceID);
           }
 
-        w3t->AddMeshFromNodes< TraceID >(
-          contourmesh_list_it );
+        w3t->AddMeshFromNodes< TraceID >( mesh_list_it );
 
-        ++contourmesh_list_it;
+        ++mesh_list_it;
         }
       }
     }
@@ -502,7 +500,7 @@ QGoMainWindow::LoadTracksFromDatabase( const int & iT )
   if ( w3t )
     {
     TrackContainer *temp = w3t->GetTrackContainer();
-    //temp->Print();
+
     if ( temp )
       {
       // let's iterate on the container with increasing TraceID
@@ -513,7 +511,7 @@ QGoMainWindow::LoadTracksFromDatabase( const int & iT )
       // since they have just been extracted from it!
       while ( track_list_it != temp->m_Container.get< TraceID >().end() )
         {
-        w3t->AddTrackFromNodes< TraceID >(track_list_it);// Name of the trace to add
+        w3t->AddTrackFromNodes< TraceID >(track_list_it);
         ++track_list_it;
         }
       }

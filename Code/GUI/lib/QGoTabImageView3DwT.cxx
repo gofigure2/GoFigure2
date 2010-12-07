@@ -2921,16 +2921,16 @@ QGoTabImageView3DwT::ComputeMeshAttributes( vtkPolyData *iMesh,
       oAttributes.m_Area = calculator->GetArea();
       oAttributes.m_Size = calculator->GetSize();
 
-  if(iIntensity )
-   {
-   QString     q_channelname = this->m_NavigationDockWidget->GetChannelName(i);
-      std::string channelname = q_channelname.toStdString();
+      if(iIntensity )
+        {
+        QString q_channelname = this->m_NavigationDockWidget->GetChannelName(i);
+        std::string channelname = q_channelname.toStdString();
 
-      oAttributes.m_TotalIntensityMap[channelname] =
-        static_cast< int >( calculator->GetSumIntensity() );
-      oAttributes.m_MeanIntensityMap[channelname] = calculator->GetMeanIntensity();
-   }
-    }
+        oAttributes.m_TotalIntensityMap[channelname] =
+          static_cast< int >( calculator->GetSumIntensity() );
+        oAttributes.m_MeanIntensityMap[channelname] = calculator->GetMeanIntensity();
+        }
+      }
   return oAttributes;
 }
 
