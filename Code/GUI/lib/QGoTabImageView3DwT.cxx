@@ -2928,7 +2928,8 @@ QGoTabImageView3DwT::ComputeMeshAttributes( vtkPolyData *iMesh,
 
         oAttributes.m_TotalIntensityMap[channelname] =
           static_cast< int >( calculator->GetSumIntensity() );
-        oAttributes.m_MeanIntensityMap[channelname] = calculator->GetMeanIntensity();
+        oAttributes.m_MeanIntensityMap[channelname] =
+          calculator->GetMeanIntensity();
         }
       }
   return oAttributes;
