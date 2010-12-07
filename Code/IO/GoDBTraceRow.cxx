@@ -46,6 +46,15 @@ GoDBTraceRow::GoDBTraceRow()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+GoDBTraceRow::GoDBTraceRow(unsigned int iExistingID,
+  vtkMySQLDatabase *iDatabaseConnector)
+{
+  /*this->InitializeMap();
+  this->SetValuesForSpecificID(iExistingID,iDatabaseConnector);*/
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 GoDBTraceRow::GoDBTraceRow(vtkMySQLDatabase *DatabaseConnector,
                            vtkPolyData *TraceVisu, GoDBCoordinateRow Min, GoDBCoordinateRow Max,
                            unsigned int ImgSessionID)
@@ -59,9 +68,10 @@ GoDBTraceRow::GoDBTraceRow(vtkMySQLDatabase *DatabaseConnector,
 //-------------------------------------------------------------------------
 GoDBTraceRow::GoDBTraceRow(unsigned int ImgSessionID)
 {
-  this->InitializeMap();
-  this->m_MapRow["ImagingSessionID"] =
-    ConvertToString< unsigned int >(ImgSessionID);
+  /*this->InitializeMap();
+  //this->m_MapRow["ImagingSessionID"] =
+  //  ConvertToString< unsigned int >(ImgSessionID);
+  this->SetImgSessionID(ImgSessionID);*/
 }
 
 //-------------------------------------------------------------------------

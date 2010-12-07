@@ -12,6 +12,7 @@ CONFIGURE_FILE(${GOFIGURE2_SOURCE_DIR}/Code/IO/QGoIOConfigure.h.in
                ${GOFIGURE2_BINARY_DIR}/Code/IO/QGoIOConfigure.h @ONLY IMMEDIATE)
 
 SET( QGOIO_SRC
+  TraceStructure.cxx
   ContourMeshStructure.cxx
   TrackStructure.cxx
   CreateDataBaseHelper.cxx

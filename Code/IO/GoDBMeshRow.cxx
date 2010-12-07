@@ -80,6 +80,16 @@ GoDBMeshRow::GoDBMeshRow(unsigned int ImagingSessionID):
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+GoDBMeshRow::GoDBMeshRow(unsigned int iExistingID,
+  vtkMySQLDatabase *iDatabaseConnector):
+  GoDBTraceRow()
+{
+  this->InitializeMap();
+  this->SetValuesForSpecificID(iExistingID,iDatabaseConnector);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 GoDBMeshRow::GoDBMeshRow(const GoDBMeshRow & iRow):GoDBTraceRow()
 {
   this->m_TableName = iRow.m_TableName;
@@ -131,6 +141,7 @@ GoDBMeshRow::SafeDownCast(GoDBTraceRow & iRow)
 //-------------------------------------------------------------------------
 void GoDBMeshRow::InitializeMap()
 {
+  GoDBTraceRow::InitializeMap();
   this->m_TableName = "mesh";
   this->m_TableIDName = "meshID";
   this->m_CollectionName = "track";

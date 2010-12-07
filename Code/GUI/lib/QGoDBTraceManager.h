@@ -391,7 +391,7 @@ protected:
       iTWContainer->GetIndexForGroupColor(this->m_TraceName),
       iTWContainer->GetIndexForGroupColor(this->m_CollectionName),
       this->m_TraceName, this->m_CollectionName, ColumnNames,iState,iIndexShowColumn);
-    this->m_Table->setSortingEnabled(true);
+    //this->m_Table->setSortingEnabled(true);
   }
 
   /**
@@ -412,12 +412,12 @@ protected:
       iTWContainer->GetContainerForOneSpecificTrace(iDatabaseConnector,
                                                     TraceID);
 
-    this->m_Table->setSortingEnabled(false);
+    //this->m_Table->setSortingEnabled(false);
     this->m_Table->InsertNewRow(RowContainer,
                                 iTWContainer->GetIndexForGroupColor(this->m_TraceName),
                                 iTWContainer->GetIndexForGroupColor(this->m_CollectionName),
                                 this->m_TraceName, this->m_CollectionName);
-    this->m_Table->setSortingEnabled(true);
+    //this->m_Table->setSortingEnabled(true);
   }
 
   /**
@@ -670,16 +670,16 @@ protected:
     std::map<unsigned int, std::string> Values;
     IsColorCodingOn = IsChecked;
 
-		if (IsChecked)
-			{
-			Values = this->m_Table->GetTraceIDAndColumnsValues(
-						this->m_TraceNameID,ColumnName);
+    if (IsChecked)
+      {
+      Values = this->m_Table->GetTraceIDAndColumnsValues(
+						this->m_TraceNameID, ColumnName);
 
-			vtkLookupTable* LUT = NULL;
+        vtkLookupTable* LUT = NULL;
 
-			bool IsRandomIncluded =
-					(ColumnName == this->m_TraceNameID) ||
-					(ColumnName == this->m_CollectionNameID);
+		bool IsRandomIncluded =
+      (ColumnName == this->m_TraceNameID) ||
+      (ColumnName == this->m_CollectionNameID);
 
       QGoColorCodingDialog::ColorWay UserColorway =
         QGoColorCodingDialog::GetColorWay( this->m_TraceName, &LUT,

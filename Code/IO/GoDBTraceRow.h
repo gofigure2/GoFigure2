@@ -34,13 +34,13 @@
 #ifndef __GoDBTraceRow_h
 #define __GoDBTraceRow_h
 
-#include "vtkMySQLDatabase.h"
 #include "GoDBCoordinateRow.h"
-#include "vtkSmartPointer.h"
-#include "vtkPolyData.h"
-#include "vtkSmartPointer.h"
 #include "GoDBRecordSetHelper.h"
 #include "GoDBRecordSet.h"
+
+#include "vtkSmartPointer.h"
+#include "vtkPolyData.h"
+#include "vtkMySQLDatabase.h"
 
 /**
 \class GoDBTraceRow
@@ -80,6 +80,14 @@ public:
   \param[in] ImgSessionID ID of the current imagingsession
   */
   GoDBTraceRow(unsigned int ImgSessionID);
+
+  /**
+  \brief get the data from the database corresponding to the iExistingID
+  and set the values of the map with them
+  \param[in] iExistingID ID of the existing trace
+  \param[in] DatabaseConnector connection to the database
+  */
+  GoDBTraceRow(unsigned int iExistingID,vtkMySQLDatabase *iDatabaseConnector);
 
   ~GoDBTraceRow()
   {}

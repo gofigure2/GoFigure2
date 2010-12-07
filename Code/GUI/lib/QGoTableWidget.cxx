@@ -287,6 +287,7 @@ void QGoTableWidget::DisplayContent(TWContainerType iTWRowContainer,
                                     Qt::CheckState iState,
                                     int iIndexShowColumn)
 {
+  this->setSortingEnabled(false);
   this->DisplayColumnNames(iTraceName.c_str(), iColumnNames);
   if ( iTWRowContainer.empty() )
     {
@@ -355,6 +356,7 @@ void QGoTableWidget::DisplayContent(TWContainerType iTWRowContainer,
     this->SetColorForTable(iTWRowContainer, iIndexColorTraceRowContainer, iTraceName, 0);
     this->SetColorForTable(iTWRowContainer, iIndexColorCollectionRowContainer, iCollectionName, 0);
     } //ENDELSE
+  this->setSortingEnabled(true);
 }
 
 //--------------------------------------------------------------------------
@@ -483,6 +485,7 @@ void QGoTableWidget::InsertNewRow(TWContainerType iTWRowContainer,
                                   std::vector< int > iIndexColorCollectionRowContainer,
                                   std::string TraceName, std::string CollectionName)
 {
+  this->setSortingEnabled(false);
   if ( iTWRowContainer.size() == 0 || iTWRowContainer[1].second.size() != 1 )
     {
     std::cout << "The New Trace Row Container is totally empty or there is more than 1 trace in it";
@@ -530,6 +533,7 @@ void QGoTableWidget::InsertNewRow(TWContainerType iTWRowContainer,
     this->SetColorForTable(iTWRowContainer, iIndexColorTraceRowContainer, TraceName, NewRow - 1);
     this->SetColorForTable(iTWRowContainer, iIndexColorCollectionRowContainer, CollectionName, NewRow - 1);
     } //ENDELSE
+  this->setSortingEnabled(true);
 }
 
 //--------------------------------------------------------------------------
@@ -557,6 +561,7 @@ void QGoTableWidget::UpdateRow(TWContainerType iTWRowContainer,
                                std::string iTraceName, std::string iCollectionName,
                                int iTraceID)
 {
+  this->setSortingEnabled(false);
   if ( iTWRowContainer.size() == 0 || iTWRowContainer[1].second.size() != 1 )
     {
     std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
@@ -633,6 +638,7 @@ void QGoTableWidget::UpdateRow(TWContainerType iTWRowContainer,
       std::cout << std::endl;
       }
     } //ENDELSE
+  this->setSortingEnabled(true);
 }
 
 //--------------------------------------------------------------------------
@@ -641,6 +647,7 @@ void QGoTableWidget::UpdateRow(TWContainerType iTWRowContainer,
 void QGoTableWidget::DeleteCheckedRows(std::string iTraceNameID,
                                        std::list< unsigned int > iTraceIDs)
 {
+  this->setSortingEnabled(false);
   std::list< unsigned int >::iterator iter = iTraceIDs.begin();
   while ( iter != iTraceIDs.end() )
     {
@@ -648,6 +655,7 @@ void QGoTableWidget::DeleteCheckedRows(std::string iTraceNameID,
     removeRow(RowToDelete);
     iter++;
     }
+  this->setSortingEnabled(true);
 }
 
 //--------------------------------------------------------------------------

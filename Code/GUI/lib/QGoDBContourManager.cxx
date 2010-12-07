@@ -63,9 +63,9 @@ QGoDBContourManager::~QGoDBContourManager()
 
 //-------------------------------------------------------------------------
 void QGoDBContourManager::SetContoursInfoContainerForVisu(
-  ContourMeshContainer *iContainerForVisu)
+  ContourContainer *iContainerForVisu)
 {
-  this->SetTracesInfoContainerForVisuTemplate<ContourMeshContainer>(
+  this->SetTracesInfoContainerForVisuTemplate<ContourContainer>(
     iContainerForVisu,&this->m_ContourContainerInfoForVisu);
 }
 //-------------------------------------------------------------------------
@@ -105,7 +105,7 @@ void QGoDBContourManager::DisplayInfoForAllTraces(
 //-------------------------------------------------------------------------
 /*void QGoDBContourManager::UpdateTracesVisibilityForGivenTimePoint(unsigned int iTimePoint)
 {
-  std::list<unsigned int> ListContours = 
+  std::list<unsigned int> ListContours =
     this->m_ContourContainerInfoForVisu->GetElementsTraceIDForGivenTimePoint(
     iTimePoint);
   this->m_Table->SetVisibleStateForListTraceIDs(
@@ -163,7 +163,11 @@ void QGoDBContourManager::SetSelectedColor(NameWithColorData iSelectedColor)
 }
 
 //-------------------------------------------------------------------------
-
+/*
+ * \todo Nicolas
+ * is it safe?? emit and process we don't know if the emit did what it was
+ *  supposed to do
+ */
 //-------------------------------------------------------------------------
 void QGoDBContourManager::ChangeTraceColor()
 {
@@ -173,6 +177,9 @@ void QGoDBContourManager::ChangeTraceColor()
   this->UpdateTheTracesColor(this->m_DatabaseConnector,
                              this->m_SelectedColor);
 
+  /*
+   * \todo Nicolas - shouldn't "m_DatabaseConnector" be desallocated here...?
+   */
   emit DBConnectionNotNeededAnymore();
 }
 
@@ -282,7 +289,7 @@ void QGoDBContourManager::UpdateTWAndContainerForImportedTraces(
   //update the visualization and the data from visu in the container for visu:
   this->m_ContourContainerInfoForVisu->
   UpdateVisualizationForGivenIDs< std::vector< int > >(
-    iVectorImportedTraces, true);
+    iVectorImportedTraces );
 }
 //-------------------------------------------------------------------------
 
@@ -349,6 +356,6 @@ void QGoDBContourManager::SetColorCoding(bool IsChecked)
 //-------------------------------------------------------------------------
 /*void QGoDBContourManager::BackFromColorCoding()
 {
-	this->SetBackFromColorCodingTemplate<ContourMeshContainer>(
+  this->SetBackFromColorCodingTemplate<ContourMeshContainer>(
     this->m_ContourContainerInfoForVisu);
 }*/

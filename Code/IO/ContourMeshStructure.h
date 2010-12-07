@@ -38,12 +38,13 @@
 class vtkActor;
 class vtkPolyData;
 class vtkProperty;
-class vtkLookupTable;
 
 #include <ostream>
 #include <vector>
 
 #include "QGoIOConfigure.h"
+
+#include "TraceStructure.h"
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 #include "StructureHelper.h"
@@ -52,8 +53,6 @@ class vtkLookupTable;
 /**
 \defgroup Contour Contour
 \defgroup Mesh Mesh
-\defgroup Trace Trace
-\defgroup Structure Structure
 */
 
 
@@ -61,47 +60,17 @@ class vtkLookupTable;
  * \struct ContourMeshStructure
  * \brief  Structure which represent a contour or a mesh, and used for
  * interaction between Visualization and TableWidget
- * \ingroup Contour Mesh Trace Structure
+ * \ingroup Contour Mesh Trace
  *
  * \sa ContourMeshContainer
  */
-struct QGOIO_EXPORT ContourMeshStructure {
-  /** TraceID */
-  unsigned int TraceID;
-
-  /** Actor in the XY View */
-  vtkActor *ActorXY;
-
-  /** Actor in the XZ View */
-  vtkActor *ActorXZ;
-
-  /** Actor in the YZ View */
-  vtkActor *ActorYZ;
-
-  /** Actor in the XYZ View */
-  vtkActor *ActorXYZ;
-
-  /**
-  * In the case of contours, Nodes represent the control points.
-  *   In the case of meshes, Nodes represent the triangular mesh.
-  */
-  vtkPolyData *Nodes;
-
+class QGOIO_EXPORT ContourMeshStructure : public TraceStructure
+{
+public:
   //unsigned int CollectionID;
 
   /** Time point of the contour / mesh */
   unsigned int TCoord;
-
-  /** Is the contour / mesh Highlighted in the Visualization ? */
-  bool Highlighted;
-
-  /** Is the contour / mesh Visible (appears on the screen)
-  * in the Visualization ?
-  */
-  bool Visible;
-
-  /** color of the contour / mesh. \note each component is in [0,1] */
-  double rgba[4];
 
   /**
   \brief Return the direction of a given contour iContour
@@ -163,32 +132,6 @@ struct QGOIO_EXPORT ContourMeshStructure {
 
   /** Destructor */
   ~ContourMeshStructure();
-
-  /** \brief Set Property for all actors
-      \param[in] iProperty */
-  void SetActorProperties( vtkProperty* iProperty ) const;
-
-  /** \brief Set Visibility for all actors
-      \param[in] iVisible */
-  void SetActorVisibility( const bool& iVisible ) const;
-
-  /** \brief Set Scalar Data associated to the elements (use for color coding)
-      \param[in] iName data name
-      \param[in] iValue value
-  */
-  void SetScalarData( const std::string& iName, const double& iValue ) const;
-
-  /** \brief Set the scalar range (use for color coding)
-      \param[in] iMin
-      \param[in] iMax */
-  void SetScalarRange( const double& iMin, const double& iMax ) const;
-
-  /** \brief Render with original colors (Remove the active scalars data).*/
-  void RenderWithOriginalColors() const;
-
-  /** \brief Set the lookup table
-      \param[in] iLut */
-  void SetLookupTable( vtkLookupTable* iLut ) const;
 
   /** Printing one element. std::cout << element << std::endl; */
   friend std::ostream & operator<<

@@ -58,7 +58,8 @@
 #include "QGoDBMeshManager.h"
 #include "QGoDBContourManager.h"
 #include "QGoDBTrackManager.h"
-#include "ContourMeshContainer.h"
+#include "ContourContainer.h"
+#include "MeshContainer.h"
 #include "TrackContainer.h"
 /**
 \defgroup DB Database
@@ -209,9 +210,25 @@ public:
 
   QAction * toggleViewAction();
 
+  /**
+  \brief get the info from a textfile, save it into the database,
+  update the container for visu and the TW
+  */
   void ImportContours();
 
+  /**
+  \brief get the info from a textfile, save it into the database,
+  update the container for visu and the TW
+  */
   void ImportMeshes();
+
+  /**
+  \brief get the info from a textfile, save it into the database,
+  update the container for visu and the TW and recalculate the points
+  for the tracks
+  \return all the new trackIDs
+  */
+  std::vector<int> ImportTracks();
 
   void PrintVolumeAreaForMesh(GoFigureMeshAttributes *
                               iMeshAttributes, unsigned int iMeshID);
@@ -242,7 +259,7 @@ public:
   \param[in] iContoursContainer pointer for the container of contours
   for the visu
   */
-  void SetContoursContainer(ContourMeshContainer *iContoursContainer);
+  void SetContoursContainer(ContourContainer *iContoursContainer);
 
   /**
   \brief set the pointer m_TraceInfoForVisu of the MeshesManager to
@@ -250,7 +267,7 @@ public:
   \param[in] iMeshesContainer pointer for the container of meshes
   for the visu
   */
-  void SetMeshesContainer(ContourMeshContainer *iMeshesContainer);
+  void SetMeshesContainer(MeshContainer *iMeshesContainer);
 
   /**
   \brief set the pointer m_TrackInfoForVisu of the TracksManager to
@@ -291,6 +308,8 @@ signals:
   "go to the trace " from the context menu
   */
   void NeedToGoToTheLocation(int XCoord, int YCoord, int ZCoord, int TCoord);
+
+  void PrintMessage(QString iMessage, int iTimeOut = 0);
 
 protected:
   //updated by the TraceManualEditing Widget:
@@ -451,7 +470,7 @@ protected:
   /**
   \brief get the RGB Alpha values from the iTraceRow and set a QColor with them
   \tparam T any children of GoDBTraceRow
-  \param[in] iTraceRow the trace from which the QColor is created  
+  \param[in] iTraceRow the trace from which the QColor is created
   \param[in] iDatabaseConnector connection to the database
   \return QColor with the values corresponding to the color values of the iTraceRow
   */
@@ -578,7 +597,6 @@ protected:
     iCollectionManager->UpdateBoundingBoxes(this->m_DatabaseConnector,
                                             ListCollectionIDsToUpdate);
   }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -673,6 +691,14 @@ protected slots:
   \param[in] iTraceID ID of the trace to reedit
   */
   void ReEditTrace(unsigned int iTraceID);
+
+  /**
+  \brief get the info needed for track from the meshcontainer,
+  and update the points of the track container (for imported tracks)
+  \param[in] iTrackID track ID for which the points will
+  be recalculated
+  */
+  void PassMeshesInfoForImportedTrack(unsigned int iTrackID);
 
   //*********************Slots for
   // TraceManualEditingWidget:**************************
