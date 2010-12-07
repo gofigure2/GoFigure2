@@ -293,23 +293,23 @@ QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
   unsigned int ContourID;
   if ( !this->m_ReeditMode )
     {
-    unsigned int MeshID = 0;
-    std::string  test = this->m_SelectedCollectionData->first;
-    if ( this->m_SelectedCollectionData->first != "Add a new mesh ..." )
-      {
-      MeshID = ss_atoi< unsigned int >(this->m_SelectedCollectionData->first);
-      }
+    //unsigned int MeshID = 0;
+    //std::string  test = this->m_SelectedCollectionData->first;
+    //if ( this->m_SelectedCollectionData->first != "Add a new mesh ..." )
+    //  {
+    //  MeshID = ss_atoi< unsigned int >(this->m_SelectedCollectionData->first);
+    //  }
     ContourID = this->m_ContoursManager->SaveNewContourFromVisu(iXCoordMin,
                                                                 iYCoordMin,
                                                                 iZCoordMin,
-                                                                iTCoord,
+                                                                //iTCoord,
                                                                 iXCoordMax,
                                                                 iYCoordMax,
                                                                 iZCoordMax,
                                                                 iContourNodes,
                                                                 this->m_DatabaseConnector,
-                                                                *this->m_SelectedColorData,
-                                                                MeshID);
+                                                                //*this->m_SelectedColorData,
+                                                                1);
     }
   else
     {
@@ -694,7 +694,7 @@ void QGoPrintDatabase::ImportContours()
     //import into the database:
     GoDBImport ImportHelper(this->m_Server, this->m_User,
                             this->m_Password, this->m_ImgSessionID, filename,
-                            this->m_SelectedTimePoint);
+                            *this->m_SelectedTimePoint);
     ImportHelper.ImportContours();
 
     std::vector< int > NewContourIDs = ImportHelper.GetVectorNewContourIDs();
@@ -733,7 +733,7 @@ void QGoPrintDatabase::ImportMeshes()
     //import into the database:
     GoDBImport ImportHelper(this->m_Server, this->m_User,
                             this->m_Password, this->m_ImgSessionID, filename,
-                            this->m_SelectedTimePoint);
+                            *this->m_SelectedTimePoint);
     ImportHelper.ImportMeshes();
 
     std::vector< int > NewMeshIDs = ImportHelper.GetVectorNewMeshIDs();
@@ -1021,9 +1021,9 @@ void QGoPrintDatabase::GetContentAndDisplayAllTracesInfo(
   vtkMySQLDatabase *iDatabaseConnector)
 {
   this->m_ContoursManager->DisplayInfoAndLoadVisuContainerForAllContours(
-    iDatabaseConnector,this->m_SelectedTimePoint);
+    iDatabaseConnector);///,this->m_SelectedTimePoint);
   this->m_MeshesManager->DisplayInfoAndLoadVisuContainerForAllMeshes(
-    iDatabaseConnector,this->m_SelectedTimePoint);
+    iDatabaseConnector);//,this->m_SelectedTimePoint);
   this->m_TracksManager->DisplayInfoAndLoadVisuContainerForAllTracks(
     iDatabaseConnector);
 }
@@ -1151,8 +1151,8 @@ void QGoPrintDatabase::SetContoursManager()
 
   QObject::connect( this->m_ContoursManager, SIGNAL( NeedToGetDatabaseConnection() ),
                     this, SLOT( PassDBConnectionToContoursManager() ) );
-  QObject::connect( this->m_ContoursManager, SIGNAL( NeedToGetCurrentSelectedColor() ),
-                    this, SLOT( PassSelectedColorToContoursManager() ) );
+  //QObject::connect( this->m_ContoursManager, SIGNAL( NeedToGetCurrentSelectedColor() ),
+  //                  this, SLOT( PassSelectedColorToContoursManager() ) );
   QObject::connect( this->m_ContoursManager, SIGNAL( TracesToDelete() ),
                     this, SLOT( DeleteContours() ) );
   QObject::connect( this->m_ContoursManager,
@@ -1278,11 +1278,11 @@ void QGoPrintDatabase::PassDBConnectionToTracksManager()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoPrintDatabase::PassSelectedColorToContoursManager()
+/*void QGoPrintDatabase::PassSelectedColorToContoursManager()
 {
   this->m_ContoursManager->SetSelectedColor(*this->m_SelectedColorData);
 }
-
+*/
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -1301,7 +1301,7 @@ void QGoPrintDatabase::CreateNewTrackFromCheckedMeshes(
 {
   this->OpenDBConnection();
   unsigned int NewTrackID = this->m_TracksManager->CreateNewTrackWithNoMesh(
-    this->m_DatabaseConnector, *this->m_SelectedColorData);
+    this->m_DatabaseConnector);//, *this->m_SelectedColorData);
   this->AddCheckedTracesToCollection< QGoDBMeshManager, QGoDBTrackManager >
     (this->m_MeshesManager, this->m_TracksManager,
     NewTrackID, iListCheckedMeshes);
@@ -1317,8 +1317,8 @@ void QGoPrintDatabase::CreateNewMeshFromCheckedContours(
   this->OpenDBConnection();
   unsigned int NewMeshID =
     this->m_MeshesManager->CreateNewMeshWithNoContourNoPoints(
-      this->m_DatabaseConnector, *this->m_SelectedColorData,
-      this->m_SelectedTimePoint);
+      this->m_DatabaseConnector);//, *this->m_SelectedColorData,
+      //this->m_SelectedTimePoint);
 
   this->AddCheckedTracesToCollection< QGoDBContourManager, QGoDBMeshManager >
     (this->m_ContoursManager, this->m_MeshesManager,

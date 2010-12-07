@@ -500,7 +500,7 @@ protected:
     //update everything for the traces and get the list of collection ID they
     //are collection of:
     std::list< unsigned int > ListCollectionOfIDsToUpdate =
-      iTraceManager->UpdateTheTracesColor(this->m_DatabaseConnector, *this->m_SelectedColorData);
+      iTraceManager->UpdateTheTracesColor(this->m_DatabaseConnector);//, *this->m_SelectedColorData);
     iCollectionOfManager->DisplayInfoForExistingTraces(this->m_DatabaseConnector,
                                                        ListCollectionOfIDsToUpdate);
     this->CloseDBConnection();
@@ -592,7 +592,7 @@ protected slots:
   */
   void PassDBConnectionToContoursManager();
 
-  void PassSelectedColorToContoursManager();
+  //void PassSelectedColorToContoursManager();
 
    /**
   \brief open the connection to the database and pass it to the MeshesManager

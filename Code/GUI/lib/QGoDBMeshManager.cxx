@@ -79,7 +79,7 @@ void QGoDBMeshManager::SetCollectionsTraceNames()
 
 //-------------------------------------------------------------------------
 void QGoDBMeshManager::DisplayInfoAndLoadVisuContainerForAllMeshes(
-  vtkMySQLDatabase *iDatabaseConnector,unsigned int iTimePoint)
+  vtkMySQLDatabase *iDatabaseConnector)//,unsigned int iTimePoint)
 {
   this->DisplayInfoAndLoadVisuContainerWithAllTraces< GoDBTWContainerForMesh >
     (this->m_TWContainer, iDatabaseConnector);
@@ -205,7 +205,7 @@ unsigned int QGoDBMeshManager::SaveNewMeshFromVisu(
   //save the intensities for each channel !!!
   unsigned int NewMeshID = this->m_CollectionOfTraces->CreateNewTraceInDB< GoDBMeshRow >(
     NewMesh, iDatabaseConnector, //iColor, iTrackID);
-    *this->m_SelectedColorData, this->m_SelectedCollectionData->first);
+    *this->m_SelectedColorData, ss_atoi<unsigned int>(this->m_SelectedCollectionData->first) );
 
   //double *rgba = this->GetVectorFromQColor(iColor.second);
   double *rgba = this->GetVectorFromQColor(this->m_SelectedColorData->second);
@@ -267,10 +267,11 @@ unsigned int QGoDBMeshManager::CreateNewMeshWithNoContourNoPoints(
   NewMesh.SetCellType(iDatabaseConnector, *this->m_SelectedCellType);
   NewMesh.SetSubCellType(iDatabaseConnector, *this->m_SelectedSubCellType);
   //if ( iTrackID != 0 )
-  if (this->m_SelectedCollectionData->first != 0)
+  unsigned int TrackID = ss_atoi<unsigned int>(this->m_SelectedCollectionData->first);
+  if ( TrackID != 0)
     {
     //NewMesh.SetCollectionID(iTrackID);
-    NewMesh.SetCollectionID(this->m_SelectedCollectionData->first);
+    NewMesh.SetCollectionID(TrackID);
     }
   unsigned int NewMeshID =
     this->m_CollectionOfTraces->CreateCollectionWithNoTracesNoPoints< GoDBMeshRow >(
@@ -292,10 +293,11 @@ unsigned int QGoDBMeshManager::CreateNewMeshWithNoContourNoPoints(
 
 //-------------------------------------------------------------------------
 std::list< unsigned int > QGoDBMeshManager::UpdateTheTracesColor(
-  vtkMySQLDatabase *iDatabaseConnector, NameWithColorData iNewColor)
+  vtkMySQLDatabase *iDatabaseConnector)//, NameWithColorData iNewColor)
 {
   return this->UpdateTheTracesColorTemplate< GoDBMeshRow,ContourMeshContainer >(
-    iDatabaseConnector,this->m_MeshContainerInfoForVisu,iNewColor);
+    //iDatabaseConnector,this->m_MeshContainerInfoForVisu,iNewColor);
+    iDatabaseConnector,this->m_MeshContainerInfoForVisu);
 }
 
 //-------------------------------------------------------------------------

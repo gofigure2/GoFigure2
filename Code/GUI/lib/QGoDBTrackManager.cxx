@@ -122,15 +122,17 @@ void QGoDBTrackManager::DisplayInfoForExistingTrace(
 
 //-------------------------------------------------------------------------
 unsigned int QGoDBTrackManager::CreateNewTrackWithNoMesh(
-  vtkMySQLDatabase *iDatabaseConnector, NameWithColorData iColor)
+  vtkMySQLDatabase *iDatabaseConnector)//, NameWithColorData iColor)
 {
   GoDBTrackRow NewTrack;
   unsigned int NewTrackID =
     this->m_CollectionOfTraces->CreateCollectionWithNoTracesNoPoints< GoDBTrackRow >(
-      iDatabaseConnector, iColor, NewTrack);
+      //iDatabaseConnector, iColor, NewTrack);
+      iDatabaseConnector, *this->m_SelectedColorData, NewTrack);
 
   this->m_TrackContainerInfoForVisu->UpdateCurrentElementFromDB(
-    NewTrackID, this->GetVectorFromQColor(iColor.second) );
+   // NewTrackID, this->GetVectorFromQColor(iColor.second) );
+   NewTrackID, this->GetVectorFromQColor(this->m_SelectedColorData->second) );
   this->m_TrackContainerInfoForVisu->InsertCurrentElement();
   this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
   return NewTrackID;
@@ -140,11 +142,11 @@ unsigned int QGoDBTrackManager::CreateNewTrackWithNoMesh(
 
 //-------------------------------------------------------------------------
 std::list< unsigned int > QGoDBTrackManager::UpdateTheTracesColor(
-  vtkMySQLDatabase *iDatabaseConnector, NameWithColorData iNewColor)
+  vtkMySQLDatabase *iDatabaseConnector)//, NameWithColorData iNewColor)
 {
   return this->UpdateTheTracesColorTemplate< GoDBTrackRow,
-    TrackContainer >(iDatabaseConnector,this->m_TrackContainerInfoForVisu,
-    iNewColor);
+    TrackContainer >(iDatabaseConnector,this->m_TrackContainerInfoForVisu);
+    //iNewColor);
 }
 
 //-------------------------------------------------------------------------
@@ -215,9 +217,11 @@ void QGoDBTrackManager::GetTracesInfoFromDBAndModifyContainerForVisu(
 void QGoDBTrackManager::UpdateCurrentElementTrackContainer()
   //unsigned int iTrackID)
 {
+  unsigned int TrackID = ss_atoi<unsigned int>(
+    this->m_SelectedCollectionData->first);
   this->m_TrackContainerInfoForVisu->UpdateCurrentElementFromExistingOne(
-    //iTrackID);
-    this->m_SelectedCollection->first);
+      TrackID);
+    
 }
 //-------------------------------------------------------------------------
 

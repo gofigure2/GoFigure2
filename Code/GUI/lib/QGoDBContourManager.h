@@ -51,7 +51,7 @@ public:
 
   //void SetDatabaseConnection(vtkMySQLDatabase *iDatabaseConnector);
 
-  void SetSelectedColor(NameWithColorData iSelectedColor);
+  //void SetSelectedColor(NameWithColorData iSelectedColor);
 
   //void SetSelectedCollection(NameWithColorData iSelectedCollection);
 
@@ -64,13 +64,13 @@ public:
   unsigned int SaveNewContourFromVisu(unsigned int iXCoordMin,
                                       unsigned int iYCoordMin,
                                       unsigned int iZCoordMin,
-                                      unsigned int iTCoord,
+                                      //unsigned int iTCoord,
                                       unsigned int iXCoordMax,
                                       unsigned int iYCoordMax,
                                       unsigned int iZCoordMax,
                                       vtkPolyData *iTraceNodes,
                                       vtkMySQLDatabase *iDatabaseConnector,
-                                      NameWithColorData iColor,
+                                      //NameWithColorData iColor,
                                       unsigned int iMeshID);
 
   /**
@@ -93,8 +93,8 @@ public:
   \param[in] iDatabaseConnector connection to the database
   \param[in] iTimePoint current timepoint
   */
-  void DisplayInfoAndLoadVisuContainerForAllContours(vtkMySQLDatabase *iDatabaseConnector,
-    unsigned int iTimePoint);
+  void DisplayInfoAndLoadVisuContainerForAllContours(vtkMySQLDatabase *iDatabaseConnector);
+    //unsigned int iTimePoint);
 
   /**
   \brief is called when the user choses the change color action in the
@@ -107,8 +107,8 @@ public:
   /**
   \brief virtual pure method in QGoDBTraceManager
   */
-  virtual std::list< unsigned int > UpdateTheTracesColor(vtkMySQLDatabase *iDatabaseConnector,
-                                                         NameWithColorData iNewColor);
+  virtual std::list< unsigned int > UpdateTheTracesColor(vtkMySQLDatabase *iDatabaseConnector);
+                                                         //NameWithColorData iNewColor);
 
   //virtual pure method in QGoDBTraceManager
   virtual void UpdateTWAndContainerForImportedTraces(std::vector< int > iVectorImportedTraces,
@@ -120,7 +120,7 @@ public:
   virtual std::list< unsigned int > GetListHighlightedIDs();
 
 signals:
-  void NeedToGetCurrentSelectedColor();
+  //void NeedToGetCurrentSelectedColor();
 
   //void NeedToGetCurrentSelectedCollection();
   /**
@@ -131,8 +131,8 @@ signals:
 protected:
   GoDBTWContainerForContourMesh *m_TWContainer;
   ContourMeshContainer          *m_ContourContainerInfoForVisu;
-  NameWithColorData              m_SelectedColor;
-  NameWithColorData              m_SelectedCollection;
+  //NameWithColorData              m_SelectedColor;
+  //NameWithColorData              m_SelectedCollection;
   vtkMySQLDatabase *             m_DatabaseConnector;
 
   //virtual pure method in QGoDBTraceManager

@@ -62,8 +62,8 @@ public:
   \param[in] iDatabaseConnector connection to the database
   \param[in] iTimePoint current timepoint
   */
-  void DisplayInfoAndLoadVisuContainerForAllMeshes(vtkMySQLDatabase *iDatabaseConnector,
-	unsigned int iTimePoint);
+  void DisplayInfoAndLoadVisuContainerForAllMeshes(vtkMySQLDatabase *iDatabaseConnector);
+	//unsigned int iTimePoint);
 
   virtual void DisplayInfoForLastCreatedTrace(vtkMySQLDatabase *iDatabaseConnector);
 
@@ -115,8 +115,8 @@ public:
   /**
   \brief virtual pure method in QGoDBTraceManager
   */
-  std::list< unsigned int > UpdateTheTracesColor(vtkMySQLDatabase *iDatabaseConnector,
-                                                 NameWithColorData iNewColor);
+  std::list< unsigned int > UpdateTheTracesColor(vtkMySQLDatabase *iDatabaseConnector);
+                                                 //NameWithColorData iNewColor);
 
   /**
   \brief update the bounding boxes for the meshes with no points

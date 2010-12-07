@@ -166,7 +166,8 @@ public:
   represented by the checked traces
   */
   virtual std::list< unsigned int > UpdateTheTracesColor(
-    vtkMySQLDatabase *iDatabaseConnector, NameWithColorData iColor) = 0;
+    vtkMySQLDatabase *iDatabaseConnector) = 0;
+    //, NameWithColorData iColor) = 0;
 
   /**
   \brief delete the selected traces from the database, the TW and the
@@ -585,13 +586,14 @@ protected:
   */
   template< typename T,typename C >
   std::list< unsigned int > UpdateTheTracesColorTemplate(
-    vtkMySQLDatabase *iDatabaseConnector, C *iContainerForVisu,
-    NameWithColorData iNewColor)
+    vtkMySQLDatabase *iDatabaseConnector, C *iContainerForVisu)
+    //NameWithColorData iNewColor)
   {
     std::list< unsigned int > oListOfCollectionOfIDs = std::list< unsigned int >();
     std::list< unsigned int > ListTracesIDs;
     ListTracesIDs = iContainerForVisu->
-                    UpdateAllHighlightedElementsWithGivenColor(iNewColor.second);
+                   // UpdateAllHighlightedElementsWithGivenColor(iNewColor.second);
+                   UpdateAllHighlightedElementsWithGivenColor(this->m_SelectedColorData->second);
     if ( ListTracesIDs.empty() )
       {
       QMessageBox msgBox;
@@ -605,7 +607,8 @@ protected:
       std::list< unsigned int >::iterator iter = ListTracesIDs.begin();
       while ( iter != ListTracesIDs.end() )
         {
-        this->m_CollectionOfTraces->ChangeColorForTrace< T >(*iter, iNewColor,
+        this->m_CollectionOfTraces->ChangeColorForTrace< T >(*iter, //iNewColor,
+                                                             *this->m_SelectedColorData,
                                                              iDatabaseConnector);
         this->DisplayInfoForExistingTrace(iDatabaseConnector, *iter);
         ++iter;
@@ -820,6 +823,6 @@ protected slots:
   */
   virtual void SetColorCoding(bool IsChecked)= 0;
 
-  void ShowOnlyRowsForCurrentTimePoint();
+  //void ShowOnlyRowsForCurrentTimePoint();
 };
 #endif

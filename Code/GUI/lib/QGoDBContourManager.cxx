@@ -82,7 +82,7 @@ void QGoDBContourManager::SetCollectionsTraceNames()
 
 //-------------------------------------------------------------------------
 void QGoDBContourManager::DisplayInfoAndLoadVisuContainerForAllContours(
-  vtkMySQLDatabase *iDatabaseConnector,unsigned int iTimePoint)
+  vtkMySQLDatabase *iDatabaseConnector)//,unsigned int iTimePoint)
 {
   this->DisplayInfoAndLoadVisuContainerWithAllTraces< GoDBTWContainerForContourMesh >
     (this->m_TWContainer, iDatabaseConnector);
@@ -157,21 +157,21 @@ void QGoDBContourManager::AddActionForCreateNewCollectionFromCheckedTraces(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBContourManager::SetSelectedColor(NameWithColorData iSelectedColor)
+/*void QGoDBContourManager::SetSelectedColor(NameWithColorData iSelectedColor)
 {
-  this->m_SelectedColor = iSelectedColor;
+  this->m_SelectedColorDat = iSelectedColor;
 }
-
+*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoDBContourManager::ChangeTraceColor()
 {
-  emit NeedToGetCurrentSelectedColor();
+  //emit NeedToGetCurrentSelectedColor();
   emit NeedToGetDatabaseConnection();
 
-  this->UpdateTheTracesColor(this->m_DatabaseConnector,
-                             this->m_SelectedColor);
+  this->UpdateTheTracesColor(this->m_DatabaseConnector);
+                             //this->m_SelectedColor);
 
   emit DBConnectionNotNeededAnymore();
 }
@@ -180,10 +180,10 @@ void QGoDBContourManager::ChangeTraceColor()
 
 //-------------------------------------------------------------------------
 std::list< unsigned int > QGoDBContourManager::UpdateTheTracesColor(
-  vtkMySQLDatabase *iDatabaseConnector, NameWithColorData iNewColor)
+  vtkMySQLDatabase *iDatabaseConnector)//, NameWithColorData iNewColor)
 {
   return this->UpdateTheTracesColorTemplate< GoDBContourRow,ContourMeshContainer >(
-    iDatabaseConnector, this->m_ContourContainerInfoForVisu,iNewColor);
+    iDatabaseConnector, this->m_ContourContainerInfoForVisu);//,iNewColor);
 }
 
 //-------------------------------------------------------------------------
@@ -191,20 +191,29 @@ std::list< unsigned int > QGoDBContourManager::UpdateTheTracesColor(
 //-------------------------------------------------------------------------
 unsigned int QGoDBContourManager::SaveNewContourFromVisu(
   unsigned int iXCoordMin, unsigned int iYCoordMin, unsigned int iZCoordMin,
-  unsigned int iTCoord, unsigned int iXCoordMax, unsigned int iYCoordMax,
+  //unsigned int iTCoord, 
+  unsigned int iXCoordMax, unsigned int iYCoordMax,
   unsigned int iZCoordMax, vtkPolyData *iTraceNodes,
-  vtkMySQLDatabase *iDatabaseConnector, NameWithColorData iColor,
+  vtkMySQLDatabase *iDatabaseConnector, //NameWithColorData iColor,
   unsigned int iMeshID)
 
 {
+  if ( this->m_SelectedCollectionData->first != "Add a new mesh ..." 
+    && iMeshID != 0)
+    {
+    iMeshID = ss_atoi< unsigned int >(this->m_SelectedCollectionData->first);
+    }
   GoDBContourRow NewContour(this->m_ImgSessionID);
   //NewContour.SetTheDataFromTheVisu(iDatabaseConnector, iTraceNodes);
 
   int NewContourID = this->CreateNewTraceInDBFromVisu< GoDBContourRow >(
-    iXCoordMin, iYCoordMin, iZCoordMin, iTCoord, iXCoordMax, iYCoordMax, iZCoordMax, iTraceNodes,
-    iColor, iDatabaseConnector, NewContour, iMeshID);
-
-  double *rgba = this->GetVectorFromQColor(iColor.second);
+    iXCoordMin, iYCoordMin, iZCoordMin, //iTCoord, 
+    *this->m_CurrentTimePoint, iXCoordMax, iYCoordMax, iZCoordMax, iTraceNodes,
+    //iColor, 
+    *this->m_SelectedColorData,
+    iDatabaseConnector, NewContour, iMeshID);
+  //double *rgba = this->GetVectorFromQColor(iColor.second);
+  double *rgba = this->GetVectorFromQColor(this->m_SelectedColorData->second);
 
   this->m_ContourContainerInfoForVisu->UpdateCurrentElementFromDB(
     NewContourID, rgba);
