@@ -69,7 +69,6 @@ public:
   */
   QGoTableWidget * GetTableWidget();
 
-
   /**
   \brief set the m_DatabaseConnection to iDatabaseConnector
   */
@@ -86,31 +85,6 @@ public:
   */
   std::list< NameWithColorData > GetAllTraceIDsWithColor(
     vtkMySQLDatabase *iDatabaseConnector, int iTimePoint = -1);
-
-  /**
-  \brief get the data needed from the database,
-  display them in the m_Table for all traces corresponding to the imagingsession
-  and update the container for the visu
-  \param[in] iDatabaseConnector connection to the database
-  */
-  //void UpdateTWAndContainerForAllTraces(vtkMySQLDatabase *iDatabaseConnector);
-
-  /**
-  \brief get the data needed from the database for the
-  existing traces,display them in a new inserted row of the m_Table and
-  update the container for the visu.
-  \param[in] iDatabaseConnector connection to the database
-  \param[in] iTraceIDs vector of the IDs for which the objects need to be updated
-  */
-  //void UpdateTWAndContainerForExistingTraces(
-  //  vtkMySQLDatabase *iDatabaseConnector, std::list< unsigned int > iTraceIDs);
-
-  /**
-  \overload UpdateTWAndContainerForExistingTraces(
-    vtkMySQLDatabase *iDatabaseConnector, std::list< unsigned int > iTraceIDs)
-  */
-  //void UpdateTWAndContainerForExistingTraces(
-  //  vtkMySQLDatabase *iDatabaseConnector, int iTraceID);
 
   /**
   \brief delete the corresponding traces in the table widget and in the
@@ -131,16 +105,6 @@ public:
                                                      vtkMySQLDatabase *iDatabaseConnector) = 0;
 
   /**
-  \brief get from the database the list of all the IDs for the traces with the
-  given ZCoord within the bounding box
-  \param[in] iDatabaseConnector connection to the database
-  \param[in] iZCoord given Z coordinate
-  return std::list<unsigned int> list of the Traces IDs
-  */
-  //std::list< unsigned int > GetAllTracesIDForAGivenZCoord(
-  //  vtkMySQLDatabase *iDatabaseConnector, int iZCoord);
-
-  /**
   \brief
   \return the list of traceIDs that have highlighted set to true in the
   ContainerForVisu.
@@ -148,26 +112,16 @@ public:
   virtual std::list< unsigned int > GetListHighlightedIDs()= 0;
 
   /**
-  \brief set the m_TraceContainerInfoForVisu to the iContainerForVisu
-  \param[in] iContainerForVisu common container for the visu and database
-  \tparam T ContourMeshContainer or TrackContainer
-  */
-  //template<typename T>
-  //virtual void SetTracesInfoContainerForVisu(T *iContainerForVisu) = 0;
-
-  /**
   \brief virtual pure. update the color of the checked traces in the database,
   the visu container and the TW and return the collectionOf IDs. (i.e traces that
   belongs to these traces as collection: contourIDs belonging to these meshes
   if the trace is a mesh)
   \param[in] iDatabaseConnector connection to the database
-  \param[in] iColor new color for the traces
   \return a list of the tracesIDs, part of the collection
   represented by the checked traces
   */
   virtual std::list< unsigned int > UpdateTheTracesColor(
     vtkMySQLDatabase *iDatabaseConnector) = 0;
-    //, NameWithColorData iColor) = 0;
 
   /**
   \brief delete the selected traces from the database, the TW and the
@@ -255,7 +209,7 @@ public:
   \brief set the pointer to the current timepoint
   \param[in] iTimePoint pointer to the current timepoint
   */
-  void SetCurrentTimePoint(unsigned int* iTimePoint);
+  void SetCurrentTimePoint(int* iTimePoint);
 
   /**
   \brief set the pointer to the current selected color
@@ -304,7 +258,7 @@ protected:
 
   NameWithColorData*      m_SelectedCollectionData;
   NameWithColorData*      m_SelectedColorData;
-  unsigned int*           m_CurrentTimePoint;
+  int*                    m_CurrentTimePoint;
 
   int                     m_ImgSessionID;
   QGoTableWidget *        m_Table;
@@ -574,11 +528,10 @@ protected:
   }
 
   /**
-  \brief update the visu container, the database and the TW with the new color
+  \brief update the visu container, the database and the TW with the user selected color
   for the highlighted traces
   \param[in] iDatabaseConnector connection to the database
   \param[in] iContainerInfoForVisu info needed for the visu
-  \param[in] iNewColor color to be the new one for the highlighted traces
   \return a list of the tracesIDs, part of the collection
   represented by the checked traces
   \tparam T children of GoDBTraceRow
@@ -587,12 +540,10 @@ protected:
   template< typename T,typename C >
   std::list< unsigned int > UpdateTheTracesColorTemplate(
     vtkMySQLDatabase *iDatabaseConnector, C *iContainerForVisu)
-    //NameWithColorData iNewColor)
   {
     std::list< unsigned int > oListOfCollectionOfIDs = std::list< unsigned int >();
     std::list< unsigned int > ListTracesIDs;
     ListTracesIDs = iContainerForVisu->
-                   // UpdateAllHighlightedElementsWithGivenColor(iNewColor.second);
                    UpdateAllHighlightedElementsWithGivenColor(this->m_SelectedColorData->second);
     if ( ListTracesIDs.empty() )
       {
@@ -607,7 +558,7 @@ protected:
       std::list< unsigned int >::iterator iter = ListTracesIDs.begin();
       while ( iter != ListTracesIDs.end() )
         {
-        this->m_CollectionOfTraces->ChangeColorForTrace< T >(*iter, //iNewColor,
+        this->m_CollectionOfTraces->ChangeColorForTrace< T >(*iter,
                                                              *this->m_SelectedColorData,
                                                              iDatabaseConnector);
         this->DisplayInfoForExistingTrace(iDatabaseConnector, *iter);
@@ -728,19 +679,6 @@ protected:
       iContainerForVisu->SetColorCode( ColumnName, Values );
       }
   }
-
-  /**
-  \brief return to the color saved in the database for the traces
-  \param[in] iContainerForVisu common container for the visu and database
-  \tparam ContourMeshContainer or TrackContainer
-  */
-  /*template<typename T>
-  void SetBackFromColorCodingTemplate( T* iContainerForVisu)
-  {
-    std::string ColumnName = "";
-  std::map<unsigned int, double> Values = std::map<unsigned int, double>();
-    iContainerForVisu->SetColorCode( ColumnName,Values );
-  }*/
 
   virtual void AddActionsContextMenu(QMenu *iMenu);
 

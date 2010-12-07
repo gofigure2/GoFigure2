@@ -642,7 +642,7 @@ void QGoDBTraceManager::SetSelectedCollection (NameWithColorData* iCollectionDat
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBTraceManager::SetCurrentTimePoint(unsigned int* iTimePoint)
+void QGoDBTraceManager::SetCurrentTimePoint(int* iTimePoint)
 {
   this->m_CurrentTimePoint = iTimePoint;
 }

@@ -60,10 +60,8 @@ public:
   \brief get all the data from the database to load all the meshes for the imagingsession
   into the table widget and the container for the visu
   \param[in] iDatabaseConnector connection to the database
-  \param[in] iTimePoint current timepoint
   */
   void DisplayInfoAndLoadVisuContainerForAllMeshes(vtkMySQLDatabase *iDatabaseConnector);
-	//unsigned int iTimePoint);
 
   virtual void DisplayInfoForLastCreatedTrace(vtkMySQLDatabase *iDatabaseConnector);
 
@@ -86,37 +84,29 @@ public:
                                             unsigned iMeshID);
 
   unsigned int CreateNewMeshWithNoContourNoPoints(
-    vtkMySQLDatabase *iDatabaseConnector);//, NameWithColorData iColor,
-    //unsigned int iTimePoint); //,std::string iCellType, std::string iSubCellType,
-    //unsigned int iTrackID = 0);
+    vtkMySQLDatabase *iDatabaseConnector);
 
   unsigned int SaveNewMeshFromVisu(unsigned int iXCoordMin,
                                    unsigned int iYCoordMin,
                                    unsigned int iZCoordMin,
-                                   //unsigned int iTCoord,
                                    unsigned int iXCoordMax,
                                    unsigned int iYCoordMax,
                                    unsigned int iZCoordMax,
                                    vtkPolyData *iTraceNodes,
                                    vtkMySQLDatabase *iDatabaseConnector,
-                                   //NameWithColorData iColor,
-                                   //unsigned int iTrackID,
                                    GoFigureMeshAttributes *iMeshAttributes);
-                                   //std::string iCellType,
-                                  // std::string iSubCellType);
 
   void SaveGeneratedMeshFromVisu(unsigned int iXCoordMin, unsigned int iYCoordMin,
                                  unsigned int iZCoordMin,
-                                 //unsigned int iTCoord, 
                                  unsigned int iXCoordMax, unsigned int iYCoordMax,
                                  unsigned int iZCoordMax, vtkPolyData *iTraceNodes,
-                                 vtkMySQLDatabase *iDatabaseConnector, GoFigureMeshAttributes *iMeshAttributes);
+                                 vtkMySQLDatabase *iDatabaseConnector, 
+                                 GoFigureMeshAttributes *iMeshAttributes);
 
   /**
   \brief virtual pure method in QGoDBTraceManager
   */
   std::list< unsigned int > UpdateTheTracesColor(vtkMySQLDatabase *iDatabaseConnector);
-                                                 //NameWithColorData iNewColor);
 
   /**
   \brief update the bounding boxes for the meshes with no points
@@ -144,19 +134,6 @@ public:
   \param[in] iSubCellType name of the subcelltype
   */
   void SetSelectedSubCellType(std::string* iSubCellType);
-
-public slots:
-  /**
-  \brief set the m_SelectedCelltype to iCelltype
-  \param[in] iCellType name of the celltype
-  */
-  //void UpdateSelectedCellType(std::string iCellType);
-
-  /**
-  \brief set the m_SelectedSubCelltype to iSubCelltype
-  \param[in] iSubCellType name of the subcelltype
-  */
-  //void UpdateSelectedSubCellType(std::string iSubCellType);
 
 protected:
   GoDBTWContainerForMesh *m_TWContainer;
@@ -189,13 +166,6 @@ protected:
   virtual void GetTracesInfoFromDBAndModifyContainerForVisu(
     vtkMySQLDatabase* iDatabaseConnector,std::vector<int> iVectIDs = std::vector< int >());
 
-  /**
-  \brief get the meshesIDs belonging to iTimePoint and set their visibility
-  on after setting all meshesIDs visibility off
-  \param[in] iTimePoint current timepoint
-  */
-  //void UpdateTracesVisibilityForGivenTimePoint(unsigned int iTimePoint);
-
 protected slots:
   //virtual pure method in QGoDBTraceManager
   virtual void UpdateHighlightedElementsInVisuContainer(int iTraceID);
@@ -216,7 +186,5 @@ protected slots:
   */
   void UpdateSubCellType();
 
-  //virtual pure method in QGoDBTraceManager
-  //virtual void BackFromColorCoding();
 };
 #endif

@@ -63,6 +63,10 @@ public:
   \param[in] iIndex index to select and at which to get the info
   */
   void SetCurrentItemAndActivate(int iIndex);
+  /**
+  \overload
+  */
+  void SetCurrentItemAndActivate(std::string iItemText);
 
 signals:
   void AddANewOneActivated();

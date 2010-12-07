@@ -247,7 +247,7 @@ public:
                                                const bool& iIntensity );
 
 signals:
-  void TimePointChanged(unsigned int TimePoint);
+  void TimePointChanged(int TimePoint);
 
   void SliceViewXYChanged(int Slice);
 

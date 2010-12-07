@@ -79,11 +79,10 @@ void QGoDBMeshManager::SetCollectionsTraceNames()
 
 //-------------------------------------------------------------------------
 void QGoDBMeshManager::DisplayInfoAndLoadVisuContainerForAllMeshes(
-  vtkMySQLDatabase *iDatabaseConnector)//,unsigned int iTimePoint)
+  vtkMySQLDatabase *iDatabaseConnector)
 {
   this->DisplayInfoAndLoadVisuContainerWithAllTraces< GoDBTWContainerForMesh >
     (this->m_TWContainer, iDatabaseConnector);
-  //this->UpdateTracesVisibilityForGivenTimePoint(iTimePoint);
 }
 
 //-------------------------------------------------------------------------
@@ -96,18 +95,6 @@ void QGoDBMeshManager::DisplayInfoForAllTraces(
   this->DisplayInfoForAllTracesTemplate< GoDBTWContainerForMesh >(
     this->m_TWContainer, iDatabaseConnector,Qt::Unchecked,IndexShowColumn);
 }
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/*void QGoDBMeshManager::UpdateTracesVisibilityForGivenTimePoint(unsigned int iTimePoint)
-{
-  std::list<unsigned int> ListMeshes = 
-    this->m_MeshContainerInfoForVisu->GetElementsTraceIDForGivenTimePoint(
-    iTimePoint);
-  this->m_Table->SetVisibleStateForListTraceIDs(
-    ListMeshes,Qt::Checked,this->m_TraceName);
-}*/
 
 //-------------------------------------------------------------------------
 
@@ -188,26 +175,23 @@ void QGoDBMeshManager::AddActionsContextMenu(QMenu *iMenu)
 //-------------------------------------------------------------------------
 unsigned int QGoDBMeshManager::SaveNewMeshFromVisu(
   unsigned int iXCoordMin, unsigned int iYCoordMin, unsigned int iZCoordMin,
-  //unsigned int iTCoord, 
   unsigned int iXCoordMax, unsigned int iYCoordMax,
   unsigned int iZCoordMax, vtkPolyData *iTraceNodes,
-  vtkMySQLDatabase *iDatabaseConnector, //NameWithColorData iColor,
-  //unsigned int iTrackID, 
+  vtkMySQLDatabase *iDatabaseConnector,
   GoFigureMeshAttributes *iMeshAttributes)
 {
   GoDBMeshRow NewMesh(this->m_ImgSessionID);
   NewMesh.SetCellType(iDatabaseConnector, *this->m_SelectedCellType);
   NewMesh.SetSubCellType(iDatabaseConnector, *this->m_SelectedSubCellType);
-  this->SetMeshBoundingBoxAndPoints(iXCoordMin, iYCoordMin, iZCoordMin,//iTCoord,
+  this->SetMeshBoundingBoxAndPoints(iXCoordMin, iYCoordMin, iZCoordMin,
                                     *this->m_CurrentTimePoint,
                                     iXCoordMax, iYCoordMax, iZCoordMax, iTraceNodes, iDatabaseConnector, NewMesh,
                                     iMeshAttributes);
   //save the intensities for each channel !!!
   unsigned int NewMeshID = this->m_CollectionOfTraces->CreateNewTraceInDB< GoDBMeshRow >(
-    NewMesh, iDatabaseConnector, //iColor, iTrackID);
-    *this->m_SelectedColorData, ss_atoi<unsigned int>(this->m_SelectedCollectionData->first) );
+    NewMesh, iDatabaseConnector,*this->m_SelectedColorData, 
+    ss_atoi<unsigned int>(this->m_SelectedCollectionData->first) );
 
-  //double *rgba = this->GetVectorFromQColor(iColor.second);
   double *rgba = this->GetVectorFromQColor(this->m_SelectedColorData->second);
   this->m_MeshContainerInfoForVisu->UpdateCurrentElementFromDB(
     NewMeshID, rgba);
@@ -221,7 +205,6 @@ unsigned int QGoDBMeshManager::SaveNewMeshFromVisu(
 void QGoDBMeshManager::SaveGeneratedMeshFromVisu(unsigned int iXCoordMin,
                                                  unsigned int iYCoordMin,
                                                  unsigned int iZCoordMin,
-                                                 //unsigned int iTCoord,
                                                  unsigned int iXCoordMax,
                                                  unsigned int iYCoordMax,
                                                  unsigned int iZCoordMax,
@@ -238,7 +221,6 @@ void QGoDBMeshManager::SaveGeneratedMeshFromVisu(unsigned int iXCoordMin,
   this->SetMeshBoundingBoxAndPoints(iXCoordMin,
                                     iYCoordMin,
                                     iZCoordMin,
-                                    //iTCoord,
                                     *this->m_CurrentTimePoint,
                                     iXCoordMax,
                                     iYCoordMax,
@@ -256,29 +238,19 @@ void QGoDBMeshManager::SaveGeneratedMeshFromVisu(unsigned int iXCoordMin,
 
 //-------------------------------------------------------------------------
 unsigned int QGoDBMeshManager::CreateNewMeshWithNoContourNoPoints(
-  vtkMySQLDatabase *iDatabaseConnector)//, NameWithColorData iColor, unsigned int iTimePoint,
-  //std::string iCellType, std::string iSubCellType, 
-  //unsigned int iTrackID)
+  vtkMySQLDatabase *iDatabaseConnector)
 {
   GoDBMeshRow NewMesh;
-
- // NewMesh.SetCellType(iDatabaseConnector, iCellType);
-  //NewMesh.SetSubCellType(iDatabaseConnector, iSubCellType);
   NewMesh.SetCellType(iDatabaseConnector, *this->m_SelectedCellType);
   NewMesh.SetSubCellType(iDatabaseConnector, *this->m_SelectedSubCellType);
-  //if ( iTrackID != 0 )
   unsigned int TrackID = ss_atoi<unsigned int>(this->m_SelectedCollectionData->first);
   if ( TrackID != 0)
     {
-    //NewMesh.SetCollectionID(iTrackID);
     NewMesh.SetCollectionID(TrackID);
     }
   unsigned int NewMeshID =
     this->m_CollectionOfTraces->CreateCollectionWithNoTracesNoPoints< GoDBMeshRow >(
-      //iDatabaseConnector, iColor, NewMesh, iTimePoint);
       iDatabaseConnector, *this->m_SelectedColorData, NewMesh, *this->m_CurrentTimePoint);
-
-  //double *color = this->GetVectorFromQColor(iColor.second);
   double *color = this->GetVectorFromQColor(this->m_SelectedColorData->second);
   this->m_MeshContainerInfoForVisu->UpdateCurrentElementFromDB(
     NewMeshID, color);
@@ -293,10 +265,9 @@ unsigned int QGoDBMeshManager::CreateNewMeshWithNoContourNoPoints(
 
 //-------------------------------------------------------------------------
 std::list< unsigned int > QGoDBMeshManager::UpdateTheTracesColor(
-  vtkMySQLDatabase *iDatabaseConnector)//, NameWithColorData iNewColor)
+  vtkMySQLDatabase *iDatabaseConnector)
 {
   return this->UpdateTheTracesColorTemplate< GoDBMeshRow,ContourMeshContainer >(
-    //iDatabaseConnector,this->m_MeshContainerInfoForVisu,iNewColor);
     iDatabaseConnector,this->m_MeshContainerInfoForVisu);
 }
 
