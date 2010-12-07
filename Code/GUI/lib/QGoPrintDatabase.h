@@ -252,7 +252,6 @@ signals:
 
 protected:
   //updated by the TraceManualEditing Widget:
-  //ItemColorComboboxData* m_SelectedColorData;
   ItemColorComboboxData* m_SelectedCollectionData;
 
   //related to 3dwt:
@@ -371,13 +370,6 @@ protected:
   selected collection
   */
   void SetPointerCollectionData(ItemColorComboboxData* iCollectionData);
-
-  /**
-  \brief set the pointer for the selected color to iColorData
-  \param[in] iColorData pointer to the name and color of the selected
-  color
-  */
-  //void SetPointerSelectedColorData(ItemColorComboboxData* iColorData);
 
   //******************End of Methods related to Trace Manual Editing
   // Widget***********

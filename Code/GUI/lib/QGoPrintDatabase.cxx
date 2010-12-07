@@ -437,7 +437,6 @@ void QGoPrintDatabase::SaveNewCollectionFromTraceWidgetInDBAndTW()
       }
     ItemColorComboboxData NewCollectionData;
     NewCollectionData.first = ConvertToString< unsigned int >(NewCollectionID);
-    //NewCollectionData.second = this->m_SelectedColorData->second;
     NewCollectionData.second = this->m_TraceWidget->GetPointerColorData()->second;
     this->m_TraceWidget->AddANewCollectionID(NewCollectionData);
     }
@@ -1102,7 +1101,6 @@ void QGoPrintDatabase::SetContoursManager()
   this->m_ContoursManager->SetSelectedCollection(
     this->m_TraceWidget->GetPointerCollectionData() );
   this->m_ContoursManager->SetCurrentTimePoint(this->m_SelectedTimePoint);
-  //this->m_ContoursManager->SetSelectedColor(this->m_SelectedColorData);
   this->m_ContoursManager->SetSelectedColor(this->m_TraceWidget->GetPointerColorData());
 }
 
@@ -1144,7 +1142,6 @@ void QGoPrintDatabase::SetMeshesManager()
   this->m_MeshesManager->SetSelectedSubCellType(
     this->m_TraceWidget->GetPointerSelectedSubCellType());
   this->m_MeshesManager->SetCurrentTimePoint(this->m_SelectedTimePoint);
-  //this->m_MeshesManager->SetSelectedColor(this->m_SelectedColorData);
   this->m_MeshesManager->SetSelectedColor(this->m_TraceWidget->GetPointerColorData());
 }
 //--------------------------------------------------------------------------
@@ -1174,7 +1171,6 @@ void QGoPrintDatabase::SetTracksManager()
 
   this->m_TracksManager->SetSelectedCollection(
     this->m_TraceWidget->GetPointerCollectionData());
-  //this->m_TracksManager->SetSelectedColor(this->m_SelectedColorData);
   this->m_TracksManager->SetSelectedColor(this->m_TraceWidget->GetPointerColorData());
 }
 
@@ -1283,8 +1279,3 @@ void QGoPrintDatabase::SetPointerCollectionData (ItemColorComboboxData* iCollect
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-/*void QGoPrintDatabase::SetPointerSelectedColorData(ItemColorComboboxData* iColorData)
-{
-  this->m_SelectedColorData = iColorData;
-}
-*/
