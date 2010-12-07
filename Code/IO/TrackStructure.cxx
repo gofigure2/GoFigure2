@@ -42,6 +42,7 @@
 #include "vtkGlyph3D.h"
 #include "vtkTubeFilter.h"
 #include "vtkAppendPolyData.h"
+#include "vtkMath.h"
 
 //--------------------------------------------------------------------------
 TrackStructure::
@@ -337,7 +338,7 @@ UpdateTracksRepresentation( bool iGlyph, bool iTube ) const
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-bool TrackMerge( const TrackStructure& iT1,
+/*bool TrackMerge( const TrackStructure& iT1,
                  const TrackStructure& iT2,
                  TrackStructure& oMerged )
 {
@@ -395,11 +396,11 @@ bool TrackMerge( const TrackStructure& iT1,
       return true;
       }
     }
-}
+}*/
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-bool TrackSplit( const TrackStructure& iTrack,
+/*bool TrackSplit( const TrackStructure& iTrack,
                  const unsigned int& iTime,
                  TrackStructure& oT1,
                  TrackStructure& oT2 )
@@ -435,5 +436,41 @@ bool TrackSplit( const TrackStructure& iTrack,
     }
 
   return false;
+}*/
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void TrackStructure::ComputeAttributes()
+{
+  PointsMapConstIterator it = this->PointsMap.begin();
+  double total_length = 0.;
+  double distance = 0.;
+  double avg_speed = 0.;
+  double max_speed = 0.;
+  unsigned int t0, t1;
+  double dist;
+
+  unsigned int tmin = it->first;
+  t0 = tmin;
+  double* org = it->second;
+  double* p = it->second;
+  double* q;
+  ++it;
+
+  while( it != this->PointsMap.end() )
+    {
+    t1 = it->first;
+    q = it->second;
+    dist = sqrt( vtkMath::Distance2BetweenPoints( p, q ) );
+    total_length += dist;
+    max_speed = std::max( max_speed,
+                          dist / (static_cast< double >( t1 - t0 ) ) );
+    p = q;
+    t0 = t1;
+    ++it;
+    }
+  distance = sqrt( vtkMath::Distance2BetweenPoints( org, q ) );
+  avg_speed = total_length / static_cast< double >( t1 - tmin );
 }
+
 //--------------------------------------------------------------------------
