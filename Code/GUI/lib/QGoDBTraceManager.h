@@ -250,6 +250,11 @@ public:
   */
   void SetSelectedCollection (NameWithColorData* iCollectionData);
 
+  /**
+  \brief set the pointer to the current timepoint
+  \param[in] iTimePoint pointer to the current timepoint
+  */
+  void SetCurrentTimePoint(unsigned int* iTimePoint);
 
 signals:
   /**
@@ -291,6 +296,7 @@ protected:
   std::string m_CollectionOfID;
 
   NameWithColorData*      m_SelectedCollectionData;
+  unsigned int*           m_CurrentTimePoint;
 
   int                     m_ImgSessionID;
   QGoTableWidget *        m_Table;
@@ -801,18 +807,12 @@ protected slots:
   */
   virtual void UpdateVisibleElementsInVisuContainer(int iTraceID) = 0;
 
-
   /**
   \brief ColorCode the traces in the visualization base on a selected column
   in the table widget
   */
   virtual void SetColorCoding(bool IsChecked)= 0;
 
-  /**
-  \brief return to the color saved in the database for the traces in the
-  visualization
-  */
-  //virtual void BackFromColorCoding() = 0;
-
+  void ShowOnlyRowsForCurrentTimePoint();
 };
 #endif
