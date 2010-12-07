@@ -72,7 +72,6 @@
 //--------------------------------------------------------------------------
 QGoPrintDatabase::QGoPrintDatabase(QWidget *iParent):
   QWidget(iParent),
-  //m_SelectedColorData(NULL),
   m_SelectedCollectionData(NULL),
   m_ContoursManager(NULL),
   m_MeshesManager(NULL),
@@ -101,7 +100,6 @@ QGoPrintDatabase::QGoPrintDatabase(QWidget *iParent):
   this->m_TraceWidget =
     this->m_TraceManualEditingDockWidget->m_TraceWidget;
   this->SetPointerCollectionData (this->m_TraceWidget->GetPointerCollectionData());
-  //this->SetPointerSelectedColorData (this->m_TraceWidget->GetPointerColorData());
 
   this->m_CellTypeManager = new QGoDBCellTypeManager(this);
 
@@ -731,12 +729,21 @@ void QGoPrintDatabase::UpdateWidgetsForCorrespondingTrace(std::string iTraceName
 {
   if ( UpdateTableWidget )
     {
+    std::string test = this->InWhichTableAreWe();
+    if (this->InWhichTableAreWe() != iTraceName)
+      {
+      this->m_TraceWidget->UpdateTraceAndCollection(iTraceName, iCollectionName);
+      this->SetTMListCollectionID();
+      // show the updated widget
+      this->m_TraceManualEditingDockWidget->show();
+      }
     //if the TableWidget has to be set to match the trace name, no need for the
     //signal TabHasChanged to be emitted, it would results in the Segmentation
     //widgets to be hidden
     this->blockSignals(true);
     this->SetTable(iTraceName);
     this->blockSignals(false);
+    return;
     }
   this->m_TraceWidget->UpdateTraceAndCollection(iTraceName, iCollectionName);
   this->SetTMListCollectionID();

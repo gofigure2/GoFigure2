@@ -454,6 +454,8 @@ std::string* QGoTraceManualEditingWidget::GetPointerSelectedCellType()
  //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+ /** \todo Lydie: except when adding a new value, these methods are called
+ twice when something changes in the comboboxes*/
  void QGoTraceManualEditingWidget::UpdateValueSelectedCellType(std::string iCellType)
 {
   *this->m_SelectedCellType = iCellType;

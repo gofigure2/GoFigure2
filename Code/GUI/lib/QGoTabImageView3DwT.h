@@ -579,9 +579,9 @@ protected slots:
 
   void OpenExistingBookmark();
 
-  void ShowTraceDockWidgetForContour(bool ManualSegVisible = true);
+  void ShowTraceWidgetsForContour(bool ManualSegVisible = true);
 
-  void ShowTraceDockWidgetForMesh(bool MeshVisible = true);
+  void ShowTraceWidgetsForMesh(bool MeshVisible = true);
 
   void UpdateSeeds();
 

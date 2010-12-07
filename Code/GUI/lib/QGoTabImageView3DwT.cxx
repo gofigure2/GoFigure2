@@ -1113,7 +1113,7 @@ void QGoTabImageView3DwT::CreateModeActions()
   QObject::connect( ContourSegmentationAction,
                     SIGNAL( toggled(bool) ),
                     this,
-                    SLOT( ShowTraceDockWidgetForContour(bool) ) );
+                    SLOT( ShowTraceWidgetsForContour(bool) ) );
 
   //---------------------------------//
   //        Mesh segmentation        //
@@ -1139,7 +1139,7 @@ void QGoTabImageView3DwT::CreateModeActions()
   QObject::connect( MeshSegmentationAction,
                     SIGNAL( toggled(bool) ),
                     this,
-                    SLOT( ShowTraceDockWidgetForMesh(bool) ) );
+                    SLOT( ShowTraceWidgetsForMesh(bool) ) );
 
   QAction *separator2 = new QAction(this);
   separator2->setSeparator(true);
@@ -2866,13 +2866,13 @@ QGoTabImageView3DwT::AddContourForMeshToContours(vtkPolyData *iInput)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTabImageView3DwT::ShowTraceDockWidgetForContour(
+void QGoTabImageView3DwT::ShowTraceWidgetsForContour(
   bool ManualSegVisible)
 {
   if ( ManualSegVisible )
     {
     if ( this->m_DataBaseTables->IsDatabaseUsed() )
-      {
+      {     
       this->m_DataBaseTables->UpdateWidgetsForCorrespondingTrace("contour", "mesh");
       }
     }
@@ -2893,7 +2893,7 @@ void QGoTabImageView3DwT::ShowTraceDockWidgetForContour(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTabImageView3DwT::ShowTraceDockWidgetForMesh(
+void QGoTabImageView3DwT::ShowTraceWidgetsForMesh(
   bool MeshSegmentationVisible)
 {
   if ( MeshSegmentationVisible )
