@@ -112,6 +112,7 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent):
   m_LSMReader(0),
   m_Image(0),
   m_BackgroundColor(Qt::black),
+  m_IntersectionLineWidth( 2. ),
   m_PCoord(0),
   m_RCoord(0),
   m_CCoord(0),
@@ -147,12 +148,15 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent):
 
   m_ContourContainer = new ContourContainer(this, this->m_ImageView);
   m_ContourContainer->SetHighlightedProperty(m_HighlightedContoursProperty);
+  m_ContourContainer->SetIntersectionLineWidth( m_IntersectionLineWidth );
 
   m_MeshContainer = new MeshContainer(this, this->m_ImageView);
   m_MeshContainer->SetHighlightedProperty(m_HighlightedMeshesProperty);
+  m_MeshContainer->SetIntersectionLineWidth( m_IntersectionLineWidth );
 
   m_TrackContainer = new TrackContainer(this, this->m_ImageView);
   m_TrackContainer->SetHighlightedProperty(m_HighlightedMeshesProperty);
+  m_TrackContainer->SetIntersectionLineWidth( m_IntersectionLineWidth );
 
   CreateVisuDockWidget();
 

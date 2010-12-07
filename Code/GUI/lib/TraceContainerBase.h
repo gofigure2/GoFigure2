@@ -164,6 +164,7 @@ public:
         vtkProperty *tproperty = vtkProperty::New();
         tproperty->SetColor(id_it->rgba[0], id_it->rgba[1], id_it->rgba[2]);
         tproperty->SetOpacity(id_it->rgba[3]);
+        tproperty->SetLineWidth( this->m_IntersectionLineWidth );
 
         vtkPolyData *nodes = id_it->Nodes;
         if ( nodes )
@@ -453,9 +454,12 @@ public:
       \param[in] iLut lookup table */
   void SetLookupTableForColorCoding( vtkLookupTable* iLut );
 
+  void SetIntersectionLineWidth( const float& iWidth );
+
 
 protected:
   vtkProperty *m_HighlightedProperty;
+  float m_IntersectionLineWidth;
 
   virtual std::vector< vtkActor* > AddTrace( vtkPolyData* , vtkProperty* ) = 0;
 
@@ -516,7 +520,7 @@ protected:
                                   it->rgba[1],
                                   it->rgba[2]);
           temp_property->SetOpacity(it->rgba[3]);
-          temp_property->SetLineWidth(1.);
+          temp_property->SetLineWidth( this->m_IntersectionLineWidth );
           }
         else
           {

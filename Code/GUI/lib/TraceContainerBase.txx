@@ -46,7 +46,8 @@ TraceContainerBase( QObject* iParent, QGoImageView3D* iView ) :
   QObject( iParent ),
   m_ImageView( iView ),
   m_CurrentElement(),
-  m_HighlightedProperty(NULL)
+  m_HighlightedProperty(NULL),
+  m_IntersectionLineWidth( 1. )
 {}
 
 template< class TContainer >
@@ -238,6 +239,7 @@ UpdateElementHighlightingWithGivenTraceID(const unsigned int & iId)
                               it->rgba[1],
                               it->rgba[2]);
       temp_property->SetOpacity(it->rgba[3]);
+      temp_property->SetLineWidth( this->m_IntersectionLineWidth );
       }
     else
       {
@@ -294,6 +296,7 @@ UpdateElementHighlightingWithGivenTraceIDsBase( const QStringList& iList,
                                   it->rgba[1],
                                   it->rgba[2]);
           temp_property->SetOpacity(it->rgba[3]);
+          temp_property->SetLineWidth( this->m_IntersectionLineWidth );
           }
         else
           {
@@ -868,5 +871,16 @@ UpdateCurrentElementFromVisuBase( std::vector< vtkActor* > iActors,
     this->m_CurrentElement.SetActorProperties( this->m_HighlightedProperty );
     }
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+template< class TContainer >
+void
+TraceContainerBase< TContainer >::
+SetIntersectionLineWidth( const float& iWidth )
+{
+  m_IntersectionLineWidth = iWidth;
+}
+//-------------------------------------------------------------------------
 
 #endif
