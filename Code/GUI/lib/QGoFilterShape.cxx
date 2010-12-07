@@ -42,7 +42,7 @@
 #include "vtkPointData.h"
 #include "vtkPlane.h"
 // To deal with borders is mesh is on a border
-#include "vtkExtractPolyDataGeometry.h"
+#include "vtkClipPolyData.h"
 // To extract 2D contours
 #include "vtkCutter.h"
 #include "vtkBox.h"
@@ -237,9 +237,10 @@ QGoFilterShape::GenerateSphere(double *iCenter)
   vtkBox *implicitFunction = vtkBox::New();
   implicitFunction->SetBounds( this->getInput()->GetBounds() );
 
-  vtkExtractPolyDataGeometry *cutter = vtkExtractPolyDataGeometry::New();
+  vtkClipPolyData *cutter = vtkClipPolyData::New();
   cutter->SetInput( sphere->GetOutput() );
-  cutter->SetImplicitFunction( implicitFunction );
+  cutter->InsideOutOn();
+  cutter->SetClipFunction( implicitFunction );
   cutter->Update();
 
   vtkPolyData *output = vtkPolyData::New();
@@ -258,6 +259,8 @@ QGoFilterShape::GenerateSphere(double *iCenter)
 vtkPolyData *
 QGoFilterShape::GenerateCube(double *iCenter)
 {
+  // time consuming
+  /*
   double* bounds = this->getInput()->GetBounds();
   double radius = this->getRadius();
 
@@ -293,10 +296,14 @@ QGoFilterShape::GenerateCube(double *iCenter)
     {
     zmax = bounds[5];
     }
+*/
 
   // create cube geometry
   vtkCubeSource *cube = vtkCubeSource::New();
-  cube->SetBounds(xmin, xmax, ymin, ymax, zmin, zmax);
+  cube->SetCenter( iCenter );
+  cube->SetXLength( this->getRadius() );
+  cube->SetYLength( this->getRadius() );
+  cube->SetZLength( this->getRadius() );
   cube->Update();
   cube->GetOutput()->GetPointData()->SetNormals(NULL);
 
@@ -304,9 +311,21 @@ QGoFilterShape::GenerateCube(double *iCenter)
   triangle->SetInput( cube->GetOutput() );
   triangle->Update();
 
-  vtkPolyData *output = vtkPolyData::New();
-  output->DeepCopy( triangle->GetOutput() );
+  // Deal with borders
+  vtkBox *implicitFunction = vtkBox::New();
+  implicitFunction->SetBounds( this->getInput()->GetBounds() );
 
+  vtkClipPolyData *cutter = vtkClipPolyData::New();
+  cutter->SetInput( triangle->GetOutput() );
+  cutter->InsideOutOn();
+  cutter->SetClipFunction( implicitFunction );
+  cutter->Update();
+
+  vtkPolyData *output = vtkPolyData::New();
+  output->DeepCopy( cutter->GetOutput() );
+
+  implicitFunction->Delete();
+  cutter->Delete();
   triangle->Delete();
   cube->Delete();
 
