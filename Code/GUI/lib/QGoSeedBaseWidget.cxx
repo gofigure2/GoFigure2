@@ -85,6 +85,9 @@ QGoSeedBaseWidget::QGoSeedBaseWidget(QWidget *iParent, int iSampling):QWidget(iP
   gridLayout->addWidget(groupBox, 4, 0, 1, -1);
   groupBox->setCollapsed(true);
 
+  vbox = new QGridLayout;
+  groupBox->setLayout(vbox);
+
 
 }
 
@@ -139,10 +142,10 @@ QGoSeedBaseWidget::GetNumberOfFilters()
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
-QGroupBox *
+QGridLayout *
 QGoSeedBaseWidget::GetGroupBox()
 {
-  return groupBox;
+  return vbox;
 }
 
 //---------------------------------------------------------------------------//

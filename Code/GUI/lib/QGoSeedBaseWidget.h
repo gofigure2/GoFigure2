@@ -37,6 +37,7 @@
 
 #include <QWidget>
 #include <QGroupBox>
+#include <QGridLayout>
 
 // Collapsible groupbox for the parameters
 #include "ctkCollapsibleGroupBox.h"
@@ -57,6 +58,7 @@ public:
   void Initialize();
 
   ctkCollapsibleGroupBox* groupBox;
+  QGridLayout *vbox;
 
 public slots:
   void         AddChannel(QString iChannel);
@@ -67,7 +69,7 @@ public slots:
 
   int          GetNumberOfFilters();
 
-  QGroupBox * GetGroupBox();
+  QGridLayout * GetGroupBox();
 
 signals:
   void Apply();
