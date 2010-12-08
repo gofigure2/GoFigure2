@@ -176,7 +176,7 @@ void QGoDBMeshManager::AddActionsContextMenu(QMenu *iMenu)
 unsigned int QGoDBMeshManager::SaveNewMeshFromVisu(
   unsigned int iXCoordMin, unsigned int iYCoordMin, unsigned int iZCoordMin,
   unsigned int iXCoordMax, unsigned int iYCoordMax,
-  unsigned int iZCoordMax, vtkPolyData *iTraceNodes,
+  unsigned int iZCoordMax, int iTShift, vtkPolyData *iTraceNodes,
   vtkMySQLDatabase *iDatabaseConnector,
   GoFigureMeshAttributes *iMeshAttributes)
 {
@@ -184,7 +184,7 @@ unsigned int QGoDBMeshManager::SaveNewMeshFromVisu(
   NewMesh.SetCellType(iDatabaseConnector, *this->m_SelectedCellType);
   NewMesh.SetSubCellType(iDatabaseConnector, *this->m_SelectedSubCellType);
   this->SetMeshBoundingBoxAndPoints(iXCoordMin, iYCoordMin, iZCoordMin,
-                                    *this->m_CurrentTimePoint,
+                                    *this->m_CurrentTimePoint + iTShift,
                                     iXCoordMax, iYCoordMax, iZCoordMax, iTraceNodes, iDatabaseConnector, NewMesh,
                                     iMeshAttributes);
   //save the intensities for each channel !!!
