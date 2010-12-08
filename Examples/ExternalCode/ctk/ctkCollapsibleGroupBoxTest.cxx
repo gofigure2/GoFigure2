@@ -86,7 +86,7 @@ int main(int argc, char * argv [] )
     return EXIT_FAILURE;
     }
 
-  if (argc < 2 || QString(argv[1]) != "1" )
+  if (argc < 2 || QString(argv[1]) == "1" )
     {
     QTimer::singleShot(200, &app, SLOT(quit()));
     }
