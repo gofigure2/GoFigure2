@@ -318,7 +318,7 @@ public slots:
   /** \brief Save a mesh in the database and render the mesh.
    * at the current time point
   \todo to be renamed */
-  void  SaveAndVisuMesh(vtkPolyData *iView);
+  void  SaveAndVisuMeshFromSegmentation(vtkPolyData *iView, int iTCoord);
 
   void ReEditContour(const unsigned int & iId);
 

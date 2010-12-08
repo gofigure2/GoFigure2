@@ -143,7 +143,7 @@ signals:
 
   void setNumberOfChannels(int);
 
-  void MeshCreated(vtkPolyData *);
+  void MeshCreated(vtkPolyData *, int);
 
   void ContourCreated(vtkPolyData *);
 

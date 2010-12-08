@@ -80,8 +80,8 @@ QGoSeedSegmentationBase::QGoSeedSegmentationBase(QWidget *parentWidget,
                     m_BaseAlgorithmSegmentationWidget, SLOT( setNumberOfChannels(int) ) );
   // mesh has been created by a filter
   QObject::connect( m_BaseAlgorithmSegmentationWidget,
-                    SIGNAL( MeshCreated(vtkPolyData *) ),
-                    this, SIGNAL( MeshCreated(vtkPolyData *) ) );
+                    SIGNAL( MeshCreated(vtkPolyData *, int) ),
+                    this, SIGNAL( MeshCreated(vtkPolyData *, int) ) );
   // contour has been created by a filter
   QObject::connect( m_BaseAlgorithmSegmentationWidget,
                     SIGNAL( ContourCreated(vtkPolyData *) ),

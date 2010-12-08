@@ -420,9 +420,9 @@ QGoTabImageView3DwT::CreateMeshSegmentationDockWidget()
                     SLOT( UpdateSeeds() ) );
 
   QObject::connect( m_MeshSegmentationDockWidget,
-                    SIGNAL( SaveAndVisuMesh(vtkPolyData *) ),
+                    SIGNAL( SaveAndVisuMesh(vtkPolyData *, int) ),
                     this,
-                    SLOT( SaveAndVisuMesh(vtkPolyData *) ) );
+                    SLOT( SaveAndVisuMeshFromSegmentation(vtkPolyData *, int) ) );
 
   QObject::connect( m_MeshSegmentationDockWidget,
                     SIGNAL( ClearAllSeeds() ),
@@ -2719,9 +2719,20 @@ QGoTabImageView3DwT::SaveMesh(vtkPolyData *iView)
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView)
+QGoTabImageView3DwT::SaveAndVisuMeshFromSegmentation(vtkPolyData *iView, int iTCoord)
 {
-  SaveAndVisuMesh(iView, m_TCoord);
+  if(!m_ChannelClassicMode)
+    {
+    iTCoord += m_TCoord;
+    }
+  else
+    {
+    iTCoord = m_TCoord;
+    }
+
+  std::cout << "time point: " << iTCoord << std::endl;
+
+  SaveAndVisuMesh(iView, iTCoord);
 }
 
 //-------------------------------------------------------------------------
@@ -2755,22 +2766,6 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord)
                                                 false,  // highlighted
                                                 true);  // visible
   m_MeshContainer->InsertCurrentElement();
-/*
-  // UPDATE THE TRACKS IN THE CONTAINER
-
-  // get the center of the mesh
-  // pointer to double is deleted in AddPointToCurrentElement
-  double* point = new double[3];
-  int time(0);
-
-  double bounds[6];
-  iView->GetBounds(bounds);
-
-  for(int i = 0; i<3; ++i)
-    {
-    point[i] = (bounds[2*i] + bounds[2*i+1])/2;
-    }
-  time = iTCoord;*/
 }
 //-------------------------------------------------------------------------
 

@@ -87,6 +87,8 @@ public:
 
   int           getSampling();
 
+  int           getChannel();
+
   void          setPoints(vtkPoints *iPoints);
 
   vtkPoints *    getPoints();
@@ -137,7 +139,7 @@ public slots:
   void    setSampling(int iSampling);
 
 signals:
-  void MeshCreated(vtkPolyData *);
+  void MeshCreated(vtkPolyData *, int timePoint = 0);
 
   void ContourCreated(vtkPolyData *);
 
