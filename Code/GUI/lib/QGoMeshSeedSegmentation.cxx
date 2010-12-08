@@ -69,7 +69,7 @@ QGoMeshSeedSegmentation::QGoMeshSeedSegmentation(QWidget *parentW,
   m_ShapeFilter->getWidget()->setParent(m_BaseAlgorithmSegmentationWidget);
   m_ShapeFilter->setPoints( getSeed() );
   m_ShapeFilter->setOriginalImageMC(m_OriginalImage);
-  m_BaseAlgorithmSegmentationWidget->GetFrame()->addWidget(m_ShapeFilter->getWidget(), 4, 0, 1, -1);
+  m_BaseAlgorithmSegmentationWidget->GetGroupBox()->addWidget(m_ShapeFilter->getWidget());
   m_ShapeFilter->ConnectSignals(filter);
 
   //=============================================================================
@@ -82,7 +82,7 @@ QGoMeshSeedSegmentation::QGoMeshSeedSegmentation(QWidget *parentW,
   m_LevelSetfilter->getWidget()->setParent(m_BaseAlgorithmSegmentationWidget);
   m_LevelSetfilter->setPoints( getSeed() );
   m_LevelSetfilter->setOriginalImageMC(m_OriginalImage);
-  m_BaseAlgorithmSegmentationWidget->GetFrame()->addWidget(m_LevelSetfilter->getWidget(), 4, 0, 1, -1);
+  m_BaseAlgorithmSegmentationWidget->GetGroupBox()->addWidget(m_LevelSetfilter->getWidget());
   m_LevelSetfilter->ConnectSignals(filter);
 
 //=============================================================================
@@ -95,7 +95,7 @@ QGoMeshSeedSegmentation::QGoMeshSeedSegmentation(QWidget *parentW,
   m_Watershed->getWidget()->setParent(m_BaseAlgorithmSegmentationWidget);
   m_Watershed->setPoints( getSeed() );
   m_Watershed->setOriginalImageMC(m_OriginalImage);
-  m_BaseAlgorithmSegmentationWidget->GetFrame()->addWidget(m_Watershed->getWidget(), 4, 0, 1, -1);
+  m_BaseAlgorithmSegmentationWidget->GetGroupBox()->addWidget(m_Watershed->getWidget());
   m_Watershed->ConnectSignals(filter);
 
 //=============================================================================

@@ -36,8 +36,10 @@
 #define __QGoSeedBaseWidget_h
 
 #include <QWidget>
-#include <QLayout>
-#include <QGridLayout>
+#include <QGroupBox>
+
+// Collapsible groupbox for the parameters
+#include "ctkCollapsibleGroupBox.h"
 
 #include "vtkPolyData.h"
 
@@ -54,6 +56,8 @@ public:
 
   void Initialize();
 
+  ctkCollapsibleGroupBox* groupBox;
+
 public slots:
   void         AddChannel(QString iChannel);
 
@@ -63,7 +67,7 @@ public slots:
 
   int          GetNumberOfFilters();
 
-  QGridLayout * GetFrame();
+  QGroupBox * GetGroupBox();
 
 signals:
   void Apply();
