@@ -285,7 +285,7 @@ QGoFilterChanAndVes::Filter3D(double *iCenter)
   if ( m_Dimension == 1 )
     {
     vtkPolyData *output = ReconstructMesh(getOutput(), 0.);
-    emit         MeshCreated(output);
+    emit         MeshCreated(output, this->getChannel() - 1);
     }
   else
     {

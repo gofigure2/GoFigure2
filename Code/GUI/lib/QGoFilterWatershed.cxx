@@ -292,7 +292,7 @@ QGoFilterWatershed::Filter3D(double *iCenter)
   if ( m_Dimension == 1 )
     {
     vtkPolyData *output = ReconstructMesh(getOutput(), .5);
-    emit         MeshCreated(output);
+    emit         MeshCreated(output, this->getChannel() - 1);
     }
   else
     {

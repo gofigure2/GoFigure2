@@ -92,6 +92,7 @@ public:
                                    unsigned int iXCoordMax,
                                    unsigned int iYCoordMax,
                                    unsigned int iZCoordMax,
+                                   int          iTShift,
                                    vtkPolyData *iTraceNodes,
                                    vtkMySQLDatabase *iDatabaseConnector,
                                    GoFigureMeshAttributes *iMeshAttributes);

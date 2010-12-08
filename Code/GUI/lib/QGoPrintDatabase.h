@@ -126,8 +126,12 @@ public:
   to false
   */
   void SaveMeshFromVisuInDB(unsigned int iXCoordMin,
-                            unsigned int iYCoordMin, unsigned int iZCoordMin,
-                            unsigned int iXCoordMax, unsigned int iYCoordMax, unsigned int iZCoordMax,
+                            unsigned int iYCoordMin,
+                            unsigned int iZCoordMin,
+                            unsigned int iXCoordMax,
+                            unsigned int iYCoordMax,
+                            unsigned int iZCoordMax,
+                            int          iTShift,
                             vtkPolyData *iMeshNodes, GoFigureMeshAttributes *iMeshAttributes);
 
   /**

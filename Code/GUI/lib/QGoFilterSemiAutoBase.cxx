@@ -226,6 +226,14 @@ QGoFilterSemiAutoBase::setChannel(int iChannel)
 {
   m_Channel = iChannel;
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+int
+QGoFilterSemiAutoBase::getChannel()
+{
+  return m_Channel;
+}
 
 //--------------------------------------------------------------------------
 
@@ -299,8 +307,8 @@ QGoFilterSemiAutoBase::ConnectSignals(int iFilterNumber)
                     this, SLOT( setSampling(int) ) );
 
   // End of segmentation signals
-  QObject::connect( this, SIGNAL( MeshCreated(vtkPolyData *) ),
-                    w, SIGNAL( MeshCreated(vtkPolyData *) ) );
+  QObject::connect( this, SIGNAL( MeshCreated(vtkPolyData *, int) ),
+                    w, SIGNAL( MeshCreated(vtkPolyData *, int) ) );
   QObject::connect( this, SIGNAL( ContourCreated(vtkPolyData *) ),
                     w, SIGNAL( ContourCreated(vtkPolyData *) ) );
   QObject::connect( this, SIGNAL( ImageProcessed() ),

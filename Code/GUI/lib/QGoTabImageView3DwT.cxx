@@ -420,9 +420,9 @@ QGoTabImageView3DwT::CreateMeshSegmentationDockWidget()
                     SLOT( UpdateSeeds() ) );
 
   QObject::connect( m_MeshSegmentationDockWidget,
-                    SIGNAL( SaveAndVisuMesh(vtkPolyData *) ),
+                    SIGNAL( SaveAndVisuMesh(vtkPolyData *, int) ),
                     this,
-                    SLOT( SaveAndVisuMesh(vtkPolyData *) ) );
+                    SLOT( SaveAndVisuMeshFromSegmentation(vtkPolyData *, int) ) );
 
   QObject::connect( m_MeshSegmentationDockWidget,
                     SIGNAL( ClearAllSeeds() ),
@@ -2701,7 +2701,7 @@ QGoTabImageView3DwT::CreateContour(vtkPolyData *contour_nodes, vtkPolyData *iVie
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SaveMesh(vtkPolyData *iView)
+QGoTabImageView3DwT::SaveMesh(vtkPolyData *iView, int iTShift)
 {
   // Compute Bounding Box
   std::vector< int > bounds = this->GetBoundingBox(iView);
@@ -2711,6 +2711,7 @@ QGoTabImageView3DwT::SaveMesh(vtkPolyData *iView)
 
   this->m_DataBaseTables->SaveMeshFromVisuInDB(bounds[0], bounds[2], bounds[4],
                                                bounds[1], bounds[3], bounds[5],
+                                               iTShift,
                                                iView,
                                                &MeshAttributes);
 }
@@ -2719,17 +2720,26 @@ QGoTabImageView3DwT::SaveMesh(vtkPolyData *iView)
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView)
+QGoTabImageView3DwT::SaveAndVisuMeshFromSegmentation(vtkPolyData *iView, int iTCoord)
 {
-  SaveAndVisuMesh(iView, m_TCoord);
+  SaveAndVisuMesh(iView, m_TCoord, iTCoord);
 }
 
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord)
+QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView,
+                                     unsigned int iTCoord,
+                                     int iTShift)
 {
+  if(iTCoord + iTShift < m_MegaCaptureReader->GetMinTimePoint()
+      || iTCoord + iTShift > m_MegaCaptureReader->GetMaxTimePoint())
+    {
+    std::cerr << "The time point you processed is out of the image extent" << std::endl;
+    return;
+    }
+
   if ( !m_DataBaseTables->IsDatabaseUsed() )
     {
     std::cerr << "Problem with DB" << std::endl;
@@ -2742,7 +2752,7 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord)
     return;
     }
 
-  SaveMesh(iView);
+  SaveMesh(iView, iTShift);
 
   std::vector< vtkActor * > actors =
       VisualizeTrace(iView,
@@ -2751,26 +2761,10 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord)
   // update container since a new mesh is created
   m_MeshContainer->UpdateCurrentElementFromVisu(actors,
                                                 iView,
-                                                iTCoord,
+                                                iTCoord + iTShift,
                                                 false,  // highlighted
                                                 true);  // visible
   m_MeshContainer->InsertCurrentElement();
-/*
-  // UPDATE THE TRACKS IN THE CONTAINER
-
-  // get the center of the mesh
-  // pointer to double is deleted in AddPointToCurrentElement
-  double* point = new double[3];
-  int time(0);
-
-  double bounds[6];
-  iView->GetBounds(bounds);
-
-  for(int i = 0; i<3; ++i)
-    {
-    point[i] = (bounds[2*i] + bounds[2*i+1])/2;
-    }
-  time = iTCoord;*/
 }
 //-------------------------------------------------------------------------
 
@@ -2989,7 +2983,7 @@ QGoTabImageView3DwT::CreateMeshFromSelectedContours(
     //as the element is already in the container we need to delete it in order
     //to update it in the SaveAndVisuMesh:
     this->m_MeshContainer->RemoveElementFromVisualizationWithGivenTraceID(iMeshID);
-    SaveAndVisuMesh(filter->GetOutput(), tcoord);
+    SaveAndVisuMesh(filter->GetOutput(), tcoord, 0);
     }
 }
 
