@@ -542,7 +542,12 @@ void QGoPrintDatabase::UpdateSelectedTimePoint(int iTimePoint)
       //previous one, so, initialize the list is needed (no pre-selected
       // collection)
       this->SetTMListCollectionID();
+      this->m_ContoursManager->CheckShowRows();
       }
+    if (this->m_TraceWidget->GetTraceName() == "mesh")
+     {
+      this->m_MeshesManager->CheckShowRows();
+     }
     }
 }
 
