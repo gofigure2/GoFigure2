@@ -1040,6 +1040,8 @@ void QGoTableWidget::ShowOnlyRowsForTimePoint(unsigned int iTimePoint)
     {
     if (this->item(i,ColumnIndex)->text().toUInt() != iTimePoint)
       this->hideRow(i);
+    else
+      this->showRow(i);
     }
 }
 //--------------------------------------------------------------------------

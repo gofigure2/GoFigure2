@@ -216,6 +216,13 @@ public:
   \param[in] iTimePoint pointer to the current timepoint
   */
   void SetSelectedColor(NameWithColorData* iColorData);
+  /** \todo Lydie: create a class for ContourMesh*/
+  /**
+  \brief if m_IsShowOnlyCurrentTimePointOn is true, call
+  the method to show only the rows for the current timepoint,
+  useful when the timepoint changes
+  */
+  void CheckShowRows();
 
 signals:
   /**

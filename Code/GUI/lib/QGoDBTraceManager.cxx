@@ -193,9 +193,6 @@ void QGoDBTraceManager::AddSpecificActionsForContourMesh(QMenu *iMenu)
                    this,
                    SLOT( ShowOnlyRowsForCurrentTimePoint(bool) ) );
   iMenu->addAction(ShowCurrentTimePoint);
-  //iMenu->addAction( tr("Show only in the table the %1 for the current timepoint")
-  //                  .arg(this->m_TraceName.c_str() ),
-  //                  this, SLOT(ShowOnlyRowsForCurrentTimePoint() ) );
   /** \todo Lydie: when using lineage, put it in the generalActionsContextMenu*/
   this->AddActionForCreateNewCollectionFromCheckedTraces(iMenu);
 }
@@ -528,4 +525,11 @@ void QGoDBTraceManager::ShowOnlyRowsForCurrentTimePoint(bool IsChecked)
       this->m_Table->ShowAllRows();
       }
   }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+void QGoDBTraceManager::CheckShowRows()
+{
+  if (this->m_IsShowOnlyCurrentTimePointOn)
+    this->ShowOnlyRowsForCurrentTimePoint(true);
+}
