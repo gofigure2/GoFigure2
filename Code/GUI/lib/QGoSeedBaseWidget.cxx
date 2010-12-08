@@ -143,7 +143,7 @@ QGoSeedBaseWidget::GetNumberOfFilters()
 
 //---------------------------------------------------------------------------//
 QGridLayout *
-QGoSeedBaseWidget::GetGroupBox()
+QGoSeedBaseWidget::GetFrame()
 {
   return vbox;
 }

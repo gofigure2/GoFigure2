@@ -69,7 +69,7 @@ public slots:
 
   int          GetNumberOfFilters();
 
-  QGridLayout * GetGroupBox();
+  QGridLayout * GetFrame();
 
 signals:
   void Apply();

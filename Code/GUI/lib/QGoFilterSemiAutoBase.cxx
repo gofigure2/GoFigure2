@@ -268,7 +268,7 @@ QGoFilterSemiAutoBase::setOriginalImageMC(std::vector< vtkSmartPointer<vtkImageD
 void
 QGoFilterSemiAutoBase::UpdateVisibility(int iCurrentFilter)
 {
-  QWidget *w = m_Widget->parentWidget();
+  QWidget *w = m_Widget->parentWidget()->parentWidget();
 
   if ( m_Number == iCurrentFilter )
     {
@@ -292,7 +292,7 @@ QGoFilterSemiAutoBase::ConnectSignals(int iFilterNumber)
 {
   m_Number = iFilterNumber;
 
-  QWidget *w = m_Widget->parentWidget();
+  QWidget *w = m_Widget->parentWidget()->parentWidget();
 
   // Buttons connections
   QObject::connect( w, SIGNAL( Apply() ),

@@ -37,7 +37,7 @@
 //---------------------------------------------------------------------------//
 QGoContourSemiAutoWatershedWidget::QGoContourSemiAutoWatershedWidget(QWidget *iParent):QWidget(iParent)
 {
-  this->setupUi(groupBox);
+  this->setupUi(this);
 
   // Connect signals
   QObject::connect( this->tresholdMinSpinBox, SIGNAL( valueChanged(int) ),
