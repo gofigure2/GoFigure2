@@ -2733,15 +2733,12 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView,
                                      unsigned int iTCoord,
                                      int iTShift)
 {
-  /*
-  if(!m_ChannelClassicMode)
+  if(iTCoord + iTShift < m_MegaCaptureReader->GetMinTimePoint()
+      || iTCoord + iTShift > m_MegaCaptureReader->GetMaxTimePoint())
     {
-    iTCoord += m_TCoord;
+    std::cerr << "The time point you processed is out of the image extent" << std::endl;
+    return;
     }
-  else
-    {
-    iTCoord = m_TCoord;
-    }*/
 
   if ( !m_DataBaseTables->IsDatabaseUsed() )
     {
