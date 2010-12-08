@@ -76,7 +76,7 @@ signals:
 
   void Sampling(int);
 
-  void MeshCreated(vtkPolyData *);
+  void MeshCreated(vtkPolyData *, int timePoint = 0);
 
   void ContourCreated(vtkPolyData *);
 

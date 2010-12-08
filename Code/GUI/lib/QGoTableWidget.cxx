@@ -1036,9 +1036,21 @@ void QGoTableWidget::ShowOnlyRowsForTimePoint(unsigned int iTimePoint)
     std::cout << std::endl;
     return;
     }
-  for( unsigned int i = 0; i<this->rowCount(); i++)
+  for( int i = 0; i < this->rowCount(); i++)
     {
     if (this->item(i,ColumnIndex)->text().toUInt() != iTimePoint)
       this->hideRow(i);
+    else
+      this->showRow(i);
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTableWidget::ShowAllRows()
+{
+   for( int i = 0; i < this->rowCount(); i++)
+    {
+    this->showRow(i);
     }
 }

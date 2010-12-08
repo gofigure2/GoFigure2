@@ -40,9 +40,9 @@
 
 QGoDBTraceManager::QGoDBTraceManager( QObject* iParent ):
   QObject( iParent ), m_SelectedCollectionData(NULL),
-  m_Table(NULL), m_CollectionOfTraces(NULL),
-  m_DatabaseConnector(NULL), IsColorCodingOn(false),
-  m_CurrentTimePoint(NULL),m_SelectedColorData(NULL)
+  m_SelectedColorData(NULL), m_CurrentTimePoint(NULL), m_Table(NULL),
+  m_CollectionOfTraces(NULL), m_DatabaseConnector(NULL),
+  m_IsColorCodingOn(false), m_IsShowOnlyCurrentTimePointOn(false)
 {}
 
 //-------------------------------------------------------------------------
@@ -153,7 +153,7 @@ void QGoDBTraceManager::AddGeneralActionsContextMenu(QMenu *iMenu)
                     this, SLOT( ChangeTraceColor() ) );
   QAction* ColorCoding = new QAction(tr("Based on the selected column"),ColorMenu);
   ColorCoding->setCheckable(true);
-  ColorCoding->setChecked(IsColorCodingOn);
+  ColorCoding->setChecked(m_IsColorCodingOn);
   QObject::connect(ColorCoding,SIGNAL(triggered ( bool ) ),this,SLOT( SetColorCoding(bool) ) );
   ColorMenu->addAction(ColorCoding);
   iMenu->addAction(ColorMenu->menuAction());
@@ -183,9 +183,15 @@ void QGoDBTraceManager::AddSpecificActionsForContourMesh(QMenu *iMenu)
   iMenu->addAction( tr("Go to this %1")
                     .arg( this->m_TraceName.c_str() ),
                     this, SLOT( GoToTheTrace() ) );
-  iMenu->addAction( tr("Show only in the table the %1 for the current timepoint")
-                    .arg(this->m_TraceName.c_str() ),
-                    this, SLOT(ShowOnlyRowsForCurrentTimePoint() ) );
+  QAction* ShowCurrentTimePoint = new QAction(tr("Show only in the table the %1 for the current timepoint")
+                    .arg(this->m_TraceName.c_str() ),iMenu);
+  ShowCurrentTimePoint->setCheckable(true);
+  ShowCurrentTimePoint->setChecked(this->m_IsShowOnlyCurrentTimePointOn);
+  QObject::connect(ShowCurrentTimePoint,
+                   SIGNAL(triggered ( bool ) ),
+                   this,
+                   SLOT( ShowOnlyRowsForCurrentTimePoint(bool) ) );
+  iMenu->addAction(ShowCurrentTimePoint);
   /** \todo Lydie: when using lineage, put it in the generalActionsContextMenu*/
   this->AddActionForCreateNewCollectionFromCheckedTraces(iMenu);
 }
@@ -306,19 +312,6 @@ void QGoDBTraceManager::DeleteTracesFromContextMenu()
       }
     }
 }
-
-//-------------------------------------------------------------------------
-
-//------------------------------------------------------------------------
-/*void QGoDBTraceManager::DeleteTraces(
-  vtkMySQLDatabase *iDatabaseConnector)
-{
-  std::list< unsigned int > ListTracesIDs =
-    this->m_TraceContainerInfoForVisu->GetHighlightedElementsTraceID();
-  this->m_CollectionOfTraces->DeleteTracesInDB(
-    ListTracesIDs, iDatabaseConnector);
-  this->UpdateTWAndContainerForDeletedTraces(ListTracesIDs);
-}*/
 
 //-------------------------------------------------------------------------
 
@@ -518,7 +511,24 @@ void QGoDBTraceManager::SetSelectedColor(NameWithColorData* iColorData)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBTraceManager::ShowOnlyRowsForCurrentTimePoint()
+void QGoDBTraceManager::ShowOnlyRowsForCurrentTimePoint(bool IsChecked)
 {
-  this->m_Table->ShowOnlyRowsForTimePoint(*this->m_CurrentTimePoint);
+  this->m_IsShowOnlyCurrentTimePointOn = IsChecked;
+
+    if (IsChecked)
+      {
+      this->m_Table->ShowOnlyRowsForTimePoint(*this->m_CurrentTimePoint);
+      }
+    else
+      {
+      this->m_Table->ShowAllRows();
+      }
+  }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTraceManager::CheckShowRows()
+{
+  if (this->m_IsShowOnlyCurrentTimePointOn)
+    this->ShowOnlyRowsForCurrentTimePoint(true);
 }

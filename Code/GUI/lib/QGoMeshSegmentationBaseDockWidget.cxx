@@ -119,8 +119,8 @@ QGoMeshSegmentationBaseDockWidget::QGoMeshSegmentationBaseDockWidget(QWidget *iP
   // connect semi-automatic segmentation specific signals
   QObject::connect( m_MeshSemiAutoSegmentation, SIGNAL( UpdateSeeds() ),
                     this, SIGNAL( UpdateSeeds() ) );
-  QObject::connect( m_MeshSemiAutoSegmentation, SIGNAL( MeshCreated(vtkPolyData *) ),
-                    this, SIGNAL( SaveAndVisuMesh(vtkPolyData *) ) );
+  QObject::connect( m_MeshSemiAutoSegmentation, SIGNAL( MeshCreated(vtkPolyData *, int) ),
+                    this, SIGNAL( SaveAndVisuMesh(vtkPolyData *, int) ) );
   QObject::connect( m_MeshSemiAutoSegmentation, SIGNAL( SegmentationFinished() ),
                     this, SIGNAL( ClearAllSeeds() ) );
 

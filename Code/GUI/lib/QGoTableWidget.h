@@ -208,6 +208,8 @@ public:
   */
   void ShowOnlyRowsForTimePoint(unsigned int iTimePoint);
 
+  void ShowAllRows();
+
 public slots:
 
   /**

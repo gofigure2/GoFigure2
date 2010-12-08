@@ -137,7 +137,7 @@ signals:
    * \brief Signal sent after a seed segmentation to save the contour and
    * update the visualization
    */
-  void SaveAndVisuMesh(vtkPolyData *);
+  void SaveAndVisuMesh(vtkPolyData *, int);
 
   /**
    * \brief Signal sent after a seed segmentation to delete the seeds

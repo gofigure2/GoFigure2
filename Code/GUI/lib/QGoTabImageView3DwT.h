@@ -313,12 +313,12 @@ public slots:
   /** \brief Save a mesh in the database and render the mesh
    * at the given time point.
   \todo to be renamed */
-  void  SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord);
+  void  SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord, int iTShift);
 
   /** \brief Save a mesh in the database and render the mesh.
    * at the current time point
   \todo to be renamed */
-  void  SaveAndVisuMesh(vtkPolyData *iView);
+  void  SaveAndVisuMeshFromSegmentation(vtkPolyData *iView, int iTCoord);
 
   void ReEditContour(const unsigned int & iId);
 
@@ -501,7 +501,7 @@ protected:
    * \brief Save mesh in Database
    * \param[in] iMesh
    */
-  void SaveMesh(vtkPolyData *iMesh);
+  void SaveMesh(vtkPolyData *iMesh, int iTShift);
 
   void GetBackgroundColorFromImageViewer();
 

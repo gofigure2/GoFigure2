@@ -128,14 +128,12 @@ vtkPolyDataToGoFigureMeshAttributes< TImage >::GenerateData()
     {
     std::cerr << "Exception: " << e << std::endl;
     }
-
 /*
  typename WriterType::Pointer writer = WriterType::New();
  writer->SetInput( m_Binarizer->GetOutput() );
  writer->SetFileName( "output.mha" );
  writer->Update();
 */
-
   m_AttributeCalculator->SetImage(m_Image);
   m_AttributeCalculator->SetMaskImage( m_Binarizer->GetOutput() );
   m_AttributeCalculator->SetIntensityBasedComputation( this->m_IntensityComputation );

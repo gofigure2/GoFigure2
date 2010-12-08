@@ -305,6 +305,7 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
                                        unsigned int iXCoordMax,
                                        unsigned int iYCoordMax,
                                        unsigned int iZCoordMax,
+                                       int          iTShift,
                                        vtkPolyData *iMeshNodes,
                                        GoFigureMeshAttributes *iMeshAttributes)
 {
@@ -315,7 +316,7 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
     unsigned int TrackID = this->m_TraceWidget->GetCurrentSelectedCollectionID();
      //check that there isn't an existing mesh with the same timepoint in the track,if so, set its trackID to 0:
     /** \todo print a different message if several meshes are created at the same timepoint*/
-    QString MessageToPrint = this->m_MeshesManager->CheckExistingMeshesForTheTrack(TrackID,*this->m_SelectedTimePoint,
+    QString MessageToPrint = this->m_MeshesManager->CheckExistingMeshesForTheTrack(TrackID,*this->m_SelectedTimePoint + iTShift,
       this->m_DatabaseConnector);
     if (MessageToPrint != "")
       {
@@ -328,6 +329,7 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
                                                                         iXCoordMax,
                                                                         iYCoordMax,
                                                                         iZCoordMax,
+                                                                        iTShift,
                                                                         iMeshNodes,
                                                                         this->m_DatabaseConnector,
                                                                         iMeshAttributes);
@@ -542,7 +544,12 @@ void QGoPrintDatabase::UpdateSelectedTimePoint(int iTimePoint)
       //previous one, so, initialize the list is needed (no pre-selected
       // collection)
       this->SetTMListCollectionID();
+      this->m_ContoursManager->CheckShowRows();
       }
+    if (this->m_TraceWidget->GetTraceName() == "mesh")
+     {
+      this->m_MeshesManager->CheckShowRows();
+     }
     }
 }
 
