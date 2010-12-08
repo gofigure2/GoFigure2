@@ -90,6 +90,7 @@ QGoTraceManualEditingWidget::SetListCollectionID(
     {
     this->m_CollectionColorComboBox->SetItemsFromListWithColor( iListExistingID,
                                                                 this->m_CollectionName->text().toStdString() );
+    this->m_CollectionColorComboBox->SetCurrentItemAndActivate(iCollectionIDtoSelect);
     }
   else
     {
@@ -116,7 +117,7 @@ void QGoTraceManualEditingWidget::SetListColors(
 {
   this->SetListItemAndSelect< QGoSelectedColorComboBox >(this->m_SelectedColorComboBox,
                                                          iListColors, iColorToSelect);
-  this->m_SelectedColorData->first = iColorToSelect;
+  this->m_SelectedColorComboBox->SetCurrentItemAndActivate(iColorToSelect);
 }
 //-------------------------------------------------------------------------
 
@@ -135,7 +136,7 @@ QGoTraceManualEditingWidget::SetListCellTypes(NamesDescrContainerType iCellTypes
 {
   this->SetListItemAndSelect< QGoComboBox >(this->m_ChoseCellType,
                                             iCellTypesData, iCellTypeToSelect);
-  *this->m_SelectedCellType = iCellTypeToSelect;
+  this->m_ChoseCellType->SetCurrentItemAndActivate(iCellTypeToSelect);
 }
 
 //-------------------------------------------------------------------------
@@ -156,7 +157,7 @@ QGoTraceManualEditingWidget::SetListSubCellTypes(NamesDescrContainerType iSubCel
 {
   this->SetListItemAndSelect< QGoComboBox >(this->m_ChoseSubCellType,
                                             iSubCellTypesData, iSubCellTypeToSelect);
-  *this->m_SelectedSubCellType = iSubCellTypeToSelect;
+  this->m_ChoseSubCellType->SetCurrentItemAndActivate(iSubCellTypeToSelect);
 }
 //-------------------------------------------------------------------------
 
@@ -453,6 +454,8 @@ std::string* QGoTraceManualEditingWidget::GetPointerSelectedCellType()
  //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+ /** \todo Lydie: except when adding a new value, these methods are called
+ twice when something changes in the comboboxes*/
  void QGoTraceManualEditingWidget::UpdateValueSelectedCellType(std::string iCellType)
 {
   *this->m_SelectedCellType = iCellType;
@@ -471,4 +474,11 @@ std::string* QGoTraceManualEditingWidget::GetPointerSelectedCellType()
    ItemColorComboboxData iColorData)
 {
   *this->m_SelectedColorData = iColorData;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+unsigned int QGoTraceManualEditingWidget::GetCurrentSelectedCollectionID()
+{
+  return atoi(this->m_SelectedCollectionData->first.c_str() );
 }

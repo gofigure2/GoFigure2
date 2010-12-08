@@ -213,3 +213,16 @@ void QGoComboBox::SetCurrentItemAndActivate(int iIndex)
   this->setCurrentIndex(iIndex);
   this->EmitActivatedItem(iIndex);
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoComboBox::SetCurrentItemAndActivate(std::string iItemText)
+{
+  int index = this->findText( iItemText.c_str() );
+  if ( index == -1 )
+    {
+    index = 0;
+    }
+  this->setCurrentIndex(index);
+  this->EmitActivatedItem(index);
+}
