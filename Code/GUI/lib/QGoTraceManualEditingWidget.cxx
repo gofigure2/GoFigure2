@@ -475,3 +475,10 @@ std::string* QGoTraceManualEditingWidget::GetPointerSelectedCellType()
 {
   *this->m_SelectedColorData = iColorData;
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+unsigned int QGoTraceManualEditingWidget::GetCurrentSelectedCollectionID()
+{
+  return atoi(this->m_SelectedCollectionData->first.c_str() );
+}

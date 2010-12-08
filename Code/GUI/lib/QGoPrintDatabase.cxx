@@ -72,7 +72,6 @@
 //--------------------------------------------------------------------------
 QGoPrintDatabase::QGoPrintDatabase(QWidget *iParent):
   QWidget(iParent),
-  m_SelectedCollectionData(NULL),
   m_ContoursManager(NULL),
   m_MeshesManager(NULL),
   m_TracksManager(NULL),
@@ -99,7 +98,6 @@ QGoPrintDatabase::QGoPrintDatabase(QWidget *iParent):
 
   this->m_TraceWidget =
     this->m_TraceManualEditingDockWidget->m_TraceWidget;
-  this->SetPointerCollectionData (this->m_TraceWidget->GetPointerCollectionData());
 
   this->m_CellTypeManager = new QGoDBCellTypeManager(this);
 
@@ -1259,7 +1257,7 @@ void QGoPrintDatabase::AddCheckedContoursToSelectedMesh(
   this->OpenDBConnection();
   this->AddCheckedTracesToCollection< QGoDBContourManager, QGoDBMeshManager >
     (this->m_ContoursManager, this->m_MeshesManager,
-    ss_atoi< unsigned int >(this->m_SelectedCollectionData->first), iListCheckedContours);
+    this->m_TraceWidget->GetCurrentSelectedCollectionID(),iListCheckedContours);
   this->CloseDBConnection();
 }
 
@@ -1272,16 +1270,9 @@ void QGoPrintDatabase::AddCheckedMeshesToSelectedTrack(
   this->OpenDBConnection();
   this->AddCheckedTracesToCollection< QGoDBMeshManager, QGoDBTrackManager >
     (this->m_MeshesManager, this->m_TracksManager,
-    ss_atoi< unsigned int >(this->m_SelectedCollectionData->first), iListCheckedMeshes);
+    this->m_TraceWidget->GetCurrentSelectedCollectionID(),iListCheckedMeshes);
 
   this->CloseDBConnection();
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void QGoPrintDatabase::SetPointerCollectionData (ItemColorComboboxData* iCollectionData)
-{
-  this->m_SelectedCollectionData = iCollectionData;
 }
 //--------------------------------------------------------------------------
 

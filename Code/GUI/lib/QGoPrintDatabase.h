@@ -251,9 +251,6 @@ signals:
   void NeedToGoToTheLocation(int XCoord, int YCoord, int ZCoord, int TCoord);
 
 protected:
-  //updated by the TraceManualEditing Widget:
-  ItemColorComboboxData* m_SelectedCollectionData;
-
   //related to 3dwt:
   int*                  m_SelectedTimePoint;
   QGoDBBookmarkManager* m_BookmarkManager;
@@ -363,13 +360,6 @@ protected:
   previously selected
   */
   void SetTMListColorsWithPreviousSelectedOne();
-
-  /**
-  \brief set the pointer for the selected collection to iCollectionData
-  \param[in] iCollectionData pointer to the ID and color of the 
-  selected collection
-  */
-  void SetPointerCollectionData(ItemColorComboboxData* iCollectionData);
 
   //******************End of Methods related to Trace Manual Editing
   // Widget***********
