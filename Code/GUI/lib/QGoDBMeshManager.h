@@ -164,13 +164,12 @@ public slots:
   the track of the previous mesh will be reassigned to 0 and a message will
   be displayed in the statusbar
   \param[in] iTrackID ID of the track to be checked
-  \param[in] iTimePoint timepoint at which the existing meshes need to be checked
   \param[in] iDatabaseConnector connection to the database
   \return a message to be print in the status bar of the mainwindow, if no meshes
   reassigned, the message will be ""
   */
   QString CheckExistingMeshesForTheTrack(
-   unsigned int iTrackID,int iTimePoint,vtkMySQLDatabase* iDatabaseConnector);
+   unsigned int iTrackID, vtkMySQLDatabase* iDatabaseConnector);
 
   /**
   \overload

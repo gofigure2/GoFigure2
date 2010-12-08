@@ -315,7 +315,7 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
     unsigned int TrackID = this->m_TraceWidget->GetCurrentSelectedCollectionID();
      //check that there isn't an existing mesh with the same timepoint in the track,if so, set its trackID to 0:
     /** \todo print a different message if several meshes are created at the same timepoint*/
-    QString MessageToPrint = this->m_MeshesManager->CheckExistingMeshesForTheTrack(TrackID,*this->m_SelectedTimePoint,
+    QString MessageToPrint = this->m_MeshesManager->CheckExistingMeshesForTheTrack(TrackID,
       this->m_DatabaseConnector);
     if (MessageToPrint != "")
       {
@@ -366,7 +366,7 @@ void QGoPrintDatabase::SaveNewMeshForMeshToContours(int iNumberOfContours)
 
   //unsigned int TrackID = ss_atoi< unsigned int >(this->m_SelectedCollectionData->first);
   unsigned int TrackID = this->m_TraceWidget->GetCurrentSelectedCollectionID();
-  QString MessageToPrint =  this->m_MeshesManager->CheckExistingMeshesForTheTrack(TrackID,*this->m_SelectedTimePoint,
+  QString MessageToPrint =  this->m_MeshesManager->CheckExistingMeshesForTheTrack(TrackID,
       this->m_DatabaseConnector);
   if (MessageToPrint != "")
     {

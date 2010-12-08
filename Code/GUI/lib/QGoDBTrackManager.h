@@ -75,11 +75,10 @@ public:
   \return the ID of the new track just created
   */
   unsigned int CreateNewTrackWithNoMesh(
-    vtkMySQLDatabase *iDatabaseConnector);//, NameWithColorData iColor);
+    vtkMySQLDatabase *iDatabaseConnector);
 
   //virtual pure method in QGoDBTraceManager
   std::list< unsigned int > UpdateTheTracesColor(vtkMySQLDatabase *iDatabaseConnector);
-                                                 //NameWithColorData iNewColor);
 
   //virtual pure method in QGoDBTraceManager
   virtual void UpdateTWAndContainerForImportedTraces(std::vector< int > iVectorImportedTraces,
@@ -94,7 +93,7 @@ public:
   \brief get the data from the TrackContainer corresponding to the user selected TrackID
   and put them in the current element of the track container
   */
-  void UpdateCurrentElementTrackContainer();//unsigned int iTrackID);
+  void UpdateCurrentElementTrackContainer();
 
   /**
   \brief update the points of the imported track in current_element
@@ -103,7 +102,7 @@ public:
   void UpdatePointsOfCurrentElementForImportedTrack(
 	  std::map<unsigned int,double*> iMeshesInfo);
 
-  //method in QGoDbTraceManager
+  //method in QGoDBTraceManager
   void UpdateBoundingBoxes(
   vtkMySQLDatabase *iDatabaseConnector,std::list< unsigned int > iListTracesIDs);
 
@@ -151,7 +150,5 @@ protected slots:
  //virtual pure method in QGoDBTraceManager
   virtual void SetColorCoding(bool IsChecked);
 
-  //virtual pure method in QGoDBTraceManager
-  //virtual void BackFromColorCoding();
 };
 #endif
