@@ -57,6 +57,8 @@ public:
 
   void Initialize();
 
+  int           GetCurrentFilter();
+
   ctkCollapsibleGroupBox* groupBox;
   QGridLayout *vbox;
 
@@ -95,6 +97,8 @@ signals:
   void CreateCorrespondingMesh(int);
 
   void AddContourForMeshToContours(vtkPolyData *);
+
+  void Clicked(bool);
 };
 
 #endif

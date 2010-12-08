@@ -88,7 +88,8 @@ QGoSeedBaseWidget::QGoSeedBaseWidget(QWidget *iParent, int iSampling):QWidget(iP
   vbox = new QGridLayout;
   groupBox->setLayout(vbox);
 
-
+  QObject::connect( this->groupBox, SIGNAL( clicked(bool) ),
+                    this, SIGNAL( Clicked(bool) ) );
 }
 
 //---------------------------------------------------------------------------//
@@ -159,3 +160,9 @@ QGoSeedBaseWidget::Initialize()
 }
 
 //---------------------------------------------------------------------------//
+
+int
+QGoSeedBaseWidget::GetCurrentFilter()
+{
+  return filter->currentIndex();
+}
