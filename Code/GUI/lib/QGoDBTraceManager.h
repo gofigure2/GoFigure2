@@ -264,7 +264,8 @@ protected:
   QGoTableWidget *        m_Table;
   GoDBCollectionOfTraces *m_CollectionOfTraces;
   vtkMySQLDatabase *      m_DatabaseConnector;
-  bool                    IsColorCodingOn;
+  bool                    m_IsColorCodingOn;
+  bool                    m_IsShowOnlyCurrentTimePointOn;
   QMenu*                  m_CheckedTracesMenu;
 
   /**
@@ -635,7 +636,7 @@ protected:
   {
     std::string ColumnName = "";
     std::map<unsigned int, std::string> Values;
-    IsColorCodingOn = IsChecked;
+    m_IsColorCodingOn = IsChecked;
 
     if (IsChecked)
       {
@@ -669,13 +670,13 @@ protected:
 
         default:
         case QGoColorCodingDialog::Nothing:
-          IsColorCodingOn = !IsChecked;
+          m_IsColorCodingOn = !IsChecked;
           break;
         }
       }
     else
       {
-      IsColorCodingOn = IsChecked;
+      m_IsColorCodingOn = IsChecked;
       iContainerForVisu->SetColorCode( ColumnName, Values );
       }
   }
@@ -758,9 +759,18 @@ protected slots:
   /**
   \brief ColorCode the traces in the visualization base on a selected column
   in the table widget
+  \param[in] IsChecked set to true if the action is checked, to false if
+  not
   */
   virtual void SetColorCoding(bool IsChecked)= 0;
 
-  void ShowOnlyRowsForCurrentTimePoint();
+  /**
+  \brief Show only the rows in the table widget that have a timepoint 
+  equal to the current timepoint if IsChecked is true, show all the rows
+  if false
+  \param[in] IsChecked set to true if the action is checked, to false if
+  not
+  */
+  void ShowOnlyRowsForCurrentTimePoint(bool IsChecked);
 };
 #endif
