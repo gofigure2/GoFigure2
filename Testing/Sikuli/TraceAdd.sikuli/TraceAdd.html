@@ -80,36 +80,39 @@ setBundlePath(address)
 
 start = time.time()
 
+<span class="cmt">#click("MeshSegmentationIcon.png")
+</span><span class="skw">click</span>(<img src="ContourSegmentationIcon.png" />)
+<span class="skw">wait</span>(<span class="dig">1</span>)
 
 <span class="kw">def</span> AddNew(Region):
 <span class="cmt">#       """Clicks on add a new... in dropdown menu of TraceWidget for Color, CellType, SubCellType. """
 </span>        <span class="skw">find</span>(Region)
         a = getLastMatch()
         <span class="kw">print</span> a, <span class="str">"this is a"</span>
-        <span class="skw">click</span>(a.below(<span class="dig">20</span>))
+        <span class="skw">click</span>(a.below(<span class="dig">45</span>))
 
 <span class="cmt">#       click("add_a_new.png")
 </span><span class="kw">def</span> AssertPreviousState(Region):
         <span class="skw">find</span>(Region)
         b = getLastMatch()
         <span class="kw">print</span> b, <span class="str">"this is b"</span>
-        c = b.below(<span class="dig">20</span>)
-        <span class="kw">assert</span> c.nearby(<span class="dig">10</span>).exists(<img src="WidgetTestDelete.png" />)
+        c = b.below(<span class="dig">45</span>)
+        <span class="kw">assert</span> c.nearby(<span class="dig">45</span>).exists(<img src="WidgetTestDelete.png" />)
 
-<span class="kw">def</span> CountPreviousStates(Region):
-        findAll(Region) <span class="cmt"># find all matches</span>
-        mm = getLastMatches()
-        c = <span class="dig">1</span>
-        <span class="kw">while</span> mm.hasNext(): <span class="cmt"># loop as long there is a first and more matches</span>
-                c = c +<span class="dig">1</span>
-
-        <span class="kw">if</span> i == <img src="SelectedColor.png" />:
-                <span class="kw">assert</span>(c == <span class="dig">1</span>)
-        <span class="kw">elif</span> i == <img src="SelectedCellType.png" />:
-                <span class="kw">assert</span>(c == <span class="dig">2</span>)
-        <span class="kw">elif</span> i == <img src="SelectedSubCellType.png" />:
-                <span class="kw">assert</span>(c == <span class="dig">3</span>)
-
+<span class="cmt">#def CountPreviousStates(Region):
+</span>        <span class="cmt">#findAll(Region) # find all matches
+</span>        <span class="cmt">#mm = getLastMatches()
+</span>        <span class="cmt">#c = 1
+</span>        <span class="cmt">#while mm.hasNext(): # loop as long there is a first and more matches
+</span>    <span class="cmt">#           c = c +1
+</span>
+        <span class="cmt">#if i == "SelectedColor.png":
+</span>        <span class="cmt">#       assert(c == 1)
+</span>        <span class="cmt">#elif i == "SelectedCellType.png":
+</span>        <span class="cmt">#       assert(c == 2)
+</span>        <span class="cmt">#elif i == "SelectedSubCellType.png":
+</span>        <span class="cmt">#       assert(c == 3)
+</span>
 
 
 

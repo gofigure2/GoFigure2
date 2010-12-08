@@ -8,35 +8,38 @@ setBundlePath(address)
 
 start = time.time()
 
+#click("MeshSegmentationIcon.png")
+click("ContourSegmentationIcon.png")
+wait(1)
 
 def AddNew(Region):
 #	"""Clicks on add a new... in dropdown menu of TraceWidget for Color, CellType, SubCellType. """
 	find(Region)
 	a = getLastMatch()
 	print a, "this is a"
-	click(a.below(20))
+	click(a.below(45))
 
 #	click("add_a_new.png")
 def AssertPreviousState(Region):
 	find(Region)
 	b = getLastMatch()
 	print b, "this is b"
-	c = b.below(20)
-	assert c.nearby(10).exists("WidgetTestDelete.png") 
+	c = b.below(45)
+	assert c.nearby(45).exists("WidgetTestDelete.png") 
 
-def CountPreviousStates(Region):
-	findAll(Region) # find all matches
-	mm = getLastMatches()
-	c = 1
-	while mm.hasNext(): # loop as long there is a first and more matches
-        	c = c +1
+#def CountPreviousStates(Region):
+	#findAll(Region) # find all matches
+	#mm = getLastMatches()
+	#c = 1
+	#while mm.hasNext(): # loop as long there is a first and more matches
+    #    	c = c +1
 
-	if i == "SelectedColor.png":
-		assert(c == 1)
-	elif i == "SelectedCellType.png":
-		assert(c == 2)
-	elif i == "SelectedSubCellType.png":
-		assert(c == 3)
+	#if i == "SelectedColor.png":
+	#	assert(c == 1)
+	#elif i == "SelectedCellType.png":
+	#	assert(c == 2)
+	#elif i == "SelectedSubCellType.png":
+	#	assert(c == 3)
 
 
 
