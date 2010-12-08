@@ -1023,3 +1023,22 @@ GetTraceIDAndColumnsValues(std::string iTraceIDName,std::string &ioColumnName)
       }
   return oMapValues;
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTableWidget::ShowOnlyRowsForTimePoint(unsigned int iTimePoint)
+{
+  int ColumnIndex = this->findColumnName("TimePoint");
+  if ( ColumnIndex == -1)
+    {
+    std::cout<<"column TimePoint not found in the table widget";
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
+    return;
+    }
+  for( unsigned int i = 0; i<this->rowCount(); i++)
+    {
+    if (this->item(i,ColumnIndex)->text().toUInt() != iTimePoint)
+      this->hideRow(i);
+    }
+}

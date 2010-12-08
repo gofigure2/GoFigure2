@@ -202,6 +202,12 @@ public:
   void SetVisibleStateForListTraceIDs( std::list<unsigned int> iListTraceIDs,
     Qt::CheckState iState,std::string iTraceName);
 
+  /**
+  \brief hide all rows who have a timepoint different than iTimePoint
+  \param[in] iTimePoint current timepoint
+  */
+  void ShowOnlyRowsForTimePoint(unsigned int iTimePoint);
+
 public slots:
 
   /**

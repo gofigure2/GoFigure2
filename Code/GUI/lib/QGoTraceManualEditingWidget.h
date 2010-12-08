@@ -204,6 +204,8 @@ public:
   ItemColorComboboxData* GetPointerCollectionData();
   ItemColorComboboxData* GetPointerColorData();
 
+  unsigned int GetCurrentSelectedCollectionID();
+
 signals:
   void AddANewCellType();
 

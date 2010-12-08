@@ -36,6 +36,10 @@
 #define __QGoContourSemiAutoWatershedWidget_h
 
 #include <QWidget>
+#include <QVBoxLayout>
+// Collapsible groupbox for the parameters
+#include "ctkCollapsibleGroupBox.h"
+
 #include "ui_WatershedWidget.h"
 
 /**
@@ -52,6 +56,9 @@ class QGoContourSemiAutoWatershedWidget:
 public:
   explicit QGoContourSemiAutoWatershedWidget(QWidget *iParent = 0);
   ~QGoContourSemiAutoWatershedWidget();
+
+  ctkCollapsibleGroupBox* groupBox;
+  QVBoxLayout *gridLayout2;
 
   signals:
     /*
