@@ -36,15 +36,7 @@
 #define __QGoContourSemiAutoWatershedWidget_h
 
 #include <QWidget>
-/*#include <QButtonGroup>
-#include <QDoubleSpinBox>
-#include <QGridLayout>*/
 #include <QVBoxLayout>
-/*#include <QHeaderView>
-#include <QLabel>
-#include <QSpinBox>
-#include <QComboBox>
-#include <QApplication>*/
 // Collapsible groupbox for the parameters
 #include "ctkCollapsibleGroupBox.h"
 
@@ -65,23 +57,8 @@ public:
   explicit QGoContourSemiAutoWatershedWidget(QWidget *iParent = 0);
   ~QGoContourSemiAutoWatershedWidget();
 
-  //QWidget* topLevel;
   ctkCollapsibleGroupBox* groupBox;
   QVBoxLayout *gridLayout2;
-  /*QGridLayout *gridLayout;
-  QGridLayout *gridLayout_2;
-  QLabel *shapeLabel;
-  QComboBox *shape;
-  QLabel *label;
-  QSpinBox *tresholdMinSpinBox;
-  QLabel *label_2;
-  QSpinBox *tresholdMaxSpinBox;
-  QLabel *label_3;
-  QDoubleSpinBox *correlationDoubleSpinBox;
-  QLabel *label_4;
-  QDoubleSpinBox *alphaDoubleSpinBox;
-  QLabel *label_5;
-  QDoubleSpinBox *betaDoubleSpinBox;*/
 
   signals:
     /*
