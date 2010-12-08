@@ -80,6 +80,7 @@ setBundlePath(address)
 
 start = time.time()
 
+
 <span class="kw">def</span> AddNew(Region):
 <span class="cmt">#       """Clicks on add a new... in dropdown menu of TraceWidget for Color, CellType, SubCellType. """
 </span>        <span class="skw">find</span>(Region)
@@ -89,6 +90,9 @@ start = time.time()
 
 <span class="cmt">#       click("add_a_new.png")
 </span>
+
+<span class="skw">click</span>(<img src="TraceWidgetIcon.png" />)
+
 <span class="cmt">#three trace widget buttons
 </span>TraceObject = (<img src="SelectedColor.png" />,<img src="SelectedCellType.png" />,<img src="SelectedSubCellType.png" />)
 <span class="cmt">#four add a new... tests for each trace widget button

@@ -8,6 +8,7 @@ setBundlePath(address)
 
 start = time.time()
 
+
 def AddNew(Region):
 #	"""Clicks on add a new... in dropdown menu of TraceWidget for Color, CellType, SubCellType. """
 	find(Region)
@@ -16,6 +17,9 @@ def AddNew(Region):
 	click(a.below(20))
 
 #	click("add_a_new.png")
+
+
+click("TraceWidgetIcon.png")
 
 #three trace widget buttons
 TraceObject = ("SelectedColor.png","SelectedCellType.png","SelectedSubCellType.png")
