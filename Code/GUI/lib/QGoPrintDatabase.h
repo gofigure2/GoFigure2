@@ -100,37 +100,6 @@ public:
  * and fill the info for the contours and meshes*/
   void FillTableFromDatabase();
 
-  /** \brief Add the contours in the traceinfoForvisu and return all the
-  contours data for the given timepoint, included the new ones*/
-  //void AddContoursFromDBForAGivenTimePoint(
-    //std::vector< int > iListIDs = std::vector< int >() );
-
-  /** \brief return the multi index container for the contours with the
-  data from the database corresponding to iTimePoint and to the list
-  of given IDs,if no list of IDs is given, will return the info for all
-  the contours*/
-  // ContourMeshStructureMultiIndexContainer *
-  // GetContoursMultiIndexFromDBForAGivenTimePoint(
-  //  int iTimePoint, std::vector< int > iListIDs = std::vector< int >() );
-
-  /** \brief return the meshes info for the visu with the data from
-  the database corresponding to iTimePoint*/
-  // ContourMeshStructureMultiIndexContainer * GetMeshesFromDBForAGivenTimePoint(
-  //  int iTimePoint);
-
-  /** \brief return the multi index container for the meshes with the
-   data from the database corresponding to iTimePoint and to the list
-   of given IDs,if no list of IDs is given, will return the info for all
-   the meshes*/
-  //ContourMeshStructureMultiIndexContainer *
-  //GetMeshesMultiIndexFromDBForAGivenTimePoint( int iTimePoint,
-  //                                             std::vector< int > iListIDs = std::vector< int >() );
-
-  /** \brief Add the meshes in the trcaeinfoForvisu and return all the
-  meshes data for the given timepoint, included the new ones*/
-  //void
- // AddMeshesFromDBForAGivenTimePoint(std::vector< int > iListIDs);
-
   /** \brief Return a vector of all the contours for the given timepoint*/
   std::vector< ContourMeshStructure > GetContoursForAGivenTimepoint(
     unsigned int iTimePoint);
@@ -138,17 +107,6 @@ public:
   /** \brief Return a vector of all the meshes for the given timepoint*/
   std::vector< ContourMeshStructure > GetMeshesForAGivenTimepoint(
     unsigned int iTimePoint);
-
-  /** \brief Return a vector of all the contours with a bounding box
-  containing the given ZCoord*/
-  //std::list< unsigned int > GetContoursForAGivenZCoord(unsigned int iZCoord);
-
-  /** \brief Return a vector of all the meshes with a bounding box
-  containing the given ZCoord*/
-  //std::list< unsigned int > GetMeshesForAGivenZCoord(unsigned int iZCoordPoint);
-
-  //useful ???
-  std::pair< std::string, QColor > GetSelectedCollectionData();
 
   /**
   \brief save a new contour from the visu into the database, update
@@ -312,27 +270,23 @@ signals:
   void PrintMessage(QString iMessage, int iTimeOut = 0);
 
 protected:
-  //updated by the TraceManualEditing Widget:
-  ItemColorComboboxData* m_SelectedColorData;
-  ItemColorComboboxData* m_SelectedCollectionData;
-
   //related to 3dwt:
-  int                   m_SelectedTimePoint;
-  QGoDBBookmarkManager *m_BookmarkManager;
+  int*                  m_SelectedTimePoint;
+  QGoDBBookmarkManager* m_BookmarkManager;
 
   //related to TraceManualEditing Widget:
-  QGoDBCellTypeManager *           m_CellTypeManager;
-  QGoDBSubCellTypeManager *        m_SubCellTypeManager;
-  QGoDBColorManager *              m_ColorManager;
-  QGoTraceManualEditingDockWidget *m_TraceManualEditingDockWidget;
-  QGoTraceManualEditingWidget *    m_TraceWidget;
+  QGoDBCellTypeManager*             m_CellTypeManager;
+  QGoDBSubCellTypeManager*          m_SubCellTypeManager;
+  QGoDBColorManager*                m_ColorManager;
+  QGoTraceManualEditingDockWidget*  m_TraceManualEditingDockWidget;
+  QGoTraceManualEditingWidget*      m_TraceWidget;
 
-  QGoDBContourManager *m_ContoursManager;
-  QGoDBMeshManager *   m_MeshesManager;
-  QGoDBTrackManager *  m_TracksManager;
+  QGoDBContourManager*              m_ContoursManager;
+  QGoDBMeshManager*                 m_MeshesManager;
+  QGoDBTrackManager*                m_TracksManager;
 
   //Database variables:
-  vtkMySQLDatabase *m_DatabaseConnector;
+  vtkMySQLDatabase* m_DatabaseConnector;
   std::string       m_Server;
   std::string       m_User;
   std::string       m_Password;
@@ -344,7 +298,7 @@ protected:
   bool m_ReeditMode;
   bool m_MeshGenerationMode;
 
-  QAction *m_VisibilityAction;
+  QAction*  m_VisibilityAction;
 
   void OpenDBConnection();
 
@@ -426,20 +380,6 @@ protected:
   */
   void SetTMListColorsWithPreviousSelectedOne();
 
-  /**
-  \brief set the pointer for the selected collection to iCollectionData
-  \param[in] iCollectionData pointer to the ID and color of the 
-  selected collection
-  */
-  void SetPointerCollectionData(ItemColorComboboxData* iCollectionData);
-
-  /**
-  \brief set the pointer for the selected color to iColorData
-  \param[in] iColorData pointer to the name and color of the selected
-  color
-  */
-  void SetPointerSelectedColorData(ItemColorComboboxData* iColorData);
-
   //******************End of Methods related to Trace Manual Editing
   // Widget***********
 
@@ -449,9 +389,6 @@ protected:
   */
   std::list< ItemColorComboboxData > GetListCollectionIDFromDB(
     vtkMySQLDatabase *iDatabaseConnector);
-
-  //std::vector< ContourMeshStructure > GetTracesForAGivenTimepoint(
-  //  ContourMeshStructureMultiIndexContainer iAllTraces, unsigned int iTimePoint);
 
   void closeEvent(QCloseEvent *event);
 
@@ -519,7 +456,7 @@ protected:
     //update everything for the traces and get the list of collection ID they
     //are collection of:
     std::list< unsigned int > ListCollectionOfIDsToUpdate =
-      iTraceManager->UpdateTheTracesColor(this->m_DatabaseConnector, *this->m_SelectedColorData);
+      iTraceManager->UpdateTheTracesColor(this->m_DatabaseConnector);//, *this->m_SelectedColorData);
     iCollectionOfManager->DisplayInfoForExistingTraces(this->m_DatabaseConnector,
                                                        ListCollectionOfIDsToUpdate);
     this->CloseDBConnection();
@@ -609,8 +546,6 @@ protected slots:
   \brief open the connection to the database and pass it to the ContoursManager
   */
   void PassDBConnectionToContoursManager();
-
-  void PassSelectedColorToContoursManager();
 
    /**
   \brief open the connection to the database and pass it to the MeshesManager
