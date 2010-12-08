@@ -761,6 +761,6 @@ protected slots:
   */
   virtual void SetColorCoding(bool IsChecked)= 0;
 
-  //void ShowOnlyRowsForCurrentTimePoint();
+  void ShowOnlyRowsForCurrentTimePoint();
 };
 #endif
