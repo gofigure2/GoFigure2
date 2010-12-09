@@ -268,7 +268,7 @@ QGoFilterSemiAutoBase::setOriginalImageMC(std::vector< vtkSmartPointer<vtkImageD
 void
 QGoFilterSemiAutoBase::UpdateVisibility(int iCurrentFilter)
 {
-  QWidget *w = m_Widget->parentWidget();
+  QWidget *w = m_Widget->parentWidget()->parentWidget();
 
   if ( m_Number == iCurrentFilter )
     {
@@ -283,7 +283,22 @@ QGoFilterSemiAutoBase::UpdateVisibility(int iCurrentFilter)
                          this, SLOT( Apply() ) );
     }
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
+void
+QGoFilterSemiAutoBase::
+UpdateAdvancedMode( bool checked)
+{
+  QWidget *w = m_Widget->parentWidget()->parentWidget();
+  QGoSeedBaseWidget* baseWidget = dynamic_cast<QGoSeedBaseWidget*>( w );
+
+  if( checked && (m_Number != baseWidget->GetCurrentFilter()) )
+    {
+    m_Widget->hide();
+    }
+
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -292,7 +307,7 @@ QGoFilterSemiAutoBase::ConnectSignals(int iFilterNumber)
 {
   m_Number = iFilterNumber;
 
-  QWidget *w = m_Widget->parentWidget();
+  QWidget *w = m_Widget->parentWidget()->parentWidget();
 
   // Buttons connections
   QObject::connect( w, SIGNAL( Apply() ),
@@ -305,6 +320,8 @@ QGoFilterSemiAutoBase::ConnectSignals(int iFilterNumber)
                     this, SLOT( setChannel(int) ) );
   QObject::connect( w, SIGNAL( Sampling(int) ),
                     this, SLOT( setSampling(int) ) );
+  QObject::connect( w, SIGNAL( Clicked(bool) ),
+                    this, SLOT( UpdateAdvancedMode(bool) ) );
 
   // End of segmentation signals
   QObject::connect( this, SIGNAL( MeshCreated(vtkPolyData *, int) ),
