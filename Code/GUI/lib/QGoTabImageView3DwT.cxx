@@ -1807,30 +1807,30 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels( int iChannel )
 
   // Create channels names
   QString t_minus_step;
-  t_minus_step.append(QLatin1String("t-"));// + m_DopplerStep);
-  t_minus_step.append(QString::number(m_DopplerStep, 10));
+  t_minus_step.append(QLatin1String("t: "));// + m_DopplerStep);
+  t_minus_step.append(QString::number(t0, 10));
 
   QString t_plus_step;
-  t_plus_step.append(QLatin1String("t+"));//() + m_DopplerStep);
-  t_plus_step.append(QString::number(m_DopplerStep, 10));
+  t_plus_step.append(QLatin1String("t: "));//() + m_DopplerStep);
+  t_plus_step.append(QString::number(t2, 10));
 
   // update channels in navigation DockWidget
   m_NavigationDockWidget->SetNumberOfChannels(3);
   m_NavigationDockWidget->blockSignals(true);
   m_NavigationDockWidget->SetChannel(0, t_minus_step);
-  m_NavigationDockWidget->SetChannel(1, "t");
+  m_NavigationDockWidget->SetChannel(1, "t: current");
   m_NavigationDockWidget->SetChannel(2, t_plus_step);
   m_NavigationDockWidget->blockSignals(false);
 
   //update channels in segmentation widgets
   m_ContourSegmentationDockWidget->SetNumberOfChannels(3);
   m_ContourSegmentationDockWidget->SetChannel(0, t_minus_step);
-  m_ContourSegmentationDockWidget->SetChannel(1, "t");
+  m_ContourSegmentationDockWidget->SetChannel(1, "t: current");
   m_ContourSegmentationDockWidget->SetChannel(2, t_plus_step);
 
   m_MeshSegmentationDockWidget->SetNumberOfChannels(3);
   m_MeshSegmentationDockWidget->SetChannel(0, t_minus_step);
-  m_MeshSegmentationDockWidget->SetChannel(1, "t");
+  m_MeshSegmentationDockWidget->SetChannel(1, "t: current");
   m_MeshSegmentationDockWidget->SetChannel(2, t_plus_step);
 }
 
@@ -2778,6 +2778,25 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView,
     std::cerr << "The time point you processed is out of the image extent" << std::endl;
     return;
     }
+  // use that
+  /*
+  int min_t = m_MegaCaptureReader->GetMinTimePoint();
+  int max_t = m_MegaCaptureReader->GetMaxTimePoint();
+
+  int t0 = m_TCoord - m_DopplerStep;
+  int t1 = m_TCoord;
+  int t2 = m_TCoord + m_DopplerStep;
+
+  // special case if we are at the borders
+  if(t0 < min_t)
+    {
+    t0 = min_t;
+    }
+
+  if(t2 > max_t)
+    {
+    t2 = max_t;
+    }*/
 
   if ( !m_DataBaseTables->IsDatabaseUsed() )
     {
