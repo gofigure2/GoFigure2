@@ -37,6 +37,7 @@
 #include "itkLightObject.h"
 #include "itkvtkPolyDataToBinaryMaskImageFilter.h"
 #include "itkBinaryMaskImageToGoFigureMeshAttributes.h"
+#include "itkRegionOfInterestImageFilter.h"
 #include "itkImageFileWriter.h"
 
 namespace itk
@@ -69,6 +70,9 @@ public:
   typedef typename BinaryMaskImageToGoFigureMeshAttributesType::Pointer
   BinaryMaskImageToGoFigureMeshAttributesPointer;
 
+  typedef RegionOfInterestImageFilter< ImageType, ImageType > ROIFilterType;
+  typedef typename ROIFilterType::Pointer ROIFilterPointer;
+
   typedef ImageFileWriter< ImageType > WriterType;
 
   virtual void SetImage(ImageType *iImage);
@@ -97,6 +101,7 @@ protected:
 
   PolyDataToBinaryMaskImageFilterPointer m_Binarizer;
   BinaryMaskImageToGoFigureMeshAttributesPointer m_AttributeCalculator;
+  ROIFilterPointer m_ROIFilter;
 
   unsigned int m_Size;
   double m_PhysicalSize;
