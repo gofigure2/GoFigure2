@@ -77,6 +77,9 @@ public:
   void preview();
 
 private:
+  vtkActor* CreateSphereActor( double* iCenter);
+  vtkActor* CreatePolylineActor( double* iCenter1, double* iCenter2);
+
   std::list<Track>                                             m_ListOfTracks;
   std::list<unsigned int>                                      m_CutList;
   std::list< std::pair<unsigned int, unsigned int> >           m_MergeList;

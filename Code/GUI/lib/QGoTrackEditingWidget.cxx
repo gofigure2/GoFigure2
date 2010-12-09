@@ -34,6 +34,18 @@
 
 #include "QGoTrackEditingWidget.h"
 
+#include "vtkSmartPointer.h"
+
+#include "vtkSphereSource.h"
+#include "vtkPolyDataMapper.h"
+
+#include "vtkPoints.h"
+#include "vtkPolyLine.h"
+#include "vtkCellArray.h"
+#include "vtkPolyData.h"
+
+#include "vtkProperty.h"
+
 QGoTrackEditingWidget::QGoTrackEditingWidget(QWidget *iParent):
   QDialog(iParent)
 {
@@ -67,21 +79,39 @@ generateTrackRepresentation()
   while( trackListIterator != m_ListOfTracks.end() )
     {
     int trackID = (*trackListIterator).first;
-    int previousMeshID = -1;
+    int    previousMeshID       = -1;
+    double* previousMeshPosition = NULL;
     std::list<Mesh>::iterator meshListIterator = (*trackListIterator).second.begin();
 
     while( meshListIterator!= (*trackListIterator).second.end())
       {
 
-      int currentMeshID = (*meshListIterator).first;
+      int     currentMeshID = (*meshListIterator).first;
       unsigned int timePoint = (*meshListIterator).second.first;
-      double*      coordinates = (*meshListIterator).second.second;
-      //Create actor
-      // Create Glyph
+      double* currentMeshPosition = (*meshListIterator).second.second;
+
+      //--------------
+      //Create actors
+      //--------------
+
+      //-------------------------------
+      // Create a sphere
+      vtkActor* sphereActor = CreateSphereActor( currentMeshPosition );
+      // save info
+
+      //-------------------------------
       // Create polyline
-      // Fill Actor/ID Map
+      if( previousMeshID >= 0 )
+        {
+        vtkActor* polylineActor = CreatePolylineActor(previousMeshPosition, currentMeshPosition);
+        // save info
+        }
+
+      //-------------------------------
 
       previousMeshID = currentMeshID;
+      previousMeshPosition = currentMeshPosition;
+
       ++meshListIterator;
       }
 
@@ -91,4 +121,75 @@ generateTrackRepresentation()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-// When Pick, get actor, then ID with map, Process Actors colors and ID lists
+vtkActor*
+QGoTrackEditingWidget::
+CreateSphereActor( double* iCenter)
+{
+// create sphere geometry
+  vtkSphereSource *sphere = vtkSphereSource::New();
+  sphere->SetRadius(1.0);
+  sphere->SetThetaResolution(18);
+  sphere->SetPhiResolution(18);
+  sphere->SetCenter( iCenter );
+
+  // map to graphics library
+  vtkPolyDataMapper *map = vtkPolyDataMapper::New();
+  map->SetInput(sphere->GetOutput());
+
+  // actor coordinates geometry, properties, transformation
+  vtkActor *aSphere = vtkActor::New();
+  aSphere->SetMapper(map);
+  aSphere->GetProperty()->SetColor(0,0,1); // sphere color blue
+
+  sphere->Delete();
+  map->Delete();
+
+  return aSphere;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+vtkActor*
+QGoTrackEditingWidget::
+CreatePolylineActor( double* iCenter1, double* iCenter2)
+{
+  //create a vtkPoints object and store the points in it
+    vtkSmartPointer<vtkPoints> points =
+      vtkSmartPointer<vtkPoints>::New();
+    points->InsertNextPoint(iCenter1);
+    points->InsertNextPoint(iCenter2);
+
+    vtkSmartPointer<vtkPolyLine> polyLine =
+        vtkSmartPointer<vtkPolyLine>::New();
+    polyLine->GetPointIds()->SetNumberOfIds(2);
+    for(unsigned int i = 0; i < 2; i++)
+      {
+      polyLine->GetPointIds()->SetId(i,i);
+      }
+
+    //Create a cell array to store the lines in and add the lines to it
+    vtkSmartPointer<vtkCellArray> cells =
+        vtkSmartPointer<vtkCellArray>::New();
+    cells->InsertNextCell(polyLine);
+
+    //Create a polydata to store everything in
+    vtkSmartPointer<vtkPolyData> polyData =
+        vtkSmartPointer<vtkPolyData>::New();
+
+    //add the points to the dataset
+    polyData->SetPoints(points);
+
+    //add the lines to the dataset
+    polyData->SetLines(cells);
+
+    //setup actor and mapper
+    vtkSmartPointer<vtkPolyDataMapper> mapper =
+        vtkSmartPointer<vtkPolyDataMapper>::New();
+    mapper->SetInput(polyData);
+
+    vtkActor* actor = vtkActor::New();
+    actor->SetMapper(mapper);
+    actor->GetProperty()->SetColor(1,1,1); // sphere color white
+
+    return actor;
+}
