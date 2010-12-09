@@ -2772,17 +2772,21 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView,
                                      unsigned int iTCoord,
                                      int iTShift)
 {
-  if(iTCoord + iTShift*m_DopplerStep < m_MegaCaptureReader->GetMinTimePoint() )
+  iTShift = iTShift*m_DopplerStep;
+
+  if(iTCoord + iTShift < m_MegaCaptureReader->GetMinTimePoint() )
     {
-    iTShift = m_TCoord - m_MegaCaptureReader->GetMinTimePoint();
+    iTShift = -(m_TCoord - m_MegaCaptureReader->GetMinTimePoint());
     }
   else
     {
-    if( iTCoord + iTShift*m_DopplerStep > m_MegaCaptureReader->GetMaxTimePoint())
+    if( iTCoord + iTShift > m_MegaCaptureReader->GetMaxTimePoint())
       {
       iTShift = m_MegaCaptureReader->GetMaxTimePoint() - m_TCoord;
       }
     }
+
+  std::cout << "Shift: " << iTShift << std::endl;
 
   if ( !m_DataBaseTables->IsDatabaseUsed() )
     {
