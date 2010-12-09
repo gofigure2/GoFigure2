@@ -62,8 +62,31 @@ void
 QGoTrackEditingWidget::
 generateTrackRepresentation()
 {
-  //Create actors
-  // Fill Actor/ID Map
+  std::list<Track>::iterator trackListIterator = m_ListOfTracks.begin();
+
+  while( trackListIterator != m_ListOfTracks.end() )
+    {
+    int trackID = (*trackListIterator).first;
+    int previousMeshID = -1;
+    std::list<Mesh>::iterator meshListIterator = (*trackListIterator).second.begin();
+
+    while( meshListIterator!= (*trackListIterator).second.end())
+      {
+
+      int currentMeshID = (*meshListIterator).first;
+      unsigned int timePoint = (*meshListIterator).second.first;
+      double*      coordinates = (*meshListIterator).second.second;
+      //Create actor
+      // Create Glyph
+      // Create polyline
+      // Fill Actor/ID Map
+
+      previousMeshID = currentMeshID;
+      ++meshListIterator;
+      }
+
+    ++trackListIterator;
+    }
 }
 //-------------------------------------------------------------------------
 

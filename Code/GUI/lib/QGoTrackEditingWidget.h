@@ -58,6 +58,9 @@ public:
   explicit QGoTrackEditingWidget(QWidget *parent = 0);
   ~QGoTrackEditingWidget();
 
+  /*
+   * \todo Need Color in the track information??
+   */
   typedef std::pair< unsigned int, std::pair< unsigned int,double*> > Mesh;
   typedef std::pair< unsigned int, std::list<Mesh> > Track;
 
