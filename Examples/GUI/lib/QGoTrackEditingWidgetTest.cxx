@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
   typedef std::pair< unsigned int, std::pair< unsigned int,double*> > Mesh;
   typedef std::pair< unsigned int, std::list<Mesh> > Track;
 
-  // Create 10 meshes
+  // Create meshes
   Mesh mesh0;
   mesh0.first = 1;
   mesh0.second.first = 2;
@@ -82,8 +82,43 @@ int main(int argc, char *argv[])
   track0.second.push_back(mesh1);
   track0.second.push_back(mesh2);
 
+  // Create meshes
+  Mesh mesh02;
+  mesh02.first = 12;
+  mesh02.second.first = 22;
+  double* position02 = new double[3];
+  position02[0] = 102;
+  position02[1] = 102;
+  position02[2] = 102;
+  mesh02.second.second = position02;
+
+  Mesh mesh12;
+  mesh12.first = 22;
+  mesh12.second.first = 42;
+  double* position12 = new double[3];
+  position12[0] = 202;
+  position12[1] = 202;
+  position12[2] = 202;
+  mesh12.second.second = position12;
+
+  Mesh mesh22;
+  mesh22.first = 32;
+  mesh22.second.first = 62;
+  double* position22 = new double[3];
+  position22[0] = 302;
+  position22[1] = 302;
+  position22[2] = 302;
+  mesh22.second.second = position22;
+
+  Track track02;
+  track02.first = 32;
+  track02.second.push_back(mesh02);
+  track02.second.push_back(mesh12);
+  track02.second.push_back(mesh22);
+
   std::list<Track> trackList;
   trackList.push_back(track0);
+  trackList.push_back(track02);
 /*
   Mesh mesh0;
   mesh0.first = 1;
