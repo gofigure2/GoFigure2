@@ -1808,11 +1808,11 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels( int iChannel )
   // Create channels names
   QString t_minus_step;
   t_minus_step.append(QLatin1String("t-"));// + m_DopplerStep);
-  t_minus_step.append(m_DopplerStep);
+  t_minus_step.append(QString::number(m_DopplerStep, 10));
 
   QString t_plus_step;
   t_plus_step.append(QLatin1String("t+"));//() + m_DopplerStep);
-  t_plus_step.append(m_DopplerStep);
+  t_plus_step.append(QString::number(m_DopplerStep, 10));
 
   // update channels in navigation DockWidget
   m_NavigationDockWidget->SetNumberOfChannels(3);
