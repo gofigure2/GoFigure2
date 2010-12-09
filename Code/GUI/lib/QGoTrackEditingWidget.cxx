@@ -224,13 +224,10 @@ preview()
 //setup render window, renderer, and interactor
   vtkSmartPointer<vtkRenderer> renderer =
       vtkSmartPointer<vtkRenderer>::New();
-  vtkSmartPointer<vtkRenderWindow> renderWindow =
-      vtkSmartPointer<vtkRenderWindow>::New();
-  renderWindow->AddRenderer(renderer);
-  vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor =
+  this->qvtkWidget->GetRenderWindow()->AddRenderer(renderer);
+  /*vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor =
       vtkSmartPointer<vtkRenderWindowInteractor>::New();
-  renderWindowInteractor->SetRenderWindow(renderWindow);
-  //this->qvtkWidget->SetRenderWindow(renderWindow);
+  renderWindowInteractor->SetRenderWindow(this->qvtkWidget->GetRenderWindow());*/
   //
   std::map< vtkActor*, std::pair<unsigned int, unsigned int> >::iterator actor2IDMapIterator;
   actor2IDMapIterator = m_Actor2IDMap.begin();
@@ -240,6 +237,6 @@ preview()
     ++actor2IDMapIterator;
     }
 
-  renderWindow->Render();
-  renderWindowInteractor->Start();
+  this->qvtkWidget->GetRenderWindow()->Render();
+  //renderWindowInteractor->Start();
 }
