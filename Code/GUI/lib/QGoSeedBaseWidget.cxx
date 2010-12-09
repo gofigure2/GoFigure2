@@ -80,6 +80,16 @@ QGoSeedBaseWidget::QGoSeedBaseWidget(QWidget *iParent, int iSampling):QWidget(iP
 
   gridLayout->removeWidget(apply);
   gridLayout->addWidget(apply, 5, 0, 1, -1);
+
+  groupBox = new ctkCollapsibleGroupBox(QObject::tr("Advanced Parameters"), this);
+  gridLayout->addWidget(groupBox, 4, 0, 1, -1);
+  groupBox->setCollapsed(true);
+
+  vbox = new QGridLayout;
+  groupBox->setLayout(vbox);
+
+  QObject::connect( this->groupBox, SIGNAL( clicked(bool) ),
+                    this, SIGNAL( Clicked(bool) ) );
 }
 
 //---------------------------------------------------------------------------//
@@ -136,7 +146,7 @@ QGoSeedBaseWidget::GetNumberOfFilters()
 QGridLayout *
 QGoSeedBaseWidget::GetFrame()
 {
-  return gridLayout;
+  return vbox;
 }
 
 //---------------------------------------------------------------------------//
@@ -150,3 +160,9 @@ QGoSeedBaseWidget::Initialize()
 }
 
 //---------------------------------------------------------------------------//
+
+int
+QGoSeedBaseWidget::GetCurrentFilter()
+{
+  return filter->currentIndex();
+}
