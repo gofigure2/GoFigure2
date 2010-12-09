@@ -66,6 +66,7 @@ QGoTrackEditingWidget(QWidget *iParent): QDialog(iParent)
 QGoTrackEditingWidget::
 ~QGoTrackEditingWidget()
 {
+  // DELETE ACTORS!!!
 }
 //-------------------------------------------------------------------------
 
@@ -229,7 +230,7 @@ preview()
   vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor =
       vtkSmartPointer<vtkRenderWindowInteractor>::New();
   renderWindowInteractor->SetRenderWindow(renderWindow);
-  this->qvtkWidget->SetRenderWindow(renderWindow);
+  //this->qvtkWidget->SetRenderWindow(renderWindow);
   //
   std::map< vtkActor*, std::pair<unsigned int, unsigned int> >::iterator actor2IDMapIterator;
   actor2IDMapIterator = m_Actor2IDMap.begin();
