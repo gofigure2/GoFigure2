@@ -103,10 +103,9 @@ QGoSeedBaseWidget::
 
 //---------------------------------------------------------------------------//
 void
-QGoSeedBaseWidget::AddChannel(QString iChannel)
+QGoSeedBaseWidget::AddChannel(int iPosition, QString iChannel)
 {
- // qDebug() << "AddChannel(" <<iChannel << ")";
-  channel->addItem(iChannel);
+  this->channel->insertItem(iPosition, iChannel);
 }
 
 //---------------------------------------------------------------------------//
