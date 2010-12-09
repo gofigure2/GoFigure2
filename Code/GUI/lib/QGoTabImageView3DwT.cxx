@@ -127,6 +127,7 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent):
 
   m_ChannelClassicMode = true;
   m_ChannelOfInterest = 0;
+  m_DopplerStep = 1;
 
   m_HighlightedContoursProperty = vtkProperty::New();
   m_HighlightedContoursProperty->SetColor(1., 0., 0.);
@@ -576,6 +577,9 @@ QGoTabImageView3DwT::CreateVisuDockWidget()
 
   QObject::connect( m_NavigationDockWidget, SIGNAL( ModeChanged(int) ),
                     this, SLOT( ModeChanged(int) ) );
+
+  QObject::connect( m_NavigationDockWidget, SIGNAL( StepChanged(int) ),
+                    this, SLOT( StepChanged(int) ) );
 }
 
 //-------------------------------------------------------------------------
@@ -1046,7 +1050,7 @@ void QGoTabImageView3DwT::LoadChannelTime()
       // emit with channel...
       // keep track of channel of interest when we move through time
       m_ChannelOfInterest = value;
-      SetTimePointWithMegaCaptureTimeChannels( value );
+      SetTimePointWithMegaCaptureTimeChannels( m_ChannelOfInterest );
       Update();
     }
   else
@@ -1742,19 +1746,19 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels( int iChannel )
   int min_t = m_MegaCaptureReader->GetMinTimePoint();
   int max_t = m_MegaCaptureReader->GetMaxTimePoint();
 
-  int t0 = m_TCoord - 1;
+  int t0 = m_TCoord - m_DopplerStep;
   int t1 = m_TCoord;
-  int t2 = m_TCoord + 1;
+  int t2 = m_TCoord + m_DopplerStep;
 
   // special case if we are at the borders
-  if(m_TCoord == min_t)
+  if(t0 < min_t)
     {
-    t0 = t2;
+    t0 = min_t;
     }
 
-  if(m_TCoord == max_t)
+  if(t2 > max_t)
     {
-    t2 = t0;
+    t2 = max_t;
     }
 
   // resize internal image
@@ -1801,24 +1805,33 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels( int iChannel )
     m_ViewActions[10]->setEnabled(true);
     }
 
+  // Create channels names
+  QString t_minus_step;
+  t_minus_step.append(QLatin1String("t-"));// + m_DopplerStep);
+  t_minus_step.append(m_DopplerStep);
+
+  QString t_plus_step;
+  t_plus_step.append(QLatin1String("t+"));//() + m_DopplerStep);
+  t_plus_step.append(m_DopplerStep);
+
   // update channels in navigation DockWidget
   m_NavigationDockWidget->SetNumberOfChannels(3);
   m_NavigationDockWidget->blockSignals(true);
-  m_NavigationDockWidget->SetChannel(0, "t-1");
+  m_NavigationDockWidget->SetChannel(0, t_minus_step);
   m_NavigationDockWidget->SetChannel(1, "t");
-  m_NavigationDockWidget->SetChannel(2, "t+1");
+  m_NavigationDockWidget->SetChannel(2, t_plus_step);
   m_NavigationDockWidget->blockSignals(false);
 
   //update channels in segmentation widgets
   m_ContourSegmentationDockWidget->SetNumberOfChannels(3);
-  m_ContourSegmentationDockWidget->SetChannel(0, "t-1");
+  m_ContourSegmentationDockWidget->SetChannel(0, t_minus_step);
   m_ContourSegmentationDockWidget->SetChannel(1, "t");
-  m_ContourSegmentationDockWidget->SetChannel(2, "t+1");
+  m_ContourSegmentationDockWidget->SetChannel(2, t_plus_step);
 
   m_MeshSegmentationDockWidget->SetNumberOfChannels(3);
-  m_MeshSegmentationDockWidget->SetChannel(0, "t-1");
+  m_MeshSegmentationDockWidget->SetChannel(0, t_minus_step);
   m_MeshSegmentationDockWidget->SetChannel(1, "t");
-  m_MeshSegmentationDockWidget->SetChannel(2, "t+1");
+  m_MeshSegmentationDockWidget->SetChannel(2, t_plus_step);
 }
 
 //-------------------------------------------------------------------------
@@ -2234,6 +2247,18 @@ QGoTabImageView3DwT::ModeChanged(int iChannel)
     }
 
   ChannelTimeMode( iChannel );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+StepChanged( int iStep)
+{
+  m_DopplerStep = iStep;
+
+  SetTimePointWithMegaCaptureTimeChannels( m_ChannelOfInterest );
+  Update();
 }
 //-------------------------------------------------------------------------
 
