@@ -56,6 +56,9 @@ QGoTrackEditingWidget::
 QGoTrackEditingWidget(QWidget *iParent): QDialog(iParent)
 {
   this->setupUi(this);
+
+  QObject::connect( this->previewPushButton, SIGNAL( pressed() ),
+                    this, SLOT( preview() ) );
 }
 //-------------------------------------------------------------------------
 
@@ -226,6 +229,7 @@ preview()
   vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor =
       vtkSmartPointer<vtkRenderWindowInteractor>::New();
   renderWindowInteractor->SetRenderWindow(renderWindow);
+  this->qvtkWidget->SetRenderWindow(renderWindow);
   //
   std::map< vtkActor*, std::pair<unsigned int, unsigned int> >::iterator actor2IDMapIterator;
   actor2IDMapIterator = m_Actor2IDMap.begin();

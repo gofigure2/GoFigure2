@@ -61,7 +61,7 @@
       </spacer>
      </item>
      <item row="2" column="0">
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="previewPushButton">
        <property name="text">
         <string>Preview</string>
        </property>
