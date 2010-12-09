@@ -1,0 +1,131 @@
+
+<html>
+   <head>
+      <style type="text/css">
+         .sikuli-code {
+            font-size: 20px;
+            font-family: "Osaka-mono", Monospace;
+            line-height: 1.5em;
+            display:table-cell;
+            white-space: pre-wrap;       /* css-3 */
+            white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+            white-space: -pre-wrap;      /* Opera 4-6 */
+            white-space: -o-pre-wrap;    /* Opera 7 */
+            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+            width: 99%;   /* remove horizontal scroll-bar when viewing in IE7 */
+         }
+         .sikuli-code img {
+            vertical-align: middle;
+            margin: 2px;
+            border: 1px solid #ccc;
+            padding: 2px;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            -moz-box-shadow: 1px 1px 1px gray;
+            -webkit-box-shadow: 1px 1px 2px gray;
+         }
+         .kw {
+            color: blue;
+         }
+         .skw {
+            color: rgb(63, 127, 127);
+         }
+
+         .str {
+            color: rgb(128, 0, 0);
+         }
+
+         .dig {
+            color: rgb(128, 64, 0);
+         }
+
+         .cmt {
+            color: rgb(200, 0, 200);
+         }
+
+         h2 {
+            display: inline;
+            font-weight: normal;
+         }  
+         
+         .info {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+            display: none;
+         }
+
+         a {
+            color: #9D2900;
+         }
+
+         body {
+            font-family: "Trebuchet MS", Arial, Sans-Serif;
+         }
+
+      </style>
+   </head>
+<body>
+<div class="info">
+<h2>Export3DMesh.sikuli</h2> <a href="Export3DMesh.zip">(Download this script)</a>
+</div>
+<pre class="sikuli-code">
+<span class="kw">import</span> os
+address = os.getcwd()
+<span class="cmt">#address = "/home/es1076/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images"
+</span>
+<span class="cmt">#address = address+"/gofigure2_images"
+</span><span class="kw">print</span> address
+setBundlePath(address)
+
+<span class="cmt">#2 scripts: one before GF closes and one after creating database. 
+</span><span class="cmt">#will need script to create meshes on 1 track in different time points.
+</span>
+<span class="skw">click</span>(<img src="NavigationIcon.png" />)
+<span class="skw">click</span>(<img src="TableWidgetIcon.png" />)
+<span class="skw">click</span>(<img src="MeshSegmentationIcon.png" />)
+
+<span class="cmt">#Need to make 3D meshes
+</span>
+<span class="skw">click</span>(<img src="Tools.png" />)
+<span class="skw">click</span>(<img src="Export.png" />)
+<span class="skw">click</span>(<img src="3DMeshes.png" />)
+
+<span class="skw">wait</span>(<span class="dig">1</span>)
+<span class="skw">type</span>(<span class="str">"3DMeshExportTest.txt"</span>+Key.ENTER)
+<span class="cmt">#BUG: AFTER PRESS ENTER TO SAVE TXT GF CRASHES !!
+</span>
+reg = <span class="skw">find</span>(Pattern(<img src="roughQuadViewRectangle.png" />).similar(<span class="dig">0.30</span>))
+<span class="cmt">#this should find a rough 30% image and just get the coordinates and then take real image below
+</span>table_quadview = reg.getRect()
+quadview_image_BEFORE =<span class="skw">capture</span>(table_quadview)
+
+f = open(<span class="str">"quadview_image_BEFORE_address.txt"</span>,<span class="str">"w"</span>)
+f.write(quadview_image_BEFORE)
+
+<span class="kw">import</span> re
+string = <span class="str">"/home/es1076/GITROOT/GoFigure2/BUILD/bin/gofigure"</span>
+pattern = <span class="str">"GITROOT"</span>
+result = re.search(pattern, string)
+len = result.start(<span class="dig">0</span>)
+
+user = address[<span class="dig">0</span>:len]
+
+
+closeApp(user+<span class="str">"GITROOT/GoFigure2/BUILD/bin/gofigure"</span>)
+
+
+<span class="cmt">#Tools
+</span><span class="cmt">#export 3DMesh
+</span><span class="cmt">#Take Screeshot of quad view and table widget before to compare with after
+</span><span class="cmt">#close GF
+</span><span class="cmt">#drop mysql db
+</span><span class="cmt">#reopen gofigure
+</span><span class="cmt">#create database and imaging session using scripts
+</span><span class="cmt">#import track
+</span><span class="cmt">#close imaging session
+</span><span class="cmt">#reopen imaging session
+</span><span class="cmt">#compare screenshot of before with after.</span>
+</pre>
+</body>
+</html>
