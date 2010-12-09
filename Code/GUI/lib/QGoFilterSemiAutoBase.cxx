@@ -283,6 +283,7 @@ QGoFilterSemiAutoBase::UpdateVisibility(int iCurrentFilter)
                          this, SLOT( Apply() ) );
     }
 }
+//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
@@ -290,22 +291,15 @@ QGoFilterSemiAutoBase::
 UpdateAdvancedMode( bool checked)
 {
   QWidget *w = m_Widget->parentWidget()->parentWidget();
-  QGoSeedBaseWidget* test = dynamic_cast<QGoSeedBaseWidget*>( w );
-  std::cout<< "current: " << test->GetCurrentFilter() << std::endl;
+  QGoSeedBaseWidget* baseWidget = dynamic_cast<QGoSeedBaseWidget*>( w );
 
-  // Deal with apply
-  if( checked )
-  {
-  if ( m_Number != test->GetCurrentFilter() )
+  if( checked && (m_Number != baseWidget->GetCurrentFilter()) )
     {
-    std::cout<< "hjde: " << m_Number << std::endl;
     m_Widget->hide();
-    QObject::disconnect( w, SIGNAL( Apply() ),
-                         this, SLOT( Apply() ) );
     }
-  }
 
 }
+//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
