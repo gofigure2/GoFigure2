@@ -90,6 +90,15 @@ generateTrackRepresentation()
       unsigned int timePoint = (*meshListIterator).second.first;
       double* currentMeshPosition = (*meshListIterator).second.second;
 
+      // IDs Pair
+      std::pair< unsigned int, unsigned int> idsPair;
+      idsPair.first = trackID;
+      idsPair.first = currentMeshID;
+
+      // Actor/IDs Pair
+      std::pair< vtkActor*, std::pair<unsigned int, unsigned int> > actorIDsPair;
+      actorIDsPair.second = idsPair;
+
       //--------------
       //Create actors
       //--------------
@@ -97,14 +106,16 @@ generateTrackRepresentation()
       //-------------------------------
       // Create a sphere
       vtkActor* sphereActor = CreateSphereActor( currentMeshPosition );
-      // save info
+      actorIDsPair.first = sphereActor;
+      m_Actor2IDMap.insert(actorIDsPair);
 
       //-------------------------------
       // Create polyline
       if( previousMeshID >= 0 )
         {
         vtkActor* polylineActor = CreatePolylineActor(previousMeshPosition, currentMeshPosition);
-        // save info
+        actorIDsPair.first = polylineActor;
+        m_Actor2IDMap.insert(actorIDsPair);
         }
 
       //-------------------------------
