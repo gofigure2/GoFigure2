@@ -294,16 +294,11 @@ UpdateAdvancedMode( bool checked)
   std::cout<< "current: " << test->GetCurrentFilter() << std::endl;
 
   // Deal with apply
-  if( !checked )
+  if( checked )
   {
-  if ( m_Number == test->GetCurrentFilter() )
+  if ( m_Number != test->GetCurrentFilter() )
     {
-    m_Widget->show();
-    QObject::connect( w, SIGNAL( Apply() ),
-                      this, SLOT( Apply() ) );
-    }
-  else
-    {
+    std::cout<< "hjde: " << m_Number << std::endl;
     m_Widget->hide();
     QObject::disconnect( w, SIGNAL( Apply() ),
                          this, SLOT( Apply() ) );
