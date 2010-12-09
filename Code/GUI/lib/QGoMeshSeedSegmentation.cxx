@@ -98,12 +98,6 @@ QGoMeshSeedSegmentation::QGoMeshSeedSegmentation(QWidget *parentW,
   m_BaseAlgorithmSegmentationWidget->GetFrame()->addWidget(m_Watershed->getWidget());
   m_Watershed->ConnectSignals(filter);
 
-  //m_BaseAlgorithmSegmentationWidget has what we want
-  std::cout << "add1: " << m_BaseAlgorithmSegmentationWidget << std::endl;
-  std::cout << "add2: " << m_BaseAlgorithmSegmentationWidget->GetFrame() << std::endl;
-  std::cout << "add3: " << m_Watershed->getWidget() << std::endl;
-  std::cout << "add4: " << m_Watershed->getWidget()->parentWidget() << std::endl;
-
 //=============================================================================
 //=============================================================================
 

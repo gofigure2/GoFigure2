@@ -289,17 +289,14 @@ void
 QGoFilterSemiAutoBase::
 UpdateAdvancedMode( bool checked)
 {
-  std::cout << "test add1: " << m_Widget->parentWidget() << std::endl;
-  std::cout << "test add2: " << m_Widget->parentWidget()->parentWidget() << std::endl;
-  QGoSeedBaseWidget* test = dynamic_cast<QGoSeedBaseWidget*>( m_Widget->parentWidget()->parentWidget() );
+  QWidget *w = m_Widget->parentWidget()->parentWidget();
+  QGoSeedBaseWidget* test = dynamic_cast<QGoSeedBaseWidget*>( w );
   std::cout<< "current: " << test->GetCurrentFilter() << std::endl;
-  /*
+
   // Deal with apply
   if( !checked )
   {
-  QWidget *w = m_Widget->parentWidget()->parentWidget();
-
-  if ( m_Number == GetCurrentFilter() )
+  if ( m_Number == test->GetCurrentFilter() )
     {
     m_Widget->show();
     QObject::connect( w, SIGNAL( Apply() ),
@@ -311,7 +308,8 @@ UpdateAdvancedMode( bool checked)
     QObject::disconnect( w, SIGNAL( Apply() ),
                          this, SLOT( Apply() ) );
     }
-  }*/
+  }
+
 }
 
 //--------------------------------------------------------------------------
