@@ -2284,14 +2284,28 @@ QGoTabImageView3DwT::GetBoundingBox(vtkPolyData *iElement)
     int *min_idx = this->GetImageCoordinatesFromWorldCoordinates(Min);
     int *max_idx = this->GetImageCoordinatesFromWorldCoordinates(Max);
 
-    boundingBox[0] = min_idx[0];
-    boundingBox[1] = max_idx[0];
+    int extent[6];
+    this->m_Image->GetExtent( extent );
 
-    boundingBox[2] = min_idx[1];
-    boundingBox[3] = max_idx[1];
-
-    boundingBox[4] = min_idx[2];
-    boundingBox[5] = max_idx[2];
+    for( i = 0 ; i < 3; i++ )
+      {
+      if( min_idx[i] > extent[2*i] )
+        {
+        boundingBox[2*i] = min_idx[i];
+        }
+      else
+        {
+        boundingBox[2*i] = extent[2*i];
+        }
+      if( max_idx[i] < extent[2*i+1] )
+        {
+        boundingBox[2*i+1] = max_idx[i];
+        }
+      else
+        {
+        boundingBox[2*i+1] = extent[2*i+1];
+        }
+      }
 
     delete[] min_idx;
     delete[] max_idx;
@@ -2823,7 +2837,7 @@ void QGoTabImageView3DwT::ShowTraceWidgetsForContour(
   if ( ManualSegVisible )
     {
     if ( this->m_DataBaseTables->IsDatabaseUsed() )
-      {     
+      {
       this->m_DataBaseTables->UpdateWidgetsForCorrespondingTrace("contour", "mesh");
       }
     }

@@ -454,7 +454,7 @@ void TrackStructure::ComputeAttributes()
   t0 = tmin;
   double* org = it->second;
   double* p = it->second;
-  double* q;
+  double* q = NULL;
   ++it;
 
   while( it != this->PointsMap.end() )
