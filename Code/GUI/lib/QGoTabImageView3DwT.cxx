@@ -2786,8 +2786,6 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView,
       }
     }
 
-  std::cout << "Shift: " << iTShift << std::endl;
-
   if ( !m_DataBaseTables->IsDatabaseUsed() )
     {
     std::cerr << "Problem with DB" << std::endl;
