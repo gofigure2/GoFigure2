@@ -55,7 +55,6 @@ setTracks( std::list<Track> iListOfTracks )
 {
   m_ListOfTracks = iListOfTracks;
 }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -63,6 +62,10 @@ void
 QGoTrackEditingWidget::
 generateTrackRepresentation()
 {
-  // 1 actor/glyph/tube
-  // actor/polydata has ID track+mesh
+  //Create actors
+  // Fill Actor/ID Map
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+// When Pick, get actor, then ID with map, Process Actors colors and ID lists

@@ -41,6 +41,8 @@
 
 #include "QGoGUILibConfigure.h"
 
+#include "vtkActor.h"
+
 
 /**
 \class QGoTrackEditingWidget
@@ -63,7 +65,21 @@ public:
 
   void generateTrackRepresentation();
 
+  // when pick actor update cut list + actor color
+  void cutMode();
+
+  // When pick actors, update merge list + actor color
+  void mergeMode();
+
+  void preview();
+
 private:
-  std::list<Track> m_ListOfTracks;
+  std::list<Track>                                             m_ListOfTracks;
+  std::list<unsigned int>                                      m_CutList;
+  std::list< std::pair<unsigned int, unsigned int> >           m_MergeList;
+  bool                                                         m_MergeMode;
+  bool                                                         m_CutMode;
+  std::map< vtkActor*, std::pair<unsigned int, unsigned int> > m_Actor2IDMap;
+
 };
 #endif
