@@ -74,7 +74,8 @@ public:
   // When pick actors, update merge list + actor color
   void mergeMode();
 
-  void preview();
+  public slots:
+    void preview();
 
 private:
   vtkActor* CreateSphereActor( double* iCenter);

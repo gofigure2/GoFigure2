@@ -46,8 +46,14 @@
 
 #include "vtkProperty.h"
 
-QGoTrackEditingWidget::QGoTrackEditingWidget(QWidget *iParent):
-  QDialog(iParent)
+// visu
+#include "vtkRenderer.h"
+#include "vtkRenderWindow.h"
+#include "vtkRenderWindowInteractor.h"
+
+//-------------------------------------------------------------------------
+QGoTrackEditingWidget::
+QGoTrackEditingWidget(QWidget *iParent): QDialog(iParent)
 {
   this->setupUi(this);
 }
@@ -164,7 +170,7 @@ vtkActor*
 QGoTrackEditingWidget::
 CreatePolylineActor( double* iCenter1, double* iCenter2)
 {
-  //create a vtkPoints object and store the points in it
+  //create a vtkPoints object and storevtkRenderWindow the points in it
     vtkSmartPointer<vtkPoints> points =
       vtkSmartPointer<vtkPoints>::New();
     points->InsertNextPoint(iCenter1);
@@ -203,4 +209,32 @@ CreatePolylineActor( double* iCenter1, double* iCenter2)
     actor->GetProperty()->SetColor(1,1,1); // sphere color white
 
     return actor;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTrackEditingWidget::
+preview()
+{
+//setup render window, renderer, and interactor
+  vtkSmartPointer<vtkRenderer> renderer =
+      vtkSmartPointer<vtkRenderer>::New();
+  vtkSmartPointer<vtkRenderWindow> renderWindow =
+      vtkSmartPointer<vtkRenderWindow>::New();
+  renderWindow->AddRenderer(renderer);
+  vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor =
+      vtkSmartPointer<vtkRenderWindowInteractor>::New();
+  renderWindowInteractor->SetRenderWindow(renderWindow);
+  //
+  std::map< vtkActor*, std::pair<unsigned int, unsigned int> >::iterator actor2IDMapIterator;
+  actor2IDMapIterator = m_Actor2IDMap.begin();
+  while( actor2IDMapIterator != m_Actor2IDMap.end() )
+    {
+    renderer->AddActor( actor2IDMapIterator->first );
+    ++actor2IDMapIterator;
+    }
+
+  renderWindow->Render();
+  renderWindowInteractor->Start();
 }
