@@ -13,7 +13,7 @@ def ClickDelete(Region):
 	find(Region)
 	a = getLastMatch()
 	print a, "this is a"
-	click(a.below(20))
+	click(a.below(40))
 
 	click("delete.png")
 	wait(1)

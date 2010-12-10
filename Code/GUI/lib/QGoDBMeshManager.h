@@ -92,6 +92,7 @@ public:
                                    unsigned int iXCoordMax,
                                    unsigned int iYCoordMax,
                                    unsigned int iZCoordMax,
+                                   int          iTShift,
                                    vtkPolyData *iTraceNodes,
                                    vtkMySQLDatabase *iDatabaseConnector,
                                    GoFigureMeshAttributes *iMeshAttributes);
@@ -165,11 +166,12 @@ public slots:
   be displayed in the statusbar
   \param[in] iTrackID ID of the track to be checked
   \param[in] iDatabaseConnector connection to the database
+  \param[in] iShift value to be added to the current timepoint
   \return a message to be print in the status bar of the mainwindow, if no meshes
   reassigned, the message will be ""
   */
   QString CheckExistingMeshesForTheTrack(
-   unsigned int iTrackID, vtkMySQLDatabase* iDatabaseConnector);
+   unsigned int iTrackID, vtkMySQLDatabase* iDatabaseConnector, int iShift = 0);
 
   /**
   \overload
@@ -236,7 +238,8 @@ protected:
                                    vtkPolyData *iTraceNodes,
                                    vtkMySQLDatabase *iDatabaseConnector,
                                    GoDBMeshRow & iMesh,
-                                   GoFigureMeshAttributes *iMeshAttributes);
+                                   GoFigureMeshAttributes *iMeshAttributes,
+                                   int iShift = 0);
   //virtual pure method in QGoDBTraceManager
   virtual void GetTracesInfoFromDBAndModifyContainerForVisu(
     vtkMySQLDatabase* iDatabaseConnector,std::vector<int> iVectIDs = std::vector< int >());

@@ -40,10 +40,9 @@
 
 QGoDBTraceManager::QGoDBTraceManager( QObject* iParent ):
   QObject( iParent ), m_SelectedCollectionData(NULL),
-  m_Table(NULL), m_CollectionOfTraces(NULL),
-  m_DatabaseConnector(NULL), m_IsColorCodingOn(false),
-  m_IsShowOnlyCurrentTimePointOn(false),
-  m_CurrentTimePoint(NULL),m_SelectedColorData(NULL)
+  m_SelectedColorData(NULL), m_CurrentTimePoint(NULL), m_Table(NULL),
+  m_CollectionOfTraces(NULL), m_DatabaseConnector(NULL),
+  m_IsColorCodingOn(false), m_IsShowOnlyCurrentTimePointOn(false)
 {}
 
 //-------------------------------------------------------------------------
@@ -522,7 +521,7 @@ void QGoDBTraceManager::ShowOnlyRowsForCurrentTimePoint(bool IsChecked)
       this->m_Table->ShowOnlyRowsForTimePoint(*this->m_CurrentTimePoint);
       }
     else
-      {     
+      {
       this->m_Table->ShowAllRows();
       }
   }

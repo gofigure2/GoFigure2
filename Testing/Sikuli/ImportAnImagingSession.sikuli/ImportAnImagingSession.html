@@ -78,17 +78,24 @@ address = os.getcwd()
 </span><span class="kw">print</span> address
 setBundlePath(address)
 
-<span class="skw">click</span>(<img src="File.png" />)
-<span class="skw">click</span>(<img src="Use_database.png" />)
-<span class="skw">click</span>(<img src="Next.png" />)
-<span class="cmt">#click("text_box.png")
+hover(<img src="UseDatabaseIcon.png" />)
+<span class="skw">wait</span>(<span class="dig">1</span>)
+<span class="skw">click</span>(<img src="UseDatabaseIcon.png" />)
+
+<span class="cmt">#click("File.png")
+</span><span class="cmt">#click("Use_database.png")
+</span><span class="cmt">#click("Next.png")
+</span><span class="cmt">#click("text_box.png")
 </span><span class="cmt">#click on create new project
-</span><span class="skw">wait</span>(<span class="dig">1</span>)
+</span>
+<span class="skw">click</span>(<img src="Next.png" />)
+<span class="skw">wait</span>(<span class="dig">1</span>)
 <span class="skw">click</span>(<img src="Next.png" />)
 <span class="kw">assert</span> exists(<img src="Please_enter_name_of_project.png" />)
 <span class="skw">click</span>(<img src="ok.png" />)
 
 <span class="skw">click</span>(<img src="Add_author.png" />)
+<span class="skw">wait</span>(<span class="dig">1</span>)
 <span class="skw">type</span>(<span class="str">"Second"</span>+Key.TAB+Key.TAB+<span class="str">"Author"</span>)
 <span class="skw">click</span>(<img src="Create_Author.png" />)
 <span class="cmt">#user cannot press enter for Create Author button 
@@ -110,6 +117,7 @@ keyUp(Key.SHIFT)
 <span class="skw">type</span>(<span class="str">"ImagingSession1"</span>)
 <span class="skw">type</span>(Key.TAB+Key.TAB)
 
+
 length = len(address) -<span class="dig">50</span>
 user = address[<span class="dig">0</span>:length]
 
@@ -117,6 +125,7 @@ user = address[<span class="dig">0</span>:length]
 <span class="cmt">#this info should be input to function
 </span><span class="skw">type</span>(user+<img src="/Data/t00-09/image-PL00-CO00-RO00-ZT00-YT00-XT00-TM0009-ch01-zs0070.png" />)
 <span class="skw">click</span>(<img src="Add_microscope.png" />)
+<span class="skw">wait</span>(<span class="dig">1</span>)
 <span class="skw">type</span>(<span class="str">"microscope2"</span>)
 <span class="skw">click</span>(<img src="Create_microscope.png" />)
 <span class="skw">click</span>(<img src="ok.png" />)

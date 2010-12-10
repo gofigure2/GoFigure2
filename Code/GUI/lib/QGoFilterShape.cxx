@@ -154,7 +154,7 @@ QGoFilterShape::Apply()
       {
       if ( m_Dimension == 1 )
         {
-        emit MeshCreated(testing);
+        emit MeshCreated(testing, this->getChannel() - 1);
         }
       else
         {

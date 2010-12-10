@@ -176,7 +176,7 @@ void QGoDBMeshManager::AddActionsContextMenu(QMenu *iMenu)
 unsigned int QGoDBMeshManager::SaveNewMeshFromVisu(
   unsigned int iXCoordMin, unsigned int iYCoordMin, unsigned int iZCoordMin,
   unsigned int iXCoordMax, unsigned int iYCoordMax,
-  unsigned int iZCoordMax, vtkPolyData *iTraceNodes,
+  unsigned int iZCoordMax, int iTShift, vtkPolyData *iTraceNodes,
   vtkMySQLDatabase *iDatabaseConnector,
   GoFigureMeshAttributes *iMeshAttributes)
 {
@@ -184,9 +184,8 @@ unsigned int QGoDBMeshManager::SaveNewMeshFromVisu(
   NewMesh.SetCellType(iDatabaseConnector, *this->m_SelectedCellType);
   NewMesh.SetSubCellType(iDatabaseConnector, *this->m_SelectedSubCellType);
   this->SetMeshBoundingBoxAndPoints(iXCoordMin, iYCoordMin, iZCoordMin,
-                                    iXCoordMax, iYCoordMax, iZCoordMax, 
-                                    iTraceNodes, iDatabaseConnector, NewMesh,
-                                    iMeshAttributes);
+                                    iXCoordMax, iYCoordMax, iZCoordMax, iTraceNodes, iDatabaseConnector, NewMesh,
+                                    iMeshAttributes, iTShift);
   //save the intensities for each channel !!!
   unsigned int NewMeshID = this->m_CollectionOfTraces->CreateNewTraceInDB< GoDBMeshRow >(
     NewMesh, iDatabaseConnector,*this->m_SelectedColorData, 
@@ -297,12 +296,13 @@ void QGoDBMeshManager::SetMeshBoundingBoxAndPoints(unsigned int iXCoordMin,
                                                    vtkPolyData *iTraceNodes,
                                                    vtkMySQLDatabase *iDatabaseConnector,
                                                    GoDBMeshRow & iMesh,
-                                                   GoFigureMeshAttributes *iMeshAttributes)
+                                                   GoFigureMeshAttributes *iMeshAttributes,
+                                                   int iShift)
 {
   GoDBCoordinateRow coord_min = this->GetCoordinateFromInt(iXCoordMin,
-    iYCoordMin, iZCoordMin, *this->m_CurrentTimePoint);
+    iYCoordMin, iZCoordMin, *this->m_CurrentTimePoint + iShift);
   GoDBCoordinateRow coord_max = this->GetCoordinateFromInt(iXCoordMax,
-    iYCoordMax, iZCoordMax, *this->m_CurrentTimePoint);
+    iYCoordMax, iZCoordMax, *this->m_CurrentTimePoint + + iShift);
 
   iMesh.SetTheDataFromTheVisu(iDatabaseConnector, iTraceNodes,
                               coord_min, coord_max, iMeshAttributes);
@@ -468,12 +468,12 @@ void QGoDBMeshManager::UpdateSubCellType()
 
 //-------------------------------------------------------------------------
 QString QGoDBMeshManager::CheckExistingMeshesForTheTrack(
-   unsigned int iTrackID, vtkMySQLDatabase* iDatabaseConnector)
+   unsigned int iTrackID, vtkMySQLDatabase* iDatabaseConnector, int iShift)
 {
   QString MessageToPrint("");
   unsigned int MeshIDKickedOut =
     this->ReassignTrackIDForPreviousMeshWithSameTimePoint(
-      iDatabaseConnector, iTrackID, *this->m_CurrentTimePoint);
+      iDatabaseConnector, iTrackID, *this->m_CurrentTimePoint + iShift);
   if (MeshIDKickedOut != 0)
     {
       MessageToPrint =

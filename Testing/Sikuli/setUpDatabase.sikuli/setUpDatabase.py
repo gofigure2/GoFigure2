@@ -6,6 +6,11 @@ address = os.getcwd()
 print address
 setBundlePath(address)
 
+click("UseDatabaseIcon.png")
+click("Next.png")
+assert exists("Have_not_set_up_GFDB.png")
+click("ok.png")
+
 for create in [1,2]:
 	click("Settings.png")
 	hover("Database_arrow.png")
@@ -86,7 +91,6 @@ assert exists("MySQL_user_and_DB_created.png")
 click("ok.png")
 assert not exists("Create_microscopes_for_gofigure_projects_page.png",0)
 
-click("Settings.png")
-hover("Database_arrow.png")
-click("Set_up_database.png")
-assert not exists("Create_user_for_MySQL_DB.png")
+#click("Settings.png")
+#click("Database_arrow.png")
+#assert not exists("Set_up_database.png")

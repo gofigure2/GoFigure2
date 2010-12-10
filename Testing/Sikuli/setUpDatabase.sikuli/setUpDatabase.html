@@ -78,6 +78,11 @@ address = os.getcwd()
 </span><span class="kw">print</span> address
 setBundlePath(address)
 
+<span class="skw">click</span>(<img src="UseDatabaseIcon.png" />)
+<span class="skw">click</span>(<img src="Next.png" />)
+<span class="kw">assert</span> exists(<img src="Have_not_set_up_GFDB.png" />)
+<span class="skw">click</span>(<img src="ok.png" />)
+
 <span class="kw">for</span> create <span class="kw">in</span> [<span class="dig">1</span>,<span class="dig">2</span>]:
         <span class="skw">click</span>(<img src="Settings.png" />)
         hover(<img src="Database_arrow.png" />)
@@ -158,10 +163,9 @@ keyUp(Key.SHIFT)
 <span class="skw">click</span>(<img src="ok.png" />)
 <span class="kw">assert</span> <span class="kw">not</span> exists(<img src="Create_microscopes_for_gofigure_projects_page.png" />,<span class="dig">0</span>)
 
-<span class="skw">click</span>(<img src="Settings.png" />)
-hover(<img src="Database_arrow.png" />)
-<span class="skw">click</span>(<img src="Set_up_database.png" />)
-<span class="kw">assert</span> <span class="kw">not</span> exists(<img src="Create_user_for_MySQL_DB.png" />)
+<span class="cmt">#click("Settings.png")
+</span><span class="cmt">#click("Database_arrow.png")
+</span><span class="cmt">#assert not exists("Set_up_database.png")</span>
 </pre>
 </body>
 </html>

@@ -6,17 +6,24 @@ address = os.getcwd()
 print address
 setBundlePath(address)
 
-click("File.png")
-click("Use_database.png")
-click("Next.png")
+hover("UseDatabaseIcon.png")
+wait(1)
+click("UseDatabaseIcon.png")
+
+#click("File.png")
+#click("Use_database.png")
+#click("Next.png")
 #click("text_box.png")
 #click on create new project
+
+click("Next.png")
 wait(1)
 click("Next.png")
 assert exists("Please_enter_name_of_project.png")
 click("ok.png")
 
 click("Add_author.png")
+wait(1)
 type("Second"+Key.TAB+Key.TAB+"Author")
 click("Create_Author.png")
 #user cannot press enter for Create Author button 
@@ -38,6 +45,7 @@ wait(1)
 type("ImagingSession1")
 type(Key.TAB+Key.TAB)
 
+
 length = len(address) -50
 user = address[0:length]
 
@@ -45,6 +53,7 @@ user = address[0:length]
 #this info should be input to function
 type(user+"/Data/t00-09/image-PL00-CO00-RO00-ZT00-YT00-XT00-TM0009-ch01-zs0070.png")
 click("Add_microscope.png")
+wait(1)
 type("microscope2")
 click("Create_microscope.png")
 click("ok.png")

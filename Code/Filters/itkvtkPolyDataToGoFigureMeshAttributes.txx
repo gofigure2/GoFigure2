@@ -41,11 +41,13 @@
 namespace itk
 {
 template< class TImage >
-vtkPolyDataToGoFigureMeshAttributes< TImage >::vtkPolyDataToGoFigureMeshAttributes()
+vtkPolyDataToGoFigureMeshAttributes< TImage >::
+vtkPolyDataToGoFigureMeshAttributes() : m_Mesh( NULL ), m_Image( NULL )
 {
   m_IntensityComputation = true;
   m_Binarizer = PolyDataToBinaryMaskImageFilterType::New();
   m_AttributeCalculator = BinaryMaskImageToGoFigureMeshAttributesType::New();
+  m_ROIFilter = ROIFilterType::New();
 }
 
 template< class TImage >
@@ -66,6 +68,20 @@ void
 vtkPolyDataToGoFigureMeshAttributes< TImage >::SetPolyData(vtkPolyData *iMesh)
 {
   m_Mesh = iMesh;
+
+  if( m_Mesh && m_Image.IsNotNull() )
+    {
+    m_Binarizer->SetInput(m_Image);
+    m_Binarizer->SetPolyData(m_Mesh);
+    try
+      {
+      m_Binarizer->Update();
+      }
+    catch(itk::ExceptionObject & e)
+      {
+      std::cerr << "Exception: " << e << std::endl;
+      }
+    }
 }
 
 template< class TImage >
@@ -73,6 +89,21 @@ void
 vtkPolyDataToGoFigureMeshAttributes< TImage >::SetImage(ImageType *iImage)
 {
   m_Image = iImage;
+  m_ROIFilter->SetInput( m_Image );
+
+  if( m_Mesh && m_Image.IsNotNull() )
+    {
+    m_Binarizer->SetInput(m_Image);
+    m_Binarizer->SetPolyData(m_Mesh);
+    try
+      {
+      m_Binarizer->Update();
+      }
+    catch(itk::ExceptionObject & e)
+      {
+      std::cerr << "Exception: " << e << std::endl;
+      }
+    }
 }
 
 template< class TImage >
@@ -118,28 +149,51 @@ template< class TImage >
 void
 vtkPolyDataToGoFigureMeshAttributes< TImage >::GenerateData()
 {
-  m_Binarizer->SetInput(m_Image);
-  m_Binarizer->SetPolyData(m_Mesh);
+  m_AttributeCalculator->SetMaskImage( m_Binarizer->GetOutput() );
+  m_AttributeCalculator->SetIntensityBasedComputation( m_IntensityComputation );
+
+  if( m_IntensityComputation )
+    {
+    double bounds[6];
+    m_Mesh->GetBounds( bounds );
+
+    typename ImageType::PointType org;
+    org[0] = bounds[0];
+    org[1] = bounds[2];
+    org[2] = bounds[4];
+
+    typename ImageType::IndexType start_idx;
+    m_Image->TransformPhysicalPointToIndex( org, start_idx );
+
+    typename ImageType::SizeType size =
+      m_Binarizer->GetOutput()->GetLargestPossibleRegion().GetSize();
+
+    typename  ImageType::RegionType region;
+    region.SetSize( size );
+    region.SetIndex( start_idx );
+
+    m_ROIFilter->SetRegionOfInterest( region );
+
+    try
+      {
+      m_ROIFilter->Update();
+      }
+    catch(itk::ExceptionObject & e)
+      {
+      std::cerr << "Exception: " << e << std::endl;
+      }
+
+    m_AttributeCalculator->SetImage( m_ROIFilter->GetOutput() );
+    }
+
   try
     {
-    m_Binarizer->Update();
+    m_AttributeCalculator->Update();
     }
   catch(itk::ExceptionObject & e)
     {
     std::cerr << "Exception: " << e << std::endl;
     }
-
-/*
- typename WriterType::Pointer writer = WriterType::New();
- writer->SetInput( m_Binarizer->GetOutput() );
- writer->SetFileName( "output.mha" );
- writer->Update();
-*/
-
-  m_AttributeCalculator->SetImage(m_Image);
-  m_AttributeCalculator->SetMaskImage( m_Binarizer->GetOutput() );
-  m_AttributeCalculator->SetIntensityBasedComputation( this->m_IntensityComputation );
-  m_AttributeCalculator->Update();
 
   m_Size = m_AttributeCalculator->GetSize();
   m_PhysicalSize = m_AttributeCalculator->GetPhysicalSize();
