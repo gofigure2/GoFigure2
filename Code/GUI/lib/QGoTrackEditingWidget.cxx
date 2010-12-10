@@ -108,13 +108,13 @@ generateTrackRepresentation()
     while( meshListIterator!= (*trackListIterator).second.end())
       {
       int     currentMeshID = (*meshListIterator).first;
-      unsigned int timePoint = (*meshListIterator).second.first;
+       int timePoint = (*meshListIterator).second.first;
       double* currentMeshPosition = (*meshListIterator).second.second;
 
       std::cout << "meshID: " << currentMeshID << std::endl;
 
       // Actor/IDs Pair
-      std::pair< vtkActor*, std::pair<unsigned int, unsigned int> > actorIDsPair;
+      std::pair< vtkActor*, std::pair< int,  int> > actorIDsPair;
 
       //--------------
       //Create actors
@@ -125,7 +125,7 @@ generateTrackRepresentation()
       actorIDsPair.first = sphereActor;
 
       // IDs Pair
-      std::pair< unsigned int, unsigned int> idsPair;
+      std::pair<  int,  int> idsPair;
       idsPair.first = trackID;
       idsPair.second = currentMeshID;
 
@@ -142,7 +142,7 @@ generateTrackRepresentation()
         actorIDsPair.first = polylineActor;
 
         // IDs Pair
-        std::pair< unsigned int, unsigned int> idsPairLine;
+        std::pair< int, int> idsPairLine;
         idsPairLine.first = trackID;
         idsPairLine.second = -1;
 
@@ -206,7 +206,7 @@ CreatePolylineActor( double* iCenter1, double* iCenter2)
     vtkSmartPointer<vtkPolyLine> polyLine =
         vtkSmartPointer<vtkPolyLine>::New();
     polyLine->GetPointIds()->SetNumberOfIds(2);
-    for(unsigned int i = 0; i < 2; i++)
+    for( int i = 0; i < 2; i++)
       {
       polyLine->GetPointIds()->SetId(i,i);
       }
@@ -249,7 +249,7 @@ preview()
       vtkSmartPointer<vtkRenderer>::New();
   this->qvtkWidget->GetRenderWindow()->AddRenderer(renderer);
 
-  std::map< vtkActor*, std::pair<unsigned int, unsigned int> >::iterator actor2IDMapIterator;
+  std::map< vtkActor*, std::pair< int,  int> >::iterator actor2IDMapIterator;
   actor2IDMapIterator = m_Actor2IDMap.begin();
   while( actor2IDMapIterator != m_Actor2IDMap.end() )
     {
@@ -278,7 +278,7 @@ UpdateCurrentActorSelection(vtkObject *caller)
                    SafeDownCast( t->GetCurrentProp() );
 
   // Where it is in the list to get the IDs
-  std::map< vtkActor*, std::pair<unsigned int, unsigned int> >::iterator actor2IDMapIterator;
+  std::map< vtkActor*, std::pair< int,  int> >::iterator actor2IDMapIterator;
   actor2IDMapIterator = m_Actor2IDMap.find(m_CurrentActor);
   if (actor2IDMapIterator != m_Actor2IDMap.end() )
     {

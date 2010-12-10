@@ -64,8 +64,8 @@ public:
   /*
    * \todo Need Color in the track information??
    */
-  typedef std::pair< unsigned int, std::pair< unsigned int,double*> > Mesh;
-  typedef std::pair< unsigned int, std::list<Mesh> > Track;
+  typedef std::pair<  int, std::pair<  int,double*> > Mesh;
+  typedef std::pair<  int, std::list<Mesh> > Track;
 
   void setTracks( std::list<Track> iListOfTracks );
 
@@ -86,11 +86,11 @@ private:
   vtkActor* CreatePolylineActor( double* iCenter1, double* iCenter2);
 
   std::list<Track>                                             m_ListOfTracks;
-  std::list<unsigned int>                                      m_CutList;
-  std::list< std::pair<unsigned int, unsigned int> >           m_MergeList;
+  std::list< int>                                      m_CutList;
+  std::list< std::pair< int,  int> >           m_MergeList;
   bool                                                         m_MergeMode;
   bool                                                         m_CutMode;
-  std::map< vtkActor*, std::pair<unsigned int, unsigned int> > m_Actor2IDMap;
+  std::map< vtkActor*, std::pair< int,  int> > m_Actor2IDMap;
 
   vtkInteractorStyleImage3D* m_InteractorStyle3D;
   vtkEventQtSlotConnect*     m_VtkEventQtConnector;
