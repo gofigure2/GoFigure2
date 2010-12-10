@@ -1206,7 +1206,7 @@ void QGoPrintDatabase::SetMeshesManager()
   QObject::connect( this->m_MeshesManager,
                     SIGNAL ( NewCollectionFromCheckedTraces(std::list< unsigned int > ) ),
                     this,
-                    SLOT( CreateNewTrackFromCheckedMeshes(std::list< unsigned int > ) ) );
+                    SLOT( CreateNewTrackFromListMeshes(std::list< unsigned int > ) ) );
   QObject::connect( this->m_MeshesManager,
                     SIGNAL( CheckedTracesToAddToSelectedCollection(
                               std::list< unsigned int > ) ), this,
@@ -1340,12 +1340,14 @@ PassMeshesInfoForImportedTrack(unsigned int iTrackID)
    std::pair<std::list<unsigned int>,std::list<unsigned int> > 
      ListMeshesForTwoTracks = this->m_MeshesManager->GetMeshesForSplittedTrack(
      iTrackID,this->m_DatabaseConnector,iListMeshIDs);
+   //a new track is created with the smallest timepoints:
+   this->CreateNewTrackFromListMeshes(ListMeshesForTwoTracks.first);
    this->CloseDBConnection();
  }
  //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoPrintDatabase::CreateNewTrackFromCheckedMeshes(
+void QGoPrintDatabase::CreateNewTrackFromListMeshes(
   std::list< unsigned int > iListCheckedMeshes)
 {
   this->OpenDBConnection();

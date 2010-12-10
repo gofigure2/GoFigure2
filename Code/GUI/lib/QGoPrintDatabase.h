@@ -589,12 +589,11 @@ protected slots:
   void DeleteTracks();
 
   /**
-  \brief slot connected to the signal NewCollectionFromCheckedTraces() emitted by
-  the m_MeshesManager, create a new track and call the the
-  AddCheckedTracesToCollection template method.
-  \param[in] iListCheckedMeshes list of the meshIDs of the checked meshes in the TW
+  \brief create a new track and call the AddCheckedTracesToCollection template method
+  to add the meshes from the list to this new track
+  \param[in] iListMeshes list of the meshIDs to belong to the new track
   */
-  void CreateNewTrackFromCheckedMeshes(std::list< unsigned int > iListCheckedMeshes);
+  void CreateNewTrackFromListMeshes(std::list< unsigned int > iListMeshes);
 
   /**
   \brief slot connected to the signal NewCollectionFromCheckedTraces() emitted by

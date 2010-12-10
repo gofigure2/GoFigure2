@@ -449,7 +449,8 @@ void QGoDBTraceManager::CreateCorrespondingCollection()
 
 //-------------------------------------------------------------------------
 
-//------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+
 GoDBCoordinateRow QGoDBTraceManager::GetCoordinateFromInt(int iXCoord,
                                                           int iYCoord, int iZCoord, int iTCoord)
 {
