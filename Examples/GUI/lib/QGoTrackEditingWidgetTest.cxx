@@ -45,8 +45,8 @@ int main(int argc, char *argv[])
 
   // Define some tracks manually
 
-  typedef std::pair< unsigned int, std::pair< unsigned int,double*> > Mesh;
-  typedef std::pair< unsigned int, std::list<Mesh> > Track;
+  typedef std::pair<  int, std::pair<  int,double*> > Mesh;
+  typedef std::pair<  int, std::list<Mesh> > Track;
 
   // Create meshes
   Mesh mesh0;

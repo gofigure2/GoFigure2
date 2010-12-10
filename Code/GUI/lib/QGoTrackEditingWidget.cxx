@@ -143,8 +143,8 @@ generateTrackRepresentation()
 
         // IDs Pair
         std::pair< int, int> idsPairLine;
-        idsPairLine.first = trackID;
-        idsPairLine.second = -1;
+        idsPairLine.first = -1;
+        idsPairLine.second = currentMeshID;
 
         actorIDsPair.second = idsPairLine;
 
