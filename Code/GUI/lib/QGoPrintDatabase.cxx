@@ -316,8 +316,8 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
     unsigned int TrackID = this->m_TraceWidget->GetCurrentSelectedCollectionID();
      //check that there isn't an existing mesh with the same timepoint in the track,if so, set its trackID to 0:
     /** \todo print a different message if several meshes are created at the same timepoint*/
-    QString MessageToPrint = this->m_MeshesManager->CheckExistingMeshesForTheTrack(TrackID, iTShift,
-      this->m_DatabaseConnector);
+    QString MessageToPrint = this->m_MeshesManager->CheckExistingMeshesForTheTrack(TrackID,
+      this->m_DatabaseConnector, iTShift );
     if (MessageToPrint != "")
       {
       emit PrintMessage(MessageToPrint);
@@ -1335,11 +1335,11 @@ PassMeshesInfoForImportedTrack(unsigned int iTrackID)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
- void QGoPrintDatabase::SplitTheTrack(unsigned int iTrackID, 
+ void QGoPrintDatabase::SplitTheTrack(unsigned int iTrackID,
    std::list<unsigned int> iListMeshIDs)
  {
    this->OpenDBConnection();
-   std::pair<std::list<unsigned int>,std::list<unsigned int> > 
+   std::pair<std::list<unsigned int>,std::list<unsigned int> >
      ListMeshesForTwoTracks = this->m_MeshesManager->GetMeshesForSplittedTrack(
      iTrackID,this->m_DatabaseConnector,iListMeshIDs);
    //a new track is created with the smallest timepoints:
