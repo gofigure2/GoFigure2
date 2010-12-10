@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
   mesh0.second.second = position0;
 
   Mesh mesh1;
-  mesh1.first = 2;
+  mesh1.first = 3;
   mesh1.second.first = 4;
   double* position1 = new double[3];
   position1[0] = 20;
@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
   mesh1.second.second = position1;
 
   Mesh mesh2;
-  mesh2.first = 3;
+  mesh2.first = 5;
   mesh2.second.first = 6;
   double* position2 = new double[3];
   position2[0] = 30;
@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
   mesh2.second.second = position2;
 
   Track track0;
-  track0.first = 3;
+  track0.first = 9;
   track0.second.push_back(mesh0);
   track0.second.push_back(mesh1);
   track0.second.push_back(mesh2);
@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
   mesh02.second.second = position02;
 
   Mesh mesh12;
-  mesh12.first = 22;
+  mesh12.first = 32;
   mesh12.second.first = 42;
   double* position12 = new double[3];
   position12[0] = 202;
@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
   mesh12.second.second = position12;
 
   Mesh mesh22;
-  mesh22.first = 32;
+  mesh22.first = 52;
   mesh22.second.first = 62;
   double* position22 = new double[3];
   position22[0] = 302;
@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
   mesh22.second.second = position22;
 
   Track track02;
-  track02.first = 32;
+  track02.first = 92;
   track02.second.push_back(mesh02);
   track02.second.push_back(mesh12);
   track02.second.push_back(mesh22);

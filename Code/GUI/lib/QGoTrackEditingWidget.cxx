@@ -51,17 +51,24 @@
 #include "vtkRenderWindow.h"
 #include "vtkRenderWindowInteractor.h"
 
+#include "vtkViewImage3DCommand.h"
+
 //-------------------------------------------------------------------------
 QGoTrackEditingWidget::
 QGoTrackEditingWidget(QWidget *iParent): QDialog(iParent)
 {
   this->setupUi(this);
 
-  m_InteractorStyle3D = vtkInteractorStyleImage3D::New();
-  m_InteractorStyle3D->EnablePickMode();
+  m_VtkEventQtConnector = vtkEventQtSlotConnect::New();
+  m_InteractorStyle3D   = vtkInteractorStyleImage3D::New();
 
   QObject::connect( this->previewPushButton, SIGNAL( pressed() ),
                     this, SLOT( preview() ) );
+
+  m_VtkEventQtConnector->Connect(
+    reinterpret_cast< vtkObject * >( m_InteractorStyle3D ),
+    vtkViewImage3DCommand::MeshPickingEvent,
+    this, SLOT( UpdateCurrentActorSelection(vtkObject *) ) );
 }
 //-------------------------------------------------------------------------
 
@@ -92,42 +99,55 @@ generateTrackRepresentation()
   while( trackListIterator != m_ListOfTracks.end() )
     {
     int trackID = (*trackListIterator).first;
+    std::cout << "-------------------------" << std::endl;
+    std::cout << "trackID: " << trackID << std::endl;
     int    previousMeshID       = -1;
     double* previousMeshPosition = NULL;
     std::list<Mesh>::iterator meshListIterator = (*trackListIterator).second.begin();
 
     while( meshListIterator!= (*trackListIterator).second.end())
       {
-
       int     currentMeshID = (*meshListIterator).first;
       unsigned int timePoint = (*meshListIterator).second.first;
       double* currentMeshPosition = (*meshListIterator).second.second;
 
-      // IDs Pair
-      std::pair< unsigned int, unsigned int> idsPair;
-      idsPair.first = trackID;
-      idsPair.first = currentMeshID;
+      std::cout << "meshID: " << currentMeshID << std::endl;
 
       // Actor/IDs Pair
       std::pair< vtkActor*, std::pair<unsigned int, unsigned int> > actorIDsPair;
-      actorIDsPair.second = idsPair;
 
       //--------------
       //Create actors
       //--------------
-
       //-------------------------------
       // Create a sphere
       vtkActor* sphereActor = CreateSphereActor( currentMeshPosition );
       actorIDsPair.first = sphereActor;
+
+      // IDs Pair
+      std::pair< unsigned int, unsigned int> idsPair;
+      idsPair.first = trackID;
+      idsPair.second = currentMeshID;
+
+      actorIDsPair.second = idsPair;
+
       m_Actor2IDMap.insert(actorIDsPair);
 
       //-------------------------------
       // Create polyline
+      // meshID= -1 for more efficiency
       if( previousMeshID >= 0 )
         {
         vtkActor* polylineActor = CreatePolylineActor(previousMeshPosition, currentMeshPosition);
         actorIDsPair.first = polylineActor;
+
+        // IDs Pair
+        std::pair< unsigned int, unsigned int> idsPairLine;
+        idsPairLine.first = trackID;
+        idsPairLine.second = -1;
+
+        actorIDsPair.second = idsPairLine;
+
         m_Actor2IDMap.insert(actorIDsPair);
         }
 
@@ -238,8 +258,36 @@ preview()
     }
 
   this->qvtkWidget->GetInteractor()->SetInteractorStyle(m_InteractorStyle3D);
+  m_InteractorStyle3D->EnablePickMode();
   //this->qvtkWidget->GetInteractor()->SetRenderWindow(this->RenderWindow);
 
 
   this->qvtkWidget->GetRenderWindow()->Render();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTrackEditingWidget::
+UpdateCurrentActorSelection(vtkObject *caller)
+{
+  vtkInteractorStyleImage3D *t =
+    static_cast< vtkInteractorStyleImage3D * >( caller );
+
+  m_CurrentActor = vtkActor::
+                   SafeDownCast( t->GetCurrentProp() );
+
+  // Where it is in the list to get the IDs
+  std::map< vtkActor*, std::pair<unsigned int, unsigned int> >::iterator actor2IDMapIterator;
+  actor2IDMapIterator = m_Actor2IDMap.find(m_CurrentActor);
+  if (actor2IDMapIterator != m_Actor2IDMap.end() )
+    {
+    std::cout << "Object found" << std::endl;
+    std::cout << "track ID:" << actor2IDMapIterator->second.first << std::endl;
+    std::cout << "mesh ID:" << actor2IDMapIterator->second.second << std::endl;
+    }
+
+  // Update IDs list
+
+  // Update actor color
 }

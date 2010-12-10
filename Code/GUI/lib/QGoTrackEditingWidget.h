@@ -42,7 +42,9 @@
 #include "QGoGUILibConfigure.h"
 
 #include "vtkActor.h"
+
 #include "vtkInteractorStyleImage3D.h"
+#include "vtkEventQtSlotConnect.h"
 
 
 /**
@@ -77,6 +79,7 @@ public:
 
   public slots:
     void preview();
+    void UpdateCurrentActorSelection(vtkObject *caller);
 
 private:
   vtkActor* CreateSphereActor( double* iCenter);
@@ -88,7 +91,10 @@ private:
   bool                                                         m_MergeMode;
   bool                                                         m_CutMode;
   std::map< vtkActor*, std::pair<unsigned int, unsigned int> > m_Actor2IDMap;
+
   vtkInteractorStyleImage3D* m_InteractorStyle3D;
+  vtkEventQtSlotConnect*     m_VtkEventQtConnector;
+  vtkActor*                  m_CurrentActor;
 
 };
 #endif
