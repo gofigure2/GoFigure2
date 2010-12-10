@@ -278,3 +278,49 @@ void QGoDBTrackManager::SetColorCoding(bool IsChecked)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoDBTrackManager::AddActionsContextMenu(QMenu *iMenu)
+{
+  QGoDBTraceManager::AddActionsContextMenu(iMenu);
+  QMenu* SplitMenu = new QMenu(tr("Split your track"),iMenu);
+  SplitMenu->addAction(tr("Using the Widget"),
+                       this, SLOT( SplitTrackWithWidget() ) );
+  QAction* SplitMenuAction = SplitMenu->menuAction();
+  iMenu->addAction(SplitMenuAction);
+  QObject::connect(SplitMenuAction,SIGNAL(triggered() ),
+    this, SLOT(TrackIDToEmit() ) );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTrackManager::TrackIDToEmit()
+{
+  std::list<unsigned int> HighlightedTrackIDs = 
+    this->m_TrackContainerInfoForVisu->GetHighlightedElementsTraceID();
+
+  if (HighlightedTrackIDs.size() != 1)
+    {
+    QMessageBox msgBox;
+    msgBox.setText(
+      tr("Please select one and only one Track to be split")
+      .arg( this->m_TraceName.c_str() ) );
+    msgBox.exec();
+    }
+  else
+    {
+    emit NeedToGetDatabaseConnection();
+    emit TrackToSplit(HighlightedTrackIDs.front(),
+      this->GetListTracesIDsFromThisCollectionOf(this->m_DatabaseConnector,
+        HighlightedTrackIDs) );
+    emit DBConnectionNotNeededAnymore();
+    }
+
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTrackManager::SplitTrackWithWidget()
+{
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------

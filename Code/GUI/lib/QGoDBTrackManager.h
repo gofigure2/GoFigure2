@@ -108,6 +108,7 @@ public:
 
 signals:
   void NeedMeshesInfoForImportedTrack(unsigned int iTrackID);
+  void TrackToSplit(unsigned int iTrackID, std::list<unsigned int> iListMeshIDs);
 
 protected:
   GoDBTWContainerForTrackLineage *m_TWContainer;
@@ -132,6 +133,9 @@ protected:
   */
   void UpdateTrackPolydataForVisu(vtkMySQLDatabase *iDatabaseConnector,unsigned int iTrackID);
 
+  //virtual in QGoDBTraceManager
+  void AddActionsContextMenu(QMenu *iMenu);
+
 protected slots:
   //virtual pure method in QGoDBTraceManager
   virtual void UpdateHighlightedElementsInVisuContainer(int iTraceID);
@@ -149,6 +153,10 @@ protected slots:
 
  //virtual pure method in QGoDBTraceManager
   virtual void SetColorCoding(bool IsChecked);
+
+  void SplitTrackWithWidget();
+
+  void TrackIDToEmit();
 
 };
 #endif

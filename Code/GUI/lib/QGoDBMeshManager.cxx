@@ -586,3 +586,51 @@ std::string QGoDBMeshManager::CheckListMeshesFromDifferentTimePoints(
      }
   return MessageToPrint;
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::pair<std::list<unsigned int>,std::list<unsigned int> >  
+QGoDBMeshManager::GetMeshesForSplittedTrack(
+  unsigned int iTrackID, vtkMySQLDatabase* iDatabaseConnector, 
+  std::list<unsigned int> iListMeshesBelongingToTrack)
+{
+  std::pair<std::list<unsigned int>,std::list<unsigned int> > ListMeshes =
+    std::pair<std::list<unsigned int>,std::list<unsigned int> >();
+
+  std::list<unsigned int> ListCheckedMeshes = 
+    this->m_MeshContainerInfoForVisu->GetHighlightedElementsTraceID();
+  std::list<unsigned int> ListCheckedMeshesBelongingToTrackID = 
+    this->m_CollectionOfTraces->GetTraceIDsBelongingToCollectionID(
+      iDatabaseConnector, ListCheckedMeshes,iTrackID);
+  if ( ListCheckedMeshesBelongingToTrackID.size() != 1)
+    {
+    QMessageBox msgBox;
+    msgBox.setText(
+      tr("Please select one and only one Mesh where to split the Track"));
+    msgBox.exec();
+    return ListMeshes;
+    }
+  unsigned int FirstMeshOfSecondTrack = 
+    ListCheckedMeshesBelongingToTrackID.front();
+  std::list<unsigned int> MeshesIDs;
+  MeshesIDs.push_back(FirstMeshOfSecondTrack);
+  std::list<unsigned int> ListTimePoints = 
+    this->m_CollectionOfTraces->GetTimePointsForTraceIDs(iDatabaseConnector, MeshesIDs);
+
+  if (ListTimePoints.size() != 1)
+    {
+    std::cout<<"more than one timepoint";
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
+    return ListMeshes;
+    }
+  
+  unsigned int TimePointWhereToSplit = ListTimePoints.front();
+  ListMeshes.first = this->m_CollectionOfTraces->GetTraceIDsWithTimePointSup(
+    iDatabaseConnector,iListMeshesBelongingToTrack,TimePointWhereToSplit);
+  ListMeshes.second = this->m_CollectionOfTraces->GetTraceIDsWithTimePointInf(
+    iDatabaseConnector,iListMeshesBelongingToTrack,TimePointWhereToSplit);
+  ListMeshes.second.push_back(FirstMeshOfSecondTrack);
+  return ListMeshes;
+  
+}

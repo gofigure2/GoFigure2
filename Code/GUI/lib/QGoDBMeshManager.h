@@ -135,6 +135,9 @@ public:
   */
   void SetSelectedSubCellType(std::string* iSubCellType);
 
+  unsigned int GetTimePointForTheOnlyCheckedMeshInTrack(
+    unsigned int iTrackID);
+
 public slots:
   /**
   \brief get the coordinate info for meshes needed for the visu
@@ -196,6 +199,11 @@ public slots:
     std::list<unsigned int> & ioListMeshIDsToBePartOfTrack,
     std::list<unsigned int> & ioListMeshIDsToReassign);
 
+  std::pair<std::list<unsigned int>,std::list<unsigned int> > 
+    GetMeshesForSplittedTrack(unsigned int iTrackID, 
+    vtkMySQLDatabase* iDatabaseConnector, 
+    std::list<unsigned int> iListMeshesBelongingToTrack);
+
 protected:
   GoDBTWContainerForMesh *m_TWContainer;
   MeshContainer          *m_MeshContainerInfoForVisu;
@@ -215,7 +223,6 @@ protected:
   void SetMeshBoundingBoxAndPoints(unsigned int iXCoordMin,
                                    unsigned int iYCoordMin,
                                    unsigned int iZCoordMin,
-                                   unsigned int iTCoord,
                                    unsigned int iXCoordMax,
                                    unsigned int iYCoordMax,
                                    unsigned int iZCoordMax,
