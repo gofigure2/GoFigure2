@@ -80,6 +80,8 @@
 #include "MultiGridOctreeData.h"
 //#include "MemoryUsage.h"
 
+#include "vtkPolyDataWriter.h"
+
 vtkCxxRevisionMacro(vtkPoissonReconstruction, "$Revision: 1.70 $");
 vtkStandardNewMacro(vtkPoissonReconstruction);
 
@@ -202,7 +204,7 @@ int vtkPoissonReconstruction::RequestData(vtkInformation *vtkNotUsed(request),
     vtkSmartPointer< vtkPoints >::New();
   Point3D< float > p;
 
-  for ( unsigned int i = 0; i < static_cast< unsigned int >( mesh.inCorePoints.size() ); i++ )
+  for ( size_t i = 0; i < mesh.inCorePoints.size(); i++ )
     {
     p = mesh.inCorePoints[i];
     points->InsertNextPoint(p.coords[0] * scale + center.coords[0],
@@ -256,6 +258,7 @@ int vtkPoissonReconstruction::RequestData(vtkInformation *vtkNotUsed(request),
 
   output->SetPoints(points);
   output->SetPolys(triangles);
+
   return 1;
 }
 

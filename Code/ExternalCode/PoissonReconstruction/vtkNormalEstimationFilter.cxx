@@ -82,6 +82,7 @@ vtkStandardNewMacro(vtkNormalEstimationFilter);
 vtkNormalEstimationFilter::vtkNormalEstimationFilter()
 {
   this->RadiusRatio = 0.1;
+  this->NeighborhoodSize = 25;
 }
 
 vtkNormalEstimationFilter::~vtkNormalEstimationFilter()
@@ -217,6 +218,11 @@ void vtkNormalEstimationFilter::BuildLocalConnectivity(vtkDataSet *input)
     vtkCopyBToA( p->loc, input->GetPoint(i) );
     //locator->FindClosestNPoints(this->NeighborhoodSize, p->loc, locals);
     locator->FindClosestNPoints(radius, p->loc, locals);
+
+    if( locals->GetNumberOfIds() < this->NeighborhoodSize )
+      {
+      locator->FindClosestNPoints( this->NeighborhoodSize, p->loc, locals);
+      }
 
     for ( vtkIdType j = 0; j < locals->GetNumberOfIds(); j++ )
       {
@@ -501,7 +507,8 @@ void vtkNormalEstimationFilter::PrintSelf(ostream & os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os, indent);
 
-  os << indent << "Radius Ratio: " << this->RadiusRatio << "\n";
+  os << indent << "Radius Ratio: " << this->RadiusRatio << std::endl;
+  os << indent << "Neighborhood Size: " <<this->NeighborhoodSize <<std::endl;
 }
 
 void vtkSRAddOuterProduct(double **m, double *v)
