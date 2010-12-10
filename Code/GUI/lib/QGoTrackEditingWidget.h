@@ -71,11 +71,18 @@ public:
 
   void generateTrackRepresentation();
 
+  /*
+   * Useless....?
   // when pick actor update cut list + actor color
   void cutMode();
 
   // When pick actors, update merge list + actor color
   void mergeMode();
+*/
+
+  signals:
+    void cutTracks( std::list< std::pair< int,  int> > );
+    void mergeTracks( std::list< std::pair< std::pair< int,  int>, std::pair< int,  int> > > );
 
   public slots:
     void preview();
@@ -86,11 +93,11 @@ private:
   vtkActor* CreatePolylineActor( double* iCenter1, double* iCenter2);
 
   std::list<Track>                                             m_ListOfTracks;
-  std::list< int>                                      m_CutList;
-  std::list< std::pair< int,  int> >           m_MergeList;
+  std::list< std::pair< int,  int> >                           m_CutList;
+  std::list< std::pair< std::pair< int,  int>, std::pair< int,  int> > >           m_MergeList;
   bool                                                         m_MergeMode;
   bool                                                         m_CutMode;
-  std::map< vtkActor*, std::pair< int,  int> > m_Actor2IDMap;
+  std::map< vtkActor*, std::pair< bool, std::pair< int,  int> > > m_Actor2IDMap;
 
   vtkInteractorStyleImage3D* m_InteractorStyle3D;
   vtkEventQtSlotConnect*     m_VtkEventQtConnector;

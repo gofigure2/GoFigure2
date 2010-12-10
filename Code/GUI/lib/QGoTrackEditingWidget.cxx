@@ -114,7 +114,13 @@ generateTrackRepresentation()
       std::cout << "meshID: " << currentMeshID << std::endl;
 
       // Actor/IDs Pair
-      std::pair< vtkActor*, std::pair< int,  int> > actorIDsPair;
+      std::pair< vtkActor*, std::pair< bool, std::pair< int,  int> > >
+          actorIDsPair;
+
+      // IDs Pair
+      std::pair<  int,  int> idsPair;
+      idsPair.first = trackID;
+      idsPair.second = currentMeshID;
 
       //--------------
       //Create actors
@@ -123,13 +129,8 @@ generateTrackRepresentation()
       // Create a sphere
       vtkActor* sphereActor = CreateSphereActor( currentMeshPosition );
       actorIDsPair.first = sphereActor;
-
-      // IDs Pair
-      std::pair<  int,  int> idsPair;
-      idsPair.first = trackID;
-      idsPair.second = currentMeshID;
-
-      actorIDsPair.second = idsPair;
+      actorIDsPair.second.first = true;
+      actorIDsPair.second.second = idsPair;
 
       m_Actor2IDMap.insert(actorIDsPair);
 
@@ -140,13 +141,8 @@ generateTrackRepresentation()
         {
         vtkActor* polylineActor = CreatePolylineActor(previousMeshPosition, currentMeshPosition);
         actorIDsPair.first = polylineActor;
-
-        // IDs Pair
-        std::pair< int, int> idsPairLine;
-        idsPairLine.first = -1;
-        idsPairLine.second = currentMeshID;
-
-        actorIDsPair.second = idsPairLine;
+        actorIDsPair.second.first = false;
+        actorIDsPair.second.second = idsPair;
 
         m_Actor2IDMap.insert(actorIDsPair);
         }
@@ -249,7 +245,8 @@ preview()
       vtkSmartPointer<vtkRenderer>::New();
   this->qvtkWidget->GetRenderWindow()->AddRenderer(renderer);
 
-  std::map< vtkActor*, std::pair< int,  int> >::iterator actor2IDMapIterator;
+  std::map< vtkActor*, std::pair<bool, std::pair< int,  int> > >::iterator
+      actor2IDMapIterator;
   actor2IDMapIterator = m_Actor2IDMap.begin();
   while( actor2IDMapIterator != m_Actor2IDMap.end() )
     {
@@ -278,16 +275,18 @@ UpdateCurrentActorSelection(vtkObject *caller)
                    SafeDownCast( t->GetCurrentProp() );
 
   // Where it is in the list to get the IDs
-  std::map< vtkActor*, std::pair< int,  int> >::iterator actor2IDMapIterator;
+  std::map< vtkActor*, std::pair< bool, std::pair< int,  int> > >::iterator actor2IDMapIterator;
   actor2IDMapIterator = m_Actor2IDMap.find(m_CurrentActor);
   if (actor2IDMapIterator != m_Actor2IDMap.end() )
     {
     std::cout << "Object found" << std::endl;
-    std::cout << "track ID:" << actor2IDMapIterator->second.first << std::endl;
-    std::cout << "mesh ID:" << actor2IDMapIterator->second.second << std::endl;
+    std::cout << "mesh?:" << actor2IDMapIterator->second.first << std::endl;
+    std::cout << "track ID: " << actor2IDMapIterator->second.second.first << std::endl;
+    std::cout << "time:" << actor2IDMapIterator->second.second.second << std::endl;
     }
 
   // Update IDs list
+  // if mesh
 
   // Update actor color
 }
