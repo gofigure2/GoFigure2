@@ -533,13 +533,13 @@ QGoFilterSemiAutoBase::ReconstructMesh(vtkImageData *iInputImage, const double &
     
   vtkSmartPointer< vtkPolyData > temp;
   vtkFillHolesFilter* fillFilter = vtkFillHolesFilter::New();
-  
+
   if ( feature->GetOutput()->GetNumberOfCells() > 0 )
     {
     // fill holes
     fillFilter->SetInputConnection( contours->GetOutputPort() );
     fillFilter->Update();
-    
+
     temp = fillFilter->GetOutput();
     }
   else

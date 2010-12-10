@@ -3026,6 +3026,8 @@ QGoTabImageView3DwT::CreateMeshFromSelectedContours(
     FilterType::Pointer filter = FilterType::New();
     filter->ProcessContours(list_contours);
 
+    std::cout << filter->GetOutput()->GetNumberOfCells() <<std::endl;
+
     //as the element is already in the container we need to delete it in order
     //to update it in the SaveAndVisuMesh:
     this->m_MeshContainer->RemoveElementFromVisualizationWithGivenTraceID(iMeshID);
