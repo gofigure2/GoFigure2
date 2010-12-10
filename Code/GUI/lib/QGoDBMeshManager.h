@@ -135,9 +135,6 @@ public:
   */
   void SetSelectedSubCellType(std::string* iSubCellType);
 
-  unsigned int GetTimePointForTheOnlyCheckedMeshInTrack(
-    unsigned int iTrackID);
-
 public slots:
   /**
   \brief get the coordinate info for meshes needed for the visu
@@ -199,6 +196,16 @@ public slots:
     std::list<unsigned int> & ioListMeshIDsToBePartOfTrack,
     std::list<unsigned int> & ioListMeshIDsToReassign);
 
+  /**
+  \brief for the track, get the list of its meshes with a timepoint 
+  inferior than the selected mesh as first and a list of meshes 
+  with a timepoint superior than the selected mesh and the 
+  selected mesh as second
+  \param[in] iTrackID ID of the track
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iListMeshesBelongingToTrack list of the meshes
+  belonging to this track
+  */
   std::pair<std::list<unsigned int>,std::list<unsigned int> > 
     GetMeshesForSplittedTrack(unsigned int iTrackID, 
     vtkMySQLDatabase* iDatabaseConnector, 
@@ -233,6 +240,16 @@ protected:
   //virtual pure method in QGoDBTraceManager
   virtual void GetTracesInfoFromDBAndModifyContainerForVisu(
     vtkMySQLDatabase* iDatabaseConnector,std::vector<int> iVectIDs = std::vector< int >());
+
+  /**
+  \brief check that there is one and only one mesh checked belonging to 
+  the track and return its ID and its timepoint
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iTrackID ID of the track the mesh belongs to
+  \return a pair with the meshID as first and the timepoint as second
+  */
+  std::pair<unsigned int, unsigned int> GetInfoForTheOnlyOneCheckedMeshOfTheTrack(
+    vtkMySQLDatabase* iDatabaseConnector, unsigned int iTrackID);
 
 protected slots:
   //virtual pure method in QGoDBTraceManager

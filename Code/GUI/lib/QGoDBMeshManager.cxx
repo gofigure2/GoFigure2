@@ -596,7 +596,27 @@ QGoDBMeshManager::GetMeshesForSplittedTrack(
 {
   std::pair<std::list<unsigned int>,std::list<unsigned int> > ListMeshes =
     std::pair<std::list<unsigned int>,std::list<unsigned int> >();
+  std::pair<unsigned int, unsigned int> InfoSplitMesh = 
+    this->GetInfoForTheOnlyOneCheckedMeshOfTheTrack(iDatabaseConnector, iTrackID);
+  if (InfoSplitMesh.first != 0)
+    {
+    ListMeshes.first = this->m_CollectionOfTraces->GetTraceIDsWithTimePointInf(
+      iDatabaseConnector,iListMeshesBelongingToTrack,InfoSplitMesh.second);
+    ListMeshes.second = this->m_CollectionOfTraces->GetTraceIDsWithTimePointSup(
+      iDatabaseConnector,iListMeshesBelongingToTrack,InfoSplitMesh.second);
+    ListMeshes.second.push_back(InfoSplitMesh.first);
+    }
+  return ListMeshes;  
+}
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+std::pair<unsigned int, unsigned int> QGoDBMeshManager::
+  GetInfoForTheOnlyOneCheckedMeshOfTheTrack(vtkMySQLDatabase* iDatabaseConnector, 
+  unsigned int iTrackID)
+{
+  std::pair<unsigned int, unsigned int> oInfo =
+    std::pair<unsigned int,unsigned int>(0,0);
   std::list<unsigned int> ListCheckedMeshes = 
     this->m_MeshContainerInfoForVisu->GetHighlightedElementsTraceID();
   std::list<unsigned int> ListCheckedMeshesBelongingToTrackID =
@@ -613,12 +633,13 @@ QGoDBMeshManager::GetMeshesForSplittedTrack(
     msgBox.setText(
       tr("Please select one and only one Mesh where to split the Track"));
     msgBox.exec();
-    return ListMeshes;
+    return oInfo;
     }
-  unsigned int FirstMeshOfSecondTrack = 
-    ListCheckedMeshesBelongingToTrackID.front();
+
+  unsigned int CheckedMesh = ListCheckedMeshesBelongingToTrackID.front();
+  oInfo.first = CheckedMesh;
   std::list<unsigned int> MeshesIDs;
-  MeshesIDs.push_back(FirstMeshOfSecondTrack);
+  MeshesIDs.push_back(CheckedMesh);
   std::list<unsigned int> ListTimePoints = 
     this->m_CollectionOfTraces->GetTimePointsForTraceIDs(iDatabaseConnector, MeshesIDs);
 
@@ -627,15 +648,8 @@ QGoDBMeshManager::GetMeshesForSplittedTrack(
     std::cout<<"more than one timepoint";
     std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
     std::cout << std::endl;
-    return ListMeshes;
+    return oInfo;
     }
-  
-  unsigned int TimePointWhereToSplit = ListTimePoints.front();
-  ListMeshes.first = this->m_CollectionOfTraces->GetTraceIDsWithTimePointSup(
-    iDatabaseConnector,iListMeshesBelongingToTrack,TimePointWhereToSplit);
-  ListMeshes.second = this->m_CollectionOfTraces->GetTraceIDsWithTimePointInf(
-    iDatabaseConnector,iListMeshesBelongingToTrack,TimePointWhereToSplit);
-  ListMeshes.second.push_back(FirstMeshOfSecondTrack);
-  return ListMeshes;
-  
+  oInfo.second = ListTimePoints.front();
+  return oInfo;
 }
