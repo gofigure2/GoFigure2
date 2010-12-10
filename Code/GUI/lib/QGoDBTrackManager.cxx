@@ -281,13 +281,15 @@ void QGoDBTrackManager::SetColorCoding(bool IsChecked)
 void QGoDBTrackManager::AddActionsContextMenu(QMenu *iMenu)
 {
   QGoDBTraceManager::AddActionsContextMenu(iMenu);
-  QMenu* SplitMenu = new QMenu(tr("Split your track"),iMenu);
-  SplitMenu->addAction(tr("Using the Widget"),
-                       this, SLOT( SplitTrackWithWidget() ) );
-  QAction* SplitMenuAction = SplitMenu->menuAction();
-  iMenu->addAction(SplitMenuAction);
-  QObject::connect(SplitMenuAction,SIGNAL(triggered() ),
+  //QMenu* SplitMenu = new QMenu(tr("Split your track"),iMenu);
+  //SplitMenu->addAction(tr("Using the Widget"),
+  //                     this, SLOT( SplitTrackWithWidget() ) );
+  //QAction* SplitMenuAction = SplitMenu->menuAction(); 
+  QAction* SplitMenuAction = new QAction(tr("Split your track"),iMenu);
+  QObject::connect(SplitMenuAction, SIGNAL( triggered() ),
     this, SLOT(TrackIDToEmit() ) );
+
+  iMenu->addAction(SplitMenuAction);
 }
 //-------------------------------------------------------------------------
 
@@ -313,7 +315,6 @@ void QGoDBTrackManager::TrackIDToEmit()
         HighlightedTrackIDs) );
     emit DBConnectionNotNeededAnymore();
     }
-
 }
 //-------------------------------------------------------------------------
 

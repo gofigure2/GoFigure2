@@ -599,9 +599,14 @@ QGoDBMeshManager::GetMeshesForSplittedTrack(
 
   std::list<unsigned int> ListCheckedMeshes = 
     this->m_MeshContainerInfoForVisu->GetHighlightedElementsTraceID();
-  std::list<unsigned int> ListCheckedMeshesBelongingToTrackID = 
-    this->m_CollectionOfTraces->GetTraceIDsBelongingToCollectionID(
+  std::list<unsigned int> ListCheckedMeshesBelongingToTrackID =
+    std::list<unsigned int>();
+  if (!ListCheckedMeshes.empty())
+    {
+    ListCheckedMeshesBelongingToTrackID = 
+      this->m_CollectionOfTraces->GetTraceIDsBelongingToCollectionID(
       iDatabaseConnector, ListCheckedMeshes,iTrackID);
+    } 
   if ( ListCheckedMeshesBelongingToTrackID.size() != 1)
     {
     QMessageBox msgBox;

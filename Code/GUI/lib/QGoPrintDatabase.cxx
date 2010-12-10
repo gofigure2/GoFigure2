@@ -1255,10 +1255,12 @@ void QGoPrintDatabase::SetTracksManager()
                     SIGNAL(DBConnectionNotNeededAnymore() ),
                     this,
                     SLOT(CloseDBConnection() ) );
+
   QObject::connect( this->m_TracksManager,
-                    SIGNAL(TrackToSplit(unsigned int) ),
+                    SIGNAL(TrackToSplit(unsigned int, std::list<unsigned int> ) ),
                     this,
-                    SLOT( PassMeshInfoToSplitTheTrack(unsigned int) ) );
+                    SLOT( SplitTheTrack(unsigned int,
+                      std::list<unsigned int> ) ) );
 
   this->m_TracksManager->SetSelectedCollection(
     this->m_TraceWidget->GetPointerCollectionData());
