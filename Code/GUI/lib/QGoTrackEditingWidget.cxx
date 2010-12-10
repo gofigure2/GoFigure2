@@ -287,6 +287,37 @@ UpdateCurrentActorSelection(vtkObject *caller)
 
   // Update IDs list
   // if mesh
+  if( actor2IDMapIterator->second.first )
+    {
+    // Is it in the list?
+    bool isPresent = findInCutList(actor2IDMapIterator->second.second.first,
+                                   actor2IDMapIterator->second.second.second);
+
+    }
+  else
+    {
+
+    }
 
   // Update actor color
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+bool
+QGoTrackEditingWidget::
+findInCutList(int iTrackId, int iMeshID)
+{
+  std::list< std::pair< int,  int> >::iterator cutListIterator = m_CutList.begin();
+  while( cutListIterator != m_CutList.end() )
+    {
+    // if we find it in the list
+    if(    (*cutListIterator).first == iTrackId
+        && (*cutListIterator).second == iMeshID)
+      {
+      return true;
+      }
+    ++cutListIterator;
+    }
+  return false;
 }

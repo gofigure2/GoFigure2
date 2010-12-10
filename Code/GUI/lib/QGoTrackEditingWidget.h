@@ -71,6 +71,8 @@ public:
 
   void generateTrackRepresentation();
 
+  bool findInCutList(int iTrackId, int iMeshID);
+
   /*
    * Useless....?
   // when pick actor update cut list + actor color
