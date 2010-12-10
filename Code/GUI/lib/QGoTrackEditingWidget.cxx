@@ -57,6 +57,9 @@ QGoTrackEditingWidget(QWidget *iParent): QDialog(iParent)
 {
   this->setupUi(this);
 
+  m_InteractorStyle3D = vtkInteractorStyleImage3D::New();
+  m_InteractorStyle3D->EnablePickMode();
+
   QObject::connect( this->previewPushButton, SIGNAL( pressed() ),
                     this, SLOT( preview() ) );
 }
@@ -225,10 +228,7 @@ preview()
   vtkSmartPointer<vtkRenderer> renderer =
       vtkSmartPointer<vtkRenderer>::New();
   this->qvtkWidget->GetRenderWindow()->AddRenderer(renderer);
-  /*vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor =
-      vtkSmartPointer<vtkRenderWindowInteractor>::New();
-  renderWindowInteractor->SetRenderWindow(this->qvtkWidget->GetRenderWindow());*/
-  //
+
   std::map< vtkActor*, std::pair<unsigned int, unsigned int> >::iterator actor2IDMapIterator;
   actor2IDMapIterator = m_Actor2IDMap.begin();
   while( actor2IDMapIterator != m_Actor2IDMap.end() )
@@ -237,6 +237,9 @@ preview()
     ++actor2IDMapIterator;
     }
 
+  this->qvtkWidget->GetInteractor()->SetInteractorStyle(m_InteractorStyle3D);
+  //this->qvtkWidget->GetInteractor()->SetRenderWindow(this->RenderWindow);
+
+
   this->qvtkWidget->GetRenderWindow()->Render();
-  //renderWindowInteractor->Start();
 }

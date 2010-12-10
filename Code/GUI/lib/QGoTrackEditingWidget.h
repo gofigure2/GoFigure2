@@ -42,6 +42,7 @@
 #include "QGoGUILibConfigure.h"
 
 #include "vtkActor.h"
+#include "vtkInteractorStyleImage3D.h"
 
 
 /**
@@ -87,6 +88,7 @@ private:
   bool                                                         m_MergeMode;
   bool                                                         m_CutMode;
   std::map< vtkActor*, std::pair<unsigned int, unsigned int> > m_Actor2IDMap;
+  vtkInteractorStyleImage3D* m_InteractorStyle3D;
 
 };
 #endif
