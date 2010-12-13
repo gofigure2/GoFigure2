@@ -63,6 +63,8 @@ QGoTrackEditingWidget(QWidget *iParent): QDialog(iParent)
   m_VtkEventQtConnector = vtkEventQtSlotConnect::New();
   m_InteractorStyle3D   = vtkInteractorStyleImage3D::New();
 
+  m_SecondClick = false;
+
   QObject::connect( this->previewPushButton, SIGNAL( pressed() ),
                     this, SLOT( preview() ) );
 
@@ -128,7 +130,7 @@ generateTrackRepresentation()
       //--------------
       //-------------------------------
       // Create a sphere
-      vtkActor* sphereActor = CreateSphereActor( currentMeshPosition );
+      vtkActor* sphereActor = CreateSphereActor( currentMeshPosition, NULL );
       actorIDsPair.first = sphereActor;
       actorIDsPair.second.first = true;
       actorIDsPair.second.second = idsPair;
@@ -140,7 +142,7 @@ generateTrackRepresentation()
       // meshID= -1 for more efficiency
       if( previousMeshID >= 0 )
         {
-        vtkActor* polylineActor = CreatePolylineActor(previousMeshPosition, currentMeshPosition);
+        vtkActor* polylineActor = CreatePolylineActor(previousMeshPosition, currentMeshPosition, NULL);
         actorIDsPair.first = polylineActor;
         actorIDsPair.second.first = false;
         actorIDsPair.second.second = idsPair;
@@ -164,7 +166,7 @@ generateTrackRepresentation()
 //-------------------------------------------------------------------------
 vtkActor*
 QGoTrackEditingWidget::
-CreateSphereActor( double* iCenter)
+CreateSphereActor( double* iCenter, const double* iColor)
 {
 // create sphere geometry
   vtkSphereSource *sphere = vtkSphereSource::New();
@@ -180,7 +182,7 @@ CreateSphereActor( double* iCenter)
   // actor coordinates geometry, properties, transformation
   vtkActor *aSphere = vtkActor::New();
   aSphere->SetMapper(map);
-  aSphere->GetProperty()->SetColor(0,0,1); // sphere color blue
+  aSphere->GetProperty()->SetColor( const_cast<double*>(iColor) ); // sphere color blue
 
   sphere->Delete();
   map->Delete();
@@ -192,7 +194,7 @@ CreateSphereActor( double* iCenter)
 //-------------------------------------------------------------------------
 vtkActor*
 QGoTrackEditingWidget::
-CreatePolylineActor( double* iCenter1, double* iCenter2)
+CreatePolylineActor( double* iCenter1, double* iCenter2, const double* iColor)
 {
   //create a vtkPoints object and storevtkRenderWindow the points in it
     vtkSmartPointer<vtkPoints> points =
@@ -230,7 +232,8 @@ CreatePolylineActor( double* iCenter1, double* iCenter2)
 
     vtkActor* actor = vtkActor::New();
     actor->SetMapper(mapper);
-    actor->GetProperty()->SetColor(1,1,1); // sphere color white
+
+    actor->GetProperty()->SetColor( const_cast<double*>(iColor) ); // sphere color white
 
     return actor;
 }
@@ -313,16 +316,27 @@ UpdateCurrentActorSelection(vtkObject *caller)
   else
     {
   // first click = actor is red
-  // second click - actor original color
-  // create line
-  // update list
-    // Is it in the list?
-    // to be implemented
-    // if we have 2 points - create line in red
-    bool isPresent = findInMergeList();
-    }
+    if( m_SecondClick )
+      {
+      m_CurrentActor->GetProperty()->SetLineWidth(5);
+      m_FirstActor = m_CurrentActor;
 
-  // Update actor color
+      m_FirstPair.first = actor2IDMapIterator->second.second.first;
+      m_FirstPair.second = actor2IDMapIterator->second.second.second;
+      m_SecondClick = true;
+      }
+    else
+      {
+      m_FirstActor->GetProperty()->SetLineWidth(1);
+      m_SecondActor = m_CurrentActor;
+
+      std::pair<int, int> secondPair;
+      secondPair.first = actor2IDMapIterator->second.second.first;
+      secondPair.second = actor2IDMapIterator->second.second.second;
+      bool isPresent = findInMergeList(m_FirstPair, secondPair);
+      m_SecondClick = false;
+      }
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -358,32 +372,61 @@ findInCutList(int iTrackId, int iMeshID)
 //-------------------------------------------------------------------------
 bool
 QGoTrackEditingWidget::
-findInMergeList()
+findInMergeList( std::pair< int, int> iFirstPair, std::pair< int, int > iSecondPair )
 {
-  /*
+
   std::list< std::pair< std::pair< int,  int>, std::pair< int,  int> > >::iterator
-      cutListIterator = m_MergeList.begin();
-  while( cutListIterator != m_MergeList.end() )
+      mergeListIterator = m_MergeList.begin();
+
+  while( mergeListIterator != m_MergeList.end() )
     {
     // if we find it in the list
-    if(    (*cutListIterator).first == iTrackId
-        && (*cutListIterator).second == iMeshID)
+    if(   ( (*mergeListIterator).first.first == iFirstPair.first
+         && (*mergeListIterator).first.second == iFirstPair.second
+         && (*mergeListIterator).second.first == iSecondPair.first
+         && (*mergeListIterator).second.second == iSecondPair.second)
+        ||
+          ( (*mergeListIterator).first.first == iSecondPair.first
+         && (*mergeListIterator).first.second == iSecondPair.second
+         && (*mergeListIterator).second.first == iFirstPair.first
+         && (*mergeListIterator).second.second == iFirstPair.second) )
       {
       std::cout<< "IDs found - remove it" << std::endl;
       // Remove from list
-      m_MergeList.erase(cutListIterator);
+      m_MergeList.erase(mergeListIterator);
+
+      // Delete Actor!!!
       return true;
       }
-    ++cutListIterator;
+    ++mergeListIterator;
     }
+
   std::cout<< "IDs NOT found - insert it" << std::endl;
   // Add in list
   std::pair<  int,  int> idsPair;
-  idsPair.first = iTrackId;
-  idsPair.second = iMeshID;
-  m_MergeList.push_back(idsPair);
-  return false;*/
-  return true;
+  idsPair.first = iFirstPair.first;
+  idsPair.second = iFirstPair.second;
+
+  std::pair<  int,  int> idsPair2;
+  idsPair2.first = iSecondPair.first;
+  idsPair2.second = iSecondPair.second;
+
+  std::pair<  std::pair<  int,  int>,  std::pair<  int,  int> > idFullPair;
+  idFullPair.first = idsPair;
+  idFullPair.second = idsPair2;
+
+  m_MergeList.push_back(idFullPair);
+
+  // Create and actor too
+  double color[3] = {1, 1, 1};
+  vtkActor* actor = CreatePolylineActor(m_FirstActor->GetCenter(), m_SecondActor->GetCenter(), color);
+
+  std::pair<std::pair< std::pair< int,  int>, std::pair< int,  int> >, vtkActor* > actorConnection;
+  actorConnection.first = idFullPair;
+  actorConnection.second =  actor;
+  m_MergeListActor.push_back( actorConnection );
+
+  return false;
 }
 //-------------------------------------------------------------------------
 
@@ -431,7 +474,7 @@ generateTrackRepresentation2()
       idsPair.second = currentMeshID;
 
       // Actor
-      vtkActor* sphereActor = CreateSphereActor( currentMeshPosition );
+      vtkActor* sphereActor = CreateSphereActor( currentMeshPosition, (*trackListIterator).second.first );
 
       // Actor/IDs Pair
       std::pair< vtkActor*, std::pair< bool, std::pair< int,  int> > >
@@ -445,7 +488,7 @@ generateTrackRepresentation2()
 
       if( previousMeshID >= 0 )
         {
-        vtkActor* polylineActor = CreatePolylineActor(previousMeshPosition, currentMeshPosition);
+        vtkActor* polylineActor = CreatePolylineActor(previousMeshPosition, currentMeshPosition, (*trackListIterator).second.first);
         actorIDsPair.first = polylineActor;
         actorIDsPair.second.first = false;
         actorIDsPair.second.second = idsPair;

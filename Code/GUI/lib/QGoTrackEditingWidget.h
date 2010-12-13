@@ -43,6 +43,7 @@
 
 #include "vtkActor.h"
 #include "vtkPolyData.h"
+#include "vtkPoints.h"
 
 #include "vtkInteractorStyleImage3D.h"
 #include "vtkEventQtSlotConnect.h"
@@ -75,7 +76,7 @@ public:
   void generateTrackRepresentation2();
 
   bool findInCutList(int iTrackId, int iMeshID);
-  bool findInMergeList();
+  bool findInMergeList( std::pair< int, int> iFirstPair, std::pair< int, int > iSecondPair );
 
   /*
    * Useless....?
@@ -95,16 +96,22 @@ public:
     void UpdateCurrentActorSelection(vtkObject *caller);
 
 private:
-  vtkActor* CreateSphereActor( double* iCenter);
-  vtkActor* CreatePolylineActor( double* iCenter1, double* iCenter2);
+  vtkActor* CreateSphereActor( double* iCenter, const double* iColor);
+  vtkActor* CreatePolylineActor( double* iCenter1, double* iCenter2, const double* iColor);
 
   std::list<Track>                                             m_ListOfTracks;
   std::list< std::pair< unsigned int, std::pair< const double* , vtkPolyData*> > >         m_ListOfTracks2;
   std::list< std::pair< int,  int> >                           m_CutList;
   std::list< std::pair< std::pair< int,  int>, std::pair< int,  int> > >           m_MergeList;
+  std::list< std::pair<std::pair< std::pair< int,  int>, std::pair< int,  int> >, vtkActor* > >           m_MergeListActor;
   bool                                                         m_MergeMode;
   bool                                                         m_CutMode;
   std::map< vtkActor*, std::pair< bool, std::pair< int,  int> > > m_Actor2IDMap;
+
+  bool m_SecondClick;
+  std::pair<int, int> m_FirstPair;
+  vtkActor* m_FirstActor;
+  vtkActor* m_SecondActor;
 
   vtkInteractorStyleImage3D* m_InteractorStyle3D;
   vtkEventQtSlotConnect*     m_VtkEventQtConnector;
