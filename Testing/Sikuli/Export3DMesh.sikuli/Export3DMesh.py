@@ -27,6 +27,7 @@ reg = find(Pattern("roughQuadViewRectangle.png").similar(0.30))
 #this should find a rough 30% image and just get the coordinates and then take real image below
 table_quadview = reg.getRect()
 quadview_image_BEFORE =capture(table_quadview)
+print quadview_image_BEFORE
 
 f = open("quadview_image_BEFORE_address.txt","w")
 f.write(quadview_image_BEFORE)
