@@ -99,6 +99,7 @@ reg = <span class="skw">find</span>(Pattern(<img src="roughQuadViewRectangle.png
 <span class="cmt">#this should find a rough 30% image and just get the coordinates and then take real image below
 </span>table_quadview = reg.getRect()
 quadview_image_BEFORE =<span class="skw">capture</span>(table_quadview)
+<span class="kw">print</span> quadview_image_BEFORE
 
 f = open(<span class="str">"quadview_image_BEFORE_address.txt"</span>,<span class="str">"w"</span>)
 f.write(quadview_image_BEFORE)

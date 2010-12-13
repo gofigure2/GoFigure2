@@ -85,7 +85,9 @@ setBundlePath(address)
 <span class="skw">click</span>(<img src="Import.png" />)
 a = <span class="skw">find</span>(<img src="3DMeshes.png" />)
 <span class="skw">click</span>(a.below(<span class="dig">10</span>))
-
+<span class="skw">wait</span>(<span class="dig">2</span>)
+<span class="skw">type</span>(<span class="str">"3DMeshExportTest.txt"</span>)
+<span class="skw">type</span>(Key.ENTER)
 <span class="cmt">#NEED TO FIGURE OUT HOW TO SELECT 3DMeshExportTest.txt file for any user on any OS
 </span>
 <span class="skw">click</span>(<img src="File.png" />)
@@ -95,6 +97,7 @@ a = <span class="skw">find</span>(<img src="3DMeshes.png" />)
 <span class="skw">click</span>(<img src="Next.png" />)
 <span class="skw">click</span>(<img src="Next.png" />)
 <span class="skw">click</span>(<img src="Finish.png" />)
+<span class="skw">wait</span>(<span class="dig">5</span>)
 
 <span class="skw">click</span>(<img src="NavigationIcon.png" />)
 <span class="skw">click</span>(<img src="TableWidgetIcon.png" />)
@@ -110,8 +113,13 @@ a = <span class="skw">find</span>(<img src="3DMeshes.png" />)
 </span><span class="cmt">#quadview_image_AFTER =capture(table_quadview)
 </span>
 
-f = open(<span class="str">"quadview_image_BEFORE_address.txt"</span>,<span class="str">"r"</span>)
-quadview_BEFORE = f.read(quadview_image_BEFORE)
+f = open(address+<span class="str">"/quadview_image_BEFORE_address.txt"</span>,<span class="str">"r"</span>)
+quadview_BEFORE = f.read()
+
+<span class="kw">print</span> quadview_BEFORE
+
+<span class="kw">import</span> shutil
+shutil.copy(quadview_BEFORE,address)
 
 <span class="cmt">#make sure images are exact.
 </span><span class="skw">find</span>(quadview_BEFORE).similar(<span class="dig">.95</span>)

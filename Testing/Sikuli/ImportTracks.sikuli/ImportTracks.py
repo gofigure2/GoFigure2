@@ -13,7 +13,9 @@ click("Tools.png")
 click("Import.png")
 a = find("3DMeshes.png")
 click(a.below(10))
-
+wait(2)
+type("3DMeshExportTest.txt")
+type(Key.ENTER)
 #NEED TO FIGURE OUT HOW TO SELECT 3DMeshExportTest.txt file for any user on any OS
 
 click("File.png")
@@ -23,6 +25,7 @@ click("UseDatabaseIcon.png")
 click("Next.png")
 click("Next.png")
 click("Finish.png")
+wait(5)
 
 click("NavigationIcon.png")
 click("TableWidgetIcon.png")
@@ -38,8 +41,13 @@ click("MeshSegmentationIcon.png")
 #quadview_image_AFTER =capture(table_quadview)
 
 
-f = open("quadview_image_BEFORE_address.txt","r")
-quadview_BEFORE = f.read(quadview_image_BEFORE)
+f = open(address+"/quadview_image_BEFORE_address.txt","r")
+quadview_BEFORE = f.read()
+
+print quadview_BEFORE
+
+import shutil
+shutil.copy(quadview_BEFORE,address)
 
 #make sure images are exact.
 find(quadview_BEFORE).similar(.95)
