@@ -292,11 +292,24 @@ UpdateCurrentActorSelection(vtkObject *caller)
     // Is it in the list?
     bool isPresent = findInCutList(actor2IDMapIterator->second.second.first,
                                    actor2IDMapIterator->second.second.second);
-
+    if(isPresent)
+      {
+      std::cout << "UN HIGHLIGHT" <<  std::endl;
+      double color[3] = {1, 1, 1};
+      m_CurrentActor->GetProperty()->SetColor(color);
+      }
+    else
+      {
+      std::cout << "HIGHTLIGHT" << std::endl;
+      double color[3] = {1, 0, 0};
+      m_CurrentActor->GetProperty()->SetColor(color);
+      }
     }
   else
     {
-
+    // Is it in the list?
+    bool isPresent = findInMergeList(actor2IDMapIterator->second.second.first,
+                                 actor2IDMapIterator->second.second.second);
     }
 
   // Update actor color
@@ -315,9 +328,46 @@ findInCutList(int iTrackId, int iMeshID)
     if(    (*cutListIterator).first == iTrackId
         && (*cutListIterator).second == iMeshID)
       {
+      std::cout<< "IDs found - remove it" << std::endl;
+      // Remove from list
+      m_CutList.erase(cutListIterator);
       return true;
       }
     ++cutListIterator;
     }
+  std::cout<< "IDs NOT found - insert it" << std::endl;
+  // Add in list
+  std::pair<  int,  int> idsPair;
+  idsPair.first = iTrackId;
+  idsPair.second = iMeshID;
+  m_CutList.push_back(idsPair);
+  return false;
+}
+//-------------------------------------------------------------------------
+bool
+QGoTrackEditingWidget::
+findInCutList(int iTrackId, int iMeshID)
+{
+  std::list< std::pair< std::pair< int,  int>, std::pair< int,  int> > >::iterator
+      cutListIterator = m_MergeList.begin();
+  while( cutListIterator != m_MergeList.end() )
+    {
+    // if we find it in the list
+    if(    (*cutListIterator).first == iTrackId
+        && (*cutListIterator).second == iMeshID)
+      {
+      std::cout<< "IDs found - remove it" << std::endl;
+      // Remove from list
+      m_MergeList.erase(cutListIterator);
+      return true;
+      }
+    ++cutListIterator;
+    }
+  std::cout<< "IDs NOT found - insert it" << std::endl;
+  // Add in list
+  std::pair<  int,  int> idsPair;
+  idsPair.first = iTrackId;
+  idsPair.second = iMeshID;
+  m_MergeList.push_back(idsPair);
   return false;
 }
