@@ -46,6 +46,8 @@ QGoTrackDockWidget::QGoTrackDockWidget(
       this, SLOT( GlyphChanged(bool) ) );
   QObject::connect( this->tube, SIGNAL( toggled(bool) ),
       this, SLOT( TubeChanged(bool) ) );
+  QObject::connect( this->twPush, SIGNAL( pressed() ),
+      this, SLOT( StartTW() ) );
 
   /*
   // double slider
