@@ -48,6 +48,7 @@
 #include "vtkInteractorStyleImage3D.h"
 #include "vtkEventQtSlotConnect.h"
 
+#include "vtkSmartPointer.h"
 
 /**
 \class QGoTrackEditingWidget
@@ -116,6 +117,8 @@ private:
   vtkInteractorStyleImage3D* m_InteractorStyle3D;
   vtkEventQtSlotConnect*     m_VtkEventQtConnector;
   vtkActor*                  m_CurrentActor;
+
+  vtkSmartPointer<vtkRenderer> renderer;
 
 };
 #endif

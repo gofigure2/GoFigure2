@@ -52,6 +52,8 @@
 #include "vtkRenderWindow.h"
 #include "vtkRenderWindowInteractor.h"
 
+#include "vtkRendererCollection.h"
+
 #include "vtkViewImage3DCommand.h"
 
 //-------------------------------------------------------------------------
@@ -59,6 +61,8 @@ QGoTrackEditingWidget::
 QGoTrackEditingWidget(QWidget *iParent): QDialog(iParent)
 {
   this->setupUi(this);
+
+  renderer = vtkSmartPointer<vtkRenderer>::New();
 
   m_VtkEventQtConnector = vtkEventQtSlotConnect::New();
   m_InteractorStyle3D   = vtkInteractorStyleImage3D::New();
@@ -245,8 +249,6 @@ QGoTrackEditingWidget::
 preview()
 {
 //setup render window, renderer, and interactor
-  vtkSmartPointer<vtkRenderer> renderer =
-      vtkSmartPointer<vtkRenderer>::New();
   this->qvtkWidget->GetRenderWindow()->AddRenderer(renderer);
 
   std::map< vtkActor*, std::pair<bool, std::pair< int,  int> > >::iterator
@@ -316,7 +318,7 @@ UpdateCurrentActorSelection(vtkObject *caller)
   else
     {
   // first click = actor is red
-    if( m_SecondClick )
+    if( !m_SecondClick )
       {
       m_CurrentActor->GetProperty()->SetLineWidth(5);
       m_FirstActor = m_CurrentActor;
@@ -329,6 +331,7 @@ UpdateCurrentActorSelection(vtkObject *caller)
       {
       m_FirstActor->GetProperty()->SetLineWidth(1);
       m_SecondActor = m_CurrentActor;
+      //m_FirstActor->SetMapper(m_CurrentActor->GetMapper());
 
       std::pair<int, int> secondPair;
       secondPair.first = actor2IDMapIterator->second.second.first;
@@ -420,6 +423,9 @@ findInMergeList( std::pair< int, int> iFirstPair, std::pair< int, int > iSecondP
   // Create and actor too
   double color[3] = {1, 1, 1};
   vtkActor* actor = CreatePolylineActor(m_FirstActor->GetCenter(), m_SecondActor->GetCenter(), color);
+
+  renderer->AddActor(actor);
+  this->qvtkWidget->GetRenderWindow()->Render();
 
   std::pair<std::pair< std::pair< int,  int>, std::pair< int,  int> >, vtkActor* > actorConnection;
   actorConnection.first = idFullPair;
