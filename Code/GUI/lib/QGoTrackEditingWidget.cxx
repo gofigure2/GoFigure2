@@ -411,7 +411,7 @@ generateTrackRepresentation2()
     std::cout << "-------------------------" << std::endl;
     std::cout << "trackID: " << trackID << std::endl;
     int    previousMeshID       = -1;
-    double* previousMeshPosition = NULL;
+    double* previousMeshPosition = new double[3];;
     vtkPolyData* trackPolyData = (*trackListIterator).second;
 
     for(int i = 0; i< trackPolyData->GetNumberOfPoints(); ++i)
@@ -451,8 +451,11 @@ generateTrackRepresentation2()
         }
 
       previousMeshID = currentMeshID;
-      previousMeshPosition = currentMeshPosition;
+      previousMeshPosition[0] = currentMeshPosition[0];
+      previousMeshPosition[1] = currentMeshPosition[1];
+      previousMeshPosition[2] = currentMeshPosition[2];
       }
+    delete[] previousMeshPosition;
     ++trackListIterator;
     }
 }
