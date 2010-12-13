@@ -416,8 +416,7 @@ generateTrackRepresentation2()
 
     for(int i = 0; i< trackPolyData->GetNumberOfPoints(); ++i)
       {
-      double *currentMeshPosition = NULL;
-      trackPolyData->GetPoint( i, currentMeshPosition );
+      double *currentMeshPosition = trackPolyData->GetPoint( i );
       vtkIntArray* array = dynamic_cast<vtkIntArray*>(
           trackPolyData->GetPointData()->GetArray("TemporalInformation") );
       int currentMeshID = array->GetValue(i);
