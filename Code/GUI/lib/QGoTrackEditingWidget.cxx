@@ -399,7 +399,28 @@ findInMergeList( std::pair< int, int> iFirstPair, std::pair< int, int > iSecondP
       m_MergeList.erase(mergeListIterator);
 
       // Delete Actor!!!
-      return true;
+      std::list< std::pair <std::pair< std::pair< int,  int>, std::pair< int,  int>  >, vtkActor* > >::iterator
+          mergeListIterator2 = m_MergeListActor.begin();
+
+      while( mergeListIterator2 != m_MergeListActor.end() )
+        {
+        if( ( (*mergeListIterator2).first.first.first == iFirstPair.first
+            && (*mergeListIterator2).first.first.second == iFirstPair.second
+            && (*mergeListIterator2).first.second.first == iSecondPair.first
+            && (*mergeListIterator2).first.second.second == iSecondPair.second)
+            ||
+             ( (*mergeListIterator2).first.first.first == iSecondPair.first
+            && (*mergeListIterator2).first.first.second == iSecondPair.second
+            && (*mergeListIterator2).first.second.first == iFirstPair.first
+            && (*mergeListIterator2).first.second.second == iFirstPair.second) )
+          {
+          renderer->RemoveActor( (*mergeListIterator2).second );
+          (*mergeListIterator2).second->Delete();
+
+          return true;
+          }
+        ++mergeListIterator2;
+        }
       }
     ++mergeListIterator;
     }
