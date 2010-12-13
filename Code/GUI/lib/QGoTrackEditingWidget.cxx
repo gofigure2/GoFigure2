@@ -393,6 +393,8 @@ QGoTrackEditingWidget::
 setTracks2( std::list< std::pair< unsigned int, std::pair< const double* , vtkPolyData*> > > iTrack )
 {
   m_ListOfTracks2 = iTrack;
+  generateTrackRepresentation2();
+  preview();
 }
 
 //-------------------------------------------------------------------------

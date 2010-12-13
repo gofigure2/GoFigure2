@@ -3064,6 +3064,5 @@ StartTW()
 {
   QGoTrackEditingWidget *win = new QGoTrackEditingWidget();
   win->setTracks2( this->m_TrackContainer->GetHighlightedElementsTrackPolyData() );
-  win->generateTrackRepresentation2();
   win->show();
 }
