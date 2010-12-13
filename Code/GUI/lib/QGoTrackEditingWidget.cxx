@@ -311,8 +311,13 @@ UpdateCurrentActorSelection(vtkObject *caller)
     }
   else
     {
+  // first click = actor is red
+  // second click - actor original color
+  // create line
+  // update list
     // Is it in the list?
     // to be implemented
+    // if we have 2 points - create line in red
     bool isPresent = findInMergeList();
     }
 
