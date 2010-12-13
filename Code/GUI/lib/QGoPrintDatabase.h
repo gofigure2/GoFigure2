@@ -360,16 +360,6 @@ protected:
   void SetTMListSubCellTypesWithPreviousSelectedOne();
 
   /**
-  \brief get a list of the IDs with their colors for the collection corresponding to
-  the tracename, for the given timepoint if the
-  collection is a mesh or for all timepoints for tracks and lineages,
-  update the Trace Manual colorcombobox and select the corresponding ID in the combobox
-  if the string is not empty
-  \param[in] iIDToSelect ID for the item to be selected in the combobox
-  */
-  void SetTMListCollectionID(std::string iIDToSelect = "");
-
-  /**
   \brief get the data for the colorcombobox from the database,
   put them in the Trace Manual colorcombobox and if the string is not empty,
   the combobox will have as selected item the string
@@ -545,6 +535,17 @@ protected slots:
   void CreateContextMenu(const QPoint & iPos);
 
   void TheTabIsChanged(int iIndex);
+
+  /**
+  \brief get a list of the IDs with their colors for the collection corresponding to
+  the tracename, for the given timepoint if the
+  collection is a mesh or for all timepoints for tracks and lineages,
+  update the Trace Manual colorcombobox and select the corresponding ID in the combobox
+  if the string is not empty
+  \param[in] iIDToSelect ID for the item to be selected in the combobox
+  */
+  void SetTMListCollectionID(std::string iIDToSelect = "", 
+    vtkMySQLDatabase* iDatabaseConnector = NULL);
 
   /**
   \brief open the connection to the database and pass it to the ContoursManager

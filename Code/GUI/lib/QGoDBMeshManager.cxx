@@ -256,6 +256,8 @@ unsigned int QGoDBMeshManager::CreateNewMeshWithNoContourNoPoints(
 
   this->m_MeshContainerInfoForVisu->InsertCurrentElement();
   this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
+  emit RefreshListCollectionIDsTM ( ConvertToString<unsigned int> (NewMeshID), 
+    iDatabaseConnector);
   return NewMeshID;
 }
 
@@ -436,7 +438,9 @@ void QGoDBMeshManager::UpdateSubCellType()
   this->DisplayInfoForExistingTraces(this->m_DatabaseConnector,ListCheckedMeshes);
   emit DBConnectionNotNeededAnymore();
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
  unsigned int QGoDBMeshManager::
    ReassignTrackIDForPreviousMeshWithSameTimePoint( vtkMySQLDatabase *iDatabaseConnector,
     unsigned int iTrackID,unsigned int iTimePoint)
