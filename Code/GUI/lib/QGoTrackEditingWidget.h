@@ -72,6 +72,7 @@ public:
   void generateTrackRepresentation();
 
   bool findInCutList(int iTrackId, int iMeshID);
+  bool findInMergeList();
 
   /*
    * Useless....?

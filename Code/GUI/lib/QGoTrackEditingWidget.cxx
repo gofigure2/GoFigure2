@@ -274,6 +274,12 @@ UpdateCurrentActorSelection(vtkObject *caller)
   m_CurrentActor = vtkActor::
                    SafeDownCast( t->GetCurrentProp() );
 
+  // if we click on the background
+  if(m_CurrentActor == NULL)
+    {
+    return;
+    }
+
   // Where it is in the list to get the IDs
   std::map< vtkActor*, std::pair< bool, std::pair< int,  int> > >::iterator actor2IDMapIterator;
   actor2IDMapIterator = m_Actor2IDMap.find(m_CurrentActor);
@@ -286,8 +292,8 @@ UpdateCurrentActorSelection(vtkObject *caller)
     }
 
   // Update IDs list
-  // if mesh
-  if( actor2IDMapIterator->second.first )
+  // if connection (ie not a mesh)
+  if( !actor2IDMapIterator->second.first )
     {
     // Is it in the list?
     bool isPresent = findInCutList(actor2IDMapIterator->second.second.first,
@@ -295,21 +301,19 @@ UpdateCurrentActorSelection(vtkObject *caller)
     if(isPresent)
       {
       std::cout << "UN HIGHLIGHT" <<  std::endl;
-      double color[3] = {1, 1, 1};
-      m_CurrentActor->GetProperty()->SetColor(color);
+      m_CurrentActor->GetProperty()->SetOpacity(1);
       }
     else
       {
       std::cout << "HIGHTLIGHT" << std::endl;
-      double color[3] = {1, 0, 0};
-      m_CurrentActor->GetProperty()->SetColor(color);
+      m_CurrentActor->GetProperty()->SetOpacity(0.3);
       }
     }
   else
     {
     // Is it in the list?
-    bool isPresent = findInMergeList(actor2IDMapIterator->second.second.first,
-                                 actor2IDMapIterator->second.second.second);
+    // to be implemented
+    bool isPresent = findInMergeList();
     }
 
   // Update actor color
@@ -346,8 +350,9 @@ findInCutList(int iTrackId, int iMeshID)
 //-------------------------------------------------------------------------
 bool
 QGoTrackEditingWidget::
-findInCutList(int iTrackId, int iMeshID)
+findInMergeList()
 {
+  /*
   std::list< std::pair< std::pair< int,  int>, std::pair< int,  int> > >::iterator
       cutListIterator = m_MergeList.begin();
   while( cutListIterator != m_MergeList.end() )
@@ -369,5 +374,5 @@ findInCutList(int iTrackId, int iMeshID)
   idsPair.first = iTrackId;
   idsPair.second = iMeshID;
   m_MergeList.push_back(idsPair);
-  return false;
+  return false;*/
 }
