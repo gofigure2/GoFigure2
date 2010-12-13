@@ -353,6 +353,8 @@ findInCutList(int iTrackId, int iMeshID)
   return false;
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 bool
 QGoTrackEditingWidget::
 findInMergeList()
@@ -380,4 +382,75 @@ findInMergeList()
   idsPair.second = iMeshID;
   m_MergeList.push_back(idsPair);
   return false;*/
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTrackEditingWidget::
+setTracks2( std::list< std::pair< unsigned int, vtkPolyData* > > iTrack )
+{
+  m_ListOfTracks2 = iTrack;
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTrackEditingWidget::
+generateTrackRepresentation2()
+{
+  std::list< std::pair< unsigned int, vtkPolyData* > >::iterator trackListIterator =
+      m_ListOfTracks2.begin();
+
+  while( trackListIterator != m_ListOfTracks2.end() )
+    {
+    int trackID = (*trackListIterator).first;
+    std::cout << "-------------------------" << std::endl;
+    std::cout << "trackID: " << trackID << std::endl;
+    int    previousMeshID       = -1;
+    double* previousMeshPosition = NULL;
+    vtkPolyData* trackPolyData = (*trackListIterator).second;
+
+    for(int i = 0; i< trackPolyData->GetNumberOfPoints(); ++i)
+      {
+      double *currentMeshPosition = NULL;
+      trackPolyData->GetPoint( i, currentMeshPosition );
+      int currentMeshID =
+          trackPolyData->GetPointData()->GetArray("TemporalInformation")->GetValue(i);
+
+      // IDS
+      std::pair<  int,  int> idsPair;
+      idsPair.first = trackID;
+      // time point
+      idsPair.second = currentMeshID;
+
+      // Actor
+      vtkActor* sphereActor = CreateSphereActor( currentMeshPosition );
+
+      // Actor/IDs Pair
+      std::pair< vtkActor*, std::pair< bool, std::pair< int,  int> > >
+          actorIDsPair;
+
+      actorIDsPair.first = sphereActor;
+      actorIDsPair.second.first = true;
+      actorIDsPair.second.second = idsPair;
+
+      m_Actor2IDMap.insert(actorIDsPair);
+
+      if( previousMeshID >= 0 )
+        {
+        vtkActor* polylineActor = CreatePolylineActor(previousMeshPosition, currentMeshPosition);
+        actorIDsPair.first = polylineActor;
+        actorIDsPair.second.first = false;
+        actorIDsPair.second.second = idsPair;
+
+        m_Actor2IDMap.insert(actorIDsPair);
+        }
+
+      previousMeshID = currentMeshID;
+      previousMeshPosition = currentMeshPosition;
+      }
+    ++trackListIterator;
+    }
 }
