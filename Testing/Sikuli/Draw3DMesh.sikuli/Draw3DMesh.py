@@ -13,7 +13,9 @@ click("MeshSegmentationIcon.png")
 import random
 region = find(Pattern("XY_ViewRegion.png").similar(0.30))
 print region
-for i in [1,4]:
+click(find("Mode.png").right(200))
+click("Manual.png")
+for i in range(1,5):
 	#could make it a straight line by moving differentials in one direction.
 	xclick = random.randint(region.x,region.w+region.x)
 	yclick = random.randint(region.y,region.h+region.y)
@@ -22,6 +24,8 @@ for i in [1,4]:
 	#change time point
 	
 	click(Location(xclick,yclick))
-	click(find("Mode.png").right(200))
-	click("Manual.png")
 	click("Apply.png")
+	keyDown(Key.CTRL)
+	type("d")
+	keyUp(Key.CTRL)
+	wait(4)

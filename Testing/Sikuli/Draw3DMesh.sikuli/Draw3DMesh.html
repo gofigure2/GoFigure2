@@ -85,7 +85,9 @@
 <span class="kw">import</span> random
 region = <span class="skw">find</span>(Pattern(<img src="XY_ViewRegion.png" />).similar(<span class="dig">0.30</span>))
 <span class="kw">print</span> region
-<span class="kw">for</span> i <span class="kw">in</span> [<span class="dig">1</span>,<span class="dig">4</span>]:
+<span class="skw">click</span>(<span class="skw">find</span>(<img src="Mode.png" />).right(<span class="dig">200</span>))
+<span class="skw">click</span>(<img src="Manual.png" />)
+<span class="kw">for</span> i <span class="kw">in</span> range(<span class="dig">1</span>,<span class="dig">5</span>):
         <span class="cmt">#could make it a straight line by moving differentials in one direction.
 </span>        xclick = random.randint(region.x,region.w+region.x)
         yclick = random.randint(region.y,region.h+region.y)
@@ -94,9 +96,11 @@ region = <span class="skw">find</span>(Pattern(<img src="XY_ViewRegion.png" />).
         <span class="cmt">#change time point
 </span>
         <span class="skw">click</span>(Location(xclick,yclick))
-        <span class="skw">click</span>(<span class="skw">find</span>(<img src="Mode.png" />).right(<span class="dig">200</span>))
-        <span class="skw">click</span>(<img src="Manual.png" />)
         <span class="skw">click</span>(<img src="Apply.png" />)
+        keyDown(Key.CTRL)
+        <span class="skw">type</span>(<span class="str">"d"</span>)
+        keyUp(Key.CTRL)
+        <span class="skw">wait</span>(<span class="dig">4</span>)
 </pre>
 </body>
 </html>
