@@ -382,6 +382,8 @@ public:
 
   void MergeTrack( const unsigned int& iId1, const unsigned int& iId2 );
 
+  std::list< std::pair< unsigned int, vtkPolyData* > > GetHighlightedElementsTrackPolyData();
+
 signals:
   /** \brief When one track has been picked (highlighted) from the visualization */
   void TracePicked(unsigned int, Qt::CheckState);

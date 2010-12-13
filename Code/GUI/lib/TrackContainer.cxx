@@ -805,3 +805,32 @@ TrackContainer::MergeTrack( const unsigned int& iId1, const unsigned int& iId2 )
     }*/
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list< std::pair< unsigned int, vtkPolyData* > >
+TrackContainer::
+GetHighlightedElementsTrackPolyData()
+{
+  // Map to be returned
+  std::list< std::pair< unsigned int, vtkPolyData* > > listOfPolyDatas;
+
+  std::list<unsigned int> listOfTrackIDs = GetHighlightedElementsTraceID();
+  std::list<unsigned int>::iterator listOfTrackIDsIterator =
+      listOfTrackIDs.begin();
+
+  while( listOfTrackIDsIterator != listOfTrackIDs.end() )
+    {
+    // Get iterator to the selectedID
+    MultiIndexContainerTraceIDIterator it =
+        m_Container.get< TraceID >().find((*listOfTrackIDsIterator));
+    // Get Polydata from this iterator
+    std::pair< unsigned int, vtkPolyData* > pair;
+    pair.first = (*listOfTrackIDsIterator);
+    pair.second =(*it).Nodes;
+    listOfPolyDatas.push_back(pair);
+    // Go to next ID
+    ++listOfTrackIDsIterator;
+    }
+
+  return listOfPolyDatas;
+}
