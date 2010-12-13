@@ -136,7 +136,9 @@ int vtkPoissonReconstruction::RequestData(vtkInformation *vtkNotUsed(request),
 
   this->KernelDepth = this->Depth - 2;
 
-  tree.setFunctionData( reconstructionFunction, this->Depth, 0, Real(1.0) / ( 1 << this->Depth ) );
+  tree.setFunctionData( reconstructionFunction, this->Depth, 0,
+                        Real(1.0) / ( 1 << this->Depth ) );
+
   //DumpOutput("Function Data Set In: %lg\n",Time()-t);
   //size_t memoryusage = MemoryInfo::Usage();
   //DumpOutput("Memory Usage: %.3f MB\n",float(memoryusage)/(1<<20));
@@ -146,8 +148,9 @@ int vtkPoissonReconstruction::RequestData(vtkInformation *vtkNotUsed(request),
     return EXIT_FAILURE;
     }
 
-  tree.setTree(input, this->Depth, this->KernelDepth, Real(
-                 this->SamplesPerNode), this->Scale, center, scale, !this->NoResetSamples, this->Confidence);
+  tree.setTree( input, this->Depth, this->KernelDepth, Real( this->SamplesPerNode),
+                this->Scale, center, scale, !this->NoResetSamples,
+                this->Confidence );
 
   //DumpOutput("Leaves/Nodes: %d/%d\n",tree.tree.leaves(),tree.tree.nodes());
   //DumpOutput("   Tree Size: %.3f
