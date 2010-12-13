@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>139</width>
-    <height>585</height>
+    <height>618</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -28,7 +28,7 @@
   </property>
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QGridLayout" name="gridLayout_2">
-    <item row="0" column="0">
+    <item row="0" column="0" colspan="2">
      <layout class="QGridLayout" name="gridLayout" rowminimumheight="10,10,10,10,0,0,0,0,0,0,0,0">
       <property name="sizeConstraint">
        <enum>QLayout::SetMinimumSize</enum>
@@ -229,7 +229,7 @@
       </property>
      </spacer>
     </item>
-    <item row="2" column="0">
+    <item row="2" column="0" colspan="2">
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
        <widget class="Line" name="line">
@@ -286,7 +286,7 @@
       </item>
      </layout>
     </item>
-    <item row="3" column="0">
+    <item row="3" column="0" colspan="2">
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
        <widget class="Line" name="line_2">
@@ -297,7 +297,7 @@
       </item>
      </layout>
     </item>
-    <item row="4" column="0">
+    <item row="4" column="0" colspan="2">
      <widget class="QComboBox" name="ModeComboBox">
       <item>
        <property name="text">
@@ -312,6 +312,20 @@
      </widget>
     </item>
     <item row="5" column="0">
+     <widget class="QLabel" name="stepLabel">
+      <property name="text">
+       <string>Step</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="1">
+     <widget class="QSpinBox" name="step">
+      <property name="value">
+       <number>1</number>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="0">
      <spacer name="verticalSpacer_2">
       <property name="orientation">
        <enum>Qt::Vertical</enum>

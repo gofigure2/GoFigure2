@@ -112,9 +112,19 @@ QGoNavigationDockWidget::QGoNavigationDockWidget(QWidget *iParent, const GoFigur
   QObject::connect( this->ModeComboBox, SIGNAL( activated(int) ),
                     this, SIGNAL( ModeChanged(int) ) );
 
+  QObject::connect( this->ModeComboBox, SIGNAL( activated(int) ),
+                    this, SLOT( StepVisibility(int) ) );
+
+  QObject::connect( this->step, SIGNAL( valueChanged(int) ),
+                    this, SIGNAL( StepChanged(int) ) );
+
+  // Hide step and setLabel at the beginning
+  this->step->hide();
+  this->stepLabel->hide();
+
   // shortcuts to move through time
-  (void) new QShortcut(QKeySequence(tr("Shift+A", "Move to previous")), this, SLOT(MoveToPreviousTimePoint()));
-  (void) new QShortcut(QKeySequence(tr("Shift+D", "Move to next")), this, SLOT(MoveToNextTimePoint()));
+  (void) new QShortcut(QKeySequence(tr("Ctrl+A", "Move to previous")), this, SLOT(MoveToPreviousTimePoint()));
+  (void) new QShortcut(QKeySequence(tr("Ctrl+D", "Move to next")), this, SLOT(MoveToNextTimePoint()));
 }
 
 //-------------------------------------------------------------------------
@@ -298,3 +308,18 @@ void QGoNavigationDockWidget::MoveToNextTimePoint()
 }
 
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoNavigationDockWidget::StepVisibility( int iStep)
+{
+  if( iStep == 0 )
+    {
+    this->step->hide();
+    this->stepLabel->hide();
+    }
+  else
+    {
+    this->step->show();
+    this->stepLabel->show();
+    }
+}

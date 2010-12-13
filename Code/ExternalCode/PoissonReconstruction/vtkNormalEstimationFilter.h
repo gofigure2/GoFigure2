@@ -89,6 +89,7 @@ protected:
                           vtkInformationVector *);
 
   double RadiusRatio;
+  vtkIdType NeighborhoodSize;
 
   virtual int FillInputPortInformation(int, vtkInformation *);
 
