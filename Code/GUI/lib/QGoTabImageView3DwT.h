@@ -304,6 +304,8 @@ public slots:
 
   void ModeChanged(int iChannel);
 
+  void StepChanged(int iStep);
+
   void ValidateContour();
 
   int SaveAndVisuContour(vtkPolyData *iView = NULL);
@@ -394,6 +396,8 @@ protected:
   /** \brief ID of the channel that we want to visualize in the time
    * visualization mode */
   int  m_ChannelOfInterest;
+
+  int m_DopplerStep;
 
   /// \todo remove m_FFMPEGWriter and m_AVIWriter from this class
 

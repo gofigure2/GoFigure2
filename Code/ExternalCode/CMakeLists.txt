@@ -1,4 +1,4 @@
-SUBDIRS( 
+SUBDIRS(
   itkQt
   MegaVTK
   vtkLSM

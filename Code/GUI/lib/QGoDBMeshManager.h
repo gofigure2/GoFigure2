@@ -165,13 +165,13 @@ public slots:
   the track of the previous mesh will be reassigned to 0 and a message will
   be displayed in the statusbar
   \param[in] iTrackID ID of the track to be checked
-  \param[in] iTimePoint timepoint at which the existing meshes need to be checked
   \param[in] iDatabaseConnector connection to the database
+  \param[in] iShift value to be added to the current timepoint
   \return a message to be print in the status bar of the mainwindow, if no meshes
   reassigned, the message will be ""
   */
   QString CheckExistingMeshesForTheTrack(
-   unsigned int iTrackID,int iTimePoint,vtkMySQLDatabase* iDatabaseConnector);
+   unsigned int iTrackID, vtkMySQLDatabase* iDatabaseConnector, int iShift = 0);
 
   /**
   \overload
@@ -198,6 +198,21 @@ public slots:
     std::list<unsigned int> & ioListMeshIDsToBePartOfTrack,
     std::list<unsigned int> & ioListMeshIDsToReassign);
 
+  /**
+  \brief for the track, get the list of its meshes with a timepoint 
+  inferior than the selected mesh as first and a list of meshes 
+  with a timepoint superior than the selected mesh and the 
+  selected mesh as second
+  \param[in] iTrackID ID of the track
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iListMeshesBelongingToTrack list of the meshes
+  belonging to this track
+  */
+  std::pair<std::list<unsigned int>,std::list<unsigned int> > 
+    GetMeshesForSplittedTrack(unsigned int iTrackID, 
+    vtkMySQLDatabase* iDatabaseConnector, 
+    std::list<unsigned int> iListMeshesBelongingToTrack);
+
 protected:
   GoDBTWContainerForMesh *m_TWContainer;
   MeshContainer          *m_MeshContainerInfoForVisu;
@@ -217,17 +232,27 @@ protected:
   void SetMeshBoundingBoxAndPoints(unsigned int iXCoordMin,
                                    unsigned int iYCoordMin,
                                    unsigned int iZCoordMin,
-                                   unsigned int iTCoord,
                                    unsigned int iXCoordMax,
                                    unsigned int iYCoordMax,
                                    unsigned int iZCoordMax,
                                    vtkPolyData *iTraceNodes,
                                    vtkMySQLDatabase *iDatabaseConnector,
                                    GoDBMeshRow & iMesh,
-                                   GoFigureMeshAttributes *iMeshAttributes);
+                                   GoFigureMeshAttributes *iMeshAttributes,
+                                   int iShift = 0);
   //virtual pure method in QGoDBTraceManager
   virtual void GetTracesInfoFromDBAndModifyContainerForVisu(
     vtkMySQLDatabase* iDatabaseConnector,std::vector<int> iVectIDs = std::vector< int >());
+
+  /**
+  \brief check that there is one and only one mesh checked belonging to 
+  the track and return its ID and its timepoint
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iTrackID ID of the track the mesh belongs to
+  \return a pair with the meshID as first and the timepoint as second
+  */
+  std::pair<unsigned int, unsigned int> GetInfoForTheOnlyOneCheckedMeshOfTheTrack(
+    vtkMySQLDatabase* iDatabaseConnector, unsigned int iTrackID);
 
 protected slots:
   //virtual pure method in QGoDBTraceManager

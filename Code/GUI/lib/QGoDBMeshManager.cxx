@@ -184,9 +184,8 @@ unsigned int QGoDBMeshManager::SaveNewMeshFromVisu(
   NewMesh.SetCellType(iDatabaseConnector, *this->m_SelectedCellType);
   NewMesh.SetSubCellType(iDatabaseConnector, *this->m_SelectedSubCellType);
   this->SetMeshBoundingBoxAndPoints(iXCoordMin, iYCoordMin, iZCoordMin,
-                                    *this->m_CurrentTimePoint + iTShift,
                                     iXCoordMax, iYCoordMax, iZCoordMax, iTraceNodes, iDatabaseConnector, NewMesh,
-                                    iMeshAttributes);
+                                    iMeshAttributes, iTShift);
   //save the intensities for each channel !!!
   unsigned int NewMeshID = this->m_CollectionOfTraces->CreateNewTraceInDB< GoDBMeshRow >(
     NewMesh, iDatabaseConnector,*this->m_SelectedColorData, 
@@ -221,7 +220,6 @@ void QGoDBMeshManager::SaveGeneratedMeshFromVisu(unsigned int iXCoordMin,
   this->SetMeshBoundingBoxAndPoints(iXCoordMin,
                                     iYCoordMin,
                                     iZCoordMin,
-                                    *this->m_CurrentTimePoint,
                                     iXCoordMax,
                                     iYCoordMax,
                                     iZCoordMax,
@@ -292,19 +290,19 @@ void QGoDBMeshManager::UpdateBoundingBoxes(vtkMySQLDatabase *iDatabaseConnector,
 void QGoDBMeshManager::SetMeshBoundingBoxAndPoints(unsigned int iXCoordMin,
                                                    unsigned int iYCoordMin,
                                                    unsigned int iZCoordMin,
-                                                   unsigned int iTCoord,
                                                    unsigned int iXCoordMax,
                                                    unsigned int iYCoordMax,
                                                    unsigned int iZCoordMax,
                                                    vtkPolyData *iTraceNodes,
                                                    vtkMySQLDatabase *iDatabaseConnector,
                                                    GoDBMeshRow & iMesh,
-                                                   GoFigureMeshAttributes *iMeshAttributes)
+                                                   GoFigureMeshAttributes *iMeshAttributes,
+                                                   int iShift)
 {
   GoDBCoordinateRow coord_min = this->GetCoordinateFromInt(iXCoordMin,
-                                                           iYCoordMin, iZCoordMin, iTCoord);
+    iYCoordMin, iZCoordMin, *this->m_CurrentTimePoint + iShift);
   GoDBCoordinateRow coord_max = this->GetCoordinateFromInt(iXCoordMax,
-                                                           iYCoordMax, iZCoordMax, iTCoord);
+    iYCoordMax, iZCoordMax, *this->m_CurrentTimePoint + + iShift);
 
   iMesh.SetTheDataFromTheVisu(iDatabaseConnector, iTraceNodes,
                               coord_min, coord_max, iMeshAttributes);
@@ -470,12 +468,12 @@ void QGoDBMeshManager::UpdateSubCellType()
 
 //-------------------------------------------------------------------------
 QString QGoDBMeshManager::CheckExistingMeshesForTheTrack(
-   unsigned int iTrackID,int iTimePoint,vtkMySQLDatabase* iDatabaseConnector)
+   unsigned int iTrackID, vtkMySQLDatabase* iDatabaseConnector, int iShift)
 {
   QString MessageToPrint("");
   unsigned int MeshIDKickedOut =
     this->ReassignTrackIDForPreviousMeshWithSameTimePoint(
-      iDatabaseConnector, iTrackID,iTimePoint);
+      iDatabaseConnector, iTrackID, *this->m_CurrentTimePoint + iShift);
   if (MeshIDKickedOut != 0)
     {
       MessageToPrint =
@@ -587,4 +585,71 @@ std::string QGoDBMeshManager::CheckListMeshesFromDifferentTimePoints(
       }
      }
   return MessageToPrint;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::pair<std::list<unsigned int>,std::list<unsigned int> >  
+QGoDBMeshManager::GetMeshesForSplittedTrack(
+  unsigned int iTrackID, vtkMySQLDatabase* iDatabaseConnector, 
+  std::list<unsigned int> iListMeshesBelongingToTrack)
+{
+  std::pair<std::list<unsigned int>,std::list<unsigned int> > ListMeshes =
+    std::pair<std::list<unsigned int>,std::list<unsigned int> >();
+  std::pair<unsigned int, unsigned int> InfoSplitMesh = 
+    this->GetInfoForTheOnlyOneCheckedMeshOfTheTrack(iDatabaseConnector, iTrackID);
+  if (InfoSplitMesh.first != 0)
+    {
+    ListMeshes.first = this->m_CollectionOfTraces->GetTraceIDsWithTimePointInf(
+      iDatabaseConnector,iListMeshesBelongingToTrack,InfoSplitMesh.second);
+    ListMeshes.second = this->m_CollectionOfTraces->GetTraceIDsWithTimePointSup(
+      iDatabaseConnector,iListMeshesBelongingToTrack,InfoSplitMesh.second);
+    ListMeshes.second.push_back(InfoSplitMesh.first);
+    }
+  return ListMeshes;  
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::pair<unsigned int, unsigned int> QGoDBMeshManager::
+  GetInfoForTheOnlyOneCheckedMeshOfTheTrack(vtkMySQLDatabase* iDatabaseConnector, 
+  unsigned int iTrackID)
+{
+  std::pair<unsigned int, unsigned int> oInfo =
+    std::pair<unsigned int,unsigned int>(0,0);
+  std::list<unsigned int> ListCheckedMeshes = 
+    this->m_MeshContainerInfoForVisu->GetHighlightedElementsTraceID();
+  std::list<unsigned int> ListCheckedMeshesBelongingToTrackID =
+    std::list<unsigned int>();
+  if (!ListCheckedMeshes.empty())
+    {
+    ListCheckedMeshesBelongingToTrackID = 
+      this->m_CollectionOfTraces->GetTraceIDsBelongingToCollectionID(
+      iDatabaseConnector, ListCheckedMeshes,iTrackID);
+    } 
+  if ( ListCheckedMeshesBelongingToTrackID.size() != 1)
+    {
+    QMessageBox msgBox;
+    msgBox.setText(
+      tr("Please select one and only one Mesh where to split the Track"));
+    msgBox.exec();
+    return oInfo;
+    }
+
+  unsigned int CheckedMesh = ListCheckedMeshesBelongingToTrackID.front();
+  oInfo.first = CheckedMesh;
+  std::list<unsigned int> MeshesIDs;
+  MeshesIDs.push_back(CheckedMesh);
+  std::list<unsigned int> ListTimePoints = 
+    this->m_CollectionOfTraces->GetTimePointsForTraceIDs(iDatabaseConnector, MeshesIDs);
+
+  if (ListTimePoints.size() != 1)
+    {
+    std::cout<<"more than one timepoint";
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
+    return oInfo;
+    }
+  oInfo.second = ListTimePoints.front();
+  return oInfo;
 }

@@ -368,8 +368,30 @@ public:
     vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTraceIDs,
     unsigned int iTimePoint,unsigned int iMaxTraceID);
 
+  /**
+  \brief get the list of timepoints for each trace in iListTraceIDs
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iListTraceIDs list of the IDs for the traces the timepoints
+  are needed
+  \return all the timepoints for the traces in iListTraceIDs
+  */
   std::list<unsigned int> GetListTimePointsFromTraceIDs(
     vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTraceIDs);
+
+  std::list<unsigned int> GetTraceIDsBelongingToCollectionID(
+    vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTraceIDs,
+    unsigned int iCollectionID);
+
+  std::list<unsigned int> GetTimePointsForTraceIDs(
+    vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTraceIDs);
+
+  std::list<unsigned int> GetTraceIDsWithTimePointSup(
+    vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTraceIDs,
+    unsigned int iTimePoint);
+
+  std::list<unsigned int> GetTraceIDsWithTimePointInf(
+    vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTraceIDs,
+    unsigned int iTimePoint);
 
 protected:
 
