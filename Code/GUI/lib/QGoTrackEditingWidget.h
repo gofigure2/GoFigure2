@@ -42,6 +42,7 @@
 #include "QGoGUILibConfigure.h"
 
 #include "vtkActor.h"
+#include "vtkPolyData.h"
 
 #include "vtkInteractorStyleImage3D.h"
 #include "vtkEventQtSlotConnect.h"

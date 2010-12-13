@@ -43,6 +43,7 @@
 #include "vtkPolyLine.h"
 #include "vtkCellArray.h"
 #include "vtkPolyData.h"
+#include "vtkPointData.h"
 
 #include "vtkProperty.h"
 
@@ -108,7 +109,7 @@ generateTrackRepresentation()
     while( meshListIterator!= (*trackListIterator).second.end())
       {
       int     currentMeshID = (*meshListIterator).first;
-       int timePoint = (*meshListIterator).second.first;
+      int timePoint = (*meshListIterator).second.first;
       double* currentMeshPosition = (*meshListIterator).second.second;
 
       std::cout << "meshID: " << currentMeshID << std::endl;
@@ -382,6 +383,7 @@ findInMergeList()
   idsPair.second = iMeshID;
   m_MergeList.push_back(idsPair);
   return false;*/
+  return true;
 }
 //-------------------------------------------------------------------------
 
@@ -416,8 +418,9 @@ generateTrackRepresentation2()
       {
       double *currentMeshPosition = NULL;
       trackPolyData->GetPoint( i, currentMeshPosition );
-      int currentMeshID =
-          trackPolyData->GetPointData()->GetArray("TemporalInformation")->GetValue(i);
+      vtkIntArray* array = dynamic_cast<vtkIntArray*>(
+          trackPolyData->GetPointData()->GetArray("TemporalInformation") );
+      int currentMeshID = array->GetValue(i);
 
       // IDS
       std::pair<  int,  int> idsPair;
