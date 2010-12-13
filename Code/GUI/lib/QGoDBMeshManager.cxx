@@ -162,10 +162,10 @@ void QGoDBMeshManager::AddActionsContextMenu(QMenu *iMenu)
 {
   QGoDBTraceManager::AddActionsContextMenu(iMenu);
   this->AddSpecificActionsForContourMesh(iMenu);
-  this->m_CheckedTracesMenu->addAction( 
+  this->m_CheckedTracesMenu->addAction(
     tr("Add the selected CellType '%1' to the checked meshes")
     .arg(this->m_SelectedCellType->c_str() ), this, SLOT( UpdateCellType() ) );
-  this->m_CheckedTracesMenu->addAction( 
+  this->m_CheckedTracesMenu->addAction(
     tr("Add the selected SubCellType '%1' to the checked meshes")
     .arg(this->m_SelectedSubCellType->c_str() ), this, SLOT( UpdateSubCellType() ) );
 }
@@ -188,7 +188,7 @@ unsigned int QGoDBMeshManager::SaveNewMeshFromVisu(
                                     iMeshAttributes, iTShift);
   //save the intensities for each channel !!!
   unsigned int NewMeshID = this->m_CollectionOfTraces->CreateNewTraceInDB< GoDBMeshRow >(
-    NewMesh, iDatabaseConnector,*this->m_SelectedColorData, 
+    NewMesh, iDatabaseConnector,*this->m_SelectedColorData,
     ss_atoi<unsigned int>(this->m_SelectedCollectionData->first) );
 
   double *rgba = this->GetVectorFromQColor(this->m_SelectedColorData->second);
@@ -241,8 +241,14 @@ unsigned int QGoDBMeshManager::CreateNewMeshWithNoContourNoPoints(
   GoDBMeshRow NewMesh;
   NewMesh.SetCellType(iDatabaseConnector, *this->m_SelectedCellType);
   NewMesh.SetSubCellType(iDatabaseConnector, *this->m_SelectedSubCellType);
-  unsigned int TrackID = ss_atoi<unsigned int>(this->m_SelectedCollectionData->first);
-  if ( TrackID != 0)
+
+  unsigned int TrackID = 0;
+
+  if( this->m_SelectedCollectionData->first != "Add a new mesh ...")
+    {
+    TrackID = ss_atoi<unsigned int>(this->m_SelectedCollectionData->first);
+    }
+  if ( TrackID != 0 )
     {
     NewMesh.SetCollectionID(TrackID);
     }
@@ -256,7 +262,7 @@ unsigned int QGoDBMeshManager::CreateNewMeshWithNoContourNoPoints(
 
   this->m_MeshContainerInfoForVisu->InsertCurrentElement();
   this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
-  emit RefreshListCollectionIDsTM ( ConvertToString<unsigned int> (NewMeshID), 
+  emit RefreshListCollectionIDsTM ( ConvertToString<unsigned int> (NewMeshID),
     iDatabaseConnector);
   return NewMeshID;
 }
@@ -414,7 +420,7 @@ void QGoDBMeshManager::UpdateCellType()
   emit NeedToGetDatabaseConnection();
   std::list<unsigned int> ListCheckedMeshes =
     this->m_MeshContainerInfoForVisu->GetHighlightedElementsTraceID();
-  int CellTypeID = GoDBMeshRow::GetCellTypeID(this->m_DatabaseConnector, 
+  int CellTypeID = GoDBMeshRow::GetCellTypeID(this->m_DatabaseConnector,
     *this->m_SelectedCellType);
   this->m_CollectionOfTraces->UpdateValueForListTraces(
     this->m_DatabaseConnector,"CellTypeID",ConvertToString<int>(CellTypeID),
@@ -430,7 +436,7 @@ void QGoDBMeshManager::UpdateSubCellType()
   emit NeedToGetDatabaseConnection();
   std::list<unsigned int> ListCheckedMeshes =
     this->m_MeshContainerInfoForVisu->GetHighlightedElementsTraceID();
-  int SubCellTypeID = GoDBMeshRow::GetSubCellTypeID(this->m_DatabaseConnector, 
+  int SubCellTypeID = GoDBMeshRow::GetSubCellTypeID(this->m_DatabaseConnector,
     *this->m_SelectedSubCellType);
   this->m_CollectionOfTraces->UpdateValueForListTraces(
     this->m_DatabaseConnector,"SubCellularID",ConvertToString<int>(SubCellTypeID),
@@ -593,14 +599,14 @@ std::string QGoDBMeshManager::CheckListMeshesFromDifferentTimePoints(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::pair<std::list<unsigned int>,std::list<unsigned int> >  
+std::pair<std::list<unsigned int>,std::list<unsigned int> >
 QGoDBMeshManager::GetMeshesForSplittedTrack(
-  unsigned int iTrackID, vtkMySQLDatabase* iDatabaseConnector, 
+  unsigned int iTrackID, vtkMySQLDatabase* iDatabaseConnector,
   std::list<unsigned int> iListMeshesBelongingToTrack)
 {
   std::pair<std::list<unsigned int>,std::list<unsigned int> > ListMeshes =
     std::pair<std::list<unsigned int>,std::list<unsigned int> >();
-  std::pair<unsigned int, unsigned int> InfoSplitMesh = 
+  std::pair<unsigned int, unsigned int> InfoSplitMesh =
     this->GetInfoForTheOnlyOneCheckedMeshOfTheTrack(iDatabaseConnector, iTrackID);
   if (InfoSplitMesh.first != 0)
     {
@@ -610,27 +616,27 @@ QGoDBMeshManager::GetMeshesForSplittedTrack(
       iDatabaseConnector,iListMeshesBelongingToTrack,InfoSplitMesh.second);
     ListMeshes.second.push_back(InfoSplitMesh.first);
     }
-  return ListMeshes;  
+  return ListMeshes;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 std::pair<unsigned int, unsigned int> QGoDBMeshManager::
-  GetInfoForTheOnlyOneCheckedMeshOfTheTrack(vtkMySQLDatabase* iDatabaseConnector, 
+  GetInfoForTheOnlyOneCheckedMeshOfTheTrack(vtkMySQLDatabase* iDatabaseConnector,
   unsigned int iTrackID)
 {
   std::pair<unsigned int, unsigned int> oInfo =
     std::pair<unsigned int,unsigned int>(0,0);
-  std::list<unsigned int> ListCheckedMeshes = 
+  std::list<unsigned int> ListCheckedMeshes =
     this->m_MeshContainerInfoForVisu->GetHighlightedElementsTraceID();
   std::list<unsigned int> ListCheckedMeshesBelongingToTrackID =
     std::list<unsigned int>();
   if (!ListCheckedMeshes.empty())
     {
-    ListCheckedMeshesBelongingToTrackID = 
+    ListCheckedMeshesBelongingToTrackID =
       this->m_CollectionOfTraces->GetTraceIDsBelongingToCollectionID(
       iDatabaseConnector, ListCheckedMeshes,iTrackID);
-    } 
+    }
   if ( ListCheckedMeshesBelongingToTrackID.size() != 1)
     {
     QMessageBox msgBox;
@@ -644,7 +650,7 @@ std::pair<unsigned int, unsigned int> QGoDBMeshManager::
   oInfo.first = CheckedMesh;
   std::list<unsigned int> MeshesIDs;
   MeshesIDs.push_back(CheckedMesh);
-  std::list<unsigned int> ListTimePoints = 
+  std::list<unsigned int> ListTimePoints =
     this->m_CollectionOfTraces->GetTimePointsForTraceIDs(iDatabaseConnector, MeshesIDs);
 
   if (ListTimePoints.size() != 1)
