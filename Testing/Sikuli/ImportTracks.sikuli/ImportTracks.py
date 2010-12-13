@@ -1,6 +1,6 @@
-#import os
-#address = os.getcwd()
-address = "/home/es1076/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images"
+import os
+address = os.getcwd()
+#address = "/home/es1076/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images"
 
 #address = address+"/gofigure2_images"
 print address
@@ -44,8 +44,10 @@ click("MeshSegmentationIcon.png")
 f = open(address+"/quadview_image_BEFORE_address.txt","r")
 quadview_BEFORE = f.read()
 
+print quadview_BEFORE
+
 import shutil
-shutil.copy("~"+quadview_BEFORE,address)
+shutil.copy(quadview_BEFORE,address)
 
 #make sure images are exact.
 find(quadview_BEFORE).similar(.95)
