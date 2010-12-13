@@ -390,7 +390,7 @@ findInMergeList()
 //-------------------------------------------------------------------------
 void
 QGoTrackEditingWidget::
-setTracks2( std::list< std::pair< unsigned int, vtkPolyData* > > iTrack )
+setTracks2( std::list< std::pair< unsigned int, std::pair< const double* , vtkPolyData*> > > iTrack )
 {
   m_ListOfTracks2 = iTrack;
 }
@@ -402,7 +402,8 @@ void
 QGoTrackEditingWidget::
 generateTrackRepresentation2()
 {
-  std::list< std::pair< unsigned int, vtkPolyData* > >::iterator trackListIterator =
+  std::list< std::pair< unsigned int, std::pair< const double* , vtkPolyData*> > >::iterator
+      trackListIterator =
       m_ListOfTracks2.begin();
 
   while( trackListIterator != m_ListOfTracks2.end() )
@@ -412,7 +413,7 @@ generateTrackRepresentation2()
     std::cout << "trackID: " << trackID << std::endl;
     int    previousMeshID       = -1;
     double* previousMeshPosition = new double[3];;
-    vtkPolyData* trackPolyData = (*trackListIterator).second;
+    vtkPolyData* trackPolyData = (*trackListIterator).second.second;
 
     for(int i = 0; i< trackPolyData->GetNumberOfPoints(); ++i)
       {
