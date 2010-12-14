@@ -131,7 +131,7 @@ unsigned int QGoDBTrackManager::CreateNewTrackWithNoMesh(
 
   this->m_TrackContainerInfoForVisu->ResetCurrentElement();
   this->m_TrackContainerInfoForVisu->UpdateCurrentElementFromDB(
-   NewTrackID, this->GetVectorFromQColor(this->m_SelectedColorData->second) );
+   NewTrackID, this->GetVectorFromQColor(this->m_SelectedColorData->second),true);
   this->m_TrackContainerInfoForVisu->InsertCurrentElement();
   this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
   emit RefreshListCollectionIDsTM ( ConvertToString<unsigned int> (NewTrackID),
@@ -255,17 +255,8 @@ void QGoDBTrackManager::UpdateTrackPolydataForVisu(vtkMySQLDatabase *iDatabaseCo
   std::list<double*> ListCenters =
     this->m_CollectionOfTraces->GetCoordinateCenterBoundingBox(
     iDatabaseConnector,iTrackID);
-  std::cout<<"TRACK ID: " << iTrackID << std::endl;
-  std::cout<<"LIST OF CENTERS: " << std::endl;
-  std::list<double*>::iterator it = ListCenters.begin();
-  while( it != ListCenters.end() )
-    {
-    std::cout << "X: " << (*it)[0] << " Y: " << (*it)[1] << " Z: " << (*it)[2] << std::endl;
-    ++it;
-    }
   this->m_TrackContainerInfoForVisu->UpdatePointsForATrack(iTrackID,ListCenters);
   this->SaveTrackCurrentElement(iDatabaseConnector);
-  std::cout<<"TRACK ID: " << iTrackID << " SAVED!!!!!!!!!!!1" << std::endl;
 }
 //-------------------------------------------------------------------------
 

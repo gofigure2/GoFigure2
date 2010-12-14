@@ -256,6 +256,7 @@ unsigned int QGoDBMeshManager::CreateNewMeshWithNoContourNoPoints(
     this->m_CollectionOfTraces->CreateCollectionWithNoTracesNoPoints< GoDBMeshRow >(
       iDatabaseConnector, *this->m_SelectedColorData, NewMesh, *this->m_CurrentTimePoint);
   double *color = this->GetVectorFromQColor(this->m_SelectedColorData->second);
+  this->m_MeshContainerInfoForVisu->ResetCurrentElement();
   this->m_MeshContainerInfoForVisu->UpdateCurrentElementFromDB(
     NewMeshID, color);
   delete[] color;
