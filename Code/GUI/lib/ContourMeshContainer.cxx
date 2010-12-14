@@ -103,8 +103,10 @@ UpdateCurrentElementFromVisu( std::vector< vtkActor * > iActors,
                               const bool & iHighlighted,
                               const bool & iVisible )
 {
+  this->m_CurrentElement.TCoord = iT;
   this->UpdateCurrentElementFromVisuBase( iActors, iNodes,
                                           iHighlighted, iVisible );
+
 }
 
 //-------------------------------------------------------------------------
