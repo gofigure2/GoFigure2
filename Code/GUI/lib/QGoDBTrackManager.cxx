@@ -284,19 +284,25 @@ void QGoDBTrackManager::SetColorCoding(bool IsChecked)
 void QGoDBTrackManager::AddActionsContextMenu(QMenu *iMenu)
 {
   QGoDBTraceManager::AddActionsContextMenu(iMenu);
-  //QMenu* SplitMenu = new QMenu(tr("Split your track"),iMenu);
-  //SplitMenu->addAction(tr("Using the Widget"),
-  //                     this, SLOT( SplitTrackWithWidget() ) );
-  //QAction* SplitMenuAction = SplitMenu->menuAction(); 
-  QAction* SplitMenuAction = new QAction(tr("Split your track"),iMenu);
-  QObject::connect(SplitMenuAction, SIGNAL( triggered() ),
-    this, SLOT(TrackIDToEmit() ) );
+  QMenu* SplitMenu = new QMenu(tr("Split"),iMenu);
 
-  iMenu->addAction(SplitMenuAction);
+  SplitMenu->addAction(tr("Your track"), this, SLOT(TrackIDToEmit() ) );
+  SplitMenu->addAction(tr("Using the Widget"),
+                       this, SLOT( SplitTrackWithWidget() ) );
+  iMenu->addAction(SplitMenu->menuAction() );
+  //QAction* SplitMenuAction = SplitMenu->menuAction(); 
+  //QAction* SplitMenuAction = new QAction(tr("Split your track"),iMenu);
+  //QObject::connect(iMenu,activated(int) , SLOT(SelectionClick(int)
+  //iMenu->connectItem(res, this, SLOT(SelectionClick(int)));
+
+  //QObject::connect(SplitMenuAction, SIGNAL( triggered() ),
+    //this, SLOT(TrackIDToEmit() ) );
+
+  //iMenu->addAction(SplitMenuAction);
 }
 //-------------------------------------------------------------------------
 
-//-------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 void QGoDBTrackManager::TrackIDToEmit()
 {
   std::list<unsigned int> HighlightedTrackIDs = 

@@ -157,6 +157,6 @@ protected slots:
   void SplitTrackWithWidget();
 
   void TrackIDToEmit();
-
+  //void SelectionClick(int iID);
 };
 #endif
