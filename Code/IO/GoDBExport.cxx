@@ -170,9 +170,12 @@ void GoDBExport::UpdateVectorContourIDsForExportMeshes()
 //--------------------------------------------------------------------------
 void GoDBExport::UpdateVectorMeshIDsForExportContours()
 {
-  this->m_VectorMeshIDs = ListSpecificValuesForOneColumn(
-    this->m_DatabaseConnector, "contour", "meshID", "contourID",
-    this->m_VectorContourIDs, true, true);
+  if(!this->m_VectorContourIDs.empty())
+    {
+    this->m_VectorMeshIDs = ListSpecificValuesForOneColumn(
+      this->m_DatabaseConnector, "contour", "meshID", "contourID",
+      this->m_VectorContourIDs, true, true);
+    }
 }
 
 //--------------------------------------------------------------------------
@@ -261,10 +264,14 @@ void GoDBExport::WriteTheColorsInfoFromDatabase()
   std::vector< std::vector< std::string > > VectorTracesIDs;
   this->GetVectorsTableNamesTracesIDsAndFields(
     TablesNames, VectorTracesIDs, FieldNames, true);
-  std::vector< std::string > ColumnNames(1);
-  ColumnNames[0] = "ColorID";
-  std::vector< std::string > ListColorIDs = GetSameFieldsFromSeveralTables(
-    this->m_DatabaseConnector, ColumnNames, TablesNames, FieldNames, VectorTracesIDs);
+  std::vector< std::string > ListColorIDs = std::vector< std::string >();
+  if (!VectorTracesIDs.empty())
+    {
+    std::vector< std::string > ColumnNames(1);
+    ColumnNames[0] = "ColorID";
+    ListColorIDs = GetSameFieldsFromSeveralTables(
+      this->m_DatabaseConnector, ColumnNames, TablesNames, FieldNames, VectorTracesIDs);
+    }
   this->WriteTableInfoFromDB< GoDBColorRow >(ListColorIDs);
 }
 
@@ -273,13 +280,19 @@ void GoDBExport::WriteTheColorsInfoFromDatabase()
 //--------------------------------------------------------------------------
 void GoDBExport::WriteCellTypeAndSubCellTypeInfoFromDatabase()
 {
-  std::vector< std::string > ListCellTypeIDs = ListSpecificValuesForOneColumn(
-    this->m_DatabaseConnector, "mesh", "CellTypeID", "meshID",
-    this->m_VectorMeshIDs, true, true);
+  std::vector< std::string > ListCellTypeIDs    = std::vector< std::string >();
+  std::vector< std::string > ListSubCellTypeIDs = std::vector< std::string >();
+  if (!this->m_VectorMeshIDs.empty())
+    {
+    ListCellTypeIDs = ListSpecificValuesForOneColumn(
+      this->m_DatabaseConnector, "mesh", "CellTypeID", "meshID",
+      this->m_VectorMeshIDs, true, true);
+  
+    ListSubCellTypeIDs =
+      ListSpecificValuesForOneColumn(this->m_DatabaseConnector,
+                                     "mesh", "SubCellularID", "meshID", this->m_VectorMeshIDs, true, true);
+    }
   this->WriteTableInfoFromDB< GoDBCellTypeRow >(ListCellTypeIDs);
-  std::vector< std::string > ListSubCellTypeIDs =
-    ListSpecificValuesForOneColumn(this->m_DatabaseConnector,
-                                   "mesh", "SubCellularID", "meshID", this->m_VectorMeshIDs, true, true);
   this->WriteTableInfoFromDB< GoDBSubCellTypeRow >(ListSubCellTypeIDs);
 }
 
@@ -296,8 +309,12 @@ void GoDBExport::WriteCoordinatesInfoFromDatabase()
   std::vector< std::string > ColumnNames(2);
   ColumnNames[0] = "CoordIDMax";
   ColumnNames[1] = "CoordIDMin";
-  std::vector< std::string > ListCoordIDs = GetSameFieldsFromSeveralTables(
-    this->m_DatabaseConnector, ColumnNames, TablesNames, FieldNames, VectorTracesIDs);
+  std::vector< std::string > ListCoordIDs = std::vector< std::string >();
+  if (!VectorTracesIDs.empty() )
+    {
+    ListCoordIDs = GetSameFieldsFromSeveralTables(
+      this->m_DatabaseConnector, ColumnNames, TablesNames, FieldNames, VectorTracesIDs);
+    }
 
   this->WriteTableInfoFromDB< GoDBCoordinateRow >(ListCoordIDs);
 }
@@ -339,10 +356,14 @@ void GoDBExport::WriteChannelsInfoFromDatabase()
 //--------------------------------------------------------------------------
 void GoDBExport::WriteIntensityInfoFromDatabase()
 {
-  std::vector< std::string > VectorIntensityIDs =
-    GetSpecificValueFromOneTableWithConditionsOnTwoColumns(
-      this->m_DatabaseConnector, "IntensityID", "intensity",
-      "meshID", this->m_VectorMeshIDs, "ChannelID", this->m_VectorChannelIDs);
+  std::vector< std::string > VectorIntensityIDs = std::vector< std::string >();
+  if (!this->m_VectorMeshIDs.empty() )
+    {
+    VectorIntensityIDs =
+      GetSpecificValueFromOneTableWithConditionsOnTwoColumns(
+        this->m_DatabaseConnector, "IntensityID", "intensity",
+        "meshID", this->m_VectorMeshIDs, "ChannelID", this->m_VectorChannelIDs);
+    }
   this->WriteTableInfoFromDB< GoDBIntensityRow >(VectorIntensityIDs);
 }
 
