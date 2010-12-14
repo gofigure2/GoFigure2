@@ -53,6 +53,7 @@ public slots:
   void TubeChanged(bool);
 signals:
   void UpdateTracksAppearance(bool, bool);
+  void StartTW();
 
 };
 #endif
