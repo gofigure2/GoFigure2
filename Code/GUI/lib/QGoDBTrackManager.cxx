@@ -129,6 +129,7 @@ unsigned int QGoDBTrackManager::CreateNewTrackWithNoMesh(
     this->m_CollectionOfTraces->CreateCollectionWithNoTracesNoPoints< GoDBTrackRow >(
       iDatabaseConnector, *this->m_SelectedColorData, NewTrack);
 
+  this->m_TrackContainerInfoForVisu->ResetCurrentElement();
   this->m_TrackContainerInfoForVisu->UpdateCurrentElementFromDB(
    NewTrackID, this->GetVectorFromQColor(this->m_SelectedColorData->second) );
   this->m_TrackContainerInfoForVisu->InsertCurrentElement();
@@ -254,8 +255,17 @@ void QGoDBTrackManager::UpdateTrackPolydataForVisu(vtkMySQLDatabase *iDatabaseCo
   std::list<double*> ListCenters =
     this->m_CollectionOfTraces->GetCoordinateCenterBoundingBox(
     iDatabaseConnector,iTrackID);
+  std::cout<<"TRACK ID: " << iTrackID << std::endl;
+  std::cout<<"LIST OF CENTERS: " << std::endl;
+  std::list<double*>::iterator it = ListCenters.begin();
+  while( it != ListCenters.end() )
+    {
+    std::cout << "X: " << (*it)[0] << " Y: " << (*it)[1] << " Z: " << (*it)[2] << std::endl;
+    ++it;
+    }
   this->m_TrackContainerInfoForVisu->UpdatePointsForATrack(iTrackID,ListCenters);
   this->SaveTrackCurrentElement(iDatabaseConnector);
+  std::cout<<"TRACK ID: " << iTrackID << " SAVED!!!!!!!!!!!1" << std::endl;
 }
 //-------------------------------------------------------------------------
 
