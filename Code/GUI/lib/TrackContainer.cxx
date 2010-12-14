@@ -819,31 +819,26 @@ TrackContainer::MergeTrack( const unsigned int& iId1, const unsigned int& iId2 )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::list< std::pair< unsigned int, std::pair< const double* , vtkPolyData*> > >
+std::map< unsigned int, std::pair< const double* , vtkPolyData*> >
 TrackContainer::
 GetHighlightedElementsTrackPolyData()
 {
   // Map to be returned
-  std::list< std::pair< unsigned int, std::pair< const double* , vtkPolyData*> > >
+  std::map< unsigned int, 
+            std::pair< const double* , vtkPolyData* > >
       listOfPolyDatas;
 
-  std::list<unsigned int> listOfTrackIDs = GetHighlightedElementsTraceID();
-  std::list<unsigned int>::iterator listOfTrackIDsIterator =
-      listOfTrackIDs.begin();
+  MultiIndexContainerType::index< Highlighted >::type::iterator 
+    it = m_Container.get< Highlighted >().begin();
 
-  while( listOfTrackIDsIterator != listOfTrackIDs.end() )
+  while( it != m_Container.get< Highlighted >().end() )
     {
     // Get iterator to the selectedID
-    MultiIndexContainerTraceIDIterator it =
-        m_Container.get< TraceID >().find((*listOfTrackIDsIterator));
     // Get Polydata from this iterator
-    std::pair< unsigned int, std::pair< const double*, vtkPolyData*> > pair;
-    pair.first = (*listOfTrackIDsIterator);
-    pair.second.first = (*it).rgba;
-    pair.second.second =(*it).Nodes;
-    listOfPolyDatas.push_back(pair);
+    listOfPolyDatas[ it->TraceID ] =
+      std::pair< const double*, vtkPolyData* >( it->rgba, it->Nodes );
     // Go to next ID
-    ++listOfTrackIDsIterator;
+    ++it;
     }
 
   return listOfPolyDatas;

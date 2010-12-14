@@ -71,7 +71,7 @@ public:
   typedef std::pair<  int, std::list<Mesh> > Track;
 
   void setTracks( std::list<Track> iListOfTracks );
-  void setTracks2( std::list< std::pair< unsigned int, std::pair< const double* , vtkPolyData*> > > );
+  void setTracks2( std::map< unsigned int, std::pair< const double* , vtkPolyData*> > );
 
   void generateTrackRepresentation();
   void generateTrackRepresentation2();
@@ -98,10 +98,10 @@ public:
 
 private:
   vtkActor* CreateSphereActor( double* iCenter, const double* iColor);
-  vtkActor* CreatePolylineActor( double* iCenter1, double* iCenter2, const double* iColor);
+  vtkActor* CreatePolylineActor( double* iCenter1, double* iCenter2, const double* iColor1, const double* iColor2);
 
   std::list<Track>                                             m_ListOfTracks;
-  std::list< std::pair< unsigned int, std::pair< const double* , vtkPolyData*> > >         m_ListOfTracks2;
+  std::map< unsigned int, std::pair< const double* , vtkPolyData*> >         m_ListOfTracks2;
   std::list< std::pair< int,  int> >                           m_CutList;
   std::list< std::pair< std::pair< int,  int>, std::pair< int,  int> > >           m_MergeList;
   std::list< std::pair<std::pair< std::pair< int,  int>, std::pair< int,  int> >, vtkActor* > >           m_MergeListActor;

@@ -382,7 +382,7 @@ public:
 
   void MergeTrack( const unsigned int& iId1, const unsigned int& iId2 );
 
-  std::list< std::pair< unsigned int, std::pair< const double* , vtkPolyData*> > >
+  std::map< unsigned int, std::pair< const double* , vtkPolyData*> > 
   GetHighlightedElementsTrackPolyData();
 
 signals:

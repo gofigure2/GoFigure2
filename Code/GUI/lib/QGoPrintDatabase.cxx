@@ -338,9 +338,10 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
     //here update the CurrentElement for trackContainer with the data from the database corresponding to the selected trackID:
    // this->m_TracksManager->UpdateCurrentElementTrackContainer(TrackID);
     //update the bounding box and the visu for the tracks:
+    std::list< unsigned int > trackIDs = this->m_MeshesManager->GetListCollectionIDs(this->m_DatabaseConnector,
+        ListNewMeshes);
     this->m_TracksManager->UpdateBoundingBoxes( this->m_DatabaseConnector,
-                                                this->m_MeshesManager->GetListCollectionIDs(this->m_DatabaseConnector,
-                                                                                            ListNewMeshes) );
+                                                trackIDs);
     }
   else //for mesh generated from contours:
     {
@@ -384,11 +385,13 @@ void QGoPrintDatabase::SaveNewMeshForMeshToContours(int iNumberOfContours)
 
   std::list< unsigned int > ListNewMeshes;
     ListNewMeshes.push_back(MeshID);
+    std::list< unsigned int > trackIDs = this->m_MeshesManager->GetListCollectionIDs(this->m_DatabaseConnector,
+        ListNewMeshes);
     //here update the CurrentElement for trackContainer with the data from the database corresponding to the selected trackID:
     //update the bounding box and the visu for the tracks:
     this->m_TracksManager->UpdateBoundingBoxes(
           this->m_DatabaseConnector,
-          this->m_MeshesManager->GetListCollectionIDs(this->m_DatabaseConnector, ListNewMeshes ) );
+          trackIDs);
   this->CloseDBConnection();
 }
 
