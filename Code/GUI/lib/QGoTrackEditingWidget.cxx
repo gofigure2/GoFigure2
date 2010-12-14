@@ -474,7 +474,7 @@ findInMergeList( std::pair< int, int> iFirstPair, std::pair< int, int > iSecondP
 //-------------------------------------------------------------------------
 void
 QGoTrackEditingWidget::
-setTracks2( std::list< std::pair< unsigned int, std::pair< const double* , vtkPolyData*> > > iTrack )
+setTracks2( std::map< unsigned int, std::pair< const double* , vtkPolyData*> > iTrack )
 {
   m_ListOfTracks2 = iTrack;
   generateTrackRepresentation2();
@@ -488,20 +488,20 @@ void
 QGoTrackEditingWidget::
 generateTrackRepresentation2()
 {
-  std::list< std::pair< unsigned int, std::pair< const double* , vtkPolyData*> > >::iterator
+  std::map< unsigned int, std::pair< const double* , vtkPolyData* > >::iterator 
       trackListIterator =
       m_ListOfTracks2.begin();
 
   while( trackListIterator != m_ListOfTracks2.end() )
     {
-    int trackID = (*trackListIterator).first;
+    unsigned int trackID = trackListIterator->first;
     std::cout << "-------------------------" << std::endl;
     std::cout << "trackID: " << trackID << std::endl;
     int    previousMeshID       = -1;
     double* previousMeshPosition = new double[3];;
-    vtkPolyData* trackPolyData = (*trackListIterator).second.second;
+    vtkPolyData* trackPolyData = ( trackListIterator->second ).second;
 
-    for(int i = 0; i< trackPolyData->GetNumberOfPoints(); ++i)
+    for(vtkIdType i = 0; i< trackPolyData->GetNumberOfPoints(); ++i)
       {
       double *currentMeshPosition = trackPolyData->GetPoint( i );
       vtkIntArray* array = dynamic_cast<vtkIntArray*>(
@@ -509,7 +509,7 @@ generateTrackRepresentation2()
       int currentMeshID = array->GetValue(i);
 
       // IDS
-      std::pair<  int,  int> idsPair;
+      std::pair< int, int> idsPair;
       idsPair.first = trackID;
       // time point
       idsPair.second = currentMeshID;
