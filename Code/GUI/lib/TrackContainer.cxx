@@ -835,8 +835,8 @@ GetHighlightedElementsTrackPolyData()
     {
     // Get iterator to the selectedID
     // Get Polydata from this iterator
-    listOfPolyDatas[ it->TraceID ] = 
-      std::pair< const double*, vtkPolyData* >( it->rgba, it->Nodes ); 
+    listOfPolyDatas[ it->TraceID ] =
+      std::pair< const double*, vtkPolyData* >( it->rgba, it->Nodes );
     // Go to next ID
     ++it;
     }

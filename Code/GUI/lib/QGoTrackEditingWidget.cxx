@@ -498,7 +498,8 @@ generateTrackRepresentation2()
     std::cout << "-------------------------" << std::endl;
     std::cout << "trackID: " << trackID << std::endl;
     int    previousMeshID       = -1;
-    double* previousMeshPosition = new double[3];;
+    double* previousMeshPosition = new double[3];
+
     vtkPolyData* trackPolyData = ( trackListIterator->second ).second;
 
     for(vtkIdType i = 0; i< trackPolyData->GetNumberOfPoints(); ++i)
