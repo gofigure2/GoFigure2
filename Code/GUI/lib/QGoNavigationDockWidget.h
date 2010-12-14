@@ -124,6 +124,8 @@ public slots:
   /** Move to the next time point using shortcuts */
   void MoveToNextTimePoint();
 
+  void StepVisibility(int);
+
 signals:
   void ShowAllChannelsChanged(bool iChanged);
 
@@ -138,6 +140,8 @@ signals:
   void TSliceChanged(int Slice);
 
   void ModeChanged(int Mode);
+
+  void StepChanged(int Step);
 
 protected:
   GoFigure::TabDimensionType m_Dimension;

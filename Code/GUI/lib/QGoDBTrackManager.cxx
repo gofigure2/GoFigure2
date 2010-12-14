@@ -65,12 +65,6 @@ void QGoDBTrackManager::SetTracksInfoContainerForVisu(
   this->SetTracesInfoContainerForVisuTemplate<TrackContainer>(
     iContainerForVisu,&this->m_TrackContainerInfoForVisu);
 
-  // Connect the signals once we have the container
-  //QObject::connect(this->m_TrackContainerInfoForVisu,
-  //                  SIGNAL(CurrentTrackToSave()),
-  //                  this,
-  //                  SLOT(SaveTrackCurrentElement()));
-
   QObject::connect(this->m_TrackContainerInfoForVisu,
                    SIGNAL(NeedMeshesInfoForImportedTrack(unsigned int) ),
                    this,
@@ -128,19 +122,20 @@ void QGoDBTrackManager::DisplayInfoForExistingTrace(
 
 //-------------------------------------------------------------------------
 unsigned int QGoDBTrackManager::CreateNewTrackWithNoMesh(
-  vtkMySQLDatabase *iDatabaseConnector)//, NameWithColorData iColor)
+  vtkMySQLDatabase *iDatabaseConnector)
 {
   GoDBTrackRow NewTrack;
   unsigned int NewTrackID =
     this->m_CollectionOfTraces->CreateCollectionWithNoTracesNoPoints< GoDBTrackRow >(
-      //iDatabaseConnector, iColor, NewTrack);
       iDatabaseConnector, *this->m_SelectedColorData, NewTrack);
 
+  this->m_TrackContainerInfoForVisu->ResetCurrentElement();
   this->m_TrackContainerInfoForVisu->UpdateCurrentElementFromDB(
-   // NewTrackID, this->GetVectorFromQColor(iColor.second) );
-   NewTrackID, this->GetVectorFromQColor(this->m_SelectedColorData->second) );
+   NewTrackID, this->GetVectorFromQColor(this->m_SelectedColorData->second),true);
   this->m_TrackContainerInfoForVisu->InsertCurrentElement();
   this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
+  emit RefreshListCollectionIDsTM ( ConvertToString<unsigned int> (NewTrackID),
+    iDatabaseConnector);
   return NewTrackID;
 }
 
@@ -148,11 +143,10 @@ unsigned int QGoDBTrackManager::CreateNewTrackWithNoMesh(
 
 //-------------------------------------------------------------------------
 std::list< unsigned int > QGoDBTrackManager::UpdateTheTracesColor(
-  vtkMySQLDatabase *iDatabaseConnector)//, NameWithColorData iNewColor)
+  vtkMySQLDatabase *iDatabaseConnector)
 {
   return this->UpdateTheTracesColorTemplate< GoDBTrackRow,
     TrackContainer >(iDatabaseConnector,this->m_TrackContainerInfoForVisu);
-    //iNewColor);
 }
 
 //-------------------------------------------------------------------------
@@ -221,26 +215,9 @@ void QGoDBTrackManager::GetTracesInfoFromDBAndModifyContainerForVisu(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/*void QGoDBTrackManager::UpdateCurrentElementTrackContainer(
-  unsigned int iTrackID)
-{
-  unsigned int TrackID = ss_atoi<unsigned int>(
-    this->m_SelectedCollectionData->first);
-  this->m_TrackContainerInfoForVisu->UpdateCurrentElementFromExistingOne(
-    iTrackID);
-}*/
-//-------------------------------------------------------------------------
-/*
- * \todo Nicolas
- * is it safe?? emit and process we don't know if the emit did what it was
- *  supposed to do
- */
-//-------------------------------------------------------------------------
 void QGoDBTrackManager::SaveTrackCurrentElement(
   vtkMySQLDatabase* iDatabaseConnector)
 {
-  //emit NeedToGetDatabaseConnection();
-
   GoDBTrackRow TrackToSave(this->m_ImgSessionID);
   unsigned int TrackID = this->m_TrackContainerInfoForVisu->m_CurrentElement.TraceID;
   if (TrackID != 0)
@@ -260,18 +237,6 @@ void QGoDBTrackManager::SaveTrackCurrentElement(
     {
     this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
     }
-
-  //update its bounding box with the new mesh into the database
-  //and the table widget:
- // std::list<unsigned int> ListTrackID;
- // ListTrackID.push_back(TrackID);
- // UpdateBoundingBoxes(this->m_DatabaseConnector,ListTrackID);
-
-  // Pointer not usefull anymore
-  //this->m_DatabaseConnector = NULL;
-  //Free memory
- // emit DBConnectionNotNeededAnymore();
-
 }
 //-------------------------------------------------------------------------
 
@@ -305,7 +270,6 @@ void QGoDBTrackManager::UpdateBoundingBoxes(
   while(iter != iListTracesIDs.end())
     {
     this->UpdateTrackPolydataForVisu(iDatabaseConnector,*iter);
-    //this->SaveTrackCurrentElement(iDatabaseConnector);
     iter++;
     }
 
@@ -326,8 +290,51 @@ void QGoDBTrackManager::SetColorCoding(bool IsChecked)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/*void QGoDBTrackManager::BackFromColorCoding()
+void QGoDBTrackManager::AddActionsContextMenu(QMenu *iMenu)
 {
-	this->SetBackFromColorCodingTemplate<TrackContainer>(
-    this->m_TrackContainerInfoForVisu);
-}*/
+  QGoDBTraceManager::AddActionsContextMenu(iMenu);
+  //QMenu* SplitMenu = new QMenu(tr("Split your track"),iMenu);
+  //SplitMenu->addAction(tr("Using the Widget"),
+  //                     this, SLOT( SplitTrackWithWidget() ) );
+  //QAction* SplitMenuAction = SplitMenu->menuAction(); 
+  QAction* SplitMenuAction = new QAction(tr("Split your track"),iMenu);
+  QObject::connect(SplitMenuAction, SIGNAL( triggered() ),
+    this, SLOT(TrackIDToEmit() ) );
+
+  iMenu->addAction(SplitMenuAction);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTrackManager::TrackIDToEmit()
+{
+  std::list<unsigned int> HighlightedTrackIDs = 
+    this->m_TrackContainerInfoForVisu->GetHighlightedElementsTraceID();
+
+  if (HighlightedTrackIDs.size() != 1)
+    {
+    QMessageBox msgBox;
+    msgBox.setText(
+      tr("Please select one and only one Track to be split")
+      .arg( this->m_TraceName.c_str() ) );
+    msgBox.exec();
+    }
+  else
+    {
+    emit NeedToGetDatabaseConnection();
+    emit TrackToSplit(HighlightedTrackIDs.front(),
+      this->GetListTracesIDsFromThisCollectionOf(this->m_DatabaseConnector,
+        HighlightedTrackIDs) );
+    emit DBConnectionNotNeededAnymore();
+    }
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTrackManager::SplitTrackWithWidget()
+{
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------

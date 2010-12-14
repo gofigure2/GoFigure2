@@ -63,7 +63,7 @@ public:
   QGridLayout *vbox;
 
 public slots:
-  void         AddChannel(QString iChannel);
+  void         AddChannel(int iPosition, QString iChannel);
 
   void         setNumberOfChannels(int iNumberOfChannels);
 

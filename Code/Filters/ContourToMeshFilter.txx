@@ -44,6 +44,7 @@
 #include "vtkPolyDataWriter.h"
 #include "vtkFillHolesFilter.h"
 #include "vtkPolylineDecimation.h"
+#include "vtkFeatureEdges.h"
 
 #include <iostream>
 
@@ -113,38 +114,45 @@ ContourToMeshFilter< TContainer >::ProcessContours(const ContainerType & iContai
 
     vtkSmartPointer< vtkNormalEstimationFilter > normal_filter =
       vtkSmartPointer< vtkNormalEstimationFilter >::New();
-    normal_filter->SetInput( append->GetOutput() );
+    normal_filter->SetInputConnection( append->GetOutputPort() );
     normal_filter->Update();
 
     // run the Poisson Reconstruction
     vtkSmartPointer< vtkPoissonReconstruction > poissonFilter =
       vtkSmartPointer< vtkPoissonReconstruction >::New();
-    poissonFilter->SetInput( normal_filter->GetOutput() );
+    poissonFilter->SetInputConnection( normal_filter->GetOutputPort() );
     poissonFilter->SetDepth(12);
     poissonFilter->SetConfidence(1.);
     poissonFilter->Update();
 
+    vtkSmartPointer<vtkFeatureEdges> feature =
+        vtkSmartPointer<vtkFeatureEdges>::New();
+    feature->SetInputConnection( poissonFilter->GetOutputPort() );
+    feature->BoundaryEdgesOn();
+    feature->FeatureEdgesOff();
+    feature->NonManifoldEdgesOff();
+    feature->ManifoldEdgesOff();
+    feature->Update();
+
     vtkSmartPointer< vtkFillHolesFilter > fillFilter =
       vtkSmartPointer< vtkFillHolesFilter >::New();
-    fillFilter->SetInput( poissonFilter->GetOutput() );
-    fillFilter->Update();
 
     if ( !m_Output )
       {
       m_Output = vtkPolyData::New();
       }
-    m_Output->ShallowCopy( fillFilter->GetOutput() );
 
-/*
-    double bounds[6];
-    m_Output->GetBounds(bounds);
+    if( feature->GetOutput()->GetNumberOfCells() > 0 )
+      {
+      fillFilter->SetInputConnection( poissonFilter->GetOutputPort() );
+      fillFilter->Update();
 
-    vtkSmartPointer< vtkPolyDataWriter > writer =
-      vtkSmartPointer< vtkPolyDataWriter >::New();
-    writer->SetInput( m_Output );
-    writer->SetFileName( "mesh.vtk" );
-    writer->Write();
-*/
+      m_Output->DeepCopy( fillFilter->GetOutput() );
+      }
+    else
+      {
+      m_Output->DeepCopy( poissonFilter->GetOutput() );
+      }
     }
 }
 

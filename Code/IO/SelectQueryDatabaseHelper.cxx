@@ -310,6 +310,33 @@ std::list< unsigned int > ListSpecificValuesForOneColumn(
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
+std::list< unsigned int > ListSpecificValuesForOneColumn(
+  vtkMySQLDatabase *iDatabaseConnector,
+  std::string TableName, std::string ColumnName,
+  std::string fieldOne, std::list< unsigned int > ListValuesOne,
+  std::string fieldTwo, std::string ValueFieldTwo)
+{
+  std::vector< unsigned int> VectorValuesOne( 
+    ListValuesOne.begin(), ListValuesOne.end() );
+  std::string Conditions;  
+  std::vector<FieldWithValue> VectorConditions(1);
+  FieldWithValue AndCondition = {fieldTwo,ValueFieldTwo, "="};
+  VectorConditions[0] = AndCondition;
+  Conditions = GetConditions(VectorConditions,"AND");
+
+  Conditions = Conditions.substr(0,Conditions.size()-1);
+  Conditions += " AND "; 
+  Conditions += GetConditions(fieldOne,VectorValuesOne,"OR");  
+  Conditions += ")";
+  std::string QueryString = SelectQueryStreamCondition(TableName, 
+    ColumnName, Conditions);
+
+  return ExecuteSelectQuery<std::list<unsigned int> >(iDatabaseConnector,QueryString); 
+}
+
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 std::vector< std::pair< std::string, std::string > >
 ListSpecificValuesForTwoColumns(vtkMySQLDatabase *DatabaseConnector,
                                 std::string TableName, std::string ColumnNameOne, std::string ColumnNameTwo,
@@ -1323,6 +1350,26 @@ int GetMaxValueFromTwoTables(vtkMySQLDatabase *iDatabaseConnector,
   Conditions += ")";
   std::string QueryString = SelectGeneralQueryConditions(What,Where,Conditions);
   return ExecuteSelectQueryOneValue<int>(iDatabaseConnector,QueryString);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list<unsigned int> GetListValuesFromTwoTablesAndCondition(
+  vtkMySQLDatabase *iDatabaseConnector,
+  std::string iTableOne, std::string iTableTwo,std::string iColumn,
+  FieldWithValue iJoinCondition,std::string iField,
+  std::vector<std::string> iVectorValues,FieldWithValue iAndCondition)
+{
+  std::string Where = GetLeftJoinTwoTables(iTableOne,iTableTwo,iJoinCondition);
+  std::string Conditions = "(";
+  Conditions += GetConditions<std::string>(iField,iVectorValues,"OR");
+  Conditions += " AND ";
+  std::vector<FieldWithValue> AndCondition(1);
+  AndCondition[0] = iAndCondition;
+  Conditions += GetConditions(AndCondition);
+  Conditions += ")";
+  std::string QueryString = SelectGeneralQueryConditions(iColumn,Where,Conditions);
+  return ExecuteSelectQuery< std::list< unsigned int> >(iDatabaseConnector,QueryString);
 }
 //-------------------------------------------------------------------------
 

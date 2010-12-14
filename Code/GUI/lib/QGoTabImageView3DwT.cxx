@@ -93,6 +93,9 @@
 #include <QColorDialog>
 #include <QInputDialog>
 
+#include "vtkBox.h"
+#include "vtkClipPolyData.h"
+
 #include <set>
 
 // base segmentation dock widgets
@@ -130,6 +133,7 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent):
 
   m_ChannelClassicMode = true;
   m_ChannelOfInterest = 0;
+  m_DopplerStep = 1;
 
   m_HighlightedContoursProperty = vtkProperty::New();
   m_HighlightedContoursProperty->SetColor(1., 0., 0.);
@@ -582,6 +586,9 @@ QGoTabImageView3DwT::CreateVisuDockWidget()
 
   QObject::connect( m_NavigationDockWidget, SIGNAL( ModeChanged(int) ),
                     this, SLOT( ModeChanged(int) ) );
+
+  QObject::connect( m_NavigationDockWidget, SIGNAL( StepChanged(int) ),
+                    this, SLOT( StepChanged(int) ) );
 }
 
 //-------------------------------------------------------------------------
@@ -1052,7 +1059,7 @@ void QGoTabImageView3DwT::LoadChannelTime()
       // emit with channel...
       // keep track of channel of interest when we move through time
       m_ChannelOfInterest = value;
-      SetTimePointWithMegaCaptureTimeChannels( value );
+      SetTimePointWithMegaCaptureTimeChannels( m_ChannelOfInterest );
       Update();
     }
   else
@@ -1748,19 +1755,19 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels( int iChannel )
   int min_t = m_MegaCaptureReader->GetMinTimePoint();
   int max_t = m_MegaCaptureReader->GetMaxTimePoint();
 
-  int t0 = m_TCoord - 1;
+  int t0 = m_TCoord - m_DopplerStep;
   int t1 = m_TCoord;
-  int t2 = m_TCoord + 1;
+  int t2 = m_TCoord + m_DopplerStep;
 
   // special case if we are at the borders
-  if(m_TCoord == min_t)
+  if(t0 < min_t)
     {
-    t0 = t2;
+    t0 = min_t;
     }
 
-  if(m_TCoord == max_t)
+  if(t2 > max_t)
     {
-    t2 = t0;
+    t2 = max_t;
     }
 
   // resize internal image
@@ -1807,24 +1814,33 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels( int iChannel )
     m_ViewActions[10]->setEnabled(true);
     }
 
+  // Create channels names
+  QString t_minus_step;
+  t_minus_step.append(QLatin1String("t: "));// + m_DopplerStep);
+  t_minus_step.append(QString::number(t0, 10));
+
+  QString t_plus_step;
+  t_plus_step.append(QLatin1String("t: "));//() + m_DopplerStep);
+  t_plus_step.append(QString::number(t2, 10));
+
   // update channels in navigation DockWidget
   m_NavigationDockWidget->SetNumberOfChannels(3);
   m_NavigationDockWidget->blockSignals(true);
-  m_NavigationDockWidget->SetChannel(0, "t-1");
-  m_NavigationDockWidget->SetChannel(1, "t");
-  m_NavigationDockWidget->SetChannel(2, "t+1");
+  m_NavigationDockWidget->SetChannel(0, t_minus_step);
+  m_NavigationDockWidget->SetChannel(1, "t: current");
+  m_NavigationDockWidget->SetChannel(2, t_plus_step);
   m_NavigationDockWidget->blockSignals(false);
 
   //update channels in segmentation widgets
   m_ContourSegmentationDockWidget->SetNumberOfChannels(3);
-  m_ContourSegmentationDockWidget->SetChannel(0, "t-1");
-  m_ContourSegmentationDockWidget->SetChannel(1, "t");
-  m_ContourSegmentationDockWidget->SetChannel(2, "t+1");
+  m_ContourSegmentationDockWidget->SetChannel(0, t_minus_step);
+  m_ContourSegmentationDockWidget->SetChannel(1, "t: current");
+  m_ContourSegmentationDockWidget->SetChannel(2, t_plus_step);
 
   m_MeshSegmentationDockWidget->SetNumberOfChannels(3);
-  m_MeshSegmentationDockWidget->SetChannel(0, "t-1");
-  m_MeshSegmentationDockWidget->SetChannel(1, "t");
-  m_MeshSegmentationDockWidget->SetChannel(2, "t+1");
+  m_MeshSegmentationDockWidget->SetChannel(0, t_minus_step);
+  m_MeshSegmentationDockWidget->SetChannel(1, "t: current");
+  m_MeshSegmentationDockWidget->SetChannel(2, t_plus_step);
 }
 
 //-------------------------------------------------------------------------
@@ -2240,6 +2256,18 @@ QGoTabImageView3DwT::ModeChanged(int iChannel)
     }
 
   ChannelTimeMode( iChannel );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+StepChanged( int iStep)
+{
+  m_DopplerStep = iStep;
+
+  SetTimePointWithMegaCaptureTimeChannels( m_ChannelOfInterest );
+  Update();
 }
 //-------------------------------------------------------------------------
 
@@ -2753,13 +2781,26 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView,
                                      unsigned int iTCoord,
                                      int iTShift)
 {
-  if(iTCoord + iTShift < m_MegaCaptureReader->GetMinTimePoint()
-      || iTCoord + iTShift > m_MegaCaptureReader->GetMaxTimePoint())
+  if (!this->m_ChannelClassicMode)
     {
-    std::cerr << "The time point you processed is out of the image extent" << std::endl;
-    return;
-    }
+    iTShift = iTShift*m_DopplerStep;
 
+    if(iTCoord + iTShift < m_MegaCaptureReader->GetMinTimePoint() )
+      {
+      iTShift = -(m_TCoord - m_MegaCaptureReader->GetMinTimePoint());
+      }
+    else
+      {
+      if( iTCoord + iTShift > m_MegaCaptureReader->GetMaxTimePoint())
+        {
+        iTShift = m_MegaCaptureReader->GetMaxTimePoint() - m_TCoord;
+        }
+      }
+    }
+  else
+    {
+    iTShift = 0;
+    }
   if ( !m_DataBaseTables->IsDatabaseUsed() )
     {
     std::cerr << "Problem with DB" << std::endl;
@@ -3000,10 +3041,28 @@ QGoTabImageView3DwT::CreateMeshFromSelectedContours(
     FilterType::Pointer filter = FilterType::New();
     filter->ProcessContours(list_contours);
 
+    vtkPolyData* mesh = filter->GetOutput();
+
+    vtkBox* implicitFunction = vtkBox::New();
+    implicitFunction->SetBounds( m_InternalImages[0]->GetBounds() );
+
+    vtkClipPolyData *cutter = vtkClipPolyData::New();
+    cutter->SetInput( mesh );
+    cutter->InsideOutOn();
+    cutter->SetClipFunction( implicitFunction );
+    cutter->Update();
+
+    vtkPolyData* temp = vtkPolyData::New();
+    temp->DeepCopy( cutter->GetOutput() );
+
+    cutter->Delete();
+    implicitFunction->Delete();
+    mesh->Delete();
+
     //as the element is already in the container we need to delete it in order
     //to update it in the SaveAndVisuMesh:
     this->m_MeshContainer->RemoveElementFromVisualizationWithGivenTraceID(iMeshID);
-    SaveAndVisuMesh(filter->GetOutput(), tcoord, 0);
+    SaveAndVisuMesh( temp, tcoord, 0);
     }
 }
 

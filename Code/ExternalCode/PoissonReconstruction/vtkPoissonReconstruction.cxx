@@ -80,6 +80,8 @@
 #include "MultiGridOctreeData.h"
 //#include "MemoryUsage.h"
 
+#include "vtkPolyDataWriter.h"
+
 vtkCxxRevisionMacro(vtkPoissonReconstruction, "$Revision: 1.70 $");
 vtkStandardNewMacro(vtkPoissonReconstruction);
 
@@ -134,7 +136,9 @@ int vtkPoissonReconstruction::RequestData(vtkInformation *vtkNotUsed(request),
 
   this->KernelDepth = this->Depth - 2;
 
-  tree.setFunctionData( reconstructionFunction, this->Depth, 0, Real(1.0) / ( 1 << this->Depth ) );
+  tree.setFunctionData( reconstructionFunction, this->Depth, 0,
+                        Real(1.0) / ( 1 << this->Depth ) );
+
   //DumpOutput("Function Data Set In: %lg\n",Time()-t);
   //size_t memoryusage = MemoryInfo::Usage();
   //DumpOutput("Memory Usage: %.3f MB\n",float(memoryusage)/(1<<20));
@@ -144,8 +148,9 @@ int vtkPoissonReconstruction::RequestData(vtkInformation *vtkNotUsed(request),
     return EXIT_FAILURE;
     }
 
-  tree.setTree(input, this->Depth, this->KernelDepth, Real(
-                 this->SamplesPerNode), this->Scale, center, scale, !this->NoResetSamples, this->Confidence);
+  tree.setTree( input, this->Depth, this->KernelDepth, Real( this->SamplesPerNode),
+                this->Scale, center, scale, !this->NoResetSamples,
+                this->Confidence );
 
   //DumpOutput("Leaves/Nodes: %d/%d\n",tree.tree.leaves(),tree.tree.nodes());
   //DumpOutput("   Tree Size: %.3f
@@ -202,7 +207,7 @@ int vtkPoissonReconstruction::RequestData(vtkInformation *vtkNotUsed(request),
     vtkSmartPointer< vtkPoints >::New();
   Point3D< float > p;
 
-  for ( unsigned int i = 0; i < static_cast< unsigned int >( mesh.inCorePoints.size() ); i++ )
+  for ( size_t i = 0; i < mesh.inCorePoints.size(); i++ )
     {
     p = mesh.inCorePoints[i];
     points->InsertNextPoint(p.coords[0] * scale + center.coords[0],
@@ -256,6 +261,7 @@ int vtkPoissonReconstruction::RequestData(vtkInformation *vtkNotUsed(request),
 
   output->SetPoints(points);
   output->SetPolys(triangles);
+
   return 1;
 }
 

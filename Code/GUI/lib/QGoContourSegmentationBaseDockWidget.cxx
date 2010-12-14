@@ -205,7 +205,7 @@ QGoContourSegmentationBaseDockWidget::SetChannel(int iChannel,const QString & iT
     input = QString("Channel %1").arg(iChannel);
     }
 
-  m_ContourSemiAutoSegmentation->SetChannel(input);
+  m_ContourSemiAutoSegmentation->SetChannel(iChannel, input);
 }
 
 //---------------------------------------------------------------------------//

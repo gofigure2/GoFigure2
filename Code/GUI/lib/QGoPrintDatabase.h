@@ -360,16 +360,6 @@ protected:
   void SetTMListSubCellTypesWithPreviousSelectedOne();
 
   /**
-  \brief get a list of the IDs with their colors for the collection corresponding to
-  the tracename, for the given timepoint if the
-  collection is a mesh or for all timepoints for tracks and lineages,
-  update the Trace Manual colorcombobox and select the corresponding ID in the combobox
-  if the string is not empty
-  \param[in] iIDToSelect ID for the item to be selected in the combobox
-  */
-  void SetTMListCollectionID(std::string iIDToSelect = "");
-
-  /**
   \brief get the data for the colorcombobox from the database,
   put them in the Trace Manual colorcombobox and if the string is not empty,
   the combobox will have as selected item the string
@@ -547,6 +537,17 @@ protected slots:
   void TheTabIsChanged(int iIndex);
 
   /**
+  \brief get a list of the IDs with their colors for the collection corresponding to
+  the tracename, for the given timepoint if the
+  collection is a mesh or for all timepoints for tracks and lineages,
+  update the Trace Manual colorcombobox and select the corresponding ID in the combobox
+  if the string is not empty
+  \param[in] iIDToSelect ID for the item to be selected in the combobox
+  */
+  void SetTMListCollectionID(std::string iIDToSelect = "", 
+    vtkMySQLDatabase* iDatabaseConnector = NULL);
+
+  /**
   \brief open the connection to the database and pass it to the ContoursManager
   */
   void PassDBConnectionToContoursManager();
@@ -593,12 +594,11 @@ protected slots:
   void DeleteTracks();
 
   /**
-  \brief slot connected to the signal NewCollectionFromCheckedTraces() emitted by
-  the m_MeshesManager, create a new track and call the the
-  AddCheckedTracesToCollection template method.
-  \param[in] iListCheckedMeshes list of the meshIDs of the checked meshes in the TW
+  \brief create a new track and call the AddCheckedTracesToCollection template method
+  to add the meshes from the list to this new track
+  \param[in] iListMeshes list of the meshIDs to belong to the new track
   */
-  void CreateNewTrackFromCheckedMeshes(std::list< unsigned int > iListCheckedMeshes);
+  void CreateNewTrackFromListMeshes(std::list< unsigned int > iListMeshes);
 
   /**
   \brief slot connected to the signal NewCollectionFromCheckedTraces() emitted by
@@ -638,6 +638,8 @@ protected slots:
   be recalculated
   */
   void PassMeshesInfoForImportedTrack(unsigned int iTrackID);
+
+  void SplitTheTrack(unsigned int iTrackID, std::list<unsigned int> iListMeshIDs);
 
   //*********************Slots for
   // TraceManualEditingWidget:**************************

@@ -194,8 +194,21 @@ QGOIO_EXPORT
 std::list< unsigned int > ListSpecificValuesForOneColumn(
   vtkMySQLDatabase *iDatabaseConnector,
   std::string TableName, std::string ColumnName,
-  std::string field, std::list< unsigned int > VectorValues,
+  std::string field, std::list< unsigned int > ListValues,
   bool Distinct = false, bool ExcludeZero = false);
+
+/**
+\brief SELECT ColumnName FROM TableName WHERE (field1 = value1
+or field = value2 AND fieldTwo = ValueFieldTwo )
+\overload
+*/
+QGOIO_EXPORT
+std::list< unsigned int > ListSpecificValuesForOneColumn(
+  vtkMySQLDatabase *iDatabaseConnector,
+  std::string TableName, std::string ColumnName,
+  std::string fieldOne, std::list< unsigned int > ListValuesOne,
+  std::string fieldTwo, std::string ValueFieldTwo);
+
 
 /**
 \brief SELECT ColumnNameOne,ColumnName2 FROM TableName
@@ -521,5 +534,11 @@ std::string GetCoordinateValuesQueryString(std::string iTableName, std::string i
 //get the center of the bounding boxes for tableName with restriction of iField = iValue
 std::list< double* > GetCenterBoundingBoxes(vtkMySQLDatabase *DatabaseConnector,
   std::string iTableName,std::string iField,std::string iValue);
+
+std::list<unsigned int> GetListValuesFromTwoTablesAndCondition(
+  vtkMySQLDatabase *iDatabaseConnector,
+  std::string iTableOne, std::string iTableTwo,std::string iColumn,
+  FieldWithValue iJoinCondition,std::string iField,
+  std::vector<std::string> iVectorValues,FieldWithValue iAndCondition);
 
 #endif

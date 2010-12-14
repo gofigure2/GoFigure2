@@ -308,6 +308,7 @@ bool
 TrackContainer::
 UpdateTrackStructurePolyData( const TrackStructure& iTrackStructure)
 {
+
   if( iTrackStructure.PointsMap.empty() )
     {
     qDebug() << "No points in the map, reset nodes";
@@ -334,6 +335,9 @@ UpdateTrackStructurePolyData( const TrackStructure& iTrackStructure)
 
   while( it != iTrackStructure.PointsMap.end() )
     {
+    qDebug() << "New point in PolyData: ";
+    qDebug() << "T: " << it->first;
+    qDebug() << "X: " << (it->second)[0] << " Y: " << (it->second)[1] << " Z: " << (it->second)[2];
     newArray->InsertNextValue( it->first );
     newPoints->InsertNextPoint( it->second );
 
@@ -639,6 +643,7 @@ RecomputeCurrentElementMap( std::list< double* > iPoints)
   PointsMapConstIterator begin = this->m_CurrentElement.PointsMap.begin();
   PointsMapConstIterator end = this->m_CurrentElement.PointsMap.end();
 
+
   while ( begin != end )
     {
     // free memory
@@ -699,7 +704,7 @@ RecomputeCurrentElementMap( std::list< double* > iPoints)
     return;
     }
 
-  UpdateTrackStructurePolyData(this->m_CurrentElement);
+  //UpdateTrackStructurePolyData(this->m_CurrentElement);
 
   //emit CurrentTrackToSave();
 }
@@ -710,8 +715,15 @@ void
 TrackContainer::UpdatePointsForATrack(unsigned int iTrackID,
 std::list< double*> iListCenterBoundingBoxes)
 {
-  this->UpdateCurrentElementFromExistingOne(iTrackID);
-  this->RecomputeCurrentElementMap(iListCenterBoundingBoxes);
+  bool updateCurrentElement = this->UpdateCurrentElementFromExistingOne(iTrackID);
+  if( updateCurrentElement )
+    {
+    this->RecomputeCurrentElementMap(iListCenterBoundingBoxes);
+    }
+  else
+    {
+    std::cout << "TrackID: " << iTrackID << " not found" << std::endl;
+    }
 }
 //-------------------------------------------------------------------------
 
