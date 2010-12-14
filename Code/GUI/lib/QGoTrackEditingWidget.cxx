@@ -146,7 +146,7 @@ generateTrackRepresentation()
       // meshID= -1 for more efficiency
       if( previousMeshID >= 0 )
         {
-        vtkActor* polylineActor = CreatePolylineActor(previousMeshPosition, currentMeshPosition, NULL);
+        vtkActor* polylineActor = CreatePolylineActor(previousMeshPosition, currentMeshPosition, NULL, NULL);
         actorIDsPair.first = polylineActor;
         actorIDsPair.second.first = false;
         actorIDsPair.second.second = idsPair;
@@ -198,7 +198,8 @@ CreateSphereActor( double* iCenter, const double* iColor)
 //-------------------------------------------------------------------------
 vtkActor*
 QGoTrackEditingWidget::
-CreatePolylineActor( double* iCenter1, double* iCenter2, const double* iColor)
+CreatePolylineActor( double* iCenter1, double* iCenter2,
+    const double* iColor1, const double* iColor2)
 {
   //create a vtkPoints object and storevtkRenderWindow the points in it
     vtkSmartPointer<vtkPoints> points =
@@ -229,6 +230,18 @@ CreatePolylineActor( double* iCenter1, double* iCenter2, const double* iColor)
     //add the lines to the dataset
     polyData->SetLines(cells);
 
+    //Color coding
+    // Setup the colors array
+    vtkSmartPointer<vtkUnsignedCharArray> colors =
+        vtkSmartPointer<vtkUnsignedCharArray>::New();
+    colors->SetNumberOfComponents(3);
+    colors->SetName("Colors");
+
+    // Add the three colors we have created to the array
+    colors->InsertNextTuple3(iColor1[0]*255, iColor1[1]*255, iColor1[2]*255);
+    colors->InsertNextTuple3(iColor2[0]*255,iColor2[1]*255, iColor2[2]*255);
+    polyData->GetPointData()->SetScalars(colors);
+
     //setup actor and mapper
     vtkSmartPointer<vtkPolyDataMapper> mapper =
         vtkSmartPointer<vtkPolyDataMapper>::New();
@@ -237,7 +250,7 @@ CreatePolylineActor( double* iCenter1, double* iCenter2, const double* iColor)
     vtkActor* actor = vtkActor::New();
     actor->SetMapper(mapper);
 
-    actor->GetProperty()->SetColor( const_cast<double*>(iColor) ); // sphere color white
+    //actor->GetProperty()->SetColor( const_cast<double*>(iColor) ); // sphere color white
 
     return actor;
 }
@@ -443,7 +456,8 @@ findInMergeList( std::pair< int, int> iFirstPair, std::pair< int, int > iSecondP
 
   // Create and actor too
   double color[3] = {1, 1, 1};
-  vtkActor* actor = CreatePolylineActor(m_FirstActor->GetCenter(), m_SecondActor->GetCenter(), color);
+  vtkActor* actor = CreatePolylineActor(m_FirstActor->GetCenter(), m_SecondActor->GetCenter(),
+      m_FirstActor->GetProperty()->GetColor(), m_SecondActor->GetProperty()->GetColor());
 
   renderer->AddActor(actor);
   this->qvtkWidget->GetRenderWindow()->Render();
@@ -515,7 +529,8 @@ generateTrackRepresentation2()
 
       if( previousMeshID >= 0 )
         {
-        vtkActor* polylineActor = CreatePolylineActor(previousMeshPosition, currentMeshPosition, (*trackListIterator).second.first);
+        vtkActor* polylineActor = CreatePolylineActor(previousMeshPosition, currentMeshPosition,
+            (*trackListIterator).second.first, (*trackListIterator).second.first);
         actorIDsPair.first = polylineActor;
         actorIDsPair.second.first = false;
         actorIDsPair.second.second = idsPair;
