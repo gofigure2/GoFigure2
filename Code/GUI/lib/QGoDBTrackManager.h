@@ -105,7 +105,8 @@ public:
 
   //method in QGoDbTraceManager
   void UpdateBoundingBoxes(
-  vtkMySQLDatabase *iDatabaseConnector,std::list< unsigned int > iListTracesIDs);
+  vtkMySQLDatabase *iDatabaseConnector,std::list< unsigned int > iListTracesIDs
+  ,std::list< unsigned int > iListMeshesIDs);
 
 signals:
   void NeedMeshesInfoForImportedTrack(unsigned int iTrackID);

@@ -297,7 +297,8 @@ void QGoDBTrackManager::UpdateTrackPolydataForVisu(vtkMySQLDatabase *iDatabaseCo
 
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::UpdateBoundingBoxes(
-  vtkMySQLDatabase *iDatabaseConnector,std::list< unsigned int > iListTracesIDs)
+  vtkMySQLDatabase *iDatabaseConnector,std::list< unsigned int > iListTracesIDs
+  ,std::list< unsigned int > iListMeshesIDs)
 {
   QGoDBTraceManager::UpdateBoundingBoxes(iDatabaseConnector,iListTracesIDs);
   std::list<unsigned int>::iterator iter = iListTracesIDs.begin();
@@ -307,6 +308,14 @@ void QGoDBTrackManager::UpdateBoundingBoxes(
     //this->SaveTrackCurrentElement(iDatabaseConnector);
     iter++;
     }
+
+  std::cout << "List of meshes in the track" << std::endl;
+  std::list<unsigned int>::iterator iter2 = iListMeshesIDs.begin();
+    while(iter2 != iListMeshesIDs.end())
+      {
+      std::cout << "MESH ID: " << *iter2  << std::endl;
+      ++iter2;
+      }
 }
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::SetColorCoding(bool IsChecked)
