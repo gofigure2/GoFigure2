@@ -1664,24 +1664,14 @@ void GetInfoFromDBAndModifyListMeshStructureSimplified(
       /// \note For the visualization rgba values are supposed to be double in
       /// between 0 and 1; whereas in the database these values are in between
       /// 0 and 255.
-      temp.rgba[0]      = ( query->DataValue(4).ToDouble() ) / 255.;
-      temp.rgba[1]      = ( query->DataValue(5).ToDouble() ) / 255.;
-      temp.rgba[2]      = ( query->DataValue(6).ToDouble() ) / 255.;
-      temp.rgba[3]      = ( query->DataValue(7).ToDouble() ) / 255.;
+      temp.rgba[0]      = ( query->DataValue(3).ToDouble() ) / 255.;
+      temp.rgba[1]      = ( query->DataValue(4).ToDouble() ) / 255.;
+      temp.rgba[2]      = ( query->DataValue(5).ToDouble() ) / 255.;
+      temp.rgba[3]      = ( query->DataValue(6).ToDouble() ) / 255.;
       ioContainer.push_back(temp);
       }
     }
   query->Delete();
-  /*std::string What = GetSelectedAttributes(iSelectedAttributes);
-  std::string Where = GetLeftJoinThreeTables(iTableOne, iTableTwo,
-    iTableThree, iJoinConditionOne, iJoinConditionTwo);
-  FieldWithValue FirstPartCondition = {iFieldOne, 
-    ConvertToString< unsigned int> (iValueFieldOne), "="};
-  std::string Conditions = GetAndORConditions<int>(FirstPartCondition, iIDFieldName,
-  iVectIDs);
-  std::string QueryString = SelectQueryStreamCondition(Where, What, Conditions);
-                                     
-  return QueryString;*/
 }
 //------------------------------------------------------------------------------
 
