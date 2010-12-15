@@ -141,6 +141,8 @@ public:
   */
   vtkProperty * GetHighlightedProperty();
 
+  std::list< unsigned int > GetAllTraceIDsGivenCollectionID( const unsigned int& iCollection );
+
   /**
     \brief Update Visualization of the given TraceIDs
     \tparam TContainer Container of TraceIDs
