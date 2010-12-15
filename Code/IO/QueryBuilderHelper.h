@@ -117,6 +117,11 @@ std::string GetConditions(std::string iField,
   return oConditions.str();
 }
 
+std::string GetConditions(std::vector<FieldWithValue> iConditions,
+                          std::string iConditionConnector = "AND");
+
+std::string GetConditions(std::string iField, std::string iValue,std::string iOperator = "=");
+
 /**
 \brief (iFirstPartCondition AND (iField = iOrVectorValues1 OR iField = iOrVectorValues1...))
 */
@@ -128,7 +133,7 @@ std::string GetAndORConditions(FieldWithValue iFirtsPartCondition, std::string i
   std::vector<FieldWithValue> VectorConditions(1);
   //FieldWithValue AndCondition = {fieldTwo,ValueFieldTwo, "="};
   VectorConditions[0] = iFirtsPartCondition;
-  oConditions = GetConditions(VectorConditions,"AND");
+  oConditions = GetConditions( VectorConditions, "AND" );
   oConditions = oConditions.substr(0, oConditions.size()-1);
   if (!iOrVectorValues.empty() )
     {
@@ -138,11 +143,6 @@ std::string GetAndORConditions(FieldWithValue iFirtsPartCondition, std::string i
     }
   return oConditions;
 }
-
-std::string GetConditions(std::vector<FieldWithValue> iConditions,
-                          std::string iConditionConnector = "AND");
-
-std::string GetConditions(std::string iField, std::string iValue,std::string iOperator = "=");
 
 std::string GetFirstPartQueryForTracesInfo(std::string iTraceName,std::string iCollectionName);
 

@@ -78,7 +78,6 @@ public:
 
   void setMeshIDs( std::list< std::list< unsigned int > > iListFfMeshes);
   void setTracksPolyData( std::list< vtkPolyData* > iListOfTracks);
-  void initializeVisualization();
 
   void generateTrackRepresentation();
   void generateTrackRepresentation2();
@@ -89,6 +88,8 @@ public:
 
   // NEW
   void setMeshContainer( MeshContainer* imeshContainer );
+  void initializeVisualization();
+  void cutTrack( vtkActor* );
   /*
    * Useless....?
   // when pick actor update cut list + actor color

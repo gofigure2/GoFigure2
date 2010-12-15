@@ -312,10 +312,13 @@ UpdateCurrentActorSelection(vtkObject *caller)
     if( m_CurrentActor->GetProperty()->GetOpacity() == 1 )
       {
       m_CurrentActor->GetProperty()->SetOpacity(0.3);
+      //Update track IDs - CUT
+      cutTrack( m_CurrentActor );
       }
     else
       {
       m_CurrentActor->GetProperty()->SetOpacity(1);
+      // Update Track IDs - MERGE
       }
     }
 /*
@@ -748,4 +751,13 @@ initializeVisualization()
 
     ++trackIDsIt;
     }
+}
+//-------------------------------------------------------------------------
+// Go through all container and creates actors
+//-------------------------------------------------------------------------
+void
+QGoTrackEditingWidget::
+cutTrack( vtkActor* )
+{
+  //std::map< vtkActor* , int >::iterator it = m_Line2MeshID.
 }
