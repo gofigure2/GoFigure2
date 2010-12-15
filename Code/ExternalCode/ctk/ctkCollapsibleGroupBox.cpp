@@ -52,7 +52,7 @@ class ctkCollapsibleGroupBoxStyle:public QProxyStyle
   }
 };
 #else
-  
+
 #endif
 
 //-----------------------------------------------------------------------------
@@ -63,8 +63,8 @@ ctkCollapsibleGroupBox::ctkCollapsibleGroupBox(QWidget* _parent)
 }
 
 //-----------------------------------------------------------------------------
-ctkCollapsibleGroupBox::ctkCollapsibleGroupBox(const QString& title, QWidget* _parent)
-  :QGroupBox(title, _parent)
+ctkCollapsibleGroupBox::ctkCollapsibleGroupBox(const QString& _title, QWidget* _parent)
+  :QGroupBox(_title, _parent)
 {
   this->init();
 }
@@ -102,10 +102,10 @@ void ctkCollapsibleGroupBox::expand(bool _expand)
     }
 
   QObjectList childList = this->children();
-  for (int i = 0; i < childList.size(); ++i) 
+  for (int i = 0; i < childList.size(); ++i)
     {
     QObject *o = childList.at(i);
-    if (o && o->isWidgetType()) 
+    if (o && o->isWidgetType())
       {
       QWidget *w = static_cast<QWidget *>(o);
       if ( w )
@@ -114,7 +114,7 @@ void ctkCollapsibleGroupBox::expand(bool _expand)
         }
       }
     }
-  
+
   if (_expand)
     {
     this->setMaximumHeight(this->MaxHeight);
@@ -146,13 +146,13 @@ void ctkCollapsibleGroupBox::childEvent(QChildEvent* c)
 void ctkCollapsibleGroupBox::paintEvent(QPaintEvent* e)
 {
   this->QGroupBox::paintEvent(e);
-  
+
   QStylePainter paint(this);
   QStyleOptionGroupBox option;
   initStyleOption(&option);
   option.activeSubControls &= !QStyle::SC_GroupBoxCheckBox;
   paint.drawComplexControl(QStyle::CC_GroupBox, option);
-  
+
 }
 
 //-----------------------------------------------------------------------------

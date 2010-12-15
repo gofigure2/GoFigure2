@@ -117,7 +117,6 @@ signals:
 protected:
   GoDBTWContainerForContourMesh *m_TWContainer;
   ContourContainer              *m_ContourContainerInfoForVisu;
-  vtkMySQLDatabase *             m_DatabaseConnector;
 
   //virtual pure method in QGoDBTraceManager
   virtual void SetCollectionsTraceNames();
