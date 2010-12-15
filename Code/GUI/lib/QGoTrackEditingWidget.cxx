@@ -232,7 +232,7 @@ CreatePolylineActor( double* iCenter1, double* iCenter2,
 
     //Color coding
     // Setup the colors array
-    vtkSmartPointer<vtkUnsignedCharArray> colors =
+    /*vtkSmartPointer<vtkUnsignedCharArray> colors =
         vtkSmartPointer<vtkUnsignedCharArray>::New();
     colors->SetNumberOfComponents(3);
     colors->SetName("Colors");
@@ -240,7 +240,7 @@ CreatePolylineActor( double* iCenter1, double* iCenter2,
     // Add the three colors we have created to the array
     colors->InsertNextTuple3(iColor1[0]*255, iColor1[1]*255, iColor1[2]*255);
     colors->InsertNextTuple3(iColor2[0]*255,iColor2[1]*255, iColor2[2]*255);
-    polyData->GetPointData()->SetScalars(colors);
+    polyData->GetPointData()->SetScalars(colors);*/
 
     //setup actor and mapper
     vtkSmartPointer<vtkPolyDataMapper> mapper =
@@ -301,6 +301,23 @@ UpdateCurrentActorSelection(vtkObject *caller)
     return;
     }
 
+  std::map< vtkActor* , int >::iterator polyToMeshID =
+      m_Line2MeshID.find(m_CurrentActor);
+
+  if(polyToMeshID != m_Line2MeshID.begin())
+    {
+    std::cout<< "Actor is a line" << std::endl;
+
+    if( m_CurrentActor->GetProperty()->GetOpacity() )
+      {
+      m_CurrentActor->GetProperty()->SetOpacity(0.3);
+      }
+    else
+      {
+      m_CurrentActor->GetProperty()->SetOpacity(1);
+      }
+    }
+/*
   // Where it is in the list to get the IDs
   std::map< vtkActor*, std::pair< bool, std::pair< int,  int> > >::iterator actor2IDMapIterator;
   actor2IDMapIterator = m_Actor2IDMap.find(m_CurrentActor);
@@ -355,6 +372,7 @@ UpdateCurrentActorSelection(vtkObject *caller)
       m_SecondClick = false;
       }
     }
+    */
 }
 //-------------------------------------------------------------------------
 
@@ -665,12 +683,12 @@ initializeVisualization()
 
       // Add actor to visu
       renderer->AddActor(actor);
-      std::vector< vtkActor * > listOfActors; // to satisfy API
-      listOfActors.push_back( actor );
 
       /*
        * \todo Find a better solution - Nicolas
        */
+      std::vector< vtkActor * > listOfActors; // to satisfy API
+      listOfActors.push_back( actor );
       vtkActor* actor1 = vtkActor::New();
       listOfActors.push_back( actor1 );
       vtkActor* actor2 = vtkActor::New();
@@ -690,8 +708,41 @@ initializeVisualization()
       // Insert Element
       m_MeshContainer->InsertCurrentElement();
 
-
       ++listOfMeshIDsIt;
+      }
+
+    // Go through map to create polylines
+    std::map<unsigned int, unsigned int>::iterator polyLIt = m_Time2MeshID.begin();
+    if( polyLIt == m_Time2MeshID.end() )
+      {
+      std::cout << "List is empty" << std::endl;
+      return;
+      }
+
+    vtkActor* firstActor = (m_MeshContainer->GetActorGivenTraceID( polyLIt->second ))[0];
+    vtkActor* secondActor = NULL;
+    ++polyLIt;
+
+    while( polyLIt != m_Time2MeshID.end() )
+      {
+      secondActor = (m_MeshContainer->GetActorGivenTraceID( polyLIt->second ))[0];
+      vtkActor* polyLine = CreatePolylineActor(firstActor->GetCenter(),
+                                               secondActor->GetCenter());
+
+      /*
+       * \todo should color be hard coded? hoew to define it? - Nicolas
+       */
+      double color[3] = {1, 1, 1};
+      polyLine->GetProperty()->SetColor(color);
+      // Add actor to visu
+      renderer->AddActor( polyLine );
+
+      // key is actor
+      m_Line2MeshID[polyLine] = polyLIt->second;
+      //m_MeshID2Neigbours[] =
+
+      firstActor = secondActor;
+      ++polyLIt;
       }
 
     ++trackIDsIt;

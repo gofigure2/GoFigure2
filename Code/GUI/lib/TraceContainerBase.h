@@ -295,6 +295,8 @@ public:
   */
   double* GetCurrentElementColor();
 
+  std::vector<vtkActor*> GetActorGivenTraceID( unsigned int iTraceID );
+
   /**
   \brief put the information of the existing element into m_CurrentElement
   and remove the existing element from the container,the visu and the memory

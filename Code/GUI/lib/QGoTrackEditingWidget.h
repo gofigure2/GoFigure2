@@ -108,7 +108,7 @@ public:
 
 private:
   vtkActor* CreateSphereActor( double* iCenter, const double* iColor);
-  vtkActor* CreatePolylineActor( double* iCenter1, double* iCenter2, const double* iColor1, const double* iColor2);
+  vtkActor* CreatePolylineActor( double* iCenter1, double* iCenter2, const double* iColor1 = NULL, const double* iColor2 = NULL);
 
   std::list<Track>                                             m_ListOfTracks;
   std::map< unsigned int, std::pair< const double* , vtkPolyData*> >         m_ListOfTracks2;
@@ -158,6 +158,7 @@ private:
   //NEW
   MeshContainer* m_MeshContainer;
   std::map<unsigned int, unsigned int> m_Time2MeshID;
+  std::map< vtkActor* , int >          m_Line2MeshID;
   // Split/merge behavior
   std::map< unsigned int , std::pair<unsigned int, unsigned int> >  m_MeshID2Neigbours;
 };

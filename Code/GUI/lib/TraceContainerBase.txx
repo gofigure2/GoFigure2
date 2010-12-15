@@ -100,6 +100,37 @@ GetHighlightedProperty()
 
 //-------------------------------------------------------------------------
 template< class TContainer >
+std::vector< vtkActor* >
+TraceContainerBase< TContainer >::
+GetActorGivenTraceID(unsigned int iTraceID)
+{
+  using boost::multi_index::get;
+
+  MultiIndexContainerTraceIDIterator
+    it = m_Container.get< TraceID >().find(iTraceID);
+
+  std::vector<vtkActor* > listActors;
+
+  if ( it != m_Container.get< TraceID >().end() )
+    {
+    listActors.push_back((*it).ActorXY);
+    listActors.push_back((*it).ActorYZ);
+    listActors.push_back((*it).ActorXZ);
+    listActors.push_back((*it).ActorXYZ);
+
+    std::cout << "Actor found" << std::endl;
+    }
+  else
+    {
+    std::cout << "Actor not found" << std::endl;
+    }
+
+  return listActors;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+template< class TContainer >
 bool
 TraceContainerBase< TContainer >::
 UpdateCurrentElementFromExistingOne(unsigned int iTraceID)
