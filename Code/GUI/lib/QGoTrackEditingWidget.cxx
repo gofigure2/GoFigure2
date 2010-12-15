@@ -298,17 +298,18 @@ UpdateCurrentActorSelection(vtkObject *caller)
   // if we click on the background
   if(m_CurrentActor == NULL)
     {
+    std::cout<< "No ActorPicked" << std::endl;
     return;
     }
 
   std::map< vtkActor* , int >::iterator polyToMeshID =
       m_Line2MeshID.find(m_CurrentActor);
 
-  if(polyToMeshID != m_Line2MeshID.begin())
+  if(polyToMeshID != m_Line2MeshID.end())
     {
     std::cout<< "Actor is a line" << std::endl;
 
-    if( m_CurrentActor->GetProperty()->GetOpacity() )
+    if( m_CurrentActor->GetProperty()->GetOpacity() == 1 )
       {
       m_CurrentActor->GetProperty()->SetOpacity(0.3);
       }
