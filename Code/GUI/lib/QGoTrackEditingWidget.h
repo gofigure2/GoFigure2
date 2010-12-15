@@ -157,5 +157,8 @@ private:
 
   //NEW
   MeshContainer* m_MeshContainer;
+  std::map<unsigned int, unsigned int> m_Time2MeshID;
+  // Split/merge behavior
+  std::map< unsigned int , std::pair<unsigned int, unsigned int> >  m_MeshID2Neigbours;
 };
 #endif

@@ -642,7 +642,7 @@ initializeVisualization()
         m_MeshContainer->GetAllTraceIDsGivenCollectionID( (*trackIDsIt) );
     std::list<unsigned int>::iterator listOfMeshIDsIt = listOfMeshIDs.begin();
 
-    // Create the spheres actor
+    // Create the meshes actor
     // update the container
     while( listOfMeshIDsIt != listOfMeshIDs.end() )
       {
@@ -650,8 +650,10 @@ initializeVisualization()
       m_MeshContainer->UpdateCurrentElementFromExistingOne( (*listOfMeshIDsIt) );
 
       // Get the polydata
+      // Might need a deep copy
       vtkPolyData* nodes = m_MeshContainer->GetCurrentElementNodes();
       double* rgba = m_MeshContainer->GetCurrentElementColor();
+      unsigned int time = m_MeshContainer->GetCurrentElementTimePoint();
 
       //setup actor and mapper
       vtkSmartPointer<vtkPolyDataMapper> mapper =
@@ -663,9 +665,12 @@ initializeVisualization()
 
       // Add actor to visu
       renderer->AddActor(actor);
-
       std::vector< vtkActor * > listOfActors; // to satisfy API
       listOfActors.push_back( actor );
+
+      /*
+       * \todo Find a better solution - Nicolas
+       */
       vtkActor* actor1 = vtkActor::New();
       listOfActors.push_back( actor1 );
       vtkActor* actor2 = vtkActor::New();
@@ -678,7 +683,14 @@ initializeVisualization()
                                        0,       //time - not used
                                        false,   //highlighted
                                        false ); // visible
+
+      // Fill map - to construct lines
+      m_Time2MeshID[time] = (*listOfMeshIDsIt);
+
+      // Insert Element
       m_MeshContainer->InsertCurrentElement();
+
+
       ++listOfMeshIDsIt;
       }
 
