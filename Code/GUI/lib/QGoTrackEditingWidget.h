@@ -50,6 +50,9 @@
 
 #include "vtkSmartPointer.h"
 
+//New
+#include "MeshContainer.h"
+
 /**
 \class QGoTrackEditingWidget
 \brief This dialog allows the user to split/merge the tracks using a GUI
@@ -73,12 +76,19 @@ public:
   void setTracks( std::list<Track> iListOfTracks );
   void setTracks2( std::map< unsigned int, std::pair< const double* , vtkPolyData*> > );
 
+  void setMeshIDs( std::list< std::list< unsigned int > > iListFfMeshes);
+  void setTracksPolyData( std::list< vtkPolyData* > iListOfTracks);
+  void initializeVisualization();
+
   void generateTrackRepresentation();
   void generateTrackRepresentation2();
 
   bool findInCutList(int iTrackId, int iMeshID);
   bool findInMergeList( std::pair< int, int> iFirstPair, std::pair< int, int > iSecondPair );
 
+
+  // NEW
+  void setMeshContainer( MeshContainer* imeshContainer );
   /*
    * Useless....?
   // when pick actor update cut list + actor color
@@ -109,6 +119,31 @@ private:
   bool                                                         m_CutMode;
   std::map< vtkActor*, std::pair< bool, std::pair< int,  int> > > m_Actor2IDMap;
 
+  //-------------------------------------------------------------------------
+  // New design
+  //-------------------------------------------------------------------------
+/*
+  // First Drawing
+  std::list< vtkPolyData* >                                m_TrackList;
+  std::list< std::list<unsigned int > >                    m_MeshList;
+
+  // Pick actors to update lists
+  // actor contains info about tube or sphere
+  // actor contains info about color
+  // actor contains info about the time
+  std::map< int , vtkActor* >                              m_MeshID2Actor;
+  std::map< vtkActor* , int >                              m_Actor2MeshID;
+  std::map< vtkActor* , int >                              m_Actor2TrackID;
+  std::map< unsigned int, std::map< unsigned int, unsigned int > >
+                                                           m_TrackID2MeshID;
+  std::map< unsigned int, std::list< unsigned int > >
+                                                           m_NewTrack;
+
+  // Split/merge behavior
+  std::map< int , std::pair<unsigned int, unsigned int> >  m_MeshID2Neigbours;
+*/
+  //-------------------------------------------------------------------------
+
   bool m_SecondClick;
   std::pair<int, int> m_FirstPair;
   vtkActor* m_FirstActor;
@@ -120,5 +155,7 @@ private:
 
   vtkSmartPointer<vtkRenderer> renderer;
 
+  //NEW
+  MeshContainer* m_MeshContainer;
 };
 #endif

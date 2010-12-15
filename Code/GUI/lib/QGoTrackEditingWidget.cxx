@@ -548,3 +548,106 @@ generateTrackRepresentation2()
     ++trackListIterator;
     }
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTrackEditingWidget::
+setMeshIDs( std::list< std::list< unsigned int > > iListoFfMeshes)
+{
+  //m_MeshList = iListoFfMeshes;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTrackEditingWidget::
+setTracksPolyData( std::list< vtkPolyData* > iListOfTracks)
+{
+  //m_TrackList = iListOfTracks;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+/*void
+QGoTrackEditingWidget::
+initializeVisualization()
+{*/
+  /*
+  // the 2 lists must have the same size
+  if( m_TrackList.size() != m_MeshList.size() )
+    {
+    std::cout << "Track list and mesh list have different sizes" << std::endl;
+    return;
+    }
+
+  // Iterators
+  std::list< vtkPolyData* >::iterator trackIterator = m_TrackList.begin();
+  std::list< std::list< unsigned int > >::iterator meshIterator = m_MeshList.begin();
+
+  while( trackIterator != m_TrackList.end() )
+    {
+    // Create actors and update lists
+    vtkPolyData* trackPolyData = (*trackIterator);
+    int numberOfPointsInPolyData = trackPolyData->GetNumberOfPoints();
+    vtkIntArray* tempArray = dynamic_cast<vtkIntArray*>(
+        trackPolyData->GetPointData()->GetArray("TemporalInformation") );
+
+    // the 2 lists must have the same size
+    if( (*meshIterator.size()) != numberOfPointsInPolyData )
+      {
+      std::cout << "PolyData and mesh list have different number of points" << std::endl;
+      return;
+      }
+
+    for(vtkIdType i = 0; i < numberOfPointsInPolyData; ++i)
+      {
+      double *currentMeshPosition = trackPolyData->GetPoint( i );
+      int currentMeshTime = tempArray->GetValue(i);
+
+      vtkActor* sphereActor = CreateSphereActor( currentMeshPosition, NULL );
+
+
+      }
+    ++meshIterator;
+    ++trackIterator;
+    }
+    */
+/*}*/
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTrackEditingWidget::
+setMeshContainer( MeshContainer* imeshContainer )
+{
+  m_MeshContainer = imeshContainer;
+}
+//-------------------------------------------------------------------------
+// Go through all container and creates actors
+//-------------------------------------------------------------------------
+void
+QGoTrackEditingWidget::
+initializeVisualization()
+{
+  //m_MeshContainer
+  /*
+  using boost::multi_index::get;
+  it = m_MeshContainer.get< TIndex >().begin();*/
+/*
+  while ( it != m_MeshContainer.end() )
+    {*/
+  /*
+    if ( it->Nodes )
+      {
+      if( it->Nodes->GetPointData()->GetScalars() )
+        {
+        it->Nodes->GetPointData()->GetScalars()->Delete();
+        }
+      it->Nodes->Delete();
+      }
+*/
+  /*
+    ++it;
+    }*/
+}
