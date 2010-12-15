@@ -283,6 +283,7 @@ IF( VTK_FOUND )
       ${GOFIGURE2_SOURCE_DIR}/Code/IO/
       ${GOFIGURE2_BINARY_DIR}/Code/IO/
       ${GOFIGURE2_SOURCE_DIR}/Code/Filters/
+      ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Attributes/
       ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/Split/
       ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/Merge/
       ${GOFIGURE2_BINARY_DIR}/Code/Filters/
