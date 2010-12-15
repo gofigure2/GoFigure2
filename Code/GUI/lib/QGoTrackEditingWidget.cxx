@@ -757,7 +757,18 @@ initializeVisualization()
 //-------------------------------------------------------------------------
 void
 QGoTrackEditingWidget::
-cutTrack( vtkActor* )
+cutTrack( vtkActor* iActor)
 {
-  //std::map< vtkActor* , int >::iterator it = m_Line2MeshID.
+  std::map< vtkActor* , int >::iterator it = m_Line2MeshID.find( iActor );
+
+  // Find the mesh ID
+  if( it != m_Line2MeshID.end() )
+    {
+    unsigned int traceID = m_MeshContainer->GetCollectionIDOfGivenTrace( it->second );
+    std::cout << "TrackID: " << traceID << std::endl;
+
+    std::list<unsigned int> listOfMeshIDs =
+        m_MeshContainer->GetAllTraceIDsGivenCollectionID( traceID );
+
+    }
 }

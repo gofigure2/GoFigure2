@@ -144,6 +144,9 @@ public:
   std::list< unsigned int > GetAllTraceIDsGivenCollectionID( const unsigned int& iCollection );
 
   std::list< unsigned int > GetAllCollectionIDs();
+
+  unsigned int GetCollectionIDOfGivenTrace( unsigned int iTraceID);
+
   /**
     \brief Update Visualization of the given TraceIDs
     \tparam TContainer Container of TraceIDs

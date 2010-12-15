@@ -976,5 +976,20 @@ GetAllCollectionIDs()
 }
 //-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+template< class TContainer >
+unsigned int
+TraceContainerBase< TContainer >::
+GetCollectionIDOfGivenTrace( unsigned int iTraceID)
+{
+  using boost::multi_index::get;
+  MultiIndexContainerTraceIDIterator it0, it1;
+  boost::tuples::tie(it0, it1) =
+          m_Container.get< TraceID >().equal_range( iTraceID );
+
+  return it0->TraceID;
+}
+//-------------------------------------------------------------------------
+
 
 #endif
