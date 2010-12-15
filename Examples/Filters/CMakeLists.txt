@@ -59,3 +59,12 @@ ADD_TEST( ContourToMeshFilterTest
  1
  )
 
+ADD_EXECUTABLE( singleCellSplitImageFilter 
+  SingleCellSplitImageFilter.cxx
+  )
+TARGET_LINK_LIBRARIES(
+  singleCellSplitImageFilter 
+  ITKReview 
+  ITKIO
+  )
+
