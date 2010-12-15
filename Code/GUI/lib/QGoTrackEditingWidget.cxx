@@ -67,6 +67,8 @@ QGoTrackEditingWidget(QWidget *iParent): QDialog(iParent)
   m_VtkEventQtConnector = vtkEventQtSlotConnect::New();
   m_InteractorStyle3D   = vtkInteractorStyleImage3D::New();
 
+  m_NumberOfTracks = 0;
+
   m_SecondClick = false;
 
   QObject::connect( this->previewPushButton, SIGNAL( pressed() ),
@@ -748,7 +750,6 @@ initializeVisualization()
       firstActor = secondActor;
       ++polyLIt;
       }
-
     ++trackIDsIt;
     }
 }
@@ -760,15 +761,44 @@ QGoTrackEditingWidget::
 cutTrack( vtkActor* iActor)
 {
   std::map< vtkActor* , int >::iterator it = m_Line2MeshID.find( iActor );
+  int timePoint;
 
   // Find the mesh ID
   if( it != m_Line2MeshID.end() )
     {
     unsigned int traceID = m_MeshContainer->GetCollectionIDOfGivenTrace( it->second );
-    std::cout << "TrackID: " << traceID << std::endl;
 
     std::list<unsigned int> listOfMeshIDs =
         m_MeshContainer->GetAllTraceIDsGivenCollectionID( traceID );
+    std::list<unsigned int>::iterator iterator = listOfMeshIDs.begin();
 
+    // border time point
+    m_MeshContainer->ResetCurrentElement();
+    m_MeshContainer->UpdateCurrentElementFromExistingOne( it->second );
+    unsigned int tLimit = m_MeshContainer->GetCurrentElementTimePoint();
+
+    while( iterator != listOfMeshIDs.end() )
+      {
+      m_MeshContainer->ResetCurrentElement();
+      m_MeshContainer->UpdateCurrentElementFromExistingOne( (*iterator) );
+
+      unsigned int time = m_MeshContainer->GetCurrentElementTimePoint();
+
+      // change track ID if we are before the mesh
+      if( time < tLimit)
+        {
+        // Collection ID
+        m_MeshContainer->SetCurrentElementCollectionID( m_NumberOfTracks );
+        // Visibility: i.e. modified
+
+        }
+      m_MeshContainer->InsertCurrentElement();
+      ++iterator;
+      }
+
+    ++m_NumberOfTracks;
+
+    // update visu
+    initializeVisualization();
     }
 }

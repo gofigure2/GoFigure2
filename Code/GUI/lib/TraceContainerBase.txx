@@ -987,7 +987,7 @@ GetCollectionIDOfGivenTrace( unsigned int iTraceID)
   boost::tuples::tie(it0, it1) =
           m_Container.get< TraceID >().equal_range( iTraceID );
 
-  return it0->TraceID;
+  return it0->CollectionID;
 }
 //-------------------------------------------------------------------------
 

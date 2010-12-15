@@ -162,5 +162,7 @@ private:
   std::map< vtkActor* , int >          m_Line2MeshID;
   // Split/merge behavior
   std::map< unsigned int , std::pair<unsigned int, unsigned int> >  m_MeshID2Neigbours;
+
+  unsigned int m_NumberOfTracks;
 };
 #endif

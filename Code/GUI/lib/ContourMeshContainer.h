@@ -459,6 +459,8 @@ public:
    */
   unsigned int GetCurrentElementTimePoint();
 
+  void SetCurrentElementCollectionID( unsigned int);
+
 public slots:
 
   /** \brief Change elements highlighting property given a list of TraceIDs
