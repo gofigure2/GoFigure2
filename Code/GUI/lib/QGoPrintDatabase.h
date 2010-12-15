@@ -640,6 +640,7 @@ protected slots:
   void PassMeshesInfoForImportedTrack(unsigned int iTrackID);
 
   void SplitTheTrack(unsigned int iTrackID, std::list<unsigned int> iListMeshIDs);
+  void SplitMergeTracksWithWidget(std::list<unsigned int> iTrackIDs);
 
   //*********************Slots for
   // TraceManualEditingWidget:**************************

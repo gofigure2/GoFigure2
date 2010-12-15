@@ -136,6 +136,9 @@ public:
   */
   void SetSelectedSubCellType(std::string* iSubCellType);
 
+  MeshContainer* GetMeshesInfoFromDBAndCreateContainerForVisu(
+  vtkMySQLDatabase* iDatabaseConnector,std::list< unsigned int> iListIDs);
+
 public slots:
   /**
   \brief get the coordinate info for meshes needed for the visu

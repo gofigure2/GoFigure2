@@ -268,6 +268,15 @@ std::list< unsigned int > QGoDBTraceManager::GetListTracesIDsFromThisCollectionO
 //-------------------------------------------------------------------------
 
 //------------------------------------------------------------------------
+std::list< unsigned int > QGoDBTraceManager::GetListTracesIDsBelongingToCollectionIDs(
+    vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListCollectionIDs)
+{
+  return this->m_CollectionOfTraces->GetTraceIDsBelongingToCollectionID(iDatabaseConnector,
+    iListCollectionIDs);
+}
+//-------------------------------------------------------------------------
+
+//------------------------------------------------------------------------
 void QGoDBTraceManager::DisplayInfoForExistingTraces(vtkMySQLDatabase *
                                                      iDatabaseConnector, std::list< unsigned int > iListTraces)
 {

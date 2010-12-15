@@ -199,7 +199,7 @@ void QGoDBTrackManager::GetTracesInfoFromDBAndModifyContainerForVisu(
   vtkMySQLDatabase* iDatabaseConnector,std::vector<int> iVectIDs)
 {
   std::list<TrackStructure> list_of_traces;
-  GetTracesInfoFromDBAndModifyContainer(
+  GetTracesInfoFromDBForVisuContainer(
       list_of_traces,
       iDatabaseConnector, this->m_TraceName, this->m_CollectionName,
       this->m_ImgSessionID,iVectIDs);
@@ -312,8 +312,7 @@ void QGoDBTrackManager::TrackIDToEmit()
     {
     QMessageBox msgBox;
     msgBox.setText(
-      tr("Please select one and only one Track to be split")
-      .arg( this->m_TraceName.c_str() ) );
+      tr("Please select one and only one Track to be split"));
     msgBox.exec();
     }
   else
@@ -331,6 +330,33 @@ void QGoDBTrackManager::TrackIDToEmit()
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::SplitTrackWithWidget()
 {
+  /*std::list <std::pair<unsigned int, std::list<unsigned int> > >TrackIDWithMeshIDs;
+  std::list<unsigned int> CheckedTracks = 
+    this->m_TrackContainerInfoForVisu->GetHighlightedElementsTraceID();
+  std::list<unsigned int>::iterator iter = CheckedTracks.begin();
+  while (iter != CheckedTracks.end() )
+  {
+    std::pair<unsigned int, std::list<unsigned int> > temp;
+    temp.first = *iter;
+    std::list<unsigned int> TrackID;
+    TrackID.push_back(*iter);
+    temp.second = this->GetListTracesIDsFromThisCollectionOf(this->m_DatabaseConnector,TrackID);
+    iter++;
+  }*/
+  std::list<unsigned int> HighlightedTrackIDs = 
+    this->m_TrackContainerInfoForVisu->GetHighlightedElementsTraceID();
+
+  if (HighlightedTrackIDs.size() == 0)
+    {
+    QMessageBox msgBox;
+    msgBox.setText(
+      tr("Please select at least one Track to be visualized in the widget"));
+    msgBox.exec();
+    }
+  else
+    {
+    emit TrackIDToBeModifiedWithWidget(HighlightedTrackIDs);
+    }
 }
 //-------------------------------------------------------------------------
 

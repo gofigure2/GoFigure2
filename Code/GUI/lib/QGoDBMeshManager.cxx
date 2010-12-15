@@ -370,10 +370,10 @@ void QGoDBMeshManager::GetTracesInfoFromDBAndModifyContainerForVisu(
   vtkMySQLDatabase* iDatabaseConnector,std::vector<int> iVectIDs)
 {
   std::list<ContourMeshStructure> list_of_traces;
-  GetTracesInfoFromDBAndModifyContainer(
+  GetTracesInfoFromDBForVisuContainer(
       list_of_traces,
       iDatabaseConnector, this->m_TraceName, this->m_CollectionName,
-      this->m_ImgSessionID, -1, iVectIDs);
+      this->m_ImgSessionID, iVectIDs);
 
   std::list< ContourMeshStructure >::iterator it = list_of_traces.begin();
 
@@ -382,6 +382,26 @@ void QGoDBMeshManager::GetTracesInfoFromDBAndModifyContainerForVisu(
     this->m_MeshContainerInfoForVisu->Insert(*it);
     ++it;
     }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+MeshContainer* QGoDBMeshManager::GetMeshesInfoFromDBAndCreateContainerForVisu(
+  vtkMySQLDatabase* iDatabaseConnector,std::list<unsigned int> iListTraces)
+{
+  MeshContainer* oMeshContainer = new MeshContainer(this, NULL);
+  std::list<ContourMeshStructure> ListMeshesInfo = 
+    this->m_CollectionOfTraces->GetListStructureFromDBWithTimePoint(
+    iDatabaseConnector, iListTraces, this->m_ImgSessionID);
+
+  std::list< ContourMeshStructure >::iterator it = ListMeshesInfo.begin();
+
+  while ( it != ListMeshesInfo.end() )
+    {
+    oMeshContainer->Insert(*it);
+    ++it;
+    }
+  return oMeshContainer;
 }
 //-------------------------------------------------------------------------
 
