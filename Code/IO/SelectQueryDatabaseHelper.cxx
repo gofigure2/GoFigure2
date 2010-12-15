@@ -318,7 +318,7 @@ std::list< unsigned int > ListSpecificValuesForOneColumn(
 {
   std::vector< unsigned int> VectorValuesOne( 
     ListValuesOne.begin(), ListValuesOne.end() );
-  std::string Conditions;  
+  /*std::string Conditions;  
   std::vector<FieldWithValue> VectorConditions(1);
   FieldWithValue AndCondition = {fieldTwo,ValueFieldTwo, "="};
   VectorConditions[0] = AndCondition;
@@ -327,7 +327,10 @@ std::list< unsigned int > ListSpecificValuesForOneColumn(
   Conditions = Conditions.substr(0,Conditions.size()-1);
   Conditions += " AND "; 
   Conditions += GetConditions(fieldOne,VectorValuesOne,"OR");  
-  Conditions += ")";
+  Conditions += ")";*/
+  FieldWithValue AndCondition = {fieldTwo,ValueFieldTwo, "="};
+  std::string Conditions = GetAndORConditions(AndCondition, fieldOne,
+    VectorValuesOne);
   std::string QueryString = SelectQueryStreamCondition(TableName, 
     ColumnName, Conditions);
 
@@ -1442,10 +1445,10 @@ std::string GetCoordinateValuesQueryString(std::string iTableName, std::string i
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void GetTracesInfoFromDBAndModifyContainer(
+void GetTracesInfoFromDBForVisuContainer(
   std::list< ContourMeshStructure > & ioContainer,
   vtkMySQLDatabase *DatabaseConnector, std::string TraceName,
-  std::string CollectionName, unsigned int ImgSessionID, int iTimePoint,
+  std::string CollectionName, unsigned int ImgSessionID,
   std::vector< int > iVectIDs)
 {
   vtkSQLQuery *query = DatabaseConnector->GetQueryInstance();
@@ -1534,7 +1537,7 @@ void GetTracesInfoFromDBAndModifyContainer(
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void GetTracesInfoFromDBAndModifyContainer(
+void GetTracesInfoFromDBForVisuContainer(
   std::list< TrackStructure > & ioContainer,
   vtkMySQLDatabase *DatabaseConnector, std::string TraceName,
   std::string CollectionName, unsigned int ImgSessionID,
@@ -1622,6 +1625,27 @@ void GetTracesInfoFromDBAndModifyContainer(
       }
     }
   query->Delete();
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+void GetInfoFromDBAndModifyListStructure(
+  std::list< ContourMeshStructure > & ioContainer,
+  vtkMySQLDatabase *iDatabaseConnector, std::vector<std::string> iSelectedAttributes,
+  std::string iTableOne, std::string iTableTwo, std::string iTableThree,
+  FieldWithValue iJoinConditionOne, FieldWithValue iJoinConditionTwo, std::string iFieldOne,
+  unsigned int iValueFieldOne, std::string iIDFieldName, std::vector< int > iVectIDs)
+{
+  std::string What = GetSelectedAttributes(iSelectedAttributes);
+  std::string Where = GetLeftJoinThreeTables(iTableOne, iTableTwo,
+    iTableThree, iJoinConditionOne, iJoinConditionTwo);
+  FieldWithValue FirstPartCondition = {iFieldOne, 
+    ConvertToString< unsigned int> (iValueFieldOne), "="};
+  std::string Conditions = GetAndORConditions<int>(FirstPartCondition, iIDFieldName,
+  iVectIDs);
+  std::string QueryString = SelectQueryStreamCondition(Where, What, Conditions);
+                                     
+
 }
 //------------------------------------------------------------------------------
 

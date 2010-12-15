@@ -383,6 +383,9 @@ public:
     vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTraceIDs,
     unsigned int iCollectionID);
 
+  std::list<unsigned int> GetTraceIDsBelongingToCollectionID(
+    vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListCollectionIDs);
+
   std::list<unsigned int> GetTimePointsForTraceIDs(
     vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTraceIDs);
 
@@ -393,6 +396,10 @@ public:
   std::list<unsigned int> GetTraceIDsWithTimePointInf(
     vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTraceIDs,
     unsigned int iTimePoint);
+
+  std::list<ContourMeshStructure> GetListStructureFromDBWithTimePoint(
+    vtkMySQLDatabase* iDatabaseConnector,std::list<unsigned int> iListTraces, 
+    unsigned int iImgSessionID);
 
 protected:
 

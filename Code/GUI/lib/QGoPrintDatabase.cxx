@@ -1282,6 +1282,11 @@ void QGoPrintDatabase::SetTracksManager()
                       std::list<unsigned int> ) ) );
 
   QObject::connect( this->m_TracksManager,
+                    SIGNAL(TrackIDToBeModifiedWithWidget(std::list<unsigned int>) ),
+                    this,
+                    SLOT (SplitMergeTracksWithWidget(std::list<unsigned int>) ) );
+
+  QObject::connect( this->m_TracksManager,
                     SIGNAL( RefreshListCollectionIDsTM(std::string, vtkMySQLDatabase*) ),
                     this,
                     SLOT (SetTMListCollectionID(std::string, vtkMySQLDatabase*) ) );
@@ -1470,3 +1475,14 @@ AddCheckedMeshesToSelectedTrack(std::list< unsigned int > iListCheckedMeshes)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+void QGoPrintDatabase::SplitMergeTracksWithWidget(
+  std::list<unsigned int> iTrackIDs)
+{
+  this->OpenDBConnection();
+  std::list<unsigned int> ListMeshesInvolved = 
+    this->m_MeshesManager->GetListTracesIDsBelongingToCollectionIDs(
+      this->m_DatabaseConnector, iTrackIDs);
+  MeshContainer* MeshContainerTemp = this->m_MeshesManager->
+      GetMeshesInfoFromDBAndCreateContainerForVisu(
+      this->m_DatabaseConnector, ListMeshesInvolved);
+}

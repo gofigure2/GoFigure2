@@ -298,9 +298,9 @@ std::string GetConditions(std::string iField, std::string iValue,std::string iCo
   Condition[0] = Field;
   return GetConditions(Condition);
 }
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 std::string GetSelectedAttributes(std::vector<std::string> iListAttributes)
 {
   std::stringstream oQueryStream;
@@ -380,6 +380,21 @@ std::string GetLeftJoinTwoTables(std::string iTableOne,std::string iTableTwo,
   oQueryStream << ".";
   oQueryStream << iOnCondition.Value;
 
+  return oQueryStream.str();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::string GetLeftJoinThreeTables(std::string iTable,std::string iTableTwo,
+  std::string iTableThree, FieldWithValue iOnConditionOne, 
+  FieldWithValue iOnConditionTwo)
+{
+  std::stringstream oQueryStream;
+  oQueryStream << "(";
+  oQueryStream << GetLeftJoinTwoTables(iTable, iTableTwo,iOnConditionOne);
+  oQueryStream << ")";
+  std::string LeftJoinTwo =  GetLeftJoinTwoTables(iTable,iTableThree,iOnConditionTwo);
+  oQueryStream << LeftJoinTwo.substr(iTable.size()+1,LeftJoinTwo.size() );
   return oQueryStream.str();
 }
 //-------------------------------------------------------------------------

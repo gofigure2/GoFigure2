@@ -297,18 +297,26 @@ std::vector< std::pair< int, std::string > > ListSpecificValuesForTwoColumnsAndT
   std::string PrimaryKey, std::string field, std::string value);
 
 QGOIO_EXPORT
-void GetTracesInfoFromDBAndModifyContainer(
+void GetTracesInfoFromDBForVisuContainer(
   std::list< ContourMeshStructure > & ioContainer,
   vtkMySQLDatabase *DatabaseConnector, std::string TraceName,
-  std::string CollectionName, unsigned int ImgSessionID, int iTimePoint = -1,
+  std::string CollectionName, unsigned int ImgSessionID,
   std::vector< int > iListIDs = std::vector< int >() );
 
 QGOIO_EXPORT
-void GetTracesInfoFromDBAndModifyContainer(
+void GetTracesInfoFromDBForVisuContainer(
   std::list< TrackStructure > & ioContainer,
   vtkMySQLDatabase *DatabaseConnector, std::string TraceName,
   std::string CollectionName, unsigned int ImgSessionID,
   std::vector< int > iVectIDs = std::vector< int >() );
+
+QGOIO_EXPORT
+void GetInfoFromDBAndModifyListStructure(
+  std::list< ContourMeshStructure > & ioContainer,
+  vtkMySQLDatabase *iDatabaseConnector, std::vector<std::string> iSelectedAttributes,
+  std::string iTableOne, std::string iTableTwo, std::string iTableThree,
+  FieldWithValue iJoinConditionOne, FieldWithValue iJoinConditionTwo, std::string iFieldOne,
+  unsigned int iValueFieldOne, std::string iIDFieldName, std::vector< int > iVectIDs);
 
 QGOIO_EXPORT
 ContourMeshStructure GetTraceInfoFromDB(

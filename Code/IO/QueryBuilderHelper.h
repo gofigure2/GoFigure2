@@ -117,6 +117,28 @@ std::string GetConditions(std::string iField,
   return oConditions.str();
 }
 
+/**
+\brief (iFirstPartCondition AND (iField = iOrVectorValues1 OR iField = iOrVectorValues1...))
+*/
+template< typename T >
+std::string GetAndORConditions(FieldWithValue iFirtsPartCondition, std::string iField,
+  std::vector< T > iOrVectorValues)
+{
+  std::string oConditions;  
+  std::vector<FieldWithValue> VectorConditions(1);
+  //FieldWithValue AndCondition = {fieldTwo,ValueFieldTwo, "="};
+  VectorConditions[0] = iFirtsPartCondition;
+  oConditions = GetConditions(VectorConditions,"AND");
+  oConditions = oConditions.substr(0, oConditions.size()-1);
+  if (!iOrVectorValues.empty() )
+    {
+    oConditions += " AND "; 
+    oConditions += GetConditions<T>(iField,iOrVectorValues,"OR");  
+    oConditions += ")";
+    }
+  return oConditions;
+}
+
 std::string GetConditions(std::vector<FieldWithValue> iConditions,
                           std::string iConditionConnector = "AND");
 
@@ -254,6 +276,20 @@ std::vector< std::string > VectorUnsgIntToVectorString(std::vector<unsigned int>
 */
 std::string GetLeftJoinTwoTables(std::string iTableOne,std::string iTableTwo,
   FieldWithValue iOnCondition);
+
+/**
+\brief (iTable LEFT JOIN iTableTwo ON iTable.iOnCondition/Field = iTableTwo.iOnCondition/Value)
+LEFT JOIN iTableThree ON iTable.iOnCondition/Field = iTableThree.iOnCondition/Value)
+\param[in] iTable table to be joined
+\param[in] iTableTwo table to be joined to the 1rst one
+\param[in] iTableThree table to be joined ot the 1rst one
+\param[in] iOnConditionOne join on which condition between table and tableTwo
+\param[in] iOnConditionTwo join on which condition between table and tableThree
+\return the string corresponding to the query part
+*/
+std::string GetLeftJoinThreeTables(std::string iTable,std::string iTableTwo,
+  std::string iTableThree, FieldWithValue iOnConditionOne, 
+  FieldWithValue iOnConditionTwo);
 
 std::string GetGroupBy(std::string iColumn, unsigned int iNumberDoublons);
 //iselectquery union iselectquery where ijoinon IS NULL (with or without

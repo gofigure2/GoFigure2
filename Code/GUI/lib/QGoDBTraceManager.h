@@ -176,6 +176,15 @@ public:
     vtkMySQLDatabase *iDatabaseConnector, std::list< unsigned int > iListTraces);
 
   /**
+  \brief get the list of tracesIDs belonging to the collection listed in iListCollectionIDs
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iListCollectionIDs list of the collection for which the traces are needed
+  \return list of the traces belonging to these collections
+  */
+  std::list< unsigned int > GetListTracesIDsBelongingToCollectionIDs(
+    vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListCollectionIDs);
+
+  /**
   \brief get the data from the database corresponding to the iListTraces and display
   them in the Table Widget
   \param[in] iDatabaseConnector connection to the database
@@ -344,6 +353,28 @@ protected:
   */
   GoDBCoordinateRow GetCoordinateFromInt(int iXCoord, int iYCoord, int iZCoord,
                                          int iTCoord);
+
+  template< typename C, typename S >
+  void GetTracesInfoFromDBAndModifyContainerForVisu(
+    vtkMySQLDatabase* iDatabaseConnector,std::vector<int> iVectIDs,
+    C *iContainerForVisu)
+  {
+    //std::list<ContourMeshStructure> list_of_traces;
+    std::list< S > list_of_traces = 
+    GetTracesInfoFromDBForVisuContainer( list_of_traces,
+        iDatabaseConnector, this->m_TraceName, this->m_CollectionName,
+        this->m_ImgSessionID, -1, iVectIDs);
+
+    //std::list< ContourMeshStructure >::iterator it = list_of_traces.begin();
+    std::list< S >::iterator it = list_of_traces.begin();
+
+    while ( it != list_of_traces.end() )
+      {
+      //this->m_ContourContainerInfoForVisu->Insert(*it);
+      iContainerForVisu->Insert(*it);
+      ++it;
+      }
+  }
 
   /**
   \brief fill the TWContainer with all the data needed from the database

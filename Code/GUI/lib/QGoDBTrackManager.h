@@ -109,6 +109,7 @@ public:
 signals:
   void NeedMeshesInfoForImportedTrack(unsigned int iTrackID);
   void TrackToSplit(unsigned int iTrackID, std::list<unsigned int> iListMeshIDs);
+  void TrackIDToBeModifiedWithWidget(std::list<unsigned int> iListTracksID);
 
 protected:
   GoDBTWContainerForTrackLineage *m_TWContainer;
