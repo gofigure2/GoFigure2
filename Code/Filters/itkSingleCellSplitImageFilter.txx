@@ -83,7 +83,8 @@ GenerateData()
 
     while( lIt != points->End() )
       {
-      m_SeedImage->TransformPhysicalPointToIndex( lIt->Value(), index );
+      pt.CastFrom( lIt->Value() );
+      m_SeedImage->TransformPhysicalPointToIndex( pt, index );
       m_SeedImage->SetPixel( index, lIt->Index() );
       ++lIt;
       }
