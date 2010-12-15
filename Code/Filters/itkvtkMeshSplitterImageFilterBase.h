@@ -32,8 +32,8 @@
 
 =========================================================================*/
 
-#ifndef __itkvtkMeshSplitterFilterBase_h
-#define __itkvtkMeshSplitterFilterBase_h
+#ifndef ITKVTKMESHSPLITTERIMAGEFILTERBASE_H
+#define ITKVTKMESHSPLITTERIMAGEFILTERBASE_H
 
 #include "itkLightObject.h"
 #include "itkPointSet.h"
@@ -43,97 +43,71 @@
 
 namespace itk
 {
-class vtkMeshSplitterFilterBase : public LightObject
+template< class TImage >
+class vtkMeshSplitterFilterBase : public vtkMeshSplitterFilterBase
   {
 public:
-  typedef LightObject Superclass;
+  typedef vtkMeshSplitterFilterBase Superclass;
   typedef SmartPointer< Self > Pointer;
   typedef SmartPointer< const Self > ConstPointer;
 
-  typedef PointSet< double, 3 > PointSetType;
+  typedef Superclass::PointSetType PointSetType;
   typedef PointSetType::Pointer PointSetPointer;
   typedef PointSetType::PointsContainerPointer PointsContainerPointer;
   typedef PointSetType::PointsContainerConstIterator PointsContainerConstIterator;
   typedef typename PointSetType::PointType PointType;
 
-  void SetMesh( vtkPolyData* iMesh )
-    {
-    if( ( iMesh ) && ( iMesh != m_Mesh ) )
-      {
-      m_Mesh = iMesh;
-      m_Mesh->GetBounds( m_Bounds );
-      }
-    }
+  typedef TImage ImageType;
+  typedef typename ImageType::Pointer ImagePointer;
 
-  void SetSeeds( PointSetType* iSeeds )
-    {
-    m_Seeds = iSeeds;
-    }
+  typedef Image< bool, 3 > BinaryMaskImageType;
 
-  void Update()
-    {
-    GenerateData();
-    }
 
-  std::list< vtkPolyData* > GetOutputs()
+  virtual void SetImage( ImageType* iImage )
     {
-    return m_Outputs;
+    m_Image = iImage;
     }
 
 protected:
   vtkMeshSplitterFilterBase() : m_Mesh( NULL ) {}
   ~vtkMeshSplitterFilterBase() {}
 
-  vtkPolyData* m_Mesh;
-  std::list< vtkPolyData* > m_Outputs;
+  BinaryMaskImagePointer m_BinaryImage;
 
-  double m_Bounds[6];
-  PointSetPointer m_Seeds;
-
-  void IsPointInMeshBounds( const PointType& iP ) const
+  virtual void ComputBinaryImageFromInputMesh()
     {
-    for( unsigned int i = 0; i < 3; ++i )
+    typedef vtkPolyDataToBinaryMaskImageFilter< ImageType, BinaryMaskImageType >
+      BinarizerType;
+    BinarizerType::Pointer binarizer = BinarizerType::New();
+    binarizer->SetInput( m_Image );
+    binarizer->SetPolyData( this->m_Mesh );
+
+    try
       {
-      if( ( iP[i] < m_Bounds[2*i] ) || ( iP[i] > m_Bounds[2*i+1] ) )
-        {
-        return false;
-        }
+      binarizer->Update();
+      m_BinaryImage = binarizer->GetOutput();
+      m_BinaryImage->DisconnectPipeline();
       }
-    return true;
-    }
-
-  bool CheckAllSeeds()
-    {
-    PointsContainerPointer points = m_Seeds->GetPoints();
-
-    PointsContainerConstIterator it = points->Begin();
-
-    while( it != points->End() )
+    catch( itk::ExceptionObject e )
       {
-      if( IsPointInMeshBounds( it->Value() ) )
-        {
-        std::cout << it->Value() << " is out of bounds" << std::endl;
-        return false;
-        }
-      ++it;
-      }
-    return true;
-    }
-
-  virtual void Split() = 0;
-
-  virtual void GenerateData()
-    {
-    if( !CheckAllSeeds() )
-      {
-      std::cout <<"Out of bounds" <<std::endl;
+      std::cerr << "Error: " << e << std::endl;
       return;
       }
-    else
-      {
-      this->Split();
-      }
     }
+
+
+  virtual void Split()
+    {
+    ComputBinaryImageFromInputMesh();
+
+    if( m_BinaryImage.IsNotNull() )
+      {
+      SplitBinaryImage();
+      }
+
+    }
+
+  virtual void SplitBinaryImage() = 0;
 
 private:
   vtkMeshSplitterFilterBase( const Self& );
@@ -141,4 +115,4 @@ private:
   };
 }
 
-#endif // QGOMESHSPLITFILTERBASE_H
+#endif // ITKVTKMESHSPLITTERIMAGEFILTERBASE_H
