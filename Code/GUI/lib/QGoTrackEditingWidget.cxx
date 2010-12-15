@@ -668,15 +668,11 @@ initializeVisualization()
       //listOfActors.resize(4);
       listOfActors.push_back( actor );
 
-      const bool test = false;
-      const bool test3 = false;
-      const unsigned int test2 = 0;
-
       m_MeshContainer->UpdateCurrentElementFromVisu( listOfActors,
                                        nodes,
-                                       test2,
-                                       test,    //highlighted
-                                       test3 ); // visible
+                                       0,       //time - not used
+                                       false,   //highlighted
+                                       false ); // visible
       m_MeshContainer->InsertCurrentElement();
       ++listOfMeshIDsIt;
       }
