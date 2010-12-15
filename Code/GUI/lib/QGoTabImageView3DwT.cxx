@@ -3121,7 +3121,17 @@ void
 QGoTabImageView3DwT::
 StartTW()
 {
+  /*
   QGoTrackEditingWidget *win = new QGoTrackEditingWidget();
   win->setTracks2( this->m_TrackContainer->GetHighlightedElementsTrackPolyData() );
-  win->show();
+  win->show();*/
+  std::list< unsigned int > test = m_MeshContainer->GetAllCollectionIDs();
+  std::list< unsigned int >::iterator it = test.begin();
+
+  std::cout << "List of track IDs fromMesh container" << std::endl;
+  while( it != test.end() )
+    {
+    std::cout << *it << std::endl;
+    ++it;
+    }
 }

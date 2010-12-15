@@ -908,5 +908,32 @@ GetAllTraceIDsGivenCollectionID( const unsigned int& iCollection )
 }
 //-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+template< class TContainer >
+std::list< unsigned int >
+TraceContainerBase< TContainer >::
+GetAllCollectionIDs()
+{
+  using boost::multi_index::get;
+
+  std::list< unsigned int > oList;
+  MultiIndexContainerCollectionIDIterator it0, it1;
+  it0 = m_Container.get< CollectionID >().begin();
+
+  unsigned int temp(0);
+
+  while( it0 != m_Container.get< CollectionID >().end() )
+    {
+    temp = it0->CollectionID;
+    oList.push_back( temp );
+    boost::tuples::tie(it0, it1) =
+            m_Container.get< CollectionID >().equal_range( temp );
+    it0 = it1;
+    }
+
+  return oList;
+}
+//-------------------------------------------------------------------------
+
 
 #endif
