@@ -312,8 +312,7 @@ void QGoDBTrackManager::TrackIDToEmit()
     {
     QMessageBox msgBox;
     msgBox.setText(
-      tr("Please select one and only one Track to be split")
-      .arg( this->m_TraceName.c_str() ) );
+      tr("Please select one and only one Track to be split"));
     msgBox.exec();
     }
   else
@@ -351,14 +350,13 @@ void QGoDBTrackManager::SplitTrackWithWidget()
     {
     QMessageBox msgBox;
     msgBox.setText(
-      tr("Please select at least one Track to be visualized in the widget")
-      .arg( this->m_TraceName.c_str() ) );
+      tr("Please select at least one Track to be visualized in the widget"));
     msgBox.exec();
     }
   else
     {
-  emit TrackIDToBeModifiedWithWidget(HighlightedTrackIDs);
-  }
+    emit TrackIDToBeModifiedWithWidget(HighlightedTrackIDs);
+    }
 }
 //-------------------------------------------------------------------------
 

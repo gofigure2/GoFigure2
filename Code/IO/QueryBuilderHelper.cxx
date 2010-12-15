@@ -415,6 +415,25 @@ std::string GetGroupBy(std::string iColumn,unsigned int iNumberDoublons)
 
   return oQueryStream.str();
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::string SelectForTracesInfo(std::vector<std::string> iSelectedAttributes,
+  std::string iTableOne, std::string iTableTwo, std::string iTableThree,
+  FieldWithValue iJoinConditionOne, FieldWithValue iJoinConditionTwo, std::string iFieldOne,
+  unsigned int iValueFieldOne, std::string iIDFieldName, std::vector< int > iVectIDs)
+{
+  std::string What = GetSelectedAttributes(iSelectedAttributes);
+  std::string Where = GetLeftJoinThreeTables(iTableOne, iTableTwo,
+    iTableThree, iJoinConditionOne, iJoinConditionTwo);
+  FieldWithValue FirstPartCondition = {iFieldOne, 
+    ConvertToString< unsigned int> (iValueFieldOne), "="};
+  std::string Conditions = GetAndORConditions<int>(FirstPartCondition, iIDFieldName,
+  iVectIDs);
+  std::string QueryString = SelectQueryStreamCondition(Where, What, Conditions);
+                                     
+  return QueryString;
+}
 /*std::string SelectWithJoinNullIncluded(std::string iSelectQuery,
                                        std::string iJoinOn,
                                        bool doublon)

@@ -311,7 +311,7 @@ void GetTracesInfoFromDBForVisuContainer(
   std::vector< int > iVectIDs = std::vector< int >() );
 
 QGOIO_EXPORT
-void GetInfoFromDBAndModifyListStructure(
+void GetInfoFromDBAndModifyListMeshStructureSimplified(
   std::list< ContourMeshStructure > & ioContainer,
   vtkMySQLDatabase *iDatabaseConnector, std::vector<std::string> iSelectedAttributes,
   std::string iTableOne, std::string iTableTwo, std::string iTableThree,

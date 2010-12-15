@@ -292,6 +292,12 @@ std::string GetLeftJoinThreeTables(std::string iTable,std::string iTableTwo,
   FieldWithValue iOnConditionTwo);
 
 std::string GetGroupBy(std::string iColumn, unsigned int iNumberDoublons);
+
+std::string SelectForTracesInfo(std::vector<std::string> iSelectedAttributes,
+  std::string iTableOne, std::string iTableTwo, std::string iTableThree,
+  FieldWithValue iJoinConditionOne, FieldWithValue iJoinConditionTwo, std::string iFieldOne,
+  unsigned int iValueFieldOne, std::string iIDFieldName, std::vector< int > iVectIDs);
+
 //iselectquery union iselectquery where ijoinon IS NULL (with or without
 // brackets in the
 //where clause, it will work

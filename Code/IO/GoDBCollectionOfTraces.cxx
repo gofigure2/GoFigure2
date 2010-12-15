@@ -931,7 +931,7 @@ std::list<ContourMeshStructure> GoDBCollectionOfTraces::
   FieldWithValue CoordinateCondition = {"CoordIDMin", "CoordID", "="};
   FieldWithValue ColorCondition = {"ColorID", "ColorID", "="};
 
-  GetInfoFromDBAndModifyListStructure( oListTracesResults, iDatabaseConnector, TraceAttributes,
+  GetInfoFromDBAndModifyListMeshStructureSimplified( oListTracesResults, iDatabaseConnector, TraceAttributes,
     this->m_TracesName, "coordinate", "color", CoordinateCondition, ColorCondition, "ImagingSessionID",
     iImgSessionID, this->m_TracesIDName, VectorTracesIDs);
 

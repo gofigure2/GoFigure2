@@ -1629,14 +1629,50 @@ void GetTracesInfoFromDBForVisuContainer(
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void GetInfoFromDBAndModifyListStructure(
+void GetInfoFromDBAndModifyListMeshStructureSimplified(
   std::list< ContourMeshStructure > & ioContainer,
   vtkMySQLDatabase *iDatabaseConnector, std::vector<std::string> iSelectedAttributes,
   std::string iTableOne, std::string iTableTwo, std::string iTableThree,
   FieldWithValue iJoinConditionOne, FieldWithValue iJoinConditionTwo, std::string iFieldOne,
   unsigned int iValueFieldOne, std::string iIDFieldName, std::vector< int > iVectIDs)
 {
-  std::string What = GetSelectedAttributes(iSelectedAttributes);
+  vtkSQLQuery *query = iDatabaseConnector->GetQueryInstance();
+
+  std::string QueryString = SelectForTracesInfo(iSelectedAttributes, iTableOne, iTableTwo, 
+    iTableThree, iJoinConditionOne, iJoinConditionTwo, iFieldOne, iValueFieldOne, iIDFieldName, 
+    iVectIDs);
+
+  query->SetQuery( QueryString.c_str() );
+  if ( !query->Execute() )
+    {
+    itkGenericExceptionMacro(
+      << "return info meshes or contours query failed"
+      << query->GetLastErrorText() );
+    iDatabaseConnector->Close();
+    iDatabaseConnector->Delete();
+    query->Delete();
+    return;
+    }
+
+  while ( query->NextRow() )
+    {
+      {
+      ContourMeshStructure temp;
+      temp.TraceID = query->DataValue(0).ToInt();
+      temp.CollectionID = query->DataValue(1).ToUnsignedInt();
+      temp.TCoord       = query->DataValue(2).ToUnsignedInt();
+      /// \note For the visualization rgba values are supposed to be double in
+      /// between 0 and 1; whereas in the database these values are in between
+      /// 0 and 255.
+      temp.rgba[0]      = ( query->DataValue(4).ToDouble() ) / 255.;
+      temp.rgba[1]      = ( query->DataValue(5).ToDouble() ) / 255.;
+      temp.rgba[2]      = ( query->DataValue(6).ToDouble() ) / 255.;
+      temp.rgba[3]      = ( query->DataValue(7).ToDouble() ) / 255.;
+      ioContainer.push_back(temp);
+      }
+    }
+  query->Delete();
+  /*std::string What = GetSelectedAttributes(iSelectedAttributes);
   std::string Where = GetLeftJoinThreeTables(iTableOne, iTableTwo,
     iTableThree, iJoinConditionOne, iJoinConditionTwo);
   FieldWithValue FirstPartCondition = {iFieldOne, 
@@ -1645,7 +1681,7 @@ void GetInfoFromDBAndModifyListStructure(
   iVectIDs);
   std::string QueryString = SelectQueryStreamCondition(Where, What, Conditions);
                                      
-
+  return QueryString;*/
 }
 //------------------------------------------------------------------------------
 
