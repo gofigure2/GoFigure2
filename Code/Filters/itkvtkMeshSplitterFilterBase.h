@@ -35,6 +35,12 @@
 #ifndef QGOMESHSPLITFILTERBASE_H
 #define QGOMESHSPLITFILTERBASE_H
 
+#include "itkLightObject.h"
+#include "itkPointSet.h"
+#include "vtkPolyData.h"
+
+#include <list>
+
 namespace itk
 {
 class vtkMeshSplitterFilterBase : public LightObject
