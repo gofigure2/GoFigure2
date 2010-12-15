@@ -91,6 +91,10 @@ namespace boost
           BOOST_MULTI_INDEX_MEMBER(TraceStructure, unsigned int, TraceID)
           >,
         boost::multi_index::ordered_non_unique<
+          boost::multi_index::tag< CollectionID >,
+          BOOST_MULTI_INDEX_MEMBER(TraceStructure, unsigned int, CollectionID)
+          >,
+        boost::multi_index::ordered_non_unique<
           boost::multi_index::tag< Highlighted >,
           BOOST_MULTI_INDEX_MEMBER(TraceStructure, bool, Highlighted)
           >,
