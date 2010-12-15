@@ -56,8 +56,8 @@
 namespace itk
 {
 template < class TInputImage >
-class ITK_EXPORT SingleCellSplitImageFilter : public ImageToImageFilter<
-        TInputImage, TInputImage >
+class ITK_EXPORT SingleCellSplitImageFilter :
+  public ImageToImageFilter< TInputImage, TInputImage >
 {
   public:
     typedef SingleCellSplitImageFilter             Self;

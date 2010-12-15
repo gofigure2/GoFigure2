@@ -58,8 +58,8 @@ template< class TInputImage >
 void SingleCellSplitImageFilter< TInputImage >::
 GenerateData()
 {
-  if ( !m_SeedImage )
-  {
+  if ( m_SeedImage.IsNull() )
+    {
     m_SeedImage = ImageType::New();
     m_SeedImage->SetRegions( this->GetInput()->GetLargestPossibleRegion() );
     m_SeedImage->SetOrigin(  this->GetInput()->GetOrigin() );
@@ -73,14 +73,13 @@ GenerateData()
     ListIteratorType lIt = m_Seeds.begin();
     unsigned int i = 1;
     while( lIt != m_Seeds.end() )
-    {
+      {
       index = *lIt;
       m_SeedImage->SetPixel( index, i );
-//       std::cout << index << std::endl;
-      lIt++;
-      i++;
+      ++lIt;
+      ++i;
+      }
     }
-  }
 
   //Compute the voronoi map
   DistanceFilterPointer m_Dist = DistanceFilterType::New();
@@ -93,15 +92,19 @@ GenerateData()
 
   IteratorType It1( output, output->GetLargestPossibleRegion() );
   ConstIteratorType It2( this->GetInput(), output->GetLargestPossibleRegion() );
+
   It1.GoToBegin();
   It2.GoToBegin();
+
   while( !It1.IsAtEnd() )
-  {
+    {
     if( It2.Get() != m_ForegroundValue )
+      {
       It1.Set( 0 );
+      }
     ++It1;
     ++It2;
-  }
+    }
 
   this->GraftOutput( output );
 
