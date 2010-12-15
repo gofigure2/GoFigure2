@@ -63,19 +63,19 @@ int main ( int argc, char* argv[] )
     }
 
   ImageType::IndexType index1, index2;
-  
+
   FilterType::Pointer filter = FilterType::New();
   filter->SetInput ( input );
   filter->SetForegroundValue( 1 );
-  
+
   index1[0] = 40;
   index1[1] = 40;
   filter->m_Seeds.push_back( index1 );
-  
+
   index2[0] = 60;
   index2[1] = 60;
   filter->m_Seeds.push_back( index2 );
-  
+
   filter->Update();
 
   WriterType::Pointer writer = WriterType::New();
