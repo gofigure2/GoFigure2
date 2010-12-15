@@ -85,28 +85,28 @@ class ITK_EXPORT SingleCellSplitImageFilter : public ImageToImageFilter<
 
     typedef ImageRegionIterator< ImageType > IteratorType;
     typedef ImageRegionConstIterator< ImageType > ConstIteratorType;
-    
+
     typedef DanielssonDistanceMapImageFilter< ImageType, ImageType > DistanceFilterType;
     typedef typename DistanceFilterType::Pointer DistanceFilterPointer;
 
     typedef std::list< ImageIndexType > SeedListType;
     typedef typename SeedListType::iterator ListIteratorType;
-    
+
     itkGetConstMacro ( ForegroundValue, ImagePixelType );
     itkSetMacro ( ForegroundValue, ImagePixelType );
-    
+
     SeedListType m_Seeds;
-    
+
     void SetSeedImage( ImagePointer in )
     {
       m_SeedImage = in;
     }
-    
+
   protected:
     SingleCellSplitImageFilter();
     ~SingleCellSplitImageFilter() {}
     void GenerateData();
-    
+
     ImagePointer m_SeedImage;
     ImagePixelType m_ForegroundValue;
 

@@ -46,7 +46,7 @@ SingleCellSplitImageFilter< TInputImage >
 {
   m_SeedImage = 0;
   m_ForegroundValue = 1;
-  
+
   this->Superclass::SetNumberOfRequiredInputs ( 1 );
   this->Superclass::SetNumberOfRequiredOutputs ( 1 );
 
@@ -81,7 +81,7 @@ GenerateData()
       i++;
     }
   }
-  
+
   //Compute the voronoi map
   DistanceFilterPointer m_Dist = DistanceFilterType::New();
   m_Dist->SetInput( m_SeedImage );
@@ -90,7 +90,7 @@ GenerateData()
   m_Dist->UpdateLargestPossibleRegion();
   ImagePointer output = m_Dist->GetVoronoiMap();
   output->DisconnectPipeline();
-  
+
   IteratorType It1( output, output->GetLargestPossibleRegion() );
   ConstIteratorType It2( this->GetInput(), output->GetLargestPossibleRegion() );
   It1.GoToBegin();
@@ -102,7 +102,7 @@ GenerateData()
     ++It1;
     ++It2;
   }
-  
+
   this->GraftOutput( output );
 
   return;
