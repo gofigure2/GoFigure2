@@ -697,7 +697,8 @@ protected:
 
   void AddSpecificActionsForContourMesh(QMenu *iMenu);
 
-  virtual void AddActionForCreateNewCollectionFromCheckedTraces(QMenu *iMenu);
+
+  virtual void AddActionForCreateNewCollectionFromCheckedTraces();
 
   /**
   \brief get the info needed from the database to update the container

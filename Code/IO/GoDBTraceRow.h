@@ -72,14 +72,14 @@ public:
   \param[in] Max coordinate row for the maximum of the bounding box
   \param[in] ImgSessionID ID of the current imagingsession
   */
-  GoDBTraceRow(vtkMySQLDatabase *DatabaseConnector, std::string TraceVisu,
-               GoDBCoordinateRow Min, GoDBCoordinateRow Max, unsigned int ImgSessionID);
+  //GoDBTraceRow(vtkMySQLDatabase *DatabaseConnector, std::string TraceVisu,
+    //           GoDBCoordinateRow Min, GoDBCoordinateRow Max, unsigned int ImgSessionID);
 
   /**
   \brief
   \param[in] ImgSessionID ID of the current imagingsession
   */
-  GoDBTraceRow(unsigned int ImgSessionID);
+  //GoDBTraceRow(unsigned int ImgSessionID);
 
   /**
   \brief get the data from the database corresponding to the iExistingID
@@ -87,7 +87,7 @@ public:
   \param[in] iExistingID ID of the existing trace
   \param[in] DatabaseConnector connection to the database
   */
-  GoDBTraceRow(unsigned int iExistingID,vtkMySQLDatabase *iDatabaseConnector);
+  //GoDBTraceRow(unsigned int iExistingID,vtkMySQLDatabase *iDatabaseConnector);
 
   ~GoDBTraceRow()
   {}

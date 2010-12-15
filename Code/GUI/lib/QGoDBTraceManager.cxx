@@ -193,14 +193,13 @@ void QGoDBTraceManager::AddSpecificActionsForContourMesh(QMenu *iMenu)
                    SLOT( ShowOnlyRowsForCurrentTimePoint(bool) ) );
   iMenu->addAction(ShowCurrentTimePoint);
   /** \todo Lydie: when using lineage, put it in the generalActionsContextMenu*/
-  this->AddActionForCreateNewCollectionFromCheckedTraces(iMenu);
+  this->AddActionForCreateNewCollectionFromCheckedTraces();
 }
 
 //-------------------------------------------------------------------------
 
 //------------------------------------------------------------------------
-void QGoDBTraceManager::AddActionForCreateNewCollectionFromCheckedTraces(
-  QMenu *iMenu)
+void QGoDBTraceManager::AddActionForCreateNewCollectionFromCheckedTraces()
 {
   this->m_CheckedTracesMenu->addAction(tr("Create a new %1 from checked %2s")
                     .arg( this->m_CollectionName.c_str() )

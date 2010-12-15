@@ -64,8 +64,8 @@ public:
   \param[in] Max coordinate row for the maximum of the bounding box
   \param[in] ImgSessionID ID of the current imagingsession
   */
-  GoDBLineageRow(vtkMySQLDatabase *DatabaseConnector, GoDBCoordinateRow Min,
-                 GoDBCoordinateRow Max, unsigned int ImgSessionID, vtkPolyData *TraceVisu);
+  //GoDBLineageRow(vtkMySQLDatabase *DatabaseConnector, GoDBCoordinateRow Min,
+  //               GoDBCoordinateRow Max, unsigned int ImgSessionID, vtkPolyData *TraceVisu);
 
   /**
   \brief 

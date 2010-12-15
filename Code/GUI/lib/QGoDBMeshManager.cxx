@@ -373,7 +373,7 @@ void QGoDBMeshManager::GetTracesInfoFromDBAndModifyContainerForVisu(
   GetTracesInfoFromDBAndModifyContainer(
       list_of_traces,
       iDatabaseConnector, this->m_TraceName, this->m_CollectionName,
-      this->m_ImgSessionID, -1, iVectIDs);
+      this->m_ImgSessionID, iVectIDs);
 
   std::list< ContourMeshStructure >::iterator it = list_of_traces.begin();
 

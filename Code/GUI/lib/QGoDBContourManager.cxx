@@ -133,8 +133,7 @@ void QGoDBContourManager::AddActionsContextMenu(QMenu *iMenu)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBContourManager::AddActionForCreateNewCollectionFromCheckedTraces(
-  QMenu *iMenu)
+void QGoDBContourManager::AddActionForCreateNewCollectionFromCheckedTraces()
 {
   this->m_CheckedTracesMenu->addAction( tr("Generate a new mesh from checked contours"),
          this, SLOT( CreateCorrespondingCollection() ) );
@@ -306,7 +305,7 @@ void QGoDBContourManager::GetTracesInfoFromDBAndModifyContainerForVisu(
   GetTracesInfoFromDBAndModifyContainer(
       list_of_traces,
       iDatabaseConnector, this->m_TraceName, this->m_CollectionName,
-      this->m_ImgSessionID, -1, iVectIDs);
+      this->m_ImgSessionID, iVectIDs);
 
   std::list< ContourMeshStructure >::iterator it = list_of_traces.begin();
 

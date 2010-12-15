@@ -46,7 +46,7 @@ GoDBLineageRow::~GoDBLineageRow ()
 {}
 
 //-------------------------------------------------------------------------
-GoDBLineageRow::GoDBLineageRow(vtkMySQLDatabase *DatabaseConnector,
+/*GoDBLineageRow::GoDBLineageRow(vtkMySQLDatabase *DatabaseConnector,
                                GoDBCoordinateRow Min, GoDBCoordinateRow Max,
                                unsigned int ImgSessionID,
                                vtkPolyData *TraceVisu)
@@ -57,7 +57,7 @@ GoDBLineageRow::GoDBLineageRow(vtkMySQLDatabase *DatabaseConnector,
     {
     std::cout << "The bounding box alreaady exists for this lineage" << std::endl;
     }
-}
+}*/
 
 //-------------------------------------------------------------------------
 

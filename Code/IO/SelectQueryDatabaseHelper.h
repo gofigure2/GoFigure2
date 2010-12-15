@@ -158,7 +158,7 @@ QGOIO_EXPORT
 std::vector< std::string > ListSpecificValuesForOneColumn(
   vtkMySQLDatabase *iDatabaseConnector,
   std::string TableName, std::string ColumnName,
-  std::string field, std::string value, bool Distinct = false,
+  std::string field, std::string value, //bool Distinct = false,
   bool ExcludeZero = false);
 
 /**
@@ -300,7 +300,7 @@ QGOIO_EXPORT
 void GetTracesInfoFromDBAndModifyContainer(
   std::list< ContourMeshStructure > & ioContainer,
   vtkMySQLDatabase *DatabaseConnector, std::string TraceName,
-  std::string CollectionName, unsigned int ImgSessionID, int iTimePoint = -1,
+  std::string CollectionName, unsigned int ImgSessionID, //int iTimePoint = -1,
   std::vector< int > iListIDs = std::vector< int >() );
 
 QGOIO_EXPORT
@@ -507,7 +507,7 @@ std::list< unsigned int > GetAllSelectedValuesFromTwoTables(vtkMySQLDatabase *iD
 std::list< unsigned int > GetDoublonValuesFromTwoTables(
       vtkMySQLDatabase* iDatabaseConnector, std::string iTableOne, std::string iTableTwo,
       std::string iColumn, FieldWithValue iJoinCondition,std::string iField,
-      std::vector<std::string> iVectValues, std::string GroupByColumn = "");
+      std::vector<std::string> iVectValues);//, std::string GroupByColumn = "");
 
 int GetMaxValueFromTwoTables(vtkMySQLDatabase *iDatabaseConnector,
   std::string iTableOne, std::string iTableTwo,std::string iColumn,
