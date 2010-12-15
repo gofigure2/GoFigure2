@@ -36,6 +36,7 @@
 #define __StructureHelper_h
 
 struct TraceID {};
+struct CollectionID {};
 struct ActorXY {};
 struct ActorXZ {};
 struct ActorYZ {};

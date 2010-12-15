@@ -74,6 +74,9 @@ public:
   typedef typename MultiIndexContainerType::template index< TraceID >::type::iterator
   MultiIndexContainerTraceIDIterator;
 
+  typedef typename MultiIndexContainerType::template index< CollectionID >::type::iterator
+  MultiIndexContainerCollectionIDIterator;
+
   typedef typename MultiIndexContainerType::template index< Highlighted >::type::iterator
   MultiIndexContainerHighlightedIterator;
 
