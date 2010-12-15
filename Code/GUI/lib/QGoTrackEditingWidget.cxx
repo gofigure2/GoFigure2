@@ -665,8 +665,13 @@ initializeVisualization()
       renderer->AddActor(actor);
 
       std::vector< vtkActor * > listOfActors; // to satisfy API
-      //listOfActors.resize(4);
       listOfActors.push_back( actor );
+      vtkActor* actor1 = vtkActor::New();
+      listOfActors.push_back( actor1 );
+      vtkActor* actor2 = vtkActor::New();
+      listOfActors.push_back( actor2 );
+      vtkActor* actor3 = vtkActor::New();
+      listOfActors.push_back( actor3 );
 
       m_MeshContainer->UpdateCurrentElementFromVisu( listOfActors,
                                        nodes,
