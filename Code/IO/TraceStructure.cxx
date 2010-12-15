@@ -45,7 +45,7 @@
 
 //--------------------------------------------------------------------------
 TraceStructure::
-TraceStructure():TraceID(0),
+TraceStructure():TraceID(0), CollectionID( 0 ),
   ActorXY(NULL), ActorXZ(NULL), ActorYZ(NULL), ActorXYZ(NULL), Nodes(NULL),
   Highlighted(false), Visible(false)
 {
@@ -59,16 +59,19 @@ TraceStructure():TraceID(0),
 
 //--------------------------------------------------------------------------
 TraceStructure::
-TraceStructure(const unsigned int & iTraceID,
-                                           std::vector< vtkActor * > iActors,
-                                           vtkPolyData *iNodes,
-                                           const bool & iHighlighted,
-                                           const bool & iVisible,
-                                           const double & r,
-                                           const double & g,
-                                           const double & b,
-                                           const double & alpha):
-  TraceID(iTraceID), Nodes(iNodes), Highlighted(iHighlighted), Visible(iVisible)
+TraceStructure(
+  const unsigned int & iTraceID,
+  const unsigned int & iCollectionID,
+  std::vector< vtkActor * > iActors,
+  vtkPolyData *iNodes,
+  const bool & iHighlighted,
+  const bool & iVisible,
+  const double & r,
+  const double & g,
+  const double & b,
+  const double & alpha):
+  TraceID(iTraceID), CollectionID( iCollectionID ),
+  Nodes(iNodes), Highlighted(iHighlighted), Visible(iVisible)
 {
   if ( iActors.size() == 4 )
     {
@@ -93,12 +96,14 @@ TraceStructure(const unsigned int & iTraceID,
 //--------------------------------------------------------------------------
 TraceStructure::
 TraceStructure( const unsigned int & iTraceID,
+                const unsigned int & iCollectionID,
                 std::vector< vtkActor * > iActors,
                 vtkPolyData *iNodes,
                 const bool & iHighlighted,
                 const bool & iVisible,
                 double iRgba[4]):
-  TraceID(iTraceID), Nodes(iNodes), Highlighted(iHighlighted), Visible(iVisible)
+  TraceID(iTraceID), CollectionID( iCollectionID ),
+  Nodes(iNodes), Highlighted(iHighlighted), Visible(iVisible)
 {
   if ( iActors.size() == 4 )
     {
@@ -123,6 +128,7 @@ TraceStructure( const unsigned int & iTraceID,
 //--------------------------------------------------------------------------
 TraceStructure::
 TraceStructure( const unsigned int & iTraceID,
+                const unsigned int & iCollectionID,
                 vtkActor *iActorXY,
                 vtkActor *iActorYZ,
                 vtkActor *iActorXZ,
@@ -134,7 +140,8 @@ TraceStructure( const unsigned int & iTraceID,
                 const double & g,
                 const double & b,
                 const double & alpha):
-  TraceID(iTraceID), ActorXY(iActorXY), ActorXZ(iActorXZ),
+  TraceID(iTraceID), CollectionID( iCollectionID ),
+  ActorXY(iActorXY), ActorXZ(iActorXZ),
   ActorYZ(iActorYZ), ActorXYZ(iActorXYZ), Nodes(iNodes),
   Highlighted(iHighlighted), Visible(iVisible)
 {
@@ -149,9 +156,9 @@ TraceStructure( const unsigned int & iTraceID,
 //--------------------------------------------------------------------------
 TraceStructure::
 TraceStructure(const TraceStructure & iE):
-  TraceID(iE.TraceID), ActorXY(iE.ActorXY), ActorXZ(iE.ActorXZ),
-  ActorYZ(iE.ActorYZ), ActorXYZ(iE.ActorXYZ), Nodes(iE.Nodes),
-  Highlighted(iE.Highlighted), Visible(iE.Visible)
+  TraceID(iE.TraceID), CollectionID(iE.CollectionID), ActorXY(iE.ActorXY),
+  ActorXZ(iE.ActorXZ), ActorYZ(iE.ActorYZ), ActorXYZ(iE.ActorXYZ),
+  Nodes(iE.Nodes), Highlighted(iE.Highlighted), Visible(iE.Visible)
 {
   for ( int i = 0; i < 4; i++ )
     {
