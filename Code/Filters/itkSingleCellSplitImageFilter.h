@@ -1,14 +1,8 @@
 /*=========================================================================
-  Author: $Author: krm15 $  // Author of last commit
-  Version: $Rev: 738 $  // Revision of last commit
-  Date: $Date: 2009-10-10 23:59:10 -0400 (Sat, 10 Oct 2009) $  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-10, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -62,8 +56,8 @@
 namespace itk
 {
 template < class TInputImage >
-class ITK_EXPORT SingleCellSplitImageFilter : public ImageToImageFilter<
-        TInputImage, TInputImage >
+class ITK_EXPORT SingleCellSplitImageFilter :
+  public ImageToImageFilter< TInputImage, TInputImage >
 {
   public:
     typedef SingleCellSplitImageFilter             Self;
@@ -91,28 +85,28 @@ class ITK_EXPORT SingleCellSplitImageFilter : public ImageToImageFilter<
 
     typedef ImageRegionIterator< ImageType > IteratorType;
     typedef ImageRegionConstIterator< ImageType > ConstIteratorType;
-    
+
     typedef DanielssonDistanceMapImageFilter< ImageType, ImageType > DistanceFilterType;
     typedef typename DistanceFilterType::Pointer DistanceFilterPointer;
 
     typedef std::list< ImageIndexType > SeedListType;
     typedef typename SeedListType::iterator ListIteratorType;
-    
+
     itkGetConstMacro ( ForegroundValue, ImagePixelType );
     itkSetMacro ( ForegroundValue, ImagePixelType );
-    
+
     SeedListType m_Seeds;
-    
+
     void SetSeedImage( ImagePointer in )
     {
       m_SeedImage = in;
     }
-    
+
   protected:
     SingleCellSplitImageFilter();
     ~SingleCellSplitImageFilter() {}
     void GenerateData();
-    
+
     ImagePointer m_SeedImage;
     ImagePixelType m_ForegroundValue;
 

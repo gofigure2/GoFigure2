@@ -1,14 +1,8 @@
 /*=========================================================================
-  Author: $Author: krm15 $  // Author of last commit
-  Version: $Rev: 738 $  // Revision of last commit
-  Date: $Date: 2009-10-10 23:59:10 -0400 (Sat, 10 Oct 2009) $  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-10, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -69,19 +63,19 @@ int main ( int argc, char* argv[] )
     }
 
   ImageType::IndexType index1, index2;
-  
+
   FilterType::Pointer filter = FilterType::New();
   filter->SetInput ( input );
   filter->SetForegroundValue( 1 );
-  
+
   index1[0] = 40;
   index1[1] = 40;
   filter->m_Seeds.push_back( index1 );
-  
+
   index2[0] = 60;
   index2[1] = 60;
   filter->m_Seeds.push_back( index2 );
-  
+
   filter->Update();
 
   WriterType::Pointer writer = WriterType::New();

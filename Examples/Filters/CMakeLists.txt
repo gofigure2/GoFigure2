@@ -39,8 +39,8 @@ ADD_TEST( itkvtkPolyDataToGoFigureMeshAttributesTest
   ${TESTING_DATA_PATH}/Circle3D.mhd
 )
 
-SET_TESTS_PROPERTIES( itkBinaryMaskImageToGoFigureMeshAttributesTest 
-  PROPERTIES DEPENDS 
+SET_TESTS_PROPERTIES( itkBinaryMaskImageToGoFigureMeshAttributesTest
+  PROPERTIES DEPENDS
   itkvtkPolyDatatoBinaryMaskImageFilterTest
 )
 
@@ -59,15 +59,14 @@ ADD_TEST( ContourToMeshFilterTest
  1
  )
 
-ADD_EXECUTABLE( singleCellSplitImageFilter 
+ADD_EXECUTABLE( singleCellSplitImageFilter
   SingleCellSplitImageFilter.cxx
   )
 TARGET_LINK_LIBRARIES(
-  singleCellSplitImageFilter 
-  ITKReview 
+  singleCellSplitImageFilter
+  ITKReview
   ITKIO
   )
-
 
 ADD_EXECUTABLE( cellMergeImageFilter 
   CellMergeImageFilter.cxx
@@ -77,3 +76,8 @@ TARGET_LINK_LIBRARIES( cellMergeImageFilter
   vtkHybrid 
   )
 
+ADD_TEST( singleCellSplitImageFilterTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/singleCellSplitImageFilter
+  ${TESTING_DATA_PATH}/MultiphaseCells2D.png
+  split.mhd
+)

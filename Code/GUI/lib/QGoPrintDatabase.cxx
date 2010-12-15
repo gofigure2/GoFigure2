@@ -1362,7 +1362,7 @@ PassMeshesInfoForImportedTrack(unsigned int iTrackID)
      ListMeshesForTwoTracks = this->m_MeshesManager->GetMeshesForSplittedTrack(
      iTrackID,this->m_DatabaseConnector,iListMeshIDs);
    //a new track is created with the smallest timepoints:
-   this->CreateNewTrackFromListMeshes(ListMeshesForTwoTracks.first);
+   this->CreateNewTrackFromListMeshes(ListMeshesForTwoTracks.second);
    this->CloseDBConnection();
  }
  //--------------------------------------------------------------------------
