@@ -264,6 +264,7 @@ preview()
 //setup render window, renderer, and interactor
   this->qvtkWidget->GetRenderWindow()->AddRenderer(renderer);
 
+/*
   std::map< vtkActor*, std::pair<bool, std::pair< int,  int> > >::iterator
       actor2IDMapIterator;
   actor2IDMapIterator = m_Actor2IDMap.begin();
@@ -272,6 +273,7 @@ preview()
     renderer->AddActor( actor2IDMapIterator->first );
     ++actor2IDMapIterator;
     }
+*/
 
   this->qvtkWidget->GetInteractor()->SetInteractorStyle(m_InteractorStyle3D);
   m_InteractorStyle3D->EnablePickMode();
@@ -630,24 +632,39 @@ void
 QGoTrackEditingWidget::
 initializeVisualization()
 {
-  //m_MeshContainer
-  /*
-  using boost::multi_index::get;
-  it = m_MeshContainer.get< TIndex >().begin();*/
-/*
-  while ( it != m_MeshContainer.end() )
-    {*/
-  /*
-    if ( it->Nodes )
+  std::list<unsigned int> listOfTrackIDs = m_MeshContainer->GetAllCollectionIDs();
+  std::list<unsigned int>::iterator trackIDsIt = listOfTrackIDs.begin();
+
+  // For each track, create the actors
+  while( trackIDsIt != listOfTrackIDs.end() )
+    {
+    std::list<unsigned int> listOfMeshIDs =
+        m_MeshContainer->GetAllTraceIDsGivenCollectionID( (*trackIDsIt) );
+    std::list<unsigned int>::iterator listOfMeshIDsIt = listOfMeshIDs.begin();
+
+    // Create the spheres actor
+    // update the container
+    while( listOfMeshIDsIt != listOfMeshIDs.end() )
       {
-      if( it->Nodes->GetPointData()->GetScalars() )
-        {
-        it->Nodes->GetPointData()->GetScalars()->Delete();
-        }
-      it->Nodes->Delete();
+      m_MeshContainer->ResetCurrentElement();
+      m_MeshContainer->UpdateCurrentElementFromExistingOne( (*listOfMeshIDsIt) );
+
+      // Get the polydata
+      vtkPolyData* nodes = m_MeshContainer->GetCurrentElementNodes();
+      //setup actor and mapper
+      vtkSmartPointer<vtkPolyDataMapper> mapper =
+          vtkSmartPointer<vtkPolyDataMapper>::New();
+      mapper->SetInput(nodes);
+
+      vtkActor* actor = vtkActor::New();
+      actor->SetMapper(mapper);
+      // Add actor to visu
+      renderer->AddActor(actor);
+
+      m_MeshContainer->InsertCurrentElement();
+      ++listOfMeshIDsIt;
       }
-*/
-  /*
-    ++it;
-    }*/
+
+    ++trackIDsIt;
+    }
 }

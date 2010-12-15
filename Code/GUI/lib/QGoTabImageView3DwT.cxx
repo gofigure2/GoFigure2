@@ -3134,4 +3134,11 @@ StartTW()
     std::cout << *it << std::endl;
     ++it;
     }
+
+
+  QGoTrackEditingWidget *win = new QGoTrackEditingWidget();
+  win->setMeshContainer( m_MeshContainer);
+  win->initializeVisualization();
+  win->preview();
+  win->show();
 }
