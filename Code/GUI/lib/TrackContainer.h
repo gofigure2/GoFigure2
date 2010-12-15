@@ -88,6 +88,10 @@ namespace boost
         BOOST_MULTI_INDEX_MEMBER(TraceStructure, unsigned int, TraceID)
         >,
       boost::multi_index::ordered_non_unique<
+        boost::multi_index::tag< CollectionID >,
+        BOOST_MULTI_INDEX_MEMBER(TraceStructure, unsigned int, CollectionID)
+      >,
+      boost::multi_index::ordered_non_unique<
         boost::multi_index::tag< Highlighted >,
         BOOST_MULTI_INDEX_MEMBER(TraceStructure, bool, Highlighted)
         >,
@@ -382,7 +386,7 @@ public:
 
   void MergeTrack( const unsigned int& iId1, const unsigned int& iId2 );
 
-  std::map< unsigned int, std::pair< const double* , vtkPolyData*> > 
+  std::map< unsigned int, std::pair< const double* , vtkPolyData*> >
   GetHighlightedElementsTrackPolyData();
 
 signals:
