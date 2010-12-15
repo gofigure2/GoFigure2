@@ -68,3 +68,12 @@ TARGET_LINK_LIBRARIES(
   ITKIO
   )
 
+
+ADD_EXECUTABLE( cellMergeImageFilter 
+  CellMergeImageFilter.cxx
+  )
+
+TARGET_LINK_LIBRARIES( cellMergeImageFilter 
+  vtkHybrid 
+  )
+
