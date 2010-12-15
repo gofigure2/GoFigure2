@@ -34,6 +34,7 @@
 
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
+#include "itkPointSet.h"
 #include "itkSingleCellSplitImageFilter.h"
 #include <list>
 #include <fstream>
@@ -49,9 +50,12 @@ int main ( int argc, char* argv[] )
 
   const unsigned int Dimension = 2;
   typedef itk::Image< unsigned char, Dimension > ImageType;
+  typedef ImageType::PointType ImagePointType;
+  typedef itk::PointSet< ImagePointType::CoordRepType, 2 > PointSetType;
+
   typedef itk::ImageFileReader< ImageType > ReaderType;
   typedef itk::ImageFileWriter< ImageType > WriterType;
-  typedef itk::SingleCellSplitImageFilter< ImageType > FilterType;
+  typedef itk::SingleCellSplitImageFilter< ImageType, PointSetType > FilterType;
 
   ImageType::Pointer input;
     {
@@ -62,20 +66,22 @@ int main ( int argc, char* argv[] )
     input->DisconnectPipeline();
     }
 
-  ImageType::IndexType index1, index2;
-
   FilterType::Pointer filter = FilterType::New();
   filter->SetInput ( input );
   filter->SetForegroundValue( 1 );
 
-  index1[0] = 40;
-  index1[1] = 40;
-  filter->m_Seeds.push_back( index1 );
+  PointSetType::Pointer seeds = PointSetType::New();
 
-  index2[0] = 60;
-  index2[1] = 60;
-  filter->m_Seeds.push_back( index2 );
+  ImagePointType p;
+  p[0] = 40;
+  p[1] = 40;
+  seeds->SetPoint( 0, p );
 
+  p[0] = 60;
+  p[1] = 60;
+  seeds->SetPoint( 1, p );
+
+  filter->SetSeeds( seeds );
   filter->Update();
 
   WriterType::Pointer writer = WriterType::New();

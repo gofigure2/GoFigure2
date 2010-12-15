@@ -1,14 +1,8 @@
 /*=========================================================================
-  Author: $Author: krm15 $  // Author of last commit
-  Version: $Rev: 738 $  // Revision of last commit
-  Date: $Date: 2009-10-10 23:59:10 -0400 (Sat, 10 Oct 2009) $  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-10, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -46,13 +40,14 @@
 namespace itk
 {
 //  Software Guide : BeginCodeSnippet
-template< class TInputImage >
-SingleCellSplitImageFilter< TInputImage >
+template< class TInputImage, class TPointSet >
+SingleCellSplitImageFilter< TInputImage, TPointSet >
 ::SingleCellSplitImageFilter()
 {
+  m_Seeds = 0;
   m_SeedImage = 0;
   m_ForegroundValue = 1;
-  
+
   this->Superclass::SetNumberOfRequiredInputs ( 1 );
   this->Superclass::SetNumberOfRequiredOutputs ( 1 );
 
@@ -60,12 +55,18 @@ SingleCellSplitImageFilter< TInputImage >
 }
 
 
-template< class TInputImage >
-void SingleCellSplitImageFilter< TInputImage >::
+template< class TInputImage, class TPointSet >
+void SingleCellSplitImageFilter< TInputImage, TPointSet >::
 GenerateData()
 {
+  if( m_Seeds.IsNull() )
+    {
+    std::cout << "Hey honey! What about providing some seeds?" <<std::endl;
+    return;
+    }
+
   if ( !m_SeedImage )
-  {
+    {
     m_SeedImage = ImageType::New();
     m_SeedImage->SetRegions( this->GetInput()->GetLargestPossibleRegion() );
     m_SeedImage->SetOrigin(  this->GetInput()->GetOrigin() );
@@ -77,19 +78,17 @@ GenerateData()
     // Fill the seeds
     ImageIndexType index;
     ImagePointType pt;
-    ListIteratorType lIt = m_Seeds.begin();
-    unsigned int i = 1;
-    while( lIt != m_Seeds.end() )
-    {
-      pt = *lIt;
-      m_SeedImage->TransformPhysicalPointToIndex( pt, index );
-      m_SeedImage->SetPixel( index, i );
-//       std::cout << index << std::endl;
-      lIt++;
-      i++;
+    PointsContainerPointer points = m_Seeds->GetPoints();
+    PointsContainerIterator lIt = points->Begin();
+
+    while( lIt != points->End() )
+      {
+      m_SeedImage->TransformPhysicalPointToIndex( lIt->Value(), index );
+      m_SeedImage->SetPixel( index, lIt->Index() );
+      ++lIt;
+      }
     }
-  }
-  
+
   //Compute the voronoi map
   DistanceFilterPointer m_Dist = DistanceFilterType::New();
   m_Dist->SetInput( m_SeedImage );
@@ -98,7 +97,7 @@ GenerateData()
   m_Dist->UpdateLargestPossibleRegion();
   ImagePointer output = m_Dist->GetVoronoiMap();
   output->DisconnectPipeline();
-  
+
   IteratorType It1( output, output->GetLargestPossibleRegion() );
   ConstIteratorType It2( this->GetInput(), output->GetLargestPossibleRegion() );
   It1.GoToBegin();
@@ -106,18 +105,20 @@ GenerateData()
   while( !It1.IsAtEnd() )
   {
     if( It2.Get() != m_ForegroundValue )
+      {
       It1.Set( 0 );
+      }
     ++It1;
     ++It2;
   }
-  
+
   this->GraftOutput( output );
 
   return;
 }
 
-template< class TInputImage >
-void SingleCellSplitImageFilter< TInputImage >::
+template< class TInputImage, class TPointSet >
+void SingleCellSplitImageFilter< TInputImage, TPointSet >::
 PrintSelf ( std::ostream& os, Indent indent ) const
 {
   Superclass::PrintSelf ( os,indent );
