@@ -178,6 +178,16 @@ GetCurrentElementNodes()
 
 //-------------------------------------------------------------------------
 template< class TContainer >
+double*
+TraceContainerBase< TContainer >::
+GetCurrentElementColor()
+{
+  return this->m_CurrentElement.rgba;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+template< class TContainer >
 bool
 TraceContainerBase< TContainer >::
 RemoveElementFromVisualizationWithGivenTraceID( const unsigned int & iId)

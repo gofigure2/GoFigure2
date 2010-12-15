@@ -290,6 +290,12 @@ public:
   vtkPolyData* GetCurrentElementNodes();
 
   /**
+    \brief Get the color of the current element track
+    \return Pointer to the current element color
+  */
+  double* GetCurrentElementColor();
+
+  /**
   \brief put the information of the existing element into m_CurrentElement
   and remove the existing element from the container,the visu and the memory
   \param[in] iTraceID ID of the existing element

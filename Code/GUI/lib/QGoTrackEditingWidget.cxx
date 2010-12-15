@@ -651,16 +651,32 @@ initializeVisualization()
 
       // Get the polydata
       vtkPolyData* nodes = m_MeshContainer->GetCurrentElementNodes();
+      double* rgba = m_MeshContainer->GetCurrentElementColor();
+
       //setup actor and mapper
       vtkSmartPointer<vtkPolyDataMapper> mapper =
           vtkSmartPointer<vtkPolyDataMapper>::New();
-      mapper->SetInput(nodes);
-
+      mapper->SetInput( nodes );
       vtkActor* actor = vtkActor::New();
-      actor->SetMapper(mapper);
+      actor->SetMapper( mapper );
+      actor->GetProperty()->SetColor( rgba );
+
       // Add actor to visu
       renderer->AddActor(actor);
 
+      std::vector< vtkActor * > listOfActors; // to satisfy API
+      //listOfActors.resize(4);
+      listOfActors.push_back( actor );
+
+      const bool test = false;
+      const bool test3 = false;
+      const unsigned int test2 = 0;
+
+      m_MeshContainer->UpdateCurrentElementFromVisu( listOfActors,
+                                       nodes,
+                                       test2,
+                                       test,    //highlighted
+                                       test3 ); // visible
       m_MeshContainer->InsertCurrentElement();
       ++listOfMeshIDsIt;
       }
