@@ -74,6 +74,9 @@ public:
   typedef typename MultiIndexContainerType::template index< TraceID >::type::iterator
   MultiIndexContainerTraceIDIterator;
 
+  typedef typename MultiIndexContainerType::template index< CollectionID >::type::iterator
+  MultiIndexContainerCollectionIDIterator;
+
   typedef typename MultiIndexContainerType::template index< Highlighted >::type::iterator
   MultiIndexContainerHighlightedIterator;
 
@@ -137,6 +140,8 @@ public:
     \brief Get property for highlighted traces
   */
   vtkProperty * GetHighlightedProperty();
+
+  std::list< unsigned int > GetAllTraceIDsGivenCollectionID( const unsigned int& iCollection );
 
   /**
     \brief Update Visualization of the given TraceIDs
