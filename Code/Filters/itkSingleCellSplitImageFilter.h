@@ -1,8 +1,14 @@
 /*=========================================================================
- Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+  Author: $Author: krm15 $  // Author of last commit
+  Version: $Rev: 738 $  // Revision of last commit
+  Date: $Date: 2009-10-10 23:59:10 -0400 (Sat, 10 Oct 2009) $  // Date of last commit
+=========================================================================*/
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+/*=========================================================================
+ Authors: The GoFigure Dev. Team.
+ at Megason Lab, Systems biology, Harvard Medical school, 2009
+
+ Copyright (c) 2009, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -56,8 +62,8 @@
 namespace itk
 {
 template < class TInputImage >
-class ITK_EXPORT SingleCellSplitImageFilter :
-  public ImageToImageFilter< TInputImage, TInputImage >
+class ITK_EXPORT SingleCellSplitImageFilter : public ImageToImageFilter<
+        TInputImage, TInputImage >
 {
   public:
     typedef SingleCellSplitImageFilter             Self;
@@ -77,36 +83,37 @@ class ITK_EXPORT SingleCellSplitImageFilter :
     /** Display */
     void PrintSelf ( std::ostream& os, Indent indent ) const;
 
-    typedef TInputImage                           ImageType;
+    typedef TInputImage                      ImageType;
     typedef typename ImageType::Pointer      ImagePointer;
     typedef typename ImageType::ConstPointer ImageConstPointer;
     typedef typename ImageType::PixelType    ImagePixelType;
+    typedef typename ImageType::PointType    ImagePointType;
     typedef typename ImageType::IndexType    ImageIndexType;
 
     typedef ImageRegionIterator< ImageType > IteratorType;
     typedef ImageRegionConstIterator< ImageType > ConstIteratorType;
-
+    
     typedef DanielssonDistanceMapImageFilter< ImageType, ImageType > DistanceFilterType;
     typedef typename DistanceFilterType::Pointer DistanceFilterPointer;
 
-    typedef std::list< ImageIndexType > SeedListType;
+    typedef std::list< ImagePointType > SeedListType;
     typedef typename SeedListType::iterator ListIteratorType;
-
+    
     itkGetConstMacro ( ForegroundValue, ImagePixelType );
     itkSetMacro ( ForegroundValue, ImagePixelType );
-
+    
     SeedListType m_Seeds;
-
+    
     void SetSeedImage( ImagePointer in )
     {
       m_SeedImage = in;
     }
-
+    
   protected:
     SingleCellSplitImageFilter();
     ~SingleCellSplitImageFilter() {}
     void GenerateData();
-
+    
     ImagePointer m_SeedImage;
     ImagePixelType m_ForegroundValue;
 
