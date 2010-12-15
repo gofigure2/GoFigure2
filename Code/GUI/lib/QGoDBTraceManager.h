@@ -360,13 +360,13 @@ protected:
     C *iContainerForVisu)
   {
     //std::list<ContourMeshStructure> list_of_traces;
-    std::list< S > list_of_traces = 
+    std::list<S> list_of_traces =
     GetTracesInfoFromDBForVisuContainer( list_of_traces,
         iDatabaseConnector, this->m_TraceName, this->m_CollectionName,
         this->m_ImgSessionID, -1, iVectIDs);
 
     //std::list< ContourMeshStructure >::iterator it = list_of_traces.begin();
-    std::list< S >::iterator it = list_of_traces.begin();
+    typename std::list<S>::iterator it = list_of_traces.begin();
 
     while ( it != list_of_traces.end() )
       {
