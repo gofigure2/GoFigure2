@@ -569,49 +569,80 @@ mergeTrack( vtkActor* iFirstActor, vtkActor* iSecondActor)
   std::cout << "Actors IDs are: " << firstMesh << " and " << secondMesh << std::endl;
 
   //Check if actors are border of track
-  bool border = isOnBorder(firstMesh);
+  std::pair< std::pair<unsigned int, unsigned int>, std::pair<unsigned int, unsigned int> >
+      border = isOnBorder(firstMesh);
 
-  if(!border)
-    {
-    std::cout << "First actor not on border" << std::endl;
-    return;
-    }
+  std::cout << "Border for mesh1" << std::endl;
+  std::cout << "mesh1" << firstMesh << std::endl;
+  std::cout << "low limit ID: " << border.first.first << " time "
+                             << border.first.second << std::endl;
+  std::cout << "high limit ID: " << border.second.first << " time "
+                              << border.second.second << std::endl;
 
   border = isOnBorder(secondMesh);
 
-  if(!border)
-    {
-    std::cout << "Second actor not on border" << std::endl;
-    return;
-    }
-
-  // Check time point of borders
-  double* firstTrackTimeExtent  = getTrackTimeExtent(firstMesh);
-  double* secondTrackTimeExtent = getTrackTimeExtent(secondMesh);
-
-  // DO SOME STUFF
-
-  // MERGE
-
+  std::cout << "Border for mesh2" << std::endl;
+  std::cout << "mesh2" << secondMesh << std::endl;
+  std::cout << "low limit ID: " << border.first.first << " time "
+                             << border.first.second << std::endl;
+  std::cout << "high limit ID: " << border.second.first << " time "
+                              << border.second.second << std::endl;
 }
 //-------------------------------------------------------------------------
 // ONLY CALLED AT THE END
 //-------------------------------------------------------------------------
-bool
+std::pair< std::pair<unsigned int, unsigned int>, std::pair<unsigned int, unsigned int> >
 QGoTrackEditingWidget::
 isOnBorder( unsigned int iMeshID)
 {
-  bool onBorder = false;
-  //m_MeshContainer->Get
-  return onBorder;
-}
-//-------------------------------------------------------------------------
-// ONLY CALLED AT THE END
-//-------------------------------------------------------------------------
-double*
-QGoTrackEditingWidget::
-getTrackTimeExtent( unsigned int iMeshID)
-{
-  double* extent;
-  return extent;
+  // Get the collectionID
+  unsigned int collectionID = m_MeshContainer->GetCollectionIDOfGivenTrace( iMeshID );
+
+  std::cout << "Merge collection: " << collectionID << std::endl;
+
+  // list of meshes of the collection
+  std::list<unsigned int> listOfMeshIDs =
+      m_MeshContainer->GetAllTraceIDsGivenCollectionID( collectionID );
+  std::list<unsigned int>::iterator iterator = listOfMeshIDs.begin();
+
+  std::pair< std::pair<unsigned int, unsigned int>, std::pair<unsigned int, unsigned int> >
+    borders;
+
+  std::pair<unsigned int, unsigned int> minBorder;
+  minBorder.first = 0;
+  minBorder.second = std::numeric_limits<unsigned int>::max();
+
+  std::pair<unsigned int, unsigned int> maxBorder;
+  maxBorder.first = 0;
+  maxBorder.second = std::numeric_limits<unsigned int>::min();
+
+  // Go through all meshes
+  while( iterator != listOfMeshIDs.end() )
+    {
+    m_MeshContainer->ResetCurrentElement();
+    m_MeshContainer->UpdateCurrentElementFromExistingOne( (*iterator) );
+
+    unsigned int time = m_MeshContainer->GetCurrentElementTimePoint();
+    m_MeshContainer->InsertCurrentElement();
+
+    if( minBorder.second > time )
+      {
+      minBorder.first = *iterator;
+      minBorder.second = time;
+      }
+    else
+      {
+      if( maxBorder.second < time )
+        {
+        maxBorder.first = *iterator;
+        maxBorder.second = time;
+        }
+      }
+    ++iterator;
+    }
+
+  borders.first = minBorder;
+  borders.second = maxBorder;
+
+  return borders;
 }

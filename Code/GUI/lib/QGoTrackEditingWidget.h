@@ -75,8 +75,8 @@ public:
   void    removeLineActors();
   void    mapContainerIDs2RealIDs();
 
-  bool    isOnBorder( unsigned int iMeshID);
-  double* getTrackTimeExtent( unsigned int iMeshID);
+  std::pair< std::pair<unsigned int, unsigned int>, std::pair<unsigned int, unsigned int> >
+      isOnBorder( unsigned int iMeshID);
 
   signals:
     void cutTracks( std::list< std::pair< int,  int> > );
