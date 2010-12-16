@@ -350,6 +350,8 @@ initializeVisualization()
       // Insert Element
       m_MeshContainer->InsertCurrentElement();
 
+      m_Actor2MeshID[actor] = (*listOfMeshIDsIt);
+
       ++listOfMeshIDsIt;
       }
 
@@ -539,8 +541,35 @@ void
 QGoTrackEditingWidget::
 mergeTrack( vtkActor* iFirstActor, vtkActor* iSecondActor)
 {
+  // Get mesh IDs
+  unsigned int firstMesh;
+  std::map< vtkActor*, unsigned int >::iterator iter = m_Actor2MeshID.find(iFirstActor);
+  if( iter != m_Actor2MeshID.end() )
+    {
+    firstMesh = iter->second;
+    }
+  else
+    {
+    std::cout << "First actor ID not found" << std::endl;
+    return;
+    }
+
+  unsigned int secondMesh;
+  iter = m_Actor2MeshID.find(iSecondActor);
+  if(iter != m_Actor2MeshID.end() )
+    {
+    secondMesh = iter->second;
+    }
+  else
+    {
+    std::cout << "Second actor ID not found" << std::endl;
+    return;
+    }
+
+  std::cout << "Actors IDs are: " << firstMesh << " and " << secondMesh << std::endl;
+
   //Check if actors are border of track
-  bool border = isOnBorder(iFirstActor);
+  bool border = isOnBorder(firstMesh);
 
   if(!border)
     {
@@ -548,7 +577,7 @@ mergeTrack( vtkActor* iFirstActor, vtkActor* iSecondActor)
     return;
     }
 
-  border = isOnBorder(iSecondActor);
+  border = isOnBorder(secondMesh);
 
   if(!border)
     {
@@ -557,8 +586,8 @@ mergeTrack( vtkActor* iFirstActor, vtkActor* iSecondActor)
     }
 
   // Check time point of borders
-  double* firstTrackTimeExtent  = getTrackTimeExtent(iFirstActor);
-  double* secondTrackTimeExtent = getTrackTimeExtent(iSecondActor);
+  double* firstTrackTimeExtent  = getTrackTimeExtent(firstMesh);
+  double* secondTrackTimeExtent = getTrackTimeExtent(secondMesh);
 
   // DO SOME STUFF
 
@@ -570,9 +599,10 @@ mergeTrack( vtkActor* iFirstActor, vtkActor* iSecondActor)
 //-------------------------------------------------------------------------
 bool
 QGoTrackEditingWidget::
-isOnBorder( vtkActor* iActor)
+isOnBorder( unsigned int iMeshID)
 {
   bool onBorder = false;
+  //m_MeshContainer->Get
   return onBorder;
 }
 //-------------------------------------------------------------------------
@@ -580,7 +610,7 @@ isOnBorder( vtkActor* iActor)
 //-------------------------------------------------------------------------
 double*
 QGoTrackEditingWidget::
-getTrackTimeExtent( vtkActor* iActor)
+getTrackTimeExtent( unsigned int iMeshID)
 {
   double* extent;
   return extent;

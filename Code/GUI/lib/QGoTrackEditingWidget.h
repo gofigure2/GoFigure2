@@ -52,6 +52,7 @@
 
 //New
 #include "MeshContainer.h"
+//#include <boost/bimap.hpp>
 
 /**
 \class QGoTrackEditingWidget
@@ -74,8 +75,8 @@ public:
   void    removeLineActors();
   void    mapContainerIDs2RealIDs();
 
-  bool    isOnBorder( vtkActor* iActor);
-  double* getTrackTimeExtent( vtkActor* iActor);
+  bool    isOnBorder( unsigned int iMeshID);
+  double* getTrackTimeExtent( unsigned int iMeshID);
 
   signals:
     void cutTracks( std::list< std::pair< int,  int> > );
@@ -109,5 +110,10 @@ private:
   bool m_FirstRender;
   std::map< unsigned int, unsigned int> m_TrackIDsMapping;
   unsigned int m_MaxTrackID;
+
+  //typedef boost::bimap< vtkActor* , unsigned int > bm_type;
+  //bm_type m_Actor2MeshID;
+  std::map < vtkActor* , unsigned int > m_Actor2MeshID;
+
 };
 #endif
