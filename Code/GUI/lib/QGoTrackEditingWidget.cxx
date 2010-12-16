@@ -67,7 +67,7 @@ QGoTrackEditingWidget(QWidget *iParent): QDialog(iParent)
   m_VtkEventQtConnector = vtkEventQtSlotConnect::New();
   m_InteractorStyle3D   = vtkInteractorStyleImage3D::New();
 
-  m_NumberOfTracks = 0;
+  m_NumberOfTracks = 1;
 
   m_SecondClick = false;
 
@@ -662,6 +662,7 @@ initializeVisualization()
   // For each track, create the actors
   while( trackIDsIt != listOfTrackIDs.end() )
     {
+    std::map<unsigned int, unsigned int> m_Time2MeshID;
     std::list<unsigned int> listOfMeshIDs =
         m_MeshContainer->GetAllTraceIDsGivenCollectionID( (*trackIDsIt) );
     std::list<unsigned int>::iterator listOfMeshIDsIt = listOfMeshIDs.begin();
@@ -790,7 +791,6 @@ cutTrack( vtkActor* iActor)
         // Collection ID
         m_MeshContainer->SetCurrentElementCollectionID( m_NumberOfTracks );
         // Visibility: i.e. modified
-
         }
       m_MeshContainer->InsertCurrentElement();
       ++iterator;
@@ -799,6 +799,21 @@ cutTrack( vtkActor* iActor)
     ++m_NumberOfTracks;
 
     // update visu
+    removeLineActors();
     initializeVisualization();
+    }
+}
+//-------------------------------------------------------------------------
+// Go through all container and creates actors
+//-------------------------------------------------------------------------
+void
+QGoTrackEditingWidget::
+removeLineActors()
+{
+  std::map< vtkActor* , int >::iterator it = m_Line2MeshID.begin();
+  while( it != m_Line2MeshID.end() )
+    {
+    renderer->RemoveActor( it->first );
+    ++it;
     }
 }

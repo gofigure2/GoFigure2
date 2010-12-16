@@ -90,6 +90,7 @@ public:
   void setMeshContainer( MeshContainer* imeshContainer );
   void initializeVisualization();
   void cutTrack( vtkActor* );
+  void removeLineActors();
   /*
    * Useless....?
   // when pick actor update cut list + actor color
@@ -158,7 +159,6 @@ private:
 
   //NEW
   MeshContainer* m_MeshContainer;
-  std::map<unsigned int, unsigned int> m_Time2MeshID;
   std::map< vtkActor* , int >          m_Line2MeshID;
   // Split/merge behavior
   std::map< unsigned int , std::pair<unsigned int, unsigned int> >  m_MeshID2Neigbours;
