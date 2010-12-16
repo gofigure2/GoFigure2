@@ -67,7 +67,8 @@ QGoTrackEditingWidget(QWidget *iParent): QDialog(iParent)
   m_VtkEventQtConnector = vtkEventQtSlotConnect::New();
   m_InteractorStyle3D   = vtkInteractorStyleImage3D::New();
 
-  m_NumberOfTracks = 1;
+  m_NumberOfTracks = 0;
+  m_FirstRender = true;
 
   m_SecondClick = false;
 
@@ -659,12 +660,46 @@ initializeVisualization()
   std::list<unsigned int> listOfTrackIDs = m_MeshContainer->GetAllCollectionIDs();
   std::list<unsigned int>::iterator trackIDsIt = listOfTrackIDs.begin();
 
+////////////////////////////////////////////////////////////////////////////////
+  if(m_FirstRender)
+    {  // For each track, create the actors
+    while( trackIDsIt != listOfTrackIDs.end() )
+      {
+      std::cout<< "collection ID: " << (*trackIDsIt) << std::endl;
+      m_TrackIDsMapping[m_NumberOfTracks] = (*trackIDsIt);
+
+      std::list<unsigned int> listOfMeshIDs =
+              m_MeshContainer->GetAllTraceIDsGivenCollectionID( (*trackIDsIt) );
+      std::list<unsigned int>::iterator listOfMeshIDsIt = listOfMeshIDs.begin();
+
+      // Create the meshes actor
+      // update the container
+      while( listOfMeshIDsIt != listOfMeshIDs.end() )
+        {
+        m_MeshContainer->ResetCurrentElement();
+        m_MeshContainer->UpdateCurrentElementFromExistingOne( (*listOfMeshIDsIt) );
+        m_MeshContainer->SetCurrentElementCollectionID( m_NumberOfTracks );
+        m_MeshContainer->InsertCurrentElement();
+        ++listOfMeshIDsIt;
+        }
+
+      ++m_NumberOfTracks;
+      ++trackIDsIt;
+      }
+    trackIDsIt = listOfTrackIDs.begin();
+    m_FirstRender = false;
+    }
+
+  ////////////////////////////////////////////////////////////////////////////////
+
+
   // For each track, create the actors
-  while( trackIDsIt != listOfTrackIDs.end() )
+  for( int i = 0; i < m_NumberOfTracks ; ++i )
     {
+    std::cout<< "collection ID: " << i << std::endl;
     std::map<unsigned int, unsigned int> m_Time2MeshID;
     std::list<unsigned int> listOfMeshIDs =
-        m_MeshContainer->GetAllTraceIDsGivenCollectionID( (*trackIDsIt) );
+        m_MeshContainer->GetAllTraceIDsGivenCollectionID( i );
     std::list<unsigned int>::iterator listOfMeshIDsIt = listOfMeshIDs.begin();
 
     // Create the meshes actor
@@ -673,6 +708,7 @@ initializeVisualization()
       {
       m_MeshContainer->ResetCurrentElement();
       m_MeshContainer->UpdateCurrentElementFromExistingOne( (*listOfMeshIDsIt) );
+      std::cout<< "mesh ID: " << (*listOfMeshIDsIt) << std::endl;
 
       // Get the polydata
       // Might need a deep copy
@@ -687,6 +723,11 @@ initializeVisualization()
       vtkActor* actor = vtkActor::New();
       actor->SetMapper( mapper );
       actor->GetProperty()->SetColor( rgba );
+
+      std::cout<< "center: " << std::endl;
+      std::cout<< "X: " << actor->GetCenter()[0] << std::endl;
+      std::cout<< "Y: " << actor->GetCenter()[1] << std::endl;
+      std::cout<< "Z: " << actor->GetCenter()[2] << std::endl;
 
       // Add actor to visu
       renderer->AddActor(actor);
@@ -751,7 +792,6 @@ initializeVisualization()
       firstActor = secondActor;
       ++polyLIt;
       }
-    ++trackIDsIt;
     }
 }
 //-------------------------------------------------------------------------
@@ -767,16 +807,21 @@ cutTrack( vtkActor* iActor)
   // Find the mesh ID
   if( it != m_Line2MeshID.end() )
     {
-    unsigned int traceID = m_MeshContainer->GetCollectionIDOfGivenTrace( it->second );
+    unsigned int collectionID = m_MeshContainer->GetCollectionIDOfGivenTrace( it->second );
+
+    std::cout << "Cut collection: " << collectionID << std::endl;
 
     std::list<unsigned int> listOfMeshIDs =
-        m_MeshContainer->GetAllTraceIDsGivenCollectionID( traceID );
+        m_MeshContainer->GetAllTraceIDsGivenCollectionID( collectionID );
     std::list<unsigned int>::iterator iterator = listOfMeshIDs.begin();
 
     // border time point
     m_MeshContainer->ResetCurrentElement();
     m_MeshContainer->UpdateCurrentElementFromExistingOne( it->second );
     unsigned int tLimit = m_MeshContainer->GetCurrentElementTimePoint();
+    m_MeshContainer->InsertCurrentElement();
+
+    std::cout << "Time limit: " << tLimit << std::endl;
 
     while( iterator != listOfMeshIDs.end() )
       {
@@ -797,6 +842,7 @@ cutTrack( vtkActor* iActor)
       }
 
     ++m_NumberOfTracks;
+    std::cout << "m_NumberOfTracks " << m_NumberOfTracks << std::endl;
 
     // update visu
     removeLineActors();

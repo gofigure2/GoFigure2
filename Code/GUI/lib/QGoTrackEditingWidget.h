@@ -164,5 +164,7 @@ private:
   std::map< unsigned int , std::pair<unsigned int, unsigned int> >  m_MeshID2Neigbours;
 
   unsigned int m_NumberOfTracks;
+  bool m_FirstRender;
+  std::map< unsigned int, unsigned int> m_TrackIDsMapping;
 };
 #endif

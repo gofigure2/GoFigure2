@@ -69,6 +69,7 @@
 #include "GoDBImport.h"
 
 #include "ContourMeshContainer.h"
+#include "QGoTrackEditingWidget.h"
 
 //--------------------------------------------------------------------------
 QGoPrintDatabase::QGoPrintDatabase(QWidget *iParent):
@@ -1485,5 +1486,11 @@ void QGoPrintDatabase::SplitMergeTracksWithWidget(
   MeshContainer* MeshContainerTemp = this->m_MeshesManager->
       GetMeshesInfoFromDBAndCreateContainerForVisu(
       this->m_DatabaseConnector, ListMeshesInvolved);
-  //create trackwidget + set the mesh container
+
+//create trackwidget + set the mesh container
+  QGoTrackEditingWidget *win = new QGoTrackEditingWidget();
+   win->setMeshContainer( MeshContainerTemp);
+   win->initializeVisualization();
+   win->preview();
+   win->show();
 }
