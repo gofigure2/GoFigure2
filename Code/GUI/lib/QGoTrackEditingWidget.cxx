@@ -566,27 +566,47 @@ mergeTrack( vtkActor* iFirstActor, vtkActor* iSecondActor)
     return;
     }
 
-  std::cout << "Actors IDs are: " << firstMesh << " and " << secondMesh << std::endl;
-
   //Check if actors are border of track
   std::pair< std::pair<unsigned int, unsigned int>, std::pair<unsigned int, unsigned int> >
-      border = isOnBorder(firstMesh);
+      border1 = isOnBorder(firstMesh);
 
   std::cout << "Border for mesh1" << std::endl;
-  std::cout << "mesh1" << firstMesh << std::endl;
-  std::cout << "low limit ID: " << border.first.first << " time "
-                             << border.first.second << std::endl;
-  std::cout << "high limit ID: " << border.second.first << " time "
-                              << border.second.second << std::endl;
+  std::cout << "mesh1: " << firstMesh << std::endl;
+  std::cout << "low limit ID: " << border1.first.first << " time "
+                             << border1.first.second << std::endl;
+  std::cout << "high limit ID: " << border1.second.first << " time "
+                              << border1.second.second << std::endl;
 
-  border = isOnBorder(secondMesh);
+  std::pair< std::pair<unsigned int, unsigned int>, std::pair<unsigned int, unsigned int> >
+      border2 = isOnBorder(secondMesh);
 
   std::cout << "Border for mesh2" << std::endl;
-  std::cout << "mesh2" << secondMesh << std::endl;
-  std::cout << "low limit ID: " << border.first.first << " time "
-                             << border.first.second << std::endl;
-  std::cout << "high limit ID: " << border.second.first << " time "
-                              << border.second.second << std::endl;
+  std::cout << "mesh2: " << secondMesh << std::endl;
+  std::cout << "low limit ID: " << border2.first.first << " time "
+                             << border2.first.second << std::endl;
+  std::cout << "high limit ID: " << border2.second.first << " time "
+                              << border2.second.second << std::endl;
+  // Check for overlap
+  if(    ( border2.first.first < border1.second.first )
+      && ( border1.first.first < border2.second.first ) )
+    {
+    std::cout << " Tracks are overlaping" << std::endl;
+    return;
+    }
+
+  //Get Highest time to know which meshes we should update
+  unsigned int trackToUpdate = 0;
+  if( border1.first.first < border2.first.first)
+    {
+    trackToUpdate = secondMesh;
+    }
+  else
+    {
+    trackToUpdate = firstMesh;
+    }
+
+  std::cout<< " Track to update: " << trackToUpdate << std::endl;
+
 }
 //-------------------------------------------------------------------------
 // ONLY CALLED AT THE END
