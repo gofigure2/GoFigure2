@@ -666,7 +666,7 @@ initializeVisualization()
     while( trackIDsIt != listOfTrackIDs.end() )
       {
       std::cout<< "collection ID: " << (*trackIDsIt) << std::endl;
-      m_TrackIDsMapping[m_NumberOfTracks] = (*trackIDsIt);
+      m_TrackIDsMapping.insert(pair(m_NumberOfTracks, (*trackIDsIt) ));
 
       std::list<unsigned int> listOfMeshIDs =
               m_MeshContainer->GetAllTraceIDsGivenCollectionID( (*trackIDsIt) );
@@ -880,4 +880,5 @@ mapContainerIDs2RealIDs()
     // check numberOfMesh+1 doesnt belong to list -> double map
       // if belongs, +1
       //else
+  //mesh+1
 }

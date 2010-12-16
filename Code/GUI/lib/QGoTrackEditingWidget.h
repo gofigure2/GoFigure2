@@ -53,6 +53,8 @@
 //New
 #include "MeshContainer.h"
 
+#include <boost/bimap.hpp>
+
 /**
 \class QGoTrackEditingWidget
 \brief This dialog allows the user to split/merge the tracks using a GUI
@@ -166,6 +168,10 @@ private:
 
   unsigned int m_NumberOfTracks;
   bool m_FirstRender;
-  std::map< unsigned int, unsigned int> m_TrackIDsMapping;
+
+  typedef boost::bimap< unsigned int, unsigned int > ids_bimap;
+  typedef ids_bimap::value_type pair;
+
+  ids_bimap m_TrackIDsMapping;
 };
 #endif
