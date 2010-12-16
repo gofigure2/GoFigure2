@@ -56,6 +56,8 @@
 
 #include "vtkViewImage3DCommand.h"
 
+#include <limits>
+
 //-------------------------------------------------------------------------
 QGoTrackEditingWidget::
 QGoTrackEditingWidget(QWidget *iParent): QDialog(iParent)
@@ -88,86 +90,6 @@ QGoTrackEditingWidget::
 ~QGoTrackEditingWidget()
 {
   // DELETE ACTORS!!!
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoTrackEditingWidget::
-setTracks( std::list<Track> iListOfTracks )
-{
-  m_ListOfTracks = iListOfTracks;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoTrackEditingWidget::
-generateTrackRepresentation()
-{
-  std::list<Track>::iterator trackListIterator = m_ListOfTracks.begin();
-
-  while( trackListIterator != m_ListOfTracks.end() )
-    {
-    int trackID = (*trackListIterator).first;
-    std::cout << "-------------------------" << std::endl;
-    std::cout << "trackID: " << trackID << std::endl;
-    int    previousMeshID       = -1;
-    double* previousMeshPosition = NULL;
-    std::list<Mesh>::iterator meshListIterator = (*trackListIterator).second.begin();
-
-    while( meshListIterator!= (*trackListIterator).second.end())
-      {
-      int     currentMeshID = (*meshListIterator).first;
-      int timePoint = (*meshListIterator).second.first;
-      double* currentMeshPosition = (*meshListIterator).second.second;
-
-      std::cout << "meshID: " << currentMeshID << std::endl;
-
-      // Actor/IDs Pair
-      std::pair< vtkActor*, std::pair< bool, std::pair< int,  int> > >
-          actorIDsPair;
-
-      // IDs Pair
-      std::pair<  int,  int> idsPair;
-      idsPair.first = trackID;
-      idsPair.second = currentMeshID;
-
-      //--------------
-      //Create actors
-      //--------------
-      //-------------------------------
-      // Create a sphere
-      vtkActor* sphereActor = CreateSphereActor( currentMeshPosition, NULL );
-      actorIDsPair.first = sphereActor;
-      actorIDsPair.second.first = true;
-      actorIDsPair.second.second = idsPair;
-
-      m_Actor2IDMap.insert(actorIDsPair);
-
-      //-------------------------------
-      // Create polyline
-      // meshID= -1 for more efficiency
-      if( previousMeshID >= 0 )
-        {
-        vtkActor* polylineActor = CreatePolylineActor(previousMeshPosition, currentMeshPosition, NULL, NULL);
-        actorIDsPair.first = polylineActor;
-        actorIDsPair.second.first = false;
-        actorIDsPair.second.second = idsPair;
-
-        m_Actor2IDMap.insert(actorIDsPair);
-        }
-
-      //-------------------------------
-
-      previousMeshID = currentMeshID;
-      previousMeshPosition = currentMeshPosition;
-
-      ++meshListIterator;
-      }
-
-    ++trackListIterator;
-    }
 }
 //-------------------------------------------------------------------------
 
@@ -234,18 +156,6 @@ CreatePolylineActor( double* iCenter1, double* iCenter2,
     //add the lines to the dataset
     polyData->SetLines(cells);
 
-    //Color coding
-    // Setup the colors array
-    /*vtkSmartPointer<vtkUnsignedCharArray> colors =
-        vtkSmartPointer<vtkUnsignedCharArray>::New();
-    colors->SetNumberOfComponents(3);
-    colors->SetName("Colors");
-
-    // Add the three colors we have created to the array
-    colors->InsertNextTuple3(iColor1[0]*255, iColor1[1]*255, iColor1[2]*255);
-    colors->InsertNextTuple3(iColor2[0]*255,iColor2[1]*255, iColor2[2]*255);
-    polyData->GetPointData()->SetScalars(colors);*/
-
     //setup actor and mapper
     vtkSmartPointer<vtkPolyDataMapper> mapper =
         vtkSmartPointer<vtkPolyDataMapper>::New();
@@ -253,8 +163,6 @@ CreatePolylineActor( double* iCenter1, double* iCenter2,
 
     vtkActor* actor = vtkActor::New();
     actor->SetMapper(mapper);
-
-    //actor->GetProperty()->SetColor( const_cast<double*>(iColor) ); // sphere color white
 
     return actor;
 }
@@ -268,21 +176,8 @@ preview()
 //setup render window, renderer, and interactor
   this->qvtkWidget->GetRenderWindow()->AddRenderer(renderer);
 
-/*
-  std::map< vtkActor*, std::pair<bool, std::pair< int,  int> > >::iterator
-      actor2IDMapIterator;
-  actor2IDMapIterator = m_Actor2IDMap.begin();
-  while( actor2IDMapIterator != m_Actor2IDMap.end() )
-    {
-    renderer->AddActor( actor2IDMapIterator->first );
-    ++actor2IDMapIterator;
-    }
-*/
-
   this->qvtkWidget->GetInteractor()->SetInteractorStyle(m_InteractorStyle3D);
   m_InteractorStyle3D->EnablePickMode();
-  //this->qvtkWidget->GetInteractor()->SetRenderWindow(this->RenderWindow);
-
 
   this->qvtkWidget->GetRenderWindow()->Render();
 }
@@ -326,238 +221,6 @@ UpdateCurrentActorSelection(vtkObject *caller)
       }
     }
 }
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-bool
-QGoTrackEditingWidget::
-findInMergeList( std::pair< int, int> iFirstPair, std::pair< int, int > iSecondPair )
-{
-
-  std::list< std::pair< std::pair< int,  int>, std::pair< int,  int> > >::iterator
-      mergeListIterator = m_MergeList.begin();
-
-  while( mergeListIterator != m_MergeList.end() )
-    {
-    // if we find it in the list
-    if(   ( (*mergeListIterator).first.first == iFirstPair.first
-         && (*mergeListIterator).first.second == iFirstPair.second
-         && (*mergeListIterator).second.first == iSecondPair.first
-         && (*mergeListIterator).second.second == iSecondPair.second)
-        ||
-          ( (*mergeListIterator).first.first == iSecondPair.first
-         && (*mergeListIterator).first.second == iSecondPair.second
-         && (*mergeListIterator).second.first == iFirstPair.first
-         && (*mergeListIterator).second.second == iFirstPair.second) )
-      {
-      std::cout<< "IDs found - remove it" << std::endl;
-      // Remove from list
-      m_MergeList.erase(mergeListIterator);
-
-      // Delete Actor!!!
-      std::list< std::pair <std::pair< std::pair< int,  int>, std::pair< int,  int>  >, vtkActor* > >::iterator
-          mergeListIterator2 = m_MergeListActor.begin();
-
-      while( mergeListIterator2 != m_MergeListActor.end() )
-        {
-        if( ( (*mergeListIterator2).first.first.first == iFirstPair.first
-            && (*mergeListIterator2).first.first.second == iFirstPair.second
-            && (*mergeListIterator2).first.second.first == iSecondPair.first
-            && (*mergeListIterator2).first.second.second == iSecondPair.second)
-            ||
-             ( (*mergeListIterator2).first.first.first == iSecondPair.first
-            && (*mergeListIterator2).first.first.second == iSecondPair.second
-            && (*mergeListIterator2).first.second.first == iFirstPair.first
-            && (*mergeListIterator2).first.second.second == iFirstPair.second) )
-          {
-          renderer->RemoveActor( (*mergeListIterator2).second );
-          (*mergeListIterator2).second->Delete();
-
-          return true;
-          }
-        ++mergeListIterator2;
-        }
-      }
-    ++mergeListIterator;
-    }
-
-  std::cout<< "IDs NOT found - insert it" << std::endl;
-  // Add in list
-  std::pair<  int,  int> idsPair;
-  idsPair.first = iFirstPair.first;
-  idsPair.second = iFirstPair.second;
-
-  std::pair<  int,  int> idsPair2;
-  idsPair2.first = iSecondPair.first;
-  idsPair2.second = iSecondPair.second;
-
-  std::pair<  std::pair<  int,  int>,  std::pair<  int,  int> > idFullPair;
-  idFullPair.first = idsPair;
-  idFullPair.second = idsPair2;
-
-  m_MergeList.push_back(idFullPair);
-
-  // Create and actor too
-  double color[3] = {1, 1, 1};
-  vtkActor* actor = CreatePolylineActor(m_FirstActor->GetCenter(), m_SecondActor->GetCenter(),
-      m_FirstActor->GetProperty()->GetColor(), m_SecondActor->GetProperty()->GetColor());
-
-  renderer->AddActor(actor);
-  this->qvtkWidget->GetRenderWindow()->Render();
-
-  std::pair<std::pair< std::pair< int,  int>, std::pair< int,  int> >, vtkActor* > actorConnection;
-  actorConnection.first = idFullPair;
-  actorConnection.second =  actor;
-  m_MergeListActor.push_back( actorConnection );
-
-  return false;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoTrackEditingWidget::
-setTracks2( std::map< unsigned int, std::pair< const double* , vtkPolyData*> > iTrack )
-{
-  m_ListOfTracks2 = iTrack;
-  generateTrackRepresentation2();
-  preview();
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoTrackEditingWidget::
-generateTrackRepresentation2()
-{
-  std::map< unsigned int, std::pair< const double* , vtkPolyData* > >::iterator 
-      trackListIterator =
-      m_ListOfTracks2.begin();
-
-  while( trackListIterator != m_ListOfTracks2.end() )
-    {
-    unsigned int trackID = trackListIterator->first;
-    std::cout << "-------------------------" << std::endl;
-    std::cout << "trackID: " << trackID << std::endl;
-    int    previousMeshID       = -1;
-    double* previousMeshPosition = new double[3];
-
-    vtkPolyData* trackPolyData = ( trackListIterator->second ).second;
-
-    for(vtkIdType i = 0; i< trackPolyData->GetNumberOfPoints(); ++i)
-      {
-      double *currentMeshPosition = trackPolyData->GetPoint( i );
-      vtkIntArray* array = dynamic_cast<vtkIntArray*>(
-          trackPolyData->GetPointData()->GetArray("TemporalInformation") );
-      int currentMeshID = array->GetValue(i);
-
-      // IDS
-      std::pair< int, int> idsPair;
-      idsPair.first = trackID;
-      // time point
-      idsPair.second = currentMeshID;
-
-      // Actor
-      vtkActor* sphereActor = CreateSphereActor( currentMeshPosition, (*trackListIterator).second.first );
-
-      // Actor/IDs Pair
-      std::pair< vtkActor*, std::pair< bool, std::pair< int,  int> > >
-          actorIDsPair;
-
-      actorIDsPair.first = sphereActor;
-      actorIDsPair.second.first = true;
-      actorIDsPair.second.second = idsPair;
-
-      m_Actor2IDMap.insert(actorIDsPair);
-
-      if( previousMeshID >= 0 )
-        {
-        vtkActor* polylineActor = CreatePolylineActor(previousMeshPosition, currentMeshPosition,
-            (*trackListIterator).second.first, (*trackListIterator).second.first);
-        actorIDsPair.first = polylineActor;
-        actorIDsPair.second.first = false;
-        actorIDsPair.second.second = idsPair;
-
-        m_Actor2IDMap.insert(actorIDsPair);
-        }
-
-      previousMeshID = currentMeshID;
-      previousMeshPosition[0] = currentMeshPosition[0];
-      previousMeshPosition[1] = currentMeshPosition[1];
-      previousMeshPosition[2] = currentMeshPosition[2];
-      }
-    delete[] previousMeshPosition;
-    ++trackListIterator;
-    }
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoTrackEditingWidget::
-setMeshIDs( std::list< std::list< unsigned int > > iListoFfMeshes)
-{
-  //m_MeshList = iListoFfMeshes;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoTrackEditingWidget::
-setTracksPolyData( std::list< vtkPolyData* > iListOfTracks)
-{
-  //m_TrackList = iListOfTracks;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/*void
-QGoTrackEditingWidget::
-initializeVisualization()
-{*/
-  /*
-  // the 2 lists must have the same size
-  if( m_TrackList.size() != m_MeshList.size() )
-    {
-    std::cout << "Track list and mesh list have different sizes" << std::endl;
-    return;
-    }
-
-  // Iterators
-  std::list< vtkPolyData* >::iterator trackIterator = m_TrackList.begin();
-  std::list< std::list< unsigned int > >::iterator meshIterator = m_MeshList.begin();
-
-  while( trackIterator != m_TrackList.end() )
-    {
-    // Create actors and update lists
-    vtkPolyData* trackPolyData = (*trackIterator);
-    int numberOfPointsInPolyData = trackPolyData->GetNumberOfPoints();
-    vtkIntArray* tempArray = dynamic_cast<vtkIntArray*>(
-        trackPolyData->GetPointData()->GetArray("TemporalInformation") );
-
-    // the 2 lists must have the same size
-    if( (*meshIterator.size()) != numberOfPointsInPolyData )
-      {
-      std::cout << "PolyData and mesh list have different number of points" << std::endl;
-      return;
-      }
-
-    for(vtkIdType i = 0; i < numberOfPointsInPolyData; ++i)
-      {
-      double *currentMeshPosition = trackPolyData->GetPoint( i );
-      int currentMeshTime = tempArray->GetValue(i);
-
-      vtkActor* sphereActor = CreateSphereActor( currentMeshPosition, NULL );
-
-
-      }
-    ++meshIterator;
-    ++trackIterator;
-    }
-    */
-/*}*/
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
