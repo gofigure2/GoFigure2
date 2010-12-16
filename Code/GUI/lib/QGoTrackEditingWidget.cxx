@@ -217,6 +217,20 @@ UpdateCurrentActorSelection(vtkObject *caller)
       // Update Track IDs - MERGE
       }
     }
+  else
+    {
+    if(m_SecondClick)
+      {
+      m_SecondActor = m_CurrentActor;
+      mergeTrack( m_FirstActor, m_SecondActor);
+      m_SecondClick = false;
+      }
+    else
+      {
+      m_FirstActor = m_CurrentActor;
+      m_SecondClick = true;
+      }
+    }
 }
 
 //-------------------------------------------------------------------------
@@ -236,7 +250,6 @@ initializeVisualization()
   std::list<unsigned int> listOfTrackIDs = m_MeshContainer->GetAllCollectionIDs();
   std::list<unsigned int>::iterator trackIDsIt = listOfTrackIDs.begin();
 
-////////////////////////////////////////////////////////////////////////////////
   if(m_FirstRender)
     {  // For each track, create the actors
     while( trackIDsIt != listOfTrackIDs.end() )
@@ -518,4 +531,57 @@ mapContainerIDs2RealIDs()
         }
       }
     }
+}
+//-------------------------------------------------------------------------
+// ONLY CALLED AT THE END
+//-------------------------------------------------------------------------
+void
+QGoTrackEditingWidget::
+mergeTrack( vtkActor* iFirstActor, vtkActor* iSecondActor)
+{
+  //Check if actors are border of track
+  bool border = isOnBorder(iFirstActor);
+
+  if(!border)
+    {
+    std::cout << "First actor not on border" << std::endl;
+    return;
+    }
+
+  border = isOnBorder(iSecondActor);
+
+  if(!border)
+    {
+    std::cout << "Second actor not on border" << std::endl;
+    return;
+    }
+
+  // Check time point of borders
+  double* firstTrackTimeExtent  = getTrackTimeExtent(iFirstActor);
+  double* secondTrackTimeExtent = getTrackTimeExtent(iSecondActor);
+
+  // DO SOME STUFF
+
+  // MERGE
+
+}
+//-------------------------------------------------------------------------
+// ONLY CALLED AT THE END
+//-------------------------------------------------------------------------
+bool
+QGoTrackEditingWidget::
+isOnBorder( vtkActor* iActor)
+{
+  bool onBorder = false;
+  return onBorder;
+}
+//-------------------------------------------------------------------------
+// ONLY CALLED AT THE END
+//-------------------------------------------------------------------------
+double*
+QGoTrackEditingWidget::
+getTrackTimeExtent( vtkActor* iActor)
+{
+  double* extent;
+  return extent;
 }

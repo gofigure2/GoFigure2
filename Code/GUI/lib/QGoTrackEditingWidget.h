@@ -67,11 +67,15 @@ public:
   explicit QGoTrackEditingWidget(QWidget *parent = 0);
   ~QGoTrackEditingWidget();
 
-  void setMeshContainer( MeshContainer* imeshContainer );
-  void initializeVisualization();
-  void cutTrack( vtkActor* );
-  void removeLineActors();
-  void mapContainerIDs2RealIDs();
+  void    setMeshContainer( MeshContainer* imeshContainer );
+  void    initializeVisualization();
+  void    cutTrack( vtkActor* );
+  void    mergeTrack( vtkActor*, vtkActor* );
+  void    removeLineActors();
+  void    mapContainerIDs2RealIDs();
+
+  bool    isOnBorder( vtkActor* iActor);
+  double* getTrackTimeExtent( vtkActor* iActor);
 
   signals:
     void cutTracks( std::list< std::pair< int,  int> > );
