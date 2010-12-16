@@ -91,6 +91,7 @@ public:
   void initializeVisualization();
   void cutTrack( vtkActor* );
   void removeLineActors();
+  void mapContainerIDs2RealIDs();
   /*
    * Useless....?
   // when pick actor update cut list + actor color

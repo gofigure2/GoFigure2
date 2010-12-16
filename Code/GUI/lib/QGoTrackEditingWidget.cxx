@@ -863,3 +863,21 @@ removeLineActors()
     ++it;
     }
 }
+//-------------------------------------------------------------------------
+// Go through all container and creates actors
+//-------------------------------------------------------------------------
+void
+QGoTrackEditingWidget::
+mapContainerIDs2RealIDs()
+{
+  //key: current ID, value: real ID
+  m_TrackIDsMapping;
+
+  // Get list of Mesh IDs with current
+    // if real ID > numberOfMesh, assign
+  // else
+    // move points to numberOfMesh+1
+    // check numberOfMesh+1 doesnt belong to list -> double map
+      // if belongs, +1
+      //else
+}
