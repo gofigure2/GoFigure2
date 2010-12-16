@@ -75,9 +75,6 @@ QGoTrackEditingWidget(QWidget *iParent): QDialog(iParent)
 
   m_SecondClick = false;
 
-  QObject::connect( this->previewPushButton, SIGNAL( pressed() ),
-                    this, SLOT( preview() ) );
-
   m_VtkEventQtConnector->Connect(
     reinterpret_cast< vtkObject * >( m_InteractorStyle3D ),
     vtkViewImage3DCommand::MeshPickingEvent,
