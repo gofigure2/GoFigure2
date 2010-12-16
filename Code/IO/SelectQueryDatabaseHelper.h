@@ -311,17 +311,47 @@ void GetTracesInfoFromDBForVisuContainer(
   std::vector< int > iVectIDs = std::vector< int >() );
 
 QGOIO_EXPORT
-void GetInfoFromDBAndModifyListMeshStructureSimplified(
+/**
+\brief select iselectedattributes from (tableone left join tabletwo ijoinconditionone)
+left join tablethree ijoinconditiontwo where (ifieldone = ivaluefieldone and (iIDfieldname
+= ivectids1 or ivectids2...) );
+*/
+void GetInfoFromDBAndModifyListStructure(
+  std::list< ContourMeshStructure > & ioListStructure,
+  vtkMySQLDatabase *iDatabaseConnector, std::vector<std::string> iSelectedAttributes,
+  std::string iTableOne, std::string iTableTwo, std::string iTableThree,
+  FieldWithValue iJoinConditionOne, FieldWithValue iJoinConditionTwo, std::string iFieldOne,
+  unsigned int iValueFieldOne, std::string iIDFieldName, std::list< unsigned int > iListIDs);
+
+QGOIO_EXPORT
+/**
+\brief select iselectedattributes from (tableone left join tabletwo ijoinconditionone)
+left join tablethree ijoinconditiontwo where (ifieldone = ivaluefieldone and (iIDfieldname
+= ivectids1 or ivectids2...) );
+\param[in] iDatabaseConnector connection to the database
+\param[in] ioListStructure list of ContourMeshStructure to be filled
+\param[in] iSelectedAttributes vector of all the attributes to be fetched from the db
+\param[in] iTableOne main table involved (usually the table for the trace)
+\param[in] iTableTwo table attached to the main table
+\param[in] iTableThree table attached to the main table
+\param[in] iJoinConditionOne describes how the tabletwo is attached to the main table
+\param[in] iJoinConditionTwo describes how the tablethree is attached to the main table
+\param[in] iFieldOne first condition
+\param[in] iValueFieldOne value for the first condition
+\param[in] iIDFieldName field for the IDName where there is a condition
+\param[in] iVectIDs values for the iIDFieldname
+*/
+/*void GetInfoFromDBAndModifyListMeshStructureSimplified(
   std::list< ContourMeshStructure > & ioContainer,
   vtkMySQLDatabase *iDatabaseConnector, std::vector<std::string> iSelectedAttributes,
   std::string iTableOne, std::string iTableTwo, std::string iTableThree,
   FieldWithValue iJoinConditionOne, FieldWithValue iJoinConditionTwo, std::string iFieldOne,
-  unsigned int iValueFieldOne, std::string iIDFieldName, std::vector< int > iVectIDs);
+  unsigned int iValueFieldOne, std::string iIDFieldName, std::list< unsigned int > iListIDs);*/
 
-QGOIO_EXPORT
-ContourMeshStructure GetTraceInfoFromDB(
-  vtkMySQLDatabase *DatabaseConnector, std::string TraceName,
-  std::string CollectionName, unsigned int TraceID);
+//QGOIO_EXPORT
+//ContourMeshStructure GetTraceInfoFromDB(
+//  vtkMySQLDatabase *DatabaseConnector, std::string TraceName,
+//  std::string CollectionName, unsigned int TraceID);
 
 /*QGOIO_EXPORT
 ContourMeshStructureMultiIndexContainer* GetTracesInfoFromDBMultiIndex(

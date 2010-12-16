@@ -245,7 +245,8 @@ protected:
                                    int iShift = 0);
   //virtual pure method in QGoDBTraceManager
   virtual void GetTracesInfoFromDBAndModifyContainerForVisu(
-    vtkMySQLDatabase* iDatabaseConnector,std::vector<int> iVectIDs = std::vector< int >());
+    vtkMySQLDatabase* iDatabaseConnector,
+    std::list<unsigned int> iVectIDs = std::list< unsigned int >());
 
   /**
   \brief check that there is one and only one mesh checked belonging to 

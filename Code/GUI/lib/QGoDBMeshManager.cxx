@@ -367,14 +367,16 @@ void QGoDBMeshManager::UpdateVisibleElementsInVisuContainer(int iTraceID)
 
 //-------------------------------------------------------------------------
 void QGoDBMeshManager::GetTracesInfoFromDBAndModifyContainerForVisu(
-  vtkMySQLDatabase* iDatabaseConnector,std::vector<int> iVectIDs)
+  vtkMySQLDatabase* iDatabaseConnector, std::list<unsigned int> iListTraceIDs)
 {
-  std::list<ContourMeshStructure> list_of_traces;
+  /*std::list<ContourMeshStructure> list_of_traces;
   GetTracesInfoFromDBForVisuContainer(
       list_of_traces,
       iDatabaseConnector, this->m_TraceName, this->m_CollectionName,
-      this->m_ImgSessionID, iVectIDs);
-
+      this->m_ImgSessionID, iVectIDs);*/
+  std::list<ContourMeshStructure> list_of_traces = 
+    this->m_CollectionOfTraces->GetListStructureFromDB(iDatabaseConnector,
+    this->m_ImgSessionID, iListTraceIDs);
   std::list< ContourMeshStructure >::iterator it = list_of_traces.begin();
 
   while ( it != list_of_traces.end() )
@@ -391,8 +393,10 @@ MeshContainer* QGoDBMeshManager::GetMeshesInfoFromDBAndCreateContainerForVisu(
 {
   MeshContainer* oMeshContainer = new MeshContainer(this, NULL);
   std::list<ContourMeshStructure> ListMeshesInfo = 
-    this->m_CollectionOfTraces->GetListStructureFromDBWithTimePoint(
-    iDatabaseConnector, iListTraces, this->m_ImgSessionID);
+    //this->m_CollectionOfTraces->GetListStructureFromDBSimplified(
+    //iDatabaseConnector, iListTraces, this->m_ImgSessionID);
+    this->m_CollectionOfTraces->GetListStructureFromDB(
+    iDatabaseConnector, this->m_ImgSessionID, iListTraces);
 
   std::list< ContourMeshStructure >::iterator it = ListMeshesInfo.begin();
 

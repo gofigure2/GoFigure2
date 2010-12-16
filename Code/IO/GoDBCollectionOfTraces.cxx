@@ -914,12 +914,12 @@ GetTraceIDsWithTimePointInf(vtkMySQLDatabase *iDatabaseConnector,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::list<ContourMeshStructure> GoDBCollectionOfTraces::
-  GetListStructureFromDBWithTimePoint(vtkMySQLDatabase* iDatabaseConnector,
+/*std::list<ContourMeshStructure> GoDBCollectionOfTraces::
+  GetListStructureFromDBSimplified(vtkMySQLDatabase* iDatabaseConnector,
   std::list<unsigned int> iListTraces, unsigned int iImgSessionID)
 {
-  std::vector<int> VectorTracesIDs(iListTraces.begin(), iListTraces.end() );
   std::list<ContourMeshStructure> oListTracesResults;
+  std::vector<std::string> TraceAttributes = this->GetAttributesForContourMeshStructure();
   std::vector<std::string> TraceAttributes(7);
   TraceAttributes[0] = this->m_TracesIDName;
   TraceAttributes[1] = this->m_CollectionIDName;
@@ -931,9 +931,46 @@ std::list<ContourMeshStructure> GoDBCollectionOfTraces::
   FieldWithValue CoordinateCondition = {"CoordIDMin", "CoordID", "="};
   FieldWithValue ColorCondition = {"ColorID", "ColorID", "="};
 
-  GetInfoFromDBAndModifyListMeshStructureSimplified( oListTracesResults, iDatabaseConnector, TraceAttributes,
-    this->m_TracesName, "coordinate", "color", CoordinateCondition, ColorCondition, "ImagingSessionID",
-    iImgSessionID, this->m_TracesIDName, VectorTracesIDs);
+  GetInfoFromDBAndModifyListStructure( oListTracesResults, 
+    iDatabaseConnector, TraceAttributes, this->m_TracesName, "coordinate", 
+    "color", CoordinateCondition, ColorCondition, "ImagingSessionID",
+    iImgSessionID, this->m_TracesIDName, iListTraces);
 
   return oListTracesResults;  
+}*/
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::vector<std::string> GoDBCollectionOfTraces::
+  GetAttributesForContourMeshStructure()
+{
+  std::vector<std::string> oTraceAttributes;
+  oTraceAttributes.push_back(this->m_TracesIDName);
+  oTraceAttributes.push_back(this->m_CollectionIDName);
+  oTraceAttributes.push_back("TCoord");
+  oTraceAttributes.push_back("Red");
+  oTraceAttributes.push_back("Green");
+  oTraceAttributes.push_back("Blue");
+  oTraceAttributes.push_back("Alpha");
+  oTraceAttributes.push_back("Points");
+  return oTraceAttributes;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list<ContourMeshStructure> GoDBCollectionOfTraces::
+  GetListStructureFromDB(vtkMySQLDatabase* iDatabaseConnector,
+  unsigned int iImgSessionID, std::list<unsigned int> iListTraces)
+{
+  std::list<ContourMeshStructure> oListTracesResults;
+  std::vector<std::string> TraceAttributes = this->GetAttributesForContourMeshStructure();
+  FieldWithValue CoordinateCondition = {"CoordIDMin", "CoordID", "="};
+  FieldWithValue ColorCondition = {"ColorID", "ColorID", "="};
+
+  GetInfoFromDBAndModifyListStructure(oListTracesResults, iDatabaseConnector, 
+    TraceAttributes, this->m_TracesName, "coordinate", "color", 
+    CoordinateCondition, ColorCondition, "ImagingSessionID",
+    iImgSessionID, this->m_TracesIDName, iListTraces);
+
+  return oListTracesResults;
 }

@@ -296,7 +296,7 @@ std::string GetGroupBy(std::string iColumn, unsigned int iNumberDoublons);
 std::string SelectForTracesInfo(std::vector<std::string> iSelectedAttributes,
   std::string iTableOne, std::string iTableTwo, std::string iTableThree,
   FieldWithValue iJoinConditionOne, FieldWithValue iJoinConditionTwo, std::string iFieldOne,
-  unsigned int iValueFieldOne, std::string iIDFieldName, std::vector< int > iVectIDs);
+  unsigned int iValueFieldOne, std::string iIDFieldName, std::list< unsigned int > iListIDs);
 
 //iselectquery union iselectquery where ijoinon IS NULL (with or without
 // brackets in the

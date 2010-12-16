@@ -196,13 +196,15 @@ void QGoDBTrackManager::UpdateVisibleElementsInVisuContainer(int iTraceID)
 
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::GetTracesInfoFromDBAndModifyContainerForVisu(
-  vtkMySQLDatabase* iDatabaseConnector,std::vector<int> iVectIDs)
+  vtkMySQLDatabase* iDatabaseConnector,
+  std::list<unsigned int> iListTraceIDs)
 {
+  std::vector<int> VectTraceIDs(iListTraceIDs.begin(), iListTraceIDs.end() );
   std::list<TrackStructure> list_of_traces;
   GetTracesInfoFromDBForVisuContainer(
       list_of_traces,
       iDatabaseConnector, this->m_TraceName, this->m_CollectionName,
-      this->m_ImgSessionID,iVectIDs);
+      this->m_ImgSessionID, VectTraceIDs);
 
   std::list< TrackStructure >::iterator it = list_of_traces.begin();
 
