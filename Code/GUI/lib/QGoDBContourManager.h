@@ -139,7 +139,8 @@ protected:
 
   //virtual pure method in QGoDBTraceManager
   virtual void GetTracesInfoFromDBAndModifyContainerForVisu(
-    vtkMySQLDatabase* iDatabaseConnector,std::vector<int> iVectIDs = std::vector< int >());
+    vtkMySQLDatabase* iDatabaseConnector,
+    std::list<unsigned int> iListTraceIDs = std::list< unsigned int >());
 
 protected slots:
   /**

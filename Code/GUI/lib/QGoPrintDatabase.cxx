@@ -1485,4 +1485,5 @@ void QGoPrintDatabase::SplitMergeTracksWithWidget(
   MeshContainer* MeshContainerTemp = this->m_MeshesManager->
       GetMeshesInfoFromDBAndCreateContainerForVisu(
       this->m_DatabaseConnector, ListMeshesInvolved);
+  //create trackwidget + set the mesh container
 }

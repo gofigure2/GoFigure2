@@ -397,9 +397,13 @@ public:
     vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTraceIDs,
     unsigned int iTimePoint);
 
-  std::list<ContourMeshStructure> GetListStructureFromDBWithTimePoint(
-    vtkMySQLDatabase* iDatabaseConnector,std::list<unsigned int> iListTraces, 
-    unsigned int iImgSessionID);
+  std::list<ContourMeshStructure> GetListStructureFromDB(
+    vtkMySQLDatabase* iDatabaseConnector,unsigned int iImgSessionID, 
+    std::list<unsigned int> iListTraces);
+
+  //std::list<ContourMeshStructure> GetListStructureFromDBSimplified(
+  //  vtkMySQLDatabase* iDatabaseConnector,std::list<unsigned int> iListTraces, 
+  //  unsigned int iImgSessionID);
 
 protected:
 
@@ -504,6 +508,8 @@ protected:
   std::list< NameWithColorData >
   GetListNameWithColorDataFromResultsQuery(
     std::vector< std::vector< std::string > > iResultsQuery);
+
+  std::vector<std::string> GetAttributesForContourMeshStructure();
 
   //std::vector< std::string > ListUnsgIntToVectorString(std::list< unsigned int > iList);
 

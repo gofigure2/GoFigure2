@@ -527,10 +527,11 @@ protected:
                                                     vtkMySQLDatabase *iDatabaseConnector)
   {
     this->DisplayInfoForAllTraces(iDatabaseConnector);
+    /** \todo Lydie: modify the TWContainer to return a list of unsigned int*/
     std::vector< int >           VectorIDs = iTWContainer->GetAllTraceIDsInContainer();
-    std::vector< int >::iterator iter = VectorIDs.begin();
-
-    this->GetTracesInfoFromDBAndModifyContainerForVisu(iDatabaseConnector,VectorIDs);
+    //std::vector< int >::iterator iter = VectorIDs.begin();
+    std::list<unsigned int> ListIDs(VectorIDs.begin(), VectorIDs.end());
+    this->GetTracesInfoFromDBAndModifyContainerForVisu(iDatabaseConnector,ListIDs);
   }
 
   /**
@@ -550,12 +551,14 @@ protected:
   {
     //insert the info from the database for the traces into the container
     //for visu:
+    /** \todo Lydie modify to have as argument a list of unsigned int*/
+    std::list< unsigned int > ListTraceIDs(iVectorTraceIDs.begin(), iVectorTraceIDs.end() );
     this->GetTracesInfoFromDBAndModifyContainerForVisu(
-      iDatabaseConnector,iVectorTraceIDs);
+      iDatabaseConnector, ListTraceIDs);
     //insert the new rows into the TW:
-    std::vector< int >::iterator iter = iVectorTraceIDs.begin();
+    std::list< unsigned int >::iterator iter = ListTraceIDs.begin();
     this->m_Table->setSortingEnabled(false);
-    while ( iter != iVectorTraceIDs.end() )
+    while ( iter != ListTraceIDs.end() )
       {
       TWContainerType RowContainer =
         iTWContainer->GetContainerForOneSpecificTrace(iDatabaseConnector,
@@ -735,7 +738,8 @@ protected:
   for visu
   */
   virtual void GetTracesInfoFromDBAndModifyContainerForVisu(
-    vtkMySQLDatabase* iDatabaseConnector,std::vector<int> iVectIDs = std::vector< int >())= 0;
+    vtkMySQLDatabase* iDatabaseConnector,
+    std::list<unsigned int> iListTraceIDs = std::list< unsigned int >())= 0;
 
 protected slots:
   //context menu:
