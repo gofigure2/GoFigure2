@@ -69,6 +69,7 @@ QGoTrackEditingWidget(QWidget *iParent): QDialog(iParent)
 
   m_NumberOfTracks = 0;
   m_FirstRender = true;
+  m_MaxTrackID = std::numeric_limits<unsigned int>::min();
 
   m_SecondClick = false;
 
@@ -324,91 +325,6 @@ UpdateCurrentActorSelection(vtkObject *caller)
       // Update Track IDs - MERGE
       }
     }
-/*
-  // Where it is in the list to get the IDs
-  std::map< vtkActor*, std::pair< bool, std::pair< int,  int> > >::iterator actor2IDMapIterator;
-  actor2IDMapIterator = m_Actor2IDMap.find(m_CurrentActor);
-  if (actor2IDMapIterator != m_Actor2IDMap.end() )
-    {
-    std::cout << "Object found" << std::endl;
-    std::cout << "mesh?:" << actor2IDMapIterator->second.first << std::endl;
-    std::cout << "track ID: " << actor2IDMapIterator->second.second.first << std::endl;
-    std::cout << "time:" << actor2IDMapIterator->second.second.second << std::endl;
-    }
-
-  // Update IDs list
-  // if connection (ie not a mesh)
-  if( !actor2IDMapIterator->second.first )
-    {
-    // Is it in the list?
-    bool isPresent = findInCutList(actor2IDMapIterator->second.second.first,
-                                   actor2IDMapIterator->second.second.second);
-    if(isPresent)
-      {
-      std::cout << "UN HIGHLIGHT" <<  std::endl;
-      m_CurrentActor->GetProperty()->SetOpacity(1);
-      }
-    else
-      {
-      std::cout << "HIGHTLIGHT" << std::endl;
-      m_CurrentActor->GetProperty()->SetOpacity(0.3);
-      }
-    }
-  else
-    {
-  // first click = actor is red
-    if( !m_SecondClick )
-      {
-      m_CurrentActor->GetProperty()->SetLineWidth(5);
-      m_FirstActor = m_CurrentActor;
-
-      m_FirstPair.first = actor2IDMapIterator->second.second.first;
-      m_FirstPair.second = actor2IDMapIterator->second.second.second;
-      m_SecondClick = true;
-      }
-    else
-      {
-      m_FirstActor->GetProperty()->SetLineWidth(1);
-      m_SecondActor = m_CurrentActor;
-      //m_FirstActor->SetMapper(m_CurrentActor->GetMapper());
-
-      std::pair<int, int> secondPair;
-      secondPair.first = actor2IDMapIterator->second.second.first;
-      secondPair.second = actor2IDMapIterator->second.second.second;
-      bool isPresent = findInMergeList(m_FirstPair, secondPair);
-      m_SecondClick = false;
-      }
-    }
-    */
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-bool
-QGoTrackEditingWidget::
-findInCutList(int iTrackId, int iMeshID)
-{
-  std::list< std::pair< int,  int> >::iterator cutListIterator = m_CutList.begin();
-  while( cutListIterator != m_CutList.end() )
-    {
-    // if we find it in the list
-    if(    (*cutListIterator).first == iTrackId
-        && (*cutListIterator).second == iMeshID)
-      {
-      std::cout<< "IDs found - remove it" << std::endl;
-      // Remove from list
-      m_CutList.erase(cutListIterator);
-      return true;
-      }
-    ++cutListIterator;
-    }
-  std::cout<< "IDs NOT found - insert it" << std::endl;
-  // Add in list
-  std::pair<  int,  int> idsPair;
-  idsPair.first = iTrackId;
-  idsPair.second = iMeshID;
-  m_CutList.push_back(idsPair);
-  return false;
 }
 //-------------------------------------------------------------------------
 
@@ -666,7 +582,12 @@ initializeVisualization()
     while( trackIDsIt != listOfTrackIDs.end() )
       {
       std::cout<< "collection ID: " << (*trackIDsIt) << std::endl;
-      m_TrackIDsMapping.insert(pair(m_NumberOfTracks, (*trackIDsIt) ));
+      m_TrackIDsMapping[m_NumberOfTracks] = (*trackIDsIt);
+
+      if( (*trackIDsIt) > m_MaxTrackID)
+        {
+        m_MaxTrackID = (*trackIDsIt);
+        }
 
       std::list<unsigned int> listOfMeshIDs =
               m_MeshContainer->GetAllTraceIDsGivenCollectionID( (*trackIDsIt) );
@@ -842,6 +763,12 @@ cutTrack( vtkActor* iActor)
       }
 
     ++m_NumberOfTracks;
+
+    if( m_NumberOfTracks > m_MaxTrackID)
+      {
+      m_MaxTrackID = m_NumberOfTracks;
+      }
+
     std::cout << "m_NumberOfTracks " << m_NumberOfTracks << std::endl;
 
     // update visu
@@ -864,21 +791,71 @@ removeLineActors()
     }
 }
 //-------------------------------------------------------------------------
-// Go through all container and creates actors
+// ONLY CALLED AT THE END
 //-------------------------------------------------------------------------
 void
 QGoTrackEditingWidget::
 mapContainerIDs2RealIDs()
 {
-  //key: current ID, value: real ID
-  m_TrackIDsMapping;
+  //left: current ID, right: real ID
+  std::map< unsigned int, unsigned int>::iterator iter =
+      m_TrackIDsMapping.begin();
 
-  // Get list of Mesh IDs with current
-    // if real ID > numberOfMesh, assign
-  // else
-    // move points to numberOfMesh+1
-    // check numberOfMesh+1 doesnt belong to list -> double map
-      // if belongs, +1
-      //else
-  //mesh+1
+  while( iter != m_TrackIDsMapping.end())
+    {
+    if( iter->second > m_NumberOfTracks )
+      {
+      std::list<unsigned int> listOfMeshIDs =
+          m_MeshContainer->GetAllTraceIDsGivenCollectionID( iter->first );
+      std::list<unsigned int>::iterator iterator = listOfMeshIDs.begin();
+
+      while( iterator != listOfMeshIDs.end())
+        {
+        m_MeshContainer->ResetCurrentElement();
+        m_MeshContainer->UpdateCurrentElementFromExistingOne( (*iterator) );
+        m_MeshContainer->SetCurrentElementCollectionID( iter->second );
+        m_MeshContainer->InsertCurrentElement();
+        m_MeshContainer->DeleteElement((*iterator));
+
+        ++iterator;
+        }
+      }
+    else
+      {
+      // increase max track ID
+      ++m_MaxTrackID;
+
+      // move first track
+      std::list<unsigned int> listOfMeshIDs =
+          m_MeshContainer->GetAllTraceIDsGivenCollectionID( iter->second );
+      std::list<unsigned int>::iterator iterator = listOfMeshIDs.begin();
+
+      while( iterator != listOfMeshIDs.end())
+        {
+        m_MeshContainer->ResetCurrentElement();
+        m_MeshContainer->UpdateCurrentElementFromExistingOne( (*iterator) );
+        m_MeshContainer->SetCurrentElementCollectionID( m_MaxTrackID );
+        m_MeshContainer->InsertCurrentElement();
+        m_MeshContainer->DeleteElement((*iterator));
+
+        ++iterator;
+        }
+
+      // move secoind track
+      std::list<unsigned int> listOfMeshIDs2 =
+          m_MeshContainer->GetAllTraceIDsGivenCollectionID( iter->first );
+      std::list<unsigned int>::iterator iterator2 = listOfMeshIDs2.begin();
+
+      while( iterator != listOfMeshIDs2.end())
+        {
+        m_MeshContainer->ResetCurrentElement();
+        m_MeshContainer->UpdateCurrentElementFromExistingOne( (*iterator2) );
+        m_MeshContainer->SetCurrentElementCollectionID( iter->second );
+        m_MeshContainer->InsertCurrentElement();
+        m_MeshContainer->DeleteElement((*iterator2));
+
+        ++iterator;
+        }
+      }
+    }
 }
