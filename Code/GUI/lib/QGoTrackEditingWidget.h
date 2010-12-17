@@ -78,6 +78,8 @@ public:
   std::pair< std::pair<unsigned int, unsigned int>, std::pair<unsigned int, unsigned int> >
       isOnBorder( unsigned int iMeshID);
 
+  void updateTracksIDs( unsigned int iIDToDelete, unsigned int iIDToUpdate);
+
   signals:
     void cutTracks( std::list< std::pair< int,  int> > );
     void mergeTracks( std::list< std::pair< std::pair< int,  int>, std::pair< int,  int> > > );

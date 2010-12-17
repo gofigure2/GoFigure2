@@ -357,36 +357,37 @@ initializeVisualization()
 
     // Go through map to create polylines
     std::map<unsigned int, unsigned int>::iterator polyLIt = m_Time2MeshID.begin();
-    if( polyLIt == m_Time2MeshID.end() )
+    if( polyLIt != m_Time2MeshID.end() )
+      {
+      vtkActor* firstActor = (m_MeshContainer->GetActorGivenTraceID( polyLIt->second ))[0];
+      vtkActor* secondActor = NULL;
+      ++polyLIt;
+
+      while( polyLIt != m_Time2MeshID.end() )
+        {
+        secondActor = (m_MeshContainer->GetActorGivenTraceID( polyLIt->second ))[0];
+        vtkActor* polyLine = CreatePolylineActor(firstActor->GetCenter(),
+                                                 secondActor->GetCenter());
+
+         /*
+         * \todo should color be hard coded? hoew to define it? - Nicolas
+         */
+          double color[3] = {1, 1, 1};
+        polyLine->GetProperty()->SetColor(color);
+        // Add actor to visu
+        renderer->AddActor( polyLine );
+
+        // key is actor
+        m_Line2MeshID[polyLine] = polyLIt->second;
+        //m_MeshID2Neigbours[] =
+
+        firstActor = secondActor;
+        ++polyLIt;
+        }
+      }
+    else
       {
       std::cout << "List is empty" << std::endl;
-      return;
-      }
-
-    vtkActor* firstActor = (m_MeshContainer->GetActorGivenTraceID( polyLIt->second ))[0];
-    vtkActor* secondActor = NULL;
-    ++polyLIt;
-
-    while( polyLIt != m_Time2MeshID.end() )
-      {
-      secondActor = (m_MeshContainer->GetActorGivenTraceID( polyLIt->second ))[0];
-      vtkActor* polyLine = CreatePolylineActor(firstActor->GetCenter(),
-                                               secondActor->GetCenter());
-
-      /*
-       * \todo should color be hard coded? hoew to define it? - Nicolas
-       */
-      double color[3] = {1, 1, 1};
-      polyLine->GetProperty()->SetColor(color);
-      // Add actor to visu
-      renderer->AddActor( polyLine );
-
-      // key is actor
-      m_Line2MeshID[polyLine] = polyLIt->second;
-      //m_MeshID2Neigbours[] =
-
-      firstActor = secondActor;
-      ++polyLIt;
       }
     }
 }
@@ -596,16 +597,27 @@ mergeTrack( vtkActor* iFirstActor, vtkActor* iSecondActor)
 
   //Get Highest time to know which meshes we should update
   unsigned int trackToUpdate = 0;
+  unsigned int trackToDelete = 0;
   if( border1.first.first < border2.first.first)
     {
+    trackToDelete = firstMesh;
     trackToUpdate = secondMesh;
     }
   else
     {
     trackToUpdate = firstMesh;
+    trackToDelete = secondMesh;
     }
 
-  std::cout<< " Track to update: " << trackToUpdate << std::endl;
+  std::cout<< " Mesh to update: " << trackToUpdate << std::endl;
+  std::cout<< " Mesh to delete: " << trackToDelete << std::endl;
+
+  // Change the ID of the track by the other one
+  updateTracksIDs( trackToDelete, trackToUpdate);
+
+  // update visu
+  removeLineActors();
+  initializeVisualization();
 
 }
 //-------------------------------------------------------------------------
@@ -650,14 +662,13 @@ isOnBorder( unsigned int iMeshID)
       minBorder.first = *iterator;
       minBorder.second = time;
       }
-    else
+
+    if( maxBorder.second < time )
       {
-      if( maxBorder.second < time )
-        {
-        maxBorder.first = *iterator;
-        maxBorder.second = time;
-        }
+      maxBorder.first = *iterator;
+      maxBorder.second = time;
       }
+
     ++iterator;
     }
 
@@ -665,4 +676,29 @@ isOnBorder( unsigned int iMeshID)
   borders.second = maxBorder;
 
   return borders;
+}
+
+void
+QGoTrackEditingWidget::
+updateTracksIDs( unsigned int iIDToDelete, unsigned int iIDToUpdate)
+{
+  // Get track to update ID
+  unsigned int collectionID =
+      m_MeshContainer->GetCollectionIDOfGivenTrace( iIDToUpdate );
+
+  // Update track to delete IDs with update ID
+  unsigned int collectionID2 = m_MeshContainer->GetCollectionIDOfGivenTrace( iIDToDelete );
+
+  std::list<unsigned int> listOfMeshIDs =
+      m_MeshContainer->GetAllTraceIDsGivenCollectionID( collectionID2 );
+  std::list<unsigned int>::iterator iterator = listOfMeshIDs.begin();
+
+  while( iterator != listOfMeshIDs.end() )
+    {
+    m_MeshContainer->ResetCurrentElement();
+    m_MeshContainer->UpdateCurrentElementFromExistingOne( (*iterator) );
+    m_MeshContainer->SetCurrentElementCollectionID( collectionID );
+    m_MeshContainer->InsertCurrentElement();
+    ++iterator;
+    }
 }
