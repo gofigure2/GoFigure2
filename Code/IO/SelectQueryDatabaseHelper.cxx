@@ -1445,7 +1445,8 @@ std::string GetCoordinateValuesQueryString(std::string iTableName, std::string i
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void GetTracesInfoFromDBForVisuContainer(
+//fill list of structure
+/*void GetTracesInfoFromDBForVisuContainer(
   std::list< ContourMeshStructure > & ioContainer,
   vtkMySQLDatabase *DatabaseConnector, std::string TraceName,
   std::string CollectionName, unsigned int ImgSessionID,
@@ -1537,6 +1538,7 @@ void GetTracesInfoFromDBForVisuContainer(
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
+//fill list of structure
 void GetTracesInfoFromDBForVisuContainer(
   std::list< TrackStructure > & ioContainer,
   vtkMySQLDatabase *DatabaseConnector, std::string TraceName,
@@ -1625,23 +1627,26 @@ void GetTracesInfoFromDBForVisuContainer(
       }
     }
   query->Delete();
-}
+}*/
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void GetInfoFromDBAndModifyListStructure(
+//fill list of structure
+/*void GetInfoFromDBAndModifyListStructure(
   std::list< ContourMeshStructure > & ioListStructure,
   vtkMySQLDatabase *iDatabaseConnector, std::vector<std::string> iSelectedAttributes,
   std::string iTableOne, std::string iTableTwo, std::string iTableThree,
   FieldWithValue iJoinConditionOne, FieldWithValue iJoinConditionTwo, std::string iFieldOne,
   unsigned int iValueFieldOne, std::string iIDFieldName, std::list< unsigned int > iListIDs)
 {
-  vtkSQLQuery *query = iDatabaseConnector->GetQueryInstance();
+  //vtkSQLQuery *query = iDatabaseConnector->GetQueryInstance();
 
   std::string QueryString = SelectForTracesInfo(iSelectedAttributes, iTableOne, iTableTwo, 
     iTableThree, iJoinConditionOne, iJoinConditionTwo, iFieldOne, iValueFieldOne, iIDFieldName, 
     iListIDs);
 
+  ExecuteQueryAndModifyListStructure<ContourMeshStructure>( 
+    iDatabaseConnector, QueryString, ioListStructure, iTableOne);
   query->SetQuery( QueryString.c_str() );
   if ( !query->Execute() )
     {
@@ -1709,68 +1714,52 @@ void GetInfoFromDBAndModifyListStructure(
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-/*void GetInfoFromDBAndModifyListMeshStructureSimplified(
-  std::list< ContourMeshStructure > & ioContainer,
+//fill list of structure
+void GetInfoFromDBAndModifyListStructure(
+  std::list< TrackStructure > & ioListStructure,
   vtkMySQLDatabase *iDatabaseConnector, std::vector<std::string> iSelectedAttributes,
   std::string iTableOne, std::string iTableTwo, std::string iTableThree,
   FieldWithValue iJoinConditionOne, FieldWithValue iJoinConditionTwo, std::string iFieldOne,
   unsigned int iValueFieldOne, std::string iIDFieldName, std::list< unsigned int > iListIDs)
 {
-  vtkSQLQuery *query = iDatabaseConnector->GetQueryInstance();
+  //vtkSQLQuery *query = iDatabaseConnector->GetQueryInstance();
 
   std::string QueryString = SelectForTracesInfo(iSelectedAttributes, iTableOne, iTableTwo, 
     iTableThree, iJoinConditionOne, iJoinConditionTwo, iFieldOne, iValueFieldOne, iIDFieldName, 
     iListIDs);
 
-  query->SetQuery( QueryString.c_str() );
-  if ( !query->Execute() )
-    {
-    itkGenericExceptionMacro(
-      << "return info meshes or contours query failed"
-      << query->GetLastErrorText() );
-    iDatabaseConnector->Close();
-    iDatabaseConnector->Delete();
-    query->Delete();
-    return;
-    }
+  ExecuteQueryAndModifyListStructure<TrackStructure>( 
+    iDatabaseConnector, QueryString, ioListStructure, iTableOne);
+}*/
+//------------------------------------------------------------------------------
 
-  while ( query->NextRow() )
-    {
-      {
-      ContourMeshStructure temp;
-      temp.TraceID = query->DataValue(0).ToInt();
-      temp.CollectionID = query->DataValue(1).ToUnsignedInt();
-      temp.TCoord       = query->DataValue(2).ToUnsignedInt();
-      /// \note For the visualization rgba values are supposed to be double in
-      /// between 0 and 1; whereas in the database these values are in between
-      /// 0 and 255.
-      temp.rgba[0]      = ( query->DataValue(3).ToDouble() ) / 255.;
-      temp.rgba[1]      = ( query->DataValue(4).ToDouble() ) / 255.;
-      temp.rgba[2]      = ( query->DataValue(5).ToDouble() ) / 255.;
-      temp.rgba[3]      = ( query->DataValue(6).ToDouble() ) / 255.;
-      std::string polydata_string = query->DataValue(7).ToString();
-      vtkPolyData *output = vtkPolyData::New();
-      if ( !polydata_string.empty() )
+//------------------------------------------------------------------------------
+//fill list of structure
+void ModifyStructureWithTCoordAndPoints(ContourMeshStructure & ioStructure,
+  unsigned int iTCoord, std::string iPoints, std::string iTraceName)
+{
+  ioStructure.TCoord = iTCoord;
+  vtkPolyData *output = vtkPolyData::New();
+      if ( !iPoints.empty() )
         {
-        if ( iTableOne.compare("contour") == 0 )
+        if ( iTraceName.compare("contour") == 0 )
           {
           vtkSmartPointer< vtkPolyDataMySQLContourReader > convert_reader =
             vtkSmartPointer< vtkPolyDataMySQLContourReader >::New();
-          output->DeepCopy(convert_reader->GetPolyData(polydata_string));
+          output->DeepCopy(convert_reader->GetPolyData(iPoints));
           }
         else
           {
-          if ( iTableOne.compare("mesh") == 0 )
+          if ( iTraceName.compare("mesh") == 0 )
             {
             vtkIdType N;
-            std::stringstream str(polydata_string);
+            std::stringstream str(iPoints);
             str >> N;
-
             if( N > 0 )
               {
               vtkSmartPointer< vtkPolyDataMySQLMeshReader > convert_reader =
                 vtkSmartPointer< vtkPolyDataMySQLMeshReader >::New();
-              output->DeepCopy(convert_reader->GetPolyData(polydata_string));
+              output->DeepCopy(convert_reader->GetPolyData(iPoints));
               }
             else
               {
@@ -1779,13 +1768,77 @@ void GetInfoFromDBAndModifyListStructure(
               }
             }
           }
-        temp.Nodes = output;
-        }
-      ioContainer.push_back(temp);
+        ioStructure.Nodes = output;
       }
-    }
-  query->Delete();
-}*/
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+//fill list of structure
+void ModifyStructureWithTCoordAndPoints(TrackStructure & ioStructure,
+  unsigned int iTCoord, std::string iPoints, std::string iTraceName)
+{
+    (void) iTCoord;
+    if (iTraceName != "track")
+      {
+      std::cout<<"this method is only for track and don't have TCoord at this moment";
+      std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+      std::cout << std::endl;
+      return;
+      }
+
+   if ( !iPoints.empty() )
+    {
+    vtkSmartPointer< vtkPolyDataMySQLTrackReader > convert_reader =
+        vtkSmartPointer< vtkPolyDataMySQLTrackReader >::New();
+    vtkIdType N;
+    std::stringstream str(iPoints);
+    str >> N;
+    if ( N > 0)
+      {
+      vtkPolyData *output = vtkPolyData::New();
+      output->DeepCopy(convert_reader->GetPolyData(iPoints));           
+      ioStructure.PointsMap = convert_reader->GetMap(iPoints);
+      ioStructure.Nodes = output;
+      //output->Delete();
+      //output = NULL;
+      }
+     }
+    else
+      {
+      ioStructure.Nodes = NULL;
+      } 
+}
+////
+/*TrackStructure temp;
+      temp.TraceID = query->DataValue(0).ToInt();
+      vtkSmartPointer< vtkPolyDataMySQLTrackReader > convert_reader =
+        vtkSmartPointer< vtkPolyDataMySQLTrackReader >::New();
+      std::string polydata_string = query->DataValue(2).ToString();
+      vtkIdType N;
+      std::stringstream str(polydata_string);
+      str >> N;
+
+      if ( (N > 0) && (!polydata_string.empty()) )
+        {
+        vtkPolyData *output = vtkPolyData::New();
+        output->DeepCopy(convert_reader->GetPolyData(polydata_string));
+        temp.Nodes = output;
+        temp.PointsMap = convert_reader->GetMap(polydata_string);
+        }
+      else
+        {
+        temp.Nodes = NULL;
+        }
+      /// \note For the visualization rgba values are supposed to be double in
+      /// between 0 and 1; whereas in the database these values are in between
+      /// 0 and 255.
+      temp.rgba[0]      = ( query->DataValue(3).ToDouble() ) / 255.;
+      temp.rgba[1]      = ( query->DataValue(4).ToDouble() ) / 255.;
+      temp.rgba[2]      = ( query->DataValue(5).ToDouble() ) / 255.;
+      temp.rgba[3]      = ( query->DataValue(6).ToDouble() ) / 255.;
+
+      ioContainer.push_back(temp);*/
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------

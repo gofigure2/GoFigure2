@@ -199,13 +199,24 @@ void QGoDBTrackManager::GetTracesInfoFromDBAndModifyContainerForVisu(
   vtkMySQLDatabase* iDatabaseConnector,
   std::list<unsigned int> iListTraceIDs)
 {
-  std::vector<int> VectTraceIDs(iListTraceIDs.begin(), iListTraceIDs.end() );
+  /*std::vector<int> VectTraceIDs(iListTraceIDs.begin(), iListTraceIDs.end() );
   std::list<TrackStructure> list_of_traces;
   GetTracesInfoFromDBForVisuContainer(
       list_of_traces,
       iDatabaseConnector, this->m_TraceName, this->m_CollectionName,
       this->m_ImgSessionID, VectTraceIDs);
 
+  std::list< TrackStructure >::iterator it = list_of_traces.begin();
+
+  while ( it != list_of_traces.end() )
+    {
+    this->m_TrackContainerInfoForVisu->Insert(*it);
+    ++it;
+    }*/
+
+  std::list<TrackStructure> list_of_traces = 
+    this->m_CollectionOfTraces->GetListStructureFromDB<TrackStructure>(
+    iDatabaseConnector, this->m_ImgSessionID, iListTraceIDs);
   std::list< TrackStructure >::iterator it = list_of_traces.begin();
 
   while ( it != list_of_traces.end() )

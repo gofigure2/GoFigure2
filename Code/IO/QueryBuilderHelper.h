@@ -144,10 +144,10 @@ std::string GetConditions(std::vector<FieldWithValue> iConditions,
 
 std::string GetConditions(std::string iField, std::string iValue,std::string iOperator = "=");
 
-std::string GetFirstPartQueryForTracesInfo(std::string iTraceName,std::string iCollectionName);
+//std::string GetFirstPartQueryForTracesInfo(std::string iTraceName,std::string iCollectionName);
 
-std::string GetSecondPartQueryForTracesInfo(std::string TraceName,
-                                            std::vector<int> iVectIDs);
+//std::string GetSecondPartQueryForTracesInfo(std::string TraceName,
+                                            //std::vector<int> iVectIDs);
 
 /**
 \brief SELECT iColumn FROM iTable ORDER BY iOrderByColumnName iAscDesc;

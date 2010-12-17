@@ -303,13 +303,24 @@ void QGoDBContourManager::GetTracesInfoFromDBAndModifyContainerForVisu(
   vtkMySQLDatabase* iDatabaseConnector,
   std::list< unsigned int > iListTraceIDs)
 {
-  std::list<ContourMeshStructure> list_of_traces;
+  /*std::list<ContourMeshStructure> list_of_traces;
   std::vector<int> VectTraceIDs(iListTraceIDs.begin(), iListTraceIDs.end() );
   GetTracesInfoFromDBForVisuContainer(
       list_of_traces,
       iDatabaseConnector, this->m_TraceName, this->m_CollectionName,
       this->m_ImgSessionID, VectTraceIDs);
 
+  std::list< ContourMeshStructure >::iterator it = list_of_traces.begin();
+
+  while ( it != list_of_traces.end() )
+    {
+    this->m_ContourContainerInfoForVisu->Insert(*it);
+    ++it;
+    }*/
+
+  std::list<ContourMeshStructure> list_of_traces = 
+    this->m_CollectionOfTraces->GetListStructureFromDB<ContourMeshStructure>(
+    iDatabaseConnector, this->m_ImgSessionID, iListTraceIDs);
   std::list< ContourMeshStructure >::iterator it = list_of_traces.begin();
 
   while ( it != list_of_traces.end() )

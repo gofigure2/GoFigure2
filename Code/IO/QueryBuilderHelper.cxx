@@ -67,7 +67,7 @@ std::string SelectGeneralQuery(std::string iWhat, std::string iWhere,std::string
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::string GetFirstPartQueryForTracesInfo(std::string iTraceName,std::string iCollectionName)
+/*std::string GetFirstPartQueryForTracesInfo(std::string iTraceName,std::string iCollectionName)
 {
   std::stringstream Querystream;
   Querystream << "SELECT ";
@@ -120,7 +120,7 @@ std::string GetSecondPartQueryForTracesInfo(std::string TraceName,
   else
     Querystream << "'";
 return Querystream.str().c_str();
-}
+}*/
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------

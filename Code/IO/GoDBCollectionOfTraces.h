@@ -397,9 +397,28 @@ public:
     vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTraceIDs,
     unsigned int iTimePoint);
 
-  std::list<ContourMeshStructure> GetListStructureFromDB(
-    vtkMySQLDatabase* iDatabaseConnector,unsigned int iImgSessionID, 
-    std::list<unsigned int> iListTraces);
+  //std::list<ContourMeshStructure> GetListStructureFromDB(
+  //  vtkMySQLDatabase* iDatabaseConnector,unsigned int iImgSessionID, 
+  //  std::list<unsigned int> iListTraces);
+
+  template<typename T>
+  std::list<T> GetListStructureFromDB(
+    vtkMySQLDatabase* iDatabaseConnector, unsigned int iImgSessionID, 
+    std::list<unsigned int> iListTraces)
+{
+  std::list<T> oListTracesResults;
+  std::vector<std::string> TraceAttributes = this->GetAttributesForTraces();
+  FieldWithValue CoordinateCondition = {"CoordIDMin", "CoordID", "="};
+  FieldWithValue ColorCondition = {"ColorID", "ColorID", "="};
+
+  GetInfoFromDBAndModifyListStructure<T>(
+    oListTracesResults, iDatabaseConnector, 
+    TraceAttributes, this->m_TracesName, "coordinate", "color", 
+    CoordinateCondition, ColorCondition, "ImagingSessionID",
+    iImgSessionID, this->m_TracesIDName, iListTraces);
+  return oListTracesResults;
+}
+
 
   //std::list<ContourMeshStructure> GetListStructureFromDBSimplified(
   //  vtkMySQLDatabase* iDatabaseConnector,std::list<unsigned int> iListTraces, 
@@ -509,7 +528,7 @@ protected:
   GetListNameWithColorDataFromResultsQuery(
     std::vector< std::vector< std::string > > iResultsQuery);
 
-  std::vector<std::string> GetAttributesForContourMeshStructure();
+  std::vector<std::string> GetAttributesForTraces();
 
   //std::vector< std::string > ListUnsgIntToVectorString(std::list< unsigned int > iList);
 
