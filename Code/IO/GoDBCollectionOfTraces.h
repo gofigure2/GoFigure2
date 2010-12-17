@@ -397,10 +397,14 @@ public:
     vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTraceIDs,
     unsigned int iTimePoint);
 
-  //std::list<ContourMeshStructure> GetListStructureFromDB(
-  //  vtkMySQLDatabase* iDatabaseConnector,unsigned int iImgSessionID, 
-  //  std::list<unsigned int> iListTraces);
-
+  /**
+  \brief get a list of structures filled with data from the database
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iImgSessionID
+  \param[in] iListTraces IDs for the traces to be in the list
+  \tparam ContourMeshStructure or TrackStructure
+  \return a list of T structure
+  */
   template<typename T>
   std::list<T> GetListStructureFromDB(
     vtkMySQLDatabase* iDatabaseConnector, unsigned int iImgSessionID, 
@@ -418,11 +422,6 @@ public:
     iImgSessionID, this->m_TracesIDName, iListTraces);
   return oListTracesResults;
 }
-
-
-  //std::list<ContourMeshStructure> GetListStructureFromDBSimplified(
-  //  vtkMySQLDatabase* iDatabaseConnector,std::list<unsigned int> iListTraces, 
-  //  unsigned int iImgSessionID);
 
 protected:
 

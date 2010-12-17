@@ -296,7 +296,6 @@ std::vector< std::pair< int, std::string > > ListSpecificValuesForTwoColumnsAndT
   std::string TableTwo, std::string ColumnTwo, std::string ForeignKey,
   std::string PrimaryKey, std::string field, std::string value);
 
-//fill list of structure
 /**
 \brief fill the TCoord and the attributes of the structure obtained from Points
 \param[in] ioStructure structure to be modified with TCoord and co.
@@ -308,14 +307,12 @@ QGOIO_EXPORT
 void ModifyStructureWithTCoordAndPoints(ContourMeshStructure & ioStructure,
   unsigned int iTCoord, std::string iPoints, std::string iTraceName);
 
-//fill list of structure
 /**
 \overload
 */
 QGOIO_EXPORT
 void ModifyStructureWithTCoordAndPoints(TrackStructure & ioStructure,
   unsigned int iTCoord, std::string iPoints, std::string iTraceName);
-//fill list of structure
 /**
 \brief execute iQueryString and put the results in a list of T structure
 \param[in] iDatabaseConnector
@@ -380,7 +377,6 @@ left join tablethree ijoinconditiontwo where (ifieldone = ivaluefieldone and (iI
 \param[in] iIDFieldName field for the IDName where there is a condition
 \param[in] iListIDs values for the iIDFieldname
 */
-//fill list of structure
 QGOIO_EXPORT
 template<typename T>
 void GetInfoFromDBAndModifyListStructure(

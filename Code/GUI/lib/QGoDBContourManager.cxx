@@ -126,8 +126,9 @@ void QGoDBContourManager::AddActionsContextMenu(QMenu *iMenu)
 {
   QGoDBTraceManager::AddActionsContextMenu(iMenu);
   this->AddSpecificActionsForContourMesh(iMenu);
-  this->m_CheckedTracesMenu->addAction( tr("ReEdit the checked %1").arg( this->m_TraceName.c_str() ),
-                    this, SLOT( ReEditTrace() ) );
+  this->m_CheckedTracesMenu->addAction( tr("ReEdit the checked %1")
+    .arg( this->m_TraceName.c_str() ),
+    this, SLOT( ReEditTrace() ) );
 }
 
 //-------------------------------------------------------------------------
@@ -136,8 +137,9 @@ void QGoDBContourManager::AddActionsContextMenu(QMenu *iMenu)
 void QGoDBContourManager::AddActionForCreateNewCollectionFromCheckedTraces(
   QMenu *iMenu)
 {
-  this->m_CheckedTracesMenu->addAction( tr("Generate a new mesh from checked contours"),
-         this, SLOT( CreateCorrespondingCollection() ) );
+  this->m_CheckedTracesMenu->addAction( 
+    tr("Generate a new mesh from checked contours"),
+    this, SLOT( CreateCorrespondingCollection() ) );
 }
 
 //-------------------------------------------------------------------------
@@ -213,7 +215,8 @@ unsigned int QGoDBContourManager::SaveReeditedContourFromVisu(unsigned int iXCoo
 
   ReeditedContour.SetValuesForSpecificID(TraceID, iDatabaseConnector);
   this->SetTraceBoundingBoxAndPoints(iXCoordMin, iYCoordMin, iZCoordMin, iTCoord, iXCoordMax,
-                                     iYCoordMax, iZCoordMax, iContourNodes, iDatabaseConnector, ReeditedContour);
+                                     iYCoordMax, iZCoordMax, iContourNodes, iDatabaseConnector, 
+                                     ReeditedContour);
   ReeditedContour.SaveInDB(iDatabaseConnector);
   this->DisplayInfoForExistingTrace(iDatabaseConnector, TraceID);
   return TraceID;
@@ -303,31 +306,8 @@ void QGoDBContourManager::GetTracesInfoFromDBAndModifyContainerForVisu(
   vtkMySQLDatabase* iDatabaseConnector,
   std::list< unsigned int > iListTraceIDs)
 {
-  /*std::list<ContourMeshStructure> list_of_traces;
-  std::vector<int> VectTraceIDs(iListTraceIDs.begin(), iListTraceIDs.end() );
-  GetTracesInfoFromDBForVisuContainer(
-      list_of_traces,
-      iDatabaseConnector, this->m_TraceName, this->m_CollectionName,
-      this->m_ImgSessionID, VectTraceIDs);
-
-  std::list< ContourMeshStructure >::iterator it = list_of_traces.begin();
-
-  while ( it != list_of_traces.end() )
-    {
-    this->m_ContourContainerInfoForVisu->Insert(*it);
-    ++it;
-    }*/
-
-  std::list<ContourMeshStructure> list_of_traces = 
-    this->m_CollectionOfTraces->GetListStructureFromDB<ContourMeshStructure>(
-    iDatabaseConnector, this->m_ImgSessionID, iListTraceIDs);
-  std::list< ContourMeshStructure >::iterator it = list_of_traces.begin();
-
-  while ( it != list_of_traces.end() )
-    {
-    this->m_ContourContainerInfoForVisu->Insert(*it);
-    ++it;
-    }
+  this->GetTracesInfoFromDBAndModifyContainerForVisuTemplate<ContourContainer>(
+    this->m_ContourContainerInfoForVisu, iDatabaseConnector, iListTraceIDs);
 }
 //-------------------------------------------------------------------------
 

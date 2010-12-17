@@ -1509,8 +1509,6 @@ void ModifyStructureWithTCoordAndPoints(TrackStructure & ioStructure,
       output->DeepCopy(convert_reader->GetPolyData(iPoints));           
       ioStructure.PointsMap = convert_reader->GetMap(iPoints);
       ioStructure.Nodes = output;
-      output->Delete();
-      output = NULL;
       }
      }
     else

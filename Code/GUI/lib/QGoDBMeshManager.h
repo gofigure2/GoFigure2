@@ -136,6 +136,13 @@ public:
   */
   void SetSelectedSubCellType(std::string* iSubCellType);
 
+  /**
+  \brief get the info needed from the database for the meshes contained
+  in iListIDs and create a new container for visu for these meshes
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iListIDs list of IDs for the meshes
+  \return a container for meshes for the visu
+  */
   MeshContainer* GetMeshesInfoFromDBAndCreateContainerForVisu(
   vtkMySQLDatabase* iDatabaseConnector,std::list< unsigned int> iListIDs);
 
