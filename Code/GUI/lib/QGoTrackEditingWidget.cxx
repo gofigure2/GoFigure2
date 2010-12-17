@@ -75,7 +75,7 @@ QGoTrackEditingWidget(QWidget *iParent): QDialog(iParent)
 
   m_SecondClick = false;
 
-  m_LabelData = vtkPointData::New();
+  m_LabelData = vtkPolyData::New();
 
   m_VtkEventQtConnector->Connect(
     reinterpret_cast< vtkObject * >( m_InteractorStyle3D ),
@@ -296,7 +296,7 @@ initializeVisualization()
       randomScalars->SetNumberOfComponents(1);
       randomScalars->SetName("TimePoint");
 
-      vtkSmartPointer<vtkPoints> c;
+   vtkSmartPointer<vtkPoints> pts = vtkSmartPointer<vtkPoints>::New();
 
 
   // For each track, create the actors

@@ -35,7 +35,7 @@ SET( QGOGUILIB_EXAMPLE_SRC
   comparepipelineexample
   QGoColorComboBoxTest
   
-  QGoTrackEditingWidgetTest
+  #QGoTrackEditingWidgetTest
 )
 
 #---------------------------------------------------------------------------
@@ -212,10 +212,11 @@ ADD_TEST( QGoDBInitCreateMicroscopePageTest
   1
 )
 
-ADD_TEST( QGoTrackEditingWidgetTest
-  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoTrackEditingWidgetTest
-  1
-)
+
+#ADD_TEST( QGoTrackEditingWidgetTest
+#  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoTrackEditingWidgetTest
+#  1
+#)
 
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
