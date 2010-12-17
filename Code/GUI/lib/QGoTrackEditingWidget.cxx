@@ -307,7 +307,7 @@ initializeVisualization()
 
 
   // For each track, create the actors
-  for( int i = 0; i < m_NumberOfTracks ; ++i )
+  for( unsigned int i = 0; i < m_NumberOfTracks ; ++i )
     {
     std::cout<< "collection ID: " << i << std::endl;
     std::map<unsigned int, unsigned int> m_Time2MeshID;
@@ -424,7 +424,7 @@ QGoTrackEditingWidget::
 cutTrack( vtkActor* iActor)
 {
   std::map< vtkActor* , int >::iterator it = m_Line2MeshID.find( iActor );
-  int timePoint;
+  //int timePoint;
 
   // Find the mesh ID
   if( it != m_Line2MeshID.end() )

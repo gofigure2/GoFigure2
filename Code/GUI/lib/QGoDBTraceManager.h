@@ -725,6 +725,30 @@ protected:
       }
   }
 
+  /**
+  \brief get the info needed from the database to fill the container for visu
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iContainerForVisu common container for the visu and database
+  \param[in] iListTraceIDs list of the IDs the info are needed
+  */
+  template<typename T>
+  void GetTracesInfoFromDBAndModifyContainerForVisuTemplate(
+    T* iContainerForVisu, vtkMySQLDatabase* iDatabaseConnector, 
+    std::list<unsigned int> iListTraceIDs)
+  {
+    typedef typename T::MultiIndexContainerElementType Structure;
+    std::list<Structure> list_of_traces = 
+      this->m_CollectionOfTraces->GetListStructureFromDB<Structure>(
+      iDatabaseConnector, this->m_ImgSessionID, iListTraceIDs);
+    std::list< Structure >::iterator it = list_of_traces.begin();
+
+    while ( it != list_of_traces.end() )
+      {
+      iContainerForVisu->Insert(*it);
+      ++it;
+      }
+  }
+
   virtual void AddActionsContextMenu(QMenu *iMenu);
 
   void AddGeneralActionsContextMenu(QMenu *iMenu);
