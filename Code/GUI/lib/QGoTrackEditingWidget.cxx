@@ -223,12 +223,15 @@ UpdateCurrentActorSelection(vtkObject *caller)
       {
       m_SecondActor = m_CurrentActor;
       mergeTrack( m_FirstActor, m_SecondActor);
+      m_FirstActor->GetProperty()->SetSpecular(0);
+      m_FirstActor->GetProperty()->SetAmbient(0);
       m_SecondClick = false;
       }
     else
       {
       m_FirstActor = m_CurrentActor;
-      m_FirstActor->SetScale(3);
+      m_FirstActor->GetProperty()->SetSpecular(1);
+      m_FirstActor->GetProperty()->SetAmbient(1);
       m_SecondClick = true;
       }
     }
@@ -588,8 +591,8 @@ mergeTrack( vtkActor* iFirstActor, vtkActor* iSecondActor)
   std::cout << "high limit ID: " << border2.second.first << " time "
                               << border2.second.second << std::endl;
   // Check for overlap
-  if(    ( border2.first.first <= border1.second.first )
-      && ( border1.first.first <= border2.second.first ) )
+  if(    ( border2.first.second <= border1.second.second )
+      && ( border1.first.second <= border2.second.second ) )
     {
     std::cout << " Tracks are overlaping" << std::endl;
     return;
