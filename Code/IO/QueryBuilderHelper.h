@@ -144,11 +144,6 @@ std::string GetConditions(std::vector<FieldWithValue> iConditions,
 
 std::string GetConditions(std::string iField, std::string iValue,std::string iOperator = "=");
 
-//std::string GetFirstPartQueryForTracesInfo(std::string iTraceName,std::string iCollectionName);
-
-//std::string GetSecondPartQueryForTracesInfo(std::string TraceName,
-                                            //std::vector<int> iVectIDs);
-
 /**
 \brief SELECT iColumn FROM iTable ORDER BY iOrderByColumnName iAscDesc;
 \param[in] iTable name of the database table
@@ -293,15 +288,25 @@ std::string GetLeftJoinThreeTables(std::string iTable,std::string iTableTwo,
 
 std::string GetGroupBy(std::string iColumn, unsigned int iNumberDoublons);
 
+/**
+\brief SELECT iSelectedAttributes[0], iSelectedAttributes[1]...FROM (iTableOne left join
+iTableTwo on iJoinConditionOne) left join tableThree on iJoinConditionTwo where (iFieldOne
+= iValueFieldOne) AND (IDFieldName = iListIDs[0] OR IDFieldName = iListIDs[1] OR....);
+\param[in] iSelectedAttributes vector of all the attributes to be fetched from the db
+\param[in] iTableOne main table involved (usually the table for the trace)
+\param[in] iTableTwo table attached to the main table
+\param[in] iTableThree table attached to the main table
+\param[in] iJoinConditionOne describes how the tabletwo is attached to the main table
+\param[in] iJoinConditionTwo describes how the tablethree is attached to the main table
+\param[in] iFieldOne first condition
+\param[in] iValueFieldOne value for the first condition
+\param[in] iIDFieldName field for the IDName where there is a condition
+\param[in] iListIDs values for the iIDFieldname
+\return the string corresponding to the query part
+*/
 std::string SelectForTracesInfo(std::vector<std::string> iSelectedAttributes,
   std::string iTableOne, std::string iTableTwo, std::string iTableThree,
   FieldWithValue iJoinConditionOne, FieldWithValue iJoinConditionTwo, std::string iFieldOne,
   unsigned int iValueFieldOne, std::string iIDFieldName, std::list< unsigned int > iListIDs);
-
-//iselectquery union iselectquery where ijoinon IS NULL (with or without
-// brackets in the
-//where clause, it will work
-//std::string SelectWithJoinNullIncluded(std::string iSelectQuery, std::string iJoinOn,
-                                       //bool doublon = true);
 
 #endif
