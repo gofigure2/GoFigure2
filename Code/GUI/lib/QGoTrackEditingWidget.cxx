@@ -60,7 +60,7 @@
 
 //-------------------------------------------------------------------------
 QGoTrackEditingWidget::
-QGoTrackEditingWidget(QWidget *iParent): QDialog(iParent)
+QGoTrackEditingWidget( MeshContainer* imeshContainer, QWidget *iParent ): QDialog(iParent)
 {
   this->setupUi(this);
 
@@ -75,10 +75,17 @@ QGoTrackEditingWidget(QWidget *iParent): QDialog(iParent)
 
   m_SecondClick = false;
 
+  m_LabelData = vtkPolyData::New();
+
+  m_MeshContainer = imeshContainer;
+
   m_VtkEventQtConnector->Connect(
     reinterpret_cast< vtkObject * >( m_InteractorStyle3D ),
     vtkViewImage3DCommand::MeshPickingEvent,
     this, SLOT( UpdateCurrentActorSelection(vtkObject *) ) );
+
+  QObject::connect (this->buttonBox , SIGNAL( accepted() ),
+                 this, SLOT( mapContainerIDs2RealIDs() ) );
 }
 //-------------------------------------------------------------------------
 
@@ -223,11 +230,15 @@ UpdateCurrentActorSelection(vtkObject *caller)
       {
       m_SecondActor = m_CurrentActor;
       mergeTrack( m_FirstActor, m_SecondActor);
+      m_FirstActor->GetProperty()->SetSpecular(0);
+      m_FirstActor->GetProperty()->SetAmbient(0);
       m_SecondClick = false;
       }
     else
       {
       m_FirstActor = m_CurrentActor;
+      m_FirstActor->GetProperty()->SetSpecular(1);
+      m_FirstActor->GetProperty()->SetAmbient(1);
       m_SecondClick = true;
       }
     }
@@ -250,12 +261,15 @@ initializeVisualization()
   std::list<unsigned int> listOfTrackIDs = m_MeshContainer->GetAllCollectionIDs();
   std::list<unsigned int>::iterator trackIDsIt = listOfTrackIDs.begin();
 
+  // first render: reassign track IDs
   if(m_FirstRender)
     {  // For each track, create the actors
     while( trackIDsIt != listOfTrackIDs.end() )
       {
       std::cout<< "collection ID: " << (*trackIDsIt) << std::endl;
       m_TrackIDsMapping[m_NumberOfTracks] = (*trackIDsIt);
+      std::cout<< "MAPPING new: " << m_NumberOfTracks << " to real: " << (*trackIDsIt)
+          << std::endl;
 
       if( (*trackIDsIt) > m_MaxTrackID)
         {
@@ -280,11 +294,16 @@ initializeVisualization()
       ++m_NumberOfTracks;
       ++trackIDsIt;
       }
-    trackIDsIt = listOfTrackIDs.begin();
     m_FirstRender = false;
     }
 
   ////////////////////////////////////////////////////////////////////////////////
+  vtkSmartPointer<vtkDoubleArray> randomScalars =
+        vtkSmartPointer<vtkDoubleArray>::New();
+      randomScalars->SetNumberOfComponents(1);
+      randomScalars->SetName("TimePoint");
+
+   vtkSmartPointer<vtkPoints> pts = vtkSmartPointer<vtkPoints>::New();
 
 
   // For each track, create the actors
@@ -322,6 +341,10 @@ initializeVisualization()
       std::cout<< "X: " << actor->GetCenter()[0] << std::endl;
       std::cout<< "Y: " << actor->GetCenter()[1] << std::endl;
       std::cout<< "Z: " << actor->GetCenter()[2] << std::endl;
+      std::cout<< "T: " << time << std::endl;
+
+      randomScalars->InsertNextTuple1( time );
+      pts->InsertNextPoint(actor->GetCenter());
 
       // Add actor to visu
       renderer->AddActor(actor);
@@ -390,6 +413,8 @@ initializeVisualization()
       std::cout << "List is empty" << std::endl;
       }
     }
+
+  m_LabelData->SetPoints(pts);
 }
 //-------------------------------------------------------------------------
 // Go through all container and creates actors
@@ -473,12 +498,15 @@ void
 QGoTrackEditingWidget::
 mapContainerIDs2RealIDs()
 {
-  //left: current ID, right: real ID
+  std::cout<< "MAP IDS: " << std::endl;
   std::map< unsigned int, unsigned int>::iterator iter =
       m_TrackIDsMapping.begin();
 
   while( iter != m_TrackIDsMapping.end())
     {
+    std::cout<< "new: " << iter->first << std::endl;
+    std::cout<< "old: " << iter->second << std::endl;
+
     if( iter->second > m_NumberOfTracks )
       {
       std::list<unsigned int> listOfMeshIDs =
@@ -491,8 +519,6 @@ mapContainerIDs2RealIDs()
         m_MeshContainer->UpdateCurrentElementFromExistingOne( (*iterator) );
         m_MeshContainer->SetCurrentElementCollectionID( iter->second );
         m_MeshContainer->InsertCurrentElement();
-        m_MeshContainer->DeleteElement((*iterator));
-
         ++iterator;
         }
       }
@@ -512,8 +538,6 @@ mapContainerIDs2RealIDs()
         m_MeshContainer->UpdateCurrentElementFromExistingOne( (*iterator) );
         m_MeshContainer->SetCurrentElementCollectionID( m_MaxTrackID );
         m_MeshContainer->InsertCurrentElement();
-        m_MeshContainer->DeleteElement((*iterator));
-
         ++iterator;
         }
 
@@ -528,11 +552,10 @@ mapContainerIDs2RealIDs()
         m_MeshContainer->UpdateCurrentElementFromExistingOne( (*iterator2) );
         m_MeshContainer->SetCurrentElementCollectionID( iter->second );
         m_MeshContainer->InsertCurrentElement();
-        m_MeshContainer->DeleteElement((*iterator2));
-
         ++iterator;
         }
       }
+    ++iter;
     }
 }
 //-------------------------------------------------------------------------
@@ -588,8 +611,8 @@ mergeTrack( vtkActor* iFirstActor, vtkActor* iSecondActor)
   std::cout << "high limit ID: " << border2.second.first << " time "
                               << border2.second.second << std::endl;
   // Check for overlap
-  if(    ( border2.first.first < border1.second.first )
-      && ( border1.first.first < border2.second.first ) )
+  if(    ( border2.first.second <= border1.second.second )
+      && ( border1.first.second <= border2.second.second ) )
     {
     std::cout << " Tracks are overlaping" << std::endl;
     return;

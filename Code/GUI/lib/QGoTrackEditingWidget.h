@@ -49,6 +49,7 @@
 #include "vtkEventQtSlotConnect.h"
 
 #include "vtkSmartPointer.h"
+#include "vtkPolyData.h"
 
 //New
 #include "MeshContainer.h"
@@ -65,7 +66,7 @@ class QGOGUILIB_EXPORT QGoTrackEditingWidget:
 {
   Q_OBJECT
 public:
-  explicit QGoTrackEditingWidget(QWidget *parent = 0);
+  explicit QGoTrackEditingWidget( MeshContainer* imeshContainer = NULL, QWidget *parent = 0 );
   ~QGoTrackEditingWidget();
 
   void    setMeshContainer( MeshContainer* imeshContainer );
@@ -73,7 +74,6 @@ public:
   void    cutTrack( vtkActor* );
   void    mergeTrack( vtkActor*, vtkActor* );
   void    removeLineActors();
-  void    mapContainerIDs2RealIDs();
 
   std::pair< std::pair<unsigned int, unsigned int>, std::pair<unsigned int, unsigned int> >
       isOnBorder( unsigned int iMeshID);
@@ -87,6 +87,7 @@ public:
   public slots:
     void preview();
     void UpdateCurrentActorSelection(vtkObject *caller);
+    void mapContainerIDs2RealIDs();
 
 private:
   vtkActor* CreateSphereActor( double* iCenter, const double* iColor);
@@ -112,6 +113,7 @@ private:
   bool m_FirstRender;
   std::map< unsigned int, unsigned int> m_TrackIDsMapping;
   unsigned int m_MaxTrackID;
+  vtkPolyData* m_LabelData;
 
   //typedef boost::bimap< vtkActor* , unsigned int > bm_type;
   //bm_type m_Actor2MeshID;
