@@ -264,7 +264,7 @@ signals:
 
   void DBConnectionNotNeededAnymore();
 
-  void RefreshListCollectionIDsTM(std::string iIDToSelect, 
+  void RefreshListCollectionIDsTM(std::string iIDToSelect,
     vtkMySQLDatabase* iDatabaseConnector);
 
 protected:
@@ -685,11 +685,11 @@ protected:
     if (IsChecked)
       {
       Values = this->m_Table->GetTraceIDAndColumnsValues(
-						this->m_TraceNameID, ColumnName);
+            this->m_TraceNameID, ColumnName);
 
         vtkLookupTable* LUT = NULL;
 
-		bool IsRandomIncluded =
+    bool IsRandomIncluded =
       (ColumnName == this->m_TraceNameID) ||
       (ColumnName == this->m_CollectionNameID);
 
@@ -733,14 +733,14 @@ protected:
   */
   template<typename T>
   void GetTracesInfoFromDBAndModifyContainerForVisuTemplate(
-    T* iContainerForVisu, vtkMySQLDatabase* iDatabaseConnector, 
+    T* iContainerForVisu, vtkMySQLDatabase* iDatabaseConnector,
     std::list<unsigned int> iListTraceIDs)
   {
     typedef typename T::MultiIndexContainerElementType Structure;
-    std::list<Structure> list_of_traces = 
+    std::list<Structure> list_of_traces =
       this->m_CollectionOfTraces->GetListStructureFromDB<Structure>(
       iDatabaseConnector, this->m_ImgSessionID, iListTraceIDs);
-    std::list< Structure >::iterator it = list_of_traces.begin();
+    typename std::list< Structure >::iterator it = list_of_traces.begin();
 
     while ( it != list_of_traces.end() )
       {
@@ -834,7 +834,7 @@ protected slots:
   virtual void SetColorCoding(bool IsChecked)= 0;
 
   /**
-  \brief Show only the rows in the table widget that have a timepoint 
+  \brief Show only the rows in the table widget that have a timepoint
   equal to the current timepoint if IsChecked is true, show all the rows
   if false
   \param[in] IsChecked set to true if the action is checked, to false if
