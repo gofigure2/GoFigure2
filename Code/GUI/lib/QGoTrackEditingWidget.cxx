@@ -75,6 +75,8 @@ QGoTrackEditingWidget(QWidget *iParent): QDialog(iParent)
 
   m_SecondClick = false;
 
+  m_LabelData = vtkPointData::New();
+
   m_VtkEventQtConnector->Connect(
     reinterpret_cast< vtkObject * >( m_InteractorStyle3D ),
     vtkViewImage3DCommand::MeshPickingEvent,
@@ -254,6 +256,7 @@ initializeVisualization()
   std::list<unsigned int> listOfTrackIDs = m_MeshContainer->GetAllCollectionIDs();
   std::list<unsigned int>::iterator trackIDsIt = listOfTrackIDs.begin();
 
+  // first render: reassign track IDs
   if(m_FirstRender)
     {  // For each track, create the actors
     while( trackIDsIt != listOfTrackIDs.end() )
@@ -288,6 +291,12 @@ initializeVisualization()
     }
 
   ////////////////////////////////////////////////////////////////////////////////
+  vtkSmartPointer<vtkDoubleArray> randomScalars =
+        vtkSmartPointer<vtkDoubleArray>::New();
+      randomScalars->SetNumberOfComponents(1);
+      randomScalars->SetName("TimePoint");
+
+      vtkSmartPointer<vtkPoints> c;
 
 
   // For each track, create the actors
@@ -325,6 +334,10 @@ initializeVisualization()
       std::cout<< "X: " << actor->GetCenter()[0] << std::endl;
       std::cout<< "Y: " << actor->GetCenter()[1] << std::endl;
       std::cout<< "Z: " << actor->GetCenter()[2] << std::endl;
+      std::cout<< "T: " << time << std::endl;
+
+      randomScalars->InsertNextTuple1( time );
+      pts->InsertNextPoint(actor->GetCenter());
 
       // Add actor to visu
       renderer->AddActor(actor);
@@ -393,6 +406,8 @@ initializeVisualization()
       std::cout << "List is empty" << std::endl;
       }
     }
+
+  m_LabelData->SetPoints(pts);
 }
 //-------------------------------------------------------------------------
 // Go through all container and creates actors

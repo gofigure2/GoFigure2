@@ -112,6 +112,7 @@ private:
   bool m_FirstRender;
   std::map< unsigned int, unsigned int> m_TrackIDsMapping;
   unsigned int m_MaxTrackID;
+  vtkPolydata* m_LabelData;
 
   //typedef boost::bimap< vtkActor* , unsigned int > bm_type;
   //bm_type m_Actor2MeshID;
