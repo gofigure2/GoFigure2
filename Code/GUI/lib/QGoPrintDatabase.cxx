@@ -1441,25 +1441,22 @@ AddCheckedContoursToSelectedMesh(std::list< unsigned int > iListCheckedContours)
 
 //--------------------------------------------------------------------------
 void QGoPrintDatabase::
-AddCheckedMeshesToSelectedTrack(std::list< unsigned int > iListCheckedMeshes)
+AddListMeshesToATrack(std::list< unsigned int > iListMeshes, unsigned int iTrackID)
 {
-  this->OpenDBConnection();
-  unsigned int SelectedTrackID =
-    this->m_TraceWidget->GetCurrentSelectedCollectionID();
-
+  this->OpenDBConnection(); 
   std::list<unsigned int> ListMeshToBelongToTheTrack;
   std::list<unsigned int> ListMeshToReassign;
   //at that moment, do nothing for the checked meshes not selected to be part of the track
   std::string MessageToPrint =
     this->m_MeshesManager->CheckListMeshesFromDifferentTimePoints(
-      this->m_DatabaseConnector, iListCheckedMeshes,
+      this->m_DatabaseConnector, iListMeshes,
       ListMeshToBelongToTheTrack, ListMeshToReassign);
 
   //check for the existing ones:
   MessageToPrint +=
     this->m_MeshesManager->CheckExistingMeshesForTheTrack(
       SelectedTrackID, this->m_DatabaseConnector,
-      iListCheckedMeshes).toStdString();
+      ListMeshToBelongToTheTrack).toStdString();
 
   if (MessageToPrint != "")
     {
@@ -1467,8 +1464,18 @@ AddCheckedMeshesToSelectedTrack(std::list< unsigned int > iListCheckedMeshes)
     }
   this->AddCheckedTracesToCollection< QGoDBMeshManager, QGoDBTrackManager >(
     this->m_MeshesManager, this->m_TracksManager,
-    SelectedTrackID, iListCheckedMeshes);
+    SelectedTrackID, iListMeshes);
   this->CloseDBConnection();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoPrintDatabase::
+AddCheckedMeshesToSelectedTrack(std::list< unsigned int > iListCheckedMeshes)
+{
+  unsigned int SelectedTrackID =
+    this->m_TraceWidget->GetCurrentSelectedCollectionID();
+
 }
 //--------------------------------------------------------------------------
 

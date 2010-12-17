@@ -190,7 +190,7 @@ public slots:
   */
   QString CheckExistingMeshesForTheTrack(
    unsigned int iTrackID,vtkMySQLDatabase* iDatabaseConnector,
-   std::list<unsigned int> iListMeshIDs);
+   std::list<unsigned int> & ioListMeshIDs);
 
   /**
   \brief check if in the iListMeshIDs, several have the same timepoint, if so,

@@ -528,6 +528,15 @@ protected:
     iCollectionManager->UpdateBoundingBoxes(this->m_DatabaseConnector,
                                             ListCollectionIDsToUpdate);
   }
+
+  /**
+  \brief add the meshes to the iTrackID after checking that there are no
+  meshes at the same timepoint in the same track, if so, won't change the
+  trackid of these meshes
+  \param[in] iListMeshes list of the meshes to be part of the itrackID
+  \param[in] iTrackID new track to be assigned to these meshes
+  */
+  void AddListMeshesToATrack(std::list< unsigned int > iListMeshes, unsigned int iTrackID);
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

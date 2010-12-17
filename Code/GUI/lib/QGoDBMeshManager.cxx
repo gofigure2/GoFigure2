@@ -508,7 +508,8 @@ QString QGoDBMeshManager::CheckExistingMeshesForTheTrack(
 
 //-------------------------------------------------------------------------
 QString QGoDBMeshManager::CheckExistingMeshesForTheTrack(
-   unsigned int iTrackID,vtkMySQLDatabase* iDatabaseConnector,std::list<unsigned int> iListMeshIDs)
+   unsigned int iTrackID,vtkMySQLDatabase* iDatabaseConnector,
+   std::list<unsigned int> & ioListMeshIDs)
 {
   QString MessageQString("");
   std::string MessageToPrint = "";
