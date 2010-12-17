@@ -84,7 +84,7 @@ QGoTrackEditingWidget( MeshContainer* imeshContainer, QWidget *iParent ): QDialo
     vtkViewImage3DCommand::MeshPickingEvent,
     this, SLOT( UpdateCurrentActorSelection(vtkObject *) ) );
 
-  QObject::connect (this, SIGNAL( accept() ),
+  QObject::connect (this->buttonBox , SIGNAL( accepted() ),
                  this, SLOT( mapContainerIDs2RealIDs() ) );
 }
 //-------------------------------------------------------------------------
@@ -268,6 +268,8 @@ initializeVisualization()
       {
       std::cout<< "collection ID: " << (*trackIDsIt) << std::endl;
       m_TrackIDsMapping[m_NumberOfTracks] = (*trackIDsIt);
+      std::cout<< "MAPPING new: " << m_NumberOfTracks << " to real: " << (*trackIDsIt)
+          << std::endl;
 
       if( (*trackIDsIt) > m_MaxTrackID)
         {
@@ -497,12 +499,14 @@ QGoTrackEditingWidget::
 mapContainerIDs2RealIDs()
 {
   std::cout<< "MAP IDS: " << std::endl;
-  //left: current ID, right: real ID
   std::map< unsigned int, unsigned int>::iterator iter =
       m_TrackIDsMapping.begin();
 
   while( iter != m_TrackIDsMapping.end())
     {
+    std::cout<< "new: " << iter->first << std::endl;
+    std::cout<< "old: " << iter->second << std::endl;
+
     if( iter->second > m_NumberOfTracks )
       {
       std::list<unsigned int> listOfMeshIDs =
@@ -515,8 +519,6 @@ mapContainerIDs2RealIDs()
         m_MeshContainer->UpdateCurrentElementFromExistingOne( (*iterator) );
         m_MeshContainer->SetCurrentElementCollectionID( iter->second );
         m_MeshContainer->InsertCurrentElement();
-        m_MeshContainer->DeleteElement((*iterator));
-
         ++iterator;
         }
       }
@@ -536,8 +538,6 @@ mapContainerIDs2RealIDs()
         m_MeshContainer->UpdateCurrentElementFromExistingOne( (*iterator) );
         m_MeshContainer->SetCurrentElementCollectionID( m_MaxTrackID );
         m_MeshContainer->InsertCurrentElement();
-        m_MeshContainer->DeleteElement((*iterator));
-
         ++iterator;
         }
 
@@ -552,11 +552,10 @@ mapContainerIDs2RealIDs()
         m_MeshContainer->UpdateCurrentElementFromExistingOne( (*iterator2) );
         m_MeshContainer->SetCurrentElementCollectionID( iter->second );
         m_MeshContainer->InsertCurrentElement();
-        m_MeshContainer->DeleteElement((*iterator2));
-
         ++iterator;
         }
       }
+    ++iter;
     }
 }
 //-------------------------------------------------------------------------
