@@ -60,7 +60,7 @@
 
 //-------------------------------------------------------------------------
 QGoTrackEditingWidget::
-QGoTrackEditingWidget(QWidget *iParent): QDialog(iParent)
+QGoTrackEditingWidget( MeshContainer* imeshContainer, QWidget *iParent ): QDialog(iParent)
 {
   this->setupUi(this);
 
@@ -76,6 +76,8 @@ QGoTrackEditingWidget(QWidget *iParent): QDialog(iParent)
   m_SecondClick = false;
 
   m_LabelData = vtkPolyData::New();
+
+  m_MeshContainer = imeshContainer;
 
   m_VtkEventQtConnector->Connect(
     reinterpret_cast< vtkObject * >( m_InteractorStyle3D ),

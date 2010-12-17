@@ -66,7 +66,7 @@ class QGOGUILIB_EXPORT QGoTrackEditingWidget:
 {
   Q_OBJECT
 public:
-  explicit QGoTrackEditingWidget(QWidget *parent = 0);
+  explicit QGoTrackEditingWidget( MeshContainer* imeshContainer = NULL, QWidget *parent = 0 );
   ~QGoTrackEditingWidget();
 
   void    setMeshContainer( MeshContainer* imeshContainer );
