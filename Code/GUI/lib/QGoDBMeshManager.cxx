@@ -376,12 +376,14 @@ void QGoDBMeshManager::GetTracesInfoFromDBAndModifyContainerForVisu(
 
 //-------------------------------------------------------------------------
 MeshContainer* QGoDBMeshManager::GetMeshesInfoFromDBAndCreateContainerForVisu(
-  vtkMySQLDatabase* iDatabaseConnector,std::list<unsigned int> iListTraces)
+  vtkMySQLDatabase* iDatabaseConnector, std::list<unsigned int> iListCollectionIDs)
 {
+  std::list<unsigned int> ListMeshesInvolved = 
+    this->GetListTracesIDsBelongingToCollectionIDs(iDatabaseConnector, iListCollectionIDs);
   MeshContainer* oMeshContainer = new MeshContainer(this, NULL);
   std::list<ContourMeshStructure> ListMeshesInfo = 
     this->m_CollectionOfTraces->GetListStructureFromDB<ContourMeshStructure>(
-    iDatabaseConnector, this->m_ImgSessionID, iListTraces);
+    iDatabaseConnector, this->m_ImgSessionID, ListMeshesInvolved);
 
   std::list< ContourMeshStructure >::iterator it = ListMeshesInfo.begin();
 

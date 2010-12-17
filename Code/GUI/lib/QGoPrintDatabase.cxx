@@ -1401,9 +1401,6 @@ void QGoPrintDatabase::CreateNewTrackFromListMeshes(
   this->AddCheckedTracesToCollection< QGoDBMeshManager, QGoDBTrackManager >(
      this->m_MeshesManager, this->m_TracksManager,
      NewTrackID, ListMeshToBelongToTheTrack );
-  //this->AddCheckedTracesToCollection< QGoDBMeshManager, QGoDBTrackManager >
-  //  (this->m_MeshesManager, this->m_TracksManager,
-  //  NewTrackID, iListCheckedMeshes);
   this->CloseDBConnection();
 }
 
@@ -1480,17 +1477,49 @@ void QGoPrintDatabase::SplitMergeTracksWithWidget(
   std::list<unsigned int> iTrackIDs)
 {
   this->OpenDBConnection();
-  std::list<unsigned int> ListMeshesInvolved = 
-    this->m_MeshesManager->GetListTracesIDsBelongingToCollectionIDs(
-      this->m_DatabaseConnector, iTrackIDs);
   MeshContainer* MeshContainerTemp = this->m_MeshesManager->
       GetMeshesInfoFromDBAndCreateContainerForVisu(
-      this->m_DatabaseConnector, ListMeshesInvolved);
-
-//create trackwidget + set the mesh container
+      this->m_DatabaseConnector, iTrackIDs);
+//create trackwidget + set the mesh container:
   QGoTrackEditingWidget *win = new QGoTrackEditingWidget();
    win->setMeshContainer( MeshContainerTemp);
    win->initializeVisualization();
    win->preview();
-   win->show();
+   //win->show();
+   int Ok = win->exec();
+  //get trackid not in iTrackIDs:
+  if (Ok != 0)
+   {
+   std::list<unsigned int> NewTempTrackIDs = MeshContainerTemp->GetAllCollectionIDs();
+   std::list<unsigned int>::iterator iter = NewTempTrackIDs.begin();
+   std::list<unsigned int>::iterator iterTrack = iTrackIDs.begin();
+   while (iter != NewTempTrackIDs.end())
+     {
+      bool Found = false;
+      while(!Found && iterTrack != iTrackIDs.end())
+        {
+        if (*iter != *iterTrack)
+          iterTrack++;
+        else
+          Found = true;
+        }
+      if (iterTrack == iTrackIDs.end())
+        {
+        //create new track
+        this->CreateNewTrackFromListMeshes(
+          MeshContainerTemp->GetAllTraceIDsGivenCollectionID(*iterTrack) );
+        }
+      else
+        {
+        this->AddCheckedMeshesToSelectedTrack(
+          MeshContainerTemp->GetAllTraceIDsGivenCollectionID(*iterTrack));
+        //remove it from iTrackIDs ?
+        }
+     iter++;
+      }
+    }
+   
+  //create new tracks and update meshcontainer
+  //addcheckedtracestocollection
+  //delete tracks with trackID in iTrackIDs not in the container
 }
