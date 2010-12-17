@@ -1488,9 +1488,9 @@ void QGoPrintDatabase::SplitMergeTracksWithWidget(
       this->m_DatabaseConnector, ListMeshesInvolved);
 
 //create trackwidget + set the mesh container
-  QGoTrackEditingWidget *win = new QGoTrackEditingWidget();
-   win->setMeshContainer( MeshContainerTemp);
-   win->initializeVisualization();
-   win->preview();
-   win->show();
+  QGoTrackEditingWidget *win = new QGoTrackEditingWidget( MeshContainerTemp );
+  win->initializeVisualization();
+  win->preview();
+  int test = win->exec();
+  std::cout << "IN PRINT DATABASE" << std::endl;
 }

@@ -83,6 +83,9 @@ QGoTrackEditingWidget( MeshContainer* imeshContainer, QWidget *iParent ): QDialo
     reinterpret_cast< vtkObject * >( m_InteractorStyle3D ),
     vtkViewImage3DCommand::MeshPickingEvent,
     this, SLOT( UpdateCurrentActorSelection(vtkObject *) ) );
+
+  QObject::connect (this, SIGNAL( accept() ),
+                 this, SLOT( mapContainerIDs2RealIDs() ) );
 }
 //-------------------------------------------------------------------------
 
@@ -493,6 +496,7 @@ void
 QGoTrackEditingWidget::
 mapContainerIDs2RealIDs()
 {
+  std::cout<< "MAP IDS: " << std::endl;
   //left: current ID, right: real ID
   std::map< unsigned int, unsigned int>::iterator iter =
       m_TrackIDsMapping.begin();

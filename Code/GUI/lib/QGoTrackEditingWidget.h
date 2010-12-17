@@ -74,7 +74,6 @@ public:
   void    cutTrack( vtkActor* );
   void    mergeTrack( vtkActor*, vtkActor* );
   void    removeLineActors();
-  void    mapContainerIDs2RealIDs();
 
   std::pair< std::pair<unsigned int, unsigned int>, std::pair<unsigned int, unsigned int> >
       isOnBorder( unsigned int iMeshID);
@@ -88,6 +87,7 @@ public:
   public slots:
     void preview();
     void UpdateCurrentActorSelection(vtkObject *caller);
+    void mapContainerIDs2RealIDs();
 
 private:
   vtkActor* CreateSphereActor( double* iCenter, const double* iColor);
