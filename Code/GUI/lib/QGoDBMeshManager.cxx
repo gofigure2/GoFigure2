@@ -514,7 +514,7 @@ QString QGoDBMeshManager::CheckExistingMeshesForTheTrack(
   QString MessageQString("");
   std::string MessageToPrint = "";
   std::list<unsigned int> ListTimePoints =
-    this->m_CollectionOfTraces->GetListTimePointsFromTraceIDs(iDatabaseConnector,iListMeshIDs);
+    this->m_CollectionOfTraces->GetListTimePointsFromTraceIDs(iDatabaseConnector,ioListMeshIDs);
   if (!ListTimePoints.empty())
   {
   std::string MeshIDToPrint = "";

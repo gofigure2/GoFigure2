@@ -56,6 +56,10 @@
 
 #include "vtkViewImage3DCommand.h"
 
+#include "vtkLabeledDataMapper.h"
+
+#include "vtkActor2D.h"
+
 #include <limits>
 
 //-------------------------------------------------------------------------
@@ -414,7 +418,23 @@ initializeVisualization()
       }
     }
 
+  // ONLY ON FIRST RENDER TOO
+  m_LabelData->GetPointData()->SetScalars(randomScalars);
   m_LabelData->SetPoints(pts);
+
+  // The labeled data mapper will place labels at the points
+  vtkSmartPointer<vtkLabeledDataMapper> labelMapper =
+    vtkSmartPointer<vtkLabeledDataMapper>::New();
+  labelMapper->SetFieldDataName("TimePoint");
+  labelMapper->SetInput(m_LabelData);
+  labelMapper->SetLabelModeToLabelScalars();
+  labelMapper->SetLabelFormat("%6.2f");
+
+  vtkSmartPointer<vtkActor2D> isolabels =
+    vtkSmartPointer<vtkActor2D>::New();
+  isolabels->SetMapper(labelMapper);
+
+  renderer->AddActor( isolabels );
 }
 //-------------------------------------------------------------------------
 // Go through all container and creates actors

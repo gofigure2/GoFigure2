@@ -1455,7 +1455,7 @@ AddListMeshesToATrack(std::list< unsigned int > iListMeshes, unsigned int iTrack
   //check for the existing ones:
   MessageToPrint +=
     this->m_MeshesManager->CheckExistingMeshesForTheTrack(
-      SelectedTrackID, this->m_DatabaseConnector,
+        iTrackID, this->m_DatabaseConnector,
       ListMeshToBelongToTheTrack).toStdString();
 
   if (MessageToPrint != "")
@@ -1464,7 +1464,7 @@ AddListMeshesToATrack(std::list< unsigned int > iListMeshes, unsigned int iTrack
     }
   this->AddCheckedTracesToCollection< QGoDBMeshManager, QGoDBTrackManager >(
     this->m_MeshesManager, this->m_TracksManager,
-    SelectedTrackID, iListMeshes);
+    iTrackID, iListMeshes);
   this->CloseDBConnection();
 }
 //--------------------------------------------------------------------------
