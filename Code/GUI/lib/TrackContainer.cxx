@@ -142,26 +142,33 @@ bool TrackContainer::DeleteElement(MultiIndexContainerTraceIDIterator iIter)
 {
   if ( iIter != m_Container.get< TraceID >().end() )
     {
-    if ( iIter->ActorXY )
+    if( this->m_ImageView )
       {
-      this->m_ImageView->RemoveActor(0, iIter->ActorXY);
-      }
-    if ( iIter->ActorXZ )
-      {
-      this->m_ImageView->RemoveActor(1, iIter->ActorXZ);
-      }
-    if ( iIter->ActorYZ )
-      {
-      this->m_ImageView->RemoveActor(2, iIter->ActorYZ);
-      }
-    if ( iIter->ActorXYZ )
-      {
-      this->m_ImageView->RemoveActor(3, iIter->ActorXYZ);
+      if ( iIter->ActorXY )
+        {
+        this->m_ImageView->RemoveActor(0, iIter->ActorXY);
+        }
+      if ( iIter->ActorXZ )
+        {
+        this->m_ImageView->RemoveActor(1, iIter->ActorXZ);
+        }
+      if ( iIter->ActorYZ )
+        {
+        this->m_ImageView->RemoveActor(2, iIter->ActorYZ);
+        }
+      if ( iIter->ActorXYZ )
+        {
+        this->m_ImageView->RemoveActor(3, iIter->ActorXYZ);
+        }
       }
     iIter->ReleaseData();
 
     m_Container.get< TraceID >().erase(iIter);
-    m_ImageView->UpdateRenderWindows();
+
+    if( this->m_ImageView )
+      {
+      m_ImageView->UpdateRenderWindows();
+      }
 
     return true;
     }
@@ -185,21 +192,24 @@ DeleteAllHighlightedElements()
     {
     oList.push_back(it0->TraceID);
 
-    if ( it0->ActorXY )
+    if( this->m_ImageView )
       {
-      this->m_ImageView->RemoveActor(0, it0->ActorXY);
-      }
-    if ( it0->ActorXZ )
-      {
-      this->m_ImageView->RemoveActor(1, it0->ActorXZ);
-      }
-    if ( it0->ActorYZ )
-      {
-      this->m_ImageView->RemoveActor(2, it0->ActorYZ);
-      }
-    if ( it0->ActorXYZ )
-      {
-      this->m_ImageView->RemoveActor(3, it0->ActorXYZ);
+      if ( it0->ActorXY )
+        {
+        this->m_ImageView->RemoveActor(0, it0->ActorXY);
+        }
+      if ( it0->ActorXZ )
+        {
+        this->m_ImageView->RemoveActor(1, it0->ActorXZ);
+        }
+      if ( it0->ActorYZ )
+        {
+        this->m_ImageView->RemoveActor(2, it0->ActorYZ);
+        }
+      if ( it0->ActorXYZ )
+        {
+        this->m_ImageView->RemoveActor(3, it0->ActorXYZ);
+        }
       }
 
     it0->ReleaseData();
@@ -210,7 +220,10 @@ DeleteAllHighlightedElements()
     m_Container.get< Highlighted >().erase(it_t);
     }
 
-  m_ImageView->UpdateRenderWindows();
+  if( this->m_ImageView )
+    {
+    m_ImageView->UpdateRenderWindows();
+    }
 
   return oList;
 }
@@ -434,26 +447,29 @@ void
 TrackContainer::
 CreateCurrentTrackActors()
 {
-  //Create new actors (new address)
-  vtkProperty * trace_property = vtkProperty::New();
-  double r = this->m_CurrentElement.rgba[0];
-  double g = this->m_CurrentElement.rgba[1];
-  double b = this->m_CurrentElement.rgba[2];
-  double a = this->m_CurrentElement.rgba[3];
+  if( this->m_ImageView )
+    {
+    //Create new actors (new address)
+    vtkProperty * trace_property = vtkProperty::New();
+    double r = this->m_CurrentElement.rgba[0];
+    double g = this->m_CurrentElement.rgba[1];
+    double b = this->m_CurrentElement.rgba[2];
+    double a = this->m_CurrentElement.rgba[3];
 
-  trace_property->SetColor( r,
-                            g,
-                            b);
-  trace_property->SetOpacity( a );
+    trace_property->SetColor( r,
+                              g,
+                              b);
+    trace_property->SetOpacity( a );
 
-  // Add contour
-  std::vector< vtkActor * > trackActors =
-      m_ImageView->AddContour( this->m_CurrentElement.Nodes, trace_property );
+    // Add contour
+    std::vector< vtkActor * > trackActors =
+        m_ImageView->AddContour( this->m_CurrentElement.Nodes, trace_property );
 
-  //update container actors addresses
-  UpdateCurrentElementActorsFromVisu(trackActors);
+    //update container actors addresses
+    UpdateCurrentElementActorsFromVisu(trackActors);
 
-  trace_property->Delete();
+    trace_property->Delete();
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -503,7 +519,10 @@ UpdateTracksReprensentation( bool iGlyph, bool iTube )
     ++it;
   }
 
-  m_ImageView->UpdateRenderWindows();
+  if( this->m_ImageView )
+    {
+    m_ImageView->UpdateRenderWindows();
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -588,47 +607,50 @@ TrackContainer::
 UpdatePointsFromBBForGivenTrack( unsigned int iTrackID,
                                  std::list<std::vector<unsigned int> > iBoundingBox)
 {
-  if(iBoundingBox.empty())
+  if( this->m_ImageView )
     {
-    qDebug() << "list of points to be added is empty";
-    }
-
-  MultiIndexContainerTraceIDIterator
-    it = m_Container.get< TraceID >().find( iTrackID );
-
-  // if we find the stucture, update it!
-  if ( it != m_Container.get< TraceID >().end() )
-    {
-    std::list< std::vector<unsigned int> >::iterator begin = iBoundingBox.begin();
-    std::list< std::vector<unsigned int> >::iterator end = iBoundingBox.end();
-
-    //add the point in the map
-    TrackStructure tempStructure(*it);
-
-    while( begin != end )
+    if(iBoundingBox.empty())
       {
-      int xyzBB[3] = { static_cast< int >( (*begin)[0] ),
-                       static_cast< int >( (*begin)[1] ),
-                       static_cast< int >( (*begin)[2] ) };
-
-      unsigned int time = (*begin)[3];
-
-      // convert xyz coordinates
-      double* xyz = m_ImageView->GetImageViewer(0)
-          ->GetWorldCoordinatesFromImageCoordinates(xyzBB);
-
-      bool added = tempStructure.InsertElement( time, xyz );
-      if( !added )
-        {
-        std::cout << "Element at a time point: " << time
-                  << "could not be added." << std::endl;
-        }
-      ++begin;
+      qDebug() << "list of points to be added is empty";
       }
-    m_Container.get< TraceID >().replace(it, tempStructure);
 
-    // Reconstruct the polydata
-    UpdateTrackStructurePolyData( *it );
+    MultiIndexContainerTraceIDIterator
+      it = m_Container.get< TraceID >().find( iTrackID );
+
+    // if we find the stucture, update it!
+    if ( it != m_Container.get< TraceID >().end() )
+      {
+      std::list< std::vector<unsigned int> >::iterator begin = iBoundingBox.begin();
+      std::list< std::vector<unsigned int> >::iterator end = iBoundingBox.end();
+
+      //add the point in the map
+      TrackStructure tempStructure(*it);
+
+      while( begin != end )
+        {
+        int xyzBB[3] = { static_cast< int >( (*begin)[0] ),
+                         static_cast< int >( (*begin)[1] ),
+                         static_cast< int >( (*begin)[2] ) };
+
+        unsigned int time = (*begin)[3];
+
+        // convert xyz coordinates
+        double* xyz = m_ImageView->GetImageViewer(0)
+            ->GetWorldCoordinatesFromImageCoordinates(xyzBB);
+
+        bool added = tempStructure.InsertElement( time, xyz );
+        if( !added )
+          {
+          std::cout << "Element at a time point: " << time
+                    << "could not be added." << std::endl;
+          }
+        ++begin;
+        }
+      m_Container.get< TraceID >().replace(it, tempStructure);
+
+      // Reconstruct the polydata
+      UpdateTrackStructurePolyData( *it );
+      }
     }
 }
 
@@ -639,74 +661,77 @@ void
 TrackContainer::
 RecomputeCurrentElementMap( std::list< double* > iPoints)
 {
-  // empty current element map
-  PointsMapConstIterator begin = this->m_CurrentElement.PointsMap.begin();
-  PointsMapConstIterator end = this->m_CurrentElement.PointsMap.end();
-
-
-  while ( begin != end )
+  if( this->m_ImageView )
     {
-    // free memory
-    delete[] begin->second;
-    ++begin;
-    }
+    // empty current element map
+    PointsMapConstIterator begin = this->m_CurrentElement.PointsMap.begin();
+    PointsMapConstIterator end = this->m_CurrentElement.PointsMap.end();
 
-  this->m_CurrentElement.PointsMap.clear();
 
-  // add points to the map
-  std::list< double* >::iterator beginList = iPoints.begin();
-  std::list< double* >::iterator endList = iPoints.end();
-
-  while( beginList != endList)
-    {
-    int xyzBB[3] = {
-      static_cast< int >( (*beginList)[0] ),
-      static_cast< int >( (*beginList)[1] ),
-      static_cast< int >( (*beginList)[2] ) };
-
-    unsigned int time = static_cast< unsigned int >( (*beginList)[3] );
-
-    // convert xyz coordinates
-    double* xyz = m_ImageView->GetImageViewer(0)
-        ->GetWorldCoordinatesFromImageCoordinates(xyzBB);
-
-    bool addPoint = this->m_CurrentElement.InsertElement( time, xyz );
-
-    if(!addPoint)
+    while ( begin != end )
       {
-      std::cout << "problem while inserting element in the map" << std::endl;
-      std::cout << " x: " << xyz[0] << " y: " << xyz[1] << " z: " << xyz[2]
-                << " t: " << xyz[3] << std::endl;
+      // free memory
+      delete[] begin->second;
+      ++begin;
       }
 
-    ++beginList;
-    }
+    this->m_CurrentElement.PointsMap.clear();
 
-  bool IsANewTrack = ( this->m_CurrentElement.Nodes == NULL );
-  // Create a new polydata and new actors if it is a new track
-  if( IsANewTrack )
-    {
-    //Create new polydata (new address)
-    this->m_CurrentElement.Nodes = vtkPolyData::New();
-    }
+    // add points to the map
+    std::list< double* >::iterator beginList = iPoints.begin();
+    std::list< double* >::iterator endList = iPoints.end();
 
-  // update the polydata (which represents the current track)
-  UpdateTrackStructurePolyData(this->m_CurrentElement);
+    while( beginList != endList)
+      {
+      int xyzBB[3] = {
+        static_cast< int >( (*beginList)[0] ),
+        static_cast< int >( (*beginList)[1] ),
+        static_cast< int >( (*beginList)[2] ) };
 
-  // if it is a new track, we need to add the actors in viewer / scene
-  if( IsANewTrack )
-    {
-    // add actors in the visualization with given property
-    CreateCurrentTrackActors();
+      unsigned int time = static_cast< unsigned int >( (*beginList)[3] );
+
+      // convert xyz coordinates
+      double* xyz = m_ImageView->GetImageViewer(0)
+          ->GetWorldCoordinatesFromImageCoordinates(xyzBB);
+
+      bool addPoint = this->m_CurrentElement.InsertElement( time, xyz );
+
+      if(!addPoint)
+        {
+        std::cout << "problem while inserting element in the map" << std::endl;
+        std::cout << " x: " << xyz[0] << " y: " << xyz[1] << " z: " << xyz[2]
+                  << " t: " << xyz[3] << std::endl;
+        }
+
+      ++beginList;
+      }
+
+    bool IsANewTrack = ( this->m_CurrentElement.Nodes == NULL );
+    // Create a new polydata and new actors if it is a new track
+    if( IsANewTrack )
+      {
+      //Create new polydata (new address)
+      this->m_CurrentElement.Nodes = vtkPolyData::New();
+      }
+
+    // update the polydata (which represents the current track)
+    UpdateTrackStructurePolyData(this->m_CurrentElement);
+
+    // if it is a new track, we need to add the actors in viewer / scene
+    if( IsANewTrack )
+      {
+      // add actors in the visualization with given property
+      CreateCurrentTrackActors();
+
+      //emit CurrentTrackToSave();
+
+      return;
+      }
+
+    //UpdateTrackStructurePolyData(this->m_CurrentElement);
 
     //emit CurrentTrackToSave();
-
-    return;
     }
-
-  //UpdateTrackStructurePolyData(this->m_CurrentElement);
-
-  //emit CurrentTrackToSave();
 }
 //-------------------------------------------------------------------------
 
@@ -753,7 +778,14 @@ std::vector< vtkActor* >
 TrackContainer::
 AddTrace( vtkPolyData* iNode, vtkProperty* iProperty )
 {
-  return this->m_ImageView->AddContour(iNode, iProperty);
+  if( this->m_ImageView )
+    {
+    return this->m_ImageView->AddContour(iNode, iProperty);
+    }
+  else
+    {
+    return std::vector< vtkActor* >();
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -817,3 +849,29 @@ TrackContainer::MergeTrack( const unsigned int& iId1, const unsigned int& iId2 )
     }
 }*/
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::map< unsigned int, std::pair< const double* , vtkPolyData*> >
+TrackContainer::
+GetHighlightedElementsTrackPolyData()
+{
+  // Map to be returned
+  std::map< unsigned int,
+            std::pair< const double* , vtkPolyData* > >
+      listOfPolyDatas;
+
+  MultiIndexContainerType::index< Highlighted >::type::iterator
+    it = m_Container.get< Highlighted >().begin();
+
+  while( it != m_Container.get< Highlighted >().end() )
+    {
+    // Get iterator to the selectedID
+    // Get Polydata from this iterator
+    listOfPolyDatas[ it->TraceID ] =
+      std::pair< const double*, vtkPolyData* >( it->rgba, it->Nodes );
+    // Go to next ID
+    ++it;
+    }
+
+  return listOfPolyDatas;
+}
