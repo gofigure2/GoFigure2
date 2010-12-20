@@ -93,6 +93,9 @@
 #include <QColorDialog>
 #include <QInputDialog>
 
+#include "vtkBox.h"
+#include "vtkClipPolyData.h"
+
 #include <set>
 
 // base segmentation dock widgets
@@ -3032,12 +3035,28 @@ QGoTabImageView3DwT::CreateMeshFromSelectedContours(
     FilterType::Pointer filter = FilterType::New();
     filter->ProcessContours(list_contours);
 
-    std::cout << filter->GetOutput()->GetNumberOfCells() <<std::endl;
+    vtkPolyData* mesh = filter->GetOutput();
+
+    vtkBox* implicitFunction = vtkBox::New();
+    implicitFunction->SetBounds( m_InternalImages[0]->GetBounds() );
+
+    vtkClipPolyData *cutter = vtkClipPolyData::New();
+    cutter->SetInput( mesh );
+    cutter->InsideOutOn();
+    cutter->SetClipFunction( implicitFunction );
+    cutter->Update();
+
+    vtkPolyData* temp = vtkPolyData::New();
+    temp->DeepCopy( cutter->GetOutput() );
+
+    cutter->Delete();
+    implicitFunction->Delete();
+    mesh->Delete();
 
     //as the element is already in the container we need to delete it in order
     //to update it in the SaveAndVisuMesh:
     this->m_MeshContainer->RemoveElementFromVisualizationWithGivenTraceID(iMeshID);
-    SaveAndVisuMesh(filter->GetOutput(), tcoord, 0);
+    SaveAndVisuMesh( temp, tcoord, 0);
     }
 }
 

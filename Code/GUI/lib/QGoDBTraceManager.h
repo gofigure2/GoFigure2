@@ -255,6 +255,9 @@ signals:
 
   void DBConnectionNotNeededAnymore();
 
+  void RefreshListCollectionIDsTM(std::string iIDToSelect, 
+    vtkMySQLDatabase* iDatabaseConnector);
+
 protected:
   std::string m_TraceName;
   std::string m_TraceNameID;
@@ -694,7 +697,8 @@ protected:
 
   void AddSpecificActionsForContourMesh(QMenu *iMenu);
 
-  virtual void AddActionForCreateNewCollectionFromCheckedTraces(QMenu *iMenu);
+
+  virtual void AddActionForCreateNewCollectionFromCheckedTraces();
 
   /**
   \brief get the info needed from the database to update the container

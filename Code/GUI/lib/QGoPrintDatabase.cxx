@@ -858,13 +858,23 @@ void QGoPrintDatabase::SetTMListColorsWithPreviousSelectedOne()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::SetTMListCollectionID(std::string iIDToSelect)
+void QGoPrintDatabase::SetTMListCollectionID(std::string iIDToSelect,
+  vtkMySQLDatabase* iDatabaseConnector)
 {
-  this->OpenDBConnection();
-  this->m_TraceWidget->SetListCollectionID(
+  if (iDatabaseConnector == NULL)
+    {
+    this->OpenDBConnection();
+    this->m_TraceWidget->SetListCollectionID(
     this->GetListCollectionIDFromDB(this->m_DatabaseConnector),
     iIDToSelect);
-  this->CloseDBConnection();
+    this->CloseDBConnection();
+    }
+  else
+    {
+    this->m_TraceWidget->SetListCollectionID(
+    this->GetListCollectionIDFromDB(iDatabaseConnector),
+    iIDToSelect);
+    }
 }
 
 //-------------------------------------------------------------------------
@@ -1217,6 +1227,10 @@ void QGoPrintDatabase::SetMeshesManager()
                     SIGNAL(DBConnectionNotNeededAnymore() ),
                     this,
                     SLOT(CloseDBConnection() ) );
+  QObject::connect( this->m_MeshesManager,
+                    SIGNAL( RefreshListCollectionIDsTM(std::string, vtkMySQLDatabase*) ),
+                    this,
+                    SLOT (SetTMListCollectionID(std::string, vtkMySQLDatabase* ) ) );
 
   //related to traceEditingWidget and meshes_manager (celltype + subcelltype + collectionData + colordata):
   this->m_MeshesManager->SetSelectedCollection (
@@ -1263,6 +1277,11 @@ void QGoPrintDatabase::SetTracksManager()
                     this,
                     SLOT( SplitTheTrack(unsigned int,
                       std::list<unsigned int> ) ) );
+
+  QObject::connect( this->m_TracksManager,
+                    SIGNAL( RefreshListCollectionIDsTM(std::string, vtkMySQLDatabase*) ),
+                    this,
+                    SLOT (SetTMListCollectionID(std::string, vtkMySQLDatabase*) ) );
 
   this->m_TracksManager->SetSelectedCollection(
     this->m_TraceWidget->GetPointerCollectionData());
@@ -1343,7 +1362,7 @@ PassMeshesInfoForImportedTrack(unsigned int iTrackID)
      ListMeshesForTwoTracks = this->m_MeshesManager->GetMeshesForSplittedTrack(
      iTrackID,this->m_DatabaseConnector,iListMeshIDs);
    //a new track is created with the smallest timepoints:
-   this->CreateNewTrackFromListMeshes(ListMeshesForTwoTracks.first);
+   this->CreateNewTrackFromListMeshes(ListMeshesForTwoTracks.second);
    this->CloseDBConnection();
  }
  //--------------------------------------------------------------------------

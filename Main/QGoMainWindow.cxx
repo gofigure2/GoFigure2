@@ -254,7 +254,17 @@ void QGoMainWindow::on_actionOpen_MegaCapture_Files_triggered()
       {
       itk::MegaCaptureImport::Pointer importer = itk::MegaCaptureImport::New();
       importer->SetFileName( filename.toStdString() );
-      importer->Update();
+
+      try
+        {
+        importer->Update();
+        }
+      catch( ... )
+        {
+        QMessageBox::critical( NULL, tr( "Error" ),
+                               tr( "Error while trying to read this Megacatpure") );
+        return;
+        }
 
       GoFigure::FileType filetype;
 
@@ -365,12 +375,15 @@ void QGoMainWindow::DisplayFilesfromDB(std::string iFirst_Filename)
     {
     return;
     }
+
   // note: do not need to call w3t->Update(); since it is internally called
   // when using CreateNewTabFor3DwtImage
-  int                  TimePoint = file_container.get< m_TCoord >().begin()->m_TCoord;
-  QGoTabImageView3DwT *w3t = CreateNewTabFor3DwtImage(file_container,
-                                                      filetype, Header_FileName, TimePoint,
-                                                      true); // Use the database
+  int TimePoint = file_container.get< m_TCoord >().begin()->m_TCoord;
+
+  QGoTabImageView3DwT *w3t =
+      CreateNewTabFor3DwtImage( file_container,
+                                filetype, Header_FileName, TimePoint,
+                                true); // Use the database
 
   QObject::connect( w3t, SIGNAL( UpdateBookmarkOpenActions(std::vector< QAction * > ) ),
                     this->m_TabManager, SLOT( UpdateBookmarkMenu(std::vector< QAction * > ) ) );
@@ -542,7 +555,18 @@ QGoMainWindow::GetFileContainerForMultiFiles(std::string & ioHeader_Filename,
     {
     itk::MegaCaptureImport::Pointer importer = itk::MegaCaptureImport::New();
     importer->SetFileName(iFirst_FileName);
-    importer->Update();
+
+    try
+      {
+      importer->Update();
+      }
+    catch( ... )
+      {
+      QMessageBox::critical( NULL, tr( "Error" ),
+                             tr( "Error while trying to read this Megacatpure") );
+      return ofile_container;
+      }
+
     ofile_container = importer->GetOutput();
     ioHeader_Filename = importer->GetHeaderFilename();
     }
@@ -614,7 +638,17 @@ void QGoMainWindow::SetSingleFileName(const QString & iFile)
       vtkImageReader2 *       reader = r_factory->CreateImageReader2( iFile.toAscii().data() );
 
       reader->SetFileName( iFile.toAscii().data() );
-      reader->Update();
+
+      try
+        {
+        reader->Update();
+        }
+      catch( ... )
+        {
+        QMessageBox::critical( NULL, tr( "Error" ),
+                               tr( "Error while trying to read this file") );
+        return;
+        }
 
       vtkImageData *image = reader->GetOutput();
 
@@ -643,7 +677,17 @@ void QGoMainWindow::OpenLSMImage(const QString & iFile, const int & iTimePoint)
   m_LSMReader.push_back( vtkLSMReader::New() );
   m_LSMReader.back()->SetFileName( iFile.toAscii().data() );
   m_LSMReader.back()->SetUpdateTimePoint(iTimePoint);
-  m_LSMReader.back()->Update();
+
+  try
+    {
+    m_LSMReader.back()->Update();
+    }
+  catch( ... )
+    {
+    QMessageBox::critical( NULL, tr( "Error" ),
+                           QString( "Error while trying to read %1 at time %2").arg( iFile ).arg( iTimePoint ) );
+    return;
+    }
 
   int dim[5];
   m_LSMReader.back()->GetDimensions(dim);

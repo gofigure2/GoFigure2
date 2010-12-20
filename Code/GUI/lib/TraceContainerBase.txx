@@ -155,13 +155,14 @@ TraceContainerBase< TContainer >::ResetCurrentElement()
 template< class TContainer >
 void TraceContainerBase< TContainer >::
 UpdateCurrentElementFromDB( unsigned int iTraceID,
-                            double irgba[4] )
+                            double irgba[4], bool IsVisible )
 {
   this->m_CurrentElement.TraceID = iTraceID;
   this->m_CurrentElement.rgba[0] = irgba[0];
   this->m_CurrentElement.rgba[1] = irgba[1];
   this->m_CurrentElement.rgba[2] = irgba[2];
   this->m_CurrentElement.rgba[3] = irgba[3];
+  this->m_CurrentElement.Visible = IsVisible;
 }
 //-------------------------------------------------------------------------
 

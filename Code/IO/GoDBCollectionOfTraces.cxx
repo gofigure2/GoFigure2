@@ -786,7 +786,7 @@ std::list<unsigned int> GoDBCollectionOfTraces::GetTimePointWithSeveralTracesFro
 
     TimePoints = GetDoublonValuesFromTwoTables(
       iDatabaseConnector, this->m_TracesName, "coordinate",
-      "TCoord", JoinCondition,this->m_TracesIDName,VectTraceIDs,"TCoord");
+      "TCoord", JoinCondition,this->m_TracesIDName,VectTraceIDs);
     }
   return TimePoints;
 }

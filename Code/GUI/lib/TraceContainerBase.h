@@ -272,8 +272,10 @@ public:
   \brief Update Current Element from te database.
   \param[in] iTraceID
   \param[in] irgba
+  \param[in] IsVisible
   */
-  void UpdateCurrentElementFromDB(unsigned int iTraceID, double irgba[4]);
+  void UpdateCurrentElementFromDB(unsigned int iTraceID, double irgba[4],
+    bool IsVisible = false);
 
   /**
     \brief Get the polydata representing the current element track

@@ -129,10 +129,13 @@ unsigned int QGoDBTrackManager::CreateNewTrackWithNoMesh(
     this->m_CollectionOfTraces->CreateCollectionWithNoTracesNoPoints< GoDBTrackRow >(
       iDatabaseConnector, *this->m_SelectedColorData, NewTrack);
 
+  this->m_TrackContainerInfoForVisu->ResetCurrentElement();
   this->m_TrackContainerInfoForVisu->UpdateCurrentElementFromDB(
-   NewTrackID, this->GetVectorFromQColor(this->m_SelectedColorData->second) );
+   NewTrackID, this->GetVectorFromQColor(this->m_SelectedColorData->second),true);
   this->m_TrackContainerInfoForVisu->InsertCurrentElement();
   this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
+  emit RefreshListCollectionIDsTM ( ConvertToString<unsigned int> (NewTrackID),
+    iDatabaseConnector);
   return NewTrackID;
 }
 
@@ -322,6 +325,19 @@ void QGoDBTrackManager::TrackIDToEmit()
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::SplitTrackWithWidget()
 {
+  std::list <std::pair<unsigned int, std::list<unsigned int> > >TrackIDWithMeshIDs;
+  std::list<unsigned int> CheckedTracks = 
+    this->m_TrackContainerInfoForVisu->GetHighlightedElementsTraceID();
+  std::list<unsigned int>::iterator iter = CheckedTracks.begin();
+  while (iter != CheckedTracks.end() )
+  {
+    std::pair<unsigned int, std::list<unsigned int> > temp;
+    temp.first = *iter;
+    std::list<unsigned int> TrackID;
+    TrackID.push_back(*iter);
+    temp.second = this->GetListTracesIDsFromThisCollectionOf(this->m_DatabaseConnector,TrackID);
+    iter++;
+  }
 }
 //-------------------------------------------------------------------------
 

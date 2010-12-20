@@ -214,7 +214,7 @@ std::vector< std::string > FindSeveralIDs(vtkMySQLDatabase * iDatabaseConnector,
 std::vector< std::string > ListSpecificValuesForOneColumn(
   vtkMySQLDatabase *iDatabaseConnector,
   std::string TableName, std::string ColumnName,
-  std::string field, std::string value, bool Distinct,
+  std::string field, std::string value, //bool Distinct,
   bool ExcludeZero)
 {
   std::vector<FieldWithValue> VectorConditions;
@@ -1377,7 +1377,7 @@ std::list<unsigned int> GetListValuesFromTwoTablesAndCondition(
 std::list< unsigned int > GetDoublonValuesFromTwoTables(
       vtkMySQLDatabase* iDatabaseConnector, std::string iTableOne, std::string iTableTwo,
       std::string iColumn, FieldWithValue iJoinCondition,std::string iField,
-      std::vector<std::string> iVectValues, std::string GroupByColumn)
+      std::vector<std::string> iVectValues)//, std::string GroupByColumn)
 
 {
 
@@ -1445,7 +1445,7 @@ std::string GetCoordinateValuesQueryString(std::string iTableName, std::string i
 void GetTracesInfoFromDBAndModifyContainer(
   std::list< ContourMeshStructure > & ioContainer,
   vtkMySQLDatabase *DatabaseConnector, std::string TraceName,
-  std::string CollectionName, unsigned int ImgSessionID, int iTimePoint,
+  std::string CollectionName, unsigned int ImgSessionID, //int iTimePoint,
   std::vector< int > iVectIDs)
 {
   vtkSQLQuery *query = DatabaseConnector->GetQueryInstance();

@@ -46,11 +46,11 @@ quadview_BEFORE = f.read()
 
 print quadview_BEFORE
 
-import shutil
-shutil.copy(quadview_BEFORE,address)
+#import shutil
+#shutil.copy(quadview_BEFORE,address)
 
 #make sure images are exact.
-find(quadview_BEFORE).similar(.95)
+find("quadview_BEFORE.png").similar(.50)
 
 
 #open GF

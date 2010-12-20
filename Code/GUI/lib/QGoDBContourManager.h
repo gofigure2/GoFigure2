@@ -117,7 +117,6 @@ signals:
 protected:
   GoDBTWContainerForContourMesh *m_TWContainer;
   ContourContainer              *m_ContourContainerInfoForVisu;
-  vtkMySQLDatabase *             m_DatabaseConnector;
 
   //virtual pure method in QGoDBTraceManager
   virtual void SetCollectionsTraceNames();
@@ -126,9 +125,8 @@ protected:
 
   /**
   \brief add the action "generate a mesh from contours" in the context menu
-  \param[in] iMenu context menu
   */
-  void AddActionForCreateNewCollectionFromCheckedTraces(QMenu *iMenu);
+  void AddActionForCreateNewCollectionFromCheckedTraces();
 
   virtual void DisplayInfoForLastCreatedTrace(vtkMySQLDatabase *iDatabaseConnector);
 

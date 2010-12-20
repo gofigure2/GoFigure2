@@ -51,7 +51,7 @@ GoDBTableWidgetContainer::GoDBTableWidgetContainer(std::string iTracesName,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::vector< GoDBTraceInfoForTableWidget > 
+std::vector< GoDBTraceInfoForTableWidget >
   GoDBTableWidgetContainer::GetColumnsInfoForTraceTable()
 {
   GoDBTraceInfoForTableWidget temp;
@@ -830,7 +830,7 @@ std::vector< int > GoDBTableWidgetContainer::GetAllTraceIDsInContainer()
     {
     std::string intstr = *iter;
     vectorInt.push_back( ss_atoi< int >(intstr) );
-    iter++;
+    ++iter;
     }
   return vectorInt;
 }
