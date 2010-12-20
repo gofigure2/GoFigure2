@@ -1497,6 +1497,8 @@ void QGoPrintDatabase::SplitMergeTracksWithWidget(
   //get trackid not in iTrackIDs:
   if (Ok != 0)
    {
+     //NewTempTrackIDs given by the MeshContainerTemp, containes the new tracks with fake IDs
+     //to create and trackIDs to update
    std::list<unsigned int> NewTempTrackIDs = MeshContainerTemp->GetAllCollectionIDs();
    std::list<unsigned int>::iterator iter = NewTempTrackIDs.begin();
    std::list<unsigned int>::iterator iterTrack = iTrackIDs.begin();
@@ -1512,21 +1514,26 @@ void QGoPrintDatabase::SplitMergeTracksWithWidget(
         }
       if (iterTrack == iTrackIDs.end())
         {
-        //create new track
+        //the trackID has not been found in the checked trackIDs, it is a new one to be created:
         this->CreateNewTrackFromListMeshes(
-          MeshContainerTemp->GetAllTraceIDsGivenCollectionID(*iterTrack) );
+          MeshContainerTemp->GetAllTraceIDsGivenCollectionID(*iter) );
         }
       else
         {
+        //the IDs has been found in the checked trackIDs, it needs ot be updated:
         this->AddCheckedMeshesToSelectedTrack(
           MeshContainerTemp->GetAllTraceIDsGivenCollectionID(*iterTrack));
-        //remove it from iTrackIDs ?
+        //as it has been found in checked trackiDs, it won't be erased, so it needs
+        //to be removed from the checked track list
+        std::list<unsigned int>::iterator iterToErase = 
+          std::find(iTrackIDs.begin(), iTrackIDs.end(), *iterTrack);
+        iTrackIDs.erase(iterToErase);
         }
+     iterTrack = iTrackIDs.begin();
      iter++;
       }
     }
-   
-  //create new tracks and update meshcontainer
-  //addcheckedtracestocollection
-  //delete tracks with trackID in iTrackIDs not in the container
+  //erase the IDs left in checked trackIDs:
+  this->DeleteListTraces<QGoDBTrackManager, QGoDBMeshManager, QGoDBMeshManager>(
+    this->m_TracksManager, this->m_MeshesManager, this->m_MeshesManager, iTrackIDs, true);   
 }

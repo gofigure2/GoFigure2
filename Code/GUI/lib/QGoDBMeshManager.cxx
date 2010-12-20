@@ -531,7 +531,6 @@ QString QGoDBMeshManager::CheckExistingMeshesForTheTrack(
       }
     iter++;
     }
-  //remove the MeshIDKickedOut from the ioListMeshIDs !!!!!!!!!!!!!!!!!!!!!
   if (!MeshIDToPrint.empty())
     {
       MeshIDToPrint = MeshIDToPrint.substr(0, MeshIDToPrint.size()-2);
