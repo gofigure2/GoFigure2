@@ -438,7 +438,7 @@ cutTrack( vtkActor* iActor)
         m_MeshContainer->GetAllTraceIDsGivenCollectionID( collectionID );
 
     // here check that the track is not a new track!
-    std::map< unsigned int, TrackStatusType >
+    std::map< unsigned int, TrackStatusType >::iterator
         stat_it = m_TrackStatus.find( collectionID );
 
     if( stat_it == m_TrackStatus.end() )
