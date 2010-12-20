@@ -1023,11 +1023,18 @@ TraceContainerBase< TContainer >::
 GetCollectionIDOfGivenTrace( unsigned int iTraceID)
 {
   using boost::multi_index::get;
-  MultiIndexContainerTraceIDIterator it0, it1;
-  boost::tuples::tie(it0, it1) =
-          m_Container.get< TraceID >().equal_range( iTraceID );
+  MultiIndexContainerTraceIDIterator
+      it0 = m_Container.get< TraceID >().find( iTraceID );
 
-  return it0->CollectionID;
+  if( it0 != m_Container.get< TraceID >().end() )
+    {
+    return it0->CollectionID;
+    }
+  else
+    {
+    std::cout << "booo" <<std::endl;
+    return std::numeric_limits< unsigned int >::max();
+    }
 }
 //-------------------------------------------------------------------------
 
