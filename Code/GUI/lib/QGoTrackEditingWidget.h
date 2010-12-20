@@ -75,26 +75,28 @@ public:
   void    mergeTrack( vtkActor*, vtkActor* );
   void    removeLineActors();
 
-  std::pair< std::pair<unsigned int, unsigned int>, std::pair<unsigned int, unsigned int> >
+  std::pair< std::pair<unsigned int, unsigned int>,
+             std::pair<unsigned int, unsigned int> >
       isOnBorder( unsigned int iMeshID);
 
   void updateTracksIDs( unsigned int iIDToDelete, unsigned int iIDToUpdate);
 
-  signals:
-    void cutTracks( std::list< std::pair< int,  int> > );
-    void mergeTracks( std::list< std::pair< std::pair< int,  int>, std::pair< int,  int> > > );
+signals:
+  void cutTracks( std::list< std::pair< int,  int> > );
+  void mergeTracks( std::list< std::pair< std::pair< int,  int>,
+                               std::pair< int,  int> > > );
 
-  public slots:
-    void preview();
-    void UpdateCurrentActorSelection(vtkObject *caller);
-    void mapContainerIDs2RealIDs();
+public slots:
+  void preview();
+  void UpdateCurrentActorSelection(vtkObject *caller);
+  void mapContainerIDs2RealIDs();
 
 private:
   vtkActor* CreateSphereActor( double* iCenter, const double* iColor);
   vtkActor* CreatePolylineActor( double* iCenter1, double* iCenter2, const double* iColor1 = NULL, const double* iColor2 = NULL);
 
   bool m_SecondClick;
-  std::pair<int, int> m_FirstPair;
+  //std::pair<int, int> m_FirstPair;
   vtkActor* m_FirstActor;
   vtkActor* m_SecondActor;
 
@@ -106,8 +108,18 @@ private:
   MeshContainer* m_MeshContainer;
   std::map< vtkActor* , int >          m_Line2MeshID;
 
+  enum TrackStatusType
+    {
+    NEW_TRACK = 0,
+    UPDATED_TRACK,
+    DELETED_TRACK
+    };
+
+  std::map< unsigned int, TrackStatusType > m_TrackStatus;
+
   // Split/merge behavior
-  std::map< unsigned int , std::pair<unsigned int, unsigned int> >  m_MeshID2Neigbours;
+  std::map< unsigned int ,
+    std::pair<unsigned int, unsigned int> >  m_MeshID2Neigbours;
 
   unsigned int m_NumberOfTracks;
   bool m_FirstRender;

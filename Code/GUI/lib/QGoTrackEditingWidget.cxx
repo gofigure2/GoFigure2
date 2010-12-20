@@ -71,7 +71,7 @@ QGoTrackEditingWidget( MeshContainer* imeshContainer, QWidget *iParent ): QDialo
 
   m_NumberOfTracks = 0;
   m_FirstRender = true;
-  m_MaxTrackID = std::numeric_limits<unsigned int>::min();
+  m_MaxTrackID = 0;
 
   m_SecondClick = false;
 
@@ -423,18 +423,29 @@ void
 QGoTrackEditingWidget::
 cutTrack( vtkActor* iActor)
 {
-  std::map< vtkActor* , int >::iterator it = m_Line2MeshID.find( iActor );
+  std::map< vtkActor*, int >::iterator it = m_Line2MeshID.find( iActor );
   //int timePoint;
 
   // Find the mesh ID
   if( it != m_Line2MeshID.end() )
     {
-    unsigned int collectionID = m_MeshContainer->GetCollectionIDOfGivenTrace( it->second );
+    unsigned int collectionID =
+         m_MeshContainer->GetCollectionIDOfGivenTrace( it->second );
 
     std::cout << "Cut collection: " << collectionID << std::endl;
 
     std::list<unsigned int> listOfMeshIDs =
         m_MeshContainer->GetAllTraceIDsGivenCollectionID( collectionID );
+
+    // here check that the track is not a new track!
+    std::map< unsigned int, TrackStatusType >
+        stat_it = m_TrackStatus.find( collectionID );
+
+    if( stat_it == m_TrackStatus.end() )
+      {
+      m_TrackStatus[ collectionID ] = UPDATED_TRACK;
+      }
+
     std::list<unsigned int>::iterator iterator = listOfMeshIDs.begin();
 
     // border time point
@@ -453,10 +464,11 @@ cutTrack( vtkActor* iActor)
       unsigned int time = m_MeshContainer->GetCurrentElementTimePoint();
 
       // change track ID if we are before the mesh
-      if( time < tLimit)
+      if( time < tLimit )
         {
         // Collection ID
         m_MeshContainer->SetCurrentElementCollectionID( m_NumberOfTracks );
+        m_TrackStatus[ m_NumberOfTracks ] = NEW_TRACK;
         // Visibility: i.e. modified
         }
       m_MeshContainer->InsertCurrentElement();
@@ -567,7 +579,9 @@ mergeTrack( vtkActor* iFirstActor, vtkActor* iSecondActor)
 {
   // Get mesh IDs
   unsigned int firstMesh;
-  std::map< vtkActor*, unsigned int >::iterator iter = m_Actor2MeshID.find(iFirstActor);
+  std::map< vtkActor*, unsigned int >::iterator
+      iter = m_Actor2MeshID.find(iFirstActor);
+
   if( iter != m_Actor2MeshID.end() )
     {
     firstMesh = iter->second;
@@ -580,6 +594,7 @@ mergeTrack( vtkActor* iFirstActor, vtkActor* iSecondActor)
 
   unsigned int secondMesh;
   iter = m_Actor2MeshID.find(iSecondActor);
+
   if(iter != m_Actor2MeshID.end() )
     {
     secondMesh = iter->second;
@@ -591,7 +606,8 @@ mergeTrack( vtkActor* iFirstActor, vtkActor* iSecondActor)
     }
 
   //Check if actors are border of track
-  std::pair< std::pair<unsigned int, unsigned int>, std::pair<unsigned int, unsigned int> >
+  std::pair< std::pair<unsigned int, unsigned int>,
+             std::pair<unsigned int, unsigned int> >
       border1 = isOnBorder(firstMesh);
 
   std::cout << "Border for mesh1" << std::endl;
@@ -601,8 +617,9 @@ mergeTrack( vtkActor* iFirstActor, vtkActor* iSecondActor)
   std::cout << "high limit ID: " << border1.second.first << " time "
                               << border1.second.second << std::endl;
 
-  std::pair< std::pair<unsigned int, unsigned int>, std::pair<unsigned int, unsigned int> >
-      border2 = isOnBorder(secondMesh);
+  std::pair< std::pair<unsigned int, unsigned int>,
+             std::pair<unsigned int, unsigned int> >
+    border2 = isOnBorder(secondMesh);
 
   std::cout << "Border for mesh2" << std::endl;
   std::cout << "mesh2: " << secondMesh << std::endl;
@@ -632,6 +649,9 @@ mergeTrack( vtkActor* iFirstActor, vtkActor* iSecondActor)
     trackToDelete = secondMesh;
     }
 
+  m_TrackStatus[trackToDelete] = DELETED_TRACK;
+  m_TrackStatus[trackToUpdate] = UPDATED_TRACK;
+
   std::cout<< " Mesh to update: " << trackToUpdate << std::endl;
   std::cout<< " Mesh to delete: " << trackToDelete << std::endl;
 
@@ -646,12 +666,14 @@ mergeTrack( vtkActor* iFirstActor, vtkActor* iSecondActor)
 //-------------------------------------------------------------------------
 // ONLY CALLED AT THE END
 //-------------------------------------------------------------------------
-std::pair< std::pair<unsigned int, unsigned int>, std::pair<unsigned int, unsigned int> >
+std::pair< std::pair<unsigned int, unsigned int>,
+           std::pair<unsigned int, unsigned int> >
 QGoTrackEditingWidget::
 isOnBorder( unsigned int iMeshID)
 {
   // Get the collectionID
-  unsigned int collectionID = m_MeshContainer->GetCollectionIDOfGivenTrace( iMeshID );
+  unsigned int collectionID =
+      m_MeshContainer->GetCollectionIDOfGivenTrace( iMeshID );
 
   std::cout << "Merge collection: " << collectionID << std::endl;
 
@@ -660,8 +682,8 @@ isOnBorder( unsigned int iMeshID)
       m_MeshContainer->GetAllTraceIDsGivenCollectionID( collectionID );
   std::list<unsigned int>::iterator iterator = listOfMeshIDs.begin();
 
-  std::pair< std::pair<unsigned int, unsigned int>, std::pair<unsigned int, unsigned int> >
-    borders;
+  std::pair< std::pair<unsigned int, unsigned int>,
+             std::pair<unsigned int, unsigned int> > borders;
 
   std::pair<unsigned int, unsigned int> minBorder;
   minBorder.first = 0;
@@ -669,26 +691,31 @@ isOnBorder( unsigned int iMeshID)
 
   std::pair<unsigned int, unsigned int> maxBorder;
   maxBorder.first = 0;
-  maxBorder.second = std::numeric_limits<unsigned int>::min();
+  maxBorder.second = 0;
+
+  unsigned int traceid = 0;
+  unsigned int time = 0;
+
+  ContourMeshContainer::MultiIndexContainerTraceIDIterator t_it;
 
   // Go through all meshes
   while( iterator != listOfMeshIDs.end() )
     {
-    m_MeshContainer->ResetCurrentElement();
-    m_MeshContainer->UpdateCurrentElementFromExistingOne( (*iterator) );
+    traceid = *iterator;
 
-    unsigned int time = m_MeshContainer->GetCurrentElementTimePoint();
-    m_MeshContainer->InsertCurrentElement();
+    t_it = m_MeshContainer->m_Container.get< TraceID >().find( traceid );
+
+    time = t_it->TCoord;
 
     if( minBorder.second > time )
       {
-      minBorder.first = *iterator;
+      minBorder.first = traceid;
       minBorder.second = time;
       }
 
     if( maxBorder.second < time )
       {
-      maxBorder.first = *iterator;
+      maxBorder.first = traceid;
       maxBorder.second = time;
       }
 
