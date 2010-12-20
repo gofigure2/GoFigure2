@@ -898,49 +898,6 @@ GetTraceIDsWithTimePointSup(vtkMySQLDatabase *iDatabaseConnector,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/*std::list<unsigned int> GoDBCollectionOfTraces::
-GetTraceIDsWithTimePointInf(vtkMySQLDatabase *iDatabaseConnector,
-  std::list<unsigned int> iListTraceIDs, unsigned int iTimePoint)
-{
-  FieldWithValue JoinCondition = {"CoordIDMin", "CoordID", "="};
-  FieldWithValue AndCondition = 
-    { "TCoord", ConvertToString<unsigned int >(iTimePoint),"<"};
-  std::vector<std::string> VectTraceIDs = ListUnsgIntToVectorString(iListTraceIDs);
-  return GetListValuesFromTwoTablesAndCondition(
-    iDatabaseConnector,
-    this->m_TracesName, "coordinate", this->m_TracesIDName,
-    JoinCondition,this->m_TracesIDName, VectTraceIDs, AndCondition);
-}*/
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/*std::list<ContourMeshStructure> GoDBCollectionOfTraces::
-  GetListStructureFromDBSimplified(vtkMySQLDatabase* iDatabaseConnector,
-  std::list<unsigned int> iListTraces, unsigned int iImgSessionID)
-{
-  std::list<ContourMeshStructure> oListTracesResults;
-  std::vector<std::string> TraceAttributes = this->GetAttributesForContourMeshStructure();
-  std::vector<std::string> TraceAttributes(7);
-  TraceAttributes[0] = this->m_TracesIDName;
-  TraceAttributes[1] = this->m_CollectionIDName;
-  TraceAttributes[2] = "TCoord";
-  TraceAttributes[3] = "Red";
-  TraceAttributes[4] = "Green";
-  TraceAttributes[5] = "Blue";
-  TraceAttributes[6] = "Alpha";
-  FieldWithValue CoordinateCondition = {"CoordIDMin", "CoordID", "="};
-  FieldWithValue ColorCondition = {"ColorID", "ColorID", "="};
-
-  GetInfoFromDBAndModifyListStructure( oListTracesResults, 
-    iDatabaseConnector, TraceAttributes, this->m_TracesName, "coordinate", 
-    "color", CoordinateCondition, ColorCondition, "ImagingSessionID",
-    iImgSessionID, this->m_TracesIDName, iListTraces);
-
-  return oListTracesResults;  
-}*/
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 std::vector<std::string> GoDBCollectionOfTraces::
   GetAttributesForTraces()
 {

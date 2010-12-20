@@ -96,16 +96,6 @@ public:
   void DeleteTracesInDB(std::list< unsigned int > TracesToDelete,
                         vtkMySQLDatabase *DatabaseConnector);
 
-  /**
-  \brief Update the collectionID of the selected traces in the DB trace table,
-  update the bounding box of the collection, update the bounding boxes of the
-  previous collections the traces belonged to and return the list of the
-  previous collection with an updated bounding box
-  */
-  //std::list< unsigned int > UpdateDBDataForAddedTracesToExistingCollection(
-  //  std::list< unsigned int > ListSelectedTraces, int iNewCollectionID,
-  //  vtkMySQLDatabase *DatabaseConnector);
-
   //Modif into Database
   /**
   \brief Update the collectionID of the selected traces in the DB traces table
@@ -409,13 +399,17 @@ public:
   std::list<unsigned int> GetTimePointsForTraceIDs(
     vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTraceIDs);
 
+  /**
+  \brief get the tracesIDs belonging to iListTraceIDs with a timepoint sup to
+  iTimePoint
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iListTraceIDs list of the IDs for the traces to be checked
+  \param[in] iTimePoint timepoint to be compared
+  \return a list of all the traces with a timepoint sup to iTimePoint
+  */
   std::list<unsigned int> GetTraceIDsWithTimePointSup(
     vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTraceIDs,
     unsigned int iTimePoint);
-
-  //std::list<unsigned int> GetTraceIDsWithTimePointInf(
-  //  vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTraceIDs,
-  //  unsigned int iTimePoint);
 
   /**
   \brief get a list of structures filled with data from the database
@@ -549,8 +543,5 @@ protected:
 
   std::vector<std::string> GetAttributesForTraces();
 
-  //std::vector< std::string > ListUnsgIntToVectorString(std::list< unsigned int > iList);
-
-  //std::list< unsigned int > VectorStringToUnsgInt(std::vector< std::string > iVector);
 };
 #endif
