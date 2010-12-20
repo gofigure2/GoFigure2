@@ -423,18 +423,29 @@ void
 QGoTrackEditingWidget::
 cutTrack( vtkActor* iActor)
 {
-  std::map< vtkActor* , int >::iterator it = m_Line2MeshID.find( iActor );
+  std::map< vtkActor*, int >::iterator it = m_Line2MeshID.find( iActor );
   //int timePoint;
 
   // Find the mesh ID
   if( it != m_Line2MeshID.end() )
     {
-    unsigned int collectionID = m_MeshContainer->GetCollectionIDOfGivenTrace( it->second );
+    unsigned int collectionID =
+         m_MeshContainer->GetCollectionIDOfGivenTrace( it->second );
 
     std::cout << "Cut collection: " << collectionID << std::endl;
 
     std::list<unsigned int> listOfMeshIDs =
         m_MeshContainer->GetAllTraceIDsGivenCollectionID( collectionID );
+
+    // here check that the track is not a new track!
+    std::map< unsigned int, TrackStatusType >
+        stat_it = m_TrackStatus.find( collectionID );
+
+    if( stat_it == m_TrackStatus.end() )
+      {
+      m_TrackStatus[ collectionID ] = UPDATED_TRACK;
+      }
+
     std::list<unsigned int>::iterator iterator = listOfMeshIDs.begin();
 
     // border time point
@@ -453,10 +464,11 @@ cutTrack( vtkActor* iActor)
       unsigned int time = m_MeshContainer->GetCurrentElementTimePoint();
 
       // change track ID if we are before the mesh
-      if( time < tLimit)
+      if( time < tLimit )
         {
         // Collection ID
         m_MeshContainer->SetCurrentElementCollectionID( m_NumberOfTracks );
+        m_TrackStatus[ m_NumberOfTracks ] = NEW_TRACK;
         // Visibility: i.e. modified
         }
       m_MeshContainer->InsertCurrentElement();
@@ -636,6 +648,9 @@ mergeTrack( vtkActor* iFirstActor, vtkActor* iSecondActor)
     trackToUpdate = firstMesh;
     trackToDelete = secondMesh;
     }
+
+  m_TrackStatus[trackToDelete] = DELETED_TRACK;
+  m_TrackStatus[trackToUpdate] = UPDATED_TRACK;
 
   std::cout<< " Mesh to update: " << trackToUpdate << std::endl;
   std::cout<< " Mesh to delete: " << trackToDelete << std::endl;

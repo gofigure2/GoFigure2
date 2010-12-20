@@ -108,8 +108,18 @@ private:
   MeshContainer* m_MeshContainer;
   std::map< vtkActor* , int >          m_Line2MeshID;
 
+  enum TrackStatusType
+    {
+    NEW_TRACK = 0,
+    UPDATED_TRACK,
+    DELETED_TRACK
+    };
+
+  std::map< unsigned int, TrackStatusType > m_TrackStatus;
+
   // Split/merge behavior
-  std::map< unsigned int , std::pair<unsigned int, unsigned int> >  m_MeshID2Neigbours;
+  std::map< unsigned int ,
+    std::pair<unsigned int, unsigned int> >  m_MeshID2Neigbours;
 
   unsigned int m_NumberOfTracks;
   bool m_FirstRender;
