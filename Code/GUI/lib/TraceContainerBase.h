@@ -200,9 +200,12 @@ public:
             f = &QGoImageView3D::RemoveActor;
             }
 
-          for ( int i = 0; i < 4; i++ )
+          if( m_ImageView )
             {
-            ( m_ImageView->*f )(i, actor[i]);
+            for ( int i = 0; i < 4; i++ )
+              {
+              ( m_ImageView->*f )(i, actor[i]);
+              }
             }
           }
         else
@@ -257,9 +260,12 @@ public:
       f = &QGoImageView3D::RemoveActor;
       }
 
-    for ( int i = 0; i < 4; i++ )
+    if( m_ImageView )
       {
-      ( m_ImageView->*f )(i, iActors[i]);
+      for ( int i = 0; i < 4; i++ )
+        {
+        ( m_ImageView->*f )(i, iActors[i]);
+        }
       }
 
     using boost::multi_index::get;
@@ -460,7 +466,10 @@ public:
 
     SetScalarRangeForAllElements( min_value, max_value );
 
-    this->m_ImageView->UpdateRenderWindows();
+    if( m_ImageView )
+      {
+      this->m_ImageView->UpdateRenderWindows();
+      }
     }
 
   void SetRandomColor( const std::string& iColumnName,
@@ -567,7 +576,11 @@ protected:
           }
 
         m_Container.get< TActor >().replace(it, tempStructure);
-        m_ImageView->UpdateRenderWindows();
+
+        if( m_ImageView )
+          {
+          m_ImageView->UpdateRenderWindows();
+          }
 
         oTraceId = it->TraceID;
 
@@ -618,7 +631,11 @@ protected:
           }
 
         m_Container.get< TActor >().replace(it, tempStructure);
-        m_ImageView->UpdateRenderWindows();
+
+        if( m_ImageView )
+          {
+          m_ImageView->UpdateRenderWindows();
+          }
 
         oTraceId = it->TraceID;
 

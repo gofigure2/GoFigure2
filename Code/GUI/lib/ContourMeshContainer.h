@@ -414,21 +414,24 @@ public:
         {
         it->SetActorVisibility( iVisibility );
 
-        if ( it->ActorXY )
+        if( m_ImageView )
           {
-          ( m_ImageView->*f )(0, it->ActorXY);
-          }
-        if ( it->ActorXZ )
-          {
-          ( m_ImageView->*f )(1, it->ActorXZ);
-          }
-        if ( it->ActorYZ )
-          {
-          ( m_ImageView->*f )(2, it->ActorYZ);
-          }
-        if ( it->ActorXYZ )
-          {
-          ( m_ImageView->*f )(3, it->ActorXYZ);
+          if ( it->ActorXY )
+            {
+            ( m_ImageView->*f )(0, it->ActorXY);
+            }
+          if ( it->ActorXZ )
+            {
+            ( m_ImageView->*f )(1, it->ActorXZ);
+            }
+          if ( it->ActorYZ )
+            {
+            ( m_ImageView->*f )(2, it->ActorYZ);
+            }
+          if ( it->ActorXYZ )
+            {
+            ( m_ImageView->*f )(3, it->ActorXYZ);
+            }
           }
 
         MultiIndexContainerElementType tempStructure(*it);
