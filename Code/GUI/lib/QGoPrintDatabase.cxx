@@ -1475,6 +1475,7 @@ AddCheckedMeshesToSelectedTrack(std::list< unsigned int > iListCheckedMeshes)
 {
   unsigned int SelectedTrackID =
     this->m_TraceWidget->GetCurrentSelectedCollectionID();
+  this->AddListMeshesToATrack(iListCheckedMeshes, SelectedTrackID);
 
 }
 //--------------------------------------------------------------------------
