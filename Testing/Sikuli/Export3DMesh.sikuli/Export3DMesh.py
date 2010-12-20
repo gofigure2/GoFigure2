@@ -9,9 +9,9 @@ setBundlePath(address)
 #2 scripts: one before GF closes and one after creating database. 
 #will need script to create meshes on 1 track in different time points.
 
-click("NavigationIcon.png")
-click("TableWidgetIcon.png")
-click("MeshSegmentationIcon.png")
+#click("NavigationIcon.png")
+#click("TableWidgetIcon.png")
+#click("MeshSegmentationIcon.png")
 
 #Need to make 3D meshes
 
