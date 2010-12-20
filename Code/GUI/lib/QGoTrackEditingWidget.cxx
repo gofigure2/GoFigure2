@@ -678,24 +678,29 @@ isOnBorder( unsigned int iMeshID)
   maxBorder.first = 0;
   maxBorder.second = 0;
 
+  unsigned int traceid = 0;
+  unsigned int time = 0;
+
+  ContourMeshContainer::MultiIndexContainerTraceIDIterator t_it;
+
   // Go through all meshes
   while( iterator != listOfMeshIDs.end() )
     {
-    m_MeshContainer->ResetCurrentElement();
-    m_MeshContainer->UpdateCurrentElementFromExistingOne( (*iterator) );
+    traceid = *iterator;
 
-    unsigned int time = m_MeshContainer->GetCurrentElementTimePoint();
-    m_MeshContainer->InsertCurrentElement();
+    t_it = m_MeshContainer->m_Container.get< TraceID >().find( traceid );
+
+    time = t_it->TCoord;
 
     if( minBorder.second > time )
       {
-      minBorder.first = *iterator;
+      minBorder.first = traceid;
       minBorder.second = time;
       }
 
     if( maxBorder.second < time )
       {
-      maxBorder.first = *iterator;
+      maxBorder.first = traceid;
       maxBorder.second = time;
       }
 
