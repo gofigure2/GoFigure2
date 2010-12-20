@@ -101,14 +101,14 @@ setBundlePath(address)
                 <span class="skw">wait</span>(<span class="dig">2</span>)
                 <span class="skw">type</span>(<span class="str">"gofigure"</span> +Key.TAB + <span class="str">"gofigure"</span>)
 
-                <span class="cmt">#click("Next_arrow.png")
-</span>                <span class="cmt">#assert exists("Root_Password.png")
-</span>                <span class="cmt">#type(Key.TAB+Key.ENTER)
-</span>                <span class="cmt">#assert exists("There_is_problem_existing_users.png")
-</span>                <span class="cmt">#click("ok.png")
-</span>                        <span class="cmt">#gofigure crashes at this step
-</span>                <span class="cmt">#assert not exists("Root_Password.png")
-</span>
+                <span class="skw">click</span>(<img src="Next_arrow.png" />)
+                <span class="kw">assert</span> exists(<img src="Root_Password.png" />)
+                <span class="skw">type</span>(Key.TAB+Key.ENTER)
+                <span class="kw">assert</span> exists(<img src="There_is_problem_existing_users.png" />)
+                <span class="skw">click</span>(<img src="ok.png" />)
+                        <span class="cmt">#gofigure crashes at this step
+</span>                <span class="kw">assert</span> <span class="kw">not</span> exists(<img src="Root_Password.png" />)
+
 <span class="kw">for</span> i <span class="kw">in</span> [<span class="dig">1</span>,<span class="dig">2</span>]:
         <span class="skw">click</span>(<img src="Next_arrow.png" />)
         <span class="kw">assert</span> exists(<img src="Root_Password.png" />)
