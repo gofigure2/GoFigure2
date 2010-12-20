@@ -612,12 +612,13 @@ std::string QGoDBMeshManager::CheckListMeshesFromDifferentTimePoints(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::pair<std::list<unsigned int>,std::list<unsigned int> >
-QGoDBMeshManager::GetMeshesForSplittedTrack(
+//std::pair<std::list<unsigned int>,std::list<unsigned int> >
+std::list<unsigned int> 
+  QGoDBMeshManager::GetMeshesWithTimePointSupOrEqualToTheCheckedOne(
   unsigned int iTrackID, vtkMySQLDatabase* iDatabaseConnector,
   std::list<unsigned int> iListMeshesBelongingToTrack)
 {
-  std::pair<std::list<unsigned int>,std::list<unsigned int> > ListMeshes =
+  /*std::pair<std::list<unsigned int>,std::list<unsigned int> > ListMeshes =
     std::pair<std::list<unsigned int>,std::list<unsigned int> >();
   std::pair<unsigned int, unsigned int> InfoSplitMesh =
     this->GetInfoForTheOnlyOneCheckedMeshOfTheTrack(iDatabaseConnector, iTrackID);
@@ -629,7 +630,17 @@ QGoDBMeshManager::GetMeshesForSplittedTrack(
       iDatabaseConnector,iListMeshesBelongingToTrack,InfoSplitMesh.second);
     ListMeshes.second.push_back(InfoSplitMesh.first);
     }
-  return ListMeshes;
+  return ListMeshes;*/
+  std::list<unsigned int> oListMeshesTimePointSup = std::list<unsigned int>();
+  std::pair<unsigned int, unsigned int> InfoSplitMesh =
+    this->GetInfoForTheOnlyOneCheckedMeshOfTheTrack(iDatabaseConnector, iTrackID);
+  if (InfoSplitMesh.first != 0)
+    {
+    oListMeshesTimePointSup = this->m_CollectionOfTraces->GetTraceIDsWithTimePointSup(
+      iDatabaseConnector, iListMeshesBelongingToTrack, InfoSplitMesh.second);
+    oListMeshesTimePointSup.push_back(InfoSplitMesh.first);
+    }
+  return oListMeshesTimePointSup;
 }
 //-------------------------------------------------------------------------
 

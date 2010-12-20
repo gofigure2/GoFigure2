@@ -379,13 +379,33 @@ public:
   std::list<unsigned int> GetListTimePointsFromTraceIDs(
     vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTraceIDs);
 
+  /**
+  \brief get the tracesIDs contained in iListTraceIDs that have iCollectionID as
+  a collectionID
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iListTraceIDs list of the IDs for the traces to be checked
+  \param[in] iCollectionID ID of the collection the traces need to belong to
+  \return the list of traces belonging to iCollectionID and to iListTraceIDs
+  */
   std::list<unsigned int> GetTraceIDsBelongingToCollectionID(
     vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTraceIDs,
     unsigned int iCollectionID);
 
+  /**
+  \brief get all the tracesIDs that belong to iListCollectionIDs
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iListCollectionIDs IDs of the collections
+  \return the list of traces belonging to iListCollectionIDs
+  */
   std::list<unsigned int> GetTraceIDsBelongingToCollectionID(
     vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListCollectionIDs);
 
+  /**
+  \brief get the timepoints (non distinct) for all the traceIDs in iListTraceIDs
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iListTraceIDs list of the IDs for the traces the timepoints are needed
+  \return a list of all the timepoints (non distinct)
+  */
   std::list<unsigned int> GetTimePointsForTraceIDs(
     vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTraceIDs);
 
@@ -393,9 +413,9 @@ public:
     vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTraceIDs,
     unsigned int iTimePoint);
 
-  std::list<unsigned int> GetTraceIDsWithTimePointInf(
-    vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTraceIDs,
-    unsigned int iTimePoint);
+  //std::list<unsigned int> GetTraceIDsWithTimePointInf(
+  //  vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTraceIDs,
+  //  unsigned int iTimePoint);
 
   /**
   \brief get a list of structures filled with data from the database

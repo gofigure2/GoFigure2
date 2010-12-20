@@ -898,7 +898,7 @@ GetTraceIDsWithTimePointSup(vtkMySQLDatabase *iDatabaseConnector,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::list<unsigned int> GoDBCollectionOfTraces::
+/*std::list<unsigned int> GoDBCollectionOfTraces::
 GetTraceIDsWithTimePointInf(vtkMySQLDatabase *iDatabaseConnector,
   std::list<unsigned int> iListTraceIDs, unsigned int iTimePoint)
 {
@@ -910,7 +910,7 @@ GetTraceIDsWithTimePointInf(vtkMySQLDatabase *iDatabaseConnector,
     iDatabaseConnector,
     this->m_TracesName, "coordinate", this->m_TracesIDName,
     JoinCondition,this->m_TracesIDName, VectTraceIDs, AndCondition);
-}
+}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

@@ -220,9 +220,12 @@ public slots:
   \param[in] iListMeshesBelongingToTrack list of the meshes
   belonging to this track
   */
-  std::pair<std::list<unsigned int>,std::list<unsigned int> > 
-    GetMeshesForSplittedTrack(unsigned int iTrackID, 
-    vtkMySQLDatabase* iDatabaseConnector, 
+  //std::pair<std::list<unsigned int>,std::list<unsigned int> > 
+   // GetMeshesForSplittedTrack(unsigned int iTrackID, 
+   // vtkMySQLDatabase* iDatabaseConnector, 
+   // std::list<unsigned int> iListMeshesBelongingToTrack);
+  std::list<unsigned int> GetMeshesWithTimePointSupOrEqualToTheCheckedOne(
+    unsigned int iTrackID, vtkMySQLDatabase* iDatabaseConnector,
     std::list<unsigned int> iListMeshesBelongingToTrack);
 
 protected:

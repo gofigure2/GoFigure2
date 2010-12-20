@@ -1367,11 +1367,15 @@ PassMeshesInfoForImportedTrack(unsigned int iTrackID)
    std::list<unsigned int> iListMeshIDs)
  {
    this->OpenDBConnection();
-   std::pair<std::list<unsigned int>,std::list<unsigned int> >
-     ListMeshesForTwoTracks = this->m_MeshesManager->GetMeshesForSplittedTrack(
-     iTrackID,this->m_DatabaseConnector,iListMeshIDs);
+   //std::pair<std::list<unsigned int>,std::list<unsigned int> >
+    // ListMeshesForTwoTracks = this->m_MeshesManager->GetMeshesForSplittedTrack(
+    // iTrackID, this->m_DatabaseConnector, iListMeshIDs);
+   std::list<unsigned int> ListMeshesForNewTrack = 
+     this->m_MeshesManager->GetMeshesWithTimePointSupOrEqualToTheCheckedOne(
+      iTrackID, this->m_DatabaseConnector, iListMeshIDs);
    //a new track is created with the smallest timepoints:
-   this->CreateNewTrackFromListMeshes(ListMeshesForTwoTracks.second);
+   //this->CreateNewTrackFromListMeshes(ListMeshesForTwoTracks.second);
+   this->CreateNewTrackFromListMeshes(ListMeshesForNewTrack);
    this->CloseDBConnection();
  }
  //--------------------------------------------------------------------------
@@ -1476,7 +1480,6 @@ AddCheckedMeshesToSelectedTrack(std::list< unsigned int > iListCheckedMeshes)
   unsigned int SelectedTrackID =
     this->m_TraceWidget->GetCurrentSelectedCollectionID();
   this->AddListMeshesToATrack(iListCheckedMeshes, SelectedTrackID);
-
 }
 //--------------------------------------------------------------------------
 
