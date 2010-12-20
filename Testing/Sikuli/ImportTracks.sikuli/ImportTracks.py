@@ -57,7 +57,7 @@ click("TableWidgetIcon.png")
 click("WhiteArrowIcon.png")
 click("TableWidgetIcon.png")
 click("MeshSegmentationIcon.png")
-
+wait(2)
 #compare before image in gofigureimage folder to after image taken here
 #reg = find(Pattern("roughQuadViewRectangle.png").similar(0.30))
 #this should find a rough 30% image and just get the coordinates and then take real image below
@@ -83,7 +83,7 @@ shutil.copy2(quadview_image_AFTER,address+"/quadview_image_AFTER.png")
 
 print "copied image"
 
-find("quadview_image_BEFORE.png").similar(.50)
+find(Pattern("quadview_image_BEFORE.png").similar(.95))
 
 
 #open GF
