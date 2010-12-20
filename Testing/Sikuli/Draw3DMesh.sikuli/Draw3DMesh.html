@@ -88,9 +88,9 @@ address = os.getcwd()
 <span class="skw">type</span>(Key.ENTER)
 <span class="cmt">#x = region.getLastMatch()
 </span>
-<span class="skw">click</span>(<span class="skw">find</span>(<img src="Mode.png" />).right(<span class="dig">200</span>))
-<span class="skw">click</span>(<img src="Manual.png" />)
-
+<span class="cmt">#click(find("Mode.png").right(200))
+</span><span class="cmt">#click("Manual.png")
+</span>
 <span class="kw">import</span> random
 region = <span class="skw">find</span>(Pattern(<img src="XY_ViewRegion.png" />).similar(<span class="dig">0.30</span>))
 <span class="kw">print</span> region

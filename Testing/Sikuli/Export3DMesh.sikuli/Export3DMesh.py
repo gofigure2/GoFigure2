@@ -26,13 +26,17 @@ type("3DMeshExportTest.txt"+Key.ENTER)
 reg = find(Pattern("roughQuadViewRectangle.png").similar(0.30))
 #this should find a rough 30% image and just get the coordinates and then take real image below
 table_quadview = reg.getRect()
+
+print table_quadview
+
 quadview_image_BEFORE =capture(table_quadview)
-import shutil
-shutil.copy2(quadview_image_BEFORE, address+"/quadview_BEFORE.png")
 print quadview_image_BEFORE
 
-f = open("quadview_image_BEFORE_address.txt","w")
-f.write(quadview_image_BEFORE)
+#f = open("quadview_image_BEFORE_address.txt","w")
+#f.write(quadview_image_BEFORE)
+
+import shutil
+shutil.copy2(quadview_image_BEFORE,address+"/quadview_image_BEFORE.png")
 
 import re
 string = "/home/es1076/GITROOT/GoFigure2/BUILD/bin/gofigure"

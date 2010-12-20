@@ -90,8 +90,12 @@ a = <span class="skw">find</span>(<img src="3DMeshes.png" />)
 <span class="skw">type</span>(Key.ENTER)
 <span class="cmt">#NEED TO FIGURE OUT HOW TO SELECT 3DMeshExportTest.txt file for any user on any OS
 </span>
-<span class="skw">click</span>(<img src="File.png" />)
-<span class="skw">click</span>(<img src="Close_all.png" />)
+<span class="cmt">#click("File.png")
+</span><span class="cmt">#click("Close_all.png")
+</span><span class="skw">wait</span>(<span class="dig">2</span>)
+keyDown(Key.CTRL)
+<span class="skw">type</span>(<span class="str">"w"</span>)
+keyUp(Key.CTRL)
 
 <span class="skw">click</span>(<img src="UseDatabaseIcon.png" />)
 <span class="skw">click</span>(<img src="Next.png" />)
@@ -105,6 +109,26 @@ a = <span class="skw">find</span>(<img src="3DMeshes.png" />)
 
 
 
+hover(<img src="Table_MeshTab.png" />)
+
+<span class="kw">from</span> java.awt <span class="kw">import</span> Robot
+robot = Robot()
+robot.mouseWheel(<span class="dig">1</span>)
+
+<span class="cmt">#hover("Table_MeshTab.png")
+</span><span class="cmt">#rightClick(region.getLastMatch().right(200).above(100))
+</span><span class="skw">rightClick</span>(<img src="RedTrack1.png" />)
+<span class="skw">type</span>(Key.DOWN+Key.ENTER+Key.DOWN+Key.DOWN+Key.DOWN+Key.ENTER)
+
+keyDown(Key.CTRL)
+<span class="skw">type</span>(<span class="str">"d"</span>+<span class="str">"d"</span>+<span class="str">"d"</span>)
+keyUp(Key.CTRL)
+<span class="skw">wait</span>(<span class="dig">6</span>)
+
+<span class="skw">click</span>(<img src="TableWidgetIcon.png" />)
+<span class="skw">click</span>(<img src="WhiteArrowIcon.png" />)
+<span class="skw">click</span>(<img src="TableWidgetIcon.png" />)
+<span class="skw">click</span>(<img src="MeshSegmentationIcon.png" />)
 
 <span class="cmt">#compare before image in gofigureimage folder to after image taken here
 </span><span class="cmt">#reg = find(Pattern("roughQuadViewRectangle.png").similar(0.30))
@@ -113,16 +137,25 @@ a = <span class="skw">find</span>(<img src="3DMeshes.png" />)
 </span><span class="cmt">#quadview_image_AFTER =capture(table_quadview)
 </span>
 
-f = open(address+<span class="str">"/quadview_image_BEFORE_address.txt"</span>,<span class="str">"r"</span>)
-quadview_BEFORE = f.read()
-
-<span class="kw">print</span> quadview_BEFORE
-
-<span class="cmt">#import shutil
-</span><span class="cmt">#shutil.copy(quadview_BEFORE,address)
+<span class="cmt">#f = open(address+"/quadview_image_BEFORE_address.txt","r")
+</span><span class="cmt">#quadview_BEFORE = f.read()
 </span>
-<span class="cmt">#make sure images are exact.
-</span><span class="skw">find</span>(<img src="quadview_BEFORE.png" />).similar(<span class="dig">.50</span>)
+<span class="cmt">#print quadview_BEFORE
+</span>
+<span class="cmt">#import shutil
+</span><span class="cmt">#shutil.copy2(quadview_BEFORE,address)
+</span>
+<span class="cmt">#print "copied address"
+</span><span class="cmt">#make sure images are exact.
+</span>quadview_image_AFTER = <span class="skw">capture</span>(<span class="dig">264</span>,<span class="dig">157</span>,<span class="dig">852</span>,<span class="dig">792</span>)
+<span class="kw">print</span> <span class="str">"captured image"</span>
+
+<span class="kw">import</span> shutil
+shutil.copy2(quadview_image_AFTER,address+<img src="/quadview_image_AFTER.png" />)
+
+<span class="kw">print</span> <span class="str">"copied image"</span>
+
+<span class="skw">find</span>(<img src="quadview_image_BEFORE.png" />).similar(<span class="dig">.50</span>)
 
 
 <span class="cmt">#open GF

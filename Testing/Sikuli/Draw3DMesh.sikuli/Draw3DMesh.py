@@ -16,8 +16,8 @@ click("Add_new_track.png")
 type(Key.ENTER)
 #x = region.getLastMatch()
 
-click(find("Mode.png").right(200))
-click("Manual.png")
+#click(find("Mode.png").right(200))
+#click("Manual.png")
 
 import random
 region = find(Pattern("XY_ViewRegion.png").similar(0.30))
