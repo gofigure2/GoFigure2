@@ -142,9 +142,9 @@ void QGoLUTDialog::setupUi(QDialog *LUTDialog)
   size_t k = 0;
   for( ; k < lut_names.size(); k++ )
     {
-    this->LUTComboBox->insertItem( k, QString::fromStdString( lut_names[k] ) );
+    this->LUTComboBox->insertItem(static_cast<int>(k), QString::fromStdString( lut_names[k] ) );
     }
-  this->LUTComboBox->insertItem( k, tr( "HSV Based" ) );
+  this->LUTComboBox->insertItem(static_cast<int>(k), tr( "HSV Based" ) );
 
   this->HorizontalLayout->addWidget(this->LUTComboBox);
 
