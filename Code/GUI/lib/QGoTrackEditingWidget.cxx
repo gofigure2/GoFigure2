@@ -649,6 +649,7 @@ mergeTrack( vtkActor* iFirstActor, vtkActor* iSecondActor)
     trackToDelete = secondMesh;
     }
 
+  // C est la!!!
   m_TrackStatus[trackToDelete] = DELETED_TRACK;
   m_TrackStatus[trackToUpdate] = UPDATED_TRACK;
 
