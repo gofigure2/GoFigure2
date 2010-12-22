@@ -189,28 +189,34 @@ RemoveElementFromVisualizationWithGivenTraceID( const unsigned int & iId)
 
   if ( it != m_Container.get< TraceID >().end() )
     {
-    if ( it->ActorXY )
+    if( m_ImageView )
       {
-      this->m_ImageView->RemoveActor(0, it->ActorXY);
-      }
-    if ( it->ActorXZ )
-      {
-      this->m_ImageView->RemoveActor(1, it->ActorXZ);
-      }
-    if ( it->ActorYZ )
-      {
-      this->m_ImageView->RemoveActor(2, it->ActorYZ);
-      }
-    if ( it->ActorXYZ )
-      {
-      this->m_ImageView->RemoveActor(3, it->ActorXYZ);
+      if ( it->ActorXY )
+        {
+        this->m_ImageView->RemoveActor(0, it->ActorXY);
+        }
+      if ( it->ActorXZ )
+        {
+        this->m_ImageView->RemoveActor(1, it->ActorXZ);
+        }
+      if ( it->ActorYZ )
+        {
+        this->m_ImageView->RemoveActor(2, it->ActorYZ);
+        }
+      if ( it->ActorXYZ )
+        {
+        this->m_ImageView->RemoveActor(3, it->ActorXYZ);
+        }
       }
 
     this->m_CurrentElement = *it;
 
     m_Container.get< TraceID >().erase(it);
 
-    m_ImageView->UpdateRenderWindows();
+    if( m_ImageView )
+      {
+      m_ImageView->UpdateRenderWindows();
+      }
 
     return true;
     }
@@ -258,7 +264,11 @@ UpdateElementHighlightingWithGivenTraceID(const unsigned int & iId)
     tempStructure.Highlighted = !it->Highlighted;
 
     m_Container.get< TraceID >().replace(it, tempStructure);
-    m_ImageView->UpdateRenderWindows();
+
+    if( m_ImageView )
+      {
+      m_ImageView->UpdateRenderWindows();
+      }
 
     return true;
     }
@@ -320,7 +330,10 @@ UpdateElementHighlightingWithGivenTraceIDsBase( const QStringList& iList,
       ++constIterator;
       }
 
-    m_ImageView->UpdateRenderWindows();
+    if( m_ImageView )
+      {
+      m_ImageView->UpdateRenderWindows();
+      }
     }
 }
 //-------------------------------------------------------------------------
@@ -342,6 +355,7 @@ UpdateElementVisibilityWithGivenTraceIDsBase( const QStringList& iList,
     ImageViewMember f;
 
     QStringList::const_iterator constIterator = iList.begin();
+    bool visible;
 
     while( constIterator != iList.end() )
       {
@@ -349,17 +363,19 @@ UpdateElementVisibilityWithGivenTraceIDsBase( const QStringList& iList,
 
       if ( it != m_Container.get< TraceID >().end() )
         {
-        // if ( it->TCoord != m_TCoord )
+        if ( iCheck == Qt::Unchecked )
           {
-          if ( iCheck )
-            {
-            f = &QGoImageView3D::RemoveActor;
-            }
-          else
-            {
-            f = &QGoImageView3D::AddActor;
-            }
+          f = &QGoImageView3D::RemoveActor;
+          visible = false;
+          }
+        else
+          {
+          f = &QGoImageView3D::AddActor;
+          visible = true;
+          }
 
+        if( m_ImageView )
+          {
           if ( it->ActorXY )
             {
             ( m_ImageView->*f )(0, it->ActorXY);
@@ -378,17 +394,20 @@ UpdateElementVisibilityWithGivenTraceIDsBase( const QStringList& iList,
             }
           }
 
-        it->SetActorVisibility( iCheck );
+        it->SetActorVisibility( visible );
 
         MultiIndexContainerElementType tempStructure(*it);
-        tempStructure.Visible = iCheck;
+        tempStructure.Visible = visible;
 
         m_Container.get< TraceID >().replace(it, tempStructure);
         }
 
       ++constIterator;
       }
-    m_ImageView->UpdateRenderWindows();
+    if( m_ImageView )
+      {
+      m_ImageView->UpdateRenderWindows();
+      }
     }
 }
 //-------------------------------------------------------------------------
@@ -480,21 +499,24 @@ UpdateElementVisibilityWithGivenTraceID(const unsigned int & iId)
       f = &QGoImageView3D::AddActor;
       }
 
-    if ( it->ActorXY )
+    if( m_ImageView )
       {
-      ( m_ImageView->*f )(0, it->ActorXY);
-      }
-    if ( it->ActorXZ )
-      {
-      ( m_ImageView->*f )(1, it->ActorXZ);
-      }
-    if ( it->ActorYZ )
-      {
-      ( m_ImageView->*f )(2, it->ActorYZ);
-      }
-    if ( it->ActorXYZ )
-      {
-      ( m_ImageView->*f )(3, it->ActorXYZ);
+      if ( it->ActorXY )
+        {
+        ( m_ImageView->*f )(0, it->ActorXY);
+        }
+      if ( it->ActorXZ )
+        {
+        ( m_ImageView->*f )(1, it->ActorXZ);
+        }
+      if ( it->ActorYZ )
+        {
+        ( m_ImageView->*f )(2, it->ActorYZ);
+        }
+      if ( it->ActorXYZ )
+        {
+        ( m_ImageView->*f )(3, it->ActorXYZ);
+        }
       }
 
     it->SetActorVisibility( !it->Visible );
@@ -504,7 +526,10 @@ UpdateElementVisibilityWithGivenTraceID(const unsigned int & iId)
 
     m_Container.get< TraceID >().replace(it, tempStructure);
 
-    m_ImageView->UpdateRenderWindows();
+    if( m_ImageView )
+      {
+      m_ImageView->UpdateRenderWindows();
+      }
     return true;
     }
 
@@ -612,7 +637,10 @@ SetColorCode( const std::string& iColumnName,
 
   SetScalarRangeForAllElements( min_value, max_value );
 
-  this->m_ImageView->UpdateRenderWindows();
+  if( m_ImageView )
+    {
+    this->m_ImageView->UpdateRenderWindows();
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -672,7 +700,10 @@ SetRandomColor( const std::string& iColumnName,
   this->SetLookupTableForColorCoding(
       vtkLookupTableManager::GetRandomLookupTable() );
 
-  this->m_ImageView->UpdateRenderWindows();
+  if( m_ImageView )
+    {
+    this->m_ImageView->UpdateRenderWindows();
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -688,7 +719,10 @@ RenderAllElementsWithOriginalColors()
     t_it->RenderWithOriginalColors();
     ++t_it;
     }
-  this->m_ImageView->UpdateRenderWindows();
+  if( m_ImageView )
+    {
+    this->m_ImageView->UpdateRenderWindows();
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -723,7 +757,10 @@ SetLookupTableForColorCoding( vtkLookupTable* iLut )
       it->SetLookupTable( iLut );
       ++it;
       }
-    this->m_ImageView->UpdateRenderWindows();
+    if( m_ImageView )
+      {
+      this->m_ImageView->UpdateRenderWindows();
+      }
     }
 }
 //-------------------------------------------------------------------------
@@ -838,7 +875,10 @@ SetRandomColor( const std::string& iColumnName,
 
   SetScalarRangeForAllElements( min_value, max_value );
 
-  this->m_ImageView->UpdateRenderWindows();
+  if( m_ImageView )
+    {
+    this->m_ImageView->UpdateRenderWindows();
+    }
 }
 //-------------------------------------------------------------------------
 
