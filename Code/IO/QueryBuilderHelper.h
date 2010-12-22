@@ -134,9 +134,9 @@ std::string GetAndORConditions(FieldWithValue iFirtsPartCondition, std::string i
   //FieldWithValue AndCondition = {fieldTwo,ValueFieldTwo, "="};
   VectorConditions[0] = iFirtsPartCondition;
   oConditions = GetConditions( VectorConditions, "AND" );
-  oConditions = oConditions.substr(0, oConditions.size()-1);
   if (!iOrVectorValues.empty() )
     {
+    oConditions = oConditions.substr(0, oConditions.size()-1);
     oConditions += " AND "; 
     oConditions += GetConditions<T>(iField,iOrVectorValues,"OR");  
     oConditions += ")";
