@@ -312,7 +312,6 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
   OpenDBConnection();
   if ( !this->m_MeshGenerationMode )
     {
-    //unsigned int TrackID = ss_atoi<unsigned int>(this->m_SelectedCollectionData->first);
     unsigned int TrackID = this->m_TraceWidget->GetCurrentSelectedCollectionID();
      //check that there isn't an existing mesh with the same timepoint in the track,if so, set its trackID to 0:
     /** \todo print a different message if several meshes are created at the same timepoint*/
@@ -365,8 +364,6 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
 void QGoPrintDatabase::SaveNewMeshForMeshToContours(int iNumberOfContours)
 {
   this->OpenDBConnection();
-
-  //unsigned int TrackID = ss_atoi< unsigned int >(this->m_SelectedCollectionData->first);
   unsigned int TrackID = this->m_TraceWidget->GetCurrentSelectedCollectionID();
   QString MessageToPrint =  this->m_MeshesManager->CheckExistingMeshesForTheTrack(TrackID,
       this->m_DatabaseConnector);
@@ -468,7 +465,6 @@ void QGoPrintDatabase::SaveNewCollectionFromTraceWidgetInDBAndTW()
     ItemColorComboboxData NewCollectionData;
     NewCollectionData.first = ConvertToString< unsigned int >(NewCollectionID);
     NewCollectionData.second = this->m_TraceWidget->GetPointerColorData()->second;
-    //this->m_TraceWidget->AddANewCollectionID(NewCollectionData);
     }
 
   this->CloseDBConnection();
@@ -540,8 +536,7 @@ void QGoPrintDatabase::UpdateSelectedTimePoint(int iTimePoint)
     if ( this->m_TraceWidget->GetTraceName() == "contour" )
       {
       //if we change the timepoint, the list of meshes will be different from
-      // the
-      //previous one, so, initialize the list is needed (no pre-selected
+      // the previous one, so, initialize the list is needed (no pre-selected
       // collection)
       this->SetTMListCollectionID();
       this->m_ContoursManager->CheckShowRows();
@@ -858,23 +853,12 @@ void QGoPrintDatabase::SetTMListColorsWithPreviousSelectedOne()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::SetTMListCollectionID(std::string iIDToSelect,
-  vtkMySQLDatabase* iDatabaseConnector)
+void QGoPrintDatabase::SetTMListCollectionID(std::string iIDToSelect)
 {
-  //if (iDatabaseConnector == NULL)
-    //{
     this->OpenDBConnection();
     this->m_TraceWidget->SetListCollectionID(
-    this->GetListCollectionIDFromDB(this->m_DatabaseConnector),
-    iIDToSelect);
+    this->GetListCollectionIDFromDB(this->m_DatabaseConnector), iIDToSelect);
     this->CloseDBConnection();
-    //}
-  //else
-    //{
-    //this->m_TraceWidget->SetListCollectionID(
-    //this->GetListCollectionIDFromDB(iDatabaseConnector),
-    //iIDToSelect);
-    //}
 }
 
 //-------------------------------------------------------------------------
@@ -1227,10 +1211,6 @@ void QGoPrintDatabase::SetMeshesManager()
                     SIGNAL(DBConnectionNotNeededAnymore() ),
                     this,
                     SLOT(CloseDBConnection() ) );
-  /*QObject::connect( this->m_MeshesManager,
-                    SIGNAL( RefreshListCollectionIDsTM(std::string, vtkMySQLDatabase*) ),
-                    this,
-                    SLOT (SetTMListCollectionID(std::string, vtkMySQLDatabase* ) ) );*/
   QObject::connect( this->m_MeshesManager,
                     SIGNAL(AddNewTraceIDInTM( std::pair<std::string, QColor> ) ),
                     this->m_TraceWidget,
@@ -1281,12 +1261,6 @@ void QGoPrintDatabase::SetTracksManager()
                     this,
                     SLOT( SplitTheTrack(unsigned int,
                       std::list<unsigned int> ) ) );
-
-  /*QObject::connect( this->m_TracksManager,
-                    SIGNAL( RefreshListCollectionIDsTM(std::string, vtkMySQLDatabase*) ),
-                    this,
-                    SLOT (SetTMListCollectionID(std::string, vtkMySQLDatabase*) ) );*/
-
   QObject::connect( this->m_TracksManager,
                     SIGNAL(AddNewTraceIDInTM( std::pair<std::string, QColor> ) ),
                     this->m_TraceWidget,
@@ -1401,9 +1375,6 @@ void QGoPrintDatabase::CreateNewTrackFromListMeshes(
   this->AddCheckedTracesToCollection< QGoDBMeshManager, QGoDBTrackManager >(
      this->m_MeshesManager, this->m_TracksManager,
      NewTrackID, ListMeshToBelongToTheTrack );
-  //this->AddCheckedTracesToCollection< QGoDBMeshManager, QGoDBTrackManager >
-  //  (this->m_MeshesManager, this->m_TracksManager,
-  //  NewTrackID, iListCheckedMeshes);
   this->CloseDBConnection();
 }
 
