@@ -95,6 +95,12 @@ private:
   vtkActor* CreateSphereActor( double* iCenter, const double* iColor);
   vtkActor* CreatePolylineActor( double* iCenter1, double* iCenter2, const double* iColor1 = NULL, const double* iColor2 = NULL);
 
+  MeshContainer* m_MeshContainer;
+
+  unsigned int m_MaxTrackID;
+  unsigned int m_NumberOfTracks;
+
+  bool m_FirstRender;
   bool m_SecondClick;
   //std::pair<int, int> m_FirstPair;
   vtkActor* m_FirstActor;
@@ -105,8 +111,10 @@ private:
   vtkActor*                  m_CurrentActor;
 
   vtkSmartPointer<vtkRenderer> renderer;
-  MeshContainer* m_MeshContainer;
-  std::map< vtkActor* , int >          m_Line2MeshID;
+
+  typedef std::map< vtkActor*, unsigned int > ActorMeshIDMapType;
+  typedef ActorMeshIDMapType::iterator ActorMeshIDMapIterator;
+  ActorMeshIDMapType m_Line2MeshID;
 
   enum TrackStatusType
     {
@@ -121,10 +129,7 @@ private:
   std::map< unsigned int ,
     std::pair<unsigned int, unsigned int> >  m_MeshID2Neigbours;
 
-  unsigned int m_NumberOfTracks;
-  bool m_FirstRender;
   std::map< unsigned int, unsigned int> m_TrackIDsMapping;
-  unsigned int m_MaxTrackID;
   vtkPolyData* m_LabelData;
 
   //typedef boost::bimap< vtkActor* , unsigned int > bm_type;

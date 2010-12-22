@@ -60,25 +60,20 @@
 
 //-------------------------------------------------------------------------
 QGoTrackEditingWidget::
-QGoTrackEditingWidget( MeshContainer* imeshContainer, QWidget *iParent ): QDialog(iParent)
+QGoTrackEditingWidget( MeshContainer* imeshContainer, QWidget *iParent ) :
+  QDialog(iParent), m_MeshContainer( imeshContainer ),
+  m_MaxTrackID( 0 ), m_NumberOfTracks( 0 ), m_FirstRender( true ),
+  m_SecondClick( false )
 {
   this->setupUi(this);
 
   renderer = vtkSmartPointer<vtkRenderer>::New();
 
-  m_VtkEventQtConnector = vtkEventQtSlotConnect::New();
   m_InteractorStyle3D   = vtkInteractorStyleImage3D::New();
-
-  m_NumberOfTracks = 0;
-  m_FirstRender = true;
-  m_MaxTrackID = 0;
-
-  m_SecondClick = false;
 
   m_LabelData = vtkPolyData::New();
 
-  m_MeshContainer = imeshContainer;
-
+  m_VtkEventQtConnector = vtkEventQtSlotConnect::New();
   m_VtkEventQtConnector->Connect(
     reinterpret_cast< vtkObject * >( m_InteractorStyle3D ),
     vtkViewImage3DCommand::MeshPickingEvent,
@@ -140,10 +135,8 @@ CreatePolylineActor( double* iCenter1, double* iCenter2,
     vtkSmartPointer<vtkPolyLine> polyLine =
         vtkSmartPointer<vtkPolyLine>::New();
     polyLine->GetPointIds()->SetNumberOfIds(2);
-    for( int i = 0; i < 2; i++)
-      {
-      polyLine->GetPointIds()->SetId(i,i);
-      }
+    polyLine->GetPointIds()->SetId(0,0);
+    polyLine->GetPointIds()->SetId(1,1);
 
     //Create a cell array to store the lines in and add the lines to it
     vtkSmartPointer<vtkCellArray> cells =
@@ -177,7 +170,7 @@ void
 QGoTrackEditingWidget::
 preview()
 {
-//setup render window, renderer, and interactor
+  //setup render window, renderer, and interactor
   this->qvtkWidget->GetRenderWindow()->AddRenderer(renderer);
 
   this->qvtkWidget->GetInteractor()->SetInteractorStyle(m_InteractorStyle3D);
@@ -205,7 +198,7 @@ UpdateCurrentActorSelection(vtkObject *caller)
     return;
     }
 
-  std::map< vtkActor* , int >::iterator polyToMeshID =
+  ActorMeshIDMapIterator polyToMeshID =
       m_Line2MeshID.find(m_CurrentActor);
 
   if(polyToMeshID != m_Line2MeshID.end())
@@ -423,7 +416,7 @@ void
 QGoTrackEditingWidget::
 cutTrack( vtkActor* iActor)
 {
-  std::map< vtkActor*, int >::iterator it = m_Line2MeshID.find( iActor );
+  ActorMeshIDMapIterator it = m_Line2MeshID.find( iActor );
   //int timePoint;
 
   // Find the mesh ID
@@ -496,7 +489,7 @@ void
 QGoTrackEditingWidget::
 removeLineActors()
 {
-  std::map< vtkActor* , int >::iterator it = m_Line2MeshID.begin();
+  ActorMeshIDMapIterator  it = m_Line2MeshID.begin();
   while( it != m_Line2MeshID.end() )
     {
     renderer->RemoveActor( it->first );
