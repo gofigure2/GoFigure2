@@ -891,11 +891,12 @@ void QGoPrintDatabase::SetTMListColorsWithPreviousSelectedOne()
 //-------------------------------------------------------------------------
 void QGoPrintDatabase::SetTMListCollectionID()
 {
-    this->OpenDBConnection();
-    std::string IDToSelect;
-    this->GetListCollectionIDFromDB(this->m_DatabaseConnector, IDToSelect)
-    this->m_TraceWidget->SetListCollectionID(IDToSelect);
-    this->CloseDBConnection();
+  this->OpenDBConnection();
+  std::string IDToSelect;
+  std::list< ItemColorComboboxData > ListCollectionID =
+    this->GetListCollectionIDFromDB(this->m_DatabaseConnector, IDToSelect);
+  this->m_TraceWidget->SetListCollectionID(ListCollectionID, IDToSelect);
+  this->CloseDBConnection();
 }
 
 //-------------------------------------------------------------------------
