@@ -263,8 +263,11 @@ unsigned int QGoDBMeshManager::CreateNewMeshWithNoContourNoPoints(
 
   this->m_MeshContainerInfoForVisu->InsertCurrentElement();
   this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
-  emit RefreshListCollectionIDsTM ( ConvertToString<unsigned int> (NewMeshID),
-    iDatabaseConnector);
+  //emit RefreshListCollectionIDsTM ( ConvertToString<unsigned int> (NewMeshID),
+    //iDatabaseConnector);
+  NameWithColorData NewMeshData(ConvertToString<unsigned int> (NewMeshID),
+    this->m_SelectedColorData->second);
+  emit AddNewTraceIDInTM( NewMeshData );
   return NewMeshID;
 }
 

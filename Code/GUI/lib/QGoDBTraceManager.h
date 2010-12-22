@@ -255,8 +255,9 @@ signals:
 
   void DBConnectionNotNeededAnymore();
 
-  void RefreshListCollectionIDsTM(std::string iIDToSelect, 
-    vtkMySQLDatabase* iDatabaseConnector);
+  //void RefreshListCollectionIDsTM(std::string iIDToSelect, 
+    //vtkMySQLDatabase* iDatabaseConnector);
+  void AddNewTraceIDInTM(NameWithColorData iTraceToAddData);
 
 protected:
   std::string m_TraceName;

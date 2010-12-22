@@ -468,7 +468,7 @@ void QGoPrintDatabase::SaveNewCollectionFromTraceWidgetInDBAndTW()
     ItemColorComboboxData NewCollectionData;
     NewCollectionData.first = ConvertToString< unsigned int >(NewCollectionID);
     NewCollectionData.second = this->m_TraceWidget->GetPointerColorData()->second;
-    this->m_TraceWidget->AddANewCollectionID(NewCollectionData);
+    //this->m_TraceWidget->AddANewCollectionID(NewCollectionData);
     }
 
   this->CloseDBConnection();
@@ -861,20 +861,20 @@ void QGoPrintDatabase::SetTMListColorsWithPreviousSelectedOne()
 void QGoPrintDatabase::SetTMListCollectionID(std::string iIDToSelect,
   vtkMySQLDatabase* iDatabaseConnector)
 {
-  if (iDatabaseConnector == NULL)
-    {
+  //if (iDatabaseConnector == NULL)
+    //{
     this->OpenDBConnection();
     this->m_TraceWidget->SetListCollectionID(
     this->GetListCollectionIDFromDB(this->m_DatabaseConnector),
     iIDToSelect);
     this->CloseDBConnection();
-    }
-  else
-    {
-    this->m_TraceWidget->SetListCollectionID(
-    this->GetListCollectionIDFromDB(iDatabaseConnector),
-    iIDToSelect);
-    }
+    //}
+  //else
+    //{
+    //this->m_TraceWidget->SetListCollectionID(
+    //this->GetListCollectionIDFromDB(iDatabaseConnector),
+    //iIDToSelect);
+    //}
 }
 
 //-------------------------------------------------------------------------
@@ -1227,10 +1227,14 @@ void QGoPrintDatabase::SetMeshesManager()
                     SIGNAL(DBConnectionNotNeededAnymore() ),
                     this,
                     SLOT(CloseDBConnection() ) );
-  QObject::connect( this->m_MeshesManager,
+  /*QObject::connect( this->m_MeshesManager,
                     SIGNAL( RefreshListCollectionIDsTM(std::string, vtkMySQLDatabase*) ),
                     this,
-                    SLOT (SetTMListCollectionID(std::string, vtkMySQLDatabase* ) ) );
+                    SLOT (SetTMListCollectionID(std::string, vtkMySQLDatabase* ) ) );*/
+  QObject::connect(this->m_MeshesManager,
+                    SIGNAL(AddNewTraceIDInTM( ItemColorComboboxData ) ),
+                    this->m_TraceWidget,
+                    SLOT(AddANewCollectionID(ItemColorComboboxData) ) );
 
   //related to traceEditingWidget and meshes_manager (celltype + subcelltype + collectionData + colordata):
   this->m_MeshesManager->SetSelectedCollection (
@@ -1278,10 +1282,15 @@ void QGoPrintDatabase::SetTracksManager()
                     SLOT( SplitTheTrack(unsigned int,
                       std::list<unsigned int> ) ) );
 
-  QObject::connect( this->m_TracksManager,
+  /*QObject::connect( this->m_TracksManager,
                     SIGNAL( RefreshListCollectionIDsTM(std::string, vtkMySQLDatabase*) ),
                     this,
-                    SLOT (SetTMListCollectionID(std::string, vtkMySQLDatabase*) ) );
+                    SLOT (SetTMListCollectionID(std::string, vtkMySQLDatabase*) ) );*/
+
+  QObject::connect(this->m_TracksManager,
+                    SIGNAL(AddNewTraceIDInTM( ItemColorComboboxData ) ),
+                    this->m_TraceWidget,
+                    SLOT(AddANewCollectionID( ItemColorComboboxData ) ) );
 
   this->m_TracksManager->SetSelectedCollection(
     this->m_TraceWidget->GetPointerCollectionData());

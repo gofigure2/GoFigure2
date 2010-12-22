@@ -134,8 +134,11 @@ unsigned int QGoDBTrackManager::CreateNewTrackWithNoMesh(
    NewTrackID, this->GetVectorFromQColor(this->m_SelectedColorData->second),true);
   this->m_TrackContainerInfoForVisu->InsertCurrentElement();
   this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
-  emit RefreshListCollectionIDsTM ( ConvertToString<unsigned int> (NewTrackID),
-    iDatabaseConnector);
+  //emit RefreshListCollectionIDsTM ( ConvertToString<unsigned int> (NewTrackID),
+   // iDatabaseConnector);
+  NameWithColorData NewTrackData(ConvertToString<unsigned int> (NewTrackID),
+    this->m_SelectedColorData->second);
+  emit AddNewTraceIDInTM( NewTrackData );
   return NewTrackID;
 }
 
