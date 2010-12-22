@@ -257,7 +257,7 @@ signals:
 
   //void RefreshListCollectionIDsTM(std::string iIDToSelect, 
     //vtkMySQLDatabase* iDatabaseConnector);
-  void AddNewTraceIDInTM(NameWithColorData iTraceToAddData);
+  void AddNewTraceIDInTM(std::pair<std::string, QColor> iTraceToAddData);
 
 protected:
   std::string m_TraceName;
