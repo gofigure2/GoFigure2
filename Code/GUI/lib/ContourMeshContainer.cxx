@@ -121,7 +121,10 @@ ContourMeshContainer::RemoveActorsWithGivenTimePoint(const unsigned int & iT)
 
   ChangeActorsVisibility< TCoord >(it0, it1, false);
 
-  m_ImageView->UpdateRenderWindows();
+  if( m_ImageView )
+    {
+    m_ImageView->UpdateRenderWindows();
+    }
 }
 
 //-------------------------------------------------------------------------
@@ -156,7 +159,10 @@ ContourMeshContainer::AddActorsWithGivenTimePoint(const unsigned int & iT)
 
   ChangeActorsVisibility< TCoord >(it0, it1, true);
 
-  m_ImageView->UpdateRenderWindows();
+  if( m_ImageView )
+    {
+    m_ImageView->UpdateRenderWindows();
+    }
 }
 
 //-------------------------------------------------------------------------
@@ -202,22 +208,34 @@ DeleteElement(MultiIndexContainerTraceIDIterator iIter)
     {
     if ( iIter->ActorXY )
       {
-      this->m_ImageView->RemoveActor(0, iIter->ActorXY);
+      if( m_ImageView )
+        {
+        this->m_ImageView->RemoveActor(0, iIter->ActorXY);
+        }
       iIter->ActorXY->Delete();
       }
     if ( iIter->ActorXZ )
       {
-      this->m_ImageView->RemoveActor(1, iIter->ActorXZ);
+      if( m_ImageView )
+        {
+        this->m_ImageView->RemoveActor(1, iIter->ActorXZ);
+        }
       iIter->ActorXZ->Delete();
       }
     if ( iIter->ActorYZ )
       {
-      this->m_ImageView->RemoveActor(2, iIter->ActorYZ);
+      if( m_ImageView )
+        {
+        this->m_ImageView->RemoveActor(2, iIter->ActorYZ);
+        }
       iIter->ActorYZ->Delete();
       }
     if ( iIter->ActorXYZ )
       {
-      this->m_ImageView->RemoveActor(3, iIter->ActorXYZ);
+      if( m_ImageView )
+        {
+        this->m_ImageView->RemoveActor(3, iIter->ActorXYZ);
+        }
       iIter->ActorXYZ->Delete();
       }
 
@@ -227,7 +245,11 @@ DeleteElement(MultiIndexContainerTraceIDIterator iIter)
       }
 
     m_Container.get< TraceID >().erase(iIter);
-    m_ImageView->UpdateRenderWindows();
+
+    if( m_ImageView )
+      {
+      m_ImageView->UpdateRenderWindows();
+      }
     return true;
     }
   return false;
@@ -251,22 +273,34 @@ ContourMeshContainer::DeleteAllHighlightedElements()
 
     if ( it0->ActorXY )
       {
-      this->m_ImageView->RemoveActor(0, it0->ActorXY);
+      if( m_ImageView )
+        {
+        this->m_ImageView->RemoveActor(0, it0->ActorXY);
+        }
       it0->ActorXY->Delete();
       }
     if ( it0->ActorXZ )
       {
-      this->m_ImageView->RemoveActor(1, it0->ActorXZ);
+      if( m_ImageView )
+        {
+        this->m_ImageView->RemoveActor(1, it0->ActorXZ);
+        }
       it0->ActorXZ->Delete();
       }
     if ( it0->ActorYZ )
       {
-      this->m_ImageView->RemoveActor(2, it0->ActorYZ);
+      if( m_ImageView )
+        {
+        this->m_ImageView->RemoveActor(2, it0->ActorYZ);
+        }
       it0->ActorYZ->Delete();
       }
     if ( it0->ActorXYZ )
       {
-      this->m_ImageView->RemoveActor(3, it0->ActorXYZ);
+      if( m_ImageView )
+        {
+        this->m_ImageView->RemoveActor(3, it0->ActorXYZ);
+        }
       it0->ActorXYZ->Delete();
       }
     if ( it0->Nodes )
@@ -280,7 +314,10 @@ ContourMeshContainer::DeleteAllHighlightedElements()
     m_Container.get< Highlighted >().erase(it_t);
     }
 
-  m_ImageView->UpdateRenderWindows();
+  if( m_ImageView )
+    {
+    m_ImageView->UpdateRenderWindows();
+    }
 
   return oList;
 }
