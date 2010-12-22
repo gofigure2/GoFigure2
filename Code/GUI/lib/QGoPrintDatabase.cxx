@@ -893,9 +893,8 @@ void QGoPrintDatabase::SetTMListCollectionID()
 {
     this->OpenDBConnection();
     std::string IDToSelect;
-    this->m_TraceWidget->SetListCollectionID(
-      this->GetListCollectionIDFromDB(this->m_DatabaseConnector, IDToSelect), 
-      IDToSelect);
+    this->GetListCollectionIDFromDB(this->m_DatabaseConnector, IDToSelect)
+    this->m_TraceWidget->SetListCollectionID(IDToSelect);
     this->CloseDBConnection();
 }
 
