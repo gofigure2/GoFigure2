@@ -382,7 +382,7 @@ protected:
   \param[in] iDatabaseConnector connection to the database
   */
   std::list< ItemColorComboboxData > GetListCollectionIDFromDB(
-    vtkMySQLDatabase *iDatabaseConnector);
+    vtkMySQLDatabase *iDatabaseConnector, std::string & ioIDToSelect);
 
   void closeEvent(QCloseEvent *event);
 
@@ -542,9 +542,8 @@ protected slots:
   collection is a mesh or for all timepoints for tracks and lineages,
   update the Trace Manual colorcombobox and select the corresponding ID in the combobox
   if the string is not empty
-  \param[in] iIDToSelect ID to select in the combobox
   */
-  void SetTMListCollectionID(std::string iIDToSelect = "");
+  void SetTMListCollectionID();
 
   /**
   \brief open the connection to the database and pass it to the ContoursManager

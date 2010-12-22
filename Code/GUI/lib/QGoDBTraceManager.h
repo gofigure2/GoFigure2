@@ -84,7 +84,7 @@ public:
   corresponding QColor
   */
   std::list< NameWithColorData > GetAllTraceIDsWithColor(
-    vtkMySQLDatabase *iDatabaseConnector, int iTimePoint = -1);
+    vtkMySQLDatabase *iDatabaseConnector, std::string & ioIDToSelect, int iTimePoint = -1);
 
   /**
   \brief delete the corresponding traces in the table widget and in the
@@ -273,6 +273,7 @@ protected:
   NameWithColorData*      m_SelectedCollectionData;
   NameWithColorData*      m_SelectedColorData;
   int*                    m_CurrentTimePoint;
+  std::string             m_LastSelectedTraceAsCollection;
 
   int                     m_ImgSessionID;
   QGoTableWidget *        m_Table;

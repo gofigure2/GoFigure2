@@ -422,17 +422,18 @@ bool QGoPrintDatabase::IsDatabaseUsed()
 
 //-------------------------------------------------------------------------
 std::list< QGoPrintDatabase::ItemColorComboboxData >
-QGoPrintDatabase::GetListCollectionIDFromDB(vtkMySQLDatabase *iDatabaseConnector)
+QGoPrintDatabase::GetListCollectionIDFromDB(vtkMySQLDatabase *iDatabaseConnector, 
+std::string & ioIDToSelect)
 {
   std::list< ItemColorComboboxData > EmptyList = std::list< ItemColorComboboxData >();
   std::string                        TraceName = this->m_TraceWidget->GetTraceName();
   if ( TraceName == "contour" )
     {
-    return this->m_MeshesManager->GetAllTraceIDsWithColor(iDatabaseConnector);
+    return this->m_MeshesManager->GetAllTraceIDsWithColor(iDatabaseConnector, ioIDToSelect);
     }
   if ( TraceName == "mesh" )
     {
-    return this->m_TracksManager->GetAllTraceIDsWithColor(iDatabaseConnector);
+    return this->m_TracksManager->GetAllTraceIDsWithColor(iDatabaseConnector, ioIDToSelect);
     }
   return EmptyList;
 }
@@ -542,9 +543,9 @@ void QGoPrintDatabase::UpdateSelectedTimePoint(int iTimePoint)
       this->m_ContoursManager->CheckShowRows();
       }
     if (this->m_TraceWidget->GetTraceName() == "mesh")
-     {
+      {
       this->m_MeshesManager->CheckShowRows();
-     }
+      }
     }
 }
 
@@ -794,12 +795,13 @@ void QGoPrintDatabase::CreateConnectionsForTraceManualEditingWidget()
 void QGoPrintDatabase::UpdateWidgetsForCorrespondingTrace(std::string iTraceName,
                                                           std::string iCollectionName, bool UpdateTableWidget)
 {
-  if ( UpdateTableWidget )
+  /*if ( UpdateTableWidget )
     {
     std::string test = this->InWhichTableAreWe();
     if (this->InWhichTableAreWe() != iTraceName)
       {
       this->m_TraceWidget->UpdateTraceAndCollection(iTraceName, iCollectionName);
+      
       this->SetTMListCollectionID();
       // show the updated widget
       this->m_TraceManualEditingDockWidget->show();
@@ -815,7 +817,22 @@ void QGoPrintDatabase::UpdateWidgetsForCorrespondingTrace(std::string iTraceName
   this->m_TraceWidget->UpdateTraceAndCollection(iTraceName, iCollectionName);
   this->SetTMListCollectionID();
   // show the updated widget
-  this->m_TraceManualEditingDockWidget->show();
+  this->m_TraceManualEditingDockWidget->show();*/
+  std::string test = this->InWhichTableAreWe();
+  if (this->InWhichTableAreWe() != iTraceName)
+    {
+    this->m_TraceWidget->UpdateTraceAndCollection(iTraceName, iCollectionName);
+      
+    this->SetTMListCollectionID();
+      // show the updated widget
+    this->m_TraceManualEditingDockWidget->show();
+    }
+  if ( UpdateTableWidget )
+    {
+    this->blockSignals(true);
+    this->SetTable(iTraceName);
+    this->blockSignals(false);
+  }
 }
 
 //-------------------------------------------------------------------------
@@ -853,11 +870,13 @@ void QGoPrintDatabase::SetTMListColorsWithPreviousSelectedOne()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::SetTMListCollectionID(std::string iIDToSelect)
+void QGoPrintDatabase::SetTMListCollectionID()
 {
     this->OpenDBConnection();
+    std::string IDToSelect;
     this->m_TraceWidget->SetListCollectionID(
-    this->GetListCollectionIDFromDB(this->m_DatabaseConnector), iIDToSelect);
+      this->GetListCollectionIDFromDB(this->m_DatabaseConnector, IDToSelect), 
+      IDToSelect);
     this->CloseDBConnection();
 }
 
