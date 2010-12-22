@@ -598,10 +598,13 @@ mergeTrack( vtkActor* iFirstActor, vtkActor* iSecondActor)
     return;
     }
 
+  unsigned int collection1 =
+    m_MeshContainer->GetCollectionIDOfGivenTrace( firstMesh );
+
   //Check if actors are border of track
   std::pair< std::pair<unsigned int, unsigned int>,
              std::pair<unsigned int, unsigned int> >
-      border1 = isOnBorder(firstMesh);
+      border1 = GetTrackBorders(collection1);
 
   std::cout << "Border for mesh1" << std::endl;
   std::cout << "mesh1: " << firstMesh << std::endl;
@@ -610,9 +613,12 @@ mergeTrack( vtkActor* iFirstActor, vtkActor* iSecondActor)
   std::cout << "high limit ID: " << border1.second.first << " time "
                               << border1.second.second << std::endl;
 
+  unsigned int collection2 =
+    m_MeshContainer->GetCollectionIDOfGivenTrace( secondMesh );
+
   std::pair< std::pair<unsigned int, unsigned int>,
              std::pair<unsigned int, unsigned int> >
-    border2 = isOnBorder(secondMesh);
+    border2 = GetTrackBorders(collection2);
 
   std::cout << "Border for mesh2" << std::endl;
   std::cout << "mesh2: " << secondMesh << std::endl;
@@ -663,64 +669,42 @@ mergeTrack( vtkActor* iFirstActor, vtkActor* iSecondActor)
 std::pair< std::pair<unsigned int, unsigned int>,
            std::pair<unsigned int, unsigned int> >
 QGoTrackEditingWidget::
-isOnBorder( unsigned int iMeshID)
+GetTrackBorders( const unsigned int& iCollectionID )
 {
-  // Get the collectionID
-  unsigned int collectionID =
-      m_MeshContainer->GetCollectionIDOfGivenTrace( iMeshID );
+  MeshContainer::MultiIndexContainerCollectionIDIterator it0, it1;
 
-  std::cout << "Merge collection: " << collectionID << std::endl;
+  boost::tuples::tie(it0, it1) =
+    m_MeshContainer->m_Container.get< CollectionID >().equal_range( iCollectionID );
 
-  // list of meshes of the collection
-  std::list<unsigned int> listOfMeshIDs =
-      m_MeshContainer->GetAllTraceIDsGivenCollectionID( collectionID );
-  std::list<unsigned int>::iterator iterator = listOfMeshIDs.begin();
+  std::pair<unsigned int, unsigned int>
+      minBorder( 0, std::numeric_limits<unsigned int>::max() );
 
-  std::pair< std::pair<unsigned int, unsigned int>,
-             std::pair<unsigned int, unsigned int> > borders;
+  std::pair<unsigned int, unsigned int>
+      maxBorder( 0, 0 );
 
-  std::pair<unsigned int, unsigned int> minBorder;
-  minBorder.first = 0;
-  minBorder.second = std::numeric_limits<unsigned int>::max();
-
-  std::pair<unsigned int, unsigned int> maxBorder;
-  maxBorder.first = 0;
-  maxBorder.second = 0;
-
-  unsigned int traceid = 0;
   unsigned int time = 0;
 
-  ContourMeshContainer::MultiIndexContainerTraceIDIterator t_it;
-
-  // Go through all meshes
-  while( iterator != listOfMeshIDs.end() )
+  while( it0 != it1 )
     {
-    traceid = *iterator;
-
-    t_it = m_MeshContainer->m_Container.get< TraceID >().find( traceid );
-
-    time = t_it->TCoord;
+    time = it0->TCoord;
 
     if( minBorder.second > time )
       {
-      minBorder.first = traceid;
+      minBorder.first = it0->TraceID;
       minBorder.second = time;
       }
 
     if( maxBorder.second < time )
       {
-      maxBorder.first = traceid;
+      maxBorder.first = it0->TraceID;
       maxBorder.second = time;
       }
-
-    ++iterator;
+    ++it0;
     }
 
-  borders.first = minBorder;
-  borders.second = maxBorder;
-
-  return borders;
+  return std::make_pair( minBorder, maxBorder );
 }
+//-------------------------------------------------------------------------
 
 void
 QGoTrackEditingWidget::

@@ -77,7 +77,7 @@ public:
 
   std::pair< std::pair<unsigned int, unsigned int>,
              std::pair<unsigned int, unsigned int> >
-      isOnBorder( unsigned int iMeshID);
+  GetTrackBorders( const unsigned int& iCollectionID );
 
   void updateTracksIDs( unsigned int iIDToDelete, unsigned int iIDToUpdate);
 
