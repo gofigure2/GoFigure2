@@ -809,13 +809,15 @@ void QGoPrintDatabase::CreateConnectionsForTraceManualEditingWidget()
 void QGoPrintDatabase::UpdateWidgetsForCorrespondingTrace(std::string iTraceName,
                                                           std::string iCollectionName, bool UpdateTableWidget)
 {
-  /*if ( UpdateTableWidget )
+  std::string CurrentTableName = this->InWhichTableAreWe();
+  std::string PreviousTraceName = this->m_TraceWidget->GetTraceName();
+  if ( UpdateTableWidget )
     {
-    std::string test = this->InWhichTableAreWe();
-    if (this->InWhichTableAreWe() != iTraceName)
+    //std::string CurrentTableName = this->InWhichTableAreWe();
+    if (CurrentTableName != iTraceName)
       {
-      this->m_TraceWidget->UpdateTraceAndCollection(iTraceName, iCollectionName);
-      
+      this->UpdateSelectedCollectionForTableWidget(PreviousTraceName);
+      this->m_TraceWidget->UpdateTraceAndCollection(iTraceName, iCollectionName);     
       this->SetTMListCollectionID();
       // show the updated widget
       this->m_TraceManualEditingDockWidget->show();
@@ -824,15 +826,17 @@ void QGoPrintDatabase::UpdateWidgetsForCorrespondingTrace(std::string iTraceName
     //signal TabHasChanged to be emitted, it would results in the Segmentation
     //widgets to be hidden
     this->blockSignals(true);
+    //this->UpdateSelectedCollectionForTableWidget(CurrentTableName);
     this->SetTable(iTraceName);
     this->blockSignals(false);
     return;
     }
+  this->UpdateSelectedCollectionForTableWidget(PreviousTraceName);
   this->m_TraceWidget->UpdateTraceAndCollection(iTraceName, iCollectionName);
   this->SetTMListCollectionID();
   // show the updated widget
-  this->m_TraceManualEditingDockWidget->show();*/
-  std::string CurrentTableName = this->InWhichTableAreWe();
+  this->m_TraceManualEditingDockWidget->show();
+  /*std::string CurrentTableName = this->InWhichTableAreWe();
   this->UpdateSelectedCollectionForTableWidget(CurrentTableName);
   if (CurrentTableName != iTraceName)
     {
@@ -847,7 +851,7 @@ void QGoPrintDatabase::UpdateWidgetsForCorrespondingTrace(std::string iTraceName
     this->blockSignals(true);
     this->SetTable(iTraceName);
     this->blockSignals(false);
-  }
+  }*/
 }
 
 //-------------------------------------------------------------------------
