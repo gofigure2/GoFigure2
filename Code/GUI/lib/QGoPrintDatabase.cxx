@@ -600,6 +600,20 @@ void QGoPrintDatabase::SetTable(std::string iTablename)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoPrintDatabase::UpdateSelectedCollectionForTableWidget(std::string iTableName)
+{
+  if ( iTableName == "contour" )
+    {
+    this->m_MeshesManager->UpdateLastSelectedOneAsCollection();
+    }
+  if ( iTableName == "mesh" )
+    {
+    this->m_TracksManager->UpdateLastSelectedOneAsCollection();
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void QGoPrintDatabase::ExportContours()
 {
   QString p = QFileDialog::getSaveFileName( this,
@@ -818,8 +832,9 @@ void QGoPrintDatabase::UpdateWidgetsForCorrespondingTrace(std::string iTraceName
   this->SetTMListCollectionID();
   // show the updated widget
   this->m_TraceManualEditingDockWidget->show();*/
-  std::string test = this->InWhichTableAreWe();
-  if (this->InWhichTableAreWe() != iTraceName)
+  std::string CurrentTableName = this->InWhichTableAreWe();
+  this->UpdateSelectedCollectionForTableWidget(CurrentTableName);
+  if (CurrentTableName != iTraceName)
     {
     this->m_TraceWidget->UpdateTraceAndCollection(iTraceName, iCollectionName);
       

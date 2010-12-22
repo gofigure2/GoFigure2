@@ -534,3 +534,11 @@ void QGoDBTraceManager::CheckShowRows()
   if (this->m_IsShowOnlyCurrentTimePointOn)
     this->ShowOnlyRowsForCurrentTimePoint(true);
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+ void QGoDBTraceManager::UpdateLastSelectedOneAsCollection()
+{
+  this->m_LastSelectedTraceAsCollection = 
+    this->m_SelectedCollectionData->first;
+}

@@ -528,6 +528,8 @@ protected:
     iCollectionManager->UpdateBoundingBoxes(this->m_DatabaseConnector,
                                             ListCollectionIDsToUpdate);
   }
+
+  void UpdateSelectedCollectionForTableWidget(std::string iTableName);
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

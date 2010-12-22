@@ -224,6 +224,8 @@ public:
   */
   void CheckShowRows();
 
+  void UpdateLastSelectedOneAsCollection();
+
 signals:
   /**
   \brief signal emitted when the user click on the action "change color" from
