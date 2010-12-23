@@ -66,20 +66,13 @@ class QGOGUILIB_EXPORT QGoTrackEditingWidget:
 {
   Q_OBJECT
 public:
-  explicit QGoTrackEditingWidget( MeshContainer* imeshContainer = NULL, QWidget *parent = 0 );
+
+  explicit QGoTrackEditingWidget( MeshContainer* imeshContainer = NULL,
+                                  QWidget *parent = 0 );
   ~QGoTrackEditingWidget();
 
   void    setMeshContainer( MeshContainer* imeshContainer );
   void    initializeVisualization();
-  void    cutTrack( vtkActor* );
-  bool    mergeTrack( const unsigned int&, const unsigned int& );
-  void    removeLineActors();
-
-  std::pair< std::pair<unsigned int, unsigned int>,
-             std::pair<unsigned int, unsigned int> >
-  GetTrackBorders( const unsigned int& iCollectionID );
-
-  void updateTracksIDs( unsigned int iIDToDelete, unsigned int iIDToUpdate);
 
 signals:
   void cutTracks( std::list< std::pair< int,  int> > );
@@ -93,7 +86,21 @@ public slots:
 
 private:
   vtkActor* CreateSphereActor( double* iCenter, const double* iColor);
-  vtkActor* CreatePolylineActor( double* iCenter1, double* iCenter2, const double* iColor1 = NULL, const double* iColor2 = NULL);
+  vtkActor* CreatePolylineActor( double* iCenter1, double* iCenter2,
+                                 const double* iColor1 = NULL,
+                                 const double* iColor2 = NULL );
+  void    cutTrack( vtkActor* );
+  bool    mergeTrack( const unsigned int&, const unsigned int& );
+
+  std::pair< std::pair<unsigned int, unsigned int>,
+             std::pair<unsigned int, unsigned int> >
+  GetTrackBorders( const unsigned int& iCollectionID );
+
+  void updateTracksIDs( const unsigned int& iIDToDelete,
+                        const unsigned int& iIDToUpdate);
+
+  void    removeLineActors();
+
 
   MeshContainer* m_MeshContainer;
 
@@ -138,6 +145,9 @@ private:
   //typedef boost::bimap< vtkActor* , unsigned int > bm_type;
   //bm_type m_Actor2MeshID;
   std::map < vtkActor* , unsigned int > m_Actor2MeshID;
+
+private:
+  Q_DISABLE_COPY( QGoTrackEditingWidget );
 
 };
 #endif

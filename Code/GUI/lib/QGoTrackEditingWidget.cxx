@@ -708,16 +708,9 @@ GetTrackBorders( const unsigned int& iCollectionID )
 
 void
 QGoTrackEditingWidget::
-updateTracksIDs( unsigned int iIDToDelete, unsigned int iIDToUpdate)
+updateTracksIDs( const unsigned int& iIDToDelete,
+                 const unsigned int& iIDToUpdate)
 {
-  /*
-  // Get track to update ID
-  unsigned int collectionID =
-      m_MeshContainer->GetCollectionIDOfGivenTraceID( iIDToUpdate );
-
-  // Update track to delete IDs with update ID
-  unsigned int collectionID2 = m_MeshContainer->GetCollectionIDOfGivenTraceID( iIDToDelete );*/
-
   std::list<unsigned int> listOfMeshIDs =
       m_MeshContainer->GetAllTraceIDsGivenCollectionID( iIDToDelete );
   std::list<unsigned int>::iterator iterator = listOfMeshIDs.begin();
