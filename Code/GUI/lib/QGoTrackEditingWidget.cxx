@@ -267,52 +267,54 @@ void
 QGoTrackEditingWidget::
 initializeVisualization()
 {
-  std::list<unsigned int> listOfTrackIDs = m_MeshContainer->GetAllCollectionIDs();
-  std::list<unsigned int>::iterator trackIDsIt = listOfTrackIDs.begin();
+  //std::list<unsigned int> listOfTrackIDs = m_MeshContainer->GetAllCollectionIDs();
+  //std::list<unsigned int>::iterator trackIDsIt = listOfTrackIDs.begin();
 
   // first render: reassign track IDs
   if(m_FirstRender)
-    {  // For each track, create the actors
-    while( trackIDsIt != listOfTrackIDs.end() )
+    {
+    MeshContainer::MultiIndexContainerCollectionIDIterator c_it, c_end;
+    c_it = m_MeshContainer->m_Container.get< CollectionID >().begin();
+    unsigned int collection = std::numeric_limits< unsigned int >::max();
+
+    c_end = m_MeshContainer->m_Container.get< CollectionID >().end();
+    unsigned int current_track = 0;
+
+    while( c_it != c_end )
       {
-      std::cout<< "collection ID: " << (*trackIDsIt) << std::endl;
-      m_TrackIDsMapping[m_NumberOfTracks] = (*trackIDsIt);
-      std::cout<< "MAPPING new: " << m_NumberOfTracks << " to real: " << (*trackIDsIt)
-          << std::endl;
+      unsigned int temp_collection = c_it->CollectionID;
 
-      if( (*trackIDsIt) > m_MaxTrackID)
+      if( temp_collection != collection )
         {
-        m_MaxTrackID = (*trackIDsIt);
+        collection = temp_collection;
+        current_track = m_NumberOfTracks;
+        m_TrackIDsMapping[current_track] = collection;
+        ++m_NumberOfTracks;
         }
 
-      std::list<unsigned int> listOfMeshIDs =
-              m_MeshContainer->GetAllTraceIDsGivenCollectionID( (*trackIDsIt) );
-      std::list<unsigned int>::iterator listOfMeshIDsIt = listOfMeshIDs.begin();
-
-      // Create the meshes actor
-      // update the container
-      while( listOfMeshIDsIt != listOfMeshIDs.end() )
+      if( temp_collection > m_MaxTrackID)
         {
-        m_MeshContainer->ResetCurrentElement();
-        m_MeshContainer->UpdateCurrentElementFromExistingOne( (*listOfMeshIDsIt) );
-        m_MeshContainer->SetCurrentElementCollectionID( m_NumberOfTracks );
-        m_MeshContainer->InsertCurrentElement();
-        ++listOfMeshIDsIt;
+        m_MaxTrackID = temp_collection;
         }
+      // to be more efficient here, it would be better to use method from
+      // boost::multi_index_container
+      m_MeshContainer->ResetCurrentElement();
+      m_MeshContainer->UpdateCurrentElementFromExistingOne( c_it->TraceID );
+      m_MeshContainer->SetCurrentElementCollectionID( current_track );
+      m_MeshContainer->InsertCurrentElement();
 
-      ++m_NumberOfTracks;
-      ++trackIDsIt;
+      ++c_it;
       }
     m_FirstRender = false;
     }
 
   ////////////////////////////////////////////////////////////////////////////////
   vtkSmartPointer<vtkDoubleArray> randomScalars =
-        vtkSmartPointer<vtkDoubleArray>::New();
-      randomScalars->SetNumberOfComponents(1);
-      randomScalars->SetName("TimePoint");
+    vtkSmartPointer< vtkDoubleArray >::New();
+  randomScalars->SetNumberOfComponents(1);
+  randomScalars->SetName("TimePoint");
 
-   vtkSmartPointer<vtkPoints> pts = vtkSmartPointer<vtkPoints>::New();
+  vtkSmartPointer<vtkPoints> pts = vtkSmartPointer<vtkPoints>::New();
 
 
   // For each track, create the actors
