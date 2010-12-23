@@ -74,6 +74,10 @@ public:
   void    setMeshContainer( MeshContainer* imeshContainer );
   void    initializeVisualization();
 
+  std::list< std::list< unsigned int > > GetListOfTracksToBeCreated();
+  std::map< unsigned int, std::list< unsigned int > > GetListOfTracksToBeUpdated();
+  std::list< unsigned int > GetListOfTracksToBeDeleted();
+
 signals:
   void cutTracks( std::list< std::pair< int,  int> > );
   void mergeTracks( std::list< std::pair< std::pair< int,  int>,
@@ -100,6 +104,10 @@ private:
                         const unsigned int& iIDToUpdate);
 
   void    removeLineActors();
+
+  std::list< std::list< unsigned int > > m_ListOfNewTrack;
+  std::map< unsigned int, std::list< unsigned int > > m_ListOfUpdatedTracks;
+  std::list< unsigned int > m_ListOfDeletedTracks;
 
 
   MeshContainer* m_MeshContainer;

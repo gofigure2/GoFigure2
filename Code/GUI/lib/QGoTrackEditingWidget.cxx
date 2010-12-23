@@ -521,7 +521,82 @@ void
 QGoTrackEditingWidget::
 mapContainerIDs2RealIDs()
 {
-  std::cout<< "MAP IDS: " << std::endl;
+  std::map< unsigned int, TrackStatusType >::iterator
+      iter = m_TrackStatus.begin();
+  unsigned int collection = 0;
+  unsigned int real_collectionID = 0;
+
+  while( iter != m_TrackStatus.end() )
+    {
+    collection = iter->first;
+
+    if( iter->second == NEW_TRACK )
+      {
+      std::list< unsigned int > list_meshid;
+
+      MeshContainer::MultiIndexContainerCollectionIDIterator it0, it1;
+
+      boost::tuples::tie(it0, it1) =
+        m_MeshContainer->m_Container.get< CollectionID >().equal_range( collection );
+
+      while( it0 != it1 )
+        {
+        list_meshid.push_back( it0->TraceID );
+        ++it0;
+        }
+      m_ListOfNewTrack.push_back( list_meshid );
+      }
+
+    if( iter->second == UPDATED_TRACK )
+      {
+      std::map< unsigned int, unsigned int >::iterator
+          id_map_it = m_TrackIDsMapping.find( collection );
+
+      if( id_map_it == m_TrackIDsMapping.end() )
+        {
+        std::cout << "error!" <<std::endl;
+        return;
+        }
+      else
+        {
+        real_collectionID = id_map_it->second;
+        }
+
+      std::list< unsigned int > list_meshid;
+
+      MeshContainer::MultiIndexContainerCollectionIDIterator it0, it1;
+
+      boost::tuples::tie(it0, it1) =
+        m_MeshContainer->m_Container.get< CollectionID >().equal_range( collection );
+
+      while( it0 != it1 )
+        {
+        list_meshid.push_back( it0->TraceID );
+        ++it0;
+        }
+      m_ListOfUpdatedTracks[real_collectionID] = list_meshid;
+      }
+
+    if( iter->second == DELETED_TRACK )
+      {
+      std::map< unsigned int, unsigned int >::iterator
+          id_map_it = m_TrackIDsMapping.find( collection );
+
+      if( id_map_it == m_TrackIDsMapping.end() )
+        {
+        std::cout << "error!" <<std::endl;
+        return;
+        }
+      else
+        {
+        real_collectionID = id_map_it->second;
+        }
+
+      m_ListOfDeletedTracks.push_back( real_collectionID );
+      }
+    ++iter;
+    }
+  /*std::cout<< "MAP IDS: " << std::endl;
   std::map< unsigned int, unsigned int>::iterator iter =
       m_TrackIDsMapping.begin();
 
@@ -579,8 +654,30 @@ mapContainerIDs2RealIDs()
         }
       }
     ++iter;
-    }
+    }*/
 }
+
+std::list< std::list< unsigned int > >
+QGoTrackEditingWidget::
+GetListOfTracksToBeCreated()
+  {
+  return this->m_ListOfNewTrack;
+  }
+
+std::map< unsigned int, std::list< unsigned int > >
+QGoTrackEditingWidget::
+GetListOfTracksToBeUpdated()
+  {
+  return this->m_ListOfUpdatedTracks;
+  }
+
+std::list< unsigned int >
+QGoTrackEditingWidget::
+GetListOfTracksToBeDeleted()
+  {
+  return this->m_ListOfDeletedTracks;
+  }
+
 //-------------------------------------------------------------------------
 // ONLY CALLED AT THE END
 //-------------------------------------------------------------------------
