@@ -161,8 +161,8 @@ void QGoDBTraceManager::AddGeneralActionsContextMenu(QMenu *iMenu)
   m_CheckedTracesMenu = new QMenu(tr("With the checked %1s").arg(this->m_TraceName.c_str() ) );
   m_CheckedTracesMenu->addAction( tr("Delete them"),
                     this, SLOT( DeleteTracesFromContextMenu() ) );
-  m_CheckedTracesMenu->addAction( tr("Add to selected %1 %2").arg( this->m_CollectionName.c_str() )
-                      .arg(this->m_SelectedCollectionData->first.c_str()), this, SLOT( AddToSelectedCollection() ) );
+  //m_CheckedTracesMenu->addAction( tr("Add to selected %1 %2").arg( this->m_CollectionName.c_str() )
+  //                    .arg(this->m_SelectedCollectionData->first.c_str()), this, SLOT( AddToSelectedCollection() ) );
   m_CheckedTracesMenu->addAction( tr("Change their color to the selected one : %1")
                                   .arg( this->m_SelectedColorData->first.c_str() ),
                                   this, SLOT( ChangeTraceColor() ) );
@@ -193,14 +193,19 @@ void QGoDBTraceManager::AddSpecificActionsForContourMesh(QMenu *iMenu)
                    SLOT( ShowOnlyRowsForCurrentTimePoint(bool) ) );
   iMenu->addAction(ShowCurrentTimePoint);
   /** \todo Lydie: when using lineage, put it in the generalActionsContextMenu*/
-  this->AddActionForCreateNewCollectionFromCheckedTraces();
+  this->AddActionForAddingCheckedTracesToCollection();
 }
 
 //-------------------------------------------------------------------------
 
 //------------------------------------------------------------------------
-void QGoDBTraceManager::AddActionForCreateNewCollectionFromCheckedTraces()
+void QGoDBTraceManager::AddActionForAddingCheckedTracesToCollection()
 {
+  this->m_CheckedTracesMenu->addAction( tr("Add to selected %1 %2")
+                      .arg( this->m_CollectionName.c_str() )
+                      .arg(this->m_SelectedCollectionData->first.c_str()), 
+                      this, SLOT( AddToSelectedCollection() ) );
+
   this->m_CheckedTracesMenu->addAction(tr("Create a new %1 from checked %2s")
                     .arg( this->m_CollectionName.c_str() )
                     .arg( this->m_TraceName.c_str() ),
