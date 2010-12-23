@@ -1124,8 +1124,8 @@ void QGoMainWindow::UpdateRecentFileActions(QStringList list,
   // the menuDatabase_Files, they don't corresponds to real
   //files, the test bellow will then remove
   //them from the list
-  //if ( menu != this->menuDatabase_Files )
-   // {
+  if ( menu != this->menuDatabase_Files )
+    {
     QMutableStringListIterator i(list);
     while ( i.hasNext() )
       {
@@ -1134,7 +1134,7 @@ void QGoMainWindow::UpdateRecentFileActions(QStringList list,
         i.remove();
         }
       }
-   // }
+    }
 
   if ( !list.isEmpty() )
     {
