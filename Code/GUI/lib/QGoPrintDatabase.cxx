@@ -1514,13 +1514,14 @@ void QGoPrintDatabase::SplitMergeTracksWithWidget(
   MeshContainer* MeshContainerTemp = this->m_MeshesManager->
       GetMeshesInfoFromDBAndCreateContainerForVisu(
       this->m_DatabaseConnector, iTrackIDs);
-//create trackwidget + set the mesh container:
-  QGoTrackEditingWidget *win = new QGoTrackEditingWidget();
-   win->setMeshContainer( MeshContainerTemp);
-   win->initializeVisualization();
-   win->preview();
-   //win->show();
-   int Ok = win->exec();
+
+  //create trackwidget + set the mesh container:
+  QGoTrackEditingWidget *win = new QGoTrackEditingWidget( MeshContainerTemp, NULL );
+  win->preview();
+
+  //win->show();
+  int Ok = win->exec();
+
   //get trackid not in iTrackIDs:
   if (Ok != 0)
    {

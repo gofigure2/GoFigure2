@@ -72,7 +72,6 @@ public:
   ~QGoTrackEditingWidget();
 
   void    setMeshContainer( MeshContainer* imeshContainer );
-  void    initializeVisualization();
 
   std::list< std::list< unsigned int > > GetListOfTracksToBeCreated();
   std::map< unsigned int, std::list< unsigned int > > GetListOfTracksToBeUpdated();
@@ -89,6 +88,8 @@ public slots:
   void mapContainerIDs2RealIDs();
 
 private:
+  void    initializeVisualization();
+
   vtkActor* CreateSphereActor( double* iCenter, const double* iColor);
   vtkActor* CreatePolylineActor( double* iCenter1, double* iCenter2,
                                  const double* iColor1 = NULL,

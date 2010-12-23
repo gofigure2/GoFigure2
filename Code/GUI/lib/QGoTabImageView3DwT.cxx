@@ -3137,7 +3137,8 @@ StartTW()
 
 
   QGoTrackEditingWidget *win = new QGoTrackEditingWidget( m_MeshContainer );
-  win->initializeVisualization();
   win->preview();
-  win->show();
+  win->exec();
+
+  delete win;
 }

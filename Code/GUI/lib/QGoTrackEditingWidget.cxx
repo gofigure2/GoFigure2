@@ -128,41 +128,37 @@ CreatePolylineActor( double* iCenter1, double* iCenter2,
     const double* iColor1, const double* iColor2)
 {
   //create a vtkPoints object and storevtkRenderWindow the points in it
-    vtkSmartPointer<vtkPoints> points =
-      vtkSmartPointer<vtkPoints>::New();
-    points->InsertNextPoint(iCenter1);
-    points->InsertNextPoint(iCenter2);
+  vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
+  points->InsertNextPoint(iCenter1);
+  points->InsertNextPoint(iCenter2);
 
-    vtkSmartPointer<vtkPolyLine> polyLine =
-        vtkSmartPointer<vtkPolyLine>::New();
-    polyLine->GetPointIds()->SetNumberOfIds(2);
-    polyLine->GetPointIds()->SetId(0,0);
-    polyLine->GetPointIds()->SetId(1,1);
+  vtkSmartPointer<vtkPolyLine> polyLine = vtkSmartPointer<vtkPolyLine>::New();
+  polyLine->GetPointIds()->SetNumberOfIds(2);
+  polyLine->GetPointIds()->SetId(0,0);
+  polyLine->GetPointIds()->SetId(1,1);
 
-    //Create a cell array to store the lines in and add the lines to it
-    vtkSmartPointer<vtkCellArray> cells =
-        vtkSmartPointer<vtkCellArray>::New();
-    cells->InsertNextCell(polyLine);
+  //Create a cell array to store the lines in and add the lines to it
+  vtkSmartPointer<vtkCellArray> cells = vtkSmartPointer<vtkCellArray>::New();
+  cells->InsertNextCell(polyLine);
 
-    //Create a polydata to store everything in
-    vtkSmartPointer<vtkPolyData> polyData =
-        vtkSmartPointer<vtkPolyData>::New();
+  //Create a polydata to store everything in
+  vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
 
-    //add the points to the dataset
-    polyData->SetPoints(points);
+  //add the points to the dataset
+  polyData->SetPoints(points);
 
-    //add the lines to the dataset
-    polyData->SetLines(cells);
+  //add the lines to the dataset
+  polyData->SetLines(cells);
 
-    //setup actor and mapper
-    vtkSmartPointer<vtkPolyDataMapper> mapper =
-        vtkSmartPointer<vtkPolyDataMapper>::New();
-    mapper->SetInput(polyData);
+  //setup actor and mapper
+  vtkSmartPointer<vtkPolyDataMapper> mapper =
+      vtkSmartPointer<vtkPolyDataMapper>::New();
+  mapper->SetInput(polyData);
 
-    vtkActor* actor = vtkActor::New();
-    actor->SetMapper(mapper);
+  vtkActor* actor = vtkActor::New();
+  actor->SetMapper(mapper);
 
-    return actor;
+  return actor;
 }
 //-------------------------------------------------------------------------
 
@@ -171,6 +167,8 @@ void
 QGoTrackEditingWidget::
 preview()
 {
+  initializeVisualization();
+
   //setup render window, renderer, and interactor
   this->qvtkWidget->GetRenderWindow()->AddRenderer(renderer);
 
