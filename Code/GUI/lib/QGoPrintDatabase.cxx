@@ -1367,7 +1367,7 @@ PassMeshesInfoForImportedTrack(unsigned int iTrackID)
    std::list<unsigned int> iListMeshIDs)
  {
    this->OpenDBConnection();
-   std::list<unsigned int> ListMeshesForNewTrack = 
+   std::list<unsigned int> ListMeshesForNewTrack =
      this->m_MeshesManager->GetMeshesWithTimePointSupOrEqualToTheCheckedOne(
       iTrackID, this->m_DatabaseConnector, iListMeshIDs);
    this->CreateNewTrackFromListMeshes(ListMeshesForNewTrack);
@@ -1442,7 +1442,7 @@ AddCheckedContoursToSelectedMesh(std::list< unsigned int > iListCheckedContours)
 void QGoPrintDatabase::
 AddListMeshesToATrack(std::list< unsigned int > iListMeshes, unsigned int iTrackID)
 {
-  this->OpenDBConnection(); 
+  this->OpenDBConnection();
   std::list<unsigned int> ListMeshToBelongToTheTrack;
   std::list<unsigned int> ListMeshToReassign;
   //at that moment, do nothing for the checked meshes not selected to be part of the track
@@ -1524,15 +1524,16 @@ void QGoPrintDatabase::SplitMergeTracksWithWidget(
           MeshContainerTemp->GetAllTraceIDsGivenCollectionID(*iterTrack));
         //as it has been found in checked trackiDs, it won't be erased, so it needs
         //to be removed from the checked track list
-        std::list<unsigned int>::iterator iterToErase = 
+        std::list<unsigned int>::iterator iterToErase =
           std::find(iTrackIDs.begin(), iTrackIDs.end(), *iterTrack);
         iTrackIDs.erase(iterToErase);
         }
      iterTrack = iTrackIDs.begin();
      iter++;
       }
-    }
+
   //erase the IDs left in checked trackIDs:
   this->DeleteListTraces<QGoDBTrackManager, QGoDBMeshManager, QGoDBMeshManager>(
-    this->m_TracksManager, this->m_MeshesManager, this->m_MeshesManager, iTrackIDs, true);   
+    this->m_TracksManager, this->m_MeshesManager, this->m_MeshesManager, iTrackIDs, true);
+   }
 }
