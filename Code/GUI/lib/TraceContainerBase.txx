@@ -1020,7 +1020,7 @@ GetAllCollectionIDs()
 template< class TContainer >
 unsigned int
 TraceContainerBase< TContainer >::
-GetCollectionIDOfGivenTrace( unsigned int iTraceID)
+GetCollectionIDOfGivenTraceID( unsigned int iTraceID)
 {
   using boost::multi_index::get;
   MultiIndexContainerTraceIDIterator

@@ -55,6 +55,7 @@
 #include "vtkRendererCollection.h"
 
 #include "vtkViewImage3DCommand.h"
+#include "itkMacro.h"
 
 #include <limits>
 
@@ -221,18 +222,33 @@ UpdateCurrentActorSelection(vtkObject *caller)
     {
     if(m_SecondClick)
       {
-      m_SecondActor = m_CurrentActor;
-      mergeTrack( m_FirstActor, m_SecondActor);
-      m_FirstActor->GetProperty()->SetSpecular(0);
-      m_FirstActor->GetProperty()->SetAmbient(0);
+      // if click the 1st mesh
+      ActorMeshIDMapIterator iter = m_Actor2MeshID.find( m_CurrentActor );
+
+      if( iter != m_Actor2MeshID.end() )
+        {
+        m_SecondMeshID = iter->second;
+        m_SecondMeshActor = m_CurrentActor;
+        mergeTrack( m_FirstMeshID, m_SecondMeshID);
+        }
+
+      m_FirstMeshActor->GetProperty()->SetSpecular(0);
+      m_FirstMeshActor->GetProperty()->SetAmbient(0);
       m_SecondClick = false;
       }
     else
       {
-      m_FirstActor = m_CurrentActor;
-      m_FirstActor->GetProperty()->SetSpecular(1);
-      m_FirstActor->GetProperty()->SetAmbient(1);
-      m_SecondClick = true;
+      // if click the 1st mesh
+      ActorMeshIDMapIterator iter = m_Actor2MeshID.find( m_CurrentActor );
+
+      if( iter != m_Actor2MeshID.end() )
+        {
+        m_FirstMeshID = iter->second;
+        m_FirstMeshActor = m_CurrentActor;
+        m_FirstMeshActor->GetProperty()->SetSpecular(1);
+        m_FirstMeshActor->GetProperty()->SetAmbient(1);
+        m_SecondClick = true;
+        }
       }
     }
 }
@@ -423,7 +439,7 @@ cutTrack( vtkActor* iActor)
   if( it != m_Line2MeshID.end() )
     {
     unsigned int collectionID =
-         m_MeshContainer->GetCollectionIDOfGivenTrace( it->second );
+         m_MeshContainer->GetCollectionIDOfGivenTraceID( it->second );
 
     std::cout << "Cut collection: " << collectionID << std::endl;
 
@@ -566,102 +582,86 @@ mapContainerIDs2RealIDs()
 //-------------------------------------------------------------------------
 // ONLY CALLED AT THE END
 //-------------------------------------------------------------------------
-void
+bool
 QGoTrackEditingWidget::
-mergeTrack( vtkActor* iFirstActor, vtkActor* iSecondActor)
+mergeTrack( const unsigned int& iFirstMesh, const unsigned int& iSecondMesh )
 {
-  // Get mesh IDs
-  unsigned int firstMesh;
-  std::map< vtkActor*, unsigned int >::iterator
-      iter = m_Actor2MeshID.find(iFirstActor);
+  unsigned int FirstCollectionID = 0;
+  unsigned int SecondCollectionID = 0;
 
-  if( iter != m_Actor2MeshID.end() )
+  try
     {
-    firstMesh = iter->second;
+    FirstCollectionID = m_MeshContainer->GetCollectionIDOfGivenTraceID( iFirstMesh );
     }
-  else
+  catch( const itk::ExceptionObject& e )
     {
-    std::cout << "First actor ID not found" << std::endl;
-    return;
-    }
-
-  unsigned int secondMesh;
-  iter = m_Actor2MeshID.find(iSecondActor);
-
-  if(iter != m_Actor2MeshID.end() )
-    {
-    secondMesh = iter->second;
-    }
-  else
-    {
-    std::cout << "Second actor ID not found" << std::endl;
-    return;
+    std::cout << "caught an exception: " <<std::endl;
+    e.Print( std::cout );
+    return false;
     }
 
-  unsigned int collection1 =
-    m_MeshContainer->GetCollectionIDOfGivenTrace( firstMesh );
-
-  //Check if actors are border of track
-  std::pair< std::pair<unsigned int, unsigned int>,
-             std::pair<unsigned int, unsigned int> >
-      border1 = GetTrackBorders(collection1);
-
-  std::cout << "Border for mesh1" << std::endl;
-  std::cout << "mesh1: " << firstMesh << std::endl;
-  std::cout << "low limit ID: " << border1.first.first << " time "
-                             << border1.first.second << std::endl;
-  std::cout << "high limit ID: " << border1.second.first << " time "
-                              << border1.second.second << std::endl;
-
-  unsigned int collection2 =
-    m_MeshContainer->GetCollectionIDOfGivenTrace( secondMesh );
-
-  std::pair< std::pair<unsigned int, unsigned int>,
-             std::pair<unsigned int, unsigned int> >
-    border2 = GetTrackBorders(collection2);
-
-  std::cout << "Border for mesh2" << std::endl;
-  std::cout << "mesh2: " << secondMesh << std::endl;
-  std::cout << "low limit ID: " << border2.first.first << " time "
-                             << border2.first.second << std::endl;
-  std::cout << "high limit ID: " << border2.second.first << " time "
-                              << border2.second.second << std::endl;
-  // Check for overlap
-  if(    ( border2.first.second <= border1.second.second )
-      && ( border1.first.second <= border2.second.second ) )
+  try
     {
-    std::cout << " Tracks are overlaping" << std::endl;
-    return;
+    SecondCollectionID = m_MeshContainer->GetCollectionIDOfGivenTraceID( iSecondMesh );
+    }
+  catch( const itk::ExceptionObject& e )
+    {
+    std::cout << "caught an exception: " <<std::endl;
+    e.Print( std::cout );
+    return false;
     }
 
-  //Get Highest time to know which meshes we should update
-  unsigned int trackToUpdate = 0;
-  unsigned int trackToDelete = 0;
-  if( border1.first.first < border2.first.first)
+  if( FirstCollectionID != SecondCollectionID )
     {
-    trackToDelete = firstMesh;
-    trackToUpdate = secondMesh;
+    //Check if actors are border of track
+    std::pair< std::pair<unsigned int, unsigned int>,
+               std::pair<unsigned int, unsigned int> >
+        border1 = GetTrackBorders( FirstCollectionID );
+
+    std::pair< std::pair<unsigned int, unsigned int>,
+               std::pair<unsigned int, unsigned int> >
+      border2 = GetTrackBorders(SecondCollectionID);
+
+    // Check for overlap
+    if(    ( border2.first.second <= border1.second.second )
+        && ( border1.first.second <= border2.second.second ) )
+      {
+      std::cout << " Tracks are overlaping" << std::endl;
+      return false;
+      }
+
+    //Get Highest time to know which meshes we should update
+    unsigned int trackToUpdate = 0;
+    unsigned int trackToDelete = 0;
+    if( border1.first.first < border2.first.first)
+      {
+      trackToDelete = FirstCollectionID;
+      trackToUpdate = SecondCollectionID;
+      }
+    else
+      {
+      trackToUpdate = FirstCollectionID;
+      trackToDelete = SecondCollectionID;
+      }
+
+    // C est la!!!
+    m_TrackStatus[trackToDelete] = DELETED_TRACK;
+    m_TrackStatus[trackToUpdate] = UPDATED_TRACK;
+
+    std::cout<< " Mesh to update: " << trackToUpdate << std::endl;
+    std::cout<< " Mesh to delete: " << trackToDelete << std::endl;
+
+    // Change the ID of the track by the other one
+    updateTracksIDs( trackToDelete, trackToUpdate );
+
+    // update visu
+    removeLineActors();
+    initializeVisualization();
+
+    return true;
     }
-  else
-    {
-    trackToUpdate = firstMesh;
-    trackToDelete = secondMesh;
-    }
 
-  // C est la!!!
-  m_TrackStatus[trackToDelete] = DELETED_TRACK;
-  m_TrackStatus[trackToUpdate] = UPDATED_TRACK;
-
-  std::cout<< " Mesh to update: " << trackToUpdate << std::endl;
-  std::cout<< " Mesh to delete: " << trackToDelete << std::endl;
-
-  // Change the ID of the track by the other one
-  updateTracksIDs( trackToDelete, trackToUpdate);
-
-  // update visu
-  removeLineActors();
-  initializeVisualization();
-
+  return false;
 }
 //-------------------------------------------------------------------------
 // ONLY CALLED AT THE END
@@ -710,22 +710,23 @@ void
 QGoTrackEditingWidget::
 updateTracksIDs( unsigned int iIDToDelete, unsigned int iIDToUpdate)
 {
+  /*
   // Get track to update ID
   unsigned int collectionID =
-      m_MeshContainer->GetCollectionIDOfGivenTrace( iIDToUpdate );
+      m_MeshContainer->GetCollectionIDOfGivenTraceID( iIDToUpdate );
 
   // Update track to delete IDs with update ID
-  unsigned int collectionID2 = m_MeshContainer->GetCollectionIDOfGivenTrace( iIDToDelete );
+  unsigned int collectionID2 = m_MeshContainer->GetCollectionIDOfGivenTraceID( iIDToDelete );*/
 
   std::list<unsigned int> listOfMeshIDs =
-      m_MeshContainer->GetAllTraceIDsGivenCollectionID( collectionID2 );
+      m_MeshContainer->GetAllTraceIDsGivenCollectionID( iIDToDelete );
   std::list<unsigned int>::iterator iterator = listOfMeshIDs.begin();
 
   while( iterator != listOfMeshIDs.end() )
     {
     m_MeshContainer->ResetCurrentElement();
     m_MeshContainer->UpdateCurrentElementFromExistingOne( (*iterator) );
-    m_MeshContainer->SetCurrentElementCollectionID( collectionID );
+    m_MeshContainer->SetCurrentElementCollectionID( iIDToUpdate );
     m_MeshContainer->InsertCurrentElement();
     ++iterator;
     }

@@ -72,7 +72,7 @@ public:
   void    setMeshContainer( MeshContainer* imeshContainer );
   void    initializeVisualization();
   void    cutTrack( vtkActor* );
-  void    mergeTrack( vtkActor*, vtkActor* );
+  bool    mergeTrack( const unsigned int&, const unsigned int& );
   void    removeLineActors();
 
   std::pair< std::pair<unsigned int, unsigned int>,
@@ -103,8 +103,11 @@ private:
   bool m_FirstRender;
   bool m_SecondClick;
   //std::pair<int, int> m_FirstPair;
-  vtkActor* m_FirstActor;
-  vtkActor* m_SecondActor;
+  vtkActor* m_FirstMeshActor;
+  unsigned int m_FirstMeshID;
+
+  vtkActor* m_SecondMeshActor;
+  unsigned int m_SecondMeshID;
 
   vtkInteractorStyleImage3D* m_InteractorStyle3D;
   vtkEventQtSlotConnect*     m_VtkEventQtConnector;
