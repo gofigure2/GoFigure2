@@ -1514,54 +1514,26 @@ void QGoPrintDatabase::SplitMergeTracksWithWidget(
   MeshContainer* MeshContainerTemp = this->m_MeshesManager->
       GetMeshesInfoFromDBAndCreateContainerForVisu(
       this->m_DatabaseConnector, iTrackIDs);
-//create trackwidget + set the mesh container:
-  QGoTrackEditingWidget *win = new QGoTrackEditingWidget();
+
+  QGoTrackEditingWidget *win = new QGoTrackEditingWidget(MeshContainerTemp);
    win->setMeshContainer( MeshContainerTemp);
    win->initializeVisualization();
    win->preview();
-   //win->show();
-   int Ok = win->exec();
-  //get trackid not in iTrackIDs:
-  if (Ok != 0)
-   {
-     //NewTempTrackIDs given by the MeshContainerTemp, containes the new tracks with fake IDs
-     //to create and trackIDs to update
-   std::list<unsigned int> NewTempTrackIDs = MeshContainerTemp->GetAllCollectionIDs();
-   std::list<unsigned int>::iterator iter = NewTempTrackIDs.begin();
-   std::list<unsigned int>::iterator iterTrack = iTrackIDs.begin();
-   while (iter != NewTempTrackIDs.end())
-     {
-      bool Found = false;
-      while(!Found && iterTrack != iTrackIDs.end())
-        {
-        if (*iter != *iterTrack)
-          iterTrack++;
-        else
-          Found = true;
-        }
-      if (iterTrack == iTrackIDs.end())
-        {
-        //the trackID has not been found in the checked trackIDs, it is a new one to be created:
-        this->CreateNewTrackFromListMeshes(
-          MeshContainerTemp->GetAllTraceIDsGivenCollectionID(*iter) );
-        }
-      else
-        {
-        //the IDs has been found in the checked trackIDs, it needs ot be updated:
-        this->AddCheckedMeshesToSelectedTrack(
-          MeshContainerTemp->GetAllTraceIDsGivenCollectionID(*iterTrack));
-        //as it has been found in checked trackiDs, it won't be erased, so it needs
-        //to be removed from the checked track list
-        std::list<unsigned int>::iterator iterToErase =
-          std::find(iTrackIDs.begin(), iTrackIDs.end(), *iterTrack);
-        iTrackIDs.erase(iterToErase);
-        }
-     iterTrack = iTrackIDs.begin();
-     iter++;
-      }
 
-  //erase the IDs left in checked trackIDs:
-  this->DeleteListTraces<QGoDBTrackManager, QGoDBMeshManager, QGoDBMeshManager>(
-    this->m_TracksManager, this->m_MeshesManager, this->m_MeshesManager, iTrackIDs, true);
-   }
+  if (win->exec())
+   {
+   std::list<std::list<unsigned int> > ListTracksToCreate = win->GetListOfTracksToBeCreated();
+   std::map<unsigned int, std::list<unsigned int> > ListTracksToUpdate 
+     = win->GetListOfTracksToBeUpdated();
+   std::list<unsigned int> ListTracksToDelete = win->GetListOfTracksToBeDeleted();
+   if (!ListTracksToCreate.empty())
+    this->CreateNewTrackFromListMeshes(ListTracksToCreate);
+   if(!ListTracksToUpdate.empty() )
+    this->AddListMeshesToATrack(ListTracksToUpdate);
+   if(!ListTracksToDelete.empty() )
+   this->DeleteListTraces<QGoDBTrackManager, QGoDBMeshManager, QGoDBMeshManager>(
+    this->m_TracksManager, this->m_MeshesManager, this->m_MeshesManager, 
+    ListTracksToDelete, true);
+  }
+  delete win;
 }
