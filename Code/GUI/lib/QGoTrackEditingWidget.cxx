@@ -270,10 +270,11 @@ initializeVisualization()
   //std::list<unsigned int> listOfTrackIDs = m_MeshContainer->GetAllCollectionIDs();
   //std::list<unsigned int>::iterator trackIDsIt = listOfTrackIDs.begin();
 
+   MeshContainer::MultiIndexContainerCollectionIDIterator c_it, c_end;
+
   // first render: reassign track IDs
   if(m_FirstRender)
     {
-    MeshContainer::MultiIndexContainerCollectionIDIterator c_it, c_end;
     c_it = m_MeshContainer->m_Container.get< CollectionID >().begin();
     unsigned int collection = std::numeric_limits< unsigned int >::max();
 
@@ -299,7 +300,7 @@ initializeVisualization()
       // to be more efficient here, it would be better to use method from
       // boost::multi_index_container
       m_MeshContainer->ResetCurrentElement();
-      m_MeshContainer->UpdateCurrentElementFromExistingOne( c_it->TraceID );
+      m_MeshContainer->UpdateCurrentElementFromExistingOne< CollectionID >( c_it );
       m_MeshContainer->SetCurrentElementCollectionID( current_track );
       m_MeshContainer->InsertCurrentElement();
 
@@ -316,6 +317,64 @@ initializeVisualization()
 
   vtkSmartPointer<vtkPoints> pts = vtkSmartPointer<vtkPoints>::New();
 
+
+  /*c_it = m_MeshContainer->m_Container.get< CollectionID >().begin();
+  c_end = m_MeshContainer->m_Container.get< CollectionID >().end();
+
+  std::map< unsigned int, std::map< unsigned int, unsigned int > >
+      Track_Time_MeshIDMap;
+
+  while( c_it != c_end )
+    {
+    m_MeshContainer->ResetCurrentElement();
+    m_MeshContainer->UpdateCurrentElementFromExistingOne( c_it->TraceID );
+
+    // Get the polydata
+    // Might need a deep copy
+    vtkPolyData* nodes = m_MeshContainer->GetCurrentElementNodes();
+    double* rgba = m_MeshContainer->GetCurrentElementColor();
+    unsigned int time = m_MeshContainer->GetCurrentElementTimePoint();
+
+    //setup actor and mapper
+    vtkSmartPointer<vtkPolyDataMapper> mapper =
+        vtkSmartPointer<vtkPolyDataMapper>::New();
+    mapper->SetInput( nodes );
+    vtkActor* actor = vtkActor::New();
+    actor->SetMapper( mapper );
+    actor->GetProperty()->SetColor( rgba );
+
+    std::cout<< "center: " << std::endl;
+    std::cout<< "X: " << actor->GetCenter()[0] << std::endl;
+    std::cout<< "Y: " << actor->GetCenter()[1] << std::endl;
+    std::cout<< "Z: " << actor->GetCenter()[2] << std::endl;
+    std::cout<< "T: " << time << std::endl;
+
+    randomScalars->InsertNextTuple1( time );
+    pts->InsertNextPoint(actor->GetCenter());
+
+    // Add actor to visu
+    renderer->AddActor(actor);
+
+    /// \todo Find a better solution - Nicolas
+    std::vector< vtkActor * > listOfActors( 4, NULL ); // to satisfy API
+    listOfActors[0] = actor;
+
+    m_MeshContainer->UpdateCurrentElementFromVisu( listOfActors,
+                                     nodes,
+                                     time,
+                                     false,   //highlighted
+                                     false ); // visible
+
+    // Fill map - to construct lines
+    ( Track_Time_MeshIDMap[ c_it->CollectionID ] ) [ time ] = c_it->TraceID;
+
+    m_Actor2MeshID[actor] = c_it->TraceID;
+
+    // Insert Element
+    m_MeshContainer->InsertCurrentElement();
+
+    ++c_it;
+    }*/
 
   // For each track, create the actors
   for( unsigned int i = 0; i < m_NumberOfTracks ; ++i )
@@ -360,9 +419,7 @@ initializeVisualization()
       // Add actor to visu
       renderer->AddActor(actor);
 
-      /*
-       * \todo Find a better solution - Nicolas
-       */
+      /// \todo Find a better solution - Nicolas
       std::vector< vtkActor * > listOfActors; // to satisfy API
       listOfActors.push_back( actor );
       vtkActor* actor1 = vtkActor::New();
@@ -388,6 +445,50 @@ initializeVisualization()
 
       ++listOfMeshIDsIt;
       }
+/*
+  std::map< unsigned int, std::map< unsigned int, unsigned int > >::iterator
+      TrackIterator = Track_Time_MeshIDMap.begin();
+
+  while( TrackIterator != Track_Time_MeshIDMap.end() )
+    {
+    std::map< unsigned int, unsigned int > time_mesh_map = TrackIterator->second;
+
+    std::map< unsigned int, unsigned int >::iterator t_it = time_mesh_map.begin();
+
+    if( t_it != time_mesh_map.end() )
+      {
+      vtkActor* firstActor =
+          (m_MeshContainer->GetActorGivenTraceID( t_it->second ))[0];
+      vtkActor* secondActor = NULL;
+      ++t_it;
+
+      while( t_it != time_mesh_map.end() )
+        {
+        secondActor = (m_MeshContainer->GetActorGivenTraceID( t_it->second ))[0];
+        vtkActor* polyLine = CreatePolylineActor(firstActor->GetCenter(),
+                                                 secondActor->GetCenter());
+
+        /// \todo should color be hard coded? how to define it? - Nicolas
+        double color[3] = {1, 1, 1};
+        polyLine->GetProperty()->SetColor(color);
+
+        // Add actor to visu
+        renderer->AddActor( polyLine );
+
+        // key is actor
+        m_Line2MeshID[polyLine] = t_it->second;
+        //m_MeshID2Neigbours[] =
+
+        firstActor = secondActor;
+        ++t_it;
+        }
+      }
+    else
+      {
+      std::cout << "List is empty" << std::endl;
+      }
+    ++TrackIterator;
+    }*/
 
     // Go through map to create polylines
     std::map<unsigned int, unsigned int>::iterator polyLIt = m_Time2MeshID.begin();
@@ -403,9 +504,7 @@ initializeVisualization()
         vtkActor* polyLine = CreatePolylineActor(firstActor->GetCenter(),
                                                  secondActor->GetCenter());
 
-         /*
-         * \todo should color be hard coded? hoew to define it? - Nicolas
-         */
+         ///\todo should color be hard coded? hoew to define it? - Nicolas
           double color[3] = {1, 1, 1};
         polyLine->GetProperty()->SetColor(color);
         // Add actor to visu
@@ -596,65 +695,6 @@ mapContainerIDs2RealIDs()
       }
     ++iter;
     }
-  /*std::cout<< "MAP IDS: " << std::endl;
-  std::map< unsigned int, unsigned int>::iterator iter =
-      m_TrackIDsMapping.begin();
-
-  while( iter != m_TrackIDsMapping.end())
-    {
-    std::cout<< "new: " << iter->first << std::endl;
-    std::cout<< "old: " << iter->second << std::endl;
-
-    if( iter->second > m_NumberOfTracks )
-      {
-      std::list<unsigned int> listOfMeshIDs =
-          m_MeshContainer->GetAllTraceIDsGivenCollectionID( iter->first );
-      std::list<unsigned int>::iterator iterator = listOfMeshIDs.begin();
-
-      while( iterator != listOfMeshIDs.end())
-        {
-        m_MeshContainer->ResetCurrentElement();
-        m_MeshContainer->UpdateCurrentElementFromExistingOne( (*iterator) );
-        m_MeshContainer->SetCurrentElementCollectionID( iter->second );
-        m_MeshContainer->InsertCurrentElement();
-        ++iterator;
-        }
-      }
-    else
-      {
-      // increase max track ID
-      ++m_MaxTrackID;
-
-      // move first track
-      std::list<unsigned int> listOfMeshIDs =
-          m_MeshContainer->GetAllTraceIDsGivenCollectionID( iter->second );
-      std::list<unsigned int>::iterator iterator = listOfMeshIDs.begin();
-
-      while( iterator != listOfMeshIDs.end())
-        {
-        m_MeshContainer->ResetCurrentElement();
-        m_MeshContainer->UpdateCurrentElementFromExistingOne( (*iterator) );
-        m_MeshContainer->SetCurrentElementCollectionID( m_MaxTrackID );
-        m_MeshContainer->InsertCurrentElement();
-        ++iterator;
-        }
-
-      // move secoind track
-      std::list<unsigned int> listOfMeshIDs2 =
-          m_MeshContainer->GetAllTraceIDsGivenCollectionID( iter->first );
-      std::list<unsigned int>::iterator iterator2 = listOfMeshIDs2.begin();
-
-      while( iterator != listOfMeshIDs2.end())
-        {
-        m_MeshContainer->ResetCurrentElement();
-        m_MeshContainer->UpdateCurrentElementFromExistingOne( (*iterator2) );
-        m_MeshContainer->SetCurrentElementCollectionID( iter->second );
-        m_MeshContainer->InsertCurrentElement();
-        ++iterator;
-        }
-      }
-    ++iter;
-    }*/
 }
 
 std::list< std::list< unsigned int > >

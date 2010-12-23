@@ -314,6 +314,22 @@ public:
   */
   bool UpdateCurrentElementFromExistingOne(unsigned int iTraceID);
 
+  template< class TIndex >
+  bool UpdateCurrentElementFromExistingOne(
+    typename MultiIndexContainerType::template index< TIndex >::type::iterator iIt )
+    {
+    using boost::multi_index::get;
+
+    // update current element
+    this->m_CurrentElement = *iIt;
+
+    // clean the container but don't erase the pointers since we still have the
+    // adresses in the m_CurrentElement
+    m_Container.get< TIndex >().erase( iIt );
+
+    return true;
+    }
+
   /**
     \brief Update element visibility given it TraceId
     \param[in] iId TraceID of the element to be modified
