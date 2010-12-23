@@ -470,7 +470,7 @@ protected:
   \tparam TCollection children of QGoDBTraceManager
   */
   template< typename TTrace, typename TCollection, typename TCollectionOf >
-  void DeleteTraces(TTrace *iTraceManager,
+  void DeleteCheckedTraces(TTrace *iTraceManager,
                     TCollection *iCollectionManager, TCollectionOf *iCollectionOfManager,
                     bool track = false)
   {
@@ -558,6 +558,12 @@ protected:
   \param[in] iTrackID new track to be assigned to these meshes
   */
   void AddListMeshesToATrack(std::list< unsigned int > iListMeshes, unsigned int iTrackID);
+
+  /**
+  \overload
+  */
+  void AddListMeshesToATrack(
+    std::map<unsigned int, std::list<unsigned int> > iListMeshesWithTracks);
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -609,19 +615,19 @@ protected slots:
   \brief slot connected to the signal TracesToDelete() emitted by the
   m_ContoursManager
   */
-  void DeleteContours();
+  void DeleteCheckedContours();
 
   /**
-  \brief slot connected to the signal Traces DeleteTracesToDelete() emitted by the
+  \brief slot connected to the signal Traces TracesToDelete() emitted by the
   m_MeshesManager
   */
-  void DeleteMeshes();
+  void DeleteCheckedMeshes();
 
   /**
   \brief slot connected to the signal TracesToDelete() emitted by the
   m_TracksManager
   */
-  void DeleteTracks();
+  void DeleteCheckedTracks();
 
   /**
   \brief create a new track and call the AddCheckedTracesToCollection template method
@@ -629,6 +635,12 @@ protected slots:
   \param[in] iListMeshes list of the meshIDs to belong to the new track
   */
   void CreateNewTrackFromListMeshes(std::list< unsigned int > iListMeshes);
+
+  /**
+  \overload
+  */
+  void CreateNewTrackFromListMeshes(
+    std::list<std::list<unsigned int> > iListsCheckedMeshes);
 
   /**
   \brief slot connected to the signal NewCollectionFromCheckedTraces() emitted by
