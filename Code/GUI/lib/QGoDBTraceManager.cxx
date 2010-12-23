@@ -292,7 +292,7 @@ void QGoDBTraceManager::DeleteTracesFromContextMenu()
     {
     QMessageBox msgBox;
     msgBox.setText(
-      tr("Please select at least one %1 to be deleted")
+      tr("Please check at least one %1 to be deleted")
       .arg( this->m_TraceName.c_str() ) );
     msgBox.exec();
     }
@@ -468,6 +468,17 @@ GoDBCoordinateRow QGoDBTraceManager::GetCoordinateFromInt(int iXCoord,
 //-------------------------------------------------------------------------
 void QGoDBTraceManager::AddToSelectedCollection()
 {
+  std::list<unsigned int> ListCheckedTraces = this->GetListHighlightedIDs();
+  if (ListCheckedTraces.empty())
+    {
+     QMessageBox msgBox;
+    msgBox.setText(
+      tr("Please check at least one %1 to be part of the %2")
+      .arg( this->m_TraceName.c_str() )
+      .arg(this->m_CollectionName.c_str() ) );
+    msgBox.exec();
+    return;
+    }
   emit CheckedTracesToAddToSelectedCollection(
     this->GetListHighlightedIDs() );
 }

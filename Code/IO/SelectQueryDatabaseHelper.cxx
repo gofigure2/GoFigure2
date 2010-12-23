@@ -293,7 +293,10 @@ std::list< unsigned int > ListSpecificValuesForOneColumn(
     Conditions = GetConditions(VectorConditions,"AND");
 
     Conditions = Conditions.substr(0,Conditions.size()-1);
-    Conditions += " AND ";
+    if (!VectorValues.empty())
+      {
+      Conditions += " AND ";
+      }
     }
   
   Conditions += GetConditions(field,VectorValues,"OR");
