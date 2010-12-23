@@ -191,9 +191,8 @@ UpdateCurrentActorSelection(vtkObject *caller)
                    SafeDownCast( t->GetCurrentProp() );
 
   // if we click on the background
-  if(m_CurrentActor == NULL)
+  if( !m_CurrentActor )
     {
-    std::cout<< "No ActorPicked" << std::endl;
     return;
     }
 
@@ -202,8 +201,6 @@ UpdateCurrentActorSelection(vtkObject *caller)
 
   if(polyToMeshID != m_Line2MeshID.end())
     {
-    std::cout<< "Actor is a line" << std::endl;
-
     if( m_CurrentActor->GetProperty()->GetOpacity() == 1 )
       {
       m_CurrentActor->GetProperty()->SetOpacity(0.3);
