@@ -46,10 +46,16 @@ GoDBTraceRow::GoDBTraceRow()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-GoDBTraceRow::GoDBTraceRow(vtkMySQLDatabase *DatabaseConnector,
-                           vtkPolyData *TraceVisu, GoDBCoordinateRow Min, GoDBCoordinateRow Max,
-                           unsigned int ImgSessionID)
+GoDBTraceRow::
+GoDBTraceRow( vtkMySQLDatabase *DatabaseConnector, vtkPolyData *TraceVisu,
+              GoDBCoordinateRow Min, GoDBCoordinateRow Max,
+              unsigned int ImgSessionID )
 {
+  (void) Min;
+  (void) Max;
+  (void) TraceVisu;
+  (void) DatabaseConnector;
+
   this->InitializeMap();
   this->m_MapRow["ImagingSessionID"] =
     ConvertToString< unsigned int >(ImgSessionID);
@@ -61,7 +67,7 @@ GoDBTraceRow::GoDBTraceRow(vtkMySQLDatabase *DatabaseConnector,
                            std::string TraceVisu, GoDBCoordinateRow Min, GoDBCoordinateRow Max,
                            unsigned int ImgSessionID)
 {
-  
+
   this->InitializeMap();
   this->SetTheBoundingBox(DatabaseConnector, Min, Max);
   this->m_MapRow["ImagingSessionID"] =
