@@ -625,73 +625,83 @@ mapContainerIDs2RealIDs()
   unsigned int collection = 0;
   unsigned int real_collectionID = 0;
 
+  m_ListOfNewTrack.clear();
+  m_ListOfUpdatedTracks.clear();
+  m_ListOfDeletedTracks.clear();
+
   while( iter != m_TrackStatus.end() )
     {
     collection = iter->first;
 
-    if( iter->second == NEW_TRACK )
+    switch( iter->second )
       {
-      std::list< unsigned int > list_meshid;
-
-      MeshContainer::MultiIndexContainerCollectionIDIterator it0, it1;
-
-      boost::tuples::tie(it0, it1) =
-        m_MeshContainer->m_Container.get< CollectionID >().equal_range( collection );
-
-      while( it0 != it1 )
+      case NEW_TRACK:
         {
-        list_meshid.push_back( it0->TraceID );
-        ++it0;
-        }
-      m_ListOfNewTrack.push_back( list_meshid );
-      }
+        std::list< unsigned int > list_meshid;
 
-    if( iter->second == UPDATED_TRACK )
-      {
-      std::map< unsigned int, unsigned int >::iterator
-          id_map_it = m_TrackIDsMapping.find( collection );
+        MeshContainer::MultiIndexContainerCollectionIDIterator it0, it1;
 
-      if( id_map_it == m_TrackIDsMapping.end() )
-        {
-        std::cout << "error!" <<std::endl;
-        return;
-        }
-      else
-        {
-        real_collectionID = id_map_it->second;
+        boost::tuples::tie(it0, it1) =
+          m_MeshContainer->m_Container.get< CollectionID >().equal_range( collection );
+
+        while( it0 != it1 )
+          {
+          list_meshid.push_back( it0->TraceID );
+          ++it0;
+          }
+        m_ListOfNewTrack.push_back( list_meshid );
+        break;
         }
 
-      std::list< unsigned int > list_meshid;
-
-      MeshContainer::MultiIndexContainerCollectionIDIterator it0, it1;
-
-      boost::tuples::tie(it0, it1) =
-        m_MeshContainer->m_Container.get< CollectionID >().equal_range( collection );
-
-      while( it0 != it1 )
+      case UPDATED_TRACK:
         {
-        list_meshid.push_back( it0->TraceID );
-        ++it0;
+        std::map< unsigned int, unsigned int >::iterator
+            id_map_it = m_TrackIDsMapping.find( collection );
+
+        if( id_map_it == m_TrackIDsMapping.end() )
+          {
+          std::cout << "error!" <<std::endl;
+          return;
+          }
+        else
+          {
+          real_collectionID = id_map_it->second;
+          }
+
+        std::list< unsigned int > list_meshid;
+
+        MeshContainer::MultiIndexContainerCollectionIDIterator it0, it1;
+
+        boost::tuples::tie(it0, it1) =
+          m_MeshContainer->m_Container.get< CollectionID >().equal_range( collection );
+
+        while( it0 != it1 )
+          {
+          list_meshid.push_back( it0->TraceID );
+          ++it0;
+          }
+        m_ListOfUpdatedTracks[real_collectionID] = list_meshid;
+        break;
         }
-      m_ListOfUpdatedTracks[real_collectionID] = list_meshid;
-      }
 
-    if( iter->second == DELETED_TRACK )
-      {
-      std::map< unsigned int, unsigned int >::iterator
-          id_map_it = m_TrackIDsMapping.find( collection );
-
-      if( id_map_it == m_TrackIDsMapping.end() )
+      case DELETED_TRACK:
         {
-        std::cout << "error!" <<std::endl;
-        return;
-        }
-      else
-        {
-        real_collectionID = id_map_it->second;
-        }
+        std::map< unsigned int, unsigned int >::iterator
+            id_map_it = m_TrackIDsMapping.find( collection );
 
-      m_ListOfDeletedTracks.push_back( real_collectionID );
+        if( id_map_it == m_TrackIDsMapping.end() )
+          {
+          std::cout << "error!" <<std::endl;
+          return;
+          }
+        else
+          {
+          real_collectionID = id_map_it->second;
+          }
+
+        m_ListOfDeletedTracks.push_back( real_collectionID );
+        break;
+        }
       }
     ++iter;
     }
