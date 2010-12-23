@@ -317,7 +317,7 @@ void QGoDBTraceManager::DeleteTracesFromContextMenu()
       {
       //as it impacts also on the collection and the collectionOf,
       //a signal has to be emitted for another traceManager:
-      emit TracesToDelete();
+      emit CheckedTracesToDelete();
       }
     }
 }
