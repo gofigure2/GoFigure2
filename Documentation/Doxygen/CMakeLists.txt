@@ -1,37 +1,33 @@
-CONFIGURE_FILE ( 
-  ${GOFIGURE2_SOURCE_DIR}/Documentation/Doxygen/Doxyfile.txt.in 
-  ${GOFIGURE2_BINARY_DIR}/Doxyfile.txt 
-) 
+# important note to link to external documentation
+#  * qt.tags is located in ${QT_DOC_DIR}/html/qt.tags
+#  * VTK Nightly doxygen tag file can be downloaded here:
+#     http://www.vtk.org/files/Nightly/vtkNightlyDoc.tag.gz
+#     http://www.vtk.org/files/Nightly/vtkNightlyDoc.tag
+#  * ITK can be downloaded here:
+#
 
 IF( LINK_EXTERNAL_DOC )
-  EXEC_PROGRAM( ${CMAKE_COMMAND} ${GOFIGURE2_BINARY_DIR}/Documentation/
-    ARGS -E tar xvz ${GOFIGURE2_SOURCE_DIR}/Documentation/Doxygen/vtkNightlyDoc.tag.tar.gz 
-)
+  FILE( DOWNLOAD http://www.vtk.org/files/nightly/vtkNightlyDoc.tag
+    ${GOFIGURE2_BINARY_DIR}/Documentation/vtkNightlyDoc.tag
+  )
 
-  EXEC_PROGRAM( ${CMAKE_COMMAND} ${GOFIGURE2_BINARY_DIR}/Documentation/
-    ARGS -E tar xvz ${GOFIGURE2_SOURCE_DIR}/Documentation/Doxygen/InsightDoxygen.tag.tar.gz 
-)
+  FILE( DOWNLOAD
+    http://public.kitware.com/pub/itk/NightlyDoxygen/InsightDoxygen.tag
+    ${GOFIGURE2_BINARY_DIR}/Documentation/InsightDoxygen.tag
+  )
 
-  EXEC_PROGRAM( ${CMAKE_COMMAND} ${GOFIGURE2_BINARY_DIR}/Documentation/
-    ARGS -E tar xvz ${GOFIGURE2_SOURCE_DIR}/Documentation/Doxygen/qt.tag.tar.gz 
-)
-  
-ELSE( LINK_EXTERNAL_DOC )
-   EXEC_PROGRAM( ${CMAKE_COMMAND} ${GOFIGURE2_BINARY_DIR}/Documentation/
-    ARGS -E remove ${GOFIGURE2_BINARY_DIR}/Documentation/vtkNightlyDoc.tag )
-
-   EXEC_PROGRAM( ${CMAKE_COMMAND} ${GOFIGURE2_BINARY_DIR}/Documentation/
-    ARGS -E remove ${GOFIGURE2_BINARY_DIR}/Documentation/InsightDoxygen.tag 
-)
-
-   EXEC_PROGRAM( ${CMAKE_COMMAND} ${GOFIGURE2_BINARY_DIR}/Documentation/
-    ARGS -E remove ${GOFIGURE2_BINARY_DIR}/Documentation/qt.tag 
-)
-
+  FILE( COPY ${QT_DOC_DIR}/html/qt.tags
+    DESTINATION ${GOFIGURE2_BINARY_DIR}/Documentation/
+  )
 ENDIF( LINK_EXTERNAL_DOC )
 
-ADD_CUSTOM_TARGET(doc ALL 
-  ${DOXYGEN_EXECUTABLE} ${GOFIGURE2_BINARY_DIR}/Doxyfile.txt 
-  DEPENDS ${GOFIGURE2_BINARY_DIR}/Doxyfile.txt 
-) 
+CONFIGURE_FILE (
+  ${GOFIGURE2_SOURCE_DIR}/Documentation/Doxygen/Doxyfile.txt.in
+  ${GOFIGURE2_BINARY_DIR}/Doxyfile.txt
+)
+
+ADD_CUSTOM_TARGET(doc ALL
+  ${DOXYGEN_EXECUTABLE} ${GOFIGURE2_BINARY_DIR}/Doxyfile.txt
+  DEPENDS ${GOFIGURE2_BINARY_DIR}/Doxyfile.txt
+)
 

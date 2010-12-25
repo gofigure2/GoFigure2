@@ -231,7 +231,11 @@ private:
   /**
    *
    */
-  void LoadAllTracesFromDatabase(const int & iT, const std::string & iTrace);
+  //void LoadAllTracesFromDatabase(const int & iT, const std::string & iTrace);
+
+  void LoadContoursFromDatabase(const int & iT );
+  void LoadMeshesFromDatabase(const int & iT);
+  void LoadTracksFromDatabase(const int & iT);
 
   /**
    * \brief Compute GoFigure file type from a given filename

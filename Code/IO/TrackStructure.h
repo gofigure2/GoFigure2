@@ -35,68 +35,111 @@
 #ifndef __TrackStructure_h
 #define __TrackStructure_h
 
-class vtkActor;
-class vtkPolyData;
-
-#include <ostream>
-#include <vector>
-
-// map to store the meshes and the related time point
-#include <map>
-
+#include "TraceStructure.h"
 #include "QGoIOConfigure.h"
 
-struct QGOIO_EXPORT TrackStructure {
-  unsigned int TraceID;
-  vtkActor *ActorXY;
-  vtkActor *ActorXZ;
-  vtkActor *ActorYZ;
-  vtkActor *ActorXYZ;
+#include <map>
 
-  /// \todo initialize map in all the constructors
-  std::map<int, vtkPolyData*> Nodes;
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#include "StructureHelper.h"
+#endif
 
-  //unsigned int CollectionID;
-  unsigned int TCoord;
-  bool Highlighted;
-  bool Visible;
-  double rgba[4];
+/**
+\defgroup Track Track
+*/
 
+/**
+ * \struct TrackStructure
+ * \brief  Structure which represent a track, and used for
+ * interaction between Visualization and TableWidget
+ * \ingroup Track Trace
+ */
+class QGOIO_EXPORT TrackStructure : public TraceStructure
+{
+public:
+
+  /**
+   * Map containing all the polydata points ordered by time
+   */
+  typedef std::map< unsigned int, double* > PointsMapType;
+  typedef PointsMapType::iterator PointsMapIterator;
+  typedef PointsMapType::const_iterator PointsMapConstIterator;
+
+  PointsMapType PointsMap;
+
+  /** Default Constructor */
   TrackStructure();
 
-  TrackStructure(const unsigned int & iTraceID,
+  /** Constructor */
+  /*TrackStructure(const unsigned int & iTraceID,
                        std::vector< vtkActor * > iActors,
-                       const unsigned int & iT,
+                       vtkPolyData *iNodes,
                        const bool & iHighlighted,
                        const bool & iVisible,
                        const double & r,
                        const double & g,
                        const double & b,
-                       const double & alpha);
+                       const double & alpha);*/
 
-  TrackStructure(const unsigned int & iTraceID,
+  /** Constructor */
+  /*TrackStructure(const unsigned int & iTraceID,
                        std::vector< vtkActor * > iActors,
-                       const unsigned int & iT,
+                       vtkPolyData *iNodes,
                        const bool & iHighlighted,
                        const bool & iVisible,
-                       double iRgba[4]);
+                       double iRgba[4]);*/
 
-  TrackStructure(const unsigned int & iTraceID,
+  /** Constructor */
+  /*TrackStructure(const unsigned int & iTraceID,
                        vtkActor *iActorXY,
                        vtkActor *iActorYZ,
                        vtkActor *iActorXZ,
                        vtkActor *iActorXYZ,
-                       const unsigned int & iT,
+                       vtkPolyData *iNodes,
                        const bool & iHighlighted,
                        const bool & iVisible,
                        const double & r,
                        const double & g,
                        const double & b,
-                       const double & alpha);
+                       const double & alpha);*/
 
+  /** Constructor by copy */
   TrackStructure(const TrackStructure & iE);
+
+  /** Destructor */
   ~TrackStructure();
 
+  /**
+   * \brief Insert a point at the current time point.
+   * \param[in] iTime time point where we want to insert the point
+   * \param[in] iPoint new point to be inserted
+   * \return true is element has been inserted, false if not (i.e. there
+   * is already a point associated to this time point). If you want to override
+   * this point, call ReplaceElement(int iTime, double* iPoint) instead.
+   */
+  bool InsertElement(const unsigned int& iTime, double* iPoint);
+
+  /**
+   * \brief Delete the point at the current time point.
+   * \param[in] iTime time point where we want to delete the mesh
+   * \return true is element has been deleted, false if there where no point at
+   * the specified time point.
+   */
+  bool DeleteElement(const unsigned int& iTime);
+
+  /**
+   * \brief Replace the point at the current time point.
+   * \param[in] iTime time point where we want to replace the point
+   * \param[in] iPoint new point to be added
+   * \return true is element has been replaced, false if there is no point at the
+   * specified time point. If you want to add this point, call
+   * InsertElement(int iTime, double* iPoint) instead.
+   */
+  bool ReplaceElement(const unsigned int& iTime, double* iPoint);
+
+  void ReleaseData() const;
+
+  /** Printing one element. std::cout << element << std::endl; */
   friend std::ostream & operator<<
     (std::ostream & os, const TrackStructure & c)
   {
@@ -105,8 +148,21 @@ struct QGOIO_EXPORT TrackStructure {
     os << "ActorXZ " << c.ActorXZ << std::endl;
     os << "ActorYZ " << c.ActorYZ << std::endl;
     os << "ActorXYZ " << c.ActorXYZ << std::endl;
-    //os << "CollectionID " << c.CollectionID << std::endl;
-    os << "TCoord " << c.TCoord << std::endl;
+    os << "Nodes " << c.Nodes << std::endl;
+    os << "Map " << std::endl;
+
+    std::map< unsigned int, double*>::const_iterator end = c.PointsMap.end();
+    std::map< unsigned int, double*>::const_iterator it = c.PointsMap.begin();
+
+    while( it != end )
+      {
+      os << "Time: " << it->first << std::endl;
+      os << " Coordinate X: " << (it->second)[0] << std::endl;
+      os << " Coordinate Y: " << (it->second)[1] << std::endl;
+      os << " Coordinate Z: " << (it->second)[2] << std::endl;
+      ++it;
+      }
+
     os << "Highlighted " << c.Highlighted << std::endl;
     os << "Visible " << c.Visible << std::endl;
     os << "RGBA [" << c.rgba[0] << ", " << c.rgba[1] << ", " << c.rgba[2]
@@ -114,17 +170,28 @@ struct QGOIO_EXPORT TrackStructure {
 
     return os;
   }
+
+  void UpdateTracksRepresentation( bool iGlyph, bool iTube ) const;
+
+  void ComputeAttributes();
+
 };
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-struct TraceID {};
-struct ActorXY {};
-struct ActorXZ {};
-struct ActorYZ {};
-struct ActorXYZ {};
-struct TCoord {};
-struct Highlighted {};
-struct Visible {};
-#endif
+/**
+  \brief merge 2 tracks (if they do not overlap) into oMerged
+  \param[in] iT1 track1
+  \param[in] iT2 track2
+  \param[out] oMerged merged track (take attributes from the earliest track in time)
+  \return true if iT1 and iT2 don't overlap
+*/
+/*
+bool TrackMerge( const TrackStructure& iT1,
+                 const TrackStructure& iT2,
+                 TrackStructure& oMerged );
+
+bool TrackSplit( const TrackStructure& iTrack,
+                 const unsigned int& iTime,
+                 TrackStructure& oT1,
+                 TrackStructure& oT2 );*/
 
 #endif

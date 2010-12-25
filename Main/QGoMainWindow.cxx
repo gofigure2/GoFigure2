@@ -69,27 +69,16 @@
 // itk includes
 #include "itkImageFileReader.h"
 
-#include "itkLsm3DSerieImport.h"
 #include "itkMegaCaptureImport.h"
 
 // vtk includes
-// #include "vtkImageAppendComponents.h"
-// #include "vtkMarchingCubes.h"
 #include "vtkLSMReader.h"
-#include "vtkPolyDataReader.h"
-#include "vtkPolyDataMySQLTextReader.h"
-#include "vtkPolyDataMySQLTextWriter.h"
 #include "vtkPLYReader.h"
-#include "vtkPolyData.h"
-#include "vtkProperty.h"
 
 #include "vtkImageData.h"
 #include "vtkImageReader2Factory.h"
 #include "vtkImageReader2.h"
-#include "vtkPolyDataWriter.h"
 #include "vtkSmartPointer.h"
-#include "vtkCell.h"
-#include "vtkPoints.h"
 
 #include "QGoTabManager.h"
 #include "QGoWizardDB.h"
@@ -265,7 +254,17 @@ void QGoMainWindow::on_actionOpen_MegaCapture_Files_triggered()
       {
       itk::MegaCaptureImport::Pointer importer = itk::MegaCaptureImport::New();
       importer->SetFileName( filename.toStdString() );
-      importer->Update();
+
+      try
+        {
+        importer->Update();
+        }
+      catch( ... )
+        {
+        QMessageBox::critical( NULL, tr( "Error" ),
+                               tr( "Error while trying to read this Megacatpure") );
+        return;
+        }
 
       GoFigure::FileType filetype;
 
@@ -376,12 +375,15 @@ void QGoMainWindow::DisplayFilesfromDB(std::string iFirst_Filename)
     {
     return;
     }
+
   // note: do not need to call w3t->Update(); since it is internally called
   // when using CreateNewTabFor3DwtImage
-  int                  TimePoint = file_container.get< m_TCoord >().begin()->m_TCoord;
-  QGoTabImageView3DwT *w3t = CreateNewTabFor3DwtImage(file_container,
-                                                      filetype, Header_FileName, TimePoint,
-                                                      true); // Use the database
+  int TimePoint = file_container.get< m_TCoord >().begin()->m_TCoord;
+
+  QGoTabImageView3DwT *w3t =
+      CreateNewTabFor3DwtImage( file_container,
+                                filetype, Header_FileName, TimePoint,
+                                true); // Use the database
 
   QObject::connect( w3t, SIGNAL( UpdateBookmarkOpenActions(std::vector< QAction * > ) ),
                     this->m_TabManager, SLOT( UpdateBookmarkMenu(std::vector< QAction * > ) ) );
@@ -401,9 +403,11 @@ QGoMainWindow::LoadAllTracesFromDatabaseManager(const int & iT)
   QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
 
   // Loads contours
-  LoadAllTracesFromDatabase(iT, "contour");
+  LoadContoursFromDatabase( iT );
   // Loads meshes
-  LoadAllTracesFromDatabase(iT, "mesh");
+  LoadMeshesFromDatabase( iT );
+  // Loads tracks
+  LoadTracksFromDatabase( iT );
 
   QApplication::restoreOverrideCursor();
 }
@@ -412,7 +416,7 @@ QGoMainWindow::LoadAllTracesFromDatabaseManager(const int & iT)
 
 //--------------------------------------------------------------------------
 void
-QGoMainWindow::LoadAllTracesFromDatabase(const int & iT, const std::string & iTraceName)
+QGoMainWindow::LoadContoursFromDatabase( const int & iT )
 {
   /// \note let's keep for the time being iT parameter in the case where
   /// we would only load traces for a given time point (that could be usefule
@@ -424,61 +428,108 @@ QGoMainWindow::LoadAllTracesFromDatabase(const int & iT, const std::string & iTr
 
   if ( w3t )
     {
-    ContourMeshContainer *temp = 0;
-    bool                  calculation = false;
-
-    if ( iTraceName.compare("contour") == 0 )
-      {
-      temp = w3t->GetContourContainer();
-      }
-    else
-      {
-      if ( iTraceName.compare("mesh") == 0 )
-        {
-        temp = w3t->GetMeshContainer();
-        calculation = true;
-        }
-      else
-        {
-        std::cerr << "iTraceName should be either contour, either mesh"
-                  << std::endl;
-        return;
-        }
-      }
+    ContourContainer *temp = w3t->GetContourContainer();
 
     if ( temp )
       {
       // let's iterate on the container with increasing TraceID
-      ContourMeshContainer::MultiIndexContainer::index< TraceID >::type::iterator
-        contourmesh_list_it = temp->m_Container.get< TraceID >().begin();
+      ContourContainer::MultiIndexContainerType::index< TraceID >::type::iterator
+        contour_list_it = temp->m_Container.get< TraceID >().begin();
 
       // we don't need here to save this contour in the database,
       // since they have just been extracted from it!
-      while ( contourmesh_list_it != temp->m_Container.get< TraceID >().end() )
+      while ( contour_list_it != temp->m_Container.get< TraceID >().end() )
         {
-        // note here it only makes sense when the trace is a mesh (for now)
-        if ( calculation )
-          {
-          if ( contourmesh_list_it->Nodes )
-            {
-            GoFigureMeshAttributes attributes =
-              w3t->ComputeMeshAttributes(
-                  contourmesh_list_it->Nodes, // mesh
-                  false ); // do not need to compute intensity based measure
-            w3t->m_DataBaseTables->PrintVolumeAreaForMesh(
-              &attributes, contourmesh_list_it->TraceID);
-            }
-          }
-        w3t->AddTraceFromNodesManager< TraceID >(
-          contourmesh_list_it,
-          iTraceName);     // Name of the trace to add
+        w3t->AddContourFromNodes< TraceID >(
+          contour_list_it );
 
-        ++contourmesh_list_it;
+        ++contour_list_it;
         }
       }
     }
 }
 
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+QGoMainWindow::LoadMeshesFromDatabase( const int & iT )
+{
+  /// \note let's keep for the time being iT parameter in the case where
+  /// we would only load traces for a given time point (that could be usefule
+  /// somehow).
+  (void)iT;
+
+  QGoTabImageView3DwT *w3t =
+    dynamic_cast< QGoTabImageView3DwT * >( this->CentralTabWidget->currentWidget() );
+
+  if ( w3t )
+    {
+    MeshContainer *temp =  w3t->GetMeshContainer();
+    if ( temp )
+      {
+      // let's iterate on the container with increasing TraceID
+      MeshContainer::MultiIndexContainerType::index< TraceID >::type::iterator
+        mesh_list_it = temp->m_Container.get< TraceID >().begin();
+
+      // we don't need here to save this contour in the database,
+      // since they have just been extracted from it!
+      while ( mesh_list_it != temp->m_Container.get< TraceID >().end() )
+        {
+        // note here it only makes sense when the trace is a mesh (for now)
+      //std::cout << "IN WHILE" << std::endl;
+
+        if ( mesh_list_it->Nodes )
+          {
+          GoFigureMeshAttributes attributes =
+            w3t->ComputeMeshAttributes(
+                mesh_list_it->Nodes, // mesh
+                false ); // do not need to compute intensity based measure
+          w3t->m_DataBaseTables->PrintVolumeAreaForMesh(
+            &attributes, mesh_list_it->TraceID);
+          }
+
+        w3t->AddMeshFromNodes< TraceID >( mesh_list_it );
+
+        ++mesh_list_it;
+        }
+      }
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+QGoMainWindow::LoadTracksFromDatabase( const int & iT )
+{
+  /// \note let's keep for the time being iT parameter in the case where
+  /// we would only load traces for a given time point (that could be usefule
+  /// somehow).
+  (void)iT;
+
+  QGoTabImageView3DwT *w3t =
+    dynamic_cast< QGoTabImageView3DwT * >( this->CentralTabWidget->currentWidget() );
+
+  if ( w3t )
+    {
+    TrackContainer *temp = w3t->GetTrackContainer();
+
+    if ( temp )
+      {
+      // let's iterate on the container with increasing TraceID
+      TrackContainer::MultiIndexContainerType::index< TraceID >::type::iterator
+        track_list_it = temp->m_Container.get< TraceID >().begin();
+
+      // we don't need here to save this contour in the database,
+      // since they have just been extracted from it!
+      while ( track_list_it != temp->m_Container.get< TraceID >().end() )
+        {
+        w3t->AddTrackFromNodes< TraceID >(track_list_it);
+        ++track_list_it;
+        }
+      }
+    }
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -504,7 +555,18 @@ QGoMainWindow::GetFileContainerForMultiFiles(std::string & ioHeader_Filename,
     {
     itk::MegaCaptureImport::Pointer importer = itk::MegaCaptureImport::New();
     importer->SetFileName(iFirst_FileName);
-    importer->Update();
+
+    try
+      {
+      importer->Update();
+      }
+    catch( ... )
+      {
+      QMessageBox::critical( NULL, tr( "Error" ),
+                             tr( "Error while trying to read this Megacatpure") );
+      return ofile_container;
+      }
+
     ofile_container = importer->GetOutput();
     ioHeader_Filename = importer->GetHeaderFilename();
     }
@@ -576,7 +638,17 @@ void QGoMainWindow::SetSingleFileName(const QString & iFile)
       vtkImageReader2 *       reader = r_factory->CreateImageReader2( iFile.toAscii().data() );
 
       reader->SetFileName( iFile.toAscii().data() );
-      reader->Update();
+
+      try
+        {
+        reader->Update();
+        }
+      catch( ... )
+        {
+        QMessageBox::critical( NULL, tr( "Error" ),
+                               tr( "Error while trying to read this file") );
+        return;
+        }
 
       vtkImageData *image = reader->GetOutput();
 
@@ -605,7 +677,17 @@ void QGoMainWindow::OpenLSMImage(const QString & iFile, const int & iTimePoint)
   m_LSMReader.push_back( vtkLSMReader::New() );
   m_LSMReader.back()->SetFileName( iFile.toAscii().data() );
   m_LSMReader.back()->SetUpdateTimePoint(iTimePoint);
-  m_LSMReader.back()->Update();
+
+  try
+    {
+    m_LSMReader.back()->Update();
+    }
+  catch( ... )
+    {
+    QMessageBox::critical( NULL, tr( "Error" ),
+                           QString( "Error while trying to read %1 at time %2").arg( iFile ).arg( iTimePoint ) );
+    return;
+    }
 
   int dim[5];
   m_LSMReader.back()->GetDimensions(dim);
@@ -661,7 +743,7 @@ QGoMainWindow::CreateNewTabFor3DwtImage(
   // note: do not need to call w3t->Update() since it is internally called in
   // w3t->SetMegaCaptureFile
   QGoTabImageView3DwT *w3t = new QGoTabImageView3DwT;
-
+  w3t->SetStatusBarPointer(this->statusBar());
   w3t->SetMegaCaptureFile(iFileList, iFileType, iHeader, iTimePoint);
 
   if ( iUseDatabase )
@@ -754,6 +836,7 @@ QGoMainWindow::CreateNewTabFor3DwtImage(vtkLSMReader *iReader, const QString & i
   SetupMenusFromTab(w3t);
 
   // w3t->m_DataBaseTables->hide();
+  w3t->SetStatusBarPointer(this->statusBar());
 
   return w3t;
 }
@@ -839,6 +922,13 @@ void QGoMainWindow::SetUpDatabase()
 {
   this->m_DBInitializationWizard->show();
   this->m_DBInitializationWizard->exec();
+  if (!this->m_RecentDatabaseFiles.empty())
+    {
+	this->m_RecentDatabaseFiles.clear();
+	UpdateRecentFileActions(this->m_RecentDatabaseFiles,
+                            menuDatabase_Files,
+                            recentDatabaseFileActions);
+    }
 }
 
 //--------------------------------------------------------------------------
@@ -1139,7 +1229,7 @@ void QGoMainWindow::AddSetUpDatabaseMenu()
     {
     actionSet_Up_Database = new QAction(
         tr("Set Up Database"), this->menuDatabase);
-	this->m_DatabaseSetUp = false;
+  this->m_DatabaseSetUp = false;
     this->menuDatabase->addAction(actionSet_Up_Database);
     this->actionSet_Up_Database->setEnabled(true);
     m_DBInitializationWizard = new QGoDBInitializationWizard(this);

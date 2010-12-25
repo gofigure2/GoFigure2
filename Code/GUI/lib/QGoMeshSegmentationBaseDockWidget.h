@@ -72,6 +72,7 @@ public:
    * data is multichannel.
    * \param[in] iChannel Channel on which want we want to apply the segmentation
    * algorithm
+   * \param[in] iText Name of the channels
    */
   void SetChannel(int iChannel, const QString & iText = QString());
 
@@ -136,7 +137,7 @@ signals:
    * \brief Signal sent after a seed segmentation to save the contour and
    * update the visualization
    */
-  void SaveAndVisuMesh(vtkPolyData *);
+  void SaveAndVisuMesh(vtkPolyData *, int);
 
   /**
    * \brief Signal sent after a seed segmentation to delete the seeds

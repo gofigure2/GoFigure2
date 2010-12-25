@@ -135,8 +135,13 @@ bool QGoOpenCreateImgSessionPage::GetListImgSession()
   ChoiceImgSession->clear();
   m_MapImgSessionIDName.clear();
 
-  m_MapImgSessionIDName = MapTwoColumnsFromTable( m_DatabaseConnector,
-                                                  "Name", "ImagingSessionID", "imagingsession", "ProjectName",
+  //m_MapImgSessionIDName = MapTwoColumnsFromTable( m_DatabaseConnector,
+   //                                               "Name", "ImagingSessionID", "imagingsession", "ProjectName",
+   //                                               field("ProjectName").toString().toStdString() );
+  std::vector<std::string> ImgSessionAttributes (2);
+  ImgSessionAttributes[0] = "Name";
+  ImgSessionAttributes[1] = "ImagingSessionID";
+  m_MapImgSessionIDName = MapTwoColumnsFromTable( m_DatabaseConnector,ImgSessionAttributes,"imagingsession", "ProjectName",
                                                   field("ProjectName").toString().toStdString() );
 
   std::map< std::string, std::string >::iterator it = m_MapImgSessionIDName.begin();

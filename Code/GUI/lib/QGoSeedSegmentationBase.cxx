@@ -73,15 +73,15 @@ QGoSeedSegmentationBase::QGoSeedSegmentationBase(QWidget *parentWidget,
     }
 
   // connect with 3DwT to add the good number of channels
-  QObject::connect( this, SIGNAL( addChannel(QString) ),
-                    m_BaseAlgorithmSegmentationWidget, SLOT( AddChannel(QString) ) );
+  QObject::connect( this, SIGNAL( addChannel(int, QString) ),
+                    m_BaseAlgorithmSegmentationWidget, SLOT( AddChannel(int, QString) ) );
   // connect with 3DwT to add the good number of channels
   QObject::connect( this, SIGNAL( setNumberOfChannels(int) ),
                     m_BaseAlgorithmSegmentationWidget, SLOT( setNumberOfChannels(int) ) );
   // mesh has been created by a filter
   QObject::connect( m_BaseAlgorithmSegmentationWidget,
-                    SIGNAL( MeshCreated(vtkPolyData *) ),
-                    this, SIGNAL( MeshCreated(vtkPolyData *) ) );
+                    SIGNAL( MeshCreated(vtkPolyData *, int) ),
+                    this, SIGNAL( MeshCreated(vtkPolyData *, int) ) );
   // contour has been created by a filter
   QObject::connect( m_BaseAlgorithmSegmentationWidget,
                     SIGNAL( ContourCreated(vtkPolyData *) ),
@@ -184,9 +184,9 @@ QGoSeedSegmentationBase::ConnectSignals(QGoSeedBaseWidget *iWidget)
 
 //--------------------------------------------------------------------------
 void
-QGoSeedSegmentationBase::SetChannel(const QString & iText)
+QGoSeedSegmentationBase::SetChannel(int iChannel, const QString & iText)
 {
-  emit addChannel( iText );
+  emit addChannel( iChannel, iText);
 }
 
 //--------------------------------------------------------------------------

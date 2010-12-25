@@ -44,13 +44,15 @@
 #endif
 
 #include "itkImageToImageFilter.h"
-#include "itkCellPreprocess.h"
+#include "itkPreprocessImageFilter.h"
 #include "itkCellForegroundExtraction.h"
 #include "itkGradientWeightedDistanceImageFilter.h"
 #include "itkInvertIntensityImageFilter.h"
 #include "itkMorphologicalWatershedImageFilter2.h"
 #include "itkImageRegionIterator.h"
+#include "itkImageRegionIteratorWithIndex.h"
 #include "itkMinimumMaximumImageCalculator.h"
+#include "itkAntiAliasBinaryImageFilter.h"
 
 namespace itk
 {
@@ -105,8 +107,9 @@ public:
   typedef typename SegmentImageType::PixelType    SegmentImagePixelType;
   typedef typename SegmentImageType::SizeType    SegmentImageSizeType;
   typedef typename SegmentImageIndexType::IndexValueType SegmentImageIndexValueType;
+  typedef typename SegmentImageType::RegionType        SegmentImageRegionType;
   
-  typedef CellPreprocess< FeatureImageType, FeatureImageType > 
+  typedef PreprocessImageFilter< FeatureImageType, FeatureImageType > 
     PreprocessFilterType;
   typedef typename PreprocessFilterType::Pointer PreprocessFilterPointer;
   
@@ -129,7 +132,11 @@ public:
   typedef MinimumMaximumImageCalculator< InputImageType > MinMaxCalculatorType;
 
   typedef ImageRegionIterator< FeatureImageType > FeatureIteratorType;
-  typedef ImageRegionIterator< SegmentImageType > SegmentIteratorType;
+  typedef ImageRegionIterator< InputImageType > InputIteratorType;
+  typedef ImageRegionIteratorWithIndex< SegmentImageType > SegmentIteratorType;
+  
+  typedef AntiAliasBinaryImageFilter< SegmentImageType, InputImageType > AntiAliasFilterType;
+  typedef typename AntiAliasFilterType::Pointer AntiAliasFilterPointer;
 
   itkGetConstMacro (NucleusRadius, double);
   itkSetMacro (NucleusRadius, double);

@@ -33,6 +33,8 @@
 =========================================================================*/
 
 #include "QGoLUTDialog.h"
+#include "QDebug"
+#include "QColorDialog"
 
 #include "vtkLookupTable.h"
 #include "vtkScalarBarActor.h"
@@ -90,13 +92,23 @@ vtkLookupTable * QGoLUTDialog::GetLookupTable(QWidget *iiParent,
     dlg.setWindowTitle(iTitle);
     }
   dlg.ChangeLookupTable(iIdx);
-  dlg.exec();
-  return dlg.GetLookupTable();
+  if( dlg.exec() == QDialog::Accepted )
+    {
+    return dlg.GetLookupTable();
+    }
+  else
+    {
+    dlg.GetLookupTable()->Delete();
+    return NULL;
+    }
 }
 
 void QGoLUTDialog::setupUi(QDialog *LUTDialog)
 {
-  if ( LUTDialog->objectName().isEmpty() ) { LUTDialog->setObjectName( QString::fromUtf8("LUTDialog") ); }
+  if ( LUTDialog->objectName().isEmpty() )
+    {
+    LUTDialog->setObjectName( QString::fromUtf8("LUTDialog") );
+    }
 
   LUTDialog->resize(321, 183);
   LUTDialog->setMinimumSize(200, 150);
@@ -124,17 +136,15 @@ void QGoLUTDialog::setupUi(QDialog *LUTDialog)
   this->LUTComboBox->setEditable(false);
   this->LUTComboBox->setFrame(true);
 
-  int k = 0;
-  this->LUTComboBox->insertItem( k++, tr("B/W") );
-  this->LUTComboBox->insertItem( k++, tr("B/W Inverse") );
-  this->LUTComboBox->insertItem( k++, tr("Spectrum") );
-  this->LUTComboBox->insertItem( k++, tr("Hot Metal") );
-  this->LUTComboBox->insertItem( k++, tr("GE Color") );
-  this->LUTComboBox->insertItem( k++, tr("Flow") );
-  this->LUTComboBox->insertItem( k++, tr("LONI") );
-  this->LUTComboBox->insertItem( k++, tr("LONI2") );
-  this->LUTComboBox->insertItem( k++, tr("Asymmetry") );
-  this->LUTComboBox->insertItem( k++, tr("P-Value") );
+  std::vector< std::string > lut_names =
+      vtkLookupTableManager::GetAvailableLookupTables();
+
+  size_t k = 0;
+  for( ; k < lut_names.size(); k++ )
+    {
+    this->LUTComboBox->insertItem(static_cast<int>(k), QString::fromStdString( lut_names[k] ) );
+    }
+  this->LUTComboBox->insertItem(static_cast<int>(k), tr( "HSV Based" ) );
 
   this->HorizontalLayout->addWidget(this->LUTComboBox);
 
@@ -181,8 +191,44 @@ void QGoLUTDialog::setupUi(QDialog *LUTDialog)
 void QGoLUTDialog::ChangeLookupTable(const int & idx)
 {
   this->LUT->Delete();
-  this->LUT = vtkLookupTableManager::GetLookupTable(idx);
-  this->LUTActor->SetLookupTable(this->LUT);
+  int N = this->LUTComboBox->count();
 
-  this->QvtkWidget->GetRenderWindow()->Render();
+  if( ( idx >= N ) || ( idx < 0 ) )
+    {
+    qWarning() << "QGoLUTDialog idx is out of range";
+    return;
+    }
+  else
+    {
+    if( idx == N-1 )
+      {
+      QColor color = QColorDialog::getColor( Qt::green );
+
+      double hsv[3];
+
+      if( color.isValid() )
+        {
+        hsv[0] = color.hueF();
+        hsv[1] = color.saturationF();
+        hsv[2] = color.valueF();
+        }
+      else
+        {
+        color = Qt::green;
+        hsv[0] = color.hueF();
+        hsv[1] = color.saturationF();
+        hsv[2] = color.valueF();
+        }
+
+      this->LUT = vtkLookupTableManager::GetHSVBasedLookupTable( hsv );
+      }
+    else
+      {
+      this->LUT = vtkLookupTableManager::GetLookupTable(idx);
+      }
+
+    this->LUTActor->SetLookupTable(this->LUT);
+    this->QvtkWidget->GetRenderWindow()->Render();
+
+    }
 }

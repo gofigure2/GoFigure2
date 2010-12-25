@@ -39,7 +39,7 @@
 #include "GoDBCollectionOfTraces.h"
 #include "GoDBTWContainerForContourMesh.h"
 #include "QGoDBTraceManager.h"
-//#include <QWidget>
+#include "ContourContainer.h"
 
 class QGOGUILIB_EXPORT QGoDBContourManager:public QGoDBTraceManager
 {
@@ -49,22 +49,20 @@ public:
   ~QGoDBContourManager();
   typedef std::pair< std::string, QColor > NameWithColorData;
 
-  void SetDatabaseConnection(vtkMySQLDatabase *iDatabaseConnector);
-
-  void SetSelectedColor(NameWithColorData iSelectedColor);
-
-  //void SetSelectedCollection(NameWithColorData iSelectedCollection);
+  /**
+  \brief set the m_ContourContainerInfoForVisu to the iContainerForVisu
+  \param[in] iContainerForVisu common container for the visu and database
+  */
+  void SetContoursInfoContainerForVisu(ContourContainer *iContainerForVisu);
 
   unsigned int SaveNewContourFromVisu(unsigned int iXCoordMin,
                                       unsigned int iYCoordMin,
                                       unsigned int iZCoordMin,
-                                      unsigned int iTCoord,
                                       unsigned int iXCoordMax,
                                       unsigned int iYCoordMax,
                                       unsigned int iZCoordMax,
                                       vtkPolyData *iTraceNodes,
                                       vtkMySQLDatabase *iDatabaseConnector,
-                                      NameWithColorData iColor,
                                       unsigned int iMeshID);
 
   /**
@@ -81,7 +79,12 @@ public:
                                             vtkPolyData *iContourNodes,
                                             vtkMySQLDatabase *iDatabaseConnector);
 
-  void DisplayInfoAndLoadVisuContainerForAllContours(vtkMySQLDatabase *iDatabaseConnector,unsigned int iTimePoint);
+  /**
+  \brief get all the data from the database to load all the contours for the imagingsession
+  into the table widget and the container for the visu
+  \param[in] iDatabaseConnector connection to the database
+  */
+  void DisplayInfoAndLoadVisuContainerForAllContours(vtkMySQLDatabase *iDatabaseConnector);
 
   /**
   \brief is called when the user choses the change color action in the
@@ -94,21 +97,18 @@ public:
   /**
   \brief virtual pure method in QGoDBTraceManager
   */
-  virtual std::list< unsigned int > UpdateTheTracesColor(vtkMySQLDatabase *iDatabaseConnector,
-                                                         NameWithColorData iNewColor);
+  virtual std::list< unsigned int > UpdateTheTracesColor(vtkMySQLDatabase *iDatabaseConnector);
 
-  /**
-  \brief virtual pure method in QGoDBTraceManager
-  */
+  //virtual pure method in QGoDBTraceManager
   virtual void UpdateTWAndContainerForImportedTraces(std::vector< int > iVectorImportedTraces,
                                                      vtkMySQLDatabase *iDatabaseConnector);
+  //virtual pure method in QGoDBTraceManager
+  virtual void DeleteTraces(vtkMySQLDatabase *iDatabaseConnector);
+
+  //virtual pure method in QGoDBTraceManager
+  virtual std::list< unsigned int > GetListHighlightedIDs();
 
 signals:
-  void NeedToGetDatabaseConnection();
-
-  void NeedToGetCurrentSelectedColor();
-
-  //void NeedToGetCurrentSelectedCollection();
   /**
   \brief signal emitted when the user clicks on "Reedit contour" in the context menu
   */
@@ -116,33 +116,44 @@ signals:
 
 protected:
   GoDBTWContainerForContourMesh *m_TWContainer;
-  NameWithColorData              m_SelectedColor;
-  NameWithColorData              m_SelectedCollection;
-  vtkMySQLDatabase *             m_DatabaseConnector;
+  ContourContainer              *m_ContourContainerInfoForVisu;
 
+  //virtual pure method in QGoDBTraceManager
   virtual void SetCollectionsTraceNames();
 
   virtual void AddActionsContextMenu(QMenu *iMenu);
 
   /**
   \brief add the action "generate a mesh from contours" in the context menu
-  \param[in] iMenu context menu
   */
-  void AddActionForCreateNewCollectionFromCheckedTraces(QMenu *iMenu);
+  void AddActionForCreateNewCollectionFromCheckedTraces();
 
   virtual void DisplayInfoForLastCreatedTrace(vtkMySQLDatabase *iDatabaseConnector);
 
   virtual void DisplayInfoForExistingTrace(vtkMySQLDatabase *iDatabaseConnector,
                                            int iTraceID);
 
+  //virtual pure method in QGoDBTraceManager
   virtual void DisplayInfoForAllTraces(vtkMySQLDatabase *iDatabaseConnector);
 
-  //void UpdateTracesVisibilityForGivenTimePoint(unsigned int iTimePoint);
+  //virtual pure method in QGoDBTraceManager
+  virtual void GetTracesInfoFromDBAndModifyContainerForVisu(
+    vtkMySQLDatabase* iDatabaseConnector,std::vector<int> iVectIDs = std::vector< int >());
 
 protected slots:
   /**
   \brief emit TraceToReEdit if one and only one contour is checked in the TW
   */
   void ReEditTrace();
+
+  //virtual pure method in QGoDBTraceManager
+  virtual void UpdateHighlightedElementsInVisuContainer(int iTraceID);
+
+  //virtual pure method in QGoDBTraceManager
+  virtual void UpdateVisibleElementsInVisuContainer(int iTraceID);
+
+  //virtual pure method in QGoDBTraceManager
+  virtual void SetColorCoding(bool IsChecked);
+
 };
 #endif

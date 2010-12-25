@@ -37,56 +37,40 @@
 
 class vtkActor;
 class vtkPolyData;
+class vtkProperty;
 
 #include <ostream>
 #include <vector>
 
 #include "QGoIOConfigure.h"
 
+#include "TraceStructure.h"
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#include "StructureHelper.h"
+#endif
+
+/**
+\defgroup Contour Contour
+\defgroup Mesh Mesh
+*/
+
+
 /**
  * \struct ContourMeshStructure
  * \brief  Structure which represent a contour or a mesh, and used for
  * interaction between Visualization and TableWidget
+ * \ingroup Contour Mesh Trace
  *
  * \sa ContourMeshContainer
  */
-struct QGOIO_EXPORT ContourMeshStructure {
-  /** TraceID */
-  unsigned int TraceID;
-
-  /** Actor in the XY View */
-  vtkActor *ActorXY;
-
-  /** Actor in the XZ View */
-  vtkActor *ActorXZ;
-
-  /** Actor in the YZ View */
-  vtkActor *ActorYZ;
-
-  /** Actor in the XYZ View */
-  vtkActor *ActorXYZ;
-
-  /**
-  * In the case of contours, Nodes represent the control points.
-  *   In the case of meshes, Nodes represent the triangular mesh.
-  */
-  vtkPolyData *Nodes;
-
+class QGOIO_EXPORT ContourMeshStructure : public TraceStructure
+{
+public:
   //unsigned int CollectionID;
 
   /** Time point of the contour / mesh */
   unsigned int TCoord;
-
-  /** Is the contour / mesh Highlighted in the Visualization ? */
-  bool Highlighted;
-
-  /** Is the contour / mesh Visible (appears on the screen)
-  * in the Visualization ?
-  */
-  bool Visible;
-
-  /** color of the contour / mesh. \note each component is in [0,1] */
-  double rgba[4];
 
   /**
   \brief Return the direction of a given contour iContour
@@ -169,17 +153,4 @@ struct QGOIO_EXPORT ContourMeshStructure {
     return os;
   }
 };
-
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-struct TraceID {};
-struct ActorXY {};
-struct ActorXZ {};
-struct ActorYZ {};
-struct ActorXYZ {};
-struct Nodes {};
-struct TCoord {};
-struct Highlighted {};
-struct Visible {};
-#endif
-
 #endif

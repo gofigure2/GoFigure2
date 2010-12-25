@@ -140,7 +140,7 @@ void MegaCaptureHeaderReader::Read()
     m_CreationDate += " ";
     m_CreationDate += hours;
 
-    std::cout << "** " << m_CreationDate << std::endl;
+    //std::cout << "** " << m_CreationDate << std::endl;
     }
   else
     {

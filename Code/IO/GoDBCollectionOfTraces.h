@@ -64,7 +64,7 @@ public:
   typedef GoDBTableWidgetContainer::TWContainerType TWContainerType;
   typedef std::pair< std::string, QColor >          NameWithColorData;
 
-  /** 
+  /**
   \brief fill the global values for the collection of traces.
   \param[in] iCollectionName name of the collection exp: track
   \param[in] iTracesName name of the trace exp:mesh
@@ -80,15 +80,15 @@ public:
   void SetImgSessionID(unsigned int iImgSessionID);
 
   //Modif into Database
-  /** 
+  /**
   \brief Delete the corresponding trace in the database
   \param[in] DatabaseConnector connection to the database
   */
   void DeleteTraceInDB(int TraceToDelete, vtkMySQLDatabase *DatabaseConnector);
 
   //Modif into Database
-  /** 
-  \brief Delete in the Database all the traces listed in the list of int 
+  /**
+  \brief Delete in the Database all the traces listed in the list of int
   \param[in] TracesToDelete delete from the database the traces with the
   ID listed in it
   \param[in] DatabaseConnector connection to the database
@@ -96,7 +96,7 @@ public:
   void DeleteTracesInDB(std::list< unsigned int > TracesToDelete,
                         vtkMySQLDatabase *DatabaseConnector);
 
-  /** 
+  /**
   \brief Update the collectionID of the selected traces in the DB trace table,
   update the bounding box of the collection, update the bounding boxes of the
   previous collections the traces belonged to and return the list of the
@@ -107,10 +107,10 @@ public:
   //  vtkMySQLDatabase *DatabaseConnector);
 
   //Modif into Database
-  /** 
+  /**
   \brief Update the collectionID of the selected traces in the DB traces table
   with the new collectionID
-  \param[in] iListSelectedTraces IDs of the traces the collectionID need to 
+  \param[in] iListSelectedTraces IDs of the traces the collectionID need to
   be updated
   \param[in] iCollectionID new collectionID
   \param[in] DatabaseConnector connection to the database
@@ -119,26 +119,17 @@ public:
     std::list< unsigned int > iListSelectedTraces, unsigned int iCollectionID,
     vtkMySQLDatabase *iDatabaseConnector);
 
-  /** 
-  \brief 
+  /**
+  \brief
   \return the name of the trace of the current collection which
   is also a collection of
   */
   std::string GetCollectionOf();
 
-  /** 
-  \brief get the IDs of the traces part of the collection with iCollectionID
-  \param[in] DatabaseConnector connection to the database
-  \param[in] iCollectionID ID of the collection the traces needed are part of
-  \return the list of IDs for the traces part of the collectionID
-  */
-  std::list< int > GetTracesIDPartOfTheCollection(
-    vtkMySQLDatabase *DatabaseConnector, int iCollectionID);
-
   //******************************Modif-Refactoring************************************************
   //public:
   //Modif into Database
-  /** 
+  /**
   \brief Calculate the bounding box of the corresponding collection and update
   it in the database
   \param[in] DatabaseConnector connection to the database
@@ -147,7 +138,7 @@ public:
   void RecalculateDBBoundingBox(
     vtkMySQLDatabase *iDatabaseConnector, int iCollectionID);
 
-  /** 
+  /**
   \brief Get the list of all the collectionIDs, distinct and different from zero for the
   corresponding traces IDs and recalculate the bounding boxes for them.
   \param[in] DatabaseConnector connection to the database
@@ -201,7 +192,8 @@ public:
     if ( CollectionID != "0" )
       {
       return this->CreateNewTraceInDB< T >( iNewCollection, iDatabaseConnector,
-                                            CoordIDMin, CoordIDMax, iColor, ss_atoi< unsigned int >(CollectionID) );
+                                            CoordIDMin, CoordIDMax, iColor,
+                                            ss_atoi< unsigned int >(CollectionID) );
       }
     else
       {
@@ -309,6 +301,99 @@ public:
   std::list< unsigned int > GetLastCreatedTracesIDs(
     vtkMySQLDatabase *iDatabaseConnector, int iNumberOfTraces);
 
+  /**
+  \brief update in the database the iNameValue with iValue for
+  the traces from iListTraceIDs
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iNameValue name of the field in the database
+  \param[in] iValue value of the field
+  \param[in] iListTraceIDs list of the traces with the
+  value to be updated
+  */
+  void UpdateValueForListTraces(
+    vtkMySQLDatabase *iDatabaseConnector,std::string iNamevalue,
+    std::string iValue, std::list<unsigned int> iListTraceIDs);
+
+  /**
+  \brief return a list of the coordinates of all the centers of the bounding boxes
+  for all the collectionOf corresponding to the iTraceID
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iTraceID ID for the trace the bounding boxes of its collectionof traces
+  are needed
+  \return a list of x,y,z,t for all centers of bounding boxes
+  */
+  std::list<double*> GetCoordinateCenterBoundingBox(vtkMySQLDatabase *iDatabaseConnector,
+    unsigned int iTraceID);
+
+  /**
+  \brief get the tracesIDs from the database which have iTimePoint as TCoordMin and iCollectionID
+  as collectionID
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iCollectionID ID of the collection
+  \param[in] iTimePoint timepoint for which the traces IDs are needed
+  \return a list of the traces IDs corresponding to this iTimePoint and iCollectionID
+  */
+  std::list<unsigned int> GetTraceIDsWithTimePointAndCollectionID(vtkMySQLDatabase *iDatabaseConnector,
+  unsigned int iCollectionID,unsigned int iTimePoint);
+
+  /**
+  \brief get the list of timepoints where several traces from the list of traces
+  have the same ones
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iListTraceIDs list of the IDs of the traces to be checked
+  \return list of timepoints with several traces from the list
+  */
+  std::list<unsigned int> GetTimePointWithSeveralTracesFromTheList(
+    vtkMySQLDatabase *iDatabaseConnector, std::list< unsigned int > iListTraceIDs);
+
+  /**
+  \brief get the max of the IDs for the traceIDs in iListTraceIDs that have a
+  timepoint equal to iTimePoint
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iListTraceIDs list of the IDs of the traces to be checked
+  \param[in] iTimePoint timepoint for which the traceIDs are checked
+  \return the max of the traceIDs for this timepoint
+  */
+  int GetMaxTraceIDsForSpecificTimePoint(vtkMySQLDatabase *iDatabaseConnector,
+    std::list<unsigned int> iListTraceIDs,unsigned int iTimePoint);
+
+  /**
+  \brief get all the traceIDs except the iMaxTraceID for the timepoint
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iListTraceIDs list of the IDs of the traces to be checked
+  \param[in] iTimePoint timepoint for which the traceIDs are checked
+  \param[in] iMaxTraceID max of the traceIDs for this timepoint
+  \return all the traceIDs for this timepoint different than the max one
+  */
+  std::list<unsigned int> GetNonMaxTraceIDsForSpecificTimePoint(
+    vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTraceIDs,
+    unsigned int iTimePoint,unsigned int iMaxTraceID);
+
+  /**
+  \brief get the list of timepoints for each trace in iListTraceIDs
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iListTraceIDs list of the IDs for the traces the timepoints
+  are needed
+  \return all the timepoints for the traces in iListTraceIDs
+  */
+  std::list<unsigned int> GetListTimePointsFromTraceIDs(
+    vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTraceIDs);
+
+  std::list<unsigned int> GetTraceIDsBelongingToCollectionID(
+    vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTraceIDs,
+    unsigned int iCollectionID);
+
+  std::list<unsigned int> GetTimePointsForTraceIDs(
+    vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTraceIDs);
+
+  std::list<unsigned int> GetTraceIDsWithTimePointSup(
+    vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTraceIDs,
+    unsigned int iTimePoint);
+
+  std::list<unsigned int> GetTraceIDsWithTimePointInf(
+    vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTraceIDs,
+    unsigned int iTimePoint);
+
 protected:
 
   std::string  m_CollectionName;
@@ -328,33 +413,9 @@ protected:
   */
   int CreateNewCollection(vtkMySQLDatabase *DatabaseConnector, GoDBTraceRow & myNewObject);
 
-  //get from Database and/or Modif into Database
-  /** \brief get the max of all the coordinates in the ListSelectedTraces, compare it
-  to the max of the existing collection and update the max coordinate of the bounding
-  box of the collection if necessary*/
-  int GetCoordMaxID(vtkMySQLDatabase *DatabaseConnector,
-                    int CollectionID, std::list< unsigned int > ListSelectedTraces);
-
-  //get from Database and/or Modif into Database
-  /** \brief get the min of all the coordinates in the ListSelectedTraces, compare it
-  to the min of the existing collection and update the min coordinate of the bounding
-  box of the collection if necessary*/
-  int GetCoordMinID(vtkMySQLDatabase *DatabaseConnector,
-                    int CollectionID, std::list< unsigned int > ListSelectedTraces);
-
   /** \brief Update in the database the coordid max and min of the trace*/
   void UpdateBoundingBoxInDB(int iCoordIDMin, int iCoordIDMax,
                              int iTraceID, vtkMySQLDatabase *iDatabaseConnector);
-
-  /** \brief return the coordinate min for the existing Collection*/
-  GoDBCoordinateRow GetExistingCoordMin(
-    vtkMySQLDatabase *DatabaseConnector, int CollectionCoordIDMin,
-    int CollectionID);
-
-  /** \brief return the coordinate max for the existing Collection*/
-  GoDBCoordinateRow GetExistingCoordMax(
-    vtkMySQLDatabase *DatabaseConnector, int CollectionCoordIDMax,
-    int CollectionID);
 
   //Modif into Database
   /** \brief change the collection ID of the trace*/
@@ -409,12 +470,12 @@ protected:
   /** \brief return the coordinate max of all the coordinates of the
   collectionOf traces*/
   GoDBCoordinateRow GetCollectionOfTracesCoordMax(
-    vtkMySQLDatabase *DatabaseConnector, std::vector< std::string > iListCollectionOfTracesID);
+    vtkMySQLDatabase *DatabaseConnector, std::list< unsigned int > iListCollectionOfTracesID);
 
   /** \brief return the coordinate min of all the coordinates of the
   selected traces*/
   GoDBCoordinateRow GetCollectionOfTracesCoordMin(
-    vtkMySQLDatabase *DatabaseConnector, std::vector< std::string > iListCollectionOfTracesID);
+    vtkMySQLDatabase *DatabaseConnector, std::list< unsigned int > iListCollectionOfTracesID);
 
   /**
   \brief get all the different parts needed for the query to get the color of traces
@@ -437,8 +498,8 @@ protected:
   GetListNameWithColorDataFromResultsQuery(
     std::vector< std::vector< std::string > > iResultsQuery);
 
-  std::vector< std::string > ListUnsgIntToVectorString(std::list< unsigned int > iList);
+  //std::vector< std::string > ListUnsgIntToVectorString(std::list< unsigned int > iList);
 
-  std::list< unsigned int > VectorStringToUnsgInt(std::vector< std::string > iVector);
+  //std::list< unsigned int > VectorStringToUnsgInt(std::vector< std::string > iVector);
 };
 #endif

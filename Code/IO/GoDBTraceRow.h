@@ -34,12 +34,13 @@
 #ifndef __GoDBTraceRow_h
 #define __GoDBTraceRow_h
 
-#include "vtkMySQLDatabase.h"
 #include "GoDBCoordinateRow.h"
-#include "vtkPolyData.h"
-#include "vtkPolyDataMySQLTextWriter.h"
 #include "GoDBRecordSetHelper.h"
 #include "GoDBRecordSet.h"
+
+#include "vtkSmartPointer.h"
+#include "vtkPolyData.h"
+#include "vtkMySQLDatabase.h"
 
 /**
 \class GoDBTraceRow
@@ -53,13 +54,40 @@ public:
 
   /**
   \brief fill the trace map with the values gotten from the visualization
+  \param[in] DatabaseConnector connection to the database
+  \param[in] TraceVisu vtkPolyData the points will be extracted from to create
+  a string for "Points"
+  \param[in] Min coordinate row for the minimum of the bounding box
+  \param[in] Max coordinate row for the maximum of the bounding box
+  \param[in] ImgSessionID ID of the current imagingsession
   */
   GoDBTraceRow(vtkMySQLDatabase *DatabaseConnector, vtkPolyData *TraceVisu,
                GoDBCoordinateRow Min, GoDBCoordinateRow Max, unsigned int ImgSessionID);
 
-  GoDBTraceRow(vtkMySQLDatabase *DatabaseConnector, std::string TraceVisu,
-               GoDBCoordinateRow Min, GoDBCoordinateRow Max, unsigned int ImgSessionID);
-  GoDBTraceRow(unsigned int ImgSessionID);
+  /**
+  \brief constructor
+  \param[in] DatabaseConnector connection to the database
+  \param[in] TraceVisu vtkPolyData the points will be extracted from
+  \param[in] Min coordinate row for the minimum of the bounding box
+  \param[in] Max coordinate row for the maximum of the bounding box
+  \param[in] ImgSessionID ID of the current imagingsession
+  */
+  //GoDBTraceRow(vtkMySQLDatabase *DatabaseConnector, std::string TraceVisu,
+    //           GoDBCoordinateRow Min, GoDBCoordinateRow Max, unsigned int ImgSessionID);
+
+  /**
+  \brief
+  \param[in] ImgSessionID ID of the current imagingsession
+  */
+  //GoDBTraceRow(unsigned int ImgSessionID);
+
+  /**
+  \brief get the data from the database corresponding to the iExistingID
+  and set the values of the map with them
+  \param[in] iExistingID ID of the existing trace
+  \param[in] DatabaseConnector connection to the database
+  */
+  //GoDBTraceRow(unsigned int iExistingID,vtkMySQLDatabase *iDatabaseConnector);
 
   ~GoDBTraceRow()
   {}
@@ -68,7 +96,7 @@ public:
   \brief check if a trace already has the same bounding box
   \param[in] DatabaseConnector connection to the database
   \return the TraceID of the Trace with the same bounding box
-  already registered in the DB or -1 if not yet created 
+  already registered in the DB or -1 if not yet created
   */
   int  DoesThisBoundingBoxExist(vtkMySQLDatabase *DatabaseConnector);
 
@@ -99,18 +127,6 @@ public:
   std::string GetCollectionName();
 
   /**
-  \brief set the data from the visu for an existing Trace
-  \param[in] DatabaseConnector connection to the database
-  \param[in] TraceVisu vtkPolyData the points will be extracted from
-  \param[in] iCoordMin coordinate row for the minimum of the bounding box
-  \param[in] iCoordMax coordinate row for the maximum of the bounding box
-  */
-  void SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector,
-                             vtkPolyData *TraceVisu,
-                             GoDBCoordinateRow iCoordMin,
-                             GoDBCoordinateRow iCoordMax);
-
-  /**
   \brief check in the database if the Coordinate Min and Max already exists,
   if yes fill the map["CoordIDMin"] and ["CoordIDmax"] with the existing CoordinateID
   if not, create the coordinates in the database and fill the map with the new created ID,
@@ -136,6 +152,14 @@ public:
   */
   void SetValuesForSpecificID(int ID, vtkMySQLDatabase *iDatabaseConnector);
 
+  /**
+  \brief save the row in the database if the TraceID is set to "0", update the
+  existing traceRow if the TraceID is <> 0
+  \param[in] DatabaseConnector connection to the database
+  \return the ID of the updated or saved trace
+  */
+  virtual int SaveInDB(vtkMySQLDatabase *DatabaseConnector) = 0;
+
 protected:
 
   virtual void InitializeMap();
@@ -151,6 +175,12 @@ protected:
   std::string m_CollectionIDName;
   std::string m_CollectionName;
 
+   /**
+  \brief set the ImagingSessionID field to iImgSessionID
+  \param[in] iImgSessionID collectionID to be set to
+  */
+  void SetImgSessionID(unsigned int iImgSessionID);
+
   /**
   \brief save the row in the database if the TraceID is set to "0", update the
   existing traceRow if the TraceID is <> 0
@@ -160,7 +190,7 @@ protected:
   \return the ID of the updated or saved trace
   */
   template< typename T >
-  int SaveInDBTemplate(vtkMySQLDatabase *iDatabaseConnector, T iTrace)
+  int SaveInDBTemplate(vtkMySQLDatabase *iDatabaseConnector, T* iTrace)
   {
     int SavedTraceID;
 
@@ -169,7 +199,7 @@ protected:
     if ( this->m_MapRow[this->m_TableIDName] != "0" )
       {
       SavedTraceID = UpdateOneNewObjectInTable< T >(iDatabaseConnector,
-                                                    &iTrace);
+                                                    iTrace);
       }
     else
       {
@@ -178,6 +208,28 @@ protected:
       this->SetField(this->m_TableIDName, SavedTraceID);
       }
     return SavedTraceID;
+  }
+
+  template< typename T >
+  void SetTheDataFromTheVisuTemplate(vtkMySQLDatabase *DatabaseConnector,
+                                        vtkPolyData *TraceVisu,
+                                        GoDBCoordinateRow iCoordMin,
+                                        GoDBCoordinateRow iCoordMax)
+  {
+    this->SetTheBoundingBox(DatabaseConnector, iCoordMin, iCoordMax);
+
+    vtkSmartPointer< T > convert =
+      vtkSmartPointer< T >::New();
+    std::string PointsString = convert->GetMySQLText(TraceVisu);
+
+//    std::cout << "output string: " << PointsString << std::endl;
+
+    this->SetField("Points", PointsString);
+
+    if ( this->DoesThisBoundingBoxExist(DatabaseConnector) )
+      {
+      std::cout << "The bounding box already exists for this mesh" << std::endl;
+      }
   }
 };
 #endif

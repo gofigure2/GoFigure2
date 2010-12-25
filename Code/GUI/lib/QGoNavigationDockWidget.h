@@ -118,11 +118,13 @@ public slots:
   /** Set Time Point */
   void SetTSlice(int iSlice);
 
-  /** \todo (Nicolas) to document */
+  /** Move to the previous time point using shortcuts */
   void MoveToPreviousTimePoint();
 
-  /** \todo (Nicolas) to document */
+  /** Move to the next time point using shortcuts */
   void MoveToNextTimePoint();
+
+  void StepVisibility(int);
 
 signals:
   void ShowAllChannelsChanged(bool iChanged);
@@ -136,6 +138,10 @@ signals:
   void ZSliceChanged(int Slice);
 
   void TSliceChanged(int Slice);
+
+  void ModeChanged(int Mode);
+
+  void StepChanged(int Step);
 
 protected:
   GoFigure::TabDimensionType m_Dimension;

@@ -121,7 +121,7 @@ ContourToMeshFilter< TContainer >::ProcessContours(const ContainerType & iContai
     vtkSmartPointer< vtkPoissonReconstruction > poissonFilter =
       vtkSmartPointer< vtkPoissonReconstruction >::New();
     poissonFilter->SetInputConnection( normal_filter->GetOutputPort() );
-    poissonFilter->SetDepth(7);
+    poissonFilter->SetDepth(12);
     poissonFilter->SetConfidence(1.);
     poissonFilter->Update();
 

@@ -47,7 +47,7 @@
 
 #include "itkImageFileWriter.h"
 
-#include "itkCellPreprocess.h"
+#include "itkPreprocessImageFilter.h"
 #include "itkRegionOfInterestImageFilter.h"
 
 namespace itk
@@ -109,7 +109,7 @@ public:
   MultiLevelSetType;
   typedef typename MultiLevelSetType::Pointer MultiLevelSetPointer;
 
-  typedef itk::CellPreprocess< FeatureImageType, FeatureImageType >
+  typedef itk::PreprocessImageFilter< FeatureImageType, FeatureImageType >
   PreprocessFilterType;
   typedef typename PreprocessFilterType::Pointer PreprocessFilterPointer;
 

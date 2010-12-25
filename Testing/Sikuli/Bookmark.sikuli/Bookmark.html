@@ -1,0 +1,175 @@
+
+<html>
+   <head>
+      <style type="text/css">
+         .sikuli-code {
+            font-size: 20px;
+            font-family: "Osaka-mono", Monospace;
+            line-height: 1.5em;
+            display:table-cell;
+            white-space: pre-wrap;       /* css-3 */
+            white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+            white-space: -pre-wrap;      /* Opera 4-6 */
+            white-space: -o-pre-wrap;    /* Opera 7 */
+            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+            width: 99%;   /* remove horizontal scroll-bar when viewing in IE7 */
+         }
+         .sikuli-code img {
+            vertical-align: middle;
+            margin: 2px;
+            border: 1px solid #ccc;
+            padding: 2px;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            -moz-box-shadow: 1px 1px 1px gray;
+            -webkit-box-shadow: 1px 1px 2px gray;
+         }
+         .kw {
+            color: blue;
+         }
+         .skw {
+            color: rgb(63, 127, 127);
+         }
+
+         .str {
+            color: rgb(128, 0, 0);
+         }
+
+         .dig {
+            color: rgb(128, 64, 0);
+         }
+
+         .cmt {
+            color: rgb(200, 0, 200);
+         }
+
+         h2 {
+            display: inline;
+            font-weight: normal;
+         }  
+         
+         .info {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+            display: none;
+         }
+
+         a {
+            color: #9D2900;
+         }
+
+         body {
+            font-family: "Trebuchet MS", Arial, Sans-Serif;
+         }
+
+      </style>
+   </head>
+<body>
+<div class="info">
+<h2>Bookmark.sikuli</h2> <a href="Bookmark.zip">(Download this script)</a>
+</div>
+<pre class="sikuli-code">
+<span class="kw">import</span> os
+address = os.getcwd()
+<span class="cmt">#address = "/home/es1076/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images"
+</span>
+<span class="cmt">#address = address+"/gofigure2_images"
+</span><span class="kw">print</span> address
+setBundlePath(address)
+
+start = time.time()
+
+<span class="cmt">#Need to get to a new book mark spot in the easiest way to add a new one.
+</span>
+
+Tests = (<span class="str">"Cancel"</span>,<span class="str">"No Name"</span>,<span class="str">"Add New"</span>,<span class="str">"Existing Name"</span>,<span class="str">"Bookmark exists"</span>)
+<span class="kw">for</span> i <span class="kw">in</span> Tests:
+
+        <span class="skw">click</span>(<img src="Bookmarks.png" />)
+        <span class="skw">click</span>(<img src="Add_a_bookmark.png" />)
+
+        <span class="kw">if</span> i == <span class="str">"Cancel"</span>:
+                <span class="skw">click</span>(<img src="cancel.png" />)
+                <span class="cmt">#assert that goes back to same bookmark state
+</span>
+        <span class="kw">if</span> i == <span class="str">"No Name"</span>:
+                <span class="skw">click</span>(<img src="ok.png" />)
+                <span class="cmt">#assert popup message exists
+</span>                <span class="skw">click</span>(<img src="ok.png" />)
+                <span class="skw">click</span>(<img src="cancel.png" />)
+
+        <span class="kw">if</span> i == <span class="str">"Add New"</span>:
+                <span class="skw">wait</span>(<span class="dig">1</span>)
+                <span class="skw">type</span>(<span class="str">"Test Bookmark"</span>)
+                <span class="skw">type</span>(Key.TAB+Key.TAB+Key.TAB)
+                <span class="skw">type</span>(<span class="str">"Test Description"</span>)
+                <span class="skw">click</span>(<img src="ok.png" />)
+                <span class="cmt">#assert that bookmark is in dropdown menu
+</span>                <span class="cmt">#assert that bookmark is in database
+</span>
+        <span class="kw">if</span> i == <span class="str">"Existing Name"</span>:
+                <span class="skw">wait</span>(<span class="dig">1</span>)
+                <span class="skw">type</span>(<span class="str">"Test Bookmark"</span>)
+                <span class="cmt">#first tab goes to cancel, then ok then description box
+</span>                <span class="skw">type</span>(Key.TAB+Key.TAB+Key.TAB)
+                <span class="skw">type</span>(<span class="str">"Test Description"</span>)
+                <span class="skw">click</span>(<img src="ok.png" />)
+                <span class="cmt">#assert popup message exists
+</span>                <span class="skw">click</span>(<img src="ok.png" />)
+                <span class="skw">click</span>(<img src="cancel.png" />)
+
+        <span class="kw">if</span> i == <span class="str">"Bookmark exists"</span>:
+<span class="cmt">#To test that this bookmark already exists.
+</span>
+                <span class="skw">click</span>(<img src="Test_Bookmark.png" />)
+                <span class="skw">type</span>(<span class="str">"This book mark already exists"</span>)
+                <span class="skw">click</span>(<img src="ok.png" />)
+                <span class="cmt">#assert popup message exists
+</span>                <span class="skw">click</span>(<img src="ok.png" />)
+                <span class="cmt">#need to select an existing bookmark and then add new book mark with different name
+</span>
+
+
+<span class="cmt">#To test bookmark description shows up
+</span><span class="skw">click</span>(<img src="Bookmarks.png" />)
+<span class="skw">click</span>(<img src="Open_a_bookmark.png" />)
+<span class="skw">wait</span>(<span class="dig">2</span>)
+hover(<img src="Test_Bookmark.png" />)
+<span class="skw">wait</span>(<span class="dig">5</span>)
+
+<span class="kw">print</span> <span class="str">"I'm waiting to find the description below"</span>
+<span class="cmt">#x = Region(4,990,200,10).find("Bookmark_Description.png")
+</span><span class="kw">assert</span> exists(<img src="Bookmark_Description.png" />)
+<span class="kw">print</span> <span class="str">"I found it"</span>
+
+
+
+
+<span class="cmt">#Test bookmark deletion
+</span>
+<span class="cmt">#Delete + cancel
+</span><span class="skw">click</span>(<img src="File.png" />)
+<span class="skw">click</span>(<img src="Bookmarks.png" />)
+<span class="skw">click</span>(<img src="Delete_a_bookmark.png" />)
+Region(<span class="dig">500</span>,<span class="dig">282</span>,<span class="dig">283</span>,<span class="dig">271</span>).<span class="skw">click</span>(<img src="Test_Bookmark.png" />)
+<span class="skw">click</span>(<img src="cancel.png" />)
+
+
+<span class="cmt">#Delete + ok
+</span><span class="skw">click</span>(<img src="File.png" />)
+<span class="skw">click</span>(<img src="Bookmarks.png" />)
+<span class="skw">click</span>(<img src="Delete_a_bookmark.png" />)
+Region(<span class="dig">500</span>,<span class="dig">282</span>,<span class="dig">283</span>,<span class="dig">271</span>).<span class="skw">click</span>(<img src="Test_Bookmark.png" />)
+<span class="skw">click</span>(<img src="ok.png" />)
+<span class="skw">click</span>(<img src="yes.png" />)
+
+<span class="cmt">#finally need to click on a different bookmark to see that quadview changes
+</span>
+
+end = time.time()
+elapsedSec = end - start
+<span class="kw">print</span> elapsedSec, <span class="str">"sec"</span>
+</pre>
+</body>
+</html>

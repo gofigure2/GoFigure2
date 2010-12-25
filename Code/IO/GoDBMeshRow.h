@@ -43,55 +43,117 @@
 #include "ConvertToStringHelper.h"
 #include "vtkMySQLDatabase.h"
 #include "vtkPolyData.h"
-#include "vtkPolyDataMySQLTextWriter.h"
 #include "GoFigureMeshAttributes.h"
 
 /**
 \class GoDBMeshRow
-\brief
+\brief this class manages the map with the keys matching the fields of the
+Mesh gofiguredatabase table and values of the map matching a row of the Mesh table
+\ingroup DB
 */
 class QGOIO_EXPORT GoDBMeshRow:public GoDBTraceRow
 {
 public:
   GoDBMeshRow();
-  /** \brief fill the mesh map with the values gotten from the visualization*/
-  /*GoDBMeshRow(vtkMySQLDatabase* DatabaseConnector,
-    GoDBCoordinateRow Min, GoDBCoordinateRow Max, unsigned int ImgSessionID,
-    vtkPolyData* TraceVisu);*/
-
+  
+  /**
+  \brief fill the mesh map with the values gotten from the visualization
+  \param[in] DatabaseConnector connection to the database
+  \param[in] TraceVisu vtkPolyData the points will be extracted from to create 
+  a string for "Points"
+  \param[in] Min coordinate row for the minimum of the bounding box
+  \param[in] Max coordinate row for the maximum of the bounding box
+  \param[in] ImgSessionID ID of the current imagingsession
+  \param[in] iMeshAttributes container for intensity values
+  */
   explicit GoDBMeshRow(vtkMySQLDatabase *DatabaseConnector,
                        vtkPolyData *TraceVisu, GoDBCoordinateRow Min, GoDBCoordinateRow Max,
                        unsigned int ImgSessionID, GoFigureMeshAttributes *iMeshAttributes = 0);
 
   GoDBMeshRow(const GoDBMeshRow & iRow);
+
+  /**
+  \brief 
+  \param[in] ImgSessionID ID of the current imagingsession
+  */
   GoDBMeshRow(unsigned int ImagingSessionID);
+
+  //constructor GoDBTraceRow
+  GoDBMeshRow(unsigned int iExistingID,vtkMySQLDatabase *iDatabaseConnector);
 
   ~GoDBMeshRow();
 
   //int DoesThisBoundingBoxMeshExist(vtkMySQLDatabase* DatabaseConnector);
+
+  /**
+  \brief put the value of map["Celltype"] to CellTypeName
+  \param[in] DatabaseConnector connection to the database
+  \param[in] CellTypeName 
+  */
   void SetCellType(vtkMySQLDatabase *DatabaseConnector,
                    std::string CellTypeName);
 
+  /**
+  \brief put the value of map["SubCelltype"] to SubCellTypeName
+  \param[in] DatabaseConnector connection to the database
+  \param[in] SubCellTypeName 
+  */
   void SetSubCellType(vtkMySQLDatabase *DatabaseConnector,
                       std::string SubCellTypeName);
 
-  /** \brief save the mesh in the database and return the ID of the new
-  created mesh*/
-  int SaveInDB(vtkMySQLDatabase *DatabaseConnector);
+  //mother class method
+  virtual int SaveInDB(vtkMySQLDatabase *DatabaseConnector);
 
-  void ReInitializeMapAfterCast();
+  //void ReInitializeMapAfterCast();
 
+
+  /**
+  \brief create the intensities per channel based on the channel names and values
+  contained in iNameChannelWithValues
+  \param[in] DatabaseConnector connection to the database
+  \param[in] iNameChannelWithValues map with keys as channel names and values as intensities
+  */
   void SaveInDBTotalIntensityPerChannel(vtkMySQLDatabase *DatabaseConnector,
                                         std::map< std::string, int > iNameChannelWithValues);
 
+  /**
+  \brief convert a GoDBTraceRow in GoDBMeshRow
+  \param[in] iRow 
+  */
   void SafeDownCast(GoDBTraceRow & iRow);
 
+  /**
+  \overload GoDBTraceRow::SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector,
+                             vtkPolyData *TraceVisu,
+                             GoDBCoordinateRow iCoordMin,
+                             GoDBCoordinateRow iCoordMax)
+  \param[in] iMeshAttributes container for intensity values
+  */
   void SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector,
                              vtkPolyData *TraceVisu, GoDBCoordinateRow iCoordMin,
                              GoDBCoordinateRow iCoordMax,
                              GoFigureMeshAttributes *iMeshAttributes);
 
+  /**
+  \brief static method.get the CellTypeID base on the name of the celltype
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iCellTypeName name of the celltype
+  \return the ID of the celltype
+  */
+  static int GetCellTypeID(vtkMySQLDatabase *iDatabaseConnector,
+                                 std::string iCellTypeName);
+
+  /**
+  \brief static method.get the SubCellTypeID base on the name of the subcelltype
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iSubCellTypeName name of the subcelltype
+  \return the ID of the subcelltype
+  */
+  static int GetSubCellTypeID(vtkMySQLDatabase *iDatabaseConnector,
+                                 std::string iSubCellTypeName);
+
 protected:
+  //mother class method
   virtual void InitializeMap();
 
   std::map< std::string, int > m_NameChannelWithValues;

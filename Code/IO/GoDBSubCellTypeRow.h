@@ -39,6 +39,13 @@
 
 #include "QGoIOConfigure.h"
 
+/**
+\class GoDBSubCellTypeRow
+\brief this class manages the map with the keys matching the fields of the
+SubCellularType gofiguredatabase table and values of the map matching a row of the 
+SubCellulartype table
+\ingroup DB
+*/
 class QGOIO_EXPORT GoDBSubCellTypeRow:public GoDBNameDescRow
 {
 public:
@@ -46,15 +53,15 @@ public:
 
   ~GoDBSubCellTypeRow()
   {}
+  //mother class method
   virtual int SaveInDB(vtkMySQLDatabase *DatabaseConnector);
 
+  //mother class method
   virtual int DoesThisEntityAlreadyExists(
     vtkMySQLDatabase *DatabaseConnector);
 
-  //virtual int DoesThisEntityAlreadyExists(
-  // vtkMySQLDatabase* DatabaseConnector, std::string& ioName);
 protected:
-
+  //mother class method
   virtual void InitializeMap();
 };
 #endif

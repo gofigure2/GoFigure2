@@ -103,10 +103,10 @@ public:
   /**
    * \brief Specify on which one the segmentation will be applied since the input
    * data is multichannel.
-   * \param[in] iChannel Channel on which want we want to apply the segmentation
+   * \param[in] iText Channel on which want we want to apply the segmentation
    * algorithm
    */
-  void SetChannel(const QString & iText);
+  void SetChannel(int iChannel, const QString & iText);
 
   void SetNumberOfChannels(int iNumberOfChannels);
 
@@ -139,11 +139,11 @@ signals:
    * QComboBox
    * \param[in] iQString Name of the channel.
    */
-  void addChannel(QString iQString);
+  void addChannel(int iChannel, QString iQString);
 
   void setNumberOfChannels(int);
 
-  void MeshCreated(vtkPolyData *);
+  void MeshCreated(vtkPolyData *, int);
 
   void ContourCreated(vtkPolyData *);
 

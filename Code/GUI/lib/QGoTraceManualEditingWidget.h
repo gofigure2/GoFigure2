@@ -82,16 +82,34 @@ public:
   void SetCurrentCellType(std::string iCellTypeText);
 
   /**
+  \brief set the selected subcelltype in the combobox corresponding to the previous
+  selected one, stored in m_SelectedSubCellType
+  */
+  void SetCurrentCellTypeToSelectedOne();
+
+  /**
   \brief set the selected subcelltype in the combobox corresponding to iSubCellTypeText
   \param[in] iSubCellTypeText name of the SubCellType to be selected
   */
   void SetCurrentSubCellType(std::string iSubCellTypeText);
 
   /**
+  \brief set the selected subcelltype in the combobox corresponding to the previous
+  selected one, stored in m_SelectedSubCellType
+  */
+  void SetCurrentSubCellTypeToSelectedOne();
+
+  /**
   \brief set the selected color in the combobox corresponding to iColorText
   \param[in] iColorText name of the Color to be selected
   */
   void SetCurrentColor(std::string iColorText);
+
+  /**
+  \brief set the selected color in the combobox corresponding to the previous
+  selected one, stored in m_SelectedColorData
+  */
+  void SetCurrentColorToSelectedOne();
 
   /**
   \brief set the selected collectionID in the combobox to iID
@@ -120,15 +138,22 @@ public:
     std::list< ItemColorComboboxData > iListExistingID,
     std::string iCollectionIDtoSelect = "");
 
-  /**
-  \brief replace the list of colors with the name and corresponding color
+ /**
+ \brief replace the list of colors with the name and corresponding color
  in the iListColors and select the color corresponding to iColortoSelect
  if not empty, if empty, select the 1rst one
  \param[in] iListColors list of colors with their names and QColor to be displayed
- \param[in] iColortoSelect name of the color to be selected in the combobox
+ \param[in] iColorToSelect name of the color to be selected in the combobox
  */
   void SetListColors(std::list< ItemColorComboboxData > iListColors,
                      std::string iColorToSelect = "");
+
+ /**
+ \brief replace the list of colors with the name and corresponding color
+ in the iListColors and select the color corresponding to m_SelectedColorData
+ \param[in] iListColors list of colors with their names and QColor to be displayed
+ */
+  void SetListColorsWithSelectedOne(std::list< ItemColorComboboxData > iListColors);
 
   /**
   \brief replace the list of celltype with the names in the iCellTypesData and
@@ -141,6 +166,14 @@ public:
   void SetListCellTypes(NamesDescrContainerType iCellTypesData,
                         std::string iCellTypeToSelect = "");
 
+ /**
+ \brief replace the list of celltype with the name in the iCellTypesData
+ and select the celltype corresponding to m_SelectedCelltype
+ \param[in] iCellTypesData list of celltypes with their names and description
+  to be displayed
+ */
+  void SetListCellTypeWithSelectedOne(NamesDescrContainerType iCellTypesData);
+
   /**
   \brief replace the list of subcelltype with the names in the iSubCellTypesData and
   select the subcelltype corresponding to iSubCellTypetoSelect if not empty, if empty,
@@ -152,11 +185,28 @@ public:
   void SetListSubCellTypes(NamesDescrContainerType iSubCellData,
                            std::string iSubCellTypeToSelect = "");
 
+ /**
+ \brief replace the list of subcelltype with the name in the iSubCellTypesData
+ and select the subcelltype corresponding to m_SelectedSubCelltype
+ \param[in] iSubCellTypesData list of subcelltypes with their names and description
+  to be displayed
+ */
+  void SetListSubCellTypeWithSelectedOne(NamesDescrContainerType iSubCellTypesData);
+
+  std::string* GetPointerSelectedCellType();
+  std::string* GetPointerSelectedSubCellType();
+  ItemColorComboboxData* GetPointerCollectionData();
+  ItemColorComboboxData* GetPointerColorData();
+
+  unsigned int GetCurrentSelectedCollectionID();
+
+public slots:
+
   /**
   \brief add a new collection in the collectionColorCombobox and select it
   \param[in] iNewCollectionID ID and QColor of the new item
   */
-  void AddANewCollectionID(ItemColorComboboxData iNewCollectionID);
+  void AddANewCollectionID(std::pair<std::string, QColor> iNewCollectionID);
 
 signals:
   void AddANewCellType();
@@ -171,11 +221,11 @@ signals:
 
   void DeleteColor();
 
-  void NewCollectionActivated(ItemColorComboboxData);
-  void NewSelectedColorActivated(ItemColorComboboxData);
-  void NewSubCellTypeActivated(std::string);
+  //void NewCollectionActivated(ItemColorComboboxData);
+  //void NewSelectedColorActivated(ItemColorComboboxData);
+  //void NewSubCellTypeActivated(std::string);
 
-  void NewCellTypeActivated(std::string);
+  //void NewCellTypeActivated(std::string);
 
   void NewCollectionToBeCreated();
 
@@ -186,6 +236,10 @@ protected:
   QGoCollectionColorComboBox *m_CollectionColorComboBox;
   QGoComboBox *               m_ChoseCellType;
   QGoComboBox *               m_ChoseSubCellType;
+  std::string *               m_SelectedCellType;
+  std::string *               m_SelectedSubCellType;
+  ItemColorComboboxData *     m_SelectedCollectionData;
+  ItemColorComboboxData *     m_SelectedColorData;
 
   /**
   \brief add the SelectedColorCombobox to the layout and make the signal/slot connections
@@ -266,5 +320,11 @@ protected:
       iComboBox->InitializeTheListWithColor(iItemsData);
       }
   }
+
+protected slots:
+  void UpdateValueSelectedCollection(ItemColorComboboxData iCollectionData);
+  void UpdateValueSelectedCellType(std::string iCellType);
+  void UpdateValueSelectedSubCellType(std::string iSubCellType);
+  void UpdateValueSelectedColor(ItemColorComboboxData iColorData);
 };
 #endif

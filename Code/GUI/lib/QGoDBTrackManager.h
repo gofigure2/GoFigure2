@@ -40,8 +40,7 @@
 #include "GoDBTWContainerForTrackLineage.h"
 #include "QGoDBTraceManager.h"
 #include "QGoGUILibConfigure.h"
-
-//#include <QWidget>
+#include "TrackContainer.h"
 
 class QGOGUILIB_EXPORT QGoDBTrackManager:public QGoDBTraceManager
 {
@@ -55,33 +54,109 @@ public:
   virtual void DisplayInfoForExistingTrace(vtkMySQLDatabase *iDatabaseConnector,
                                            int iTraceID);
 
+  /**
+  \brief set the m_TrackContainerInfoForVisu to the iContainerForVisu
+  \param[in] iContainerForVisu common container for the visu and database
+  */
+  void SetTracksInfoContainerForVisu(TrackContainer *iContainerForVisu);
+
+  /**
+  \brief get all the data from the database to load all the tracks for the imagingsession
+  into the table widget and the container for the visu
+  \param[in] iDatabaseConnector connection to the database
+  */
   void DisplayInfoAndLoadVisuContainerForAllTracks(
     vtkMySQLDatabase *iDatabaseConnector);
 
   /**
   \brief create a new track with no mesh and no points in the database, add it in the
   TW and in the visu container
+  \param[in] iDatabaseConnector connection to the database
+  \return the ID of the new track just created
   */
   unsigned int CreateNewTrackWithNoMesh(
-    vtkMySQLDatabase *iDatabaseConnector, NameWithColorData iColor);
+    vtkMySQLDatabase *iDatabaseConnector);
 
-  /**
-  \brief virtual pure method in QGoDBTraceManager
-  */
-  std::list< unsigned int > UpdateTheTracesColor(vtkMySQLDatabase *iDatabaseConnector,
-                                                 NameWithColorData iNewColor);
+  //virtual pure method in QGoDBTraceManager
+  std::list< unsigned int > UpdateTheTracesColor(vtkMySQLDatabase *iDatabaseConnector);
 
-  /**
-  \brief virtual pure method in QGoDBTraceManager
-  */
+  //virtual pure method in QGoDBTraceManager
   virtual void UpdateTWAndContainerForImportedTraces(std::vector< int > iVectorImportedTraces,
                                                      vtkMySQLDatabase *iDatabaseConnector);
+  //virtual pure method in QGoDBTraceManager
+  virtual void DeleteTraces(vtkMySQLDatabase *iDatabaseConnector);
+
+   //virtual pure method in QGoDBTraceManager
+  virtual std::list< unsigned int > GetListHighlightedIDs();
+
+  /**
+  \brief get the data from the TrackContainer corresponding to the user selected TrackID
+  and put them in the current element of the track container
+  */
+  void UpdateCurrentElementTrackContainer();
+
+  /**
+  \brief update the points of the imported track in current_element
+  with the info from the meshes
+  */
+  void UpdatePointsOfCurrentElementForImportedTrack(
+	  std::map<unsigned int,double*> iMeshesInfo);
+
+  //method in QGoDBTraceManager
+  void UpdateBoundingBoxes(
+  vtkMySQLDatabase *iDatabaseConnector,std::list< unsigned int > iListTracesIDs);
+
+signals:
+  void NeedMeshesInfoForImportedTrack(unsigned int iTrackID);
+  void TrackToSplit(unsigned int iTrackID, std::list<unsigned int> iListMeshIDs);
 
 protected:
   GoDBTWContainerForTrackLineage *m_TWContainer;
+  TrackContainer                 *m_TrackContainerInfoForVisu;
 
+  //virtual pure method in QGoDBTraceManager
   virtual void SetCollectionsTraceNames();
 
+  //virtual pure method in QGoDBTraceManager
   virtual void DisplayInfoForAllTraces(vtkMySQLDatabase *iDatabaseConnector);
+
+  //virtual pure method in QGoDBTraceManager
+  virtual void GetTracesInfoFromDBAndModifyContainerForVisu(
+    vtkMySQLDatabase* iDatabaseConnector,std::vector<int> iVectIDs = std::vector< int >());
+
+  /**
+  \brief get the center of bounding boxes from the database for the meshes
+  belonging to the iTrackID, update the polydata in the container for visu and save it in
+  the database
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iTrackID ID for the track the polydata needs to be recalculated
+  */
+  void UpdateTrackPolydataForVisu(vtkMySQLDatabase *iDatabaseConnector,unsigned int iTrackID);
+
+  //virtual in QGoDBTraceManager
+  void AddActionsContextMenu(QMenu *iMenu);
+
+protected slots:
+  //virtual pure method in QGoDBTraceManager
+  virtual void UpdateHighlightedElementsInVisuContainer(int iTraceID);
+
+  //virtual pure method in QGoDBTraceManager
+  virtual void UpdateVisibleElementsInVisuContainer(int iTraceID);
+
+  /**
+  \brief create or update the track contained in the current element of the
+  track container into the database, the table widget and insert the current
+  element into the track container
+  \param[in] iDatabaseConnector connection to the database
+  */
+  void SaveTrackCurrentElement(vtkMySQLDatabase* iDatabaseConnector);
+
+ //virtual pure method in QGoDBTraceManager
+  virtual void SetColorCoding(bool IsChecked);
+
+  void SplitTrackWithWidget();
+
+  void TrackIDToEmit();
+
 };
 #endif

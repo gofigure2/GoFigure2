@@ -497,6 +497,12 @@ public:
   virtual void ChangeActorProperty(vtkProp3D *iActor,
                                    vtkProperty *iProperty);
 
+  /** \brief Set the linewidth for added dataset in the scene (when using AddDataSet) */
+  vtkSetMacro( IntersectionLineWidth, float );
+
+  /** \brief Get the linewidth for added dataset in the scene (when using AddDataSet) */
+  vtkGetMacro( IntersectionLineWidth, float );
+
 protected:
 
   vtkViewImage();
@@ -554,6 +560,8 @@ protected:
   vtkMatrixToLinearTransform *OrientationTransform;
 
   std::string DirectionAnnotationMatrix[3][2];
+
+  float IntersectionLineWidth;
 
   /**
      local instances.

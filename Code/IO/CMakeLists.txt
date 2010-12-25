@@ -12,9 +12,11 @@ CONFIGURE_FILE(${GOFIGURE2_SOURCE_DIR}/Code/IO/QGoIOConfigure.h.in
                ${GOFIGURE2_BINARY_DIR}/Code/IO/QGoIOConfigure.h @ONLY IMMEDIATE)
 
 SET( QGOIO_SRC
+  TraceStructure.cxx
   ContourMeshStructure.cxx
-# TrackStructure.cxx
+  TrackStructure.cxx
   CreateDataBaseHelper.cxx
+  GoDBAuthorRow.cxx
   GoDBChannelRow.cxx
   GoDBCollectionOfTraces.cxx
   GoDBColorRow.cxx
@@ -42,15 +44,20 @@ SET( QGOIO_SRC
   MegaCaptureHeaderReader.cxx
   QueryDataBaseHelper.cxx
   SelectQueryDatabaseHelper.cxx
-  itkLsm3DSerieImport.cxx
+  QueryBuilderHelper.cxx
+  # itkLsm3DSerieImport.cxx
   itkMegaCaptureImport.cxx
   itkMegaCaptureReader.cxx
   GoFigureFileInfoMultiIndexContainerHelper.cxx
-  vtkPolyDataMySQLTextReader.cxx
-  vtkPolyDataMySQLTextWriter.cxx
+  vtkPolyDataMySQLContourReader.cxx
+  vtkPolyDataMySQLMeshReader.cxx
+  vtkPolyDataMySQLTrackReader.cxx
+  vtkPolyDataMySQLContourWriter.cxx
+  vtkPolyDataMySQLMeshWriter.cxx
+  vtkPolyDataMySQLTrackWriter.cxx
   LSMToMegaCapture.cxx
-  MeshTextFileImport.cxx
-  TrackTextFileImport.cxx
+#  MeshTextFileImport.cxx
+#  TrackTextFileImport.cxx
 )
 
 ADD_LIBRARY( QGoIO

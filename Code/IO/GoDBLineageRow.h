@@ -42,6 +42,12 @@
 #include "ConvertToStringHelper.h"
 #include "vtkMySQLDatabase.h"
 
+/**
+\class GoDBLineageRow
+\brief this class manages the map with the keys matching the fields of the
+Lineage gofiguredatabase table and values of the map matching a row of the Lineage table
+\ingroup DB
+*/
 class GoDBLineageRow:public GoDBTraceRow
 {
 public:
@@ -49,20 +55,30 @@ public:
 
   ~GoDBLineageRow();
 
-  /** \brief fill the lineage map with the values gotten from the
-    visualization*/
-  GoDBLineageRow(vtkMySQLDatabase *DatabaseConnector, GoDBCoordinateRow Min,
-                 GoDBCoordinateRow Max, unsigned int ImgSessionID, vtkPolyData *TraceVisu);
+  /**
+  \brief fill the track map with the values gotten from the visualization
+  \param[in] DatabaseConnector connection to the database
+  \param[in] TraceVisu vtkPolyData the points will be extracted from to create 
+  a string for "Points"
+  \param[in] Min coordinate row for the minimum of the bounding box
+  \param[in] Max coordinate row for the maximum of the bounding box
+  \param[in] ImgSessionID ID of the current imagingsession
+  */
+  //GoDBLineageRow(vtkMySQLDatabase *DatabaseConnector, GoDBCoordinateRow Min,
+  //               GoDBCoordinateRow Max, unsigned int ImgSessionID, vtkPolyData *TraceVisu);
 
-  /** \brief return the LineageID of the Lineage with the same bounding box
- already registered in the DB or -1 if not yet created*/
+  /**
+  \brief 
+  \return the TrackID of the Track with the same bounding box
+  already registered in the DB or -1 if not yet created
+  */
   int DoesThisBoundingBoxLineageExist(vtkMySQLDatabase *DatabaseConnector);
 
-  /** \brief save the lineage in the database and return the ID of the new
-  created lineage*/
-  int SaveInDB(vtkMySQLDatabase *DatabaseConnector);
+  //mother class method
+  virtual int SaveInDB(vtkMySQLDatabase *DatabaseConnector);
 
 protected:
+  //mother class method
   virtual void InitializeMap();
 };
 

@@ -643,14 +643,14 @@ vtkViewImage3D::AddDataSet(vtkDataSet *dataset,
 
   if ( !this->Renderer )
     {
-    return 0;
+    return NULL;
     }
 
   vtkCamera *cam = this->Renderer->GetActiveCamera();
 
   if ( !cam )
     {
-    return 0;
+    return NULL;
     }
 
   vtkSmartPointer< vtkPolyDataMapper > mapper =
@@ -673,6 +673,7 @@ vtkViewImage3D::AddDataSet(vtkDataSet *dataset,
     //actor3d->SetProperty( property );
     actor3d->GetProperty()->SetColor( property->GetColor() );
     actor3d->GetProperty()->SetOpacity( property->GetOpacity() );
+    actor3d->GetProperty()->SetLineWidth( this->IntersectionLineWidth );
     }
   // Generates problems in visu 3d
   //contActor->GetProperty()->BackfaceCullingOn();
@@ -732,7 +733,7 @@ void vtkViewImage3D::SetupTextureMapper()
 
   if ( mapper3D && !this->GetRenderWindow()->GetNeverRendered() )
     {
-#if VTK_MAJOR_VERSION == 5 && VTK_MINOR_VERSION == 6
+#if VTK_MAJOR_VERSION == 5 && VTK_MINOR_VERSION == 6 && VTK_BUILD_VERSION == 0
     if ( !mapper3D->IsRenderSupported (this->VolumeProperty) )
 #else
     if ( !mapper3D->IsRenderSupported( this->VolumeProperty,
@@ -742,7 +743,7 @@ void vtkViewImage3D::SetupTextureMapper()
       //try the ATI fragment program implementation
       // mapper3D->SetPreferredMethodToFragmentProgram();
 
-#if VTK_MAJOR_VERSION == 5 && VTK_MINOR_VERSION == 6
+#if VTK_MAJOR_VERSION == 5 && VTK_MINOR_VERSION == 6 && VTK_BUILD_VERSION == 0
       if ( !mapper3D->IsRenderSupported (this->VolumeProperty) )
 #else
       if ( !mapper3D->IsRenderSupported( this->VolumeProperty,

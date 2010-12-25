@@ -36,8 +36,11 @@
 #define __QGoSeedBaseWidget_h
 
 #include <QWidget>
-#include <QLayout>
+#include <QGroupBox>
 #include <QGridLayout>
+
+// Collapsible groupbox for the parameters
+#include "ctkCollapsibleGroupBox.h"
 
 #include "vtkPolyData.h"
 
@@ -54,8 +57,13 @@ public:
 
   void Initialize();
 
+  int           GetCurrentFilter();
+
+  ctkCollapsibleGroupBox* groupBox;
+  QGridLayout *vbox;
+
 public slots:
-  void         AddChannel(QString iChannel);
+  void         AddChannel(int iPosition, QString iChannel);
 
   void         setNumberOfChannels(int iNumberOfChannels);
 
@@ -76,7 +84,7 @@ signals:
 
   void Sampling(int);
 
-  void MeshCreated(vtkPolyData *);
+  void MeshCreated(vtkPolyData *, int timePoint = 0);
 
   void ContourCreated(vtkPolyData *);
 
@@ -89,6 +97,8 @@ signals:
   void CreateCorrespondingMesh(int);
 
   void AddContourForMeshToContours(vtkPolyData *);
+
+  void Clicked(bool);
 };
 
 #endif

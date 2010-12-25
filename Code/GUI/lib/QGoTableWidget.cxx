@@ -41,6 +41,7 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QToolButton>
+#include <QMessageBox>
 
 QGoTableWidget::QGoTableWidget(QWidget *iParent):QTableWidget(iParent)
 {
@@ -162,7 +163,7 @@ void  QGoTableWidget::SetVisibleStateForListTraceIDs(
   std::list<unsigned int>::iterator iter = iListTraceIDs.begin();
   while (iter != iListTraceIDs.end())
   {
-  this->SetVisibleStateForTraceID(*iter,iTraceName,iState,false);                                              
+  this->SetVisibleStateForTraceID(*iter,iTraceName,iState,false);
   iter++;
   }
 }
@@ -286,6 +287,7 @@ void QGoTableWidget::DisplayContent(TWContainerType iTWRowContainer,
                                     Qt::CheckState iState,
                                     int iIndexShowColumn)
 {
+  this->setSortingEnabled(false);
   this->DisplayColumnNames(iTraceName.c_str(), iColumnNames);
   if ( iTWRowContainer.empty() )
     {
@@ -323,7 +325,14 @@ void QGoTableWidget::DisplayContent(TWContainerType iTWRowContainer,
               if ( this->CheckValueToDisplayData(Value, HeaderCol) )
                 {
                 QTableWidgetItem *CellTable = new QTableWidgetItem;
-                CellTable->setData( 0, QString::fromStdString(Value).toDouble() );
+                if(iTWRowContainer[i].first.TypeName == "string")
+                  {
+                  CellTable->setData( 0, QString::fromStdString(Value) );
+                  }
+                else
+                  {
+                  CellTable->setData( 0, QString::fromStdString(Value).toDouble() );
+                  }
                 CellTable->setTextAlignment(Qt::AlignCenter);
                 this->setItem(k, j, CellTable);
                 }
@@ -347,6 +356,7 @@ void QGoTableWidget::DisplayContent(TWContainerType iTWRowContainer,
     this->SetColorForTable(iTWRowContainer, iIndexColorTraceRowContainer, iTraceName, 0);
     this->SetColorForTable(iTWRowContainer, iIndexColorCollectionRowContainer, iCollectionName, 0);
     } //ENDELSE
+  this->setSortingEnabled(true);
 }
 
 //--------------------------------------------------------------------------
@@ -475,6 +485,7 @@ void QGoTableWidget::InsertNewRow(TWContainerType iTWRowContainer,
                                   std::vector< int > iIndexColorCollectionRowContainer,
                                   std::string TraceName, std::string CollectionName)
 {
+  this->setSortingEnabled(false);
   if ( iTWRowContainer.size() == 0 || iTWRowContainer[1].second.size() != 1 )
     {
     std::cout << "The New Trace Row Container is totally empty or there is more than 1 trace in it";
@@ -501,7 +512,15 @@ void QGoTableWidget::InsertNewRow(TWContainerType iTWRowContainer,
                                                                    // "")
               {
               QTableWidgetItem *CellTable = new QTableWidgetItem;
-              CellTable->setData( 0, QString::fromStdString(Value).toDouble() );
+              //CellTable->setData( 0, QString::fromStdString(Value).toDouble() );
+              if(iTWRowContainer[i].first.TypeName == "string")
+                    {
+                    CellTable->setData( 0, QString::fromStdString(Value) );
+                    }
+                  else
+                    {
+                    CellTable->setData( 0, QString::fromStdString(Value).toDouble() );
+                    }
               CellTable->setTextAlignment(Qt::AlignCenter);
               this->setItem(NewRow - 1, j, CellTable);
               }
@@ -514,6 +533,7 @@ void QGoTableWidget::InsertNewRow(TWContainerType iTWRowContainer,
     this->SetColorForTable(iTWRowContainer, iIndexColorTraceRowContainer, TraceName, NewRow - 1);
     this->SetColorForTable(iTWRowContainer, iIndexColorCollectionRowContainer, CollectionName, NewRow - 1);
     } //ENDELSE
+  this->setSortingEnabled(true);
 }
 
 //--------------------------------------------------------------------------
@@ -541,6 +561,7 @@ void QGoTableWidget::UpdateRow(TWContainerType iTWRowContainer,
                                std::string iTraceName, std::string iCollectionName,
                                int iTraceID)
 {
+  this->setSortingEnabled(false);
   if ( iTWRowContainer.size() == 0 || iTWRowContainer[1].second.size() != 1 )
     {
     std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
@@ -572,14 +593,30 @@ void QGoTableWidget::UpdateRow(TWContainerType iTWRowContainer,
 
               if ( t_item )
                 {
-                t_item->setData( 0, QString::fromStdString(Value).toDouble() );
+                //t_item->setData( 0, QString::fromStdString(Value).toDouble() );
+                if(iTWRowContainer[i].first.TypeName == "string")
+                  {
+                  t_item->setData( 0, QString::fromStdString(Value) );
+                  }
+                else
+                  {
+                  t_item->setData( 0, QString::fromStdString(Value).toDouble() );
+                  }
                 }
               else
                 {
                 if ( this->CheckValueToDisplayData(Value, HeaderCol) )
                   {
                   QTableWidgetItem *CellTable = new QTableWidgetItem;
-                  CellTable->setData( 0, QString::fromStdString(Value).toDouble() );
+                  //CellTable->setData( 0, QString::fromStdString(Value).toDouble() );
+                  if(iTWRowContainer[i].first.TypeName == "string")
+                    {
+                    CellTable->setData( 0, QString::fromStdString(Value) );
+                    }
+                  else
+                    {
+                    CellTable->setData( 0, QString::fromStdString(Value).toDouble() );
+                    }
                   CellTable->setTextAlignment(Qt::AlignCenter);
                   this->setItem(IndexUpdateRow, j, CellTable);
                   }
@@ -601,6 +638,7 @@ void QGoTableWidget::UpdateRow(TWContainerType iTWRowContainer,
       std::cout << std::endl;
       }
     } //ENDELSE
+  this->setSortingEnabled(true);
 }
 
 //--------------------------------------------------------------------------
@@ -609,6 +647,7 @@ void QGoTableWidget::UpdateRow(TWContainerType iTWRowContainer,
 void QGoTableWidget::DeleteCheckedRows(std::string iTraceNameID,
                                        std::list< unsigned int > iTraceIDs)
 {
+  this->setSortingEnabled(false);
   std::list< unsigned int >::iterator iter = iTraceIDs.begin();
   while ( iter != iTraceIDs.end() )
     {
@@ -616,6 +655,7 @@ void QGoTableWidget::DeleteCheckedRows(std::string iTraceNameID,
     removeRow(RowToDelete);
     iter++;
     }
+  this->setSortingEnabled(true);
 }
 
 //--------------------------------------------------------------------------
@@ -946,4 +986,71 @@ bool QGoTableWidget::setCheckStateCheckBox(QTableWidgetItem *iItem,
       }
     }
   return oModification;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::map<unsigned int, std::string> QGoTableWidget::
+GetTraceIDAndColumnsValues(std::string iTraceIDName,std::string &ioColumnName)
+{
+  std::map<unsigned int,std::string> oMapValues =
+    std::map<unsigned int,std::string>();
+  QList<QTableWidgetSelectionRange> Ranges = this->selectedRanges();
+  if ( Ranges.size()>1 || Ranges[0].columnCount()>1 )
+    {
+    QMessageBox msgBox;
+    msgBox.setText(
+      tr("Please choose only one column to color code") );
+    msgBox.exec();
+    return oMapValues;
+    }
+  unsigned int ColumnIndex = Ranges[0].leftColumn();
+  ioColumnName = this->horizontalHeaderItem(ColumnIndex)->text().toStdString();
+  int NbOfRows = this->rowCount();
+  unsigned int IndexTraceID = this->findColumnName(iTraceIDName.c_str());
+  for( int i = 0; i<NbOfRows; i++ )
+      {     
+      if (this->item(i,ColumnIndex))
+        {
+        std::string Text = this->item(i,ColumnIndex)->text().toStdString();  //for test purpose
+        oMapValues[this->item(i,IndexTraceID)->text().toUInt()] =
+          this->item(i,ColumnIndex)->text().toStdString();     
+        }
+      else
+        {
+        oMapValues[this->item(i,IndexTraceID)->text().toUInt()] = "";
+        }
+      }
+  return oMapValues;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTableWidget::ShowOnlyRowsForTimePoint(unsigned int iTimePoint)
+{
+  int ColumnIndex = this->findColumnName("TimePoint");
+  if ( ColumnIndex == -1)
+    {
+    std::cout<<"column TimePoint not found in the table widget";
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
+    return;
+    }
+  for( int i = 0; i < this->rowCount(); i++)
+    {
+    if (this->item(i,ColumnIndex)->text().toUInt() != iTimePoint)
+      this->hideRow(i);
+    else
+      this->showRow(i);
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTableWidget::ShowAllRows()
+{
+   for( int i = 0; i < this->rowCount(); i++)
+    {
+    this->showRow(i);
+    }
 }

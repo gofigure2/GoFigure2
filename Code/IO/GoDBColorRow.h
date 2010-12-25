@@ -45,7 +45,8 @@
 /**
 \class GoDBColorRow
 \brief this class manages the map with the keys matching the fields of the
-color DBTable
+Color gofiguredatabase table and values of the map matching a row of the Color table
+\ingroup DB
 */
 class QGOIO_EXPORT GoDBColorRow:public GoDBNameDescRow
 {
@@ -54,16 +55,14 @@ public:
 
   ~GoDBColorRow()
   {}
-  /**\brief check if the color already exists in the DB, if yes,
-  return the existing ID, if not, save it in the DB and return the
-  ID for new created color*/
+  //mother class method
   virtual int SaveInDB(vtkMySQLDatabase *iDatabaseConnector);
 
-/**\brief check if the color already exists in the database, if yes,
-  return the corresponding ID, if not, return -1*/
+  //mother class method
   virtual int DoesThisEntityAlreadyExists(vtkMySQLDatabase *iDatabaseConnector);
 
 protected:
+  //mother class method
   virtual void InitializeMap();
 };
 

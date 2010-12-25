@@ -72,10 +72,10 @@ inline SortedTreeNodes::~SortedTreeNodes(void)
 
 inline void SortedTreeNodes::set(TreeOctNode& root,const int& setIndex)
 {
-	if(nodeCount)
+  if(nodeCount)
     {delete[] nodeCount;}
 
-	if(treeNodes)
+  if(treeNodes)
     {delete[] treeNodes;}
 
 	maxDepth=root.maxDepth()+1;
@@ -85,23 +85,23 @@ inline void SortedTreeNodes::set(TreeOctNode& root,const int& setIndex)
 	TreeOctNode* temp=root.nextNode();
 	int i,cnt=0;
 	while(temp)
-    {
+		{
 		treeNodes[cnt++]=temp;
 		temp=root.nextNode(temp);
 	}
 	qsort(treeNodes,cnt,sizeof(const TreeOctNode*),TreeOctNode::CompareForwardPointerDepths);
 
-	for(i=0;i<=maxDepth;i++)
+  for(i=0;i<=maxDepth;i++)
     {nodeCount[i]=0;}
 
-	for(i=0;i<cnt;i++)
+  for(i=0;i<cnt;i++)
     {
-		if(setIndex)
+    if(setIndex)
         {treeNodes[i]->nodeData.nodeIndex=i;}
-		nodeCount[treeNodes[i]->depth()+1]++;
-	}
+    nodeCount[treeNodes[i]->depth()+1]++;
+  }
 
-	for(i=1;i<=maxDepth;i++)
+  for(i=1;i<=maxDepth;i++)
     {nodeCount[i]+=nodeCount[i-1];}
 }
 
@@ -138,7 +138,7 @@ inline double Octree<Degree>::MemoryUsage(void)
 {
 	double mem=MemoryInfo::Usage()/(1<<20);
 	if(mem>maxMemoryUsage)
-    {maxMemoryUsage=mem;}
+		{maxMemoryUsage=mem;}
 	return mem;
 }
 */
@@ -157,10 +157,10 @@ inline void Octree<Degree>::setNodeIndices(TreeOctNode& node,int& idx)
 	node.nodeData.nodeIndex=idx;
 	idx++;
 	if(node.children)
-    {for(int i=0;i<Cube::CORNERS;i++)
-    {setNodeIndices(node.children[i],idx);
-    }
-    }
+		{for(int i=0;i<Cube::CORNERS;i++)
+		{setNodeIndices(node.children[i],idx);
+		}
+		}
 }
 
 template<int Degree>
@@ -176,7 +176,7 @@ inline int Octree<Degree>::NonLinearSplatOrientedPoint(TreeOctNode* node,const P
 	node->centerAndWidth(center,w);
 	twidth=w;
 	for(i=0;i<3;i++)
-    {
+		{
 		x=(center.coords[i]-position.coords[i]-twidth)/twidth;
 		dx[i][0]=1.125+1.500*x+0.500*x*x;
 		x=(center.coords[i]-position.coords[i])/twidth;
@@ -184,18 +184,18 @@ inline int Octree<Degree>::NonLinearSplatOrientedPoint(TreeOctNode* node,const P
 		dx[i][2]=1.0-dx[i][1]-dx[i][0];
 	}
 	for(i=0;i<3;i++)
-    {
+		{
 		for(j=0;j<3;j++)
-        {
+				{
 			dxdy=dx[0][i]*dx[1][j];
 			for(k=0;k<3;k++)
-            {
+						{
 				if(neighbors.neighbors[i][j][k])
-                {
+								{
 					dxdydz=dxdy*dx[2][k];
 					int idx=neighbors.neighbors[i][j][k]->nodeData.nodeIndex;
 					if(idx<0)
-                    {
+										{
 						Point3D<Real> n;
 						n.coords[0]=n.coords[1]=n.coords[2]=0;
 						idx=neighbors.neighbors[i][j][k]->nodeData.nodeIndex=int(normals->size());
@@ -227,9 +227,9 @@ inline void Octree<Degree>::NonLinearSplatOrientedPoint(const Point3D<Real>& pos
 
 	temp=&tree;
 	while(temp->depth()<splatDepth)
-    {
+		{
 		if(!temp->children)
-        {
+				{
 			printf("Octree<Degree>::NonLinearSplatOrientedPoint error\n");
 			return;
 		}
@@ -246,54 +246,54 @@ inline void Octree<Degree>::NonLinearSplatOrientedPoint(const Point3D<Real>& pos
 	Real alpha,newDepth;
 	NonLinearGetSampleDepthAndWeight(temp,position,samplesPerNode,newDepth,alpha);
 
-	if(newDepth<minDepth)
+  if(newDepth<minDepth)
     {newDepth=Real(minDepth);}
 
-	if(newDepth>maxDepth)
+  if(newDepth>maxDepth)
     {newDepth=Real(maxDepth);}
 
-	int topDepth=int(ceil(newDepth));
+  int topDepth=int(ceil(newDepth));
 
 	dx=1.0-(topDepth-newDepth);
 	if(topDepth<=minDepth)
-    {
+		{
 		topDepth=minDepth;
 		dx=1;
 	}
 	else if(topDepth>maxDepth)
-    {
+		{
 		topDepth=maxDepth;
 		dx=1;
 	}
 	while(temp->depth()>topDepth)
-    {temp=temp->parent;}
+		{temp=temp->parent;}
 
-	while(temp->depth()<topDepth)
+  while(temp->depth()<topDepth)
     {
-		if(!temp->children)
+    if(!temp->children)
         {temp->initChildren();}
-		int cIndex=TreeOctNode::CornerIndex(myCenter,position);
-		temp=&temp->children[cIndex];
-		myWidth/=2;
-		if(cIndex&1){myCenter.coords[0]+=myWidth/2;}
-		else		{myCenter.coords[0]-=myWidth/2;}
-		if(cIndex&2){myCenter.coords[1]+=myWidth/2;}
-		else		{myCenter.coords[1]-=myWidth/2;}
-		if(cIndex&4){myCenter.coords[2]+=myWidth/2;}
-		else		{myCenter.coords[2]-=myWidth/2;}
-	}
-	twidth=1.0/(1<<temp->depth());
-	for(i=0;i<DIMENSION;i++)
+    int cIndex=TreeOctNode::CornerIndex(myCenter,position);
+    temp=&temp->children[cIndex];
+    myWidth/=2;
+    if(cIndex&1){myCenter.coords[0]+=myWidth/2;}
+    else		{myCenter.coords[0]-=myWidth/2;}
+    if(cIndex&2){myCenter.coords[1]+=myWidth/2;}
+    else		{myCenter.coords[1]-=myWidth/2;}
+    if(cIndex&4){myCenter.coords[2]+=myWidth/2;}
+    else		{myCenter.coords[2]-=myWidth/2;}
+  }
+  twidth=1.0/(1<<temp->depth());
+  for(i=0;i<DIMENSION;i++)
     {n.coords[i]=normal.coords[i]*alpha/Real(pow(twidth,3))*Real(dx);}
 
 	NonLinearSplatOrientedPoint(temp,position,n);
 	if(fabs(1.0-dx)>EPSILON)
-    {
+		{
 		dx=Real(1.0-dx);
 		temp=temp->parent;
 		twidth=1.0/(1<<temp->depth());
 
-		for(i=0;i<DIMENSION;i++)
+    for(i=0;i<DIMENSION;i++)
         {n.coords[i]=normal.coords[i]*alpha/Real(pow(twidth,3))*Real(dx);}
 
 		NonLinearSplatOrientedPoint(temp,position,n);
@@ -306,13 +306,13 @@ inline void Octree<Degree>::NonLinearGetSampleDepthAndWeight(TreeOctNode* node,c
 	TreeOctNode* temp=node;
 	weight=Real(1.0)/NonLinearGetSampleWeight(temp,position);
 	if(weight>=samplesPerNode+1)
-    {depth=Real(temp->depth()+log(weight/(samplesPerNode+1))/log(double(1<<(DIMENSION-1))));}
+		{depth=Real(temp->depth()+log(weight/(samplesPerNode+1))/log(double(1<<(DIMENSION-1))));}
 	else
-    {
+		{
 		Real oldAlpha,newAlpha;
 		oldAlpha=newAlpha=weight;
 		while(newAlpha<(samplesPerNode+1) && temp->parent)
-        {
+				{
 			temp=temp->parent;
 			oldAlpha=newAlpha;
 			newAlpha=Real(1.0)/NonLinearGetSampleWeight(temp,position);
@@ -335,30 +335,30 @@ inline Real Octree<Degree>::NonLinearGetSampleWeight(TreeOctNode* node,const Poi
 	node->centerAndWidth(center,w);
 	twidth=w;
 
-	for(i=0;i<DIMENSION;i++)
+  for(i=0;i<DIMENSION;i++)
     {
-		x=(center.coords[i]-position.coords[i]-twidth)/twidth;
-		dx[i][0]=1.125+1.500*x+0.500*x*x;
-		x=(center.coords[i]-position.coords[i])/twidth;
-		dx[i][1]=0.750        -      x*x;
-		dx[i][2]=1.0-dx[i][1]-dx[i][0];
-	}
+    x=(center.coords[i]-position.coords[i]-twidth)/twidth;
+    dx[i][0]=1.125+1.500*x+0.500*x*x;
+    x=(center.coords[i]-position.coords[i])/twidth;
+    dx[i][1]=0.750        -      x*x;
+    dx[i][2]=1.0-dx[i][1]-dx[i][0];
+  }
 
-	for(i=0;i<3;i++)
+  for(i=0;i<3;i++)
     {
-		for(j=0;j<3;j++)
+    for(j=0;j<3;j++)
         {
-			dxdy=dx[0][i]*dx[1][j];
-			for(k=0;k<3;k++)
+      dxdy=dx[0][i]*dx[1][j];
+      for(k=0;k<3;k++)
             {
-				if(neighbors.neighbors[i][j][k])
+        if(neighbors.neighbors[i][j][k])
                 {
-					weight+=Real(dxdy*dx[2][k]*neighbors.neighbors[i][j][k]->nodeData.centerWeightContribution);
-				}
-			}
-		}
-	}
-	return Real(1.0/weight);
+          weight+=Real(dxdy*dx[2][k]*neighbors.neighbors[i][j][k]->nodeData.centerWeightContribution);
+        }
+      }
+    }
+  }
+  return Real(1.0/weight);
 }
 
 template<int Degree>
@@ -373,27 +373,27 @@ inline int Octree<Degree>::NonLinearUpdateWeightContribution(TreeOctNode* node,c
 	node->centerAndWidth(center,w);
 	twidth=w;
 
-	for(i=0;i<DIMENSION;i++)
+  for(i=0;i<DIMENSION;i++)
     {
-		x=(center.coords[i]-position.coords[i]-twidth)/twidth;
-		dx[i][0]=1.125+1.500*x+0.500*x*x;
-		x=(center.coords[i]-position.coords[i])/twidth;
-		dx[i][1]=0.750        -      x*x;
-		dx[i][2]=1.0-dx[i][1]-dx[i][0];
-	}
+    x=(center.coords[i]-position.coords[i]-twidth)/twidth;
+    dx[i][0]=1.125+1.500*x+0.500*x*x;
+    x=(center.coords[i]-position.coords[i])/twidth;
+    dx[i][1]=0.750        -      x*x;
+    dx[i][2]=1.0-dx[i][1]-dx[i][0];
+  }
 
-	for(i=0;i<3;i++)
+  for(i=0;i<3;i++)
     {
-		for(j=0;j<3;j++)
+    for(j=0;j<3;j++)
         {
-			dxdy=dx[0][i]*dx[1][j]*weight;
-			for(k=0;k<3;k++)
+      dxdy=dx[0][i]*dx[1][j]*weight;
+      for(k=0;k<3;k++)
             {
-				if(neighbors.neighbors[i][j][k]){neighbors.neighbors[i][j][k]->nodeData.centerWeightContribution+=Real(dxdy*dx[2][k]);}
-			}
-		}
-	}
-	return 0;
+        if(neighbors.neighbors[i][j][k]){neighbors.neighbors[i][j][k]->nodeData.centerWeightContribution+=Real(dxdy*dx[2][k]);}
+      }
+    }
+  }
+  return 0;
 }
 
 template<int Degree>
@@ -745,11 +745,11 @@ template<int Degree>
 inline int Octree<Degree>::GetRestrictedFixedDepthLaplacian(SparseSymmetricMatrix<float>& matrix,const int& depth,const int* entries,const int& entryCount,
 													 const TreeOctNode* rNode,const Real& iRadius,
 													 const SortedTreeNodes& sNodes){
-  (void) depth;
+	(void) depth;
 
 	int i;
 	RestrictedLaplacianMatrixFunction mf;
-  //NOTE: myRadius was unused (so I commented it)
+	//NOTE: myRadius was unused (so I commented it)
 	//Real myRadius=int(2*iRadius-ROUND_EPS)+ROUND_EPS;
 	mf.ot=this;
 	mf.radius=iRadius;
@@ -783,8 +783,8 @@ inline int Octree<Degree>::LaplacianMatrixIteration(const int& subdivideDepth)
 
 	sNodes.treeNodes[0]->nodeData.value=0;
 	for(i=1;i<sNodes.maxDepth;i++)
-      {
-      DumpOutput("Depth: %d/%d\n",i,sNodes.maxDepth-1);
+			{
+			DumpOutput("Depth: %d/%d\n",i,sNodes.maxDepth-1);
 
       if(subdivideDepth>0)
         {
@@ -794,10 +794,10 @@ inline int Octree<Degree>::LaplacianMatrixIteration(const int& subdivideDepth)
         {
         iter+=SolveFixedDepthMatrix(i,sNodes);
         }
-	 }
-	SparseMatrix<float>::MatrixAllocator.reset();
-	fData.clearDotTables(fData.DOT_FLAG | fData.D_DOT_FLAG | fData.D2_DOT_FLAG);
-	return iter;
+   }
+  SparseMatrix<float>::MatrixAllocator.reset();
+  fData.clearDotTables(fData.DOT_FLAG | fData.D_DOT_FLAG | fData.D2_DOT_FLAG);
+  return iter;
 }
 
 template<int Degree>
@@ -813,38 +813,38 @@ inline int Octree<Degree>::SolveFixedDepthMatrix(const int& depth,const SortedTr
 
 	V.Resize(sNodes.nodeCount[depth+1]-sNodes.nodeCount[depth]);
 	for(i=sNodes.nodeCount[depth];i<sNodes.nodeCount[depth+1];i++)
-      {
-      V[i-sNodes.nodeCount[depth]]=sNodes.treeNodes[i]->nodeData.value;
-      }
+			{
+			V[i-sNodes.nodeCount[depth]]=sNodes.treeNodes[i]->nodeData.value;
+			}
 	SparseSymmetricMatrix<float>::MatrixAllocator.rollBack();
 	GetFixedDepthLaplacian(matrix,depth,sNodes);
 	//DumpOutput("\tMatrix entries: %d / %d^2 = %.4f%%\n",matrix.Entries(),matrix.rows,100.0*(matrix.Entries()/double(matrix.rows))/matrix.rows);
 //	DumpOutput("\tMemory Usage: %.3f MB\n",float(MemoryUsage()));
 	iter+=SparseSymmetricMatrix<Real>::Solve(matrix,V,int(pow(matrix.rows,ITERATION_POWER)),Solution,double(EPSILON),1);
 	for(i=sNodes.nodeCount[depth];i<sNodes.nodeCount[depth+1];i++)
-      {
-      sNodes.treeNodes[i]->nodeData.value=Real(Solution[i-sNodes.nodeCount[depth]]);
-      }
+			{
+			sNodes.treeNodes[i]->nodeData.value=Real(Solution[i-sNodes.nodeCount[depth]]);
+			}
 
 	myRadius=Real(radius+ROUND_EPS-0.5);
 	myRadius /=(1<<depth);
 
-	if(depth<sNodes.maxDepth-1)
+  if(depth<sNodes.maxDepth-1)
     {
-		LaplacianProjectionFunction pf;
-		TreeOctNode *node1,*node2;
-		pf.ot=this;
-		int idx1,idx2,off=sNodes.nodeCount[depth];
-		// First pass: idx2 is the solution coefficient propogated
-		for(i=0;i<matrix.rows;i++)
+    LaplacianProjectionFunction pf;
+    TreeOctNode *node1,*node2;
+    pf.ot=this;
+    int idx1,idx2,off=sNodes.nodeCount[depth];
+    // First pass: idx2 is the solution coefficient propogated
+    for(i=0;i<matrix.rows;i++)
           {
-			idx1=i;
-			node1=sNodes.treeNodes[idx1+off];
-			if(!node1->children){continue;}
-			x1=int(node1->off[0]);
-			y1=int(node1->off[1]);
-			z1=int(node1->off[2]);
-			for(int j=0;j<matrix.rowSizes[i];j++)
+      idx1=i;
+      node1=sNodes.treeNodes[idx1+off];
+      if(!node1->children){continue;}
+      x1=int(node1->off[0]);
+      y1=int(node1->off[1]);
+      z1=int(node1->off[2]);
+      for(int j=0;j<matrix.rowSizes[i];j++)
               {
               idx2=matrix.m_ppElements[i][j].N;
               node2=sNodes.treeNodes[idx2+off];
@@ -866,46 +866,46 @@ inline int Octree<Degree>::SolveFixedDepthMatrix(const int& depth,const SortedTr
                 {
                 TreeOctNode::ProcessNodeAdjacentNodes(fData.depth,node2,width,node1,width,&pf,0);
                 }
-			   }
-		  }
-		// Second pass: idx1 is the solution coefficient propogated
-		for(i=0;i<matrix.rows;i++)
+         }
+      }
+    // Second pass: idx1 is the solution coefficient propogated
+    for(i=0;i<matrix.rows;i++)
         {
-			idx1=i;
-			node1=sNodes.treeNodes[idx1+off];
-			x1=int(node1->off[0]);
-			y1=int(node1->off[1]);
-			z1=int(node1->off[2]);
-			pf.value=Solution[idx1];
-			pf.index[0]=x1;
-			pf.index[1]=y1;
-			pf.index[2]=z1;
-			for(int j=0;j<matrix.rowSizes[i];j++)
+      idx1=i;
+      node1=sNodes.treeNodes[idx1+off];
+      x1=int(node1->off[0]);
+      y1=int(node1->off[1]);
+      z1=int(node1->off[2]);
+      pf.value=Solution[idx1];
+      pf.index[0]=x1;
+      pf.index[1]=y1;
+      pf.index[2]=z1;
+      for(int j=0;j<matrix.rowSizes[i];j++)
             {
-				idx2=matrix.m_ppElements[i][j].N;
-				node2=sNodes.treeNodes[idx2+off];
-				if(idx1!=idx2 && node2->children)
+        idx2=matrix.m_ppElements[i][j].N;
+        node2=sNodes.treeNodes[idx2+off];
+        if(idx1!=idx2 && node2->children)
                 {
-					x2=int(node2->off[0]);
-					y2=int(node2->off[1]);
-					z2=int(node2->off[2]);
-					dx=Real(x1-x2)/(1<<depth);
-					dy=Real(y1-y2)/(1<<depth);
-					dz=Real(z1-z2)/(1<<depth);
-					if(fabs(dx)<myRadius && fabs(dy)<myRadius && fabs(dz)<myRadius)
+          x2=int(node2->off[0]);
+          y2=int(node2->off[1]);
+          z2=int(node2->off[2]);
+          dx=Real(x1-x2)/(1<<depth);
+          dy=Real(y1-y2)/(1<<depth);
+          dz=Real(z1-z2)/(1<<depth);
+          if(fabs(dx)<myRadius && fabs(dy)<myRadius && fabs(dz)<myRadius)
                       {
                       node2->processNodeNodes(node1,&pf,0);
                       }
-					else
+          else
                       {
                       TreeOctNode::ProcessNodeAdjacentNodes(fData.depth,node1,width,node2,width,&pf,0);
                       }
-				}
-			}
-		}
-	}
-	//DumpOutput("\tGot / Solved / Updated in: %6.3f / %6.3f / %6.3f\n",gTime,sTime,uTime);
-	return iter;
+        }
+      }
+    }
+  }
+  //DumpOutput("\tGot / Solved / Updated in: %6.3f / %6.3f / %6.3f\n",gTime,sTime,uTime);
+  return iter;
 }
 
 template<int Degree>
@@ -986,122 +986,122 @@ inline int Octree<Degree>::SolveFixedDepthMatrix(const int& depth,const int& sta
 
 		// Update the solution for all nodes in the sub-tree
 		for(j=0;j<asf.adjacencyCount;j++)
-          {
+					{
 			temp=sNodes.treeNodes[asf.adjacencies[j]];
 			while(temp->depth()>sNodes.treeNodes[i]->depth())
-              {
-              temp=temp->parent;
-              }
+							{
+							temp=temp->parent;
+							}
 			if(temp->nodeData.nodeIndex>=sNodes.treeNodes[i]->nodeData.nodeIndex)
-              {
-              sNodes.treeNodes[asf.adjacencies[j]]->nodeData.value=Real(SubSolution[j]);
-              }
-		  }
-    //NOTE: t was unused (so I commented it)
+							{
+							sNodes.treeNodes[asf.adjacencies[j]]->nodeData.value=Real(SubSolution[j]);
+							}
+			}
+		//NOTE: t was unused (so I commented it)
 		//double t=Time();
 		// Update the values in the next depth
 		int x1,x2,y1,y2,z1,z2;
 		if(depth<sNodes.maxDepth-1)
-        {
+				{
 			int idx1,idx2;
 			TreeOctNode *node1,*node2;
 			// First pass: idx2 is the solution coefficient propogated
 			for(j=0;j<matrix.rows;j++)
-              {
+							{
 				idx1=asf.adjacencies[j];
 				node1=sNodes.treeNodes[idx1];
 				if(!node1->children)
-                  {
-                  continue;
-                  }
+									{
+									continue;
+									}
 				x1=int(node1->off[0]);
 				y1=int(node1->off[1]);
 				z1=int(node1->off[2]);
 
-				for(int k=0;k<matrix.rowSizes[j];k++)
+        for(int k=0;k<matrix.rowSizes[j];k++)
                 {
-					idx2=asf.adjacencies[matrix.m_ppElements[j][k].N];
-					node2=sNodes.treeNodes[idx2];
-					temp=node2;
-					while(temp->depth()>d)
+          idx2=asf.adjacencies[matrix.m_ppElements[j][k].N];
+          node2=sNodes.treeNodes[idx2];
+          temp=node2;
+          while(temp->depth()>d)
                       {
                       temp=temp->parent;
                       }
-					if(temp!=sNodes.treeNodes[i])
+          if(temp!=sNodes.treeNodes[i])
                       {
                       continue;
                       }
-					lpf.value=Real(SubSolution[matrix.m_ppElements[j][k].N]);
-					x2=int(node2->off[0]);
-					y2=int(node2->off[1]);
-					z2=int(node2->off[2]);
-					lpf.index[0]=x2;
-					lpf.index[1]=y2;
-					lpf.index[2]=z2;
-					dx=Real(x2-x1)/(1<<depth);
-					dy=Real(y2-y1)/(1<<depth);
-					dz=Real(z2-z1)/(1<<depth);
-					if(fabs(dx)<myRadius2 && fabs(dy)<myRadius2 && fabs(dz)<myRadius2)
+          lpf.value=Real(SubSolution[matrix.m_ppElements[j][k].N]);
+          x2=int(node2->off[0]);
+          y2=int(node2->off[1]);
+          z2=int(node2->off[2]);
+          lpf.index[0]=x2;
+          lpf.index[1]=y2;
+          lpf.index[2]=z2;
+          dx=Real(x2-x1)/(1<<depth);
+          dy=Real(y2-y1)/(1<<depth);
+          dz=Real(z2-z1)/(1<<depth);
+          if(fabs(dx)<myRadius2 && fabs(dy)<myRadius2 && fabs(dz)<myRadius2)
                       {
                       node1->processNodeNodes(node2,&lpf,0);
                       }
-					else
+          else
                       {
                       TreeOctNode::ProcessNodeAdjacentNodes(fData.depth,node2,width,node1,width,&lpf,0);
                       }
-				}
-			}
-			// Second pass: idx1 is the solution coefficient propogated
-			for(j=0;j<matrix.rows;j++)
+        }
+      }
+      // Second pass: idx1 is the solution coefficient propogated
+      for(j=0;j<matrix.rows;j++)
             {
-				idx1=asf.adjacencies[j];
-				node1=sNodes.treeNodes[idx1];
-				temp=node1;
-				while(temp->depth()>d)
+        idx1=asf.adjacencies[j];
+        node1=sNodes.treeNodes[idx1];
+        temp=node1;
+        while(temp->depth()>d)
                   {
                   temp=temp->parent;
                   }
-				if(temp!=sNodes.treeNodes[i])
+        if(temp!=sNodes.treeNodes[i])
                   {
                   continue;
                   }
-				x1=int(node1->off[0]);
-				y1=int(node1->off[1]);
-				z1=int(node1->off[2]);
+        x1=int(node1->off[0]);
+        y1=int(node1->off[1]);
+        z1=int(node1->off[2]);
 
 				lpf.value=Real(SubSolution[j]);
 				lpf.index[0]=x1;
 				lpf.index[1]=y1;
 				lpf.index[2]=z1;
 				for(int k=0;k<matrix.rowSizes[j];k++)
-                {
+								{
 					idx2=asf.adjacencies[matrix.m_ppElements[j][k].N];
 					node2=sNodes.treeNodes[idx2];
 					if(!node2->children)
-                      {
-                      continue;
-                      }
+											{
+											continue;
+											}
 
-					if(idx1!=idx2)
+          if(idx1!=idx2)
                     {
-						x2=int(node2->off[0]);
-						y2=int(node2->off[1]);
-						z2=int(node2->off[2]);
-						dx=Real(x1-x2)/(1<<depth);
-						dy=Real(y1-y2)/(1<<depth);
-						dz=Real(z1-z2)/(1<<depth);
-						if(fabs(dx)<myRadius2 && fabs(dy)<myRadius2 && fabs(dz)<myRadius2)
+            x2=int(node2->off[0]);
+            y2=int(node2->off[1]);
+            z2=int(node2->off[2]);
+            dx=Real(x1-x2)/(1<<depth);
+            dy=Real(y1-y2)/(1<<depth);
+            dz=Real(z1-z2)/(1<<depth);
+            if(fabs(dx)<myRadius2 && fabs(dy)<myRadius2 && fabs(dz)<myRadius2)
                           {
                           node2->processNodeNodes(node1,&lpf,0);
                           }
-						else
+            else
                           {
                           TreeOctNode::ProcessNodeAdjacentNodes(fData.depth,node1,width,node2,width,&lpf,0);
                           }
-					}
-				}
-			}
-		}
+          }
+        }
+      }
+    }
 
 		//DumpOutput("\t\tGot / Solved / Updated in: %6.3f / %6.3f / %6.3f\n",gTime,sTime,uTime);
 		delete[] asf.adjacencies;
@@ -1114,16 +1114,16 @@ inline int Octree<Degree>::HasNormals(TreeOctNode* node,const Real& epsilon)
 {
 	int hasNormals=0;
 	if(node->nodeData.nodeIndex>=0 && Length((*normals)[node->nodeData.nodeIndex])>epsilon)
-      {
-      hasNormals=1;
-      }
+			{
+			hasNormals=1;
+			}
 	if(node->children)
-      {
-      for(int i=0;i<Cube::CORNERS && !hasNormals;i++)
-        {
-        hasNormals|=HasNormals(&node->children[i],epsilon);
-        }
-      }
+			{
+			for(int i=0;i<Cube::CORNERS && !hasNormals;i++)
+				{
+				hasNormals|=HasNormals(&node->children[i],epsilon);
+				}
+			}
 
 	return hasNormals;
 }
@@ -1134,18 +1134,18 @@ inline void Octree<Degree>::ClipTree(void)
 	TreeOctNode* temp;
 	temp=tree.nextNode();
 	while(temp)
-    {
+		{
 		if(temp->children)
-        {
+				{
 			int hasNormals=0;
 			for(int i=0;i<Cube::CORNERS && !hasNormals;i++)
-              {
-              hasNormals=HasNormals(&temp->children[i],EPSILON);
-              }
+							{
+							hasNormals=HasNormals(&temp->children[i],EPSILON);
+							}
 			if(!hasNormals)
-              {
-              temp->children=NULL;
-              }
+							{
+							temp->children=NULL;
+							}
 		}
 		temp=tree.nextNode(temp);
 	}
@@ -1165,7 +1165,7 @@ inline void Octree<Degree>::SetLaplacianWeights(void)
 			temp=tree.nextNode(temp);
 			continue;
 		}
-    //NOTE: d was unused (so I commented it)
+		//NOTE: d was unused (so I commented it)
 		// int d=temp->depth();
 		df.normal=(*normals)[temp->nodeData.nodeIndex];
 		df.index[0]=int(temp->off[0]);
@@ -1190,7 +1190,7 @@ inline void Octree<Degree>::SetLaplacianWeights(void)
 template<int Degree>
 inline void Octree<Degree>::DivergenceFunction::Function(TreeOctNode* node1,const TreeOctNode* node2)
 {
-  (void) node2;
+	(void) node2;
 
 	Point3D<Real> n=normal;
 	if(FunctionData<Degree,Real>::SymmetricIndex(index[0],int(node1->off[0]),scratch[0])){n.coords[0]=-n.coords[0];}
@@ -1203,9 +1203,9 @@ inline void Octree<Degree>::DivergenceFunction::Function(TreeOctNode* node1,cons
 template<int Degree>
 inline void Octree<Degree>::LaplacianProjectionFunction::Function(TreeOctNode* node1,const TreeOctNode* node2)
 {
-	(void) node2;
+  (void) node2;
 
-  scratch[0]=FunctionData<Degree,Real>::SymmetricIndex(index[0],int(node1->off[0]));
+	scratch[0]=FunctionData<Degree,Real>::SymmetricIndex(index[0],int(node1->off[0]));
 	scratch[1]=FunctionData<Degree,Real>::SymmetricIndex(index[1],int(node1->off[1]));
 	scratch[2]=FunctionData<Degree,Real>::SymmetricIndex(index[2],int(node1->off[2]));
 	node1->nodeData.value-=Real(ot->GetLaplacian(scratch)*value);
@@ -1229,14 +1229,14 @@ inline void Octree<Degree>::AdjacencySetFunction::Function(const TreeOctNode* no
 template<int Degree>
 inline void Octree<Degree>::RefineFunction::Function(TreeOctNode* node1,const TreeOctNode* node2)
 {
-  (void) node2;
+	(void) node2;
 	if(!node1->children && node1->depth()<depth){node1->initChildren();}
 }
 
 template<int Degree>
 inline void Octree<Degree>::FaceEdgesFunction::Function(const TreeOctNode* node1,const TreeOctNode* node2)
 {
-  (void) node2;
+	(void) node2;
 
 	if(!node1->children && MarchingCubes::HasRoots(node1->nodeData.mcIndex)){
 		RootInfo ri1,ri2;
@@ -1381,7 +1381,7 @@ inline void Octree<Degree>::GetMCIsoTriangles(const Real& isoValue,CoredMeshData
 	fData.setValueTables(fData.VALUE_FLAG | fData.D_VALUE_FLAG,0,postNormalSmooth);
 	temp=tree.nextLeaf();
 	while(temp)
-    {
+		{
 		SetMCRootPositions(temp,0,isoValue,roots,NULL,*normalHash,NULL,NULL,mesh,nonLinearFit);
 		temp=tree.nextLeaf(temp);
 	}
@@ -1400,7 +1400,7 @@ inline void Octree<Degree>::GetMCIsoTriangles(const Real& isoValue,CoredMeshData
 	// finer faces to coarser ones.
 	temp=tree.nextLeaf();
 	while(temp)
-    {
+		{
 		GetMCIsoTriangles(temp,mesh,roots,NULL,NULL,0,0);
 		temp=tree.nextLeaf(temp);
 	}
@@ -1418,21 +1418,21 @@ inline void Octree<Degree>::GetMCIsoTriangles(const Real& isoValue,const int& su
 
 	int sDepth;
 	if(subdivideDepth<=0)
-      {
-      sDepth=0;
-      }
+			{
+			sDepth=0;
+			}
 	else
-      {
-      sDepth=fData.depth-subdivideDepth;
-      }
+			{
+			sDepth=fData.depth-subdivideDepth;
+			}
 	if(sDepth<0)
-      {
-      sDepth=0;
-      }
+			{
+			sDepth=0;
+			}
 
 	SetIsoSurfaceCorners(isoValue,sDepth,fullDepthIso);
-	// At this point all of the corner values have been set and all nodes are valid. Now it's just a matter
-	// of running marching cubes.
+	// At this point all of the corner values have been set and all nodes are valid.
+	// Now it's just a matter of running marching cubes.
 
 	boundaryNormalHash=new hash_map<long long,std::pair<Real,Point3D<Real> > >();
 	int offSet=0;
@@ -1679,14 +1679,14 @@ inline Real Octree<Degree>::GetIsoValue(void)
 template<int Degree>
 inline void Octree<Degree>::SetIsoSurfaceCorners(const Real& isoValue,const int& subdivideDepth,const int& fullDepthIso)
 {
-  (void) fullDepthIso;
+	(void) fullDepthIso;
 
 	int i,j;
 	hash_map<long long,Real> values;
 	Real cornerValues[Cube::CORNERS];
 	PointIndexValueFunction cf;
 	TreeOctNode* temp;
-  //NOTE: leafCount was unused (so I commented it)
+	//NOTE: leafCount was unused (so I commented it)
 	//int leafCount=tree.leaves();
 	long long key;
 	SortedTreeNodes *sNodes=new SortedTreeNodes();
@@ -1739,38 +1739,38 @@ inline void Octree<Degree>::SetIsoSurfaceCorners(const Real& isoValue,const int&
 
 //	MemoryUsage();
 
-	for(i=sNodes->nodeCount[subdivideDepth];i<sNodes->nodeCount[subdivideDepth+1];i++)
+  for(i=sNodes->nodeCount[subdivideDepth];i<sNodes->nodeCount[subdivideDepth+1];i++)
     {
-		temp=sNodes->treeNodes[i]->nextLeaf();
-		while(temp)
+    temp=sNodes->treeNodes[i]->nextLeaf();
+    while(temp)
         {
-			for(j=0;j<Cube::CORNERS;j++)
+      for(j=0;j<Cube::CORNERS;j++)
             {
-				int idx[3];
-				key=VertexData::CornerIndex(temp,j,fData.depth,idx);
-				cf.index[0]=idx[0]*fData.res;
-				cf.index[1]=idx[1]*fData.res;
-				cf.index[2]=idx[2]*fData.res;
-				if(values.find(key)!=values.end())
+        int idx[3];
+        key=VertexData::CornerIndex(temp,j,fData.depth,idx);
+        cf.index[0]=idx[0]*fData.res;
+        cf.index[1]=idx[1]*fData.res;
+        cf.index[2]=idx[2]*fData.res;
+        if(values.find(key)!=values.end())
                   {
                   cornerValues[j]=values[key];
                   }
-				else
+        else
                   {
-					if(this->width<=3)
+          if(this->width<=3)
                       {
                       values[key]=cornerValues[j]=getCornerValue(temp,j);
                       }
-					else
+          else
                     {
-						cf.value=0;
-						TreeOctNode::ProcessPointAdjacentNodes(fData.depth,idx,&tree,width,&cf);
-						values[key]=cf.value;
-						cornerValues[j]=cf.value;
-					}
-				}
-			}
-			temp->nodeData.mcIndex=MarchingCubes::GetIndex(cornerValues,isoValue);
+            cf.value=0;
+            TreeOctNode::ProcessPointAdjacentNodes(fData.depth,idx,&tree,width,&cf);
+            values[key]=cf.value;
+            cornerValues[j]=cf.value;
+          }
+        }
+      }
+      temp->nodeData.mcIndex=MarchingCubes::GetIndex(cornerValues,isoValue);
 
 			if(temp->parent){
 				TreeOctNode* parent=temp->parent;
@@ -1797,7 +1797,7 @@ inline void Octree<Degree>::SetIsoSurfaceCorners(const Real& isoValue,const int&
 	//DumpOutput("Set corner values in: %f\n",Time()-t);
 	//DumpOutput("Memory Usage: %.3f MB\n",float(MemoryUsage()));
 
-	if(subdivideDepth)
+  if(subdivideDepth)
       {
       PreValidate(isoValue,fData.depth,subdivideDepth);
       }
@@ -2227,7 +2227,7 @@ inline int Octree<Degree>::GetRoot(const RootInfo& ri,const Real& isoValue,Point
 
 template<int Degree>
 inline int Octree<Degree>::GetRoot(const RootInfo& ri,const Real& isoValue,const int& maxDepth,Point3D<Real>& position,hash_map<long long,std::pair<Real,Point3D<Real> > >& Normals,
-							Point3D<Real>* normal,const int& nonLinearFit)
+              Point3D<Real>* normal,const int& nonLinearFit)
 {
   (void) maxDepth;
   (void) normal;
@@ -2359,8 +2359,8 @@ inline int Octree<Degree>::GetRootIndex(const TreeOctNode* node,const int& edgeI
 		ri.node=finest;
 		ri.edgeIndex=finestIndex;
 		int offset,eIndex[2];
-    eIndex[0] = 0;
-    eIndex[1] = 0;
+		eIndex[0] = 0;
+		eIndex[1] = 0;
 		offset=BinaryNode<Real>::Index(d,off[o]);
 		switch(o){
 				case 0:
@@ -2421,10 +2421,10 @@ inline int Octree<Degree>::GetRootIndex(const long long& key,hash_map<long long,
 
 template<int Degree>
 inline int Octree<Degree>::SetMCRootPositions(TreeOctNode* node,const int& sDepth,const Real& isoValue,
-									   hash_map<long long,int>& boundaryRoots,hash_map<long long,int>* interiorRoots,
-									   hash_map<long long,std::pair<Real,Point3D<Real> > >& boundaryNormalHash,hash_map<long long,std::pair<Real,Point3D<Real> > >* interiorNormalHash,
-									   std::vector<Point3D<float> >* interiorPositions,
-									   CoredMeshData* mesh,const int& nonLinearFit)
+										 hash_map<long long,int>& boundaryRoots,hash_map<long long,int>* interiorRoots,
+										 hash_map<long long,std::pair<Real,Point3D<Real> > >& boundaryNormalHash,hash_map<long long,std::pair<Real,Point3D<Real> > >* interiorNormalHash,
+										 std::vector<Point3D<float> >* interiorPositions,
+										 CoredMeshData* mesh,const int& nonLinearFit)
 {
 	Point3D<Real> position;
 	int i,j,k,eIndex;
@@ -2463,8 +2463,8 @@ inline int Octree<Degree>::SetMCRootPositions(TreeOctNode* node,const int& sDept
 
 template<int Degree>
 inline int Octree<Degree>::SetBoundaryMCRootPositions(const int& sDepth,const Real& isoValue,
-											   hash_map<long long,int>& boundaryRoots,hash_map<long long,std::pair<Real,Point3D<Real> > >& boundaryNormalHash,
-											   CoredMeshData* mesh,const int& nonLinearFit)
+												 hash_map<long long,int>& boundaryRoots,hash_map<long long,std::pair<Real,Point3D<Real> > >& boundaryNormalHash,
+												 CoredMeshData* mesh,const int& nonLinearFit)
 {
 	Point3D<Real> position;
 	int i,j,k,eIndex,hits=0;
@@ -2505,7 +2505,7 @@ inline int Octree<Degree>::SetBoundaryMCRootPositions(const int& sDepth,const Re
 
 template<int Degree>
 inline void Octree<Degree>::GetMCIsoEdges(TreeOctNode* node,hash_map<long long,int>& boundaryRoots,hash_map<long long,int>* interiorRoots,const int& sDepth,
-								   std::vector<std::pair<long long,long long> >& edges)
+                   std::vector<std::pair<long long,long long> >& edges)
 {
   (void) boundaryRoots;
   (void) interiorRoots;
@@ -2589,7 +2589,7 @@ inline void Octree<Degree>::GetMCIsoEdges(TreeOctNode* node,hash_map<long long,i
 
 template<int Degree>
 inline int Octree<Degree>::GetMCIsoTriangles(TreeOctNode* node,CoredMeshData* mesh,hash_map<long long,int>& boundaryRoots,
-									  hash_map<long long,int>* interiorRoots,std::vector<Point3D<float> >* interiorPositions,const int& offSet,const int& sDepth)
+										hash_map<long long,int>* interiorRoots,std::vector<Point3D<float> >* interiorPositions,const int& offSet,const int& sDepth)
 {
 	int tris=0;
 	std::vector<std::pair<long long,long long> > edges;
@@ -2687,9 +2687,9 @@ inline int Octree<Degree>::AddTriangles(CoredMeshData* mesh,std::vector<CoredPoi
 		for(int i=0;i<int(t.triangles.size());i++){
 			TriangleIndex tri;
 			int idx[3];
-      idx[0] = 0;
-      idx[1] = 0;
-      idx[2] = 0;
+			idx[0] = 0;
+			idx[1] = 0;
+			idx[2] = 0;
 			int inCoreFlag=0;
 			t.factor(i,idx[0],idx[1],idx[2]);
 			for(int j=0;j<3;j++){

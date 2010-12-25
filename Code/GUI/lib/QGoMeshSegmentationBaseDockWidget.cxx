@@ -119,10 +119,13 @@ QGoMeshSegmentationBaseDockWidget::QGoMeshSegmentationBaseDockWidget(QWidget *iP
   // connect semi-automatic segmentation specific signals
   QObject::connect( m_MeshSemiAutoSegmentation, SIGNAL( UpdateSeeds() ),
                     this, SIGNAL( UpdateSeeds() ) );
-  QObject::connect( m_MeshSemiAutoSegmentation, SIGNAL( MeshCreated(vtkPolyData *) ),
-                    this, SIGNAL( SaveAndVisuMesh(vtkPolyData *) ) );
+  QObject::connect( m_MeshSemiAutoSegmentation, SIGNAL( MeshCreated(vtkPolyData *, int) ),
+                    this, SIGNAL( SaveAndVisuMesh(vtkPolyData *, int) ) );
   QObject::connect( m_MeshSemiAutoSegmentation, SIGNAL( SegmentationFinished() ),
                     this, SIGNAL( ClearAllSeeds() ) );
+
+  // set default segmentation as semi auto segmentation
+  this->mode->setCurrentIndex(1);
 }
 
 //---------------------------------------------------------------------------//
@@ -210,8 +213,8 @@ QGoMeshSegmentationBaseDockWidget::SetChannel(int iChannel,const QString & iText
     input = QString("Channel %1").arg(iChannel);
     }
 
-  m_MeshManualSegmentation->SetChannel(input);
-  m_MeshSemiAutoSegmentation->SetChannel(input);
+  m_MeshManualSegmentation->SetChannel(iChannel, input);
+  m_MeshSemiAutoSegmentation->SetChannel(iChannel, input);
 }
 
 //---------------------------------------------------------------------------//

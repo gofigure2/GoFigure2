@@ -38,7 +38,12 @@
 
 #include "GoFigureFileInfoMultiIndexContainerHelper.h"
 #include "itkMegaCaptureReader.h"
-#include "ContourMeshContainer.h"
+
+#include "ContourContainer.h"
+#include "MeshContainer.h"
+#include "TrackContainer.h"
+#include "TraceContainerBase.h"
+
 #include "QGoPrintDatabase.h"
 
 #include "GoFigureMeshAttributes.h"
@@ -52,6 +57,9 @@
 // base segmentation dock widget
 class QGoContourSegmentationBaseDockWidget;
 class QGoMeshSegmentationBaseDockWidget;
+
+//track dockwidget
+class QGoTrackDockWidget;
 
 class QGoImageView3D;
 class QGoNavigationDockWidget;
@@ -151,45 +159,43 @@ public:
    */
   virtual void ReadSettings() {}
 
-  ContourMeshContainer * GetContourContainer()
+  ContourContainer * GetContourContainer()
   {
     return m_ContourContainer;
   }
 
-  ContourMeshContainer * GetMeshContainer()
+  MeshContainer * GetMeshContainer()
   {
     return m_MeshContainer;
   }
 
-  template< class TIndex >
-  void AddTraceFromNodesManager(
-    typename ContourMeshContainer::MultiIndexContainer::index< TIndex >::type::iterator iIt,
-    const std::string & iTrace)
+  TrackContainer * GetTrackContainer()
   {
-    // If we want to add a contour
-    if ( iTrace.compare("contour") == 0 )
-      {
-      AddContourFromNodes< TIndex >(iIt);
-      }
-    // If we want to add a mesh
-    if ( iTrace.compare("mesh") == 0 )
-      {
-      AddMeshFromNodes< TIndex >(iIt);
-      }
+    return m_TrackContainer;
   }
 
   template< class TIndex >
   void AddMeshFromNodes(
-    typename ContourMeshContainer::MultiIndexContainer::index< TIndex >::type::iterator iIt)
+    typename ContourMeshContainer::MultiIndexContainerType::index< TIndex >::type::iterator
+      iIt )
   {
     VisualizeMesh< TIndex >(iIt);
+  }
+
+  template< class TIndex >
+  void AddTrackFromNodes(
+    typename TrackContainer::MultiIndexContainerType::index< TIndex >::type::iterator
+      iIt )
+  {
+    VisualizeTrack< TIndex >(iIt);
   }
 
   //-------------------------------------------------------------------------
   template< class TIndex >
   void
   AddContourFromNodes(
-    typename ContourMeshContainer::MultiIndexContainer::index< TIndex >::type::iterator iIt)
+    typename ContourContainer::MultiIndexContainerType::index< TIndex >::type::iterator
+      iIt )
   {
     vtkPolyData *nodes = iIt->Nodes;
 
@@ -296,6 +302,10 @@ public slots:
 
   void ShowOneChannel(int iChannel);
 
+  void ModeChanged(int iChannel);
+
+  void StepChanged(int iStep);
+
   void ValidateContour();
 
   int SaveAndVisuContour(vtkPolyData *iView = NULL);
@@ -305,12 +315,12 @@ public slots:
   /** \brief Save a mesh in the database and render the mesh
    * at the given time point.
   \todo to be renamed */
-  void  SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord);
+  void  SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord, int iTShift);
 
   /** \brief Save a mesh in the database and render the mesh.
    * at the current time point
   \todo to be renamed */
-  void  SaveAndVisuMesh(vtkPolyData *iView);
+  void  SaveAndVisuMeshFromSegmentation(vtkPolyData *iView, int iTCoord);
 
   void ReEditContour(const unsigned int & iId);
 
@@ -352,6 +362,8 @@ protected:
   QAction *                                 m_BackgroundColorAction;
   QAction *                                 m_TakeSnapshotAction;
 
+  float m_IntersectionLineWidth;
+
   int m_PCoord;
   int m_RCoord;
   int m_CCoord;
@@ -359,8 +371,6 @@ protected:
   int m_YTileCoord;
   int m_ZTileCoord;
   int m_TCoord;
-
-  unsigned int m_ContourId;
 
   QGoNavigationDockWidget *m_NavigationDockWidget;
 
@@ -370,11 +380,13 @@ protected:
   // base segmentation dockwidget for meshes
   QGoMeshSegmentationBaseDockWidget *m_MeshSegmentationDockWidget;
 
+  QGoTrackDockWidget* m_TrackDockWidget;
+
   vtkPoints *m_Seeds;
 
-  ContourMeshContainer *m_ContourContainer;
-  ContourMeshContainer *m_MeshContainer;
-  ContourMeshContainer *m_TrackContainer;
+  ContourContainer *m_ContourContainer;
+  MeshContainer    *m_MeshContainer;
+  TrackContainer   *m_TrackContainer;
 
   bool m_TraceWidgetRequiered;
 
@@ -385,6 +397,8 @@ protected:
    * visualization mode */
   int  m_ChannelOfInterest;
 
+  int m_DopplerStep;
+
   /// \todo remove m_FFMPEGWriter and m_AVIWriter from this class
 
   #if defined ENABLEFFMPEG || defined ENABLEAVI
@@ -393,9 +407,7 @@ protected:
 
   void SaveContour(vtkPolyData *contour, vtkPolyData *contour_nodes);
 
-  std::vector< vtkActor * > VisualizeContour(vtkPolyData *contour);
-
-  std::vector< vtkActor * > VisualizeMesh(vtkPolyData *iMesh);
+  std::vector< vtkActor * > VisualizeTrace(vtkPolyData *iTrace, double* iRGBA);
 
   //int VisualizeContour(const int& iContourID,
   //    const unsigned int& iTCoord, vtkPolyData* contour,
@@ -403,69 +415,87 @@ protected:
 
   template< class TIndex >
   void VisualizeContour(
-    typename ContourMeshContainer::MultiIndexContainer::index< TIndex >::type::iterator iIt,
+    typename ContourContainer::MultiIndexContainerType::template index< TIndex >::type::iterator iIt,
     vtkPolyData *iContour)
   {
     if ( ( iContour->GetNumberOfPoints() > 2 ) && ( m_TCoord >= 0 ) )
       {
-      m_ContourId = iIt->TraceID;
-      const double *RGBA = iIt->rgba;
-
       bool visibility =
         ( static_cast< unsigned int >( m_TCoord ) == iIt->TCoord );
-
-      vtkProperty *contour_property = vtkProperty::New();
-      contour_property->SetColor(RGBA[0], RGBA[1], RGBA[2]);
-      contour_property->SetOpacity(RGBA[3]);
+      bool highlighted = false;
 
       vtkPolyData *contour_copy = vtkPolyData::New();
       contour_copy->DeepCopy(iContour);
 
-      std::vector< vtkActor * > contour_actor =
-        this->AddContour(contour_copy, contour_property);
+      VisualizeTraceBase< ContourContainer, TIndex >( m_ContourContainer, iIt,
+                                                      highlighted, visibility,
+                                                      contour_copy );
 
       contour_copy->Delete();
-      contour_property->Delete();
-
-      // fill the container
-      m_ContourContainer->UpdateVisualizationForGivenElement< TIndex >(
-        iIt,
-        contour_actor,
-        false,       //highlighted
-        visibility); //visible
-
-      // to increase accurately
-      ++m_ContourId;
       }
   }
 
   template< class TIndex >
   void
   VisualizeMesh(
-    typename ContourMeshContainer::MultiIndexContainer::index< TIndex >::type::iterator iIt)
+    typename MeshContainer::MultiIndexContainerType::template index< TIndex >::type::iterator iIt)
   {
-    const double *iRgba = iIt->rgba;
-    vtkPolyData * iMesh = iIt->Nodes;
-
-    if ( iMesh )
+    if ( iIt->Nodes )
       {
+      bool highlighted = false;
       bool visibility =
         ( static_cast< unsigned int >( m_TCoord ) == iIt->TCoord );
 
-      vtkProperty *mesh_property = vtkProperty::New();
-      mesh_property->SetColor(iRgba[0], iRgba[1], iRgba[2]);
-      mesh_property->SetOpacity(iRgba[3]);
-
-      /// \todo fix bug, shouldn't be required
-      std::vector< vtkActor * > mesh_actor = this->AddContour(iMesh, mesh_property);
-      mesh_property->Delete();
-
-      m_MeshContainer->UpdateVisualizationForGivenElement< TIndex >(iIt,
-                                                                    mesh_actor,
-                                                                    false,
-                                                                    visibility);
+      VisualizeTraceBase< MeshContainer, TIndex >( m_MeshContainer, iIt,
+                                                   highlighted, visibility );
       }
   }
+
+  template< class TIndex >
+  void
+  VisualizeTrack(
+    typename TrackContainer::MultiIndexContainerType::template index< TIndex >::type::iterator iIt)
+  {
+    if ( iIt->Nodes )
+      {
+      bool highlighted = false;
+      bool visibility = false;
+
+      VisualizeTraceBase< TrackContainer, TIndex >( m_TrackContainer, iIt,
+                                                   highlighted, visibility );
+      }
+  }
+
+  template< class TContainer, class TIndex >
+  void
+  VisualizeTraceBase(
+    TContainer* iContainer,
+    typename TContainer::MultiIndexContainerType::template index< TIndex >::type::iterator iIt,
+    const double & iHighlighted,
+    const double & iVisible,
+    vtkPolyData* iContour = NULL )
+    {
+    const double *iRgba = iIt->rgba;
+
+    vtkProperty *mesh_property = vtkProperty::New();
+    mesh_property->SetColor(iRgba[0], iRgba[1], iRgba[2]);
+    mesh_property->SetOpacity(iRgba[3]);
+
+    vtkPolyData* temp = iIt->Nodes;
+
+    if( iContour )
+      {
+      temp = iContour;
+      }
+
+    std::vector< vtkActor * > mesh_actor = this->AddContour( temp, mesh_property );
+    mesh_property->Delete();
+
+    iContainer->template UpdateVisualizationForGivenElement< TIndex >( iIt,
+                                                              mesh_actor,
+                                                              iHighlighted,
+                                                              iVisible );
+    }
 
   std::vector< int > GetBoundingBox(vtkPolyData *contour);
 
@@ -475,7 +505,7 @@ protected:
    * \brief Save mesh in Database
    * \param[in] iMesh
    */
-  void SaveMesh(vtkPolyData *iMesh);
+  void SaveMesh(vtkPolyData *iMesh, int iTShift);
 
   void GetBackgroundColorFromImageViewer();
 
@@ -515,6 +545,12 @@ protected:
 
   void SetTimePointWithMegaCaptureTimeChannels(int channel);
 
+  /**
+  \brief give the adress for the contours, meshes and tracks container to the
+  QGoPrintDatabase
+  */
+  void SetTheContainersForDB();
+
 protected slots:
   void AddBookmark();
 
@@ -524,9 +560,9 @@ protected slots:
 
   void OpenExistingBookmark();
 
-  void ShowTraceDockWidgetForContour(bool ManualSegVisible = true);
+  void ShowTraceWidgetsForContour(bool ManualSegVisible = true);
 
-  void ShowTraceDockWidgetForMesh(bool MeshVisible = true);
+  void ShowTraceWidgetsForMesh(bool MeshVisible = true);
 
   void UpdateSeeds();
 
@@ -586,11 +622,7 @@ protected slots:
 
   void ImportMeshes();
 
-  /**
-  \brief give the adress for the contours and meshes container to the QGoPrintDatabase,
-  once the database variables have been set for the QGoPrintDatabase
-  */
-  void SetTheContainersForDB();
+  void ImportTracks();
 
   /**
   \brief switch between the 2 visualization modes:
@@ -604,6 +636,15 @@ protected slots:
   updates the navigation widget.
   */
   void LoadChannelTime();
+
+  void UpdateTracksAppearance(bool, bool);
+
+  /**
+  \brief give the adress for the contours, meshes and tracks container to the
+  QGoPrintDatabase, and make the connection for the status bar once the database
+  variables have been set for the QGoPrintDatabase
+  */
+  void SetDatabaseContainersAndDelayedConnections();
 
 private:
   Q_DISABLE_COPY(QGoTabImageView3DwT);

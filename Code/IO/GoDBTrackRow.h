@@ -40,6 +40,12 @@
 #include <string>
 #include <map>
 
+/**
+\class GoDBTrackRow
+\brief this class manages the map with the keys matching the fields of the
+Track gofiguredatabase table and values of the map matching a row of the Track table
+\ingroup DB
+*/
 class QGOIO_EXPORT GoDBTrackRow:public GoDBTraceRow
 {
 public:
@@ -47,19 +53,56 @@ public:
 
   ~GoDBTrackRow()
   {}
-  /**\brief fill the track map with the values gotten from the visualization*/
-  GoDBTrackRow(vtkMySQLDatabase *DatabaseConnector, GoDBCoordinateRow Min,
-               GoDBCoordinateRow Max, unsigned int ImgSessionID, std::string TraceVisu);
+  /**
+  \brief fill the track map with the values gotten from the visualization
+  \param[in] DatabaseConnector connection to the database
+  \param[in] TraceVisu vtkPolyData the points will be extracted from to create 
+  a string for "Points"
+  \param[in] Min coordinate row for the minimum of the bounding box
+  \param[in] Max coordinate row for the maximum of the bounding box
+  \param[in] ImgSessionID ID of the current imagingsession
+  */
+  GoDBTrackRow(vtkMySQLDatabase *DatabaseConnector, vtkPolyData *TraceVisu,
+    GoDBCoordinateRow Min,GoDBCoordinateRow Max, unsigned int ImgSessionID);
 
-  /**\brief return the TrackID of the Track with the same bounding box
-  already registered in the DB or -1 if not yet created*/
+  GoDBTrackRow(vtkMySQLDatabase *DatabaseConnector,GoDBCoordinateRow Min,
+    GoDBCoordinateRow Max, unsigned int ImgSessionID,std::string iPoints);
+
+  /**
+  \param[in] ImagingSessionID current imagingsession the track belongs to
+  */
+  GoDBTrackRow(unsigned int ImagingSessionID);
+
+  //constructor GoDBTraceRow
+  GoDBTrackRow(unsigned int iExistingID,vtkMySQLDatabase *iDatabaseConnector);
+
+  //mother class method
+  void SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector,
+                                         vtkPolyData *TrackVisu,
+                                         GoDBCoordinateRow iCoordMin,
+                                         GoDBCoordinateRow iCoordMax);
+
+  /**
+  \brief convert the iTrackVisu into a string and
+  set the field 'points' of the map 
+  \param[in] iTrackVisu vtkPolyData the points will be extracted from to create 
+  a string for "Points"
+  */
+  void SetThePointsFromPolydata(vtkPolyData * iTrackVisu);
+
+  /**
+  \brief 
+  \return the TrackID of the Track with the same bounding box
+  already registered in the DB or -1 if not yet created
+  */
   int DoesThisBoundingBoxTrackExist(vtkMySQLDatabase *DatabaseConnector);
 
-  /**\brief save the track in the database and return the ID of the new
-  created track*/
-  int SaveInDB(vtkMySQLDatabase *DatabaseConnector);
+  //mother class method
+  virtual int SaveInDB(vtkMySQLDatabase *DatabaseConnector);
 
 protected:
+  //mother class method
   virtual void InitializeMap();
+
 };
 #endif

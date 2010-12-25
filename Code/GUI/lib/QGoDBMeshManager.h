@@ -40,7 +40,7 @@
 #include "GoDBTWContainerForMesh.h"
 #include "QGoDBTraceManager.h"
 #include "GoDBMeshRow.h"
-//#include <QWidget>
+#include "MeshContainer.h"
 
 class QGOGUILIB_EXPORT QGoDBMeshManager:public QGoDBTraceManager
 {
@@ -50,8 +50,18 @@ public:
                    QWidget *iparent);
   ~QGoDBMeshManager();
 
-  void DisplayInfoAndLoadVisuContainerForAllMeshes(
-    vtkMySQLDatabase *iDatabaseConnector,unsigned int iTimePoint);
+  /**
+  \brief set the m_MeshContainerInfoForVisu to the iContainerForVisu
+  \param[in] iContainerForVisu common container for the visu and database
+  */
+  void SetMeshesInfoContainerForVisu(MeshContainer *iContainerForVisu);
+
+  /**
+  \brief get all the data from the database to load all the meshes for the imagingsession
+  into the table widget and the container for the visu
+  \param[in] iDatabaseConnector connection to the database
+  */
+  void DisplayInfoAndLoadVisuContainerForAllMeshes(vtkMySQLDatabase *iDatabaseConnector);
 
   virtual void DisplayInfoForLastCreatedTrace(vtkMySQLDatabase *iDatabaseConnector);
 
@@ -74,36 +84,30 @@ public:
                                             unsigned iMeshID);
 
   unsigned int CreateNewMeshWithNoContourNoPoints(
-    vtkMySQLDatabase *iDatabaseConnector, NameWithColorData iColor,
-    unsigned int iTimePoint, std::string iCellType, std::string iSubCellType,
-    unsigned int iTrackID = 0);
+    vtkMySQLDatabase *iDatabaseConnector);
 
   unsigned int SaveNewMeshFromVisu(unsigned int iXCoordMin,
                                    unsigned int iYCoordMin,
                                    unsigned int iZCoordMin,
-                                   unsigned int iTCoord,
                                    unsigned int iXCoordMax,
                                    unsigned int iYCoordMax,
                                    unsigned int iZCoordMax,
+                                   int          iTShift,
                                    vtkPolyData *iTraceNodes,
                                    vtkMySQLDatabase *iDatabaseConnector,
-                                   NameWithColorData iColor,
-                                   unsigned int iTrackID,
-                                   GoFigureMeshAttributes *iMeshAttributes,
-                                   std::string iCellType,
-                                   std::string iSubCellType);
+                                   GoFigureMeshAttributes *iMeshAttributes);
 
   void SaveGeneratedMeshFromVisu(unsigned int iXCoordMin, unsigned int iYCoordMin,
                                  unsigned int iZCoordMin,
-                                 unsigned int iTCoord, unsigned int iXCoordMax, unsigned int iYCoordMax,
+                                 unsigned int iXCoordMax, unsigned int iYCoordMax,
                                  unsigned int iZCoordMax, vtkPolyData *iTraceNodes,
-                                 vtkMySQLDatabase *iDatabaseConnector, GoFigureMeshAttributes *iMeshAttributes);
+                                 vtkMySQLDatabase *iDatabaseConnector, 
+                                 GoFigureMeshAttributes *iMeshAttributes);
 
   /**
   \brief virtual pure method in QGoDBTraceManager
   */
-  std::list< unsigned int > UpdateTheTracesColor(vtkMySQLDatabase *iDatabaseConnector,
-                                                 NameWithColorData iNewColor);
+  std::list< unsigned int > UpdateTheTracesColor(vtkMySQLDatabase *iDatabaseConnector);
 
   /**
   \brief update the bounding boxes for the meshes with no points
@@ -111,34 +115,164 @@ public:
   void UpdateBoundingBoxes(vtkMySQLDatabase *iDatabaseConnector,
                            std::list< unsigned int > iListTracesIDs);
 
-  /**
-  \brief virtual pure method in QGoDBTraceManager
-  */
+  //virtual pure method in QGoDBTraceManager
   virtual void UpdateTWAndContainerForImportedTraces(std::vector< int > iVectorImportedTraces,
                                                      vtkMySQLDatabase *iDatabaseConnector);
+  //virtual pure method in QGoDBTraceManager
+  virtual void DeleteTraces(vtkMySQLDatabase *iDatabaseConnector);
+
+   //virtual pure method in QGoDBTraceManager
+  virtual std::list< unsigned int > GetListHighlightedIDs();
+
+  /**
+  \brief set the m_SelectedCelltype to iCelltype
+  \param[in] iCellType name of the celltype
+  */
+  void SetSelectedCellType(std::string* iCellType);
+
+  /**
+  \brief set the m_SelectedSubCelltype to iSubCelltype
+  \param[in] iSubCellType name of the subcelltype
+  */
+  void SetSelectedSubCellType(std::string* iSubCellType);
+
+public slots:
+  /**
+  \brief get the coordinate info for meshes needed for the visu
+  for imported tracks
+  \param[in] iMeshesIDs list of meshes IDs the info are needed
+  \return a map with IDs as keys and info as value
+  */
+  std::map<unsigned int,double*> GetMeshesInfoForImportedMesh(
+  std::list<unsigned int> iMeshesIDs);
+
+  /**
+  \brief check in the database if there is an existing mesh belonging
+  to iTrackID with iTimePoint, if yes, reassign the trackID to 0 and
+  return the ID of the mesh with the new trackID set to 0.
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iTrackID ID of the track
+  \param[in] iTimePoint timepoint to be checked
+  \return meshID of the mesh on the same timepoint which trackID is
+  reassigned to 0
+  */
+  unsigned int ReassignTrackIDForPreviousMeshWithSameTimePoint(
+    vtkMySQLDatabase *iDatabaseConnector,unsigned int iTrackID,
+    unsigned int iTimePoint);
+
+  /**
+  \brief if the track has already a mesh assigned for the current timepoint,
+  the track of the previous mesh will be reassigned to 0 and a message will
+  be displayed in the statusbar
+  \param[in] iTrackID ID of the track to be checked
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iShift value to be added to the current timepoint
+  \return a message to be print in the status bar of the mainwindow, if no meshes
+  reassigned, the message will be ""
+  */
+  QString CheckExistingMeshesForTheTrack(
+   unsigned int iTrackID, vtkMySQLDatabase* iDatabaseConnector, int iShift = 0);
+
+  /**
+  \overload
+  */
+  QString CheckExistingMeshesForTheTrack(
+   unsigned int iTrackID,vtkMySQLDatabase* iDatabaseConnector,
+   std::list<unsigned int> iListMeshIDs);
+
+  /**
+  \brief check if in the iListMeshIDs, several have the same timepoint, if so,
+  return the list of meshIDs that need to be reassigned to 0 and modify the
+  ioListMeshIDsToBePartOfTrack with only one meshid (the max one of several
+  meshid for the same timepoint) per timepoint
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iListMeshIDs list of the meshIDs to be checked
+  \param[in,out] ioListMeshIDsToBePartOfTrack list of meshIDs with only
+  one per timepoint
+  \return message to be printed in the status bar with the list of meshIDs
+  that won't be part of the selected trackid
+  */
+  std::string CheckListMeshesFromDifferentTimePoints(
+    vtkMySQLDatabase *iDatabaseConnector,
+    std::list< unsigned int > iListMeshIDs,
+    std::list<unsigned int> & ioListMeshIDsToBePartOfTrack,
+    std::list<unsigned int> & ioListMeshIDsToReassign);
+
+  /**
+  \brief for the track, get the list of its meshes with a timepoint 
+  inferior than the selected mesh as first and a list of meshes 
+  with a timepoint superior than the selected mesh and the 
+  selected mesh as second
+  \param[in] iTrackID ID of the track
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iListMeshesBelongingToTrack list of the meshes
+  belonging to this track
+  */
+  std::pair<std::list<unsigned int>,std::list<unsigned int> > 
+    GetMeshesForSplittedTrack(unsigned int iTrackID, 
+    vtkMySQLDatabase* iDatabaseConnector, 
+    std::list<unsigned int> iListMeshesBelongingToTrack);
 
 protected:
   GoDBTWContainerForMesh *m_TWContainer;
+  MeshContainer          *m_MeshContainerInfoForVisu;
+  std::string*            m_SelectedCellType;
+  std::string*            m_SelectedSubCellType;
+
+  //virtual pure method in QGoDBTraceManager
   virtual void SetCollectionsTraceNames();
 
   void PrintValuesForMeshWithNoPoints(unsigned int iTraceID);
 
   virtual void AddActionsContextMenu(QMenu *iMenu);
 
+  //virtual pure method in QGoDBTraceManager
   virtual void DisplayInfoForAllTraces(vtkMySQLDatabase *iDatabaseConnector);
 
   void SetMeshBoundingBoxAndPoints(unsigned int iXCoordMin,
                                    unsigned int iYCoordMin,
                                    unsigned int iZCoordMin,
-                                   unsigned int iTCoord,
                                    unsigned int iXCoordMax,
                                    unsigned int iYCoordMax,
                                    unsigned int iZCoordMax,
                                    vtkPolyData *iTraceNodes,
                                    vtkMySQLDatabase *iDatabaseConnector,
                                    GoDBMeshRow & iMesh,
-                                   GoFigureMeshAttributes *iMeshAttributes);
+                                   GoFigureMeshAttributes *iMeshAttributes,
+                                   int iShift = 0);
+  //virtual pure method in QGoDBTraceManager
+  virtual void GetTracesInfoFromDBAndModifyContainerForVisu(
+    vtkMySQLDatabase* iDatabaseConnector,std::vector<int> iVectIDs = std::vector< int >());
 
- // void UpdateTracesVisibilityForGivenTimePoint(unsigned int iTimePoint);
+  /**
+  \brief check that there is one and only one mesh checked belonging to 
+  the track and return its ID and its timepoint
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iTrackID ID of the track the mesh belongs to
+  \return a pair with the meshID as first and the timepoint as second
+  */
+  std::pair<unsigned int, unsigned int> GetInfoForTheOnlyOneCheckedMeshOfTheTrack(
+    vtkMySQLDatabase* iDatabaseConnector, unsigned int iTrackID);
+
+protected slots:
+  //virtual pure method in QGoDBTraceManager
+  virtual void UpdateHighlightedElementsInVisuContainer(int iTraceID);
+
+  //virtual pure method in QGoDBTraceManager
+  virtual void UpdateVisibleElementsInVisuContainer(int iTraceID);
+
+  //virtual pure method in QGoDBTraceManager
+  virtual void SetColorCoding(bool IsChecked);
+
+  /**
+  \brief update the celltype of the checked meshes with the selected one
+  */
+  void UpdateCellType();
+
+   /**
+  \brief update the subcelltype of the checked meshes with the selected one
+  */
+  void UpdateSubCellType();
+
 };
 #endif

@@ -45,6 +45,7 @@
 #include "vtkImageReslice.h"
 
 // construct contour
+#include "vtkContourFilter.h"
 #include "vtkMarchingSquares.h"
 #include "vtkCellArray.h"
 #include "vtkPolylineDecimation.h"
@@ -225,6 +226,14 @@ QGoFilterSemiAutoBase::setChannel(int iChannel)
 {
   m_Channel = iChannel;
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+int
+QGoFilterSemiAutoBase::getChannel()
+{
+  return m_Channel;
+}
 
 //--------------------------------------------------------------------------
 
@@ -259,7 +268,7 @@ QGoFilterSemiAutoBase::setOriginalImageMC(std::vector< vtkSmartPointer<vtkImageD
 void
 QGoFilterSemiAutoBase::UpdateVisibility(int iCurrentFilter)
 {
-  QWidget *w = m_Widget->parentWidget();
+  QWidget *w = m_Widget->parentWidget()->parentWidget();
 
   if ( m_Number == iCurrentFilter )
     {
@@ -274,7 +283,22 @@ QGoFilterSemiAutoBase::UpdateVisibility(int iCurrentFilter)
                          this, SLOT( Apply() ) );
     }
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
+void
+QGoFilterSemiAutoBase::
+UpdateAdvancedMode( bool checked)
+{
+  QWidget *w = m_Widget->parentWidget()->parentWidget();
+  QGoSeedBaseWidget* baseWidget = dynamic_cast<QGoSeedBaseWidget*>( w );
+
+  if( checked && (m_Number != baseWidget->GetCurrentFilter()) )
+    {
+    m_Widget->hide();
+    }
+
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -283,7 +307,7 @@ QGoFilterSemiAutoBase::ConnectSignals(int iFilterNumber)
 {
   m_Number = iFilterNumber;
 
-  QWidget *w = m_Widget->parentWidget();
+  QWidget *w = m_Widget->parentWidget()->parentWidget();
 
   // Buttons connections
   QObject::connect( w, SIGNAL( Apply() ),
@@ -296,10 +320,12 @@ QGoFilterSemiAutoBase::ConnectSignals(int iFilterNumber)
                     this, SLOT( setChannel(int) ) );
   QObject::connect( w, SIGNAL( Sampling(int) ),
                     this, SLOT( setSampling(int) ) );
+  QObject::connect( w, SIGNAL( Clicked(bool) ),
+                    this, SLOT( UpdateAdvancedMode(bool) ) );
 
   // End of segmentation signals
-  QObject::connect( this, SIGNAL( MeshCreated(vtkPolyData *) ),
-                    w, SIGNAL( MeshCreated(vtkPolyData *) ) );
+  QObject::connect( this, SIGNAL( MeshCreated(vtkPolyData *, int) ),
+                    w, SIGNAL( MeshCreated(vtkPolyData *, int) ) );
   QObject::connect( this, SIGNAL( ContourCreated(vtkPolyData *) ),
                     w, SIGNAL( ContourCreated(vtkPolyData *) ) );
   QObject::connect( this, SIGNAL( ImageProcessed() ),
@@ -471,30 +497,39 @@ vtkPolyData *
 QGoFilterSemiAutoBase::ReconstructMesh(vtkImageData *iInputImage, const double & iThreshold)
 {
   // create iso-contours
-  vtkMarchingCubes *contours = vtkMarchingCubes::New();
+  // Problem[Kishore]: Creates holes in some meshes although image has no hole
+//   vtkMarchingCubes *contours = vtkMarchingCubes::New();
+//
+//   contours->SetInput(iInputImage);
+//   contours->GenerateValues (1, iThreshold, iThreshold);
+//   contours->SetComputeGradients(0);
+//   contours->SetComputeNormals(1);
+//   contours->SetComputeScalars(0);
+//   contours->SetNumberOfContours(1);
+//   contours->Update();
 
-  contours->SetInput(iInputImage);
-  contours->GenerateValues (1, iThreshold, iThreshold);
+  vtkSmartPointer<vtkContourFilter> contours = vtkSmartPointer<vtkContourFilter>::New();
+  contours->SetInput( iInputImage );
   contours->SetComputeGradients(0);
   contours->SetComputeNormals(0);
   contours->SetComputeScalars(0);
   contours->SetNumberOfContours(1);
+  contours->SetValue( 0, iThreshold );
   contours->Update();
 
-//   vtkSmartPointer< vtkPolyDataWriter > pWriter = vtkSmartPointer< vtkPolyDataWriter >::New();
-//   pWriter->SetFileName( "test1.vtk" );
-//   pWriter->SetInput( contours->GetOutput() );
-//   pWriter->Write();
-  
+  vtkSmoothPolyDataFilter* smoother =
+  vtkSmoothPolyDataFilter::New();
+  smoother->SetInput( contours->GetOutput() );
+  smoother->SetNumberOfIterations(400);
+  smoother->Update();
+
   vtkSmartPointer<vtkFeatureEdges> feature = vtkSmartPointer<vtkFeatureEdges>::New();
-  feature->SetInputConnection( contours->GetOutputPort() );
+  feature->SetInputConnection( smoother->GetOutputPort() );
   feature->BoundaryEdgesOn();
   feature->FeatureEdgesOff();
-  feature->NonManifoldEdgesOff();
+  feature->NonManifoldEdgesOn();
   feature->ManifoldEdgesOff();
   feature->Update();
-
-  std::cout << feature->GetOutput()->GetNumberOfCells() << std::endl;
 
   vtkSmartPointer< vtkPolyData > temp;
   vtkFillHolesFilter* fillFilter = vtkFillHolesFilter::New();
@@ -509,23 +544,12 @@ QGoFilterSemiAutoBase::ReconstructMesh(vtkImageData *iInputImage, const double &
     }
   else
     {
-    temp = contours->GetOutput();
+      temp = smoother->GetOutput();
     }
-  
-/*  vtkSmartPointer< vtkPolyDataWriter > pWriter = vtkSmartPointer< vtkPolyDataWriter >::New();
-  pWriter->SetFileName( "test.vtk" );
-  pWriter->SetInput( contours->GetOutput() );
-  pWriter->Write();*/
-  
-  vtkSmoothPolyDataFilter* smoother =
-      vtkSmoothPolyDataFilter::New();
-  smoother->SetInput( temp );
-  smoother->SetNumberOfIterations(400);
-  smoother->Update();
 
-  // keep the larget region
+  // keep the largest region
   vtkPolyDataConnectivityFilter* connectivityFilter = vtkPolyDataConnectivityFilter::New();
-  connectivityFilter->SetInput(smoother->GetOutputDataObject(0));
+  connectivityFilter->SetInput( temp );
   connectivityFilter->SetExtractionModeToLargestRegion();
   connectivityFilter->Update();
 
@@ -534,7 +558,7 @@ QGoFilterSemiAutoBase::ReconstructMesh(vtkImageData *iInputImage, const double &
 
   smoother->Delete();
   connectivityFilter->Delete();
-  contours->Delete();
+//   contours->Delete();
   fillFilter->Delete();
 
   return output;

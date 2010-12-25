@@ -51,6 +51,7 @@ struct GoDBTraceInfoForTableWidget {
   std::string TableForeignKeyDatabase; //Name of the foreign key corresponding
                                        // in the trace table
   std::string AccessFromTraceTableThroughWhichTable;
+  std::string TypeName; //double, string...
 
   GoDBTraceInfoForTableWidget()
   {
@@ -62,6 +63,7 @@ struct GoDBTraceInfoForTableWidget {
     TableForeignKeyDatabase = "None";
     SameFieldForDifferentValues = false;
     AccessFromTraceTableThroughWhichTable = "None";
+    TypeName = "double";
   }
 
   void Clear()

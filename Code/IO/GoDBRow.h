@@ -43,9 +43,13 @@
 #include <vector>
 
 #include "QGoIOConfigure.h"
+#include "SelectQueryDatabaseHelper.h"
 
 /**
 \class GoDBRow
+\brief abstract class manages a map with keys matching fields of a gofiguredatabase table
+and values of the map matching a row of a gofiguredatabase table
+\ingroup DB
 */
 class QGOIO_EXPORT GoDBRow
 {
@@ -58,6 +62,12 @@ public:
   GoDBRow();
   virtual ~GoDBRow();
 
+  /** 
+  \brief convert the value into a string and assign it to the key in the map
+  \param[in] key key of the map
+  \param[in] value value to be assigned to key
+  \tparam T type of the value, anything but string
+  */
   template< typename T >
   void SetField(std::string key, T value)
   {
@@ -76,36 +86,86 @@ public:
   /**
   \brief set value as the value of map[key] after having put " at the beginning
   and at the end of the string, as value is a string and it will be needed for
-  the database queries */
+  the database queries. map[key] = " "value" "
+  \param[in] key key of the map
+  \param[in] value value to be assigned to key which is a string
+  */
   void SetField(std::string key, std::string value);
 
+  /**
+  \brief
+  \return the table name
+  */
   std::string GetTableName();
 
+  /**
+  \brief
+  \return the tableID name
+  */
   std::string GetTableIDName();
 
+  /**
+  \brief put all the values of the map in a string separated by ','
+  \return all the map values separated by ',' but without a ',' at the end of the string
+  */
   std::string PrintValues();
 
+  /**
+  \brief put all the keys of the map in a string separated by ','
+  \return all the map keys separated by ',' but without a ',' at the end of the string
+  */
   std::string PrintColumnNames();
 
+  /**
+  \brief put all the keys of the map in a vector
+  \return all the map keys in a vector
+  */
   std::vector< std::string > GetVectorColumnNames();
-
-  //std::list<std::string> GetListColumnNames();
+  
+  /**
+  \brief put all the keys and values of the map in a string as map[key] = value separated by ','
+  \return all the map [key] = value separated by ',' but without a ',' at the end of the string
+  */
   std::string PrintColumnNamesWithValues();
 
-  StringMapIterator MapBegin();
-
+  /**
+  \brief
+  \return the iterator at the beginning of the class map as a const
+  */
   StringMapConstIterator ConstMapBegin();
 
-  StringMapIterator MapEnd();
-
+  /**
+  \brief
+  \return the iterator at the end of the class map as a const
+  */
   StringMapConstIterator ConstMapEnd();
+
+  /**
+  \brief
+  \return the iterator at the beginning of the class map
+  */
+  StringMapIterator MapBegin();
+
+  /**
+  \brief
+  \return the iterator at the end of the class map 
+  */
+  StringMapIterator MapEnd();
 
   /**
   \brief return the value for the field map[key] after having removed the "
   at the beginning and at the end of the value if it is a string in order to get
-  the original value. */
+  the original value. 
+  \param[in] key key of the map for which the value is needed
+  \return the corresponding value without "" if the value was a string 
+  */
   std::string GetMapValue(std::string key);
 
+  /**
+  \brief print the keys and values of the map in a cout
+  \param[in,out] os 
+  \param[in,out] c the row to print
+  */
   friend std::ostream & operator<<(std::ostream & os, const GoDBRow & c)
   {
     for ( StringMapConstIterator it = c.m_MapRow.begin();
@@ -118,14 +178,33 @@ public:
     return os;
   }
 
+  /**
+  \brief get the data from the database corresponding to the specific ID and 
+  put them in the map
+  \param[in] ID ID for which the data are needed
+  \param[in] iDatabaseConnector connection to the database
+  */
   virtual void SetValuesForSpecificID(int ID, vtkMySQLDatabase *iDatabaseConnector);
 
 protected:
+
+  /**
+  \brief virtual pure. initialize all the values of the map
+  */
   virtual void InitializeMap() = 0;
+
+  /**
+  \brief add as an element of ioFieldWithValue the name and value of the map with the key
+  iNameOfField
+  \param[in] iNameOfField key of the map
+  \param[in,out] ioFieldWithValue vector of FieldWithValue
+  */
+  void AddConditions(std::string iNameOfField, std::vector<FieldWithValue> &ioFieldWithValue);
 
   StringMapType m_MapRow;
   std::string   m_TableName;
   std::string   m_TableIDName;
+
 };
 
 #endif

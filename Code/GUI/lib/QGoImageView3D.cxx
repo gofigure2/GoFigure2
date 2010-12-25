@@ -33,6 +33,7 @@
 =========================================================================*/
 
 #include "QGoImageView3D.h"
+#include "QDebug"
 
 #include "vtkImageData.h"
 #include "vtkViewImage2D.h"
@@ -268,6 +269,7 @@ QGoImageView3D::Update()
 
   vtkViewImage2D *View1 = this->m_Pool->GetItem(0);
   View1->SetInput(this->m_Image);
+  View1->SetIntersectionLineWidth(this->m_IntersectionLineWidth);
 
   this->m_View3D->Add2DPhantom( 0,
                                 View1->GetImageActor(),
@@ -278,6 +280,7 @@ QGoImageView3D::Update()
 
   vtkViewImage2D *View2 = this->m_Pool->GetItem(1);
   View2->SetInput(this->m_Image);
+  View2->SetIntersectionLineWidth(this->m_IntersectionLineWidth);
 
   this->m_View3D->Add2DPhantom( 1,
                                 View2->GetImageActor(),
@@ -288,6 +291,7 @@ QGoImageView3D::Update()
 
   vtkViewImage2D *View3 = this->m_Pool->GetItem(2);
   View3->SetInput(this->m_Image);
+  View3->SetIntersectionLineWidth(this->m_IntersectionLineWidth);
 
   this->m_View3D->Add2DPhantom( 2,
                                 View3->GetImageActor(),
@@ -297,6 +301,7 @@ QGoImageView3D::Update()
   this->SliderYZ->setMaximum(extent[1]);
 
   this->m_View3D->SetInput(this->m_Image);
+  this->m_View3D->SetIntersectionLineWidth(this->m_IntersectionLineWidth);
 
   if ( m_FirstRender )
     {
@@ -1146,7 +1151,7 @@ QGoImageView3D::EnableSeedWidget(bool iActivate)
 void
 QGoImageView3D::EnableBoxWidget(bool iValue)
 {
-  std::cout << "Box ---Widget---" << std::endl;
+  //qDebug() << "Box ---Widget---";
   DefaultMode();
   m_BoxWidget->SetEnabled(iValue);
 
@@ -1163,7 +1168,7 @@ QGoImageView3D::EnableBoxWidget(bool iValue)
 void
 QGoImageView3D::EnablePlaneWidget(bool iValue)
 {
-  std::cout << "Plane ---Widget---" << std::endl;
+  //qDebug() << "Plane ---Widget---";
   DefaultMode();
   m_PlaneWidget->SetEnabled(iValue);
 
@@ -1244,8 +1249,6 @@ QGoImageView3D::InitializePlaneWidget()
   imageData->GetExtent(extent);
   imageData->GetSpacing(spacing);
 
-  //imageData->Print(cout);
-
   m_PlaneWidget->SetInteractor( m_View3D->GetInteractor() );
   m_PlaneWidget->SetInput(imageData);
   m_PlaneWidget->SetPlaceFactor(1);
@@ -1305,27 +1308,27 @@ QGoImageView3D::UpdateCurrentActorSelection(vtkObject *caller)
 
   if ( t == m_Pool->GetItem(0)->GetInteractorStyle() )
     {
-    std::cout << "in XY" << std::endl;
+    //qDebug() << "in XY";
     emit SelectionXYChanged();
     }
   else if ( t == m_Pool->GetItem(1)->GetInteractorStyle() )
     {
-    std::cout << "in XZ" << std::endl;
+    //qDebug() << "in XZ";
     emit SelectionXZChanged();
     }
   else if ( t == m_Pool->GetItem(2)->GetInteractorStyle() )
     {
-    std::cout << "in YZ" << std::endl;
+    //qDebug() << "in YZ";
     emit SelectionYZChanged();
     }
   else if ( t == (vtkInteractorStyleImage2D *)this->m_View3D->GetInteractorStyle3D() )
     {
-    std::cout << "in 3D" << std::endl;
+    //qDebug() << "in 3D";
     emit SelectionXYZChanged();
     }
   else
     {
-    std::cout << "no match" << std::endl;
+    qWarning() << "no match";
     }
 }
 

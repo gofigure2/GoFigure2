@@ -1,0 +1,37 @@
+#!/bin/bash
+make gofigure -j2;
+
+cd @SIKULI_SCRIPTS_DIR@;
+
+# first let's launch gofigure
+@GOFIGURE2_BINARY_DIR@/bin/gofigure &
+
+# set up database
+@SIKULI_EXECUTABLE@ -t ../setUpDatabase.sikuli;
+
+# you need a sikuli script to import an imaging session
+@SIKULI_EXECUTABLE@ -t ../ImportAnImagingSession.sikuli;
+
+@SIKULI_EXECUTABLE@ -t ../Draw3DMesh.sikuli;
+
+@SIKULI_EXECUTABLE@ -t ../Export3DMesh.sikuli;
+
+#drop database
+
+@GOFIGURE2_BINARY_DIR@/bin/gofigure &
+
+# set up database
+@SIKULI_EXECUTABLE@ -t ../setUpDatabase.sikuli;
+
+# you need a sikuli script to import an imaging session
+@SIKULI_EXECUTABLE@ -t ../ImportAnImagingSession.sikuli;
+
+@SIKULI_EXECUTABLE@ -t ../ImportTracks.sikuli;
+
+# Start the test
+for var in TraceAdd TraceDelete Bookmark
+do
+     echo "$var"
+     @SIKULI_EXECUTABLE@ -t ../$var.sikuli > @GOFIGURE2_BINARY_DIR@/Testing/$var.log;
+     echo "Done!"
+done

@@ -46,7 +46,7 @@ GoDBLineageRow::~GoDBLineageRow ()
 {}
 
 //-------------------------------------------------------------------------
-GoDBLineageRow::GoDBLineageRow(vtkMySQLDatabase *DatabaseConnector,
+/*GoDBLineageRow::GoDBLineageRow(vtkMySQLDatabase *DatabaseConnector,
                                GoDBCoordinateRow Min, GoDBCoordinateRow Max,
                                unsigned int ImgSessionID,
                                vtkPolyData *TraceVisu)
@@ -57,15 +57,13 @@ GoDBLineageRow::GoDBLineageRow(vtkMySQLDatabase *DatabaseConnector,
     {
     std::cout << "The bounding box alreaady exists for this lineage" << std::endl;
     }
-}
+}*/
 
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void GoDBLineageRow::InitializeMap()
 {
-  //GoDBTraceRow::InitializeMap();
-  //this->m_MapRow["LineageID"] = ConvertToString<int>(0);
   this->m_TableName = "lineage";
   this->m_TableIDName = "lineageID";
   this->m_CollectionName = "None";
@@ -79,9 +77,13 @@ void GoDBLineageRow::InitializeMap()
 //-------------------------------------------------------------------------
 int GoDBLineageRow::DoesThisBoundingBoxLineageExist(vtkMySQLDatabase *DatabaseConnector)
 {
+  std::vector<FieldWithValue> Conditions;
+  this->AddConditions("ImagingSessionID",Conditions);
+  this->AddConditions("CoordIDMax",Conditions);
+  this->AddConditions("CoordIDMin",Conditions);
+
   return FindOneID( DatabaseConnector, "lineage", "lineageID",
-                    "CoordIDMax", this->GetMapValue("CoordIDMax"),
-                    "CoordIDMin", this->GetMapValue("CoordIDMin") );
+                   Conditions);
 }
 
 //-------------------------------------------------------------------------

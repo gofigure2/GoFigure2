@@ -80,6 +80,16 @@ QGoSeedBaseWidget::QGoSeedBaseWidget(QWidget *iParent, int iSampling):QWidget(iP
 
   gridLayout->removeWidget(apply);
   gridLayout->addWidget(apply, 5, 0, 1, -1);
+
+  groupBox = new ctkCollapsibleGroupBox(QObject::tr("Advanced Parameters"), this);
+  gridLayout->addWidget(groupBox, 4, 0, 1, -1);
+  groupBox->setCollapsed(true);
+
+  vbox = new QGridLayout;
+  groupBox->setLayout(vbox);
+
+  QObject::connect( this->groupBox, SIGNAL( clicked(bool) ),
+                    this, SIGNAL( Clicked(bool) ) );
 }
 
 //---------------------------------------------------------------------------//
@@ -93,9 +103,9 @@ QGoSeedBaseWidget::
 
 //---------------------------------------------------------------------------//
 void
-QGoSeedBaseWidget::AddChannel(QString iChannel)
+QGoSeedBaseWidget::AddChannel(int iPosition, QString iChannel)
 {
-  channel->addItem(iChannel);
+  this->channel->insertItem(iPosition, iChannel);
 }
 
 //---------------------------------------------------------------------------//
@@ -105,6 +115,7 @@ QGoSeedBaseWidget::AddChannel(QString iChannel)
 void
 QGoSeedBaseWidget::setNumberOfChannels(int iNumberOfChannels)
 {
+  //qDebug() << "setNumberOfChannels" << iNumberOfChannels;
   channel->clear();
   channel->setMaxCount(iNumberOfChannels);
 }
@@ -134,7 +145,7 @@ QGoSeedBaseWidget::GetNumberOfFilters()
 QGridLayout *
 QGoSeedBaseWidget::GetFrame()
 {
-  return gridLayout;
+  return vbox;
 }
 
 //---------------------------------------------------------------------------//
@@ -148,3 +159,9 @@ QGoSeedBaseWidget::Initialize()
 }
 
 //---------------------------------------------------------------------------//
+
+int
+QGoSeedBaseWidget::GetCurrentFilter()
+{
+  return filter->currentIndex();
+}
