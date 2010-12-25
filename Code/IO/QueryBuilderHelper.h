@@ -99,6 +99,9 @@ std::string GetConditions(std::string iField,
                           std::string iConditionConnector = "AND")
 {
   std::stringstream oConditions;
+  oConditions << "";
+  if (!iVectorValues.empty() )
+    {
     oConditions << "(";
     unsigned int i;
       for ( i = 0; i < iVectorValues.size() - 1; i++ )
@@ -110,10 +113,11 @@ std::string GetConditions(std::string iField,
         oConditions << iConditionConnector;
         oConditions  << " ";
         }
-      oConditions << iField;
-      oConditions << " = '";
-      oConditions << iVectorValues[i];
-      oConditions << "')";
+    oConditions << iField;
+    oConditions << " = '";
+    oConditions << iVectorValues[i];
+    oConditions << "')";
+    }
   return oConditions.str();
 }
 

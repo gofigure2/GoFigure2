@@ -922,6 +922,13 @@ void QGoMainWindow::SetUpDatabase()
 {
   this->m_DBInitializationWizard->show();
   this->m_DBInitializationWizard->exec();
+  if (!this->m_RecentDatabaseFiles.empty())
+    {
+	this->m_RecentDatabaseFiles.clear();
+	UpdateRecentFileActions(this->m_RecentDatabaseFiles,
+                            menuDatabase_Files,
+                            recentDatabaseFileActions);
+    }
 }
 
 //--------------------------------------------------------------------------

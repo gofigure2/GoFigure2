@@ -193,18 +193,20 @@ public:
  */
   void SetListSubCellTypeWithSelectedOne(NamesDescrContainerType iSubCellTypesData);
 
-  /**
-  \brief add a new collection in the collectionColorCombobox and select it
-  \param[in] iNewCollectionID ID and QColor of the new item
-  */
-  void AddANewCollectionID(ItemColorComboboxData iNewCollectionID);
-
   std::string* GetPointerSelectedCellType();
   std::string* GetPointerSelectedSubCellType();
   ItemColorComboboxData* GetPointerCollectionData();
   ItemColorComboboxData* GetPointerColorData();
 
   unsigned int GetCurrentSelectedCollectionID();
+
+public slots:
+
+  /**
+  \brief add a new collection in the collectionColorCombobox and select it
+  \param[in] iNewCollectionID ID and QColor of the new item
+  */
+  void AddANewCollectionID(std::pair<std::string, QColor> iNewCollectionID);
 
 signals:
   void AddANewCellType();

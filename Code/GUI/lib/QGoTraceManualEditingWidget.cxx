@@ -374,7 +374,6 @@ void QGoTraceManualEditingWidget::UpdateTraceAndCollection(
   std::string iTrace, std::string iCollection)
 {
   std::cout << iTrace << std::endl;
-
   this->m_TraceName->setText( iTrace.c_str() );
   this->m_CollectionName->setText( iCollection.c_str() );
   //this->m_CollectionColorComboBox->SetTextToAdd(iCollection);
