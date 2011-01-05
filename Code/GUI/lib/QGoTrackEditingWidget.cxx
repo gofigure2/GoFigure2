@@ -507,7 +507,7 @@ cutTrack( vtkActor* iActor)
     std::cout << "m_NumberOfTracks " << m_NumberOfTracks << std::endl;
 
     // update visu
-    //removeLineActors();
+    removeLineActors();
     initializeVisualization();
     }
 }
@@ -522,8 +522,10 @@ removeLineActors()
   while( it != m_Line2MeshID.end() )
     {
     renderer->RemoveActor( it->first );
+    it->first->Delete();
     ++it;
     }
+  m_Line2MeshID.clear();
 }
 //-------------------------------------------------------------------------
 // ONLY CALLED AT THE END
@@ -716,7 +718,7 @@ mergeTrack( const unsigned int& iFirstMesh, const unsigned int& iSecondMesh )
     updateTracksIDs( trackToDelete, trackToUpdate );
 
     // update visu
-    //removeLineActors();
+    removeLineActors();
     initializeVisualization();
 
     return true;
