@@ -505,7 +505,7 @@ initializeVisualization()
   labelMapper->SetFieldDataName("TimePoint");
   labelMapper->SetInput(m_LabelData);
   labelMapper->SetLabelModeToLabelScalars();
-  labelMapper->SetLabelFormat("%6.2f");
+  labelMapper->SetLabelFormat("%6.0f");
 
   vtkSmartPointer<vtkActor2D> isolabels =
     vtkSmartPointer<vtkActor2D>::New();
