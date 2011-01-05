@@ -90,11 +90,10 @@ public slots:
 private:
   void    initializeVisualization();
 
-  vtkActor* CreateSphereActor( double* iCenter, const double* iColor);
-  vtkActor* CreatePolylineActor( double* iCenter1, double* iCenter2,
+  vtkSmartPointer<vtkActor> CreatePolylineActor( double* iCenter1, double* iCenter2,
                                  const double* iColor1 = NULL,
                                  const double* iColor2 = NULL );
-  void    cutTrack( vtkActor* );
+  void    cutTrack( vtkSmartPointer<vtkActor> );
   bool    mergeTrack( const unsigned int&, const unsigned int& );
 
   std::pair< std::pair<unsigned int, unsigned int>,
@@ -126,12 +125,12 @@ private:
   unsigned int m_SecondMeshID;
 
   vtkInteractorStyleImage3D* m_InteractorStyle3D;
-  vtkEventQtSlotConnect*     m_VtkEventQtConnector;
-  vtkActor*                  m_CurrentActor;
+  vtkSmartPointer<vtkEventQtSlotConnect>     m_VtkEventQtConnector;
+  vtkSmartPointer<vtkActor>                  m_CurrentActor;
 
   vtkSmartPointer<vtkRenderer> renderer;
 
-  typedef std::map< vtkActor*, unsigned int > ActorMeshIDMapType;
+  typedef std::map< vtkSmartPointer<vtkActor>, unsigned int > ActorMeshIDMapType;
   typedef ActorMeshIDMapType::iterator ActorMeshIDMapIterator;
   ActorMeshIDMapType m_Line2MeshID;
 
@@ -149,11 +148,11 @@ private:
     std::pair<unsigned int, unsigned int> >  m_MeshID2Neigbours;
 
   std::map< unsigned int, unsigned int> m_TrackIDsMapping;
-  vtkPolyData* m_LabelData;
+  vtkSmartPointer<vtkPolyData> m_LabelData;
 
   //typedef boost::bimap< vtkActor* , unsigned int > bm_type;
   //bm_type m_Actor2MeshID;
-  std::map < vtkActor* , unsigned int > m_Actor2MeshID;
+  std::map < vtkSmartPointer<vtkActor> , unsigned int > m_Actor2MeshID;
 
 private:
   Q_DISABLE_COPY( QGoTrackEditingWidget );

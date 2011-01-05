@@ -76,9 +76,9 @@ QGoTrackEditingWidget( MeshContainer* imeshContainer, QWidget *iParent ) :
 
   m_InteractorStyle3D   = vtkInteractorStyleImage3D::New();
 
-  m_LabelData = vtkPolyData::New();
+  m_LabelData = vtkSmartPointer<vtkPolyData>::New();
 
-  m_VtkEventQtConnector = vtkEventQtSlotConnect::New();
+  m_VtkEventQtConnector = vtkSmartPointer<vtkEventQtSlotConnect>::New();
   m_VtkEventQtConnector->Connect(
     reinterpret_cast< vtkObject * >( m_InteractorStyle3D ),
     vtkViewImage3DCommand::MeshPickingEvent,
@@ -98,35 +98,7 @@ QGoTrackEditingWidget::
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-vtkActor*
-QGoTrackEditingWidget::
-CreateSphereActor( double* iCenter, const double* iColor)
-{
-// create sphere geometry
-  vtkSphereSource *sphere = vtkSphereSource::New();
-  sphere->SetRadius(1.0);
-  sphere->SetThetaResolution(18);
-  sphere->SetPhiResolution(18);
-  sphere->SetCenter( iCenter );
-
-  // map to graphics library
-  vtkPolyDataMapper *map = vtkPolyDataMapper::New();
-  map->SetInput(sphere->GetOutput());
-
-  // actor coordinates geometry, properties, transformation
-  vtkActor *aSphere = vtkActor::New();
-  aSphere->SetMapper(map);
-  aSphere->GetProperty()->SetColor( const_cast<double*>(iColor) ); // sphere color blue
-
-  sphere->Delete();
-  map->Delete();
-
-  return aSphere;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-vtkActor*
+vtkSmartPointer<vtkActor>
 QGoTrackEditingWidget::
 CreatePolylineActor( double* iCenter1, double* iCenter2,
     const double* iColor1, const double* iColor2)
@@ -159,7 +131,7 @@ CreatePolylineActor( double* iCenter1, double* iCenter2,
       vtkSmartPointer<vtkPolyDataMapper>::New();
   mapper->SetInput(polyData);
 
-  vtkActor* actor = vtkActor::New();
+  vtkSmartPointer<vtkActor> actor = vtkActor::New();
   actor->SetMapper(mapper);
 
   return actor;
@@ -402,7 +374,7 @@ initializeVisualization()
       vtkSmartPointer<vtkPolyDataMapper> mapper =
           vtkSmartPointer<vtkPolyDataMapper>::New();
       mapper->SetInput( nodes );
-      vtkActor* actor = vtkActor::New();
+      vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
       actor->SetMapper( mapper );
       actor->GetProperty()->SetColor( rgba );
 
@@ -420,7 +392,7 @@ initializeVisualization()
 
       /// \todo Find a better solution - Nicolas
       std::vector< vtkActor * > listOfActors; // to satisfy API
-      listOfActors.push_back( actor );
+      listOfActors.push_back( actor.GetPointer() );
       vtkActor* actor1 = vtkActor::New();
       listOfActors.push_back( actor1 );
       vtkActor* actor2 = vtkActor::New();
@@ -500,7 +472,7 @@ initializeVisualization()
       while( polyLIt != m_Time2MeshID.end() )
         {
         secondActor = (m_MeshContainer->GetActorGivenTraceID( polyLIt->second ))[0];
-        vtkActor* polyLine = CreatePolylineActor(firstActor->GetCenter(),
+        vtkSmartPointer<vtkActor> polyLine = CreatePolylineActor(firstActor->GetCenter(),
                                                  secondActor->GetCenter());
 
          ///\todo should color be hard coded? hoew to define it? - Nicolas
@@ -546,7 +518,7 @@ initializeVisualization()
 //-------------------------------------------------------------------------
 void
 QGoTrackEditingWidget::
-cutTrack( vtkActor* iActor)
+cutTrack( vtkSmartPointer<vtkActor> iActor)
 {
   ActorMeshIDMapIterator it = m_Line2MeshID.find( iActor );
   //int timePoint;
