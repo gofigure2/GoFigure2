@@ -317,18 +317,20 @@ initializeVisualization()
   vtkSmartPointer<vtkPoints> pts = vtkSmartPointer<vtkPoints>::New();
   ////////////////////////////////////////////////////////////////////////////////
 
+
+
   // For each track, create the actors
   for( unsigned int i = 0; i < m_NumberOfTracks ; ++i )
     {
     std::cout<< "collection ID: " << i << std::endl;
+    m_Time2MeshID.clear();
+    // Create the meshes actor if first render
+    // update the container
+
     std::list<unsigned int> listOfMeshIDs =
         m_MeshContainer->GetAllTraceIDsGivenCollectionID( i );
     std::list<unsigned int>::iterator listOfMeshIDsIt = listOfMeshIDs.begin();
 
-    if(m_FirstRender)
-      {
-    // Create the meshes actor if first render
-    // update the container
     while( listOfMeshIDsIt != listOfMeshIDs.end() )
       {
       m_MeshContainer->ResetCurrentElement();
@@ -341,6 +343,7 @@ initializeVisualization()
       double* rgba = m_MeshContainer->GetCurrentElementColor();
       unsigned int time = m_MeshContainer->GetCurrentElementTimePoint();
 
+      if( m_FirstRender ){
       //setup actor and mapper
       vtkSmartPointer<vtkPolyDataMapper> mapper =
           vtkSmartPointer<vtkPolyDataMapper>::New();
@@ -362,6 +365,7 @@ initializeVisualization()
       renderer->AddActor(actor);
 
       /// \todo Find a better solution - Nicolas
+
       std::vector< vtkActor * > listOfActors; // to satisfy API
       listOfActors.push_back( actor );
       vtkActor* actor1 = vtkActor::New();
@@ -377,17 +381,18 @@ initializeVisualization()
                                        false,   //highlighted
                                        false ); // visible
 
+      m_Actor2MeshID[actor] = (*listOfMeshIDsIt);
+      }
+
       // Fill map - to construct lines
       m_Time2MeshID[time] = (*listOfMeshIDsIt);
 
       // Insert Element
       m_MeshContainer->InsertCurrentElement();
 
-      m_Actor2MeshID[actor] = (*listOfMeshIDsIt);
-
       ++listOfMeshIDsIt;
       }
-      }
+    //   }
 
     // Go through map to create polylines
     std::map<unsigned int, unsigned int>::iterator polyLIt = m_Time2MeshID.begin();
