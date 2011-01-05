@@ -211,18 +211,18 @@ public slots:
     std::list<unsigned int> & ioListMeshIDsToReassign);
 
   /**
-  \brief for the track, get the list of its meshes with a timepoint 
-  inferior than the selected mesh as first and a list of meshes 
-  with a timepoint superior than the selected mesh and the 
-  selected mesh as second
+  \brief for the track, get the list of its meshes 
+  with a timepoint superior than the checked mesh and the 
+  checked mesh
   \param[in] iTrackID ID of the track
   \param[in] iDatabaseConnector connection to the database
   \param[in] iListMeshesBelongingToTrack list of the meshes
   belonging to this track
+  \return list of the meshes with a timepoint superior than 
+  the checked mesh and the checked mesh
   */
-  std::pair<std::list<unsigned int>,std::list<unsigned int> > 
-    GetMeshesForSplittedTrack(unsigned int iTrackID, 
-    vtkMySQLDatabase* iDatabaseConnector, 
+  std::list<unsigned int> GetMeshesWithTimePointSupOrEqualToTheCheckedOne(
+    unsigned int iTrackID, vtkMySQLDatabase* iDatabaseConnector,
     std::list<unsigned int> iListMeshesBelongingToTrack);
 
 protected:

@@ -244,7 +244,7 @@ signals:
   \brief signal emitted when the user click on the action "DeleteTraces" from
   the context menu as it can impact different TraceManagers
   */
-  void TracesToDelete();
+  void CheckedTracesToDelete();
 
   /**
   \brief signal emitted when the user clicks on "go to the trace" in the context

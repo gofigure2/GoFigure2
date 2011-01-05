@@ -318,16 +318,6 @@ std::list< unsigned int > ListSpecificValuesForOneColumn(
 {
   std::vector< unsigned int> VectorValuesOne( 
     ListValuesOne.begin(), ListValuesOne.end() );
-  /*std::string Conditions;  
-  std::vector<FieldWithValue> VectorConditions(1);
-  FieldWithValue AndCondition = {fieldTwo,ValueFieldTwo, "="};
-  VectorConditions[0] = AndCondition;
-  Conditions = GetConditions(VectorConditions,"AND");
-
-  Conditions = Conditions.substr(0,Conditions.size()-1);
-  Conditions += " AND "; 
-  Conditions += GetConditions(fieldOne,VectorValuesOne,"OR");  
-  Conditions += ")";*/
   FieldWithValue AndCondition = {fieldTwo,ValueFieldTwo, "="};
   std::string Conditions = GetAndORConditions(AndCondition, fieldOne,
     VectorValuesOne);

@@ -55,6 +55,7 @@
 #include "vtkRendererCollection.h"
 
 #include "vtkViewImage3DCommand.h"
+#include "itkMacro.h"
 
 #include "vtkLabeledDataMapper.h"
 
@@ -64,25 +65,20 @@
 
 //-------------------------------------------------------------------------
 QGoTrackEditingWidget::
-QGoTrackEditingWidget( MeshContainer* imeshContainer, QWidget *iParent ): QDialog(iParent)
+QGoTrackEditingWidget( MeshContainer* imeshContainer, QWidget *iParent ) :
+  QDialog(iParent), m_MeshContainer( imeshContainer ),
+  m_MaxTrackID( 0 ), m_NumberOfTracks( 0 ), m_FirstRender( true ),
+  m_SecondClick( false )
 {
   this->setupUi(this);
 
   renderer = vtkSmartPointer<vtkRenderer>::New();
 
-  m_VtkEventQtConnector = vtkEventQtSlotConnect::New();
   m_InteractorStyle3D   = vtkInteractorStyleImage3D::New();
-
-  m_NumberOfTracks = 0;
-  m_FirstRender = true;
-  m_MaxTrackID = std::numeric_limits<unsigned int>::min();
-
-  m_SecondClick = false;
 
   m_LabelData = vtkPolyData::New();
 
-  m_MeshContainer = imeshContainer;
-
+  m_VtkEventQtConnector = vtkEventQtSlotConnect::New();
   m_VtkEventQtConnector->Connect(
     reinterpret_cast< vtkObject * >( m_InteractorStyle3D ),
     vtkViewImage3DCommand::MeshPickingEvent,
@@ -136,43 +132,37 @@ CreatePolylineActor( double* iCenter1, double* iCenter2,
     const double* iColor1, const double* iColor2)
 {
   //create a vtkPoints object and storevtkRenderWindow the points in it
-    vtkSmartPointer<vtkPoints> points =
-      vtkSmartPointer<vtkPoints>::New();
-    points->InsertNextPoint(iCenter1);
-    points->InsertNextPoint(iCenter2);
+  vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
+  points->InsertNextPoint(iCenter1);
+  points->InsertNextPoint(iCenter2);
 
-    vtkSmartPointer<vtkPolyLine> polyLine =
-        vtkSmartPointer<vtkPolyLine>::New();
-    polyLine->GetPointIds()->SetNumberOfIds(2);
-    for( int i = 0; i < 2; i++)
-      {
-      polyLine->GetPointIds()->SetId(i,i);
-      }
+  vtkSmartPointer<vtkPolyLine> polyLine = vtkSmartPointer<vtkPolyLine>::New();
+  polyLine->GetPointIds()->SetNumberOfIds(2);
+  polyLine->GetPointIds()->SetId(0,0);
+  polyLine->GetPointIds()->SetId(1,1);
 
-    //Create a cell array to store the lines in and add the lines to it
-    vtkSmartPointer<vtkCellArray> cells =
-        vtkSmartPointer<vtkCellArray>::New();
-    cells->InsertNextCell(polyLine);
+  //Create a cell array to store the lines in and add the lines to it
+  vtkSmartPointer<vtkCellArray> cells = vtkSmartPointer<vtkCellArray>::New();
+  cells->InsertNextCell(polyLine);
 
-    //Create a polydata to store everything in
-    vtkSmartPointer<vtkPolyData> polyData =
-        vtkSmartPointer<vtkPolyData>::New();
+  //Create a polydata to store everything in
+  vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
 
-    //add the points to the dataset
-    polyData->SetPoints(points);
+  //add the points to the dataset
+  polyData->SetPoints(points);
 
-    //add the lines to the dataset
-    polyData->SetLines(cells);
+  //add the lines to the dataset
+  polyData->SetLines(cells);
 
-    //setup actor and mapper
-    vtkSmartPointer<vtkPolyDataMapper> mapper =
-        vtkSmartPointer<vtkPolyDataMapper>::New();
-    mapper->SetInput(polyData);
+  //setup actor and mapper
+  vtkSmartPointer<vtkPolyDataMapper> mapper =
+      vtkSmartPointer<vtkPolyDataMapper>::New();
+  mapper->SetInput(polyData);
 
-    vtkActor* actor = vtkActor::New();
-    actor->SetMapper(mapper);
+  vtkActor* actor = vtkActor::New();
+  actor->SetMapper(mapper);
 
-    return actor;
+  return actor;
 }
 //-------------------------------------------------------------------------
 
@@ -181,7 +171,9 @@ void
 QGoTrackEditingWidget::
 preview()
 {
-//setup render window, renderer, and interactor
+  initializeVisualization();
+
+  //setup render window, renderer, and interactor
   this->qvtkWidget->GetRenderWindow()->AddRenderer(renderer);
 
   this->qvtkWidget->GetInteractor()->SetInteractorStyle(m_InteractorStyle3D);
@@ -203,19 +195,16 @@ UpdateCurrentActorSelection(vtkObject *caller)
                    SafeDownCast( t->GetCurrentProp() );
 
   // if we click on the background
-  if(m_CurrentActor == NULL)
+  if( !m_CurrentActor )
     {
-    std::cout<< "No ActorPicked" << std::endl;
     return;
     }
 
-  std::map< vtkActor* , int >::iterator polyToMeshID =
+  ActorMeshIDMapIterator polyToMeshID =
       m_Line2MeshID.find(m_CurrentActor);
 
   if(polyToMeshID != m_Line2MeshID.end())
     {
-    std::cout<< "Actor is a line" << std::endl;
-
     if( m_CurrentActor->GetProperty()->GetOpacity() == 1 )
       {
       m_CurrentActor->GetProperty()->SetOpacity(0.3);
@@ -232,18 +221,33 @@ UpdateCurrentActorSelection(vtkObject *caller)
     {
     if(m_SecondClick)
       {
-      m_SecondActor = m_CurrentActor;
-      mergeTrack( m_FirstActor, m_SecondActor);
-      m_FirstActor->GetProperty()->SetSpecular(0);
-      m_FirstActor->GetProperty()->SetAmbient(0);
+      // if click the 1st mesh
+      ActorMeshIDMapIterator iter = m_Actor2MeshID.find( m_CurrentActor );
+
+      if( iter != m_Actor2MeshID.end() )
+        {
+        m_SecondMeshID = iter->second;
+        m_SecondMeshActor = m_CurrentActor;
+        mergeTrack( m_FirstMeshID, m_SecondMeshID);
+        }
+
+      m_FirstMeshActor->GetProperty()->SetSpecular(0);
+      m_FirstMeshActor->GetProperty()->SetAmbient(0);
       m_SecondClick = false;
       }
     else
       {
-      m_FirstActor = m_CurrentActor;
-      m_FirstActor->GetProperty()->SetSpecular(1);
-      m_FirstActor->GetProperty()->SetAmbient(1);
-      m_SecondClick = true;
+      // if click the 1st mesh
+      ActorMeshIDMapIterator iter = m_Actor2MeshID.find( m_CurrentActor );
+
+      if( iter != m_Actor2MeshID.end() )
+        {
+        m_FirstMeshID = iter->second;
+        m_FirstMeshActor = m_CurrentActor;
+        m_FirstMeshActor->GetProperty()->SetSpecular(1);
+        m_FirstMeshActor->GetProperty()->SetAmbient(1);
+        m_SecondClick = true;
+        }
       }
     }
 }
@@ -262,53 +266,114 @@ void
 QGoTrackEditingWidget::
 initializeVisualization()
 {
-  std::list<unsigned int> listOfTrackIDs = m_MeshContainer->GetAllCollectionIDs();
-  std::list<unsigned int>::iterator trackIDsIt = listOfTrackIDs.begin();
+  //std::list<unsigned int> listOfTrackIDs = m_MeshContainer->GetAllCollectionIDs();
+  //std::list<unsigned int>::iterator trackIDsIt = listOfTrackIDs.begin();
+
+   MeshContainer::MultiIndexContainerCollectionIDIterator c_it, c_end;
 
   // first render: reassign track IDs
   if(m_FirstRender)
-    {  // For each track, create the actors
-    while( trackIDsIt != listOfTrackIDs.end() )
+    {
+    c_it = m_MeshContainer->m_Container.get< CollectionID >().begin();
+    unsigned int collection = std::numeric_limits< unsigned int >::max();
+
+    c_end = m_MeshContainer->m_Container.get< CollectionID >().end();
+    unsigned int current_track = 0;
+
+    while( c_it != c_end )
       {
-      std::cout<< "collection ID: " << (*trackIDsIt) << std::endl;
-      m_TrackIDsMapping[m_NumberOfTracks] = (*trackIDsIt);
-      std::cout<< "MAPPING new: " << m_NumberOfTracks << " to real: " << (*trackIDsIt)
-          << std::endl;
+      unsigned int temp_collection = c_it->CollectionID;
 
-      if( (*trackIDsIt) > m_MaxTrackID)
+      if( temp_collection != collection )
         {
-        m_MaxTrackID = (*trackIDsIt);
+        collection = temp_collection;
+        current_track = m_NumberOfTracks;
+        m_TrackIDsMapping[current_track] = collection;
+        ++m_NumberOfTracks;
         }
 
-      std::list<unsigned int> listOfMeshIDs =
-              m_MeshContainer->GetAllTraceIDsGivenCollectionID( (*trackIDsIt) );
-      std::list<unsigned int>::iterator listOfMeshIDsIt = listOfMeshIDs.begin();
-
-      // Create the meshes actor
-      // update the container
-      while( listOfMeshIDsIt != listOfMeshIDs.end() )
+      if( temp_collection > m_MaxTrackID)
         {
-        m_MeshContainer->ResetCurrentElement();
-        m_MeshContainer->UpdateCurrentElementFromExistingOne( (*listOfMeshIDsIt) );
-        m_MeshContainer->SetCurrentElementCollectionID( m_NumberOfTracks );
-        m_MeshContainer->InsertCurrentElement();
-        ++listOfMeshIDsIt;
+        m_MaxTrackID = temp_collection;
         }
+      // to be more efficient here, it would be better to use method from
+      // boost::multi_index_container
+      m_MeshContainer->ResetCurrentElement();
+      m_MeshContainer->UpdateCurrentElementFromExistingOne< CollectionID >( c_it );
+      m_MeshContainer->SetCurrentElementCollectionID( current_track );
+      m_MeshContainer->InsertCurrentElement();
 
-      ++m_NumberOfTracks;
-      ++trackIDsIt;
+      ++c_it;
       }
     m_FirstRender = false;
     }
 
   ////////////////////////////////////////////////////////////////////////////////
   vtkSmartPointer<vtkDoubleArray> randomScalars =
-        vtkSmartPointer<vtkDoubleArray>::New();
-      randomScalars->SetNumberOfComponents(1);
-      randomScalars->SetName("TimePoint");
+    vtkSmartPointer< vtkDoubleArray >::New();
+  randomScalars->SetNumberOfComponents(1);
+  randomScalars->SetName("TimePoint");
 
-   vtkSmartPointer<vtkPoints> pts = vtkSmartPointer<vtkPoints>::New();
+  vtkSmartPointer<vtkPoints> pts = vtkSmartPointer<vtkPoints>::New();
 
+
+  /*c_it = m_MeshContainer->m_Container.get< CollectionID >().begin();
+  c_end = m_MeshContainer->m_Container.get< CollectionID >().end();
+
+  std::map< unsigned int, std::map< unsigned int, unsigned int > >
+      Track_Time_MeshIDMap;
+
+  while( c_it != c_end )
+    {
+    m_MeshContainer->ResetCurrentElement();
+    m_MeshContainer->UpdateCurrentElementFromExistingOne( c_it->TraceID );
+
+    // Get the polydata
+    // Might need a deep copy
+    vtkPolyData* nodes = m_MeshContainer->GetCurrentElementNodes();
+    double* rgba = m_MeshContainer->GetCurrentElementColor();
+    unsigned int time = m_MeshContainer->GetCurrentElementTimePoint();
+
+    //setup actor and mapper
+    vtkSmartPointer<vtkPolyDataMapper> mapper =
+        vtkSmartPointer<vtkPolyDataMapper>::New();
+    mapper->SetInput( nodes );
+    vtkActor* actor = vtkActor::New();
+    actor->SetMapper( mapper );
+    actor->GetProperty()->SetColor( rgba );
+
+    std::cout<< "center: " << std::endl;
+    std::cout<< "X: " << actor->GetCenter()[0] << std::endl;
+    std::cout<< "Y: " << actor->GetCenter()[1] << std::endl;
+    std::cout<< "Z: " << actor->GetCenter()[2] << std::endl;
+    std::cout<< "T: " << time << std::endl;
+
+    randomScalars->InsertNextTuple1( time );
+    pts->InsertNextPoint(actor->GetCenter());
+
+    // Add actor to visu
+    renderer->AddActor(actor);
+
+    /// \todo Find a better solution - Nicolas
+    std::vector< vtkActor * > listOfActors( 4, NULL ); // to satisfy API
+    listOfActors[0] = actor;
+
+    m_MeshContainer->UpdateCurrentElementFromVisu( listOfActors,
+                                     nodes,
+                                     time,
+                                     false,   //highlighted
+                                     false ); // visible
+
+    // Fill map - to construct lines
+    ( Track_Time_MeshIDMap[ c_it->CollectionID ] ) [ time ] = c_it->TraceID;
+
+    m_Actor2MeshID[actor] = c_it->TraceID;
+
+    // Insert Element
+    m_MeshContainer->InsertCurrentElement();
+
+    ++c_it;
+    }*/
 
   // For each track, create the actors
   for( unsigned int i = 0; i < m_NumberOfTracks ; ++i )
@@ -353,9 +418,7 @@ initializeVisualization()
       // Add actor to visu
       renderer->AddActor(actor);
 
-      /*
-       * \todo Find a better solution - Nicolas
-       */
+      /// \todo Find a better solution - Nicolas
       std::vector< vtkActor * > listOfActors; // to satisfy API
       listOfActors.push_back( actor );
       vtkActor* actor1 = vtkActor::New();
@@ -381,6 +444,50 @@ initializeVisualization()
 
       ++listOfMeshIDsIt;
       }
+/*
+  std::map< unsigned int, std::map< unsigned int, unsigned int > >::iterator
+      TrackIterator = Track_Time_MeshIDMap.begin();
+
+  while( TrackIterator != Track_Time_MeshIDMap.end() )
+    {
+    std::map< unsigned int, unsigned int > time_mesh_map = TrackIterator->second;
+
+    std::map< unsigned int, unsigned int >::iterator t_it = time_mesh_map.begin();
+
+    if( t_it != time_mesh_map.end() )
+      {
+      vtkActor* firstActor =
+          (m_MeshContainer->GetActorGivenTraceID( t_it->second ))[0];
+      vtkActor* secondActor = NULL;
+      ++t_it;
+
+      while( t_it != time_mesh_map.end() )
+        {
+        secondActor = (m_MeshContainer->GetActorGivenTraceID( t_it->second ))[0];
+        vtkActor* polyLine = CreatePolylineActor(firstActor->GetCenter(),
+                                                 secondActor->GetCenter());
+
+        /// \todo should color be hard coded? how to define it? - Nicolas
+        double color[3] = {1, 1, 1};
+        polyLine->GetProperty()->SetColor(color);
+
+        // Add actor to visu
+        renderer->AddActor( polyLine );
+
+        // key is actor
+        m_Line2MeshID[polyLine] = t_it->second;
+        //m_MeshID2Neigbours[] =
+
+        firstActor = secondActor;
+        ++t_it;
+        }
+      }
+    else
+      {
+      std::cout << "List is empty" << std::endl;
+      }
+    ++TrackIterator;
+    }*/
 
     // Go through map to create polylines
     std::map<unsigned int, unsigned int>::iterator polyLIt = m_Time2MeshID.begin();
@@ -396,9 +503,7 @@ initializeVisualization()
         vtkActor* polyLine = CreatePolylineActor(firstActor->GetCenter(),
                                                  secondActor->GetCenter());
 
-         /*
-         * \todo should color be hard coded? hoew to define it? - Nicolas
-         */
+         ///\todo should color be hard coded? hoew to define it? - Nicolas
           double color[3] = {1, 1, 1};
         polyLine->GetProperty()->SetColor(color);
         // Add actor to visu
@@ -443,18 +548,29 @@ void
 QGoTrackEditingWidget::
 cutTrack( vtkActor* iActor)
 {
-  std::map< vtkActor* , int >::iterator it = m_Line2MeshID.find( iActor );
+  ActorMeshIDMapIterator it = m_Line2MeshID.find( iActor );
   //int timePoint;
 
   // Find the mesh ID
   if( it != m_Line2MeshID.end() )
     {
-    unsigned int collectionID = m_MeshContainer->GetCollectionIDOfGivenTrace( it->second );
+    unsigned int collectionID =
+         m_MeshContainer->GetCollectionIDOfGivenTraceID( it->second );
 
     std::cout << "Cut collection: " << collectionID << std::endl;
 
     std::list<unsigned int> listOfMeshIDs =
         m_MeshContainer->GetAllTraceIDsGivenCollectionID( collectionID );
+
+    // here check that the track is not a new track!
+    std::map< unsigned int, TrackStatusType >::iterator
+        stat_it = m_TrackStatus.find( collectionID );
+
+    if( stat_it == m_TrackStatus.end() )
+      {
+      m_TrackStatus[ collectionID ] = UPDATED_TRACK;
+      }
+
     std::list<unsigned int>::iterator iterator = listOfMeshIDs.begin();
 
     // border time point
@@ -473,10 +589,11 @@ cutTrack( vtkActor* iActor)
       unsigned int time = m_MeshContainer->GetCurrentElementTimePoint();
 
       // change track ID if we are before the mesh
-      if( time < tLimit)
+      if( time < tLimit )
         {
         // Collection ID
         m_MeshContainer->SetCurrentElementCollectionID( m_NumberOfTracks );
+        m_TrackStatus[ m_NumberOfTracks ] = NEW_TRACK;
         // Visibility: i.e. modified
         }
       m_MeshContainer->InsertCurrentElement();
@@ -504,7 +621,7 @@ void
 QGoTrackEditingWidget::
 removeLineActors()
 {
-  std::map< vtkActor* , int >::iterator it = m_Line2MeshID.begin();
+  ActorMeshIDMapIterator  it = m_Line2MeshID.begin();
   while( it != m_Line2MeshID.end() )
     {
     renderer->RemoveActor( it->first );
@@ -518,229 +635,255 @@ void
 QGoTrackEditingWidget::
 mapContainerIDs2RealIDs()
 {
-  std::cout<< "MAP IDS: " << std::endl;
-  std::map< unsigned int, unsigned int>::iterator iter =
-      m_TrackIDsMapping.begin();
+  std::map< unsigned int, TrackStatusType >::iterator
+      iter = m_TrackStatus.begin();
+  unsigned int collection = 0;
+  unsigned int real_collectionID = 0;
 
-  while( iter != m_TrackIDsMapping.end())
+  m_ListOfNewTrack.clear();
+  m_ListOfUpdatedTracks.clear();
+  m_ListOfDeletedTracks.clear();
+
+  while( iter != m_TrackStatus.end() )
     {
-    std::cout<< "new: " << iter->first << std::endl;
-    std::cout<< "old: " << iter->second << std::endl;
+    collection = iter->first;
 
-    if( iter->second > m_NumberOfTracks )
+    switch( iter->second )
       {
-      std::list<unsigned int> listOfMeshIDs =
-          m_MeshContainer->GetAllTraceIDsGivenCollectionID( iter->first );
-      std::list<unsigned int>::iterator iterator = listOfMeshIDs.begin();
-
-      while( iterator != listOfMeshIDs.end())
+      case NEW_TRACK:
         {
-        m_MeshContainer->ResetCurrentElement();
-        m_MeshContainer->UpdateCurrentElementFromExistingOne( (*iterator) );
-        m_MeshContainer->SetCurrentElementCollectionID( iter->second );
-        m_MeshContainer->InsertCurrentElement();
-        ++iterator;
-        }
-      }
-    else
-      {
-      // increase max track ID
-      ++m_MaxTrackID;
+        std::list< unsigned int > list_meshid;
 
-      // move first track
-      std::list<unsigned int> listOfMeshIDs =
-          m_MeshContainer->GetAllTraceIDsGivenCollectionID( iter->second );
-      std::list<unsigned int>::iterator iterator = listOfMeshIDs.begin();
+        MeshContainer::MultiIndexContainerCollectionIDIterator it0, it1;
 
-      while( iterator != listOfMeshIDs.end())
-        {
-        m_MeshContainer->ResetCurrentElement();
-        m_MeshContainer->UpdateCurrentElementFromExistingOne( (*iterator) );
-        m_MeshContainer->SetCurrentElementCollectionID( m_MaxTrackID );
-        m_MeshContainer->InsertCurrentElement();
-        ++iterator;
+        boost::tuples::tie(it0, it1) =
+          m_MeshContainer->m_Container.get< CollectionID >().equal_range( collection );
+
+        while( it0 != it1 )
+          {
+          list_meshid.push_back( it0->TraceID );
+          ++it0;
+          }
+        m_ListOfNewTrack.push_back( list_meshid );
+        break;
         }
 
-      // move secoind track
-      std::list<unsigned int> listOfMeshIDs2 =
-          m_MeshContainer->GetAllTraceIDsGivenCollectionID( iter->first );
-      std::list<unsigned int>::iterator iterator2 = listOfMeshIDs2.begin();
-
-      while( iterator != listOfMeshIDs2.end())
+      case UPDATED_TRACK:
         {
-        m_MeshContainer->ResetCurrentElement();
-        m_MeshContainer->UpdateCurrentElementFromExistingOne( (*iterator2) );
-        m_MeshContainer->SetCurrentElementCollectionID( iter->second );
-        m_MeshContainer->InsertCurrentElement();
-        ++iterator;
+        std::map< unsigned int, unsigned int >::iterator
+            id_map_it = m_TrackIDsMapping.find( collection );
+
+        if( id_map_it == m_TrackIDsMapping.end() )
+          {
+          std::cout << "error!" <<std::endl;
+          return;
+          }
+        else
+          {
+          real_collectionID = id_map_it->second;
+          }
+
+        std::list< unsigned int > list_meshid;
+
+        MeshContainer::MultiIndexContainerCollectionIDIterator it0, it1;
+
+        boost::tuples::tie(it0, it1) =
+          m_MeshContainer->m_Container.get< CollectionID >().equal_range( collection );
+
+        while( it0 != it1 )
+          {
+          list_meshid.push_back( it0->TraceID );
+          ++it0;
+          }
+        m_ListOfUpdatedTracks[real_collectionID] = list_meshid;
+        break;
+        }
+
+      case DELETED_TRACK:
+        {
+        std::map< unsigned int, unsigned int >::iterator
+            id_map_it = m_TrackIDsMapping.find( collection );
+
+        if( id_map_it == m_TrackIDsMapping.end() )
+          {
+          std::cout << "error!" <<std::endl;
+          return;
+          }
+        else
+          {
+          real_collectionID = id_map_it->second;
+          }
+
+        m_ListOfDeletedTracks.push_back( real_collectionID );
+        break;
         }
       }
     ++iter;
     }
 }
+
+std::list< std::list< unsigned int > >
+QGoTrackEditingWidget::
+GetListOfTracksToBeCreated()
+  {
+  return this->m_ListOfNewTrack;
+  }
+
+std::map< unsigned int, std::list< unsigned int > >
+QGoTrackEditingWidget::
+GetListOfTracksToBeUpdated()
+  {
+  return this->m_ListOfUpdatedTracks;
+  }
+
+std::list< unsigned int >
+QGoTrackEditingWidget::
+GetListOfTracksToBeDeleted()
+  {
+  return this->m_ListOfDeletedTracks;
+  }
+
 //-------------------------------------------------------------------------
 // ONLY CALLED AT THE END
 //-------------------------------------------------------------------------
-void
+bool
 QGoTrackEditingWidget::
-mergeTrack( vtkActor* iFirstActor, vtkActor* iSecondActor)
+mergeTrack( const unsigned int& iFirstMesh, const unsigned int& iSecondMesh )
 {
-  // Get mesh IDs
-  unsigned int firstMesh;
-  std::map< vtkActor*, unsigned int >::iterator iter = m_Actor2MeshID.find(iFirstActor);
-  if( iter != m_Actor2MeshID.end() )
-    {
-    firstMesh = iter->second;
-    }
-  else
-    {
-    std::cout << "First actor ID not found" << std::endl;
-    return;
-    }
+  unsigned int FirstCollectionID = 0;
+  unsigned int SecondCollectionID = 0;
 
-  unsigned int secondMesh;
-  iter = m_Actor2MeshID.find(iSecondActor);
-  if(iter != m_Actor2MeshID.end() )
+  try
     {
-    secondMesh = iter->second;
+    FirstCollectionID = m_MeshContainer->GetCollectionIDOfGivenTraceID( iFirstMesh );
     }
-  else
+  catch( const itk::ExceptionObject& e )
     {
-    std::cout << "Second actor ID not found" << std::endl;
-    return;
+    std::cout << "caught an exception: " <<std::endl;
+    e.Print( std::cout );
+    return false;
     }
 
-  //Check if actors are border of track
-  std::pair< std::pair<unsigned int, unsigned int>, std::pair<unsigned int, unsigned int> >
-      border1 = isOnBorder(firstMesh);
-
-  std::cout << "Border for mesh1" << std::endl;
-  std::cout << "mesh1: " << firstMesh << std::endl;
-  std::cout << "low limit ID: " << border1.first.first << " time "
-                             << border1.first.second << std::endl;
-  std::cout << "high limit ID: " << border1.second.first << " time "
-                              << border1.second.second << std::endl;
-
-  std::pair< std::pair<unsigned int, unsigned int>, std::pair<unsigned int, unsigned int> >
-      border2 = isOnBorder(secondMesh);
-
-  std::cout << "Border for mesh2" << std::endl;
-  std::cout << "mesh2: " << secondMesh << std::endl;
-  std::cout << "low limit ID: " << border2.first.first << " time "
-                             << border2.first.second << std::endl;
-  std::cout << "high limit ID: " << border2.second.first << " time "
-                              << border2.second.second << std::endl;
-  // Check for overlap
-  if(    ( border2.first.second <= border1.second.second )
-      && ( border1.first.second <= border2.second.second ) )
+  try
     {
-    std::cout << " Tracks are overlaping" << std::endl;
-    return;
+    SecondCollectionID = m_MeshContainer->GetCollectionIDOfGivenTraceID( iSecondMesh );
+    }
+  catch( const itk::ExceptionObject& e )
+    {
+    std::cout << "caught an exception: " <<std::endl;
+    e.Print( std::cout );
+    return false;
     }
 
-  //Get Highest time to know which meshes we should update
-  unsigned int trackToUpdate = 0;
-  unsigned int trackToDelete = 0;
-  if( border1.first.first < border2.first.first)
+  if( FirstCollectionID != SecondCollectionID )
     {
-    trackToDelete = firstMesh;
-    trackToUpdate = secondMesh;
+    //Check if actors are border of track
+    std::pair< std::pair<unsigned int, unsigned int>,
+               std::pair<unsigned int, unsigned int> >
+        border1 = GetTrackBorders( FirstCollectionID );
+
+    std::pair< std::pair<unsigned int, unsigned int>,
+               std::pair<unsigned int, unsigned int> >
+      border2 = GetTrackBorders(SecondCollectionID);
+
+    // Check for overlap
+    if(    ( border2.first.second <= border1.second.second )
+        && ( border1.first.second <= border2.second.second ) )
+      {
+      std::cout << " Tracks are overlaping" << std::endl;
+      return false;
+      }
+
+    //Get Highest time to know which meshes we should update
+    unsigned int trackToUpdate = 0;
+    unsigned int trackToDelete = 0;
+    if( border1.first.first < border2.first.first)
+      {
+      trackToDelete = FirstCollectionID;
+      trackToUpdate = SecondCollectionID;
+      }
+    else
+      {
+      trackToUpdate = FirstCollectionID;
+      trackToDelete = SecondCollectionID;
+      }
+
+    // C est la!!!
+    m_TrackStatus[trackToDelete] = DELETED_TRACK;
+    m_TrackStatus[trackToUpdate] = UPDATED_TRACK;
+
+    std::cout<< " Mesh to update: " << trackToUpdate << std::endl;
+    std::cout<< " Mesh to delete: " << trackToDelete << std::endl;
+
+    // Change the ID of the track by the other one
+    updateTracksIDs( trackToDelete, trackToUpdate );
+
+    // update visu
+    removeLineActors();
+    initializeVisualization();
+
+    return true;
     }
-  else
-    {
-    trackToUpdate = firstMesh;
-    trackToDelete = secondMesh;
-    }
 
-  std::cout<< " Mesh to update: " << trackToUpdate << std::endl;
-  std::cout<< " Mesh to delete: " << trackToDelete << std::endl;
-
-  // Change the ID of the track by the other one
-  updateTracksIDs( trackToDelete, trackToUpdate);
-
-  // update visu
-  removeLineActors();
-  initializeVisualization();
-
+  return false;
 }
 //-------------------------------------------------------------------------
 // ONLY CALLED AT THE END
 //-------------------------------------------------------------------------
-std::pair< std::pair<unsigned int, unsigned int>, std::pair<unsigned int, unsigned int> >
+std::pair< std::pair<unsigned int, unsigned int>,
+           std::pair<unsigned int, unsigned int> >
 QGoTrackEditingWidget::
-isOnBorder( unsigned int iMeshID)
+GetTrackBorders( const unsigned int& iCollectionID )
 {
-  // Get the collectionID
-  unsigned int collectionID = m_MeshContainer->GetCollectionIDOfGivenTrace( iMeshID );
+  MeshContainer::MultiIndexContainerCollectionIDIterator it0, it1;
 
-  std::cout << "Merge collection: " << collectionID << std::endl;
+  boost::tuples::tie(it0, it1) =
+    m_MeshContainer->m_Container.get< CollectionID >().equal_range( iCollectionID );
 
-  // list of meshes of the collection
-  std::list<unsigned int> listOfMeshIDs =
-      m_MeshContainer->GetAllTraceIDsGivenCollectionID( collectionID );
-  std::list<unsigned int>::iterator iterator = listOfMeshIDs.begin();
+  std::pair<unsigned int, unsigned int>
+      minBorder( 0, std::numeric_limits<unsigned int>::max() );
 
-  std::pair< std::pair<unsigned int, unsigned int>, std::pair<unsigned int, unsigned int> >
-    borders;
+  std::pair<unsigned int, unsigned int>
+      maxBorder( 0, 0 );
 
-  std::pair<unsigned int, unsigned int> minBorder;
-  minBorder.first = 0;
-  minBorder.second = std::numeric_limits<unsigned int>::max();
+  unsigned int time = 0;
 
-  std::pair<unsigned int, unsigned int> maxBorder;
-  maxBorder.first = 0;
-  maxBorder.second = std::numeric_limits<unsigned int>::min();
-
-  // Go through all meshes
-  while( iterator != listOfMeshIDs.end() )
+  while( it0 != it1 )
     {
-    m_MeshContainer->ResetCurrentElement();
-    m_MeshContainer->UpdateCurrentElementFromExistingOne( (*iterator) );
-
-    unsigned int time = m_MeshContainer->GetCurrentElementTimePoint();
-    m_MeshContainer->InsertCurrentElement();
+    time = it0->TCoord;
 
     if( minBorder.second > time )
       {
-      minBorder.first = *iterator;
+      minBorder.first = it0->TraceID;
       minBorder.second = time;
       }
 
     if( maxBorder.second < time )
       {
-      maxBorder.first = *iterator;
+      maxBorder.first = it0->TraceID;
       maxBorder.second = time;
       }
-
-    ++iterator;
+    ++it0;
     }
 
-  borders.first = minBorder;
-  borders.second = maxBorder;
-
-  return borders;
+  return std::make_pair( minBorder, maxBorder );
 }
+//-------------------------------------------------------------------------
 
 void
 QGoTrackEditingWidget::
-updateTracksIDs( unsigned int iIDToDelete, unsigned int iIDToUpdate)
+updateTracksIDs( const unsigned int& iIDToDelete,
+                 const unsigned int& iIDToUpdate)
 {
-  // Get track to update ID
-  unsigned int collectionID =
-      m_MeshContainer->GetCollectionIDOfGivenTrace( iIDToUpdate );
-
-  // Update track to delete IDs with update ID
-  unsigned int collectionID2 = m_MeshContainer->GetCollectionIDOfGivenTrace( iIDToDelete );
-
   std::list<unsigned int> listOfMeshIDs =
-      m_MeshContainer->GetAllTraceIDsGivenCollectionID( collectionID2 );
+      m_MeshContainer->GetAllTraceIDsGivenCollectionID( iIDToDelete );
   std::list<unsigned int>::iterator iterator = listOfMeshIDs.begin();
 
   while( iterator != listOfMeshIDs.end() )
     {
     m_MeshContainer->ResetCurrentElement();
     m_MeshContainer->UpdateCurrentElementFromExistingOne( (*iterator) );
-    m_MeshContainer->SetCurrentElementCollectionID( collectionID );
+    m_MeshContainer->SetCurrentElementCollectionID( iIDToUpdate );
     m_MeshContainer->InsertCurrentElement();
     ++iterator;
     }

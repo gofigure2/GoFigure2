@@ -145,7 +145,7 @@ public:
 
   std::list< unsigned int > GetAllCollectionIDs();
 
-  unsigned int GetCollectionIDOfGivenTrace( unsigned int iTraceID);
+  unsigned int GetCollectionIDOfGivenTraceID( unsigned int iTraceID);
 
   /**
     \brief Update Visualization of the given TraceIDs
@@ -200,9 +200,12 @@ public:
             f = &QGoImageView3D::RemoveActor;
             }
 
-          for ( int i = 0; i < 4; i++ )
+          if( m_ImageView )
             {
-            ( m_ImageView->*f )(i, actor[i]);
+            for ( int i = 0; i < 4; i++ )
+              {
+              ( m_ImageView->*f )(i, actor[i]);
+              }
             }
           }
         else
@@ -257,9 +260,12 @@ public:
       f = &QGoImageView3D::RemoveActor;
       }
 
-    for ( int i = 0; i < 4; i++ )
+    if( m_ImageView )
       {
-      ( m_ImageView->*f )(i, iActors[i]);
+      for ( int i = 0; i < 4; i++ )
+        {
+        ( m_ImageView->*f )(i, iActors[i]);
+        }
       }
 
     using boost::multi_index::get;
@@ -307,6 +313,22 @@ public:
   \return true if the element was found in the container, false if not
   */
   bool UpdateCurrentElementFromExistingOne(unsigned int iTraceID);
+
+  template< class TIndex >
+  bool UpdateCurrentElementFromExistingOne(
+    typename MultiIndexContainerType::template index< TIndex >::type::iterator iIt )
+    {
+    using boost::multi_index::get;
+
+    // update current element
+    this->m_CurrentElement = *iIt;
+
+    // clean the container but don't erase the pointers since we still have the
+    // adresses in the m_CurrentElement
+    m_Container.get< TIndex >().erase( iIt );
+
+    return true;
+    }
 
   /**
     \brief Update element visibility given it TraceId
@@ -460,7 +482,10 @@ public:
 
     SetScalarRangeForAllElements( min_value, max_value );
 
-    this->m_ImageView->UpdateRenderWindows();
+    if( m_ImageView )
+      {
+      this->m_ImageView->UpdateRenderWindows();
+      }
     }
 
   void SetRandomColor( const std::string& iColumnName,
@@ -567,7 +592,11 @@ protected:
           }
 
         m_Container.get< TActor >().replace(it, tempStructure);
-        m_ImageView->UpdateRenderWindows();
+
+        if( m_ImageView )
+          {
+          m_ImageView->UpdateRenderWindows();
+          }
 
         oTraceId = it->TraceID;
 
@@ -618,7 +647,11 @@ protected:
           }
 
         m_Container.get< TActor >().replace(it, tempStructure);
-        m_ImageView->UpdateRenderWindows();
+
+        if( m_ImageView )
+          {
+          m_ImageView->UpdateRenderWindows();
+          }
 
         oTraceId = it->TraceID;
 
