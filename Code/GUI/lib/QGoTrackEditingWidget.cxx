@@ -208,7 +208,6 @@ UpdateCurrentActorSelection(vtkObject *caller)
     {
     if( m_CurrentActor->GetProperty()->GetOpacity() == 1 )
       {
-      m_CurrentActor->GetProperty()->SetOpacity(0.3);
       //Update track IDs - CUT
       cutTrack( m_CurrentActor );
       }
@@ -306,9 +305,9 @@ initializeVisualization()
 
       ++c_it;
       }
-    m_FirstRender = false;
     }
-
+  ////////////////////////////////////////////////////////////////////////////////
+  // FOR THE LABELS
   ////////////////////////////////////////////////////////////////////////////////
   vtkSmartPointer<vtkDoubleArray> randomScalars =
     vtkSmartPointer< vtkDoubleArray >::New();
@@ -316,6 +315,7 @@ initializeVisualization()
   randomScalars->SetName("TimePoint");
 
   vtkSmartPointer<vtkPoints> pts = vtkSmartPointer<vtkPoints>::New();
+  ////////////////////////////////////////////////////////////////////////////////
 
   // For each track, create the actors
   for( unsigned int i = 0; i < m_NumberOfTracks ; ++i )
@@ -326,7 +326,9 @@ initializeVisualization()
         m_MeshContainer->GetAllTraceIDsGivenCollectionID( i );
     std::list<unsigned int>::iterator listOfMeshIDsIt = listOfMeshIDs.begin();
 
-    // Create the meshes actor
+    if(m_FirstRender)
+      {
+    // Create the meshes actor if first render
     // update the container
     while( listOfMeshIDsIt != listOfMeshIDs.end() )
       {
@@ -386,6 +388,7 @@ initializeVisualization()
 
       ++listOfMeshIDsIt;
       }
+      }
 
     // Go through map to create polylines
     std::map<unsigned int, unsigned int>::iterator polyLIt = m_Time2MeshID.begin();
@@ -420,7 +423,8 @@ initializeVisualization()
       }
     }
 
-  // ONLY ON FIRST RENDER TOO
+  if(m_FirstRender)
+    {
   m_LabelData->GetPointData()->SetScalars(randomScalars);
   m_LabelData->SetPoints(pts);
 
@@ -437,6 +441,8 @@ initializeVisualization()
   isolabels->SetMapper(labelMapper);
 
   renderer->AddActor( isolabels );
+  m_FirstRender = false;
+  }
 }
 //-------------------------------------------------------------------------
 // Go through all container and creates actors
