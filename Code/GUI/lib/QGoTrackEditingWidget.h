@@ -153,6 +153,7 @@ private:
   //typedef boost::bimap< vtkActor* , unsigned int > bm_type;
   //bm_type m_Actor2MeshID;
   std::map < vtkActor* , unsigned int > m_Actor2MeshID;
+  std::map<unsigned int, unsigned int> m_Time2MeshID;
 
 private:
   Q_DISABLE_COPY( QGoTrackEditingWidget );

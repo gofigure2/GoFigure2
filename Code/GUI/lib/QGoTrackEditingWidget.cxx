@@ -321,7 +321,6 @@ initializeVisualization()
   for( unsigned int i = 0; i < m_NumberOfTracks ; ++i )
     {
     std::cout<< "collection ID: " << i << std::endl;
-    std::map<unsigned int, unsigned int> m_Time2MeshID;
     std::list<unsigned int> listOfMeshIDs =
         m_MeshContainer->GetAllTraceIDsGivenCollectionID( i );
     std::list<unsigned int>::iterator listOfMeshIDsIt = listOfMeshIDs.begin();
