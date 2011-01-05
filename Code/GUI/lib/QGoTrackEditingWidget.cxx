@@ -93,7 +93,7 @@ QGoTrackEditingWidget( MeshContainer* imeshContainer, QWidget *iParent ) :
 QGoTrackEditingWidget::
 ~QGoTrackEditingWidget()
 {
-  // DELETE ACTORS!!!
+  m_InteractorStyle3D->Delete();
 }
 //-------------------------------------------------------------------------
 
@@ -374,7 +374,7 @@ initializeVisualization()
       vtkSmartPointer<vtkPolyDataMapper> mapper =
           vtkSmartPointer<vtkPolyDataMapper>::New();
       mapper->SetInput( nodes );
-      vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
+      vtkActor* actor = vtkActor::New();
       actor->SetMapper( mapper );
       actor->GetProperty()->SetColor( rgba );
 
@@ -392,7 +392,7 @@ initializeVisualization()
 
       /// \todo Find a better solution - Nicolas
       std::vector< vtkActor * > listOfActors; // to satisfy API
-      listOfActors.push_back( actor.GetPointer() );
+      listOfActors.push_back( actor );
       vtkActor* actor1 = vtkActor::New();
       listOfActors.push_back( actor1 );
       vtkActor* actor2 = vtkActor::New();
