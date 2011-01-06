@@ -106,6 +106,9 @@ private:
   void    removeLineActors();
   void    computeLineActors();
 
+  void    computeLabelActor( vtkSmartPointer<vtkDoubleArray> iScalars,
+                            vtkSmartPointer<vtkPoints> iPts);
+
   void    reassignTrackIDs();
   //void    restoreTrackIDs();
 
@@ -151,7 +154,6 @@ private:
     std::pair<unsigned int, unsigned int> >  m_MeshID2Neigbours;
 
   std::map< unsigned int, unsigned int> m_TrackIDsMapping;
-  vtkPolyData* m_LabelData;
 
   //typedef boost::bimap< vtkActor* , unsigned int > bm_type;
   //bm_type m_Actor2MeshID;

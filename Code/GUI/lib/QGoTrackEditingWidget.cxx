@@ -75,8 +75,6 @@ QGoTrackEditingWidget( MeshContainer* imeshContainer, QWidget *iParent ) :
 
   m_InteractorStyle3D   = vtkInteractorStyleImage3D::New();
 
-  m_LabelData = vtkPolyData::New();
-
   m_VtkEventQtConnector = vtkSmartPointer<vtkEventQtSlotConnect>::New();
   m_VtkEventQtConnector->Connect(
     reinterpret_cast< vtkObject * >( m_InteractorStyle3D ),
@@ -93,27 +91,6 @@ QGoTrackEditingWidget::
 ~QGoTrackEditingWidget()
 {
   m_InteractorStyle3D->Delete();
-
-  if( m_LabelData )
-    {
-    if( m_LabelData->GetPointData() )
-      {
-    m_LabelData->GetPointData()->Reset();
-      }
-    if( m_LabelData->GetPoints() )
-      {
-    m_LabelData->GetPoints()->Reset();
-      }
-    if( m_LabelData->GetLines() )
-      {
-    m_LabelData->GetLines()->Reset();
-      }
-    if( m_LabelData )
-      {
-    m_LabelData->Reset();
-      }
-    }
-  m_LabelData->Delete();
 
   ActorMeshIDMapIterator  it = m_Line2MeshID.begin();
   while( it != m_Line2MeshID.end() )
@@ -375,9 +352,18 @@ initializeVisualization()
     computeLineActors();
     }
 
-  m_LabelData->GetPointData()->SetScalars(randomScalars);
-  m_LabelData->SetPoints(pts);
+  computeLabelActor(randomScalars, pts);
+}
 
+void
+QGoTrackEditingWidget::
+computeLabelActor( vtkSmartPointer<vtkDoubleArray> iScalars,
+    vtkSmartPointer<vtkPoints> iPts)
+{
+  vtkPolyData* m_LabelData = vtkPolyData::New();
+
+  m_LabelData->GetPointData()->SetScalars(iScalars);
+  m_LabelData->SetPoints(iPts);
   // The labeled data mapper will place labels at the points
   vtkSmartPointer<vtkLabeledDataMapper> labelMapper =
     vtkSmartPointer<vtkLabeledDataMapper>::New();
@@ -391,6 +377,27 @@ initializeVisualization()
   isolabels->SetMapper(labelMapper);
 
   renderer->AddActor( isolabels );
+
+  if( m_LabelData )
+    {
+    if( m_LabelData->GetPointData() )
+      {
+    m_LabelData->GetPointData()->Reset();
+      }
+    if( m_LabelData->GetPoints() )
+      {
+    m_LabelData->GetPoints()->Reset();
+      }
+    if( m_LabelData->GetLines() )
+      {
+    m_LabelData->GetLines()->Reset();
+      }
+    if( m_LabelData )
+      {
+    m_LabelData->Reset();
+      }
+    }
+  m_LabelData->Delete();
 }
 //-------------------------------------------------------------------------
 // Go through all container and creates actors
