@@ -34,6 +34,8 @@
 
 #include "QGoTrackEditingWidget.h"
 
+#include "ContourMeshStructure.cxx"
+
 #include "vtkPolyDataMapper.h"
 #include "vtkLabeledDataMapper.h"
 
@@ -234,12 +236,10 @@ reassignTrackIDs()
         {
         m_MaxTrackID = temp_collection;
         }
-      // to be more efficient here, it would be better to use method from
-      // boost::multi_index_container
-      m_MeshContainer->ResetCurrentElement();
-      m_MeshContainer->UpdateCurrentElementFromExistingOne< CollectionID >( c_it );
-      m_MeshContainer->SetCurrentElementCollectionID( current_track );
-      m_MeshContainer->InsertCurrentElement();
+
+      ContourMeshStructure tempStructure(*c_it);
+      tempStructure.CollectionID = current_track;
+      m_MeshContainer->m_Container.get< CollectionID >().replace(c_it, tempStructure);
 
       ++c_it;
       }
@@ -263,29 +263,29 @@ initializeVisualization()
   // Create the actors
   for( unsigned int i = 0; i < m_NumberOfTracks ; ++i )
     {
-    // Create the meshes actor if first render
-    // update the container
-    std::list<unsigned int> listOfMeshIDs =
-        m_MeshContainer->GetAllTraceIDsGivenCollectionID( i );
-    std::list<unsigned int>::iterator listOfMeshIDsIt = listOfMeshIDs.begin();
+    MeshContainer::MultiIndexContainerCollectionIDIterator it0, it1;
 
-    while( listOfMeshIDsIt != listOfMeshIDs.end() )
+    boost::tuples::tie(it0, it1) =
+      m_MeshContainer->m_Container.get< CollectionID >().equal_range( i );
+
+    while( it0 != it1 )
       {
-      m_MeshContainer->ResetCurrentElement();
-      m_MeshContainer->UpdateCurrentElementFromExistingOne( (*listOfMeshIDsIt) );
+      ContourMeshStructure tempStructure(*it0);
 
       // Get the polydata
-      vtkPolyData* nodes = m_MeshContainer->GetCurrentElementNodes();
-      double* rgba = m_MeshContainer->GetCurrentElementColor();
-      unsigned int time = m_MeshContainer->GetCurrentElementTimePoint();
+      vtkPolyData* nodes = tempStructure.Nodes;
+      double* rgba = tempStructure.rgba;
+      unsigned int time = tempStructure.TCoord;
 
       //setup actor and mapper
       vtkSmartPointer<vtkPolyDataMapper> mapper =
           vtkSmartPointer<vtkPolyDataMapper>::New();
       mapper->SetInput( nodes );
+
       vtkActor* actor = vtkActor::New();
       actor->SetMapper( mapper );
       actor->GetProperty()->SetColor( rgba );
+      tempStructure.ActorXY = actor;
 
       randomScalars->InsertNextTuple1( time );
       pts->InsertNextPoint(actor->GetCenter());
@@ -293,28 +293,11 @@ initializeVisualization()
       // Add actor to visu
       renderer->AddActor(actor);
 
-      /// \todo Find a better solution - Nicolas
-      std::vector< vtkActor * > listOfActors; // to satisfy API
-      listOfActors.push_back( actor );
-      vtkActor* actor1 = vtkActor::New();
-      listOfActors.push_back( actor1 );
-      vtkActor* actor2 = vtkActor::New();
-      listOfActors.push_back( actor2 );
-      vtkActor* actor3 = vtkActor::New();
-      listOfActors.push_back( actor3 );
+      m_Actor2MeshID[actor] = tempStructure.TraceID;
 
-      m_MeshContainer->UpdateCurrentElementFromVisu( listOfActors,
-                                       nodes,
-                                       0,       //time - not used
-                                       false,   //highlighted
-                                       false ); // visible
+      m_MeshContainer->m_Container.get< CollectionID >().replace(it0, tempStructure);
 
-      m_Actor2MeshID[actor] = (*listOfMeshIDsIt);
-
-      // Insert Element
-      m_MeshContainer->InsertCurrentElement();
-
-      ++listOfMeshIDsIt;
+      ++it0;
       }
 
     // Go through map to create polylines
@@ -448,26 +431,15 @@ computeLineActors()
   for( unsigned int i = 0; i < m_NumberOfTracks ; ++i )
     {
     m_Time2MeshID.clear();
-    // Create the meshes actor if first render
-    // update the container
-    std::list<unsigned int> listOfMeshIDs =
-        m_MeshContainer->GetAllTraceIDsGivenCollectionID( i );
-    std::list<unsigned int>::iterator listOfMeshIDsIt = listOfMeshIDs.begin();
 
-    while( listOfMeshIDsIt != listOfMeshIDs.end() )
+    MeshContainer::MultiIndexContainerCollectionIDIterator it0, it1;
+    boost::tuples::tie(it0, it1) =
+     m_MeshContainer->m_Container.get< CollectionID >().equal_range( i );
+
+    while( it0 != it1 )
       {
-      m_MeshContainer->ResetCurrentElement();
-      m_MeshContainer->UpdateCurrentElementFromExistingOne( (*listOfMeshIDsIt) );
-
-      unsigned int time = m_MeshContainer->GetCurrentElementTimePoint();
-
-      // Fill map - to construct lines
-      m_Time2MeshID[time] = (*listOfMeshIDsIt);
-
-      // Insert Element
-      m_MeshContainer->InsertCurrentElement();
-
-      ++listOfMeshIDsIt;
+      m_Time2MeshID[it0->TCoord] = (it0->TraceID);
+      ++it0;
       }
 
     // Go through map to create polylines
