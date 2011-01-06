@@ -42,18 +42,15 @@
 #include "QGoGUILibConfigure.h"
 
 #include "vtkActor.h"
-#include "vtkPolyData.h"
-#include "vtkPoints.h"
 
 #include "vtkInteractorStyleImage3D.h"
 #include "vtkEventQtSlotConnect.h"
 
 #include "vtkSmartPointer.h"
-#include "vtkPolyData.h"
 
-//New
 #include "MeshContainer.h"
-//#include <boost/bimap.hpp>
+
+class vtkPoints;
 
 /**
 \class QGoTrackEditingWidget
@@ -71,28 +68,19 @@ public:
                                   QWidget *parent = 0 );
   ~QGoTrackEditingWidget();
 
-  void    setMeshContainer( MeshContainer* imeshContainer );
+  void    init();
 
-  std::list< std::list< unsigned int > > GetListOfTracksToBeCreated();
+  std::list< std::list< unsigned int > >              GetListOfTracksToBeCreated();
   std::map< unsigned int, std::list< unsigned int > > GetListOfTracksToBeUpdated();
-  std::list< unsigned int > GetListOfTracksToBeDeleted();
-
-signals:
-  void cutTracks( std::list< std::pair< int,  int> > );
-  void mergeTracks( std::list< std::pair< std::pair< int,  int>,
-                               std::pair< int,  int> > > );
+  std::list< unsigned int >                           GetListOfTracksToBeDeleted();
 
 public slots:
-  void preview();
   void UpdateCurrentActorSelection(vtkObject *caller);
-  void mapContainerIDs2RealIDs();
+  void restoreTrackIDs();
 
 private:
   void    initializeVisualization();
 
-  vtkActor* CreatePolylineActor( double* iCenter1, double* iCenter2,
-                                 const double* iColor1 = NULL,
-                                 const double* iColor2 = NULL );
   void    cutTrack( vtkActor* );
   bool    mergeTrack( const unsigned int&, const unsigned int& );
 
@@ -100,45 +88,41 @@ private:
              std::pair<unsigned int, unsigned int> >
   GetTrackBorders( const unsigned int& iCollectionID );
 
-  void updateTracksIDs( const unsigned int& iIDToDelete,
+  void    reassignTrackIDs();
+  void    updateTracksIDs( const unsigned int& iIDToDelete,
                         const unsigned int& iIDToUpdate);
 
-  void    removeLineActors();
-  void    computeLineActors();
+  void      computeLineActors();
+  void      removeLineActors();
+  vtkActor* CreatePolylineActor( double* iCenter1, double* iCenter2,
+                                 const double* iColor1 = NULL,
+                                 const double* iColor2 = NULL );
 
-  void    computeLabelActor( vtkSmartPointer<vtkDoubleArray> iScalars,
+  void      computeLabelActor( vtkSmartPointer<vtkDoubleArray> iScalars,
                             vtkSmartPointer<vtkPoints> iPts);
 
-  void    reassignTrackIDs();
-  //void    restoreTrackIDs();
-
-  std::list< std::list< unsigned int > > m_ListOfNewTrack;
-  std::map< unsigned int, std::list< unsigned int > > m_ListOfUpdatedTracks;
-  std::list< unsigned int > m_ListOfDeletedTracks;
 
 
   MeshContainer* m_MeshContainer;
+
+  std::list< std::list< unsigned int > >              m_ListOfNewTrack;
+  std::map< unsigned int, std::list< unsigned int > > m_ListOfUpdatedTracks;
+  std::list< unsigned int >                           m_ListOfDeletedTracks;
 
   unsigned int m_MaxTrackID;
   unsigned int m_NumberOfTracks;
 
   bool m_SecondClick;
-  //std::pair<int, int> m_FirstPair;
-  vtkActor* m_FirstMeshActor;
-  unsigned int m_FirstMeshID;
 
-  vtkActor* m_SecondMeshActor;
+  vtkActor*    m_CurrentActor;
+  vtkActor*    m_FirstMeshActor;
+  vtkActor*    m_SecondMeshActor;
+  unsigned int m_FirstMeshID;
   unsigned int m_SecondMeshID;
 
-  vtkInteractorStyleImage3D* m_InteractorStyle3D;
+  vtkInteractorStyleImage3D*                 m_InteractorStyle3D;
   vtkSmartPointer<vtkEventQtSlotConnect>     m_VtkEventQtConnector;
-  vtkActor*                  m_CurrentActor;
-
-  vtkSmartPointer<vtkRenderer> renderer;
-
-  typedef std::map< vtkActor*, unsigned int > ActorMeshIDMapType;
-  typedef ActorMeshIDMapType::iterator ActorMeshIDMapIterator;
-  ActorMeshIDMapType m_Line2MeshID;
+  vtkSmartPointer<vtkRenderer>               renderer;
 
   enum TrackStatusType
     {
@@ -149,15 +133,11 @@ private:
 
   std::map< unsigned int, TrackStatusType > m_TrackStatus;
 
-  // Split/merge behavior
-  std::map< unsigned int ,
-    std::pair<unsigned int, unsigned int> >  m_MeshID2Neigbours;
-
   std::map< unsigned int, unsigned int> m_TrackIDsMapping;
-
-  //typedef boost::bimap< vtkActor* , unsigned int > bm_type;
-  //bm_type m_Actor2MeshID;
   std::map < vtkActor* , unsigned int > m_Actor2MeshID;
+  typedef std::map< vtkActor*, unsigned int > ActorMeshIDMapType;
+  typedef ActorMeshIDMapType::iterator ActorMeshIDMapIterator;
+  ActorMeshIDMapType                    m_Line2MeshID;
 
 private:
   Q_DISABLE_COPY( QGoTrackEditingWidget );

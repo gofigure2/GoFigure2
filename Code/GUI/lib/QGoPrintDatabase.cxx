@@ -1516,7 +1516,7 @@ void QGoPrintDatabase::SplitMergeTracksWithWidget(
       this->m_DatabaseConnector, iTrackIDs);
 
   QGoTrackEditingWidget *win = new QGoTrackEditingWidget(MeshContainerTemp);
-  win->preview();
+  win->init();
 
   if (win->exec())
    {

@@ -178,10 +178,6 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent):
                     SIGNAL( UpdateTracksAppearance(bool, bool) ),
                     this,
                     SLOT( UpdateTracksAppearance(bool, bool) ) );
-  QObject::connect( m_TrackDockWidget,
-                    SIGNAL( StartTW() ),
-                    this,
-                    SLOT( StartTW() ) );
 
   CreateDataBaseTablesConnection();
 
@@ -3115,30 +3111,3 @@ UpdateTracksAppearance(bool iGlyph, bool iTube)
   m_TrackContainer->UpdateTracksReprensentation( iGlyph, iTube );
 }
 //-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
-StartTW()
-{
-  /*
-  QGoTrackEditingWidget *win = new QGoTrackEditingWidget();
-  win->setTracks2( this->m_TrackContainer->GetHighlightedElementsTrackPolyData() );
-  win->show();*/
-  std::list< unsigned int > test = m_MeshContainer->GetAllCollectionIDs();
-  std::list< unsigned int >::iterator it = test.begin();
-
-  std::cout << "List of track IDs fromMesh container" << std::endl;
-  while( it != test.end() )
-    {
-    std::cout << *it << std::endl;
-    ++it;
-    }
-
-
-  QGoTrackEditingWidget *win = new QGoTrackEditingWidget( m_MeshContainer );
-  win->preview();
-  win->exec();
-
-  delete win;
-}

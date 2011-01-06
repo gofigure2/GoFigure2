@@ -34,10 +34,8 @@
 
 #include "QGoTrackEditingWidget.h"
 
-#include "vtkSmartPointer.h"
-
-#include "vtkSphereSource.h"
 #include "vtkPolyDataMapper.h"
+#include "vtkLabeledDataMapper.h"
 
 #include "vtkPoints.h"
 #include "vtkPolyLine.h"
@@ -45,21 +43,17 @@
 #include "vtkPolyData.h"
 #include "vtkPointData.h"
 
+#include "vtkActor2D.h"
 #include "vtkProperty.h"
 
 // visu
 #include "vtkRenderer.h"
 #include "vtkRenderWindow.h"
 #include "vtkRenderWindowInteractor.h"
-
 #include "vtkRendererCollection.h"
 
 #include "vtkViewImage3DCommand.h"
 #include "itkMacro.h"
-
-#include "vtkLabeledDataMapper.h"
-
-#include "vtkActor2D.h"
 
 #include <limits>
 
@@ -82,7 +76,7 @@ QGoTrackEditingWidget( MeshContainer* imeshContainer, QWidget *iParent ) :
     this, SLOT( UpdateCurrentActorSelection(vtkObject *) ) );
 
   QObject::connect (this->buttonBox , SIGNAL( accepted() ),
-                 this, SLOT( mapContainerIDs2RealIDs() ) );
+                 this, SLOT( restoreTrackIDs() ) );
 }
 //-------------------------------------------------------------------------
 
@@ -140,23 +134,6 @@ CreatePolylineActor( double* iCenter1, double* iCenter2,
   actor->SetMapper(mapper);
 
   return actor;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoTrackEditingWidget::
-preview()
-{
-  initializeVisualization();
-
-  //setup render window, renderer, and interactor
-  this->qvtkWidget->GetRenderWindow()->AddRenderer(renderer);
-
-  this->qvtkWidget->GetInteractor()->SetInteractorStyle(m_InteractorStyle3D);
-  m_InteractorStyle3D->EnablePickMode();
-
-  this->qvtkWidget->GetRenderWindow()->Render();
 }
 //-------------------------------------------------------------------------
 
@@ -227,16 +204,8 @@ UpdateCurrentActorSelection(vtkObject *caller)
       }
     }
 }
+//-------------------------------------------------------------------------
 
-//-------------------------------------------------------------------------
-void
-QGoTrackEditingWidget::
-setMeshContainer( MeshContainer* imeshContainer )
-{
-  m_MeshContainer = imeshContainer;
-}
-//-------------------------------------------------------------------------
-// Go through all container and creates actors
 //-------------------------------------------------------------------------
 void
 QGoTrackEditingWidget::
@@ -276,7 +245,9 @@ reassignTrackIDs()
       ++c_it;
       }
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 void
 QGoTrackEditingWidget::
 initializeVisualization()
@@ -354,7 +325,9 @@ initializeVisualization()
 
   computeLabelActor(randomScalars, pts);
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 void
 QGoTrackEditingWidget::
 computeLabelActor( vtkSmartPointer<vtkDoubleArray> iScalars,
@@ -379,7 +352,7 @@ computeLabelActor( vtkSmartPointer<vtkDoubleArray> iScalars,
   renderer->AddActor( isolabels );
 }
 //-------------------------------------------------------------------------
-// Go through all container and creates actors
+
 //-------------------------------------------------------------------------
 void
 QGoTrackEditingWidget::
@@ -452,7 +425,7 @@ cutTrack( vtkActor* iActor)
     }
 }
 //-------------------------------------------------------------------------
-// Go through all container and creates actors
+
 //-------------------------------------------------------------------------
 void
 QGoTrackEditingWidget::
@@ -467,7 +440,9 @@ removeLineActors()
     }
   m_Line2MeshID.clear();
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 void
 QGoTrackEditingWidget::
 computeLineActors()
@@ -534,11 +509,11 @@ computeLineActors()
 
 }
 //-------------------------------------------------------------------------
-// ONLY CALLED AT THE END
+
 //-------------------------------------------------------------------------
 void
 QGoTrackEditingWidget::
-mapContainerIDs2RealIDs()
+restoreTrackIDs()
 {
   std::map< unsigned int, TrackStatusType >::iterator
       iter = m_TrackStatus.begin();
@@ -626,30 +601,35 @@ mapContainerIDs2RealIDs()
     ++iter;
     }
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 std::list< std::list< unsigned int > >
 QGoTrackEditingWidget::
 GetListOfTracksToBeCreated()
   {
   return this->m_ListOfNewTrack;
   }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 std::map< unsigned int, std::list< unsigned int > >
 QGoTrackEditingWidget::
 GetListOfTracksToBeUpdated()
   {
   return this->m_ListOfUpdatedTracks;
   }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 std::list< unsigned int >
 QGoTrackEditingWidget::
 GetListOfTracksToBeDeleted()
   {
   return this->m_ListOfDeletedTracks;
   }
-
 //-------------------------------------------------------------------------
-// ONLY CALLED AT THE END
+
 //-------------------------------------------------------------------------
 bool
 QGoTrackEditingWidget::
@@ -717,9 +697,6 @@ mergeTrack( const unsigned int& iFirstMesh, const unsigned int& iSecondMesh )
     m_TrackStatus[trackToDelete] = DELETED_TRACK;
     m_TrackStatus[trackToUpdate] = UPDATED_TRACK;
 
-    std::cout<< " Mesh to update: " << trackToUpdate << std::endl;
-    std::cout<< " Mesh to delete: " << trackToDelete << std::endl;
-
     // Change the ID of the track by the other one
     updateTracksIDs( trackToDelete, trackToUpdate );
 
@@ -733,7 +710,7 @@ mergeTrack( const unsigned int& iFirstMesh, const unsigned int& iSecondMesh )
   return false;
 }
 //-------------------------------------------------------------------------
-// ONLY CALLED AT THE END
+
 //-------------------------------------------------------------------------
 std::pair< std::pair<unsigned int, unsigned int>,
            std::pair<unsigned int, unsigned int> >
@@ -775,6 +752,7 @@ GetTrackBorders( const unsigned int& iCollectionID )
 }
 //-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
 void
 QGoTrackEditingWidget::
 updateTracksIDs( const unsigned int& iIDToDelete,
@@ -793,3 +771,19 @@ updateTracksIDs( const unsigned int& iIDToDelete,
     ++iterator;
     }
 }
+//-------------------------------------------------------------------------
+void
+QGoTrackEditingWidget::
+init()
+{
+  initializeVisualization();
+
+  //setup render window, renderer, and interactor
+  this->qvtkWidget->GetRenderWindow()->AddRenderer(renderer);
+
+  this->qvtkWidget->GetInteractor()->SetInteractorStyle(m_InteractorStyle3D);
+  m_InteractorStyle3D->EnablePickMode();
+
+  this->qvtkWidget->GetRenderWindow()->Render();
+}
+//-------------------------------------------------------------------------
