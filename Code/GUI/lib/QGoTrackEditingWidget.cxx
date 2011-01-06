@@ -368,6 +368,8 @@ cutTrack( vtkActor* iActor)
     unsigned int tLimit = m_MeshContainer->GetCurrentElementTimePoint();
     m_MeshContainer->InsertCurrentElement();
 
+
+
     std::cout << "Time limit: " << tLimit << std::endl;
 
     while( iterator != listOfMeshIDs.end() )
@@ -433,6 +435,7 @@ computeLineActors()
     m_Time2MeshID.clear();
 
     MeshContainer::MultiIndexContainerCollectionIDIterator it0, it1;
+
     boost::tuples::tie(it0, it1) =
      m_MeshContainer->m_Container.get< CollectionID >().equal_range( i );
 
@@ -726,17 +729,16 @@ QGoTrackEditingWidget::
 updateTracksIDs( const unsigned int& iIDToDelete,
                  const unsigned int& iIDToUpdate)
 {
-  std::list<unsigned int> listOfMeshIDs =
-      m_MeshContainer->GetAllTraceIDsGivenCollectionID( iIDToDelete );
-  std::list<unsigned int>::iterator iterator = listOfMeshIDs.begin();
+  MeshContainer::MultiIndexContainerCollectionIDIterator it0, it1;
+  boost::tuples::tie(it0, it1) =
+    m_MeshContainer->m_Container.get< CollectionID >().equal_range( iIDToDelete );
 
-  while( iterator != listOfMeshIDs.end() )
+  while( it0 != it1 )
     {
-    m_MeshContainer->ResetCurrentElement();
-    m_MeshContainer->UpdateCurrentElementFromExistingOne( (*iterator) );
-    m_MeshContainer->SetCurrentElementCollectionID( iIDToUpdate );
-    m_MeshContainer->InsertCurrentElement();
-    ++iterator;
+    ContourMeshStructure tempStructure(*it0);
+    tempStructure.CollectionID = iIDToUpdate;
+    m_MeshContainer->m_Container.get< CollectionID >().replace(it0, tempStructure);
+    ++it0;
     }
 }
 //-------------------------------------------------------------------------
