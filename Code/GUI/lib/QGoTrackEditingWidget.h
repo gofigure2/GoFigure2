@@ -116,9 +116,7 @@ private:
 
   vtkActor*    m_CurrentActor;
   vtkActor*    m_FirstMeshActor;
-  vtkActor*    m_SecondMeshActor;
   unsigned int m_FirstMeshID;
-  unsigned int m_SecondMeshID;
 
   vtkInteractorStyleImage3D*                 m_InteractorStyle3D;
   vtkSmartPointer<vtkEventQtSlotConnect>     m_VtkEventQtConnector;

@@ -179,9 +179,8 @@ UpdateCurrentActorSelection(vtkObject *caller)
 
       if( iter != m_Actor2MeshID.end() )
         {
-        m_SecondMeshID = iter->second;
-        m_SecondMeshActor = m_CurrentActor;
-        mergeTrack( m_FirstMeshID, m_SecondMeshID);
+        unsigned int secondMeshID = iter->second;
+        mergeTrack( m_FirstMeshID, secondMeshID);
         }
 
       m_FirstMeshActor->GetProperty()->SetSpecular(0);
@@ -771,6 +770,8 @@ updateTracksIDs( const unsigned int& iIDToDelete,
     ++iterator;
     }
 }
+//-------------------------------------------------------------------------
+
 //-------------------------------------------------------------------------
 void
 QGoTrackEditingWidget::
