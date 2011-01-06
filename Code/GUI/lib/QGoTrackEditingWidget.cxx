@@ -67,8 +67,7 @@
 QGoTrackEditingWidget::
 QGoTrackEditingWidget( MeshContainer* imeshContainer, QWidget *iParent ) :
   QDialog(iParent), m_MeshContainer( imeshContainer ),
-  m_MaxTrackID( 0 ), m_NumberOfTracks( 0 ), m_FirstRender( true ),
-  m_SecondClick( false )
+  m_MaxTrackID( 0 ), m_NumberOfTracks( 0 ), m_SecondClick( false )
 {
   this->setupUi(this);
 
@@ -266,14 +265,8 @@ void
 QGoTrackEditingWidget::
 initializeVisualization()
 {
-  //std::list<unsigned int> listOfTrackIDs = m_MeshContainer->GetAllCollectionIDs();
-  //std::list<unsigned int>::iterator trackIDsIt = listOfTrackIDs.begin();
+  MeshContainer::MultiIndexContainerCollectionIDIterator c_it, c_end;
 
-   MeshContainer::MultiIndexContainerCollectionIDIterator c_it, c_end;
-
-  // first render: reassign track IDs
-  if(m_FirstRender)
-    {
     c_it = m_MeshContainer->m_Container.get< CollectionID >().begin();
     unsigned int collection = std::numeric_limits< unsigned int >::max();
 
@@ -305,7 +298,7 @@ initializeVisualization()
 
       ++c_it;
       }
-    }
+
   ////////////////////////////////////////////////////////////////////////////////
   // FOR THE LABELS
   ////////////////////////////////////////////////////////////////////////////////
@@ -317,13 +310,10 @@ initializeVisualization()
   vtkSmartPointer<vtkPoints> pts = vtkSmartPointer<vtkPoints>::New();
   ////////////////////////////////////////////////////////////////////////////////
 
-
-
   // For each track, create the actors
   for( unsigned int i = 0; i < m_NumberOfTracks ; ++i )
     {
     std::cout<< "collection ID: " << i << std::endl;
-    m_Time2MeshID.clear();
     // Create the meshes actor if first render
     // update the container
 
@@ -343,7 +333,6 @@ initializeVisualization()
       double* rgba = m_MeshContainer->GetCurrentElementColor();
       unsigned int time = m_MeshContainer->GetCurrentElementTimePoint();
 
-      if( m_FirstRender ){
       //setup actor and mapper
       vtkSmartPointer<vtkPolyDataMapper> mapper =
           vtkSmartPointer<vtkPolyDataMapper>::New();
@@ -382,10 +371,6 @@ initializeVisualization()
                                        false ); // visible
 
       m_Actor2MeshID[actor] = (*listOfMeshIDsIt);
-      }
-
-      // Fill map - to construct lines
-      m_Time2MeshID[time] = (*listOfMeshIDsIt);
 
       // Insert Element
       m_MeshContainer->InsertCurrentElement();
@@ -395,40 +380,10 @@ initializeVisualization()
     //   }
 
     // Go through map to create polylines
-    std::map<unsigned int, unsigned int>::iterator polyLIt = m_Time2MeshID.begin();
-    if( polyLIt != m_Time2MeshID.end() )
-      {
-      vtkActor* firstActor = (m_MeshContainer->GetActorGivenTraceID( polyLIt->second ))[0];
-      vtkActor* secondActor = NULL;
-      ++polyLIt;
+    computeLineActors();
 
-      while( polyLIt != m_Time2MeshID.end() )
-        {
-        secondActor = (m_MeshContainer->GetActorGivenTraceID( polyLIt->second ))[0];
-        vtkActor* polyLine = CreatePolylineActor(firstActor->GetCenter(),
-                                                 secondActor->GetCenter());
-
-         ///\todo should color be hard coded? hoew to define it? - Nicolas
-          double color[3] = {1, 1, 1};
-        polyLine->GetProperty()->SetColor(color);
-        // Add actor to visu
-        renderer->AddActor( polyLine );
-
-        // key is actor
-        m_Line2MeshID[polyLine] = polyLIt->second;
-
-        firstActor = secondActor;
-        ++polyLIt;
-        }
-      }
-    else
-      {
-      std::cout << "List is empty" << std::endl;
-      }
     }
 
-  if(m_FirstRender)
-    {
   m_LabelData->GetPointData()->SetScalars(randomScalars);
   m_LabelData->SetPoints(pts);
 
@@ -445,8 +400,6 @@ initializeVisualization()
   isolabels->SetMapper(labelMapper);
 
   renderer->AddActor( isolabels );
-  m_FirstRender = false;
-  }
 }
 //-------------------------------------------------------------------------
 // Go through all container and creates actors
@@ -518,7 +471,7 @@ cutTrack( vtkActor* iActor)
 
     // update visu
     removeLineActors();
-    initializeVisualization();
+    computeLineActors();
     }
 }
 //-------------------------------------------------------------------------
@@ -536,6 +489,72 @@ removeLineActors()
     ++it;
     }
   m_Line2MeshID.clear();
+}
+
+void
+QGoTrackEditingWidget::
+computeLineActors()
+{
+  std::map<unsigned int, unsigned int> m_Time2MeshID;
+  // For each track, create the actors
+  for( unsigned int i = 0; i < m_NumberOfTracks ; ++i )
+    {
+    m_Time2MeshID.clear();
+    // Create the meshes actor if first render
+    // update the container
+    std::list<unsigned int> listOfMeshIDs =
+        m_MeshContainer->GetAllTraceIDsGivenCollectionID( i );
+    std::list<unsigned int>::iterator listOfMeshIDsIt = listOfMeshIDs.begin();
+
+    while( listOfMeshIDsIt != listOfMeshIDs.end() )
+      {
+      m_MeshContainer->ResetCurrentElement();
+      m_MeshContainer->UpdateCurrentElementFromExistingOne( (*listOfMeshIDsIt) );
+
+      unsigned int time = m_MeshContainer->GetCurrentElementTimePoint();
+
+      // Fill map - to construct lines
+      m_Time2MeshID[time] = (*listOfMeshIDsIt);
+
+      // Insert Element
+      m_MeshContainer->InsertCurrentElement();
+
+      ++listOfMeshIDsIt;
+      }
+
+    // Go through map to create polylines
+    std::map<unsigned int, unsigned int>::iterator polyLIt = m_Time2MeshID.begin();
+    if( polyLIt != m_Time2MeshID.end() )
+      {
+      vtkActor* firstActor = (m_MeshContainer->GetActorGivenTraceID( polyLIt->second ))[0];
+      vtkActor* secondActor = NULL;
+      ++polyLIt;
+
+      while( polyLIt != m_Time2MeshID.end() )
+        {
+        secondActor = (m_MeshContainer->GetActorGivenTraceID( polyLIt->second ))[0];
+        vtkActor* polyLine = CreatePolylineActor(firstActor->GetCenter(),
+                                                 secondActor->GetCenter());
+
+         ///\todo should color be hard coded? hoew to define it? - Nicolas
+          double color[3] = {1, 1, 1};
+        polyLine->GetProperty()->SetColor(color);
+        // Add actor to visu
+        renderer->AddActor( polyLine );
+
+        // key is actor
+        m_Line2MeshID[polyLine] = polyLIt->second;
+
+        firstActor = secondActor;
+        ++polyLIt;
+        }
+      }
+    else
+      {
+      std::cout << "List is empty" << std::endl;
+      }
+    }
+
 }
 //-------------------------------------------------------------------------
 // ONLY CALLED AT THE END
@@ -729,7 +748,7 @@ mergeTrack( const unsigned int& iFirstMesh, const unsigned int& iSecondMesh )
 
     // update visu
     removeLineActors();
-    initializeVisualization();
+    computeLineActors();
 
     return true;
     }

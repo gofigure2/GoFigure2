@@ -104,6 +104,7 @@ private:
                         const unsigned int& iIDToUpdate);
 
   void    removeLineActors();
+  void    computeLineActors();
 
   std::list< std::list< unsigned int > > m_ListOfNewTrack;
   std::map< unsigned int, std::list< unsigned int > > m_ListOfUpdatedTracks;
@@ -115,7 +116,6 @@ private:
   unsigned int m_MaxTrackID;
   unsigned int m_NumberOfTracks;
 
-  bool m_FirstRender;
   bool m_SecondClick;
   //std::pair<int, int> m_FirstPair;
   vtkActor* m_FirstMeshActor;
@@ -153,7 +153,6 @@ private:
   //typedef boost::bimap< vtkActor* , unsigned int > bm_type;
   //bm_type m_Actor2MeshID;
   std::map < vtkActor* , unsigned int > m_Actor2MeshID;
-  std::map<unsigned int, unsigned int> m_Time2MeshID;
 
 private:
   Q_DISABLE_COPY( QGoTrackEditingWidget );
