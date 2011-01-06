@@ -106,6 +106,9 @@ private:
   void    removeLineActors();
   void    computeLineActors();
 
+  void    reassignTrackIDs();
+  //void    restoreTrackIDs();
+
   std::list< std::list< unsigned int > > m_ListOfNewTrack;
   std::map< unsigned int, std::list< unsigned int > > m_ListOfUpdatedTracks;
   std::list< unsigned int > m_ListOfDeletedTracks;

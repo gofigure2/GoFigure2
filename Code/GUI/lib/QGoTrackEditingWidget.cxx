@@ -263,7 +263,7 @@ setMeshContainer( MeshContainer* imeshContainer )
 //-------------------------------------------------------------------------
 void
 QGoTrackEditingWidget::
-initializeVisualization()
+reassignTrackIDs()
 {
   MeshContainer::MultiIndexContainerCollectionIDIterator c_it, c_end;
 
@@ -298,25 +298,26 @@ initializeVisualization()
 
       ++c_it;
       }
+}
 
-  ////////////////////////////////////////////////////////////////////////////////
-  // FOR THE LABELS
-  ////////////////////////////////////////////////////////////////////////////////
+void
+QGoTrackEditingWidget::
+initializeVisualization()
+{
+  reassignTrackIDs();
+
   vtkSmartPointer<vtkDoubleArray> randomScalars =
     vtkSmartPointer< vtkDoubleArray >::New();
   randomScalars->SetNumberOfComponents(1);
   randomScalars->SetName("TimePoint");
 
   vtkSmartPointer<vtkPoints> pts = vtkSmartPointer<vtkPoints>::New();
-  ////////////////////////////////////////////////////////////////////////////////
 
   // For each track, create the actors
   for( unsigned int i = 0; i < m_NumberOfTracks ; ++i )
     {
-    std::cout<< "collection ID: " << i << std::endl;
     // Create the meshes actor if first render
     // update the container
-
     std::list<unsigned int> listOfMeshIDs =
         m_MeshContainer->GetAllTraceIDsGivenCollectionID( i );
     std::list<unsigned int>::iterator listOfMeshIDsIt = listOfMeshIDs.begin();
@@ -325,7 +326,6 @@ initializeVisualization()
       {
       m_MeshContainer->ResetCurrentElement();
       m_MeshContainer->UpdateCurrentElementFromExistingOne( (*listOfMeshIDsIt) );
-      std::cout<< "mesh ID: " << (*listOfMeshIDsIt) << std::endl;
 
       // Get the polydata
       // Might need a deep copy
@@ -341,12 +341,6 @@ initializeVisualization()
       actor->SetMapper( mapper );
       actor->GetProperty()->SetColor( rgba );
 
-      std::cout<< "center: " << std::endl;
-      std::cout<< "X: " << actor->GetCenter()[0] << std::endl;
-      std::cout<< "Y: " << actor->GetCenter()[1] << std::endl;
-      std::cout<< "Z: " << actor->GetCenter()[2] << std::endl;
-      std::cout<< "T: " << time << std::endl;
-
       randomScalars->InsertNextTuple1( time );
       pts->InsertNextPoint(actor->GetCenter());
 
@@ -354,7 +348,6 @@ initializeVisualization()
       renderer->AddActor(actor);
 
       /// \todo Find a better solution - Nicolas
-
       std::vector< vtkActor * > listOfActors; // to satisfy API
       listOfActors.push_back( actor );
       vtkActor* actor1 = vtkActor::New();
@@ -377,11 +370,9 @@ initializeVisualization()
 
       ++listOfMeshIDsIt;
       }
-    //   }
 
     // Go through map to create polylines
     computeLineActors();
-
     }
 
   m_LabelData->GetPointData()->SetScalars(randomScalars);
