@@ -260,7 +260,7 @@ initializeVisualization()
 
   vtkSmartPointer<vtkPoints> pts = vtkSmartPointer<vtkPoints>::New();
 
-  // For each track, create the actors
+  // Create the actors
   for( unsigned int i = 0; i < m_NumberOfTracks ; ++i )
     {
     // Create the meshes actor if first render
@@ -275,7 +275,6 @@ initializeVisualization()
       m_MeshContainer->UpdateCurrentElementFromExistingOne( (*listOfMeshIDsIt) );
 
       // Get the polydata
-      // Might need a deep copy
       vtkPolyData* nodes = m_MeshContainer->GetCurrentElementNodes();
       double* rgba = m_MeshContainer->GetCurrentElementColor();
       unsigned int time = m_MeshContainer->GetCurrentElementTimePoint();
@@ -332,15 +331,15 @@ QGoTrackEditingWidget::
 computeLabelActor( vtkSmartPointer<vtkDoubleArray> iScalars,
     vtkSmartPointer<vtkPoints> iPts)
 {
-  vtkSmartPointer<vtkPolyData> m_LabelData = vtkSmartPointer<vtkPolyData>::New();
-  m_LabelData->GetPointData()->SetScalars(iScalars);
-  m_LabelData->SetPoints(iPts);
+  vtkSmartPointer<vtkPolyData> labelData = vtkSmartPointer<vtkPolyData>::New();
+  labelData->GetPointData()->SetScalars(iScalars);
+  labelData->SetPoints(iPts);
 
   // The labeled data mapper will place labels at the points
   vtkSmartPointer<vtkLabeledDataMapper> labelMapper =
     vtkSmartPointer<vtkLabeledDataMapper>::New();
   labelMapper->SetFieldDataName("TimePoint");
-  labelMapper->SetInput(m_LabelData);
+  labelMapper->SetInput(labelData);
   labelMapper->SetLabelModeToLabelScalars();
   labelMapper->SetLabelFormat("%6.0f");
 
@@ -365,8 +364,6 @@ cutTrack( vtkActor* iActor)
     {
     unsigned int collectionID =
          m_MeshContainer->GetCollectionIDOfGivenTraceID( it->second );
-
-    std::cout << "Cut collection: " << collectionID << std::endl;
 
     std::list<unsigned int> listOfMeshIDs =
         m_MeshContainer->GetAllTraceIDsGivenCollectionID( collectionID );
