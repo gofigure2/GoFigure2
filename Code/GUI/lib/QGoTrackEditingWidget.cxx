@@ -73,7 +73,7 @@ QGoTrackEditingWidget( MeshContainer* imeshContainer, QWidget *iParent ) :
   m_VtkEventQtConnector->Connect(
     reinterpret_cast< vtkObject * >( m_InteractorStyle3D ),
     vtkViewImage3DCommand::MeshPickingEvent,
-    this, SLOT( UpdateCurrentActorSelection(vtkObject *) ) );
+    this, SLOT( updateCurrentActorSelection(vtkObject *) ) );
 
   QObject::connect (this->buttonBox , SIGNAL( accepted() ),
                  this, SLOT( restoreTrackIDs() ) );
@@ -99,7 +99,7 @@ QGoTrackEditingWidget::
 //-------------------------------------------------------------------------
 vtkActor*
 QGoTrackEditingWidget::
-CreatePolylineActor( double* iCenter1, double* iCenter2,
+createPolylineActor( double* iCenter1, double* iCenter2,
     const double* iColor1, const double* iColor2)
 {
   //create a vtkPoints object and storevtkRenderWindow the points in it
@@ -140,7 +140,7 @@ CreatePolylineActor( double* iCenter1, double* iCenter2,
 //-------------------------------------------------------------------------
 void
 QGoTrackEditingWidget::
-UpdateCurrentActorSelection(vtkObject *caller)
+updateCurrentActorSelection(vtkObject *caller)
 {
   vtkInteractorStyleImage3D *t =
     static_cast< vtkInteractorStyleImage3D * >( caller );
@@ -174,7 +174,7 @@ UpdateCurrentActorSelection(vtkObject *caller)
     {
     if(m_SecondClick)
       {
-      // if click the 1st mesh
+      // if click the 2nd mesh
       ActorMeshIDMapIterator iter = m_Actor2MeshID.find( m_CurrentActor );
 
       if( iter != m_Actor2MeshID.end() )
@@ -481,7 +481,7 @@ computeLineActors()
       while( polyLIt != m_Time2MeshID.end() )
         {
         secondActor = (m_MeshContainer->GetActorGivenTraceID( polyLIt->second ))[0];
-        vtkActor* polyLine = CreatePolylineActor(firstActor->GetCenter(),
+        vtkActor* polyLine = createPolylineActor(firstActor->GetCenter(),
                                                  secondActor->GetCenter());
 
          ///\todo should color be hard coded? hoew to define it? - Nicolas
@@ -661,11 +661,11 @@ mergeTrack( const unsigned int& iFirstMesh, const unsigned int& iSecondMesh )
     //Check if actors are border of track
     std::pair< std::pair<unsigned int, unsigned int>,
                std::pair<unsigned int, unsigned int> >
-        border1 = GetTrackBorders( FirstCollectionID );
+        border1 = getTrackBorders( FirstCollectionID );
 
     std::pair< std::pair<unsigned int, unsigned int>,
                std::pair<unsigned int, unsigned int> >
-      border2 = GetTrackBorders(SecondCollectionID);
+      border2 = getTrackBorders(SecondCollectionID);
 
     // Check for overlap
     if(    ( border2.first.second <= border1.second.second )
@@ -711,7 +711,7 @@ mergeTrack( const unsigned int& iFirstMesh, const unsigned int& iSecondMesh )
 std::pair< std::pair<unsigned int, unsigned int>,
            std::pair<unsigned int, unsigned int> >
 QGoTrackEditingWidget::
-GetTrackBorders( const unsigned int& iCollectionID )
+getTrackBorders( const unsigned int& iCollectionID )
 {
   MeshContainer::MultiIndexContainerCollectionIDIterator it0, it1;
 

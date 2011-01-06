@@ -55,7 +55,7 @@ class vtkPoints;
 /**
 \class QGoTrackEditingWidget
 \brief This dialog allows the user to split/merge the tracks using a GUI
-\ingroup GUI
+\ingroup GUI Track
 */
 class QGOGUILIB_EXPORT QGoTrackEditingWidget:
   public QDialog,
@@ -68,40 +68,124 @@ public:
                                   QWidget *parent = 0 );
   ~QGoTrackEditingWidget();
 
+  /**
+   * \brief Initialize the renderer, the rendering window, the interactor style
+   * and add the meshes, polylines and labels to the visualization
+   */
   void    init();
 
+  /**
+   * \brief Returns the list of tracks to be created
+   * \return    The list of tracks to be created
+  */
   std::list< std::list< unsigned int > >              GetListOfTracksToBeCreated();
+
+  /**
+   * \brief Returns the list of tracks to be updated
+   * \return    The list of tracks to be updated
+  */
   std::map< unsigned int, std::list< unsigned int > > GetListOfTracksToBeUpdated();
+
+  /**
+   * \brief Returns the list of tracks to be deleted
+   * \return    The list of tracks to be deleted
+  */
   std::list< unsigned int >                           GetListOfTracksToBeDeleted();
 
 public slots:
-  void UpdateCurrentActorSelection(vtkObject *caller);
+
+  /**
+  \brief Defines behavior when we pick an actor in the visualization
+  */
+  void updateCurrentActorSelection(vtkObject *caller);
+
+  /**
+  \brief Restore the track IDs to theirs original values (ie before entering the widget).
+  Creates a TracksToBeCreated list, a TracksToBeUpdated list and a TracksToBeDeleted list.
+  */
   void restoreTrackIDs();
 
 private:
+  /**
+   * \brief Reassigns track IDs and add the meshes, polylines and labels actors
+   * to the visualization
+   */
   void    initializeVisualization();
 
-  void    cutTrack( vtkActor* );
-  bool    mergeTrack( const unsigned int&, const unsigned int& );
+  /**
+   * \brief Cut a track at the current actor. The actor represents a polyline
+   * between 2 meshes.
+   * \param[in] iActor position where we want to split the track
+   */
+  void    cutTrack( vtkActor* iActor);
 
+  /**
+   * \brief Merge 2 tracks, given 2 mesh IDs.
+   * Requierements for a successful merge:
+   * -Each mesh must belong to different tracks.
+   * -The tracks can't overlap.
+   * -The mesh has to be a border of its own track.
+   * \param[in] iFirstMesh ID of a mesh belonging to the first track
+   * \param[in] iSecondMesh ID of a mesh belonging to the second track
+   * \return true is the merge was successful
+   */
+  bool    mergeTrack( const unsigned int& iFirstMesh, const unsigned int& iSecondMesh);
+
+  /**
+   * \brief Get the borders of the given track.
+   * \param[in] iCollectionID track IDs we are interested in
+   * \return time point and mesh id of the first and last mesh of the track
+   */
   std::pair< std::pair<unsigned int, unsigned int>,
              std::pair<unsigned int, unsigned int> >
-  GetTrackBorders( const unsigned int& iCollectionID );
+  getTrackBorders( const unsigned int& iCollectionID );
 
+  /**
+   * \brief Reassing real track IDs to temporary ones for convenience
+   */
   void    reassignTrackIDs();
+
+  /**
+   * \brief Update track IDs after a merge
+   * -The mesh has to be a border of its own track.
+   * \param[in] iIDToDelete ID of the track to be deleted
+   * \param[in] iIDToUpdate ID of the track to be updated
+   */
   void    updateTracksIDs( const unsigned int& iIDToDelete,
                         const unsigned int& iIDToUpdate);
 
+  /**
+   * \brief Create the polyLines actors according to the current MeshContainer
+   */
   void      computeLineActors();
+
+  /**
+   * \brief Remove the polyLines actors. Usefull after a merge or a cut. An
+   * "Update" method would be more efficient than remove then compute.
+   */
   void      removeLineActors();
-  vtkActor* CreatePolylineActor( double* iCenter1, double* iCenter2,
+
+  /**
+   * \brief Create a line between 2 points
+   * \param[in] iCenter1 Center of the first mesh
+   * \param[in] iCenter2 Center of the second mesh
+   * \param[in] iColor1 Color of the first mesh
+   * \param[in] iColor2 Color of the second mesh
+   * \return a pointer to the new actor. It has to be deleted somewhere.
+   */
+  vtkActor* createPolylineActor( double* iCenter1, double* iCenter2,
                                  const double* iColor1 = NULL,
                                  const double* iColor2 = NULL );
 
+  /**
+   * \brief Create label actors to see the temporal information of each mesh.
+   * It is very useful for the merge. Note that the 2 input parameters have to
+   * ordered in the same way.
+   * \param[in] iScalars Temporal information for each mesh
+   * \param[in] iPts Center of each mesh
+   */
   void      computeLabelActor( vtkSmartPointer<vtkDoubleArray> iScalars,
                             vtkSmartPointer<vtkPoints> iPts);
-
-
 
   MeshContainer* m_MeshContainer;
 
