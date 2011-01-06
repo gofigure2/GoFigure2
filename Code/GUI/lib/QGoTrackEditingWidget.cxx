@@ -360,10 +360,10 @@ QGoTrackEditingWidget::
 computeLabelActor( vtkSmartPointer<vtkDoubleArray> iScalars,
     vtkSmartPointer<vtkPoints> iPts)
 {
-  vtkPolyData* m_LabelData = vtkPolyData::New();
-
+  vtkSmartPointer<vtkPolyData> m_LabelData = vtkSmartPointer<vtkPolyData>::New();
   m_LabelData->GetPointData()->SetScalars(iScalars);
   m_LabelData->SetPoints(iPts);
+
   // The labeled data mapper will place labels at the points
   vtkSmartPointer<vtkLabeledDataMapper> labelMapper =
     vtkSmartPointer<vtkLabeledDataMapper>::New();
@@ -377,27 +377,6 @@ computeLabelActor( vtkSmartPointer<vtkDoubleArray> iScalars,
   isolabels->SetMapper(labelMapper);
 
   renderer->AddActor( isolabels );
-
-  if( m_LabelData )
-    {
-    if( m_LabelData->GetPointData() )
-      {
-    m_LabelData->GetPointData()->Reset();
-      }
-    if( m_LabelData->GetPoints() )
-      {
-    m_LabelData->GetPoints()->Reset();
-      }
-    if( m_LabelData->GetLines() )
-      {
-    m_LabelData->GetLines()->Reset();
-      }
-    if( m_LabelData )
-      {
-    m_LabelData->Reset();
-      }
-    }
-  m_LabelData->Delete();
 }
 //-------------------------------------------------------------------------
 // Go through all container and creates actors
