@@ -218,7 +218,6 @@ private:
   std::map< unsigned int, TrackStatusType > m_TrackStatus;
 
   std::map< unsigned int, unsigned int> m_TrackIDsMapping;
-  std::map < vtkActor* , unsigned int > m_Actor2MeshID;
   typedef std::map< vtkActor*, unsigned int > ActorMeshIDMapType;
   typedef ActorMeshIDMapType::iterator ActorMeshIDMapIterator;
   ActorMeshIDMapType                    m_Line2MeshID;

@@ -174,18 +174,18 @@ updateCurrentActorSelection(vtkObject *caller)
     }
   else
     {
-    // if click the 2nd mesh
-    ActorMeshIDMapIterator iter = m_Actor2MeshID.find( m_CurrentActor );
-    if( iter != m_Actor2MeshID.end() )
+    MeshContainer::MultiIndexContainerActorXYIterator
+    iter = m_MeshContainer->m_Container.get< ActorXY >().find( m_CurrentActor );
+
+    if( iter != m_MeshContainer->m_Container.get< ActorXY >().end() )
       {
       if(m_SecondClick)
         {
-        unsigned int secondMeshID = iter->second;
-        mergeTrack( m_FirstMeshID, secondMeshID);
+        mergeTrack( m_FirstMeshID, iter->TraceID);
         }
       else
         {
-        m_FirstMeshID = iter->second;
+        m_FirstMeshID    = iter->TraceID;
         m_FirstMeshActor = m_CurrentActor;
         }
       HighlightFirstActor( !m_SecondClick );
@@ -279,8 +279,6 @@ computeMeshActors()
 
       // Add actor to visu
       renderer->AddActor(actor);
-
-      m_Actor2MeshID[actor] = tempStructure.TraceID;
 
       m_MeshContainer->m_Container.get< CollectionID >().replace(it0, tempStructure);
 
