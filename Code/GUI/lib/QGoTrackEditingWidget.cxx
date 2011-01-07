@@ -363,17 +363,13 @@ cutTrack( vtkActor* iActor)
     unsigned int tLimit = it0->TCoord;
     unsigned int collectionID = it0->CollectionID;
 
-    TrackInformation track;//(collection, UPDATED_TRACK);
-    track.RealID = collectionID;
-    track.Status = UPDATED_TRACK;
     SUPERMAP::iterator super_map_it= m_SuperMap.find( collectionID );
-
-    // ADD OTHER CASES DELETED- NEW
-
     if( super_map_it == m_SuperMap.end() )
       {
       m_SuperMap[ collectionID ].Status = UPDATED_TRACK;
       }
+
+
     MeshContainer::MultiIndexContainerCollectionIDIterator it2, it3;
     boost::tuples::tie(it2, it3) =
       m_MeshContainer->m_Container.get< CollectionID >().equal_range( collectionID );
@@ -516,13 +512,7 @@ restoreTrackIDs()
 
       case UPDATED_TRACK:
         {
-        /////////////////////////
-        TrackInformation track;//(collection, UPDATED_TRACK);
-        track.RealID = collection;
-        track.Status = UPDATED_TRACK;
         SUPERMAP::iterator super_map_it= m_SuperMap.find( collection );
-        /////////////////////////
-
         if( super_map_it == m_SuperMap.end() )
           {
           std::cout << "error!" <<std::endl;
@@ -551,13 +541,7 @@ restoreTrackIDs()
 
       case DELETED_TRACK:
         {
-        //////////////////////////////////////
-        TrackInformation track;//(collection, UPDATED_TRACK);
-        track.RealID = collection;
-        track.Status = DELETED_TRACK;
         SUPERMAP::iterator super_map_it= m_SuperMap.find( collection );
-        ///////////////////////////////////////////////////////
-
         if( super_map_it == m_SuperMap.end() )
           {
           std::cout << "error!" <<std::endl;
