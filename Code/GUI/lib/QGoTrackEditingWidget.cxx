@@ -356,19 +356,18 @@ cutTrack( vtkActor* iActor)
   // Find the mesh ID
   if( it != m_Line2MeshID.end() )
     {
-    MeshContainer::MultiIndexContainerTraceIDIterator it0, it1;
-    boost::tuples::tie(it0, it1) =
-      m_MeshContainer->m_Container.get< TraceID >().equal_range( it->second );
+    MeshContainer::MultiIndexContainerTraceIDIterator it0;
+    it0 = m_MeshContainer->m_Container.get< TraceID >().find( it->second );
 
-    unsigned int tLimit = it0->TCoord;
     unsigned int collectionID = it0->CollectionID;
 
     SUPERMAP::iterator super_map_it= m_SuperMap.find( collectionID );
-    if( super_map_it == m_SuperMap.end() )
+    if( super_map_it != m_SuperMap.end() )
       {
       m_SuperMap[ collectionID ].Status = UPDATED_TRACK;
       }
 
+    unsigned int tLimit = it0->TCoord;
 
     MeshContainer::MultiIndexContainerCollectionIDIterator it2, it3;
     boost::tuples::tie(it2, it3) =
@@ -383,7 +382,11 @@ cutTrack( vtkActor* iActor)
       if( time < tLimit )
         {
         ModifyMeshCollectionID(traceID, m_NumberOfTracks);
-        m_SuperMap[ m_NumberOfTracks ].Status = NEW_TRACK;
+
+        TrackInformation track;
+        track.RealID = 0;
+        track.Status = NEW_TRACK;
+        m_SuperMap[ m_NumberOfTracks ] = track;
         }
       }
     ++m_NumberOfTracks;
@@ -552,7 +555,11 @@ restoreTrackIDs()
           real_collectionID = super_map_it->second.RealID;
           }
 
-        m_ListOfDeletedTracks.push_back( real_collectionID );
+        // if real ID > 0
+        if(real_collectionID)
+          {
+          m_ListOfDeletedTracks.push_back( real_collectionID );
+          }
         break;
         }
       }
