@@ -106,6 +106,10 @@ public slots:
   void restoreTrackIDs();
 
 private:
+
+  void HighlightFirstActor( bool iHighlight );
+  void ModifyMeshCollectionID( unsigned int iMeshID, unsigned int iCollectionID);
+
   /**
    * \brief Reassigns track IDs and add the meshes, polylines and labels actors
    * to the visualization

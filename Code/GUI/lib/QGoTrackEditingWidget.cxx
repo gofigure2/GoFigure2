@@ -174,34 +174,21 @@ updateCurrentActorSelection(vtkObject *caller)
     }
   else
     {
-    if(m_SecondClick)
+    // if click the 2nd mesh
+    ActorMeshIDMapIterator iter = m_Actor2MeshID.find( m_CurrentActor );
+    if( iter != m_Actor2MeshID.end() )
       {
-      // if click the 2nd mesh
-      ActorMeshIDMapIterator iter = m_Actor2MeshID.find( m_CurrentActor );
-
-      if( iter != m_Actor2MeshID.end() )
+      if(m_SecondClick)
         {
         unsigned int secondMeshID = iter->second;
         mergeTrack( m_FirstMeshID, secondMeshID);
         }
-
-      m_FirstMeshActor->GetProperty()->SetSpecular(0);
-      m_FirstMeshActor->GetProperty()->SetAmbient(0);
-      m_SecondClick = false;
-      }
-    else
-      {
-      // if click the 1st mesh
-      ActorMeshIDMapIterator iter = m_Actor2MeshID.find( m_CurrentActor );
-
-      if( iter != m_Actor2MeshID.end() )
+      else
         {
         m_FirstMeshID = iter->second;
         m_FirstMeshActor = m_CurrentActor;
-        m_FirstMeshActor->GetProperty()->SetSpecular(1);
-        m_FirstMeshActor->GetProperty()->SetAmbient(1);
-        m_SecondClick = true;
         }
+      HighlightFirstActor( !m_SecondClick );
       }
     }
 }
@@ -239,11 +226,7 @@ reassignTrackIDs()
         m_MaxTrackID = temp_collection;
         }
 
-      MeshContainer::MultiIndexContainerTraceIDIterator
-        it4 = m_MeshContainer->m_Container.get< TraceID >().find( traceID );
-      ContourMeshStructure tempStructure(*it4);
-      tempStructure.CollectionID = current_track;
-      m_MeshContainer->m_Container.get< TraceID >().replace(it4, tempStructure);
+      ModifyMeshCollectionID(traceID, current_track);
       }
 }
 //-------------------------------------------------------------------------
@@ -373,11 +356,7 @@ cutTrack( vtkActor* iActor)
       // change track ID if we are before the mesh
       if( time < tLimit )
         {
-        MeshContainer::MultiIndexContainerTraceIDIterator
-          it4 = m_MeshContainer->m_Container.get< TraceID >().find( traceID );
-        ContourMeshStructure tempStructure(*it4);
-        tempStructure.CollectionID = m_NumberOfTracks;
-        m_MeshContainer->m_Container.get< TraceID >().replace(it4, tempStructure);
+        ModifyMeshCollectionID(traceID, m_NumberOfTracks);
         m_TrackStatus[ m_NumberOfTracks ] = NEW_TRACK;
         }
       }
@@ -723,12 +702,7 @@ updateTracksIDs( const unsigned int& iIDToDelete,
     {
     unsigned int traceID = it0->TraceID;
     ++it0;
-
-    MeshContainer::MultiIndexContainerTraceIDIterator
-      it4 = m_MeshContainer->m_Container.get< TraceID >().find( traceID );
-    ContourMeshStructure tempStructure(*it4);
-    tempStructure.CollectionID = iIDToUpdate;
-    m_MeshContainer->m_Container.get< TraceID >().replace(it4, tempStructure);
+    ModifyMeshCollectionID(traceID, iIDToUpdate);
     }
 }
 //-------------------------------------------------------------------------
@@ -749,3 +723,26 @@ init()
   this->qvtkWidget->GetRenderWindow()->Render();
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTrackEditingWidget::
+ModifyMeshCollectionID( unsigned int iMeshID, unsigned int iCollectionID)
+{
+  MeshContainer::MultiIndexContainerTraceIDIterator
+    it = m_MeshContainer->m_Container.get< TraceID >().find( iMeshID );
+  ContourMeshStructure tempStructure(*it);
+  tempStructure.CollectionID = iCollectionID;
+  m_MeshContainer->m_Container.get< TraceID >().replace(it, tempStructure);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTrackEditingWidget::
+HighlightFirstActor( bool iHighlight )
+{
+  m_FirstMeshActor->GetProperty()->SetSpecular( iHighlight );
+  m_FirstMeshActor->GetProperty()->SetAmbient( iHighlight );
+  m_SecondClick = iHighlight;
+}
