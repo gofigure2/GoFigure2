@@ -109,6 +109,7 @@ private:
 
   void HighlightFirstActor( bool iHighlight );
   void ModifyMeshCollectionID( unsigned int iMeshID, unsigned int iCollectionID);
+  void computeMeshActors();
 
   /**
    * \brief Reassigns track IDs and add the meshes, polylines and labels actors
@@ -185,11 +186,8 @@ private:
    * \brief Create label actors to see the temporal information of each mesh.
    * It is very useful for the merge. Note that the 2 input parameters have to
    * ordered in the same way.
-   * \param[in] iScalars Temporal information for each mesh
-   * \param[in] iPts Center of each mesh
    */
-  void      computeLabelActor( vtkSmartPointer<vtkDoubleArray> iScalars,
-                            vtkSmartPointer<vtkPoints> iPts);
+  void      computeLabelActor();
 
   MeshContainer* m_MeshContainer;
 

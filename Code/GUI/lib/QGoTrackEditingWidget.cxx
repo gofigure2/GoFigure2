@@ -238,6 +238,63 @@ initializeVisualization()
 {
   reassignTrackIDs();
 
+  computeMeshActors();
+
+  computeLineActors();
+
+  computeLabelActor();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTrackEditingWidget::
+computeMeshActors()
+{
+  // Create the actors
+  for( unsigned int i = 0; i < m_NumberOfTracks ; ++i )
+    {
+    MeshContainer::MultiIndexContainerCollectionIDIterator it0, it1;
+
+    boost::tuples::tie(it0, it1) =
+      m_MeshContainer->m_Container.get< CollectionID >().equal_range( i );
+
+    while( it0 != it1 )
+      {
+      ContourMeshStructure tempStructure(*it0);
+
+      // Get the polydata
+      vtkPolyData* nodes = tempStructure.Nodes;
+      double* rgba = tempStructure.rgba;
+
+      //setup actor and mapper
+      vtkSmartPointer<vtkPolyDataMapper> mapper =
+          vtkSmartPointer<vtkPolyDataMapper>::New();
+      mapper->SetInput( nodes );
+
+      vtkActor* actor = vtkActor::New();
+      actor->SetMapper( mapper );
+      actor->GetProperty()->SetColor( rgba );
+      tempStructure.ActorXY = actor;
+
+      // Add actor to visu
+      renderer->AddActor(actor);
+
+      m_Actor2MeshID[actor] = tempStructure.TraceID;
+
+      m_MeshContainer->m_Container.get< CollectionID >().replace(it0, tempStructure);
+
+      ++it0;
+      }
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTrackEditingWidget::
+computeLabelActor()
+{
   vtkSmartPointer<vtkDoubleArray> randomScalars =
     vtkSmartPointer< vtkDoubleArray >::New();
   randomScalars->SetNumberOfComponents(1);
@@ -255,53 +312,20 @@ initializeVisualization()
 
     while( it0 != it1 )
       {
-      ContourMeshStructure tempStructure(*it0);
-
       // Get the polydata
-      vtkPolyData* nodes = tempStructure.Nodes;
-      double* rgba = tempStructure.rgba;
-      unsigned int time = tempStructure.TCoord;
-
-      //setup actor and mapper
-      vtkSmartPointer<vtkPolyDataMapper> mapper =
-          vtkSmartPointer<vtkPolyDataMapper>::New();
-      mapper->SetInput( nodes );
-
-      vtkActor* actor = vtkActor::New();
-      actor->SetMapper( mapper );
-      actor->GetProperty()->SetColor( rgba );
-      tempStructure.ActorXY = actor;
+      vtkPolyData* nodes = it0->Nodes;
+      unsigned int time = it0->TCoord;
 
       randomScalars->InsertNextTuple1( time );
-      pts->InsertNextPoint(actor->GetCenter());
-
-      // Add actor to visu
-      renderer->AddActor(actor);
-
-      m_Actor2MeshID[actor] = tempStructure.TraceID;
-
-      m_MeshContainer->m_Container.get< CollectionID >().replace(it0, tempStructure);
+      pts->InsertNextPoint(nodes->GetCenter());
 
       ++it0;
       }
-
-    // Go through map to create polylines
-    computeLineActors();
     }
 
-  computeLabelActor(randomScalars, pts);
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoTrackEditingWidget::
-computeLabelActor( vtkSmartPointer<vtkDoubleArray> iScalars,
-    vtkSmartPointer<vtkPoints> iPts)
-{
   vtkSmartPointer<vtkPolyData> labelData = vtkSmartPointer<vtkPolyData>::New();
-  labelData->GetPointData()->SetScalars(iScalars);
-  labelData->SetPoints(iPts);
+  labelData->GetPointData()->SetScalars(randomScalars);
+  labelData->SetPoints(pts);
 
   // The labeled data mapper will place labels at the points
   vtkSmartPointer<vtkLabeledDataMapper> labelMapper =
