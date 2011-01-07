@@ -188,7 +188,7 @@ updateCurrentActorSelection(vtkObject *caller)
         m_FirstMeshID    = iter->TraceID;
         m_FirstMeshActor = m_CurrentActor;
         }
-      HighlightFirstActor( !m_SecondClick );
+      highlightFirstActor( !m_SecondClick );
       }
     }
 }
@@ -231,7 +231,7 @@ reassignTrackIDs()
         m_MaxTrackID = temp_collection;
         }
 
-      ModifyMeshCollectionID(traceID, current_track);
+      modifyMeshCollectionID(traceID, current_track);
       }
 }
 //-------------------------------------------------------------------------
@@ -374,7 +374,7 @@ cutTrack( vtkActor* iActor)
       // change track ID if we are before the mesh
       if( time < tLimit )
         {
-        ModifyMeshCollectionID(traceID, m_NumberOfTracks);
+        modifyMeshCollectionID(traceID, m_NumberOfTracks);
 
         TrackInformation track;
         track.RealID = 0; // useful information
@@ -698,7 +698,7 @@ updateTracksIDs( const unsigned int& iIDToDelete,
     {
     unsigned int traceID = it0->TraceID;
     ++it0;
-    ModifyMeshCollectionID(traceID, iIDToUpdate);
+    modifyMeshCollectionID(traceID, iIDToUpdate);
     }
 }
 //-------------------------------------------------------------------------
@@ -723,7 +723,7 @@ init()
 //-------------------------------------------------------------------------
 void
 QGoTrackEditingWidget::
-ModifyMeshCollectionID( unsigned int iMeshID, unsigned int iCollectionID)
+modifyMeshCollectionID( unsigned int iMeshID, unsigned int iCollectionID)
 {
   MeshContainer::MultiIndexContainerTraceIDIterator
     it = m_MeshContainer->m_Container.get< TraceID >().find( iMeshID );
@@ -736,7 +736,7 @@ ModifyMeshCollectionID( unsigned int iMeshID, unsigned int iCollectionID)
 //-------------------------------------------------------------------------
 void
 QGoTrackEditingWidget::
-HighlightFirstActor( bool iHighlight )
+highlightFirstActor( bool iHighlight )
 {
   m_FirstMeshActor->GetProperty()->SetSpecular( iHighlight );
   m_FirstMeshActor->GetProperty()->SetAmbient( iHighlight );

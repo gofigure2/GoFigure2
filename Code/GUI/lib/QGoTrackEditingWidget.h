@@ -107,9 +107,31 @@ public slots:
 
 private:
 
-  void HighlightFirstActor( bool iHighlight );
-  void ModifyMeshCollectionID( unsigned int iMeshID, unsigned int iCollectionID);
+  /**
+   * \brief Change the apperance of the mesh depending on if we want to
+   *  highlight it or not. First click on one actor will highlight it. Second
+   *  click will restore its original apperance.
+   * \param[in] iHighlight true if we want to highlight the actor (i.e. first click)
+   */
+  void highlightFirstActor( bool iHighlight );
+
+  /**
+   * \brief Modify the mesh collection to the chosen track ID.
+   * \param[in] iMeshID mesh to be modified
+   * \param[in] iCollectionID new track ID of the mesh
+   */
+  void modifyMeshCollectionID( unsigned int iMeshID, unsigned int iCollectionID);
+
+  /**
+   * \brief Get and display the meshes actors
+   */
   void computeMeshActors();
+
+  /**
+   * \brief Get the list of the mesh IDs which belong to the given track
+   * \param[in] iCollectionID track from which we want to extract the mesh id
+   * \return list of the meshes IDs
+   */
   std::list< unsigned int > getMeshIDsInTrack( unsigned int iCollection);
 
   /**
@@ -216,11 +238,9 @@ private:
     DELETED_TRACK
     };
 
-  // struct track info
   struct TrackInformation {
     unsigned int RealID;
     TrackStatusType Status;
-
     //TrackInformation(unsigned int A, TrackStatusType B):RealID(A), Status(B){}
     };
 
