@@ -217,7 +217,12 @@ reassignTrackIDs()
         {
         collection = temp_collection;
         current_track = m_NumberOfTracks;
-        m_TrackIDsMapping[current_track] = collection;
+
+        TrackInformation track;//(collection, UPDATED_TRACK);
+        track.RealID = collection;
+        track.Status = UPDATED_TRACK;
+        m_SuperMap[current_track] = track;
+
         ++m_NumberOfTracks;
         }
 
@@ -358,13 +363,16 @@ cutTrack( vtkActor* iActor)
     unsigned int tLimit = it0->TCoord;
     unsigned int collectionID = it0->CollectionID;
 
-    // here check that the track is not a new track!
-    std::map< unsigned int, TrackStatusType >::iterator
-        stat_it = m_TrackStatus.find( collectionID );
+    TrackInformation track;//(collection, UPDATED_TRACK);
+    track.RealID = collectionID;
+    track.Status = UPDATED_TRACK;
+    SUPERMAP::iterator super_map_it= m_SuperMap.find( collectionID );
 
-    if( stat_it == m_TrackStatus.end() )
+    // ADD OTHER CASES DELETED- NEW
+
+    if( super_map_it == m_SuperMap.end() )
       {
-      m_TrackStatus[ collectionID ] = UPDATED_TRACK;
+      m_SuperMap[ collectionID ].Status = UPDATED_TRACK;
       }
     MeshContainer::MultiIndexContainerCollectionIDIterator it2, it3;
     boost::tuples::tie(it2, it3) =
@@ -379,7 +387,7 @@ cutTrack( vtkActor* iActor)
       if( time < tLimit )
         {
         ModifyMeshCollectionID(traceID, m_NumberOfTracks);
-        m_TrackStatus[ m_NumberOfTracks ] = NEW_TRACK;
+        m_SuperMap[ m_NumberOfTracks ].Status = NEW_TRACK;
         }
       }
     ++m_NumberOfTracks;
@@ -473,8 +481,8 @@ void
 QGoTrackEditingWidget::
 restoreTrackIDs()
 {
-  std::map< unsigned int, TrackStatusType >::iterator
-      iter = m_TrackStatus.begin();
+  SUPERMAP::iterator super_map_it1= m_SuperMap.begin();
+
   unsigned int collection = 0;
   unsigned int real_collectionID = 0;
 
@@ -482,11 +490,11 @@ restoreTrackIDs()
   m_ListOfUpdatedTracks.clear();
   m_ListOfDeletedTracks.clear();
 
-  while( iter != m_TrackStatus.end() )
+  while( super_map_it1 != m_SuperMap.end() )
     {
-    collection = iter->first;
+    collection = super_map_it1->first;
 
-    switch( iter->second )
+    switch( super_map_it1->second.Status )
       {
       case NEW_TRACK:
         {
@@ -508,17 +516,21 @@ restoreTrackIDs()
 
       case UPDATED_TRACK:
         {
-        std::map< unsigned int, unsigned int >::iterator
-            id_map_it = m_TrackIDsMapping.find( collection );
+        /////////////////////////
+        TrackInformation track;//(collection, UPDATED_TRACK);
+        track.RealID = collection;
+        track.Status = UPDATED_TRACK;
+        SUPERMAP::iterator super_map_it= m_SuperMap.find( collection );
+        /////////////////////////
 
-        if( id_map_it == m_TrackIDsMapping.end() )
+        if( super_map_it == m_SuperMap.end() )
           {
           std::cout << "error!" <<std::endl;
           return;
           }
         else
           {
-          real_collectionID = id_map_it->second;
+          real_collectionID = super_map_it->second.RealID;
           }
 
         std::list< unsigned int > list_meshid;
@@ -539,24 +551,28 @@ restoreTrackIDs()
 
       case DELETED_TRACK:
         {
-        std::map< unsigned int, unsigned int >::iterator
-            id_map_it = m_TrackIDsMapping.find( collection );
+        //////////////////////////////////////
+        TrackInformation track;//(collection, UPDATED_TRACK);
+        track.RealID = collection;
+        track.Status = DELETED_TRACK;
+        SUPERMAP::iterator super_map_it= m_SuperMap.find( collection );
+        ///////////////////////////////////////////////////////
 
-        if( id_map_it == m_TrackIDsMapping.end() )
+        if( super_map_it == m_SuperMap.end() )
           {
           std::cout << "error!" <<std::endl;
           return;
           }
         else
           {
-          real_collectionID = id_map_it->second;
+          real_collectionID = super_map_it->second.RealID;
           }
 
         m_ListOfDeletedTracks.push_back( real_collectionID );
         break;
         }
       }
-    ++iter;
+    ++super_map_it1;
     }
 }
 //-------------------------------------------------------------------------
@@ -652,8 +668,8 @@ mergeTrack( const unsigned int& iFirstMesh, const unsigned int& iSecondMesh )
       }
 
     // C est la!!!
-    m_TrackStatus[trackToDelete] = DELETED_TRACK;
-    m_TrackStatus[trackToUpdate] = UPDATED_TRACK;
+    m_SuperMap[trackToDelete].Status = DELETED_TRACK;
+    m_SuperMap[trackToUpdate].Status = UPDATED_TRACK;
 
     // Change the ID of the track by the other one
     updateTracksIDs( trackToDelete, trackToUpdate );

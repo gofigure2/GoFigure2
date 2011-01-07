@@ -215,9 +215,17 @@ private:
     DELETED_TRACK
     };
 
-  //
-  std::map< unsigned int, TrackStatusType > m_TrackStatus;
-  std::map< unsigned int, unsigned int> m_TrackIDsMapping;
+  // struct track info
+  struct TrackInformation
+    {
+    unsigned int RealID;
+    TrackStatusType Status;
+    //TrackInformation(unsigned int A,QGoTrackEditingWidget::TrackStatusType B) :
+    //    RealID(A),Status(B) {}
+    };
+
+  typedef std::map< unsigned int, TrackInformation > SUPERMAP;
+  SUPERMAP m_SuperMap;
   //
 
   typedef std::map< vtkActor*, unsigned int >::iterator LineActor2MeshIDIterator;
