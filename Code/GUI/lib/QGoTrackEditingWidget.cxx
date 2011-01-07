@@ -223,6 +223,8 @@ reassignTrackIDs()
     while( c_it != c_end )
       {
       unsigned int temp_collection = c_it->CollectionID;
+      unsigned int traceID = c_it->TraceID;
+      ++c_it;
 
       if( temp_collection != collection )
         {
@@ -237,11 +239,11 @@ reassignTrackIDs()
         m_MaxTrackID = temp_collection;
         }
 
-      ContourMeshStructure tempStructure(*c_it);
+      MeshContainer::MultiIndexContainerTraceIDIterator
+        it4 = m_MeshContainer->m_Container.get< TraceID >().find( traceID );
+      ContourMeshStructure tempStructure(*it4);
       tempStructure.CollectionID = current_track;
-      m_MeshContainer->m_Container.get< CollectionID >().replace(c_it, tempStructure);
-
-      ++c_it;
+      m_MeshContainer->m_Container.get< TraceID >().replace(it4, tempStructure);
       }
 }
 //-------------------------------------------------------------------------
