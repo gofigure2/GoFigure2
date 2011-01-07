@@ -360,13 +360,6 @@ cutTrack( vtkActor* iActor)
     it0 = m_MeshContainer->m_Container.get< TraceID >().find( it->second );
 
     unsigned int collectionID = it0->CollectionID;
-
-    SUPERMAP::iterator super_map_it= m_SuperMap.find( collectionID );
-    if( super_map_it != m_SuperMap.end() )
-      {
-      m_SuperMap[ collectionID ].Status = UPDATED_TRACK;
-      }
-
     unsigned int tLimit = it0->TCoord;
 
     MeshContainer::MultiIndexContainerCollectionIDIterator it2, it3;
@@ -658,9 +651,7 @@ mergeTrack( const unsigned int& iFirstMesh, const unsigned int& iSecondMesh )
       trackToDelete = SecondCollectionID;
       }
 
-    // C est la!!!
     m_SuperMap[trackToDelete].Status = DELETED_TRACK;
-    m_SuperMap[trackToUpdate].Status = UPDATED_TRACK;
 
     // Change the ID of the track by the other one
     updateTracksIDs( trackToDelete, trackToUpdate );
