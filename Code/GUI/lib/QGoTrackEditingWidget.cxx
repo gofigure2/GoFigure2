@@ -88,7 +88,7 @@ QGoTrackEditingWidget::
 {
   m_InteractorStyle3D->Delete();
 
-  ActorMeshIDMapIterator  it = m_Line2MeshID.begin();
+  LineActor2MeshIDIterator  it = m_Line2MeshID.begin();
   while( it != m_Line2MeshID.end() )
     {
     renderer->RemoveActor( it->first );
@@ -156,7 +156,7 @@ updateCurrentActorSelection(vtkObject *caller)
     return;
     }
 
-  ActorMeshIDMapIterator polyToMeshID =
+  LineActor2MeshIDIterator polyToMeshID =
       m_Line2MeshID.find(m_CurrentActor);
 
   if(polyToMeshID != m_Line2MeshID.end())
@@ -346,7 +346,7 @@ void
 QGoTrackEditingWidget::
 cutTrack( vtkActor* iActor)
 {
-  ActorMeshIDMapIterator it = m_Line2MeshID.find( iActor );
+  LineActor2MeshIDIterator it = m_Line2MeshID.find( iActor );
 
   // Find the mesh ID
   if( it != m_Line2MeshID.end() )
@@ -400,7 +400,7 @@ void
 QGoTrackEditingWidget::
 removeLineActors()
 {
-  ActorMeshIDMapIterator  it = m_Line2MeshID.begin();
+  LineActor2MeshIDIterator  it = m_Line2MeshID.begin();
   while( it != m_Line2MeshID.end() )
     {
     renderer->RemoveActor( it->first );

@@ -215,12 +215,14 @@ private:
     DELETED_TRACK
     };
 
+  //
   std::map< unsigned int, TrackStatusType > m_TrackStatus;
-
   std::map< unsigned int, unsigned int> m_TrackIDsMapping;
-  typedef std::map< vtkActor*, unsigned int > ActorMeshIDMapType;
-  typedef ActorMeshIDMapType::iterator ActorMeshIDMapIterator;
-  ActorMeshIDMapType                    m_Line2MeshID;
+  //
+
+  typedef std::map< vtkActor*, unsigned int >::iterator LineActor2MeshIDIterator;
+  std::map< vtkActor*, unsigned int >   m_Line2MeshID;
+
 
 private:
   Q_DISABLE_COPY( QGoTrackEditingWidget );
