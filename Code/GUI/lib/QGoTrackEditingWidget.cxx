@@ -340,16 +340,16 @@ QGoTrackEditingWidget::
 cutTrack( vtkActor* iActor)
 {
   ActorMeshIDMapIterator it = m_Line2MeshID.find( iActor );
-  //int timePoint;
 
   // Find the mesh ID
   if( it != m_Line2MeshID.end() )
     {
-    unsigned int collectionID =
-         m_MeshContainer->GetCollectionIDOfGivenTraceID( it->second );
+    MeshContainer::MultiIndexContainerTraceIDIterator it0, it1;
+    boost::tuples::tie(it0, it1) =
+      m_MeshContainer->m_Container.get< TraceID >().equal_range( it->second );
 
-    std::list<unsigned int> listOfMeshIDs =
-        m_MeshContainer->GetAllTraceIDsGivenCollectionID( collectionID );
+    unsigned int tLimit = it0->TCoord;
+    unsigned int collectionID = it0->CollectionID;
 
     // here check that the track is not a new track!
     std::map< unsigned int, TrackStatusType >::iterator
@@ -359,47 +359,32 @@ cutTrack( vtkActor* iActor)
       {
       m_TrackStatus[ collectionID ] = UPDATED_TRACK;
       }
+    MeshContainer::MultiIndexContainerCollectionIDIterator it2, it3;
+    boost::tuples::tie(it2, it3) =
+      m_MeshContainer->m_Container.get< CollectionID >().equal_range( collectionID );
 
-    std::list<unsigned int>::iterator iterator = listOfMeshIDs.begin();
-
-    // border time point
-    m_MeshContainer->ResetCurrentElement();
-    m_MeshContainer->UpdateCurrentElementFromExistingOne( it->second );
-    unsigned int tLimit = m_MeshContainer->GetCurrentElementTimePoint();
-    m_MeshContainer->InsertCurrentElement();
-
-
-
-    std::cout << "Time limit: " << tLimit << std::endl;
-
-    while( iterator != listOfMeshIDs.end() )
+    while( it2 != it3 )
       {
-      m_MeshContainer->ResetCurrentElement();
-      m_MeshContainer->UpdateCurrentElementFromExistingOne( (*iterator) );
-
-      unsigned int time = m_MeshContainer->GetCurrentElementTimePoint();
-
+      unsigned int time = it2->TCoord;
+      unsigned int traceID = it2->TraceID;
+      ++it2;
       // change track ID if we are before the mesh
       if( time < tLimit )
         {
-        // Collection ID
-        m_MeshContainer->SetCurrentElementCollectionID( m_NumberOfTracks );
+        MeshContainer::MultiIndexContainerTraceIDIterator
+          it4 = m_MeshContainer->m_Container.get< TraceID >().find( traceID );
+        ContourMeshStructure tempStructure(*it4);
+        tempStructure.CollectionID = m_NumberOfTracks;
+        m_MeshContainer->m_Container.get< TraceID >().replace(it4, tempStructure);
         m_TrackStatus[ m_NumberOfTracks ] = NEW_TRACK;
-        // Visibility: i.e. modified
         }
-      m_MeshContainer->InsertCurrentElement();
-      ++iterator;
       }
-
     ++m_NumberOfTracks;
 
     if( m_NumberOfTracks > m_MaxTrackID)
       {
       m_MaxTrackID = m_NumberOfTracks;
       }
-
-    std::cout << "m_NumberOfTracks " << m_NumberOfTracks << std::endl;
-
     // update visu
     removeLineActors();
     computeLineActors();
@@ -435,7 +420,6 @@ computeLineActors()
     m_Time2MeshID.clear();
 
     MeshContainer::MultiIndexContainerCollectionIDIterator it0, it1;
-
     boost::tuples::tie(it0, it1) =
      m_MeshContainer->m_Container.get< CollectionID >().equal_range( i );
 
@@ -735,10 +719,14 @@ updateTracksIDs( const unsigned int& iIDToDelete,
 
   while( it0 != it1 )
     {
-    ContourMeshStructure tempStructure(*it0);
-    tempStructure.CollectionID = iIDToUpdate;
-    m_MeshContainer->m_Container.get< CollectionID >().replace(it0, tempStructure);
+    unsigned int traceID = it0->TraceID;
     ++it0;
+
+    MeshContainer::MultiIndexContainerTraceIDIterator
+      it4 = m_MeshContainer->m_Container.get< TraceID >().find( traceID );
+    ContourMeshStructure tempStructure(*it4);
+    tempStructure.CollectionID = iIDToUpdate;
+    m_MeshContainer->m_Container.get< TraceID >().replace(it4, tempStructure);
     }
 }
 //-------------------------------------------------------------------------
