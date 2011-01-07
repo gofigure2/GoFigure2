@@ -244,8 +244,8 @@ private:
     //TrackInformation(unsigned int A, TrackStatusType B):RealID(A), Status(B){}
     };
 
-  typedef std::map< unsigned int, TrackInformation > SUPERMAP;
-  SUPERMAP m_SuperMap;
+  typedef std::map< unsigned int, TrackInformation > TrackMapping;
+  TrackMapping m_TrackMapping;
 
   typedef std::map< vtkActor*, unsigned int >::iterator LineActor2MeshIDIterator;
   std::map< vtkActor*, unsigned int >   m_Line2MeshID;

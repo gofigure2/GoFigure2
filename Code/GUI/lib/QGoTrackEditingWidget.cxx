@@ -221,7 +221,7 @@ reassignTrackIDs()
         TrackInformation track;//(collection, UPDATED_TRACK);
         track.RealID = collection;
         track.Status = UPDATED_TRACK;
-        m_SuperMap[current_track] = track;
+        m_TrackMapping[current_track] = track;
 
         ++m_NumberOfTracks;
         }
@@ -379,7 +379,7 @@ cutTrack( vtkActor* iActor)
         TrackInformation track;
         track.RealID = 0; // useful information
         track.Status = NEW_TRACK;
-        m_SuperMap[ m_NumberOfTracks ] = track;
+        m_TrackMapping[ m_NumberOfTracks ] = track;
         }
       }
     ++m_NumberOfTracks;
@@ -473,7 +473,7 @@ void
 QGoTrackEditingWidget::
 restoreTrackIDs()
 {
-  SUPERMAP::iterator super_map_it1= m_SuperMap.begin();
+  TrackMapping::iterator it= m_TrackMapping.begin();
 
   unsigned int collection = 0;
 
@@ -481,11 +481,11 @@ restoreTrackIDs()
   m_ListOfUpdatedTracks.clear();
   m_ListOfDeletedTracks.clear();
 
-  while( super_map_it1 != m_SuperMap.end() )
+  while( it != m_TrackMapping.end() )
     {
-    collection = super_map_it1->first;
+    collection = it->first;
 
-    switch( super_map_it1->second.Status )
+    switch( it->second.Status )
       {
       case NEW_TRACK:
         {
@@ -497,21 +497,21 @@ restoreTrackIDs()
       case UPDATED_TRACK:
         {
         std::list< unsigned int > list_meshid = getMeshIDsInTrack(collection);
-        m_ListOfUpdatedTracks[super_map_it1->second.RealID] = list_meshid;
+        m_ListOfUpdatedTracks[it->second.RealID] = list_meshid;
         break;
         }
 
       case DELETED_TRACK:
         {
         // if real ID > 0
-        if(super_map_it1->second.RealID)
+        if(it->second.RealID)
           {
-          m_ListOfDeletedTracks.push_back( super_map_it1->second.RealID );
+          m_ListOfDeletedTracks.push_back( it->second.RealID );
           }
         break;
         }
       }
-    ++super_map_it1;
+    ++it;
     }
 }
 //-------------------------------------------------------------------------
@@ -627,7 +627,7 @@ mergeTrack( const unsigned int& iFirstMesh, const unsigned int& iSecondMesh )
       trackToDelete = SecondCollectionID;
       }
 
-    m_SuperMap[trackToDelete].Status = DELETED_TRACK;
+    m_TrackMapping[trackToDelete].Status = DELETED_TRACK;
 
     // Change the ID of the track by the other one
     updateTracksIDs( trackToDelete, trackToUpdate );
