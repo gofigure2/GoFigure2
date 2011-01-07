@@ -457,13 +457,6 @@ public:
       }
   }
 
-  /**
-   * \brief Get the current trace time point
-   */
-  unsigned int GetCurrentElementTimePoint();
-
-  void SetCurrentElementCollectionID( unsigned int);
-
 public slots:
 
   /** \brief Change elements highlighting property given a list of TraceIDs

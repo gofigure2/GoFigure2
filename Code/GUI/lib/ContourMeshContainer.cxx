@@ -377,20 +377,3 @@ GetMeshesPoints( std::list< unsigned int> iMeshID )
   return meshPosition;
 }
 //-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-unsigned int
-ContourMeshContainer::
-GetCurrentElementTimePoint()
-{
-  return this->m_CurrentElement.TCoord;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-ContourMeshContainer::
-SetCurrentElementCollectionID( unsigned int iCollectionID)
-{
-  this->m_CurrentElement.CollectionID = iCollectionID;
-}

@@ -141,10 +141,6 @@ public:
   */
   vtkProperty * GetHighlightedProperty();
 
-  std::list< unsigned int > GetAllTraceIDsGivenCollectionID( const unsigned int& iCollection );
-
-  std::list< unsigned int > GetAllCollectionIDs();
-
   unsigned int GetCollectionIDOfGivenTraceID( unsigned int iTraceID);
 
   /**
