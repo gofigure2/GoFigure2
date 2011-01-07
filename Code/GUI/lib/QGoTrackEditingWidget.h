@@ -110,6 +110,7 @@ private:
   void HighlightFirstActor( bool iHighlight );
   void ModifyMeshCollectionID( unsigned int iMeshID, unsigned int iCollectionID);
   void computeMeshActors();
+  std::list< unsigned int > getMeshIDsInTrack( unsigned int iCollection);
 
   /**
    * \brief Reassigns track IDs and add the meshes, polylines and labels actors

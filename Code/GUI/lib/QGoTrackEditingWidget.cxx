@@ -377,7 +377,7 @@ cutTrack( vtkActor* iActor)
         ModifyMeshCollectionID(traceID, m_NumberOfTracks);
 
         TrackInformation track;
-        track.RealID = 0;
+        track.RealID = 0; // useful information
         track.Status = NEW_TRACK;
         m_SuperMap[ m_NumberOfTracks ] = track;
         }
@@ -476,7 +476,6 @@ restoreTrackIDs()
   SUPERMAP::iterator super_map_it1= m_SuperMap.begin();
 
   unsigned int collection = 0;
-  unsigned int real_collectionID = 0;
 
   m_ListOfNewTrack.clear();
   m_ListOfUpdatedTracks.clear();
@@ -490,74 +489,51 @@ restoreTrackIDs()
       {
       case NEW_TRACK:
         {
-        std::list< unsigned int > list_meshid;
-
-        MeshContainer::MultiIndexContainerCollectionIDIterator it0, it1;
-
-        boost::tuples::tie(it0, it1) =
-          m_MeshContainer->m_Container.get< CollectionID >().equal_range( collection );
-
-        while( it0 != it1 )
-          {
-          list_meshid.push_back( it0->TraceID );
-          ++it0;
-          }
+        std::list< unsigned int > list_meshid = getMeshIDsInTrack(collection);
         m_ListOfNewTrack.push_back( list_meshid );
         break;
         }
 
       case UPDATED_TRACK:
         {
-        SUPERMAP::iterator super_map_it= m_SuperMap.find( collection );
-        if( super_map_it == m_SuperMap.end() )
-          {
-          std::cout << "error!" <<std::endl;
-          return;
-          }
-        else
-          {
-          real_collectionID = super_map_it->second.RealID;
-          }
-
-        std::list< unsigned int > list_meshid;
-
-        MeshContainer::MultiIndexContainerCollectionIDIterator it0, it1;
-
-        boost::tuples::tie(it0, it1) =
-          m_MeshContainer->m_Container.get< CollectionID >().equal_range( collection );
-
-        while( it0 != it1 )
-          {
-          list_meshid.push_back( it0->TraceID );
-          ++it0;
-          }
-        m_ListOfUpdatedTracks[real_collectionID] = list_meshid;
+        std::list< unsigned int > list_meshid = getMeshIDsInTrack(collection);
+        m_ListOfUpdatedTracks[super_map_it1->second.RealID] = list_meshid;
         break;
         }
 
       case DELETED_TRACK:
         {
-        SUPERMAP::iterator super_map_it= m_SuperMap.find( collection );
-        if( super_map_it == m_SuperMap.end() )
-          {
-          std::cout << "error!" <<std::endl;
-          return;
-          }
-        else
-          {
-          real_collectionID = super_map_it->second.RealID;
-          }
-
         // if real ID > 0
-        if(real_collectionID)
+        if(super_map_it1->second.RealID)
           {
-          m_ListOfDeletedTracks.push_back( real_collectionID );
+          m_ListOfDeletedTracks.push_back( super_map_it1->second.RealID );
           }
         break;
         }
       }
     ++super_map_it1;
     }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list< unsigned int >
+QGoTrackEditingWidget::
+getMeshIDsInTrack( unsigned int iCollection)
+{
+  std::list< unsigned int > list_meshid;
+
+  MeshContainer::MultiIndexContainerCollectionIDIterator it0, it1;
+
+  boost::tuples::tie(it0, it1) =
+    m_MeshContainer->m_Container.get< CollectionID >().equal_range( iCollection );
+
+  while( it0 != it1 )
+    {
+    list_meshid.push_back( it0->TraceID );
+    ++it0;
+    }
+  return list_meshid;
 }
 //-------------------------------------------------------------------------
 
