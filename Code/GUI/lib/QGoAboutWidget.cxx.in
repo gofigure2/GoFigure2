@@ -115,6 +115,7 @@ QString QGoAboutWidget::GetContributors()
   authors.append(" * 2008 ~ K. Mosaliganti\n");
   authors.append(" * 2009 ~ N. Rannou\n");
   authors.append(" * 2010 ~ A. Perrot-Audet\n");
+  authors.append(" * 2010 ~ E. Schwab\n");
   authors.append(" * 2007-2009 ~ A. Gouaillard\n");
   authors.append(" * 2006 ~ S. G. Megason\n");
 
