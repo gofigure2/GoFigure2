@@ -241,7 +241,10 @@ private:
   struct TrackInformation {
     unsigned int RealID;
     TrackStatusType Status;
-    //TrackInformation(unsigned int A, TrackStatusType B):RealID(A), Status(B){}
+
+    // Constructors
+    TrackInformation(){}
+    TrackInformation(unsigned int A, TrackStatusType B):RealID(A), Status(B){}
     };
 
   typedef std::map< unsigned int, TrackInformation > TrackMapping;

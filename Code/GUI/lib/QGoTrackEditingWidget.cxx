@@ -218,9 +218,7 @@ reassignTrackIDs()
         collection = temp_collection;
         current_track = m_NumberOfTracks;
 
-        TrackInformation track;//(collection, UPDATED_TRACK);
-        track.RealID = collection;
-        track.Status = UPDATED_TRACK;
+        TrackInformation track(collection, UPDATED_TRACK);
         m_TrackMapping[current_track] = track;
 
         ++m_NumberOfTracks;
@@ -376,9 +374,7 @@ cutTrack( vtkActor* iActor)
         {
         modifyMeshCollectionID(traceID, m_NumberOfTracks);
 
-        TrackInformation track;
-        track.RealID = 0; // useful information
-        track.Status = NEW_TRACK;
+        TrackInformation track(0, NEW_TRACK);
         m_TrackMapping[ m_NumberOfTracks ] = track;
         }
       }
