@@ -46,6 +46,7 @@
 #include "itkImageToImageFilter.h"
 #include "itkCastImageFilter.h"
 #include "itkMedianImageFilter.h"
+#include "itkAffineTransform.h"
 #include "itkGrayscaleFillholeImageFilter.h"
 #include "itkRecursiveGaussianImageFilter.h"
 #include "itkRegionOfInterestImageFilter.h"
