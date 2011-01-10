@@ -77,6 +77,11 @@ QGoTrackEditingWidget( MeshContainer* imeshContainer, QWidget *iParent ) :
     vtkViewImage3DCommand::MeshPickingEvent,
     this, SLOT( updateCurrentActorSelection(vtkObject *) ) );
 
+  // ADD A STATUS BAR
+  m_StatusBar = new QStatusBar;
+  this->gridLayout_2->addWidget(m_StatusBar, 1, 0, 1, 1);
+  m_StatusBar->showMessage("No actor selected");
+
   QObject::connect (this->buttonBox , SIGNAL( accepted() ),
                  this, SLOT( restoreTrackIDs() ) );
 }
@@ -166,11 +171,6 @@ updateCurrentActorSelection(vtkObject *caller)
       //Update track IDs - CUT
       cutTrack( m_CurrentActor );
       }
-    else
-      {
-      m_CurrentActor->GetProperty()->SetOpacity(1);
-      // Update Track IDs - MERGE
-      }
     }
   else
     {
@@ -187,6 +187,7 @@ updateCurrentActorSelection(vtkObject *caller)
         {
         m_FirstMeshID    = iter->TraceID;
         m_FirstMeshActor = m_CurrentActor;
+        m_StatusBar->showMessage("Select another mesh to merge tracks");
         }
       highlightFirstActor( !m_SecondClick );
       }
@@ -388,6 +389,7 @@ cutTrack( vtkActor* iActor)
     removeLineActors();
     computeLineActors();
     }
+  m_StatusBar->showMessage("Track splitted");
 }
 //-------------------------------------------------------------------------
 
@@ -605,7 +607,7 @@ mergeTrack( const unsigned int& iFirstMesh, const unsigned int& iSecondMesh )
     if(    ( border2.first.second <= border1.second.second )
         && ( border1.first.second <= border2.second.second ) )
       {
-      std::cout << " Tracks are overlaping" << std::endl;
+      m_StatusBar->showMessage("Can't merge tracks: overlap");
       return false;
       }
 
@@ -631,6 +633,8 @@ mergeTrack( const unsigned int& iFirstMesh, const unsigned int& iSecondMesh )
     // update visu
     removeLineActors();
     computeLineActors();
+
+    m_StatusBar->showMessage("Tracks merged");
 
     return true;
     }

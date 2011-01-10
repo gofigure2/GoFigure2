@@ -36,6 +36,7 @@
 #define __QGoTrackEditingWidget_h
 
 #include <QDialog>
+#include <QStatusBar>
 
 #include "ui_TrackEditingWidget.h"
 
@@ -217,6 +218,8 @@ private:
   std::list< std::list< unsigned int > >              m_ListOfNewTrack;
   std::map< unsigned int, std::list< unsigned int > > m_ListOfUpdatedTracks;
   std::list< unsigned int >                           m_ListOfDeletedTracks;
+
+  QStatusBar *m_StatusBar;
 
   unsigned int m_MaxTrackID;
   unsigned int m_NumberOfTracks;
