@@ -1,5 +1,6 @@
 Developed by Arnaud Gelas, Lydie Souhait, Nicolas Rannou, Kishore
-Mosaliganti, Alexandre Gouaillard, and Sean Megason.
+Mosaliganti, Evan Schwab, Antonin Perrot-Audet, 
+Alexandre Gouaillard, and Sean Megason.
 
 The Megason Lab, Department of Systems Biology, Harvard Medical School.
 Developed with support from NIH (NHGRI P50HG004071).
@@ -12,7 +13,7 @@ to indicate your acceptance.
 
 
 <BEGINNING OF LICENSE>
-Copyright (c) 2010, President and Fellows of Harvard College.
+Copyright (c) 2011, President and Fellows of Harvard College.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
