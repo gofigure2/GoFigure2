@@ -127,8 +127,10 @@ public:
   \brief delete the selected traces from the database, the TW and the
   container for visu
   \param[in] iDatabaseConnector connection to the database
+  \param[in] iListTraces list of the traceIDs to be deleted
   */
-  virtual void DeleteTraces(vtkMySQLDatabase *iDatabaseConnector) = 0;
+  virtual void DeleteTraces(vtkMySQLDatabase *iDatabaseConnector, 
+    std::list<unsigned int> iListTraces) = 0;
 
   /**
   \brief update the collectionID of the tracesIDs in the list with
@@ -650,22 +652,29 @@ protected:
   }
 
   /**
-  \brief delete the selected traces from the database, the TW and the
+  \brief delete the traces from the database, the TW and the
   container for visu
   \param[in] iDatabaseConnector connection to the database
   \param[in] iContainerForVisu common container for the visu and database
+  \param[in] iListTracesToDelete list of the tracesIDs to be deleted
   \tparam T ContourMeshContainer or TrackContainer
   */
   template<typename T>
   void DeleteTracesTemplate(vtkMySQLDatabase *iDatabaseConnector,
-    T *iContainerForVisu)
+    T *iContainerForVisu, std::list<unsigned int> iListTracesToDelete)
   {
-    std::list< unsigned int > ListTracesIDs =
-      iContainerForVisu->GetHighlightedElementsTraceID();
+   // std::list< unsigned int > ListTracesIDs =
+   //   iContainerForVisu->GetHighlightedElementsTraceID();
     this->m_CollectionOfTraces->DeleteTracesInDB(
-      ListTracesIDs, iDatabaseConnector);
-    iContainerForVisu->DeleteAllHighlightedElements();
-    this->m_Table->DeleteCheckedRows(this->m_TraceNameID, ListTracesIDs);
+      iListTracesToDelete, iDatabaseConnector);
+    //iContainerForVisu->DeleteAllHighlightedElements();
+    std::list<unsigned int>::iterator iter = iListTracesToDelete.begin();
+    while( iter != iListTracesToDelete.end() )
+      {
+      iContainerForVisu->DeleteElement(*iter);
+      ++iter;
+      }
+    this->m_Table->DeleteCheckedRows(this->m_TraceNameID, iListTracesToDelete);
   }
 
   /**

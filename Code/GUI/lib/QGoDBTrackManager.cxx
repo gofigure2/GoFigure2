@@ -102,7 +102,8 @@ void QGoDBTrackManager::DisplayInfoAndLoadVisuContainerForAllTracks(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBTrackManager::DisplayInfoForLastCreatedTrace(vtkMySQLDatabase *iDatabaseConnector)
+void QGoDBTrackManager::DisplayInfoForLastCreatedTrace(
+  vtkMySQLDatabase *iDatabaseConnector)
 {
   this->DisplayInfoForLastCreatedTraceTemplate< GoDBTWContainerForTrackLineage >(
     this->m_TWContainer, iDatabaseConnector);
@@ -146,7 +147,7 @@ std::list< unsigned int > QGoDBTrackManager::UpdateTheTracesColor(
   vtkMySQLDatabase *iDatabaseConnector)
 {
   return this->UpdateTheTracesColorTemplate< GoDBTrackRow,
-    TrackContainer >(iDatabaseConnector,this->m_TrackContainerInfoForVisu);
+    TrackContainer >(iDatabaseConnector, this->m_TrackContainerInfoForVisu);
 }
 
 //-------------------------------------------------------------------------
@@ -163,10 +164,11 @@ void QGoDBTrackManager::UpdateTWAndContainerForImportedTraces(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBTrackManager::DeleteTraces(vtkMySQLDatabase *iDatabaseConnector)
+void QGoDBTrackManager::DeleteTraces(vtkMySQLDatabase *iDatabaseConnector,
+  std::list<unsigned int> iListTraces)
 {
   this->DeleteTracesTemplate<TrackContainer>(iDatabaseConnector,
-    this->m_TrackContainerInfoForVisu);
+    this->m_TrackContainerInfoForVisu, iListTraces);
 }
 //-------------------------------------------------------------------------
 

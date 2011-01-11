@@ -270,10 +270,11 @@ void QGoDBContourManager::UpdateTWAndContainerForImportedTraces(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBContourManager::DeleteTraces(vtkMySQLDatabase *iDatabaseConnector)
+void QGoDBContourManager::DeleteTraces(vtkMySQLDatabase *iDatabaseConnector,
+  std::list<unsigned int> iListTraces)
 {
   this->DeleteTracesTemplate<ContourMeshContainer>(iDatabaseConnector,
-    this->m_ContourContainerInfoForVisu);
+    this->m_ContourContainerInfoForVisu, iListTraces);
 }
 //-------------------------------------------------------------------------
 
