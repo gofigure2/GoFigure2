@@ -829,13 +829,14 @@ void
 QGoTrackEditingWidget::
 getClosestPoints()
 {
-  MeshContainer::MultiIndexContainerTraceIDIterator c_it, c_end, c_it2, c_end2;
+  MeshContainer::MultiIndexContainerTraceIDIterator c_it, c_end;
+  MeshContainer::MultiIndexContainerCollectionIDIterator c_it2, c_end2;
 
     c_it = m_MeshContainer->m_Container.get< TraceID >().begin();
     c_end = m_MeshContainer->m_Container.get< TraceID >().end();
 
-    c_it2 = m_MeshContainer->m_Container.get< TraceID >().begin();
-    c_end2 = m_MeshContainer->m_Container.get< TraceID >().end();
+    c_it2 = m_MeshContainer->m_Container.get< CollectionID >().begin();
+    c_end2 = m_MeshContainer->m_Container.get< CollectionID >().end();
 
     while( c_it != c_end )
       {
@@ -845,13 +846,14 @@ getClosestPoints()
                              + (c_it->Nodes->GetCenter()[1] - c_it2->Nodes->GetCenter()[1])*(c_it->Nodes->GetCenter()[1] - c_it2->Nodes->GetCenter()[1])
                              + (c_it->Nodes->GetCenter()[2] - c_it2->Nodes->GetCenter()[2])*(c_it->Nodes->GetCenter()[2] - c_it2->Nodes->GetCenter()[2]));
         std::cout << "distance: " << distance << std::endl;
-        if( distance < m_MinimalDistance && c_it!= c_it2)
+        if( distance < m_MinimalDistance && c_it->TraceID != c_it2->TraceID)
           {
           m_MinimalDistance = distance;
           std::cout << "m_MinimalDistance: " << m_MinimalDistance << std::endl;
           }
         ++c_it2;
         }
+      c_it2 = m_MeshContainer->m_Container.get< CollectionID >().begin();
       ++c_it;
       }
 }
