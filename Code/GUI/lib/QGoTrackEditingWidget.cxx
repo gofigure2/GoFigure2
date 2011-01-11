@@ -79,6 +79,8 @@ QGoTrackEditingWidget( MeshContainer* imeshContainer, QWidget *iParent ) :
     vtkViewImage3DCommand::MeshPickingEvent,
     this, SLOT( updateCurrentActorSelection(vtkObject *) ) );
 
+  m_MinimalDistance = std::numeric_limits< double >::max();;
+
   // ADD A STATUS BAR
   m_StatusBar = new QStatusBar;
   this->gridLayout_2->addWidget(m_StatusBar, 1, 0, 1, 1);
@@ -267,6 +269,8 @@ initializeVisualization()
 {
   reassignTrackIDs();
 
+  getClosestPoints();
+
   computeMeshActors();
 
   computeLineActors();
@@ -307,8 +311,7 @@ computeMeshActors()
       tempStructure.ActorXY = actor; // real mesh
       // generate sphere base on the minimal distance between 2 points in a track
       // actors are invisible
-      double radius = 2.0; // TO BE CHANGED
-      vtkActor* sphereActor = computeSphere( actor->GetCenter(), radius); // sphere (useful is real mesh is too big)
+      vtkActor* sphereActor = computeSphere( actor->GetCenter(), m_MinimalDistance/3); // sphere (useful is real mesh is too big)
       tempStructure.ActorXZ = sphereActor;
 
       // Add actor to visu
@@ -818,4 +821,37 @@ computeSphere( double* iCenter, double iRadius)
   sphereActor->SetVisibility( false );
 
   return sphereActor;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTrackEditingWidget::
+getClosestPoints()
+{
+  MeshContainer::MultiIndexContainerTraceIDIterator c_it, c_end, c_it2, c_end2;
+
+    c_it = m_MeshContainer->m_Container.get< TraceID >().begin();
+    c_end = m_MeshContainer->m_Container.get< TraceID >().end();
+
+    c_it2 = m_MeshContainer->m_Container.get< TraceID >().begin();
+    c_end2 = m_MeshContainer->m_Container.get< TraceID >().end();
+
+    while( c_it != c_end )
+      {
+      while( c_it2 != c_end2 )
+        {
+        double distance = sqrt( (c_it->Nodes->GetCenter()[0] - c_it2->Nodes->GetCenter()[0])*(c_it->Nodes->GetCenter()[0] - c_it2->Nodes->GetCenter()[0])
+                             + (c_it->Nodes->GetCenter()[1] - c_it2->Nodes->GetCenter()[1])*(c_it->Nodes->GetCenter()[1] - c_it2->Nodes->GetCenter()[1])
+                             + (c_it->Nodes->GetCenter()[2] - c_it2->Nodes->GetCenter()[2])*(c_it->Nodes->GetCenter()[2] - c_it2->Nodes->GetCenter()[2]));
+        std::cout << "distance: " << distance << std::endl;
+        if( distance < m_MinimalDistance && c_it!= c_it2)
+          {
+          m_MinimalDistance = distance;
+          std::cout << "m_MinimalDistance: " << m_MinimalDistance << std::endl;
+          }
+        ++c_it2;
+        }
+      ++c_it;
+      }
 }

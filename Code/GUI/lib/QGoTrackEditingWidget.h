@@ -193,6 +193,8 @@ private:
   void      computeLineActors();
 
   vtkActor* computeSphere( double* iCenter, double radius);
+
+  void getClosestPoints();
   /**
    * \brief Remove the polyLines actors. Usefull after a merge or a cut. An
    * "Update" method would be more efficient than remove then compute.
@@ -234,6 +236,8 @@ private:
   vtkActor*    m_CurrentActor;
   vtkActor*    m_FirstMeshActor;
   unsigned int m_FirstMeshID;
+
+  double       m_MinimalDistance;
 
   vtkInteractorStyleImage3D*                 m_InteractorStyle3D;
   vtkSmartPointer<vtkEventQtSlotConnect>     m_VtkEventQtConnector;
