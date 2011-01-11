@@ -309,9 +309,9 @@ computeMeshActors()
       actor->SetMapper( mapper );
       actor->GetProperty()->SetColor( rgba );
       tempStructure.ActorXY = actor; // real mesh
-      // generate sphere base on the minimal distance between 2 points in a track
+      // generate sphere based on the minimal distance between 2 points in a track
       // actors are invisible
-      vtkActor* sphereActor = computeSphere( actor->GetCenter(), m_MinimalDistance/3); // sphere (useful is real mesh is too big)
+      vtkActor* sphereActor = computeSphere( actor->GetCenter(), m_MinimalDistance/3);
       tempStructure.ActorXZ = sphereActor;
 
       // Add actor to visu
@@ -829,31 +829,30 @@ void
 QGoTrackEditingWidget::
 getClosestPoints()
 {
-  MeshContainer::MultiIndexContainerTraceIDIterator c_it, c_end;
-  MeshContainer::MultiIndexContainerCollectionIDIterator c_it2, c_end2;
+  MeshContainer::MultiIndexContainerTraceIDIterator it, it2, end, end2;
 
-    c_it = m_MeshContainer->m_Container.get< TraceID >().begin();
-    c_end = m_MeshContainer->m_Container.get< TraceID >().end();
+  it = m_MeshContainer->m_Container.get< TraceID >().begin();
+  end = m_MeshContainer->m_Container.get< TraceID >().end();
 
-    c_it2 = m_MeshContainer->m_Container.get< CollectionID >().begin();
-    c_end2 = m_MeshContainer->m_Container.get< CollectionID >().end();
+  it2 = it;
+  end2 = end;
 
-    while( c_it != c_end )
+  while( it != end )
+    {
+    while( it2 != end2 )
       {
-      while( c_it2 != c_end2 )
+      double* center1 = it->Nodes->GetCenter();
+      double* center2 = it2->Nodes->GetCenter();
+      double distance = sqrt( pow(center1[0] - center2[0],2)
+                            + pow(center1[1] - center2[1],2)
+                            + pow(center1[2] - center2[2],2));
+      if( distance < m_MinimalDistance && it->TraceID != it2->TraceID)
         {
-        double distance = sqrt( (c_it->Nodes->GetCenter()[0] - c_it2->Nodes->GetCenter()[0])*(c_it->Nodes->GetCenter()[0] - c_it2->Nodes->GetCenter()[0])
-                             + (c_it->Nodes->GetCenter()[1] - c_it2->Nodes->GetCenter()[1])*(c_it->Nodes->GetCenter()[1] - c_it2->Nodes->GetCenter()[1])
-                             + (c_it->Nodes->GetCenter()[2] - c_it2->Nodes->GetCenter()[2])*(c_it->Nodes->GetCenter()[2] - c_it2->Nodes->GetCenter()[2]));
-        std::cout << "distance: " << distance << std::endl;
-        if( distance < m_MinimalDistance && c_it->TraceID != c_it2->TraceID)
-          {
-          m_MinimalDistance = distance;
-          std::cout << "m_MinimalDistance: " << m_MinimalDistance << std::endl;
-          }
-        ++c_it2;
+        m_MinimalDistance = distance;
         }
-      c_it2 = m_MeshContainer->m_Container.get< CollectionID >().begin();
-      ++c_it;
+      ++it2;
       }
+    it2 = m_MeshContainer->m_Container.get< TraceID >().begin();
+    ++it;
+    }
 }
