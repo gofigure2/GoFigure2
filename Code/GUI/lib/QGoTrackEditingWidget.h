@@ -106,6 +106,8 @@ public slots:
   */
   void restoreTrackIDs();
 
+  void updateMeshesActors( bool );
+
 private:
 
   /**
@@ -160,6 +162,8 @@ private:
    */
   bool    mergeTrack( const unsigned int& iFirstMesh, const unsigned int& iSecondMesh);
 
+  template< class TIterator > void merge( TIterator iBegin, TIterator iEnd );
+
   /**
    * \brief Get the borders of the given track.
    * \param[in] iCollectionID track IDs we are interested in
@@ -188,6 +192,7 @@ private:
    */
   void      computeLineActors();
 
+  vtkActor* computeSphere( double* iCenter, double radius);
   /**
    * \brief Remove the polyLines actors. Usefull after a merge or a cut. An
    * "Update" method would be more efficient than remove then compute.

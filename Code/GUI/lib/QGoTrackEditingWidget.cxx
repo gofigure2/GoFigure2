@@ -36,6 +36,8 @@
 
 #include "ContourMeshStructure.cxx"
 
+#include "vtkSphereSource.h"
+
 #include "vtkPolyDataMapper.h"
 #include "vtkLabeledDataMapper.h"
 
@@ -84,6 +86,9 @@ QGoTrackEditingWidget( MeshContainer* imeshContainer, QWidget *iParent ) :
 
   QObject::connect (this->buttonBox , SIGNAL( accepted() ),
                  this, SLOT( restoreTrackIDs() ) );
+
+  QObject::connect (this->realMeshes , SIGNAL( toggled( bool ) ),
+                 this, SLOT( updateMeshesActors( bool ) ) );
 }
 //-------------------------------------------------------------------------
 
@@ -174,24 +179,44 @@ updateCurrentActorSelection(vtkObject *caller)
     }
   else
     {
-    MeshContainer::MultiIndexContainerActorXYIterator
-    iter = m_MeshContainer->m_Container.get< ActorXY >().find( m_CurrentActor );
+    if( realMeshes->isChecked() )
+      {
+      MeshContainer::MultiIndexContainerActorXYIterator iter, c_end;
+      iter = m_MeshContainer->m_Container.get< ActorXY >().find( m_CurrentActor );
+      c_end = m_MeshContainer->m_Container.get< ActorXY >().end();
+      merge< MeshContainer::MultiIndexContainerActorXYIterator >( iter, c_end);
+      }
+    else
+      {
+      MeshContainer::MultiIndexContainerActorXZIterator iter, c_end;
+      iter = m_MeshContainer->m_Container.get< ActorXZ >().find( m_CurrentActor );
+      c_end = m_MeshContainer->m_Container.get< ActorXZ >().end();
+      merge< MeshContainer::MultiIndexContainerActorXZIterator >( iter, c_end);
+      }
+    }
+}
+//-------------------------------------------------------------------------
 
-    if( iter != m_MeshContainer->m_Container.get< ActorXY >().end() )
+//-------------------------------------------------------------------------
+template< class TIterator >
+void
+QGoTrackEditingWidget::
+merge( TIterator iBegin, TIterator iEnd )
+{
+    if( iBegin != iEnd )
       {
       if(m_SecondClick)
         {
-        mergeTrack( m_FirstMeshID, iter->TraceID);
+        mergeTrack( m_FirstMeshID, iBegin->TraceID);
         }
       else
         {
-        m_FirstMeshID    = iter->TraceID;
+        m_FirstMeshID    = iBegin->TraceID;
         m_FirstMeshActor = m_CurrentActor;
         m_StatusBar->showMessage("Select another mesh to merge tracks");
         }
       highlightFirstActor( !m_SecondClick );
       }
-    }
 }
 //-------------------------------------------------------------------------
 
@@ -279,10 +304,16 @@ computeMeshActors()
       vtkActor* actor = vtkActor::New();
       actor->SetMapper( mapper );
       actor->GetProperty()->SetColor( rgba );
-      tempStructure.ActorXY = actor;
+      tempStructure.ActorXY = actor; // real mesh
+      // generate sphere base on the minimal distance between 2 points in a track
+      // actors are invisible
+      double radius = 2.0; // TO BE CHANGED
+      vtkActor* sphereActor = computeSphere( actor->GetCenter(), radius); // sphere (useful is real mesh is too big)
+      tempStructure.ActorXZ = sphereActor;
 
       // Add actor to visu
       renderer->AddActor(actor);
+      renderer->AddActor(sphereActor);
 
       m_MeshContainer->m_Container.get< CollectionID >().replace(it0, tempStructure);
 
@@ -639,6 +670,7 @@ mergeTrack( const unsigned int& iFirstMesh, const unsigned int& iSecondMesh )
     return true;
     }
 
+  m_StatusBar->showMessage("Meshes belong to same track");
   return false;
 }
 //-------------------------------------------------------------------------
@@ -741,4 +773,49 @@ highlightFirstActor( bool iHighlight )
   m_FirstMeshActor->GetProperty()->SetSpecular( iHighlight );
   m_FirstMeshActor->GetProperty()->SetAmbient( iHighlight );
   m_SecondClick = iHighlight;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTrackEditingWidget::
+updateMeshesActors( bool iRealMeshes)
+{
+  // Go through container and update visibility
+  MeshContainer::MultiIndexContainerActorXYIterator iter, c_end;
+  iter = m_MeshContainer->m_Container.get< ActorXY >().begin();
+  c_end = m_MeshContainer->m_Container.get< ActorXY >().end();
+
+  while( iter != c_end )
+    {
+    iter->ActorXY->SetVisibility( iRealMeshes );
+    iter->ActorXZ->SetVisibility( !iRealMeshes );
+    ++iter;
+    }
+
+  // update visu
+  this->qvtkWidget->update();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+vtkActor*
+QGoTrackEditingWidget::
+computeSphere( double* iCenter, double iRadius)
+{
+  // Sphere
+  vtkSmartPointer<vtkSphereSource> sphereSource =
+    vtkSmartPointer<vtkSphereSource>::New();
+  sphereSource->SetCenter(iCenter);
+  sphereSource->SetRadius(iRadius);
+
+  vtkSmartPointer<vtkPolyDataMapper> sphereMapper =
+    vtkSmartPointer<vtkPolyDataMapper>::New();
+  sphereMapper->SetInputConnection(sphereSource->GetOutputPort());
+
+  vtkActor* sphereActor = vtkActor::New();
+  sphereActor->SetMapper(sphereMapper);
+  sphereActor->SetVisibility( false );
+
+  return sphereActor;
 }
