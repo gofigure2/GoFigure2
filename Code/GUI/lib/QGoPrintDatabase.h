@@ -506,7 +506,7 @@ protected:
       iTraceManager->GetListTracesIDsFromThisCollectionOf(this->m_DatabaseConnector,
                                                           iListTracesToDelete);
 
-    iTraceManager->DeleteTraces(this->m_DatabaseConnector);
+    iTraceManager->DeleteTraces(this->m_DatabaseConnector, iListTracesToDelete);
 
     if ( !ListTracesAsCollectionOf.empty() )
       {
