@@ -667,7 +667,13 @@ protected:
    //   iContainerForVisu->GetHighlightedElementsTraceID();
     this->m_CollectionOfTraces->DeleteTracesInDB(
       iListTracesToDelete, iDatabaseConnector);
-    iContainerForVisu->DeleteAllHighlightedElements();
+    //iContainerForVisu->DeleteAllHighlightedElements();
+    std::list<unsigned int>::iterator iter = iListTracesToDelete.begin();
+    while( iter != iListTracesToDelete.end() )
+      {
+      iContainerForVisu->DeleteElement(*iter);
+      ++iter;
+      }
     this->m_Table->DeleteCheckedRows(this->m_TraceNameID, iListTracesToDelete);
   }
 
