@@ -83,9 +83,19 @@ public:
   //virtual pure method in QGoDBTraceManager
   virtual void UpdateTWAndContainerForImportedTraces(std::vector< int > iVectorImportedTraces,
                                                      vtkMySQLDatabase *iDatabaseConnector);
-  //virtual pure method in QGoDBTraceManager
-  virtual void DeleteTraces(vtkMySQLDatabase *iDatabaseConnector,
+  
+  /**
+  \brief delete the traces of the list from the database, the TW and the
+  container for visu
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iListTraces list of the tracesIDs to be deleted
+
+  */
+  void DeleteTraces(vtkMySQLDatabase *iDatabaseConnector,
     std::list<unsigned int> iListTraces);
+
+  //virtual pure method in QGoDBTraceManager
+  virtual void DeleteCheckedTraces( vtkMySQLDatabase *iDatabaseConnector);
 
    //virtual pure method in QGoDBTraceManager
   virtual std::list< unsigned int > GetListHighlightedIDs();
