@@ -421,6 +421,8 @@ public slots:
 
   void ColorCodeTracksByTime( bool );
 
+  double getRange();
+
 protected:
 
   /**

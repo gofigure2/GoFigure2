@@ -54,6 +54,8 @@
 #include "VisualizePolydataHelper.h"
 #include "vtkPolyDataWriter.h"
 
+#include <limits>
+
 #include <QDebug>
 
 //-------------------------------------------------------------------------
@@ -887,6 +889,23 @@ ColorCodeTracksByTime( bool iChecked )
   MultiIndexContainerType::index< ActorXY >::type::iterator
     it = m_Container.get< ActorXY >().begin();
 
+  //
+  double range = getRange();
+  std::cout << "range: " << range << std::endl;
+  /*
+  120   vtkLookupTable *LUT = vtkLookupTable::New();
+  121   LUT->SetTableRange(range);
+  122   LUT->SetNumberOfTableValues(256);
+  123   LUT->SetHueRange(0,0.7);
+  124   LUT->SetSaturationRange(1,1);
+  125   LUT->SetValueRange(1,1);
+  126   LUT->Build();
+*/
+  /*
+  572   sphereMapper->SetScalarRange(range);
+  573   sphereMapper->SetLookupTable(LUT);
+*/
+
   while( it != m_Container.get< ActorXY >().end() )
     {
     if( iChecked )
@@ -907,4 +926,35 @@ ColorCodeTracksByTime( bool iChecked )
     ++it;
     }
   m_ImageView->Update();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+double
+TrackContainer::
+getRange()
+{
+  double min = std::numeric_limits< double >::max();
+  double max = std::numeric_limits< double >::min();
+
+  MultiIndexContainerType::index< TraceID >::type::iterator
+    it = m_Container.get< TraceID >().begin();
+
+  while( it != m_Container.get< TraceID >().end() )
+    {
+    vtkPolyData* time = it->Nodes;
+    int numberOfPoints = time->GetNumberOfPoints();
+    vtkSmartPointer<vtkIntArray> newArray =
+        dynamic_cast<vtkIntArray*>(time->GetPointData()->GetArray("TemporalInformation"));
+
+    for(int i=0; i<numberOfPoints; ++i)
+      {
+      int realTime = newArray->GetValue(i);
+      if(realTime < min){min = realTime;}
+      if(realTime > max){max = realTime;}
+      }
+    ++it;
+    }
+
+  return (max - min);
 }

@@ -79,7 +79,7 @@ QGoTrackEditingWidget( MeshContainer* imeshContainer, QWidget *iParent ) :
     vtkViewImage3DCommand::MeshPickingEvent,
     this, SLOT( updateCurrentActorSelection(vtkObject *) ) );
 
-  m_MinimalDistance = std::numeric_limits< double >::max();;
+  m_MinimalDistance = std::numeric_limits< double >::max();
 
   // ADD A STATUS BAR
   m_StatusBar = new QStatusBar;
