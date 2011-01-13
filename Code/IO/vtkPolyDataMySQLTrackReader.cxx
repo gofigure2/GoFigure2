@@ -130,6 +130,7 @@ GetPolyData(const std::string & iString)
 
     //add the temporal information
     polyData->GetPointData()->AddArray(temporalArray);
+    polyData->GetPointData()->SetScalars(temporalArray);
 
     return polyData;
     }
