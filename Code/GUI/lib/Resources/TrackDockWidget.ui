@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>109</width>
-    <height>126</height>
+    <width>158</width>
+    <height>121</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,9 +30,9 @@
      </widget>
     </item>
     <item row="2" column="0">
-     <widget class="QPushButton" name="twPush">
+     <widget class="QCheckBox" name="time">
       <property name="text">
-       <string>Launch TW</string>
+       <string>Time Color code</string>
       </property>
      </widget>
     </item>

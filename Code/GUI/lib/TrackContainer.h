@@ -419,6 +419,8 @@ public slots:
   void UpdateElementVisibilityWithGivenTraceIDs( const QStringList& iList,
                                                  const Qt::CheckState& iCheck );
 
+  void ColorCodeTracksByTime( bool );
+
 protected:
 
   /**

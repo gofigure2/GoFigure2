@@ -375,6 +375,7 @@ UpdateTrackStructurePolyData( const TrackStructure& iTrackStructure)
   polyData->SetLines(cells);
   //add the temporal information
   polyData->GetPointData()->AddArray(newArray);
+  polyData->GetPointData()->SetScalars(newArray);
 
   iTrackStructure.Nodes->DeepCopy(polyData);
 
@@ -874,4 +875,36 @@ GetHighlightedElementsTrackPolyData()
     }
 
   return listOfPolyDatas;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+ColorCodeTracksByTime( bool iChecked )
+{
+
+  MultiIndexContainerType::index< ActorXY >::type::iterator
+    it = m_Container.get< ActorXY >().begin();
+
+  while( it != m_Container.get< ActorXY >().end() )
+    {
+    if( iChecked )
+      {
+      it->ActorXY->GetMapper()->ScalarVisibilityOn();
+      it->ActorXZ->GetMapper()->ScalarVisibilityOn();
+      it->ActorYZ->GetMapper()->ScalarVisibilityOn();
+      it->ActorXYZ->GetMapper()->ScalarVisibilityOn();
+
+      }
+    else
+      {
+      it->ActorXY->GetMapper()->ScalarVisibilityOff();
+      it->ActorXZ->GetMapper()->ScalarVisibilityOff();
+      it->ActorYZ->GetMapper()->ScalarVisibilityOff();
+      it->ActorXYZ->GetMapper()->ScalarVisibilityOff();
+      }
+    ++it;
+    }
+  m_ImageView->Update();
 }
