@@ -895,7 +895,7 @@ ColorCodeTracksByTime( bool iChecked )
   std::cout << "range: " << range[0] << " to " << range[1] << std::endl;
 
 
-  vtkLookupTable *LUT = vtkLookupTable::New();
+  vtkSmartPointer<vtkLookupTable> LUT = vtkSmartPointer<vtkLookupTable>::New();
   LUT->SetTableRange(range);
   LUT->SetNumberOfTableValues(256);
   LUT->SetHueRange(0,0.7);
@@ -931,6 +931,8 @@ ColorCodeTracksByTime( bool iChecked )
     ++it;
     }
   m_ImageView->Update();
+
+  delete[] range;
 }
 //-------------------------------------------------------------------------
 
