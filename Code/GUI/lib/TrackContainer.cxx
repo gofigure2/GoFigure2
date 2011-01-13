@@ -54,6 +54,7 @@
 #include "VisualizePolydataHelper.h"
 #include "vtkPolyDataWriter.h"
 
+#include "vtkLookupTable.h"
 #include <limits>
 
 #include <QDebug>
@@ -890,30 +891,34 @@ ColorCodeTracksByTime( bool iChecked )
     it = m_Container.get< ActorXY >().begin();
 
   //
-  double range = getRange();
-  std::cout << "range: " << range << std::endl;
-  /*
-  120   vtkLookupTable *LUT = vtkLookupTable::New();
-  121   LUT->SetTableRange(range);
-  122   LUT->SetNumberOfTableValues(256);
-  123   LUT->SetHueRange(0,0.7);
-  124   LUT->SetSaturationRange(1,1);
-  125   LUT->SetValueRange(1,1);
-  126   LUT->Build();
-*/
-  /*
-  572   sphereMapper->SetScalarRange(range);
-  573   sphereMapper->SetLookupTable(LUT);
-*/
+  double* range = getRange();
+  std::cout << "range: " << range[0] << " to " << range[1] << std::endl;
+
+
+  vtkLookupTable *LUT = vtkLookupTable::New();
+  LUT->SetTableRange(range);
+  LUT->SetNumberOfTableValues(256);
+  LUT->SetHueRange(0,0.7);
+  LUT->SetSaturationRange(1,1);
+  LUT->SetValueRange(1,1);
+  LUT->Build();
 
   while( it != m_Container.get< ActorXY >().end() )
     {
     if( iChecked )
       {
       it->ActorXY->GetMapper()->ScalarVisibilityOn();
+      it->ActorXY->GetMapper()->SetScalarRange(range);
+      it->ActorXY->GetMapper()->SetLookupTable(LUT);
       it->ActorXZ->GetMapper()->ScalarVisibilityOn();
+      it->ActorXZ->GetMapper()->SetScalarRange(range);
+      it->ActorXZ->GetMapper()->SetLookupTable(LUT);
       it->ActorYZ->GetMapper()->ScalarVisibilityOn();
+      it->ActorYZ->GetMapper()->SetScalarRange(range);
+      it->ActorYZ->GetMapper()->SetLookupTable(LUT);
       it->ActorXYZ->GetMapper()->ScalarVisibilityOn();
+      it->ActorXYZ->GetMapper()->SetScalarRange(range);
+      it->ActorXYZ->GetMapper()->SetLookupTable(LUT);
 
       }
     else
@@ -930,12 +935,13 @@ ColorCodeTracksByTime( bool iChecked )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-double
+double*
 TrackContainer::
 getRange()
 {
-  double min = std::numeric_limits< double >::max();
-  double max = std::numeric_limits< double >::min();
+  double* range =  new double[2];
+  range[0] = std::numeric_limits< double >::max();
+  range[1] = std::numeric_limits< double >::min();
 
   MultiIndexContainerType::index< TraceID >::type::iterator
     it = m_Container.get< TraceID >().begin();
@@ -950,11 +956,11 @@ getRange()
     for(int i=0; i<numberOfPoints; ++i)
       {
       int realTime = newArray->GetValue(i);
-      if(realTime < min){min = realTime;}
-      if(realTime > max){max = realTime;}
+      if(realTime < range[0]){range[0] = realTime;}
+      if(realTime > range[1]){range[1] = realTime;}
       }
     ++it;
     }
 
-  return (max - min);
+  return range;
 }
