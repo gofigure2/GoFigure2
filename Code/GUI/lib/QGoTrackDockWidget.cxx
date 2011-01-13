@@ -65,13 +65,13 @@ QGoTrackDockWidget::
 {
 }
 //-------------------------------------------------------------------------
-
+//BUGGY AND USELESS SO COMMENTED
 //-------------------------------------------------------------------------
 void
 QGoTrackDockWidget::
 GlyphChanged( bool iState )
 {
-  emit UpdateTracksAppearance( iState, this->tube->isChecked() );
+  //emit UpdateTracksAppearance( iState, this->tube->isChecked() );
 }
 //-------------------------------------------------------------------------
 
@@ -80,6 +80,6 @@ void
 QGoTrackDockWidget::
 TubeChanged( bool iState )
 {
-  emit UpdateTracksAppearance( this->glyph->isChecked(), iState );
+  //emit UpdateTracksAppearance( this->glyph->isChecked(), iState );
 }
 //-------------------------------------------------------------------------

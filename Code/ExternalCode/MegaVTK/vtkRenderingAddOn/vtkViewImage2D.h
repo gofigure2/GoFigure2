@@ -302,13 +302,13 @@ public:
   virtual vtkActor * AddDataSet(vtkDataSet *dataset,
                                 vtkProperty *property = NULL,
                                 const bool & intersection = true,
-                                const bool & iDataVisibility = true);
+                                const bool & iDataVisibility = false);
 
   //virtual vtkQuadricLODActor*
   virtual vtkActor * AddDataSet(vtkPolyData *polydata,
                                 vtkProperty *property = NULL,
                                 const bool & intersection = true,
-                                const bool & iDataVisibility = true);
+                                const bool & iDataVisibility = false);
 
   /**
    * \brief Set the camera motion vector
