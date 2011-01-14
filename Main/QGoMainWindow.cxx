@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -922,6 +922,13 @@ void QGoMainWindow::SetUpDatabase()
 {
   this->m_DBInitializationWizard->show();
   this->m_DBInitializationWizard->exec();
+  if (!this->m_RecentDatabaseFiles.empty())
+    {
+	this->m_RecentDatabaseFiles.clear();
+	UpdateRecentFileActions(this->m_RecentDatabaseFiles,
+                            menuDatabase_Files,
+                            recentDatabaseFileActions);
+    }
 }
 
 //--------------------------------------------------------------------------

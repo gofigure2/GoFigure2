@@ -603,18 +603,18 @@ ctkRangeSlider* ctkDoubleRangeSlider::slider()const
 }
 
 // --------------------------------------------------------------------------
-void ctkDoubleRangeSlider::setSlider(ctkRangeSlider* slider)
+void ctkDoubleRangeSlider::setSlider(ctkRangeSlider* t_slider)
 {
   Q_D(ctkDoubleRangeSlider);
-  slider->setOrientation(d->Slider->orientation());
-  slider->setMinimum(d->Slider->minimum());
-  slider->setMaximum(d->Slider->maximum());
-  slider->setValues(d->Slider->minimumValue(), d->Slider->maximumValue());
-  slider->setSingleStep(d->Slider->singleStep());
-  slider->setTracking(d->Slider->hasTracking());
-  slider->setTickInterval(d->Slider->tickInterval());
+  t_slider->setOrientation(d->Slider->orientation());
+  t_slider->setMinimum(d->Slider->minimum());
+  t_slider->setMaximum(d->Slider->maximum());
+  t_slider->setValues(d->Slider->minimumValue(), d->Slider->maximumValue());
+  t_slider->setSingleStep(d->Slider->singleStep());
+  t_slider->setTracking(d->Slider->hasTracking());
+  t_slider->setTickInterval(d->Slider->tickInterval());
   delete d->Slider;
-  qobject_cast<QHBoxLayout*>(this->layout())->addWidget(slider);
-  d->Slider = slider;
+  qobject_cast<QHBoxLayout*>(this->layout())->addWidget(t_slider);
+  d->Slider = t_slider;
   d->connectSlider();
 }

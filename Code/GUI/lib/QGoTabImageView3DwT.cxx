@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -3022,7 +3022,7 @@ QGoTabImageView3DwT::CreateMeshFromSelectedContours(
   std::vector< vtkPolyData * > list_contours;
 
   // get the time point
-  int tcoord = this->m_TCoord;
+  unsigned int tcoord = std::numeric_limits< unsigned int >::max();
 
   while ( contourid_it != iListContourIDs.end() )
     {
@@ -3031,7 +3031,20 @@ QGoTabImageView3DwT::CreateMeshFromSelectedContours(
 
     if ( traceid_it != m_ContourContainer->m_Container.get< TraceID >().end() )
       {
-      tcoord = traceid_it->TCoord;
+      if( tcoord == std::numeric_limits< unsigned int >::max() )
+        {
+        tcoord = traceid_it->TCoord;
+        }
+      else
+        {
+        if( traceid_it->TCoord != tcoord )
+          {
+          QMessageBox::warning( NULL,
+            tr( "Generate Mesh From Checked Contours" ),
+            tr("Selected contours are at different time point: %1 != %2").arg( tcoord ).arg( traceid_it->TCoord ) );
+          return;
+          }
+        }
 
       list_contours.push_back(
         vtkPolyData::SafeDownCast(

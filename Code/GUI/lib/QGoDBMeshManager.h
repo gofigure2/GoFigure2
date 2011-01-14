@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -119,7 +119,7 @@ public:
   virtual void UpdateTWAndContainerForImportedTraces(std::vector< int > iVectorImportedTraces,
                                                      vtkMySQLDatabase *iDatabaseConnector);
   //virtual pure method in QGoDBTraceManager
-  virtual void DeleteTraces(vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTraces);
+  virtual void DeleteCheckedTraces(vtkMySQLDatabase *iDatabaseConnector);
 
    //virtual pure method in QGoDBTraceManager
   virtual std::list< unsigned int > GetListHighlightedIDs();

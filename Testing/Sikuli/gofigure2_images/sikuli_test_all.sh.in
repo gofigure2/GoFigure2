@@ -12,6 +12,22 @@ cd @SIKULI_SCRIPTS_DIR@;
 # you need a sikuli script to import an imaging session
 @SIKULI_EXECUTABLE@ -t ../ImportAnImagingSession.sikuli;
 
+@SIKULI_EXECUTABLE@ -t ../Draw3DMesh.sikuli;
+
+@SIKULI_EXECUTABLE@ -t ../Export3DMesh.sikuli;
+
+#drop database
+
+@GOFIGURE2_BINARY_DIR@/bin/gofigure &
+
+# set up database
+@SIKULI_EXECUTABLE@ -t ../setUpDatabase.sikuli;
+
+# you need a sikuli script to import an imaging session
+@SIKULI_EXECUTABLE@ -t ../ImportAnImagingSession.sikuli;
+
+@SIKULI_EXECUTABLE@ -t ../ImportTracks.sikuli;
+
 # Start the test
 for var in TraceAdd TraceDelete Bookmark
 do

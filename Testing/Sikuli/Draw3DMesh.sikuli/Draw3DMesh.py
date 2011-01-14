@@ -10,11 +10,19 @@ click("NavigationIcon.png")
 click("TableWidgetIcon.png")
 click("MeshSegmentationIcon.png")
 
+
+wait(2)
+click("Add_new_track.png")
+type(Key.ENTER)
+#x = region.getLastMatch()
+
+#click(find("Mode.png").right(200))
+#click("Manual.png")
+
 import random
 region = find(Pattern("XY_ViewRegion.png").similar(0.30))
 print region
-click(find("Mode.png").right(200))
-click("Manual.png")
+
 for i in range(1,5):
 	#could make it a straight line by moving differentials in one direction.
 	xclick = random.randint(region.x,region.w+region.x)

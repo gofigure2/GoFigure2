@@ -227,8 +227,8 @@ void ctkRangeSliderPrivate::drawMaximumSlider( QStylePainter* painter ) const
 }
 
 // --------------------------------------------------------------------------
-ctkRangeSlider::ctkRangeSlider(QWidget* parent)
-  : QSlider(parent)
+ctkRangeSlider::ctkRangeSlider(QWidget* iParent)
+  : QSlider(iParent)
   , d_ptr(new ctkRangeSliderPrivate(*this))
 {
   Q_D(ctkRangeSlider);
@@ -246,8 +246,8 @@ ctkRangeSlider::ctkRangeSlider( Qt::Orientation o,
 }
 
 // --------------------------------------------------------------------------
-ctkRangeSlider::ctkRangeSlider(ctkRangeSliderPrivate* impl, QWidget* parent)
-  : QSlider(parent)
+ctkRangeSlider::ctkRangeSlider(ctkRangeSliderPrivate* impl, QWidget* iParent)
+  : QSlider(iParent)
   , d_ptr(impl)
 {
   Q_D(ctkRangeSlider);
@@ -301,36 +301,36 @@ void ctkRangeSlider::setMaximumValue( int max )
 void ctkRangeSlider::setValues(int l, int u)
 {
   Q_D(ctkRangeSlider);
-  const int minimumValue =
+  const int t_minimumValue =
     qBound(this->minimum(), qMin(l,u), this->maximum());
-  const int maximumValue =
+  const int t_maximumValue =
     qBound(this->minimum(), qMax(l,u), this->maximum());
-  bool emitMinValChanged = (minimumValue != d->m_MinimumValue);
-  bool emitMaxValChanged = (maximumValue != d->m_MaximumValue);
+  bool emitMinValChanged = (t_minimumValue != d->m_MinimumValue);
+  bool emitMaxValChanged = (t_maximumValue != d->m_MaximumValue);
 
-  d->m_MinimumValue = minimumValue;
-  d->m_MaximumValue = maximumValue;
+  d->m_MinimumValue = t_minimumValue;
+  d->m_MaximumValue = t_maximumValue;
 
   bool emitMinPosChanged =
-    (minimumValue != d->m_MinimumPosition);
+    (t_minimumValue != d->m_MinimumPosition);
   bool emitMaxPosChanged =
-    (maximumValue != d->m_MaximumPosition);
-  d->m_MinimumPosition = minimumValue;
-  d->m_MaximumPosition = maximumValue;
+    (t_maximumValue != d->m_MaximumPosition);
+  d->m_MinimumPosition = t_minimumValue;
+  d->m_MaximumPosition = t_maximumValue;
 
   if (isSliderDown())
     {
     if (emitMinPosChanged || emitMaxPosChanged)
       {
-      emit positionsChanged(minimumValue, maximumValue);
+      emit positionsChanged(t_minimumValue, t_maximumValue);
       }
     if (emitMinPosChanged)
       {
-      emit minimumPositionChanged(minimumValue);
+      emit minimumPositionChanged(t_minimumValue);
       }
     if (emitMaxPosChanged)
       {
-      emit maximumPositionChanged(maximumValue);
+      emit maximumPositionChanged(t_maximumValue);
       }
     }
   if (emitMinValChanged || emitMaxValChanged)
@@ -340,11 +340,11 @@ void ctkRangeSlider::setValues(int l, int u)
     }
   if (emitMinValChanged)
     {
-    emit minimumValueChanged(minimumValue);
+    emit minimumValueChanged(t_minimumValue);
     }
   if (emitMaxValChanged)
     {
-    emit maximumValueChanged(maximumValue);
+    emit maximumValueChanged(t_maximumValue);
     }
   if (emitMinPosChanged || emitMaxPosChanged ||
       emitMinValChanged || emitMaxValChanged)
@@ -442,10 +442,10 @@ bool ctkRangeSlider::symmetricMoves()const
 }
 
 // --------------------------------------------------------------------------
-void ctkRangeSlider::onRangeChanged(int minimum, int maximum)
+void ctkRangeSlider::onRangeChanged(int t_minimum, int t_maximum)
 {
-  Q_UNUSED(minimum);
-  Q_UNUSED(maximum);
+  Q_UNUSED(t_minimum);
+  Q_UNUSED(t_maximum);
   Q_D(ctkRangeSlider);
   this->setValues(d->m_MinimumValue, d->m_MaximumValue);
 }
@@ -553,7 +553,7 @@ void ctkRangeSlider::mousePressEvent(QMouseEvent* mouseEvent)
     mouseEvent->ignore();
     return;
     }
-  int pos = this->orientation() == Qt::Horizontal ?
+  int t_pos = this->orientation() == Qt::Horizontal ?
     mouseEvent->pos().x() : mouseEvent->pos().y();
 
   QStyleOptionSlider option;
@@ -578,7 +578,7 @@ void ctkRangeSlider::mousePressEvent(QMouseEvent* mouseEvent)
     d->m_SubclassPosition = d->m_MinimumPosition;
 
     // save the position of the mouse inside the handle for later
-    d->m_SubclassClickOffset = pos - (this->orientation() == Qt::Horizontal ?
+    d->m_SubclassClickOffset = t_pos - (this->orientation() == Qt::Horizontal ?
       lr.left() : lr.top());
 
     this->setSliderDown(true);
@@ -613,7 +613,7 @@ void ctkRangeSlider::mousePressEvent(QMouseEvent* mouseEvent)
     d->m_SubclassPosition = d->m_MaximumPosition;
 
     // save the position of the mouse inside the handle for later
-    d->m_SubclassClickOffset = pos - (this->orientation() == Qt::Horizontal ?
+    d->m_SubclassClickOffset = t_pos - (this->orientation() == Qt::Horizontal ?
       ur.left() : ur.top());
 
     this->setSliderDown(true);
@@ -644,11 +644,11 @@ void ctkRangeSlider::mousePressEvent(QMouseEvent* mouseEvent)
   int maxCenter = (this->orientation() == Qt::Horizontal ?
     ur.center().x() : lr.center().y());
   if (control == QStyle::SC_SliderGroove &&
-      pos > minCenter && pos < maxCenter)
+      t_pos > minCenter && t_pos < maxCenter)
     {
     // warning lost of precision it might be fatal
     d->m_SubclassPosition = (d->m_MinimumPosition + d->m_MaximumPosition) / 2.;
-    d->m_SubclassClickOffset = pos - d->pixelPosFromRangeValue(d->m_SubclassPosition);
+    d->m_SubclassClickOffset = t_pos - d->pixelPosFromRangeValue(d->m_SubclassPosition);
     d->m_SubclassWidth = (d->m_MaximumPosition - d->m_MinimumPosition) / 2;
     qMax(d->m_SubclassPosition - d->m_MinimumPosition, d->m_MaximumPosition - d->m_SubclassPosition);
     this->setSliderDown(true);
@@ -677,7 +677,7 @@ void ctkRangeSlider::mouseMoveEvent(QMouseEvent* mouseEvent)
     mouseEvent->ignore();
     return;
     }
-  int pos = this->orientation() == Qt::Horizontal ?
+  int t_pos = this->orientation() == Qt::Horizontal ?
     mouseEvent->pos().x() : mouseEvent->pos().y();
 
   QStyleOptionSlider option;
@@ -685,7 +685,7 @@ void ctkRangeSlider::mouseMoveEvent(QMouseEvent* mouseEvent)
 
   const int m = style()->pixelMetric( QStyle::PM_MaximumDragDistance, &option, this );
 
-  int newPosition = d->pixelPosToRangeValue(pos - d->m_SubclassClickOffset);
+  int newPosition = d->pixelPosToRangeValue(t_pos - d->m_SubclassClickOffset);
 
   if (m >= 0)
     {

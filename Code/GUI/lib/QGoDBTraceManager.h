@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -84,7 +84,7 @@ public:
   corresponding QColor
   */
   std::list< NameWithColorData > GetAllTraceIDsWithColor(
-    vtkMySQLDatabase *iDatabaseConnector, int iTimePoint = -1);
+    vtkMySQLDatabase *iDatabaseConnector, std::string & ioIDToSelect, int iTimePoint = -1);
 
   /**
   \brief delete the corresponding traces in the table widget and in the
@@ -124,13 +124,11 @@ public:
     vtkMySQLDatabase *iDatabaseConnector) = 0;
 
   /**
-  \brief delete the selected traces from the database, the TW and the
+  \brief delete the checked traces from the database, the TW and the
   container for visu
   \param[in] iDatabaseConnector connection to the database
-  \param[in] iListTraces list of the traceIDs to be deleted
   */
-  virtual void DeleteTraces(vtkMySQLDatabase *iDatabaseConnector, 
-    std::list<unsigned int> iListTraces) = 0;
+  virtual void DeleteCheckedTraces(vtkMySQLDatabase *iDatabaseConnector) = 0;
 
   /**
   \brief update the collectionID of the tracesIDs in the list with
@@ -235,6 +233,8 @@ public:
   */
   void CheckShowRows();
 
+  void UpdateLastSelectedOneAsCollection();
+
 signals:
   /**
   \brief signal emitted when the user click on the action "change color" from
@@ -266,8 +266,12 @@ signals:
 
   void DBConnectionNotNeededAnymore();
 
-  void RefreshListCollectionIDsTM(std::string iIDToSelect,
-    vtkMySQLDatabase* iDatabaseConnector);
+/**
+  \brief signal emitted when a new trace is created that need to be added in the
+  manual editing trace widget. (when a new mesh is created while contour table is
+  displayed for example)
+  */
+  void AddNewTraceIDInTM(std::pair<std::string, QColor> iTraceToAddData);
 
 protected:
   std::string m_TraceName;
@@ -280,6 +284,7 @@ protected:
   NameWithColorData*      m_SelectedCollectionData;
   NameWithColorData*      m_SelectedColorData;
   int*                    m_CurrentTimePoint;
+  std::string             m_LastSelectedTraceAsCollection;
 
   int                     m_ImgSessionID;
   QGoTableWidget *        m_Table;
@@ -661,20 +666,28 @@ protected:
   */
   template<typename T>
   void DeleteTracesTemplate(vtkMySQLDatabase *iDatabaseConnector,
-    T *iContainerForVisu, std::list<unsigned int> iListTracesToDelete)
+    T *iContainerForVisu, std::list<unsigned int> iListTracesToDelete = std::list<unsigned int>(), 
+    bool DeleteHighlightedTraces = true)
   {
-   // std::list< unsigned int > ListTracesIDs =
-   //   iContainerForVisu->GetHighlightedElementsTraceID();
-    this->m_CollectionOfTraces->DeleteTracesInDB(
-      iListTracesToDelete, iDatabaseConnector);
-    //iContainerForVisu->DeleteAllHighlightedElements();
-    std::list<unsigned int>::iterator iter = iListTracesToDelete.begin();
-    while( iter != iListTracesToDelete.end() )
+    std::list< unsigned int > ListTracesIDsToDelete;
+    if (DeleteHighlightedTraces) //case where the traces to be deleted are the ones highlighted in the visu
       {
-      iContainerForVisu->DeleteElement(*iter);
-      ++iter;
+      ListTracesIDsToDelete = iContainerForVisu->GetHighlightedElementsTraceID();
+      iContainerForVisu->DeleteAllHighlightedElements();
       }
-    this->m_Table->DeleteCheckedRows(this->m_TraceNameID, iListTracesToDelete);
+    else //case where specific traces need to be deleted, not the highlighted ones
+      {
+      ListTracesIDsToDelete = iListTracesToDelete;
+      std::list<unsigned int>::iterator iter = iListTracesToDelete.begin();
+      while( iter != iListTracesToDelete.end() )
+        {
+        iContainerForVisu->DeleteElement(*iter);
+        ++iter;
+        }
+      }
+    this->m_CollectionOfTraces->DeleteTracesInDB(
+        ListTracesIDsToDelete, iDatabaseConnector);
+    this->m_Table->DeleteCheckedRows(this->m_TraceNameID, ListTracesIDsToDelete);
   }
 
   /**
@@ -764,7 +777,8 @@ protected:
 
   void AddSpecificActionsForContourMesh(QMenu *iMenu);
 
-  virtual void AddActionForCreateNewCollectionFromCheckedTraces(QMenu *iMenu);
+
+  virtual void AddActionForAddingCheckedTracesToCollection();
 
   /**
   \brief get the info needed from the database to update the container

@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -99,6 +99,9 @@ std::string GetConditions(std::string iField,
                           std::string iConditionConnector = "AND")
 {
   std::stringstream oConditions;
+  oConditions << "";
+  if (!iVectorValues.empty() )
+    {
     oConditions << "(";
     unsigned int i;
       for ( i = 0; i < iVectorValues.size() - 1; i++ )
@@ -110,10 +113,11 @@ std::string GetConditions(std::string iField,
         oConditions << iConditionConnector;
         oConditions  << " ";
         }
-      oConditions << iField;
-      oConditions << " = '";
-      oConditions << iVectorValues[i];
-      oConditions << "')";
+    oConditions << iField;
+    oConditions << " = '";
+    oConditions << iVectorValues[i];
+    oConditions << "')";
+    }
   return oConditions.str();
 }
 
