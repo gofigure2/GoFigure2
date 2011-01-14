@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -103,8 +103,10 @@ UpdateCurrentElementFromVisu( std::vector< vtkActor * > iActors,
                               const bool & iHighlighted,
                               const bool & iVisible )
 {
+  this->m_CurrentElement.TCoord = iT;
   this->UpdateCurrentElementFromVisuBase( iActors, iNodes,
                                           iHighlighted, iVisible );
+
 }
 
 //-------------------------------------------------------------------------

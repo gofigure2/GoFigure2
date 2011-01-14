@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -214,7 +214,7 @@ std::vector< std::string > FindSeveralIDs(vtkMySQLDatabase * iDatabaseConnector,
 std::vector< std::string > ListSpecificValuesForOneColumn(
   vtkMySQLDatabase *iDatabaseConnector,
   std::string TableName, std::string ColumnName,
-  std::string field, std::string value, bool Distinct,
+  std::string field, std::string value, //bool Distinct,
   bool ExcludeZero)
 {
   std::vector<FieldWithValue> VectorConditions;
@@ -293,7 +293,10 @@ std::list< unsigned int > ListSpecificValuesForOneColumn(
     Conditions = GetConditions(VectorConditions,"AND");
 
     Conditions = Conditions.substr(0,Conditions.size()-1);
-    Conditions += " AND ";
+    if (!VectorValues.empty())
+      {
+      Conditions += " AND ";
+      }
     }
   
   Conditions += GetConditions(field,VectorValues,"OR");
@@ -1370,7 +1373,7 @@ std::list<unsigned int> GetListValuesFromTwoTablesAndCondition(
 std::list< unsigned int > GetDoublonValuesFromTwoTables(
       vtkMySQLDatabase* iDatabaseConnector, std::string iTableOne, std::string iTableTwo,
       std::string iColumn, FieldWithValue iJoinCondition,std::string iField,
-      std::vector<std::string> iVectValues, std::string GroupByColumn)
+      std::vector<std::string> iVectValues)//, std::string GroupByColumn)
 
 {
 
@@ -1432,6 +1435,48 @@ std::string GetCoordinateValuesQueryString(std::string iTableName, std::string i
 
   return Querystream.str();
 }
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+/*void GetTracesInfoFromDBAndModifyContainer(
+  std::list< ContourMeshStructure > & ioContainer,
+  vtkMySQLDatabase *DatabaseConnector, std::string TraceName,
+  std::string CollectionName, unsigned int ImgSessionID, //int iTimePoint,
+  std::vector< int > iVectIDs)
+{
+  ioStructure.TCoord = iTCoord;
+  vtkPolyData *output = vtkPolyData::New();
+      if ( !iPoints.empty() )
+        {
+        if ( iTraceName.compare("contour") == 0 )
+          {
+          vtkSmartPointer< vtkPolyDataMySQLContourReader > convert_reader =
+            vtkSmartPointer< vtkPolyDataMySQLContourReader >::New();
+          output->DeepCopy(convert_reader->GetPolyData(iPoints));
+          }
+        else
+          {
+          if ( iTraceName.compare("mesh") == 0 )
+            {
+            vtkIdType N;
+            std::stringstream str(iPoints);
+            str >> N;
+            if( N > 0 )
+              {
+              vtkSmartPointer< vtkPolyDataMySQLMeshReader > convert_reader =
+                vtkSmartPointer< vtkPolyDataMySQLMeshReader >::New();
+              output->DeepCopy(convert_reader->GetPolyData(iPoints));
+              }
+            else
+              {
+              output->Delete();
+              output = NULL;
+              }
+            }
+          }
+        ioStructure.Nodes = output;
+      }
+}*/
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------

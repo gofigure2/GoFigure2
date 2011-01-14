@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -497,9 +497,9 @@ vtkPolyData *
 QGoFilterSemiAutoBase::ReconstructMesh(vtkImageData *iInputImage, const double & iThreshold)
 {
   // create iso-contours
-  // Problem[Kishore]: Creates holes in some meshes although image has no hole 
+  // Problem[Kishore]: Creates holes in some meshes although image has no hole
 //   vtkMarchingCubes *contours = vtkMarchingCubes::New();
-// 
+//
 //   contours->SetInput(iInputImage);
 //   contours->GenerateValues (1, iThreshold, iThreshold);
 //   contours->SetComputeGradients(0);
@@ -514,7 +514,7 @@ QGoFilterSemiAutoBase::ReconstructMesh(vtkImageData *iInputImage, const double &
   contours->SetComputeNormals(0);
   contours->SetComputeScalars(0);
   contours->SetNumberOfContours(1);
-  contours->SetValue(0, 0.5);
+  contours->SetValue( 0, iThreshold );
   contours->Update();
 
   vtkSmoothPolyDataFilter* smoother =
@@ -522,15 +522,15 @@ QGoFilterSemiAutoBase::ReconstructMesh(vtkImageData *iInputImage, const double &
   smoother->SetInput( contours->GetOutput() );
   smoother->SetNumberOfIterations(400);
   smoother->Update();
-    
+
   vtkSmartPointer<vtkFeatureEdges> feature = vtkSmartPointer<vtkFeatureEdges>::New();
   feature->SetInputConnection( smoother->GetOutputPort() );
   feature->BoundaryEdgesOn();
   feature->FeatureEdgesOff();
   feature->NonManifoldEdgesOn();
   feature->ManifoldEdgesOff();
-  feature->Update(); 
-    
+  feature->Update();
+
   vtkSmartPointer< vtkPolyData > temp;
   vtkFillHolesFilter* fillFilter = vtkFillHolesFilter::New();
 
@@ -546,7 +546,7 @@ QGoFilterSemiAutoBase::ReconstructMesh(vtkImageData *iInputImage, const double &
     {
       temp = smoother->GetOutput();
     }
-    
+
   // keep the largest region
   vtkPolyDataConnectivityFilter* connectivityFilter = vtkPolyDataConnectivityFilter::New();
   connectivityFilter->SetInput( temp );

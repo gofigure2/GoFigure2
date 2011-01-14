@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -263,8 +263,10 @@ unsigned int QGoDBMeshManager::CreateNewMeshWithNoContourNoPoints(
 
   this->m_MeshContainerInfoForVisu->InsertCurrentElement();
   this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
-  emit RefreshListCollectionIDsTM ( ConvertToString<unsigned int> (NewMeshID),
-    iDatabaseConnector);
+ 
+  NameWithColorData NewMeshData(ConvertToString<unsigned int> (NewMeshID),
+    this->m_SelectedColorData->second);
+  emit AddNewTraceIDInTM( NewMeshData );
   return NewMeshID;
 }
 
@@ -552,12 +554,17 @@ std::string QGoDBMeshManager::CheckListMeshesFromDifferentTimePoints(
 {
   std::string MessageToPrint = "";
   ioListMeshIDsToBePartOfTrack = iListMeshIDs;
+
+  std::list< unsigned int >::iterator iter;
+
   if (!iListMeshIDs.empty())
     {
     std::list< unsigned int > TimePointsWithSeveralMeshes =
       this->m_CollectionOfTraces->GetTimePointWithSeveralTracesFromTheList(
       iDatabaseConnector,iListMeshIDs);
-    std::list< unsigned int >::iterator iter = TimePointsWithSeveralMeshes.begin();
+
+    iter = TimePointsWithSeveralMeshes.begin();
+
     while (iter != TimePointsWithSeveralMeshes.end())
       {
       int MaxMeshIDForTimePoint =
@@ -576,10 +583,10 @@ std::string QGoDBMeshManager::CheckListMeshesFromDifferentTimePoints(
             std::find(ioListMeshIDsToBePartOfTrack.begin(), ioListMeshIDsToBePartOfTrack.end(),
             *iterTraceIDToRemove);
           ioListMeshIDsToBePartOfTrack.erase(Find);
-          iterTraceIDToRemove++;
+          ++iterTraceIDToRemove;
           }
         }
-      iter++;
+      ++iter;
        }
     if (!ioListMeshIDsToReassign.empty())
       {
@@ -590,19 +597,21 @@ std::string QGoDBMeshManager::CheckListMeshesFromDifferentTimePoints(
           std::string temp = ConvertToString<unsigned int>(*iterIDs);
           MessageToPrint += temp;
           MessageToPrint += ", ";
-          iterIDs++;
+          ++iterIDs;
           }
         MessageToPrint  = MessageToPrint.substr(0,MessageToPrint.size()-1);
         MessageToPrint  += "have not been reassigned ";
         MessageToPrint += "to the trackID because several meshes were selected for the same ";
         MessageToPrint += "timepoints ";
-        std::list<unsigned int>::iterator iter = TimePointsWithSeveralMeshes.begin();
+
+        iter = TimePointsWithSeveralMeshes.begin();
+
         while(iter != TimePointsWithSeveralMeshes.end())
           {
           std::string temp = ConvertToString<unsigned int>(*iter);
           MessageToPrint += temp;
           MessageToPrint += ", ";
-          iter++;
+          ++iter;
           }
         MessageToPrint = MessageToPrint.substr(0,MessageToPrint.size()-2);
       }

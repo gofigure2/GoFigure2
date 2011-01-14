@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -84,7 +84,7 @@ public:
   corresponding QColor
   */
   std::list< NameWithColorData > GetAllTraceIDsWithColor(
-    vtkMySQLDatabase *iDatabaseConnector, int iTimePoint = -1);
+    vtkMySQLDatabase *iDatabaseConnector, std::string & ioIDToSelect, int iTimePoint = -1);
 
   /**
   \brief delete the corresponding traces in the table widget and in the
@@ -233,6 +233,8 @@ public:
   */
   void CheckShowRows();
 
+  void UpdateLastSelectedOneAsCollection();
+
 signals:
   /**
   \brief signal emitted when the user click on the action "change color" from
@@ -264,8 +266,14 @@ signals:
 
   void DBConnectionNotNeededAnymore();
 
-  void RefreshListCollectionIDsTM(std::string iIDToSelect,
-    vtkMySQLDatabase* iDatabaseConnector);
+  //void RefreshListCollectionIDsTM(std::string iIDToSelect,
+    //vtkMySQLDatabase* iDatabaseConnector);
+/**
+  \brief signal emitted when a new trace is created that need to be added in the
+  manual editing trace widget. (when a new mesh is created while contour table is
+  displayed for example)
+  */
+  void AddNewTraceIDInTM(std::pair<std::string, QColor> iTraceToAddData);
 
 protected:
   std::string m_TraceName;
@@ -278,6 +286,7 @@ protected:
   NameWithColorData*      m_SelectedCollectionData;
   NameWithColorData*      m_SelectedColorData;
   int*                    m_CurrentTimePoint;
+  std::string             m_LastSelectedTraceAsCollection;
 
   int                     m_ImgSessionID;
   QGoTableWidget *        m_Table;
@@ -770,7 +779,8 @@ protected:
 
   void AddSpecificActionsForContourMesh(QMenu *iMenu);
 
-  virtual void AddActionForCreateNewCollectionFromCheckedTraces(QMenu *iMenu);
+
+  virtual void AddActionForAddingCheckedTracesToCollection();
 
   /**
   \brief get the info needed from the database to update the container

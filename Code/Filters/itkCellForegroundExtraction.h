@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -47,6 +47,7 @@
 #include "itkImageToImageFilter.h"
 #include "itkCastImageFilter.h"
 #include "itkMedianImageFilter.h"
+#include "itkAffineTransform.h"
 #include "itkGrayscaleFillholeImageFilter.h"
 #include "itkRecursiveGaussianImageFilter.h"
 #include "itkRegionOfInterestImageFilter.h"

@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -158,7 +158,7 @@ QGOIO_EXPORT
 std::vector< std::string > ListSpecificValuesForOneColumn(
   vtkMySQLDatabase *iDatabaseConnector,
   std::string TableName, std::string ColumnName,
-  std::string field, std::string value, bool Distinct = false,
+  std::string field, std::string value, //bool Distinct = false,
   bool ExcludeZero = false);
 
 /**
@@ -295,6 +295,20 @@ std::vector< std::pair< int, std::string > > ListSpecificValuesForTwoColumnsAndT
   vtkMySQLDatabase *DatabaseConnector, std::string TableOne, std::string ColumnOne,
   std::string TableTwo, std::string ColumnTwo, std::string ForeignKey,
   std::string PrimaryKey, std::string field, std::string value);
+
+/**
+\brief fill the TCoord and the attributes of the structure obtained from Points
+\param[in] ioStructure structure to be modified with TCoord and co.
+\param[in] iTCoord one to be filled with
+\param[in] iPoints points from which some attributes will be calculated
+\param[in] iTraceName name of the trace
+*/
+/*QGOIO_EXPORT
+void GetTracesInfoFromDBAndModifyContainer(
+  std::list< ContourMeshStructure > & ioContainer,
+  vtkMySQLDatabase *DatabaseConnector, std::string TraceName,
+  std::string CollectionName, unsigned int ImgSessionID, //int iTimePoint = -1,
+  std::vector< int > iListIDs = std::vector< int >() );*/
 
 /**
 \brief fill the TCoord and the attributes of the structure obtained from Points
@@ -571,7 +585,7 @@ std::list< unsigned int > GetAllSelectedValuesFromTwoTables(vtkMySQLDatabase *iD
 std::list< unsigned int > GetDoublonValuesFromTwoTables(
       vtkMySQLDatabase* iDatabaseConnector, std::string iTableOne, std::string iTableTwo,
       std::string iColumn, FieldWithValue iJoinCondition,std::string iField,
-      std::vector<std::string> iVectValues, std::string GroupByColumn = "");
+      std::vector<std::string> iVectValues);//, std::string GroupByColumn = "");
 
 int GetMaxValueFromTwoTables(vtkMySQLDatabase *iDatabaseConnector,
   std::string iTableOne, std::string iTableTwo,std::string iColumn,

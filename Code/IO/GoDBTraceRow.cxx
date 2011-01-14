@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -46,19 +46,16 @@ GoDBTraceRow::GoDBTraceRow()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-GoDBTraceRow::GoDBTraceRow(unsigned int iExistingID,
-  vtkMySQLDatabase *iDatabaseConnector)
+GoDBTraceRow::
+GoDBTraceRow( vtkMySQLDatabase *DatabaseConnector, vtkPolyData *TraceVisu,
+              GoDBCoordinateRow Min, GoDBCoordinateRow Max,
+              unsigned int ImgSessionID )
 {
-  /*this->InitializeMap();
-  this->SetValuesForSpecificID(iExistingID,iDatabaseConnector);*/
-}
-//-------------------------------------------------------------------------
+  (void) Min;
+  (void) Max;
+  (void) TraceVisu;
+  (void) DatabaseConnector;
 
-//-------------------------------------------------------------------------
-GoDBTraceRow::GoDBTraceRow(vtkMySQLDatabase *DatabaseConnector,
-                           vtkPolyData *TraceVisu, GoDBCoordinateRow Min, GoDBCoordinateRow Max,
-                           unsigned int ImgSessionID)
-{
   this->InitializeMap();
   this->m_MapRow["ImagingSessionID"] =
     ConvertToString< unsigned int >(ImgSessionID);
@@ -66,29 +63,18 @@ GoDBTraceRow::GoDBTraceRow(vtkMySQLDatabase *DatabaseConnector,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-GoDBTraceRow::GoDBTraceRow(unsigned int ImgSessionID)
-{
-  /*this->InitializeMap();
-  //this->m_MapRow["ImagingSessionID"] =
-  //  ConvertToString< unsigned int >(ImgSessionID);
-  this->SetImgSessionID(ImgSessionID);*/
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-GoDBTraceRow::GoDBTraceRow(vtkMySQLDatabase *DatabaseConnector,
+/*GoDBTraceRow::GoDBTraceRow(vtkMySQLDatabase *DatabaseConnector,
                            std::string TraceVisu, GoDBCoordinateRow Min, GoDBCoordinateRow Max,
                            unsigned int ImgSessionID)
 {
-  /*
+
   this->InitializeMap();
   this->SetTheBoundingBox(DatabaseConnector, Min, Max);
   this->m_MapRow["ImagingSessionID"] =
     ConvertToString< unsigned int >(ImgSessionID);
 
-  this->SetField("Points", TraceVisu);*/
-}
+  this->SetField("Points", TraceVisu);
+}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

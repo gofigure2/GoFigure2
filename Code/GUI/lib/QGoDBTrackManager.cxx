@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -135,8 +135,9 @@ unsigned int QGoDBTrackManager::CreateNewTrackWithNoMesh(
    NewTrackID, this->GetVectorFromQColor(this->m_SelectedColorData->second),true);
   this->m_TrackContainerInfoForVisu->InsertCurrentElement();
   this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
-  emit RefreshListCollectionIDsTM ( ConvertToString<unsigned int> (NewTrackID),
-    iDatabaseConnector);
+  NameWithColorData NewTrackData(ConvertToString<unsigned int> (NewTrackID),
+    this->m_SelectedColorData->second);
+  emit AddNewTraceIDInTM( NewTrackData );
   return NewTrackID;
 }
 

@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -66,7 +66,7 @@ WatershedBasedCellSegmentation< TFeatureImage, TInputImage, TSegmentImage >::Gen
   preprocess->SetInput( this->GetInput() );
   preprocess->SetLargestCellRadius ( m_NucleusRadius );
   preprocess->Update();
-  
+
   FeatureImageConstPointer m_NucleiImg = preprocess->GetOutput();
   FeatureImageConstPointer m_MembraneImg = m_NucleiImg;
 
@@ -124,7 +124,7 @@ WatershedBasedCellSegmentation< TFeatureImage, TInputImage, TSegmentImage >::Gen
 
   SegmentImagePointer output = wshed->GetOutput();
   output->DisconnectPipeline();
-  
+
   SegmentImageSizeType size = output->GetLargestPossibleRegion().GetSize();
   SegmentImageIndexType index, index2;
   SegmentImageSizeType size2;
@@ -135,13 +135,13 @@ WatershedBasedCellSegmentation< TFeatureImage, TInputImage, TSegmentImage >::Gen
     size2[i] = size[i] - 2;
   }
   SegmentImagePixelType label = output->GetPixel( index );
-  
+
   SegmentImageRegionType region;
   region.SetIndex( index2 );
   region.SetSize( size2 );
-  
+
   std::cout << "label: " << label << std::endl;
-  
+
   SegmentIteratorType It( output, output->GetLargestPossibleRegion() );
   It.GoToBegin();
   if ( label > 0 )
@@ -149,7 +149,7 @@ WatershedBasedCellSegmentation< TFeatureImage, TInputImage, TSegmentImage >::Gen
     while( !It.IsAtEnd() )
     {
       index = It.GetIndex();
-      
+
       if ( (It.Get() ==  label ) && ( region.IsInside( index ) ) )
       {
         It.Set( 1 );
@@ -158,7 +158,7 @@ WatershedBasedCellSegmentation< TFeatureImage, TInputImage, TSegmentImage >::Gen
       {
         It.Set( 0 );
       }
-      
+
       ++It;
     }
   }
@@ -176,7 +176,7 @@ WatershedBasedCellSegmentation< TFeatureImage, TInputImage, TSegmentImage >::Gen
 //     smooth = antialiaser->GetOutput();
 //     smooth->DisconnectPipeline();
 //   }
-//   
+//
 //   InputIteratorType iIt( smooth, smooth->GetLargestPossibleRegion() );
 //   for( iIt.GoToBegin(), It.GoToBegin(); !It.IsAtEnd(); ++iIt, ++It )
 //   {
@@ -189,7 +189,7 @@ WatershedBasedCellSegmentation< TFeatureImage, TInputImage, TSegmentImage >::Gen
 //       It.Set( 0 );
 //     }
 //   }
-  
+
   this->GraftOutput( output );
 }
 
