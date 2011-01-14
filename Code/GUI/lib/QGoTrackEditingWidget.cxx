@@ -831,17 +831,18 @@ void
 QGoTrackEditingWidget::
 getClosestPoints()
 {
-  MeshContainer::MultiIndexContainerTraceIDIterator it, it2, end, end2;
+  MeshContainer::MultiIndexContainerTraceIDIterator it, it2, end;
 
   it = m_MeshContainer->m_Container.get< TraceID >().begin();
   end = m_MeshContainer->m_Container.get< TraceID >().end();
 
   it2 = it;
-  end2 = end;
 
   while( it != end )
     {
-    while( it2 != end2 )
+    it2 = it;
+    it2++;
+    while( it2 != end )
       {
       double distance =
           sqrt( vtkMath::Distance2BetweenPoints( it->Nodes->GetCenter(),

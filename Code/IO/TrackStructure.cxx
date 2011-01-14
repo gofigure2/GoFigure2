@@ -478,7 +478,6 @@ void TrackStructure::ComputeAttributes()
 
     double speed = dist / (static_cast< double >( t1 - t0 ) );
     newArray->InsertNextValue( speed );
-    std::cout << "speed: " << speed << std::endl;
 
     p = q;
     t0 = t1;
