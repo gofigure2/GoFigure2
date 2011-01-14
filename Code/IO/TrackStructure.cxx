@@ -38,6 +38,9 @@
 #include "vtkPolyData.h"
 #include "vtkActor.h"
 
+#include "vtkDoubleArray.h"
+#include "vtkPointData.h"
+
 #include "vtkSphereSource.h"
 #include "vtkGlyph3D.h"
 #include "vtkTubeFilter.h"
@@ -457,6 +460,12 @@ void TrackStructure::ComputeAttributes()
   double* q = NULL;
   ++it;
 
+  // NEW
+  vtkDoubleArray* newArray = vtkDoubleArray::New();
+  newArray->SetNumberOfComponents(1);
+  newArray->SetName("SpeedInformation");
+  newArray->InsertNextValue(0.0);
+
   while( it != this->PointsMap.end() )
     {
     t1 = it->first;
@@ -465,6 +474,13 @@ void TrackStructure::ComputeAttributes()
     total_length += dist;
     max_speed = std::max( max_speed,
                           dist / (static_cast< double >( t1 - t0 ) ) );
+
+    // NEW
+    double speed = dist / (static_cast< double >( t1 - t0 ) );
+    newArray->InsertNextValue( speed );
+    std::cout << "speed: " << speed << std::endl;
+    // ISSUE LAST POINT
+
     p = q;
     t0 = t1;
     ++it;
@@ -472,7 +488,9 @@ void TrackStructure::ComputeAttributes()
   distance = sqrt( vtkMath::Distance2BetweenPoints( org, q ) );
   avg_speed = total_length / static_cast< double >( t1 - tmin );
 
-  // convert to spheric coordinates
+  // NEW
+  this->Nodes->GetPointData()->AddArray(newArray);
+  newArray->Delete();
 }
 
 //--------------------------------------------------------------------------

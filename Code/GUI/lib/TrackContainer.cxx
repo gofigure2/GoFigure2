@@ -969,7 +969,7 @@ ColorCodeTracksBySpeed( bool iColorCode )
     // associated LUT
     vtkSmartPointer<vtkLookupTable> LUT = vtkSmartPointer<vtkLookupTable>::New();
     LUT->SetTableRange(range);
-    LUT->SetNumberOfTableValues(256);
+    LUT->SetNumberOfTableValues(1024);
     LUT->SetHueRange(0,0.7);
     LUT->SetSaturationRange(1,1);
     LUT->SetValueRange(1,1);
@@ -1036,16 +1036,13 @@ ComputeSpeed()
 
     while( it != m_Container.get< TraceID >().end() )
       {
-    /*
-      vtkSmartPointer<vtkDataArray> newArray =
-          it->Nodes->GetPointData()->GetArray(iArrayName);
-      it->Nodes->GetPointData()->SetScalars(newArray);
+      // Create temp structure
+      TrackStructure tempStructure(*it);
+      // Compute attributes - speed + new array "SpeedInformation" in polydata
+      tempStructure.ComputeAttributes();
+      // Replace structure
+      m_Container.get< TraceID >().replace(it, tempStructure);
 
-      double* realTime = newArray->GetRange();
-      range[0] = std::min( range[0], realTime[0] );
-      range[1] = std::max( range[1], realTime[1] );
-*/
-      it->ComputeAttributes();
       ++it;
       }
 }
@@ -1054,7 +1051,7 @@ ComputeSpeed()
 //-------------------------------------------------------------------------
 double*
 TrackContainer::
-setNodeScalars(const char *iArrayName)
+setNodeScalars(const char *iArrayName) // if null
 {
   double* range =  new double[2];
   range[0] = std::numeric_limits< double >::max();
@@ -1065,16 +1062,18 @@ setNodeScalars(const char *iArrayName)
 
   while( it != m_Container.get< TraceID >().end() )
     {
-    vtkSmartPointer<vtkDataArray> newArray =
-        it->Nodes->GetPointData()->GetArray(iArrayName);
-    it->Nodes->GetPointData()->SetScalars(newArray);
-
-    double* realTime = newArray->GetRange();
+    double* realTime =
+        it->Nodes->GetPointData()->GetArray(iArrayName)->GetRange();
     range[0] = std::min( range[0], realTime[0] );
     range[1] = std::max( range[1], realTime[1] );
 
+    //set active scalar
+    it->Nodes->GetPointData()->SetActiveScalars(iArrayName);
+
     ++it;
     }
+
+  std::cout << "range: " << range[0] << " to " << range[1] << std::endl;
 
   return range;
 }
