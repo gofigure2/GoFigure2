@@ -957,28 +957,24 @@ TrackContainer::
 setNodeScalars(const char *iArrayName)
 {
   double* range =  new double[2];
-    range[0] = std::numeric_limits< double >::max();
-    range[1] = std::numeric_limits< double >::min();
+  range[0] = std::numeric_limits< double >::max();
+  range[1] = std::numeric_limits< double >::min();
 
-    MultiIndexContainerType::index< TraceID >::type::iterator
-      it = m_Container.get< TraceID >().begin();
+  MultiIndexContainerType::index< TraceID >::type::iterator
+    it = m_Container.get< TraceID >().begin();
 
-    while( it != m_Container.get< TraceID >().end() )
-      {
-      vtkPolyData* time = it->Nodes;
-      int numberOfPoints = time->GetNumberOfPoints();
-      vtkSmartPointer<vtkIntArray> newArray =
-          dynamic_cast<vtkIntArray*>(time->GetPointData()->GetArray(iArrayName));
-      it->Nodes->GetPointData()->SetScalars(newArray);
+  while( it != m_Container.get< TraceID >().end() )
+    {
+    vtkSmartPointer<vtkDataArray> newArray =
+        it->Nodes->GetPointData()->GetArray(iArrayName);
+    it->Nodes->GetPointData()->SetScalars(newArray);
 
-      for(int i=0; i<numberOfPoints; ++i)
-        {
-        double realTime = newArray->GetValue(i);
-        range[0] = std::min( range[0], realTime );
-        range[1] = std::max( range[1], realTime );
-        }
-      ++it;
-      }
+    double* realTime = newArray->GetRange();
+    range[0] = std::min( range[0], realTime[0] );
+    range[1] = std::max( range[1], realTime[1] );
 
-    return range;
+    ++it;
+    }
+
+  return range;
 }
