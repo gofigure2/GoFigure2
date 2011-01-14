@@ -172,7 +172,7 @@ void QGoDBTrackManager::DeleteCheckedTraces(vtkMySQLDatabase *iDatabaseConnector
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBTrackManager::DeleteTraces(vtkMySQLDatabase *iDatabaseConnector,
+void QGoDBTrackManager::DeleteListTraces(vtkMySQLDatabase *iDatabaseConnector,
   std::list<unsigned int> iListTraces)
 {
   this->DeleteTracesTemplate<TrackContainer>(iDatabaseConnector,

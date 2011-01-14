@@ -660,7 +660,7 @@ protected:
   template<typename T>
   void DeleteTracesTemplate(vtkMySQLDatabase *iDatabaseConnector,
     T *iContainerForVisu, std::list<unsigned int> iListTracesToDelete = std::list<unsigned int>(), 
-    bool DeleteHighlightedTraces = true)//std::list<unsigned int> iListTracesToDelete = std::list<unsigned int>())
+    bool DeleteHighlightedTraces = true)
   {
     std::list< unsigned int > ListTracesIDsToDelete;
     if (DeleteHighlightedTraces) //case where the traces to be deleted are the ones highlighted in the visu
@@ -678,18 +678,6 @@ protected:
         ++iter;
         }
       }
-
-   // std::list< unsigned int > ListTracesIDs =
-   //   
-    //this->m_CollectionOfTraces->DeleteTracesInDB(
-    //  iListTracesToDelete, iDatabaseConnector);
-    //iContainerForVisu->DeleteAllHighlightedElements();
-    /*std::list<unsigned int>::iterator iter = iListTracesToDelete.begin();
-    while( iter != iListTracesToDelete.end() )
-      {
-      iContainerForVisu->DeleteElement(*iter);
-      ++iter;
-      }*/
     this->m_CollectionOfTraces->DeleteTracesInDB(
         ListTracesIDsToDelete, iDatabaseConnector);
     this->m_Table->DeleteCheckedRows(this->m_TraceNameID, ListTracesIDsToDelete);

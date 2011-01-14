@@ -91,7 +91,7 @@ public:
   \param[in] iListTraces list of the tracesIDs to be deleted
 
   */
-  void DeleteTraces(vtkMySQLDatabase *iDatabaseConnector,
+  void DeleteListTraces(vtkMySQLDatabase *iDatabaseConnector,
     std::list<unsigned int> iListTraces);
 
   //virtual pure method in QGoDBTraceManager
