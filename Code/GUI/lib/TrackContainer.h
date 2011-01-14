@@ -436,10 +436,11 @@ protected:
 
   std::vector< vtkActor* > AddTrace( vtkPolyData* , vtkProperty* );
 
-  /** \brief Returns the range of the tracks
-   * \return Pointer to double[2] where [0] is the min time point and [1] is
-   * the max time point. Pointer has to be deleted (delete[] pointer) */
-  double* getTrackRange();
+  /** \brief Changes the scalars to be displayed and return the new range
+   * \param[in] iArrayName Array to be displayed
+   * \return Pointer to double[2] where [0] is the min scalar value and [1] is
+   * the max scalar value. Pointer has to be deleted (delete[] pointer) */
+  double* setNodeScalars(const char *iArrayName);
 
 private:
   Q_DISABLE_COPY(TrackContainer);
