@@ -884,17 +884,12 @@ GetHighlightedElementsTrackPolyData()
 //-------------------------------------------------------------------------
 void
 TrackContainer::
-ColorCodeTracksByTime( bool iChecked )
+ColorCodeTracksByTime( bool iColorCode )
 {
+  // get range for the tracks
+  double* range = getTrackRange();
 
-  MultiIndexContainerType::index< ActorXY >::type::iterator
-    it = m_Container.get< ActorXY >().begin();
-
-  //
-  double* range = getRange();
-  std::cout << "range: " << range[0] << " to " << range[1] << std::endl;
-
-
+  // associated LUT
   vtkSmartPointer<vtkLookupTable> LUT = vtkSmartPointer<vtkLookupTable>::New();
   LUT->SetTableRange(range);
   LUT->SetNumberOfTableValues(256);
@@ -903,9 +898,13 @@ ColorCodeTracksByTime( bool iChecked )
   LUT->SetValueRange(1,1);
   LUT->Build();
 
+  // Change the appearnace of th actors
+  MultiIndexContainerType::index< ActorXY >::type::iterator
+    it = m_Container.get< ActorXY >().begin();
+
   while( it != m_Container.get< ActorXY >().end() )
     {
-    if( iChecked )
+    if( iColorCode )
       {
       it->ActorXY->GetMapper()->ScalarVisibilityOn();
       it->ActorXY->GetMapper()->SetScalarRange(range);
@@ -939,7 +938,7 @@ ColorCodeTracksByTime( bool iChecked )
 //-------------------------------------------------------------------------
 double*
 TrackContainer::
-getRange()
+getTrackRange()
 {
   double* range =  new double[2];
   range[0] = std::numeric_limits< double >::max();

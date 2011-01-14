@@ -419,9 +419,10 @@ public slots:
   void UpdateElementVisibilityWithGivenTraceIDs( const QStringList& iList,
                                                  const Qt::CheckState& iCheck );
 
-  void ColorCodeTracksByTime( bool );
-
-  double* getRange();
+  /** \brief Color code the track by time.
+    \param[in] iColorCode Display Time Color Code (true) or Real Color (false)
+   */
+  void ColorCodeTracksByTime( bool iColorCode);
 
 protected:
 
@@ -434,6 +435,11 @@ protected:
   void RecomputeCurrentElementMap( std::list< double* > iPoints);
 
   std::vector< vtkActor* > AddTrace( vtkPolyData* , vtkProperty* );
+
+  /** \brief Returns the range of the tracks
+   * \return Pointer to double[2] where [0] is the min time point and [1] is
+   * the max time point. Pointer has to be deleted (delete[] pointer) */
+  double* getTrackRange();
 
 private:
   Q_DISABLE_COPY(TrackContainer);
