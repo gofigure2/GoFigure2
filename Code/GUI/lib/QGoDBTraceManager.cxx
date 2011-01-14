@@ -134,6 +134,16 @@ void QGoDBTraceManager::AddActionsContextMenu(QMenu *iMenu)
 //-------------------------------------------------------------------------
 void QGoDBTraceManager::AddGeneralActionsContextMenu(QMenu *iMenu)
 {
+  m_CheckedTracesMenu = new QMenu(tr("With the checked %1s").arg(this->m_TraceName.c_str() ) );
+  m_CheckedTracesMenu->addAction( tr("Delete them"),
+                    this, SLOT( DeleteTracesFromContextMenu() ) );
+  //m_CheckedTracesMenu->addAction( tr("Add to selected %1 %2").arg( this->m_CollectionName.c_str() )
+  //                    .arg(this->m_SelectedCollectionData->first.c_str()), this, SLOT( AddToSelectedCollection() ) );
+  m_CheckedTracesMenu->addAction( tr("Change their color to the selected one : %1")
+                                  .arg( this->m_SelectedColorData->first.c_str() ),
+                                  this, SLOT( ChangeTraceColor() ) );
+  iMenu->addAction(this->m_CheckedTracesMenu->menuAction() );
+
   QMenu* SelectedTracesMenu = new QMenu(tr("With the selected %1s").arg(this->m_TraceName.c_str() ) );
   SelectedTracesMenu->addAction( tr("Check the selected %1s")
                     .arg( this->m_TraceName.c_str() ), this, SLOT( CheckSelectedRows() ) );
@@ -157,16 +167,6 @@ void QGoDBTraceManager::AddGeneralActionsContextMenu(QMenu *iMenu)
   QObject::connect(ColorCoding,SIGNAL(triggered ( bool ) ),this,SLOT( SetColorCoding(bool) ) );
   ColorMenu->addAction(ColorCoding);
   iMenu->addAction(ColorMenu->menuAction());
-
-  m_CheckedTracesMenu = new QMenu(tr("With the checked %1s").arg(this->m_TraceName.c_str() ) );
-  m_CheckedTracesMenu->addAction( tr("Delete them"),
-                    this, SLOT( DeleteTracesFromContextMenu() ) );
-  //m_CheckedTracesMenu->addAction( tr("Add to selected %1 %2").arg( this->m_CollectionName.c_str() )
-  //                    .arg(this->m_SelectedCollectionData->first.c_str()), this, SLOT( AddToSelectedCollection() ) );
-  m_CheckedTracesMenu->addAction( tr("Change their color to the selected one : %1")
-                                  .arg( this->m_SelectedColorData->first.c_str() ),
-                                  this, SLOT( ChangeTraceColor() ) );
-  iMenu->addAction(this->m_CheckedTracesMenu->menuAction() );
 
   iMenu->addAction( tr("Copy Selection"),
                     this->m_Table, SLOT( CopySelection() ) );
