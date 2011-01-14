@@ -471,6 +471,8 @@ void TrackStructure::ComputeAttributes()
     }
   distance = sqrt( vtkMath::Distance2BetweenPoints( org, q ) );
   avg_speed = total_length / static_cast< double >( t1 - tmin );
+
+  // convert to spheric coordinates
 }
 
 //--------------------------------------------------------------------------

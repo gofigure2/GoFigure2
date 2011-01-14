@@ -968,14 +968,14 @@ setNodeScalars(const char *iArrayName)
       vtkPolyData* time = it->Nodes;
       int numberOfPoints = time->GetNumberOfPoints();
       vtkSmartPointer<vtkIntArray> newArray =
-          dynamic_cast<vtkIntArray*>(time->GetPointData()->GetArray(arrayName));
+          dynamic_cast<vtkIntArray*>(time->GetPointData()->GetArray(iArrayName));
       it->Nodes->GetPointData()->SetScalars(newArray);
 
       for(int i=0; i<numberOfPoints; ++i)
         {
-        int realTime = newArray->GetValue(i);
-        if(realTime < range[0]){range[0] = realTime;}
-        if(realTime > range[1]){range[1] = realTime;}
+        double realTime = newArray->GetValue(i);
+        range[0] = std::min( range[0], realTime );
+        range[1] = std::max( range[1], realTime );
         }
       ++it;
       }

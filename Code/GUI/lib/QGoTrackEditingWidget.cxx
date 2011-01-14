@@ -59,6 +59,8 @@
 #include "vtkViewImage3DCommand.h"
 #include "itkMacro.h"
 
+#include "vtkMath.h"
+
 #include <limits>
 
 //-------------------------------------------------------------------------
@@ -841,14 +843,12 @@ getClosestPoints()
     {
     while( it2 != end2 )
       {
-      double* center1 = it->Nodes->GetCenter();
-      double* center2 = it2->Nodes->GetCenter();
-      double distance = sqrt( pow(center1[0] - center2[0],2)
-                            + pow(center1[1] - center2[1],2)
-                            + pow(center1[2] - center2[2],2));
-      if( distance < m_MinimalDistance && it->TraceID != it2->TraceID)
+      double distance =
+          sqrt( vtkMath::Distance2BetweenPoints( it->Nodes->GetCenter(),
+                                                 it2->Nodes->GetCenter() ) );
+      if(it->TraceID != it2->TraceID)
         {
-        m_MinimalDistance = distance;
+        m_MinimalDistance = std::min( m_MinimalDistance, distance );
         }
       ++it2;
       }
