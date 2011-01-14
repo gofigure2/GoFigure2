@@ -54,6 +54,7 @@ public slots:
 signals:
   void UpdateTracksAppearance(bool, bool);
   void ColorCodeTracksByTime(bool);
+  void ColorCodeTracksBySpeed(bool);
 
 };
 #endif

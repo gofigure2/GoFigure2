@@ -42,12 +42,15 @@ QGoTrackDockWidget::QGoTrackDockWidget(
   this->setupUi(this);
 
   // Connect signals
+  /*
   QObject::connect( this->glyph, SIGNAL( toggled(bool) ),
       this, SLOT( GlyphChanged(bool) ) );
   QObject::connect( this->tube, SIGNAL( toggled(bool) ),
-      this, SLOT( TubeChanged(bool) ) );
+      this, SLOT( TubeChanged(bool) ) );*/
   QObject::connect( this->time, SIGNAL( toggled(bool)),
       this, SIGNAL( ColorCodeTracksByTime(bool) ) );
+  QObject::connect( this->speed, SIGNAL( toggled(bool)),
+      this, SIGNAL( ColorCodeTracksBySpeed(bool) ) );
 
 
   /*

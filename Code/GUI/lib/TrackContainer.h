@@ -424,6 +424,8 @@ public slots:
    */
   void ColorCodeTracksByTime( bool iColorCode);
 
+  void ColorCodeTracksBySpeed( bool iColorCode);
+
 protected:
 
   /**
@@ -441,6 +443,8 @@ protected:
    * \return Pointer to double[2] where [0] is the min scalar value and [1] is
    * the max scalar value. Pointer has to be deleted (delete[] pointer) */
   double* setNodeScalars(const char *iArrayName);
+
+  void ComputeSpeed();
 
 private:
   Q_DISABLE_COPY(TrackContainer);

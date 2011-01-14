@@ -952,6 +952,106 @@ ColorCodeTracksByTime( bool iColorCode )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+ColorCodeTracksBySpeed( bool iColorCode )
+{
+  if( iColorCode )
+    {
+    // Compute the speed - stored in the polydata
+    ComputeSpeed();
+
+    // get range for the tracks
+    double* range = setNodeScalars("SpeedInformation");
+
+    // associated LUT
+    vtkSmartPointer<vtkLookupTable> LUT = vtkSmartPointer<vtkLookupTable>::New();
+    LUT->SetTableRange(range);
+    LUT->SetNumberOfTableValues(256);
+    LUT->SetHueRange(0,0.7);
+    LUT->SetSaturationRange(1,1);
+    LUT->SetValueRange(1,1);
+    LUT->Build();
+
+    // Change the appearnace of th actors
+    MultiIndexContainerType::index< ActorXY >::type::iterator
+      it = m_Container.get< ActorXY >().begin();
+
+    while( it != m_Container.get< ActorXY >().end() )
+      {
+      //  set the lookuptable
+      it->ActorXY->GetMapper()->SetLookupTable(LUT);
+      it->ActorXZ->GetMapper()->SetLookupTable(LUT);
+      it->ActorYZ->GetMapper()->SetLookupTable(LUT);
+      it->ActorXYZ->GetMapper()->SetLookupTable(LUT);
+
+      // use the lookuptable scalar range
+      it->ActorXY->GetMapper()->UseLookupTableScalarRangeOn();
+      it->ActorXZ->GetMapper()->UseLookupTableScalarRangeOn();
+      it->ActorYZ->GetMapper()->UseLookupTableScalarRangeOn();
+      it->ActorXYZ->GetMapper()->UseLookupTableScalarRangeOn();
+
+      // set scalar visibility to on
+      it->ActorXY->GetMapper()->SetScalarVisibility(iColorCode);
+      it->ActorXZ->GetMapper()->SetScalarVisibility(iColorCode);
+      it->ActorYZ->GetMapper()->SetScalarVisibility(iColorCode);
+      it->ActorXYZ->GetMapper()->SetScalarVisibility(iColorCode);
+
+      ++it;
+      }
+
+    delete[] range;
+    }
+  else
+    {
+    // Change the appearnace of th actors
+    MultiIndexContainerType::index< ActorXY >::type::iterator
+      it = m_Container.get< ActorXY >().begin();
+
+    while( it != m_Container.get< ActorXY >().end() )
+      {
+      // set scalar visibility to off
+      it->ActorXY->GetMapper()->SetScalarVisibility(iColorCode);
+      it->ActorXZ->GetMapper()->SetScalarVisibility(iColorCode);
+      it->ActorYZ->GetMapper()->SetScalarVisibility(iColorCode);
+      it->ActorXYZ->GetMapper()->SetScalarVisibility(iColorCode);
+
+      ++it;
+      }
+    }
+
+  m_ImageView->Update();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+ComputeSpeed()
+{
+  MultiIndexContainerType::index< TraceID >::type::iterator
+      it = m_Container.get< TraceID >().begin();
+
+    while( it != m_Container.get< TraceID >().end() )
+      {
+    /*
+      vtkSmartPointer<vtkDataArray> newArray =
+          it->Nodes->GetPointData()->GetArray(iArrayName);
+      it->Nodes->GetPointData()->SetScalars(newArray);
+
+      double* realTime = newArray->GetRange();
+      range[0] = std::min( range[0], realTime[0] );
+      range[1] = std::max( range[1], realTime[1] );
+*/
+      it->ComputeAttributes();
+      ++it;
+      }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 double*
 TrackContainer::
 setNodeScalars(const char *iArrayName)
