@@ -906,6 +906,13 @@ ColorCodeTracksByTime( bool iColorCode )
     LUT->SetValueRange(1,1);
     LUT->Build();
 
+    SetScalarRangeForAllElements(range[0], range[1]);
+    SetLookupTableForColorCoding(LUT);
+
+    delete[] range;
+
+    }
+/*
     // Change the appearnace of th actors
     MultiIndexContainerType::index< ActorXY >::type::iterator
       it = m_Container.get< ActorXY >().begin();
@@ -953,11 +960,10 @@ ColorCodeTracksByTime( bool iColorCode )
       }
     }
 
-  m_ImageView->Update();
+  m_ImageView->Update();*/
 }
 //-------------------------------------------------------------------------
 
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
@@ -981,6 +987,12 @@ ColorCodeTracksBySpeed( bool iColorCode )
     LUT->SetValueRange(1,1);
     LUT->Build();
 
+    SetScalarRangeForAllElements(range[0], range[1]);
+    SetLookupTableForColorCoding(LUT);
+
+    delete[] range;
+    }
+/*
     // Change the appearnace of th actors
     MultiIndexContainerType::index< ActorXY >::type::iterator
       it = m_Container.get< ActorXY >().begin();
@@ -988,16 +1000,16 @@ ColorCodeTracksBySpeed( bool iColorCode )
     while( it != m_Container.get< ActorXY >().end() )
       {
       //  set the lookuptable
-      it->ActorXY->GetMapper()->SetLookupTable(LUT);
-      it->ActorXZ->GetMapper()->SetLookupTable(LUT);
-      it->ActorYZ->GetMapper()->SetLookupTable(LUT);
-      it->ActorXYZ->GetMapper()->SetLookupTable(LUT);
+      //it->ActorXY->GetMapper()->SetLookupTable(LUT);
+      //it->ActorXZ->GetMapper()->SetLookupTable(LUT);
+      //it->ActorYZ->GetMapper()->SetLookupTable(LUT);
+      //it->ActorXYZ->GetMapper()->SetLookupTable(LUT);
 
       // use the lookuptable scalar range
-      it->ActorXY->GetMapper()->UseLookupTableScalarRangeOn();
-      it->ActorXZ->GetMapper()->UseLookupTableScalarRangeOn();
-      it->ActorYZ->GetMapper()->UseLookupTableScalarRangeOn();
-      it->ActorXYZ->GetMapper()->UseLookupTableScalarRangeOn();
+      //it->ActorXY->GetMapper()->UseLookupTableScalarRangeOn();
+      //it->ActorXZ->GetMapper()->UseLookupTableScalarRangeOn();
+      //it->ActorYZ->GetMapper()->UseLookupTableScalarRangeOn();
+      //it->ActorXYZ->GetMapper()->UseLookupTableScalarRangeOn();
 
       // set scalar visibility to on
       it->ActorXY->GetMapper()->SetScalarVisibility(iColorCode);
@@ -1007,8 +1019,6 @@ ColorCodeTracksBySpeed( bool iColorCode )
 
       ++it;
       }
-
-    delete[] range;
     }
   else
     {
@@ -1027,8 +1037,8 @@ ColorCodeTracksBySpeed( bool iColorCode )
       ++it;
       }
     }
-
-  m_ImageView->Update();
+*/
+  //m_ImageView->Update();
 }
 //-------------------------------------------------------------------------
 
