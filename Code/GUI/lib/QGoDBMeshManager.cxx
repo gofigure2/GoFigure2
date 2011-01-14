@@ -334,11 +334,10 @@ void QGoDBMeshManager::UpdateTWAndContainerForImportedTraces(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBMeshManager::DeleteTraces(vtkMySQLDatabase *iDatabaseConnector,
-  std::list<unsigned int> iListTraces)
+void QGoDBMeshManager::DeleteCheckedTraces(vtkMySQLDatabase *iDatabaseConnector)
 {
   this->DeleteTracesTemplate<ContourMeshContainer>(iDatabaseConnector,
-    this->m_MeshContainerInfoForVisu, iListTraces);
+    this->m_MeshContainerInfoForVisu);
 }
 //-------------------------------------------------------------------------
 

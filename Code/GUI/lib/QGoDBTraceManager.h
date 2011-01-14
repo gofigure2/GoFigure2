@@ -124,13 +124,11 @@ public:
     vtkMySQLDatabase *iDatabaseConnector) = 0;
 
   /**
-  \brief delete the selected traces from the database, the TW and the
+  \brief delete the checked traces from the database, the TW and the
   container for visu
   \param[in] iDatabaseConnector connection to the database
-  \param[in] iListTraces list of the traceIDs to be deleted
   */
-  virtual void DeleteTraces(vtkMySQLDatabase *iDatabaseConnector, 
-    std::list<unsigned int> iListTraces) = 0;
+  virtual void DeleteCheckedTraces(vtkMySQLDatabase *iDatabaseConnector) = 0;
 
   /**
   \brief update the collectionID of the tracesIDs in the list with
@@ -661,20 +659,28 @@ protected:
   */
   template<typename T>
   void DeleteTracesTemplate(vtkMySQLDatabase *iDatabaseConnector,
-    T *iContainerForVisu, std::list<unsigned int> iListTracesToDelete)
+    T *iContainerForVisu, std::list<unsigned int> iListTracesToDelete = std::list<unsigned int>(), 
+    bool DeleteHighlightedTraces = true)
   {
-   // std::list< unsigned int > ListTracesIDs =
-   //   iContainerForVisu->GetHighlightedElementsTraceID();
-    this->m_CollectionOfTraces->DeleteTracesInDB(
-      iListTracesToDelete, iDatabaseConnector);
-    //iContainerForVisu->DeleteAllHighlightedElements();
-    std::list<unsigned int>::iterator iter = iListTracesToDelete.begin();
-    while( iter != iListTracesToDelete.end() )
+    std::list< unsigned int > ListTracesIDsToDelete;
+    if (DeleteHighlightedTraces) //case where the traces to be deleted are the ones highlighted in the visu
       {
-      iContainerForVisu->DeleteElement(*iter);
-      ++iter;
+      ListTracesIDsToDelete = iContainerForVisu->GetHighlightedElementsTraceID();
+      iContainerForVisu->DeleteAllHighlightedElements();
       }
-    this->m_Table->DeleteCheckedRows(this->m_TraceNameID, iListTracesToDelete);
+    else //case where specific traces need to be deleted, not the highlighted ones
+      {
+      ListTracesIDsToDelete = iListTracesToDelete;
+      std::list<unsigned int>::iterator iter = iListTracesToDelete.begin();
+      while( iter != iListTracesToDelete.end() )
+        {
+        iContainerForVisu->DeleteElement(*iter);
+        ++iter;
+        }
+      }
+    this->m_CollectionOfTraces->DeleteTracesInDB(
+        ListTracesIDsToDelete, iDatabaseConnector);
+    this->m_Table->DeleteCheckedRows(this->m_TraceNameID, ListTracesIDsToDelete);
   }
 
   /**

@@ -164,11 +164,19 @@ void QGoDBTrackManager::UpdateTWAndContainerForImportedTraces(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBTrackManager::DeleteTraces(vtkMySQLDatabase *iDatabaseConnector,
+void QGoDBTrackManager::DeleteCheckedTraces(vtkMySQLDatabase *iDatabaseConnector)
+{
+  this->DeleteTracesTemplate<TrackContainer>(iDatabaseConnector,
+    this->m_TrackContainerInfoForVisu);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTrackManager::DeleteListTraces(vtkMySQLDatabase *iDatabaseConnector,
   std::list<unsigned int> iListTraces)
 {
   this->DeleteTracesTemplate<TrackContainer>(iDatabaseConnector,
-    this->m_TrackContainerInfoForVisu, iListTraces);
+    this->m_TrackContainerInfoForVisu, iListTraces, false);
 }
 //-------------------------------------------------------------------------
 

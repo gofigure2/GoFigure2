@@ -474,29 +474,62 @@ protected:
                     TCollection *iCollectionManager, TCollectionOf *iCollectionOfManager,
                     bool track = false)
   {
-    this->OpenDBConnection();
     std::list< unsigned int > ListTracesToDelete =
       iTraceManager->GetListHighlightedIDs();
-    this->DeleteListTraces<TTrace, TCollection, TCollectionOf>
-      (iTraceManager, iCollectionManager, iCollectionOfManager, ListTracesToDelete, track);
+    std::list<unsigned int> ListCollectionsIDs = 
+      this->UpdateCollectionDataForTracesToBeDeleted<TTrace, TCollectionOf>
+      (iTraceManager, iCollectionOfManager, ListTracesToDelete);
+    this->OpenDBConnection();
+    iTraceManager->DeleteCheckedTraces(this->m_DatabaseConnector);
+    if ( !ListCollectionsIDs.empty() || track )
+      {
+      iCollectionManager->UpdateBoundingBoxes(this->m_DatabaseConnector, ListCollectionsIDs);
+      }
+    this->CloseDBConnection();
   }
 
   /**
-  \brief delete the traces from the database,TW,visu container, udpate the collectionof
-  collectionID in database and TW and update the bounding box of the collection
+  \brief delete the traces of iListTracesToDelete from the database,TW,
+  visu container, udpate the collectionof collectionID in database and TW and update the 
+  bounding box of the collection
   \param[in] iTraceManager the manager for the trace expl: mesh_manager
   \param[in] iCollectionManager the manager for the collection expl: track
   \param[in] iCollectionOfManager the manager for the collectioof expl: contour
-  \param[in] track if the trace is track, track is set to true
   \param[in] iListTracesToDelete list of the traceIDs to be deleted
+  \param[in] track if the trace is track, track is set to true
   \tparam TTrace children of QGoDBTraceManager
   \tparam TCollection children of QGoDBTraceManager
   */
   template< typename TTrace, typename TCollection, typename TCollectionOf >
   void DeleteListTraces(TTrace *iTraceManager,
-                        TCollection *iCollectionManager, TCollectionOf *iCollectionOfManager,
-                        std::list<unsigned int> iListTracesToDelete,
-                        bool track = false)
+                    TCollection *iCollectionManager, TCollectionOf *iCollectionOfManager,
+                    std::list<unsigned int> iListTracesToDelete,
+                    bool track = false)
+  {
+    std::list<unsigned int> ListCollectionsIDs =
+      this->UpdateCollectionDataForTracesToBeDeleted<TTrace, TCollectionOf>
+      (iTraceManager, iCollectionOfManager, iListTracesToDelete);
+    this->OpenDBConnection();
+    iTraceManager->DeleteTraces(this->m_DatabaseConnector, iListTracesToDelete);
+    if ( !ListCollectionsIDs.empty() || track )
+      {
+      iCollectionManager->UpdateBoundingBoxes(this->m_DatabaseConnector, ListCollectionsIDs);
+      }
+    this->CloseDBConnection();
+  }
+  /**
+  \brief udpate the collectionof collectionID in database and TW 
+  \param[in] iTraceManager the manager for the trace expl: mesh_manager
+  \param[in] iCollectionOfManager the manager for the collectioof expl: contour
+  \param[in] track if the trace is track, track is set to true
+  \param[in] iListTracesToDelete list of the traceIDs to be deleted
+  \tparam TTrace children of QGoDBTraceManager
+  \tparam TCollectionOf children of QGoDBTraceManager
+  */
+  template< typename TTrace, typename TCollectionOf >
+  std::list<unsigned int> UpdateCollectionDataForTracesToBeDeleted(TTrace *iTraceManager,
+                        TCollectionOf *iCollectionOfManager,
+                        std::list<unsigned int> iListTracesToDelete)
   {
     this->OpenDBConnection();
     //need to get all the needed data from the traces before deleting them:
@@ -505,20 +538,13 @@ protected:
     std::list< unsigned int > ListTracesAsCollectionOf =
       iTraceManager->GetListTracesIDsFromThisCollectionOf(this->m_DatabaseConnector,
                                                           iListTracesToDelete);
-
-    iTraceManager->DeleteTraces(this->m_DatabaseConnector, iListTracesToDelete);
-
     if ( !ListTracesAsCollectionOf.empty() )
       {
       iCollectionOfManager->UpdateCollectionID(this->m_DatabaseConnector,
                                                ListTracesAsCollectionOf, 0);
       }
-
-    if ( !ListCollectionsIDs.empty() || track )
-      {
-      iCollectionManager->UpdateBoundingBoxes(this->m_DatabaseConnector, ListCollectionsIDs);
-      }
     this->CloseDBConnection();
+    return ListCollectionsIDs;
   }
   /**
   \brief change the collectionIDs to iCollectionID for the traces in iListCheckedTraces,
