@@ -303,20 +303,6 @@ std::vector< std::pair< int, std::string > > ListSpecificValuesForTwoColumnsAndT
 \param[in] iPoints points from which some attributes will be calculated
 \param[in] iTraceName name of the trace
 */
-/*QGOIO_EXPORT
-void GetTracesInfoFromDBAndModifyContainer(
-  std::list< ContourMeshStructure > & ioContainer,
-  vtkMySQLDatabase *DatabaseConnector, std::string TraceName,
-  std::string CollectionName, unsigned int ImgSessionID, //int iTimePoint = -1,
-  std::vector< int > iListIDs = std::vector< int >() );*/
-
-/**
-\brief fill the TCoord and the attributes of the structure obtained from Points
-\param[in] ioStructure structure to be modified with TCoord and co.
-\param[in] iTCoord one to be filled with
-\param[in] iPoints points from which some attributes will be calculated
-\param[in] iTraceName name of the trace
-*/
 QGOIO_EXPORT
 void ModifyStructureWithTCoordAndPoints(ContourMeshStructure & ioStructure,
   unsigned int iTCoord, std::string iPoints, std::string iTraceName);

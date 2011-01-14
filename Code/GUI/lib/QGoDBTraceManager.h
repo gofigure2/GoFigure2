@@ -266,8 +266,6 @@ signals:
 
   void DBConnectionNotNeededAnymore();
 
-  //void RefreshListCollectionIDsTM(std::string iIDToSelect,
-    //vtkMySQLDatabase* iDatabaseConnector);
 /**
   \brief signal emitted when a new trace is created that need to be added in the
   manual editing trace widget. (when a new mesh is created while contour table is

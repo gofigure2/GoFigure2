@@ -1285,6 +1285,12 @@ void QGoPrintDatabase::SetTracksManager()
                     this,
                     SLOT( SplitTheTrack(unsigned int,
                       std::list<unsigned int> ) ) );
+
+  QObject::connect( this->m_TracksManager, 
+                    SIGNAL( TrackIDToBeModifiedWithWidget( std::list<unsigned int> ) ),
+                    this,
+                    SLOT(SplitMergeTracksWithWidget(std::list<unsigned int> ) ) );
+
   QObject::connect( this->m_TracksManager,
                     SIGNAL(AddNewTraceIDInTM( std::pair<std::string, QColor> ) ),
                     this->m_TraceWidget,
