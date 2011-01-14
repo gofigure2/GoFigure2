@@ -378,7 +378,13 @@ UpdateTrackStructurePolyData( const TrackStructure& iTrackStructure)
   polyData->SetLines(cells);
   //add the temporal information
   polyData->GetPointData()->AddArray(newArray);
-  polyData->GetPointData()->SetScalars(newArray);
+  //polyData->GetPointData()->SetScalars(newArray);
+
+  vtkSmartPointer<vtkDoubleArray> speedArray =
+      vtkSmartPointer<vtkDoubleArray>::New();
+  speedArray->SetNumberOfComponents(1);
+  speedArray->SetName("SpeedInformation");
+  polyData->GetPointData()->AddArray(speedArray);
 
   iTrackStructure.Nodes->DeepCopy(polyData);
 

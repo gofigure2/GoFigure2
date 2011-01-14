@@ -452,20 +452,19 @@ void TrackStructure::ComputeAttributes()
   double max_speed = 0.;
   unsigned int t0, t1;
   double dist;
-  double theta;
-  double phi;
+  double theta = 0.;
+  double phi = 90.;
 
   unsigned int tmin = it->first;
   t0 = tmin;
   double* org = it->second;
   double* p = it->second;
-  double* q = NULL;
+  double* q = it->second; // if we only have one point in the map
   ++it;
 
-  // shouldnt create a new array
-  vtkDoubleArray* newArray = vtkDoubleArray::New();
-  newArray->SetNumberOfComponents(1);
-  newArray->SetName("SpeedInformation");
+  vtkDoubleArray* newArray =
+      dynamic_cast<vtkDoubleArray*>(this->Nodes->GetPointData()->GetArray("SpeedInformation"));
+  newArray->Reset();
   newArray->InsertNextValue(0.0);
 
   while( it != this->PointsMap.end() )
@@ -485,21 +484,19 @@ void TrackStructure::ComputeAttributes()
     t0 = t1;
     ++it;
     }
-
-  distance = sqrt( vtkMath::Distance2BetweenPoints( org, q ) );
   avg_speed = total_length / static_cast< double >( t1 - tmin );
 
-  //angles
-  theta = vtkMath::DegreesFromRadians( atan2( ( q[1] - org[1] ), ( q[0] - org[0] ) ) );
-  phi   = vtkMath::DegreesFromRadians( acos( ( q[2] - org[2] ) / distance ) );
+  distance = sqrt( vtkMath::Distance2BetweenPoints( org, q ) );
 
+  if(distance)
+    {
+    theta = vtkMath::DegreesFromRadians( atan2( ( q[1] - org[1] ), ( q[0] - org[0] ) ) );
+    phi   = vtkMath::DegreesFromRadians( acos( ( q[2] - org[2] ) / distance ) );
+    }
   std::cout << "r, theta, phi: ("
             << std::setprecision(3)
             << distance << ", " << theta << ", " << phi << ") "
             << std::endl;
-
-  this->Nodes->GetPointData()->AddArray(newArray);
-  newArray->Delete();
 }
 
 //--------------------------------------------------------------------------
