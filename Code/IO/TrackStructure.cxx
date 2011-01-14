@@ -452,6 +452,8 @@ void TrackStructure::ComputeAttributes()
   double max_speed = 0.;
   unsigned int t0, t1;
   double dist;
+  double theta;
+  double phi;
 
   unsigned int tmin = it->first;
   t0 = tmin;
@@ -460,7 +462,7 @@ void TrackStructure::ComputeAttributes()
   double* q = NULL;
   ++it;
 
-  // NEW
+  // shouldnt create a new array
   vtkDoubleArray* newArray = vtkDoubleArray::New();
   newArray->SetNumberOfComponents(1);
   newArray->SetName("SpeedInformation");
@@ -475,20 +477,27 @@ void TrackStructure::ComputeAttributes()
     max_speed = std::max( max_speed,
                           dist / (static_cast< double >( t1 - t0 ) ) );
 
-    // NEW
     double speed = dist / (static_cast< double >( t1 - t0 ) );
     newArray->InsertNextValue( speed );
     std::cout << "speed: " << speed << std::endl;
-    // ISSUE LAST POINT
 
     p = q;
     t0 = t1;
     ++it;
     }
+
   distance = sqrt( vtkMath::Distance2BetweenPoints( org, q ) );
   avg_speed = total_length / static_cast< double >( t1 - tmin );
 
-  // NEW
+  //angles
+  theta = vtkMath::DegreesFromRadians( atan2( ( q[1] - org[1] ), ( q[0] - org[0] ) ) );
+  phi   = vtkMath::DegreesFromRadians( acos( ( q[2] - org[2] ) / distance ) );
+
+  std::cout << "r, theta, phi: ("
+            << std::setprecision(3)
+            << distance << ", " << theta << ", " << phi << ") "
+            << std::endl;
+
   this->Nodes->GetPointData()->AddArray(newArray);
   newArray->Delete();
 }
