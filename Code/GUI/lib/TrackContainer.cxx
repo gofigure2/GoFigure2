@@ -890,6 +890,18 @@ GetHighlightedElementsTrackPolyData()
 //-------------------------------------------------------------------------
 void
 TrackContainer::
+ColorCodeTracksByOriginalColor( bool iColorCode )
+{
+  if( iColorCode )
+    {
+    this->RenderAllElementsWithOriginalColors();
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
 ColorCodeTracksByTime( bool iColorCode )
 {
   if( iColorCode )
@@ -900,8 +912,8 @@ ColorCodeTracksByTime( bool iColorCode )
     // associated LUT
     vtkSmartPointer<vtkLookupTable> LUT = vtkSmartPointer<vtkLookupTable>::New();
     LUT->SetTableRange(range);
-    LUT->SetNumberOfTableValues(256);
-    LUT->SetHueRange(0,0.7);
+    LUT->SetNumberOfTableValues(1024);
+    LUT->SetHueRange(0.7,0);
     LUT->SetSaturationRange(1,1);
     LUT->SetValueRange(1,1);
     LUT->Build();
@@ -933,7 +945,7 @@ ColorCodeTracksBySpeed( bool iColorCode )
     vtkSmartPointer<vtkLookupTable> LUT = vtkSmartPointer<vtkLookupTable>::New();
     LUT->SetTableRange(range);
     LUT->SetNumberOfTableValues(1024);
-    LUT->SetHueRange(0,0.7);
+    LUT->SetHueRange(0.7,0);
     LUT->SetSaturationRange(1,1);
     LUT->SetValueRange(1,1);
     LUT->Build();

@@ -426,6 +426,8 @@ public slots:
 
   void ColorCodeTracksBySpeed( bool iColorCode);
 
+  void ColorCodeTracksByOriginalColor( bool iColorCode );
+
 protected:
 
   /**

@@ -189,6 +189,11 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent):
                     m_TrackContainer,
                     SLOT( ColorCodeTracksBySpeed(bool) ) );
 
+  QObject::connect( m_TrackDockWidget,
+                    SIGNAL( ColorCodeTracksByOriginalColor(bool) ),
+                    m_TrackContainer,
+                    SLOT( ColorCodeTracksByOriginalColor(bool) ) );
+
   CreateDataBaseTablesConnection();
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )

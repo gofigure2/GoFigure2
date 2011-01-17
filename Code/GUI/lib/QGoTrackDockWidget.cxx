@@ -51,6 +51,8 @@ QGoTrackDockWidget::QGoTrackDockWidget(
       this, SIGNAL( ColorCodeTracksByTime(bool) ) );
   QObject::connect( this->speed, SIGNAL( toggled(bool)),
       this, SIGNAL( ColorCodeTracksBySpeed(bool) ) );
+  QObject::connect( this->real, SIGNAL( toggled(bool)),
+      this, SIGNAL( ColorCodeTracksByOriginalColor(bool) ) );
 
 
   /*

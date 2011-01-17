@@ -55,6 +55,7 @@ signals:
   void UpdateTracksAppearance(bool, bool);
   void ColorCodeTracksByTime(bool);
   void ColorCodeTracksBySpeed(bool);
+  void ColorCodeTracksByOriginalColor(bool);
 
 };
 #endif
