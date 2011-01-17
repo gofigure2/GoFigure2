@@ -912,55 +912,6 @@ ColorCodeTracksByTime( bool iColorCode )
     delete[] range;
 
     }
-/*
-    // Change the appearnace of th actors
-    MultiIndexContainerType::index< ActorXY >::type::iterator
-      it = m_Container.get< ActorXY >().begin();
-
-    while( it != m_Container.get< ActorXY >().end() )
-      {
-      //  set the lookuptable
-      it->ActorXY->GetMapper()->SetLookupTable(LUT);
-      it->ActorXZ->GetMapper()->SetLookupTable(LUT);
-      it->ActorYZ->GetMapper()->SetLookupTable(LUT);
-      it->ActorXYZ->GetMapper()->SetLookupTable(LUT);
-
-      // use the lookuptable scalar range
-      it->ActorXY->GetMapper()->UseLookupTableScalarRangeOn();
-      it->ActorXZ->GetMapper()->UseLookupTableScalarRangeOn();
-      it->ActorYZ->GetMapper()->UseLookupTableScalarRangeOn();
-      it->ActorXYZ->GetMapper()->UseLookupTableScalarRangeOn();
-
-      // set scalar visibility to on
-      it->ActorXY->GetMapper()->SetScalarVisibility(iColorCode);
-      it->ActorXZ->GetMapper()->SetScalarVisibility(iColorCode);
-      it->ActorYZ->GetMapper()->SetScalarVisibility(iColorCode);
-      it->ActorXYZ->GetMapper()->SetScalarVisibility(iColorCode);
-
-      ++it;
-      }
-
-    delete[] range;
-    }
-  else
-    {
-    // Change the appearnace of th actors
-    MultiIndexContainerType::index< ActorXY >::type::iterator
-      it = m_Container.get< ActorXY >().begin();
-
-    while( it != m_Container.get< ActorXY >().end() )
-      {
-      // set scalar visibility to off
-      it->ActorXY->GetMapper()->SetScalarVisibility(iColorCode);
-      it->ActorXZ->GetMapper()->SetScalarVisibility(iColorCode);
-      it->ActorYZ->GetMapper()->SetScalarVisibility(iColorCode);
-      it->ActorXYZ->GetMapper()->SetScalarVisibility(iColorCode);
-
-      ++it;
-      }
-    }
-
-  m_ImageView->Update();*/
 }
 //-------------------------------------------------------------------------
 
@@ -992,53 +943,6 @@ ColorCodeTracksBySpeed( bool iColorCode )
 
     delete[] range;
     }
-/*
-    // Change the appearnace of th actors
-    MultiIndexContainerType::index< ActorXY >::type::iterator
-      it = m_Container.get< ActorXY >().begin();
-
-    while( it != m_Container.get< ActorXY >().end() )
-      {
-      //  set the lookuptable
-      //it->ActorXY->GetMapper()->SetLookupTable(LUT);
-      //it->ActorXZ->GetMapper()->SetLookupTable(LUT);
-      //it->ActorYZ->GetMapper()->SetLookupTable(LUT);
-      //it->ActorXYZ->GetMapper()->SetLookupTable(LUT);
-
-      // use the lookuptable scalar range
-      //it->ActorXY->GetMapper()->UseLookupTableScalarRangeOn();
-      //it->ActorXZ->GetMapper()->UseLookupTableScalarRangeOn();
-      //it->ActorYZ->GetMapper()->UseLookupTableScalarRangeOn();
-      //it->ActorXYZ->GetMapper()->UseLookupTableScalarRangeOn();
-
-      // set scalar visibility to on
-      it->ActorXY->GetMapper()->SetScalarVisibility(iColorCode);
-      it->ActorXZ->GetMapper()->SetScalarVisibility(iColorCode);
-      it->ActorYZ->GetMapper()->SetScalarVisibility(iColorCode);
-      it->ActorXYZ->GetMapper()->SetScalarVisibility(iColorCode);
-
-      ++it;
-      }
-    }
-  else
-    {
-    // Change the appearnace of th actors
-    MultiIndexContainerType::index< ActorXY >::type::iterator
-      it = m_Container.get< ActorXY >().begin();
-
-    while( it != m_Container.get< ActorXY >().end() )
-      {
-      // set scalar visibility to off
-      it->ActorXY->GetMapper()->SetScalarVisibility(iColorCode);
-      it->ActorXZ->GetMapper()->SetScalarVisibility(iColorCode);
-      it->ActorYZ->GetMapper()->SetScalarVisibility(iColorCode);
-      it->ActorXYZ->GetMapper()->SetScalarVisibility(iColorCode);
-
-      ++it;
-      }
-    }
-*/
-  //m_ImageView->Update();
 }
 //-------------------------------------------------------------------------
 
