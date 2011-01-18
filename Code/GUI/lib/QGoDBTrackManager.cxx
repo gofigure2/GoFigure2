@@ -243,9 +243,10 @@ void QGoDBTrackManager::SaveTrackCurrentElement(
 
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::UpdatePointsOfCurrentElementForImportedTrack(
-	  std::map<unsigned int,double*> iMeshesInfo)
+	  std::map<unsigned int,double*> iMeshesInfo, vtkMySQLDatabase* iDatabaseConnector)
 {
 	this->m_TrackContainerInfoForVisu->UpdateCurrentElementMap(iMeshesInfo);
+  this->SaveTrackCurrentElement(iDatabaseConnector);
 }
 //-------------------------------------------------------------------------
 
