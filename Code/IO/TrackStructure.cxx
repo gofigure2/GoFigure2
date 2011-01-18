@@ -453,14 +453,13 @@ ComputeAttributes()
   attributes.distance = 0.;
   attributes.avg_speed = 0.;
   attributes.max_speed = 0.;
-  attributes.t0 = 0;
-  attributes.t1 = 0;
+  unsigned int t0, t1;
   attributes.theta = 0.;
   attributes.phi = 90.;
 
   PointsMapConstIterator it = this->PointsMap.begin();
   unsigned int tmin = it->first;
-  attributes.t0 = tmin;
+  t0 = tmin;
   double* org = it->second;
   double* p = it->second;
   double* q = it->second; // if we only have one point in the map
@@ -473,22 +472,22 @@ ComputeAttributes()
 
   while( it != this->PointsMap.end() )
     {
-    attributes.t1 = it->first;
+    t1 = it->first;
     q = it->second;
     attributes.distance = sqrt( vtkMath::Distance2BetweenPoints( p, q ) );
     attributes.total_length += attributes.distance;
     attributes.max_speed = std::max( attributes.max_speed,
-        attributes.distance / (static_cast< double >( attributes.t1 - attributes.t0 ) ) );
+        attributes.distance / (static_cast< double >( t1 - t0 ) ) );
 
-    double speed = attributes.distance / (static_cast< double >( attributes.t1 - attributes.t0 ) );
+    double speed = attributes.distance / (static_cast< double >( t1 - t0 ) );
     newArray->InsertNextValue( speed );
 
     p = q;
-    attributes.t0 = attributes.t1;
+    t0 = t1;
     ++it;
     }
   attributes.avg_speed = attributes.total_length /
-                         static_cast< double >( attributes.t1 - tmin );
+                         static_cast< double >( t1 - tmin );
 
   attributes.distance = sqrt( vtkMath::Distance2BetweenPoints( org, q ) );
 
