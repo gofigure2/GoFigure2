@@ -238,6 +238,16 @@ void QGoDBTrackManager::SaveTrackCurrentElement(
     {
     this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
     }
+
+  /*
+  std::vector< std::string > ColumnNames (2);
+  std::vector< std::string > Values (2);
+  ColumnNames.at(0) = "SurfaceArea";
+  Values.at(0) = ConvertToString< double >(iMeshAttributes->m_Area);
+  ColumnNames.at(1) = "Volume";
+  Values.at(1) = ConvertToString< double >(iMeshAttributes->m_Volume);
+  // Update TableWidget
+  this->m_Table->AddValuesForID(ColumnNames, Values, TrackID, "trackID");*/
 }
 //-------------------------------------------------------------------------
 

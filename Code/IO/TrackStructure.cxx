@@ -451,7 +451,7 @@ void TrackStructure::ComputeAttributes()
   double avg_speed = 0.;
   double max_speed = 0.;
   unsigned int t0, t1;
-  double dist;
+  double dist = 0.;
   double theta = 0.;
   double phi = 90.;
 
@@ -492,10 +492,6 @@ void TrackStructure::ComputeAttributes()
     theta = vtkMath::DegreesFromRadians( atan2( ( q[1] - org[1] ), ( q[0] - org[0] ) ) );
     phi   = vtkMath::DegreesFromRadians( acos( ( q[2] - org[2] ) / distance ) );
     }
-  std::cout << "r, theta, phi: ("
-            << std::setprecision(3)
-            << distance << ", " << theta << ", " << phi << ") "
-            << std::endl;
 }
 
 //--------------------------------------------------------------------------
