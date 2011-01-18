@@ -447,7 +447,6 @@ GoFigureTrackAttributes
 TrackStructure::
 ComputeAttributes()
 {
-
   GoFigureTrackAttributes attributes;
 
   attributes.total_length = 0.;
@@ -456,7 +455,6 @@ ComputeAttributes()
   attributes.max_speed = 0.;
   attributes.t0 = 0;
   attributes.t1 = 0;
-  attributes.dist = 0.;
   attributes.theta = 0.;
   attributes.phi = 90.;
 
@@ -477,12 +475,12 @@ ComputeAttributes()
     {
     attributes.t1 = it->first;
     q = it->second;
-    attributes.dist = sqrt( vtkMath::Distance2BetweenPoints( p, q ) );
-    attributes.total_length += attributes.dist;
+    attributes.distance = sqrt( vtkMath::Distance2BetweenPoints( p, q ) );
+    attributes.total_length += attributes.distance;
     attributes.max_speed = std::max( attributes.max_speed,
-        attributes.dist / (static_cast< double >( attributes.t1 - attributes.t0 ) ) );
+        attributes.distance / (static_cast< double >( attributes.t1 - attributes.t0 ) ) );
 
-    double speed = attributes.dist / (static_cast< double >( attributes.t1 - attributes.t0 ) );
+    double speed = attributes.distance / (static_cast< double >( attributes.t1 - attributes.t0 ) );
     newArray->InsertNextValue( speed );
 
     p = q;

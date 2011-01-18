@@ -40,13 +40,19 @@
 #include "QGoIOConfigure.h"
 
 struct QGOIO_EXPORT GoFigureTrackAttributes {
+  // total distance (add each segment size)
   double total_length;
-  double distance;
+  // average speed
   double avg_speed;
+  // maximum speed
   double max_speed;
+  // first and last time point
   unsigned int t0, t1;
-  double dist;
+  // euclidian distance between first and last points
+  double distance;
+  // theta in spherical coordinate system
   double theta;
+  // phi in spherical coordinate system
   double phi;
 };
 #endif
