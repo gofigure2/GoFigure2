@@ -443,20 +443,26 @@ UpdateTracksRepresentation( bool iGlyph, bool iTube ) const
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void TrackStructure::ComputeAttributes()
+GoFigureTrackAttributes
+TrackStructure::
+ComputeAttributes()
 {
-  PointsMapConstIterator it = this->PointsMap.begin();
-  double total_length = 0.;
-  double distance = 0.;
-  double avg_speed = 0.;
-  double max_speed = 0.;
-  unsigned int t0, t1;
-  double dist = 0.;
-  double theta = 0.;
-  double phi = 90.;
 
+  GoFigureTrackAttributes attributes;
+
+  attributes.total_length = 0.;
+  attributes.distance = 0.;
+  attributes.avg_speed = 0.;
+  attributes.max_speed = 0.;
+  attributes.t0 = 0;
+  attributes.t1 = 0;
+  attributes.dist = 0.;
+  attributes.theta = 0.;
+  attributes.phi = 90.;
+
+  PointsMapConstIterator it = this->PointsMap.begin();
   unsigned int tmin = it->first;
-  t0 = tmin;
+  attributes.t0 = tmin;
   double* org = it->second;
   double* p = it->second;
   double* q = it->second; // if we only have one point in the map
@@ -469,29 +475,34 @@ void TrackStructure::ComputeAttributes()
 
   while( it != this->PointsMap.end() )
     {
-    t1 = it->first;
+    attributes.t1 = it->first;
     q = it->second;
-    dist = sqrt( vtkMath::Distance2BetweenPoints( p, q ) );
-    total_length += dist;
-    max_speed = std::max( max_speed,
-                          dist / (static_cast< double >( t1 - t0 ) ) );
+    attributes.dist = sqrt( vtkMath::Distance2BetweenPoints( p, q ) );
+    attributes.total_length += attributes.dist;
+    attributes.max_speed = std::max( attributes.max_speed,
+        attributes.dist / (static_cast< double >( attributes.t1 - attributes.t0 ) ) );
 
-    double speed = dist / (static_cast< double >( t1 - t0 ) );
+    double speed = attributes.dist / (static_cast< double >( attributes.t1 - attributes.t0 ) );
     newArray->InsertNextValue( speed );
 
     p = q;
-    t0 = t1;
+    attributes.t0 = attributes.t1;
     ++it;
     }
-  avg_speed = total_length / static_cast< double >( t1 - tmin );
+  attributes.avg_speed = attributes.total_length /
+                         static_cast< double >( attributes.t1 - tmin );
 
-  distance = sqrt( vtkMath::Distance2BetweenPoints( org, q ) );
+  attributes.distance = sqrt( vtkMath::Distance2BetweenPoints( org, q ) );
 
-  if(distance)
+  if(attributes.distance)
     {
-    theta = vtkMath::DegreesFromRadians( atan2( ( q[1] - org[1] ), ( q[0] - org[0] ) ) );
-    phi   = vtkMath::DegreesFromRadians( acos( ( q[2] - org[2] ) / distance ) );
+    attributes.theta = vtkMath::DegreesFromRadians( atan2( ( q[1] - org[1] ),
+                                                           ( q[0] - org[0] ) ) );
+    attributes.phi   = vtkMath::DegreesFromRadians( acos( ( q[2] - org[2] ) /
+                                                         attributes.distance ) );
     }
+
+  return attributes;
 }
 
 //--------------------------------------------------------------------------
