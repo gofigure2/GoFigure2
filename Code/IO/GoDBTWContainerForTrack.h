@@ -47,11 +47,24 @@ public:
   GoDBTWContainerForTrack(int iImgSessionID);
   ~GoDBTWContainerForTrack();
 
+  virtual TWContainerType GetContainerForOneSpecificTrace(
+    vtkMySQLDatabase *iDatabaseConnector, int iTraceID );
+
+  /**
+  \brief set m_TrackAttributes to iMeshAttributes, needs to be called
+  before displaying the volume, area values
+  \param[in] iTrackAttributes values for the track computed from visu
+  */
+  void SetTrackAttributes(GoFigureTrackAttributes *iTrackAttributes);
+
 protected:
 
+  GoFigureTrackAttributes* m_TrackAttributes;
   /**
   \brief add the specific info for a track to the columns description
   */
   void SetSpecificInfoForTrackTable();
+
+  void FillRowContainerForTrackComputedValues(int iTrackID);
 };
 #endif

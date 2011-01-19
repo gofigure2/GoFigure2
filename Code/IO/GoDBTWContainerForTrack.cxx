@@ -34,7 +34,8 @@
 #include "GoDBTWContainerForTrack.h"
 
 GoDBTWContainerForTrack::GoDBTWContainerForTrack(int iImgSessionID):
-  GoDBTWContainerForTrackLineage("track", "lineage", iImgSessionID)
+  GoDBTWContainerForTrackLineage("track", "lineage", iImgSessionID),
+  m_TrackAttributes(NULL)
 {
   this->SetSpecificInfoForTrackTable();
 }
@@ -102,4 +103,31 @@ void GoDBTWContainerForTrack::SetSpecificInfoForTrackTable()
   PairTemp.first = temp;
   m_RowContainer.push_back(PairTemp);
   temp.Clear();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBTWContainerForTrack::SetTrackAttributes(GoFigureTrackAttributes *iTrackAttributes)
+{
+  this->m_TrackAttributes = iTrackAttributes;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+GoDBTableWidgetContainer::TWContainerType
+GoDBTWContainerForTrack::GetContainerForOneSpecificTrace(
+  vtkMySQLDatabase *iDatabaseConnector, int iTraceID )
+{
+  GoDBTableWidgetContainer::GetContainerForOneSpecificTrace(iDatabaseConnector,
+                                                            iTraceID);
+  this->FillRowContainerForTrackComputedValues(iTraceID);
+  return this->m_RowContainer;
+}
+
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBTWContainerForTrack::FillRowContainerForTrackComputedValues(int iTrackID)
+{
+  this->m_TrackAttributes = 0;
 }
