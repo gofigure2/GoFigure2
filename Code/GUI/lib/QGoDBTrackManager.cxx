@@ -38,12 +38,10 @@
 #include <sstream>
 
 QGoDBTrackManager::QGoDBTrackManager(int iImgSessionID, QWidget *iparent):
-  QGoDBTraceManager(),m_TrackContainerInfoForVisu(NULL)
+  QGoDBTraceManager(), m_TrackContainerInfoForVisu(NULL)
 {
   this->SetInfo(iImgSessionID, iparent);
-  this->m_TWContainer = new GoDBTWContainerForTrackLineage(this->m_TraceName,
-                                                           this->m_CollectionName,
-                                                           iImgSessionID);
+  this->m_TWContainer = new GoDBTWContainerForTrack( iImgSessionID );
 }
 
 //-------------------------------------------------------------------------
@@ -86,7 +84,7 @@ void QGoDBTrackManager::SetCollectionsTraceNames()
 void QGoDBTrackManager::DisplayInfoForAllTraces(
   vtkMySQLDatabase *iDatabaseConnector)
 {
-  this->DisplayInfoForAllTracesTemplate< GoDBTWContainerForTrackLineage >(
+  this->DisplayInfoForAllTracesTemplate< GoDBTWContainerForTrack >(
     this->m_TWContainer, iDatabaseConnector,Qt::Unchecked);
 }
 //-------------------------------------------------------------------------
@@ -95,7 +93,7 @@ void QGoDBTrackManager::DisplayInfoForAllTraces(
 void QGoDBTrackManager::DisplayInfoAndLoadVisuContainerForAllTracks(
   vtkMySQLDatabase *iDatabaseConnector)
 {
-  this->DisplayInfoAndLoadVisuContainerWithAllTraces< GoDBTWContainerForTrackLineage >
+  this->DisplayInfoAndLoadVisuContainerWithAllTraces< GoDBTWContainerForTrack >
     (this->m_TWContainer,iDatabaseConnector);
 }
 
@@ -105,7 +103,7 @@ void QGoDBTrackManager::DisplayInfoAndLoadVisuContainerForAllTracks(
 void QGoDBTrackManager::DisplayInfoForLastCreatedTrace(
   vtkMySQLDatabase *iDatabaseConnector)
 {
-  this->DisplayInfoForLastCreatedTraceTemplate< GoDBTWContainerForTrackLineage >(
+  this->DisplayInfoForLastCreatedTraceTemplate< GoDBTWContainerForTrack >(
     this->m_TWContainer, iDatabaseConnector);
 }
 
@@ -115,7 +113,7 @@ void QGoDBTrackManager::DisplayInfoForLastCreatedTrace(
 void QGoDBTrackManager::DisplayInfoForExistingTrace(
   vtkMySQLDatabase *iDatabaseConnector, int iTraceID)
 {
-  this->DisplayInfoForExistingTraceTemplate< GoDBTWContainerForTrackLineage >(
+  this->DisplayInfoForExistingTraceTemplate< GoDBTWContainerForTrack >(
     this->m_TWContainer, iDatabaseConnector, iTraceID);
 }
 
@@ -158,7 +156,7 @@ void QGoDBTrackManager::UpdateTWAndContainerForImportedTraces(
   std::vector< int > iVectorImportedTraces, vtkMySQLDatabase *iDatabaseConnector)
 {
   this->UpdateTWAndContainerWithImportedTracesTemplate<
-    GoDBTWContainerForTrackLineage>(this->m_TWContainer,
+    GoDBTWContainerForTrack >(this->m_TWContainer,
     iVectorImportedTraces, iDatabaseConnector);
   //call the TrackContainer to give him iVectorImportedTraces
 }
@@ -238,16 +236,6 @@ void QGoDBTrackManager::SaveTrackCurrentElement(
     {
     this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
     }
-
-  /*
-  std::vector< std::string > ColumnNames (2);
-  std::vector< std::string > Values (2);
-  ColumnNames.at(0) = "SurfaceArea";
-  Values.at(0) = ConvertToString< double >(iMeshAttributes->m_Area);
-  ColumnNames.at(1) = "Volume";
-  Values.at(1) = ConvertToString< double >(iMeshAttributes->m_Volume);
-  // Update TableWidget
-  this->m_Table->AddValuesForID(ColumnNames, Values, TrackID, "trackID");*/
 }
 //-------------------------------------------------------------------------
 
@@ -341,19 +329,6 @@ void QGoDBTrackManager::TrackIDToEmit()
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::SplitTrackWithWidget()
 {
-  /*std::list <std::pair<unsigned int, std::list<unsigned int> > >TrackIDWithMeshIDs;
-  std::list<unsigned int> CheckedTracks = 
-    this->m_TrackContainerInfoForVisu->GetHighlightedElementsTraceID();
-  std::list<unsigned int>::iterator iter = CheckedTracks.begin();
-  while (iter != CheckedTracks.end() )
-  {
-    std::pair<unsigned int, std::list<unsigned int> > temp;
-    temp.first = *iter;
-    std::list<unsigned int> TrackID;
-    TrackID.push_back(*iter);
-    temp.second = this->GetListTracesIDsFromThisCollectionOf(this->m_DatabaseConnector,TrackID);
-    iter++;
-  }*/
   std::list<unsigned int> HighlightedTrackIDs = 
     this->m_TrackContainerInfoForVisu->GetHighlightedElementsTraceID();
 

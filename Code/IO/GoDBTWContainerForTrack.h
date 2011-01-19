@@ -31,26 +31,23 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
+#ifndef __GoDBTWContainerForTrack_h
+#define __GoDBTWContainerForTrack_h
 
-#ifndef __GoFigureTrackAttributes_h
-#define __GoFigureTrackAttributes_h
-
-#include <map>
-#include <string>
+#include "GoDBTWContainerForTrackLineage.h"
 #include "QGoIOConfigure.h"
+#include "GoFigureTrackAttributes.h"
+/**
+\brief
+*/
+class QGOIO_EXPORT GoDBTWContainerForTrack:public GoDBTWContainerForTrackLineage
+{
+public:
+  GoDBTWContainerForTrack(int iImgSessionID);
+  ~GoDBTWContainerForTrack();
 
-struct QGOIO_EXPORT GoFigureTrackAttributes {
-  // total distance (add each segment size) = deplacement
-  double total_length;
-  // average speed
-  double avg_speed;
-  // maximum speed
-  double max_speed;
-  // euclidian distance between first and last points
-  double distance;
-  // theta in spherical coordinate system
-  double theta;
-  // phi in spherical coordinate system
-  double phi;
+protected:
+
+  void SetSpecificInfoForTrackTable();
 };
 #endif

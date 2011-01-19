@@ -37,7 +37,7 @@
 
 #include "QGoTableWidget.h"
 #include "GoDBCollectionOfTraces.h"
-#include "GoDBTWContainerForTrackLineage.h"
+#include "GoDBTWContainerForTrack.h"
 #include "QGoDBTraceManager.h"
 #include "QGoGUILibConfigure.h"
 #include "TrackContainer.h"
@@ -123,8 +123,8 @@ signals:
   void TrackIDToBeModifiedWithWidget(std::list<unsigned int> iListTracksID);
 
 protected:
-  GoDBTWContainerForTrackLineage *m_TWContainer;
-  TrackContainer                 *m_TrackContainerInfoForVisu;
+  GoDBTWContainerForTrack *m_TWContainer;
+  TrackContainer          *m_TrackContainerInfoForVisu;
 
   //virtual pure method in QGoDBTraceManager
   virtual void SetCollectionsTraceNames();
