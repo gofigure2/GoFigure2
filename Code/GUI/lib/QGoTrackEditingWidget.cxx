@@ -118,6 +118,9 @@ QGoTrackEditingWidget::
 createPolylineActor( double* iCenter1, double* iCenter2,
     const double* iColor1, const double* iColor2)
 {
+  // Might be useful at some point
+  (void)iColor1;
+  (void)iColor2;
   //create a vtkPoints object and storevtkRenderWindow the points in it
   vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
   points->InsertNextPoint(iCenter1);

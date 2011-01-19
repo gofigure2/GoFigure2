@@ -69,6 +69,7 @@ QGoTrackDockWidget::
 ~QGoTrackDockWidget()
 {
 }
+/*
 //-------------------------------------------------------------------------
 //BUGGY AND USELESS SO COMMENTED
 //-------------------------------------------------------------------------
@@ -88,3 +89,4 @@ TubeChanged( bool iState )
   //emit UpdateTracksAppearance( this->glyph->isChecked(), iState );
 }
 //-------------------------------------------------------------------------
+ */
