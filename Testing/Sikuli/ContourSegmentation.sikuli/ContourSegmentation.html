@@ -1,0 +1,112 @@
+
+<html>
+   <head>
+      <style type="text/css">
+         .sikuli-code {
+            font-size: 20px;
+            font-family: "Osaka-mono", Monospace;
+            line-height: 1.5em;
+            display:table-cell;
+            white-space: pre-wrap;       /* css-3 */
+            white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+            white-space: -pre-wrap;      /* Opera 4-6 */
+            white-space: -o-pre-wrap;    /* Opera 7 */
+            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+            width: 99%;   /* remove horizontal scroll-bar when viewing in IE7 */
+         }
+         .sikuli-code img {
+            vertical-align: middle;
+            margin: 2px;
+            border: 1px solid #ccc;
+            padding: 2px;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            -moz-box-shadow: 1px 1px 1px gray;
+            -webkit-box-shadow: 1px 1px 2px gray;
+         }
+         .kw {
+            color: blue;
+         }
+         .skw {
+            color: rgb(63, 127, 127);
+         }
+
+         .str {
+            color: rgb(128, 0, 0);
+         }
+
+         .dig {
+            color: rgb(128, 64, 0);
+         }
+
+         .cmt {
+            color: rgb(200, 0, 200);
+         }
+
+         h2 {
+            display: inline;
+            font-weight: normal;
+         }  
+         
+         .info {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+            display: none;
+         }
+
+         a {
+            color: #9D2900;
+         }
+
+         body {
+            font-family: "Trebuchet MS", Arial, Sans-Serif;
+         }
+
+      </style>
+   </head>
+<body>
+<div class="info">
+<h2>ContourSegmentation.sikuli</h2> <a href="ContourSegmentation.zip">(Download this script)</a>
+</div>
+<pre class="sikuli-code">
+<span class="kw">import</span> os
+address = os.getcwd()
+<span class="cmt">#address = "/home/es1076/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images"
+</span>
+<span class="cmt">#address = address+"/gofigure2_images"
+</span><span class="cmt">#print address
+</span>setBundlePath(address)
+
+<span class="skw">click</span>(<img src="ContourSegmentationIcon.png" />)
+<span class="skw">click</span>(<img src="TableWidgetIcon.png" />)
+<span class="skw">wait</span>(<span class="dig">1</span>)
+
+xyView = <span class="skw">find</span>(Pattern(<img src="XY_ViewRegion.png" />).similar(<span class="dig">0.10</span>))
+<span class="kw">print</span> xyView.x, xyView.y, xyView.h
+
+startx = xyView.x + <span class="dig">100</span>
+starty = xyView.y + xyView.h - <span class="dig">100</span>
+<span class="skw">click</span>(Location(startx,starty))
+<span class="kw">print</span> startx, starty
+<span class="skw">wait</span>(<span class="dig">1</span>)
+Secondx = startx+<span class="dig">10</span>
+Secondy = starty+<span class="dig">10</span>
+<span class="skw">click</span>(Location(Secondx,Secondy))
+<span class="skw">wait</span>(<span class="dig">1</span>)
+Thirdx = Secondx+<span class="dig">10</span>
+Thirdy = Secondy -<span class="dig">10</span>
+<span class="skw">click</span>(Location(Thirdx,Thirdy))
+Forthx = Thirdx - <span class="dig">10</span>
+Forthy = Thirdy - <span class="dig">10</span>
+<span class="skw">wait</span>(<span class="dig">1</span>)
+<span class="skw">click</span>(Location(Forthx,Forthy))
+<span class="skw">wait</span>(<span class="dig">1</span>)
+
+<span class="skw">click</span>(Location(startx,starty))
+<span class="skw">wait</span>(<span class="dig">1</span>)
+
+<span class="cmt">#click("Validate.png")</span>
+</pre>
+</body>
+</html>
