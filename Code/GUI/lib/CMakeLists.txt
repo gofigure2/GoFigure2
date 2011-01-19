@@ -103,6 +103,7 @@ SET( QGoGUILIB_SRC
 
   # for the tracks
   QGoTrackDockWidget.cxx
+  QGoTrackEditingWidget.cxx
 
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx
@@ -221,6 +222,7 @@ SET( QGoGUILIB_HDRS
 
   # for the tracks
   QGoTrackDockWidget.h
+  QGoTrackEditingWidget.h
 )
 
 #---------------------------------------------------------------------------
@@ -272,6 +274,7 @@ SET( QGoGUILIB_UI
 
   # for tracks
   Resources/TrackDockWidget.ui
+  Resources/TrackEditingWidget.ui
 )
 
 #---------------------------------------------------------------------------

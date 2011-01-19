@@ -74,6 +74,7 @@ int main(int argc, char *argv[])
   for (; i < 20; i++ )
     {
     ContourMeshStructure element(i,
+                                 0,
                                  vtkActor::New(),
                                  vtkActor::New(),
                                  vtkActor::New(),
@@ -90,6 +91,7 @@ int main(int argc, char *argv[])
   for (; i < 30; i++ )
     {
     ContourMeshStructure element(i,
+                                 0,
                                  vtkActor::New(),
                                  vtkActor::New(),
                                  vtkActor::New(),

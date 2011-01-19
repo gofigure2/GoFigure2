@@ -459,8 +459,9 @@ protected:
   /** todo once lineage container is set up, the bool track needs to be
     removed*/
   /**
-  \brief delete the traces from the database,TW,visu container, udpate the collectionof
-  collectionID in database and TW and update the bounding box of the collection
+  \brief delete the checked traces from the database,TW,visu container, 
+  udpate the collectionof collectionID in database and TW and update the 
+  bounding box of the collection
   \param[in] iTraceManager the manager for the trace expl: mesh_manager
   \param[in] iCollectionManager the manager for the collection expl: track
   \param[in] iCollectionOfManager the manager for the collectioof expl: contour
@@ -469,36 +470,82 @@ protected:
   \tparam TCollection children of QGoDBTraceManager
   */
   template< typename TTrace, typename TCollection, typename TCollectionOf >
-  void DeleteTraces(TTrace *iTraceManager,
+  void DeleteCheckedTraces(TTrace *iTraceManager,
                     TCollection *iCollectionManager, TCollectionOf *iCollectionOfManager,
                     bool track = false)
   {
-    this->OpenDBConnection();
-    //need to get all the needed data from the traces before deleting them:
     std::list< unsigned int > ListTracesToDelete =
       iTraceManager->GetListHighlightedIDs();
+    std::list<unsigned int> ListCollectionsIDs = 
+      this->UpdateCollectionDataForTracesToBeDeleted<TTrace, TCollectionOf>
+      (iTraceManager, iCollectionOfManager, ListTracesToDelete);
+    this->OpenDBConnection();
+    iTraceManager->DeleteCheckedTraces(this->m_DatabaseConnector);
+    if ( !ListCollectionsIDs.empty() || track )
+      {
+      iCollectionManager->UpdateBoundingBoxes(this->m_DatabaseConnector, ListCollectionsIDs);
+      }
+    this->CloseDBConnection();
+  }
+
+  /**
+  \brief delete the traces of iListTracesToDelete from the database,TW,
+  visu container, udpate the collectionof collectionID in database and TW and update the 
+  bounding box of the collection
+  \param[in] iTraceManager the manager for the trace expl: mesh_manager
+  \param[in] iCollectionManager the manager for the collection expl: track
+  \param[in] iCollectionOfManager the manager for the collectioof expl: contour
+  \param[in] iListTracesToDelete list of the traceIDs to be deleted
+  \param[in] track if the trace is track, track is set to true
+  \tparam TTrace children of QGoDBTraceManager
+  \tparam TCollection children of QGoDBTraceManager
+  */
+  template< typename TTrace, typename TCollection, typename TCollectionOf >
+  void DeleteListTraces(TTrace *iTraceManager,
+                    TCollection *iCollectionManager, TCollectionOf *iCollectionOfManager,
+                    std::list<unsigned int> iListTracesToDelete,
+                    bool track = false)
+  {
+    std::list<unsigned int> ListCollectionsIDs =
+      this->UpdateCollectionDataForTracesToBeDeleted<TTrace, TCollectionOf>
+      (iTraceManager, iCollectionOfManager, iListTracesToDelete);
+    this->OpenDBConnection();
+    iTraceManager->DeleteListTraces(this->m_DatabaseConnector, iListTracesToDelete);
+    if ( !ListCollectionsIDs.empty() || track )
+      {
+      iCollectionManager->UpdateBoundingBoxes(this->m_DatabaseConnector, ListCollectionsIDs);
+      }
+    this->CloseDBConnection();
+  }
+  /**
+  \brief udpate the collectionof collectionID in database and TW 
+  \param[in] iTraceManager the manager for the trace expl: mesh_manager
+  \param[in] iCollectionOfManager the manager for the collectioof expl: contour
+  \param[in] track if the trace is track, track is set to true
+  \param[in] iListTracesToDelete list of the traceIDs to be deleted
+  \tparam TTrace children of QGoDBTraceManager
+  \tparam TCollectionOf children of QGoDBTraceManager
+  */
+  template< typename TTrace, typename TCollectionOf >
+  std::list<unsigned int> UpdateCollectionDataForTracesToBeDeleted(TTrace *iTraceManager,
+                        TCollectionOf *iCollectionOfManager,
+                        std::list<unsigned int> iListTracesToDelete)
+  {
+    this->OpenDBConnection();
+    //need to get all the needed data from the traces before deleting them:
     std::list< unsigned int > ListCollectionsIDs =
-      iTraceManager->GetListCollectionIDs(this->m_DatabaseConnector, ListTracesToDelete);
+      iTraceManager->GetListCollectionIDs(this->m_DatabaseConnector, iListTracesToDelete);
     std::list< unsigned int > ListTracesAsCollectionOf =
       iTraceManager->GetListTracesIDsFromThisCollectionOf(this->m_DatabaseConnector,
-                                                          ListTracesToDelete);
-
-    iTraceManager->DeleteTraces(this->m_DatabaseConnector);
-
+                                                          iListTracesToDelete);
     if ( !ListTracesAsCollectionOf.empty() )
       {
       iCollectionOfManager->UpdateCollectionID(this->m_DatabaseConnector,
                                                ListTracesAsCollectionOf, 0);
       }
-
-    if ( !ListCollectionsIDs.empty() || track )
-      {
-      iCollectionManager->UpdateBoundingBoxes(this->m_DatabaseConnector, ListCollectionsIDs);
-      }
-
     this->CloseDBConnection();
+    return ListCollectionsIDs;
   }
-
   /**
   \brief change the collectionIDs to iCollectionID for the traces in iListCheckedTraces,
   and update the bounding boxes of the previous collection the traces were part of
@@ -530,6 +577,21 @@ protected:
   }
 
   void UpdateSelectedCollectionForTableWidget(std::string iTableName);
+  
+  /**
+  \brief add the meshes to the iTrackID after checking that there are no
+  meshes at the same timepoint in the same track, if so, won't change the
+  trackid of these meshes
+  \param[in] iListMeshes list of the meshes to be part of the itrackID
+  \param[in] iTrackID new track to be assigned to these meshes
+  */
+  void AddListMeshesToATrack(std::list< unsigned int > iListMeshes, unsigned int iTrackID);
+
+  /**
+  \overload
+  */
+  void AddListMeshesToATrack(
+    std::map<unsigned int, std::list<unsigned int> > iListMeshesWithTracks);
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -579,19 +641,19 @@ protected slots:
   \brief slot connected to the signal TracesToDelete() emitted by the
   m_ContoursManager
   */
-  void DeleteContours();
+  void DeleteCheckedContours();
 
   /**
-  \brief slot connected to the signal Traces DeleteTracesToDelete() emitted by the
+  \brief slot connected to the signal Traces TracesToDelete() emitted by the
   m_MeshesManager
   */
-  void DeleteMeshes();
+  void DeleteCheckedMeshes();
 
   /**
   \brief slot connected to the signal TracesToDelete() emitted by the
   m_TracksManager
   */
-  void DeleteTracks();
+  void DeleteCheckedTracks();
 
   /**
   \brief create a new track and call the AddCheckedTracesToCollection template method
@@ -599,6 +661,12 @@ protected slots:
   \param[in] iListMeshes list of the meshIDs to belong to the new track
   */
   void CreateNewTrackFromListMeshes(std::list< unsigned int > iListMeshes);
+
+  /**
+  \overload
+  */
+  void CreateNewTrackFromListMeshes(
+    std::list<std::list<unsigned int> > iListsCheckedMeshes);
 
   /**
   \brief slot connected to the signal NewCollectionFromCheckedTraces() emitted by
@@ -639,7 +707,22 @@ protected slots:
   */
   void PassMeshesInfoForImportedTrack(unsigned int iTrackID);
 
+  /**
+  \brief split the checked track: a new track is created with the checked mesh
+  and the meshes with timepoint sup and the checked track is updated.
+  \param[in] iTrackID ID for the checked track
+  \param[in] iListMeshIDs meshes belonging to the iTrackID before the split
+  */
   void SplitTheTrack(unsigned int iTrackID, std::list<unsigned int> iListMeshIDs);
+
+  /**
+  \brief slot called after signal TrackIDToBeModifiedWithWidget sent by
+  tracksManager, display the checked tracks in a widget allowing the user to 
+  split and merge them and save the results in the database if the user clicks 
+  the OK button
+  \param[in] iTrackIDs checked tracks
+  */
+  void SplitMergeTracksWithWidget(std::list<unsigned int> iTrackIDs);
 
   //*********************Slots for
   // TraceManualEditingWidget:**************************

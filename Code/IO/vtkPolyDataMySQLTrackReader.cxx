@@ -39,6 +39,7 @@
 #include "vtkCellArray.h"
 #include "vtkPolyData.h"
 #include "vtkIntArray.h"
+#include "vtkDoubleArray.h"
 #include "vtkPointData.h"
 
 #include "vtkPolyDataMapper.h"
@@ -130,6 +131,14 @@ GetPolyData(const std::string & iString)
 
     //add the temporal information
     polyData->GetPointData()->AddArray(temporalArray);
+
+    vtkSmartPointer<vtkDoubleArray> speedArray =
+        vtkSmartPointer<vtkDoubleArray>::New();
+    speedArray->SetNumberOfComponents(1);
+    speedArray->SetName("SpeedInformation");
+    polyData->GetPointData()->AddArray(speedArray);
+
+    //polyData->GetPointData()->SetScalars(temporalArray);
 
     return polyData;
     }

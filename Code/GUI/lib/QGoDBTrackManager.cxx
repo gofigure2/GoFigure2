@@ -102,7 +102,8 @@ void QGoDBTrackManager::DisplayInfoAndLoadVisuContainerForAllTracks(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBTrackManager::DisplayInfoForLastCreatedTrace(vtkMySQLDatabase *iDatabaseConnector)
+void QGoDBTrackManager::DisplayInfoForLastCreatedTrace(
+  vtkMySQLDatabase *iDatabaseConnector)
 {
   this->DisplayInfoForLastCreatedTraceTemplate< GoDBTWContainerForTrackLineage >(
     this->m_TWContainer, iDatabaseConnector);
@@ -147,7 +148,7 @@ std::list< unsigned int > QGoDBTrackManager::UpdateTheTracesColor(
   vtkMySQLDatabase *iDatabaseConnector)
 {
   return this->UpdateTheTracesColorTemplate< GoDBTrackRow,
-    TrackContainer >(iDatabaseConnector,this->m_TrackContainerInfoForVisu);
+    TrackContainer >(iDatabaseConnector, this->m_TrackContainerInfoForVisu);
 }
 
 //-------------------------------------------------------------------------
@@ -164,10 +165,19 @@ void QGoDBTrackManager::UpdateTWAndContainerForImportedTraces(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBTrackManager::DeleteTraces(vtkMySQLDatabase *iDatabaseConnector)
+void QGoDBTrackManager::DeleteCheckedTraces(vtkMySQLDatabase *iDatabaseConnector)
 {
   this->DeleteTracesTemplate<TrackContainer>(iDatabaseConnector,
     this->m_TrackContainerInfoForVisu);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTrackManager::DeleteListTraces(vtkMySQLDatabase *iDatabaseConnector,
+  std::list<unsigned int> iListTraces)
+{
+  this->DeleteTracesTemplate<TrackContainer>(iDatabaseConnector,
+    this->m_TrackContainerInfoForVisu, iListTraces, false);
 }
 //-------------------------------------------------------------------------
 
@@ -197,21 +207,11 @@ void QGoDBTrackManager::UpdateVisibleElementsInVisuContainer(int iTraceID)
 
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::GetTracesInfoFromDBAndModifyContainerForVisu(
-  vtkMySQLDatabase* iDatabaseConnector,std::vector<int> iVectIDs)
+  vtkMySQLDatabase* iDatabaseConnector,
+  std::list<unsigned int> iListTraceIDs)
 {
-  std::list<TrackStructure> list_of_traces;
-  GetTracesInfoFromDBAndModifyContainer(
-      list_of_traces,
-      iDatabaseConnector, this->m_TraceName, this->m_CollectionName,
-      this->m_ImgSessionID,iVectIDs);
-
-  std::list< TrackStructure >::iterator it = list_of_traces.begin();
-
-  while ( it != list_of_traces.end() )
-    {
-    this->m_TrackContainerInfoForVisu->Insert(*it);
-    ++it;
-    }
+  this->GetTracesInfoFromDBAndModifyContainerForVisuTemplate<TrackContainer>(
+    this->m_TrackContainerInfoForVisu, iDatabaseConnector, iListTraceIDs);
 }
 //-------------------------------------------------------------------------
 
@@ -238,6 +238,16 @@ void QGoDBTrackManager::SaveTrackCurrentElement(
     {
     this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
     }
+
+  /*
+  std::vector< std::string > ColumnNames (2);
+  std::vector< std::string > Values (2);
+  ColumnNames.at(0) = "SurfaceArea";
+  Values.at(0) = ConvertToString< double >(iMeshAttributes->m_Area);
+  ColumnNames.at(1) = "Volume";
+  Values.at(1) = ConvertToString< double >(iMeshAttributes->m_Volume);
+  // Update TableWidget
+  this->m_Table->AddValuesForID(ColumnNames, Values, TrackID, "trackID");*/
 }
 //-------------------------------------------------------------------------
 
@@ -285,19 +295,25 @@ void QGoDBTrackManager::SetColorCoding(bool IsChecked)
 void QGoDBTrackManager::AddActionsContextMenu(QMenu *iMenu)
 {
   QGoDBTraceManager::AddActionsContextMenu(iMenu);
-  //QMenu* SplitMenu = new QMenu(tr("Split your track"),iMenu);
-  //SplitMenu->addAction(tr("Using the Widget"),
-  //                     this, SLOT( SplitTrackWithWidget() ) );
-  //QAction* SplitMenuAction = SplitMenu->menuAction(); 
-  QAction* SplitMenuAction = new QAction(tr("Split your track"),iMenu);
-  QObject::connect(SplitMenuAction, SIGNAL( triggered() ),
-    this, SLOT(TrackIDToEmit() ) );
+  QMenu* SplitMenu = new QMenu(tr("Split"),iMenu);
 
-  iMenu->addAction(SplitMenuAction);
+  SplitMenu->addAction(tr("Your track"), this, SLOT(TrackIDToEmit() ) );
+  SplitMenu->addAction(tr("Using the Widget"),
+                       this, SLOT( SplitTrackWithWidget() ) );
+  iMenu->addAction(SplitMenu->menuAction() );
+  //QAction* SplitMenuAction = SplitMenu->menuAction(); 
+  //QAction* SplitMenuAction = new QAction(tr("Split your track"),iMenu);
+  //QObject::connect(iMenu,activated(int) , SLOT(SelectionClick(int)
+  //iMenu->connectItem(res, this, SLOT(SelectionClick(int)));
+
+  //QObject::connect(SplitMenuAction, SIGNAL( triggered() ),
+    //this, SLOT(TrackIDToEmit() ) );
+
+  //iMenu->addAction(SplitMenuAction);
 }
 //-------------------------------------------------------------------------
 
-//-------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 void QGoDBTrackManager::TrackIDToEmit()
 {
   std::list<unsigned int> HighlightedTrackIDs = 
@@ -307,8 +323,7 @@ void QGoDBTrackManager::TrackIDToEmit()
     {
     QMessageBox msgBox;
     msgBox.setText(
-      tr("Please select one and only one Track to be split")
-      .arg( this->m_TraceName.c_str() ) );
+      tr("Please select one and only one Track to be split"));
     msgBox.exec();
     }
   else
@@ -326,7 +341,7 @@ void QGoDBTrackManager::TrackIDToEmit()
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::SplitTrackWithWidget()
 {
-  std::list <std::pair<unsigned int, std::list<unsigned int> > >TrackIDWithMeshIDs;
+  /*std::list <std::pair<unsigned int, std::list<unsigned int> > >TrackIDWithMeshIDs;
   std::list<unsigned int> CheckedTracks = 
     this->m_TrackContainerInfoForVisu->GetHighlightedElementsTraceID();
   std::list<unsigned int>::iterator iter = CheckedTracks.begin();
@@ -338,7 +353,21 @@ void QGoDBTrackManager::SplitTrackWithWidget()
     TrackID.push_back(*iter);
     temp.second = this->GetListTracesIDsFromThisCollectionOf(this->m_DatabaseConnector,TrackID);
     iter++;
-  }
+  }*/
+  std::list<unsigned int> HighlightedTrackIDs = 
+    this->m_TrackContainerInfoForVisu->GetHighlightedElementsTraceID();
+
+  if (HighlightedTrackIDs.size() == 0)
+    {
+    QMessageBox msgBox;
+    msgBox.setText(
+      tr("Please select at least one Track to be visualized in the widget"));
+    msgBox.exec();
+    }
+  else
+    {
+    emit TrackIDToBeModifiedWithWidget(HighlightedTrackIDs);
+    }
 }
 //-------------------------------------------------------------------------
 

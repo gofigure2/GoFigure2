@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>94</width>
-    <height>93</height>
+    <width>169</width>
+    <height>121</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,17 +15,39 @@
   </property>
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
-     <widget class="QCheckBox" name="glyph">
+    <item row="1" column="0">
+     <widget class="QCheckBox" name="time">
       <property name="text">
-       <string>Glyph</string>
+       <string>Time Color code</string>
+      </property>
+      <property name="autoExclusive">
+       <bool>true</bool>
+      </property>
+      <property name="tristate">
+       <bool>false</bool>
       </property>
      </widget>
     </item>
-    <item row="1" column="0">
-     <widget class="QCheckBox" name="tube">
+    <item row="2" column="0">
+     <widget class="QCheckBox" name="speed">
       <property name="text">
-       <string>Tube</string>
+       <string>Speed Color Code</string>
+      </property>
+      <property name="autoExclusive">
+       <bool>true</bool>
+      </property>
+      <property name="tristate">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QCheckBox" name="real">
+      <property name="text">
+       <string>Real Color Code</string>
+      </property>
+      <property name="autoExclusive">
+       <bool>true</bool>
       </property>
      </widget>
     </item>

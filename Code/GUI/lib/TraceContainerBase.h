@@ -74,6 +74,9 @@ public:
   typedef typename MultiIndexContainerType::template index< TraceID >::type::iterator
   MultiIndexContainerTraceIDIterator;
 
+  typedef typename MultiIndexContainerType::template index< CollectionID >::type::iterator
+  MultiIndexContainerCollectionIDIterator;
+
   typedef typename MultiIndexContainerType::template index< Highlighted >::type::iterator
   MultiIndexContainerHighlightedIterator;
 
@@ -137,6 +140,8 @@ public:
     \brief Get property for highlighted traces
   */
   vtkProperty * GetHighlightedProperty();
+
+  unsigned int GetCollectionIDOfGivenTraceID( unsigned int iTraceID);
 
   /**
     \brief Update Visualization of the given TraceIDs
@@ -290,12 +295,36 @@ public:
   vtkPolyData* GetCurrentElementNodes();
 
   /**
+    \brief Get the color of the current element track
+    \return Pointer to the current element color
+  */
+  double* GetCurrentElementColor();
+
+  std::vector<vtkActor*> GetActorGivenTraceID( unsigned int iTraceID );
+
+  /**
   \brief put the information of the existing element into m_CurrentElement
   and remove the existing element from the container,the visu and the memory
   \param[in] iTraceID ID of the existing element
   \return true if the element was found in the container, false if not
   */
   bool UpdateCurrentElementFromExistingOne(unsigned int iTraceID);
+
+  template< class TIndex >
+  bool UpdateCurrentElementFromExistingOne(
+    typename MultiIndexContainerType::template index< TIndex >::type::iterator iIt )
+    {
+    using boost::multi_index::get;
+
+    // update current element
+    this->m_CurrentElement = *iIt;
+
+    // clean the container but don't erase the pointers since we still have the
+    // adresses in the m_CurrentElement
+    m_Container.get< TIndex >().erase( iIt );
+
+    return true;
+    }
 
   /**
     \brief Update element visibility given it TraceId

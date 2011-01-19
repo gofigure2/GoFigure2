@@ -336,7 +336,7 @@ void QGoDBMeshManager::UpdateTWAndContainerForImportedTraces(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBMeshManager::DeleteTraces(vtkMySQLDatabase *iDatabaseConnector)
+void QGoDBMeshManager::DeleteCheckedTraces(vtkMySQLDatabase *iDatabaseConnector)
 {
   this->DeleteTracesTemplate<ContourMeshContainer>(iDatabaseConnector,
     this->m_MeshContainerInfoForVisu);
@@ -369,21 +369,32 @@ void QGoDBMeshManager::UpdateVisibleElementsInVisuContainer(int iTraceID)
 
 //-------------------------------------------------------------------------
 void QGoDBMeshManager::GetTracesInfoFromDBAndModifyContainerForVisu(
-  vtkMySQLDatabase* iDatabaseConnector,std::vector<int> iVectIDs)
+  vtkMySQLDatabase* iDatabaseConnector, std::list<unsigned int> iListTraceIDs)
 {
-  std::list<ContourMeshStructure> list_of_traces;
-  GetTracesInfoFromDBAndModifyContainer(
-      list_of_traces,
-      iDatabaseConnector, this->m_TraceName, this->m_CollectionName,
-      this->m_ImgSessionID, iVectIDs);
+  this->GetTracesInfoFromDBAndModifyContainerForVisuTemplate<MeshContainer>(
+    this->m_MeshContainerInfoForVisu, iDatabaseConnector, iListTraceIDs);
+}
+//-------------------------------------------------------------------------
 
-  std::list< ContourMeshStructure >::iterator it = list_of_traces.begin();
+//-------------------------------------------------------------------------
+MeshContainer* QGoDBMeshManager::GetMeshesInfoFromDBAndCreateContainerForVisu(
+  vtkMySQLDatabase* iDatabaseConnector, std::list<unsigned int> iListCollectionIDs)
+{
+  std::list<unsigned int> ListMeshesInvolved = 
+    this->GetListTracesIDsBelongingToCollectionIDs(iDatabaseConnector, iListCollectionIDs);
+  MeshContainer* oMeshContainer = new MeshContainer(this, NULL);
+  std::list<ContourMeshStructure> ListMeshesInfo = 
+    this->m_CollectionOfTraces->GetListStructureFromDB<ContourMeshStructure>(
+    iDatabaseConnector, this->m_ImgSessionID, ListMeshesInvolved);
 
-  while ( it != list_of_traces.end() )
+  std::list< ContourMeshStructure >::iterator it = ListMeshesInfo.begin();
+
+  while ( it != ListMeshesInfo.end() )
     {
-    this->m_MeshContainerInfoForVisu->Insert(*it);
+    oMeshContainer->Insert(*it);
     ++it;
     }
+  return oMeshContainer;
 }
 //-------------------------------------------------------------------------
 
@@ -499,12 +510,13 @@ QString QGoDBMeshManager::CheckExistingMeshesForTheTrack(
 
 //-------------------------------------------------------------------------
 QString QGoDBMeshManager::CheckExistingMeshesForTheTrack(
-   unsigned int iTrackID,vtkMySQLDatabase* iDatabaseConnector,std::list<unsigned int> iListMeshIDs)
+   unsigned int iTrackID,vtkMySQLDatabase* iDatabaseConnector,
+   std::list<unsigned int> & ioListMeshIDs)
 {
   QString MessageQString("");
   std::string MessageToPrint = "";
   std::list<unsigned int> ListTimePoints =
-    this->m_CollectionOfTraces->GetListTimePointsFromTraceIDs(iDatabaseConnector,iListMeshIDs);
+    this->m_CollectionOfTraces->GetListTimePointsFromTraceIDs(iDatabaseConnector,ioListMeshIDs);
   if (!ListTimePoints.empty())
   {
   std::string MeshIDToPrint = "";
@@ -609,24 +621,21 @@ std::string QGoDBMeshManager::CheckListMeshesFromDifferentTimePoints(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::pair<std::list<unsigned int>,std::list<unsigned int> >
-QGoDBMeshManager::GetMeshesForSplittedTrack(
+std::list<unsigned int> 
+  QGoDBMeshManager::GetMeshesWithTimePointSupOrEqualToTheCheckedOne(
   unsigned int iTrackID, vtkMySQLDatabase* iDatabaseConnector,
   std::list<unsigned int> iListMeshesBelongingToTrack)
 {
-  std::pair<std::list<unsigned int>,std::list<unsigned int> > ListMeshes =
-    std::pair<std::list<unsigned int>,std::list<unsigned int> >();
+  std::list<unsigned int> oListMeshesTimePointSup = std::list<unsigned int>();
   std::pair<unsigned int, unsigned int> InfoSplitMesh =
     this->GetInfoForTheOnlyOneCheckedMeshOfTheTrack(iDatabaseConnector, iTrackID);
   if (InfoSplitMesh.first != 0)
     {
-    ListMeshes.first = this->m_CollectionOfTraces->GetTraceIDsWithTimePointInf(
-      iDatabaseConnector,iListMeshesBelongingToTrack,InfoSplitMesh.second);
-    ListMeshes.second = this->m_CollectionOfTraces->GetTraceIDsWithTimePointSup(
-      iDatabaseConnector,iListMeshesBelongingToTrack,InfoSplitMesh.second);
-    ListMeshes.second.push_back(InfoSplitMesh.first);
+    oListMeshesTimePointSup = this->m_CollectionOfTraces->GetTraceIDsWithTimePointSup(
+      iDatabaseConnector, iListMeshesBelongingToTrack, InfoSplitMesh.second);
+    oListMeshesTimePointSup.push_back(InfoSplitMesh.first);
     }
-  return ListMeshes;
+  return oListMeshesTimePointSup;
 }
 //-------------------------------------------------------------------------
 

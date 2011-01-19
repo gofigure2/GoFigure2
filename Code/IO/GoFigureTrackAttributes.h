@@ -32,18 +32,25 @@
 
 =========================================================================*/
 
-#ifndef __StructureHelper_h
-#define __StructureHelper_h
+#ifndef __GoFigureTrackAttributes_h
+#define __GoFigureTrackAttributes_h
 
-struct TraceID {};
-struct CollectionID {};
-struct ActorXY {};
-struct ActorXZ {};
-struct ActorYZ {};
-struct ActorXYZ {};
-struct Nodes {};
-struct TCoord {};
-struct Highlighted {};
-struct Visible {};
+#include <map>
+#include <string>
+#include "QGoIOConfigure.h"
 
+struct QGOIO_EXPORT GoFigureTrackAttributes {
+  // total distance (add each segment size)
+  double total_length;
+  // average speed
+  double avg_speed;
+  // maximum speed
+  double max_speed;
+  // euclidian distance between first and last points
+  double distance;
+  // theta in spherical coordinate system
+  double theta;
+  // phi in spherical coordinate system
+  double phi;
+};
 #endif

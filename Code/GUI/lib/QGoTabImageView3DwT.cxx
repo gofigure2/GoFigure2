@@ -105,6 +105,9 @@
 // track dockwidget
 #include "QGoTrackDockWidget.h"
 
+//trackediting dw
+#include "QGoTrackEditingWidget.h"
+
 // TESTS
 #include "vtkPolyDataWriter.h"
 #include "vtkViewImage3D.h"
@@ -176,6 +179,20 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent):
                     this,
                     SLOT( UpdateTracksAppearance(bool, bool) ) );
 
+  QObject::connect( m_TrackDockWidget,
+                    SIGNAL( ColorCodeTracksByTime(bool) ),
+                    m_TrackContainer,
+                    SLOT( ColorCodeTracksByTime(bool) ) );
+
+  QObject::connect( m_TrackDockWidget,
+                    SIGNAL( ColorCodeTracksBySpeed(bool) ),
+                    m_TrackContainer,
+                    SLOT( ColorCodeTracksBySpeed(bool) ) );
+
+  QObject::connect( m_TrackDockWidget,
+                    SIGNAL( ColorCodeTracksByOriginalColor(bool) ),
+                    m_TrackContainer,
+                    SLOT( ColorCodeTracksByOriginalColor(bool) ) );
 
   CreateDataBaseTablesConnection();
 
@@ -3112,6 +3129,7 @@ QGoTabImageView3DwT::GoToLocation(int iX, int iY, int iZ, int iT)
   this->SetSliceViewXZ(iY);
   this->SetSliceViewYZ(iX);
 }
+//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
@@ -3120,3 +3138,4 @@ UpdateTracksAppearance(bool iGlyph, bool iTube)
 {
   m_TrackContainer->UpdateTracksReprensentation( iGlyph, iTube );
 }
+//-------------------------------------------------------------------------

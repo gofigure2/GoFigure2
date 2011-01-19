@@ -150,7 +150,7 @@ public:
   virtual vtkActor * AddDataSet(vtkDataSet *dataset,
                                 vtkProperty *property = NULL,
                                 const bool & intersection = true,
-                                const bool & iDataVisibility = true);
+                                const bool & iDataVisibility = false);
 
   /**
      Set/Get the current slice to display (depending on the orientation

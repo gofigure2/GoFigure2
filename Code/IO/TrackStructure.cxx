@@ -38,6 +38,9 @@
 #include "vtkPolyData.h"
 #include "vtkActor.h"
 
+#include "vtkDoubleArray.h"
+#include "vtkPointData.h"
+
 #include "vtkSphereSource.h"
 #include "vtkGlyph3D.h"
 #include "vtkTubeFilter.h"
@@ -440,37 +443,63 @@ UpdateTracksRepresentation( bool iGlyph, bool iTube ) const
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void TrackStructure::ComputeAttributes()
+GoFigureTrackAttributes
+TrackStructure::
+ComputeAttributes()
 {
-  PointsMapConstIterator it = this->PointsMap.begin();
-  double total_length = 0.;
-  double distance = 0.;
-  double avg_speed = 0.;
-  double max_speed = 0.;
-  unsigned int t0, t1;
-  double dist;
+  GoFigureTrackAttributes attributes;
 
+  attributes.total_length = 0.;
+  attributes.distance = 0.;
+  attributes.avg_speed = 0.;
+  attributes.max_speed = 0.;
+  unsigned int t0, t1;
+  attributes.theta = 0.;
+  attributes.phi = 90.;
+
+  PointsMapConstIterator it = this->PointsMap.begin();
   unsigned int tmin = it->first;
   t0 = tmin;
   double* org = it->second;
   double* p = it->second;
-  double* q = NULL;
+  double* q = it->second; // if we only have one point in the map
   ++it;
+
+  vtkDoubleArray* newArray =
+      dynamic_cast<vtkDoubleArray*>(this->Nodes->GetPointData()->GetArray("SpeedInformation"));
+  newArray->Reset();
+  newArray->InsertNextValue(0.0);
 
   while( it != this->PointsMap.end() )
     {
     t1 = it->first;
     q = it->second;
-    dist = sqrt( vtkMath::Distance2BetweenPoints( p, q ) );
-    total_length += dist;
-    max_speed = std::max( max_speed,
-                          dist / (static_cast< double >( t1 - t0 ) ) );
+    attributes.distance = sqrt( vtkMath::Distance2BetweenPoints( p, q ) );
+    attributes.total_length += attributes.distance;
+    attributes.max_speed = std::max( attributes.max_speed,
+        attributes.distance / (static_cast< double >( t1 - t0 ) ) );
+
+    double speed = attributes.distance / (static_cast< double >( t1 - t0 ) );
+    newArray->InsertNextValue( speed );
+
     p = q;
     t0 = t1;
     ++it;
     }
-  distance = sqrt( vtkMath::Distance2BetweenPoints( org, q ) );
-  avg_speed = total_length / static_cast< double >( t1 - tmin );
+  attributes.avg_speed = attributes.total_length /
+                         static_cast< double >( t1 - tmin );
+
+  attributes.distance = sqrt( vtkMath::Distance2BetweenPoints( org, q ) );
+
+  if(attributes.distance)
+    {
+    attributes.theta = vtkMath::DegreesFromRadians( atan2( ( q[1] - org[1] ),
+                                                           ( q[0] - org[0] ) ) );
+    attributes.phi   = vtkMath::DegreesFromRadians( acos( ( q[2] - org[2] ) /
+                                                         attributes.distance ) );
+    }
+
+  return attributes;
 }
 
 //--------------------------------------------------------------------------

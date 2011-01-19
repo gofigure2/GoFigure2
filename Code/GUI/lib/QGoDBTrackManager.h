@@ -83,8 +83,19 @@ public:
   //virtual pure method in QGoDBTraceManager
   virtual void UpdateTWAndContainerForImportedTraces(std::vector< int > iVectorImportedTraces,
                                                      vtkMySQLDatabase *iDatabaseConnector);
+  
+  /**
+  \brief delete the traces of the list from the database, the TW and the
+  container for visu
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iListTraces list of the tracesIDs to be deleted
+
+  */
+  void DeleteListTraces(vtkMySQLDatabase *iDatabaseConnector,
+    std::list<unsigned int> iListTraces);
+
   //virtual pure method in QGoDBTraceManager
-  virtual void DeleteTraces(vtkMySQLDatabase *iDatabaseConnector);
+  virtual void DeleteCheckedTraces( vtkMySQLDatabase *iDatabaseConnector);
 
    //virtual pure method in QGoDBTraceManager
   virtual std::list< unsigned int > GetListHighlightedIDs();
@@ -109,6 +120,7 @@ public:
 signals:
   void NeedMeshesInfoForImportedTrack(unsigned int iTrackID);
   void TrackToSplit(unsigned int iTrackID, std::list<unsigned int> iListMeshIDs);
+  void TrackIDToBeModifiedWithWidget(std::list<unsigned int> iListTracksID);
 
 protected:
   GoDBTWContainerForTrackLineage *m_TWContainer;
@@ -122,7 +134,8 @@ protected:
 
   //virtual pure method in QGoDBTraceManager
   virtual void GetTracesInfoFromDBAndModifyContainerForVisu(
-    vtkMySQLDatabase* iDatabaseConnector,std::vector<int> iVectIDs = std::vector< int >());
+    vtkMySQLDatabase* iDatabaseConnector,
+    std::list<unsigned int> iListTraceIDs = std::list< unsigned int >());
 
   /**
   \brief get the center of bounding boxes from the database for the meshes
@@ -157,6 +170,6 @@ protected slots:
   void SplitTrackWithWidget();
 
   void TrackIDToEmit();
-
+  //void SelectionClick(int iID);
 };
 #endif
