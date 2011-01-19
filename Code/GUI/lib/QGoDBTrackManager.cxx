@@ -347,3 +347,31 @@ void QGoDBTrackManager::SplitTrackWithWidget()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoDBTrackManager::DisplayOnlyCalculatedValuesForExistingTrack(
+  GoFigureTrackAttributes *iTrackAttributes, unsigned iTrackID)
+{
+  if ( iTrackAttributes != 0 )
+    {
+    std::vector< std::string > ColumnNames (6);
+    std::vector< std::string > Values (6);
+
+    ColumnNames.at(0) = "Deplacement";
+    Values.at(0) = ConvertToString< double >(iTrackAttributes->total_length);
+    ColumnNames.at(1) = "Distance";
+    Values.at(1) = ConvertToString< double >(iTrackAttributes->distance);
+    ColumnNames.at(0) = "Theta";
+    Values.at(0) = ConvertToString< double >(iTrackAttributes->theta);
+    ColumnNames.at(0) = "Phi";
+    Values.at(0) = ConvertToString< double >(iTrackAttributes->phi);
+    ColumnNames.at(0) = "AvgSpeed";
+    Values.at(0) = ConvertToString< double >(iTrackAttributes->avg_speed);
+    ColumnNames.at(0) = "MaxSpeed";
+    Values.at(0) = ConvertToString< double >(iTrackAttributes->max_speed);
+
+    this->m_Table->AddValuesForID(ColumnNames, Values, iTrackID, "trackID");
+    }
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------

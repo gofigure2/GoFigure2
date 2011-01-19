@@ -42,6 +42,7 @@
 #include "QGoGUILibConfigure.h"
 #include "TrackContainer.h"
 
+
 class QGOGUILIB_EXPORT QGoDBTrackManager:public QGoDBTraceManager
 {
   Q_OBJECT
@@ -67,6 +68,15 @@ public:
   */
   void DisplayInfoAndLoadVisuContainerForAllTracks(
     vtkMySQLDatabase *iDatabaseConnector);
+
+  /**
+  \brief display in the TW the values extracted from iTrackAttributes
+  * called when loading all tracks from database when opening an imagingsession
+  \param[in] iTrackAttributes computed values for a track
+  \param[in] iTrackID trackID of the track we want to display the values
+  */
+  void DisplayOnlyCalculatedValuesForExistingTrack(
+    GoFigureTrackAttributes *iTrackAttributes, unsigned iTrackID);
 
   /**
   \brief create a new track with no mesh and no points in the database, add it in the

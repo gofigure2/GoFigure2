@@ -42,12 +42,16 @@
 */
 class QGOIO_EXPORT GoDBTWContainerForTrack:public GoDBTWContainerForTrackLineage
 {
+
 public:
   GoDBTWContainerForTrack(int iImgSessionID);
   ~GoDBTWContainerForTrack();
 
 protected:
 
+  /**
+  \brief add the specific info for a track to the columns description
+  */
   void SetSpecificInfoForTrackTable();
 };
 #endif
