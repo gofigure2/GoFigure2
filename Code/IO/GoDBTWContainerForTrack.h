@@ -72,6 +72,9 @@ protected:
   */
   void FillRowContainerForTrackComputedValues(int iTrackID);
 
+  /**
+  \brief 
+  */
   void GetValuesAndNamesForTrackComputedValues(GoFigureTrackAttributes* iTrackAttributes,
     std::vector<std::vector<std::string> > &ioValues, std::vector<std::string> &ioNames);
 };

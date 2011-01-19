@@ -100,16 +100,6 @@ void QGoDBTrackManager::DisplayInfoAndLoadVisuContainerForAllTracks(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/*void QGoDBTrackManager::DisplayInfoForLastCreatedTrack(
-  vtkMySQLDatabase *iDatabaseConnector, GoFigureTrackAttributes *iTrackAttributes)
-{
-  this->m_TWContainer->SetTrackAttributes(iTrackAttributes);
-  this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
-}*/
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 void QGoDBTrackManager::DisplayInfoForLastCreatedTrace(
   vtkMySQLDatabase *iDatabaseConnector)
 {

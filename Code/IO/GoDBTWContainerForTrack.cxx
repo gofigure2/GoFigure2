@@ -146,7 +146,7 @@ void GoDBTWContainerForTrack::GetValuesAndNamesForTrackComputedValues(
 {
   if ( iTrackAttributes != 0 )
     {
-    std::vector<std::string> temp;
+    std::vector<std::string> temp(1);
     ioNames.push_back("Deplacement");
     temp.at(0) = ConvertToString< double >(iTrackAttributes->total_length);
     ioValues.push_back(temp);   
