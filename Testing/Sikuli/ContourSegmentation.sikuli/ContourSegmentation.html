@@ -85,8 +85,8 @@ address = os.getcwd()
 xyView = <span class="skw">find</span>(Pattern(<img src="XY_ViewRegion.png" />).similar(<span class="dig">0.10</span>))
 <span class="kw">print</span> xyView.x, xyView.y, xyView.h
 
-startx = xyView.x + <span class="dig">100</span>
-starty = xyView.y + xyView.h - <span class="dig">100</span>
+startx = xyView.x + int(round((<span class="dig">0.3</span>)*xyView.w))
+starty = xyView.y + int(round((<span class="dig">0.6</span>)*xyView.h))
 <span class="skw">click</span>(Location(startx,starty))
 <span class="kw">print</span> startx, starty
 <span class="skw">wait</span>(<span class="dig">1</span>)
