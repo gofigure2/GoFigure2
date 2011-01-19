@@ -107,7 +107,7 @@ void GoDBTWContainerForTrack::SetSpecificInfoForTrackTable()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBTWContainerForTrack::SetTrackAttributes(GoFigureTrackAttributes *iTrackAttributes)
+void GoDBTWContainerForTrack::SetTrackAttributes(GoFigureTrackAttributes* iTrackAttributes)
 {
   this->m_TrackAttributes = iTrackAttributes;
 }
@@ -129,5 +129,41 @@ GoDBTWContainerForTrack::GetContainerForOneSpecificTrace(
 //--------------------------------------------------------------------------
 void GoDBTWContainerForTrack::FillRowContainerForTrackComputedValues(int iTrackID)
 {
+  std::vector<std::string> VectorNames;
+  std::vector<std::vector<std::string> > VectorValues;
+  this->GetValuesAndNamesForTrackComputedValues(this->m_TrackAttributes, VectorValues,
+    VectorNames);
+  this->FillRowContainer(VectorValues, VectorNames, "ColumnNameTableWidget");
   this->m_TrackAttributes = 0;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBTWContainerForTrack::GetValuesAndNamesForTrackComputedValues(
+  GoFigureTrackAttributes* iTrackAttributes, 
+  std::vector< std::vector<std::string> > &ioValues, 
+  std::vector<std::string> &ioNames)
+{
+  if ( iTrackAttributes != 0 )
+    {
+    std::vector<std::string> temp;
+    ioNames.push_back("Deplacement");
+    temp.at(0) = ConvertToString< double >(iTrackAttributes->total_length);
+    ioValues.push_back(temp);   
+    ioNames.push_back( "Distance" );
+    temp.at(0) = ConvertToString< double >(iTrackAttributes->distance);
+    ioValues.push_back(temp);   
+    ioNames.push_back("Theta");
+    temp.at(0) = ConvertToString< double >(iTrackAttributes->theta);
+    ioValues.push_back(temp);   
+    ioNames.push_back("Phi");
+    temp.at(0) = ConvertToString< double >(iTrackAttributes->phi);
+    ioValues.push_back(temp);   
+    ioNames.push_back( "AvgSpeed" );
+    temp.at(0) = ConvertToString< double >(iTrackAttributes->avg_speed);
+    ioValues.push_back(temp);   
+    ioNames.push_back( "MaxSpeed" );
+    temp.at(0) = ConvertToString< double >(iTrackAttributes->max_speed);
+    ioValues.push_back(temp);   
+    }
 }

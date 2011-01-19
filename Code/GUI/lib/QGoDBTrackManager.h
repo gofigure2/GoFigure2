@@ -55,6 +55,9 @@ public:
   virtual void DisplayInfoForExistingTrace(vtkMySQLDatabase *iDatabaseConnector,
                                            int iTraceID);
 
+  //void DisplayInfoForLastCreatedTrack(vtkMySQLDatabase *iDatabaseConnector, 
+    //GoFigureTrackAttributes *iTrackAttributes);
+
   /**
   \brief set the m_TrackContainerInfoForVisu to the iContainerForVisu
   \param[in] iContainerForVisu common container for the visu and database

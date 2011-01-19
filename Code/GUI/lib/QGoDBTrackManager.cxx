@@ -100,6 +100,16 @@ void QGoDBTrackManager::DisplayInfoAndLoadVisuContainerForAllTracks(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/*void QGoDBTrackManager::DisplayInfoForLastCreatedTrack(
+  vtkMySQLDatabase *iDatabaseConnector, GoFigureTrackAttributes *iTrackAttributes)
+{
+  this->m_TWContainer->SetTrackAttributes(iTrackAttributes);
+  this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
+}*/
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void QGoDBTrackManager::DisplayInfoForLastCreatedTrace(
   vtkMySQLDatabase *iDatabaseConnector)
 {
@@ -219,6 +229,7 @@ void QGoDBTrackManager::SaveTrackCurrentElement(
 {
   GoDBTrackRow TrackToSave(this->m_ImgSessionID);
   unsigned int TrackID = this->m_TrackContainerInfoForVisu->m_CurrentElement.TraceID;
+  
   if (TrackID != 0)
     {
     TrackToSave.SetValuesForSpecificID(TrackID,iDatabaseConnector);
@@ -232,9 +243,18 @@ void QGoDBTrackManager::SaveTrackCurrentElement(
   //save the track into the container:
   this->m_TrackContainerInfoForVisu->InsertCurrentElement();
 
+  //calculate the values to be put in the table widget:
+  this->m_TWContainer->SetTrackAttributes(
+      &this->m_TrackContainerInfoForVisu->m_CurrentElement.ComputeAttributes());
+
+  //update the table widget:
   if (TrackID == 0)
     {
     this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
+    }
+  else
+    {
+    this->DisplayInfoForExistingTrace(iDatabaseConnector, TrackID);
     }
 }
 //-------------------------------------------------------------------------
@@ -263,7 +283,7 @@ void QGoDBTrackManager::UpdateTrackPolydataForVisu(vtkMySQLDatabase *iDatabaseCo
 void QGoDBTrackManager::UpdateBoundingBoxes(
   vtkMySQLDatabase *iDatabaseConnector,std::list< unsigned int > iListTracesIDs)
 {
-  QGoDBTraceManager::UpdateBoundingBoxes(iDatabaseConnector,iListTracesIDs);
+  QGoDBTraceManager::UpdateBoundingBoxes(iDatabaseConnector,iListTracesIDs, false);
   std::list<unsigned int>::iterator iter = iListTracesIDs.begin();
   while(iter != iListTracesIDs.end())
     {
