@@ -234,8 +234,9 @@ void QGoDBTrackManager::SaveTrackCurrentElement(
   this->m_TrackContainerInfoForVisu->InsertCurrentElement();
 
   //calculate the values to be put in the table widget:
-  this->m_TWContainer->SetTrackAttributes(
-      &this->m_TrackContainerInfoForVisu->m_CurrentElement.ComputeAttributes());
+  GoFigureTrackAttributes trackAttributes(
+      this->m_TrackContainerInfoForVisu->m_CurrentElement.ComputeAttributes());
+  this->m_TWContainer->SetTrackAttributes(&trackAttributes);
 
   //update the table widget:
   if (TrackID == 0)

@@ -52,5 +52,12 @@ struct QGOIO_EXPORT GoFigureTrackAttributes {
   double theta;
   // phi in spherical coordinate system
   double phi;
+
+  // Constructors
+  GoFigureTrackAttributes(){}
+  GoFigureTrackAttributes(const GoFigureTrackAttributes & iE):
+  total_length(iE.total_length), avg_speed(iE.avg_speed),
+  max_speed(iE.max_speed), distance(iE.distance),
+  theta(iE.theta), phi(iE.phi){}
 };
 #endif
