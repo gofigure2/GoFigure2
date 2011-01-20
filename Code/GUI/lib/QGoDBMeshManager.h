@@ -112,7 +112,7 @@ public:
   /**
   \brief update the bounding boxes for the meshes with no points
   */
-  virtual void UpdateBoundingBoxes(vtkMySQLDatabase *iDatabaseConnector,
+  void UpdateBoundingBoxes(vtkMySQLDatabase *iDatabaseConnector,
                            std::list< unsigned int > iListTracesIDs);
 
   //virtual pure method in QGoDBTraceManager

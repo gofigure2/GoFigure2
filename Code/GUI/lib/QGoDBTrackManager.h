@@ -124,7 +124,7 @@ public:
 	  std::map<unsigned int,double*> iMeshesInfo);
 
   //method in QGoDBTraceManager
-  virtual void UpdateBoundingBoxes(
+  void UpdateBoundingBoxes(
   vtkMySQLDatabase *iDatabaseConnector,std::list< unsigned int > iListTracesIDs);
 
 signals:
