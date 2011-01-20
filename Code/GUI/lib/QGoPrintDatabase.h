@@ -192,8 +192,23 @@ public:
   */
   std::vector<int> ImportTracks();
 
+  /**
+  \brief display in the table widget the volume and area from iMeshAttributes
+  for iMeshID 
+  \param[in] iMeshAttributes contains the values to be displayed
+  \param[in] iMeshID ID of the mesh
+  */
   void PrintVolumeAreaForMesh(GoFigureMeshAttributes *
                               iMeshAttributes, unsigned int iMeshID);
+
+  /**
+  \brief display in the table widget the values from iTrackAttributes
+  for iTrackID 
+  \param[in] iTrackAttributes contains the values to be displayed
+  \param[in] iTrackID ID of the track
+  */
+  void PrintCalculatedValuesForTrack(GoFigureTrackAttributes *
+                        iTrackAttributes, unsigned int iTrackID);
 
   /** \brief return the TraceManualEditingDockWidget*/
   QGoTraceManualEditingDockWidget * GetTraceManualEditingDockWidget();

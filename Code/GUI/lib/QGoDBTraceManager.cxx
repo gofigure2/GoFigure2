@@ -351,10 +351,12 @@ std::list< unsigned int > QGoDBTraceManager::GetListCollectionIDs(
 
 //------------------------------------------------------------------------
 void QGoDBTraceManager::UpdateBoundingBoxes(vtkMySQLDatabase *iDatabaseConnector,
-                                            std::list< unsigned int > iListTracesIDs)
+                                            std::list< unsigned int > iListTracesIDs,
+                                            bool UpdateTW)
 {
   this->m_CollectionOfTraces->
     RecalculateDBBoundingBox(iDatabaseConnector, iListTracesIDs);
+  if (UpdateTW)
   this->DisplayInfoForExistingTraces(iDatabaseConnector, iListTracesIDs);
 }
 

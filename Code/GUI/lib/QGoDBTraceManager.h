@@ -144,13 +144,16 @@ public:
 
   /**
   \brief update in the database the bounding boxes corresponding to the
-  TracesIDs and update the corresponding rows in the TW.
+  TracesIDs and update the corresponding rows in the TW if the bool is 
+  set to true.
   \param[in] iDatabaseConnector connection to the database
   \param[in] iListTracesIDs list of the tracesIDs with a bounding box
   to update
+  \param[in] UpdateTW display the updates in the TW
   */
   virtual void UpdateBoundingBoxes(vtkMySQLDatabase *iDatabaseConnector,
-                                   std::list< unsigned int > iListTracesIDs);
+                                   std::list< unsigned int > iListTracesIDs,
+                                   bool UpdateTW = true);
 
   /**
   \brief return the list of collection IDs distinct and different from zero

@@ -37,10 +37,11 @@
 
 #include "QGoTableWidget.h"
 #include "GoDBCollectionOfTraces.h"
-#include "GoDBTWContainerForTrackLineage.h"
+#include "GoDBTWContainerForTrack.h"
 #include "QGoDBTraceManager.h"
 #include "QGoGUILibConfigure.h"
 #include "TrackContainer.h"
+
 
 class QGOGUILIB_EXPORT QGoDBTrackManager:public QGoDBTraceManager
 {
@@ -67,6 +68,15 @@ public:
   */
   void DisplayInfoAndLoadVisuContainerForAllTracks(
     vtkMySQLDatabase *iDatabaseConnector);
+
+  /**
+  \brief display in the TW the values extracted from iTrackAttributes
+  * called when loading all tracks from database when opening an imagingsession
+  \param[in] iTrackAttributes computed values for a track
+  \param[in] iTrackID trackID of the track we want to display the values
+  */
+  void DisplayOnlyCalculatedValuesForExistingTrack(
+    GoFigureTrackAttributes *iTrackAttributes, unsigned iTrackID);
 
   /**
   \brief create a new track with no mesh and no points in the database, add it in the
@@ -123,8 +133,8 @@ signals:
   void TrackIDToBeModifiedWithWidget(std::list<unsigned int> iListTracksID);
 
 protected:
-  GoDBTWContainerForTrackLineage *m_TWContainer;
-  TrackContainer                 *m_TrackContainerInfoForVisu;
+  GoDBTWContainerForTrack *m_TWContainer;
+  TrackContainer          *m_TrackContainerInfoForVisu;
 
   //virtual pure method in QGoDBTraceManager
   virtual void SetCollectionsTraceNames();

@@ -38,12 +38,10 @@
 #include <sstream>
 
 QGoDBTrackManager::QGoDBTrackManager(int iImgSessionID, QWidget *iparent):
-  QGoDBTraceManager(),m_TrackContainerInfoForVisu(NULL)
+  QGoDBTraceManager(), m_TrackContainerInfoForVisu(NULL)
 {
   this->SetInfo(iImgSessionID, iparent);
-  this->m_TWContainer = new GoDBTWContainerForTrackLineage(this->m_TraceName,
-                                                           this->m_CollectionName,
-                                                           iImgSessionID);
+  this->m_TWContainer = new GoDBTWContainerForTrack( iImgSessionID );
 }
 
 //-------------------------------------------------------------------------
@@ -86,7 +84,7 @@ void QGoDBTrackManager::SetCollectionsTraceNames()
 void QGoDBTrackManager::DisplayInfoForAllTraces(
   vtkMySQLDatabase *iDatabaseConnector)
 {
-  this->DisplayInfoForAllTracesTemplate< GoDBTWContainerForTrackLineage >(
+  this->DisplayInfoForAllTracesTemplate< GoDBTWContainerForTrack >(
     this->m_TWContainer, iDatabaseConnector,Qt::Unchecked);
 }
 //-------------------------------------------------------------------------
@@ -95,7 +93,7 @@ void QGoDBTrackManager::DisplayInfoForAllTraces(
 void QGoDBTrackManager::DisplayInfoAndLoadVisuContainerForAllTracks(
   vtkMySQLDatabase *iDatabaseConnector)
 {
-  this->DisplayInfoAndLoadVisuContainerWithAllTraces< GoDBTWContainerForTrackLineage >
+  this->DisplayInfoAndLoadVisuContainerWithAllTraces< GoDBTWContainerForTrack >
     (this->m_TWContainer,iDatabaseConnector);
 }
 
@@ -105,7 +103,7 @@ void QGoDBTrackManager::DisplayInfoAndLoadVisuContainerForAllTracks(
 void QGoDBTrackManager::DisplayInfoForLastCreatedTrace(
   vtkMySQLDatabase *iDatabaseConnector)
 {
-  this->DisplayInfoForLastCreatedTraceTemplate< GoDBTWContainerForTrackLineage >(
+  this->DisplayInfoForLastCreatedTraceTemplate< GoDBTWContainerForTrack >(
     this->m_TWContainer, iDatabaseConnector);
 }
 
@@ -115,7 +113,7 @@ void QGoDBTrackManager::DisplayInfoForLastCreatedTrace(
 void QGoDBTrackManager::DisplayInfoForExistingTrace(
   vtkMySQLDatabase *iDatabaseConnector, int iTraceID)
 {
-  this->DisplayInfoForExistingTraceTemplate< GoDBTWContainerForTrackLineage >(
+  this->DisplayInfoForExistingTraceTemplate< GoDBTWContainerForTrack >(
     this->m_TWContainer, iDatabaseConnector, iTraceID);
 }
 
@@ -158,7 +156,7 @@ void QGoDBTrackManager::UpdateTWAndContainerForImportedTraces(
   std::vector< int > iVectorImportedTraces, vtkMySQLDatabase *iDatabaseConnector)
 {
   this->UpdateTWAndContainerWithImportedTracesTemplate<
-    GoDBTWContainerForTrackLineage>(this->m_TWContainer,
+    GoDBTWContainerForTrack >(this->m_TWContainer,
     iVectorImportedTraces, iDatabaseConnector);
   //call the TrackContainer to give him iVectorImportedTraces
 }
@@ -221,6 +219,7 @@ void QGoDBTrackManager::SaveTrackCurrentElement(
 {
   GoDBTrackRow TrackToSave(this->m_ImgSessionID);
   unsigned int TrackID = this->m_TrackContainerInfoForVisu->m_CurrentElement.TraceID;
+  
   if (TrackID != 0)
     {
     TrackToSave.SetValuesForSpecificID(TrackID,iDatabaseConnector);
@@ -234,20 +233,19 @@ void QGoDBTrackManager::SaveTrackCurrentElement(
   //save the track into the container:
   this->m_TrackContainerInfoForVisu->InsertCurrentElement();
 
+  //calculate the values to be put in the table widget:
+  this->m_TWContainer->SetTrackAttributes(
+      &this->m_TrackContainerInfoForVisu->m_CurrentElement.ComputeAttributes());
+
+  //update the table widget:
   if (TrackID == 0)
     {
     this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
     }
-
-  /*
-  std::vector< std::string > ColumnNames (2);
-  std::vector< std::string > Values (2);
-  ColumnNames.at(0) = "SurfaceArea";
-  Values.at(0) = ConvertToString< double >(iMeshAttributes->m_Area);
-  ColumnNames.at(1) = "Volume";
-  Values.at(1) = ConvertToString< double >(iMeshAttributes->m_Volume);
-  // Update TableWidget
-  this->m_Table->AddValuesForID(ColumnNames, Values, TrackID, "trackID");*/
+  else
+    {
+    this->DisplayInfoForExistingTrace(iDatabaseConnector, TrackID);
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -275,7 +273,7 @@ void QGoDBTrackManager::UpdateTrackPolydataForVisu(vtkMySQLDatabase *iDatabaseCo
 void QGoDBTrackManager::UpdateBoundingBoxes(
   vtkMySQLDatabase *iDatabaseConnector,std::list< unsigned int > iListTracesIDs)
 {
-  QGoDBTraceManager::UpdateBoundingBoxes(iDatabaseConnector,iListTracesIDs);
+  QGoDBTraceManager::UpdateBoundingBoxes(iDatabaseConnector,iListTracesIDs, false);
   std::list<unsigned int>::iterator iter = iListTracesIDs.begin();
   while(iter != iListTracesIDs.end())
     {
@@ -341,19 +339,6 @@ void QGoDBTrackManager::TrackIDToEmit()
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::SplitTrackWithWidget()
 {
-  /*std::list <std::pair<unsigned int, std::list<unsigned int> > >TrackIDWithMeshIDs;
-  std::list<unsigned int> CheckedTracks = 
-    this->m_TrackContainerInfoForVisu->GetHighlightedElementsTraceID();
-  std::list<unsigned int>::iterator iter = CheckedTracks.begin();
-  while (iter != CheckedTracks.end() )
-  {
-    std::pair<unsigned int, std::list<unsigned int> > temp;
-    temp.first = *iter;
-    std::list<unsigned int> TrackID;
-    TrackID.push_back(*iter);
-    temp.second = this->GetListTracesIDsFromThisCollectionOf(this->m_DatabaseConnector,TrackID);
-    iter++;
-  }*/
   std::list<unsigned int> HighlightedTrackIDs = 
     this->m_TrackContainerInfoForVisu->GetHighlightedElementsTraceID();
 
@@ -369,6 +354,38 @@ void QGoDBTrackManager::SplitTrackWithWidget()
     emit TrackIDToBeModifiedWithWidget(HighlightedTrackIDs);
     }
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTrackManager::DisplayOnlyCalculatedValuesForExistingTrack(
+  GoFigureTrackAttributes *iTrackAttributes, unsigned iTrackID)
+{
+  if ( iTrackAttributes != 0 )
+    {
+    int timeInterval = m_TrackContainerInfoForVisu->getTimeInterval();
+
+    std::vector< std::string > ColumnNames (6);
+    std::vector< std::string > Values (6);
+
+    ColumnNames.at(0) = "Deplacement";
+    Values.at(0) = ConvertToString< double >(iTrackAttributes->total_length);
+    ColumnNames.at(1) = "Distance";
+    Values.at(1) = ConvertToString< double >(iTrackAttributes->distance);
+    ColumnNames.at(2) = "Theta";
+    Values.at(2) = ConvertToString< double >(iTrackAttributes->theta);
+    ColumnNames.at(3) = "Phi";
+    Values.at(3) = ConvertToString< double >(iTrackAttributes->phi);
+    ColumnNames.at(4) = "AvgSpeed";
+    Values.at(4) = ConvertToString< double >
+        (iTrackAttributes->avg_speed/timeInterval);
+    ColumnNames.at(5) = "MaxSpeed";
+    Values.at(5) = ConvertToString< double >
+        (iTrackAttributes->max_speed/timeInterval);
+
+    this->m_Table->AddValuesForID(ColumnNames, Values, iTrackID, "trackID");
+    }
+}
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

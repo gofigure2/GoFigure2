@@ -2637,6 +2637,14 @@ int QGoTabImageView3DwT::GetTimePoint() const
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+int QGoTabImageView3DwT::GetTimeInterval() const
+{
+  return static_cast<int>( m_MegaCaptureReader->GetTimeInterval() );
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void QGoTabImageView3DwT::AddBookmark()
 {
   this->m_DataBaseTables->AddBookmark( this->GetSliceViewYZ(),

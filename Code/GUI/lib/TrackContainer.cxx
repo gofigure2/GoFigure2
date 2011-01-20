@@ -62,7 +62,9 @@
 //-------------------------------------------------------------------------
 TrackContainer::
 TrackContainer(QObject *iParent,QGoImageView3D *iView):Superclass(iParent, iView)
-{}
+{
+  m_TimeInterval = 0;
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -1008,4 +1010,22 @@ setNodeScalars(const char *iArrayName) // if null
   std::cout << "range: " << range[0] << " to " << range[1] << std::endl;
 
   return range;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+setTimeInterval( int iTimeInterval)
+{
+  m_TimeInterval = iTimeInterval;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int
+TrackContainer::
+getTimeInterval()
+{
+  return m_TimeInterval;
 }

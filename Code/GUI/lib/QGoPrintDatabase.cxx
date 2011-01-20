@@ -1129,6 +1129,15 @@ void QGoPrintDatabase::PrintVolumeAreaForMesh(GoFigureMeshAttributes *
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+void QGoPrintDatabase::PrintCalculatedValuesForTrack(GoFigureTrackAttributes *
+  iTrackAttributes, unsigned int iTrackID)
+{
+  this->m_TracksManager->DisplayOnlyCalculatedValuesForExistingTrack(
+    iTrackAttributes, iTrackID);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 void
 QGoPrintDatabase::SetContoursContainer(ContourContainer *iContainer)
 {

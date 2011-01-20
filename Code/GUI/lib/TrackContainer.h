@@ -389,6 +389,10 @@ public:
   std::map< unsigned int, std::pair< const double* , vtkPolyData*> >
   GetHighlightedElementsTrackPolyData();
 
+  void setTimeInterval( int iTimeInterval);
+
+  int getTimeInterval();
+
 signals:
   /** \brief When one track has been picked (highlighted) from the visualization */
   void TracePicked(unsigned int, Qt::CheckState);
@@ -429,7 +433,7 @@ public slots:
   void ColorCodeTracksByOriginalColor( bool iColorCode );
 
 protected:
-
+  int m_TimeInterval;
   /**
     \brief Recompute a polydata from a list of point (coordinates) for the
     current element. If the current element is a new track, then the polydata,

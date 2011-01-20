@@ -70,7 +70,7 @@ protected:
   /**
   \brief add the specific info for a trace to the columns description
   */
-  void SetSpecificInfoForTraceTable();
+  void SetSpecificInfoForMeshTable();
 
   /**
   \brief add as many columns with their description as there is Channels

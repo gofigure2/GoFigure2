@@ -78,6 +78,8 @@ public:
   itkGetConstMacro(MinTimePoint, unsigned int);
   itkGetConstMacro(MaxTimePoint, unsigned int);
 
+  itkGetConstMacro(TimeInterval, unsigned int);
+
   void SetZSlice(const unsigned int & iZs);
 
   itkGetConstMacro(UpdateZSlice, unsigned int);
@@ -114,6 +116,7 @@ protected:
   unsigned int m_MinTimePoint;
   unsigned int m_MaxTimePoint;
   unsigned int m_UpdateTimePoint;
+  unsigned int m_TimeInterval;
 
   unsigned int m_MinZSlice;
   unsigned int m_MaxZSlice;

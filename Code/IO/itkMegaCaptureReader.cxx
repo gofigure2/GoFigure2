@@ -60,6 +60,7 @@ MegaCaptureReader() :
   m_MinTimePoint = max_uint;
   m_MaxTimePoint = max_uint;
   m_UpdateTimePoint = max_uint;
+  m_TimeInterval = max_uint;
   m_MinZSlice = max_uint;
   m_MaxZSlice = max_uint;
   m_UpdateZSlice = max_uint;
@@ -321,6 +322,7 @@ MegaCaptureReader::Update()
 
       ++fch_it;
       }
+    m_TimeInterval = m_HeaderReader->m_TimeInterval;
     }
 }
 //--------------------------------------------------------------------------

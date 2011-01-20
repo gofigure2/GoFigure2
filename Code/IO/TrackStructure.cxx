@@ -455,11 +455,12 @@ ComputeAttributes()
   attributes.max_speed = 0.;
   unsigned int t0, t1;
   attributes.theta = 0.;
-  attributes.phi = 90.;
+  attributes.phi = 0.;
 
   PointsMapConstIterator it = this->PointsMap.begin();
   unsigned int tmin = it->first;
   t0 = tmin;
+  t1 = tmin;
   double* org = it->second;
   double* p = it->second;
   double* q = it->second; // if we only have one point in the map
@@ -486,8 +487,16 @@ ComputeAttributes()
     t0 = t1;
     ++it;
     }
-  attributes.avg_speed = attributes.total_length /
-                         static_cast< double >( t1 - tmin );
+
+  if (t1 == tmin)
+    {
+      attributes.avg_speed = 0;
+    }
+  else
+    {
+    attributes.avg_speed = attributes.total_length /
+                           static_cast< double >( t1 - tmin );
+    }
 
   attributes.distance = sqrt( vtkMath::Distance2BetweenPoints( org, q ) );
 
