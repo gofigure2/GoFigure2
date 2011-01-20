@@ -82,7 +82,11 @@ address = os.getcwd()
 <span class="skw">click</span>(<img src="TableWidgetIcon.png" />)
 <span class="skw">wait</span>(<span class="dig">1</span>)
 
-xyView = <span class="skw">find</span>(Pattern(<img src="XY_ViewRegion.png" />).similar(<span class="dig">0.10</span>))
+<span class="kw">for</span> view <span class="kw">in</span> [<span class="dig">1</span>,<span class="dig">3</span>]:
+
+
+
+xyView = <span class="skw">find</span>(Pattern(<img src="XY_ViewRegion.png" />).similar(<span class="dig">0.30</span>))
 <span class="kw">print</span> xyView.x, xyView.y, xyView.h
 
 startx = xyView.x + <span class="dig">100</span>

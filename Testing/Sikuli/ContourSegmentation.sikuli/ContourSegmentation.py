@@ -10,7 +10,11 @@ click("ContourSegmentationIcon.png")
 click("TableWidgetIcon.png")
 wait(1)
 
-xyView = find(Pattern("XY_ViewRegion.png").similar(0.10))
+for view in [1,3]:
+
+
+
+xyView = find(Pattern("XY_ViewRegion.png").similar(0.30))
 print xyView.x, xyView.y, xyView.h
 
 startx = xyView.x + 100
