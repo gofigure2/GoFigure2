@@ -1357,7 +1357,6 @@ PassMeshesInfoForImportedTrack(unsigned int iTrackID)
 	std::list<unsigned int> ListMeshesIDs =
 		this->m_TracksManager->GetListTracesIDsFromThisCollectionOf(
 		this->m_DatabaseConnector,TrackIDs);
-	this->CloseDBConnection();
 
 	if (!ListMeshesIDs.empty())
 		{
@@ -1369,9 +1368,10 @@ PassMeshesInfoForImportedTrack(unsigned int iTrackID)
 			//pass the coordinate info from the meshes in order to calculate the
 			//points/string of the track:
 			this->m_TracksManager->UpdatePointsOfCurrentElementForImportedTrack(
-				MeshesInfo);
+        MeshesInfo, this->m_DatabaseConnector);
 			}
 		}
+  this->CloseDBConnection();
 }
 //--------------------------------------------------------------------------
 

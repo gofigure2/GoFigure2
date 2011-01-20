@@ -118,10 +118,10 @@ public:
 
   /**
   \brief update the points of the imported track in current_element
-  with the info from the meshes
+  with the info from the meshes and save them in the database
   */
   void UpdatePointsOfCurrentElementForImportedTrack(
-	  std::map<unsigned int,double*> iMeshesInfo);
+	  std::map<unsigned int,double*> iMeshesInfo, vtkMySQLDatabase* iDatabaseConnector);
 
   //method in QGoDBTraceManager
   void UpdateBoundingBoxes(
