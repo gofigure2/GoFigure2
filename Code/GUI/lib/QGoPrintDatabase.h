@@ -208,7 +208,8 @@ public:
   \param[in] iTrackID ID of the track
   */
   void PrintCalculatedValuesForTrack(GoFigureTrackAttributes *
-                        iTrackAttributes, unsigned int iTrackID);
+                        iTrackAttributes, unsigned int iTrackID,
+                        int iTimeInterval);
 
   /** \brief return the TraceManualEditingDockWidget*/
   QGoTraceManualEditingDockWidget * GetTraceManualEditingDockWidget();

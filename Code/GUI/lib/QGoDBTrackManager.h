@@ -76,7 +76,8 @@ public:
   \param[in] iTrackID trackID of the track we want to display the values
   */
   void DisplayOnlyCalculatedValuesForExistingTrack(
-    GoFigureTrackAttributes *iTrackAttributes, unsigned iTrackID);
+    GoFigureTrackAttributes *iTrackAttributes, unsigned iTrackID,
+    int iTimeInterval);
 
   /**
   \brief create a new track with no mesh and no points in the database, add it in the

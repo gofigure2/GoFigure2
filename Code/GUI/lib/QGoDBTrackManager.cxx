@@ -358,7 +358,7 @@ void QGoDBTrackManager::SplitTrackWithWidget()
 
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::DisplayOnlyCalculatedValuesForExistingTrack(
-  GoFigureTrackAttributes *iTrackAttributes, unsigned iTrackID)
+  GoFigureTrackAttributes *iTrackAttributes, unsigned iTrackID, int iTimeInterval)
 {
   if ( iTrackAttributes != 0 )
     {
@@ -374,9 +374,11 @@ void QGoDBTrackManager::DisplayOnlyCalculatedValuesForExistingTrack(
     ColumnNames.at(3) = "Phi";
     Values.at(3) = ConvertToString< double >(iTrackAttributes->phi);
     ColumnNames.at(4) = "AvgSpeed";
-    Values.at(4) = ConvertToString< double >(iTrackAttributes->avg_speed);
+    Values.at(4) = ConvertToString< double >
+        (iTrackAttributes->avg_speed/iTimeInterval);
     ColumnNames.at(5) = "MaxSpeed";
-    Values.at(5) = ConvertToString< double >(iTrackAttributes->max_speed);
+    Values.at(5) = ConvertToString< double >
+        (iTrackAttributes->max_speed/iTimeInterval);
 
     this->m_Table->AddValuesForID(ColumnNames, Values, iTrackID, "trackID");
     }
