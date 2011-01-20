@@ -2639,7 +2639,7 @@ int QGoTabImageView3DwT::GetTimePoint() const
 //-------------------------------------------------------------------------
 int QGoTabImageView3DwT::GetTimeInterval() const
 {
-  return static_cast<int>( m_MegaCaptureReader->m_TimeInterval );
+  return static_cast<int>( m_MegaCaptureReader->GetTimeInterval() );
 }
 
 //-------------------------------------------------------------------------
