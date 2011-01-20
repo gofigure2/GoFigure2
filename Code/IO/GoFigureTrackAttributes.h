@@ -32,30 +32,25 @@
 
 =========================================================================*/
 
-#ifndef __QGoTrackDockWidget_h
-#define __QGoTrackDockWidget_h
+#ifndef __GoFigureTrackAttributes_h
+#define __GoFigureTrackAttributes_h
 
-#include <QDockWidget>
+#include <map>
+#include <string>
+#include "QGoIOConfigure.h"
 
-#include "ui_TrackDockWidget.h"
-
-class QGoTrackDockWidget:
-  public QDockWidget,
-  protected Ui::TrackDockWidget
-{
-  Q_OBJECT
-public:
-  explicit QGoTrackDockWidget(QWidget *iParent = 0);
-  ~QGoTrackDockWidget();
-
-public slots:
-  /*void GlyphChanged(bool);
-  void TubeChanged(bool);*/
-signals:
-  void UpdateTracksAppearance(bool, bool);
-  void ColorCodeTracksByTime(bool);
-  void ColorCodeTracksBySpeed(bool);
-  void ColorCodeTracksByOriginalColor(bool);
-
+struct QGOIO_EXPORT GoFigureTrackAttributes {
+  // total distance (add each segment size) = deplacement
+  double total_length;
+  // average speed
+  double avg_speed;
+  // maximum speed
+  double max_speed;
+  // euclidian distance between first and last points
+  double distance;
+  // theta in spherical coordinate system
+  double theta;
+  // phi in spherical coordinate system
+  double phi;
 };
 #endif

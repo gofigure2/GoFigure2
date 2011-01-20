@@ -100,6 +100,37 @@ GetHighlightedProperty()
 
 //-------------------------------------------------------------------------
 template< class TContainer >
+std::vector< vtkActor* >
+TraceContainerBase< TContainer >::
+GetActorGivenTraceID(unsigned int iTraceID)
+{
+  using boost::multi_index::get;
+
+  MultiIndexContainerTraceIDIterator
+    it = m_Container.get< TraceID >().find(iTraceID);
+
+  std::vector<vtkActor* > listActors;
+
+  if ( it != m_Container.get< TraceID >().end() )
+    {
+    listActors.push_back((*it).ActorXY);
+    listActors.push_back((*it).ActorYZ);
+    listActors.push_back((*it).ActorXZ);
+    listActors.push_back((*it).ActorXYZ);
+
+    std::cout << "Actor found" << std::endl;
+    }
+  else
+    {
+    std::cout << "Actor not found" << std::endl;
+    }
+
+  return listActors;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+template< class TContainer >
 bool
 TraceContainerBase< TContainer >::
 UpdateCurrentElementFromExistingOne(unsigned int iTraceID)
@@ -173,6 +204,16 @@ TraceContainerBase< TContainer >::
 GetCurrentElementNodes()
 {
   return this->m_CurrentElement.Nodes;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+template< class TContainer >
+double*
+TraceContainerBase< TContainer >::
+GetCurrentElementColor()
+{
+  return this->m_CurrentElement.rgba;
 }
 //-------------------------------------------------------------------------
 
@@ -923,5 +964,28 @@ SetIntersectionLineWidth( const float& iWidth )
   m_IntersectionLineWidth = iWidth;
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+template< class TContainer >
+unsigned int
+TraceContainerBase< TContainer >::
+GetCollectionIDOfGivenTraceID( unsigned int iTraceID)
+{
+  using boost::multi_index::get;
+  MultiIndexContainerTraceIDIterator
+      it0 = m_Container.get< TraceID >().find( iTraceID );
+
+  if( it0 != m_Container.get< TraceID >().end() )
+    {
+    return it0->CollectionID;
+    }
+  else
+    {
+    std::cout << "booo" <<std::endl;
+    return std::numeric_limits< unsigned int >::max();
+    }
+}
+//-------------------------------------------------------------------------
+
 
 #endif

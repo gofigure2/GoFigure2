@@ -66,6 +66,9 @@ public:
   /** TraceID */
   unsigned int TraceID;
 
+  /** CollectionID */
+  unsigned int CollectionID;
+
   /** Actor in the XY View */
   vtkActor *ActorXY;
 
@@ -97,6 +100,7 @@ public:
 
   /** Constructor */
   TraceStructure( const unsigned int & iTraceID,
+                  const unsigned int & iCollectionID,
                   std::vector< vtkActor * > iActors,
                   vtkPolyData *iNodes,
                   const bool & iHighlighted,
@@ -107,26 +111,28 @@ public:
                   const double & alpha);
 
   /** Constructor */
-  TraceStructure(const unsigned int & iTraceID,
-                       std::vector< vtkActor * > iActors,
-                       vtkPolyData *iNodes,
-                       const bool & iHighlighted,
-                       const bool & iVisible,
-                       double iRgba[4]);
+  TraceStructure( const unsigned int & iTraceID,
+                  const unsigned int & iCollectionID,
+                  std::vector< vtkActor * > iActors,
+                  vtkPolyData *iNodes,
+                  const bool & iHighlighted,
+                  const bool & iVisible,
+                  double iRgba[4]);
 
   /** Constructor */
-  TraceStructure(const unsigned int & iTraceID,
-                       vtkActor *iActorXY,
-                       vtkActor *iActorYZ,
-                       vtkActor *iActorXZ,
-                       vtkActor *iActorXYZ,
-                       vtkPolyData *iNodes,
-                       const bool & iHighlighted,
-                       const bool & iVisible,
-                       const double & r,
-                       const double & g,
-                       const double & b,
-                       const double & alpha);
+  TraceStructure( const unsigned int & iTraceID,
+                  const unsigned int & iCollectionID,
+                  vtkActor *iActorXY,
+                  vtkActor *iActorYZ,
+                  vtkActor *iActorXZ,
+                  vtkActor *iActorXYZ,
+                  vtkPolyData *iNodes,
+                  const bool & iHighlighted,
+                  const bool & iVisible,
+                  const double & r,
+                  const double & g,
+                  const double & b,
+                  const double & alpha);
 
   /** Constructor */
   TraceStructure( const TraceStructure& iE );

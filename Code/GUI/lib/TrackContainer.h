@@ -88,6 +88,10 @@ namespace boost
         BOOST_MULTI_INDEX_MEMBER(TraceStructure, unsigned int, TraceID)
         >,
       boost::multi_index::ordered_non_unique<
+        boost::multi_index::tag< CollectionID >,
+        BOOST_MULTI_INDEX_MEMBER(TraceStructure, unsigned int, CollectionID)
+      >,
+      boost::multi_index::ordered_non_unique<
         boost::multi_index::tag< Highlighted >,
         BOOST_MULTI_INDEX_MEMBER(TraceStructure, bool, Highlighted)
         >,
@@ -385,6 +389,10 @@ public:
   std::map< unsigned int, std::pair< const double* , vtkPolyData*> >
   GetHighlightedElementsTrackPolyData();
 
+  void setTimeInterval( int iTimeInterval);
+
+  int getTimeInterval();
+
 signals:
   /** \brief When one track has been picked (highlighted) from the visualization */
   void TracePicked(unsigned int, Qt::CheckState);
@@ -415,8 +423,17 @@ public slots:
   void UpdateElementVisibilityWithGivenTraceIDs( const QStringList& iList,
                                                  const Qt::CheckState& iCheck );
 
-protected:
+  /** \brief Color code the track by time.
+    \param[in] iColorCode Display Time Color Code (true) or Real Color (false)
+   */
+  void ColorCodeTracksByTime( bool iColorCode);
 
+  void ColorCodeTracksBySpeed( bool iColorCode);
+
+  void ColorCodeTracksByOriginalColor( bool iColorCode );
+
+protected:
+  int m_TimeInterval;
   /**
     \brief Recompute a polydata from a list of point (coordinates) for the
     current element. If the current element is a new track, then the polydata,
@@ -426,6 +443,14 @@ protected:
   void RecomputeCurrentElementMap( std::list< double* > iPoints);
 
   std::vector< vtkActor* > AddTrace( vtkPolyData* , vtkProperty* );
+
+  /** \brief Changes the scalars to be displayed and return the new range
+   * \param[in] iArrayName Array to be displayed
+   * \return Pointer to double[2] where [0] is the min scalar value and [1] is
+   * the max scalar value. Pointer has to be deleted (delete[] pointer) */
+  double* setNodeScalars(const char *iArrayName);
+
+  void ComputeSpeed();
 
 private:
   Q_DISABLE_COPY(TrackContainer);

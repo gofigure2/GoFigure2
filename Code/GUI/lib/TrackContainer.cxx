@@ -54,12 +54,17 @@
 #include "VisualizePolydataHelper.h"
 #include "vtkPolyDataWriter.h"
 
+#include "vtkLookupTable.h"
+#include <limits>
+
 #include <QDebug>
 
 //-------------------------------------------------------------------------
 TrackContainer::
 TrackContainer(QObject *iParent,QGoImageView3D *iView):Superclass(iParent, iView)
-{}
+{
+  m_TimeInterval = 0;
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -375,6 +380,13 @@ UpdateTrackStructurePolyData( const TrackStructure& iTrackStructure)
   polyData->SetLines(cells);
   //add the temporal information
   polyData->GetPointData()->AddArray(newArray);
+  //polyData->GetPointData()->SetScalars(newArray);
+
+  vtkSmartPointer<vtkDoubleArray> speedArray =
+      vtkSmartPointer<vtkDoubleArray>::New();
+  speedArray->SetNumberOfComponents(1);
+  speedArray->SetName("SpeedInformation");
+  polyData->GetPointData()->AddArray(speedArray);
 
   iTrackStructure.Nodes->DeepCopy(polyData);
 
@@ -874,4 +886,146 @@ GetHighlightedElementsTrackPolyData()
     }
 
   return listOfPolyDatas;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+ColorCodeTracksByOriginalColor( bool iColorCode )
+{
+  if( iColorCode )
+    {
+    this->RenderAllElementsWithOriginalColors();
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+ColorCodeTracksByTime( bool iColorCode )
+{
+  if( iColorCode )
+    {
+    // get range for the tracks
+    double* range = setNodeScalars("TemporalInformation");
+
+    // associated LUT
+    vtkSmartPointer<vtkLookupTable> LUT = vtkSmartPointer<vtkLookupTable>::New();
+    LUT->SetTableRange(range);
+    LUT->SetNumberOfTableValues(1024);
+    LUT->SetHueRange(0,0.7);
+    LUT->SetSaturationRange(1,1);
+    LUT->SetValueRange(1,1);
+    LUT->Build();
+
+    SetScalarRangeForAllElements(range[0], range[1]);
+    SetLookupTableForColorCoding(LUT);
+
+    delete[] range;
+
+    }
+}
+//-------------------------------------------------------------------------
+
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+ColorCodeTracksBySpeed( bool iColorCode )
+{
+  if( iColorCode )
+    {
+    // Compute the speed - stored in the polydata
+    ComputeSpeed();
+
+    // get range for the tracks
+    double* range = setNodeScalars("SpeedInformation");
+
+    // associated LUT
+    vtkSmartPointer<vtkLookupTable> LUT = vtkSmartPointer<vtkLookupTable>::New();
+    LUT->SetTableRange(range);
+    LUT->SetNumberOfTableValues(1024);
+    LUT->SetHueRange(0,0.7);
+    LUT->SetSaturationRange(1,1);
+    LUT->SetValueRange(1,1);
+    LUT->Build();
+
+    SetScalarRangeForAllElements(range[0], range[1]);
+    SetLookupTableForColorCoding(LUT);
+
+    delete[] range;
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+ComputeSpeed()
+{
+  MultiIndexContainerType::index< TraceID >::type::iterator
+      it = m_Container.get< TraceID >().begin();
+
+    while( it != m_Container.get< TraceID >().end() )
+      {
+      // Create temp structure
+      TrackStructure tempStructure(*it);
+      // Compute attributes - speed + new array "SpeedInformation" in polydata
+      tempStructure.ComputeAttributes();
+      // Replace structure
+      m_Container.get< TraceID >().replace(it, tempStructure);
+
+      ++it;
+      }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+double*
+TrackContainer::
+setNodeScalars(const char *iArrayName) // if null
+{
+  double* range =  new double[2];
+  range[0] = std::numeric_limits< double >::max();
+  range[1] = std::numeric_limits< double >::min();
+
+  MultiIndexContainerType::index< TraceID >::type::iterator
+    it = m_Container.get< TraceID >().begin();
+
+  while( it != m_Container.get< TraceID >().end() )
+    {
+    double* realTime =
+        it->Nodes->GetPointData()->GetArray(iArrayName)->GetRange();
+    range[0] = std::min( range[0], realTime[0] );
+    range[1] = std::max( range[1], realTime[1] );
+
+    //set active scalar
+    it->Nodes->GetPointData()->SetActiveScalars(iArrayName);
+
+    ++it;
+    }
+
+  std::cout << "range: " << range[0] << " to " << range[1] << std::endl;
+
+  return range;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+setTimeInterval( int iTimeInterval)
+{
+  m_TimeInterval = iTimeInterval;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int
+TrackContainer::
+getTimeInterval()
+{
+  return m_TimeInterval;
 }

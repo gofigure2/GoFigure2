@@ -52,6 +52,7 @@ ContourMeshStructure::ContourMeshStructure():TraceStructure(),
 
 //--------------------------------------------------------------------------
 ContourMeshStructure::ContourMeshStructure(const unsigned int & iTraceID,
+                                           const unsigned int & iCollectionID,
                                            std::vector< vtkActor * > iActors,
                                            vtkPolyData *iNodes,
                                            const unsigned int & iT,
@@ -61,7 +62,8 @@ ContourMeshStructure::ContourMeshStructure(const unsigned int & iTraceID,
                                            const double & g,
                                            const double & b,
                                            const double & alpha) :
-  TraceStructure( iTraceID, iActors, iNodes, iHighlighted, iVisible, r, g, b, alpha ),
+  TraceStructure( iTraceID, iCollectionID, iActors, iNodes, iHighlighted,
+                  iVisible, r, g, b, alpha ),
   TCoord(iT)
 {
   if ( iActors.size() == 4 )
@@ -86,13 +88,14 @@ ContourMeshStructure::ContourMeshStructure(const unsigned int & iTraceID,
 
 //--------------------------------------------------------------------------
 ContourMeshStructure::ContourMeshStructure(const unsigned int & iTraceID,
+                                           const unsigned int & iCollectionID,
                                            std::vector< vtkActor * > iActors,
                                            vtkPolyData *iNodes,
                                            const unsigned int & iT,
                                            const bool & iHighlighted,
                                            const bool & iVisible,
                                            double iRgba[4]):
-  TraceStructure(iTraceID, iActors, iNodes, iHighlighted, iVisible, iRgba ),
+  TraceStructure(iTraceID, iCollectionID, iActors, iNodes, iHighlighted, iVisible, iRgba ),
   TCoord(iT)
 {
 }
@@ -101,6 +104,7 @@ ContourMeshStructure::ContourMeshStructure(const unsigned int & iTraceID,
 
 //--------------------------------------------------------------------------
 ContourMeshStructure::ContourMeshStructure(const unsigned int & iTraceID,
+                                           const unsigned int & iCollectionID,
                                            vtkActor *iActorXY,
                                            vtkActor *iActorYZ,
                                            vtkActor *iActorXZ,
@@ -113,7 +117,7 @@ ContourMeshStructure::ContourMeshStructure(const unsigned int & iTraceID,
                                            const double & g,
                                            const double & b,
                                            const double & alpha):
-  TraceStructure( iTraceID, iActorXY, iActorYZ, iActorXZ, iActorXYZ, iNodes,
+  TraceStructure( iTraceID, iCollectionID, iActorXY, iActorYZ, iActorXZ, iActorXYZ, iNodes,
                   iHighlighted, iVisible, r, g, b, alpha ),
   TCoord(iT)
 {

@@ -42,10 +42,18 @@ QGoTrackDockWidget::QGoTrackDockWidget(
   this->setupUi(this);
 
   // Connect signals
+  /*
   QObject::connect( this->glyph, SIGNAL( toggled(bool) ),
       this, SLOT( GlyphChanged(bool) ) );
   QObject::connect( this->tube, SIGNAL( toggled(bool) ),
-      this, SLOT( TubeChanged(bool) ) );
+      this, SLOT( TubeChanged(bool) ) );*/
+  QObject::connect( this->time, SIGNAL( toggled(bool)),
+      this, SIGNAL( ColorCodeTracksByTime(bool) ) );
+  QObject::connect( this->speed, SIGNAL( toggled(bool)),
+      this, SIGNAL( ColorCodeTracksBySpeed(bool) ) );
+  QObject::connect( this->real, SIGNAL( toggled(bool)),
+      this, SIGNAL( ColorCodeTracksByOriginalColor(bool) ) );
+
 
   /*
   // double slider
@@ -61,14 +69,15 @@ QGoTrackDockWidget::
 ~QGoTrackDockWidget()
 {
 }
+/*
 //-------------------------------------------------------------------------
-
+//BUGGY AND USELESS SO COMMENTED
 //-------------------------------------------------------------------------
 void
 QGoTrackDockWidget::
 GlyphChanged( bool iState )
 {
-  emit UpdateTracksAppearance( iState, this->tube->isChecked() );
+  //emit UpdateTracksAppearance( iState, this->tube->isChecked() );
 }
 //-------------------------------------------------------------------------
 
@@ -77,6 +86,7 @@ void
 QGoTrackDockWidget::
 TubeChanged( bool iState )
 {
-  emit UpdateTracksAppearance( this->glyph->isChecked(), iState );
+  //emit UpdateTracksAppearance( this->glyph->isChecked(), iState );
 }
 //-------------------------------------------------------------------------
+ */

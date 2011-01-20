@@ -31,31 +31,51 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
+#ifndef __GoDBTWContainerForTrack_h
+#define __GoDBTWContainerForTrack_h
 
-#ifndef __QGoTrackDockWidget_h
-#define __QGoTrackDockWidget_h
-
-#include <QDockWidget>
-
-#include "ui_TrackDockWidget.h"
-
-class QGoTrackDockWidget:
-  public QDockWidget,
-  protected Ui::TrackDockWidget
+#include "GoDBTWContainerForTrackLineage.h"
+#include "QGoIOConfigure.h"
+#include "GoFigureTrackAttributes.h"
+/**
+\brief
+*/
+class QGOIO_EXPORT GoDBTWContainerForTrack:public GoDBTWContainerForTrackLineage
 {
-  Q_OBJECT
+
 public:
-  explicit QGoTrackDockWidget(QWidget *iParent = 0);
-  ~QGoTrackDockWidget();
+  GoDBTWContainerForTrack(int iImgSessionID);
+  ~GoDBTWContainerForTrack();
 
-public slots:
-  /*void GlyphChanged(bool);
-  void TubeChanged(bool);*/
-signals:
-  void UpdateTracksAppearance(bool, bool);
-  void ColorCodeTracksByTime(bool);
-  void ColorCodeTracksBySpeed(bool);
-  void ColorCodeTracksByOriginalColor(bool);
+  virtual TWContainerType GetContainerForOneSpecificTrace(
+    vtkMySQLDatabase *iDatabaseConnector, int iTraceID );
 
+  /**
+  \brief set m_TrackAttributes to iMeshAttributes, needs to be called
+  before displaying the volume, area values
+  \param[in] iTrackAttributes values for the track computed from visu
+  */
+  void SetTrackAttributes(GoFigureTrackAttributes *iTrackAttributes);
+
+protected:
+
+  GoFigureTrackAttributes* m_TrackAttributes;
+  /**
+  \brief add the specific info for a track to the columns description
+  */
+  void SetSpecificInfoForTrackTable();
+
+  /**
+  \brief get the values from m_TrackAttributes and the names of the calculated
+  values and fill the corresponding columns of the row container with them
+  \param[in] iTrackID ID of the track 
+  */
+  void FillRowContainerForTrackComputedValues(int iTrackID);
+
+  /**
+  \brief 
+  */
+  void GetValuesAndNamesForTrackComputedValues(GoFigureTrackAttributes* iTrackAttributes,
+    std::vector<std::vector<std::string> > &ioValues, std::vector<std::string> &ioNames);
 };
 #endif

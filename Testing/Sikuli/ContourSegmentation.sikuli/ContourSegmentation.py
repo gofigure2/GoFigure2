@@ -17,8 +17,8 @@ for view in [1,3]:
 xyView = find(Pattern("XY_ViewRegion.png").similar(0.30))
 print xyView.x, xyView.y, xyView.h
 
-startx = xyView.x + 100
-starty = xyView.y + xyView.h - 100
+startx = xyView.x + int(round((0.3)*xyView.w))
+starty = xyView.y + int(round((0.6)*xyView.h))
 click(Location(startx,starty))
 print startx, starty
 wait(1)

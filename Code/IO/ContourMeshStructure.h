@@ -93,6 +93,7 @@ public:
 
   /** Constructor */
   ContourMeshStructure(const unsigned int & iTraceID,
+                       const unsigned int & iCollectionID,
                        std::vector< vtkActor * > iActors,
                        vtkPolyData *iNodes,
                        const unsigned int & iT,
@@ -105,6 +106,7 @@ public:
 
   /** Constructor */
   ContourMeshStructure(const unsigned int & iTraceID,
+                       const unsigned int & iCollectionID,
                        std::vector< vtkActor * > iActors,
                        vtkPolyData *iNodes,
                        const unsigned int & iT,
@@ -114,6 +116,7 @@ public:
 
   /** Constructor */
   ContourMeshStructure(const unsigned int & iTraceID,
+                       const unsigned int & iCollectionID,
                        vtkActor *iActorXY,
                        vtkActor *iActorYZ,
                        vtkActor *iActorXZ,

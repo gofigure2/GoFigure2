@@ -38,6 +38,8 @@
 #include "TraceStructure.h"
 #include "QGoIOConfigure.h"
 
+#include "GoFigureTrackAttributes.h"
+
 #include <map>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -173,7 +175,7 @@ public:
 
   void UpdateTracksRepresentation( bool iGlyph, bool iTube ) const;
 
-  void ComputeAttributes();
+  GoFigureTrackAttributes ComputeAttributes();
 
 };
 

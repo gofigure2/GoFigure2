@@ -860,6 +860,15 @@ GetTraceIDsBelongingToCollectionID(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+std::list<unsigned int> GoDBCollectionOfTraces::GetTraceIDsBelongingToCollectionID(
+    vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListCollectionIDs)
+{
+  return ListSpecificValuesForOneColumn(iDatabaseConnector, this->m_TracesName,
+    this->m_TracesIDName, this->m_CollectionIDName, iListCollectionIDs);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 std::list<unsigned int> GoDBCollectionOfTraces::
 GetTimePointsForTraceIDs(
     vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTraceIDs)
@@ -889,16 +898,20 @@ GetTraceIDsWithTimePointSup(vtkMySQLDatabase *iDatabaseConnector,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::list<unsigned int> GoDBCollectionOfTraces::
-GetTraceIDsWithTimePointInf(vtkMySQLDatabase *iDatabaseConnector,
-  std::list<unsigned int> iListTraceIDs, unsigned int iTimePoint)
+std::vector<std::string> GoDBCollectionOfTraces::
+  GetAttributesForTraces()
 {
-  FieldWithValue JoinCondition = {"CoordIDMin", "CoordID", "="};
-  FieldWithValue AndCondition = 
-    { "TCoord", ConvertToString<unsigned int >(iTimePoint),"<"};
-  std::vector<std::string> VectTraceIDs = ListUnsgIntToVectorString(iListTraceIDs);
-  return GetListValuesFromTwoTablesAndCondition(
-    iDatabaseConnector,
-    this->m_TracesName, "coordinate", this->m_TracesIDName,
-    JoinCondition,this->m_TracesIDName, VectTraceIDs, AndCondition);
+  std::vector<std::string> oTraceAttributes;
+  oTraceAttributes.push_back(this->m_TracesIDName);
+  oTraceAttributes.push_back(this->m_CollectionIDName);
+  oTraceAttributes.push_back("Red");
+  oTraceAttributes.push_back("Green");
+  oTraceAttributes.push_back("Blue");
+  oTraceAttributes.push_back("Alpha");
+  oTraceAttributes.push_back("Points");
+  oTraceAttributes.push_back("TCoord");
+  return oTraceAttributes;
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
