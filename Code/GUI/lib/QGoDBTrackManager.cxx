@@ -358,10 +358,12 @@ void QGoDBTrackManager::SplitTrackWithWidget()
 
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::DisplayOnlyCalculatedValuesForExistingTrack(
-  GoFigureTrackAttributes *iTrackAttributes, unsigned iTrackID, int iTimeInterval)
+  GoFigureTrackAttributes *iTrackAttributes, unsigned iTrackID)
 {
   if ( iTrackAttributes != 0 )
     {
+    int timeInterval = m_TrackContainerInfoForVisu->getTimeInterval();
+
     std::vector< std::string > ColumnNames (6);
     std::vector< std::string > Values (6);
 
@@ -375,10 +377,10 @@ void QGoDBTrackManager::DisplayOnlyCalculatedValuesForExistingTrack(
     Values.at(3) = ConvertToString< double >(iTrackAttributes->phi);
     ColumnNames.at(4) = "AvgSpeed";
     Values.at(4) = ConvertToString< double >
-        (iTrackAttributes->avg_speed/iTimeInterval);
+        (iTrackAttributes->avg_speed/timeInterval);
     ColumnNames.at(5) = "MaxSpeed";
     Values.at(5) = ConvertToString< double >
-        (iTrackAttributes->max_speed/iTimeInterval);
+        (iTrackAttributes->max_speed/timeInterval);
 
     this->m_Table->AddValuesForID(ColumnNames, Values, iTrackID, "trackID");
     }

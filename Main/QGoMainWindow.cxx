@@ -513,6 +513,7 @@ QGoMainWindow::LoadTracksFromDatabase( const int & iT )
   if ( w3t )
     {
     TrackContainer *temp = w3t->GetTrackContainer();
+    temp->setTimeInterval( w3t->GetTimeInterval() );
 
     if ( temp )
       {
@@ -530,7 +531,7 @@ QGoMainWindow::LoadTracksFromDatabase( const int & iT )
           GoFigureTrackAttributes attributes = Track.ComputeAttributes();
             //track_list_it->ComputeAttributes();
           w3t->m_DataBaseTables->PrintCalculatedValuesForTrack(&attributes, 
-            track_list_it->TraceID, w3t->GetTimeInterval() );
+            track_list_it->TraceID);
           }
         w3t->AddTrackFromNodes< TraceID >(track_list_it);
         ++track_list_it;

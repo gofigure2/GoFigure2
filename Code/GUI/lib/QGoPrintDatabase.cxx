@@ -1130,10 +1130,10 @@ void QGoPrintDatabase::PrintVolumeAreaForMesh(GoFigureMeshAttributes *
 
 //--------------------------------------------------------------------------
 void QGoPrintDatabase::PrintCalculatedValuesForTrack(GoFigureTrackAttributes *
-  iTrackAttributes, unsigned int iTrackID, int iTimeInterval)
+  iTrackAttributes, unsigned int iTrackID)
 {
   this->m_TracksManager->DisplayOnlyCalculatedValuesForExistingTrack(
-    iTrackAttributes, iTrackID, iTimeInterval);
+    iTrackAttributes, iTrackID);
 }
 //--------------------------------------------------------------------------
 
