@@ -146,24 +146,19 @@ void GoDBTWContainerForTrack::GetValuesAndNamesForTrackComputedValues(
 {
   if ( iTrackAttributes != 0 )
     {
-    std::vector<std::string> temp(1);
+    std::vector<std::string> temp;
     ioNames.push_back("Deplacement");
-    temp.at(0) = ConvertToString< double >(iTrackAttributes->total_length);
-    ioValues.push_back(temp);   
+    temp.push_back(ConvertToString< double >(iTrackAttributes->total_length) );
     ioNames.push_back( "Distance" );
-    temp.at(0) = ConvertToString< double >(iTrackAttributes->distance);
-    ioValues.push_back(temp);   
+    temp.push_back( ConvertToString< double >(iTrackAttributes->distance) ); 
     ioNames.push_back("Theta");
-    temp.at(0) = ConvertToString< double >(iTrackAttributes->theta);
-    ioValues.push_back(temp);   
+    temp.push_back( ConvertToString< double >(iTrackAttributes->theta) );
     ioNames.push_back("Phi");
-    temp.at(0) = ConvertToString< double >(iTrackAttributes->phi);
-    ioValues.push_back(temp);   
+    temp.push_back( ConvertToString< double >(iTrackAttributes->phi) ); 
     ioNames.push_back( "AvgSpeed" );
-    temp.at(0) = ConvertToString< double >(iTrackAttributes->avg_speed);
-    ioValues.push_back(temp);   
+    temp.push_back( ConvertToString< double >(iTrackAttributes->avg_speed) );
     ioNames.push_back( "MaxSpeed" );
-    temp.at(0) = ConvertToString< double >(iTrackAttributes->max_speed);
-    ioValues.push_back(temp);   
+    temp.push_back( ConvertToString< double >(iTrackAttributes->max_speed) );
+    ioValues.push_back(temp);
     }
 }
