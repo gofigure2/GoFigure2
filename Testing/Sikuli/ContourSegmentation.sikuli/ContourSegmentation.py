@@ -6,15 +6,15 @@ address = os.getcwd()
 #print address
 setBundlePath(address)
 
-def DrawContour(View):
+def DrawContour(View,xdecimal,ydecimal):
 	
 	xyView = find(Pattern(View).similar(0.30))
 	print xyView.x, xyView.y, xyView.h
 
-	startx = xyView.x + int(round((0.3)*xyView.w))
-	starty = xyView.y + int(round((0.6)*xyView.h))
+	startx = xyView.x + int(round((xdecimal)*xyView.w))
+	starty = xyView.y + int(round((ydecimal)*xyView.h))
 	click(Location(startx,starty))
-	print startx, starty
+	
 	wait(1)
 	Secondx = startx+10
 	Secondy = starty+10
@@ -39,13 +39,12 @@ wait(1)
 ViewRegion = ("XY_ViewRegion.png","XZ_ViewRegion.png","YZ_ViewRegion.png","last")
 
 for view in ViewRegion:
-	
-	
+		
 	if view == "last":
 		for i in ViewRegion[0:3]:
-			DrawContour(i)
+			DrawContour(i,0.5,0.5)
 	else:
-		DrawContour(view)
+		DrawContour(view,0.3,0.6)
 	
 	click("ContourSettings.png")
 	#change line width from 3 to 7
@@ -62,9 +61,9 @@ for view in ViewRegion:
 	#check that line disapears 
 	if view == "last":
 		for i in ViewRegion[0:3]:
-			DrawContour(i)
+			DrawContour(i,0.5,0.5)
 	else:
-		DrawContour(view)
+		DrawContour(view,0.3,0.6)
 	
 			
 	click("Validate.png")

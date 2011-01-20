@@ -78,15 +78,15 @@ address = os.getcwd()
 </span><span class="cmt">#print address
 </span>setBundlePath(address)
 
-<span class="kw">def</span> DrawContour(View):
+<span class="kw">def</span> DrawContour(View,xdecimal,ydecimal):
 
         xyView = <span class="skw">find</span>(Pattern(View).similar(<span class="dig">0.30</span>))
         <span class="kw">print</span> xyView.x, xyView.y, xyView.h
 
-        startx = xyView.x + int(round((<span class="dig">0.3</span>)*xyView.w))
-        starty = xyView.y + int(round((<span class="dig">0.6</span>)*xyView.h))
+        startx = xyView.x + int(round((xdecimal)*xyView.w))
+        starty = xyView.y + int(round((ydecimal)*xyView.h))
         <span class="skw">click</span>(Location(startx,starty))
-        <span class="kw">print</span> startx, starty
+
         <span class="skw">wait</span>(<span class="dig">1</span>)
         Secondx = startx+<span class="dig">10</span>
         Secondy = starty+<span class="dig">10</span>
@@ -112,12 +112,11 @@ ViewRegion = (<img src="XY_ViewRegion.png" />,<img src="XZ_ViewRegion.png" />,<i
 
 <span class="kw">for</span> view <span class="kw">in</span> ViewRegion:
 
-
         <span class="kw">if</span> view == <span class="str">"last"</span>:
                 <span class="kw">for</span> i <span class="kw">in</span> ViewRegion[<span class="dig">0</span>:<span class="dig">3</span>]:
-                        DrawContour(i)
+                        DrawContour(i,<span class="dig">0.5</span>,<span class="dig">0.5</span>)
         <span class="kw">else</span>:
-                DrawContour(view)
+                DrawContour(view,<span class="dig">0.3</span>,<span class="dig">0.6</span>)
 
         <span class="skw">click</span>(<img src="ContourSettings.png" />)
         <span class="cmt">#change line width from 3 to 7
@@ -134,9 +133,9 @@ ViewRegion = (<img src="XY_ViewRegion.png" />,<img src="XZ_ViewRegion.png" />,<i
         <span class="cmt">#check that line disapears 
 </span>        <span class="kw">if</span> view == <span class="str">"last"</span>:
                 <span class="kw">for</span> i <span class="kw">in</span> ViewRegion[<span class="dig">0</span>:<span class="dig">3</span>]:
-                        DrawContour(i)
+                        DrawContour(i,<span class="dig">0.5</span>,<span class="dig">0.5</span>)
         <span class="kw">else</span>:
-                DrawContour(view)
+                DrawContour(view,<span class="dig">0.3</span>,<span class="dig">0.6</span>)
 
 
         <span class="skw">click</span>(<img src="Validate.png" />)
