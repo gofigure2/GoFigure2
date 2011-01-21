@@ -781,13 +781,17 @@ setNodeScalars(const char *iArrayName) // if null
 
   while( it != m_Container.get< TraceID >().end() )
     {
-    double* realTime =
-        it->Nodes->GetPointData()->GetArray(iArrayName)->GetRange();
-    range[0] = std::min( range[0], realTime[0] );
-    range[1] = std::max( range[1], realTime[1] );
+    // does the track have a polydata
+    if(it->Nodes)
+      {
+      double* realTime =
+          it->Nodes->GetPointData()->GetArray(iArrayName)->GetRange();
+      range[0] = std::min( range[0], realTime[0] );
+      range[1] = std::max( range[1], realTime[1] );
 
-    //set active scalar
-    it->Nodes->GetPointData()->SetActiveScalars(iArrayName);
+      //set active scalar
+      it->Nodes->GetPointData()->SetActiveScalars(iArrayName);
+      }
 
     ++it;
     }
