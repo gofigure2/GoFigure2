@@ -175,11 +175,6 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent):
   m_TrackDockWidget = new QGoTrackDockWidget(this);
 
   QObject::connect( m_TrackDockWidget,
-                    SIGNAL( UpdateTracksAppearance(bool, bool) ),
-                    this,
-                    SLOT( UpdateTracksAppearance(bool, bool) ) );
-
-  QObject::connect( m_TrackDockWidget,
                     SIGNAL( ColorCodeTracksByTime(bool) ),
                     m_TrackContainer,
                     SLOT( ColorCodeTracksByTime(bool) ) );
@@ -985,7 +980,7 @@ QGoTabImageView3DwT::CreateAllViewActions()
   QAction *TrackAction =
     new QAction(tr("Change tracks appearance"), this);
   TrackAction->setCheckable(true);
-  TrackAction->setChecked(true);
+  TrackAction->setChecked(false);
   this->m_ViewActions.push_back(TrackAction);
 
   QIcon trackicon;
