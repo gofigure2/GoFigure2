@@ -400,14 +400,14 @@ public:
     vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTraceIDs);
 
   /**
-  \brief get the tracesIDs belonging to iListTraceIDs with a timepoint sup to
+  \brief get the tracesIDs belonging to iListTraceIDs with a timepoint inf to
   iTimePoint
   \param[in] iDatabaseConnector connection to the database
   \param[in] iListTraceIDs list of the IDs for the traces to be checked
   \param[in] iTimePoint timepoint to be compared
-  \return a list of all the traces with a timepoint sup to iTimePoint
+  \return a list of all the traces with a timepoint inf to iTimePoint
   */
-  std::list<unsigned int> GetTraceIDsWithTimePointSup(
+  std::list<unsigned int> GetTraceIDsWithTimePointInf(
     vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTraceIDs,
     unsigned int iTimePoint);
 
