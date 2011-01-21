@@ -40,13 +40,11 @@ QGoTrackDockWidget::QGoTrackDockWidget(
   QWidget *iParent):QDockWidget(iParent)
 {
   this->setupUi(this);
+  QIcon trackicon;
+  trackicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/BlankIcon.png") ),
+                                QIcon::Normal, QIcon::Off);
+  this->toggleViewAction()->setIcon(trackicon);
 
-  // Connect signals
-  /*
-  QObject::connect( this->glyph, SIGNAL( toggled(bool) ),
-      this, SLOT( GlyphChanged(bool) ) );
-  QObject::connect( this->tube, SIGNAL( toggled(bool) ),
-      this, SLOT( TubeChanged(bool) ) );*/
   QObject::connect( this->time, SIGNAL( toggled(bool)),
       this, SIGNAL( ColorCodeTracksByTime(bool) ) );
   QObject::connect( this->speed, SIGNAL( toggled(bool)),

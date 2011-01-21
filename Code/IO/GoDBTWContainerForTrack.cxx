@@ -1,4 +1,4 @@
-/*=========================================================================
+﻿/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
@@ -31,6 +31,7 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
+#include <vtkUnicodeString.h>
 #include "GoDBTWContainerForTrack.h"
 
 GoDBTWContainerForTrack::GoDBTWContainerForTrack(int iImgSessionID):
@@ -59,6 +60,7 @@ void GoDBTWContainerForTrack::SetSpecificInfoForTrackTable()
    //Get the info for the Deplacement:
   temp.InfoName = "Deplacement";
   temp.ColumnNameTableWidget = "Deplacement";
+  temp.ToolTip = "micron";
   m_ColumnsInfos.push_back(temp);
   PairTemp.first = temp;
   m_RowContainer.push_back(PairTemp);
@@ -67,6 +69,7 @@ void GoDBTWContainerForTrack::SetSpecificInfoForTrackTable()
   //Get the info for the Distance:
   temp.InfoName = "Distance";
   temp.ColumnNameTableWidget = "Distance";
+  temp.ToolTip = "micron";
   m_ColumnsInfos.push_back(temp);
   PairTemp.first = temp;
   m_RowContainer.push_back(PairTemp);
@@ -91,6 +94,7 @@ void GoDBTWContainerForTrack::SetSpecificInfoForTrackTable()
   //Get the info for AvgSpeed:
   temp.InfoName = "AvgSpeed";
   temp.ColumnNameTableWidget = "AvgSpeed";
+  temp.ToolTip = "micron/s";
   m_ColumnsInfos.push_back(temp);
   PairTemp.first = temp;
   m_RowContainer.push_back(PairTemp);
@@ -99,6 +103,7 @@ void GoDBTWContainerForTrack::SetSpecificInfoForTrackTable()
   //Get the info for MaxSpeed:
   temp.InfoName = "MaxSpeed";
   temp.ColumnNameTableWidget = "MaxSpeed";
+  temp.ToolTip = "micron/s";
   m_ColumnsInfos.push_back(temp);
   PairTemp.first = temp;
   m_RowContainer.push_back(PairTemp);
