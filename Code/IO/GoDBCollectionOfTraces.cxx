@@ -883,12 +883,12 @@ GetTimePointsForTraceIDs(
 
 //-------------------------------------------------------------------------
 std::list<unsigned int> GoDBCollectionOfTraces::
-GetTraceIDsWithTimePointSup(vtkMySQLDatabase *iDatabaseConnector,
+GetTraceIDsWithTimePointInf(vtkMySQLDatabase *iDatabaseConnector,
   std::list<unsigned int> iListTraceIDs, unsigned int iTimePoint)
 {
   FieldWithValue JoinCondition = {"CoordIDMin", "CoordID", "="};
   FieldWithValue AndCondition = 
-    { "TCoord", ConvertToString<unsigned int >(iTimePoint),">"};
+    { "TCoord", ConvertToString<unsigned int >(iTimePoint),"<"};
   std::vector<std::string> VectTraceIDs = ListUnsgIntToVectorString(iListTraceIDs);
   return GetListValuesFromTwoTablesAndCondition(
     iDatabaseConnector,

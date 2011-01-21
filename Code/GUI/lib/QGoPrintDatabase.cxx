@@ -1381,7 +1381,7 @@ PassMeshesInfoForImportedTrack(unsigned int iTrackID)
  {
    this->OpenDBConnection();
    std::list<unsigned int> ListMeshesForNewTrack =
-     this->m_MeshesManager->GetMeshesWithTimePointSupOrEqualToTheCheckedOne(
+     this->m_MeshesManager->GetMeshesWithTimePointInfToTheCheckedOne(
       iTrackID, this->m_DatabaseConnector, iListMeshIDs);
    this->CreateNewTrackFromListMeshes(ListMeshesForNewTrack);
    this->CloseDBConnection();
