@@ -404,13 +404,14 @@ protected:
     TWContainerType RowContainer =
     iTWContainer->GetContainerLoadedWithAllFromDB(iDatabaseConnector);
 
-    std::list< std::string > ColumnNames =
-      iTWContainer->GetListColumnsNamesForTableWidget();
+    std::list< std::pair< std::string, std::string >  > ColumnNamesAndToolTips =
+      iTWContainer->GetListColumnsNamesAndToolTipsForTableWidget();
     this->m_Table->DisplayContent(
       RowContainer,
       iTWContainer->GetIndexForGroupColor(this->m_TraceName),
       iTWContainer->GetIndexForGroupColor(this->m_CollectionName),
-      this->m_TraceName, this->m_CollectionName, ColumnNames,iState,iIndexShowColumn);
+      this->m_TraceName, this->m_CollectionName, ColumnNamesAndToolTips, 
+      iState,iIndexShowColumn);
     //this->m_Table->setSortingEnabled(true);
   }
 

@@ -41,6 +41,7 @@ and the Database*/
 struct GoDBTraceInfoForTableWidget {
   std::string InfoName;
   std::string ColumnNameTableWidget;   //Name of the column in the Table Widget
+  std::string ToolTip;                 //ToolTip to be displayed on the columnName in the Table Widget
   std::string ColumnNameDatabase;      //Name of the field in the database
   std::string TableNameDatabase;       //name of the table in the database
   bool SameFieldForDifferentValues;    /*set to true if the same table.field is
@@ -57,6 +58,7 @@ struct GoDBTraceInfoForTableWidget {
   {
     InfoName = "None";
     ColumnNameTableWidget = "None";
+    ToolTip = "None";
     ColumnNameDatabase = "None";
     TableNameDatabase = "None";
     TableKeyDatabase = "None";
@@ -70,6 +72,7 @@ struct GoDBTraceInfoForTableWidget {
   {
     InfoName = "None";
     ColumnNameTableWidget = "None";
+    ToolTip = "None";
     ColumnNameDatabase = "None";
     TableNameDatabase = "None";
     TableKeyDatabase = "None";

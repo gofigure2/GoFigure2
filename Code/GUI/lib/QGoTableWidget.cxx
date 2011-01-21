@@ -231,29 +231,31 @@ QStringList QGoTableWidget::ValuesForSelectedRows(QString iColumnName)
 
 //--------------------------------------------------------------------------
 void QGoTableWidget::DisplayColumnNames(QString iTableName,
-                                        std::list< std::string > iColumnNames)
+     std::list< std::pair<std::string, std::string > > iColumnNamesAndToolTip)
 {
-  size_t numberCol = iColumnNames.size();
+  size_t numberCol = iColumnNamesAndToolTip.size();
 
   this->setColumnCount( static_cast< int >( numberCol ) );
   int i = 0;
-  for ( std::list< std::string >::iterator iter = iColumnNames.begin();
-        iter != iColumnNames.end();
+  for ( std::list< std::pair<std::string, std::string > >::iterator iter = iColumnNamesAndToolTip.begin();
+        iter != iColumnNamesAndToolTip.end();
         ++iter, ++i )
     {
     QTableWidgetItem *HeaderCol = new QTableWidgetItem;
-    std::string       NameHeader;
-    NameHeader = *iter;
+    std::string       NameHeader, ToolTip;
+    NameHeader = iter->first;
+    ToolTip = iter->second;
 
     HeaderCol->setText( NameHeader.c_str() );
-    if ( NameHeader.empty() )
+    HeaderCol->setToolTip( ToolTip.c_str() );
+    /*if ( NameHeader.empty() )
       {
       HeaderCol->setToolTip( tr("Check/Uncheck %1").arg(iTableName) );
       }
     if ( NameHeader.find("T.I.") != std::string::npos )
       {
       HeaderCol->setToolTip( tr("T.I = Total Intensity For the Channel") );
-      }
+      }*/
     QFont serifFont("Arial", 10, QFont::Bold);
     HeaderCol->setFont(serifFont);
     this->setHorizontalHeaderItem(i, HeaderCol);
@@ -283,12 +285,12 @@ void QGoTableWidget::DisplayContent(TWContainerType iTWRowContainer,
                                     std::vector< int > iIndexColorTraceRowContainer,
                                     std::vector< int > iIndexColorCollectionRowContainer,
                                     std::string iTraceName, std::string iCollectionName,
-                                    std::list< std::string > iColumnNames,
+                                    std::list<std::pair< std::string, std::string > > iColumnNamesAndToolTip,
                                     Qt::CheckState iState,
                                     int iIndexShowColumn)
 {
   this->setSortingEnabled(false);
-  this->DisplayColumnNames(iTraceName.c_str(), iColumnNames);
+  this->DisplayColumnNames(iTraceName.c_str(), iColumnNamesAndToolTip);
   if ( iTWRowContainer.empty() )
     {
     std::cout << "The Row Container is totally empty ";
