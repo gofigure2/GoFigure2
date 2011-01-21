@@ -267,6 +267,13 @@ ComputeAttributes()
   attributes.phi = 0.;
 
   PointsMapConstIterator it = this->PointsMap.begin();
+
+  // check if there are no points in the map
+  if( it == this->PointsMap.end())
+    {
+    return attributes;
+    }
+
   unsigned int tmin = it->first;
   t0 = tmin;
   t1 = tmin;
@@ -275,6 +282,7 @@ ComputeAttributes()
   double* q = it->second; // if we only have one point in the map
   ++it;
 
+  // reset the array
   vtkDoubleArray* newArray =
       dynamic_cast<vtkDoubleArray*>(this->Nodes->GetPointData()->GetArray("SpeedInformation"));
   newArray->Reset();
