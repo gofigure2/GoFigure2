@@ -249,18 +249,10 @@ void QGoTableWidget::DisplayColumnNames(QString iTableName,
     HeaderCol->setText( NameHeader.c_str() );
     if (ToolTip != "None")
       HeaderCol->setToolTip( ToolTip.c_str() );
-    /*if ( NameHeader.empty() )
-      {
-      HeaderCol->setToolTip( tr("Check/Uncheck %1").arg(iTableName) );
-      }
-    if ( NameHeader.find("T.I.") != std::string::npos )
-      {
-      HeaderCol->setToolTip( tr("T.I = Total Intensity For the Channel") );
-      }*/
+
     QFont serifFont("Arial", 10, QFont::Bold);
     HeaderCol->setFont(serifFont);
     this->setHorizontalHeaderItem(i, HeaderCol);
-    this->resizeColumnToContents(i);
     }
 
   this->horizontalHeader()->setSortIndicatorShown(true);
@@ -360,6 +352,7 @@ void QGoTableWidget::DisplayContent(TWContainerType iTWRowContainer,
     this->SetColorForTable(iTWRowContainer, iIndexColorCollectionRowContainer, iCollectionName, 0);
     } //ENDELSE
   this->setSortingEnabled(true);
+  this->resizeColumnsToContents();
 }
 
 //--------------------------------------------------------------------------
