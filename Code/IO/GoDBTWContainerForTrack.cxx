@@ -125,14 +125,14 @@ GoDBTWContainerForTrack::GetContainerForOneSpecificTrace(
 {
   GoDBTableWidgetContainer::GetContainerForOneSpecificTrace(iDatabaseConnector,
                                                             iTraceID);
-  this->FillRowContainerForTrackComputedValues(iTraceID);
+  this->FillRowContainerForTrackComputedValues();
   return this->m_RowContainer;
 }
 
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBTWContainerForTrack::FillRowContainerForTrackComputedValues(int iTrackID)
+void GoDBTWContainerForTrack::FillRowContainerForTrackComputedValues()
 {
   std::vector<std::string> VectorNames;
   std::vector<std::vector<std::string> > VectorValues;

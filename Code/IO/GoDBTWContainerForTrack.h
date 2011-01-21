@@ -67,10 +67,10 @@ protected:
 
   /**
   \brief get the values from m_TrackAttributes and the names of the calculated
-  values and fill the corresponding columns of the row container with them
-  \param[in] iTrackID ID of the track 
+  values from m_TrackAttributes and fill the corresponding columns of the row 
+  container with them
   */
-  void FillRowContainerForTrackComputedValues(int iTrackID);
+  void FillRowContainerForTrackComputedValues();
 
   /**
   \brief 
