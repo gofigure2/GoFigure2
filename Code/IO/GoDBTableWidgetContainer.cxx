@@ -435,7 +435,6 @@ std::list< std::pair< std::string, std::string > >
       std::pair< std::string, std::string> temp;
       temp.first = m_ColumnsInfos[i].ColumnNameTableWidget;
       temp.second = m_ColumnsInfos[i].ToolTip;
-      //ListColumnNames.push_back(m_ColumnsInfos[i].ColumnNameTableWidget);
       oListColumnNamesAndToolTips.push_back(temp);
       }
     }

@@ -247,7 +247,8 @@ void QGoTableWidget::DisplayColumnNames(QString iTableName,
     ToolTip = iter->second;
 
     HeaderCol->setText( NameHeader.c_str() );
-    HeaderCol->setToolTip( ToolTip.c_str() );
+    if (ToolTip != "None")
+      HeaderCol->setToolTip( ToolTip.c_str() );
     /*if ( NameHeader.empty() )
       {
       HeaderCol->setToolTip( tr("Check/Uncheck %1").arg(iTableName) );
