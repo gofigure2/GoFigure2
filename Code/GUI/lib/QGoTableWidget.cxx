@@ -230,7 +230,7 @@ QStringList QGoTableWidget::ValuesForSelectedRows(QString iColumnName)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTableWidget::DisplayColumnNames(QString iTableName,
+void QGoTableWidget::DisplayColumnNames(
      std::list< std::pair<std::string, std::string > > iColumnNamesAndToolTip)
 {
   size_t numberCol = iColumnNamesAndToolTip.size();
@@ -283,7 +283,7 @@ void QGoTableWidget::DisplayContent(TWContainerType iTWRowContainer,
                                     int iIndexShowColumn)
 {
   this->setSortingEnabled(false);
-  this->DisplayColumnNames(iTraceName.c_str(), iColumnNamesAndToolTip);
+  this->DisplayColumnNames(iColumnNamesAndToolTip);
   if ( iTWRowContainer.empty() )
     {
     std::cout << "The Row Container is totally empty ";

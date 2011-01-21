@@ -262,11 +262,10 @@ protected:
   /**
   \brief create the table widget items for the columns Header and set the
   corresponding tooltips for them
-  \param[in] iTableName name of the trace to be displayed in the tooltip check/uncheck
   \param[in] iColumnNamesAndToolTip list of all the names of the columns to be displayed in the
   table with their tooltips
   */
-  void DisplayColumnNames(QString iTableName, 
+  void DisplayColumnNames(
     std::list< std::pair<std::string, std::string > > iColumnNamesAndToolTip);
 
   /**
