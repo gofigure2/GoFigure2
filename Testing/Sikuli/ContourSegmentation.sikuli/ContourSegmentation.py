@@ -53,10 +53,13 @@ for view in ViewRegion:
 	#check that nothing changed	
 
 
+#can find 1 instance of blue circle image and then 3 instances of it.  Also red cirles for validation.
+
+
 	click("ContourSettings.png")
 	click("ok.png")
 	#check that line width changed.
-
+	
 	click("ContourReinit.png")
 	#check that line disapears 
 	if view == "last":
@@ -68,4 +71,33 @@ for view in ViewRegion:
 			
 	click("Validate.png")
 	#check that new contour is on View and in DB
+
+
+
+click("Manual.png")
+type(Key.DOWN+Key.ENTER)
+
+import random
+
+for channel in [0,2]:
+	if channel == 2:
+		keyDown(Key.SHIFT)
+		type(Key.TAB)
+		keyUp(Key.SHIFT)
+		type(Key.DOWN)
+		
+	for view in ViewRegion:
 	
+		if view == "last":
+			for i in ViewRegion[0:3]:
+				region = find(Pattern(i).similar(0.30))
+				xclick = random.randint(region.x,region.w+region.x)
+				yclick = random.randint(region.y,region.h+region.y)
+				click(Location(xclick,yclick))
+				click("Apply.png")
+		else:
+			region = find(Pattern(view).similar(0.30))
+			xclick = random.randint(region.x,region.w+region.x)
+			yclick = random.randint(region.y,region.h+region.y)
+			click(Location(xclick,yclick))
+			click("Apply.png")

@@ -125,6 +125,9 @@ ViewRegion = (<img src="XY_ViewRegion.png" />,<img src="XZ_ViewRegion.png" />,<i
         <span class="cmt">#check that nothing changed     
 </span>
 
+<span class="cmt">#can find 1 instance of blue circle image and then 3 instances of it.  Also red cirles for validation.
+</span>
+
         <span class="skw">click</span>(<img src="ContourSettings.png" />)
         <span class="skw">click</span>(<img src="ok.png" />)
         <span class="cmt">#check that line width changed.
@@ -139,7 +142,37 @@ ViewRegion = (<img src="XY_ViewRegion.png" />,<img src="XZ_ViewRegion.png" />,<i
 
 
         <span class="skw">click</span>(<img src="Validate.png" />)
-        <span class="cmt">#check that new contour is on View and in DB</span>
+        <span class="cmt">#check that new contour is on View and in DB
+</span>
+
+
+<span class="skw">click</span>(<img src="Manual.png" />)
+<span class="skw">type</span>(Key.DOWN+Key.ENTER)
+
+<span class="kw">import</span> random
+
+<span class="kw">for</span> channel <span class="kw">in</span> [<span class="dig">0</span>,<span class="dig">2</span>]:
+        <span class="kw">if</span> channel == <span class="dig">2</span>:
+                keyDown(Key.SHIFT)
+                <span class="skw">type</span>(Key.TAB)
+                keyUp(Key.SHIFT)
+                <span class="skw">type</span>(Key.DOWN)
+
+        <span class="kw">for</span> view <span class="kw">in</span> ViewRegion:
+
+                <span class="kw">if</span> view == <span class="str">"last"</span>:
+                        <span class="kw">for</span> i <span class="kw">in</span> ViewRegion[<span class="dig">0</span>:<span class="dig">3</span>]:
+                                region = <span class="skw">find</span>(Pattern(i).similar(<span class="dig">0.30</span>))
+                                xclick = random.randint(region.x,region.w+region.x)
+                                yclick = random.randint(region.y,region.h+region.y)
+                                <span class="skw">click</span>(Location(xclick,yclick))
+                                <span class="skw">click</span>(<img src="Apply.png" />)
+                <span class="kw">else</span>:
+                        region = <span class="skw">find</span>(Pattern(view).similar(<span class="dig">0.30</span>))
+                        xclick = random.randint(region.x,region.w+region.x)
+                        yclick = random.randint(region.y,region.h+region.y)
+                        <span class="skw">click</span>(Location(xclick,yclick))
+                        <span class="skw">click</span>(<img src="Apply.png" />)
 </pre>
 </body>
 </html>
