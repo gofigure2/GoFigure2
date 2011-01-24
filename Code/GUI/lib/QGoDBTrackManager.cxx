@@ -414,7 +414,7 @@ void QGoDBTrackManager::MergeTracks()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-bool QGoDBTrackManager::CheckOverlapingTracks(
+bool QGoDBTrackManager::CheckOverlappingTracks(
   std::list<unsigned int> iTrackIDs, unsigned int ioTraceIDToKeep,
   unsigned int ioTraceIDToDelete)
 {
