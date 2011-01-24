@@ -177,9 +177,19 @@ protected slots:
  //virtual pure method in QGoDBTraceManager
   virtual void SetColorCoding(bool IsChecked);
 
-  void SplitTrackWithWidget();
+  /**
+  \brief get the trackIDs checked in the TW that will be modified with the
+  widget and emit a signal with them as info on meshes are needed.
+  */
+  void SplitMergeTrackWithWidget();
 
+  /**
+  \brief check that there is only one checked track in the TW and emit a
+  signal with it as the checked mesh is needed also to split the track
+  */
   void TrackIDToEmit();
-  //void SelectionClick(int iID);
+
+  void MergeTracks();
+
 };
 #endif

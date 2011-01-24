@@ -295,21 +295,16 @@ void QGoDBTrackManager::SetColorCoding(bool IsChecked)
 void QGoDBTrackManager::AddActionsContextMenu(QMenu *iMenu)
 {
   QGoDBTraceManager::AddActionsContextMenu(iMenu);
-  QMenu* SplitMenu = new QMenu(tr("Split"),iMenu);
+  //this->m_CheckedTracesMenu->addAction
+  QMenu* SplitMergeMenu = new QMenu(tr("Split/Merge them"),iMenu);
 
-  SplitMenu->addAction(tr("Your track"), this, SLOT(TrackIDToEmit() ) );
-  SplitMenu->addAction(tr("Using the Widget"),
-                       this, SLOT( SplitTrackWithWidget() ) );
-  iMenu->addAction(SplitMenu->menuAction() );
-  //QAction* SplitMenuAction = SplitMenu->menuAction(); 
-  //QAction* SplitMenuAction = new QAction(tr("Split your track"),iMenu);
-  //QObject::connect(iMenu,activated(int) , SLOT(SelectionClick(int)
-  //iMenu->connectItem(res, this, SLOT(SelectionClick(int)));
-
-  //QObject::connect(SplitMenuAction, SIGNAL( triggered() ),
-    //this, SLOT(TrackIDToEmit() ) );
-
-  //iMenu->addAction(SplitMenuAction);
+  SplitMergeMenu->addAction(tr("Split your track"), this, SLOT(TrackIDToEmit() ) );
+  SplitMergeMenu->addAction(tr("Using the Widget"),
+                       this, SLOT( SplitMergeTrackWithWidget() ) );
+  SplitMergeMenu->addAction(tr("Merge your 2 tracks"), this, SLOT(MergeTracks() ) );
+  
+  iMenu->addAction(SplitMergeMenu->menuAction() );
+  
 }
 //-------------------------------------------------------------------------
 
@@ -323,7 +318,7 @@ void QGoDBTrackManager::TrackIDToEmit()
     {
     QMessageBox msgBox;
     msgBox.setText(
-      tr("Please select one and only one Track to be split"));
+      tr("Please check one and only one Track to be split"));
     msgBox.exec();
     }
   else
@@ -339,7 +334,7 @@ void QGoDBTrackManager::TrackIDToEmit()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBTrackManager::SplitTrackWithWidget()
+void QGoDBTrackManager::SplitMergeTrackWithWidget()
 {
   std::list<unsigned int> HighlightedTrackIDs = 
     this->m_TrackContainerInfoForVisu->GetHighlightedElementsTraceID();
@@ -348,7 +343,7 @@ void QGoDBTrackManager::SplitTrackWithWidget()
     {
     QMessageBox msgBox;
     msgBox.setText(
-      tr("Please select at least one Track to be visualized in the widget"));
+      tr("Please check at least one Track to be visualized in the widget"));
     msgBox.exec();
     }
   else
@@ -391,3 +386,37 @@ void QGoDBTrackManager::DisplayOnlyCalculatedValuesForExistingTrack(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoDBTrackManager::MergeTracks()
+{
+  std::list<unsigned int> CheckedTrack = 
+    this->m_TrackContainerInfoForVisu->GetHighlightedElementsTraceID();
+  if (CheckedTrack.size() != 2)
+    {
+    QMessageBox msgBox;
+    msgBox.setText(
+      tr("Please check two and only two tracks to be merged"));
+    msgBox.exec();
+    }
+  else
+    {
+    emit NeedToGetDatabaseConnection();
+    unsigned int TimePointMin1, TimePointMin2, TimePointMax1, TimePointMax2;
+    std::list<unsigned int>::iterator iter = CheckedTrack.begin();
+    if (iter != CheckedTrack.end() )
+      {
+      TimePointMin1 = this->m_CollectionOfTraces->GetTimePointMin(
+        this->m_DatabaseConnector, *iter);
+      TimePointMax1 = this->m_CollectionOfTraces->GetTimePointMax(
+      this->m_DatabaseConnector, *iter);
+      }
+    ++iter;
+    if (iter != CheckedTrack.end() )
+      {
+      TimePointMin2 = this->m_CollectionOfTraces->GetTimePointMin(
+        this->m_DatabaseConnector, *iter);
+      TimePointMax2 = this->m_CollectionOfTraces->GetTimePointMax(
+      this->m_DatabaseConnector, *iter);
+      }
+    
+    }
+}
