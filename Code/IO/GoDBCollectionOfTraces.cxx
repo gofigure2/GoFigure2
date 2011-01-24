@@ -898,7 +898,7 @@ GetTraceIDsWithTimePointInf(vtkMySQLDatabase *iDatabaseConnector,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-unsigned int GoDBCollectionOfTraces::GetTimePointMin(
+/*unsigned int GoDBCollectionOfTraces::GetTimePointMin(
   vtkMySQLDatabase *iDatabaseConnector, unsigned int iTraceID)
 {
   FieldWithValue JoinCondition = {"CoordIDMin", "CoordID", "="};
@@ -912,8 +912,7 @@ unsigned int GoDBCollectionOfTraces::GetTimePointMin(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/** \todo reduce code redundancy between GetTimePointMax, Min and
-GetTraceIDsWithTimePointInf,Sup*/
+
 unsigned int GoDBCollectionOfTraces::GetTimePointMax(
   vtkMySQLDatabase *iDatabaseConnector, unsigned int iTraceID)
 {
@@ -924,7 +923,24 @@ unsigned int GoDBCollectionOfTraces::GetTimePointMax(
     iDatabaseConnector, this->m_TracesName, "coordinate", "TCoord", JoinCondition,
   this->m_TracesIDName, TraceID);
   return results.front();
-  }
+  }*/
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+unsigned int GoDBCollectionOfTraces::GetBoundedBoxTimePoint(
+  vtkMySQLDatabase *iDatabaseConnector, unsigned int iTraceID, bool MinTimePoint)
+{
+  std::string WhichTimePoint = "CoordIDMin";
+  if (MinTimePoint)
+    WhichTimePoint = "CoordIDMax";
+  FieldWithValue JoinCondition = {WhichTimePoint, "CoordID", "="};
+  std::vector<std::string> TraceID(1);
+  TraceID.at(0) = ConvertToString<unsigned int>(iTraceID);
+  std::list<unsigned int> results = GetAllSelectedValuesFromTwoTables(
+    iDatabaseConnector, this->m_TracesName, "coordinate", "TCoord", JoinCondition,
+  this->m_TracesIDName, TraceID);
+  return results.front();
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

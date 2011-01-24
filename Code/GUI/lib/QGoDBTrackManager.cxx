@@ -297,12 +297,10 @@ void QGoDBTrackManager::AddActionsContextMenu(QMenu *iMenu)
   QGoDBTraceManager::AddActionsContextMenu(iMenu);
   //this->m_CheckedTracesMenu->addAction
   QMenu* SplitMergeMenu = new QMenu(tr("Split/Merge them"),iMenu);
-
-  SplitMergeMenu->addAction(tr("Split your track"), this, SLOT(TrackIDToEmit() ) );
   SplitMergeMenu->addAction(tr("Using the Widget"),
                        this, SLOT( SplitMergeTrackWithWidget() ) );
-  SplitMergeMenu->addAction(tr("Merge your 2 tracks"), this, SLOT(MergeTracks() ) );
-  
+  SplitMergeMenu->addAction(tr("Split your track"), this, SLOT(TrackIDToEmit() ) );  
+  SplitMergeMenu->addAction(tr("Merge your 2 tracks"), this, SLOT(MergeTracks() ) );  
   iMenu->addAction(SplitMergeMenu->menuAction() );
   
 }
@@ -399,24 +397,62 @@ void QGoDBTrackManager::MergeTracks()
     }
   else
     {
-    emit NeedToGetDatabaseConnection();
-    unsigned int TimePointMin1, TimePointMin2, TimePointMax1, TimePointMax2;
-    std::list<unsigned int>::iterator iter = CheckedTrack.begin();
-    if (iter != CheckedTrack.end() )
+    unsigned int TrackIDToKeep, TrackIDToDelete = 0;
+    if (this->CheckOverlapingTracks(CheckedTrack, TrackIDToKeep, 
+       TrackIDToDelete) )
       {
-      TimePointMin1 = this->m_CollectionOfTraces->GetTimePointMin(
-        this->m_DatabaseConnector, *iter);
-      TimePointMax1 = this->m_CollectionOfTraces->GetTimePointMax(
-      this->m_DatabaseConnector, *iter);
+      std::list<unsigned int> TraceIDToDelete;
+      TraceIDToDelete.push_back(TrackIDToDelete);
+      std::list<unsigned int> MeshesBelongingToTrackToDelete = 
+        this->m_CollectionOfTraces->GetListTracesIDsFromThisCollectionOf(
+        this->m_DatabaseConnector, TraceIDToDelete);
+      this->DeleteListTraces(this->m_DatabaseConnector, TraceIDToDelete);
+      emit MeshesToAddToTrack(MeshesBelongingToTrackToDelete, TrackIDToKeep);
+      }
+   }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+bool QGoDBTrackManager::CheckOverlapingTracks(
+  std::list<unsigned int> iTrackIDs, unsigned int ioTraceIDToKeep,
+  unsigned int ioTraceIDToDelete)
+{
+  emit NeedToGetDatabaseConnection();
+  unsigned int TraceID1, TraceID2;
+  unsigned int TimePointMin1, TimePointMin2, TimePointMax1, TimePointMax2;
+  bool oTracksOverlapping = true;
+  std::list<unsigned int>::iterator iter = iTrackIDs.begin();
+    if (iter != iTrackIDs.end() )
+      {
+      TraceID1 = *iter;
+      TimePointMin1 = this->m_CollectionOfTraces->GetBoundedBoxTimePoint(
+        this->m_DatabaseConnector, TraceID1, true);
+      TimePointMax1 = this->m_CollectionOfTraces->GetBoundedBoxTimePoint(
+        this->m_DatabaseConnector, TraceID1, false);
       }
     ++iter;
-    if (iter != CheckedTrack.end() )
+    if (iter != iTrackIDs.end() )
       {
-      TimePointMin2 = this->m_CollectionOfTraces->GetTimePointMin(
-        this->m_DatabaseConnector, *iter);
-      TimePointMax2 = this->m_CollectionOfTraces->GetTimePointMax(
-      this->m_DatabaseConnector, *iter);
+      TraceID2 = *iter;
+      TimePointMin2 = this->m_CollectionOfTraces->GetBoundedBoxTimePoint(
+        this->m_DatabaseConnector, TraceID2, true);
+      TimePointMax2 = this->m_CollectionOfTraces->GetBoundedBoxTimePoint(
+        this->m_DatabaseConnector, TraceID2, false);
       }
-    
-    }
+    if (TimePointMin2 > TimePointMax1)
+      {
+      oTracksOverlapping = false;
+      ioTraceIDToKeep = TraceID2;
+      ioTraceIDToDelete = TraceID1;
+      }
+
+    if (TimePointMin1 > TimePointMax2)
+      {
+      oTracksOverlapping = false;
+      ioTraceIDToKeep = TraceID1;
+      ioTraceIDToDelete = TraceID2;
+      }
+    emit DBConnectionNotNeededAnymore();
+    return oTracksOverlapping;
 }

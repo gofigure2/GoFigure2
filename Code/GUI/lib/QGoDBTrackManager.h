@@ -131,6 +131,7 @@ signals:
   void NeedMeshesInfoForImportedTrack(unsigned int iTrackID);
   void TrackToSplit(unsigned int iTrackID, std::list<unsigned int> iListMeshIDs);
   void TrackIDToBeModifiedWithWidget(std::list<unsigned int> iListTracksID);
+  void MeshesToAddToTrack(std::list<unsigned int> iListMeshes, unsigned int iTrackID);
 
 protected:
   GoDBTWContainerForTrack *m_TWContainer;
@@ -190,6 +191,13 @@ protected slots:
   void TrackIDToEmit();
 
   void MergeTracks();
+
+  /**
+  \brief check that the 2 tracks are not overloaping, if not, return the
+  trackID to keep for the merge and the one to delete
+  */
+  bool CheckOverlapingTracks(std::list<unsigned int> iTrackIDs,
+    unsigned int ioTraceIDToKeep, unsigned int ioTraceIDToDelete);
 
 };
 #endif
