@@ -101,11 +101,11 @@ Glyphs( bool iActivated )
 {
   if( iActivated)
     {
-    emit UpdateTrackGlyphs( this->glyphSpinBox->value(), this->tubeSpinBox->value()*this->tube->isChecked() );
+    emit UpdateTracksRepresentation( this->glyphSpinBox->value(), this->tubeSpinBox->value()*this->tube->isChecked() );
     }
   else
     {
-    emit UpdateTrackGlyphs( 0, this->tubeSpinBox->value()*this->tube->isChecked() );
+    emit UpdateTracksRepresentation( 0, this->tubeSpinBox->value()*this->tube->isChecked() );
     }
 }
 //-------------------------------------------------------------------------
@@ -130,11 +130,11 @@ Tubes( bool iActivated )
 {
   if( iActivated)
     {
-    emit UpdateTrackGlyphs( this->glyphSpinBox->value()*this->glyph->isChecked(), this->tubeSpinBox->value() );
+    emit UpdateTracksRepresentation( this->glyphSpinBox->value()*this->glyph->isChecked(), this->tubeSpinBox->value() );
     }
   else
     {
-    emit UpdateTrackGlyphs( this->glyphSpinBox->value()*this->glyph->isChecked(), 0 );
+    emit UpdateTracksRepresentation( this->glyphSpinBox->value()*this->glyph->isChecked(), 0 );
     }
 }
 //-------------------------------------------------------------------------

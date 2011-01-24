@@ -261,7 +261,6 @@ UpdateTrackStructurePolyData( const TrackStructure& iTrackStructure)
     ++it;
     }
 
-
   //Create a cell array to store the lines in and add the lines to it
   vtkSmartPointer<vtkCellArray> cells =
       vtkSmartPointer<vtkCellArray>::New();
@@ -284,6 +283,8 @@ UpdateTrackStructurePolyData( const TrackStructure& iTrackStructure)
   polyData->GetPointData()->AddArray(speedArray);
 
   iTrackStructure.Nodes->DeepCopy(polyData);
+  //update speed information
+  iTrackStructure.ComputeAttributes();
 
   return true;
 }
@@ -722,9 +723,6 @@ ColorCodeTracksBySpeed( bool iColorCode )
 {
   if( iColorCode )
     {
-    // Compute the speed - stored in the polydata
-    ComputeSpeed();
-
     // get range for the tracks
     double* range = setNodeScalars("SpeedInformation");
 
@@ -742,28 +740,6 @@ ColorCodeTracksBySpeed( bool iColorCode )
 
     delete[] range;
     }
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-TrackContainer::
-ComputeSpeed()
-{
-  MultiIndexContainerType::index< TraceID >::type::iterator
-      it = m_Container.get< TraceID >().begin();
-
-    while( it != m_Container.get< TraceID >().end() )
-      {
-      // Create temp structure
-      TrackStructure tempStructure(*it);
-      // Compute attributes - speed + new array "SpeedInformation" in polydata
-      tempStructure.ComputeAttributes();
-      // Replace structure
-      m_Container.get< TraceID >().replace(it, tempStructure);
-
-      ++it;
-      }
 }
 //-------------------------------------------------------------------------
 
@@ -821,7 +797,7 @@ getTimeInterval()
 //-------------------------------------------------------------------------
 void
 TrackContainer::
-UpdateTrackGlyphs( int iRadius, int iRadius2 )
+UpdateTracksRepresentation( int iRadius, int iRadius2 )
 {
   MultiIndexContainerType::iterator it = m_Container.begin();
 
@@ -831,14 +807,11 @@ UpdateTrackGlyphs( int iRadius, int iRadius2 )
     bool update = UpdateTrackStructurePolyData( (*it) );
 
     // add glyphs if necessary
-    if( iRadius && it->Nodes )
+    if( (iRadius || iRadius2) && it->Nodes )
       {
-      it->UpdateGlyphs(iRadius);
+      it->UpdateTracksRepresentation(iRadius, iRadius2);
       }
-    if( iRadius2 && it->Nodes )
-      {
-      it->UpdateTubes(iRadius2);
-      }
+
     ++it;
   }
 

@@ -161,147 +161,47 @@ TrackStructure::ReleaseData() const
 //--------------------------------------------------------------------------
 void
 TrackStructure::
-UpdateTracksRepresentation( bool iGlyph, bool iTube ) const
+UpdateTracksRepresentation(int iRadius, int iRadius2) const
 {
-  vtkPolyData* glyph_pd = NULL;
-  vtkSphereSource* sphere = NULL;
-  vtkGlyph3D* glyph = NULL;
+  vtkSmartPointer<vtkAppendPolyData> apd =
+      vtkSmartPointer<vtkAppendPolyData>::New();
+  apd = vtkAppendPolyData::New();
+  apd->AddInput( this->Nodes );
 
-  if( iGlyph )
+  if(iRadius)
     {
-    // Glyph shape
+    vtkSmartPointer<vtkSphereSource> sphere =
+        vtkSmartPointer<vtkSphereSource>::New();
     sphere = vtkSphereSource::New();
     sphere->SetThetaResolution( 8 );
     sphere->SetPhiResolution( 8 );
+    sphere->SetRadius( static_cast<double>(iRadius) );
 
+    vtkSmartPointer<vtkGlyph3D> glyph =
+        vtkSmartPointer<vtkGlyph3D>::New();
     glyph = vtkGlyph3D::New();
     glyph->SetInput( this->Nodes );
     glyph->SetSource( sphere->GetOutput() );
     glyph->Update();
 
-    glyph_pd = glyph->GetOutput();
+    apd->AddInput( glyph->GetOutput() );
     }
 
-  vtkPolyData* tube_pd = NULL;
-  vtkTubeFilter* tube = NULL;
-
-  if( iTube )
+  if(iRadius2)
     {
-    tube = vtkTubeFilter::New();
+    vtkSmartPointer<vtkTubeFilter> tube =
+        vtkSmartPointer<vtkTubeFilter>::New();
     tube->SetNumberOfSides( 8 );
     tube->SetInput( this->Nodes );
-    tube->SetRadius( .2  );
+    tube->SetRadius( static_cast< double >(iRadius2)  );
     tube->Update();
 
-    tube_pd = tube->GetOutput();
-    }
-  else
-    {
-    tube_pd = this->Nodes;
+    apd->AddInput( tube->GetOutput() );
     }
 
-  vtkPolyData* temp = NULL;
-  vtkAppendPolyData* apd = NULL;
-
-  if( glyph_pd && tube_pd )
-    {
-    // append both polydata sets
-    apd = vtkAppendPolyData::New();;
-    apd->AddInput( glyph_pd );
-    apd->AddInput( tube_pd );
-    apd->Update();
-
-    temp = apd->GetOutput();
-    }
-  else
-    {
-    if( glyph_pd )
-      {
-      temp = glyph_pd;
-      }
-    else
-      {
-      if( tube_pd )
-        {
-        temp = tube_pd;
-        }
-      else
-        {
-        temp = this->Nodes;
-        }
-      }
-    }
-
-  this->Nodes->DeepCopy( temp );
-
-  if( sphere )
-    {
-    sphere->Delete();
-    }
-  if( glyph )
-    {
-    glyph->Delete();
-    }
-  if( tube )
-    {
-    tube->Delete();
-    }
-  if( apd )
-    {
-    apd->Delete();
-    }
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void
-TrackStructure::
-UpdateGlyphs(int iRadius) const
-{
-  vtkSmartPointer<vtkSphereSource> sphere =
-      vtkSmartPointer<vtkSphereSource>::New();
-  sphere = vtkSphereSource::New();
-  sphere->SetThetaResolution( 8 );
-  sphere->SetPhiResolution( 8 );
-  sphere->SetRadius( static_cast<double>(iRadius) );
-
-  vtkSmartPointer<vtkGlyph3D> glyph =
-      vtkSmartPointer<vtkGlyph3D>::New();
-  glyph = vtkGlyph3D::New();
-  glyph->SetInput( this->Nodes );
-  glyph->SetSource( sphere->GetOutput() );
-  glyph->Update();
-
-  vtkSmartPointer<vtkAppendPolyData> apd =
-      vtkSmartPointer<vtkAppendPolyData>::New();
-  apd = vtkAppendPolyData::New();;
-  apd->AddInput( this->Nodes );
-  apd->AddInput( glyph->GetOutput() );
   apd->Update();
-
-  this->Nodes->DeepCopy( apd->GetOutput() );
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void
-TrackStructure::
-UpdateTubes(int iRadius) const
-{
-  vtkSmartPointer<vtkTubeFilter> tube =
-      vtkSmartPointer<vtkTubeFilter>::New();
-  tube->SetNumberOfSides( 8 );
-  tube->SetInput( this->Nodes );
-  tube->SetRadius( static_cast< double >(iRadius)  );
-  tube->Update();
-  tube->GetOutput();
-
-  vtkSmartPointer<vtkAppendPolyData> apd =
-      vtkSmartPointer<vtkAppendPolyData>::New();
-  apd = vtkAppendPolyData::New();;
-  apd->AddInput( this->Nodes );
-  apd->AddInput( tube->GetOutput() );
-  apd->Update();
+  apd->GetOutput()->GetPointData()
+      ->SetScalars(this->Nodes->GetPointData()->GetScalars());
 
   this->Nodes->DeepCopy( apd->GetOutput() );
 }
@@ -310,7 +210,7 @@ UpdateTubes(int iRadius) const
 //--------------------------------------------------------------------------
 GoFigureTrackAttributes
 TrackStructure::
-ComputeAttributes()
+ComputeAttributes() const
 {
   GoFigureTrackAttributes attributes;
 

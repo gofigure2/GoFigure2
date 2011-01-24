@@ -190,9 +190,9 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent):
                     SLOT( ColorCodeTracksByOriginalColor(bool) ) );
 
   QObject::connect( m_TrackDockWidget,
-                    SIGNAL( UpdateTrackGlyphs(int, int) ),
+                    SIGNAL( UpdateTracksRepresentation(int, int) ),
                     m_TrackContainer,
-                    SLOT( UpdateTrackGlyphs(int, int) ) );
+                    SLOT( UpdateTracksRepresentation(int, int) ) );
 
   CreateDataBaseTablesConnection();
 
@@ -3126,12 +3126,3 @@ QGoTabImageView3DwT::GoToLocation(int iX, int iY, int iZ, int iT)
   this->SetSliceViewYZ(iX);
 }
 //-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
-UpdateTracksAppearance(bool iGlyph, bool iTube)
-{
-  m_TrackContainer->UpdateTracksReprensentation( iGlyph, iTube );
-}
-

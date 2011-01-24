@@ -140,13 +140,9 @@ public:
     return os;
   }
 
-  void UpdateTracksRepresentation( bool iGlyph, bool iTube ) const;
+  void UpdateTracksRepresentation( int iRadius, int iRadius2 ) const;
 
-  void UpdateGlyphs( int iRadius ) const;
-
-  void UpdateTubes(int iRadius) const;
-
-  GoFigureTrackAttributes ComputeAttributes();
+  GoFigureTrackAttributes ComputeAttributes() const;
 
 };
 
