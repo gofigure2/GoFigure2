@@ -56,7 +56,7 @@ public slots:
   void Tubes( bool );
   void tubeValueChanged( int );
 signals:
-  void UpdateTrackGlyphs(int);
+  void UpdateTrackGlyphs(int, int);
   void UpdateTrackTubes(int);
 
   void UpdateTracksAppearance(bool, bool);

@@ -821,7 +821,7 @@ getTimeInterval()
 //-------------------------------------------------------------------------
 void
 TrackContainer::
-UpdateTrackGlyphs( int iRadius )
+UpdateTrackGlyphs( int iRadius, int iRadius2 )
 {
   MultiIndexContainerType::iterator it = m_Container.begin();
 
@@ -835,32 +835,9 @@ UpdateTrackGlyphs( int iRadius )
       {
       it->UpdateGlyphs(iRadius);
       }
-    ++it;
-  }
-
-  if( this->m_ImageView )
-    {
-    m_ImageView->UpdateRenderWindows();
-    }
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-TrackContainer::
-UpdateTrackTubes( int iRadius )
-{
-  MultiIndexContainerType::iterator it = m_Container.begin();
-
-  while ( it != m_Container.end() )
-    {
-    // restore original polydata
-    bool update = UpdateTrackStructurePolyData( (*it) );
-
-    // add glyphs if necessary
-    if( iRadius && it->Nodes )
+    if( iRadius2 && it->Nodes )
       {
-      it->UpdateTubes(iRadius);
+      it->UpdateTubes(iRadius2);
       }
     ++it;
   }

@@ -190,18 +190,9 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent):
                     SLOT( ColorCodeTracksByOriginalColor(bool) ) );
 
   QObject::connect( m_TrackDockWidget,
-                    SIGNAL( UpdateTrackGlyphs(int) ),
+                    SIGNAL( UpdateTrackGlyphs(int, int) ),
                     m_TrackContainer,
-                    SLOT( UpdateTrackGlyphs(int) ) );
-
-  QObject::connect( m_TrackDockWidget,
-                    SIGNAL( UpdateTrackTubes(int) ),
-                    m_TrackContainer,
-                    SLOT( UpdateTrackTubes(int) ) );
-
-  //  void UpdateTracksGlyphs( int );
-
-
+                    SLOT( UpdateTrackGlyphs(int, int) ) );
 
   CreateDataBaseTablesConnection();
 
