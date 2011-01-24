@@ -45,6 +45,18 @@ QGoTrackDockWidget::QGoTrackDockWidget(
                                 QIcon::Normal, QIcon::Off);
   this->toggleViewAction()->setIcon(trackicon);
 
+  // appearance
+  QObject::connect( this->glyph, SIGNAL( toggled(bool)),
+      this, SLOT( Glyphs(bool) ) );
+  QObject::connect( this->glyphSpinBox, SIGNAL( valueChanged( int )),
+      this, SLOT( glyphValueChanged( int ) ) );
+
+  QObject::connect( this->tube, SIGNAL( toggled(bool)),
+      this, SLOT( Tubes(bool) ) );
+  QObject::connect( this->tubeSpinBox, SIGNAL( valueChanged( int )),
+      this, SLOT( tubeValueChanged( int ) ) );
+
+  // color code
   QObject::connect( this->time, SIGNAL( toggled(bool)),
       this, SIGNAL( ColorCodeTracksByTime(bool) ) );
   QObject::connect( this->speed, SIGNAL( toggled(bool)),
@@ -67,6 +79,66 @@ QGoTrackDockWidget::
 ~QGoTrackDockWidget()
 {
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTrackDockWidget::
+glyphValueChanged( int )
+{
+  //to avoid useless update
+  if( this->glyph->isChecked() )
+    {
+    Glyphs( true );
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTrackDockWidget::
+Glyphs( bool iActivated )
+{
+  if( iActivated)
+    {
+    emit UpdateTrackGlyphs( this->glyphSpinBox->value() );
+    }
+  else
+    {
+    emit UpdateTrackGlyphs( 0 );
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTrackDockWidget::
+tubeValueChanged( int )
+{
+  //to avoid useless update
+  if( this->tube->isChecked() )
+    {
+    Tubes( true );
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTrackDockWidget::
+Tubes( bool iActivated )
+{
+  if( iActivated)
+    {
+    emit UpdateTrackTubes( this->tubeSpinBox->value() );
+    }
+  else
+    {
+    emit UpdateTrackTubes( 0 );
+    }
+}
+//-------------------------------------------------------------------------
+
 /*
 //-------------------------------------------------------------------------
 //BUGGY AND USELESS SO COMMENTED

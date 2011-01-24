@@ -189,6 +189,20 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent):
                     m_TrackContainer,
                     SLOT( ColorCodeTracksByOriginalColor(bool) ) );
 
+  QObject::connect( m_TrackDockWidget,
+                    SIGNAL( UpdateTrackGlyphs(int) ),
+                    m_TrackContainer,
+                    SLOT( UpdateTrackGlyphs(int) ) );
+
+  QObject::connect( m_TrackDockWidget,
+                    SIGNAL( UpdateTrackTubes(int) ),
+                    m_TrackContainer,
+                    SLOT( UpdateTrackTubes(int) ) );
+
+  //  void UpdateTracksGlyphs( int );
+
+
+
   CreateDataBaseTablesConnection();
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
@@ -3129,4 +3143,4 @@ UpdateTracksAppearance(bool iGlyph, bool iTube)
 {
   m_TrackContainer->UpdateTracksReprensentation( iGlyph, iTube );
 }
-//-------------------------------------------------------------------------
+

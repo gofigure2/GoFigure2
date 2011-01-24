@@ -142,6 +142,10 @@ public:
 
   void UpdateTracksRepresentation( bool iGlyph, bool iTube ) const;
 
+  void UpdateGlyphs( int iRadius ) const;
+
+  void UpdateTubes(int iRadius) const;
+
   GoFigureTrackAttributes ComputeAttributes();
 
 };

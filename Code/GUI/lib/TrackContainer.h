@@ -432,6 +432,10 @@ public slots:
 
   void ColorCodeTracksByOriginalColor( bool iColorCode );
 
+  void UpdateTrackGlyphs( int iRadius);
+
+  void UpdateTrackTubes( int iRadius);
+
 protected:
   int m_TimeInterval;
   /**

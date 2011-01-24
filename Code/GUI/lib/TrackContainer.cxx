@@ -816,3 +816,58 @@ getTimeInterval()
 {
   return m_TimeInterval;
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateTrackGlyphs( int iRadius )
+{
+  MultiIndexContainerType::iterator it = m_Container.begin();
+
+  while ( it != m_Container.end() )
+    {
+    // restore original polydata
+    bool update = UpdateTrackStructurePolyData( (*it) );
+
+    // add glyphs if necessary
+    if( iRadius )
+      {
+      it->UpdateGlyphs(iRadius);
+      }
+    ++it;
+  }
+
+  if( this->m_ImageView )
+    {
+    m_ImageView->UpdateRenderWindows();
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateTrackTubes( int iRadius )
+{
+  MultiIndexContainerType::iterator it = m_Container.begin();
+
+  while ( it != m_Container.end() )
+    {
+    // restore original polydata
+    bool update = UpdateTrackStructurePolyData( (*it) );
+
+    // add glyphs if necessary
+    if( iRadius )
+      {
+      it->UpdateTubes(iRadius);
+      }
+    ++it;
+  }
+
+  if( this->m_ImageView )
+    {
+    m_ImageView->UpdateRenderWindows();
+    }
+}
+//-------------------------------------------------------------------------

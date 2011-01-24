@@ -38,6 +38,8 @@
 #include "vtkPolyData.h"
 #include "vtkActor.h"
 
+#include "vtkSmartPointer.h"
+
 #include "vtkDoubleArray.h"
 #include "vtkPointData.h"
 
@@ -248,6 +250,60 @@ UpdateTracksRepresentation( bool iGlyph, bool iTube ) const
     {
     apd->Delete();
     }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+TrackStructure::
+UpdateGlyphs(int iRadius) const
+{
+  vtkSmartPointer<vtkSphereSource> sphere =
+      vtkSmartPointer<vtkSphereSource>::New();
+  sphere = vtkSphereSource::New();
+  sphere->SetThetaResolution( 8 );
+  sphere->SetPhiResolution( 8 );
+  sphere->SetRadius( static_cast<double>(iRadius) );
+
+  vtkSmartPointer<vtkGlyph3D> glyph =
+      vtkSmartPointer<vtkGlyph3D>::New();
+  glyph = vtkGlyph3D::New();
+  glyph->SetInput( this->Nodes );
+  glyph->SetSource( sphere->GetOutput() );
+  glyph->Update();
+
+  vtkSmartPointer<vtkAppendPolyData> apd =
+      vtkSmartPointer<vtkAppendPolyData>::New();
+  apd = vtkAppendPolyData::New();;
+  apd->AddInput( this->Nodes );
+  apd->AddInput( glyph->GetOutput() );
+  apd->Update();
+
+  this->Nodes->DeepCopy( apd->GetOutput() );
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+TrackStructure::
+UpdateTubes(int iRadius) const
+{
+  vtkSmartPointer<vtkTubeFilter> tube =
+      vtkSmartPointer<vtkTubeFilter>::New();
+  tube->SetNumberOfSides( 8 );
+  tube->SetInput( this->Nodes );
+  tube->SetRadius( static_cast< double >(iRadius)  );
+  tube->Update();
+  tube->GetOutput();
+
+  vtkSmartPointer<vtkAppendPolyData> apd =
+      vtkSmartPointer<vtkAppendPolyData>::New();
+  apd = vtkAppendPolyData::New();;
+  //apd->AddInput( this->Nodes );
+  apd->AddInput( tube->GetOutput() );
+  apd->Update();
+
+  this->Nodes->DeepCopy( apd->GetOutput() );
 }
 //--------------------------------------------------------------------------
 
