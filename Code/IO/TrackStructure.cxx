@@ -175,7 +175,7 @@ UpdateTracksRepresentation(int iRadius, int iRadius2) const
     sphere = vtkSphereSource::New();
     sphere->SetThetaResolution( 8 );
     sphere->SetPhiResolution( 8 );
-    sphere->SetRadius( static_cast<double>(iRadius) );
+    sphere->SetRadius( iRadius );
 
     vtkSmartPointer<vtkGlyph3D> glyph =
         vtkSmartPointer<vtkGlyph3D>::New();
@@ -200,8 +200,6 @@ UpdateTracksRepresentation(int iRadius, int iRadius2) const
     }
 
   apd->Update();
-  apd->GetOutput()->GetPointData()
-      ->SetScalars(this->Nodes->GetPointData()->GetScalars());
 
   this->Nodes->DeepCopy( apd->GetOutput() );
 }

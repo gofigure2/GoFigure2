@@ -64,6 +64,7 @@ TrackContainer::
 TrackContainer(QObject *iParent,QGoImageView3D *iView):Superclass(iParent, iView)
 {
   m_TimeInterval = 0;
+  m_ActiveScalars = NULL;
 }
 //-------------------------------------------------------------------------
 
@@ -249,9 +250,6 @@ UpdateTrackStructurePolyData( const TrackStructure& iTrackStructure)
 
   while( it != iTrackStructure.PointsMap.end() )
     {
-    qDebug() << "New point in PolyData: ";
-    qDebug() << "T: " << it->first;
-    qDebug() << "X: " << (it->second)[0] << " Y: " << (it->second)[1] << " Z: " << (it->second)[2];
     newArray->InsertNextValue( it->first );
     newPoints->InsertNextPoint( it->second );
 
@@ -285,6 +283,8 @@ UpdateTrackStructurePolyData( const TrackStructure& iTrackStructure)
   iTrackStructure.Nodes->DeepCopy(polyData);
   //update speed information
   iTrackStructure.ComputeAttributes();
+
+  iTrackStructure.Nodes->GetPointData()->SetActiveScalars(m_ActiveScalars);
 
   return true;
 }
@@ -678,70 +678,34 @@ GetHighlightedElementsTrackPolyData()
 //-------------------------------------------------------------------------
 void
 TrackContainer::
-ColorCodeTracksByOriginalColor( bool iColorCode )
+ChangeColorCode( char* iColorCode)
 {
-  if( iColorCode )
+  m_ActiveScalars = iColorCode;
+
+  if( iColorCode)
+    {
+    // get range for the tracks
+    double* range = setNodeScalars(iColorCode);
+
+    // associated LUT
+    vtkSmartPointer<vtkLookupTable> LUT = vtkSmartPointer<vtkLookupTable>::New();
+    LUT->SetTableRange(range);
+    LUT->SetNumberOfTableValues(1024);
+    LUT->SetHueRange(0,0.7);
+    LUT->SetSaturationRange(1,1);
+    LUT->SetValueRange(1,1);
+    LUT->Build();
+
+    SetScalarRangeForAllElements(range[0], range[1]);
+    SetLookupTableForColorCoding(LUT);
+
+    delete[] range;
+    }
+  else
     {
     this->RenderAllElementsWithOriginalColors();
     }
 }
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-TrackContainer::
-ColorCodeTracksByTime( bool iColorCode )
-{
-  if( iColorCode )
-    {
-    // get range for the tracks
-    double* range = setNodeScalars("TemporalInformation");
-
-    // associated LUT
-    vtkSmartPointer<vtkLookupTable> LUT = vtkSmartPointer<vtkLookupTable>::New();
-    LUT->SetTableRange(range);
-    LUT->SetNumberOfTableValues(1024);
-    LUT->SetHueRange(0,0.7);
-    LUT->SetSaturationRange(1,1);
-    LUT->SetValueRange(1,1);
-    LUT->Build();
-
-    SetScalarRangeForAllElements(range[0], range[1]);
-    SetLookupTableForColorCoding(LUT);
-
-    delete[] range;
-
-    }
-}
-//-------------------------------------------------------------------------
-
-
-//-------------------------------------------------------------------------
-void
-TrackContainer::
-ColorCodeTracksBySpeed( bool iColorCode )
-{
-  if( iColorCode )
-    {
-    // get range for the tracks
-    double* range = setNodeScalars("SpeedInformation");
-
-    // associated LUT
-    vtkSmartPointer<vtkLookupTable> LUT = vtkSmartPointer<vtkLookupTable>::New();
-    LUT->SetTableRange(range);
-    LUT->SetNumberOfTableValues(1024);
-    LUT->SetHueRange(0,0.7);
-    LUT->SetSaturationRange(1,1);
-    LUT->SetValueRange(1,1);
-    LUT->Build();
-
-    SetScalarRangeForAllElements(range[0], range[1]);
-    SetLookupTableForColorCoding(LUT);
-
-    delete[] range;
-    }
-}
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 double*

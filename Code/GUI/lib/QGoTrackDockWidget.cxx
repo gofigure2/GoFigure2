@@ -35,6 +35,8 @@
 
 #include "ctkDoubleRangeSlider.h"
 
+#include <iostream>
+
 //-------------------------------------------------------------------------
 QGoTrackDockWidget::QGoTrackDockWidget(
   QWidget *iParent):QDockWidget(iParent)
@@ -58,11 +60,11 @@ QGoTrackDockWidget::QGoTrackDockWidget(
 
   // color code
   QObject::connect( this->time, SIGNAL( toggled(bool)),
-      this, SIGNAL( ColorCodeTracksByTime(bool) ) );
+      this, SLOT( ColorCodeTracksByTime(bool) ) );
   QObject::connect( this->speed, SIGNAL( toggled(bool)),
-      this, SIGNAL( ColorCodeTracksBySpeed(bool) ) );
+      this, SLOT( ColorCodeTracksBySpeed(bool) ) );
   QObject::connect( this->real, SIGNAL( toggled(bool)),
-      this, SIGNAL( ColorCodeTracksByOriginalColor(bool) ) );
+      this, SLOT( ColorCodeTracksByOriginalColor(bool) ) );
 
 
   /*
@@ -128,6 +130,8 @@ void
 QGoTrackDockWidget::
 Tubes( bool iActivated )
 {
+
+
   if( iActivated)
     {
     emit UpdateTracksRepresentation( this->glyphSpinBox->value()*this->glyph->isChecked(), this->tubeSpinBox->value() );
@@ -139,24 +143,38 @@ Tubes( bool iActivated )
 }
 //-------------------------------------------------------------------------
 
-/*
-//-------------------------------------------------------------------------
-//BUGGY AND USELESS SO COMMENTED
 //-------------------------------------------------------------------------
 void
 QGoTrackDockWidget::
-GlyphChanged( bool iState )
+ColorCodeTracksByTime(bool iChecked)
 {
-  //emit UpdateTracksAppearance( iState, this->tube->isChecked() );
+  if( iChecked )
+    {
+    emit ChangeColorCode("TemporalInformation");
+    }
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
 QGoTrackDockWidget::
-TubeChanged( bool iState )
+ColorCodeTracksBySpeed(bool iChecked)
 {
-  //emit UpdateTracksAppearance( this->glyph->isChecked(), iState );
+  if( iChecked )
+    {
+    emit ChangeColorCode("SpeedInformation");
+    }
 }
 //-------------------------------------------------------------------------
- */
+
+//-------------------------------------------------------------------------
+void
+QGoTrackDockWidget::
+ColorCodeTracksByOriginalColor(bool iChecked)
+{
+  if( iChecked )
+    {
+    emit ChangeColorCode(NULL);
+    }
+}
+//-------------------------------------------------------------------------

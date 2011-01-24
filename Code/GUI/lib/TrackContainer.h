@@ -426,16 +426,11 @@ public slots:
   /** \brief Color code the track by time.
     \param[in] iColorCode Display Time Color Code (true) or Real Color (false)
    */
-  void ColorCodeTracksByTime( bool iColorCode);
-
-  void ColorCodeTracksBySpeed( bool iColorCode);
-
-  void ColorCodeTracksByOriginalColor( bool iColorCode );
+  void ChangeColorCode( char* iColorCode);
 
   void UpdateTracksRepresentation( int iRadius,int iRadius2);
 
 protected:
-  int m_TimeInterval;
   /**
     \brief Recompute a polydata from a list of point (coordinates) for the
     current element. If the current element is a new track, then the polydata,
@@ -455,6 +450,9 @@ protected:
   void ComputeSpeed();
 
 private:
+  int m_TimeInterval;
+  char* m_ActiveScalars;
+
   Q_DISABLE_COPY(TrackContainer);
 };
 

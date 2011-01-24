@@ -53,12 +53,12 @@ public slots:
   void glyphValueChanged( int );
   void Tubes( bool );
   void tubeValueChanged( int );
-signals:
-  void UpdateTracksRepresentation(int, int);
-
   void ColorCodeTracksByTime(bool);
   void ColorCodeTracksBySpeed(bool);
   void ColorCodeTracksByOriginalColor(bool);
+signals:
+  void UpdateTracksRepresentation(int, int);
+  void ChangeColorCode( char* );
 
 };
 #endif
