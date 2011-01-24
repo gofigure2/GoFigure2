@@ -831,7 +831,7 @@ UpdateTrackGlyphs( int iRadius )
     bool update = UpdateTrackStructurePolyData( (*it) );
 
     // add glyphs if necessary
-    if( iRadius )
+    if( iRadius && it->Nodes )
       {
       it->UpdateGlyphs(iRadius);
       }
@@ -858,7 +858,7 @@ UpdateTrackTubes( int iRadius )
     bool update = UpdateTrackStructurePolyData( (*it) );
 
     // add glyphs if necessary
-    if( iRadius )
+    if( iRadius && it->Nodes )
       {
       it->UpdateTubes(iRadius);
       }

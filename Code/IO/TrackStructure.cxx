@@ -299,7 +299,7 @@ UpdateTubes(int iRadius) const
   vtkSmartPointer<vtkAppendPolyData> apd =
       vtkSmartPointer<vtkAppendPolyData>::New();
   apd = vtkAppendPolyData::New();;
-  //apd->AddInput( this->Nodes );
+  apd->AddInput( this->Nodes );
   apd->AddInput( tube->GetOutput() );
   apd->Update();
 
