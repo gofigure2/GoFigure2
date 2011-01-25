@@ -400,8 +400,15 @@ void QGoDBTrackManager::MergeTracks()
     emit NeedToGetDatabaseConnection();
     unsigned int TrackIDToKeep = 0;
     unsigned int TrackIDToDelete = 0;
-    if (!this->CheckOverlappingTracks(CheckedTrack, TrackIDToKeep, 
+    if (this->CheckOverlappingTracks(CheckedTrack, TrackIDToKeep, 
       TrackIDToDelete, this->m_DatabaseConnector) )
+      {
+      QMessageBox msgBox;
+      msgBox.setText(
+      tr("The two tracks are overlapping, it is not possible to merge them !!"));
+      msgBox.exec();
+      }
+    else
       {
       std::list<unsigned int> TraceIDToDelete;
       TraceIDToDelete.push_back(TrackIDToDelete);
