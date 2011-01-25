@@ -223,7 +223,6 @@ bool
 TrackContainer::
 UpdateTrackStructurePolyData( const TrackStructure& iTrackStructure)
 {
-
   if( iTrackStructure.PointsMap.empty() )
     {
     qDebug() << "No points in the map, reset nodes";
@@ -284,9 +283,7 @@ UpdateTrackStructurePolyData( const TrackStructure& iTrackStructure)
   //update speed information
   iTrackStructure.ComputeAttributes();
 
-  QByteArray   bytes  = m_ActiveScalars.toAscii();
-  const char * ptr    = bytes.data();
-  iTrackStructure.Nodes->GetPointData()->SetActiveScalars( ptr );
+  iTrackStructure.Nodes->GetPointData()->SetActiveScalars( NULL );
 
   return true;
 }
@@ -341,14 +338,10 @@ UpdateCurrentElementMap( std::map< unsigned int, double* > iMeshes)
 
     CreateCurrentTrackActors();
 
-    emit CurrentTrackToSave();
-
     return;
     }
 
   UpdateTrackStructurePolyData(this->m_CurrentElement);
-
-  emit CurrentTrackToSave();
 }
 //-------------------------------------------------------------------------
 
@@ -583,15 +576,8 @@ RecomputeCurrentElementMap( std::list< double* > iPoints)
       {
       // add actors in the visualization with given property
       CreateCurrentTrackActors();
-
-      //emit CurrentTrackToSave();
-
-      return;
       }
 
-    //UpdateTrackStructurePolyData(this->m_CurrentElement);
-
-    //emit CurrentTrackToSave();
     }
 }
 //-------------------------------------------------------------------------
@@ -767,7 +753,7 @@ TrackContainer::
 UpdateTracksRepresentation( int iRadius, int iRadius2 )
 {
   MultiIndexContainerType::iterator it = m_Container.begin();
-  this->RenderAllElementsWithOriginalColors();
+  //this->RenderAllElementsWithOriginalColors();
 
   while ( it != m_Container.end() )
     {
