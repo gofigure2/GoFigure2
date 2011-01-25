@@ -64,7 +64,7 @@ TrackContainer::
 TrackContainer(QObject *iParent,QGoImageView3D *iView):Superclass(iParent, iView)
 {
   m_TimeInterval = 0;
-  m_ActiveScalars = NULL;
+  m_ActiveScalars.append("Original");
 }
 //-------------------------------------------------------------------------
 
@@ -284,7 +284,9 @@ UpdateTrackStructurePolyData( const TrackStructure& iTrackStructure)
   //update speed information
   iTrackStructure.ComputeAttributes();
 
-  iTrackStructure.Nodes->GetPointData()->SetActiveScalars(m_ActiveScalars);
+  QByteArray   bytes  = m_ActiveScalars.toAscii();
+  const char * ptr    = bytes.data();
+  iTrackStructure.Nodes->GetPointData()->SetActiveScalars( ptr );
 
   return true;
 }
@@ -678,12 +680,14 @@ GetHighlightedElementsTrackPolyData()
 //-------------------------------------------------------------------------
 void
 TrackContainer::
-ChangeColorCode( char* iColorCode)
+ChangeColorCode( const char* iColorCode)
 {
-  m_ActiveScalars = iColorCode;
+  m_ActiveScalars.clear();
+  m_ActiveScalars.append(iColorCode);
 
-  if( iColorCode)
+  if( m_ActiveScalars.compare( "Original" ) )
     {
+    std::cout << " diff" << std::endl;
     // get range for the tracks
     double* range = setNodeScalars(iColorCode);
 
@@ -703,6 +707,7 @@ ChangeColorCode( char* iColorCode)
     }
   else
     {
+  std::cout << " equal" << std::endl;
     this->RenderAllElementsWithOriginalColors();
     }
 }
@@ -775,9 +780,12 @@ UpdateTracksRepresentation( int iRadius, int iRadius2 )
       {
       it->UpdateTracksRepresentation(iRadius, iRadius2);
       }
-
     ++it;
   }
+
+  QByteArray   bytes  = m_ActiveScalars.toAscii();
+  const char * ptr    = bytes.data();
+  ChangeColorCode( ptr );
 
   if( this->m_ImageView )
     {

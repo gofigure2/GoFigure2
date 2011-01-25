@@ -57,6 +57,7 @@
 #include "vtkDoubleArray.h"
 #include "QGoImageView3D.h"
 #include "vtkLookupTableManager.h"
+#include <QString>
 
 namespace boost
 {
@@ -426,7 +427,7 @@ public slots:
   /** \brief Color code the track by time.
     \param[in] iColorCode Display Time Color Code (true) or Real Color (false)
    */
-  void ChangeColorCode( char* iColorCode);
+  void ChangeColorCode( const char* iColorCode);
 
   void UpdateTracksRepresentation( int iRadius,int iRadius2);
 
@@ -451,7 +452,7 @@ protected:
 
 private:
   int m_TimeInterval;
-  char* m_ActiveScalars;
+  QString m_ActiveScalars;
 
   Q_DISABLE_COPY(TrackContainer);
 };

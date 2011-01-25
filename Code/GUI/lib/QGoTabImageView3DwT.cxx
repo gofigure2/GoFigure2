@@ -175,9 +175,9 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent):
   m_TrackDockWidget = new QGoTrackDockWidget(this);
 
   QObject::connect( m_TrackDockWidget,
-                    SIGNAL( ChangeColorCode(char*) ),
+                    SIGNAL( ChangeColorCode(const char*) ),
                     m_TrackContainer,
-                    SLOT( ChangeColorCode(char*) ) );
+                    SLOT( ChangeColorCode(const char*) ) );
 
   QObject::connect( m_TrackDockWidget,
                     SIGNAL( UpdateTracksRepresentation(int, int) ),

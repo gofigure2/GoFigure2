@@ -174,7 +174,7 @@ ColorCodeTracksByOriginalColor(bool iChecked)
 {
   if( iChecked )
     {
-    emit ChangeColorCode(NULL);
+    emit ChangeColorCode("Original");
     }
 }
 //-------------------------------------------------------------------------
