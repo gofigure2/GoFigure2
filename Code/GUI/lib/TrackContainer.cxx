@@ -687,7 +687,6 @@ ChangeColorCode( const char* iColorCode)
 
   if( m_ActiveScalars.compare( "Original" ) )
     {
-    std::cout << " diff" << std::endl;
     // get range for the tracks
     double* range = setNodeScalars(iColorCode);
 
@@ -707,7 +706,6 @@ ChangeColorCode( const char* iColorCode)
     }
   else
     {
-  std::cout << " equal" << std::endl;
     this->RenderAllElementsWithOriginalColors();
     }
 }
@@ -769,6 +767,7 @@ TrackContainer::
 UpdateTracksRepresentation( int iRadius, int iRadius2 )
 {
   MultiIndexContainerType::iterator it = m_Container.begin();
+  this->RenderAllElementsWithOriginalColors();
 
   while ( it != m_Container.end() )
     {
