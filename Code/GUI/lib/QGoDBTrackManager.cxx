@@ -295,21 +295,14 @@ void QGoDBTrackManager::SetColorCoding(bool IsChecked)
 void QGoDBTrackManager::AddActionsContextMenu(QMenu *iMenu)
 {
   QGoDBTraceManager::AddActionsContextMenu(iMenu);
-  QMenu* SplitMenu = new QMenu(tr("Split"),iMenu);
-
-  SplitMenu->addAction(tr("Your track"), this, SLOT(TrackIDToEmit() ) );
-  SplitMenu->addAction(tr("Using the Widget"),
-                       this, SLOT( SplitTrackWithWidget() ) );
-  iMenu->addAction(SplitMenu->menuAction() );
-  //QAction* SplitMenuAction = SplitMenu->menuAction(); 
-  //QAction* SplitMenuAction = new QAction(tr("Split your track"),iMenu);
-  //QObject::connect(iMenu,activated(int) , SLOT(SelectionClick(int)
-  //iMenu->connectItem(res, this, SLOT(SelectionClick(int)));
-
-  //QObject::connect(SplitMenuAction, SIGNAL( triggered() ),
-    //this, SLOT(TrackIDToEmit() ) );
-
-  //iMenu->addAction(SplitMenuAction);
+  //this->m_CheckedTracesMenu->addAction
+  QMenu* SplitMergeMenu = new QMenu(tr("Split/Merge them"),iMenu);
+  SplitMergeMenu->addAction(tr("Using the Widget"),
+                       this, SLOT( SplitMergeTrackWithWidget() ) );
+  SplitMergeMenu->addAction(tr("Split your track"), this, SLOT(TrackIDToEmit() ) );  
+  SplitMergeMenu->addAction(tr("Merge your 2 tracks"), this, SLOT(MergeTracks() ) );  
+  iMenu->addAction(SplitMergeMenu->menuAction() );
+  
 }
 //-------------------------------------------------------------------------
 
@@ -323,7 +316,7 @@ void QGoDBTrackManager::TrackIDToEmit()
     {
     QMessageBox msgBox;
     msgBox.setText(
-      tr("Please select one and only one Track to be split"));
+      tr("Please check one and only one Track to be split"));
     msgBox.exec();
     }
   else
@@ -339,7 +332,7 @@ void QGoDBTrackManager::TrackIDToEmit()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBTrackManager::SplitTrackWithWidget()
+void QGoDBTrackManager::SplitMergeTrackWithWidget()
 {
   std::list<unsigned int> HighlightedTrackIDs = 
     this->m_TrackContainerInfoForVisu->GetHighlightedElementsTraceID();
@@ -348,7 +341,7 @@ void QGoDBTrackManager::SplitTrackWithWidget()
     {
     QMessageBox msgBox;
     msgBox.setText(
-      tr("Please select at least one Track to be visualized in the widget"));
+      tr("Please check at least one Track to be visualized in the widget"));
     msgBox.exec();
     }
   else
@@ -391,3 +384,77 @@ void QGoDBTrackManager::DisplayOnlyCalculatedValuesForExistingTrack(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoDBTrackManager::MergeTracks()
+{
+  std::list<unsigned int> CheckedTrack = 
+    this->m_TrackContainerInfoForVisu->GetHighlightedElementsTraceID();
+  if (CheckedTrack.size() != 2)
+    {
+    QMessageBox msgBox;
+    msgBox.setText(
+      tr("Please check two and only two tracks to be merged"));
+    msgBox.exec();
+    }
+  else
+    {
+    emit NeedToGetDatabaseConnection();
+    unsigned int TrackIDToKeep = 0;
+    unsigned int TrackIDToDelete = 0;
+    if (!this->CheckOverlappingTracks(CheckedTrack, TrackIDToKeep, 
+      TrackIDToDelete, this->m_DatabaseConnector) )
+      {
+      std::list<unsigned int> TraceIDToDelete;
+      TraceIDToDelete.push_back(TrackIDToDelete);
+      std::list<unsigned int> MeshesBelongingToTrackToDelete = 
+        this->m_CollectionOfTraces->GetListTracesIDsFromThisCollectionOf(
+        this->m_DatabaseConnector, TraceIDToDelete);
+      this->DeleteListTraces(this->m_DatabaseConnector, TraceIDToDelete);
+      emit MeshesToAddToTrack(MeshesBelongingToTrackToDelete, TrackIDToKeep);
+      }
+    emit DBConnectionNotNeededAnymore();
+   }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+bool QGoDBTrackManager::CheckOverlappingTracks(
+  std::list<unsigned int> iTrackIDs, unsigned int &ioTraceIDToKeep,
+  unsigned int &ioTraceIDToDelete, vtkMySQLDatabase* iDatabaseConnector)
+{
+  unsigned int TraceID1, TraceID2;
+  unsigned int TimePointMin1, TimePointMin2, TimePointMax1, TimePointMax2;
+  bool oTracksOverlapping = true;
+  std::list<unsigned int>::iterator iter = iTrackIDs.begin();
+    if (iter != iTrackIDs.end() )
+      {
+      TraceID1 = *iter;
+      TimePointMin1 = this->m_CollectionOfTraces->GetBoundedBoxTimePoint(
+        iDatabaseConnector, TraceID1, true);
+      TimePointMax1 = this->m_CollectionOfTraces->GetBoundedBoxTimePoint(
+        iDatabaseConnector, TraceID1, false);
+      }
+    ++iter;
+    if (iter != iTrackIDs.end() )
+      {
+      TraceID2 = *iter;
+      TimePointMin2 = this->m_CollectionOfTraces->GetBoundedBoxTimePoint(
+        iDatabaseConnector, TraceID2, true);
+      TimePointMax2 = this->m_CollectionOfTraces->GetBoundedBoxTimePoint(
+        iDatabaseConnector, TraceID2, false);
+      }
+    if (TimePointMin2 > TimePointMax1)
+      {
+      oTracksOverlapping = false;
+      ioTraceIDToKeep = TraceID2;
+      ioTraceIDToDelete = TraceID1;
+      }
+
+    if (TimePointMin1 > TimePointMax2)
+      {
+      oTracksOverlapping = false;
+      ioTraceIDToKeep = TraceID1;
+      ioTraceIDToDelete = TraceID2;
+      }
+
+    return oTracksOverlapping;
+}

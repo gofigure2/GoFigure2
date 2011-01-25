@@ -412,6 +412,34 @@ public:
     unsigned int iTimePoint);
 
   /**
+  \brief get the timepoint min or max for the trace
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iTraceID ID of the trace the timepoint min is needed
+  \param[in] MinTimePoint if true return the min timepoint, if false, 
+  return the max timepoint
+  \return the timepoint min or max
+  */
+  unsigned int GetBoundedBoxTimePoint(
+    vtkMySQLDatabase *iDatabaseConnector, unsigned int iTraceID, bool MinTimePoint = true);
+  /**
+  \brief get the timepoint min for the trace
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iTraceID ID of the trace the timepoint min is needed
+  \return the timepoint min
+  */
+  //unsigned int GetTimePointMin(vtkMySQLDatabase *iDatabaseConnector, 
+  //  unsigned int iTraceID);
+
+  /**
+  \brief get the timepoint max for the trace
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iTraceID ID of the trace the timepoint min is needed
+  \return the timepoint max
+  */
+  //unsigned int GetTimePointMax(vtkMySQLDatabase *iDatabaseConnector, 
+  //  unsigned int iTraceID);
+
+  /**
   \brief get a list of structures filled with data from the database
   \param[in] iDatabaseConnector connection to the database
   \param[in] iImgSessionID
