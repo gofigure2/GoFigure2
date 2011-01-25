@@ -51,12 +51,12 @@ QGoTrackDockWidget::QGoTrackDockWidget(
   QObject::connect( this->glyph, SIGNAL( toggled(bool)),
       this, SLOT( Glyphs(bool) ) );
   QObject::connect( this->glyphSpinBox, SIGNAL( valueChanged( double )),
-      this, SLOT( glyphValueChanged( int ) ) );
+      this, SLOT( glyphValueChanged( double ) ) );
 
   QObject::connect( this->tube, SIGNAL( toggled(bool)),
       this, SLOT( Tubes(bool) ) );
   QObject::connect( this->tubeSpinBox, SIGNAL( valueChanged( double )),
-      this, SLOT( tubeValueChanged( int ) ) );
+      this, SLOT( tubeValueChanged( double ) ) );
 
   // color code
   QObject::connect( this->time, SIGNAL( toggled(bool)),
