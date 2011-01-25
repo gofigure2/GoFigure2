@@ -50,14 +50,14 @@ public:
 
 public slots:
   void Glyphs( bool );
-  void glyphValueChanged( int );
+  void glyphValueChanged( double );
   void Tubes( bool );
-  void tubeValueChanged( int );
+  void tubeValueChanged( double );
   void ColorCodeTracksByTime(bool);
   void ColorCodeTracksBySpeed(bool);
   void ColorCodeTracksByOriginalColor(bool);
 signals:
-  void UpdateTracksRepresentation(int, int);
+  void UpdateTracksRepresentation(double, double);
   void ChangeColorCode( const char* );
 
 };

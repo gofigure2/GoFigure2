@@ -161,7 +161,7 @@ TrackStructure::ReleaseData() const
 //--------------------------------------------------------------------------
 void
 TrackStructure::
-UpdateTracksRepresentation(int iRadius, int iRadius2) const
+UpdateTracksRepresentation(double iRadius, double iRadius2) const
 {
   vtkSmartPointer<vtkAppendPolyData> apd =
       vtkSmartPointer<vtkAppendPolyData>::New();
@@ -193,7 +193,7 @@ UpdateTracksRepresentation(int iRadius, int iRadius2) const
         vtkSmartPointer<vtkTubeFilter>::New();
     tube->SetNumberOfSides( 8 );
     tube->SetInput( this->Nodes );
-    tube->SetRadius( static_cast< double >(iRadius2)  );
+    tube->SetRadius( iRadius2 );
     tube->Update();
 
     apd->AddInput( tube->GetOutput() );

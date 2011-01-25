@@ -421,7 +421,7 @@ public slots:
    */
   void ChangeColorCode( const char* iColorCode);
 
-  void UpdateTracksRepresentation( int iRadius,int iRadius2);
+  void UpdateTracksRepresentation( double iRadius,double iRadius2);
 
 protected:
   /**

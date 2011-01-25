@@ -140,7 +140,7 @@ public:
     return os;
   }
 
-  void UpdateTracksRepresentation( int iRadius, int iRadius2 ) const;
+  void UpdateTracksRepresentation( double iRadius, double iRadius2 ) const;
 
   GoFigureTrackAttributes ComputeAttributes() const;
 

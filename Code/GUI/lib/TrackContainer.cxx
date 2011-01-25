@@ -725,7 +725,7 @@ getTimeInterval()
 //-------------------------------------------------------------------------
 void
 TrackContainer::
-UpdateTracksRepresentation( int iRadius, int iRadius2 )
+UpdateTracksRepresentation( double iRadius, double iRadius2 )
 {
   MultiIndexContainerType::iterator it = m_Container.begin();
 

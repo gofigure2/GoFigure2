@@ -50,12 +50,12 @@ QGoTrackDockWidget::QGoTrackDockWidget(
   // appearance
   QObject::connect( this->glyph, SIGNAL( toggled(bool)),
       this, SLOT( Glyphs(bool) ) );
-  QObject::connect( this->glyphSpinBox, SIGNAL( valueChanged( int )),
+  QObject::connect( this->glyphSpinBox, SIGNAL( valueChanged( double )),
       this, SLOT( glyphValueChanged( int ) ) );
 
   QObject::connect( this->tube, SIGNAL( toggled(bool)),
       this, SLOT( Tubes(bool) ) );
-  QObject::connect( this->tubeSpinBox, SIGNAL( valueChanged( int )),
+  QObject::connect( this->tubeSpinBox, SIGNAL( valueChanged( double )),
       this, SLOT( tubeValueChanged( int ) ) );
 
   // color code
@@ -86,7 +86,7 @@ QGoTrackDockWidget::
 //-------------------------------------------------------------------------
 void
 QGoTrackDockWidget::
-glyphValueChanged( int )
+glyphValueChanged( double )
 {
   //to avoid useless update
   if( this->glyph->isChecked() )
@@ -115,7 +115,7 @@ Glyphs( bool iActivated )
 //-------------------------------------------------------------------------
 void
 QGoTrackDockWidget::
-tubeValueChanged( int )
+tubeValueChanged( double )
 {
   //to avoid useless update
   if( this->tube->isChecked() )
