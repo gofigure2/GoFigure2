@@ -931,7 +931,7 @@ unsigned int GoDBCollectionOfTraces::GetBoundedBoxTimePoint(
   vtkMySQLDatabase *iDatabaseConnector, unsigned int iTraceID, bool MinTimePoint)
 {
   std::string WhichTimePoint = "CoordIDMin";
-  if (MinTimePoint)
+  if (!MinTimePoint)
     WhichTimePoint = "CoordIDMax";
   FieldWithValue JoinCondition = {WhichTimePoint, "CoordID", "="};
   std::vector<std::string> TraceID(1);

@@ -190,14 +190,28 @@ protected slots:
   */
   void TrackIDToEmit();
 
+  /**
+  \brief check that only 2 tracks are checked in the TW, if not display 
+  a message to the user, check that the 2 tracks are not overlapping, 
+  if yes, display a message to the user, get the meshes of the track with 
+  the lowest timepoints, delete this track and send a signal for the list of 
+  meshes of the previous track to be reassigned to the track with the 
+  highest timepoints
+  */
   void MergeTracks();
 
   /**
   \brief check that the 2 tracks are not overloaping, if not, return the
   trackID to keep for the merge and the one to delete
+  \param[in] iTrackIDs IDs of both tracks to check
+  \param[in,out] ioTraceIDToKeep ID of the trace to keep after the merge
+  \param[in,out] ioTraceIDToDelete ID of the trace to delete after the merge
+  \param[in] iDatabaseConnector connection to the database
+  \return false of the tracks are not overlapping, true if they are
   */
   bool CheckOverlappingTracks(std::list<unsigned int> iTrackIDs,
-    unsigned int ioTraceIDToKeep, unsigned int ioTraceIDToDelete);
+    unsigned int &ioTraceIDToKeep, unsigned int &ioTraceIDToDelete,
+    vtkMySQLDatabase* iDatabaseConnector);
 
 };
 #endif
