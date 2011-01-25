@@ -165,21 +165,18 @@ UpdateTracksRepresentation(double iRadius, double iRadius2) const
 {
   vtkSmartPointer<vtkAppendPolyData> apd =
       vtkSmartPointer<vtkAppendPolyData>::New();
-  apd = vtkAppendPolyData::New();
   apd->AddInput( this->Nodes );
 
   if(iRadius)
     {
     vtkSmartPointer<vtkSphereSource> sphere =
         vtkSmartPointer<vtkSphereSource>::New();
-    sphere = vtkSphereSource::New();
     sphere->SetThetaResolution( 8 );
     sphere->SetPhiResolution( 8 );
     sphere->SetRadius( iRadius );
 
     vtkSmartPointer<vtkGlyph3D> glyph =
         vtkSmartPointer<vtkGlyph3D>::New();
-    glyph = vtkGlyph3D::New();
     glyph->SetInput( this->Nodes );
     glyph->SetSource( sphere->GetOutput() );
     glyph->Update();
