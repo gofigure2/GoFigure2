@@ -1301,6 +1301,11 @@ void QGoPrintDatabase::SetTracksManager()
                     SLOT(SplitMergeTracksWithWidget(std::list<unsigned int> ) ) );
 
   QObject::connect( this->m_TracksManager,
+                    SIGNAL( MeshesToAddToTrack(std::list<unsigned int>, unsigned int) ),
+                    this,
+                    SLOT(AddListMeshesToATrack(std::list<unsigned int>, unsigned int) ) );
+
+  QObject::connect( this->m_TracksManager,
                     SIGNAL(AddNewTraceIDInTM( std::pair<std::string, QColor> ) ),
                     this->m_TraceWidget,
                     SLOT(AddANewCollectionID( std::pair<std::string, QColor> ) ) );

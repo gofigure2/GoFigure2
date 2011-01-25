@@ -603,6 +603,6 @@ std::list<unsigned int> GetListValuesFromTwoTablesAndCondition(
   vtkMySQLDatabase *iDatabaseConnector,
   std::string iTableOne, std::string iTableTwo,std::string iColumn,
   FieldWithValue iJoinCondition,std::string iField,
-  std::vector<std::string> iVectorValues,FieldWithValue iAndCondition);
+  std::vector<std::string> iVectorValues, FieldWithValue iAndCondition);
 
 #endif
