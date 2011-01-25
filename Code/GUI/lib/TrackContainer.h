@@ -285,14 +285,6 @@ public:
   void DeleteListFromCurrentElement( const std::list<unsigned int>& iTimeList );
 
   /**
-   * \brief Define the appareance of a track (line/tubes, glyph/no glyph)
-   * \param[in] iGlyph Do we want to see glyph(true)/no glyph(false)
-   * \param[in] iTube Do we want to see a tube(true)/polyline(false)
-   */
-  void UpdateTracksReprensentation( bool iGlyph, bool iTube );
-
-
-  /**
    * \brief Delete a list of tracks.
    * \param[in] iPointsToBeDeleted a list containing pairs.
    * Each pair is composed by a track ID and a list of the time points to be

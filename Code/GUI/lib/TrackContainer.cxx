@@ -405,31 +405,6 @@ DeleteListFromCurrentElement( const std::list<unsigned int>& iTimeList )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void
-TrackContainer::
-UpdateTracksReprensentation( bool iGlyph, bool iTube )
-{
-  MultiIndexContainerType::iterator it = m_Container.begin();
-
-  while ( it != m_Container.end() )
-    {
-    bool update = UpdateTrackStructurePolyData( (*it) );
-
-    if( update )
-      {
-      it->UpdateTracksRepresentation( iGlyph, iTube );
-      }
-    ++it;
-  }
-
-  if( this->m_ImageView )
-    {
-    m_ImageView->UpdateRenderWindows();
-    }
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 bool
 TrackContainer::
 DeletePointFromElement( MultiIndexContainerTraceIDIterator iIterator,
@@ -699,7 +674,7 @@ ChangeColorCode( const char* iColorCode)
 //-------------------------------------------------------------------------
 double*
 TrackContainer::
-setNodeScalars(const char *iArrayName) // if null
+setNodeScalars(const char *iArrayName)
 {
   double* range =  new double[2];
   range[0] = std::numeric_limits< double >::max();
@@ -753,7 +728,6 @@ TrackContainer::
 UpdateTracksRepresentation( int iRadius, int iRadius2 )
 {
   MultiIndexContainerType::iterator it = m_Container.begin();
-  //this->RenderAllElementsWithOriginalColors();
 
   while ( it != m_Container.end() )
     {
@@ -768,6 +742,7 @@ UpdateTracksRepresentation( int iRadius, int iRadius2 )
     ++it;
   }
 
+  // update color since active scalar is set to NULL in UpdateTrackStructurePolyData
   QByteArray   bytes  = m_ActiveScalars.toAscii();
   const char * ptr    = bytes.data();
   ChangeColorCode( ptr );
