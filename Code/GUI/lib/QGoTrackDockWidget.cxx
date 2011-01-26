@@ -43,10 +43,11 @@ QGoTrackDockWidget::QGoTrackDockWidget(
 {
   this->setupUi(this);
   QIcon trackicon;
-  trackicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/BlankIcon.png") ),
+  trackicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/TrackView.png") ),
                                 QIcon::Normal, QIcon::Off);
   this->toggleViewAction()->setIcon(trackicon);
-
+  this->toggleViewAction()->setToolTip("Track View");
+  this->setWindowTitle("Track View");
   // appearance
   QObject::connect( this->glyph, SIGNAL( toggled(bool)),
       this, SLOT( Glyphs(bool) ) );

@@ -86,7 +86,7 @@ QGoTrackEditingWidget( MeshContainer* imeshContainer, QWidget *iParent ) :
   // ADD A STATUS BAR
   m_StatusBar = new QStatusBar;
   this->gridLayout_2->addWidget(m_StatusBar, 1, 0, 1, 1);
-  m_StatusBar->showMessage("No actor selected");
+  m_StatusBar->showMessage("No track selected");
 
   QObject::connect (this->buttonBox , SIGNAL( accepted() ),
                  this, SLOT( restoreTrackIDs() ) );

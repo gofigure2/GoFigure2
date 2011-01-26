@@ -44,7 +44,7 @@ QGoMeshSegmentationBaseDockWidget::QGoMeshSegmentationBaseDockWidget(QWidget *iP
 {
   this->setupUi(this);
 
-  this->setWindowTitle( QString::fromUtf8("Mesh Segmentation") );
+  this->setWindowTitle( QString::fromUtf8("Mesh Editing") );
 
   QIcon MeshSegmentationIcon;
   //MeshSegmentationIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/meshOneClick.png")),
@@ -53,7 +53,7 @@ QGoMeshSegmentationBaseDockWidget::QGoMeshSegmentationBaseDockWidget(QWidget *iP
                                  QIcon::Normal, QIcon::Off);
 
   this->toggleViewAction()->setIcon(MeshSegmentationIcon);
-  this->toggleViewAction()->setToolTip( tr("Mesh Segmentation") );
+  this->toggleViewAction()->setToolTip( tr("Mesh Editing") );
   this->toggleViewAction()->setStatusTip( tr("Create meshes manually, semi-automatically or automatically") );
 
   // update interactor behavior
