@@ -46,8 +46,9 @@ public:
   explicit QGoTraceManualEditingDockWidget(QWidget *iParent = 0);
   ~QGoTraceManualEditingDockWidget();
   QGoTraceManualEditingWidget *m_TraceWidget;
-public slots:
+protected slots:
   //void ShowAndUpdate(std::string iTraceName,
   //  std::string iCollectionName);
+  void ModifyWindowTitle(QString iTitle);
 };
 #endif
