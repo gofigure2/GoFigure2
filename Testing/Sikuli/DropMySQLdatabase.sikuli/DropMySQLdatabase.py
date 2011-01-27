@@ -18,3 +18,5 @@ wait(1)
 type("d")
 keyUp(Key.CTRL)
 
+closeApp("/home/es1076/GITROOT/GoFigure2/BUILD/bin/gofigure")
+wait(8)
