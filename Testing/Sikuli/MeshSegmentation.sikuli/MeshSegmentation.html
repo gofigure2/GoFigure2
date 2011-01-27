@@ -93,14 +93,18 @@ address = os.getcwd()
 
 ViewRegion = (<img src="XY_ViewRegion.png" />,<img src="XZ_ViewRegion.png" />,<img src="YZ_ViewRegion.png" />,<span class="str">"last"</span>)
 
+Filter = (<span class="str">"2DContour"</span>,<span class="str">"3DSphere"</span>,<span class="str">"3DLevelSet"</span>)
 
-<span class="kw">for</span> view <span class="kw">in</span> ViewRegion:
 
-        <span class="kw">if</span> view == <span class="str">"last"</span>:
-                <span class="kw">for</span> i <span class="kw">in</span> ViewRegion[<span class="dig">0</span>:<span class="dig">3</span>]:
-                        MeshSegmentation(i)
-        <span class="kw">else</span>:
-                MeshSegmentation(view)
+<span class="kw">for</span> shape <span class="kw">in</span> Filter
+
+        <span class="kw">for</span> view <span class="kw">in</span> ViewRegion:
+
+                <span class="kw">if</span> view == <span class="str">"last"</span>:
+                        <span class="kw">for</span> i <span class="kw">in</span> ViewRegion[<span class="dig">0</span>:<span class="dig">3</span>]:
+                                MeshSegmentation(i)
+                <span class="kw">else</span>:
+                        MeshSegmentation(view)
 </pre>
 </body>
 </html>
