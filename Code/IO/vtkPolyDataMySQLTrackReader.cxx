@@ -138,8 +138,6 @@ GetPolyData(const std::string & iString)
     speedArray->SetName("SpeedInformation");
     polyData->GetPointData()->AddArray(speedArray);
 
-    //polyData->GetPointData()->SetScalars(temporalArray);
-
     return polyData;
     }
 

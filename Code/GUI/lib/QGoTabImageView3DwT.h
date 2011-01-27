@@ -639,8 +639,6 @@ protected slots:
   */
   void LoadChannelTime();
 
-  void UpdateTracksAppearance(bool, bool);
-
   /**
   \brief give the adress for the contours, meshes and tracks container to the
   QGoPrintDatabase, and make the connection for the status bar once the database

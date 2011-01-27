@@ -72,39 +72,6 @@ public:
   /** Default Constructor */
   TrackStructure();
 
-  /** Constructor */
-  /*TrackStructure(const unsigned int & iTraceID,
-                       std::vector< vtkActor * > iActors,
-                       vtkPolyData *iNodes,
-                       const bool & iHighlighted,
-                       const bool & iVisible,
-                       const double & r,
-                       const double & g,
-                       const double & b,
-                       const double & alpha);*/
-
-  /** Constructor */
-  /*TrackStructure(const unsigned int & iTraceID,
-                       std::vector< vtkActor * > iActors,
-                       vtkPolyData *iNodes,
-                       const bool & iHighlighted,
-                       const bool & iVisible,
-                       double iRgba[4]);*/
-
-  /** Constructor */
-  /*TrackStructure(const unsigned int & iTraceID,
-                       vtkActor *iActorXY,
-                       vtkActor *iActorYZ,
-                       vtkActor *iActorXZ,
-                       vtkActor *iActorXYZ,
-                       vtkPolyData *iNodes,
-                       const bool & iHighlighted,
-                       const bool & iVisible,
-                       const double & r,
-                       const double & g,
-                       const double & b,
-                       const double & alpha);*/
-
   /** Constructor by copy */
   TrackStructure(const TrackStructure & iE);
 
@@ -173,27 +140,10 @@ public:
     return os;
   }
 
-  void UpdateTracksRepresentation( bool iGlyph, bool iTube ) const;
+  void UpdateTracksRepresentation( double iRadius, double iRadius2 ) const;
 
-  GoFigureTrackAttributes ComputeAttributes();
+  GoFigureTrackAttributes ComputeAttributes() const;
 
 };
-
-/**
-  \brief merge 2 tracks (if they do not overlap) into oMerged
-  \param[in] iT1 track1
-  \param[in] iT2 track2
-  \param[out] oMerged merged track (take attributes from the earliest track in time)
-  \return true if iT1 and iT2 don't overlap
-*/
-/*
-bool TrackMerge( const TrackStructure& iT1,
-                 const TrackStructure& iT2,
-                 TrackStructure& oMerged );
-
-bool TrackSplit( const TrackStructure& iTrack,
-                 const unsigned int& iTime,
-                 TrackStructure& oT1,
-                 TrackStructure& oT2 );*/
 
 #endif

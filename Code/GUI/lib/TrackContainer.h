@@ -57,6 +57,7 @@
 #include "vtkDoubleArray.h"
 #include "QGoImageView3D.h"
 #include "vtkLookupTableManager.h"
+#include <QString>
 
 namespace boost
 {
@@ -284,14 +285,6 @@ public:
   void DeleteListFromCurrentElement( const std::list<unsigned int>& iTimeList );
 
   /**
-   * \brief Define the appareance of a track (line/tubes, glyph/no glyph)
-   * \param[in] iGlyph Do we want to see glyph(true)/no glyph(false)
-   * \param[in] iTube Do we want to see a tube(true)/polyline(false)
-   */
-  void UpdateTracksReprensentation( bool iGlyph, bool iTube );
-
-
-  /**
    * \brief Delete a list of tracks.
    * \param[in] iPointsToBeDeleted a list containing pairs.
    * Each pair is composed by a track ID and a list of the time points to be
@@ -426,14 +419,11 @@ public slots:
   /** \brief Color code the track by time.
     \param[in] iColorCode Display Time Color Code (true) or Real Color (false)
    */
-  void ColorCodeTracksByTime( bool iColorCode);
+  void ChangeColorCode( const char* iColorCode);
 
-  void ColorCodeTracksBySpeed( bool iColorCode);
-
-  void ColorCodeTracksByOriginalColor( bool iColorCode );
+  void UpdateTracksRepresentation( double iRadius,double iRadius2);
 
 protected:
-  int m_TimeInterval;
   /**
     \brief Recompute a polydata from a list of point (coordinates) for the
     current element. If the current element is a new track, then the polydata,
@@ -453,6 +443,9 @@ protected:
   void ComputeSpeed();
 
 private:
+  int m_TimeInterval;
+  QString m_ActiveScalars;
+
   Q_DISABLE_COPY(TrackContainer);
 };
 

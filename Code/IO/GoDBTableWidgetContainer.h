@@ -71,12 +71,12 @@ public:
   TWContainerType;
 
   /** 
-  \brief Return a list with all the ColumnNames to be displayed in the
+  \brief Return a list with all the ColumnNames and tooltips to be displayed in the
   tableWidget
-  \return a list with all the ColumnNames to be displayed in the
+  \return a list with all the ColumnNames and tooltips to be displayed in the
   tableWidget
   */
-  std::list< std::string > GetListColumnsNamesForTableWidget();
+  std::list< std::pair<std::string, std::string> > GetListColumnsNamesAndToolTipsForTableWidget();
 
   /** 
   \brief Return a list with all the ColumnNames for computed values displayed in the

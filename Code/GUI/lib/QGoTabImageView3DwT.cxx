@@ -175,24 +175,14 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent):
   m_TrackDockWidget = new QGoTrackDockWidget(this);
 
   QObject::connect( m_TrackDockWidget,
-                    SIGNAL( UpdateTracksAppearance(bool, bool) ),
-                    this,
-                    SLOT( UpdateTracksAppearance(bool, bool) ) );
+                    SIGNAL( ChangeColorCode(const char*) ),
+                    m_TrackContainer,
+                    SLOT( ChangeColorCode(const char*) ) );
 
   QObject::connect( m_TrackDockWidget,
-                    SIGNAL( ColorCodeTracksByTime(bool) ),
+                    SIGNAL( UpdateTracksRepresentation(double, double) ),
                     m_TrackContainer,
-                    SLOT( ColorCodeTracksByTime(bool) ) );
-
-  QObject::connect( m_TrackDockWidget,
-                    SIGNAL( ColorCodeTracksBySpeed(bool) ),
-                    m_TrackContainer,
-                    SLOT( ColorCodeTracksBySpeed(bool) ) );
-
-  QObject::connect( m_TrackDockWidget,
-                    SIGNAL( ColorCodeTracksByOriginalColor(bool) ),
-                    m_TrackContainer,
-                    SLOT( ColorCodeTracksByOriginalColor(bool) ) );
+                    SLOT( UpdateTracksRepresentation(double, double) ) );
 
   CreateDataBaseTablesConnection();
 
@@ -213,7 +203,7 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent):
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
       new QGoDockWidgetStatus(
-        m_NavigationDockWidget, Qt::RightDockWidgetArea, true, true),
+        m_NavigationDockWidget, Qt::RightDockWidgetArea, false, true),
       m_NavigationDockWidget) );
 
   m_DockWidgetList.push_back(
@@ -237,13 +227,13 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent):
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
       new QGoDockWidgetStatus(this->m_TrackDockWidget,
-                              Qt::LeftDockWidgetArea, true, true),
+                              Qt::LeftDockWidgetArea, false, true),
       this->m_TrackDockWidget ) );
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
-      new QGoDockWidgetStatus(m_VideoRecorderWidget, Qt::LeftDockWidgetArea, true, true),
+      new QGoDockWidgetStatus(m_VideoRecorderWidget, Qt::LeftDockWidgetArea, false, true),
       m_VideoRecorderWidget) );
 #endif
 }
@@ -981,20 +971,8 @@ QGoTabImageView3DwT::CreateAllViewActions()
   separator8->setSeparator(true);
   this->m_ViewActions.push_back(separator8);
 
-  // Enable volume rendering
-  QAction *TrackAction =
-    new QAction(tr("Change tracks appearance"), this);
-  TrackAction->setCheckable(true);
-  TrackAction->setChecked(true);
-  this->m_ViewActions.push_back(TrackAction);
-
-  QIcon trackicon;
-  trackicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/BlankIcon.png") ),
-                                QIcon::Normal, QIcon::Off);
-  TrackAction->setIcon(trackicon);
-
-  QObject::connect( TrackAction, SIGNAL( toggled(bool) ),
-                    this->m_TrackDockWidget, SLOT( setVisible(bool) ) );
+  // Track Color Coding
+  this->m_ViewActions.push_back( m_TrackDockWidget->toggleViewAction() );
 }
 
 //-------------------------------------------------------------------------
@@ -3136,14 +3114,5 @@ QGoTabImageView3DwT::GoToLocation(int iX, int iY, int iZ, int iT)
   this->SetSliceViewXY(iZ);
   this->SetSliceViewXZ(iY);
   this->SetSliceViewYZ(iX);
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
-UpdateTracksAppearance(bool iGlyph, bool iTube)
-{
-  m_TrackContainer->UpdateTracksReprensentation( iGlyph, iTube );
 }
 //-------------------------------------------------------------------------
