@@ -125,6 +125,9 @@ void ctkCollapsibleGroupBox::expand(bool _expand)
     this->MaxHeight = this->maximumHeight();
     this->setMaximumHeight(22);
     }
+
+  //this->updateGeometry();
+  //this->sizeHint();
 }
 
 //-----------------------------------------------------------------------------

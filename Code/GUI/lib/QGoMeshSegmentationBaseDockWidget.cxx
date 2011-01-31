@@ -126,6 +126,7 @@ QGoMeshSegmentationBaseDockWidget::QGoMeshSegmentationBaseDockWidget(QWidget *iP
 
   // set default segmentation as semi auto segmentation
   this->mode->setCurrentIndex(1);
+  gridLayout->setSizeConstraint(QLayout::SetFixedSize);
 }
 
 //---------------------------------------------------------------------------//
