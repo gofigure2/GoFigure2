@@ -64,7 +64,7 @@ ENDIF( NOT GOFIGURE2_INSTALL_BUNDLE_DIR )
 IF( NOT GOFIGURE2_INSTALL_BIN_DIR )
   SET( GOFIGURE2_INSTALL_BIN_DIR "bin" )
 ENDIF( NOT GOFIGURE2_INSTALL_BIN_DIR )
-   
+
 IF( NOT GOFIGURE2_INSTALL_LIB_DIR )
   SET( GOFIGURE2_INSTALL_LIB_DIR "lib/gofigure2" )
 ENDIF( NOT GOFIGURE2_INSTALL_LIB_DIR )
@@ -107,6 +107,13 @@ SET( TESTING_DATA_PATH
   CACHE PATH "Directory which contains data for testing."
 )
 
+OPTION( USE_SUPERBUILD "Use SuperBuild" ON )
+
+IF( USE_SUPERBUILD )
+  INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/SuperBuild.cmake" )
+  RETURN()
+ELSE()
+
 #---------------------------------------------------------------------------
 # Handle Documentation
 #---------------------------------------------------------------------------
@@ -143,6 +150,7 @@ ENDIF( BUILD_DOCUMENTATION )
 
 SET( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
   "${GOFIGURE2_SOURCE_DIR}/CMake/"
+  "${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/"
 )
 
 IF( UNIX )
@@ -441,3 +449,5 @@ IF( VTK_FOUND )
   ENDIF( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
 
 ENDIF( VTK_FOUND )
+
+ENDIF()

@@ -59,8 +59,8 @@ set(GoFigure2_DEPENDENCIES VTK ITK)
 # Conditionnaly include ExternalProject Target
 #---------------------------------------------------------------------------
 
-include(External_VTK.cmake)
-include(External_ITK.cmake)
+include("${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/External-VTK.cmake")
+include("${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/External-ITK.cmake")
 
 #---------------------------------------------------------------------------
 # Set superbuild boolean args
@@ -110,7 +110,7 @@ ExternalProject_Add(${proj}
     -DITK_DIR:PATH=${ITK_DIR}
     # VTK
     -DVTK_DIR:PATH=${VTK_DIR}
-    -DVTK_DEBUG_LEAKS:BOOL=${GoFigure2_USE_VTK_DEBUG_LEAKS}
+#    -DVTK_DEBUG_LEAKS:BOOL=${GoFigure2_USE_VTK_DEBUG_LEAKS}
     # Qt
     -DQT_QMAKE_EXECUTABLE:PATH=${QT_QMAKE_EXECUTABLE}
     # MySQL
