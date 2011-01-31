@@ -36,5 +36,5 @@ else()
   # The project is provided using ITK_DIR,
   # nevertheless since other project may depend on ITK,
   # let's add an 'empty' one
-  GoFigure2MacroEmptyExternalProject(${proj} "${Insight_DEPENDENCIES}")
+  GoFigure2MacroEmptyExternalProject(${proj} "${ITK_DEPENDENCIES}")
 endif()

@@ -61,7 +61,7 @@ if(NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR)
       -DVTK_USE_PARALLEL:BOOL=ON
       -DVTK_DEBUG_LEAKS:BOOL=${USE_VTK_DEBUG_LEAKS}
       -DVTK_USE_RPATH:BOOL=ON
-      -DVTK_INSTALL_LIB_DIR:PATH=${Slicer_INSTALL_LIB_DIR}
+      -DVTK_INSTALL_LIB_DIR:PATH=${GoFigure2_INSTALL_LIB_DIR}
       ${VTK_QT_ARGS}
       ${VTK_MAC_ARGS}
     INSTALL_COMMAND ""
@@ -74,5 +74,5 @@ if(NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR)
 else()
   # The project is provided using VTK_DIR and VTK_SOURCE_DIR, nevertheless since other
   # project may depend on VTK, let's add an 'empty' one
-  SlicerMacroEmptyExternalProject(${proj} "${VTK_DEPENDENCIES}")
+  GoFigure2MacroEmptyExternalProject(${proj} "${VTK_DEPENDENCIES}")
 endif()
