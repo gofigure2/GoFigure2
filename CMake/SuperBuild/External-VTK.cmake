@@ -25,6 +25,12 @@ if(NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR)
         -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
         -DVTK_USE_MYSQL:BOOL=ON
         )
+    if( UNIX )
+      set(VTK_QT_ARGS
+          ${VTK_QT_ARGS}
+          -DVTK_USE_FFMPEG:BOOL=ON
+         )
+    endif()
   else()
       set(VTK_QT_ARGS
         -DVTK_USE_CARBON:BOOL=OFF
@@ -44,7 +50,7 @@ if(NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR)
     SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
     BINARY_DIR ${proj}-build
     GIT_REPOSITORY "${git_protocol}://vtk.org/VTK.git"
-    GIT_TAG "origin/v5.6.1"
+    GIT_TAG "origin/master"
     CMAKE_GENERATOR ${gen}
     CMAKE_ARGS
       ${ep_common_args}
