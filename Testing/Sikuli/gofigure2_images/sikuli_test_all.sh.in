@@ -17,7 +17,7 @@ cd @SIKULI_SCRIPTS_DIR@;
 @SIKULI_EXECUTABLE@ -t ../Export3DMesh.sikuli;
 
 #drop MySQL database
-@SIKULI_EXECUTABLE@ -t ../DropMySQLdatabase;
+@SIKULI_EXECUTABLE@ -t ../DropMySQLdatabase.sikuli;
 
 
 @GOFIGURE2_BINARY_DIR@/bin/gofigure &
