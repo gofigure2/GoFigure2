@@ -2238,7 +2238,7 @@ QGoTabImageView3DwT::ShowOneChannel(int iChannel)
 void
 QGoTabImageView3DwT::ModeChanged(int iChannel)
 {
-  std::cout << "channel: " << iChannel << std::endl;
+  //std::cout << "channel: " << iChannel << std::endl;
 
   if(iChannel == 1)
     {
