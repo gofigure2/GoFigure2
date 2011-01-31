@@ -67,44 +67,28 @@
    </head>
 <body>
 <div class="info">
-<h2>MeshSegmentation.sikuli</h2> <a href="MeshSegmentation.zip">(Download this script)</a>
+<h2>DropMySQLdatabase.sikuli</h2> <a href="DropMySQLdatabase.zip">(Download this script)</a>
 </div>
 <pre class="sikuli-code">
-<span class="kw">import</span> os
-address = os.getcwd()
-<span class="cmt">#address = "/home/es1076/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images"
-</span>
-<span class="cmt">#address = address+"/gofigure2_images"
-</span><span class="cmt">#print address
-</span>setBundlePath(address)
+keyDown(Key.ALT+Key.SHIFT)
+<span class="skw">type</span>(<span class="str">"t"</span>)
+keyUp(Key.ALT+Key.SHIFT)
+<span class="skw">wait</span>(<span class="dig">4</span>)
 
-<span class="kw">def</span> MeshSegmentation(View)
+<span class="skw">type</span>(<span class="str">"mysql -u gofigure -p"</span>+Key.ENTER)
+<span class="skw">wait</span>(<span class="dig">2</span>)
+<span class="skw">type</span>(<span class="str">"gofigure"</span>+Key.ENTER)
+<span class="skw">wait</span>(<span class="dig">3</span>)
 
-        <span class="kw">import</span> random
-        region = <span class="skw">find</span>(Pattern(View).similar(<span class="dig">0.30</span>))
+<span class="skw">type</span>(<span class="str">"drop database gofiguredatabase;"</span>+Key.ENTER)
+<span class="skw">wait</span>(<span class="dig">2</span>)
 
-        <span class="cmt">#could make it a straight line by moving differentials in one direction.
-</span>        xclick = random.randint(region.x,region.w+region.x)
-        yclick = random.randint(region.y,region.h+region.y)
-
-        <span class="skw">click</span>(<img src="Apply.png" />)
-
-
-
-ViewRegion = (<img src="XY_ViewRegion.png" />,<img src="XZ_ViewRegion.png" />,<img src="YZ_ViewRegion.png" />,<span class="str">"last"</span>)
-
-Filter = (<span class="str">"2DContour"</span>,<span class="str">"3DSphere"</span>,<span class="str">"3DLevelSet"</span>)
-
-
-<span class="kw">for</span> shape <span class="kw">in</span> Filter
-
-        <span class="kw">for</span> view <span class="kw">in</span> ViewRegion:
-
-                <span class="kw">if</span> view == <span class="str">"last"</span>:
-                        <span class="kw">for</span> i <span class="kw">in</span> ViewRegion[<span class="dig">0</span>:<span class="dig">3</span>]:
-                                MeshSegmentation(i)
-                <span class="kw">else</span>:
-                        MeshSegmentation(view)
+<span class="cmt">#log out
+</span>keyDown(Key.CTRL)
+<span class="skw">type</span>(<span class="str">"d"</span>)
+<span class="skw">wait</span>(<span class="dig">1</span>)
+<span class="skw">type</span>(<span class="str">"d"</span>)
+keyUp(Key.CTRL)
 </pre>
 </body>
 </html>
