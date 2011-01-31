@@ -665,6 +665,7 @@ void QGoPrintDatabase::ImportContours()
   //refactoring
   if ( !p.isNull() )
     {
+    emit PrintMessage(tr("Warning: Close and reopen your imagingsession once the import is done !!") );
     QFileInfo   pathInfo(p);
     std::string filename = p.toStdString();
     //import into the database:
@@ -704,6 +705,7 @@ void QGoPrintDatabase::ImportMeshes()
 
   if ( !p.isNull() )
     {
+    emit PrintMessage(tr("Warning: Close and reopen your imagingsession once the import is done !!") );
     QFileInfo   pathInfo(p);
     std::string filename = p.toStdString();
     //import into the database:
@@ -737,6 +739,7 @@ std::vector<int> QGoPrintDatabase::ImportTracks()
 
   if ( !p.isNull() )
     {
+    emit PrintMessage(tr("Warning: Close and reopen your imagingsession once the import is done !!") );
     QFileInfo   pathInfo(p);
     std::string filename = p.toStdString();
     //import into the database:
