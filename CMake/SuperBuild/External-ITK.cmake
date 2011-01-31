@@ -3,7 +3,8 @@
 
 # Sanity checks
 if(DEFINED ITK_DIR AND NOT EXISTS ${ITK_DIR})
-  message(FATAL_ERROR "ITK_DIR variable is defined but corresponds to non-existing directory")
+  message(FATAL_ERROR
+    "ITK_DIR variable is defined but corresponds to non-existing directory")
 endif()
 
 set(proj ITK)
@@ -12,7 +13,7 @@ if(NOT DEFINED ITK_DIR)
 #  message(STATUS "Adding project:${proj}")
   ExternalProject_Add(${proj}
     GIT_REPOSITORY "${git_protocol}://itk.org/ITK.git"
-    GIT_TAG "origin/v4.0a03"
+    GIT_TAG "origin/v4.0a04"
     SOURCE_DIR ${proj}
     BINARY_DIR ${proj}-build
     CMAKE_GENERATOR ${gen}
@@ -32,7 +33,8 @@ if(NOT DEFINED ITK_DIR)
   set(ITK_DIR ${CMAKE_BINARY_DIR}/${proj}-build)
 
 else()
-  # The project is provided using ITK_DIR, nevertheless since other project may depend on ITK,
+  # The project is provided using ITK_DIR,
+  # nevertheless since other project may depend on ITK,
   # let's add an 'empty' one
-  SlicerMacroEmptyExternalProject(${proj} "${Insight_DEPENDENCIES}")
+  GoFigure2MacroEmptyExternalProject(${proj} "${Insight_DEPENDENCIES}")
 endif()
