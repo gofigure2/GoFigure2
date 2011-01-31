@@ -1379,6 +1379,7 @@ QGoTabImageView3DwT::TakeSnapshot()
   int FullScreenView = m_ImageView->GetFullScreenView();
 
   QString filename = QDir::toNativeSeparators( QDir::homePath() );
+  filename.append( QString("%1").arg("/") );
 
   switch ( FullScreenView )
     {
