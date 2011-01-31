@@ -1,3 +1,4 @@
+wait(4)
 keyDown(Key.ALT+Key.SHIFT)
 type("t")
 keyUp(Key.ALT+Key.SHIFT)
@@ -18,5 +19,3 @@ wait(1)
 type("d")
 keyUp(Key.CTRL)
 
-closeApp("/home/es1076/GITROOT/GoFigure2/BUILD/bin/gofigure")
-wait(8)
