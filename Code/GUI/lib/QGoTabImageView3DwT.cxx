@@ -1379,6 +1379,7 @@ QGoTabImageView3DwT::TakeSnapshot()
   int FullScreenView = m_ImageView->GetFullScreenView();
 
   QString filename = QDir::toNativeSeparators( QDir::homePath() );
+  filename.append( QString("%1").arg("/") );
 
   switch ( FullScreenView )
     {
@@ -2237,7 +2238,7 @@ QGoTabImageView3DwT::ShowOneChannel(int iChannel)
 void
 QGoTabImageView3DwT::ModeChanged(int iChannel)
 {
-  std::cout << "channel: " << iChannel << std::endl;
+  //std::cout << "channel: " << iChannel << std::endl;
 
   if(iChannel == 1)
     {

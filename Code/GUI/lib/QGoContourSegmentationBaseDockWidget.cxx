@@ -118,6 +118,8 @@ QGoContourSegmentationBaseDockWidget::QGoContourSegmentationBaseDockWidget(
                     this, SIGNAL( SaveAndVisuContour(vtkPolyData *) ) );
   QObject::connect( m_ContourSemiAutoSegmentation, SIGNAL( SegmentationFinished() ),
                     this, SIGNAL( ClearAllSeeds() ) );
+
+  gridLayout->setSizeConstraint(QLayout::SetFixedSize);
 }
 
 //---------------------------------------------------------------------------//

@@ -373,7 +373,7 @@ void QGoTraceManualEditingWidget::SetCurrentCollectionID(std::string iID)
 void QGoTraceManualEditingWidget::UpdateTraceAndCollection(
   std::string iTrace, std::string iCollection)
 {
-  std::cout << iTrace << std::endl;
+  //std::cout << iTrace << std::endl;
   QString Title(tr("%1 settings").arg(iTrace.c_str()) );
   emit WindowsTitleToModify(Title);
   this->m_TraceName->setText( iTrace.c_str() );

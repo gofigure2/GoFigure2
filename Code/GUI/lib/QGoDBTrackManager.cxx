@@ -428,27 +428,34 @@ bool QGoDBTrackManager::CheckOverlappingTracks(
   std::list<unsigned int> iTrackIDs, unsigned int &ioTraceIDToKeep,
   unsigned int &ioTraceIDToDelete, vtkMySQLDatabase* iDatabaseConnector)
 {
-  unsigned int TraceID1, TraceID2;
-  unsigned int TimePointMin1, TimePointMin2, TimePointMax1, TimePointMax2;
+  unsigned int TraceID1 = 0, TraceID2 = 0;
+  unsigned int TimePointMin1 = 0, TimePointMin2 = 0, TimePointMax1 = 0, 
+    TimePointMax2 = 0;
   bool oTracksOverlapping = true;
   std::list<unsigned int>::iterator iter = iTrackIDs.begin();
-    if (iter != iTrackIDs.end() )
+    if (iter == iTrackIDs.end() )
       {
-      TraceID1 = *iter;
-      TimePointMin1 = this->m_CollectionOfTraces->GetBoundedBoxTimePoint(
-        iDatabaseConnector, TraceID1, true);
-      TimePointMax1 = this->m_CollectionOfTraces->GetBoundedBoxTimePoint(
-        iDatabaseConnector, TraceID1, false);
+      std::cout<<"Pb, there should have been 2 tracks instead of 0 in this method"<<std::endl;
+      return oTracksOverlapping;
       }
+    TraceID1 = *iter;
+    TimePointMin1 = this->m_CollectionOfTraces->GetBoundedBoxTimePoint(
+      iDatabaseConnector, TraceID1, true);
+    TimePointMax1 = this->m_CollectionOfTraces->GetBoundedBoxTimePoint(
+      iDatabaseConnector, TraceID1, false);
     ++iter;
-    if (iter != iTrackIDs.end() )
+    if (iter == iTrackIDs.end() )
       {
-      TraceID2 = *iter;
-      TimePointMin2 = this->m_CollectionOfTraces->GetBoundedBoxTimePoint(
-        iDatabaseConnector, TraceID2, true);
-      TimePointMax2 = this->m_CollectionOfTraces->GetBoundedBoxTimePoint(
-        iDatabaseConnector, TraceID2, false);
+      std::cout<<"Pb, there should have been 2 tracks instead of 1 in this method"<<std::endl;
+      return oTracksOverlapping;
       }
+   
+    TraceID2 = *iter;
+    TimePointMin2 = this->m_CollectionOfTraces->GetBoundedBoxTimePoint(
+      iDatabaseConnector, TraceID2, true);
+    TimePointMax2 = this->m_CollectionOfTraces->GetBoundedBoxTimePoint(
+      iDatabaseConnector, TraceID2, false);
+
     if (TimePointMin2 > TimePointMax1)
       {
       oTracksOverlapping = false;
