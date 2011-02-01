@@ -1,3 +1,4 @@
+wait(4)
 keyDown(Key.ALT+Key.SHIFT)
 type("t")
 keyUp(Key.ALT+Key.SHIFT)
