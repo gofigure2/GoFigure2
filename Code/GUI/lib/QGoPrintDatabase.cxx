@@ -625,6 +625,10 @@ void QGoPrintDatabase::ExportContours()
 
   if ( !p.isNull() )
     {
+    if ( !p.endsWith(".txt") )
+      {
+      p.append( QString(".txt") );
+      }
     QFileInfo   pathInfo(p);
     std::string filename = p.toStdString();
 
@@ -644,6 +648,12 @@ void QGoPrintDatabase::ExportMeshes()
 
   if ( !p.isNull() )
     {
+
+    if ( !p.endsWith(".txt") )
+      {
+      p.append( QString(".txt") );
+      }
+
     QFileInfo   pathInfo(p);
     std::string filename = p.toStdString();
 
