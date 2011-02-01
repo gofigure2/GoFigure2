@@ -1497,7 +1497,7 @@ AddListMeshesToATrack(std::list< unsigned int > iListMeshes, unsigned int iTrack
     }
   this->AddCheckedTracesToCollection< QGoDBMeshManager, QGoDBTrackManager >(
     this->m_MeshesManager, this->m_TracksManager,
-    iTrackID, iListMeshes);
+    iTrackID, ListMeshToBelongToTheTrack);
   this->CloseDBConnection();
 }
 //--------------------------------------------------------------------------
