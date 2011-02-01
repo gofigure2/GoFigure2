@@ -7,6 +7,8 @@ cd @SIKULI_SCRIPTS_DIR@;
 # drop gofigure database
 @SIKULI_EXECUTABLE@ -t ../DropMySQLdatabase.sikuli;
 
+rm 3DMeshExport.txt;
+
 
 # first let's launch gofigure
 @GOFIGURE2_BINARY_DIR@/bin/gofigure &
