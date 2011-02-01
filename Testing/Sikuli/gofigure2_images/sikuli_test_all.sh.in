@@ -1,7 +1,12 @@
+
 #!/bin/bash
 make gofigure -j2;
 
 cd @SIKULI_SCRIPTS_DIR@;
+
+# drop gofigure database
+@SIKULI_EXECUTABLE@ -t ../setUpDatabase.sikuli;
+
 
 # first let's launch gofigure
 @GOFIGURE2_BINARY_DIR@/bin/gofigure &
