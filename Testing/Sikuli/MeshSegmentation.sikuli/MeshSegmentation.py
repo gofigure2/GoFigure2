@@ -21,11 +21,15 @@ def MeshSegmentation(View)
 
 ViewRegion = ("XY_ViewRegion.png","XZ_ViewRegion.png","YZ_ViewRegion.png","last")
 
+Filter = ("2DContour","3DSphere","3DLevelSet")
 
-for view in ViewRegion:
 
-	if view == "last":
-		for i in ViewRegion[0:3]:
-			MeshSegmentation(i)
-	else:
-		MeshSegmentation(view)
+for shape in Filter
+
+	for view in ViewRegion:
+
+		if view == "last":
+			for i in ViewRegion[0:3]:
+				MeshSegmentation(i)
+		else:
+			MeshSegmentation(view)
