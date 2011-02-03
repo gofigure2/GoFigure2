@@ -118,7 +118,7 @@ GetActorGivenTraceID(unsigned int iTraceID)
     listActors.push_back((*it).ActorXZ);
     listActors.push_back((*it).ActorXYZ);
 
-    std::cout << "Actor found" << std::endl;
+    //std::cout << "Actor found" << std::endl;
     }
   else
     {

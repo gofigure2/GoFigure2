@@ -682,3 +682,14 @@ std::pair<unsigned int, unsigned int> QGoDBMeshManager::
   oInfo.second = ListTimePoints.front();
   return oInfo;
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------v
+std::list< QGoDBTraceManager::NameWithColorData > 
+  QGoDBMeshManager::GetAllTraceIDsWithColor(
+    vtkMySQLDatabase *iDatabaseConnector, std::string & ioIDToSelect)
+{
+  ioIDToSelect = this->m_LastSelectedTraceAsCollection;
+  return this->m_CollectionOfTraces->GetTracesIDsWithColorForATimePoint(
+    iDatabaseConnector, *this->m_CurrentTimePoint );
+}

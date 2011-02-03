@@ -230,6 +230,7 @@ void GoDBRow::SetValuesForSpecificID(int ID,
 
   if ( this->m_MapRow.size() != ResultQuery.size() )
     {
+    ResultQuery;
     std::cout << "pb the map and the query results are not the same size";
     std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
     std::cout << std::endl;

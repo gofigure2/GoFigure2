@@ -381,20 +381,19 @@ double * QGoDBTraceManager::GetVectorFromQColor(QColor iColor)
 //------------------------------------------------------------------------
 std::list< QGoDBTraceManager::NameWithColorData >
 QGoDBTraceManager::GetAllTraceIDsWithColor(
-  vtkMySQLDatabase *iDatabaseConnector, std::string & ioIDToSelect, 
-  int iTimePoint)
+  vtkMySQLDatabase *iDatabaseConnector, std::string & ioIDToSelect)
 {
   ioIDToSelect = this->m_LastSelectedTraceAsCollection;
-  if ( iTimePoint == -1 )
-    {
+  //if ( iTimePoint == -1 )
+  //  {
     return this->m_CollectionOfTraces->GetAllTracesIDsWithColor(
              iDatabaseConnector);
-    }
-  else
-    {
-    return this->m_CollectionOfTraces->GetTracesIDsWithColorForATimePoint(
-             iDatabaseConnector, static_cast< unsigned int >( iTimePoint ) );
-    }
+  //  }
+ // else
+ //   {
+ //   return this->m_CollectionOfTraces->GetTracesIDsWithColorForATimePoint(
+ //            iDatabaseConnector, static_cast< unsigned int >( iTimePoint ) );
+ //   }
 }
 
 //-------------------------------------------------------------------------
