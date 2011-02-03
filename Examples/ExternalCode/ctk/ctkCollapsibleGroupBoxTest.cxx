@@ -22,7 +22,7 @@
 #include <QApplication>
 #include <QRadioButton>
 #include <QTimer>
-#include <QVBoxLayout>
+#include <QHBoxLayout>
 
 // CTK includes
 #include "ctkCollapsibleGroupBox.h"
@@ -44,15 +44,15 @@ int main(int argc, char * argv [] )
 
   radio1->setChecked(true);
 
-  QVBoxLayout *vbox = new QVBoxLayout;
+  QHBoxLayout *vbox = new QHBoxLayout;
   vbox->addWidget(radio1);
   vbox->addWidget(radio2);
   vbox->addWidget(radio3);
-  vbox->addStretch(1);
   groupBox->setLayout(vbox);
 
-  QVBoxLayout* topLevelVBox = new QVBoxLayout;
+  QHBoxLayout* topLevelVBox = new QHBoxLayout;
   topLevelVBox->addWidget(groupBox);
+  topLevelVBox->setSizeConstraint(QLayout::SetFixedSize);
   topLevel.setLayout(topLevelVBox);
 
   topLevel.show();

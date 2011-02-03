@@ -83,10 +83,12 @@ QGoSeedBaseWidget::QGoSeedBaseWidget(QWidget *iParent, int iSampling):QWidget(iP
 
   groupBox = new ctkCollapsibleGroupBox(QObject::tr("Advanced Parameters"), this);
   gridLayout->addWidget(groupBox, 4, 0, 1, -1);
+  //gridLayout->setSizeConstraint(QLayout::SetFixedSize);
   groupBox->setCollapsed(true);
 
   vbox = new QGridLayout;
   groupBox->setLayout(vbox);
+
 
   QObject::connect( this->groupBox, SIGNAL( clicked(bool) ),
                     this, SIGNAL( Clicked(bool) ) );

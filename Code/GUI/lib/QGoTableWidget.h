@@ -85,7 +85,7 @@ public:
                       std::vector< int > iIndexColorTraceRowContainer,
                       std::vector< int > iIndexColorCollectionRowContainer,
                       std::string iTraceName, std::string iCollectionName,
-                      std::list< std::string > iColumnNames,
+                      std::list< std::pair< std::string, std::string > > iColumnNames,
                       Qt::CheckState iState,
                       int iIndexShowColumn = 0);
 
@@ -262,11 +262,11 @@ protected:
   /**
   \brief create the table widget items for the columns Header and set the
   corresponding tooltips for them
-  \param[in] iTableName name of the trace to be displayed in the tooltip check/uncheck
-  \param[in] iColumnNames list of all the names of the columns to be displayed in the
-  table
+  \param[in] iColumnNamesAndToolTip list of all the names of the columns to be displayed in the
+  table with their tooltips
   */
-  void DisplayColumnNames(QString iTableName, std::list< std::string > iColumnNames);
+  void DisplayColumnNames(
+    std::list< std::pair<std::string, std::string > > iColumnNamesAndToolTip);
 
   /**
   \brief get the value in the table for the given iRowIndex and

@@ -131,6 +131,7 @@ signals:
   void NeedMeshesInfoForImportedTrack(unsigned int iTrackID);
   void TrackToSplit(unsigned int iTrackID, std::list<unsigned int> iListMeshIDs);
   void TrackIDToBeModifiedWithWidget(std::list<unsigned int> iListTracksID);
+  void MeshesToAddToTrack(std::list<unsigned int> iListMeshes, unsigned int iTrackID);
 
 protected:
   GoDBTWContainerForTrack *m_TWContainer;
@@ -177,9 +178,40 @@ protected slots:
  //virtual pure method in QGoDBTraceManager
   virtual void SetColorCoding(bool IsChecked);
 
-  void SplitTrackWithWidget();
+  /**
+  \brief get the trackIDs checked in the TW that will be modified with the
+  widget and emit a signal with them as info on meshes are needed.
+  */
+  void SplitMergeTrackWithWidget();
 
+  /**
+  \brief check that there is only one checked track in the TW and emit a
+  signal with it as the checked mesh is needed also to split the track
+  */
   void TrackIDToEmit();
-  //void SelectionClick(int iID);
+
+  /**
+  \brief check that only 2 tracks are checked in the TW, if not display 
+  a message to the user, check that the 2 tracks are not overlapping, 
+  if yes, display a message to the user, get the meshes of the track with 
+  the lowest timepoints, delete this track and send a signal for the list of 
+  meshes of the previous track to be reassigned to the track with the 
+  highest timepoints
+  */
+  void MergeTracks();
+
+  /**
+  \brief check that the 2 tracks are not overloaping, if not, return the
+  trackID to keep for the merge and the one to delete
+  \param[in] iTrackIDs IDs of both tracks to check
+  \param[in,out] ioTraceIDToKeep ID of the trace to keep after the merge
+  \param[in,out] ioTraceIDToDelete ID of the trace to delete after the merge
+  \param[in] iDatabaseConnector connection to the database
+  \return false of the tracks are not overlapping, true if they are
+  */
+  bool CheckOverlappingTracks(std::list<unsigned int> iTrackIDs,
+    unsigned int &ioTraceIDToKeep, unsigned int &ioTraceIDToDelete,
+    vtkMySQLDatabase* iDatabaseConnector);
+
 };
 #endif

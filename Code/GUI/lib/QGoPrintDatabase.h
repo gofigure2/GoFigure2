@@ -593,20 +593,6 @@ protected:
 
   void UpdateSelectedCollectionForTableWidget(std::string iTableName);
   
-  /**
-  \brief add the meshes to the iTrackID after checking that there are no
-  meshes at the same timepoint in the same track, if so, won't change the
-  trackid of these meshes
-  \param[in] iListMeshes list of the meshes to be part of the itrackID
-  \param[in] iTrackID new track to be assigned to these meshes
-  */
-  void AddListMeshesToATrack(std::list< unsigned int > iListMeshes, unsigned int iTrackID);
-
-  /**
-  \overload
-  */
-  void AddListMeshesToATrack(
-    std::map<unsigned int, std::list<unsigned int> > iListMeshesWithTracks);
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -738,6 +724,21 @@ protected slots:
   \param[in] iTrackIDs checked tracks
   */
   void SplitMergeTracksWithWidget(std::list<unsigned int> iTrackIDs);
+
+  /**
+  \brief add the meshes to the iTrackID after checking that there are no
+  meshes at the same timepoint in the same track, if so, won't change the
+  trackid of these meshes
+  \param[in] iListMeshes list of the meshes to be part of the itrackID
+  \param[in] iTrackID new track to be assigned to these meshes
+  */
+  void AddListMeshesToATrack(std::list< unsigned int > iListMeshes, unsigned int iTrackID);
+
+  /**
+  \overload
+  */
+  void AddListMeshesToATrack(
+    std::map<unsigned int, std::list<unsigned int> > iListMeshesWithTracks);
 
   //*********************Slots for
   // TraceManualEditingWidget:**************************

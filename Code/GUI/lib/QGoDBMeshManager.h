@@ -212,16 +212,15 @@ public slots:
 
   /**
   \brief for the track, get the list of its meshes 
-  with a timepoint superior than the checked mesh and the 
-  checked mesh
+  with a timepoint inferior than the checked mesh
   \param[in] iTrackID ID of the track
   \param[in] iDatabaseConnector connection to the database
   \param[in] iListMeshesBelongingToTrack list of the meshes
   belonging to this track
-  \return list of the meshes with a timepoint superior than 
-  the checked mesh and the checked mesh
+  \return list of the meshes with a timepoint inferior than 
+  the checked mesh
   */
-  std::list<unsigned int> GetMeshesWithTimePointSupOrEqualToTheCheckedOne(
+  std::list<unsigned int> GetMeshesWithTimePointInfToTheCheckedOne(
     unsigned int iTrackID, vtkMySQLDatabase* iDatabaseConnector,
     std::list<unsigned int> iListMeshesBelongingToTrack);
 

@@ -228,6 +228,7 @@ signals:
   //void NewCellTypeActivated(std::string);
 
   void NewCollectionToBeCreated();
+  void WindowsTitleToModify(QString);
 
 protected:
   QLabel *                    m_TraceName;

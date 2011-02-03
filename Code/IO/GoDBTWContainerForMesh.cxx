@@ -75,6 +75,7 @@ void GoDBTWContainerForMesh::SetColumnsInfoBasedOnChannelsInfo()
     std::string ColumnNameTableWidget = "T.I.";
     ColumnNameTableWidget += this->m_ChannelsInfo.at(i).at(0);
     temp.ColumnNameTableWidget = ColumnNameTableWidget;
+    temp.ToolTip = "Total Intensity For the Channel";
     temp.TableNameDatabase = "intensity";
     temp.TableForeignKeyDatabase = "MeshID";
     temp.TableKeyDatabase = "MeshID";

@@ -49,13 +49,16 @@ public:
   ~QGoTrackDockWidget();
 
 public slots:
-  /*void GlyphChanged(bool);
-  void TubeChanged(bool);*/
-signals:
-  void UpdateTracksAppearance(bool, bool);
+  void Glyphs( bool );
+  void glyphValueChanged( double );
+  void Tubes( bool );
+  void tubeValueChanged( double );
   void ColorCodeTracksByTime(bool);
   void ColorCodeTracksBySpeed(bool);
   void ColorCodeTracksByOriginalColor(bool);
+signals:
+  void UpdateTracksRepresentation(double, double);
+  void ChangeColorCode( const char* );
 
 };
 #endif

@@ -328,6 +328,12 @@ vtkInteractorStyleImage2D::OnMouseWheelForward()
       this->SliceMove();
       this->EndSliceMove();
       break;
+    case InteractionTypeContourPicking:
+      this->StartSliceMove();
+      this->SliceStep = static_cast< int >( this->MouseWheelMotionFactor );
+      this->SliceMove();
+      this->EndSliceMove();
+      break;
     default:
       break;
     }
@@ -349,6 +355,12 @@ vtkInteractorStyleImage2D::OnMouseWheelBackward()
   switch ( this->m_Mode )
     {
     case InteractionTypeDefault:
+      this->StartSliceMove();
+      this->SliceStep = static_cast< int >( -this->MouseWheelMotionFactor );
+      this->SliceMove();
+      this->EndSliceMove();
+      break;
+    case InteractionTypeContourPicking:
       this->StartSliceMove();
       this->SliceStep = static_cast< int >( -this->MouseWheelMotionFactor );
       this->SliceMove();
