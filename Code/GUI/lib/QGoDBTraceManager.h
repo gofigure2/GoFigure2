@@ -79,12 +79,11 @@ public:
   for all timepoints if the timepoint is set to the default one or for the
   corresponding timepoint if not
   \param[in] iDatabaseConnector connection to the database
-  \param[in] iTimePoint timepoint to get the tracesIDs for if different from -1
   \return a list of the tracesIDs with their
   corresponding QColor
   */
-  std::list< NameWithColorData > GetAllTraceIDsWithColor(
-    vtkMySQLDatabase *iDatabaseConnector, std::string & ioIDToSelect, int iTimePoint = -1);
+  virtual std::list< NameWithColorData > GetAllTraceIDsWithColor(
+    vtkMySQLDatabase *iDatabaseConnector, std::string & ioIDToSelect);
 
   /**
   \brief delete the corresponding traces in the table widget and in the

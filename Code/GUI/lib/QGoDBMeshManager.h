@@ -148,6 +148,10 @@ public:
     vtkMySQLDatabase* iDatabaseConnector,
     std::list< unsigned int > iListCollectionIDs);
 
+  //method in QGoDBTraceManager
+  virtual std::list< NameWithColorData > GetAllTraceIDsWithColor(
+    vtkMySQLDatabase *iDatabaseConnector, std::string & ioIDToSelect);
+
 public slots:
   /**
   \brief get the coordinate info for meshes needed for the visu
