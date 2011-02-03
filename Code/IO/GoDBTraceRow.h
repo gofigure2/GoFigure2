@@ -226,7 +226,7 @@ protected:
 
     this->SetField("Points", PointsString);
 
-    if ( this->DoesThisBoundingBoxExist(DatabaseConnector) )
+    if ( this->DoesThisBoundingBoxExist(DatabaseConnector) != -1)
       {
       std::cout << "The bounding box already exists for this mesh" << std::endl;
       }
