@@ -183,6 +183,7 @@ unsigned int QGoDBMeshManager::SaveNewMeshFromVisu(
   GoDBMeshRow NewMesh(this->m_ImgSessionID);
   NewMesh.SetCellType(iDatabaseConnector, *this->m_SelectedCellType);
   NewMesh.SetSubCellType(iDatabaseConnector, *this->m_SelectedSubCellType);
+
   this->SetMeshBoundingBoxAndPoints(iXCoordMin, iYCoordMin, iZCoordMin,
                                     iXCoordMax, iYCoordMax, iZCoordMax, iTraceNodes, iDatabaseConnector, NewMesh,
                                     iMeshAttributes, iTShift);

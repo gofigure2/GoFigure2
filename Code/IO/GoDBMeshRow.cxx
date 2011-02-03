@@ -186,8 +186,12 @@ void GoDBMeshRow::SetCellType(vtkMySQLDatabase *iDatabaseConnector,
 {
  // this->SetField< int >( "CellTypeID", FindOneID(DatabaseConnector,
                                                //  "celltype", "CellTypeID", "Name", CellTypeName) );
-  this->SetField< int >( "CellTypeID",
-    GoDBMeshRow::GetCellTypeID(iDatabaseConnector,iCellTypeName) );
+  if (iCellTypeName != "Add a new celltype..." 
+    && iCellTypeName != "Delete a celltype")
+    {
+    this->SetField< int >( "CellTypeID",
+      GoDBMeshRow::GetCellTypeID(iDatabaseConnector,iCellTypeName) );
+    }
 }
 
 //-------------------------------------------------------------------------
@@ -207,8 +211,12 @@ void GoDBMeshRow::SetSubCellType(vtkMySQLDatabase *iDatabaseConnector,
 {
  // this->SetField< int >( "SubCellularID", FindOneID(DatabaseConnector,
                                            //         "subcellulartype", "SubCellularID", "Name", SubCellTypeName) );
-   this->SetField< int >( "SubCellularID",
-     GoDBMeshRow::GetSubCellTypeID(iDatabaseConnector,iSubCellTypeName) );
+  if (iSubCellTypeName != "Add a new subcelltype..." 
+    && iSubCellTypeName != "Delete a subcelltype")
+    {
+     this->SetField< int >( "SubCellularID",
+       GoDBMeshRow::GetSubCellTypeID(iDatabaseConnector,iSubCellTypeName) );
+    }
 }
 //-------------------------------------------------------------------------
 
