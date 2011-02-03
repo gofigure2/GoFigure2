@@ -111,343 +111,199 @@ OPTION( USE_SUPERBUILD "Use SuperBuild" ON )
 
 IF( USE_SUPERBUILD )
   INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/SuperBuild.cmake" )
-  RETURN()
+ # RETURN()
+#DEBUG
+
+    MESSAGE( "EXIT SUPER BUILD" )
 ELSE()
+    MESSAGE( "NO SUPER BUILD" )
+
 
 #---------------------------------------------------------------------------
 # Handle Documentation
 #---------------------------------------------------------------------------
-OPTION( BUILD_DOCUMENTATION "Build Doxygen Documentation" OFF )
+  OPTION( BUILD_DOCUMENTATION "Build Doxygen Documentation" OFF )
 
 #---------------------------------------------------------------------------
-IF( BUILD_DOCUMENTATION )
-  FIND_PACKAGE( Doxygen )
-  IF( DOXYGEN_FOUND )
-    IF( DOXYGEN_DOT_FOUND )
-
-      OPTION( LINK_EXTERNAL_DOC
-        "Should the doc be linked with external sources (VTK, ITK...)?" 
-        OFF 
-      )
-
-      ADD_SUBDIRECTORY( Documentation )
-
-    ELSE( DOXYGEN_DOT_FOUND )
-      MESSAGE( STATUS 
-        "Warning: Dot (from GraphViz) not found - Documentation will not ce generated" 
-      )
-    ENDIF( DOXYGEN_DOT_FOUND )
-  ELSE( DOXYGEN_FOUND )
-    MESSAGE( STATUS 
-      "Warning: Doxygen not found - Documentation will not be created"
-    )
-  ENDIF( DOXYGEN_FOUND )
-ENDIF( BUILD_DOCUMENTATION )
+  IF( BUILD_DOCUMENTATION )
+    FIND_PACKAGE( Doxygen )
+        INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigDoxygen.cmake" )
+  ENDIF( BUILD_DOCUMENTATION )
 
 #---------------------------------------------------------------------------
 # Main GoFigure Settings
 #---------------------------------------------------------------------------
 
-SET( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-  "${GOFIGURE2_SOURCE_DIR}/CMake/"
-  "${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/"
-)
+  SET( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+    "${GOFIGURE2_SOURCE_DIR}/CMake/"
+    "${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/"
+  )
 
-IF( UNIX )
-  SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
-ENDIF( UNIX )
+  IF( UNIX )
+    SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+  ENDIF( UNIX )
 
+#---------------------------------------------------------------------------
 # Everything depends on VTK first
 # that way we can get Qt info from VTK
 #### VTK ####
-FIND_PACKAGE( VTK REQUIRED )
-IF( VTK_FOUND )
 
-  # Check the version of VTK
-  # GoFigure2 requires vtk >= 5.6
-  IF( ( ${VTK_MAJOR_VERSION} LESS 5 ) OR ( ${VTK_MINOR_VERSION} LESS 6 ) )
-    MESSAGE( SEND_ERROR
-      "GoFigure2 requires VTK 5.6 (your version of VTK is ${VTK_VERSION})" )
-  ENDIF( ( ${VTK_MAJOR_VERSION} LESS 5 ) OR ( ${VTK_MINOR_VERSION} LESS 6 ) )
-  
-  # Check if version of VTK is > 5.6
-  # Requiered to now if we can use setBitRate() and setBitRateTolerance
-  # in the vtkFFMPEGWriter
-  IF( ( ${VTK_MAJOR_VERSION} EQUAL 5 ) AND ( ${VTK_MINOR_VERSION} GREATER 6 ))
-    ADD_DEFINITIONS( -DVTKTRUNK )
-  ENDIF( ( ${VTK_MAJOR_VERSION} EQUAL 5 ) AND ( ${VTK_MINOR_VERSION} GREATER 6 ))
-
-  INCLUDE( ${VTK_USE_FILE} )
-
-  IF( ${VTK_USE_MYSQL} MATCHES "ON" )
-    FIND_PACKAGE( MySQL REQUIRED )
-    SET( MYSQL_LIBRARIES ${MYSQL_LIBRARIES} CACHE FILEPATH "" )
-#    SET( MYSQL_EXTRA_LIBRARIES ${MYSQL_EXTRA_LIBRARIES} CACHE FILEPATH "" )
-  ELSE( ${VTK_USE_MYSQL} MATCHES "ON" )
-    MESSAGE( SEND_ERROR "VTK must be compiled with MySQL support" )
-    # TODO (arnaudgelas)
-    # Here add a definition to be able to compile and use GoFigure
-    # without any database support
-    # ADD_DEFINITION( -DNODBSUPPORT )
-  ENDIF( ${VTK_USE_MYSQL} MATCHES "ON" )
-
-  #----------------------------------------------------------
-  # Determine if GoFigure has to be built in shared or static
-  # based on the configuration of VTK
-  IF( VTK_BUILD_SHARED_LIBS )
-    SET( LIBS_STYLE "SHARED" )
-    SET( BUILD_SHARED_LIBS "TRUE" )
-    ADD_DEFINITIONS( -DGOFIGURE2_BUILD_SHARED_LIBS )
-  ELSE( VTK_BUILD_SHARED_LIBS )
-    SET( LIBS_STYLE "STATIC" )
-    SET( BUILD_SHARED_LIBS "FALSE" )
-    REMOVE_DEFINITIONS( -DGOFIGURE2_BUILD_SHARED_LIBS )
-  ENDIF( VTK_BUILD_SHARED_LIBS )
-  #----------------------------------------------------------
-
+  FIND_PACKAGE( VTK REQUIRED )
+  IF( VTK_FOUND )
+    INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigVTK.cmake" )
   #----------------------------------------------------------
   # Then find ITK
   #### ITK ####
-  FIND_PACKAGE( ITK REQUIRED )
-  IF( ITK_FOUND )
-    INCLUDE( ${ITK_USE_FILE} )
-
-    IF( ( ${ITK_VERSION_MAJOR} LESS 3 ) OR
-        ( ( ${ITK_VERSION_MAJOR} EQUAL 3 ) AND
-          ( ${ITK_VERSION_MINOR} LESS 18 ) ) ) 
-      MESSAGE( SEND_ERROR
-        "GoFigure2 requires ITK 3.18 or newer version (your version of ITK is ${ITK_VERSION_MAJOR}.${ITK_VERSION_MINOR}.${ITK_VERSION_PATCH})" )
-    ENDIF( ( ${ITK_VERSION_MAJOR} LESS 3 ) OR
-        ( ( ${ITK_VERSION_MAJOR} EQUAL 3 ) AND
-          ( ${ITK_VERSION_MINOR} LESS 18 ) ) ) 
-
-  
-  IF( ${ITK_VERSION_MAJOR} EQUAL 3 ) 
-    IF( ( ${ITK_USE_REVIEW} MATCHES "OFF" ) OR 
-        ( ${ITK_USE_REVIEW_STATISTICS} MATCHES "OFF" ) )
-      MESSAGE( SEND_ERROR
-        "GoFigure2 requires ITK to be compiled with USE_REVIEW and USE_REVIEW_STATISTICS turned ON" )
-     ENDIF( ( ${ITK_USE_REVIEW} MATCHES "OFF" ) OR 
-        ( ${ITK_USE_REVIEW_STATISTICS} MATCHES "OFF" ) )
-  ELSE( ${ITK_VERSION_MAJOR} EQUAL 3 )
-    IF( ${ITK_USE_REVIEW} MATCHES "OFF" )
-      MESSAGE( SEND_ERROR
-        "GoFigure2 requires ITK to be compiled with USE_REVIEW turned ON" )
-    ENDIF( ${ITK_USE_REVIEW} MATCHES "OFF" )
-
-  ENDIF( ${ITK_VERSION_MAJOR} EQUAL 3 ) 
-
-  ENDIF( ITK_FOUND )
-  #----------------------------------------------------------
+    FIND_PACKAGE( ITK REQUIRED )
+    IF( ITK_FOUND )
+      INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigITK.cmake" )
+    ENDIF( ITK_FOUND )
 
   #----------------------------------------------------------
   # Then find Boost. Note that we only need headers
   #### BOOST ####
-  FIND_PACKAGE( Boost REQUIRED )
-  IF( Boost_FOUND )
-    INCLUDE_DIRECTORIES( BEFORE ${Boost_INCLUDE_DIRS} )
-  ENDIF( Boost_FOUND )
+    FIND_PACKAGE( Boost REQUIRED )
+    IF( Boost_FOUND )
+      INCLUDE_DIRECTORIES( BEFORE ${Boost_INCLUDE_DIRS} )
+    ENDIF( Boost_FOUND )
 
+  #----------------------------------------------------------
   # Try to find Qt.
   # Note that some command line tools will get compiled even without Qt
   #### Qt ####
-  FIND_PACKAGE( Qt4 REQUIRED )
-  IF( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
-    IF( QT_USE_FILE )
-      SET( QT_USE_QT3SUPPORT FALSE )
-      SET( QT_USE_QTCORE TRUE )
-      SET( QT_USE_QTGUI TRUE )
-      INCLUDE( ${QT_USE_FILE} )
-    ELSE( QT_USE_FILE )
-      SET( QT_LIBRARIES ${QT_QT_LIBRARY} )
-    ENDIF( QT_USE_FILE )
+    FIND_PACKAGE( Qt4 REQUIRED )
+    IF( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
+      INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigQT.cmake" )
 
-    SET( QT_PLUGIN_LIBS ${QT_LIBRARIES} )
+      SET( GOFIGURE2_EXTERNAL_SOURCE_DIR
+        ${GOFIGURE2_SOURCE_DIR}/Code/ExternalCode )
+      SET( GOFIGURE2_EXTERNAL_BINARY_DIR
+        ${GOFIGURE2_BINARY_DIR}/Code/ExternalCode )
 
-    ADD_DEFINITIONS( ${QT_DEFINITIONS} )
-    #
-    # ADD_DEFINITIONS( -DQT_GUI_LIBS )
-    # ADD_DEFINITIONS( -DQT_CORE_LIB )
+      SET( MEGAVTK2_SOURCE_DIR ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/MegaVTK )
+      SET( MEGAVTK2_BINARY_DIR ${GOFIGURE2_EXTERNAL_BINARY_DIR}/MegaVTK )
 
-    SET( GOFIGURE2_EXTERNAL_SOURCE_DIR
-      ${GOFIGURE2_SOURCE_DIR}/Code/ExternalCode )
-    SET( GOFIGURE2_EXTERNAL_BINARY_DIR
-      ${GOFIGURE2_BINARY_DIR}/Code/ExternalCode )
+      LINK_DIRECTORIES(
+        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+        ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
+        ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+        )
 
-    SET( MEGAVTK2_SOURCE_DIR ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/MegaVTK )
-    SET( MEGAVTK2_BINARY_DIR ${GOFIGURE2_EXTERNAL_BINARY_DIR}/MegaVTK )
 
-    LINK_DIRECTORIES(
-      ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-      ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-      ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+      INCLUDE_DIRECTORIES( BEFORE
+        ${QT_INCLUDES}
+        ${GOFIGURE2_SOURCE_DIR}/Code/
+        ${GOFIGURE2_BINARY_DIR}/Code/
+        ${GOFIGURE2_SOURCE_DIR}/Code/IO/
+        ${GOFIGURE2_BINARY_DIR}/Code/IO/
+        ${GOFIGURE2_SOURCE_DIR}/Code/Filters/
+        ${GOFIGURE2_BINARY_DIR}/Code/Filters/
+        ${GOFIGURE2_SOURCE_DIR}/Code/GUI/
+        ${GOFIGURE2_BINARY_DIR}/Code/GUI/
+        ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/
+        ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/
+        ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/Resources/
+        ${GOFIGURE2_SOURCE_DIR}/Interfaces/
+        ${GOFIGURE2_BINARY_DIR}/Interfaces/
+        ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/
+        ${GOFIGURE2_BINARY_DIR}/Code/GUI/src/
+        ${MEGAVTK2_SOURCE_DIR}
+        ${MEGAVTK2_BINARY_DIR}
+        ${MEGAVTK2_SOURCE_DIR}/vtkItk
+        ${MEGAVTK2_BINARY_DIR}/vtkItk
+        ${MEGAVTK2_SOURCE_DIR}/vtkRenderingAddOn
+        ${MEGAVTK2_BINARY_DIR}/vtkRenderingAddOn
+        ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM
+        ${GOFIGURE2_EXTERNAL_BINARY_DIR}/vtkLSM
+        ${GOFIGURE2_EXTERNAL_BINARY_DIR}/itkQt
+        ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/itkQt
+        ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/PoissonReconstruction
+        ${GOFIGURE2_EXTERNAL_BINARY_DIR}/PoissonReconstruction
+        ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/ctk
+        ${GOFIGURE2_EXTERNAL_BINARY_DIR}/ctk
+        ${GOFIGURE2_SOURCE_DIR}/Main
+        ${GOFIGURE2_BINARY_DIR}/Main
       )
 
-
-    INCLUDE_DIRECTORIES( BEFORE
-      ${QT_INCLUDES}
-      ${GOFIGURE2_SOURCE_DIR}/Code/
-      ${GOFIGURE2_BINARY_DIR}/Code/
-      ${GOFIGURE2_SOURCE_DIR}/Code/IO/
-      ${GOFIGURE2_BINARY_DIR}/Code/IO/
-      ${GOFIGURE2_SOURCE_DIR}/Code/Filters/
-      ${GOFIGURE2_BINARY_DIR}/Code/Filters/
-      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/
-      ${GOFIGURE2_BINARY_DIR}/Code/GUI/
-      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/
-      ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/
-      ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/Resources/
-      ${GOFIGURE2_SOURCE_DIR}/Interfaces/
-      ${GOFIGURE2_BINARY_DIR}/Interfaces/
-      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/
-      ${GOFIGURE2_BINARY_DIR}/Code/GUI/src/
-      ${MEGAVTK2_SOURCE_DIR}
-      ${MEGAVTK2_BINARY_DIR}
-      ${MEGAVTK2_SOURCE_DIR}/vtkItk
-      ${MEGAVTK2_BINARY_DIR}/vtkItk
-      ${MEGAVTK2_SOURCE_DIR}/vtkRenderingAddOn
-      ${MEGAVTK2_BINARY_DIR}/vtkRenderingAddOn
-      ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM
-      ${GOFIGURE2_EXTERNAL_BINARY_DIR}/vtkLSM
-      ${GOFIGURE2_EXTERNAL_BINARY_DIR}/itkQt
-      ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/itkQt
-      ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/PoissonReconstruction
-      ${GOFIGURE2_EXTERNAL_BINARY_DIR}/PoissonReconstruction
-      ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/ctk
-      ${GOFIGURE2_EXTERNAL_BINARY_DIR}/ctk
-      ${GOFIGURE2_SOURCE_DIR}/Main
-      ${GOFIGURE2_BINARY_DIR}/Main
-    )
-
     # Try to extract Qt variable from VTK
-    SET( QT_QMAKE_EXECUTABLE ${VTK_QT_QMAKE_EXECUTABLE} CACHE FILEPATH "" )
-    SET( QT_MOC_EXECUTABLE ${VTK_QT_MOC_EXECUTABLE} CACHE FILEPATH "" )
-    SET( QT_UIC_EXECUTABLE ${VTK_QT_UIC_EXECUTABLE} CACHE FILEPATH "" )
-
-    #---------------------------------------------------------------------
-    #---------------------------------------------------------------------
-    # VIDEO SUPPORT
-    #---------------------------------------------------------------------
-    #---------------------------------------------------------------------
-
-    # FFMPEG: for Linux and Mac (tested and validated)
-    IF( VTK_USE_FFMPEG_ENCODER )
-      OPTION( ENABLE_VIDEO_RECORD_FFMPEG "VTK must be built with VTK_USE_FFMPEG_ENCODER" ON )
-    ENDIF( VTK_USE_FFMPEG_ENCODER )
-
-    IF( ENABLE_VIDEO_RECORD_FFMPEG )
-      ADD_DEFINITIONS( -DENABLEFFMPEG )
-    ELSE( ENABLE_VIDEO_RECORD_FFMPEG )
-      REMOVE_DEFINITIONS( -DENABLEFFMPEG )
-    ENDIF( ENABLE_VIDEO_RECORD_FFMPEG )
-
-    # AVI: for Windows only
-    IF( VTK_USE_VIDEO_FOR_WINDOWS )
-      OPTION( ENABLE_VIDEO_RECORD_AVI "VTK must be built with VTK_USE_AVI_ENCODER" ON )
-    ENDIF( VTK_USE_VIDEO_FOR_WINDOWS )
-
-    IF( ENABLE_VIDEO_RECORD_AVI )
-      ADD_DEFINITIONS( -DENABLEAVI )
-    ELSE( ENABLE_VIDEO_RECORD_AVI )
-      REMOVE_DEFINITIONS( -DENABLEAVI )
-    ENDIF( ENABLE_VIDEO_RECORD_AVI )
+      SET( QT_QMAKE_EXECUTABLE ${VTK_QT_QMAKE_EXECUTABLE} CACHE FILEPATH "" )
+      SET( QT_MOC_EXECUTABLE ${VTK_QT_MOC_EXECUTABLE} CACHE FILEPATH "" )
+      SET( QT_UIC_EXECUTABLE ${VTK_QT_UIC_EXECUTABLE} CACHE FILEPATH "" )
 
     #---------------------------------------------------------------------
     #---------------------------------------------------------------------
 
-    SET( QGoResourceFile ${GOFIGURE2_SOURCE_DIR}/Resources/axes.qrc )
+      SET( QGoResourceFile ${GOFIGURE2_SOURCE_DIR}/Resources/axes.qrc )
 
-    SET( QGoGUIINTERFACES_HDRS
-      ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoPlugin.h
-      ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoImageFilterPluginBase.h
-    )
-    SET( QGoGUIINTERFACES_SRC
-      ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoPluginHelper.cxx
-      ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoPlugin.cxx
-      ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoImageFilterPluginBase.cxx
-    )
+      SET( QGoGUIINTERFACES_HDRS
+        ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoPlugin.h
+        ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoImageFilterPluginBase.h
+      )
+      SET( QGoGUIINTERFACES_SRC
+        ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoPluginHelper.cxx
+        ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoPlugin.cxx
+        ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoImageFilterPluginBase.cxx
+      )
 
-    ADD_SUBDIRECTORY( Code )
-    ADD_SUBDIRECTORY( Main )
+      ADD_SUBDIRECTORY( Code )
+      ADD_SUBDIRECTORY( Main )
 
     #-----------------------------------------------------------------------
     # Plugins
     #-----------------------------------------------------------------------
-    IF( VTK_BUILD_SHARED_LIBS )
-      OPTION( BUILD_PLUGINS  "Build GoFigure Plugins" OFF )
-    ELSE( VTK_BUILD_SHARED_LIBS )
-      SET( BUILD_PLUGINS OFF )
-    ENDIF( VTK_BUILD_SHARED_LIBS )
+      IF( VTK_BUILD_SHARED_LIBS )
+        OPTION( BUILD_PLUGINS  "Build GoFigure Plugins" OFF )
+      ELSE( VTK_BUILD_SHARED_LIBS )
+        SET( BUILD_PLUGINS OFF )
+      ENDIF( VTK_BUILD_SHARED_LIBS )
 
-    IF( BUILD_PLUGINS )
-      ADD_SUBDIRECTORY( Plugins )
-    ENDIF( BUILD_PLUGINS )
+      IF( BUILD_PLUGINS )
+        ADD_SUBDIRECTORY( Plugins )
+      ENDIF( BUILD_PLUGINS )
 
     #-----------------------------------------------------------------------
     # Examples and tests
     #-----------------------------------------------------------------------
-    OPTION( BUILD_EXAMPLES "Build Examples" OFF )
+      OPTION( BUILD_EXAMPLES "Build Examples" OFF )
 
-    IF( BUILD_TESTING )
-      SET( BUILDNAME "${BUILDNAME}"
-             CACHE STRING "Name of build on the dashboard"
-            )
+      IF( BUILD_TESTING )
+              INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigTests.cmake" )
+      ENDIF( BUILD_TESTING )
 
-      MARK_AS_ADVANCED( BUILDNAME )
+      IF( BUILD_EXAMPLES )
+              INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigExamples.cmake" )
+      ENDIF( BUILD_EXAMPLES )
 
-      OPTION( TESTING_USING_SIKULI "Use Sikuli for testing" OFF )
-      MARK_AS_ADVANCED( TESTING_USING_SIKULI )
+      INCLUDE( GoFigure2IncludeDirectories.cmake )
 
-      IF( TESTING_USING_SIKULI )
-        FIND_PACKAGE( Sikuli )
-        ADD_SUBDIRECTORY( Testing )
-      ENDIF( TESTING_USING_SIKULI )
-
-      CONFIGURE_FILE( CMake/CTestCustom.cmake.in
-        ${CMAKE_CURRENT_BINARY_DIR}/CTestCustom.cmake
+      CONFIGURE_FILE(
+        "${CMAKE_CURRENT_SOURCE_DIR}/UseGoFigure2.cmake.in"
+        "${CMAKE_CURRENT_BINARY_DIR}/UseGoFigure2.cmake"
         @ONLY
         )
-      INCLUDE ( CTest )
-    ENDIF( BUILD_TESTING )
-
-    IF( BUILD_EXAMPLES )
-      ADD_SUBDIRECTORY( Examples )
-      ADD_SUBDIRECTORY( KWStyle )
-      OPTION( BUILD_TESTING "Test the project" ON )
-    ELSE( BUILD_EXAMPLES )
-      SET( BUILD_TESTING OFF )
-    ENDIF( BUILD_EXAMPLES )
-
-    INCLUDE( GoFigure2IncludeDirectories.cmake )
-
-    CONFIGURE_FILE(
-      "${CMAKE_CURRENT_SOURCE_DIR}/UseGoFigure2.cmake.in"
-      "${CMAKE_CURRENT_BINARY_DIR}/UseGoFigure2.cmake"
-      @ONLY
-      )
-
+ 
     #-----------------------------------------------------------------------
     # PACKAGE With CPack
     #-----------------------------------------------------------------------
     # add the uninstall support
-    CONFIGURE_FILE(
-      "${CMAKE_CURRENT_SOURCE_DIR}/GOFIGURE2Uninstall.cmake.in"
-      "${CMAKE_CURRENT_BINARY_DIR}/GOFIGURE2Uninstall.cmake"
-      @ONLY
-      )
+      CONFIGURE_FILE(
+        "${CMAKE_CURRENT_SOURCE_DIR}/GOFIGURE2Uninstall.cmake.in"
+        "${CMAKE_CURRENT_BINARY_DIR}/GOFIGURE2Uninstall.cmake"
+        @ONLY
+        )
 
-    ADD_CUSTOM_TARGET( uninstall
-      "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/GOFIGURE2Uninstall.cmake"
-      )
+      ADD_CUSTOM_TARGET( uninstall
+        "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/GOFIGURE2Uninstall.cmake"
+        )
       
-    IF( ( ${CMAKE_MAJOR_VERSION} EQUAL 2 )  AND ( ${CMAKE_MINOR_VERSION} GREATER 7 ) )
-      INCLUDE( GOFIGURE2CPack.cmake )
-    ENDIF( ( ${CMAKE_MAJOR_VERSION} EQUAL 2 )  AND ( ${CMAKE_MINOR_VERSION} GREATER 7 ) )
+      IF( ( ${CMAKE_MAJOR_VERSION} EQUAL 2 )  AND ( ${CMAKE_MINOR_VERSION} GREATER 7 ) )
+        INCLUDE( GOFIGURE2CPack.cmake )
+      ENDIF( ( ${CMAKE_MAJOR_VERSION} EQUAL 2 )  AND ( ${CMAKE_MINOR_VERSION} GREATER 7 ) )
 
-  ELSE( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
-    MESSAGE( SEND_ERROR "GoFigure2 requires Qt4.5 (or newer version) to be installed" )
-  ENDIF( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
+    ELSE( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
+      MESSAGE( SEND_ERROR "GoFigure2 requires Qt4.5 (or newer version) to be installed" )
+    ENDIF( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
 
-ENDIF( VTK_FOUND )
+  ENDIF( VTK_FOUND )
 
 ENDIF()

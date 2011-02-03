@@ -1,3 +1,7 @@
+#DEBUG
+
+    MESSAGE( "ENTER SUPER BUILD" )
+
 #---------------------------------------------------------------------------
 # Git protocole option
 #---------------------------------------------------------------------------
@@ -52,16 +56,18 @@ endif()
 # Establish Target Dependencies based on Selected Options
 #---------------------------------------------------------------------------
 
-set(VTK_DEPENDENCIES)
 set(ITK_DEPENDENCIES)
-set(GoFigure2_DEPENDENCIES VTK ITK)
+set(VTK_DEPENDENCIES)
+
+set(GoFigure2_DEPENDENCIES ITK VTK)
 
 #---------------------------------------------------------------------------
 # Conditionnaly include ExternalProject Target
 #---------------------------------------------------------------------------
 
-include("${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/External-VTK.cmake")
+
 include("${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/External-ITK.cmake")
+include("${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/External-VTK.cmake")
 
 #---------------------------------------------------------------------------
 # Set superbuild boolean args

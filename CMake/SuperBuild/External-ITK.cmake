@@ -1,3 +1,7 @@
+#DEBUG
+
+    MESSAGE( "ENTER SUPER BUILD - ITK" )
+
 #---------------------------------------------------------------------------
 # Get and build itk
 
@@ -9,7 +13,7 @@ endif()
 
 set(proj ITK)
 
-if(NOT DEFINED ITK_DIR)
+if(NOT DEFINED ITK_DIR OR NOT DEFINED ITK_SOURCE_DIR)
 #  message(STATUS "Adding project:${proj}")
   ExternalProject_Add(${proj}
     GIT_REPOSITORY "${git_protocol}://itk.org/ITK.git"
