@@ -127,7 +127,15 @@ ELSE()
 #---------------------------------------------------------------------------
   IF( BUILD_DOCUMENTATION )
     FIND_PACKAGE( Doxygen )
-        INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigDoxygen.cmake" )
+
+    IF( DOXYGEN_FOUND )
+      INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigDoxygen.cmake" )
+    ELSE( DOXYGEN_FOUND )
+      MESSAGE( STATUS 
+      "Warning: Doxygen not found - Documentation will not be created"
+      )
+    ENDIF( DOXYGEN_FOUND )
+
   ENDIF( BUILD_DOCUMENTATION )
 
 #---------------------------------------------------------------------------
@@ -270,8 +278,11 @@ ELSE()
               INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigTests.cmake" )
       ENDIF( BUILD_TESTING )
 
+
       IF( BUILD_EXAMPLES )
-              INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigExamples.cmake" )
+        INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigExamples.cmake" )
+      ELSE( BUILD_EXAMPLES )
+        SET( BUILD_TESTING OFF )
       ENDIF( BUILD_EXAMPLES )
 
       INCLUDE( GoFigure2IncludeDirectories.cmake )

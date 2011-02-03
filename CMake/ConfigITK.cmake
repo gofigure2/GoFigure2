@@ -1,5 +1,8 @@
+#----------------------------------------------------------
 INCLUDE( ${ITK_USE_FILE} )
 
+#----------------------------------------------------------
+# Check the version of ITK
 IF( ( ${ITK_VERSION_MAJOR} LESS 3 ) OR
     ( ( ${ITK_VERSION_MAJOR} EQUAL 3 ) AND
     ( ${ITK_VERSION_MINOR} LESS 18 ) ) ) 
@@ -9,7 +12,8 @@ ENDIF( ( ${ITK_VERSION_MAJOR} LESS 3 ) OR
     ( ( ${ITK_VERSION_MAJOR} EQUAL 3 ) AND
       ( ${ITK_VERSION_MINOR} LESS 18 ) ) ) 
 
- 
+#----------------------------------------------------------
+# Check if "REVIEW" is "ON"
 IF( ${ITK_VERSION_MAJOR} EQUAL 3 ) 
   IF( ( ${ITK_USE_REVIEW} MATCHES "OFF" ) OR 
       ( ${ITK_USE_REVIEW_STATISTICS} MATCHES "OFF" ) )
