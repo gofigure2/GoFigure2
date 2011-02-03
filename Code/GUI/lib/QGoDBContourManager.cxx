@@ -319,3 +319,47 @@ void QGoDBContourManager::SetColorCoding(bool IsChecked)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoDBContourManager::AddToSelectedCollection()
+{
+  if (this->AreCheckedContoursFromCurrentTimepoint())
+    QGoDBTraceManager::AddToSelectedCollection();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBContourManager::CreateCorrespondingCollection()
+{
+  if (this->AreCheckedContoursFromCurrentTimepoint())
+    QGoDBTraceManager::CreateCorrespondingCollection();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+bool QGoDBContourManager::AreCheckedContoursFromCurrentTimepoint()
+{
+  std::list<unsigned int> ListCheckedContours = 
+    this->m_ContourContainerInfoForVisu->GetHighlightedElementsTraceID();
+  if (!ListCheckedContours.empty())
+    {
+    emit NeedToGetDatabaseConnection();
+    std::list<unsigned int>::iterator iter = ListCheckedContours.begin();
+    while (iter != ListCheckedContours.end())
+      {
+      unsigned int TimepointContour = 
+        this->m_CollectionOfTraces->GetBoundedBoxTimePoint(this->m_DatabaseConnector, *iter); //for test
+      if (this->m_CollectionOfTraces->GetBoundedBoxTimePoint(this->m_DatabaseConnector, *iter) != *this->m_CurrentTimePoint)
+        {
+        emit PrintMessage(tr("To see only the contours from the current timepoint in the table, right click on the table and select 'Show only in the table the contours for the current timepoint' ") );
+        QMessageBox msgBox;
+        msgBox.setText(
+          tr("Please select only contours from the current timepoint: %1 !!")
+          .arg( *this->m_CurrentTimePoint ) );
+        msgBox.exec();
+        return false;
+        }
+      ++iter;
+      }
+    emit DBConnectionNotNeededAnymore();
+    }
+  return true;
+}

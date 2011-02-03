@@ -275,6 +275,8 @@ signals:
   */
   void AddNewTraceIDInTM(std::pair<std::string, QColor> iTraceToAddData);
 
+  void PrintMessage(QString iMessage, int iTimeOut = 0);
+
 protected:
   std::string m_TraceName;
   std::string m_TraceNameID;
@@ -833,9 +835,9 @@ protected slots:
   checked traces" in the context menu, emit the signal NewCollectionFromCheckedTraces
   as it impact the collection also
   */
-  void CreateCorrespondingCollection();
+  virtual void CreateCorrespondingCollection();
 
-  void AddToSelectedCollection();
+  virtual void AddToSelectedCollection();
 
   /**
   \brief modify to the opposite one the highlighted property of the corresponding

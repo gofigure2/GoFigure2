@@ -1221,6 +1221,10 @@ void QGoPrintDatabase::SetContoursManager()
                     SIGNAL(DBConnectionNotNeededAnymore() ),
                     this,
                     SLOT(CloseDBConnection() ) );
+  QObject::connect( this->m_ContoursManager,
+                    SIGNAL(PrintMessage(QString , int) ),
+                    this,
+                    SIGNAL(PrintMessage(QString, int) ) );
 
   this->m_ContoursManager->SetSelectedCollection(
     this->m_TraceWidget->GetPointerCollectionData() );
@@ -1261,6 +1265,10 @@ void QGoPrintDatabase::SetMeshesManager()
                     SIGNAL(AddNewTraceIDInTM( std::pair<std::string, QColor> ) ),
                     this->m_TraceWidget,
                     SLOT(AddANewCollectionID(std::pair<std::string, QColor>) ) );
+  QObject::connect( this->m_MeshesManager,
+                    SIGNAL(PrintMessage(QString , int) ),
+                    this,
+                    SIGNAL(PrintMessage(QString, int) ) );
 
   //related to traceEditingWidget and meshes_manager (celltype + subcelltype + collectionData + colordata):
   this->m_MeshesManager->SetSelectedCollection (
@@ -1282,7 +1290,6 @@ void QGoPrintDatabase::SetTracksManager()
   QObject::connect( this->m_TracksManager,
                     SIGNAL( TraceColorToChange() ),
                     this, SLOT( ChangeTrackColor() ) );
-
   QObject::connect( this->m_TracksManager, SIGNAL( CheckedTracesToDelete() ),
                     this, SLOT( DeleteCheckedTracks() ) );
 
@@ -1293,35 +1300,33 @@ void QGoPrintDatabase::SetTracksManager()
                     SIGNAL(DBConnectionNotNeededAnymore() ),
                     this,
                     SLOT(CloseDBConnection() ) );
-
   QObject::connect( this->m_TracksManager, SIGNAL( NeedToGetDatabaseConnection() ),
                     this, SLOT( PassDBConnectionToTracksManager() ) );
-
   QObject::connect( this->m_TracksManager,
                     SIGNAL(DBConnectionNotNeededAnymore() ),
                     this,
                     SLOT(CloseDBConnection() ) );
-
   QObject::connect( this->m_TracksManager,
                     SIGNAL(TrackToSplit(unsigned int, std::list<unsigned int> ) ),
                     this,
                     SLOT( SplitTheTrack(unsigned int,
                       std::list<unsigned int> ) ) );
-
   QObject::connect( this->m_TracksManager, 
                     SIGNAL( TrackIDToBeModifiedWithWidget( std::list<unsigned int> ) ),
                     this,
                     SLOT(SplitMergeTracksWithWidget(std::list<unsigned int> ) ) );
-
   QObject::connect( this->m_TracksManager,
                     SIGNAL( MeshesToAddToTrack(std::list<unsigned int>, unsigned int) ),
                     this,
                     SLOT(AddListMeshesToATrack(std::list<unsigned int>, unsigned int) ) );
-
   QObject::connect( this->m_TracksManager,
                     SIGNAL(AddNewTraceIDInTM( std::pair<std::string, QColor> ) ),
                     this->m_TraceWidget,
                     SLOT(AddANewCollectionID( std::pair<std::string, QColor> ) ) );
+  QObject::connect( this->m_TracksManager,
+                    SIGNAL(PrintMessage(QString , int) ),
+                    this,
+                    SIGNAL(PrintMessage(QString, int) ) );
 
   this->m_TracksManager->SetSelectedCollection(
     this->m_TraceWidget->GetPointerCollectionData());
