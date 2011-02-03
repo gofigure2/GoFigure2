@@ -3,10 +3,15 @@
 #BUILD directory
 BUILD/
 
+#KDevelop
+*.kdev4
+
 #QT creator specifics
 CMakeLists.txt.user*
 qtcreator-build/
 
+#KDevelop4
+*.kdev4
 
 #OSX specifics
 .DS_Store

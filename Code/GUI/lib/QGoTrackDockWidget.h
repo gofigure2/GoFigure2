@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -49,10 +49,16 @@ public:
   ~QGoTrackDockWidget();
 
 public slots:
-  void GlyphChanged(bool);
-  void TubeChanged(bool);
+  void Glyphs( bool );
+  void glyphValueChanged( double );
+  void Tubes( bool );
+  void tubeValueChanged( double );
+  void ColorCodeTracksByTime(bool);
+  void ColorCodeTracksBySpeed(bool);
+  void ColorCodeTracksByOriginalColor(bool);
 signals:
-  void UpdateTracksAppearance(bool, bool);
+  void UpdateTracksRepresentation(double, double);
+  void ChangeColorCode( const char* );
 
 };
 #endif

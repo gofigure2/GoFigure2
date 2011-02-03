@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -78,6 +78,8 @@ public:
   itkGetConstMacro(MinTimePoint, unsigned int);
   itkGetConstMacro(MaxTimePoint, unsigned int);
 
+  itkGetConstMacro(TimeInterval, unsigned int);
+
   void SetZSlice(const unsigned int & iZs);
 
   itkGetConstMacro(UpdateZSlice, unsigned int);
@@ -114,6 +116,7 @@ protected:
   unsigned int m_MinTimePoint;
   unsigned int m_MaxTimePoint;
   unsigned int m_UpdateTimePoint;
+  unsigned int m_TimeInterval;
 
   unsigned int m_MinZSlice;
   unsigned int m_MaxZSlice;

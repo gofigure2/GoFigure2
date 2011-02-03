@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -52,25 +52,28 @@ AddTrace( vtkPolyData* iNode, vtkProperty* iProperty )
 {
   std::vector< vtkActor* > oActors;
 
-  int dir = this->ComputeDirectionFromContour(iNode);
-
-  if ( dir != -1 )
+  if( m_ImageView )
     {
-    m_ImageView->EnableContourWidget(true);
-    m_ImageView->InitializeContourWidgetNodes(dir, iNode);
+    int dir = this->ComputeDirectionFromContour(iNode);
 
-    vtkPolyData *trace = vtkPolyData::New();
-    trace->ShallowCopy(
-      m_ImageView->GetContourRepresentationAsPolydata(dir) );
+    if ( dir != -1 )
+      {
+      m_ImageView->EnableContourWidget(true);
+      m_ImageView->InitializeContourWidgetNodes(dir, iNode);
 
-    oActors = this->m_ImageView->AddContour(trace, iProperty);
+      vtkPolyData *trace = vtkPolyData::New();
+      trace->ShallowCopy(
+        m_ImageView->GetContourRepresentationAsPolydata(dir) );
 
-    m_ImageView->ReinitializeContourWidget();
-    m_ImageView->EnableContourWidget(false);
-    }
-  else
-    {
-    qWarning() << "iNodes is not an axis-aligned contour";
+      oActors = this->m_ImageView->AddContour(trace, iProperty);
+
+      m_ImageView->ReinitializeContourWidget();
+      m_ImageView->EnableContourWidget(false);
+      }
+    else
+      {
+      qWarning() << "iNodes is not an axis-aligned contour";
+      }
     }
   return oActors;
 }

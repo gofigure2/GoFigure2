@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -126,18 +126,19 @@ void QGoDBContourManager::AddActionsContextMenu(QMenu *iMenu)
 {
   QGoDBTraceManager::AddActionsContextMenu(iMenu);
   this->AddSpecificActionsForContourMesh(iMenu);
-  this->m_CheckedTracesMenu->addAction( tr("ReEdit the checked %1").arg( this->m_TraceName.c_str() ),
-                    this, SLOT( ReEditTrace() ) );
+  this->m_CheckedTracesMenu->addAction( tr("ReEdit the checked %1")
+    .arg( this->m_TraceName.c_str() ),
+    this, SLOT( ReEditTrace() ) );
 }
 
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBContourManager::AddActionForCreateNewCollectionFromCheckedTraces(
-  QMenu *iMenu)
+void QGoDBContourManager::AddActionForCreateNewCollectionFromCheckedTraces()
 {
-  this->m_CheckedTracesMenu->addAction( tr("Generate a new mesh from checked contours"),
-         this, SLOT( CreateCorrespondingCollection() ) );
+  this->m_CheckedTracesMenu->addAction( 
+    tr("Generate a new mesh from checked contours"),
+    this, SLOT( CreateCorrespondingCollection() ) );
 }
 
 //-------------------------------------------------------------------------
@@ -213,7 +214,8 @@ unsigned int QGoDBContourManager::SaveReeditedContourFromVisu(unsigned int iXCoo
 
   ReeditedContour.SetValuesForSpecificID(TraceID, iDatabaseConnector);
   this->SetTraceBoundingBoxAndPoints(iXCoordMin, iYCoordMin, iZCoordMin, iTCoord, iXCoordMax,
-                                     iYCoordMax, iZCoordMax, iContourNodes, iDatabaseConnector, ReeditedContour);
+                                     iYCoordMax, iZCoordMax, iContourNodes, iDatabaseConnector, 
+                                     ReeditedContour);
   ReeditedContour.SaveInDB(iDatabaseConnector);
   this->DisplayInfoForExistingTrace(iDatabaseConnector, TraceID);
   return TraceID;
@@ -267,7 +269,7 @@ void QGoDBContourManager::UpdateTWAndContainerForImportedTraces(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBContourManager::DeleteTraces(vtkMySQLDatabase *iDatabaseConnector)
+void QGoDBContourManager::DeleteCheckedTraces(vtkMySQLDatabase *iDatabaseConnector)
 {
   this->DeleteTracesTemplate<ContourMeshContainer>(iDatabaseConnector,
     this->m_ContourContainerInfoForVisu);
@@ -300,21 +302,11 @@ void QGoDBContourManager::UpdateVisibleElementsInVisuContainer(int iTraceID)
 
 //-------------------------------------------------------------------------
 void QGoDBContourManager::GetTracesInfoFromDBAndModifyContainerForVisu(
-  vtkMySQLDatabase* iDatabaseConnector,std::vector<int> iVectIDs)
+  vtkMySQLDatabase* iDatabaseConnector,
+  std::list< unsigned int > iListTraceIDs)
 {
-  std::list<ContourMeshStructure> list_of_traces;
-  GetTracesInfoFromDBAndModifyContainer(
-      list_of_traces,
-      iDatabaseConnector, this->m_TraceName, this->m_CollectionName,
-      this->m_ImgSessionID, -1, iVectIDs);
-
-  std::list< ContourMeshStructure >::iterator it = list_of_traces.begin();
-
-  while ( it != list_of_traces.end() )
-    {
-    this->m_ContourContainerInfoForVisu->Insert(*it);
-    ++it;
-    }
+  this->GetTracesInfoFromDBAndModifyContainerForVisuTemplate<ContourContainer>(
+    this->m_ContourContainerInfoForVisu, iDatabaseConnector, iListTraceIDs);
 }
 //-------------------------------------------------------------------------
 

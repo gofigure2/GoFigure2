@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -59,6 +59,8 @@ std::vector< GoDBTraceInfoForTableWidget >
   //IsSelected column will correspond to the "IsHighLighted":
   temp.InfoName = "Selected";
   temp.ColumnNameTableWidget = "";
+  temp.ToolTip = "Check/Uncheck ";
+  temp.ToolTip += this->m_TracesName;
   m_ColumnsInfos.push_back(temp);
   std::pair< GoDBTraceInfoForTableWidget, std::vector< std::string > > PairTemp;
   PairTemp.first = temp;
@@ -421,18 +423,22 @@ void GoDBTableWidgetContainer::SetInfoForColumnIsVisible()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::list< std::string > GoDBTableWidgetContainer::GetListColumnsNamesForTableWidget()
+std::list< std::pair< std::string, std::string > > 
+  GoDBTableWidgetContainer::GetListColumnsNamesAndToolTipsForTableWidget()
 {
-  std::list< std::string > ListColumnNames;
+  std::list< std::pair< std::string, std::string > > oListColumnNamesAndToolTips;
   for ( unsigned int i = 0; i < m_ColumnsInfos.size(); i++ )
     {
     if ( m_ColumnsInfos[i].ColumnNameTableWidget != "None"
          && m_ColumnsInfos[i].ColumnNameTableWidget != "NoneID" )
       {
-      ListColumnNames.push_back(m_ColumnsInfos[i].ColumnNameTableWidget);
+      std::pair< std::string, std::string> temp;
+      temp.first = m_ColumnsInfos[i].ColumnNameTableWidget;
+      temp.second = m_ColumnsInfos[i].ToolTip;
+      oListColumnNamesAndToolTips.push_back(temp);
       }
     }
-  return ListColumnNames;
+  return oListColumnNamesAndToolTips;
 }
 
 //--------------------------------------------------------------------------

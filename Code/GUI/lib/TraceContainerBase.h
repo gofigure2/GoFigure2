@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -74,6 +74,9 @@ public:
   typedef typename MultiIndexContainerType::template index< TraceID >::type::iterator
   MultiIndexContainerTraceIDIterator;
 
+  typedef typename MultiIndexContainerType::template index< CollectionID >::type::iterator
+  MultiIndexContainerCollectionIDIterator;
+
   typedef typename MultiIndexContainerType::template index< Highlighted >::type::iterator
   MultiIndexContainerHighlightedIterator;
 
@@ -138,6 +141,8 @@ public:
   */
   vtkProperty * GetHighlightedProperty();
 
+  unsigned int GetCollectionIDOfGivenTraceID( unsigned int iTraceID);
+
   /**
     \brief Update Visualization of the given TraceIDs
     \tparam TContainer Container of TraceIDs
@@ -191,9 +196,12 @@ public:
             f = &QGoImageView3D::RemoveActor;
             }
 
-          for ( int i = 0; i < 4; i++ )
+          if( m_ImageView )
             {
-            ( m_ImageView->*f )(i, actor[i]);
+            for ( int i = 0; i < 4; i++ )
+              {
+              ( m_ImageView->*f )(i, actor[i]);
+              }
             }
           }
         else
@@ -248,9 +256,12 @@ public:
       f = &QGoImageView3D::RemoveActor;
       }
 
-    for ( int i = 0; i < 4; i++ )
+    if( m_ImageView )
       {
-      ( m_ImageView->*f )(i, iActors[i]);
+      for ( int i = 0; i < 4; i++ )
+        {
+        ( m_ImageView->*f )(i, iActors[i]);
+        }
       }
 
     using boost::multi_index::get;
@@ -284,12 +295,36 @@ public:
   vtkPolyData* GetCurrentElementNodes();
 
   /**
+    \brief Get the color of the current element track
+    \return Pointer to the current element color
+  */
+  double* GetCurrentElementColor();
+
+  std::vector<vtkActor*> GetActorGivenTraceID( unsigned int iTraceID );
+
+  /**
   \brief put the information of the existing element into m_CurrentElement
   and remove the existing element from the container,the visu and the memory
   \param[in] iTraceID ID of the existing element
   \return true if the element was found in the container, false if not
   */
   bool UpdateCurrentElementFromExistingOne(unsigned int iTraceID);
+
+  template< class TIndex >
+  bool UpdateCurrentElementFromExistingOne(
+    typename MultiIndexContainerType::template index< TIndex >::type::iterator iIt )
+    {
+    using boost::multi_index::get;
+
+    // update current element
+    this->m_CurrentElement = *iIt;
+
+    // clean the container but don't erase the pointers since we still have the
+    // adresses in the m_CurrentElement
+    m_Container.get< TIndex >().erase( iIt );
+
+    return true;
+    }
 
   /**
     \brief Update element visibility given it TraceId
@@ -443,7 +478,10 @@ public:
 
     SetScalarRangeForAllElements( min_value, max_value );
 
-    this->m_ImageView->UpdateRenderWindows();
+    if( m_ImageView )
+      {
+      this->m_ImageView->UpdateRenderWindows();
+      }
     }
 
   void SetRandomColor( const std::string& iColumnName,
@@ -550,7 +588,11 @@ protected:
           }
 
         m_Container.get< TActor >().replace(it, tempStructure);
-        m_ImageView->UpdateRenderWindows();
+
+        if( m_ImageView )
+          {
+          m_ImageView->UpdateRenderWindows();
+          }
 
         oTraceId = it->TraceID;
 
@@ -601,7 +643,11 @@ protected:
           }
 
         m_Container.get< TActor >().replace(it, tempStructure);
-        m_ImageView->UpdateRenderWindows();
+
+        if( m_ImageView )
+          {
+          m_ImageView->UpdateRenderWindows();
+          }
 
         oTraceId = it->TraceID;
 

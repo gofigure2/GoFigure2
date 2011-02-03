@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -99,6 +99,9 @@ std::string GetConditions(std::string iField,
                           std::string iConditionConnector = "AND")
 {
   std::stringstream oConditions;
+  oConditions << "";
+  if (!iVectorValues.empty() )
+    {
     oConditions << "(";
     unsigned int i;
       for ( i = 0; i < iVectorValues.size() - 1; i++ )
@@ -110,10 +113,11 @@ std::string GetConditions(std::string iField,
         oConditions << iConditionConnector;
         oConditions  << " ";
         }
-      oConditions << iField;
-      oConditions << " = '";
-      oConditions << iVectorValues[i];
-      oConditions << "')";
+    oConditions << iField;
+    oConditions << " = '";
+    oConditions << iVectorValues[i];
+    oConditions << "')";
+    }
   return oConditions.str();
 }
 
@@ -122,10 +126,32 @@ std::string GetConditions(std::vector<FieldWithValue> iConditions,
 
 std::string GetConditions(std::string iField, std::string iValue,std::string iOperator = "=");
 
-std::string GetFirstPartQueryForTracesInfo(std::string iTraceName,std::string iCollectionName);
+/**
+\brief (iFirstPartCondition AND (iField = iOrVectorValues1 OR iField = iOrVectorValues1...))
+*/
+template< typename T >
+std::string GetAndORConditions(FieldWithValue iFirtsPartCondition, std::string iField,
+  std::vector< T > iOrVectorValues)
+{
+  std::string oConditions;  
+  std::vector<FieldWithValue> VectorConditions(1);
+  //FieldWithValue AndCondition = {fieldTwo,ValueFieldTwo, "="};
+  VectorConditions[0] = iFirtsPartCondition;
+  oConditions = GetConditions( VectorConditions, "AND" );
+  if (!iOrVectorValues.empty() )
+    {
+    oConditions = oConditions.substr(0, oConditions.size()-1);
+    oConditions += " AND "; 
+    oConditions += GetConditions<T>(iField,iOrVectorValues,"OR");  
+    oConditions += ")";
+    }
+  return oConditions;
+}
 
-std::string GetSecondPartQueryForTracesInfo(std::string TraceName,
-                                            std::vector<int> iVectIDs);
+//std::string GetConditions(std::vector<FieldWithValue> iConditions,
+ //                         std::string iConditionConnector = "AND");
+
+//std::string GetConditions(std::string iField, std::string iValue,std::string iOperator = "=");
 
 /**
 \brief SELECT iColumn FROM iTable ORDER BY iOrderByColumnName iAscDesc;
@@ -255,11 +281,41 @@ std::vector< std::string > VectorUnsgIntToVectorString(std::vector<unsigned int>
 std::string GetLeftJoinTwoTables(std::string iTableOne,std::string iTableTwo,
   FieldWithValue iOnCondition);
 
+/**
+\brief (iTable LEFT JOIN iTableTwo ON iTable.iOnCondition/Field = iTableTwo.iOnCondition/Value)
+LEFT JOIN iTableThree ON iTable.iOnCondition/Field = iTableThree.iOnCondition/Value)
+\param[in] iTable table to be joined
+\param[in] iTableTwo table to be joined to the 1rst one
+\param[in] iTableThree table to be joined ot the 1rst one
+\param[in] iOnConditionOne join on which condition between table and tableTwo
+\param[in] iOnConditionTwo join on which condition between table and tableThree
+\return the string corresponding to the query part
+*/
+std::string GetLeftJoinThreeTables(std::string iTable,std::string iTableTwo,
+  std::string iTableThree, FieldWithValue iOnConditionOne, 
+  FieldWithValue iOnConditionTwo);
+
 std::string GetGroupBy(std::string iColumn, unsigned int iNumberDoublons);
-//iselectquery union iselectquery where ijoinon IS NULL (with or without
-// brackets in the
-//where clause, it will work
-//std::string SelectWithJoinNullIncluded(std::string iSelectQuery, std::string iJoinOn,
-                                       //bool doublon = true);
+
+/**
+\brief SELECT iSelectedAttributes[0], iSelectedAttributes[1]...FROM (iTableOne left join
+iTableTwo on iJoinConditionOne) left join tableThree on iJoinConditionTwo where (iFieldOne
+= iValueFieldOne) AND (IDFieldName = iListIDs[0] OR IDFieldName = iListIDs[1] OR....);
+\param[in] iSelectedAttributes vector of all the attributes to be fetched from the db
+\param[in] iTableOne main table involved (usually the table for the trace)
+\param[in] iTableTwo table attached to the main table
+\param[in] iTableThree table attached to the main table
+\param[in] iJoinConditionOne describes how the tabletwo is attached to the main table
+\param[in] iJoinConditionTwo describes how the tablethree is attached to the main table
+\param[in] iFieldOne first condition
+\param[in] iValueFieldOne value for the first condition
+\param[in] iIDFieldName field for the IDName where there is a condition
+\param[in] iListIDs values for the iIDFieldname
+\return the string corresponding to the query part
+*/
+std::string SelectForTracesInfo(std::vector<std::string> iSelectedAttributes,
+  std::string iTableOne, std::string iTableTwo, std::string iTableThree,
+  FieldWithValue iJoinConditionOne, FieldWithValue iJoinConditionTwo, std::string iFieldOne,
+  unsigned int iValueFieldOne, std::string iIDFieldName, std::list< unsigned int > iListIDs);
 
 #endif

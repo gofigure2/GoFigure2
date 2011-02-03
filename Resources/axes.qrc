@@ -42,5 +42,6 @@
         <file>fig/ContourEditing.png</file>
         <file>fig/VisuClassic.png</file>
         <file>fig/VisuTime.png</file>
+        <file>fig/TrackView.png</file>
     </qresource>
 </RCC>

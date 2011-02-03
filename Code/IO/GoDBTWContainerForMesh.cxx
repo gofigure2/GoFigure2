@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@ GoDBTWContainerForMesh::GoDBTWContainerForMesh(int iImgSessionID):
   GoDBTWContainerForContourMesh("mesh", "track", iImgSessionID),
   m_MeshAttributes(NULL)
 {
-  this->SetSpecificInfoForTraceTable();
+  this->SetSpecificInfoForMeshTable();
   //checker the columnsinfo
 }
 
@@ -75,6 +75,7 @@ void GoDBTWContainerForMesh::SetColumnsInfoBasedOnChannelsInfo()
     std::string ColumnNameTableWidget = "T.I.";
     ColumnNameTableWidget += this->m_ChannelsInfo.at(i).at(0);
     temp.ColumnNameTableWidget = ColumnNameTableWidget;
+    temp.ToolTip = "Total Intensity For the Channel";
     temp.TableNameDatabase = "intensity";
     temp.TableForeignKeyDatabase = "MeshID";
     temp.TableKeyDatabase = "MeshID";
@@ -83,69 +84,12 @@ void GoDBTWContainerForMesh::SetColumnsInfoBasedOnChannelsInfo()
     m_RowContainer.push_back(PairTemp);
     temp.Clear();
     }
- /* //Get the info for the Volume:
-  temp.InfoName = "Volume";
-  temp.ColumnNameTableWidget = "Volume";
-  m_ColumnsInfos.push_back(temp);
-  PairTemp.first = temp;
-  m_RowContainer.push_back(PairTemp);
-  temp.Clear();
-
-  //Get the info for the Surface Area:
-  temp.InfoName = "SurfaceArea";
-  temp.ColumnNameTableWidget = "SurfaceArea";
-  m_ColumnsInfos.push_back(temp);
-  PairTemp.first = temp;
-  m_RowContainer.push_back(PairTemp);
-  temp.Clear();
-
-  //Get the info for CelltypeID:
-  temp.InfoName = "CellTypeID";
-  temp.ColumnNameDatabase = "CellTypeID";
-  temp.TableNameDatabase = this->m_TracesName;
-  temp.TableForeignKeyDatabase = "CellTypeID";
-  temp.TableKeyDatabase = "CellTypeID";
-  m_ColumnsInfos.push_back(temp);
-  PairTemp.first = temp;
-  m_RowContainer.push_back(PairTemp);
-
-  //Get the info for the celltype name:
-  temp.ColumnNameTableWidget = "CellType";
-  temp.ColumnNameDatabase = "Name";
-  temp.TableNameDatabase = "celltype";
-  temp.InfoName = "CellTypeName";
-  temp.TableForeignKeyDatabase = "CellTypeID";
-  temp.TableKeyDatabase = "CellTypeID";
-  m_ColumnsInfos.push_back(temp);
-  m_RowContainer.push_back(PairTemp);
-  temp.Clear();
-
-  //Get the info for SubCelltypeID:
-  temp.InfoName = "SubCellTypeID";
-  temp.ColumnNameDatabase = "SubCellTypeID";
-  temp.TableNameDatabase = this->m_TracesName;
-  temp.TableForeignKeyDatabase = "SubCellularID";
-  temp.TableKeyDatabase = "SubCellularID";
-  m_ColumnsInfos.push_back(temp);
-  PairTemp.first = temp;
-  m_RowContainer.push_back(PairTemp);
-
-   //Get the info for the SubCellType name:
-  temp.ColumnNameTableWidget = "SubCellType";
-  temp.ColumnNameDatabase = "Name";
-  temp.TableNameDatabase = "subcellulartype";
-  temp.InfoName = "SubCellTypeName";
-  temp.TableForeignKeyDatabase = "SubCellularID";
-  temp.TableKeyDatabase = "SubCellularID";
-  m_ColumnsInfos.push_back(temp);
-  m_RowContainer.push_back(PairTemp);
-  temp.Clear();*/
 }
 
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBTWContainerForMesh::SetSpecificInfoForTraceTable()
+void GoDBTWContainerForMesh::SetSpecificInfoForMeshTable()
 {
   GoDBTraceInfoForTableWidget temp;
 

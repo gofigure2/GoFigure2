@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -51,7 +51,7 @@ QGoTraceManualEditingWidget::QGoTraceManualEditingWidget(QWidget *iParent):
   SetTraceCollectionColorComboBox();
   SetCellTypeComboBox();
   SetSubCellTypeComboBox();
-  UpdateTraceAndCollection("contour", "mesh");
+  //UpdateTraceAndCollection("contour", "mesh");
 }
 
 //-------------------------------------------------------------------------
@@ -373,8 +373,9 @@ void QGoTraceManualEditingWidget::SetCurrentCollectionID(std::string iID)
 void QGoTraceManualEditingWidget::UpdateTraceAndCollection(
   std::string iTrace, std::string iCollection)
 {
-  std::cout << iTrace << std::endl;
-
+  //std::cout << iTrace << std::endl;
+  QString Title(tr("%1 settings").arg(iTrace.c_str()) );
+  emit WindowsTitleToModify(Title);
   this->m_TraceName->setText( iTrace.c_str() );
   this->m_CollectionName->setText( iCollection.c_str() );
   //this->m_CollectionColorComboBox->SetTextToAdd(iCollection);

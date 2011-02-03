@@ -33,9 +33,9 @@
 
 /*=========================================================================
  Modifications were made by the GoFigure Dev. Team.
- while at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ while at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -302,13 +302,13 @@ public:
   virtual vtkActor * AddDataSet(vtkDataSet *dataset,
                                 vtkProperty *property = NULL,
                                 const bool & intersection = true,
-                                const bool & iDataVisibility = true);
+                                const bool & iDataVisibility = false);
 
   //virtual vtkQuadricLODActor*
   virtual vtkActor * AddDataSet(vtkPolyData *polydata,
                                 vtkProperty *property = NULL,
                                 const bool & intersection = true,
-                                const bool & iDataVisibility = true);
+                                const bool & iDataVisibility = false);
 
   /**
    * \brief Set the camera motion vector

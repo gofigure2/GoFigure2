@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -47,5 +47,12 @@ std::vector< vtkActor* >
 MeshContainer::
 AddTrace( vtkPolyData* iNode, vtkProperty* iProperty )
 {
-  return this->m_ImageView->AddContour(iNode, iProperty);
+  if( m_ImageView )
+    {
+    return this->m_ImageView->AddContour(iNode, iProperty);
+    }
+  else
+    {
+    return std::vector< vtkActor* >();
+    }
 }

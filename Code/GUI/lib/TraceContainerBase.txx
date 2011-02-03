@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -100,6 +100,37 @@ GetHighlightedProperty()
 
 //-------------------------------------------------------------------------
 template< class TContainer >
+std::vector< vtkActor* >
+TraceContainerBase< TContainer >::
+GetActorGivenTraceID(unsigned int iTraceID)
+{
+  using boost::multi_index::get;
+
+  MultiIndexContainerTraceIDIterator
+    it = m_Container.get< TraceID >().find(iTraceID);
+
+  std::vector<vtkActor* > listActors;
+
+  if ( it != m_Container.get< TraceID >().end() )
+    {
+    listActors.push_back((*it).ActorXY);
+    listActors.push_back((*it).ActorYZ);
+    listActors.push_back((*it).ActorXZ);
+    listActors.push_back((*it).ActorXYZ);
+
+    std::cout << "Actor found" << std::endl;
+    }
+  else
+    {
+    std::cout << "Actor not found" << std::endl;
+    }
+
+  return listActors;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+template< class TContainer >
 bool
 TraceContainerBase< TContainer >::
 UpdateCurrentElementFromExistingOne(unsigned int iTraceID)
@@ -178,6 +209,16 @@ GetCurrentElementNodes()
 
 //-------------------------------------------------------------------------
 template< class TContainer >
+double*
+TraceContainerBase< TContainer >::
+GetCurrentElementColor()
+{
+  return this->m_CurrentElement.rgba;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+template< class TContainer >
 bool
 TraceContainerBase< TContainer >::
 RemoveElementFromVisualizationWithGivenTraceID( const unsigned int & iId)
@@ -189,28 +230,34 @@ RemoveElementFromVisualizationWithGivenTraceID( const unsigned int & iId)
 
   if ( it != m_Container.get< TraceID >().end() )
     {
-    if ( it->ActorXY )
+    if( m_ImageView )
       {
-      this->m_ImageView->RemoveActor(0, it->ActorXY);
-      }
-    if ( it->ActorXZ )
-      {
-      this->m_ImageView->RemoveActor(1, it->ActorXZ);
-      }
-    if ( it->ActorYZ )
-      {
-      this->m_ImageView->RemoveActor(2, it->ActorYZ);
-      }
-    if ( it->ActorXYZ )
-      {
-      this->m_ImageView->RemoveActor(3, it->ActorXYZ);
+      if ( it->ActorXY )
+        {
+        this->m_ImageView->RemoveActor(0, it->ActorXY);
+        }
+      if ( it->ActorXZ )
+        {
+        this->m_ImageView->RemoveActor(1, it->ActorXZ);
+        }
+      if ( it->ActorYZ )
+        {
+        this->m_ImageView->RemoveActor(2, it->ActorYZ);
+        }
+      if ( it->ActorXYZ )
+        {
+        this->m_ImageView->RemoveActor(3, it->ActorXYZ);
+        }
       }
 
     this->m_CurrentElement = *it;
 
     m_Container.get< TraceID >().erase(it);
 
-    m_ImageView->UpdateRenderWindows();
+    if( m_ImageView )
+      {
+      m_ImageView->UpdateRenderWindows();
+      }
 
     return true;
     }
@@ -258,7 +305,11 @@ UpdateElementHighlightingWithGivenTraceID(const unsigned int & iId)
     tempStructure.Highlighted = !it->Highlighted;
 
     m_Container.get< TraceID >().replace(it, tempStructure);
-    m_ImageView->UpdateRenderWindows();
+
+    if( m_ImageView )
+      {
+      m_ImageView->UpdateRenderWindows();
+      }
 
     return true;
     }
@@ -320,7 +371,10 @@ UpdateElementHighlightingWithGivenTraceIDsBase( const QStringList& iList,
       ++constIterator;
       }
 
-    m_ImageView->UpdateRenderWindows();
+    if( m_ImageView )
+      {
+      m_ImageView->UpdateRenderWindows();
+      }
     }
 }
 //-------------------------------------------------------------------------
@@ -342,6 +396,7 @@ UpdateElementVisibilityWithGivenTraceIDsBase( const QStringList& iList,
     ImageViewMember f;
 
     QStringList::const_iterator constIterator = iList.begin();
+    bool visible;
 
     while( constIterator != iList.end() )
       {
@@ -349,17 +404,19 @@ UpdateElementVisibilityWithGivenTraceIDsBase( const QStringList& iList,
 
       if ( it != m_Container.get< TraceID >().end() )
         {
-        // if ( it->TCoord != m_TCoord )
+        if ( iCheck == Qt::Unchecked )
           {
-          if ( iCheck )
-            {
-            f = &QGoImageView3D::RemoveActor;
-            }
-          else
-            {
-            f = &QGoImageView3D::AddActor;
-            }
+          f = &QGoImageView3D::RemoveActor;
+          visible = false;
+          }
+        else
+          {
+          f = &QGoImageView3D::AddActor;
+          visible = true;
+          }
 
+        if( m_ImageView )
+          {
           if ( it->ActorXY )
             {
             ( m_ImageView->*f )(0, it->ActorXY);
@@ -378,17 +435,20 @@ UpdateElementVisibilityWithGivenTraceIDsBase( const QStringList& iList,
             }
           }
 
-        it->SetActorVisibility( iCheck );
+        it->SetActorVisibility( visible );
 
         MultiIndexContainerElementType tempStructure(*it);
-        tempStructure.Visible = iCheck;
+        tempStructure.Visible = visible;
 
         m_Container.get< TraceID >().replace(it, tempStructure);
         }
 
       ++constIterator;
       }
-    m_ImageView->UpdateRenderWindows();
+    if( m_ImageView )
+      {
+      m_ImageView->UpdateRenderWindows();
+      }
     }
 }
 //-------------------------------------------------------------------------
@@ -480,21 +540,24 @@ UpdateElementVisibilityWithGivenTraceID(const unsigned int & iId)
       f = &QGoImageView3D::AddActor;
       }
 
-    if ( it->ActorXY )
+    if( m_ImageView )
       {
-      ( m_ImageView->*f )(0, it->ActorXY);
-      }
-    if ( it->ActorXZ )
-      {
-      ( m_ImageView->*f )(1, it->ActorXZ);
-      }
-    if ( it->ActorYZ )
-      {
-      ( m_ImageView->*f )(2, it->ActorYZ);
-      }
-    if ( it->ActorXYZ )
-      {
-      ( m_ImageView->*f )(3, it->ActorXYZ);
+      if ( it->ActorXY )
+        {
+        ( m_ImageView->*f )(0, it->ActorXY);
+        }
+      if ( it->ActorXZ )
+        {
+        ( m_ImageView->*f )(1, it->ActorXZ);
+        }
+      if ( it->ActorYZ )
+        {
+        ( m_ImageView->*f )(2, it->ActorYZ);
+        }
+      if ( it->ActorXYZ )
+        {
+        ( m_ImageView->*f )(3, it->ActorXYZ);
+        }
       }
 
     it->SetActorVisibility( !it->Visible );
@@ -504,7 +567,10 @@ UpdateElementVisibilityWithGivenTraceID(const unsigned int & iId)
 
     m_Container.get< TraceID >().replace(it, tempStructure);
 
-    m_ImageView->UpdateRenderWindows();
+    if( m_ImageView )
+      {
+      m_ImageView->UpdateRenderWindows();
+      }
     return true;
     }
 
@@ -612,7 +678,10 @@ SetColorCode( const std::string& iColumnName,
 
   SetScalarRangeForAllElements( min_value, max_value );
 
-  this->m_ImageView->UpdateRenderWindows();
+  if( m_ImageView )
+    {
+    this->m_ImageView->UpdateRenderWindows();
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -672,7 +741,10 @@ SetRandomColor( const std::string& iColumnName,
   this->SetLookupTableForColorCoding(
       vtkLookupTableManager::GetRandomLookupTable() );
 
-  this->m_ImageView->UpdateRenderWindows();
+  if( m_ImageView )
+    {
+    this->m_ImageView->UpdateRenderWindows();
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -688,7 +760,10 @@ RenderAllElementsWithOriginalColors()
     t_it->RenderWithOriginalColors();
     ++t_it;
     }
-  this->m_ImageView->UpdateRenderWindows();
+  if( m_ImageView )
+    {
+    this->m_ImageView->UpdateRenderWindows();
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -723,7 +798,10 @@ SetLookupTableForColorCoding( vtkLookupTable* iLut )
       it->SetLookupTable( iLut );
       ++it;
       }
-    this->m_ImageView->UpdateRenderWindows();
+    if( m_ImageView )
+      {
+      this->m_ImageView->UpdateRenderWindows();
+      }
     }
 }
 //-------------------------------------------------------------------------
@@ -838,7 +916,10 @@ SetRandomColor( const std::string& iColumnName,
 
   SetScalarRangeForAllElements( min_value, max_value );
 
-  this->m_ImageView->UpdateRenderWindows();
+  if( m_ImageView )
+    {
+    this->m_ImageView->UpdateRenderWindows();
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -883,5 +964,28 @@ SetIntersectionLineWidth( const float& iWidth )
   m_IntersectionLineWidth = iWidth;
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+template< class TContainer >
+unsigned int
+TraceContainerBase< TContainer >::
+GetCollectionIDOfGivenTraceID( unsigned int iTraceID)
+{
+  using boost::multi_index::get;
+  MultiIndexContainerTraceIDIterator
+      it0 = m_Container.get< TraceID >().find( iTraceID );
+
+  if( it0 != m_Container.get< TraceID >().end() )
+    {
+    return it0->CollectionID;
+    }
+  else
+    {
+    std::cout << "booo" <<std::endl;
+    return std::numeric_limits< unsigned int >::max();
+    }
+}
+//-------------------------------------------------------------------------
+
 
 #endif

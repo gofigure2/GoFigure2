@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -38,7 +38,9 @@ QGoTraceManualEditingDockWidget::QGoTraceManualEditingDockWidget(
 {
   this->m_TraceWidget =
     new QGoTraceManualEditingWidget(this);
-  this->setWindowTitle( tr("Trace settings") );
+  QObject::connect(this->m_TraceWidget, SIGNAL(WindowsTitleToModify(QString) ),
+    this, SLOT(ModifyWindowTitle(QString) ) );
+  this->m_TraceWidget->UpdateTraceAndCollection("contour", "mesh");
   this->setWidget(this->m_TraceWidget);
 }
 
@@ -51,6 +53,10 @@ QGoTraceManualEditingDockWidget::~QGoTraceManualEditingDockWidget()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoTraceManualEditingDockWidget::ModifyWindowTitle(QString iTitle)
+{
+  this->setWindowTitle(iTitle);
+}
 /*void QGoTraceManualEditingDockWidget::ShowAndUpdate(std::string iTraceName,
                                                     std::string iCollectionName)
 {

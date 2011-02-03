@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -786,7 +786,7 @@ std::list<unsigned int> GoDBCollectionOfTraces::GetTimePointWithSeveralTracesFro
 
     TimePoints = GetDoublonValuesFromTwoTables(
       iDatabaseConnector, this->m_TracesName, "coordinate",
-      "TCoord", JoinCondition,this->m_TracesIDName,VectTraceIDs,"TCoord");
+      "TCoord", JoinCondition,this->m_TracesIDName,VectTraceIDs);
     }
   return TimePoints;
 }
@@ -860,6 +860,15 @@ GetTraceIDsBelongingToCollectionID(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+std::list<unsigned int> GoDBCollectionOfTraces::GetTraceIDsBelongingToCollectionID(
+    vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListCollectionIDs)
+{
+  return ListSpecificValuesForOneColumn(iDatabaseConnector, this->m_TracesName,
+    this->m_TracesIDName, this->m_CollectionIDName, iListCollectionIDs);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 std::list<unsigned int> GoDBCollectionOfTraces::
 GetTimePointsForTraceIDs(
     vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTraceIDs)
@@ -869,22 +878,6 @@ GetTimePointsForTraceIDs(
   return GetAllSelectedValuesFromTwoTables(iDatabaseConnector,
     this->m_TracesName, "coordinate","TCoord", JoinCondition,
     this->m_TracesIDName, VectTraceIDs);
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-std::list<unsigned int> GoDBCollectionOfTraces::
-GetTraceIDsWithTimePointSup(vtkMySQLDatabase *iDatabaseConnector,
-  std::list<unsigned int> iListTraceIDs, unsigned int iTimePoint)
-{
-  FieldWithValue JoinCondition = {"CoordIDMin", "CoordID", "="};
-  FieldWithValue AndCondition = 
-    { "TCoord", ConvertToString<unsigned int >(iTimePoint),">"};
-  std::vector<std::string> VectTraceIDs = ListUnsgIntToVectorString(iListTraceIDs);
-  return GetListValuesFromTwoTablesAndCondition(
-    iDatabaseConnector,
-    this->m_TracesName, "coordinate", this->m_TracesIDName,
-    JoinCondition,this->m_TracesIDName, VectTraceIDs, AndCondition);
 }
 //-------------------------------------------------------------------------
 
@@ -902,3 +895,69 @@ GetTraceIDsWithTimePointInf(vtkMySQLDatabase *iDatabaseConnector,
     this->m_TracesName, "coordinate", this->m_TracesIDName,
     JoinCondition,this->m_TracesIDName, VectTraceIDs, AndCondition);
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+/*unsigned int GoDBCollectionOfTraces::GetTimePointMin(
+  vtkMySQLDatabase *iDatabaseConnector, unsigned int iTraceID)
+{
+  FieldWithValue JoinCondition = {"CoordIDMin", "CoordID", "="};
+  std::vector<std::string> TraceID(1);
+  TraceID.at(0) = ConvertToString<unsigned int>(iTraceID);
+  std::list<unsigned int> results = GetAllSelectedValuesFromTwoTables(
+    iDatabaseConnector, this->m_TracesName, "coordinate", "TCoord", JoinCondition,
+  this->m_TracesIDName, TraceID);
+  return results.front();
+  }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+
+unsigned int GoDBCollectionOfTraces::GetTimePointMax(
+  vtkMySQLDatabase *iDatabaseConnector, unsigned int iTraceID)
+{
+  FieldWithValue JoinCondition = {"CoordIDMax", "CoordID", "="};
+  std::vector<std::string> TraceID(1);
+  TraceID.at(0) = ConvertToString<unsigned int>(iTraceID);
+  std::list<unsigned int> results = GetAllSelectedValuesFromTwoTables(
+    iDatabaseConnector, this->m_TracesName, "coordinate", "TCoord", JoinCondition,
+  this->m_TracesIDName, TraceID);
+  return results.front();
+  }*/
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+unsigned int GoDBCollectionOfTraces::GetBoundedBoxTimePoint(
+  vtkMySQLDatabase *iDatabaseConnector, unsigned int iTraceID, bool MinTimePoint)
+{
+  std::string WhichTimePoint = "CoordIDMin";
+  if (!MinTimePoint)
+    WhichTimePoint = "CoordIDMax";
+  FieldWithValue JoinCondition = {WhichTimePoint, "CoordID", "="};
+  std::vector<std::string> TraceID(1);
+  TraceID.at(0) = ConvertToString<unsigned int>(iTraceID);
+  std::list<unsigned int> results = GetAllSelectedValuesFromTwoTables(
+    iDatabaseConnector, this->m_TracesName, "coordinate", "TCoord", JoinCondition,
+  this->m_TracesIDName, TraceID);
+  return results.front();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::vector<std::string> GoDBCollectionOfTraces::
+  GetAttributesForTraces()
+{
+  std::vector<std::string> oTraceAttributes;
+  oTraceAttributes.push_back(this->m_TracesIDName);
+  oTraceAttributes.push_back(this->m_CollectionIDName);
+  oTraceAttributes.push_back("Red");
+  oTraceAttributes.push_back("Green");
+  oTraceAttributes.push_back("Blue");
+  oTraceAttributes.push_back("Alpha");
+  oTraceAttributes.push_back("Points");
+  oTraceAttributes.push_back("TCoord");
+  return oTraceAttributes;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------

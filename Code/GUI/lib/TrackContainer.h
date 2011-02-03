@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -57,6 +57,7 @@
 #include "vtkDoubleArray.h"
 #include "QGoImageView3D.h"
 #include "vtkLookupTableManager.h"
+#include <QString>
 
 namespace boost
 {
@@ -87,6 +88,10 @@ namespace boost
         boost::multi_index::tag< TraceID >,
         BOOST_MULTI_INDEX_MEMBER(TraceStructure, unsigned int, TraceID)
         >,
+      boost::multi_index::ordered_non_unique<
+        boost::multi_index::tag< CollectionID >,
+        BOOST_MULTI_INDEX_MEMBER(TraceStructure, unsigned int, CollectionID)
+      >,
       boost::multi_index::ordered_non_unique<
         boost::multi_index::tag< Highlighted >,
         BOOST_MULTI_INDEX_MEMBER(TraceStructure, bool, Highlighted)
@@ -280,14 +285,6 @@ public:
   void DeleteListFromCurrentElement( const std::list<unsigned int>& iTimeList );
 
   /**
-   * \brief Define the appareance of a track (line/tubes, glyph/no glyph)
-   * \param[in] iGlyph Do we want to see glyph(true)/no glyph(false)
-   * \param[in] iTube Do we want to see a tube(true)/polyline(false)
-   */
-  void UpdateTracksReprensentation( bool iGlyph, bool iTube );
-
-
-  /**
    * \brief Delete a list of tracks.
    * \param[in] iPointsToBeDeleted a list containing pairs.
    * Each pair is composed by a track ID and a list of the time points to be
@@ -382,6 +379,13 @@ public:
 
   void MergeTrack( const unsigned int& iId1, const unsigned int& iId2 );
 
+  std::map< unsigned int, std::pair< const double* , vtkPolyData*> >
+  GetHighlightedElementsTrackPolyData();
+
+  void setTimeInterval( int iTimeInterval);
+
+  int getTimeInterval();
+
 signals:
   /** \brief When one track has been picked (highlighted) from the visualization */
   void TracePicked(unsigned int, Qt::CheckState);
@@ -412,8 +416,14 @@ public slots:
   void UpdateElementVisibilityWithGivenTraceIDs( const QStringList& iList,
                                                  const Qt::CheckState& iCheck );
 
-protected:
+  /** \brief Color code the track by time.
+    \param[in] iColorCode Display Time Color Code (true) or Real Color (false)
+   */
+  void ChangeColorCode( const char* iColorCode);
 
+  void UpdateTracksRepresentation( double iRadius,double iRadius2);
+
+protected:
   /**
     \brief Recompute a polydata from a list of point (coordinates) for the
     current element. If the current element is a new track, then the polydata,
@@ -424,7 +434,18 @@ protected:
 
   std::vector< vtkActor* > AddTrace( vtkPolyData* , vtkProperty* );
 
+  /** \brief Changes the scalars to be displayed and return the new range
+   * \param[in] iArrayName Array to be displayed
+   * \return Pointer to double[2] where [0] is the min scalar value and [1] is
+   * the max scalar value. Pointer has to be deleted (delete[] pointer) */
+  double* setNodeScalars(const char *iArrayName);
+
+  void ComputeSpeed();
+
 private:
+  int m_TimeInterval;
+  QString m_ActiveScalars;
+
   Q_DISABLE_COPY(TrackContainer);
 };
 

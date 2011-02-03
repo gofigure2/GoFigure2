@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>228</width>
+    <width>167</width>
     <height>177</height>
    </rect>
   </property>
@@ -16,13 +16,19 @@
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
     <widget class="QLabel" name="label">
+     <property name="toolTip">
+      <string>Minimum intensity of a nuclei</string>
+     </property>
      <property name="text">
-      <string>Treshold Min</string>
+      <string>Thres. Min.</string>
      </property>
     </widget>
    </item>
    <item row="0" column="1">
     <widget class="QSpinBox" name="tresholdMinSpinBox">
+     <property name="toolTip">
+      <string>Minimum intensity of a nuclei</string>
+     </property>
      <property name="value">
       <number>10</number>
      </property>
@@ -30,13 +36,19 @@
    </item>
    <item row="1" column="0">
     <widget class="QLabel" name="label_2">
+     <property name="toolTip">
+      <string>Intensities above the threshold are nuclei</string>
+     </property>
      <property name="text">
-      <string>Treshold Max</string>
+      <string>Thres. Max.</string>
      </property>
     </widget>
    </item>
    <item row="1" column="1">
     <widget class="QSpinBox" name="tresholdMaxSpinBox">
+     <property name="toolTip">
+      <string>Intensities above the threshold are nuclei</string>
+     </property>
      <property name="minimum">
       <number>0</number>
      </property>
@@ -47,13 +59,19 @@
    </item>
    <item row="2" column="0">
     <widget class="QLabel" name="label_3">
+     <property name="toolTip">
+      <string>Similarity between the shape of the nuclei and a gaussian profile</string>
+     </property>
      <property name="text">
-      <string>Correlation Treshold</string>
+      <string>Corr. Thres.</string>
      </property>
     </widget>
    </item>
    <item row="2" column="1">
     <widget class="QDoubleSpinBox" name="correlationDoubleSpinBox">
+     <property name="toolTip">
+      <string>Similarity between the shape of the nuclei and a gaussian profile</string>
+     </property>
      <property name="singleStep">
       <double>0.010000000000000</double>
      </property>
@@ -64,6 +82,9 @@
    </item>
    <item row="3" column="0">
     <widget class="QLabel" name="label_4">
+     <property name="toolTip">
+      <string>Weight of the gradient</string>
+     </property>
      <property name="text">
       <string>Alpha</string>
      </property>
@@ -71,6 +92,9 @@
    </item>
    <item row="3" column="1">
     <widget class="QDoubleSpinBox" name="alphaDoubleSpinBox">
+     <property name="toolTip">
+      <string>Weight of the gradient</string>
+     </property>
      <property name="singleStep">
       <double>0.100000000000000</double>
      </property>

@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -44,7 +44,7 @@ QGoMeshSegmentationBaseDockWidget::QGoMeshSegmentationBaseDockWidget(QWidget *iP
 {
   this->setupUi(this);
 
-  this->setWindowTitle( QString::fromUtf8("Mesh Segmentation") );
+  this->setWindowTitle( QString::fromUtf8("Mesh Editing") );
 
   QIcon MeshSegmentationIcon;
   //MeshSegmentationIcon.addPixmap(QPixmap(QString::fromUtf8(":/fig/meshOneClick.png")),
@@ -53,7 +53,7 @@ QGoMeshSegmentationBaseDockWidget::QGoMeshSegmentationBaseDockWidget(QWidget *iP
                                  QIcon::Normal, QIcon::Off);
 
   this->toggleViewAction()->setIcon(MeshSegmentationIcon);
-  this->toggleViewAction()->setToolTip( tr("Mesh Segmentation") );
+  this->toggleViewAction()->setToolTip( tr("Mesh Editing") );
   this->toggleViewAction()->setStatusTip( tr("Create meshes manually, semi-automatically or automatically") );
 
   // update interactor behavior
@@ -126,6 +126,7 @@ QGoMeshSegmentationBaseDockWidget::QGoMeshSegmentationBaseDockWidget(QWidget *iP
 
   // set default segmentation as semi auto segmentation
   this->mode->setCurrentIndex(1);
+  gridLayout->setSizeConstraint(QLayout::SetFixedSize);
 }
 
 //---------------------------------------------------------------------------//

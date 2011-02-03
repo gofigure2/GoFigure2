@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -513,6 +513,7 @@ QGoMainWindow::LoadTracksFromDatabase( const int & iT )
   if ( w3t )
     {
     TrackContainer *temp = w3t->GetTrackContainer();
+    temp->setTimeInterval( w3t->GetTimeInterval() );
 
     if ( temp )
       {
@@ -520,10 +521,18 @@ QGoMainWindow::LoadTracksFromDatabase( const int & iT )
       TrackContainer::MultiIndexContainerType::index< TraceID >::type::iterator
         track_list_it = temp->m_Container.get< TraceID >().begin();
 
-      // we don't need here to save this contour in the database,
+      // we don't need here to save this track in the database,
       // since they have just been extracted from it!
       while ( track_list_it != temp->m_Container.get< TraceID >().end() )
         {
+        if ( track_list_it->Nodes )
+          {
+          TrackStructure Track = *track_list_it;
+          GoFigureTrackAttributes attributes = Track.ComputeAttributes();
+            //track_list_it->ComputeAttributes();
+          w3t->m_DataBaseTables->PrintCalculatedValuesForTrack(&attributes, 
+            track_list_it->TraceID);
+          }
         w3t->AddTrackFromNodes< TraceID >(track_list_it);
         ++track_list_it;
         }
@@ -922,6 +931,13 @@ void QGoMainWindow::SetUpDatabase()
 {
   this->m_DBInitializationWizard->show();
   this->m_DBInitializationWizard->exec();
+  if (!this->m_RecentDatabaseFiles.empty())
+    {
+	this->m_RecentDatabaseFiles.clear();
+	UpdateRecentFileActions(this->m_RecentDatabaseFiles,
+                            menuDatabase_Files,
+                            recentDatabaseFileActions);
+    }
 }
 
 //--------------------------------------------------------------------------

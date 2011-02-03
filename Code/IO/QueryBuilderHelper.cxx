@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -63,63 +63,6 @@ std::string SelectGeneralQuery(std::string iWhat, std::string iWhere,std::string
     querystream << iOrderByQuery;
     }
   return querystream.str();
-}
-//------------------------------------------------------------------------------
-
-//------------------------------------------------------------------------------
-std::string GetFirstPartQueryForTracesInfo(std::string iTraceName,std::string iCollectionName)
-{
-  std::stringstream Querystream;
-  Querystream << "SELECT ";
-  Querystream << iTraceName;
-  Querystream << ".";
-  Querystream << iTraceName;
-  Querystream << "ID, ";
-  Querystream << iTraceName;
-  Querystream << ".";
-  Querystream << iCollectionName;
-  Querystream << "ID, ";
-  Querystream << iTraceName;
-  Querystream << ".Points, coordinate.TCoord, color.Red,\
-                 color.Green, color.Blue, color.Alpha from (";
-  Querystream << iTraceName;
-  Querystream << " left join coordinate on coordinate.CoordID = ";
-  Querystream << iTraceName;
-  Querystream << ".coordIDMax) left join color on ";
-  Querystream << iTraceName;
-
-  Querystream << ".colorID = color.colorID  where ";
-  return Querystream.str().c_str();
-}
-//------------------------------------------------------------------------------
-
-//------------------------------------------------------------------------------
-std::string GetSecondPartQueryForTracesInfo(std::string TraceName,
-                                            std::vector<int> iVectIDs)
-{
-  std::stringstream Querystream;
-  unsigned int i;
-  if (iVectIDs.size()>1)
-    {
-    Querystream << "(";
-    }
-  for ( i = 0; i < iVectIDs.size() - 1; i++ )
-    {
-    Querystream << TraceName;
-    Querystream << "ID = '";
-    Querystream << iVectIDs[i];
-    Querystream << "' OR ";
-    }
-  Querystream << TraceName;
-  Querystream << "ID = '";
-  Querystream << iVectIDs[i];
-  if (iVectIDs.size()>1)
-    {
-    Querystream << "')";
-    }
-  else
-    Querystream << "'";
-return Querystream.str().c_str();
 }
 //------------------------------------------------------------------------------
 
@@ -298,9 +241,9 @@ std::string GetConditions(std::string iField, std::string iValue,std::string iCo
   Condition[0] = Field;
   return GetConditions(Condition);
 }
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 std::string GetSelectedAttributes(std::vector<std::string> iListAttributes)
 {
   std::stringstream oQueryStream;
@@ -385,6 +328,21 @@ std::string GetLeftJoinTwoTables(std::string iTableOne,std::string iTableTwo,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+std::string GetLeftJoinThreeTables(std::string iTable,std::string iTableTwo,
+  std::string iTableThree, FieldWithValue iOnConditionOne, 
+  FieldWithValue iOnConditionTwo)
+{
+  std::stringstream oQueryStream;
+  oQueryStream << "(";
+  oQueryStream << GetLeftJoinTwoTables(iTable, iTableTwo,iOnConditionOne);
+  oQueryStream << ")";
+  std::string LeftJoinTwo =  GetLeftJoinTwoTables(iTable,iTableThree,iOnConditionTwo);
+  oQueryStream << LeftJoinTwo.substr(iTable.size()+1,LeftJoinTwo.size() );
+  return oQueryStream.str();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 std::string GetGroupBy(std::string iColumn,unsigned int iNumberDoublons)
 {
   std::stringstream oQueryStream;
@@ -397,65 +355,25 @@ std::string GetGroupBy(std::string iColumn,unsigned int iNumberDoublons)
     oQueryStream << ") > ";
     oQueryStream << iNumberDoublons;
     }
-
   return oQueryStream.str();
 }
-/*std::string SelectWithJoinNullIncluded(std::string iSelectQuery,
-                                       std::string iJoinOn,
-                                       bool doublon)
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::string SelectForTracesInfo(std::vector<std::string> iSelectedAttributes,
+  std::string iTableOne, std::string iTableTwo, std::string iTableThree,
+  FieldWithValue iJoinConditionOne, FieldWithValue iJoinConditionTwo, std::string iFieldOne,
+  unsigned int iValueFieldOne, std::string iIDFieldName, 
+  std::list< unsigned int > iListIDs)
 {
-  std::stringstream QueryStream;
-
-  QueryStream << iSelectQuery;
-  QueryStream << " UNION ";
-  if (doublon)
-    {
-    QueryStream << " ALL ";
-    }
-  //QueryStream << iSelectQuery;
-  size_t            posWhere = iSelectQuery.find("WHERE", 0);
-  std::stringstream SecondPart;
-  if ( posWhere != std::string::npos )
-    {
-    size_t posCloseBracket = iSelectQuery.find(")", iSelectQuery.size() - 1);
-      {
-      //if an end bracket is found, remove it:
-      if ( posCloseBracket != std::string::npos )
-        {
-        SecondPart << iSelectQuery.substr(0, posCloseBracket - 1);
-        }
-      //if an end bracket is not found, add an opening bracket after where:
-      else
-        {
-        SecondPart << iSelectQuery.substr(0, posWhere + 6);
-        SecondPart << "(";
-        size_t BegEndQuery = posWhere + 6;
-        size_t Length = iSelectQuery.size() - BegEndQuery;
-        SecondPart << iSelectQuery.substr(posWhere + 6, Length);
-        }
-      }
-    }
-  else
-    {
-    SecondPart << iSelectQuery;
-    SecondPart << "WHERE ";
-    }
-  QueryStream << SecondPart.str();
-  QueryStream << " AND ";
-  QueryStream << iJoinOn;
-  QueryStream << " IS NULL";
-  if ( posWhere != std::string::npos )
-    {
-    QueryStream << ");";
-    }
-  else
-    {
-    QueryStream << ";";
-    }
-
-  return QueryStream.str();
-}*/
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
+  std::vector< unsigned int > VectIDs(iListIDs.begin(), iListIDs.end() );
+  std::string What = GetSelectedAttributes(iSelectedAttributes);
+  std::string Where = GetLeftJoinThreeTables(iTableOne, iTableTwo,
+    iTableThree, iJoinConditionOne, iJoinConditionTwo);
+  FieldWithValue FirstPartCondition = {iFieldOne, 
+    ConvertToString< unsigned int> (iValueFieldOne), "="};
+  std::string Conditions = GetAndORConditions<unsigned int>(FirstPartCondition, iIDFieldName,
+    VectIDs);
+  std::string QueryString = SelectQueryStreamCondition(Where, What, Conditions);                                    
+  return QueryString;
+}

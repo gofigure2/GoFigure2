@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -119,7 +119,7 @@ public:
   virtual void UpdateTWAndContainerForImportedTraces(std::vector< int > iVectorImportedTraces,
                                                      vtkMySQLDatabase *iDatabaseConnector);
   //virtual pure method in QGoDBTraceManager
-  virtual void DeleteTraces(vtkMySQLDatabase *iDatabaseConnector);
+  virtual void DeleteCheckedTraces(vtkMySQLDatabase *iDatabaseConnector);
 
    //virtual pure method in QGoDBTraceManager
   virtual std::list< unsigned int > GetListHighlightedIDs();
@@ -135,6 +135,18 @@ public:
   \param[in] iSubCellType name of the subcelltype
   */
   void SetSelectedSubCellType(std::string* iSubCellType);
+
+  /**
+  \brief get the info needed from the database for the meshes who belongs
+  to the collectionIDs contained in iListCollectionIDs and create a new 
+  container for visu for these meshes
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iListCollectionIDs list of collectionIDs of the meshes needed
+  \return a container for meshes for the visu
+  */
+  MeshContainer* GetMeshesInfoFromDBAndCreateContainerForVisu(
+    vtkMySQLDatabase* iDatabaseConnector,
+    std::list< unsigned int > iListCollectionIDs);
 
 public slots:
   /**
@@ -178,7 +190,7 @@ public slots:
   */
   QString CheckExistingMeshesForTheTrack(
    unsigned int iTrackID,vtkMySQLDatabase* iDatabaseConnector,
-   std::list<unsigned int> iListMeshIDs);
+   std::list<unsigned int> & ioListMeshIDs);
 
   /**
   \brief check if in the iListMeshIDs, several have the same timepoint, if so,
@@ -199,18 +211,17 @@ public slots:
     std::list<unsigned int> & ioListMeshIDsToReassign);
 
   /**
-  \brief for the track, get the list of its meshes with a timepoint 
-  inferior than the selected mesh as first and a list of meshes 
-  with a timepoint superior than the selected mesh and the 
-  selected mesh as second
+  \brief for the track, get the list of its meshes 
+  with a timepoint inferior than the checked mesh
   \param[in] iTrackID ID of the track
   \param[in] iDatabaseConnector connection to the database
   \param[in] iListMeshesBelongingToTrack list of the meshes
   belonging to this track
+  \return list of the meshes with a timepoint inferior than 
+  the checked mesh
   */
-  std::pair<std::list<unsigned int>,std::list<unsigned int> > 
-    GetMeshesForSplittedTrack(unsigned int iTrackID, 
-    vtkMySQLDatabase* iDatabaseConnector, 
+  std::list<unsigned int> GetMeshesWithTimePointInfToTheCheckedOne(
+    unsigned int iTrackID, vtkMySQLDatabase* iDatabaseConnector,
     std::list<unsigned int> iListMeshesBelongingToTrack);
 
 protected:
@@ -242,7 +253,8 @@ protected:
                                    int iShift = 0);
   //virtual pure method in QGoDBTraceManager
   virtual void GetTracesInfoFromDBAndModifyContainerForVisu(
-    vtkMySQLDatabase* iDatabaseConnector,std::vector<int> iVectIDs = std::vector< int >());
+    vtkMySQLDatabase* iDatabaseConnector,
+    std::list<unsigned int> iVectIDs = std::list< unsigned int >());
 
   /**
   \brief check that there is one and only one mesh checked belonging to 

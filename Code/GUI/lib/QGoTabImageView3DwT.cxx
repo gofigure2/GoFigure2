@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -105,6 +105,9 @@
 // track dockwidget
 #include "QGoTrackDockWidget.h"
 
+//trackediting dw
+#include "QGoTrackEditingWidget.h"
+
 // TESTS
 #include "vtkPolyDataWriter.h"
 #include "vtkViewImage3D.h"
@@ -172,10 +175,14 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent):
   m_TrackDockWidget = new QGoTrackDockWidget(this);
 
   QObject::connect( m_TrackDockWidget,
-                    SIGNAL( UpdateTracksAppearance(bool, bool) ),
-                    this,
-                    SLOT( UpdateTracksAppearance(bool, bool) ) );
+                    SIGNAL( ChangeColorCode(const char*) ),
+                    m_TrackContainer,
+                    SLOT( ChangeColorCode(const char*) ) );
 
+  QObject::connect( m_TrackDockWidget,
+                    SIGNAL( UpdateTracksRepresentation(double, double) ),
+                    m_TrackContainer,
+                    SLOT( UpdateTracksRepresentation(double, double) ) );
 
   CreateDataBaseTablesConnection();
 
@@ -196,7 +203,7 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent):
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
       new QGoDockWidgetStatus(
-        m_NavigationDockWidget, Qt::RightDockWidgetArea, true, true),
+        m_NavigationDockWidget, Qt::RightDockWidgetArea, false, true),
       m_NavigationDockWidget) );
 
   m_DockWidgetList.push_back(
@@ -220,13 +227,13 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent):
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
       new QGoDockWidgetStatus(this->m_TrackDockWidget,
-                              Qt::LeftDockWidgetArea, true, true),
+                              Qt::LeftDockWidgetArea, false, true),
       this->m_TrackDockWidget ) );
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
-      new QGoDockWidgetStatus(m_VideoRecorderWidget, Qt::LeftDockWidgetArea, true, true),
+      new QGoDockWidgetStatus(m_VideoRecorderWidget, Qt::LeftDockWidgetArea, false, true),
       m_VideoRecorderWidget) );
 #endif
 }
@@ -964,20 +971,8 @@ QGoTabImageView3DwT::CreateAllViewActions()
   separator8->setSeparator(true);
   this->m_ViewActions.push_back(separator8);
 
-  // Enable volume rendering
-  QAction *TrackAction =
-    new QAction(tr("Change tracks appearance"), this);
-  TrackAction->setCheckable(true);
-  TrackAction->setChecked(true);
-  this->m_ViewActions.push_back(TrackAction);
-
-  QIcon trackicon;
-  trackicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/BlankIcon.png") ),
-                                QIcon::Normal, QIcon::Off);
-  TrackAction->setIcon(trackicon);
-
-  QObject::connect( TrackAction, SIGNAL( toggled(bool) ),
-                    this->m_TrackDockWidget, SLOT( setVisible(bool) ) );
+  // Track Color Coding
+  this->m_ViewActions.push_back( m_TrackDockWidget->toggleViewAction() );
 }
 
 //-------------------------------------------------------------------------
@@ -1384,6 +1379,7 @@ QGoTabImageView3DwT::TakeSnapshot()
   int FullScreenView = m_ImageView->GetFullScreenView();
 
   QString filename = QDir::toNativeSeparators( QDir::homePath() );
+  filename.append( QString("%1").arg("/") );
 
   switch ( FullScreenView )
     {
@@ -2242,7 +2238,7 @@ QGoTabImageView3DwT::ShowOneChannel(int iChannel)
 void
 QGoTabImageView3DwT::ModeChanged(int iChannel)
 {
-  std::cout << "channel: " << iChannel << std::endl;
+  //std::cout << "channel: " << iChannel << std::endl;
 
   if(iChannel == 1)
     {
@@ -2615,6 +2611,14 @@ int QGoTabImageView3DwT::GetSliceViewYZ() const
 int QGoTabImageView3DwT::GetTimePoint() const
 {
   return m_TCoord;
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int QGoTabImageView3DwT::GetTimeInterval() const
+{
+  return static_cast<int>( m_MegaCaptureReader->GetTimeInterval() );
 }
 
 //-------------------------------------------------------------------------
@@ -3010,7 +3014,7 @@ QGoTabImageView3DwT::CreateMeshFromSelectedContours(
   std::vector< vtkPolyData * > list_contours;
 
   // get the time point
-  int tcoord = this->m_TCoord;
+  unsigned int tcoord = std::numeric_limits< unsigned int >::max();
 
   while ( contourid_it != iListContourIDs.end() )
     {
@@ -3019,7 +3023,20 @@ QGoTabImageView3DwT::CreateMeshFromSelectedContours(
 
     if ( traceid_it != m_ContourContainer->m_Container.get< TraceID >().end() )
       {
-      tcoord = traceid_it->TCoord;
+      if( tcoord == std::numeric_limits< unsigned int >::max() )
+        {
+        tcoord = traceid_it->TCoord;
+        }
+      else
+        {
+        if( traceid_it->TCoord != tcoord )
+          {
+          QMessageBox::warning( NULL,
+            tr( "Generate Mesh From Checked Contours" ),
+            tr("Selected contours are at different time point: %1 != %2").arg( tcoord ).arg( traceid_it->TCoord ) );
+          return;
+          }
+        }
 
       list_contours.push_back(
         vtkPolyData::SafeDownCast(
@@ -3099,11 +3116,4 @@ QGoTabImageView3DwT::GoToLocation(int iX, int iY, int iZ, int iT)
   this->SetSliceViewXZ(iY);
   this->SetSliceViewYZ(iX);
 }
-
 //-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
-UpdateTracksAppearance(bool iGlyph, bool iTube)
-{
-  m_TrackContainer->UpdateTracksReprensentation( iGlyph, iTube );
-}

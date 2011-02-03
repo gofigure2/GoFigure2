@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -89,6 +89,10 @@ namespace boost
         boost::multi_index::ordered_unique<
           boost::multi_index::tag< TraceID >,
           BOOST_MULTI_INDEX_MEMBER(TraceStructure, unsigned int, TraceID)
+          >,
+        boost::multi_index::ordered_non_unique<
+          boost::multi_index::tag< CollectionID >,
+          BOOST_MULTI_INDEX_MEMBER(TraceStructure, unsigned int, CollectionID)
           >,
         boost::multi_index::ordered_non_unique<
           boost::multi_index::tag< Highlighted >,
@@ -410,21 +414,24 @@ public:
         {
         it->SetActorVisibility( iVisibility );
 
-        if ( it->ActorXY )
+        if( m_ImageView )
           {
-          ( m_ImageView->*f )(0, it->ActorXY);
-          }
-        if ( it->ActorXZ )
-          {
-          ( m_ImageView->*f )(1, it->ActorXZ);
-          }
-        if ( it->ActorYZ )
-          {
-          ( m_ImageView->*f )(2, it->ActorYZ);
-          }
-        if ( it->ActorXYZ )
-          {
-          ( m_ImageView->*f )(3, it->ActorXYZ);
+          if ( it->ActorXY )
+            {
+            ( m_ImageView->*f )(0, it->ActorXY);
+            }
+          if ( it->ActorXZ )
+            {
+            ( m_ImageView->*f )(1, it->ActorXZ);
+            }
+          if ( it->ActorYZ )
+            {
+            ( m_ImageView->*f )(2, it->ActorYZ);
+            }
+          if ( it->ActorXYZ )
+            {
+            ( m_ImageView->*f )(3, it->ActorXYZ);
+            }
           }
 
         MultiIndexContainerElementType tempStructure(*it);

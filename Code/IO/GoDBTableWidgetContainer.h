@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -71,12 +71,12 @@ public:
   TWContainerType;
 
   /** 
-  \brief Return a list with all the ColumnNames to be displayed in the
+  \brief Return a list with all the ColumnNames and tooltips to be displayed in the
   tableWidget
-  \return a list with all the ColumnNames to be displayed in the
+  \return a list with all the ColumnNames and tooltips to be displayed in the
   tableWidget
   */
-  std::list< std::string > GetListColumnsNamesForTableWidget();
+  std::list< std::pair<std::string, std::string> > GetListColumnsNamesAndToolTipsForTableWidget();
 
   /** 
   \brief Return a list with all the ColumnNames for computed values displayed in the
