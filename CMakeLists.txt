@@ -390,16 +390,17 @@ IF( VTK_FOUND )
       OPTION( TESTING_USING_SIKULI "Use Sikuli for testing" OFF )
       MARK_AS_ADVANCED( TESTING_USING_SIKULI )
 
-      IF( TESTING_USING_SIKULI )
-        FIND_PACKAGE( Sikuli )
-        ADD_SUBDIRECTORY( Testing )
-      ENDIF( TESTING_USING_SIKULI )
-
       CONFIGURE_FILE( CMake/CTestCustom.cmake.in
         ${CMAKE_CURRENT_BINARY_DIR}/CTestCustom.cmake
         @ONLY
         )
       INCLUDE ( CTest )
+
+      IF( TESTING_USING_SIKULI )
+        FIND_PACKAGE( Sikuli )
+        ADD_SUBDIRECTORY( Testing )
+      ENDIF( TESTING_USING_SIKULI )
+
     ENDIF( BUILD_TESTING )
 
     IF( BUILD_EXAMPLES )
