@@ -6,14 +6,14 @@
 # Get and build itk
 
 # Sanity checks
-if(DEFINED ITK_DIR AND NOT EXISTS ${ITK_DIR})
-  message(FATAL_ERROR
-    "ITK_DIR variable is defined but corresponds to non-existing directory")
-endif()
+#if(DEFINED ITK_DIR AND NOT EXISTS ${ITK_DIR})
+#  message(FATAL_ERROR
+#    "ITK_DIR variable is defined but corresponds to non-existing directory")
+#endif()
 
 set(proj ITK)
 
-if(NOT DEFINED ITK_DIR OR NOT DEFINED ITK_SOURCE_DIR)
+#if(NOT DEFINED ITK_DIR OR NOT DEFINED ITK_SOURCE_DIR)
 #  message(STATUS "Adding project:${proj}")
   ExternalProject_Add(${proj}
     GIT_REPOSITORY "${git_protocol}://itk.org/ITK.git"
@@ -36,9 +36,9 @@ if(NOT DEFINED ITK_DIR OR NOT DEFINED ITK_SOURCE_DIR)
     )
   set(ITK_DIR ${CMAKE_BINARY_DIR}/${proj}-build)
 
-else()
+#else()
   # The project is provided using ITK_DIR,
   # nevertheless since other project may depend on ITK,
   # let's add an 'empty' one
-  GoFigure2MacroEmptyExternalProject(${proj} "${ITK_DEPENDENCIES}")
-endif()
+#  GoFigure2MacroEmptyExternalProject(${proj} "${ITK_DEPENDENCIES}")
+#endif()

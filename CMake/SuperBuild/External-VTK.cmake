@@ -7,17 +7,17 @@
 #
 
 # Sanity checks
-if(DEFINED VTK_DIR AND NOT EXISTS ${VTK_DIR})
-  message(FATAL_ERROR "VTK_DIR variable is defined but corresponds to non-existing directory")
-endif()
+#if(DEFINED VTK_DIR AND NOT EXISTS ${VTK_DIR})
+#  message(FATAL_ERROR "VTK_DIR variable is defined but corresponds to non-existing directory")
+#endif()
 
-if(DEFINED VTK_SOURCE_DIR AND NOT EXISTS ${VTK_SOURCE_DIR})
-  message(FATAL_ERROR "VTK_SOURCE_DIR variable is defined but corresponds to non-existing directory")
-endif()
+#if(DEFINED VTK_SOURCE_DIR AND NOT EXISTS ${VTK_SOURCE_DIR})
+#  message(FATAL_ERROR "VTK_SOURCE_DIR variable is defined but corresponds to non-existing directory")
+#endif()
 
 set(proj VTK)
 
-if(NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR)
+#if(NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR)
 
   set(VTK_QT_ARGS)
   if(NOT APPLE)
@@ -75,8 +75,8 @@ if(NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR)
   set(VTK_DIR ${CMAKE_BINARY_DIR}/${proj}-build)
   set(VTK_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj})
 
-else()
+#else()
   # The project is provided using VTK_DIR and VTK_SOURCE_DIR, nevertheless since other
   # project may depend on VTK, let's add an 'empty' one
-  GoFigure2MacroEmptyExternalProject(${proj} "${VTK_DEPENDENCIES}")
-endif()
+#  GoFigure2MacroEmptyExternalProject(${proj} "${VTK_DEPENDENCIES}")
+#endif()

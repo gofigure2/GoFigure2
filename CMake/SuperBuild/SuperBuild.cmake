@@ -19,9 +19,7 @@ endif()
 
 FIND_PACKAGE(Qt4)
 IF(QT_FOUND)
-  IF("${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}" VERSION_LESS "${minimum_required_qt_version}")
-    MESSAGE(FATAL_ERROR "error: GoFigure2 requires Qt >= ${minimum_required_qt_version} -- you cannot use Qt ${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}.")
-  ENDIF()
+  INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigQT.cmake" )
 ELSE()
   MESSAGE(FATAL_ERROR "error: Qt4 was not found on your system. You probably need to set the QT_QMAKE_EXECUTABLE variable")
 ENDIF()
@@ -53,21 +51,13 @@ else()
 endif()
 
 #---------------------------------------------------------------------------
-# Establish Target Dependencies based on Selected Options
-#---------------------------------------------------------------------------
-
-set(ITK_DEPENDENCIES)
-set(VTK_DEPENDENCIES)
-
-set(GoFigure2_DEPENDENCIES ITK VTK)
-
-#---------------------------------------------------------------------------
 # Conditionnaly include ExternalProject Target
 #---------------------------------------------------------------------------
 
-
 include("${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/External-ITK.cmake")
 include("${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/External-VTK.cmake")
+
+set(GoFigure2_DEPENDENCIES ITK VTK)
 
 #---------------------------------------------------------------------------
 # Set superbuild boolean args
@@ -84,6 +74,7 @@ SET(GoFigure2_cmake_boolean_args
 SET(GoFigure2_superbuild_boolean_args)
 FOREACH(GoFigure2_cmake_arg ${GoFigure2_cmake_boolean_args})
   LIST(APPEND GoFigure2_superbuild_boolean_args -D${GoFigure2_cmake_arg}:BOOL=${${GoFigure2_cmake_arg}})
+  MESSAGE("BOOL ARG:" ${GoFigure2_cmake_arg} ${${GoFigure2_cmake_arg}} )
 ENDFOREACH()
 
 # MESSAGE("CMake args:")
