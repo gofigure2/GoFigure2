@@ -183,8 +183,9 @@ public:
   put them in the map
   \param[in] ID ID for which the data are needed
   \param[in] iDatabaseConnector connection to the database
+  \return false if the ID hasn't been found in the database
   */
-  virtual void SetValuesForSpecificID(int ID, vtkMySQLDatabase *iDatabaseConnector);
+  virtual bool SetValuesForSpecificID(int ID, vtkMySQLDatabase *iDatabaseConnector);
 
 protected:
 

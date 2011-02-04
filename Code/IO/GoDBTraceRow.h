@@ -145,12 +145,9 @@ public:
   void SetCollectionID(unsigned int iCollectionID);
 
   /**
-  \brief get the data from the database for a specific ID and fill the GoDBTraceRow
-  with it
-  \param[in] ID ID of the trace the data will be fetched for
-  \param[in] iDatabaseConnector connection to the database
+  \overload
   */
-  void SetValuesForSpecificID(int ID, vtkMySQLDatabase *iDatabaseConnector);
+  bool SetValuesForSpecificID(int ID, vtkMySQLDatabase *iDatabaseConnector);
 
   /**
   \brief save the row in the database if the TraceID is set to "0", update the

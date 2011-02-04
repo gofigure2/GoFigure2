@@ -157,8 +157,8 @@ private:
     while ( iter != iListIDs.end() )
       {
       std::vector< std::pair< std::string, std::string > > EntityInfo =
-        this->GetOneEntityInfoFromDB(*iter, TableRow);
-      this->WriteOnTheOutputFile(TableRow.GetTableName(), EntityInfo);
+        this->GetOneEntityInfoFromDB(*iter, TableRow);     
+      this->WriteOnTheOutputFile(TableRow.GetTableName(), EntityInfo); 
       iter++;
       }
   }
@@ -175,8 +175,10 @@ private:
   std::vector< std::pair< std::string, std::string > >
   GetOneEntityInfoFromDB(std::string iEntityID, T iTableRow)
   {
-    std::vector< std::pair< std::string, std::string > > oEntityInfo;
-    iTableRow.SetValuesForSpecificID(atoi( iEntityID.c_str() ), this->m_DatabaseConnector);
+    std::vector< std::pair< std::string, std::string > > oEntityInfo = 
+      std::vector< std::pair< std::string, std::string > >();
+    iTableRow.SetValuesForSpecificID(atoi( iEntityID.c_str() ), 
+      this->m_DatabaseConnector);
     std::vector< std::string >           FieldNames = iTableRow.GetVectorColumnNames();
     std::vector< std::string >::iterator iter = FieldNames.begin();
     while ( iter != FieldNames.end() )

@@ -220,7 +220,7 @@ std::string GoDBRow::GetMapValue(std::string key)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void GoDBRow::SetValuesForSpecificID(int ID,
+bool GoDBRow::SetValuesForSpecificID(int ID,
                                      vtkMySQLDatabase *iDatabaseConnector)
 {
   std::vector< std::string > ResultQuery =
@@ -228,14 +228,19 @@ void GoDBRow::SetValuesForSpecificID(int ID,
       iDatabaseConnector, this->m_TableName, this->PrintColumnNames(),
       this->m_TableIDName, ConvertToString< int >(ID) );
 
+  if (ResultQuery.empty())
+    {
+    return false;
+    }
+
   if ( this->m_MapRow.size() != ResultQuery.size() )
     {
     std::cout << "pb the map and the query results are not the same size";
     std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
     std::cout << std::endl;
+    return false;
     }
-  else
-    {
+ 
     std::vector< std::string >::iterator iterResultQuery =
       ResultQuery.begin();
 
@@ -247,7 +252,7 @@ void GoDBRow::SetValuesForSpecificID(int ID,
       ++iterMap;
       ++iterResultQuery;
       }
-    }
+   return true;
 }
 
 //-------------------------------------------------------------------------

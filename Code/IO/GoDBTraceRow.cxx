@@ -183,9 +183,13 @@ void GoDBTraceRow::SetImgSessionID(unsigned int iImgSessionID)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void GoDBTraceRow::SetValuesForSpecificID(int ID, vtkMySQLDatabase *iDatabaseConnector)
+bool GoDBTraceRow::SetValuesForSpecificID(int ID, vtkMySQLDatabase *iDatabaseConnector)
 {
-  GoDBRow::SetValuesForSpecificID(ID, iDatabaseConnector);
-  //add the "" for the string
-  this->SetField("Points", this->m_MapRow["Points"]);
+  if (GoDBRow::SetValuesForSpecificID(ID, iDatabaseConnector))
+    {
+    //add the "" for the string
+    this->SetField("Points", this->m_MapRow["Points"]);
+    return true;
+    }
+  return false;
 }
