@@ -450,7 +450,18 @@ std::string* QGoTraceManualEditingWidget::GetPointerSelectedCellType()
  void QGoTraceManualEditingWidget::UpdateValueSelectedCollection(
    ItemColorComboboxData iCollectionData)
 {
-  *this->m_SelectedCollectionData = iCollectionData;
+  std::string CollectionID = iCollectionData.first;
+  if (CollectionID.size() > 9)
+    {
+    if (CollectionID.substr(0,9) == "Add a new")
+      {
+      this->m_SelectedCollectionData->first = "0";
+      }
+    }
+  else
+    {
+    *this->m_SelectedCollectionData = iCollectionData;
+    }
 }
  //-------------------------------------------------------------------------
 
@@ -474,6 +485,7 @@ std::string* QGoTraceManualEditingWidget::GetPointerSelectedCellType()
  void QGoTraceManualEditingWidget::UpdateValueSelectedColor(
    ItemColorComboboxData iColorData)
 {
+
   *this->m_SelectedColorData = iColorData;
 }
 //-------------------------------------------------------------------------

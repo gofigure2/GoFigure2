@@ -187,10 +187,15 @@ unsigned int QGoDBMeshManager::SaveNewMeshFromVisu(
   this->SetMeshBoundingBoxAndPoints(iXCoordMin, iYCoordMin, iZCoordMin,
                                     iXCoordMax, iYCoordMax, iZCoordMax, iTraceNodes, iDatabaseConnector, NewMesh,
                                     iMeshAttributes, iTShift);
+  //unsigned int TrackID = 0;
+  std::string test = this->m_SelectedCollectionData->first; //for test
+  //if (this->m_SelectedCollectionData->first != "Add a new track ...") no need as it will be directly 0
+   // TrackID = ss_atoi<unsigned int>(this->m_SelectedCollectionData->first);
+
   //save the intensities for each channel !!!
   unsigned int NewMeshID = this->m_CollectionOfTraces->CreateNewTraceInDB< GoDBMeshRow >(
-    NewMesh, iDatabaseConnector,*this->m_SelectedColorData,
-    ss_atoi<unsigned int>(this->m_SelectedCollectionData->first) );
+    NewMesh, iDatabaseConnector,*this->m_SelectedColorData, 
+    ss_atoi<unsigned int>(this->m_SelectedCollectionData->first));
 
   double *rgba = this->GetVectorFromQColor(this->m_SelectedColorData->second);
   this->m_MeshContainerInfoForVisu->UpdateCurrentElementFromDB(
@@ -243,16 +248,19 @@ unsigned int QGoDBMeshManager::CreateNewMeshWithNoContourNoPoints(
   NewMesh.SetCellType(iDatabaseConnector, *this->m_SelectedCellType);
   NewMesh.SetSubCellType(iDatabaseConnector, *this->m_SelectedSubCellType);
 
-  unsigned int TrackID = 0;
+  //unsigned int TrackID = 0;
 
-  if( this->m_SelectedCollectionData->first != "Add a new mesh ...")
-    {
-    TrackID = ss_atoi<unsigned int>(this->m_SelectedCollectionData->first);
-    }
-  if ( TrackID != 0 )
-    {
-    NewMesh.SetCollectionID(TrackID);
-    }
+ // if( this->m_SelectedCollectionData->first != "Add a new mesh ..." 
+   // && this->m_SelectedCollectionData->first != "Add a new track ...")
+ //   {
+    // TrackID = ss_atoi<unsigned int>(this->m_SelectedCollectionData->first);
+ //   }
+ // if ( TrackID != 0 )
+ //   {
+    //NewMesh.SetCollectionID(TrackID);
+ //   }
+  NewMesh.SetCollectionID(ss_atoi<unsigned int>(this->m_SelectedCollectionData->first) );
+
   unsigned int NewMeshID =
     this->m_CollectionOfTraces->CreateCollectionWithNoTracesNoPoints< GoDBMeshRow >(
       iDatabaseConnector, *this->m_SelectedColorData, NewMesh, *this->m_CurrentTimePoint);
@@ -496,14 +504,17 @@ QString QGoDBMeshManager::CheckExistingMeshesForTheTrack(
    unsigned int iTrackID, vtkMySQLDatabase* iDatabaseConnector, int iShift)
 {
   QString MessageToPrint("");
-  unsigned int MeshIDKickedOut =
-    this->ReassignTrackIDForPreviousMeshWithSameTimePoint(
-      iDatabaseConnector, iTrackID, *this->m_CurrentTimePoint + iShift);
-  if (MeshIDKickedOut != 0)
+  if (iTrackID != 0) //if the user has not created a track yet
     {
-      MessageToPrint =
-        tr("Warning: existing mesh at this timepoint for this track !!The track of the mesh with the meshID %1 has been reassigned to 0")
-      .arg(MeshIDKickedOut);
+    unsigned int MeshIDKickedOut =
+      this->ReassignTrackIDForPreviousMeshWithSameTimePoint(
+        iDatabaseConnector, iTrackID, *this->m_CurrentTimePoint + iShift);
+    if (MeshIDKickedOut != 0)
+      {
+        MessageToPrint =
+          tr("Warning: existing mesh at this timepoint for this track !!The track of the mesh with the meshID %1 has been reassigned to 0")
+        .arg(MeshIDKickedOut);
+      }
     }
   return MessageToPrint;
 }
@@ -515,34 +526,37 @@ QString QGoDBMeshManager::CheckExistingMeshesForTheTrack(
    std::list<unsigned int> & ioListMeshIDs)
 {
   QString MessageQString("");
-  std::string MessageToPrint = "";
-  std::list<unsigned int> ListTimePoints =
-    this->m_CollectionOfTraces->GetListTimePointsFromTraceIDs(iDatabaseConnector,ioListMeshIDs);
-  if (!ListTimePoints.empty())
+  if (iTrackID != 0)
   {
-  std::string MeshIDToPrint = "";
-  std::list<unsigned int>::iterator iter = ListTimePoints.begin();
-  while(iter!= ListTimePoints.end())
+    std::string MessageToPrint = "";
+    std::list<unsigned int> ListTimePoints =
+      this->m_CollectionOfTraces->GetListTimePointsFromTraceIDs(iDatabaseConnector,ioListMeshIDs);
+    if (!ListTimePoints.empty())
     {
-    unsigned int MeshIDKickedOut =
-      this->ReassignTrackIDForPreviousMeshWithSameTimePoint(
-        iDatabaseConnector, iTrackID,*iter);
-    if (MeshIDKickedOut != 0)
+    std::string MeshIDToPrint = "";
+    std::list<unsigned int>::iterator iter = ListTimePoints.begin();
+    while(iter!= ListTimePoints.end())
       {
-        MeshIDToPrint += ConvertToString<unsigned int>(MeshIDKickedOut);
-        MeshIDToPrint += ", ";
+      unsigned int MeshIDKickedOut =
+        this->ReassignTrackIDForPreviousMeshWithSameTimePoint(
+          iDatabaseConnector, iTrackID,*iter);
+      if (MeshIDKickedOut != 0)
+        {
+          MeshIDToPrint += ConvertToString<unsigned int>(MeshIDKickedOut);
+          MeshIDToPrint += ", ";
+        }
+      iter++;
       }
-    iter++;
+    if (!MeshIDToPrint.empty())
+      {
+        MeshIDToPrint = MeshIDToPrint.substr(0, MeshIDToPrint.size()-2);
+        MessageToPrint += "The trackID of the meshes ";
+        MessageToPrint += MeshIDToPrint;
+        MessageToPrint += " have been reassigned to 0";
+      }
     }
-  if (!MeshIDToPrint.empty())
-    {
-      MeshIDToPrint = MeshIDToPrint.substr(0, MeshIDToPrint.size()-2);
-      MessageToPrint += "The trackID of the meshes ";
-      MessageToPrint += MeshIDToPrint;
-      MessageToPrint += " have been reassigned to 0";
-    }
+    MessageQString = MessageToPrint.c_str();
   }
-  MessageQString = MessageToPrint.c_str();
   return MessageQString;
 }
 //-------------------------------------------------------------------------

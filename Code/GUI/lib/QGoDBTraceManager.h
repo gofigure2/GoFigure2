@@ -456,14 +456,16 @@ protected:
   void DisplayInfoForExistingTraceTemplate(T *iTWContainer,
                                            vtkMySQLDatabase *iDatabaseConnector, int iTraceID)
   {
-    TWContainerType RowContainer =
-      iTWContainer->GetContainerForOneSpecificTrace(iDatabaseConnector,
-                                                    iTraceID);
-
-    this->m_Table->UpdateRow(RowContainer,
-                             iTWContainer->GetIndexForGroupColor(this->m_TraceName),
-                             iTWContainer->GetIndexForGroupColor(this->m_CollectionName),
-                             this->m_TraceName, this->m_CollectionName, iTraceID);
+    if (iTraceID != 0)
+      {
+      TWContainerType RowContainer =
+        iTWContainer->GetContainerForOneSpecificTrace(iDatabaseConnector,
+                                                      iTraceID);
+      this->m_Table->UpdateRow(RowContainer,
+                               iTWContainer->GetIndexForGroupColor(this->m_TraceName),
+                               iTWContainer->GetIndexForGroupColor(this->m_CollectionName),
+                               this->m_TraceName, this->m_CollectionName, iTraceID);
+      }
   }
 
   /**

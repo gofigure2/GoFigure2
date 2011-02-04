@@ -562,14 +562,17 @@ void
 TrackContainer::UpdatePointsForATrack(unsigned int iTrackID,
 std::list< double*> iListCenterBoundingBoxes)
 {
-  bool updateCurrentElement = this->UpdateCurrentElementFromExistingOne(iTrackID);
-  if( updateCurrentElement )
+  if (iTrackID != 0)
     {
-    this->RecomputeCurrentElementMap(iListCenterBoundingBoxes);
-    }
-  else
-    {
-    std::cout << "TrackID: " << iTrackID << " not found" << std::endl;
+    bool updateCurrentElement = this->UpdateCurrentElementFromExistingOne(iTrackID);
+    if( updateCurrentElement )
+      {
+      this->RecomputeCurrentElementMap(iListCenterBoundingBoxes);
+      }
+    else
+      {
+      std::cout << "TrackID: " << iTrackID << " not found" << std::endl;
+      }
     }
 }
 //-------------------------------------------------------------------------

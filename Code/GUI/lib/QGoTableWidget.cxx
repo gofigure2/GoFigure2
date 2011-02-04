@@ -557,84 +557,87 @@ void QGoTableWidget::UpdateRow(TWContainerType iTWRowContainer,
                                std::string iTraceName, std::string iCollectionName,
                                int iTraceID)
 {
-  this->setSortingEnabled(false);
-  if ( iTWRowContainer.size() == 0 || iTWRowContainer[1].second.size() != 1 )
+  if (iTraceID != 0)
     {
-    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-    std::cout << std::endl;
-    std::cout << "The Update Trace Row Container is totally empty or there is more than 1 trace in it";
-    std::cout << std::endl;
-    }
-  else
-    {
-    QString TraceNameID = QString("%1ID").arg( iTraceName.c_str() );
-    int     IndexUpdateRow = this->findValueGivenColumn(iTraceID, TraceNameID);
-    if ( IndexUpdateRow != -1 )
-      {
-      QTableWidgetItem *t_item = NULL;
-
-      for ( unsigned int i = 0; i < iTWRowContainer.size(); i++ )
-        {
-        if ( iTWRowContainer[i].first.ColumnNameTableWidget != "None"
-             && !iTWRowContainer[i].second.empty() )
-          {
-          for ( int j = 0; j < this->columnCount(); j++ )
-            {
-            std::string HeaderCol = this->horizontalHeaderItem(j)->text().toStdString();
-            if ( HeaderCol == iTWRowContainer[i].first.ColumnNameTableWidget )
-              {
-              std::string Value = iTWRowContainer[i].second[0];
-
-              t_item = this->item(IndexUpdateRow, j);
-
-              if ( t_item )
-                {
-                //t_item->setData( 0, QString::fromStdString(Value).toDouble() );
-                if(iTWRowContainer[i].first.TypeName == "string")
-                  {
-                  t_item->setData( 0, QString::fromStdString(Value) );
-                  }
-                else
-                  {
-                  t_item->setData( 0, QString::fromStdString(Value).toDouble() );
-                  }
-                }
-              else
-                {
-                if ( this->CheckValueToDisplayData(Value, HeaderCol) )
-                  {
-                  QTableWidgetItem *CellTable = new QTableWidgetItem;
-                  //CellTable->setData( 0, QString::fromStdString(Value).toDouble() );
-                  if(iTWRowContainer[i].first.TypeName == "string")
-                    {
-                    CellTable->setData( 0, QString::fromStdString(Value) );
-                    }
-                  else
-                    {
-                    CellTable->setData( 0, QString::fromStdString(Value).toDouble() );
-                    }
-                  CellTable->setTextAlignment(Qt::AlignCenter);
-                  this->setItem(IndexUpdateRow, j, CellTable);
-                  }
-                }
-              } //ENDIF
-            }   //ENDFOR
-          }     //ENDIF
-        }       //ENDFOR
-      this->SetColorForTable(
-        iTWRowContainer, iIndexColorTraceRowContainer, iTraceName, IndexUpdateRow);
-      this->SetColorForTable(
-        iTWRowContainer, iIndexColorCollectionRowContainer, iCollectionName, IndexUpdateRow);
-      }
-    else
+    this->setSortingEnabled(false);
+    if ( iTWRowContainer.size() == 0 || iTWRowContainer[1].second.size() != 1 )
       {
       std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
       std::cout << std::endl;
-      std::cout << "the row does't exist";
+      std::cout << "The Update Trace Row Container is totally empty or there is more than 1 trace in it";
       std::cout << std::endl;
       }
-    } //ENDELSE
-  this->setSortingEnabled(true);
+    else
+      {
+      QString TraceNameID = QString("%1ID").arg( iTraceName.c_str() );
+      int     IndexUpdateRow = this->findValueGivenColumn(iTraceID, TraceNameID);
+      if ( IndexUpdateRow != -1 )
+        {
+        QTableWidgetItem *t_item = NULL;
+
+        for ( unsigned int i = 0; i < iTWRowContainer.size(); i++ )
+          {
+          if ( iTWRowContainer[i].first.ColumnNameTableWidget != "None"
+               && !iTWRowContainer[i].second.empty() )
+            {
+            for ( int j = 0; j < this->columnCount(); j++ )
+              {
+              std::string HeaderCol = this->horizontalHeaderItem(j)->text().toStdString();
+              if ( HeaderCol == iTWRowContainer[i].first.ColumnNameTableWidget )
+                {
+                std::string Value = iTWRowContainer[i].second[0];
+
+                t_item = this->item(IndexUpdateRow, j);
+
+                if ( t_item )
+                  {
+                  //t_item->setData( 0, QString::fromStdString(Value).toDouble() );
+                  if(iTWRowContainer[i].first.TypeName == "string")
+                    {
+                    t_item->setData( 0, QString::fromStdString(Value) );
+                    }
+                  else
+                    {
+                    t_item->setData( 0, QString::fromStdString(Value).toDouble() );
+                    }
+                  }
+                else
+                  {
+                  if ( this->CheckValueToDisplayData(Value, HeaderCol) )
+                    {
+                    QTableWidgetItem *CellTable = new QTableWidgetItem;
+                    //CellTable->setData( 0, QString::fromStdString(Value).toDouble() );
+                    if(iTWRowContainer[i].first.TypeName == "string")
+                      {
+                      CellTable->setData( 0, QString::fromStdString(Value) );
+                      }
+                    else
+                      {
+                      CellTable->setData( 0, QString::fromStdString(Value).toDouble() );
+                      }
+                    CellTable->setTextAlignment(Qt::AlignCenter);
+                    this->setItem(IndexUpdateRow, j, CellTable);
+                    }
+                  }
+                } //ENDIF
+              }   //ENDFOR
+            }     //ENDIF
+          }       //ENDFOR
+        this->SetColorForTable(
+          iTWRowContainer, iIndexColorTraceRowContainer, iTraceName, IndexUpdateRow);
+        this->SetColorForTable(
+          iTWRowContainer, iIndexColorCollectionRowContainer, iCollectionName, IndexUpdateRow);
+        }
+      else
+        {
+        std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+        std::cout << std::endl;
+        std::cout << "the row doesn't exist";
+        std::cout << std::endl;
+        }
+      } //ENDELSE
+    this->setSortingEnabled(true);
+    }
 }
 
 //--------------------------------------------------------------------------

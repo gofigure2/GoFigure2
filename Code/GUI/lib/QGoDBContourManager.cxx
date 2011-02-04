@@ -172,8 +172,9 @@ unsigned int QGoDBContourManager::SaveNewContourFromVisu(
   unsigned int iMeshID)
 
 {
-  if ( this->m_SelectedCollectionData->first != "Add a new mesh ..." 
-    && iMeshID != 0)
+  //if ( this->m_SelectedCollectionData->first != "Add a new mesh ..." 
+    //&& iMeshID != 0)
+  if(iMeshID != 0)
     {
     iMeshID = ss_atoi< unsigned int >(this->m_SelectedCollectionData->first);
     }

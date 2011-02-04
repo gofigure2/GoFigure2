@@ -158,8 +158,6 @@ int GoDBMeshRow::SaveInDB(vtkMySQLDatabase *DatabaseConnector)
 {
   int SavedMeshID = GoDBTraceRow::SaveInDBTemplate< GoDBMeshRow >(DatabaseConnector, this);
 
-  //int SavedMeshID = GoDBTraceRow::SaveInDBTemplate< GoDBMeshRow >(DatabaseConnector, *this);
-
   if ( !this->m_NameChannelWithValues.empty() )
     {
     this->SaveInDBTotalIntensityPerChannel(DatabaseConnector,
@@ -184,8 +182,6 @@ int GoDBMeshRow::GetCellTypeID(vtkMySQLDatabase *iDatabaseConnector,
 void GoDBMeshRow::SetCellType(vtkMySQLDatabase *iDatabaseConnector,
                               std::string iCellTypeName)
 {
- // this->SetField< int >( "CellTypeID", FindOneID(DatabaseConnector,
-                                               //  "celltype", "CellTypeID", "Name", CellTypeName) );
   if (iCellTypeName != "Add a new celltype..." 
     && iCellTypeName != "Delete a celltype")
     {
@@ -209,8 +205,6 @@ int GoDBMeshRow::GetSubCellTypeID(vtkMySQLDatabase *iDatabaseConnector,
 void GoDBMeshRow::SetSubCellType(vtkMySQLDatabase *iDatabaseConnector,
                                  std::string iSubCellTypeName)
 {
- // this->SetField< int >( "SubCellularID", FindOneID(DatabaseConnector,
-                                           //         "subcellulartype", "SubCellularID", "Name", SubCellTypeName) );
   if (iSubCellTypeName != "Add a new subcelltype..." 
     && iSubCellTypeName != "Delete a subcelltype")
     {
