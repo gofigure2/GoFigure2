@@ -13,7 +13,7 @@ set(proj ITK)
 #  message(STATUS "Adding project:${proj}")
   ExternalProject_Add(${proj}
     GIT_REPOSITORY "${git_protocol}://itk.org/ITK.git"
-    GIT_TAG "origin/master"
+    GIT_TAG "origin/release"
     SOURCE_DIR ${proj}
     BINARY_DIR ${proj}-build
     CMAKE_GENERATOR ${gen}

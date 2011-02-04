@@ -46,8 +46,9 @@ include("${GOFIGURE2_SOURCE_DIR}/CMake/ConfigQT.cmake")
 
 include("${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/External-ITK.cmake")
 include("${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/External-VTK.cmake")
+include("${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/External-Boost.cmake")
 
-set(GoFigure2_DEPENDENCIES ITK VTK)
+set(GoFigure2_DEPENDENCIES ITK VTK Boost)
 
 #---------------------------------------------------------------------------
 # Set superbuild boolean args

@@ -50,7 +50,7 @@ set(proj VTK)
     SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
     BINARY_DIR ${proj}-build
     GIT_REPOSITORY "${git_protocol}://vtk.org/VTK.git"
-    GIT_TAG "origin/master"
+    GIT_TAG "origin/release"
     CMAKE_GENERATOR ${gen}
     CMAKE_ARGS
       ${ep_common_args}
