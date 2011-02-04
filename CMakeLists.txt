@@ -107,6 +107,11 @@ SET( TESTING_DATA_PATH
   CACHE PATH "Directory which contains data for testing."
 )
 
+
+#---------------------------------------------------------------------------
+# SUPERBUILD - ENABLED BY DEFAULT
+#---------------------------------------------------------------------------
+
 OPTION( USE_SUPERBUILD "Use SuperBuild" ON )
 
 IF( USE_SUPERBUILD )
@@ -121,18 +126,8 @@ ELSE()
 #---------------------------------------------------------------------------
   OPTION( BUILD_DOCUMENTATION "Build Doxygen Documentation" OFF )
 
-#---------------------------------------------------------------------------
   IF( BUILD_DOCUMENTATION )
-    FIND_PACKAGE( Doxygen )
-
-    IF( DOXYGEN_FOUND )
-      INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigDoxygen.cmake" )
-    ELSE( DOXYGEN_FOUND )
-      MESSAGE( STATUS 
-      "Warning: Doxygen not found - Documentation will not be created"
-      )
-    ENDIF( DOXYGEN_FOUND )
-
+    INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigDoxygen.cmake" )
   ENDIF( BUILD_DOCUMENTATION )
 
 #---------------------------------------------------------------------------
@@ -148,31 +143,23 @@ ELSE()
     SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
   ENDIF( UNIX )
 
-#---------------------------------------------------------------------------
-# Everything depends on VTK first
-# that way we can get Qt info from VTK
-#### VTK ####
+  #---------------------------------------------------------------------------
+  # Everything depends on VTK first
+  # that way we can get Qt info from VTK
+  #### VTK ####
 
-  FIND_PACKAGE( VTK REQUIRED )
-  IF( VTK_FOUND )
-    INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigVTK.cmake" )
-  ELSE( VTK_FOUND )
-    MESSAGE( SEND_ERROR "VTK NOT FOUND, CMAKE WILL STOP NOW")  
-  ENDIF( VTK_FOUND )
+  INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigVTK.cmake" )
 
   #----------------------------------------------------------
   # Then find ITK
   #### ITK ####
-  FIND_PACKAGE( ITK REQUIRED )
-  IF( ITK_FOUND )
-    INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigITK.cmake" )
-  ELSE( ITK_FOUND )
-    MESSAGE( SEND_ERROR "ITK NOT FOUND, CMAKE WILL STOP NOW")  
-  ENDIF( ITK_FOUND )
+
+  INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigITK.cmake" )
 
   #----------------------------------------------------------
   # Then find Boost. Note that we only need headers
   #### BOOST ####
+  # NEEDS ConfiBoost as well
   FIND_PACKAGE( Boost REQUIRED )
   IF( Boost_FOUND )
     INCLUDE_DIRECTORIES( BEFORE ${Boost_INCLUDE_DIRS} )
@@ -184,12 +171,7 @@ ELSE()
   # Try to find Qt.
   # Note that some command line tools will get compiled even without Qt
   #### Qt ####
-  FIND_PACKAGE( Qt4 REQUIRED )
-  IF( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
-    INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigQT.cmake" )
-  ELSE( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
-    MESSAGE( SEND_ERROR "GoFigure2 requires Qt4.5 (or newer version) to be installed" )
-  ENDIF( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
+  INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigQT.cmake" )
 
   #----------------------------------------------------------
   #

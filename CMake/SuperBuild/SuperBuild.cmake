@@ -9,6 +9,8 @@ if(NOT GoFigure2_USE_GIT_PROTOCOL)
   set(git_protocol "http")
 endif()
 
+INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigQT.cmake" )
+
 #---------------------------------------------------------------------------
 # Enable and setup External project global properties
 #---------------------------------------------------------------------------
@@ -39,10 +41,13 @@ endif()
 # Conditionnaly include ExternalProject Target
 #---------------------------------------------------------------------------
 
+# REQUIRED TO BUILD VTK
+include("${GOFIGURE2_SOURCE_DIR}/CMake/ConfigQT.cmake")
+
 include("${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/External-ITK.cmake")
 include("${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/External-VTK.cmake")
 
-#set(GoFigure2_DEPENDENCIES ITK VTK)
+set(GoFigure2_DEPENDENCIES ITK VTK)
 
 #---------------------------------------------------------------------------
 # Set superbuild boolean args
@@ -72,7 +77,7 @@ include("${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/External-VTK.cmake")
 
 set(proj GoFigure2)
 ExternalProject_Add(${proj}
- # DEPENDS ${GoFigure2_DEPENDENCIES}
+  DEPENDS ${GoFigure2_DEPENDENCIES}
   DOWNLOAD_COMMAND ""
   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}
   BINARY_DIR GoFigure2-build
