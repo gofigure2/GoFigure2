@@ -938,7 +938,7 @@ void QGoPrintDatabase::SetTMListSubCellTypesWithPreviousSelectedOne()
 {
   this->OpenDBConnection();
   this->m_TraceWidget->SetListSubCellTypeWithSelectedOne(
-    this->m_CellTypeManager->GetListExistingEntities(this->m_DatabaseConnector));
+    this->m_SubCellTypeManager->GetListExistingEntities(this->m_DatabaseConnector));
   this->CloseDBConnection();
 }
 
