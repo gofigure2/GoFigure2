@@ -1,7 +1,3 @@
-#DEBUG
-
-    MESSAGE( "ENTER SUPER BUILD - ITK" )
-
 #---------------------------------------------------------------------------
 # Get and build itk
 

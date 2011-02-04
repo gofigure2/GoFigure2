@@ -1,7 +1,3 @@
-#DEBUG
-
-    MESSAGE( "ENTER SUPER BUILD" )
-
 #---------------------------------------------------------------------------
 # Git protocole option
 #---------------------------------------------------------------------------
@@ -74,7 +70,6 @@ SET(GoFigure2_cmake_boolean_args
 SET(GoFigure2_superbuild_boolean_args)
 FOREACH(GoFigure2_cmake_arg ${GoFigure2_cmake_boolean_args})
   LIST(APPEND GoFigure2_superbuild_boolean_args -D${GoFigure2_cmake_arg}:BOOL=${${GoFigure2_cmake_arg}})
-  MESSAGE("BOOL ARG:" ${GoFigure2_cmake_arg} ${${GoFigure2_cmake_arg}} )
 ENDFOREACH()
 
 # MESSAGE("CMake args:")
