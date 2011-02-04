@@ -389,6 +389,8 @@ void QGoPrintDatabase::SaveNewMeshForMeshToContours(int iNumberOfContours)
     this->m_TracksManager->UpdateBoundingBoxes(
           this->m_DatabaseConnector,
           trackIDs);
+  this->SetTMListCollectionID(); // need to reload the list of trackIDs as normally, the new added mesh from create mesh with no
+  //contour will add the new meshid in the TMList...
   this->CloseDBConnection();
 }
 
