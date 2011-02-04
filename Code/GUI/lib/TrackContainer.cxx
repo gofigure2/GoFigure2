@@ -732,7 +732,7 @@ UpdateTracksRepresentation( double iRadius, double iRadius2 )
   while ( it != m_Container.end() )
     {
     // restore original polydata
-    bool update = UpdateTrackStructurePolyData( (*it) );
+    UpdateTrackStructurePolyData( (*it) );
 
     // add glyphs if necessary
     if( (iRadius || iRadius2) && it->Nodes )
