@@ -10,17 +10,6 @@ if(NOT GoFigure2_USE_GIT_PROTOCOL)
 endif()
 
 #---------------------------------------------------------------------------
-# Qt - Let's check if a valid version of Qt is available
-#---------------------------------------------------------------------------
-
-FIND_PACKAGE(Qt4)
-IF(QT_FOUND)
-  INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigQT.cmake" )
-ELSE()
-  MESSAGE(FATAL_ERROR "error: Qt4 was not found on your system. You probably need to set the QT_QMAKE_EXECUTABLE variable")
-ENDIF()
-
-#---------------------------------------------------------------------------
 # Enable and setup External project global properties
 #---------------------------------------------------------------------------
 
@@ -53,24 +42,24 @@ endif()
 include("${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/External-ITK.cmake")
 include("${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/External-VTK.cmake")
 
-set(GoFigure2_DEPENDENCIES ITK VTK)
+#set(GoFigure2_DEPENDENCIES ITK VTK)
 
 #---------------------------------------------------------------------------
 # Set superbuild boolean args
 #
 
-SET(GoFigure2_cmake_boolean_args
-  BUILD_DOCUMENTATION
-  BUILD_TESTING
-  BUILD_SHARED_LIBS
-  WITH_COVERAGE
-  WITH_MEMCHECK
-  )
+#SET(GoFigure2_cmake_boolean_args
+#  BUILD_DOCUMENTATION
+#  BUILD_TESTING
+#  BUILD_SHARED_LIBS
+#  WITH_COVERAGE
+#  WITH_MEMCHECK
+#  )
 
-SET(GoFigure2_superbuild_boolean_args)
-FOREACH(GoFigure2_cmake_arg ${GoFigure2_cmake_boolean_args})
-  LIST(APPEND GoFigure2_superbuild_boolean_args -D${GoFigure2_cmake_arg}:BOOL=${${GoFigure2_cmake_arg}})
-ENDFOREACH()
+#SET(GoFigure2_superbuild_boolean_args)
+#FOREACH(GoFigure2_cmake_arg ${GoFigure2_cmake_boolean_args})
+#  LIST(APPEND GoFigure2_superbuild_boolean_args -D${GoFigure2_cmake_arg}:BOOL=${${GoFigure2_cmake_arg}})
+#ENDFOREACH()
 
 # MESSAGE("CMake args:")
 # FOREACH(arg ${GoFigure2_superbuild_boolean_args})
@@ -83,13 +72,14 @@ ENDFOREACH()
 
 set(proj GoFigure2)
 ExternalProject_Add(${proj}
-  DEPENDS ${GoFigure2_DEPENDENCIES}
+ # DEPENDS ${GoFigure2_DEPENDENCIES}
   DOWNLOAD_COMMAND ""
   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}
   BINARY_DIR GoFigure2-build
   CMAKE_GENERATOR ${gen}
   CMAKE_ARGS
-    ${GoFigure2_superbuild_boolean_args}
+ 
+#   ${GoFigure2_superbuild_boolean_args}
     -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
     -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
     -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
