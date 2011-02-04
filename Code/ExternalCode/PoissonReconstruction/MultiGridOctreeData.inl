@@ -1203,7 +1203,7 @@ inline void Octree<Degree>::DivergenceFunction::Function(TreeOctNode* node1,cons
 template<int Degree>
 inline void Octree<Degree>::LaplacianProjectionFunction::Function(TreeOctNode* node1,const TreeOctNode* node2)
 {
-  (void) node2;
+	(void) node2;
 
 	scratch[0]=FunctionData<Degree,Real>::SymmetricIndex(index[0],int(node1->off[0]));
 	scratch[1]=FunctionData<Degree,Real>::SymmetricIndex(index[1],int(node1->off[1]));
@@ -1700,14 +1700,19 @@ inline void Octree<Degree>::SetIsoSurfaceCorners(const Real& isoValue,const int&
 	// Start by setting the corner values of all the nodes
 	cf.valueTables=fData.valueTables;
 	cf.res2=fData.res2;
-	for(i=0;i<sNodes->nodeCount[subdivideDepth];i++){
+
+	int idx[3];
+	int temp_N = sNodes->nodeCount[subdivideDepth];
+
+	int c, mcid;
+
+	for(i=0;i<temp_N;i++){
 		temp=sNodes->treeNodes[i];
 		if(!temp->children){
 			for(j=0;j<Cube::CORNERS;j++){
 				if(this->width<=3){cornerValues[j]=getCornerValue(temp,j);}
 				else{
 					cf.value=0;
-					int idx[3];
 					VertexData::CornerIndex(temp,j,fData.depth,idx);
 					cf.index[0]=idx[0]*fData.res;
 					cf.index[1]=idx[1]*fData.res;
@@ -1720,8 +1725,8 @@ inline void Octree<Degree>::SetIsoSurfaceCorners(const Real& isoValue,const int&
 
 			if(temp->parent){
 				TreeOctNode* parent=temp->parent;
-				int c=int(temp-temp->parent->children);
-				int mcid=temp->nodeData.mcIndex&(1<<MarchingCubes::cornerMap[c]);
+				c=int(temp-temp->parent->children);
+				mcid=temp->nodeData.mcIndex&(1<<MarchingCubes::cornerMap[c]);
 
 				if(mcid){
 					parent->nodeData.mcIndex|=mcid;

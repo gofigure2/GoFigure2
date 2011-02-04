@@ -122,7 +122,8 @@ ContourToMeshFilter< TContainer >::ProcessContours(const ContainerType & iContai
       vtkSmartPointer< vtkPoissonReconstruction >::New();
     poissonFilter->SetInputConnection( normal_filter->GetOutputPort() );
     poissonFilter->SetDepth(12);
-    poissonFilter->SetConfidence(1.);
+    poissonFilter->SetSolverDivide(12);
+    poissonFilter->SetIsoDivide(12);
     poissonFilter->Update();
 
     vtkSmartPointer<vtkFeatureEdges> feature =
