@@ -23,7 +23,6 @@ SET( QGoGUILIB_SRC
   ContourMeshContainer.cxx
   TrackContainer.cxx
   QGoConnectServerPage.cxx
-  QGoCreateDataBasePage.cxx
   QGoCreateImgSessionPage.cxx
   QGoImageView.cxx
   QGoImageView2D.cxx
@@ -141,7 +140,6 @@ SET( QGoGUILIB_HDRS
   ContourMeshContainer.h
   TrackContainer.h
   QGoConnectServerPage.h
-  QGoCreateDataBasePage.h
   QGoCreateImgSessionPage.h
   QGoImageView.h
   QGoImageView2D.h
