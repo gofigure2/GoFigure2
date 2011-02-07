@@ -160,12 +160,7 @@ ELSE()
   # Then find Boost. Note that we only need headers
   #### BOOST ####
   # NEEDS ConfiBoost as well
-  FIND_PACKAGE( Boost REQUIRED )
-  IF( Boost_FOUND )
-    INCLUDE_DIRECTORIES( BEFORE ${Boost_INCLUDE_DIRS} )
-  ELSE( Boost_FOUND )
-    MESSAGE( SEND_ERROR "BOOST NOT FOUND, CMAKE WILL STOP NOW")  
-  ENDIF( Boost_FOUND )
+  INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigBoost.cmake" )
 
   #----------------------------------------------------------
   # Try to find Qt.
