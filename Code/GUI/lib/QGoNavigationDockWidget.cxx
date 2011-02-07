@@ -123,8 +123,8 @@ QGoNavigationDockWidget::QGoNavigationDockWidget(QWidget *iParent, const GoFigur
   this->stepLabel->hide();
 
   // shortcuts to move through time
-  (void) new QShortcut(QKeySequence(tr("Ctrl+A", "Move to previous")), this, SLOT(MoveToPreviousTimePoint()));
-  (void) new QShortcut(QKeySequence(tr("Ctrl+D", "Move to next")), this, SLOT(MoveToNextTimePoint()));
+  (void) new QShortcut(QKeySequence(tr("Ctrl+Z", "Move to previous")), this, SLOT(MoveToPreviousTimePoint()));
+  (void) new QShortcut(QKeySequence(tr("Ctrl+C", "Move to next")), this, SLOT(MoveToNextTimePoint()));
 }
 
 //-------------------------------------------------------------------------
