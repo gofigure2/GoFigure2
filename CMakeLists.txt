@@ -126,12 +126,12 @@ IF( BUILD_DOCUMENTATION )
       ADD_SUBDIRECTORY( Documentation )
 
     ELSE( DOXYGEN_DOT_FOUND )
-      MESSAGE( STATUS 
+      MESSAGE( SEND_ERROR 
         "Warning: Dot (from GraphViz) not found - Documentation will not ce generated" 
       )
     ENDIF( DOXYGEN_DOT_FOUND )
   ELSE( DOXYGEN_FOUND )
-    MESSAGE( STATUS 
+    MESSAGE( SEND_ERROR 
       "Warning: Doxygen not found - Documentation will not be created"
     )
   ENDIF( DOXYGEN_FOUND )

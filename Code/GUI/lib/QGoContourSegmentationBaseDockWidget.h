@@ -146,9 +146,6 @@ signals:
    */
   void UpdateContourRepresentationProperties(float, QColor, QColor, QColor);
 
-
-  //void ShowTraceDockWidgetForContour(bool);
-
   // semi automatic signals
   /**
    * \brief Signal sent before starting a "seed segmentation" to update the

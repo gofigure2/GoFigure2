@@ -48,7 +48,7 @@ class QGoManualSegmentationSettingsDialog;
 /**
  * \class QGoContourManualSegmentationWidget
  * \ingroup QGoContourManual
- * \brief Define the manual segmentation dockwidget behavior
+ * \brief Define the manual segmentation widget connections
 */
 
 class QGOGUILIB_EXPORT QGoContourManualSegmentationWidget:

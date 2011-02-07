@@ -55,6 +55,13 @@ class vtkPoints;
 class vtkImageExport;
 #include "QGoGUILibConfigure.h"
 
+/**
+ * \class QGoFilterSemiAutoBase Connects the common signals regarding the seeds segmentation
+ * Provides methods to convert images from itk to vtk.
+ * Provides methods to convert images from vtk to itk.
+ * Provides methods to extract ROI from your image and to enhance your meshes.
+ */
+
 class QGOGUILIB_EXPORT QGoFilterSemiAutoBase:public QObject
 {
   Q_OBJECT

@@ -135,16 +135,10 @@ public:
   /** \brief Destructor. */
   ~TrackContainer();
 
-  /** \brief Display all elements for a given time point
-  *   \param[in] iT time point
-  */
-  // void ShowActorsWithGivenTimePoint(const unsigned int & iT);
-
   /** \brief Update Current Element by providing all required information
   from the visualization.
   \param[in] iActors
   \param[in] iNodes
-  \param[in] iT
   \param[in] iHighlighted
   \param[in] iVisible
   \see TrackStructure
@@ -191,37 +185,19 @@ public:
   std::list< unsigned int > DeleteAllHighlightedElements();
 
   /**
-    \brief Add a point in the current track.
-    If there is already a point existing at the same time point, we don't do anything.
-    We could add a variable to either override or not the point who already
-    exists at a current time point.
-    \param[in] iPoint new point to be added in the track
-    \param[in] iTime time coordinate of the new point
-    \param[in] iReconstructPolyData should we reconstruct the polydata
-  */
-  //bool AddPointToCurrentElement(int iTime, double* iPoint, bool iReconstructPolyData = true);
-
-  /**
     \brief Delete a point from the current track.
     \param[in] iTime time point to clear
     \param[in] iReconstructPolyData should we reconstruct the polydata
-    \return true: a point has been deleted, false: no point has been deleted
+    \return true a point has been deleted
+    \return false no point has been deleted
   */
   bool DeletePointFromCurrentElement( unsigned int iTime,
                                       bool iReconstructPolyData );
-
-  /**
-    \brief Replace a point from the current track.
-    \param[in] iPoint new point to be added in the track
-    \param[in] iTime time point to update
-    \return true: a point has been replace, false: no point has been replaced
-  */
-  //bool ReplacePointFromCurrentElement(int iTime, double* iPoint);
-
   /**
     \brief Update the TrackStructure polydata according to the current map.
     \param[in] iTrackStructure Structure to be updated
-    \return true if the polydata has been updated, false if it hasn't (i.e. mesh without point)
+    \return true if the polydata has been updated
+    \return false if it hasn't (i.e. mesh without point)
   */
   bool UpdateTrackStructurePolyData( const TrackStructure& iTrackStructure);
 
@@ -285,25 +261,12 @@ public:
   void DeleteListFromCurrentElement( const std::list<unsigned int>& iTimeList );
 
   /**
-   * \brief Delete a list of tracks.
-   * \param[in] iPointsToBeDeleted a list containing pairs.
-   * Each pair is composed by a track ID and a list of the time points to be
-   * deleted in this track ID.
-   *
-   * \todo Why does this method exist? \sa DeleteElement
-   * \todo Let's assume this method is useful, why not using a map or
-   * multi_map instead?
-   */
-  /*void DeleteListOfTracks(
-      std::list< std::pair< unsigned int , std::list< unsigned int > > >
-                 iPointsToBeDeleted);*/
-
-  /**
     \brief Delete a point from a track.
     \param[in] iIterator trackstructure which will be modified
     \param[in] iTime time point to clear
     \param[in] iReconstructPolyData should we reconstruct the polydata
-    \return true: a point has been deleted, false: no point has been deleted
+    \return true if a point has been deleted
+    \return false no point has been deleted
   */
   bool DeletePointFromElement(
     MultiIndexContainerTraceIDIterator iIterator,
@@ -321,12 +284,12 @@ public:
     std::list<std::vector<unsigned int> > iBoundingBox);
 
   /**
-  \brief get the element with iTrackID into the current element, remove it from the container,
-  recalculate the points from the iListCenterBoundingBox and emit a signal for the current element
-  to be saved into the database
+  \brief get the element with iTrackID into the current element, remove it from
+  the container, recalculate the points from the iListCenterBoundingBox and emit
+  a signal for the current element to be saved into the database
   \param[in] iTrackID  ID for the track to be updated
-  \param[in] iListCenterBoundingBox list of the center of the bounding boxes for the meshes belonging
-  to this track
+  \param[in] iListCenterBoundingBoxes list of the center of the bounding boxes
+  for the meshes belonging to this track
   */
   void UpdatePointsForATrack(unsigned int iTrackID,
                              std::list< double*> iListCenterBoundingBoxes);
@@ -356,7 +319,6 @@ public:
   /**
   \brief Update highlighting property of one element given one actor.
   \param[in] iActor Actor of the element to be modified
-  \param[in] iState Visibility to applied to the element
   \return true if the element exists
   \return false else
   */

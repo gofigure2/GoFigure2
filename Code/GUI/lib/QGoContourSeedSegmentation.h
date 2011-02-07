@@ -53,7 +53,8 @@ class QGoFilterShape;
 /**
  * \class QGoContourSeedSegmentation
  * \ingroup QGoContourSeed
- * \brief Interface between the seed segmentation filters and the base seed dockwidget
+ * \brief Interface between the segmentation filters and the seed base widget.
+ * Generates contours.
 */
 
 class QGOGUILIB_EXPORT QGoContourSeedSegmentation:public QGoSeedSegmentationBase
