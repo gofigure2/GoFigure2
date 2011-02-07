@@ -37,14 +37,25 @@
 
 #include "ContourMeshContainer.h"
 
+/**
+ * \class MeshContainer
+ * \brief Wraps a boost::multi_index_container of ContourMeshStructure.
+ * This class is specialized for the means of Mesh.
+ * */
 class MeshContainer : public ContourMeshContainer
 {
   Q_OBJECT
 public:
-    explicit MeshContainer(QObject* iParent, QGoImageView3D *iView);
-    ~MeshContainer();
+  /** \brief Constructor */
+  explicit MeshContainer(QObject* iParent, QGoImageView3D *iView);
+
+  /** \brief Destructor */
+  ~MeshContainer();
+
 protected:
-    std::vector< vtkActor* > AddTrace( vtkPolyData* iNode, vtkProperty* iProp );
+  /** \brief Add a mesh in the visualization with its property. It returns a
+   * vector of size 4, of each element represents one view in the Quad-View.  */
+  std::vector< vtkActor* > AddTrace( vtkPolyData* iNode, vtkProperty* iProp );
 
 private:
     Q_DISABLE_COPY( MeshContainer );
