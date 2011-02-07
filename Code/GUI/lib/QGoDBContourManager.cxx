@@ -136,7 +136,7 @@ void QGoDBContourManager::AddActionsContextMenu(QMenu *iMenu)
 //-------------------------------------------------------------------------
 void QGoDBContourManager::AddActionForCreateNewCollectionFromCheckedTraces()
 {
-  this->m_CheckedTracesMenu->addAction( 
+  this->m_CheckedTracesMenu->addAction(
     tr("Generate a new mesh from checked contours"),
     this, SLOT( CreateCorrespondingCollection() ) );
 }
@@ -172,7 +172,7 @@ unsigned int QGoDBContourManager::SaveNewContourFromVisu(
   unsigned int iMeshID)
 
 {
-  //if ( this->m_SelectedCollectionData->first != "Add a new mesh ..." 
+  //if ( this->m_SelectedCollectionData->first != "Add a new mesh ..."
     //&& iMeshID != 0)
   if(iMeshID != 0)
     {
@@ -181,7 +181,7 @@ unsigned int QGoDBContourManager::SaveNewContourFromVisu(
   GoDBContourRow NewContour(this->m_ImgSessionID);
 
   int NewContourID = this->CreateNewTraceInDBFromVisu< GoDBContourRow >(
-    iXCoordMin, iYCoordMin, iZCoordMin,*this->m_CurrentTimePoint, 
+    iXCoordMin, iYCoordMin, iZCoordMin,*this->m_CurrentTimePoint,
     iXCoordMax, iYCoordMax, iZCoordMax, iTraceNodes,
     *this->m_SelectedColorData,
     iDatabaseConnector, NewContour, iMeshID);
@@ -215,7 +215,7 @@ unsigned int QGoDBContourManager::SaveReeditedContourFromVisu(unsigned int iXCoo
 
   ReeditedContour.SetValuesForSpecificID(TraceID, iDatabaseConnector);
   this->SetTraceBoundingBoxAndPoints(iXCoordMin, iYCoordMin, iZCoordMin, iTCoord, iXCoordMax,
-                                     iYCoordMax, iZCoordMax, iContourNodes, iDatabaseConnector, 
+                                     iYCoordMax, iZCoordMax, iContourNodes, iDatabaseConnector,
                                      ReeditedContour);
   ReeditedContour.SaveInDB(iDatabaseConnector);
   this->DisplayInfoForExistingTrace(iDatabaseConnector, TraceID);
@@ -338,24 +338,30 @@ void QGoDBContourManager::CreateCorrespondingCollection()
 //-------------------------------------------------------------------------
 bool QGoDBContourManager::AreCheckedContoursFromCurrentTimepoint()
 {
-  std::list<unsigned int> ListCheckedContours = 
+  std::list<unsigned int> ListCheckedContours =
     this->m_ContourContainerInfoForVisu->GetHighlightedElementsTraceID();
   if (!ListCheckedContours.empty())
     {
     emit NeedToGetDatabaseConnection();
     std::list<unsigned int>::iterator iter = ListCheckedContours.begin();
+
     while (iter != ListCheckedContours.end())
       {
-      unsigned int TimepointContour = 
-        this->m_CollectionOfTraces->GetBoundedBoxTimePoint(this->m_DatabaseConnector, *iter); //for test
-      if (this->m_CollectionOfTraces->GetBoundedBoxTimePoint(this->m_DatabaseConnector, *iter) != *this->m_CurrentTimePoint)
+      unsigned int TimepointContour =
+        this->m_CollectionOfTraces->GetBoundedBoxTimePoint(this->m_DatabaseConnector, *iter);
+
+      if ( TimepointContour !=
+           static_cast< unsigned int >( *this->m_CurrentTimePoint ) )
         {
-        emit PrintMessage(tr("To see only the contours from the current timepoint in the table, right click on the table and select 'Show only in the table the contours for the current timepoint' ") );
+        emit PrintMessage(
+          tr("To see only the contours from the current timepoint in the table, right click on the table and select 'Show only in the table the contours for the current timepoint' ") );
+
         QMessageBox msgBox;
         msgBox.setText(
           tr("Please select only contours from the current timepoint: %1 !!")
           .arg( *this->m_CurrentTimePoint ) );
         msgBox.exec();
+
         return false;
         }
       ++iter;
