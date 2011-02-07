@@ -412,7 +412,7 @@ public:
   /**
     \brief Color code contour / mesh according to values provided
     \param[in] iColumnName Name of data provided
-    \param[in] ivalues is a map where the key is the TraceID and the Value is
+    \param[in] iValues is a map where the key is the TraceID and the Value is
     a string that can be either converted to a double, or not
     \note if iColumnName and/or iValues are empty traces will be then rendered
     with their original colors.
@@ -424,7 +424,7 @@ public:
     \brief Color code contour / mesh according to values provided
     \tparam TValue numerical type that can be converted into double
     \param[in] iColumnName Name of data provided
-    \param[in] ivalues is a map where the key is the TraceID and the Value is
+    \param[in] iValues is a map where the key is the TraceID and the Value is
     the actual data used to color.
     \note if iColumnName and/or iValues are empty traces will be then rendered
     with their original colors.
@@ -552,6 +552,8 @@ protected:
   /**
   \brief Update highlighting property of one element given one actor.
   \param[in] iActor Actor of the element to be modified
+  \param[out] oTraceId TraceId of the element
+  \param[out] oState Qt::Checked if the element is not highlighted else Qt::UnChecked
   \return true if the element exists
   \return false else
   */
@@ -626,6 +628,8 @@ protected:
   /** \brief Update element Visibility property given one actor.
   \tparam TActor either ActorXY, ActorXZ, ActorYZ, ActorXYZ depending on the view
   \param[in] iActor provided actor
+  \param[out] oTraceId TraceId of the element
+  \param[out] oState Qt::Checked if the element is not visible else Qt::UnChecked
   \return true if iActor is in the container
   \return false else
   */
@@ -682,6 +686,8 @@ protected:
   \brief Update highlighting property of one element given one actor.
   \param[in] iActor Actor of the element to be modified
   \param[in] iState Visibility to applied to the element
+  \param[out] oTraceId TraceId of the element
+  \param[out] oState Qt::Checked if iState is true else Qt::UnChecked
   \return true if the element exists
   \return false else
   */
