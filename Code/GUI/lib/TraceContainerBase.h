@@ -686,7 +686,7 @@ protected:
   \brief Update highlighting property of one element given one actor.
   \param[in] iActor Actor of the element to be modified
   \param[in] iState Visibility to applied to the element
-  \param[out] oTraceId TraceId of the element
+  \param[out] oTraceID TraceId of the element
   \param[out] oState Qt::Checked if iState is true else Qt::UnChecked
   \return true if the element exists
   \return false else

@@ -144,7 +144,6 @@ public:
   from the visualization.
   \param[in] iActors
   \param[in] iNodes
-  \param[in] iT
   \param[in] iHighlighted
   \param[in] iVisible
   \see TrackStructure
@@ -205,7 +204,8 @@ public:
     \brief Delete a point from the current track.
     \param[in] iTime time point to clear
     \param[in] iReconstructPolyData should we reconstruct the polydata
-    \return true: a point has been deleted, false: no point has been deleted
+    \return true a point has been deleted
+    \return false no point has been deleted
   */
   bool DeletePointFromCurrentElement( unsigned int iTime,
                                       bool iReconstructPolyData );
@@ -221,7 +221,8 @@ public:
   /**
     \brief Update the TrackStructure polydata according to the current map.
     \param[in] iTrackStructure Structure to be updated
-    \return true if the polydata has been updated, false if it hasn't (i.e. mesh without point)
+    \return true if the polydata has been updated
+    \return false if it hasn't (i.e. mesh without point)
   */
   bool UpdateTrackStructurePolyData( const TrackStructure& iTrackStructure);
 
@@ -303,7 +304,8 @@ public:
     \param[in] iIterator trackstructure which will be modified
     \param[in] iTime time point to clear
     \param[in] iReconstructPolyData should we reconstruct the polydata
-    \return true: a point has been deleted, false: no point has been deleted
+    \return true if a point has been deleted
+    \return false no point has been deleted
   */
   bool DeletePointFromElement(
     MultiIndexContainerTraceIDIterator iIterator,
@@ -321,12 +323,12 @@ public:
     std::list<std::vector<unsigned int> > iBoundingBox);
 
   /**
-  \brief get the element with iTrackID into the current element, remove it from the container,
-  recalculate the points from the iListCenterBoundingBox and emit a signal for the current element
-  to be saved into the database
+  \brief get the element with iTrackID into the current element, remove it from
+  the container, recalculate the points from the iListCenterBoundingBox and emit
+  a signal for the current element to be saved into the database
   \param[in] iTrackID  ID for the track to be updated
-  \param[in] iListCenterBoundingBox list of the center of the bounding boxes for the meshes belonging
-  to this track
+  \param[in] iListCenterBoundingBoxes list of the center of the bounding boxes
+  for the meshes belonging to this track
   */
   void UpdatePointsForATrack(unsigned int iTrackID,
                              std::list< double*> iListCenterBoundingBoxes);
