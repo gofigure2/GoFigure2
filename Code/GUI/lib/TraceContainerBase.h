@@ -49,6 +49,13 @@
 #include "boost/numeric/conversion/cast.hpp"
 #include "boost/lexical_cast.hpp"
 
+/**
+ * \class TraceContainerBase
+ * \tparam TContainer boost::multi_index_container of a given TraceStructure
+ * \brief Generic interface for trace container.
+ * More specific container should inherit from this class and get specialized
+ * depending on the kind of trace it contains.
+ * */
 template< class TContainer >
 class TraceContainerBase : public QObject
 {
@@ -83,20 +90,30 @@ public:
   typedef typename MultiIndexContainerType::template index< Visible >::type::iterator
   MultiIndexContainerVisibleIterator;
 
+  /** \brief Constructor
+ * \param[in] iParent Parent to provide ownership (Qt style)
+ * \param[in] iView Visualization for trace
+ * */
   explicit TraceContainerBase( QObject* iParent, QGoImageView3D* iView );
+
+  /** \brief Destructor */
   virtual ~TraceContainerBase();
 
-
+  /** \brief Trace Contaienr */
   MultiIndexContainerType m_Container;
 
   /** \brief Link to the visualization. */
   QGoImageView3D *m_ImageView;
 
+  /** \brief Current Element of the trace type. */
   MultiIndexContainerElementType m_CurrentElement;
 
   // ----------------------------------------------------------------------
 
-  /** \brief Print the container content in the application output */
+  /** \brief Print the container content in the application output.
+ * \tparam TIterator Iterator on one index of boost::multi_index_container
+ * or on the container itself.
+ * */
   template< class TIterator >
   void Print(TIterator iBegin, TIterator iEnd)
   {
@@ -141,6 +158,7 @@ public:
   */
   vtkProperty * GetHighlightedProperty();
 
+  /** \brief Get the CollectionID given a TraceID */
   unsigned int GetCollectionIDOfGivenTraceID( unsigned int iTraceID);
 
   /**
@@ -267,6 +285,7 @@ public:
     using boost::multi_index::get;
     m_Container.get< TIndex >().replace(iIt, temp);
   }
+
   /**
   \brief Insert one element in the container
   \param[in] iE element to be insert in the container
@@ -310,6 +329,7 @@ public:
   */
   bool UpdateCurrentElementFromExistingOne(unsigned int iTraceID);
 
+  /** \brief */
   template< class TIndex >
   bool UpdateCurrentElementFromExistingOne(
     typename MultiIndexContainerType::template index< TIndex >::type::iterator iIt )
