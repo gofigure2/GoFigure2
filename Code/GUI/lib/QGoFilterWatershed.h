@@ -39,8 +39,11 @@
 #include "QGoGUILibConfigure.h"
 
 /**
- * \class QGoFilterChanAndVes
+ * \class QGoFilterWatershed Watershed segmentation algorithm implementation.
+ * Can generate contours and meshes.
+ * Will generate 2D objects if m_Dimension<2, 3D objects in the other case.
  */
+
 class QGOGUILIB_EXPORT QGoFilterWatershed:public QGoFilterSemiAutoBase
 {
   Q_OBJECT

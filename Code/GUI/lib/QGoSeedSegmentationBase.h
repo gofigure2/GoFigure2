@@ -43,10 +43,9 @@ class vtkPoints;
 class vtkPolyData;
 
 /**
- * \class QGoSeedSegmentation
- * \ingroup QGoSeed
- * \brief Base class for all segmentations from seed points
-*/
+ * \class QGoSeedSegmentationBase
+ * \brief Implements common method/signals for all the seed based segmentation methods
+**/
 
 class QGOGUILIB_EXPORT QGoSeedSegmentationBase:public QObject
 {
