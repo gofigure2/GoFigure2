@@ -101,7 +101,7 @@ ContourToMeshFilter< TContainer >::ProcessContours(const ContainerType & iContai
             static_cast< double >( (*it)->GetNumberOfPoints() ) );
           decimate[i]->Update();
 
-          append->AddInput( decimate[i]->GetOutput() );
+          append->AddInputConnection( decimate[i]->GetOutputPort() );
           }
         else
           {
