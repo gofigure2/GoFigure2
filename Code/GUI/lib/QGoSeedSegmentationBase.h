@@ -102,6 +102,8 @@ public:
   /**
    * \brief Specify on which one the segmentation will be applied since the input
    * data is multichannel.
+   * \param[in] iChannel Channel on which want we want to apply the segmentation
+   * algorithm - temporary since channels don't have names yet
    * \param[in] iText Channel on which want we want to apply the segmentation
    * algorithm
    */
