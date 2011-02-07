@@ -42,7 +42,6 @@
 #include "SelectQueryDatabaseHelper.h"
 #include "GoDBRecordSet.h"
 #include "GoDBRecordSetHelper.h"
-#include "GoDBSeriesGridRow.h"
 #include "itkMegaCaptureImport.h"
 #include "GoFigureFileInfoMultiIndexContainerHelper.h"
 
