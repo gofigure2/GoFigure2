@@ -107,20 +107,6 @@ SET( TESTING_DATA_PATH
   CACHE PATH "Directory which contains data for testing."
 )
 
-
-#---------------------------------------------------------------------------
-# SUPERBUILD - ENABLED BY DEFAULT
-#---------------------------------------------------------------------------
-
-OPTION( USE_SUPERBUILD "Use SuperBuild" ON )
-
-IF( USE_SUPERBUILD )
-
-  CMAKE_MINIMUM_REQUIRED( VERSION 2.8.3 )
-  INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/SuperBuild.cmake" )
-  RETURN()
-ELSE()
-
 #---------------------------------------------------------------------------
 # Handle Documentation
 #---------------------------------------------------------------------------
@@ -142,6 +128,20 @@ ELSE()
   IF( UNIX )
     SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
   ENDIF( UNIX )
+
+
+#---------------------------------------------------------------------------
+# SUPERBUILD - ENABLED BY DEFAULT
+#---------------------------------------------------------------------------
+
+OPTION( USE_SUPERBUILD "Use SuperBuild" ON )
+
+IF( USE_SUPERBUILD )
+
+  CMAKE_MINIMUM_REQUIRED( VERSION 2.8.3 )
+  INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/SuperBuild.cmake" )
+  RETURN()
+ELSE()
 
   #---------------------------------------------------------------------------
   # Everything depends on VTK first
