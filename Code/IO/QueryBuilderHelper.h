@@ -87,8 +87,7 @@ std::string GetSelectedAttributes(std::vector<std::string> iListAttributes);
 
 /**
 \brief (iAttribute = iListValues[i] iConditionConnector iAttribute = iListValues[i+1]...)
-\param[in] iAttribute attribute who has to be equal to the iListValues
-\param[in] iListValues list of all the values iAttribute can be equal to
+\param[in] iVectorValues list of all the values iAttribute can be equal to
 \param[in] iConditionConnector AND/OR 
 \tparam T  
 \return the string corresponding to the query part
@@ -163,7 +162,7 @@ empty, no sorting
 \return the string corresponding to the query part
 */
 std::string SelectQueryStream(std::string iTable, std::string iColumn,
-                              std::string iOrderByColumnname = "", std::string iAscDesc = "ASC");
+                              std::string iOrderByColumnName = "", std::string iAscDesc = "ASC");
 
 /**
 \brief SELECT iColumn[i],iColumn[i=1]... FROM iTable ORDER BY iOrderByColumnName iAscDesc;
@@ -185,6 +184,8 @@ std::string SelectQueryStream(std::string iTable, std::vector<std::string > iLis
 \param[in] iOrderByColumnName name of the column by which the results will be sorted, if
 empty, no sorting 
 \param[in] iAscDesc order to sort the results, ascendent by default
+\param[in] iConditions name of the columns separated by comma that are part of the 'where'
+\param[in] Distinct true if no doublon allowed
 \return the string corresponding to the query part 
 */
 std::string SelectQueryStreamCondition(std::string iTable, 
