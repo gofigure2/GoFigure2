@@ -199,6 +199,7 @@ private:
   \param[in,out] ioVectorTableNames names of the tables
   \param[in,out] ioVectorTracesIDs IDs of the traces
   \param[in,out] ioVectorFields names of the database fields
+  \param[in] IncludeChannelIDs 
   */
   void GetVectorsTableNamesTracesIDsAndFields(
     std::vector< std::string > & ioVectorTableNames,
@@ -320,16 +321,16 @@ private:
   void WriteCoordinatesInfoFromDatabase();
 
   /** 
-  \brief transform iName into '<iName>' 
+  \brief put iName within brackets
   \param[in] iName
-  \return '<iName>' 
+  \return iName within brackets
   */
   std::string GetNameWithBrackets(std::string iName);
 
   /** 
-  \brief transform iName into '</iName>' 
+  \brief put iName into slash brackets 
   \param[in] iName
-  \return '</iName>' 
+  \return /iName within brackets 
   */
   std::string GetNameWithSlashBrackets(std::string iName);
 

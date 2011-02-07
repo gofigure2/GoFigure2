@@ -108,7 +108,7 @@ namespace boost
 
 /**
   \class ContourMeshContainer
-  \brief Wraps a boost multi index container of ContourMeshStructure.
+  \brief Wraps a boost::multi_index_container of ContourMeshStructure.
   This class intends to synchronize Contour and Mesh representation in
   the Visualization and in the TableWidget
   \sa ContourMeshStructure QGoTableWidget QGoImageView3D
@@ -134,7 +134,7 @@ public:
   /** \brief Destructor. */
   virtual ~ContourMeshContainer();
 
-  /** */
+  /** \brief Set the Current Time Point*/
   void SetTimePoint(const unsigned int & iT);
 
   /** \brief Display all elements for a given time point

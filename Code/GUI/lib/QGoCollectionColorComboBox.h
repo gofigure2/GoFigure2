@@ -55,13 +55,7 @@ signals:
 
 public slots:
   /**
-  \brief clear the items already in the combobox,displayed the one in the iDataFromList,
-  the items to add/delete and adjust the text to add an item according to the iCollectionName.
-  \param[in] iDataFromList contains the names and QColor of the items to be
-  displayed in the combobox
-  \param[in] iCollectionName name to use in the add an item
-  \overload QGoColorComboBox::SetItemsFromListWithColor(
-  std::list< ItemColorComboboxData > iDataFromList)
+  \overload
   */
   void SetItemsFromListWithColor(std::list< ItemColorComboboxData > iDataFromList,
                                  std::string iCollectionName);

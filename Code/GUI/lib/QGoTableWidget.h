@@ -234,14 +234,14 @@ public slots:
                                                        Qt::CheckState iState);
 
   /**
-  \brief convert the text in the selection to a QString with '\n' and '\t'
+  \brief convert the text in the selection to a QString with  anti slash n and anti slash t
   and put it in the Clipboard to be pasted in other applications
   */
   void CopySelection();
 
   /**
   \brief convert the text in the all table and the columns namse
-  to a QString with '\n' and '\t' and put it in the Clipboard to be
+  to a QString with anti slash n and anti slash t and put it in the Clipboard to be
   pasted in other applications
   */
   void CopyTable();
