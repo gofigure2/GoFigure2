@@ -54,7 +54,8 @@ class QGoFilterWatershed;
 /**
  * \class QGoMeshSeedSegmentation
  * \ingroup QGoMeshSeed
- * \brief Interface between the seed segmentation filters and the base seed dockwidget
+ * \brief Interface between the segmentation filters and the seed base widget.
+ * Generates meshes.
 */
 
 class QGOGUILIB_EXPORT QGoMeshSeedSegmentation:public QGoSeedSegmentationBase

@@ -41,8 +41,11 @@
 class vtkPolyData;
 
 /**
- * \class QGoFilterShape
+ * \class QGoFilterShape Shape segmentation algorithm implementation.
+ * Can generate circles, spheres, squares and cubes.
+  * Will generate 2D objects if m_Dimension<2, 3D objects in the other case.
  */
+
 class QGOGUILIB_EXPORT QGoFilterShape:public QGoFilterSemiAutoBase
 {
   Q_OBJECT
