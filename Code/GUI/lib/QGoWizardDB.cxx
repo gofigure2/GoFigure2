@@ -33,7 +33,6 @@
 =========================================================================*/
 #include "QGoWizardDB.h"
 
-#include "QGoCreateDataBasePage.h"
 #include "QGoOpenCreateProjectPage.h"
 #include "QGoOpenCreateImgSessionPage.h"
 #include "QGoCreateImgSessionPage.h"
@@ -86,7 +85,6 @@ QGoWizardDB::QGoWizardDB(QWidget *iParent):
   this->setButton (QWizard::FinishButton, finishButton);
   this->m_ConnectServerPage = new QGoConnectServerPage;
   setPage(ConnectServerPageID, this->m_ConnectServerPage);
-  //setPage(CreateDataBasePageID, new QGoCreateDataBasePage);
   setPage(OpenOrCreateProjectPageID, new QGoOpenCreateProjectPage);
   setPage(OpenOrCreateImgSessionPageID, new QGoOpenCreateImgSessionPage);
   setPage(CreateImgSessionPageID, new QGoCreateImgSessionPage);
