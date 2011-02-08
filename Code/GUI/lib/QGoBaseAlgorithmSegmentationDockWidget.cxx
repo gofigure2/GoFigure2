@@ -35,7 +35,7 @@
 #include "QGoBaseAlgorithmSegmentationDockWidget.h"
 
 //---------------------------------------------------------------------------//
-QGoBaseAlgorithmSegmentationDockWidget::QGoBaseAlgorithmSegmentationDockWidget(QWidget *iParent):QWidget(iParent)
+QGoBaseAlgorithmSegmentationDockWidget::QGoBaseAlgorithmSegmentationDockWidget(QWidget *iParent) : QWidget(iParent)
 {
   this->setupUi(this);
 
@@ -57,7 +57,8 @@ QGoBaseAlgorithmSegmentationDockWidget::QGoBaseAlgorithmSegmentationDockWidget(Q
 //---------------------------------------------------------------------------//
 QGoBaseAlgorithmSegmentationDockWidget::
 ~QGoBaseAlgorithmSegmentationDockWidget()
-{}
+{
+}
 
 //---------------------------------------------------------------------------//
 

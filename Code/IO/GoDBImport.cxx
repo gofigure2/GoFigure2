@@ -62,7 +62,8 @@ GoDBImport::GoDBImport(std::string iServerName, std::string iLogin,
 
 //--------------------------------------------------------------------------
 GoDBImport::~GoDBImport()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 
@@ -148,22 +149,22 @@ std::string GoDBImport::SaveNoTracesEntities(std::map< int, int > & ioMapColorID
       if ( NameEntity == "color" )
         {
         LineContent = this->SaveImportedEntitiesInDatabase< GoDBColorRow >(
-          EntitiesNumber, ioMapColorIDs);
+            EntitiesNumber, ioMapColorIDs);
         }
       if ( NameEntity == "celltype" )
         {
         LineContent = this->SaveImportedEntitiesInDatabase< GoDBCellTypeRow >(
-          EntitiesNumber, ioMapCellTypeIDs);
+            EntitiesNumber, ioMapCellTypeIDs);
         }
       if ( NameEntity == "subcellulartype" )
         {
         LineContent = this->SaveImportedEntitiesInDatabase< GoDBSubCellTypeRow >(
-          EntitiesNumber, ioMapSubCellTypeIDs);
+            EntitiesNumber, ioMapSubCellTypeIDs);
         }
       if ( NameEntity == "coordinate" )
         {
         LineContent = this->SaveImportedEntitiesInDatabase< GoDBCoordinateRow >(
-          EntitiesNumber, ioMapCoordIDs);
+            EntitiesNumber, ioMapCoordIDs);
         }
       if ( NameEntity != "color" && NameEntity != "celltype"
            && NameEntity != "subcellulartype" && NameEntity != "coordinate" )

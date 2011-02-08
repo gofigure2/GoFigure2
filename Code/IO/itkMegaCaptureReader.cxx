@@ -49,7 +49,7 @@
 namespace itk
 {
 //--------------------------------------------------------------------------
-MegaCaptureReader::MegaCaptureReader():
+MegaCaptureReader::MegaCaptureReader() :
   m_FileType(GoFigure::PNG),
   m_TimeBased(true),
   m_Modified(true)
@@ -402,4 +402,5 @@ MegaCaptureReader::GetOutputs()
 {
   return m_OutputImageMap;
 }
+
 } //end of namespace

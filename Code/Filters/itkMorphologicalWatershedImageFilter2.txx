@@ -194,5 +194,6 @@ MorphologicalWatershedImageFilter2< TInputImage, TOutputImage >
      << static_cast< typename NumericTraits< InputImagePixelType >::PrintType >(m_Level)
      << std::endl;
 }
+
 } // end namespace itk
 #endif

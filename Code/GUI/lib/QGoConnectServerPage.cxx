@@ -43,7 +43,7 @@
 #include <iostream>
 #include <list>
 
-QGoConnectServerPage::QGoConnectServerPage(QWidget *iParent):
+QGoConnectServerPage::QGoConnectServerPage(QWidget *iParent) :
   QWizardPage(iParent)
 {
   this->m_ImgSessionName.clear();
@@ -170,9 +170,9 @@ std::list< std::string > QGoConnectServerPage::ListGofigureDatabases() const
     //First, create the connection to the database named vectListDB[i]and check
     // it is open:
     std::pair< bool, vtkMySQLDatabase * > DatabaseConnection = ConnectToDatabase(
-      field("ServerName").toString().toStdString(),
-      field("User").toString().toStdString(),
-      field("Password").toString().toStdString(), vectListDB[i]);
+        field("ServerName").toString().toStdString(),
+        field("User").toString().toStdString(),
+        field("Password").toString().toStdString(), vectListDB[i]);
     if ( !DatabaseConnection.first )
       {
       std::cout << "Cannot check if " << vectListDB[i].c_str()
@@ -215,9 +215,9 @@ void QGoConnectServerPage::OpenConnectionToServer() const
   if ( this->m_ConnectionServer.second == 0 )
     {
     m_ConnectionServer = ConnectToServer(
-      field("ServerName").toString().toStdString(),
-      field("User").toString().toStdString(),
-      field("Password").toString().toStdString() );
+        field("ServerName").toString().toStdString(),
+        field("User").toString().toStdString(),
+        field("Password").toString().toStdString() );
     }
 }
 

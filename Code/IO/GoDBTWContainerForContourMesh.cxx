@@ -34,7 +34,7 @@
 #include "GoDBTWContainerForContourMesh.h"
 
 GoDBTWContainerForContourMesh::GoDBTWContainerForContourMesh(
-  std::string iTraceName, std::string iCollectionName, int iImgSessionID):
+  std::string iTraceName, std::string iCollectionName, int iImgSessionID) :
   GoDBTableWidgetContainer(iTraceName, iCollectionName, iImgSessionID)
 {
   m_ColumnsInfos = GetColumnsInfoForTraceTable();
@@ -44,7 +44,8 @@ GoDBTWContainerForContourMesh::GoDBTWContainerForContourMesh(
 
 //--------------------------------------------------------------------------
 GoDBTWContainerForContourMesh::~GoDBTWContainerForContourMesh()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 
@@ -106,7 +107,7 @@ void GoDBTWContainerForContourMesh::FillColumnShowHide(vtkMySQLDatabase *iDataba
   FieldWithValue                ImgSession = { "ImagingsessionID", ConvertToString< int >(this->m_ImgSessionID), "=" };
   Condition[0] = ImgSession;
   std::list< unsigned int > VectorMinTimePoint = GetAllSelectedValuesFromTwoTables(
-    iDatabaseConnector, "imagingsession", "coordinate", "TCoord", JoinCondition, Condition);
+      iDatabaseConnector, "imagingsession", "coordinate", "TCoord", JoinCondition, Condition);
 
   std::string                               MinTimePoint = ConvertToString< unsigned int >( VectorMinTimePoint.front() );
   std::vector< std::vector< std::string > > Values;

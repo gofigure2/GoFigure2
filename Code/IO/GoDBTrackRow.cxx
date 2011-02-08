@@ -39,7 +39,7 @@
 
 #include "vtkSmartPointer.h"
 
-GoDBTrackRow::GoDBTrackRow():GoDBTraceRow()
+GoDBTrackRow::GoDBTrackRow() : GoDBTraceRow()
 {
   this->InitializeMap();
 }
@@ -50,7 +50,7 @@ GoDBTrackRow::GoDBTrackRow():GoDBTraceRow()
 GoDBTrackRow::GoDBTrackRow(vtkMySQLDatabase *DatabaseConnector,
                            GoDBCoordinateRow Min, GoDBCoordinateRow Max,
                            unsigned int ImgSessionID,
-                           std::string TraceVisu):GoDBTraceRow()
+                           std::string TraceVisu) : GoDBTraceRow()
 {
   this->InitializeMap();
   this->SetImgSessionID(ImgSessionID);
@@ -68,7 +68,7 @@ GoDBTrackRow::GoDBTrackRow(vtkMySQLDatabase *DatabaseConnector,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-GoDBTrackRow::GoDBTrackRow(unsigned int ImagingSessionID):
+GoDBTrackRow::GoDBTrackRow(unsigned int ImagingSessionID) :
   GoDBTraceRow()
 {
   this->InitializeMap();
@@ -79,7 +79,7 @@ GoDBTrackRow::GoDBTrackRow(unsigned int ImagingSessionID):
 
 //-------------------------------------------------------------------------
 GoDBTrackRow::GoDBTrackRow(unsigned int iExistingID,
-                           vtkMySQLDatabase *iDatabaseConnector):GoDBTraceRow()
+                           vtkMySQLDatabase *iDatabaseConnector) : GoDBTraceRow()
 {
   this->InitializeMap();
   this->SetValuesForSpecificID(iExistingID, iDatabaseConnector);
@@ -90,7 +90,7 @@ GoDBTrackRow::GoDBTrackRow(unsigned int iExistingID,
 //-------------------------------------------------------------------------
 GoDBTrackRow::GoDBTrackRow(vtkMySQLDatabase *DatabaseConnector,
                            vtkPolyData *TraceVisu, GoDBCoordinateRow Min, GoDBCoordinateRow Max,
-                           unsigned int ImgSessionID):GoDBTraceRow()
+                           unsigned int ImgSessionID) : GoDBTraceRow()
 {
   this->InitializeMap();
   this->SetImgSessionID(ImgSessionID);

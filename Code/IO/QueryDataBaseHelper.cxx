@@ -102,7 +102,7 @@ vtkMySQLDatabase * OpenDatabaseConnection(
   std::string Password, std::string DBName)
 {
   std::pair< bool, vtkMySQLDatabase * > ConnectionDatabase = ConnectToDatabase(
-    ServerName, login, Password, DBName);
+      ServerName, login, Password, DBName);
 
   if ( !ConnectionDatabase.first )
     {

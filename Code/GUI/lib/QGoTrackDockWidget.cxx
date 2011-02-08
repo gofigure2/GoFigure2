@@ -39,7 +39,7 @@
 
 //-------------------------------------------------------------------------
 QGoTrackDockWidget::QGoTrackDockWidget(
-  QWidget *iParent):QDockWidget(iParent)
+  QWidget *iParent) : QDockWidget(iParent)
 {
   this->setupUi(this);
   QIcon trackicon;
@@ -80,7 +80,8 @@ QGoTrackDockWidget::QGoTrackDockWidget(
 //-------------------------------------------------------------------------
 QGoTrackDockWidget::
 ~QGoTrackDockWidget()
-{}
+{
+}
 
 //-------------------------------------------------------------------------
 

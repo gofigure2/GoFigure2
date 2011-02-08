@@ -60,7 +60,7 @@
  * \brief Constructor
  * @param iParent
  */
-QGoTabImageView3D::QGoTabImageView3D(QWidget *iParent):
+QGoTabImageView3D::QGoTabImageView3D(QWidget *iParent) :
   QGoTabImageViewNDBase(iParent)
 {
   setupUi(this);
@@ -352,7 +352,8 @@ void QGoTabImageView3D::CreateModeActions()
 
 //--------------------------------------------------------------------------
 QGoTabImageView3D::~QGoTabImageView3D()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 

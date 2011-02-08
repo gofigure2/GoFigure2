@@ -33,9 +33,10 @@
 =========================================================================*/
 #include "QGoDBSubCellTypeManager.h"
 
-QGoDBSubCellTypeManager::QGoDBSubCellTypeManager (QWidget *iParent):
+QGoDBSubCellTypeManager::QGoDBSubCellTypeManager (QWidget *iParent) :
   QGoDBNameDescEntityManager(iParent, "subcellulartype", 0)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 

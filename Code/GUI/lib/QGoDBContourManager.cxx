@@ -40,7 +40,7 @@
 #include <QMenu>
 #include "GoDBContourRow.h"
 
-QGoDBContourManager::QGoDBContourManager(int iImgSessionID, QWidget *iparent):
+QGoDBContourManager::QGoDBContourManager(int iImgSessionID, QWidget *iparent) :
   QGoDBTraceManager(), m_ContourContainerInfoForVisu(NULL)
 {
   this->SetInfo(iImgSessionID, iparent);
@@ -185,10 +185,10 @@ unsigned int QGoDBContourManager::SaveNewContourFromVisu(
   GoDBContourRow NewContour(this->m_ImgSessionID);
 
   int NewContourID = this->CreateNewTraceInDBFromVisu< GoDBContourRow >(
-    iXCoordMin, iYCoordMin, iZCoordMin, *this->m_CurrentTimePoint,
-    iXCoordMax, iYCoordMax, iZCoordMax, iTraceNodes,
-    *this->m_SelectedColorData,
-    iDatabaseConnector, NewContour, iMeshID);
+      iXCoordMin, iYCoordMin, iZCoordMin, *this->m_CurrentTimePoint,
+      iXCoordMax, iYCoordMax, iZCoordMax, iTraceNodes,
+      *this->m_SelectedColorData,
+      iDatabaseConnector, NewContour, iMeshID);
 
   double *rgba = this->GetVectorFromQColor(this->m_SelectedColorData->second);
 

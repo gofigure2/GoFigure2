@@ -38,7 +38,7 @@
 #include <QProgressDialog>
 
 //-------------------------------------------------------------------------
-QGoLsmToMegaExportDialog::QGoLsmToMegaExportDialog(QWidget *iParent):QDialog(iParent), m_LsmPath(""),
+QGoLsmToMegaExportDialog::QGoLsmToMegaExportDialog(QWidget *iParent) : QDialog(iParent), m_LsmPath(""),
   m_LsmName(""), m_MegaPath(""), m_FileFormatIsPNG(true), m_Counter(0)
 {
   this->setupUi(this);

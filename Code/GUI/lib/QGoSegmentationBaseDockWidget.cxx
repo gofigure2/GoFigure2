@@ -40,7 +40,8 @@
 
 //---------------------------------------------------------------------------//
 QGoSegmentationBaseDockWidget::QGoSegmentationBaseDockWidget(QWidget *iParent, vtkPoints *seeds,
-                                                             std::vector< vtkImageData * > *iOriginalImage):QDockWidget(
+                                                             std::vector< vtkImageData * > *iOriginalImage) :
+  QDockWidget(
     iParent)
 {
   this->setupUi(this);
@@ -112,7 +113,8 @@ QGoSegmentationBaseDockWidget::QGoSegmentationBaseDockWidget(QWidget *iParent, v
 //---------------------------------------------------------------------------//
 QGoSegmentationBaseDockWidget::
 ~QGoSegmentationBaseDockWidget()
-{}
+{
+}
 
 //---------------------------------------------------------------------------//
 

@@ -44,7 +44,7 @@
 #include <QLabel>
 #include <QTextLayout>
 
-QGoDBInitCreateUserPage::QGoDBInitCreateUserPage(QWidget *iParent):
+QGoDBInitCreateUserPage::QGoDBInitCreateUserPage(QWidget *iParent) :
   QWizardPage(iParent)
 {
   QFont tfont;

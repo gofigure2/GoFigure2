@@ -37,12 +37,14 @@
 #include <QDebug>
 
 ContourContainer::ContourContainer(QObject *iParent,
-                                   QGoImageView3D *iView):ContourMeshContainer(iParent, iView)
-{}
+                                   QGoImageView3D *iView) : ContourMeshContainer(iParent, iView)
+{
+}
 
 ContourContainer::
 ~ContourContainer()
-{}
+{
+}
 
 std::vector< vtkActor * >
 ContourContainer::AddTrace(vtkPolyData *iNode, vtkProperty *iProperty)

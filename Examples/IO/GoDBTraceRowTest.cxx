@@ -33,13 +33,17 @@
 =========================================================================*/
 #include "GoDBTraceRow.h"
 
-class GoDBTraceRowTestHelper:public GoDBTraceRow
+class GoDBTraceRowTestHelper : public GoDBTraceRow
 {
 public:
-  GoDBTraceRowTestHelper():GoDBTraceRow() {}
-  ~GoDBTraceRowTestHelper() {}
+  GoDBTraceRowTestHelper() : GoDBTraceRow() {
+  }
+  ~GoDBTraceRowTestHelper() {
+  }
 
-  int SaveInDB(vtkMySQLDatabase *) { return 0; }
+  int SaveInDB(vtkMySQLDatabase *) {
+    return 0;
+  }
 };
 
 int main(int argc, char **argv)

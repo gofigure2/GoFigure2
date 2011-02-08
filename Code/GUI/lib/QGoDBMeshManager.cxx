@@ -37,7 +37,7 @@
 #include <iostream>
 #include <sstream>
 
-QGoDBMeshManager::QGoDBMeshManager(int iImgSessionID, QWidget *iparent):
+QGoDBMeshManager::QGoDBMeshManager(int iImgSessionID, QWidget *iparent) :
   QGoDBTraceManager(), m_MeshContainerInfoForVisu(NULL), m_SelectedCellType(NULL),
   m_SelectedSubCellType(NULL)
 {
@@ -199,8 +199,8 @@ unsigned int QGoDBMeshManager::SaveNewMeshFromVisu(
 
   //save the intensities for each channel !!!
   unsigned int NewMeshID = this->m_CollectionOfTraces->CreateNewTraceInDB< GoDBMeshRow >(
-    NewMesh, iDatabaseConnector, *this->m_SelectedColorData,
-    ss_atoi< unsigned int >(this->m_SelectedCollectionData->first) );
+      NewMesh, iDatabaseConnector, *this->m_SelectedColorData,
+      ss_atoi< unsigned int >(this->m_SelectedCollectionData->first) );
 
   double *rgba = this->GetVectorFromQColor(this->m_SelectedColorData->second);
   this->m_MeshContainerInfoForVisu->UpdateCurrentElementFromDB(
@@ -679,7 +679,7 @@ QGoDBMeshManager::GetMeshesWithTimePointInfToTheCheckedOne(
   if ( InfoSplitMesh.first != 0 )
     {
     oListMeshesTimePointInf = this->m_CollectionOfTraces->GetTraceIDsWithTimePointInf(
-      iDatabaseConnector, iListMeshesBelongingToTrack, InfoSplitMesh.second);
+        iDatabaseConnector, iListMeshesBelongingToTrack, InfoSplitMesh.second);
     //oListMeshesTimePointSup.push_back(InfoSplitMesh.first);
     }
   return oListMeshesTimePointInf;

@@ -34,7 +34,7 @@
 #include <vtkUnicodeString.h>
 #include "GoDBTWContainerForTrack.h"
 
-GoDBTWContainerForTrack::GoDBTWContainerForTrack(int iImgSessionID):
+GoDBTWContainerForTrack::GoDBTWContainerForTrack(int iImgSessionID) :
   GoDBTWContainerForTrackLineage("track", "lineage", iImgSessionID),
   m_TrackAttributes(NULL)
 {
@@ -45,7 +45,8 @@ GoDBTWContainerForTrack::GoDBTWContainerForTrack(int iImgSessionID):
 
 //--------------------------------------------------------------------------
 GoDBTWContainerForTrack::~GoDBTWContainerForTrack()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 

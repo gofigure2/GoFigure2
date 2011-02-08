@@ -37,21 +37,28 @@
 
 #include "vtkImageData.h"
 
-class QGoTabImageViewElementBaseTestHelper:
+class QGoTabImageViewElementBaseTestHelper :
   public QGoTabImageViewElementBase
 {
 public:
-  explicit QGoTabImageViewElementBaseTestHelper(QWidget *iParent = 0):
-    QGoTabImageViewElementBase(iParent) {}
-  virtual ~QGoTabImageViewElementBaseTestHelper() {}
+  explicit QGoTabImageViewElementBaseTestHelper(QWidget *iParent = 0) :
+    QGoTabImageViewElementBase(iParent) {
+  }
+  virtual ~QGoTabImageViewElementBaseTestHelper() {
+  }
 
   GoFigure::TabDimensionType GetTabDimensionType() const
-  { return GoFigure::TWO_D; }
+  {
+    return GoFigure::TWO_D;
+  }
 
-  virtual void Update() {}
+  virtual void Update() {
+  }
 
-  virtual void WriteSettings() {}
-  virtual void ReadSettings() {}
+  virtual void WriteSettings() {
+  }
+  virtual void ReadSettings() {
+  }
 public slots:
   virtual void ShowAllChannels(bool iChecked)
   {
@@ -64,16 +71,20 @@ public slots:
   }
 
   virtual void TakeSnapshot()
-  {}
+  {
+  }
 protected:
   virtual void PopulateMenus(QObject *iPlugin)
   {
     (void)iPlugin;
   }
 
-  virtual void GetBackgroundColorFromImageViewer() {}
-  virtual void SetBackgroundColorToImageViewer() {}
-  virtual void SetImageToImageViewer(vtkImageData *) {}
+  virtual void GetBackgroundColorFromImageViewer() {
+  }
+  virtual void SetBackgroundColorToImageViewer() {
+  }
+  virtual void SetImageToImageViewer(vtkImageData *) {
+  }
   virtual int * GetImageCoordinatesFromWorldCoordinates(double iPos[3])
   {
     (void)iPos;
@@ -81,9 +92,11 @@ protected:
   }
 
   virtual void RemoveActorFromViewer(const int &, vtkActor *)
-  {}
+  {
+  }
   virtual void DisplayActorInViewer(const int &, vtkActor *)
-  {}
+  {
+  }
 
   virtual std::vector< vtkActor * > AddContour(vtkPolyData *,
                                                vtkProperty *iProperty = NULL)
@@ -92,7 +105,8 @@ protected:
     return std::vector< vtkActor * >();
   }
 
-  virtual void SetSlice(int, int *) {}
+  virtual void SetSlice(int, int *) {
+  }
 };
 
 int main(int argc, char **argv)

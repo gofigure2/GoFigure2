@@ -43,7 +43,7 @@
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
 
-  #include "QGoVideoRecorder.h"
+#include "QGoVideoRecorder.h"
 
 #endif /* ENABLEVIDEORECORD */
 
@@ -113,7 +113,7 @@
 #include "vtkViewImage3D.h"
 
 //-------------------------------------------------------------------------
-QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent):
+QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   QGoTabElementBase(iParent),
   m_LSMReader(0),
   m_Image(0),

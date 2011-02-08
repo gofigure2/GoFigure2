@@ -48,7 +48,7 @@
 QGoContourSeedSegmentation::QGoContourSeedSegmentation(QWidget *parentW,
                                                        vtkPoints *seeds,
                                                        std::vector< vtkSmartPointer< vtkImageData > > *iOriginalImage,
-                                                       int iSampling):
+                                                       int iSampling) :
   QGoSeedSegmentationBase(parentW, seeds, iSampling),
   m_OriginalImage(iOriginalImage)
 {
@@ -97,6 +97,7 @@ QGoContourSeedSegmentation::QGoContourSeedSegmentation(QWidget *parentW,
 //--------------------------------------------------------------------------
 QGoContourSeedSegmentation::
 ~QGoContourSeedSegmentation()
-{}
+{
+}
 
 //--------------------------------------------------------------------------

@@ -34,7 +34,7 @@
 #include "GoDBChannelRow.h"
 #include "GoDBRecordSetHelper.h"
 
-GoDBChannelRow::GoDBChannelRow():GoDBRow()
+GoDBChannelRow::GoDBChannelRow() : GoDBRow()
 {
   this->InitializeMap();
 }
@@ -64,7 +64,7 @@ int GoDBChannelRow::SaveInDB(vtkMySQLDatabase *DatabaseConnector)
   if ( ChannelID == -1 )
     {
     ChannelID = AddOnlyOneNewObjectInTable< GoDBChannelRow >(
-      DatabaseConnector, "channel", *this, "ChannelID");
+        DatabaseConnector, "channel", *this, "ChannelID");
     }
   return ChannelID;
 }

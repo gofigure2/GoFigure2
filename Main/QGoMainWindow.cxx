@@ -86,7 +86,7 @@
 #include <list>
 
 //--------------------------------------------------------------------------
-QGoMainWindow::QGoMainWindow(QWidget *iParent, Qt::WindowFlags iFlags):
+QGoMainWindow::QGoMainWindow(QWidget *iParent, Qt::WindowFlags iFlags) :
   QMainWindow(iParent, iFlags)
 {
   QString title("<*)0|00|0>< ~~ <*)0|00|0><     GoFigure    ><0|00|0(*> ~~ ><0|00|0(*>");
@@ -226,10 +226,10 @@ void QGoMainWindow::CreateSignalSlotsConnection()
 void QGoMainWindow::on_actionOpen_Single_File_triggered()
 {
   QString filename = QFileDialog::getOpenFileName(
-    this,
-    tr("Select Image"), "",
-    tr("Images (*.png *.bmp *.jpg *.jpeg *.tiff *.tif *.mha *.mhd *.img *.lsm)")
-    );
+      this,
+      tr("Select Image"), "",
+      tr("Images (*.png *.bmp *.jpg *.jpeg *.tiff *.tif *.mha *.mhd *.img *.lsm)")
+      );
 
   if ( !filename.isEmpty() )
     {
@@ -243,10 +243,10 @@ void QGoMainWindow::on_actionOpen_Single_File_triggered()
 void QGoMainWindow::on_actionOpen_MegaCapture_Files_triggered()
 {
   QString filename = QFileDialog::getOpenFileName(
-    this,
-    tr("Select One Image from the Dataset"), "",
-    tr("Images (*.png *.tif *.tiff *.jpg *.jpeg)")
-    );
+      this,
+      tr("Select One Image from the Dataset"), "",
+      tr("Images (*.png *.tif *.tiff *.jpg *.jpeg)")
+      );
 
   if ( !filename.isEmpty() )
     {
@@ -1159,8 +1159,8 @@ void QGoMainWindow::UpdateRecentFileActions(QStringList list,
     if ( j < list.count() )
       {
       QString text = tr("&%1 %2 ")
-                     .arg(j + 1)
-                     .arg( strippedName(list[j]) );
+        .arg(j + 1)
+        .arg( strippedName(list[j]) );
 
       recentFileActions[j]->setText(text);
       recentFileActions[j]->setData(list[j]);
@@ -1243,7 +1243,7 @@ void QGoMainWindow::AddSetUpDatabaseMenu()
   if ( NumberOfCurrentActions != NumberOfActionsIfSetUpDB )
     {
     actionSet_Up_Database = new QAction(
-      tr("Set Up Database"), this->menuDatabase);
+        tr("Set Up Database"), this->menuDatabase);
     this->m_DatabaseSetUp = false;
     this->menuDatabase->addAction(actionSet_Up_Database);
     this->actionSet_Up_Database->setEnabled(true);

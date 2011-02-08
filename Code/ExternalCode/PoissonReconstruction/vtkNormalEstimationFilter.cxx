@@ -73,9 +73,12 @@ struct SurfacePoint {
   char isVisited;
 
   // simple constructor to initialise the members
-  SurfacePoint():neighbors( vtkIdList::New() ), isVisited(0) {}
-  ~SurfacePoint() { delete[] costs; neighbors->Delete(); }
-};
+  SurfacePoint() : neighbors( vtkIdList::New() ), isVisited(0) {
+  }
+  ~SurfacePoint() {
+    delete[] costs; neighbors->Delete();
+  }
+  };
 
 vtkStandardNewMacro(vtkNormalEstimationFilter);
 
@@ -318,7 +321,7 @@ void vtkNormalEstimationFilter::ComputeCostForMST(vtkDataSet *input)
     for ( j = 0; j < p->neighbors->GetNumberOfIds(); j++ )
       {
       p->costs[j] = 1.0
-                    - fabs( vtkMath::Dot(p->n, m_SurfacePoints[p->neighbors->GetId(j)].n) );
+        - fabs( vtkMath::Dot(p->n, m_SurfacePoints[p->neighbors->GetId(j)].n) );
       }
     }
 }
@@ -428,12 +431,12 @@ int vtkNormalEstimationFilter::RequestData(
   // get the input
   vtkInformation *inInfo = inputVector[0]->GetInformationObject(0);
   vtkDataSet *    input = vtkDataSet::SafeDownCast(
-    inInfo->Get( vtkDataObject::DATA_OBJECT() ) );
+      inInfo->Get( vtkDataObject::DATA_OBJECT() ) );
 
   // get the output
   vtkInformation *outInfo = outputVector->GetInformationObject(0);
   vtkPolyData *   output = vtkPolyData::SafeDownCast(
-    outInfo->Get( vtkDataObject::DATA_OBJECT() ) );
+      outInfo->Get( vtkDataObject::DATA_OBJECT() ) );
 
   const vtkIdType COUNT = input->GetNumberOfPoints();
 

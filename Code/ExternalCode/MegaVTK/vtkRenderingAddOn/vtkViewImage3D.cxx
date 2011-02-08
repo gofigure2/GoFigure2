@@ -157,11 +157,13 @@ vtkCxxRevisionMacro(vtkViewImage3D, "$Revision: 501 $");
 vtkStandardNewMacro(vtkViewImage3D);
 
 //----------------------------------------------------------------------------
-class VTK_RENDERINGADDON2_EXPORT ImageActorCallback:public vtkCommand
+class VTK_RENDERINGADDON2_EXPORT ImageActorCallback : public vtkCommand
 {
 public:
 
-  static ImageActorCallback * New() { return new ImageActorCallback; }
+  static ImageActorCallback * New() {
+    return new ImageActorCallback;
+  }
 
   void Execute( vtkObject *caller,
                 unsigned long event,
@@ -186,8 +188,10 @@ public:
 
   vtkImageActor *Actor;
 protected:
-  ImageActorCallback():Actor(0) {}
-  ~ImageActorCallback() {}
+  ImageActorCallback() : Actor(0) {
+  }
+  ~ImageActorCallback() {
+  }
 };
 
 //----------------------------------------------------------------------------
@@ -808,8 +812,8 @@ vtkViewImage3D::ComputeDistances(double *n, double *origin)
     {
     double *point = prop_temp->GetCenter();
     double  distance = n[0] * ( point[0] - origin[0] )
-                       + n[1] * ( point[1] - origin[1] )
-                       + n[2] * ( point[2] - origin[2] );
+      + n[1] * ( point[1] - origin[1] )
+      + n[2] * ( point[2] - origin[2] );
 
     // condition on distance to the plane
     //if(abs(distance) < 50)
@@ -859,8 +863,8 @@ vtkViewImage3D::ComputeDistancesToSquare(vtkPlanes *planes)
       double *n = planes->GetPlane(i)->GetNormal();
       double *origin = planes->GetPlane(i)->GetOrigin();
       double  distance = n[0] * ( point[0] - origin[0] )
-                         + n[1] * ( point[1] - origin[1] )
-                         + n[2] * ( point[2] - origin[2] );
+        + n[1] * ( point[1] - origin[1] )
+        + n[2] * ( point[2] - origin[2] );
 
       if ( distance > 0 )
         {

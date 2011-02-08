@@ -52,9 +52,10 @@
 /**
  * \brief Constructor
  */
-LSMToMegaCapture::LSMToMegaCapture():m_Plaque(0), m_Row(0),
+LSMToMegaCapture::LSMToMegaCapture() : m_Plaque(0), m_Row(0),
   m_Column(0), m_XTile(0), m_YTile(0), m_ZTile(0)
-{}
+{
+}
 
 /**
  * \brief Destructor

@@ -44,7 +44,7 @@
 #include "vtkLookupTable.h"
 
 //--------------------------------------------------------------------------
-TraceStructure::TraceStructure():TraceID(0), CollectionID(0),
+TraceStructure::TraceStructure() : TraceID(0), CollectionID(0),
   ActorXY(NULL), ActorXZ(NULL), ActorYZ(NULL), ActorXYZ(NULL), Nodes(NULL),
   Highlighted(false), Visible(false)
 {
@@ -67,7 +67,7 @@ TraceStructure::TraceStructure(
   const double & r,
   const double & g,
   const double & b,
-  const double & alpha):
+  const double & alpha) :
   TraceID(iTraceID), CollectionID(iCollectionID),
   Nodes(iNodes), Highlighted(iHighlighted), Visible(iVisible)
 {
@@ -98,7 +98,7 @@ TraceStructure::TraceStructure(const unsigned int & iTraceID,
                                vtkPolyData *iNodes,
                                const bool & iHighlighted,
                                const bool & iVisible,
-                               double iRgba[4]):
+                               double iRgba[4]) :
   TraceID(iTraceID), CollectionID(iCollectionID),
   Nodes(iNodes), Highlighted(iHighlighted), Visible(iVisible)
 {
@@ -135,7 +135,7 @@ TraceStructure::TraceStructure(const unsigned int & iTraceID,
                                const double & r,
                                const double & g,
                                const double & b,
-                               const double & alpha):
+                               const double & alpha) :
   TraceID(iTraceID), CollectionID(iCollectionID),
   ActorXY(iActorXY), ActorXZ(iActorXZ),
   ActorYZ(iActorYZ), ActorXYZ(iActorXYZ), Nodes(iNodes),
@@ -150,7 +150,7 @@ TraceStructure::TraceStructure(const unsigned int & iTraceID,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-TraceStructure::TraceStructure(const TraceStructure & iE):
+TraceStructure::TraceStructure(const TraceStructure & iE) :
   TraceID(iE.TraceID), CollectionID(iE.CollectionID), ActorXY(iE.ActorXY),
   ActorXZ(iE.ActorXZ), ActorYZ(iE.ActorYZ), ActorXYZ(iE.ActorXYZ),
   Nodes(iE.Nodes), Highlighted(iE.Highlighted), Visible(iE.Visible)
@@ -166,7 +166,8 @@ TraceStructure::TraceStructure(const TraceStructure & iE):
 //--------------------------------------------------------------------------
 TraceStructure::
 ~TraceStructure()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 

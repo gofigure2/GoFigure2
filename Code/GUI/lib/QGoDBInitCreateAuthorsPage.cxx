@@ -45,7 +45,7 @@
 #include <QDir>
 #include <QPushButton>
 
-QGoDBInitCreateAuthorsPage::QGoDBInitCreateAuthorsPage(QWidget *iParent):
+QGoDBInitCreateAuthorsPage::QGoDBInitCreateAuthorsPage(QWidget *iParent) :
   QWizardPage(iParent)
 {
   QFont tfont;
@@ -171,7 +171,7 @@ void QGoDBInitCreateAuthorsPage::OpenDBConnection()
   if ( this->m_DatabaseConnector == 0 )
     {
     m_DatabaseConnector = OpenDatabaseConnection(
-      this->m_Server, this->m_User, this->m_Password, this->m_DBName);
+        this->m_Server, this->m_User, this->m_Password, this->m_DBName);
     }
 }
 

@@ -34,7 +34,7 @@
 #include "GoDBAuthorRow.h"
 #include "GoDBRecordSetHelper.h"
 
-GoDBAuthorRow::GoDBAuthorRow():GoDBRow()
+GoDBAuthorRow::GoDBAuthorRow() : GoDBRow()
 {
   this->InitializeMap();
 }
@@ -62,7 +62,7 @@ int GoDBAuthorRow::SaveInDB(vtkMySQLDatabase *DatabaseConnector)
   if ( AuthorID == -1 )
     {
     AuthorID = AddOnlyOneNewObjectInTable< GoDBAuthorRow >(
-      DatabaseConnector, "author", *this, "authorID");
+        DatabaseConnector, "author", *this, "authorID");
     }
   return AuthorID;
 }

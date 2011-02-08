@@ -43,7 +43,7 @@
 #include <iostream>
 
 //-------------------------------------------------------------------------
-GoDBMeshRow::GoDBMeshRow():GoDBTraceRow()
+GoDBMeshRow::GoDBMeshRow() : GoDBTraceRow()
 {
   this->InitializeMap();
   m_NameChannelWithValues.clear();
@@ -53,12 +53,13 @@ GoDBMeshRow::GoDBMeshRow():GoDBTraceRow()
 
 //-------------------------------------------------------------------------
 GoDBMeshRow::~GoDBMeshRow()
-{}
+{
+}
 
 //-------------------------------------------------------------------------
 GoDBMeshRow::GoDBMeshRow(vtkMySQLDatabase *DatabaseConnector,
                          vtkPolyData *TraceVisu, GoDBCoordinateRow Min, GoDBCoordinateRow Max,
-                         unsigned int ImgSessionID, GoFigureMeshAttributes *iMeshAttributes):
+                         unsigned int ImgSessionID, GoFigureMeshAttributes *iMeshAttributes) :
   GoDBTraceRow()
 {
   this->InitializeMap();
@@ -69,7 +70,7 @@ GoDBMeshRow::GoDBMeshRow(vtkMySQLDatabase *DatabaseConnector,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-GoDBMeshRow::GoDBMeshRow(unsigned int ImagingSessionID):
+GoDBMeshRow::GoDBMeshRow(unsigned int ImagingSessionID) :
   GoDBTraceRow()
 {
   this->InitializeMap();
@@ -81,7 +82,7 @@ GoDBMeshRow::GoDBMeshRow(unsigned int ImagingSessionID):
 
 //-------------------------------------------------------------------------
 GoDBMeshRow::GoDBMeshRow(unsigned int iExistingID,
-                         vtkMySQLDatabase *iDatabaseConnector):
+                         vtkMySQLDatabase *iDatabaseConnector) :
   GoDBTraceRow()
 {
   this->InitializeMap();
@@ -91,7 +92,7 @@ GoDBMeshRow::GoDBMeshRow(unsigned int iExistingID,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-GoDBMeshRow::GoDBMeshRow(const GoDBMeshRow & iRow):GoDBTraceRow()
+GoDBMeshRow::GoDBMeshRow(const GoDBMeshRow & iRow) : GoDBTraceRow()
 {
   this->m_TableName = iRow.m_TableName;
   this->m_TableIDName = iRow.m_TableIDName;

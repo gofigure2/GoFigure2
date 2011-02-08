@@ -43,7 +43,7 @@
 #include <QtDebug>
 #include <iostream>
 
-QGoTraceManualEditingWidget::QGoTraceManualEditingWidget(QWidget *iParent):
+QGoTraceManualEditingWidget::QGoTraceManualEditingWidget(QWidget *iParent) :
   QWidget(iParent)
 {
   this->setupUi(this);

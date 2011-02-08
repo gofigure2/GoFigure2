@@ -100,10 +100,12 @@ vtkStandardNewMacro(vtkLookupTableManager);
 #include <time.h>
 
 vtkLookupTableManager::vtkLookupTableManager()
-{}
+{
+}
 
 vtkLookupTableManager::~vtkLookupTableManager()
-{}
+{
+}
 
 std::vector< std::string > vtkLookupTableManager::GetAvailableLookupTables()
 {

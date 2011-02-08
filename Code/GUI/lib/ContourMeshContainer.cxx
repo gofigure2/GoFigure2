@@ -39,10 +39,11 @@
 
 //-------------------------------------------------------------------------
 ContourMeshContainer::ContourMeshContainer(QObject *iParent,
-                                           QGoImageView3D *iView):
+                                           QGoImageView3D *iView) :
   Superclass(iParent, iView),
   m_TCoord( std::numeric_limits< unsigned int >::max() )
-{}
+{
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

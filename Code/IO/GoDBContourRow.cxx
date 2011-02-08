@@ -40,7 +40,7 @@
 
 #include <iostream>
 
-GoDBContourRow::GoDBContourRow():GoDBTraceRow()
+GoDBContourRow::GoDBContourRow() : GoDBTraceRow()
 {
   this->InitializeMap();
 }
@@ -50,7 +50,7 @@ GoDBContourRow::GoDBContourRow():GoDBTraceRow()
 //-------------------------------------------------------------------------
 GoDBContourRow::GoDBContourRow(vtkMySQLDatabase *DatabaseConnector,
                                vtkPolyData *TraceVisu, GoDBCoordinateRow Min, GoDBCoordinateRow Max,
-                               unsigned int ImgSessionID):
+                               unsigned int ImgSessionID) :
   //GoDBTraceRow(DatabaseConnector, TraceVisu, Min, Max, ImgSessionID)
   GoDBTraceRow()
 {
@@ -67,7 +67,7 @@ GoDBContourRow::GoDBContourRow(vtkMySQLDatabase *DatabaseConnector,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-GoDBContourRow::GoDBContourRow(unsigned int ImagingSessionID):
+GoDBContourRow::GoDBContourRow(unsigned int ImagingSessionID) :
   GoDBTraceRow()
 {
   this->InitializeMap();
@@ -78,7 +78,7 @@ GoDBContourRow::GoDBContourRow(unsigned int ImagingSessionID):
 
 //-------------------------------------------------------------------------
 GoDBContourRow::GoDBContourRow(unsigned int iExistingID,
-                               vtkMySQLDatabase *iDatabaseConnector):GoDBTraceRow()
+                               vtkMySQLDatabase *iDatabaseConnector) : GoDBTraceRow()
 {
   this->InitializeMap();
   this->SetValuesForSpecificID(iExistingID, iDatabaseConnector);

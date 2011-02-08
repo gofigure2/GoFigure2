@@ -714,8 +714,8 @@ void GoDBTableWidgetContainer::FillRowContainerWithDBValues(
 
   //then, get the results of the first query:
   std::vector< std::vector< std::string > > ResultsFirstQuery = GetValuesFromSeveralTables(
-    iDatabaseConnector, this->m_TracesName, SelectFirstFields, iRestrictionName,
-    iRestrictionValue, JoinFirstTablesOnTraceTable, true);
+      iDatabaseConnector, this->m_TracesName, SelectFirstFields, iRestrictionName,
+      iRestrictionValue, JoinFirstTablesOnTraceTable, true);
 
   //fill the row container with the results of the first query:
   this->FillRowContainer(ResultsFirstQuery, SelectFirstFields);
@@ -728,8 +728,8 @@ void GoDBTableWidgetContainer::FillRowContainerWithDBValues(
 
   //then, get the results of the second query:
   std::vector< std::vector< std::string > > ResultsSecondQuery = GetValuesFromSeveralTables(
-    iDatabaseConnector, this->m_TracesName, SelectSecondFields, iRestrictionName,
-    iRestrictionValue, JoinSecondTablesOnTraceTable, false);
+      iDatabaseConnector, this->m_TracesName, SelectSecondFields, iRestrictionName,
+      iRestrictionValue, JoinSecondTablesOnTraceTable, false);
 
   //fill the row container with the results of the second query:
   this->FillRowContainer(ResultsSecondQuery, SelectSecondFields);

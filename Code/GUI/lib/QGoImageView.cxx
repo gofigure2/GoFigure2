@@ -70,7 +70,7 @@
  * \brief Default Constructor.
  * \param iParent
  */
-QGoImageView::QGoImageView(QWidget *iParent):QWidget(iParent),
+QGoImageView::QGoImageView(QWidget *iParent) : QWidget(iParent),
   m_Pool(0),
   m_Image(0),
   m_IntersectionLineWidth(1.),

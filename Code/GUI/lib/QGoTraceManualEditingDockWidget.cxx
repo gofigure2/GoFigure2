@@ -34,7 +34,7 @@
 #include "QGoTraceManualEditingDockWidget.h"
 
 QGoTraceManualEditingDockWidget::QGoTraceManualEditingDockWidget(
-  QWidget *iParent):QDockWidget(iParent)
+  QWidget *iParent) : QDockWidget(iParent)
 {
   this->m_TraceWidget =
     new QGoTraceManualEditingWidget(this);
@@ -48,7 +48,8 @@ QGoTraceManualEditingDockWidget::QGoTraceManualEditingDockWidget(
 
 //-------------------------------------------------------------------------
 QGoTraceManualEditingDockWidget::~QGoTraceManualEditingDockWidget()
-{}
+{
+}
 
 //-------------------------------------------------------------------------
 

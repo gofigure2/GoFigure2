@@ -60,7 +60,7 @@
 #include <QDebug>
 
 //-------------------------------------------------------------------------
-TrackContainer::TrackContainer(QObject *iParent, QGoImageView3D *iView):Superclass(iParent, iView)
+TrackContainer::TrackContainer(QObject *iParent, QGoImageView3D *iView) : Superclass(iParent, iView)
 {
   m_TimeInterval = 0;
   m_ActiveScalars.append("Original");
@@ -466,7 +466,7 @@ TrackContainer::UpdatePointsFromBBForGivenTrack(unsigned int iTrackID,
 
         // convert xyz coordinates
         double *xyz = m_ImageView->GetImageViewer(0)
-                      ->GetWorldCoordinatesFromImageCoordinates(xyzBB);
+          ->GetWorldCoordinatesFromImageCoordinates(xyzBB);
 
         bool added = tempStructure.InsertElement(time, xyz);
         if ( !added )
@@ -521,7 +521,7 @@ TrackContainer::RecomputeCurrentElementMap(std::list< double * > iPoints)
 
       // convert xyz coordinates
       double *xyz = m_ImageView->GetImageViewer(0)
-                    ->GetWorldCoordinatesFromImageCoordinates(xyzBB);
+        ->GetWorldCoordinatesFromImageCoordinates(xyzBB);
 
       bool addPoint = this->m_CurrentElement.InsertElement(time, xyz);
 

@@ -39,20 +39,23 @@
 #include "vtkActor.h"
 #include "vtkPolyData.h"
 
-class ContourMeshContainerTestHelper:
+class ContourMeshContainerTestHelper :
   public ContourMeshContainer
 {
 public:
   explicit ContourMeshContainerTestHelper(QObject *iParent,
-                                          QGoImageView3D *iViewer):
-    ContourMeshContainer(iParent, iViewer) {}
+                                          QGoImageView3D *iViewer) :
+    ContourMeshContainer(iParent, iViewer) {
+  }
 
-  ~ContourMeshContainerTestHelper() {}
+  ~ContourMeshContainerTestHelper() {
+  }
 protected:
   std::vector< vtkActor * > AddTrace(vtkPolyData *, vtkProperty *)
   {
     return std::vector< vtkActor * >();
   }
+
 };
 
 int main(int argc, char *argv[])

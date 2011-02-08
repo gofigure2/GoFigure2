@@ -56,7 +56,7 @@
 #include "QGoContourSemiAutoWatershedWidget.h"
 
 //--------------------------------------------------------------------------
-QGoFilterWatershed::QGoFilterWatershed(QObject *iParent, int iDimension):
+QGoFilterWatershed::QGoFilterWatershed(QObject *iParent, int iDimension) :
   QGoFilterSemiAutoBase(iParent)
 {
   m_Dimension = iDimension;
@@ -88,7 +88,8 @@ QGoFilterWatershed::QGoFilterWatershed(QObject *iParent, int iDimension):
 //--------------------------------------------------------------------------
 QGoFilterWatershed::
 ~QGoFilterWatershed()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 

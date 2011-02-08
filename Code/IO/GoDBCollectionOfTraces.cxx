@@ -48,7 +48,8 @@
 #include <algorithm>
 
 GoDBCollectionOfTraces::GoDBCollectionOfTraces()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 
@@ -65,7 +66,8 @@ GoDBCollectionOfTraces::GoDBCollectionOfTraces(
 
 //--------------------------------------------------------------------------
 GoDBCollectionOfTraces::~GoDBCollectionOfTraces()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 
@@ -250,10 +252,10 @@ GoDBCollectionOfTraces::GetTracesIDsWithColorForATimePoint(
   WhereAndConditions.push_back( ConvertToString< int >(iTimePoint) );
 
   std::vector< std::vector< std::string > > ResultsQuery = GetValuesFromSeveralTables(
-    iDatabaseConnector,
-    this->m_TracesName, SelectFields,
-    WhereAndConditions,
-    JoinTablesOnTraceTable, true);
+      iDatabaseConnector,
+      this->m_TracesName, SelectFields,
+      WhereAndConditions,
+      JoinTablesOnTraceTable, true);
 
   return this->GetListNameWithColorDataFromResultsQuery(ResultsQuery);
 }
@@ -350,7 +352,7 @@ int GoDBCollectionOfTraces::GetCoordMinID(vtkMySQLDatabase *iDatabaseConnector,
     //std::vector< std::string > VectorCollectionOfTraces =
     //ListUnsgIntToVectorString(ListCollectionOfTraces);
     GoDBCoordinateRow TracesCoordMin = this->GetCollectionOfTracesCoordMin(
-      iDatabaseConnector, ListCollectionOfTraces);
+        iDatabaseConnector, ListCollectionOfTraces);
     return TracesCoordMin.SaveInDB(iDatabaseConnector);
     }
 }
@@ -378,7 +380,7 @@ int GoDBCollectionOfTraces::GetCoordMaxID(vtkMySQLDatabase *iDatabaseConnector,
     //std::vector< std::string > VectorCollectionOfTraces =
     // ListUnsgIntToVectorString(ListCollectionOfTraces);
     GoDBCoordinateRow TracesCoordMax = this->GetCollectionOfTracesCoordMax(
-      iDatabaseConnector, ListCollectionOfTraces);
+        iDatabaseConnector, ListCollectionOfTraces);
     return TracesCoordMax.SaveInDB(iDatabaseConnector);
     }
 }
@@ -408,7 +410,7 @@ GoDBCoordinateRow GoDBCollectionOfTraces::GetCollectionOfTracesCoordMin(
     if ( ColumnNames[i] != "CoordID" )
       {
       std::vector< std::string > VectorCollectionOfTracesCoordIDMin = ListUnsgIntToVectorString(
-        ListCollectionOfTracesCoordIDMin);
+          ListCollectionOfTracesCoordIDMin);
       CoordMin.SetField( ColumnNames[i], MinValueForOneColumnInTable(
                            DatabaseConnector, ColumnNames[i], "coordinate", "CoordID",
                            VectorCollectionOfTracesCoordIDMin) );
@@ -442,7 +444,7 @@ GoDBCoordinateRow GoDBCollectionOfTraces::GetCollectionOfTracesCoordMax(
     if ( ColumnNames[i] != "CoordID" )
       {
       std::vector< std::string > VectorCollectionOfTracesCoordIDMax = ListUnsgIntToVectorString(
-        ListCollectionOfTracesCoordIDMax);
+          ListCollectionOfTracesCoordIDMax);
       CoordMax.SetField( ColumnNames[i], MaxValueForOneColumnInTable(
                            DatabaseConnector, ColumnNames[i], "coordinate", "CoordID",
                            VectorCollectionOfTracesCoordIDMax) );
@@ -704,8 +706,8 @@ std::list< unsigned int > GoDBCollectionOfTraces::GetListCollectionIDs(
   if ( this->m_CollectionName != "None" )
     {
     ListCollectionIDs = ListSpecificValuesForOneColumn(
-      iDatabaseConnector, this->m_TracesName, this->m_CollectionIDName,
-      this->m_TracesIDName, iListTracesIDs, true, true);
+        iDatabaseConnector, this->m_TracesName, this->m_CollectionIDName,
+        this->m_TracesIDName, iListTracesIDs, true, true);
     }
   return ListCollectionIDs;
 }
@@ -739,9 +741,9 @@ std::list< unsigned int > GoDBCollectionOfTraces::GetLastCreatedTracesIDs(
   vtkMySQLDatabase *iDatabaseConnector, int iNumberOfTraces)
 {
   std::vector< std::string > VectorTracesIDs = GetOrderByWithLimit(
-    iDatabaseConnector, this->m_TracesIDName, this->m_TracesName,
-    "imagingsessionid", ConvertToString< unsigned int >(this->m_ImgSessionID),
-    false, ConvertToString< int >(iNumberOfTraces) );
+      iDatabaseConnector, this->m_TracesIDName, this->m_TracesName,
+      "imagingsessionid", ConvertToString< unsigned int >(this->m_ImgSessionID),
+      false, ConvertToString< int >(iNumberOfTraces) );
 
   return VectorStringToUnsgInt(VectorTracesIDs);
 }
@@ -791,8 +793,8 @@ std::list< unsigned int > GoDBCollectionOfTraces::GetTimePointWithSeveralTracesF
     std::vector< std::string > VectTraceIDs = ListUnsgIntToVectorString(iListTraceIDs);
 
     TimePoints = GetDoublonValuesFromTwoTables(
-      iDatabaseConnector, this->m_TracesName, "coordinate",
-      "TCoord", JoinCondition, this->m_TracesIDName, VectTraceIDs);
+        iDatabaseConnector, this->m_TracesName, "coordinate",
+        "TCoord", JoinCondition, this->m_TracesIDName, VectTraceIDs);
     }
   return TimePoints;
 }
@@ -911,7 +913,7 @@ std::list< unsigned int > GoDBCollectionOfTraces::GetTraceIDsWithTimePointInf(vt
 {
   FieldWithValue JoinCondition = { "CoordIDMin", "CoordID", "=" };
   FieldWithValue AndCondition =
-              { "TCoord", ConvertToString< unsigned int >(iTimePoint), "<" };
+                  { "TCoord", ConvertToString< unsigned int >(iTimePoint), "<" };
 
   std::vector< std::string > VectTraceIDs = ListUnsgIntToVectorString(iListTraceIDs);
   return GetListValuesFromTwoTablesAndCondition(
@@ -965,8 +967,8 @@ unsigned int GoDBCollectionOfTraces::GetBoundedBoxTimePoint(
   std::vector< std::string > TraceID(1);
   TraceID.at(0) = ConvertToString< unsigned int >(iTraceID);
   std::list< unsigned int > results = GetAllSelectedValuesFromTwoTables(
-    iDatabaseConnector, this->m_TracesName, "coordinate", "TCoord", JoinCondition,
-    this->m_TracesIDName, TraceID);
+      iDatabaseConnector, this->m_TracesName, "coordinate", "TCoord", JoinCondition,
+      this->m_TracesIDName, TraceID);
   return results.front();
 }
 

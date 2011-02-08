@@ -50,22 +50,25 @@
 #include "vtkMath.h"
 
 //--------------------------------------------------------------------------
-TrackStructure::TrackStructure():TraceStructure()
-{}
+TrackStructure::TrackStructure() : TraceStructure()
+{
+}
 
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-TrackStructure::TrackStructure(const TrackStructure & iE):
+TrackStructure::TrackStructure(const TrackStructure & iE) :
   TraceStructure(iE), PointsMap(iE.PointsMap)
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 TrackStructure::
 ~TrackStructure()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 
@@ -228,7 +231,7 @@ TrackStructure::ComputeAttributes() const
   else
     {
     attributes.avg_speed = attributes.total_length
-                           / static_cast< double >( t1 - tmin );
+      / static_cast< double >( t1 - tmin );
     }
 
   attributes.distance = sqrt( vtkMath::Distance2BetweenPoints(org, q) );

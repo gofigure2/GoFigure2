@@ -160,7 +160,7 @@ QGoFilterSemiAutoBase::ExtractROI(typename itk::Image< PixelType, VImageDimensio
       }
 
     endOfROI[j] = startOfROI[j]
-                  + static_cast< InternalIndexValueType >(size[j]) - 1;
+      + static_cast< InternalIndexValueType >(size[j]) - 1;
 
     if ( endOfROI[j] >
          static_cast< InternalIndexValueType >(sizeOfLargeImage[j] - 1) )

@@ -38,7 +38,7 @@
 #include <QVBoxLayout>
 #include <QShortcut>
 
-QGoNavigationDockWidget::QGoNavigationDockWidget(QWidget *iParent, const GoFigure::TabDimensionType & iDim):
+QGoNavigationDockWidget::QGoNavigationDockWidget(QWidget *iParent, const GoFigure::TabDimensionType & iDim) :
   QDockWidget(iParent),
   m_Dimension(iDim)
 {
@@ -132,7 +132,8 @@ QGoNavigationDockWidget::QGoNavigationDockWidget(QWidget *iParent, const GoFigur
 //-------------------------------------------------------------------------
 QGoNavigationDockWidget::
 ~QGoNavigationDockWidget()
-{}
+{
+}
 
 //-------------------------------------------------------------------------
 

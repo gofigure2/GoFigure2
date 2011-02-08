@@ -40,15 +40,17 @@
 #include "QGoTabElementBase.h"
 
 //--------------------------------------------------------------------------
-QGoTabManager::QGoTabManager(QGoMainWindow *iMW, QTabWidget *iTW):m_MainWindow(iMW),
+QGoTabManager::QGoTabManager(QGoMainWindow *iMW, QTabWidget *iTW) : m_MainWindow(iMW),
   m_TabWidget(iTW), m_PreviousTabIndex(-1)
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QGoTabManager::~QGoTabManager()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 

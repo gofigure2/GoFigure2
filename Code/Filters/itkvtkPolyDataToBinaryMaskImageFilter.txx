@@ -54,7 +54,8 @@ vtkPolyDataToBinaryMaskImageFilter< TInput, TOutput >::vtkPolyDataToBinaryMaskIm
 template< class TInput, class TOutput >
 vtkPolyDataToBinaryMaskImageFilter< TInput, TOutput >::
 ~vtkPolyDataToBinaryMaskImageFilter()
-{}
+{
+}
 
 template< class TInput, class TOutput >
 void
@@ -138,6 +139,7 @@ vtkPolyDataToBinaryMaskImageFilter< TInput, TOutput >::GenerateData()
 
   this->GraftOutput( m_ITKImporter->GetOutput() );
 }
+
 }
 
 #endif

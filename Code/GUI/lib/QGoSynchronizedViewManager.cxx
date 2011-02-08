@@ -40,11 +40,12 @@
 #include <algorithm>
 
 //--------------------------------------------------------------------------
-QGoSynchronizedViewManager::QGoSynchronizedViewManager(QObject *iParent):
+QGoSynchronizedViewManager::QGoSynchronizedViewManager(QObject *iParent) :
   QObject           (iParent),
   m_Synchronizer    (NULL),
   m_Synchronizer3D  (NULL)
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 //--------------------------------------------------------------------------

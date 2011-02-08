@@ -38,7 +38,7 @@
 
 #include <QGridLayout>
 
-QGoOpenCreateImgSessionPage::QGoOpenCreateImgSessionPage(QWidget *iParent):
+QGoOpenCreateImgSessionPage::QGoOpenCreateImgSessionPage(QWidget *iParent) :
   QWizardPage(iParent),
   m_DatabaseConnector(0)
 {
@@ -266,8 +266,8 @@ void QGoOpenCreateImgSessionPage::DisplayInfoImgSession(
       }
 
     std::vector< std::string > ListDescription = ListSpecificValuesForOneColumn(
-      m_DatabaseConnector, "imagingsession", "Description",
-      "ImagingSessionID", ImagingSessionID);
+        m_DatabaseConnector, "imagingsession", "Description",
+        "ImagingSessionID", ImagingSessionID);
     if ( ListDescription.size() != 1 )
       {
       std::cout << "Pb, the imagingsession " << ImgSessionName.toStdString().c_str()

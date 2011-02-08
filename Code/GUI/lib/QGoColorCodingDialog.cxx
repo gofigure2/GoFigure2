@@ -38,7 +38,7 @@
 
 QGoColorCodingDialog::QGoColorCodingDialog(std::string iTraceName,
                                            bool iRandomIncluded,
-                                           QWidget *iParent):QDialog(iParent)
+                                           QWidget *iParent) : QDialog(iParent)
 {
   this->SetUpUi(iTraceName, iRandomIncluded);
 }
@@ -47,7 +47,8 @@ QGoColorCodingDialog::QGoColorCodingDialog(std::string iTraceName,
 
 //-------------------------------------------------------------------------
 QGoColorCodingDialog::~QGoColorCodingDialog()
-{}
+{
+}
 
 //-------------------------------------------------------------------------
 

@@ -38,7 +38,7 @@
 #include <QDebug>
 
 //---------------------------------------------------------------------------//
-QGoSeedBaseWidget::QGoSeedBaseWidget(QWidget *iParent, int iSampling):QWidget(iParent)
+QGoSeedBaseWidget::QGoSeedBaseWidget(QWidget *iParent, int iSampling) : QWidget(iParent)
 {
   this->setupUi(this);
 
@@ -98,7 +98,8 @@ QGoSeedBaseWidget::QGoSeedBaseWidget(QWidget *iParent, int iSampling):QWidget(iP
 //---------------------------------------------------------------------------//
 QGoSeedBaseWidget::
 ~QGoSeedBaseWidget()
-{}
+{
+}
 
 //---------------------------------------------------------------------------//
 

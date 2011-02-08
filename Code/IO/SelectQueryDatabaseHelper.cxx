@@ -166,7 +166,7 @@ int FindOneID(vtkMySQLDatabase *DatabaseConnector,
     SelectQueryStreamCondition(TableName, ColumnName, field, value);
 
   std::vector< std::string > Results = ExecuteSelectQuery< std::vector< std::string > >(
-    DatabaseConnector, QueryString);
+      DatabaseConnector, QueryString);
   if ( Results.size() > 1 )
     {
     std::cout << "there is not an unique ID";
@@ -193,7 +193,7 @@ int FindOneID(vtkMySQLDatabase *DatabaseConnector,
   int ID = -1;
 
   std::vector< int > Results = ExecuteSelectQuery< std::vector< int > >(
-    DatabaseConnector, QueryString);
+      DatabaseConnector, QueryString);
 
   if ( !Results.empty() )
     {

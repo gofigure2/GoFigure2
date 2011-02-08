@@ -37,7 +37,7 @@
 #include <iostream>
 #include <sstream>
 
-QGoDBTrackManager::QGoDBTrackManager(int iImgSessionID, QWidget *iparent):
+QGoDBTrackManager::QGoDBTrackManager(int iImgSessionID, QWidget *iparent) :
   QGoDBTraceManager(), m_TrackContainerInfoForVisu(NULL)
 {
   this->SetInfo(iImgSessionID, iparent);
@@ -388,10 +388,10 @@ void QGoDBTrackManager::DisplayOnlyCalculatedValuesForExistingTrack(
     Values.at(3) = ConvertToString< double >(iTrackAttributes->phi);
     ColumnNames.at(4) = "AvgSpeed";
     Values.at(4) = ConvertToString< double >
-                     (iTrackAttributes->avg_speed / timeInterval);
+        (iTrackAttributes->avg_speed / timeInterval);
     ColumnNames.at(5) = "MaxSpeed";
     Values.at(5) = ConvertToString< double >
-                     (iTrackAttributes->max_speed / timeInterval);
+        (iTrackAttributes->max_speed / timeInterval);
 
     this->m_Table->AddValuesForID(ColumnNames, Values, iTrackID, "trackID");
     }
@@ -447,7 +447,7 @@ bool QGoDBTrackManager::CheckOverlappingTracks(
 {
   unsigned int TraceID1 = 0, TraceID2 = 0;
   unsigned int TimePointMin1 = 0, TimePointMin2 = 0, TimePointMax1 = 0,
-               TimePointMax2 = 0;
+    TimePointMax2 = 0;
   bool oTracksOverlapping = true;
 
   std::list< unsigned int >::iterator iter = iTrackIDs.begin();
@@ -458,9 +458,9 @@ bool QGoDBTrackManager::CheckOverlappingTracks(
     }
   TraceID1 = *iter;
   TimePointMin1 = this->m_CollectionOfTraces->GetBoundedBoxTimePoint(
-    iDatabaseConnector, TraceID1, true);
+      iDatabaseConnector, TraceID1, true);
   TimePointMax1 = this->m_CollectionOfTraces->GetBoundedBoxTimePoint(
-    iDatabaseConnector, TraceID1, false);
+      iDatabaseConnector, TraceID1, false);
   ++iter;
   if ( iter == iTrackIDs.end() )
     {
@@ -470,9 +470,9 @@ bool QGoDBTrackManager::CheckOverlappingTracks(
 
   TraceID2 = *iter;
   TimePointMin2 = this->m_CollectionOfTraces->GetBoundedBoxTimePoint(
-    iDatabaseConnector, TraceID2, true);
+      iDatabaseConnector, TraceID2, true);
   TimePointMax2 = this->m_CollectionOfTraces->GetBoundedBoxTimePoint(
-    iDatabaseConnector, TraceID2, false);
+      iDatabaseConnector, TraceID2, false);
 
   if ( TimePointMin2 > TimePointMax1 )
     {

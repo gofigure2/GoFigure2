@@ -60,7 +60,7 @@
 #include <QCloseEvent>
 
 //-------------------------------------------------------------------------
-QGoWizardDB::QGoWizardDB(QWidget *iParent):
+QGoWizardDB::QGoWizardDB(QWidget *iParent) :
   QWizard(iParent)
 {
   this->m_ImgSessionName = "";
@@ -110,7 +110,7 @@ std::vector< std::vector< std::string > > QGoWizardDB::GetFilenamesFromDB()
   std::string DBName = field("DBName").toString().toStdString();
 
   std::pair< bool, vtkMySQLDatabase * > ConnectionDatabase = ConnectToDatabase(
-    Server, User, Password, DBName);
+      Server, User, Password, DBName);
 
   if ( !ConnectionDatabase.first )
     {
@@ -144,7 +144,7 @@ std::vector< std::vector< std::string > > QGoWizardDB::GetFilenamesFromDB()
     std::string ChannelID = it->first;
     //get the filenames of all the images corresponding to ChannelID:
     oFilenames[i] = ListSpecificValuesForOneColumn(
-      DatabaseConnector, "image", "Filename", "channelID", ChannelID);
+        DatabaseConnector, "image", "Filename", "channelID", ChannelID);
     it++;
     i++;
     }
@@ -356,7 +356,7 @@ void QGoWizardDB::SetFirstFileName()
   std::string DBName = field("DBName").toString().toStdString();
 
   std::pair< bool, vtkMySQLDatabase * > ConnectionDatabase = ConnectToDatabase(
-    Server, User, Password, DBName);
+      Server, User, Password, DBName);
 
   if ( !ConnectionDatabase.first )
     {

@@ -38,12 +38,13 @@
 #include <QMenu>
 #include <QMessageBox>
 
-QGoDBTraceManager::QGoDBTraceManager(QObject *iParent):
+QGoDBTraceManager::QGoDBTraceManager(QObject *iParent) :
   QObject(iParent), m_SelectedCollectionData(NULL),
   m_SelectedColorData(NULL), m_CurrentTimePoint(NULL), m_Table(NULL),
   m_CollectionOfTraces(NULL), m_DatabaseConnector(NULL),
   m_IsColorCodingOn(false), m_IsShowOnlyCurrentTimePointOn(false)
-{}
+{
+}
 
 //-------------------------------------------------------------------------
 

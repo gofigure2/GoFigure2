@@ -44,15 +44,17 @@
 #include <iostream>
 
 //--------------------------------------------------------------------------
-QGoTabElementBase::QGoTabElementBase(QWidget *iParent):QWidget(iParent),
+QGoTabElementBase::QGoTabElementBase(QWidget *iParent) : QWidget(iParent),
   m_StatusBar(NULL)
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QGoTabElementBase::~QGoTabElementBase()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 

@@ -64,7 +64,7 @@
 #include <algorithm>
 
 //--------------------------------------------------------------------------
-QGoTabImageView4D::QGoTabImageView4D(QWidget *iParent):
+QGoTabImageView4D::QGoTabImageView4D(QWidget *iParent) :
   QGoTabElementBase(iParent),
   m_XYZImage(0),
   m_XYTImage(0),

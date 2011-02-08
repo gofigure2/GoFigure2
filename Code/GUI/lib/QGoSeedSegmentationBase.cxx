@@ -41,7 +41,7 @@
 //--------------------------------------------------------------------------
 QGoSeedSegmentationBase::QGoSeedSegmentationBase(QWidget *parentWidget,
                                                  vtkPoints *seeds,
-                                                 int iSampling):
+                                                 int iSampling) :
   QObject(parentWidget),
   m_NumberOfChannels(0)
 {
@@ -104,7 +104,8 @@ QGoSeedSegmentationBase::QGoSeedSegmentationBase(QWidget *parentWidget,
 //--------------------------------------------------------------------------
 QGoSeedSegmentationBase::
 ~QGoSeedSegmentationBase()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 

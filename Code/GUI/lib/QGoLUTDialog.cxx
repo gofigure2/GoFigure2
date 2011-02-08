@@ -44,7 +44,7 @@
 #include "vtkRendererCollection.h"
 #include "vtkRenderWindow.h"
 
-QGoLUTDialog::QGoLUTDialog(QWidget *iParent):
+QGoLUTDialog::QGoLUTDialog(QWidget *iParent) :
   QDialog(iParent),
   LUT(0)
 {

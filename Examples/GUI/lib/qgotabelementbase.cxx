@@ -35,24 +35,33 @@
 
 #include "QGoTabElementBase.h"
 
-class QGoTabElementTestHelper:public QGoTabElementBase
+class QGoTabElementTestHelper : public QGoTabElementBase
 {
 public:
-  QGoTabElementTestHelper(QWidget *iParent = 0):
-    QGoTabElementBase(iParent) {}
-  virtual ~QGoTabElementTestHelper() {}
+  QGoTabElementTestHelper(QWidget *iParent = 0) :
+    QGoTabElementBase(iParent) {
+  }
+  virtual ~QGoTabElementTestHelper() {
+  }
 
-  virtual void WriteSettings() {}
-  virtual void ReadSettings() {}
+  virtual void WriteSettings() {
+  }
+  virtual void ReadSettings() {
+  }
 
   virtual GoFigure::TabDimensionType GetTabDimensionType() const
-  { return GoFigure::TWO_D; }
+  {
+    return GoFigure::TWO_D;
+  }
 protected:
   virtual void PopulateMenus(QObject *iPlugin)
-  { (void)iPlugin; }
+  {
+    (void)iPlugin;
+  }
 private:
   QGoTabElementTestHelper(const QGoTabElementTestHelper &);
   void operator=(const QGoTabElementTestHelper &);
+
 };
 
 int main(int argc, char **argv)

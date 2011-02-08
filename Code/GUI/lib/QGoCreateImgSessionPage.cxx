@@ -50,7 +50,7 @@
 #include <QMessageBox>
 #include <iostream>
 
-QGoCreateImgSessionPage::QGoCreateImgSessionPage(QWidget *iParent):
+QGoCreateImgSessionPage::QGoCreateImgSessionPage(QWidget *iParent) :
   QWizardPage(iParent)
 {
   QFont tfont;
@@ -128,7 +128,7 @@ void QGoCreateImgSessionPage::initializePage()
 void QGoCreateImgSessionPage::SelectImages()
 {
   QString filename = QFileDialog::getOpenFileName(
-    this, tr("Import Image"), "", tr("Images (*.png *.bmp *.jpg *.jpeg *tif *.tiff *.mha *.mhd *.img *.lsm)") );
+      this, tr("Import Image"), "", tr("Images (*.png *.bmp *.jpg *.jpeg *tif *.tiff *.mha *.mhd *.img *.lsm)") );
 
   lineFilename->setText(filename);
   FirstImage->setFile(filename);
@@ -218,8 +218,8 @@ bool QGoCreateImgSessionPage::validatePage()
   if ( lineNewImgSessionName->displayText() != "" )
     {
     std::vector< std::string > ProjectNameTaken = ListSpecificValuesForOneColumn(
-      m_DatabaseConnector, "imagingsession", "Name", "Name",
-      lineNewImgSessionName->displayText().toStdString() );
+        m_DatabaseConnector, "imagingsession", "Name", "Name",
+        lineNewImgSessionName->displayText().toStdString() );
     if ( ProjectNameTaken.size() != 0 )
       {
       QMessageBox msgBox;

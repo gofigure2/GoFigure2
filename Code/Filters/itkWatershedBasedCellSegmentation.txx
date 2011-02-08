@@ -203,6 +203,7 @@ WatershedBasedCellSegmentation< TFeatureImage, TInputImage, TSegmentImage >::Pri
   (void)os;
   (void)indent;
 }
+
 } /* end namespace itk */
 
 #endif

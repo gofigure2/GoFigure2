@@ -72,7 +72,7 @@
 #include "QGoTrackEditingWidget.h"
 
 //--------------------------------------------------------------------------
-QGoPrintDatabase::QGoPrintDatabase(QWidget *iParent):
+QGoPrintDatabase::QGoPrintDatabase(QWidget *iParent) :
   QWidget(iParent),
   m_ContoursManager(NULL),
   m_MeshesManager(NULL),
@@ -279,8 +279,8 @@ QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
   else
     {
     ContourID =  this->m_ContoursManager->SaveReeditedContourFromVisu(
-      iXCoordMin, iYCoordMin, iZCoordMin, iTCoord, iXCoordMax, iYCoordMax, iZCoordMax,
-      iContourNodes, this->m_DatabaseConnector);
+        iXCoordMin, iYCoordMin, iZCoordMin, iTCoord, iXCoordMax, iYCoordMax, iZCoordMax,
+        iContourNodes, this->m_DatabaseConnector);
     this->m_ReeditMode = false;
     this->m_TraceManualEditingDockWidget->setEnabled(true);
     }
@@ -377,7 +377,7 @@ void QGoPrintDatabase::SaveNewMeshForMeshToContours(int iNumberOfContours)
     }
 
   unsigned int MeshID = this->m_MeshesManager->CreateNewMeshWithNoContourNoPoints(
-    this->m_DatabaseConnector);
+      this->m_DatabaseConnector);
   std::list< unsigned int > ListLastCreatedContours =
     this->m_ContoursManager->GetLastCreatedTracesIDs(this->m_DatabaseConnector, iNumberOfContours);
   this->AddCheckedTracesToCollection< QGoDBContourManager, QGoDBMeshManager >(
@@ -414,9 +414,9 @@ unsigned int QGoPrintDatabase::SaveNewContourForMeshToContours(
 {
   this->OpenDBConnection();
   unsigned int ContourID = this->m_ContoursManager->SaveNewContourFromVisu(
-    iXCoordMin, iYCoordMin, iZCoordMin,
-    iXCoordMax, iYCoordMax, iZCoordMax, iTraceNodes,
-    this->m_DatabaseConnector, 0);
+      iXCoordMin, iYCoordMin, iZCoordMin,
+      iXCoordMax, iYCoordMax, iZCoordMax, iTraceNodes,
+      this->m_DatabaseConnector, 0);
   this->CloseDBConnection();
   return ContourID;
 }
@@ -467,12 +467,12 @@ void QGoPrintDatabase::SaveNewCollectionFromTraceWidgetInDBAndTW()
     if ( TraceName == "contour" )
       {
       NewCollectionID = this->m_MeshesManager->CreateNewMeshWithNoContourNoPoints(
-        this->m_DatabaseConnector);
+          this->m_DatabaseConnector);
       }
     if ( TraceName == "mesh" )
       {
       NewCollectionID = this->m_TracksManager->CreateNewTrackWithNoMesh(
-        this->m_DatabaseConnector);
+          this->m_DatabaseConnector);
       }
     ItemColorComboboxData NewCollectionData;
     NewCollectionData.first = ConvertToString< unsigned int >(NewCollectionID);
@@ -521,7 +521,7 @@ GoDBCoordinateRow QGoPrintDatabase::GetCoordinateForBookmark(
 {
   this->OpenDBConnection();
   GoDBCoordinateRow Coord = this->m_BookmarkManager->
-                            GetCoordinatesForBookmark(this->m_DatabaseConnector, iName);
+    GetCoordinatesForBookmark(this->m_DatabaseConnector, iName);
   this->CloseDBConnection();
   return Coord;
 }
@@ -962,7 +962,7 @@ void QGoPrintDatabase::AddNewCellType()
 {
   this->OpenDBConnection();
   std::string NewCellType = this->m_CellTypeManager->AddAnEntity(
-    this->m_DatabaseConnector);
+      this->m_DatabaseConnector);
   if ( !NewCellType.empty() )
     {
     this->SetTMListCellTypes(NewCellType);
@@ -1000,7 +1000,7 @@ void QGoPrintDatabase::AddNewColor()
 {
   this->OpenDBConnection();
   ItemColorComboboxData NewColor = this->m_ColorManager->AddANewColor(
-    this->m_DatabaseConnector);
+      this->m_DatabaseConnector);
   if ( !NewColor.first.empty() )
     {
     //*this->m_SelectedColorData = NewColor;
@@ -1404,7 +1404,7 @@ void QGoPrintDatabase::PassMeshesInfoForImportedTrack(unsigned int iTrackID)
     {
     //get the coordinate info from the meshes:
     std::map< unsigned int, double * > MeshesInfo = this->m_MeshesManager->
-                                                    GetMeshesInfoForImportedMesh(ListMeshesIDs);
+      GetMeshesInfoForImportedMesh(ListMeshesIDs);
     if ( !MeshesInfo.empty() )
       {
       //pass the coordinate info from the meshes in order to calculate the
@@ -1581,8 +1581,8 @@ void QGoPrintDatabase::SplitMergeTracksWithWidget(
 {
   this->OpenDBConnection();
   MeshContainer *MeshContainerTemp = this->m_MeshesManager->
-                                     GetMeshesInfoFromDBAndCreateContainerForVisu(
-    this->m_DatabaseConnector, iTrackIDs);
+    GetMeshesInfoFromDBAndCreateContainerForVisu(
+      this->m_DatabaseConnector, iTrackIDs);
 
   QGoTrackEditingWidget *win = new QGoTrackEditingWidget(MeshContainerTemp);
   win->init();

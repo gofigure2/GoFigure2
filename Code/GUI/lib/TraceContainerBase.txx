@@ -41,18 +41,20 @@
 #include "vtkLookupTableManager.h"
 
 template< class TContainer >
-TraceContainerBase< TContainer >::TraceContainerBase(QObject *iParent, QGoImageView3D *iView):
+TraceContainerBase< TContainer >::TraceContainerBase(QObject *iParent, QGoImageView3D *iView) :
   QObject(iParent),
   m_ImageView(iView),
   m_CurrentElement(),
   m_HighlightedProperty(NULL),
   m_IntersectionLineWidth(1.)
-{}
+{
+}
 
 template< class TContainer >
 TraceContainerBase< TContainer >::
 ~TraceContainerBase()
-{}
+{
+}
 
 template< class TContainer >
 void

@@ -37,7 +37,7 @@
 #include <iostream>
 #include <fstream>
 
-MegaCaptureHeaderReader::MegaCaptureHeaderReader(const std::string & iFileName):
+MegaCaptureHeaderReader::MegaCaptureHeaderReader(const std::string & iFileName) :
   m_FileName(iFileName)
 {
   m_TimeInterval = 0.;
@@ -53,7 +53,8 @@ MegaCaptureHeaderReader::MegaCaptureHeaderReader(const std::string & iFileName):
 
 MegaCaptureHeaderReader::
 ~MegaCaptureHeaderReader()
-{}
+{
+}
 
 void MegaCaptureHeaderReader::SetFileName(const std::string & iFileName)
 {

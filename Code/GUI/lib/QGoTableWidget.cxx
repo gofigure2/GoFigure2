@@ -43,7 +43,7 @@
 #include <QToolButton>
 #include <QMessageBox>
 
-QGoTableWidget::QGoTableWidget(QWidget *iParent):QTableWidget(iParent)
+QGoTableWidget::QGoTableWidget(QWidget *iParent) : QTableWidget(iParent)
 {
   PrevCol = -1;
   PrevOrder = -1;
@@ -55,15 +55,17 @@ QGoTableWidget::QGoTableWidget(QWidget *iParent):QTableWidget(iParent)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-QGoTableWidget::QGoTableWidget(int rows, int columns, QWidget *iParent):
+QGoTableWidget::QGoTableWidget(int rows, int columns, QWidget *iParent) :
   QTableWidget(rows, columns, iParent), PrevCol(-1), PrevOrder(-1)
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QGoTableWidget::~QGoTableWidget()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 
@@ -343,7 +345,9 @@ void QGoTableWidget::DisplayContent(TWContainerType iTWRowContainer,
     SetSelectedColumn(static_cast< unsigned int >( NbofRows ), 0);
     if ( iIndexShowColumn == 0 || iTWRowContainer[iIndexShowColumn].second.empty() ) //track
                                                                                      //
+                                                                                     //
                                                                                      // and
+                                                                                     //
                                                                                      //
                                                                                      // lineage
       {
@@ -806,7 +810,7 @@ void QGoTableWidget::ChangeCheckStateSelectedRows(std::string iTraceName,
                                                   std::string iTraceNameID, Qt::CheckState iState)
 {
   QStringList ListSelectedTracesID = this->ValuesForSelectedRows(
-    iTraceNameID.c_str() );
+      iTraceNameID.c_str() );
 
   if ( !ListSelectedTracesID.empty() )
     {
@@ -833,7 +837,7 @@ void QGoTableWidget::ChangeVisibilityStateSelectedRows(std::string iTraceName,
                                                        Qt::CheckState iState)
 {
   QStringList ListSelectedTracesID = this->ValuesForSelectedRows(
-    iTraceNameID.c_str() );
+      iTraceNameID.c_str() );
 
   if ( !ListSelectedTracesID.empty() )
     {
@@ -1025,7 +1029,9 @@ std::map< unsigned int, std::string > QGoTableWidget::GetTraceIDAndColumnsValues
       {
       std::string Text = this->item(i, ColumnIndex)->text().toStdString();   //for
                                                                              //
+                                                                             //
                                                                              // test
+                                                                             //
                                                                              //
                                                                              // purpose
       oMapValues[this->item(i, IndexTraceID)->text().toUInt()] =

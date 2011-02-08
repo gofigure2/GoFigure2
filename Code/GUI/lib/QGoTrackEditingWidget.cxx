@@ -64,7 +64,7 @@
 #include <limits>
 
 //-------------------------------------------------------------------------
-QGoTrackEditingWidget::QGoTrackEditingWidget(MeshContainer *imeshContainer, QWidget *iParent):
+QGoTrackEditingWidget::QGoTrackEditingWidget(MeshContainer *imeshContainer, QWidget *iParent) :
   QDialog(iParent), m_MeshContainer(imeshContainer),
   m_MaxTrackID(0), m_NumberOfTracks(0), m_SecondClick(false)
 {
@@ -165,7 +165,7 @@ QGoTrackEditingWidget::updateCurrentActorSelection(vtkObject *caller)
     static_cast< vtkInteractorStyleImage3D * >( caller );
 
   m_CurrentActor = vtkActor::
-                   SafeDownCast( t->GetCurrentProp() );
+    SafeDownCast( t->GetCurrentProp() );
 
   // if we click on the background
   if ( !m_CurrentActor )

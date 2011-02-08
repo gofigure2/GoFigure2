@@ -542,7 +542,7 @@ vtkViewImage2D::SetSlicePlaneToConvention(unsigned int axis)
   vals[axis] = 255;
 
   vtkUnsignedCharArray *array = vtkUnsignedCharArray::SafeDownCast(
-    this->SlicePlane->GetPointData()->GetScalars() );
+      this->SlicePlane->GetPointData()->GetScalars() );
 
   if ( !array )
     {

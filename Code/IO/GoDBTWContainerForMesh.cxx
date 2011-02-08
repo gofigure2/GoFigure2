@@ -33,7 +33,7 @@
 =========================================================================*/
 #include "GoDBTWContainerForMesh.h"
 
-GoDBTWContainerForMesh::GoDBTWContainerForMesh(int iImgSessionID):
+GoDBTWContainerForMesh::GoDBTWContainerForMesh(int iImgSessionID) :
   GoDBTWContainerForContourMesh("mesh", "track", iImgSessionID),
   m_MeshAttributes(NULL)
 {
@@ -45,7 +45,8 @@ GoDBTWContainerForMesh::GoDBTWContainerForMesh(int iImgSessionID):
 
 //--------------------------------------------------------------------------
 GoDBTWContainerForMesh::~GoDBTWContainerForMesh()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 
@@ -226,8 +227,8 @@ void GoDBTWContainerForMesh::GetValuesForIntensities(
     Condition[0] = ImgSession;
     FieldWithValue JoinCondition = { this->m_TracesIDName, this->m_TracesIDName, "=" };
     ResultQuery = GetAllSelectedValuesFromTwoTables(
-      iDatabaseConnector, this->m_TracesName, "intensity", SelectedFields,
-      JoinCondition, Condition);
+        iDatabaseConnector, this->m_TracesName, "intensity", SelectedFields,
+        JoinCondition, Condition);
     this->GetValuesToFillForIntensityFromQueryResults(
       ResultQuery, iVectMeshIDs, ioValuesToFill);
     }
@@ -368,8 +369,8 @@ GoDBTWContainerForMesh::GetContainerLoadedWithAllFromDB(
 {
   GoDBTableWidgetContainer::GetContainerLoadedWithAllFromDB(iDatabaseConnector);
   std::vector< std::string > VectMeshIDs = ListSpecificValuesForOneColumn(
-    iDatabaseConnector, "mesh", "MeshID", "ImagingSessionID",
-    ConvertToString< unsigned int >(this->m_ImgSessionID) );
+      iDatabaseConnector, "mesh", "MeshID", "ImagingSessionID",
+      ConvertToString< unsigned int >(this->m_ImgSessionID) );
 
   this->FillRowContainerForMeshValues(iDatabaseConnector, VectMeshIDs);
   return this->m_RowContainer;
@@ -391,8 +392,8 @@ void GoDBTWContainerForMesh::SetChannelsInfo(
     JoinTablesOnTraceTable.push_back("image.ChannelID = channel.ChannelID");
 
     this->m_ChannelsInfo = GetValuesFromSeveralTables(
-      iDatabaseConnector, "image", SelectFields, "ImagingSessionID",
-      ConvertToString< unsigned int >(this->m_ImgSessionID), JoinTablesOnTraceTable, true);
+        iDatabaseConnector, "image", SelectFields, "ImagingSessionID",
+        ConvertToString< unsigned int >(this->m_ImgSessionID), JoinTablesOnTraceTable, true);
     //this->SetSpecificColumnsInfoForMesh();
     this->SetColumnsInfoBasedOnChannelsInfo();
     }

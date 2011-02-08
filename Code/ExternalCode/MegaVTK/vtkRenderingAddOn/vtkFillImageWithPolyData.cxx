@@ -453,8 +453,8 @@ void vtkFillImageWithPolyData::ThreadedRequestData(
     {
 //     slice = int( vtkrint ( (pt[0]-origin[0])/spacing[0] ));
     slice = static_cast< int >(
-      ( pt[ExtractionDirection] - origin[ExtractionDirection] )
-      / spacing[ExtractionDirection] );
+        ( pt[ExtractionDirection] - origin[ExtractionDirection] )
+        / spacing[ExtractionDirection] );
     }
 
   inPtr1 = inData[0][0]->GetScalarPointerForExtent(outExt);

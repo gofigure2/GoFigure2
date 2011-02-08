@@ -55,7 +55,7 @@
 #include "QGoContourSemiAutoLevelsetWidget.h"
 
 //--------------------------------------------------------------------------
-QGoFilterChanAndVese::QGoFilterChanAndVese(QObject *iParent, int iDimension):
+QGoFilterChanAndVese::QGoFilterChanAndVese(QObject *iParent, int iDimension) :
   QGoFilterSemiAutoBase(iParent)
 {
   m_Dimension = iDimension;
@@ -83,7 +83,8 @@ QGoFilterChanAndVese::QGoFilterChanAndVese(QObject *iParent, int iDimension):
 //--------------------------------------------------------------------------
 QGoFilterChanAndVese::
 ~QGoFilterChanAndVese()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 

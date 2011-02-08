@@ -49,7 +49,8 @@ BinaryMaskImageToGoFigureMeshAttributes< TInput, TMask >::BinaryMaskImageToGoFig
 template< class TInput, class TMask >
 BinaryMaskImageToGoFigureMeshAttributes< TInput, TMask >::
 ~BinaryMaskImageToGoFigureMeshAttributes()
-{}
+{
+}
 
 template< class TInput, class TMask >
 void
@@ -181,6 +182,7 @@ BinaryMaskImageToGoFigureMeshAttributes< TInput, TMask >::GenerateData()
       }
     }
 }
+
 }
 
 #endif

@@ -42,7 +42,7 @@ QGoMeshSegmentationBaseDockWidget::QGoMeshSegmentationBaseDockWidget(
   QWidget *iParent,
   vtkPoints *seeds,
   std::vector< vtkSmartPointer< vtkImageData > > *
-  iOriginalImage):
+  iOriginalImage) :
   QDockWidget(iParent)
 {
   this->setupUi(this);
@@ -137,7 +137,8 @@ QGoMeshSegmentationBaseDockWidget::QGoMeshSegmentationBaseDockWidget(
 //---------------------------------------------------------------------------//
 QGoMeshSegmentationBaseDockWidget::
 ~QGoMeshSegmentationBaseDockWidget()
-{}
+{
+}
 
 //---------------------------------------------------------------------------//
 // one segmentation to another

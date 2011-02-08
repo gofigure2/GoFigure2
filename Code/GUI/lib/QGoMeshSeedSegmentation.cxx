@@ -49,7 +49,7 @@
 QGoMeshSeedSegmentation::QGoMeshSeedSegmentation(QWidget *parentW,
                                                  vtkPoints *seeds,
                                                  std::vector< vtkSmartPointer< vtkImageData > > *iOriginalImage,
-                                                 int iSampling):
+                                                 int iSampling) :
   QGoSeedSegmentationBase(parentW, seeds, iSampling),
   m_OriginalImage(iOriginalImage)
 {
@@ -112,6 +112,7 @@ QGoMeshSeedSegmentation::QGoMeshSeedSegmentation(QWidget *parentW,
 //--------------------------------------------------------------------------
 QGoMeshSeedSegmentation::
 ~QGoMeshSeedSegmentation()
-{}
+{
+}
 
 //--------------------------------------------------------------------------

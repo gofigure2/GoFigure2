@@ -69,7 +69,7 @@
 #include "vtkImageExport.h"
 
 //--------------------------------------------------------------------------
-QGoFilterSemiAutoBase::QGoFilterSemiAutoBase(QObject *iParent):
+QGoFilterSemiAutoBase::QGoFilterSemiAutoBase(QObject *iParent) :
   QObject(iParent),
   m_Widget(NULL),
   m_Radius(3.),

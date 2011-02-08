@@ -41,7 +41,7 @@ namespace itk
 {
 template< class TFeatureImage, class TInputImage, class TSegmentImage >
 GaussianProfileMatchingImageFilter< TFeatureImage, TInputImage, TSegmentImage >
-::GaussianProfileMatchingImageFilter():m_SigmaForm (2.0), m_LargestCellRadius (4.0)
+::GaussianProfileMatchingImageFilter() : m_SigmaForm (2.0), m_LargestCellRadius (4.0)
 {
   m_Blob = 0;
 
@@ -166,7 +166,7 @@ GaussianProfileMatchingImageFilter< TFeatureImage, TInputImage, TSegmentImage >:
   for ( unsigned int i = 0; i < ImageDimension; i++ )
     {
     m_CellExtent[i] = static_cast< FeatureImageSizeValueType >
-                        (2 * m_LargestCellRadius / spacing[i]);
+        (2 * m_LargestCellRadius / spacing[i]);
     if ( m_CellExtent[i] % 2 == 1 )
       {
       m_CellExtent[i] += 1;
@@ -241,7 +241,7 @@ GaussianProfileMatchingImageFilter< TFeatureImage, TInputImage, TSegmentImage >:
       for ( unsigned int i = 0; i < ImageDimension; i++ )
         {
         windowStart[i] = idx[i] - static_cast< ImageSizeValueType >(
-          m_CellExtent[i] / 2);
+            m_CellExtent[i] / 2);
         }
       kernelRegion.SetIndex (windowStart);
 
@@ -263,6 +263,7 @@ GaussianProfileMatchingImageFilter< TFeatureImage, TInputImage, TSegmentImage >:
   os << indent << "Largest cell radius: " << GetLargestCellRadius()
      << std::endl;
 }
+
 } /* end namespace itk */
 
 #endif

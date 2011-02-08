@@ -55,15 +55,17 @@ namespace itk
  * \brief
  */
 template< class TContainer >
-ContourToMeshFilter< TContainer >::ContourToMeshFilter():
+ContourToMeshFilter< TContainer >::ContourToMeshFilter() :
   m_Output(NULL),
   m_ThresholdNumberOfPoints(20),
   m_TargetNumberOfPoints(20)
-{}
+{
+}
 
 template< class TContainer >
 ContourToMeshFilter< TContainer >::~ContourToMeshFilter()
-{}
+{
+}
 
 template< class TContainer >
 void
@@ -162,5 +164,6 @@ ContourToMeshFilter< TContainer >::GetOutput()
 {
   return m_Output;
 }
+
 }
 #endif

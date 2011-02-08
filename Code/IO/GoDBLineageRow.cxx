@@ -43,7 +43,8 @@ GoDBLineageRow::GoDBLineageRow()
 
 //-------------------------------------------------------------------------
 GoDBLineageRow::~GoDBLineageRow ()
-{}
+{
+}
 
 //-------------------------------------------------------------------------
 /*GoDBLineageRow::GoDBLineageRow(vtkMySQLDatabase *DatabaseConnector,
