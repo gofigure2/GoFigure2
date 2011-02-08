@@ -72,6 +72,7 @@ public:
    * \brief Specify on which one the segmentation will be applied
    * \param[in] iChannel Channel on which want we want to apply the segmentation
    * algorithm
+   * \param[in] iText Name of the channel (not used yet)
    */
   void SetChannel(int iChannel, const QString & iText = QString());
 
