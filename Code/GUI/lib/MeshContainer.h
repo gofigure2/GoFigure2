@@ -32,8 +32,8 @@
 
 =========================================================================*/
 
-#ifndef MESHCONTAINER_H
-#define MESHCONTAINER_H
+#ifndef __MeshContainer_h
+#define __MeshContainer_h
 
 #include "ContourMeshContainer.h"
 
@@ -58,7 +58,7 @@ protected:
   std::vector< vtkActor* > AddTrace( vtkPolyData* iNode, vtkProperty* iProp );
 
 private:
-    Q_DISABLE_COPY( MeshContainer );
+  Q_DISABLE_COPY( MeshContainer );
 };
 
-#endif // MESHCONTAINER_H
+#endif // __MeshContainer_h

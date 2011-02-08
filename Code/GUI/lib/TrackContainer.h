@@ -61,47 +61,47 @@
 
 namespace boost
 {
-  typedef multi_index::multi_index_container<
-    TrackStructure,
-    boost::multi_index::indexed_by<
-      boost::multi_index::hashed_non_unique<
-        boost::multi_index::tag< ActorXY >,
-        BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorXY)
-        >,
-      boost::multi_index::hashed_non_unique<
-        boost::multi_index::tag< ActorXZ >,
-        BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorXZ)
-        >,
-      boost::multi_index::hashed_non_unique<
-        boost::multi_index::tag< ActorYZ >,
-        BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorYZ)
-        >,
-      boost::multi_index::hashed_non_unique<
-        boost::multi_index::tag< ActorXYZ >,
-        BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorXYZ)
-        >,
-      boost::multi_index::hashed_non_unique<
-        boost::multi_index::tag< Nodes >,
-        BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkPolyData *, Nodes)
-        >,
-      boost::multi_index::ordered_unique<
-        boost::multi_index::tag< TraceID >,
-        BOOST_MULTI_INDEX_MEMBER(TraceStructure, unsigned int, TraceID)
-        >,
-      boost::multi_index::ordered_non_unique<
-        boost::multi_index::tag< CollectionID >,
-        BOOST_MULTI_INDEX_MEMBER(TraceStructure, unsigned int, CollectionID)
-      >,
-      boost::multi_index::ordered_non_unique<
-        boost::multi_index::tag< Highlighted >,
-        BOOST_MULTI_INDEX_MEMBER(TraceStructure, bool, Highlighted)
-        >,
-      boost::multi_index::ordered_non_unique<
-        boost::multi_index::tag< Visible >,
-        BOOST_MULTI_INDEX_MEMBER(TraceStructure, bool, Visible)
-        >
-      >
-    > MultiIndexTrackContainer;
+typedef multi_index::multi_index_container<
+  TrackStructure,
+  boost::multi_index::indexed_by<
+    boost::multi_index::hashed_non_unique<
+      boost::multi_index::tag< ActorXY >,
+      BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorXY)
+    >,
+    boost::multi_index::hashed_non_unique<
+      boost::multi_index::tag< ActorXZ >,
+      BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorXZ)
+    >,
+    boost::multi_index::hashed_non_unique<
+      boost::multi_index::tag< ActorYZ >,
+      BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorYZ)
+    >,
+    boost::multi_index::hashed_non_unique<
+      boost::multi_index::tag< ActorXYZ >,
+      BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorXYZ)
+    >,
+    boost::multi_index::hashed_non_unique<
+      boost::multi_index::tag< Nodes >,
+      BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkPolyData *, Nodes)
+    >,
+    boost::multi_index::ordered_unique<
+      boost::multi_index::tag< TraceID >,
+      BOOST_MULTI_INDEX_MEMBER(TraceStructure, unsigned int, TraceID)
+    >,
+    boost::multi_index::ordered_non_unique<
+      boost::multi_index::tag< CollectionID >,
+      BOOST_MULTI_INDEX_MEMBER(TraceStructure, unsigned int, CollectionID)
+    >,
+    boost::multi_index::ordered_non_unique<
+      boost::multi_index::tag< Highlighted >,
+      BOOST_MULTI_INDEX_MEMBER(TraceStructure, bool, Highlighted)
+    >,
+    boost::multi_index::ordered_non_unique<
+      boost::multi_index::tag< Visible >,
+      BOOST_MULTI_INDEX_MEMBER(TraceStructure, bool, Visible)
+    >
+  >
+> MultiIndexTrackContainer;
 }
 
 /**
@@ -119,11 +119,11 @@ public:
 
   typedef TraceContainerBase< boost::MultiIndexTrackContainer > Superclass;
 
-  typedef Superclass::MultiIndexContainerType MultiIndexContainerType;
-  typedef Superclass::MultiIndexContainerElementType TrackType;
+  typedef Superclass::MultiIndexContainerType         MultiIndexContainerType;
+  typedef Superclass::MultiIndexContainerElementType  TrackType;
 
-  typedef TrackType::PointsMapType PointsMapType;
-  typedef TrackType::PointsMapIterator PointsMapIterator;
+  typedef TrackType::PointsMapType          PointsMapType;
+  typedef TrackType::PointsMapIterator      PointsMapIterator;
   typedef TrackType::PointsMapConstIterator PointsMapConstIterator;
 
   //------------------------------------------------------------------------
@@ -261,24 +261,22 @@ public:
   void DeleteListFromCurrentElement( const std::list<unsigned int>& iTimeList );
 
   /**
-    \brief Delete a point from a track.
-    \param[in] iIterator trackstructure which will be modified
-    \param[in] iTime time point to clear
-    \param[in] iReconstructPolyData should we reconstruct the polydata
-    \return true if a point has been deleted
-    \return false no point has been deleted
-  */
+  \brief Delete a point from a track.
+  \param[in] iIterator trackstructure which will be modified
+  \param[in] iTime time point to clear
+  \param[in] iReconstructPolyData should we reconstruct the polydata
+  \return true if a point has been deleted
+  \return false no point has been deleted */
   bool DeletePointFromElement(
     MultiIndexContainerTraceIDIterator iIterator,
     unsigned int iTime,
     bool iReconstructPolyData );
 
   /**
-    \brief Add traces (collections of contours / meshes) to a track, given their
-    bounding box.
-    \param[in] iTrackID track id
-    \param[in] iBoundingBox list of bounding boxes
-  */
+  \brief Add traces (collections of contours / meshes) to a track, given their
+  bounding box.
+  \param[in] iTrackID track id
+  \param[in] iBoundingBox list of bounding boxes */
   void UpdatePointsFromBBForGivenTrack(
     unsigned int iTrackID,
     std::list<std::vector<unsigned int> > iBoundingBox);
@@ -289,8 +287,7 @@ public:
   a signal for the current element to be saved into the database
   \param[in] iTrackID  ID for the track to be updated
   \param[in] iListCenterBoundingBoxes list of the center of the bounding boxes
-  for the meshes belonging to this track
-  */
+  for the meshes belonging to this track */
   void UpdatePointsForATrack(unsigned int iTrackID,
                              std::list< double*> iListCenterBoundingBoxes);
 
@@ -298,8 +295,7 @@ public:
   \brief Update highlighting property of one element given one actor.
   \param[in] iActor Actor of the element to be modified
   \return true if the element exists
-  \return false else
-  */
+  \return false else */
   template< class TActor >
   bool UpdateElementHighlightingWithGivenActor(vtkActor *iActor)
     {
@@ -320,8 +316,7 @@ public:
   \brief Update highlighting property of one element given one actor.
   \param[in] iActor Actor of the element to be modified
   \return true if the element exists
-  \return false else
-  */
+  \return false else */
   template< class TActor >
   bool UpdateElementVisibilityWithGivenActor(
       vtkActor *iActor )
@@ -364,34 +359,35 @@ signals:
 
 public slots:
 
-  /** \brief Change elements highlighting property given a list of TraceIDs
-  and the new status.
-    \param[in] iList list of TraceIDs
-    \param[in] iCheck */
+  /**
+  \brief Change elements highlighting property given a list of TraceIDs and the
+  new status.
+  \param[in] iList list of TraceIDs
+  \param[in] iCheck */
   void UpdateElementHighlightingWithGivenTraceIDs( const QStringList& iList,
                                                    const Qt::CheckState& iCheck );
 
-  /** \brief Change elements visibility property given a list of TraceIDs
-  and the new status.
-    \param[in] iList list of TraceIDs
-    \param[in] iCheck */
+  /**
+  \brief Change elements visibility property given a list of TraceIDs and the
+  new status.
+  \param[in] iList list of TraceIDs
+  \param[in] iCheck */
   void UpdateElementVisibilityWithGivenTraceIDs( const QStringList& iList,
                                                  const Qt::CheckState& iCheck );
 
-  /** \brief Color code the track by time.
-    \param[in] iColorCode Display Time Color Code (true) or Real Color (false)
-   */
+  /**
+  \brief Color code the track by time.
+  \param[in] iColorCode Display Time Color Code (true) or Real Color (false) */
   void ChangeColorCode( const char* iColorCode);
 
   void UpdateTracksRepresentation( double iRadius,double iRadius2);
 
 protected:
   /**
-    \brief Recompute a polydata from a list of point (coordinates) for the
-    current element. If the current element is a new track, then the polydata,
-    actors are allocated and added in consequence.
-    \param[in] iPoints list of points to generate the new polydata
-  */
+  \brief Recompute a polydata from a list of point (coordinates) for the
+  current element. If the current element is a new track, then the polydata,
+  actors are allocated and added in consequence.
+  \param[in] iPoints list of points to generate the new polydata */
   void RecomputeCurrentElementMap( std::list< double* > iPoints);
 
   std::vector< vtkActor* > AddTrace( vtkPolyData* , vtkProperty* );

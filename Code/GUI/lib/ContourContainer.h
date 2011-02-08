@@ -32,8 +32,8 @@
 
 =========================================================================*/
 
-#ifndef CONTOURCONTAINER_H
-#define CONTOURCONTAINER_H
+#ifndef __ContourContainer_h
+#define __ContourContainer_h
 
 #include "ContourMeshContainer.h"
 
