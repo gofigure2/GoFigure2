@@ -348,7 +348,9 @@ void QGoTableWidget::DisplayContent(TWContainerType iTWRowContainer,
                                                                                      //
                                                                                      //
                                                                                      //
+                                                                                     //
                                                                                      // and
+                                                                                     //
                                                                                      //
                                                                                      //
                                                                                      //
@@ -1036,7 +1038,9 @@ std::map< unsigned int, std::string > QGoTableWidget::GetTraceIDAndColumnsValues
                                                                              //
                                                                              //
                                                                              //
+                                                                             //
                                                                              // test
+                                                                             //
                                                                              //
                                                                              //
                                                                              //
