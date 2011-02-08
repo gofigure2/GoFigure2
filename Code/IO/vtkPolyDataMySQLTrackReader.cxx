@@ -57,6 +57,7 @@ vtkStandardNewMacro(vtkPolyDataMySQLTrackReader);
 vtkPolyDataMySQLTrackReader::vtkPolyDataMySQLTrackReader()
 {
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -64,6 +65,7 @@ vtkPolyDataMySQLTrackReader::
 ~vtkPolyDataMySQLTrackReader()
 {
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------

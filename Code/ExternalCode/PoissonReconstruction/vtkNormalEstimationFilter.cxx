@@ -75,9 +75,11 @@ struct SurfacePoint {
   // simple constructor to initialise the members
   SurfacePoint() : neighbors( vtkIdList::New() ), isVisited(0) {
   }
+
   ~SurfacePoint() {
     delete[] costs; neighbors->Delete();
   }
+
   };
 
 vtkStandardNewMacro(vtkNormalEstimationFilter);

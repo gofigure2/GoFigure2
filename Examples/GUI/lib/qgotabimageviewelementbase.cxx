@@ -44,6 +44,7 @@ public:
   explicit QGoTabImageViewElementBaseTestHelper(QWidget *iParent = 0) :
     QGoTabImageViewElementBase(iParent) {
   }
+
   virtual ~QGoTabImageViewElementBaseTestHelper() {
   }
 
@@ -57,8 +58,10 @@ public:
 
   virtual void WriteSettings() {
   }
+
   virtual void ReadSettings() {
   }
+
 public slots:
   virtual void ShowAllChannels(bool iChecked)
   {
@@ -73,6 +76,7 @@ public slots:
   virtual void TakeSnapshot()
   {
   }
+
 protected:
   virtual void PopulateMenus(QObject *iPlugin)
   {
@@ -81,10 +85,13 @@ protected:
 
   virtual void GetBackgroundColorFromImageViewer() {
   }
+
   virtual void SetBackgroundColorToImageViewer() {
   }
+
   virtual void SetImageToImageViewer(vtkImageData *) {
   }
+
   virtual int * GetImageCoordinatesFromWorldCoordinates(double iPos[3])
   {
     (void)iPos;
@@ -94,6 +101,7 @@ protected:
   virtual void RemoveActorFromViewer(const int &, vtkActor *)
   {
   }
+
   virtual void DisplayActorInViewer(const int &, vtkActor *)
   {
   }
@@ -107,6 +115,7 @@ protected:
 
   virtual void SetSlice(int, int *) {
   }
+
 };
 
 int main(int argc, char **argv)

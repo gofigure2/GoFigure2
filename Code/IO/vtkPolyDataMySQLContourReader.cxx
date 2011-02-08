@@ -47,6 +47,7 @@ vtkStandardNewMacro(vtkPolyDataMySQLContourReader);
 vtkPolyDataMySQLContourReader::vtkPolyDataMySQLContourReader()
 {
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -54,6 +55,7 @@ vtkPolyDataMySQLContourReader::
 ~vtkPolyDataMySQLContourReader()
 {
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------

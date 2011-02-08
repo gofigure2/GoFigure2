@@ -190,8 +190,10 @@ public:
 protected:
   ImageActorCallback() : Actor(0) {
   }
+
   ~ImageActorCallback() {
   }
+
 };
 
 //----------------------------------------------------------------------------

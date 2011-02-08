@@ -50,6 +50,7 @@ public:
 
   ~ContourMeshContainerTestHelper() {
   }
+
 protected:
   std::vector< vtkActor * > AddTrace(vtkPolyData *, vtkProperty *)
   {

@@ -346,7 +346,11 @@ void QGoTableWidget::DisplayContent(TWContainerType iTWRowContainer,
     if ( iIndexShowColumn == 0 || iTWRowContainer[iIndexShowColumn].second.empty() ) //track
                                                                                      //
                                                                                      //
+                                                                                     //
+                                                                                     //
                                                                                      // and
+                                                                                     //
+                                                                                     //
                                                                                      //
                                                                                      //
                                                                                      // lineage
@@ -1030,7 +1034,11 @@ std::map< unsigned int, std::string > QGoTableWidget::GetTraceIDAndColumnsValues
       std::string Text = this->item(i, ColumnIndex)->text().toStdString();   //for
                                                                              //
                                                                              //
+                                                                             //
+                                                                             //
                                                                              // test
+                                                                             //
+                                                                             //
                                                                              //
                                                                              //
                                                                              // purpose

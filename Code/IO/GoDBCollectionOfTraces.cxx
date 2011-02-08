@@ -913,7 +913,7 @@ std::list< unsigned int > GoDBCollectionOfTraces::GetTraceIDsWithTimePointInf(vt
 {
   FieldWithValue JoinCondition = { "CoordIDMin", "CoordID", "=" };
   FieldWithValue AndCondition =
-                  { "TCoord", ConvertToString< unsigned int >(iTimePoint), "<" };
+                          { "TCoord", ConvertToString< unsigned int >(iTimePoint), "<" };
 
   std::vector< std::string > VectTraceIDs = ListUnsgIntToVectorString(iListTraceIDs);
   return GetListValuesFromTwoTablesAndCondition(

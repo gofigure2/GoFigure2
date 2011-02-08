@@ -44,6 +44,7 @@ ContourMeshContainer::ContourMeshContainer(QObject *iParent,
   m_TCoord( std::numeric_limits< unsigned int >::max() )
 {
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

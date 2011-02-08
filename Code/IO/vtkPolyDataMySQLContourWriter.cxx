@@ -48,6 +48,7 @@ vtkStandardNewMacro(vtkPolyDataMySQLContourWriter);
 vtkPolyDataMySQLContourWriter::vtkPolyDataMySQLContourWriter()
 {
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -55,6 +56,7 @@ vtkPolyDataMySQLContourWriter::
 ~vtkPolyDataMySQLContourWriter()
 {
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------

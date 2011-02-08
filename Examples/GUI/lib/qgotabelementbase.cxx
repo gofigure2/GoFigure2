@@ -41,11 +41,13 @@ public:
   QGoTabElementTestHelper(QWidget *iParent = 0) :
     QGoTabElementBase(iParent) {
   }
+
   virtual ~QGoTabElementTestHelper() {
   }
 
   virtual void WriteSettings() {
   }
+
   virtual void ReadSettings() {
   }
 
@@ -53,11 +55,13 @@ public:
   {
     return GoFigure::TWO_D;
   }
+
 protected:
   virtual void PopulateMenus(QObject *iPlugin)
   {
     (void)iPlugin;
   }
+
 private:
   QGoTabElementTestHelper(const QGoTabElementTestHelper &);
   void operator=(const QGoTabElementTestHelper &);

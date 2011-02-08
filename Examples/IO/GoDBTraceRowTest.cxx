@@ -38,12 +38,14 @@ class GoDBTraceRowTestHelper : public GoDBTraceRow
 public:
   GoDBTraceRowTestHelper() : GoDBTraceRow() {
   }
+
   ~GoDBTraceRowTestHelper() {
   }
 
   int SaveInDB(vtkMySQLDatabase *) {
     return 0;
   }
+
 };
 
 int main(int argc, char **argv)
