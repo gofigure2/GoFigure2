@@ -9,8 +9,6 @@ if(NOT GoFigure2_USE_GIT_PROTOCOL)
   set(git_protocol "http")
 endif()
 
-INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigQT.cmake" )
-
 #---------------------------------------------------------------------------
 # Enable and setup External project global properties
 #---------------------------------------------------------------------------
@@ -49,9 +47,6 @@ include("${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/External-VTK.cmake")
 include("${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/External-ITK.cmake")
 include("${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/External-Boost.cmake")
 
- # INCLUDE( ${VTK_USE_FILE} )
-
- # INCLUDE( ${ITK_USE_FILE} )
 set(GoFigure2_DEPENDENCIES ITK VTK Boost)
 
 #---------------------------------------------------------------------------
@@ -89,23 +84,22 @@ ExternalProject_Add(${proj}
   CMAKE_GENERATOR ${gen}
   CMAKE_ARGS
  
-#   ${GoFigure2_superbuild_boolean_args}
+   ${GoFigure2_superbuild_boolean_args}
     -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
     -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
     -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
     -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
-#    -DSubversion_SVN_EXECUTABLE:FILEPATH=${Subversion_SVN_EXECUTABLE}
     -DGIT_EXECUTABLE:FILEPATH=${GIT_EXECUTABLE}
     -DUSE_SUPERBUILD:BOOL=OFF
     -DGoFigure2_C_FLAGS:STRING=${GoFigure2_C_FLAGS}
     -DGoFigure2_CXX_FLAGS:STRING=${GoFigure2_CXX_FLAGS}
     # ITK
-    -DITK_DIR:PATH=${ITK_DIR}
+    #-DITK_DIR:PATH=${ITK_DIR}
     # VTK
-    -DVTK_DIR:PATH=${VTK_DIR}
-    -DVTK_DEBUG_LEAKS:BOOL=${GoFigure2_USE_VTK_DEBUG_LEAKS}
+    #-DVTK_DIR:PATH=${VTK_DIR}
+#    -DVTK_DEBUG_LEAKS:BOOL=${GoFigure2_USE_VTK_DEBUG_LEAKS}
     # Qt
-    -DQT_QMAKE_EXECUTABLE:PATH=${QT_QMAKE_EXECUTABLE}
+    #-DQT_QMAKE_EXECUTABLE:PATH=${QT_QMAKE_EXECUTABLE}
     # MySQL
     # Boost
   INSTALL_COMMAND ""

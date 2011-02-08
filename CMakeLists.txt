@@ -140,159 +140,155 @@ IF( USE_SUPERBUILD )
   CMAKE_MINIMUM_REQUIRED( VERSION 2.8.3 )
   INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/SuperBuild.cmake" )
   RETURN()
+ENDIF( USE_SUPERBUILD)
 
-ELSE( USE_SUPERBUILD)
+#---------------------------------------------------------------------------
+# Everything depends on VTK first
+# that way we can get Qt info from VTK
+#### VTK ####
 
-  #---------------------------------------------------------------------------
-  # Everything depends on VTK first
-  # that way we can get Qt info from VTK
-  #### VTK ####
+INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigVTK.cmake" )
 
-  INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigVTK.cmake" )
+#----------------------------------------------------------
+# Then find ITK
+#### ITK ####
 
-  #----------------------------------------------------------
-  # Then find ITK
-  #### ITK ####
+INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigITK.cmake" )
 
-  INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigITK.cmake" )
+#----------------------------------------------------------
+# Then find Boost. Note that we only need headers
+#### BOOST ####
+INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigBoost.cmake" )
 
-  #----------------------------------------------------------
-  # Then find Boost. Note that we only need headers
-  #### BOOST ####
-  # NEEDS ConfiBoost as well
-  INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigBoost.cmake" )
+#----------------------------------------------------------
+# Then find Qt.
+# Note that some command line tools will get compiled even without Qt
+#### Qt ####
+INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigQT.cmake" )
 
-  #----------------------------------------------------------
-  # Try to find Qt.
-  # Note that some command line tools will get compiled even without Qt
-  #### Qt ####
-  INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigQT.cmake" )
+#----------------------------------------------------------
+#
+SET( GOFIGURE2_EXTERNAL_SOURCE_DIR
+  ${GOFIGURE2_SOURCE_DIR}/Code/ExternalCode )
+SET( GOFIGURE2_EXTERNAL_BINARY_DIR
+  ${GOFIGURE2_BINARY_DIR}/Code/ExternalCode )
 
-  #----------------------------------------------------------
-  #
-  SET( GOFIGURE2_EXTERNAL_SOURCE_DIR
-    ${GOFIGURE2_SOURCE_DIR}/Code/ExternalCode )
-  SET( GOFIGURE2_EXTERNAL_BINARY_DIR
-    ${GOFIGURE2_BINARY_DIR}/Code/ExternalCode )
+SET( MEGAVTK2_SOURCE_DIR ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/MegaVTK )
+SET( MEGAVTK2_BINARY_DIR ${GOFIGURE2_EXTERNAL_BINARY_DIR}/MegaVTK )
 
-  SET( MEGAVTK2_SOURCE_DIR ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/MegaVTK )
-  SET( MEGAVTK2_BINARY_DIR ${GOFIGURE2_EXTERNAL_BINARY_DIR}/MegaVTK )
+LINK_DIRECTORIES(
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+  ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
+  ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+  )
 
-  LINK_DIRECTORIES(
-    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-    ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-    ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-    )
-
-  INCLUDE_DIRECTORIES( BEFORE
-    ${QT_INCLUDES}
-    ${GOFIGURE2_SOURCE_DIR}/Code/
-    ${GOFIGURE2_BINARY_DIR}/Code/
-    ${GOFIGURE2_SOURCE_DIR}/Code/IO/
-    ${GOFIGURE2_BINARY_DIR}/Code/IO/
-    ${GOFIGURE2_SOURCE_DIR}/Code/Filters/
-    ${GOFIGURE2_BINARY_DIR}/Code/Filters/
-    ${GOFIGURE2_SOURCE_DIR}/Code/GUI/
-    ${GOFIGURE2_BINARY_DIR}/Code/GUI/
-    ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/
-    ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/
-    ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/Resources/
-    ${GOFIGURE2_SOURCE_DIR}/Interfaces/
-    ${GOFIGURE2_BINARY_DIR}/Interfaces/
-    ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/
-    ${GOFIGURE2_BINARY_DIR}/Code/GUI/src/
-    ${MEGAVTK2_SOURCE_DIR}
-    ${MEGAVTK2_BINARY_DIR}
-    ${MEGAVTK2_SOURCE_DIR}/vtkItk
-    ${MEGAVTK2_BINARY_DIR}/vtkItk
-    ${MEGAVTK2_SOURCE_DIR}/vtkRenderingAddOn
-    ${MEGAVTK2_BINARY_DIR}/vtkRenderingAddOn
-    ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM
-    ${GOFIGURE2_EXTERNAL_BINARY_DIR}/vtkLSM
-    ${GOFIGURE2_EXTERNAL_BINARY_DIR}/itkQt
-    ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/itkQt
-    ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/PoissonReconstruction
-    ${GOFIGURE2_EXTERNAL_BINARY_DIR}/PoissonReconstruction
-    ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/ctk
-    ${GOFIGURE2_EXTERNAL_BINARY_DIR}/ctk
-    ${GOFIGURE2_SOURCE_DIR}/Main
-    ${GOFIGURE2_BINARY_DIR}/Main
- )
+INCLUDE_DIRECTORIES( BEFORE
+  ${QT_INCLUDES}
+  ${GOFIGURE2_SOURCE_DIR}/Code/
+  ${GOFIGURE2_BINARY_DIR}/Code/
+  ${GOFIGURE2_SOURCE_DIR}/Code/IO/
+  ${GOFIGURE2_BINARY_DIR}/Code/IO/
+  ${GOFIGURE2_SOURCE_DIR}/Code/Filters/
+  ${GOFIGURE2_BINARY_DIR}/Code/Filters/
+  ${GOFIGURE2_SOURCE_DIR}/Code/GUI/
+  ${GOFIGURE2_BINARY_DIR}/Code/GUI/
+  ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/
+  ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/
+  ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/Resources/
+  ${GOFIGURE2_SOURCE_DIR}/Interfaces/
+  ${GOFIGURE2_BINARY_DIR}/Interfaces/
+  ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/
+  ${GOFIGURE2_BINARY_DIR}/Code/GUI/src/
+  ${MEGAVTK2_SOURCE_DIR}
+  ${MEGAVTK2_BINARY_DIR}
+  ${MEGAVTK2_SOURCE_DIR}/vtkItk
+  ${MEGAVTK2_BINARY_DIR}/vtkItk
+  ${MEGAVTK2_SOURCE_DIR}/vtkRenderingAddOn
+  ${MEGAVTK2_BINARY_DIR}/vtkRenderingAddOn
+  ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/vtkLSM
+  ${GOFIGURE2_EXTERNAL_BINARY_DIR}/vtkLSM
+  ${GOFIGURE2_EXTERNAL_BINARY_DIR}/itkQt
+  ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/itkQt
+  ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/PoissonReconstruction
+  ${GOFIGURE2_EXTERNAL_BINARY_DIR}/PoissonReconstruction
+  ${GOFIGURE2_EXTERNAL_SOURCE_DIR}/ctk
+  ${GOFIGURE2_EXTERNAL_BINARY_DIR}/ctk
+  ${GOFIGURE2_SOURCE_DIR}/Main
+  ${GOFIGURE2_BINARY_DIR}/Main
+)
 
 #---------------------------------------------------------------------
 #---------------------------------------------------------------------
 
-  SET( QGoResourceFile ${GOFIGURE2_SOURCE_DIR}/Resources/axes.qrc )
+SET( QGoResourceFile ${GOFIGURE2_SOURCE_DIR}/Resources/axes.qrc )
 
-  SET( QGoGUIINTERFACES_HDRS
-    ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoPlugin.h
-    ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoImageFilterPluginBase.h
-  )
-  SET( QGoGUIINTERFACES_SRC
-    ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoPluginHelper.cxx
-    ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoPlugin.cxx
-    ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoImageFilterPluginBase.cxx
-  )
+SET( QGoGUIINTERFACES_HDRS
+  ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoPlugin.h
+  ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoImageFilterPluginBase.h
+)
+SET( QGoGUIINTERFACES_SRC
+  ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoPluginHelper.cxx
+  ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoPlugin.cxx
+  ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoImageFilterPluginBase.cxx
+)
 
-  ADD_SUBDIRECTORY( Code )
-  ADD_SUBDIRECTORY( Main )
+ADD_SUBDIRECTORY( Code )
+ADD_SUBDIRECTORY( Main )
 
 #-----------------------------------------------------------------------
 # Plugins
 #-----------------------------------------------------------------------
-  IF( VTK_BUILD_SHARED_LIBS )
-    OPTION( BUILD_PLUGINS  "Build GoFigure Plugins" OFF )
-  ELSE( VTK_BUILD_SHARED_LIBS )
-    SET( BUILD_PLUGINS OFF )
-  ENDIF( VTK_BUILD_SHARED_LIBS )
+IF( VTK_BUILD_SHARED_LIBS )
+  OPTION( BUILD_PLUGINS  "Build GoFigure Plugins" OFF )
+ELSE( VTK_BUILD_SHARED_LIBS )
+  SET( BUILD_PLUGINS OFF )
+ENDIF( VTK_BUILD_SHARED_LIBS )
 
-  IF( BUILD_PLUGINS )
-    ADD_SUBDIRECTORY( Plugins )
-  ENDIF( BUILD_PLUGINS )
+IF( BUILD_PLUGINS )
+  ADD_SUBDIRECTORY( Plugins )
+ENDIF( BUILD_PLUGINS )
 
 #-----------------------------------------------------------------------
 # Examples and tests
 #-----------------------------------------------------------------------
-  OPTION( BUILD_EXAMPLES "Build Examples" OFF )
+OPTION( BUILD_EXAMPLES "Build Examples" OFF )
 
-  IF( BUILD_TESTING )
-          INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigTests.cmake" )
-  ENDIF( BUILD_TESTING )
+IF( BUILD_TESTING )
+  INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigTests.cmake" )
+ENDIF( BUILD_TESTING )
 
 
-  IF( BUILD_EXAMPLES )
-    INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigExamples.cmake" )
-  ELSE( BUILD_EXAMPLES )
-    SET( BUILD_TESTING OFF )
-  ENDIF( BUILD_EXAMPLES )
+IF( BUILD_EXAMPLES )
+  INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigExamples.cmake" )
+ELSE( BUILD_EXAMPLES )
+  SET( BUILD_TESTING OFF )
+ENDIF( BUILD_EXAMPLES )
 
 #-----------------------------------------------------------------------
 #
 #-----------------------------------------------------------------------
-  INCLUDE( GoFigure2IncludeDirectories.cmake )
+INCLUDE( GoFigure2IncludeDirectories.cmake )
 
-  CONFIGURE_FILE(
-    "${CMAKE_CURRENT_SOURCE_DIR}/UseGoFigure2.cmake.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/UseGoFigure2.cmake"
-    @ONLY
-    )
+CONFIGURE_FILE(
+  "${CMAKE_CURRENT_SOURCE_DIR}/UseGoFigure2.cmake.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/UseGoFigure2.cmake"
+  @ONLY
+)
  
 #-----------------------------------------------------------------------
 # PACKAGE With CPack
 #-----------------------------------------------------------------------
 # add the uninstall support
-  CONFIGURE_FILE(
-    "${CMAKE_CURRENT_SOURCE_DIR}/GOFIGURE2Uninstall.cmake.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/GOFIGURE2Uninstall.cmake"
-   @ONLY
-   )
+CONFIGURE_FILE(
+  "${CMAKE_CURRENT_SOURCE_DIR}/GOFIGURE2Uninstall.cmake.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/GOFIGURE2Uninstall.cmake"
+ @ONLY
+)
 
-  ADD_CUSTOM_TARGET( uninstall
-    "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/GOFIGURE2Uninstall.cmake"
-    )
+ADD_CUSTOM_TARGET( uninstall
+  "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/GOFIGURE2Uninstall.cmake"
+)
       
 IF( ( ${CMAKE_MAJOR_VERSION} EQUAL 2 )  AND ( ${CMAKE_MINOR_VERSION} GREATER 7 ) )
   INCLUDE( GOFIGURE2CPack.cmake )
 ENDIF( ( ${CMAKE_MAJOR_VERSION} EQUAL 2 )  AND ( ${CMAKE_MINOR_VERSION} GREATER 7 ) )
-
-ENDIF( USE_SUPERBUILD )
