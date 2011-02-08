@@ -94,13 +94,10 @@ ExternalProject_Add(${proj}
     -DGoFigure2_C_FLAGS:STRING=${GoFigure2_C_FLAGS}
     -DGoFigure2_CXX_FLAGS:STRING=${GoFigure2_CXX_FLAGS}
     # ITK
-    #-DITK_DIR:PATH=${ITK_DIR}
+    -DITK_DIR:PATH=${ITK_DIR}
     # VTK
-    #-DVTK_DIR:PATH=${VTK_DIR}
-#    -DVTK_DEBUG_LEAKS:BOOL=${GoFigure2_USE_VTK_DEBUG_LEAKS}
+    -DVTK_DIR:PATH=${VTK_DIR}
     # Qt
     #-DQT_QMAKE_EXECUTABLE:PATH=${QT_QMAKE_EXECUTABLE}
-    # MySQL
-    # Boost
   INSTALL_COMMAND ""
   )
