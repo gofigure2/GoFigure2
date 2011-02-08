@@ -65,7 +65,7 @@ public:
   and the LUT if he chooses the LUT
   \param[in] iTraceName name of the trace to be colorcoded
   \param[in,out] ioLUT lookup table choosen by the user
-  \param[in] iParent parent of the widget
+  \param[in] iiParent parent of the widget
   */
   static ColorWay GetColorWay( std::string iTraceName,
    vtkLookupTable **ioLUT, bool iRandomIncluded, QWidget *iiParent = 0 );
