@@ -73,15 +73,17 @@ GoDBContourRow::GoDBContourRow(unsigned int ImagingSessionID):
   this->InitializeMap();
   this->SetImgSessionID(ImagingSessionID);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
- GoDBContourRow::GoDBContourRow(unsigned int iExistingID,
-   vtkMySQLDatabase *iDatabaseConnector):GoDBTraceRow()
- {
+GoDBContourRow::GoDBContourRow(unsigned int iExistingID,
+                               vtkMySQLDatabase *iDatabaseConnector):GoDBTraceRow()
+{
   this->InitializeMap();
-  this->SetValuesForSpecificID(iExistingID,iDatabaseConnector);
- }
+  this->SetValuesForSpecificID(iExistingID, iDatabaseConnector);
+}
+
 /*GoDBContourRow::GoDBContourRow(vtkMySQLDatabase* DatabaseConnector,
   GoDBCoordinateRow Min, GoDBCoordinateRow Max,unsigned int ImgSessionID,
   vtkPolyData* TraceVisu):
@@ -149,9 +151,9 @@ void GoDBContourRow::SetTheDataFromTheVisu(
 }*/
 //-------------------------------------------------------------------------
 void GoDBContourRow::SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector,
-                                        vtkPolyData *TraceVisu,
-                                        GoDBCoordinateRow iCoordMin,
-                                        GoDBCoordinateRow iCoordMax)
+                                           vtkPolyData *TraceVisu,
+                                           GoDBCoordinateRow iCoordMin,
+                                           GoDBCoordinateRow iCoordMax)
 {
   /*this->SetTheBoundingBox(DatabaseConnector, iCoordMin, iCoordMax);
 
@@ -167,6 +169,6 @@ void GoDBContourRow::SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector,
     {
     std::cout << "The bounding box already exists for this mesh" << std::endl;
     }*/
-  this->SetTheDataFromTheVisuTemplate < vtkPolyDataMySQLContourWriter > (
-    DatabaseConnector,TraceVisu,iCoordMin,iCoordMax);
+  this->SetTheDataFromTheVisuTemplate< vtkPolyDataMySQLContourWriter >(
+    DatabaseConnector, TraceVisu, iCoordMin, iCoordMax);
 }

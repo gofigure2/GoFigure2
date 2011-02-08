@@ -491,13 +491,13 @@ int QGoCreateImgSessionPage::CreateImageCoordMin(vtkMySQLDatabase *DatabaseConne
 int QGoCreateImgSessionPage::FindChannelIDForImage(vtkMySQLDatabase *DatabaseConnector,
                                                    int ImagingSessionID, int ChannelNumber)
 {
-  std::vector<FieldWithValue> Conditions(2);
-  FieldWithValue ImgSession ={"ImagingSessionID",ConvertToString< int >(ImagingSessionID),"="};
-  FieldWithValue Channel ={"ChannelNumber",ConvertToString< int >(ChannelNumber),"="};
-    Conditions[0] = ImgSession;
-    Conditions[1] = Channel;
+  std::vector< FieldWithValue > Conditions(2);
+  FieldWithValue                ImgSession = { "ImagingSessionID", ConvertToString< int >(ImagingSessionID), "=" };
+  FieldWithValue                Channel = { "ChannelNumber", ConvertToString< int >(ChannelNumber), "=" };
+  Conditions[0] = ImgSession;
+  Conditions[1] = Channel;
 
-  return FindOneID( DatabaseConnector, "channel", "channelID", Conditions);
+  return FindOneID(DatabaseConnector, "channel", "channelID", Conditions);
 }
 
 //-------------------------------------------------------------------------
@@ -554,12 +554,12 @@ void QGoCreateImgSessionPage::CreateImgSessionCoord(
   int CoordIDMax = m_ImgSessionCoordMax.SaveInDB(DatabaseConnector);
 
   //update the CoordMaxID in Imgsession with the new created coordinate
-  UpdateValueInDB( DatabaseConnector,
-                   "imagingsession",
-                   "CoordIDMax",
-                   ConvertToString< int >(CoordIDMax),
-                   "ImagingSessionID",
-                    imgsessionid);
+  UpdateValueInDB(DatabaseConnector,
+                  "imagingsession",
+                  "CoordIDMax",
+                  ConvertToString< int >(CoordIDMax),
+                  "ImagingSessionID",
+                  imgsessionid);
 
   m_ImgSessionCoordMin.SetField("PCoord", m_PCoordMin);
   m_ImgSessionCoordMin.SetField("RCoord", m_RCoordMin);
@@ -576,12 +576,12 @@ void QGoCreateImgSessionPage::CreateImgSessionCoord(
   int CoordIDMin = m_ImgSessionCoordMin.SaveInDB(DatabaseConnector);
 
   //update the CoordMaxID in Imgsession with the new created coordinate
-  UpdateValueInDB( DatabaseConnector,
-                   "imagingsession",
-                   "CoordIDMin",
-                   ConvertToString< int >(CoordIDMin),
-                   "ImagingSessionID",
-                   imgsessionid );
+  UpdateValueInDB(DatabaseConnector,
+                  "imagingsession",
+                  "CoordIDMin",
+                  ConvertToString< int >(CoordIDMin),
+                  "ImagingSessionID",
+                  imgsessionid);
 }
 
 //-------------------------------------------------------------------------

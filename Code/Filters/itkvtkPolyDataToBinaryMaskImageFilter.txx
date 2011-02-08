@@ -58,8 +58,7 @@ vtkPolyDataToBinaryMaskImageFilter< TInput, TOutput >::
 
 template< class TInput, class TOutput >
 void
-vtkPolyDataToBinaryMaskImageFilter< TInput, TOutput >::
-SetPolyData(vtkPolyData *iMesh)
+vtkPolyDataToBinaryMaskImageFilter< TInput, TOutput >::SetPolyData(vtkPolyData *iMesh)
 {
   m_Mesh = iMesh;
   this->Modified();
@@ -67,8 +66,7 @@ SetPolyData(vtkPolyData *iMesh)
 
 template< class TInput, class TOutput >
 void
-vtkPolyDataToBinaryMaskImageFilter< TInput, TOutput >::
-GenerateData()
+vtkPolyDataToBinaryMaskImageFilter< TInput, TOutput >::GenerateData()
 {
   InputImageConstPointer input = this->GetInput();
 

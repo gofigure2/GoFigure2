@@ -74,19 +74,20 @@ GoDBMeshRow::GoDBMeshRow(unsigned int ImagingSessionID):
 {
   this->InitializeMap();
   this->SetImgSessionID(ImagingSessionID);
-  this->m_MapRow["ImagingSessionID"] = ConvertToString<int>(ImagingSessionID);
+  this->m_MapRow["ImagingSessionID"] = ConvertToString< int >(ImagingSessionID);
 }
 
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 GoDBMeshRow::GoDBMeshRow(unsigned int iExistingID,
-  vtkMySQLDatabase *iDatabaseConnector):
+                         vtkMySQLDatabase *iDatabaseConnector):
   GoDBTraceRow()
 {
   this->InitializeMap();
-  this->SetValuesForSpecificID(iExistingID,iDatabaseConnector);
+  this->SetValuesForSpecificID(iExistingID, iDatabaseConnector);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -103,6 +104,7 @@ GoDBMeshRow::GoDBMeshRow(const GoDBMeshRow & iRow):GoDBTraceRow()
     m_NameChannelWithValues = iRow.m_NameChannelWithValues;
     }
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -112,8 +114,8 @@ void GoDBMeshRow::SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector,
                                         GoDBCoordinateRow iCoordMax,
                                         GoFigureMeshAttributes *iMeshAttributes)
 {
-  this->SetTheDataFromTheVisuTemplate < vtkPolyDataMySQLMeshWriter > (
-    DatabaseConnector,TraceVisu,iCoordMin,iCoordMax);
+  this->SetTheDataFromTheVisuTemplate< vtkPolyDataMySQLMeshWriter >(
+    DatabaseConnector, TraceVisu, iCoordMin, iCoordMax);
 
   m_NameChannelWithValues.clear();
 
@@ -122,6 +124,7 @@ void GoDBMeshRow::SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector,
     this->m_NameChannelWithValues = iMeshAttributes->m_TotalIntensityMap;
     }
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -136,6 +139,7 @@ GoDBMeshRow::SafeDownCast(GoDBTraceRow & iRow)
     ++iRowIt;
     }
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -151,6 +155,7 @@ void GoDBMeshRow::InitializeMap()
   this->m_MapRow["SubCellularID"] = ConvertToString< int >(0);
   this->m_MapRow["trackID"] = ConvertToString< int >(0);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -171,22 +176,23 @@ int GoDBMeshRow::SaveInDB(vtkMySQLDatabase *DatabaseConnector)
 
 //-------------------------------------------------------------------------
 int GoDBMeshRow::GetCellTypeID(vtkMySQLDatabase *iDatabaseConnector,
-                              std::string iCellTypeName)
+                               std::string iCellTypeName)
 {
-  return FindOneID(iDatabaseConnector,"celltype", "CellTypeID", 
-    "Name", iCellTypeName);
+  return FindOneID(iDatabaseConnector, "celltype", "CellTypeID",
+                   "Name", iCellTypeName);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void GoDBMeshRow::SetCellType(vtkMySQLDatabase *iDatabaseConnector,
                               std::string iCellTypeName)
 {
-  if (iCellTypeName != "Add a new celltype..." 
-    && iCellTypeName != "Delete a celltype")
+  if ( iCellTypeName != "Add a new celltype..."
+       && iCellTypeName != "Delete a celltype" )
     {
     this->SetField< int >( "CellTypeID",
-      GoDBMeshRow::GetCellTypeID(iDatabaseConnector,iCellTypeName) );
+                           GoDBMeshRow::GetCellTypeID(iDatabaseConnector, iCellTypeName) );
     }
 }
 
@@ -194,24 +200,26 @@ void GoDBMeshRow::SetCellType(vtkMySQLDatabase *iDatabaseConnector,
 
 //-------------------------------------------------------------------------
 int GoDBMeshRow::GetSubCellTypeID(vtkMySQLDatabase *iDatabaseConnector,
-                                 std::string iSubCellTypeName)
+                                  std::string iSubCellTypeName)
 {
- return  FindOneID(iDatabaseConnector,"subcellulartype", "SubCellularID", 
-    "Name", iSubCellTypeName);
+  return FindOneID(iDatabaseConnector, "subcellulartype", "SubCellularID",
+                   "Name", iSubCellTypeName);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void GoDBMeshRow::SetSubCellType(vtkMySQLDatabase *iDatabaseConnector,
                                  std::string iSubCellTypeName)
 {
-  if (iSubCellTypeName != "Add a new subcelltype..." 
-    && iSubCellTypeName != "Delete a subcelltype")
+  if ( iSubCellTypeName != "Add a new subcelltype..."
+       && iSubCellTypeName != "Delete a subcelltype" )
     {
-     this->SetField< int >( "SubCellularID",
-       GoDBMeshRow::GetSubCellTypeID(iDatabaseConnector,iSubCellTypeName) );
+    this->SetField< int >( "SubCellularID",
+                           GoDBMeshRow::GetSubCellTypeID(iDatabaseConnector, iSubCellTypeName) );
     }
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -231,11 +239,11 @@ void GoDBMeshRow::SaveInDBTotalIntensityPerChannel(
   std::map< std::string, int >::iterator iter = iNameChannelWithValues.begin();
   while ( iter != iNameChannelWithValues.end() )
     {
-    std::vector<FieldWithValue> Conditions;
-    this->AddConditions("ImagingSessionID",Conditions);
-    FieldWithValue Name = {"Name",iter->first,"="};
+    std::vector< FieldWithValue > Conditions;
+    this->AddConditions("ImagingSessionID", Conditions);
+    FieldWithValue Name = { "Name", iter->first, "=" };
     Conditions.push_back(Name);
-    int ChannelID = FindOneID( DatabaseConnector, "channel", "ChannelID", Conditions);
+    int ChannelID = FindOneID(DatabaseConnector, "channel", "ChannelID", Conditions);
 
     GoDBIntensityRow NewIntensity;
     NewIntensity.SetField("ChannelID", ChannelID);
@@ -246,6 +254,7 @@ void GoDBMeshRow::SaveInDBTotalIntensityPerChannel(
     iter++;
     }
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

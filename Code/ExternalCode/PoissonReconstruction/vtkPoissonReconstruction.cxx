@@ -148,9 +148,9 @@ int vtkPoissonReconstruction::RequestData(vtkInformation *vtkNotUsed(request),
     return EXIT_FAILURE;
     }
 
-  tree.setTree( input, this->Depth, this->KernelDepth, Real( this->SamplesPerNode),
-                this->Scale, center, scale, !this->NoResetSamples,
-                this->Confidence );
+  tree.setTree(input, this->Depth, this->KernelDepth, Real(this->SamplesPerNode),
+               this->Scale, center, scale, !this->NoResetSamples,
+               this->Confidence);
 
   //DumpOutput("Leaves/Nodes: %d/%d\n",tree.tree.leaves(),tree.tree.nodes());
   //DumpOutput("   Tree Size: %.3f

@@ -58,7 +58,6 @@ int main(int argc, char *argv[])
   QTimer *timer = new QTimer;
   timer->setSingleShot(true);
 
-
   QObject::connect( timer, SIGNAL( timeout() ), rangeSlider, SLOT( close() ) );
 
   if ( atoi(argv[1]) == 1 )

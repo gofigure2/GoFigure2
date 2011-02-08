@@ -216,7 +216,7 @@ void vtkViewImage2DCollection::Initialize()
 //       vtkQuadricLODActor* temp =
       vtkActor *temp =  this->GetItem(j)->AddDataSet(
         static_cast< vtkDataSet * >( this->GetItem(i)->GetSlicePlane() ),
-        plane_property, ( i != j ), true );
+        plane_property, ( i != j ), true);
       //store all slice actors
       this->SlicePlaneActors.push_back(temp);
       /// \todo Check if delete makes sense here

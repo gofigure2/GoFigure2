@@ -111,7 +111,7 @@ void GoDBImport::ImportMeshes()
 //--------------------------------------------------------------------------
 void GoDBImport::ImportTracks()
 {
-	this->ImportMeshes();
+  this->ImportMeshes();
 }
 
 //--------------------------------------------------------------------------

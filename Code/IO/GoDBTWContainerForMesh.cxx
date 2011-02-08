@@ -96,7 +96,7 @@ void GoDBTWContainerForMesh::SetSpecificInfoForMeshTable()
   std::pair< GoDBTraceInfoForTableWidget,
              std::vector< std::string > > PairTemp;
 
-   //Get the info for the Volume:
+  //Get the info for the Volume:
   temp.InfoName = "Volume";
   temp.ColumnNameTableWidget = "Volume";
   m_ColumnsInfos.push_back(temp);
@@ -147,7 +147,7 @@ void GoDBTWContainerForMesh::SetSpecificInfoForMeshTable()
   m_RowContainer.push_back(PairTemp);
   temp.Clear();
 
-   //Get the info for the SubCellType name:
+  //Get the info for the SubCellType name:
   temp.ColumnNameTableWidget = "SubCellType";
   temp.ColumnNameDatabase = "Name";
   temp.TypeName = "string";
@@ -160,6 +160,7 @@ void GoDBTWContainerForMesh::SetSpecificInfoForMeshTable()
   m_RowContainer.push_back(PairTemp);
   temp.Clear();
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -220,16 +221,15 @@ void GoDBTWContainerForMesh::GetValuesForIntensities(
     }
   else
     {
-    std::vector<FieldWithValue> Condition(1);
-    FieldWithValue ImgSession = {"ImagingSessionID", ConvertToString< int >(this->m_ImgSessionID), "="};
+    std::vector< FieldWithValue > Condition(1);
+    FieldWithValue                ImgSession = { "ImagingSessionID", ConvertToString< int >(this->m_ImgSessionID), "=" };
     Condition[0] = ImgSession;
-    FieldWithValue JoinCondition = {this->m_TracesIDName, this->m_TracesIDName, "="};
+    FieldWithValue JoinCondition = { this->m_TracesIDName, this->m_TracesIDName, "=" };
     ResultQuery = GetAllSelectedValuesFromTwoTables(
       iDatabaseConnector, this->m_TracesName, "intensity", SelectedFields,
       JoinCondition, Condition);
     this->GetValuesToFillForIntensityFromQueryResults(
       ResultQuery, iVectMeshIDs, ioValuesToFill);
-
     }
 }
 
@@ -243,15 +243,15 @@ void GoDBTWContainerForMesh::GetIntensityValuesForOneMesh(std::string iMeshID,
   std::vector< std::string > temp;
   for ( unsigned int i = 0; i < this->m_ChannelsInfo.size(); i++ )
     {
-    std::string ChannelIDValue = this->m_ChannelsInfo.at(i).at(1);
-    std::vector<FieldWithValue> Conditions(2);
-    FieldWithValue MeshID = {"MeshID",iMeshID, "="};
-    FieldWithValue ChannelID = {"ChannelID",ChannelIDValue,"="};
+    std::string                   ChannelIDValue = this->m_ChannelsInfo.at(i).at(1);
+    std::vector< FieldWithValue > Conditions(2);
+    FieldWithValue                MeshID = { "MeshID", iMeshID, "=" };
+    FieldWithValue                ChannelID = { "ChannelID", ChannelIDValue, "=" };
     Conditions[0] = MeshID;
     Conditions[1] = ChannelID;
 
-    int         ValueIntensity = FindOneID(iDatabaseConnector, "intensity",
-                                           "Value", Conditions);
+    int ValueIntensity = FindOneID(iDatabaseConnector, "intensity",
+                                   "Value", Conditions);
     if ( ValueIntensity == -1 )
       {
       temp.push_back("");
@@ -279,13 +279,13 @@ void GoDBTWContainerForMesh::GetValuesToFillForIntensityFromQueryResults
 
   size_t i;
 
-  while( ( iterMeshID != iVectMeshIDs.end() ) &&
-        ( iterResult != iResultQuery.end() ) )
+  while ( ( iterMeshID != iVectMeshIDs.end() )
+          && ( iterResult != iResultQuery.end() ) )
     {
     ++iterResult;
     std::vector< std::string > temp;
-    std::string Points = *iterResult;
-    std::string IntensityValue;
+    std::string                Points = *iterResult;
+    std::string                IntensityValue;
     if ( ( Points == "0" ) || ( Points == "" ) ) //if the mesh has no points, he
                                                  // has no intensity
       {

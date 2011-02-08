@@ -38,8 +38,8 @@ QGoTraceManualEditingDockWidget::QGoTraceManualEditingDockWidget(
 {
   this->m_TraceWidget =
     new QGoTraceManualEditingWidget(this);
-  QObject::connect(this->m_TraceWidget, SIGNAL(WindowsTitleToModify(QString) ),
-    this, SLOT(ModifyWindowTitle(QString) ) );
+  QObject::connect( this->m_TraceWidget, SIGNAL( WindowsTitleToModify(QString) ),
+                    this, SLOT( ModifyWindowTitle(QString) ) );
   this->m_TraceWidget->UpdateTraceAndCollection("contour", "mesh");
   this->setWidget(this->m_TraceWidget);
 }
@@ -57,6 +57,7 @@ void QGoTraceManualEditingDockWidget::ModifyWindowTitle(QString iTitle)
 {
   this->setWindowTitle(iTitle);
 }
+
 /*void QGoTraceManualEditingDockWidget::ShowAndUpdate(std::string iTraceName,
                                                     std::string iCollectionName)
 {

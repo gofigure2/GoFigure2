@@ -63,8 +63,9 @@ void
 WatershedBasedCellSegmentation< TFeatureImage, TInputImage, TSegmentImage >::GenerateData()
 {
   PreprocessFilterPointer preprocess = PreprocessFilterType::New();
+
   preprocess->SetInput( this->GetInput() );
-  preprocess->SetLargestCellRadius ( m_NucleusRadius );
+  preprocess->SetLargestCellRadius (m_NucleusRadius);
   preprocess->Update();
 
   FeatureImageConstPointer m_NucleiImg = preprocess->GetOutput();
@@ -92,13 +93,13 @@ WatershedBasedCellSegmentation< TFeatureImage, TInputImage, TSegmentImage >::Gen
 
   // Gradient weighted distance -- Todo: extend with blob instead of laplace
   DistanceFilterPointer distFilter = DistanceFilterType::New();
-  distFilter->SetInput ( m_NucleiImg );
-  distFilter->SetUseLevelSet( true );
-  distFilter->SetForeground ( m_ForegroundImg );
-  distFilter->SetLargestCellRadius( m_NucleusRadius );
-  distFilter->SetNucleiSigma ( 0.5 );
-  distFilter->SetAlpha( m_Alpha );
-  distFilter->SetBeta( m_Beta );
+  distFilter->SetInput (m_NucleiImg);
+  distFilter->SetUseLevelSet(true);
+  distFilter->SetForeground (m_ForegroundImg);
+  distFilter->SetLargestCellRadius(m_NucleusRadius);
+  distFilter->SetNucleiSigma (0.5);
+  distFilter->SetAlpha(m_Alpha);
+  distFilter->SetBeta(m_Beta);
   distFilter->Update();
   std::cout << "Computed distance map" << std::endl;
 
@@ -116,7 +117,7 @@ WatershedBasedCellSegmentation< TFeatureImage, TInputImage, TSegmentImage >::Gen
   WatershedFilterPointer wshed = WatershedFilterType::New();
   wshed->SetInput( idistance->GetOutput() );
   wshed->SetMarkWatershedLine(false);
-  wshed->SetLevel( 1.0 );
+  wshed->SetLevel(1.0);
   wshed->FullyConnectedOn();
   wshed->SetNumberOfThreads( this->GetNumberOfThreads() );
   wshed->SetForegroundImage(m_ForegroundImg);
@@ -125,43 +126,44 @@ WatershedBasedCellSegmentation< TFeatureImage, TInputImage, TSegmentImage >::Gen
   SegmentImagePointer output = wshed->GetOutput();
   output->DisconnectPipeline();
 
-  SegmentImageSizeType size = output->GetLargestPossibleRegion().GetSize();
+  SegmentImageSizeType  size = output->GetLargestPossibleRegion().GetSize();
   SegmentImageIndexType index, index2;
-  SegmentImageSizeType size2;
-  for( unsigned int i = 0; i < ImageDimension; i++ )
-  {
-    index[i] = static_cast<SegmentImageIndexValueType>( size[i]/2 );
+  SegmentImageSizeType  size2;
+  for ( unsigned int i = 0; i < ImageDimension; i++ )
+    {
+    index[i] = static_cast< SegmentImageIndexValueType >(size[i] / 2);
     index2[i] = 1;
     size2[i] = size[i] - 2;
-  }
-  SegmentImagePixelType label = output->GetPixel( index );
+    }
+  SegmentImagePixelType label = output->GetPixel(index);
 
   SegmentImageRegionType region;
-  region.SetIndex( index2 );
-  region.SetSize( size2 );
+  region.SetIndex(index2);
+  region.SetSize(size2);
 
   std::cout << "label: " << label << std::endl;
 
   SegmentIteratorType It( output, output->GetLargestPossibleRegion() );
+
   It.GoToBegin();
   if ( label > 0 )
-  {
-    while( !It.IsAtEnd() )
     {
+    while ( !It.IsAtEnd() )
+      {
       index = It.GetIndex();
 
-      if ( (It.Get() ==  label ) && ( region.IsInside( index ) ) )
-      {
-        It.Set( 1 );
-      }
+      if ( ( It.Get() ==  label ) && ( region.IsInside(index) ) )
+        {
+        It.Set(1);
+        }
       else
-      {
-        It.Set( 0 );
-      }
+        {
+        It.Set(0);
+        }
 
       ++It;
+      }
     }
-  }
   std::cout << "Computed watershed segmentation" << std::endl;
 
 //   InputImagePointer smooth;
@@ -190,18 +192,17 @@ WatershedBasedCellSegmentation< TFeatureImage, TInputImage, TSegmentImage >::Gen
 //     }
 //   }
 
-  this->GraftOutput( output );
+  this->GraftOutput(output);
 }
 
 template< class TFeatureImage, class TInputImage, class TSegmentImage >
 void
 WatershedBasedCellSegmentation< TFeatureImage, TInputImage, TSegmentImage >::PrintSelf(std::ostream & os,
-  Indent indent) const
+                                                                                       Indent indent) const
 {
-  (void) os;
-  (void) indent;
+  (void)os;
+  (void)indent;
 }
-
 } /* end namespace itk */
 
 #endif

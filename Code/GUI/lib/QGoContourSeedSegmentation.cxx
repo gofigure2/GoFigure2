@@ -47,7 +47,7 @@
 //--------------------------------------------------------------------------
 QGoContourSeedSegmentation::QGoContourSeedSegmentation(QWidget *parentW,
                                                        vtkPoints *seeds,
-                                                       std::vector< vtkSmartPointer<vtkImageData> > *iOriginalImage,
+                                                       std::vector< vtkSmartPointer< vtkImageData > > *iOriginalImage,
                                                        int iSampling):
   QGoSeedSegmentationBase(parentW, seeds, iSampling),
   m_OriginalImage(iOriginalImage)
@@ -73,8 +73,8 @@ QGoContourSeedSegmentation::QGoContourSeedSegmentation(QWidget *parentW,
 
   //Add new segmentation method
   m_LevelSetfilter = new QGoFilterChanAndVese(this, iSampling);   // 2 i.e. 2D,
-                                                                 // to create a
-                                                                 // contour
+                                                                  // to create a
+                                                                  // contour
   filter = m_BaseAlgorithmSegmentationWidget->GetNumberOfFilters();
   m_BaseAlgorithmSegmentationWidget->AddFilter( m_LevelSetfilter->getName() );
   m_LevelSetfilter->getWidget()->setParent(m_BaseAlgorithmSegmentationWidget);

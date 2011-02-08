@@ -45,8 +45,7 @@ vtkCxxRevisionMacro(vtkPolyDataMySQLContourWriter, "$Revision$");
 vtkStandardNewMacro(vtkPolyDataMySQLContourWriter);
 
 //--------------------------------------------------------------------------
-vtkPolyDataMySQLContourWriter::
-vtkPolyDataMySQLContourWriter()
+vtkPolyDataMySQLContourWriter::vtkPolyDataMySQLContourWriter()
 {}
 //--------------------------------------------------------------------------
 
@@ -58,8 +57,7 @@ vtkPolyDataMySQLContourWriter::
 
 //--------------------------------------------------------------------------
 std::string
-vtkPolyDataMySQLContourWriter::
-GetMySQLText(vtkPolyData *iPolyData)
+vtkPolyDataMySQLContourWriter::GetMySQLText(vtkPolyData *iPolyData)
 {
   vtkIdType N = iPolyData->GetNumberOfPoints();
 
@@ -75,4 +73,5 @@ GetMySQLText(vtkPolyData *iPolyData)
     }
   return oMyString.str();
 }
+
 //--------------------------------------------------------------------------

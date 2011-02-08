@@ -49,8 +49,7 @@
 namespace itk
 {
 //--------------------------------------------------------------------------
-MegaCaptureReader::
-MegaCaptureReader() :
+MegaCaptureReader::MegaCaptureReader():
   m_FileType(GoFigure::PNG),
   m_TimeBased(true),
   m_Modified(true)
@@ -67,6 +66,7 @@ MegaCaptureReader() :
   m_MinChannel = max_uint;
   m_MaxChannel = max_uint;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -75,6 +75,7 @@ MegaCaptureReader::
 {
   delete m_HeaderReader;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -100,6 +101,7 @@ MegaCaptureReader::SetTimePoint(const unsigned int & iT)
       }
     }
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -125,6 +127,7 @@ MegaCaptureReader::SetZSlice(const unsigned int & iZs)
       }
     }
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -135,6 +138,7 @@ MegaCaptureReader::SetMegaCaptureHeader(const std::string & iHeader)
   m_HeaderReader->Read();
   m_Modified = true;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -152,6 +156,7 @@ MegaCaptureReader::SetInput(const GoFigureFileInfoHelperMultiIndexContainer & iU
 
   ComputeBounds();
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -194,19 +199,19 @@ MegaCaptureReader::ComputeBounds()
 
   m_MaxChannel = ( *r_ch_it ).m_Channel;
 }
+
 //--------------------------------------------------------------------------
 //--------------------------------------------------------------------------
 void
-MegaCaptureReader::
-AddToVTKVolumeBuilder( const int& iCounter,
-                    const std::string& iFileName,
-                    vtkImageAppend *iBuilder )
+MegaCaptureReader::AddToVTKVolumeBuilder(const int & iCounter,
+                                         const std::string & iFileName,
+                                         vtkImageAppend *iBuilder)
 {
   switch ( this->m_FileType )
     {
     case GoFigure::JPEG:
       {
-      AddToVolumeBuilder< vtkJPEGReader >( iCounter, iFileName, iBuilder);
+      AddToVolumeBuilder< vtkJPEGReader >(iCounter, iFileName, iBuilder);
       break;
       }
     case GoFigure::BMP:
@@ -242,6 +247,7 @@ AddToVTKVolumeBuilder( const int& iCounter,
       }
     }
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -285,7 +291,7 @@ MegaCaptureReader::Update()
 
       while ( f_it != f_end )
         {
-        AddToVTKVolumeBuilder( counter, *f_it, volumeBuilder );
+        AddToVTKVolumeBuilder(counter, *f_it, volumeBuilder);
 
         ++f_it;
         ++counter;
@@ -325,19 +331,20 @@ MegaCaptureReader::Update()
     m_TimeInterval = m_HeaderReader->m_TimeInterval;
     }
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 vtkSmartPointer< vtkImageData >
-MegaCaptureReader::
-GetOutput(const unsigned int & iChannel)
+MegaCaptureReader::GetOutput(const unsigned int & iChannel)
 {
   std::map< unsigned int, vtkImageData * >::iterator
     it = m_OutputImageMap.find(iChannel);
 
   if ( it != m_OutputImageMap.end() )
     {
-    //vtkSmartPointer< vtkImageData > output = vtkSmartPointer<vtkImageData>::New();
+    //vtkSmartPointer< vtkImageData > output =
+    // vtkSmartPointer<vtkImageData>::New();
     //output->ShallowCopy(it->second);
     return it->second;
     }
@@ -346,18 +353,18 @@ GetOutput(const unsigned int & iChannel)
     return NULL;
     }
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-vtkSmartPointer<vtkImageData>
-MegaCaptureReader::
-GetImage( const unsigned int & iCh,
-          const unsigned int & iT )
+vtkSmartPointer< vtkImageData >
+MegaCaptureReader::GetImage(const unsigned int & iCh,
+                            const unsigned int & iT)
 {
   std::list< std::string > filenames =
-    GetAllFileNamesForGivenTCoordAndChannel( this->m_FileList, iT, iCh );
+    GetAllFileNamesForGivenTCoordAndChannel(this->m_FileList, iT, iCh);
 
-  if( filenames.empty() )
+  if ( filenames.empty() )
     {
     return NULL;
     }
@@ -369,23 +376,24 @@ GetImage( const unsigned int & iCh,
 
     std::list< std::string >::iterator f_it = filenames.begin();
     std::list< std::string >::iterator f_end = filenames.end();
-    int counter = 0;
+    int                                counter = 0;
 
-    while( f_it != f_end )
+    while ( f_it != f_end )
       {
-      this->AddToVTKVolumeBuilder( counter, *f_it, volumeBuilder );
-      ++ counter;
+      this->AddToVTKVolumeBuilder(counter, *f_it, volumeBuilder);
+      ++counter;
       ++f_it;
       }
     volumeBuilder->Update();
-    vtkSmartPointer<vtkImageData> temp_output = vtkSmartPointer<vtkImageData>::New();
-    temp_output->ShallowCopy(volumeBuilder->GetOutput());
+    vtkSmartPointer< vtkImageData > temp_output = vtkSmartPointer< vtkImageData >::New();
+    temp_output->ShallowCopy( volumeBuilder->GetOutput() );
     temp_output->SetSpacing(m_HeaderReader->m_VoxelSizeX,
                             m_HeaderReader->m_VoxelSizeY,
                             m_HeaderReader->m_VoxelSizeZ);
     return temp_output;
     }
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------

@@ -673,7 +673,7 @@ vtkViewImage3D::AddDataSet(vtkDataSet *dataset,
     //actor3d->SetProperty( property );
     actor3d->GetProperty()->SetColor( property->GetColor() );
     actor3d->GetProperty()->SetOpacity( property->GetOpacity() );
-    actor3d->GetProperty()->SetLineWidth( this->IntersectionLineWidth );
+    actor3d->GetProperty()->SetLineWidth(this->IntersectionLineWidth);
     }
   // Generates problems in visu 3d
   //contActor->GetProperty()->BackfaceCullingOn();

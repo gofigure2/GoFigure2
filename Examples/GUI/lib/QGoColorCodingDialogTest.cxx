@@ -52,7 +52,6 @@ int main(int argc, char *argv[])
 
   win->show();
 
-
   int output = app.exec();
 
   app.closeAllWindows();

@@ -45,8 +45,7 @@ vtkCxxRevisionMacro(vtkPolyDataMySQLMeshWriter, "$Revision$");
 vtkStandardNewMacro(vtkPolyDataMySQLMeshWriter);
 
 //--------------------------------------------------------------------------
-vtkPolyDataMySQLMeshWriter::
-vtkPolyDataMySQLMeshWriter()
+vtkPolyDataMySQLMeshWriter::vtkPolyDataMySQLMeshWriter()
 {}
 //--------------------------------------------------------------------------
 
@@ -58,8 +57,7 @@ vtkPolyDataMySQLMeshWriter::
 
 //--------------------------------------------------------------------------
 std::string
-vtkPolyDataMySQLMeshWriter::
-GetMySQLText(vtkPolyData *iPolyData)
+vtkPolyDataMySQLMeshWriter::GetMySQLText(vtkPolyData *iPolyData)
 {
   vtkIdType N = iPolyData->GetNumberOfPoints();
   double    pt[3];
@@ -75,7 +73,7 @@ GetMySQLText(vtkPolyData *iPolyData)
     }
 
   vtkSmartPointer< vtkIdList >
-    cell_points = vtkSmartPointer< vtkIdList >::New();
+  cell_points = vtkSmartPointer< vtkIdList >::New();
 
   vtkIdType NbOfPointsInCell;
   N = iPolyData->GetNumberOfCells();
@@ -95,4 +93,5 @@ GetMySQLText(vtkPolyData *iPolyData)
 
   return oMyString.str();
 }
+
 //--------------------------------------------------------------------------

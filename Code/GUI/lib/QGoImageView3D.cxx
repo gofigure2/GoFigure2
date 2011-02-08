@@ -576,7 +576,7 @@ QGoImageView3D::SnapshotViewXY(const GoFigure::FileType & iType,
 //-------------------------------------------------------------------------
 QString
 QGoImageView3D::SnapshotViewXZ(const GoFigure::FileType & iType,
-                              const QString & iBaseName)
+                               const QString & iBaseName)
 {
   QString filename = SnapshotView(QvtkWidget_XZ, iType,
                                   iBaseName, m_SnapshotId);

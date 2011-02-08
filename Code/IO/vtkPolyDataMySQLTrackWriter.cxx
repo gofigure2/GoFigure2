@@ -49,8 +49,7 @@ vtkCxxRevisionMacro(vtkPolyDataMySQLTrackWriter, "$Revision$");
 vtkStandardNewMacro(vtkPolyDataMySQLTrackWriter);
 
 //--------------------------------------------------------------------------
-vtkPolyDataMySQLTrackWriter::
-vtkPolyDataMySQLTrackWriter()
+vtkPolyDataMySQLTrackWriter::vtkPolyDataMySQLTrackWriter()
 {}
 //--------------------------------------------------------------------------
 
@@ -62,21 +61,20 @@ vtkPolyDataMySQLTrackWriter::
 
 //--------------------------------------------------------------------------
 std::string
-vtkPolyDataMySQLTrackWriter::
-GetMySQLText(vtkPolyData *iPolyData)
+vtkPolyDataMySQLTrackWriter::GetMySQLText(vtkPolyData *iPolyData)
 {
   vtkIdType N = iPolyData->GetNumberOfPoints();
-  double*    pt = NULL;
-  int        time = 0;
+  double *  pt = NULL;
+  int       time = 0;
 
   std::stringstream oMyString;
 
   oMyString << N << " ";
 
-  vtkSmartPointer<vtkPoints> points = iPolyData->GetPoints();
+  vtkSmartPointer< vtkPoints > points = iPolyData->GetPoints();
   // Might create problems because of the safedowncast
-  vtkSmartPointer<vtkIntArray> temporalArray =
-      vtkIntArray::SafeDownCast(iPolyData->GetPointData()->GetArray("TemporalInformation"));
+  vtkSmartPointer< vtkIntArray > temporalArray =
+    vtkIntArray::SafeDownCast( iPolyData->GetPointData()->GetArray("TemporalInformation") );
 
   for ( vtkIdType i = 0; i < N; i++ )
     {
@@ -87,4 +85,5 @@ GetMySQLText(vtkPolyData *iPolyData)
 
   return oMyString.str();
 }
+
 //--------------------------------------------------------------------------

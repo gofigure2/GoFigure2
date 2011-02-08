@@ -119,14 +119,14 @@ typename itk::Image< PixelType, VImageDimension >::Pointer
 QGoFilterSemiAutoBase::ExtractROI(typename itk::Image< PixelType, VImageDimension >::Pointer iInput,
                                   double *iCenter, double iRadius)
 {
-  typedef itk::Image< PixelType, VImageDimension >    InternalImageType;
-  typedef typename InternalImageType::PointType       InternalPointType;
-  typedef typename InternalImageType::IndexType       InternalIndexType;
-  typedef typename InternalImageType::IndexValueType  InternalIndexValueType;
-  typedef typename InternalImageType::SizeType        InternalSizeType;
-  typedef typename InternalImageType::SizeValueType   InternalSizeValueType;
-  typedef typename InternalImageType::RegionType      InternalRegionType;
-  typedef typename InternalImageType::SpacingType     InternalSpacingType;
+  typedef itk::Image< PixelType, VImageDimension >   InternalImageType;
+  typedef typename InternalImageType::PointType      InternalPointType;
+  typedef typename InternalImageType::IndexType      InternalIndexType;
+  typedef typename InternalImageType::IndexValueType InternalIndexValueType;
+  typedef typename InternalImageType::SizeType       InternalSizeType;
+  typedef typename InternalImageType::SizeValueType  InternalSizeValueType;
+  typedef typename InternalImageType::RegionType     InternalRegionType;
+  typedef typename InternalImageType::SpacingType    InternalSpacingType;
 
   if ( iInput.IsNull() )
     {
@@ -138,7 +138,7 @@ QGoFilterSemiAutoBase::ExtractROI(typename itk::Image< PixelType, VImageDimensio
   InternalIndexType startOfROI, endOfROI;
   InternalPointType origin;
   InternalSizeType  size;
-  InternalSizeType sizeOfLargeImage = iInput->GetLargestPossibleRegion().GetSize();
+  InternalSizeType  sizeOfLargeImage = iInput->GetLargestPossibleRegion().GetSize();
   size.Fill(0);
 
   unsigned int j;
@@ -159,15 +159,15 @@ QGoFilterSemiAutoBase::ExtractROI(typename itk::Image< PixelType, VImageDimensio
       startOfROI[j] = 0;
       }
 
-    endOfROI[j] = startOfROI[j] +
-      static_cast< InternalIndexValueType >( size[j] ) - 1;
+    endOfROI[j] = startOfROI[j]
+                  + static_cast< InternalIndexValueType >(size[j]) - 1;
 
     if ( endOfROI[j] >
-         static_cast< InternalIndexValueType >( sizeOfLargeImage[j] - 1 ) )
+         static_cast< InternalIndexValueType >(sizeOfLargeImage[j] - 1) )
       {
       size[j] = sizeOfLargeImage[j] - startOfROI[j];
       }
-  }
+    }
 
   InternalRegionType region;
   region.SetSize(size);

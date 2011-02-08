@@ -111,7 +111,7 @@ void QGoDBInitCreateAuthorsPage::CreateAuthor()
   std::string FirstNameValue = lineFirstName->text().toStdString();
   std::string MiddleNameValue =  lineMiddleName->text().toStdString();
 
-  if (FirstNameValue.empty() || LastNameValue.empty() )
+  if ( FirstNameValue.empty() || LastNameValue.empty() )
     {
     msgBox.setText(
       tr("Please enter at least the lastname and the firstname of your author") );
@@ -119,13 +119,13 @@ void QGoDBInitCreateAuthorsPage::CreateAuthor()
     return;
     }
 
-  std::vector<FieldWithValue> Conditions;
-  FieldWithValue FirstName = {"FirstName",FirstNameValue, "="};
-  FieldWithValue LastName = {"LastName",LastNameValue, "="};
+  std::vector< FieldWithValue > Conditions;
+  FieldWithValue                FirstName = { "FirstName", FirstNameValue, "=" };
+  FieldWithValue                LastName = { "LastName", LastNameValue, "=" };
   Conditions.push_back(FirstName);
   Conditions.push_back(LastName);
-  
-  if( FindOneID(this->m_DatabaseConnector,"author", "AuthorID",Conditions) != -1 && MiddleNameValue.empty() )
+
+  if ( FindOneID(this->m_DatabaseConnector, "author", "AuthorID", Conditions) != -1 && MiddleNameValue.empty() )
     {
     msgBox.setText(
       tr("There is already an Author with the same lastname and firstname, please enter a middlename") );
@@ -134,19 +134,19 @@ void QGoDBInitCreateAuthorsPage::CreateAuthor()
     }
 
   GoDBAuthorRow NewAuthor;
-  NewAuthor.SetField("FirstName", lineFirstName->text().toStdString() );
-  NewAuthor.SetField("LastName", lineLastName->text().toStdString() );
-  NewAuthor.SetField("MiddleName",lineMiddleName->text().toStdString() );
+  NewAuthor.SetField( "FirstName", lineFirstName->text().toStdString() );
+  NewAuthor.SetField( "LastName", lineLastName->text().toStdString() );
+  NewAuthor.SetField( "MiddleName", lineMiddleName->text().toStdString() );
 
-  if (NewAuthor.DoesThisAuthorAlreadyExists(this->m_DatabaseConnector) != -1)
+  if ( NewAuthor.DoesThisAuthorAlreadyExists(this->m_DatabaseConnector) != -1 )
     {
-     msgBox.setText(
+    msgBox.setText(
       tr("This author already exists") );
     msgBox.exec();
     return;
     }
-  NewAuthor.SaveInDB(this->m_DatabaseConnector) ;
- 
+  NewAuthor.SaveInDB(this->m_DatabaseConnector);
+
   msgBox.setText(
     tr("Your author has been successfully created") );
   msgBox.exec();

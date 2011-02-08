@@ -45,14 +45,14 @@ int main(int argc, char *argv[])
 
   // Define some tracks manually
 
-  typedef std::pair<  int, std::pair<  int,double*> > Mesh;
-  typedef std::pair<  int, std::list<Mesh> > Track;
+  typedef std::pair<  int, std::pair<  int, double * > > Mesh;
+  typedef std::pair<  int, std::list< Mesh > >           Track;
 
   // Create meshes
   Mesh mesh0;
   mesh0.first = 1;
   mesh0.second.first = 2;
-  double* position0 = new double[3];
+  double *position0 = new double[3];
   position0[0] = 10;
   position0[1] = 10;
   position0[2] = 10;
@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
   Mesh mesh1;
   mesh1.first = 3;
   mesh1.second.first = 4;
-  double* position1 = new double[3];
+  double *position1 = new double[3];
   position1[0] = 20;
   position1[1] = 20;
   position1[2] = 20;
@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
   Mesh mesh2;
   mesh2.first = 5;
   mesh2.second.first = 6;
-  double* position2 = new double[3];
+  double *position2 = new double[3];
   position2[0] = 30;
   position2[1] = 30;
   position2[2] = 30;
@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
   Mesh mesh02;
   mesh02.first = 12;
   mesh02.second.first = 22;
-  double* position02 = new double[3];
+  double *position02 = new double[3];
   position02[0] = 102;
   position02[1] = 102;
   position02[2] = 102;
@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
   Mesh mesh12;
   mesh12.first = 32;
   mesh12.second.first = 42;
-  double* position12 = new double[3];
+  double *position12 = new double[3];
   position12[0] = 202;
   position12[1] = 202;
   position12[2] = 202;
@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
   Mesh mesh22;
   mesh22.first = 52;
   mesh22.second.first = 62;
-  double* position22 = new double[3];
+  double *position22 = new double[3];
   position22[0] = 302;
   position22[1] = 302;
   position22[2] = 302;
@@ -116,7 +116,7 @@ int main(int argc, char *argv[])
   track02.second.push_back(mesh12);
   track02.second.push_back(mesh22);
 
-  std::list<Track> trackList;
+  std::list< Track > trackList;
   trackList.push_back(track0);
   trackList.push_back(track02);
 /*

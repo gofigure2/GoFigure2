@@ -38,8 +38,11 @@
 #include "QGoMeshSeedSegmentation.h"
 
 //---------------------------------------------------------------------------//
-QGoMeshSegmentationBaseDockWidget::QGoMeshSegmentationBaseDockWidget(QWidget *iParent, vtkPoints *seeds,
-                                                                     std::vector< vtkSmartPointer<vtkImageData> > *iOriginalImage):
+QGoMeshSegmentationBaseDockWidget::QGoMeshSegmentationBaseDockWidget(
+  QWidget *iParent,
+  vtkPoints *seeds,
+  std::vector< vtkSmartPointer< vtkImageData > > *
+  iOriginalImage):
   QDockWidget(iParent)
 {
   this->setupUi(this);
@@ -201,7 +204,7 @@ QGoMeshSegmentationBaseDockWidget::interactorBehavior(bool iSegmentationMethod)
 
 //---------------------------------------------------------------------------//
 void
-QGoMeshSegmentationBaseDockWidget::SetChannel(int iChannel,const QString & iText)
+QGoMeshSegmentationBaseDockWidget::SetChannel(int iChannel, const QString & iText)
 {
   QString input;
 

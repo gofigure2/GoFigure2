@@ -54,13 +54,13 @@ int main(int argc, char **argv)
   vtkPolyData *input = vtk_reader->GetOutput();
 
   vtkPolyDataMySQLContourWriter *convert_writer =
-      vtkPolyDataMySQLContourWriter::New();
+    vtkPolyDataMySQLContourWriter::New();
   std::string polydata_string = convert_writer->GetMySQLText(input);
 
   vtkPolyDataMySQLContourReader *convert_reader =
-      vtkPolyDataMySQLContourReader::New();
+    vtkPolyDataMySQLContourReader::New();
   vtkPolyData *output = vtkPolyData::New();
-  output->DeepCopy(convert_reader->GetPolyData(polydata_string));
+  output->DeepCopy( convert_reader->GetPolyData(polydata_string) );
 
   if ( output->GetNumberOfPoints() != input->GetNumberOfPoints() )
     {

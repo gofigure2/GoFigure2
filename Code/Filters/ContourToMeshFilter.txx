@@ -55,11 +55,10 @@ namespace itk
  * \brief
  */
 template< class TContainer >
-ContourToMeshFilter< TContainer >::
-ContourToMeshFilter():
+ContourToMeshFilter< TContainer >::ContourToMeshFilter():
   m_Output(NULL),
-  m_ThresholdNumberOfPoints( 20 ),
-  m_TargetNumberOfPoints( 20 )
+  m_ThresholdNumberOfPoints(20),
+  m_TargetNumberOfPoints(20)
 {}
 
 template< class TContainer >
@@ -84,7 +83,7 @@ ContourToMeshFilter< TContainer >::ProcessContours(const ContainerType & iContai
     ContainerConstIterator it = iContainer.begin();
 
     std::vector< vtkSmartPointer< vtkPolylineDecimation > >
-      decimate( iContainer.size() );
+    decimate( iContainer.size() );
 
     size_t i = 0;
 
@@ -92,13 +91,13 @@ ContourToMeshFilter< TContainer >::ProcessContours(const ContainerType & iContai
       {
       if ( ( *it ) )
         {
-        if( (*it)->GetNumberOfPoints() > m_ThresholdNumberOfPoints )
+        if ( ( *it )->GetNumberOfPoints() > m_ThresholdNumberOfPoints )
           {
           decimate[i] = vtkSmartPointer< vtkPolylineDecimation >::New();
-          decimate[i]->SetInput( *it );
-          decimate[i]->SetTargetReduction( 1. -
-            static_cast< double >( m_TargetNumberOfPoints ) /
-            static_cast< double >( (*it)->GetNumberOfPoints() ) );
+          decimate[i]->SetInput(*it);
+          decimate[i]->SetTargetReduction( 1.
+                                           - static_cast< double >(m_TargetNumberOfPoints)
+                                           / static_cast< double >( ( *it )->GetNumberOfPoints() ) );
           decimate[i]->Update();
 
           append->AddInputConnection( decimate[i]->GetOutputPort() );
@@ -126,8 +125,8 @@ ContourToMeshFilter< TContainer >::ProcessContours(const ContainerType & iContai
     poissonFilter->SetIsoDivide(12);
     poissonFilter->Update();
 
-    vtkSmartPointer<vtkFeatureEdges> feature =
-        vtkSmartPointer<vtkFeatureEdges>::New();
+    vtkSmartPointer< vtkFeatureEdges > feature =
+      vtkSmartPointer< vtkFeatureEdges >::New();
     feature->SetInputConnection( poissonFilter->GetOutputPort() );
     feature->BoundaryEdgesOn();
     feature->FeatureEdgesOff();
@@ -143,7 +142,7 @@ ContourToMeshFilter< TContainer >::ProcessContours(const ContainerType & iContai
       m_Output = vtkPolyData::New();
       }
 
-    if( feature->GetOutput()->GetNumberOfCells() > 0 )
+    if ( feature->GetOutput()->GetNumberOfCells() > 0 )
       {
       fillFilter->SetInputConnection( poissonFilter->GetOutputPort() );
       fillFilter->Update();

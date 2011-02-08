@@ -61,9 +61,9 @@ ContourMeshStructure::ContourMeshStructure(const unsigned int & iTraceID,
                                            const double & r,
                                            const double & g,
                                            const double & b,
-                                           const double & alpha) :
-  TraceStructure( iTraceID, iCollectionID, iActors, iNodes, iHighlighted,
-                  iVisible, r, g, b, alpha ),
+                                           const double & alpha):
+  TraceStructure(iTraceID, iCollectionID, iActors, iNodes, iHighlighted,
+                 iVisible, r, g, b, alpha),
   TCoord(iT)
 {
   if ( iActors.size() == 4 )
@@ -95,10 +95,9 @@ ContourMeshStructure::ContourMeshStructure(const unsigned int & iTraceID,
                                            const bool & iHighlighted,
                                            const bool & iVisible,
                                            double iRgba[4]):
-  TraceStructure(iTraceID, iCollectionID, iActors, iNodes, iHighlighted, iVisible, iRgba ),
+  TraceStructure(iTraceID, iCollectionID, iActors, iNodes, iHighlighted, iVisible, iRgba),
   TCoord(iT)
-{
-}
+{}
 
 //--------------------------------------------------------------------------
 
@@ -117,20 +116,18 @@ ContourMeshStructure::ContourMeshStructure(const unsigned int & iTraceID,
                                            const double & g,
                                            const double & b,
                                            const double & alpha):
-  TraceStructure( iTraceID, iCollectionID, iActorXY, iActorYZ, iActorXZ, iActorXYZ, iNodes,
-                  iHighlighted, iVisible, r, g, b, alpha ),
+  TraceStructure(iTraceID, iCollectionID, iActorXY, iActorYZ, iActorXZ, iActorXYZ, iNodes,
+                 iHighlighted, iVisible, r, g, b, alpha),
   TCoord(iT)
-{
-}
+{}
 
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 ContourMeshStructure::ContourMeshStructure(const ContourMeshStructure & iE):
-  TraceStructure( iE ),
-  TCoord( iE.TCoord )
-{
-}
+  TraceStructure(iE),
+  TCoord(iE.TCoord)
+{}
 
 //--------------------------------------------------------------------------
 
@@ -167,4 +164,5 @@ int ContourMeshStructure::GetDirection()
 
   return oDir;
 }
+
 //--------------------------------------------------------------------------

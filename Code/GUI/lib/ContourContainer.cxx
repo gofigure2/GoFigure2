@@ -36,23 +36,20 @@
 
 #include <QDebug>
 
-ContourContainer::
-ContourContainer(QObject* iParent,
-                 QGoImageView3D *iView) : ContourMeshContainer( iParent, iView )
-{
-}
+ContourContainer::ContourContainer(QObject *iParent,
+                                   QGoImageView3D *iView):ContourMeshContainer(iParent, iView)
+{}
 
 ContourContainer::
 ~ContourContainer()
 {}
 
-std::vector< vtkActor* >
-ContourContainer::
-AddTrace( vtkPolyData* iNode, vtkProperty* iProperty )
+std::vector< vtkActor * >
+ContourContainer::AddTrace(vtkPolyData *iNode, vtkProperty *iProperty)
 {
-  std::vector< vtkActor* > oActors;
+  std::vector< vtkActor * > oActors;
 
-  if( m_ImageView )
+  if ( m_ImageView )
     {
     int dir = this->ComputeDirectionFromContour(iNode);
 

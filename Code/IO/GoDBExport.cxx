@@ -170,7 +170,7 @@ void GoDBExport::UpdateVectorContourIDsForExportMeshes()
 //--------------------------------------------------------------------------
 void GoDBExport::UpdateVectorMeshIDsForExportContours()
 {
-  if(!this->m_VectorContourIDs.empty())
+  if ( !this->m_VectorContourIDs.empty() )
     {
     this->m_VectorMeshIDs = ListSpecificValuesForOneColumn(
       this->m_DatabaseConnector, "contour", "meshID", "contourID",
@@ -183,14 +183,14 @@ void GoDBExport::UpdateVectorMeshIDsForExportContours()
 //--------------------------------------------------------------------------
 void GoDBExport::UpdateVectorMeshIDsForExportMeshes()
 {
-  std::vector<FieldWithValue> Conditions(2);
-  FieldWithValue ImgSession = {"ImagingSessionID",
-    ConvertToString< int >(this->m_ImagingSessionID),"="};
-  FieldWithValue Points = {"Points","0","<>"};
+  std::vector< FieldWithValue > Conditions(2);
+  FieldWithValue                ImgSession = { "ImagingSessionID",
+                                               ConvertToString< int >(this->m_ImagingSessionID), "=" };
+  FieldWithValue                Points = { "Points", "0", "<>" };
   Conditions[0] = ImgSession;
   Conditions[1] = Points;
   this->m_VectorMeshIDs = FindSeveralIDs(this->m_DatabaseConnector,
-                                         "mesh", "meshID",Conditions);
+                                         "mesh", "meshID", Conditions);
 }
 
 //--------------------------------------------------------------------------
@@ -265,7 +265,7 @@ void GoDBExport::WriteTheColorsInfoFromDatabase()
   this->GetVectorsTableNamesTracesIDsAndFields(
     TablesNames, VectorTracesIDs, FieldNames, true);
   std::vector< std::string > ListColorIDs = std::vector< std::string >();
-  if (!VectorTracesIDs.empty())
+  if ( !VectorTracesIDs.empty() )
     {
     std::vector< std::string > ColumnNames(1);
     ColumnNames[0] = "ColorID";
@@ -282,12 +282,12 @@ void GoDBExport::WriteCellTypeAndSubCellTypeInfoFromDatabase()
 {
   std::vector< std::string > ListCellTypeIDs    = std::vector< std::string >();
   std::vector< std::string > ListSubCellTypeIDs = std::vector< std::string >();
-  if (!this->m_VectorMeshIDs.empty())
+  if ( !this->m_VectorMeshIDs.empty() )
     {
     ListCellTypeIDs = ListSpecificValuesForOneColumn(
       this->m_DatabaseConnector, "mesh", "CellTypeID", "meshID",
       this->m_VectorMeshIDs, true, true);
-  
+
     ListSubCellTypeIDs =
       ListSpecificValuesForOneColumn(this->m_DatabaseConnector,
                                      "mesh", "SubCellularID", "meshID", this->m_VectorMeshIDs, true, true);
@@ -310,7 +310,7 @@ void GoDBExport::WriteCoordinatesInfoFromDatabase()
   ColumnNames[0] = "CoordIDMax";
   ColumnNames[1] = "CoordIDMin";
   std::vector< std::string > ListCoordIDs = std::vector< std::string >();
-  if (!VectorTracesIDs.empty() )
+  if ( !VectorTracesIDs.empty() )
     {
     ListCoordIDs = GetSameFieldsFromSeveralTables(
       this->m_DatabaseConnector, ColumnNames, TablesNames, FieldNames, VectorTracesIDs);
@@ -357,7 +357,7 @@ void GoDBExport::WriteChannelsInfoFromDatabase()
 void GoDBExport::WriteIntensityInfoFromDatabase()
 {
   std::vector< std::string > VectorIntensityIDs = std::vector< std::string >();
-  if (!this->m_VectorMeshIDs.empty() )
+  if ( !this->m_VectorMeshIDs.empty() )
     {
     VectorIntensityIDs =
       GetSpecificValueFromOneTableWithConditionsOnTwoColumns(

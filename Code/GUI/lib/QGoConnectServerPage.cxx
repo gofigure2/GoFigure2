@@ -132,7 +132,8 @@ bool QGoConnectServerPage::validatePage()
   std::string                        DBName = *i;
   this->wizard()->setField( "DBName", DBName.c_str() );
   emit GofigureDatabaseExists();
-  //std::cout << "the db name to open is: " << field("DBName").toString().toStdString().c_str() << std::endl;
+  //std::cout << "the db name to open is: " <<
+  // field("DBName").toString().toStdString().c_str() << std::endl;
   return true;
 }
 

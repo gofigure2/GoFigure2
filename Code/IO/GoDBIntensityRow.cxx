@@ -78,10 +78,10 @@ int GoDBIntensityRow::SaveInDB(vtkMySQLDatabase *DatabaseConnector)
 //-------------------------------------------------------------------------
 int GoDBIntensityRow::DoesThisIntensityAlreadyExists(
   vtkMySQLDatabase *DatabaseConnector)
-{ 
-  std::vector<FieldWithValue> Conditions;
-  this->AddConditions("ChannelID",Conditions);
-  this->AddConditions("meshID",Conditions);
+{
+  std::vector< FieldWithValue > Conditions;
+  this->AddConditions("ChannelID", Conditions);
+  this->AddConditions("meshID", Conditions);
 
   return FindOneID(DatabaseConnector, "intensity", "IntensityID", Conditions);
 }

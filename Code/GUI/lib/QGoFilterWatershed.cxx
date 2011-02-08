@@ -239,7 +239,7 @@ QGoFilterWatershed::Filter3D(double *iCenter)
   typedef itk::Image< float, dimension > OutputImageType;
 
   typedef itk::WatershedBasedCellSegmentation< FeatureImageType, InputImageType, SegmentImageType >
-    SegmentationFilterType;
+  SegmentationFilterType;
 
   //VTK to ITK
   //---------------------------------------------------------
@@ -258,15 +258,15 @@ QGoFilterWatershed::Filter3D(double *iCenter)
   SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
   filter->SetInput(test2);
   //set up parameters
-  filter->SetNucleusThresholdMin( m_TreshMin );
-  filter->SetNucleusThresholdMax( m_TreshMax );
-  filter->SetCorrelationThreshold1( m_CorrTresh );
-  filter->SetAlpha( m_Alpha );
-  filter->SetBeta( m_Beta );
+  filter->SetNucleusThresholdMin(m_TreshMin);
+  filter->SetNucleusThresholdMax(m_TreshMax);
+  filter->SetCorrelationThreshold1(m_CorrTresh);
+  filter->SetAlpha(m_Alpha);
+  filter->SetBeta(m_Beta);
   // run the filter
   filter->Update();
   SegmentImagePointer test3 = filter->GetOutput();
-  
+
 /*
   typedef itk::ImageFileWriter< SegmentImageType > WriterType;
   WriterType::Pointer writer = WriterType::New();
@@ -281,12 +281,13 @@ QGoFilterWatershed::Filter3D(double *iCenter)
   setOutput(itk2vtk);
   itk2vtk->Delete();
 
-//   vtkSmartPointer< vtkMetaImageWriter > writer = vtkSmartPointer< vtkMetaImageWriter >::New(); 
-//   writer->SetFileDimensionality( 3 ); 
-//   writer->SetInput( getOutput() ); 
-//   writer->SetFileName("test.mha"); 
-//   writer->Write(); 
-  
+//   vtkSmartPointer< vtkMetaImageWriter > writer = vtkSmartPointer<
+// vtkMetaImageWriter >::New();
+//   writer->SetFileDimensionality( 3 );
+//   writer->SetInput( getOutput() );
+//   writer->SetFileName("test.mha");
+//   writer->Write();
+
   // 3D when m_Dimension = 1
   /// \todo rename m_Dimension
   if ( m_Dimension == 1 )
@@ -400,6 +401,7 @@ QGoFilterWatershed::setTreshMin(int iTreshmin)
 {
   m_TreshMin = iTreshmin;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -408,6 +410,7 @@ QGoFilterWatershed::setTreshMax(int iTreshmax)
 {
   m_TreshMax = iTreshmax;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -416,14 +419,16 @@ QGoFilterWatershed::setCorrTresh(double iCorrTresh)
 {
   m_CorrTresh = iCorrTresh;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
 QGoFilterWatershed::setAlpha(double iAlpha)
 {
- m_Alpha = iAlpha;
+  m_Alpha = iAlpha;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -432,4 +437,5 @@ QGoFilterWatershed::setBeta(double iBeta)
 {
   m_Beta = iBeta;
 }
+
 //--------------------------------------------------------------------------

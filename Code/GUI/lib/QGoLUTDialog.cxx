@@ -92,7 +92,7 @@ vtkLookupTable * QGoLUTDialog::GetLookupTable(QWidget *iiParent,
     dlg.setWindowTitle(iTitle);
     }
   dlg.ChangeLookupTable(iIdx);
-  if( dlg.exec() == QDialog::Accepted )
+  if ( dlg.exec() == QDialog::Accepted )
     {
     return dlg.GetLookupTable();
     }
@@ -137,14 +137,14 @@ void QGoLUTDialog::setupUi(QDialog *LUTDialog)
   this->LUTComboBox->setFrame(true);
 
   std::vector< std::string > lut_names =
-      vtkLookupTableManager::GetAvailableLookupTables();
+    vtkLookupTableManager::GetAvailableLookupTables();
 
   size_t k = 0;
-  for( ; k < lut_names.size(); k++ )
+  for (; k < lut_names.size(); k++ )
     {
-    this->LUTComboBox->insertItem(static_cast<int>(k), QString::fromStdString( lut_names[k] ) );
+    this->LUTComboBox->insertItem( static_cast< int >( k ), QString::fromStdString(lut_names[k]) );
     }
-  this->LUTComboBox->insertItem(static_cast<int>(k), tr( "HSV Based" ) );
+  this->LUTComboBox->insertItem( static_cast< int >( k ), tr("HSV Based") );
 
   this->HorizontalLayout->addWidget(this->LUTComboBox);
 
@@ -193,20 +193,20 @@ void QGoLUTDialog::ChangeLookupTable(const int & idx)
   this->LUT->Delete();
   int N = this->LUTComboBox->count();
 
-  if( ( idx >= N ) || ( idx < 0 ) )
+  if ( ( idx >= N ) || ( idx < 0 ) )
     {
     qWarning() << "QGoLUTDialog idx is out of range";
     return;
     }
   else
     {
-    if( idx == N-1 )
+    if ( idx == N - 1 )
       {
-      QColor color = QColorDialog::getColor( Qt::green );
+      QColor color = QColorDialog::getColor(Qt::green);
 
       double hsv[3];
 
-      if( color.isValid() )
+      if ( color.isValid() )
         {
         hsv[0] = color.hueF();
         hsv[1] = color.saturationF();
@@ -220,7 +220,7 @@ void QGoLUTDialog::ChangeLookupTable(const int & idx)
         hsv[2] = color.valueF();
         }
 
-      this->LUT = vtkLookupTableManager::GetHSVBasedLookupTable( hsv );
+      this->LUT = vtkLookupTableManager::GetHSVBasedLookupTable(hsv);
       }
     else
       {
@@ -229,6 +229,5 @@ void QGoLUTDialog::ChangeLookupTable(const int & idx)
 
     this->LUTActor->SetLookupTable(this->LUT);
     this->QvtkWidget->GetRenderWindow()->Render();
-
     }
 }

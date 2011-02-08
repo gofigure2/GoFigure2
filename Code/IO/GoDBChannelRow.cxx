@@ -75,9 +75,9 @@ int GoDBChannelRow::SaveInDB(vtkMySQLDatabase *DatabaseConnector)
 int GoDBChannelRow::DoesThisChannelAlreadyExists(
   vtkMySQLDatabase *DatabaseConnector)
 {
-  std::vector<FieldWithValue> Conditions;
-  this->AddConditions("ImagingSessionID",Conditions);
-  this->AddConditions("ChannelNumber",Conditions);
+  std::vector< FieldWithValue > Conditions;
+  this->AddConditions("ImagingSessionID", Conditions);
+  this->AddConditions("ChannelNumber", Conditions);
 
   return FindOneID(DatabaseConnector, "channel", "ChannelID", Conditions);
   /** \todo Lydie: Once we get the channel names from the megacapture file,

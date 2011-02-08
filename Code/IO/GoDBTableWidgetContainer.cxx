@@ -52,7 +52,7 @@ GoDBTableWidgetContainer::GoDBTableWidgetContainer(std::string iTracesName,
 
 //--------------------------------------------------------------------------
 std::vector< GoDBTraceInfoForTableWidget >
-  GoDBTableWidgetContainer::GetColumnsInfoForTraceTable()
+GoDBTableWidgetContainer::GetColumnsInfoForTraceTable()
 {
   GoDBTraceInfoForTableWidget temp;
 
@@ -423,8 +423,8 @@ void GoDBTableWidgetContainer::SetInfoForColumnIsVisible()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::list< std::pair< std::string, std::string > > 
-  GoDBTableWidgetContainer::GetListColumnsNamesAndToolTipsForTableWidget()
+std::list< std::pair< std::string, std::string > >
+GoDBTableWidgetContainer::GetListColumnsNamesAndToolTipsForTableWidget()
 {
   std::list< std::pair< std::string, std::string > > oListColumnNamesAndToolTips;
   for ( unsigned int i = 0; i < m_ColumnsInfos.size(); i++ )
@@ -432,7 +432,7 @@ std::list< std::pair< std::string, std::string > >
     if ( m_ColumnsInfos[i].ColumnNameTableWidget != "None"
          && m_ColumnsInfos[i].ColumnNameTableWidget != "NoneID" )
       {
-      std::pair< std::string, std::string> temp;
+      std::pair< std::string, std::string > temp;
       temp.first = m_ColumnsInfos[i].ColumnNameTableWidget;
       temp.second = m_ColumnsInfos[i].ToolTip;
       oListColumnNamesAndToolTips.push_back(temp);

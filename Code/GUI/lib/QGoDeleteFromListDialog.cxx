@@ -59,7 +59,7 @@ QGoDeleteFromListDialog::QGoDeleteFromListDialog
 
 //--------------------------------------------------------------------------
 QGoDeleteFromListDialog::QGoDeleteFromListDialog(
-  QGoDeleteFromListDialog::ListOfItemColorComboboxData  iDataListWithColor,
+  QGoDeleteFromListDialog::ListOfItemColorComboboxData iDataListWithColor,
   QWidget *iParent,
   std::string iEntityName
   ):QDialog(iParent)
