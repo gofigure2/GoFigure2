@@ -113,7 +113,7 @@ public:
   if yes fill the map["CoordIDMin"] and ["CoordIDmax"] with the existing CoordinateID
   if not, create the coordinates in the database and fill the map with the new created ID,
   if the bounding box already exists, a cout is generated
-  \param[in] DatabaseConnector connection to the database
+  \param[in] iDatabaseConnector connection to the database
   \param[in] Min coordinate row for the minimum of the bounding box
   \param[in] Max coordinate row for the maximum of the bounding box
   */
