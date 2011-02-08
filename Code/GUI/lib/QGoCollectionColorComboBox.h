@@ -61,11 +61,7 @@ public slots:
                                  std::string iCollectionName);
 
   /**
-  \brief
-  \param[in] iCollectionName name of the collection to add in the text to add a new
-  collection
-  \overload QGoColorComboBox::InitializeTheListWithColor(
-  std::list< ItemColorComboboxData > iDataFromList)
+  \overload
   */
   void InitializeTheListWithColor(std::list< ItemColorComboboxData > iDataFromList,
                                   std::string iCollectionName);
