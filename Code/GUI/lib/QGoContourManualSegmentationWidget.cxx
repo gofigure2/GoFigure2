@@ -39,7 +39,7 @@
 #include "QGoManualSegmentationSettingsDialog.h"
 
 //---------------------------------------------------------------------------//
-QGoContourManualSegmentationWidget::QGoContourManualSegmentationWidget(QWidget *iParent):
+QGoContourManualSegmentationWidget::QGoContourManualSegmentationWidget(QWidget *iParent) :
   QWidget(iParent)
 {
   this->setupUi(this);
@@ -64,6 +64,7 @@ QGoContourManualSegmentationWidget::QGoContourManualSegmentationWidget(QWidget *
 //---------------------------------------------------------------------------//
 QGoContourManualSegmentationWidget::
 ~QGoContourManualSegmentationWidget()
-{}
+{
+}
 
 //---------------------------------------------------------------------------//

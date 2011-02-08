@@ -50,7 +50,7 @@
 
 //--------------------------------------------------------------------------
 QGoSeedSegmentation::QGoSeedSegmentation(QObject *parentO, QWidget *parentW, vtkPoints *seeds,
-                                         std::vector< vtkImageData * > *iOriginalImage):
+                                         std::vector< vtkImageData * > *iOriginalImage) :
   QGoSeedSegmentationBase(parentO, seeds)
 {
   int filter = 0;

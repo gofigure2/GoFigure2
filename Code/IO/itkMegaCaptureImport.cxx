@@ -47,7 +47,8 @@ MegaCaptureImport::MegaCaptureImport()
 //--------------------------------------------------------------------------------
 MegaCaptureImport::
 ~MegaCaptureImport()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -136,7 +137,7 @@ MegaCaptureImport::CreateOutput()
       // get the headerfile name and add the .meg
       std::string fileNamePath = itksys::SystemTools::GetFilenamePath(m_FileName);
       m_HeaderFileName = fileNamePath + "/"
-                         + origFileName.substr(0, LengthHeaderFile) + ".meg";
+        + origFileName.substr(0, LengthHeaderFile) + ".meg";
       }
 
     if ( m_NbSignificantMegaCaptureNumGroup == 9 )
@@ -487,4 +488,5 @@ std::string MegaCaptureImport::GetHeaderFilename()
 {
   return m_HeaderFileName;
 }
+
 }

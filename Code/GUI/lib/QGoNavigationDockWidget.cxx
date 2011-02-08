@@ -38,7 +38,7 @@
 #include <QVBoxLayout>
 #include <QShortcut>
 
-QGoNavigationDockWidget::QGoNavigationDockWidget(QWidget *iParent, const GoFigure::TabDimensionType & iDim):
+QGoNavigationDockWidget::QGoNavigationDockWidget(QWidget *iParent, const GoFigure::TabDimensionType & iDim) :
   QDockWidget(iParent),
   m_Dimension(iDim)
 {
@@ -123,8 +123,8 @@ QGoNavigationDockWidget::QGoNavigationDockWidget(QWidget *iParent, const GoFigur
   this->stepLabel->hide();
 
   // shortcuts to move through time
-  (void) new QShortcut(QKeySequence(tr("Ctrl+Z", "Move to previous")), this, SLOT(MoveToPreviousTimePoint()));
-  (void) new QShortcut(QKeySequence(tr("Ctrl+C", "Move to next")), this, SLOT(MoveToNextTimePoint()));
+  (void)new QShortcut( QKeySequence( tr("Ctrl+Z", "Move to previous") ), this, SLOT( MoveToPreviousTimePoint() ) );
+  (void)new QShortcut( QKeySequence( tr("Ctrl+C", "Move to next") ), this, SLOT( MoveToNextTimePoint() ) );
 }
 
 //-------------------------------------------------------------------------
@@ -132,7 +132,8 @@ QGoNavigationDockWidget::QGoNavigationDockWidget(QWidget *iParent, const GoFigur
 //-------------------------------------------------------------------------
 QGoNavigationDockWidget::
 ~QGoNavigationDockWidget()
-{}
+{
+}
 
 //-------------------------------------------------------------------------
 
@@ -289,11 +290,10 @@ QString QGoNavigationDockWidget::GetChannelName(const int & iIdx)
 //-------------------------------------------------------------------------
 void QGoNavigationDockWidget::MoveToPreviousTimePoint()
 {
-  if(TSliceSpinBox->value() > TSliceSpinBox->minimum())
-  {
-  emit TSliceChanged(TSliceSpinBox->value() - 1);
-  }
-
+  if ( TSliceSpinBox->value() > TSliceSpinBox->minimum() )
+    {
+    emit TSliceChanged(TSliceSpinBox->value() - 1);
+    }
 }
 
 //-------------------------------------------------------------------------
@@ -301,18 +301,18 @@ void QGoNavigationDockWidget::MoveToPreviousTimePoint()
 //-------------------------------------------------------------------------
 void QGoNavigationDockWidget::MoveToNextTimePoint()
 {
-  if(TSliceSpinBox->value() < TSliceSpinBox->maximum())
-  {
-  emit TSliceChanged(TSliceSpinBox->value() + 1);
-  }
+  if ( TSliceSpinBox->value() < TSliceSpinBox->maximum() )
+    {
+    emit TSliceChanged(TSliceSpinBox->value() + 1);
+    }
 }
 
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoNavigationDockWidget::StepVisibility( int iStep)
+void QGoNavigationDockWidget::StepVisibility(int iStep)
 {
-  if( iStep == 0 )
+  if ( iStep == 0 )
     {
     this->step->hide();
     this->stepLabel->hide();

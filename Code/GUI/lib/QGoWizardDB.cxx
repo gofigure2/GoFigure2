@@ -60,7 +60,7 @@
 #include <QCloseEvent>
 
 //-------------------------------------------------------------------------
-QGoWizardDB::QGoWizardDB(QWidget *iParent):
+QGoWizardDB::QGoWizardDB(QWidget *iParent) :
   QWizard(iParent)
 {
   this->m_ImgSessionName = "";
@@ -110,7 +110,7 @@ std::vector< std::vector< std::string > > QGoWizardDB::GetFilenamesFromDB()
   std::string DBName = field("DBName").toString().toStdString();
 
   std::pair< bool, vtkMySQLDatabase * > ConnectionDatabase = ConnectToDatabase(
-    Server, User, Password, DBName);
+      Server, User, Password, DBName);
 
   if ( !ConnectionDatabase.first )
     {
@@ -123,17 +123,18 @@ std::vector< std::vector< std::string > > QGoWizardDB::GetFilenamesFromDB()
 
   //Get the number of channels with their id as a map
   //ListChannelsIDNumber[channelID]=ChannelNumber:
-  std::vector<std::string> ChannelAttributes (2);
+  std::vector< std::string > ChannelAttributes (2);
   ChannelAttributes[0] = "channelID";
   ChannelAttributes[1] = "ChannelNumber";
 
   std::map< std::string, std::string > ListChannelsIDNumber =
-    MapTwoColumnsFromTable( DatabaseConnector, ChannelAttributes,"channel",
-    "ImagingSessionID", field("ImgSessionID").toString().toStdString() );
+    MapTwoColumnsFromTable( DatabaseConnector, ChannelAttributes, "channel",
+                            "ImagingSessionID", field("ImgSessionID").toString().toStdString() );
 
- // std::map< std::string, std::string > ListChannelsIDNumber =
+  // std::map< std::string, std::string > ListChannelsIDNumber =
   //  MapTwoColumnsFromTable( DatabaseConnector, "channelID", "ChannelNumber",
-   //                         "channel", "ImagingSessionID", field("ImgSessionID").toString().toStdString() );
+  //                         "channel", "ImagingSessionID",
+  // field("ImgSessionID").toString().toStdString() );
 
   std::map< std::string, std::string >::iterator it = ListChannelsIDNumber.begin();
   oFilenames.resize( ListChannelsIDNumber.size() );
@@ -143,7 +144,7 @@ std::vector< std::vector< std::string > > QGoWizardDB::GetFilenamesFromDB()
     std::string ChannelID = it->first;
     //get the filenames of all the images corresponding to ChannelID:
     oFilenames[i] = ListSpecificValuesForOneColumn(
-      DatabaseConnector, "image", "Filename", "channelID", ChannelID);
+        DatabaseConnector, "image", "Filename", "channelID", ChannelID);
     it++;
     i++;
     }
@@ -355,7 +356,7 @@ void QGoWizardDB::SetFirstFileName()
   std::string DBName = field("DBName").toString().toStdString();
 
   std::pair< bool, vtkMySQLDatabase * > ConnectionDatabase = ConnectToDatabase(
-    Server, User, Password, DBName);
+      Server, User, Password, DBName);
 
   if ( !ConnectionDatabase.first )
     {

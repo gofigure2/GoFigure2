@@ -50,18 +50,17 @@
 #include "vtkMath.h"
 
 //--------------------------------------------------------------------------
-TrackStructure::
-TrackStructure():TraceStructure()
+TrackStructure::TrackStructure() : TraceStructure()
 {
 }
 
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-TrackStructure::
-TrackStructure(const TrackStructure & iE):
-  TraceStructure( iE ), PointsMap(iE.PointsMap)
-{}
+TrackStructure::TrackStructure(const TrackStructure & iE) :
+  TraceStructure(iE), PointsMap(iE.PointsMap)
+{
+}
 
 //--------------------------------------------------------------------------
 
@@ -70,26 +69,26 @@ TrackStructure::
 ~TrackStructure()
 {
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 bool
-TrackStructure::
-InsertElement(const unsigned int& iTime, double* iPoint)
+TrackStructure::InsertElement(const unsigned int & iTime, double *iPoint)
 {
   // if there is no point, insert it and return true
   DeleteElement(iTime);
   this->PointsMap.insert(
-      std::pair< unsigned int, double* >( iTime, iPoint ) );
+    std::pair< unsigned int, double * >(iTime, iPoint) );
 
   return true;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 bool
-TrackStructure::
-DeleteElement(const unsigned int& iTime)
+TrackStructure::DeleteElement(const unsigned int & iTime)
 {
   // check if there is something at the iTime time point
   PointsMapIterator pointsMapIterator = this->PointsMap.find(iTime);
@@ -107,6 +106,7 @@ DeleteElement(const unsigned int& iTime)
   // else do nothing and return false
   return false;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -118,47 +118,47 @@ TrackStructure::ReleaseData() const
   PointsMapConstIterator begin = this->PointsMap.begin();
   PointsMapConstIterator end = this->PointsMap.end();
 
-  while( begin != end )
+  while ( begin != end )
     {
     delete[] begin->second;
     ++begin;
     }
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
-TrackStructure::
-UpdateTracksRepresentation(double iRadius, double iRadius2) const
+TrackStructure::UpdateTracksRepresentation(double iRadius, double iRadius2) const
 {
-  vtkSmartPointer<vtkAppendPolyData> apd =
-      vtkSmartPointer<vtkAppendPolyData>::New();
-  apd->AddInput( this->Nodes );
+  vtkSmartPointer< vtkAppendPolyData > apd =
+    vtkSmartPointer< vtkAppendPolyData >::New();
+  apd->AddInput(this->Nodes);
 
-  if(iRadius)
+  if ( iRadius )
     {
-    vtkSmartPointer<vtkSphereSource> sphere =
-        vtkSmartPointer<vtkSphereSource>::New();
-    sphere->SetThetaResolution( 8 );
-    sphere->SetPhiResolution( 8 );
-    sphere->SetRadius( iRadius );
+    vtkSmartPointer< vtkSphereSource > sphere =
+      vtkSmartPointer< vtkSphereSource >::New();
+    sphere->SetThetaResolution(8);
+    sphere->SetPhiResolution(8);
+    sphere->SetRadius(iRadius);
 
-    vtkSmartPointer<vtkGlyph3D> glyph =
-        vtkSmartPointer<vtkGlyph3D>::New();
-    glyph->SetInput( this->Nodes );
+    vtkSmartPointer< vtkGlyph3D > glyph =
+      vtkSmartPointer< vtkGlyph3D >::New();
+    glyph->SetInput(this->Nodes);
     glyph->SetSource( sphere->GetOutput() );
     glyph->Update();
 
     apd->AddInput( glyph->GetOutput() );
     }
 
-  if(iRadius2)
+  if ( iRadius2 )
     {
-    vtkSmartPointer<vtkTubeFilter> tube =
-        vtkSmartPointer<vtkTubeFilter>::New();
-    tube->SetNumberOfSides( 8 );
-    tube->SetInput( this->Nodes );
-    tube->SetRadius( iRadius2 );
+    vtkSmartPointer< vtkTubeFilter > tube =
+      vtkSmartPointer< vtkTubeFilter >::New();
+    tube->SetNumberOfSides(8);
+    tube->SetInput(this->Nodes);
+    tube->SetRadius(iRadius2);
     tube->Update();
 
     apd->AddInput( tube->GetOutput() );
@@ -168,12 +168,12 @@ UpdateTracksRepresentation(double iRadius, double iRadius2) const
 
   this->Nodes->DeepCopy( apd->GetOutput() );
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 GoFigureTrackAttributes
-TrackStructure::
-ComputeAttributes() const
+TrackStructure::ComputeAttributes() const
 {
   GoFigureTrackAttributes attributes;
 
@@ -188,7 +188,7 @@ ComputeAttributes() const
   PointsMapConstIterator it = this->PointsMap.begin();
 
   // check if there are no points in the map
-  if( it == this->PointsMap.end())
+  if ( it == this->PointsMap.end() )
     {
     return attributes;
     }
@@ -196,52 +196,52 @@ ComputeAttributes() const
   unsigned int tmin = it->first;
   t0 = tmin;
   t1 = tmin;
-  double* org = it->second;
-  double* p = it->second;
-  double* q = it->second; // if we only have one point in the map
+  double *org = it->second;
+  double *p = it->second;
+  double *q = it->second; // if we only have one point in the map
   ++it;
 
   // reset the array
-  vtkDoubleArray* newArray =
-      dynamic_cast<vtkDoubleArray*>(this->Nodes->GetPointData()->GetArray("SpeedInformation"));
+  vtkDoubleArray *newArray =
+    dynamic_cast< vtkDoubleArray * >( this->Nodes->GetPointData()->GetArray("SpeedInformation") );
   newArray->Reset();
   newArray->InsertNextValue(0.0);
 
-  while( it != this->PointsMap.end() )
+  while ( it != this->PointsMap.end() )
     {
     t1 = it->first;
     q = it->second;
-    attributes.distance = sqrt( vtkMath::Distance2BetweenPoints( p, q ) );
+    attributes.distance = sqrt( vtkMath::Distance2BetweenPoints(p, q) );
     attributes.total_length += attributes.distance;
     attributes.max_speed = std::max( attributes.max_speed,
-        attributes.distance / (static_cast< double >( t1 - t0 ) ) );
+                                     attributes.distance / ( static_cast< double >( t1 - t0 ) ) );
 
-    double speed = attributes.distance / (static_cast< double >( t1 - t0 ) );
-    newArray->InsertNextValue( speed );
+    double speed = attributes.distance / ( static_cast< double >( t1 - t0 ) );
+    newArray->InsertNextValue(speed);
 
     p = q;
     t0 = t1;
     ++it;
     }
 
-  if (t1 == tmin)
+  if ( t1 == tmin )
     {
-      attributes.avg_speed = 0;
+    attributes.avg_speed = 0;
     }
   else
     {
-    attributes.avg_speed = attributes.total_length /
-                           static_cast< double >( t1 - tmin );
+    attributes.avg_speed = attributes.total_length
+      / static_cast< double >( t1 - tmin );
     }
 
-  attributes.distance = sqrt( vtkMath::Distance2BetweenPoints( org, q ) );
+  attributes.distance = sqrt( vtkMath::Distance2BetweenPoints(org, q) );
 
-  if(attributes.distance)
+  if ( attributes.distance )
     {
     attributes.theta = vtkMath::DegreesFromRadians( atan2( ( q[1] - org[1] ),
                                                            ( q[0] - org[0] ) ) );
-    attributes.phi   = vtkMath::DegreesFromRadians( acos( ( q[2] - org[2] ) /
-                                                         attributes.distance ) );
+    attributes.phi   = vtkMath::DegreesFromRadians( acos( ( q[2] - org[2] )
+                                                          / attributes.distance ) );
     }
 
   return attributes;

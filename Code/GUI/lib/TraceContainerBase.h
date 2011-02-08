@@ -32,8 +32,8 @@
 
 =========================================================================*/
 
-#ifndef TRACECONTAINERBASE_H
-#define TRACECONTAINERBASE_H
+#ifndef __TraceContainerBase_h
+#define __TraceContainerBase_h
 
 #include <Qt>
 #include <QObject>
@@ -60,8 +60,8 @@ template< class TContainer >
 class TraceContainerBase : public QObject
 {
 public:
-  typedef TContainer MultiIndexContainerType;
-  typedef typename MultiIndexContainerType::value_type MultiIndexContainerElementType;
+  typedef TContainer                                    MultiIndexContainerType;
+  typedef typename MultiIndexContainerType::value_type  MultiIndexContainerElementType;
 
   typedef typename MultiIndexContainerType::template index< ActorXY >::type::iterator
   MultiIndexContainerActorXYIterator;
@@ -116,7 +116,7 @@ public:
  * */
   template< class TIterator >
   void Print(TIterator iBegin, TIterator iEnd)
-  {
+    {
     TIterator it = iBegin;
 
     while ( it != iEnd )
@@ -126,7 +126,7 @@ public:
       std::cout << std::endl;
       ++it;
       }
-  }
+    }
 
   /**
     \brief Print the container content in the application output according
@@ -135,12 +135,12 @@ public:
     */
   template< class TIndex >
   void Print()
-  {
+    {
     using boost::multi_index::get;
 
     this->Print(  this->m_Container.get< TIndex >().begin(),
                   this->m_Container.get< TIndex >().end() );
-  }
+    }
 
   /** \brief Print the container content in the application output. */
   void Print();
@@ -168,7 +168,7 @@ public:
   */
   template< class TList >
   void UpdateVisualizationForGivenIDs(TList iList)
-  {
+    {
     using boost::multi_index::get;
 
     typename TList::iterator it = iList.begin();
@@ -231,25 +231,24 @@ public:
         }
       ++it;
       }
-  }
+    }
 
   /**
- * \brief Update Actors, Highlighted, Visibility (properties) of given
- * a element
- * \tparam TIndex Index Type (referring to multi index container's indices)
- * \param[in] iIt element to update
- * \param[in] iActors its actors
- * \param[in] iHighlighted
- * \param[in] iVisible if false remove the element from the scene, else
- * add it
- */
+  * \brief Update Actors, Highlighted, Visibility (properties) of given
+  * a element
+  * \tparam TIndex Index Type (referring to multi index container's indices)
+  * \param[in] iIt element to update
+  * \param[in] iActors its actors
+  * \param[in] iHighlighted
+  * \param[in] iVisible if false remove the element from the scene, else
+  * add it */
   template< class TIndex >
   void UpdateVisualizationForGivenElement(
     typename MultiIndexContainerType::template index< TIndex >::type::iterator iIt,
     std::vector< vtkActor * > iActors,
     const bool & iHighlighted,
     const bool & iVisible)
-  {
+    {
     MultiIndexContainerElementType temp = *iIt;
 
     if ( iActors.size() == 4 )
@@ -284,7 +283,7 @@ public:
 
     using boost::multi_index::get;
     m_Container.get< TIndex >().replace(iIt, temp);
-  }
+    }
 
   /**
   \brief Insert one element in the container
@@ -433,9 +432,9 @@ public:
   void SetColorCode( const std::string& iColumnName,
                      const std::map< unsigned int, TValue >& iValues )
     {
-    typedef TValue ValueType;
-    typedef typename std::map< unsigned int, ValueType > MapType;
-    typedef typename MapType::const_iterator MapConstIterator;
+    typedef TValue                                        ValueType;
+    typedef typename std::map< unsigned int, ValueType >  MapType;
+    typedef typename MapType::const_iterator              MapConstIterator;
 
     using boost::multi_index::get;
 
@@ -562,7 +561,7 @@ protected:
       vtkActor *iActor,
       unsigned int& oTraceId,
       Qt::CheckState& oState )
-  {
+    {
     using boost::multi_index::get;
 
     if ( iActor )
@@ -623,7 +622,7 @@ protected:
       }
 
     return false;
-  }
+    }
 
   /** \brief Update element Visibility property given one actor.
   \tparam TActor either ActorXY, ActorXZ, ActorYZ, ActorXYZ depending on the view
@@ -631,14 +630,13 @@ protected:
   \param[out] oTraceId TraceId of the element
   \param[out] oState Qt::Checked if the element is not visible else Qt::UnChecked
   \return true if iActor is in the container
-  \return false else
-  */
+  \return false else */
   template< class TActor >
   bool UpdateElementVisibilityWithGivenActor(
       vtkActor *iActor,
       unsigned int& oTraceId,
       Qt::CheckState& oState )
-  {
+    {
     using boost::multi_index::get;
 
     if ( iActor )
@@ -680,7 +678,7 @@ protected:
       }
 
     return false;
-  }
+    }
 
   /**
   \brief Update highlighting property of one element given one actor.
@@ -689,15 +687,14 @@ protected:
   \param[out] oTraceID TraceId of the element
   \param[out] oState Qt::Checked if iState is true else Qt::UnChecked
   \return true if the element exists
-  \return false else
-  */
+  \return false else */
   template< class TActor >
   bool UpdateElementVisibilityWithGivenActor(
       vtkActor *iActor,
       bool iState,
       unsigned int& oTraceID,
       Qt::CheckState& oState )
-  {
+    {
     using boost::multi_index::get;
 
     if ( iActor )
@@ -736,9 +733,9 @@ protected:
       }
 
     return false;
-  }
+    }
 };
 
 #include "TraceContainerBase.txx"
 
-#endif // TRACECONTAINERBASE_H
+#endif // __TraceContainerBase_h

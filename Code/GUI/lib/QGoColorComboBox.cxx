@@ -44,7 +44,7 @@
 
 QGoColorComboBox::QGoColorComboBox(std::string iTextToAddANewOne,
                                    QWidget *iparent,
-                                   std::string iTextToDelete):
+                                   std::string iTextToDelete) :
   QGoComboBox(iTextToAddANewOne,
               iparent, iTextToDelete)
 {
@@ -56,7 +56,8 @@ QGoColorComboBox::QGoColorComboBox(std::string iTextToAddANewOne,
 
 //--------------------------------------------------------------------------
 QGoColorComboBox::~QGoColorComboBox()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 

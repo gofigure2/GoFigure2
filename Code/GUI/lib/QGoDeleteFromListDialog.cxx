@@ -49,7 +49,7 @@ QGoDeleteFromListDialog::QGoDeleteFromListDialog
   (std::vector< std::string > iVectorEntities,
   QWidget *iParent,
   std::string iEntityName
-  ):QDialog(iParent)
+  ) : QDialog(iParent)
 {
   this->SetUpUi(iEntityName);
   this->SetItemsFromTheVector(iVectorEntities);
@@ -62,7 +62,7 @@ QGoDeleteFromListDialog::QGoDeleteFromListDialog(
   QGoDeleteFromListDialog::ListOfItemColorComboboxData iDataListWithColor,
   QWidget *iParent,
   std::string iEntityName
-  ):QDialog(iParent)
+  ) : QDialog(iParent)
 {
   this->SetUpUi(iEntityName);
   this->SetItemsInTheListWithColor(iDataListWithColor);
@@ -72,7 +72,8 @@ QGoDeleteFromListDialog::QGoDeleteFromListDialog(
 
 //--------------------------------------------------------------------------
 QGoDeleteFromListDialog::~QGoDeleteFromListDialog()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 

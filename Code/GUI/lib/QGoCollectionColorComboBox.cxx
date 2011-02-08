@@ -34,15 +34,17 @@
 #include "QGoCollectionColorComboBox.h"
 #include <iostream>
 
-QGoCollectionColorComboBox::QGoCollectionColorComboBox(QWidget *iparent):
+QGoCollectionColorComboBox::QGoCollectionColorComboBox(QWidget *iparent) :
   QGoColorComboBox("Add a new mesh...", iparent)
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QGoCollectionColorComboBox::~QGoCollectionColorComboBox()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 

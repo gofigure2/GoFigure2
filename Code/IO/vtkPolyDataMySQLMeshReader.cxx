@@ -44,21 +44,23 @@ vtkCxxRevisionMacro(vtkPolyDataMySQLMeshReader, "$Revision$");
 vtkStandardNewMacro(vtkPolyDataMySQLMeshReader);
 
 //--------------------------------------------------------------------------
-vtkPolyDataMySQLMeshReader::
-vtkPolyDataMySQLMeshReader()
-{}
+vtkPolyDataMySQLMeshReader::vtkPolyDataMySQLMeshReader()
+{
+}
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 vtkPolyDataMySQLMeshReader::
 ~vtkPolyDataMySQLMeshReader()
-{}
+{
+}
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-vtkSmartPointer<vtkPolyData>
-vtkPolyDataMySQLMeshReader::
-GetPolyData(const std::string & iString)
+vtkSmartPointer< vtkPolyData >
+vtkPolyDataMySQLMeshReader::GetPolyData(const std::string & iString)
 {
   std::stringstream str(iString);
 
@@ -70,9 +72,9 @@ GetPolyData(const std::string & iString)
 
   if ( N != 0 )
     {
-    vtkSmartPointer<vtkPolyData> oMesh;
+    vtkSmartPointer< vtkPolyData > oMesh;
 
-    oMesh = vtkSmartPointer<vtkPolyData>::New();
+    oMesh = vtkSmartPointer< vtkPolyData >::New();
     vtkSmartPointer< vtkPoints > points =
       vtkSmartPointer< vtkPoints >::New();
 
@@ -114,4 +116,5 @@ GetPolyData(const std::string & iString)
 
   return NULL;
 }
+
 //--------------------------------------------------------------------------

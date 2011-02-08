@@ -40,17 +40,19 @@
 #include "vtkImageExtractComponents.h"
 
 //--------------------------------------------------------------------------
-QGoTabImageViewNDBase::QGoTabImageViewNDBase(QWidget *iParent):
+QGoTabImageViewNDBase::QGoTabImageViewNDBase(QWidget *iParent) :
   QGoTabImageViewElementBase(iParent),
   m_Image(0)
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QGoTabImageViewNDBase::
 ~QGoTabImageViewNDBase()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 

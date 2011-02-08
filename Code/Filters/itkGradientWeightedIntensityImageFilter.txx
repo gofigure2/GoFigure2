@@ -156,6 +156,7 @@ GradientWeightedIntensityImageFilter< TFeatureImage, TInputImage, TSegmentImage 
   os << indent << "Class Name:              " << this->GetNameOfClass()
      << std::endl;
 }
+
 } /* end namespace itk */
 
 #endif

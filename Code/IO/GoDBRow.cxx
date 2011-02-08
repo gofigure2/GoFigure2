@@ -37,13 +37,15 @@
 #include <iostream>
 
 GoDBRow::GoDBRow()
-{}
+{
+}
 
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 GoDBRow::~GoDBRow()
-{}
+{
+}
 
 //-------------------------------------------------------------------------
 
@@ -228,7 +230,7 @@ bool GoDBRow::SetValuesForSpecificID(int ID,
       iDatabaseConnector, this->m_TableName, this->PrintColumnNames(),
       this->m_TableIDName, ConvertToString< int >(ID) );
 
-  if (ResultQuery.empty())
+  if ( ResultQuery.empty() )
     {
     return false;
     }
@@ -240,19 +242,19 @@ bool GoDBRow::SetValuesForSpecificID(int ID,
     std::cout << std::endl;
     return false;
     }
- 
-    std::vector< std::string >::iterator iterResultQuery =
-      ResultQuery.begin();
 
-    StringMapIterator iterMap = this->MapBegin();
+  std::vector< std::string >::iterator iterResultQuery =
+    ResultQuery.begin();
 
-    while ( iterMap != this->MapEnd() )
-      {
-      iterMap->second = *iterResultQuery;
-      ++iterMap;
-      ++iterResultQuery;
-      }
-   return true;
+  StringMapIterator iterMap = this->MapBegin();
+
+  while ( iterMap != this->MapEnd() )
+    {
+    iterMap->second = *iterResultQuery;
+    ++iterMap;
+    ++iterResultQuery;
+    }
+  return true;
 }
 
 //-------------------------------------------------------------------------
@@ -270,12 +272,14 @@ std::string GoDBRow::GetTableIDName()
 {
   return this->m_TableIDName;
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void GoDBRow::AddConditions(
-  std::string iNameOfField, std::vector<FieldWithValue> &ioFieldWithValue)
+  std::string iNameOfField, std::vector< FieldWithValue > & ioFieldWithValue)
 {
-  FieldWithValue temp = {iNameOfField,this->GetMapValue(iNameOfField),"=" };
+  FieldWithValue temp = { iNameOfField, this->GetMapValue(iNameOfField), "=" };
+
   ioFieldWithValue.push_back(temp);
 }

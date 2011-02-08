@@ -35,7 +35,7 @@
 #include "QGoContourSemiAutoShapeWidget.h"
 
 //---------------------------------------------------------------------------//
-QGoContourSemiAutoShapeWidget::QGoContourSemiAutoShapeWidget(QWidget *iParent):QWidget(iParent)
+QGoContourSemiAutoShapeWidget::QGoContourSemiAutoShapeWidget(QWidget *iParent) : QWidget(iParent)
 {
   this->setupUi(this);
 
@@ -49,6 +49,7 @@ QGoContourSemiAutoShapeWidget::QGoContourSemiAutoShapeWidget(QWidget *iParent):Q
 //---------------------------------------------------------------------------//
 QGoContourSemiAutoShapeWidget::
 ~QGoContourSemiAutoShapeWidget()
-{}
+{
+}
 
 //---------------------------------------------------------------------------//

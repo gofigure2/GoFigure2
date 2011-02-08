@@ -138,7 +138,7 @@ bool BuildScreenshotFromImage(vtkImageData *image,
     // Create the screenshot
 
     factor = static_cast< double >( tsize )
-             / static_cast< double >( resample_input_dims[large_dim] );
+      / static_cast< double >( resample_input_dims[large_dim] );
 
     resample->SetAxisMagnificationFactor(large_dim, factor);
     resample->SetAxisMagnificationFactor(

@@ -56,7 +56,7 @@
  * \brief Default Constructor
  * \param iParent
  */
-QGoTabImageViewElementBase::QGoTabImageViewElementBase(QWidget *iParent):
+QGoTabImageViewElementBase::QGoTabImageViewElementBase(QWidget *iParent) :
   QGoTabElementBase(iParent),
   m_Color(false),
   m_BackgroundColor(Qt::black),
@@ -87,7 +87,8 @@ QGoTabImageViewElementBase::QGoTabImageViewElementBase(QWidget *iParent):
  * \brief Destructor
  */
 QGoTabImageViewElementBase::~QGoTabImageViewElementBase()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 

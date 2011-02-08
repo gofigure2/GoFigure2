@@ -91,7 +91,8 @@ vtkInteractorStyleImage3D::vtkInteractorStyleImage3D()
 //----------------------------------------------------------------------------
 vtkInteractorStyleImage3D::
 ~vtkInteractorStyleImage3D()
-{}
+{
+}
 
 //----------------------------------------------------------------------------
 void
