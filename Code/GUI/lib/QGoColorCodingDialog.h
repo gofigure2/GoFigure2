@@ -80,6 +80,7 @@ protected:
   /**
   \brief set the components of the widget and the connection
   \param[in] iTraceName name of the trace to be colorcoded
+  \param[in] iRandomIncluded true if the random option needs to be included
   */
   void SetUpUi(std::string iTraceName, bool iRandomIncluded);
 
