@@ -86,9 +86,10 @@ std::string AddOrderBy(std::string iAttribute,std::string iAscDesc = "ASC");
 std::string GetSelectedAttributes(std::vector<std::string> iListAttributes);
 
 /**
-\brief (iAttribute = iListValues[i] iConditionConnector iAttribute = iListValues[i+1]...)
+\brief (iField = iListValues[i] iConditionConnector iField = iListValues[i+1]...)
 \param[in] iVectorValues list of all the values iAttribute can be equal to
 \param[in] iConditionConnector AND/OR 
+\param[in] iField 
 \tparam T  
 \return the string corresponding to the query part
 */

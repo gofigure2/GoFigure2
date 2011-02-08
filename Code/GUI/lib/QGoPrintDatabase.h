@@ -144,7 +144,6 @@ public:
   \param[in] iYCoordMax ycoord of the maximum for the boundingbox
   \param[in] iZCoordMax zcoord of the maximum for the boundingbox
   \param[in] iTraceNodes nodes to be saved as points in the database
-  \param[in] iMeshID meshID for the mesh that has just been created
   \return    unsigned int ID of the new created contour
   */
   unsigned int SaveNewContourForMeshToContours(unsigned int iXCoordMin,
@@ -395,6 +394,7 @@ protected:
   /**
   \brief get the collection id with their corresponding color from the database
   \param[in] iDatabaseConnector connection to the database
+  \param[in] ioIDToSelect ID to be selected in the combobox
   */
   std::list< ItemColorComboboxData > GetListCollectionIDFromDB(
     vtkMySQLDatabase *iDatabaseConnector, std::string & ioIDToSelect);
@@ -536,7 +536,6 @@ protected:
   \brief udpate the collectionof collectionID in database and TW 
   \param[in] iTraceManager the manager for the trace expl: mesh_manager
   \param[in] iCollectionOfManager the manager for the collectioof expl: contour
-  \param[in] track if the trace is track, track is set to true
   \param[in] iListTracesToDelete list of the traceIDs to be deleted
   \tparam TTrace children of QGoDBTraceManager
   \tparam TCollectionOf children of QGoDBTraceManager

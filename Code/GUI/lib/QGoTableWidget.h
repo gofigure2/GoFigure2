@@ -80,6 +80,9 @@ public:
   \param[in] iTraceName name of the trace
   \param[in] iCollectionName name of the collection
   \param[in] iColumnNames list of the column names to be displayed
+  \param[in] iState if true, the isvisible is checked
+  \param[in] iIndexShowColumn index of the show column in the TW Container(
+  for contour and mesh)
   */
   void DisplayContent(TWContainerType iTWRowContainer,
                       std::vector< int > iIndexColorTraceRowContainer,
@@ -306,7 +309,7 @@ protected:
 
   /**
   \brief put the text in the cells which are part of the range in a
-  QString and insert '\n' and '\t' to be read by other applications
+  QString and insert antislash n and antislash t to be read by other applications
   \param[in] iRange selected cells
   \param[in,out] istr text of the selected cells
   */
@@ -356,7 +359,7 @@ protected:
   /**
   \brief return a list of the values of a specific column for the rows where the user
   has selected at least one cell.
-  \param[in] iColummName name of the column to look for value
+  \param[in] iColumnName name of the column to look for value
   \return QStringList of the values for the column where the user has selected at
   least once cell in the same row
   */
@@ -391,6 +394,7 @@ protected:
   /**
   \brief get the rgba values from the iTWRowContainer and display them in the
   column NameGroupColorID
+  \param[in] iTWRowContainer contains the data to be displayed 
   \param[in] iIndexColorRowContainer index of the iTWRowContainer to find the
   rgba values
   \param[in] iNameGroupColor name of the trace for which the color needs to
