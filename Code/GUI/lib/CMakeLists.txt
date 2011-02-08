@@ -96,7 +96,7 @@ SET( QGoGUILIB_SRC
     QGoContourSemiAutoShapeWidget.cxx
     QGoContourSemiAutoWatershedWidget.cxx
   QGoFilterSemiAutoBase.cxx
-    QGoFilterChanAndVes.cxx
+    QGoFilterChanAndVese.cxx
     QGoFilterShape.cxx
     QGoFilterWatershed.cxx
 
@@ -214,7 +214,7 @@ SET( QGoGUILIB_HDRS
     QGoContourSemiAutoShapeWidget.h
     QGoContourSemiAutoWatershedWidget.h
   QGoFilterSemiAutoBase.h
-    QGoFilterChanAndVes.h
+    QGoFilterChanAndVese.h
     QGoFilterShape.h
     QGoFilterWatershed.h
 

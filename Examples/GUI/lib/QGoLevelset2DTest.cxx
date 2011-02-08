@@ -40,7 +40,7 @@
 #include "vtkImageCast.h"
 
 #include "vtkImageData.h"
-#include "QGoFilterChanAndVes.h"
+#include "QGoFilterChanAndVese.h"
 
 int main(int argc, char **argv)
 {
@@ -67,7 +67,7 @@ int main(int argc, char **argv)
   castFilter->Update();
 
   // Initialize the segmentation
-  QGoFilterChanAndVes *         levelSet2DFilter = new QGoFilterChanAndVes(NULL, 2);
+  QGoFilterChanAndVese*         levelSet2DFilter = new QGoFilterChanAndVese(NULL, 2);
   std::vector< vtkSmartPointer< vtkImageData > > imagesVector(1);
   imagesVector[0] = castFilter->GetOutput();
   levelSet2DFilter->setOriginalImageMC(&imagesVector);

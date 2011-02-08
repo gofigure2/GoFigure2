@@ -40,7 +40,7 @@
 #include "QGoSeedBaseWidget.h"
 // ALGOS
 // LevelSet algorithm
-#include "QGoFilterChanAndVes.h"
+#include "QGoFilterChanAndVese.h"
 #include "QGoFilterShape.h"
 //#include "Watershed.h"
 
@@ -72,7 +72,7 @@ QGoContourSeedSegmentation::QGoContourSeedSegmentation(QWidget *parentW,
 //=============================================================================
 
   //Add new segmentation method
-  m_LevelSetfilter = new QGoFilterChanAndVes(this, iSampling);   // 2 i.e. 2D,
+  m_LevelSetfilter = new QGoFilterChanAndVese(this, iSampling);   // 2 i.e. 2D,
                                                                  // to create a
                                                                  // contour
   filter = m_BaseAlgorithmSegmentationWidget->GetNumberOfFilters();

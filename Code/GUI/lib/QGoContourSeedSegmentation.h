@@ -47,7 +47,7 @@ class vtkPoints;
 class vtkImageData;
 
 // segmentation filters
-class QGoFilterChanAndVes;
+class QGoFilterChanAndVese;
 class QGoFilterShape;
 
 /**
@@ -74,8 +74,8 @@ public:
    */
   ~QGoContourSeedSegmentation();
 private:
-  QGoFilterChanAndVes *m_LevelSetfilter;
-  QGoFilterShape *     m_ShapeFilter;
+  QGoFilterChanAndVese* m_LevelSetfilter;
+  QGoFilterShape *      m_ShapeFilter;
 
   std::vector< vtkSmartPointer<vtkImageData> > *m_OriginalImage;
 };

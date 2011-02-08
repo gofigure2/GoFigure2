@@ -41,7 +41,7 @@
 
 // ALGOS
 // LevelSet algorithm
-#include "QGoFilterChanAndVes.h"
+#include "QGoFilterChanAndVese.h"
 #include "QGoFilterShape.h"
 #include "QGoFilterWatershed.h"
 
@@ -75,7 +75,7 @@ QGoMeshSeedSegmentation::QGoMeshSeedSegmentation(QWidget *parentW,
   //=============================================================================
 
   //Add new segmentation method
-  m_LevelSetfilter = new QGoFilterChanAndVes(this, iSampling); // 3 i.e. 3D, to
+  m_LevelSetfilter = new QGoFilterChanAndVese(this, iSampling); // 3 i.e. 3D, to
                                                                // create a mesh
   filter = m_BaseAlgorithmSegmentationWidget->GetNumberOfFilters();
   m_BaseAlgorithmSegmentationWidget->AddFilter( m_LevelSetfilter->getName() );
