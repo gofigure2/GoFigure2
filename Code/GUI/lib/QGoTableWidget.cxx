@@ -342,7 +342,9 @@ void QGoTableWidget::DisplayContent(TWContainerType iTWRowContainer,
       }         //ENDFOR
     SetSelectedColumn(static_cast< unsigned int >( NbofRows ), 0);
     if ( iIndexShowColumn == 0 || iTWRowContainer[iIndexShowColumn].second.empty() ) //track
+                                                                                     //
                                                                                      // and
+                                                                                     //
                                                                                      // lineage
       {
       this->SetVisibleColumn(static_cast< unsigned int >( NbofRows ), 0, iState);
@@ -1022,7 +1024,9 @@ std::map< unsigned int, std::string > QGoTableWidget::GetTraceIDAndColumnsValues
     if ( this->item(i, ColumnIndex) )
       {
       std::string Text = this->item(i, ColumnIndex)->text().toStdString();   //for
+                                                                             //
                                                                              // test
+                                                                             //
                                                                              // purpose
       oMapValues[this->item(i, IndexTraceID)->text().toUInt()] =
         this->item(i, ColumnIndex)->text().toStdString();
