@@ -73,12 +73,28 @@ public:
   /** \brief Destructor */
   virtual ~QGoFilterSemiAutoBase();
 
+  /**
+   * \brief Set Name of the filter in the combo box
+   * \param[in] iName Name of the filter
+  */
   void          setName(QString iName);
 
+  /**
+   * \brief Get Name of the filter in the combo box
+   * \return Name of the filter
+  */
   QString       getName();
 
+  /**
+   * \brief Set the widget associated to the filter
+   * \param[in] iWidget Widget of the filter
+  */
   void          setWidget(QWidget *iWidget);
 
+  /**
+   * \brief Get the widget associated to the filter
+   * \return Widget of the filter
+  */
   QWidget *      getWidget();
 
   vtkSmartPointer<vtkImageData> getInput();
@@ -89,12 +105,24 @@ public:
 
   void          setCenter(double *iCenter);
 
+  /**
+   * \brief Get the center of the area to be segmented
+   * \return Center of the area to be segmented
+  */
   double *       getCenter();
 
+  /**
+   * \brief Get the radius of the area to be segmented
+   * \return Radius of the area to be segmented
+  */
   double        getRadius();
 
   int           getSampling();
 
+  /**
+   * \brief Get the channel to be segmented
+   * \return Channel to be segmented
+  */
   int           getChannel();
 
   void          setPoints(vtkPoints *iPoints);
@@ -114,20 +142,35 @@ public:
   vtkPolyData *  ReconstructMesh(vtkImageData *iInputImage,
                                  const double & iThreshold);
 
-  // connect signals to dockwidget
+  /*
+   * \brief Connect the widget to the algorithm and to gofigure
+   * \param[in] iFilterNumber Filter to be connected
+  */
   virtual void   ConnectSignals(int iFilterNumber);
 
-  //CONVERT VTK 2 ITK
+  /*
+   * \brief Convert an image from VTK to ITK
+   * \param[in] iInput VTK image to be converted
+   * \return ITK image
+  */
   template< class PixelType, unsigned int VImageDimension >
   typename itk::Image< PixelType, VImageDimension >::Pointer
   ConvertVTK2ITK(vtkImageData *iInput);
 
-  //CONVERT ITK 2 VTK
+  /*
+   * \brief Convert an image from ITK to VTK
+   * \param[in] iInput ITK image to be converted
+   * \return VTK image
+  */
   template< class PixelType, unsigned int VImageDimension >
   vtkImageData *
-  ConvertITK2VTK(typename itk::Image< PixelType, VImageDimension >::Pointer);
+  ConvertITK2VTK(typename itk::Image< PixelType, VImageDimension >::Pointer iInput);
 
-  //EXTRACT ROI
+  /*
+   * \brief Extract Region Of Interest (ROI) from an ITK image
+   * \param[in] iCenter Center of the ROI
+   * \param[in] iRadius Radius of the ROI
+  */
   template< class PixelType, unsigned int VImageDimension >
   typename itk::Image< PixelType, VImageDimension >::Pointer
   ExtractROI(typename itk::Image< PixelType, VImageDimension >::Pointer,

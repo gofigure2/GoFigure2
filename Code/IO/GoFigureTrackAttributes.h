@@ -39,6 +39,11 @@
 #include <string>
 #include "QGoIOConfigure.h"
 
+/*
+\struct GoFigureTrackAttributes
+\brief Track attributes to be displayed in the table widget
+*/
+
 struct QGOIO_EXPORT GoFigureTrackAttributes {
   // total distance (add each segment size) = deplacement
   double total_length;

@@ -39,6 +39,12 @@
 #include <string>
 #include "QGoIOConfigure.h"
 
+/*
+\struct GoFigureMeshAttributes
+\brief Mesh attributes to be displayed in the table widget
+*/
+
+
 struct QGOIO_EXPORT GoFigureMeshAttributes {
   std::map< std::string, int > m_TotalIntensityMap;
   std::map< std::string, double > m_MeanIntensityMap;
