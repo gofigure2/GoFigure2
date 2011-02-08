@@ -39,8 +39,8 @@ ADD_TEST( itkvtkPolyDataToGoFigureMeshAttributesTest
   ${TESTING_DATA_PATH}/Circle3D.mhd
 )
 
-SET_TESTS_PROPERTIES( itkBinaryMaskImageToGoFigureMeshAttributesTest 
-  PROPERTIES DEPENDS 
+SET_TESTS_PROPERTIES( itkBinaryMaskImageToGoFigureMeshAttributesTest
+  PROPERTIES DEPENDS
   itkvtkPolyDatatoBinaryMaskImageFilterTest
 )
 

@@ -505,7 +505,8 @@ protected:
 
   /**
    * \brief Save mesh in Database
-   * \param[in] iMesh
+   * \param[in] iMesh mesh to be saved
+   * \param[in] iTShift time shift (used in the Doppler View case)
    */
   void SaveMesh(vtkPolyData *iMesh, int iTShift);
 

@@ -138,10 +138,14 @@ signals:
   /**
    * \brief Signal to be send to the Widget to add channel to the channel
    * QComboBox
+   * \param[in] iChannel Channel Number
    * \param[in] iQString Name of the channel.
    */
   void addChannel(int iChannel, QString iQString);
 
+  /**
+    * \brief Set the number of channels
+    */
   void setNumberOfChannels(int);
 
   void MeshCreated(vtkPolyData *, int);
