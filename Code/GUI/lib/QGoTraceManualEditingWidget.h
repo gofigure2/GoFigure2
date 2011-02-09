@@ -206,7 +206,7 @@ public slots:
   \brief add a new collection in the collectionColorCombobox and select it
   \param[in] iNewCollectionID ID and QColor of the new item
   */
-  void AddANewCollectionID(ItemColorComboboxData iNewCollectionID);
+  void AddANewCollectionID(std::pair<std::string, QColor> iNewCollectionID);
 
 signals:
   void AddANewCellType();

@@ -42,6 +42,12 @@
 #include "GoDBMeshRow.h"
 #include "MeshContainer.h"
 
+/**
+\class QGoDBMeshManager
+\brief This class manages the database queries, the table widget and
+the data from the database in the Container for visu for the meshes
+\ingroup DB, GUI
+*/
 class QGOGUILIB_EXPORT QGoDBMeshManager:public QGoDBTraceManager
 {
   Q_OBJECT

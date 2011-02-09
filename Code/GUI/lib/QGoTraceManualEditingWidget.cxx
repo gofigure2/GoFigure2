@@ -422,7 +422,7 @@ std::string QGoTraceManualEditingWidget::GetTraceName()
 
 //-------------------------------------------------------------------------
 void QGoTraceManualEditingWidget::AddANewCollectionID(
-  QGoTraceManualEditingWidget::ItemColorComboboxData iNewCollectionID)
+  std::pair<std::string, QColor> iNewCollectionID)
 {
   this->m_CollectionColorComboBox->AddItemWithColor(iNewCollectionID, true);
 }
