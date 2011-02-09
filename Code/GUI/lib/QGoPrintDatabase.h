@@ -86,7 +86,7 @@ public:
 
   typedef GoDBCollectionOfTraces::TWContainerType            TWContainerType;
   typedef QGoDBBookmarkManager::NamesDescrContainerType      NamesDescrContainerType;
-  typedef QGoTraceManualEditingWidget::ItemColorComboboxData ItemColorComboboxData;
+  typedef QGoTraceManualEditingWidget::ItemColorComboboxData ItemColorComboboxData; 
   typedef std::pair< int, QColor >                           IDWithColorData;
 
   /** \brief set all the values needed for the database*/
