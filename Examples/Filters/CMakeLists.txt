@@ -68,12 +68,12 @@ TARGET_LINK_LIBRARIES(
   ITKIO
   )
 
-ADD_EXECUTABLE( cellMergeImageFilter 
+ADD_EXECUTABLE( cellMergeImageFilter
   CellMergeImageFilter.cxx
   )
 
-TARGET_LINK_LIBRARIES( cellMergeImageFilter 
-  vtkHybrid 
+TARGET_LINK_LIBRARIES( cellMergeImageFilter
+  vtkHybrid
   )
 
 ADD_TEST( singleCellSplitImageFilterTest
@@ -81,3 +81,9 @@ ADD_TEST( singleCellSplitImageFilterTest
   ${TESTING_DATA_PATH}/MultiphaseCells2D.png
   split.mhd
 )
+
+
+ADD_EXECUTABLE( itkvtkMeshSplitterDanielssonImageFilterTest
+  itkvtkMeshSplitterDanielssonImageFilterTest.cxx
+)
+

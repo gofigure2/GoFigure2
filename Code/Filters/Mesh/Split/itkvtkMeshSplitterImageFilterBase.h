@@ -39,7 +39,8 @@
 #include "itkPointSet.h"
 #include "vtkPolyData.h"
 #include "itkvtkMeshSplitterFilterBase.h"
-
+#include "itkvtkPolyDataToBinaryMaskImageFilter.h"
+#include "itkImage.h"
 #include <list>
 
 namespace itk
@@ -62,9 +63,16 @@ public:
 
   typedef TImage ImageType;
   typedef typename ImageType::Pointer ImagePointer;
+  typedef typename ImageType::PixelType ImagePixelType;
+  typedef typename ImageType::IndexType ImageIndexType;
+  typedef typename ImageType::PointType ImagePointType;
 
   typedef Image< bool, 3 > BinaryMaskImageType;
   typedef typename BinaryMaskImageType::Pointer BinaryMaskImagePointer;
+
+  typedef vtkPolyDataToBinaryMaskImageFilter< ImageType, BinaryMaskImageType >
+    BinarizerType;
+  typedef typename BinarizerType::Pointer BinarizerPointer;
 
 
   virtual void SetImage( ImageType* iImage )
@@ -77,12 +85,11 @@ protected:
   ~vtkMeshSplitterImageFilterBase() {}
 
   BinaryMaskImagePointer m_BinaryImage;
+  ImagePointer m_Image;
 
   virtual void ComputBinaryImageFromInputMesh()
     {
-    typedef vtkPolyDataToBinaryMaskImageFilter< ImageType, BinaryMaskImageType >
-      BinarizerType;
-    BinarizerType::Pointer binarizer = BinarizerType::New();
+    BinarizerPointer binarizer = BinarizerType::New();
     binarizer->SetInput( m_Image );
     binarizer->SetPolyData( this->m_Mesh );
 
