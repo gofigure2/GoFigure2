@@ -41,6 +41,12 @@
 #include "QGoGUILibConfigure.h"
 #include "QGoLUTDialog.h"
 
+/**
+\class QGoColorCodingDialog
+\brief This dialog asks the user to chose the way he wants its
+traces to be colorcoded
+\ingroup GUI
+*/
 class QGOGUILIB_EXPORT QGoColorCodingDialog:public QDialog
 {
   Q_OBJECT

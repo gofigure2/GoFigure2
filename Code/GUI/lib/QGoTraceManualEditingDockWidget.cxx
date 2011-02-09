@@ -58,11 +58,3 @@ void QGoTraceManualEditingDockWidget::ModifyWindowTitle(QString iTitle)
 {
   this->setWindowTitle(iTitle);
 }
-
-/*void QGoTraceManualEditingDockWidget::ShowAndUpdate(std::string iTraceName,
-                                                    std::string iCollectionName)
-{
-  this->m_TraceWidget->UpdateTraceAndCollection(iTraceName, iCollectionName);
-  this->show();
-}
-*/

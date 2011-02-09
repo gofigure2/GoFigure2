@@ -41,6 +41,12 @@
 #include "QGoDBTraceManager.h"
 #include "ContourContainer.h"
 
+/**
+\class QGoDBContourManager
+\brief This class manages the database queries, the table widget and
+the data from the database in the Container for visu for the contours
+\ingroup DB, GUI
+*/
 class QGOGUILIB_EXPORT QGoDBContourManager:public QGoDBTraceManager
 {
   Q_OBJECT

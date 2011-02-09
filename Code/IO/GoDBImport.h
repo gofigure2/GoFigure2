@@ -43,6 +43,12 @@
 
 #include "QGoIOConfigure.h"
 
+/**
+\class GoDBImport
+\brief This class get the data of traces from a textfile and save them into
+the GoFigure Database
+\ingroup DB
+*/
 class QGOIO_EXPORT GoDBImport
 {
 public:
