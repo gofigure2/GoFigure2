@@ -11,6 +11,8 @@ IF( UNIX )
       PATHS
       "$ENV{ProgramFiles}/Sikuli-IDE/"
       "$ENV{SystemDrive}/Sikuli-IDE/"
+      "$ENV{HOME}/Sikuli-IDE/"
+      "$ENV{HOME}/Sikuli-IDE/Sikuli-IDE"
       PATH_SUFFIXES "bin"
       DOC "Specify the path to sikuli"
     )
