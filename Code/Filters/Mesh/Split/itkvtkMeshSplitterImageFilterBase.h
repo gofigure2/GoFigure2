@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -32,35 +32,39 @@
 
 =========================================================================*/
 
-#ifndef ITKVTKMESHSPLITTERIMAGEFILTERBASE_H
-#define ITKVTKMESHSPLITTERIMAGEFILTERBASE_H
+#ifndef __itkvtkMeshSplitterImageFilterBase_h
+#define __itkvtkMeshSplitterImageFilterBase_h
 
 #include "itkLightObject.h"
 #include "itkPointSet.h"
 #include "vtkPolyData.h"
+#include "itkvtkMeshSplitterFilterBase.h"
 
 #include <list>
 
 namespace itk
 {
 template< class TImage >
-class vtkMeshSplitterFilterBase : public vtkMeshSplitterFilterBase
+class vtkMeshSplitterImageFilterBase : public vtkMeshSplitterFilterBase
   {
 public:
+  typedef vtkMeshSplitterImageFilterBase Self;
   typedef vtkMeshSplitterFilterBase Superclass;
   typedef SmartPointer< Self > Pointer;
   typedef SmartPointer< const Self > ConstPointer;
 
-  typedef Superclass::PointSetType PointSetType;
-  typedef PointSetType::Pointer PointSetPointer;
-  typedef PointSetType::PointsContainerPointer PointsContainerPointer;
-  typedef PointSetType::PointsContainerConstIterator PointsContainerConstIterator;
+  typedef typename Superclass::PointSetType PointSetType;
+  typedef typename PointSetType::Pointer PointSetPointer;
+  typedef typename PointSetType::PointsContainerPointer PointsContainerPointer;
+  typedef typename PointSetType::PointsContainerConstIterator
+    PointsContainerConstIterator;
   typedef typename PointSetType::PointType PointType;
 
   typedef TImage ImageType;
   typedef typename ImageType::Pointer ImagePointer;
 
   typedef Image< bool, 3 > BinaryMaskImageType;
+  typedef typename BinaryMaskImageType::Pointer BinaryMaskImagePointer;
 
 
   virtual void SetImage( ImageType* iImage )
@@ -69,8 +73,8 @@ public:
     }
 
 protected:
-  vtkMeshSplitterFilterBase() : m_Mesh( NULL ) {}
-  ~vtkMeshSplitterFilterBase() {}
+  vtkMeshSplitterImageFilterBase() : Superclass( ) {}
+  ~vtkMeshSplitterImageFilterBase() {}
 
   BinaryMaskImagePointer m_BinaryImage;
 
@@ -85,14 +89,15 @@ protected:
     try
       {
       binarizer->Update();
-      m_BinaryImage = binarizer->GetOutput();
-      m_BinaryImage->DisconnectPipeline();
       }
     catch( itk::ExceptionObject e )
       {
       std::cerr << "Error: " << e << std::endl;
       return;
       }
+
+    m_BinaryImage = binarizer->GetOutput();
+    m_BinaryImage->DisconnectPipeline();
     }
 
 
@@ -102,7 +107,11 @@ protected:
 
     if( m_BinaryImage.IsNotNull() )
       {
-      SplitBinaryImage();
+      this->SplitBinaryImage();
+      }
+    else
+      {
+      itkGenericExceptionMacro( << "m_BinaryImage is Null" );
       }
 
     }
@@ -110,9 +119,9 @@ protected:
   virtual void SplitBinaryImage() = 0;
 
 private:
-  vtkMeshSplitterFilterBase( const Self& );
+  vtkMeshSplitterImageFilterBase( const Self& );
   void operator = ( const Self& );
   };
 }
 
-#endif // ITKVTKMESHSPLITTERIMAGEFILTERBASE_H
+#endif // __itkvtkMeshSplitterImageFilterBase_h

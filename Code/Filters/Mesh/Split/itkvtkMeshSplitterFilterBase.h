@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,7 @@
 #include "itkPointSet.h"
 #include "vtkPolyData.h"
 
-#include <list>
+#include <vector>
 
 namespace itk
 {
@@ -47,6 +47,7 @@ class vtkMeshSplitterFilterBase : public LightObject
   {
 public:
   typedef LightObject Superclass;
+  typedef vtkMeshSplitterFilterBase Self;
   typedef SmartPointer< Self > Pointer;
   typedef SmartPointer< const Self > ConstPointer;
 
@@ -75,22 +76,34 @@ public:
     GenerateData();
     }
 
-  std::list< vtkPolyData* > GetOutputs()
+  std::vector< vtkPolyData* > GetOutputs()
     {
     return m_Outputs;
     }
 
 protected:
-  vtkMeshSplitterFilterBase() : m_Mesh( NULL ) {}
+  /** \brief Constructor */
+  vtkMeshSplitterFilterBase() : m_Mesh( NULL ), m_Outputs( 0 ), m_Seeds( NULL )
+    {
+    for( unsigned int dim = 0; dim < 3; ++dim )
+      {
+      m_Bounds[2 * dim] = vcl_numeric_limits< double >::max();
+      m_Bounds[2 * dim + 1] = vcl_numeric_limits< double >::min();
+      }
+    }
+  /** \brief Destructor */
   ~vtkMeshSplitterFilterBase() {}
 
   vtkPolyData* m_Mesh;
-  std::list< vtkPolyData* > m_Outputs;
 
-  double m_Bounds[6];
+  std::vector< vtkPolyData* > m_Outputs;
+
   PointSetPointer m_Seeds;
 
-  void IsPointInMeshBounds( const PointType& iP ) const
+  double m_Bounds[6];
+
+
+  bool IsPointInMeshBounds( const PointType& iP ) const
     {
     for( unsigned int i = 0; i < 3; ++i )
       {
@@ -102,13 +115,14 @@ protected:
     return true;
     }
 
-  bool CheckAllSeeds()
+  bool CheckAllSeeds() const
     {
     PointsContainerPointer points = m_Seeds->GetPoints();
 
     PointsContainerConstIterator it = points->Begin();
+    PointsContainerConstIterator end = points->End();
 
-    while( it != points->End() )
+    while( it != end )
       {
       if( IsPointInMeshBounds( it->Value() ) )
         {
@@ -120,18 +134,19 @@ protected:
     return true;
     }
 
+  /** \brief Main method to be reimplemented in inherited classes */
   virtual void Split() = 0;
 
   virtual void GenerateData()
     {
-    if( !CheckAllSeeds() )
+    if( CheckAllSeeds() )
       {
-      std::cout <<"Out of bounds" <<std::endl;
-      return;
+      this->Split();
       }
     else
       {
-      this->Split();
+      std::cout <<"Out of bounds" <<std::endl;
+      return;
       }
     }
 
@@ -141,4 +156,4 @@ private:
   };
 }
 
-#endif // QGOMESHSPLITFILTERBASE_H
+#endif // __itkvtkMeshSplitterFilterBase_h

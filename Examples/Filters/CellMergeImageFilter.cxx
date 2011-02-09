@@ -1,14 +1,8 @@
 /*=========================================================================
-  Author: $Author: krm15 $  // Author of last commit
-  Version: $Rev: 740 $  // Revision of last commit
-  Date: $Date: 2009-10-12 12:19:55 -0400 (Mon, 12 Oct 2009) $  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -54,28 +48,28 @@ int main( int argc, char** argv )
     std::cerr << argv[0] << " polydata1 polydata2 hullOutput" << std::endl;
     return EXIT_FAILURE;
     }
-  
-  
+
+
   vtkSmartPointer<vtkPolyDataReader> reader1 = vtkSmartPointer<vtkPolyDataReader>::New();
   reader1->SetFileName( argv[1] );
   reader1->Update();
   vtkPolyData* contour1 = reader1->GetOutput();
-  
+
   vtkSmartPointer<vtkPolyDataReader> reader2 = vtkSmartPointer<vtkPolyDataReader>::New();
   reader2->SetFileName( argv[2] );
   reader2->Update();
   vtkPolyData* contour2 = reader2->GetOutput();
-  
+
   // Append the local and remote data
   vtkSmartPointer<vtkAppendPolyData> append = vtkSmartPointer<vtkAppendPolyData>::New();
   append->AddInput( contour1 );
   append->AddInput( contour2 );
-  
+
   vtkSmartPointer<vtkHull> hullFilter =  vtkSmartPointer<vtkHull>::New();
   hullFilter->SetInputConnection( append->GetOutputPort() );
   hullFilter->AddRecursiveSpherePlanes( 2 );
   hullFilter->Update();
-  
+
   vtkSmartPointer<vtkPolyDataWriter> writer = vtkSmartPointer<vtkPolyDataWriter>::New();
   writer->SetFileName( argv[3] );
   writer->SetInput( hullFilter->GetOutput() );

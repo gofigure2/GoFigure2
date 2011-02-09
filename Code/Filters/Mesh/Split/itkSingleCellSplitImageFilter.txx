@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -61,8 +61,7 @@ GenerateData()
 {
   if( m_Seeds.IsNull() )
     {
-    std::cout << "Hey honey! What about providing some seeds?" <<std::endl;
-    return;
+    itkGenericExceptionMacro( << "No Seeds" ) ;
     }
 
   if ( !m_SeedImage )
@@ -96,6 +95,7 @@ GenerateData()
   m_Dist->UseImageSpacingOn();
   m_Dist->SetInputIsBinary( true );
   m_Dist->UpdateLargestPossibleRegion();
+
   ImagePointer output = m_Dist->GetVoronoiMap();
   output->DisconnectPipeline();
 
@@ -103,19 +103,18 @@ GenerateData()
   ConstIteratorType It2( this->GetInput(), output->GetLargestPossibleRegion() );
   It1.GoToBegin();
   It2.GoToBegin();
+
   while( !It1.IsAtEnd() )
-  {
+    {
     if( It2.Get() != m_ForegroundValue )
       {
       It1.Set( 0 );
       }
     ++It1;
     ++It2;
-  }
+    }
 
   this->GraftOutput( output );
-
-  return;
 }
 
 template< class TInputImage, class TPointSet >
