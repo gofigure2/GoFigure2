@@ -87,9 +87,9 @@ protected:
     if( m_SeedImage.IsNull() )
       {
       m_SeedImage = ImageType::New();
-      m_SeedImage->SetRegions( this->GetInput()->GetLargestPossibleRegion() );
-      m_SeedImage->SetOrigin(  this->GetInput()->GetOrigin() );
-      m_SeedImage->SetSpacing( this->GetInput()->GetSpacing() );
+      m_SeedImage->SetRegions( this->m_Image->GetLargestPossibleRegion() );
+      m_SeedImage->SetOrigin(  this->m_Image->GetOrigin() );
+      m_SeedImage->SetSpacing( this->m_Image->GetSpacing() );
       m_SeedImage->Allocate();
       m_SeedImage->FillBuffer( 0 );
       m_SeedImage->Update();
@@ -118,11 +118,13 @@ protected:
     m_Dist->SetInputIsBinary( true );
     m_Dist->UpdateLargestPossibleRegion();
 
-    ImagePointer output = m_Dist->GetVoronoiMap();
-    output->DisconnectPipeline();
+    this->m_OutputImage = m_Dist->GetVoronoiMap();
+    this->m_OutputImage->DisconnectPipeline();
 
-    IteratorType It1( output, output->GetLargestPossibleRegion() );
-    ConstIteratorType It2( this->GetInput(), output->GetLargestPossibleRegion() );
+    IteratorType It1( this->m_OutputImage,
+                     this->m_OutputImage->GetLargestPossibleRegion() );
+    ConstIteratorType It2( this->m_Image,
+                          this->m_OutputImage->GetLargestPossibleRegion() );
     It1.GoToBegin();
     It2.GoToBegin();
 

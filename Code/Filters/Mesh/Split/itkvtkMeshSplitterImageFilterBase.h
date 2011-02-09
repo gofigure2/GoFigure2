@@ -86,6 +86,7 @@ protected:
 
   BinaryMaskImagePointer m_BinaryImage;
   ImagePointer m_Image;
+  ImagePointer m_OutputImage;
 
   virtual void ComputBinaryImageFromInputMesh()
     {
@@ -115,6 +116,7 @@ protected:
     if( m_BinaryImage.IsNotNull() )
       {
       this->SplitBinaryImage();
+      GenerateMeshesFromOutputImage();
       }
     else
       {
@@ -124,6 +126,10 @@ protected:
     }
 
   virtual void SplitBinaryImage() = 0;
+
+  void GenerateMeshesFromOutputImage()
+    {
+    }
 
 private:
   vtkMeshSplitterImageFilterBase( const Self& );
