@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -72,6 +72,7 @@ public:
    * \brief Specify on which one the segmentation will be applied
    * \param[in] iChannel Channel on which want we want to apply the segmentation
    * algorithm
+   * \param[in] iText Name of the channel (not used yet)
    */
   void SetChannel(int iChannel, const QString & iText = QString());
 
@@ -145,9 +146,6 @@ signals:
    * \brief Signal sent to update the contour properties in the visualization
    */
   void UpdateContourRepresentationProperties(float, QColor, QColor, QColor);
-
-
-  //void ShowTraceDockWidgetForContour(bool);
 
   // semi automatic signals
   /**

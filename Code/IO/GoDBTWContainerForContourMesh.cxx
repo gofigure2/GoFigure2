@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -34,7 +34,7 @@
 #include "GoDBTWContainerForContourMesh.h"
 
 GoDBTWContainerForContourMesh::GoDBTWContainerForContourMesh(
-  std::string iTraceName, std::string iCollectionName, int iImgSessionID):
+  std::string iTraceName, std::string iCollectionName, int iImgSessionID) :
   GoDBTableWidgetContainer(iTraceName, iCollectionName, iImgSessionID)
 {
   m_ColumnsInfos = GetColumnsInfoForTraceTable();
@@ -44,7 +44,8 @@ GoDBTWContainerForContourMesh::GoDBTWContainerForContourMesh(
 
 //--------------------------------------------------------------------------
 GoDBTWContainerForContourMesh::~GoDBTWContainerForContourMesh()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 
@@ -69,66 +70,74 @@ void GoDBTWContainerForContourMesh::SetCommonInfoForTwoTracesTable()
 
   this->SetInfoForColumnIsVisible();
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void GoDBTWContainerForContourMesh::FillRowContainerWithDBValues(
-    vtkMySQLDatabase *iDatabaseConnector, std::string iRestrictionName,
-    std::string iRestrictionValue)
+  vtkMySQLDatabase *iDatabaseConnector, std::string iRestrictionName,
+  std::string iRestrictionValue)
 {
   GoDBTableWidgetContainer::FillRowContainerWithDBValues(iDatabaseConnector,
-    iRestrictionName,iRestrictionValue);
+                                                         iRestrictionName, iRestrictionValue);
   this->FillColumnShowHide(iDatabaseConnector);
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBTWContainerForContourMesh::FillColumnShowHide(vtkMySQLDatabase* iDatabaseConnector)
+void GoDBTWContainerForContourMesh::FillColumnShowHide(vtkMySQLDatabase *iDatabaseConnector)
 {
-  //get the current timepoint which is also the min timepoint for the imagingsession:
+  //get the current timepoint which is also the min timepoint for the
+  // imagingsession:
   //std::vector<std::string> SelectedFields;
   //SelectedFields.push_back("TCoord");
-  //std::string JoinCondition = "imagingsession.CoordIDMin = coordinate.CoordID";
+  //std::string JoinCondition = "imagingsession.CoordIDMin =
+  // coordinate.CoordID";
   //std::vector<std::string> Conditions(2);
   //Conditions[0]="imagingsessionID";
   //Conditions[1] = ConvertToString<int>(this->m_ImgSessionID);
-  //std::list<unsigned int> VectorMinTimePoint = GetAllSelectedValuesFromTwoTables(
-  //  iDatabaseConnector, "imagingsession", "coordinate",SelectedFields, JoinCondition,Conditions);
-  FieldWithValue JoinCondition = {"CoordIDMin", "CoordID", "="};
-  std::vector<FieldWithValue> Condition (1);
-  FieldWithValue ImgSession = {"ImagingsessionID", ConvertToString<int>(this->m_ImgSessionID), "="};
+  //std::list<unsigned int> VectorMinTimePoint =
+  // GetAllSelectedValuesFromTwoTables(
+  //  iDatabaseConnector, "imagingsession", "coordinate",SelectedFields,
+  // JoinCondition,Conditions);
+  FieldWithValue JoinCondition = { "CoordIDMin", "CoordID", "=" };
+
+  std::vector< FieldWithValue > Condition (1);
+  FieldWithValue                ImgSession = { "ImagingsessionID", ConvertToString< int >(this->m_ImgSessionID), "=" };
   Condition[0] = ImgSession;
-  std::list<unsigned int> VectorMinTimePoint = GetAllSelectedValuesFromTwoTables(
-    iDatabaseConnector,"imagingsession","coordinate","TCoord",JoinCondition,Condition);
+  std::list< unsigned int > VectorMinTimePoint = GetAllSelectedValuesFromTwoTables(
+      iDatabaseConnector, "imagingsession", "coordinate", "TCoord", JoinCondition, Condition);
 
-  std::string MinTimePoint = ConvertToString<unsigned int> (VectorMinTimePoint.front());
-  std::vector<std::vector<std::string> > Values;
-  std::vector<std::string> ShowHideValue;
+  std::string                               MinTimePoint = ConvertToString< unsigned int >( VectorMinTimePoint.front() );
+  std::vector< std::vector< std::string > > Values;
+  std::vector< std::string >                ShowHideValue;
 
-  int IndexTimePoint = this->GetIndexInsideRowContainer("TimePoint");
-  std::vector<std::string>::iterator iter = this->m_RowContainer.at(IndexTimePoint).second.begin();
-  while(iter != this->m_RowContainer.at(IndexTimePoint).second.end() )
+  int                                  IndexTimePoint = this->GetIndexInsideRowContainer("TimePoint");
+  std::vector< std::string >::iterator iter = this->m_RowContainer.at(IndexTimePoint).second.begin();
+  while ( iter != this->m_RowContainer.at(IndexTimePoint).second.end() )
     {
-      if (*iter == MinTimePoint)
-        {
-        ShowHideValue.push_back("true");
-        }
-      else
-        {
-         ShowHideValue.push_back("false");
-        }
-      Values.push_back(ShowHideValue);
-      ShowHideValue.clear();
-      iter++;
+    if ( *iter == MinTimePoint )
+      {
+      ShowHideValue.push_back("true");
+      }
+    else
+      {
+      ShowHideValue.push_back("false");
+      }
+    Values.push_back(ShowHideValue);
+    ShowHideValue.clear();
+    iter++;
     }
 
-  std::vector<std::string> Fields;
+  std::vector< std::string > Fields;
   Fields.push_back("Show");
-  if (!Values.empty())
+  if ( !Values.empty() )
     {
-    this->FillRowContainer(Values,Fields,"ColumnNameTableWidget");
+    this->FillRowContainer(Values, Fields, "ColumnNameTableWidget");
     }
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------

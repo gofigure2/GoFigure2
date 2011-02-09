@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -108,11 +108,11 @@ public:
   typedef typename SegmentImageType::SizeType    SegmentImageSizeType;
   typedef typename SegmentImageIndexType::IndexValueType SegmentImageIndexValueType;
   typedef typename SegmentImageType::RegionType        SegmentImageRegionType;
-  
-  typedef PreprocessImageFilter< FeatureImageType, FeatureImageType > 
+
+  typedef PreprocessImageFilter< FeatureImageType, FeatureImageType >
     PreprocessFilterType;
   typedef typename PreprocessFilterType::Pointer PreprocessFilterPointer;
-  
+
   typedef CellForegroundExtraction< FeatureImageType, InputImageType, SegmentImageType >
   ForegroundFilterType;
   typedef typename ForegroundFilterType::Pointer ForegroundFilterPointer;
@@ -134,7 +134,7 @@ public:
   typedef ImageRegionIterator< FeatureImageType > FeatureIteratorType;
   typedef ImageRegionIterator< InputImageType > InputIteratorType;
   typedef ImageRegionIteratorWithIndex< SegmentImageType > SegmentIteratorType;
-  
+
   typedef AntiAliasBinaryImageFilter< SegmentImageType, InputImageType > AntiAliasFilterType;
   typedef typename AntiAliasFilterType::Pointer AntiAliasFilterPointer;
 

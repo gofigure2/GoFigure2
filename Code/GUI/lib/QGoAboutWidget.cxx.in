@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -45,7 +45,7 @@
 
 #include <iostream>
 
-QGoAboutWidget::QGoAboutWidget(QWidget *iParent):QWidget(iParent)
+QGoAboutWidget::QGoAboutWidget(QWidget *iParent) : QWidget(iParent)
 {
   Q_INIT_RESOURCE(axes);
 
@@ -65,7 +65,7 @@ QGoAboutWidget::QGoAboutWidget(QWidget *iParent):QWidget(iParent)
 
   GofigureLabel->setAlignment(Qt::AlignCenter);
   QLabel *TabExplanation = new QLabel(
-    tr("\nGofigure uses different librairies,click on the tabs bellow to have a look at their copyright:\n"), this);
+      tr("\nGofigure uses different librairies,click on the tabs bellow to have a look at their copyright:\n"), this);
 
   TabExplanation->setAlignment(Qt::AlignJustify);
 
@@ -83,7 +83,8 @@ QGoAboutWidget::QGoAboutWidget(QWidget *iParent):QWidget(iParent)
 
 //--------------------------------------------------------------------------
 QGoAboutWidget::~QGoAboutWidget()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 
@@ -115,6 +116,7 @@ QString QGoAboutWidget::GetContributors()
   authors.append(" * 2008 ~ K. Mosaliganti\n");
   authors.append(" * 2009 ~ N. Rannou\n");
   authors.append(" * 2010 ~ A. Perrot-Audet\n");
+  authors.append(" * 2010 ~ E. Schwab\n");
   authors.append(" * 2007-2009 ~ A. Gouaillard\n");
   authors.append(" * 2006 ~ S. G. Megason\n");
 
@@ -210,7 +212,7 @@ void QGoAboutWidget::WriteLicenseText(QTabWidget *iTabWidget)
                     "BioImageXD", iTabWidget);
   this->AddTabAbout(
     this->ReadLicenseText("PoissonreconstructionCopyright.txt"),
-    "Poisson Reconstruction", iTabWidget );
+    "Poisson Reconstruction", iTabWidget);
 
 #ifdef ENABLEFFMPEG
   this->AddTabAbout(this->ReadLicenseText("FFmpegCopyright.txt"),

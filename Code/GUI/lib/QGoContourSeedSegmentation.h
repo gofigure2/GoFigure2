@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -47,13 +47,14 @@ class vtkPoints;
 class vtkImageData;
 
 // segmentation filters
-class QGoFilterChanAndVes;
+class QGoFilterChanAndVese;
 class QGoFilterShape;
 
 /**
  * \class QGoContourSeedSegmentation
  * \ingroup QGoContourSeed
- * \brief Interface between the seed segmentation filters and the base seed dockwidget
+ * \brief Interface between the segmentation filters and the seed base widget.
+ * Generates contours.
 */
 
 class QGOGUILIB_EXPORT QGoContourSeedSegmentation:public QGoSeedSegmentationBase
@@ -73,8 +74,8 @@ public:
    */
   ~QGoContourSeedSegmentation();
 private:
-  QGoFilterChanAndVes *m_LevelSetfilter;
-  QGoFilterShape *     m_ShapeFilter;
+  QGoFilterChanAndVese* m_LevelSetfilter;
+  QGoFilterShape *      m_ShapeFilter;
 
   std::vector< vtkSmartPointer<vtkImageData> > *m_OriginalImage;
 };

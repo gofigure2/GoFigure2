@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -37,13 +37,15 @@
 #include <iostream>
 
 GoDBRow::GoDBRow()
-{}
+{
+}
 
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 GoDBRow::~GoDBRow()
-{}
+{
+}
 
 //-------------------------------------------------------------------------
 
@@ -220,7 +222,7 @@ std::string GoDBRow::GetMapValue(std::string key)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void GoDBRow::SetValuesForSpecificID(int ID,
+bool GoDBRow::SetValuesForSpecificID(int ID,
                                      vtkMySQLDatabase *iDatabaseConnector)
 {
   std::vector< std::string > ResultQuery =
@@ -228,26 +230,31 @@ void GoDBRow::SetValuesForSpecificID(int ID,
       iDatabaseConnector, this->m_TableName, this->PrintColumnNames(),
       this->m_TableIDName, ConvertToString< int >(ID) );
 
+  if ( ResultQuery.empty() )
+    {
+    return false;
+    }
+
   if ( this->m_MapRow.size() != ResultQuery.size() )
     {
     std::cout << "pb the map and the query results are not the same size";
     std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
     std::cout << std::endl;
+    return false;
     }
-  else
+
+  std::vector< std::string >::iterator iterResultQuery =
+    ResultQuery.begin();
+
+  StringMapIterator iterMap = this->MapBegin();
+
+  while ( iterMap != this->MapEnd() )
     {
-    std::vector< std::string >::iterator iterResultQuery =
-      ResultQuery.begin();
-
-    StringMapIterator iterMap = this->MapBegin();
-
-    while ( iterMap != this->MapEnd() )
-      {
-      iterMap->second = *iterResultQuery;
-      ++iterMap;
-      ++iterResultQuery;
-      }
+    iterMap->second = *iterResultQuery;
+    ++iterMap;
+    ++iterResultQuery;
     }
+  return true;
 }
 
 //-------------------------------------------------------------------------
@@ -265,12 +272,14 @@ std::string GoDBRow::GetTableIDName()
 {
   return this->m_TableIDName;
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void GoDBRow::AddConditions(
-  std::string iNameOfField, std::vector<FieldWithValue> &ioFieldWithValue)
+  std::string iNameOfField, std::vector< FieldWithValue > & ioFieldWithValue)
 {
-  FieldWithValue temp = {iNameOfField,this->GetMapValue(iNameOfField),"=" };
+  FieldWithValue temp = { iNameOfField, this->GetMapValue(iNameOfField), "=" };
+
   ioFieldWithValue.push_back(temp);
 }

@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,42 +31,54 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __QGoFilterChanAndVes_h
-#define __QGoFilterChanAndVes_h
+#ifndef __GoDBTWContainerForTrack_h
+#define __GoDBTWContainerForTrack_h
 
-#include "QGoFilterSemiAutoBase.h"
-
-#include "QGoGUILibConfigure.h"
-
+#include "GoDBTWContainerForTrackLineage.h"
+#include "QGoIOConfigure.h"
+#include "GoFigureTrackAttributes.h"
 /**
- * \class QGoFilterChanAndVes
- */
-class QGOGUILIB_EXPORT QGoFilterChanAndVes:public QGoFilterSemiAutoBase
+\class GoDBTWContainerForTrack
+\brief This class describes the specificities of the GoDBTWContainerForTrackLineage for 
+track
+\ingroup DB
+*/
+class QGOIO_EXPORT GoDBTWContainerForTrack:public GoDBTWContainerForTrackLineage
 {
-  Q_OBJECT
+
 public:
-  /** \brief Constructor */
-  explicit QGoFilterChanAndVes(QObject *iParent = NULL, int iDimension = 2);
+  GoDBTWContainerForTrack(int iImgSessionID);
+  ~GoDBTWContainerForTrack();
 
-  /** \brief Destructor */
-  ~QGoFilterChanAndVes();
+  virtual TWContainerType GetContainerForOneSpecificTrace(
+    vtkMySQLDatabase *iDatabaseConnector, int iTraceID );
 
-  virtual vtkPolyData * Apply();
-
-  virtual void ConnectSignals(int iFilterNumber);
-
-public slots:
-  void setIterations(int iIterations);
-
-  void setCurvature(int iCurvature);
+  /**
+  \brief set m_TrackAttributes to iMeshAttributes, needs to be called
+  before displaying the volume, area values
+  \param[in] iTrackAttributes values for the track computed from visu
+  */
+  void SetTrackAttributes(GoFigureTrackAttributes *iTrackAttributes);
 
 protected:
-  void Filter2D(double *iCenter, const int & iOrientation);
 
-  void Filter3D(double *iCenter);
+  GoFigureTrackAttributes* m_TrackAttributes;
+  /**
+  \brief add the specific info for a track to the columns description
+  */
+  void SetSpecificInfoForTrackTable();
 
-private:
-  int m_Iterations;
-  int m_Curvature;
+  /**
+  \brief get the values from m_TrackAttributes and the names of the calculated
+  values from m_TrackAttributes and fill the corresponding columns of the row 
+  container with them
+  */
+  void FillRowContainerForTrackComputedValues();
+
+  /**
+  \brief 
+  */
+  void GetValuesAndNamesForTrackComputedValues(GoFigureTrackAttributes* iTrackAttributes,
+    std::vector<std::vector<std::string> > &ioValues, std::vector<std::string> &ioNames);
 };
 #endif

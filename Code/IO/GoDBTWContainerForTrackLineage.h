@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,10 @@
 #include "GoDBTableWidgetContainer.h"
 #include "QGoIOConfigure.h"
 /**
-\brief
+\class GoDBTWContainerForTrackLineage
+\brief This class describes the specificities of the GoDBTableWidgetContainer for 
+track and lineage
+\ingroup DB
 */
 class QGOIO_EXPORT GoDBTWContainerForTrackLineage:public GoDBTableWidgetContainer
 {

@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -56,7 +56,7 @@
  * \brief Default Constructor
  * \param iParent
  */
-QGoTabImageViewElementBase::QGoTabImageViewElementBase(QWidget *iParent):
+QGoTabImageViewElementBase::QGoTabImageViewElementBase(QWidget *iParent) :
   QGoTabElementBase(iParent),
   m_Color(false),
   m_BackgroundColor(Qt::black),
@@ -87,7 +87,8 @@ QGoTabImageViewElementBase::QGoTabImageViewElementBase(QWidget *iParent):
  * \brief Destructor
  */
 QGoTabImageViewElementBase::~QGoTabImageViewElementBase()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 

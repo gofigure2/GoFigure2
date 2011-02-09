@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -74,7 +74,7 @@ public:
 
   /**
   \brief 
-  \param[in] ImgSessionID ID of the current imagingsession
+  \param[in] ImagingSessionID ID of the current imagingsession
   */
   GoDBMeshRow(unsigned int ImagingSessionID);
 
@@ -123,11 +123,7 @@ public:
   void SafeDownCast(GoDBTraceRow & iRow);
 
   /**
-  \overload GoDBTraceRow::SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector,
-                             vtkPolyData *TraceVisu,
-                             GoDBCoordinateRow iCoordMin,
-                             GoDBCoordinateRow iCoordMax)
-  \param[in] iMeshAttributes container for intensity values
+  \overload
   */
   void SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector,
                              vtkPolyData *TraceVisu, GoDBCoordinateRow iCoordMin,

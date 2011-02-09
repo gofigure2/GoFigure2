@@ -1,8 +1,8 @@
 /*=========================================================================
  Modifications were made by the GoFigure Dev. Team.
- while at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ while at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -103,9 +103,9 @@ int vtkPolylineDecimation::RequestData(
 
   // get the input and ouptut
   vtkPolyData *input = vtkPolyData::SafeDownCast(
-    inInfo->Get( vtkDataObject::DATA_OBJECT() ) );
+      inInfo->Get( vtkDataObject::DATA_OBJECT() ) );
   vtkPolyData *output = vtkPolyData::SafeDownCast(
-    outInfo->Get( vtkDataObject::DATA_OBJECT() ) );
+      outInfo->Get( vtkDataObject::DATA_OBJECT() ) );
 
   vtkCellArray *inputLines = input->GetLines();
   vtkPoints *   inputPoints = input->GetPoints();

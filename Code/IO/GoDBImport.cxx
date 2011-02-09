@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -62,7 +62,8 @@ GoDBImport::GoDBImport(std::string iServerName, std::string iLogin,
 
 //--------------------------------------------------------------------------
 GoDBImport::~GoDBImport()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 
@@ -111,7 +112,7 @@ void GoDBImport::ImportMeshes()
 //--------------------------------------------------------------------------
 void GoDBImport::ImportTracks()
 {
-	this->ImportMeshes();
+  this->ImportMeshes();
 }
 
 //--------------------------------------------------------------------------
@@ -148,22 +149,22 @@ std::string GoDBImport::SaveNoTracesEntities(std::map< int, int > & ioMapColorID
       if ( NameEntity == "color" )
         {
         LineContent = this->SaveImportedEntitiesInDatabase< GoDBColorRow >(
-          EntitiesNumber, ioMapColorIDs);
+            EntitiesNumber, ioMapColorIDs);
         }
       if ( NameEntity == "celltype" )
         {
         LineContent = this->SaveImportedEntitiesInDatabase< GoDBCellTypeRow >(
-          EntitiesNumber, ioMapCellTypeIDs);
+            EntitiesNumber, ioMapCellTypeIDs);
         }
       if ( NameEntity == "subcellulartype" )
         {
         LineContent = this->SaveImportedEntitiesInDatabase< GoDBSubCellTypeRow >(
-          EntitiesNumber, ioMapSubCellTypeIDs);
+            EntitiesNumber, ioMapSubCellTypeIDs);
         }
       if ( NameEntity == "coordinate" )
         {
         LineContent = this->SaveImportedEntitiesInDatabase< GoDBCoordinateRow >(
-          EntitiesNumber, ioMapCoordIDs);
+            EntitiesNumber, ioMapCoordIDs);
         }
       if ( NameEntity != "color" && NameEntity != "celltype"
            && NameEntity != "subcellulartype" && NameEntity != "coordinate" )

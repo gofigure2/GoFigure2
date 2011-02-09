@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -44,8 +44,7 @@
 #include "vtkLookupTable.h"
 
 //--------------------------------------------------------------------------
-TraceStructure::
-TraceStructure():TraceID(0),
+TraceStructure::TraceStructure() : TraceID(0), CollectionID(0),
   ActorXY(NULL), ActorXZ(NULL), ActorYZ(NULL), ActorXYZ(NULL), Nodes(NULL),
   Highlighted(false), Visible(false)
 {
@@ -58,17 +57,19 @@ TraceStructure():TraceID(0),
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-TraceStructure::
-TraceStructure(const unsigned int & iTraceID,
-                                           std::vector< vtkActor * > iActors,
-                                           vtkPolyData *iNodes,
-                                           const bool & iHighlighted,
-                                           const bool & iVisible,
-                                           const double & r,
-                                           const double & g,
-                                           const double & b,
-                                           const double & alpha):
-  TraceID(iTraceID), Nodes(iNodes), Highlighted(iHighlighted), Visible(iVisible)
+TraceStructure::TraceStructure(
+  const unsigned int & iTraceID,
+  const unsigned int & iCollectionID,
+  std::vector< vtkActor * > iActors,
+  vtkPolyData *iNodes,
+  const bool & iHighlighted,
+  const bool & iVisible,
+  const double & r,
+  const double & g,
+  const double & b,
+  const double & alpha) :
+  TraceID(iTraceID), CollectionID(iCollectionID),
+  Nodes(iNodes), Highlighted(iHighlighted), Visible(iVisible)
 {
   if ( iActors.size() == 4 )
     {
@@ -91,14 +92,15 @@ TraceStructure(const unsigned int & iTraceID,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-TraceStructure::
-TraceStructure( const unsigned int & iTraceID,
-                std::vector< vtkActor * > iActors,
-                vtkPolyData *iNodes,
-                const bool & iHighlighted,
-                const bool & iVisible,
-                double iRgba[4]):
-  TraceID(iTraceID), Nodes(iNodes), Highlighted(iHighlighted), Visible(iVisible)
+TraceStructure::TraceStructure(const unsigned int & iTraceID,
+                               const unsigned int & iCollectionID,
+                               std::vector< vtkActor * > iActors,
+                               vtkPolyData *iNodes,
+                               const bool & iHighlighted,
+                               const bool & iVisible,
+                               double iRgba[4]) :
+  TraceID(iTraceID), CollectionID(iCollectionID),
+  Nodes(iNodes), Highlighted(iHighlighted), Visible(iVisible)
 {
   if ( iActors.size() == 4 )
     {
@@ -121,20 +123,21 @@ TraceStructure( const unsigned int & iTraceID,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-TraceStructure::
-TraceStructure( const unsigned int & iTraceID,
-                vtkActor *iActorXY,
-                vtkActor *iActorYZ,
-                vtkActor *iActorXZ,
-                vtkActor *iActorXYZ,
-                vtkPolyData *iNodes,
-                const bool & iHighlighted,
-                const bool & iVisible,
-                const double & r,
-                const double & g,
-                const double & b,
-                const double & alpha):
-  TraceID(iTraceID), ActorXY(iActorXY), ActorXZ(iActorXZ),
+TraceStructure::TraceStructure(const unsigned int & iTraceID,
+                               const unsigned int & iCollectionID,
+                               vtkActor *iActorXY,
+                               vtkActor *iActorYZ,
+                               vtkActor *iActorXZ,
+                               vtkActor *iActorXYZ,
+                               vtkPolyData *iNodes,
+                               const bool & iHighlighted,
+                               const bool & iVisible,
+                               const double & r,
+                               const double & g,
+                               const double & b,
+                               const double & alpha) :
+  TraceID(iTraceID), CollectionID(iCollectionID),
+  ActorXY(iActorXY), ActorXZ(iActorXZ),
   ActorYZ(iActorYZ), ActorXYZ(iActorXYZ), Nodes(iNodes),
   Highlighted(iHighlighted), Visible(iVisible)
 {
@@ -147,11 +150,10 @@ TraceStructure( const unsigned int & iTraceID,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-TraceStructure::
-TraceStructure(const TraceStructure & iE):
-  TraceID(iE.TraceID), ActorXY(iE.ActorXY), ActorXZ(iE.ActorXZ),
-  ActorYZ(iE.ActorYZ), ActorXYZ(iE.ActorXYZ), Nodes(iE.Nodes),
-  Highlighted(iE.Highlighted), Visible(iE.Visible)
+TraceStructure::TraceStructure(const TraceStructure & iE) :
+  TraceID(iE.TraceID), CollectionID(iE.CollectionID), ActorXY(iE.ActorXY),
+  ActorXZ(iE.ActorXZ), ActorYZ(iE.ActorYZ), ActorXYZ(iE.ActorXYZ),
+  Nodes(iE.Nodes), Highlighted(iE.Highlighted), Visible(iE.Visible)
 {
   for ( int i = 0; i < 4; i++ )
     {
@@ -166,35 +168,37 @@ TraceStructure::
 ~TraceStructure()
 {
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void TraceStructure::SetActorProperties( vtkProperty* iProperty ) const
-  {
-  if( iProperty )
+void TraceStructure::SetActorProperties(vtkProperty *iProperty) const
+{
+  if ( iProperty )
     {
-    if( this->ActorXY )
+    if ( this->ActorXY )
       {
-      this->ActorXY->SetProperty( iProperty );
+      this->ActorXY->SetProperty(iProperty);
       }
-    if( this->ActorXZ )
+    if ( this->ActorXZ )
       {
-      this->ActorXZ->SetProperty( iProperty );
+      this->ActorXZ->SetProperty(iProperty);
       }
-    if( this->ActorYZ )
+    if ( this->ActorYZ )
       {
-      this->ActorYZ->SetProperty( iProperty );
+      this->ActorYZ->SetProperty(iProperty);
       }
-    if( this->ActorXYZ )
+    if ( this->ActorXYZ )
       {
-      this->ActorXYZ->SetProperty( iProperty );
+      this->ActorXYZ->SetProperty(iProperty);
       }
     }
-  }
+}
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void TraceStructure::SetActorVisibility( const bool& iVisible ) const
+void TraceStructure::SetActorVisibility(const bool & iVisible) const
 {
   if ( this->ActorXY )
     {
@@ -213,161 +217,162 @@ void TraceStructure::SetActorVisibility( const bool& iVisible ) const
     this->ActorXYZ->SetVisibility(iVisible);
     }
 }
+
 //--------------------------------------------------------------------------
 void
-TraceStructure::
-SetScalarData( const std::string& iName,
-               const double& iValue ) const
+TraceStructure::SetScalarData(const std::string & iName,
+                              const double & iValue) const
 {
-  if( this->Nodes )
+  if ( this->Nodes )
     {
-    vtkIdType NbOfPoints = this->Nodes->GetNumberOfPoints();
-    vtkDoubleArray* data = vtkDoubleArray::New();
-    data->SetNumberOfComponents( 1 );
+    vtkIdType       NbOfPoints = this->Nodes->GetNumberOfPoints();
+    vtkDoubleArray *data = vtkDoubleArray::New();
+    data->SetNumberOfComponents(1);
     data->SetName( iName.c_str() );
 
-    for( vtkIdType i = 0; i < NbOfPoints; ++i )
+    for ( vtkIdType i = 0; i < NbOfPoints; ++i )
       {
-      data->InsertNextValue( iValue );
+      data->InsertNextValue(iValue);
       }
 
-    this->Nodes->GetPointData()->SetScalars( data );
+    this->Nodes->GetPointData()->SetScalars(data);
     this->Nodes->GetPointData()->SetActiveScalars( iName.c_str() );
     }
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
-TraceStructure::
-SetScalarRange( const double& iMin, const double& iMax ) const
+TraceStructure::SetScalarRange(const double & iMin, const double & iMax) const
 {
-  if( this->ActorXY )
+  if ( this->ActorXY )
     {
-    this->ActorXY->GetMapper()->SetScalarRange( iMin, iMax );
-    this->ActorXY->GetMapper()->SetScalarVisibility( true );
+    this->ActorXY->GetMapper()->SetScalarRange(iMin, iMax);
+    this->ActorXY->GetMapper()->SetScalarVisibility(true);
     }
-  if( this->ActorXZ )
+  if ( this->ActorXZ )
     {
-    this->ActorXZ->GetMapper()->SetScalarRange( iMin, iMax );
-    this->ActorXZ->GetMapper()->SetScalarVisibility( true );
+    this->ActorXZ->GetMapper()->SetScalarRange(iMin, iMax);
+    this->ActorXZ->GetMapper()->SetScalarVisibility(true);
     }
-  if( this->ActorYZ )
+  if ( this->ActorYZ )
     {
-    this->ActorYZ->GetMapper()->SetScalarRange( iMin, iMax );
-    this->ActorYZ->GetMapper()->SetScalarVisibility( true );
+    this->ActorYZ->GetMapper()->SetScalarRange(iMin, iMax);
+    this->ActorYZ->GetMapper()->SetScalarVisibility(true);
     }
-  if( this->ActorXYZ )
+  if ( this->ActorXYZ )
     {
-    this->ActorXYZ->GetMapper()->SetScalarRange( iMin, iMax );
-    this->ActorXYZ->GetMapper()->SetScalarVisibility( true );
+    this->ActorXYZ->GetMapper()->SetScalarRange(iMin, iMax);
+    this->ActorXYZ->GetMapper()->SetScalarVisibility(true);
     }
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
-TraceStructure::
-RenderWithOriginalColors() const
+TraceStructure::RenderWithOriginalColors() const
 {
-  if( this->Nodes )
+  if ( this->Nodes )
     {
-    this->Nodes->GetPointData()->SetActiveScalars( NULL );
+    this->Nodes->GetPointData()->SetActiveScalars(NULL);
     }
 
-  if( this->ActorXY )
+  if ( this->ActorXY )
     {
-    this->ActorXY->GetMapper()->SetScalarVisibility( false );
+    this->ActorXY->GetMapper()->SetScalarVisibility(false);
     }
-  if( this->ActorXZ )
+  if ( this->ActorXZ )
     {
-    this->ActorXZ->GetMapper()->SetScalarVisibility( false );
+    this->ActorXZ->GetMapper()->SetScalarVisibility(false);
     }
-  if( this->ActorYZ )
+  if ( this->ActorYZ )
     {
-    this->ActorYZ->GetMapper()->SetScalarVisibility( false );
+    this->ActorYZ->GetMapper()->SetScalarVisibility(false);
     }
-  if( this->ActorXYZ )
+  if ( this->ActorXYZ )
     {
-    this->ActorXYZ->GetMapper()->SetScalarVisibility( false );
+    this->ActorXYZ->GetMapper()->SetScalarVisibility(false);
     }
 }
-//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
-TraceStructure::
-SetLookupTable( vtkLookupTable* iLut ) const
+TraceStructure::SetLookupTable(vtkLookupTable *iLut) const
 {
-  if( iLut )
+  if ( iLut )
     {
-    if( this->ActorXY )
+    if ( this->ActorXY )
       {
-      this->ActorXY->GetMapper()->SetLookupTable( iLut );
+      this->ActorXY->GetMapper()->SetLookupTable(iLut);
       }
-    if( this->ActorXZ )
+    if ( this->ActorXZ )
       {
-      this->ActorXZ->GetMapper()->SetLookupTable( iLut );
+      this->ActorXZ->GetMapper()->SetLookupTable(iLut);
       }
-    if( this->ActorYZ )
+    if ( this->ActorYZ )
       {
-      this->ActorYZ->GetMapper()->SetLookupTable( iLut );
+      this->ActorYZ->GetMapper()->SetLookupTable(iLut);
       }
-    if( this->ActorXYZ )
+    if ( this->ActorXYZ )
       {
-      this->ActorXYZ->GetMapper()->SetLookupTable( iLut );
+      this->ActorXYZ->GetMapper()->SetLookupTable(iLut);
       }
     }
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
 TraceStructure::ReleaseData() const
 {
-  if( this->ActorXY )
+  if ( this->ActorXY )
     {
     this->ActorXY->Delete();
     }
-  if( this->ActorXZ )
+  if ( this->ActorXZ )
     {
     this->ActorXZ->Delete();
     }
-  if( this->ActorYZ )
+  if ( this->ActorYZ )
     {
     this->ActorYZ->Delete();
     }
-  if( this->ActorXYZ )
+  if ( this->ActorXYZ )
     {
     this->ActorXYZ->Delete();
     }
-  if( this->Nodes )
+  if ( this->Nodes )
     {
     this->Nodes->Delete();
     }
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
 TraceStructure::ResetNodes() const
 {
-  if( this->Nodes )
+  if ( this->Nodes )
     {
-    if( this->Nodes->GetPointData() )
+    if ( this->Nodes->GetPointData() )
       {
       this->Nodes->GetPointData()->Reset();
       }
-    if( this->Nodes->GetPoints() )
+    if ( this->Nodes->GetPoints() )
       {
       this->Nodes->GetPoints()->Reset();
       }
-    if( this->Nodes->GetLines() )
+    if ( this->Nodes->GetLines() )
       {
       this->Nodes->GetLines()->Reset();
       }
-    if( this->Nodes )
+    if ( this->Nodes )
       {
       this->Nodes->Reset();
       }

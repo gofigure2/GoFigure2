@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -227,18 +227,18 @@ std::list< std::string > GetAllFileNamesForGivenZCoordPointAndChannel(
 
 std::map< unsigned int, std::list< std::string > >
 GetAllFileNamesForGivenChannelAndTCoords(
-    const GoFigureFileInfoHelperMultiIndexContainer & iContainer,
-    const unsigned int & iCh,
-    const std::set< unsigned int > & iTCoordList
-    )
+  const GoFigureFileInfoHelperMultiIndexContainer & iContainer,
+  const unsigned int & iCh,
+  const std::set< unsigned int > & iTCoordList
+  )
 {
   std::map< unsigned int, std::list< std::string > > oList;
 
   std::set< unsigned int >::const_iterator t_it = iTCoordList.begin();
 
-  while( t_it != iTCoordList.end() )
+  while ( t_it != iTCoordList.end() )
     {
-    oList[ *t_it ] = GetAllFileNamesForGivenTCoordAndChannel( iContainer, *t_it, iCh );
+    oList[*t_it] = GetAllFileNamesForGivenTCoordAndChannel(iContainer, *t_it, iCh);
     ++t_it;
     }
 

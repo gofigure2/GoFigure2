@@ -17,9 +17,9 @@
 
 /*=========================================================================
  Modifications were made by the GoFigure Dev. Team.
- while at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ while at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -55,7 +55,7 @@
 namespace itk
 {
 /** Constructor */
-QtProgressBar::QtProgressBar(QWidget *iParent):QProgressBar(iParent)
+QtProgressBar::QtProgressBar(QWidget *iParent) : QProgressBar(iParent)
 {
   m_RedrawCommand = RedrawCommandType::New();
   m_RedrawCommand->SetCallbackFunction(this, &QtProgressBar::ProcessEvent);
@@ -84,7 +84,7 @@ QtProgressBar::ProcessEvent(itk::Object *caller,
       dynamic_cast< itk::ProcessObject * >( caller );
 
     const int tempvalue = static_cast< int >(
-      process->GetProgress() * static_cast< float >( this->maximum() ) );
+        process->GetProgress() * static_cast< float >( this->maximum() ) );
     std::cout << "New Value : " << tempvalue << std::endl;
     this->setValue(tempvalue);
     }
@@ -100,7 +100,7 @@ QtProgressBar::ConstProcessEvent(const itk::Object *caller,
       dynamic_cast< const itk::ProcessObject * >( caller );
 
     const int temp_value = static_cast< int >(
-      process->GetProgress() * static_cast< float >( this->maximum() ) );
+        process->GetProgress() * static_cast< float >( this->maximum() ) );
     std::cout << "New Value : " << temp_value << std::endl;
     this->setValue(temp_value);
     }
@@ -112,4 +112,5 @@ QtProgressBar::Observe(itk::Object *caller)
 {
   caller->AddObserver( itk::ProgressEvent(), m_RedrawCommand.GetPointer() );
 }
+
 } // end namespace fltk

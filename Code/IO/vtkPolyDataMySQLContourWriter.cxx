@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -45,21 +45,23 @@ vtkCxxRevisionMacro(vtkPolyDataMySQLContourWriter, "$Revision$");
 vtkStandardNewMacro(vtkPolyDataMySQLContourWriter);
 
 //--------------------------------------------------------------------------
-vtkPolyDataMySQLContourWriter::
-vtkPolyDataMySQLContourWriter()
-{}
+vtkPolyDataMySQLContourWriter::vtkPolyDataMySQLContourWriter()
+{
+}
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 vtkPolyDataMySQLContourWriter::
 ~vtkPolyDataMySQLContourWriter()
-{}
+{
+}
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 std::string
-vtkPolyDataMySQLContourWriter::
-GetMySQLText(vtkPolyData *iPolyData)
+vtkPolyDataMySQLContourWriter::GetMySQLText(vtkPolyData *iPolyData)
 {
   vtkIdType N = iPolyData->GetNumberOfPoints();
 
@@ -75,4 +77,5 @@ GetMySQLText(vtkPolyData *iPolyData)
     }
   return oMyString.str();
 }
+
 //--------------------------------------------------------------------------

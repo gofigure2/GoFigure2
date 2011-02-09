@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,6 @@
 =========================================================================*/
 #include "QGoWizardDB.h"
 
-#include "QGoCreateDataBasePage.h"
 #include "QGoOpenCreateProjectPage.h"
 #include "QGoOpenCreateImgSessionPage.h"
 #include "QGoCreateImgSessionPage.h"
@@ -42,7 +41,6 @@
 #include "SelectQueryDatabaseHelper.h"
 #include "GoDBRecordSet.h"
 #include "GoDBRecordSetHelper.h"
-#include "GoDBSeriesGridRow.h"
 #include "itkMegaCaptureImport.h"
 #include "GoFigureFileInfoMultiIndexContainerHelper.h"
 
@@ -62,7 +60,7 @@
 #include <QCloseEvent>
 
 //-------------------------------------------------------------------------
-QGoWizardDB::QGoWizardDB(QWidget *iParent):
+QGoWizardDB::QGoWizardDB(QWidget *iParent) :
   QWizard(iParent)
 {
   this->m_ImgSessionName = "";
@@ -87,7 +85,6 @@ QGoWizardDB::QGoWizardDB(QWidget *iParent):
   this->setButton (QWizard::FinishButton, finishButton);
   this->m_ConnectServerPage = new QGoConnectServerPage;
   setPage(ConnectServerPageID, this->m_ConnectServerPage);
-  //setPage(CreateDataBasePageID, new QGoCreateDataBasePage);
   setPage(OpenOrCreateProjectPageID, new QGoOpenCreateProjectPage);
   setPage(OpenOrCreateImgSessionPageID, new QGoOpenCreateImgSessionPage);
   setPage(CreateImgSessionPageID, new QGoCreateImgSessionPage);
@@ -113,7 +110,7 @@ std::vector< std::vector< std::string > > QGoWizardDB::GetFilenamesFromDB()
   std::string DBName = field("DBName").toString().toStdString();
 
   std::pair< bool, vtkMySQLDatabase * > ConnectionDatabase = ConnectToDatabase(
-    Server, User, Password, DBName);
+      Server, User, Password, DBName);
 
   if ( !ConnectionDatabase.first )
     {
@@ -126,17 +123,18 @@ std::vector< std::vector< std::string > > QGoWizardDB::GetFilenamesFromDB()
 
   //Get the number of channels with their id as a map
   //ListChannelsIDNumber[channelID]=ChannelNumber:
-  std::vector<std::string> ChannelAttributes (2);
+  std::vector< std::string > ChannelAttributes (2);
   ChannelAttributes[0] = "channelID";
   ChannelAttributes[1] = "ChannelNumber";
 
   std::map< std::string, std::string > ListChannelsIDNumber =
-    MapTwoColumnsFromTable( DatabaseConnector, ChannelAttributes,"channel",
-    "ImagingSessionID", field("ImgSessionID").toString().toStdString() );
+    MapTwoColumnsFromTable( DatabaseConnector, ChannelAttributes, "channel",
+                            "ImagingSessionID", field("ImgSessionID").toString().toStdString() );
 
- // std::map< std::string, std::string > ListChannelsIDNumber =
+  // std::map< std::string, std::string > ListChannelsIDNumber =
   //  MapTwoColumnsFromTable( DatabaseConnector, "channelID", "ChannelNumber",
-   //                         "channel", "ImagingSessionID", field("ImgSessionID").toString().toStdString() );
+  //                         "channel", "ImagingSessionID",
+  // field("ImgSessionID").toString().toStdString() );
 
   std::map< std::string, std::string >::iterator it = ListChannelsIDNumber.begin();
   oFilenames.resize( ListChannelsIDNumber.size() );
@@ -146,7 +144,7 @@ std::vector< std::vector< std::string > > QGoWizardDB::GetFilenamesFromDB()
     std::string ChannelID = it->first;
     //get the filenames of all the images corresponding to ChannelID:
     oFilenames[i] = ListSpecificValuesForOneColumn(
-      DatabaseConnector, "image", "Filename", "channelID", ChannelID);
+        DatabaseConnector, "image", "Filename", "channelID", ChannelID);
     it++;
     i++;
     }
@@ -358,7 +356,7 @@ void QGoWizardDB::SetFirstFileName()
   std::string DBName = field("DBName").toString().toStdString();
 
   std::pair< bool, vtkMySQLDatabase * > ConnectionDatabase = ConnectToDatabase(
-    Server, User, Password, DBName);
+      Server, User, Password, DBName);
 
   if ( !ConnectionDatabase.first )
     {

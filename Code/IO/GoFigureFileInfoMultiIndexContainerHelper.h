@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -32,8 +32,8 @@
 
 =========================================================================*/
 
-#ifndef __GoFigureFileInfoHelperMultiIndexContainer_h
-#define __GoFigureFileInfoHelperMultiIndexContainer_h
+#ifndef __GoFigureFileInfoMultiIndexContainerHelper_h
+#define __GoFigureFileInfoMultiIndexContainerHelper_h
 
 #include "boost/multi_index_container.hpp"
 #include "boost/multi_index/member.hpp"
@@ -61,7 +61,7 @@ struct QGOIO_EXPORT GoFigureFileInfoHelper {
   unsigned int m_ZCoord;
   unsigned int m_TCoord;
   unsigned int m_Channel;
-  std::string m_Filename;
+  std::string  m_Filename;
 
   GoFigureFileInfoHelper(const unsigned int & p, const unsigned int & r,
                          const unsigned int & c, const unsigned int & xt,
@@ -73,12 +73,12 @@ struct QGOIO_EXPORT GoFigureFileInfoHelper {
     m_YTileCoord(yt), m_ZTileCoord(zt), m_XCoord(xs),
     m_YCoord(ys), m_ZCoord(zs), m_TCoord(t), m_Channel(ch),
     m_Filename(iFile)
-  {}
+    {}
 
   GoFigureFileInfoHelper():m_PCoord(0), m_RCoord(0), m_CCoord(0),
     m_XTileCoord(0), m_YTileCoord(0), m_ZTileCoord(0), m_XCoord(0),
     m_YCoord(0), m_ZCoord(0), m_TCoord(0), m_Channel(0), m_Filename("")
-  {}
+    {}
 
   ~GoFigureFileInfoHelper() {}
 };
@@ -106,94 +106,108 @@ typedef boost::multi_index::multi_index_container<
   boost::multi_index::indexed_by<
     boost::multi_index::ordered_non_unique<
       boost::multi_index::tag<m_PCoord>,
-      BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_PCoord)>,
+      BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_PCoord)
+    >,
     boost::multi_index::ordered_non_unique<
       boost::multi_index::tag<m_RCoord>,
-      BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_RCoord)>,
+      BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_RCoord)
+    >,
     boost::multi_index::ordered_non_unique<
       boost::multi_index::tag<m_CCoord>,
-      BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_CCoord)>,
+      BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_CCoord)
+    >,
     boost::multi_index::ordered_non_unique<
       boost::multi_index::tag<m_XTileCoord>,
-      BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_XTileCoord)>,
+      BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_XTileCoord)
+    >,
     boost::multi_index::ordered_non_unique<
       boost::multi_index::tag<m_YTileCoord>,
-      BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_YTileCoord)>,
+      BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_YTileCoord)
+    >,
     boost::multi_index::ordered_non_unique<
       boost::multi_index::tag<m_ZTileCoord>,
-      BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_ZTileCoord)>,
+      BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper,unsigned int,m_ZTileCoord)
+    >,
     boost::multi_index::ordered_non_unique<
       boost::multi_index::tag< m_ZCoord >,
-      BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper, unsigned int, m_ZCoord) >,
+      BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper, unsigned int, m_ZCoord)
+    >,
     boost::multi_index::ordered_non_unique<
       boost::multi_index::tag< m_Channel >,
-      BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper, unsigned int, m_Channel) >,
+      BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper, unsigned int, m_Channel)
+    >,
     boost::multi_index::ordered_non_unique<
       boost::multi_index::tag< m_TCoord >,
-      BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper, unsigned int, m_TCoord) >
+      BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper, unsigned int, m_TCoord)
     >
-  > GoFigureFileInfoHelperMultiIndexContainer;
+  >
+> GoFigureFileInfoHelperMultiIndexContainer;
 
 typedef boost::multi_index::multi_index_container<
   const GoFigureFileInfoHelper *,
   boost::multi_index::indexed_by<
     boost::multi_index::ordered_non_unique<
-      BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper, const unsigned int, m_ZCoord) >
+      BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper, const unsigned int, m_ZCoord)
     >
-  > GoFigureFileInfoHelperZCoordViewContainer;
+  >
+> GoFigureFileInfoHelperZCoordViewContainer;
 
 typedef boost::multi_index::multi_index_container<
   const GoFigureFileInfoHelper *,
   boost::multi_index::indexed_by<
     boost::multi_index::ordered_non_unique<
-      BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper, const unsigned int, m_TCoord) >
+      BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper, const unsigned int, m_TCoord)
     >
-  > GoFigureFileInfoHelperTCoordViewContainer;
+  >
+> GoFigureFileInfoHelperTCoordViewContainer;
 
 typedef boost::multi_index::multi_index_container<
   const GoFigureFileInfoHelper *,
   boost::multi_index::indexed_by<
     boost::multi_index::ordered_non_unique<
-      BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper, const unsigned int, m_Channel) > //,
+      BOOST_MULTI_INDEX_MEMBER(GoFigureFileInfoHelper, const unsigned int, m_Channel)
     >
-  > GoFigureFileInfoHelperChannelViewContainer;
+  >
+> GoFigureFileInfoHelperChannelViewContainer;
 
 QGOIO_EXPORT
 std::map< unsigned int, std::list< std::string > >
 GetAllFileNamesForGivenTCoord(
   const GoFigureFileInfoHelperMultiIndexContainer & iContainer,
-  const unsigned int & iT,
-  const unsigned int & iMinCh,
-  const unsigned int & iMaxCh
-  );
+  const unsigned int &                              iT,
+  const unsigned int &                              iMinCh,
+  const unsigned int &                              iMaxCh
+);
 
 QGOIO_EXPORT
 std::map< unsigned int, std::list< std::string > >
 GetAllFileNamesForGivenZCoord(
   const GoFigureFileInfoHelperMultiIndexContainer & iContainer,
-  const unsigned int & iZ,
-  const unsigned int & iMinCh,
-  const unsigned int & iMaxCh
-  );
+  const unsigned int &                              iZ,
+  const unsigned int &                              iMinCh,
+  const unsigned int &                              iMaxCh
+);
 
 QGOIO_EXPORT
 std::list< std::string > GetAllFileNamesForGivenTCoordAndChannel(
   const GoFigureFileInfoHelperMultiIndexContainer & iContainer,
-  const unsigned int & iT,
-  const unsigned int & iCh);
+  const unsigned int &                              iT,
+  const unsigned int &                              iCh
+);
 
 QGOIO_EXPORT
 std::list< std::string > GetAllFileNamesForGivenZCoordPointAndChannel(
   const GoFigureFileInfoHelperMultiIndexContainer & iContainer,
-  const unsigned int & iZ,
-  const unsigned int & iCh);
+  const unsigned int &                              iZ,
+  const unsigned int &                              iCh
+);
 
 QGOIO_EXPORT
 std::map< unsigned int, std::list< std::string > >
 GetAllFileNamesForGivenChannelAndTCoords(
-    const GoFigureFileInfoHelperMultiIndexContainer & iContainer,
-    const unsigned int & iCh,
-    const std::set< unsigned int > & iT
-    );
+  const GoFigureFileInfoHelperMultiIndexContainer & iContainer,
+  const unsigned int &                              iCh,
+  const std::set< unsigned int > &                  iT
+);
 
 #endif

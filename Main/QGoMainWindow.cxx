@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -86,7 +86,7 @@
 #include <list>
 
 //--------------------------------------------------------------------------
-QGoMainWindow::QGoMainWindow(QWidget *iParent, Qt::WindowFlags iFlags):
+QGoMainWindow::QGoMainWindow(QWidget *iParent, Qt::WindowFlags iFlags) :
   QMainWindow(iParent, iFlags)
 {
   QString title("<*)0|00|0>< ~~ <*)0|00|0><     GoFigure    ><0|00|0(*> ~~ ><0|00|0(*>");
@@ -166,8 +166,8 @@ QGoMainWindow::QGoMainWindow(QWidget *iParent, Qt::WindowFlags iFlags):
     }
   else
     {
-    QObject::connect(this->m_DBWizard, SIGNAL ( NoGofigureDatabase () ),
-                     this, SLOT(AddSetUpDatabaseMenu() ) );
+    QObject::connect( this->m_DBWizard, SIGNAL ( NoGofigureDatabase () ),
+                      this, SLOT( AddSetUpDatabaseMenu() ) );
     }
   // LoadPlugins();
 }
@@ -226,10 +226,10 @@ void QGoMainWindow::CreateSignalSlotsConnection()
 void QGoMainWindow::on_actionOpen_Single_File_triggered()
 {
   QString filename = QFileDialog::getOpenFileName(
-    this,
-    tr("Select Image"), "",
-    tr("Images (*.png *.bmp *.jpg *.jpeg *.tiff *.tif *.mha *.mhd *.img *.lsm)")
-    );
+      this,
+      tr("Select Image"), "",
+      tr("Images (*.png *.bmp *.jpg *.jpeg *.tiff *.tif *.mha *.mhd *.img *.lsm)")
+      );
 
   if ( !filename.isEmpty() )
     {
@@ -243,10 +243,10 @@ void QGoMainWindow::on_actionOpen_Single_File_triggered()
 void QGoMainWindow::on_actionOpen_MegaCapture_Files_triggered()
 {
   QString filename = QFileDialog::getOpenFileName(
-    this,
-    tr("Select One Image from the Dataset"), "",
-    tr("Images (*.png *.tif *.tiff *.jpg *.jpeg)")
-    );
+      this,
+      tr("Select One Image from the Dataset"), "",
+      tr("Images (*.png *.tif *.tiff *.jpg *.jpeg)")
+      );
 
   if ( !filename.isEmpty() )
     {
@@ -259,10 +259,10 @@ void QGoMainWindow::on_actionOpen_MegaCapture_Files_triggered()
         {
         importer->Update();
         }
-      catch( ... )
+      catch ( ... )
         {
-        QMessageBox::critical( NULL, tr( "Error" ),
-                               tr( "Error while trying to read this Megacatpure") );
+        QMessageBox::critical( NULL, tr("Error"),
+                               tr("Error while trying to read this Megacatpure") );
         return;
         }
 
@@ -381,9 +381,9 @@ void QGoMainWindow::DisplayFilesfromDB(std::string iFirst_Filename)
   int TimePoint = file_container.get< m_TCoord >().begin()->m_TCoord;
 
   QGoTabImageView3DwT *w3t =
-      CreateNewTabFor3DwtImage( file_container,
-                                filetype, Header_FileName, TimePoint,
-                                true); // Use the database
+    CreateNewTabFor3DwtImage(file_container,
+                             filetype, Header_FileName, TimePoint,
+                             true);    // Use the database
 
   QObject::connect( w3t, SIGNAL( UpdateBookmarkOpenActions(std::vector< QAction * > ) ),
                     this->m_TabManager, SLOT( UpdateBookmarkMenu(std::vector< QAction * > ) ) );
@@ -403,11 +403,11 @@ QGoMainWindow::LoadAllTracesFromDatabaseManager(const int & iT)
   QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
 
   // Loads contours
-  LoadContoursFromDatabase( iT );
+  LoadContoursFromDatabase(iT);
   // Loads meshes
-  LoadMeshesFromDatabase( iT );
+  LoadMeshesFromDatabase(iT);
   // Loads tracks
-  LoadTracksFromDatabase( iT );
+  LoadTracksFromDatabase(iT);
 
   QApplication::restoreOverrideCursor();
 }
@@ -416,7 +416,7 @@ QGoMainWindow::LoadAllTracesFromDatabaseManager(const int & iT)
 
 //--------------------------------------------------------------------------
 void
-QGoMainWindow::LoadContoursFromDatabase( const int & iT )
+QGoMainWindow::LoadContoursFromDatabase(const int & iT)
 {
   /// \note let's keep for the time being iT parameter in the case where
   /// we would only load traces for a given time point (that could be usefule
@@ -441,7 +441,7 @@ QGoMainWindow::LoadContoursFromDatabase( const int & iT )
       while ( contour_list_it != temp->m_Container.get< TraceID >().end() )
         {
         w3t->AddContourFromNodes< TraceID >(
-          contour_list_it );
+          contour_list_it);
 
         ++contour_list_it;
         }
@@ -453,7 +453,7 @@ QGoMainWindow::LoadContoursFromDatabase( const int & iT )
 
 //--------------------------------------------------------------------------
 void
-QGoMainWindow::LoadMeshesFromDatabase( const int & iT )
+QGoMainWindow::LoadMeshesFromDatabase(const int & iT)
 {
   /// \note let's keep for the time being iT parameter in the case where
   /// we would only load traces for a given time point (that could be usefule
@@ -477,30 +477,32 @@ QGoMainWindow::LoadMeshesFromDatabase( const int & iT )
       while ( mesh_list_it != temp->m_Container.get< TraceID >().end() )
         {
         // note here it only makes sense when the trace is a mesh (for now)
-      //std::cout << "IN WHILE" << std::endl;
+        //std::cout << "IN WHILE" << std::endl;
 
         if ( mesh_list_it->Nodes )
           {
           GoFigureMeshAttributes attributes =
             w3t->ComputeMeshAttributes(
-                mesh_list_it->Nodes, // mesh
-                false ); // do not need to compute intensity based measure
+              mesh_list_it->Nodes, // mesh
+              false);              // do not need to compute intensity based
+                                   // measure
           w3t->m_DataBaseTables->PrintVolumeAreaForMesh(
             &attributes, mesh_list_it->TraceID);
           }
 
-        w3t->AddMeshFromNodes< TraceID >( mesh_list_it );
+        w3t->AddMeshFromNodes< TraceID >(mesh_list_it);
 
         ++mesh_list_it;
         }
       }
     }
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
-QGoMainWindow::LoadTracksFromDatabase( const int & iT )
+QGoMainWindow::LoadTracksFromDatabase(const int & iT)
 {
   /// \note let's keep for the time being iT parameter in the case where
   /// we would only load traces for a given time point (that could be usefule
@@ -513,6 +515,7 @@ QGoMainWindow::LoadTracksFromDatabase( const int & iT )
   if ( w3t )
     {
     TrackContainer *temp = w3t->GetTrackContainer();
+    temp->setTimeInterval( w3t->GetTimeInterval() );
 
     if ( temp )
       {
@@ -520,16 +523,25 @@ QGoMainWindow::LoadTracksFromDatabase( const int & iT )
       TrackContainer::MultiIndexContainerType::index< TraceID >::type::iterator
         track_list_it = temp->m_Container.get< TraceID >().begin();
 
-      // we don't need here to save this contour in the database,
+      // we don't need here to save this track in the database,
       // since they have just been extracted from it!
       while ( track_list_it != temp->m_Container.get< TraceID >().end() )
         {
+        if ( track_list_it->Nodes )
+          {
+          TrackStructure          Track = *track_list_it;
+          GoFigureTrackAttributes attributes = Track.ComputeAttributes();
+          //track_list_it->ComputeAttributes();
+          w3t->m_DataBaseTables->PrintCalculatedValuesForTrack(&attributes,
+                                                               track_list_it->TraceID);
+          }
         w3t->AddTrackFromNodes< TraceID >(track_list_it);
         ++track_list_it;
         }
       }
     }
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -560,10 +572,10 @@ QGoMainWindow::GetFileContainerForMultiFiles(std::string & ioHeader_Filename,
       {
       importer->Update();
       }
-    catch( ... )
+    catch ( ... )
       {
-      QMessageBox::critical( NULL, tr( "Error" ),
-                             tr( "Error while trying to read this Megacatpure") );
+      QMessageBox::critical( NULL, tr("Error"),
+                             tr("Error while trying to read this Megacatpure") );
       return ofile_container;
       }
 
@@ -643,10 +655,10 @@ void QGoMainWindow::SetSingleFileName(const QString & iFile)
         {
         reader->Update();
         }
-      catch( ... )
+      catch ( ... )
         {
-        QMessageBox::critical( NULL, tr( "Error" ),
-                               tr( "Error while trying to read this file") );
+        QMessageBox::critical( NULL, tr("Error"),
+                               tr("Error while trying to read this file") );
         return;
         }
 
@@ -682,10 +694,10 @@ void QGoMainWindow::OpenLSMImage(const QString & iFile, const int & iTimePoint)
     {
     m_LSMReader.back()->Update();
     }
-  catch( ... )
+  catch ( ... )
     {
-    QMessageBox::critical( NULL, tr( "Error" ),
-                           QString( "Error while trying to read %1 at time %2").arg( iFile ).arg( iTimePoint ) );
+    QMessageBox::critical( NULL, tr("Error"),
+                           QString("Error while trying to read %1 at time %2").arg(iFile).arg(iTimePoint) );
     return;
     }
 
@@ -743,7 +755,8 @@ QGoMainWindow::CreateNewTabFor3DwtImage(
   // note: do not need to call w3t->Update() since it is internally called in
   // w3t->SetMegaCaptureFile
   QGoTabImageView3DwT *w3t = new QGoTabImageView3DwT;
-  w3t->SetStatusBarPointer(this->statusBar());
+
+  w3t->SetStatusBarPointer( this->statusBar() );
   w3t->SetMegaCaptureFile(iFileList, iFileType, iHeader, iTimePoint);
 
   if ( iUseDatabase )
@@ -836,7 +849,7 @@ QGoMainWindow::CreateNewTabFor3DwtImage(vtkLSMReader *iReader, const QString & i
   SetupMenusFromTab(w3t);
 
   // w3t->m_DataBaseTables->hide();
-  w3t->SetStatusBarPointer(this->statusBar());
+  w3t->SetStatusBarPointer( this->statusBar() );
 
   return w3t;
 }
@@ -922,6 +935,13 @@ void QGoMainWindow::SetUpDatabase()
 {
   this->m_DBInitializationWizard->show();
   this->m_DBInitializationWizard->exec();
+  if ( !this->m_RecentDatabaseFiles.empty() )
+    {
+    this->m_RecentDatabaseFiles.clear();
+    UpdateRecentFileActions(this->m_RecentDatabaseFiles,
+                            menuDatabase_Files,
+                            recentDatabaseFileActions);
+    }
 }
 
 //--------------------------------------------------------------------------
@@ -1139,8 +1159,8 @@ void QGoMainWindow::UpdateRecentFileActions(QStringList list,
     if ( j < list.count() )
       {
       QString text = tr("&%1 %2 ")
-                     .arg(j + 1)
-                     .arg( strippedName(list[j]) );
+        .arg(j + 1)
+        .arg( strippedName(list[j]) );
 
       recentFileActions[j]->setText(text);
       recentFileActions[j]->setData(list[j]);
@@ -1209,6 +1229,7 @@ void QGoMainWindow::RemoveSetUpDatabaseMenu()
   this->menuDatabase->removeAction(this->actionSet_Up_Database);
   this->m_DatabaseSetUp = true;
 }
+
 //--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------
@@ -1218,11 +1239,12 @@ void QGoMainWindow::AddSetUpDatabaseMenu()
   unsigned int NumberOfActionsIfSetUpDB = 1;
 
   unsigned int NumberOfCurrentActions = this->menuDatabase->actions().size();
-  if (NumberOfCurrentActions != NumberOfActionsIfSetUpDB)
+
+  if ( NumberOfCurrentActions != NumberOfActionsIfSetUpDB )
     {
     actionSet_Up_Database = new QAction(
         tr("Set Up Database"), this->menuDatabase);
-  this->m_DatabaseSetUp = false;
+    this->m_DatabaseSetUp = false;
     this->menuDatabase->addAction(actionSet_Up_Database);
     this->actionSet_Up_Database->setEnabled(true);
     m_DBInitializationWizard = new QGoDBInitializationWizard(this);
@@ -1232,9 +1254,10 @@ void QGoMainWindow::AddSetUpDatabaseMenu()
     QObject::connect( this->m_DBInitializationWizard, SIGNAL( DatabaseAndUserCreated() ),
                       this, SLOT( RemoveSetUpDatabaseMenu() ) );
     QObject::connect( this->m_DBWizard, SIGNAL( GofigureDatabaseExists() ),
-                      this, SLOT(RemoveSetUpDatabaseMenu() ) );
+                      this, SLOT( RemoveSetUpDatabaseMenu() ) );
     }
 }
+
 //--------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------

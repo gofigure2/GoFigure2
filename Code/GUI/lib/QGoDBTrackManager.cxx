@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -37,13 +37,11 @@
 #include <iostream>
 #include <sstream>
 
-QGoDBTrackManager::QGoDBTrackManager(int iImgSessionID, QWidget *iparent):
-  QGoDBTraceManager(),m_TrackContainerInfoForVisu(NULL)
+QGoDBTrackManager::QGoDBTrackManager(int iImgSessionID, QWidget *iparent) :
+  QGoDBTraceManager(), m_TrackContainerInfoForVisu(NULL)
 {
   this->SetInfo(iImgSessionID, iparent);
-  this->m_TWContainer = new GoDBTWContainerForTrackLineage(this->m_TraceName,
-                                                           this->m_CollectionName,
-                                                           iImgSessionID);
+  this->m_TWContainer = new GoDBTWContainerForTrack(iImgSessionID);
 }
 
 //-------------------------------------------------------------------------
@@ -56,20 +54,22 @@ QGoDBTrackManager::~QGoDBTrackManager()
     delete this->m_TWContainer;
     }
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::SetTracksInfoContainerForVisu(
   TrackContainer *iContainerForVisu)
 {
-  this->SetTracesInfoContainerForVisuTemplate<TrackContainer>(
-    iContainerForVisu,&this->m_TrackContainerInfoForVisu);
+  this->SetTracesInfoContainerForVisuTemplate< TrackContainer >(
+    iContainerForVisu, &this->m_TrackContainerInfoForVisu);
 
-  QObject::connect(this->m_TrackContainerInfoForVisu,
-                   SIGNAL(NeedMeshesInfoForImportedTrack(unsigned int) ),
-                   this,
-                   SIGNAL(NeedMeshesInfoForImportedTrack(unsigned int) ) );
+  QObject::connect( this->m_TrackContainerInfoForVisu,
+                    SIGNAL( NeedMeshesInfoForImportedTrack(unsigned int) ),
+                    this,
+                    SIGNAL( NeedMeshesInfoForImportedTrack(unsigned int) ) );
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -86,25 +86,27 @@ void QGoDBTrackManager::SetCollectionsTraceNames()
 void QGoDBTrackManager::DisplayInfoForAllTraces(
   vtkMySQLDatabase *iDatabaseConnector)
 {
-  this->DisplayInfoForAllTracesTemplate< GoDBTWContainerForTrackLineage >(
-    this->m_TWContainer, iDatabaseConnector,Qt::Unchecked);
+  this->DisplayInfoForAllTracesTemplate< GoDBTWContainerForTrack >(
+    this->m_TWContainer, iDatabaseConnector, Qt::Unchecked);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::DisplayInfoAndLoadVisuContainerForAllTracks(
   vtkMySQLDatabase *iDatabaseConnector)
 {
-  this->DisplayInfoAndLoadVisuContainerWithAllTraces< GoDBTWContainerForTrackLineage >
-    (this->m_TWContainer,iDatabaseConnector);
+  this->DisplayInfoAndLoadVisuContainerWithAllTraces< GoDBTWContainerForTrack >
+    (this->m_TWContainer, iDatabaseConnector);
 }
 
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBTrackManager::DisplayInfoForLastCreatedTrace(vtkMySQLDatabase *iDatabaseConnector)
+void QGoDBTrackManager::DisplayInfoForLastCreatedTrace(
+  vtkMySQLDatabase *iDatabaseConnector)
 {
-  this->DisplayInfoForLastCreatedTraceTemplate< GoDBTWContainerForTrackLineage >(
+  this->DisplayInfoForLastCreatedTraceTemplate< GoDBTWContainerForTrack >(
     this->m_TWContainer, iDatabaseConnector);
 }
 
@@ -114,7 +116,7 @@ void QGoDBTrackManager::DisplayInfoForLastCreatedTrace(vtkMySQLDatabase *iDataba
 void QGoDBTrackManager::DisplayInfoForExistingTrace(
   vtkMySQLDatabase *iDatabaseConnector, int iTraceID)
 {
-  this->DisplayInfoForExistingTraceTemplate< GoDBTWContainerForTrackLineage >(
+  this->DisplayInfoForExistingTraceTemplate< GoDBTWContainerForTrack >(
     this->m_TWContainer, iDatabaseConnector, iTraceID);
 }
 
@@ -131,11 +133,12 @@ unsigned int QGoDBTrackManager::CreateNewTrackWithNoMesh(
 
   this->m_TrackContainerInfoForVisu->ResetCurrentElement();
   this->m_TrackContainerInfoForVisu->UpdateCurrentElementFromDB(
-   NewTrackID, this->GetVectorFromQColor(this->m_SelectedColorData->second),true);
+    NewTrackID, this->GetVectorFromQColor(this->m_SelectedColorData->second), true);
   this->m_TrackContainerInfoForVisu->InsertCurrentElement();
   this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
-  emit RefreshListCollectionIDsTM ( ConvertToString<unsigned int> (NewTrackID),
-    iDatabaseConnector);
+  NameWithColorData NewTrackData(ConvertToString< unsigned int >(NewTrackID),
+                                 this->m_SelectedColorData->second);
+  emit AddNewTraceIDInTM(NewTrackData);
   return NewTrackID;
 }
 
@@ -146,7 +149,7 @@ std::list< unsigned int > QGoDBTrackManager::UpdateTheTracesColor(
   vtkMySQLDatabase *iDatabaseConnector)
 {
   return this->UpdateTheTracesColorTemplate< GoDBTrackRow,
-    TrackContainer >(iDatabaseConnector,this->m_TrackContainerInfoForVisu);
+                                             TrackContainer >(iDatabaseConnector, this->m_TrackContainerInfoForVisu);
 }
 
 //-------------------------------------------------------------------------
@@ -156,18 +159,30 @@ void QGoDBTrackManager::UpdateTWAndContainerForImportedTraces(
   std::vector< int > iVectorImportedTraces, vtkMySQLDatabase *iDatabaseConnector)
 {
   this->UpdateTWAndContainerWithImportedTracesTemplate<
-    GoDBTWContainerForTrackLineage>(this->m_TWContainer,
-    iVectorImportedTraces, iDatabaseConnector);
+    GoDBTWContainerForTrack >(this->m_TWContainer,
+                              iVectorImportedTraces, iDatabaseConnector);
   //call the TrackContainer to give him iVectorImportedTraces
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBTrackManager::DeleteTraces(vtkMySQLDatabase *iDatabaseConnector)
+void QGoDBTrackManager::DeleteCheckedTraces(vtkMySQLDatabase *iDatabaseConnector)
 {
-  this->DeleteTracesTemplate<TrackContainer>(iDatabaseConnector,
-    this->m_TrackContainerInfoForVisu);
+  this->DeleteTracesTemplate< TrackContainer >(iDatabaseConnector,
+                                               this->m_TrackContainerInfoForVisu);
 }
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTrackManager::DeleteListTraces(vtkMySQLDatabase *iDatabaseConnector,
+                                         std::list< unsigned int > iListTraces)
+{
+  this->DeleteTracesTemplate< TrackContainer >(iDatabaseConnector,
+                                               this->m_TrackContainerInfoForVisu, iListTraces, false);
+}
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -175,6 +190,7 @@ std::list< unsigned int > QGoDBTrackManager::GetListHighlightedIDs()
 {
   return this->m_TrackContainerInfoForVisu->GetHighlightedElementsTraceID();
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -182,140 +198,148 @@ void QGoDBTrackManager::UpdateHighlightedElementsInVisuContainer(
   int iTraceID)
 {
   this->m_TrackContainerInfoForVisu->
-    UpdateElementHighlightingWithGivenTraceID(iTraceID);
+  UpdateElementHighlightingWithGivenTraceID(iTraceID);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::UpdateVisibleElementsInVisuContainer(int iTraceID)
 {
   this->m_TrackContainerInfoForVisu->
-    UpdateElementVisibilityWithGivenTraceID(iTraceID);
+  UpdateElementVisibilityWithGivenTraceID(iTraceID);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::GetTracesInfoFromDBAndModifyContainerForVisu(
-  vtkMySQLDatabase* iDatabaseConnector,std::vector<int> iVectIDs)
+  vtkMySQLDatabase *iDatabaseConnector,
+  std::list< unsigned int > iListTraceIDs)
 {
-  std::list<TrackStructure> list_of_traces;
-  GetTracesInfoFromDBAndModifyContainer(
-      list_of_traces,
-      iDatabaseConnector, this->m_TraceName, this->m_CollectionName,
-      this->m_ImgSessionID,iVectIDs);
-
-  std::list< TrackStructure >::iterator it = list_of_traces.begin();
-
-  while ( it != list_of_traces.end() )
-    {
-    this->m_TrackContainerInfoForVisu->Insert(*it);
-    ++it;
-    }
+  this->GetTracesInfoFromDBAndModifyContainerForVisuTemplate< TrackContainer >(
+    this->m_TrackContainerInfoForVisu, iDatabaseConnector, iListTraceIDs);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::SaveTrackCurrentElement(
-  vtkMySQLDatabase* iDatabaseConnector)
+  vtkMySQLDatabase *iDatabaseConnector)
 {
   GoDBTrackRow TrackToSave(this->m_ImgSessionID);
   unsigned int TrackID = this->m_TrackContainerInfoForVisu->m_CurrentElement.TraceID;
-  if (TrackID != 0)
+
+  if ( TrackID != 0 )
     {
-    TrackToSave.SetValuesForSpecificID(TrackID,iDatabaseConnector);
+    TrackToSave.SetValuesForSpecificID(TrackID, iDatabaseConnector);
     }
 
   //save the track into the database
   TrackToSave.SetThePointsFromPolydata(
     this->m_TrackContainerInfoForVisu->m_CurrentElement.Nodes);
   TrackID = TrackToSave.SaveInDB(iDatabaseConnector);
-  
+
   //save the track into the container:
   this->m_TrackContainerInfoForVisu->InsertCurrentElement();
 
-  if (TrackID == 0)
+  //calculate the values to be put in the table widget:
+  GoFigureTrackAttributes trackAttributes(
+    this->m_TrackContainerInfoForVisu->m_CurrentElement.ComputeAttributes() );
+  this->m_TWContainer->SetTrackAttributes(&trackAttributes);
+
+  //update the table widget:
+  if ( TrackID == 0 )
     {
     this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
     }
+  else
+    {
+    this->DisplayInfoForExistingTrace(iDatabaseConnector, TrackID);
+    }
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::UpdatePointsOfCurrentElementForImportedTrack(
-	  std::map<unsigned int,double*> iMeshesInfo)
+  std::map< unsigned int, double * > iMeshesInfo, vtkMySQLDatabase *iDatabaseConnector)
 {
-	this->m_TrackContainerInfoForVisu->UpdateCurrentElementMap(iMeshesInfo);
+  this->m_TrackContainerInfoForVisu->UpdateCurrentElementMap(iMeshesInfo);
+  this->SaveTrackCurrentElement(iDatabaseConnector);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::UpdateTrackPolydataForVisu(vtkMySQLDatabase *iDatabaseConnector,
-  unsigned int iTrackID)
+                                                   unsigned int iTrackID)
 {
-  std::list<double*> ListCenters =
+  std::list< double * > ListCenters =
     this->m_CollectionOfTraces->GetCoordinateCenterBoundingBox(
-    iDatabaseConnector,iTrackID);
-  this->m_TrackContainerInfoForVisu->UpdatePointsForATrack(iTrackID,ListCenters);
+      iDatabaseConnector, iTrackID);
+  this->m_TrackContainerInfoForVisu->UpdatePointsForATrack(iTrackID, ListCenters);
   this->SaveTrackCurrentElement(iDatabaseConnector);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::UpdateBoundingBoxes(
-  vtkMySQLDatabase *iDatabaseConnector,std::list< unsigned int > iListTracesIDs)
+  vtkMySQLDatabase *iDatabaseConnector, std::list< unsigned int > iListTracesIDs)
 {
-  QGoDBTraceManager::UpdateBoundingBoxes(iDatabaseConnector,iListTracesIDs);
-  std::list<unsigned int>::iterator iter = iListTracesIDs.begin();
-  while(iter != iListTracesIDs.end())
+  QGoDBTraceManager::UpdateBoundingBoxes(iDatabaseConnector, iListTracesIDs, false);
+  std::list< unsigned int >::iterator iter = iListTracesIDs.begin();
+  while ( iter != iListTracesIDs.end() )
     {
-    this->UpdateTrackPolydataForVisu(iDatabaseConnector,*iter);
+    this->UpdateTrackPolydataForVisu(iDatabaseConnector, *iter);
     iter++;
     }
 }
+
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::SetColorCoding(bool IsChecked)
 {
-  this->SetColorCodingTemplate<TrackContainer>(
-    this->m_TrackContainerInfoForVisu,IsChecked);
+  this->SetColorCodingTemplate< TrackContainer >(
+    this->m_TrackContainerInfoForVisu, IsChecked);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::AddActionsContextMenu(QMenu *iMenu)
 {
   QGoDBTraceManager::AddActionsContextMenu(iMenu);
-  //QMenu* SplitMenu = new QMenu(tr("Split your track"),iMenu);
-  //SplitMenu->addAction(tr("Using the Widget"),
-  //                     this, SLOT( SplitTrackWithWidget() ) );
-  //QAction* SplitMenuAction = SplitMenu->menuAction(); 
-  QAction* SplitMenuAction = new QAction(tr("Split your track"),iMenu);
-  QObject::connect(SplitMenuAction, SIGNAL( triggered() ),
-    this, SLOT(TrackIDToEmit() ) );
-
-  iMenu->addAction(SplitMenuAction);
+  //this->m_CheckedTracesMenu->addAction
+  QMenu *SplitMergeMenu = new QMenu(tr("Split/Merge them"), iMenu);
+  SplitMergeMenu->addAction( tr("Using the Widget"),
+                             this, SLOT( SplitMergeTrackWithWidget() ) );
+  SplitMergeMenu->addAction( tr("Split your track"), this, SLOT( TrackIDToEmit() ) );
+  SplitMergeMenu->addAction( tr("Merge your 2 tracks"), this, SLOT( MergeTracks() ) );
+  iMenu->addAction( SplitMergeMenu->menuAction() );
 }
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 void QGoDBTrackManager::TrackIDToEmit()
 {
-  std::list<unsigned int> HighlightedTrackIDs = 
+  std::list< unsigned int > HighlightedTrackIDs =
     this->m_TrackContainerInfoForVisu->GetHighlightedElementsTraceID();
 
-  if (HighlightedTrackIDs.size() != 1)
+  if ( HighlightedTrackIDs.size() != 1 )
     {
     QMessageBox msgBox;
     msgBox.setText(
-      tr("Please select one and only one Track to be split")
-      .arg( this->m_TraceName.c_str() ) );
+      tr("Please check one and only one Track to be split") );
     msgBox.exec();
     }
   else
     {
     emit NeedToGetDatabaseConnection();
-    emit TrackToSplit(HighlightedTrackIDs.front(),
-      this->GetListTracesIDsFromThisCollectionOf(this->m_DatabaseConnector,
-        HighlightedTrackIDs) );
+    emit TrackToSplit( HighlightedTrackIDs.front(),
+                       this->GetListTracesIDsFromThisCollectionOf(this->m_DatabaseConnector,
+                                                                  HighlightedTrackIDs) );
     emit DBConnectionNotNeededAnymore();
     }
 }
@@ -323,22 +347,146 @@ void QGoDBTrackManager::TrackIDToEmit()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBTrackManager::SplitTrackWithWidget()
+void QGoDBTrackManager::SplitMergeTrackWithWidget()
 {
-  std::list <std::pair<unsigned int, std::list<unsigned int> > >TrackIDWithMeshIDs;
-  std::list<unsigned int> CheckedTracks = 
+  std::list< unsigned int > HighlightedTrackIDs =
     this->m_TrackContainerInfoForVisu->GetHighlightedElementsTraceID();
-  std::list<unsigned int>::iterator iter = CheckedTracks.begin();
-  while (iter != CheckedTracks.end() )
-  {
-    std::pair<unsigned int, std::list<unsigned int> > temp;
-    temp.first = *iter;
-    std::list<unsigned int> TrackID;
-    TrackID.push_back(*iter);
-    temp.second = this->GetListTracesIDsFromThisCollectionOf(this->m_DatabaseConnector,TrackID);
-    iter++;
-  }
+
+  if ( HighlightedTrackIDs.size() == 0 )
+    {
+    QMessageBox msgBox;
+    msgBox.setText(
+      tr("Please check at least one Track to be visualized in the widget") );
+    msgBox.exec();
+    }
+  else
+    {
+    emit TrackIDToBeModifiedWithWidget(HighlightedTrackIDs);
+    }
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoDBTrackManager::DisplayOnlyCalculatedValuesForExistingTrack(
+  GoFigureTrackAttributes *iTrackAttributes, unsigned iTrackID)
+{
+  if ( iTrackAttributes != 0 )
+    {
+    int timeInterval = m_TrackContainerInfoForVisu->getTimeInterval();
+
+    std::vector< std::string > ColumnNames (6);
+    std::vector< std::string > Values (6);
+
+    ColumnNames.at(0) = "Deplacement";
+    Values.at(0) = ConvertToString< double >(iTrackAttributes->total_length);
+    ColumnNames.at(1) = "Distance";
+    Values.at(1) = ConvertToString< double >(iTrackAttributes->distance);
+    ColumnNames.at(2) = "Theta";
+    Values.at(2) = ConvertToString< double >(iTrackAttributes->theta);
+    ColumnNames.at(3) = "Phi";
+    Values.at(3) = ConvertToString< double >(iTrackAttributes->phi);
+    ColumnNames.at(4) = "AvgSpeed";
+    Values.at(4) = ConvertToString< double >
+        (iTrackAttributes->avg_speed / timeInterval);
+    ColumnNames.at(5) = "MaxSpeed";
+    Values.at(5) = ConvertToString< double >
+        (iTrackAttributes->max_speed / timeInterval);
+
+    this->m_Table->AddValuesForID(ColumnNames, Values, iTrackID, "trackID");
+    }
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTrackManager::MergeTracks()
+{
+  std::list< unsigned int > CheckedTrack =
+    this->m_TrackContainerInfoForVisu->GetHighlightedElementsTraceID();
+  if ( CheckedTrack.size() != 2 )
+    {
+    QMessageBox msgBox;
+    msgBox.setText(
+      tr("Please check two and only two tracks to be merged") );
+    msgBox.exec();
+    }
+  else
+    {
+    emit         NeedToGetDatabaseConnection();
+    unsigned int TrackIDToKeep = 0;
+    unsigned int TrackIDToDelete = 0;
+    if ( this->CheckOverlappingTracks(CheckedTrack, TrackIDToKeep,
+                                      TrackIDToDelete, this->m_DatabaseConnector) )
+      {
+      QMessageBox msgBox;
+      msgBox.setText(
+        tr("The two tracks are overlapping, it is not possible to merge them !!") );
+      msgBox.exec();
+      }
+    else
+      {
+      std::list< unsigned int > TraceIDToDelete;
+      TraceIDToDelete.push_back(TrackIDToDelete);
+      std::list< unsigned int > MeshesBelongingToTrackToDelete =
+        this->m_CollectionOfTraces->GetListTracesIDsFromThisCollectionOf(
+          this->m_DatabaseConnector, TraceIDToDelete);
+      this->DeleteListTraces(this->m_DatabaseConnector, TraceIDToDelete);
+      emit MeshesToAddToTrack(MeshesBelongingToTrackToDelete, TrackIDToKeep);
+      }
+    emit DBConnectionNotNeededAnymore();
+    }
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+bool QGoDBTrackManager::CheckOverlappingTracks(
+  std::list< unsigned int > iTrackIDs, unsigned int & ioTraceIDToKeep,
+  unsigned int & ioTraceIDToDelete, vtkMySQLDatabase *iDatabaseConnector)
+{
+  unsigned int TraceID1 = 0, TraceID2 = 0;
+  unsigned int TimePointMin1 = 0, TimePointMin2 = 0, TimePointMax1 = 0,
+    TimePointMax2 = 0;
+  bool oTracksOverlapping = true;
+
+  std::list< unsigned int >::iterator iter = iTrackIDs.begin();
+  if ( iter == iTrackIDs.end() )
+    {
+    std::cout << "Pb, there should have been 2 tracks instead of 0 in this method" << std::endl;
+    return oTracksOverlapping;
+    }
+  TraceID1 = *iter;
+  TimePointMin1 = this->m_CollectionOfTraces->GetBoundedBoxTimePoint(
+      iDatabaseConnector, TraceID1, true);
+  TimePointMax1 = this->m_CollectionOfTraces->GetBoundedBoxTimePoint(
+      iDatabaseConnector, TraceID1, false);
+  ++iter;
+  if ( iter == iTrackIDs.end() )
+    {
+    std::cout << "Pb, there should have been 2 tracks instead of 1 in this method" << std::endl;
+    return oTracksOverlapping;
+    }
+
+  TraceID2 = *iter;
+  TimePointMin2 = this->m_CollectionOfTraces->GetBoundedBoxTimePoint(
+      iDatabaseConnector, TraceID2, true);
+  TimePointMax2 = this->m_CollectionOfTraces->GetBoundedBoxTimePoint(
+      iDatabaseConnector, TraceID2, false);
+
+  if ( TimePointMin2 > TimePointMax1 )
+    {
+    oTracksOverlapping = false;
+    ioTraceIDToKeep = TraceID2;
+    ioTraceIDToDelete = TraceID1;
+    }
+
+  if ( TimePointMin1 > TimePointMax2 )
+    {
+    oTracksOverlapping = false;
+    ioTraceIDToKeep = TraceID1;
+    ioTraceIDToDelete = TraceID2;
+    }
+
+  return oTracksOverlapping;
+}

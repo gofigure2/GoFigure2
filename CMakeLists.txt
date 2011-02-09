@@ -12,16 +12,16 @@ ENDIF(COMMAND CMAKE_POLICY)
 # When making one release: update GOFIGURE2_*_VERSION,
 # GOFIGURE2_WC_REVISION and the date of the release
 SET( GOFIGURE2_MAJOR_VERSION "0" )
-SET( GOFIGURE2_MINOR_VERSION "7" )
+SET( GOFIGURE2_MINOR_VERSION "8" )
 SET( GOFIGURE2_WC_REVISION "0" )
 
-SET( DATE "12/10/2010" )
+SET( DATE "01/21/2011" )
 
 SET( GOFIGURE2_VERSION
   "${GOFIGURE2_MAJOR_VERSION}.${GOFIGURE2_MINOR_VERSION}.${GOFIGURE2_WC_REVISION}" )
 
 SET( GOFIGURE2_LIB_VERSION
-  "${GOFIGURE2_MAJOR_VERSION}.${GOFIGURE2_MINOR_VERSION}" )
+  "${GOFIGURE2_VERSION}" )
 
 MESSAGE( STATUS "GoFigure2 version ${GOFIGURE2_VERSION}" )
 
@@ -64,7 +64,7 @@ ENDIF( NOT GOFIGURE2_INSTALL_BUNDLE_DIR )
 IF( NOT GOFIGURE2_INSTALL_BIN_DIR )
   SET( GOFIGURE2_INSTALL_BIN_DIR "bin" )
 ENDIF( NOT GOFIGURE2_INSTALL_BIN_DIR )
-   
+
 IF( NOT GOFIGURE2_INSTALL_LIB_DIR )
   SET( GOFIGURE2_INSTALL_LIB_DIR "lib/gofigure2" )
 ENDIF( NOT GOFIGURE2_INSTALL_LIB_DIR )
@@ -119,19 +119,19 @@ IF( BUILD_DOCUMENTATION )
     IF( DOXYGEN_DOT_FOUND )
 
       OPTION( LINK_EXTERNAL_DOC
-        "Should the doc be linked with external sources (VTK, ITK...)?" 
-        OFF 
+        "Should the doc be linked with external sources (VTK, ITK...)?"
+        OFF
       )
 
       ADD_SUBDIRECTORY( Documentation )
 
     ELSE( DOXYGEN_DOT_FOUND )
-      MESSAGE( STATUS 
-        "Warning: Dot (from GraphViz) not found - Documentation will not ce generated" 
+      MESSAGE( SEND_ERROR
+        "Warning: Dot (from GraphViz) not found - Documentation will not ce generated"
       )
     ENDIF( DOXYGEN_DOT_FOUND )
   ELSE( DOXYGEN_FOUND )
-    MESSAGE( STATUS 
+    MESSAGE( SEND_ERROR
       "Warning: Doxygen not found - Documentation will not be created"
     )
   ENDIF( DOXYGEN_FOUND )
@@ -206,20 +206,20 @@ IF( VTK_FOUND )
 
     IF( ( ${ITK_VERSION_MAJOR} LESS 3 ) OR
         ( ( ${ITK_VERSION_MAJOR} EQUAL 3 ) AND
-          ( ${ITK_VERSION_MINOR} LESS 18 ) ) ) 
+          ( ${ITK_VERSION_MINOR} LESS 18 ) ) )
       MESSAGE( SEND_ERROR
         "GoFigure2 requires ITK 3.18 or newer version (your version of ITK is ${ITK_VERSION_MAJOR}.${ITK_VERSION_MINOR}.${ITK_VERSION_PATCH})" )
     ENDIF( ( ${ITK_VERSION_MAJOR} LESS 3 ) OR
         ( ( ${ITK_VERSION_MAJOR} EQUAL 3 ) AND
-          ( ${ITK_VERSION_MINOR} LESS 18 ) ) ) 
+          ( ${ITK_VERSION_MINOR} LESS 18 ) ) )
 
-  
-  IF( ${ITK_VERSION_MAJOR} EQUAL 3 ) 
-    IF( ( ${ITK_USE_REVIEW} MATCHES "OFF" ) OR 
+
+  IF( ${ITK_VERSION_MAJOR} EQUAL 3 )
+    IF( ( ${ITK_USE_REVIEW} MATCHES "OFF" ) OR
         ( ${ITK_USE_REVIEW_STATISTICS} MATCHES "OFF" ) )
       MESSAGE( SEND_ERROR
         "GoFigure2 requires ITK to be compiled with USE_REVIEW and USE_REVIEW_STATISTICS turned ON" )
-     ENDIF( ( ${ITK_USE_REVIEW} MATCHES "OFF" ) OR 
+     ENDIF( ( ${ITK_USE_REVIEW} MATCHES "OFF" ) OR
         ( ${ITK_USE_REVIEW_STATISTICS} MATCHES "OFF" ) )
   ELSE( ${ITK_VERSION_MAJOR} EQUAL 3 )
     IF( ${ITK_USE_REVIEW} MATCHES "OFF" )
@@ -227,7 +227,7 @@ IF( VTK_FOUND )
         "GoFigure2 requires ITK to be compiled with USE_REVIEW turned ON" )
     ENDIF( ${ITK_USE_REVIEW} MATCHES "OFF" )
 
-  ENDIF( ${ITK_VERSION_MAJOR} EQUAL 3 ) 
+  ENDIF( ${ITK_VERSION_MAJOR} EQUAL 3 )
 
   ENDIF( ITK_FOUND )
   #----------------------------------------------------------
@@ -395,16 +395,17 @@ IF( VTK_FOUND )
       OPTION( TESTING_USING_SIKULI "Use Sikuli for testing" OFF )
       MARK_AS_ADVANCED( TESTING_USING_SIKULI )
 
-      IF( TESTING_USING_SIKULI )
-        FIND_PACKAGE( Sikuli )
-        ADD_SUBDIRECTORY( Testing )
-      ENDIF( TESTING_USING_SIKULI )
-
       CONFIGURE_FILE( CMake/CTestCustom.cmake.in
         ${CMAKE_CURRENT_BINARY_DIR}/CTestCustom.cmake
         @ONLY
         )
       INCLUDE ( CTest )
+
+      IF( TESTING_USING_SIKULI )
+        FIND_PACKAGE( Sikuli )
+        ADD_SUBDIRECTORY( Testing )
+      ENDIF( TESTING_USING_SIKULI )
+
     ENDIF( BUILD_TESTING )
 
     IF( BUILD_EXAMPLES )
@@ -436,7 +437,7 @@ IF( VTK_FOUND )
     ADD_CUSTOM_TARGET( uninstall
       "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/GOFIGURE2Uninstall.cmake"
       )
-      
+
     IF( ( ${CMAKE_MAJOR_VERSION} EQUAL 2 )  AND ( ${CMAKE_MINOR_VERSION} GREATER 7 ) )
       INCLUDE( GOFIGURE2CPack.cmake )
     ENDIF( ( ${CMAKE_MAJOR_VERSION} EQUAL 2 )  AND ( ${CMAKE_MINOR_VERSION} GREATER 7 ) )

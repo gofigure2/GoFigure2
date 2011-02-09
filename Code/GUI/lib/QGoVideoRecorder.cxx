@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -43,15 +43,15 @@
 #include "vtkRenderWindowMovieRecorder.h"
 
 #ifdef ENABLEFFMPEG
-  #include "vtkFFMPEGRenderWindowRecorder.h"
+#include "vtkFFMPEGRenderWindowRecorder.h"
 #endif
 
 #ifdef ENABLEAVI
-  #include "vtkAVIRenderWindowRecorder.h"
+#include "vtkAVIRenderWindowRecorder.h"
 #endif
 
 //-------------------------------------------------------------------------
-QGoVideoRecorder::QGoVideoRecorder(QWidget *iParent):QDockWidget(iParent),
+QGoVideoRecorder::QGoVideoRecorder(QWidget *iParent) : QDockWidget(iParent),
   m_VideoName2(""), m_FrameRate2(10), m_VideoQuality2(2), m_SliceFT(0),
   m_WindowSelected(0), m_XMinForVideo(0), m_XMaxForVideo(0),
   m_YMinForVideo(0), m_YMaxForVideo(0), m_ZMinForVideo(0),

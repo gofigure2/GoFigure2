@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -38,12 +38,13 @@
 #include <QMenu>
 #include <QMessageBox>
 
-QGoDBTraceManager::QGoDBTraceManager( QObject* iParent ):
-  QObject( iParent ), m_SelectedCollectionData(NULL),
+QGoDBTraceManager::QGoDBTraceManager(QObject *iParent) :
+  QObject(iParent), m_SelectedCollectionData(NULL),
   m_SelectedColorData(NULL), m_CurrentTimePoint(NULL), m_Table(NULL),
   m_CollectionOfTraces(NULL), m_DatabaseConnector(NULL),
   m_IsColorCodingOn(false), m_IsShowOnlyCurrentTimePointOn(false)
-{}
+{
+}
 
 //-------------------------------------------------------------------------
 
@@ -134,39 +135,41 @@ void QGoDBTraceManager::AddActionsContextMenu(QMenu *iMenu)
 //-------------------------------------------------------------------------
 void QGoDBTraceManager::AddGeneralActionsContextMenu(QMenu *iMenu)
 {
-  QMenu* SelectedTracesMenu = new QMenu(tr("With the selected %1s").arg(this->m_TraceName.c_str() ) );
-  SelectedTracesMenu->addAction( tr("Check the selected %1s")
-                    .arg( this->m_TraceName.c_str() ), this, SLOT( CheckSelectedRows() ) );
-  SelectedTracesMenu->addAction( tr("Uncheck the selected %1s")
-                    .arg( this->m_TraceName.c_str() ), this, SLOT( UncheckSelectedRows() ) );
-  SelectedTracesMenu->addAction( tr("Show the selected %1s")
-                    .arg( this->m_TraceName.c_str() ), this, SLOT( ShowSelectedRows() ) );
-  SelectedTracesMenu->addAction( tr("Hide the selected %1s")
-                    .arg( this->m_TraceName.c_str() ), this, SLOT( HideSelectedRows() ) );
-
-  iMenu->addAction(SelectedTracesMenu->menuAction());
-
-  QMenu* ColorMenu = new QMenu(tr("Change color of your %1s").arg(this->m_TraceName.c_str() ) );
-
-  ColorMenu->addAction( tr("To the selected color for the checked %1s")
-                    .arg( this->m_TraceName.c_str() ),
-                    this, SLOT( ChangeTraceColor() ) );
-  QAction* ColorCoding = new QAction(tr("Based on the selected column"),ColorMenu);
-  ColorCoding->setCheckable(true);
-  ColorCoding->setChecked(m_IsColorCodingOn);
-  QObject::connect(ColorCoding,SIGNAL(triggered ( bool ) ),this,SLOT( SetColorCoding(bool) ) );
-  ColorMenu->addAction(ColorCoding);
-  iMenu->addAction(ColorMenu->menuAction());
-
-  m_CheckedTracesMenu = new QMenu(tr("With the checked %1s").arg(this->m_TraceName.c_str() ) );
+  m_CheckedTracesMenu = new QMenu( tr("With the checked %1s").arg( this->m_TraceName.c_str() ) );
   m_CheckedTracesMenu->addAction( tr("Delete them"),
-                    this, SLOT( DeleteTracesFromContextMenu() ) );
-  m_CheckedTracesMenu->addAction( tr("Add to selected %1 %2").arg( this->m_CollectionName.c_str() )
-                      .arg(this->m_SelectedCollectionData->first.c_str()), this, SLOT( AddToSelectedCollection() ) );
+                                  this, SLOT( DeleteTracesFromContextMenu() ) );
+  //m_CheckedTracesMenu->addAction( tr("Add to selected %1 %2").arg(
+  // this->m_CollectionName.c_str() )
+  //                    .arg(this->m_SelectedCollectionData->first.c_str()),
+  // this, SLOT( AddToSelectedCollection() ) );
   m_CheckedTracesMenu->addAction( tr("Change their color to the selected one : %1")
                                   .arg( this->m_SelectedColorData->first.c_str() ),
                                   this, SLOT( ChangeTraceColor() ) );
-  iMenu->addAction(this->m_CheckedTracesMenu->menuAction() );
+  iMenu->addAction( this->m_CheckedTracesMenu->menuAction() );
+
+  QMenu *SelectedTracesMenu = new QMenu( tr("With the selected %1s").arg( this->m_TraceName.c_str() ) );
+  SelectedTracesMenu->addAction( tr("Check the selected %1s")
+                                 .arg( this->m_TraceName.c_str() ), this, SLOT( CheckSelectedRows() ) );
+  SelectedTracesMenu->addAction( tr("Uncheck the selected %1s")
+                                 .arg( this->m_TraceName.c_str() ), this, SLOT( UncheckSelectedRows() ) );
+  SelectedTracesMenu->addAction( tr("Show the selected %1s")
+                                 .arg( this->m_TraceName.c_str() ), this, SLOT( ShowSelectedRows() ) );
+  SelectedTracesMenu->addAction( tr("Hide the selected %1s")
+                                 .arg( this->m_TraceName.c_str() ), this, SLOT( HideSelectedRows() ) );
+
+  iMenu->addAction( SelectedTracesMenu->menuAction() );
+
+  QMenu *ColorMenu = new QMenu( tr("Change color of your %1s").arg( this->m_TraceName.c_str() ) );
+
+  ColorMenu->addAction( tr("To the selected color for the checked %1s")
+                        .arg( this->m_TraceName.c_str() ),
+                        this, SLOT( ChangeTraceColor() ) );
+  QAction *ColorCoding = new QAction(tr("Based on the selected column"), ColorMenu);
+  ColorCoding->setCheckable(true);
+  ColorCoding->setChecked(m_IsColorCodingOn);
+  QObject::connect( ColorCoding, SIGNAL( triggered (bool) ), this, SLOT( SetColorCoding(bool) ) );
+  ColorMenu->addAction(ColorCoding);
+  iMenu->addAction( ColorMenu->menuAction() );
 
   iMenu->addAction( tr("Copy Selection"),
                     this->m_Table, SLOT( CopySelection() ) );
@@ -183,29 +186,33 @@ void QGoDBTraceManager::AddSpecificActionsForContourMesh(QMenu *iMenu)
   iMenu->addAction( tr("Go to this %1")
                     .arg( this->m_TraceName.c_str() ),
                     this, SLOT( GoToTheTrace() ) );
-  QAction* ShowCurrentTimePoint = new QAction(tr("Show only in the table the %1 for the current timepoint")
-                    .arg(this->m_TraceName.c_str() ),iMenu);
+  QAction *ShowCurrentTimePoint = new QAction(tr("Show only in the table the %1 for the current timepoint")
+                                              .arg( this->m_TraceName.c_str() ), iMenu);
   ShowCurrentTimePoint->setCheckable(true);
   ShowCurrentTimePoint->setChecked(this->m_IsShowOnlyCurrentTimePointOn);
-  QObject::connect(ShowCurrentTimePoint,
-                   SIGNAL(triggered ( bool ) ),
-                   this,
-                   SLOT( ShowOnlyRowsForCurrentTimePoint(bool) ) );
+  QObject::connect( ShowCurrentTimePoint,
+                    SIGNAL( triggered (bool) ),
+                    this,
+                    SLOT( ShowOnlyRowsForCurrentTimePoint(bool) ) );
   iMenu->addAction(ShowCurrentTimePoint);
   /** \todo Lydie: when using lineage, put it in the generalActionsContextMenu*/
-  this->AddActionForCreateNewCollectionFromCheckedTraces(iMenu);
+  this->AddActionForAddingCheckedTracesToCollection();
 }
 
 //-------------------------------------------------------------------------
 
 //------------------------------------------------------------------------
-void QGoDBTraceManager::AddActionForCreateNewCollectionFromCheckedTraces(
-  QMenu *iMenu)
+void QGoDBTraceManager::AddActionForAddingCheckedTracesToCollection()
 {
-  this->m_CheckedTracesMenu->addAction(tr("Create a new %1 from checked %2s")
-                    .arg( this->m_CollectionName.c_str() )
-                    .arg( this->m_TraceName.c_str() ),
-                    this, SLOT( CreateCorrespondingCollection() ) );
+  this->m_CheckedTracesMenu->addAction( tr("Add to selected %1 %2")
+                                        .arg( this->m_CollectionName.c_str() )
+                                        .arg( this->m_SelectedCollectionData->first.c_str() ),
+                                        this, SLOT( AddToSelectedCollection() ) );
+
+  this->m_CheckedTracesMenu->addAction( tr("Create a new %1 from checked %2s")
+                                        .arg( this->m_CollectionName.c_str() )
+                                        .arg( this->m_TraceName.c_str() ),
+                                        this, SLOT( CreateCorrespondingCollection() ) );
 }
 
 //-------------------------------------------------------------------------
@@ -214,7 +221,7 @@ void QGoDBTraceManager::AddActionForCreateNewCollectionFromCheckedTraces(
 void QGoDBTraceManager::CheckSelectedRows()
 {
   this->m_Table->ChangeCheckStateSelectedRows(this->m_TraceName,
-    this->m_TraceNameID,Qt::Checked);
+                                              this->m_TraceNameID, Qt::Checked);
 }
 
 //-------------------------------------------------------------------------
@@ -223,7 +230,7 @@ void QGoDBTraceManager::CheckSelectedRows()
 void QGoDBTraceManager::UncheckSelectedRows()
 {
   this->m_Table->ChangeCheckStateSelectedRows(this->m_TraceName,
-    this->m_TraceNameID,Qt::Unchecked);
+                                              this->m_TraceNameID, Qt::Unchecked);
 }
 
 //-------------------------------------------------------------------------
@@ -232,7 +239,7 @@ void QGoDBTraceManager::UncheckSelectedRows()
 void QGoDBTraceManager::ShowSelectedRows()
 {
   this->m_Table->ChangeVisibilityStateSelectedRows(this->m_TraceName,
-    this->m_TraceNameID,Qt::Checked);
+                                                   this->m_TraceNameID, Qt::Checked);
 }
 
 //-------------------------------------------------------------------------
@@ -241,7 +248,7 @@ void QGoDBTraceManager::ShowSelectedRows()
 void QGoDBTraceManager::HideSelectedRows()
 {
   this->m_Table->ChangeVisibilityStateSelectedRows(this->m_TraceName,
-    this->m_TraceNameID,Qt::Unchecked);
+                                                   this->m_TraceNameID, Qt::Unchecked);
 }
 
 //-------------------------------------------------------------------------
@@ -263,6 +270,16 @@ std::list< unsigned int > QGoDBTraceManager::GetListTracesIDsFromThisCollectionO
 {
   return this->m_CollectionOfTraces->GetListTracesIDsFromThisCollectionOf(
            iDatabaseConnector, iListTraces);
+}
+
+//-------------------------------------------------------------------------
+
+//------------------------------------------------------------------------
+std::list< unsigned int > QGoDBTraceManager::GetListTracesIDsBelongingToCollectionIDs(
+  vtkMySQLDatabase *iDatabaseConnector, std::list< unsigned int > iListCollectionIDs)
+{
+  return this->m_CollectionOfTraces->GetTraceIDsBelongingToCollectionID(iDatabaseConnector,
+                                                                        iListCollectionIDs);
 }
 
 //-------------------------------------------------------------------------
@@ -293,7 +310,7 @@ void QGoDBTraceManager::DeleteTracesFromContextMenu()
     {
     QMessageBox msgBox;
     msgBox.setText(
-      tr("Please select at least one %1 to be deleted")
+      tr("Please check at least one %1 to be deleted")
       .arg( this->m_TraceName.c_str() ) );
     msgBox.exec();
     }
@@ -308,7 +325,7 @@ void QGoDBTraceManager::DeleteTracesFromContextMenu()
       {
       //as it impacts also on the collection and the collectionOf,
       //a signal has to be emitted for another traceManager:
-      emit TracesToDelete();
+      emit CheckedTracesToDelete();
       }
     }
 }
@@ -338,11 +355,15 @@ std::list< unsigned int > QGoDBTraceManager::GetListCollectionIDs(
 
 //------------------------------------------------------------------------
 void QGoDBTraceManager::UpdateBoundingBoxes(vtkMySQLDatabase *iDatabaseConnector,
-                                            std::list< unsigned int > iListTracesIDs)
+                                            std::list< unsigned int > iListTracesIDs,
+                                            bool UpdateTW)
 {
   this->m_CollectionOfTraces->
-    RecalculateDBBoundingBox(iDatabaseConnector, iListTracesIDs);
-  this->DisplayInfoForExistingTraces(iDatabaseConnector, iListTracesIDs);
+  RecalculateDBBoundingBox(iDatabaseConnector, iListTracesIDs);
+  if ( UpdateTW )
+    {
+    this->DisplayInfoForExistingTraces(iDatabaseConnector, iListTracesIDs);
+    }
 }
 
 //-------------------------------------------------------------------------
@@ -366,18 +387,19 @@ double * QGoDBTraceManager::GetVectorFromQColor(QColor iColor)
 //------------------------------------------------------------------------
 std::list< QGoDBTraceManager::NameWithColorData >
 QGoDBTraceManager::GetAllTraceIDsWithColor(
-  vtkMySQLDatabase *iDatabaseConnector, int iTimePoint)
+  vtkMySQLDatabase *iDatabaseConnector, std::string & ioIDToSelect)
 {
-  if ( iTimePoint == -1 )
-    {
-    return this->m_CollectionOfTraces->GetAllTracesIDsWithColor(
-             iDatabaseConnector);
-    }
-  else
-    {
-    return this->m_CollectionOfTraces->GetTracesIDsWithColorForATimePoint(
-             iDatabaseConnector, static_cast< unsigned int >( iTimePoint ) );
-    }
+  ioIDToSelect = this->m_LastSelectedTraceAsCollection;
+  //if ( iTimePoint == -1 )
+  //  {
+  return this->m_CollectionOfTraces->GetAllTracesIDsWithColor(
+           iDatabaseConnector);
+  //  }
+  // else
+  //   {
+  //   return this->m_CollectionOfTraces->GetTracesIDsWithColorForATimePoint(
+  //            iDatabaseConnector, static_cast< unsigned int >( iTimePoint ) );
+  //   }
 }
 
 //-------------------------------------------------------------------------
@@ -467,6 +489,17 @@ GoDBCoordinateRow QGoDBTraceManager::GetCoordinateFromInt(int iXCoord,
 //-------------------------------------------------------------------------
 void QGoDBTraceManager::AddToSelectedCollection()
 {
+  std::list< unsigned int > ListCheckedTraces = this->GetListHighlightedIDs();
+  if ( ListCheckedTraces.empty() )
+    {
+    QMessageBox msgBox;
+    msgBox.setText(
+      tr("Please check at least one %1 to be part of the %2")
+      .arg( this->m_TraceName.c_str() )
+      .arg( this->m_CollectionName.c_str() ) );
+    msgBox.exec();
+    return;
+    }
   emit CheckedTracesToAddToSelectedCollection(
     this->GetListHighlightedIDs() );
 }
@@ -480,6 +513,7 @@ std::list< unsigned int > QGoDBTraceManager::GetLastCreatedTracesIDs(
   return this->m_CollectionOfTraces->GetLastCreatedTracesIDs(
            iDatabaseConnector, iNumberOfTraceIDs);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -488,27 +522,31 @@ void QGoDBTraceManager::SetDatabaseConnection(
 {
   this->m_DatabaseConnector = iDatabaseConnector;
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBTraceManager::SetSelectedCollection (NameWithColorData* iCollectionData)
+void QGoDBTraceManager::SetSelectedCollection(NameWithColorData *iCollectionData)
 {
   this->m_SelectedCollectionData = iCollectionData;
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBTraceManager::SetCurrentTimePoint(int* iTimePoint)
+void QGoDBTraceManager::SetCurrentTimePoint(int *iTimePoint)
 {
   this->m_CurrentTimePoint = iTimePoint;
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBTraceManager::SetSelectedColor(NameWithColorData* iColorData)
+void QGoDBTraceManager::SetSelectedColor(NameWithColorData *iColorData)
 {
   this->m_SelectedColorData = iColorData;
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -516,20 +554,32 @@ void QGoDBTraceManager::ShowOnlyRowsForCurrentTimePoint(bool IsChecked)
 {
   this->m_IsShowOnlyCurrentTimePointOn = IsChecked;
 
-    if (IsChecked)
-      {
-      this->m_Table->ShowOnlyRowsForTimePoint(*this->m_CurrentTimePoint);
-      }
-    else
-      {
-      this->m_Table->ShowAllRows();
-      }
-  }
+  if ( IsChecked )
+    {
+    this->m_Table->ShowOnlyRowsForTimePoint(*this->m_CurrentTimePoint);
+    }
+  else
+    {
+    this->m_Table->ShowAllRows();
+    }
+}
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoDBTraceManager::CheckShowRows()
 {
-  if (this->m_IsShowOnlyCurrentTimePointOn)
+  if ( this->m_IsShowOnlyCurrentTimePointOn )
+    {
     this->ShowOnlyRowsForCurrentTimePoint(true);
+    }
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTraceManager::UpdateLastSelectedOneAsCollection()
+{
+  this->m_LastSelectedTraceAsCollection =
+    this->m_SelectedCollectionData->first;
 }

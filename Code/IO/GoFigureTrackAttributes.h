@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,24 +31,38 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __QGoCreateDataBasePage_h
-#define __QGoCreateDataBasePage_h
 
-#include <QWizardPage>
-#include <QLineEdit>
+#ifndef __GoFigureTrackAttributes_h
+#define __GoFigureTrackAttributes_h
 
-#include "QGoGUILibConfigure.h"
+#include <map>
+#include <string>
+#include "QGoIOConfigure.h"
 
-class QGOGUILIB_EXPORT QGoCreateDataBasePage:public QWizardPage
-{
-  Q_OBJECT
-public:
-  QGoCreateDataBasePage(QWidget *parent = 0);
-  void initializePage();
+/*
+\struct GoFigureTrackAttributes
+\brief Track attributes to be displayed in the table widget
+*/
 
-  bool validatePage();
+struct QGOIO_EXPORT GoFigureTrackAttributes {
+  // total distance (add each segment size) = deplacement
+  double total_length;
+  // average speed
+  double avg_speed;
+  // maximum speed
+  double max_speed;
+  // euclidian distance between first and last points
+  double distance;
+  // theta in spherical coordinate system
+  double theta;
+  // phi in spherical coordinate system
+  double phi;
 
-private:
-  QLineEdit *lineNewDBName;
+  // Constructors
+  GoFigureTrackAttributes(){}
+  GoFigureTrackAttributes(const GoFigureTrackAttributes & iE):
+  total_length(iE.total_length), avg_speed(iE.avg_speed),
+  max_speed(iE.max_speed), distance(iE.distance),
+  theta(iE.theta), phi(iE.phi){}
 };
 #endif

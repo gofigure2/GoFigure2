@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -49,7 +49,7 @@ QGoDeleteFromListDialog::QGoDeleteFromListDialog
   (std::vector< std::string > iVectorEntities,
   QWidget *iParent,
   std::string iEntityName
-  ):QDialog(iParent)
+  ) : QDialog(iParent)
 {
   this->SetUpUi(iEntityName);
   this->SetItemsFromTheVector(iVectorEntities);
@@ -59,10 +59,10 @@ QGoDeleteFromListDialog::QGoDeleteFromListDialog
 
 //--------------------------------------------------------------------------
 QGoDeleteFromListDialog::QGoDeleteFromListDialog(
-  std::list< QGoDeleteFromListDialog::ItemColorComboboxData > iDataListWithColor,
+  QGoDeleteFromListDialog::ListOfItemColorComboboxData iDataListWithColor,
   QWidget *iParent,
   std::string iEntityName
-  ):QDialog(iParent)
+  ) : QDialog(iParent)
 {
   this->SetUpUi(iEntityName);
   this->SetItemsInTheListWithColor(iDataListWithColor);
@@ -72,7 +72,8 @@ QGoDeleteFromListDialog::QGoDeleteFromListDialog(
 
 //--------------------------------------------------------------------------
 QGoDeleteFromListDialog::~QGoDeleteFromListDialog()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 

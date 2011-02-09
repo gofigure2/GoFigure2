@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -54,14 +54,16 @@ class QGOGUILIB_EXPORT QGoDeleteFromListDialog:public QDialog
 public:
 
   typedef std::pair< std::string, QColor > ItemColorComboboxData;
+  typedef std::list< ItemColorComboboxData > ListOfItemColorComboboxData;
 
   explicit QGoDeleteFromListDialog(std::vector< std::string > iVectorEntities,
                                    QWidget *iParent = 0,
                                    std::string iEntityName = "");
 
-  explicit QGoDeleteFromListDialog(std::list< ItemColorComboboxData > iDataListWithColor,
-                                   QWidget *iParent = 0,
-                                   std::string iEntityName = "");
+  explicit QGoDeleteFromListDialog(
+    ListOfItemColorComboboxData iDataListWithColor,
+    QWidget *iParent = 0,
+    std::string iEntityName = "");
 
   virtual ~QGoDeleteFromListDialog();
 

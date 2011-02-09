@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -43,7 +43,9 @@
 
 /**
 \class GoDBIntensityRow
-\brief
+\brief manages a map with keys matching fields of the gofiguredatabase Intensity table
+and values of the map matching a row of the Intensity table
+\ingroup DB
 */
 class QGOIO_EXPORT GoDBIntensityRow:public GoDBRow
 {
@@ -52,8 +54,12 @@ public:
 
   ~GoDBIntensityRow();
 
-  /** \brief check if the intensity already exists in the database, if yes,
-  return the corresponding ID, if not, return -1*/
+  /** 
+  \brief check if the intensity already exists in the database, if yes,
+  return the corresponding ID, if not, return -1
+  \param[in] DatabaseConnector connection to the database
+  \return the ID of the existing intensity and -1 if it doesn't exist
+  */
   int DoesThisIntensityAlreadyExists(vtkMySQLDatabase *DatabaseConnector);
 
   int SaveInDB(vtkMySQLDatabase *DatabaseConnector);

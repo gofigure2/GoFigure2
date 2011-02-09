@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -49,12 +49,12 @@ BinaryMaskImageToGoFigureMeshAttributes< TInput, TMask >::BinaryMaskImageToGoFig
 template< class TInput, class TMask >
 BinaryMaskImageToGoFigureMeshAttributes< TInput, TMask >::
 ~BinaryMaskImageToGoFigureMeshAttributes()
-{}
+{
+}
 
 template< class TInput, class TMask >
 void
-BinaryMaskImageToGoFigureMeshAttributes< TInput, TMask >::
-SetIntensityBasedComputation( const bool& iComputation )
+BinaryMaskImageToGoFigureMeshAttributes< TInput, TMask >::SetIntensityBasedComputation(const bool & iComputation)
 {
   m_IntensityComputation = iComputation;
 }
@@ -127,8 +127,8 @@ BinaryMaskImageToGoFigureMeshAttributes< TInput, TMask >::GenerateData()
     return;
     }
 
-  ShapeLabelMapPointer        shapeLabelMap = shapeConverter->GetOutput();
-  if ( shapeLabelMap->HasLabel( 255 ) )
+  ShapeLabelMapPointer shapeLabelMap = shapeConverter->GetOutput();
+  if ( shapeLabelMap->HasLabel(255) )
     {
     const ShapeLabelObjectType *shapeObject = shapeLabelMap->GetLabelObject(255);
 
@@ -147,7 +147,7 @@ BinaryMaskImageToGoFigureMeshAttributes< TInput, TMask >::GenerateData()
     m_PhysicalSize = 0;
     }
 
-  if( m_IntensityComputation )
+  if ( m_IntensityComputation )
     {
     // stat stuff
     StatConverterPointer statConverter = StatConverterType::New();
@@ -166,9 +166,9 @@ BinaryMaskImageToGoFigureMeshAttributes< TInput, TMask >::GenerateData()
       return;
       }
 
-    StatLabelMapPointer        statLabelMap = statConverter->GetOutput();
+    StatLabelMapPointer statLabelMap = statConverter->GetOutput();
 
-    if ( statLabelMap->HasLabel( 255 ) )
+    if ( statLabelMap->HasLabel(255) )
       {
       const StatLabelObjectType *statObject = statLabelMap->GetLabelObject(255);
 

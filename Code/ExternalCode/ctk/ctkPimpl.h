@@ -1,5 +1,5 @@
 /**
-\class ctkPimpl ctkPimpl
+\class ctkPimpl
 \brief Utility macros for handling private implementations. It is in addition
        to QtGlobal: Q_DECLARE_PRIVATE, Q_DECLARE_PUBLIC,
        Q_D and Q_Q.

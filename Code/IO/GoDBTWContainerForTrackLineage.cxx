@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -34,7 +34,7 @@
 #include "GoDBTWContainerForTrackLineage.h"
 
 GoDBTWContainerForTrackLineage::GoDBTWContainerForTrackLineage(
-  std::string iTraceName, std::string iCollectionName, int iImgSessionID):
+  std::string iTraceName, std::string iCollectionName, int iImgSessionID) :
   GoDBTableWidgetContainer(iTraceName, iCollectionName, iImgSessionID)
 {
   m_ColumnsInfos = GetColumnsInfoForTraceTable();
@@ -44,7 +44,8 @@ GoDBTWContainerForTrackLineage::GoDBTWContainerForTrackLineage(
 
 //--------------------------------------------------------------------------
 GoDBTWContainerForTrackLineage::~GoDBTWContainerForTrackLineage()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 

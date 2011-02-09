@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -38,7 +38,7 @@
 #include <QDebug>
 
 //---------------------------------------------------------------------------//
-QGoSeedBaseWidget::QGoSeedBaseWidget(QWidget *iParent, int iSampling):QWidget(iParent)
+QGoSeedBaseWidget::QGoSeedBaseWidget(QWidget *iParent, int iSampling) : QWidget(iParent)
 {
   this->setupUi(this);
 
@@ -55,7 +55,7 @@ QGoSeedBaseWidget::QGoSeedBaseWidget(QWidget *iParent, int iSampling):QWidget(iP
                     this, SIGNAL( Channel(int) ) );
 
   // shortcut to the "Apply" button
-  (void) new QShortcut(QKeySequence(tr("A", "Apply")), this, SIGNAL(Apply()));
+  (void)new QShortcut( QKeySequence( tr("X", "Apply") ), this, SIGNAL( Apply() ) );
 
   // About the sampling button...
   if ( iSampling == 2 )
@@ -83,6 +83,7 @@ QGoSeedBaseWidget::QGoSeedBaseWidget(QWidget *iParent, int iSampling):QWidget(iP
 
   groupBox = new ctkCollapsibleGroupBox(QObject::tr("Advanced Parameters"), this);
   gridLayout->addWidget(groupBox, 4, 0, 1, -1);
+  //gridLayout->setSizeConstraint(QLayout::SetFixedSize);
   groupBox->setCollapsed(true);
 
   vbox = new QGridLayout;
@@ -97,7 +98,8 @@ QGoSeedBaseWidget::QGoSeedBaseWidget(QWidget *iParent, int iSampling):QWidget(iP
 //---------------------------------------------------------------------------//
 QGoSeedBaseWidget::
 ~QGoSeedBaseWidget()
-{}
+{
+}
 
 //---------------------------------------------------------------------------//
 

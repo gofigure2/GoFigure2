@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -43,7 +43,7 @@
 #include <iostream>
 #include <list>
 
-QGoConnectServerPage::QGoConnectServerPage(QWidget *iParent):
+QGoConnectServerPage::QGoConnectServerPage(QWidget *iParent) :
   QWizardPage(iParent)
 {
   this->m_ImgSessionName.clear();
@@ -132,7 +132,8 @@ bool QGoConnectServerPage::validatePage()
   std::string                        DBName = *i;
   this->wizard()->setField( "DBName", DBName.c_str() );
   emit GofigureDatabaseExists();
-  //std::cout << "the db name to open is: " << field("DBName").toString().toStdString().c_str() << std::endl;
+  //std::cout << "the db name to open is: " <<
+  // field("DBName").toString().toStdString().c_str() << std::endl;
   return true;
 }
 
@@ -169,9 +170,9 @@ std::list< std::string > QGoConnectServerPage::ListGofigureDatabases() const
     //First, create the connection to the database named vectListDB[i]and check
     // it is open:
     std::pair< bool, vtkMySQLDatabase * > DatabaseConnection = ConnectToDatabase(
-      field("ServerName").toString().toStdString(),
-      field("User").toString().toStdString(),
-      field("Password").toString().toStdString(), vectListDB[i]);
+        field("ServerName").toString().toStdString(),
+        field("User").toString().toStdString(),
+        field("Password").toString().toStdString(), vectListDB[i]);
     if ( !DatabaseConnection.first )
       {
       std::cout << "Cannot check if " << vectListDB[i].c_str()
@@ -214,9 +215,9 @@ void QGoConnectServerPage::OpenConnectionToServer() const
   if ( this->m_ConnectionServer.second == 0 )
     {
     m_ConnectionServer = ConnectToServer(
-      field("ServerName").toString().toStdString(),
-      field("User").toString().toStdString(),
-      field("Password").toString().toStdString() );
+        field("ServerName").toString().toStdString(),
+        field("User").toString().toStdString(),
+        field("Password").toString().toStdString() );
     }
 }
 

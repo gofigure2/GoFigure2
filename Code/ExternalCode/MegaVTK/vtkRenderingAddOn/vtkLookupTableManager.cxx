@@ -50,9 +50,9 @@ PURPOSE.  See the above copyright notices for more information.
 
 /*=========================================================================
  Modifications were made by the GoFigure Dev. Team.
- while at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ while at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -100,10 +100,12 @@ vtkStandardNewMacro(vtkLookupTableManager);
 #include <time.h>
 
 vtkLookupTableManager::vtkLookupTableManager()
-{}
+{
+}
 
 vtkLookupTableManager::~vtkLookupTableManager()
-{}
+{
+}
 
 std::vector< std::string > vtkLookupTableManager::GetAvailableLookupTables()
 {
@@ -179,7 +181,7 @@ vtkLookupTable * vtkLookupTableManager::GetLookupTable(const int & iIndex)
       break;
 
     default:
-      std::cout << "Unknown Lookup Table" <<std::endl;
+      std::cout << "Unknown Lookup Table" << std::endl;
       break;
     }
 
@@ -458,7 +460,6 @@ vtkLookupTable * vtkLookupTableManager::GetROILookupTable()
   return lut;
 }
 
-
 vtkLookupTable * vtkLookupTableManager::GetRandomLookupTable()
 {
   vtkLookupTable *lut = vtkLookupTable::New();
@@ -474,49 +475,49 @@ vtkLookupTable * vtkLookupTableManager::GetRandomLookupTable()
     r = RandomColors[k++];
     g = RandomColors[k++];
     b = RandomColors[k++];
-    lut->SetTableValue( i,
-                        static_cast< double >( r ) / 255.,
-                        static_cast< double >( g ) / 255.,
-                        static_cast< double >( b ) / 255.,
-                        1.0 );
+    lut->SetTableValue(i,
+                       static_cast< double >( r ) / 255.,
+                       static_cast< double >( g ) / 255.,
+                       static_cast< double >( b ) / 255.,
+                       1.0);
     }
 
   return lut;
 }
 
-
-vtkLookupTable*
-vtkLookupTableManager::GetHSVBasedLookupTable( double iHSV[3] )
+vtkLookupTable *
+vtkLookupTableManager::GetHSVBasedLookupTable(double iHSV[3])
 {
-  vtkLookupTable* lut = vtkLookupTable::New();
+  vtkLookupTable *lut = vtkLookupTable::New();
+
   lut->SetTableRange (0., 1.);
-  if( ( iHSV[0] >= 0. ) && ( iHSV[0] <= 1. ) )
+  if ( ( iHSV[0] >= 0. ) && ( iHSV[0] <= 1. ) )
     {
     lut->SetHueRange (iHSV[0], iHSV[0]);
     }
   else
     {
-    std::cout << "iHSV[0] < 0 or > 1" <<std::endl;
+    std::cout << "iHSV[0] < 0 or > 1" << std::endl;
     return NULL;
     }
 
-  if( ( iHSV[1] >= 0. ) && ( iHSV[1] <= 1. ) )
+  if ( ( iHSV[1] >= 0. ) && ( iHSV[1] <= 1. ) )
     {
     lut->SetSaturationRange (iHSV[1], iHSV[1]);
     }
   else
     {
-    std::cout << "iHSV[1] < 0 or > 1" <<std::endl;
+    std::cout << "iHSV[1] < 0 or > 1" << std::endl;
     return NULL;
     }
 
-  if( ( iHSV[2] >= 0. ) && ( iHSV[2] <= 1. ) )
+  if ( ( iHSV[2] >= 0. ) && ( iHSV[2] <= 1. ) )
     {
     lut->SetValueRange (0., iHSV[2]);
     }
   else
     {
-    std::cout << "iHSV[2] < 0 or > 1" <<std::endl;
+    std::cout << "iHSV[2] < 0 or > 1" << std::endl;
     return NULL;
     }
 

@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -38,6 +38,8 @@
 #include "TraceStructure.h"
 #include "QGoIOConfigure.h"
 
+#include "GoFigureTrackAttributes.h"
+
 #include <map>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -70,39 +72,6 @@ public:
   /** Default Constructor */
   TrackStructure();
 
-  /** Constructor */
-  /*TrackStructure(const unsigned int & iTraceID,
-                       std::vector< vtkActor * > iActors,
-                       vtkPolyData *iNodes,
-                       const bool & iHighlighted,
-                       const bool & iVisible,
-                       const double & r,
-                       const double & g,
-                       const double & b,
-                       const double & alpha);*/
-
-  /** Constructor */
-  /*TrackStructure(const unsigned int & iTraceID,
-                       std::vector< vtkActor * > iActors,
-                       vtkPolyData *iNodes,
-                       const bool & iHighlighted,
-                       const bool & iVisible,
-                       double iRgba[4]);*/
-
-  /** Constructor */
-  /*TrackStructure(const unsigned int & iTraceID,
-                       vtkActor *iActorXY,
-                       vtkActor *iActorYZ,
-                       vtkActor *iActorXZ,
-                       vtkActor *iActorXYZ,
-                       vtkPolyData *iNodes,
-                       const bool & iHighlighted,
-                       const bool & iVisible,
-                       const double & r,
-                       const double & g,
-                       const double & b,
-                       const double & alpha);*/
-
   /** Constructor by copy */
   TrackStructure(const TrackStructure & iE);
 
@@ -126,16 +95,6 @@ public:
    * the specified time point.
    */
   bool DeleteElement(const unsigned int& iTime);
-
-  /**
-   * \brief Replace the point at the current time point.
-   * \param[in] iTime time point where we want to replace the point
-   * \param[in] iPoint new point to be added
-   * \return true is element has been replaced, false if there is no point at the
-   * specified time point. If you want to add this point, call
-   * InsertElement(int iTime, double* iPoint) instead.
-   */
-  bool ReplaceElement(const unsigned int& iTime, double* iPoint);
 
   void ReleaseData() const;
 
@@ -171,27 +130,10 @@ public:
     return os;
   }
 
-  void UpdateTracksRepresentation( bool iGlyph, bool iTube ) const;
+  void UpdateTracksRepresentation( double iRadius, double iRadius2 ) const;
 
-  void ComputeAttributes();
+  GoFigureTrackAttributes ComputeAttributes() const;
 
 };
-
-/**
-  \brief merge 2 tracks (if they do not overlap) into oMerged
-  \param[in] iT1 track1
-  \param[in] iT2 track2
-  \param[out] oMerged merged track (take attributes from the earliest track in time)
-  \return true if iT1 and iT2 don't overlap
-*/
-/*
-bool TrackMerge( const TrackStructure& iT1,
-                 const TrackStructure& iT2,
-                 TrackStructure& oMerged );
-
-bool TrackSplit( const TrackStructure& iTrack,
-                 const unsigned int& iTime,
-                 TrackStructure& oT1,
-                 TrackStructure& oT2 );*/
 
 #endif

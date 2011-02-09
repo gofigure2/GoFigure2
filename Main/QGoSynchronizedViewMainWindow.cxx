@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -80,7 +80,8 @@ QGoSynchronizedViewMainWindow::QGoSynchronizedViewMainWindow()
 
 QGoSynchronizedViewMainWindow::
 ~QGoSynchronizedViewMainWindow()
-{}
+{
+}
 
 QGoSynchronizedViewManager *
 QGoSynchronizedViewMainWindow::GetSynchronizedViewManager()
@@ -101,8 +102,8 @@ QGoSynchronizedViewMainWindow::newSynchronizedView(QString iSynchronizedViewName
   QGoSynchronizedView *synchronizedView;
 
   synchronizedView = dynamic_cast< QGoSynchronizedView * >(
-    m_SynchronizedViewManager->newSynchronizedView(iSynchronizedViewName,
-                                                   iImage) );
+      m_SynchronizedViewManager->newSynchronizedView(iSynchronizedViewName,
+                                                     iImage) );
 
   mdiArea->addSubWindow(synchronizedView, Qt::SubWindow);
   synchronizedView->parentWidget()
@@ -157,9 +158,9 @@ void
 QGoSynchronizedViewMainWindow::openfile()
 {
   QString filename = QFileDialog::getOpenFileName(
-    this,
-    tr("Select Image"), "",
-    tr("Images (*.png *.bmp *.jpg *.jpeg *.tiff *.mha *.mhd *.img *.lsm)") );
+      this,
+      tr("Select Image"), "",
+      tr("Images (*.png *.bmp *.jpg *.jpeg *.tiff *.mha *.mhd *.img *.lsm)") );
 
   if ( !filename.isEmpty() )
     {
@@ -201,10 +202,10 @@ QGoSynchronizedViewMainWindow::snapshotAs()
 {
   QGoSynchronizedView *ScreenshotSynchronizedView = activeSynchronizedView();
   QString              filename = QFileDialog::getSaveFileName(
-    this,
-    tr("Select Image"), "",
-    tr("Images (*.png *.bmp *.jpg *.jpeg *.tiff)")
-    );
+      this,
+      tr("Select Image"), "",
+      tr("Images (*.png *.bmp *.jpg *.jpeg *.tiff)")
+      );
 
   if ( !filename.isEmpty() )
     {
@@ -473,7 +474,7 @@ void
 QGoSynchronizedViewMainWindow::createActions()
 {
   openfileAct = new QAction( /*QIcon( ":/images/open.png" ),*/
-    tr("&Open an image file"), this);
+      tr("&Open an image file"), this);
   openfileAct->setShortcuts(QKeySequence::Open);
   openfileAct->setStatusTip( tr("Open an image from file") );
   connect( openfileAct,
@@ -509,9 +510,9 @@ QGoSynchronizedViewMainWindow::createActions()
 
   //! [0]
   exitAct = new QAction(tr("E&xit"), this);
-  #if ( ( QT_MAJOR_VERSION == 4 ) && ( QT_MINOR_VERSION >= 6 ) )
+#if ( ( QT_MAJOR_VERSION == 4 ) && ( QT_MINOR_VERSION >= 6 ) )
   exitAct->setShortcuts(QKeySequence::Quit);
-  #endif
+#endif
   exitAct->setStatusTip( tr("Exit the application") );
   connect( exitAct,
            SIGNAL( triggered() ),

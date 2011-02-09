@@ -50,13 +50,13 @@ void CreateCircle(const double & iZ,
                   const int & iResolution,
                   vtkPolyData *ioContour)
 {
-  vtkSmartPointer< vtkPoints >    points = vtkSmartPointer< vtkPoints >::New();
+  vtkSmartPointer< vtkPoints > points = vtkSmartPointer< vtkPoints >::New();
   points->SetNumberOfPoints(iResolution);
 
   vtkSmartPointer< vtkCellArray > lines = vtkSmartPointer< vtkCellArray >::New();
   lines->Allocate(1, iResolution);
 
-  vtkIdType* lineIndices = new vtkIdType[iResolution+1];
+  vtkIdType *lineIndices = new vtkIdType[iResolution + 1];
 
   for ( int i = 0; i < iResolution; ++i )
     {
@@ -68,11 +68,11 @@ void CreateCircle(const double & iZ,
     }
   lineIndices[iResolution] = 0;
 
-  lines->InsertNextCell( iResolution+1, lineIndices );
+  lines->InsertNextCell(iResolution + 1, lineIndices);
   delete[] lineIndices;
 
   ioContour->Initialize();
-  ioContour->SetLines( lines );
+  ioContour->SetLines(lines);
   ioContour->SetPoints(points);
 }
 

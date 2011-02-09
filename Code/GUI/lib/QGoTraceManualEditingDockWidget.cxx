@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -34,11 +34,13 @@
 #include "QGoTraceManualEditingDockWidget.h"
 
 QGoTraceManualEditingDockWidget::QGoTraceManualEditingDockWidget(
-  QWidget *iParent):QDockWidget(iParent)
+  QWidget *iParent) : QDockWidget(iParent)
 {
   this->m_TraceWidget =
     new QGoTraceManualEditingWidget(this);
-  this->setWindowTitle( tr("Trace settings") );
+  QObject::connect( this->m_TraceWidget, SIGNAL( WindowsTitleToModify(QString) ),
+                    this, SLOT( ModifyWindowTitle(QString) ) );
+  this->m_TraceWidget->UpdateTraceAndCollection("contour", "mesh");
   this->setWidget(this->m_TraceWidget);
 }
 
@@ -46,15 +48,13 @@ QGoTraceManualEditingDockWidget::QGoTraceManualEditingDockWidget(
 
 //-------------------------------------------------------------------------
 QGoTraceManualEditingDockWidget::~QGoTraceManualEditingDockWidget()
-{}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/*void QGoTraceManualEditingDockWidget::ShowAndUpdate(std::string iTraceName,
-                                                    std::string iCollectionName)
 {
-  this->m_TraceWidget->UpdateTraceAndCollection(iTraceName, iCollectionName);
-  this->show();
 }
-*/
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTraceManualEditingDockWidget::ModifyWindowTitle(QString iTitle)
+{
+  this->setWindowTitle(iTitle);
+}

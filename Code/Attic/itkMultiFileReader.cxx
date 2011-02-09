@@ -6,9 +6,9 @@
 
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -53,18 +53,20 @@
 namespace itk
 {
 //-----------------------------------------------------------------------------
-MultiFileReader::MultiFileReader():m_OutputImage(0),
+MultiFileReader::MultiFileReader() : m_OutputImage(0),
   m_Dimensionality(0), m_DataScalarType(-1), m_NumberOfChannels(0),
   m_NumberOfTimePoints(0), m_NumberOfSlices(0), m_UpdateTimePoint(0),
   m_UpdateZSlice(0), m_UpdateChannel(0), m_MultiChannelImages(false),
   m_TimeBased(true)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
 MultiFileReader::~MultiFileReader()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
