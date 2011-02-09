@@ -238,6 +238,7 @@ CellFeatureGenerator< TFeatureImage, TInputImage, TSegmentImage >::PrintSelf(std
   os << indent << "MembraneWeight:         " << this->GetMembraneWeight()
      << std::endl;
 }
+
 } /* end namespace itk */
 
 #endif

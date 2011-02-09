@@ -46,6 +46,12 @@
 
 #include "ui_SegmentationSeedBaseWidget.h"
 
+/**
+ * \class QGoSeedBaseWidget
+ * \ingroup QGoSeed
+ * \brief Base widget for all the seed-based segmentations (contours and meshes)
+*/
+
 class QGoSeedBaseWidget:
   public QWidget,
   protected Ui::SegmentationSeedBaseWidget

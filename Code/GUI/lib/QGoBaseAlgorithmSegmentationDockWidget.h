@@ -76,8 +76,6 @@ signals:
 
   void ContourCreated(vtkPolyData *);
 
-  void ImageProcessed();
-
   void UpdateSeeds();
 
   void SegmentationFinished();

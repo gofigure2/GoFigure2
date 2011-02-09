@@ -141,6 +141,19 @@ protected:
     vtkMySQLDatabase* iDatabaseConnector,
     std::list<unsigned int> iListTraceIDs = std::list< unsigned int >());
 
+  //QGoDBTraceManager method
+  virtual void AddToSelectedCollection();
+
+  //QGoDBTraceManager method
+  virtual void CreateCorrespondingCollection();
+
+  /**
+  \brief check that all the highlighted contours belong to the current timepoint,
+  if not display a message to the user and return false
+  \return true if all the highlighted contours are from the current timepoint
+  */
+  bool AreCheckedContoursFromCurrentTimepoint();
+
 protected slots:
   /**
   \brief emit TraceToReEdit if one and only one contour is checked in the TW

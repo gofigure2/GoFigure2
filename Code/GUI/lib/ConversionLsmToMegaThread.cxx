@@ -57,11 +57,12 @@
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-ConversionLsmToMegaThread::ConversionLsmToMegaThread ():m_BaseName(""), m_LsmPath(""), m_MegaPath(""),
+ConversionLsmToMegaThread::ConversionLsmToMegaThread () : m_BaseName(""), m_LsmPath(""), m_MegaPath(""),
   m_FileType(GoFigure::PNG), m_LSMReaders(0), m_Plaque (0), m_Row(0), m_Column (0),
   m_XTile(0), m_YTile(0), m_ZTile (0), m_XOverlap(0), m_YOverlap(0), m_ZOverlap(0),
   m_NumberOfChannels(0), m_NumberOfTimePoints(0), m_Dim(0)
-{}
+{
+}
 
 //-------------------------------------------------------------------------
 
@@ -317,8 +318,8 @@ int
 ConversionLsmToMegaThread::GetNumberOfPoints()
 {
   int total = m_NumberOfChannels * m_NumberOfTimePoints
-              + m_NumberOfChannels
-              + m_NumberOfTimePoints * m_NumberOfChannels * m_Dim;
+    + m_NumberOfChannels
+    + m_NumberOfTimePoints * m_NumberOfChannels * m_Dim;
 
   return total;
 }

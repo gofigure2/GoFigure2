@@ -45,7 +45,7 @@
 #include "vtkViewImage2D.h"
 
 //--------------------------------------------------------------------------
-QGoImageView2D::QGoImageView2D(QWidget *iiParent):QGoImageView(iiParent)
+QGoImageView2D::QGoImageView2D(QWidget *iiParent) : QGoImageView(iiParent)
 {
   m_VTKEventQtConnector = vtkEventQtSlotConnect::New();
 

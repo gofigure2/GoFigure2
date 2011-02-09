@@ -51,10 +51,11 @@
 * \param iSynchronizedViewName
 * \param iParent
 */
-QGoSynchronizedView2D::QGoSynchronizedView2D(QString iViewName, QWidget *iParent):
+QGoSynchronizedView2D::QGoSynchronizedView2D(QString iViewName, QWidget *iParent) :
   QGoSynchronizedView(iViewName, iParent),
   m_View (NULL)
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 QGoSynchronizedView2D::

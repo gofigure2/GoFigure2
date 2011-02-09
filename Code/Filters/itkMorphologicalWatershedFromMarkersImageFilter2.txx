@@ -522,5 +522,6 @@ MorphologicalWatershedFromMarkersImageFilter2< TInputImage, TLabelImage >
   os << indent << "FullyConnected: "  << m_FullyConnected << std::endl;
   os << indent << "MarkWatershedLine: "  << m_MarkWatershedLine << std::endl;
 }
+
 } // end namespace itk
 #endif

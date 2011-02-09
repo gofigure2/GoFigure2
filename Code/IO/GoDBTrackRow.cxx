@@ -39,7 +39,7 @@
 
 #include "vtkSmartPointer.h"
 
-GoDBTrackRow::GoDBTrackRow():GoDBTraceRow()
+GoDBTrackRow::GoDBTrackRow() : GoDBTraceRow()
 {
   this->InitializeMap();
 }
@@ -48,13 +48,13 @@ GoDBTrackRow::GoDBTrackRow():GoDBTraceRow()
 
 //-------------------------------------------------------------------------
 GoDBTrackRow::GoDBTrackRow(vtkMySQLDatabase *DatabaseConnector,
-                           GoDBCoordinateRow Min, GoDBCoordinateRow Max, 
+                           GoDBCoordinateRow Min, GoDBCoordinateRow Max,
                            unsigned int ImgSessionID,
-                           std::string TraceVisu):GoDBTraceRow()
+                           std::string TraceVisu) : GoDBTraceRow()
 {
   this->InitializeMap();
   this->SetImgSessionID(ImgSessionID);
-  this->SetTheBoundingBox(DatabaseConnector,Min,Max);
+  this->SetTheBoundingBox(DatabaseConnector, Min, Max);
   this->SetField("Points", TraceVisu);
 
   cout << "Track ID found: " << this->DoesThisBoundingBoxTrackExist(DatabaseConnector) << endl;
@@ -68,7 +68,7 @@ GoDBTrackRow::GoDBTrackRow(vtkMySQLDatabase *DatabaseConnector,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-  GoDBTrackRow::GoDBTrackRow(unsigned int ImagingSessionID):
+GoDBTrackRow::GoDBTrackRow(unsigned int ImagingSessionID) :
   GoDBTraceRow()
 {
   this->InitializeMap();
@@ -79,22 +79,24 @@ GoDBTrackRow::GoDBTrackRow(vtkMySQLDatabase *DatabaseConnector,
 
 //-------------------------------------------------------------------------
 GoDBTrackRow::GoDBTrackRow(unsigned int iExistingID,
-  vtkMySQLDatabase *iDatabaseConnector):GoDBTraceRow()
+                           vtkMySQLDatabase *iDatabaseConnector) : GoDBTraceRow()
 {
   this->InitializeMap();
-  this->SetValuesForSpecificID(iExistingID,iDatabaseConnector);
+  this->SetValuesForSpecificID(iExistingID, iDatabaseConnector);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-  GoDBTrackRow::GoDBTrackRow(vtkMySQLDatabase *DatabaseConnector, 
-    vtkPolyData *TraceVisu,GoDBCoordinateRow Min,GoDBCoordinateRow Max, 
-    unsigned int ImgSessionID):GoDBTraceRow()
+GoDBTrackRow::GoDBTrackRow(vtkMySQLDatabase *DatabaseConnector,
+                           vtkPolyData *TraceVisu, GoDBCoordinateRow Min, GoDBCoordinateRow Max,
+                           unsigned int ImgSessionID) : GoDBTraceRow()
 {
   this->InitializeMap();
   this->SetImgSessionID(ImgSessionID);
-  this->SetTheDataFromTheVisu(DatabaseConnector,TraceVisu,Min,Max);
+  this->SetTheDataFromTheVisu(DatabaseConnector, TraceVisu, Min, Max);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -115,12 +117,12 @@ void GoDBTrackRow::InitializeMap()
 int GoDBTrackRow::DoesThisBoundingBoxTrackExist(
   vtkMySQLDatabase *DatabaseConnector)
 {
-  std::vector<FieldWithValue> Conditions;
-  this->AddConditions("ImagingSessionID",Conditions);
-  this->AddConditions("CoordIDMax",Conditions);
-  this->AddConditions("CoordIDMin",Conditions);
+  std::vector< FieldWithValue > Conditions;
+  this->AddConditions("ImagingSessionID", Conditions);
+  this->AddConditions("CoordIDMax", Conditions);
+  this->AddConditions("CoordIDMin", Conditions);
 
-  return FindOneID( DatabaseConnector, "track", "trackID", Conditions);
+  return FindOneID(DatabaseConnector, "track", "trackID", Conditions);
 }
 
 //-------------------------------------------------------------------------
@@ -130,6 +132,7 @@ int GoDBTrackRow::SaveInDB(vtkMySQLDatabase *DatabaseConnector)
 {
   return this->SaveInDBTemplate< GoDBTrackRow >(DatabaseConnector, this);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -138,20 +141,22 @@ void GoDBTrackRow::SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector,
                                          GoDBCoordinateRow iCoordMin,
                                          GoDBCoordinateRow iCoordMax)
 {
-  this->SetTheDataFromTheVisuTemplate < vtkPolyDataMySQLTrackWriter > (
-    DatabaseConnector,TrackVisu,iCoordMin,iCoordMax);
+  this->SetTheDataFromTheVisuTemplate< vtkPolyDataMySQLTrackWriter >(
+    DatabaseConnector, TrackVisu, iCoordMin, iCoordMax);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void GoDBTrackRow::SetThePointsFromPolydata(vtkPolyData * iTrackVisu)
+void GoDBTrackRow::SetThePointsFromPolydata(vtkPolyData *iTrackVisu)
 {
   std::string PointsString = "0"; //in case the track has no more meshes
-  if (iTrackVisu)
+
+  if ( iTrackVisu )
     {
     vtkSmartPointer< vtkPolyDataMySQLTrackWriter > convert =
       vtkSmartPointer< vtkPolyDataMySQLTrackWriter >::New();
-     PointsString = convert->GetMySQLText(iTrackVisu);
+    PointsString = convert->GetMySQLText(iTrackVisu);
     }
   this->SetField("Points", PointsString);
 }

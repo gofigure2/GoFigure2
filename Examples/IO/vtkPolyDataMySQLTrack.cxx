@@ -40,25 +40,25 @@
 
 int main(int argc, char **argv)
 {
-  (void) argc;
-  (void) argv;
+  (void)argc;
+  (void)argv;
 
-  vtkSmartPointer<vtkPolyDataMySQLTrackReader> track_reader =
-      vtkSmartPointer<vtkPolyDataMySQLTrackReader>::New();
+  vtkSmartPointer< vtkPolyDataMySQLTrackReader > track_reader =
+    vtkSmartPointer< vtkPolyDataMySQLTrackReader >::New();
 
   std::string stringFromDB = "2 1 1 1 1 2 2 2 2 ";
 
-  vtkSmartPointer<vtkPolyData> input = vtkSmartPointer<vtkPolyData>::New();
-  input->ShallowCopy(track_reader->GetPolyData(stringFromDB));
+  vtkSmartPointer< vtkPolyData > input = vtkSmartPointer< vtkPolyData >::New();
+  input->ShallowCopy( track_reader->GetPolyData(stringFromDB) );
 
-  vtkSmartPointer<vtkPolyDataMySQLTrackWriter> track_writer =
-      vtkSmartPointer<vtkPolyDataMySQLTrackWriter>::New();
+  vtkSmartPointer< vtkPolyDataMySQLTrackWriter > track_writer =
+    vtkSmartPointer< vtkPolyDataMySQLTrackWriter >::New();
   std::string output = track_writer->GetMySQLText(input);
 
   std::cout << "before: " << stringFromDB << std::endl;
   std::cout << "after: " << output << std::endl;
 
-  if(stringFromDB.compare(output) != 0)
+  if ( stringFromDB.compare(output) != 0 )
     {
     return EXIT_FAILURE;
     }

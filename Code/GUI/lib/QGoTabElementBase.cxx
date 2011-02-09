@@ -44,15 +44,17 @@
 #include <iostream>
 
 //--------------------------------------------------------------------------
-QGoTabElementBase::QGoTabElementBase(QWidget *iParent):QWidget(iParent)
-  ,m_StatusBar(NULL)
-{}
+QGoTabElementBase::QGoTabElementBase(QWidget *iParent) : QWidget(iParent),
+  m_StatusBar(NULL)
+{
+}
 
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QGoTabElementBase::~QGoTabElementBase()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 
@@ -187,10 +189,11 @@ void QGoTabElementBase::CreateModeActions(QActionGroup *group)
   QObject::connect( PanAction, SIGNAL( toggled(bool) ),
                     this, SLOT( PanInteractorBehavior(bool) ) );
 }
+
 //--------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTabElementBase::SetStatusBarPointer(QStatusBar* iStatusbar)
+void QGoTabElementBase::SetStatusBarPointer(QStatusBar *iStatusbar)
 {
   this->m_StatusBar = iStatusbar;
 }

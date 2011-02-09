@@ -37,7 +37,7 @@
 #include "QTextEditChild.h"
 
 QGoNameDescriptionInputDialog::QGoNameDescriptionInputDialog(QWidget *iParent,
-                                                             QString iEntityName):QDialog(iParent)
+                                                             QString iEntityName) : QDialog(iParent)
 {
   this->setupUi(this);
   this->m_EntityName = iEntityName;
@@ -55,7 +55,8 @@ QGoNameDescriptionInputDialog::QGoNameDescriptionInputDialog(QWidget *iParent,
 
 //--------------------------------------------------------------------------
 QGoNameDescriptionInputDialog::~QGoNameDescriptionInputDialog()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 

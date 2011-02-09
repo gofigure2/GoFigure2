@@ -37,15 +37,17 @@
 #include "SelectQueryDatabaseHelper.h"
 
 QGoDBBookmarkManager::QGoDBBookmarkManager(QWidget *iParent,
-                                           int iImgSessionID):
+                                           int iImgSessionID) :
   QGoDBNameDescEntityManager(iParent, "bookmark", iImgSessionID)
-{}
+{
+}
 
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 QGoDBBookmarkManager::~QGoDBBookmarkManager()
-{}
+{
+}
 
 //-------------------------------------------------------------------------
 

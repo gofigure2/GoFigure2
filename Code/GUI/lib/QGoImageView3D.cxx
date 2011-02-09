@@ -80,7 +80,7 @@
 #include <cstdlib>
 
 //-------------------------------------------------------------------------
-QGoImageView3D::QGoImageView3D(QWidget *iParent):
+QGoImageView3D::QGoImageView3D(QWidget *iParent) :
   QGoImageView(iParent),
   IsFullScreen(0),
   m_FirstRender(true),
@@ -576,7 +576,7 @@ QGoImageView3D::SnapshotViewXY(const GoFigure::FileType & iType,
 //-------------------------------------------------------------------------
 QString
 QGoImageView3D::SnapshotViewXZ(const GoFigure::FileType & iType,
-                              const QString & iBaseName)
+                               const QString & iBaseName)
 {
   QString filename = SnapshotView(QvtkWidget_XZ, iType,
                                   iBaseName, m_SnapshotId);
@@ -1342,7 +1342,7 @@ QGoImageView3D::UpdateCurrentActorVisibility(vtkObject *caller)
     static_cast< vtkViewImage3D * >( caller );
 
   m_CurrentActor = vtkActor::
-                   SafeDownCast( t->GetInteractorStyle3D()->GetCurrentProp() );
+    SafeDownCast( t->GetInteractorStyle3D()->GetCurrentProp() );
   m_CurrentState = t->GetInteractorStyle3D()->GetCurrentState();
 
   emit VisibilityXYZChanged();

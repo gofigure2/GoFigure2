@@ -37,7 +37,10 @@
 #include "GoDBTableWidgetContainer.h"
 #include "QGoIOConfigure.h"
 /**
-\brief
+\class GoDBTWContainerForContourMesh
+\brief This class describes the specificities of the GoDBTableWidgetContainer for 
+contour and mesh 
+\ingroup DB
 */
 class QGOIO_EXPORT GoDBTWContainerForContourMesh:public GoDBTableWidgetContainer
 {

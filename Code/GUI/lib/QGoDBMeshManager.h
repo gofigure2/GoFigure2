@@ -205,6 +205,8 @@ public slots:
   \param[in] iListMeshIDs list of the meshIDs to be checked
   \param[in,out] ioListMeshIDsToBePartOfTrack list of meshIDs with only
   one per timepoint
+  \param[in,out] ioListMeshIDsToReassign list of meshIDs that will not be 
+  part of the track
   \return message to be printed in the status bar with the list of meshIDs
   that won't be part of the selected trackid
   */

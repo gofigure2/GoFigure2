@@ -70,7 +70,7 @@
  * \brief Default Constructor.
  * \param iParent
  */
-QGoImageView::QGoImageView(QWidget *iParent):QWidget(iParent),
+QGoImageView::QGoImageView(QWidget *iParent) : QWidget(iParent),
   m_Pool(0),
   m_Image(0),
   m_IntersectionLineWidth(1.),
@@ -115,8 +115,9 @@ QGoImageView::
     m_Pool = 0;
     }
 }
+
 //--------------------------------------------------------------------------
-void QGoImageView::SetIntersectionLineWidth( const float& iWidth )
+void QGoImageView::SetIntersectionLineWidth(const float & iWidth)
 {
   m_IntersectionLineWidth = iWidth;
 }
@@ -236,9 +237,9 @@ QGoImageView::AddContour(vtkPolyData *iDataset, vtkProperty *iProperty)
 {
   int n = m_Pool->GetNumberOfItems();
 
-  std::vector< vtkActor * > oActorVector(n, (vtkActor*) NULL );
+  std::vector< vtkActor * > oActorVector(n, (vtkActor *)NULL);
 
-  if( iDataset )
+  if ( iDataset )
     {
     for ( int i = 0; i < n; i++ )
       {
@@ -313,6 +314,7 @@ QGoImageView::ZoomMode()
   //qDebug() << "Zoom Mode";
   //Change cursors
   QCursor zoomCursor(QPixmap( QString::fromUtf8(":/fig/zoom.png") ), -1, -1);
+
   ChangeCursorShape(zoomCursor);
 
   // Change mode in the collection
@@ -420,7 +422,7 @@ QGoImageView::SetInterpolate(const int & val)
 void
 QGoImageView::EnableContourPickingMode()
 {
- // qDebug() << "Contour Picking Mode";
+  // qDebug() << "Contour Picking Mode";
   //Change cursor
   ChangeCursorShape(Qt::ArrowCursor);
   // Change mode in the collection

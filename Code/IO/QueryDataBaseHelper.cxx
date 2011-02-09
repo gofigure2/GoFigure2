@@ -102,7 +102,7 @@ vtkMySQLDatabase * OpenDatabaseConnection(
   std::string Password, std::string DBName)
 {
   std::pair< bool, vtkMySQLDatabase * > ConnectionDatabase = ConnectToDatabase(
-    ServerName, login, Password, DBName);
+      ServerName, login, Password, DBName);
 
   if ( !ConnectionDatabase.first )
     {
@@ -132,9 +132,10 @@ bool CloseDatabaseConnection(
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void ExecuteQuery(vtkMySQLDatabase * iDatabaseConnector, std::string iQuery)
+void ExecuteQuery(vtkMySQLDatabase *iDatabaseConnector, std::string iQuery)
 {
   vtkSQLQuery *query = iDatabaseConnector->GetQueryInstance();
+
   query->SetQuery( iQuery.c_str() );
   if ( !query->Execute() )
     {
@@ -146,6 +147,7 @@ void ExecuteQuery(vtkMySQLDatabase * iDatabaseConnector, std::string iQuery)
     }
   query->Delete();
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -266,7 +268,7 @@ void DeleteRow(vtkMySQLDatabase *DatabaseConnector,
   querystream << value;
   querystream << "';";
 
-  ExecuteQuery(DatabaseConnector,querystream.str() );
+  ExecuteQuery( DatabaseConnector, querystream.str() );
 }
 
 //------------------------------------------------------------------------------
@@ -293,7 +295,7 @@ void DeleteRows(vtkMySQLDatabase *DatabaseConnector, std::string TableName,
   querystream << VectorValues[i];
   querystream << "');";
 
-  ExecuteQuery(DatabaseConnector,querystream.str() );
+  ExecuteQuery( DatabaseConnector, querystream.str() );
 }
 
 //------------------------------------------------------------------------------
@@ -342,11 +344,12 @@ bool DoesTableExist(vtkMySQLDatabase *DatabaseConnector,
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void UpdateValueInDB(vtkMySQLDatabase *DatabaseConnector,std::string iTableName,
-  std::string iColumnName, std::string iNewValue, std::string iField,
-  std::vector<unsigned int> iVectIDs)
+void UpdateValueInDB(vtkMySQLDatabase *DatabaseConnector, std::string iTableName,
+                     std::string iColumnName, std::string iNewValue, std::string iField,
+                     std::vector< unsigned int > iVectIDs)
 {
   std::stringstream querystream;
+
   querystream << "UPDATE ";
   querystream << iTableName;
   querystream << " SET ";
@@ -354,9 +357,10 @@ void UpdateValueInDB(vtkMySQLDatabase *DatabaseConnector,std::string iTableName,
   querystream << " = '";
   querystream << iNewValue;
   querystream << "' WHERE ";
-  querystream << GetConditions<unsigned int>(iField,iVectIDs,"OR");
-  ExecuteQuery(DatabaseConnector,querystream.str() );
+  querystream << GetConditions< unsigned int >(iField, iVectIDs, "OR");
+  ExecuteQuery( DatabaseConnector, querystream.str() );
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -379,7 +383,7 @@ void UpdateValueInDB(vtkMySQLDatabase *DatabaseConnector,
   querystream << value;
   querystream << "';";
 
-  ExecuteQuery(DatabaseConnector,querystream.str() );
+  ExecuteQuery( DatabaseConnector, querystream.str() );
 }
 
 //------------------------------------------------------------------------------
@@ -390,6 +394,7 @@ void UpdateValueInDB(vtkMySQLDatabase *DatabaseConnector,
                      std::string inewValue, std::vector< unsigned int > iVectIDs)
 {
   std::stringstream querystream;
+
   querystream << "UPDATE ";
   querystream << iTableName;
   querystream << " SET ";
@@ -410,8 +415,9 @@ void UpdateValueInDB(vtkMySQLDatabase *DatabaseConnector,
   querystream << iVectIDs[i];
   querystream << "');";
 
-  ExecuteQuery(DatabaseConnector,querystream.str() );
+  ExecuteQuery( DatabaseConnector, querystream.str() );
 }
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------

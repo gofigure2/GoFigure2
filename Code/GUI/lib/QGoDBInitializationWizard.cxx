@@ -37,7 +37,7 @@
 #include "QGoDBInitCreateAuthorsPage.h"
 #include "QGoDBInitCreateMicroscopePage.h"
 
-QGoDBInitializationWizard::QGoDBInitializationWizard(QWidget *iParent):
+QGoDBInitializationWizard::QGoDBInitializationWizard(QWidget *iParent) :
   QWizard(iParent)
 {
   this->m_CreateUserPage = new QGoDBInitCreateUserPage;

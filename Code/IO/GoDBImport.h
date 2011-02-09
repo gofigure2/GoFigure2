@@ -182,9 +182,12 @@ private:
       T EntityToSave;
       LineContent = this->GetValuesFromInfile< T >(EntityToSave);
       int OldID = atoi( EntityToSave.GetMapValue( EntityToSave.GetTableIDName() ).c_str() );
-      EntityToSave.SetField(EntityToSave.GetTableIDName(), "0");
-      int NewID = EntityToSave.SaveInDB(this->m_DatabaseConnector);
-      ioMapMatchingIDs[OldID] = NewID;
+      if (OldID > 0) // in case their is an error in the file to import
+        {
+        EntityToSave.SetField(EntityToSave.GetTableIDName(), "0");
+        int NewID = EntityToSave.SaveInDB(this->m_DatabaseConnector);
+        ioMapMatchingIDs[OldID] = NewID;
+        }
       }
     return LineContent;
   }

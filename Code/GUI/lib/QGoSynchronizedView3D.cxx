@@ -44,10 +44,11 @@
 
 //--------------------------------------------------------------------------
 QGoSynchronizedView3D::QGoSynchronizedView3D(QString iViewName,
-                                             QWidget *iParent):
+                                             QWidget *iParent) :
   QGoSynchronizedView(iViewName, iParent),
   m_View (NULL)
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 QGoSynchronizedView3D::

@@ -83,6 +83,7 @@ public:
   /**
   \brief Delete the corresponding trace in the database
   \param[in] DatabaseConnector connection to the database
+  \param[in] TraceToDelete ID of the trace to be deleted from the database
   */
   void DeleteTraceInDB(int TraceToDelete, vtkMySQLDatabase *DatabaseConnector);
 
@@ -103,7 +104,7 @@ public:
   \param[in] iListSelectedTraces IDs of the traces the collectionID need to
   be updated
   \param[in] iCollectionID new collectionID
-  \param[in] DatabaseConnector connection to the database
+  \param[in] iDatabaseConnector connection to the database
   */
   void UpdateCollectionIDOfSelectedTraces(
     std::list< unsigned int > iListSelectedTraces, unsigned int iCollectionID,
@@ -122,7 +123,7 @@ public:
   /**
   \brief Calculate the bounding box of the corresponding collection and update
   it in the database
-  \param[in] DatabaseConnector connection to the database
+  \param[in] iDatabaseConnector connection to the database
   \param[in] iCollectionID ID of the collection the bounding box is calculated
   */
   void RecalculateDBBoundingBox(
@@ -131,7 +132,7 @@ public:
   /**
   \brief Get the list of all the collectionIDs, distinct and different from zero for the
   corresponding traces IDs and recalculate the bounding boxes for them.
-  \param[in] DatabaseConnector connection to the database
+  \param[in] iDatabaseConnector connection to the database
   \param[in] iListTracesIDs list of the tracesIDs the collection need to be recalculated
   */
   void RecalculateDBBoundingBox(
@@ -215,10 +216,7 @@ public:
   }
 
   /**
-  \overload CreateNewTraceInDB(T iTrace, vtkMySQLDatabase *iDatabaseConnector,
-                                  NameWithColorData iColor, unsigned int iCollectionID)
-  \param[in] iCoordIDMin coordinateID of the minimum of the bounding box
-  \param[in] iCoordIDMax coordinateID of the maximum of the bounding box
+  \overload 
   */
   template< typename T >
   unsigned int CreateNewTraceInDB(T iTrace, vtkMySQLDatabase *iDatabaseConnector,
@@ -301,7 +299,7 @@ public:
   value to be updated
   */
   void UpdateValueForListTraces(
-    vtkMySQLDatabase *iDatabaseConnector,std::string iNamevalue,
+    vtkMySQLDatabase *iDatabaseConnector,std::string iNameValue,
     std::string iValue, std::list<unsigned int> iListTraceIDs);
 
   /**
@@ -421,24 +419,7 @@ public:
   */
   unsigned int GetBoundedBoxTimePoint(
     vtkMySQLDatabase *iDatabaseConnector, unsigned int iTraceID, bool MinTimePoint = true);
-  /**
-  \brief get the timepoint min for the trace
-  \param[in] iDatabaseConnector connection to the database
-  \param[in] iTraceID ID of the trace the timepoint min is needed
-  \return the timepoint min
-  */
-  //unsigned int GetTimePointMin(vtkMySQLDatabase *iDatabaseConnector, 
-  //  unsigned int iTraceID);
-
-  /**
-  \brief get the timepoint max for the trace
-  \param[in] iDatabaseConnector connection to the database
-  \param[in] iTraceID ID of the trace the timepoint min is needed
-  \return the timepoint max
-  */
-  //unsigned int GetTimePointMax(vtkMySQLDatabase *iDatabaseConnector, 
-  //  unsigned int iTraceID);
-
+ 
   /**
   \brief get a list of structures filled with data from the database
   \param[in] iDatabaseConnector connection to the database

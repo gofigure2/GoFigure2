@@ -34,25 +34,24 @@
 
 #include "MeshContainer.h"
 
-MeshContainer::
-MeshContainer(QObject* iParent,
-              QGoImageView3D *iView) : ContourMeshContainer( iParent, iView )
+MeshContainer::MeshContainer(QObject *iParent,
+                             QGoImageView3D *iView) : ContourMeshContainer(iParent, iView)
 {
 }
 
 MeshContainer::~MeshContainer()
-{}
-
-std::vector< vtkActor* >
-MeshContainer::
-AddTrace( vtkPolyData* iNode, vtkProperty* iProperty )
 {
-  if( m_ImageView )
+}
+
+std::vector< vtkActor * >
+MeshContainer::AddTrace(vtkPolyData *iNode, vtkProperty *iProperty)
+{
+  if ( m_ImageView )
     {
     return this->m_ImageView->AddContour(iNode, iProperty);
     }
   else
     {
-    return std::vector< vtkActor* >();
+    return std::vector< vtkActor * >();
     }
 }

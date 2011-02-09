@@ -79,6 +79,7 @@ public:
   for all timepoints if the timepoint is set to the default one or for the
   corresponding timepoint if not
   \param[in] iDatabaseConnector connection to the database
+  \param[in] ioIDToSelect ID to be selected in the combobox
   \return a list of the tracesIDs with their
   corresponding QColor
   */
@@ -208,7 +209,7 @@ public:
   \return a list of the IDs
   */
   std::list< unsigned int > GetLastCreatedTracesIDs(
-    vtkMySQLDatabase *iDatabaseConnector, int iNumberOfTraceIDs);
+    vtkMySQLDatabase *iDatabaseConnector, int iNumberOfTracesIDs);
 
   /**
   \brief set the pointer to the selected collection data
@@ -224,7 +225,7 @@ public:
 
   /**
   \brief set the pointer to the current selected color
-  \param[in] iTimePoint pointer to the current timepoint
+  \param[in] iColorData pointer to the current selected color
   */
   void SetSelectedColor(NameWithColorData* iColorData);
   /** \todo Lydie: create a class for ContourMesh*/
@@ -274,6 +275,8 @@ signals:
   displayed for example)
   */
   void AddNewTraceIDInTM(std::pair<std::string, QColor> iTraceToAddData);
+
+  void PrintMessage(QString iMessage, int iTimeOut = 0);
 
 protected:
   std::string m_TraceName;
@@ -392,6 +395,9 @@ protected:
   get the data from the database and to display them in the m_Table but has
   no value yet
   \param[in] iDatabaseConnector connection to the database
+  \param[in] iState if false the visible column will be unchecked in the TW
+  \param[in] iIndexShowColumn index of the show column in the TW Container(to be set up 
+  for mesh and contour)
   \tparam T this method takes only children of GoDBTableWidgetContainer as type
   */
   template< typename T >
@@ -410,7 +416,7 @@ protected:
       iTWContainer->GetIndexForGroupColor(this->m_TraceName),
       iTWContainer->GetIndexForGroupColor(this->m_CollectionName),
       this->m_TraceName, this->m_CollectionName, ColumnNamesAndToolTips, 
-      iState,iIndexShowColumn);
+      iState, iIndexShowColumn);
     //this->m_Table->setSortingEnabled(true);
   }
 
@@ -454,14 +460,16 @@ protected:
   void DisplayInfoForExistingTraceTemplate(T *iTWContainer,
                                            vtkMySQLDatabase *iDatabaseConnector, int iTraceID)
   {
-    TWContainerType RowContainer =
-      iTWContainer->GetContainerForOneSpecificTrace(iDatabaseConnector,
-                                                    iTraceID);
-
-    this->m_Table->UpdateRow(RowContainer,
-                             iTWContainer->GetIndexForGroupColor(this->m_TraceName),
-                             iTWContainer->GetIndexForGroupColor(this->m_CollectionName),
-                             this->m_TraceName, this->m_CollectionName, iTraceID);
+    if (iTraceID != 0)
+      {
+      TWContainerType RowContainer =
+        iTWContainer->GetContainerForOneSpecificTrace(iDatabaseConnector,
+                                                      iTraceID);
+      this->m_Table->UpdateRow(RowContainer,
+                               iTWContainer->GetIndexForGroupColor(this->m_TraceName),
+                               iTWContainer->GetIndexForGroupColor(this->m_CollectionName),
+                               this->m_TraceName, this->m_CollectionName, iTraceID);
+      }
   }
 
   /**
@@ -481,7 +489,7 @@ protected:
   \param[in,out] iTrace GoDBTraceRow with the fields to be set
   \param[in] iCollectionID collection ID of the trace
   \param[in] iTCoordMax T coord max of the bounding box
-  \tparam
+  \tparam T
   */
   template< typename T >
   unsigned int CreateNewTraceInDBFromVisu(
@@ -594,11 +602,11 @@ protected:
   */
   template< typename T,typename C >
   std::list< unsigned int > UpdateTheTracesColorTemplate(
-    vtkMySQLDatabase *iDatabaseConnector, C *iContainerForVisu)
+    vtkMySQLDatabase *iDatabaseConnector, C *iContainerInfoForVisu)
   {
     std::list< unsigned int > oListOfCollectionOfIDs = std::list< unsigned int >();
     std::list< unsigned int > ListTracesIDs;
-    ListTracesIDs = iContainerForVisu->
+    ListTracesIDs = iContainerInfoForVisu->
                    UpdateAllHighlightedElementsWithGivenColor(this->m_SelectedColorData->second);
     if ( ListTracesIDs.empty() )
       {
@@ -665,6 +673,8 @@ protected:
   \param[in] iDatabaseConnector connection to the database
   \param[in] iContainerForVisu common container for the visu and database
   \param[in] iListTracesToDelete list of the tracesIDs to be deleted
+  \param[in] DeleteHighlightedTraces if true, the traces to be deleted are the ones 
+  highlighted in the visu
   \tparam T ContourMeshContainer or TrackContainer
   */
   template<typename T>
@@ -698,10 +708,11 @@ protected:
   selected columns as values for all traces in the table widget and
   update the color of the traces in the visu
   \param[in] iContainerForVisu common container for the visu and database
+  \param[in] IsChecked corresponds to the state of the checkable action
   \tparam ContourMeshContainer or TrackContainer
   */
   template<typename T>
-  void SetColorCodingTemplate( T* iContainerForVisu,bool IsChecked)
+  void SetColorCodingTemplate( T* iContainerForVisu, bool IsChecked)
   {
     std::string ColumnName = "";
     std::map<unsigned int, std::string> Values;
@@ -833,9 +844,9 @@ protected slots:
   checked traces" in the context menu, emit the signal NewCollectionFromCheckedTraces
   as it impact the collection also
   */
-  void CreateCorrespondingCollection();
+  virtual void CreateCorrespondingCollection();
 
-  void AddToSelectedCollection();
+  virtual void AddToSelectedCollection();
 
   /**
   \brief modify to the opposite one the highlighted property of the corresponding

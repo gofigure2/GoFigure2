@@ -115,10 +115,10 @@ int vtkPoissonReconstruction::RequestData(vtkInformation *vtkNotUsed(request),
 
   // get the input and ouptut
   vtkPolyData *input = vtkPolyData::SafeDownCast(
-    inInfo->Get( vtkDataObject::DATA_OBJECT() ) );
+      inInfo->Get( vtkDataObject::DATA_OBJECT() ) );
 
   vtkPolyData *output = vtkPolyData::SafeDownCast(
-    outInfo->Get( vtkDataObject::DATA_OBJECT() ) );
+      outInfo->Get( vtkDataObject::DATA_OBJECT() ) );
 
   const int Degree = 2;
 
@@ -148,9 +148,9 @@ int vtkPoissonReconstruction::RequestData(vtkInformation *vtkNotUsed(request),
     return EXIT_FAILURE;
     }
 
-  tree.setTree( input, this->Depth, this->KernelDepth, Real( this->SamplesPerNode),
-                this->Scale, center, scale, !this->NoResetSamples,
-                this->Confidence );
+  tree.setTree(input, this->Depth, this->KernelDepth, Real(this->SamplesPerNode),
+               this->Scale, center, scale, !this->NoResetSamples,
+               this->Confidence);
 
   //DumpOutput("Leaves/Nodes: %d/%d\n",tree.tree.leaves(),tree.tree.nodes());
   //DumpOutput("   Tree Size: %.3f
