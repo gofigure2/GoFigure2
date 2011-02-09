@@ -38,7 +38,10 @@
 #include "QGoIOConfigure.h"
 #include "GoFigureTrackAttributes.h"
 /**
-\brief
+\class GoDBTWContainerForTrack
+\brief This class describes the specificities of the GoDBTWContainerForTrackLineage for 
+track
+\ingroup DB
 */
 class QGOIO_EXPORT GoDBTWContainerForTrack:public GoDBTWContainerForTrackLineage
 {
