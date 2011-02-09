@@ -47,7 +47,7 @@
 
 MeshTextFileImport::MeshTextFileImport(const std::string & iServerName, const std::string & iLogin,
                                        const std::string & iPassword, const std::string & iDBName,
-                                       const unsigned int & iImagingSessionId):m_ImagingSessionId(iImagingSessionId)
+                                       const unsigned int & iImagingSessionId) : m_ImagingSessionId(iImagingSessionId)
 {
   m_DBConnector =
     OpenDatabaseConnection(iServerName, iLogin, iPassword, iDBName);

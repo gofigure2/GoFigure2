@@ -40,6 +40,12 @@
 #include <string>
 #include <map>
 
+/**
+\class GoDBImgSessionRow
+\brief manages a map with keys matching fields of the gofiguredatabase ImgSession table
+and values of the map matching a row of the ImgSession table
+\ingroup DB
+*/
 class QGOIO_EXPORT GoDBImgSessionRow:public GoDBRow
 {
 public:
@@ -47,8 +53,12 @@ public:
 
   ~GoDBImgSessionRow()
   {}
-  /**\brief return the ImgSessionID of the imaging session with the same date+time of creation
-  and microscope already registered in the DB or -1 if not yet created*/
+  /**
+  \brief return the ImgSessionID of the imaging session with the same date+time of creation
+  and microscope already registered in the DB or -1 if not yet created
+  \param[in] DatabaseConnector connection to the database
+  \return the ID of the existing ImgSession, -1 if the ImgSession does'nt exist yet
+  */
   int DoesThisImagingSessionExist(vtkMySQLDatabase *DatabaseConnector);
 
 protected:

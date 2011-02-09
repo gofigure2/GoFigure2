@@ -211,6 +211,7 @@ GradientWeightedDistanceImageFilter< TFeatureImage, TInputImage, TSegmentImage >
      << std::endl;
   os << indent << "Use LevelSet:              " << m_UseLevelSet << std::endl;
 }
+
 } /* end namespace itk */
 
 #endif

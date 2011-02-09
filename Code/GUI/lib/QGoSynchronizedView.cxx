@@ -45,7 +45,7 @@
 * \param iViewName
 * \param iParent
 */
-QGoSynchronizedView::QGoSynchronizedView(QString iViewName, QWidget *iParent):
+QGoSynchronizedView::QGoSynchronizedView(QString iViewName, QWidget *iParent) :
   QWidget                  (iParent),
   m_ViewName       (iViewName),
   m_Image          (NULL),
@@ -67,7 +67,8 @@ QGoSynchronizedView::QGoSynchronizedView(QString iViewName, QWidget *iParent):
 //--------------------------------------------------------------------------
 QGoSynchronizedView::
 ~QGoSynchronizedView()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 void QGoSynchronizedView::changeEvent(QEvent *e)

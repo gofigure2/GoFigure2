@@ -46,20 +46,20 @@ GoDBTraceRow::GoDBTraceRow()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-GoDBTraceRow::
-GoDBTraceRow( vtkMySQLDatabase *DatabaseConnector, vtkPolyData *TraceVisu,
-              GoDBCoordinateRow Min, GoDBCoordinateRow Max,
-              unsigned int ImgSessionID )
+GoDBTraceRow::GoDBTraceRow(vtkMySQLDatabase *DatabaseConnector, vtkPolyData *TraceVisu,
+                           GoDBCoordinateRow Min, GoDBCoordinateRow Max,
+                           unsigned int ImgSessionID)
 {
-  (void) Min;
-  (void) Max;
-  (void) TraceVisu;
-  (void) DatabaseConnector;
+  (void)Min;
+  (void)Max;
+  (void)TraceVisu;
+  (void)DatabaseConnector;
 
   this->InitializeMap();
   this->m_MapRow["ImagingSessionID"] =
     ConvertToString< unsigned int >(ImgSessionID);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -115,12 +115,12 @@ void GoDBTraceRow::SetTheBoundingBox(vtkMySQLDatabase *DatabaseConnector,
 int GoDBTraceRow::DoesThisBoundingBoxExist(
   vtkMySQLDatabase *DatabaseConnector)
 {
-  std::vector<FieldWithValue> Conditions;
-  this->AddConditions("CoordIDMax",Conditions);
-  this->AddConditions("CoordIDMin",Conditions);
-  this->AddConditions("ImagingSessionID",Conditions);
+  std::vector< FieldWithValue > Conditions;
+  this->AddConditions("CoordIDMax", Conditions);
+  this->AddConditions("CoordIDMin", Conditions);
+  this->AddConditions("ImagingSessionID", Conditions);
 
-  return FindOneID(DatabaseConnector,this->m_TableName, this->m_TableIDName,Conditions);
+  return FindOneID(DatabaseConnector, this->m_TableName, this->m_TableIDName, Conditions);
 }
 
 //-------------------------------------------------------------------------
@@ -177,15 +177,19 @@ void GoDBTraceRow::SetCollectionID(unsigned int iCollectionID)
 //-------------------------------------------------------------------------
 void GoDBTraceRow::SetImgSessionID(unsigned int iImgSessionID)
 {
-   this->SetField< int >("ImagingSessionID", iImgSessionID);
+  this->SetField< int >("ImagingSessionID", iImgSessionID);
 }
 
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void GoDBTraceRow::SetValuesForSpecificID(int ID, vtkMySQLDatabase *iDatabaseConnector)
+bool GoDBTraceRow::SetValuesForSpecificID(int ID, vtkMySQLDatabase *iDatabaseConnector)
 {
-  GoDBRow::SetValuesForSpecificID(ID, iDatabaseConnector);
-  //add the "" for the string
-  this->SetField("Points", this->m_MapRow["Points"]);
+  if ( GoDBRow::SetValuesForSpecificID(ID, iDatabaseConnector) )
+    {
+    //add the "" for the string
+    this->SetField("Points", this->m_MapRow["Points"]);
+    return true;
+    }
+  return false;
 }

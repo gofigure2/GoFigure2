@@ -34,7 +34,7 @@
 #include "GoDBTWContainerForTrackLineage.h"
 
 GoDBTWContainerForTrackLineage::GoDBTWContainerForTrackLineage(
-  std::string iTraceName, std::string iCollectionName, int iImgSessionID):
+  std::string iTraceName, std::string iCollectionName, int iImgSessionID) :
   GoDBTableWidgetContainer(iTraceName, iCollectionName, iImgSessionID)
 {
   m_ColumnsInfos = GetColumnsInfoForTraceTable();
@@ -44,7 +44,8 @@ GoDBTWContainerForTrackLineage::GoDBTWContainerForTrackLineage(
 
 //--------------------------------------------------------------------------
 GoDBTWContainerForTrackLineage::~GoDBTWContainerForTrackLineage()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 

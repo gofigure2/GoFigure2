@@ -64,7 +64,7 @@
 #include <algorithm>
 
 //--------------------------------------------------------------------------
-QGoTabImageView4D::QGoTabImageView4D(QWidget *iParent):
+QGoTabImageView4D::QGoTabImageView4D(QWidget *iParent) :
   QGoTabElementBase(iParent),
   m_XYZImage(0),
   m_XYTImage(0),
@@ -288,6 +288,7 @@ void QGoTabImageView4D::CreateModeActions()
   //QObject::connect( DefaultAction, SIGNAL( triggered() ),
   // this, SLOT( DefaultMode() ) );
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -714,7 +715,7 @@ QGoTabImageView4D::SnapshotViewXY(const GoFigure::FileType & iType,
 //--------------------------------------------------------------------------
 QString
 QGoTabImageView4D::SnapshotViewXZ(const GoFigure::FileType & iType,
-                                 const QString & iBaseName)
+                                  const QString & iBaseName)
 {
   return m_XYZImageView->SnapshotViewXZ(iType, iBaseName);
 }
@@ -724,7 +725,7 @@ QGoTabImageView4D::SnapshotViewXZ(const GoFigure::FileType & iType,
 //--------------------------------------------------------------------------
 QString
 QGoTabImageView4D::SnapshotViewYZ(const GoFigure::FileType & iType,
-                                 const QString & iBaseName)
+                                  const QString & iBaseName)
 {
   return m_XYZImageView->SnapshotViewYZ(iType, iBaseName);
 }

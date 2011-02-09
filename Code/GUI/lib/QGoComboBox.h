@@ -83,9 +83,7 @@ public slots:
   virtual void InitializeTheList(QStringList iListItems);
 
   /**
-  \overload InitializeTheList(QStringList iListItems)
-  \param[in] iItemsData contains the name and the description of the items to be 
-  displayed in the combobox
+  \overload
   */
   virtual void InitializeTheList(NamesDescrContainerType iItemsData);
 
@@ -97,9 +95,7 @@ public slots:
   virtual void SetItemsFromList(QStringList iDataFromList);
 
   /**
-  \overload SetItemsFromList(QStringList iDataFromList)
-  \param[in] iItemsData contains the name and the description of the items to be 
-  displayed in the combobox
+  \overload
   */
   virtual void SetItemsFromList(NamesDescrContainerType iItemsData);
 

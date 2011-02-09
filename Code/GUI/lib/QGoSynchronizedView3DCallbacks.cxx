@@ -45,7 +45,7 @@
 //--------------------------------------------------------------------------
 QGoSynchronizedView3DCallbacks::QGoSynchronizedView3DCallbacks(std::vector< QGoSynchronizedView3D * >
                                                                ioOpenSynchronizedViews,
-                                                               QObject *iParent):
+                                                               QObject *iParent) :
   QObject                  (iParent)
 {
   m_vtkCallBackCamSync.resize(4);

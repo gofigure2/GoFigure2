@@ -35,6 +35,8 @@
 #ifndef __StructureHelper_h
 #define __StructureHelper_h
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
 struct TraceID {};
 struct CollectionID {};
 struct ActorXY {};
@@ -45,5 +47,7 @@ struct Nodes {};
 struct TCoord {};
 struct Highlighted {};
 struct Visible {};
+
+#endif
 
 #endif

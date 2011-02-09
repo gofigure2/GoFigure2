@@ -36,9 +36,10 @@
 #include <QInputDialog>
 #include "SelectQueryDatabaseHelper.h"
 
-QGoDBColorManager::QGoDBColorManager (QWidget *iParent):
+QGoDBColorManager::QGoDBColorManager (QWidget *iParent) :
   QGoDBNameDescEntityManager(iParent, "color", 0)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -97,8 +98,8 @@ void QGoDBColorManager::ValidateName(std::string iName, std::string iDescription
 bool QGoDBColorManager::DeleteEntity(vtkMySQLDatabase *iDatabaseConnector)
 {
   QGoDeleteFromListDialog *Dialog = new QGoDeleteFromListDialog(
-    this->GetListExistingColors(iDatabaseConnector),
-    this, this->m_EntityName);
+      this->GetListExistingColors(iDatabaseConnector),
+      this, this->m_EntityName);
 
   this->m_DatabaseConnector = iDatabaseConnector;
   QObject::connect(Dialog,
@@ -119,7 +120,7 @@ QGoDBColorManager::GetListExistingColors(vtkMySQLDatabase *iDatabaseConnector)
 {
   std::list< ItemColorComboboxData > oInfoColors;
   std::vector< std::string >         ResultsQuery  = ListAllValuesForOneColumn(
-    iDatabaseConnector, "*", "color", "name");
+      iDatabaseConnector, "*", "color", "name");
   unsigned int i = 0;
   while ( i < ResultsQuery.size() )
     {

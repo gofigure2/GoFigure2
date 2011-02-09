@@ -43,7 +43,8 @@ GoDBIntensityRow::GoDBIntensityRow()
 
 //-------------------------------------------------------------------------
 GoDBIntensityRow::~GoDBIntensityRow()
-{}
+{
+}
 
 //-------------------------------------------------------------------------
 
@@ -68,7 +69,7 @@ int GoDBIntensityRow::SaveInDB(vtkMySQLDatabase *DatabaseConnector)
   if ( IntensityID == -1 )
     {
     IntensityID = AddOnlyOneNewObjectInTable< GoDBIntensityRow >(
-      DatabaseConnector, "intensity", this, "IntensityID");
+        DatabaseConnector, "intensity", this, "IntensityID");
     }
   return IntensityID;
 }
@@ -78,10 +79,10 @@ int GoDBIntensityRow::SaveInDB(vtkMySQLDatabase *DatabaseConnector)
 //-------------------------------------------------------------------------
 int GoDBIntensityRow::DoesThisIntensityAlreadyExists(
   vtkMySQLDatabase *DatabaseConnector)
-{ 
-  std::vector<FieldWithValue> Conditions;
-  this->AddConditions("ChannelID",Conditions);
-  this->AddConditions("meshID",Conditions);
+{
+  std::vector< FieldWithValue > Conditions;
+  this->AddConditions("ChannelID", Conditions);
+  this->AddConditions("meshID", Conditions);
 
   return FindOneID(DatabaseConnector, "intensity", "IntensityID", Conditions);
 }

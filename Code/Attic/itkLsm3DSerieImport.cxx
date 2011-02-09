@@ -45,7 +45,8 @@ Lsm3DSerieImport::Lsm3DSerieImport()
 
 Lsm3DSerieImport::
 ~Lsm3DSerieImport()
-{}
+{
+}
 
 void
 Lsm3DSerieImport::SetFileName(std::string name)
@@ -279,4 +280,5 @@ Lsm3DSerieImport::CreateOutput()
     }
 #endif
 }
+
 }

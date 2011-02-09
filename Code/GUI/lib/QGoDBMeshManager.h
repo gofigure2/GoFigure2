@@ -42,6 +42,12 @@
 #include "GoDBMeshRow.h"
 #include "MeshContainer.h"
 
+/**
+\class QGoDBMeshManager
+\brief This class manages the database queries, the table widget and
+the data from the database in the Container for visu for the meshes
+\ingroup DB, GUI
+*/
 class QGOGUILIB_EXPORT QGoDBMeshManager:public QGoDBTraceManager
 {
   Q_OBJECT
@@ -148,6 +154,10 @@ public:
     vtkMySQLDatabase* iDatabaseConnector,
     std::list< unsigned int > iListCollectionIDs);
 
+  //method in QGoDBTraceManager
+  virtual std::list< NameWithColorData > GetAllTraceIDsWithColor(
+    vtkMySQLDatabase *iDatabaseConnector, std::string & ioIDToSelect);
+
 public slots:
   /**
   \brief get the coordinate info for meshes needed for the visu
@@ -201,6 +211,8 @@ public slots:
   \param[in] iListMeshIDs list of the meshIDs to be checked
   \param[in,out] ioListMeshIDsToBePartOfTrack list of meshIDs with only
   one per timepoint
+  \param[in,out] ioListMeshIDsToReassign list of meshIDs that will not be 
+  part of the track
   \return message to be printed in the status bar with the list of meshIDs
   that won't be part of the selected trackid
   */

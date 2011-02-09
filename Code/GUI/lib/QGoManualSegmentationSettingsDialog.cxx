@@ -51,7 +51,7 @@ QGoManualSegmentationSettingsDialog::QGoManualSegmentationSettingsDialog(QWidget
                                                                          const double & iWidth,
                                                                          const QColor & iLineColor,
                                                                          const QColor & iNodeColor,
-                                                                         const QColor & iActivatedNodeColor):QDialog(
+                                                                         const QColor & iActivatedNodeColor) : QDialog(
     iParent),
   m_LineWidth(iWidth),
   m_LineColor(iLineColor),

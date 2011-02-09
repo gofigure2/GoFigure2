@@ -69,7 +69,7 @@
 #include "vtkImageExport.h"
 
 //--------------------------------------------------------------------------
-QGoFilterSemiAutoBase::QGoFilterSemiAutoBase(QObject *iParent):
+QGoFilterSemiAutoBase::QGoFilterSemiAutoBase(QObject *iParent) :
   QObject(iParent),
   m_Widget(NULL),
   m_Radius(3.),
@@ -226,6 +226,7 @@ QGoFilterSemiAutoBase::setChannel(int iChannel)
 {
   m_Channel = iChannel;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -257,7 +258,7 @@ QGoFilterSemiAutoBase::setPoints(vtkPoints *iPoints)
 
 //--------------------------------------------------------------------------
 void
-QGoFilterSemiAutoBase::setOriginalImageMC(std::vector< vtkSmartPointer<vtkImageData> > *iOriginalImage)
+QGoFilterSemiAutoBase::setOriginalImageMC(std::vector< vtkSmartPointer< vtkImageData > > *iOriginalImage)
 {
   m_OriginalImageMC = iOriginalImage;
 }
@@ -283,22 +284,22 @@ QGoFilterSemiAutoBase::UpdateVisibility(int iCurrentFilter)
                          this, SLOT( Apply() ) );
     }
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
-QGoFilterSemiAutoBase::
-UpdateAdvancedMode( bool checked)
+QGoFilterSemiAutoBase::UpdateAdvancedMode(bool checked)
 {
-  QWidget *w = m_Widget->parentWidget()->parentWidget();
-  QGoSeedBaseWidget* baseWidget = dynamic_cast<QGoSeedBaseWidget*>( w );
+  QWidget *          w = m_Widget->parentWidget()->parentWidget();
+  QGoSeedBaseWidget *baseWidget = dynamic_cast< QGoSeedBaseWidget * >( w );
 
-  if( checked && (m_Number != baseWidget->GetCurrentFilter()) )
+  if ( checked && ( m_Number != baseWidget->GetCurrentFilter() ) )
     {
     m_Widget->hide();
     }
-
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -508,22 +509,22 @@ QGoFilterSemiAutoBase::ReconstructMesh(vtkImageData *iInputImage, const double &
 //   contours->SetNumberOfContours(1);
 //   contours->Update();
 
-  vtkSmartPointer<vtkContourFilter> contours = vtkSmartPointer<vtkContourFilter>::New();
-  contours->SetInput( iInputImage );
+  vtkSmartPointer< vtkContourFilter > contours = vtkSmartPointer< vtkContourFilter >::New();
+  contours->SetInput(iInputImage);
   contours->SetComputeGradients(0);
   contours->SetComputeNormals(0);
   contours->SetComputeScalars(0);
   contours->SetNumberOfContours(1);
-  contours->SetValue( 0, iThreshold );
+  contours->SetValue(0, iThreshold);
   contours->Update();
 
-  vtkSmoothPolyDataFilter* smoother =
-  vtkSmoothPolyDataFilter::New();
+  vtkSmoothPolyDataFilter *smoother =
+    vtkSmoothPolyDataFilter::New();
   smoother->SetInput( contours->GetOutput() );
   smoother->SetNumberOfIterations(400);
   smoother->Update();
 
-  vtkSmartPointer<vtkFeatureEdges> feature = vtkSmartPointer<vtkFeatureEdges>::New();
+  vtkSmartPointer< vtkFeatureEdges > feature = vtkSmartPointer< vtkFeatureEdges >::New();
   feature->SetInputConnection( smoother->GetOutputPort() );
   feature->BoundaryEdgesOn();
   feature->FeatureEdgesOff();
@@ -532,7 +533,7 @@ QGoFilterSemiAutoBase::ReconstructMesh(vtkImageData *iInputImage, const double &
   feature->Update();
 
   vtkSmartPointer< vtkPolyData > temp;
-  vtkFillHolesFilter* fillFilter = vtkFillHolesFilter::New();
+  vtkFillHolesFilter *           fillFilter = vtkFillHolesFilter::New();
 
   if ( feature->GetOutput()->GetNumberOfCells() > 0 )
     {
@@ -544,12 +545,12 @@ QGoFilterSemiAutoBase::ReconstructMesh(vtkImageData *iInputImage, const double &
     }
   else
     {
-      temp = smoother->GetOutput();
+    temp = smoother->GetOutput();
     }
 
   // keep the largest region
-  vtkPolyDataConnectivityFilter* connectivityFilter = vtkPolyDataConnectivityFilter::New();
-  connectivityFilter->SetInput( temp );
+  vtkPolyDataConnectivityFilter *connectivityFilter = vtkPolyDataConnectivityFilter::New();
+  connectivityFilter->SetInput(temp);
   connectivityFilter->SetExtractionModeToLargestRegion();
   connectivityFilter->Update();
 

@@ -90,8 +90,9 @@
 #include <sstream>
 
 //----------------------------------------------------------------------------
-vtkViewImage2DCommand::vtkViewImage2DCommand():Viewer(0)
-{}
+vtkViewImage2DCommand::vtkViewImage2DCommand() : Viewer(0)
+{
+}
 
 //----------------------------------------------------------------------------
 void
@@ -188,7 +189,7 @@ vtkViewImage2DCommand::Execute( vtkObject *caller,
   if ( event == vtkViewImage2DCommand::RequestedPositionEvent )
     {
     double *position = this->Viewer->GetWorldCoordinatesFromDisplayPosition (
-      isi->GetRequestedPosition () );
+        isi->GetRequestedPosition () );
     this->Viewer->SetWorldCoordinates(position);
     this->Viewer->Render();
     }
@@ -210,11 +211,11 @@ vtkViewImage2DCommand::Windowing(vtkInteractorStyleImage2D *isi)
 
   // Compute normalized delta
   double dx = 4.0
-              * ( isi->GetWindowLevelCurrentPosition()[0]
-                  - isi->GetWindowLevelStartPosition()[0] ) / size[0];
+    * ( isi->GetWindowLevelCurrentPosition()[0]
+        - isi->GetWindowLevelStartPosition()[0] ) / size[0];
   double dy = 4.0
-              * ( isi->GetWindowLevelStartPosition()[1]
-                  - isi->GetWindowLevelCurrentPosition()[1] ) / size[1];
+    * ( isi->GetWindowLevelStartPosition()[1]
+        - isi->GetWindowLevelCurrentPosition()[1] ) / size[1];
 
   // Scale by current values
   if ( fabs(window) > 0.01 ) { dx = dx * window; }
@@ -251,7 +252,7 @@ void vtkViewImage2DCommand::PrintInformation()
     this->Viewer->GetRenderWindow()->GetInteractor();
 
   double *pos = this->Viewer->GetWorldCoordinatesFromDisplayPosition (
-    rwi->GetLastEventPosition () );
+      rwi->GetLastEventPosition () );
 
   int *idx = this->Viewer->GetImageCoordinatesFromWorldCoordinates(pos);
 
