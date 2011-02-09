@@ -39,15 +39,41 @@ endif()
 # Conditionnaly include ExternalProject Target
 #---------------------------------------------------------------------------
 
+set(GoFigure2_DEPENDENCIES)
+
 # REQUIRED MYSQLand QT TO BUILD VTK
-include("${GOFIGURE2_SOURCE_DIR}/CMake/ConfigMySQL.cmake")
-include("${GOFIGURE2_SOURCE_DIR}/CMake/ConfigQT.cmake")
-include("${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/External-VTK.cmake")
+OPTION( SUPERBUILD_VTK "SuperBuild VTK" ON )
 
-include("${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/External-ITK.cmake")
-include("${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/External-Boost.cmake")
+IF( SUPERBUILD_VTK )
+  include("${GOFIGURE2_SOURCE_DIR}/CMake/ConfigMySQL.cmake")
+  include("${GOFIGURE2_SOURCE_DIR}/CMake/ConfigQT.cmake")
+  include("${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/External-VTK.cmake")
+  LIST(APPEND GoFigure2_DEPENDENCIES VTK)
+ELSE( SUPERBUILD_VTK )
+  include( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigVTK.cmake" )
+ENDIF( SUPERBUILD_VTK )
 
-set(GoFigure2_DEPENDENCIES ITK VTK Boost)
+#-------------------------
+
+OPTION( SUPERBUILD_ITK "SuperBuild ITK" ON )
+
+IF( SUPERBUILD_ITK )
+  include("${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/External-ITK.cmake")
+  LIST(APPEND GoFigure2_DEPENDENCIES ITK)
+ELSE( SUPERBUILD_ITK )
+  include( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigITK.cmake" )
+ENDIF( SUPERBUILD_ITK )
+
+#-------------------------
+
+OPTION( SUPERBUILD_BOOST "SuperBuild BOOST" ON )
+
+IF( SUPERBUILD_BOOST )
+  include("${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/External-Boost.cmake")
+  LIST(APPEND GoFigure2_DEPENDENCIES Boost)
+ELSE( SUPERBUILD_BOOST )
+  include( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigBoost.cmake" )
+ENDIF( SUPERBUILD_BOOST )
 
 #---------------------------------------------------------------------------
 # Set superbuild boolean args
