@@ -40,7 +40,7 @@ namespace itk
 {
 template< class TInputImage, class TOutputImage >
 PreprocessImageFilter< TInputImage, TOutputImage >
-::PreprocessImageFilter():m_LargestCellRadius (4.0)
+::PreprocessImageFilter() : m_LargestCellRadius (4.0)
 {
   this->Superclass::SetNumberOfRequiredInputs (1);
   this->Superclass::SetNumberOfRequiredOutputs (1);
@@ -62,7 +62,7 @@ PreprocessImageFilter< TInputImage, TOutputImage >::GenerateData()
   for ( unsigned int j = 0; j < ImageDimension; j++ )
     {
     radius[j] = static_cast< ImageSizeValueType >(
-      0.3 * m_LargestCellRadius / spacing[j]);
+        0.3 * m_LargestCellRadius / spacing[j]);
     }
 
   ImagePointer cellImg;
@@ -101,6 +101,7 @@ PreprocessImageFilter< TInputImage, TOutputImage >::PrintSelf(std::ostream & os,
   os << indent << "Largest cell radius: " << GetLargestCellRadius()
      << std::endl;
 }
+
 }   /* end namespace itk */
 
 #endif

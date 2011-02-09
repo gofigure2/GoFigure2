@@ -59,56 +59,56 @@
 
 namespace boost
 {
-  typedef multi_index::multi_index_container<
-      ContourMeshStructure,
-      boost::multi_index::indexed_by<
-        boost::multi_index::ordered_non_unique<
-          boost::multi_index::tag< TCoord >,
-          BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, unsigned int, TCoord)
-          >,
-        boost::multi_index::hashed_non_unique<
-          boost::multi_index::tag< ActorXY >,
-          BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorXY)
-          >,
-        boost::multi_index::hashed_non_unique<
-          boost::multi_index::tag< ActorXZ >,
-          BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorXZ)
-          >,
-        boost::multi_index::hashed_non_unique<
-          boost::multi_index::tag< ActorYZ >,
-          BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorYZ)
-          >,
-        boost::multi_index::hashed_non_unique<
-          boost::multi_index::tag< ActorXYZ >,
-          BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorXYZ)
-          >,
-        boost::multi_index::hashed_non_unique<
-          boost::multi_index::tag< Nodes >,
-          BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkPolyData *, Nodes)
-          >,
-        boost::multi_index::ordered_unique<
-          boost::multi_index::tag< TraceID >,
-          BOOST_MULTI_INDEX_MEMBER(TraceStructure, unsigned int, TraceID)
-          >,
-        boost::multi_index::ordered_non_unique<
-          boost::multi_index::tag< CollectionID >,
-          BOOST_MULTI_INDEX_MEMBER(TraceStructure, unsigned int, CollectionID)
-          >,
-        boost::multi_index::ordered_non_unique<
-          boost::multi_index::tag< Highlighted >,
-          BOOST_MULTI_INDEX_MEMBER(TraceStructure, bool, Highlighted)
-          >,
-        boost::multi_index::ordered_non_unique<
-          boost::multi_index::tag< Visible >,
-          BOOST_MULTI_INDEX_MEMBER(TraceStructure, bool, Visible)
-          >
-        >
-      > MultiIndexContourMeshContainer;
+typedef multi_index::multi_index_container<
+  ContourMeshStructure,
+  boost::multi_index::indexed_by<
+    boost::multi_index::ordered_non_unique<
+      boost::multi_index::tag< TCoord >,
+      BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, unsigned int, TCoord)
+    >,
+    boost::multi_index::hashed_non_unique<
+      boost::multi_index::tag< ActorXY >,
+      BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorXY)
+    >,
+    boost::multi_index::hashed_non_unique<
+      boost::multi_index::tag< ActorXZ >,
+      BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorXZ)
+    >,
+    boost::multi_index::hashed_non_unique<
+      boost::multi_index::tag< ActorYZ >,
+      BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorYZ)
+    >,
+    boost::multi_index::hashed_non_unique<
+      boost::multi_index::tag< ActorXYZ >,
+      BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorXYZ)
+    >,
+    boost::multi_index::hashed_non_unique<
+      boost::multi_index::tag< Nodes >,
+      BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkPolyData *, Nodes)
+    >,
+    boost::multi_index::ordered_unique<
+      boost::multi_index::tag< TraceID >,
+      BOOST_MULTI_INDEX_MEMBER(TraceStructure, unsigned int, TraceID)
+    >,
+    boost::multi_index::ordered_non_unique<
+      boost::multi_index::tag< CollectionID >,
+      BOOST_MULTI_INDEX_MEMBER(TraceStructure, unsigned int, CollectionID)
+    >,
+    boost::multi_index::ordered_non_unique<
+      boost::multi_index::tag< Highlighted >,
+      BOOST_MULTI_INDEX_MEMBER(TraceStructure, bool, Highlighted)
+    >,
+    boost::multi_index::ordered_non_unique<
+      boost::multi_index::tag< Visible >,
+      BOOST_MULTI_INDEX_MEMBER(TraceStructure, bool, Visible)
+    >
+  >
+> MultiIndexContourMeshContainer;
 }
 
 /**
   \class ContourMeshContainer
-  \brief Wraps a boost multi index container of ContourMeshStructure.
+  \brief Wraps a boost::multi_index_container of ContourMeshStructure.
   This class intends to synchronize Contour and Mesh representation in
   the Visualization and in the TableWidget
   \sa ContourMeshStructure QGoTableWidget QGoImageView3D
@@ -134,7 +134,7 @@ public:
   /** \brief Destructor. */
   virtual ~ContourMeshContainer();
 
-  /** */
+  /** \brief Set the Current Time Point*/
   void SetTimePoint(const unsigned int & iT);
 
   /** \brief Display all elements for a given time point
@@ -192,13 +192,13 @@ public:
   static
   int
   ComputeDirectionFromContour(vtkPolyData *iContour)
-  {
+    {
     double bounds[6];
 
     iContour->GetBounds(bounds);
 
     return ComputeDirectionFromBounds< double >(bounds);
-  }
+    }
 
   /**
   \brief Returns the direction of a given element given its bounding box.
@@ -206,13 +206,12 @@ public:
   \return 0 if z coordinates are constant
   \return 1 if y coordinates are constant
   \return 2 if x coordinates are constant
-  \return -1 else
-  */
+  \return -1 else  */
   template< typename T >
   static
   int
   ComputeDirectionFromBounds(T *iBounds)
-  {
+    {
     int oDir = -1;
 
     for ( int i = 0; i < 3; i++ )
@@ -224,13 +223,13 @@ public:
       }
 
     return oDir;
-  }
+    }
 
   template< typename T >
   static
   int
   ComputeDirectionFromBounds(const std::vector< T > & iBounds)
-  {
+    {
     int oDir = -1;
 
     if ( iBounds.size() == 6 )
@@ -245,7 +244,7 @@ public:
       }
 
     return oDir;
-  }
+    }
 
   /**
   \brief Update highlighting property of one element given one actor.
@@ -255,7 +254,7 @@ public:
   */
   template< class TActor >
   bool UpdateElementHighlightingWithGivenActor(vtkActor *iActor)
-  {
+    {
     unsigned TraceId;
     Qt::CheckState state;
     bool oValue =
@@ -267,7 +266,7 @@ public:
       emit TracePicked(TraceId, state);
       }
     return oValue;
-  }
+    }
 
   /** \brief Update element Visibility property given one actor.
   \tparam TActor either ActorXY, ActorXZ, ActorYZ, ActorXYZ depending on the view
@@ -277,7 +276,7 @@ public:
   */
   template< class TActor >
   bool UpdateElementVisibilityWithGivenActor(vtkActor *iActor)
-  {
+    {
     unsigned TraceId;
     Qt::CheckState state;
     bool oValue =
@@ -290,7 +289,7 @@ public:
       }
 
     return oValue;
-  }
+    }
 
   /**
   \brief Update highlighting property of one element given one actor.
@@ -301,7 +300,7 @@ public:
   */
   template< class TActor >
   bool UpdateElementVisibilityWithGivenActor(vtkActor *iActor, bool iState)
-  {
+    {
     if ( iActor )
       {
       typedef typename MultiIndexContainerType::index< TActor >::type::iterator
@@ -340,7 +339,7 @@ public:
       }
 
     return false;
-  }
+    }
 
   //-------------------------------------------------------------------------
 
@@ -392,7 +391,7 @@ public:
     typename MultiIndexContainerType::template index< TIndex >::type::iterator iBegin,
     typename MultiIndexContainerType::template index< TIndex >::type::iterator iEnd,
     const bool & iVisibility)
-  {
+    {
     typename MultiIndexContainerType::template index< TIndex >::type::iterator
         it = iBegin;
 
@@ -455,21 +454,23 @@ public:
         }
       ++it;
       }
-  }
+    }
 
 public slots:
 
-  /** \brief Change elements highlighting property given a list of TraceIDs
-  and the new status.
-    \param[in] iList list of TraceIDs
-    \param[in] iCheck */
+  /**
+  \brief Change elements highlighting property given a list of TraceIDs and the
+  new status.
+  \param[in] iList list of TraceIDs
+  \param[in] iCheck */
   void UpdateElementHighlightingWithGivenTraceIDs( const QStringList& iList,
                                                    const Qt::CheckState& iCheck );
 
-  /** \brief Change elements visibility property given a list of TraceIDs
-  and the new status.
-    \param[in] iList list of TraceIDs
-    \param[in] iCheck */
+  /**
+  \brief Change elements visibility property given a list of TraceIDs and the
+  new status.
+  \param[in] iList list of TraceIDs
+  \param[in] iCheck  */
   void UpdateElementVisibilityWithGivenTraceIDs( const QStringList& iList,
                                                  const Qt::CheckState& iCheck );
 

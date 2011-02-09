@@ -42,7 +42,7 @@
 QGoContourSegmentationBaseDockWidget::QGoContourSegmentationBaseDockWidget(
   QWidget *iParent,
   vtkPoints *seeds,
-  std::vector< vtkSmartPointer<vtkImageData> > *iOriginalImage):QDockWidget(iParent)
+  std::vector< vtkSmartPointer< vtkImageData > > *iOriginalImage) : QDockWidget(iParent)
 {
   this->setupUi(this);
 
@@ -127,7 +127,8 @@ QGoContourSegmentationBaseDockWidget::QGoContourSegmentationBaseDockWidget(
 //---------------------------------------------------------------------------//
 QGoContourSegmentationBaseDockWidget::
 ~QGoContourSegmentationBaseDockWidget()
-{}
+{
+}
 
 //---------------------------------------------------------------------------//
 // one segmentation to another
@@ -194,7 +195,7 @@ QGoContourSegmentationBaseDockWidget::interactorBehavior(bool iSegmentationMetho
 
 //---------------------------------------------------------------------------//
 void
-QGoContourSegmentationBaseDockWidget::SetChannel(int iChannel,const QString & iText)
+QGoContourSegmentationBaseDockWidget::SetChannel(int iChannel, const QString & iText)
 {
   QString input;
 

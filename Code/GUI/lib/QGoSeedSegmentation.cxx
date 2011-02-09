@@ -50,7 +50,7 @@
 
 //--------------------------------------------------------------------------
 QGoSeedSegmentation::QGoSeedSegmentation(QObject *parentO, QWidget *parentW, vtkPoints *seeds,
-                                         std::vector< vtkImageData * > *iOriginalImage):
+                                         std::vector< vtkImageData * > *iOriginalImage) :
   QGoSeedSegmentationBase(parentO, seeds)
 {
   int filter = 0;
@@ -71,10 +71,7 @@ QGoSeedSegmentation::QGoSeedSegmentation(QObject *parentO, QWidget *parentW, vtk
   // contour has been created by a filter
   QObject::connect( m_BaseAlgorithmSegmentationDockWidget, SIGNAL( ContourCreated(vtkPolyData *) ),
                     this, SIGNAL( ContourCreated(vtkPolyData *) ) );
-  // image has been processed by a filter
-  // should return the new image as argument
-  QObject::connect( m_BaseAlgorithmSegmentationDockWidget, SIGNAL( ImageProcessed() ),
-                    this, SIGNAL( ImageProcessed() ) );
+
   QObject::connect( m_BaseAlgorithmSegmentationDockWidget, SIGNAL( Radius(double) ),
                     this, SLOT( setRadius(double) ) );
 

@@ -238,7 +238,7 @@ void vtkLSMReader::Clean()
   this->ColorMapOffset = 0;
   this->LSMSpecificInfoOffset = 0;
   this->NumberOfIntensityValues[0] = this->NumberOfIntensityValues[1] =
-                                       this->NumberOfIntensityValues[2] = this->NumberOfIntensityValues[3] = 0;
+      this->NumberOfIntensityValues[2] = this->NumberOfIntensityValues[3] = 0;
   this->ScanType = 0;
   this->DataType = 0;
   this->ChannelColors = vtkIntArray::New();

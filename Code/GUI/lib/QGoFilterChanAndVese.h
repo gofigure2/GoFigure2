@@ -31,25 +31,28 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __QGoFilterChanAndVes_h
-#define __QGoFilterChanAndVes_h
+#ifndef __QGoFilterChanAndVese_h
+#define __QGoFilterChanAndVese_h
 
 #include "QGoFilterSemiAutoBase.h"
 
 #include "QGoGUILibConfigure.h"
 
 /**
- * \class QGoFilterChanAndVes
+ * \class QGoFilterChanAndVese
+ * \brief Levelset segmentation algorithm implementation.
+ * Can generate contours and meshes.
+ * Will generate 2D objects if m_Dimension<2, 3D objects in the other case.
  */
-class QGOGUILIB_EXPORT QGoFilterChanAndVes:public QGoFilterSemiAutoBase
+class QGOGUILIB_EXPORT QGoFilterChanAndVese : public QGoFilterSemiAutoBase
 {
   Q_OBJECT
 public:
   /** \brief Constructor */
-  explicit QGoFilterChanAndVes(QObject *iParent = NULL, int iDimension = 2);
+  explicit QGoFilterChanAndVese(QObject *iParent = NULL, int iDimension = 2);
 
   /** \brief Destructor */
-  ~QGoFilterChanAndVes();
+  ~QGoFilterChanAndVese();
 
   virtual vtkPolyData * Apply();
 

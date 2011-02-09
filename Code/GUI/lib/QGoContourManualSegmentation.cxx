@@ -37,7 +37,7 @@
 #include "QGoManualSegmentationSettingsDialog.h"
 
 //--------------------------------------------------------------------------
-QGoContourManualSegmentation::QGoContourManualSegmentation(QWidget *iParent):
+QGoContourManualSegmentation::QGoContourManualSegmentation(QWidget *iParent) :
   QObject(iParent),
   m_LinesWidth(2.),
   m_LinesColor(Qt::magenta),
@@ -65,7 +65,8 @@ QGoContourManualSegmentation::QGoContourManualSegmentation(QWidget *iParent):
 //--------------------------------------------------------------------------
 QGoContourManualSegmentation::
 ~QGoContourManualSegmentation()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 

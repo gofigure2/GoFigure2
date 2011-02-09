@@ -31,7 +31,7 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "QGoFilterChanAndVes.h"
+#include "QGoFilterChanAndVese.h"
 
 #include "QGoGUILibConfigure.h"
 
@@ -55,7 +55,7 @@
 #include "QGoContourSemiAutoLevelsetWidget.h"
 
 //--------------------------------------------------------------------------
-QGoFilterChanAndVes::QGoFilterChanAndVes(QObject *iParent, int iDimension):
+QGoFilterChanAndVese::QGoFilterChanAndVese(QObject *iParent, int iDimension) :
   QGoFilterSemiAutoBase(iParent)
 {
   m_Dimension = iDimension;
@@ -81,15 +81,16 @@ QGoFilterChanAndVes::QGoFilterChanAndVes(QObject *iParent, int iDimension):
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-QGoFilterChanAndVes::
-~QGoFilterChanAndVes()
-{}
+QGoFilterChanAndVese::
+~QGoFilterChanAndVese()
+{
+}
 
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
-QGoFilterChanAndVes::setIterations(int iIterations)
+QGoFilterChanAndVese::setIterations(int iIterations)
 {
   m_Iterations = iIterations;
 }
@@ -98,7 +99,7 @@ QGoFilterChanAndVes::setIterations(int iIterations)
 
 //--------------------------------------------------------------------------
 void
-QGoFilterChanAndVes::setCurvature(int iCurvature)
+QGoFilterChanAndVese::setCurvature(int iCurvature)
 {
   m_Curvature = iCurvature;
 }
@@ -107,7 +108,7 @@ QGoFilterChanAndVes::setCurvature(int iCurvature)
 
 //--------------------------------------------------------------------------
 void
-QGoFilterChanAndVes::Filter2D(double *iCenter, const int & iOrientation)
+QGoFilterChanAndVese::Filter2D(double *iCenter, const int & iOrientation)
 {
   const int dimension = 2;
 
@@ -226,7 +227,7 @@ QGoFilterChanAndVes::Filter2D(double *iCenter, const int & iOrientation)
 //--------------------------------------------------------------------------
 
 void
-QGoFilterChanAndVes::Filter3D(double *iCenter)
+QGoFilterChanAndVese::Filter3D(double *iCenter)
 {
   const int dimension = 3;
 
@@ -319,7 +320,7 @@ QGoFilterChanAndVes::Filter3D(double *iCenter)
 
 //--------------------------------------------------------------------------
 vtkPolyData *
-QGoFilterChanAndVes::Apply()
+QGoFilterChanAndVese::Apply()
 {
   // Radius has to be > 0
   if ( getRadius() <= 0 )
@@ -367,7 +368,7 @@ QGoFilterChanAndVes::Apply()
 
 //--------------------------------------------------------------------------
 void
-QGoFilterChanAndVes::ConnectSignals(int iFilterNumber)
+QGoFilterChanAndVese::ConnectSignals(int iFilterNumber)
 {
   QGoFilterSemiAutoBase::ConnectSignals(iFilterNumber);
 

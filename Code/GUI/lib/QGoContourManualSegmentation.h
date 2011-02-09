@@ -43,7 +43,7 @@ class QGoContourManualSegmentationWidget;
 /**
  * \class QGoContourManualSegmentation
  * \ingroup QGoContourManual
- * \brief Base class for manual segmentations
+ * \brief Base class for contour manual segmentation
 */
 
 class QGOGUILIB_EXPORT QGoContourManualSegmentation:public QObject

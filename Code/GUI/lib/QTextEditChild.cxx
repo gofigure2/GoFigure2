@@ -36,7 +36,7 @@
 #include <QTextEdit>
 
 //--------------------------------------------------------------------------
-QTextEditChild::QTextEditChild(QWidget *iParent, int iNumberMaxCharacters):
+QTextEditChild::QTextEditChild(QWidget *iParent, int iNumberMaxCharacters) :
   QTextEdit(iParent), m_MaxCharacters(iNumberMaxCharacters)
 {
   QObject::connect( this, SIGNAL( textChanged() ),
@@ -47,7 +47,8 @@ QTextEditChild::QTextEditChild(QWidget *iParent, int iNumberMaxCharacters):
 
 //--------------------------------------------------------------------------
 QTextEditChild::~QTextEditChild()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 

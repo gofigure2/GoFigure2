@@ -158,6 +158,7 @@ MultiScaleLoGImageFilter
   os << indent << "SigmaMin:  " << m_SigmaMin << std::endl;
   os << indent << "SigmaMax:  " << m_SigmaMax  << std::endl;
 }
+
 } // end namespace itk
 
 #endif

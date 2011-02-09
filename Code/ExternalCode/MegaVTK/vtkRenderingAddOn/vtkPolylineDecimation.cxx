@@ -103,9 +103,9 @@ int vtkPolylineDecimation::RequestData(
 
   // get the input and ouptut
   vtkPolyData *input = vtkPolyData::SafeDownCast(
-    inInfo->Get( vtkDataObject::DATA_OBJECT() ) );
+      inInfo->Get( vtkDataObject::DATA_OBJECT() ) );
   vtkPolyData *output = vtkPolyData::SafeDownCast(
-    outInfo->Get( vtkDataObject::DATA_OBJECT() ) );
+      outInfo->Get( vtkDataObject::DATA_OBJECT() ) );
 
   vtkCellArray *inputLines = input->GetLines();
   vtkPoints *   inputPoints = input->GetPoints();

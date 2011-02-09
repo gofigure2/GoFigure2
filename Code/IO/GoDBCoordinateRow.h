@@ -40,6 +40,12 @@
 #include <string>
 #include <map>
 
+/**
+\class GoDBCoordinateRow
+\brief manages a map with keys matching fields of the gofiguredatabase Coordinate table
+and values of the map matching a row of the Coordinate table
+\ingroup DB
+*/
 class QGOIO_EXPORT GoDBCoordinateRow:public GoDBRow
 {
 public:

@@ -206,7 +206,7 @@ public slots:
   \brief add a new collection in the collectionColorCombobox and select it
   \param[in] iNewCollectionID ID and QColor of the new item
   */
-  void AddANewCollectionID(std::pair<std::string, QColor> iNewCollectionID);
+  void AddANewCollectionID(ItemColorComboboxData iNewCollectionID);
 
 signals:
   void AddANewCellType();
@@ -298,7 +298,7 @@ protected:
   }
 
   /**
-  \overload SetListItemAndSelect
+  \overload
   */
   template< typename T >
   void SetListItemAndSelect(T *iComboBox, std::list< ItemColorComboboxData > iItemsData,

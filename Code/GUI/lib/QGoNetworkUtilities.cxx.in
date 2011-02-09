@@ -41,7 +41,7 @@
 
 #include <QDebug>
 
-QGoNetworkUtilities::QGoNetworkUtilities(QObject *iParent):QObject(iParent), m_Reply(0)
+QGoNetworkUtilities::QGoNetworkUtilities(QObject *iParent) : QObject(iParent), m_Reply(0)
 {
   m_Manager = new QNetworkAccessManager(this);
 
@@ -90,4 +90,5 @@ QGoNetworkUtilities::DisplayResults(QNetworkReply *reply)
   //  }
 
   emit CheckForUpdatesDone(response, ok);
+
 }

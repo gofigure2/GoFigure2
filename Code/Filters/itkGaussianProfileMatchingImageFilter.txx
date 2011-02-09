@@ -41,7 +41,7 @@ namespace itk
 {
 template< class TFeatureImage, class TInputImage, class TSegmentImage >
 GaussianProfileMatchingImageFilter< TFeatureImage, TInputImage, TSegmentImage >
-::GaussianProfileMatchingImageFilter():m_SigmaForm (2.0), m_LargestCellRadius (4.0)
+::GaussianProfileMatchingImageFilter() : m_SigmaForm (2.0), m_LargestCellRadius (4.0)
 {
   m_Blob = 0;
 
@@ -85,7 +85,7 @@ GaussianProfileMatchingImageFilter< TFeatureImage, TInputImage, TSegmentImage >
     {
     idx = blobIt.GetIndex();
     sum = 0;
-    for ( i = 0; i < ImageDimension; i++ )
+    for ( i = 0; i < ImageDimension; ++i )
       {
       dx = ( idx[i] - blobOrigin[i] ) * spacing[i];
       sum += dx * dx;
@@ -101,9 +101,9 @@ GaussianProfileMatchingImageFilter< TFeatureImage, TInputImage, TSegmentImage >
 ::PearsonCorrelation
   (ImageRegionType & region)
 {
-  int n(0);
+  unsigned int n(0);
 
-  float x(0), y (0), xy (0), x2 (0), y2 (0);
+  double x(0), y (0), xy (0), x2 (0), y2 (0);
 
   IteratorType inputIt1( m_Blob, m_Blob->GetLargestPossibleRegion() );
 
@@ -122,15 +122,17 @@ GaussianProfileMatchingImageFilter< TFeatureImage, TInputImage, TSegmentImage >
     x2 += p1 * p1;
     y2 += p2 * p2;
     }
-  float d = ( n * x2 - x * x ) * ( n * y2 - y * y );
+  double d = ( static_cast< double >( n ) * x2 - x * x ) *
+             ( static_cast< double >( n ) * y2 - y * y );
 
-  if ( d == 0 )
+  if ( d > vnl_math::eps )
     {
-    return 0;
+    return static_cast< ImagePixelType >(
+          ( ( static_cast< double >( n ) * xy ) - ( x * y ) ) / vcl_sqrt (d) );
     }
   else
     {
-    return ( ( n * xy ) - ( x * y ) ) / vcl_sqrt (d);
+    return 0;
     }
 }
 
@@ -163,10 +165,12 @@ GaussianProfileMatchingImageFilter< TFeatureImage, TInputImage, TSegmentImage >:
   FeatureImageSizeType     inputSize = input->GetLargestPossibleRegion().GetSize();
   FeatureImageSpacingType  spacing = input->GetSpacing();
 
-  for ( unsigned int i = 0; i < ImageDimension; i++ )
+  unsigned int i;
+
+  for ( i = 0; i < ImageDimension; ++i )
     {
     m_CellExtent[i] = static_cast< FeatureImageSizeValueType >
-                        (2 * m_LargestCellRadius / spacing[i]);
+        (2 * m_LargestCellRadius / spacing[i]);
     if ( m_CellExtent[i] % 2 == 1 )
       {
       m_CellExtent[i] += 1;
@@ -176,7 +180,7 @@ GaussianProfileMatchingImageFilter< TFeatureImage, TInputImage, TSegmentImage >:
   // Define a image region to run windowing on
   FeatureImageIndexType start;
   FeatureImageSizeType  size;
-  for ( unsigned int i = 0; i < ImageDimension; i++ )
+  for ( i = 0; i < ImageDimension; i++ )
     {
     start[i] = static_cast< FeatureImageSizeValueType >(m_CellExtent[i] / 2);
     size[i] = inputSize[i] - m_CellExtent[i] + 1;
@@ -232,16 +236,18 @@ GaussianProfileMatchingImageFilter< TFeatureImage, TInputImage, TSegmentImage >:
   FeatureImageIndexType idx, windowStart;
   ImagePixelType        p;
 
+  unsigned int i;
+
   outIt.GoToBegin();
   while ( !outIt.IsAtEnd() )
     {
     idx = outIt.GetIndex();
     if ( m_ImageRegion.IsInside(idx) )
       {
-      for ( unsigned int i = 0; i < ImageDimension; i++ )
+      for ( i = 0; i < ImageDimension; ++i )
         {
-        windowStart[i] = idx[i] - static_cast< ImageSizeValueType >(
-          m_CellExtent[i] / 2);
+        windowStart[i] = idx[i] -
+            static_cast< ImageSizeValueType >( m_CellExtent[i] / 2 );
         }
       kernelRegion.SetIndex (windowStart);
 
@@ -263,6 +269,7 @@ GaussianProfileMatchingImageFilter< TFeatureImage, TInputImage, TSegmentImage >:
   os << indent << "Largest cell radius: " << GetLargestCellRadius()
      << std::endl;
 }
+
 } /* end namespace itk */
 
 #endif

@@ -35,7 +35,7 @@
 #include "QGoContourSemiAutoLevelsetWidget.h"
 
 //---------------------------------------------------------------------------//
-QGoContourSemiAutoLevelsetWidget::QGoContourSemiAutoLevelsetWidget(QWidget *iParent):QWidget(iParent)
+QGoContourSemiAutoLevelsetWidget::QGoContourSemiAutoLevelsetWidget(QWidget *iParent) : QWidget(iParent)
 {
   this->setupUi(this);
 
@@ -52,6 +52,7 @@ QGoContourSemiAutoLevelsetWidget::QGoContourSemiAutoLevelsetWidget(QWidget *iPar
 //---------------------------------------------------------------------------//
 QGoContourSemiAutoLevelsetWidget::
 ~QGoContourSemiAutoLevelsetWidget()
-{}
+{
+}
 
 //---------------------------------------------------------------------------//
