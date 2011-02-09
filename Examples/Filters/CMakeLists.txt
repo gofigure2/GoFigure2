@@ -59,14 +59,14 @@ ADD_TEST( ContourToMeshFilterTest
  1
  )
 
-ADD_EXECUTABLE( singleCellSplitImageFilter
-  SingleCellSplitImageFilter.cxx
-  )
-TARGET_LINK_LIBRARIES(
-  singleCellSplitImageFilter
-  ITKReview
-  ITKIO
-  )
+#ADD_EXECUTABLE( singleCellSplitImageFilter
+#  SingleCellSplitImageFilter.cxx
+#  )
+#TARGET_LINK_LIBRARIES(
+#  singleCellSplitImageFilter
+#  ITKReview
+#  ITKIO
+#  )
 
 ADD_EXECUTABLE( cellMergeImageFilter
   CellMergeImageFilter.cxx
@@ -76,11 +76,11 @@ TARGET_LINK_LIBRARIES( cellMergeImageFilter
   vtkHybrid
   )
 
-ADD_TEST( singleCellSplitImageFilterTest
-  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/singleCellSplitImageFilter
-  ${TESTING_DATA_PATH}/MultiphaseCells2D.png
-  split.mhd
-)
+#ADD_TEST( singleCellSplitImageFilterTest
+#  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/singleCellSplitImageFilter
+#  ${TESTING_DATA_PATH}/MultiphaseCells2D.png
+#  split.mhd
+#)
 
 
 ADD_EXECUTABLE( itkvtkMeshSplitterDanielssonImageFilterTest
