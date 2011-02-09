@@ -1,7 +1,7 @@
 # - Find SIKULI
 
 IF( UNIX )
-  IF( NOT APPLE )
+  IF( NOT APPLE ) # Linux
     FIND_PROGRAM( SH_EXECUTABLE
       NAMES bash
     )
@@ -14,18 +14,18 @@ IF( UNIX )
       PATH_SUFFIXES "bin"
       DOC "Specify the path to sikuli"
     )
-  ELSE( APPLE )
+  ELSE( NOT APPLE ) # Mac OS
+    MESSAGE( "Apple" )
+  ENDIF( NOT APPLE )
 
-  ENDIF( APPLE )
-
-ELSE( UNIX )
+ELSE( UNIX ) # Windows
 
   FIND_PROGRAM( SIKULI_EXECUTABLE
     NAMES sikuli
     PATHS
      "$ENV{ProgramFiles}/Sikuli-IDE/"
-      "$ENV{SystemDrive}/Sikuli-IDE/"
-      PATH_SUFFIXES "bin"
+     "$ENV{SystemDrive}/Sikuli-IDE/"
+     PATH_SUFFIXES "bin"
     DOC "Specify the path to Sikuli"
   )
 
