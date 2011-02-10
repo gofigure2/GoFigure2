@@ -38,6 +38,7 @@
 #include <string>
 #include <sstream>
 #include <list>
+#include "QGoIOConfigure.h"
 
 struct FieldWithValue
   {
@@ -315,6 +316,7 @@ iTableTwo on iJoinConditionOne) left join tableThree on iJoinConditionTwo where 
 \param[in] iListIDs values for the iIDFieldname
 \return the string corresponding to the query part
 */
+QGOIO_EXPORT
 std::string SelectForTracesInfo(std::vector<std::string> iSelectedAttributes,
   std::string iTableOne, std::string iTableTwo, std::string iTableThree,
   FieldWithValue iJoinConditionOne, FieldWithValue iJoinConditionTwo, std::string iFieldOne,
