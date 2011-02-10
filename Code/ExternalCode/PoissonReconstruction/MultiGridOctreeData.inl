@@ -1751,7 +1751,6 @@ inline void Octree<Degree>::SetIsoSurfaceCorners(const Real& isoValue,const int&
         {
       for(j=0;j<Cube::CORNERS;j++)
             {
-        int idx[3];
         key=VertexData::CornerIndex(temp,j,fData.depth,idx);
         cf.index[0]=idx[0]*fData.res;
         cf.index[1]=idx[1]*fData.res;
@@ -1780,7 +1779,7 @@ inline void Octree<Degree>::SetIsoSurfaceCorners(const Real& isoValue,const int&
 			if(temp->parent){
 				TreeOctNode* parent=temp->parent;
 				int c=int(temp-temp->parent->children);
-				int mcid=temp->nodeData.mcIndex&(1<<MarchingCubes::cornerMap[c]);
+				mcid=temp->nodeData.mcIndex&(1<<MarchingCubes::cornerMap[c]);
 
 				if(mcid){
 					parent->nodeData.mcIndex|=mcid;
