@@ -18,9 +18,13 @@ INCLUDE(ExternalProject)
 set(ep_base        "${CMAKE_BINARY_DIR}")
 #set(ep_install_dir "${ep_base}/Install")
 
+# should be preset for user or for developer???
+OPTION( SUPER_BUILD_SHARED_LIBS ON)
+
 SET(ep_common_args
   #-DCMAKE_INSTALL_PREFIX:PATH=${ep_install_dir}
   -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
+  -DCMAKE_BUILD_SHARED_LIBS=${SUPERBUILD_SHARED_LIBS}
   -DBUILD_TESTING:BOOL=OFF
   -DBUILD_EXAMPLES:BOOL=OFF
   )
@@ -45,11 +49,18 @@ set(GoFigure2_DEPENDENCIES)
 OPTION( SUPERBUILD_VTK "SuperBuild VTK" ON )
 
 IF( SUPERBUILD_VTK )
+  # check if we have MySQL
   include("${GOFIGURE2_SOURCE_DIR}/CMake/ConfigMySQL.cmake")
+  # check if we have QT
   include("${GOFIGURE2_SOURCE_DIR}/CMake/ConfigQT.cmake")
+  # check if we have some video support (FFMPEG or AVI)
+  include("${GOFIGURE2_SOURCE_DIR}/CMake/ConfigVideo.cmake")
+  # add the vtk external project
   include("${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/External-VTK.cmake")
+  # add the external projrct "VTK" to the list of dependencies
   LIST(APPEND GoFigure2_DEPENDENCIES VTK)
 ELSE( SUPERBUILD_VTK )
+  # check if our vtk is properly configured
   include( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigVTK.cmake" )
 ENDIF( SUPERBUILD_VTK )
 

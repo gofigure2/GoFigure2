@@ -138,9 +138,12 @@ OPTION( USE_SUPERBUILD "Use SuperBuild" ON )
 
 IF( USE_SUPERBUILD )
   CMAKE_MINIMUM_REQUIRED( VERSION 2.8.3 )
+  #SET( MESSAGE_TYPE STATUS )
   INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/SuperBuild.cmake" )
   RETURN()
 ENDIF( USE_SUPERBUILD)
+
+#SET( MESSAGE_TYPE SEND_ERROR)
 
 #---------------------------------------------------------------------------
 # Everything depends on VTK first
