@@ -1,13 +1,26 @@
 #-----------------------------------------------------------------------------
 # Get and build VTK
 #
+
+#-----------------------------------------------------------------------------
+# Is FFMPEG AVAILABLE ( FOR UNIX)
+FIND_PACKAGE( FFMPEG )
+
+IF( FFMPEG_FOUND )
+  set( USE_FFMPEG ON)
+ELSE( FFMPEG_FOUND)
+  set ( USE_FFMPEG OFF)
+ENDIF( FFMPEG_FOUND )
+
+# TODO SAME FOR WINDOWS
+
+#-----------------------------------------------------------------------------
 set(proj VTK)
 
 set(VTK_QT_ARGS)
 
 if(NOT APPLE)
     set(VTK_QT_ARGS
-      -DDESIRED_QT_VERSION:STRING=4
       -DVTK_USE_GUISUPPORT:BOOL=ON
       -DVTK_USE_QVTK_QTOPENGL:BOOL=ON
       -DVTK_USE_QT:BOOL=ON
@@ -17,16 +30,11 @@ if(NOT APPLE)
   if( UNIX )
     set(VTK_QT_ARGS
         ${VTK_QT_ARGS}
-        -DVTK_USE_FFMPEG:BOOL=ON
+        -DVTK_USE_FFMPEG:BOOL= ${USE_FFMPEG}
        )
   endif()
 else()
     set(VTK_QT_ARGS
-      -DVTK_USE_CARBON:BOOL=OFF
-      -DVTK_USE_COCOA:BOOL=ON # Default to Cocoa, VTK/CMakeLists.txt will enable Carbon and disable cocoa if needed
-      -DVTK_USE_X:BOOL=OFF
-      -DVTK_USE_RPATH:BOOL=ON
-      -DDESIRED_QT_VERSION:STRING=4
       -DVTK_USE_GUISUPPORT:BOOL=ON
       -DVTK_USE_QVTK_QTOPENGL:BOOL=ON
       -DVTK_USE_QT:BOOL=ON
