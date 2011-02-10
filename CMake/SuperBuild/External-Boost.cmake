@@ -15,7 +15,12 @@ ExternalProject_Add(${proj}
     -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
     -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
     # can generate erros on Mac 10.6
-    -DWITH_PYTHON=OFF
+    -DWITH_PYTHON:BOOL=OFF
+	-DWITH_DOXYGEN:BOOL=OFF
+	-DWITH_EXPAT:BOOL=OFF
+	-DWITH_BZIP2:BOOL=OFF
+	-DWITH_MPI:BOOL=OFF
+	-DWITH_XSLTPROC:BOOL=OFF
   INSTALL_COMMAND ""
   DEPENDS
     ${BOOST_DEPENDENCIES}
