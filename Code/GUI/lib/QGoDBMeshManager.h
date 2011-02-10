@@ -41,6 +41,7 @@
 #include "QGoDBTraceManager.h"
 #include "GoDBMeshRow.h"
 #include "MeshContainer.h"
+#include "QGoGUILibConfigure.h"
 
 /**
 \class QGoDBMeshManager

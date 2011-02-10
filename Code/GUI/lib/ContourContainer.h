@@ -36,13 +36,14 @@
 #define __ContourContainer_h
 
 #include "ContourMeshContainer.h"
+#include "QGoGUILibConfigure.h"
 
 /**
  * \class ContourContainer
  * \brief Wraps a boost::multi_index_container of ContourMeshStructure.
  * This class is specialized for the means of 2D Contour.
  * */
-class ContourContainer : public ContourMeshContainer
+class QGOGUILIB_EXPORT ContourContainer : public ContourMeshContainer
 {
   Q_OBJECT
 

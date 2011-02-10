@@ -34,7 +34,7 @@
 
 #include "QGoTrackEditingWidget.h"
 
-#include "ContourMeshStructure.cxx"
+#include "ContourMeshStructure.h"
 
 #include "vtkSphereSource.h"
 
