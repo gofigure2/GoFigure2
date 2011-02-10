@@ -1,4 +1,4 @@
-﻿/*=========================================================================
+/*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
@@ -34,7 +34,7 @@
 #include <vtkUnicodeString.h>
 #include "GoDBTWContainerForTrack.h"
 
-GoDBTWContainerForTrack::GoDBTWContainerForTrack(int iImgSessionID):
+GoDBTWContainerForTrack::GoDBTWContainerForTrack(int iImgSessionID) :
   GoDBTWContainerForTrackLineage("track", "lineage", iImgSessionID),
   m_TrackAttributes(NULL)
 {
@@ -45,7 +45,8 @@ GoDBTWContainerForTrack::GoDBTWContainerForTrack(int iImgSessionID):
 
 //--------------------------------------------------------------------------
 GoDBTWContainerForTrack::~GoDBTWContainerForTrack()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 
@@ -57,7 +58,7 @@ void GoDBTWContainerForTrack::SetSpecificInfoForTrackTable()
   std::pair< GoDBTraceInfoForTableWidget,
              std::vector< std::string > > PairTemp;
 
-   //Get the info for the Deplacement:
+  //Get the info for the Deplacement:
   temp.InfoName = "Deplacement";
   temp.ColumnNameTableWidget = "Deplacement";
   temp.ToolTip = "micron";
@@ -85,7 +86,7 @@ void GoDBTWContainerForTrack::SetSpecificInfoForTrackTable()
 
   //Get the info for phi:
   temp.InfoName = "Phi";
-  temp.ColumnNameTableWidget = "Phi";  
+  temp.ColumnNameTableWidget = "Phi";
   m_ColumnsInfos.push_back(temp);
   PairTemp.first = temp;
   m_RowContainer.push_back(PairTemp);
@@ -109,19 +110,21 @@ void GoDBTWContainerForTrack::SetSpecificInfoForTrackTable()
   m_RowContainer.push_back(PairTemp);
   temp.Clear();
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBTWContainerForTrack::SetTrackAttributes(GoFigureTrackAttributes* iTrackAttributes)
+void GoDBTWContainerForTrack::SetTrackAttributes(GoFigureTrackAttributes *iTrackAttributes)
 {
   this->m_TrackAttributes = iTrackAttributes;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 GoDBTableWidgetContainer::TWContainerType
 GoDBTWContainerForTrack::GetContainerForOneSpecificTrace(
-  vtkMySQLDatabase *iDatabaseConnector, int iTraceID )
+  vtkMySQLDatabase *iDatabaseConnector, int iTraceID)
 {
   GoDBTableWidgetContainer::GetContainerForOneSpecificTrace(iDatabaseConnector,
                                                             iTraceID);
@@ -134,35 +137,36 @@ GoDBTWContainerForTrack::GetContainerForOneSpecificTrace(
 //--------------------------------------------------------------------------
 void GoDBTWContainerForTrack::FillRowContainerForTrackComputedValues()
 {
-  std::vector<std::string> VectorNames;
-  std::vector<std::vector<std::string> > VectorValues;
+  std::vector< std::string >                VectorNames;
+  std::vector< std::vector< std::string > > VectorValues;
   this->GetValuesAndNamesForTrackComputedValues(this->m_TrackAttributes, VectorValues,
-    VectorNames);
+                                                VectorNames);
   this->FillRowContainer(VectorValues, VectorNames, "ColumnNameTableWidget");
   this->m_TrackAttributes = 0;
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void GoDBTWContainerForTrack::GetValuesAndNamesForTrackComputedValues(
-  GoFigureTrackAttributes* iTrackAttributes, 
-  std::vector< std::vector<std::string> > &ioValues, 
-  std::vector<std::string> &ioNames)
+  GoFigureTrackAttributes *iTrackAttributes,
+  std::vector< std::vector< std::string > > & ioValues,
+  std::vector< std::string > & ioNames)
 {
   if ( iTrackAttributes != 0 )
     {
-    std::vector<std::string> temp;
+    std::vector< std::string > temp;
     ioNames.push_back("Deplacement");
-    temp.push_back(ConvertToString< double >(iTrackAttributes->total_length) );
-    ioNames.push_back( "Distance" );
-    temp.push_back( ConvertToString< double >(iTrackAttributes->distance) ); 
+    temp.push_back( ConvertToString< double >(iTrackAttributes->total_length) );
+    ioNames.push_back("Distance");
+    temp.push_back( ConvertToString< double >(iTrackAttributes->distance) );
     ioNames.push_back("Theta");
     temp.push_back( ConvertToString< double >(iTrackAttributes->theta) );
     ioNames.push_back("Phi");
-    temp.push_back( ConvertToString< double >(iTrackAttributes->phi) ); 
-    ioNames.push_back( "AvgSpeed" );
+    temp.push_back( ConvertToString< double >(iTrackAttributes->phi) );
+    ioNames.push_back("AvgSpeed");
     temp.push_back( ConvertToString< double >(iTrackAttributes->avg_speed) );
-    ioNames.push_back( "MaxSpeed" );
+    ioNames.push_back("MaxSpeed");
     temp.push_back( ConvertToString< double >(iTrackAttributes->max_speed) );
     ioValues.push_back(temp);
     }

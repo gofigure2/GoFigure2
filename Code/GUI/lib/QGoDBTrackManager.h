@@ -42,7 +42,12 @@
 #include "QGoGUILibConfigure.h"
 #include "TrackContainer.h"
 
-
+/**
+\class QGoDBTrackManager
+\brief This class manages the database queries, the table widget and
+the data from the database in the Container for visu for the tracks
+\ingroup DB, GUI
+*/
 class QGOGUILIB_EXPORT QGoDBTrackManager:public QGoDBTraceManager
 {
   Q_OBJECT

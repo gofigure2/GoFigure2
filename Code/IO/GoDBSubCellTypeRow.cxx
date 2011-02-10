@@ -34,7 +34,7 @@
 #include "GoDBSubCellTypeRow.h"
 #include "GoDBRecordSetHelper.h"
 
-GoDBSubCellTypeRow::GoDBSubCellTypeRow():GoDBNameDescRow()
+GoDBSubCellTypeRow::GoDBSubCellTypeRow() : GoDBNameDescRow()
 {
   this->m_TableName = "subcellulartype";
   this->m_TableIDName = "SubCellularID";

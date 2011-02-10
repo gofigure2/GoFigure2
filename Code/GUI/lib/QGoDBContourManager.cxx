@@ -40,8 +40,8 @@
 #include <QMenu>
 #include "GoDBContourRow.h"
 
-QGoDBContourManager::QGoDBContourManager(int iImgSessionID, QWidget *iparent):
-  QGoDBTraceManager(),m_ContourContainerInfoForVisu(NULL)
+QGoDBContourManager::QGoDBContourManager(int iImgSessionID, QWidget *iparent) :
+  QGoDBTraceManager(), m_ContourContainerInfoForVisu(NULL)
 {
   this->SetInfo(iImgSessionID, iparent);
   this->m_TWContainer = new GoDBTWContainerForContourMesh(this->m_TraceName,
@@ -65,9 +65,10 @@ QGoDBContourManager::~QGoDBContourManager()
 void QGoDBContourManager::SetContoursInfoContainerForVisu(
   ContourContainer *iContainerForVisu)
 {
-  this->SetTracesInfoContainerForVisuTemplate<ContourContainer>(
-    iContainerForVisu,&this->m_ContourContainerInfoForVisu);
+  this->SetTracesInfoContainerForVisuTemplate< ContourContainer >(
+    iContainerForVisu, &this->m_ContourContainerInfoForVisu);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -96,9 +97,11 @@ void QGoDBContourManager::DisplayInfoForAllTraces(
 
 {
   int IndexShowColumn = this->m_TWContainer->GetIndexShowColumn();
+
   this->DisplayInfoForAllTracesTemplate< GoDBTWContainerForContourMesh >(
-    this->m_TWContainer, iDatabaseConnector,Qt::Unchecked,IndexShowColumn);
+    this->m_TWContainer, iDatabaseConnector, Qt::Unchecked, IndexShowColumn);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -127,8 +130,8 @@ void QGoDBContourManager::AddActionsContextMenu(QMenu *iMenu)
   QGoDBTraceManager::AddActionsContextMenu(iMenu);
   this->AddSpecificActionsForContourMesh(iMenu);
   this->m_CheckedTracesMenu->addAction( tr("ReEdit the checked %1")
-    .arg( this->m_TraceName.c_str() ),
-    this, SLOT( ReEditTrace() ) );
+                                        .arg( this->m_TraceName.c_str() ),
+                                        this, SLOT( ReEditTrace() ) );
 }
 
 //-------------------------------------------------------------------------
@@ -136,7 +139,7 @@ void QGoDBContourManager::AddActionsContextMenu(QMenu *iMenu)
 //-------------------------------------------------------------------------
 void QGoDBContourManager::AddActionForCreateNewCollectionFromCheckedTraces()
 {
-  this->m_CheckedTracesMenu->addAction( 
+  this->m_CheckedTracesMenu->addAction(
     tr("Generate a new mesh from checked contours"),
     this, SLOT( CreateCorrespondingCollection() ) );
 }
@@ -147,6 +150,7 @@ void QGoDBContourManager::AddActionForCreateNewCollectionFromCheckedTraces()
 void QGoDBContourManager::ChangeTraceColor()
 {
   emit NeedToGetDatabaseConnection();
+
   this->UpdateTheTracesColor(this->m_DatabaseConnector);
   emit DBConnectionNotNeededAnymore();
 }
@@ -157,8 +161,8 @@ void QGoDBContourManager::ChangeTraceColor()
 std::list< unsigned int > QGoDBContourManager::UpdateTheTracesColor(
   vtkMySQLDatabase *iDatabaseConnector)
 {
-  return this->UpdateTheTracesColorTemplate< GoDBContourRow,ContourMeshContainer >(
-    iDatabaseConnector, this->m_ContourContainerInfoForVisu);
+  return this->UpdateTheTracesColorTemplate< GoDBContourRow, ContourMeshContainer >(
+           iDatabaseConnector, this->m_ContourContainerInfoForVisu);
 }
 
 //-------------------------------------------------------------------------
@@ -172,18 +176,19 @@ unsigned int QGoDBContourManager::SaveNewContourFromVisu(
   unsigned int iMeshID)
 
 {
-  if ( this->m_SelectedCollectionData->first != "Add a new mesh ..." 
-    && iMeshID != 0)
+  //if ( this->m_SelectedCollectionData->first != "Add a new mesh ..."
+  //&& iMeshID != 0)
+  if ( iMeshID != 0 )
     {
     iMeshID = ss_atoi< unsigned int >(this->m_SelectedCollectionData->first);
     }
   GoDBContourRow NewContour(this->m_ImgSessionID);
 
   int NewContourID = this->CreateNewTraceInDBFromVisu< GoDBContourRow >(
-    iXCoordMin, iYCoordMin, iZCoordMin,*this->m_CurrentTimePoint, 
-    iXCoordMax, iYCoordMax, iZCoordMax, iTraceNodes,
-    *this->m_SelectedColorData,
-    iDatabaseConnector, NewContour, iMeshID);
+      iXCoordMin, iYCoordMin, iZCoordMin, *this->m_CurrentTimePoint,
+      iXCoordMax, iYCoordMax, iZCoordMax, iTraceNodes,
+      *this->m_SelectedColorData,
+      iDatabaseConnector, NewContour, iMeshID);
 
   double *rgba = this->GetVectorFromQColor(this->m_SelectedColorData->second);
 
@@ -214,7 +219,7 @@ unsigned int QGoDBContourManager::SaveReeditedContourFromVisu(unsigned int iXCoo
 
   ReeditedContour.SetValuesForSpecificID(TraceID, iDatabaseConnector);
   this->SetTraceBoundingBoxAndPoints(iXCoordMin, iYCoordMin, iZCoordMin, iTCoord, iXCoordMax,
-                                     iYCoordMax, iZCoordMax, iContourNodes, iDatabaseConnector, 
+                                     iYCoordMax, iZCoordMax, iContourNodes, iDatabaseConnector,
                                      ReeditedContour);
   ReeditedContour.SaveInDB(iDatabaseConnector);
   this->DisplayInfoForExistingTrace(iDatabaseConnector, TraceID);
@@ -252,6 +257,7 @@ void QGoDBContourManager::ReEditTrace()
       }
     }
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -259,21 +265,23 @@ void QGoDBContourManager::UpdateTWAndContainerForImportedTraces(
   std::vector< int > iVectorImportedTraces, vtkMySQLDatabase *iDatabaseConnector)
 {
   this->UpdateTWAndContainerWithImportedTracesTemplate<
-    GoDBTWContainerForContourMesh>(
-    this->m_TWContainer,iVectorImportedTraces, iDatabaseConnector);
+    GoDBTWContainerForContourMesh >(
+    this->m_TWContainer, iVectorImportedTraces, iDatabaseConnector);
   //update the visualization and the data from visu in the container for visu:
   this->m_ContourContainerInfoForVisu->
   UpdateVisualizationForGivenIDs< std::vector< int > >(
-    iVectorImportedTraces );
+    iVectorImportedTraces);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoDBContourManager::DeleteCheckedTraces(vtkMySQLDatabase *iDatabaseConnector)
 {
-  this->DeleteTracesTemplate<ContourMeshContainer>(iDatabaseConnector,
-    this->m_ContourContainerInfoForVisu);
+  this->DeleteTracesTemplate< ContourMeshContainer >(iDatabaseConnector,
+                                                     this->m_ContourContainerInfoForVisu);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -281,6 +289,7 @@ std::list< unsigned int > QGoDBContourManager::GetListHighlightedIDs()
 {
   return this->m_ContourContainerInfoForVisu->GetHighlightedElementsTraceID();
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -288,34 +297,95 @@ void QGoDBContourManager::UpdateHighlightedElementsInVisuContainer(
   int iTraceID)
 {
   this->m_ContourContainerInfoForVisu->
-    UpdateElementHighlightingWithGivenTraceID(iTraceID);
+  UpdateElementHighlightingWithGivenTraceID(iTraceID);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoDBContourManager::UpdateVisibleElementsInVisuContainer(int iTraceID)
 {
   this->m_ContourContainerInfoForVisu->
-    UpdateElementVisibilityWithGivenTraceID(iTraceID);
+  UpdateElementVisibilityWithGivenTraceID(iTraceID);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoDBContourManager::GetTracesInfoFromDBAndModifyContainerForVisu(
-  vtkMySQLDatabase* iDatabaseConnector,
+  vtkMySQLDatabase *iDatabaseConnector,
   std::list< unsigned int > iListTraceIDs)
 {
-  this->GetTracesInfoFromDBAndModifyContainerForVisuTemplate<ContourContainer>(
+  this->GetTracesInfoFromDBAndModifyContainerForVisuTemplate< ContourContainer >(
     this->m_ContourContainerInfoForVisu, iDatabaseConnector, iListTraceIDs);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoDBContourManager::SetColorCoding(bool IsChecked)
 {
-  this->SetColorCodingTemplate<ContourMeshContainer>(
-    this->m_ContourContainerInfoForVisu,IsChecked);
+  this->SetColorCodingTemplate< ContourMeshContainer >(
+    this->m_ContourContainerInfoForVisu, IsChecked);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoDBContourManager::AddToSelectedCollection()
+{
+  if ( this->AreCheckedContoursFromCurrentTimepoint() )
+    {
+    QGoDBTraceManager::AddToSelectedCollection();
+    }
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBContourManager::CreateCorrespondingCollection()
+{
+  if ( this->AreCheckedContoursFromCurrentTimepoint() )
+    {
+    QGoDBTraceManager::CreateCorrespondingCollection();
+    }
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+bool QGoDBContourManager::AreCheckedContoursFromCurrentTimepoint()
+{
+  std::list< unsigned int > ListCheckedContours =
+    this->m_ContourContainerInfoForVisu->GetHighlightedElementsTraceID();
+  if ( !ListCheckedContours.empty() )
+    {
+    emit                                NeedToGetDatabaseConnection();
+    std::list< unsigned int >::iterator iter = ListCheckedContours.begin();
+
+    while ( iter != ListCheckedContours.end() )
+      {
+      unsigned int TimepointContour =
+        this->m_CollectionOfTraces->GetBoundedBoxTimePoint(this->m_DatabaseConnector, *iter);
+
+      if ( TimepointContour !=
+           static_cast< unsigned int >( *this->m_CurrentTimePoint ) )
+        {
+        emit PrintMessage(
+          tr(
+            "To see only the contours from the current timepoint in the table, right click on the table and select 'Show only in the table the contours for the current timepoint' ") );
+
+        QMessageBox msgBox;
+        msgBox.setText(
+          tr("Please select only contours from the current timepoint: %1 !!")
+          .arg(*this->m_CurrentTimePoint) );
+        msgBox.exec();
+
+        return false;
+        }
+      ++iter;
+      }
+    emit DBConnectionNotNeededAnymore();
+    }
+  return true;
+}

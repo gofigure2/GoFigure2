@@ -41,6 +41,12 @@
 #include "GoDBRow.h"
 #include "ConvertToStringHelper.h"
 
+/**
+\class GoDBProjectRow
+\brief manages a map with keys matching fields of the gofiguredatabase Project table
+and values of the map matching a row of the Project table
+\ingroup DB
+*/
 class QGOIO_EXPORT GoDBProjectRow:public GoDBRow
 {
 public:

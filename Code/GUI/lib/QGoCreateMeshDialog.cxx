@@ -33,7 +33,7 @@
 =========================================================================*/
 #include "QGoCreateMeshDialog.h"
 
-QGoCreateMeshDialog::QGoCreateMeshDialog(QWidget *iParent):
+QGoCreateMeshDialog::QGoCreateMeshDialog(QWidget *iParent) :
   QDialog(iParent)
 {
   /*this->VLayoutLabel       = new QVBoxLayout;
@@ -117,7 +117,8 @@ QGoCreateMeshDialog::QGoCreateMeshDialog(QWidget *iParent):
 
 //--------------------------------------------------------------------------
 QGoCreateMeshDialog::~QGoCreateMeshDialog()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 

@@ -33,9 +33,10 @@
 =========================================================================*/
 #include "QGoDBCellTypeManager.h"
 
-QGoDBCellTypeManager::QGoDBCellTypeManager (QWidget *iParent):
+QGoDBCellTypeManager::QGoDBCellTypeManager (QWidget *iParent) :
   QGoDBNameDescEntityManager(iParent, "celltype", 0)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 

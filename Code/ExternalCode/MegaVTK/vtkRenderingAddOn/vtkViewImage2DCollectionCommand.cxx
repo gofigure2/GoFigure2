@@ -51,12 +51,14 @@
 
 //--------------------------------------------------------------------------
 vtkViewImage2DCollectionCommand::vtkViewImage2DCollectionCommand()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 vtkViewImage2DCollectionCommand::
 ~vtkViewImage2DCollectionCommand()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 
@@ -201,7 +203,7 @@ void vtkViewImage2DCollectionCommand::Execute( vtkObject *caller,
   if ( event == vtkViewImage2DCommand::RequestedPositionEvent )
     {
     double *position = viewer->GetWorldCoordinatesFromDisplayPosition (
-      isi->GetRequestedPosition () );
+        isi->GetRequestedPosition () );
     this->Collection->SyncSetWorldCoordinates(position);
     this->Collection->SyncRender();
     }

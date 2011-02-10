@@ -53,18 +53,20 @@
 namespace itk
 {
 //-----------------------------------------------------------------------------
-MultiFileReader::MultiFileReader():m_OutputImage(0),
+MultiFileReader::MultiFileReader() : m_OutputImage(0),
   m_Dimensionality(0), m_DataScalarType(-1), m_NumberOfChannels(0),
   m_NumberOfTimePoints(0), m_NumberOfSlices(0), m_UpdateTimePoint(0),
   m_UpdateZSlice(0), m_UpdateChannel(0), m_MultiChannelImages(false),
   m_TimeBased(true)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
 MultiFileReader::~MultiFileReader()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 

@@ -227,18 +227,18 @@ std::list< std::string > GetAllFileNamesForGivenZCoordPointAndChannel(
 
 std::map< unsigned int, std::list< std::string > >
 GetAllFileNamesForGivenChannelAndTCoords(
-    const GoFigureFileInfoHelperMultiIndexContainer & iContainer,
-    const unsigned int & iCh,
-    const std::set< unsigned int > & iTCoordList
-    )
+  const GoFigureFileInfoHelperMultiIndexContainer & iContainer,
+  const unsigned int & iCh,
+  const std::set< unsigned int > & iTCoordList
+  )
 {
   std::map< unsigned int, std::list< std::string > > oList;
 
   std::set< unsigned int >::const_iterator t_it = iTCoordList.begin();
 
-  while( t_it != iTCoordList.end() )
+  while ( t_it != iTCoordList.end() )
     {
-    oList[ *t_it ] = GetAllFileNamesForGivenTCoordAndChannel( iContainer, *t_it, iCh );
+    oList[*t_it] = GetAllFileNamesForGivenTCoordAndChannel(iContainer, *t_it, iCh);
     ++t_it;
     }
 

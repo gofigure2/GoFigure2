@@ -41,15 +41,15 @@
 
 // ALGOS
 // LevelSet algorithm
-#include "QGoFilterChanAndVes.h"
+#include "QGoFilterChanAndVese.h"
 #include "QGoFilterShape.h"
 #include "QGoFilterWatershed.h"
 
 //--------------------------------------------------------------------------
 QGoMeshSeedSegmentation::QGoMeshSeedSegmentation(QWidget *parentW,
                                                  vtkPoints *seeds,
-                                                 std::vector< vtkSmartPointer<vtkImageData> > *iOriginalImage,
-                                                 int iSampling):
+                                                 std::vector< vtkSmartPointer< vtkImageData > > *iOriginalImage,
+                                                 int iSampling) :
   QGoSeedSegmentationBase(parentW, seeds, iSampling),
   m_OriginalImage(iOriginalImage)
 {
@@ -69,20 +69,20 @@ QGoMeshSeedSegmentation::QGoMeshSeedSegmentation(QWidget *parentW,
   m_ShapeFilter->getWidget()->setParent(m_BaseAlgorithmSegmentationWidget);
   m_ShapeFilter->setPoints( getSeed() );
   m_ShapeFilter->setOriginalImageMC(m_OriginalImage);
-  m_BaseAlgorithmSegmentationWidget->GetFrame()->addWidget(m_ShapeFilter->getWidget());
+  m_BaseAlgorithmSegmentationWidget->GetFrame()->addWidget( m_ShapeFilter->getWidget() );
   m_ShapeFilter->ConnectSignals(filter);
 
   //=============================================================================
 
   //Add new segmentation method
-  m_LevelSetfilter = new QGoFilterChanAndVes(this, iSampling); // 3 i.e. 3D, to
-                                                               // create a mesh
+  m_LevelSetfilter = new QGoFilterChanAndVese(this, iSampling); // 3 i.e. 3D, to
+                                                                // create a mesh
   filter = m_BaseAlgorithmSegmentationWidget->GetNumberOfFilters();
   m_BaseAlgorithmSegmentationWidget->AddFilter( m_LevelSetfilter->getName() );
   m_LevelSetfilter->getWidget()->setParent(m_BaseAlgorithmSegmentationWidget);
   m_LevelSetfilter->setPoints( getSeed() );
   m_LevelSetfilter->setOriginalImageMC(m_OriginalImage);
-  m_BaseAlgorithmSegmentationWidget->GetFrame()->addWidget(m_LevelSetfilter->getWidget());
+  m_BaseAlgorithmSegmentationWidget->GetFrame()->addWidget( m_LevelSetfilter->getWidget() );
   m_LevelSetfilter->ConnectSignals(filter);
 
 //=============================================================================
@@ -95,7 +95,7 @@ QGoMeshSeedSegmentation::QGoMeshSeedSegmentation(QWidget *parentW,
   m_Watershed->getWidget()->setParent(m_BaseAlgorithmSegmentationWidget);
   m_Watershed->setPoints( getSeed() );
   m_Watershed->setOriginalImageMC(m_OriginalImage);
-  m_BaseAlgorithmSegmentationWidget->GetFrame()->addWidget(m_Watershed->getWidget());
+  m_BaseAlgorithmSegmentationWidget->GetFrame()->addWidget( m_Watershed->getWidget() );
   m_Watershed->ConnectSignals(filter);
 
 //=============================================================================
@@ -112,6 +112,7 @@ QGoMeshSeedSegmentation::QGoMeshSeedSegmentation(QWidget *parentW,
 //--------------------------------------------------------------------------
 QGoMeshSeedSegmentation::
 ~QGoMeshSeedSegmentation()
-{}
+{
+}
 
 //--------------------------------------------------------------------------

@@ -45,7 +45,7 @@
 
 #include <iostream>
 
-QGoAboutWidget::QGoAboutWidget(QWidget *iParent):QWidget(iParent)
+QGoAboutWidget::QGoAboutWidget(QWidget *iParent) : QWidget(iParent)
 {
   Q_INIT_RESOURCE(axes);
 
@@ -65,7 +65,7 @@ QGoAboutWidget::QGoAboutWidget(QWidget *iParent):QWidget(iParent)
 
   GofigureLabel->setAlignment(Qt::AlignCenter);
   QLabel *TabExplanation = new QLabel(
-    tr("\nGofigure uses different librairies,click on the tabs bellow to have a look at their copyright:\n"), this);
+      tr("\nGofigure uses different librairies,click on the tabs bellow to have a look at their copyright:\n"), this);
 
   TabExplanation->setAlignment(Qt::AlignJustify);
 
@@ -83,7 +83,8 @@ QGoAboutWidget::QGoAboutWidget(QWidget *iParent):QWidget(iParent)
 
 //--------------------------------------------------------------------------
 QGoAboutWidget::~QGoAboutWidget()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 
@@ -211,7 +212,7 @@ void QGoAboutWidget::WriteLicenseText(QTabWidget *iTabWidget)
                     "BioImageXD", iTabWidget);
   this->AddTabAbout(
     this->ReadLicenseText("PoissonreconstructionCopyright.txt"),
-    "Poisson Reconstruction", iTabWidget );
+    "Poisson Reconstruction", iTabWidget);
 
 #ifdef ENABLEFFMPEG
   this->AddTabAbout(this->ReadLicenseText("FFmpegCopyright.txt"),

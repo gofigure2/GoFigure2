@@ -47,14 +47,15 @@ class vtkPoints;
 class vtkImageData;
 
 // segmentation filters
-class QGoFilterChanAndVes;
+class QGoFilterChanAndVese;
 class QGoFilterShape;
 class QGoFilterWatershed;
 
 /**
  * \class QGoMeshSeedSegmentation
  * \ingroup QGoMeshSeed
- * \brief Interface between the seed segmentation filters and the base seed dockwidget
+ * \brief Interface between the segmentation filters and the seed base widget.
+ * Generates meshes.
 */
 
 class QGOGUILIB_EXPORT QGoMeshSeedSegmentation:public QGoSeedSegmentationBase
@@ -74,9 +75,9 @@ public:
    */
   ~QGoMeshSeedSegmentation();
 private:
-  QGoFilterChanAndVes *m_LevelSetfilter;
-  QGoFilterShape *     m_ShapeFilter;
-  QGoFilterWatershed * m_Watershed;
+  QGoFilterChanAndVese* m_LevelSetfilter;
+  QGoFilterShape*       m_ShapeFilter;
+  QGoFilterWatershed*   m_Watershed;
 
   std::vector< vtkSmartPointer<vtkImageData> > *m_OriginalImage;
 };

@@ -98,8 +98,7 @@ protected:
     vtkMySQLDatabase *iDatabaseConnector, std::vector< std::string > iVectMeshIDs);
 
   /**
-  \overload FillRowContainerForMeshValues(
-    vtkMySQLDatabase *iDatabaseConnector, std::vector< std::string > iVectMeshIDs);
+  \overload
   */
   void FillRowContainerForMeshValues(
     vtkMySQLDatabase *iDatabaseConnector, int iMeshID);

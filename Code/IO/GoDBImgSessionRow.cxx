@@ -71,10 +71,10 @@ int GoDBImgSessionRow::DoesThisImagingSessionExist(
 {
   //std::string MicroscopeName = this->GetMapValue("MicroscopeName");
   //std::string CreationDate = this->GetMapValue("CreationDate");
-  std::vector<FieldWithValue> Conditions;
-  this->AddConditions("MicroscopeName",Conditions);
-  this->AddConditions("CreationDate",Conditions);
- 
-  return FindOneID( DatabaseConnector, "imagingsession", "ImagingSessionID",
-                    Conditions);
+  std::vector< FieldWithValue > Conditions;
+  this->AddConditions("MicroscopeName", Conditions);
+  this->AddConditions("CreationDate", Conditions);
+
+  return FindOneID(DatabaseConnector, "imagingsession", "ImagingSessionID",
+                   Conditions);
 }

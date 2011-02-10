@@ -67,10 +67,7 @@ public:
   GoDBContourRow(vtkMySQLDatabase *DatabaseConnector, vtkPolyData *TraceVisu,
                  GoDBCoordinateRow Min, GoDBCoordinateRow Max, unsigned int ImgSessionID);
 
-  /**
-  \brief 
-  \param[in] ImgSessionID ID of the current imagingsession
-  */
+
   //constructor in GoDBTraceRow
   GoDBContourRow(unsigned int ImagingSessionID);
 

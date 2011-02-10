@@ -96,16 +96,6 @@ public:
    */
   bool DeleteElement(const unsigned int& iTime);
 
-  /**
-   * \brief Replace the point at the current time point.
-   * \param[in] iTime time point where we want to replace the point
-   * \param[in] iPoint new point to be added
-   * \return true is element has been replaced, false if there is no point at the
-   * specified time point. If you want to add this point, call
-   * InsertElement(int iTime, double* iPoint) instead.
-   */
-  bool ReplaceElement(const unsigned int& iTime, double* iPoint);
-
   void ReleaseData() const;
 
   /** Printing one element. std::cout << element << std::endl; */

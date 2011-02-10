@@ -41,6 +41,12 @@
 #include "GoDBRow.h"
 #include "ConvertToStringHelper.h"
 
+/**
+\class GoDBChannelRow
+\brief manages a map with keys matching fields of the gofiguredatabase Channel table
+and values of the map matching a row of the Channel table
+\ingroup DB
+*/
 class QGOIO_EXPORT GoDBChannelRow:public GoDBRow
 {
 public:

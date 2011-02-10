@@ -1,7 +1,15 @@
+
 #!/bin/bash
+make clean
 make gofigure -j2;
 
 cd @SIKULI_SCRIPTS_DIR@;
+
+# drop gofigure database
+@SIKULI_EXECUTABLE@ -t ../DropMySQLdatabase.sikuli;
+
+rm 3DMeshExportTest.txt;
+
 
 # first let's launch gofigure
 @GOFIGURE2_BINARY_DIR@/bin/gofigure &
@@ -16,7 +24,9 @@ cd @SIKULI_SCRIPTS_DIR@;
 
 @SIKULI_EXECUTABLE@ -t ../Export3DMesh.sikuli;
 
-#drop database
+#drop MySQL database
+@SIKULI_EXECUTABLE@ -t ../DropMySQLdatabase.sikuli;
+
 
 @GOFIGURE2_BINARY_DIR@/bin/gofigure &
 
@@ -29,7 +39,7 @@ cd @SIKULI_SCRIPTS_DIR@;
 @SIKULI_EXECUTABLE@ -t ../ImportTracks.sikuli;
 
 # Start the test
-for var in TraceAdd TraceDelete Bookmark
+for var in TraceAdd TraceDelete Bookmark ContourSegmentation MeshSegmentation
 do
      echo "$var"
      @SIKULI_EXECUTABLE@ -t ../$var.sikuli > @GOFIGURE2_BINARY_DIR@/Testing/$var.log;

@@ -59,7 +59,7 @@
 #include <QVariant>
 
 //--------------------------------------------------------------------------
-QGoTabImageView2D::QGoTabImageView2D(QWidget *iParent):
+QGoTabImageView2D::QGoTabImageView2D(QWidget *iParent) :
   QGoTabImageViewNDBase(iParent)
 {
   m_Image = 0;
@@ -142,7 +142,8 @@ QGoTabImageView2D::QGoTabImageView2D(QWidget *iParent):
 //--------------------------------------------------------------------------
 QGoTabImageView2D::
 ~QGoTabImageView2D()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 

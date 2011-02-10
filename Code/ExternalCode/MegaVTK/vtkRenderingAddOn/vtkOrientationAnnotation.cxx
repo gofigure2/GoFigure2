@@ -76,11 +76,13 @@ vtkCxxRevisionMacro(vtkOrientationAnnotation, "$Revision: 490 $");
 
 //----------------------------------------------------------------------------
 vtkOrientationAnnotation::vtkOrientationAnnotation()
-{}
+{
+}
 
 //----------------------------------------------------------------------------
 vtkOrientationAnnotation::~vtkOrientationAnnotation()
-{}
+{
+}
 
 //----------------------------------------------------------------------------
 void vtkOrientationAnnotation::SetTextActorsPosition(int vsize[2])

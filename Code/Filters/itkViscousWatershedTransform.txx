@@ -139,6 +139,7 @@ ViscousWatershedTransform< TFeatureImage, TInputImage, TSegmentImage >::PrintSel
 {
   Superclass::PrintSelf (os, indent);
 }
+
 } /* end namespace itk */
 
 #endif
