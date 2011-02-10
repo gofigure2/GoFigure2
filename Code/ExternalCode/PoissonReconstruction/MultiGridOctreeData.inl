@@ -1778,7 +1778,7 @@ inline void Octree<Degree>::SetIsoSurfaceCorners(const Real& isoValue,const int&
 
 			if(temp->parent){
 				TreeOctNode* parent=temp->parent;
-				int c=int(temp-temp->parent->children);
+				c=int(temp-temp->parent->children);
 				mcid=temp->nodeData.mcIndex&(1<<MarchingCubes::cornerMap[c]);
 
 				if(mcid){
