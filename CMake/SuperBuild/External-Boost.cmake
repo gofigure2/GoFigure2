@@ -1,7 +1,7 @@
 #---------------------------------------------------------------------------
 # Get and build boost
 
-set(proj Boost)
+set( proj Boost )
 set( version 1.45.0 )
 
 ExternalProject_Add(${proj}
@@ -14,6 +14,7 @@ ExternalProject_Add(${proj}
     ${ep_common_args}
     -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
     -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
+	-DCMAKE_BUILD_SHARED_LIBS:BOOL=${SUPERBUILD_SHARED_LIBS}  
     # can generate erros on Mac 10.6
     -DWITH_PYTHON:BOOL=OFF
 	-DWITH_DOXYGEN:BOOL=OFF
@@ -21,6 +22,7 @@ ExternalProject_Add(${proj}
 	-DWITH_BZIP2:BOOL=OFF
 	-DWITH_MPI:BOOL=OFF
 	-DWITH_XSLTPROC:BOOL=OFF
+	-DWITH_ICU:BOOL=OFF
   INSTALL_COMMAND ""
   DEPENDS
     ${BOOST_DEPENDENCIES}

@@ -1,4 +1,4 @@
-SET( VIDEO_SUPPORT)
+SET( VIDEO_SUPPORT )
 
 #-----------------------------------------------------------------------------
 # Is FFMPEG AVAILABLE ( FOR UNIX) MAC??
@@ -10,7 +10,7 @@ IF( NOT WIN32 )
     LIST( APPEND VIDEO_SUPPORT
       -DVTK_USE_FFMPEG_ENCODER:BOOL=ON    
     )
-  ELSE( FFMPEG_FOUND)
+  ELSE( FFMPEG_FOUND )
     LIST( APPEND VIDEO_SUPPORT
       -DVTK_USE_FFMPEG_ENCODER:BOOL=OFF    
     )
@@ -19,7 +19,7 @@ IF( NOT WIN32 )
 # DO STH FOR WINDOWS
 # turn on video by default
 ELSE( NOT WIN32 )
-  LIST(APPEND VIDEO_SUPPORT
+  LIST( APPEND VIDEO_SUPPORT
     -DVTK_USE_AVI_ENCODER:BOOL=ON
   )
 ENDIF( NOT WIN32 )
