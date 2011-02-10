@@ -447,6 +447,7 @@ QGoTabImageView3DwT::CreateMeshSegmentationDockWidget()
 void
 QGoTabImageView3DwT::ManualInteractorBehavior(bool iVisible)
 {
+  DefaultInteractorBehavior(iVisible);
   this->m_ImageView->EnableContourWidget(iVisible);
 }
 
