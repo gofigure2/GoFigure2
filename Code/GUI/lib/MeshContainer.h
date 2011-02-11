@@ -36,13 +36,14 @@
 #define __MeshContainer_h
 
 #include "ContourMeshContainer.h"
+#include "QGoGUILibConfigure.h"
 
 /**
  * \class MeshContainer
  * \brief Wraps a boost::multi_index_container of ContourMeshStructure.
  * This class is specialized for the means of Mesh.
  * */
-class MeshContainer : public ContourMeshContainer
+class QGOGUILIB_EXPORT MeshContainer : public ContourMeshContainer
 {
   Q_OBJECT
 public:
