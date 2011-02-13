@@ -246,6 +246,10 @@ ENDIF( ENABLE_VIDEO_RECORD_AVI )
 #---------------------------------------------------------------------------
 
 SET( QGoGUILIB_UI
+#segmentation widget
+  Resources/SegmentationBaseDockWidget.ui
+  Resources/SegmentationSeedBaseWidget.ui
+
 # manual contour segmentation dock widget
   Resources/ManualSegmentationSettingsDlg.ui
   Resources/ContourManualSegmentationWidget.ui
