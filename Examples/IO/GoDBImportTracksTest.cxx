@@ -1,14 +1,8 @@
 /*=========================================================================
-  Author: $Author: lsouhait $  // Author of last commit
-  Version: $Rev: 542 $  // Revision of last commit
-  Date: $Date: 2009-08-06 16:08:10 -0400 (Thu, 06 Aug 2009) $  // Date of last commit
-=========================================================================*/
-
-/*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -44,15 +38,15 @@
 
 int main(int argc, char *argv[])
 {
-  void (argc);
-  void (argv);
+  (void) argc;
+  (void) argv;
   std::string ServerName = "localhost";
   std::string filename;
   std::string Login;
   std::string Password;
   std::string DBName = "gofiguredatabase";
   int ImgSessionID;
- 
+
   std::cout<<"Enter your mysql user:"<<std::endl;
   std::cin >> Login;
   std::cout<<"Enter your mysql password:"<<std::endl;
@@ -61,7 +55,7 @@ int main(int argc, char *argv[])
   std::cin >> filename;
   std::cout<<"Enter your imagingsessionID the traces will be imported to:"<<std::endl;
   std::cin >> ImgSessionID;
- 
+
   /*std::string ServerName = "localhost";
   std::string filename = argv[1];
   std::string Login = argv[2];
@@ -72,5 +66,5 @@ int main(int argc, char *argv[])
   //import into the database:
   GoDBImport ImportHelper(ServerName, Login,
                           Password, ImgSessionID, filename, 0);
-  ImportHelper.ImportTracks();  
+  ImportHelper.ImportTracks();
 }
