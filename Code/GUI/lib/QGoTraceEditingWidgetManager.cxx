@@ -60,13 +60,19 @@ void QGoTraceEditingWidgetManager::Initialize(QWidget *iParent)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTraceEditingWidgetManager:: AddWidgetForMode(
-  QWidget* iModeWidget, std::string iModeName, 
+void QGoTraceEditingWidgetManager:: AddMode(
+  std::string iModeName, QWidget* iModeWidget, 
   QGoAdvancedParametersWidget* iParameterWidget)
 {
+  QWidget* ModeWidget = new QWidget;
+  if (iModeWidget != 0)
+  {
+  ModeWidget = iModeWidget;
   if (iParameterWidget != 0)
    {
-   iModeWidget->layout()->addWidget(iParameterWidget);
+   ModeWidget->layout()->addWidget(iParameterWidget);
    }
-  this->m_ModeEditingWidget->AddWidgetWithModeName(iModeWidget, iModeName);
+  }
+  this->m_ModeEditingWidget->AddWidgetWithModeName(iModeName, ModeWidget);
+  
 }

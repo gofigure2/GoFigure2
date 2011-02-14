@@ -74,12 +74,16 @@ void QGoModeEditingWidget::Initialize()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoModeEditingWidget::AddWidgetWithModeName(QWidget* iWidget, 
-  std::string iModeName)
+void QGoModeEditingWidget::AddWidgetWithModeName(
+  std::string iModeName, QWidget* iWidget )
 {
   //this->m_ModeLayout->addWidget(iWidget);
   //int Index = this->m_ModeLayout->indexOf(iWidget);
-  this->m_ModeWidgets->addWidget(iWidget);
-  int Index = this->m_ModeWidgets->indexOf(iWidget);
+  int Index = 0;
+  if (iWidget != 0)
+  {
+  this->m_ModeWidgets->addWidget(iWidget);  
+  Index = this->m_ModeWidgets->indexOf(iWidget);
+  }
   this->m_ModeComboBox->insertItem(Index,iModeName.c_str());
 }

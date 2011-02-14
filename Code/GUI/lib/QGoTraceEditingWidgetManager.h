@@ -52,7 +52,7 @@ public:
   explicit QGoTraceEditingWidgetManager(std::string iTraceName, QWidget *iParent = 0 );
   ~QGoTraceEditingWidgetManager();
 
-  void AddWidgetForMode(QWidget* iModeWidget, std::string iModeName, 
+  void AddMode( std::string iModeName, QWidget* iModeWidget = 0,
     QGoAdvancedParametersWidget* iParameterWidget = 0);
 
 protected:

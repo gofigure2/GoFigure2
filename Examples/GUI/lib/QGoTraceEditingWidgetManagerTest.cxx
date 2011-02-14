@@ -77,13 +77,12 @@ int main(int argc, char *argv[])
   QGoAdvancedParametersWidget* SemiAutomatedParam = new QGoAdvancedParametersWidget(MeshEditing);
   QGoContourSemiAutoLevelsetWidget* LevelSetParam = new QGoContourSemiAutoLevelsetWidget(MeshEditing);
   QGoContourSemiAutoWatershedWidget* WaterShedParam = new QGoContourSemiAutoWatershedWidget(MeshEditing);
-  //QGoTraceManualEditingWidget* LevelSetParam = new QGoTraceManualEditingWidget(MeshEditing);
-  //QGoContourManualSegmentationWidget* WaterShedParam = new QGoContourManualSegmentationWidget(MeshEditing);
+  
   SemiAutomatedParam->AddWidgetWithName(LevelSetParam, "Level Set 3D");
   SemiAutomatedParam->AddWidgetWithName(WaterShedParam, "WaterShed");
 
-  //MeshEditing->AddWidgetForMode(SemiAutoModeWidget, "Semi Automated", SemiAutomatedParam);
-  MeshEditing->AddWidgetForMode(SemiAutoModeWidget, "Semi Automated", SemiAutomatedParam);
+  MeshEditing->AddMode("Manual");
+  MeshEditing->AddMode( "Semi Automated", SemiAutoModeWidget, SemiAutomatedParam);
   //MeshEditing->AddWidgetForMode(LevelSetParam, "Semi Automated");
   //QObject::connect( timer, SIGNAL( timeout() ), window, SLOT( close() ) );
 

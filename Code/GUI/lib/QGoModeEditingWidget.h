@@ -49,7 +49,7 @@ public:
   explicit QGoModeEditingWidget(QWidget *iParent = 0);
   ~QGoModeEditingWidget();
 
-  void AddWidgetWithModeName(QWidget* iWidget, std::string iModeName);
+  void AddWidgetWithModeName (std::string iModeName, QWidget* iWidget= 0);
 
 protected:
   QVBoxLayout*            m_VBoxLayout;
