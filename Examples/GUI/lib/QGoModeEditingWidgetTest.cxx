@@ -62,8 +62,8 @@ int main(int argc, char *argv[])
   //ListFilters.append("WaterShed");
 
   QGoModeEditingWidget* ModeEditing = new QGoModeEditingWidget(NULL);
-  QGoTraceManualEditingWidget* ManualEditing = new QGoTraceManualEditingWidget(ModeEditing);
-  QGoContourManualSegmentationWidget* SemiAutomatedEditing = new QGoContourManualSegmentationWidget(ModeEditing);
+ 
+
   
   ModeEditing->AddWidgetWithModeName(ManualEditing, "Manual");
   ModeEditing->AddWidgetWithModeName(SemiAutomatedEditing, "Semi Automated"); 
