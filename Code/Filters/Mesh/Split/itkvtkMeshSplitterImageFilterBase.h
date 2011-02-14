@@ -45,6 +45,10 @@
 
 namespace itk
 {
+/**
+  \class vtkMeshSplitterImageFilterBase
+  \brief
+*/
 template< class TImage >
 class vtkMeshSplitterImageFilterBase : public vtkMeshSplitterFilterBase
   {

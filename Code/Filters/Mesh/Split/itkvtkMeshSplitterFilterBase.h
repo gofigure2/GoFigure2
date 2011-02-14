@@ -43,6 +43,10 @@
 
 namespace itk
 {
+/**
+  \class vtkMeshSplitterFilterBase
+  \brief
+*/
 class vtkMeshSplitterFilterBase : public LightObject
   {
 public:
