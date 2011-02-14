@@ -33,19 +33,11 @@
 =========================================================================*/
 #include <QApplication>
 #include <QTimer>
+#include <QStringlist>
 
-#include "QGoTraceEditingWidgetManager.h"
-#include "QGoTraceManualEditingWidget.h"
-#include "QGoSeedBaseWidget.h"
-#include "QGoContourManualSegmentationWidget.h"
-#include "QGoContourSemiAutoLevelsetWidget.h"
-#include "QGoContourSemiAutoWatershedWidget.h"
 #include "QGoAdvancedParametersWidget.h"
-
 #include "QGoTraceManualEditingWidget.h"
 #include "QGoContourManualSegmentationWidget.h"
-
-
 
 
 //**************************************************************************//
@@ -67,29 +59,20 @@ int main(int argc, char *argv[])
   //ListFilters.append("LevelSet");
   //ListFilters.append("WaterShed");
 
-  QGoTraceEditingWidgetManager* MeshEditing = new QGoTraceEditingWidgetManager("Mesh", NULL);
-  QGoTraceManualEditingWidget* ManualEditing = new QGoTraceManualEditingWidget(MeshEditing);
-  QGoContourManualSegmentationWidget* SemiAutomatedEditing = new QGoContourManualSegmentationWidget(MeshEditing);
-  MeshEditing->AddWidgetForMode(ManualEditing, "manual");
-  MeshEditing->AddWidgetForMode(SemiAutomatedEditing, "semi auto");
-  //QGoSeedBaseWidget* SemiAutoModeWidget = new QGoSeedBaseWidget(MeshEditing);
-  
-  //QGoAdvancedParametersWidget* SemiAutomatedParam = new QGoAdvancedParametersWidget(MeshEditing);
-  //QGoContourSemiAutoLevelsetWidget* LevelSetParam = new QGoContourSemiAutoLevelsetWidget(MeshEditing);
-  //QGoContourSemiAutoWatershedWidget* WaterShedParam = new QGoContourSemiAutoWatershedWidget(MeshEditing);
-  //QGoTraceManualEditingWidget* LevelSetParam = new QGoTraceManualEditingWidget(MeshEditing);
-  //QGoContourManualSegmentationWidget* WaterShedParam = new QGoContourManualSegmentationWidget(MeshEditing);
-  //SemiAutomatedParam->AddWidgetWithName(LevelSetParam, "Level Set 3D");
-  //SemiAutomatedParam->AddWidgetWithName(WaterShedParam, "WaterShed");
+  QGoAdvancedParametersWidget *window = new QGoAdvancedParametersWidget(NULL);
 
-  //MeshEditing->AddWidgetForMode(SemiAutoModeWidget, "Semi Automated", SemiAutomatedParam);
-  //MeshEditing->AddWidgetForMode(LevelSetParam, "Semi Automated");
+  QGoTraceManualEditingWidget* FirstWidget = new QGoTraceManualEditingWidget(window);
+  QGoContourManualSegmentationWidget* SecondWidget = new QGoContourManualSegmentationWidget(window);
+  
+  window->AddWidgetWithName(FirstWidget, "FirstWidget");
+  window->AddWidgetWithName(SecondWidget, "SecondWidget");
+
   //QObject::connect( timer, SIGNAL( timeout() ), window, SLOT( close() ) );
 
   
   //timer->start(1000);
 
-  MeshEditing->show();
+  window->show();
 
   app.processEvents();
   int output = app.exec();
@@ -97,7 +80,7 @@ int main(int argc, char *argv[])
   app.closeAllWindows();
 
   //delete timer;
-  delete MeshEditing;
+  delete window;
 
   return output;
 }

@@ -69,5 +69,5 @@ void QGoTraceEditingWidgetManager:: AddWidgetForMode(
    iModeWidget->layout()->addWidget(iParameterWidget);
    }
   this->m_ModeEditingWidget->AddWidgetWithModeName(iModeWidget, iModeName);
-  this->m_VLayout->addWidget(iModeWidget);
+  //this->m_VLayout->addWidget(iModeWidget);
 }
