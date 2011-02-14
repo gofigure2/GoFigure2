@@ -34,6 +34,6 @@ for i in range(1,5):
 	click(Location(xclick,yclick))
 	click("Apply.png")
 	keyDown(Key.CTRL)
-	type("d")
+	type("c")
 	keyUp(Key.CTRL)
 	wait(4)

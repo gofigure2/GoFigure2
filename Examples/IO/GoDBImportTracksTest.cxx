@@ -31,35 +31,40 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
+#include "GoDBImport.h"
+#include <string>
 
-#ifndef __MeshContainer_h
-#define __MeshContainer_h
 
-#include "ContourMeshContainer.h"
-#include "QGoGUILibConfigure.h"
 
-/**
- * \class MeshContainer
- * \brief Wraps a boost::multi_index_container of ContourMeshStructure.
- * This class is specialized for the means of Mesh.
- * */
-class QGOGUILIB_EXPORT MeshContainer : public ContourMeshContainer
+int main(int argc, char *argv[])
 {
-  Q_OBJECT
-public:
-  /** \brief Constructor */
-  explicit MeshContainer(QObject* iParent, QGoImageView3D *iView);
+  (void) argc;
+  (void) argv;
+  std::string ServerName = "localhost";
+  std::string filename;
+  std::string Login;
+  std::string Password;
+  std::string DBName = "gofiguredatabase";
+  int ImgSessionID;
 
-  /** \brief Destructor */
-  ~MeshContainer();
+  std::cout<<"Enter your mysql user:"<<std::endl;
+  std::cin >> Login;
+  std::cout<<"Enter your mysql password:"<<std::endl;
+  std::cin >> Password;
+  std::cout<<"Enter the path to your file to import:"<<std::endl;
+  std::cin >> filename;
+  std::cout<<"Enter your imagingsessionID the traces will be imported to:"<<std::endl;
+  std::cin >> ImgSessionID;
 
-protected:
-  /** \brief Add a mesh in the visualization with its property. It returns a
-   * vector of size 4, of each element represents one view in the Quad-View.  */
-  std::vector< vtkActor* > AddTrace( vtkPolyData* iNode, vtkProperty* iProp );
+  /*std::string ServerName = "localhost";
+  std::string filename = argv[1];
+  std::string Login = argv[2];
+  std::string Password = argv[3];
+  std::string DBName = "gofiguredatabase";
+  int ImgSessionID = argv[4];*/
 
-private:
-  Q_DISABLE_COPY( MeshContainer );
-};
-
-#endif // __MeshContainer_h
+  //import into the database:
+  GoDBImport ImportHelper(ServerName, Login,
+                          Password, ImgSessionID, filename, 0);
+  ImportHelper.ImportTracks();
+}

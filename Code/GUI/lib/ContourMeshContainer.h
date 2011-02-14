@@ -56,6 +56,7 @@
 #include "QGoImageView3D.h"
 
 #include "vtkLookupTableManager.h"
+#include "QGoGUILibConfigure.h"
 
 namespace boost
 {
@@ -113,7 +114,7 @@ typedef multi_index::multi_index_container<
   the Visualization and in the TableWidget
   \sa ContourMeshStructure QGoTableWidget QGoImageView3D
   */
-class ContourMeshContainer:
+class QGOGUILIB_EXPORT ContourMeshContainer:
     public TraceContainerBase< boost::MultiIndexContourMeshContainer >
 {
   Q_OBJECT

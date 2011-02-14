@@ -40,6 +40,7 @@
 #include "GoDBTWContainerForContourMesh.h"
 #include "QGoDBTraceManager.h"
 #include "ContourContainer.h"
+#include "QGoGUILibConfigure.h"
 
 /**
 \class QGoDBContourManager
