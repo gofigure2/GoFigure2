@@ -56,7 +56,7 @@ protected:
   QComboBox*              m_ModeComboBox;
   //QStackedLayout*         m_ModeLayout;
   QStackedWidget*         m_ModeWidgets;  
-  void Initialize(QWidget *iParent = 0);
+  void Initialize();
 
 };
 #endif

@@ -101,7 +101,7 @@ void ctkCollapsibleGroupBox::expand(bool _expand)
     this->OldSize = this->size();
     }
 
-  QObjectList childList = this->children();
+  /*QObjectList childList = this->children();
   for (int i = 0; i < childList.size(); ++i)
     {
     QObject *o = childList.at(i);
@@ -113,7 +113,7 @@ void ctkCollapsibleGroupBox::expand(bool _expand)
         w->setVisible(_expand);
         }
       }
-    }
+    }*/
 
   if (_expand)
     {

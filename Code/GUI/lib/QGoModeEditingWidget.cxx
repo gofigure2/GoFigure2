@@ -34,8 +34,9 @@
 #include "QGoModeEditingWidget.h"
 
 QGoModeEditingWidget::QGoModeEditingWidget(QWidget *iParent)
+  :QWidget(iParent)
 {
-  this->Initialize(iParent);
+  this->Initialize();
 }
 //-------------------------------------------------------------------------
 
@@ -46,7 +47,7 @@ QGoModeEditingWidget::~QGoModeEditingWidget()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoModeEditingWidget::Initialize(QWidget *iParent)
+void QGoModeEditingWidget::Initialize()
 {
   this->m_VBoxLayout = new QVBoxLayout;
  
