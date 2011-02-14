@@ -57,6 +57,7 @@
 #include "vtkDoubleArray.h"
 #include "QGoImageView3D.h"
 #include "vtkLookupTableManager.h"
+#include "QGoGUILibConfigure.h"
 #include <QString>
 
 namespace boost
@@ -111,7 +112,7 @@ typedef multi_index::multi_index_container<
   the Visualization and in the TableWidget
   \sa TrackStructure QGoTableWidget QGoImageView3D
   */
-class TrackContainer:
+class QGOGUILIB_EXPORT TrackContainer:
     public TraceContainerBase< boost::MultiIndexTrackContainer >
 {
   Q_OBJECT

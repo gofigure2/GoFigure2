@@ -321,7 +321,6 @@ void ModifyStructureWithTCoordAndPoints(TrackStructure & ioStructure,
 \param[in] iTableOne name of the main table (usually a trace name)
 \tparam ContourMeshStructure or TrackStructure
 */
-QGOIO_EXPORT
 template <typename T>
 void ExecuteQueryAndModifyListStructure(vtkMySQLDatabase* iDatabaseConnector,
   std::string iQueryString, std::list<T> & ioListStructure, std::string iTableOne)
@@ -377,7 +376,6 @@ left join tablethree ijoinconditiontwo where (ifieldone = ivaluefieldone and (iI
 \param[in] iIDFieldName field for the IDName where there is a condition
 \param[in] iListIDs values for the iIDFieldname
 */
-QGOIO_EXPORT
 template<typename T>
 void GetInfoFromDBAndModifyListStructure(
   std::list< T > & ioListStructure,
@@ -472,6 +470,7 @@ std::vector< std::string > GetSpecificValueFromOneTableWithConditionsOnTwoColumn
 //coordinate on mesh.coordidmin = coordinate.coordid
 //where ( imagingsessionid = 2 and coordinate.zcoord < 20) )
 //AS t2 on t1.meshid = t2.meshid;
+QGOIO_EXPORT
 std::list< unsigned int > GetColumnForBoundedValue(std::string iColumnName,
                                                    std::string iTableName,
                                                    std::string iImgSessionID,
@@ -479,6 +478,7 @@ std::list< unsigned int > GetColumnForBoundedValue(std::string iColumnName,
                                                    std::string iValue,
                                                    vtkMySQLDatabase *DatabaseConnector);
 
+QGOIO_EXPORT
 std::list< unsigned int > GetSpecificValuesEqualToZero(
   vtkMySQLDatabase *iDatabaseConnection, std::string iColumnName, std::string iTableName,
   std::vector< std::string > iVectorConditionFieldOne,
@@ -545,34 +545,41 @@ T ExecuteSelectQueryOneValue(vtkMySQLDatabase *iDatabaseConnector,
 
 // WHERE (iWhereAndConditions[i] = iWhereAndConditions[i+1] and/or ....)
 //if only 1 condition: WHERE iWhereAndConditions[i] = iWhereAndConditions[i+1]
+QGOIO_EXPORT
 std::string WhereAndOrConditions(std::vector<std::string> iWhereAndConditions,
   bool iAnd = true);
 
+QGOIO_EXPORT
 std::list<unsigned int> GetAllSelectedValuesFromTwoTables(
   vtkMySQLDatabase *iDatabaseConnector, std::string iTableOne, std::string iTableTwo,
   std::string iColumn, FieldWithValue iJoinCondition,
   std::vector<FieldWithValue> iFieldsWithValues, bool Distinct = false);
 
+QGOIO_EXPORT
 std::vector<std::string> GetAllSelectedValuesFromTwoTables(
   vtkMySQLDatabase *iDatabaseConnector, std::string iTableOne, std::string iTableTwo,
   std::vector<std::string> iListAttributes, FieldWithValue iJoinCondition,
   std::vector<FieldWithValue> iFieldsWithValues);
 
+QGOIO_EXPORT
 std::list< unsigned int > GetAllSelectedValuesFromTwoTables(vtkMySQLDatabase *iDatabaseConnector,
   std::string iTableOne, std::string iTableTwo,
   std::string iColumn, FieldWithValue iJoinCondition,
   std::string iField, std::vector<std::string> iVectorValues, bool Distinct = false);
 
+QGOIO_EXPORT
 std::list< unsigned int > GetAllSelectedValuesFromTwoTables(vtkMySQLDatabase *iDatabaseConnector,
   std::string iTableOne, std::string iTableTwo,
   std::string iColumn, FieldWithValue iJoinCondition,
   std::string iField, std::vector<std::string> iVectorValues,FieldWithValue iAndCondition);
 
+QGOIO_EXPORT
 std::list< unsigned int > GetDoublonValuesFromTwoTables(
       vtkMySQLDatabase* iDatabaseConnector, std::string iTableOne, std::string iTableTwo,
       std::string iColumn, FieldWithValue iJoinCondition,std::string iField,
       std::vector<std::string> iVectValues);//, std::string GroupByColumn = "");
 
+QGOIO_EXPORT
 int GetMaxValueFromTwoTables(vtkMySQLDatabase *iDatabaseConnector,
   std::string iTableOne, std::string iTableTwo,std::string iColumn,
   FieldWithValue iJoinCondition,std::string iField,
@@ -584,6 +591,7 @@ int GetMaxValueFromTwoTables(vtkMySQLDatabase *iDatabaseConnector,
 
 //select columnname FROM tablename WHERE field = value order by ASC/DESC limit
 // iNumberLimit
+QGOIO_EXPORT
 std::vector< std::string > GetOrderByWithLimit(vtkMySQLDatabase *iDatabaseConnector,
                                                std::string iColumnName,
                                                std::string iTableName,
@@ -592,13 +600,16 @@ std::vector< std::string > GetOrderByWithLimit(vtkMySQLDatabase *iDatabaseConnec
                                                bool ASC,
                                                std::string iNumberLimit);
 
+QGOIO_EXPORT
 std::string GetCoordinateValuesQueryString(std::string iTableName, std::string iField,
   std::string iValue,bool iMin);
 
 //get the center of the bounding boxes for tableName with restriction of iField = iValue
+QGOIO_EXPORT
 std::list< double* > GetCenterBoundingBoxes(vtkMySQLDatabase *DatabaseConnector,
   std::string iTableName,std::string iField,std::string iValue);
 
+QGOIO_EXPORT
 std::list<unsigned int> GetListValuesFromTwoTablesAndCondition(
   vtkMySQLDatabase *iDatabaseConnector,
   std::string iTableOne, std::string iTableTwo,std::string iColumn,

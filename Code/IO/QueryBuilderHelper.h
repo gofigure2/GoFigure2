@@ -38,6 +38,7 @@
 #include <string>
 #include <sstream>
 #include <list>
+#include "QGoIOConfigure.h"
 
 #include "QGoIOConfigure.h"
 
