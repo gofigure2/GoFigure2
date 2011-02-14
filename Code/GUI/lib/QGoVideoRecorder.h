@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -73,23 +73,47 @@ public:
   ~QGoVideoRecorder();
 
   /**
-   * \brief Set value X/Y/Z/T Min and Max for a given image (useful for spin boxes)
+   * \brief Set value X Min and Max for a given image (useful for spin boxes)
    * when image is loaded, to know boundaries of the spin box to be used
    */
   void SetXMinAndMax(const int &, const int &);
 
+  /**
+   * \brief Set value Y Min and Max for a given image (useful for spin boxes)
+   * when image is loaded, to know boundaries of the spin box to be used
+   */
   void SetYMinAndMax(const int &, const int &);
 
+  /**
+   * \brief Set value Z Min and Max for a given image (useful for spin boxes)
+   * when image is loaded, to know boundaries of the spin box to be used
+   */
   void SetZMinAndMax(const int &, const int &);
 
+  /**
+   * \brief Set value T Min and Max for a given image (useful for spin boxes)
+   * when image is loaded, to know boundaries of the spin box to be used
+   */
   void SetTMinAndMax(const int &, const int &);
 
+  /**
+   * \brief Set current X value (useful for spin boxes)
+   */
   void SetCurrentX(const int &);
 
+  /**
+   * \brief Set current Y value (useful for spin boxes)
+   */
   void SetCurrentY(const int &);
 
+  /**
+   * \brief Set current Z value (useful for spin boxes)
+   */
   void SetCurrentZ(const int &);
 
+  /**
+   * \brief Set current T value (useful for spin boxes)
+   */
   void SetCurrentT(const int &);
 
   std::ofstream m_OutputVideoFile;

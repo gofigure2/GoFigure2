@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,7 @@
 
 #include <iostream>
 
-QGoDockWidgetStatus::QGoDockWidgetStatus(QDockWidget *iW):QObject(iW),
+QGoDockWidgetStatus::QGoDockWidgetStatus(QDockWidget *iW) : QObject(iW),
   m_DockWidget(iW),
   m_Area(Qt::LeftDockWidgetArea), m_DefaultArea(Qt::LeftDockWidgetArea),
   m_Visibility(true), m_Attached(true)
@@ -48,7 +48,7 @@ QGoDockWidgetStatus::QGoDockWidgetStatus(QDockWidget *iW):QObject(iW),
                     this, SLOT( SetVisibility(bool) ) );
 }
 
-QGoDockWidgetStatus::QGoDockWidgetStatus(const QGoDockWidgetStatus & iS):
+QGoDockWidgetStatus::QGoDockWidgetStatus(const QGoDockWidgetStatus & iS) :
   QObject(iS.m_DockWidget), m_Area(iS.m_Area), m_DefaultArea(iS.m_Area),
   m_Visibility(iS.m_Visibility), m_Attached(iS.m_Attached)
 {
@@ -60,7 +60,7 @@ QGoDockWidgetStatus::QGoDockWidgetStatus(const QGoDockWidgetStatus & iS):
 }
 
 QGoDockWidgetStatus::QGoDockWidgetStatus(QDockWidget *iW, Qt::DockWidgetArea iArea,
-                                         const bool & iVisibility, const bool & iAttached):
+                                         const bool & iVisibility, const bool & iAttached) :
   QObject(iW), m_DockWidget(iW), m_Area(iArea),
   m_DefaultArea(iArea), m_Visibility(iVisibility),
   m_Attached(iAttached)
@@ -74,7 +74,8 @@ QGoDockWidgetStatus::QGoDockWidgetStatus(QDockWidget *iW, Qt::DockWidgetArea iAr
 
 QGoDockWidgetStatus::
 ~QGoDockWidgetStatus()
-{}
+{
+}
 
 void
 QGoDockWidgetStatus::SetArea(Qt::DockWidgetArea iArea)

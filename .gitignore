@@ -3,6 +3,9 @@
 #BUILD directory
 BUILD/
 
+#KDevelop
+*.kdev4
+
 #QT creator specifics
 CMakeLists.txt.user*
 qtcreator-build/

@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -40,15 +40,15 @@
 #include "QGoSeedBaseWidget.h"
 // ALGOS
 // LevelSet algorithm
-#include "QGoFilterChanAndVes.h"
+#include "QGoFilterChanAndVese.h"
 #include "QGoFilterShape.h"
 //#include "Watershed.h"
 
 //--------------------------------------------------------------------------
 QGoContourSeedSegmentation::QGoContourSeedSegmentation(QWidget *parentW,
                                                        vtkPoints *seeds,
-                                                       std::vector< vtkSmartPointer<vtkImageData> > *iOriginalImage,
-                                                       int iSampling):
+                                                       std::vector< vtkSmartPointer< vtkImageData > > *iOriginalImage,
+                                                       int iSampling) :
   QGoSeedSegmentationBase(parentW, seeds, iSampling),
   m_OriginalImage(iOriginalImage)
 {
@@ -72,9 +72,9 @@ QGoContourSeedSegmentation::QGoContourSeedSegmentation(QWidget *parentW,
 //=============================================================================
 
   //Add new segmentation method
-  m_LevelSetfilter = new QGoFilterChanAndVes(this, iSampling);   // 2 i.e. 2D,
-                                                                 // to create a
-                                                                 // contour
+  m_LevelSetfilter = new QGoFilterChanAndVese(this, iSampling);   // 2 i.e. 2D,
+                                                                  // to create a
+                                                                  // contour
   filter = m_BaseAlgorithmSegmentationWidget->GetNumberOfFilters();
   m_BaseAlgorithmSegmentationWidget->AddFilter( m_LevelSetfilter->getName() );
   m_LevelSetfilter->getWidget()->setParent(m_BaseAlgorithmSegmentationWidget);
@@ -97,6 +97,7 @@ QGoContourSeedSegmentation::QGoContourSeedSegmentation(QWidget *parentW,
 //--------------------------------------------------------------------------
 QGoContourSeedSegmentation::
 ~QGoContourSeedSegmentation()
-{}
+{
+}
 
 //--------------------------------------------------------------------------

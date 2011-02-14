@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -60,7 +60,7 @@
  * \brief Constructor
  * @param iParent
  */
-QGoTabImageView3D::QGoTabImageView3D(QWidget *iParent):
+QGoTabImageView3D::QGoTabImageView3D(QWidget *iParent) :
   QGoTabImageViewNDBase(iParent)
 {
   setupUi(this);
@@ -352,7 +352,8 @@ void QGoTabImageView3D::CreateModeActions()
 
 //--------------------------------------------------------------------------
 QGoTabImageView3D::~QGoTabImageView3D()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 
@@ -862,22 +863,22 @@ QGoTabImageView3D::TakeSnapshot()
   switch ( FullScreenView )
     {
     case 1:
-      filename.append( "snapshot-xy-" );
+      filename.append("snapshot-xy-");
       m_ImageView->SnapshotViewXY(GoFigure::PNG, filename);
       break;
 
     case 2:
-      filename.append( "snapshot-xz-" );
+      filename.append("snapshot-xz-");
       m_ImageView->SnapshotViewXZ(GoFigure::PNG, filename);
       break;
 
     case 3:
-      filename.append( "snapshot-yz-" );
+      filename.append("snapshot-yz-");
       m_ImageView->SnapshotViewYZ(GoFigure::PNG, filename);
       break;
 
     default:
-      filename.append( "snapshot-xyz-" );
+      filename.append("snapshot-xyz-");
       m_ImageView->SnapshotViewXYZ(GoFigure::PNG, filename);
       break;
     }

@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -42,17 +42,17 @@
 QGoContourSegmentationBaseDockWidget::QGoContourSegmentationBaseDockWidget(
   QWidget *iParent,
   vtkPoints *seeds,
-  std::vector< vtkSmartPointer<vtkImageData> > *iOriginalImage):QDockWidget(iParent)
+  std::vector< vtkSmartPointer< vtkImageData > > *iOriginalImage) : QDockWidget(iParent)
 {
   this->setupUi(this);
 
-  this->setWindowTitle( QString::fromUtf8("Contour Segmentation") );
+  this->setWindowTitle( QString::fromUtf8("Contour Editing") );
 
   QIcon ContourSegmentationIcon;
   ContourSegmentationIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/ContourEditing.png") ),
                                     QIcon::Normal, QIcon::Off);
   this->toggleViewAction()->setIcon(ContourSegmentationIcon);
-  this->toggleViewAction()->setToolTip( tr("Contour Segmentation") );
+  this->toggleViewAction()->setToolTip( tr("Contour Editing") );
   this->toggleViewAction()->setStatusTip( tr("Create contours manually, semi-automatically or automatically") );
 
   // update interactor behavior
@@ -118,6 +118,8 @@ QGoContourSegmentationBaseDockWidget::QGoContourSegmentationBaseDockWidget(
                     this, SIGNAL( SaveAndVisuContour(vtkPolyData *) ) );
   QObject::connect( m_ContourSemiAutoSegmentation, SIGNAL( SegmentationFinished() ),
                     this, SIGNAL( ClearAllSeeds() ) );
+
+  gridLayout->setSizeConstraint(QLayout::SetFixedSize);
 }
 
 //---------------------------------------------------------------------------//
@@ -125,7 +127,8 @@ QGoContourSegmentationBaseDockWidget::QGoContourSegmentationBaseDockWidget(
 //---------------------------------------------------------------------------//
 QGoContourSegmentationBaseDockWidget::
 ~QGoContourSegmentationBaseDockWidget()
-{}
+{
+}
 
 //---------------------------------------------------------------------------//
 // one segmentation to another
@@ -192,7 +195,7 @@ QGoContourSegmentationBaseDockWidget::interactorBehavior(bool iSegmentationMetho
 
 //---------------------------------------------------------------------------//
 void
-QGoContourSegmentationBaseDockWidget::SetChannel(int iChannel,const QString & iText)
+QGoContourSegmentationBaseDockWidget::SetChannel(int iChannel, const QString & iText)
 {
   QString input;
 

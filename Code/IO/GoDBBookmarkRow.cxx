@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -63,10 +63,10 @@ void GoDBBookmarkRow::InitializeMap()
 int GoDBBookmarkRow::DoesThisNameAlreadyExists(
   vtkMySQLDatabase *DatabaseConnector)
 {
-  std::vector<FieldWithValue> Conditions;
-  this->AddConditions("ImagingSessionID",Conditions);
-  this->AddConditions("Name",Conditions);
-  return FindOneID( DatabaseConnector, "bookmark", "BookmarkID",Conditions);
+  std::vector< FieldWithValue > Conditions;
+  this->AddConditions("ImagingSessionID", Conditions);
+  this->AddConditions("Name", Conditions);
+  return FindOneID(DatabaseConnector, "bookmark", "BookmarkID", Conditions);
 }
 
 //-------------------------------------------------------------------------
@@ -75,10 +75,10 @@ int GoDBBookmarkRow::DoesThisNameAlreadyExists(
 int GoDBBookmarkRow::DoesThisEntityAlreadyExists(
   vtkMySQLDatabase *iDatabaseConnector)
 {
-  std::vector<FieldWithValue> Conditions;
-  this->AddConditions("ImagingSessionID",Conditions);
-  this->AddConditions("CoordID",Conditions);
-  return FindOneID( iDatabaseConnector, "bookmark", "BookmarkID",Conditions);
+  std::vector< FieldWithValue > Conditions;
+  this->AddConditions("ImagingSessionID", Conditions);
+  this->AddConditions("CoordID", Conditions);
+  return FindOneID(iDatabaseConnector, "bookmark", "BookmarkID", Conditions);
 }
 
 //-------------------------------------------------------------------------

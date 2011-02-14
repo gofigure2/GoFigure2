@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -47,7 +47,7 @@
 #include <QComboBox>
 #include <QPushButton>
 
-QGoOpenCreateProjectPage::QGoOpenCreateProjectPage(QWidget *iParent):
+QGoOpenCreateProjectPage::QGoOpenCreateProjectPage(QWidget *iParent) :
   QWizardPage(iParent),
   m_DatabaseConnector(0),
   ExistingImgSession(false)
@@ -236,13 +236,13 @@ QStringList QGoOpenCreateProjectPage::GetListAuthors()
     }
 
   std::vector< std::string > ListFirstNames = ListAllValuesForOneColumn(
-    m_DatabaseConnector, "FirstName", "author");
+      m_DatabaseConnector, "FirstName", "author");
   std::vector< std::string > ListMiddleNames = ListAllValuesForOneColumn(
-    m_DatabaseConnector, "MiddleName", "author");
+      m_DatabaseConnector, "MiddleName", "author");
   std::vector< std::string > ListLastNames = ListAllValuesForOneColumn(
-    m_DatabaseConnector, "LastName", "author");
+      m_DatabaseConnector, "LastName", "author");
   std::vector< std::string > ListID = ListAllValuesForOneColumn(
-    m_DatabaseConnector, "AuthorID", "author");
+      m_DatabaseConnector, "AuthorID", "author");
 
   if ( !ListFirstNames.empty() )
     {
@@ -255,16 +255,16 @@ QStringList QGoOpenCreateProjectPage::GetListAuthors()
       AuthorTotalName << " ";
       AuthorTotalName << ListMiddleNames[i];
 
-      std::vector<FieldWithValue> Conditions(3);
-      FieldWithValue FirstName ={"FirstName",ListFirstNames[i],"="};
+      std::vector< FieldWithValue > Conditions(3);
+      FieldWithValue                FirstName = { "FirstName", ListFirstNames[i], "=" };
       Conditions[0] = FirstName;
-      FieldWithValue MiddleName = {"MiddleName",ListMiddleNames[i], "="};
+      FieldWithValue MiddleName = { "MiddleName", ListMiddleNames[i], "=" };
       Conditions[1] = MiddleName;
-      FieldWithValue LastName = {"LastName",ListLastNames[i], "="};
+      FieldWithValue LastName = { "LastName", ListLastNames[i], "=" };
       Conditions[2] = LastName;
 
-       m_MapAuthorIDName[AuthorTotalName.str()] = FindOneID(m_DatabaseConnector,
-         "author", "AuthorID",Conditions);
+      m_MapAuthorIDName[AuthorTotalName.str()] = FindOneID(m_DatabaseConnector,
+                                                           "author", "AuthorID", Conditions);
       }
     for ( std::map< std::string, int >::iterator iter = m_MapAuthorIDName.begin();
           iter != m_MapAuthorIDName.end(); ++iter )
@@ -363,8 +363,8 @@ void QGoOpenCreateProjectPage::DisplayInfoProject(QString ProjectName)
       }
     std::vector< std::string > ResultQuery;
     ResultQuery = ListSpecificValuesForOneColumn(
-      m_DatabaseConnector, "project", "Description",
-      "Name", ProjectName.toStdString() );
+        m_DatabaseConnector, "project", "Description",
+        "Name", ProjectName.toStdString() );
     /*only one field in the ResultQuery as the project name is the primary key
       of the Project Table: */
     Description = ResultQuery[0].c_str();
@@ -374,8 +374,8 @@ void QGoOpenCreateProjectPage::DisplayInfoProject(QString ProjectName)
     first, have to find the corresponding AuthorID in the Database :*/
     ResultQuery.clear();
     ResultQuery = ListSpecificValuesForOneColumn(
-      m_DatabaseConnector, "project", "AuthorID",
-      "Name", ProjectName.toStdString() );
+        m_DatabaseConnector, "project", "AuthorID",
+        "Name", ProjectName.toStdString() );
     int AuthorID = atoi( ResultQuery[0].c_str() );
 
     /*second, have to find the corresponding AuthorName in the map*/
@@ -505,8 +505,8 @@ bool QGoOpenCreateProjectPage::DoesProjectHaveExistingImgSession() const
     }
 
   std::vector< std::string > ListImgSessionID = ListSpecificValuesForOneColumn(
-    m_DatabaseConnector, "imagingsession", "imagingsessionID", "projectName",
-    field("ProjectName").toString().toStdString() );
+      m_DatabaseConnector, "imagingsession", "imagingsessionID", "projectName",
+      field("ProjectName").toString().toStdString() );
 
   return !ListImgSessionID.empty();
 }

@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -40,20 +40,23 @@
 #include "vtkPolyData.h"
 
 class ContourMeshContainerTestHelper :
-    public ContourMeshContainer
+  public ContourMeshContainer
 {
 public:
-  explicit ContourMeshContainerTestHelper( QObject* iParent,
-                                           QGoImageView3D* iViewer ) :
-    ContourMeshContainer( iParent, iViewer ) {}
+  explicit ContourMeshContainerTestHelper(QObject *iParent,
+                                          QGoImageView3D *iViewer) :
+    ContourMeshContainer(iParent, iViewer) {
+  }
 
-  ~ContourMeshContainerTestHelper() {}
+  ~ContourMeshContainerTestHelper() {
+  }
 
 protected:
-  std::vector< vtkActor* > AddTrace( vtkPolyData*, vtkProperty* )
-    {
-    return std::vector< vtkActor* >();
-    }
+  std::vector< vtkActor * > AddTrace(vtkPolyData *, vtkProperty *)
+  {
+    return std::vector< vtkActor * >();
+  }
+
 };
 
 int main(int argc, char *argv[])
@@ -66,14 +69,15 @@ int main(int argc, char *argv[])
   QGoImageView3D *viewer = new QGoImageView3D;
 
   ContourMeshContainerTestHelper container(NULL, viewer);
-  unsigned             TimePoint = 0;
-  bool                 highlighted = true;
-  bool                 visible = true;
-  unsigned int         i = 0;
+  unsigned                       TimePoint = 0;
+  bool                           highlighted = true;
+  bool                           visible = true;
+  unsigned int                   i = 0;
 
   for (; i < 20; i++ )
     {
     ContourMeshStructure element(i,
+                                 0,
                                  vtkActor::New(),
                                  vtkActor::New(),
                                  vtkActor::New(),
@@ -90,6 +94,7 @@ int main(int argc, char *argv[])
   for (; i < 30; i++ )
     {
     ContourMeshStructure element(i,
+                                 0,
                                  vtkActor::New(),
                                  vtkActor::New(),
                                  vtkActor::New(),

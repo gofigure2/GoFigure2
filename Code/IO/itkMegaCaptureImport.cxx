@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -47,7 +47,8 @@ MegaCaptureImport::MegaCaptureImport()
 //--------------------------------------------------------------------------------
 MegaCaptureImport::
 ~MegaCaptureImport()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -136,7 +137,7 @@ MegaCaptureImport::CreateOutput()
       // get the headerfile name and add the .meg
       std::string fileNamePath = itksys::SystemTools::GetFilenamePath(m_FileName);
       m_HeaderFileName = fileNamePath + "/"
-                         + origFileName.substr(0, LengthHeaderFile) + ".meg";
+        + origFileName.substr(0, LengthHeaderFile) + ".meg";
       }
 
     if ( m_NbSignificantMegaCaptureNumGroup == 9 )
@@ -487,4 +488,5 @@ std::string MegaCaptureImport::GetHeaderFilename()
 {
   return m_HeaderFileName;
 }
+
 }

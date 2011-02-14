@@ -33,9 +33,9 @@
 
 /*=========================================================================
  Modifications were made by the GoFigure Dev. Team.
- while at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ while at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -453,8 +453,8 @@ void vtkFillImageWithPolyData::ThreadedRequestData(
     {
 //     slice = int( vtkrint ( (pt[0]-origin[0])/spacing[0] ));
     slice = static_cast< int >(
-      ( pt[ExtractionDirection] - origin[ExtractionDirection] )
-      / spacing[ExtractionDirection] );
+        ( pt[ExtractionDirection] - origin[ExtractionDirection] )
+        / spacing[ExtractionDirection] );
     }
 
   inPtr1 = inData[0][0]->GetScalarPointerForExtent(outExt);

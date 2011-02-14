@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -65,18 +65,18 @@ void GoDBCoordinateRow::InitializeMap()
 //-------------------------------------------------------------------------
 int GoDBCoordinateRow::DoesThisCoordinateExist(vtkMySQLDatabase *DatabaseConnector)
 {
-  std::vector<FieldWithValue> Conditions;
-  this->AddConditions("PCoord",Conditions);
-  this->AddConditions("RCoord",Conditions);
-  this->AddConditions("CCoord",Conditions);
-  this->AddConditions("XTileCoord",Conditions);
-  this->AddConditions("YTileCoord",Conditions);
-  this->AddConditions("ZTileCoord",Conditions);
-  this->AddConditions("XCoord",Conditions);
-  this->AddConditions("YCoord",Conditions);
-  this->AddConditions("ZCoord",Conditions);
-  this->AddConditions("TCoord",Conditions);
-  return FindOneID( DatabaseConnector, "coordinate", "CoordID", Conditions);
+  std::vector< FieldWithValue > Conditions;
+  this->AddConditions("PCoord", Conditions);
+  this->AddConditions("RCoord", Conditions);
+  this->AddConditions("CCoord", Conditions);
+  this->AddConditions("XTileCoord", Conditions);
+  this->AddConditions("YTileCoord", Conditions);
+  this->AddConditions("ZTileCoord", Conditions);
+  this->AddConditions("XCoord", Conditions);
+  this->AddConditions("YCoord", Conditions);
+  this->AddConditions("ZCoord", Conditions);
+  this->AddConditions("TCoord", Conditions);
+  return FindOneID(DatabaseConnector, "coordinate", "CoordID", Conditions);
 }
 
 //-------------------------------------------------------------------------

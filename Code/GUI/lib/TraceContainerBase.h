@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -32,8 +32,8 @@
 
 =========================================================================*/
 
-#ifndef TRACECONTAINERBASE_H
-#define TRACECONTAINERBASE_H
+#ifndef __TraceContainerBase_h
+#define __TraceContainerBase_h
 
 #include <Qt>
 #include <QObject>
@@ -41,6 +41,7 @@
 
 #include "vtkProperty.h"
 #include "StructureHelper.h"
+#include "QGoGUILibConfigure.h"
 
 #include "boost/multi_index_container.hpp"
 #include "boost/multi_index/member.hpp"
@@ -49,12 +50,19 @@
 #include "boost/numeric/conversion/cast.hpp"
 #include "boost/lexical_cast.hpp"
 
+/**
+ * \class TraceContainerBase
+ * \tparam TContainer boost::multi_index_container of a given TraceStructure
+ * \brief Generic interface for trace container.
+ * More specific container should inherit from this class and get specialized
+ * depending on the kind of trace it contains.
+ * */
 template< class TContainer >
 class TraceContainerBase : public QObject
 {
 public:
-  typedef TContainer MultiIndexContainerType;
-  typedef typename MultiIndexContainerType::value_type MultiIndexContainerElementType;
+  typedef TContainer                                    MultiIndexContainerType;
+  typedef typename MultiIndexContainerType::value_type  MultiIndexContainerElementType;
 
   typedef typename MultiIndexContainerType::template index< ActorXY >::type::iterator
   MultiIndexContainerActorXYIterator;
@@ -74,29 +82,42 @@ public:
   typedef typename MultiIndexContainerType::template index< TraceID >::type::iterator
   MultiIndexContainerTraceIDIterator;
 
+  typedef typename MultiIndexContainerType::template index< CollectionID >::type::iterator
+  MultiIndexContainerCollectionIDIterator;
+
   typedef typename MultiIndexContainerType::template index< Highlighted >::type::iterator
   MultiIndexContainerHighlightedIterator;
 
   typedef typename MultiIndexContainerType::template index< Visible >::type::iterator
   MultiIndexContainerVisibleIterator;
 
+  /** \brief Constructor
+ * \param[in] iParent Parent to provide ownership (Qt style)
+ * \param[in] iView Visualization for trace
+ * */
   explicit TraceContainerBase( QObject* iParent, QGoImageView3D* iView );
+
+  /** \brief Destructor */
   virtual ~TraceContainerBase();
 
-
+  /** \brief Trace Contaienr */
   MultiIndexContainerType m_Container;
 
   /** \brief Link to the visualization. */
   QGoImageView3D *m_ImageView;
 
+  /** \brief Current Element of the trace type. */
   MultiIndexContainerElementType m_CurrentElement;
 
   // ----------------------------------------------------------------------
 
-  /** \brief Print the container content in the application output */
+  /** \brief Print the container content in the application output.
+ * \tparam TIterator Iterator on one index of boost::multi_index_container
+ * or on the container itself.
+ * */
   template< class TIterator >
   void Print(TIterator iBegin, TIterator iEnd)
-  {
+    {
     TIterator it = iBegin;
 
     while ( it != iEnd )
@@ -106,7 +127,7 @@ public:
       std::cout << std::endl;
       ++it;
       }
-  }
+    }
 
   /**
     \brief Print the container content in the application output according
@@ -115,12 +136,12 @@ public:
     */
   template< class TIndex >
   void Print()
-  {
+    {
     using boost::multi_index::get;
 
     this->Print(  this->m_Container.get< TIndex >().begin(),
                   this->m_Container.get< TIndex >().end() );
-  }
+    }
 
   /** \brief Print the container content in the application output. */
   void Print();
@@ -138,6 +159,9 @@ public:
   */
   vtkProperty * GetHighlightedProperty();
 
+  /** \brief Get the CollectionID given a TraceID */
+  unsigned int GetCollectionIDOfGivenTraceID( unsigned int iTraceID);
+
   /**
     \brief Update Visualization of the given TraceIDs
     \tparam TContainer Container of TraceIDs
@@ -145,7 +169,7 @@ public:
   */
   template< class TList >
   void UpdateVisualizationForGivenIDs(TList iList)
-  {
+    {
     using boost::multi_index::get;
 
     typename TList::iterator it = iList.begin();
@@ -208,25 +232,24 @@ public:
         }
       ++it;
       }
-  }
+    }
 
   /**
- * \brief Update Actors, Highlighted, Visibility (properties) of given
- * a element
- * \tparam TIndex Index Type (referring to multi index container's indices)
- * \param[in] iIt element to update
- * \param[in] iActors its actors
- * \param[in] iHighlighted
- * \param[in] iVisible if false remove the element from the scene, else
- * add it
- */
+  * \brief Update Actors, Highlighted, Visibility (properties) of given
+  * a element
+  * \tparam TIndex Index Type (referring to multi index container's indices)
+  * \param[in] iIt element to update
+  * \param[in] iActors its actors
+  * \param[in] iHighlighted
+  * \param[in] iVisible if false remove the element from the scene, else
+  * add it */
   template< class TIndex >
   void UpdateVisualizationForGivenElement(
     typename MultiIndexContainerType::template index< TIndex >::type::iterator iIt,
     std::vector< vtkActor * > iActors,
     const bool & iHighlighted,
     const bool & iVisible)
-  {
+    {
     MultiIndexContainerElementType temp = *iIt;
 
     if ( iActors.size() == 4 )
@@ -261,7 +284,8 @@ public:
 
     using boost::multi_index::get;
     m_Container.get< TIndex >().replace(iIt, temp);
-  }
+    }
+
   /**
   \brief Insert one element in the container
   \param[in] iE element to be insert in the container
@@ -290,12 +314,37 @@ public:
   vtkPolyData* GetCurrentElementNodes();
 
   /**
+    \brief Get the color of the current element track
+    \return Pointer to the current element color
+  */
+  double* GetCurrentElementColor();
+
+  std::vector<vtkActor*> GetActorGivenTraceID( unsigned int iTraceID );
+
+  /**
   \brief put the information of the existing element into m_CurrentElement
   and remove the existing element from the container,the visu and the memory
   \param[in] iTraceID ID of the existing element
   \return true if the element was found in the container, false if not
   */
   bool UpdateCurrentElementFromExistingOne(unsigned int iTraceID);
+
+  /** \brief */
+  template< class TIndex >
+  bool UpdateCurrentElementFromExistingOne(
+    typename MultiIndexContainerType::template index< TIndex >::type::iterator iIt )
+    {
+    using boost::multi_index::get;
+
+    // update current element
+    this->m_CurrentElement = *iIt;
+
+    // clean the container but don't erase the pointers since we still have the
+    // adresses in the m_CurrentElement
+    m_Container.get< TIndex >().erase( iIt );
+
+    return true;
+    }
 
   /**
     \brief Update element visibility given it TraceId
@@ -363,7 +412,7 @@ public:
   /**
     \brief Color code contour / mesh according to values provided
     \param[in] iColumnName Name of data provided
-    \param[in] ivalues is a map where the key is the TraceID and the Value is
+    \param[in] iValues is a map where the key is the TraceID and the Value is
     a string that can be either converted to a double, or not
     \note if iColumnName and/or iValues are empty traces will be then rendered
     with their original colors.
@@ -375,7 +424,7 @@ public:
     \brief Color code contour / mesh according to values provided
     \tparam TValue numerical type that can be converted into double
     \param[in] iColumnName Name of data provided
-    \param[in] ivalues is a map where the key is the TraceID and the Value is
+    \param[in] iValues is a map where the key is the TraceID and the Value is
     the actual data used to color.
     \note if iColumnName and/or iValues are empty traces will be then rendered
     with their original colors.
@@ -384,9 +433,9 @@ public:
   void SetColorCode( const std::string& iColumnName,
                      const std::map< unsigned int, TValue >& iValues )
     {
-    typedef TValue ValueType;
-    typedef typename std::map< unsigned int, ValueType > MapType;
-    typedef typename MapType::const_iterator MapConstIterator;
+    typedef TValue                                        ValueType;
+    typedef typename std::map< unsigned int, ValueType >  MapType;
+    typedef typename MapType::const_iterator              MapConstIterator;
 
     using boost::multi_index::get;
 
@@ -503,6 +552,8 @@ protected:
   /**
   \brief Update highlighting property of one element given one actor.
   \param[in] iActor Actor of the element to be modified
+  \param[out] oTraceId TraceId of the element
+  \param[out] oState Qt::Checked if the element is not highlighted else Qt::UnChecked
   \return true if the element exists
   \return false else
   */
@@ -511,7 +562,7 @@ protected:
       vtkActor *iActor,
       unsigned int& oTraceId,
       Qt::CheckState& oState )
-  {
+    {
     using boost::multi_index::get;
 
     if ( iActor )
@@ -572,20 +623,21 @@ protected:
       }
 
     return false;
-  }
+    }
 
   /** \brief Update element Visibility property given one actor.
   \tparam TActor either ActorXY, ActorXZ, ActorYZ, ActorXYZ depending on the view
   \param[in] iActor provided actor
+  \param[out] oTraceId TraceId of the element
+  \param[out] oState Qt::Checked if the element is not visible else Qt::UnChecked
   \return true if iActor is in the container
-  \return false else
-  */
+  \return false else */
   template< class TActor >
   bool UpdateElementVisibilityWithGivenActor(
       vtkActor *iActor,
       unsigned int& oTraceId,
       Qt::CheckState& oState )
-  {
+    {
     using boost::multi_index::get;
 
     if ( iActor )
@@ -627,22 +679,23 @@ protected:
       }
 
     return false;
-  }
+    }
 
   /**
   \brief Update highlighting property of one element given one actor.
   \param[in] iActor Actor of the element to be modified
   \param[in] iState Visibility to applied to the element
+  \param[out] oTraceID TraceId of the element
+  \param[out] oState Qt::Checked if iState is true else Qt::UnChecked
   \return true if the element exists
-  \return false else
-  */
+  \return false else */
   template< class TActor >
   bool UpdateElementVisibilityWithGivenActor(
       vtkActor *iActor,
       bool iState,
       unsigned int& oTraceID,
       Qt::CheckState& oState )
-  {
+    {
     using boost::multi_index::get;
 
     if ( iActor )
@@ -681,9 +734,9 @@ protected:
       }
 
     return false;
-  }
+    }
 };
 
 #include "TraceContainerBase.txx"
 
-#endif // TRACECONTAINERBASE_H
+#endif // __TraceContainerBase_h

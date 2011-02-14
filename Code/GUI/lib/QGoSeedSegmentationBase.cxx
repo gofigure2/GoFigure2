@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -41,9 +41,9 @@
 //--------------------------------------------------------------------------
 QGoSeedSegmentationBase::QGoSeedSegmentationBase(QWidget *parentWidget,
                                                  vtkPoints *seeds,
-                                                 int iSampling):
+                                                 int iSampling) :
   QObject(parentWidget),
-  m_NumberOfChannels( 0 )
+  m_NumberOfChannels(0)
 {
   m_Seeds = seeds;
   // initialize to 0 leads to segfaults
@@ -104,7 +104,8 @@ QGoSeedSegmentationBase::QGoSeedSegmentationBase(QWidget *parentWidget,
 //--------------------------------------------------------------------------
 QGoSeedSegmentationBase::
 ~QGoSeedSegmentationBase()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 
@@ -186,7 +187,7 @@ QGoSeedSegmentationBase::ConnectSignals(QGoSeedBaseWidget *iWidget)
 void
 QGoSeedSegmentationBase::SetChannel(int iChannel, const QString & iText)
 {
-  emit addChannel( iChannel, iText);
+  emit addChannel(iChannel, iText);
 }
 
 //--------------------------------------------------------------------------
@@ -195,10 +196,10 @@ QGoSeedSegmentationBase::SetChannel(int iChannel, const QString & iText)
 void
 QGoSeedSegmentationBase::SetNumberOfChannels(int iNumberOfChannels)
 {
-  if( m_NumberOfChannels != iNumberOfChannels )
+  if ( m_NumberOfChannels != iNumberOfChannels )
     {
     m_NumberOfChannels = iNumberOfChannels;
-    emit setNumberOfChannels( iNumberOfChannels );
+    emit setNumberOfChannels(iNumberOfChannels);
     }
 }
 

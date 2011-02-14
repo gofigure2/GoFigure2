@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -37,14 +37,14 @@
 
 #include "vtkActor.h"
 
-
 //-------------------------------------------------------------------------
-ContourMeshContainer::
-ContourMeshContainer( QObject *iParent,
-                      QGoImageView3D *iView) :
+ContourMeshContainer::ContourMeshContainer(QObject *iParent,
+                                           QGoImageView3D *iView) :
   Superclass(iParent, iView),
   m_TCoord( std::numeric_limits< unsigned int >::max() )
-{}
+{
+}
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -57,7 +57,7 @@ ContourMeshContainer::
     {
     if ( it->Nodes )
       {
-      if( it->Nodes->GetPointData()->GetScalars() )
+      if ( it->Nodes->GetPointData()->GetScalars() )
         {
         it->Nodes->GetPointData()->GetScalars()->Delete();
         }
@@ -83,6 +83,7 @@ ContourMeshContainer::
     ++it;
     }
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -96,17 +97,15 @@ ContourMeshContainer::SetTimePoint(const unsigned int & iT)
 
 //-------------------------------------------------------------------------
 void
-ContourMeshContainer::
-UpdateCurrentElementFromVisu( std::vector< vtkActor * > iActors,
-                              vtkPolyData *iNodes,
-                              const unsigned int & iT,
-                              const bool & iHighlighted,
-                              const bool & iVisible )
+ContourMeshContainer::UpdateCurrentElementFromVisu(std::vector< vtkActor * > iActors,
+                                                   vtkPolyData *iNodes,
+                                                   const unsigned int & iT,
+                                                   const bool & iHighlighted,
+                                                   const bool & iVisible)
 {
   this->m_CurrentElement.TCoord = iT;
-  this->UpdateCurrentElementFromVisuBase( iActors, iNodes,
-                                          iHighlighted, iVisible );
-
+  this->UpdateCurrentElementFromVisuBase(iActors, iNodes,
+                                         iHighlighted, iVisible);
 }
 
 //-------------------------------------------------------------------------
@@ -121,7 +120,7 @@ ContourMeshContainer::RemoveActorsWithGivenTimePoint(const unsigned int & iT)
 
   ChangeActorsVisibility< TCoord >(it0, it1, false);
 
-  if( m_ImageView )
+  if ( m_ImageView )
     {
     m_ImageView->UpdateRenderWindows();
     }
@@ -159,7 +158,7 @@ ContourMeshContainer::AddActorsWithGivenTimePoint(const unsigned int & iT)
 
   ChangeActorsVisibility< TCoord >(it0, it1, true);
 
-  if( m_ImageView )
+  if ( m_ImageView )
     {
     m_ImageView->UpdateRenderWindows();
     }
@@ -169,23 +168,23 @@ ContourMeshContainer::AddActorsWithGivenTimePoint(const unsigned int & iT)
 
 //-------------------------------------------------------------------------
 void
-ContourMeshContainer::
-UpdateElementHighlightingWithGivenTraceIDs( const QStringList& iList,
-                                            const Qt::CheckState& iCheck )
+ContourMeshContainer::UpdateElementHighlightingWithGivenTraceIDs(const QStringList & iList,
+                                                                 const Qt::CheckState & iCheck)
 {
-  Superclass::UpdateElementHighlightingWithGivenTraceIDsBase( iList,
-                                                              iCheck );
+  Superclass::UpdateElementHighlightingWithGivenTraceIDsBase(iList,
+                                                             iCheck);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
-ContourMeshContainer::
-UpdateElementVisibilityWithGivenTraceIDs( const QStringList& iList,
-                                          const Qt::CheckState& iCheck )
+ContourMeshContainer::UpdateElementVisibilityWithGivenTraceIDs(const QStringList & iList,
+                                                               const Qt::CheckState & iCheck)
 {
-  Superclass::UpdateElementVisibilityWithGivenTraceIDsBase( iList, iCheck );
+  Superclass::UpdateElementVisibilityWithGivenTraceIDsBase(iList, iCheck);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -195,20 +194,20 @@ ContourMeshContainer::DeleteElement(const unsigned int & iId)
   MultiIndexContainerTraceIDIterator
     it = m_Container.get< TraceID >().find(iId);
 
-  return DeleteElement( it );
+  return DeleteElement(it);
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 bool
-ContourMeshContainer::
-DeleteElement(MultiIndexContainerTraceIDIterator iIter)
+ContourMeshContainer::DeleteElement(MultiIndexContainerTraceIDIterator iIter)
 {
   if ( iIter != m_Container.get< TraceID >().end() )
     {
     if ( iIter->ActorXY )
       {
-      if( m_ImageView )
+      if ( m_ImageView )
         {
         this->m_ImageView->RemoveActor(0, iIter->ActorXY);
         }
@@ -216,7 +215,7 @@ DeleteElement(MultiIndexContainerTraceIDIterator iIter)
       }
     if ( iIter->ActorXZ )
       {
-      if( m_ImageView )
+      if ( m_ImageView )
         {
         this->m_ImageView->RemoveActor(1, iIter->ActorXZ);
         }
@@ -224,7 +223,7 @@ DeleteElement(MultiIndexContainerTraceIDIterator iIter)
       }
     if ( iIter->ActorYZ )
       {
-      if( m_ImageView )
+      if ( m_ImageView )
         {
         this->m_ImageView->RemoveActor(2, iIter->ActorYZ);
         }
@@ -232,7 +231,7 @@ DeleteElement(MultiIndexContainerTraceIDIterator iIter)
       }
     if ( iIter->ActorXYZ )
       {
-      if( m_ImageView )
+      if ( m_ImageView )
         {
         this->m_ImageView->RemoveActor(3, iIter->ActorXYZ);
         }
@@ -246,7 +245,7 @@ DeleteElement(MultiIndexContainerTraceIDIterator iIter)
 
     m_Container.get< TraceID >().erase(iIter);
 
-    if( m_ImageView )
+    if ( m_ImageView )
       {
       m_ImageView->UpdateRenderWindows();
       }
@@ -254,6 +253,7 @@ DeleteElement(MultiIndexContainerTraceIDIterator iIter)
     }
   return false;
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -273,7 +273,7 @@ ContourMeshContainer::DeleteAllHighlightedElements()
 
     if ( it0->ActorXY )
       {
-      if( m_ImageView )
+      if ( m_ImageView )
         {
         this->m_ImageView->RemoveActor(0, it0->ActorXY);
         }
@@ -281,7 +281,7 @@ ContourMeshContainer::DeleteAllHighlightedElements()
       }
     if ( it0->ActorXZ )
       {
-      if( m_ImageView )
+      if ( m_ImageView )
         {
         this->m_ImageView->RemoveActor(1, it0->ActorXZ);
         }
@@ -289,7 +289,7 @@ ContourMeshContainer::DeleteAllHighlightedElements()
       }
     if ( it0->ActorYZ )
       {
-      if( m_ImageView )
+      if ( m_ImageView )
         {
         this->m_ImageView->RemoveActor(2, it0->ActorYZ);
         }
@@ -297,7 +297,7 @@ ContourMeshContainer::DeleteAllHighlightedElements()
       }
     if ( it0->ActorXYZ )
       {
-      if( m_ImageView )
+      if ( m_ImageView )
         {
         this->m_ImageView->RemoveActor(3, it0->ActorXYZ);
         }
@@ -314,7 +314,7 @@ ContourMeshContainer::DeleteAllHighlightedElements()
     m_Container.get< Highlighted >().erase(it_t);
     }
 
-  if( m_ImageView )
+  if ( m_ImageView )
     {
     m_ImageView->UpdateRenderWindows();
     }
@@ -326,7 +326,7 @@ ContourMeshContainer::DeleteAllHighlightedElements()
 
 //-------------------------------------------------------------------------
 std::list< unsigned int >
-ContourMeshContainer:: GetElementsTraceIDForGivenTimePoint(unsigned int iTimePoint)
+ContourMeshContainer::GetElementsTraceIDForGivenTimePoint(unsigned int iTimePoint)
 {
   MultiIndexContainerTCoordIterator it0, it1;
 
@@ -340,42 +340,42 @@ ContourMeshContainer:: GetElementsTraceIDForGivenTimePoint(unsigned int iTimePoi
     ++it0;
     }
   return oList;
-
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::map< unsigned int, double* >
-ContourMeshContainer::
-GetMeshesPoints( std::list< unsigned int> iMeshID )
+std::map< unsigned int, double * >
+ContourMeshContainer::GetMeshesPoints(std::list< unsigned int > iMeshID)
 {
-  std::map< unsigned int, double* > meshPosition;
-  std::list< unsigned int>::iterator listIt = iMeshID.begin();
-  MultiIndexContainerTraceIDIterator containerIt;
+  std::map< unsigned int, double * >  meshPosition;
+  std::list< unsigned int >::iterator listIt = iMeshID.begin();
+  MultiIndexContainerTraceIDIterator  containerIt;
 
-  while( listIt != iMeshID.end() )
+  while ( listIt != iMeshID.end() )
     {
-    containerIt = m_Container.get< TraceID >().find( *listIt );
+    containerIt = m_Container.get< TraceID >().find(*listIt);
 
     //if element found
-    if( containerIt != m_Container.get< TraceID >().end() )
+    if ( containerIt != m_Container.get< TraceID >().end() )
       {
       unsigned int time = containerIt->TCoord;
-      double* point = new double[3];
+      double *     point = new double[3];
 
       double bounds[6];
       containerIt->Nodes->GetBounds(bounds);
 
-      for(int i = 0; i<3; ++i)
+      for ( int i = 0; i < 3; ++i )
         {
-        point[i] = (bounds[2*i] + bounds[2*i+1])/2;
+        point[i] = ( bounds[2 * i] + bounds[2 * i + 1] ) / 2;
         }
 
-      meshPosition.insert( std::pair<unsigned int, double*>(time, point) );
+      meshPosition.insert( std::pair< unsigned int, double * >(time, point) );
       }
     ++listIt;
     }
 
   return meshPosition;
 }
+
 //-------------------------------------------------------------------------

@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -44,7 +44,7 @@
 #include <QDir>
 #include <QPushButton>
 
-QGoDBInitCreateMicroscopePage::QGoDBInitCreateMicroscopePage(QWidget *iParent):
+QGoDBInitCreateMicroscopePage::QGoDBInitCreateMicroscopePage(QWidget *iParent) :
   QWizardPage(iParent)
 {
   QFont tfont;
@@ -165,7 +165,7 @@ void QGoDBInitCreateMicroscopePage::OpenDBConnection()
   if ( this->m_DatabaseConnector == 0 )
     {
     m_DatabaseConnector = OpenDatabaseConnection(
-      this->m_Server, this->m_User, this->m_Password, this->m_DBName);
+        this->m_Server, this->m_User, this->m_Password, this->m_DBName);
     }
 }
 

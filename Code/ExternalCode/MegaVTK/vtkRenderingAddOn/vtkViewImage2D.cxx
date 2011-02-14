@@ -33,9 +33,9 @@
 
 /*=========================================================================
  Modifications were made by the GoFigure Dev. Team.
- while at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ while at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -542,7 +542,7 @@ vtkViewImage2D::SetSlicePlaneToConvention(unsigned int axis)
   vals[axis] = 255;
 
   vtkUnsignedCharArray *array = vtkUnsignedCharArray::SafeDownCast(
-    this->SlicePlane->GetPointData()->GetScalars() );
+      this->SlicePlane->GetPointData()->GetScalars() );
 
   if ( !array )
     {
@@ -904,7 +904,7 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
     return NULL;
     }
 
-  if( !dataset )
+  if ( !dataset )
     {
     return NULL;
     }
@@ -961,7 +961,7 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
     actor->SetProperty(property);
     }
   actor->GetProperty()->BackfaceCullingOn();
-  actor->GetProperty()->SetLineWidth( this->IntersectionLineWidth );
+  actor->GetProperty()->SetLineWidth(this->IntersectionLineWidth);
 
   this->Renderer->AddViewProp(actor);
   this->Prop3DCollection->AddItem(actor);
@@ -990,7 +990,7 @@ vtkViewImage2D::AddDataSet(vtkDataSet *dataset,
     return NULL;
     }
 
-  if( !dataset )
+  if ( !dataset )
     {
     return NULL;
     }
@@ -1024,7 +1024,7 @@ vtkViewImage2D::AddDataSet(vtkDataSet *dataset,
     actor->SetProperty(property);
     }
   actor->GetProperty()->BackfaceCullingOn();
-  actor->GetProperty()->SetLineWidth( this->IntersectionLineWidth );
+  actor->GetProperty()->SetLineWidth(this->IntersectionLineWidth);
 
   this->Renderer->AddViewProp(actor);
   this->Prop3DCollection->AddItem(actor);

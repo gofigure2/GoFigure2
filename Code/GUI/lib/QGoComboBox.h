@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -83,9 +83,7 @@ public slots:
   virtual void InitializeTheList(QStringList iListItems);
 
   /**
-  \overload InitializeTheList(QStringList iListItems)
-  \param[in] iItemsData contains the name and the description of the items to be 
-  displayed in the combobox
+  \overload
   */
   virtual void InitializeTheList(NamesDescrContainerType iItemsData);
 
@@ -97,9 +95,7 @@ public slots:
   virtual void SetItemsFromList(QStringList iDataFromList);
 
   /**
-  \overload SetItemsFromList(QStringList iDataFromList)
-  \param[in] iItemsData contains the name and the description of the items to be 
-  displayed in the combobox
+  \overload
   */
   virtual void SetItemsFromList(NamesDescrContainerType iItemsData);
 

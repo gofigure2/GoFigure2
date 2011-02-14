@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -38,8 +38,11 @@
 #include <string>
 #include <sstream>
 #include <list>
+#include "QGoIOConfigure.h"
 
-struct FieldWithValue
+#include "QGoIOConfigure.h"
+
+struct QGOIO_EXPORT FieldWithValue
   {
     std::string Field;
     std::string Value;
@@ -52,6 +55,7 @@ struct FieldWithValue
 \param[in] iConditions list of conditions
 \return the string corresponding to the query part
 */
+QGOIO_EXPORT
 std::string SelectGeneralQueryConditions(std::string iWhat, std::string iWhere, std::string iConditions);
 
 /**
@@ -61,6 +65,7 @@ std::string SelectGeneralQueryConditions(std::string iWhat, std::string iWhere, 
 \param[in] iOrderByQuery part of the query to order by
 \return the string corresponding to the query part
 */
+QGOIO_EXPORT
 std::string SelectGeneralQuery(std::string iWhat, std::string iWhere,std::string iOrderByQuery = "");
 
 /**
@@ -68,6 +73,7 @@ std::string SelectGeneralQuery(std::string iWhat, std::string iWhere,std::string
 \param[in] iWhat attributes
 \return part of the query to make iWhat distinct
 */
+QGOIO_EXPORT
 std::string AddDistinctToWhat(std::string iWhat);
 
 /**
@@ -76,6 +82,7 @@ std::string AddDistinctToWhat(std::string iWhat);
 \param[in] iAscDesc ascendent or descendent sorting 
 \return the string corresponding to the query part
 */
+QGOIO_EXPORT
 std::string AddOrderBy(std::string iAttribute,std::string iAscDesc = "ASC");
 
 /**
@@ -83,13 +90,14 @@ std::string AddOrderBy(std::string iAttribute,std::string iAscDesc = "ASC");
 \param[in] iListAttributes list of the attributes to be selected
 \return the string corresponding to the query part
 */
+QGOIO_EXPORT
 std::string GetSelectedAttributes(std::vector<std::string> iListAttributes);
 
 /**
-\brief (iAttribute = iListValues[i] iConditionConnector iAttribute = iListValues[i+1]...)
-\param[in] iAttribute attribute who has to be equal to the iListValues
-\param[in] iListValues list of all the values iAttribute can be equal to
+\brief (iField = iListValues[i] iConditionConnector iField = iListValues[i+1]...)
+\param[in] iVectorValues list of all the values iAttribute can be equal to
 \param[in] iConditionConnector AND/OR 
+\param[in] iField 
 \tparam T  
 \return the string corresponding to the query part
 */
@@ -121,15 +129,39 @@ std::string GetConditions(std::string iField,
   return oConditions.str();
 }
 
+QGOIO_EXPORT
 std::string GetConditions(std::vector<FieldWithValue> iConditions,
                           std::string iConditionConnector = "AND");
 
+QGOIO_EXPORT
 std::string GetConditions(std::string iField, std::string iValue,std::string iOperator = "=");
 
-std::string GetFirstPartQueryForTracesInfo(std::string iTraceName,std::string iCollectionName);
+/**
+\brief (iFirstPartCondition AND (iField = iOrVectorValues1 OR iField = iOrVectorValues1...))
+*/
+template< typename T >
+std::string GetAndORConditions(FieldWithValue iFirtsPartCondition, std::string iField,
+  std::vector< T > iOrVectorValues)
+{
+  std::string oConditions;  
+  std::vector<FieldWithValue> VectorConditions(1);
+  //FieldWithValue AndCondition = {fieldTwo,ValueFieldTwo, "="};
+  VectorConditions[0] = iFirtsPartCondition;
+  oConditions = GetConditions( VectorConditions, "AND" );
+  if (!iOrVectorValues.empty() )
+    {
+    oConditions = oConditions.substr(0, oConditions.size()-1);
+    oConditions += " AND "; 
+    oConditions += GetConditions<T>(iField,iOrVectorValues,"OR");  
+    oConditions += ")";
+    }
+  return oConditions;
+}
 
-std::string GetSecondPartQueryForTracesInfo(std::string TraceName,
-                                            std::vector<int> iVectIDs);
+//std::string GetConditions(std::vector<FieldWithValue> iConditions,
+ //                         std::string iConditionConnector = "AND");
+
+//std::string GetConditions(std::string iField, std::string iValue,std::string iOperator = "=");
 
 /**
 \brief SELECT iColumn FROM iTable ORDER BY iOrderByColumnName iAscDesc;
@@ -140,8 +172,9 @@ empty, no sorting
 \param[in] iAscDesc order to sort the results, ascendent by default
 \return the string corresponding to the query part
 */
+QGOIO_EXPORT
 std::string SelectQueryStream(std::string iTable, std::string iColumn,
-                              std::string iOrderByColumnname = "", std::string iAscDesc = "ASC");
+                              std::string iOrderByColumnName = "", std::string iAscDesc = "ASC");
 
 /**
 \brief SELECT iColumn[i],iColumn[i=1]... FROM iTable ORDER BY iOrderByColumnName iAscDesc;
@@ -152,6 +185,7 @@ empty, no sorting
 \param[in] iAscDesc order to sort the results, ascendent by default
 \return the string corresponding to the query part
 */
+QGOIO_EXPORT
 std::string SelectQueryStream(std::string iTable, std::vector<std::string > iListAttributes,
                               std::string iOrderByColumnName = "", std::string iAscDesc = "ASC");
 
@@ -163,8 +197,11 @@ std::string SelectQueryStream(std::string iTable, std::vector<std::string > iLis
 \param[in] iOrderByColumnName name of the column by which the results will be sorted, if
 empty, no sorting 
 \param[in] iAscDesc order to sort the results, ascendent by default
+\param[in] iConditions name of the columns separated by comma that are part of the 'where'
+\param[in] Distinct true if no doublon allowed
 \return the string corresponding to the query part 
 */
+QGOIO_EXPORT
 std::string SelectQueryStreamCondition(std::string iTable, 
                                        std::string iColumn, 
                                        std::string iConditions,
@@ -174,6 +211,7 @@ std::string SelectQueryStreamCondition(std::string iTable,
 /**
 \overload
 */
+QGOIO_EXPORT
 std::string SelectQueryStreamCondition(std::string iTable, 
                                        std::string iColumn, 
                                        std::string iField,
@@ -185,6 +223,7 @@ std::string SelectQueryStreamCondition(std::string iTable,
 /**
 \overload
 */
+QGOIO_EXPORT
 std::string SelectQueryStreamCondition(std::string iTable, 
                                        std::vector<std::string> iListAttributes,
                                        std::string iField, 
@@ -202,6 +241,7 @@ std::string SelectQueryStreamCondition(std::string iTable,
 \param[in] iConditionConnector or/and
 \return the string corresponding to the query part 
 */
+QGOIO_EXPORT
 std::string SelectQueryStreamListConditions(std::string iTable,
                                             std::string iColumn, std::string iField,
                                             std::vector< std::string > iListValues, bool Distinct = false,
@@ -210,6 +250,7 @@ std::string SelectQueryStreamListConditions(std::string iTable,
 /**
 \overload
 */
+QGOIO_EXPORT
 std::string SelectQueryStreamListConditions(std::string iTable,
                                             std::vector<std::string> iListAttributes, 
                                             std::string iField,
@@ -219,6 +260,7 @@ std::string SelectQueryStreamListConditions(std::string iTable,
 /**
 \overload
 */
+QGOIO_EXPORT
 std::string SelectQueryStreamListConditions(std::string iTable,
                                             std::vector<std::string> iListAttributes, 
                                             std::string iField,
@@ -228,6 +270,7 @@ std::string SelectQueryStreamListConditions(std::string iTable,
 /**
 \overload
 */
+QGOIO_EXPORT
 std::string SelectQueryStreamListConditions(std::string iTable,
                                             std::string iColumn,
                                             std::vector<FieldWithValue> iConditions,
@@ -237,16 +280,20 @@ std::string SelectQueryStreamListConditions(std::string iTable,
 /**
 \overload
 */
+QGOIO_EXPORT
 std::string SelectQueryStreamListConditions(std::string iTable,
                                             std::vector<std::string> iListAttributes,
                                             std::vector<FieldWithValue> iConditions,
                                             std::string iConditionConnector = "OR",
                                             bool Distinct = false);
 
+QGOIO_EXPORT
 std::vector< std::string > ListUnsgIntToVectorString(std::list< unsigned int > iList);
 
+QGOIO_EXPORT
 std::list< unsigned int > VectorStringToUnsgInt(std::vector< std::string > iVector);
 
+QGOIO_EXPORT
 std::vector< std::string > VectorUnsgIntToVectorString(std::vector<unsigned int> iVector);
 
 /**
@@ -256,14 +303,48 @@ std::vector< std::string > VectorUnsgIntToVectorString(std::vector<unsigned int>
 \param[in] iOnCondition join on which condition
 \return the string corresponding to the query part
 */
+QGOIO_EXPORT
 std::string GetLeftJoinTwoTables(std::string iTableOne,std::string iTableTwo,
   FieldWithValue iOnCondition);
 
+/**
+\brief (iTable LEFT JOIN iTableTwo ON iTable.iOnCondition/Field = iTableTwo.iOnCondition/Value)
+LEFT JOIN iTableThree ON iTable.iOnCondition/Field = iTableThree.iOnCondition/Value)
+\param[in] iTable table to be joined
+\param[in] iTableTwo table to be joined to the 1rst one
+\param[in] iTableThree table to be joined ot the 1rst one
+\param[in] iOnConditionOne join on which condition between table and tableTwo
+\param[in] iOnConditionTwo join on which condition between table and tableThree
+\return the string corresponding to the query part
+*/
+QGOIO_EXPORT
+std::string GetLeftJoinThreeTables(std::string iTable,std::string iTableTwo,
+  std::string iTableThree, FieldWithValue iOnConditionOne, 
+  FieldWithValue iOnConditionTwo);
+
+QGOIO_EXPORT
 std::string GetGroupBy(std::string iColumn, unsigned int iNumberDoublons);
-//iselectquery union iselectquery where ijoinon IS NULL (with or without
-// brackets in the
-//where clause, it will work
-//std::string SelectWithJoinNullIncluded(std::string iSelectQuery, std::string iJoinOn,
-                                       //bool doublon = true);
+
+/**
+\brief SELECT iSelectedAttributes[0], iSelectedAttributes[1]...FROM (iTableOne left join
+iTableTwo on iJoinConditionOne) left join tableThree on iJoinConditionTwo where (iFieldOne
+= iValueFieldOne) AND (IDFieldName = iListIDs[0] OR IDFieldName = iListIDs[1] OR....);
+\param[in] iSelectedAttributes vector of all the attributes to be fetched from the db
+\param[in] iTableOne main table involved (usually the table for the trace)
+\param[in] iTableTwo table attached to the main table
+\param[in] iTableThree table attached to the main table
+\param[in] iJoinConditionOne describes how the tabletwo is attached to the main table
+\param[in] iJoinConditionTwo describes how the tablethree is attached to the main table
+\param[in] iFieldOne first condition
+\param[in] iValueFieldOne value for the first condition
+\param[in] iIDFieldName field for the IDName where there is a condition
+\param[in] iListIDs values for the iIDFieldname
+\return the string corresponding to the query part
+*/
+QGOIO_EXPORT
+std::string SelectForTracesInfo(std::vector<std::string> iSelectedAttributes,
+  std::string iTableOne, std::string iTableTwo, std::string iTableThree,
+  FieldWithValue iJoinConditionOne, FieldWithValue iJoinConditionTwo, std::string iFieldOne,
+  unsigned int iValueFieldOne, std::string iIDFieldName, std::list< unsigned int > iListIDs);
 
 #endif

@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -41,7 +41,7 @@ namespace itk
 {
 template< class TFeatureImage, class TInputImage, class TSegmentImage >
 CellForegroundExtraction< TFeatureImage, TInputImage, TSegmentImage >
-::CellForegroundExtraction():m_SigmaForm (2.0),
+::CellForegroundExtraction() : m_SigmaForm (2.0),
   m_ThresholdCellmin (10), m_ThresholdCellmax (30),  m_ThresholdMembrane (0),
   m_ThresholdForm (0.15), m_LargestCellRadius (4.0)
 {
@@ -138,7 +138,7 @@ CellForegroundExtraction< TFeatureImage, TInputImage, TSegmentImage >::GenerateD
     ImagePointer gaussCorrImg;
       {
       FeatureImagePointer rawSubsampledImage = ResampleInput (
-        cellImg, subSpacing, subSize, origin);
+          cellImg, subSpacing, subSize, origin);
 
       GaussProfileFilterPointer gaussCorr = GaussProfileFilterType::New();
       gaussCorr->SetInput(rawSubsampledImage);
@@ -236,6 +236,7 @@ CellForegroundExtraction< TFeatureImage, TInputImage, TSegmentImage >::PrintSelf
     }
   std::cout << std::endl;
 }
+
 } /* end namespace itk */
 
 #endif

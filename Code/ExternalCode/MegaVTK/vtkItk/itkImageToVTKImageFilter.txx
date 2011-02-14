@@ -150,6 +150,7 @@ ImageToVTKImageFilter< TInputImage >
 {
   m_Importer->Update();
 }
+
 } // end namespace itk
 
 #endif

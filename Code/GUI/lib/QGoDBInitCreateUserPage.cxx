@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -44,7 +44,7 @@
 #include <QLabel>
 #include <QTextLayout>
 
-QGoDBInitCreateUserPage::QGoDBInitCreateUserPage(QWidget *iParent):
+QGoDBInitCreateUserPage::QGoDBInitCreateUserPage(QWidget *iParent) :
   QWizardPage(iParent)
 {
   QFont tfont;
@@ -140,11 +140,12 @@ bool QGoDBInitCreateUserPage::CreateUser()
       return false;
       }
     }
-  else //the user clicks on something else than ok when asking for the mysql root password:
-	{
-	return false;
-	}
-  if ( !this->UserNameAlreadyExits(DataBaseConnector, Login))
+  else //the user clicks on something else than ok when asking for the mysql
+       // root password:
+    {
+    return false;
+    }
+  if ( !this->UserNameAlreadyExits(DataBaseConnector, Login) )
     {
     if ( this->QuestionToUser(
            tr("Do you want to create this new user with a new database?") ) )
@@ -220,6 +221,7 @@ QGoDBInitCreateUserPage::UserNameAlreadyExits(vtkMySQLDatabase *DatabaseConnecto
 {
   vtkSQLQuery *     queryUserExist = DatabaseConnector->GetQueryInstance();
   std::stringstream UserExistScript;
+
   UserExistScript << "SELECT USER FROM mysql.user WHERE user = '";
   UserExistScript <<  iLogin;
   UserExistScript << "';";

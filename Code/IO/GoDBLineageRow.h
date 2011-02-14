@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -55,20 +55,13 @@ public:
 
   ~GoDBLineageRow();
 
-  /**
-  \brief fill the track map with the values gotten from the visualization
-  \param[in] DatabaseConnector connection to the database
-  \param[in] TraceVisu vtkPolyData the points will be extracted from to create 
-  a string for "Points"
-  \param[in] Min coordinate row for the minimum of the bounding box
-  \param[in] Max coordinate row for the maximum of the bounding box
-  \param[in] ImgSessionID ID of the current imagingsession
-  */
+  
   //GoDBLineageRow(vtkMySQLDatabase *DatabaseConnector, GoDBCoordinateRow Min,
   //               GoDBCoordinateRow Max, unsigned int ImgSessionID, vtkPolyData *TraceVisu);
 
   /**
   \brief 
+  \param[in] DatabaseConnector connection to the database
   \return the TrackID of the Track with the same bounding box
   already registered in the DB or -1 if not yet created
   */

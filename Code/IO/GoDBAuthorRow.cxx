@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -34,7 +34,7 @@
 #include "GoDBAuthorRow.h"
 #include "GoDBRecordSetHelper.h"
 
-GoDBAuthorRow::GoDBAuthorRow():GoDBRow()
+GoDBAuthorRow::GoDBAuthorRow() : GoDBRow()
 {
   this->InitializeMap();
 }
@@ -62,7 +62,7 @@ int GoDBAuthorRow::SaveInDB(vtkMySQLDatabase *DatabaseConnector)
   if ( AuthorID == -1 )
     {
     AuthorID = AddOnlyOneNewObjectInTable< GoDBAuthorRow >(
-      DatabaseConnector, "author", *this, "authorID");
+        DatabaseConnector, "author", *this, "authorID");
     }
   return AuthorID;
 }
@@ -73,11 +73,11 @@ int GoDBAuthorRow::SaveInDB(vtkMySQLDatabase *DatabaseConnector)
 int GoDBAuthorRow::DoesThisAuthorAlreadyExists(
   vtkMySQLDatabase *DatabaseConnector)
 {
-  std::vector<FieldWithValue> Conditions;
-  this->AddConditions("FirstName",Conditions);
-  this->AddConditions("LastName",Conditions);
-  this->AddConditions("MiddleName",Conditions);
-  return FindOneID(DatabaseConnector, "author", "authorID",Conditions);
+  std::vector< FieldWithValue > Conditions;
+  this->AddConditions("FirstName", Conditions);
+  this->AddConditions("LastName", Conditions);
+  this->AddConditions("MiddleName", Conditions);
+  return FindOneID(DatabaseConnector, "author", "authorID", Conditions);
 }
 
 //-------------------------------------------------------------------------

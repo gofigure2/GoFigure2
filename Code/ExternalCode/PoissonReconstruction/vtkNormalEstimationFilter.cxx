@@ -1,8 +1,8 @@
 /*=========================================================================
  Modifications were made by the GoFigure Dev. Team.
- while at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ while at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -73,9 +73,14 @@ struct SurfacePoint {
   char isVisited;
 
   // simple constructor to initialise the members
-  SurfacePoint():neighbors( vtkIdList::New() ), isVisited(0) {}
-  ~SurfacePoint() { delete[] costs; neighbors->Delete(); }
-};
+  SurfacePoint() : neighbors( vtkIdList::New() ), isVisited(0) {
+  }
+
+  ~SurfacePoint() {
+    delete[] costs; neighbors->Delete();
+  }
+
+  };
 
 vtkStandardNewMacro(vtkNormalEstimationFilter);
 
@@ -219,9 +224,9 @@ void vtkNormalEstimationFilter::BuildLocalConnectivity(vtkDataSet *input)
     //locator->FindClosestNPoints(this->NeighborhoodSize, p->loc, locals);
     locator->FindClosestNPoints(radius, p->loc, locals);
 
-    if( locals->GetNumberOfIds() < this->NeighborhoodSize )
+    if ( locals->GetNumberOfIds() < this->NeighborhoodSize )
       {
-      locator->FindClosestNPoints( this->NeighborhoodSize, p->loc, locals);
+      locator->FindClosestNPoints(this->NeighborhoodSize, p->loc, locals);
       }
 
     for ( vtkIdType j = 0; j < locals->GetNumberOfIds(); j++ )
@@ -318,7 +323,7 @@ void vtkNormalEstimationFilter::ComputeCostForMST(vtkDataSet *input)
     for ( j = 0; j < p->neighbors->GetNumberOfIds(); j++ )
       {
       p->costs[j] = 1.0
-                    - fabs( vtkMath::Dot(p->n, m_SurfacePoints[p->neighbors->GetId(j)].n) );
+        - fabs( vtkMath::Dot(p->n, m_SurfacePoints[p->neighbors->GetId(j)].n) );
       }
     }
 }
@@ -428,12 +433,12 @@ int vtkNormalEstimationFilter::RequestData(
   // get the input
   vtkInformation *inInfo = inputVector[0]->GetInformationObject(0);
   vtkDataSet *    input = vtkDataSet::SafeDownCast(
-    inInfo->Get( vtkDataObject::DATA_OBJECT() ) );
+      inInfo->Get( vtkDataObject::DATA_OBJECT() ) );
 
   // get the output
   vtkInformation *outInfo = outputVector->GetInformationObject(0);
   vtkPolyData *   output = vtkPolyData::SafeDownCast(
-    outInfo->Get( vtkDataObject::DATA_OBJECT() ) );
+      outInfo->Get( vtkDataObject::DATA_OBJECT() ) );
 
   const vtkIdType COUNT = input->GetNumberOfPoints();
 
@@ -508,7 +513,7 @@ void vtkNormalEstimationFilter::PrintSelf(ostream & os, vtkIndent indent)
   this->Superclass::PrintSelf(os, indent);
 
   os << indent << "Radius Ratio: " << this->RadiusRatio << std::endl;
-  os << indent << "Neighborhood Size: " <<this->NeighborhoodSize <<std::endl;
+  os << indent << "Neighborhood Size: " << this->NeighborhoodSize << std::endl;
 }
 
 void vtkSRAddOuterProduct(double **m, double *v)

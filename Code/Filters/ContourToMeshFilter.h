@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -41,7 +41,9 @@ namespace itk
 {
 /**
  * \class ContourToMeshFilter
- * \brief
+ * \brief Generate a mesh from a set of 2D contours
+ * \tparam TContainer Container of Contours (e.g. std::vector< vtkPolyData* >,
+ * std::list< vtkPolyData* >, etc. )
  */
 template< class TContainer >
 class ContourToMeshFilter:public LightObject
@@ -61,12 +63,17 @@ public:
   typedef TContainer                             ContainerType;
   typedef typename ContainerType::const_iterator ContainerConstIterator;
 
+  /** \brief Main method: where the mesh is actually calculated. */
   void ProcessContours(const ContainerType & iContainer);
 
+  /** \brief Get the resulting mesh */
   vtkPolyData * GetOutput();
 
 protected:
+  /** \brief Constructor */
   ContourToMeshFilter();
+
+  /** \brief Destructor */
   ~ContourToMeshFilter();
 
   vtkPolyData *m_Output;

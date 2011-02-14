@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -84,8 +84,8 @@ int main(int argc, char **argv)
   QPixmap pixmap( QString::fromUtf8(":/fig/splash.png") );
 
   QSplashScreen *splash = new QSplashScreen(
-    pixmap.scaledToWidth(800, Qt::SmoothTransformation),
-    Qt::WindowStaysOnTopHint);
+      pixmap.scaledToWidth(800, Qt::SmoothTransformation),
+      Qt::WindowStaysOnTopHint);
 
   splash->show();
 

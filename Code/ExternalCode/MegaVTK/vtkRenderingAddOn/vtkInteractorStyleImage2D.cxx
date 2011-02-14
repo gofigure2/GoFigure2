@@ -33,9 +33,9 @@
 
 /*=========================================================================
  Modifications were made by the GoFigure Dev. Team.
- while at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ while at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -328,6 +328,12 @@ vtkInteractorStyleImage2D::OnMouseWheelForward()
       this->SliceMove();
       this->EndSliceMove();
       break;
+    case InteractionTypeContourPicking:
+      this->StartSliceMove();
+      this->SliceStep = static_cast< int >( this->MouseWheelMotionFactor );
+      this->SliceMove();
+      this->EndSliceMove();
+      break;
     default:
       break;
     }
@@ -349,6 +355,12 @@ vtkInteractorStyleImage2D::OnMouseWheelBackward()
   switch ( this->m_Mode )
     {
     case InteractionTypeDefault:
+      this->StartSliceMove();
+      this->SliceStep = static_cast< int >( -this->MouseWheelMotionFactor );
+      this->SliceMove();
+      this->EndSliceMove();
+      break;
+    case InteractionTypeContourPicking:
       this->StartSliceMove();
       this->SliceStep = static_cast< int >( -this->MouseWheelMotionFactor );
       this->SliceMove();

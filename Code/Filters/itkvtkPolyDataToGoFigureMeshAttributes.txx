@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -41,8 +41,7 @@
 namespace itk
 {
 template< class TImage >
-vtkPolyDataToGoFigureMeshAttributes< TImage >::
-vtkPolyDataToGoFigureMeshAttributes() : m_Mesh( NULL ), m_Image( NULL )
+vtkPolyDataToGoFigureMeshAttributes< TImage >::vtkPolyDataToGoFigureMeshAttributes() : m_Mesh(NULL), m_Image(NULL)
 {
   m_IntensityComputation = true;
   m_Binarizer = PolyDataToBinaryMaskImageFilterType::New();
@@ -53,12 +52,12 @@ vtkPolyDataToGoFigureMeshAttributes() : m_Mesh( NULL ), m_Image( NULL )
 template< class TImage >
 vtkPolyDataToGoFigureMeshAttributes< TImage >::
 ~vtkPolyDataToGoFigureMeshAttributes()
-{}
+{
+}
 
 template< class TImage >
 void
-vtkPolyDataToGoFigureMeshAttributes< TImage >::
-SetIntensityBasedComputation( const bool& iComputation )
+vtkPolyDataToGoFigureMeshAttributes< TImage >::SetIntensityBasedComputation(const bool & iComputation)
 {
   this->m_IntensityComputation = iComputation;
 }
@@ -69,7 +68,7 @@ vtkPolyDataToGoFigureMeshAttributes< TImage >::SetPolyData(vtkPolyData *iMesh)
 {
   m_Mesh = iMesh;
 
-  if( m_Mesh && m_Image.IsNotNull() )
+  if ( m_Mesh && m_Image.IsNotNull() )
     {
     m_Binarizer->SetInput(m_Image);
     m_Binarizer->SetPolyData(m_Mesh);
@@ -89,9 +88,9 @@ void
 vtkPolyDataToGoFigureMeshAttributes< TImage >::SetImage(ImageType *iImage)
 {
   m_Image = iImage;
-  m_ROIFilter->SetInput( m_Image );
+  m_ROIFilter->SetInput(m_Image);
 
-  if( m_Mesh && m_Image.IsNotNull() )
+  if ( m_Mesh && m_Image.IsNotNull() )
     {
     m_Binarizer->SetInput(m_Image);
     m_Binarizer->SetPolyData(m_Mesh);
@@ -150,12 +149,12 @@ void
 vtkPolyDataToGoFigureMeshAttributes< TImage >::GenerateData()
 {
   m_AttributeCalculator->SetMaskImage( m_Binarizer->GetOutput() );
-  m_AttributeCalculator->SetIntensityBasedComputation( m_IntensityComputation );
+  m_AttributeCalculator->SetIntensityBasedComputation(m_IntensityComputation);
 
-  if( m_IntensityComputation )
+  if ( m_IntensityComputation )
     {
     double bounds[6];
-    m_Mesh->GetBounds( bounds );
+    m_Mesh->GetBounds(bounds);
 
     typename ImageType::PointType org;
     org[0] = bounds[0];
@@ -163,16 +162,16 @@ vtkPolyDataToGoFigureMeshAttributes< TImage >::GenerateData()
     org[2] = bounds[4];
 
     typename ImageType::IndexType start_idx;
-    m_Image->TransformPhysicalPointToIndex( org, start_idx );
+    m_Image->TransformPhysicalPointToIndex(org, start_idx);
 
     typename ImageType::SizeType size =
       m_Binarizer->GetOutput()->GetLargestPossibleRegion().GetSize();
 
-    typename  ImageType::RegionType region;
-    region.SetSize( size );
-    region.SetIndex( start_idx );
+    typename ImageType::RegionType region;
+    region.SetSize(size);
+    region.SetIndex(start_idx);
 
-    m_ROIFilter->SetRegionOfInterest( region );
+    m_ROIFilter->SetRegionOfInterest(region);
 
     try
       {
@@ -217,6 +216,7 @@ vtkPolyDataToGoFigureMeshAttributes< TImage >::ComputeArea()
     m_Area += t->ComputeArea();
     }
 }
+
 }
 
 #endif

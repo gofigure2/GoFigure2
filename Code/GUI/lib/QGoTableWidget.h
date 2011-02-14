@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -80,12 +80,15 @@ public:
   \param[in] iTraceName name of the trace
   \param[in] iCollectionName name of the collection
   \param[in] iColumnNames list of the column names to be displayed
+  \param[in] iState if true, the isvisible is checked
+  \param[in] iIndexShowColumn index of the show column in the TW Container(
+  for contour and mesh)
   */
   void DisplayContent(TWContainerType iTWRowContainer,
                       std::vector< int > iIndexColorTraceRowContainer,
                       std::vector< int > iIndexColorCollectionRowContainer,
                       std::string iTraceName, std::string iCollectionName,
-                      std::list< std::string > iColumnNames,
+                      std::list< std::pair< std::string, std::string > > iColumnNames,
                       Qt::CheckState iState,
                       int iIndexShowColumn = 0);
 
@@ -234,14 +237,14 @@ public slots:
                                                        Qt::CheckState iState);
 
   /**
-  \brief convert the text in the selection to a QString with '\n' and '\t'
+  \brief convert the text in the selection to a QString with  anti slash n and anti slash t
   and put it in the Clipboard to be pasted in other applications
   */
   void CopySelection();
 
   /**
   \brief convert the text in the all table and the columns namse
-  to a QString with '\n' and '\t' and put it in the Clipboard to be
+  to a QString with anti slash n and anti slash t and put it in the Clipboard to be
   pasted in other applications
   */
   void CopyTable();
@@ -262,11 +265,11 @@ protected:
   /**
   \brief create the table widget items for the columns Header and set the
   corresponding tooltips for them
-  \param[in] iTableName name of the trace to be displayed in the tooltip check/uncheck
-  \param[in] iColumnNames list of all the names of the columns to be displayed in the
-  table
+  \param[in] iColumnNamesAndToolTip list of all the names of the columns to be displayed in the
+  table with their tooltips
   */
-  void DisplayColumnNames(QString iTableName, std::list< std::string > iColumnNames);
+  void DisplayColumnNames(
+    std::list< std::pair<std::string, std::string > > iColumnNamesAndToolTip);
 
   /**
   \brief get the value in the table for the given iRowIndex and
@@ -306,7 +309,7 @@ protected:
 
   /**
   \brief put the text in the cells which are part of the range in a
-  QString and insert '\n' and '\t' to be read by other applications
+  QString and insert antislash n and antislash t to be read by other applications
   \param[in] iRange selected cells
   \param[in,out] istr text of the selected cells
   */
@@ -356,7 +359,7 @@ protected:
   /**
   \brief return a list of the values of a specific column for the rows where the user
   has selected at least one cell.
-  \param[in] iColummName name of the column to look for value
+  \param[in] iColumnName name of the column to look for value
   \return QStringList of the values for the column where the user has selected at
   least once cell in the same row
   */
@@ -391,6 +394,7 @@ protected:
   /**
   \brief get the rgba values from the iTWRowContainer and display them in the
   column NameGroupColorID
+  \param[in] iTWRowContainer contains the data to be displayed 
   \param[in] iIndexColorRowContainer index of the iTWRowContainer to find the
   rgba values
   \param[in] iNameGroupColor name of the trace for which the color needs to

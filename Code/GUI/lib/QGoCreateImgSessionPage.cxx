@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -50,7 +50,7 @@
 #include <QMessageBox>
 #include <iostream>
 
-QGoCreateImgSessionPage::QGoCreateImgSessionPage(QWidget *iParent):
+QGoCreateImgSessionPage::QGoCreateImgSessionPage(QWidget *iParent) :
   QWizardPage(iParent)
 {
   QFont tfont;
@@ -128,7 +128,7 @@ void QGoCreateImgSessionPage::initializePage()
 void QGoCreateImgSessionPage::SelectImages()
 {
   QString filename = QFileDialog::getOpenFileName(
-    this, tr("Import Image"), "", tr("Images (*.png *.bmp *.jpg *.jpeg *tif *.tiff *.mha *.mhd *.img *.lsm)") );
+      this, tr("Import Image"), "", tr("Images (*.png *.bmp *.jpg *.jpeg *tif *.tiff *.mha *.mhd *.img *.lsm)") );
 
   lineFilename->setText(filename);
   FirstImage->setFile(filename);
@@ -218,8 +218,8 @@ bool QGoCreateImgSessionPage::validatePage()
   if ( lineNewImgSessionName->displayText() != "" )
     {
     std::vector< std::string > ProjectNameTaken = ListSpecificValuesForOneColumn(
-      m_DatabaseConnector, "imagingsession", "Name", "Name",
-      lineNewImgSessionName->displayText().toStdString() );
+        m_DatabaseConnector, "imagingsession", "Name", "Name",
+        lineNewImgSessionName->displayText().toStdString() );
     if ( ProjectNameTaken.size() != 0 )
       {
       QMessageBox msgBox;
@@ -491,13 +491,13 @@ int QGoCreateImgSessionPage::CreateImageCoordMin(vtkMySQLDatabase *DatabaseConne
 int QGoCreateImgSessionPage::FindChannelIDForImage(vtkMySQLDatabase *DatabaseConnector,
                                                    int ImagingSessionID, int ChannelNumber)
 {
-  std::vector<FieldWithValue> Conditions(2);
-  FieldWithValue ImgSession ={"ImagingSessionID",ConvertToString< int >(ImagingSessionID),"="};
-  FieldWithValue Channel ={"ChannelNumber",ConvertToString< int >(ChannelNumber),"="};
-    Conditions[0] = ImgSession;
-    Conditions[1] = Channel;
+  std::vector< FieldWithValue > Conditions(2);
+  FieldWithValue                ImgSession = { "ImagingSessionID", ConvertToString< int >(ImagingSessionID), "=" };
+  FieldWithValue                Channel = { "ChannelNumber", ConvertToString< int >(ChannelNumber), "=" };
+  Conditions[0] = ImgSession;
+  Conditions[1] = Channel;
 
-  return FindOneID( DatabaseConnector, "channel", "channelID", Conditions);
+  return FindOneID(DatabaseConnector, "channel", "channelID", Conditions);
 }
 
 //-------------------------------------------------------------------------
@@ -554,12 +554,12 @@ void QGoCreateImgSessionPage::CreateImgSessionCoord(
   int CoordIDMax = m_ImgSessionCoordMax.SaveInDB(DatabaseConnector);
 
   //update the CoordMaxID in Imgsession with the new created coordinate
-  UpdateValueInDB( DatabaseConnector,
-                   "imagingsession",
-                   "CoordIDMax",
-                   ConvertToString< int >(CoordIDMax),
-                   "ImagingSessionID",
-                    imgsessionid);
+  UpdateValueInDB(DatabaseConnector,
+                  "imagingsession",
+                  "CoordIDMax",
+                  ConvertToString< int >(CoordIDMax),
+                  "ImagingSessionID",
+                  imgsessionid);
 
   m_ImgSessionCoordMin.SetField("PCoord", m_PCoordMin);
   m_ImgSessionCoordMin.SetField("RCoord", m_RCoordMin);
@@ -576,12 +576,12 @@ void QGoCreateImgSessionPage::CreateImgSessionCoord(
   int CoordIDMin = m_ImgSessionCoordMin.SaveInDB(DatabaseConnector);
 
   //update the CoordMaxID in Imgsession with the new created coordinate
-  UpdateValueInDB( DatabaseConnector,
-                   "imagingsession",
-                   "CoordIDMin",
-                   ConvertToString< int >(CoordIDMin),
-                   "ImagingSessionID",
-                   imgsessionid );
+  UpdateValueInDB(DatabaseConnector,
+                  "imagingsession",
+                  "CoordIDMin",
+                  ConvertToString< int >(CoordIDMin),
+                  "ImagingSessionID",
+                  imgsessionid);
 }
 
 //-------------------------------------------------------------------------

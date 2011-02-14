@@ -39,6 +39,7 @@ SET( QGOIO_SRC
   GoDBTWContainerForContourMesh.cxx
   GoDBTWContainerForTrackLineage.cxx
   GoDBTWContainerForMesh.cxx
+  GoDBTWContainerForTrack.cxx
   GoDBExport.cxx
   GoDBImport.cxx
   MegaCaptureHeaderReader.cxx

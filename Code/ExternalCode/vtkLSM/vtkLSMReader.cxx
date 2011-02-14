@@ -40,9 +40,9 @@
 
 /*=========================================================================
  Modifications were made by the GoFigure Dev. Team.
- while at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ while at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -238,7 +238,7 @@ void vtkLSMReader::Clean()
   this->ColorMapOffset = 0;
   this->LSMSpecificInfoOffset = 0;
   this->NumberOfIntensityValues[0] = this->NumberOfIntensityValues[1] =
-                                       this->NumberOfIntensityValues[2] = this->NumberOfIntensityValues[3] = 0;
+      this->NumberOfIntensityValues[2] = this->NumberOfIntensityValues[3] = 0;
   this->ScanType = 0;
   this->DataType = 0;
   this->ChannelColors = vtkIntArray::New();

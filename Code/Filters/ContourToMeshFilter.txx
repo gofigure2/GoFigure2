@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -55,16 +55,17 @@ namespace itk
  * \brief
  */
 template< class TContainer >
-ContourToMeshFilter< TContainer >::
-ContourToMeshFilter():
+ContourToMeshFilter< TContainer >::ContourToMeshFilter() :
   m_Output(NULL),
-  m_ThresholdNumberOfPoints( 20 ),
-  m_TargetNumberOfPoints( 20 )
-{}
+  m_ThresholdNumberOfPoints(20),
+  m_TargetNumberOfPoints(20)
+{
+}
 
 template< class TContainer >
 ContourToMeshFilter< TContainer >::~ContourToMeshFilter()
-{}
+{
+}
 
 template< class TContainer >
 void
@@ -84,7 +85,7 @@ ContourToMeshFilter< TContainer >::ProcessContours(const ContainerType & iContai
     ContainerConstIterator it = iContainer.begin();
 
     std::vector< vtkSmartPointer< vtkPolylineDecimation > >
-      decimate( iContainer.size() );
+    decimate( iContainer.size() );
 
     size_t i = 0;
 
@@ -92,16 +93,16 @@ ContourToMeshFilter< TContainer >::ProcessContours(const ContainerType & iContai
       {
       if ( ( *it ) )
         {
-        if( (*it)->GetNumberOfPoints() > m_ThresholdNumberOfPoints )
+        if ( ( *it )->GetNumberOfPoints() > m_ThresholdNumberOfPoints )
           {
           decimate[i] = vtkSmartPointer< vtkPolylineDecimation >::New();
-          decimate[i]->SetInput( *it );
-          decimate[i]->SetTargetReduction( 1. -
-            static_cast< double >( m_TargetNumberOfPoints ) /
-            static_cast< double >( (*it)->GetNumberOfPoints() ) );
+          decimate[i]->SetInput(*it);
+          decimate[i]->SetTargetReduction( 1.
+                                           - static_cast< double >(m_TargetNumberOfPoints)
+                                           / static_cast< double >( ( *it )->GetNumberOfPoints() ) );
           decimate[i]->Update();
 
-          append->AddInput( decimate[i]->GetOutput() );
+          append->AddInputConnection( decimate[i]->GetOutputPort() );
           }
         else
           {
@@ -122,11 +123,12 @@ ContourToMeshFilter< TContainer >::ProcessContours(const ContainerType & iContai
       vtkSmartPointer< vtkPoissonReconstruction >::New();
     poissonFilter->SetInputConnection( normal_filter->GetOutputPort() );
     poissonFilter->SetDepth(12);
-    poissonFilter->SetConfidence(1.);
+    poissonFilter->SetSolverDivide(12);
+    poissonFilter->SetIsoDivide(12);
     poissonFilter->Update();
 
-    vtkSmartPointer<vtkFeatureEdges> feature =
-        vtkSmartPointer<vtkFeatureEdges>::New();
+    vtkSmartPointer< vtkFeatureEdges > feature =
+      vtkSmartPointer< vtkFeatureEdges >::New();
     feature->SetInputConnection( poissonFilter->GetOutputPort() );
     feature->BoundaryEdgesOn();
     feature->FeatureEdgesOff();
@@ -142,7 +144,7 @@ ContourToMeshFilter< TContainer >::ProcessContours(const ContainerType & iContai
       m_Output = vtkPolyData::New();
       }
 
-    if( feature->GetOutput()->GetNumberOfCells() > 0 )
+    if ( feature->GetOutput()->GetNumberOfCells() > 0 )
       {
       fillFilter->SetInputConnection( poissonFilter->GetOutputPort() );
       fillFilter->Update();
@@ -162,5 +164,6 @@ ContourToMeshFilter< TContainer >::GetOutput()
 {
   return m_Output;
 }
+
 }
 #endif

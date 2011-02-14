@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -35,17 +35,37 @@
 
 #include "ctkDoubleRangeSlider.h"
 
+#include <iostream>
+
 //-------------------------------------------------------------------------
 QGoTrackDockWidget::QGoTrackDockWidget(
-  QWidget *iParent):QDockWidget(iParent)
+  QWidget *iParent) : QDockWidget(iParent)
 {
   this->setupUi(this);
-
-  // Connect signals
+  QIcon trackicon;
+  trackicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/TrackView.png") ),
+                      QIcon::Normal, QIcon::Off);
+  this->toggleViewAction()->setIcon(trackicon);
+  this->toggleViewAction()->setToolTip("Track View");
+  this->setWindowTitle("Track View");
+  // appearance
   QObject::connect( this->glyph, SIGNAL( toggled(bool) ),
-      this, SLOT( GlyphChanged(bool) ) );
+                    this, SLOT( Glyphs(bool) ) );
+  QObject::connect( this->glyphSpinBox, SIGNAL( valueChanged(double) ),
+                    this, SLOT( glyphValueChanged(double) ) );
+
   QObject::connect( this->tube, SIGNAL( toggled(bool) ),
-      this, SLOT( TubeChanged(bool) ) );
+                    this, SLOT( Tubes(bool) ) );
+  QObject::connect( this->tubeSpinBox, SIGNAL( valueChanged(double) ),
+                    this, SLOT( tubeValueChanged(double) ) );
+
+  // color code
+  QObject::connect( this->time, SIGNAL( toggled(bool) ),
+                    this, SLOT( ColorCodeTracksByTime(bool) ) );
+  QObject::connect( this->speed, SIGNAL( toggled(bool) ),
+                    this, SLOT( ColorCodeTracksBySpeed(bool) ) );
+  QObject::connect( this->real, SIGNAL( toggled(bool) ),
+                    this, SLOT( ColorCodeTracksByOriginalColor(bool) ) );
 
   /*
   // double slider
@@ -54,6 +74,7 @@ QGoTrackDockWidget::QGoTrackDockWidget(
   gridLayout->addWidget(rangeSlider, 2, 0, 1, 1);
   */
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -61,22 +82,99 @@ QGoTrackDockWidget::
 ~QGoTrackDockWidget()
 {
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
-QGoTrackDockWidget::
-GlyphChanged( bool iState )
+QGoTrackDockWidget::glyphValueChanged(double)
 {
-  emit UpdateTracksAppearance( iState, this->tube->isChecked() );
+  //to avoid useless update
+  if ( this->glyph->isChecked() )
+    {
+    Glyphs(true);
+    }
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
-QGoTrackDockWidget::
-TubeChanged( bool iState )
+QGoTrackDockWidget::Glyphs(bool iActivated)
 {
-  emit UpdateTracksAppearance( this->glyph->isChecked(), iState );
+  if ( iActivated )
+    {
+    emit UpdateTracksRepresentation( this->glyphSpinBox->value(), this->tubeSpinBox->value() * this->tube->isChecked() );
+    }
+  else
+    {
+    emit UpdateTracksRepresentation( 0, this->tubeSpinBox->value() * this->tube->isChecked() );
+    }
 }
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTrackDockWidget::tubeValueChanged(double)
+{
+  //to avoid useless update
+  if ( this->tube->isChecked() )
+    {
+    Tubes(true);
+    }
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTrackDockWidget::Tubes(bool iActivated)
+{
+  if ( iActivated )
+    {
+    emit UpdateTracksRepresentation( this->glyphSpinBox->value() * this->glyph->isChecked(), this->tubeSpinBox->value() );
+    }
+  else
+    {
+    emit UpdateTracksRepresentation(this->glyphSpinBox->value() * this->glyph->isChecked(), 0);
+    }
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTrackDockWidget::ColorCodeTracksByTime(bool iChecked)
+{
+  if ( iChecked )
+    {
+    emit ChangeColorCode("TemporalInformation");
+    }
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTrackDockWidget::ColorCodeTracksBySpeed(bool iChecked)
+{
+  if ( iChecked )
+    {
+    emit ChangeColorCode("SpeedInformation");
+    }
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTrackDockWidget::ColorCodeTracksByOriginalColor(bool iChecked)
+{
+  if ( iChecked )
+    {
+    emit ChangeColorCode("Original");
+    }
+}
+
 //-------------------------------------------------------------------------

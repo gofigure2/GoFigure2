@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -44,21 +44,23 @@ vtkCxxRevisionMacro(vtkPolyDataMySQLMeshReader, "$Revision$");
 vtkStandardNewMacro(vtkPolyDataMySQLMeshReader);
 
 //--------------------------------------------------------------------------
-vtkPolyDataMySQLMeshReader::
-vtkPolyDataMySQLMeshReader()
-{}
+vtkPolyDataMySQLMeshReader::vtkPolyDataMySQLMeshReader()
+{
+}
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 vtkPolyDataMySQLMeshReader::
 ~vtkPolyDataMySQLMeshReader()
-{}
+{
+}
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-vtkSmartPointer<vtkPolyData>
-vtkPolyDataMySQLMeshReader::
-GetPolyData(const std::string & iString)
+vtkSmartPointer< vtkPolyData >
+vtkPolyDataMySQLMeshReader::GetPolyData(const std::string & iString)
 {
   std::stringstream str(iString);
 
@@ -70,9 +72,9 @@ GetPolyData(const std::string & iString)
 
   if ( N != 0 )
     {
-    vtkSmartPointer<vtkPolyData> oMesh;
+    vtkSmartPointer< vtkPolyData > oMesh;
 
-    oMesh = vtkSmartPointer<vtkPolyData>::New();
+    oMesh = vtkSmartPointer< vtkPolyData >::New();
     vtkSmartPointer< vtkPoints > points =
       vtkSmartPointer< vtkPoints >::New();
 
@@ -114,4 +116,5 @@ GetPolyData(const std::string & iString)
 
   return NULL;
 }
+
 //--------------------------------------------------------------------------

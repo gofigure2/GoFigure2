@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -44,10 +44,11 @@
 
 //--------------------------------------------------------------------------
 QGoSynchronizedView3D::QGoSynchronizedView3D(QString iViewName,
-                                             QWidget *iParent):
+                                             QWidget *iParent) :
   QGoSynchronizedView(iViewName, iParent),
   m_View (NULL)
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 QGoSynchronizedView3D::

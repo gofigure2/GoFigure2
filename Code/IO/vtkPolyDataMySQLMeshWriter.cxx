@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -45,28 +45,24 @@ vtkCxxRevisionMacro(vtkPolyDataMySQLMeshWriter, "$Revision$");
 vtkStandardNewMacro(vtkPolyDataMySQLMeshWriter);
 
 //--------------------------------------------------------------------------
-vtkPolyDataMySQLMeshWriter::
-vtkPolyDataMySQLMeshWriter()
-{}
+vtkPolyDataMySQLMeshWriter::vtkPolyDataMySQLMeshWriter()
+{
+}
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 vtkPolyDataMySQLMeshWriter::
 ~vtkPolyDataMySQLMeshWriter()
-{}
+{
+}
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 std::string
-vtkPolyDataMySQLMeshWriter::
-GetMySQLText(vtkPolyData *iPolyData)
+vtkPolyDataMySQLMeshWriter::GetMySQLText(vtkPolyData *iPolyData)
 {
-  std::cout<<"___Mesh PolyData Writer Debug___"<< std::endl;
-  std::cout << "File: " << __FILE__<< std::endl;
-  std::cout << "Line: " << __LINE__<< std::endl;
-  std::cout << "Number Of Cells: " << iPolyData->GetNumberOfCells()<< std::endl;
-  std::cout << "Number Of Points: " << iPolyData->GetNumberOfPoints()<< std::endl;
-
   vtkIdType N = iPolyData->GetNumberOfPoints();
   double    pt[3];
 
@@ -81,7 +77,7 @@ GetMySQLText(vtkPolyData *iPolyData)
     }
 
   vtkSmartPointer< vtkIdList >
-    cell_points = vtkSmartPointer< vtkIdList >::New();
+  cell_points = vtkSmartPointer< vtkIdList >::New();
 
   vtkIdType NbOfPointsInCell;
   N = iPolyData->GetNumberOfCells();
@@ -101,4 +97,5 @@ GetMySQLText(vtkPolyData *iPolyData)
 
   return oMyString.str();
 }
+
 //--------------------------------------------------------------------------

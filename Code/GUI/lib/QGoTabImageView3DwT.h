@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -224,6 +224,8 @@ public:
   int GetSliceViewYZ() const;
 
   int GetTimePoint() const;
+
+  int GetTimeInterval() const;
 
   QGoTraceManualEditingWidget *     GetTraceManualEditingWidget();
 
@@ -503,7 +505,8 @@ protected:
 
   /**
    * \brief Save mesh in Database
-   * \param[in] iMesh
+   * \param[in] iMesh mesh to be saved
+   * \param[in] iTShift time shift (used in the Doppler View case)
    */
   void SaveMesh(vtkPolyData *iMesh, int iTShift);
 
@@ -636,8 +639,6 @@ protected slots:
   updates the navigation widget.
   */
   void LoadChannelTime();
-
-  void UpdateTracksAppearance(bool, bool);
 
   /**
   \brief give the adress for the contours, meshes and tracks container to the

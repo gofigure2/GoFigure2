@@ -33,9 +33,9 @@
 
 /*=========================================================================
  Modifications were made by the GoFigure Dev. Team.
- while at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ while at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -297,10 +297,32 @@ public:
      This method has been overriden in order to generalize the use of this class
      to 2D AND 3D scene visualization. Thus in this top-level class SetSlice() does
      not do anything.
+     \param[in] iSlice New position of the slice
   */
-  virtual void SetSlice(int s)
+  virtual void SetSlice(int iSlice)
   {
-    this->Superclass::SetSlice (s);
+    int *range = this->GetSliceRange();
+    if (range)
+      {
+      if (iSlice < range[0])
+        {
+          iSlice = range[0];
+        }
+      else if (iSlice > range[1])
+        {
+          iSlice = range[1];
+        }
+      }
+
+    if (this->Slice == iSlice)
+      {
+      return;
+      }
+
+    this->Slice = iSlice;
+    this->Modified();
+
+    this->UpdateDisplayExtent();
   }
 
   virtual void Update(void){}

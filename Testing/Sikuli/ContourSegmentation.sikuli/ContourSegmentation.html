@@ -1,0 +1,178 @@
+
+<html>
+   <head>
+      <style type="text/css">
+         .sikuli-code {
+            font-size: 20px;
+            font-family: "Osaka-mono", Monospace;
+            line-height: 1.5em;
+            display:table-cell;
+            white-space: pre-wrap;       /* css-3 */
+            white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+            white-space: -pre-wrap;      /* Opera 4-6 */
+            white-space: -o-pre-wrap;    /* Opera 7 */
+            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+            width: 99%;   /* remove horizontal scroll-bar when viewing in IE7 */
+         }
+         .sikuli-code img {
+            vertical-align: middle;
+            margin: 2px;
+            border: 1px solid #ccc;
+            padding: 2px;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            -moz-box-shadow: 1px 1px 1px gray;
+            -webkit-box-shadow: 1px 1px 2px gray;
+         }
+         .kw {
+            color: blue;
+         }
+         .skw {
+            color: rgb(63, 127, 127);
+         }
+
+         .str {
+            color: rgb(128, 0, 0);
+         }
+
+         .dig {
+            color: rgb(128, 64, 0);
+         }
+
+         .cmt {
+            color: rgb(200, 0, 200);
+         }
+
+         h2 {
+            display: inline;
+            font-weight: normal;
+         }  
+         
+         .info {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+            display: none;
+         }
+
+         a {
+            color: #9D2900;
+         }
+
+         body {
+            font-family: "Trebuchet MS", Arial, Sans-Serif;
+         }
+
+      </style>
+   </head>
+<body>
+<div class="info">
+<h2>ContourSegmentation.sikuli</h2> <a href="ContourSegmentation.zip">(Download this script)</a>
+</div>
+<pre class="sikuli-code">
+<span class="kw">import</span> os
+address = os.getcwd()
+<span class="cmt">#address = "/home/es1076/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images"
+</span>
+<span class="cmt">#address = address+"/gofigure2_images"
+</span><span class="cmt">#print address
+</span>setBundlePath(address)
+
+<span class="kw">def</span> DrawContour(View,xdecimal,ydecimal):
+
+        xyView = <span class="skw">find</span>(Pattern(View).similar(<span class="dig">0.30</span>))
+        <span class="kw">print</span> xyView.x, xyView.y, xyView.h
+
+        startx = xyView.x + int(round((xdecimal)*xyView.w))
+        starty = xyView.y + int(round((ydecimal)*xyView.h))
+        <span class="skw">click</span>(Location(startx,starty))
+
+        <span class="skw">wait</span>(<span class="dig">1</span>)
+        Secondx = startx+<span class="dig">10</span>
+        Secondy = starty+<span class="dig">10</span>
+        <span class="skw">click</span>(Location(Secondx,Secondy))
+        <span class="skw">wait</span>(<span class="dig">1</span>)
+        Thirdx = Secondx+<span class="dig">10</span>
+        Thirdy = Secondy -<span class="dig">10</span>
+        <span class="skw">click</span>(Location(Thirdx,Thirdy))
+        Forthx = Thirdx - <span class="dig">10</span>
+        Forthy = Thirdy - <span class="dig">10</span>
+        <span class="skw">wait</span>(<span class="dig">1</span>)
+        <span class="skw">click</span>(Location(Forthx,Forthy))
+        <span class="skw">wait</span>(<span class="dig">1</span>)
+        <span class="skw">click</span>(Location(startx,starty))
+        <span class="skw">wait</span>(<span class="dig">1</span>)
+
+
+<span class="skw">click</span>(<img src="ContourSegmentationIcon.png" />)
+<span class="skw">click</span>(<img src="TableWidgetIcon.png" />)
+<span class="skw">wait</span>(<span class="dig">1</span>)
+
+ViewRegion = (<img src="XY_ViewRegion.png" />,<img src="XZ_ViewRegion.png" />,<img src="YZ_ViewRegion.png" />,<span class="str">"last"</span>)
+
+<span class="kw">for</span> view <span class="kw">in</span> ViewRegion:
+
+        <span class="kw">if</span> view == <span class="str">"last"</span>:
+                <span class="kw">for</span> i <span class="kw">in</span> ViewRegion[<span class="dig">0</span>:<span class="dig">3</span>]:
+                        DrawContour(i,<span class="dig">0.5</span>,<span class="dig">0.5</span>)
+        <span class="kw">else</span>:
+                DrawContour(view,<span class="dig">0.3</span>,<span class="dig">0.6</span>)
+
+        <span class="skw">click</span>(<img src="ContourSettings.png" />)
+        <span class="cmt">#change line width from 3 to 7
+</span>        <span class="skw">type</span>(Key.UP+Key.UP+Key.UP+Key.UP+Key.UP)
+        <span class="skw">click</span>(<img src="cancel.png" />)
+        <span class="cmt">#check that nothing changed     
+</span>
+
+<span class="cmt">#can find 1 instance of blue circle image and then 3 instances of it.  Also red cirles for validation.
+</span>
+
+        <span class="skw">click</span>(<img src="ContourSettings.png" />)
+        <span class="skw">click</span>(<img src="ok.png" />)
+        <span class="cmt">#check that line width changed.
+</span>
+        <span class="skw">click</span>(<img src="ContourReinit.png" />)
+        <span class="cmt">#check that line disapears 
+</span>        <span class="kw">if</span> view == <span class="str">"last"</span>:
+                <span class="kw">for</span> i <span class="kw">in</span> ViewRegion[<span class="dig">0</span>:<span class="dig">3</span>]:
+                        DrawContour(i,<span class="dig">0.5</span>,<span class="dig">0.5</span>)
+        <span class="kw">else</span>:
+                DrawContour(view,<span class="dig">0.3</span>,<span class="dig">0.6</span>)
+
+
+        <span class="skw">click</span>(<img src="Validate.png" />)
+        <span class="cmt">#check that new contour is on View and in DB
+</span>
+
+
+<span class="skw">click</span>(<img src="Manual.png" />)
+<span class="skw">type</span>(Key.DOWN+Key.ENTER)
+
+<span class="kw">import</span> random
+
+<span class="kw">for</span> channel <span class="kw">in</span> [<span class="dig">0</span>,<span class="dig">2</span>]:
+        <span class="kw">if</span> channel == <span class="dig">2</span>:
+                keyDown(Key.SHIFT)
+                <span class="skw">type</span>(Key.TAB)
+                keyUp(Key.SHIFT)
+                <span class="skw">type</span>(Key.DOWN)
+
+        <span class="kw">for</span> view <span class="kw">in</span> ViewRegion:
+
+                <span class="kw">if</span> view == <span class="str">"last"</span>:
+                        <span class="kw">for</span> i <span class="kw">in</span> ViewRegion[<span class="dig">0</span>:<span class="dig">3</span>]:
+                                region = <span class="skw">find</span>(Pattern(i).similar(<span class="dig">0.30</span>))
+                                xclick = random.randint(region.x,region.w+region.x)
+                                yclick = random.randint(region.y,region.h+region.y)
+                                <span class="skw">click</span>(Location(xclick,yclick))
+                                <span class="skw">click</span>(<img src="Apply.png" />)
+                <span class="kw">else</span>:
+                        region = <span class="skw">find</span>(Pattern(view).similar(<span class="dig">0.30</span>))
+                        xclick = random.randint(region.x,region.w+region.x)
+                        yclick = random.randint(region.y,region.h+region.y)
+                        <span class="skw">click</span>(Location(xclick,yclick))
+                        <span class="skw">click</span>(<img src="Apply.png" />)
+</pre>
+</body>
+</html>
