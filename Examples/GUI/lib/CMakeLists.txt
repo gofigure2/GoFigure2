@@ -36,6 +36,7 @@ SET( QGOGUILIB_EXAMPLE_SRC
   QGoColorComboBoxTest
   
   #QGoTrackEditingWidgetTest
+  QGoTraceEditingWidgetManagerTest
 )
 
 #---------------------------------------------------------------------------
