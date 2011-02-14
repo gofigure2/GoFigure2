@@ -297,10 +297,32 @@ public:
      This method has been overriden in order to generalize the use of this class
      to 2D AND 3D scene visualization. Thus in this top-level class SetSlice() does
      not do anything.
+     \param[in] iSlice New position of the slice
   */
-  virtual void SetSlice(int s)
+  virtual void SetSlice(int iSlice)
   {
-    this->Superclass::SetSlice (s);
+    int *range = this->GetSliceRange();
+    if (range)
+      {
+      if (iSlice < range[0])
+        {
+          iSlice = range[0];
+        }
+      else if (iSlice > range[1])
+        {
+          iSlice = range[1];
+        }
+      }
+
+    if (this->Slice == iSlice)
+      {
+      return;
+      }
+
+    this->Slice = iSlice;
+    this->Modified();
+
+    this->UpdateDisplayExtent();
   }
 
   virtual void Update(void){}

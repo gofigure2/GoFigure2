@@ -447,6 +447,7 @@ QGoTabImageView3DwT::CreateMeshSegmentationDockWidget()
 void
 QGoTabImageView3DwT::ManualInteractorBehavior(bool iVisible)
 {
+  DefaultInteractorBehavior(iVisible);
   this->m_ImageView->EnableContourWidget(iVisible);
 }
 
@@ -2988,6 +2989,10 @@ QGoTabImageView3DwT::ComputeMeshAttributes(vtkPolyData *iMesh,
         static_cast< int >( calculator->GetSumIntensity() );
       oAttributes.m_MeanIntensityMap[channelname] =
         calculator->GetMeanIntensity();
+      }
+    else
+      {
+      break;
       }
     }
   return oAttributes;
