@@ -58,12 +58,12 @@ void QGoAdvancedParametersWidget::Initialize()
   this->m_ComboBox = new QComboBox(this);
   this->m_VBoxLayout->addWidget(this->m_ComboBox);
   
-  m_AdvParamGrpBox = new ctkCollapsibleGroupBox(tr("Advanced") );
+  m_ExpandableBox = new ctkCollapsibleGroupBox(tr("Advanced") );
   this->m_AdvParamStackedLayout = new QStackedLayout(this);
-  this->m_AdvParamGrpBox->setFlat(true);
-  this->m_AdvParamGrpBox->setLayout(this->m_AdvParamStackedLayout);
+  this->m_ExpandableBox->setFlat(true);
+  this->m_ExpandableBox->setLayout(this->m_AdvParamStackedLayout);
   
-  this->m_VBoxLayout->addWidget(this->m_AdvParamGrpBox);
+  this->m_VBoxLayout->addWidget(this->m_ExpandableBox);
   this->m_VBoxLayout->setSizeConstraint(QLayout::SetFixedSize);
   this->setLayout(this->m_VBoxLayout);
 
