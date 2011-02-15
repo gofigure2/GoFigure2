@@ -55,31 +55,33 @@ QGoAdvancedParametersWidget::~QGoAdvancedParametersWidget()
 void QGoAdvancedParametersWidget::Initialize()
 {
   this->m_VBoxLayout = new QVBoxLayout;
-  this->m_ComboBox = new QComboBox(this);
-  this->m_VBoxLayout->addWidget(this->m_ComboBox);
+  //this->m_ComboBox = new QComboBox(this);
+  //this->m_VBoxLayout->addWidget(this->m_ComboBox);
   
   m_ExpandableBox = new ctkCollapsibleGroupBox(tr("Advanced") );
-  this->m_AdvParamStackedLayout = new QStackedLayout(this);
+  //this->m_AdvParamStackedLayout = new QStackedLayout(this);
   this->m_ExpandableBox->setFlat(true);
-  this->m_ExpandableBox->setLayout(this->m_AdvParamStackedLayout);
+//  this->m_ExpandableBox->setLayout(this->m_AdvParamStackedLayout);
   
   this->m_VBoxLayout->addWidget(this->m_ExpandableBox);
   this->m_VBoxLayout->setSizeConstraint(QLayout::SetFixedSize);
   this->setLayout(this->m_VBoxLayout);
 
-  QObject::connect(this->m_ComboBox, SIGNAL(activated(int)),
-             this->m_AdvParamStackedLayout, SLOT(setCurrentIndex(int)));
+  //QObject::connect(this->m_ComboBox, SIGNAL(activated(int)),
+       //      this->m_AdvParamStackedLayout, SLOT(setCurrentIndex(int)));
 
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoAdvancedParametersWidget::AddWidgetWithName(QWidget* iWidget, 
-  std::string iName)
+void QGoAdvancedParametersWidget::AddAdvancedParamWidget(QWidget* iWidget)
 {
-  this->m_AdvParamStackedLayout->addWidget(iWidget);
-  int Index = this->m_AdvParamStackedLayout->indexOf(iWidget);
-  this->m_ComboBox->insertItem(Index,iName.c_str());
+  this->m_ExpandableBox->setLayout(iWidget->layout());
+  this->m_ExpandableBox->setChecked(false);
+  //this->m_AdvParamStackedLayout->addWidget(iWidget);
+  //int Index = this->m_AdvParamStackedLayout->indexOf(iWidget);
+  //this->m_AdvParamStackedLayout
+  //this->m_ComboBox->insertItem(Index,iName.c_str());
 }
 //-------------------------------------------------------------------------
 

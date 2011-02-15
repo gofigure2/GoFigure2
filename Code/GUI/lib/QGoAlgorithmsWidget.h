@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,56 +31,47 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include <QApplication>
-#include <QTimer>
-#include <QStringlist>
 
+#ifndef __QGoAlgorithmsWidget_h
+#define __QGoAlgorithmsWidget_h
+
+#include <QWidget>
+#include <QStackedWidget>
+#include <QVBoxLayout>
+#include <QComboBox>
 #include "QGoAdvancedParametersWidget.h"
-#include "QGoTraceManualEditingWidget.h"
-#include "QGoContourManualSegmentationWidget.h"
 
-
-//**************************************************************************//
-//                               MAIN                                       //
-//**************************************************************************//
-
-int main(int argc, char *argv[])
+/**
+ * \class QGoAlgorithmsWidget
+ * \ingroup GUI manages all the algorithms widget for a same result,
+ has a combobox with the name of the methods which display a different
+ layout with the parameters, the advanced parameters in an expandable
+ box depending on the method selected in the combobox
+ * \brief 
+*/
+class QGoAlgorithmsWidget:
+  public QWidget
 {
-  if ( argc != 1 )
-    {
-    return EXIT_FAILURE;
-    }
+  Q_OBJECT
+public:
+  explicit QGoAlgorithmsWidget(QWidget *iParent = 0);
+  ~QGoAlgorithmsWidget();
 
-  QApplication app(argc, argv);
-  //QTimer *     timer = new QTimer;
-  //timer->setSingleShot(true);
-  //QStringList ListFilters;
-  //ListFilters.append("Shape");
-  //ListFilters.append("LevelSet");
-  //ListFilters.append("WaterShed");
+  /**
+  \brief add a widget in the stacked widgets with the name
+  of the method associated in the combobox to display it,
+  including the parameters and the advanced parameters
+  displayed in an expandable box
+  */
+  void AddMethod(std::string iNameMethod, 
+  QWidget* iParametersWidget, QWidget* iAdvParamWidget);
 
-  QGoAdvancedParametersWidget *window = new QGoAdvancedParametersWidget(NULL);
+protected:
+  QVBoxLayout*                 m_VBoxLayout;
+  QComboBox*                   m_MethodComboBox;
+  QStackedWidget*              m_MethodWidgets; 
+ 
+  void Initialize();
 
-  QGoTraceManualEditingWidget* FirstWidget = new QGoTraceManualEditingWidget(window);
-  QGoContourManualSegmentationWidget* SecondWidget = new QGoContourManualSegmentationWidget(window);
-  
-  window->AddWidgetWithName(FirstWidget, "FirstWidget");
-  window->AddWidgetWithName(SecondWidget, "SecondWidget");
-
-  //QObject::connect( timer, SIGNAL( timeout() ), window, SLOT( close() ) );
-
-  
-  //timer->start(1000);
-
-  window->show();
-
-  app.processEvents();
-  int output = app.exec();
-
-  app.closeAllWindows();
-
-  //delete timer;
-  delete window;
-
-  return output;
-}
+};
+#endif

@@ -37,8 +37,8 @@ SET( QGOGUILIB_EXAMPLE_SRC
   
   #QGoTrackEditingWidgetTest
   QGoTraceEditingWidgetManagerTest
-  QGoAdvancedParametersWidgetTest
   QGoModeEditingWidgetTest
+  QGoAlgorithmsWidgetTest
 )
 
 #---------------------------------------------------------------------------

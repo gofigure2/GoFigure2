@@ -44,9 +44,8 @@
 /**
  * \class QGoAdvancedParametersWidget
  * \ingroup GUI
- * \brief widget for the advanced parameters in the editing section: 
- has one combobox and one expandable box: the containt of the expandable
- box is directly linked with the item displayed in the combobox.
+ * \brief widget for the advanced parameters displayed in an
+ expandable box
 */
 class QGoAdvancedParametersWidget:
   public QWidget
@@ -58,15 +57,12 @@ public:
 
   void Initialize();
   /**
-  \brief add a widget in the expandable box as the layout corresponding 
-  to iName in the combobox
+  \brief add a widget in the expandable box
   */
-  void AddWidgetWithName(QWidget* iWidget, std::string iName);
+  void AddAdvancedParamWidget(QWidget* iWidget);
 
 protected:
   QVBoxLayout*            m_VBoxLayout;
-  QComboBox*              m_ComboBox;
-  QStackedLayout*         m_AdvParamStackedLayout;
   ctkCollapsibleGroupBox* m_ExpandableBox;
 
 };

@@ -31,9 +31,15 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "QGoModeEditingWidget.h"
 
-QGoModeEditingWidget::QGoModeEditingWidget(QWidget *iParent)
+#include "QGoAlgorithmsWidget.h"
+#include <QStackedLayout>
+#include <QLabel>
+#include <QGroupBox>
+#include "QGoAdvancedParametersWidget.h"
+
+
+QGoAlgorithmsWidget::QGoAlgorithmsWidget(QWidget *iParent )
   :QWidget(iParent)
 {
   this->Initialize();
@@ -41,40 +47,51 @@ QGoModeEditingWidget::QGoModeEditingWidget(QWidget *iParent)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QGoModeEditingWidget::~QGoModeEditingWidget()
+QGoAlgorithmsWidget::~QGoAlgorithmsWidget()
 {
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoModeEditingWidget::Initialize()
+void QGoAlgorithmsWidget::Initialize()
 {
   this->m_VBoxLayout = new QVBoxLayout;
- 
-  this->m_ModeComboBox = new QComboBox(this);
-  this->m_VBoxLayout->addWidget(this->m_ModeComboBox);
+  this->m_MethodComboBox = new QComboBox(this);
+  this->m_MethodWidgets = new QStackedWidget(this);
   
-  this->m_ModeWidgets = new QStackedWidget;
-  this->m_VBoxLayout->addWidget(this->m_ModeWidgets);
-
-  this->m_VBoxLayout->setSizeConstraint(QLayout::SetFixedSize);
-
+  this->m_VBoxLayout->addWidget(this->m_MethodComboBox);
+  this->m_VBoxLayout->addWidget(this->m_MethodWidgets);
   this->setLayout(this->m_VBoxLayout);
+  this->m_VBoxLayout->setSizeConstraint(QLayout::SetFixedSize);
+  
+  QObject::connect(this->m_MethodComboBox, SIGNAL(activated(int)),
+             this->m_MethodWidgets, SLOT(setCurrentIndex(int)));
 
-  QObject::connect(this->m_ModeComboBox, SIGNAL(activated(int)),
-             this->m_ModeWidgets, SLOT(setCurrentIndex(int)));
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoModeEditingWidget::AddWidgetWithModeName(
-  std::string iModeName, QWidget* iWidget )
+void QGoAlgorithmsWidget::AddMethod(std::string iNameMethod, 
+  QWidget* iParametersWidget, QWidget* iAdvParamWidget)
 {
-  int Index = 0;
-  if (iWidget != 0)
-  {
-  this->m_ModeWidgets->addWidget(iWidget);  
-  Index = this->m_ModeWidgets->indexOf(iWidget);
-  }
-  this->m_ModeComboBox->insertItem(Index,iModeName.c_str());
+  QWidget* MethodWidget = new QWidget(this);
+
+  QVBoxLayout* MethodLayout = new QVBoxLayout;
+  MethodLayout->addWidget(iParametersWidget);
+  
+  QGoAdvancedParametersWidget* AdvParamWidget = 
+    new QGoAdvancedParametersWidget(this);
+  AdvParamWidget->AddAdvancedParamWidget(iAdvParamWidget);
+  
+
+  MethodLayout->addWidget(AdvParamWidget);
+
+  MethodWidget->setLayout(MethodLayout);
+  this->m_MethodWidgets->addWidget(MethodWidget);
+
+  int Index = this->m_MethodWidgets->indexOf(MethodWidget);
+  this->m_MethodComboBox->insertItem(Index,iNameMethod.c_str());
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------

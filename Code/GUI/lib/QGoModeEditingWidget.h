@@ -38,9 +38,15 @@
 #include <QWidget>
 #include <QStackedWidget>
 #include <QVBoxLayout>
-#include <QStackedLayout>
 #include <QComboBox>
 
+/**
+ * \class QGoModeEditingWidget
+ * \ingroup GUI
+ * \brief widget that manages the different modes for the TraceEditingWidget,
+ has a combobox with the mode names and a corresponging stackedWidgets which
+ display the right widget according to the mode selected in the combobox
+*/
 class QGoModeEditingWidget:
   public QWidget
 {
@@ -49,13 +55,17 @@ public:
   explicit QGoModeEditingWidget(QWidget *iParent = 0);
   ~QGoModeEditingWidget();
 
+  /**
+  \brief add a widget in the StackedWidget with the mode name that will
+  be added in the combobox.
+  */
   void AddWidgetWithModeName (std::string iModeName, QWidget* iWidget= 0);
 
 protected:
   QVBoxLayout*            m_VBoxLayout;
   QComboBox*              m_ModeComboBox;
-  //QStackedLayout*         m_ModeLayout;
   QStackedWidget*         m_ModeWidgets;  
+  
   void Initialize();
 
 };
