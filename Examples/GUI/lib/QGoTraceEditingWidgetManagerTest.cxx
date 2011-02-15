@@ -97,16 +97,9 @@ int main(int argc, char *argv[])
   ManualMethodsWidget->AddMethod("2D WaterShed within 1 mesh", ParamMeshToContoursWaterShed, AdvParamMeshToContoursWaterShed);
 
 
-  //QGoAdvancedParametersWidget* SemiAutomatedParam = new QGoAdvancedParametersWidget(MeshEditing);
-  
-  
-  
-  //SemiAutomatedParam->AddWidgetWithName(LevelSetParam, "Level Set 3D");
-  //SemiAutomatedParam->AddWidgetWithName(WaterShedParam, "WaterShed");
   MeshEditing->AddMode("Manual", ManualMethodsWidget);
   MeshEditing->AddMode("Semi Automated", SemiAutomatedMethodsWidget);
-  //MeshEditing->AddMode( "Semi Automated", SemiAutoModeWidget, SemiAutomatedParam);
-  //MeshEditing->AddWidgetForMode(LevelSetParam, "Semi Automated");
+
   //QObject::connect( timer, SIGNAL( timeout() ), window, SLOT( close() ) );
 
   
