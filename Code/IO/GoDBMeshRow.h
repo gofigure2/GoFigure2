@@ -74,7 +74,7 @@ public:
 
   /**
   \brief 
-  \param[in] ImgSessionID ID of the current imagingsession
+  \param[in] ImagingSessionID ID of the current imagingsession
   */
   GoDBMeshRow(unsigned int ImagingSessionID);
 
@@ -123,11 +123,7 @@ public:
   void SafeDownCast(GoDBTraceRow & iRow);
 
   /**
-  \overload GoDBTraceRow::SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector,
-                             vtkPolyData *TraceVisu,
-                             GoDBCoordinateRow iCoordMin,
-                             GoDBCoordinateRow iCoordMax)
-  \param[in] iMeshAttributes container for intensity values
+  \overload
   */
   void SetTheDataFromTheVisu(vtkMySQLDatabase *DatabaseConnector,
                              vtkPolyData *TraceVisu, GoDBCoordinateRow iCoordMin,

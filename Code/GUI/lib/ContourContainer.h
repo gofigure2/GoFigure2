@@ -32,23 +32,37 @@
 
 =========================================================================*/
 
-#ifndef CONTOURCONTAINER_H
-#define CONTOURCONTAINER_H
+#ifndef __ContourContainer_h
+#define __ContourContainer_h
 
 #include "ContourMeshContainer.h"
+#include "QGoGUILibConfigure.h"
 
-class ContourContainer : public ContourMeshContainer
+/**
+ * \class ContourContainer
+ * \brief Wraps a boost::multi_index_container of ContourMeshStructure.
+ * This class is specialized for the means of 2D Contour.
+ * */
+class QGOGUILIB_EXPORT ContourContainer : public ContourMeshContainer
 {
   Q_OBJECT
 
 public:
+  /** \brief Constructor */
   explicit ContourContainer( QObject* iParent, QGoImageView3D *iView);
+
+  /** \brief Destructor */
   ~ContourContainer();
 
 protected:
+
+  /** \brief Add a contour in the visualization given the spline nodes and the
+   * property for the given contour. It returns a vector of size 4, of each
+   * element represents one view in the Quad-View.  */
   std::vector< vtkActor* > AddTrace( vtkPolyData* iNode, vtkProperty* iProperty );
 
 private:
+
   Q_DISABLE_COPY(ContourContainer);
 
 };

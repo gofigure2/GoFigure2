@@ -32,22 +32,34 @@
 
 =========================================================================*/
 
-#ifndef MESHCONTAINER_H
-#define MESHCONTAINER_H
+#ifndef __MeshContainer_h
+#define __MeshContainer_h
 
 #include "ContourMeshContainer.h"
+#include "QGoGUILibConfigure.h"
 
-class MeshContainer : public ContourMeshContainer
+/**
+ * \class MeshContainer
+ * \brief Wraps a boost::multi_index_container of ContourMeshStructure.
+ * This class is specialized for the means of Mesh.
+ * */
+class QGOGUILIB_EXPORT MeshContainer : public ContourMeshContainer
 {
   Q_OBJECT
 public:
-    explicit MeshContainer(QObject* iParent, QGoImageView3D *iView);
-    ~MeshContainer();
+  /** \brief Constructor */
+  explicit MeshContainer(QObject* iParent, QGoImageView3D *iView);
+
+  /** \brief Destructor */
+  ~MeshContainer();
+
 protected:
-    std::vector< vtkActor* > AddTrace( vtkPolyData* iNode, vtkProperty* iProp );
+  /** \brief Add a mesh in the visualization with its property. It returns a
+   * vector of size 4, of each element represents one view in the Quad-View.  */
+  std::vector< vtkActor* > AddTrace( vtkPolyData* iNode, vtkProperty* iProp );
 
 private:
-    Q_DISABLE_COPY( MeshContainer );
+  Q_DISABLE_COPY( MeshContainer );
 };
 
-#endif // MESHCONTAINER_H
+#endif // __MeshContainer_h

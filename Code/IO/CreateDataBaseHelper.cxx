@@ -90,7 +90,7 @@ bool CreateGoFigureDataBase(
   std::string Password, std::string DBName)
 {
   std::pair< bool, vtkMySQLDatabase * > ConnectionServer = ConnectToServer(
-    ServerName, login, Password);
+      ServerName, login, Password);
 
   if ( !ConnectionServer.first )
     {

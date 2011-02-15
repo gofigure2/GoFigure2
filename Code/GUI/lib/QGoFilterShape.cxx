@@ -56,7 +56,7 @@
 //#include "vtkTriangleFilter.h"
 
 //--------------------------------------------------------------------------
-QGoFilterShape::QGoFilterShape(QObject *iParent, int iDimension):
+QGoFilterShape::QGoFilterShape(QObject *iParent, int iDimension) :
   QGoFilterSemiAutoBase(iParent)
 {
   m_Dimension = iDimension;
@@ -85,7 +85,8 @@ QGoFilterShape::QGoFilterShape(QObject *iParent, int iDimension):
 //--------------------------------------------------------------------------
 QGoFilterShape::
 ~QGoFilterShape()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 
@@ -240,7 +241,7 @@ QGoFilterShape::GenerateSphere(double *iCenter)
   vtkClipPolyData *cutter = vtkClipPolyData::New();
   cutter->SetInput( sphere->GetOutput() );
   cutter->InsideOutOn();
-  cutter->SetClipFunction( implicitFunction );
+  cutter->SetClipFunction(implicitFunction);
   cutter->Update();
 
   vtkPolyData *output = vtkPolyData::New();
@@ -300,10 +301,11 @@ QGoFilterShape::GenerateCube(double *iCenter)
 
   // create cube geometry
   vtkCubeSource *cube = vtkCubeSource::New();
-  cube->SetCenter( iCenter );
-  cube->SetXLength( 2*this->getRadius() );
-  cube->SetYLength( 2*this->getRadius() );
-  cube->SetZLength( 2*this->getRadius() );
+
+  cube->SetCenter(iCenter);
+  cube->SetXLength( 2 * this->getRadius() );
+  cube->SetYLength( 2 * this->getRadius() );
+  cube->SetZLength( 2 * this->getRadius() );
   cube->Update();
   cube->GetOutput()->GetPointData()->SetNormals(NULL);
 
@@ -318,7 +320,7 @@ QGoFilterShape::GenerateCube(double *iCenter)
   vtkClipPolyData *cutter = vtkClipPolyData::New();
   cutter->SetInput( triangle->GetOutput() );
   cutter->InsideOutOn();
-  cutter->SetClipFunction( implicitFunction );
+  cutter->SetClipFunction(implicitFunction);
   cutter->Update();
 
   vtkPolyData *output = vtkPolyData::New();

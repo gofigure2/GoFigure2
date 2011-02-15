@@ -35,13 +35,14 @@
 #include "QGoImageInfo.h"
 #include <iostream>
 
-QGoImageInfo::QGoImageInfo(QWidget *iParent):QWidget(iParent)
+QGoImageInfo::QGoImageInfo(QWidget *iParent) : QWidget(iParent)
 {
   setupUi(this);
 }
 
 QGoImageInfo::~QGoImageInfo()
-{}
+{
+}
 
 void QGoImageInfo::setupUi(QWidget *ImageInfo)
 {

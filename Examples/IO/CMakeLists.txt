@@ -30,6 +30,7 @@ SET( GODB_SRC
   GoDBProjectRowTest
   GoDBCoordinateRowTest
   GoDBImgSessionRowTest
+  GoDBImportTracksTest
 )
 
 SET( QGOIO_EXAMPLES_SRC

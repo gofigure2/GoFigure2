@@ -36,7 +36,7 @@
 #include "SelectQueryDatabaseHelper.h"
 #include "GoDBRecordSetHelper.h"
 
-GoDBNameDescRow::GoDBNameDescRow():GoDBRow()
+GoDBNameDescRow::GoDBNameDescRow() : GoDBRow()
 {
   this->InitializeMap();
 }

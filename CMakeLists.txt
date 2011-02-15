@@ -13,15 +13,15 @@ ENDIF(COMMAND CMAKE_POLICY)
 # GOFIGURE2_WC_REVISION and the date of the release
 SET( GOFIGURE2_MAJOR_VERSION "0" )
 SET( GOFIGURE2_MINOR_VERSION "8" )
-SET( GOFIGURE2_WC_REVISION "0" )
+SET( GOFIGURE2_WC_REVISION "1" )
 
-SET( DATE "01/21/2011" )
+SET( DATE "02/14/2011" )
 
 SET( GOFIGURE2_VERSION
   "${GOFIGURE2_MAJOR_VERSION}.${GOFIGURE2_MINOR_VERSION}.${GOFIGURE2_WC_REVISION}" )
 
 SET( GOFIGURE2_LIB_VERSION
-  "${GOFIGURE2_VERSION}" )
+  "${GOFIGURE2_MAJOR_VERSION}.${GOFIGURE2_MINOR_VERSION}" )
 
 MESSAGE( STATUS "GoFigure2 version ${GOFIGURE2_VERSION}" )
 
@@ -288,10 +288,118 @@ CONFIGURE_FILE(
  @ONLY
 )
 
-ADD_CUSTOM_TARGET( uninstall
-  "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/GOFIGURE2Uninstall.cmake"
-)
-      
-IF( ( ${CMAKE_MAJOR_VERSION} EQUAL 2 )  AND ( ${CMAKE_MINOR_VERSION} GREATER 7 ) )
-  INCLUDE( GOFIGURE2CPack.cmake )
-ENDIF( ( ${CMAKE_MAJOR_VERSION} EQUAL 2 )  AND ( ${CMAKE_MINOR_VERSION} GREATER 7 ) )
+    IF( ENABLE_VIDEO_RECORD_FFMPEG )
+      ADD_DEFINITIONS( -DENABLEFFMPEG )
+    ELSE( ENABLE_VIDEO_RECORD_FFMPEG )
+      REMOVE_DEFINITIONS( -DENABLEFFMPEG )
+    ENDIF( ENABLE_VIDEO_RECORD_FFMPEG )
+
+    # AVI: for Windows only
+    IF( VTK_USE_VIDEO_FOR_WINDOWS )
+      OPTION( ENABLE_VIDEO_RECORD_AVI "VTK must be built with VTK_USE_AVI_ENCODER" ON )
+    ENDIF( VTK_USE_VIDEO_FOR_WINDOWS )
+
+    IF( ENABLE_VIDEO_RECORD_AVI )
+      ADD_DEFINITIONS( -DENABLEAVI )
+    ELSE( ENABLE_VIDEO_RECORD_AVI )
+      REMOVE_DEFINITIONS( -DENABLEAVI )
+    ENDIF( ENABLE_VIDEO_RECORD_AVI )
+
+    #---------------------------------------------------------------------
+    #---------------------------------------------------------------------
+
+    SET( QGoResourceFile ${GOFIGURE2_SOURCE_DIR}/Resources/axes.qrc )
+
+    SET( QGoGUIINTERFACES_HDRS
+      ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoPlugin.h
+      ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoImageFilterPluginBase.h
+    )
+    SET( QGoGUIINTERFACES_SRC
+      ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoPluginHelper.cxx
+      ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoPlugin.cxx
+      ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoImageFilterPluginBase.cxx
+    )
+
+    ADD_SUBDIRECTORY( Code )
+    ADD_SUBDIRECTORY( Main )
+
+    #-----------------------------------------------------------------------
+    # Plugins
+    #-----------------------------------------------------------------------
+    IF( VTK_BUILD_SHARED_LIBS )
+      OPTION( BUILD_PLUGINS  "Build GoFigure Plugins" OFF )
+    ELSE( VTK_BUILD_SHARED_LIBS )
+      SET( BUILD_PLUGINS OFF )
+    ENDIF( VTK_BUILD_SHARED_LIBS )
+
+    IF( BUILD_PLUGINS )
+      ADD_SUBDIRECTORY( Plugins )
+    ENDIF( BUILD_PLUGINS )
+
+    #-----------------------------------------------------------------------
+    # Examples and tests
+    #-----------------------------------------------------------------------
+    OPTION( BUILD_EXAMPLES "Build Examples" OFF )
+
+    IF( BUILD_TESTING )
+      SET( BUILDNAME "${BUILDNAME}"
+             CACHE STRING "Name of build on the dashboard"
+            )
+
+      MARK_AS_ADVANCED( BUILDNAME )
+
+      OPTION( TESTING_USING_SIKULI "Use Sikuli for testing" OFF )
+      MARK_AS_ADVANCED( TESTING_USING_SIKULI )
+
+      CONFIGURE_FILE( CMake/CTestCustom.cmake.in
+        ${CMAKE_CURRENT_BINARY_DIR}/CTestCustom.cmake
+        @ONLY
+        )
+      INCLUDE ( CTest )
+
+      IF( TESTING_USING_SIKULI )
+        FIND_PACKAGE( Sikuli )
+        ADD_SUBDIRECTORY( Testing )
+      ENDIF( TESTING_USING_SIKULI )
+
+    ENDIF( BUILD_TESTING )
+
+    IF( BUILD_EXAMPLES )
+      ADD_SUBDIRECTORY( Examples )
+      ADD_SUBDIRECTORY( KWStyle )
+      OPTION( BUILD_TESTING "Test the project" ON )
+    ELSE( BUILD_EXAMPLES )
+      SET( BUILD_TESTING OFF )
+    ENDIF( BUILD_EXAMPLES )
+
+    INCLUDE( GoFigure2IncludeDirectories.cmake )
+
+    CONFIGURE_FILE(
+      "${CMAKE_CURRENT_SOURCE_DIR}/UseGoFigure2.cmake.in"
+      "${CMAKE_CURRENT_BINARY_DIR}/UseGoFigure2.cmake"
+      @ONLY
+      )
+
+    #-----------------------------------------------------------------------
+    # PACKAGE With CPack
+    #-----------------------------------------------------------------------
+    # add the uninstall support
+    CONFIGURE_FILE(
+      "${CMAKE_CURRENT_SOURCE_DIR}/GOFIGURE2Uninstall.cmake.in"
+      "${CMAKE_CURRENT_BINARY_DIR}/GOFIGURE2Uninstall.cmake"
+      @ONLY
+      )
+
+    ADD_CUSTOM_TARGET( uninstall
+      "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/GOFIGURE2Uninstall.cmake"
+      )
+
+    IF( ( ${CMAKE_MAJOR_VERSION} EQUAL 2 )  AND ( ${CMAKE_MINOR_VERSION} GREATER 7 ) )
+      INCLUDE( GOFIGURE2CPack.cmake )
+    ENDIF( ( ${CMAKE_MAJOR_VERSION} EQUAL 2 )  AND ( ${CMAKE_MINOR_VERSION} GREATER 7 ) )
+
+  ELSE( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
+    MESSAGE( SEND_ERROR "GoFigure2 requires Qt4.5 (or newer version) to be installed" )
+  ENDIF( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
+
+ENDIF( VTK_FOUND )

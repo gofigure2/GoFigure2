@@ -37,7 +37,7 @@
 
 QGoComboBox::QGoComboBox(std::string iTextToAddANewOne,
                          QWidget *iparent,
-                         std::string iTextToDelete):
+                         std::string iTextToDelete) :
   QComboBox(iparent)
 {
   this->m_TextToAddANewOne = iTextToAddANewOne;
@@ -61,7 +61,8 @@ QGoComboBox::QGoComboBox(std::string iTextToAddANewOne,
 
 //--------------------------------------------------------------------------
 QGoComboBox::~QGoComboBox()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 
@@ -213,12 +214,14 @@ void QGoComboBox::SetCurrentItemAndActivate(int iIndex)
   this->setCurrentIndex(iIndex);
   this->EmitActivatedItem(iIndex);
 }
+
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void QGoComboBox::SetCurrentItemAndActivate(std::string iItemText)
 {
   int index = this->findText( iItemText.c_str() );
+
   if ( index == -1 )
     {
     index = 0;

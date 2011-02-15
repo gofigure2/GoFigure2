@@ -38,7 +38,7 @@
 #include "QGoDeleteFromListDialog.h"
 
 QGoDBNameDescEntityManager::QGoDBNameDescEntityManager(QWidget *iParent,
-                                                       std::string iEntityName, int iImgSessionID):
+                                                       std::string iEntityName, int iImgSessionID) :
   QWidget(iParent)
 {
   this->m_EntityName = iEntityName;
@@ -50,7 +50,8 @@ QGoDBNameDescEntityManager::QGoDBNameDescEntityManager(QWidget *iParent,
 
 //-------------------------------------------------------------------------
 QGoDBNameDescEntityManager::~QGoDBNameDescEntityManager()
-{}
+{
+}
 
 //-------------------------------------------------------------------------
 
@@ -59,7 +60,7 @@ std::string QGoDBNameDescEntityManager::AddAnEntity(
   vtkMySQLDatabase *iDatabaseConnector)
 {
   this->m_NameDescDialog = new QGoNameDescriptionInputDialog(
-    this, this->m_EntityName.c_str() );
+      this, this->m_EntityName.c_str() );
 
   this->m_DatabaseConnector = iDatabaseConnector;
   QObject::connect ( this->m_NameDescDialog, SIGNAL( NewNameDescription(std::string,
@@ -99,8 +100,8 @@ bool QGoDBNameDescEntityManager::DeleteEntity(
   vtkMySQLDatabase *iDatabaseConnector)
 {
   QGoDeleteFromListDialog *Dialog = new QGoDeleteFromListDialog(
-    this->GetNameExistingEntities(iDatabaseConnector),
-    this, this->m_EntityName);
+      this->GetNameExistingEntities(iDatabaseConnector),
+      this, this->m_EntityName);
 
   this->m_DatabaseConnector = iDatabaseConnector;
   QObject::connect(Dialog,
@@ -146,8 +147,8 @@ std::vector< std::string > QGoDBNameDescEntityManager::GetNameExistingEntities(v
     if ( this->m_ImgSessionID != 0 )
       {
       ResultsQuery = ListSpecificValuesForOneColumn(
-        iDatabaseConnector, this->m_EntityName, "Name", "ImagingSessionID",
-        ConvertToString< int >(this->m_ImgSessionID), "Name");
+          iDatabaseConnector, this->m_EntityName, "Name", "ImagingSessionID",
+          ConvertToString< int >(this->m_ImgSessionID), "Name");
       }
     else
       {

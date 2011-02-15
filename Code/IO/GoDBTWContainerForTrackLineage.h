@@ -37,7 +37,10 @@
 #include "GoDBTableWidgetContainer.h"
 #include "QGoIOConfigure.h"
 /**
-\brief
+\class GoDBTWContainerForTrackLineage
+\brief This class describes the specificities of the GoDBTableWidgetContainer for 
+track and lineage
+\ingroup DB
 */
 class QGOIO_EXPORT GoDBTWContainerForTrackLineage:public GoDBTableWidgetContainer
 {

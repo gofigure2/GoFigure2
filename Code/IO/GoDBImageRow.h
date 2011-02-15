@@ -39,6 +39,12 @@
 #include <string>
 #include <map>
 
+/**
+\class GoDBImageRow
+\brief manages a map with keys matching fields of the gofiguredatabase Image table
+and values of the map matching a row of the Image table
+\ingroup DB
+*/
 class QGOIO_EXPORT GoDBImageRow:public GoDBRow
 {
 public:

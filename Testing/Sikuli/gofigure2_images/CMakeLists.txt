@@ -9,7 +9,11 @@ CONFIGURE_FILE( ${SIKULI_SCRIPTS_DIR}/sikuli_test_all.sh.in
         @ONLY
         )
 
+IF( UNIX AND NOT APPLE )
 
-ADD_TEST( SikuliTest1
-  "/bin/bash" "${GOFIGURE2_BINARY_DIR}/sikuli_test_all.sh"
-)
+  ADD_TEST( SikuliTest1
+    ${SH_EXECUTABLE} ${GOFIGURE2_BINARY_DIR}/sikuli_test_all.sh
+  )
+
+ENDIF( UNIX AND NOT APPLE )
+

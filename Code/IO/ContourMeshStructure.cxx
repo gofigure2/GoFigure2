@@ -44,9 +44,10 @@
 #include "vtkLookupTable.h"
 
 //--------------------------------------------------------------------------
-ContourMeshStructure::ContourMeshStructure():TraceStructure(),
+ContourMeshStructure::ContourMeshStructure() : TraceStructure(),
   TCoord(0)
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 
@@ -62,8 +63,8 @@ ContourMeshStructure::ContourMeshStructure(const unsigned int & iTraceID,
                                            const double & g,
                                            const double & b,
                                            const double & alpha) :
-  TraceStructure( iTraceID, iCollectionID, iActors, iNodes, iHighlighted,
-                  iVisible, r, g, b, alpha ),
+  TraceStructure(iTraceID, iCollectionID, iActors, iNodes, iHighlighted,
+                 iVisible, r, g, b, alpha),
   TCoord(iT)
 {
   if ( iActors.size() == 4 )
@@ -94,8 +95,8 @@ ContourMeshStructure::ContourMeshStructure(const unsigned int & iTraceID,
                                            const unsigned int & iT,
                                            const bool & iHighlighted,
                                            const bool & iVisible,
-                                           double iRgba[4]):
-  TraceStructure(iTraceID, iCollectionID, iActors, iNodes, iHighlighted, iVisible, iRgba ),
+                                           double iRgba[4]) :
+  TraceStructure(iTraceID, iCollectionID, iActors, iNodes, iHighlighted, iVisible, iRgba),
   TCoord(iT)
 {
 }
@@ -116,9 +117,9 @@ ContourMeshStructure::ContourMeshStructure(const unsigned int & iTraceID,
                                            const double & r,
                                            const double & g,
                                            const double & b,
-                                           const double & alpha):
-  TraceStructure( iTraceID, iCollectionID, iActorXY, iActorYZ, iActorXZ, iActorXYZ, iNodes,
-                  iHighlighted, iVisible, r, g, b, alpha ),
+                                           const double & alpha) :
+  TraceStructure(iTraceID, iCollectionID, iActorXY, iActorYZ, iActorXZ, iActorXYZ, iNodes,
+                 iHighlighted, iVisible, r, g, b, alpha),
   TCoord(iT)
 {
 }
@@ -126,9 +127,9 @@ ContourMeshStructure::ContourMeshStructure(const unsigned int & iTraceID,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-ContourMeshStructure::ContourMeshStructure(const ContourMeshStructure & iE):
-  TraceStructure( iE ),
-  TCoord( iE.TCoord )
+ContourMeshStructure::ContourMeshStructure(const ContourMeshStructure & iE) :
+  TraceStructure(iE),
+  TCoord(iE.TCoord)
 {
 }
 
@@ -136,7 +137,8 @@ ContourMeshStructure::ContourMeshStructure(const ContourMeshStructure & iE):
 
 //--------------------------------------------------------------------------
 ContourMeshStructure::~ContourMeshStructure()
-{}
+{
+}
 
 //--------------------------------------------------------------------------
 
@@ -167,4 +169,5 @@ int ContourMeshStructure::GetDirection()
 
   return oDir;
 }
+
 //--------------------------------------------------------------------------

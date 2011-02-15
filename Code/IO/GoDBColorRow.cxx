@@ -35,7 +35,7 @@
 #include "SelectQueryDatabaseHelper.h"
 #include "GoDBRecordSetHelper.h"
 
-GoDBColorRow::GoDBColorRow():GoDBNameDescRow()
+GoDBColorRow::GoDBColorRow() : GoDBNameDescRow()
 {
   this->InitializeMap();
 }

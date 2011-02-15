@@ -23,7 +23,6 @@ SET( QGoGUILIB_SRC
   ContourMeshContainer.cxx
   TrackContainer.cxx
   QGoConnectServerPage.cxx
-  QGoCreateDataBasePage.cxx
   QGoCreateImgSessionPage.cxx
   QGoImageView.cxx
   QGoImageView2D.cxx
@@ -97,7 +96,7 @@ SET( QGoGUILIB_SRC
     QGoContourSemiAutoShapeWidget.cxx
     QGoContourSemiAutoWatershedWidget.cxx
   QGoFilterSemiAutoBase.cxx
-    QGoFilterChanAndVes.cxx
+    QGoFilterChanAndVese.cxx
     QGoFilterShape.cxx
     QGoFilterWatershed.cxx
 
@@ -141,7 +140,6 @@ SET( QGoGUILIB_HDRS
   ContourMeshContainer.h
   TrackContainer.h
   QGoConnectServerPage.h
-  QGoCreateDataBasePage.h
   QGoCreateImgSessionPage.h
   QGoImageView.h
   QGoImageView2D.h
@@ -216,7 +214,7 @@ SET( QGoGUILIB_HDRS
     QGoContourSemiAutoShapeWidget.h
     QGoContourSemiAutoWatershedWidget.h
   QGoFilterSemiAutoBase.h
-    QGoFilterChanAndVes.h
+    QGoFilterChanAndVese.h
     QGoFilterShape.h
     QGoFilterWatershed.h
 
@@ -248,13 +246,12 @@ ENDIF( ENABLE_VIDEO_RECORD_AVI )
 #---------------------------------------------------------------------------
 
 SET( QGoGUILIB_UI
-# base segmentation dock widget
+#segmentation widget
   Resources/SegmentationBaseDockWidget.ui
-# base widget for the seed segmentation
   Resources/SegmentationSeedBaseWidget.ui
+
 # manual contour segmentation dock widget
   Resources/ManualSegmentationSettingsDlg.ui
-  Resources/ContourManualSegmentationDockWidget.ui
   Resources/ContourManualSegmentationWidget.ui
   Resources/ContourSemiAutoShapeWidget.ui
 

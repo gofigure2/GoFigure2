@@ -38,6 +38,12 @@
 #include <QDockWidget>
 #include "QGoTraceManualEditingWidget.h"
 
+/**
+\class QGoTraceManualEditingDockWidget
+\brief dock widget for the QGoTraceManualEditingWidget, has a window
+title that can be modified according to the content of its widget
+\ingroup GUI
+*/
 class QGOGUILIB_EXPORT QGoTraceManualEditingDockWidget:
   public QDockWidget
 {
@@ -47,8 +53,6 @@ public:
   ~QGoTraceManualEditingDockWidget();
   QGoTraceManualEditingWidget *m_TraceWidget;
 protected slots:
-  //void ShowAndUpdate(std::string iTraceName,
-  //  std::string iCollectionName);
   void ModifyWindowTitle(QString iTitle);
 };
 #endif

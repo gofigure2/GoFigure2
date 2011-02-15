@@ -41,6 +41,12 @@
 #include "QGoGUILibConfigure.h"
 #include "QGoLUTDialog.h"
 
+/**
+\class QGoColorCodingDialog
+\brief This dialog asks the user to chose the way he wants its
+traces to be colorcoded
+\ingroup GUI
+*/
 class QGOGUILIB_EXPORT QGoColorCodingDialog:public QDialog
 {
   Q_OBJECT
@@ -51,8 +57,9 @@ public:
   \brief Constructor
   \param[in] iTraceName name of the trace to be colorcoded
   \param[in] iParent parent of the widget
+  \param[in] iRandomIncluded true if the random option needs to be included
  */
-  explicit QGoColorCodingDialog(std::string iTraceName,bool iRandomIncluded,
+  explicit QGoColorCodingDialog(std::string iTraceName, bool iRandomIncluded,
     QWidget *iParent = 0);
 
   enum ColorWay{Nothing,Default,Random,LUT};
@@ -65,7 +72,8 @@ public:
   and the LUT if he chooses the LUT
   \param[in] iTraceName name of the trace to be colorcoded
   \param[in,out] ioLUT lookup table choosen by the user
-  \param[in] iParent parent of the widget
+  \param[in] iiParent parent of the widget
+  \param[in] iRandomIncluded true if the random option needs to be included
   */
   static ColorWay GetColorWay( std::string iTraceName,
    vtkLookupTable **ioLUT, bool iRandomIncluded, QWidget *iiParent = 0 );
@@ -78,6 +86,7 @@ protected:
   /**
   \brief set the components of the widget and the connection
   \param[in] iTraceName name of the trace to be colorcoded
+  \param[in] iRandomIncluded true if the random option needs to be included
   */
   void SetUpUi(std::string iTraceName, bool iRandomIncluded);
 

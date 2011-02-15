@@ -31,60 +31,40 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "QGoCreateDataBasePage.h"
-#include "QueryDataBaseHelper.h"
-#include "CreateDataBaseHelper.h"
-#include <QFormLayout>
-#include <QMessageBox>
-#include <QLineEdit>
-#include <QVariant>
-#include <iostream>
+#include "GoDBImport.h"
+#include <string>
 
-QGoCreateDataBasePage::QGoCreateDataBasePage(QWidget *iParent):
-  QWizardPage(iParent)
+
+
+int main(int argc, char *argv[])
 {
-  QFont tfont;
+  (void) argc;
+  (void) argv;
+  std::string ServerName = "localhost";
+  std::string filename;
+  std::string Login;
+  std::string Password;
+  std::string DBName = "gofiguredatabase";
+  int ImgSessionID;
 
-  tfont.setBold(false);
-  this->setFont(tfont);
+  std::cout<<"Enter your mysql user:"<<std::endl;
+  std::cin >> Login;
+  std::cout<<"Enter your mysql password:"<<std::endl;
+  std::cin >> Password;
+  std::cout<<"Enter the path to your file to import:"<<std::endl;
+  std::cin >> filename;
+  std::cout<<"Enter your imagingsessionID the traces will be imported to:"<<std::endl;
+  std::cin >> ImgSessionID;
 
-  QFormLayout *formLayout = new QFormLayout;
-  lineNewDBName = new QLineEdit;
-  formLayout->addRow(tr("Name of the new DB to create:"), lineNewDBName);
+  /*std::string ServerName = "localhost";
+  std::string filename = argv[1];
+  std::string Login = argv[2];
+  std::string Password = argv[3];
+  std::string DBName = "gofiguredatabase";
+  int ImgSessionID = argv[4];*/
 
-  setLayout(formLayout);
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoCreateDataBasePage::initializePage()
-{
-  this->setSubTitle( tr("There is no existing GoFigure Database, please create one:") );
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-bool QGoCreateDataBasePage::validatePage()
-{
-  QString DBName = lineNewDBName->text();
-
-  if ( DBName.isEmpty() )
-    {
-    QMessageBox msgBox;
-    msgBox.setText(
-      tr("Please enter a name for your new DataBase :") );
-    msgBox.exec();
-    return false;
-    }
-  this->wizard()->setField("DBName", DBName);
-  std::cout << "the DBName to create is: " << field("DBName").toString().toStdString().c_str() << std::endl;
-
-  CreateGoFigureDataBase( field("ServerName").toString().toStdString(),
-                          field("User").toString().toStdString(),
-                          field("Password").toString().toStdString(),
-                          field("DBName").toString().toStdString() );
-
-  return true;
+  //import into the database:
+  GoDBImport ImportHelper(ServerName, Login,
+                          Password, ImgSessionID, filename, 0);
+  ImportHelper.ImportTracks();
 }

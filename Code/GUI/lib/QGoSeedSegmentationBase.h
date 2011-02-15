@@ -43,10 +43,9 @@ class vtkPoints;
 class vtkPolyData;
 
 /**
- * \class QGoSeedSegmentation
- * \ingroup QGoSeed
- * \brief Base class for all segmentations from seed points
-*/
+ * \class QGoSeedSegmentationBase
+ * \brief Implements common method/signals for all the seed based segmentation methods
+**/
 
 class QGOGUILIB_EXPORT QGoSeedSegmentationBase:public QObject
 {
@@ -103,6 +102,8 @@ public:
   /**
    * \brief Specify on which one the segmentation will be applied since the input
    * data is multichannel.
+   * \param[in] iChannel Channel on which want we want to apply the segmentation
+   * algorithm - temporary since channels don't have names yet
    * \param[in] iText Channel on which want we want to apply the segmentation
    * algorithm
    */
@@ -137,10 +138,14 @@ signals:
   /**
    * \brief Signal to be send to the Widget to add channel to the channel
    * QComboBox
+   * \param[in] iChannel Channel Number
    * \param[in] iQString Name of the channel.
    */
   void addChannel(int iChannel, QString iQString);
 
+  /**
+    * \brief Set the number of channels
+    */
   void setNumberOfChannels(int);
 
   void MeshCreated(vtkPolyData *, int);

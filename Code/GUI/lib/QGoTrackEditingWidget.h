@@ -132,7 +132,7 @@ private:
 
   /**
    * \brief Get the list of the mesh IDs which belong to the given track
-   * \param[in] iCollectionID track from which we want to extract the mesh id
+   * \param[in] iCollection track from which we want to extract the mesh id
    * \return list of the meshes IDs
    */
   std::list< unsigned int > getMeshIDsInTrack( unsigned int iCollection);

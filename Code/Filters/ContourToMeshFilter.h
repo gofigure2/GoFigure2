@@ -41,7 +41,9 @@ namespace itk
 {
 /**
  * \class ContourToMeshFilter
- * \brief
+ * \brief Generate a mesh from a set of 2D contours
+ * \tparam TContainer Container of Contours (e.g. std::vector< vtkPolyData* >,
+ * std::list< vtkPolyData* >, etc. )
  */
 template< class TContainer >
 class ContourToMeshFilter:public LightObject
@@ -61,12 +63,17 @@ public:
   typedef TContainer                             ContainerType;
   typedef typename ContainerType::const_iterator ContainerConstIterator;
 
+  /** \brief Main method: where the mesh is actually calculated. */
   void ProcessContours(const ContainerType & iContainer);
 
+  /** \brief Get the resulting mesh */
   vtkPolyData * GetOutput();
 
 protected:
+  /** \brief Constructor */
   ContourToMeshFilter();
+
+  /** \brief Destructor */
   ~ContourToMeshFilter();
 
   vtkPolyData *m_Output;

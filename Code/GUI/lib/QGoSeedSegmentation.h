@@ -52,9 +52,7 @@ class QGoFilterChanAndVes;
 class QGoFilterShape;
 
 /**
- * \class QGoSeedShapeSegmentation
- * \ingroup QGoSeed
- * \brief Class to create pre defined meshes
+ * \class QGoSeedSegmentation
 */
 class QGOGUILIB_EXPORT QGoSeedSegmentation:public QGoSeedSegmentationBase
 {
@@ -99,14 +97,26 @@ signals:
    */
   void addChannel(QString iQString);
 
-  void MeshCreated(vtkPolyData *);
+/**
+ * \brief Signal to be send to the gqotabimageview3dwt when a mesh has been created
+ * \param[in] iMesh New mesh.
+ */
+  void MeshCreated(vtkPolyData *iMesh);
 
-  void ContourCreated(vtkPolyData *);
+  /**
+   * \brief Signal to be send to the gqotabimageview3dwt when a contour has been created
+   * \param[in] iContour New contour.
+   */
+  void ContourCreated(vtkPolyData *iContour);
 
-  void ImageProcessed();
-
+  /**
+   * \brief Reset the seeds
+   */
   void UpdateSeeds();
 
+  /**
+   * \brief Segmentation completed
+   */
   void SegmentationFinished();
 
 private:

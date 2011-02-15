@@ -72,7 +72,7 @@
 //   std::list< QGoPlugin* > m_Plugins;
 // };
 
-QGoPluginManager::QGoPluginManager():QObject()
+QGoPluginManager::QGoPluginManager() : QObject()
 {
 //   m_InternalManager = new Interior();
 }

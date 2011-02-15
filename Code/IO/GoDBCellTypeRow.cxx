@@ -34,7 +34,7 @@
 #include "GoDBCellTypeRow.h"
 #include "GoDBRecordSetHelper.h"
 
-GoDBCellTypeRow::GoDBCellTypeRow():GoDBNameDescRow()
+GoDBCellTypeRow::GoDBCellTypeRow() : GoDBNameDescRow()
 {
   this->InitializeMap();
 }

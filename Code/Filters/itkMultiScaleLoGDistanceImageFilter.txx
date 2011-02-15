@@ -239,6 +239,7 @@ MultiScaleLoGDistanceImageFilter
   os << indent << "NumberOfSigmaSteps:  " << m_NumberOfSigmaSteps  << std::endl;
   os << indent << "ComputeOutsideForeground:  " << m_ComputeOutsideForeground  << std::endl;
 }
+
 } // end namespace itk
 
 #endif

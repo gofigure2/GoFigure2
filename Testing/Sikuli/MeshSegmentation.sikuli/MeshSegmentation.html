@@ -70,15 +70,15 @@
 <h2>MeshSegmentation.sikuli</h2> <a href="MeshSegmentation.zip">(Download this script)</a>
 </div>
 <pre class="sikuli-code">
-<span class="kw">import</span> os
-address = os.getcwd()
-<span class="cmt">#address = "/home/es1076/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images"
-</span>
+<span class="cmt">#import os
+</span><span class="cmt">#address = os.getcwd()
+</span>address = <span class="str">"/home/es1076/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images"</span>
+
 <span class="cmt">#address = address+"/gofigure2_images"
 </span><span class="cmt">#print address
 </span>setBundlePath(address)
 
-<span class="kw">def</span> MeshSegmentation(View)
+<span class="kw">def</span> MeshSegmentation(View):
 
         <span class="kw">import</span> random
         region = <span class="skw">find</span>(Pattern(View).similar(<span class="dig">0.30</span>))
@@ -96,7 +96,7 @@ ViewRegion = (<img src="XY_ViewRegion.png" />,<img src="XZ_ViewRegion.png" />,<i
 Filter = (<span class="str">"2DContour"</span>,<span class="str">"3DSphere"</span>,<span class="str">"3DLevelSet"</span>)
 
 
-<span class="kw">for</span> shape <span class="kw">in</span> Filter
+<span class="kw">for</span> shape <span class="kw">in</span> Filter:
 
         <span class="kw">for</span> view <span class="kw">in</span> ViewRegion:
 
