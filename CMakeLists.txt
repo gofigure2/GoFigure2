@@ -1,5 +1,3 @@
-PROJECT( GOFIGURE2 )
-
 # CMake >= 2.8.2 MUST be installed (which is requiered by ITK)
 CMAKE_MINIMUM_REQUIRED( VERSION 2.8.2 )
 
@@ -8,22 +6,6 @@ IF( COMMAND CMAKE_POLICY )
   CMAKE_POLICY( SET CMP0005 OLD )
   CMAKE_POLICY( SET CMP0003 NEW )
 ENDIF(COMMAND CMAKE_POLICY)
-
-# When making one release: update GOFIGURE2_*_VERSION,
-# GOFIGURE2_WC_REVISION and the date of the release
-SET( GOFIGURE2_MAJOR_VERSION "0" )
-SET( GOFIGURE2_MINOR_VERSION "8" )
-SET( GOFIGURE2_WC_REVISION "1" )
-
-SET( DATE "02/14/2011" )
-
-SET( GOFIGURE2_VERSION
-  "${GOFIGURE2_MAJOR_VERSION}.${GOFIGURE2_MINOR_VERSION}.${GOFIGURE2_WC_REVISION}" )
-
-SET( GOFIGURE2_LIB_VERSION
-  "${GOFIGURE2_MAJOR_VERSION}.${GOFIGURE2_MINOR_VERSION}" )
-
-MESSAGE( STATUS "GoFigure2 version ${GOFIGURE2_VERSION}" )
 
 # On Visual Studio 8 MS deprecated C. This removes all 1.276E1265 security
 # warnings. Copied from ITK CMakeLists.
@@ -47,6 +29,40 @@ IF( WIN32 )
     ENDIF( NOT CYGWIN )
   ENDIF( NOT BORLAND )
 ENDIF( WIN32 )
+
+#---------------------------------------------------------------------------
+# SUPERBUILD - ENABLED BY DEFAULT
+#---------------------------------------------------------------------------
+
+OPTION( USE_SUPERBUILD "Use SuperBuild" ON )
+
+IF( USE_SUPERBUILD )
+  CMAKE_MINIMUM_REQUIRED( VERSION 2.8.3 )
+  #SET( MESSAGE_TYPE STATUS )
+  INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/SuperBuild.cmake" )
+  RETURN()
+ELSE( USE_SUPERBUILD )
+
+#---------------------------------------------------------------------------
+
+
+PROJECT( GOFIGURE2 )
+
+# When making one release: update GOFIGURE2_*_VERSION,
+# GOFIGURE2_WC_REVISION and the date of the release
+SET( GOFIGURE2_MAJOR_VERSION "0" )
+SET( GOFIGURE2_MINOR_VERSION "8" )
+SET( GOFIGURE2_WC_REVISION "1" )
+
+SET( DATE "02/14/2011" )
+
+SET( GOFIGURE2_VERSION
+  "${GOFIGURE2_MAJOR_VERSION}.${GOFIGURE2_MINOR_VERSION}.${GOFIGURE2_WC_REVISION}" )
+
+SET( GOFIGURE2_LIB_VERSION
+  "${GOFIGURE2_MAJOR_VERSION}.${GOFIGURE2_MINOR_VERSION}" )
+
+MESSAGE( STATUS "GoFigure2 version ${GOFIGURE2_VERSION}" )
 
 #-----------------------------------------------------------------------
 # Export and Install configuration
@@ -128,22 +144,6 @@ SET( TESTING_DATA_PATH
   IF( UNIX )
     SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
   ENDIF( UNIX )
-
-
-#---------------------------------------------------------------------------
-# SUPERBUILD - ENABLED BY DEFAULT
-#---------------------------------------------------------------------------
-
-OPTION( USE_SUPERBUILD "Use SuperBuild" ON )
-
-IF( USE_SUPERBUILD )
-  CMAKE_MINIMUM_REQUIRED( VERSION 2.8.3 )
-  #SET( MESSAGE_TYPE STATUS )
-  INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/SuperBuild.cmake" )
-  RETURN()
-ENDIF( USE_SUPERBUILD)
-
-#SET( MESSAGE_TYPE SEND_ERROR)
 
 #---------------------------------------------------------------------------
 # Everything depends on VTK first
@@ -403,3 +403,5 @@ CONFIGURE_FILE(
   ENDIF( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
 
 ENDIF( VTK_FOUND )
+
+ENDIF( USE_SUPERBUILD )
