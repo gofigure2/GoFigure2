@@ -571,11 +571,6 @@ QGoFilterSemiAutoBase::ReconstructMesh(vtkImageData *iInputImage, const double &
   vtkPolyData *output = vtkPolyData::New();
   output->DeepCopy( connectivityFilter->GetOutput() );
 
-  smoother->Delete();
-  connectivityFilter->Delete();
-//   contours->Delete();
-  fillFilter->Delete();
-
   return output;
 }
 
