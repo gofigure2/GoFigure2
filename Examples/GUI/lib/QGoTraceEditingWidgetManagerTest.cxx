@@ -45,6 +45,7 @@
 #include "QGoTraceManualEditingWidget.h"
 #include "QGoContourManualSegmentationWidget.h"
 #include "QGoAlgorithmsWidget.h"
+#include "QGoContourSemiAutoShapeWidget.h"
 
 
 
@@ -68,13 +69,10 @@ int main(int argc, char *argv[])
   //ListFilters.append("WaterShed");
 
   QGoTraceEditingWidgetManager* MeshEditing = new QGoTraceEditingWidgetManager("Mesh", NULL);
+
+  //semi automated mode
   QGoAlgorithmsWidget* SemiAutomatedMethodsWidget = new QGoAlgorithmsWidget(MeshEditing);
 
-
-  //QGoTraceManualEditingWidget* ManualEditing = new QGoTraceManualEditingWidget(MeshEditing);
-  //QGoContourManualSegmentationWidget* SemiAutomatedEditing = new QGoContourManualSegmentationWidget(MeshEditing);
-  //MeshEditing->AddWidgetForMode(ManualEditing, "manual");
-  //MeshEditing->AddWidgetForMode(SemiAutomatedEditing, "semi auto");
   QGoSeedBaseWidget* LevelSetParamWidget = new QGoSeedBaseWidget(MeshEditing);
   QGoContourSemiAutoLevelsetWidget* LevelSetAdvParamWidget = new QGoContourSemiAutoLevelsetWidget(MeshEditing);
   SemiAutomatedMethodsWidget->AddMethod("Level Set 3D", LevelSetParamWidget, LevelSetAdvParamWidget);
@@ -83,6 +81,21 @@ int main(int argc, char *argv[])
   QGoContourSemiAutoWatershedWidget* WaterShedAdvParamWidget = new QGoContourSemiAutoWatershedWidget(MeshEditing);
   SemiAutomatedMethodsWidget->AddMethod("WaterShed 3D", WaterShedParamWidget, WaterShedAdvParamWidget);
   
+  //manual mode
+  QGoAlgorithmsWidget* ManualMethodsWidget = new QGoAlgorithmsWidget(MeshEditing);
+
+  QGoSeedBaseWidget* ParamMeshToContours = new QGoSeedBaseWidget(MeshEditing);
+  QGoContourSemiAutoShapeWidget* AdvParamMeshToContours = new QGoContourSemiAutoShapeWidget(MeshEditing);
+  ManualMethodsWidget->AddMethod("2D Shapes in 1 mesh", ParamMeshToContours, AdvParamMeshToContours);
+
+  QGoSeedBaseWidget* ParamMeshToContoursLevelSet = new QGoSeedBaseWidget(MeshEditing);
+  QGoContourSemiAutoLevelsetWidget* AdvParamMeshToContoursLevelSet = new QGoContourSemiAutoLevelsetWidget(MeshEditing);
+  ManualMethodsWidget->AddMethod("2D Levelset in 1 mesh", ParamMeshToContoursLevelSet, AdvParamMeshToContoursLevelSet);
+
+  QGoSeedBaseWidget* ParamMeshToContoursWaterShed = new QGoSeedBaseWidget(MeshEditing);
+  QGoContourSemiAutoWatershedWidget* AdvParamMeshToContoursWaterShed = new QGoContourSemiAutoWatershedWidget(MeshEditing);
+  ManualMethodsWidget->AddMethod("2D WaterShed within 1 mesh", ParamMeshToContoursWaterShed, AdvParamMeshToContoursWaterShed);
+
 
   //QGoAdvancedParametersWidget* SemiAutomatedParam = new QGoAdvancedParametersWidget(MeshEditing);
   
@@ -90,7 +103,7 @@ int main(int argc, char *argv[])
   
   //SemiAutomatedParam->AddWidgetWithName(LevelSetParam, "Level Set 3D");
   //SemiAutomatedParam->AddWidgetWithName(WaterShedParam, "WaterShed");
-  MeshEditing->AddMode("Manual");
+  MeshEditing->AddMode("Manual", ManualMethodsWidget);
   MeshEditing->AddMode("Semi Automated", SemiAutomatedMethodsWidget);
   //MeshEditing->AddMode( "Semi Automated", SemiAutoModeWidget, SemiAutomatedParam);
   //MeshEditing->AddWidgetForMode(LevelSetParam, "Semi Automated");
