@@ -41,7 +41,6 @@
 #include <QStackedLayout>
 #include <QComboBox>
 #include "QGoModeEditingWidget.h"
-#include "QGoAdvancedParametersWidget.h"
 
 
 class QGoTraceEditingWidgetManager:
@@ -52,8 +51,7 @@ public:
   explicit QGoTraceEditingWidgetManager(std::string iTraceName, QWidget *iParent = 0 );
   ~QGoTraceEditingWidgetManager();
 
-  void AddMode( std::string iModeName, QWidget* iModeWidget = 0,
-    QGoAdvancedParametersWidget* iParameterWidget = 0);
+  void AddMode( std::string iModeName, QWidget* iModeWidget = 0);
 
 protected:
   void Initialize(QWidget *iParent = 0);

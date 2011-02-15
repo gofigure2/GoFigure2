@@ -44,7 +44,7 @@
 
 #include "QGoTraceManualEditingWidget.h"
 #include "QGoContourManualSegmentationWidget.h"
-
+#include "QGoAlgorithmsWidget.h"
 
 
 
@@ -68,21 +68,31 @@ int main(int argc, char *argv[])
   //ListFilters.append("WaterShed");
 
   QGoTraceEditingWidgetManager* MeshEditing = new QGoTraceEditingWidgetManager("Mesh", NULL);
+  QGoAlgorithmsWidget* SemiAutomatedMethodsWidget = new QGoAlgorithmsWidget(MeshEditing);
+
+
   //QGoTraceManualEditingWidget* ManualEditing = new QGoTraceManualEditingWidget(MeshEditing);
   //QGoContourManualSegmentationWidget* SemiAutomatedEditing = new QGoContourManualSegmentationWidget(MeshEditing);
   //MeshEditing->AddWidgetForMode(ManualEditing, "manual");
   //MeshEditing->AddWidgetForMode(SemiAutomatedEditing, "semi auto");
-  QGoSeedBaseWidget* SemiAutoModeWidget = new QGoSeedBaseWidget(MeshEditing);
-  
-  QGoAdvancedParametersWidget* SemiAutomatedParam = new QGoAdvancedParametersWidget(MeshEditing);
-  QGoContourSemiAutoLevelsetWidget* LevelSetParam = new QGoContourSemiAutoLevelsetWidget(MeshEditing);
-  QGoContourSemiAutoWatershedWidget* WaterShedParam = new QGoContourSemiAutoWatershedWidget(MeshEditing);
-  
-  SemiAutomatedParam->AddWidgetWithName(LevelSetParam, "Level Set 3D");
-  SemiAutomatedParam->AddWidgetWithName(WaterShedParam, "WaterShed");
+  QGoSeedBaseWidget* LevelSetParamWidget = new QGoSeedBaseWidget(MeshEditing);
+  QGoContourSemiAutoLevelsetWidget* LevelSetAdvParamWidget = new QGoContourSemiAutoLevelsetWidget(MeshEditing);
+  SemiAutomatedMethodsWidget->AddMethod("Level Set 3D", LevelSetParamWidget, LevelSetAdvParamWidget);
 
+  QGoSeedBaseWidget* WaterShedParamWidget = new QGoSeedBaseWidget(MeshEditing);
+  QGoContourSemiAutoWatershedWidget* WaterShedAdvParamWidget = new QGoContourSemiAutoWatershedWidget(MeshEditing);
+  SemiAutomatedMethodsWidget->AddMethod("WaterShed 3D", WaterShedParamWidget, WaterShedAdvParamWidget);
+  
+
+  //QGoAdvancedParametersWidget* SemiAutomatedParam = new QGoAdvancedParametersWidget(MeshEditing);
+  
+  
+  
+  //SemiAutomatedParam->AddWidgetWithName(LevelSetParam, "Level Set 3D");
+  //SemiAutomatedParam->AddWidgetWithName(WaterShedParam, "WaterShed");
   MeshEditing->AddMode("Manual");
-  MeshEditing->AddMode( "Semi Automated", SemiAutoModeWidget, SemiAutomatedParam);
+  MeshEditing->AddMode("Semi Automated", SemiAutomatedMethodsWidget);
+  //MeshEditing->AddMode( "Semi Automated", SemiAutoModeWidget, SemiAutomatedParam);
   //MeshEditing->AddWidgetForMode(LevelSetParam, "Semi Automated");
   //QObject::connect( timer, SIGNAL( timeout() ), window, SLOT( close() ) );
 

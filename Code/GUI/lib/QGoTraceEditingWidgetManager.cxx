@@ -34,6 +34,7 @@
 #include "QGoTraceEditingWidgetManager.h"
 #include "QGoAdvancedParametersWidget.h"
 #include "QGoModeEditingWidget.h"
+#include <QPushButton>
 
 QGoTraceEditingWidgetManager::QGoTraceEditingWidgetManager(
   std::string iTraceName, QWidget *iParent)
@@ -55,24 +56,21 @@ void QGoTraceEditingWidgetManager::Initialize(QWidget *iParent)
   this->m_ModeEditingWidget = new QGoModeEditingWidget(this);
   this->m_VLayout = new QVBoxLayout;
   this->m_VLayout->addWidget(this->m_ModeEditingWidget);
+  QPushButton* ApplyButton = new QPushButton(tr("Apply"),this);
+  this->m_VLayout->addWidget(ApplyButton);
   this->setLayout(this->m_VLayout);
+  this->m_VLayout->setSizeConstraint(QLayout::SetFixedSize);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoTraceEditingWidgetManager:: AddMode(
-  std::string iModeName, QWidget* iModeWidget, 
-  QGoAdvancedParametersWidget* iParameterWidget)
+  std::string iModeName, QWidget* iModeWidget)
 {
   QWidget* ModeWidget = new QWidget;
   if (iModeWidget != 0)
-  {
-  ModeWidget = iModeWidget;
-  if (iParameterWidget != 0)
-   {
-   ModeWidget->layout()->addWidget(iParameterWidget);
-   }
-  }
-  this->m_ModeEditingWidget->AddWidgetWithModeName(iModeName, ModeWidget);
-  
+    {
+    ModeWidget = iModeWidget;
+    }
+  this->m_ModeEditingWidget->AddWidgetWithModeName(iModeName, ModeWidget); 
 }
