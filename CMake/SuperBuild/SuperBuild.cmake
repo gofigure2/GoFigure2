@@ -56,18 +56,18 @@ OPTION( SUPERBUILD_VTK "SuperBuild VTK" ON )
 
 IF( SUPERBUILD_VTK )
   # check if we have MySQL
-  include("${GOFIGURE2_SOURCE_DIR}/CMake/ConfigMySQL.cmake")
+  include("${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigMySQL.cmake")
   # check if we have QT
-  include("${GOFIGURE2_SOURCE_DIR}/CMake/ConfigQT.cmake")
+  include("${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigQT.cmake")
   # check if we have some video support (FFMPEG or AVI)
-  include("${GOFIGURE2_SOURCE_DIR}/CMake/ConfigVideo.cmake")
+  include("${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigVideo.cmake")
   # add the vtk external project
-  include("${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/External-VTK.cmake")
+  include("${CMAKE_CURRENT_SOURCE_DIR}/CMake/SuperBuild/External-VTK.cmake")
   # add the external projrct "VTK" to the list of dependencies
   LIST(APPEND GoFigure2_DEPENDENCIES VTK)
 ELSE( SUPERBUILD_VTK )
   # check if our vtk is properly configured
-  include( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigVTK.cmake" )
+  include( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigVTK.cmake" )
 ENDIF( SUPERBUILD_VTK )
 
 #-------------------------
@@ -75,10 +75,10 @@ ENDIF( SUPERBUILD_VTK )
 OPTION( SUPERBUILD_ITK "SuperBuild ITK" ON )
 
 IF( SUPERBUILD_ITK )
-  include("${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/External-ITK.cmake")
+  include("${CMAKE_CURRENT_SOURCE_DIR}/CMake/SuperBuild/External-ITK.cmake")
   LIST(APPEND GoFigure2_DEPENDENCIES ITK)
 ELSE( SUPERBUILD_ITK )
-  include( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigITK.cmake" )
+  include( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigITK.cmake" )
 ENDIF( SUPERBUILD_ITK )
 
 #-------------------------
@@ -86,10 +86,10 @@ ENDIF( SUPERBUILD_ITK )
 OPTION( SUPERBUILD_BOOST "SuperBuild BOOST" ON )
 
 IF( SUPERBUILD_BOOST )
-  include("${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/External-Boost.cmake")
+  include("${CMAKE_CURRENT_SOURCE_DIR}/CMake/SuperBuild/External-Boost.cmake")
   LIST(APPEND GoFigure2_DEPENDENCIES Boost)
 ELSE( SUPERBUILD_BOOST )
-  include( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigBoost.cmake" )
+  include( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigBoost.cmake" )
 ENDIF( SUPERBUILD_BOOST )
 
 #---------------------------------------------------------------------------

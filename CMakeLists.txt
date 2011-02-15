@@ -31,6 +31,19 @@ IF( WIN32 )
 ENDIF( WIN32 )
 
 #---------------------------------------------------------------------------
+# CONFIGURE CMAKE
+#---------------------------------------------------------------------------
+
+  SET( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+    "${CMAKE_CURRENT_SOURCE_DIR}/CMake/"
+    "${CMAKE_CURRENT_SOURCE_DIR}/CMake/SuperBuild/"
+  )
+
+  IF( UNIX )
+    SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+  ENDIF( UNIX )
+
+#---------------------------------------------------------------------------
 # SUPERBUILD - ENABLED BY DEFAULT
 #---------------------------------------------------------------------------
 
@@ -38,8 +51,7 @@ OPTION( USE_SUPERBUILD "Use SuperBuild" ON )
 
 IF( USE_SUPERBUILD )
   CMAKE_MINIMUM_REQUIRED( VERSION 2.8.3 )
-  #SET( MESSAGE_TYPE STATUS )
-  INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/SuperBuild.cmake" )
+  INCLUDE( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/SuperBuild/SuperBuild.cmake" )
   RETURN()
 ELSE( USE_SUPERBUILD )
 
@@ -135,15 +147,6 @@ SET( TESTING_DATA_PATH
 #---------------------------------------------------------------------------
 # Main GoFigure Settings
 #---------------------------------------------------------------------------
-
-  SET( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    "${GOFIGURE2_SOURCE_DIR}/CMake/"
-    "${GOFIGURE2_SOURCE_DIR}/CMake/SuperBuild/"
-  )
-
-  IF( UNIX )
-    SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
-  ENDIF( UNIX )
 
 #---------------------------------------------------------------------------
 # Everything depends on VTK first
