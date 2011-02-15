@@ -27,16 +27,19 @@ ELSE( SUPERBUILD_SHARED_LIBS )
 	REMOVE_DEFINITIONS( -DGOFIGURE2_BUILD_SHARED_LIBS )
 ENDIF( SUPERBUILD_SHARED_LIBS )
 
+SET(ep_install_dir ${CMAKE_INSTALL_PREFIX})
+SET(ep_common_c_flags "${CMAKE_C_FLAGS_INIT} ${ADDITIONAL_C_FLAGS}")
+SET(ep_common_cxx_flags "${CMAKE_CXX_FLAGS_INIT} ${ADDITIONAL_CXX_FLAGS}")
+
 SET(ep_common_args
-  #-DCMAKE_INSTALL_PREFIX:PATH=${ep_install_dir}
   -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
   -DBUILD_SHARED_LIBS:BOOL=${SUPERBUILD_SHARED_LIBS}
   -DBUILD_TESTING:BOOL=OFF
   -DBUILD_EXAMPLES:BOOL=OFF
+  -DCMAKE_INSTALL_PREFIX:PATH=${ep_install_dir}
+  -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
+  -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
   )
-
-SET(ep_common_c_flags "${CMAKE_C_FLAGS_INIT} ${ADDITIONAL_C_FLAGS}")
-SET(ep_common_cxx_flags "${CMAKE_CXX_FLAGS_INIT} ${ADDITIONAL_CXX_FLAGS}")
 
 # Compute -G arg for configuring external projects with the same CMake generator:
 if(CMAKE_EXTRA_GENERATOR)
@@ -126,17 +129,12 @@ ExternalProject_Add(${proj}
   BINARY_DIR GoFigure2-build
   CMAKE_GENERATOR ${gen}
   CMAKE_ARGS
-   ${GoFigure2_superbuild_boolean_args}
-    -DBUILD_SHARED_LIBS:BOOL=${SUPERBUILD_SHARED_LIBS}
-    -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
-    -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
-    -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
+     ${ep_common_args}
+     ${GoFigure2_superbuild_boolean_args}
     -DUSE_SUPERBUILD:BOOL=OFF
     # ITK
     -DITK_DIR:PATH=${ITK_DIR}
     # VTK
     -DVTK_DIR:PATH=${VTK_DIR}
-    # Qt
-    -DQT_QMAKE_EXECUTABLE:PATH=${QT_QMAKE_EXECUTABLE}
   INSTALL_COMMAND ""
   )

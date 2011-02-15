@@ -50,13 +50,14 @@ ENDIF( WIN32 )
 OPTION( USE_SUPERBUILD "Use SuperBuild" ON )
 
 IF( USE_SUPERBUILD )
-  PROJECT( MYSUPERPROJECT )
   CMAKE_MINIMUM_REQUIRED( VERSION 2.8.3 )
+  PROJECT( MYSUPERPROJECT )
   INCLUDE( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/SuperBuild/SuperBuild.cmake" )
   RETURN()
 ELSE( USE_SUPERBUILD )
 
   #---------------------------------------------------------------------------
+
   PROJECT( GOFIGURE2 )
 
   # When making one release: update GOFIGURE2_*_VERSION,
@@ -84,6 +85,7 @@ ELSE( USE_SUPERBUILD )
   # GOFIGURE2_INSTALL_DOC_DIR          - documentation dir
   # GOFIGURE2_INSTALL_LICENSE_DIR      - licenses dir
   #-----------------------------------------------------------------------
+  
   IF( NOT GOFIGURE2_INSTALL_BUNDLE_DIR )
     SET( GOFIGURE2_INSTALL_BUNDLE_DIR "." )
   ENDIF( NOT GOFIGURE2_INSTALL_BUNDLE_DIR )

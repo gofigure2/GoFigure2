@@ -11,8 +11,6 @@ ExternalProject_Add(${proj}
   CMAKE_GENERATOR ${gen}
   CMAKE_ARGS
     ${ep_common_args}
-    -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
-    -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
     -DITK_INSTALL_LIB_DIR:PATH=${GOFIGURE2_INSTALL_LIB_DIR}
     -DITK_USE_REVIEW:BOOL=ON
     -DITK_USE_REVIEW_STATISTICS:BOOL=ON      
