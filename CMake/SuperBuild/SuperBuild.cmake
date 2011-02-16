@@ -143,3 +143,7 @@ ExternalProject_Add(${proj}
 ADD_CUSTOM_TARGET(superinstall 
                   COMMAND ${CMAKE_COMMAND} -E chdir GoFigure2-build/ make install
                   DEPENDS GoFigure2)
+
+ADD_CUSTOM_TARGET(superpackage
+                  COMMAND ${CMAKE_COMMAND} -E chdir GoFigure2-build/ make package
+                  DEPENDS GoFigure2)
