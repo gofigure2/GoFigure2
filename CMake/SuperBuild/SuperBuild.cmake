@@ -19,13 +19,13 @@ set(ep_base        "${CMAKE_BINARY_DIR}")
 #set(ep_install_dir "${ep_base}/Install")
 
 # should be preset for user or for developer???
-OPTION( SUPERBUILD_SHARED_LIBS ON )
+OPTION( SUPER_SHARED_LIBS ON )
 
-IF( SUPERBUILD_SHARED_LIBS )
+IF( SUPER_SHARED_LIBS )
 	ADD_DEFINITIONS( -DGOFIGURE2_BUILD_SHARED_LIBS )
-ELSE( SUPERBUILD_SHARED_LIBS )
+ELSE( SUPER_SHARED_LIBS )
 	REMOVE_DEFINITIONS( -DGOFIGURE2_BUILD_SHARED_LIBS )
-ENDIF( SUPERBUILD_SHARED_LIBS )
+ENDIF( SUPER_SHARED_LIBS )
 
 SET(ep_install_dir ${CMAKE_INSTALL_PREFIX})
 SET(ep_common_c_flags "${CMAKE_C_FLAGS_INIT} ${ADDITIONAL_C_FLAGS}")
@@ -33,7 +33,7 @@ SET(ep_common_cxx_flags "${CMAKE_CXX_FLAGS_INIT} ${ADDITIONAL_CXX_FLAGS}")
 
 SET(ep_common_args
   -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
-  -DBUILD_SHARED_LIBS:BOOL=${SUPERBUILD_SHARED_LIBS}
+  -DBUILD_SHARED_LIBS:BOOL=${SUPER_SHARED_LIBS}
   -DBUILD_TESTING:BOOL=OFF
   -DBUILD_EXAMPLES:BOOL=OFF
   -DCMAKE_INSTALL_PREFIX:PATH=${ep_install_dir}
@@ -55,45 +55,50 @@ endif()
 set(GoFigure2_DEPENDENCIES)
 
 # REQUIRED MYSQLand QT TO BUILD VTK
-OPTION( SUPERBUILD_VTK "SuperBuild VTK" ON )
+OPTION( SUPER_VTK "SuperBuild VTK" ON )
 
-IF( SUPERBUILD_VTK )
-  # check if we have MySQL
+IF( SUPER_VTK )
+  # check if we have MySQL - COMPULSORY
   include("${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigMySQL.cmake")
-  # check if we have QT
+  # check if we have QT - COMPULSORY
   include("${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigQT.cmake")
-  # check if we have some video support (FFMPEG or AVI)
-  include("${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigVideo.cmake")
+  
+  OPTION( SUPER_VTK_VIDEO "ENABLE THE VIDEO SUPPORT IN SUPERBUILD" OFF )
+  IF( SUPER_VTK_VIDEO )
+    # check if we have some video support (FFMPEG or AVI) - OPTIONAL
+    include("${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigVideo.cmake")
+  ENDIF( SUPER_VTK_VIDEO)
+
   # add the vtk external project
   include("${CMAKE_CURRENT_SOURCE_DIR}/CMake/SuperBuild/External-VTK.cmake")
   # add the external projrct "VTK" to the list of dependencies
   LIST(APPEND GoFigure2_DEPENDENCIES VTK)
-ELSE( SUPERBUILD_VTK )
+ELSE( SUPER_VTK )
   # check if our vtk is properly configured
   include( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigVTK.cmake" )
-ENDIF( SUPERBUILD_VTK )
+ENDIF( SUPER_VTK )
 
 #-------------------------
 
-OPTION( SUPERBUILD_ITK "SuperBuild ITK" ON )
+OPTION( SUPER_ITK "SuperBuild ITK" ON )
 
-IF( SUPERBUILD_ITK )
+IF( SUPER_ITK )
   include("${CMAKE_CURRENT_SOURCE_DIR}/CMake/SuperBuild/External-ITK.cmake")
   LIST(APPEND GoFigure2_DEPENDENCIES ITK)
-ELSE( SUPERBUILD_ITK )
+ELSE( SUPER_ITK )
   include( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigITK.cmake" )
-ENDIF( SUPERBUILD_ITK )
+ENDIF( SUPER_ITK )
 
 #-------------------------
 
-OPTION( SUPERBUILD_BOOST "SuperBuild BOOST" ON )
+OPTION( SUPER_BOOST "SuperBuild BOOST" ON )
 
-IF( SUPERBUILD_BOOST )
+IF( SUPER_BOOST )
   include("${CMAKE_CURRENT_SOURCE_DIR}/CMake/SuperBuild/External-Boost.cmake")
   LIST(APPEND GoFigure2_DEPENDENCIES Boost)
-ELSE( SUPERBUILD_BOOST )
+ELSE( SUPER_BOOST )
   include( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigBoost.cmake" )
-ENDIF( SUPERBUILD_BOOST )
+ENDIF( SUPER_BOOST )
 
 #---------------------------------------------------------------------------
 # Set superbuild boolean args
@@ -132,7 +137,7 @@ ExternalProject_Add(${proj}
   CMAKE_ARGS
      ${ep_common_args}
      ${GoFigure2_superbuild_boolean_args}
-    -DUSE_SUPERBUILD:BOOL=OFF
+    -DSUPERBUILD:BOOL=OFF
     # ITK
     -DITK_DIR:PATH=${ITK_DIR}
     # VTK

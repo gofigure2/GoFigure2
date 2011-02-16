@@ -47,14 +47,14 @@ ENDIF( WIN32 )
 # SUPERBUILD - ENABLED BY DEFAULT
 #---------------------------------------------------------------------------
 
-OPTION( USE_SUPERBUILD "Use SuperBuild" ON )
+OPTION( SUPERBUILD "Use SuperBuild" ON )
 
-IF( USE_SUPERBUILD )
+IF( SUPERBUILD )
   CMAKE_MINIMUM_REQUIRED( VERSION 2.8.3 )
   PROJECT( MYSUPERPROJECT )
   INCLUDE( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/SuperBuild/SuperBuild.cmake" )
   RETURN()
-ELSE( USE_SUPERBUILD )
+ELSE( SUPERBUILD )
 
   #---------------------------------------------------------------------------
 
@@ -300,4 +300,4 @@ ELSE( USE_SUPERBUILD )
     INCLUDE( GOFIGURE2CPack.cmake )
   ENDIF( ( ${CMAKE_MAJOR_VERSION} EQUAL 2 )  AND ( ${CMAKE_MINOR_VERSION} GREATER 7 ) )
 
-ENDIF( USE_SUPERBUILD )
+ENDIF( SUPERBUILD )
