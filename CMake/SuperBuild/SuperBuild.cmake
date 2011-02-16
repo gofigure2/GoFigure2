@@ -122,6 +122,7 @@ ENDIF( SUPERBUILD_BOOST )
 #---------------------------------------------------------------------------
 
 set(proj GoFigure2)
+
 ExternalProject_Add(${proj}
   DEPENDS ${GoFigure2_DEPENDENCIES}
   DOWNLOAD_COMMAND ""
@@ -138,3 +139,7 @@ ExternalProject_Add(${proj}
     -DVTK_DIR:PATH=${VTK_DIR}
   INSTALL_COMMAND ""
   )
+
+ADD_CUSTOM_TARGET(superinstall 
+                  COMMAND ${CMAKE_COMMAND} -E chdir GoFigure2-build/ make install
+                  DEPENDS GoFigure2)
