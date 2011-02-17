@@ -14,6 +14,7 @@ else( WIN32 )
 endif( WIN32 )
 
 ExternalProject_Add(${proj}
+  DEPENDS ${VTK_DEPENDENCIES}
   SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
   BINARY_DIR ${proj}-build
   GIT_REPOSITORY "${git_protocol}://vtk.org/VTK.git"
@@ -28,11 +29,9 @@ ExternalProject_Add(${proj}
     -DVTK_USE_MYSQL:BOOL=ON
     -DMYSQL_INCLUDE_DIRECTORIES:PATH=${MYSQL_INCLUDE_DIR}
     -DMYSQL_LIBRARY:FILEPATH=${MYSQL_LIBRARIES}
-    ${VIDEO_SUPPORT}
+    #${VIDEO_SUPPORT}
     ${WINDOWS_FLAGS}
   INSTALL_COMMAND ""
-  DEPENDS
-    ${VTK_DEPENDENCIES}
 )
 
 set(VTK_DIR ${CMAKE_BINARY_DIR}/${proj}-build)

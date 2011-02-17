@@ -65,8 +65,19 @@ IF( SUPER_VTK )
   
   OPTION( SUPER_VTK_VIDEO "ENABLE THE VIDEO SUPPORT IN SUPERBUILD" OFF )
   IF( SUPER_VTK_VIDEO )
-    # check if we have some video support (FFMPEG or AVI) - OPTIONAL
-    include("${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigVideo.cmake")
+    if( NOT WIN32)
+      option( SUPER_FFMPEG "SuperBuild FFMPEG")
+      # check if we have some video support (FFMPEG or AVI) - OPTIONAL
+      IF( SUPER_FFMPEG )
+        #add dependency to VTK if we have to build FFMPEG
+        set(VTK_DEPENDENCIES FFMPEG)
+        include( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/SuperBuild/External-FFMPEG.cmake")
+      ELSE( SUPER_FFMPEG )
+        include("${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigVideo.cmake")
+      ENDIF( SUPER_FFMPEG )
+    ELSE( NOT WIN32)
+      include("${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigVideo.cmake")
+    ENDIF( NOT WIN32)
   ENDIF( SUPER_VTK_VIDEO)
 
   # add the vtk external project
