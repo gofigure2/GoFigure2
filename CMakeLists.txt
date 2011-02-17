@@ -60,6 +60,8 @@ ELSE( SUPERBUILD )
 
   PROJECT( GOFIGURE2 )
 
+  MESSAGE( "QT_QMAKE_EXECUTABLE:${QT_QMAKE_EXECUTABLE}"  )
+
   # When making one release: update GOFIGURE2_*_VERSION,
   # GOFIGURE2_WC_REVISION and the date of the release
   SET( GOFIGURE2_MAJOR_VERSION "0" )
