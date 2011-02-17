@@ -142,6 +142,8 @@ ExternalProject_Add(${proj}
     -DITK_DIR:PATH=${ITK_DIR}
     # VTK
     -DVTK_DIR:PATH=${VTK_DIR}
+    # QT (From VTK)
+    -DQT_QMAKE_EXECUTABLE:PATH=${VTK_QT_QMAKE_EXECUTABLE}
   INSTALL_COMMAND ""
   )
 
