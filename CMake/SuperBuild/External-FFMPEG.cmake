@@ -9,12 +9,12 @@ IF( SUPER_SHARED_LIBS )
   set( SHARED_FFMPEG --enable-shared )
 ENDIF( SUPER_SHARED_LIBS )
 
-SET(GF2_SRC_DIR ${CMAKE_CURRENT_SRC_DIR})
+SET(FFMPEG_INSTALL_DIR  ${CMAKE_BINARY_DIR}/${proj}-install)
 
 ExternalProject_Add(${proj}
   # Set up dirs
   SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
-
+  INSTALL_DIR ${FFMPEG_INSTALL_DIR}
   # get the project
   GIT_REPOSITORY "${git_protocol}://git.ffmpeg.org/ffmpeg.git"
 
@@ -23,10 +23,7 @@ ExternalProject_Add(${proj}
   
   # Configure step
   # DO STH FOR THE ARCHITECTURE...
-  CONFIGURE_COMMAND <SOURCE_DIR>/configure ${SHARED_FFMPEG} --enable-gpl --enable-avfilter --disable-yasm --disable-decoders --disable-zlib --disable-demuxer=matroska
-
-  # Install the project
-  INSTALL_COMMAND ""
+  CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${FFMPEG_INSTALL_DIR} ${SHARED_FFMPEG} --enable-gpl --enable-avfilter --disable-yasm --disable-decoders --disable-zlib --disable-demuxer=matroska
 )
 
 # define the library suffix
@@ -40,15 +37,22 @@ ELSE( SUPER_SHARED_LIBS )
   SET(LIBRARY_SUFFIX .a)
 ENDIF( SUPER_SHARED_LIBS )
 
+# ADD DIRECTORIES FOR DEPENDENCIES IN Main/CMakeLists.txt
+set( FFMPEG_LIBRARY_DIRS ${FFMPEG_INSTALL_DIR}/lib/libavcodec
+                         ${FFMPEG_INSTALL_DIR}/lib/libavformat
+                         ${FFMPEG_INSTALL_DIR}/lib/libavutil
+                         ${FFMPEG_INSTALL_DIR}/lib/libswscale
+)
+
 set( VIDEO_SUPPORT # turn ON ffmpeg encoder
                    -DVTK_USE_FFMPEG_ENCODER:BOOL=ON
                    # force VTK to use NEW headers
-                   -DVTK_FFMPEG_CACHED_INCLUDE:PATH=${CMAKE_BINARY_DIR}/${proj}
-                   -DVTK_FFMPEG_HAS_OLD_HEADER:BOOL=FALSE
+                   #-DVTK_FFMPEG_CACHED_INCLUDE:PATH=${CMAKE_BINARY_DIR}/${proj}
+                   #-DVTK_FFMPEG_HAS_OLD_HEADER:BOOL=FALSE
                    # set useful variables
-                   -DFFMPEG_INCLUDE_DIR:PATH=${CMAKE_BINARY_DIR}/${proj}
-                   -DFFMPEG_avcodec_LIBRARY:FILEPATH=${CMAKE_BINARY_DIR}/${proj}/libavcodec/libavcodec${LIBRARY_SUFFIX}         
-                   -DFFMPEG_avformat_LIBRARY:FILEPATH=${CMAKE_BINARY_DIR}/${proj}/libavformat/libavformat${LIBRARY_SUFFIX}
-                   -DFFMPEG_avutil_LIBRARY:FILEPATH=${CMAKE_BINARY_DIR}/${proj}/libavutil/libavutil${LIBRARY_SUFFIX}
-                   -DFFMPEG_swscale_LIBRARY:FILEPATH=${CMAKE_BINARY_DIR}/${proj}/libswscale/libswscale${LIBRARY_SUFFIX}
+                   -DFFMPEG_INCLUDE_DIR:PATH=${FFMPEG_INSTALL_DIR}/include
+                   -DFFMPEG_avcodec_LIBRARY:FILEPATH=${FFMPEG_INSTALL_DIR}/lib/libavcodec${LIBRARY_SUFFIX}         
+                   -DFFMPEG_avformat_LIBRARY:FILEPATH=${FFMPEG_INSTALL_DIR}/lib/libavformat${LIBRARY_SUFFIX}
+                   -DFFMPEG_avutil_LIBRARY:FILEPATH=${FFMPEG_INSTALL_DIR}/lib/libavutil${LIBRARY_SUFFIX}
+                   -DFFMPEG_swscale_LIBRARY:FILEPATH=${FFMPEG_INSTALL_DIR}/lib/libswscale${LIBRARY_SUFFIX}
 )
