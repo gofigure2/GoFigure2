@@ -68,7 +68,7 @@
 
 /**
 \class QGoPrintDatabase
-\brief manages all the database components: table widget, trace manual editing widdet,
+\brief manages all the database components: table widget, trace settings editing widdet,
 QGoDBTraceManager...
 \ingroup DB GUI
 */
@@ -209,11 +209,11 @@ public:
   void PrintCalculatedValuesForTrack(GoFigureTrackAttributes *
                         iTrackAttributes, unsigned int iTrackID);
 
-  /** \brief return the TraceManualEditingDockWidget*/
+  /** \brief return the TraceSettingsDockWidget*/
   QGoTraceSettingsDockWidget * GetTraceSettingsDockWidget();
 
   /**
-  \brief update the tracemanualeditingwidget for the trace with the
+  \brief update the traceSettingswidget for the trace with the
   corresponding list of collectionID and set the tablewidget for the
   trace table
   \param[in] iTraceName name of the corresponding trace
@@ -226,7 +226,7 @@ public:
                                           bool UpdateTableWidget = true);
 
   /** \brief Initialize or reinitialized the celltype,subcelltype
-  and color list from the database into the tracemanualeditingwidget*/
+  and color list from the database into the traceSettingswidget*/
   void InitializeTheComboboxesNotTraceRelated();
 
   /**
@@ -292,7 +292,7 @@ protected:
   int*                  m_SelectedTimePoint;
   QGoDBBookmarkManager* m_BookmarkManager;
 
-  //related to TraceManualEditing Widget:
+  //related to TraceSettings Widget:
   QGoDBCellTypeManager*             m_CellTypeManager;
   QGoDBSubCellTypeManager*          m_SubCellTypeManager;
   QGoDBColorManager*                m_ColorManager;
@@ -335,7 +335,7 @@ protected:
  */
   void SetTracksManager();
 
-  //******************Methods related to Trace Manual Editing Widget***********
+  //******************Methods related to Trace Settings Editing Widget***********
 
   /**
   \brief create all the connections between the QGoPrintDatabase and the
@@ -345,50 +345,50 @@ protected:
 
   /**
   \brief get the list of celltypes from the database, put them in
-  the Trace Manual combobox and if the string is not empty, the combobox will have as
+  the Trace Settings combobox and if the string is not empty, the combobox will have as
   selected item the string
   \param[in] iCellTypeToSelect name of the celltype to be selected
   */
-  void SetTMListCellTypes(std::string iCellTypeToSelect = "");
+  void SetTSListCellTypes(std::string iCellTypeToSelect = "");
 
   /**
   \brief get the list of celltypes from the database, put them in
-  the Trace Manual combobox and the combobox will have as selected item the one
+  the Trace Settings combobox and the combobox will have as selected item the one
   previously selected
   */
-  void SetTMListCellTypesWithPreviousSelectedOne();
+  void SetTSListCellTypesWithPreviousSelectedOne();
 
   /**
   \brief get the list of subcelltypes from the database, put them in
-  the Trace Manual combobox and if the string is not empty, the combobox will have as
+  the Trace Settings combobox and if the string is not empty, the combobox will have as
   selected item the string
   \param[in] iSubCellTypeToSelect name of the subcelltype to be selected
   */
-  void SetTMListSubCellTypes(std::string iSubCellTypeToSelect = "");
+  void SetTSListSubCellTypes(std::string iSubCellTypeToSelect = "");
 
   /**
   \brief get the list of subcelltypes from the database, put them in
-  the Trace Manual combobox and the combobox will have as selected item the one
+  the Trace Settings combobox and the combobox will have as selected item the one
   previously selected
   */
-  void SetTMListSubCellTypesWithPreviousSelectedOne();
+  void SetTSListSubCellTypesWithPreviousSelectedOne();
 
   /**
   \brief get the data for the colorcombobox from the database,
-  put them in the Trace Manual colorcombobox and if the string is not empty,
+  put them in the Trace Settings colorcombobox and if the string is not empty,
   the combobox will have as selected item the string
   \param[in] iColorToSelect name of the color to be selected in the combobox
   */
-  void SetTMListColors(std::string iColorToSelect = "");
+  void SetTSListColors(std::string iColorToSelect = "");
 
   /**
   \brief get the list of colors from the database, put them in
-  the Trace Manual combobox and the combobox will have as selected item the one
+  the Trace Settings combobox and the combobox will have as selected item the one
   previously selected
   */
-  void SetTMListColorsWithPreviousSelectedOne();
+  void SetTSListColorsWithPreviousSelectedOne();
 
-  //******************End of Methods related to Trace Manual Editing
+  //******************End of Methods related to Trace Settings Editing
   // Widget***********
 
   /**
@@ -604,10 +604,10 @@ protected slots:
   \brief get a list of the IDs with their colors for the collection corresponding to
   the tracename, for the given timepoint if the
   collection is a mesh or for all timepoints for tracks and lineages,
-  update the Trace Manual colorcombobox and select the corresponding ID in the combobox
+  update the Trace Settings colorcombobox and select the corresponding ID in the combobox
   if the string is not empty
   */
-  void SetTMListCollectionID();
+  void SetTSListCollectionID();
 
   /**
   \brief open the connection to the database and pass it to the ContoursManager
@@ -792,7 +792,7 @@ protected slots:
   */
   void DeleteColor();
 
-  //**********************End TraceManualEditingWidget slots
+  //**********************End TraceSettingsWidget slots
   // related****************
 private:
   Q_DISABLE_COPY(QGoPrintDatabase);
