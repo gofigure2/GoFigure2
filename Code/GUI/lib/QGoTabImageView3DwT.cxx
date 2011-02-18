@@ -220,9 +220,9 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
 
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
-      new QGoDockWidgetStatus(this->m_DataBaseTables->GetTraceManualEditingDockWidget(),
+      new QGoDockWidgetStatus(this->m_DataBaseTables->GetTraceSettingsDockWidget(),
                               Qt::LeftDockWidgetArea, true, true),
-      this->m_DataBaseTables->GetTraceManualEditingDockWidget() ) );
+      this->m_DataBaseTables->GetTraceSettingsDockWidget() ) );
 
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
@@ -631,13 +631,13 @@ QGoTabImageView3DwT::CloseTabRequest(bool iTable)
 {
   if ( iTable )
     {
-    m_DataBaseTables->GetTraceManualEditingDockWidget()->show();
+    m_DataBaseTables->GetTraceSettingsDockWidget()->show();
     return;
     }
 
   if ( !m_TraceWidgetRequiered )
     {
-    m_DataBaseTables->GetTraceManualEditingDockWidget()->hide();
+    m_DataBaseTables->GetTraceSettingsDockWidget()->hide();
     }
 }
 
@@ -2412,7 +2412,7 @@ QGoTabImageView3DwT::ValidateContour()
   /** \todo useful ?? */
   if ( re_edit )
     {
-    this->m_DataBaseTables->GetTraceManualEditingDockWidget()->setEnabled(true);
+    this->m_DataBaseTables->GetTraceSettingsDockWidget()->setEnabled(true);
     m_ContourSegmentationDockWidget->SetReeditMode(false);
     m_ImageView->ReinitializeContourWidget();
     m_ContourSegmentationDockWidget->hide();
@@ -2901,7 +2901,7 @@ void QGoTabImageView3DwT::ShowTraceWidgetsForContour(
     else
       {
       //
-      m_DataBaseTables->GetTraceManualEditingDockWidget()->hide();
+      m_DataBaseTables->GetTraceSettingsDockWidget()->hide();
       }
     }
 }
@@ -2928,7 +2928,7 @@ void QGoTabImageView3DwT::ShowTraceWidgetsForMesh(
     else
       {
       //
-      m_DataBaseTables->GetTraceManualEditingDockWidget()->hide();
+      m_DataBaseTables->GetTraceSettingsDockWidget()->hide();
       }
     }
 }

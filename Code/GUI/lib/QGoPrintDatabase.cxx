@@ -95,11 +95,11 @@ QGoPrintDatabase::QGoPrintDatabase(QWidget *iParent) :
   m_VisibilityAction->setIcon(TableWidgetIcon);
   m_VisibilityAction->setCheckable(true);
 
-  this->m_TraceManualEditingDockWidget =
-    new QGoTraceManualEditingDockWidget(this);
+  this->m_TraceSettingsDockWidget =
+    new QGoTraceSettingsDockWidget(this);
 
   this->m_TraceWidget =
-    this->m_TraceManualEditingDockWidget->m_TraceWidget;
+    this->m_TraceSettingsDockWidget->m_TraceWidget;
 
   this->m_CellTypeManager = new QGoDBCellTypeManager(this);
 
@@ -108,7 +108,7 @@ QGoPrintDatabase::QGoPrintDatabase(QWidget *iParent) :
   this->m_ColorManager = new QGoDBColorManager(this);
   this->m_SelectedTimePoint = new int;
 
-  this->CreateConnectionsForTraceManualEditingWidget();
+  this->CreateConnectionsForTraceSettingsWidget();
 
   QObject::connect( m_VisibilityAction, SIGNAL( toggled(bool) ),
                     this, SLOT( setVisible(bool) ) );
@@ -282,7 +282,7 @@ QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
         iXCoordMin, iYCoordMin, iZCoordMin, iTCoord, iXCoordMax, iYCoordMax, iZCoordMax,
         iContourNodes, this->m_DatabaseConnector);
     this->m_ReeditMode = false;
-    this->m_TraceManualEditingDockWidget->setEnabled(true);
+    this->m_TraceSettingsDockWidget->setEnabled(true);
     }
 
   std::list< unsigned int > ListContours;
@@ -565,7 +565,7 @@ void QGoPrintDatabase::UpdateSelectedTimePoint(int iTimePoint)
 //-------------------------------------------------------------------------
 void QGoPrintDatabase::TheTabIsChanged(int iIndex)
 {
-  this->m_TraceManualEditingDockWidget->show();
+  this->m_TraceSettingsDockWidget->show();
 
   //this->m_TraceManualEditingDockWidget->setEnabled(true);
   switch ( iIndex )
@@ -784,15 +784,15 @@ std::vector< int > QGoPrintDatabase::ImportTracks()
 
 //-------------------------------------------------------------------------
 //******related to TraceManualEditingDockWidget:****************************
-QGoTraceManualEditingDockWidget * QGoPrintDatabase::GetTraceManualEditingDockWidget()
+QGoTraceSettingsDockWidget * QGoPrintDatabase::GetTraceSettingsDockWidget()
 {
-  return this->m_TraceManualEditingDockWidget;
+  return this->m_TraceSettingsDockWidget;
 }
 
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::CreateConnectionsForTraceManualEditingWidget()
+void QGoPrintDatabase::CreateConnectionsForTraceSettingsWidget()
 {
   QObject::connect( this->m_TraceWidget,
                     SIGNAL( AddNewColor() ),
@@ -846,7 +846,7 @@ void QGoPrintDatabase::UpdateWidgetsForCorrespondingTrace(std::string iTraceName
       this->m_TraceWidget->UpdateTraceAndCollection(iTraceName, iCollectionName);
       this->SetTMListCollectionID();
       // show the updated widget
-      this->m_TraceManualEditingDockWidget->show();
+      this->m_TraceSettingsDockWidget->show();
       }
     //if the TableWidget has to be set to match the trace name, no need for the
     //signal TabHasChanged to be emitted, it would results in the Segmentation
@@ -860,7 +860,7 @@ void QGoPrintDatabase::UpdateWidgetsForCorrespondingTrace(std::string iTraceName
   this->m_TraceWidget->UpdateTraceAndCollection(iTraceName, iCollectionName);
   this->SetTMListCollectionID();
   // show the updated widget
-  this->m_TraceManualEditingDockWidget->show();
+  this->m_TraceSettingsDockWidget->show();
 }
 
 //-------------------------------------------------------------------------
@@ -1383,7 +1383,7 @@ void QGoPrintDatabase::PassDBConnectionToTracksManager()
 void QGoPrintDatabase::ReEditTrace(unsigned int iTraceID)
 {
   this->m_ReeditMode = true;
-  this->m_TraceManualEditingDockWidget->setEnabled(false);
+  this->m_TraceSettingsDockWidget->setEnabled(false);
   emit TraceToReEdit(iTraceID);
 }
 

@@ -57,7 +57,7 @@ SET( QGoGUILIB_SRC
   QGoDBCellTypeManager.cxx
   QGoDBSubCellTypeManager.cxx
   QGoDBColorManager.cxx
-  QGoTraceManualEditingDockWidget.cxx
+  QGoTraceSettingsDockWidget.cxx
   QGoTraceSettingsWidget.cxx
   QGoDBInitializationWizard.cxx
   QGoDBInitCreateUserPage.cxx
@@ -177,7 +177,7 @@ SET( QGoGUILIB_HDRS
   QGoDBCellTypeManager.h
   QGoDBSubCellTypeManager.h
   QGoDBColorManager.h
-  QGoTraceManualEditingDockWidget.h
+  QGoTraceSettingsDockWidget.h
   QGoTraceSettingsWidget.h
   QGoAboutWidget.h
   QGoDBInitializationWizard.h

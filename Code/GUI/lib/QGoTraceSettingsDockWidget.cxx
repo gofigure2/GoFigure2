@@ -31,28 +31,30 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
+#include "QGoTraceSettingsDockWidget.h"
 
-#ifndef __QGoTraceManualEditingDockWidget_h
-#define __QGoTraceManualEditingDockWidget_h
-
-#include <QDockWidget>
-#include "QGoTraceSettingsWidget.h"
-
-/**
-\class QGoTraceManualEditingDockWidget
-\brief dock widget for the QGoTraceManualEditingWidget, has a window
-title that can be modified according to the content of its widget
-\ingroup GUI
-*/
-class QGOGUILIB_EXPORT QGoTraceManualEditingDockWidget:
-  public QDockWidget
+QGoTraceSettingsDockWidget::QGoTraceSettingsDockWidget(
+  QWidget *iParent) : QDockWidget(iParent)
 {
-  Q_OBJECT
-public:
-  explicit QGoTraceManualEditingDockWidget(QWidget *iParent = 0);
-  ~QGoTraceManualEditingDockWidget();
-  QGoTraceSettingsWidget *m_TraceWidget;
-protected slots:
-  void ModifyWindowTitle(QString iTitle);
-};
-#endif
+  this->m_TraceWidget =
+    new QGoTraceSettingsWidget(this);
+  QObject::connect( this->m_TraceWidget, SIGNAL( WindowsTitleToModify(QString) ),
+                    this, SLOT( ModifyWindowTitle(QString) ) );
+  this->m_TraceWidget->UpdateTraceAndCollection("contour", "mesh");
+  this->setWidget(this->m_TraceWidget);
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+QGoTraceSettingsDockWidget::~QGoTraceSettingsDockWidget()
+{
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTraceSettingsDockWidget::ModifyWindowTitle(QString iTitle)
+{
+  this->setWindowTitle(iTitle);
+}

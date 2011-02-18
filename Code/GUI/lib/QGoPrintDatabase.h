@@ -50,7 +50,7 @@
 #include "QGoDBBookmarkManager.h"
 #include "QGoGUILibConfigure.h"
 #include "GoFigureMeshAttributes.h"
-#include "QGoTraceManualEditingDockWidget.h"
+#include "QGoTraceSettingsDockWidget.h"
 #include "QGoTraceSettingsWidget.h"
 #include "QGoDBCellTypeManager.h"
 #include "QGoDBSubCellTypeManager.h"
@@ -210,7 +210,7 @@ public:
                         iTrackAttributes, unsigned int iTrackID);
 
   /** \brief return the TraceManualEditingDockWidget*/
-  QGoTraceManualEditingDockWidget * GetTraceManualEditingDockWidget();
+  QGoTraceSettingsDockWidget * GetTraceSettingsDockWidget();
 
   /**
   \brief update the tracemanualeditingwidget for the trace with the
@@ -296,7 +296,7 @@ protected:
   QGoDBCellTypeManager*             m_CellTypeManager;
   QGoDBSubCellTypeManager*          m_SubCellTypeManager;
   QGoDBColorManager*                m_ColorManager;
-  QGoTraceManualEditingDockWidget*  m_TraceManualEditingDockWidget;
+  QGoTraceSettingsDockWidget*       m_TraceSettingsDockWidget;
   QGoTraceSettingsWidget*           m_TraceWidget;
 
   QGoDBContourManager*              m_ContoursManager;
@@ -339,9 +339,9 @@ protected:
 
   /**
   \brief create all the connections between the QGoPrintDatabase and the
-  QGoTraceManaualEditingWidget (TM)
+  QGoTraceSettingsWidget (TS)
   */
-  void CreateConnectionsForTraceManualEditingWidget();
+  void CreateConnectionsForTraceSettingsWidget();
 
   /**
   \brief get the list of celltypes from the database, put them in
