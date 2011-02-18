@@ -31,36 +31,61 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-
 #include <QApplication>
 #include <QTimer>
 
-#include "QGoTraceSettingsWidget.h"
+#include "QGoAlgorithmsWidget.h"
+#include "QGoSeedBaseWidget.h"
+#include "QGoContourSemiAutoLevelsetWidget.h"
+#include "QGoContourSemiAutoWatershedWidget.h"
+
+
+
+
+//**************************************************************************//
+//                               MAIN                                       //
+//**************************************************************************//
 
 int main(int argc, char *argv[])
 {
+  if ( argc != 1 )
+    {
+    return EXIT_FAILURE;
+    }
+
   QApplication app(argc, argv);
+  //QTimer *     timer = new QTimer;
+  //timer->setSingleShot(true);
+  //QStringList ListFilters;
+  //ListFilters.append("Shape");
+  //ListFilters.append("LevelSet");
+  //ListFilters.append("WaterShed");
 
-  QGoTraceSettingsWidget *win = new QGoTraceSettingsWidget();
+  QGoAlgorithmsWidget* SemiAutoModeMeshEditingAlgoWidget = new QGoAlgorithmsWidget(NULL);
 
-  //QTimer* timer = new QTimer;
-  //timer->setSingleShot( true );
-  //QObject::connect( timer, SIGNAL( timeout() ), win, SLOT( close() ) );
+  QGoSeedBaseWidget* SemiAutoModeParamWidget = new QGoSeedBaseWidget(SemiAutoModeMeshEditingAlgoWidget);
+  QGoSeedBaseWidget* SemiAutoModeParamWidgetTwo = new QGoSeedBaseWidget(SemiAutoModeMeshEditingAlgoWidget);
+  
+  QGoContourSemiAutoLevelsetWidget* LevelSetParam = new QGoContourSemiAutoLevelsetWidget(SemiAutoModeMeshEditingAlgoWidget);
+  QGoContourSemiAutoWatershedWidget* WaterShedParam = new QGoContourSemiAutoWatershedWidget(SemiAutoModeMeshEditingAlgoWidget);
+  
+  SemiAutoModeMeshEditingAlgoWidget->AddMethod("LevelSet 3D", SemiAutoModeParamWidget,  LevelSetParam);
+  SemiAutoModeMeshEditingAlgoWidget->AddMethod("WaterShed 3D", SemiAutoModeParamWidgetTwo,  WaterShedParam);
 
-  win->show();
+  //QObject::connect( timer, SIGNAL( timeout() ), window, SLOT( close() ) );
 
-//  if( atoi( argv[1] ) == 1 )
-//  {
-// timer->start( 1000 );
-// }
+  
+  //timer->start(1000);
+
+  SemiAutoModeMeshEditingAlgoWidget->show();
 
   app.processEvents();
-
   int output = app.exec();
 
   app.closeAllWindows();
-//  delete timer;
-  delete win;
+
+  //delete timer;
+  delete SemiAutoModeMeshEditingAlgoWidget;
 
   return output;
 }

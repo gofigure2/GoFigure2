@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QGoTraceManualEditingWidget</class>
- <widget class="QWidget" name="QGoTraceManualEditingWidget">
+ <class>QGoTraceSettingsWidget</class>
+ <widget class="QWidget" name="QGoTraceSettingsWidget">
   <property name="geometry">
    <rect>
     <x>0</x>

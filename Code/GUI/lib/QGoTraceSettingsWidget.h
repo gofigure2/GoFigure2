@@ -32,8 +32,8 @@
 
 =========================================================================*/
 
-#ifndef __QGoTraceManualEditingWidget_h
-#define __QGoTraceManualEditingWidget_h
+#ifndef __QGoTraceSettingsWidget_h
+#define __QGoTraceSettingsWidget_h
 
 #include <QWidget>
 #include <QComboBox>
@@ -44,24 +44,25 @@
 #include "QGoCollectionColorComboBox.h"
 #include "QGoComboBox.h"
 
-#include "ui_QGoTraceManualEditingWidget.h"
+#include "ui_QGoTraceSettingsWidget.h"
 
 #include "QGoGUILibConfigure.h"
 
 /**
-\class QGoTraceManualEditingWidget
+\class QGoTraceSettingsWidget
 \brief this class contains all the comboboxes for collectionID,color,
 celltypes and subcelltypes, and displays the trace and collection name.
 \ingroup GUI
 */
-class QGOGUILIB_EXPORT QGoTraceManualEditingWidget:
+class QGOGUILIB_EXPORT QGoTraceSettingsWidget:
   public QWidget,
-  private Ui::QGoTraceManualEditingWidget
+  private Ui::QGoTraceSettingsWidget
+
 {
   Q_OBJECT
 public:
-  explicit QGoTraceManualEditingWidget(QWidget *parent = 0);
-  ~QGoTraceManualEditingWidget();
+  explicit QGoTraceSettingsWidget(QWidget *parent = 0);
+  ~QGoTraceSettingsWidget();
 
   typedef QGoColorComboBox::ItemColorComboboxData ItemColorComboboxData;
   typedef std::vector< std::pair< std::string, std::string > >

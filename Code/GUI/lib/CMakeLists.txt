@@ -57,8 +57,8 @@ SET( QGoGUILIB_SRC
   QGoDBCellTypeManager.cxx
   QGoDBSubCellTypeManager.cxx
   QGoDBColorManager.cxx
-  QGoTraceManualEditingWidget.cxx
-  QGoTraceManualEditingDockWidget.cxx
+  QGoTraceSettingsDockWidget.cxx
+  QGoTraceSettingsWidget.cxx
   QGoDBInitializationWizard.cxx
   QGoDBInitCreateUserPage.cxx
   QGoDBInitCreateAuthorsPage.cxx
@@ -103,6 +103,10 @@ SET( QGoGUILIB_SRC
   # for the tracks
   QGoTrackDockWidget.cxx
   QGoTrackEditingWidget.cxx
+  QGoTraceEditingWidget.cxx
+  QGoModeEditingWidget.cxx
+  QGoAdvancedParametersWidget.cxx
+  QGoAlgorithmsWidget.cxx
 
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx
@@ -173,8 +177,8 @@ SET( QGoGUILIB_HDRS
   QGoDBCellTypeManager.h
   QGoDBSubCellTypeManager.h
   QGoDBColorManager.h
-  QGoTraceManualEditingWidget.h
-  QGoTraceManualEditingDockWidget.h
+  QGoTraceSettingsDockWidget.h
+  QGoTraceSettingsWidget.h
   QGoAboutWidget.h
   QGoDBInitializationWizard.h
   QGoDBInitCreateUserPage.h
@@ -221,6 +225,10 @@ SET( QGoGUILIB_HDRS
   # for the tracks
   QGoTrackDockWidget.h
   QGoTrackEditingWidget.h
+  QGoTraceEditingWidget.h
+  QGoModeEditingWidget.h
+  QGoAdvancedParametersWidget.h
+  QGoAlgorithmsWidget.h
 )
 
 #---------------------------------------------------------------------------
@@ -260,7 +268,7 @@ SET( QGoGUILIB_UI
   Resources/QGoPrintDatabase.ui
   Resources/LsmToMegaExportDialog.ui
   Resources/QNameDescriptionInputDialog.ui
-  Resources/QGoTraceManualEditingWidget.ui
+  Resources/QGoTraceSettingsWidget.ui
 
   Resources/QGoSynchronizedView.ui
 

@@ -31,30 +31,47 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "QGoTraceManualEditingDockWidget.h"
 
-QGoTraceManualEditingDockWidget::QGoTraceManualEditingDockWidget(
-  QWidget *iParent) : QDockWidget(iParent)
+#ifndef __QGoAlgorithmsWidget_h
+#define __QGoAlgorithmsWidget_h
+
+#include <QWidget>
+#include <QStackedWidget>
+#include <QVBoxLayout>
+#include <QComboBox>
+#include "QGoAdvancedParametersWidget.h"
+
+/**
+ * \class QGoAlgorithmsWidget
+ * \ingroup GUI manages all the algorithms widget for a same result,
+ has a combobox with the name of the methods which display a different
+ layout with the parameters, the advanced parameters in an expandable
+ box depending on the method selected in the combobox
+ * \brief 
+*/
+class QGoAlgorithmsWidget:
+  public QWidget
 {
-  this->m_TraceWidget =
-    new QGoTraceManualEditingWidget(this);
-  QObject::connect( this->m_TraceWidget, SIGNAL( WindowsTitleToModify(QString) ),
-                    this, SLOT( ModifyWindowTitle(QString) ) );
-  this->m_TraceWidget->UpdateTraceAndCollection("contour", "mesh");
-  this->setWidget(this->m_TraceWidget);
-}
+  Q_OBJECT
+public:
+  explicit QGoAlgorithmsWidget(QWidget *iParent = 0);
+  ~QGoAlgorithmsWidget();
 
-//-------------------------------------------------------------------------
+  /**
+  \brief add a widget in the stacked widgets with the name
+  of the method associated in the combobox to display it,
+  including the parameters and the advanced parameters
+  displayed in an expandable box
+  */
+  void AddMethod(std::string iNameMethod, 
+  QWidget* iParametersWidget, QWidget* iAdvParamWidget);
 
-//-------------------------------------------------------------------------
-QGoTraceManualEditingDockWidget::~QGoTraceManualEditingDockWidget()
-{
-}
+protected:
+  QVBoxLayout*                 m_VBoxLayout;
+  QComboBox*                   m_MethodComboBox;
+  QStackedWidget*              m_MethodWidgets; 
+ 
+  void Initialize();
 
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoTraceManualEditingDockWidget::ModifyWindowTitle(QString iTitle)
-{
-  this->setWindowTitle(iTitle);
-}
+};
+#endif

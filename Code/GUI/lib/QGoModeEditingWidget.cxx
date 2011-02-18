@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,36 +31,50 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
+#include "QGoModeEditingWidget.h"
 
-#include <QApplication>
-#include <QTimer>
-
-#include "QGoTraceSettingsWidget.h"
-
-int main(int argc, char *argv[])
+QGoModeEditingWidget::QGoModeEditingWidget(QWidget *iParent)
+  :QWidget(iParent)
 {
-  QApplication app(argc, argv);
+  this->Initialize();
+}
+//-------------------------------------------------------------------------
 
-  QGoTraceSettingsWidget *win = new QGoTraceSettingsWidget();
+//-------------------------------------------------------------------------
+QGoModeEditingWidget::~QGoModeEditingWidget()
+{
+}
+//-------------------------------------------------------------------------
 
-  //QTimer* timer = new QTimer;
-  //timer->setSingleShot( true );
-  //QObject::connect( timer, SIGNAL( timeout() ), win, SLOT( close() ) );
+//-------------------------------------------------------------------------
+void QGoModeEditingWidget::Initialize()
+{
+  this->m_VBoxLayout = new QVBoxLayout;
+ 
+  this->m_ModeComboBox = new QComboBox(this);
+  this->m_VBoxLayout->addWidget(this->m_ModeComboBox);
+  
+  this->m_ModeWidgets = new QStackedWidget;
+  this->m_VBoxLayout->addWidget(this->m_ModeWidgets);
 
-  win->show();
+  this->m_VBoxLayout->setSizeConstraint(QLayout::SetFixedSize);
 
-//  if( atoi( argv[1] ) == 1 )
-//  {
-// timer->start( 1000 );
-// }
+  this->setLayout(this->m_VBoxLayout);
 
-  app.processEvents();
+  QObject::connect(this->m_ModeComboBox, SIGNAL(activated(int)),
+             this->m_ModeWidgets, SLOT(setCurrentIndex(int)));
+}
+//-------------------------------------------------------------------------
 
-  int output = app.exec();
-
-  app.closeAllWindows();
-//  delete timer;
-  delete win;
-
-  return output;
+//-------------------------------------------------------------------------
+void QGoModeEditingWidget::AddWidgetWithModeName(
+  std::string iModeName, QWidget* iWidget )
+{
+  int Index = 0;
+  if (iWidget != 0)
+  {
+  this->m_ModeWidgets->addWidget(iWidget);  
+  Index = this->m_ModeWidgets->indexOf(iWidget);
+  }
+  this->m_ModeComboBox->insertItem(Index,iModeName.c_str());
 }

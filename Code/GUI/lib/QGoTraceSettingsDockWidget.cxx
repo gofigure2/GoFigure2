@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,36 +31,30 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
+#include "QGoTraceSettingsDockWidget.h"
 
-#include <QApplication>
-#include <QTimer>
-
-#include "QGoTraceSettingsWidget.h"
-
-int main(int argc, char *argv[])
+QGoTraceSettingsDockWidget::QGoTraceSettingsDockWidget(
+  QWidget *iParent) : QDockWidget(iParent)
 {
-  QApplication app(argc, argv);
+  this->m_TraceWidget =
+    new QGoTraceSettingsWidget(this);
+  QObject::connect( this->m_TraceWidget, SIGNAL( WindowsTitleToModify(QString) ),
+                    this, SLOT( ModifyWindowTitle(QString) ) );
+  this->m_TraceWidget->UpdateTraceAndCollection("contour", "mesh");
+  this->setWidget(this->m_TraceWidget);
+}
 
-  QGoTraceSettingsWidget *win = new QGoTraceSettingsWidget();
+//-------------------------------------------------------------------------
 
-  //QTimer* timer = new QTimer;
-  //timer->setSingleShot( true );
-  //QObject::connect( timer, SIGNAL( timeout() ), win, SLOT( close() ) );
+//-------------------------------------------------------------------------
+QGoTraceSettingsDockWidget::~QGoTraceSettingsDockWidget()
+{
+}
 
-  win->show();
+//-------------------------------------------------------------------------
 
-//  if( atoi( argv[1] ) == 1 )
-//  {
-// timer->start( 1000 );
-// }
-
-  app.processEvents();
-
-  int output = app.exec();
-
-  app.closeAllWindows();
-//  delete timer;
-  delete win;
-
-  return output;
+//-------------------------------------------------------------------------
+void QGoTraceSettingsDockWidget::ModifyWindowTitle(QString iTitle)
+{
+  this->setWindowTitle(iTitle);
 }

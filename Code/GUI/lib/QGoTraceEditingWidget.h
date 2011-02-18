@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -32,35 +32,31 @@
 
 =========================================================================*/
 
-#include <QApplication>
-#include <QTimer>
+#ifndef __QGoTraceEditingWidget_h
+#define __QGoTraceEditingWidget_h
 
-#include "QGoTraceSettingsWidget.h"
+#include <QWidget>
+#include <QStackedWidget>
+#include <QVBoxLayout>
+#include <QStackedLayout>
+#include <QComboBox>
+#include "QGoModeEditingWidget.h"
 
-int main(int argc, char *argv[])
+
+class QGoTraceEditingWidget:
+  public QWidget
 {
-  QApplication app(argc, argv);
+  Q_OBJECT
+public:
+  explicit QGoTraceEditingWidget(std::string iTraceName, QWidget *iParent = 0 );
+  ~QGoTraceEditingWidget();
 
-  QGoTraceSettingsWidget *win = new QGoTraceSettingsWidget();
+  void AddMode( std::string iModeName, QWidget* iModeWidget = 0);
 
-  //QTimer* timer = new QTimer;
-  //timer->setSingleShot( true );
-  //QObject::connect( timer, SIGNAL( timeout() ), win, SLOT( close() ) );
+protected:
+  void Initialize(QWidget *iParent = 0);
+  QGoModeEditingWidget* m_ModeEditingWidget;
+  QVBoxLayout*          m_VLayout;
 
-  win->show();
-
-//  if( atoi( argv[1] ) == 1 )
-//  {
-// timer->start( 1000 );
-// }
-
-  app.processEvents();
-
-  int output = app.exec();
-
-  app.closeAllWindows();
-//  delete timer;
-  delete win;
-
-  return output;
-}
+};
+#endif

@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -32,35 +32,27 @@
 
 =========================================================================*/
 
-#include <QApplication>
-#include <QTimer>
+#ifndef __QGoTraceSettingsDockWidget_h
+#define __QGoTraceSettingsDockWidget_h
 
+#include <QDockWidget>
 #include "QGoTraceSettingsWidget.h"
 
-int main(int argc, char *argv[])
+/**
+\class QGoTraceManualEditingDockWidget
+\brief dock widget for the QGoTraceManualEditingWidget, has a window
+title that can be modified according to the content of its widget
+\ingroup GUI
+*/
+class QGOGUILIB_EXPORT QGoTraceSettingsDockWidget:
+  public QDockWidget
 {
-  QApplication app(argc, argv);
-
-  QGoTraceSettingsWidget *win = new QGoTraceSettingsWidget();
-
-  //QTimer* timer = new QTimer;
-  //timer->setSingleShot( true );
-  //QObject::connect( timer, SIGNAL( timeout() ), win, SLOT( close() ) );
-
-  win->show();
-
-//  if( atoi( argv[1] ) == 1 )
-//  {
-// timer->start( 1000 );
-// }
-
-  app.processEvents();
-
-  int output = app.exec();
-
-  app.closeAllWindows();
-//  delete timer;
-  delete win;
-
-  return output;
-}
+  Q_OBJECT
+public:
+  explicit QGoTraceSettingsDockWidget(QWidget *iParent = 0);
+  ~QGoTraceSettingsDockWidget();
+  QGoTraceSettingsWidget *m_TraceWidget;
+protected slots:
+  void ModifyWindowTitle(QString iTitle);
+};
+#endif

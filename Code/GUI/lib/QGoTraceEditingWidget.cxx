@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,36 +31,46 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
+#include "QGoTraceEditingWidget.h"
+#include "QGoAdvancedParametersWidget.h"
+#include "QGoModeEditingWidget.h"
+#include <QPushButton>
 
-#include <QApplication>
-#include <QTimer>
-
-#include "QGoTraceSettingsWidget.h"
-
-int main(int argc, char *argv[])
+QGoTraceEditingWidget::QGoTraceEditingWidget(
+  std::string iTraceName, QWidget *iParent)
 {
-  QApplication app(argc, argv);
+  this->Initialize(iParent);
+  this->setWindowTitle(tr("%1 Editing").arg(iTraceName.c_str()));
+}
+//-------------------------------------------------------------------------
 
-  QGoTraceSettingsWidget *win = new QGoTraceSettingsWidget();
+//-------------------------------------------------------------------------
+QGoTraceEditingWidget::~QGoTraceEditingWidget()
+{
+}
+//-------------------------------------------------------------------------
 
-  //QTimer* timer = new QTimer;
-  //timer->setSingleShot( true );
-  //QObject::connect( timer, SIGNAL( timeout() ), win, SLOT( close() ) );
+//-------------------------------------------------------------------------
+void QGoTraceEditingWidget::Initialize(QWidget *iParent)
+{
+  this->m_ModeEditingWidget = new QGoModeEditingWidget(this);
+  this->m_VLayout = new QVBoxLayout;
+  this->m_VLayout->addWidget(this->m_ModeEditingWidget);
+  QPushButton* ApplyButton = new QPushButton(tr("Apply"),this);
+  this->m_VLayout->addWidget(ApplyButton);
+  this->setLayout(this->m_VLayout);
+  this->m_VLayout->setSizeConstraint(QLayout::SetFixedSize);
+}
+//-------------------------------------------------------------------------
 
-  win->show();
-
-//  if( atoi( argv[1] ) == 1 )
-//  {
-// timer->start( 1000 );
-// }
-
-  app.processEvents();
-
-  int output = app.exec();
-
-  app.closeAllWindows();
-//  delete timer;
-  delete win;
-
-  return output;
+//-------------------------------------------------------------------------
+void QGoTraceEditingWidget:: AddMode(
+  std::string iModeName, QWidget* iModeWidget)
+{
+  QWidget* ModeWidget = new QWidget;
+  if (iModeWidget != 0)
+    {
+    ModeWidget = iModeWidget;
+    }
+  this->m_ModeEditingWidget->AddWidgetWithModeName(iModeName, ModeWidget); 
 }

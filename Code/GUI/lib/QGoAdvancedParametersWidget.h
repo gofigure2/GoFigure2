@@ -31,28 +31,40 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
+#ifndef __QGoAdvancedParametersWidget_h
+#define __QGoAdvancedParametersWidget_h
 
-#ifndef __QGoTraceManualEditingDockWidget_h
-#define __QGoTraceManualEditingDockWidget_h
-
-#include <QDockWidget>
-#include "QGoTraceManualEditingWidget.h"
+#include <QWidget>
+#include <QStackedLayout>
+#include <QVBoxLayout>
+#include <QComboBox>
+#include <QStackedLayout>
+#include "ctkCollapsibleGroupBox.h"
 
 /**
-\class QGoTraceManualEditingDockWidget
-\brief dock widget for the QGoTraceManualEditingWidget, has a window
-title that can be modified according to the content of its widget
-\ingroup GUI
+ * \class QGoAdvancedParametersWidget
+ * \ingroup GUI
+ * \brief widget for the advanced parameters displayed in an
+ expandable box
 */
-class QGOGUILIB_EXPORT QGoTraceManualEditingDockWidget:
-  public QDockWidget
+class QGoAdvancedParametersWidget:
+  public QWidget
 {
   Q_OBJECT
 public:
-  explicit QGoTraceManualEditingDockWidget(QWidget *iParent = 0);
-  ~QGoTraceManualEditingDockWidget();
-  QGoTraceManualEditingWidget *m_TraceWidget;
-protected slots:
-  void ModifyWindowTitle(QString iTitle);
+  explicit QGoAdvancedParametersWidget(QWidget *iParent = 0);
+  ~QGoAdvancedParametersWidget();
+
+  void Initialize();
+  /**
+  \brief add a widget in the expandable box
+  */
+  void AddAdvancedParamWidget(QWidget* iWidget);
+
+protected:
+  QVBoxLayout*            m_VBoxLayout;
+  ctkCollapsibleGroupBox* m_ExpandableBox;
+
 };
+
 #endif

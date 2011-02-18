@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -32,35 +32,41 @@
 
 =========================================================================*/
 
-#include <QApplication>
-#include <QTimer>
+#ifndef __QGoModeEditingWidget_h
+#define __QGoModeEditingWidget_h
 
-#include "QGoTraceSettingsWidget.h"
+#include <QWidget>
+#include <QStackedWidget>
+#include <QVBoxLayout>
+#include <QComboBox>
 
-int main(int argc, char *argv[])
+/**
+ * \class QGoModeEditingWidget
+ * \ingroup GUI
+ * \brief widget that manages the different modes for the TraceEditingWidget,
+ has a combobox with the mode names and a corresponging stackedWidgets which
+ display the right widget according to the mode selected in the combobox
+*/
+class QGoModeEditingWidget:
+  public QWidget
 {
-  QApplication app(argc, argv);
+  Q_OBJECT
+public:
+  explicit QGoModeEditingWidget(QWidget *iParent = 0);
+  ~QGoModeEditingWidget();
 
-  QGoTraceSettingsWidget *win = new QGoTraceSettingsWidget();
+  /**
+  \brief add a widget in the StackedWidget with the mode name that will
+  be added in the combobox.
+  */
+  void AddWidgetWithModeName (std::string iModeName, QWidget* iWidget= 0);
 
-  //QTimer* timer = new QTimer;
-  //timer->setSingleShot( true );
-  //QObject::connect( timer, SIGNAL( timeout() ), win, SLOT( close() ) );
+protected:
+  QVBoxLayout*            m_VBoxLayout;
+  QComboBox*              m_ModeComboBox;
+  QStackedWidget*         m_ModeWidgets;  
+  
+  void Initialize();
 
-  win->show();
-
-//  if( atoi( argv[1] ) == 1 )
-//  {
-// timer->start( 1000 );
-// }
-
-  app.processEvents();
-
-  int output = app.exec();
-
-  app.closeAllWindows();
-//  delete timer;
-  delete win;
-
-  return output;
-}
+};
+#endif
