@@ -37,7 +37,7 @@ QGoTraceManualEditingDockWidget::QGoTraceManualEditingDockWidget(
   QWidget *iParent) : QDockWidget(iParent)
 {
   this->m_TraceWidget =
-    new QGoTraceManualEditingWidget(this);
+    new QGoTraceSettingsWidget(this);
   QObject::connect( this->m_TraceWidget, SIGNAL( WindowsTitleToModify(QString) ),
                     this, SLOT( ModifyWindowTitle(QString) ) );
   this->m_TraceWidget->UpdateTraceAndCollection("contour", "mesh");

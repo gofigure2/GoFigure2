@@ -36,7 +36,7 @@
 #define __QGoTraceManualEditingDockWidget_h
 
 #include <QDockWidget>
-#include "QGoTraceManualEditingWidget.h"
+#include "QGoTraceSettingsWidget.h"
 
 /**
 \class QGoTraceManualEditingDockWidget
@@ -51,7 +51,7 @@ class QGOGUILIB_EXPORT QGoTraceManualEditingDockWidget:
 public:
   explicit QGoTraceManualEditingDockWidget(QWidget *iParent = 0);
   ~QGoTraceManualEditingDockWidget();
-  QGoTraceManualEditingWidget *m_TraceWidget;
+  QGoTraceSettingsWidget *m_TraceWidget;
 protected slots:
   void ModifyWindowTitle(QString iTitle);
 };

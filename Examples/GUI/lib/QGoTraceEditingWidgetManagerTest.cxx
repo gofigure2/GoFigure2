@@ -35,14 +35,13 @@
 #include <QTimer>
 
 #include "QGoTraceEditingWidgetManager.h"
-#include "QGoTraceManualEditingWidget.h"
+#include "QGoTraceSettingsWidget.h"
 #include "QGoSeedBaseWidget.h"
 #include "QGoContourManualSegmentationWidget.h"
 #include "QGoContourSemiAutoLevelsetWidget.h"
 #include "QGoContourSemiAutoWatershedWidget.h"
 #include "QGoAdvancedParametersWidget.h"
 
-#include "QGoTraceManualEditingWidget.h"
 #include "QGoContourManualSegmentationWidget.h"
 #include "QGoAlgorithmsWidget.h"
 #include "QGoContourSemiAutoShapeWidget.h"
