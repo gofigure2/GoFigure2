@@ -57,7 +57,7 @@ void QGoAlgorithmsWidget::Initialize()
 {
   this->m_VBoxLayout = new QVBoxLayout;
   QHBoxLayout* MethodLayout = new QHBoxLayout;
-  QLabel* MethodLabel = new QLabel(tr("Method"), this);
+  QLabel* MethodLabel = new QLabel(tr("Method:"), this);
   this->m_MethodComboBox = new QComboBox(this);
   MethodLayout->addWidget(MethodLabel);
   MethodLayout->addWidget(this->m_MethodComboBox);

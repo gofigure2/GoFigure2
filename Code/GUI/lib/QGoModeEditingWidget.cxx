@@ -32,6 +32,7 @@
 
 =========================================================================*/
 #include "QGoModeEditingWidget.h"
+#include <QLabel>
 
 QGoModeEditingWidget::QGoModeEditingWidget(QWidget *iParent)
   :QWidget(iParent)
@@ -50,10 +51,16 @@ QGoModeEditingWidget::~QGoModeEditingWidget()
 void QGoModeEditingWidget::Initialize()
 {
   this->m_VBoxLayout = new QVBoxLayout;
- 
   this->m_ModeComboBox = new QComboBox(this);
-  this->m_VBoxLayout->addWidget(this->m_ModeComboBox);
-  
+
+  QHBoxLayout* ModeLayout = new QHBoxLayout;
+  QLabel* ModeLabel = new QLabel(tr("Mode:"), this);
+  ModeLayout->addWidget(ModeLabel);
+  ModeLayout->addWidget(this->m_ModeComboBox);
+
+  //this->m_VBoxLayout->addWidget(this->m_ModeComboBox);
+  this->m_VBoxLayout->addLayout(ModeLayout);
+
   this->m_ModeWidgets = new QStackedWidget;
   this->m_VBoxLayout->addWidget(this->m_ModeWidgets);
 
