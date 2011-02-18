@@ -56,10 +56,14 @@ QGoAlgorithmsWidget::~QGoAlgorithmsWidget()
 void QGoAlgorithmsWidget::Initialize()
 {
   this->m_VBoxLayout = new QVBoxLayout;
+  QHBoxLayout* MethodLayout = new QHBoxLayout;
+  QLabel* MethodLabel = new QLabel(tr("Method"), this);
   this->m_MethodComboBox = new QComboBox(this);
+  MethodLayout->addWidget(MethodLabel);
+  MethodLayout->addWidget(this->m_MethodComboBox);
   this->m_MethodWidgets = new QStackedWidget(this);
   
-  this->m_VBoxLayout->addWidget(this->m_MethodComboBox);
+  this->m_VBoxLayout->addLayout(MethodLayout);
   this->m_VBoxLayout->addWidget(this->m_MethodWidgets);
   this->setLayout(this->m_VBoxLayout);
   this->m_VBoxLayout->setSizeConstraint(QLayout::SetFixedSize);
