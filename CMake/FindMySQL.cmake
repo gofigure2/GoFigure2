@@ -13,6 +13,8 @@ FIND_PATH( MYSQL_INCLUDE_DIR NAMES mysql.h
   "$ENV{SystemDrive}/MySQL/*/"
   "[HKEY_LOCAL_MACHINE\\SOFTWARE\\MySQL AB\\*;Location]/"
   "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\MySQL AB\\*;Location]/"
+  "C:/Program Files/MySQL/include"
+  "C:/Program Files/MySQL/MySQL Server 5.1/include"
   PATH_SUFFIXES "include" "include/mysql" "mysql/include" 
   DOC "Specify the directory containing mysql.h"
 )
@@ -26,6 +28,7 @@ FIND_LIBRARY( MYSQL_LIBRARIES
   "$ENV{SystemDrive}/MySQL/*/"
   "[HKEY_LOCAL_MACHINE\\SOFTWARE\\MySQL AB\\*;Location]/lib/opt"
   "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\MySQL AB\\*;Location]/lib/opt"
+  "C:/Program Files/MySQL/MySQL Server 5.1/lib/opt"
   PATH_SUFFIXES "lib" "mysql" "mysql/lib" "mysql/lib/mysql" "lib/opt"
   DOC "Specify the mysql library here."
 )
