@@ -38,6 +38,20 @@ IF( NOT DEFINED CPACK_SYSTEM_NAME )
   ENDIF("${CMAKE_SYSTEM_NAME}" STREQUAL "CYGWIN")
 ENDIF( NOT DEFINED CPACK_SYSTEM_NAME )
 
+#set up the package name on mac
+IF( ${CPACK_SYSTEM_NAME} MATCHES Darwin )
+  #use uname -m instead of uname -p
+  #EXECUTE_PROCESS( COMMAND uname -m
+  #                 OUTPUT_VARIABLE PLATFORM)
+  #remove end of line character
+  #STRING(REGEX REPLACE "/n" "" PLATFORM2 ${PLATFORM})
+  #set the system name
+  IF( CMAKE_OSX_ARCHITECTURES )
+    SET( CPACK_SYSTEM_NAME Darwin-${CMAKE_OSX_ARCHITECTURES} )
+  ENDIF( CMAKE_OSX_ARCHITECTURES )
+ENDIF( ${CPACK_SYSTEM_NAME} MATCHES Darwin )
+
+#set up the package name on windows
 IF( ${CPACK_SYSTEM_NAME} MATCHES Windows )
  IF( CMAKE_CL_64 )
    SET( CPACK_SYSTEM_NAME win64-${CMAKE_SYSTEM_PROCESSOR} )
