@@ -31,32 +31,46 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-
-#ifndef __QGoTraceEditingWidgetManager_h
-#define __QGoTraceEditingWidgetManager_h
-
-#include <QWidget>
-#include <QStackedWidget>
-#include <QVBoxLayout>
-#include <QStackedLayout>
-#include <QComboBox>
+#include "QGoTraceEditingWidget.h"
+#include "QGoAdvancedParametersWidget.h"
 #include "QGoModeEditingWidget.h"
+#include <QPushButton>
 
-
-class QGoTraceEditingWidgetManager:
-  public QWidget
+QGoTraceEditingWidget::QGoTraceEditingWidget(
+  std::string iTraceName, QWidget *iParent)
 {
-  Q_OBJECT
-public:
-  explicit QGoTraceEditingWidgetManager(std::string iTraceName, QWidget *iParent = 0 );
-  ~QGoTraceEditingWidgetManager();
+  this->Initialize(iParent);
+  this->setWindowTitle(tr("%1 Editing").arg(iTraceName.c_str()));
+}
+//-------------------------------------------------------------------------
 
-  void AddMode( std::string iModeName, QWidget* iModeWidget = 0);
+//-------------------------------------------------------------------------
+QGoTraceEditingWidget::~QGoTraceEditingWidget()
+{
+}
+//-------------------------------------------------------------------------
 
-protected:
-  void Initialize(QWidget *iParent = 0);
-  QGoModeEditingWidget* m_ModeEditingWidget;
-  QVBoxLayout*          m_VLayout;
+//-------------------------------------------------------------------------
+void QGoTraceEditingWidget::Initialize(QWidget *iParent)
+{
+  this->m_ModeEditingWidget = new QGoModeEditingWidget(this);
+  this->m_VLayout = new QVBoxLayout;
+  this->m_VLayout->addWidget(this->m_ModeEditingWidget);
+  QPushButton* ApplyButton = new QPushButton(tr("Apply"),this);
+  this->m_VLayout->addWidget(ApplyButton);
+  this->setLayout(this->m_VLayout);
+  this->m_VLayout->setSizeConstraint(QLayout::SetFixedSize);
+}
+//-------------------------------------------------------------------------
 
-};
-#endif
+//-------------------------------------------------------------------------
+void QGoTraceEditingWidget:: AddMode(
+  std::string iModeName, QWidget* iModeWidget)
+{
+  QWidget* ModeWidget = new QWidget;
+  if (iModeWidget != 0)
+    {
+    ModeWidget = iModeWidget;
+    }
+  this->m_ModeEditingWidget->AddWidgetWithModeName(iModeName, ModeWidget); 
+}

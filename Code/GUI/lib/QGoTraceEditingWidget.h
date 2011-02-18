@@ -31,46 +31,32 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "QGoTraceEditingWidgetManager.h"
-#include "QGoAdvancedParametersWidget.h"
+
+#ifndef __QGoTraceEditingWidget_h
+#define __QGoTraceEditingWidget_h
+
+#include <QWidget>
+#include <QStackedWidget>
+#include <QVBoxLayout>
+#include <QStackedLayout>
+#include <QComboBox>
 #include "QGoModeEditingWidget.h"
-#include <QPushButton>
 
-QGoTraceEditingWidgetManager::QGoTraceEditingWidgetManager(
-  std::string iTraceName, QWidget *iParent)
-{
-  this->Initialize(iParent);
-  this->setWindowTitle(tr("%1 Editing").arg(iTraceName.c_str()));
-}
-//-------------------------------------------------------------------------
 
-//-------------------------------------------------------------------------
-QGoTraceEditingWidgetManager::~QGoTraceEditingWidgetManager()
+class QGoTraceEditingWidget:
+  public QWidget
 {
-}
-//-------------------------------------------------------------------------
+  Q_OBJECT
+public:
+  explicit QGoTraceEditingWidget(std::string iTraceName, QWidget *iParent = 0 );
+  ~QGoTraceEditingWidget();
 
-//-------------------------------------------------------------------------
-void QGoTraceEditingWidgetManager::Initialize(QWidget *iParent)
-{
-  this->m_ModeEditingWidget = new QGoModeEditingWidget(this);
-  this->m_VLayout = new QVBoxLayout;
-  this->m_VLayout->addWidget(this->m_ModeEditingWidget);
-  QPushButton* ApplyButton = new QPushButton(tr("Apply"),this);
-  this->m_VLayout->addWidget(ApplyButton);
-  this->setLayout(this->m_VLayout);
-  this->m_VLayout->setSizeConstraint(QLayout::SetFixedSize);
-}
-//-------------------------------------------------------------------------
+  void AddMode( std::string iModeName, QWidget* iModeWidget = 0);
 
-//-------------------------------------------------------------------------
-void QGoTraceEditingWidgetManager:: AddMode(
-  std::string iModeName, QWidget* iModeWidget)
-{
-  QWidget* ModeWidget = new QWidget;
-  if (iModeWidget != 0)
-    {
-    ModeWidget = iModeWidget;
-    }
-  this->m_ModeEditingWidget->AddWidgetWithModeName(iModeName, ModeWidget); 
-}
+protected:
+  void Initialize(QWidget *iParent = 0);
+  QGoModeEditingWidget* m_ModeEditingWidget;
+  QVBoxLayout*          m_VLayout;
+
+};
+#endif

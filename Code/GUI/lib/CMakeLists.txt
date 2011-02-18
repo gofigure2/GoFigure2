@@ -103,7 +103,7 @@ SET( QGoGUILIB_SRC
   # for the tracks
   QGoTrackDockWidget.cxx
   QGoTrackEditingWidget.cxx
-  QGoTraceEditingWidgetManager.cxx
+  QGoTraceEditingWidget.cxx
   QGoModeEditingWidget.cxx
   QGoAdvancedParametersWidget.cxx
   QGoAlgorithmsWidget.cxx
@@ -225,7 +225,7 @@ SET( QGoGUILIB_HDRS
   # for the tracks
   QGoTrackDockWidget.h
   QGoTrackEditingWidget.h
-  QGoTraceEditingWidgetManager.h
+  QGoTraceEditingWidget.h
   QGoModeEditingWidget.h
   QGoAdvancedParametersWidget.h
   QGoAlgorithmsWidget.h

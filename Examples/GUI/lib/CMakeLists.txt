@@ -20,7 +20,7 @@ SET( QGOGUILIB_EXAMPLE_SRC
   QGoLsmToMegaExportDialogTest
   QGoLsmToMegaExportThreadTest
   QGoDBCreateBookmarkDialogTest
-  QGoTraceManualEditingWidgetTest
+  QGoTraceSettingsWidgetTest
   QGoDBInitializationWizardTest
   qgotabimageview3dwt2
   QGoLevelset2DTest
@@ -36,7 +36,7 @@ SET( QGOGUILIB_EXAMPLE_SRC
   QGoColorComboBoxTest
   
   #QGoTrackEditingWidgetTest
-  QGoTraceEditingWidgetManagerTest
+  QGoTraceEditingWidgetTest
   QGoAlgorithmsWidgetTest
 )
 

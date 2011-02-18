@@ -138,7 +138,7 @@ unsigned int QGoDBTrackManager::CreateNewTrackWithNoMesh(
   this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
   NameWithColorData NewTrackData(ConvertToString< unsigned int >(NewTrackID),
                                  this->m_SelectedColorData->second);
-  emit AddNewTraceIDInTM(NewTrackData);
+  emit AddNewTraceIDInTS(NewTrackData);
   return NewTrackID;
 }
 

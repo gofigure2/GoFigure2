@@ -34,7 +34,7 @@
 #include <QApplication>
 #include <QTimer>
 
-#include "QGoTraceEditingWidgetManager.h"
+#include "QGoTraceEditingWidget.h"
 #include "QGoTraceSettingsWidget.h"
 #include "QGoSeedBaseWidget.h"
 #include "QGoContourManualSegmentationWidget.h"
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
   //ListFilters.append("LevelSet");
   //ListFilters.append("WaterShed");
 
-  QGoTraceEditingWidgetManager* MeshEditing = new QGoTraceEditingWidgetManager("Mesh", NULL);
+  QGoTraceEditingWidget* MeshEditing = new QGoTraceEditingWidget("Mesh", NULL);
 
   //semi automated mode
   QGoAlgorithmsWidget* SemiAutomatedMethodsWidget = new QGoAlgorithmsWidget(MeshEditing);
