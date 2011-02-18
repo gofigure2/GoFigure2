@@ -4,15 +4,6 @@
 #-----------------------------------------------------------------------------
 set(proj VTK)
 
-if( WIN32 )
-	set( WINDOWS_FLAGS 
-	-DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS} /NODEFAULTLIB:libcmt
-	-DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:libcmt 
-	)
-else( WIN32 )
-	set( WINDOWS_FLAGS )
-endif( WIN32 )
-
 ExternalProject_Add(${proj}
   DEPENDS ${VTK_DEPENDENCIES}
   SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
@@ -30,7 +21,7 @@ ExternalProject_Add(${proj}
     -DMYSQL_INCLUDE_DIRECTORIES:PATH=${MYSQL_INCLUDE_DIR}
     -DMYSQL_LIBRARY:FILEPATH=${MYSQL_LIBRARIES}
     ${VIDEO_SUPPORT}
-    ${WINDOWS_FLAGS}
+    #${WINDOWS_FLAGS}
   INSTALL_COMMAND ""
 )
 
