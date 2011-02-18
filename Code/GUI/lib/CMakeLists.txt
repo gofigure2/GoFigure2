@@ -57,8 +57,8 @@ SET( QGoGUILIB_SRC
   QGoDBCellTypeManager.cxx
   QGoDBSubCellTypeManager.cxx
   QGoDBColorManager.cxx
-  QGoTraceManualEditingWidget.cxx
-  QGoTraceManualEditingDockWidget.cxx
+  QGoTraceSettingsDockWidget.cxx
+  QGoTraceSettingsWidget.cxx
   QGoDBInitializationWizard.cxx
   QGoDBInitCreateUserPage.cxx
   QGoDBInitCreateAuthorsPage.cxx
@@ -177,8 +177,8 @@ SET( QGoGUILIB_HDRS
   QGoDBCellTypeManager.h
   QGoDBSubCellTypeManager.h
   QGoDBColorManager.h
-  QGoTraceManualEditingWidget.h
-  QGoTraceManualEditingDockWidget.h
+  QGoTraceSettingsDockWidget.h
+  QGoTraceSettingsWidget.h
   QGoAboutWidget.h
   QGoDBInitializationWizard.h
   QGoDBInitCreateUserPage.h
@@ -268,7 +268,7 @@ SET( QGoGUILIB_UI
   Resources/QGoPrintDatabase.ui
   Resources/LsmToMegaExportDialog.ui
   Resources/QNameDescriptionInputDialog.ui
-  Resources/QGoTraceManualEditingWidget.ui
+  Resources/QGoTraceSettingsWidget.ui
 
   Resources/QGoSynchronizedView.ui
 

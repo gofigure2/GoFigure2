@@ -35,13 +35,13 @@
 #include <QApplication>
 #include <QTimer>
 
-#include "QGoTraceManualEditingWidget.h"
+#include "QGoTraceSettingsWidget.h"
 
 int main(int argc, char *argv[])
 {
   QApplication app(argc, argv);
 
-  QGoTraceManualEditingWidget *win = new QGoTraceManualEditingWidget();
+  QGoTraceSettingsWidget *win = new QGoTraceSettingsWidget();
 
   //QTimer* timer = new QTimer;
   //timer->setSingleShot( true );

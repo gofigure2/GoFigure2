@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,54 +31,30 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include <QApplication>
-#include <QTimer>
+#include "QGoTraceSettingsDockWidget.h"
 
-#include "QGoModeEditingWidget.h"
-
-#include "QGoTraceManualEditingWidget.h"
-#include "QGoContourManualSegmentationWidget.h"
-
-
-
-
-//**************************************************************************//
-//                               MAIN                                       //
-//**************************************************************************//
-
-int main(int argc, char *argv[])
+QGoTraceSettingsDockWidget::QGoTraceSettingsDockWidget(
+  QWidget *iParent) : QDockWidget(iParent)
 {
-  if ( argc != 1 )
-    {
-    return EXIT_FAILURE;
-    }
+  this->m_TraceWidget =
+    new QGoTraceSettingsWidget(this);
+  QObject::connect( this->m_TraceWidget, SIGNAL( WindowsTitleToModify(QString) ),
+                    this, SLOT( ModifyWindowTitle(QString) ) );
+  this->m_TraceWidget->UpdateTraceAndCollection("contour", "mesh");
+  this->setWidget(this->m_TraceWidget);
+}
 
-  QApplication app(argc, argv);
-  //QTimer *     timer = new QTimer;
-  //timer->setSingleShot(true);
-  //QStringList ListFilters;
-  //ListFilters.append("Shape");
-  //ListFilters.append("LevelSet");
-  //ListFilters.append("WaterShed");
+//-------------------------------------------------------------------------
 
-  QGoModeEditingWidget* ModeEditing = new QGoModeEditingWidget(NULL);
- 
+//-------------------------------------------------------------------------
+QGoTraceSettingsDockWidget::~QGoTraceSettingsDockWidget()
+{
+}
 
-  
-  ModeEditing->AddWidgetWithModeName(ManualEditing, "Manual");
-  ModeEditing->AddWidgetWithModeName(SemiAutomatedEditing, "Semi Automated"); 
-  
-  //timer->start(1000);
+//-------------------------------------------------------------------------
 
-  ModeEditing->show();
-
-  app.processEvents();
-  int output = app.exec();
-
-  app.closeAllWindows();
-
-  //delete timer;
-  delete ModeEditing;
-
-  return output;
+//-------------------------------------------------------------------------
+void QGoTraceSettingsDockWidget::ModifyWindowTitle(QString iTitle)
+{
+  this->setWindowTitle(iTitle);
 }

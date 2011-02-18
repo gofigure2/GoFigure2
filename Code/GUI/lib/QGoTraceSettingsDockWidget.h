@@ -32,11 +32,11 @@
 
 =========================================================================*/
 
-#ifndef __QGoTraceManualEditingDockWidget_h
-#define __QGoTraceManualEditingDockWidget_h
+#ifndef __QGoTraceSettingsDockWidget_h
+#define __QGoTraceSettingsDockWidget_h
 
 #include <QDockWidget>
-#include "QGoTraceManualEditingWidget.h"
+#include "QGoTraceSettingsWidget.h"
 
 /**
 \class QGoTraceManualEditingDockWidget
@@ -44,14 +44,14 @@
 title that can be modified according to the content of its widget
 \ingroup GUI
 */
-class QGOGUILIB_EXPORT QGoTraceManualEditingDockWidget:
+class QGOGUILIB_EXPORT QGoTraceSettingsDockWidget:
   public QDockWidget
 {
   Q_OBJECT
 public:
-  explicit QGoTraceManualEditingDockWidget(QWidget *iParent = 0);
-  ~QGoTraceManualEditingDockWidget();
-  QGoTraceManualEditingWidget *m_TraceWidget;
+  explicit QGoTraceSettingsDockWidget(QWidget *iParent = 0);
+  ~QGoTraceSettingsDockWidget();
+  QGoTraceSettingsWidget *m_TraceWidget;
 protected slots:
   void ModifyWindowTitle(QString iTitle);
 };

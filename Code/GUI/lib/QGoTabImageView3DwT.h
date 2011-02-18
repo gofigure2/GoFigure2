@@ -227,7 +227,7 @@ public:
 
   int GetTimeInterval() const;
 
-  QGoTraceManualEditingWidget *     GetTraceManualEditingWidget();
+  //QGoTraceManualEditingWidget *     GetTraceManualEditingWidget();
 
   QGoPrintDatabase *m_DataBaseTables;
 
