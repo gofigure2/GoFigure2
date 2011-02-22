@@ -32,58 +32,69 @@
 
 =========================================================================*/
 
-#include "QGoAdvancedParametersWidget.h"
-#include <QStackedLayout>
+#include "QGoAlgorithmWidget.h"
 #include <QLabel>
-#include <QGroupBox>
+#include "QGoAdvancedParametersWidget.h"
 
 
-QGoAdvancedParametersWidget::QGoAdvancedParametersWidget(QWidget *iParent )
+QGoAlgorithmWidget::QGoAlgorithmWidget(std::string iMethodName, QWidget *iParent )
   :QWidget(iParent)
 {
+  this->m_MethodName = iMethodName;
   this->Initialize();
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QGoAdvancedParametersWidget::~QGoAdvancedParametersWidget()
+QGoAlgorithmWidget::~QGoAlgorithmWidget()
 {
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoAdvancedParametersWidget::Initialize()
+void QGoAlgorithmWidget::Initialize()
 {
   this->m_VBoxLayout = new QVBoxLayout;
-  //this->m_ComboBox = new QComboBox(this);
-  //this->m_VBoxLayout->addWidget(this->m_ComboBox);
+  this->m_ParamLayout = new QFormLayout;
+  this->m_AdvParamWidget = new QGoAdvancedParametersWidget(this);
   
-  m_ExpandableBox = new ctkCollapsibleGroupBox(tr("Advanced") );
-  //this->m_AdvParamStackedLayout = new QStackedLayout(this);
-  this->m_ExpandableBox->setFlat(true);
-  this->m_ExpandableBox->setChecked(false);
-//  this->m_ExpandableBox->setLayout(this->m_AdvParamStackedLayout);
-  
-  this->m_VBoxLayout->addWidget(this->m_ExpandableBox);
-  this->m_VBoxLayout->setSizeConstraint(QLayout::SetFixedSize);
+  this->m_VBoxLayout->addLayout(this->m_ParamLayout);
+  this->m_VBoxLayout->addWidget(this->m_AdvParamWidget); 
+
   this->setLayout(this->m_VBoxLayout);
-
-  //QObject::connect(this->m_ComboBox, SIGNAL(activated(int)),
-       //      this->m_AdvParamStackedLayout, SLOT(setCurrentIndex(int)));
-
+  this->m_VBoxLayout->setSizeConstraint(QLayout::SetFixedSize);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoAdvancedParametersWidget::AddAdvancedParamWidget(QWidget* iWidget)
+std::string QGoAlgorithmWidget::GetMethodName()
 {
-  this->m_ExpandableBox->setLayout(iWidget->layout());
-  this->m_ExpandableBox->setChecked(false);
-  //this->m_AdvParamStackedLayout->addWidget(iWidget);
-  //int Index = this->m_AdvParamStackedLayout->indexOf(iWidget);
-  //this->m_AdvParamStackedLayout
-  //this->m_ComboBox->insertItem(Index,iName.c_str());
+  return this->m_MethodName;
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+/*void QGoAlgorithmsManagerWidget::AddMethod(std::string iNameMethod, 
+  QWidget* iParametersWidget, QWidget* iAdvParamWidget)
+{
+  QWidget* MethodWidget = new QWidget(this);
+
+  QVBoxLayout* MethodLayout = new QVBoxLayout;
+  MethodLayout->addWidget(iParametersWidget);
+  
+  QGoAdvancedParametersWidget* AdvParamWidget = 
+    new QGoAdvancedParametersWidget(this);
+  AdvParamWidget->AddAdvancedParamWidget(iAdvParamWidget);
+  
+
+  MethodLayout->addWidget(AdvParamWidget);
+
+  MethodWidget->setLayout(MethodLayout);
+  this->m_MethodWidgets->addWidget(MethodWidget);
+
+  int Index = this->m_MethodWidgets->indexOf(MethodWidget);
+  this->m_MethodComboBox->insertItem(Index,iNameMethod.c_str());
+}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

@@ -34,10 +34,7 @@
 #include <QApplication>
 #include <QTimer>
 
-#include "QGoAlgorithmsManagerWidget.h"
-#include "QGoSeedBaseWidget.h"
-#include "QGoContourSemiAutoLevelsetWidget.h"
-#include "QGoContourSemiAutoWatershedWidget.h"
+#include "QGoAlgorithmWidget.h"
 
 
 
@@ -61,31 +58,23 @@ int main(int argc, char *argv[])
   //ListFilters.append("LevelSet");
   //ListFilters.append("WaterShed");
 
-  QGoAlgorithmsManagerWidget* SemiAutoModeMeshEditingAlgoWidget = new QGoAlgorithmsManagerWidget(NULL);
+  QGoAlgorithmWidget* AlgoWidget = new QGoAlgorithmWidget("Test", NULL);
 
-  QGoSeedBaseWidget* SemiAutoModeParamWidget = new QGoSeedBaseWidget(SemiAutoModeMeshEditingAlgoWidget);
-  QGoSeedBaseWidget* SemiAutoModeParamWidgetTwo = new QGoSeedBaseWidget(SemiAutoModeMeshEditingAlgoWidget);
-  
-  QGoContourSemiAutoLevelsetWidget* LevelSetParam = new QGoContourSemiAutoLevelsetWidget(SemiAutoModeMeshEditingAlgoWidget);
-  QGoContourSemiAutoWatershedWidget* WaterShedParam = new QGoContourSemiAutoWatershedWidget(SemiAutoModeMeshEditingAlgoWidget);
-  
-  SemiAutoModeMeshEditingAlgoWidget->AddMethod("LevelSet 3D", SemiAutoModeParamWidget,  LevelSetParam);
-  SemiAutoModeMeshEditingAlgoWidget->AddMethod("WaterShed 3D", SemiAutoModeParamWidgetTwo,  WaterShedParam);
 
   //QObject::connect( timer, SIGNAL( timeout() ), window, SLOT( close() ) );
 
   
   //timer->start(1000);
 
-  SemiAutoModeMeshEditingAlgoWidget->show();
+  AlgoWidget->show();
 
   app.processEvents();
   int output = app.exec();
 
-  app.closeAllWindows();
+  //app.closeAllWindows();
 
   //delete timer;
-  delete SemiAutoModeMeshEditingAlgoWidget;
+  delete AlgoWidget;
 
   return output;
 }

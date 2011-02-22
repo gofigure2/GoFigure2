@@ -103,10 +103,13 @@ SET( QGoGUILIB_SRC
   # for the tracks
   QGoTrackDockWidget.cxx
   QGoTrackEditingWidget.cxx
+
+  # for the trace editing widget
   QGoTraceEditingWidget.cxx
   QGoModeEditingWidget.cxx
   QGoAdvancedParametersWidget.cxx
   QGoAlgorithmsManagerWidget.cxx
+  QGoAlgorithmWidget.cxx
 
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx
@@ -225,10 +228,13 @@ SET( QGoGUILIB_HDRS
   # for the tracks
   QGoTrackDockWidget.h
   QGoTrackEditingWidget.h
+
+  # for the trace editing widget
   QGoTraceEditingWidget.h
   QGoModeEditingWidget.h
   QGoAdvancedParametersWidget.h
   QGoAlgorithmsManagerWidget.h
+  QGoAlgorithmWidget.h
 )
 
 #---------------------------------------------------------------------------
