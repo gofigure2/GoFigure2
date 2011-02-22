@@ -38,7 +38,7 @@ MARK_AS_ADVANCED( SIKULI_EXECUTABLE )
 FUNCTION( add_sikuli_test testname sikuli_test )
   IF( UNIX )
     add_test( ${testname}
-      ${SH_EXECUTABLE} ${SIKULI_EXECUTABLE} -t ${sikuli_test} )
+      ${SH_EXECUTABLE} ${SIKULI_EXECUTABLE} -t ${CMAKE_CURRENT_SOURCE_DIR}/${sikuli_test} )
   ELSE( UNIX )
     add_test( ${testname}
       ${SIKULI_EXECUTABLE} -t ${sikuli_test} )
