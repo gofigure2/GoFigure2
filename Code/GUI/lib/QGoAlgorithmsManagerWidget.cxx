@@ -32,7 +32,7 @@
 
 =========================================================================*/
 
-#include "QGoAlgorithmsWidget.h"
+#include "QGoAlgorithmsManagerWidget.h"
 #include <QStackedLayout>
 #include <QLabel>
 #include <QGroupBox>
@@ -40,7 +40,7 @@
 #include "QGoAdvancedParametersWidget.h"
 
 
-QGoAlgorithmsWidget::QGoAlgorithmsWidget(QWidget *iParent )
+QGoAlgorithmsManagerWidget::QGoAlgorithmsManagerWidget(QWidget *iParent )
   :QWidget(iParent)
 {
   this->Initialize();
@@ -48,13 +48,13 @@ QGoAlgorithmsWidget::QGoAlgorithmsWidget(QWidget *iParent )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QGoAlgorithmsWidget::~QGoAlgorithmsWidget()
+QGoAlgorithmsManagerWidget::~QGoAlgorithmsManagerWidget()
 {
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoAlgorithmsWidget::Initialize()
+void QGoAlgorithmsManagerWidget::Initialize()
 {
   this->m_VBoxLayout = new QVBoxLayout;
   QHBoxLayout* MethodLayout = new QHBoxLayout;
@@ -71,7 +71,6 @@ void QGoAlgorithmsWidget::Initialize()
   QPushButton* ResetButton = new QPushButton(tr("Reset"), this);
   ButtonLayout->addWidget(ApplyButton);
   ButtonLayout->addWidget(ResetButton);
-  //this->m_VLayout->addWidget(ApplyButton);
   this->m_VBoxLayout->addLayout(ButtonLayout);
 
   this->setLayout(this->m_VBoxLayout);
@@ -84,7 +83,7 @@ void QGoAlgorithmsWidget::Initialize()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoAlgorithmsWidget::AddMethod(std::string iNameMethod, 
+void QGoAlgorithmsManagerWidget::AddMethod(std::string iNameMethod, 
   QWidget* iParametersWidget, QWidget* iAdvParamWidget)
 {
   QWidget* MethodWidget = new QWidget(this);

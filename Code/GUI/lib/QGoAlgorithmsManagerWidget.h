@@ -32,8 +32,8 @@
 
 =========================================================================*/
 
-#ifndef __QGoAlgorithmsWidget_h
-#define __QGoAlgorithmsWidget_h
+#ifndef __QGoAlgorithmsManagerWidget_h
+#define __QGoAlgorithmsManagerWidget_h
 
 #include <QWidget>
 #include <QStackedWidget>
@@ -42,20 +42,20 @@
 #include "QGoAdvancedParametersWidget.h"
 
 /**
- * \class QGoAlgorithmsWidget
+ * \class QGoAlgorithmsManagerWidget
  * \ingroup GUI manages all the algorithms widget for a same result,
  has a combobox with the name of the methods which display a different
  layout with the parameters, the advanced parameters in an expandable
  box depending on the method selected in the combobox
  * \brief 
 */
-class QGoAlgorithmsWidget:
+class QGoAlgorithmsManagerWidget:
   public QWidget
 {
   Q_OBJECT
 public:
-  explicit QGoAlgorithmsWidget(QWidget *iParent = 0);
-  ~QGoAlgorithmsWidget();
+  explicit QGoAlgorithmsManagerWidget(QWidget *iParent = 0);
+  ~QGoAlgorithmsManagerWidget();
 
   /**
   \brief add a widget in the stacked widgets with the name

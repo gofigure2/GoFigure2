@@ -106,7 +106,7 @@ SET( QGoGUILIB_SRC
   QGoTraceEditingWidget.cxx
   QGoModeEditingWidget.cxx
   QGoAdvancedParametersWidget.cxx
-  QGoAlgorithmsWidget.cxx
+  QGoAlgorithmsManagerWidget.cxx
 
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx
@@ -228,7 +228,7 @@ SET( QGoGUILIB_HDRS
   QGoTraceEditingWidget.h
   QGoModeEditingWidget.h
   QGoAdvancedParametersWidget.h
-  QGoAlgorithmsWidget.h
+  QGoAlgorithmsManagerWidget.h
 )
 
 #---------------------------------------------------------------------------

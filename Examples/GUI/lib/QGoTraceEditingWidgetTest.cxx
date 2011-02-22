@@ -43,7 +43,7 @@
 #include "QGoAdvancedParametersWidget.h"
 
 #include "QGoContourManualSegmentationWidget.h"
-#include "QGoAlgorithmsWidget.h"
+#include "QGoAlgorithmsManagerWidget.h"
 #include "QGoContourSemiAutoShapeWidget.h"
 
 
@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
   QGoTraceEditingWidget* MeshEditing = new QGoTraceEditingWidget("Mesh", NULL);
 
   //semi automated mode
-  QGoAlgorithmsWidget* SemiAutomatedMethodsWidget = new QGoAlgorithmsWidget(MeshEditing);
+  QGoAlgorithmsManagerWidget* SemiAutomatedMethodsWidget = new QGoAlgorithmsManagerWidget(MeshEditing);
 
   QGoSeedBaseWidget* LevelSetParamWidget = new QGoSeedBaseWidget(MeshEditing);
   QGoContourSemiAutoLevelsetWidget* LevelSetAdvParamWidget = new QGoContourSemiAutoLevelsetWidget(MeshEditing);
@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
   SemiAutomatedMethodsWidget->AddMethod("WaterShed 3D", WaterShedParamWidget, WaterShedAdvParamWidget);
   
   //manual mode
-  QGoAlgorithmsWidget* ManualMethodsWidget = new QGoAlgorithmsWidget(MeshEditing);
+  QGoAlgorithmsManagerWidget* ManualMethodsWidget = new QGoAlgorithmsManagerWidget(MeshEditing);
 
   QGoSeedBaseWidget* ParamMeshToContours = new QGoSeedBaseWidget(MeshEditing);
   QGoContourSemiAutoShapeWidget* AdvParamMeshToContours = new QGoContourSemiAutoShapeWidget(MeshEditing);
