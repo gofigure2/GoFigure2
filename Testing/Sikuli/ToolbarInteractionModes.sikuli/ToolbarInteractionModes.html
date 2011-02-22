@@ -67,27 +67,19 @@
    </head>
 <body>
 <div class="info">
-<h2>test.sikuli</h2> <a href="test.zip">(Download this script)</a>
+<h2>ToolbarInteractionModes.sikuli</h2> <a href="ToolbarInteractionModes.zip">(Download this script)</a>
 </div>
 <pre class="sikuli-code">
-<span class="cmt">#import sys
-</span>
-<span class="cmt">#address = sys.argv[0]
-</span><span class="kw">def</span> test(self):
-        address = <span class="str">"/home/es1076/GITROOT/GoFigure2/Testing/Sikuli/googletest"</span>
+Toolbar = (<span class="str">"default"</span>,<img src="ZoomIcon.png" />,<img src="PanIcon.png" />,<img src="ActorPickingIcon.png" />)
 
-        setBundlePath(address)
-        <span class="kw">print</span> address
+<span class="kw">for</span> mode <span class="kw">in</span> Toolbar:
 
-        <span class="skw">click</span>(<img src="google.png" />)
-        <span class="cmt">#click("yo.png")
-</span>
-<span class="kw">def</span> test2(self):
-        address = <span class="str">"/home/es1076/GITROOT/GoFigure2/Testing/Sikuli/googletest"</span>
+         <span class="kw">if</span> mode != <span class="str">"default"</span>:
+                <span class="skw">click</span>(mode)
 
-        setBundlePath(address)
-        <span class="kw">print</span> address
-        <span class="skw">click</span>(<img src="1298417390867.png" />)
+        <span class="cmt">#button: left, right, middle, scroll
+</span>        <span class="cmt">#action: single_click, double_click, drag_up2down,drag_down2up,drag_left2right,drag_right2left
+</span>        <span class="cmt">#view: xy, xz, yz, xyz</span>
 </pre>
 </body>
 </html>
