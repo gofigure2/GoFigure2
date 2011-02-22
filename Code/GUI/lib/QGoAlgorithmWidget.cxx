@@ -34,7 +34,7 @@
 
 #include "QGoAlgorithmWidget.h"
 #include <QLabel>
-#include "QGoAdvancedParametersWidget.h"
+#include "ctkCollapsibleGroupBox.h"
 
 
 QGoAlgorithmWidget::QGoAlgorithmWidget(std::string iMethodName, QWidget *iParent )
@@ -56,10 +56,17 @@ void QGoAlgorithmWidget::Initialize()
 {
   this->m_VBoxLayout = new QVBoxLayout;
   this->m_ParamLayout = new QFormLayout;
-  this->m_AdvParamWidget = new QGoAdvancedParametersWidget(this);
-  
+
+  ctkCollapsibleGroupBox* AdvParamWidget = 
+    new ctkCollapsibleGroupBox(tr("Advanced"),this );
+  this->m_ExpandableBox->setFlat(true);
+  this->m_ExpandableBox->setChecked(false);
+
+  this->m_AdvParamLayout = new QFormLayout;
+  AdvParamWidget->setLayout(this->m_AdvParamLayout);
+
   this->m_VBoxLayout->addLayout(this->m_ParamLayout);
-  this->m_VBoxLayout->addWidget(this->m_AdvParamWidget); 
+  this->m_VBoxLayout->addWidget(AdvParamWidget); 
 
   this->setLayout(this->m_VBoxLayout);
   this->m_VBoxLayout->setSizeConstraint(QLayout::SetFixedSize);
@@ -77,10 +84,13 @@ std::string QGoAlgorithmWidget::GetMethodName()
 void QGoAlgorithmWidget::AddParameter(std::string iParamName, 
   int iMinValue, int iMaxValue, int iDefaultValue)
 {
-  QSpinBox* ParamBox = this->GetSpinBox(iMinValue, iMaxValue, iDefaultValue);
-  QString ParamName(tr("%1:").arg(iParamName.c_str() ) );
-  this->m_ParamLayout->addRow(tr("%1:").arg(iParamName.c_str() ), 
-    ParamBox);
+  QSpinBox* ParamBox = new QSpinBox(this);
+  this->AddParameterInLayout<QSpinBox, int>(ParamBox, iParamName, 
+    this->m_ParamLayout, iMinValue, iMaxValue, iDefaultValue);
+  //QSpinBox* ParamBox = this->AddSpinBox(iMinValue, iMaxValue, iDefaultValue);
+  //QString ParamName(tr("%1:").arg(iParamName.c_str() ) );
+  //this->m_ParamLayout->addRow(tr("%1:").arg(iParamName.c_str() ), 
+  //  ParamBox);
 }
 //-------------------------------------------------------------------------
 
@@ -89,15 +99,22 @@ void QGoAlgorithmWidget::AddParameter(std::string iParamName,
   double iMinValue, double iMaxValue, double iDefaultValue, 
   int iNbDecimal)
 {
-  QDoubleSpinBox* ParamBox = this->GetDoubleSpinBox(iMinValue, iMaxValue, 
-    iDefaultValue, iNbDecimal);
-  this->m_ParamLayout->addRow(tr("%1:").arg(iParamName.c_str() ), 
-    ParamBox);
+  //QDoubleSpinBox* ParamBox = this->GetDoubleSpinBox(iMinValue, iMaxValue, 
+  //  iDefaultValue, iNbDecimal);
+   QDoubleSpinBox* ParamBox = new QDoubleSpinBox(this);
+   if (iNbDecimal != 0)
+     {
+     ParamBox->setDecimals(iNbDecimal);
+     }
+   this->AddParameterInLayout<QDoubleSpinBox, int>(ParamBox, iParamName, 
+    this->m_ParamLayout, iMinValue, iMaxValue, iDefaultValue);
+  //this->m_ParamLayout->addRow(tr("%1:").arg(iParamName.c_str() ), 
+   // ParamBox);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QSpinBox* QGoAlgorithmWidget::GetSpinBox(
+/*QSpinBox* QGoAlgorithmWidget::GetSpinBox(
   int iMinValue, int iMaxValue, int iDefaultValue)
 {
   QSpinBox* SpinBox = new QSpinBox(this);
@@ -119,6 +136,15 @@ QDoubleSpinBox* QGoAlgorithmWidget::GetDoubleSpinBox(double iMinValue,
       DoubleSpinBox->setDecimals(iNbDecimal);
       }
   return DoubleSpinBox;
+}*/
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoAlgorithmWidget::AddAdvParameter(std::string iParamName, int iMinValue, 
+  int iMaxValue, int iDefaultValue)
+{
+  
+
 }
 /*void QGoAlgorithmsManagerWidget::AddMethod(std::string iNameMethod, 
   QWidget* iParametersWidget, QWidget* iAdvParamWidget)

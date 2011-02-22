@@ -53,11 +53,6 @@ int main(int argc, char *argv[])
   QApplication app(argc, argv);
   //QTimer *     timer = new QTimer;
   //timer->setSingleShot(true);
-  //QStringList ListFilters;
-  //ListFilters.append("Shape");
-  //ListFilters.append("LevelSet");
-  //ListFilters.append("WaterShed");
-
   QGoAlgorithmWidget* AlgoWidget = new QGoAlgorithmWidget("Test", NULL);
   AlgoWidget->AddParameter("IntParam", 0, 100, 50);
   AlgoWidget->AddParameter("DoubleParam", 20.56, 53.21, 24, 2);

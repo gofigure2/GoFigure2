@@ -55,7 +55,8 @@ public:
   explicit QGoAdvancedParametersWidget(QWidget *iParent = 0);
   ~QGoAdvancedParametersWidget();
 
-  void Initialize();
+  //void Initialize();
+  void setLayout(QLayout* iLayout);
   /**
   \brief add a widget in the expandable box
   */

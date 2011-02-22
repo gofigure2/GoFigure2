@@ -41,7 +41,7 @@
 QGoAdvancedParametersWidget::QGoAdvancedParametersWidget(QWidget *iParent )
   :QWidget(iParent)
 {
-  this->Initialize();
+  //this->Initialize();
 }
 //-------------------------------------------------------------------------
 
@@ -52,9 +52,9 @@ QGoAdvancedParametersWidget::~QGoAdvancedParametersWidget()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoAdvancedParametersWidget::Initialize()
+void QGoAdvancedParametersWidget::setLayout(QLayout* iLayout)
 {
-  this->m_VBoxLayout = new QVBoxLayout;
+  //this->m_VBoxLayout = new QVBoxLayout;
   //this->m_ComboBox = new QComboBox(this);
   //this->m_VBoxLayout->addWidget(this->m_ComboBox);
   
