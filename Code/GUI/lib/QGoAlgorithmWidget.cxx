@@ -74,6 +74,52 @@ std::string QGoAlgorithmWidget::GetMethodName()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoAlgorithmWidget::AddParameter(std::string iParamName, 
+  int iMinValue, int iMaxValue, int iDefaultValue)
+{
+  QSpinBox* ParamBox = this->GetSpinBox(iMinValue, iMaxValue, iDefaultValue);
+  QString ParamName(tr("%1:").arg(iParamName.c_str() ) );
+  this->m_ParamLayout->addRow(tr("%1:").arg(iParamName.c_str() ), 
+    ParamBox);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoAlgorithmWidget::AddParameter(std::string iParamName, 
+  double iMinValue, double iMaxValue, double iDefaultValue, 
+  int iNbDecimal)
+{
+  QDoubleSpinBox* ParamBox = this->GetDoubleSpinBox(iMinValue, iMaxValue, 
+    iDefaultValue, iNbDecimal);
+  this->m_ParamLayout->addRow(tr("%1:").arg(iParamName.c_str() ), 
+    ParamBox);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+QSpinBox* QGoAlgorithmWidget::GetSpinBox(
+  int iMinValue, int iMaxValue, int iDefaultValue)
+{
+  QSpinBox* SpinBox = new QSpinBox(this);
+  this->FillGeneralConditions<QSpinBox, int>(SpinBox, 
+    iMinValue, iMaxValue, iDefaultValue);
+  return SpinBox;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+QDoubleSpinBox* QGoAlgorithmWidget::GetDoubleSpinBox(double iMinValue, 
+  double iMaxValue, double iDefaultValue, double iNbDecimal)
+{
+  QDoubleSpinBox* DoubleSpinBox = new QDoubleSpinBox(this);
+  this->FillGeneralConditions<QDoubleSpinBox, double>(DoubleSpinBox, 
+    iMinValue, iMaxValue, iDefaultValue);
+    if (iNbDecimal != 0)
+      {
+      DoubleSpinBox->setDecimals(iNbDecimal);
+      }
+  return DoubleSpinBox;
+}
 /*void QGoAlgorithmsManagerWidget::AddMethod(std::string iNameMethod, 
   QWidget* iParametersWidget, QWidget* iAdvParamWidget)
 {

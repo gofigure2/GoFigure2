@@ -38,6 +38,8 @@
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QFormLayout>
+#include <QSpinBox>
+#include <QDoubleSpinBox>
 #include "QGoAdvancedParametersWidget.h"
 
 /**
@@ -55,6 +57,12 @@ public:
 
   std::string GetMethodName();
 
+  void AddParameter(std::string iParamName, int iMinValue = 0, int iMaxValue = 0, 
+    int iDefaultValue = 0);
+
+  void AddParameter(std::string iParamName, double iMinValue = 0, double iMaxValue = 0, 
+    double iDefaultValue = 0, int iNbDecimal = 0);
+ 
 protected:
   QVBoxLayout*                  m_VBoxLayout;
   std::string                   m_MethodName;
@@ -62,6 +70,21 @@ protected:
   QFormLayout*                  m_ParamLayout;
  
   void Initialize();
+  QSpinBox* GetSpinBox(int iMinValue = 0, int iMaxValue = 0, int iDefaultValue = 0);
+  QDoubleSpinBox* GetDoubleSpinBox(double iMinValue = 0, double iMaxValue = 0, double iDefaultValue = 0,
+    double iNbDecimal = 0);
 
+  template<typename B, typename T >
+  void FillGeneralConditions(B* iBox, T iMinValue = 0, T iMaxValue = 0, T iDefaultValue = 0)
+  {
+    if (!(iMinValue == 0 && iMaxValue ==0) )
+      {
+      iBox->setRange(iMinValue, iMaxValue);
+      }
+    if(iDefaultValue != 0)
+      {
+      iBox->setValue(iDefaultValue);
+      }
+  }
 };
 #endif

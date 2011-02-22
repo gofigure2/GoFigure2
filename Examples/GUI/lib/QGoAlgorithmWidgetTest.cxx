@@ -59,7 +59,8 @@ int main(int argc, char *argv[])
   //ListFilters.append("WaterShed");
 
   QGoAlgorithmWidget* AlgoWidget = new QGoAlgorithmWidget("Test", NULL);
-
+  AlgoWidget->AddParameter("IntParam", 0, 100, 50);
+  AlgoWidget->AddParameter("DoubleParam", 20.56, 53.21, 24, 2);
 
   //QObject::connect( timer, SIGNAL( timeout() ), window, SLOT( close() ) );
 
