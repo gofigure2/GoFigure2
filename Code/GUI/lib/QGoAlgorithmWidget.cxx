@@ -56,20 +56,18 @@ void QGoAlgorithmWidget::Initialize()
 {
   this->m_VBoxLayout = new QVBoxLayout;
   this->m_ParamLayout = new QFormLayout;
-
-  ctkCollapsibleGroupBox* AdvParamWidget = 
-    new ctkCollapsibleGroupBox(tr("Advanced"),this );
-  this->m_ExpandableBox->setFlat(true);
-  this->m_ExpandableBox->setChecked(false);
-
   this->m_AdvParamLayout = new QFormLayout;
-  AdvParamWidget->setLayout(this->m_AdvParamLayout);
-
+  
   this->m_VBoxLayout->addLayout(this->m_ParamLayout);
-  this->m_VBoxLayout->addWidget(AdvParamWidget); 
-
+ 
   this->setLayout(this->m_VBoxLayout);
   this->m_VBoxLayout->setSizeConstraint(QLayout::SetFixedSize);
+
+  //can not setflat + set checked before inserting the parameters
+  //or no ones will appear...
+  //this->m_AdvParamGroupBox->setFlat(true);
+  //this->m_AdvParamGroupBox->setChecked(false);
+
 }
 //-------------------------------------------------------------------------
 
@@ -87,10 +85,6 @@ void QGoAlgorithmWidget::AddParameter(std::string iParamName,
   QSpinBox* ParamBox = new QSpinBox(this);
   this->AddParameterInLayout<QSpinBox, int>(ParamBox, iParamName, 
     this->m_ParamLayout, iMinValue, iMaxValue, iDefaultValue);
-  //QSpinBox* ParamBox = this->AddSpinBox(iMinValue, iMaxValue, iDefaultValue);
-  //QString ParamName(tr("%1:").arg(iParamName.c_str() ) );
-  //this->m_ParamLayout->addRow(tr("%1:").arg(iParamName.c_str() ), 
-  //  ParamBox);
 }
 //-------------------------------------------------------------------------
 
@@ -99,8 +93,6 @@ void QGoAlgorithmWidget::AddParameter(std::string iParamName,
   double iMinValue, double iMaxValue, double iDefaultValue, 
   int iNbDecimal)
 {
-  //QDoubleSpinBox* ParamBox = this->GetDoubleSpinBox(iMinValue, iMaxValue, 
-  //  iDefaultValue, iNbDecimal);
    QDoubleSpinBox* ParamBox = new QDoubleSpinBox(this);
    if (iNbDecimal != 0)
      {
@@ -108,65 +100,47 @@ void QGoAlgorithmWidget::AddParameter(std::string iParamName,
      }
    this->AddParameterInLayout<QDoubleSpinBox, int>(ParamBox, iParamName, 
     this->m_ParamLayout, iMinValue, iMaxValue, iDefaultValue);
-  //this->m_ParamLayout->addRow(tr("%1:").arg(iParamName.c_str() ), 
-   // ParamBox);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/*QSpinBox* QGoAlgorithmWidget::GetSpinBox(
+void QGoAlgorithmWidget::AddAdvParameter(std::string iParamName, 
   int iMinValue, int iMaxValue, int iDefaultValue)
 {
-  QSpinBox* SpinBox = new QSpinBox(this);
-  this->FillGeneralConditions<QSpinBox, int>(SpinBox, 
-    iMinValue, iMaxValue, iDefaultValue);
-  return SpinBox;
+  QSpinBox* AdvParamBox = new QSpinBox(this);
+  this->AddParameterInLayout<QSpinBox, int>(AdvParamBox, iParamName, 
+    this->m_AdvParamLayout, iMinValue, iMaxValue, iDefaultValue);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QDoubleSpinBox* QGoAlgorithmWidget::GetDoubleSpinBox(double iMinValue, 
-  double iMaxValue, double iDefaultValue, double iNbDecimal)
+void QGoAlgorithmWidget::AddAdvParameter(std::string iParamName, 
+  double iMinValue, double iMaxValue, double iDefaultValue,
+  int iNbDecimal)
 {
-  QDoubleSpinBox* DoubleSpinBox = new QDoubleSpinBox(this);
-  this->FillGeneralConditions<QDoubleSpinBox, double>(DoubleSpinBox, 
-    iMinValue, iMaxValue, iDefaultValue);
-    if (iNbDecimal != 0)
-      {
-      DoubleSpinBox->setDecimals(iNbDecimal);
-      }
-  return DoubleSpinBox;
-}*/
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoAlgorithmWidget::AddAdvParameter(std::string iParamName, int iMinValue, 
-  int iMaxValue, int iDefaultValue)
-{
-  
-
+  QDoubleSpinBox* AdvParamBox = new QDoubleSpinBox(this);
+  if (iNbDecimal != 0)
+     {
+     AdvParamBox->setDecimals(iNbDecimal);
+     }
+  this->AddParameterInLayout<QDoubleSpinBox, double>(AdvParamBox, iParamName, 
+    this->m_AdvParamLayout, iMinValue, iMaxValue, iDefaultValue);
 }
-/*void QGoAlgorithmsManagerWidget::AddMethod(std::string iNameMethod, 
-  QWidget* iParametersWidget, QWidget* iAdvParamWidget)
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoAlgorithmWidget::show()
 {
-  QWidget* MethodWidget = new QWidget(this);
-
-  QVBoxLayout* MethodLayout = new QVBoxLayout;
-  MethodLayout->addWidget(iParametersWidget);
+  int Param = this->m_AdvParamLayout->rowCount();
+  if (this->m_AdvParamLayout->rowCount()>0)
+    {
+    ctkCollapsibleGroupBox* AdvParamGroupBox =
+      new ctkCollapsibleGroupBox(tr("Advanced"));
+    AdvParamGroupBox->setLayout(this->m_AdvParamLayout);
+    AdvParamGroupBox->setFlat(true);
+    AdvParamGroupBox->setChecked(false);
+    this->m_VBoxLayout->addWidget(AdvParamGroupBox);
+    }
   
-  QGoAdvancedParametersWidget* AdvParamWidget = 
-    new QGoAdvancedParametersWidget(this);
-  AdvParamWidget->AddAdvancedParamWidget(iAdvParamWidget);
-  
-
-  MethodLayout->addWidget(AdvParamWidget);
-
-  MethodWidget->setLayout(MethodLayout);
-  this->m_MethodWidgets->addWidget(MethodWidget);
-
-  int Index = this->m_MethodWidgets->indexOf(MethodWidget);
-  this->m_MethodComboBox->insertItem(Index,iNameMethod.c_str());
-}*/
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
+  QWidget::show();
+}

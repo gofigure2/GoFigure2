@@ -40,7 +40,7 @@
 #include <QFormLayout>
 #include <QSpinBox>
 #include <QDoubleSpinBox>
-#include "QGoAdvancedParametersWidget.h"
+#include "ctkCollapsibleGroupBox.h"
 
 /**
  * \class QGoAlgorithmWidget
@@ -95,33 +95,19 @@ public:
   void AddAdvParameter(std::string iParamName, double iMinValue = 0, double iMaxValue = 0, 
     double iDefaultValue = 0, int iNbDecimal = 0);
 
+  /**
+  \brief add the Advanced parameters box if there are parameters inside and reduce it
+  before showing the widget    
+  */
+  void show();
+
 protected:
   QVBoxLayout*                  m_VBoxLayout;
   std::string                   m_MethodName;
-  //QGoAdvancedParametersWidget*  m_AdvParamWidget;
   QFormLayout*                  m_ParamLayout;
   QFormLayout*                  m_AdvParamLayout;
  
   void Initialize();
-
-  /**
-  \brief return the spinbox with the corresponding min, max and default values
-  \param[in] iMinValue min value of the spinbox
-  \param[in] iMaxValue max value of the spinbox
-  \param[in] iDefaultValue default value of the spinbox
-  \return the spinbox
-  */
-  //QSpinBox* GetSpinBox(int iMinValue = 0, int iMaxValue = 0, int iDefaultValue = 0);
-
-  /**
-  \brief return the doublespinbox with the corresponding min, max and default values
-  \param[in] iMinValue min value of the spinbox
-  \param[in] iMaxValue max value of the spinbox
-  \param[in] iDefaultValue default value of the spinbox
-  \return the doublespinbox
-  */
-  //QDoubleSpinBox* GetDoubleSpinBox(double iMinValue = 0, double iMaxValue = 0, double iDefaultValue = 0,
-  //  double iNbDecimal = 0);
 
   /**
   \brief set the min, max and default values of the spinbox and 
