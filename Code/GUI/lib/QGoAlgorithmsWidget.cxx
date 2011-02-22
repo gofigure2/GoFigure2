@@ -36,6 +36,7 @@
 #include <QStackedLayout>
 #include <QLabel>
 #include <QGroupBox>
+#include <QPushButton>
 #include "QGoAdvancedParametersWidget.h"
 
 
@@ -65,6 +66,14 @@ void QGoAlgorithmsWidget::Initialize()
   
   this->m_VBoxLayout->addLayout(MethodLayout);
   this->m_VBoxLayout->addWidget(this->m_MethodWidgets);
+  QHBoxLayout* ButtonLayout = new QHBoxLayout;
+  QPushButton* ApplyButton = new QPushButton(tr("Apply"),this);
+  QPushButton* ResetButton = new QPushButton(tr("Reset"), this);
+  ButtonLayout->addWidget(ApplyButton);
+  ButtonLayout->addWidget(ResetButton);
+  //this->m_VLayout->addWidget(ApplyButton);
+  this->m_VBoxLayout->addLayout(ButtonLayout);
+
   this->setLayout(this->m_VBoxLayout);
   this->m_VBoxLayout->setSizeConstraint(QLayout::SetFixedSize);
   

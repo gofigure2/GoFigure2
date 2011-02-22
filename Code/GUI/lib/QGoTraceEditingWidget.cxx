@@ -56,8 +56,8 @@ void QGoTraceEditingWidget::Initialize(QWidget *iParent)
   this->m_ModeEditingWidget = new QGoModeEditingWidget(this);
   this->m_VLayout = new QVBoxLayout;
   this->m_VLayout->addWidget(this->m_ModeEditingWidget);
-  QPushButton* ApplyButton = new QPushButton(tr("Apply"),this);
-  this->m_VLayout->addWidget(ApplyButton);
+  //QPushButton* ApplyButton = new QPushButton(tr("Apply"),this);
+  //this->m_VLayout->addWidget(ApplyButton);
   this->setLayout(this->m_VLayout);
   this->m_VLayout->setSizeConstraint(QLayout::SetFixedSize);
 }
