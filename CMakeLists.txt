@@ -289,6 +289,8 @@ IF( VTK_FOUND )
       ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/
       ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/
       ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/Resources/
+      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/TraceContainers/
+      ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/TraceContainers/
       ${GOFIGURE2_SOURCE_DIR}/Interfaces/
       ${GOFIGURE2_BINARY_DIR}/Interfaces/
       ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/
