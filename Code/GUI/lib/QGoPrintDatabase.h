@@ -631,6 +631,11 @@ protected slots:
   */
   void PassDBConnectionToTracksManager();
 
+   /**
+  \brief open the connection to the database and pass it to the LineagesManager
+  */
+  void PassDBConnectionToLineagesManager();
+
   void CloseDBConnection();
   /**
   \brief slot connected to the TraceColorToChange() emitted by the

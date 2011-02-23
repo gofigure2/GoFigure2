@@ -1361,6 +1361,20 @@ void QGoPrintDatabase::SetTracksManager()
 void QGoPrintDatabase::SetLineagesManager()
 {
   this->m_LineagesManager = new QGoDBLineageManager(m_ImgSessionID, this);
+
+  QObject::connect( this->m_TracksManager, 
+                    SIGNAL (TrackRootLastCreatedLineageToUpdate(unsigned int) ),
+                    this->m_LineagesManager, 
+                    SLOT( UpdateTrackRootLastCreatedLineage(unsigned int) ) );
+
+  QObject::connect( this->m_LineagesManager, 
+                    SIGNAL( NeedToGetDatabaseConnection() ),
+                    this, 
+                    SLOT( PassDBConnectionToLineagesManager() ) );
+  QObject::connect( this->m_LineagesManager,
+                    SIGNAL( DBConnectionNotNeededAnymore() ),
+                    this,
+                    SLOT( CloseDBConnection() ) );
 }
 //--------------------------------------------------------------------------
 
@@ -1387,6 +1401,15 @@ void QGoPrintDatabase::PassDBConnectionToTracksManager()
 {
   this->OpenDBConnection();
   this->m_TracksManager->SetDatabaseConnection(this->m_DatabaseConnector);
+}
+
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoPrintDatabase::PassDBConnectionToLineagesManager()
+{
+  this->OpenDBConnection();
+  this->m_LineagesManager->SetDatabaseConnection(this->m_DatabaseConnector);
 }
 
 //--------------------------------------------------------------------------

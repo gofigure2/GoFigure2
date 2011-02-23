@@ -132,6 +132,13 @@ public:
   void UpdateBoundingBoxes(
   vtkMySQLDatabase *iDatabaseConnector,std::list< unsigned int > iListTracesIDs);
 
+public slots:
+
+  /**
+  \brief update the trackID root for the lineage with iTrackIDRoot
+  */
+  void UpdateTrackRootLastCreatedLineage(unsigned int iTrackIDRoot);
+
 signals:
   //void NeedMeshesInfoForImportedTrack(unsigned int iTrackID);
   //void TrackToSplit(unsigned int iTrackID, std::list<unsigned int> iListMeshIDs);

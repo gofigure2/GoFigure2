@@ -137,6 +137,7 @@ signals:
   void TrackToSplit(unsigned int iTrackID, std::list<unsigned int> iListMeshIDs);
   void TrackIDToBeModifiedWithWidget(std::list<unsigned int> iListTracksID);
   void MeshesToAddToTrack(std::list<unsigned int> iListMeshes, unsigned int iTrackID);
+  void TrackRootLastCreatedLineageToUpdate(unsigned int iMotherID);       
 
 protected:
   GoDBTWContainerForTrack *m_TWContainer;
@@ -218,5 +219,31 @@ protected slots:
     unsigned int &ioTraceIDToKeep, unsigned int &ioTraceIDToDelete,
     vtkMySQLDatabase* iDatabaseConnector);
 
+  //QGoDBTraceManager method
+  virtual void CreateCorrespondingCollection();
+
+  /**
+  \brief get the trackID with the lowest timepoint as the mother trackID, 
+  if several tracks have the lowest timepoint, return false. if other tracks 
+  from the list are overlapping the mother trackID, return false.
+  */
+  bool IdentifyMotherDaughtersToCreateLineage(
+    vtkMySQLDatabase* iDatabaseConnector,
+    std::list<unsigned int> iListTracksID, unsigned int &ioMotherID,
+    std::list<unsigned int> &ioDaughtersID);
+
+  /**
+  \brief check that the mothertrackID is not already a mother in another
+  trackfamily, create the trackfamily if not and return the trackfamilyID
+  */
+  int CreateTrackFamily(vtkMySQLDatabase* iDatabaseConnector,
+    unsigned int iMotherTrackID, std::list<unsigned int> iDaughtersID);
+
+  /**
+  \brief update the trackFamilyID in the database for the track corresponding
+  to iDaughterID
+  */
+  void UpdateTrackFamilyIDForDaughter(vtkMySQLDatabase* iDatabaseConnector,
+    unsigned int iDaughterID,unsigned int iTrackFamilyID);
 };
 #endif

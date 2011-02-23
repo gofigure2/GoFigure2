@@ -285,7 +285,8 @@ std::string SelectQueryStreamListConditions(std::string iTable,
                                             std::vector<std::string> iListAttributes,
                                             std::vector<FieldWithValue> iConditions,
                                             std::string iConditionConnector = "OR",
-                                            bool Distinct = false);
+                                            bool Distinct = false,
+                                            std::string iOrderByColumnName = "");
 
 QGOIO_EXPORT
 std::vector< std::string > ListUnsgIntToVectorString(std::list< unsigned int > iList);

@@ -313,6 +313,21 @@ void QGoDBLineageManager::SetColorCoding(bool IsChecked)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoDBLineageManager::UpdateTrackRootLastCreatedLineage(
+  unsigned int iTrackIDRoot) 
+{
+  emit NeedToGetDatabaseConnection();
+  int LineageID = this->GetLastCreatedTraceID(this->m_DatabaseConnector);
+  GoDBLineageRow LastLineage;
+  LastLineage.SetValuesForSpecificID(LineageID,this->m_DatabaseConnector);
+  LastLineage.SetField("TrackIDRoot", iTrackIDRoot);
+  LastLineage.SaveInDB(this->m_DatabaseConnector);
+  emit DBConnectionNotNeededAnymore();
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 /*void QGoDBTrackManager::AddActionsContextMenu(QMenu *iMenu)
 {
   QGoDBTraceManager::AddActionsContextMenu(iMenu);

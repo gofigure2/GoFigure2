@@ -34,6 +34,7 @@
 
 #include "QGoDBTrackManager.h"
 #include "GoDBTrackRow.h"
+#include "GoDBTrackFamilyRow.h"
 #include <iostream>
 #include <sstream>
 
@@ -317,6 +318,13 @@ void QGoDBTrackManager::AddActionsContextMenu(QMenu *iMenu)
   SplitMergeMenu->addAction( tr("Split your track"), this, SLOT( TrackIDToEmit() ) );
   SplitMergeMenu->addAction( tr("Merge your 2 tracks"), this, SLOT( MergeTracks() ) );
   iMenu->addAction( SplitMergeMenu->menuAction() );
+
+  //if we use also add checked traces to selected collection, then we should use
+  // AddActionForAddingCheckedTracesToCollection() from QGoDBTraceManager instead:
+  this->m_CheckedTracesMenu->addAction( tr("Create a new %1 from checked %2s")
+                                        .arg( this->m_CollectionName.c_str() )
+                                        .arg( this->m_TraceName.c_str() ),
+                                        this, SLOT( CreateCorrespondingCollection() ) );
 }
 
 //-------------------------------------------------------------------------
@@ -489,4 +497,124 @@ bool QGoDBTrackManager::CheckOverlappingTracks(
     }
 
   return oTracksOverlapping;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTrackManager::CreateCorrespondingCollection()
+{
+  unsigned int MotherID;
+  std::list<unsigned int> DaughtersIDs = std::list<unsigned int>();
+  if (this->IdentifyMotherDaughtersToCreateLineage(this->m_DatabaseConnector, 
+    this->GetListHighlightedIDs(), MotherID, DaughtersIDs) )
+    {
+    int TrackFamilyID =  this->CreateTrackFamily(this->m_DatabaseConnector, 
+      MotherID, DaughtersIDs);
+    if (TrackFamilyID != -1)
+      {
+      //for lineage bounding box and lineageid in track table
+      QGoDBTraceManager::CreateCorrespondingCollection(); 
+      std::list<unsigned int>::iterator iter = DaughtersIDs.begin();
+      while(iter != DaughtersIDs.end() )
+        {
+        this->UpdateTrackFamilyIDForDaughter(this->m_DatabaseConnector, 
+          *iter, TrackFamilyID);
+        ++iter;
+        }
+      //update the root for the lineage:
+      emit TrackRootLastCreatedLineageToUpdate(MotherID);       
+      }    
+    }  
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+bool QGoDBTrackManager::IdentifyMotherDaughtersToCreateLineage(
+  vtkMySQLDatabase* iDatabaseConnector,
+  std::list<unsigned int> iListTracksID, unsigned int &ioMotherID,
+  std::list<unsigned int> &ioDaughtersID)
+{
+  //get the trackid with the lowest timepoint and check that there is only one:
+  int MotherTrackID = this->m_CollectionOfTraces->GetTraceIDWithLowestTimePoint(
+    iDatabaseConnector,iListTracksID);
+  if (MotherTrackID == -1)
+    {
+    QMessageBox msgBox;
+    msgBox.setText(
+      tr("Can not create the lineage as two of your selected tracks can be the mother") );
+    msgBox.exec();
+    return false;
+    }
+  //check that none of the 2 others tracks overlap the mother:
+  std::list<unsigned int>::iterator iter = iListTracksID.begin();
+  //to change: modify the method CheckOverlappingTracks:
+  unsigned int ioTraceIDToKeep = 0;
+  unsigned int ioTraceIDToDelete = 0; 
+  while(iter != iListTracksID.end())
+    {
+    if (*iter != static_cast<unsigned int>(MotherTrackID) )
+      {
+      std::list<unsigned int> TracksOverlappingToCheck;
+      TracksOverlappingToCheck.push_back(MotherTrackID);
+      TracksOverlappingToCheck.push_back(*iter);
+      if (this->CheckOverlappingTracks(TracksOverlappingToCheck, 
+        ioTraceIDToKeep, ioTraceIDToDelete, iDatabaseConnector) )
+        {
+        QMessageBox msgBox;
+        msgBox.setText(
+          tr("Can not create the lineage as one daughter is overlapping the mother") );
+        msgBox.exec();
+        return false;
+        }
+      ioDaughtersID.push_back(*iter);
+      }
+    iter++;
+    } 
+  return true;
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int QGoDBTrackManager::CreateTrackFamily(vtkMySQLDatabase* iDatabaseConnector,
+   unsigned int iMotherTrackID, std::list<unsigned int> iDaughtersID)
+{
+  int oTrackFamilyID = -1;
+  //check that the mother is not already a mother in a trackfamily:
+  GoDBTrackFamilyRow TrackFamily;
+  TrackFamily.SetField<unsigned int>("TrackIDMother", iMotherTrackID);
+  if (TrackFamily.DoesThisTrackFamilyAlreadyExists(iDatabaseConnector))
+    {
+    QMessageBox msgBox;
+    msgBox.setText(
+          tr("Can not create the lineage as the Mother track is already mother of other daugthers") );
+    msgBox.exec();
+    return oTrackFamilyID;
+    }
+  if(iDaughtersID.size() != 2)
+    {
+    std::cout<<"Pb, there is more than 2 daughters to create the lineage !!";
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
+    return oTrackFamilyID;
+    }
+  std::list<unsigned int>::iterator iter = iDaughtersID.begin();
+  TrackFamily.SetField<unsigned int>("TrackIDDaughterOne", *iter);
+  ++iter;
+  TrackFamily.SetField<unsigned int>("TrackIDDaughterTwo", *iter);
+
+  return TrackFamily.SaveInDB(iDatabaseConnector);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTrackManager::UpdateTrackFamilyIDForDaughter(
+  vtkMySQLDatabase* iDatabaseConnector,
+  unsigned int iDaughterID, unsigned int iTrackFamilyID)
+{
+  GoDBTrackRow Daughter;
+  Daughter.SetValuesForSpecificID(iDaughterID, iDatabaseConnector);
+  Daughter.SetField<unsigned int>("TrackFamilyID", iTrackFamilyID);
+  Daughter.SaveInDB(iDatabaseConnector);
 }

@@ -445,6 +445,12 @@ public:
     iImgSessionID, this->m_TracesIDName, iListTraces);
   return oListTracesResults;
 }
+  /**
+  \brief return the traceID with the lowest timepoint or -1 if there
+  is not only one that have the lowest timepoint
+  */
+  int GetTraceIDWithLowestTimePoint(vtkMySQLDatabase *iDatabaseConnector,
+    std::list<unsigned int> iListTraceIDs);
 
 protected:
 
