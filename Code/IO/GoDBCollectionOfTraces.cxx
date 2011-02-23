@@ -1015,7 +1015,7 @@ int GoDBCollectionOfTraces::GetTraceIDWithLowestTimePoint(
   std::vector< std::string > ResultQuery 
     = GetAllSelectedValuesFromTwoTables(
         iDatabaseConnector, this->m_TracesName, "coordinate", SelectedFields,
-        JoinCondition, Conditions, "TCoord");
+        JoinCondition, Conditions, "OR", "TCoord");
   if (ResultQuery.size()>2)
     {
       if (ResultQuery.at(1) != ResultQuery.at(3)) //if the 2 lowest timepoints are different

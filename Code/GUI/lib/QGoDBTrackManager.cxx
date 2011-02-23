@@ -503,8 +503,17 @@ bool QGoDBTrackManager::CheckOverlappingTracks(
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::CreateCorrespondingCollection()
 {
-  unsigned int MotherID;
+  unsigned int MotherID = 0;
   std::list<unsigned int> DaughtersIDs = std::list<unsigned int>();
+  std::list<unsigned int> CheckedTracks = this->GetListHighlightedIDs();
+  if (CheckedTracks.size() != 3)
+    {
+    QMessageBox msgBox;
+    msgBox.setText(
+      tr("Please select 3 tracks to create your lineage") );
+    msgBox.exec();
+    return;
+    }
   if (this->IdentifyMotherDaughtersToCreateLineage(this->m_DatabaseConnector, 
     this->GetListHighlightedIDs(), MotherID, DaughtersIDs) )
     {

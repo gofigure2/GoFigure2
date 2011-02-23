@@ -1091,12 +1091,13 @@ std::list< unsigned int > GetAllSelectedValuesFromTwoTables(
 std::vector< std::string > GetAllSelectedValuesFromTwoTables(
   vtkMySQLDatabase *iDatabaseConnector, std::string iTableOne, std::string iTableTwo,
   std::vector< std::string > iSelectedFields, FieldWithValue iJoinCondition,
-  std::vector< FieldWithValue > iFieldsWithValues, std::string ColumnNameOrder)
+  std::vector< FieldWithValue > iFieldsWithValues, std::string iConditionConnector,
+  std::string ColumnNameOrder)
 {
   std::string Where = GetLeftJoinTwoTables(iTableOne, iTableTwo, iJoinCondition);
 
   std::string QueryString = SelectQueryStreamListConditions(Where, iSelectedFields,
-       iFieldsWithValues, "AND", false, ColumnNameOrder);
+       iFieldsWithValues, iConditionConnector, false, ColumnNameOrder);
   /*if (!ColumnNameOrder.empty())
     {
     QueryString = SelectQueryStreamListConditions(Where, iSelectedFields, iFieldsWithValues, "AND",
