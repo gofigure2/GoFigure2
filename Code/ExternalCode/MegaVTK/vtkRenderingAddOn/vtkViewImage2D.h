@@ -425,6 +425,20 @@ public:
       }
   }
 
+
+  /*
+   * \brief Synchronize the views
+   * \param[in] iSynchronize Enable/disable synchronization
+   */
+  void SynchronizeViews( bool iSynchronize)
+  {
+    vtkInteractorStyleImage2D *t = vtkInteractorStyleImage2D::SafeDownCast (this->InteractorStyle);
+    if ( t )
+      {
+      t->SynchronizeViews(iSynchronize);
+      }
+  }
+
   /**
      Access to the actor corresponding to the cursor. It follows the mouse cursor
      everywhere it goes, and can be activated by pressing 'c'

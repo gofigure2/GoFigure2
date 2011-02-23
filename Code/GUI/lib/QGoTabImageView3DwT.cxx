@@ -975,6 +975,27 @@ QGoTabImageView3DwT::CreateAllViewActions()
 
   // Track Color Coding
   this->m_ViewActions.push_back( m_TrackDockWidget->toggleViewAction() );
+
+  QAction *separator9 = new QAction(this);
+  separator9->setSeparator(true);
+  this->m_ViewActions.push_back(separator9);
+
+  // Enable synchronization
+  QAction *SynchronizeViewsAction =
+    new QAction(tr("synchronize the different views"), this);
+  SynchronizeViewsAction->setCheckable(true);
+  SynchronizeViewsAction->setChecked(true);
+  this->m_ViewActions.push_back(SynchronizeViewsAction);
+
+  QIcon synchronizeicon;
+  synchronizeicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/synchronize.png") ),
+                                QIcon::Normal, QIcon::Off);
+  synchronizeicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/desynchronize.png") ),
+                                QIcon::Normal, QIcon::On);
+  SynchronizeViewsAction->setIcon(synchronizeicon);
+
+  QObject::connect( SynchronizeViewsAction, SIGNAL( toggled(bool) ),
+                    this->m_ImageView, SLOT( SynchronizeViews(bool) ) );
 }
 
 //-------------------------------------------------------------------------
