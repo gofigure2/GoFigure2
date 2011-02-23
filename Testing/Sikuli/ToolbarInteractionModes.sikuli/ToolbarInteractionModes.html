@@ -95,7 +95,16 @@ ViewRegion = (<img src="XY_ViewRegion.png" />,<img src="XZ_ViewRegion.png" />,<i
 
         <span class="kw">for</span> j <span class="kw">in</span> [<span class="dig">0.</span><span class="dig">.3</span>]:
                 point= [<span class="dig">2</span>*(Init_view[j].x+Init_view[j].h)/<span class="dig">3</span>, <span class="dig">2</span>*(Init_view[j].y+Init_view[j].w)/<span class="dig">3</span>]
-                <span class="skw">click</span>(Location(point))
+
+                <span class="cmt">#single left click
+</span>                <span class="skw">click</span>(Location(point))
+                <span class="cmt">#nothing should happen in all modes in all views
+</span>                <span class="kw">assert</span> exists(Init_view[j])
+
+                <span class="cmt">#single right click
+</span>                <span class="skw">rightClick</span>(Location(point))
+                <span class="cmt">#nothing should happen in all modes in all views
+</span>                <span class="kw">assert</span> exists(Init_view[j])
 </pre>
 </body>
 </html>

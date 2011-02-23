@@ -23,7 +23,21 @@ for mode in Toolbar:
 
 	for j in [0..3]:
 		point= [2*(Init_view[j].x+Init_view[j].h)/3, 2*(Init_view[j].y+Init_view[j].w)/3]
+
+		#single left click
 		click(Location(point))
+		#nothing should happen in all modes in all views
+		assert exists(Init_view[j])
+
+		#single right click
+		rightClick(Location(point))
+		#nothing should happen in all modes in all views
+		assert exists(Init_view[j])
+
+		
+
+				
+	
 
 
 		
