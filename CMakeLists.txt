@@ -443,7 +443,7 @@ IF( VTK_FOUND )
     ENDIF( ( ${CMAKE_MAJOR_VERSION} EQUAL 2 )  AND ( ${CMAKE_MINOR_VERSION} GREATER 7 ) )
 
   ELSE( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
-    MESSAGE( SEND_ERROR "GoFigure2 requires Qt4.5 (or newer version) to be installed" )
+    MESSAGE( SEND_ERROR "GoFigure2 requires Qt4.5 (or newer version) to be installed, and your version is ${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}" )
   ENDIF( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
 
 ENDIF( VTK_FOUND )
