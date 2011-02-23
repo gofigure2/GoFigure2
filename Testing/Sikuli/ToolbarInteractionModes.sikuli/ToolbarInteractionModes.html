@@ -70,16 +70,32 @@
 <h2>ToolbarInteractionModes.sikuli</h2> <a href="ToolbarInteractionModes.zip">(Download this script)</a>
 </div>
 <pre class="sikuli-code">
+<span class="cmt">#will have to click trace and table to get right size for xyview images and navigation widget to see if things moved or not
+</span>
 Toolbar = (<span class="str">"default"</span>,<img src="ZoomIcon.png" />,<img src="PanIcon.png" />,<img src="ActorPickingIcon.png" />)
+
+
+Mouse = (<span class="str">"Left"</span>,<span class="str">"Right"</span>,<span class="str">"Middle"</span>,<span class="str">"Scroll"</span>)
+Actions = (<span class="str">"single_click"</span>,<span class="str">"double_click"</span>,<span class="str">"drag_up2down"</span>,<span class="str">"drag_down2up"</span>,<span class="str">"drag_left2right"</span>,<span class="str">"drag_right2left"</span>)
+
+ViewRegion = (<img src="XY_ViewRegion.png" />,<img src="XZ_ViewRegion.png" />,<img src="YZ_ViewRegion.png" />,<img src="XYZ_ViewRegion.png" />)
+
+<span class="kw">for</span> i <span class="kw">in</span> [<span class="dig">0.</span><span class="dig">.3</span>]:
+        Init_view[i] = <span class="skw">find</span>(Pattern(ViewRegion[i]).similar(<span class="dig">0.30</span>))
+
+        <span class="cmt">#Init_XZview = find(Pattern(ViewRegion[1]).similar(0.30))
+</span>        <span class="cmt">#Init_YZview = find(Pattern(ViewRegion[2]).similar(0.30))
+</span>        <span class="cmt">#Init_XYZview = find(Pattern(ViewRegion[3]).similar(0.30))
+</span>
 
 <span class="kw">for</span> mode <span class="kw">in</span> Toolbar:
 
-         <span class="kw">if</span> mode != <span class="str">"default"</span>:
+        <span class="kw">if</span> mode != <span class="str">"default"</span>:
                 <span class="skw">click</span>(mode)
 
-        <span class="cmt">#button: left, right, middle, scroll
-</span>        <span class="cmt">#action: single_click, double_click, drag_up2down,drag_down2up,drag_left2right,drag_right2left
-</span>        <span class="cmt">#view: xy, xz, yz, xyz</span>
+        <span class="kw">for</span> j <span class="kw">in</span> [<span class="dig">0.</span><span class="dig">.3</span>]:
+                point= [<span class="dig">2</span>*(Init_view[j].x+Init_view[j].h)/<span class="dig">3</span>, <span class="dig">2</span>*(Init_view[j].y+Init_view[j].w)/<span class="dig">3</span>]
+                <span class="skw">click</span>(Location(point))
 </pre>
 </body>
 </html>
