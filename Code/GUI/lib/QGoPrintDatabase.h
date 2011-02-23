@@ -58,6 +58,7 @@
 #include "QGoDBMeshManager.h"
 #include "QGoDBContourManager.h"
 #include "QGoDBTrackManager.h"
+#include "QGoDBLineageManager.h"
 #include "ContourContainer.h"
 #include "MeshContainer.h"
 #include "TrackContainer.h"
@@ -302,6 +303,7 @@ protected:
   QGoDBContourManager*              m_ContoursManager;
   QGoDBMeshManager*                 m_MeshesManager;
   QGoDBTrackManager*                m_TracksManager;
+  QGoDBLineageManager*              m_LineagesManager;
 
   //Database variables:
   vtkMySQLDatabase* m_DatabaseConnector;
@@ -334,6 +336,11 @@ protected:
  \brief create the m_TracksManager and its SLOT/SIGNAL connection
  */
   void SetTracksManager();
+
+  /**
+ \brief create the m_LineagesManager and its SLOT/SIGNAL connection
+ */
+  void SetLineagesManager();
 
   //******************Methods related to Trace Settings Editing Widget***********
 

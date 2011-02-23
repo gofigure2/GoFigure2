@@ -29,7 +29,7 @@ SET( QGOIO_SRC
   GoDBTraceRow.cxx
   GoDBRow.cxx
   GoDBTrackRow.cxx
-  GoDbTrackFamily.cxx
+  GoDBTrackFamilyRow.cxx
   GoDBLineageRow.cxx
   GoDBNameDescRow.cxx
   GoDBBookmarkRow.cxx

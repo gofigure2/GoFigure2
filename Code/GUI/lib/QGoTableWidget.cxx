@@ -365,7 +365,10 @@ void QGoTableWidget::DisplayContent(TWContainerType iTWRowContainer,
       }
 
     this->SetColorForTable(iTWRowContainer, iIndexColorTraceRowContainer, iTraceName, 0);
-    this->SetColorForTable(iTWRowContainer, iIndexColorCollectionRowContainer, iCollectionName, 0);
+    if (iCollectionName != "None") //no collection for lineages
+      {
+      this->SetColorForTable(iTWRowContainer, iIndexColorCollectionRowContainer, iCollectionName, 0);
+      }
     } //ENDELSE
   this->setSortingEnabled(true);
   this->resizeColumnsToContents();

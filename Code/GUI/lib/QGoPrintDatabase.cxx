@@ -77,6 +77,7 @@ QGoPrintDatabase::QGoPrintDatabase(QWidget *iParent) :
   m_ContoursManager(NULL),
   m_MeshesManager(NULL),
   m_TracksManager(NULL),
+  m_LineagesManager(NULL),
   m_DatabaseConnector(NULL),
   m_IsDatabaseUsed(false),
   m_ReeditMode(false),
@@ -145,10 +146,10 @@ QGoPrintDatabase::~QGoPrintDatabase()
     delete m_TracksManager;
     }
   // lineages
-  // if (m_LineagesManager)
-  //   {
-  //   delete m_LineagesManager;
-  //   }
+  if (m_LineagesManager)
+    {
+    delete m_LineagesManager;
+    }
 }
 
 //--------------------------------------------------------------------------
@@ -224,6 +225,7 @@ void QGoPrintDatabase::FillTableFromDatabase()
   this->DBTabWidget->addTab(this->m_ContoursManager->GetTableWidget(), "contour");
   this->DBTabWidget->addTab(this->m_MeshesManager->GetTableWidget(), "mesh");
   this->DBTabWidget->addTab(this->m_TracksManager->GetTableWidget(), "track");
+  this->DBTabWidget->addTab(this->m_LineagesManager->GetTableWidget(), "lineage");
   this->DBTabWidget->blockSignals(false);
 
   m_IsDatabaseUsed = true;
@@ -1075,6 +1077,8 @@ void QGoPrintDatabase::GetContentAndDisplayAllTracesInfo(
     iDatabaseConnector);
   this->m_TracksManager->DisplayInfoAndLoadVisuContainerForAllTracks(
     iDatabaseConnector);
+  this->m_LineagesManager->DisplayInfoAndLoadVisuContainerForAllLineages(
+    iDatabaseConnector);
 }
 
 //-------------------------------------------------------------------------
@@ -1202,6 +1206,7 @@ void QGoPrintDatabase::SetTracesManager()
   this->SetContoursManager();
   this->SetMeshesManager();
   this->SetTracksManager();
+  this->SetLineagesManager();
 }
 
 //--------------------------------------------------------------------------
@@ -1350,6 +1355,13 @@ void QGoPrintDatabase::SetTracksManager()
   this->m_TracksManager->SetSelectedColor( this->m_TraceWidget->GetPointerColorData() );
 }
 
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoPrintDatabase::SetLineagesManager()
+{
+  this->m_LineagesManager = new QGoDBLineageManager(m_ImgSessionID, this);
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
