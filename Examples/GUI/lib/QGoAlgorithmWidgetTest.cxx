@@ -59,13 +59,13 @@ int main(int argc, char *argv[])
   AlgoWidget->AddAdvParameter("IntParam", 20, 50, 40);
   AlgoWidget->AddAdvParameter("DoubleParam", 11, 23.00, 15, 3);
 
+
   //QObject::connect( timer, SIGNAL( timeout() ), window, SLOT( close() ) );
 
   
   //timer->start(1000);
 
   AlgoWidget->show();
-
   app.processEvents();
   int output = app.exec();
 

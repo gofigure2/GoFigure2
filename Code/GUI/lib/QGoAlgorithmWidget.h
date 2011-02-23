@@ -106,6 +106,7 @@ protected:
   std::string                   m_MethodName;
   QFormLayout*                  m_ParamLayout;
   QFormLayout*                  m_AdvParamLayout;
+  bool                          m_AdvParamAlreadySetUp;
  
   void Initialize();
 

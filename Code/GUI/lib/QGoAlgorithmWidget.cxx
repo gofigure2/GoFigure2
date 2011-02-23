@@ -62,7 +62,7 @@ void QGoAlgorithmWidget::Initialize()
  
   this->setLayout(this->m_VBoxLayout);
   this->m_VBoxLayout->setSizeConstraint(QLayout::SetFixedSize);
-
+  this->m_AdvParamAlreadySetUp = false;
   //can not setflat + set checked before inserting the parameters
   //or no ones will appear...
   //this->m_AdvParamGroupBox->setFlat(true);
@@ -131,16 +131,21 @@ void QGoAlgorithmWidget::AddAdvParameter(std::string iParamName,
 //-------------------------------------------------------------------------
 void QGoAlgorithmWidget::show()
 {
-  int Param = this->m_AdvParamLayout->rowCount();
-  if (this->m_AdvParamLayout->rowCount()>0)
+  if (!this->m_AdvParamAlreadySetUp) //in order not to add another collapsible box
+    //each time the widget is shown
     {
-    ctkCollapsibleGroupBox* AdvParamGroupBox =
-      new ctkCollapsibleGroupBox(tr("Advanced"));
-    AdvParamGroupBox->setLayout(this->m_AdvParamLayout);
-    AdvParamGroupBox->setFlat(true);
-    AdvParamGroupBox->setChecked(false);
-    this->m_VBoxLayout->addWidget(AdvParamGroupBox);
+    if (this->m_AdvParamLayout->rowCount()>0 ) //if there is at least one advanced parameter,
+      //if not, no need to add the collapsible box
+      {
+      ctkCollapsibleGroupBox* AdvParamGroupBox =
+        new ctkCollapsibleGroupBox(tr("Advanced"));
+      AdvParamGroupBox->setLayout(this->m_AdvParamLayout);
+      AdvParamGroupBox->setFlat(true);
+      AdvParamGroupBox->setChecked(false);
+      this->m_VBoxLayout->addWidget(AdvParamGroupBox);
+      }
+    this->m_AdvParamAlreadySetUp = true; //no need to check again when widget shown another time
     }
-  
+
   QWidget::show();
 }
