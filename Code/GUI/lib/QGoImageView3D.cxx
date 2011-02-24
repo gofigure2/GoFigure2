@@ -1399,6 +1399,7 @@ QGoImageView3D::SynchronizeViews( bool iSynchronize)
   for ( int i = 0; i < n; i++ )
     {
     vtkViewImage2D *viewer = m_Pool->GetItem(i);
+    m_Pool->SynchronizeViews( iSynchronize );
     viewer->SynchronizeViews( iSynchronize );
     }
 

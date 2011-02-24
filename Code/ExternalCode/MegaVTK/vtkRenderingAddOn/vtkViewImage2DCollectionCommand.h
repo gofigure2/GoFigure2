@@ -76,6 +76,12 @@ public:
    */
   void SetCollection(vtkViewImage2DCollection *p);
 
+  /**
+   * \brief Synchronize the 2d views
+   * \param[in] iSynchronize enable/disable synchronization
+   */
+  void SynchronizeViews( bool iSynchronizeViews);
+
   // Description:
   // Satisfy the superclass API for callbacks. Recall that the caller is
   // the instance invoking the event; eid is the event id (see
@@ -91,6 +97,8 @@ private:
 
   double InitialWindow;
   double InitialLevel;
+
+  bool m_SynchronizeViews;
 };
 
 #endif

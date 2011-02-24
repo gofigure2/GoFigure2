@@ -990,8 +990,6 @@ QGoTabImageView3DwT::CreateAllViewActions()
   QIcon synchronizeicon;
   synchronizeicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/synchronize.png") ),
                                 QIcon::Normal, QIcon::Off);
-  synchronizeicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/desynchronize.png") ),
-                                QIcon::Normal, QIcon::On);
   SynchronizeViewsAction->setIcon(synchronizeicon);
 
   QObject::connect( SynchronizeViewsAction, SIGNAL( toggled(bool) ),
