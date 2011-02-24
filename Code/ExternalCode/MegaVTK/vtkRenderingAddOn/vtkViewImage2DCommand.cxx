@@ -194,6 +194,7 @@ vtkViewImage2DCommand::Execute( vtkObject *caller,
     this->Viewer->Render();
     }
 }
+//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void
@@ -245,7 +246,9 @@ vtkViewImage2DCommand::Windowing(vtkInteractorStyleImage2D *isi)
   this->Viewer->SetColorLevel(newLevel);
   this->Viewer->Render();
 }
+//----------------------------------------------------------------------------
 
+//----------------------------------------------------------------------------
 void vtkViewImage2DCommand::PrintInformation()
 {
   vtkRenderWindowInteractor *rwi =
@@ -302,7 +305,9 @@ void vtkViewImage2DCommand::PrintInformation()
   // to allocated but not managed memory : have to cleanup :
   delete[] idx;
 }
+//----------------------------------------------------------------------------
 
+//----------------------------------------------------------------------------
 void vtkViewImage2DCommand::Zooming()
 {
   vtkRenderWindowInteractor *rwi =
@@ -321,7 +326,26 @@ void vtkViewImage2DCommand::Zooming()
   double z = pow(static_cast< double >( 1.1 ), factor);
 
   this->Viewer->SetZoom(z);
+
+  double parallel_scale =
+      this->Viewer->GetRenderer()->GetActiveCamera()->GetParallelScale();
+
+  if(parallel_scale == factor)
+    { std::cout << "are equal" << std::endl;}
+
+  double          t = parallel_scale / z;
+
+  this->Viewer->GetRenderer()->GetActiveCamera()->SetParallelScale(t);
+
+  //  ???
+    if ( this->Viewer->GetInteractorStyle()->GetInteractor()->GetLightFollowCamera() )
+      {
+        this->Viewer->GetRenderer()->UpdateLightsGeometryToFollowCamera();
+      }
+//    item->Render();
+
 }
+//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void

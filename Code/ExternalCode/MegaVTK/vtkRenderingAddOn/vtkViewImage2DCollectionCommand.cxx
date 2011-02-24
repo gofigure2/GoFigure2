@@ -52,6 +52,7 @@
 //--------------------------------------------------------------------------
 vtkViewImage2DCollectionCommand::vtkViewImage2DCollectionCommand()
 {
+  m_SynchronizeViews = true;
 }
 
 //--------------------------------------------------------------------------
@@ -88,6 +89,11 @@ vtkViewImage2DCollectionCommand::GetCollection()
 }
 
 //--------------------------------------------------------------------------
+void
+vtkViewImage2DCollectionCommand::SynchronizeViews( bool iSynchronizeViews)
+{
+  m_SynchronizeViews = iSynchronizeViews;
+}
 
 //--------------------------------------------------------------------------
 void vtkViewImage2DCollectionCommand::Execute( vtkObject *caller,
@@ -97,6 +103,11 @@ void vtkViewImage2DCollectionCommand::Execute( vtkObject *caller,
   if ( !this->Collection )
     {
     return;
+    }
+
+  if( !m_SynchronizeViews )
+    {
+      return;
     }
 
   if ( event == vtkCommand::EndInteractionEvent )

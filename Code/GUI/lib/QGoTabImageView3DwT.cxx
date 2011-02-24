@@ -975,6 +975,25 @@ QGoTabImageView3DwT::CreateAllViewActions()
 
   // Track Color Coding
   this->m_ViewActions.push_back( m_TrackDockWidget->toggleViewAction() );
+
+  QAction *separator9 = new QAction(this);
+  separator9->setSeparator(true);
+  this->m_ViewActions.push_back(separator9);
+
+  // Enable synchronization
+  QAction *SynchronizeViewsAction =
+    new QAction(tr("synchronize the different views"), this);
+  SynchronizeViewsAction->setCheckable(true);
+  SynchronizeViewsAction->setChecked(true);
+  this->m_ViewActions.push_back(SynchronizeViewsAction);
+
+  QIcon synchronizeicon;
+  synchronizeicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/synchronize.png") ),
+                                QIcon::Normal, QIcon::Off);
+  SynchronizeViewsAction->setIcon(synchronizeicon);
+
+  QObject::connect( SynchronizeViewsAction, SIGNAL( toggled(bool) ),
+                    this->m_ImageView, SLOT( SynchronizeViews(bool) ) );
 }
 
 //-------------------------------------------------------------------------
@@ -2174,6 +2193,12 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
 {
   if ( iChecked )
     {
+    // Requiered if we modified the window level
+    /*
+     * \todo Nicolas-Find a better solution
+     */
+    m_ImageView->ResetWindowLevel();
+
     vtkSmartPointer< vtkImageAppendComponents > append_filter =
       vtkSmartPointer< vtkImageAppendComponents >::New();
 

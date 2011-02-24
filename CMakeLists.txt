@@ -243,8 +243,8 @@ IF( VTK_FOUND )
   # Try to find Qt.
   # Note that some command line tools will get compiled even without Qt
   #### Qt ####
-  FIND_PACKAGE( Qt4 REQUIRED )
-  IF( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
+  FIND_PACKAGE( Qt4 4.5 REQUIRED QtCore QtGui )
+  IF( QT4_FOUND )
     IF( QT_USE_FILE )
       SET( QT_USE_QT3SUPPORT FALSE )
       SET( QT_USE_QTCORE TRUE )
@@ -289,6 +289,14 @@ IF( VTK_FOUND )
       ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/
       ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/
       ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/Resources/
+      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/SynchronizedViews/
+      ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/SynchronizedViews/
+      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/VisualizationTraceContainers/
+      ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/VisualizationTraceContainers/
+      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/Video/
+      ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/Video/
+      ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/Wizard/
+      ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/Wizard/
       ${GOFIGURE2_SOURCE_DIR}/Interfaces/
       ${GOFIGURE2_BINARY_DIR}/Interfaces/
       ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/
@@ -433,12 +441,8 @@ IF( VTK_FOUND )
       "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/GOFIGURE2Uninstall.cmake"
       )
 
-    IF( ( ${CMAKE_MAJOR_VERSION} EQUAL 2 )  AND ( ${CMAKE_MINOR_VERSION} GREATER 7 ) )
-      INCLUDE( GOFIGURE2CPack.cmake )
-    ENDIF( ( ${CMAKE_MAJOR_VERSION} EQUAL 2 )  AND ( ${CMAKE_MINOR_VERSION} GREATER 7 ) )
-
-  ELSE( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
-    MESSAGE( SEND_ERROR "GoFigure2 requires Qt4.5 (or newer version) to be installed" )
-  ENDIF( QT4_FOUND AND QT_VERSION_MINOR GREATER 4 )
+    INCLUDE( GOFIGURE2CPack.cmake )
+    
+  ENDIF( QT4_FOUND )
 
 ENDIF( VTK_FOUND )

@@ -171,6 +171,12 @@ public:
    */
   vtkProp * GetCurrentProp();
 
+  /*
+   * \brief Synchronize the views
+   * \param[in] iSynchronize Enable/disable synchronization
+   */
+  void SynchronizeViews( bool iSynchronize);
+
 protected:
   vtkInteractorStyleImage2D();
   ~vtkInteractorStyleImage2D();
@@ -186,6 +192,7 @@ private:
 
   unsigned int m_Mode;
   bool         m_LeftButtonDown;
+  bool         m_SynchronizeViews;
 };
 
 #endif
