@@ -71,7 +71,13 @@
 </div>
 <pre class="sikuli-code">
 <span class="cmt">#will have to click trace and table to get right size for xyview images and navigation widget to see if things moved or not
+</span><span class="cmt">#import os
+</span><span class="cmt">#address = os.getcwd()
+</span>address = <span class="str">"/home/es1076/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images"</span>
+
+<span class="cmt">#address = address+"/gofigure2_images"
 </span>
+setBundlePath(address)
 Toolbar = (<span class="str">"default"</span>,<img src="ZoomIcon.png" />,<img src="PanIcon.png" />,<img src="ActorPickingIcon.png" />)
 
 
@@ -79,10 +85,15 @@ Mouse = (<span class="str">"Left"</span>,<span class="str">"Right"</span>,<span 
 Actions = (<span class="str">"single_click"</span>,<span class="str">"double_click"</span>,<span class="str">"drag_up2down"</span>,<span class="str">"drag_down2up"</span>,<span class="str">"drag_left2right"</span>,<span class="str">"drag_right2left"</span>)
 
 ViewRegion = (<img src="XY_ViewRegion.png" />,<img src="XZ_ViewRegion.png" />,<img src="YZ_ViewRegion.png" />,<img src="XYZ_ViewRegion.png" />)
-
-<span class="kw">for</span> i <span class="kw">in</span> [<span class="dig">0.</span><span class="dig">.3</span>]:
-        Init_view[i] = <span class="skw">find</span>(Pattern(ViewRegion[i]).similar(<span class="dig">0.30</span>))
-
+Init_view = [None]*<span class="dig">4</span>
+pointx = [None]*<span class="dig">4</span>
+pointy = [None]*<span class="dig">4</span>
+<span class="kw">for</span> i <span class="kw">in</span> range(<span class="dig">4</span>):
+        Init_view[i] = <span class="skw">find</span>(Pattern(ViewRegion[i]).similar(<span class="dig">0.3</span>))
+        pointx[i] = Init_view[i].x+ int(round(<span class="dig">0.3</span>*(Init_view[i].w)))
+        pointy[i] = Init_view[i].y+ int(round(<span class="dig">0.6</span>*(Init_view[i].h)))
+        <span class="kw">print</span> pointx[i],pointy[i], <span class="str">"this is pointx and pointy"</span>
+        <span class="kw">print</span> Init_view[i]
         <span class="cmt">#Init_XZview = find(Pattern(ViewRegion[1]).similar(0.30))
 </span>        <span class="cmt">#Init_YZview = find(Pattern(ViewRegion[2]).similar(0.30))
 </span>        <span class="cmt">#Init_XYZview = find(Pattern(ViewRegion[3]).similar(0.30))
@@ -93,18 +104,47 @@ ViewRegion = (<img src="XY_ViewRegion.png" />,<img src="XZ_ViewRegion.png" />,<i
         <span class="kw">if</span> mode != <span class="str">"default"</span>:
                 <span class="skw">click</span>(mode)
 
-        <span class="kw">for</span> j <span class="kw">in</span> [<span class="dig">0.</span><span class="dig">.3</span>]:
-                point= [<span class="dig">2</span>*(Init_view[j].x+Init_view[j].h)/<span class="dig">3</span>, <span class="dig">2</span>*(Init_view[j].y+Init_view[j].w)/<span class="dig">3</span>]
-
-                <span class="cmt">#single left click
-</span>                <span class="skw">click</span>(Location(point))
+        <span class="kw">for</span> j <span class="kw">in</span> range(<span class="dig">4</span>):
+                <span class="cmt">#pointx= 2*(Init_view[j].x+Init_view[j].h)/3
+</span>                <span class="cmt">#pointy= 2*(Init_view[j].y+Init_view[j].w)/3
+</span>                <span class="cmt">#print pointx, pointy
+</span>                <span class="cmt">#single left click
+</span>                mouseMove(Location(pointx[j],pointy[j]))
+                view_withmouse = <span class="skw">capture</span>(Init_view[j].getRect())
+                <span class="skw">click</span>(Location(pointx[j],pointy[j]))
                 <span class="cmt">#nothing should happen in all modes in all views
-</span>                <span class="kw">assert</span> exists(Init_view[j])
+</span>
+                <span class="kw">assert</span> exists(view_withmouse)
 
                 <span class="cmt">#single right click
-</span>                <span class="skw">rightClick</span>(Location(point))
+</span>                <span class="skw">rightClick</span>(Location(pointx[j],pointy[j]))
                 <span class="cmt">#nothing should happen in all modes in all views
-</span>                <span class="kw">assert</span> exists(Init_view[j])
+</span>                <span class="kw">assert</span> exists(Pattern(view_withmouse))
+
+                <span class="cmt">#double right click
+</span>
+                mouseDown(Button.RIGHT)
+                mouseUp(Button.RIGHT)
+                mouseDown(Button.RIGHT)
+                mouseUp(Button.RIGHT)
+                <span class="cmt">#nothing should happen in all modes in all views
+</span>                <span class="kw">assert</span> exists(Pattern(view_withmouse))
+
+                <span class="cmt">#single middle click
+</span>
+                mouseDown(Button.MIDDLE)
+                mouseUp(Button.MIDDLE)
+                <span class="cmt">#nothing should happen in all modes in all views
+</span>                <span class="kw">assert</span> exists(Pattern(view_withmouse))
+
+                <span class="cmt">#double middle click
+</span>
+                mouseDown(Button.MIDDLE)
+                mouseUp(Button.MIDDLE)
+                mouseDown(Button.MIDDLE)
+                mouseUp(Button.MIDDLE)
+                <span class="cmt">#nothing should happen in all modes in all views
+</span>                <span class="kw">assert</span> exists(Pattern(view_withmouse))
 </pre>
 </body>
 </html>
