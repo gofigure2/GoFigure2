@@ -22,16 +22,16 @@ SET( QGoGUILIB_SRC
   VisualizationTraceContainers/MeshContainer.cxx
   VisualizationTraceContainers/ContourMeshContainer.cxx
   VisualizationTraceContainers/TrackContainer.cxx
-  QGoConnectServerPage.cxx
-  QGoCreateImgSessionPage.cxx
+  Wizard/QGoConnectServerPage.cxx
+  Wizard/QGoCreateImgSessionPage.cxx
   QGoImageView.cxx
   QGoImageView2D.cxx
   QGoImageView3D.cxx
   QGoImageInfo.cxx
   QGoLUTDialog.cxx
   QGoManualSegmentationSettingsDialog.cxx
-  QGoOpenCreateImgSessionPage.cxx
-  QGoOpenCreateProjectPage.cxx
+  Wizard/QGoOpenCreateImgSessionPage.cxx
+  Wizard/QGoOpenCreateProjectPage.cxx
   QGoPrintDatabase.cxx
   QGoTabElementBase.cxx
   QGoTabImageView2D.cxx
@@ -41,7 +41,7 @@ SET( QGoGUILIB_SRC
   QGoTabImageViewElementBase.cxx
   QGoTabImageViewNDBase.cxx
   QGoNavigationDockWidget.cxx
-  QGoWizardDB.cxx
+  Wizard/QGoWizardDB.cxx
   QSplitterChild.cxx
   QGoTableWidget.cxx
   SnapshotHelper.cxx
@@ -59,10 +59,10 @@ SET( QGoGUILIB_SRC
   QGoDBColorManager.cxx
   QGoTraceSettingsDockWidget.cxx
   QGoTraceSettingsWidget.cxx
-  QGoDBInitializationWizard.cxx
-  QGoDBInitCreateUserPage.cxx
-  QGoDBInitCreateAuthorsPage.cxx
-  QGoDBInitCreateMicroscopePage.cxx
+  Wizard/QGoDBInitializationWizard.cxx
+  Wizard/QGoDBInitCreateUserPage.cxx
+  Wizard/QGoDBInitCreateAuthorsPage.cxx
+  Wizard/QGoDBInitCreateMicroscopePage.cxx
   QGoColorComboBox.cxx
   QGoSelectedColorComboBox.cxx
   QGoCollectionColorComboBox.cxx
@@ -143,16 +143,16 @@ SET( QGoGUILIB_HDRS
   VisualizationTraceContainers/MeshContainer.h
   VisualizationTraceContainers/ContourMeshContainer.h
   VisualizationTraceContainers/TrackContainer.h
-  QGoConnectServerPage.h
-  QGoCreateImgSessionPage.h
+  Wizard/QGoConnectServerPage.h
+  Wizard/QGoCreateImgSessionPage.h
   QGoImageView.h
   QGoImageView2D.h
   QGoImageView3D.h
   QGoImageInfo.h
   QGoLUTDialog.h
   QGoManualSegmentationSettingsDialog.h
-  QGoOpenCreateImgSessionPage.h
-  QGoOpenCreateProjectPage.h
+  Wizard/QGoOpenCreateImgSessionPage.h
+  Wizard/QGoOpenCreateProjectPage.h
   QGoPrintDatabase.h
   QGoTabElementBase.h
   QGoTabImageView2D.h
@@ -162,7 +162,7 @@ SET( QGoGUILIB_HDRS
   QGoTabImageViewElementBase.h
   QGoTabImageViewNDBase.h
   QGoNavigationDockWidget.h
-  QGoWizardDB.h
+  Wizard/QGoWizardDB.h
   QSplitterChild.h
   QGoTableWidget.h
   QGoCreateMeshDialog.h
@@ -180,10 +180,10 @@ SET( QGoGUILIB_HDRS
   QGoTraceSettingsDockWidget.h
   QGoTraceSettingsWidget.h
   QGoAboutWidget.h
-  QGoDBInitializationWizard.h
-  QGoDBInitCreateUserPage.h
-  QGoDBInitCreateAuthorsPage.h
-  QGoDBInitCreateMicroscopePage.h
+  Wizard/QGoDBInitializationWizard.h
+  Wizard/QGoDBInitCreateUserPage.h
+  Wizard/QGoDBInitCreateAuthorsPage.h
+  Wizard/QGoDBInitCreateMicroscopePage.h
   QGoNetworkUtilities.h
   SynchronizedViews/QGoSynchronizedView.h
   SynchronizedViews/QGoSynchronizedView2D.h
