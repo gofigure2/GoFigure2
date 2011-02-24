@@ -287,6 +287,7 @@ SET( DIRS
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
   ${ITK_LIBRARY_DIRS}
   ${VTK_LIBRARY_DIRS}
+  ${FFMPEG_LIBRARY_DIRS}
 )
 
 # Now the work of copying dependencies into the bundle/package
