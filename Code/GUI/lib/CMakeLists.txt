@@ -119,9 +119,9 @@ SET( QGoGUILIB_SRC
 IF( ENABLE_VIDEO_RECORD_FFMPEG )
   SET(QGoGUILIB_SRC
     ${QGoGUILIB_SRC}
-    vtkRenderWindowMovieRecorder.cxx
-    vtkFFMPEGRenderWindowRecorder.cxx
-    QGoVideoRecorder.cxx
+    Video/vtkRenderWindowMovieRecorder.cxx
+    Video/vtkFFMPEGRenderWindowRecorder.cxx
+    Video/QGoVideoRecorder.cxx
   )
 ENDIF( ENABLE_VIDEO_RECORD_FFMPEG )
 
@@ -129,9 +129,9 @@ ENDIF( ENABLE_VIDEO_RECORD_FFMPEG )
 IF( ENABLE_VIDEO_RECORD_AVI )
   SET(QGoGUILIB_SRC
     ${QGoGUILIB_SRC}
-    vtkRenderWindowMovieRecorder.cxx
-    vtkAVIRenderWindowRecorder.cxx
-    QGoVideoRecorder.cxx
+    Video/vtkRenderWindowMovieRecorder.cxx
+    Video/vtkAVIRenderWindowRecorder.cxx
+    Video/QGoVideoRecorder.cxx
   )
 ENDIF( ENABLE_VIDEO_RECORD_AVI )
 
@@ -238,7 +238,7 @@ SET( QGoGUILIB_HDRS
 IF( ENABLE_VIDEO_RECORD_FFMPEG )
   SET(QGoGUILIB_HDRS
     ${QGoGUILIB_HDRS}
-    QGoVideoRecorder.h
+    Video/QGoVideoRecorder.h
   )
 ENDIF( ENABLE_VIDEO_RECORD_FFMPEG )
 
@@ -246,7 +246,7 @@ ENDIF( ENABLE_VIDEO_RECORD_FFMPEG )
 IF( ENABLE_VIDEO_RECORD_AVI )
   SET(QGoGUILIB_HDRS
     ${QGoGUILIB_HDRS}
-    QGoVideoRecorder.h
+    Video/QGoVideoRecorder.h
   )
 ENDIF( ENABLE_VIDEO_RECORD_AVI )
 
