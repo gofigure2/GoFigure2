@@ -90,6 +90,8 @@ vtkInteractorStyleImage2D::vtkInteractorStyleImage2D()
 
   this->m_LeftButtonDown = false;
 
+  this->m_SynchronizeViews = true;
+
   this->m_Mode = InteractionTypeDefault;
 }
 
@@ -128,14 +130,6 @@ vtkInteractorStyleImage2D::OnMouseMove()
       break;
     case VTKIS_PICK:
       HighlightCurrentActor();
-      break;
-    case VTKIS_WINDOW_LEVEL:
-      this->Superclass::OnMouseMove();
-      // Send event to update Scalar bar in 3D view
-      if ( this->m_LeftButtonDown )
-        {
-        this->InvokeEvent(vtkViewImage2DCommand::WindowLevelEvent, NULL);
-        }
       break;
     default:
       this->Superclass::OnMouseMove();
@@ -472,8 +466,12 @@ vtkInteractorStyleImage2D::EndSliceMove()
     }
   this->StopState();
   this->InvokeEvent(vtkViewImage2DCommand::EndSliceMoveEvent, this);
+
   // Call one more time to update views...
-  this->InvokeEvent(vtkViewImage2DCommand::SyncViewsEvent, this);
+  if(m_SynchronizeViews)
+    {
+    this->InvokeEvent(vtkViewImage2DCommand::SyncViewsEvent, this);
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -484,7 +482,10 @@ vtkInteractorStyleImage2D::SliceMove()
     {
     return;
     }
-  this->InvokeEvent(vtkViewImage2DCommand::SyncViewsEvent, this);
+  if(m_SynchronizeViews)
+    {
+    this->InvokeEvent(vtkViewImage2DCommand::SyncViewsEvent, this);
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -579,4 +580,11 @@ vtkInteractorStyleImage2D::SetPickMode()
   this->State = VTKIS_NONE;
   this->m_Mode = InteractionTypeContourPicking;
   this->Superclass::StartPick();
+}
+
+//----------------------------------------------------------------------------
+void
+vtkInteractorStyleImage2D::SynchronizeViews( bool iSynchronize)
+{
+  m_SynchronizeViews = iSynchronize;
 }
