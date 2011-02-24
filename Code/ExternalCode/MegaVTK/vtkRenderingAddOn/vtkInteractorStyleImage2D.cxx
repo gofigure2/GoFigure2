@@ -131,14 +131,6 @@ vtkInteractorStyleImage2D::OnMouseMove()
     case VTKIS_PICK:
       HighlightCurrentActor();
       break;
-    case VTKIS_WINDOW_LEVEL:
-      this->Superclass::OnMouseMove();
-      // Send event to update Scalar bar in 3D view
-      if ( this->m_LeftButtonDown )
-        {
-        this->InvokeEvent(vtkViewImage2DCommand::WindowLevelEvent, NULL);
-        }
-      break;
     default:
       this->Superclass::OnMouseMove();
       break;
