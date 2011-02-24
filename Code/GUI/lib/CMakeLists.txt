@@ -67,12 +67,12 @@ SET( QGoGUILIB_SRC
   QGoSelectedColorComboBox.cxx
   QGoCollectionColorComboBox.cxx
   QGoComboBox.cxx
-  QGoSynchronizedView.cxx
-  QGoSynchronizedView2D.cxx
-  QGoSynchronizedView3D.cxx
-  QGoSynchronizedView2DCallbacks.cxx
-  QGoSynchronizedView3DCallbacks.cxx
-  QGoSynchronizedViewManager.cxx
+  SynchronizedViews/QGoSynchronizedView.cxx
+  SynchronizedViews/QGoSynchronizedView2D.cxx
+  SynchronizedViews/QGoSynchronizedView3D.cxx
+  SynchronizedViews/QGoSynchronizedView2DCallbacks.cxx
+  SynchronizedViews/QGoSynchronizedView3DCallbacks.cxx
+  SynchronizedViews/QGoSynchronizedViewManager.cxx
   QGoDBTraceManager.cxx
   QGoDBContourManager.cxx
   QGoDBMeshManager.cxx
@@ -185,12 +185,12 @@ SET( QGoGUILIB_HDRS
   QGoDBInitCreateAuthorsPage.h
   QGoDBInitCreateMicroscopePage.h
   QGoNetworkUtilities.h
-  QGoSynchronizedView.h
-  QGoSynchronizedView2D.h
-  QGoSynchronizedView3D.h
-  QGoSynchronizedView2DCallbacks.h
-  QGoSynchronizedView3DCallbacks.h
-  QGoSynchronizedViewManager.h
+  SynchronizedViews/QGoSynchronizedView.h
+  SynchronizedViews/QGoSynchronizedView2D.h
+  SynchronizedViews/QGoSynchronizedView3D.h
+  SynchronizedViews/QGoSynchronizedView2DCallbacks.h
+  SynchronizedViews/QGoSynchronizedView3DCallbacks.h
+  SynchronizedViews/QGoSynchronizedViewManager.h
   QGoColorComboBox.h
   QGoSelectedColorComboBox.h
   QGoCollectionColorComboBox.h
