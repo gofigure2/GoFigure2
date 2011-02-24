@@ -1315,6 +1315,11 @@ void QGoPrintDatabase::SetTracksManager()
   QObject::connect( this->m_TracksManager, SIGNAL( CheckedTracesToDelete() ),
                     this, SLOT( DeleteCheckedTracks() ) );
 
+  QObject::connect( this->m_TracksManager,
+                    SIGNAL ( NewCollectionFromCheckedTraces(std::list< unsigned int > ) ),
+                    this,
+                    SLOT( CreateNewLineageFromCheckedTracks(std::list< unsigned int > ) ) );
+
   QObject::connect( this->m_TracksManager, SIGNAL( NeedToGetDatabaseConnection() ),
                     this, SLOT( PassDBConnectionToTracksManager() ) );
 
@@ -1375,6 +1380,8 @@ void QGoPrintDatabase::SetLineagesManager()
                     SIGNAL( DBConnectionNotNeededAnymore() ),
                     this,
                     SLOT( CloseDBConnection() ) );
+
+  this->m_LineagesManager->SetSelectedColor( this->m_TraceWidget->GetPointerColorData() );
 }
 //--------------------------------------------------------------------------
 
@@ -1531,6 +1538,22 @@ void QGoPrintDatabase::CreateNewMeshFromCheckedContours(
   this->CloseDBConnection();
 }
 
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoPrintDatabase::CreateNewLineageFromCheckedTracks(
+  std::list< unsigned int > iListCheckedTracks )
+{
+  this->OpenDBConnection();
+  unsigned int NewLineageID =
+    this->m_LineagesManager->CreateNewLineageWithNoTrack(
+      this->m_DatabaseConnector);
+
+  this->AddCheckedTracesToCollection< QGoDBTrackManager, QGoDBLineageManager >(
+    this->m_TracksManager, this->m_LineagesManager,
+    NewLineageID, iListCheckedTracks);
+  this->CloseDBConnection();
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------

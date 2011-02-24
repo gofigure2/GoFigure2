@@ -548,7 +548,10 @@ void QGoTableWidget::InsertNewRow(TWContainerType iTWRowContainer,
     SetSelectedColumn(1, NewRow - 1);
     SetVisibleColumn(1, NewRow - 1);
     this->SetColorForTable(iTWRowContainer, iIndexColorTraceRowContainer, TraceName, NewRow - 1);
-    this->SetColorForTable(iTWRowContainer, iIndexColorCollectionRowContainer, CollectionName, NewRow - 1);
+    if (CollectionName != "None") //no collection for lineages
+      {
+      this->SetColorForTable(iTWRowContainer, iIndexColorCollectionRowContainer, CollectionName, NewRow - 1);
+      }
     } //ENDELSE
   this->setSortingEnabled(true);
 }
@@ -648,8 +651,11 @@ void QGoTableWidget::UpdateRow(TWContainerType iTWRowContainer,
           }       //ENDFOR
         this->SetColorForTable(
           iTWRowContainer, iIndexColorTraceRowContainer, iTraceName, IndexUpdateRow);
-        this->SetColorForTable(
-          iTWRowContainer, iIndexColorCollectionRowContainer, iCollectionName, IndexUpdateRow);
+        if (iCollectionName != "None") //no collection for lineages
+          {
+          this->SetColorForTable(
+            iTWRowContainer, iIndexColorCollectionRowContainer, iCollectionName, IndexUpdateRow);
+          }
         }
       else
         {

@@ -202,7 +202,7 @@ std::string SelectQueryStreamListConditions(std::string iTable,
                                          Distinct);
   if (!iOrderByColumnName.empty())
     {
-    AddOrderBy(iOrderByColumnName);
+    oQueryString += AddOrderBy(iOrderByColumnName);
     }
 
   return oQueryString;

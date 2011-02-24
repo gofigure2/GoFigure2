@@ -174,7 +174,7 @@ protected:
     int SavedTraceID;
 
     //in case the ID is different from 0, this means the values have been
-    //updated for this mesh, so we update it in the database:
+    //updated for this trace, so we update it in the database:
     if ( this->m_MapRow[this->m_TableIDName] != "0" )
       {
       SavedTraceID = UpdateOneNewObjectInTable< T >(iDatabaseConnector,

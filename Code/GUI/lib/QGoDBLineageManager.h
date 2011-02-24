@@ -84,13 +84,12 @@ public:
   //  GoFigureTrackAttributes *iTrackAttributes, unsigned iTrackID);
 
   /**
-  \brief create a new track with no mesh and no points in the database, add it in the
+  \brief create a new lineage with no track and no points in the database, add it in the
   TW and in the visu container
   \param[in] iDatabaseConnector connection to the database
-  \return the ID of the new track just created
+  \return the ID of the new lineage just created
   */
-  //unsigned int CreateNewTrackWithNoMesh(
-  //  vtkMySQLDatabase *iDatabaseConnector);
+  unsigned int CreateNewLineageWithNoTrack( vtkMySQLDatabase *iDatabaseConnector);
 
   //virtual pure method in QGoDBTraceManager
   std::list< unsigned int > UpdateTheTracesColor(vtkMySQLDatabase *iDatabaseConnector);
@@ -129,8 +128,8 @@ public:
 	//  std::map<unsigned int,double*> iMeshesInfo, vtkMySQLDatabase* iDatabaseConnector);
 
   //method in QGoDBTraceManager
-  void UpdateBoundingBoxes(
-  vtkMySQLDatabase *iDatabaseConnector,std::list< unsigned int > iListTracesIDs);
+  //void UpdateBoundingBoxes(
+  //vtkMySQLDatabase *iDatabaseConnector,std::list< unsigned int > iListTracesIDs);
 
 public slots:
 

@@ -125,24 +125,24 @@ void QGoDBLineageManager::DisplayInfoForExistingTrace(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/*unsigned int QGoDBTrackManager::CreateNewTrackWithNoMesh(
+unsigned int QGoDBLineageManager::CreateNewLineageWithNoTrack(
   vtkMySQLDatabase *iDatabaseConnector)
 {
-  GoDBTrackRow NewTrack;
-  unsigned int NewTrackID =
-    this->m_CollectionOfTraces->CreateCollectionWithNoTracesNoPoints< GoDBTrackRow >(
-      iDatabaseConnector, *this->m_SelectedColorData, NewTrack);
+  GoDBLineageRow NewLineage;
+  unsigned int NewLineageID =
+    this->m_CollectionOfTraces->CreateCollectionWithNoTracesNoPoints< GoDBLineageRow >(
+      iDatabaseConnector, *this->m_SelectedColorData, NewLineage);
 
-  this->m_TrackContainerInfoForVisu->ResetCurrentElement();
-  this->m_TrackContainerInfoForVisu->UpdateCurrentElementFromDB(
-    NewTrackID, this->GetVectorFromQColor(this->m_SelectedColorData->second), true);
-  this->m_TrackContainerInfoForVisu->InsertCurrentElement();
+  //this->m_TrackContainerInfoForVisu->ResetCurrentElement();
+  //this->m_TrackContainerInfoForVisu->UpdateCurrentElementFromDB(
+    //NewTrackID, this->GetVectorFromQColor(this->m_SelectedColorData->second), true);
+  //this->m_TrackContainerInfoForVisu->InsertCurrentElement();
   this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
-  NameWithColorData NewTrackData(ConvertToString< unsigned int >(NewTrackID),
-                                 this->m_SelectedColorData->second);
-  emit AddNewTraceIDInTS(NewTrackData);
-  return NewTrackID;
-}*/
+  //NameWithColorData NewTrackData(ConvertToString< unsigned int >(NewTrackID),
+                                 //this->m_SelectedColorData->second);
+  //emit AddNewTraceIDInTS(NewTrackData);
+  return NewLineageID;
+}
 
 //-------------------------------------------------------------------------
 

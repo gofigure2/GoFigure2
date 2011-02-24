@@ -514,6 +514,7 @@ void QGoDBTrackManager::CreateCorrespondingCollection()
     msgBox.exec();
     return;
     }
+  emit NeedToGetDatabaseConnection();
   if (this->IdentifyMotherDaughtersToCreateLineage(this->m_DatabaseConnector, 
     this->GetListHighlightedIDs(), MotherID, DaughtersIDs) )
     {
@@ -523,6 +524,7 @@ void QGoDBTrackManager::CreateCorrespondingCollection()
       {
       //for lineage bounding box and lineageid in track table
       QGoDBTraceManager::CreateCorrespondingCollection(); 
+      emit NeedToGetDatabaseConnection();
       std::list<unsigned int>::iterator iter = DaughtersIDs.begin();
       while(iter != DaughtersIDs.end() )
         {
@@ -533,7 +535,8 @@ void QGoDBTrackManager::CreateCorrespondingCollection()
       //update the root for the lineage:
       emit TrackRootLastCreatedLineageToUpdate(MotherID);       
       }    
-    }  
+    } 
+  emit DBConnectionNotNeededAnymore();
 }
 
 //-------------------------------------------------------------------------
@@ -545,9 +548,9 @@ bool QGoDBTrackManager::IdentifyMotherDaughtersToCreateLineage(
   std::list<unsigned int> &ioDaughtersID)
 {
   //get the trackid with the lowest timepoint and check that there is only one:
-  int MotherTrackID = this->m_CollectionOfTraces->GetTraceIDWithLowestTimePoint(
+  ioMotherID = this->m_CollectionOfTraces->GetTraceIDWithLowestTimePoint(
     iDatabaseConnector,iListTracksID);
-  if (MotherTrackID == -1)
+  if (ioMotherID == -1)
     {
     QMessageBox msgBox;
     msgBox.setText(
@@ -562,10 +565,10 @@ bool QGoDBTrackManager::IdentifyMotherDaughtersToCreateLineage(
   unsigned int ioTraceIDToDelete = 0; 
   while(iter != iListTracksID.end())
     {
-    if (*iter != static_cast<unsigned int>(MotherTrackID) )
+    if (*iter != static_cast<unsigned int>(ioMotherID) )
       {
       std::list<unsigned int> TracksOverlappingToCheck;
-      TracksOverlappingToCheck.push_back(MotherTrackID);
+      TracksOverlappingToCheck.push_back(ioMotherID);
       TracksOverlappingToCheck.push_back(*iter);
       if (this->CheckOverlappingTracks(TracksOverlappingToCheck, 
         ioTraceIDToKeep, ioTraceIDToDelete, iDatabaseConnector) )
@@ -593,7 +596,7 @@ int QGoDBTrackManager::CreateTrackFamily(vtkMySQLDatabase* iDatabaseConnector,
   //check that the mother is not already a mother in a trackfamily:
   GoDBTrackFamilyRow TrackFamily;
   TrackFamily.SetField<unsigned int>("TrackIDMother", iMotherTrackID);
-  if (TrackFamily.DoesThisTrackFamilyAlreadyExists(iDatabaseConnector))
+  if (TrackFamily.DoesThisTrackFamilyAlreadyExists(iDatabaseConnector) != -1)
     {
     QMessageBox msgBox;
     msgBox.setText(
@@ -609,9 +612,9 @@ int QGoDBTrackManager::CreateTrackFamily(vtkMySQLDatabase* iDatabaseConnector,
     return oTrackFamilyID;
     }
   std::list<unsigned int>::iterator iter = iDaughtersID.begin();
-  TrackFamily.SetField<unsigned int>("TrackIDDaughterOne", *iter);
+  TrackFamily.SetField<unsigned int>("TrackIDDaughter1", *iter);
   ++iter;
-  TrackFamily.SetField<unsigned int>("TrackIDDaughterTwo", *iter);
+  TrackFamily.SetField<unsigned int>("TrackIDDaughter2", *iter);
 
   return TrackFamily.SaveInDB(iDatabaseConnector);
 }

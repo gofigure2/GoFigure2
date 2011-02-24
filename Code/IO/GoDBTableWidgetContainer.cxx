@@ -78,16 +78,19 @@ GoDBTableWidgetContainer::GetColumnsInfoForTraceTable()
   temp.Clear();
 
   //Get the info for the CollectionID:
-  temp.InfoName   = this->m_CollectionIDName;
-  temp.ColumnNameDatabase = this->m_CollectionIDName;
-  temp.ColumnNameTableWidget = this->m_CollectionIDName;
-  temp.TableNameDatabase = this->m_TracesName;
-  temp.TableForeignKeyDatabase = this->m_CollectionIDName;
-  temp.TableKeyDatabase = this->m_CollectionIDName;
-  m_ColumnsInfos.push_back(temp);
-  PairTemp.first = temp;
-  m_RowContainer.push_back(PairTemp);
-  temp.Clear();
+  if (this->m_CollectionName != "None")
+    {
+    temp.InfoName   = this->m_CollectionIDName;
+    temp.ColumnNameDatabase = this->m_CollectionIDName;
+    temp.ColumnNameTableWidget = this->m_CollectionIDName;
+    temp.TableNameDatabase = this->m_TracesName;
+    temp.TableForeignKeyDatabase = this->m_CollectionIDName;
+    temp.TableKeyDatabase = this->m_CollectionIDName;
+    m_ColumnsInfos.push_back(temp);
+    PairTemp.first = temp;
+    m_RowContainer.push_back(PairTemp);
+    temp.Clear();
+    }
 
   //Get the info for the ColorID of the trace:
   //check if it is needed in the query ??
@@ -156,78 +159,81 @@ GoDBTableWidgetContainer::GetColumnsInfoForTraceTable()
   temp.Clear();
 
   //Get the info for the ColorID of the collection:
-  std::string ColorCollection = this->m_CollectionName;
-  ColorCollection += "Color";
-  temp.ColumnNameDatabase = "ColorID";
-  temp.TableNameDatabase = this->m_CollectionName;
-  temp.InfoName = ColorCollection;
-  temp.TableForeignKeyDatabase = this->m_CollectionIDName;
-  temp.TableKeyDatabase = this->m_CollectionIDName;
-  temp.SameFieldForDifferentValues = false;
-  m_ColumnsInfos.push_back(temp);
-  PairTemp.first = temp;
-  m_RowContainer.push_back(PairTemp);
-  temp.Clear();
+  if (this->m_CollectionName != "None")
+    {
+    std::string ColorCollection = this->m_CollectionName;
+    ColorCollection += "Color";
+    temp.ColumnNameDatabase = "ColorID";
+    temp.TableNameDatabase = this->m_CollectionName;
+    temp.InfoName = ColorCollection;
+    temp.TableForeignKeyDatabase = this->m_CollectionIDName;
+    temp.TableKeyDatabase = this->m_CollectionIDName;
+    temp.SameFieldForDifferentValues = false;
+    m_ColumnsInfos.push_back(temp);
+    PairTemp.first = temp;
+    m_RowContainer.push_back(PairTemp);
+    temp.Clear();
 
-  //Get the info for the Red value of the collection:
-  temp.ColumnNameDatabase = "Red";
-  temp.TableNameDatabase = "color";
-  OtherInfo = "RedFor";
-  OtherInfo += this->m_CollectionName;
-  temp.AccessFromTraceTableThroughWhichTable = this->m_CollectionName;
-  temp.InfoName = OtherInfo;
-  temp.TableForeignKeyDatabase = "ColorID";
-  temp.TableKeyDatabase = "ColorID";
-  temp.SameFieldForDifferentValues = true;
-  m_ColumnsInfos.push_back(temp);
-  PairTemp.first = temp;
-  m_RowContainer.push_back(PairTemp);
-  temp.Clear();
+    //Get the info for the Red value of the collection:
+    temp.ColumnNameDatabase = "Red";
+    temp.TableNameDatabase = "color";
+    OtherInfo = "RedFor";
+    OtherInfo += this->m_CollectionName;
+    temp.AccessFromTraceTableThroughWhichTable = this->m_CollectionName;
+    temp.InfoName = OtherInfo;
+    temp.TableForeignKeyDatabase = "ColorID";
+    temp.TableKeyDatabase = "ColorID";
+    temp.SameFieldForDifferentValues = true;
+    m_ColumnsInfos.push_back(temp);
+    PairTemp.first = temp;
+    m_RowContainer.push_back(PairTemp);
+    temp.Clear();
 
-  //Get the info for the Green value of the collection:
-  temp.ColumnNameDatabase = "Green";
-  temp.TableNameDatabase = "color";
-  OtherInfo = "GreenFor";
-  OtherInfo += this->m_CollectionName;
-  temp.AccessFromTraceTableThroughWhichTable = this->m_CollectionName;
-  temp.InfoName = OtherInfo;
-  temp.TableForeignKeyDatabase = "ColorID";
-  temp.TableKeyDatabase = "ColorID";
-  temp.SameFieldForDifferentValues = true;
-  m_ColumnsInfos.push_back(temp);
-  PairTemp.first = temp;
-  m_RowContainer.push_back(PairTemp);
-  temp.Clear();
+    //Get the info for the Green value of the collection:
+    temp.ColumnNameDatabase = "Green";
+    temp.TableNameDatabase = "color";
+    OtherInfo = "GreenFor";
+    OtherInfo += this->m_CollectionName;
+    temp.AccessFromTraceTableThroughWhichTable = this->m_CollectionName;
+    temp.InfoName = OtherInfo;
+    temp.TableForeignKeyDatabase = "ColorID";
+    temp.TableKeyDatabase = "ColorID";
+    temp.SameFieldForDifferentValues = true;
+    m_ColumnsInfos.push_back(temp);
+    PairTemp.first = temp;
+    m_RowContainer.push_back(PairTemp);
+    temp.Clear();
 
-  //Get the info for the Blue value of the collection:
-  temp.ColumnNameDatabase = "Blue";
-  temp.TableNameDatabase = "color";
-  OtherInfo = "BlueFor";
-  OtherInfo += this->m_CollectionName;
-  temp.AccessFromTraceTableThroughWhichTable = this->m_CollectionName;
-  temp.InfoName = OtherInfo;
-  temp.TableForeignKeyDatabase = "ColorID";
-  temp.TableKeyDatabase = "ColorID";
-  temp.SameFieldForDifferentValues = true;
-  m_ColumnsInfos.push_back(temp);
-  PairTemp.first = temp;
-  m_RowContainer.push_back(PairTemp);
-  temp.Clear();
+    //Get the info for the Blue value of the collection:
+    temp.ColumnNameDatabase = "Blue";
+    temp.TableNameDatabase = "color";
+    OtherInfo = "BlueFor";
+    OtherInfo += this->m_CollectionName;
+    temp.AccessFromTraceTableThroughWhichTable = this->m_CollectionName;
+    temp.InfoName = OtherInfo;
+    temp.TableForeignKeyDatabase = "ColorID";
+    temp.TableKeyDatabase = "ColorID";
+    temp.SameFieldForDifferentValues = true;
+    m_ColumnsInfos.push_back(temp);
+    PairTemp.first = temp;
+    m_RowContainer.push_back(PairTemp);
+    temp.Clear();
 
-  //Get the info for the Alpha value of the collection:
-  temp.ColumnNameDatabase = "Alpha";
-  temp.TableNameDatabase = "color";
-  OtherInfo = "AlphaFor";
-  OtherInfo += this->m_CollectionName;
-  temp.AccessFromTraceTableThroughWhichTable = this->m_CollectionName;
-  temp.InfoName = OtherInfo;
-  temp.TableForeignKeyDatabase = "ColorID";
-  temp.TableKeyDatabase = "ColorID";
-  temp.SameFieldForDifferentValues = true;
-  m_ColumnsInfos.push_back(temp);
-  PairTemp.first = temp;
-  m_RowContainer.push_back(PairTemp);
-  temp.Clear();
+    //Get the info for the Alpha value of the collection:
+    temp.ColumnNameDatabase = "Alpha";
+    temp.TableNameDatabase = "color";
+    OtherInfo = "AlphaFor";
+    OtherInfo += this->m_CollectionName;
+    temp.AccessFromTraceTableThroughWhichTable = this->m_CollectionName;
+    temp.InfoName = OtherInfo;
+    temp.TableForeignKeyDatabase = "ColorID";
+    temp.TableKeyDatabase = "ColorID";
+    temp.SameFieldForDifferentValues = true;
+    m_ColumnsInfos.push_back(temp);
+    PairTemp.first = temp;
+    m_RowContainer.push_back(PairTemp);
+    temp.Clear();
+    }
 
   //Get the info for the PCoord:
   temp.InfoName = "PCoord";

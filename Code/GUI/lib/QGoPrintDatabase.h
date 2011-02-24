@@ -690,6 +690,13 @@ protected slots:
   void CreateNewMeshFromCheckedContours(std::list< unsigned int > iListCheckedContours);
 
   /**
+  \brief slot connected to the signal NewCollectionFromCheckedTraces() emitted by
+  the m_TracksManager
+  \param[in] iListCheckedTracks list of the meshIDs of the checked meshes in the TW
+  */
+  void CreateNewLineageFromCheckedTracks(std::list< unsigned int > iListCheckedTracks );
+
+  /**
   \brief slot connected to the the signal CheckedTracesToAddToSelectedCollection
   emitted by m_ContoursManager, which call the AddCheckedTracesToCollection template
   \param[in] iListCheckedContours list of the checked contours to be part of the
