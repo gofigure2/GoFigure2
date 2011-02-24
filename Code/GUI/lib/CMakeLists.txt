@@ -18,10 +18,10 @@ CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx.in
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx @ONLY IMMEDIATE )
 
 SET( QGoGUILIB_SRC
-  TraceContainers/ContourContainer.cxx
-  TraceContainers/MeshContainer.cxx
-  TraceContainers/ContourMeshContainer.cxx
-  TraceContainers/TrackContainer.cxx
+  VisualizationTraceContainers/ContourContainer.cxx
+  VisualizationTraceContainers/MeshContainer.cxx
+  VisualizationTraceContainers/ContourMeshContainer.cxx
+  VisualizationTraceContainers/TrackContainer.cxx
   QGoConnectServerPage.cxx
   QGoCreateImgSessionPage.cxx
   QGoImageView.cxx
@@ -139,10 +139,10 @@ ENDIF( ENABLE_VIDEO_RECORD_AVI )
 #---------------------------------------------------------------------------
 
 SET( QGoGUILIB_HDRS
-  TraceContainers/ContourContainer.h
-  TraceContainers/MeshContainer.h
-  TraceContainers/ContourMeshContainer.h
-  TraceContainers/TrackContainer.h
+  VisualizationTraceContainers/ContourContainer.h
+  VisualizationTraceContainers/MeshContainer.h
+  VisualizationTraceContainers/ContourMeshContainer.h
+  VisualizationTraceContainers/TrackContainer.h
   QGoConnectServerPage.h
   QGoCreateImgSessionPage.h
   QGoImageView.h
