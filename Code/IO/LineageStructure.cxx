@@ -32,24 +32,31 @@
 
 =========================================================================*/
 
-#ifndef __StructureHelper_h
-#define __StructureHelper_h
+#include "LineageStructure.h"
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#include <iostream>
+#include "vtkPolyData.h"
+#include "vtkActor.h"
 
-struct TraceID {};
-struct CollectionID {};
-struct ActorXY {};
-struct ActorXZ {};
-struct ActorYZ {};
-struct ActorXYZ {};
-struct Nodes {};
-struct TCoord {};
-struct Highlighted {};
-struct Visible {};
-struct TrackID {};
-struct Root {};
+#include "vtkDoubleArray.h"
+#include "vtkPointData.h"
 
-#endif
+#include "vtkSphereSource.h"
+#include "vtkGlyph3D.h"
+#include "vtkTubeFilter.h"
+#include "vtkAppendPolyData.h"
+#include "vtkMath.h"
 
-#endif
+//--------------------------------------------------------------------------
+LineageStructure::
+LineageStructure():TraceStructure()
+{
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+LineageStructure::
+~LineageStructure()
+{
+}
+//--------------------------------------------------------------------------

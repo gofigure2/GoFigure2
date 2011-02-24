@@ -32,24 +32,24 @@
 
 =========================================================================*/
 
-#ifndef __StructureHelper_h
-#define __StructureHelper_h
+#include "LineageContainer.h"
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
+//-------------------------------------------------------------------------
+LineageContainer::
+LineageContainer(QObject *iParent,QGoImageView3D *iView):Superclass(iParent, iView)
+{}
+//-------------------------------------------------------------------------
 
-struct TraceID {};
-struct CollectionID {};
-struct ActorXY {};
-struct ActorXZ {};
-struct ActorYZ {};
-struct ActorXYZ {};
-struct Nodes {};
-struct TCoord {};
-struct Highlighted {};
-struct Visible {};
-struct TrackID {};
-struct Root {};
+//-------------------------------------------------------------------------
+LineageContainer::
+~LineageContainer()
+{
+  MultiIndexContainerType::iterator it = m_Container.begin();
 
-#endif
-
-#endif
+  while ( it != m_Container.end() )
+    {
+    it->ReleaseData();
+    ++it;
+    }
+}
+//-------------------------------------------------------------------------
