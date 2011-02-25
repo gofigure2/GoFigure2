@@ -58,6 +58,7 @@
 #include "QGoDBMeshManager.h"
 #include "QGoDBContourManager.h"
 #include "QGoDBTrackManager.h"
+#include "QGoDBLineageManager.h"
 #include "ContourContainer.h"
 #include "MeshContainer.h"
 #include "TrackContainer.h"
@@ -302,6 +303,7 @@ protected:
   QGoDBContourManager*              m_ContoursManager;
   QGoDBMeshManager*                 m_MeshesManager;
   QGoDBTrackManager*                m_TracksManager;
+  QGoDBLineageManager*              m_LineagesManager;
 
   //Database variables:
   vtkMySQLDatabase* m_DatabaseConnector;
@@ -334,6 +336,11 @@ protected:
  \brief create the m_TracksManager and its SLOT/SIGNAL connection
  */
   void SetTracksManager();
+
+  /**
+ \brief create the m_LineagesManager and its SLOT/SIGNAL connection
+ */
+  void SetLineagesManager();
 
   //******************Methods related to Trace Settings Editing Widget***********
 
@@ -624,6 +631,11 @@ protected slots:
   */
   void PassDBConnectionToTracksManager();
 
+   /**
+  \brief open the connection to the database and pass it to the LineagesManager
+  */
+  void PassDBConnectionToLineagesManager();
+
   void CloseDBConnection();
   /**
   \brief slot connected to the TraceColorToChange() emitted by the
@@ -676,6 +688,13 @@ protected slots:
   \param[in] iListCheckedContours list of the meshIDs of the checked meshes in the TW
   */
   void CreateNewMeshFromCheckedContours(std::list< unsigned int > iListCheckedContours);
+
+  /**
+  \brief slot connected to the signal NewCollectionFromCheckedTraces() emitted by
+  the m_TracksManager
+  \param[in] iListCheckedTracks list of the meshIDs of the checked meshes in the TW
+  */
+  void CreateNewLineageFromCheckedTracks(std::list< unsigned int > iListCheckedTracks );
 
   /**
   \brief slot connected to the the signal CheckedTracesToAddToSelectedCollection

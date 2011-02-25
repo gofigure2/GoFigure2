@@ -992,3 +992,39 @@ std::vector< std::string > GoDBCollectionOfTraces::GetAttributesForTraces()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+int GoDBCollectionOfTraces::GetTraceIDWithLowestTimePoint(
+  vtkMySQLDatabase *iDatabaseConnector,
+  std::list<unsigned int> iListTraceIDs )
+{
+  int oTraceID = -1;
+  std::vector< std::string > SelectedFields(2);
+  SelectedFields.at(0) = "track.trackid";
+  SelectedFields.at(1) = "coordinate.TCoord";
+  FieldWithValue JoinCondition = { "CoordIDMin", "CoordID", "=" };
+  std::vector<FieldWithValue> Conditions = std::vector<FieldWithValue>();
+  std::list<unsigned int>::iterator iter = iListTraceIDs.begin();
+
+  while(iter != iListTraceIDs.end() )
+    {
+    unsigned int Value = *iter;
+    FieldWithValue Condition = {this->m_TracesIDName, ConvertToString<unsigned int>(Value), "="};
+    Conditions.push_back(Condition);
+    ++iter;
+    }
+
+  std::vector< std::string > ResultQuery 
+    = GetAllSelectedValuesFromTwoTables(
+        iDatabaseConnector, this->m_TracesName, "coordinate", SelectedFields,
+        JoinCondition, Conditions, "OR", "TCoord");
+  if (ResultQuery.size()>2)
+    {
+      if (ResultQuery.at(1) != ResultQuery.at(3)) //if the 2 lowest timepoints are different
+        {
+        oTraceID = ss_atoi<int>(ResultQuery.at(0)); //return the 1rst traceID
+        }
+    }
+  return oTraceID;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------

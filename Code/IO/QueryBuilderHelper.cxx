@@ -195,12 +195,17 @@ std::string SelectQueryStreamListConditions(std::string iTable,
                                             std::vector< std::string > iListAttributes,
                                             std::vector< FieldWithValue > iConditions,
                                             std::string iConditionConnector,
-                                            bool Distinct)
+                                            bool Distinct, std::string iOrderByColumnName)
 {
   std::string What = GetSelectedAttributes(iListAttributes);
-
-  return SelectQueryStreamListConditions(iTable, What, iConditions, iConditionConnector,
+  std::string oQueryString = SelectQueryStreamListConditions(iTable, What, iConditions, iConditionConnector,
                                          Distinct);
+  if (!iOrderByColumnName.empty())
+    {
+    oQueryString += AddOrderBy(iOrderByColumnName);
+    }
+
+  return oQueryString;
 }
 
 //------------------------------------------------------------------------------

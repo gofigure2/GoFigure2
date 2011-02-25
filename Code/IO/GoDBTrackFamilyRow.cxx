@@ -31,66 +31,54 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "GoDBLineageRow.h"
-#include "SelectQueryDatabaseHelper.h"
+#include "GoDBTrackFamilyRow.h"
 #include "GoDBRecordSetHelper.h"
-#include <iostream>
 
-GoDBLineageRow::GoDBLineageRow()
+GoDBTrackFamilyRow::GoDBTrackFamilyRow() : GoDBRow()
 {
   this->InitializeMap();
 }
 
 //-------------------------------------------------------------------------
-GoDBLineageRow::~GoDBLineageRow ()
+
+//-------------------------------------------------------------------------
+void GoDBTrackFamilyRow::InitializeMap()
 {
+  this->m_TableName = "trackfamily";
+  this->m_TableIDName = "TrackFamilyID";
+  this->m_MapRow["TrackFamilyID"] = ConvertToString< int >(0);
+  this->m_MapRow["TrackIDMother"] = ConvertToString< int >(0);
+  this->m_MapRow["TrackIDDaughter1"] = ConvertToString< int >(0);
+  this->m_MapRow["TrackIDDaughter2"] = ConvertToString< int >(0);
 }
 
 //-------------------------------------------------------------------------
-/*GoDBLineageRow::GoDBLineageRow(vtkMySQLDatabase *DatabaseConnector,
-                               GoDBCoordinateRow Min, GoDBCoordinateRow Max,
-                               unsigned int ImgSessionID,
-                               vtkPolyData *TraceVisu)
+
+//-------------------------------------------------------------------------
+int GoDBTrackFamilyRow::SaveInDB(vtkMySQLDatabase *DatabaseConnector)
 {
-  //GoDBTraceRow::GoDBTraceRow(DatabaseConnector, TraceVisu, Min, Max,
-  //                           ImgSessionID);
-  if ( this->DoesThisBoundingBoxLineageExist(DatabaseConnector) )
+  int TrackFamilyID = this->DoesThisTrackFamilyAlreadyExists(DatabaseConnector);
+
+  if ( TrackFamilyID == -1 )
     {
-    std::cout << "The bounding box alreaady exists for this lineage" << std::endl;
+    TrackFamilyID = AddOnlyOneNewObjectInTable< GoDBTrackFamilyRow >(
+        DatabaseConnector, "trackfamily", *this, "TrackFamilyID");
     }
-}*/
 
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void GoDBLineageRow::InitializeMap()
-{
-  this->m_TableName = "lineage";
-  this->m_TableIDName = "lineageID";
-  this->m_CollectionName = "None";
-  this->m_CollectionIDName = "NoneID";
-  this->m_MapRow[this->m_TableIDName] = ConvertToString< int >(0);
-  this->m_MapRow["TrackIDRoot"] = ConvertToString< int >(0);
+  return TrackFamilyID;
 }
 
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int GoDBLineageRow::DoesThisBoundingBoxLineageExist(vtkMySQLDatabase *DatabaseConnector)
+int GoDBTrackFamilyRow::DoesThisTrackFamilyAlreadyExists(
+  vtkMySQLDatabase *DatabaseConnector)
 {
   std::vector< FieldWithValue > Conditions;
-  this->AddConditions("ImagingSessionID", Conditions);
-  this->AddConditions("CoordIDMax", Conditions);
-  this->AddConditions("CoordIDMin", Conditions);
-
-  return FindOneID(DatabaseConnector, "lineage", "lineageID",
-                   Conditions);
+  this->AddConditions("TrackIDMother", Conditions); 
+  return FindOneID(DatabaseConnector, this->m_TableName, 
+    this->m_TableIDName, Conditions);
 }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int GoDBLineageRow::SaveInDB(vtkMySQLDatabase *DatabaseConnector)
-{
-  return this->SaveInDBTemplate< GoDBLineageRow >(DatabaseConnector, this);
-}

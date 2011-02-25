@@ -182,9 +182,17 @@ public:
     std::string CollectionID = iNewCollection.GetMapValue(this->m_CollectionIDName);
     if ( CollectionID != "0" )
       {
-      return this->CreateNewTraceInDB< T >( iNewCollection, iDatabaseConnector,
-                                            CoordIDMin, CoordIDMax, iColor,
-                                            ss_atoi< unsigned int >(CollectionID) );
+      if (CollectionID == "noValue") //case for lineage
+        {
+        return this->CreateNewTraceInDB< T >( iNewCollection, iDatabaseConnector,
+                                              CoordIDMin, CoordIDMax, iColor);
+        }
+      else
+        {
+        return this->CreateNewTraceInDB< T >( iNewCollection, iDatabaseConnector,
+                                              CoordIDMin, CoordIDMax, iColor,
+                                              ss_atoi< unsigned int >(CollectionID) );
+        }
       }
     else
       {
@@ -230,6 +238,22 @@ public:
                     iDatabaseConnector);
 
     iTrace.SetCollectionID(iCollectionID);
+    return iTrace.SaveInDB(iDatabaseConnector);
+  }
+
+  /**
+  \overload
+  */
+  template< typename T > //for lineage
+  unsigned int CreateNewTraceInDB(T iTrace, vtkMySQLDatabase *iDatabaseConnector,
+                                  unsigned int iCoordIDMin, unsigned int iCoordIDMax, 
+                                  NameWithColorData iColor)
+  {
+    iTrace.SetField( "CoordIDMin", ConvertToString< unsigned int >(iCoordIDMin) );
+    iTrace.SetField( "CoordIDMax", ConvertToString< unsigned int >(iCoordIDMax) );
+    iTrace.SetColor(iColor.second.red(), iColor.second.green(),
+                    iColor.second.blue(), iColor.second.alpha(), iColor.first,
+                    iDatabaseConnector);
     return iTrace.SaveInDB(iDatabaseConnector);
   }
 
@@ -445,6 +469,12 @@ public:
     iImgSessionID, this->m_TracesIDName, iListTraces);
   return oListTracesResults;
 }
+  /**
+  \brief return the traceID with the lowest timepoint or -1 if there
+  is not only one that have the lowest timepoint
+  */
+  int GetTraceIDWithLowestTimePoint(vtkMySQLDatabase *iDatabaseConnector,
+    std::list<unsigned int> iListTraceIDs);
 
 protected:
 
