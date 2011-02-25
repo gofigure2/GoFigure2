@@ -47,7 +47,7 @@ ENDIF( WIN32 )
 # SUPERBUILD - ENABLED BY DEFAULT
 #---------------------------------------------------------------------------
 
-OPTION( SUPERBUILD "Use SuperBuild" ON )
+OPTION( SUPERBUILD "Use SuperBuild" OFF )
 
 IF( SUPERBUILD )
   CMAKE_MINIMUM_REQUIRED( VERSION 2.8.3 )
