@@ -72,6 +72,26 @@ public:
   void ConnectTracks( unsigned int iD1TrackID, vtkPolyData* iD1PolyData,
                          unsigned int iD2TrackID = 0, vtkPolyData* iD2PolyData = NULL );
 
+  void SetRoot(Self* iRoot)
+  {
+    m_Root = iRoot;
+  }
+
+  void SetMother(Self* iMother)
+  {
+    m_Mother = iMother;
+  }
+
+  void SetDaughter1(Self* iDaughter1)
+  {
+    m_Daughter1 = iDaughter1;
+  }
+
+  void SetDaughter2(Self* iDaughter2)
+  {
+    m_Daughter2 = iDaughter2;
+  }
+
   /*
    * \brief Cut the current lineage at the current node. 2 new lineages will be
    * created with the daughters. New lineage means:
@@ -103,6 +123,9 @@ public:
    * \brief Useful variable to sort in the container. true if is Root.
    */
   bool              Root;
+
+  double* m_FirstPoint;
+  double* m_LastPoint;
 
 private:
   // only lineage ID of root is relevant as well??

@@ -758,3 +758,36 @@ TrackContainer::UpdateTracksRepresentation(double iRadius, double iRadius2)
 }
 
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+double*
+TrackContainer::GetLastPointOfTheTrack(unsigned int iTrackID)
+{
+  MultiIndexContainerTraceIDIterator
+    it = m_Container.get< TraceID >().find(iTrackID);
+
+  vtkPoints* points = it->Nodes->GetPoints();
+  vtkIdType nbOfPoints = points->GetNumberOfPoints();
+  std::cout <<"LAST POINT: X: " << points->GetPoint(nbOfPoints-1)[0]
+                      << " Y: " << points->GetPoint(nbOfPoints-1)[1]
+                      << " Z: " << points->GetPoint(nbOfPoints-1)[2]
+  << std::endl;
+  return points->GetPoint(nbOfPoints-1);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+double*
+TrackContainer::GetFirstPointOfTheTrack(unsigned int iTrackID)
+{
+  MultiIndexContainerTraceIDIterator
+    it = m_Container.get< TraceID >().find(iTrackID);
+
+  vtkPoints* points = it->Nodes->GetPoints();
+  std::cout <<"FIRST POINT: X: " << points->GetPoint(0)[0]
+                      << " Y: " << points->GetPoint(0)[1]
+                      << " Z: " << points->GetPoint(0)[2]
+  << std::endl;
+  return points->GetPoint(0);
+}
+//-------------------------------------------------------------------------

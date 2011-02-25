@@ -34,19 +34,6 @@
 
 #include "LineageStructure.h"
 
-#include <iostream>
-#include "vtkPolyData.h"
-#include "vtkActor.h"
-
-#include "vtkDoubleArray.h"
-#include "vtkPointData.h"
-
-#include "vtkSphereSource.h"
-#include "vtkGlyph3D.h"
-#include "vtkTubeFilter.h"
-#include "vtkAppendPolyData.h"
-#include "vtkMath.h"
-
 //--------------------------------------------------------------------------
 LineageStructure::
 LineageStructure():TraceStructure()

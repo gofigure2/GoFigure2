@@ -122,7 +122,7 @@ public:
                            QGoImageView3D *iView);
 
   /** \brief Destructor. */
-  ~LineageContainer();
+  virtual ~LineageContainer();
 
   /*
    * \brief Extract 1 polydata from a lineage. Useful for the database.
@@ -150,9 +150,35 @@ public:
    * \param[in] iD2TrackID ID of the second daughter (not required)
    * \param[in] iD2PolyData PolyData of the second daughter (not required)
    */
-  void connectTracks( unsigned int iMoTrackID,
+ /* void connectTracks( unsigned int iMoTrackID,
                       unsigned int iD1TrackID, vtkPolyData* iD1PolyData,
                       unsigned int iD2TrackID = 0, vtkPolyData* iD2PolyData = NULL);
+*/
+
+  /*
+   * \brief Create a basic lineage
+   * \param[in] iLineageID
+   * \param[in] iMoTrackID ID of the mother to find it in the container
+   * \param[in] iMotherFirst
+   * \param[in] iMotherLast
+   * \param[in] iD1TrackID ID of the first daughter
+   * \param[in] iD1First
+   * \param[in] iD1Last
+   * \param[in] iD2TrackID ID of the second daughter (not required)
+   * \param[in] iD2First (not required)
+   * \param[in] iD2Last (not required)
+   */
+  void createLineage( unsigned int iLineageID,
+                      unsigned int iMoTrackID, double* iMotherFirst, double* iMotherLast,
+                      unsigned int iD1TrackID, double* iD1First, double* iD1Last,
+                      unsigned int iD2TrackID, double* iD2First, double* iD2Last);
+
+  /*
+   * \brief Basic lineage for testing purpose
+   */
+  void createDumbLineageFromCurrentElement( double* iMother,
+                          double* iDaughter, double* iDaughter2);
+
 
   /*
    * \brief Cut a lineage after the chosen point.
