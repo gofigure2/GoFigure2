@@ -13,6 +13,8 @@ FIND_PATH( MYSQL_INCLUDE_DIR NAMES mysql.h
   "$ENV{SystemDrive}/MySQL/*/"
   "[HKEY_LOCAL_MACHINE\\SOFTWARE\\MySQL AB\\*;Location]/"
   "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\MySQL AB\\*;Location]/"
+  "C:/Program Files/MySQL/include"
+  "C:/Program Files/MySQL/MySQL Server 5.1/include"
   PATH_SUFFIXES "include" "include/mysql" "mysql/include" 
   DOC "Specify the directory containing mysql.h"
 )
@@ -26,6 +28,7 @@ FIND_LIBRARY( MYSQL_LIBRARIES
   "$ENV{SystemDrive}/MySQL/*/"
   "[HKEY_LOCAL_MACHINE\\SOFTWARE\\MySQL AB\\*;Location]/lib/opt"
   "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\MySQL AB\\*;Location]/lib/opt"
+  "C:/Program Files/MySQL/MySQL Server 5.1/lib/opt"
   PATH_SUFFIXES "lib" "mysql" "mysql/lib" "mysql/lib/mysql" "lib/opt"
   DOC "Specify the mysql library here."
 )
@@ -35,19 +38,32 @@ FIND_LIBRARY( MYSQL_LIBRARIES
 IF( NOT WIN32 )
   FIND_PACKAGE( ZLIB )
   SET( MYSQL_EXTRA_LIBRARIES ${ZLIB_LIBRARY} )
+  
+  INCLUDE( FindPackageHandleStandardArgs )
+  FIND_PACKAGE_HANDLE_STANDARD_ARGS( MYSQL DEFAULT_MSG 
+    MYSQL_INCLUDE_DIR
+    MYSQL_LIBRARIES
+    MYSQL_EXTRA_LIBRARIES
+  )
+
+  MARK_AS_ADVANCED( MYSQL_FOUND 
+    MYSQL_LIBRARIES 
+    MYSQL_EXTRA_LIBRARIES 
+    MYSQL_INCLUDE_DIR 
+  )
+
 ELSE( NOT WIN32 )
   SET( MYSQL_EXTRA_LIBRARIES "" )
+  
+  INCLUDE( FindPackageHandleStandardArgs )
+  FIND_PACKAGE_HANDLE_STANDARD_ARGS( MYSQL DEFAULT_MSG 
+    MYSQL_INCLUDE_DIR
+    MYSQL_LIBRARIES
+  )
+
+  MARK_AS_ADVANCED( MYSQL_FOUND 
+    MYSQL_LIBRARIES 
+    MYSQL_INCLUDE_DIR 
+  )
 ENDIF( NOT WIN32 )
 
-INCLUDE( FindPackageHandleStandardArgs )
-FIND_PACKAGE_HANDLE_STANDARD_ARGS( MYSQL DEFAULT_MSG 
-  MYSQL_INCLUDE_DIR
-  MYSQL_LIBRARIES
-  MYSQL_EXTRA_LIBRARIES
-)
-
-MARK_AS_ADVANCED( MYSQL_FOUND 
-  MYSQL_LIBRARIES 
-  MYSQL_EXTRA_LIBRARIES 
-  MYSQL_INCLUDE_DIR 
-)
