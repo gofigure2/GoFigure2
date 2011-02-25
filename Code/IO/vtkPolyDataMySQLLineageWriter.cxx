@@ -32,53 +32,53 @@
 
 =========================================================================*/
 
-#ifndef __vtkPolyDataMySQLTrackWriter_h
-#define __vtkPolyDataMySQLTrackWriter_h
+#include "vtkPolyDataMySQLLineageWriter.h"
 
-#include <string>
 #include <sstream>
 
-#include "vtkPolyData.h"
-#include "vtkMath.h"
-#include "vtkIdList.h"
+#include "vtkObjectFactory.h"
 
-#include "QGoIOConfigure.h"
+#include "vtkPointData.h"
+#include "vtkSmartPointer.h"
 
-/**
-\defgroup MySQLWriter MySQLWriter
-\defgroup Track Track
-\defgroup Trace Trace
-*/
+vtkCxxRevisionMacro(vtkPolyDataMySQLLineageWriter, "$Revision$");
+vtkStandardNewMacro(vtkPolyDataMySQLLineageWriter);
 
-/**
-\class vtkPolyDataMySQLTrackWriter
-\brief Reads a string and convert it into a track polydata
-\ingroup MySQLWriter Track Trace
-*/
-
-class QGOIO_EXPORT vtkPolyDataMySQLTrackWriter:public vtkObject
+//--------------------------------------------------------------------------
+vtkPolyDataMySQLLineageWriter::vtkPolyDataMySQLLineageWriter()
 {
-public:
-  /*
-   * \brief Public constructor
-   */
-  static vtkPolyDataMySQLTrackWriter * New();
+}
 
-  vtkTypeRevisionMacro(vtkPolyDataMySQLTrackWriter, vtkObject);
+//--------------------------------------------------------------------------
 
-  /*
-   * \brief Generate a string from a track polydata
-   * \param[in] iPolyData Polydata to generate the string
-   * \return string containing the track polydata information
-   */
-  std::string GetMySQLText(vtkPolyData *iPolyData);
+//--------------------------------------------------------------------------
+vtkPolyDataMySQLLineageWriter::
+~vtkPolyDataMySQLLineageWriter()
+{
+}
 
-protected:
-  vtkPolyDataMySQLTrackWriter();
-  virtual ~vtkPolyDataMySQLTrackWriter();
+//--------------------------------------------------------------------------
 
-private:
-  vtkPolyDataMySQLTrackWriter(const vtkPolyDataMySQLTrackWriter &);
-  void operator=(const vtkPolyDataMySQLTrackWriter &);
-};
-#endif
+//--------------------------------------------------------------------------
+std::string
+vtkPolyDataMySQLLineageWriter::GetMySQLText(vtkPolyData *iPolyData)
+{
+  vtkIdType N = iPolyData->GetNumberOfPoints();
+  double *  pt = NULL;
+  int       time = 0;
+
+  std::stringstream oMyString;
+
+  oMyString << N << " ";
+
+  vtkSmartPointer< vtkPoints > points = iPolyData->GetPoints();
+
+  for ( vtkIdType i = 0; i < N; i++ )
+    {
+    pt = points->GetPoint(i);
+    oMyString << pt[0] << " " << pt[1] << " " << pt[2] << " ";
+    }
+
+  return oMyString.str();
+}
+//--------------------------------------------------------------------------

@@ -32,8 +32,8 @@
 
 =========================================================================*/
 
-#ifndef __vtkPolyDataMySQLTrackWriter_h
-#define __vtkPolyDataMySQLTrackWriter_h
+#ifndef __vtkPolyDataMySQLLineageWriter_h
+#define __vtkPolyDataMySQLLineageWriter_h
 
 #include <string>
 #include <sstream>
@@ -46,39 +46,39 @@
 
 /**
 \defgroup MySQLWriter MySQLWriter
-\defgroup Track Track
+\defgroup Lineage Lineage
 \defgroup Trace Trace
 */
 
 /**
-\class vtkPolyDataMySQLTrackWriter
+\class vtkPolyDataMySQLLineageWriter
 \brief Reads a string and convert it into a track polydata
-\ingroup MySQLWriter Track Trace
+\ingroup MySQLWriter Lineage Trace
 */
 
-class QGOIO_EXPORT vtkPolyDataMySQLTrackWriter:public vtkObject
+class QGOIO_EXPORT vtkPolyDataMySQLLineageWriter:public vtkObject
 {
 public:
   /*
    * \brief Public constructor
    */
-  static vtkPolyDataMySQLTrackWriter * New();
+  static vtkPolyDataMySQLLineageWriter * New();
 
-  vtkTypeRevisionMacro(vtkPolyDataMySQLTrackWriter, vtkObject);
+  vtkTypeRevisionMacro(vtkPolyDataMySQLLineageWriter, vtkObject);
 
   /*
-   * \brief Generate a string from a track polydata
+   * \brief Generate a string from a Lineage polydata
    * \param[in] iPolyData Polydata to generate the string
-   * \return string containing the track polydata information
+   * \return string containing the Lineage polydata information
    */
   std::string GetMySQLText(vtkPolyData *iPolyData);
 
 protected:
-  vtkPolyDataMySQLTrackWriter();
-  virtual ~vtkPolyDataMySQLTrackWriter();
+  vtkPolyDataMySQLLineageWriter();
+  virtual ~vtkPolyDataMySQLLineageWriter();
 
 private:
-  vtkPolyDataMySQLTrackWriter(const vtkPolyDataMySQLTrackWriter &);
-  void operator=(const vtkPolyDataMySQLTrackWriter &);
+  vtkPolyDataMySQLLineageWriter(const vtkPolyDataMySQLLineageWriter &);
+  void operator=(const vtkPolyDataMySQLLineageWriter &);
 };
 #endif

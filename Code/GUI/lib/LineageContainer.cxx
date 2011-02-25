@@ -74,11 +74,6 @@ createDumbLineageFromCurrentElement( double* iMother, double* iDaughter1, double
 
   //create a triangle on the three points in the polydata
   vtkSmartPointer<vtkTriangle> triangle = vtkSmartPointer<vtkTriangle>::New();
-
-  //Unfortunately in this simple example the following lines are ambiguous.
-  //The first 0 is the index of the triangle vertex which is ALWAYS 0-2.
-  //The second 0 is the index into the point (geometry) array, so this can range from 0-(NumPoints-1)
-  //i.e. a more general statement is triangle->GetPointIds()->SetId(0, PointId);
   triangle->GetPointIds()->SetId ( 0, 0 );
   triangle->GetPointIds()->SetId ( 1, 1 );
   triangle->GetPointIds()->SetId ( 2, 2 );

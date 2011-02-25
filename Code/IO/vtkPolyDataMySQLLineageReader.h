@@ -32,53 +32,54 @@
 
 =========================================================================*/
 
-#ifndef __vtkPolyDataMySQLTrackWriter_h
-#define __vtkPolyDataMySQLTrackWriter_h
+#ifndef __vtkPolyDataMySQLLineageReader_h
+#define __vtkPolyDataMySQLLineageReader_h
+
+#include "vtkSmartPointer.h"
+#include "vtkObject.h"
 
 #include <string>
-#include <sstream>
-
-#include "vtkPolyData.h"
-#include "vtkMath.h"
-#include "vtkIdList.h"
 
 #include "QGoIOConfigure.h"
 
+class vtkPolyData;
+
 /**
-\defgroup MySQLWriter MySQLWriter
-\defgroup Track Track
+\defgroup MySQLReader MySQLReader
+\defgroup Lineage Lineage
 \defgroup Trace Trace
 */
 
 /**
-\class vtkPolyDataMySQLTrackWriter
-\brief Reads a string and convert it into a track polydata
-\ingroup MySQLWriter Track Trace
+\class vtkPolyDataMySQLLineageReader
+\brief Reads a string and convert it into a Lineage polydata
+\ingroup MySQLReader Lineage Trace
 */
 
-class QGOIO_EXPORT vtkPolyDataMySQLTrackWriter:public vtkObject
+class QGOIO_EXPORT vtkPolyDataMySQLLineageReader:public vtkObject
 {
 public:
   /*
    * \brief Public constructor
    */
-  static vtkPolyDataMySQLTrackWriter * New();
+  static vtkPolyDataMySQLLineageReader * New();
 
-  vtkTypeRevisionMacro(vtkPolyDataMySQLTrackWriter, vtkObject);
+  vtkTypeRevisionMacro(vtkPolyDataMySQLLineageReader, vtkObject);
 
   /*
-   * \brief Generate a string from a track polydata
-   * \param[in] iPolyData Polydata to generate the string
-   * \return string containing the track polydata information
+   * \brief Generate a "Lineage Polydata" from a string
+   * \param[in] iString base string to generate the polydata
+   * \return pointer to the generated "Lineage Polydata"
    */
-  std::string GetMySQLText(vtkPolyData *iPolyData);
+  vtkSmartPointer<vtkPolyData> GetPolyData(const std::string & iString);
 
 protected:
-  vtkPolyDataMySQLTrackWriter();
-  virtual ~vtkPolyDataMySQLTrackWriter();
+  vtkPolyDataMySQLLineageReader();
+  virtual ~vtkPolyDataMySQLLineageReader();
 
 private:
-  vtkPolyDataMySQLTrackWriter(const vtkPolyDataMySQLTrackWriter &);
-  void operator=(const vtkPolyDataMySQLTrackWriter &);
+  vtkPolyDataMySQLLineageReader(const vtkPolyDataMySQLLineageReader &);
+  void operator=(const vtkPolyDataMySQLLineageReader &);
 };
+
 #endif
