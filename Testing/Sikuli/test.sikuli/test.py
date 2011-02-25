@@ -1,8 +1,15 @@
+from sikuli.Sikuli import *
 
-import sys
 
-address = sys.argv[0]
-setBundlePath(address)
-print address
+#address = sys.argv[0]
+def test():
+	
 
-click("google.png")
+	
+
+
+	click("google.png")
+
+	
+
+	#click("1298417390867.png")
