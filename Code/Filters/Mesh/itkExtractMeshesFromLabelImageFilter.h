@@ -163,7 +163,7 @@ public:
 
   MeshVectorType m_Meshes;
 
-  void GenerateData();
+  void Update();
 
 protected:
   ExtractMeshesFromLabelImageFilter();
@@ -178,6 +178,8 @@ protected:
   {
     Self*                 Filter;
   };
+
+  void GenerateData();
 
   ImageConstPointer     m_Input;
   ShapeLabelMapPointer  m_ShapeLabelMap;

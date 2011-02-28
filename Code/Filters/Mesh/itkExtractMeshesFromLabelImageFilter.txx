@@ -56,6 +56,14 @@ ExtractMeshesFromLabelImageFilter< TImage >
   m_UseDecimation = true;
 }
 
+template< class TImage >
+void
+ExtractMeshesFromLabelImageFilter< TImage >::
+Update()
+{
+  this->GenerateData();
+}
+
 
 template< class TImage >
 void
@@ -218,7 +226,7 @@ ThreadedExtractMesh( const unsigned int& startLabel, const unsigned int& endLabe
     m_Meshes[label-1]->DisconnectPipeline();
 
     ++it;
-    ++startLabel;
+    ++label;
   }
 }
 

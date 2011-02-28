@@ -87,3 +87,9 @@ ADD_EXECUTABLE( itkvtkMeshSplitterDanielssonImageFilterTest
   itkvtkMeshSplitterDanielssonImageFilterTest.cxx
 )
 
+
+ADD_EXECUTABLE( ExtractMeshesFromLabelImageFilter
+  ExtractMeshesFromLabelImageFilter.cxx
+)
+TARGET_LINK_LIBRARIES( ExtractMeshesFromLabelImageFilter
+)
