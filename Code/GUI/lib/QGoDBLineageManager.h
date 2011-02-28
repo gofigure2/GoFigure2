@@ -103,7 +103,6 @@ public:
   container for visu
   \param[in] iDatabaseConnector connection to the database
   \param[in] iListTraces list of the tracesIDs to be deleted
-
   */
   void DeleteListTraces(vtkMySQLDatabase *iDatabaseConnector,
     std::list<unsigned int> iListTraces);
