@@ -150,10 +150,8 @@ unsigned int QGoDBLineageManager::CreateNewLineageWithNoTrack(
 std::list< unsigned int > QGoDBLineageManager::UpdateTheTracesColor(
   vtkMySQLDatabase *iDatabaseConnector)
 {
-  std::list< unsigned int > List = std::list<unsigned int>();
-  return List;
- // return this->UpdateTheTracesColorTemplate< GoDBTrackRow,
- //                                            TrackContainer >(iDatabaseConnector, this->m_TrackContainerInfoForVisu);
+  return this->UpdateTheTracesColorTemplate< GoDBLineageRow,
+                                             LineageContainer >(iDatabaseConnector, this->m_LineageContainerInfoForVisu);
 }
 
 //-------------------------------------------------------------------------
@@ -173,8 +171,8 @@ void QGoDBLineageManager::UpdateTWAndContainerForImportedTraces(
 //-------------------------------------------------------------------------
 void QGoDBLineageManager::DeleteCheckedTraces(vtkMySQLDatabase *iDatabaseConnector)
 {
-  //this->DeleteTracesTemplate< TrackContainer >(iDatabaseConnector,
-   //                                            this->m_TrackContainerInfoForVisu);
+  this->DeleteTracesTemplate< LineageContainer >(iDatabaseConnector,
+                                               this->m_LineageContainerInfoForVisu);
 }
 
 //-------------------------------------------------------------------------
@@ -183,8 +181,8 @@ void QGoDBLineageManager::DeleteCheckedTraces(vtkMySQLDatabase *iDatabaseConnect
 void QGoDBLineageManager::DeleteListTraces(vtkMySQLDatabase *iDatabaseConnector,
                                          std::list< unsigned int > iListTraces)
 {
-  //this->DeleteTracesTemplate< TrackContainer >(iDatabaseConnector,
-  //                                             this->m_TrackContainerInfoForVisu, iListTraces, false);
+  this->DeleteTracesTemplate< LineageContainer >(iDatabaseConnector,
+                                               this->m_LineageContainerInfoForVisu, iListTraces, false);
 }
 
 //-------------------------------------------------------------------------
@@ -192,9 +190,7 @@ void QGoDBLineageManager::DeleteListTraces(vtkMySQLDatabase *iDatabaseConnector,
 //-------------------------------------------------------------------------
 std::list< unsigned int > QGoDBLineageManager::GetListHighlightedIDs()
 {
-  std::list< unsigned int > List = std::list<unsigned int>();
-  return List;
-  //return this->m_TrackContainerInfoForVisu->GetHighlightedElementsTraceID();
+  return this->m_LineageContainerInfoForVisu->GetHighlightedElementsTraceID();
 }
 
 //-------------------------------------------------------------------------
@@ -203,8 +199,8 @@ std::list< unsigned int > QGoDBLineageManager::GetListHighlightedIDs()
 void QGoDBLineageManager::UpdateHighlightedElementsInVisuContainer(
   int iTraceID)
 {
-  //this->m_TrackContainerInfoForVisu->
-  //UpdateElementHighlightingWithGivenTraceID(iTraceID);
+  this->m_LineageContainerInfoForVisu->
+    UpdateElementHighlightingWithGivenTraceID(iTraceID);
 }
 
 //-------------------------------------------------------------------------
@@ -212,8 +208,8 @@ void QGoDBLineageManager::UpdateHighlightedElementsInVisuContainer(
 //-------------------------------------------------------------------------
 void QGoDBLineageManager::UpdateVisibleElementsInVisuContainer(int iTraceID)
 {
-  //this->m_TrackContainerInfoForVisu->
-  //UpdateElementVisibilityWithGivenTraceID(iTraceID);
+  this->m_LineageContainerInfoForVisu->
+    UpdateElementVisibilityWithGivenTraceID(iTraceID);
 }
 
 //-------------------------------------------------------------------------
