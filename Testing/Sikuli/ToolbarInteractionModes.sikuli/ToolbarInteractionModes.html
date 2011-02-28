@@ -82,8 +82,8 @@ Toolbar = (<span class="str">"default"</span>,<img src="ZoomIcon.png" />,<img sr
 
 
 Mouse = (<span class="str">"Left"</span>,<span class="str">"Right"</span>,<span class="str">"Middle"</span>,<span class="str">"Scroll"</span>)
-Actions = (<span class="str">"single_click"</span>,<span class="str">"double_click"</span>,<span class="str">"drag_up2down"</span>,<span class="str">"drag_down2up"</span>,<span class="str">"drag_left2right"</span>,<span class="str">"drag_right2left"</span>)
-
+<span class="cmt">#Actions = ("single_click","double_click","drag_up2down","drag_down2up","drag_left2right","drag_right2left")
+</span>
 ViewRegion = (<img src="XY_ViewRegion.png" />,<img src="XZ_ViewRegion.png" />,<img src="YZ_ViewRegion.png" />,<img src="XYZ_ViewRegion.png" />)
 Init_view = [None]*<span class="dig">4</span>
 pointx = [None]*<span class="dig">4</span>
@@ -145,6 +145,38 @@ pointy = [None]*<span class="dig">4</span>
                 mouseUp(Button.MIDDLE)
                 <span class="cmt">#nothing should happen in all modes in all views
 </span>                <span class="kw">assert</span> exists(Pattern(view_withmouse))
+
+                shift = <span class="dig">30</span>
+                mouseMove(Location(pointx[j]+shift,pointy[j]))
+                view_withmouseRight = <span class="skw">capture</span>(Init_view[j].getRect())
+                <span class="cmt">#left click drag left2right
+</span>                <span class="skw">dragDrop</span>(Location(pointx[j],pointy[j]),Location(pointx[j]+shift,pointy[j]))
+
+                <span class="cmt">#should move figure to the right only in pan mode in all views
+</span>                <span class="cmt">#should rotate only xyz view to the right in all other modes.
+</span>
+                <span class="kw">if</span> mode == <img src="PanIcon.png" />:
+                        <span class="cmt">#assert each view is shifted by 10 pixels
+</span>                        rightShift = <span class="skw">find</span>(Pattern(view_withmouse))
+                        <span class="kw">assert</span>(rightShift.x == Init_view[j].x + shift)
+                        <span class="kw">assert</span>(rightShift.y == Init_view[j].y)
+                        <span class="kw">assert</span>(rightShift.h == Init_view[j].h)
+                        <span class="kw">assert</span>(rightShift.w == Init_view[j].w)
+
+
+                <span class="kw">else</span>:
+
+                        <span class="kw">if</span> j == <span class="dig">3</span>:
+
+                                mouseMove(Location(pointx[<span class="dig">0</span>],pointy[<span class="dig">0</span>]))
+                                <span class="skw">wait</span>(<span class="dig">3</span>)
+                                <span class="cmt">#assert xyz view rotated to the right by 10 degrees
+</span>                                <span class="kw">assert</span> exists(Pattern(<img src="1298594448537.png" />).similar(<span class="dig">0.99</span>))
+
+
+                        <span class="kw">else</span>:
+
+                                <span class="kw">assert</span> exists(Pattern(view_withmouseRight))
 </pre>
 </body>
 </html>

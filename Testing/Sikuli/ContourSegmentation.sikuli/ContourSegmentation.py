@@ -31,9 +31,9 @@ def DrawContour(View,xdecimal,ydecimal):
 	click(Location(startx,starty))
 	wait(1)
 
-
-click("ContourSegmentationIcon.png")
 click("TableWidgetIcon.png")
+click("ContourSegmentationIcon.png")
+
 wait(1)
 
 ViewRegion = ("XY_ViewRegion.png","XZ_ViewRegion.png","YZ_ViewRegion.png","last")
@@ -41,17 +41,17 @@ ViewRegion = ("XY_ViewRegion.png","XZ_ViewRegion.png","YZ_ViewRegion.png","last"
 for view in ViewRegion:
 		
 	if view == "last":
-		for i in ViewRegion[0:3]:
+		for i in ViewRegion[0:2]:
 			DrawContour(i,0.5,0.5)
 	else:
 		DrawContour(view,0.3,0.6)
 	
 	
-	reg = find(Pattern(view).similar(0.30))
+	#reg = find(Pattern(view).similar(0.30))
 
-	table_quadview = reg.getRect()
+	#table_quadview = reg.getRect()
 
-	quadview_image_BEFORE =capture(table_quadview)
+	#quadview_image_BEFORE =capture(table_quadview)
 	
 	
 	click("ContourSettings.png")
@@ -59,14 +59,14 @@ for view in ViewRegion:
 	type(Key.UP+Key.UP+Key.UP+Key.UP+Key.UP)
 	click("cancel.png")
 
-	find(Pattern(quadview_image_BEFORE).similar(.95))
+	#find(Pattern(quadview_image_BEFORE).similar(.95))
 
 	#check that nothing changed	
-	reg = find(Pattern(view).similar(0.30))
+	#reg = find(Pattern(view).similar(0.30))
 	#this should find a rough 30% image and just get the coordinates and then take real image below
-	table_quadview = reg.getRect()
+	#table_quadview = reg.getRect()
 
-	quadview_image_BEFORE =capture(table_quadview)
+	#quadview_image_BEFORE =capture(table_quadview)
 
 #can find 1 instance of blue circle image and then 3 instances of it.  Also red circles for validation.
 
@@ -79,17 +79,18 @@ for view in ViewRegion:
 	
 	click("ContourSettings.png")
 	#change line width from 3 to 7
-	type(Key.DOWN+Key.DOWN+Key.DOWN+Key.DOWN+Key.DOWN)
+	type(Key.UP+Key.DOWN+Key.DOWN+Key.DOWN+Key.DOWN)
 	click("ok.png")
 	#check that line disapears 
 	if view == "last":
-		for i in ViewRegion[0:3]:
+		for i in ViewRegion[0:2]:
 			DrawContour(i,0.5,0.5)
 	else:
 		DrawContour(view,0.3,0.6)
 	
 			
 	click("Validate.png")
+	click("ContourReinit.png")
 	#check that new contour is on View and in DB
 
 
@@ -109,7 +110,7 @@ for channel in [0,2]:
 	for view in ViewRegion:
 	
 		if view == "last":
-			for i in ViewRegion[0:3]:
+			for i in ViewRegion[0:2]:
 				region = find(Pattern(i).similar(0.30))
 				xclick = random.randint(region.x,region.w+region.x)
 				yclick = random.randint(region.y,region.h+region.y)

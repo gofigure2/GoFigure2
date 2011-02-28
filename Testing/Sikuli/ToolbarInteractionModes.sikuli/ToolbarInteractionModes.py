@@ -10,7 +10,7 @@ Toolbar = ("default","ZoomIcon.png","PanIcon.png","ActorPickingIcon.png")
 
 
 Mouse = ("Left","Right","Middle","Scroll")
-Actions = ("single_click","double_click","drag_up2down","drag_down2up","drag_left2right","drag_right2left")
+#Actions = ("single_click","double_click","drag_up2down","drag_down2up","drag_left2right","drag_right2left")
 
 ViewRegion = ("XY_ViewRegion.png","XZ_ViewRegion.png","YZ_ViewRegion.png","XYZ_ViewRegion.png")
 Init_view = [None]*4
@@ -74,12 +74,38 @@ for mode in Toolbar:
 		#nothing should happen in all modes in all views
 		assert exists(Pattern(view_withmouse))
 
-		
+		shift = 30
+		mouseMove(Location(pointx[j]+shift,pointy[j]))
+		view_withmouseRight = capture(Init_view[j].getRect())
+		#left click drag left2right
+		dragDrop(Location(pointx[j],pointy[j]),Location(pointx[j]+shift,pointy[j]))
 
+		#should move figure to the right only in pan mode in all views
+		#should rotate only xyz view to the right in all other modes.
 
-
-		
-
+		if mode == "PanIcon.png":
+			#assert each view is shifted by 10 pixels
+			rightShift = find(Pattern(view_withmouse))
+			assert(rightShift.x == Init_view[j].x + shift)
+			assert(rightShift.y == Init_view[j].y)
+			assert(rightShift.h == Init_view[j].h)
+			assert(rightShift.w == Init_view[j].w)
+	
+			
+		else:	
+			
+			if j == 3:
+			
+				mouseMove(Location(pointx[0],pointy[0]))
+				wait(3)
+				#assert xyz view rotated to the right by 10 degrees
+				assert exists(Pattern("1298594448537.png").similar(0.99))
+				
+				
+			else:	
+				
+				assert exists(Pattern(view_withmouseRight))
+				
 	
 
 	

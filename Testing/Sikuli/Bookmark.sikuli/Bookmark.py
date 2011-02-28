@@ -86,6 +86,7 @@ click("cancel.png")
 
 #Delete + ok
 click("File.png")
+wait(1)
 click("Bookmarks.png")
 click("Delete_a_bookmark.png")
 Region(500,282,283,271).click("Test_Bookmark.png")
