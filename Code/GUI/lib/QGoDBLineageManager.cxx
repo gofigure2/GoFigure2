@@ -38,7 +38,7 @@
 #include <sstream>
 
 QGoDBLineageManager::QGoDBLineageManager(int iImgSessionID, QWidget *iparent) :
-  QGoDBTraceManager()//, m_TrackContainerInfoForVisu(NULL)
+  QGoDBTraceManager(), m_LineageContainerInfoForVisu(NULL)
 {
   this->SetInfo(iImgSessionID, iparent);
   this->m_TWContainer = new GoDBTWContainerForTrackLineage(this->m_TraceName,
@@ -59,17 +59,17 @@ QGoDBLineageManager::~QGoDBLineageManager()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/*void QGoDBTrackManager::SetTracksInfoContainerForVisu(
-  TrackContainer *iContainerForVisu)
+void QGoDBLineageManager::SetLineagesInfoContainerForVisu(
+  LineageContainer *iContainerForVisu)
 {
-  this->SetTracesInfoContainerForVisuTemplate< TrackContainer >(
-    iContainerForVisu, &this->m_TrackContainerInfoForVisu);
+  this->SetTracesInfoContainerForVisuTemplate< LineageContainer >(
+    iContainerForVisu, &this->m_LineageContainerInfoForVisu);
 
-  QObject::connect( this->m_TrackContainerInfoForVisu,
+  /*QObject::connect( this->m_TrackContainerInfoForVisu,
                     SIGNAL( NeedMeshesInfoForImportedTrack(unsigned int) ),
                     this,
-                    SIGNAL( NeedMeshesInfoForImportedTrack(unsigned int) ) );
-}*/
+                    SIGNAL( NeedMeshesInfoForImportedTrack(unsigned int) ) );*/
+}
 
 //-------------------------------------------------------------------------
 
@@ -133,10 +133,10 @@ unsigned int QGoDBLineageManager::CreateNewLineageWithNoTrack(
     this->m_CollectionOfTraces->CreateCollectionWithNoTracesNoPoints< GoDBLineageRow >(
       iDatabaseConnector, *this->m_SelectedColorData, NewLineage);
 
-  //this->m_TrackContainerInfoForVisu->ResetCurrentElement();
-  //this->m_TrackContainerInfoForVisu->UpdateCurrentElementFromDB(
-    //NewTrackID, this->GetVectorFromQColor(this->m_SelectedColorData->second), true);
-  //this->m_TrackContainerInfoForVisu->InsertCurrentElement();
+  this->m_LineageContainerInfoForVisu->ResetCurrentElement();
+  this->m_LineageContainerInfoForVisu->UpdateCurrentElementFromDB(
+    NewLineageID, this->GetVectorFromQColor(this->m_SelectedColorData->second), true);
+  this->m_LineageContainerInfoForVisu->InsertCurrentElement();
   this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
   //NameWithColorData NewTrackData(ConvertToString< unsigned int >(NewTrackID),
                                  //this->m_SelectedColorData->second);
@@ -325,6 +325,29 @@ void QGoDBLineageManager::UpdateTrackRootLastCreatedLineage(
   emit DBConnectionNotNeededAnymore();
 }
 
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBLineageManager::CreateBasicLineageInVisuFromCurrentElement(
+  double* iMotherTrackPoint, double* iDaughterOneTrackPoint, 
+  double* iDaughterTwoTrackPoint)
+{
+  this->m_LineageContainerInfoForVisu->
+    createBasicLineageFromCurrentElement( iMotherTrackPoint,
+                         iDaughterOneTrackPoint, iDaughterTwoTrackPoint);
+  //unsigned int LineageID = 
+    //this->m_LineageContainerInfoForVisu->m_CurrentElement.TraceID;
+  //SetThePointsFromPolydata(
+  //  this->m_LineageContainerInfoForVisu->m_CurrentElement.Nodes);
+  //to implement in GoDBLineageRow
+  /*emit NeedToGetDatabaseConnection();
+  GoDBLineageRow Lineage;
+  Lineage.SetValuesForSpecificID(LineageID,this->m_DatabaseConnector);
+  Lineage.SaveInDB(this->m_DatabaseConnector);
+  emit DBConnectionNotNeededAnymore();*/
+  //save the lineage into the container:
+  //this->m_LineageContainerInfoForVisu->InsertCurrentElement();
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

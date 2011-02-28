@@ -254,6 +254,14 @@ public:
   */
   void SetTracksContainer(TrackContainer *iContainer);
 
+  /**
+  \brief set the pointer m_LineageInfoForVisu of the LineagesManager to
+  iContainer
+  \param[in] iContainer pointer for the container of lineages
+  for the visu
+  */
+  void SetLineagesContainer(LineageContainer *iContainer);
+
 public slots:
   void DeleteBookmarks();
 

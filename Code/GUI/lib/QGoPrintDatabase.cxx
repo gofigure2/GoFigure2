@@ -1201,6 +1201,15 @@ QGoPrintDatabase::SetTracksContainer(TrackContainer *iContainer)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+void
+QGoPrintDatabase::SetLineagesContainer(LineageContainer *iContainer)
+{
+  this->m_LineagesManager->SetLineagesInfoContainerForVisu(iContainer);
+}
+
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 void QGoPrintDatabase::SetTracesManager()
 {
   this->SetContoursManager();
@@ -1381,6 +1390,11 @@ void QGoPrintDatabase::SetLineagesManager()
                     this,
                     SLOT( CloseDBConnection() ) );
 
+  QObject::connect(this->m_TracksManager,
+                   SIGNAL(NewTrackFamilySavedInDB(double*, double*, double*) ),
+                   this->m_LineagesManager,
+                   SLOT(CreateBasicLineageInVisuFromCurrentElement(double*, double*, double*) ) );
+
   this->m_LineagesManager->SetSelectedColor( this->m_TraceWidget->GetPointerColorData() );
 }
 //--------------------------------------------------------------------------
@@ -1552,6 +1566,7 @@ void QGoPrintDatabase::CreateNewLineageFromCheckedTracks(
   this->AddCheckedTracesToCollection< QGoDBTrackManager, QGoDBLineageManager >(
     this->m_TracksManager, this->m_LineagesManager,
     NewLineageID, iListCheckedTracks);
+
   this->CloseDBConnection();
 }
 //--------------------------------------------------------------------------

@@ -389,6 +389,7 @@ protected:
   ContourContainer *m_ContourContainer;
   MeshContainer    *m_MeshContainer;
   TrackContainer   *m_TrackContainer;
+  LineageContainer *m_LineageContainer;
 
   bool m_TraceWidgetRequiered;
 

@@ -176,7 +176,7 @@ public:
   /*
    * \brief Basic lineage for testing purpose
    */
-  void createDumbLineageFromCurrentElement( double* iMother,
+  void createBasicLineageFromCurrentElement( double* iMother,
                           double* iDaughter, double* iDaughter2);
 
 
@@ -197,6 +197,14 @@ public:
   //void updateActor( unsigned int iLineageID );
 
   //void createTreeForLineageViewer();
+
+  /**\todo implement them:*/
+  virtual bool DeleteElement(const unsigned int & iId);
+  virtual bool DeleteElement(MultiIndexContainerTraceIDIterator iIter);
+  std::list< unsigned int > DeleteAllHighlightedElements();
+
+protected:
+  std::vector< vtkActor* > AddTrace( vtkPolyData* , vtkProperty* );
 
 private:
   Q_DISABLE_COPY(LineageContainer);

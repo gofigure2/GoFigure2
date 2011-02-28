@@ -61,7 +61,7 @@ LineageContainer::
 //-------------------------------------------------------------------------
 void
 LineageContainer::
-createDumbLineageFromCurrentElement( double* iMother, double* iDaughter1, double* iDaughter2)
+createBasicLineageFromCurrentElement( double* iMother, double* iDaughter1, double* iDaughter2)
 {
   // Create the triangle polydata
   //setup points (geometry)
@@ -181,3 +181,32 @@ createLineage( unsigned int iLineageID,
   m_CurrentElement.ActorXYZ = NULL;*/
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+bool LineageContainer::DeleteElement(const unsigned int & iId)
+{
+  return true;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+bool LineageContainer::DeleteElement(MultiIndexContainerTraceIDIterator iIter)
+{
+  return true;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list< unsigned int > LineageContainer::DeleteAllHighlightedElements()
+{
+  std::list< unsigned int > toreturn = std::list< unsigned int >();
+  return toreturn;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::vector< vtkActor* > LineageContainer::AddTrace( vtkPolyData* , vtkProperty* )
+{
+  std::vector< vtkActor* > toreturn = std::vector< vtkActor* >();
+  return toreturn;
+}
