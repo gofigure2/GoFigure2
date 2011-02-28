@@ -1,6 +1,3 @@
-# CMake >= 2.8.2 MUST be installed (which is requiered by ITK)
-CMAKE_MINIMUM_REQUIRED( VERSION 2.8.2 )
-
 IF( COMMAND CMAKE_POLICY )
   CMAKE_POLICY( VERSION 2.6 )
   CMAKE_POLICY( SET CMP0005 OLD )
@@ -50,11 +47,17 @@ ENDIF( WIN32 )
 OPTION( SUPERBUILD "Use SuperBuild" OFF )
 
 IF( SUPERBUILD )
+
   CMAKE_MINIMUM_REQUIRED( VERSION 2.8.3 )
+  
   PROJECT( MYSUPERPROJECT )
   INCLUDE( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/SuperBuild/SuperBuild.cmake" )
   RETURN()
+  
 ELSE( SUPERBUILD )
+
+  # CMake >= 2.8.2 MUST be installed (which is required by ITK)
+  CMAKE_MINIMUM_REQUIRED( VERSION 2.8.2 )
 
   #---------------------------------------------------------------------------
 
