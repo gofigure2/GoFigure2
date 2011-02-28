@@ -40,7 +40,7 @@
 #include "GoDBTWContainerForTrackLineage.h"
 #include "QGoDBTraceManager.h"
 #include "QGoGUILibConfigure.h"
-//#include "TrackContainer.h"
+#include "LineageContainer.h"
 
 /**
 \class QGoDBLineageManager
@@ -61,10 +61,10 @@ public:
                                            int iTraceID);
 
   /**
-  \brief set the m_TrackContainerInfoForVisu to the iContainerForVisu
+  \brief set the m_LineageContainerInfoForVisu to the iContainerForVisu
   \param[in] iContainerForVisu common container for the visu and database
   */
-  //void SetTracksInfoContainerForVisu(TrackContainer *iContainerForVisu);
+  void SetLineagesInfoContainerForVisu(LineageContainer *iContainerForVisu);
 
   /**
   \brief get all the data from the database to load all the lineages for the imagingsession
@@ -138,6 +138,10 @@ public slots:
   */
   void UpdateTrackRootLastCreatedLineage(unsigned int iTrackIDRoot);
 
+  void CreateBasicLineageInVisuFromCurrentElement(
+    double* iMotherTrackPoint, double* iDaughterOneTrackPoint, 
+    double* iDaughterTwoTrackPoint);
+
 signals:
   //void NeedMeshesInfoForImportedTrack(unsigned int iTrackID);
   //void TrackToSplit(unsigned int iTrackID, std::list<unsigned int> iListMeshIDs);
@@ -146,7 +150,7 @@ signals:
 
 protected:
   GoDBTWContainerForTrackLineage *m_TWContainer;
-  //TrackContainer            *m_TrackContainerInfoForVisu;
+  LineageContainer               *m_LineageContainerInfoForVisu;
 
   //virtual pure method in QGoDBTraceManager
   virtual void SetCollectionsTraceNames();

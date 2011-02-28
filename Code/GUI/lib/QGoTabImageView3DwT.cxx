@@ -165,6 +165,7 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_TrackContainer->SetHighlightedProperty(m_HighlightedMeshesProperty);
   m_TrackContainer->SetIntersectionLineWidth(m_IntersectionLineWidth);
 
+  m_LineageContainer = new LineageContainer(this, this->m_ImageView);
   CreateVisuDockWidget();
 
   // segmentation dockwidgets
@@ -289,6 +290,10 @@ QGoTabImageView3DwT::
   if ( m_TrackContainer )
     {
     delete m_TrackContainer;
+    }
+  if ( m_LineageContainer)
+    {
+    delete m_LineageContainer;
     }
 }
 
@@ -671,6 +676,7 @@ QGoTabImageView3DwT::SetTheContainersForDB()
   m_DataBaseTables->SetContoursContainer(m_ContourContainer);
   m_DataBaseTables->SetMeshesContainer(m_MeshContainer);
   m_DataBaseTables->SetTracksContainer(m_TrackContainer);
+  m_DataBaseTables->SetLineagesContainer(m_LineageContainer);
 }
 
 //-------------------------------------------------------------------------

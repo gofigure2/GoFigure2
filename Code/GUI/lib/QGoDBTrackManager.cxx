@@ -612,9 +612,18 @@ int QGoDBTrackManager::CreateTrackFamily(vtkMySQLDatabase* iDatabaseConnector,
     return oTrackFamilyID;
     }
   std::list<unsigned int>::iterator iter = iDaughtersID.begin();
-  TrackFamily.SetField<unsigned int>("TrackIDDaughter1", *iter);
+  unsigned int TrackIDDaughterOne = *iter;
   ++iter;
-  TrackFamily.SetField<unsigned int>("TrackIDDaughter2", *iter);
+  unsigned int TrackIDDaughterTwo = *iter;
+  TrackFamily.SetField<unsigned int>("TrackIDDaughter1", TrackIDDaughterOne);
+  
+  TrackFamily.SetField<unsigned int>("TrackIDDaughter2", TrackIDDaughterTwo);
+
+  //emit the points to create the basic lineage in the visu:
+  emit NewTrackFamilySavedInDB(
+    this->m_TrackContainerInfoForVisu->GetLastPointOfTheTrack(iMotherTrackID), 
+    this->m_TrackContainerInfoForVisu->GetFirstPointOfTheTrack(TrackIDDaughterOne), 
+    this->m_TrackContainerInfoForVisu->GetFirstPointOfTheTrack(TrackIDDaughterTwo) );
 
   return TrackFamily.SaveInDB(iDatabaseConnector);
 }
@@ -630,3 +639,6 @@ void QGoDBTrackManager::UpdateTrackFamilyIDForDaughter(
   Daughter.SetField<unsigned int>("TrackFamilyID", iTrackFamilyID);
   Daughter.SaveInDB(iDatabaseConnector);
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
