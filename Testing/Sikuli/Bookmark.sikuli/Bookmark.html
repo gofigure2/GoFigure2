@@ -75,8 +75,8 @@ address = os.getcwd()
 <span class="cmt">#address = "/home/es1076/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images"
 </span>
 <span class="cmt">#address = address+"/gofigure2_images"
-</span><span class="kw">print</span> address
-setBundlePath(address)
+</span><span class="cmt">#print address
+</span>setBundlePath(address)
 
 start = time.time()
 
@@ -157,8 +157,8 @@ Region(<span class="dig">500</span>,<span class="dig">282</span>,<span class="di
 
 
 <span class="cmt">#Delete + ok
-</span><span class="skw">click</span>(<img src="File.png" />)
-<span class="skw">wait</span>(<span class="dig">1</span>)
+</span><span class="cmt">#click("File.png")
+</span><span class="skw">wait</span>(<span class="dig">1</span>)
 <span class="skw">click</span>(<img src="Bookmarks.png" />)
 <span class="skw">click</span>(<img src="Delete_a_bookmark.png" />)
 Region(<span class="dig">500</span>,<span class="dig">282</span>,<span class="dig">283</span>,<span class="dig">271</span>).<span class="skw">click</span>(<img src="Test_Bookmark.png" />)
