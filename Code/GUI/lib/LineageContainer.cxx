@@ -36,7 +36,7 @@
 
 #include "vtkPolyData.h"
 #include "vtkCellArray.h"
-#include "vtkTriangle.h"
+#include "vtkLine.h"
 
 //-------------------------------------------------------------------------
 LineageContainer::
@@ -66,40 +66,43 @@ createBasicLineageFromCurrentElement( double* iMother, double* iDaughter1, doubl
   // Create the triangle polydata
   //setup points (geometry)
   vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
-  points->InsertNextPoint ( iMother[0], iMother[1], iMother[2] );
   points->InsertNextPoint ( iDaughter1[0], iDaughter1[1], iDaughter1[2] );
+  points->InsertNextPoint ( iMother[0], iMother[1], iMother[2] );
   points->InsertNextPoint ( iDaughter2[0], iDaughter2[1], iDaughter2[2] );
 
-  vtkSmartPointer<vtkCellArray> triangles = vtkSmartPointer<vtkCellArray>::New();
+  vtkSmartPointer<vtkCellArray> lines = vtkSmartPointer<vtkCellArray>::New();
 
-  //create a triangle on the three points in the polydata
-  vtkSmartPointer<vtkTriangle> triangle = vtkSmartPointer<vtkTriangle>::New();
-  triangle->GetPointIds()->SetId ( 0, 0 );
-  triangle->GetPointIds()->SetId ( 1, 1 );
-  triangle->GetPointIds()->SetId ( 2, 2 );
-
-  //add the triangle to the list of triangles (in this case there is only 1)
-  triangles->InsertNextCell ( triangle );
+  for(int i=0; i<2; ++i)
+    {
+    //Create the first line (between Origin and P0)
+    vtkSmartPointer<vtkLine> line =
+        vtkSmartPointer<vtkLine>::New();
+    line->GetPointIds()->SetId(0,i);
+    line->GetPointIds()->SetId(1,i+1);
+    lines->InsertNextCell(line);
+    }
 
   //add the geometry and topology to the polydata
   this->m_CurrentElement.Nodes = vtkPolyData::New();
   this->m_CurrentElement.Nodes->SetPoints ( points );
-  this->m_CurrentElement.Nodes->SetPolys ( triangles );
+  this->m_CurrentElement.Nodes->SetLines ( lines );
 
   // Add the actors
   if ( this->m_ImageView )
     {
     //Create new actors (new address)
     vtkProperty *trace_property = vtkProperty::New();
-    double       r = this->m_CurrentElement.rgba[0];
-    double       g = this->m_CurrentElement.rgba[1];
-    double       b = this->m_CurrentElement.rgba[2];
-    double       a = this->m_CurrentElement.rgba[3];
+    double       r = 1.0;
+    double       g = 1.0;
+    double       b = 1.0;
+    double       a = 1.0;
 
     trace_property->SetColor(r,
                              g,
                              b);
     trace_property->SetOpacity(a);
+    // Not working only open gl
+    //trace_property->SetLineWidth(10.0);
 
     // Add contour
     std::vector< vtkActor * > lineageActors =
