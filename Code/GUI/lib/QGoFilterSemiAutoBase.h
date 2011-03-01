@@ -137,7 +137,7 @@ public:
                                     const double & iThreshold);
 
   vtkPolyData *  ReorganizeContour(vtkPolyData *iInputImage = NULL,
-                                   bool iDecimate = false);
+                                   bool iDecimate = true );
 
   vtkPolyData *  ReconstructMesh(vtkImageData *iInputImage,
                                  const double & iThreshold);
