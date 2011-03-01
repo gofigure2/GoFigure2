@@ -227,6 +227,8 @@ void QGoPrintDatabase::FillTableFromDatabase()
   this->DBTabWidget->addTab(this->m_TracksManager->GetTableWidget(), "track");
   this->DBTabWidget->addTab(this->m_LineagesManager->GetTableWidget(), "lineage");
   this->DBTabWidget->blockSignals(false);
+  //this->DBTabWidget->setTabPosition(QTabWidget:North);
+  this->DBTabWidget->setTabShape(QTabWidget::Triangular);
 
   m_IsDatabaseUsed = true;
   emit PrintDBReady();
