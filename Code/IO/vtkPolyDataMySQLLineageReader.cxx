@@ -38,7 +38,7 @@
 #include "vtkCellArray.h"
 #include "vtkPolyData.h"
 #include "vtkPoints.h"
-#include "vtkTriangle.h"
+#include "vtkLine.h"
 
 #include <sstream>
 
@@ -81,21 +81,22 @@ vtkPolyDataMySQLLineageReader::GetPolyData(const std::string & iString)
         points->InsertNextPoint(pt[0], pt[1], pt[2]);
         }
 
-      vtkSmartPointer<vtkCellArray> triangles = vtkSmartPointer<vtkCellArray>::New();
+      vtkSmartPointer<vtkCellArray> lines = vtkSmartPointer<vtkCellArray>::New();
 
-      //create a triangle on the three points in the polydata
-      vtkSmartPointer<vtkTriangle> triangle = vtkSmartPointer<vtkTriangle>::New();
-      triangle->GetPointIds()->SetId ( 0, 0 );
-      triangle->GetPointIds()->SetId ( 1, 1 );
-      triangle->GetPointIds()->SetId ( 2, 2 );
-
-      //add the triangle to the list of triangles (in this case there is only 1)
-      triangles->InsertNextCell ( triangle );
+      for(int i=0; i<2; ++i)
+        {
+        //Create the first line (between Origin and P0)
+        vtkSmartPointer<vtkLine> line =
+            vtkSmartPointer<vtkLine>::New();
+        line->GetPointIds()->SetId(0,i);
+        line->GetPointIds()->SetId(1,i+1);
+        lines->InsertNextCell(line);
+        }
 
       vtkSmartPointer<vtkPolyData> polyData =
           vtkSmartPointer<vtkPolyData>::New();
       polyData->SetPoints ( points );
-      polyData->SetPolys ( triangles );
+      polyData->SetLines ( lines );
 
     return polyData;
     }

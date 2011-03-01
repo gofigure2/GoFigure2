@@ -124,8 +124,8 @@ public:
    */
   bool              Root;
 
-  double* m_FirstPoint;
-  double* m_LastPoint;
+  //double* m_FirstPoint;
+  //double* m_LastPoint;
 
 private:
   // only lineage ID of root is relevant as well??
