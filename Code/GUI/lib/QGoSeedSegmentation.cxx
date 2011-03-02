@@ -63,11 +63,11 @@ QGoSeedSegmentation::QGoSeedSegmentation(QObject *parentO, QWidget *parentW, vtk
   //Create associated dockwidget
   m_BaseAlgorithmSegmentationDockWidget = new QGoBaseAlgorithmSegmentationDockWidget(parentW);
   // connect with 3DwT to add the good number of channels
-  QObject::connect( this, SIGNAL( addChannel(QString) ),
-                    m_BaseAlgorithmSegmentationDockWidget, SLOT( AddChannel(QString) ) );
+  //QObject::connect( this, SIGNAL( addChannel(QString) ),
+  //                  m_BaseAlgorithmSegmentationDockWidget, SLOT( AddChannel(QString) ) );
   // connect with 3DwT to add the good number of channels
-  QObject::connect( this, SIGNAL( setChannel(unsigned int) ),
-                    m_BaseAlgorithmSegmentationDockWidget, SLOT( SetChannel(unsigned int) ) );
+  //QObject::connect( this, SIGNAL( setChannel(unsigned int) ),
+  //                  m_BaseAlgorithmSegmentationDockWidget, SLOT( SetChannel(unsigned int) ) );
   // mesh has been created by a filter
   QObject::connect( m_BaseAlgorithmSegmentationDockWidget, SIGNAL( MeshCreated(vtkPolyData *) ),
                     this, SIGNAL( MeshCreated(vtkPolyData *) ) );
@@ -152,6 +152,8 @@ QGoSeedSegmentation::ConnectSignals(QGoBaseAlgorithmSegmentationDockWidget *iDoc
 {
   QObject::connect( this, SIGNAL( addChannel(QString) ),
                     iDockWidget, SLOT( AddChannel(QString) ) );
+  QObject::connect( this, SIGNAL( setChannel(unsigned int) ),
+                    iDockWidget, SLOT( SetChannel(unsigned int) ) );
 }
 
 //--------------------------------------------------------------------------
@@ -160,7 +162,7 @@ QGoSeedSegmentation::ConnectSignals(QGoBaseAlgorithmSegmentationDockWidget *iDoc
 void
 QGoSeedSegmentation::SetChannel(int i)
 {
-  emit addChannel( QString::number(i, 10) );
+  //emit addChannel( QString::number(i, 10) );
 }
 
 //--------------------------------------------------------------------------

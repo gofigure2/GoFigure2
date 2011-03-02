@@ -61,7 +61,7 @@ public:
   /**
    * \brief Destructor
    */
-  ~QGoSeedSegmentationBase();
+  virtual ~QGoSeedSegmentationBase();
 
   /**
    * \brief Set the seeds from which the segmentation will be computed.

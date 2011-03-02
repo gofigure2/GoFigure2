@@ -75,6 +75,7 @@ QGoBaseAlgorithmSegmentationDockWidget::AddChannel(QString iChannel)
 void
 QGoBaseAlgorithmSegmentationDockWidget::SetChannel(unsigned int iChannel)
 {
+  std::cout << "set channel received: " << iChannel << std::endl;
   channel->setCurrentIndex(iChannel);
 }
 

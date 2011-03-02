@@ -50,7 +50,7 @@ class QGoBaseAlgorithmSegmentationDockWidget:
   Q_OBJECT
 public:
   explicit QGoBaseAlgorithmSegmentationDockWidget(QWidget *iParent = 0);
-  ~QGoBaseAlgorithmSegmentationDockWidget();
+  virtual ~QGoBaseAlgorithmSegmentationDockWidget();
 
   void Initialize();
 

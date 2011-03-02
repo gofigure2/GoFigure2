@@ -1831,6 +1831,10 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels(int iChannel)
   t_minus_step.append( QLatin1String("t: ") ); // + m_DopplerStep);
   t_minus_step.append( QString::number(t0, 10) );
 
+  QString t_current_step;
+  t_current_step.append( QLatin1String("t: ") ); // + m_DopplerStep);
+  t_current_step.append( QString::number(t1, 10) );
+
   QString t_plus_step;
   t_plus_step.append( QLatin1String("t: ") ); //() + m_DopplerStep);
   t_plus_step.append( QString::number(t2, 10) );
@@ -1840,7 +1844,7 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels(int iChannel)
   m_NavigationDockWidget->blockSignals(true);
   // Create the channels labels
   m_NavigationDockWidget->SetChannel(0, t_minus_step);
-  m_NavigationDockWidget->SetChannel(1, "t: current");
+  m_NavigationDockWidget->SetChannel(1, t_current_step);
   m_NavigationDockWidget->SetChannel(2, t_plus_step);
   // Update the current channel
   m_NavigationDockWidget->SetCurrentChannel(1);
@@ -1850,7 +1854,7 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels(int iChannel)
   // Create the channels labels
   m_ContourSegmentationDockWidget->SetNumberOfChannels(3);
   m_ContourSegmentationDockWidget->SetChannel(0, t_minus_step);
-  m_ContourSegmentationDockWidget->SetChannel(1, "t: current");
+  m_ContourSegmentationDockWidget->SetChannel(1, t_current_step);
   m_ContourSegmentationDockWidget->SetChannel(2, t_plus_step);
   // Update the current channel
   m_ContourSegmentationDockWidget->SetCurrentChannel(1);
@@ -1858,7 +1862,7 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels(int iChannel)
   // Create the channels labels
   m_MeshSegmentationDockWidget->SetNumberOfChannels(3);
   m_MeshSegmentationDockWidget->SetChannel(0, t_minus_step);
-  m_MeshSegmentationDockWidget->SetChannel(1, "t: current");
+  m_MeshSegmentationDockWidget->SetChannel(1, t_current_step);
   m_MeshSegmentationDockWidget->SetChannel(2, t_plus_step);
   // Update the current channel
   m_MeshSegmentationDockWidget->SetCurrentChannel(1);

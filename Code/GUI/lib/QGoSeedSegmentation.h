@@ -68,7 +68,7 @@ public:
   /**
    * \brief Destructor
    */
-  ~QGoSeedSegmentation();
+  virtual ~QGoSeedSegmentation();
 
   /**
    * \brief Connect signals/slots to the segmentation dock widget

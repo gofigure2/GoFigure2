@@ -196,6 +196,7 @@ QGoSeedSegmentationBase::SetChannel(int iChannel, const QString & iText)
 void
 QGoSeedSegmentationBase::SetCurrentChannel(unsigned int iChannel)
 {
+  std::cout << "emit setChannel: " << iChannel << std::endl;
   emit setChannel(iChannel);
 }
 
