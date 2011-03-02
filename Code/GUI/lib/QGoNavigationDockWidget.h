@@ -72,6 +72,8 @@ public:
   */
   void SetChannel( const unsigned int & i, const QString & iText = QString() );
 
+  void SetCurrentChannel(unsigned int iChannel);
+
  /** \brief Set the extent of the images in the X direction
  * \param[in] iMin XMin
  * \param[in] iMax XMax

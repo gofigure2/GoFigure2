@@ -211,6 +211,14 @@ QGoNavigationDockWidget::SetChannel(const unsigned int & i, const QString & iTex
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void
+QGoNavigationDockWidget::SetCurrentChannel(unsigned int iChannel)
+{
+  this->ChannelComboBox->setCurrentIndex(iChannel);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void QGoNavigationDockWidget::SetXMinimumAndMaximum(const int & iMin, const int & iMax)
 {
   this->XSliceSpinBox->setMinimum(iMin);

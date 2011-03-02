@@ -57,6 +57,8 @@ public:
 public slots:
   void    AddChannel(QString iChannel);
 
+  void    SetChannel(unsigned int iChannel)
+
   void    AddFilter(QString iFilter);
 
   int     GetNumberOfFilters();

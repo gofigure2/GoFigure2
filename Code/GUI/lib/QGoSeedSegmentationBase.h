@@ -109,6 +109,8 @@ public:
    */
   void SetChannel(int iChannel, const QString & iText);
 
+  void SetCurrentChannel(unsigned int iChannel);
+
   void SetNumberOfChannels(int iNumberOfChannels);
 
 public slots:
@@ -142,6 +144,8 @@ signals:
    * \param[in] iQString Name of the channel.
    */
   void addChannel(int iChannel, QString iQString);
+
+  void setChannel(unsigned int iChannel);
 
   /**
     * \brief Set the number of channels

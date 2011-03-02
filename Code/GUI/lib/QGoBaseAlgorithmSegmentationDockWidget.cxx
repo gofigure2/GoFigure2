@@ -72,6 +72,15 @@ QGoBaseAlgorithmSegmentationDockWidget::AddChannel(QString iChannel)
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
+void
+QGoBaseAlgorithmSegmentationDockWidget::SetChannel(unsigned int iChannel)
+{
+  channel->setCurrentIndex(iChannel);
+}
+
+//---------------------------------------------------------------------------//
+
+//---------------------------------------------------------------------------//
 
 void
 QGoBaseAlgorithmSegmentationDockWidget::AddFilter(QString iFilter)
