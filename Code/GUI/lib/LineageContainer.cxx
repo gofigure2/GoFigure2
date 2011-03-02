@@ -61,69 +61,46 @@ LineageContainer::
 //-------------------------------------------------------------------------
 void
 LineageContainer::
-createBasicLineageFromCurrentElement( double* iMother, double* iDaughter1, double* iDaughter2)
+addFamilyToLineage( unsigned int iLineageID,
+                    unsigned int iMoTrackID, double* iMotherFirst, double* iMotherLast,
+                    unsigned int iD1TrackID, double* iD1First, double* iD1Last,
+                    unsigned int iD2TrackID, double* iD2First, double* iD2Last)
 {
-  // Create the triangle polydata
-  //setup points (geometry)
-  vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
-  points->InsertNextPoint ( iDaughter1[0], iDaughter1[1], iDaughter1[2] );
-  points->InsertNextPoint ( iMother[0], iMother[1], iMother[2] );
-  points->InsertNextPoint ( iDaughter2[0], iDaughter2[1], iDaughter2[2] );
+  // Update current track family
+  // Look for the mother trackID in the container
+  MultiIndexContainerTrackIDIterator
+    it = m_Container.get< TrackID >().find(true);
 
-  vtkSmartPointer<vtkCellArray> lines = vtkSmartPointer<vtkCellArray>::New();
-
-  for(int i=0; i<2; ++i)
+  // if we find the stucture
+  if ( it != m_Container.get< TrackID >().end() )
     {
-    //Create the first line (between Origin and P0)
-    vtkSmartPointer<vtkLine> line =
-        vtkSmartPointer<vtkLine>::New();
-    line->GetPointIds()->SetId(0,i);
-    line->GetPointIds()->SetId(1,i+1);
-    lines->InsertNextCell(line);
+      //Does this structure has daughters?
+      if( /*!it->HasDaughters()*/ true )
+        {
+        //no daughters->create daughters
+        ///push elements adress issues
+
+        // update actor
+
+        //update connections mother/daughter
+        }
     }
-
-  //add the geometry and topology to the polydata
-  this->m_CurrentElement.Nodes = vtkPolyData::New();
-  this->m_CurrentElement.Nodes->SetPoints ( points );
-  this->m_CurrentElement.Nodes->SetLines ( lines );
-
-  // Add the actors
-  if ( this->m_ImageView )
+  // if we dont find the structure, new root!
+  else
     {
-    //Create new actors (new address)
-    vtkProperty *trace_property = vtkProperty::New();
-    double       r = 1.0;
-    double       g = 1.0;
-    double       b = 1.0;
-    double       a = 1.0;
 
-    trace_property->SetColor(r,
-                             g,
-                             b);
-    trace_property->SetOpacity(a);
-    // Not working only open gl
-    //trace_property->SetLineWidth(10.0);
-
-    // Add contour
-    std::vector< vtkActor * > lineageActors =
-      m_ImageView->AddContour(this->m_CurrentElement.Nodes, trace_property);
-
-    this->m_CurrentElement.ActorXY = lineageActors[0];
-    this->m_CurrentElement.ActorXZ = lineageActors[1];
-    this->m_CurrentElement.ActorYZ = lineageActors[2];
-    this->m_CurrentElement.ActorXYZ = lineageActors[3];
     }
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void
-LineageContainer::
-createLineage( unsigned int iLineageID,
-               unsigned int iMoTrackID, double* iMotherFirst, double* iMotherLast,
-               unsigned int iD1TrackID, double* iD1First, double* iD1Last,
-               unsigned int iD2TrackID, double* iD2First, double* iD2Last)
-{
+//void
+//LineageContainer::
+//createLineage( unsigned int iLineageID,
+//               unsigned int iMoTrackID, double* iMotherFirst, double* iMotherLast,
+//               unsigned int iD1TrackID, double* iD1First, double* iD1Last,
+//               unsigned int iD2TrackID, double* iD2First, double* iD2Last)
+//{
 /*
   // Create temp structure
   TrackStructure tempStructure(*iIterator);
@@ -182,6 +159,64 @@ createLineage( unsigned int iLineageID,
   m_CurrentElement.ActorXZ = NULL;
   m_CurrentElement.ActorYZ = NULL;
   m_CurrentElement.ActorXYZ = NULL;*/
+//}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+LineageContainer::
+createBasicLineageFromCurrentElement( double* iMother, double* iDaughter1, double* iDaughter2)
+{
+  // Create the triangle polydata
+  //setup points (geometry)
+  vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
+  points->InsertNextPoint ( iDaughter1[0], iDaughter1[1], iDaughter1[2] );
+  points->InsertNextPoint ( iMother[0], iMother[1], iMother[2] );
+  points->InsertNextPoint ( iDaughter2[0], iDaughter2[1], iDaughter2[2] );
+
+  vtkSmartPointer<vtkCellArray> lines = vtkSmartPointer<vtkCellArray>::New();
+
+  for(int i=0; i<2; ++i)
+    {
+    //Create the first line (between Origin and P0)
+    vtkSmartPointer<vtkLine> line =
+        vtkSmartPointer<vtkLine>::New();
+    line->GetPointIds()->SetId(0,i);
+    line->GetPointIds()->SetId(1,i+1);
+    lines->InsertNextCell(line);
+    }
+
+  //add the geometry and topology to the polydata
+  this->m_CurrentElement.Nodes = vtkPolyData::New();
+  this->m_CurrentElement.Nodes->SetPoints ( points );
+  this->m_CurrentElement.Nodes->SetLines ( lines );
+
+  // Add the actors
+  if ( this->m_ImageView )
+    {
+    //Create new actors (new address)
+    vtkProperty *trace_property = vtkProperty::New();
+    double       r = 1.0;
+    double       g = 1.0;
+    double       b = 1.0;
+    double       a = 1.0;
+
+    trace_property->SetColor(r,
+                             g,
+                             b);
+    trace_property->SetOpacity(a);
+    // Not working only open gl
+    //trace_property->SetLineWidth(10.0);
+
+    // Add contour
+    std::vector< vtkActor * > lineageActors =
+      m_ImageView->AddContour(this->m_CurrentElement.Nodes, trace_property);
+
+    this->m_CurrentElement.ActorXY = lineageActors[0];
+    this->m_CurrentElement.ActorXZ = lineageActors[1];
+    this->m_CurrentElement.ActorYZ = lineageActors[2];
+    this->m_CurrentElement.ActorXYZ = lineageActors[3];
+    }
 }
 //-------------------------------------------------------------------------
 
