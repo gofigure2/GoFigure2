@@ -78,6 +78,8 @@ QGoSeedSegmentationBase::QGoSeedSegmentationBase(QWidget *parentWidget,
   // connect with 3DwT to add the good number of channels
   QObject::connect( this, SIGNAL( setNumberOfChannels(int) ),
                     m_BaseAlgorithmSegmentationWidget, SLOT( setNumberOfChannels(int) ) );
+  QObject::connect( this, SIGNAL( setChannel(unsigned int) ),
+                    m_BaseAlgorithmSegmentationWidget, SLOT( SetChannel(unsigned int) ) );
   // mesh has been created by a filter
   QObject::connect( m_BaseAlgorithmSegmentationWidget,
                     SIGNAL( MeshCreated(vtkPolyData *, int) ),
@@ -187,6 +189,7 @@ QGoSeedSegmentationBase::ConnectSignals(QGoSeedBaseWidget *iWidget)
 void
 QGoSeedSegmentationBase::SetChannel(int iChannel, const QString & iText)
 {
+  // send signal to this class
   emit addChannel(iChannel, iText);
 }
 
@@ -196,6 +199,7 @@ QGoSeedSegmentationBase::SetChannel(int iChannel, const QString & iText)
 void
 QGoSeedSegmentationBase::SetCurrentChannel(unsigned int iChannel)
 {
+  // send signal to this class
   std::cout << "emit setChannel: " << iChannel << std::endl;
   emit setChannel(iChannel);
 }
@@ -206,6 +210,7 @@ QGoSeedSegmentationBase::SetCurrentChannel(unsigned int iChannel)
 void
 QGoSeedSegmentationBase::SetNumberOfChannels(int iNumberOfChannels)
 {
+  // send signal to this class
   if ( m_NumberOfChannels != iNumberOfChannels )
     {
     m_NumberOfChannels = iNumberOfChannels;

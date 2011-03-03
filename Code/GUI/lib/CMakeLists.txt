@@ -255,13 +255,11 @@ ENDIF( ENABLE_VIDEO_RECORD_AVI )
 
 SET( QGoGUILIB_UI
 #segmentation widget
-  Resources/SegmentationBaseDockWidget.ui
   Resources/SegmentationSeedBaseWidget.ui
 
 # manual contour segmentation dock widget
   Resources/ManualSegmentationSettingsDlg.ui
   Resources/ContourManualSegmentationWidget.ui
-  Resources/ContourSemiAutoShapeWidget.ui
 
 # other
   Resources/NavigationDockWidget.ui
@@ -276,6 +274,7 @@ SET( QGoGUILIB_UI
   Resources/BaseAlgoSegmentationDockWidget.ui
   Resources/LevelsetWidget.ui
   Resources/WatershedWidget.ui
+  Resources/ContourSemiAutoShapeWidget.ui
 
   # for tracks
   Resources/TrackDockWidget.ui
