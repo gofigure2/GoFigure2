@@ -273,7 +273,7 @@ SET( QGoGUILIB_UI
   # seed segmentation dock widgets
   Resources/LevelsetWidget.ui
   Resources/WatershedWidget.ui
-  Resources/ContourSemiAutoShapeWidget.ui
+  Resources/ShapeWidget.ui
 
   # for tracks
   Resources/TrackDockWidget.ui

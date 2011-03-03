@@ -200,7 +200,6 @@ void
 QGoSeedSegmentationBase::SetCurrentChannel(unsigned int iChannel)
 {
   // send signal to this class
-  std::cout << "emit setChannel: " << iChannel << std::endl;
   emit setChannel(iChannel);
 }
 
