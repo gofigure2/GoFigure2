@@ -271,7 +271,6 @@ SET( QGoGUILIB_UI
   Resources/QGoSynchronizedView.ui
 
   # seed segmentation dock widgets
-  Resources/BaseAlgoSegmentationDockWidget.ui
   Resources/LevelsetWidget.ui
   Resources/WatershedWidget.ui
   Resources/ContourSemiAutoShapeWidget.ui
