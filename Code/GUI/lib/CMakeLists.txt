@@ -254,14 +254,23 @@ ENDIF( ENABLE_VIDEO_RECORD_AVI )
 #---------------------------------------------------------------------------
 
 SET( QGoGUILIB_UI
+
+#base dockwidget
+  Resources/SegmentationDockWidgetBase.ui
+
 #segmentation widget
   Resources/SegmentationSeedBaseWidget.ui
 
 # manual contour segmentation dock widget
   Resources/ManualSegmentationSettingsDlg.ui
   Resources/ContourManualSegmentationWidget.ui
-
-# other
+  
+# seed segmentation dock widgets
+  Resources/LevelsetWidget.ui
+  Resources/WatershedWidget.ui
+  Resources/ShapeWidget.ui
+  
+  # other
   Resources/NavigationDockWidget.ui
   Resources/QGoPrintDatabase.ui
   Resources/LsmToMegaExportDialog.ui
@@ -269,11 +278,6 @@ SET( QGoGUILIB_UI
   Resources/QGoTraceSettingsWidget.ui
 
   Resources/QGoSynchronizedView.ui
-
-  # seed segmentation dock widgets
-  Resources/LevelsetWidget.ui
-  Resources/WatershedWidget.ui
-  Resources/ShapeWidget.ui
 
   # for tracks
   Resources/TrackDockWidget.ui
