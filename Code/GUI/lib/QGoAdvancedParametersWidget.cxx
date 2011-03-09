@@ -77,7 +77,7 @@ void QGoAdvancedParametersWidget::setLayout(QLayout* iLayout)
 //-------------------------------------------------------------------------
 void QGoAdvancedParametersWidget::AddAdvancedParamWidget(QWidget* iWidget)
 {
-  this->m_ExpandableBox->setLayout(iWidget->layout());
+  //this->m_ExpandableBox->setLayout(iWidget->layout());
   this->m_ExpandableBox->setChecked(false);
   //this->m_AdvParamStackedLayout->addWidget(iWidget);
   //int Index = this->m_AdvParamStackedLayout->indexOf(iWidget);

@@ -51,8 +51,9 @@ int main(int argc, char *argv[])
     }
 
   QApplication app(argc, argv);
-  //QTimer *     timer = new QTimer;
-  //timer->setSingleShot(true);
+  QTimer *     timer = new QTimer;
+  timer->setSingleShot(true);
+
   QGoAlgorithmWidget* AlgoWidget = new QGoAlgorithmWidget("Test", NULL);
   AlgoWidget->AddParameter("IntParam", 0, 100, 50);
   AlgoWidget->AddParameter("DoubleParam", 20.56, 53.21, 24, 2);
@@ -60,18 +61,18 @@ int main(int argc, char *argv[])
   AlgoWidget->AddAdvParameter("DoubleParam", 11, 23.00, 15, 3);
 
 
-  //QObject::connect( timer, SIGNAL( timeout() ), window, SLOT( close() ) );
-
-  
-  //timer->start(1000);
+  QObject::connect( timer, SIGNAL( timeout() ), AlgoWidget, SLOT( close() ) );
 
   AlgoWidget->show();
+  timer->start(1000);
+
+ 
   app.processEvents();
   int output = app.exec();
 
-  //app.closeAllWindows();
+  app.closeAllWindows();
 
-  //delete timer;
+  delete timer;
   delete AlgoWidget;
 
   return output;
