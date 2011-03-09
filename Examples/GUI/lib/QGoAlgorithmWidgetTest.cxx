@@ -59,14 +59,14 @@ int main(int argc, char *argv[])
   ChannelName.append("Channel 1");
   ChannelName.append("Channel 2");
   ChannelName.append("All Channels");
-  AlgoWidget->AddParamater("Channel", ChannelName);
+  AlgoWidget->AddParameter("Channel", ChannelName);
   AlgoWidget->AddParameter("IntParam", 0, 100, 50);
   AlgoWidget->AddParameter("DoubleParam", 20.56, 53.21, 24, 2);
   AlgoWidget->AddAdvParameter("IntParam", 20, 50, 40);
   AlgoWidget->AddAdvParameter("DoubleParam", 11, 23.00, 15, 3);
 
 
-  QObject::connect( timer, SIGNAL( timeout() ), AlgoWidget, SLOT( close() ) );
+  //QObject::connect( timer, SIGNAL( timeout() ), AlgoWidget, SLOT( close() ) );
 
   AlgoWidget->show();
   timer->start(1000);

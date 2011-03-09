@@ -81,7 +81,7 @@ public:
   /**
   \overload
   */
-  void AddParamater(std::string iParamName, QStringList iListValues);
+  void AddParameter(std::string iParamName, QStringList iListValues);
 
   /**
   \brief add the paramater described with the arguments in an expandable box 
@@ -103,7 +103,7 @@ public:
   /**
   \overload
   */
-  void AddAdvParamater(std::string iAdvParamName, QStringList iListValues);
+  void AddAdvParameter(std::string iAdvParamName, QStringList iListValues);
 
   /**
   \brief add the Advanced parameters box if there are parameters inside and reduce it

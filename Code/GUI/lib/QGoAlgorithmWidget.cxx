@@ -105,7 +105,7 @@ void QGoAlgorithmWidget::AddParameter(std::string iParamName,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoAlgorithmWidget::AddParamater(std::string iParamName, 
+void QGoAlgorithmWidget::AddParameter(std::string iParamName, 
   QStringList iListValues)
 {
   this->AddParamComboBoxinLayout(iParamName, iListValues, 
@@ -139,7 +139,7 @@ void QGoAlgorithmWidget::AddAdvParameter(std::string iParamName,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoAlgorithmWidget::AddAdvParamater(std::string iAdvParamName, 
+void QGoAlgorithmWidget::AddAdvParameter(std::string iAdvParamName, 
   QStringList iListValues)
 {
   this->AddParamComboBoxinLayout(iAdvParamName, iListValues, 

@@ -55,27 +55,43 @@ int main(int argc, char *argv[])
   QApplication app(argc, argv);
   //QTimer *     timer = new QTimer;
   //timer->setSingleShot(true);
-  //QStringList ListFilters;
-  //ListFilters.append("Shape");
-  //ListFilters.append("LevelSet");
-  //ListFilters.append("WaterShed");
-
+  
   QGoAlgorithmsManagerWidget* SemiAutoModeMeshEditingAlgoWidget = new QGoAlgorithmsManagerWidget(NULL);
+
   QGoAlgorithmWidget* LevelSetWidget = new QGoAlgorithmWidget("LevelSet", SemiAutoModeMeshEditingAlgoWidget);
-  LevelSetWidget->AddParameter("Radius", 0, 10, 3);
   QStringList ChannelName;
-  ChannelName->
-  
+  ChannelName.append("Channel 1");
+  ChannelName.append("Channel 2");
+  LevelSetWidget->AddParameter("Channel", ChannelName);
+  LevelSetWidget->AddParameter("Radius", 0, 10, 3);
+  LevelSetWidget->AddAdvParameter("Curvature", 0, 100, 20);
+  LevelSetWidget->AddAdvParameter("Iterations", 0, 1000, 100);
 
 
-  //QGoSeedBaseWidget* SemiAutoModeParamWidget = new QGoSeedBaseWidget(SemiAutoModeMeshEditingAlgoWidget);
-  //QGoSeedBaseWidget* SemiAutoModeParamWidgetTwo = new QGoSeedBaseWidget(SemiAutoModeMeshEditingAlgoWidget);
-  
-  //QGoContourSemiAutoLevelsetWidget* LevelSetParam = new QGoContourSemiAutoLevelsetWidget(SemiAutoModeMeshEditingAlgoWidget);
-  //QGoContourSemiAutoWatershedWidget* WaterShedParam = new QGoContourSemiAutoWatershedWidget(SemiAutoModeMeshEditingAlgoWidget);
-  
-  //SemiAutoModeMeshEditingAlgoWidget->AddMethod("LevelSet 3D", SemiAutoModeParamWidget,  LevelSetParam);
-  //SemiAutoModeMeshEditingAlgoWidget->AddMethod("WaterShed 3D", SemiAutoModeParamWidgetTwo,  WaterShedParam);
+  QGoAlgorithmWidget* Shape3D = new QGoAlgorithmWidget("Shape 3D", SemiAutoModeMeshEditingAlgoWidget);
+  Shape3D->AddParameter("Channel", ChannelName);
+  Shape3D->AddParameter("Radius", 0, 10, 3);
+
+  QStringList ShapeList;
+  ShapeList.append("Sphere");
+  ShapeList.append("Cube");
+
+  Shape3D->AddAdvParameter("Shape", ShapeList);
+
+  QGoAlgorithmWidget* WaterShedWidget = new QGoAlgorithmWidget("WaterShed", SemiAutoModeMeshEditingAlgoWidget);
+  WaterShedWidget->AddParameter("Channel", ChannelName);
+  WaterShedWidget->AddParameter("Radius", 0, 10, 3);
+  WaterShedWidget->AddAdvParameter("Thres.Min.", 0, 10, 20);
+  WaterShedWidget->AddAdvParameter("Thres.Min.", 0, 30, 50);
+  WaterShedWidget->AddAdvParameter("Corr.Thres.", 0.00, 0.50, 5.00, 2);
+  WaterShedWidget->AddAdvParameter("Alpha", 0.00, 1.50, 5.00, 2);
+  WaterShedWidget->AddAdvParameter("Beta", 0.00, 3.00, 5.00, 2);
+
+  SemiAutoModeMeshEditingAlgoWidget->AddMethod(LevelSetWidget);
+  SemiAutoModeMeshEditingAlgoWidget->AddMethod(WaterShedWidget);
+  SemiAutoModeMeshEditingAlgoWidget->AddMethod(Shape3D);
+
+  SemiAutoModeMeshEditingAlgoWidget->SetCurrentIndex(0);
 
   //QObject::connect( timer, SIGNAL( timeout() ), window, SLOT( close() ) );
 

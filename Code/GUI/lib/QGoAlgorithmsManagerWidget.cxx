@@ -63,9 +63,11 @@ void QGoAlgorithmsManagerWidget::Initialize()
   MethodLayout->addWidget(MethodLabel);
   MethodLayout->addWidget(this->m_MethodComboBox);
   this->m_MethodWidgets = new QStackedWidget(this);
+  //this->m_MethodsLayout = new QStackedLayout(this->m_VBoxLayout);
   
   this->m_VBoxLayout->addLayout(MethodLayout);
   this->m_VBoxLayout->addWidget(this->m_MethodWidgets);
+  //this->m_VBoxLayout->addLayout(this->m_MethodsLayout);
   QHBoxLayout* ButtonLayout = new QHBoxLayout;
   QPushButton* ApplyButton = new QPushButton(tr("Apply"),this);
   QPushButton* ResetButton = new QPushButton(tr("Reset"), this);
@@ -77,21 +79,35 @@ void QGoAlgorithmsManagerWidget::Initialize()
   this->m_VBoxLayout->setSizeConstraint(QLayout::SetFixedSize);
   
   QObject::connect(this->m_MethodComboBox, SIGNAL(activated(int)),
-             this->m_MethodWidgets, SLOT(setCurrentIndex(int)));
+            this->m_MethodWidgets, SLOT(setCurrentIndex(int)));
+
+  //QObject::connect(this->m_MethodComboBox, SIGNAL(activated(int)),
+  //           this->m_MethodsLayout, SLOT(setCurrentIndex(int)));
 
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoAlgorithmsManagerWidget:: AddMethod(QGoAlgorithmWidget* iAlgoWidget)
+void QGoAlgorithmsManagerWidget::AddMethod(QGoAlgorithmWidget* iAlgoWidget)
 {
   this->m_MethodWidgets->addWidget(iAlgoWidget);
+  //this->m_MethodsLayout->addWidget(iAlgoWidget);
   int Index = this->m_MethodWidgets->indexOf(iAlgoWidget);
+  //int Index = this->m_MethodsLayout->indexOf(iAlgoWidget);
   this->m_MethodComboBox->insertItem(Index, iAlgoWidget->GetMethodName().c_str());
+  //this->m_MethodComboBox->addItem(iAlgoWidget->GetMethodName().c_str());
+  iAlgoWidget->show();
+  this->m_MethodComboBox->setCurrentIndex(Index);
+  this->m_MethodWidgets->setCurrentWidget(iAlgoWidget);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoAlgorithmsManagerWidget::SetCurrentIndex(int iIndex)
+{
+  this->m_MethodComboBox->setCurrentIndex(iIndex);
+  this->m_MethodWidgets->setCurrentIndex(iIndex);
+}
 /*void QGoAlgorithmsManagerWidget::AddMethod(std::string iNameMethod, 
   QWidget* iParametersWidget, QWidget* iAdvParamWidget)
 {

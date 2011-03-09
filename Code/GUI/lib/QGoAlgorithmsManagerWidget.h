@@ -37,6 +37,7 @@
 
 #include <QWidget>
 #include <QStackedWidget>
+#include <QStackedLayout>
 #include <QVBoxLayout>
 #include <QComboBox>
 #include "QGoAlgorithmWidget.h"
@@ -57,20 +58,25 @@ public:
   ~QGoAlgorithmsManagerWidget();
 
   /**
-  \brief add a widget in the stacked widgets with the name
+  \brief add a widget in the stacked layout with the name
   of the method associated in the combobox to display it,
   including the parameters and the advanced parameters
   displayed in an expandable box
   */
-  //void AddMethod(std::string iNameMethod, 
-  //QWidget* iParametersWidget, QWidget* iAdvParamWidget);
   void AddMethod(QGoAlgorithmWidget* iAlgoWidget);
+
+  /**
+  \brief set the current index in the combobox to iIndex and 
+  get the corresponding widget to display
+  \param[in] iIndex index to be displayed as the current one
+  */
+  void SetCurrentIndex(int iIndex);
 
 protected:
   QVBoxLayout*                 m_VBoxLayout;
   QComboBox*                   m_MethodComboBox;
   QStackedWidget*              m_MethodWidgets; 
- 
+  //QStackedLayout*              m_MethodsLayout;
   void Initialize();
 
 };
