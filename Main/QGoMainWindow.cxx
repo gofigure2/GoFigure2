@@ -436,15 +436,27 @@ QGoMainWindow::LoadContoursFromDatabase(const int & iT)
       ContourContainer::MultiIndexContainerType::index< TraceID >::type::iterator
         contour_list_it = temp->m_Container.get< TraceID >().begin();
 
+      ContourContainer::MultiIndexContainerType::index< TraceID >::type::iterator
+        contour_list_end = temp->m_Container.get< TraceID >().end();
+
+      size_t nb_contours = temp->m_Container.get< TraceID >().size();
+
+      QProgressDialog progress( "Loading Contours...", QString(), 0, nb_contours );
+
+      size_t i = 0;
+
       // we don't need here to save this contour in the database,
       // since they have just been extracted from it!
-      while ( contour_list_it != temp->m_Container.get< TraceID >().end() )
+      while ( contour_list_it != contour_list_end )
         {
-        w3t->AddContourFromNodes< TraceID >(
-          contour_list_it);
+        w3t->AddContourFromNodes< TraceID >( contour_list_it );
 
+        progress.setValue( i );
+
+        ++i;
         ++contour_list_it;
         }
+      progress.setValue( nb_contours );
       }
     }
 }
@@ -472,9 +484,18 @@ QGoMainWindow::LoadMeshesFromDatabase(const int & iT)
       MeshContainer::MultiIndexContainerType::index< TraceID >::type::iterator
         mesh_list_it = temp->m_Container.get< TraceID >().begin();
 
+      MeshContainer::MultiIndexContainerType::index< TraceID >::type::iterator
+        mesh_list_end = temp->m_Container.get< TraceID >().end();
+
+      size_t nb_meshes = temp->m_Container.get< TraceID >().size();
+
+      QProgressDialog progress( "Loading Meshes...", QString(), 0, nb_meshes );
+
+      size_t i = 0;
+
       // we don't need here to save this contour in the database,
       // since they have just been extracted from it!
-      while ( mesh_list_it != temp->m_Container.get< TraceID >().end() )
+      while ( mesh_list_it != mesh_list_end )
         {
         // note here it only makes sense when the trace is a mesh (for now)
         //std::cout << "IN WHILE" << std::endl;
@@ -492,8 +513,13 @@ QGoMainWindow::LoadMeshesFromDatabase(const int & iT)
 
         w3t->AddMeshFromNodes< TraceID >(mesh_list_it);
 
+        progress.setValue( i );
+
+        ++i;
         ++mesh_list_it;
         }
+
+      progress.setValue( nb_meshes );
       }
     }
 }
@@ -523,9 +549,18 @@ QGoMainWindow::LoadTracksFromDatabase(const int & iT)
       TrackContainer::MultiIndexContainerType::index< TraceID >::type::iterator
         track_list_it = temp->m_Container.get< TraceID >().begin();
 
+      TrackContainer::MultiIndexContainerType::index< TraceID >::type::iterator
+        track_list_end = temp->m_Container.get< TraceID >().end();
+
+      size_t nb_tracks = temp->m_Container.get< TraceID >().size();
+
+      QProgressDialog progress( "Loading Tracks...", QString(), 0, nb_tracks );
+
+      size_t i = 0;
+
       // we don't need here to save this track in the database,
       // since they have just been extracted from it!
-      while ( track_list_it != temp->m_Container.get< TraceID >().end() )
+      while ( track_list_it != track_list_end )
         {
         if ( track_list_it->Nodes )
           {
@@ -536,8 +571,13 @@ QGoMainWindow::LoadTracksFromDatabase(const int & iT)
                                                                track_list_it->TraceID);
           }
         w3t->AddTrackFromNodes< TraceID >(track_list_it);
+
+        progress.setValue( i );
+
+        ++i;
         ++track_list_it;
         }
+      progress.setValue( nb_tracks );
       }
     }
 }

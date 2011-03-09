@@ -113,6 +113,16 @@ QGoSeedBaseWidget::AddChannel(int iPosition, QString iChannel)
 //---------------------------------------------------------------------------//
 
 //---------------------------------------------------------------------------//
+void
+QGoSeedBaseWidget::SetChannel( unsigned int iChannel)
+{
+  this->channel->setCurrentIndex(iChannel);
+  // update the channel in the filter
+  emit Channel(iChannel);
+}
+//---------------------------------------------------------------------------//
+
+//---------------------------------------------------------------------------//
 
 void
 QGoSeedBaseWidget::setNumberOfChannels(int iNumberOfChannels)

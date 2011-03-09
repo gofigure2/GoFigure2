@@ -1,0 +1,182 @@
+
+<html>
+   <head>
+      <style type="text/css">
+         .sikuli-code {
+            font-size: 20px;
+            font-family: "Osaka-mono", Monospace;
+            line-height: 1.5em;
+            display:table-cell;
+            white-space: pre-wrap;       /* css-3 */
+            white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+            white-space: -pre-wrap;      /* Opera 4-6 */
+            white-space: -o-pre-wrap;    /* Opera 7 */
+            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+            width: 99%;   /* remove horizontal scroll-bar when viewing in IE7 */
+         }
+         .sikuli-code img {
+            vertical-align: middle;
+            margin: 2px;
+            border: 1px solid #ccc;
+            padding: 2px;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            -moz-box-shadow: 1px 1px 1px gray;
+            -webkit-box-shadow: 1px 1px 2px gray;
+         }
+         .kw {
+            color: blue;
+         }
+         .skw {
+            color: rgb(63, 127, 127);
+         }
+
+         .str {
+            color: rgb(128, 0, 0);
+         }
+
+         .dig {
+            color: rgb(128, 64, 0);
+         }
+
+         .cmt {
+            color: rgb(200, 0, 200);
+         }
+
+         h2 {
+            display: inline;
+            font-weight: normal;
+         }  
+         
+         .info {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+            display: none;
+         }
+
+         a {
+            color: #9D2900;
+         }
+
+         body {
+            font-family: "Trebuchet MS", Arial, Sans-Serif;
+         }
+
+      </style>
+   </head>
+<body>
+<div class="info">
+<h2>ToolbarInteractionModes.sikuli</h2> <a href="ToolbarInteractionModes.zip">(Download this script)</a>
+</div>
+<pre class="sikuli-code">
+<span class="cmt">#will have to click trace and table to get right size for xyview images and navigation widget to see if things moved or not
+</span><span class="cmt">#import os
+</span><span class="cmt">#address = os.getcwd()
+</span>address = <span class="str">"/home/es1076/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images"</span>
+
+<span class="cmt">#address = address+"/gofigure2_images"
+</span>
+setBundlePath(address)
+Toolbar = (<span class="str">"default"</span>,<img src="ZoomIcon.png" />,<img src="PanIcon.png" />,<img src="ActorPickingIcon.png" />)
+
+
+Mouse = (<span class="str">"Left"</span>,<span class="str">"Right"</span>,<span class="str">"Middle"</span>,<span class="str">"Scroll"</span>)
+<span class="cmt">#Actions = ("single_click","double_click","drag_up2down","drag_down2up","drag_left2right","drag_right2left")
+</span>
+ViewRegion = (<img src="XY_ViewRegion.png" />,<img src="XZ_ViewRegion.png" />,<img src="YZ_ViewRegion.png" />,<img src="XYZ_ViewRegion.png" />)
+Init_view = [None]*<span class="dig">4</span>
+pointx = [None]*<span class="dig">4</span>
+pointy = [None]*<span class="dig">4</span>
+<span class="kw">for</span> i <span class="kw">in</span> range(<span class="dig">4</span>):
+        Init_view[i] = <span class="skw">find</span>(Pattern(ViewRegion[i]).similar(<span class="dig">0.3</span>))
+        pointx[i] = Init_view[i].x+ int(round(<span class="dig">0.3</span>*(Init_view[i].w)))
+        pointy[i] = Init_view[i].y+ int(round(<span class="dig">0.6</span>*(Init_view[i].h)))
+        <span class="kw">print</span> pointx[i],pointy[i], <span class="str">"this is pointx and pointy"</span>
+        <span class="kw">print</span> Init_view[i]
+        <span class="cmt">#Init_XZview = find(Pattern(ViewRegion[1]).similar(0.30))
+</span>        <span class="cmt">#Init_YZview = find(Pattern(ViewRegion[2]).similar(0.30))
+</span>        <span class="cmt">#Init_XYZview = find(Pattern(ViewRegion[3]).similar(0.30))
+</span>
+
+<span class="kw">for</span> mode <span class="kw">in</span> Toolbar:
+
+        <span class="kw">if</span> mode != <span class="str">"default"</span>:
+                <span class="skw">click</span>(mode)
+
+        <span class="kw">for</span> j <span class="kw">in</span> range(<span class="dig">4</span>):
+                <span class="cmt">#pointx= 2*(Init_view[j].x+Init_view[j].h)/3
+</span>                <span class="cmt">#pointy= 2*(Init_view[j].y+Init_view[j].w)/3
+</span>                <span class="cmt">#print pointx, pointy
+</span>                <span class="cmt">#single left click
+</span>                mouseMove(Location(pointx[j],pointy[j]))
+                view_withmouse = <span class="skw">capture</span>(Init_view[j].getRect())
+                <span class="skw">click</span>(Location(pointx[j],pointy[j]))
+                <span class="cmt">#nothing should happen in all modes in all views
+</span>
+                <span class="kw">assert</span> exists(view_withmouse)
+
+                <span class="cmt">#single right click
+</span>                <span class="skw">rightClick</span>(Location(pointx[j],pointy[j]))
+                <span class="cmt">#nothing should happen in all modes in all views
+</span>                <span class="kw">assert</span> exists(Pattern(view_withmouse))
+
+                <span class="cmt">#double right click
+</span>
+                mouseDown(Button.RIGHT)
+                mouseUp(Button.RIGHT)
+                mouseDown(Button.RIGHT)
+                mouseUp(Button.RIGHT)
+                <span class="cmt">#nothing should happen in all modes in all views
+</span>                <span class="kw">assert</span> exists(Pattern(view_withmouse))
+
+                <span class="cmt">#single middle click
+</span>
+                mouseDown(Button.MIDDLE)
+                mouseUp(Button.MIDDLE)
+                <span class="cmt">#nothing should happen in all modes in all views
+</span>                <span class="kw">assert</span> exists(Pattern(view_withmouse))
+
+                <span class="cmt">#double middle click
+</span>
+                mouseDown(Button.MIDDLE)
+                mouseUp(Button.MIDDLE)
+                mouseDown(Button.MIDDLE)
+                mouseUp(Button.MIDDLE)
+                <span class="cmt">#nothing should happen in all modes in all views
+</span>                <span class="kw">assert</span> exists(Pattern(view_withmouse))
+
+                shift = <span class="dig">30</span>
+                mouseMove(Location(pointx[j]+shift,pointy[j]))
+                view_withmouseRight = <span class="skw">capture</span>(Init_view[j].getRect())
+                <span class="cmt">#left click drag left2right
+</span>                <span class="skw">dragDrop</span>(Location(pointx[j],pointy[j]),Location(pointx[j]+shift,pointy[j]))
+
+                <span class="cmt">#should move figure to the right only in pan mode in all views
+</span>                <span class="cmt">#should rotate only xyz view to the right in all other modes.
+</span>
+                <span class="kw">if</span> mode == <img src="PanIcon.png" />:
+                        <span class="cmt">#assert each view is shifted by 10 pixels
+</span>                        rightShift = <span class="skw">find</span>(Pattern(view_withmouse))
+                        <span class="kw">assert</span>(rightShift.x == Init_view[j].x + shift)
+                        <span class="kw">assert</span>(rightShift.y == Init_view[j].y)
+                        <span class="kw">assert</span>(rightShift.h == Init_view[j].h)
+                        <span class="kw">assert</span>(rightShift.w == Init_view[j].w)
+
+
+                <span class="kw">else</span>:
+
+                        <span class="kw">if</span> j == <span class="dig">3</span>:
+
+                                mouseMove(Location(pointx[<span class="dig">0</span>],pointy[<span class="dig">0</span>]))
+                                <span class="skw">wait</span>(<span class="dig">3</span>)
+                                <span class="cmt">#assert xyz view rotated to the right by 10 degrees
+</span>                                <span class="kw">assert</span> exists(Pattern(<img src="1298594448537.png" />).similar(<span class="dig">0.99</span>))
+
+
+                        <span class="kw">else</span>:
+
+                                <span class="kw">assert</span> exists(Pattern(view_withmouseRight))
+</pre>
+</body>
+</html>

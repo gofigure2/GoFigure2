@@ -10,7 +10,7 @@ start = time.time()
 
 #click("MeshSegmentationIcon.png")
 #Need this b/c when Click on just Contour Segmentation Icon, Trace widget does not show up
-click("ContourSegmentationIcon.png")
+#click("ContourSegmentationIcon.png")
 wait(1)
 
 def AddNew(Region):

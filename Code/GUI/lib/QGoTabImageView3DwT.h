@@ -546,7 +546,7 @@ protected:
 
   void SetTimePointWithMegaCapture();
 
-  void SetTimePointWithMegaCaptureTimeChannels(int channel);
+  void SetTimePointWithMegaCaptureTimeChannels(int channel, int PreviousT = 0);
 
   /**
   \brief give the adress for the contours, meshes and tracks container to the

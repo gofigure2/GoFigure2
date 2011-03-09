@@ -975,6 +975,25 @@ QGoTabImageView3DwT::CreateAllViewActions()
 
   // Track Color Coding
   this->m_ViewActions.push_back( m_TrackDockWidget->toggleViewAction() );
+
+  QAction *separator9 = new QAction(this);
+  separator9->setSeparator(true);
+  this->m_ViewActions.push_back(separator9);
+
+  // Enable synchronization
+  QAction *SynchronizeViewsAction =
+    new QAction(tr("synchronize the different views"), this);
+  SynchronizeViewsAction->setCheckable(true);
+  SynchronizeViewsAction->setChecked(true);
+  this->m_ViewActions.push_back(SynchronizeViewsAction);
+
+  QIcon synchronizeicon;
+  synchronizeicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/synchronize.png") ),
+                                QIcon::Normal, QIcon::Off);
+  SynchronizeViewsAction->setIcon(synchronizeicon);
+
+  QObject::connect( SynchronizeViewsAction, SIGNAL( toggled(bool) ),
+                    this->m_ImageView, SLOT( SynchronizeViews(bool) ) );
 }
 
 //-------------------------------------------------------------------------
@@ -1743,7 +1762,8 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels(int iChannel)
+QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels(int iChannel,
+                                                             int iPreviousT)
 {
   int min_t = m_MegaCaptureReader->GetMinTimePoint();
   int max_t = m_MegaCaptureReader->GetMaxTimePoint();
@@ -1763,27 +1783,83 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels(int iChannel)
     t2 = max_t;
     }
 
-  // resize internal image
-  // clean the vector since is is a vector of smartpointers
-  m_InternalImages.resize(3, NULL);
-
   vtkSmartPointer< vtkImageAppendComponents > append_filter =
     vtkSmartPointer< vtkImageAppendComponents >::New();
 
-  vtkSmartPointer< vtkImageData > i0 = vtkSmartPointer< vtkImageData >::New();
-  i0->ShallowCopy( m_MegaCaptureReader->GetImage(iChannel, t0) );
-  m_InternalImages[0] = i0;
-  append_filter->AddInput(m_InternalImages[0]);
+  // if step != 1 and we have previous and next time point loaded
+  if( m_DopplerStep != 1 || iPreviousT == 0 )
+    {
+    // resize internal image
+    // clean the vector since is is a vector of smartpointers
+    m_InternalImages.resize(3, NULL);
 
-  vtkSmartPointer< vtkImageData > i1 = vtkSmartPointer< vtkImageData >::New();
-  i1->ShallowCopy( m_MegaCaptureReader->GetImage(iChannel, t1) );
-  m_InternalImages[1] = i1;
-  append_filter->AddInput(m_InternalImages[1]);
+    vtkSmartPointer< vtkImageData > i0 = vtkSmartPointer< vtkImageData >::New();
+    i0->ShallowCopy( m_MegaCaptureReader->GetImage(iChannel, t0) );
+    m_InternalImages[0] = i0;
+    append_filter->AddInput(m_InternalImages[0]);
 
-  vtkSmartPointer< vtkImageData > i2 = vtkSmartPointer< vtkImageData >::New();
-  i2->ShallowCopy( m_MegaCaptureReader->GetImage(iChannel, t2) );
-  m_InternalImages[2] = i2;
-  append_filter->AddInput(m_InternalImages[2]);
+    vtkSmartPointer< vtkImageData > i1 = vtkSmartPointer< vtkImageData >::New();
+    i1->ShallowCopy( m_MegaCaptureReader->GetImage(iChannel, t1) );
+    m_InternalImages[1] = i1;
+    append_filter->AddInput(m_InternalImages[1]);
+
+    vtkSmartPointer< vtkImageData > i2 = vtkSmartPointer< vtkImageData >::New();
+    i2->ShallowCopy( m_MegaCaptureReader->GetImage(iChannel, t2) );
+    m_InternalImages[2] = i2;
+    append_filter->AddInput(m_InternalImages[2]);
+    }
+  else
+    {
+    // if we go FORWARD and step == 1
+    if( iPreviousT < m_TCoord)
+      {
+      // assume we imcrease t point all the time for testing
+      vtkSmartPointer< vtkImageData > i0 = vtkSmartPointer< vtkImageData >::New();
+      i0->ShallowCopy(m_InternalImages[1]);
+      // clean smartpointer
+      m_InternalImages[0] = NULL;
+      m_InternalImages[0] = i0;
+      append_filter->AddInput(m_InternalImages[0]);
+
+      vtkSmartPointer< vtkImageData > i1 = vtkSmartPointer< vtkImageData >::New();
+      i1->ShallowCopy(m_InternalImages[2]);
+      // clean smartpointer
+      m_InternalImages[1] = NULL;
+      m_InternalImages[1] = i1;
+      append_filter->AddInput(m_InternalImages[1]);
+
+      vtkSmartPointer< vtkImageData > i2 = vtkSmartPointer< vtkImageData >::New();
+      i2->ShallowCopy( m_MegaCaptureReader->GetImage(iChannel, t2) );
+      // clean smartpointer
+      m_InternalImages[2] = NULL;
+      m_InternalImages[2] = i2;
+      append_filter->AddInput(m_InternalImages[2]);
+      }
+    // if we go BACKWARD and step == 1
+    else
+      {
+      vtkSmartPointer< vtkImageData > i2 = vtkSmartPointer< vtkImageData >::New();
+      i2->ShallowCopy(m_InternalImages[1]);
+      // clean smartpointer
+      m_InternalImages[2] = NULL;
+      m_InternalImages[2] = i2;
+      append_filter->AddInput(m_InternalImages[2]);
+
+      vtkSmartPointer< vtkImageData > i1 = vtkSmartPointer< vtkImageData >::New();
+      i1->ShallowCopy(m_InternalImages[0]);
+      // clean smartpointer
+      m_InternalImages[1] = NULL;
+      m_InternalImages[1] = i1;
+      append_filter->AddInput(m_InternalImages[1]);
+
+      vtkSmartPointer< vtkImageData > i0 = vtkSmartPointer< vtkImageData >::New();
+      i0->ShallowCopy( m_MegaCaptureReader->GetImage(iChannel, t0) );
+      // clean smartpointer
+      m_InternalImages[0] = NULL;
+      m_InternalImages[0] = i0;
+      append_filter->AddInput(m_InternalImages[0]);
+      }
+    }
 
   append_filter->Update();
 
@@ -1812,6 +1888,10 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels(int iChannel)
   t_minus_step.append( QLatin1String("t: ") ); // + m_DopplerStep);
   t_minus_step.append( QString::number(t0, 10) );
 
+  QString t_current_step;
+  t_current_step.append( QLatin1String("t: ") ); // + m_DopplerStep);
+  t_current_step.append( QString::number(t1, 10) );
+
   QString t_plus_step;
   t_plus_step.append( QLatin1String("t: ") ); //() + m_DopplerStep);
   t_plus_step.append( QString::number(t2, 10) );
@@ -1819,21 +1899,30 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels(int iChannel)
   // update channels in navigation DockWidget
   m_NavigationDockWidget->SetNumberOfChannels(3);
   m_NavigationDockWidget->blockSignals(true);
+  // Create the channels labels
   m_NavigationDockWidget->SetChannel(0, t_minus_step);
-  m_NavigationDockWidget->SetChannel(1, "t: current");
+  m_NavigationDockWidget->SetChannel(1, t_current_step);
   m_NavigationDockWidget->SetChannel(2, t_plus_step);
+  // Update the current channel
+  m_NavigationDockWidget->SetCurrentChannel(1);
   m_NavigationDockWidget->blockSignals(false);
 
   //update channels in segmentation widgets
+  // Create the channels labels
   m_ContourSegmentationDockWidget->SetNumberOfChannels(3);
   m_ContourSegmentationDockWidget->SetChannel(0, t_minus_step);
-  m_ContourSegmentationDockWidget->SetChannel(1, "t: current");
+  m_ContourSegmentationDockWidget->SetChannel(1, t_current_step);
   m_ContourSegmentationDockWidget->SetChannel(2, t_plus_step);
+  // Update the current channel
+  m_ContourSegmentationDockWidget->SetCurrentChannel(1);
 
+  // Create the channels labels
   m_MeshSegmentationDockWidget->SetNumberOfChannels(3);
   m_MeshSegmentationDockWidget->SetChannel(0, t_minus_step);
-  m_MeshSegmentationDockWidget->SetChannel(1, "t: current");
+  m_MeshSegmentationDockWidget->SetChannel(1, t_current_step);
   m_MeshSegmentationDockWidget->SetChannel(2, t_plus_step);
+  // Update the current channel
+  m_MeshSegmentationDockWidget->SetCurrentChannel(1);
 }
 
 //-------------------------------------------------------------------------
@@ -1920,6 +2009,7 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
         }
       else
         {
+        int previousT = m_TCoord;
         m_TCoord = iTimePoint;
         if ( m_ChannelClassicMode )
           {
@@ -1930,7 +2020,7 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
           {
           //qDebug() << "TRACK mode";
           //qDebug() << "CHANNEL: " << m_ChannelOfInterest;
-          SetTimePointWithMegaCaptureTimeChannels(m_ChannelOfInterest);
+          SetTimePointWithMegaCaptureTimeChannels(m_ChannelOfInterest, previousT);
           }
         emit TimePointChanged(m_TCoord);
         }
@@ -2174,6 +2264,12 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
 {
   if ( iChecked )
     {
+    // Requiered if we modified the window level
+    /*
+     * \todo Nicolas-Find a better solution
+     */
+    m_ImageView->ResetWindowLevel();
+
     vtkSmartPointer< vtkImageAppendComponents > append_filter =
       vtkSmartPointer< vtkImageAppendComponents >::New();
 

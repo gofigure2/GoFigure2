@@ -79,6 +79,8 @@ public slots:
 
   QGridLayout * GetFrame();
 
+  void          SetChannel( unsigned int iChannel);
+
 signals:
   void Apply();
 

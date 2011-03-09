@@ -595,6 +595,7 @@ vtkViewImage2D::UpdateSlicePlane(void)
     x[this->SliceOrientation] = bounds[2 * this->SliceOrientation];
     oldpoints->InsertPoint(i, x);
     }
+
   this->OrientationTransform->TransformPoints(oldpoints, points);
   this->SlicePlane->SetPoints(points);
 

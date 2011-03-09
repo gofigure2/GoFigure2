@@ -371,6 +371,12 @@ public:
    */
   void EnableContourPickingMode();
 
+  /**
+   * \brief Synchronize the 2d views
+   * \param[in] iSynchronize enable/disable synchronization
+   */
+  void SynchronizeViews( bool iSynchronize);
+
 protected:
 
   vtkViewImage2DCollection();

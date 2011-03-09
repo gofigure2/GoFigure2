@@ -47,7 +47,7 @@
 class QGoContourManualSegmentation;
 class QGoContourSeedSegmentation;
 
-#include "ui_SegmentationBaseDockWidget.h"
+#include "ui_SegmentationDockWidgetBase.h"
 
 /**
  * \class QGoContourSegmentationBaseDockWidget
@@ -57,7 +57,7 @@ class QGoContourSeedSegmentation;
 
 class QGoContourSegmentationBaseDockWidget:
   public QDockWidget,
-  protected Ui::SegmentationBaseDockWidget
+  protected Ui::SegmentationDockWidgetBase
 {
   Q_OBJECT
 public:
@@ -75,6 +75,8 @@ public:
    * \param[in] iText Name of the channel (not used yet)
    */
   void SetChannel(int iChannel, const QString & iText = QString());
+
+  void SetCurrentChannel(unsigned int iChannel);
 
   void SetNumberOfChannels(int iNumberOfChannels);
 

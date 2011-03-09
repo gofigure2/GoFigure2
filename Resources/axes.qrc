@@ -43,5 +43,7 @@
         <file>fig/VisuClassic.png</file>
         <file>fig/VisuTime.png</file>
         <file>fig/TrackView.png</file>
+        <file>fig/synchronize.png</file>
+        <file>fig/desynchronize.png</file>
     </qresource>
 </RCC>
