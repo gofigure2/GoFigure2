@@ -83,7 +83,16 @@ void QGoAlgorithmsManagerWidget::Initialize()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoAlgorithmsManagerWidget::AddMethod(std::string iNameMethod, 
+void QGoAlgorithmsManagerWidget:: AddMethod(QGoAlgorithmWidget* iAlgoWidget)
+{
+  this->m_MethodWidgets->addWidget(iAlgoWidget);
+  int Index = this->m_MethodWidgets->indexOf(iAlgoWidget);
+  this->m_MethodComboBox->insertItem(Index, iAlgoWidget->GetMethodName().c_str());
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+/*void QGoAlgorithmsManagerWidget::AddMethod(std::string iNameMethod, 
   QWidget* iParametersWidget, QWidget* iAdvParamWidget)
 {
   QWidget* MethodWidget = new QWidget(this);
@@ -103,7 +112,4 @@ void QGoAlgorithmsManagerWidget::AddMethod(std::string iNameMethod,
 
   int Index = this->m_MethodWidgets->indexOf(MethodWidget);
   this->m_MethodComboBox->insertItem(Index,iNameMethod.c_str());
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
+}*/

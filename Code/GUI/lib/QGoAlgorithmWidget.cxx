@@ -34,6 +34,7 @@
 
 #include "QGoAlgorithmWidget.h"
 #include <QLabel>
+#include <QComboBox>
 #include "ctkCollapsibleGroupBox.h"
 
 
@@ -104,6 +105,15 @@ void QGoAlgorithmWidget::AddParameter(std::string iParamName,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoAlgorithmWidget::AddParamater(std::string iParamName, 
+  QStringList iListValues)
+{
+  this->AddParamComboBoxinLayout(iParamName, iListValues, 
+    this->m_ParamLayout);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void QGoAlgorithmWidget::AddAdvParameter(std::string iParamName, 
   int iMinValue, int iMaxValue, int iDefaultValue)
 {
@@ -125,6 +135,25 @@ void QGoAlgorithmWidget::AddAdvParameter(std::string iParamName,
      }
   this->AddParameterInLayout<QDoubleSpinBox, double>(AdvParamBox, iParamName, 
     this->m_AdvParamLayout, iMinValue, iMaxValue, iDefaultValue);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoAlgorithmWidget::AddAdvParamater(std::string iAdvParamName, 
+  QStringList iListValues)
+{
+  this->AddParamComboBoxinLayout(iAdvParamName, iListValues, 
+    this->m_AdvParamLayout);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoAlgorithmWidget::AddParamComboBoxinLayout(std::string iParamName, 
+  QStringList iListValues, QFormLayout* iLayout)
+{
+  QComboBox* ListParamBox = new QComboBox(this);
+  ListParamBox->addItems(iListValues);
+  iLayout->addRow(iParamName.c_str(), ListParamBox);
 }
 //-------------------------------------------------------------------------
 

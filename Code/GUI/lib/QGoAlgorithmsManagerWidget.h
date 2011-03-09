@@ -39,14 +39,13 @@
 #include <QStackedWidget>
 #include <QVBoxLayout>
 #include <QComboBox>
-#include "QGoAdvancedParametersWidget.h"
+#include "QGoAlgorithmWidget.h"
 
 /**
  * \class QGoAlgorithmsManagerWidget
  * \ingroup GUI manages all the algorithms widget for a same result,
  has a combobox with the name of the methods which display a different
- layout with the parameters, the advanced parameters in an expandable
- box depending on the method selected in the combobox
+ QGoAlgorithmWidget depending on the method selected in the combobox
  * \brief 
 */
 class QGoAlgorithmsManagerWidget:
@@ -63,8 +62,9 @@ public:
   including the parameters and the advanced parameters
   displayed in an expandable box
   */
-  void AddMethod(std::string iNameMethod, 
-  QWidget* iParametersWidget, QWidget* iAdvParamWidget);
+  //void AddMethod(std::string iNameMethod, 
+  //QWidget* iParametersWidget, QWidget* iAdvParamWidget);
+  void AddMethod(QGoAlgorithmWidget* iAlgoWidget);
 
 protected:
   QVBoxLayout*                 m_VBoxLayout;

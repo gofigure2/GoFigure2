@@ -79,6 +79,11 @@ public:
     double iDefaultValue = 0, int iNbDecimal = 0);
 
   /**
+  \overload
+  */
+  void AddParamater(std::string iParamName, QStringList iListValues);
+
+  /**
   \brief add the paramater described with the arguments in an expandable box 
   with a spinbox 
   \param[in] iParamName name of the parameter to be displayed 
@@ -94,6 +99,11 @@ public:
   */
   void AddAdvParameter(std::string iParamName, double iMinValue = 0, double iMaxValue = 0, 
     double iDefaultValue = 0, int iNbDecimal = 0);
+
+  /**
+  \overload
+  */
+  void AddAdvParamater(std::string iAdvParamName, QStringList iListValues);
 
   /**
   \brief add the Advanced parameters box if there are parameters inside and reduce it
@@ -137,5 +147,14 @@ protected:
     iLayout->addRow(tr("%1:").arg(iParamName.c_str() ), 
     iBox);
   }
+
+  /**
+  \brief add a combobox in iLayout with items corresponding to iListValues
+  \param[in] iParamName name of the param to be displayed next to the combobox
+  \param[in] iListValues list of the values to be displayed in the combobox
+  \param[in] iLayout which layout to insert the combobox: Param or advParam
+  */
+  void AddParamComboBoxinLayout(std::string iParamName, 
+  QStringList iListValues, QFormLayout* iLayout);
 };
 #endif

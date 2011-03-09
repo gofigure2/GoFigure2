@@ -33,7 +33,7 @@
 =========================================================================*/
 #include <QApplication>
 #include <QTimer>
-
+#include <QStringList>
 #include "QGoAlgorithmWidget.h"
 
 
@@ -55,6 +55,11 @@ int main(int argc, char *argv[])
   timer->setSingleShot(true);
 
   QGoAlgorithmWidget* AlgoWidget = new QGoAlgorithmWidget("Test", NULL);
+  QStringList ChannelName;
+  ChannelName.append("Channel 1");
+  ChannelName.append("Channel 2");
+  ChannelName.append("All Channels");
+  AlgoWidget->AddParamater("Channel", ChannelName);
   AlgoWidget->AddParameter("IntParam", 0, 100, 50);
   AlgoWidget->AddParameter("DoubleParam", 20.56, 53.21, 24, 2);
   AlgoWidget->AddAdvParameter("IntParam", 20, 50, 40);
