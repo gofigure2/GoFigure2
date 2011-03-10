@@ -40,6 +40,7 @@
 #include "vtkPolyData.h"
 #include "itkvtkMeshSplitterFilterBase.h"
 #include "itkvtkPolyDataToBinaryMaskImageFilter.h"
+#include "itkExtractMeshesFromLabelImageFilter.h"
 #include "itkImage.h"
 #include <list>
 
@@ -78,6 +79,8 @@ public:
     BinarizerType;
   typedef typename BinarizerType::Pointer BinarizerPointer;
 
+  typedef ExtractMeshesFromLabelImageFilter< ImageType > ExtracMeshFilterType;
+  typedef typename ExtracMeshFilterType::Pointer ExtracMeshFilterPointer;
 
   virtual void SetImage( ImageType* iImage )
     {
@@ -85,12 +88,26 @@ public:
     }
 
 protected:
-  vtkMeshSplitterImageFilterBase() : Superclass( ) {}
+  vtkMeshSplitterImageFilterBase() : Superclass( ),
+    m_NumberOfThreads( 1 ), m_NumberOfTrianglesPerMesh( 200 ),
+    m_NumberOfSmoothingIterations( 8 ), m_SmoothingRelaxationFactor( 0.75 ),
+    m_DelaunayConforming( false ), m_UseSmoothing( true ),
+    m_UseDecimation( true )
+  {}
+
   ~vtkMeshSplitterImageFilterBase() {}
 
   BinaryMaskImagePointer m_BinaryImage;
   ImagePointer m_Image;
   ImagePointer m_OutputImage;
+  unsigned int m_NumberOfThreads;
+  unsigned int m_NumberOfTrianglesPerMesh;
+  unsigned int m_NumberOfSmoothingIterations;
+  unsigned int m_SmoothingRelaxationFactor;
+
+  bool m_DelaunayConforming;
+  bool m_UseSmoothing;
+  bool m_UseDecimation;
 
   virtual void ComputBinaryImageFromInputMesh()
     {
@@ -117,22 +134,31 @@ protected:
     {
     ComputBinaryImageFromInputMesh();
 
-    if( m_BinaryImage.IsNotNull() )
+    if( m_BinaryImage.IsNull() )
+      {
+      itkGenericExceptionMacro( << "m_BinaryImage is Null" );
+      }
+    else
       {
       this->SplitBinaryImage();
       GenerateMeshesFromOutputImage();
       }
-    else
-      {
-      itkGenericExceptionMacro( << "m_BinaryImage is Null" );
-      }
-
     }
 
   virtual void SplitBinaryImage() = 0;
 
   void GenerateMeshesFromOutputImage()
     {
+    ExtracMeshFilterPointer extractor = ExtracMeshFilterType::New();
+    extractor->SetInput( m_OutputImage );
+    extractor->SetNumberOfThreads( m_NumberOfThreads );
+    extractor->SetUseSmoothing( m_UseSmoothing );
+    extractor->SetUseDecimation( m_UseDecimation );
+    extractor->SetNumberOfTrianglesPerMesh( m_NumberOfTrianglesPerMesh );
+    extractor->SetNumberOfSmoothingIterations( m_NumberOfSmoothingIterations );
+    extractor->SetSmoothingRelaxationFactor( m_SmoothingRelaxationFactor );
+    extractor->SetDelaunayConforming( m_DelaunayConforming );
+    extractor->Update();
     }
 
 private:

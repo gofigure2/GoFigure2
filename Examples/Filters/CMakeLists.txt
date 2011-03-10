@@ -86,7 +86,9 @@ TARGET_LINK_LIBRARIES( cellMergeImageFilter
 ADD_EXECUTABLE( itkvtkMeshSplitterDanielssonImageFilterTest
   itkvtkMeshSplitterDanielssonImageFilterTest.cxx
 )
-
+TARGET_LINK_LIBRARIES( itkvtkMeshSplitterDanielssonImageFilterTest
+  ITKCommon
+)
 
 ADD_EXECUTABLE( ExtractMeshesFromLabelImageFilter
   ExtractMeshesFromLabelImageFilter.cxx
@@ -99,3 +101,9 @@ TARGET_LINK_LIBRARIES( ExtractMeshesFromLabelImageFilter
 
 ADD_EXECUTABLE(ConvertMeshesToLabelImageFilter ConvertMeshesToLabelImageFilter.cxx )
 TARGET_LINK_LIBRARIES( ConvertMeshesToLabelImageFilter ITKIO ITKReview )
+
+ADD_EXECUTABLE( itkQuadEdgeMeshTovtkPolyDataTest itkQuadEdgeMeshTovtkPolyDataTest.cxx )
+TARGET_LINK_LIBRARIES( itkQuadEdgeMeshTovtkPolyDataTest
+  ITKCommon
+  vtkHybrid
+)

@@ -35,7 +35,7 @@
 #ifndef __itkvtkMeshSplitterFilterBase_h
 #define __itkvtkMeshSplitterFilterBase_h
 
-#include "itkLightObject.h"
+#include "itkObject.h"
 #include "itkPointSet.h"
 #include "vtkPolyData.h"
 
@@ -47,7 +47,7 @@ namespace itk
   \class vtkMeshSplitterFilterBase
   \brief
 */
-class vtkMeshSplitterFilterBase : public LightObject
+class vtkMeshSplitterFilterBase : public Object
   {
 public:
   typedef LightObject Superclass;
@@ -67,12 +67,17 @@ public:
       {
       m_Mesh = iMesh;
       m_Mesh->GetBounds( m_Bounds );
+      this->Modified();
       }
     }
 
   void SetSeeds( PointSetType* iSeeds )
     {
-    m_Seeds = iSeeds;
+    if( iSeeds )
+      {
+      m_Seeds = iSeeds;
+      this->Modified();
+      }
     }
 
   void Update()
@@ -91,8 +96,8 @@ protected:
     {
     for( unsigned int dim = 0; dim < 3; ++dim )
       {
-      m_Bounds[2 * dim] = vcl_numeric_limits< double >::max();
-      m_Bounds[2 * dim + 1] = vcl_numeric_limits< double >::min();
+      m_Bounds[2 * dim] = NumericTraits< double >::max();
+      m_Bounds[2 * dim + 1] = NumericTraits< double >::min();
       }
     }
   /** \brief Destructor */
@@ -143,15 +148,22 @@ protected:
 
   virtual void GenerateData()
     {
-    if( CheckAllSeeds() )
+    if( !m_Mesh )
       {
-      this->Split();
+      itkGenericExceptionMacro( << "m_Mesh is NULL" );
       }
-    else
+
+    if( m_Seeds.IsNull() )
       {
-      std::cout <<"Out of bounds" <<std::endl;
-      return;
+      itkGenericExceptionMacro( << "m_Seeds is NULL" );
       }
+
+    if( !CheckAllSeeds() )
+      {
+      itkGenericExceptionMacro( <<"Out of bounds" );
+      }
+
+    this->Split();
     }
 
 private:
