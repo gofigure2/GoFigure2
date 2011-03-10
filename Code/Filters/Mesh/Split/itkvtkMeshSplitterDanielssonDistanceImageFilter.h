@@ -75,71 +75,13 @@ public:
   itkSetMacro ( ForegroundValue, ImagePixelType );
 
 protected:
-  vtkMeshSplitterDanielssonDistanceImageFilter() :
-    Superclass(), m_SeedImage( NULL ), m_ForegroundValue( 1 ) {}
+  vtkMeshSplitterDanielssonDistanceImageFilter();
   ~vtkMeshSplitterDanielssonDistanceImageFilter() {}
 
   ImagePointer m_SeedImage;
   ImagePixelType  m_ForegroundValue;
 
-  void SplitBinaryImage()
-    {
-    if( m_SeedImage.IsNull() )
-      {
-      m_SeedImage = ImageType::New();
-      m_SeedImage->SetRegions( this->m_Image->GetLargestPossibleRegion() );
-      m_SeedImage->SetOrigin(  this->m_Image->GetOrigin() );
-      m_SeedImage->SetSpacing( this->m_Image->GetSpacing() );
-      m_SeedImage->Allocate();
-      m_SeedImage->FillBuffer( 0 );
-      m_SeedImage->Update();
-
-      // Fill the seeds
-      ImageIndexType index;
-      ImagePointType pt;
-
-      PointsContainerPointer points = this->m_Seeds->GetPoints();
-      PointsContainerConstIterator it = points->Begin();
-      PointsContainerConstIterator end = points->Begin();
-
-      while( it != end )
-        {
-        pt.CastFrom( it->Value() );
-        m_SeedImage->TransformPhysicalPointToIndex( pt, index );
-        m_SeedImage->SetPixel( index, it->Index() );
-        ++it;
-        }
-      }
-
-    //Compute the voronoi map
-    DistanceFilterPointer m_Dist = DistanceFilterType::New();
-    m_Dist->SetInput( m_SeedImage );
-    m_Dist->UseImageSpacingOn();
-    m_Dist->SetInputIsBinary( true );
-    m_Dist->UpdateLargestPossibleRegion();
-
-    this->m_OutputImage = m_Dist->GetVoronoiMap();
-    this->m_OutputImage->DisconnectPipeline();
-
-    IteratorType It1( this->m_OutputImage,
-                     this->m_OutputImage->GetLargestPossibleRegion() );
-    ConstIteratorType It2( this->m_Image,
-                          this->m_OutputImage->GetLargestPossibleRegion() );
-    It1.GoToBegin();
-    It2.GoToBegin();
-
-    while( !It1.IsAtEnd() )
-      {
-      if( It2.Get() != m_ForegroundValue )
-        {
-        It1.Set( 0 );
-        }
-      ++It1;
-      ++It2;
-      }
-
-
-    }
+  void SplitBinaryImage();
 
 private:
   vtkMeshSplitterDanielssonDistanceImageFilter( const Self& );
@@ -147,4 +89,5 @@ private:
   };
 }
 
+#include "itkvtkMeshSplitterDanielssonDistanceImageFilter.txx"
 #endif // __itkvtkMeshSplitterDanielssonDistanceImageFilter_h

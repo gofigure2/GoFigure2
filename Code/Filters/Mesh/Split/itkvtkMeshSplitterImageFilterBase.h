@@ -87,18 +87,10 @@ public:
   typedef QuadEdgeMeshTovtkPolyData< MeshType > ITKVTKMeshConverterType;
   typedef typename ITKVTKMeshConverterType::Pointer ITKVTKMeshConverterPointer;
 
-  virtual void SetImage( ImageType* iImage )
-    {
-    m_Image = iImage;
-    }
+  virtual void SetImage( ImageType* iImage );
 
 protected:
-  vtkMeshSplitterImageFilterBase() : Superclass( ),
-    m_NumberOfThreads( 1 ), m_NumberOfTrianglesPerMesh( 200 ),
-    m_NumberOfSmoothingIterations( 8 ), m_SmoothingRelaxationFactor( 0.75 ),
-    m_DelaunayConforming( false ), m_UseSmoothing( true ),
-    m_UseDecimation( true )
-  {}
+  vtkMeshSplitterImageFilterBase();
 
   ~vtkMeshSplitterImageFilterBase() {}
 
@@ -114,81 +106,19 @@ protected:
   bool m_UseSmoothing;
   bool m_UseDecimation;
 
-  virtual void ComputBinaryImageFromInputMesh()
-    {
-    BinarizerPointer binarizer = BinarizerType::New();
-    binarizer->SetInput( m_Image );
-    binarizer->SetPolyData( this->m_Mesh );
-
-    try
-      {
-      binarizer->Update();
-      }
-    catch( itk::ExceptionObject e )
-      {
-      std::cerr << "Error: " << e << std::endl;
-      return;
-      }
-
-    m_BinaryImage = binarizer->GetOutput();
-    m_BinaryImage->DisconnectPipeline();
-    }
+  virtual void ComputBinaryImageFromInputMesh();
 
 
-  virtual void Split()
-    {
-    ComputBinaryImageFromInputMesh();
-
-    if( m_BinaryImage.IsNull() )
-      {
-      itkGenericExceptionMacro( << "m_BinaryImage is Null" );
-      }
-    else
-      {
-      this->SplitBinaryImage();
-      GenerateMeshesFromOutputImage();
-      }
-    }
+  virtual void Split();
 
   virtual void SplitBinaryImage() = 0;
 
-  void GenerateMeshesFromOutputImage()
-    {
-    ExtracMeshFilterPointer extractor = ExtracMeshFilterType::New();
-    extractor->SetInput( m_OutputImage );
-    extractor->SetNumberOfThreads( m_NumberOfThreads );
-    extractor->SetUseSmoothing( m_UseSmoothing );
-    extractor->SetUseDecimation( m_UseDecimation );
-    extractor->SetNumberOfTrianglesPerMesh( m_NumberOfTrianglesPerMesh );
-    extractor->SetNumberOfSmoothingIterations( m_NumberOfSmoothingIterations );
-    extractor->SetSmoothingRelaxationFactor( m_SmoothingRelaxationFactor );
-    extractor->SetDelaunayConforming( m_DelaunayConforming );
-    extractor->Update();
-
-    typedef typename ExtracMeshFilterType::MeshVectorType MeshVectorType;
-    MeshVectorType MeshVector = extractor->GetOutputs();
-
-    typename MeshVectorType::const_iterator it = MeshVector.begin();
-    typename MeshVectorType::const_iterator end = MeshVector.end();
-
-    size_t i = 0;
-
-    while( it != end )
-      {
-      ITKVTKMeshConverterPointer converter = ITKVTKMeshConverterType::New();
-      converter->SetInput( *it );
-      converter->Update();
-
-      m_Outputs[i] = converter->GetOutput();
-      ++it;
-      ++i;
-      }
-    }
+  void GenerateMeshesFromOutputImage();
 
 private:
   vtkMeshSplitterImageFilterBase( const Self& );
   void operator = ( const Self& );
   };
 }
-
+#include "itkvtkMeshSplitterImageFilterBase.txx"
 #endif // __itkvtkMeshSplitterImageFilterBase_h

@@ -32,72 +32,111 @@
 
 =========================================================================*/
 
-#ifndef __itkvtkMeshSplitterFilterBase_h
-#define __itkvtkMeshSplitterFilterBase_h
-
-#include "itkObject.h"
-#include "itkPointSet.h"
-#include "vtkPolyData.h"
-
-#include <vector>
+#include "itkvtkMeshMergerFilterBase.h"
 
 namespace itk
 {
-/**
-  \class vtkMeshSplitterFilterBase
-  \brief
-*/
-class vtkMeshSplitterFilterBase : public Object
+vtkMeshMergerFilterBase::
+vtkMeshSplitterFilterBase() : m_Mesh( NULL ), m_Outputs( 0 ), m_Seeds( NULL )
   {
-public:
-  typedef LightObject Superclass;
-  typedef vtkMeshSplitterFilterBase Self;
-  typedef SmartPointer< Self > Pointer;
-  typedef SmartPointer< const Self > ConstPointer;
+  for( unsigned int dim = 0; dim < 3; ++dim )
+    {
+    m_Bounds[2 * dim] = NumericTraits< double >::max();
+    m_Bounds[2 * dim + 1] = NumericTraits< double >::min();
+    }
+  }
 
-  typedef PointSet< double, 3 > PointSetType;
-  typedef PointSetType::Pointer PointSetPointer;
-  typedef PointSetType::PointsContainerPointer PointsContainerPointer;
-  typedef PointSetType::PointsContainerConstIterator PointsContainerConstIterator;
-  typedef typename PointSetType::PointType PointType;
-
-  void SetMesh( vtkPolyData* iMesh );
-
-  void SetSeeds( PointSetType* iSeeds );
-
-  void Update();
-
-  std::vector< vtkPolyData* > GetOutputs();
-
-protected:
-  /** \brief Constructor */
-  vtkMeshSplitterFilterBase();
-
-  /** \brief Destructor */
-  ~vtkMeshSplitterFilterBase() {}
-
-  vtkPolyData* m_Mesh;
-
-  std::vector< vtkPolyData* > m_Outputs;
-
-  PointSetPointer m_Seeds;
-
-  double m_Bounds[6];
-
-
-  bool IsPointInMeshBounds( const PointType& iP ) const;
-
-  bool CheckAllSeeds() const;
-
-  /** \brief Main method to be reimplemented in inherited classes */
-  virtual void Split() = 0;
-
-  virtual void GenerateData();
-
-private:
-  vtkMeshSplitterFilterBase( const Self& );
-  void operator = ( const Self& );
-  };
+void
+vtkMeshMergerFilterBase::
+SetMesh( vtkPolyData* iMesh )
+{
+  if( ( iMesh ) && ( iMesh != m_Mesh ) )
+    {
+    m_Mesh = iMesh;
+    m_Mesh->GetBounds( m_Bounds );
+    this->Modified();
+    }
 }
 
-#endif // __itkvtkMeshSplitterFilterBase_h
+void
+vtkMeshMergerFilterBase::
+SetSeeds( PointSetType* iSeeds )
+{
+  if( iSeeds )
+    {
+    m_Seeds = iSeeds;
+    this->Modified();
+    }
+}
+
+void
+vtkMeshMergerFilterBase::
+Update()
+{
+  GenerateData();
+}
+
+std::vector< vtkPolyData* >
+vtkMeshMergerFilterBase::
+GetOutputs()
+{
+  return m_Outputs;
+}
+
+bool
+vtkMeshMergerFilterBase::
+IsPointInMeshBounds( const PointType& iP ) const
+{
+  for( unsigned int i = 0; i < 3; ++i )
+    {
+    if( ( iP[i] < m_Bounds[2*i] ) || ( iP[i] > m_Bounds[2*i+1] ) )
+      {
+      return false;
+      }
+    }
+  return true;
+}
+
+bool
+vtkMeshMergerFilterBase::
+CheckAllSeeds() const
+{
+  PointsContainerPointer points = m_Seeds->GetPoints();
+
+  PointsContainerConstIterator it = points->Begin();
+  PointsContainerConstIterator end = points->End();
+
+  while( it != end )
+    {
+    if( IsPointInMeshBounds( it->Value() ) )
+      {
+      std::cout << it->Value() << " is out of bounds" << std::endl;
+      return false;
+      }
+    ++it;
+    }
+  return true;
+  }
+
+void
+vtkMeshMergerFilterBase::
+GenerateData()
+{
+  if( !m_Mesh )
+    {
+    itkGenericExceptionMacro( << "m_Mesh is NULL" );
+    }
+
+  if( m_Seeds.IsNull() )
+    {
+    itkGenericExceptionMacro( << "m_Seeds is NULL" );
+    }
+
+  if( !CheckAllSeeds() )
+    {
+    itkGenericExceptionMacro( <<"Out of bounds" );
+    }
+
+  this->Split();
+  }
+}

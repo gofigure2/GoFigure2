@@ -106,6 +106,8 @@ SET( QGoGUILIB_SRC
 
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx
+
+  ${GOFIGURE2_FILTER_SOURCE}
 )
 
 #---------------------------------------------------------------------------
