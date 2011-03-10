@@ -92,4 +92,7 @@ ADD_EXECUTABLE( ExtractMeshesFromLabelImageFilter
   ExtractMeshesFromLabelImageFilter.cxx
 )
 TARGET_LINK_LIBRARIES( ExtractMeshesFromLabelImageFilter
+  ITKCommon
+  ITKIO
+  ITKReview
 )
