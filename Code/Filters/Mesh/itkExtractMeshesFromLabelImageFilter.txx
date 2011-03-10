@@ -69,6 +69,13 @@ Update()
   this->GenerateData();
 }
 
+template< class TImage >
+typename ExtractMeshesFromLabelImageFilter< TImage >::MeshVectorType
+ExtractMeshesFromLabelImageFilter< TImage >::
+GetOutputs()
+{
+  return m_Meshes;
+}
 
 template< class TImage >
 void

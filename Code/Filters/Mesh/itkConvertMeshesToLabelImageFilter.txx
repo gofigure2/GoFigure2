@@ -74,7 +74,6 @@ Update()
   this->GenerateData();
 }
 
-
 template< class TImage >
 void
 ConvertMeshesToLabelImageFilter< TImage >::

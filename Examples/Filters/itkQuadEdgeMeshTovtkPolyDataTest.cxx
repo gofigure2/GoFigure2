@@ -45,7 +45,7 @@
 #include "vtkRenderWindow.h"
 #include "vtkRenderWindowInteractor.h"
 
-int main( int argc, char* argv[] )
+int main( int, char** )
 {
   typedef double CoordType;
   const unsigned int Dimension = 3;

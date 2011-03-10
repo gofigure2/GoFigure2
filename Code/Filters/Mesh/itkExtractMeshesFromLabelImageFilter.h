@@ -159,9 +159,9 @@ public:
   itkGetConstMacro( NumberOfThreads, unsigned int );
   itkSetMacro( NumberOfThreads, unsigned int );
 
-  MeshVectorType m_Meshes;
-
   void Update();
+
+  MeshVectorType GetOutputs();
 
 protected:
   ExtractMeshesFromLabelImageFilter();
@@ -181,6 +181,7 @@ protected:
 
   ImageConstPointer     m_Input;
   ShapeLabelMapPointer  m_ShapeLabelMap;
+  MeshVectorType m_Meshes;
 
   unsigned int m_NumberOfThreads;
   unsigned int m_NumberOfMeshes;

@@ -97,7 +97,7 @@ int main (int argc, char *argv[])
 //     std::cout << argv[0] << " writing " << ss.str() << std::endl;
 
     MeshWriterType::Pointer writer = MeshWriterType::New( );
-    writer->SetInput( meshSource->m_Meshes[i] );
+    writer->SetInput( meshSource->GetOutputs()[i] );
     writer->SetFileName( ss.str().c_str() );
     writer->Update();
   }

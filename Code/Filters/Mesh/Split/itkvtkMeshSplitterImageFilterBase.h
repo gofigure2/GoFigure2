@@ -41,6 +41,7 @@
 #include "itkvtkMeshSplitterFilterBase.h"
 #include "itkvtkPolyDataToBinaryMaskImageFilter.h"
 #include "itkExtractMeshesFromLabelImageFilter.h"
+#include "itkQuadEdgeMeshTovtkPolyData.h"
 #include "itkImage.h"
 #include <list>
 
@@ -81,6 +82,10 @@ public:
 
   typedef ExtractMeshesFromLabelImageFilter< ImageType > ExtracMeshFilterType;
   typedef typename ExtracMeshFilterType::Pointer ExtracMeshFilterPointer;
+  typedef typename ExtracMeshFilterType::MeshType MeshType;
+
+  typedef QuadEdgeMeshTovtkPolyData< MeshType > ITKVTKMeshConverterType;
+  typedef typename ITKVTKMeshConverterType::Pointer ITKVTKMeshConverterPointer;
 
   virtual void SetImage( ImageType* iImage )
     {
@@ -159,6 +164,25 @@ protected:
     extractor->SetSmoothingRelaxationFactor( m_SmoothingRelaxationFactor );
     extractor->SetDelaunayConforming( m_DelaunayConforming );
     extractor->Update();
+
+    typedef typename ExtracMeshFilterType::MeshVectorType MeshVectorType;
+    MeshVectorType MeshVector = extractor->GetOutputs();
+
+    typename MeshVectorType::const_iterator it = MeshVector.begin();
+    typename MeshVectorType::const_iterator end = MeshVector.end();
+
+    size_t i = 0;
+
+    while( it != end )
+      {
+      ITKVTKMeshConverterPointer converter = ITKVTKMeshConverterType::New();
+      converter->SetInput( *it );
+      converter->Update();
+
+      m_Outputs[i] = converter->GetOutput();
+      ++it;
+      ++i;
+      }
     }
 
 private:
