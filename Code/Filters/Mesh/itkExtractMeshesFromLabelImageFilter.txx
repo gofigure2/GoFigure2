@@ -46,6 +46,7 @@ template< class TImage >
 ExtractMeshesFromLabelImageFilter< TImage >
 ::ExtractMeshesFromLabelImageFilter()
 {
+  m_Input = 0;
   m_NumberOfMeshes = 0;
   m_NumberOfTrianglesPerMesh = 200;
   m_NumberOfSmoothingIterations = 15;
@@ -61,6 +62,10 @@ void
 ExtractMeshesFromLabelImageFilter< TImage >::
 Update()
 {
+  if( m_Input.IsNull() )
+    {
+    itkGenericExceptionMacro( << "Input is NULL" );
+    }
   this->GenerateData();
 }
 
@@ -74,6 +79,7 @@ GenerateData()
   shapeConverter->SetInput ( m_Input );
   shapeConverter->SetBackgroundValue ( 0 );
   shapeConverter->Update();
+
   m_ShapeLabelMap = shapeConverter->GetOutput();
 
   m_NumberOfMeshes = m_ShapeLabelMap->GetNumberOfLabelObjects();
@@ -132,21 +138,19 @@ ThreadedExtractMesh( const unsigned int& startLabel, const unsigned int& endLabe
   RegionType region;
   SizeType inputSize = m_Input->GetLargestPossibleRegion().GetSize();
 
-  unsigned int i;
+  LabelObjectIterator l_it = container.begin();
 
-  LabelObjectIterator it = container.begin();
-  for ( unsigned int j = 1; j < startLabel; ++j )
-    {
-    ++it;
-    }
+  for ( unsigned int j = 1; j < startLabel; ++j, ++l_it )
+    {}
 
   MeshPointer mesh, smoothMesh, decimatedMesh;
 
   unsigned int label = startLabel;
+  LabelObjectIterator l_end = container.end();
 
-  while( ( label <= endLabel ) && ( it != container.end() ) )
+  while( ( label <= endLabel ) && ( l_it != l_end ) )
     {
-    i = it->first;
+    unsigned int i = l_it->first;
     region = m_ShapeLabelMap->GetLabelObject ( i )->GetBoundingBox();
     index = region.GetIndex();
     size = region.GetSize();
@@ -225,7 +229,7 @@ ThreadedExtractMesh( const unsigned int& startLabel, const unsigned int& endLabe
     m_Meshes[label-1] = decimatedMesh;
     m_Meshes[label-1]->DisconnectPipeline();
 
-    ++it;
+    ++l_it;
     ++label;
   }
 }
