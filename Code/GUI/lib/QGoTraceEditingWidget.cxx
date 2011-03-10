@@ -32,7 +32,7 @@
 
 =========================================================================*/
 #include "QGoTraceEditingWidget.h"
-#include "QGoModeEditingWidget.h"
+#include "QGoModesManagerWidget.h"
 #include <QPushButton>
 
 QGoTraceEditingWidget::QGoTraceEditingWidget(
@@ -52,7 +52,7 @@ QGoTraceEditingWidget::~QGoTraceEditingWidget()
 //-------------------------------------------------------------------------
 void QGoTraceEditingWidget::Initialize(QWidget *iParent)
 {
-  this->m_ModeEditingWidget = new QGoModeEditingWidget(this);
+  this->m_ModeEditingWidget = new QGoModesManagerWidget(this);
   this->m_VLayout = new QVBoxLayout;
   this->m_VLayout->addWidget(this->m_ModeEditingWidget);
   this->setLayout(this->m_VLayout);
@@ -61,7 +61,7 @@ void QGoTraceEditingWidget::Initialize(QWidget *iParent)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTraceEditingWidget:: AddMode(
+void QGoTraceEditingWidget::AddMode(
   std::string iModeName, QWidget* iModeWidget)
 {
   QWidget* ModeWidget = new QWidget;
@@ -74,7 +74,7 @@ void QGoTraceEditingWidget:: AddMode(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTraceEditingWidget::AddModeManager(QGoModeEditingWidget* iModeWidget)
+void QGoTraceEditingWidget::SetModesManager(QGoModesManagerWidget* iModeWidget)
 {
   delete this->m_ModeEditingWidget;
   this->m_ModeEditingWidget = iModeWidget;

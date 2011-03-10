@@ -40,7 +40,7 @@
 #include <QVBoxLayout>
 #include <QStackedLayout>
 #include <QComboBox>
-#include "QGoModeEditingWidget.h"
+#include "QGoModesManagerWidget.h"
 
 
 class QGoTraceEditingWidget:
@@ -51,12 +51,24 @@ public:
   explicit QGoTraceEditingWidget(std::string iTraceName, QWidget *iParent = 0 );
   ~QGoTraceEditingWidget();
 
+  /**
+  \brief add iModeWidget as a widget to be displayed when iModeName is selected
+  in the combobox of m_ModeEditingWidget 
+  \param[in] iModeName name of the mode corresponding to iModeWidget
+  \param[in] iModeWidget Widget corresponding to iModeName
+  */
   void AddMode( std::string iModeName, QWidget* iModeWidget = 0);
-  void AddModeManager(QGoModeEditingWidget* iModeWidget);
+
+  /**
+  \brief replace the existing m_ModeEditingWidget with iModeWidget: all the 
+  previous mode will be erased
+  \param[in] iModeWidget modes manager
+  */
+  void SetModesManager(QGoModesManagerWidget* iModeWidget);
 
 protected:
   void Initialize(QWidget *iParent = 0);
-  QGoModeEditingWidget* m_ModeEditingWidget;
+  QGoModesManagerWidget* m_ModeEditingWidget;
   QVBoxLayout*          m_VLayout;
 
 };

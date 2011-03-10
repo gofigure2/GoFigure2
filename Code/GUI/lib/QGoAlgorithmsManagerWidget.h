@@ -75,6 +75,11 @@ public:
 
   std::string GetModeName();
 
+signals:
+
+  void ApplyClicked();
+  void ResetClicked();
+
 protected:
   QVBoxLayout*                 m_VBoxLayout;
   QComboBox*                   m_MethodComboBox;

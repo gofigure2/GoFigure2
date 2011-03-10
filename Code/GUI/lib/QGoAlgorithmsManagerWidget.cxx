@@ -83,6 +83,8 @@ void QGoAlgorithmsManagerWidget::Initialize()
   QObject::connect(this->m_MethodComboBox, SIGNAL(activated(int)),
             this->m_MethodWidgets, SLOT(setCurrentIndex(int)));
 
+  QObject::connect(ApplyButton, SIGNAL(clicked()), this, SIGNAL(ApplyClicked()));
+  QObject::connect(ResetButton, SIGNAL(clicked()), this, SIGNAL(ResetClicked()));
   //QObject::connect(this->m_MethodComboBox, SIGNAL(activated(int)),
   //           this->m_MethodsLayout, SLOT(setCurrentIndex(int)));
 

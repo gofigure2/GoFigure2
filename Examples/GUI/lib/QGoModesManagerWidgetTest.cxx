@@ -33,12 +33,10 @@
 =========================================================================*/
 #include <QApplication>
 #include <QTimer>
+#include <QStringList>
 
-#include "QGoTraceEditingWidget.h"
-#include "QGoTraceSettingsWidget.h"
 #include "QGoModesManagerWidget.h"
 #include "QGoAlgorithmWidget.h"
-#include "QGoSeedBaseWidget.h"
 
 
 
@@ -57,18 +55,10 @@ int main(int argc, char *argv[])
   QApplication app(argc, argv);
   //QTimer *     timer = new QTimer;
   //timer->setSingleShot(true);
-  //QStringList ListFilters;
-  //ListFilters.append("Shape");
-  //ListFilters.append("LevelSet");
-  //ListFilters.append("WaterShed");
+  
+  QGoAlgorithmsManagerWidget* SemiAutoModeMeshEditingAlgoWidget = new QGoAlgorithmsManagerWidget("Semi Automated",NULL);
 
-  QGoTraceEditingWidget* MeshEditing = new QGoTraceEditingWidget("Mesh", NULL);
-
-  //semi automated mode
-
-  QGoAlgorithmsManagerWidget* SemiAutomatedMethodsWidget = new QGoAlgorithmsManagerWidget("Semi Automated", MeshEditing);
-
-  QGoAlgorithmWidget* LevelSetWidget = new QGoAlgorithmWidget("LevelSet", SemiAutomatedMethodsWidget);
+  QGoAlgorithmWidget* LevelSetWidget = new QGoAlgorithmWidget("LevelSet", SemiAutoModeMeshEditingAlgoWidget);
   QStringList ChannelName;
   ChannelName.append("Channel 1");
   ChannelName.append("Channel 2");
@@ -77,7 +67,7 @@ int main(int argc, char *argv[])
   LevelSetWidget->AddAdvParameter("Curvature", 0, 100, 20);
   LevelSetWidget->AddAdvParameter("Iterations", 0, 1000, 100);
 
-  QGoAlgorithmWidget* Shape3D = new QGoAlgorithmWidget("Shape 3D", SemiAutomatedMethodsWidget);
+  QGoAlgorithmWidget* Shape3D = new QGoAlgorithmWidget("Shape 3D", SemiAutoModeMeshEditingAlgoWidget);
   Shape3D->AddParameter("Channel", ChannelName);
   Shape3D->AddParameter("Radius", 0, 10, 3);
   QStringList ShapeList;
@@ -85,7 +75,7 @@ int main(int argc, char *argv[])
   ShapeList.append("Cube");
   Shape3D->AddAdvParameter("Shape", ShapeList);
 
-  QGoAlgorithmWidget* WaterShedWidget = new QGoAlgorithmWidget("WaterShed", SemiAutomatedMethodsWidget);
+  QGoAlgorithmWidget* WaterShedWidget = new QGoAlgorithmWidget("WaterShed", SemiAutoModeMeshEditingAlgoWidget);
   WaterShedWidget->AddParameter("Channel", ChannelName);
   WaterShedWidget->AddParameter("Radius", 0, 10, 3);
   WaterShedWidget->AddAdvParameter("Thres.Min.", 0, 10, 20);
@@ -94,51 +84,21 @@ int main(int argc, char *argv[])
   WaterShedWidget->AddAdvParameter("Alpha", 0, 5, 1.50, 2);
   WaterShedWidget->AddAdvParameter("Beta", 0, 5, 3, 1);
 
-  SemiAutomatedMethodsWidget->AddMethod(LevelSetWidget);
-  SemiAutomatedMethodsWidget->AddMethod(WaterShedWidget);
-  SemiAutomatedMethodsWidget->AddMethod(Shape3D);
+  SemiAutoModeMeshEditingAlgoWidget->AddMethod(LevelSetWidget);
+  SemiAutoModeMeshEditingAlgoWidget->AddMethod(WaterShedWidget);
+  SemiAutoModeMeshEditingAlgoWidget->AddMethod(Shape3D);
   
-  QGoModesManagerWidget* SemiAutomatedMode = new QGoModesManagerWidget(NULL);
-  SemiAutomatedMode->AddAlgoManagerWidget(SemiAutomatedMethodsWidget);
-
-  MeshEditing->SetModesManager(SemiAutomatedMode);
-
-  //add mode:
-  QGoSeedBaseWidget* TestAddMode = new QGoSeedBaseWidget(MeshEditing);
-  MeshEditing->AddMode("TestAddMode", TestAddMode);
- /* QGoSeedBaseWidget* LevelSetParamWidget = new QGoSeedBaseWidget(MeshEditing);
-  QGoContourSemiAutoLevelsetWidget* LevelSetAdvParamWidget = new QGoContourSemiAutoLevelsetWidget(MeshEditing);
-  SemiAutomatedMethodsWidget->AddMethod("Level Set 3D", LevelSetParamWidget, LevelSetAdvParamWidget);
-
-  QGoSeedBaseWidget* WaterShedParamWidget = new QGoSeedBaseWidget(MeshEditing);
-  QGoContourSemiAutoWatershedWidget* WaterShedAdvParamWidget = new QGoContourSemiAutoWatershedWidget(MeshEditing);
-  SemiAutomatedMethodsWidget->AddMethod("WaterShed 3D", WaterShedParamWidget, WaterShedAdvParamWidget);
-  
-  //manual mode
-  QGoAlgorithmsManagerWidget* ManualMethodsWidget = new QGoAlgorithmsManagerWidget(MeshEditing);
-
-  QGoSeedBaseWidget* ParamMeshToContours = new QGoSeedBaseWidget(MeshEditing);
-  QGoContourSemiAutoShapeWidget* AdvParamMeshToContours = new QGoContourSemiAutoShapeWidget(MeshEditing);
-  ManualMethodsWidget->AddMethod("2D Shapes in 1 mesh", ParamMeshToContours, AdvParamMeshToContours);
-
-  QGoSeedBaseWidget* ParamMeshToContoursLevelSet = new QGoSeedBaseWidget(MeshEditing);
-  QGoContourSemiAutoLevelsetWidget* AdvParamMeshToContoursLevelSet = new QGoContourSemiAutoLevelsetWidget(MeshEditing);
-  ManualMethodsWidget->AddMethod("2D Levelset in 1 mesh", ParamMeshToContoursLevelSet, AdvParamMeshToContoursLevelSet);
-
-  QGoSeedBaseWidget* ParamMeshToContoursWaterShed = new QGoSeedBaseWidget(MeshEditing);
-  QGoContourSemiAutoWatershedWidget* AdvParamMeshToContoursWaterShed = new QGoContourSemiAutoWatershedWidget(MeshEditing);
-  ManualMethodsWidget->AddMethod("2D WaterShed within 1 mesh", ParamMeshToContoursWaterShed, AdvParamMeshToContoursWaterShed);
-
-
-  MeshEditing->AddMode("Manual", ManualMethodsWidget);
-  MeshEditing->AddMode("Semi Automated", SemiAutomatedMethodsWidget);*/
-
-  //QObject::connect( timer, SIGNAL( timeout() ), window, SLOT( close() ) );
+  QGoModesManagerWidget* MeshMode = new QGoModesManagerWidget(NULL);
+  //MeshMode->AddAlgoManagerWidget(SemiAutoModeMeshEditingAlgoWidget);
+  MeshMode->AddWidgetWithModeName("Test", SemiAutoModeMeshEditingAlgoWidget);
+  //SemiAutomatedMode->AddMethod(WaterShedWidget);
+  //SemiAutomatedMode->AddMethod(Shape3D);
+  //QObject::connect( timer, SIGNAL( timeout() ), SemiAutoModeMeshEditingAlgoWidget, SLOT( close() ) );
 
   
   //timer->start(1000);
 
-  MeshEditing->show();
+  MeshMode->show();
 
   app.processEvents();
   int output = app.exec();
@@ -146,7 +106,7 @@ int main(int argc, char *argv[])
   app.closeAllWindows();
 
   //delete timer;
-  delete MeshEditing;
+  delete SemiAutoModeMeshEditingAlgoWidget;
 
   return output;
 }

@@ -31,10 +31,10 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "QGoModeEditingWidget.h"
+#include "QGoModesManagerWidget.h"
 #include <QLabel>
 
-QGoModeEditingWidget::QGoModeEditingWidget(QWidget *iParent)
+QGoModesManagerWidget::QGoModesManagerWidget(QWidget *iParent)
   :QWidget(iParent)
 {
   this->Initialize();
@@ -42,13 +42,13 @@ QGoModeEditingWidget::QGoModeEditingWidget(QWidget *iParent)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QGoModeEditingWidget::~QGoModeEditingWidget()
+QGoModesManagerWidget::~QGoModesManagerWidget()
 {
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoModeEditingWidget::Initialize()
+void QGoModesManagerWidget::Initialize()
 {
   this->m_VBoxLayout = new QVBoxLayout;
   this->m_ModeComboBox = new QComboBox(this);
@@ -58,7 +58,6 @@ void QGoModeEditingWidget::Initialize()
   ModeLayout->addWidget(ModeLabel);
   ModeLayout->addWidget(this->m_ModeComboBox);
 
-  //this->m_VBoxLayout->addWidget(this->m_ModeComboBox);
   this->m_VBoxLayout->addLayout(ModeLayout);
 
   this->m_ModeWidgets = new QStackedWidget;
@@ -74,7 +73,7 @@ void QGoModeEditingWidget::Initialize()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoModeEditingWidget::AddWidgetWithModeName(
+void QGoModesManagerWidget::AddWidgetWithModeName(
   std::string iModeName, QWidget* iWidget )
 {
   int Index = 0;
@@ -88,10 +87,10 @@ void QGoModeEditingWidget::AddWidgetWithModeName(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoModeEditingWidget::AddAlgoManagerWidget(
-    QGoAlgorithmsManagerWidget* iAlgoManagerWidget,int iCurrentIndex)
+void QGoModesManagerWidget::AddAlgoManagerWidget(
+    QGoAlgorithmsManagerWidget* iAlgoManagerWidget,int iDefaultIndex)
 {
   this->AddWidgetWithModeName(iAlgoManagerWidget->GetModeName(), 
     iAlgoManagerWidget);
-  iAlgoManagerWidget->SetCurrentIndex(iCurrentIndex);
+  iAlgoManagerWidget->SetCurrentIndex(iDefaultIndex);
 }

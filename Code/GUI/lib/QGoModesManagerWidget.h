@@ -32,8 +32,8 @@
 
 =========================================================================*/
 
-#ifndef __QGoModeEditingWidget_h
-#define __QGoModeEditingWidget_h
+#ifndef __QGoModesManagerWidget_h
+#define __QGoModesManagerWidget_h
 
 #include <QWidget>
 #include <QStackedWidget>
@@ -42,19 +42,19 @@
 #include "QGoAlgorithmsManagerWidget.h"
 
 /**
- * \class QGoModeEditingWidget
+ * \class QGoModesManagerWidget
  * \ingroup GUI
  * \brief widget that manages the different modes for the TraceEditingWidget,
  has a combobox with the mode names and a corresponging stackedWidgets which
  display the right widget according to the mode selected in the combobox
 */
-class QGoModeEditingWidget:
+class QGoModesManagerWidget:
   public QWidget
 {
   Q_OBJECT
 public:
-  explicit QGoModeEditingWidget(QWidget *iParent = 0);
-  ~QGoModeEditingWidget();
+  explicit QGoModesManagerWidget(QWidget *iParent = 0);
+  ~QGoModesManagerWidget();
 
   /**
   \brief add a widget in the StackedWidget with the mode name that will
@@ -63,12 +63,13 @@ public:
   void AddWidgetWithModeName (std::string iModeName, QWidget* iWidget= 0);
 
   /**
-  \brief add a QGoAlgorithmsManagerWidget and set the current index of this algo widget
-  to iCurrentIndex
+  \brief add a QGoAlgorithmsManagerWidget and set the default index of this algo widget
+  to iDefaultIndex
   \param[in] iAlgoManagerWidget
-  \param[in] iCurrentIndex default index for the algo widget
+  \param[in] iDefaultIndex default index for the algo widget
   */
-  void AddAlgoManagerWidget(QGoAlgorithmsManagerWidget* iAlgoManagerWidget, int iCurrentIndex = 0);
+  void AddAlgoManagerWidget(QGoAlgorithmsManagerWidget* iAlgoManagerWidget, 
+    int iDefaultIndex = 0);
 
 protected:
   QVBoxLayout*            m_VBoxLayout;
