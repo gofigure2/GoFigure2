@@ -85,3 +85,13 @@ void QGoModeEditingWidget::AddWidgetWithModeName(
   }
   this->m_ModeComboBox->insertItem(Index,iModeName.c_str());
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoModeEditingWidget::AddAlgoManagerWidget(
+    QGoAlgorithmsManagerWidget* iAlgoManagerWidget,int iCurrentIndex)
+{
+  this->AddWidgetWithModeName(iAlgoManagerWidget->GetModeName(), 
+    iAlgoManagerWidget);
+  iAlgoManagerWidget->SetCurrentIndex(iCurrentIndex);
+}

@@ -39,6 +39,7 @@
 #include <QStackedWidget>
 #include <QVBoxLayout>
 #include <QComboBox>
+#include "QGoAlgorithmsManagerWidget.h"
 
 /**
  * \class QGoModeEditingWidget
@@ -60,6 +61,14 @@ public:
   be added in the combobox.
   */
   void AddWidgetWithModeName (std::string iModeName, QWidget* iWidget= 0);
+
+  /**
+  \brief add a QGoAlgorithmsManagerWidget and set the current index of this algo widget
+  to iCurrentIndex
+  \param[in] iAlgoManagerWidget
+  \param[in] iCurrentIndex default index for the algo widget
+  */
+  void AddAlgoManagerWidget(QGoAlgorithmsManagerWidget* iAlgoManagerWidget, int iCurrentIndex = 0);
 
 protected:
   QVBoxLayout*            m_VBoxLayout;

@@ -52,6 +52,7 @@ public:
   ~QGoTraceEditingWidget();
 
   void AddMode( std::string iModeName, QWidget* iModeWidget = 0);
+  void AddModeManager(QGoModeEditingWidget* iModeWidget);
 
 protected:
   void Initialize(QWidget *iParent = 0);

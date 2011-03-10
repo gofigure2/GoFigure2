@@ -53,10 +53,10 @@ int main(int argc, char *argv[])
     }
 
   QApplication app(argc, argv);
-  //QTimer *     timer = new QTimer;
-  //timer->setSingleShot(true);
+  QTimer *     timer = new QTimer;
+  timer->setSingleShot(true);
   
-  QGoAlgorithmsManagerWidget* SemiAutoModeMeshEditingAlgoWidget = new QGoAlgorithmsManagerWidget(NULL);
+  QGoAlgorithmsManagerWidget* SemiAutoModeMeshEditingAlgoWidget = new QGoAlgorithmsManagerWidget("SemiAutomatedWidget", NULL);
 
   QGoAlgorithmWidget* LevelSetWidget = new QGoAlgorithmWidget("LevelSet", SemiAutoModeMeshEditingAlgoWidget);
   QStringList ChannelName;
@@ -83,9 +83,9 @@ int main(int argc, char *argv[])
   WaterShedWidget->AddParameter("Radius", 0, 10, 3);
   WaterShedWidget->AddAdvParameter("Thres.Min.", 0, 10, 20);
   WaterShedWidget->AddAdvParameter("Thres.Min.", 0, 30, 50);
-  WaterShedWidget->AddAdvParameter("Corr.Thres.", 0.00, 0.50, 5.00, 2);
-  WaterShedWidget->AddAdvParameter("Alpha", 0.00, 1.50, 5.00, 2);
-  WaterShedWidget->AddAdvParameter("Beta", 0.00, 3.00, 5.00, 2);
+  WaterShedWidget->AddAdvParameter("Corr.Thres.", 0, 5, 2, 2);
+  WaterShedWidget->AddAdvParameter("Alpha", 0, 5, 1.50, 2);
+  WaterShedWidget->AddAdvParameter("Beta", 0, 5, 3, 1);
 
   SemiAutoModeMeshEditingAlgoWidget->AddMethod(LevelSetWidget);
   SemiAutoModeMeshEditingAlgoWidget->AddMethod(WaterShedWidget);
@@ -93,10 +93,10 @@ int main(int argc, char *argv[])
 
   SemiAutoModeMeshEditingAlgoWidget->SetCurrentIndex(0);
 
-  //QObject::connect( timer, SIGNAL( timeout() ), window, SLOT( close() ) );
+  QObject::connect( timer, SIGNAL( timeout() ), SemiAutoModeMeshEditingAlgoWidget, SLOT( close() ) );
 
   
-  //timer->start(1000);
+  timer->start(1000);
 
   SemiAutoModeMeshEditingAlgoWidget->show();
 
@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
 
   app.closeAllWindows();
 
-  //delete timer;
+  delete timer;
   delete SemiAutoModeMeshEditingAlgoWidget;
 
   return output;

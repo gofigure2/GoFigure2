@@ -54,7 +54,8 @@ class QGoAlgorithmsManagerWidget:
 {
   Q_OBJECT
 public:
-  explicit QGoAlgorithmsManagerWidget(QWidget *iParent = 0);
+  explicit QGoAlgorithmsManagerWidget(std::string iModeName, 
+    QWidget *iParent = 0);
   ~QGoAlgorithmsManagerWidget();
 
   /**
@@ -72,10 +73,13 @@ public:
   */
   void SetCurrentIndex(int iIndex);
 
+  std::string GetModeName();
+
 protected:
   QVBoxLayout*                 m_VBoxLayout;
   QComboBox*                   m_MethodComboBox;
   QStackedWidget*              m_MethodWidgets; 
+  std::string                  m_ModeName;
   //QStackedLayout*              m_MethodsLayout;
   void Initialize();
 

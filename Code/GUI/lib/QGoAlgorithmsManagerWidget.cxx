@@ -40,9 +40,11 @@
 #include "QGoAdvancedParametersWidget.h"
 
 
-QGoAlgorithmsManagerWidget::QGoAlgorithmsManagerWidget(QWidget *iParent )
+QGoAlgorithmsManagerWidget::QGoAlgorithmsManagerWidget(std::string iModeName,
+  QWidget *iParent )
   :QWidget(iParent)
 {
+  this->m_ModeName = iModeName;
   this->Initialize();
 }
 //-------------------------------------------------------------------------
@@ -107,6 +109,13 @@ void QGoAlgorithmsManagerWidget::SetCurrentIndex(int iIndex)
 {
   this->m_MethodComboBox->setCurrentIndex(iIndex);
   this->m_MethodWidgets->setCurrentIndex(iIndex);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::string QGoAlgorithmsManagerWidget::GetModeName()
+{
+  return this->m_ModeName;
 }
 /*void QGoAlgorithmsManagerWidget::AddMethod(std::string iNameMethod, 
   QWidget* iParametersWidget, QWidget* iAdvParamWidget)

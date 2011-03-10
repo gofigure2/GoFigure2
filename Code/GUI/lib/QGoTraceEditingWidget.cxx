@@ -32,7 +32,6 @@
 
 =========================================================================*/
 #include "QGoTraceEditingWidget.h"
-#include "QGoAdvancedParametersWidget.h"
 #include "QGoModeEditingWidget.h"
 #include <QPushButton>
 
@@ -71,4 +70,13 @@ void QGoTraceEditingWidget:: AddMode(
     ModeWidget = iModeWidget;
     }
   this->m_ModeEditingWidget->AddWidgetWithModeName(iModeName, ModeWidget); 
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTraceEditingWidget::AddModeManager(QGoModeEditingWidget* iModeWidget)
+{
+  delete this->m_ModeEditingWidget;
+  this->m_ModeEditingWidget = iModeWidget;
+  this->m_VLayout->addWidget(this->m_ModeEditingWidget);
 }
