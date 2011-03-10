@@ -41,11 +41,11 @@
 
 
 QGoAlgorithmsManagerWidget::QGoAlgorithmsManagerWidget(std::string iModeName,
-  QWidget *iParent )
+  QStringList iListChannels, QStringList iListTime, QWidget *iParent )
   :QWidget(iParent)
 {
   this->m_ModeName = iModeName;
-  this->Initialize();
+  this->Initialize(iListChannels, iListTime);
 }
 //-------------------------------------------------------------------------
 
@@ -56,30 +56,42 @@ QGoAlgorithmsManagerWidget::~QGoAlgorithmsManagerWidget()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoAlgorithmsManagerWidget::Initialize()
+void QGoAlgorithmsManagerWidget::Initialize(QStringList iListChannels, 
+  QStringList iListTime)
 {
   this->m_VBoxLayout = new QVBoxLayout;
-  QHBoxLayout* MethodLayout = new QHBoxLayout;
-  QLabel* MethodLabel = new QLabel(tr("Method:"), this);
+  QFormLayout* FormLayout = new QFormLayout;
+ 
+  this->m_ChannelComboBox = new QComboBox(this);
+  this->m_ChannelComboBox->addItems(iListChannels);
+  FormLayout->addRow(tr("Channel:"), this->m_ChannelComboBox);
+
+  this->m_TimeComboBox = new QComboBox(this);
+  this->m_TimeComboBox->addItems(iListTime);
+  FormLayout->addRow(tr("TSlice:"), this->m_TimeComboBox);
+
   this->m_MethodComboBox = new QComboBox(this);
-  MethodLayout->addWidget(MethodLabel);
-  MethodLayout->addWidget(this->m_MethodComboBox);
+  FormLayout->addRow(tr("Method:"), this->m_MethodComboBox);
+
   this->m_MethodWidgets = new QStackedWidget(this);
   //this->m_MethodsLayout = new QStackedLayout(this->m_VBoxLayout);
-  
-  this->m_VBoxLayout->addLayout(MethodLayout);
-  this->m_VBoxLayout->addWidget(this->m_MethodWidgets);
-  //this->m_VBoxLayout->addLayout(this->m_MethodsLayout);
+
   QHBoxLayout* ButtonLayout = new QHBoxLayout;
   QPushButton* ApplyButton = new QPushButton(tr("Apply"),this);
   QPushButton* ResetButton = new QPushButton(tr("Reset"), this);
   ButtonLayout->addWidget(ApplyButton);
   ButtonLayout->addWidget(ResetButton);
+
+  this->m_VBoxLayout->addLayout(FormLayout);
+  this->m_VBoxLayout->addWidget(this->m_MethodWidgets);
   this->m_VBoxLayout->addLayout(ButtonLayout);
+  //this->m_VBoxLayout->addLayout(this->m_MethodsLayout);
+  
+ 
 
   this->setLayout(this->m_VBoxLayout);
   this->m_VBoxLayout->setSizeConstraint(QLayout::SetFixedSize);
-  
+
   QObject::connect(this->m_MethodComboBox, SIGNAL(activated(int)),
             this->m_MethodWidgets, SLOT(setCurrentIndex(int)));
 
@@ -118,6 +130,22 @@ void QGoAlgorithmsManagerWidget::SetCurrentIndex(int iIndex)
 std::string QGoAlgorithmsManagerWidget::GetModeName()
 {
   return this->m_ModeName;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoAlgorithmsManagerWidget::SetCurrentChannel(QString iChannel)
+{
+  this->m_ChannelComboBox->setCurrentIndex(
+    this->m_ChannelComboBox->findText(iChannel) );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoAlgorithmsManagerWidget::SetCurrentTimePoint(QString iTimePoint)
+{
+  this->m_TimeComboBox->setCurrentIndex(
+    this->m_TimeComboBox->findText(iTimePoint) );
 }
 /*void QGoAlgorithmsManagerWidget::AddMethod(std::string iNameMethod, 
   QWidget* iParametersWidget, QWidget* iAdvParamWidget)

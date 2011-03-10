@@ -39,6 +39,7 @@
 #include <QStackedWidget>
 #include <QStackedLayout>
 #include <QVBoxLayout>
+#include <QFormLayout.h>
 #include <QComboBox>
 #include "QGoAlgorithmWidget.h"
 
@@ -55,7 +56,7 @@ class QGoAlgorithmsManagerWidget:
   Q_OBJECT
 public:
   explicit QGoAlgorithmsManagerWidget(std::string iModeName, 
-    QWidget *iParent = 0);
+    QStringList iListChannels, QStringList iListTime, QWidget *iParent = 0);
   ~QGoAlgorithmsManagerWidget();
 
   /**
@@ -73,6 +74,10 @@ public:
   */
   void SetCurrentIndex(int iIndex);
 
+  void SetCurrentTimePoint(QString iTimePoint);
+
+  void SetCurrentChannel(QString iChannel);
+
   std::string GetModeName();
 
 signals:
@@ -85,8 +90,15 @@ protected:
   QComboBox*                   m_MethodComboBox;
   QStackedWidget*              m_MethodWidgets; 
   std::string                  m_ModeName;
+  QComboBox*                   m_ChannelComboBox;
+  QComboBox*                   m_TimeComboBox;
   //QStackedLayout*              m_MethodsLayout;
-  void Initialize();
 
+  /**
+  \brief add the different widgets, buttons and fill the comboboxes 
+  for channel and timepoint
+  */
+  void Initialize(QStringList iListChannels, QStringList iListTime);
+  
 };
 #endif
