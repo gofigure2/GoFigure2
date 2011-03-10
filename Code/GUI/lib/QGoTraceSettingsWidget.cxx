@@ -51,6 +51,7 @@ QGoTraceSettingsWidget::QGoTraceSettingsWidget(QWidget *iParent) :
   SetTraceCollectionColorComboBox();
   SetCellTypeComboBox();
   SetSubCellTypeComboBox();
+  this->layout()->setSizeConstraint(QLayout::SetFixedSize);
   //UpdateTraceAndCollection("contour", "mesh");
 }
 
