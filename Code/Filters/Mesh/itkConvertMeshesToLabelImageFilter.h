@@ -31,8 +31,8 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __itkExtractMeshesFromLabelImageFilter_h
-#define __itkExtractMeshesFromLabelImageFilter_h
+#ifndef __itkConvertMeshesToLabelImageFilter_h
+#define __itkConvertMeshesToLabelImageFilter_h
 
 #ifdef _MSC_VER
 #pragma warning ( disable : 4786 )
@@ -43,36 +43,21 @@
 
 #include "itkImageRegionIteratorWithIndex.h"
 #include "itkRegionOfInterestImageFilter.h"
-#include "itkShapeLabelObject.h"
-#include "itkLabelMap.h"
-#include "itkLabelImageToShapeLabelMapFilter.h"
-#include "itkShapeRelabelImageFilter.h"
-
-#include "itkVector.h"
 #include "itkQuadEdgeMesh.h"
-#include "itkSmoothingQuadEdgeMeshFilter.h"
-#include "itkQuadEdgeMeshParamMatrixCoefficients.h"
-#include "itkQuadEdgeMeshDecimationCriteria.h"
-#include "itkSquaredEdgeLengthDecimationQuadEdgeMeshFilter.h"
-#include "itkBinaryMask3DMeshSource.h"
+#include "itkTriangleMeshToBinaryImageFilter.h"
+#include "itkVector.h"
 
 #include <fstream>
-#include "itkVTKPolyDataWriter.h"
 #include "itkMultiThreader.h"
 
 namespace itk
 {
 
-/**
-  \class ExtractMeshesFromLabelImageFilter
-  \brief
-  \author Kishore Mosaliganti
-  */
 template< class TImage >
-class ITK_EXPORT ExtractMeshesFromLabelImageFilter : public Object
+class ITK_EXPORT ConvertMeshesToLabelImageFilter : public Object
 {
 public:
-  typedef ExtractMeshesFromLabelImageFilter Self;
+  typedef ConvertMeshesToLabelImageFilter   Self;
   typedef Object                            Superclass;
   typedef SmartPointer<Self>                Pointer;
   typedef SmartPointer<const Self>          ConstPointer;
@@ -80,7 +65,7 @@ public:
   itkStaticConstMacro ( ImageDimension, unsigned int, TImage::ImageDimension );
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro( ExtractMeshesFromLabelImageFilter, Object );
+  itkTypeMacro( ConvertMeshesToLabelImageFilter, Object );
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -99,73 +84,35 @@ public:
   typedef typename ImageType::PointType      PointType;
   typedef typename PointType::CoordRepType   CoordType;
 
-  typedef QuadEdgeMesh< CoordType, ImageDimension >   MeshType;
-  typedef typename MeshType::Pointer                  MeshPointer;
-
-  typedef std::vector< MeshPointer >                  MeshVectorType;
-
-  typedef unsigned int                                        ShapeLabelType;
-  typedef ShapeLabelObject< ShapeLabelType, ImageDimension >  ShapeLabelObjectType;
-  typedef LabelMap< ShapeLabelObjectType >                    ShapeLabelMapType;
-  typedef typename ShapeLabelMapType::Pointer                 ShapeLabelMapPointer;
-
-  typedef LabelImageToShapeLabelMapFilter< ImageType, ShapeLabelMapType > ShapeConverterType;
-  typedef typename ShapeConverterType::Pointer ShapeConverterPointer;
-  typedef typename ShapeLabelMapType::LabelObjectContainerType LabelObjectContainerType;
-  typedef typename LabelObjectContainerType::const_iterator LabelObjectIterator;
+  typedef QuadEdgeMesh< CoordType, ImageDimension >  MeshType;
+  typedef typename MeshType::Pointer MeshPointer;
+  typedef std::vector< MeshPointer > MeshVectorType;
 
   typedef RegionOfInterestImageFilter< ImageType, ImageType > ROIFilterType;
-  typedef typename ROIFilterType::Pointer                     ROIFilterPointer;
+  typedef typename ROIFilterType::Pointer ROIFilterPointer;
 
   typedef ImageRegionIterator< ImageType > IteratorType;
   typedef ImageRegionIteratorWithIndex< ImageType > IndexIteratorType;
 
-  typedef BinaryMask3DMeshSource< ImageType, MeshType > MeshSourceType;
-  typedef typename MeshSourceType::Pointer MeshSourcePointer;
-
-  typedef SmoothingQuadEdgeMeshFilter< MeshType, MeshType > MeshSmoothingType;
-  typedef typename MeshSmoothingType::Pointer MeshSmoothingPointer;
-
-  typedef NumberOfFacesCriterion< MeshType > CriterionType;
-  typedef typename CriterionType::Pointer CriterionPointer;
-
-  typedef SquaredEdgeLengthDecimationQuadEdgeMeshFilter<
-    MeshType, MeshType, CriterionType > DecimationType;
-  typedef typename DecimationType::Pointer DecimationPointer;
-
-  typedef VTKPolyDataWriter< MeshType > MeshWriterType;
-  typedef typename MeshWriterType::Pointer MeshWriterPointer;
+  typedef TriangleMeshToBinaryImageFilter< MeshType, ImageType > MeshToImageFilterType;
+  typedef typename MeshToImageFilterType::Pointer MeshToImageFilterPointer;
 
   typedef MultiThreader ThreaderType;
   typedef typename ThreaderType::Pointer ThreaderPointer;
 
-  itkSetConstObjectMacro( Input , ImageType );
-  itkGetConstMacro( NumberOfMeshes, unsigned int );
-  itkSetMacro( NumberOfTrianglesPerMesh, unsigned int );
-  itkGetConstMacro( DelaunayConforming, bool );
-  itkSetMacro( DelaunayConforming, bool );
+  itkSetObjectMacro( Input , ImageType );
+  itkGetConstMacro( NumberOfMeshes, size_t );
 
-  itkSetMacro( UseDecimation, bool );
-  itkGetConstMacro( UseDecimation, bool );
-
-  itkSetMacro( UseSmoothing, bool );
-  itkGetConstMacro( UseSmoothing, bool );
-
-  itkGetConstMacro( NumberOfTrianglesPerMesh, unsigned int );
-  itkSetMacro( NumberOfSmoothingIterations, unsigned int );
-  itkGetConstMacro( NumberOfSmoothingIterations, unsigned int );
-  itkSetMacro( SmoothingRelaxationFactor, double );
-  itkGetConstMacro( SmoothingRelaxationFactor, double );
   itkGetConstMacro( NumberOfThreads, unsigned int );
   itkSetMacro( NumberOfThreads, unsigned int );
 
-  MeshVectorType m_Meshes;
+  void SetMeshes( const MeshVectorType& iMeshes );
 
   void Update();
 
 protected:
-  ExtractMeshesFromLabelImageFilter();
-  ~ExtractMeshesFromLabelImageFilter(){}
+  ConvertMeshesToLabelImageFilter();
+  ~ConvertMeshesToLabelImageFilter(){}
   void PrintSelf(std::ostream& os, Indent indent) const;
   void ThreadedExtractMesh( const unsigned int& startLabel,
                             const unsigned int& endLabel );
@@ -174,33 +121,24 @@ protected:
 
   struct ThreadStruct
   {
-    Self*                 Filter;
+    Self* Filter;
   };
+
+  size_t        m_NumberOfMeshes;
+  unsigned int  m_NumberOfThreads;
+  ImageType*    m_Input;
+
+  MeshVectorType m_Meshes;
 
   void GenerateData();
 
-  ImageConstPointer     m_Input;
-  ShapeLabelMapPointer  m_ShapeLabelMap;
-
-  unsigned int m_NumberOfThreads;
-  unsigned int m_NumberOfMeshes;
-  unsigned int m_NumberOfTrianglesPerMesh;
-  unsigned int m_NumberOfSmoothingIterations;
-  unsigned int m_SmoothingRelaxationFactor;
-
-  bool m_DelaunayConforming;
-  bool m_UseSmoothing;
-  bool m_UseDecimation;
-
 private:
-  ExtractMeshesFromLabelImageFilter(const Self&) {}
-  void operator=(const Self&) {}
+  ConvertMeshesToLabelImageFilter(const Self&);
+  void operator=(const Self&);
 };
 
 } // end namespace itk
 
-#ifndef ITK_MANUAL_INSTANTIATION
-#include "itkExtractMeshesFromLabelImageFilter.txx"
-#endif
+#include "itkConvertMeshesToLabelImageFilter.txx"
 
 #endif

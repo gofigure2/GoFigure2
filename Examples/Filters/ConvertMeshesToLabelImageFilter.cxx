@@ -1,8 +1,14 @@
 /*=========================================================================
- Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-11
+  Author: $Author: krm15 $  // Author of last commit
+  Version: $Rev: 807 $  // Revision of last commit
+  Date: $Date: 2009-11-03 22:35:10 -0500 (Tue, 03 Nov 2009) $  // Date of last commit
+=========================================================================*/
 
- Copyright (c) 2009-11, President and Fellows of Harvard College.
+/*=========================================================================
+ Authors: The GoFigure Dev. Team.
+ at Megason Lab, Systems biology, Harvard Medical school, 2009
+
+ Copyright (c) 2009, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -32,19 +38,17 @@
 
 =========================================================================*/
 #include "itkImageFileReader.h"
+#include "itkImageFileWriter.h"
+#include "itkConvertMeshesToLabelImageFilter.h"
 #include "itkVTKPolyDataReader.h"
-#include "itkVTKPolyDataWriter.h"
-#include "itkExtractMeshesFromLabelImageFilter.h"
 #include "itkNumericSeriesFileNames.h"
 #include <fstream>
 
 int main (int argc, char *argv[])
 {
-  if (argc < 3)
+  if (argc < 5)
     {
-    std::cout << "Usage: " << argv[0]
-              << " InputVolume OutputMeshFormat numOfThreads"
-              << std::endl;
+    std::cout << "Usage: " << argv[0] << " InfoVolume InputMeshFormat OutputVolume numOfThreads numOfMeshes" << std::endl;
     return EXIT_FAILURE;
     }
 
@@ -52,55 +56,61 @@ int main (int argc, char *argv[])
   typedef itk::Image< unsigned int, Dimension > SegmentImageType;
   typedef itk::ImageFileReader< SegmentImageType > ReaderType;
 
-  typedef itk::ExtractMeshesFromLabelImageFilter< SegmentImageType >
-      MeshSourceType;
+  typedef itk::ConvertMeshesToLabelImageFilter< SegmentImageType > ImageSourceType;
 
-  typedef MeshSourceType::MeshType            MeshType;
+  typedef ImageSourceType::MeshType           MeshType;
   typedef itk::VTKPolyDataReader< MeshType >  MeshReaderType;
-  typedef itk::VTKPolyDataWriter< MeshType >  MeshWriterType;
 
-  typedef itk::NumericSeriesFileNames         NameGeneratorType;
-  typedef itk::VTKPolyDataWriter< MeshType >  MeshWriterType;
+  typedef itk::NumericSeriesFileNames                  NameGeneratorType;
+  typedef itk::ImageFileWriter< SegmentImageType >     WriterType;
 
   // Define all of the variables
-  unsigned int smoothingIterations = 8;
-  double relaxationFactor = 0.75;
-  unsigned int numberOfTriangles = 200;
-  unsigned int numOfThreads = atoi( argv[3] );
+  unsigned int numOfThreads = atoi( argv[4] );
+  unsigned int numOfMeshes  = atoi( argv[5] );
 
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName ( argv[1] );
   reader->Update();
   SegmentImageType::Pointer input = reader->GetOutput();
 
-  MeshSourceType::Pointer meshSource = MeshSourceType::New();
-  meshSource->SetInput( input );
-  meshSource->SetUseSmoothing( true );
-  meshSource->SetUseDecimation( true );
-  meshSource->SetNumberOfTrianglesPerMesh( numberOfTriangles );
-  meshSource->SetNumberOfSmoothingIterations( smoothingIterations );
-  meshSource->SetSmoothingRelaxationFactor( relaxationFactor );
-  meshSource->SetDelaunayConforming( false );
-  meshSource->SetNumberOfThreads( numOfThreads );
-  meshSource->Update();
+  SegmentImageType::Pointer m_OutputImage = SegmentImageType::New();
+  m_OutputImage->CopyInformation( input );
+  m_OutputImage->SetRegions( input->GetLargestPossibleRegion() );
+  m_OutputImage->Allocate();
+  m_OutputImage->FillBuffer( 0 );
 
   NameGeneratorType::Pointer nameGeneratorOutput = NameGeneratorType::New();
   nameGeneratorOutput->SetSeriesFormat( argv[2] );
   nameGeneratorOutput->SetStartIndex( 1 );
-  nameGeneratorOutput->SetEndIndex( meshSource->GetNumberOfMeshes() );
+  nameGeneratorOutput->SetEndIndex( numOfMeshes );
   nameGeneratorOutput->SetIncrementIndex( 1 );
 
-  for( unsigned int i = 0; i < meshSource->GetNumberOfMeshes(); ++i )
-  {
+  ImageSourceType::Pointer imageSource = ImageSourceType::New();
+
+  ImageSourceType::MeshVectorType meshes( numOfMeshes );
+
+  for( unsigned int i = 0; i < numOfMeshes; ++i )
+    {
     std::stringstream ss;
     ss << nameGeneratorOutput->GetFileNames()[i];
-//     std::cout << argv[0] << " writing " << ss.str() << std::endl;
+    //     std::cout << argv[0] << " writing " << ss.str() << std::endl;
 
-    MeshWriterType::Pointer writer = MeshWriterType::New( );
-    writer->SetInput( meshSource->m_Meshes[i] );
-    writer->SetFileName( ss.str().c_str() );
-    writer->Update();
-  }
+    MeshReaderType::Pointer meshReader = MeshReaderType::New( );
+    meshReader->SetFileName( ss.str().c_str() );
+    meshReader->Update();
+    meshes[i] = meshReader->GetOutput();
+    meshes[i]->DisconnectPipeline();
+    }
+
+  imageSource->SetInput( m_OutputImage );
+  imageSource->SetNumberOfThreads( numOfThreads );
+  imageSource->SetMeshes( meshes );
+  imageSource->Update();
+
+  WriterType::Pointer writer = WriterType::New( );
+  writer->SetInput( m_OutputImage );
+  writer->SetFileName( argv[3] );
+  writer->Update();
 
   return EXIT_SUCCESS;
 }

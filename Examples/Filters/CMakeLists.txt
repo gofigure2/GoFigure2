@@ -96,3 +96,6 @@ TARGET_LINK_LIBRARIES( ExtractMeshesFromLabelImageFilter
   ITKIO
   ITKReview
 )
+
+ADD_EXECUTABLE(ConvertMeshesToLabelImageFilter ConvertMeshesToLabelImageFilter.cxx )
+TARGET_LINK_LIBRARIES( ConvertMeshesToLabelImageFilter ITKIO ITKReview )
