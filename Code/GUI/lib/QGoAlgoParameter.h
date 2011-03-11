@@ -71,7 +71,7 @@ class QGoAlgoParameter< int >
       bool iAdvParam, int iMin, int iMax, int iDefaultValue = 0)
     {
     m_ParamName = iParamName;
-    m_Value = 0;
+    //m_Value = 0;
     m_Box = new RepresentationType;
     m_AdvParam = iAdvParam;
     SetRangeValues(iMin, iMax, iDefaultValue);
@@ -85,7 +85,11 @@ class QGoAlgoParameter< int >
       }
     };
 
-    int m_Value;
+    int GetValue()
+    {
+    return m_Box->value();
+    };
+    //int m_Value;
     //int m_Min;
     //int m_Max;
     RepresentationType* m_Box;
@@ -121,7 +125,7 @@ class QGoAlgoParameter< double >
       int iNbDecimal, double iDefaultValue = 0)
       {
       m_ParamName = iParamName;
-      m_Value = 0;
+      //m_Value = 0;
       m_Box = new RepresentationType;
       m_AdvParam = iAdvParam;
       SetRangeValues(iMin, iMax, iNbDecimal, iDefaultValue);
@@ -135,7 +139,11 @@ class QGoAlgoParameter< double >
       }
     };
 
-    double m_Value;
+    double GetValue()
+    {
+    return m_Box->value();
+    };
+    //double m_Value;
     //double m_Min;
     //double m_Max;
     RepresentationType* m_Box; 
@@ -173,7 +181,7 @@ class QGoAlgoParameter< std::string >
       QStringList iListValues, std::string iDefaultValue = "")
       {
       m_ParamName = iParamName;
-      m_Value = "";
+      //m_Value = "";
       m_Box = new RepresentationType;
       m_AdvParam = iAdvParam;
       SetListValues(iListValues, iDefaultValue);
@@ -187,7 +195,11 @@ class QGoAlgoParameter< std::string >
       }
     };
 
-    std::string m_Value;
+    std::string Getvalue()
+      {
+      return m_Box->currentText().toStdString();
+      }
+    //std::string m_Value;
     QStringList m_ListValues;
     RepresentationType* m_Box;
     //std::string m_DefaultValue;

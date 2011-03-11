@@ -81,7 +81,30 @@ std::string QGoAlgorithmWidget::GetMethodName()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoAlgorithmWidget::AddParameter(std::string iParamName, 
+void QGoAlgorithmWidget::show()
+{
+  if (!this->m_AdvParamAlreadySetUp) //in order not to add another collapsible box
+    //each time the widget is shown
+    {
+    if (this->m_AdvParamLayout->rowCount()>0 ) //if there is at least one advanced parameter,
+      //if not, no need to add the collapsible box
+      {
+      ctkCollapsibleGroupBox* AdvParamGroupBox =
+        new ctkCollapsibleGroupBox(tr("Advanced"));
+      AdvParamGroupBox->setLayout(this->m_AdvParamLayout);
+      AdvParamGroupBox->setFlat(true);
+      AdvParamGroupBox->setChecked(false);
+      this->m_VBoxLayout->addWidget(AdvParamGroupBox);
+      }
+    this->m_AdvParamAlreadySetUp = true; //no need to check again when widget shown another time
+    }
+
+  QWidget::show();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+/*void QGoAlgorithmWidget::AddParameter(std::string iParamName, 
   int iMinValue, int iMaxValue, int iDefaultValue)
 {
   QSpinBox* ParamBox = new QSpinBox(this);
@@ -160,51 +183,11 @@ void QGoAlgorithmWidget::AddParamComboBoxinLayout(std::string iParamName,
     ListParamBox->setCurrentIndex(
       ListParamBox->findText(iDefaultValue.c_str()));
     }
-}
+}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoAlgorithmWidget::show()
-{
-  if (!this->m_AdvParamAlreadySetUp) //in order not to add another collapsible box
-    //each time the widget is shown
-    {
-    if (this->m_AdvParamLayout->rowCount()>0 ) //if there is at least one advanced parameter,
-      //if not, no need to add the collapsible box
-      {
-      ctkCollapsibleGroupBox* AdvParamGroupBox =
-        new ctkCollapsibleGroupBox(tr("Advanced"));
-      AdvParamGroupBox->setLayout(this->m_AdvParamLayout);
-      AdvParamGroupBox->setFlat(true);
-      AdvParamGroupBox->setChecked(false);
-      this->m_VBoxLayout->addWidget(AdvParamGroupBox);
-      }
-    this->m_AdvParamAlreadySetUp = true; //no need to check again when widget shown another time
-    }
-
-  QWidget::show();
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-std::map<std::string, std::string> QGoAlgorithmWidget::GetParamAndAdvParamValues()
-{
-  std::map<std::string, std::string> ParamValues = std::map<std::string, std::string>();
-  int NbParam = this->m_ParamLayout->rowCount();
-  if (NbParam != 0)
-    {
-    for(int i = 0; i < NbParam; ++i)
-      {
-      //std::string Text = this->m_ParamLayout->itemAt(i)->widget()->text()->toStdString();
-        //ParamValues[
-      } 
-    }
-  return ParamValues;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoAlgorithmWidget::AddGeneralParameter(AlgoParameterStructure iParameter)
+/*void QGoAlgorithmWidget::AddGeneralParameter(AlgoParameterStructure iParameter)
 {
   if (!iParameter.AdvParam)
     {
@@ -240,7 +223,7 @@ void QGoAlgorithmWidget::AddGeneralParameter(AlgoParameterStructure iParameter)
        }
     this->m_MapAdvParam[this->m_AdvParamLayout->rowCount()] = iParameter.Type;
     }
-}
+}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

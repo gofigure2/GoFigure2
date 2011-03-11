@@ -42,7 +42,6 @@
 #include <QDoubleSpinBox>
 #include <map>
 #include "ctkCollapsibleGroupBox.h"
-#include "AlgoParameterStructure.h"
 #include "QGoAlgoParameter.h"
 
 /**
@@ -64,17 +63,15 @@ public:
   */
   std::string GetMethodName();
 
-  void AddGeneralParameter(AlgoParameterStructure iParameter);
+  //void AddGeneralParameter(AlgoParameterStructure iParameter);
 
-  void AddGeneralParameter(QGoAlgoParameter<int>* iParameter);
+  //void AddGeneralParameter(QGoAlgoParameter<int>* iParameter);
 
   /**
   \brief add the Advanced parameters box if there are parameters inside and reduce it
   before showing the widget    
   */
   void show();
-
-  std::map<std::string, std::string> GetParamAndAdvParamValues();
 
   template<typename T>
   void AddGeneralParameter(QGoAlgoParameter<T>* iParameter)
@@ -92,14 +89,12 @@ public:
     }
 
 protected:
-  QVBoxLayout*                        m_VBoxLayout;
-  std::string                         m_MethodName;
-  QFormLayout*                        m_ParamLayout;
-  QFormLayout*                        m_AdvParamLayout;
-  bool                                m_AdvParamAlreadySetUp;
-  std::map<int, ParamType>            m_MapParam;
-  std::map<int, ParamType>            m_MapAdvParam;
- 
+  QVBoxLayout*                             m_VBoxLayout;
+  std::string                              m_MethodName;
+  QFormLayout*                             m_ParamLayout;
+  QFormLayout*                             m_AdvParamLayout;
+  bool                                     m_AdvParamAlreadySetUp;
+
   void Initialize();
 
   /**
@@ -110,19 +105,19 @@ protected:
   \param[in] iMaxValue max value of the spinbox
   \param[in] iDefaultValue default value of the spinbox
   */
-  void AddParameter(std::string iParamName, int iMinValue = 0, int iMaxValue = 0, 
-    int iDefaultValue = 0);
+  //void AddParameter(std::string iParamName, int iMinValue = 0, int iMaxValue = 0, 
+  //  int iDefaultValue = 0);
 
   /**
   \overload
   */
-  void AddParameter(std::string iParamName, double iMinValue = 0, double iMaxValue = 0, 
-    double iDefaultValue = 0, int iNbDecimal = 0);
+  //void AddParameter(std::string iParamName, double iMinValue = 0, double iMaxValue = 0, 
+  //  double iDefaultValue = 0, int iNbDecimal = 0);
 
   /**
   \overload
   */
-  void AddParameter(std::string iParamName, QStringList iListValues, std::string iDefaultValue = "");
+  //void AddParameter(std::string iParamName, QStringList iListValues, std::string iDefaultValue = "");
 
   /**
   \brief add the paramater described with the arguments in an expandable box 
@@ -132,19 +127,19 @@ protected:
   \param[in] iMaxValue max value of the spinbox
   \param[in] iDefaultValue default value of the spinbox
   */
-  void AddAdvParameter(std::string iParamName, int iMinValue = 0, int iMaxValue = 0, 
-    int iDefaultValue = 0);
+  //void AddAdvParameter(std::string iParamName, int iMinValue = 0, int iMaxValue = 0, 
+  //  int iDefaultValue = 0);
 
   /**
   \overload
   */
-  void AddAdvParameter(std::string iParamName, double iMinValue = 0, double iMaxValue = 0, 
-    double iDefaultValue = 0, int iNbDecimal = 0);
+  //void AddAdvParameter(std::string iParamName, double iMinValue = 0, double iMaxValue = 0, 
+  //  double iDefaultValue = 0, int iNbDecimal = 0);
 
   /**
   \overload
   */
-  void AddAdvParameter(std::string iAdvParamName, QStringList iListValues, std::string iDefaultValue = "");
+  //void AddAdvParameter(std::string iAdvParamName, QStringList iListValues, std::string iDefaultValue = "");
 
   /**
   \brief set the min, max and default values of the spinbox and 
@@ -157,7 +152,7 @@ protected:
   \tparam T  int or double
   \tparam B  SpinBox or DoubleSpinBox
   */
-  template<typename B, typename T>
+  /*template<typename B, typename T>
   void AddParameterInLayout(B* iBox, std::string iParamName,
     QFormLayout* iLayout, T iMinValue = 0, T iMaxValue = 0, 
     T iDefaultValue = 0)
@@ -174,7 +169,7 @@ protected:
     iLayout->addRow(tr("%1:").arg(iParamName.c_str() ), 
     iBox);
 
-  }
+  }*/
 
   /**
   \brief add a combobox in iLayout with items corresponding to iListValues
@@ -183,8 +178,8 @@ protected:
   \param[in] iLayout which layout to insert the combobox: Param or advParam
   \param[in] iDefaultValue default selected value in the combobox
   */
-  void AddParamComboBoxinLayout(std::string iParamName, 
-  QStringList iListValues, QFormLayout* iLayout, std::string iDefaultValue);
+  //void AddParamComboBoxinLayout(std::string iParamName, 
+  //QStringList iListValues, QFormLayout* iLayout, std::string iDefaultValue);
 
 };
 #endif

@@ -40,7 +40,6 @@
 #include "QGoAlgorithmWidget.h"
 #include "QGoSeedBaseWidget.h"
 #include "QGoTraceSettingsWidget.h"
-#include "AlgoParameterStructure.h"
 #include "ConvertToStringHelper.h"
 #include "QGoAlgoParameter.h"
 
@@ -140,6 +139,9 @@ int main(int argc, char *argv[])
   app.processEvents();
   int output = app.exec();
 
+  std::cout<< "Alpha "<< Alpha.GetValue()<<std::endl;
+  std::cout<< "Beta "<< Beta.GetValue()<<std::endl;
+  std::cout<< "Shape "<< Shape.Getvalue().c_str()<<std::endl;
   app.closeAllWindows();
 
   //delete timer;
