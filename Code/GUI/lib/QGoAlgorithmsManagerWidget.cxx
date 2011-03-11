@@ -37,7 +37,6 @@
 #include <QLabel>
 #include <QGroupBox>
 #include <QPushButton>
-#include "QGoAdvancedParametersWidget.h"
 
 
 QGoAlgorithmsManagerWidget::QGoAlgorithmsManagerWidget(std::string iModeName,

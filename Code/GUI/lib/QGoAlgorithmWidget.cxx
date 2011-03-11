@@ -36,6 +36,7 @@
 #include <QLabel>
 #include <QComboBox>
 #include "ctkCollapsibleGroupBox.h"
+#include "ConvertToStringHelper.h"
 
 
 QGoAlgorithmWidget::QGoAlgorithmWidget(std::string iMethodName, QWidget *iParent )
@@ -106,10 +107,10 @@ void QGoAlgorithmWidget::AddParameter(std::string iParamName,
 
 //-------------------------------------------------------------------------
 void QGoAlgorithmWidget::AddParameter(std::string iParamName, 
-  QStringList iListValues)
+  QStringList iListValues, std::string iDefaultValue)
 {
   this->AddParamComboBoxinLayout(iParamName, iListValues, 
-    this->m_ParamLayout);
+    this->m_ParamLayout, iDefaultValue);
 }
 //-------------------------------------------------------------------------
 
@@ -140,20 +141,25 @@ void QGoAlgorithmWidget::AddAdvParameter(std::string iParamName,
 
 //-------------------------------------------------------------------------
 void QGoAlgorithmWidget::AddAdvParameter(std::string iAdvParamName, 
-  QStringList iListValues)
+  QStringList iListValues, std::string iDefaultValue)
 {
   this->AddParamComboBoxinLayout(iAdvParamName, iListValues, 
-    this->m_AdvParamLayout);
+    this->m_AdvParamLayout, iDefaultValue );
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoAlgorithmWidget::AddParamComboBoxinLayout(std::string iParamName, 
-  QStringList iListValues, QFormLayout* iLayout)
+  QStringList iListValues, QFormLayout* iLayout, std::string iDefaultValue)
 {
   QComboBox* ListParamBox = new QComboBox(this);
   ListParamBox->addItems(iListValues);
   iLayout->addRow(iParamName.c_str(), ListParamBox);
+  if (!iDefaultValue.empty())
+    {
+    ListParamBox->setCurrentIndex(
+      ListParamBox->findText(iDefaultValue.c_str()));
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -178,3 +184,63 @@ void QGoAlgorithmWidget::show()
 
   QWidget::show();
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::map<std::string, std::string> QGoAlgorithmWidget::GetParamAndAdvParamValues()
+{
+  std::map<std::string, std::string> ParamValues = std::map<std::string, std::string>();
+  int NbParam = this->m_ParamLayout->rowCount();
+  if (NbParam != 0)
+    {
+    for(int i = 0; i < NbParam; ++i)
+      {
+      //std::string Text = this->m_ParamLayout->itemAt(i)->widget()->text()->toStdString();
+        //ParamValues[
+      } 
+    }
+  return ParamValues;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoAlgorithmWidget::AddGeneralParameter(AlgoParameterStructure iParameter)
+{
+  if (!iParameter.AdvParam)
+    {
+    switch (iParameter.Type)
+      {
+      case intType:
+        this->AddParameter(iParameter.ParamName, iParameter.MinValue, iParameter.MaxValue,
+          ss_atoi<int>(iParameter.DefaultValue), iParameter.NbDecimal);
+        break;
+      case doubleType: 
+        this->AddParameter(iParameter.ParamName, iParameter.MinValue, iParameter.MaxValue,
+          ss_atoi<double>(iParameter.DefaultValue) );
+        break;
+      default:
+        this->AddParameter(iParameter.ParamName, iParameter.ListValues);
+       }
+    this->m_MapParam[this->m_ParamLayout->rowCount()] = iParameter.Type;
+    }
+  else
+    {
+    switch (iParameter.Type)
+      {
+      case intType:
+        this->AddAdvParameter(iParameter.ParamName, iParameter.MinValue, iParameter.MaxValue,
+          ss_atoi<int>(iParameter.DefaultValue), iParameter.NbDecimal);
+        break;
+      case doubleType: 
+        this->AddAdvParameter(iParameter.ParamName, iParameter.MinValue, iParameter.MaxValue,
+          ss_atoi<double>(iParameter.DefaultValue));
+        break;
+      default:
+        this->AddAdvParameter(iParameter.ParamName, iParameter.ListValues, iParameter.DefaultValue);
+       }
+    this->m_MapAdvParam[this->m_AdvParamLayout->rowCount()] = iParameter.Type;
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------

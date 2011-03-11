@@ -63,9 +63,8 @@ void QGoModesManagerWidget::Initialize()
   this->m_ModeWidgets = new QStackedWidget;
   this->m_VBoxLayout->addWidget(this->m_ModeWidgets);
 
-  this->m_VBoxLayout->setSizeConstraint(QLayout::SetFixedSize);
-
   this->setLayout(this->m_VBoxLayout);
+  this->m_VBoxLayout->setSizeConstraint(QLayout::SetFixedSize);
 
   QObject::connect(this->m_ModeComboBox, SIGNAL(activated(int)),
              this->m_ModeWidgets, SLOT(setCurrentIndex(int)));

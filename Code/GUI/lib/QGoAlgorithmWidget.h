@@ -40,7 +40,10 @@
 #include <QFormLayout>
 #include <QSpinBox>
 #include <QDoubleSpinBox>
+#include <map>
 #include "ctkCollapsibleGroupBox.h"
+#include "AlgoParameterStructure.h"
+#include "QGoAlgoParameter.h"
 
 /**
  * \class QGoAlgorithmWidget
@@ -60,6 +63,44 @@ public:
   \return the name of the algorithms 
   */
   std::string GetMethodName();
+
+  void AddGeneralParameter(AlgoParameterStructure iParameter);
+
+  void AddGeneralParameter(QGoAlgoParameter<int>* iParameter);
+
+  /**
+  \brief add the Advanced parameters box if there are parameters inside and reduce it
+  before showing the widget    
+  */
+  void show();
+
+  std::map<std::string, std::string> GetParamAndAdvParamValues();
+
+  template<typename T>
+  void AddGeneralParameter(QGoAlgoParameter<T>* iParameter)
+    {
+    if (iParameter->m_AdvParam)
+      {
+        this->m_AdvParamLayout->addRow(tr("%1:").arg(iParameter->m_ParamName.c_str() ), 
+        iParameter->m_Box);
+      }    
+    else
+      {
+        this->m_ParamLayout->addRow(tr("%1:").arg(iParameter->m_ParamName.c_str() ), 
+        iParameter->m_Box);
+      }
+    }
+
+protected:
+  QVBoxLayout*                        m_VBoxLayout;
+  std::string                         m_MethodName;
+  QFormLayout*                        m_ParamLayout;
+  QFormLayout*                        m_AdvParamLayout;
+  bool                                m_AdvParamAlreadySetUp;
+  std::map<int, ParamType>            m_MapParam;
+  std::map<int, ParamType>            m_MapAdvParam;
+ 
+  void Initialize();
 
   /**
   \brief add the paramater described with the arguments in the parameters area
@@ -81,7 +122,7 @@ public:
   /**
   \overload
   */
-  void AddParameter(std::string iParamName, QStringList iListValues);
+  void AddParameter(std::string iParamName, QStringList iListValues, std::string iDefaultValue = "");
 
   /**
   \brief add the paramater described with the arguments in an expandable box 
@@ -103,22 +144,7 @@ public:
   /**
   \overload
   */
-  void AddAdvParameter(std::string iAdvParamName, QStringList iListValues);
-
-  /**
-  \brief add the Advanced parameters box if there are parameters inside and reduce it
-  before showing the widget    
-  */
-  void show();
-
-protected:
-  QVBoxLayout*                  m_VBoxLayout;
-  std::string                   m_MethodName;
-  QFormLayout*                  m_ParamLayout;
-  QFormLayout*                  m_AdvParamLayout;
-  bool                          m_AdvParamAlreadySetUp;
- 
-  void Initialize();
+  void AddAdvParameter(std::string iAdvParamName, QStringList iListValues, std::string iDefaultValue = "");
 
   /**
   \brief set the min, max and default values of the spinbox and 
@@ -144,8 +170,10 @@ protected:
       {
       iBox->setValue(iDefaultValue);
       }
+    int NbRow = iLayout->rowCount();
     iLayout->addRow(tr("%1:").arg(iParamName.c_str() ), 
     iBox);
+
   }
 
   /**
@@ -153,8 +181,10 @@ protected:
   \param[in] iParamName name of the param to be displayed next to the combobox
   \param[in] iListValues list of the values to be displayed in the combobox
   \param[in] iLayout which layout to insert the combobox: Param or advParam
+  \param[in] iDefaultValue default selected value in the combobox
   */
   void AddParamComboBoxinLayout(std::string iParamName, 
-  QStringList iListValues, QFormLayout* iLayout);
+  QStringList iListValues, QFormLayout* iLayout, std::string iDefaultValue);
+
 };
 #endif

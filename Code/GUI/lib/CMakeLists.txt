@@ -107,7 +107,6 @@ SET( QGoGUILIB_SRC
   # for the trace editing widget
   QGoTraceEditingWidget.cxx
   QGoModesManagerWidget.cxx
-  QGoAdvancedParametersWidget.cxx
   QGoAlgorithmsManagerWidget.cxx
   QGoAlgorithmWidget.cxx
 
@@ -232,7 +231,6 @@ SET( QGoGUILIB_HDRS
   # for the trace editing widget
   QGoTraceEditingWidget.h
   QGoModesManagerWidget.h
-  QGoAdvancedParametersWidget.h
   QGoAlgorithmsManagerWidget.h
   QGoAlgorithmWidget.h
 )
