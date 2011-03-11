@@ -104,9 +104,9 @@ GenerateMeshesFromOutputImage()
 {
   ExtracMeshFilterPointer extractor = ExtracMeshFilterType::New();
   extractor->SetInput( m_OutputImage );
-  extractor->SetNumberOfThreads( m_NumberOfThreads );
-  extractor->SetUseSmoothing( m_UseSmoothing );
-  extractor->SetUseDecimation( m_UseDecimation );
+  extractor->SetNumberOfThreads( 1 );//m_NumberOfThreads );
+  extractor->SetUseSmoothing( false );//m_UseSmoothing );
+  extractor->SetUseDecimation( false );//m_UseDecimation );
   extractor->SetNumberOfTrianglesPerMesh( m_NumberOfTrianglesPerMesh );
   extractor->SetNumberOfSmoothingIterations( m_NumberOfSmoothingIterations );
   extractor->SetSmoothingRelaxationFactor( m_SmoothingRelaxationFactor );
@@ -119,6 +119,9 @@ GenerateMeshesFromOutputImage()
   typename MeshVectorType::const_iterator it = MeshVector.begin();
   typename MeshVectorType::const_iterator end = MeshVector.end();
 
+  m_Outputs.resize( MeshVector.size() );
+
+  std::cout << "size = " <<MeshVector.size() <<std::endl;
   size_t i = 0;
 
   while( it != end )
@@ -127,7 +130,9 @@ GenerateMeshesFromOutputImage()
     converter->SetInput( *it );
     converter->Update();
 
-    m_Outputs[i] = converter->GetOutput();
+    m_Outputs[i] = vtkPolyData::New();
+    m_Outputs[i]->DeepCopy( converter->GetOutput() );
+    std::cout << m_Outputs[i]->GetNumberOfPoints() <<std::endl;
     ++it;
     ++i;
     }

@@ -96,12 +96,12 @@ int main( int argc, char* argv[] )
   typedef SplitterType::PointSetType PointSetType;
   PointSetType::Pointer seeds = PointSetType::New();
 
-  p[0] = center[0] - 0.1 * radius;
+  p[0] = center[0] - 0.5 * radius;
   p[1] = center[1];
   p[2] = center[2];
   seeds->SetPoint( 0, p );
 
-  p[0] = center[0] + 0.1 * radius;
+  p[0] = center[0] + 0.5 * radius;
   seeds->SetPoint( 1, p );
 
   filter->SetSeeds( seeds );
@@ -109,7 +109,7 @@ int main( int argc, char* argv[] )
 
   std::vector< vtkPolyData* > outputs = filter->GetOutputs();
 
-  std::vector< vtkPolyData* >::const_iterator it = outputs.begin();
+  std::vector< vtkPolyData* >::iterator it = outputs.begin();
   size_t i = 0;
 
   while( it != outputs.end() )
@@ -124,6 +124,8 @@ int main( int argc, char* argv[] )
     std::string filename = "mesh";
     filename += os.str();
     filename += ".vtk";
+
+    std::cout << filename.c_str() << std::endl;
     writer->SetFileName( filename.c_str() );
     writer->Write();
 

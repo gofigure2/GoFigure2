@@ -78,15 +78,11 @@ public:
     DistanceFilterType;
   typedef typename DistanceFilterType::Pointer DistanceFilterPointer;
 
-  itkGetConstMacro ( ForegroundValue, ImagePixelType );
-  itkSetMacro ( ForegroundValue, ImagePixelType );
-
 protected:
   vtkMeshSplitterDanielssonDistanceImageFilter();
   ~vtkMeshSplitterDanielssonDistanceImageFilter() {}
 
   ImagePointer m_SeedImage;
-  ImagePixelType  m_ForegroundValue;
 
   void SplitBinaryImage();
 

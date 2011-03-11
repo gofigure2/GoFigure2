@@ -90,6 +90,9 @@ GenerateData()
   m_ShapeLabelMap = shapeConverter->GetOutput();
 
   m_NumberOfMeshes = m_ShapeLabelMap->GetNumberOfLabelObjects();
+
+  std::cout << m_NumberOfMeshes <<std::endl;
+
   this->m_Meshes.resize( m_NumberOfMeshes );
 
   ThreadStruct str;

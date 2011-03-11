@@ -42,21 +42,23 @@ namespace itk
 template< class TImage >
 vtkMeshSplitterDanielssonDistanceImageFilter< TImage >::
 vtkMeshSplitterDanielssonDistanceImageFilter() : Superclass(),
-  m_SeedImage( NULL ), m_ForegroundValue( 1 ) {}
+  m_SeedImage( NULL ) {}
 
 template< class TImage >
 void
 vtkMeshSplitterDanielssonDistanceImageFilter< TImage >::
 SplitBinaryImage()
 {
+  ImagePixelType zero = NumericTraits< ImagePixelType >::Zero;
+
   if( m_SeedImage.IsNull() )
     {
     m_SeedImage = ImageType::New();
-    m_SeedImage->SetRegions( this->m_Image->GetLargestPossibleRegion() );
-    m_SeedImage->SetOrigin(  this->m_Image->GetOrigin() );
-    m_SeedImage->SetSpacing( this->m_Image->GetSpacing() );
+    m_SeedImage->SetRegions( this->m_BinaryImage->GetLargestPossibleRegion() );
+    m_SeedImage->SetOrigin(  this->m_BinaryImage->GetOrigin() );
+    m_SeedImage->SetSpacing( this->m_BinaryImage->GetSpacing() );
     m_SeedImage->Allocate();
-    m_SeedImage->FillBuffer( 0 );
+    m_SeedImage->FillBuffer( zero );
     m_SeedImage->Update();
 
     // Fill the seeds
@@ -65,13 +67,13 @@ SplitBinaryImage()
 
     PointsContainerPointer points = this->m_Seeds->GetPoints();
     PointsContainerConstIterator it = points->Begin();
-    PointsContainerConstIterator end = points->Begin();
+    PointsContainerConstIterator end = points->End();
 
     while( it != end )
       {
       pt.CastFrom( it->Value() );
       m_SeedImage->TransformPhysicalPointToIndex( pt, index );
-      m_SeedImage->SetPixel( index, it->Index() );
+      m_SeedImage->SetPixel( index, 1 + it->Index() );
       ++it;
       }
     }
@@ -82,6 +84,7 @@ SplitBinaryImage()
   m_Dist->UseImageSpacingOn();
   m_Dist->SetInputIsBinary( true );
   m_Dist->UpdateLargestPossibleRegion();
+  m_Dist->Update();
 
   this->m_OutputImage = m_Dist->GetVoronoiMap();
   this->m_OutputImage->DisconnectPipeline();
@@ -89,16 +92,16 @@ SplitBinaryImage()
   IteratorType It1( this->m_OutputImage,
                     this->m_OutputImage->GetLargestPossibleRegion() );
 
-  ConstIteratorType It2( this->m_Image,
-                         this->m_OutputImage->GetLargestPossibleRegion() );
+  ConstIteratorType It2( this->m_BinaryImage,
+                         this->m_BinaryImage->GetLargestPossibleRegion() );
   It1.GoToBegin();
   It2.GoToBegin();
 
   while( !It1.IsAtEnd() )
     {
-    if( It2.Get() != m_ForegroundValue )
+    if( It2.Get() == zero )
       {
-      It1.Set( 0 );
+      It1.Set( zero );
       }
     ++It1;
     ++It2;
