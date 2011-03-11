@@ -90,6 +90,11 @@ TARGET_LINK_LIBRARIES( itkvtkMeshSplitterDanielssonImageFilterTest
   QGoGui
 )
 
+ADD_TEST( itkvtkMeshSplitterDanielssonImageFilterTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/itkvtkMeshSplitterDanielssonImageFilterTest
+  ${TESTING_DATA_PATH}/Circle3D.mhd
+)
+
 ADD_EXECUTABLE( ExtractMeshesFromLabelImageFilter
   ExtractMeshesFromLabelImageFilter.cxx
 )

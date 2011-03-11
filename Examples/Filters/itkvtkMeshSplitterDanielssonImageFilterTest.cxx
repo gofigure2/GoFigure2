@@ -40,6 +40,7 @@
 
 #include "vtkSmartPointer.h"
 #include "vtkSphereSource.h"
+#include "vtkPolyDataWriter.h"
 
 #include "vcl_algorithm.h"
 
@@ -105,6 +106,30 @@ int main( int argc, char* argv[] )
 
   filter->SetSeeds( seeds );
   filter->Update();
+
+  std::vector< vtkPolyData* > outputs = filter->GetOutputs();
+
+  std::vector< vtkPolyData* >::const_iterator it = outputs.begin();
+  size_t i = 0;
+
+  while( it != outputs.end() )
+    {
+    vtkSmartPointer< vtkPolyDataWriter > writer =
+        vtkSmartPointer< vtkPolyDataWriter >::New();
+    writer->SetInput( *it );
+
+    std::stringstream os;
+    os << i;
+
+    std::string filename = "mesh";
+    filename += os.str();
+    filename += ".vtk";
+    writer->SetFileName( filename.c_str() );
+    writer->Write();
+
+    ++i;
+    ++it;
+    }
 
   return EXIT_SUCCESS;
 }

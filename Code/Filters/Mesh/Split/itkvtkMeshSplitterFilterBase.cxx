@@ -108,7 +108,7 @@ CheckAllSeeds() const
 
   while( it != end )
     {
-    if( IsPointInMeshBounds( it->Value() ) )
+    if( !IsPointInMeshBounds( it->Value() ) )
       {
       std::cout << it->Value() << " is out of bounds" << std::endl;
       return false;

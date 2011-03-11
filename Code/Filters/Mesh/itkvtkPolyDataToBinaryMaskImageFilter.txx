@@ -42,7 +42,8 @@
 namespace itk
 {
 template< class TInput, class TOutput >
-vtkPolyDataToBinaryMaskImageFilter< TInput, TOutput >::vtkPolyDataToBinaryMaskImageFilter()
+vtkPolyDataToBinaryMaskImageFilter< TInput, TOutput >::
+vtkPolyDataToBinaryMaskImageFilter()
 {
   m_WhiteImage = vtkSmartPointer< vtkImageData >::New();
   m_Pol2stenc = vtkSmartPointer< vtkPolyDataToImageStencil >::New();
@@ -59,7 +60,8 @@ vtkPolyDataToBinaryMaskImageFilter< TInput, TOutput >::
 
 template< class TInput, class TOutput >
 void
-vtkPolyDataToBinaryMaskImageFilter< TInput, TOutput >::SetPolyData(vtkPolyData *iMesh)
+vtkPolyDataToBinaryMaskImageFilter< TInput, TOutput >::
+SetPolyData(vtkPolyData *iMesh)
 {
   m_Mesh = iMesh;
   this->Modified();
@@ -67,9 +69,15 @@ vtkPolyDataToBinaryMaskImageFilter< TInput, TOutput >::SetPolyData(vtkPolyData *
 
 template< class TInput, class TOutput >
 void
-vtkPolyDataToBinaryMaskImageFilter< TInput, TOutput >::GenerateData()
+vtkPolyDataToBinaryMaskImageFilter< TInput, TOutput >::
+GenerateData()
 {
   InputImageConstPointer input = this->GetInput();
+
+  if( input.IsNull() )
+    {
+    itkGenericExceptionMacro( << "input is NULL" );
+    }
 
   double bounds[6];
 

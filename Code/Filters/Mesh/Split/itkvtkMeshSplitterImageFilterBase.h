@@ -76,7 +76,7 @@ public:
   typedef typename ImageType::IndexType ImageIndexType;
   typedef typename ImageType::PointType ImagePointType;
 
-  typedef Image< bool, 3 > BinaryMaskImageType;
+  typedef Image< bool, ImageType::ImageDimension > BinaryMaskImageType;
   typedef typename BinaryMaskImageType::Pointer BinaryMaskImagePointer;
 
   typedef vtkPolyDataToBinaryMaskImageFilter< ImageType, BinaryMaskImageType >
