@@ -112,6 +112,17 @@ SET( QGoGUILIB_SRC
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx
 )
 
+SET_SOURCE_FILES_PROPERTIES(
+  QGoTabElementBase.cxx
+  QGoTabImageViewNDBase.cxx
+  QGoTabImageViewElementBase.cxx
+  QGoImageView.cxx
+  QGoFilterSemiAutoBase.cxx
+  QGoDBTraceManager.cxx
+  QGoDBNameDescEntityManager.cxx
+  QGoColorComboBox.cxx
+  ABSTRACT
+  )
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
 

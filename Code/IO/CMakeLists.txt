@@ -61,6 +61,14 @@ SET( QGOIO_SRC
 #  TrackTextFileImport.cxx
 )
 
+SET_SOURCE_FILES_PROPERTIES(
+  GoDBRow.cxx
+  GoDBTraceRow.cxx
+  GoDBTableWidgetContainer.cxx
+  GoDBNameDescRow.cxx
+  ABSTRACT
+  )
+
 ADD_LIBRARY( QGoIO
   ${QGOIO_SRC}
 )
