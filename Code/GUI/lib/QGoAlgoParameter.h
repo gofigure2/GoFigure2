@@ -41,22 +41,21 @@
 #include <QDoubleSpinBox>
 #include <QComboBox>
 
-//enum ParamType{intType, doubleType, stringType};
-
+/**
+\brief specialized class for a parameter to be added in an
+algorithm widget
+*/
 template< class T >
 class QGoAlgoParameter
 {
   public:
-    QGoAlgoParameter()//std::string iParamName)
-      {
-      //m_ParamName = iParamName;
-      };//, ParamType iType);
+    QGoAlgoParameter()
+      {};
     ~QGoAlgoParameter(){};
 
   protected:
     T m_Value;
     T m_DefaultValue;
-    //ParamType m_Type;
     std::string m_ParamName;
 };
 //-------------------------------------------------------------------------
@@ -71,7 +70,6 @@ class QGoAlgoParameter< int >
       bool iAdvParam, int iMin, int iMax, int iDefaultValue = 0)
     {
     m_ParamName = iParamName;
-    //m_Value = 0;
     m_Box = new RepresentationType;
     m_AdvParam = iAdvParam;
     SetRangeValues(iMin, iMax, iDefaultValue);
@@ -79,31 +77,25 @@ class QGoAlgoParameter< int >
 
     ~QGoAlgoParameter<int>()
     {
-      if (m_Box != NULL)
+      /*if (m_Box != NULL)
       {
       delete m_Box;
-      }
+      }*/
     };
+
+    std::string m_ParamName;
+    bool m_AdvParam;
+    RepresentationType* m_Box;
 
     int GetValue()
     {
     return m_Box->value();
     };
-    //int m_Value;
-    //int m_Min;
-    //int m_Max;
-    RepresentationType* m_Box;
-    //int m_DefaultValue;
-    std::string m_ParamName;
-    bool m_AdvParam;
 
   protected:
-    
+
     void SetRangeValues(int iMin, int iMax, int iDefaultValue)
     {
-      //m_Min = iMin;
-      //m_Max = iMax;
-      //m_DefaultValue = iDefaultValue;
       m_Box->setRange(iMin, iMax);
       if (iDefaultValue != 0)
         {
@@ -125,7 +117,6 @@ class QGoAlgoParameter< double >
       int iNbDecimal, double iDefaultValue = 0)
       {
       m_ParamName = iParamName;
-      //m_Value = 0;
       m_Box = new RepresentationType;
       m_AdvParam = iAdvParam;
       SetRangeValues(iMin, iMax, iNbDecimal, iDefaultValue);
@@ -133,33 +124,26 @@ class QGoAlgoParameter< double >
 
     ~QGoAlgoParameter<double>()
     {
-      if (m_Box != NULL)
+      /*if (m_Box != NULL)
       {
       delete m_Box;
-      }
+      }*/
     };
+
+    std::string m_ParamName;
+    bool m_AdvParam;
+    RepresentationType* m_Box; 
 
     double GetValue()
     {
     return m_Box->value();
     };
-    //double m_Value;
-    //double m_Min;
-    //double m_Max;
-    RepresentationType* m_Box; 
-    //double m_DefaultValue;
-    std::string m_ParamName;
-    bool m_AdvParam;
-    //int m_NbDecimal;
-
-  protected:
     
+  protected:
+
     void SetRangeValues(double iMin, double iMax, 
       int iNbDecimal, double iDefaultValue)
     {
-      //m_Min = iMin;
-      //m_Max = iMax;
-      //m_DefaultValue = iDefaultValue;
       m_Box->setRange(iMin, iMax);
       m_Box->setDecimals(iNbDecimal);
       if (iDefaultValue != 0)
@@ -181,7 +165,6 @@ class QGoAlgoParameter< std::string >
       QStringList iListValues, std::string iDefaultValue = "")
       {
       m_ParamName = iParamName;
-      //m_Value = "";
       m_Box = new RepresentationType;
       m_AdvParam = iAdvParam;
       SetListValues(iListValues, iDefaultValue);
@@ -189,29 +172,25 @@ class QGoAlgoParameter< std::string >
 
     ~QGoAlgoParameter<std::string>()
     {
-      if (m_Box != NULL)
+      /*if (m_Box != NULL)
       {
       delete m_Box;
-      }
+      }*/
     };
+
+    std::string m_ParamName;
+    bool m_AdvParam;
+    RepresentationType* m_Box;
 
     std::string Getvalue()
       {
       return m_Box->currentText().toStdString();
       }
-    //std::string m_Value;
-    QStringList m_ListValues;
-    RepresentationType* m_Box;
-    //std::string m_DefaultValue;
-    std::string m_ParamName;
-    bool m_AdvParam;
 
   protected:
 
     void SetListValues(QStringList iListValues, std::string iDefaultValue)
       {
-      //m_DefaultValue = iDefaultValue;
-      m_ListValues = iListValues;
       m_Box->addItems(iListValues);
       if (!iDefaultValue.empty())
         {

@@ -103,8 +103,9 @@ int main(int argc, char *argv[])
 
   WaterShedWidget->AddGeneralParameter<int>(&Radius);
   QGoAlgoParameter<int> ThresMin("Thres.Min.", true, 0, 10, 20);
+
   WaterShedWidget->AddGeneralParameter<int>(&ThresMin);
-  QGoAlgoParameter<int> ThresMax("Thres.Min.", true, 0, 50, 30);
+  QGoAlgoParameter<int> ThresMax("Thres.Max.", true, 0, 50, 30);
   WaterShedWidget->AddGeneralParameter<int>(&ThresMax);
 
   QGoAlgoParameter<double> CorrThres("Corr.Thres.", true, 0, 5, 2, 2);

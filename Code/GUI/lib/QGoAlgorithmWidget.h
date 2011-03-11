@@ -63,10 +63,6 @@ public:
   */
   std::string GetMethodName();
 
-  //void AddGeneralParameter(AlgoParameterStructure iParameter);
-
-  //void AddGeneralParameter(QGoAlgoParameter<int>* iParameter);
-
   /**
   \brief add the Advanced parameters box if there are parameters inside and reduce it
   before showing the widget    
@@ -96,90 +92,6 @@ protected:
   bool                                     m_AdvParamAlreadySetUp;
 
   void Initialize();
-
-  /**
-  \brief add the paramater described with the arguments in the parameters area
-  of the widget, with a spinbox 
-  \param[in] iParamName name of the parameter to be displayed 
-  \param[in] iMinValue min value of the spinbox
-  \param[in] iMaxValue max value of the spinbox
-  \param[in] iDefaultValue default value of the spinbox
-  */
-  //void AddParameter(std::string iParamName, int iMinValue = 0, int iMaxValue = 0, 
-  //  int iDefaultValue = 0);
-
-  /**
-  \overload
-  */
-  //void AddParameter(std::string iParamName, double iMinValue = 0, double iMaxValue = 0, 
-  //  double iDefaultValue = 0, int iNbDecimal = 0);
-
-  /**
-  \overload
-  */
-  //void AddParameter(std::string iParamName, QStringList iListValues, std::string iDefaultValue = "");
-
-  /**
-  \brief add the paramater described with the arguments in an expandable box 
-  with a spinbox 
-  \param[in] iParamName name of the parameter to be displayed 
-  \param[in] iMinValue min value of the spinbox
-  \param[in] iMaxValue max value of the spinbox
-  \param[in] iDefaultValue default value of the spinbox
-  */
-  //void AddAdvParameter(std::string iParamName, int iMinValue = 0, int iMaxValue = 0, 
-  //  int iDefaultValue = 0);
-
-  /**
-  \overload
-  */
-  //void AddAdvParameter(std::string iParamName, double iMinValue = 0, double iMaxValue = 0, 
-  //  double iDefaultValue = 0, int iNbDecimal = 0);
-
-  /**
-  \overload
-  */
-  //void AddAdvParameter(std::string iAdvParamName, QStringList iListValues, std::string iDefaultValue = "");
-
-  /**
-  \brief set the min, max and default values of the spinbox and 
-  add it with the parameter name in the layout
-  \param[in] iBox spinbox to be set up
-  \param[in] iParamName name of the parameter
-  \param[in] iMinValue min value of the spinbox
-  \param[in] iMaxValue max value of the spinbox
-  \param[in] iDefaultValue default value of the spinbox
-  \tparam T  int or double
-  \tparam B  SpinBox or DoubleSpinBox
-  */
-  /*template<typename B, typename T>
-  void AddParameterInLayout(B* iBox, std::string iParamName,
-    QFormLayout* iLayout, T iMinValue = 0, T iMaxValue = 0, 
-    T iDefaultValue = 0)
-  {
-    if (!(iMinValue == 0 && iMaxValue ==0) )
-      {
-      iBox->setRange(iMinValue, iMaxValue);
-      }
-    if(iDefaultValue != 0)
-      {
-      iBox->setValue(iDefaultValue);
-      }
-    int NbRow = iLayout->rowCount();
-    iLayout->addRow(tr("%1:").arg(iParamName.c_str() ), 
-    iBox);
-
-  }*/
-
-  /**
-  \brief add a combobox in iLayout with items corresponding to iListValues
-  \param[in] iParamName name of the param to be displayed next to the combobox
-  \param[in] iListValues list of the values to be displayed in the combobox
-  \param[in] iLayout which layout to insert the combobox: Param or advParam
-  \param[in] iDefaultValue default selected value in the combobox
-  */
-  //void AddParamComboBoxinLayout(std::string iParamName, 
-  //QStringList iListValues, QFormLayout* iLayout, std::string iDefaultValue);
 
 };
 #endif
