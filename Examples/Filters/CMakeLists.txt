@@ -87,7 +87,7 @@ ADD_EXECUTABLE( itkvtkMeshSplitterDanielssonImageFilterTest
   itkvtkMeshSplitterDanielssonImageFilterTest.cxx
 )
 TARGET_LINK_LIBRARIES( itkvtkMeshSplitterDanielssonImageFilterTest
-  ITKCommon
+  QGoGui
 )
 
 ADD_EXECUTABLE( ExtractMeshesFromLabelImageFilter

@@ -55,6 +55,9 @@ public:
   typedef SmartPointer< Self > Pointer;
   typedef SmartPointer< const Self > ConstPointer;
 
+  /** Run-time type information (and related methods). */
+  itkTypeMacro( vtkMeshSplitterFilterBase, Object );
+
   typedef PointSet< double, 3 > PointSetType;
   typedef PointSetType::Pointer PointSetPointer;
   typedef PointSetType::PointsContainerPointer PointsContainerPointer;

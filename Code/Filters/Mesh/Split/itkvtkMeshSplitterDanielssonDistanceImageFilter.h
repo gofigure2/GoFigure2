@@ -53,6 +53,13 @@ public:
   typedef SmartPointer< Self > Pointer;
   typedef SmartPointer< const Self > ConstPointer;
 
+  /** Run-time type information (and related methods). */
+  itkTypeMacro( vtkMeshSplitterDanielssonDistanceImageFilter,
+               vtkMeshSplitterImageFilterBase );
+
+  /** Method for creation through the object factory. */
+  itkNewMacro(Self);
+
   typedef typename Superclass::ImageType    ImageType;
   typedef typename Superclass::ImagePointer ImagePointer;
   typedef typename Superclass::ImagePixelType ImagePixelType;

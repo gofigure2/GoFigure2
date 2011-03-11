@@ -35,15 +35,17 @@
 #ifndef ITKVTKMESHMERGERFILTERBASE_H
 #define ITKVTKMESHMERGERFILTERBASE_H
 
-#include "itkLightObject.h"
+#include "itkObject.h"
 #include <list>
+
+class vtkPolyData;
 
 namespace itk
 {
-class vtkMeshMergerFilterBase : public LightObject
+class vtkMeshMergerFilterBase : public Object
 {
 public:
-  typedef LightObject Superclass;
+  typedef Object Superclass;
   typedef SmartPointer< Self > Pointer;
   typedef SmartPointer< const Self > ConstPointer;
 
@@ -58,7 +60,7 @@ public:
     }
 
 protected:
-  vtkMeshMergerFilterBase() {}
+  vtkMeshMergerFilterBase();
   virtual ~vtkMeshMergerFilterBase() {}
 
   std::list< vtkPolyData* > m_Input;

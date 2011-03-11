@@ -35,8 +35,76 @@
 
 #include "itkvtkMeshSplitterDanielssonDistanceImageFilter.h"
 
+#include "itkImage.h"
+#include "itkImageFileReader.h"
+
+#include "vtkSmartPointer.h"
+#include "vtkSphereSource.h"
+
+#include "vcl_algorithm.h"
+
 int main( int argc, char* argv[] )
-  {
+{
+  const unsigned int Dimension = 3;
+  typedef unsigned char PixelType;
+
+  typedef itk::Image< PixelType, Dimension > ImageType;
+  typedef itk::ImageFileReader< ImageType > ReaderType;
+
+  ImageType::Pointer input;
+    {
+    ReaderType::Pointer reader = ReaderType::New();
+    reader->SetFileName ( argv[1] );
+    reader->Update();
+    input = reader->GetOutput();
+    input->DisconnectPipeline();
+    }
+
+  ImageType::PointType im_org = input->GetOrigin();
+  ImageType::SizeType im_size = input->GetLargestPossibleRegion().GetSize();
+
+  ImageType::IndexType idx;
+  idx[0] = im_size[0] - 1;
+  idx[1] = im_size[1] - 1;
+  idx[2] = im_size[2] - 1;
+
+  ImageType::PointType p;
+  input->TransformIndexToPhysicalPoint( idx, p );
+
+  ImageType::PointType center;
+  center.SetToMidPoint( im_org, p );
+
+  ImageType::PointType::CoordRepType radius;
+  radius = vcl_min( p[0] - im_org[0], p[1] - im_org[1] );
+  radius = vcl_min( radius, p[2] - im_org[2] );
+
+  radius *= 0.25;
+
+  vtkSmartPointer< vtkSphereSource > sphere_source =
+      vtkSmartPointer< vtkSphereSource >::New();
+  sphere_source->SetCenter( center[0], center[1], center[2] );
+  sphere_source->SetRadius( radius );
+  sphere_source->Update();
+
+  typedef itk::vtkMeshSplitterDanielssonDistanceImageFilter< ImageType >
+      SplitterType;
+  SplitterType::Pointer filter = SplitterType::New();
+  filter->SetMesh( sphere_source->GetOutput() );
+  filter->SetImage( input );
+
+  typedef SplitterType::PointSetType PointSetType;
+  PointSetType::Pointer seeds = PointSetType::New();
+
+  p[0] = center[0] - 0.1 * radius;
+  p[1] = center[1];
+  p[2] = center[2];
+  seeds->SetPoint( 0, p );
+
+  p[0] = center[0] + 0.1 * radius;
+  seeds->SetPoint( 1, p );
+
+  filter->SetSeeds( seeds );
+  filter->Update();
 
   return EXIT_SUCCESS;
-  }
+}

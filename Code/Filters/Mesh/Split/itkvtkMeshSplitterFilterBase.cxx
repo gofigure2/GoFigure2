@@ -32,11 +32,11 @@
 
 =========================================================================*/
 
-#include "itkvtkMeshMergerFilterBase.h"
+#include "itkvtkMeshSplitterFilterBase.h"
 
 namespace itk
 {
-vtkMeshMergerFilterBase::
+vtkMeshSplitterFilterBase::
 vtkMeshSplitterFilterBase() : m_Mesh( NULL ), m_Outputs( 0 ), m_Seeds( NULL )
   {
   for( unsigned int dim = 0; dim < 3; ++dim )
@@ -47,7 +47,7 @@ vtkMeshSplitterFilterBase() : m_Mesh( NULL ), m_Outputs( 0 ), m_Seeds( NULL )
   }
 
 void
-vtkMeshMergerFilterBase::
+vtkMeshSplitterFilterBase::
 SetMesh( vtkPolyData* iMesh )
 {
   if( ( iMesh ) && ( iMesh != m_Mesh ) )
@@ -59,7 +59,7 @@ SetMesh( vtkPolyData* iMesh )
 }
 
 void
-vtkMeshMergerFilterBase::
+vtkMeshSplitterFilterBase::
 SetSeeds( PointSetType* iSeeds )
 {
   if( iSeeds )
@@ -70,21 +70,21 @@ SetSeeds( PointSetType* iSeeds )
 }
 
 void
-vtkMeshMergerFilterBase::
+vtkMeshSplitterFilterBase::
 Update()
 {
   GenerateData();
 }
 
 std::vector< vtkPolyData* >
-vtkMeshMergerFilterBase::
+vtkMeshSplitterFilterBase::
 GetOutputs()
 {
   return m_Outputs;
 }
 
 bool
-vtkMeshMergerFilterBase::
+vtkMeshSplitterFilterBase::
 IsPointInMeshBounds( const PointType& iP ) const
 {
   for( unsigned int i = 0; i < 3; ++i )
@@ -98,7 +98,7 @@ IsPointInMeshBounds( const PointType& iP ) const
 }
 
 bool
-vtkMeshMergerFilterBase::
+vtkMeshSplitterFilterBase::
 CheckAllSeeds() const
 {
   PointsContainerPointer points = m_Seeds->GetPoints();
@@ -119,7 +119,7 @@ CheckAllSeeds() const
   }
 
 void
-vtkMeshMergerFilterBase::
+vtkMeshSplitterFilterBase::
 GenerateData()
 {
   if( !m_Mesh )
