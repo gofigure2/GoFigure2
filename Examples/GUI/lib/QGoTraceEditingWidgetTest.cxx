@@ -33,18 +33,13 @@
 =========================================================================*/
 #include <QApplication>
 #include <QTimer>
-
+#include <iostream>
 #include "QGoTraceEditingWidget.h"
 #include "QGoTraceSettingsWidget.h"
 #include "QGoModesManagerWidget.h"
 #include "QGoAlgorithmWidget.h"
-#include "QGoSeedBaseWidget.h"
 #include "QGoTraceSettingsWidget.h"
-#include "ConvertToStringHelper.h"
 #include "QGoAlgoParameter.h"
-
-
-
 
 //**************************************************************************//
 //                               MAIN                                       //
@@ -84,38 +79,38 @@ int main(int argc, char *argv[])
   QGoAlgoParameter<int> Curvature ("Curvature", true, 0, 100, 20);
   QGoAlgoParameter<int> Iteration ("Iterations", true,0, 1000, 100);
 
-  LevelSetWidget->AddGeneralParameter<int>(&Radius);
-  LevelSetWidget->AddGeneralParameter<int>(&Curvature);
-  LevelSetWidget->AddGeneralParameter<int>(&Iteration);
+  LevelSetWidget->AddParameter<int>(&Radius);
+  LevelSetWidget->AddParameter<int>(&Curvature);
+  LevelSetWidget->AddParameter<int>(&Iteration);
   
   //Shape3D
   QGoAlgorithmWidget* Shape3D = new QGoAlgorithmWidget("Shape 3D", SemiAutomatedMethodsWidget);
 
-  Shape3D->AddGeneralParameter<int>(&Radius);
+  Shape3D->AddParameter<int>(&Radius);
   QStringList ShapeList;
   ShapeList.append("Sphere");
   ShapeList.append("Cube");
   QGoAlgoParameter<std::string> Shape("Shape", true, ShapeList, "Sphere");
-  Shape3D->AddGeneralParameter<std::string>(&Shape);
+  Shape3D->AddParameter<std::string>(&Shape);
 
   //watershed
   QGoAlgorithmWidget* WaterShedWidget = new QGoAlgorithmWidget("WaterShed", SemiAutomatedMethodsWidget);
 
-  WaterShedWidget->AddGeneralParameter<int>(&Radius);
+  WaterShedWidget->AddParameter<int>(&Radius);
   QGoAlgoParameter<int> ThresMin("Thres.Min.", true, 0, 10, 20);
 
-  WaterShedWidget->AddGeneralParameter<int>(&ThresMin);
+  WaterShedWidget->AddParameter<int>(&ThresMin);
   QGoAlgoParameter<int> ThresMax("Thres.Max.", true, 0, 50, 30);
-  WaterShedWidget->AddGeneralParameter<int>(&ThresMax);
+  WaterShedWidget->AddParameter<int>(&ThresMax);
 
   QGoAlgoParameter<double> CorrThres("Corr.Thres.", true, 0, 5, 2, 2);
-  WaterShedWidget->AddGeneralParameter<double>(&CorrThres);
+  WaterShedWidget->AddParameter<double>(&CorrThres);
 
   QGoAlgoParameter<double> Alpha("Alpha", true, 0, 5, 2, 1.5);
-  WaterShedWidget->AddGeneralParameter<double>(&Alpha);
+  WaterShedWidget->AddParameter<double>(&Alpha);
  
   QGoAlgoParameter<double> Beta("Beta", true, 0, 5, 1, 3);
-  WaterShedWidget->AddGeneralParameter<double>(&Beta);
+  WaterShedWidget->AddParameter<double>(&Beta);
   
   SemiAutomatedMethodsWidget->AddMethod(LevelSetWidget);
   SemiAutomatedMethodsWidget->AddMethod(WaterShedWidget);

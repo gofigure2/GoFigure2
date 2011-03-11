@@ -70,7 +70,7 @@ public:
   void show();
 
   template<typename T>
-  void AddGeneralParameter(QGoAlgoParameter<T>* iParameter)
+  void AddParameter(QGoAlgoParameter<T>* iParameter)
     {
     if (iParameter->m_AdvParam)
       {
