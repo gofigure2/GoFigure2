@@ -50,7 +50,7 @@ namespace itk
 class vtkMeshSplitterFilterBase : public Object
   {
 public:
-  typedef LightObject Superclass;
+  typedef Object Superclass;
   typedef vtkMeshSplitterFilterBase Self;
   typedef SmartPointer< Self > Pointer;
   typedef SmartPointer< const Self > ConstPointer;
@@ -62,7 +62,7 @@ public:
   typedef PointSetType::Pointer PointSetPointer;
   typedef PointSetType::PointsContainerPointer PointsContainerPointer;
   typedef PointSetType::PointsContainerConstIterator PointsContainerConstIterator;
-  typedef typename PointSetType::PointType PointType;
+  typedef PointSetType::PointType PointType;
 
   void SetMesh( vtkPolyData* iMesh );
 
