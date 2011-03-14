@@ -327,10 +327,11 @@ SET( QGoGUI_LIBS
   vtkRenderingAddOn2
   PoissonReconstruction
   ctk
-  ITKIO
-  ITKCommon
-  ITKBasicFilters
-  ITKStatistics
+  ${ITK_LIBRARIES}
+  #ITKIO
+  #ITKCommon
+  #ITKBasicFilters
+  #ITKStatistics
   )
 
 IF( ( ITK_VERSION_MAJOR EQUAL 4 ) AND
