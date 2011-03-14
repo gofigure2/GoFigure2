@@ -39,7 +39,7 @@ FUNCTION( add_sikuli_test testname sikuli_test )
 
   SET( SIKULI_RUNNING_DIR )
 
-  MESSAGE( ${ARGV2} )
+  # MESSAGE( "argv2: " ${ARGV2} )
   SET( image_lib_dir ${ARGV2} )
 
   IF( image_lib_dir )
