@@ -46,6 +46,7 @@
 #include "itkShapeLabelObject.h"
 #include "itkLabelMap.h"
 #include "itkLabelImageToShapeLabelMapFilter.h"
+#include "itkLabelImageToStatisticsLabelMapFilter.h"
 #include "itkShapeRelabelImageFilter.h"
 
 #include "itkVector.h"
@@ -104,15 +105,32 @@ public:
 
   typedef std::vector< MeshPointer >                  MeshVectorType;
 
-  typedef unsigned int                                        ShapeLabelType;
-  typedef ShapeLabelObject< ShapeLabelType, ImageDimension >  ShapeLabelObjectType;
+  typedef unsigned int                                        LabelType;
+  typedef ShapeLabelObject< LabelType, ImageDimension >  ShapeLabelObjectType;
   typedef LabelMap< ShapeLabelObjectType >                    ShapeLabelMapType;
   typedef typename ShapeLabelMapType::Pointer                 ShapeLabelMapPointer;
 
-  typedef LabelImageToShapeLabelMapFilter< ImageType, ShapeLabelMapType > ShapeConverterType;
-  typedef typename ShapeConverterType::Pointer ShapeConverterPointer;
+  typedef LabelImageToShapeLabelMapFilter< ImageType,
+                                           ShapeLabelMapType >  ShapeConverterType;
+  typedef typename ShapeConverterType::Pointer                  ShapeConverterPointer;
+
   typedef typename ShapeLabelMapType::LabelObjectContainerType LabelObjectContainerType;
   typedef typename LabelObjectContainerType::const_iterator LabelObjectIterator;
+
+
+
+  typedef StatisticsLabelObject< LabelType, ImageDimension > StatLabelObjectType;
+  typedef typename StatLabelObjectType::Pointer StatLabelObjectPointer;
+
+  typedef LabelMap< StatLabelObjectType >    StatLabelMapType;
+  typedef typename StatLabelMapType::Pointer StatLabelMapPointer;
+
+  typedef LabelImageToStatisticsLabelMapFilter< ImageType,
+                                                ImageType,
+                                                StatLabelMapType >  StatConverterType;
+  typedef typename StatConverterType::Pointer                      StatConverterPointer;
+
+
 
   typedef RegionOfInterestImageFilter< ImageType, ImageType > ROIFilterType;
   typedef typename ROIFilterType::Pointer                     ROIFilterPointer;
@@ -192,6 +210,7 @@ protected:
   bool m_DelaunayConforming;
   bool m_UseSmoothing;
   bool m_UseDecimation;
+  bool m_ComputeIntensityStatistics;
 
 private:
   ExtractMeshesFromLabelImageFilter(const Self&) {}

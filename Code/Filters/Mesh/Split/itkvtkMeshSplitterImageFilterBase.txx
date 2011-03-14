@@ -39,8 +39,6 @@
 #include "itkConvertMeshesToLabelImageFilter.h"
 #include "itkvtkPolyDataToitkQuadEdgeMesh.h"
 
-#include "itkImageFileWriter.h"
-
 namespace itk
 {
 template< class TImage >
@@ -58,6 +56,7 @@ vtkMeshSplitterImageFilterBase< TImage >::
 SetImage( ImageType* iImage )
 {
   m_Image = iImage;
+  this->Modified();
 }
 
 template< class TImage >
@@ -99,16 +98,9 @@ Split()
 {
   ComputeBinaryImageFromInputMesh();
 
-  if( m_BinaryImage.IsNull() )
-    {
-    itkGenericExceptionMacro( << "m_BinaryImage is Null" );
-    }
-  else
-    {
-    this->SplitBinaryImage();
-    GenerateMeshesFromOutputImage();
-    }
-  }
+  this->SplitBinaryImage();
+  GenerateMeshesFromOutputImage();
+}
 
 template< class TImage >
 void
@@ -117,9 +109,9 @@ GenerateMeshesFromOutputImage()
 {
   ExtracMeshFilterPointer extractor = ExtracMeshFilterType::New();
   extractor->SetInput( m_OutputImage );
-  extractor->SetNumberOfThreads( 1 );//m_NumberOfThreads );
-  extractor->SetUseSmoothing( false );//m_UseSmoothing );
-  extractor->SetUseDecimation( false );//m_UseDecimation );
+  extractor->SetNumberOfThreads( m_NumberOfThreads );
+  extractor->SetUseSmoothing( m_UseSmoothing );
+  extractor->SetUseDecimation( m_UseDecimation );
   extractor->SetNumberOfTrianglesPerMesh( m_NumberOfTrianglesPerMesh );
   extractor->SetNumberOfSmoothingIterations( m_NumberOfSmoothingIterations );
   extractor->SetSmoothingRelaxationFactor( m_SmoothingRelaxationFactor );

@@ -36,7 +36,7 @@
 #define __itkvtkMeshSplitterDanielssonDistanceImageFilter_h
 
 #include "itkvtkMeshSplitterImageFilterBase.h"
-#include "itkImageRegionIteratorWithIndex.h"
+#include "itkImageRegionIterator.h"
 #include "itkImageRegionConstIterator.h"
 
 #include "itkDanielssonDistanceMapImageFilter.h"
@@ -71,7 +71,7 @@ public:
   typedef typename Superclass::PointsContainerConstIterator
     PointsContainerConstIterator;
 
-  typedef ImageRegionIteratorWithIndex< ImageType > IteratorType;
+  typedef ImageRegionIterator< ImageType > IteratorType;
   typedef ImageRegionConstIterator< ImageType > ConstIteratorType;
 
   typedef DanielssonDistanceMapImageFilter< ImageType, ImageType >
@@ -81,8 +81,6 @@ public:
 protected:
   vtkMeshSplitterDanielssonDistanceImageFilter();
   ~vtkMeshSplitterDanielssonDistanceImageFilter() {}
-
-  ImagePointer m_SeedImage;
 
   void SplitBinaryImage();
 

@@ -36,14 +36,13 @@
 #define __itkvtkMeshSplitterDanielssonDistanceImageFilter_txx
 
 #include "itkvtkMeshSplitterDanielssonDistanceImageFilter.h"
-#include "itkAndImageFilter.h"
 
 namespace itk
 {
 template< class TImage >
 vtkMeshSplitterDanielssonDistanceImageFilter< TImage >::
-vtkMeshSplitterDanielssonDistanceImageFilter() : Superclass(),
-  m_SeedImage( NULL ) {}
+vtkMeshSplitterDanielssonDistanceImageFilter() : Superclass()
+{}
 
 template< class TImage >
 void
@@ -52,42 +51,39 @@ SplitBinaryImage()
 {
   ImagePixelType zero = NumericTraits< ImagePixelType >::Zero;
 
-  if( m_SeedImage.IsNull() )
+  ImagePointer seed_image = ImageType::New();
+  seed_image->SetRegions( this->m_BinaryImage->GetLargestPossibleRegion() );
+  seed_image->SetOrigin( this->m_BinaryImage->GetOrigin() );
+  seed_image->SetSpacing( this->m_BinaryImage->GetSpacing() );
+  seed_image->Allocate();
+  seed_image->FillBuffer( zero );
+  seed_image->Update();
+
+  // Fill the seeds
+  ImageIndexType index;
+  ImagePointType pt;
+
+  PointsContainerPointer points = this->m_Seeds->GetPoints();
+  PointsContainerConstIterator it = points->Begin();
+  PointsContainerConstIterator end = points->End();
+
+  while( it != end )
     {
-    m_SeedImage = ImageType::New();
-    m_SeedImage->SetRegions( this->m_BinaryImage->GetLargestPossibleRegion() );
-    m_SeedImage->SetOrigin( this->m_BinaryImage->GetOrigin() );
-    m_SeedImage->SetSpacing( this->m_BinaryImage->GetSpacing() );
-    m_SeedImage->Allocate();
-    m_SeedImage->FillBuffer( zero );
-    m_SeedImage->Update();
-
-    // Fill the seeds
-    ImageIndexType index;
-    ImagePointType pt;
-
-    PointsContainerPointer points = this->m_Seeds->GetPoints();
-    PointsContainerConstIterator it = points->Begin();
-    PointsContainerConstIterator end = points->End();
-
-    while( it != end )
-      {
-      pt.CastFrom( it->Value() );
-      m_SeedImage->TransformPhysicalPointToIndex( pt, index );
-      m_SeedImage->SetPixel( index, 1 + it->Index() );
-      ++it;
-      }
+    pt.CastFrom( it->Value() );
+    seed_image->TransformPhysicalPointToIndex( pt, index );
+    seed_image->SetPixel( index, 1 + it->Index() );
+    ++it;
     }
 
   //Compute the voronoi map
-  DistanceFilterPointer m_Dist = DistanceFilterType::New();
-  m_Dist->SetInput( m_SeedImage );
-  m_Dist->UseImageSpacingOn();
-  m_Dist->SetInputIsBinary( true );
-  m_Dist->UpdateLargestPossibleRegion();
-  m_Dist->Update();
+  DistanceFilterPointer distance_filter = DistanceFilterType::New();
+  distance_filter->SetInput( seed_image );
+  distance_filter->UseImageSpacingOn();
+  distance_filter->SetInputIsBinary( true );
+  distance_filter->UpdateLargestPossibleRegion();
+  distance_filter->Update();
 
-  this->m_OutputImage = m_Dist->GetVoronoiMap();
+  this->m_OutputImage = distance_filter->GetVoronoiMap();
   this->m_OutputImage->DisconnectPipeline();
 
   IteratorType Vor_it( this->m_OutputImage,

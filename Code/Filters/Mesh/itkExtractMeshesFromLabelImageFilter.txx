@@ -55,6 +55,7 @@ ExtractMeshesFromLabelImageFilter< TImage >
   m_NumberOfThreads = 1;
   m_UseSmoothing = true;
   m_UseDecimation = true;
+  m_ComputeIntensityStatistics = false;
 }
 
 template< class TImage >
@@ -91,9 +92,27 @@ GenerateData()
 
   m_NumberOfMeshes = m_ShapeLabelMap->GetNumberOfLabelObjects();
 
-  std::cout << m_NumberOfMeshes <<std::endl;
-
   this->m_Meshes.resize( m_NumberOfMeshes );
+
+  if( m_ComputeIntensityStatistics )
+    {
+    StatConverterPointer statConverter = StatConverterType::New();
+    statConverter->SetInput( m_Input );
+    //statConverter->SetFeatureImage( m_FeatureImage );
+    statConverter->SetBackgroundValue ( 0 );
+    statConverter->SetComputePerimeter(false);
+
+    try
+      {
+      statConverter->Update();
+      }
+    catch(itk::ExceptionObject & e)
+      {
+      std::cerr << "Exception Caught: " << e << std::endl;
+      std::cerr << "statConverter->Update()" << std::endl;
+      return;
+      }
+    }
 
   ThreadStruct str;
   str.Filter  = this;

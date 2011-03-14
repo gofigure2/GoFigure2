@@ -39,7 +39,6 @@
 #include "itkPointSet.h"
 #include "vtkPolyData.h"
 #include "itkvtkMeshSplitterFilterBase.h"
-#include "itkvtkPolyDataToBinaryMaskImageFilter.h"
 #include "itkExtractMeshesFromLabelImageFilter.h"
 #include "itkQuadEdgeMeshTovtkPolyData.h"
 #include "itkImage.h"
@@ -76,13 +75,6 @@ public:
   typedef typename ImageType::IndexType ImageIndexType;
   typedef typename ImageType::PointType ImagePointType;
 
-  typedef Image< unsigned char, ImageType::ImageDimension > BinaryMaskImageType;
-  typedef typename BinaryMaskImageType::Pointer BinaryMaskImagePointer;
-
-  typedef vtkPolyDataToBinaryMaskImageFilter< ImageType, BinaryMaskImageType >
-    BinarizerType;
-  typedef typename BinarizerType::Pointer BinarizerPointer;
-
   typedef ExtractMeshesFromLabelImageFilter< ImageType > ExtracMeshFilterType;
   typedef typename ExtracMeshFilterType::Pointer ExtracMeshFilterPointer;
   typedef typename ExtracMeshFilterType::MeshType MeshType;
@@ -97,7 +89,7 @@ protected:
 
   ~vtkMeshSplitterImageFilterBase() {}
 
-  BinaryMaskImagePointer m_BinaryImage;
+  ImagePointer m_BinaryImage;
   ImagePointer m_Image;
   ImagePointer m_OutputImage;
   unsigned int m_NumberOfThreads;
