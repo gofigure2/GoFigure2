@@ -127,3 +127,7 @@ TARGET_LINK_LIBRARIES( itkvtkPolyDataToitkQuadEdgeMeshTest
   ${ITK_LIBRARIES}
   vtkHybrid
 )
+
+ADD_TEST( itkvtkPolyDataToitkQuadEdgeMeshTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/itkvtkPolyDataToitkQuadEdgeMeshTest
+)

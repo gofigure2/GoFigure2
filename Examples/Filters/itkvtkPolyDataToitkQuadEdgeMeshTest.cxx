@@ -37,7 +37,7 @@
 #include "itkvtkPolyDataToitkQuadEdgeMesh.h"
 #include "itkVTKPolyDataWriter.h"
 
-int main( int argc, char* argv[] )
+int main( int , char** )
 {
   vtkSmartPointer< vtkSphereSource > sphere_source =
       vtkSmartPointer< vtkSphereSource >::New();
