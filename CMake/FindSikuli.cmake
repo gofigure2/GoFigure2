@@ -36,11 +36,32 @@ FIND_PACKAGE_HANDLE_STANDARD_ARGS(Sikuli DEFAULT_MSG Sikuli_EXECUTABLE)
 MARK_AS_ADVANCED( SIKULI_EXECUTABLE )
 
 FUNCTION( add_sikuli_test testname sikuli_test )
+
+  SET( SIKULI_RUNNING_DIR )
+
+  MESSAGE( ${ARGV2} )
+  SET( image_lib_dir ${ARGV2} )
+
+  IF( image_lib_dir )
+    EXECUTE_PROCESS(
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+          ${CMAKE_CURRENT_SOURCE_DIR}/${image_lib_dir}/
+          ${CMAKE_CURRENT_BINARY_DIR}/${sikuli_test}/
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+          ${CMAKE_CURRENT_SOURCE_DIR}/${sikuli_test}
+          ${CMAKE_CURRENT_BINARY_DIR}/${sikuli_test}
+      )
+    SET( SIKULI_RUNNING_DIR ${CMAKE_CURRENT_BINARY_DIR} )
+  ELSE( image_lib_dir )
+    SET( SIKULI_RUNNING_DIR ${CMAKE_CURRENT_SOURCE_DIR} )
+  ENDIF( image_lib_dir )
+
   IF( UNIX )
     add_test( ${testname}
-      ${SH_EXECUTABLE} ${SIKULI_EXECUTABLE} -t ${CMAKE_CURRENT_SOURCE_DIR}/${sikuli_test} )
+      ${SH_EXECUTABLE} ${SIKULI_EXECUTABLE} -t ${SIKULI_RUNNING_DIR}/${sikuli_test} )
   ELSE( UNIX )
+
     add_test( ${testname}
-      ${SIKULI_EXECUTABLE} -t ${sikuli_test} )
+      ${SIKULI_EXECUTABLE} -t ${SIKULI_RUNNING_DIR}/${sikuli_test} )
   ENDIF( UNIX )
 ENDFUNCTION( add_sikuli_test )

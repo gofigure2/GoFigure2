@@ -4,7 +4,11 @@
 
 #address = address+"/gofigure2_images"
 #print address
+<<<<<<< HEAD
 #setBundlePath(address)
+=======
+setBundlePath(address)
+>>>>>>> develop
 
 start = time.time()
 

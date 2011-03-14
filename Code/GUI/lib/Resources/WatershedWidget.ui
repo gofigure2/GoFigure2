@@ -29,6 +29,9 @@
      <property name="toolTip">
       <string>Minimum intensity of a nuclei</string>
      </property>
+     <property name="maximum">
+      <number>999</number>
+     </property>
      <property name="value">
       <number>10</number>
      </property>
@@ -51,6 +54,9 @@
      </property>
      <property name="minimum">
       <number>0</number>
+     </property>
+     <property name="maximum">
+      <number>999</number>
      </property>
      <property name="value">
       <number>30</number>

@@ -99,7 +99,11 @@ for mode in Toolbar:
 				mouseMove(Location(pointx[0],pointy[0]))
 				wait(3)
 				#assert xyz view rotated to the right by 10 degrees
+<<<<<<< HEAD
 				#assert exists(Pattern("1298594448537.png").similar(0.99))
+=======
+				assert exists(Pattern("1298594448537.png").similar(0.99))
+>>>>>>> develop
 				
 				
 			else:	
