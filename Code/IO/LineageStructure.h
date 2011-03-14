@@ -72,22 +72,22 @@ public:
   void ConnectTracks( unsigned int iD1TrackID, vtkPolyData* iD1PolyData,
                          unsigned int iD2TrackID = 0, vtkPolyData* iD2PolyData = NULL );
 
-  void SetRoot(Self* iRoot)
+  void SetRootID(unsigned int iRoot)
   {
-    m_Root = iRoot;
+    m_RootID = iRoot;
   }
 
-  void SetMother(Self* iMother)
+  void SetMotherID(unsigned int iMother)
   {
-    m_Mother = iMother;
+    TraceID = iMother;
   }
 
-  void SetDaughter1(Self* iDaughter1)
+  void SetDaughter1ID(unsigned int iDaughter1)
   {
     m_Daughter1 = iDaughter1;
   }
 
-  void SetDaughter2(Self* iDaughter2)
+  void SetDaughter2ID(unsigned int iDaughter2)
   {
     m_Daughter2 = iDaughter2;
   }
@@ -120,31 +120,25 @@ public:
   void UpdateRootPolyData();
 
   /*
-   * \brief Useful variable to find a track in the container, regarding lineage editing:
-   * -connect tracks
-   * -split lineage
-   */
-  unsigned int      TrackID;
-  /*
    * \brief Useful variable to sort in the container. true if is Root.
    */
   bool              Root;
 
-  //double* m_FirstPoint;
-  //double* m_LastPoint;
-
 private:
   // only lineage ID of root is relevant as well??
-  Self*             m_Root;
-  Self*             m_Mother;
-  Self*             m_Daughter1;
-  Self*             m_Daughter2;
+  unsigned int             m_RootID;
+  unsigned int             m_Daughter1;
+  unsigned int             m_Daughter2;
 
   /** Printing one element. std::cout << element << std::endl; */
   friend std::ostream & operator<<
     (std::ostream & os, const LineageStructure & c)
   {
     os << "TraceID " << c.TraceID << std::endl;
+    os << "Root " << c.Root << std::endl;
+    os << "m_RootID " << c.m_RootID << std::endl;
+    os << "m_Daughter1 " << c.m_Daughter1 << std::endl;
+    os << "m_Daughter2 " << c.m_Daughter2 << std::endl;
     os << "ActorXY " << c.ActorXY << std::endl;
     os << "ActorXZ " << c.ActorXZ << std::endl;
     os << "ActorYZ " << c.ActorYZ << std::endl;
@@ -154,8 +148,6 @@ private:
     os << "Visible " << c.Visible << std::endl;
     os << "RGBA [" << c.rgba[0] << ", " << c.rgba[1] << ", " << c.rgba[2]
     << ", " << c.rgba[3] << "]" << std::endl;
-    os << "TrackID " << c.TrackID << std::endl;
-    os << "Root " << c.Root << std::endl;
 
     return os;
   }

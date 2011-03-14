@@ -86,10 +86,6 @@ namespace boost
         BOOST_MULTI_INDEX_MEMBER(TraceStructure, bool, Visible)
         >,
       boost::multi_index::ordered_non_unique<
-        boost::multi_index::tag< TrackID >,
-        BOOST_MULTI_INDEX_MEMBER(LineageStructure, unsigned int, TrackID)
-        >,
-      boost::multi_index::ordered_non_unique<
         boost::multi_index::tag< Root >,
         BOOST_MULTI_INDEX_MEMBER(LineageStructure, bool, Root)
         >
@@ -113,8 +109,6 @@ public:
   typedef TraceContainerBase< boost::MultiIndexLineageContainer > Superclass;
 
   // define lineage specific boost iterators
-  typedef boost::MultiIndexLineageContainer::index<TrackID>::type::iterator
-      MultiIndexContainerTrackIDIterator;
   typedef boost::MultiIndexLineageContainer::index<Root>::type::iterator
       MultiIndexContainerRootIterator;
 
@@ -174,10 +168,10 @@ public:
    * \param[in] iD2First (not required)
    * \param[in] iD2Last (not required)
    */
-  void addFamilyToLineage( unsigned int iLineageID,
-                      unsigned int iMoTrackID, double* iMotherFirst, double* iMotherLast,
-                      unsigned int iD1TrackID, double* iD1First, double* iD1Last,
-                      unsigned int iD2TrackID, double* iD2First, double* iD2Last);
+  void addDivisionToLineage( unsigned int iLineageID, bool iIsRoot,
+                      unsigned int iMoTrackID, double* iMotherFirstPoint,
+                      unsigned int iD1TrackID, double* iD1LastPoint,
+                      unsigned int iD2TrackID, double* iD2LastPoint);
 
   /*
    * \brief Basic lineage for testing purpose

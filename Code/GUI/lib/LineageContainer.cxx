@@ -61,35 +61,20 @@ LineageContainer::
 //-------------------------------------------------------------------------
 void
 LineageContainer::
-addFamilyToLineage( unsigned int iLineageID,
-                    unsigned int iMoTrackID, double* iMotherFirst, double* iMotherLast,
-                    unsigned int iD1TrackID, double* iD1First, double* iD1Last,
-                    unsigned int iD2TrackID, double* iD2First, double* iD2Last)
+addDivisionToLineage( unsigned int iLineageID, bool iIsRoot,
+                    unsigned int iMoTrackID, double* iMotherLast,
+                    unsigned int iD1TrackID, double* iD1First,
+                    unsigned int iD2TrackID, double* iD2First)
 {
-  // Update current track family
-  // Look for the mother trackID in the container
-  MultiIndexContainerTrackIDIterator
-    it = m_Container.get< TrackID >().find(true);
+  // Create the polydata and actors
+	createBasicLineageFromCurrentElement(iMotherLast, iD1First, iD2First);
 
-  // if we find the stucture
-  if ( it != m_Container.get< TrackID >().end() )
-    {
-      //Does this structure has daughters?
-      if( /*!it->HasDaughters()*/ true )
-        {
-        //no daughters->create daughters
-        ///push elements adress issues
-
-        // update actor
-
-        //update connections mother/daughter
-        }
-    }
-  // if we dont find the structure, new root!
-  else
-    {
-
-    }
+  // update ID fields
+  this->m_CurrentElement.SetRootID(iLineageID);
+  this->m_CurrentElement.SetMotherID(iMoTrackID);
+  this->m_CurrentElement.SetDaughter1ID(iD1TrackID);
+  this->m_CurrentElement.SetDaughter2ID(iD2TrackID);
+  this->m_CurrentElement.Root = iIsRoot;
 }
 //-------------------------------------------------------------------------
 

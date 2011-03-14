@@ -36,8 +36,8 @@
 
 //--------------------------------------------------------------------------
 LineageStructure::
-LineageStructure():TraceStructure(),TrackID(0), Root(true),
-m_Root(NULL), m_Mother(NULL), m_Daughter1(NULL), m_Daughter2(NULL)
+LineageStructure():TraceStructure(), Root(true),
+m_RootID(0), m_Daughter1(0), m_Daughter2(0)
 {
 }
 //--------------------------------------------------------------------------
@@ -54,5 +54,5 @@ bool
 LineageStructure::
 HasDaughters()
 {
-  return !( m_Daughter1==NULL && m_Daughter1==NULL);
+  return !( m_Daughter1==0 && m_Daughter1==0);
 }

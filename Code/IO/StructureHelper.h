@@ -47,7 +47,6 @@ struct Nodes {};
 struct TCoord {};
 struct Highlighted {};
 struct Visible {};
-struct TrackID {};
 struct Root {};
 
 #endif
