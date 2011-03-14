@@ -13,7 +13,7 @@ add_sikuli_test( Draw3DMesh Draw3DMesh.sikuli )
 add_sikuli_test( Export3DMesh Export3DMesh.sikuli )
 
 #drop MySQL database
-add_sikuli_test( DropMySQLDatabase DropMySQLdatabase.sikuli)
+#add_sikuli_test( DropMySQLDatabase DropMySQLdatabase.sikuli)
 
 
 
@@ -21,11 +21,11 @@ add_sikuli_test( DropMySQLDatabase DropMySQLdatabase.sikuli)
 #@GOFIGURE2_BINARY_DIR@/bin/gofigure &
 
 # set up database
-add_sikuli_test( setUpDatabase setUpDatabase.sikuli )
+#add_sikuli_test( setUpDatabase setUpDatabase.sikuli )
 
 
 # you need a sikuli script to import an imaging session
-add_sikuli_test( ImportAnImagingSession ImportAnImagingSession.sikuli )
+#add_sikuli_test( ImportAnImagingSession ImportAnImagingSession.sikuli )
 
 add_sikuli_test( ImportTracks ImportTracks.sikuli )
 
