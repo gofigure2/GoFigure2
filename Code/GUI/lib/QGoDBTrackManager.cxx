@@ -526,27 +526,28 @@ void QGoDBTrackManager::CreateCorrespondingCollection()
       //check the lineageID of the mother:
       std::list<unsigned int> TrackID;
       TrackID.push_back(MotherID);
-      unsigned int LineageIDToCheck = 
-        this->m_CollectionOfTraces->GetListCollectionIDs(this->m_DatabaseConnector,TrackID).front();
-      if (LineageIDToCheck != 0)
+      std::list<unsigned int> LineageIDToCheck = 
+        this->m_CollectionOfTraces->GetListCollectionIDs(this->m_DatabaseConnector,TrackID);
+      if (!LineageIDToCheck.empty())
         {
         //the mother track already belong to the lineage, need to add the daughters only:
-        emit CheckedTracksToAddToSelectedLineage(DaughtersIDs, LineageIDToCheck);
+        emit CheckedTracksToAddToSelectedLineage(DaughtersIDs, LineageIDToCheck.front());
         }
       else
         {
         QGoDBTraceManager::CreateCorrespondingCollection(); 
-        emit NeedToGetDatabaseConnection();
-        std::list<unsigned int>::iterator iter = DaughtersIDs.begin();
-        while(iter != DaughtersIDs.end() )
-          {
-          this->UpdateTrackFamilyIDForDaughter(this->m_DatabaseConnector, 
-            *iter, TrackFamilyID);
-          ++iter;
-          }
         //update the root for the lineage:
         emit TrackRootLastCreatedLineageToUpdate(MotherID);       
-        }    
+        }
+      //update the trackFamilyID for the daughters:
+      emit NeedToGetDatabaseConnection();
+      std::list<unsigned int>::iterator iter = DaughtersIDs.begin();
+      while(iter != DaughtersIDs.end() )
+        {
+        this->UpdateTrackFamilyIDForDaughter(this->m_DatabaseConnector, 
+          *iter, TrackFamilyID);
+        ++iter;
+        }  
       }
     } 
   emit DBConnectionNotNeededAnymore();
