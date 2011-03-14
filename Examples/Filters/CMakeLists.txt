@@ -2,8 +2,9 @@ ADD_EXECUTABLE( itkvtkPolyDatatoBinaryMaskImageFilterTest
   itkvtkPolyDatatoBinaryMaskImageFilterTest.cxx )
 
 TARGET_LINK_LIBRARIES( itkvtkPolyDatatoBinaryMaskImageFilterTest
-  ITKIO
-  ITKCommon
+  #ITKIO
+  #ITKCommon
+  ${ITK_LIBRARIES}
   vtkGraphics
   vtkHybrid
 )
@@ -51,7 +52,8 @@ TARGET_LINK_LIBRARIES( ContourToMeshFilterTest
   PoissonReconstruction
   vtkHybrid
   vtkRenderingAddOn2
-  ITKCommon
+  # ITKCommon
+  ${ITK_LIBRARIES}
   )
 
 ADD_TEST( ContourToMeshFilterTest
@@ -99,23 +101,29 @@ ADD_EXECUTABLE( ExtractMeshesFromLabelImageFilter
   ExtractMeshesFromLabelImageFilter.cxx
 )
 TARGET_LINK_LIBRARIES( ExtractMeshesFromLabelImageFilter
-  ITKCommon
-  ITKIO
-  ITKReview
+  #ITKCommon
+  #ITKIO
+  #ITKReview
+  ${ITK_LIBRARIES}
 )
 
 ADD_EXECUTABLE(ConvertMeshesToLabelImageFilter ConvertMeshesToLabelImageFilter.cxx )
-TARGET_LINK_LIBRARIES( ConvertMeshesToLabelImageFilter ITKIO ITKReview )
+TARGET_LINK_LIBRARIES( ConvertMeshesToLabelImageFilter
+  # ITKIO ITKReview
+  ${ITK_LIBRARIES}
+)
 
 ADD_EXECUTABLE( itkQuadEdgeMeshTovtkPolyDataTest itkQuadEdgeMeshTovtkPolyDataTest.cxx )
 TARGET_LINK_LIBRARIES( itkQuadEdgeMeshTovtkPolyDataTest
-  ITKCommon
+  #ITKCommon
+  ${ITK_LIBRARIES}
   vtkHybrid
 )
 
 ADD_EXECUTABLE( itkvtkPolyDataToitkQuadEdgeMeshTest
   itkvtkPolyDataToitkQuadEdgeMeshTest.cxx )
 TARGET_LINK_LIBRARIES( itkvtkPolyDataToitkQuadEdgeMeshTest
-  ITKCommon
+  #ITKCommon
+  ${ITK_LIBRARIES}
   vtkHybrid
 )

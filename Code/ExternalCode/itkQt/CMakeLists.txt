@@ -21,7 +21,8 @@ ADD_LIBRARY( itkQt
 )
 
 TARGET_LINK_LIBRARIES( itkQt
-  ITKCommon
+  #ITKCommon
+  ${ITK_LIBRARIES}
   ${QT_LIBRARIES}
   )
 
