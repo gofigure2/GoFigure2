@@ -510,7 +510,7 @@ void QGoDBTrackManager::CreateCorrespondingCollection()
     {
     QMessageBox msgBox;
     msgBox.setText(
-      tr("Please select 3 tracks to create your lineage") );
+      tr("Please select 3 tracks to add your division/connection/junction ???") );
     msgBox.exec();
     return;
     }
@@ -523,18 +523,31 @@ void QGoDBTrackManager::CreateCorrespondingCollection()
     if (TrackFamilyID != -1)
       {
       //for lineage bounding box and lineageid in track table
-      QGoDBTraceManager::CreateCorrespondingCollection(); 
-      emit NeedToGetDatabaseConnection();
-      std::list<unsigned int>::iterator iter = DaughtersIDs.begin();
-      while(iter != DaughtersIDs.end() )
+      //check the lineageID of the mother:
+      std::list<unsigned int> TrackID;
+      TrackID.push_back(MotherID);
+      unsigned int LineageIDToCheck = 
+        this->m_CollectionOfTraces->GetListCollectionIDs(this->m_DatabaseConnector,TrackID).front();
+      if (LineageIDToCheck != 0)
         {
-        this->UpdateTrackFamilyIDForDaughter(this->m_DatabaseConnector, 
-          *iter, TrackFamilyID);
-        ++iter;
+        //the mother track already belong to the lineage, need to add the daughters only:
+        emit CheckedTracksToAddToSelectedLineage(DaughtersIDs, LineageIDToCheck);
         }
-      //update the root for the lineage:
-      emit TrackRootLastCreatedLineageToUpdate(MotherID);       
-      }    
+      else
+        {
+        QGoDBTraceManager::CreateCorrespondingCollection(); 
+        emit NeedToGetDatabaseConnection();
+        std::list<unsigned int>::iterator iter = DaughtersIDs.begin();
+        while(iter != DaughtersIDs.end() )
+          {
+          this->UpdateTrackFamilyIDForDaughter(this->m_DatabaseConnector, 
+            *iter, TrackFamilyID);
+          ++iter;
+          }
+        //update the root for the lineage:
+        emit TrackRootLastCreatedLineageToUpdate(MotherID);       
+        }    
+      }
     } 
   emit DBConnectionNotNeededAnymore();
 }

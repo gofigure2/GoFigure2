@@ -1395,6 +1395,11 @@ void QGoPrintDatabase::SetLineagesManager()
                    this->m_LineagesManager,
                    SLOT(CreateBasicLineageInVisuFromCurrentElement(double*, double*, double*) ) );
 
+  QObject::connect(this->m_TracksManager,
+                   SIGNAL(CheckedTracksToAddToSelectedLineage(
+                              std::list< unsigned int >, unsigned int ) ), this,
+                   SLOT( AddCheckedTracksToSelectedLineage(std::list< unsigned int >, unsigned int ) ) );
+
   this->m_LineagesManager->SetSelectedColor( this->m_TraceWidget->GetPointerColorData() );
 }
 //--------------------------------------------------------------------------
@@ -1682,4 +1687,13 @@ void QGoPrintDatabase::SplitMergeTracksWithWidget(
       }
     }
   delete win;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoPrintDatabase::AddCheckedTracksToSelectedLineage(
+  std::list< unsigned int > iListTracksID, unsigned int iLineageID)
+{
+  this->AddCheckedTracesToCollection< QGoDBTrackManager, QGoDBLineageManager >(
+    this->m_TracksManager, this->m_LineagesManager, iLineageID, iListTracksID);
 }

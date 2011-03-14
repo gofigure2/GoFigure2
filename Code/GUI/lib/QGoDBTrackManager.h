@@ -139,11 +139,16 @@ signals:
   void MeshesToAddToTrack(std::list<unsigned int> iListMeshes, unsigned int iTrackID);
   void TrackRootLastCreatedLineageToUpdate(unsigned int iMotherID);  
   /**
-  \signal emitted in CreateTrackFamily to create a basic lineage in the visu
+  \signal emitted in CreateTrackFamily to create a connection for lineage in the visu
   by calculating the points
   */
   void NewTrackFamilySavedInDB(double* iMotherTrackPoints, 
     double* iDaughterOneTrackPoints, double* iDaughterTwoTrackPoints);
+
+  /**
+  \signal emitted ...
+  */
+  void CheckedTracksToAddToSelectedLineage(std::list<unsigned int> iDaughtersID, unsigned int iLineageID);
 
 protected:
   GoDBTWContainerForTrack *m_TWContainer;
