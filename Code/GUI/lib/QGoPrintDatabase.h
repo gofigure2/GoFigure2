@@ -720,6 +720,9 @@ protected slots:
   */
   void AddCheckedMeshesToSelectedTrack(std::list< unsigned int > iListCheckedMeshes);
 
+  void AddCheckedTracksToSelectedLineage(std::list< unsigned int > iListTracksID, 
+    unsigned int iLineageID);
+
   /**
   \brief emit a signal TraceToReedit and set m_ReeditMode to true
   \param[in] iTraceID ID of the trace to reedit
