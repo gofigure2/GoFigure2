@@ -133,12 +133,36 @@ public:
 public slots:
 
   /**
-  \brief update the trackID root for the lineage with iTrackIDRoot
+  \brief update the trackID root for the last created lineage with iTrackIDRoot and
+  return the ID of the last lineage
   */
-  void UpdateTrackRootLastCreatedLineage(unsigned int iTrackIDRoot);
+  unsigned int UpdateTrackRootLastCreatedLineage(unsigned int iTrackIDRoot);
 
-  void CreateBasicLineageInVisuFromCurrentElement(
-    double* iMotherTrackPoint, double* iDaughterOneTrackPoint, 
+  //void CreateBasicLineageInVisuFromCurrentElement(
+  //  double* iMotherTrackPoint, double* iDaughterOneTrackPoint, 
+  //  double* iDaughterTwoTrackPoint);
+  /**
+  \brief create a new division in visu and update the ID root of the last created lineage
+  with the iTrackIDRoot
+  */
+  void CreateNewDivisionInVisuForNewLineage(
+    unsigned int iTrackIDRoot,
+    double* iMotherTrackPoint, 
+    unsigned int iDaughterOneID,
+    double* iDaughterOneTrackPoint,
+    unsigned int iDaughterTwoID,
+    double* iDaughterTwoTrackPoint);
+
+  /**
+  \brief create a new division in visu.
+  */
+  void UpdateExistingLineageWithNewDivision(
+    unsigned int iLineageID,
+    unsigned int iMotherTrackID,
+    double* iMotherTrackPoint, 
+    unsigned int iDaughterOneID,
+    double* iDaughterOneTrackPoint,
+    unsigned int iDaughterTwoID,
     double* iDaughterTwoTrackPoint);
 
 signals:

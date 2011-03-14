@@ -137,18 +137,28 @@ signals:
   void TrackToSplit(unsigned int iTrackID, std::list<unsigned int> iListMeshIDs);
   void TrackIDToBeModifiedWithWidget(std::list<unsigned int> iListTracksID);
   void MeshesToAddToTrack(std::list<unsigned int> iListMeshes, unsigned int iTrackID);
-  void TrackRootLastCreatedLineageToUpdate(unsigned int iMotherID);  
+  //void TrackRootLastCreatedLineageToUpdate(unsigned int iMotherID);  
   /**
   \signal emitted in CreateTrackFamily to create a connection for lineage in the visu
   by calculating the points
   */
-  void NewTrackFamilySavedInDB(double* iMotherTrackPoints, 
-    double* iDaughterOneTrackPoints, double* iDaughterTwoTrackPoints);
+  //void NewTrackFamilySavedInDB(double* iMotherTrackPoints, 
+  //  double* iDaughterOneTrackPoints, double* iDaughterTwoTrackPoints);
 
   /**
   \signal emitted ...
   */
-  void CheckedTracksToAddToSelectedLineage(std::list<unsigned int> iDaughtersID, unsigned int iLineageID);
+  //void CheckedTracksToAddToSelectedLineage(std::list<unsigned int> iDaughtersID, unsigned int iLineageID);
+
+  void NewTrackFamilySavedInDBForExistingLineage(unsigned int iLineageID, 
+    unsigned int iMotherID, double* iMotherTrackPoints, 
+    unsigned int iDaughterOneID, double* iDaughterOneTrackPoints, 
+    unsigned int iDaughterTwoID, double* iDaughterTwoTrackPoints);
+
+  void NewTrackFamilySavedInDBForNewLineage(
+    unsigned int iMotherID, double* iMotherTrackPoints, 
+    unsigned int iDaughterOneID, double* iDaughterOneTrackPoints, 
+    unsigned int iDaughterTwoID, double* iDaughterTwoTrackPoints);
 
 protected:
   GoDBTWContainerForTrack *m_TWContainer;

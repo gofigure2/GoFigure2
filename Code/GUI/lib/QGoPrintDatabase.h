@@ -720,8 +720,14 @@ protected slots:
   */
   void AddCheckedMeshesToSelectedTrack(std::list< unsigned int > iListCheckedMeshes);
 
-  void AddCheckedTracksToSelectedLineage(std::list< unsigned int > iListTracksID, 
-    unsigned int iLineageID);
+  /** 
+  \brief call the AddCheckedTracesToCollection template and give the info to the
+  lineages manager to create the division in the visu
+  */
+  void AddCheckedTracksToSelectedLineage(
+    unsigned int iLineageID, unsigned int iMotherID, double* iMotherPoints, 
+    unsigned int iDaughterOneID, double* iDaughterOnePoints, 
+    unsigned int iDaughterTwoID, double* iDaughterTwoPoints);
 
   /**
   \brief emit a signal TraceToReedit and set m_ReeditMode to true

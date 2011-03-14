@@ -339,7 +339,7 @@ void QGoDBTrackManager::TrackIDToEmit()
     {
     QMessageBox msgBox;
     msgBox.setText(
-      tr("Please check one and only one Track to be split") );
+      tr("Please check one and only one Track to split") );
     msgBox.exec();
     }
   else
@@ -528,26 +528,58 @@ void QGoDBTrackManager::CreateCorrespondingCollection()
       TrackID.push_back(MotherID);
       std::list<unsigned int> LineageIDToCheck = 
         this->m_CollectionOfTraces->GetListCollectionIDs(this->m_DatabaseConnector,TrackID);
+      //update the trackFamilyID for the daughters:
+      emit NeedToGetDatabaseConnection();
+      std::list<unsigned int>::iterator iter = DaughtersIDs.begin();
+      unsigned int DaughterOneID, DaughterTwoID;
+      DaughterOneID = *iter;
+      while(iter != DaughtersIDs.end() )
+        {
+        this->UpdateTrackFamilyIDForDaughter(this->m_DatabaseConnector, 
+          *iter, TrackFamilyID);
+        DaughterTwoID = *iter;
+        ++iter;
+        }  
       if (!LineageIDToCheck.empty())
         {
         //the mother track already belong to the lineage, need to add the daughters only:
-        emit CheckedTracksToAddToSelectedLineage(DaughtersIDs, LineageIDToCheck.front());
+        //emit CheckedTracksToAddToSelectedLineage(DaughtersIDs, LineageIDToCheck.front());
+        //emit the points to create the basic lineage in the visu:
+        //emit NewTrackFamilySavedInDB(
+          //  this->m_TrackContainerInfoForVisu->GetLastPointOfTheTrack(iMotherTrackID), 
+          //  this->m_TrackContainerInfoForVisu->GetFirstPointOfTheTrack(TrackIDDaughterOne), 
+          //  this->m_TrackContainerInfoForVisu->GetFirstPointOfTheTrack(TrackIDDaughterTwo) );
+        emit NewTrackFamilySavedInDBForExistingLineage(
+          LineageIDToCheck.front(), MotherID,
+          this->m_TrackContainerInfoForVisu->GetLastPointOfTheTrack(MotherID), 
+          DaughterOneID, 
+          this->m_TrackContainerInfoForVisu->GetFirstPointOfTheTrack(DaughterOneID), 
+          DaughterTwoID,
+          this->m_TrackContainerInfoForVisu->GetFirstPointOfTheTrack(DaughterTwoID) );
         }
       else
         {
         QGoDBTraceManager::CreateCorrespondingCollection(); 
         //update the root for the lineage:
-        emit TrackRootLastCreatedLineageToUpdate(MotherID);       
+        //emit TrackRootLastCreatedLineageToUpdate(MotherID);
+        //emit the points to create the basic lineage in the visu:
+        emit NewTrackFamilySavedInDBForNewLineage(
+            MotherID,
+            this->m_TrackContainerInfoForVisu->GetLastPointOfTheTrack(MotherID), 
+            DaughterOneID, 
+            this->m_TrackContainerInfoForVisu->GetFirstPointOfTheTrack(DaughterOneID), 
+            DaughterTwoID,
+            this->m_TrackContainerInfoForVisu->GetFirstPointOfTheTrack(DaughterTwoID) );
         }
       //update the trackFamilyID for the daughters:
-      emit NeedToGetDatabaseConnection();
-      std::list<unsigned int>::iterator iter = DaughtersIDs.begin();
-      while(iter != DaughtersIDs.end() )
-        {
-        this->UpdateTrackFamilyIDForDaughter(this->m_DatabaseConnector, 
-          *iter, TrackFamilyID);
-        ++iter;
-        }  
+      //emit NeedToGetDatabaseConnection();
+      //std::list<unsigned int>::iterator iter = DaughtersIDs.begin();
+      //while(iter != DaughtersIDs.end() )
+      //  {
+      //  this->UpdateTrackFamilyIDForDaughter(this->m_DatabaseConnector, 
+      //    *iter, TrackFamilyID);
+      //  ++iter;
+      //  }  
       }
     } 
   emit DBConnectionNotNeededAnymore();
@@ -634,10 +666,10 @@ int QGoDBTrackManager::CreateTrackFamily(vtkMySQLDatabase* iDatabaseConnector,
   TrackFamily.SetField<unsigned int>("TrackIDDaughter2", TrackIDDaughterTwo);
 
   //emit the points to create the basic lineage in the visu:
-  emit NewTrackFamilySavedInDB(
-    this->m_TrackContainerInfoForVisu->GetLastPointOfTheTrack(iMotherTrackID), 
-    this->m_TrackContainerInfoForVisu->GetFirstPointOfTheTrack(TrackIDDaughterOne), 
-    this->m_TrackContainerInfoForVisu->GetFirstPointOfTheTrack(TrackIDDaughterTwo) );
+  //emit NewTrackFamilySavedInDB(
+  //  this->m_TrackContainerInfoForVisu->GetLastPointOfTheTrack(iMotherTrackID), 
+  //  this->m_TrackContainerInfoForVisu->GetFirstPointOfTheTrack(TrackIDDaughterOne), 
+  //  this->m_TrackContainerInfoForVisu->GetFirstPointOfTheTrack(TrackIDDaughterTwo) );
 
   return TrackFamily.SaveInDB(iDatabaseConnector);
 }
