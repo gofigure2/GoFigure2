@@ -112,6 +112,17 @@ SET( QGoGUILIB_SRC
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx
 )
 
+SET_SOURCE_FILES_PROPERTIES(
+  QGoTabElementBase.cxx
+  QGoTabImageViewNDBase.cxx
+  QGoTabImageViewElementBase.cxx
+  QGoImageView.cxx
+  QGoFilterSemiAutoBase.cxx
+  QGoDBTraceManager.cxx
+  QGoDBNameDescEntityManager.cxx
+  QGoColorComboBox.cxx
+  ABSTRACT
+  )
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
 
@@ -254,16 +265,23 @@ ENDIF( ENABLE_VIDEO_RECORD_AVI )
 #---------------------------------------------------------------------------
 
 SET( QGoGUILIB_UI
+
+#base dockwidget
+  Resources/SegmentationDockWidgetBase.ui
+
 #segmentation widget
-  Resources/SegmentationBaseDockWidget.ui
   Resources/SegmentationSeedBaseWidget.ui
 
 # manual contour segmentation dock widget
   Resources/ManualSegmentationSettingsDlg.ui
   Resources/ContourManualSegmentationWidget.ui
-  Resources/ContourSemiAutoShapeWidget.ui
-
-# other
+  
+# seed segmentation dock widgets
+  Resources/LevelsetWidget.ui
+  Resources/WatershedWidget.ui
+  Resources/ShapeWidget.ui
+  
+  # other
   Resources/NavigationDockWidget.ui
   Resources/QGoPrintDatabase.ui
   Resources/LsmToMegaExportDialog.ui
@@ -271,11 +289,6 @@ SET( QGoGUILIB_UI
   Resources/QGoTraceSettingsWidget.ui
 
   Resources/QGoSynchronizedView.ui
-
-  # seed segmentation dock widgets
-  Resources/BaseAlgoSegmentationDockWidget.ui
-  Resources/LevelsetWidget.ui
-  Resources/WatershedWidget.ui
 
   # for tracks
   Resources/TrackDockWidget.ui

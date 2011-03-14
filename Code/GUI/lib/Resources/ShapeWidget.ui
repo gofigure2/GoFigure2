@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ContourSemiAutoShapeWidget</class>
- <widget class="QWidget" name="ContourSemiAutoShapeWidget">
+ <class>ShapeWidget</class>
+ <widget class="QWidget" name="ShapeWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>150</width>
-    <height>45</height>
+    <height>47</height>
    </rect>
   </property>
   <property name="windowTitle">
