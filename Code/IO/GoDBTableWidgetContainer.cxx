@@ -235,6 +235,7 @@ GoDBTableWidgetContainer::GetColumnsInfoForTraceTable()
     temp.Clear();
     }
 
+  this->SetCommonInfoForTwoTracesTable();
   //Get the info for the PCoord:
   temp.InfoName = "PCoord";
   temp.ColumnNameDatabase = "PCoord";
@@ -404,7 +405,7 @@ GoDBTableWidgetContainer::GetColumnsInfoForTraceTable()
   m_RowContainer.push_back(PairTemp);
   temp.Clear();
 
-  this->SetCommonInfoForTwoTracesTable();
+  //this->SetCommonInfoForTwoTracesTable();
 
   return m_ColumnsInfos;
 }

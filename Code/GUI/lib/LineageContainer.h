@@ -112,6 +112,12 @@ public:
 
   typedef TraceContainerBase< boost::MultiIndexLineageContainer > Superclass;
 
+  // define lineage specific boost iterators
+  typedef boost::MultiIndexLineageContainer::index<TrackID>::type::iterator
+      MultiIndexContainerTrackIDIterator;
+  typedef boost::MultiIndexLineageContainer::index<Root>::type::iterator
+      MultiIndexContainerRootIterator;
+
   typedef Superclass::MultiIndexContainerType MultiIndexContainerType;
   typedef Superclass::MultiIndexContainerElementType LineageType;
 
@@ -157,7 +163,7 @@ public:
 
   /*
    * \brief Create a basic lineage
-   * \param[in] iLineageID
+   * \param[in] iLineageID is root ID
    * \param[in] iMoTrackID ID of the mother to find it in the container
    * \param[in] iMotherFirst
    * \param[in] iMotherLast
@@ -168,7 +174,7 @@ public:
    * \param[in] iD2First (not required)
    * \param[in] iD2Last (not required)
    */
-  void createLineage( unsigned int iLineageID,
+  void addFamilyToLineage( unsigned int iLineageID,
                       unsigned int iMoTrackID, double* iMotherFirst, double* iMotherLast,
                       unsigned int iD1TrackID, double* iD1First, double* iD1Last,
                       unsigned int iD2TrackID, double* iD2First, double* iD2Last);

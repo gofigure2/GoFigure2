@@ -93,6 +93,12 @@ public:
   }
 
   /*
+   * \brief Does the current structure has daughters
+   * \return true or false
+   */
+  bool HasDaughters();
+
+  /*
    * \brief Cut the current lineage at the current node. 2 new lineages will be
    * created with the daughters. New lineage means:
    * -new root lineage ID
@@ -124,8 +130,8 @@ public:
    */
   bool              Root;
 
-  double* m_FirstPoint;
-  double* m_LastPoint;
+  //double* m_FirstPoint;
+  //double* m_LastPoint;
 
 private:
   // only lineage ID of root is relevant as well??
