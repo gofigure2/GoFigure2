@@ -36,6 +36,8 @@
 
 #include "itkvtkMeshSplitterImageFilterBase.h"
 
+#include "itkImageFileWriter.h"
+
 namespace itk
 {
 template< class TImage >
@@ -58,8 +60,9 @@ SetImage( ImageType* iImage )
 template< class TImage >
 void
 vtkMeshSplitterImageFilterBase< TImage >::
-ComputBinaryImageFromInputMesh()
+ComputeBinaryImageFromInputMesh()
 {
+
   BinarizerPointer binarizer = BinarizerType::New();
   binarizer->SetInput( m_Image );
   binarizer->SetPolyData( this->m_Mesh );
@@ -76,6 +79,12 @@ ComputBinaryImageFromInputMesh()
 
   m_BinaryImage = binarizer->GetOutput();
   m_BinaryImage->DisconnectPipeline();
+
+  typedef ImageFileWriter< BinaryMaskImageType > WriterType;
+  typename WriterType::Pointer writer = WriterType::New();
+  writer->SetFileName( "binary2.mhd" );
+  writer->SetInput( m_BinaryImage );
+  writer->Write();
 }
 
 
@@ -84,7 +93,7 @@ void
 vtkMeshSplitterImageFilterBase< TImage >::
 Split()
 {
-  ComputBinaryImageFromInputMesh();
+  ComputeBinaryImageFromInputMesh();
 
   if( m_BinaryImage.IsNull() )
     {

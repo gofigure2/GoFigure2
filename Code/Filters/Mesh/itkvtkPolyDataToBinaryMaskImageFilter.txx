@@ -91,21 +91,37 @@ GenerateData()
     return;
     }
 
-  // origin is the lowest bound!
-  double origin[3];
-  origin[0] = bounds[0];
-  origin[1] = bounds[2];
-  origin[2] = bounds[4];
-
   // spacing is got from the input image
   InputImageSpacingType itk_spacing = input->GetSpacing();
   double                vtk_spacing[3] = { 0., 0., 0. };
   int                   vtk_size[3] = { 0, 0, 0 };
 
+  // origin is the lowest bound!
+  double origin[3];
+  origin[0] = bounds[0] - itk_spacing[0];
+  origin[1] = bounds[2] - itk_spacing[1];
+  origin[2] = bounds[4] - itk_spacing[2];
+
+  typename InputImageType::PointType itk_pt;
+  itk_pt[0] = origin[0];
+  itk_pt[1] = origin[1];
+  itk_pt[2] = origin[2];
+
+  typename InputImageType::IndexType itk_idx;
+
+  input->TransformPhysicalPointToIndex( itk_pt, itk_idx );
+  input->TransformIndexToPhysicalPoint( itk_idx, itk_pt );
+
+  origin[0] = itk_pt[0];
+  origin[1] = itk_pt[1];
+  origin[2] = itk_pt[2];
+
   for ( unsigned int dim = 0; dim < ImageDimension; dim++ )
     {
     vtk_spacing[dim] = static_cast< double >(itk_spacing[dim]);
-    vtk_size[dim] = static_cast< int >(vcl_ceil(bounds[2 * dim + 1] - bounds[2 * dim]) / vtk_spacing[dim]);
+    vtk_size[dim] = 1 +
+        static_cast< int >( vcl_ceil( bounds[2 * dim + 1] -
+                                      bounds[2 * dim] ) / vtk_spacing[dim]);
     }
 
   m_WhiteImage->SetSpacing(vtk_spacing);

@@ -109,7 +109,7 @@ protected:
   bool m_UseSmoothing;
   bool m_UseDecimation;
 
-  virtual void ComputBinaryImageFromInputMesh();
+  virtual void ComputeBinaryImageFromInputMesh();
 
 
   virtual void Split();

@@ -36,6 +36,7 @@
 #define __itkvtkMeshSplitterDanielssonDistanceImageFilter_txx
 
 #include "itkvtkMeshSplitterDanielssonDistanceImageFilter.h"
+#include "itkAndImageFilter.h"
 
 namespace itk
 {
@@ -55,7 +56,7 @@ SplitBinaryImage()
     {
     m_SeedImage = ImageType::New();
     m_SeedImage->SetRegions( this->m_BinaryImage->GetLargestPossibleRegion() );
-    m_SeedImage->SetOrigin(  this->m_BinaryImage->GetOrigin() );
+    m_SeedImage->SetOrigin( this->m_BinaryImage->GetOrigin() );
     m_SeedImage->SetSpacing( this->m_BinaryImage->GetSpacing() );
     m_SeedImage->Allocate();
     m_SeedImage->FillBuffer( zero );
@@ -86,26 +87,63 @@ SplitBinaryImage()
   m_Dist->UpdateLargestPossibleRegion();
   m_Dist->Update();
 
+  /*
+  typedef ImageFileWriter< ImageType > WriterType;
+  typename WriterType::Pointer writer = WriterType::New();
+  writer->SetFileName( "Voronoi.mhd" );
+  writer->SetInput(  m_Dist->GetVoronoiMap() );
+  writer->Write();
+
+
+  typedef AndImageFilter< ImageType > AndFilterType;
+  typedef typename AndFilterType::Pointer AndFilterPointer;
+  AndFilterPointer and_filer = AndFilterType::New();
+  and_filer->SetInput( 0, m_Dist->GetVoronoiMap() );
+  and_filer->SetInput( 1, this->m_BinaryImage );
+  and_filer->Update();
+
+  this->m_OutputImage = and_filer->GetOutput();
+  this->m_OutputImage->DisconnectPipeline();*/
+
   this->m_OutputImage = m_Dist->GetVoronoiMap();
   this->m_OutputImage->DisconnectPipeline();
 
-  IteratorType It1( this->m_OutputImage,
+  typedef ImageFileWriter< ImageType > WriterType;
+
+  typename WriterType::Pointer writer = WriterType::New();
+  writer->SetFileName( "Voronoi2.mhd" );
+  writer->SetInput( this->m_OutputImage );
+  writer->Write();
+
+  IteratorType Vor_it( this->m_OutputImage,
                     this->m_OutputImage->GetLargestPossibleRegion() );
 
-  ConstIteratorType It2( this->m_BinaryImage,
+  ConstIteratorType Bin_it( this->m_BinaryImage,
                          this->m_BinaryImage->GetLargestPossibleRegion() );
-  It1.GoToBegin();
-  It2.GoToBegin();
 
-  while( !It1.IsAtEnd() )
+  Vor_it.GoToBegin();
+  Bin_it.GoToBegin();
+
+  while( !Vor_it.IsAtEnd() )
     {
-    if( It2.Get() == zero )
+    if( ( Vor_it.GetIndex()[0] == 11 ) && ( Vor_it.GetIndex()[1] == 0 ) )
       {
-      It1.Set( zero );
+      std::cout << Vor_it.GetIndex() << ' '
+              << static_cast< int >( Vor_it.Get() ) << ' '
+              << static_cast< int >( Bin_it.Get() ) << std::endl;
       }
-    ++It1;
-    ++It2;
+    if( Bin_it.Get() == zero )
+      {
+      Vor_it.Set( zero );
+      }
+    ++Vor_it;
+    ++Bin_it;
     }
+
+  typename WriterType::Pointer writer2 = WriterType::New();
+  writer2->SetFileName( "Output2.mhd" );
+  writer2->SetInput( this->m_OutputImage );
+  writer2->Write();
   }
 }
 

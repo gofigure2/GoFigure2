@@ -112,3 +112,10 @@ TARGET_LINK_LIBRARIES( itkQuadEdgeMeshTovtkPolyDataTest
   ITKCommon
   vtkHybrid
 )
+
+ADD_EXECUTABLE( itkvtkPolyDataToitkQuadEdgeMeshTest
+  itkvtkPolyDataToitkQuadEdgeMeshTest.cxx )
+TARGET_LINK_LIBRARIES( itkvtkPolyDataToitkQuadEdgeMeshTest
+  ITKCommon
+  vtkHybrid
+)
