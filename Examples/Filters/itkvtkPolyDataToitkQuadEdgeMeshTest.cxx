@@ -35,6 +35,7 @@
 #include "vtkSphereSource.h"
 #include "itkQuadEdgeMesh.h"
 #include "itkvtkPolyDataToitkQuadEdgeMesh.h"
+#include "itkVTKPolyDataWriter.h"
 
 int main( int argc, char* argv[] )
 {
@@ -50,6 +51,12 @@ int main( int argc, char* argv[] )
   converter->Update();
 
   MeshType::Pointer mesh = converter->GetOutput();
+
+  typedef itk::VTKPolyDataWriter< MeshType > WriterType;
+  WriterType::Pointer writer = WriterType::New();
+  writer->SetInput( mesh );
+  writer->SetFileName( "ConvertVTKtoITKMesh.vtk" );
+  writer->Update();
 
   return EXIT_SUCCESS;
 }
