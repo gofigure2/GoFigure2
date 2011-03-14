@@ -41,8 +41,8 @@ static itk::SimpleFastMutexLock m_MutexCMLF;
 namespace itk
 {
 
-template< class TImage >
-ConvertMeshesToLabelImageFilter< TImage >
+template< class TImage, class TMesh >
+ConvertMeshesToLabelImageFilter< TImage, TMesh >
 ::ConvertMeshesToLabelImageFilter()
 {
   m_NumberOfMeshes = 0;
@@ -51,9 +51,9 @@ ConvertMeshesToLabelImageFilter< TImage >
 }
 
 
-template< class TImage >
+template< class TImage, class TMesh >
 void
-ConvertMeshesToLabelImageFilter< TImage >::
+ConvertMeshesToLabelImageFilter< TImage, TMesh >::
 SetMeshes( const MeshVectorType& iMeshes )
 {
   m_Meshes = iMeshes;
@@ -61,9 +61,9 @@ SetMeshes( const MeshVectorType& iMeshes )
 }
 
 
-template< class TImage >
+template< class TImage, class TMesh >
 void
-ConvertMeshesToLabelImageFilter< TImage >::
+ConvertMeshesToLabelImageFilter< TImage, TMesh >::
 Update()
 {
   // Create an empty image
@@ -74,9 +74,9 @@ Update()
   this->GenerateData();
 }
 
-template< class TImage >
+template< class TImage, class TMesh >
 void
-ConvertMeshesToLabelImageFilter< TImage >::
+ConvertMeshesToLabelImageFilter< TImage, TMesh >::
 GenerateData()
 {
   m_NumberOfMeshes = this->m_Meshes.size();
@@ -90,9 +90,9 @@ GenerateData()
   threader->SingleMethodExecute();
 }
 
-template< class TImage >
+template< class TImage, class TMesh >
 ITK_THREAD_RETURN_TYPE
-ConvertMeshesToLabelImageFilter< TImage >::
+ConvertMeshesToLabelImageFilter< TImage, TMesh >::
 ThreaderCallback(void * arg)
 {
   unsigned int ThreadId =
@@ -123,9 +123,9 @@ ThreaderCallback(void * arg)
 }
 
 
-template< class TImage >
+template< class TImage, class TMesh >
 void
-ConvertMeshesToLabelImageFilter< TImage >::
+ConvertMeshesToLabelImageFilter< TImage, TMesh >::
 ThreadedExtractMesh( const unsigned int& startLabel,
                      const unsigned int& endLabel )
 {
@@ -174,16 +174,13 @@ ThreadedExtractMesh( const unsigned int& startLabel,
     newRegion.SetIndex( null_index );
     newRegion.SetSize( region.GetSize() );
 
-//     std::cout << region    << std::endl;
-//     std::cout << newRegion << std::endl;
-
     // Call TriangleMeshToBinaryImageFilter
     MeshToImageFilterPointer imageFilter = MeshToImageFilterType::New();
     imageFilter->SetInput( temp_mesh );
-    imageFilter->SetInsideValue( label-1 );
+    imageFilter->SetInsideValue( label );
     imageFilter->SetOrigin( newOrigin );
     imageFilter->SetSpacing( spacing );
-    imageFilter->SetIndex( imin );
+    imageFilter->SetIndex( null_index );
     imageFilter->SetSize( size );
     imageFilter->Update();
 
@@ -212,9 +209,9 @@ ThreadedExtractMesh( const unsigned int& startLabel,
 
 
 /** Print Self information */
-template<class TImage >
+template< class TImage, class TMesh >
 void
-ConvertMeshesToLabelImageFilter< TImage >
+ConvertMeshesToLabelImageFilter< TImage, TMesh >
 ::PrintSelf(std::ostream& os, Indent indent) const
 {
   Superclass::PrintSelf(os,indent);

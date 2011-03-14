@@ -53,7 +53,9 @@
 namespace itk
 {
 
-template< class TImage >
+template< class TImage,
+          class TMesh = QuadEdgeMesh< typename TImage::PointType::CoordRepType,
+                                      TImage::ImageDimension > >
 class ITK_EXPORT ConvertMeshesToLabelImageFilter : public Object
 {
 public:
@@ -84,7 +86,7 @@ public:
   typedef typename ImageType::PointType      PointType;
   typedef typename PointType::CoordRepType   CoordType;
 
-  typedef QuadEdgeMesh< CoordType, ImageDimension >  MeshType;
+  typedef TMesh                      MeshType;
   typedef typename MeshType::Pointer MeshPointer;
   typedef std::vector< MeshPointer > MeshVectorType;
 

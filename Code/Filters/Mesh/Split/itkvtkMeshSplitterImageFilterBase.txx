@@ -36,6 +36,9 @@
 
 #include "itkvtkMeshSplitterImageFilterBase.h"
 
+#include "itkConvertMeshesToLabelImageFilter.h"
+#include "itkvtkPolyDataToitkQuadEdgeMesh.h"
+
 #include "itkImageFileWriter.h"
 
 namespace itk
@@ -62,29 +65,30 @@ void
 vtkMeshSplitterImageFilterBase< TImage >::
 ComputeBinaryImageFromInputMesh()
 {
+  typedef ConvertMeshesToLabelImageFilter< ImageType > MeshToLabelFilterType;
+  typedef typename MeshToLabelFilterType::Pointer MeshToLabelFilterPointer;
+  typedef typename MeshToLabelFilterType::MeshType MeshType;
 
-  BinarizerPointer binarizer = BinarizerType::New();
-  binarizer->SetInput( m_Image );
-  binarizer->SetPolyData( this->m_Mesh );
+  typedef vtkPolyDataToitkQuadEdgeMesh< MeshType > MeshConverterType;
+  typedef typename MeshConverterType::Pointer MeshConverterPointer;
 
-  try
-    {
-    binarizer->Update();
-    }
-  catch( itk::ExceptionObject e )
-    {
-    std::cerr << "Error: " << e << std::endl;
-    return;
-    }
+  MeshConverterPointer converter = MeshConverterType::New();
+  converter->SetInput( this->m_Mesh );
+  converter->Update();
 
-  m_BinaryImage = binarizer->GetOutput();
-  m_BinaryImage->DisconnectPipeline();
+  typename MeshToLabelFilterType::MeshVectorType mesh_vector( 1 );
+  mesh_vector[0] = converter->GetOutput();
 
-  typedef ImageFileWriter< BinaryMaskImageType > WriterType;
-  typename WriterType::Pointer writer = WriterType::New();
-  writer->SetFileName( "binary2.mhd" );
-  writer->SetInput( m_BinaryImage );
-  writer->Write();
+  m_BinaryImage = ImageType::New();
+  m_BinaryImage->CopyInformation( m_Image );
+  m_BinaryImage->SetRegions( m_Image->GetLargestPossibleRegion() );
+  m_BinaryImage->Allocate();
+  m_BinaryImage->FillBuffer( 0 );
+
+  typename MeshToLabelFilterType::Pointer binarizer = MeshToLabelFilterType::New();
+  binarizer->SetInput( m_BinaryImage );
+  binarizer->SetMeshes( mesh_vector );
+  binarizer->Update();
 }
 
 
@@ -130,7 +134,6 @@ GenerateMeshesFromOutputImage()
 
   m_Outputs.resize( MeshVector.size() );
 
-  std::cout << "size = " <<MeshVector.size() <<std::endl;
   size_t i = 0;
 
   while( it != end )
@@ -141,7 +144,6 @@ GenerateMeshesFromOutputImage()
 
     m_Outputs[i] = vtkPolyData::New();
     m_Outputs[i]->DeepCopy( converter->GetOutput() );
-    std::cout << m_Outputs[i]->GetNumberOfPoints() <<std::endl;
     ++it;
     ++i;
     }

@@ -100,11 +100,6 @@ protected:
 
   void GenerateData()
     {
-    if( m_PolyData )
-      {
-      itkGenericExceptionMacro( <<"m_PolyData is NULL" );
-      }
-
     vtkIdType NbOfPoints = m_PolyData->GetNumberOfPoints();
 
     if( NbOfPoints == 0 )
