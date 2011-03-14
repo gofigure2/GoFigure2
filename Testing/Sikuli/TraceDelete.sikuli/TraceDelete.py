@@ -1,10 +1,10 @@
-import os
-address = os.getcwd()
+#import os
+#address = os.getcwd()
 #address should be ~/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images
 
 #address = address+"/gofigure2_images"
-print address
-setBundlePath(address)
+#print address
+#setBundlePath(address)
 
 start = time.time()
 

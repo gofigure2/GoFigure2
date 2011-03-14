@@ -70,14 +70,14 @@
 <h2>ContourSegmentation.sikuli</h2> <a href="ContourSegmentation.zip">(Download this script)</a>
 </div>
 <pre class="sikuli-code">
-<span class="kw">import</span> os
-address = os.getcwd()
-<span class="cmt">#address = "/home/es1076/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images"
+<span class="cmt">#import os
+</span><span class="cmt">#address = os.getcwd()
+</span><span class="cmt">#address = "/home/es1076/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images"
 </span>
 <span class="cmt">#address = address+"/gofigure2_images"
 </span><span class="cmt">#print address
-</span>setBundlePath(address)
-
+</span><span class="cmt">#setBundlePath(address)
+</span>
 <span class="kw">def</span> DrawContour(View,xdecimal,ydecimal):
 
         xyView = <span class="skw">find</span>(Pattern(View).similar(<span class="dig">0.30</span>))
