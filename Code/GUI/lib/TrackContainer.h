@@ -392,6 +392,10 @@ public:
   std::vector<vtkActor* > CreateDivisionActor( unsigned int iMother, unsigned int iDaughter1,
       unsigned int iDaughter2);
 
+  /*
+   * \brief Cut the lineage after the given track ID. Modifies mother child pointers to NULL.
+   * Modifies child mother pointer to NULL;
+   */
   void CutLineage(unsigned int iMotherID);
 
 

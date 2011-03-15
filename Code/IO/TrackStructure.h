@@ -77,6 +77,20 @@ public:
       }
     }
 
+  void DeleteActors()
+    {
+    std::vector<vtkActor* >::iterator it = m_DivisionActor.begin();
+        while(it != m_DivisionActor.end() )
+          {
+          if(*it)
+            {
+            (*it)->Delete();
+            (*it) = NULL;
+            }
+          ++it;
+          }
+    }
+
   const T* m_Mother;
   const T* m_Child[2];
   std::vector<vtkActor* > m_DivisionActor;

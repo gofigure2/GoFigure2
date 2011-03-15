@@ -934,3 +934,54 @@ CreateDivisionActor( unsigned int iMother, unsigned int iDaughter1, unsigned int
   return divisionActors;
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+CutLineage(unsigned int iMotherID)
+{
+
+  // create connections
+  //------------------------------
+  // motherID->D1
+  //         ->D2
+  //------------------------------
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iMotherID);
+  // Create temporary structures so we can modify it
+  TrackStructure tempMother(*motherIt);
+  // Get daughters IDs
+  unsigned int daughter1ID = (*(tempMother.TreeNode.m_Child[0])).TraceID;
+  unsigned int daughter2ID = (*(tempMother.TreeNode.m_Child[2])).TraceID;
+
+  // Update daughters pointers
+  tempMother.TreeNode.m_Child[0] = NULL;
+  tempMother.TreeNode.m_Child[1] = NULL;
+  tempMother.TreeNode.DeleteActors();
+
+  // Push current element
+  m_Container.get< TraceID >().replace(motherIt, tempMother);
+
+  // Find the daughters and update them
+  //------------------------------
+  MultiIndexContainerTraceIDIterator daughter1It
+      = m_Container.get< TraceID >().find(daughter1ID);
+  // Create temporary structures so we can modify it
+  TrackStructure tempDaughter1(*daughter1It);
+  // Update daughters pointers
+  tempDaughter1.TreeNode.m_Mother = NULL;
+  // Push current element
+  m_Container.get< TraceID >().replace(daughter1It, tempDaughter1);
+
+  // Find the daughters and update them
+  //------------------------------
+  MultiIndexContainerTraceIDIterator daughter2It
+      = m_Container.get< TraceID >().find(daughter2ID);
+  // Create temporary structures so we can modify it
+  TrackStructure tempDaughter2(*daughter2It);
+  // Update daughters pointers
+  tempDaughter2.TreeNode.m_Mother = NULL;
+  // Push current element
+  m_Container.get< TraceID >().replace(daughter2It, tempDaughter2);
+
+}
