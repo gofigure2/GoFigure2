@@ -47,7 +47,7 @@ struct Nodes {};
 struct TCoord {};
 struct Highlighted {};
 struct Visible {};
-struct Root {};
+//struct Root {};
 
 #endif
 

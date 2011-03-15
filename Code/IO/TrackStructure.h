@@ -40,11 +40,36 @@
 
 #include "GoFigureTrackAttributes.h"
 
+#include "vtkActor.h"
 #include <map>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 #include "StructureHelper.h"
 #endif
+
+// TREE NODE STRUCTURE
+template <class T>
+class QGOIO_EXPORT TreeNodeStructure
+{
+public:
+  TreeNodeStructure();
+  ~TreeNodeStructure()
+    {
+    std::vector<vtkActor* >::iterator it = m_DivisionActor.begin();
+    while(it != m_DivisionActor.end() )
+      {
+      if(*it)
+        {
+        (*it)->Delete();
+        (*it) = NULL;
+        }
+      ++it;
+      }
+    }
+  const T* m_Mother;
+  const T* m_Child[2];
+  std::vector<vtkActor* > m_DivisionActor;
+};
 
 /**
 \defgroup Track Track
@@ -59,6 +84,11 @@
 class QGOIO_EXPORT TrackStructure : public TraceStructure
 {
 public:
+
+  typedef TrackStructure Self;
+
+  // contains pointers + actor
+  TreeNodeStructure<Self> TreeNode;
 
   /**
    * Map containing all the polydata points ordered by time

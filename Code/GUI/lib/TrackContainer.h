@@ -335,17 +335,54 @@ public:
     return oValue;
     }
 
+  /*
+   * \brief
+   */
   void MergeTrack( const unsigned int& iId1, const unsigned int& iId2 );
 
+  /*
+   * \brief
+   */
   std::map< unsigned int, std::pair< const double* , vtkPolyData*> >
   GetHighlightedElementsTrackPolyData();
 
+  /*
+   * \brief
+   */
   void setTimeInterval( int iTimeInterval);
 
+  /*
+   * \brief
+   */
   int getTimeInterval();
 
+  /*
+   * \brief
+   */
   double* GetFirstPointOfTheTrack(unsigned int iTrackID);
+
+  /*
+   * \brief
+   */
   double* GetLastPointOfTheTrack(unsigned int iTrackID);
+
+  /*
+   * \brief
+   */
+  void SetListOfDivisions( std::list<unsigned int> iListOfDivisions);
+
+  /*
+   * \brief
+   */
+  void AddDivision( unsigned int iMotherID, unsigned int iDaughter1ID,
+      unsigned int iDaughter2ID);
+
+  /*
+   * \brief
+   */
+  std::vector<vtkActor* > CreateDivisionActor( unsigned int iMother, unsigned int iDaughter1,
+      unsigned int iDaughter2);
+
 
 signals:
   /** \brief When one track has been picked (highlighted) from the visualization */

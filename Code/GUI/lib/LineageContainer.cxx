@@ -68,13 +68,13 @@ addDivisionToLineage( unsigned int iLineageID, bool iIsRoot,
 {
   // Create the polydata and actors
 	createBasicLineageFromCurrentElement(iMotherLast, iD1First, iD2First);
-
+/*
   // update ID fields
   this->m_CurrentElement.SetRootID(iLineageID);
   this->m_CurrentElement.SetMotherID(iMoTrackID);
   this->m_CurrentElement.SetDaughter1ID(iD1TrackID);
   this->m_CurrentElement.SetDaughter2ID(iD2TrackID);
-  this->m_CurrentElement.Root = iIsRoot;
+  this->m_CurrentElement.Root = iIsRoot;*/
 }
 //-------------------------------------------------------------------------
 
