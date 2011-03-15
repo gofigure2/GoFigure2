@@ -41,8 +41,8 @@
 
 namespace itk
 {
-template< class TImage >
-vtkMeshSplitterImageFilterBase< TImage >::
+template< class TFeatureImage >
+vtkMeshSplitterImageFilterBase< TFeatureImage >::
 vtkMeshSplitterImageFilterBase() : Superclass( ),
     m_NumberOfThreads( 1 ), m_NumberOfTrianglesPerMesh( 200 ),
     m_NumberOfSmoothingIterations( 8 ), m_SmoothingRelaxationFactor( 0.75 ),
@@ -50,18 +50,18 @@ vtkMeshSplitterImageFilterBase() : Superclass( ),
     m_UseDecimation( true )
 {}
 
-template< class TImage >
+template< class TFeatureImage >
 void
-vtkMeshSplitterImageFilterBase< TImage >::
+vtkMeshSplitterImageFilterBase< TFeatureImage >::
 SetNumberOfImages( const size_t& iN )
 {
   m_Images.resize( iN );
 }
 
-template< class TImage >
+template< class TFeatureImage >
 void
-vtkMeshSplitterImageFilterBase< TImage >::
-SetImage( const size_t& iId, ImageType* iImage )
+vtkMeshSplitterImageFilterBase< TFeatureImage >::
+SetFeatureImage( const size_t& iId, FeatureImageType* iImage )
 {
   if( iId < m_Images.size() )
     {
@@ -70,12 +70,12 @@ SetImage( const size_t& iId, ImageType* iImage )
     }
 }
 
-template< class TImage >
+template< class TFeatureImage >
 void
-vtkMeshSplitterImageFilterBase< TImage >::
+vtkMeshSplitterImageFilterBase< TFeatureImage >::
 ComputeBinaryImageFromInputMesh()
 {
-  typedef ConvertMeshesToLabelImageFilter< ImageType > MeshToLabelFilterType;
+  typedef ConvertMeshesToLabelImageFilter< FeatureImageType > MeshToLabelFilterType;
   typedef typename MeshToLabelFilterType::Pointer MeshToLabelFilterPointer;
   typedef typename MeshToLabelFilterType::MeshType MeshType;
 
@@ -89,7 +89,7 @@ ComputeBinaryImageFromInputMesh()
   typename MeshToLabelFilterType::MeshVectorType mesh_vector( 1 );
   mesh_vector[0] = converter->GetOutput();
 
-  m_BinaryImage = ImageType::New();
+  m_BinaryImage = FeatureImageType::New();
   m_BinaryImage->CopyInformation( m_Images.front() );
   m_BinaryImage->SetRegions( m_Images.front()->GetLargestPossibleRegion() );
   m_BinaryImage->Allocate();
@@ -102,9 +102,9 @@ ComputeBinaryImageFromInputMesh()
 }
 
 
-template< class TImage >
+template< class TFeatureImage >
 void
-vtkMeshSplitterImageFilterBase< TImage >::
+vtkMeshSplitterImageFilterBase< TFeatureImage >::
 Split()
 {
   ComputeBinaryImageFromInputMesh();
@@ -113,9 +113,9 @@ Split()
   GenerateMeshesFromOutputImage();
 }
 
-template< class TImage >
+template< class TFeatureImage >
 void
-vtkMeshSplitterImageFilterBase< TImage >::
+vtkMeshSplitterImageFilterBase< TFeatureImage >::
 GenerateMeshesFromOutputImage()
 {
   ExtracMeshFilterPointer extractor = ExtracMeshFilterType::New();

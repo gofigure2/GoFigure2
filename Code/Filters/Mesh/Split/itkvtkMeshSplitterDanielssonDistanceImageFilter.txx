@@ -39,19 +39,19 @@
 
 namespace itk
 {
-template< class TImage >
-vtkMeshSplitterDanielssonDistanceImageFilter< TImage >::
+template< class TFeatureImage >
+vtkMeshSplitterDanielssonDistanceImageFilter< TFeatureImage >::
 vtkMeshSplitterDanielssonDistanceImageFilter() : Superclass()
 {}
 
-template< class TImage >
+template< class TFeatureImage >
 void
-vtkMeshSplitterDanielssonDistanceImageFilter< TImage >::
+vtkMeshSplitterDanielssonDistanceImageFilter< TFeatureImage >::
 SplitBinaryImage()
 {
-  ImagePixelType zero = NumericTraits< ImagePixelType >::Zero;
+  FeatureImagePixelType zero = NumericTraits< FeatureImagePixelType >::Zero;
 
-  ImagePointer seed_image = ImageType::New();
+  FeatureImagePointer seed_image = FeatureImageType::New();
   seed_image->SetRegions( this->m_BinaryImage->GetLargestPossibleRegion() );
   seed_image->SetOrigin( this->m_BinaryImage->GetOrigin() );
   seed_image->SetSpacing( this->m_BinaryImage->GetSpacing() );
@@ -60,8 +60,8 @@ SplitBinaryImage()
   seed_image->Update();
 
   // Fill the seeds
-  ImageIndexType index;
-  ImagePointType pt;
+  FeatureImageIndexType index;
+  FeatureImagePointType pt;
 
   PointsContainerPointer points = this->m_Seeds->GetPoints();
   PointsContainerConstIterator it = points->Begin();

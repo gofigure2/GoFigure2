@@ -43,13 +43,13 @@
 
 namespace itk
 {
-template< class TImage >
+template< class TFeatureImage >
 class vtkMeshSplitterDanielssonDistanceImageFilter :
-  public vtkMeshSplitterImageFilterBase< TImage >
+  public vtkMeshSplitterImageFilterBase< TFeatureImage >
   {
 public:
   typedef vtkMeshSplitterDanielssonDistanceImageFilter Self;
-  typedef vtkMeshSplitterImageFilterBase< TImage > Superclass;
+  typedef vtkMeshSplitterImageFilterBase< TFeatureImage > Superclass;
   typedef SmartPointer< Self > Pointer;
   typedef SmartPointer< const Self > ConstPointer;
 
@@ -60,21 +60,21 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  typedef typename Superclass::ImageType    ImageType;
-  typedef typename Superclass::ImagePointer ImagePointer;
-  typedef typename Superclass::ImagePixelType ImagePixelType;
-  typedef typename Superclass::ImageIndexType ImageIndexType;
-  typedef typename Superclass::ImagePointType ImagePointType;
+  typedef typename Superclass::FeatureImageType    FeatureImageType;
+  typedef typename Superclass::FeatureImagePointer FeatureImagePointer;
+  typedef typename Superclass::FeatureImagePixelType FeatureImagePixelType;
+  typedef typename Superclass::FeatureImageIndexType FeatureImageIndexType;
+  typedef typename Superclass::FeatureImagePointType FeatureImagePointType;
 
   typedef typename Superclass::PointsContainerPointer
     PointsContainerPointer;
   typedef typename Superclass::PointsContainerConstIterator
     PointsContainerConstIterator;
 
-  typedef ImageRegionIterator< ImageType > IteratorType;
-  typedef ImageRegionConstIterator< ImageType > ConstIteratorType;
+  typedef ImageRegionIterator< FeatureImageType > IteratorType;
+  typedef ImageRegionConstIterator< FeatureImageType > ConstIteratorType;
 
-  typedef DanielssonDistanceMapImageFilter< ImageType, ImageType >
+  typedef DanielssonDistanceMapImageFilter< FeatureImageType, FeatureImageType >
     DistanceFilterType;
   typedef typename DistanceFilterType::Pointer DistanceFilterPointer;
 
