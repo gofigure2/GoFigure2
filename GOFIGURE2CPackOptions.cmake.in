@@ -4,17 +4,17 @@ IF( CPACK_GENERATOR MATCHES "NSIS" )
 
     # NOT WORKING
     # The icon file (.ico) for the generated install program
-    #SET(CPACK_NSIS_MUI_ICON "@GOFIGURE2_SOURCE_DIR@/Resources\\myappico.ico")
+#   SET(CPACK_NSIS_MUI_ICON "@GOFIGURE2_SOURCE_DIR@/Resources\\myappico.ico")
     # The icon file (.ico) for the generated uninstall program.
     # We use the default one!
 #   SET(CPACK_NSIS_MUI_UNIICON "@CMake_SOURCE_DIR@/Utilities/Release\\CMakeLogo.ico")
-  
+
     # A branding image that will be displayed inside the installer.
     # We use the default one!
-   SET(CPACK_PACKAGE_ICON "@CMake_SOURCE_DIR@/Resources/fig\\splash.png")
-  
+#    SET(CPACK_PACKAGE_ICON "@CMake_SOURCE_DIR@/Resources/fig\\splash.png")
+
     SET( CPACK_NSIS_COMPRESSOR "/SOLID lzma" )
- 
+
 #   # tell cpack to create links to the doc files
 #   SET(CPACK_NSIS_MENU_LINKS
 #     "doc/cmake-@CMake_VERSION_MAJOR@.@CMake_VERSION_MINOR@/cmake-gui.html" "cmake-gui Help"
@@ -40,7 +40,7 @@ ENDIF( CPACK_GENERATOR MATCHES "NSIS" )
 IF( CPACK_GENERATOR MATCHES "RPM" )
   SET( CPACK_RPM_PACKAGE_ARCHITECTURE "@CPACK_SYSTEM_NAME@" )
   SET( CPACK_RPM_PACKAGE_LICENSE "BSD" )
-# SET( CPACK_RPM_PACKAGE_REQUIRES "" )    
+# SET( CPACK_RPM_PACKAGE_REQUIRES "" )
 ENDIF( CPACK_GENERATOR MATCHES "RPM" )
 
 ## Debian package - variables to be set.
