@@ -37,7 +37,7 @@ SET( GOFIGURE2_FILTER_SOURCE
   ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/itkvtkPolyDataToBinaryMaskImageFilter.h
   ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/itkvtkPolyDataToBinaryMaskImageFilter.txx
 
-  ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/Merge/itkvtkMeshMergerFilterBase.h
+  ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/Merge/itkvtkMeshMergeFilterBase.h
 
 #  ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/Split/itkSingleCellSplitImageFilter.h
 #  ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/Split/itkSingleCellSplitImageFilter.txx
