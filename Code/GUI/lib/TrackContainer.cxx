@@ -940,11 +940,10 @@ void
 TrackContainer::
 CutLineage(unsigned int iMotherID)
 {
-
-  // create connections
+  // update connections
   //------------------------------
-  // motherID->D1
-  //         ->D2
+  // motherID->NULL
+  //         ->NULL
   //------------------------------
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iMotherID);
@@ -953,16 +952,14 @@ CutLineage(unsigned int iMotherID)
   // Get daughters IDs
   unsigned int daughter1ID = (*(tempMother.TreeNode.m_Child[0])).TraceID;
   unsigned int daughter2ID = (*(tempMother.TreeNode.m_Child[2])).TraceID;
-
   // Update daughters pointers
   tempMother.TreeNode.m_Child[0] = NULL;
   tempMother.TreeNode.m_Child[1] = NULL;
   tempMother.TreeNode.DeleteActors();
-
   // Push current element
   m_Container.get< TraceID >().replace(motherIt, tempMother);
 
-  // Find the daughters and update them
+  // Find the daughter1 and update mother connection to NULL
   //------------------------------
   MultiIndexContainerTraceIDIterator daughter1It
       = m_Container.get< TraceID >().find(daughter1ID);
@@ -973,7 +970,7 @@ CutLineage(unsigned int iMotherID)
   // Push current element
   m_Container.get< TraceID >().replace(daughter1It, tempDaughter1);
 
-  // Find the daughters and update them
+  // Find the daughter2 and update mother connection to NULL
   //------------------------------
   MultiIndexContainerTraceIDIterator daughter2It
       = m_Container.get< TraceID >().find(daughter2ID);
