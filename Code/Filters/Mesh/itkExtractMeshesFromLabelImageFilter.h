@@ -69,7 +69,7 @@ namespace itk
   \brief
   \author Kishore Mosaliganti
   */
-template< class TImage >
+template< class TImage, class TFeatureImage = TImage >
 class ITK_EXPORT ExtractMeshesFromLabelImageFilter : public Object
 {
 public:
@@ -86,7 +86,7 @@ public:
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
-  /** Input Image typedef */
+  /** \typedef ImageType Input Image type */
   typedef TImage                             ImageType;
   typedef typename ImageType::Pointer        ImagePointer;
   typedef typename ImageType::ConstPointer   ImageConstPointer;
@@ -100,37 +100,60 @@ public:
   typedef typename ImageType::PointType      PointType;
   typedef typename PointType::CoordRepType   CoordType;
 
+  typedef TFeatureImage FeatureImageType;
+  typedef typename FeatureImageType::Pointer FeatureImagePointer;
+
+  typedef std::vector< FeatureImagePointer >  FeatureImageVectorType;
+
+  /** \typedef MeshType Output Mesh type */
   typedef QuadEdgeMesh< CoordType, ImageDimension >   MeshType;
   typedef typename MeshType::Pointer                  MeshPointer;
 
   typedef std::vector< MeshPointer >                  MeshVectorType;
 
-  typedef unsigned int                                        LabelType;
-  typedef ShapeLabelObject< LabelType, ImageDimension >  ShapeLabelObjectType;
-  typedef LabelMap< ShapeLabelObjectType >                    ShapeLabelMapType;
-  typedef typename ShapeLabelMapType::Pointer                 ShapeLabelMapPointer;
+  /** \typedef LabelType label type*/
+  typedef unsigned int                                LabelType;
 
+  // ---------------------------------------------------------------------------
+
+  /** \typedef ShapeLabelObjectType */
+  typedef ShapeLabelObject< LabelType, ImageDimension > ShapeLabelObjectType;
+  typedef typename ShapeLabelObjectType::Pointer        ShapeLabelObjectPointer;
+
+  /** \typedef ShapeLabelMapType */
+  typedef LabelMap< ShapeLabelObjectType >              ShapeLabelMapType;
+  typedef typename ShapeLabelMapType::Pointer           ShapeLabelMapPointer;
+
+  /** \typedef ShapeConverterType */
   typedef LabelImageToShapeLabelMapFilter< ImageType,
-                                           ShapeLabelMapType >  ShapeConverterType;
-  typedef typename ShapeConverterType::Pointer                  ShapeConverterPointer;
-
-  typedef typename ShapeLabelMapType::LabelObjectContainerType LabelObjectContainerType;
-  typedef typename LabelObjectContainerType::const_iterator LabelObjectIterator;
+                                           ShapeLabelMapType >
+                                                        ShapeConverterType;
+  typedef typename ShapeConverterType::Pointer          ShapeConverterPointer;
 
 
+  typedef typename ShapeLabelMapType::LabelObjectContainerType
+                                                        LabelObjectContainerType;
+  typedef typename LabelObjectContainerType::const_iterator
+                                                        LabelObjectIterator;
 
-  typedef StatisticsLabelObject< LabelType, ImageDimension > StatLabelObjectType;
-  typedef typename StatLabelObjectType::Pointer StatLabelObjectPointer;
+  // ---------------------------------------------------------------------------
 
-  typedef LabelMap< StatLabelObjectType >    StatLabelMapType;
-  typedef typename StatLabelMapType::Pointer StatLabelMapPointer;
-
-  typedef LabelImageToStatisticsLabelMapFilter< ImageType,
-                                                ImageType,
-                                                StatLabelMapType >  StatConverterType;
-  typedef typename StatConverterType::Pointer                      StatConverterPointer;
+  /** \typedef StatLabelObjectType */
+  typedef StatisticsLabelObject< LabelType, ImageDimension >  StatLabelObjectType;
+  typedef typename StatLabelObjectType::Pointer               StatLabelObjectPointer;
 
 
+  typedef LabelMap< StatLabelObjectType >     StatLabelMapType;
+  typedef typename StatLabelMapType::Pointer  StatLabelMapPointer;
+
+  typedef LabelImageToStatisticsLabelMapFilter<
+    ImageType,
+    ImageType,
+    StatLabelMapType >                        StatConverterType;
+
+  typedef typename StatConverterType::Pointer StatConverterPointer;
+
+  // ---------------------------------------------------------------------------
 
   typedef RegionOfInterestImageFilter< ImageType, ImageType > ROIFilterType;
   typedef typename ROIFilterType::Pointer                     ROIFilterPointer;
@@ -157,9 +180,16 @@ public:
   typedef MultiThreader ThreaderType;
   typedef typename ThreaderType::Pointer ThreaderPointer;
 
-  itkSetConstObjectMacro( Input , ImageType );
+  itkSetConstObjectMacro( Input, ImageType );
+
+  void SetNumberOfFeatureImages( const size_t& iN );
+  void SetFeatureImage( const size_t& iId, FeatureImageType* iF );
+
   itkGetConstMacro( NumberOfMeshes, unsigned int );
+
   itkSetMacro( NumberOfTrianglesPerMesh, unsigned int );
+  itkGetConstMacro( NumberOfTrianglesPerMesh, unsigned int );
+
   itkGetConstMacro( DelaunayConforming, bool );
   itkSetMacro( DelaunayConforming, bool );
 
@@ -169,11 +199,12 @@ public:
   itkSetMacro( UseSmoothing, bool );
   itkGetConstMacro( UseSmoothing, bool );
 
-  itkGetConstMacro( NumberOfTrianglesPerMesh, unsigned int );
   itkSetMacro( NumberOfSmoothingIterations, unsigned int );
   itkGetConstMacro( NumberOfSmoothingIterations, unsigned int );
+
   itkSetMacro( SmoothingRelaxationFactor, double );
   itkGetConstMacro( SmoothingRelaxationFactor, double );
+
   itkGetConstMacro( NumberOfThreads, unsigned int );
   itkSetMacro( NumberOfThreads, unsigned int );
 
@@ -192,6 +223,8 @@ protected:
 
   struct ThreadStruct
   {
+    ThreadStruct( Self* iFilter ) : Filter( iFilter ) {}
+
     Self*                 Filter;
   };
 
@@ -199,7 +232,11 @@ protected:
 
   ImageConstPointer     m_Input;
   ShapeLabelMapPointer  m_ShapeLabelMap;
+  std::vector< StatLabelMapPointer > m_StatLabelMap;
+  std::map< size_t, LabelType > m_MeshtoLabelIdMap;
+
   MeshVectorType m_Meshes;
+  FeatureImageVectorType m_FeatureImages;
 
   unsigned int m_NumberOfThreads;
   unsigned int m_NumberOfMeshes;

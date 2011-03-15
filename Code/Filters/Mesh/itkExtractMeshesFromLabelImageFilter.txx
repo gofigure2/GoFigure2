@@ -42,8 +42,8 @@ static itk::SimpleFastMutexLock m_Mutex;
 namespace itk
 {
 
-template< class TImage >
-ExtractMeshesFromLabelImageFilter< TImage >
+template< class TImage, class TFeatureImage >
+ExtractMeshesFromLabelImageFilter< TImage, TFeatureImage >
 ::ExtractMeshesFromLabelImageFilter()
 {
   m_Input = 0;
@@ -58,9 +58,28 @@ ExtractMeshesFromLabelImageFilter< TImage >
   m_ComputeIntensityStatistics = false;
 }
 
-template< class TImage >
+template< class TImage, class TFeatureImage >
 void
-ExtractMeshesFromLabelImageFilter< TImage >::
+ExtractMeshesFromLabelImageFilter< TImage, TFeatureImage >::
+SetNumberOfFeatureImages( const size_t& iN )
+{
+  m_FeatureImages.resize( iN );
+}
+
+template< class TImage, class TFeatureImage >
+void
+ExtractMeshesFromLabelImageFilter< TImage, TFeatureImage >::
+SetFeatureImage( const size_t& iId, FeatureImageType* iF )
+{
+  if( iId < m_FeatureImages.size() )
+    {
+    m_FeatureImages[iId] = iF;
+    }
+}
+
+template< class TImage, class TFeatureImage >
+void
+ExtractMeshesFromLabelImageFilter< TImage, TFeatureImage >::
 Update()
 {
   if( m_Input.IsNull() )
@@ -70,17 +89,17 @@ Update()
   this->GenerateData();
 }
 
-template< class TImage >
-typename ExtractMeshesFromLabelImageFilter< TImage >::MeshVectorType
-ExtractMeshesFromLabelImageFilter< TImage >::
+template< class TImage, class TFeatureImage >
+typename ExtractMeshesFromLabelImageFilter< TImage, TFeatureImage >::MeshVectorType
+ExtractMeshesFromLabelImageFilter< TImage, TFeatureImage >::
 GetOutputs()
 {
   return m_Meshes;
 }
 
-template< class TImage >
+template< class TImage, class TFeatureImage >
 void
-ExtractMeshesFromLabelImageFilter< TImage >::
+ExtractMeshesFromLabelImageFilter< TImage, TFeatureImage >::
 GenerateData()
 {
   ShapeConverterPointer shapeConverter = ShapeConverterType::New();
@@ -89,6 +108,7 @@ GenerateData()
   shapeConverter->Update();
 
   m_ShapeLabelMap = shapeConverter->GetOutput();
+  m_ShapeLabelMap->DisconnectPipeline();
 
   m_NumberOfMeshes = m_ShapeLabelMap->GetNumberOfLabelObjects();
 
@@ -96,26 +116,47 @@ GenerateData()
 
   if( m_ComputeIntensityStatistics )
     {
-    StatConverterPointer statConverter = StatConverterType::New();
-    statConverter->SetInput( m_Input );
-    //statConverter->SetFeatureImage( m_FeatureImage );
-    statConverter->SetBackgroundValue ( 0 );
-    statConverter->SetComputePerimeter(false);
+    size_t NumberOfFeatureImages = m_FeatureImages.size();
 
-    try
+    if( NumberOfFeatureImages == 0 )
       {
-      statConverter->Update();
+      itkGenericExceptionMacro( <<"No Feature Image Provided" );
       }
-    catch(itk::ExceptionObject & e)
+    m_StatLabelMap.resize( NumberOfFeatureImages );
+
+    typename FeatureImageVectorType::iterator f_it =  m_FeatureImages.begin();
+    typename FeatureImageVectorType::iterator f_end = m_FeatureImages.end();
+
+    size_t i = 0;
+
+    while( f_it != f_end )
       {
-      std::cerr << "Exception Caught: " << e << std::endl;
-      std::cerr << "statConverter->Update()" << std::endl;
-      return;
+      StatConverterPointer statConverter = StatConverterType::New();
+      statConverter->SetInput( m_Input );
+      statConverter->SetFeatureImage( *f_it );
+      statConverter->SetBackgroundValue ( 0 );
+      statConverter->SetComputePerimeter(false);
+
+      try
+        {
+        statConverter->Update();
+        }
+      catch(itk::ExceptionObject & e)
+        {
+        std::cerr << "Exception Caught: " << e << std::endl;
+        std::cerr << "statConverter->Update()" << std::endl;
+        return;
+        }
+
+      m_StatLabelMap[i] = statConverter->GetOutput();
+      m_StatLabelMap[i]->DisconnectPipeline();
+
+      ++i;
+      ++f_it;
       }
     }
 
-  ThreadStruct str;
-  str.Filter  = this;
+  ThreadStruct str( this );
 
   ThreaderPointer threader = ThreaderType::New();
   threader->SetNumberOfThreads( m_NumberOfThreads );
@@ -123,12 +164,13 @@ GenerateData()
   threader->SingleMethodExecute();
 }
 
-template< class TImage >
+template< class TImage, class TFeatureImage >
 ITK_THREAD_RETURN_TYPE
-ExtractMeshesFromLabelImageFilter< TImage >::
+ExtractMeshesFromLabelImageFilter< TImage, TFeatureImage >::
 ThreaderCallback(void * arg)
 {
-  unsigned int ThreadId = ((MultiThreader::ThreadInfoStruct *)(arg))->ThreadID;
+  unsigned int ThreadId =
+    ((MultiThreader::ThreadInfoStruct *)(arg))->ThreadID;
 
   ThreadStruct * str =
     (ThreadStruct *) (((MultiThreader::ThreadInfoStruct *)(arg))->UserData);
@@ -153,14 +195,13 @@ ThreaderCallback(void * arg)
 }
 
 
-template< class TImage >
+template< class TImage, class TFeatureImage >
 void
-ExtractMeshesFromLabelImageFilter< TImage >::
-ThreadedExtractMesh( const unsigned int& startLabel, const unsigned int& endLabel )
+ExtractMeshesFromLabelImageFilter< TImage, TFeatureImage >::
+ThreadedExtractMesh( const unsigned int& startLabel,
+                     const unsigned int& endLabel )
 {
   LabelObjectContainerType container = m_ShapeLabelMap->GetLabelObjectContainer();
-//   ROIFilterPointer ROIfilter = ROIFilterType::New();
-//   ROIfilter->SetInput ( m_Input );
 
   SizeType size;
   IndexType index;
@@ -174,15 +215,16 @@ ThreadedExtractMesh( const unsigned int& startLabel, const unsigned int& endLabe
 
   MeshPointer mesh, smoothMesh, decimatedMesh;
 
-  unsigned int label = startLabel;
+  LabelType label = startLabel;
   LabelObjectIterator l_end = container.end();
 
   while( ( label <= endLabel ) && ( l_it != l_end ) )
     {
-    unsigned int i = l_it->first;
+    LabelType i = l_it->first;
     region = m_ShapeLabelMap->GetLabelObject ( i )->GetBoundingBox();
     index = region.GetIndex();
     size = region.GetSize();
+
     for( unsigned int j = 0; j < ImageDimension; ++j )
       {
       if ( static_cast<IndexValueType>( index[j] ) > 0 )
@@ -198,19 +240,13 @@ ThreadedExtractMesh( const unsigned int& startLabel, const unsigned int& endLabe
     region.SetIndex( index );
     region.SetSize( size );
 
-//     ROIfilter->SetRegionOfInterest ( region );
-//     ROIfilter->Update();
-//     output = ROIfilter->GetOutput();
-//     output->DisconnectPipeline();
-
-//     std::cout << i << ' ' << region << std::endl;
-
     // Extract mesh
     MeshSourcePointer meshSource = MeshSourceType::New();
     meshSource->SetInput( m_Input );
     meshSource->SetRegionOfInterest ( region );
     meshSource->SetObjectValue( i );
     meshSource->Update();
+
     mesh = meshSource->GetOutput();
     mesh->DisconnectPipeline();
 
@@ -226,6 +262,7 @@ ThreadedExtractMesh( const unsigned int& startLabel, const unsigned int& endLabe
       smoothingFilter->SetDelaunayConforming( m_DelaunayConforming );
       smoothingFilter->SetCoefficientsMethod( &coeff0 );
       smoothingFilter->Update();
+
       smoothMesh = smoothingFilter->GetOutput();
       smoothMesh->DisconnectPipeline();
       }
@@ -247,6 +284,7 @@ ThreadedExtractMesh( const unsigned int& startLabel, const unsigned int& endLabe
       decimate->SetInput( smoothMesh );
       decimate->SetCriterion( criterion );
       decimate->Update();
+
       decimatedMesh = decimate->GetOutput();
       decimatedMesh->DisconnectPipeline();
       }
@@ -258,6 +296,8 @@ ThreadedExtractMesh( const unsigned int& startLabel, const unsigned int& endLabe
     m_Meshes[label-1] = decimatedMesh;
     m_Meshes[label-1]->DisconnectPipeline();
 
+    m_MeshtoLabelIdMap.insert( std::pair< size_t, LabelType >( label - 1, i ) );
+
     ++l_it;
     ++label;
   }
@@ -265,9 +305,9 @@ ThreadedExtractMesh( const unsigned int& startLabel, const unsigned int& endLabe
 
 
 /** Print Self information */
-template<class TImage >
+template< class TImage, class TFeatureImage >
 void
-ExtractMeshesFromLabelImageFilter< TImage >
+ExtractMeshesFromLabelImageFilter< TImage, TFeatureImage >
 ::PrintSelf(std::ostream& os, Indent indent) const
 {
   Superclass::PrintSelf(os,indent);

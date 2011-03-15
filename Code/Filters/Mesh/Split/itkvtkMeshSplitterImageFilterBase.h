@@ -82,7 +82,8 @@ public:
   typedef QuadEdgeMeshTovtkPolyData< MeshType > ITKVTKMeshConverterType;
   typedef typename ITKVTKMeshConverterType::Pointer ITKVTKMeshConverterPointer;
 
-  virtual void SetImage( ImageType* iImage );
+  void SetNumberOfImages( const size_t& iN );
+  void SetImage( const size_t& iId, ImageType* iImage );
 
 protected:
   vtkMeshSplitterImageFilterBase();
@@ -90,7 +91,7 @@ protected:
   ~vtkMeshSplitterImageFilterBase() {}
 
   ImagePointer m_BinaryImage;
-  ImagePointer m_Image;
+  std::vector< ImagePointer > m_Images;
   ImagePointer m_OutputImage;
   unsigned int m_NumberOfThreads;
   unsigned int m_NumberOfTrianglesPerMesh;

@@ -91,7 +91,8 @@ int main( int argc, char* argv[] )
       SplitterType;
   SplitterType::Pointer filter = SplitterType::New();
   filter->SetMesh( sphere_source->GetOutput() );
-  filter->SetImage( input );
+  filter->SetNumberOfImages( 1 );
+  filter->SetImage( 0, input );
 
   typedef SplitterType::PointSetType PointSetType;
   PointSetType::Pointer seeds = PointSetType::New();

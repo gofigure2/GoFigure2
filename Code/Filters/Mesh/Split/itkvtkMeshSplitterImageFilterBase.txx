@@ -53,10 +53,21 @@ vtkMeshSplitterImageFilterBase() : Superclass( ),
 template< class TImage >
 void
 vtkMeshSplitterImageFilterBase< TImage >::
-SetImage( ImageType* iImage )
+SetNumberOfImages( const size_t& iN )
 {
-  m_Image = iImage;
-  this->Modified();
+  m_Images.resize( iN );
+}
+
+template< class TImage >
+void
+vtkMeshSplitterImageFilterBase< TImage >::
+SetImage( const size_t& iId, ImageType* iImage )
+{
+  if( iId < m_Images.size() )
+    {
+    m_Images[iId] = iImage;
+    this->Modified();
+    }
 }
 
 template< class TImage >
@@ -79,8 +90,8 @@ ComputeBinaryImageFromInputMesh()
   mesh_vector[0] = converter->GetOutput();
 
   m_BinaryImage = ImageType::New();
-  m_BinaryImage->CopyInformation( m_Image );
-  m_BinaryImage->SetRegions( m_Image->GetLargestPossibleRegion() );
+  m_BinaryImage->CopyInformation( m_Images.front() );
+  m_BinaryImage->SetRegions( m_Images.front()->GetLargestPossibleRegion() );
   m_BinaryImage->Allocate();
   m_BinaryImage->FillBuffer( 0 );
 
@@ -109,6 +120,17 @@ GenerateMeshesFromOutputImage()
 {
   ExtracMeshFilterPointer extractor = ExtracMeshFilterType::New();
   extractor->SetInput( m_OutputImage );
+
+  size_t i = 0;
+  size_t NumberOfImages = m_Images.size();
+
+  extractor->SetNumberOfFeatureImages( NumberOfImages );
+
+  for( ; i < NumberOfImages; ++i )
+    {
+    extractor->SetFeatureImage( i, m_Images[i] );
+    }
+
   extractor->SetNumberOfThreads( m_NumberOfThreads );
   extractor->SetUseSmoothing( m_UseSmoothing );
   extractor->SetUseDecimation( m_UseDecimation );
@@ -125,8 +147,6 @@ GenerateMeshesFromOutputImage()
   typename MeshVectorType::const_iterator end = MeshVector.end();
 
   m_Outputs.resize( MeshVector.size() );
-
-  size_t i = 0;
 
   while( it != end )
     {
