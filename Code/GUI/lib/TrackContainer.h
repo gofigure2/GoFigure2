@@ -344,25 +344,31 @@ public:
 
   /*
    * \brief Set time interval between each image.
-   * Necessary to estimate the speed of a cell.
+   * Useful to estimate the speed of a cell.
+   * \param[in] iTimeInterval time interval between 2 time points
    */
   void setTimeInterval( int iTimeInterval);
 
   /*
    * \brief Get time interval between each image.
    * Necessary to estimate the speed of a cell.
+   * \return time interval between 2 time points
    */
   int getTimeInterval();
 
   /*
-   * \brief Convenience to get the first point of a track.
+   * \brief Convenience to get the position of the first point of a track.
    * Used to create the divisions actors.
+   * \param[in] iTrackID track of interest
+   * \return position of the first point (double* pointing to a double[3])
    */
   double* GetFirstPointOfTheTrack(unsigned int iTrackID);
 
   /*
-   * \brief Convenience to get the last point of a track.
+   * \brief Convenience to get the position of the last point of a track.
    * Used to create the divisions actors.
+   * \param[in] iTrackID track of interest
+   * \return position of the last point (double* pointing to a double[3])
    */
   double* GetLastPointOfTheTrack(unsigned int iTrackID);
 
@@ -370,6 +376,7 @@ public:
    * \brief Create divisions from a list of track ids.
    * the list has the following format:
    * motherID daughter1ID daughter2ID motherID daughter1ID ...
+   * \param[in] iListOfDivisions list of the track ids to create the divisions
    */
   void SetListOfDivisions( std::list<unsigned int> iListOfDivisions);
 
@@ -377,6 +384,9 @@ public:
    * \brief Create a division between 3 tracks.
    * Assigns mother and child pointers. Create 4 actors (one for each view)
    * for this division.
+   * \param[in] iMotherID ID of the mother of the division
+   * \param[in] iDaughter1ID ID of the daughter1 of the division
+   * \param[in] iDaughter2ID ID of the daughter2 of the division
    */
   void AddDivision( unsigned int iMotherID, unsigned int iDaughter1ID,
       unsigned int iDaughter2ID);
@@ -384,6 +394,10 @@ public:
   /*
    * \brief Create 4 actors (one for each view)
    * for this division.
+   * \param[in] iMotherID ID of the mother of the division
+   * \param[in] iDaughter1ID ID of the daughter1 of the division
+   * \param[in] iDaughter2ID ID of the daughter2 of the division
+   * \return vector of 4 actors (1 for each view) representing the division
    */
   std::vector<vtkActor* > CreateDivisionActor( unsigned int iMother, unsigned int iDaughter1,
       unsigned int iDaughter2);
@@ -391,6 +405,7 @@ public:
   /*
    * \brief Cut the lineage after the given track ID. Modifies mother child pointers to NULL.
    * Modifies child mother pointer to NULL;
+   * \param[in] iMotherID last track of the "mother lineage"
    */
   void CutLineage(unsigned int iMotherID);
 
