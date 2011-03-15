@@ -343,12 +343,19 @@ std::vector< std::string > VectorUnsgIntToVectorString(
 
 //-------------------------------------------------------------------------
 std::string GetLeftJoinTwoTables(std::string iTableOne, std::string iTableTwo,
-                                 FieldWithValue iOnCondition)
+                                 FieldWithValue iOnCondition, bool NonNULLRows)
 {
   std::stringstream oQueryStream;
 
   oQueryStream << iTableOne;
+  if (NonNULLRows)
+  {
+  oQueryStream << " JOIN ";
+  }
+  else
+  {
   oQueryStream << " LEFT JOIN ";
+  }
   oQueryStream << iTableTwo;
   oQueryStream << " ON ";
   oQueryStream << iTableOne;

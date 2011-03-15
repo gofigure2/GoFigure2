@@ -75,6 +75,12 @@ public:
     vtkMySQLDatabase *iDatabaseConnector);
 
   /**
+  \brief get all the data from the database of the track family table and give the corresponding
+  info to the track container for visu
+  */
+  void LoadInfoVisuContainerForTrackFamilies(vtkMySQLDatabase *iDatabaseConnector);
+
+  /**
   \brief display in the TW the values extracted from iTrackAttributes
   * called when loading all tracks from database when opening an imagingsession
   \param[in] iTrackAttributes computed values for a track

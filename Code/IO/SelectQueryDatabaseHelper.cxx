@@ -1154,6 +1154,24 @@ std::list< unsigned int > GetAllSelectedValuesFromTwoTables(vtkMySQLDatabase *iD
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+std::list<unsigned int> GetAllSelectedValuesFromTwoTables(  vtkMySQLDatabase *iDatabaseConnector,
+                                                            std::string iTableOne,
+                                                            std::string iTableTwo,
+                                                            std::vector<std::string> iSelectedFields,
+                                                            FieldWithValue iJoinCondition,
+                                                            std::string iField,
+                                                            std::string iValue,
+                                                            bool NonNULLRows)
+{
+  std::string Where = GetLeftJoinTwoTables(iTableOne, iTableTwo, iJoinCondition, true);
+  std::string QueryString = SelectQueryStreamCondition(Where, iSelectedFields,
+       iField, iValue);
+
+  return ExecuteSelectQuery< std::list< unsigned int > >(iDatabaseConnector, QueryString);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 int GetMaxValueFromTwoTables(vtkMySQLDatabase *iDatabaseConnector,
                              std::string iTableOne, std::string iTableTwo,
                              std::string iColumn, FieldWithValue iJoinCondition,
