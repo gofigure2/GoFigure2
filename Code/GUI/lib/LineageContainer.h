@@ -176,8 +176,10 @@ public:
   /*
    * \brief Basic lineage for testing purpose
    */
-  void createBasicLineageFromCurrentElement( double* iMother,
-                          double* iDaughter, double* iDaughter2);
+  void createBasicLineageFromCurrentElement( 
+    double* iMother, // Arnaud: what is iMother?
+    double* iDaughter, // Arnaud: what is iDaugher* ?
+    double* iDaughter2);
 
 
   /*
