@@ -791,3 +791,74 @@ TrackContainer::GetFirstPointOfTheTrack(unsigned int iTrackID)
   return points->GetPoint(0);
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+SetListOfDivisions( std::list<unsigned int> iListOfDivisions)
+{
+  // Create list iterator
+  std::list<unsigned int>::iterator it = iListOfDivisions.begin();
+
+  while( it != iListOfDivisions.end() )
+    {
+    // get ids
+    unsigned int mother = *it;
+    ++it;
+    unsigned int daughter1 = *it;
+    ++it;
+    unsigned int daughter2 = *it;
+    ++it;
+    // create connections and actor for the division of interest
+    AddDivisionToTrack(mother, daughter1, daughter2);
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+AddDivisionToTrack( unsigned int iMotherID, unsigned int iDaughter1ID,
+    unsigned int iDaughter2ID)
+{
+  // get address of the structures of interest
+  //------------------------------
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iMotherID);
+  MultiIndexContainerTraceIDIterator daughter1It
+      = m_Container.get< TraceID >().find(iDaughter1ID);
+  MultiIndexContainerTraceIDIterator daughter2It
+      = m_Container.get< TraceID >().find(iDaughter2ID);
+
+  // create connections
+  //------------------------------
+  // motherID->D1
+  //         ->D2
+  //------------------------------
+  // Create temporary structures so we can modify it
+  TrackStructure tempStructure(*motherIt);
+
+  // Update daughters IDs
+  tempStructure->
+
+  // Create Actor
+
+  // Push current element
+  m_Container.get< TraceID >().replace(motherIt, tempStructure);
+
+  //------------------------------
+  // D1->motherID
+  // D2->motherID
+  //------------------------------
+  // Change Current element to D1
+
+  // Update mother ID
+
+  // Push current element
+
+  // Change Current element to D2
+
+  // Update mother ID
+
+  // Push current element
+}

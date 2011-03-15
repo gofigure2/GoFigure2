@@ -67,7 +67,7 @@ public:
 
   /** Destructor */
   ~LineageStructure();
-
+/*
   // Add daughters to the current node. 1 or 2
   // Arnaud: Note implemented!
   void ConnectTracks( 
@@ -96,13 +96,13 @@ public:
   {
     m_Daughter2 = iDaughter2;
   }
-
+*/
   /*
    * \brief Does the current structure has daughters
    * \return true or false
    * Arnaud: Rename bool IsLeaf() const
    */
-  bool HasDaughters();
+  //bool HasDaughters();
 
   /*
    * \brief Cut the current lineage at the current node. 2 new lineages will be
@@ -116,40 +116,43 @@ public:
    * Required if we cut a track at the root level
    */
   // Need root polydata if we cut just after the first: nodes doesnt contain real polydata for root
-  void CutLineage( 
-    unsigned int iNewLineageID1, unsigned int iNewLineageID2,
-    vtkPolyData* iRootPolyData = NULL);
+  //void CutLineage(
+  //  unsigned int iNewLineageID1, unsigned int iNewLineageID2,
+  //  vtkPolyData* iRootPolyData = NULL);
 
   /*
    * \brief Update the root element polydata using vtkAppend. Required since the
    * root is the only relevant element (polydata+lineageID) to represent a lineage.
    */
-  void UpdateRootPolyData();
+  //void UpdateRootPolyData();
 
   /*
    * \brief Useful variable to sort in the container. true if is Root.
    */
-  bool              Root;
+  //bool              Root;
+
+  unsigned int TrackRootID;
 
 private:
   // only lineage ID of root is relevant as well??
   // Arnaud why using unsigned int? what about pointers?
   // Arnaud: what is m_RootID? Her mother? the root?
-  unsigned int             m_RootID;
+/*  unsigned int             m_RootID;
 
   // Arnaud: Rename m_Children? Why not using an array?
   unsigned int             m_Daughter1;
   unsigned int             m_Daughter2;
-
+*/
   /** Printing one element. std::cout << element << std::endl; */
   friend std::ostream & operator<<
     (std::ostream & os, const LineageStructure & c)
   {
     os << "TraceID " << c.TraceID << std::endl;
-    os << "Root " << c.Root << std::endl;
-    os << "m_RootID " << c.m_RootID << std::endl;
-    os << "m_Daughter1 " << c.m_Daughter1 << std::endl;
-    os << "m_Daughter2 " << c.m_Daughter2 << std::endl;
+    os << "TrackRootID " << c.TrackRootID << std::endl;
+    //os << "Root " << c.Root << std::endl;
+    //os << "m_RootID " << c.m_RootID << std::endl;
+    //os << "m_Daughter1 " << c.m_Daughter1 << std::endl;
+    //os << "m_Daughter2 " << c.m_Daughter2 << std::endl;
     os << "ActorXY " << c.ActorXY << std::endl;
     os << "ActorXZ " << c.ActorXZ << std::endl;
     os << "ActorYZ " << c.ActorYZ << std::endl;

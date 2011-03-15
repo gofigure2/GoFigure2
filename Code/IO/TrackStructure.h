@@ -46,6 +46,15 @@
 #include "StructureHelper.h"
 #endif
 
+// TREE NODE STRUCTURE
+template <class T>
+class QGOIO_EXPORT TreeNodeStructure
+{
+  T* m_Mother;
+  T* m_Child[2];
+  vtkActor* DivisionActor;
+};
+
 /**
 \defgroup Track Track
 */
@@ -59,6 +68,11 @@
 class QGOIO_EXPORT TrackStructure : public TraceStructure
 {
 public:
+
+  typedef TrackStructure Self;
+
+  // contains pointers + actor
+  TreeNodeStructure<Self> TriNode;
 
   /**
    * Map containing all the polydata points ordered by time

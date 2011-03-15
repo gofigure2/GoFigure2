@@ -347,6 +347,12 @@ public:
   double* GetFirstPointOfTheTrack(unsigned int iTrackID);
   double* GetLastPointOfTheTrack(unsigned int iTrackID);
 
+  void SetListOfDivisions( std::list<unsigned int> iListOfDivisions);
+
+  void AddDivisionToTrack( unsigned int iMotherID, unsigned int iDaughter1ID
+      ,unsigned int iDaughter2ID);
+
+
 signals:
   /** \brief When one track has been picked (highlighted) from the visualization */
   void TracePicked(unsigned int, Qt::CheckState);

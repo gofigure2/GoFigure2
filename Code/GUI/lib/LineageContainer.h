@@ -84,11 +84,11 @@ namespace boost
       boost::multi_index::ordered_non_unique<
         boost::multi_index::tag< Visible >,
         BOOST_MULTI_INDEX_MEMBER(TraceStructure, bool, Visible)
-        >,
+        >/*,
       boost::multi_index::ordered_non_unique<
         boost::multi_index::tag< Root >,
         BOOST_MULTI_INDEX_MEMBER(LineageStructure, bool, Root)
-        >
+        >*/
       >
     > MultiIndexLineageContainer;
 }
@@ -109,8 +109,8 @@ public:
   typedef TraceContainerBase< boost::MultiIndexLineageContainer > Superclass;
 
   // define lineage specific boost iterators
-  typedef boost::MultiIndexLineageContainer::index<Root>::type::iterator
-      MultiIndexContainerRootIterator;
+  //typedef boost::MultiIndexLineageContainer::index<Root>::type::iterator
+  //    MultiIndexContainerRootIterator;
 
   typedef Superclass::MultiIndexContainerType MultiIndexContainerType;
   typedef Superclass::MultiIndexContainerElementType LineageType;
