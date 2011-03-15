@@ -56,6 +56,13 @@ template <class T>
 class QGOIO_EXPORT TreeNodeStructure
 {
 public:
+  TreeNodeStructure()
+    {
+    m_Mother = NULL;
+    m_Child[0] = NULL;
+    m_Child[1] = NULL;
+    }
+
   ~TreeNodeStructure()
     {
     std::vector<vtkActor* >::iterator it = m_DivisionActor.begin();
@@ -69,6 +76,7 @@ public:
       ++it;
       }
     }
+
   const T* m_Mother;
   const T* m_Child[2];
   std::vector<vtkActor* > m_DivisionActor;

@@ -392,6 +392,8 @@ public:
   std::vector<vtkActor* > CreateDivisionActor( unsigned int iMother, unsigned int iDaughter1,
       unsigned int iDaughter2);
 
+  void CutLineage(unsigned int iMotherID);
+
 
 signals:
   /** \brief When one track has been picked (highlighted) from the visualization */
