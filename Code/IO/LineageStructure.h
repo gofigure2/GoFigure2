@@ -69,24 +69,29 @@ public:
   ~LineageStructure();
 
   // Add daughters to the current node. 1 or 2
-  void ConnectTracks( unsigned int iD1TrackID, vtkPolyData* iD1PolyData,
-                         unsigned int iD2TrackID = 0, vtkPolyData* iD2PolyData = NULL );
+  // Arnaud: Note implemented!
+  void ConnectTracks( 
+    unsigned int iD1TrackID, vtkPolyData* iD1PolyData,
+    unsigned int iD2TrackID = 0, vtkPolyData* iD2PolyData = NULL );
 
-  void SetRootID(unsigned int iRoot)
+  // Arnaud: const?
+  void SetRootID( unsigned int iRoot)
   {
     m_RootID = iRoot;
   }
-
+  // Arnaud: const?
   void SetMotherID(unsigned int iMother)
   {
     TraceID = iMother;
   }
 
+  // Arnaud: const?
   void SetDaughter1ID(unsigned int iDaughter1)
   {
     m_Daughter1 = iDaughter1;
   }
 
+  // Arnaud: const?
   void SetDaughter2ID(unsigned int iDaughter2)
   {
     m_Daughter2 = iDaughter2;
@@ -95,6 +100,7 @@ public:
   /*
    * \brief Does the current structure has daughters
    * \return true or false
+   * Arnaud: Rename bool IsLeaf() const
    */
   bool HasDaughters();
 
@@ -110,8 +116,9 @@ public:
    * Required if we cut a track at the root level
    */
   // Need root polydata if we cut just after the first: nodes doesnt contain real polydata for root
-  void CutLineage( unsigned int iNewLineageID1, unsigned int iNewLineageID2,
-      vtkPolyData* iRootPolyData = NULL);
+  void CutLineage( 
+    unsigned int iNewLineageID1, unsigned int iNewLineageID2,
+    vtkPolyData* iRootPolyData = NULL);
 
   /*
    * \brief Update the root element polydata using vtkAppend. Required since the
@@ -126,7 +133,11 @@ public:
 
 private:
   // only lineage ID of root is relevant as well??
+  // Arnaud why using unsigned int? what about pointers?
+  // Arnaud: what is m_RootID? Her mother? the root?
   unsigned int             m_RootID;
+
+  // Arnaud: Rename m_Children? Why not using an array?
   unsigned int             m_Daughter1;
   unsigned int             m_Daughter2;
 

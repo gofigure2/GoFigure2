@@ -54,5 +54,7 @@ bool
 LineageStructure::
 HasDaughters()
 {
+  // Arnaud: if m_Daughter* are unsigned int, use the largest unsigned int
+  // instead
   return !( m_Daughter1==0 && m_Daughter1==0);
 }

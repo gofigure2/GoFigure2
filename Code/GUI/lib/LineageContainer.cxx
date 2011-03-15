@@ -152,6 +152,10 @@ void
 LineageContainer::
 createBasicLineageFromCurrentElement( double* iMother, double* iDaughter1, double* iDaughter2)
 {
+  // Arnaud: what about if any of the parameter is NULL?
+  // Arnaud: what about if one daughter is in the field of view,
+  // and not the other one?
+
   // Create the triangle polydata
   //setup points (geometry)
   vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
