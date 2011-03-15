@@ -47,6 +47,9 @@
 #include "vtkTubeFilter.h"
 #include "vtkAppendPolyData.h"
 
+// division polydata
+#include "vtkLine.h"
+
 // to convert coordinates
 #include "vtkViewImage2D.h"
 
@@ -810,7 +813,7 @@ SetListOfDivisions( std::list<unsigned int> iListOfDivisions)
     unsigned int daughter2 = *it;
     ++it;
     // create connections and actor for the division of interest
-    AddDivisionToTrack(mother, daughter1, daughter2);
+    AddDivision(mother, daughter1, daughter2);
     }
 }
 //-------------------------------------------------------------------------
@@ -818,7 +821,7 @@ SetListOfDivisions( std::list<unsigned int> iListOfDivisions)
 //-------------------------------------------------------------------------
 void
 TrackContainer::
-AddDivisionToTrack( unsigned int iMotherID, unsigned int iDaughter1ID,
+AddDivision( unsigned int iMotherID, unsigned int iDaughter1ID,
     unsigned int iDaughter2ID)
 {
   // get address of the structures of interest
@@ -836,29 +839,94 @@ AddDivisionToTrack( unsigned int iMotherID, unsigned int iDaughter1ID,
   //         ->D2
   //------------------------------
   // Create temporary structures so we can modify it
-  TrackStructure tempStructure(*motherIt);
-
-  // Update daughters IDs
-  tempStructure->
-
+  TrackStructure tempMother(*motherIt);
+  // Update daughters pointers
+  tempMother.TreeNode.m_Child[0] = &(*daughter1It);
+  tempMother.TreeNode.m_Child[1] = &(*daughter2It);
   // Create Actor
-
+  tempMother.TreeNode.m_DivisionActor =
+      CreateDivisionActor(iMotherID, iDaughter1ID, iDaughter2ID);
   // Push current element
-  m_Container.get< TraceID >().replace(motherIt, tempStructure);
+  m_Container.get< TraceID >().replace(motherIt, tempMother);
 
   //------------------------------
   // D1->motherID
   // D2->motherID
   //------------------------------
-  // Change Current element to D1
-
-  // Update mother ID
-
+  // Create temporary structures so we can modify it
+  TrackStructure tempDaughter1(*daughter1It);
+  // Update daughters pointers
+  tempDaughter1.TreeNode.m_Mother = &(*motherIt);
   // Push current element
+  m_Container.get< TraceID >().replace(daughter1It, tempDaughter1);
 
-  // Change Current element to D2
-
-  // Update mother ID
-
+  // Create temporary structures so we can modify it
+  TrackStructure tempDaughter2(*daughter2It);
+  // Update daughters pointers
+  tempDaughter2.TreeNode.m_Mother = &(*motherIt);
   // Push current element
+  m_Container.get< TraceID >().replace(daughter1It, tempDaughter2);
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::vector<vtkActor* >
+TrackContainer::
+CreateDivisionActor( unsigned int iMother, unsigned int iDaughter1, unsigned int iDaughter2)
+{
+  // Arnaud: what about if any of the parameter is NULL?
+  // Arnaud: what about if one daughter is in the field of view,
+  // and not the other one?
+  // Nicolas: dont deal with any of that yet
+
+  // Get points of interest:
+  // Mother: last point
+  // D1 & D2: first point
+  double* mother = this->GetLastPointOfTheTrack(iMother);
+  double* daughter1 = this->GetFirstPointOfTheTrack(iDaughter1);
+  double* daughter2 = this->GetFirstPointOfTheTrack(iDaughter2);
+
+  //setup points (geometry)
+  vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
+  points->InsertNextPoint ( daughter1[0], daughter1[1], daughter1[2] );
+  points->InsertNextPoint ( mother[0], mother[1], mother[2] );
+  points->InsertNextPoint ( daughter2[0], daughter2[1], daughter2[2] );
+
+  // create the lines
+  vtkSmartPointer<vtkCellArray> lines = vtkSmartPointer<vtkCellArray>::New();
+  for(int i=0; i<2; ++i)
+    {
+    //Create the first line (between Origin and P0)
+    vtkSmartPointer<vtkLine> line =
+        vtkSmartPointer<vtkLine>::New();
+    line->GetPointIds()->SetId(0,i);
+    line->GetPointIds()->SetId(1,i+1);
+    lines->InsertNextCell(line);
+    }
+
+  // create polydata
+  vtkSmartPointer<vtkPolyData> division = vtkSmartPointer<vtkPolyData>::New();
+  division->SetPoints(points);
+  division->SetLines(lines);
+
+  /*
+   * \todo Nicolas: Which color should it be? White as of now
+   */
+  vtkProperty *trace_property = vtkProperty::New();
+  double       r = 1.0;
+  double       g = 1.0;
+  double       b = 1.0;
+  double       a = 1.0;
+
+  trace_property->SetColor(r,
+                           g,
+                           b);
+  trace_property->SetOpacity(a);
+
+  // create actors and add it to the visualization
+  std::vector< vtkActor * > divisionActors =
+        m_ImageView->AddContour( division, trace_property );
+
+  return divisionActors;
+}
+//-------------------------------------------------------------------------

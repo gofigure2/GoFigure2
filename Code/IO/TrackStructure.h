@@ -50,9 +50,10 @@
 template <class T>
 class QGOIO_EXPORT TreeNodeStructure
 {
-  T* m_Mother;
-  T* m_Child[2];
-  vtkActor* DivisionActor;
+public:
+  const T* m_Mother;
+  const T* m_Child[2];
+  std::vector<vtkActor* > m_DivisionActor;
 };
 
 /**
@@ -72,7 +73,7 @@ public:
   typedef TrackStructure Self;
 
   // contains pointers + actor
-  TreeNodeStructure<Self> TriNode;
+  TreeNodeStructure<Self> TreeNode;
 
   /**
    * Map containing all the polydata points ordered by time
