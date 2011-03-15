@@ -131,3 +131,14 @@ TARGET_LINK_LIBRARIES( itkvtkPolyDataToitkQuadEdgeMeshTest
 ADD_TEST( itkvtkPolyDataToitkQuadEdgeMeshTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/itkvtkPolyDataToitkQuadEdgeMeshTest
 )
+
+ADD_EXECUTABLE( itkvtkMeshMergeConvexHullFilterTest
+  itkvtkMeshMergeConvexHullFilterTest.cxx )
+TARGET_LINK_LIBRARIES( itkvtkMeshMergeConvexHullFilterTest
+  ${ITK_LIBRARIES}
+  vtkHybrid
+)
+ADD_TEST( itkvtkMeshMergeConvexHullFilterTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/itkvtkMeshMergeConvexHullFilterTest
+  ${TESTING_DATA_PATH}/Circle3D.mhd
+)

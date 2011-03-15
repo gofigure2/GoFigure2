@@ -48,6 +48,9 @@ public:
   typedef SmartPointer< Self > Pointer;
   typedef SmartPointer< const Self > ConstPointer;
 
+  /** Run-time type information (and related methods). */
+  itkTypeMacro( vtkMeshFilterBase, Object );
+
   typedef TFeatureImage FeatureImageType;
   typedef typename FeatureImageType::Pointer FeatureImagePointer;
   typedef typename FeatureImageType::PixelType FeatureImagePixelType;

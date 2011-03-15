@@ -47,13 +47,15 @@ class vtkMeshMergeFilterBase :
     public vtkMeshFilterBase< TFeatureImage >
 {
 public:
-  typedef Object Superclass;
+  typedef vtkMeshFilterBase< TFeatureImage > Superclass;
   typedef vtkMeshMergeFilterBase Self;
   typedef SmartPointer< Self > Pointer;
   typedef SmartPointer< const Self > ConstPointer;
 
-  typedef TFeatureImage FeatureImageType;
-  typedef typename FeatureImageType FeatureImagePointer;
+  itkTypeMacro( vtkMeshMergeFilterBase, vtkMeshFilterBase );
+
+  typedef typename Superclass::FeatureImageType FeatureImageType;
+  typedef typename Superclass::FeatureImagePointer FeatureImagePointer;
 
   void SetInputs( std::list< vtkPolyData* > iMeshes )
     {
@@ -72,8 +74,6 @@ protected:
 
   std::list< vtkPolyData* > m_Inputs;
   vtkPolyData* m_Output;
-
-  virtual void GenerateData();
 
 private:
   vtkMeshMergeFilterBase( const Self& );

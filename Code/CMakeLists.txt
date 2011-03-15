@@ -25,9 +25,15 @@ SET( GOFIGURE2_FILTER_SOURCE
   ${GOFIGURE2_SOURCE_DIR}/Code/Filters/itkWatershedBasedCellSegmentation.h
   ${GOFIGURE2_SOURCE_DIR}/Code/Filters/itkWatershedBasedCellSegmentation.txx
 
+#
+# Contour
+#
   ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Contour/ContourToMeshFilter.h
   ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Contour/ContourToMeshFilter.txx
 
+#
+# Mesh
+#
   ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/itkConvertMeshesToLabelImageFilter.h
   ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/itkConvertMeshesToLabelImageFilter.txx
   ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/itkExtractMeshesFromLabelImageFilter.h
@@ -37,8 +43,16 @@ SET( GOFIGURE2_FILTER_SOURCE
   ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/itkvtkPolyDataToBinaryMaskImageFilter.h
   ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/itkvtkPolyDataToBinaryMaskImageFilter.txx
 
+  # Attributes
+  ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/Attributes/itkBinaryMaskImageToGoFigureMeshAttributes.h
+  ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/Attributes/itkBinaryMaskImageToGoFigureMeshAttributes.txx
+  ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/Attributes/itkvtkPolyDataToGoFigureMeshAttributes.h
+  ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/Attributes/itkvtkPolyDataToGoFigureMeshAttributes.txx
+
+  # Merge
   ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/Merge/itkvtkMeshMergeFilterBase.h
 
+  # Split
   ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/Split/itkvtkMeshSplitterDanielssonDistanceImageFilter.h
   ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/Split/itkvtkMeshSplitterDanielssonDistanceImageFilter.txx
   ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/Split/itkvtkMeshSplitterFilterBase.txx
