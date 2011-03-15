@@ -650,7 +650,8 @@ int QGoDBTrackManager::CreateTrackFamily(vtkMySQLDatabase* iDatabaseConnector,
   TrackFamily.SetField<unsigned int>("TrackIDDaughter1", TrackIDDaughterOne);
   
   TrackFamily.SetField<unsigned int>("TrackIDDaughter2", TrackIDDaughterTwo);
-  //give the 3 IDs to the container for visu.
+  this->m_TrackContainerInfoForVisu->AddDivision(iMotherTrackID, TrackIDDaughterOne, 
+    TrackIDDaughterTwo);
   return TrackFamily.SaveInDB(iDatabaseConnector);
 }
 //-------------------------------------------------------------------------
@@ -673,5 +674,5 @@ void QGoDBTrackManager::LoadInfoVisuContainerForTrackFamilies(
 {
   std::list<unsigned int> ListTrackIDs = 
     this->m_CollectionOfTraces->GetTrackFamilyDataFromDB(iDatabaseConnector);
-  //todo: give it to the trackinfocontainer for visu
+  this->m_TrackContainerInfoForVisu->SetListOfDivisions(ListTrackIDs);
 }
