@@ -40,6 +40,7 @@
 
 #include "GoFigureTrackAttributes.h"
 
+#include "vtkActor.h"
 #include <map>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -51,6 +52,20 @@ template <class T>
 class QGOIO_EXPORT TreeNodeStructure
 {
 public:
+  TreeNodeStructure();
+  ~TreeNodeStructure()
+    {
+    std::vector<vtkActor* >::iterator it = m_DivisionActor.begin();
+    while(it != m_DivisionActor.end() )
+      {
+      if(*it)
+        {
+        (*it)->Delete();
+        (*it) = NULL;
+        }
+      ++it;
+      }
+    }
   const T* m_Mother;
   const T* m_Child[2];
   std::vector<vtkActor* > m_DivisionActor;

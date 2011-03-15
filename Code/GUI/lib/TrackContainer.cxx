@@ -908,6 +908,10 @@ CreateDivisionActor( unsigned int iMother, unsigned int iDaughter1, unsigned int
   vtkSmartPointer<vtkPolyData> division = vtkSmartPointer<vtkPolyData>::New();
   division->SetPoints(points);
   division->SetLines(lines);
+  /*
+   * \todo Nicolas: add array in polydata containing trackID
+   * so we have the track ID from the actor directly
+   */
 
   /*
    * \todo Nicolas: Which color should it be? White as of now
