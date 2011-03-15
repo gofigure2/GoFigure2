@@ -35,7 +35,7 @@
 #ifndef __itkvtkMeshSplitterFilterBase_h
 #define __itkvtkMeshSplitterFilterBase_h
 
-#include "itkObject.h"
+#include "itkvtkMeshFilterBase.h"
 #include "itkPointSet.h"
 #include "vtkPolyData.h"
 
@@ -48,27 +48,21 @@ namespace itk
   \brief
 */
 template< class TFeatureImage >
-class vtkMeshSplitterFilterBase : public Object
+class vtkMeshSplitterFilterBase : public vtkMeshFilterBase< TFeatureImage >
   {
 public:
-  typedef Object Superclass;
+  typedef vtkMeshFilterBase< TFeatureImage > Superclass;
   typedef vtkMeshSplitterFilterBase Self;
   typedef SmartPointer< Self > Pointer;
   typedef SmartPointer< const Self > ConstPointer;
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro( vtkMeshSplitterFilterBase, Object );
+  itkTypeMacro( vtkMeshSplitterFilterBase, vtkMeshFilterBase );
 
-  typedef TFeatureImage FeatureImageType;
-  typedef typename FeatureImageType::Pointer FeatureImagePointer;
+  typedef typename Superclass::FeatureImageType FeatureImageType;
+  typedef typename Superclass::FeatureImagePointer FeatureImagePointer;
 
   void SetMesh( vtkPolyData* iMesh );
-
-  void SetNumberOfImages( const size_t& iN );
-
-  void SetFeatureImage( const size_t& iId, FeatureImageType* iImage );
-
-  void Update();
 
   std::vector< vtkPolyData* > GetOutputs();
 
@@ -79,7 +73,6 @@ protected:
   /** \brief Destructor */
   ~vtkMeshSplitterFilterBase() {}
 
-  std::vector< FeatureImagePointer > m_Images;
   vtkPolyData* m_Mesh;
 
   std::vector< vtkPolyData* > m_Outputs;

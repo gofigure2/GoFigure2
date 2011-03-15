@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-11
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
- Copyright (c) 2009-11, President and Fellows of Harvard College.
+ Copyright (c) 2009-10, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -32,57 +32,52 @@
 
 =========================================================================*/
 
-#ifndef __itkvtkMeshSplitterFilterBase_txx
-#define __itkvtkMeshSplitterFilterBase_txx
+#ifndef __itkvtkMeshMergeFilterBase_h
+#define __itkvtkMeshMergeFilterBase_h
 
-#include "itkvtkMeshSplitterFilterBase.h"
+#include "itkvtkMeshFilterBase.h"
+#include <list>
+
+class vtkPolyData;
 
 namespace itk
 {
 template< class TFeatureImage >
-vtkMeshSplitterFilterBase< TFeatureImage >::
-vtkMeshSplitterFilterBase() : Superclass(), m_Mesh( NULL ), m_Outputs( 0 )
-  {
-  for( unsigned int dim = 0; dim < 3; ++dim )
-    {
-    m_Bounds[2 * dim] = NumericTraits< double >::max();
-    m_Bounds[2 * dim + 1] = NumericTraits< double >::min();
-    }
-  }
-
-template< class TFeatureImage >
-void
-vtkMeshSplitterFilterBase< TFeatureImage >::
-SetMesh( vtkPolyData* iMesh )
+class vtkMeshMergeFilterBase :
+    public vtkMeshFilterBase< TFeatureImage >
 {
-  if( ( iMesh ) && ( iMesh != m_Mesh ) )
+public:
+  typedef Object Superclass;
+  typedef vtkMeshMergeFilterBase Self;
+  typedef SmartPointer< Self > Pointer;
+  typedef SmartPointer< const Self > ConstPointer;
+
+  typedef TFeatureImage FeatureImageType;
+  typedef typename FeatureImageType FeatureImagePointer;
+
+  void SetInputs( std::list< vtkPolyData* > iMeshes )
     {
-    m_Mesh = iMesh;
-    m_Mesh->GetBounds( m_Bounds );
+    m_Inputs = iMeshes;
     this->Modified();
     }
-}
 
-template< class TFeatureImage >
-std::vector< vtkPolyData* >
-vtkMeshSplitterFilterBase< TFeatureImage >::
-GetOutputs()
-{
-  return m_Outputs;
-}
-
-template< class TFeatureImage >
-void
-vtkMeshSplitterFilterBase< TFeatureImage >::
-GenerateData()
-{
-  if( !m_Mesh )
+  vtkPolyData* GetOutput()
     {
-    itkGenericExceptionMacro( << "m_Mesh is NULL" );
+    return m_Output;
     }
 
-  this->Split();
-}
+protected:
+  vtkMeshMergeFilterBase() : Superclass(), m_Output( NULL ) {}
+  virtual ~vtkMeshMergeFilterBase() {}
 
+  std::list< vtkPolyData* > m_Inputs;
+  vtkPolyData* m_Output;
+
+  virtual void GenerateData();
+
+private:
+  vtkMeshMergeFilterBase( const Self& );
+  void operator = ( const Self& );
+};
 }
-#endif
+#endif // __itkvtkMeshMergeFilterBase_h

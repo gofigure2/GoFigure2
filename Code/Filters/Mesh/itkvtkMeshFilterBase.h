@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -32,45 +32,59 @@
 
 =========================================================================*/
 
-#ifndef ITKVTKMESHMERGERFILTERBASE_H
-#define ITKVTKMESHMERGERFILTERBASE_H
+#ifndef __itkvtkMeshFilterBase_h
+#define __itkvtkMeshFilterBase_h
 
 #include "itkObject.h"
-#include <list>
-
-class vtkPolyData;
 
 namespace itk
 {
-class vtkMeshMergerFilterBase : public Object
+template< class TFeatureImage >
+class vtkMeshFilterBase : public Object
 {
 public:
   typedef Object Superclass;
+  typedef vtkMeshFilterBase Self;
   typedef SmartPointer< Self > Pointer;
   typedef SmartPointer< const Self > ConstPointer;
 
-  void SetInputs( std::list< vtkPolyData* > iMeshes );
+  typedef TFeatureImage FeatureImageType;
+  typedef typename FeatureImageType::Pointer FeatureImagePointer;
+  typedef typename FeatureImageType::PixelType FeatureImagePixelType;
+  typedef typename FeatureImageType::IndexType FeatureImageIndexType;
+  typedef typename FeatureImageType::PointType FeatureImagePointType;
+
+  void SetNumberOfImages( const size_t& iN )
+    {
+    m_Images.resize( iN );
+    }
+
+  void SetFeatureImage( const size_t& iId, FeatureImageType* iImage )
+    {
+    if( iId < m_Images.size() )
+      {
+      m_Images[iId] = iImage;
+      this->Modified();
+      }
+    }
+
   void Update()
     {
     this->GenerateData();
     }
-  vtkPolyData* GetOutput()
-    {
-    return m_Output;
-    }
 
 protected:
-  vtkMeshMergerFilterBase();
-  virtual ~vtkMeshMergerFilterBase() {}
+  vtkMeshFilterBase() : Superclass() {}
+  virtual ~vtkMeshFilterBase() {}
 
-  std::list< vtkPolyData* > m_Input;
-  vtkPolyData* m_Output;
+  virtual void GenerateData() = 0;
 
-  virtual void GenerateData();
+  std::vector< FeatureImagePointer > m_Images;
 
 private:
-  vtkMeshMergerFilterBase( const Self& );
+  vtkMeshFilterBase( const Self& );
   void operator = ( const Self& );
 };
 }
-#endif // ITKVTKMESHMERGERFILTERBASE_H
+#endif
+
