@@ -142,6 +142,9 @@ public:
    */
   void extractLineageFromPolyData( vtkPolyData* iPolyData);
 
+  void UpdateCurrentElementFromDBForLineage(unsigned int LineageID, 
+    double irgba[4], unsigned int iTrackIDRoot,
+    bool IsVisible = false);
   /*
    * \brief Create a new connection between the selected points
    * \param[in] iMoTrackID ID of the mother to find it in the container

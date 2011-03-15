@@ -96,7 +96,6 @@ void QGoDBLineageManager::DisplayInfoForAllTraces(
 void QGoDBLineageManager::DisplayInfoAndLoadVisuContainerForAllLineages(
   vtkMySQLDatabase *iDatabaseConnector)
 {
-  //this->DisplayInfoForAllTraces(iDatabaseConnector); //for the time being as there is no lineage container
   this->DisplayInfoAndLoadVisuContainerWithAllTraces< GoDBTWContainerForLineage >
     (this->m_TWContainer, iDatabaseConnector);
 }
@@ -135,8 +134,9 @@ unsigned int QGoDBLineageManager::CreateNewLineageWithTrackRoot(
 
   this->m_LineageContainerInfoForVisu->ResetCurrentElement();
   //todo : add the trackIDRoot also to update the currentElement:
-  //this->m_LineageContainerInfoForVisu->UpdateCurrentElementFromDB(
-  //  NewLineageID, this->GetVectorFromQColor(this->m_SelectedColorData->second), true);
+  this->m_LineageContainerInfoForVisu->UpdateCurrentElementFromDBForLineage(NewLineageID, 
+    this->GetVectorFromQColor(this->m_SelectedColorData->second), iTrackRoot,
+    false);
   this->m_LineageContainerInfoForVisu->InsertCurrentElement();
   this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
   
