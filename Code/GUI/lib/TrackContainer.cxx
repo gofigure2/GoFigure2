@@ -619,33 +619,6 @@ TrackContainer::AddTrace(vtkPolyData *iNode, vtkProperty *iProperty)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::map< unsigned int, std::pair< const double *, vtkPolyData * > >
-TrackContainer::GetHighlightedElementsTrackPolyData()
-{
-  // Map to be returned
-  std::map< unsigned int,
-            std::pair< const double *, vtkPolyData * > >
-  listOfPolyDatas;
-
-  MultiIndexContainerType::index< Highlighted >::type::iterator
-    it = m_Container.get< Highlighted >().begin();
-
-  while ( it != m_Container.get< Highlighted >().end() )
-    {
-    // Get iterator to the selectedID
-    // Get Polydata from this iterator
-    listOfPolyDatas[it->TraceID] =
-      std::pair< const double *, vtkPolyData * >(it->rgba, it->Nodes);
-    // Go to next ID
-    ++it;
-    }
-
-  return listOfPolyDatas;
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 void
 TrackContainer::ChangeColorCode(const char *iColorCode)
 {

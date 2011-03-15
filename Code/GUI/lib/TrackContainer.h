@@ -336,15 +336,11 @@ public:
     }
 
   /*
-   * \brief
+   * \brief Merge given tracks
+   * \param[in] iId1 ID of the first track
+   * \param[in] iId2 ID of the second track
    */
   void MergeTrack( const unsigned int& iId1, const unsigned int& iId2 );
-
-  /*
-   * \brief
-   */
-  std::map< unsigned int, std::pair< const double* , vtkPolyData*> >
-  GetHighlightedElementsTrackPolyData();
 
   /*
    * \brief Set time interval between each image.
@@ -379,14 +375,14 @@ public:
 
   /*
    * \brief Create a division between 3 tracks.
-   * Assigns mother and child pointers. Create an 4 actors (one for each view)
+   * Assigns mother and child pointers. Create 4 actors (one for each view)
    * for this division.
    */
   void AddDivision( unsigned int iMotherID, unsigned int iDaughter1ID,
       unsigned int iDaughter2ID);
 
   /*
-   * \brief Create an 4 actors (one for each view)
+   * \brief Create 4 actors (one for each view)
    * for this division.
    */
   std::vector<vtkActor* > CreateDivisionActor( unsigned int iMother, unsigned int iDaughter1,
