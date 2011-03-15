@@ -347,38 +347,47 @@ public:
   GetHighlightedElementsTrackPolyData();
 
   /*
-   * \brief
+   * \brief Set time interval between each image.
+   * Necessary to estimate the speed of a cell.
    */
   void setTimeInterval( int iTimeInterval);
 
   /*
-   * \brief
+   * \brief Get time interval between each image.
+   * Necessary to estimate the speed of a cell.
    */
   int getTimeInterval();
 
   /*
-   * \brief
+   * \brief Convenience to get the first point of a track.
+   * Used to create the divisions actors.
    */
   double* GetFirstPointOfTheTrack(unsigned int iTrackID);
 
   /*
-   * \brief
+   * \brief Convenience to get the last point of a track.
+   * Used to create the divisions actors.
    */
   double* GetLastPointOfTheTrack(unsigned int iTrackID);
 
   /*
-   * \brief
+   * \brief Create divisions from a list of track ids.
+   * the list has the following format:
+   * motherID daughter1ID daughter2ID motherID daughter1ID ...
    */
   void SetListOfDivisions( std::list<unsigned int> iListOfDivisions);
 
   /*
-   * \brief
+   * \brief Create a division between 3 tracks.
+   * Assigns mother and child pointers. Create an 4 actors (one for each view)
+   * for this division.
    */
   void AddDivision( unsigned int iMotherID, unsigned int iDaughter1ID,
       unsigned int iDaughter2ID);
 
   /*
-   * \brief
+   * \brief Create an 4 actors (one for each view)
+   * for this division.
    */
   std::vector<vtkActor* > CreateDivisionActor( unsigned int iMother, unsigned int iDaughter1,
       unsigned int iDaughter2);

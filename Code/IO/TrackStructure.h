@@ -47,12 +47,15 @@
 #include "StructureHelper.h"
 #endif
 
-// TREE NODE STRUCTURE
+/**
+ * \struct TreeNodeStructure
+ * \brief  Structure which represent a tree node.
+ * \ingroup Track Trace
+ */
 template <class T>
 class QGOIO_EXPORT TreeNodeStructure
 {
 public:
-  TreeNodeStructure();
   ~TreeNodeStructure()
     {
     std::vector<vtkActor* >::iterator it = m_DivisionActor.begin();
