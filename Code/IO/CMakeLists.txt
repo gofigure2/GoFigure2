@@ -42,6 +42,7 @@ SET( QGOIO_SRC
   GoDBTWContainerForTrackLineage.cxx
   GoDBTWContainerForMesh.cxx
   GoDBTWContainerForTrack.cxx
+  GoDBTWContainerForLineage.cxx
   GoDBExport.cxx
   GoDBImport.cxx
   MegaCaptureHeaderReader.cxx

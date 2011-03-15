@@ -84,12 +84,14 @@ public:
   //  GoFigureTrackAttributes *iTrackAttributes, unsigned iTrackID);
 
   /**
-  \brief create a new lineage with no track and no points in the database, add it in the
+  \brief create a new lineage with IDRoot in the database, add it in the
   TW and in the visu container
   \param[in] iDatabaseConnector connection to the database
+  \param[in] iTrackRoot ID of the track that is the root of the new lineage to create
   \return the ID of the new lineage just created
   */
-  unsigned int CreateNewLineageWithNoTrack( vtkMySQLDatabase *iDatabaseConnector);
+  unsigned int CreateNewLineageWithTrackRoot(
+      vtkMySQLDatabase *iDatabaseConnector, unsigned int iTrackRoot);
 
   //virtual pure method in QGoDBTraceManager
   std::list< unsigned int > UpdateTheTracesColor(vtkMySQLDatabase *iDatabaseConnector);
@@ -133,10 +135,10 @@ public:
 public slots:
 
   /**
-  \brief update the trackID root for the last created lineage with iTrackIDRoot and
-  return the ID of the last lineage
+  \brief update the trackID root for the lineage with iTrackIDRoot
   */
-  unsigned int UpdateTrackRootLastCreatedLineage(unsigned int iTrackIDRoot);
+  void UpdateTrackRootSelectedLineage(unsigned int iLineageID, 
+    unsigned int iTrackIDRoot);
 
   //void CreateBasicLineageInVisuFromCurrentElement(
   //  double* iMotherTrackPoint, double* iDaughterOneTrackPoint, 
@@ -145,25 +147,25 @@ public slots:
   \brief create a new division in visu and update the ID root of the last created lineage
   with the iTrackIDRoot
   */
-  void CreateNewDivisionInVisuForNewLineage(
+  /*void CreateNewDivisionInVisuForNewLineage(
     unsigned int iTrackIDRoot,
     double* iMotherTrackPoint, 
     unsigned int iDaughterOneID,
     double* iDaughterOneTrackPoint,
     unsigned int iDaughterTwoID,
-    double* iDaughterTwoTrackPoint);
+    double* iDaughterTwoTrackPoint);*/
 
   /**
   \brief create a new division in visu.
   */
-  void UpdateExistingLineageWithNewDivision(
+  /*void UpdateExistingLineageWithNewDivision(
     unsigned int iLineageID,
     unsigned int iMotherTrackID,
     double* iMotherTrackPoint, 
     unsigned int iDaughterOneID,
     double* iDaughterOneTrackPoint,
     unsigned int iDaughterTwoID,
-    double* iDaughterTwoTrackPoint);
+    double* iDaughterTwoTrackPoint);*/
 
 signals:
   //void NeedMeshesInfoForImportedTrack(unsigned int iTrackID);

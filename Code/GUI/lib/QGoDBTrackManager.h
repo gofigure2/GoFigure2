@@ -154,9 +154,10 @@ signals:
   /**
   \signal emitted ...
   */
-  //void CheckedTracksToAddToSelectedLineage(std::list<unsigned int> iDaughtersID, unsigned int iLineageID);
+  void CheckedTracksToAddToSelectedLineage(std::list<unsigned int> iDaughtersID, unsigned int iLineageID);
+  void NewLineageToCreateFromCheckedTracks( std::list<unsigned int> iCheckedTracksIDs, unsigned int iTrackIDRoot);
 
-  void NewTrackFamilySavedInDBForExistingLineage(unsigned int iLineageID, 
+ /* void NewTrackFamilySavedInDBForExistingLineage(unsigned int iLineageID, 
     unsigned int iMotherID, double* iMotherTrackPoints, 
     unsigned int iDaughterOneID, double* iDaughterOneTrackPoints, 
     unsigned int iDaughterTwoID, double* iDaughterTwoTrackPoints);
@@ -164,7 +165,7 @@ signals:
   void NewTrackFamilySavedInDBForNewLineage(
     unsigned int iMotherID, double* iMotherTrackPoints, 
     unsigned int iDaughterOneID, double* iDaughterOneTrackPoints, 
-    unsigned int iDaughterTwoID, double* iDaughterTwoTrackPoints);
+    unsigned int iDaughterTwoID, double* iDaughterTwoTrackPoints);*/
 
 protected:
   GoDBTWContainerForTrack *m_TWContainer;
@@ -247,14 +248,14 @@ protected slots:
     vtkMySQLDatabase* iDatabaseConnector);
 
   //QGoDBTraceManager method
-  virtual void CreateCorrespondingCollection();
+  //virtual void CreateCorrespondingCollection();
 
   /**
   \brief get the trackID with the lowest timepoint as the mother trackID, 
   if several tracks have the lowest timepoint, return false. if other tracks 
   from the list are overlapping the mother trackID, return false.
   */
-  bool IdentifyMotherDaughtersToCreateLineage(
+  bool IdentifyMotherDaughtersToCreateTrackFamily(
     vtkMySQLDatabase* iDatabaseConnector,
     std::list<unsigned int> iListTracksID, unsigned int &ioMotherID,
     std::list<unsigned int> &ioDaughtersID);
@@ -272,5 +273,7 @@ protected slots:
   */
   void UpdateTrackFamilyIDForDaughter(vtkMySQLDatabase* iDatabaseConnector,
     unsigned int iDaughterID,unsigned int iTrackFamilyID);
+
+  void CreateCorrespondingTrackFamily();
 };
 #endif

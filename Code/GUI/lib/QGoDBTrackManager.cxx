@@ -321,10 +321,9 @@ void QGoDBTrackManager::AddActionsContextMenu(QMenu *iMenu)
 
   //if we use also add checked traces to selected collection, then we should use
   // AddActionForAddingCheckedTracesToCollection() from QGoDBTraceManager instead:
-  this->m_CheckedTracesMenu->addAction( tr("Create a new %1 from checked %2s")
-                                        .arg( this->m_CollectionName.c_str() )
+  this->m_CheckedTracesMenu->addAction( tr("Create a new division from checked %1s")
                                         .arg( this->m_TraceName.c_str() ),
-                                        this, SLOT( CreateCorrespondingCollection() ) );
+                                        this, SLOT( CreateCorrespondingTrackFamily() ) );
 }
 
 //-------------------------------------------------------------------------
@@ -501,7 +500,7 @@ bool QGoDBTrackManager::CheckOverlappingTracks(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBTrackManager::CreateCorrespondingCollection()
+void QGoDBTrackManager::CreateCorrespondingTrackFamily()
 {
   unsigned int MotherID = 0;
   std::list<unsigned int> DaughtersIDs = std::list<unsigned int>();
@@ -515,7 +514,7 @@ void QGoDBTrackManager::CreateCorrespondingCollection()
     return;
     }
   emit NeedToGetDatabaseConnection();
-  if (this->IdentifyMotherDaughtersToCreateLineage(this->m_DatabaseConnector, 
+  if (this->IdentifyMotherDaughtersToCreateTrackFamily(this->m_DatabaseConnector, 
     this->GetListHighlightedIDs(), MotherID, DaughtersIDs) )
     {
     int TrackFamilyID =  this->CreateTrackFamily(this->m_DatabaseConnector, 
@@ -531,39 +530,41 @@ void QGoDBTrackManager::CreateCorrespondingCollection()
       //update the trackFamilyID for the daughters:
       emit NeedToGetDatabaseConnection();
       std::list<unsigned int>::iterator iter = DaughtersIDs.begin();
-      unsigned int DaughterOneID, DaughterTwoID;
-      DaughterOneID = *iter;
+      //unsigned int DaughterOneID, DaughterTwoID;
+      //DaughterOneID = *iter;
       while(iter != DaughtersIDs.end() )
         {
         this->UpdateTrackFamilyIDForDaughter(this->m_DatabaseConnector, 
           *iter, TrackFamilyID);
-        DaughterTwoID = *iter;
+        //DaughterTwoID = *iter;
         ++iter;
         }  
       if (!LineageIDToCheck.empty())
         {
         //the mother track already belong to the lineage, need to add the daughters only:
-        //emit CheckedTracksToAddToSelectedLineage(DaughtersIDs, LineageIDToCheck.front());
+        emit CheckedTracksToAddToSelectedLineage(DaughtersIDs, LineageIDToCheck.front());
         //emit the points to create the basic lineage in the visu:
-        emit NewTrackFamilySavedInDBForExistingLineage(
-          LineageIDToCheck.front(), MotherID,
-          this->m_TrackContainerInfoForVisu->GetLastPointOfTheTrack(MotherID), 
-          DaughterOneID, 
-          this->m_TrackContainerInfoForVisu->GetFirstPointOfTheTrack(DaughterOneID), 
-          DaughterTwoID,
-          this->m_TrackContainerInfoForVisu->GetFirstPointOfTheTrack(DaughterTwoID) );
+        //emit NewTrackFamilySavedInDBForExistingLineage(
+          //LineageIDToCheck.front(), MotherID,
+          //this->m_TrackContainerInfoForVisu->GetLastPointOfTheTrack(MotherID), 
+          //DaughterOneID, 
+          //this->m_TrackContainerInfoForVisu->GetFirstPointOfTheTrack(DaughterOneID), 
+          //DaughterTwoID,
+          //this->m_TrackContainerInfoForVisu->GetFirstPointOfTheTrack(DaughterTwoID) );
         }
       else
         {
-        QGoDBTraceManager::CreateCorrespondingCollection(); 
+        //QGoDBTraceManager::CreateCorrespondingCollection(); 
+          emit NewLineageToCreateFromCheckedTracks(
+            this->m_TrackContainerInfoForVisu->GetHighlightedElementsTraceID(), MotherID);
         //need to update the trackIDRoot for the lineage and the division to be created in the visu:
-        emit NewTrackFamilySavedInDBForNewLineage(
-            MotherID,
-            this->m_TrackContainerInfoForVisu->GetLastPointOfTheTrack(MotherID), 
-            DaughterOneID, 
-            this->m_TrackContainerInfoForVisu->GetFirstPointOfTheTrack(DaughterOneID), 
-            DaughterTwoID,
-            this->m_TrackContainerInfoForVisu->GetFirstPointOfTheTrack(DaughterTwoID) );
+        //emit NewTrackFamilySavedInDBForNewLineage(
+        //    MotherID,
+        //    this->m_TrackContainerInfoForVisu->GetLastPointOfTheTrack(MotherID), 
+         //   DaughterOneID, 
+       //     this->m_TrackContainerInfoForVisu->GetFirstPointOfTheTrack(DaughterOneID), 
+        //    DaughterTwoID,
+        //    this->m_TrackContainerInfoForVisu->GetFirstPointOfTheTrack(DaughterTwoID) );
         }
       }
     } 
@@ -573,7 +574,7 @@ void QGoDBTrackManager::CreateCorrespondingCollection()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-bool QGoDBTrackManager::IdentifyMotherDaughtersToCreateLineage(
+bool QGoDBTrackManager::IdentifyMotherDaughtersToCreateTrackFamily(
   vtkMySQLDatabase* iDatabaseConnector,
   std::list<unsigned int> iListTracksID, unsigned int &ioMotherID,
   std::list<unsigned int> &ioDaughtersID)
@@ -649,7 +650,7 @@ int QGoDBTrackManager::CreateTrackFamily(vtkMySQLDatabase* iDatabaseConnector,
   TrackFamily.SetField<unsigned int>("TrackIDDaughter1", TrackIDDaughterOne);
   
   TrackFamily.SetField<unsigned int>("TrackIDDaughter2", TrackIDDaughterTwo);
-
+  //give the 3 IDs to the container for visu.
   return TrackFamily.SaveInDB(iDatabaseConnector);
 }
 //-------------------------------------------------------------------------
