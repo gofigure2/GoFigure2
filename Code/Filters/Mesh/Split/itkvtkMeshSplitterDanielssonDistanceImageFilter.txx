@@ -39,14 +39,14 @@
 
 namespace itk
 {
-template< class TFeatureImage >
-vtkMeshSplitterDanielssonDistanceImageFilter< TFeatureImage >::
+template< class TFeatureImage, class TPointSet >
+vtkMeshSplitterDanielssonDistanceImageFilter< TFeatureImage, TPointSet >::
 vtkMeshSplitterDanielssonDistanceImageFilter() : Superclass()
 {}
 
-template< class TFeatureImage >
+template< class TFeatureImage, class TPointSet >
 void
-vtkMeshSplitterDanielssonDistanceImageFilter< TFeatureImage >::
+vtkMeshSplitterDanielssonDistanceImageFilter< TFeatureImage, TPointSet >::
 SplitBinaryImage()
 {
   FeatureImagePixelType zero = NumericTraits< FeatureImagePixelType >::Zero;

@@ -43,13 +43,16 @@
 
 namespace itk
 {
-template< class TFeatureImage >
+template< class TFeatureImage,
+          class TPointSet =
+            PointSet< typename TFeatureImage::PointType::CoordRepType,
+                      TFeatureImage::ImageDimension > >
 class vtkMeshSplitterDanielssonDistanceImageFilter :
-  public vtkMeshSplitterImageFilterBase< TFeatureImage >
+  public vtkMeshSplitterImageFilterBase< TFeatureImage, TPointSet >
   {
 public:
   typedef vtkMeshSplitterDanielssonDistanceImageFilter Self;
-  typedef vtkMeshSplitterImageFilterBase< TFeatureImage > Superclass;
+  typedef vtkMeshSplitterImageFilterBase< TFeatureImage, TPointSet > Superclass;
   typedef SmartPointer< Self > Pointer;
   typedef SmartPointer< const Self > ConstPointer;
 

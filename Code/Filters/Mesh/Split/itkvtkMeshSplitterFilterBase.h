@@ -47,6 +47,7 @@ namespace itk
   \class vtkMeshSplitterFilterBase
   \brief
 */
+template< class TFeatureImage >
 class vtkMeshSplitterFilterBase : public Object
   {
 public:
@@ -58,15 +59,14 @@ public:
   /** Run-time type information (and related methods). */
   itkTypeMacro( vtkMeshSplitterFilterBase, Object );
 
-  typedef PointSet< double, 3 > PointSetType;
-  typedef PointSetType::Pointer PointSetPointer;
-  typedef PointSetType::PointsContainerPointer PointsContainerPointer;
-  typedef PointSetType::PointsContainerConstIterator PointsContainerConstIterator;
-  typedef PointSetType::PointType PointType;
+  typedef TFeatureImage FeatureImageType;
+  typedef typename FeatureImageType::Pointer FeatureImagePointer;
 
   void SetMesh( vtkPolyData* iMesh );
 
-  void SetSeeds( PointSetType* iSeeds );
+  void SetNumberOfImages( const size_t& iN );
+
+  void SetFeatureImage( const size_t& iId, FeatureImageType* iImage );
 
   void Update();
 
@@ -79,18 +79,29 @@ protected:
   /** \brief Destructor */
   ~vtkMeshSplitterFilterBase() {}
 
+  std::vector< FeatureImagePointer > m_Images;
   vtkPolyData* m_Mesh;
 
   std::vector< vtkPolyData* > m_Outputs;
 
-  PointSetPointer m_Seeds;
-
   double m_Bounds[6];
 
 
-  bool IsPointInMeshBounds( const PointType& iP ) const;
+  template< class TPoint >
+  bool IsPointInMeshBounds( const TPoint& iP ) const
+    {
+    for( unsigned int i = 0; i < 3; ++i )
+      {
+      double t = static_cast< double >( iP[i] );
 
-  bool CheckAllSeeds() const;
+      if( ( t < m_Bounds[2*i] ) || ( t > m_Bounds[2*i+1] ) )
+        {
+        return false;
+        }
+      }
+    return true;
+    }
+
 
   /** \brief Main method to be reimplemented in inherited classes */
   virtual void Split() = 0;
@@ -103,4 +114,5 @@ private:
   };
 }
 
+#include "itkvtkMeshSplitterFilterBase.txx"
 #endif // __itkvtkMeshSplitterFilterBase_h

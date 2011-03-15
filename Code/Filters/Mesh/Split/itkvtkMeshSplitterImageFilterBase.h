@@ -50,30 +50,31 @@ namespace itk
   \class vtkMeshSplitterImageFilterBase
   \brief
 */
-template< class TFeatureImage >
-class vtkMeshSplitterImageFilterBase : public vtkMeshSplitterFilterBase
+template< class TFeatureImage,
+          class TPointSet >
+class vtkMeshSplitterImageFilterBase :
+    public vtkMeshSplitterFilterBase< TFeatureImage >
   {
 public:
   typedef vtkMeshSplitterImageFilterBase Self;
-  typedef vtkMeshSplitterFilterBase Superclass;
+  typedef vtkMeshSplitterFilterBase< TFeatureImage > Superclass;
   typedef SmartPointer< Self > Pointer;
   typedef SmartPointer< const Self > ConstPointer;
 
   /** Run-time type information (and related methods). */
   itkTypeMacro( vtkMeshSplitterFilterBase, vtkMeshSplitterFilterBase );
 
-  typedef typename Superclass::PointSetType PointSetType;
-  typedef typename PointSetType::Pointer PointSetPointer;
-  typedef typename PointSetType::PointsContainerPointer PointsContainerPointer;
-  typedef typename PointSetType::PointsContainerConstIterator
-    PointsContainerConstIterator;
-  typedef typename PointSetType::PointType PointType;
-
   typedef TFeatureImage FeatureImageType;
   typedef typename FeatureImageType::Pointer FeatureImagePointer;
   typedef typename FeatureImageType::PixelType FeatureImagePixelType;
   typedef typename FeatureImageType::IndexType FeatureImageIndexType;
   typedef typename FeatureImageType::PointType FeatureImagePointType;
+
+  typedef TPointSet PointSetType;
+  typedef typename PointSetType::Pointer PointSetPointer;
+  typedef typename PointSetType::PointsContainerPointer PointsContainerPointer;
+  typedef typename PointSetType::PointsContainerConstIterator PointsContainerConstIterator;
+  typedef typename PointSetType::PointType PointType;
 
   typedef ExtractMeshesFromLabelImageFilter< FeatureImageType > ExtracMeshFilterType;
   typedef typename ExtracMeshFilterType::Pointer ExtracMeshFilterPointer;
@@ -82,17 +83,19 @@ public:
   typedef QuadEdgeMeshTovtkPolyData< MeshType > ITKVTKMeshConverterType;
   typedef typename ITKVTKMeshConverterType::Pointer ITKVTKMeshConverterPointer;
 
-  void SetNumberOfImages( const size_t& iN );
-  void SetFeatureImage( const size_t& iId, FeatureImageType* iImage );
+  void SetSeeds( PointSetType* iSeeds );
+
 
 protected:
   vtkMeshSplitterImageFilterBase();
 
   ~vtkMeshSplitterImageFilterBase() {}
 
-  std::vector< FeatureImagePointer > m_Images;
   FeatureImagePointer m_BinaryImage;
   FeatureImagePointer m_OutputImage;
+
+  PointSetPointer m_Seeds;
+
   unsigned int m_NumberOfThreads;
   unsigned int m_NumberOfTrianglesPerMesh;
   unsigned int m_NumberOfSmoothingIterations;
@@ -102,8 +105,9 @@ protected:
   bool m_UseSmoothing;
   bool m_UseDecimation;
 
-  virtual void ComputeBinaryImageFromInputMesh();
+  bool CheckAllSeeds() const;
 
+  virtual void ComputeBinaryImageFromInputMesh();
 
   virtual void Split();
 

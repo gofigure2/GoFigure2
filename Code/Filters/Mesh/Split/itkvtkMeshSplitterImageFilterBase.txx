@@ -41,38 +41,54 @@
 
 namespace itk
 {
-template< class TFeatureImage >
-vtkMeshSplitterImageFilterBase< TFeatureImage >::
-vtkMeshSplitterImageFilterBase() : Superclass( ),
+template< class TFeatureImage, class TPointSet >
+vtkMeshSplitterImageFilterBase< TFeatureImage, TPointSet >::
+vtkMeshSplitterImageFilterBase() : Superclass( ), m_Seeds( NULL ),
     m_NumberOfThreads( 1 ), m_NumberOfTrianglesPerMesh( 200 ),
     m_NumberOfSmoothingIterations( 8 ), m_SmoothingRelaxationFactor( 0.75 ),
     m_DelaunayConforming( false ), m_UseSmoothing( true ),
     m_UseDecimation( true )
 {}
 
-template< class TFeatureImage >
+template< class TFeatureImage, class TPointSet >
 void
-vtkMeshSplitterImageFilterBase< TFeatureImage >::
-SetNumberOfImages( const size_t& iN )
+vtkMeshSplitterImageFilterBase< TFeatureImage, TPointSet >::
+SetSeeds( PointSetType* iSeeds )
 {
-  m_Images.resize( iN );
-}
-
-template< class TFeatureImage >
-void
-vtkMeshSplitterImageFilterBase< TFeatureImage >::
-SetFeatureImage( const size_t& iId, FeatureImageType* iImage )
-{
-  if( iId < m_Images.size() )
+  if( iSeeds )
     {
-    m_Images[iId] = iImage;
+    m_Seeds = iSeeds;
     this->Modified();
     }
 }
 
-template< class TFeatureImage >
+template< class TFeatureImage, class TPointSet >
+bool
+vtkMeshSplitterImageFilterBase< TFeatureImage, TPointSet >::
+CheckAllSeeds() const
+{
+  PointsContainerPointer points = m_Seeds->GetPoints();
+
+  PointsContainerConstIterator it = points->Begin();
+  PointsContainerConstIterator end = points->End();
+
+  while( it != end )
+    {
+    if( !IsPointInMeshBounds( it->Value() ) )
+      {
+      std::cout << it->Value() << " is out of bounds" << std::endl;
+      return false;
+      }
+    ++it;
+    }
+  return true;
+  }
+
+
+
+template< class TFeatureImage, class TPointSet >
 void
-vtkMeshSplitterImageFilterBase< TFeatureImage >::
+vtkMeshSplitterImageFilterBase< TFeatureImage, TPointSet >::
 ComputeBinaryImageFromInputMesh()
 {
   typedef ConvertMeshesToLabelImageFilter< FeatureImageType > MeshToLabelFilterType;
@@ -90,8 +106,8 @@ ComputeBinaryImageFromInputMesh()
   mesh_vector[0] = converter->GetOutput();
 
   m_BinaryImage = FeatureImageType::New();
-  m_BinaryImage->CopyInformation( m_Images.front() );
-  m_BinaryImage->SetRegions( m_Images.front()->GetLargestPossibleRegion() );
+  m_BinaryImage->CopyInformation( this->m_Images.front() );
+  m_BinaryImage->SetRegions( this->m_Images.front()->GetLargestPossibleRegion() );
   m_BinaryImage->Allocate();
   m_BinaryImage->FillBuffer( 0 );
 
@@ -102,33 +118,43 @@ ComputeBinaryImageFromInputMesh()
 }
 
 
-template< class TFeatureImage >
+template< class TFeatureImage, class TPointSet >
 void
-vtkMeshSplitterImageFilterBase< TFeatureImage >::
+vtkMeshSplitterImageFilterBase< TFeatureImage, TPointSet >::
 Split()
 {
+  if( m_Seeds.IsNull() )
+    {
+    itkGenericExceptionMacro( << "m_Seeds is NULL" );
+    }
+
+  if( !CheckAllSeeds() )
+    {
+    itkGenericExceptionMacro( <<"Out of bounds" );
+    }
+
   ComputeBinaryImageFromInputMesh();
 
   this->SplitBinaryImage();
   GenerateMeshesFromOutputImage();
 }
 
-template< class TFeatureImage >
+template< class TFeatureImage, class TPointSet >
 void
-vtkMeshSplitterImageFilterBase< TFeatureImage >::
+vtkMeshSplitterImageFilterBase< TFeatureImage, TPointSet >::
 GenerateMeshesFromOutputImage()
 {
   ExtracMeshFilterPointer extractor = ExtracMeshFilterType::New();
   extractor->SetInput( m_OutputImage );
 
   size_t i = 0;
-  size_t NumberOfImages = m_Images.size();
+  size_t NumberOfImages = this->m_Images.size();
 
   extractor->SetNumberOfFeatureImages( NumberOfImages );
 
   for( ; i < NumberOfImages; ++i )
     {
-    extractor->SetFeatureImage( i, m_Images[i] );
+    extractor->SetFeatureImage( i, this->m_Images[i] );
     }
 
   extractor->SetNumberOfThreads( m_NumberOfThreads );
@@ -146,7 +172,7 @@ GenerateMeshesFromOutputImage()
   typename MeshVectorType::const_iterator it = MeshVector.begin();
   typename MeshVectorType::const_iterator end = MeshVector.end();
 
-  m_Outputs.resize( MeshVector.size() );
+  this->m_Outputs.resize( MeshVector.size() );
 
   while( it != end )
     {
@@ -154,8 +180,8 @@ GenerateMeshesFromOutputImage()
     converter->SetInput( *it );
     converter->Update();
 
-    m_Outputs[i] = vtkPolyData::New();
-    m_Outputs[i]->DeepCopy( converter->GetOutput() );
+    this->m_Outputs[i] = vtkPolyData::New();
+    this->m_Outputs[i]->DeepCopy( converter->GetOutput() );
     ++it;
     ++i;
     }

@@ -32,12 +32,16 @@
 
 =========================================================================*/
 
+#ifndef __itkvtkMeshSplitterFilterBase_txx
+#define __itkvtkMeshSplitterFilterBase_txx
+
 #include "itkvtkMeshSplitterFilterBase.h"
 
 namespace itk
 {
-vtkMeshSplitterFilterBase::
-vtkMeshSplitterFilterBase() : m_Mesh( NULL ), m_Outputs( 0 ), m_Seeds( NULL )
+template< class TFeatureImage >
+vtkMeshSplitterFilterBase< TFeatureImage >::
+vtkMeshSplitterFilterBase() : m_Mesh( NULL ), m_Outputs( 0 )
   {
   for( unsigned int dim = 0; dim < 3; ++dim )
     {
@@ -46,8 +50,29 @@ vtkMeshSplitterFilterBase() : m_Mesh( NULL ), m_Outputs( 0 ), m_Seeds( NULL )
     }
   }
 
+template< class TFeatureImage >
 void
-vtkMeshSplitterFilterBase::
+vtkMeshSplitterFilterBase< TFeatureImage >::
+SetNumberOfImages( const size_t& iN )
+{
+  m_Images.resize( iN );
+}
+
+template< class TFeatureImage >
+void
+vtkMeshSplitterFilterBase< TFeatureImage >::
+SetFeatureImage( const size_t& iId, FeatureImageType* iImage )
+{
+  if( iId < m_Images.size() )
+    {
+    m_Images[iId] = iImage;
+    this->Modified();
+    }
+}
+
+template< class TFeatureImage >
+void
+vtkMeshSplitterFilterBase< TFeatureImage >::
 SetMesh( vtkPolyData* iMesh )
 {
   if( ( iMesh ) && ( iMesh != m_Mesh ) )
@@ -58,68 +83,25 @@ SetMesh( vtkPolyData* iMesh )
     }
 }
 
+template< class TFeatureImage >
 void
-vtkMeshSplitterFilterBase::
-SetSeeds( PointSetType* iSeeds )
-{
-  if( iSeeds )
-    {
-    m_Seeds = iSeeds;
-    this->Modified();
-    }
-}
-
-void
-vtkMeshSplitterFilterBase::
+vtkMeshSplitterFilterBase< TFeatureImage >::
 Update()
 {
   GenerateData();
 }
 
+template< class TFeatureImage >
 std::vector< vtkPolyData* >
-vtkMeshSplitterFilterBase::
+vtkMeshSplitterFilterBase< TFeatureImage >::
 GetOutputs()
 {
   return m_Outputs;
 }
 
-bool
-vtkMeshSplitterFilterBase::
-IsPointInMeshBounds( const PointType& iP ) const
-{
-  for( unsigned int i = 0; i < 3; ++i )
-    {
-    if( ( iP[i] < m_Bounds[2*i] ) || ( iP[i] > m_Bounds[2*i+1] ) )
-      {
-      return false;
-      }
-    }
-  return true;
-}
-
-bool
-vtkMeshSplitterFilterBase::
-CheckAllSeeds() const
-{
-  PointsContainerPointer points = m_Seeds->GetPoints();
-
-  PointsContainerConstIterator it = points->Begin();
-  PointsContainerConstIterator end = points->End();
-
-  while( it != end )
-    {
-    if( !IsPointInMeshBounds( it->Value() ) )
-      {
-      std::cout << it->Value() << " is out of bounds" << std::endl;
-      return false;
-      }
-    ++it;
-    }
-  return true;
-  }
-
+template< class TFeatureImage >
 void
-vtkMeshSplitterFilterBase::
+vtkMeshSplitterFilterBase< TFeatureImage >::
 GenerateData()
 {
   if( !m_Mesh )
@@ -127,16 +109,8 @@ GenerateData()
     itkGenericExceptionMacro( << "m_Mesh is NULL" );
     }
 
-  if( m_Seeds.IsNull() )
-    {
-    itkGenericExceptionMacro( << "m_Seeds is NULL" );
-    }
-
-  if( !CheckAllSeeds() )
-    {
-    itkGenericExceptionMacro( <<"Out of bounds" );
-    }
-
   this->Split();
-  }
 }
+
+}
+#endif
