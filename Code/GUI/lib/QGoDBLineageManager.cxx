@@ -41,8 +41,7 @@ QGoDBLineageManager::QGoDBLineageManager(int iImgSessionID, QWidget *iparent) :
   QGoDBTraceManager(), m_LineageContainerInfoForVisu(NULL)
 {
   this->SetInfo(iImgSessionID, iparent);
-  this->m_TWContainer = new GoDBTWContainerForTrackLineage(this->m_TraceName,
-                                                          this->m_CollectionName, iImgSessionID);
+  this->m_TWContainer = new GoDBTWContainerForLineage(iImgSessionID);
 }
 
 //-------------------------------------------------------------------------
@@ -87,7 +86,7 @@ void QGoDBLineageManager::SetCollectionsTraceNames()
 void QGoDBLineageManager::DisplayInfoForAllTraces(
   vtkMySQLDatabase *iDatabaseConnector)
 {
-  this->DisplayInfoForAllTracesTemplate< GoDBTWContainerForTrackLineage >(
+  this->DisplayInfoForAllTracesTemplate< GoDBTWContainerForLineage >(
     this->m_TWContainer, iDatabaseConnector, Qt::Unchecked);
 }
 
@@ -108,7 +107,7 @@ void QGoDBLineageManager::DisplayInfoAndLoadVisuContainerForAllLineages(
 void QGoDBLineageManager::DisplayInfoForLastCreatedTrace(
   vtkMySQLDatabase *iDatabaseConnector)
 {
-  this->DisplayInfoForLastCreatedTraceTemplate< GoDBTWContainerForTrackLineage >(
+  this->DisplayInfoForLastCreatedTraceTemplate< GoDBTWContainerForLineage >(
     this->m_TWContainer, iDatabaseConnector);
 }
 
@@ -118,7 +117,7 @@ void QGoDBLineageManager::DisplayInfoForLastCreatedTrace(
 void QGoDBLineageManager::DisplayInfoForExistingTrace(
   vtkMySQLDatabase *iDatabaseConnector, int iTraceID)
 {
-  this->DisplayInfoForExistingTraceTemplate< GoDBTWContainerForTrackLineage >(
+  this->DisplayInfoForExistingTraceTemplate< GoDBTWContainerForLineage >(
     this->m_TWContainer, iDatabaseConnector, iTraceID);
 }
 

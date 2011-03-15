@@ -37,7 +37,7 @@
 
 #include "QGoTableWidget.h"
 #include "GoDBCollectionOfTraces.h"
-#include "GoDBTWContainerForTrackLineage.h"
+#include "GoDBTWContainerForLineage.h"
 #include "QGoDBTraceManager.h"
 #include "QGoGUILibConfigure.h"
 #include "LineageContainer.h"
@@ -174,7 +174,7 @@ signals:
   //void MeshesToAddToTrack(std::list<unsigned int> iListMeshes, unsigned int iTrackID);
 
 protected:
-  GoDBTWContainerForTrackLineage *m_TWContainer;
+  GoDBTWContainerForLineage      *m_TWContainer;
   LineageContainer               *m_LineageContainerInfoForVisu;
 
   //virtual pure method in QGoDBTraceManager
