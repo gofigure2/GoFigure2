@@ -39,8 +39,6 @@ SET( GOFIGURE2_FILTER_SOURCE
 
   ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/Merge/itkvtkMeshMergeFilterBase.h
 
-#  ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/Split/itkSingleCellSplitImageFilter.h
-#  ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/Split/itkSingleCellSplitImageFilter.txx
   ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/Split/itkvtkMeshSplitterDanielssonDistanceImageFilter.h
   ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/Split/itkvtkMeshSplitterDanielssonDistanceImageFilter.txx
   ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/Split/itkvtkMeshSplitterFilterBase.txx
