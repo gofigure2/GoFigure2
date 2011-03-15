@@ -979,13 +979,21 @@ std::vector< std::string > GoDBCollectionOfTraces::GetAttributesForTraces()
 {
   std::vector< std::string > oTraceAttributes;
   oTraceAttributes.push_back(this->m_TracesIDName);
-  oTraceAttributes.push_back(this->m_CollectionIDName);
+  if (this->m_CollectionIDName != "NoneID")
+    {
+    oTraceAttributes.push_back(this->m_CollectionIDName);
+    }
+  else
+    {
+    oTraceAttributes.push_back("TrackIDRoot");
+    }
   oTraceAttributes.push_back("Red");
   oTraceAttributes.push_back("Green");
   oTraceAttributes.push_back("Blue");
   oTraceAttributes.push_back("Alpha");
   oTraceAttributes.push_back("Points");
   oTraceAttributes.push_back("TCoord");
+
   return oTraceAttributes;
 }
 

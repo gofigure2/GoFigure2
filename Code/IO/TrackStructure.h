@@ -52,7 +52,7 @@ template <class T>
 class QGOIO_EXPORT TreeNodeStructure
 {
 public:
-  TreeNodeStructure();
+  //TreeNodeStructure();
   ~TreeNodeStructure()
     {
     std::vector<vtkActor* >::iterator it = m_DivisionActor.begin();

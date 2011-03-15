@@ -96,9 +96,9 @@ void QGoDBLineageManager::DisplayInfoForAllTraces(
 void QGoDBLineageManager::DisplayInfoAndLoadVisuContainerForAllLineages(
   vtkMySQLDatabase *iDatabaseConnector)
 {
-  this->DisplayInfoForAllTraces(iDatabaseConnector); //for the time being as there is no lineage container
-  //this->DisplayInfoAndLoadVisuContainerWithAllTraces< GoDBTWContainerForTrackLineage >
-  //  (this->m_TWContainer, iDatabaseConnector);
+  //this->DisplayInfoForAllTraces(iDatabaseConnector); //for the time being as there is no lineage container
+  this->DisplayInfoAndLoadVisuContainerWithAllTraces< GoDBTWContainerForLineage >
+    (this->m_TWContainer, iDatabaseConnector);
 }
 
 //-------------------------------------------------------------------------
@@ -218,8 +218,8 @@ void QGoDBLineageManager::GetTracesInfoFromDBAndModifyContainerForVisu(
   vtkMySQLDatabase *iDatabaseConnector,
   std::list< unsigned int > iListTraceIDs)
 {
-  //this->GetTracesInfoFromDBAndModifyContainerForVisuTemplate< TrackContainer >(
-  //  this->m_TrackContainerInfoForVisu, iDatabaseConnector, iListTraceIDs);
+  this->GetTracesInfoFromDBAndModifyContainerForVisuTemplate< LineageContainer >(
+    this->m_LineageContainerInfoForVisu, iDatabaseConnector, iListTraceIDs);
 }
 
 //-------------------------------------------------------------------------
