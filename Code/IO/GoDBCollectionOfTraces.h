@@ -476,6 +476,9 @@ public:
   int GetTraceIDWithLowestTimePoint(vtkMySQLDatabase *iDatabaseConnector,
     std::list<unsigned int> iListTraceIDs);
 
+  std::list<unsigned int> GetTrackFamilyDataFromDB(
+    vtkMySQLDatabase *iDatabaseConnector);
+
 protected:
 
   std::string  m_CollectionName;
