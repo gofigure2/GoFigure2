@@ -311,7 +311,7 @@ void QGoDBTrackManager::SetColorCoding(bool IsChecked)
 void QGoDBTrackManager::AddActionsContextMenu(QMenu *iMenu)
 {
   QGoDBTraceManager::AddActionsContextMenu(iMenu);
-  //this->m_CheckedTracesMenu->addAction
+
   QMenu *SplitMergeMenu = new QMenu(tr("Split/Merge them"), iMenu);
   SplitMergeMenu->addAction( tr("Using the Widget"),
                              this, SLOT( SplitMergeTrackWithWidget() ) );
@@ -319,8 +319,6 @@ void QGoDBTrackManager::AddActionsContextMenu(QMenu *iMenu)
   SplitMergeMenu->addAction( tr("Merge your 2 tracks"), this, SLOT( MergeTracks() ) );
   iMenu->addAction( SplitMergeMenu->menuAction() );
 
-  //if we use also add checked traces to selected collection, then we should use
-  // AddActionForAddingCheckedTracesToCollection() from QGoDBTraceManager instead:
   this->m_CheckedTracesMenu->addAction( tr("Create a new division from checked %1s")
                                         .arg( this->m_TraceName.c_str() ),
                                         this, SLOT( CreateCorrespondingTrackFamily() ) );
@@ -521,7 +519,6 @@ void QGoDBTrackManager::CreateCorrespondingTrackFamily()
       MotherID, DaughtersIDs);
     if (TrackFamilyID != -1)
       {
-      //for lineage bounding box and lineageid in track table
       //check the lineageID of the mother:
       std::list<unsigned int> TrackID;
       TrackID.push_back(MotherID);
@@ -530,41 +527,21 @@ void QGoDBTrackManager::CreateCorrespondingTrackFamily()
       //update the trackFamilyID for the daughters:
       emit NeedToGetDatabaseConnection();
       std::list<unsigned int>::iterator iter = DaughtersIDs.begin();
-      //unsigned int DaughterOneID, DaughterTwoID;
-      //DaughterOneID = *iter;
       while(iter != DaughtersIDs.end() )
         {
         this->UpdateTrackFamilyIDForDaughter(this->m_DatabaseConnector, 
           *iter, TrackFamilyID);
-        //DaughterTwoID = *iter;
         ++iter;
         }  
       if (!LineageIDToCheck.empty())
         {
         //the mother track already belong to the lineage, need to add the daughters only:
         emit CheckedTracksToAddToSelectedLineage(DaughtersIDs, LineageIDToCheck.front());
-        //emit the points to create the basic lineage in the visu:
-        //emit NewTrackFamilySavedInDBForExistingLineage(
-          //LineageIDToCheck.front(), MotherID,
-          //this->m_TrackContainerInfoForVisu->GetLastPointOfTheTrack(MotherID), 
-          //DaughterOneID, 
-          //this->m_TrackContainerInfoForVisu->GetFirstPointOfTheTrack(DaughterOneID), 
-          //DaughterTwoID,
-          //this->m_TrackContainerInfoForVisu->GetFirstPointOfTheTrack(DaughterTwoID) );
         }
       else
         {
-        //QGoDBTraceManager::CreateCorrespondingCollection(); 
-          emit NewLineageToCreateFromCheckedTracks(
+        emit NewLineageToCreateFromCheckedTracks(
             this->m_TrackContainerInfoForVisu->GetHighlightedElementsTraceID(), MotherID);
-        //need to update the trackIDRoot for the lineage and the division to be created in the visu:
-        //emit NewTrackFamilySavedInDBForNewLineage(
-        //    MotherID,
-        //    this->m_TrackContainerInfoForVisu->GetLastPointOfTheTrack(MotherID), 
-         //   DaughterOneID, 
-       //     this->m_TrackContainerInfoForVisu->GetFirstPointOfTheTrack(DaughterOneID), 
-        //    DaughterTwoID,
-        //    this->m_TrackContainerInfoForVisu->GetFirstPointOfTheTrack(DaughterTwoID) );
         }
       }
     } 

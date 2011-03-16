@@ -79,13 +79,19 @@ addDivisionToLineage( unsigned int iLineageID, bool iIsRoot,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void LineageContainer::UpdateCurrentElementFromDBForLineage(unsigned int LineageID, 
+void LineageContainer::InsertNewLineage(unsigned int iLineageID, 
     double irgba[4], unsigned int iTrackIDRoot,
     bool IsVisible)
 {
-  TraceContainerBase::UpdateCurrentElementFromDB(LineageID, irgba,
-    IsVisible);
-  this->m_CurrentElement.TrackRootID = iTrackIDRoot;
+  MultiIndexContainerElementType NewElement;
+  NewElement.TraceID = iLineageID;
+  NewElement.rgba[0] = irgba[0];
+  NewElement.rgba[1] = irgba[1];
+  NewElement.rgba[2] = irgba[2];
+  NewElement.rgba[3] = irgba[3];
+  NewElement.TrackRootID = iTrackIDRoot;
+  NewElement.Visible = IsVisible;
+  this->Insert(NewElement);
 }
 //-------------------------------------------------------------------------
 

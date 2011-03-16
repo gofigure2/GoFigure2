@@ -1327,15 +1327,6 @@ void QGoPrintDatabase::SetTracksManager()
   QObject::connect( this->m_TracksManager, SIGNAL( CheckedTracesToDelete() ),
                     this, SLOT( DeleteCheckedTracks() ) );
 
-  //QObject::connect( this->m_TracksManager,
-                    //SIGNAL ( NewCollectionFromCheckedTraces(std::list< unsigned int > ) ),
-                    //this,
-                    //SLOT( CreateNewLineageFromCheckedTracks(std::list< unsigned int >, unsigned int ) ) );
-  QObject::connect( this->m_TracksManager,
-                    SIGNAL ( NewLineageToCreateFromCheckedTracks( std::list<unsigned int>, unsigned int )),
-                    this,
-                    SLOT( CreateNewLineageFromCheckedTracks(std::list< unsigned int >, unsigned int ) ) );
-                    
   QObject::connect( this->m_TracksManager, SIGNAL( NeedToGetDatabaseConnection() ),
                     this, SLOT( PassDBConnectionToTracksManager() ) );
 
@@ -1371,6 +1362,16 @@ void QGoPrintDatabase::SetTracksManager()
                     this,
                     SIGNAL( PrintMessage(QString, int) ) );
 
+   QObject::connect(this->m_TracksManager,
+                   SIGNAL(CheckedTracksToAddToSelectedLineage(
+                              std::list< unsigned int >, unsigned int ) ), this,
+                   SLOT( AddCheckedTracksToSelectedLineage(std::list< unsigned int >, unsigned int ) ) );
+
+   QObject::connect( this->m_TracksManager,
+                   SIGNAL ( NewLineageToCreateFromCheckedTracks( std::list<unsigned int>, unsigned int )),
+                   this,
+                   SLOT( CreateNewLineageFromCheckedTracks(std::list< unsigned int >, unsigned int ) ) );
+
   this->m_TracksManager->SetSelectedCollection(
     this->m_TraceWidget->GetPointerCollectionData() );
   this->m_TracksManager->SetSelectedColor( this->m_TraceWidget->GetPointerColorData() );
@@ -1382,27 +1383,7 @@ void QGoPrintDatabase::SetTracksManager()
 void QGoPrintDatabase::SetLineagesManager()
 {
   this->m_LineagesManager = new QGoDBLineageManager(m_ImgSessionID, this);
-
-  //QObject::connect( this->m_TracksManager, 
-  //                  SIGNAL (TrackRootLastCreatedLineageToUpdate(unsigned int) ),
-  //                  this->m_LineagesManager, 
-  //                  SLOT( UpdateTrackRootLastCreatedLineage(unsigned int) ) );
-  QObject::connect(this->m_TracksManager,
-                   SIGNAL(NewTrackFamilySavedInDBForNewLineage(unsigned int, double*, 
-                    unsigned int, double*, unsigned int, double*) ),
-                   this->m_LineagesManager,
-                   SLOT(CreateNewDivisionInVisuForNewLineage(unsigned int, double*, 
-                   unsigned int, double*, unsigned int, double*)));
-
- // QObject::connect(this->m_TracksManager,
- //                  SIGNAL(NewTrackFamilySavedInDBForExistingLineage(unsigned int,
- //                  unsigned int, double*, unsigned int, double*, unsigned int, double*) ),
- //                  this,
- //                  SLOT(AddCheckedTracksToSelectedLineage(
-  //                 unsigned int, unsigned int, double*, unsigned int, double*, 
-  //                 unsigned int, double*) ) );
-
-
+                    
   QObject::connect( this->m_LineagesManager, 
                     SIGNAL( NeedToGetDatabaseConnection() ),
                     this, 
@@ -1411,13 +1392,6 @@ void QGoPrintDatabase::SetLineagesManager()
                     SIGNAL( DBConnectionNotNeededAnymore() ),
                     this,
                     SLOT( CloseDBConnection() ) );
-
-  
-
-  QObject::connect(this->m_TracksManager,
-                   SIGNAL(CheckedTracksToAddToSelectedLineage(
-                              std::list< unsigned int >, unsigned int ) ), this,
-                   SLOT( AddCheckedTracksToSelectedLineage(std::list< unsigned int >, unsigned int ) ) );
 
   this->m_LineagesManager->SetSelectedColor( this->m_TraceWidget->GetPointerColorData() );
 }
@@ -1711,16 +1685,8 @@ void QGoPrintDatabase::SplitMergeTracksWithWidget(
 
 //--------------------------------------------------------------------------
 void QGoPrintDatabase::AddCheckedTracksToSelectedLineage(
-  unsigned int iLineageID, std::list<unsigned int> iListDaughters)
-  //double* iMotherPoints, unsigned int iDaughterOneID, double* iDaughterOnePoints, 
-  //unsigned int iDaughterTwoID, double* iDaughterTwoPoints)
+  std::list<unsigned int> iListDaughters, unsigned int iLineageID)
 {
-  //std::list<unsigned int> ListDaughters;
-  //ListDaughters.push_back(iDaughterOneID);
-  //ListDaughters.push_back(iDaughterTwoID);
   this->AddCheckedTracesToCollection< QGoDBTrackManager, QGoDBLineageManager >(
     this->m_TracksManager, this->m_LineagesManager, iLineageID, iListDaughters);
-  //this->m_LineagesManager->UpdateExistingLineageWithNewDivision(iLineageID, 
-  //  iMotherID, iMotherPoints, iDaughterOneID, iDaughterOnePoints, 
-  //  iDaughterTwoID, iDaughterTwoPoints);
 }

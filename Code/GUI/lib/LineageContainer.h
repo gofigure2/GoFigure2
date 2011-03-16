@@ -142,7 +142,14 @@ public:
    */
   void extractLineageFromPolyData( vtkPolyData* iPolyData);
 
-  void UpdateCurrentElementFromDBForLineage(unsigned int LineageID, 
+  /**
+  \brief insert a new element in the container with all the info needed
+  \param[in] iLineageID ID for the new lineage
+  \param[in] irgba color of the lineage
+  \param[in] iTrackIDRoot for the new lineage
+  \param[in] IsVisible 
+  */
+  void InsertNewLineage(unsigned int iLineageID, 
     double irgba[4], unsigned int iTrackIDRoot,
     bool IsVisible = false);
   /*

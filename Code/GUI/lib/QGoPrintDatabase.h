@@ -725,12 +725,11 @@ protected slots:
   /** 
   \brief call the AddCheckedTracesToCollection template and give the info to the
   lineages manager to create the division in the visu
+  \param[in] iLineageID
+  \param[in] iListDaughters ID of the tracks to be updated with lineageID
   */
   void AddCheckedTracksToSelectedLineage(
-    unsigned int iLineageID, std::list<unsigned int> iListDaughters);
-    //unsigned int iLineageID, unsigned int iMotherID, double* iMotherPoints, 
-    //unsigned int iDaughterOneID, double* iDaughterOnePoints, 
-    //unsigned int iDaughterTwoID, double* iDaughterTwoPoints);
+    std::list<unsigned int> iListDaughters, unsigned int iLineageID);
 
   /**
   \brief emit a signal TraceToReedit and set m_ReeditMode to true

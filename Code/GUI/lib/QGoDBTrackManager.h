@@ -77,6 +77,7 @@ public:
   /**
   \brief get all the data from the database of the track family table and give the corresponding
   info to the track container for visu
+  \param[in] iDatabaseConnector connection to the database
   */
   void LoadInfoVisuContainerForTrackFamilies(vtkMySQLDatabase *iDatabaseConnector);
 
@@ -143,29 +144,9 @@ signals:
   void TrackToSplit(unsigned int iTrackID, std::list<unsigned int> iListMeshIDs);
   void TrackIDToBeModifiedWithWidget(std::list<unsigned int> iListTracksID);
   void MeshesToAddToTrack(std::list<unsigned int> iListMeshes, unsigned int iTrackID);
-  //void TrackRootLastCreatedLineageToUpdate(unsigned int iMotherID);  
-  /**
-  \signal emitted in CreateTrackFamily to create a connection for lineage in the visu
-  by calculating the points
-  */
-  //void NewTrackFamilySavedInDB(double* iMotherTrackPoints, 
-  //  double* iDaughterOneTrackPoints, double* iDaughterTwoTrackPoints);
-
-  /**
-  \signal emitted ...
-  */
+ 
   void CheckedTracksToAddToSelectedLineage(std::list<unsigned int> iDaughtersID, unsigned int iLineageID);
   void NewLineageToCreateFromCheckedTracks( std::list<unsigned int> iCheckedTracksIDs, unsigned int iTrackIDRoot);
-
- /* void NewTrackFamilySavedInDBForExistingLineage(unsigned int iLineageID, 
-    unsigned int iMotherID, double* iMotherTrackPoints, 
-    unsigned int iDaughterOneID, double* iDaughterOneTrackPoints, 
-    unsigned int iDaughterTwoID, double* iDaughterTwoTrackPoints);
-
-  void NewTrackFamilySavedInDBForNewLineage(
-    unsigned int iMotherID, double* iMotherTrackPoints, 
-    unsigned int iDaughterOneID, double* iDaughterOneTrackPoints, 
-    unsigned int iDaughterTwoID, double* iDaughterTwoTrackPoints);*/
 
 protected:
   GoDBTWContainerForTrack *m_TWContainer;
@@ -194,13 +175,6 @@ protected:
   //virtual in QGoDBTraceManager
   void AddActionsContextMenu(QMenu *iMenu);
 
-protected slots:
-  //virtual pure method in QGoDBTraceManager
-  virtual void UpdateHighlightedElementsInVisuContainer(int iTraceID);
-
-  //virtual pure method in QGoDBTraceManager
-  virtual void UpdateVisibleElementsInVisuContainer(int iTraceID);
-
   /**
   \brief create or update the track contained in the current element of the
   track container into the database, the table widget and insert the current
@@ -208,6 +182,63 @@ protected slots:
   \param[in] iDatabaseConnector connection to the database
   */
   void SaveTrackCurrentElement(vtkMySQLDatabase* iDatabaseConnector);
+
+  /**
+  \brief check that the 2 tracks are not overloaping, if not, return the
+  trackID to keep for the merge and the one to delete
+  \param[in] iTrackIDs IDs of both tracks to check
+  \param[in,out] ioTraceIDToKeep ID of the trace to keep after the merge
+  \param[in,out] ioTraceIDToDelete ID of the trace to delete after the merge
+  \param[in] iDatabaseConnector connection to the database
+  \return false of the tracks are not overlapping, true if they are
+  */
+  bool CheckOverlappingTracks(std::list<unsigned int> iTrackIDs,
+    unsigned int &ioTraceIDToKeep, unsigned int &ioTraceIDToDelete,
+    vtkMySQLDatabase* iDatabaseConnector);
+
+  /**
+  \brief update the trackFamilyID in the database for the track corresponding
+  to iDaughterID
+  \param[in] iDatabaseconnector connection to the database
+  \param[in] iDaughterID ID of the track to be updated
+  \param[in] iTrackFamilyID
+  */
+  void UpdateTrackFamilyIDForDaughter(vtkMySQLDatabase* iDatabaseConnector,
+    unsigned int iDaughterID,unsigned int iTrackFamilyID);
+
+  /**
+  \brief check that the mothertrackID is not already a mother in another
+  trackfamily, create the trackfamily if not and return the trackfamilyID
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iMotherTrackID 
+  \param[in] iDaughtersID
+  \return ID of the new created trackfamily
+  */
+  int CreateTrackFamily(vtkMySQLDatabase* iDatabaseConnector,
+    unsigned int iMotherTrackID, std::list<unsigned int> iDaughtersID);
+
+  /**
+  \brief get the trackID with the lowest timepoint as the mother trackID, 
+  if several tracks have the lowest timepoint, return false. if other tracks 
+  from the list are overlapping the mother trackID, return false.
+  \param[in] iListTracksID tracks ID to be identified
+  \param[in,out] ioMotherID to be modified with the identified mother TrackID 
+  \param[in,out] ioDaughtersID to be modified with the identified daughters TrackID
+  \return false if it was not possible to identify them based on the timepoints
+  */
+  bool IdentifyMotherDaughtersToCreateTrackFamily(
+    vtkMySQLDatabase* iDatabaseConnector,
+    std::list<unsigned int> iListTracksID, unsigned int &ioMotherID,
+    std::list<unsigned int> &ioDaughtersID);
+
+protected slots:
+
+  //virtual pure method in QGoDBTraceManager
+  virtual void UpdateHighlightedElementsInVisuContainer(int iTraceID);
+
+  //virtual pure method in QGoDBTraceManager
+  virtual void UpdateVisibleElementsInVisuContainer(int iTraceID);
+
 
  //virtual pure method in QGoDBTraceManager
   virtual void SetColorCoding(bool IsChecked);
@@ -235,45 +266,11 @@ protected slots:
   void MergeTracks();
 
   /**
-  \brief check that the 2 tracks are not overloaping, if not, return the
-  trackID to keep for the merge and the one to delete
-  \param[in] iTrackIDs IDs of both tracks to check
-  \param[in,out] ioTraceIDToKeep ID of the trace to keep after the merge
-  \param[in,out] ioTraceIDToDelete ID of the trace to delete after the merge
-  \param[in] iDatabaseConnector connection to the database
-  \return false of the tracks are not overlapping, true if they are
+  \brief slot called when the user chose "Create a new division from checked tracks"
   */
-  bool CheckOverlappingTracks(std::list<unsigned int> iTrackIDs,
-    unsigned int &ioTraceIDToKeep, unsigned int &ioTraceIDToDelete,
-    vtkMySQLDatabase* iDatabaseConnector);
-
-  //QGoDBTraceManager method
-  //virtual void CreateCorrespondingCollection();
-
-  /**
-  \brief get the trackID with the lowest timepoint as the mother trackID, 
-  if several tracks have the lowest timepoint, return false. if other tracks 
-  from the list are overlapping the mother trackID, return false.
-  */
-  bool IdentifyMotherDaughtersToCreateTrackFamily(
-    vtkMySQLDatabase* iDatabaseConnector,
-    std::list<unsigned int> iListTracksID, unsigned int &ioMotherID,
-    std::list<unsigned int> &ioDaughtersID);
-
-  /**
-  \brief check that the mothertrackID is not already a mother in another
-  trackfamily, create the trackfamily if not and return the trackfamilyID
-  */
-  int CreateTrackFamily(vtkMySQLDatabase* iDatabaseConnector,
-    unsigned int iMotherTrackID, std::list<unsigned int> iDaughtersID);
-
-  /**
-  \brief update the trackFamilyID in the database for the track corresponding
-  to iDaughterID
-  */
-  void UpdateTrackFamilyIDForDaughter(vtkMySQLDatabase* iDatabaseConnector,
-    unsigned int iDaughterID,unsigned int iTrackFamilyID);
-
   void CreateCorrespondingTrackFamily();
+
+  
+
 };
 #endif
