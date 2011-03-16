@@ -32,47 +32,37 @@
 
 =========================================================================*/
 
-#ifndef __itkvtkMeshMergeFilterBase_h
-#define __itkvtkMeshMergeFilterBase_h
+#ifndef __itkvtkMeshMergeFilterBase_txx
+#define __itkvtkMeshMergeFilterBase_txx
 
-#include "itkvtkMeshFilterBase.h"
-#include <list>
-
-class vtkPolyData;
+#include "itkvtkMeshMergeFilterBase.h"
+#include "vtkPolyData.h"
 
 namespace itk
 {
-template< class TFeatureImage >
-class vtkMeshMergeFilterBase :
-    public vtkMeshFilterBase< TFeatureImage >
+template< class TFeature >
+vtkMeshMergeFilterBase< TFeature >::
+vtkMeshMergeFilterBase() : Superclass()
 {
-public:
-  typedef vtkMeshFilterBase< TFeatureImage > Superclass;
-  typedef vtkMeshMergeFilterBase Self;
-  typedef SmartPointer< Self > Pointer;
-  typedef SmartPointer< const Self > ConstPointer;
-
-  itkTypeMacro( vtkMeshMergeFilterBase, vtkMeshFilterBase );
-
-  typedef typename Superclass::FeatureImageType FeatureImageType;
-  typedef typename Superclass::FeatureImagePointer FeatureImagePointer;
-
-  void SetInputs( std::list< vtkPolyData* > iMeshes );
-
-  vtkPolyData* GetOutput();
-
-protected:
-  vtkMeshMergeFilterBase();
-  virtual ~vtkMeshMergeFilterBase() {}
-
-  std::list< vtkPolyData* > m_Inputs;
-  vtkPolyData* m_Output;
-
-private:
-  vtkMeshMergeFilterBase( const Self& );
-  void operator = ( const Self& );
-};
+  m_Output = vtkPolyData::New();
 }
 
-#include "itkvtkMeshMergeFilterBase.txx"
-#endif // __itkvtkMeshMergeFilterBase_h
+template< class TFeature >
+void
+vtkMeshMergeFilterBase< TFeature >::
+SetInputs( std::list< vtkPolyData* > iMeshes )
+{
+  m_Inputs = iMeshes;
+  this->Modified();
+}
+
+template< class TFeature >
+vtkPolyData*
+vtkMeshMergeFilterBase< TFeature >::
+GetOutput()
+{
+  return m_Output;
+}
+
+}
+#endif

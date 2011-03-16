@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-10
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009-10, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -32,47 +32,48 @@
 
 =========================================================================*/
 
-#ifndef __itkvtkMeshMergeFilterBase_h
-#define __itkvtkMeshMergeFilterBase_h
+#ifndef __itkvtkMeshMergeConvexHullFilter_txx
+#define __itkvtkMeshMergeConvexHullFilter_txx
 
-#include "itkvtkMeshFilterBase.h"
-#include <list>
+#include "itkvtkMeshMergeConvexHullFilter.h"
 
-class vtkPolyData;
+#include "vtkSmartPointer.h"
+#include "vtkAppendPolyData.h"
+#include "vtkDelaunay3D.h"
+#include "vtkDataSetSurfaceFilter.h"
 
 namespace itk
 {
 template< class TFeatureImage >
-class vtkMeshMergeFilterBase :
-    public vtkMeshFilterBase< TFeatureImage >
+void
+vtkMeshMergeConvexHullFilter< TFeatureImage >::
+GenerateData()
 {
-public:
-  typedef vtkMeshFilterBase< TFeatureImage > Superclass;
-  typedef vtkMeshMergeFilterBase Self;
-  typedef SmartPointer< Self > Pointer;
-  typedef SmartPointer< const Self > ConstPointer;
+  vtkSmartPointer< vtkAppendPolyData > append =
+      vtkSmartPointer< vtkAppendPolyData >::New();
 
-  itkTypeMacro( vtkMeshMergeFilterBase, vtkMeshFilterBase );
+  std::list< vtkPolyData* >::iterator it = this->m_Inputs.begin();
 
-  typedef typename Superclass::FeatureImageType FeatureImageType;
-  typedef typename Superclass::FeatureImagePointer FeatureImagePointer;
+  while( it != this->m_Inputs.end() )
+    {
+    append->AddInput( *it );
+    ++it;
+    }
 
-  void SetInputs( std::list< vtkPolyData* > iMeshes );
+  append->Update();
 
-  vtkPolyData* GetOutput();
+  vtkSmartPointer< vtkDelaunay3D > delaunay =
+      vtkSmartPointer< vtkDelaunay3D >::New();
+  delaunay->SetInputConnection( append->GetOutputPort() );
+  delaunay->Update();
 
-protected:
-  vtkMeshMergeFilterBase();
-  virtual ~vtkMeshMergeFilterBase() {}
+  vtkSmartPointer<vtkDataSetSurfaceFilter> surfaceFilter =
+      vtkSmartPointer<vtkDataSetSurfaceFilter>::New();
+  surfaceFilter->SetInputConnection(delaunay->GetOutputPort());
+  surfaceFilter->Update();
 
-  std::list< vtkPolyData* > m_Inputs;
-  vtkPolyData* m_Output;
+  this->m_Output->DeepCopy( surfaceFilter->GetOutput() );
+  }
 
-private:
-  vtkMeshMergeFilterBase( const Self& );
-  void operator = ( const Self& );
-};
 }
-
-#include "itkvtkMeshMergeFilterBase.txx"
-#endif // __itkvtkMeshMergeFilterBase_h
+#endif // __itkvtkMeshMergeConvexHullFilter_h

@@ -51,6 +51,9 @@ SET( GOFIGURE2_FILTER_SOURCE
 
   # Merge
   ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/Merge/itkvtkMeshMergeFilterBase.h
+  ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/Merge/itkvtkMeshMergeFilterBase.txx
+  ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/Merge/itkvtkMeshMergeConvexHullFilter.h
+  ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/Merge/itkvtkMeshMergeConvexHullFilter.txx
 
   # Split
   ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/Split/itkvtkMeshSplitterDanielssonDistanceImageFilter.h

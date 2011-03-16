@@ -37,11 +37,6 @@
 
 #include "itkvtkMeshMergeFilterBase.h"
 
-#include "vtkSmartPointer.h"
-#include "vtkAppendPolyData.h"
-#include "vtkDelaunay3D.h"
-#include "vtkDataSetSurfaceFilter.h"
-
 #include "itkObjectFactory.h"
 
 namespace itk
@@ -67,38 +62,12 @@ protected:
   vtkMeshMergeConvexHullFilter() {}
   ~vtkMeshMergeConvexHullFilter() {}
 
-  void GenerateData()
-    {
-    vtkSmartPointer< vtkAppendPolyData > append =
-        vtkSmartPointer< vtkAppendPolyData >::New();
-
-    std::list< vtkPolyData* >::iterator it = this->m_Inputs.begin();
-
-    while( it != this->m_Inputs.end() )
-      {
-      append->AddInput( *it );
-      ++it;
-      }
-
-    append->Update();
-
-    vtkSmartPointer< vtkDelaunay3D > delaunay =
-        vtkSmartPointer< vtkDelaunay3D >::New();
-    delaunay->SetInputConnection( append->GetOutputPort() );
-    delaunay->Update();
-
-    vtkSmartPointer<vtkDataSetSurfaceFilter> surfaceFilter =
-        vtkSmartPointer<vtkDataSetSurfaceFilter>::New();
-    surfaceFilter->SetInputConnection(delaunay->GetOutputPort());
-    surfaceFilter->Update();
-
-    this->m_Output = vtkPolyData::New();
-    this->m_Output->DeepCopy( surfaceFilter->GetOutput() );
-    }
+  void GenerateData();
 
 private:
   vtkMeshMergeConvexHullFilter( const Self& );
   void operator = ( const Self& );
 };
 }
+#include "itkvtkMeshMergeConvexHullFilter.txx"
 #endif // __itkvtkMeshMergeConvexHullFilter_h
