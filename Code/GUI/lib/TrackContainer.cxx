@@ -882,10 +882,28 @@ CreateDivisionActor( unsigned int iMother, unsigned int iDaughter1, unsigned int
   division->SetPoints(points);
   division->SetLines(lines);
   /*
-   * \todo Nicolas: add array in polydata containing trackID
-   * so we have the track ID from the actor directly
+   * \todo Nicolas: we might want to extend it to more parameters: color, ...
+   * and to the meshes->efficiency of show/hide, picking, boxwidget, ...!
    */
+  // add track ID to the polydata so we can get it from the actor later on
+  vtkSmartPointer<vtkIntArray> trackIDArray = vtkSmartPointer<vtkIntArray>::New();
+  trackIDArray->SetNumberOfComponents(1);
+  trackIDArray->SetNumberOfValues(1);
+  trackIDArray->SetName("TrackID");
+  trackIDArray->SetValue(0,iMother);
 
+  division->GetPointData()->AddArray(trackIDArray);
+/*
+  // Get info back from actor
+  vtkIntArray* testArray =
+      static_cast<vtkIntArray*>(actors[3]->GetMapper()->GetInput()->GetPointData()->GetArray("TrackID"));
+  int nbcompo = testArray->GetNumberOfComponents();
+  std::cout << "nb of components: " << nbcompo << std::endl;
+  int* range = testArray->GetValueRange();
+  std::cout << "range: " << range[0] << " to " << range[1] << std::endl;
+  int value = testArray->GetValue(0);
+  std::cout << "value: " << value << std::endl;
+*/
   /*
    * \todo Nicolas: Which color should it be? White as of now
    */
@@ -953,5 +971,4 @@ CutLineage(unsigned int iMotherID)
   tempDaughter2.TreeNode.m_Mother = NULL;
   // Push current element
   m_Container.get< TraceID >().replace(daughter2It, tempDaughter2);
-
 }
