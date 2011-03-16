@@ -48,7 +48,7 @@
 Lineage gofiguredatabase table and values of the map matching a row of the Lineage table
 \ingroup DB
 */
-class GoDBLineageRow:public GoDBTraceRow
+class QGOIO_EXPORT GoDBLineageRow:public GoDBTraceRow
 {
 public:
   GoDBLineageRow();
