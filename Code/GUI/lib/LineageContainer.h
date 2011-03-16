@@ -206,6 +206,8 @@ public:
                    unsigned int iNewLineageID2,
                    vtkPolyData* iRootPolyData = NULL);
 
+  std::list<unsigned int> GetLineagesTrackRootIDs();
+
   //void updateActor( unsigned int iLineageID );
 
   //void createTreeForLineageViewer();

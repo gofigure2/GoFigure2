@@ -254,3 +254,21 @@ std::vector< vtkActor* > LineageContainer::AddTrace( vtkPolyData* , vtkProperty*
   std::vector< vtkActor* > toreturn = std::vector< vtkActor* >();
   return toreturn;
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list<unsigned int> LineageContainer::GetLineagesTrackRootIDs()
+{
+  std::list<unsigned int> listOfTrackIDs;
+
+  MultiIndexContainerType::index< TraceID >::type::iterator
+    it = m_Container.get< TraceID >().begin();
+
+  while( it != m_Container.get< TraceID >().end() )
+    {
+    listOfTrackIDs.push_back(it->TrackRootID);
+    it++;
+    }
+
+  return listOfTrackIDs;
+}
