@@ -232,7 +232,8 @@ public:
   QGoPrintDatabase *m_DataBaseTables;
 
   GoFigureMeshAttributes ComputeMeshAttributes(vtkPolyData *iMesh,
-                                               const bool& iIntensity );
+                                               const bool& iIntensity,
+                                               const unsigned int& iTCoord );
 
 signals:
   void TimePointChanged(int TimePoint);

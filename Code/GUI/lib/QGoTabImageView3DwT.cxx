@@ -2757,8 +2757,12 @@ QGoTabImageView3DwT::SaveMesh(vtkPolyData *iView, int iTShift)
   // Compute Bounding Box
   std::vector< int > bounds = this->GetBoundingBox(iView);
 
+  int tcoord = static_cast< int >( m_TCoord ) + iTShift;
+
   // Save mesh in database
-  GoFigureMeshAttributes MeshAttributes = ComputeMeshAttributes(iView, true);
+  GoFigureMeshAttributes
+      MeshAttributes =
+        ComputeMeshAttributes( iView, true, static_cast< unsigned int >( tcoord ) );
 
   this->m_DataBaseTables->SaveMeshFromVisuInDB(bounds[0], bounds[2], bounds[4],
                                                bounds[1], bounds[3], bounds[5],
@@ -2948,8 +2952,10 @@ void QGoTabImageView3DwT::GoToDefaultMenu(bool iEnable)
 
 //-------------------------------------------------------------------------
 GoFigureMeshAttributes
-QGoTabImageView3DwT::ComputeMeshAttributes(vtkPolyData *iMesh,
-                                           const bool & iIntensity)
+QGoTabImageView3DwT::
+ComputeMeshAttributes(vtkPolyData *iMesh,
+                      const bool & iIntensity,
+                      const unsigned int& iTCoord )
 {
   typedef unsigned char PixelType;
   const unsigned int Dimension = 3;
@@ -2962,37 +2968,89 @@ QGoTabImageView3DwT::ComputeMeshAttributes(vtkPolyData *iMesh,
 
   GoFigureMeshAttributes oAttributes;
 
-  for ( size_t i = 0; i < m_InternalImages.size(); i++ )
+  if( this->m_ChannelClassicMode )
     {
-    vtkSmartPointer< vtkImageExport > vtk_exporter =
-      vtkSmartPointer< vtkImageExport >::New();
-    itk::VTKImageImport< ImageType >::Pointer itk_importer =
-      itk::VTKImageImport< ImageType >::New();
-    vtk_exporter->SetInput(m_InternalImages[i]);
-
-    ConnectPipelines< vtkImageExport, itk::VTKImageImport< ImageType >::Pointer >(
-      vtk_exporter, itk_importer);
-    calculator->SetImage( itk_importer->GetOutput() );
-    calculator->Update();
-
-    oAttributes.m_Volume = calculator->GetPhysicalSize();
-    //qDebug() << "volume:" << oAttributes.m_Volume;
-    oAttributes.m_Area = calculator->GetArea();
-    oAttributes.m_Size = calculator->GetSize();
-
-    if ( iIntensity )
+    for ( size_t i = 0; i < m_InternalImages.size(); i++ )
       {
-      QString     q_channelname = this->m_NavigationDockWidget->GetChannelName(i);
-      std::string channelname = q_channelname.toStdString();
+      vtkSmartPointer< vtkImageExport > vtk_exporter =
+        vtkSmartPointer< vtkImageExport >::New();
+      itk::VTKImageImport< ImageType >::Pointer itk_importer =
+        itk::VTKImageImport< ImageType >::New();
 
-      oAttributes.m_TotalIntensityMap[channelname] =
-        static_cast< int >( calculator->GetSumIntensity() );
-      oAttributes.m_MeanIntensityMap[channelname] =
-        calculator->GetMeanIntensity();
+      vtk_exporter->SetInput(m_InternalImages[i]);
+
+      ConnectPipelines< vtkImageExport, itk::VTKImageImport< ImageType >::Pointer >(
+        vtk_exporter, itk_importer);
+      calculator->SetImage( itk_importer->GetOutput() );
+      calculator->Update();
+
+      oAttributes.m_Volume = calculator->GetPhysicalSize();
+      //qDebug() << "volume:" << oAttributes.m_Volume;
+      oAttributes.m_Area = calculator->GetArea();
+      oAttributes.m_Size = calculator->GetSize();
+
+      if ( iIntensity )
+        {
+        QString     q_channelname = this->m_NavigationDockWidget->GetChannelName(i);
+        std::string channelname = q_channelname.toStdString();
+
+        oAttributes.m_TotalIntensityMap[channelname] =
+          static_cast< int >( calculator->GetSumIntensity() );
+        oAttributes.m_MeanIntensityMap[channelname] =
+          calculator->GetMeanIntensity();
+        }
+      else
+        {
+        break;
+        }
       }
-    else
+    }
+  else
+    {
+    unsigned int min_ch = m_MegaCaptureReader->GetMinChannel();
+    unsigned int max_ch = m_MegaCaptureReader->GetMaxChannel();
+    unsigned int NumberOfChannels = max_ch - min_ch + 1;
+
+    std::vector< vtkSmartPointer< vtkImageData > > temp_image( NumberOfChannels );
+
+    m_MegaCaptureReader->SetTimePoint( iTCoord );
+    m_MegaCaptureReader->Update();
+
+    for ( unsigned int i = min_ch; i <= max_ch; i++ )
       {
-      break;
+      temp_image[i] = m_MegaCaptureReader->GetOutput( i );
+
+      vtkSmartPointer< vtkImageExport > vtk_exporter =
+        vtkSmartPointer< vtkImageExport >::New();
+      itk::VTKImageImport< ImageType >::Pointer itk_importer =
+        itk::VTKImageImport< ImageType >::New();
+
+      vtk_exporter->SetInput(temp_image[i]);
+
+      ConnectPipelines< vtkImageExport, itk::VTKImageImport< ImageType >::Pointer >(
+        vtk_exporter, itk_importer);
+      calculator->SetImage( itk_importer->GetOutput() );
+      calculator->Update();
+
+      oAttributes.m_Volume = calculator->GetPhysicalSize();
+      //qDebug() << "volume:" << oAttributes.m_Volume;
+      oAttributes.m_Area = calculator->GetArea();
+      oAttributes.m_Size = calculator->GetSize();
+
+      if ( iIntensity )
+        {
+        QString     q_channelname = this->m_NavigationDockWidget->GetChannelName(i);
+        std::string channelname = q_channelname.toStdString();
+
+        oAttributes.m_TotalIntensityMap[channelname] =
+          static_cast< int >( calculator->GetSumIntensity() );
+        oAttributes.m_MeanIntensityMap[channelname] =
+          calculator->GetMeanIntensity();
+        }
+      else
+        {
+        break;
+        }
       }
     }
   return oAttributes;
