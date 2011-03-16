@@ -89,7 +89,7 @@ public:
 protected:
   vtkMeshSplitterImageFilterBase();
 
-  ~vtkMeshSplitterImageFilterBase() {}
+  virtual ~vtkMeshSplitterImageFilterBase() {}
 
   FeatureImagePointer m_BinaryImage;
   FeatureImagePointer m_OutputImage;
@@ -114,6 +114,7 @@ protected:
   virtual void SplitBinaryImage() = 0;
 
   void GenerateMeshesFromOutputImage();
+  void SetRequiredAttributeComputationFlags();
 
 private:
   vtkMeshSplitterImageFilterBase( const Self& );

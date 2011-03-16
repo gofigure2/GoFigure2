@@ -135,8 +135,7 @@ ADD_TEST( itkvtkPolyDataToitkQuadEdgeMeshTest
 ADD_EXECUTABLE( itkvtkMeshMergeConvexHullFilterTest
   itkvtkMeshMergeConvexHullFilterTest.cxx )
 TARGET_LINK_LIBRARIES( itkvtkMeshMergeConvexHullFilterTest
-  ${ITK_LIBRARIES}
-  vtkHybrid
+  QGoGui
 )
 ADD_TEST( itkvtkMeshMergeConvexHullFilterTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/itkvtkMeshMergeConvexHullFilterTest

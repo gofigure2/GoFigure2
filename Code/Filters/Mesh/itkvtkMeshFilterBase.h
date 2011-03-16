@@ -36,6 +36,13 @@
 #define __itkvtkMeshFilterBase_h
 
 #include "itkObject.h"
+#include "itkConvertMeshesToLabelImageFilter.h"
+#include "itkvtkPolyDataToitkQuadEdgeMesh.h"
+
+#include "itkShapeLabelObject.h"
+#include "itkLabelMap.h"
+#include "itkLabelImageToShapeLabelMapFilter.h"
+#include "itkLabelImageToStatisticsLabelMapFilter.h"
 
 namespace itk
 {
@@ -57,37 +64,95 @@ public:
   typedef typename FeatureImageType::IndexType FeatureImageIndexType;
   typedef typename FeatureImageType::PointType FeatureImagePointType;
 
-  void SetNumberOfImages( const size_t& iN )
-    {
-    m_Images.resize( iN );
-    }
+  typedef ConvertMeshesToLabelImageFilter< FeatureImageType > MeshToLabelFilterType;
+  typedef typename MeshToLabelFilterType::Pointer MeshToLabelFilterPointer;
+  typedef typename MeshToLabelFilterType::MeshType QuadEdgeMeshType;
 
-  void SetFeatureImage( const size_t& iId, FeatureImageType* iImage )
-    {
-    if( iId < m_Images.size() )
-      {
-      m_Images[iId] = iImage;
-      this->Modified();
-      }
-    }
+  typedef vtkPolyDataToitkQuadEdgeMesh< QuadEdgeMeshType > MeshConverterType;
+  typedef typename MeshConverterType::Pointer MeshConverterPointer;
 
-  void Update()
-    {
-    this->GenerateData();
-    }
+
+  // ---------------------------------------------------------------------------
+
+  /** \typedef LabelType label type*/
+  typedef unsigned int                                LabelType;
+
+  // ---------------------------------------------------------------------------
+
+  /** \typedef ShapeLabelObjectType */
+  typedef ShapeLabelObject< LabelType,
+                            FeatureImageType::ImageDimension >
+                                                        ShapeLabelObjectType;
+  typedef typename ShapeLabelObjectType::Pointer        ShapeLabelObjectPointer;
+
+  /** \typedef ShapeLabelMapType */
+  typedef LabelMap< ShapeLabelObjectType >              ShapeLabelMapType;
+  typedef typename ShapeLabelMapType::Pointer           ShapeLabelMapPointer;
+
+  /** \typedef ShapeConverterType */
+  typedef LabelImageToShapeLabelMapFilter< FeatureImageType,
+                                           ShapeLabelMapType >
+                                                        ShapeConverterType;
+  typedef typename ShapeConverterType::Pointer          ShapeConverterPointer;
+
+
+  typedef typename ShapeLabelMapType::LabelObjectContainerType
+                                                        LabelObjectContainerType;
+  typedef typename LabelObjectContainerType::const_iterator
+                                                        LabelObjectIterator;
+
+  // ---------------------------------------------------------------------------
+
+  /** \typedef StatLabelObjectType */
+  typedef StatisticsLabelObject< LabelType,
+                                 FeatureImageType::ImageDimension >
+                                                StatLabelObjectType;
+  typedef typename StatLabelObjectType::Pointer StatLabelObjectPointer;
+
+
+  typedef LabelMap< StatLabelObjectType >     StatLabelMapType;
+  typedef typename StatLabelMapType::Pointer  StatLabelMapPointer;
+
+  typedef LabelImageToStatisticsLabelMapFilter<
+    FeatureImageType,
+    FeatureImageType,
+    StatLabelMapType >                        StatConverterType;
+
+  typedef typename StatConverterType::Pointer StatConverterPointer;
+
+  // ---------------------------------------------------------------------------
+
+  void SetNumberOfImages( const size_t& iN );
+
+  void SetFeatureImage( const size_t& iId, FeatureImageType* iImage );
+
+  void Update();
 
 protected:
-  vtkMeshFilterBase() : Superclass() {}
+  vtkMeshFilterBase();
   virtual ~vtkMeshFilterBase() {}
 
   virtual void GenerateData() = 0;
 
+  virtual void SetRequiredAttributeComputationFlags() = 0;
+
+  void ComputeOutputAttributes();
+
   std::vector< FeatureImagePointer > m_Images;
+  std::vector< vtkPolyData* > m_Outputs;
+  ShapeLabelMapPointer  m_ShapeLabelMap;
+  std::vector< StatLabelMapPointer > m_StatLabelMap;
+  std::map< size_t, LabelType > m_MeshtoLabelIdMap;
+
+  bool m_ShapeComputation;
+  bool m_IntensityComputation;
 
 private:
   vtkMeshFilterBase( const Self& );
   void operator = ( const Self& );
 };
 }
+
+#include "itkvtkMeshFilterBase.txx"
 #endif
 

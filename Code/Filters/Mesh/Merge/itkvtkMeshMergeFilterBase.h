@@ -66,7 +66,6 @@ protected:
   virtual ~vtkMeshMergeFilterBase() {}
 
   std::list< vtkPolyData* > m_Inputs;
-  vtkPolyData* m_Output;
 
 private:
   vtkMeshMergeFilterBase( const Self& );

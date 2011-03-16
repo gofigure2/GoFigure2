@@ -10,7 +10,7 @@ SET( GOFIGURE2_FILTER_MESH_DIR
   ${GOFIGURE2_FILTER_SOURCE_DIR}/Mesh
 )
 
-SET( GOFIGURE2_FILTER_SOURCE
+SET( GOFIGURE2_FILTER_SOURCES
   ${GOFIGURE2_FILTER_SOURCE_DIR}/itkCellFeatureGenerator.h
   ${GOFIGURE2_FILTER_SOURCE_DIR}/itkCellFeatureGenerator.txx
   ${GOFIGURE2_FILTER_SOURCE_DIR}/itkCellForegroundExtraction.h
@@ -54,6 +54,9 @@ SET( GOFIGURE2_FILTER_SOURCE
   ${GOFIGURE2_FILTER_MESH_DIR}/itkQuadEdgeMeshTovtkPolyData.txx
   ${GOFIGURE2_FILTER_MESH_DIR}/itkvtkPolyDataToBinaryMaskImageFilter.h
   ${GOFIGURE2_FILTER_MESH_DIR}/itkvtkPolyDataToBinaryMaskImageFilter.txx
+
+  ${GOFIGURE2_FILTER_MESH_DIR}/itkvtkMeshFilterBase.txx
+  ${GOFIGURE2_FILTER_MESH_DIR}/itkvtkMeshFilterBase.h
 
   # Attributes
   ${GOFIGURE2_FILTER_MESH_DIR}/Attributes/itkBinaryMaskImageToGoFigureMeshAttributes.h

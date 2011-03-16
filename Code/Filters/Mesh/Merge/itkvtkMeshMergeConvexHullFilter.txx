@@ -45,6 +45,13 @@
 namespace itk
 {
 template< class TFeatureImage >
+vtkMeshMergeConvexHullFilter< TFeatureImage >::
+vtkMeshMergeConvexHullFilter() : Superclass()
+{
+  this->SetRequiredAttributeComputationFlags();
+}
+
+template< class TFeatureImage >
 void
 vtkMeshMergeConvexHullFilter< TFeatureImage >::
 GenerateData()
@@ -52,9 +59,10 @@ GenerateData()
   vtkSmartPointer< vtkAppendPolyData > append =
       vtkSmartPointer< vtkAppendPolyData >::New();
 
-  std::list< vtkPolyData* >::iterator it = this->m_Inputs.begin();
+  typename std::list< vtkPolyData* >::iterator it = this->m_Inputs.begin();
+  typename std::list< vtkPolyData* >::iterator end = this->m_Inputs.end();
 
-  while( it != this->m_Inputs.end() )
+  while( it != end )
     {
     append->AddInput( *it );
     ++it;
@@ -72,8 +80,17 @@ GenerateData()
   surfaceFilter->SetInputConnection(delaunay->GetOutputPort());
   surfaceFilter->Update();
 
-  this->m_Output->DeepCopy( surfaceFilter->GetOutput() );
-  }
+  this->m_Outputs.front()->DeepCopy( surfaceFilter->GetOutput() );
+}
+
+template< class TFeatureImage >
+void
+vtkMeshMergeConvexHullFilter< TFeatureImage >::
+SetRequiredAttributeComputationFlags()
+{
+  this->m_ShapeComputation = true;
+  this->m_IntensityComputation = true;
+}
 
 }
 #endif // __itkvtkMeshMergeConvexHullFilter_h

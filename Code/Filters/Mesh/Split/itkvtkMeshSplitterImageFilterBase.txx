@@ -48,7 +48,9 @@ vtkMeshSplitterImageFilterBase() : Superclass( ), m_Seeds( NULL ),
     m_NumberOfSmoothingIterations( 8 ), m_SmoothingRelaxationFactor( 0.75 ),
     m_DelaunayConforming( false ), m_UseSmoothing( true ),
     m_UseDecimation( true )
-{}
+{
+  this->SetRequiredAttributeComputationFlags();
+}
 
 template< class TFeatureImage, class TPointSet >
 void
@@ -187,6 +189,14 @@ GenerateMeshesFromOutputImage()
     }
 }
 
+template< class TFeatureImage, class TPointSet >
+void
+vtkMeshSplitterImageFilterBase< TFeatureImage, TPointSet >::
+SetRequiredAttributeComputationFlags()
+  {
+  this->m_ShapeComputation = false;
+  this->m_IntensityComputation = false;
+  }
 }
 
 #endif // __itkvtkMeshSplitterImageFilterBase_txx

@@ -41,7 +41,7 @@ namespace itk
 {
 template< class TFeatureImage >
 vtkMeshSplitterFilterBase< TFeatureImage >::
-vtkMeshSplitterFilterBase() : Superclass(), m_Mesh( NULL ), m_Outputs( 0 )
+vtkMeshSplitterFilterBase() : Superclass(), m_Mesh( NULL )
   {
   for( unsigned int dim = 0; dim < 3; ++dim )
     {
@@ -68,7 +68,7 @@ std::vector< vtkPolyData* >
 vtkMeshSplitterFilterBase< TFeatureImage >::
 GetOutputs()
 {
-  return m_Outputs;
+  return this->m_Outputs;
 }
 
 template< class TFeatureImage >

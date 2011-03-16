@@ -59,10 +59,11 @@ public:
   itkNewMacro(Self);
 
 protected:
-  vtkMeshMergeConvexHullFilter() {}
+  vtkMeshMergeConvexHullFilter();
   ~vtkMeshMergeConvexHullFilter() {}
 
   void GenerateData();
+  void SetRequiredAttributeComputationFlags();
 
 private:
   vtkMeshMergeConvexHullFilter( const Self& );

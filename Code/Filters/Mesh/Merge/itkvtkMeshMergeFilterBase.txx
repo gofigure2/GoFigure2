@@ -44,7 +44,8 @@ template< class TFeature >
 vtkMeshMergeFilterBase< TFeature >::
 vtkMeshMergeFilterBase() : Superclass()
 {
-  m_Output = vtkPolyData::New();
+  this->m_Outputs.resize( 1, NULL );
+  this->m_Outputs[0] = vtkPolyData::New();
 }
 
 template< class TFeature >
@@ -61,7 +62,7 @@ vtkPolyData*
 vtkMeshMergeFilterBase< TFeature >::
 GetOutput()
 {
-  return m_Output;
+  return this->m_Outputs.front();
 }
 
 }

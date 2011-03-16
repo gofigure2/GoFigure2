@@ -71,11 +71,9 @@ protected:
   vtkMeshSplitterFilterBase();
 
   /** \brief Destructor */
-  ~vtkMeshSplitterFilterBase() {}
+  virtual ~vtkMeshSplitterFilterBase() {}
 
   vtkPolyData* m_Mesh;
-
-  std::vector< vtkPolyData* > m_Outputs;
 
   double m_Bounds[6];
 
