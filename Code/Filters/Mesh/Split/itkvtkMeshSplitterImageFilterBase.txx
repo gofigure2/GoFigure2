@@ -168,6 +168,9 @@ GenerateMeshesFromOutputImage()
   extractor->SetDelaunayConforming( m_DelaunayConforming );
   extractor->Update();
 
+  this->m_ShapeLabelMap = extractor->GetShapeLabelMap();
+  this->m_StatLabelMap = extractor->GetStatLabelMap();
+
   typedef typename ExtracMeshFilterType::MeshVectorType MeshVectorType;
   MeshVectorType MeshVector = extractor->GetOutputs();
 

@@ -208,6 +208,12 @@ public:
   itkGetConstMacro( NumberOfThreads, unsigned int );
   itkSetMacro( NumberOfThreads, unsigned int );
 
+  itkGetObjectMacro( ShapeLabelMap, ShapeLabelMapType );
+  std::vector< StatLabelMapPointer > GetStatLabelMap()
+    {
+    return m_StatLabelMap;
+    }
+
   void Update();
 
   MeshVectorType GetOutputs();
