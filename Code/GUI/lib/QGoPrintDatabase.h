@@ -698,11 +698,13 @@ protected slots:
   void CreateNewMeshFromCheckedContours(std::list< unsigned int > iListCheckedContours);
 
   /**
-  \brief slot connected to the signal NewCollectionFromCheckedTraces() emitted by
+  \brief slot connected to the signal NewLineageToCreateFromCheckedTracks() emitted by
   the m_TracksManager
-  \param[in] iListCheckedTracks list of the meshIDs of the checked meshes in the TW
+  \param[in] iListCheckedTracks list of the tracksIDs of the checked tracks in the TW
+  \param[in] iTrackIDRoot ID of the track to be the root of the new lineage to be created
   */
-  void CreateNewLineageFromCheckedTracks(std::list< unsigned int > iListCheckedTracks );
+  void CreateNewLineageFromCheckedTracks(std::list< unsigned int > iListCheckedTracks,
+    unsigned int iTrackIDRoot);
 
   /**
   \brief slot connected to the the signal CheckedTracesToAddToSelectedCollection
@@ -723,11 +725,11 @@ protected slots:
   /** 
   \brief call the AddCheckedTracesToCollection template and give the info to the
   lineages manager to create the division in the visu
+  \param[in] iLineageID
+  \param[in] iListDaughters ID of the tracks to be updated with lineageID
   */
   void AddCheckedTracksToSelectedLineage(
-    unsigned int iLineageID, unsigned int iMotherID, double* iMotherPoints, 
-    unsigned int iDaughterOneID, double* iDaughterOnePoints, 
-    unsigned int iDaughterTwoID, double* iDaughterTwoPoints);
+    std::list<unsigned int> iListDaughters, unsigned int iLineageID);
 
   /**
   \brief emit a signal TraceToReedit and set m_ReeditMode to true

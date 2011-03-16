@@ -142,6 +142,16 @@ public:
    */
   void extractLineageFromPolyData( vtkPolyData* iPolyData);
 
+  /**
+  \brief insert a new element in the container with all the info needed
+  \param[in] iLineageID ID for the new lineage
+  \param[in] irgba color of the lineage
+  \param[in] iTrackIDRoot for the new lineage
+  \param[in] IsVisible 
+  */
+  void InsertNewLineage(unsigned int iLineageID, 
+    double irgba[4], unsigned int iTrackIDRoot,
+    bool IsVisible = false);
   /*
    * \brief Create a new connection between the selected points
    * \param[in] iMoTrackID ID of the mother to find it in the container

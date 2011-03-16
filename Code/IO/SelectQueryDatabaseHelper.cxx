@@ -1291,7 +1291,7 @@ std::string GetCoordinateValuesQueryString(std::string iTableName, std::string i
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void ModifyStructureWithTCoordAndPoints(ContourMeshStructure & ioStructure,
+void ModifyStructureWithSpecificities(ContourMeshStructure & ioStructure,
                                         unsigned int iTCoord, std::string iPoints, std::string iTraceName)
 {
   ioStructure.TCoord = iTCoord;
@@ -1331,7 +1331,7 @@ void ModifyStructureWithTCoordAndPoints(ContourMeshStructure & ioStructure,
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void ModifyStructureWithTCoordAndPoints(TrackStructure & ioStructure,
+void ModifyStructureWithSpecificities(TrackStructure & ioStructure,
                                         unsigned int iTCoord, std::string iPoints, std::string iTraceName)
 {
   (void)iTCoord;
@@ -1363,7 +1363,22 @@ void ModifyStructureWithTCoordAndPoints(TrackStructure & ioStructure,
     ioStructure.Nodes = NULL;
     }
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
+void ModifyStructureWithSpecificities(LineageStructure & ioStructure,
+  unsigned int iTrackRootID, std::string iPoints, std::string iTraceName)
+{
+  (void) iPoints;
+  if ( iTraceName != "lineage" )
+    {
+    std::cout << "this method is only for lineage";
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
+    return;
+    }
+  ioStructure.TrackRootID = iTrackRootID;
+}
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------

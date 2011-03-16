@@ -41,8 +41,7 @@ QGoDBLineageManager::QGoDBLineageManager(int iImgSessionID, QWidget *iparent) :
   QGoDBTraceManager(), m_LineageContainerInfoForVisu(NULL)
 {
   this->SetInfo(iImgSessionID, iparent);
-  this->m_TWContainer = new GoDBTWContainerForTrackLineage(this->m_TraceName,
-                                                          this->m_CollectionName, iImgSessionID);
+  this->m_TWContainer = new GoDBTWContainerForLineage(iImgSessionID);
 }
 
 //-------------------------------------------------------------------------
@@ -87,7 +86,7 @@ void QGoDBLineageManager::SetCollectionsTraceNames()
 void QGoDBLineageManager::DisplayInfoForAllTraces(
   vtkMySQLDatabase *iDatabaseConnector)
 {
-  this->DisplayInfoForAllTracesTemplate< GoDBTWContainerForTrackLineage >(
+  this->DisplayInfoForAllTracesTemplate< GoDBTWContainerForLineage >(
     this->m_TWContainer, iDatabaseConnector, Qt::Unchecked);
 }
 
@@ -97,9 +96,8 @@ void QGoDBLineageManager::DisplayInfoForAllTraces(
 void QGoDBLineageManager::DisplayInfoAndLoadVisuContainerForAllLineages(
   vtkMySQLDatabase *iDatabaseConnector)
 {
-  this->DisplayInfoForAllTraces(iDatabaseConnector); //for the time being as there is no lineage container
-  //this->DisplayInfoAndLoadVisuContainerWithAllTraces< GoDBTWContainerForTrackLineage >
-  //  (this->m_TWContainer, iDatabaseConnector);
+  this->DisplayInfoAndLoadVisuContainerWithAllTraces< GoDBTWContainerForLineage >
+    (this->m_TWContainer, iDatabaseConnector);
 }
 
 //-------------------------------------------------------------------------
@@ -108,7 +106,7 @@ void QGoDBLineageManager::DisplayInfoAndLoadVisuContainerForAllLineages(
 void QGoDBLineageManager::DisplayInfoForLastCreatedTrace(
   vtkMySQLDatabase *iDatabaseConnector)
 {
-  this->DisplayInfoForLastCreatedTraceTemplate< GoDBTWContainerForTrackLineage >(
+  this->DisplayInfoForLastCreatedTraceTemplate< GoDBTWContainerForLineage >(
     this->m_TWContainer, iDatabaseConnector);
 }
 
@@ -118,29 +116,27 @@ void QGoDBLineageManager::DisplayInfoForLastCreatedTrace(
 void QGoDBLineageManager::DisplayInfoForExistingTrace(
   vtkMySQLDatabase *iDatabaseConnector, int iTraceID)
 {
-  this->DisplayInfoForExistingTraceTemplate< GoDBTWContainerForTrackLineage >(
+  this->DisplayInfoForExistingTraceTemplate< GoDBTWContainerForLineage >(
     this->m_TWContainer, iDatabaseConnector, iTraceID);
 }
 
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-unsigned int QGoDBLineageManager::CreateNewLineageWithNoTrack(
-  vtkMySQLDatabase *iDatabaseConnector)
+unsigned int QGoDBLineageManager::CreateNewLineageWithTrackRoot(
+      vtkMySQLDatabase *iDatabaseConnector, unsigned int iTrackRoot)
 {
   GoDBLineageRow NewLineage;
   unsigned int NewLineageID =
     this->m_CollectionOfTraces->CreateCollectionWithNoTracesNoPoints< GoDBLineageRow >(
       iDatabaseConnector, *this->m_SelectedColorData, NewLineage);
+  this->UpdateTrackRootSelectedLineage(iDatabaseConnector, NewLineageID, iTrackRoot);
 
-  this->m_LineageContainerInfoForVisu->ResetCurrentElement();
-  this->m_LineageContainerInfoForVisu->UpdateCurrentElementFromDB(
-    NewLineageID, this->GetVectorFromQColor(this->m_SelectedColorData->second), true);
-  this->m_LineageContainerInfoForVisu->InsertCurrentElement();
+  this->m_LineageContainerInfoForVisu->InsertNewLineage(NewLineageID, 
+    this->GetVectorFromQColor(this->m_SelectedColorData->second), iTrackRoot,
+    false);
   this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
-  //NameWithColorData NewTrackData(ConvertToString< unsigned int >(NewTrackID),
-                                 //this->m_SelectedColorData->second);
-  //emit AddNewTraceIDInTS(NewTrackData);
+  
   return NewLineageID;
 }
 
@@ -219,8 +215,8 @@ void QGoDBLineageManager::GetTracesInfoFromDBAndModifyContainerForVisu(
   vtkMySQLDatabase *iDatabaseConnector,
   std::list< unsigned int > iListTraceIDs)
 {
-  //this->GetTracesInfoFromDBAndModifyContainerForVisuTemplate< TrackContainer >(
-  //  this->m_TrackContainerInfoForVisu, iDatabaseConnector, iListTraceIDs);
+  this->GetTracesInfoFromDBAndModifyContainerForVisuTemplate< LineageContainer >(
+    this->m_LineageContainerInfoForVisu, iDatabaseConnector, iListTraceIDs);
 }
 
 //-------------------------------------------------------------------------
@@ -235,52 +231,16 @@ void QGoDBLineageManager::SetColorCoding(bool IsChecked)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-unsigned int QGoDBLineageManager::UpdateTrackRootLastCreatedLineage(
-  unsigned int iTrackIDRoot) 
+void QGoDBLineageManager::UpdateTrackRootSelectedLineage(
+  vtkMySQLDatabase* iDatabaseConnector,
+  unsigned int iLineageID, unsigned int iTrackIDRoot) 
 {
-  emit NeedToGetDatabaseConnection();
-  int LineageID = this->GetLastCreatedTraceID(this->m_DatabaseConnector);
   GoDBLineageRow LastLineage;
-  LastLineage.SetValuesForSpecificID(LineageID,this->m_DatabaseConnector);
+  LastLineage.SetValuesForSpecificID(iLineageID, iDatabaseConnector);
   LastLineage.SetField("TrackIDRoot", iTrackIDRoot);
-  LastLineage.SaveInDB(this->m_DatabaseConnector);
-  emit DBConnectionNotNeededAnymore();
-  return LineageID;
+  LastLineage.SaveInDB(iDatabaseConnector);
 }
 
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoDBLineageManager::CreateNewDivisionInVisuForNewLineage(
-    unsigned int iTrackIDRoot,
-    double* iMotherTrackPoint,
-    unsigned int iDaughterOneID,
-    double* iDaughterOneTrackPoint,
-    unsigned int iDaughterTwoID,
-    double* iDaughterTwoTrackPoint)
-{
-  unsigned int LineageID = 
-    this->UpdateTrackRootLastCreatedLineage(iTrackIDRoot);
-  this->m_LineageContainerInfoForVisu->addDivisionToLineage(LineageID, true,
-    iTrackIDRoot, iMotherTrackPoint, iDaughterOneID, iDaughterOneTrackPoint, 
-    iDaughterTwoID, iDaughterTwoTrackPoint);
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoDBLineageManager::UpdateExistingLineageWithNewDivision(
-    unsigned int iLineageID,
-    unsigned int iMotherTrackID,
-    double* iMotherTrackPoint, 
-    unsigned int iDaughterOneID,
-    double* iDaughterOneTrackPoint,
-    unsigned int iDaughterTwoID,
-    double* iDaughterTwoTrackPoint)
-{
-  this->m_LineageContainerInfoForVisu->addDivisionToLineage(iLineageID, false,
-    iMotherTrackID, iMotherTrackPoint, iDaughterOneID, iDaughterOneTrackPoint, 
-    iDaughterTwoID, iDaughterTwoTrackPoint);
-}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
