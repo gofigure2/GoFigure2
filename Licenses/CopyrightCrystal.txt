@@ -1,8 +1,10 @@
 The copyright for the following icons belongs to the Crystal Project:
-*system-quit icon
-*use database icon
-*navigation icon
-*eye icon 
+
+*GoFigure2\Resources\figsystem-quit.png corresponds to Crystal_Clear_action_exit.png in Crystal Project
+*GoFigure2\Resources\UseDatabase.png: part taken from kexi.png in Crystal project
+*GoFigure2\Resources\navigation.png corresponds to map-compass.png in Crystal project
+*GoFigure2\Resources\EyeIcon.png corresponds to layer-novisible-3.png in Crystal project
+*GoFigure2\Resources\TrackView.png: eye is taken from layer-novisible-3.png in Crystal project
 
 They can be found following this link:
 http://everaldo.com/crystal/
