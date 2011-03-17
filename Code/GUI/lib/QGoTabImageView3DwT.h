@@ -53,6 +53,7 @@
 #include <string>
 
 #include "vtkSmartPointer.h"
+#include "QGoTraceEditingWidget.h"
 
 // base segmentation dock widget
 class QGoContourSegmentationBaseDockWidget;
@@ -381,6 +382,7 @@ protected:
 
   // base segmentation dockwidget for meshes
   QGoMeshSegmentationBaseDockWidget *m_MeshSegmentationDockWidget;
+  //QGoTraceEditingWidget*    m_MeshEditingWidget;
 
   QGoTrackDockWidget* m_TrackDockWidget;
 

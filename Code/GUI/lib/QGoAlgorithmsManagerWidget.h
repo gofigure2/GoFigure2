@@ -80,6 +80,8 @@ public:
 
   std::string GetModeName();
 
+  bool HasMethod();
+
 signals:
 
   void ApplyClicked();

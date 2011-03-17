@@ -37,6 +37,7 @@
 
 #include "QGoModesManagerWidget.h"
 #include "QGoAlgorithmWidget.h"
+#include "QGoAlgoParameter.h"
 
 
 
@@ -64,40 +65,68 @@ int main(int argc, char *argv[])
   ListTimePoint.append("t");
   ListTimePoint.append("t+1");
 
-  QGoAlgorithmsManagerWidget* SemiAutoModeMeshEditingAlgoWidget = new QGoAlgorithmsManagerWidget(
-    "Semi Automated",ChannelName, ListTimePoint, NULL);
+  QGoModesManagerWidget* MeshMode = new QGoModesManagerWidget(ChannelName, ListTimePoint, NULL);
   
-  QGoAlgorithmWidget* LevelSetWidget = new QGoAlgorithmWidget("LevelSet",
-    SemiAutoModeMeshEditingAlgoWidget);
+  
+  //QGoAlgorithmsManagerWidget* SemiAutoModeMeshEditingAlgoWidget = new QGoAlgorithmsManagerWidget(
+  //  "Semi Automated",ChannelName, ListTimePoint, NULL);
+  QGoAlgorithmWidget* LevelSetWidget = new QGoAlgorithmWidget("LevelSet", MeshMode);
+    //SemiAutoModeMeshEditingAlgoWidget);
+  
+  QGoAlgoParameter<double> Radius ("Radius", false, 0, 10, 2, 3);
+  LevelSetWidget->AddParameter<double>(&Radius);
+  QGoAlgoParameter<int> Curvature ("Curvature", true, 0, 100, 20);
+  LevelSetWidget->AddParameter<int>(&Curvature);
+  QGoAlgoParameter<int> Iteration ("Iterations", true, 0, 1000, 100);
+  LevelSetWidget->AddParameter<int>(&Iteration);
   
   //LevelSetWidget->AddParameter("Channel", ChannelName);
-  LevelSetWidget->AddParameter("Radius", 0, 10, 3);
-  LevelSetWidget->AddAdvParameter("Curvature", 0, 100, 20);
-  LevelSetWidget->AddAdvParameter("Iterations", 0, 1000, 100);
+  //LevelSetWidget->AddParameter("Radius", 0, 10, 3);
+  //LevelSetWidget->AddAdvParameter("Curvature", 0, 100, 20);
+  //LevelSetWidget->AddAdvParameter("Iterations", 0, 1000, 100);
 
-  QGoAlgorithmWidget* Shape3D = new QGoAlgorithmWidget("Shape 3D", SemiAutoModeMeshEditingAlgoWidget);
+  QGoAlgorithmWidget* Shape3D = new QGoAlgorithmWidget("Shape 3D", MeshMode);//SemiAutoModeMeshEditingAlgoWidget);
   //Shape3D->AddParameter("Channel", ChannelName);
-  Shape3D->AddParameter("Radius", 0, 10, 3);
+  //Shape3D->AddParameter("Radius", 0, 10, 3);
+  Shape3D->AddParameter<double>(&Radius);
   QStringList ShapeList;
   ShapeList.append("Sphere");
   ShapeList.append("Cube");
-  Shape3D->AddAdvParameter("Shape", ShapeList);
-
-  QGoAlgorithmWidget* WaterShedWidget = new QGoAlgorithmWidget("WaterShed", SemiAutoModeMeshEditingAlgoWidget);
-  //WaterShedWidget->AddParameter("Channel", ChannelName);
-  WaterShedWidget->AddParameter("Radius", 0, 10, 3);
-  WaterShedWidget->AddAdvParameter("Thres.Min.", 0, 10, 20);
-  WaterShedWidget->AddAdvParameter("Thres.Min.", 0, 30, 50);
-  WaterShedWidget->AddAdvParameter("Corr.Thres.", 0, 5, 2, 2);
-  WaterShedWidget->AddAdvParameter("Alpha", 0, 5, 1.50, 2);
-  WaterShedWidget->AddAdvParameter("Beta", 0, 5, 3, 1);
-
-  SemiAutoModeMeshEditingAlgoWidget->AddMethod(LevelSetWidget);
-  SemiAutoModeMeshEditingAlgoWidget->AddMethod(WaterShedWidget);
-  SemiAutoModeMeshEditingAlgoWidget->AddMethod(Shape3D);
+  QGoAlgoParameter<std::string> Shape("Shape",true, ShapeList, "Sphere");
+  //Shape3D->AddAdvParameter("Shape", ShapeList);
+  Shape3D->AddParameter<std::string>(&Shape);
   
-  QGoModesManagerWidget* MeshMode = new QGoModesManagerWidget(NULL);
-  MeshMode->AddAlgoManagerWidget(SemiAutoModeMeshEditingAlgoWidget);
+  QGoAlgorithmWidget* WaterShedWidget = new QGoAlgorithmWidget("WaterShed", MeshMode);//SemiAutoModeMeshEditingAlgoWidget);
+  //WaterShedWidget->AddParameter("Channel", ChannelName);
+  //WaterShedWidget->AddParameter("Radius", 0, 10, 3);
+  WaterShedWidget->AddParameter<double>(&Radius);
+  QGoAlgoParameter<int> ThresMin ("Thres.Min.", true, 0, 100, 20);
+  WaterShedWidget->AddParameter<int>(&ThresMin);
+  //WaterShedWidget->AddAdvParameter ("Thres.Min.", 0, 100, 20);
+  QGoAlgoParameter<int> ThresMax ("Thres.Max.", true, 0, 30, 50);
+  WaterShedWidget->AddParameter<int>(&ThresMax);
+ // WaterShedWidget->AddAdvParameter("Thres.Min.", 0, 30, 50);
+  QGoAlgoParameter<double> CorrThres ("Corr.Thres.", true, 0, 5, 2, 2);
+  WaterShedWidget->AddParameter<double>(&CorrThres);
+  //WaterShedWidget->AddAdvParameter("Corr.Thres.", 0, 5, 2, 2);
+  QGoAlgoParameter<double> Alpha ("Alpha", true, 0, 5, 1.50, 2);
+  WaterShedWidget->AddParameter<double>(&Alpha);
+  //WaterShedWidget->AddAdvParameter("Alpha", 0, 5, 1.50, 2);
+  QGoAlgoParameter<double> Beta ("Beta", true, 0, 5, 3, 1);
+  WaterShedWidget->AddParameter<double>(&Beta);
+  //WaterShedWidget->AddAdvParameter("Beta", 0, 5, 3, 1);
+
+  //SemiAutoModeMeshEditingAlgoWidget->AddMethod(LevelSetWidget);
+  //SemiAutoModeMeshEditingAlgoWidget->AddMethod(WaterShedWidget);
+  //SemiAutoModeMeshEditingAlgoWidget->AddMethod(Shape3D);
+  MeshMode->AddAlgoWidgetForSemiAutomatedMode(LevelSetWidget);
+  MeshMode->AddAlgoWidgetForSemiAutomatedMode(WaterShedWidget);
+  MeshMode->AddAlgoWidgetForSemiAutomatedMode(Shape3D);
+
+  MeshMode->CheckDefaultModes();
+  
+  
+  //MeshMode->AddAlgoManagerWidget(SemiAutoModeMeshEditingAlgoWidget);
   //MeshMode->AddWidgetWithModeName("Test", SemiAutoModeMeshEditingAlgoWidget);
   //SemiAutomatedMode->AddMethod(WaterShedWidget);
   //SemiAutomatedMode->AddMethod(Shape3D);
@@ -114,7 +143,8 @@ int main(int argc, char *argv[])
   app.closeAllWindows();
 
   //delete timer;
-  delete SemiAutoModeMeshEditingAlgoWidget;
+ // delete SemiAutoModeMeshEditingAlgoWidget;
+  delete MeshMode;
 
   return output;
 }

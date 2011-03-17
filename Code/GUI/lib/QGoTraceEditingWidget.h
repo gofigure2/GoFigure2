@@ -41,6 +41,7 @@
 #include <QStackedLayout>
 #include <QComboBox>
 #include "QGoModesManagerWidget.h"
+#include "QGoAlgorithmsManagerWidget.h"
 
 
 class QGoTraceEditingWidget:
@@ -48,7 +49,8 @@ class QGoTraceEditingWidget:
 {
   Q_OBJECT
 public:
-  explicit QGoTraceEditingWidget(std::string iTraceName, QWidget *iParent = 0 );
+  explicit QGoTraceEditingWidget(std::string iTraceName , QStringList iListChannels, 
+  QStringList iListTimePoints, QWidget *iParent = 0 );
   ~QGoTraceEditingWidget();
 
   /**
@@ -67,9 +69,10 @@ public:
   void SetModesManager(QGoModesManagerWidget* iModeWidget);
 
 protected:
-  void Initialize(QWidget *iParent = 0);
+  void Initialize(QStringList iListChannels, 
+  QStringList iListTimePoints, QWidget *iParent = 0);
   QGoModesManagerWidget* m_ModeEditingWidget;
-  QVBoxLayout*          m_VLayout;
+  QVBoxLayout*           m_VLayout;
 
 };
 #endif

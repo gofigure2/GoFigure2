@@ -146,6 +146,13 @@ void QGoAlgorithmsManagerWidget::SetCurrentTimePoint(QString iTimePoint)
   this->m_TimeComboBox->setCurrentIndex(
     this->m_TimeComboBox->findText(iTimePoint) );
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+bool QGoAlgorithmsManagerWidget::HasMethod()
+{
+  return this->m_MethodComboBox->count();
+}
 /*void QGoAlgorithmsManagerWidget::AddMethod(std::string iNameMethod, 
   QWidget* iParametersWidget, QWidget* iAdvParamWidget)
 {

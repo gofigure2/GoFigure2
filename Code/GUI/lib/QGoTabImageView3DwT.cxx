@@ -391,6 +391,7 @@ QGoTabImageView3DwT::CreateMeshSegmentationDockWidget()
 
   m_MeshSegmentationDockWidget =
     new QGoMeshSegmentationBaseDockWidget(this, m_Seeds, &m_InternalImages);
+  //this->m_MeshEditingWidget = new QGoTraceEditingWidget("Mesh", this);
 
   QObject::connect( m_MeshSegmentationDockWidget,
                     SIGNAL( ReinitializeInteractorActivated(bool) ),

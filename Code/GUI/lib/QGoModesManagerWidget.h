@@ -46,14 +46,16 @@
  * \ingroup GUI
  * \brief widget that manages the different modes for the TraceEditingWidget,
  has a combobox with the mode names and a corresponging stackedWidgets which
- display the right widget according to the mode selected in the combobox
+ display the right widget according to the mode selected in the combobox,
+ has semiautomated and automated default modes
 */
 class QGoModesManagerWidget:
   public QWidget
 {
   Q_OBJECT
 public:
-  explicit QGoModesManagerWidget(QWidget *iParent = 0);
+  explicit QGoModesManagerWidget(QStringList iListChannels, 
+    QStringList iListTimePoints, QWidget *iParent = 0);
   ~QGoModesManagerWidget();
 
   /**
@@ -71,12 +73,25 @@ public:
   void AddAlgoManagerWidget(QGoAlgorithmsManagerWidget* iAlgoManagerWidget, 
     int iDefaultIndex = 0);
 
+  void AddAlgoWidgetForSemiAutomatedMode(QGoAlgorithmWidget* iAlgoWidget);
+  void AddAlgoWidgetForAutomatedMode(QGoAlgorithmWidget* iAlgoWidget);
+  void AddWidgetForManualMode(QWidget* iWidget);
+
+  /**
+  \brief check that there is something in the default modes, if not, remove the mode
+  name from the combobox
+  */
+  void CheckDefaultModes();
+
 protected:
-  QVBoxLayout*            m_VBoxLayout;
-  QComboBox*              m_ModeComboBox;
-  QStackedWidget*         m_ModeWidgets;  
+  QVBoxLayout*                m_VBoxLayout;
+  QComboBox*                  m_ModeComboBox;
+  QStackedWidget*             m_ModeWidgets;  
+  QGoAlgorithmsManagerWidget* m_SemiAutoAlgoManagerWidget;
+  QGoAlgorithmsManagerWidget* m_AutoAlgoManagerWidget;
   
-  void Initialize();
+  void Initialize(QStringList iListChannels, QStringList iListTimePoints);
+
 
 };
 #endif

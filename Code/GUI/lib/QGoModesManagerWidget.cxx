@@ -34,10 +34,11 @@
 #include "QGoModesManagerWidget.h"
 #include <QLabel>
 
-QGoModesManagerWidget::QGoModesManagerWidget(QWidget *iParent)
+QGoModesManagerWidget::QGoModesManagerWidget(QStringList iListChannels, 
+  QStringList iListTimePoints, QWidget *iParent)
   :QWidget(iParent)
 {
-  this->Initialize();
+  this->Initialize(iListChannels, iListTimePoints);
 }
 //-------------------------------------------------------------------------
 
@@ -48,7 +49,8 @@ QGoModesManagerWidget::~QGoModesManagerWidget()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoModesManagerWidget::Initialize()
+void QGoModesManagerWidget::Initialize(QStringList iListChannels, 
+  QStringList iListTimePoints)
 {
   this->m_VBoxLayout = new QVBoxLayout;
   this->m_ModeComboBox = new QComboBox(this);
@@ -65,6 +67,17 @@ void QGoModesManagerWidget::Initialize()
 
   this->setLayout(this->m_VBoxLayout);
   this->m_VBoxLayout->setSizeConstraint(QLayout::SetFixedSize);
+
+  //add default modes:
+  this->m_SemiAutoAlgoManagerWidget = new
+    QGoAlgorithmsManagerWidget("SemiAutomated",iListChannels, 
+    iListTimePoints, this);
+  this->AddAlgoManagerWidget(this->m_SemiAutoAlgoManagerWidget);
+
+  this->m_AutoAlgoManagerWidget = new
+    QGoAlgorithmsManagerWidget("Automated",iListChannels, 
+    iListTimePoints, this);
+  this->AddAlgoManagerWidget(this->m_AutoAlgoManagerWidget);
 
   QObject::connect(this->m_ModeComboBox, SIGNAL(activated(int)),
              this->m_ModeWidgets, SLOT(setCurrentIndex(int)));
@@ -92,4 +105,43 @@ void QGoModesManagerWidget::AddAlgoManagerWidget(
   this->AddWidgetWithModeName(iAlgoManagerWidget->GetModeName(), 
     iAlgoManagerWidget);
   iAlgoManagerWidget->SetCurrentIndex(iDefaultIndex);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoModesManagerWidget::CheckDefaultModes()
+{
+  if (!this->m_AutoAlgoManagerWidget->HasMethod())
+    {
+    this->m_ModeComboBox->removeItem(
+      this->m_ModeComboBox->findText("Automated") );
+    }
+   if (!this->m_SemiAutoAlgoManagerWidget->HasMethod())
+    {
+    this->m_ModeComboBox->removeItem(
+      this->m_ModeComboBox->findText("SemiAutomated") );
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoModesManagerWidget::AddAlgoWidgetForSemiAutomatedMode(
+  QGoAlgorithmWidget* iAlgoWidget)
+{
+  this->m_SemiAutoAlgoManagerWidget->AddMethod(iAlgoWidget);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoModesManagerWidget::AddAlgoWidgetForAutomatedMode(
+  QGoAlgorithmWidget* iAlgoWidget)
+{
+  this->m_AutoAlgoManagerWidget->AddMethod(iAlgoWidget);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoModesManagerWidget::AddWidgetForManualMode(QWidget* iWidget)
+{
+  this->AddWidgetWithModeName("Manual", iWidget);
 }

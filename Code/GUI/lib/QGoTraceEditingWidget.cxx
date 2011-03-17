@@ -33,12 +33,14 @@
 =========================================================================*/
 #include "QGoTraceEditingWidget.h"
 #include "QGoModesManagerWidget.h"
+#include "QGoAlgorithmsManagerWidget.h"
 #include <QPushButton>
 
 QGoTraceEditingWidget::QGoTraceEditingWidget(
-  std::string iTraceName, QWidget *iParent)
+  std::string iTraceName, QStringList iListChannels, 
+  QStringList iListTimePoints, QWidget *iParent)
 {
-  this->Initialize(iParent);
+  this->Initialize(iListChannels, iListTimePoints, iParent);
   this->setWindowTitle(tr("%1 Editing").arg(iTraceName.c_str()));
 }
 //-------------------------------------------------------------------------
@@ -50,9 +52,12 @@ QGoTraceEditingWidget::~QGoTraceEditingWidget()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTraceEditingWidget::Initialize(QWidget *iParent)
+void QGoTraceEditingWidget::Initialize(QStringList iListChannels, 
+  QStringList iListTimePoints, QWidget *iParent)
 {
-  this->m_ModeEditingWidget = new QGoModesManagerWidget(this);
+  this->m_ModeEditingWidget = new QGoModesManagerWidget(
+    iListChannels, iListTimePoints, this);
+
   this->m_VLayout = new QVBoxLayout;
   this->m_VLayout->addWidget(this->m_ModeEditingWidget);
   this->setLayout(this->m_VLayout);
