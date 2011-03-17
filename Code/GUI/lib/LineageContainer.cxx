@@ -170,7 +170,6 @@ LineageContainer::UpdateElementVisibilityWithGivenTraceIDs(const QStringList & i
 {
   // emit signal for each lineage to be shown/hidden
   // signal contains the trackIDroot and the state
-
   if ( !iList.empty() )
     {
     MultiIndexContainerTraceIDIterator it;

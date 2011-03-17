@@ -295,14 +295,16 @@ TrackStructure::
 ModifyCollectionHighlight( TrackStructure* iRoot, bool iHighlight )
 {
   std::cout << "in ModifyCollectionHighlight" << std::endl;
-
-  if(iRoot->TreeNode.m_Child[0])
+  if(iRoot)
     {
-    ModifyCollectionHighlight(iRoot->TreeNode.m_Child[0],iHighlight);
-    }
-  else if(iRoot->TreeNode.m_Child[1])
-    {
-    ModifyCollectionHighlight(iRoot->TreeNode.m_Child[1],iHighlight);
+    if(iRoot->TreeNode.m_Child[0])
+      {
+      ModifyCollectionHighlight(iRoot->TreeNode.m_Child[0],iHighlight);
+      }
+    else if(iRoot->TreeNode.m_Child[1])
+      {
+      ModifyCollectionHighlight(iRoot->TreeNode.m_Child[1],iHighlight);
+      }
     }
 }
 //--------------------------------------------------------------------------

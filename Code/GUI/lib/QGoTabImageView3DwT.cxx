@@ -2791,6 +2791,8 @@ void
 QGoTabImageView3DwT::SaveAndVisuMeshFromSegmentation(vtkPolyData *iView, int iTCoord)
 {
   SaveAndVisuMesh(iView, m_TCoord, iTCoord);
+  // testing purpose
+  this->m_TrackContainer->HighlightCollection(7, true);
 }
 
 //-------------------------------------------------------------------------

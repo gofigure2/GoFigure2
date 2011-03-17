@@ -811,34 +811,26 @@ AddDivision( unsigned int iMotherID, unsigned int iDaughter1ID,
   // motherID->D1
   //         ->D2
   //------------------------------
-  // Create temporary structures so we can modify it
-  TrackStructure tempMother(*motherIt);
-  // Update daughters pointers
-  tempMother.TreeNode.m_Child[0] = const_cast<TrackStructure*>(&(*daughter1It));
-  tempMother.TreeNode.m_Child[1] = const_cast<TrackStructure*>(&(*daughter2It));
+  TrackStructure* mother = const_cast<TrackStructure*>(&(*motherIt));
+  mother->TreeNode.m_Child[0] = const_cast<TrackStructure*>(&(*daughter1It));
+  std::cout << "D1: " << mother->TreeNode.m_Child[0] << std::endl;
+  mother->TreeNode.m_Child[1] = const_cast<TrackStructure*>(&(*daughter2It));
+  std::cout << "D2: " << mother->TreeNode.m_Child[1] << std::endl;
   // Create Actor
-  tempMother.TreeNode.m_DivisionActor =
+  mother->TreeNode.m_DivisionActor =
       CreateDivisionActor(iMotherID, iDaughter1ID, iDaughter2ID);
-  // Push current element
-  m_Container.get< TraceID >().replace(motherIt, tempMother);
 
   //------------------------------
   // D1->motherID
   // D2->motherID
   //------------------------------
-  // Create temporary structures so we can modify it
-  TrackStructure tempDaughter1(*daughter1It);
-  // Update daughters pointers
-  tempDaughter1.TreeNode.m_Mother = const_cast<TrackStructure*>(&(*motherIt));
-  // Push current element
-  m_Container.get< TraceID >().replace(daughter1It, tempDaughter1);
+  TrackStructure* d1 =  const_cast<TrackStructure*>(&(*daughter1It));
+  d1->TreeNode.m_Mother = const_cast<TrackStructure*>(&(*motherIt));
+  std::cout << "M: " << d1->TreeNode.m_Mother << std::endl;
 
-  // Create temporary structures so we can modify it
-  TrackStructure tempDaughter2(*daughter2It);
-  // Update daughters pointers
-  tempDaughter2.TreeNode.m_Mother = const_cast<TrackStructure*>(&(*motherIt));
-  // Push current element
-  m_Container.get< TraceID >().replace(daughter1It, tempDaughter2);
+  TrackStructure* d2 =  const_cast<TrackStructure*>(&(*daughter2It));
+  d2->TreeNode.m_Mother = const_cast<TrackStructure*>(&(*motherIt));
+  std::cout << "M: " << d2->TreeNode.m_Mother << std::endl;
 }
 //-------------------------------------------------------------------------
 
