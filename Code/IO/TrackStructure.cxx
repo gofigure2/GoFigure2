@@ -287,12 +287,14 @@ TrackStructure::
 ModifyDivisionVisibility( bool iVisibility )
 {
   (void)iVisibility;
-  bool visibility = !this->TreeNode.m_DivisionActor[0]->GetVisibility();
-  std::cout << "visibility: " << visibility << std::endl;
-  this->TreeNode.m_DivisionActor[0]->SetVisibility( visibility );
-  this->TreeNode.m_DivisionActor[1]->SetVisibility( visibility );
-  this->TreeNode.m_DivisionActor[2]->SetVisibility( visibility );
-  this->TreeNode.m_DivisionActor[3]->SetVisibility( visibility );
+  //bool visibility = !this->TreeNode.m_DivisionActor[0]->GetVisibility();
+  std::cout << "visibility: " << iVisibility << std::endl;
+  //this->TreeNode.m_DivisionActor[0]->SetVisibility( visibility );
+  //this->TreeNode.m_DivisionActor[1]->SetVisibility( visibility );
+  //this->TreeNode.m_DivisionActor[2]->SetVisibility( visibility );
+  std::cout << "XYZ view: "
+            << this->TreeNode.m_DivisionActor[3]
+            << std::endl;
 }
 //--------------------------------------------------------------------------
 

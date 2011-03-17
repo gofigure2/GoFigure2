@@ -805,8 +805,12 @@ AddDivision( unsigned int iMotherID, unsigned int iDaughter1ID,
   mother->TreeNode.m_Child[0] = const_cast<TrackStructure*>(&(*daughter1It));
   mother->TreeNode.m_Child[1] = const_cast<TrackStructure*>(&(*daughter2It));
   // Create Actor
-  mother->TreeNode.m_DivisionActor =
+  std::vector< vtkActor * > actors =
       CreateDivisionActor(iMotherID, iDaughter1ID, iDaughter2ID);
+  mother->TreeNode.m_DivisionActor[0] = actors[0];
+  mother->TreeNode.m_DivisionActor[1] = actors[1];
+  mother->TreeNode.m_DivisionActor[2] = actors[2];
+  mother->TreeNode.m_DivisionActor[3] = actors[3];
 
   //------------------------------
   // D1->motherID
@@ -963,11 +967,6 @@ HighlightCollection(unsigned int iRootTrackID, bool iHilighted)
       = m_Container.get< TraceID >().find(iRootTrackID);
   TrackStructure* mother =  const_cast<TrackStructure*>(&(*motherIt));
   mother->UpdateCollectionHighlight( iHilighted );
-
-  if ( m_ImageView )
-    {
-    m_ImageView->UpdateRenderWindows();
-    }
 }
 //-------------------------------------------------------------------------
 
@@ -980,10 +979,5 @@ ShowCollection(unsigned int iRootTrackID, bool iVisible)
       = m_Container.get< TraceID >().find(iRootTrackID);
   TrackStructure* mother =  const_cast<TrackStructure*>(&(*motherIt));
   mother->UpdateCollectionVisibility( iVisible );
-
-  if ( m_ImageView )
-    {
-    m_ImageView->UpdateRenderWindows();
-    }
 }
 //-------------------------------------------------------------------------

@@ -61,10 +61,13 @@ public:
     m_Mother = NULL;
     m_Child[0] = NULL;
     m_Child[1] = NULL;
+
+    m_DivisionActor.resize(4);
     m_DivisionActor[0] = NULL;
     m_DivisionActor[1] = NULL;
     m_DivisionActor[2] = NULL;
     m_DivisionActor[3] = NULL;
+
     m_Visible = false;
     m_Highlighted = false;
     }
@@ -75,10 +78,11 @@ public:
       m_Child[0] = iE.m_Child[0];
       m_Child[1] = iE.m_Child[1];
 
-      m_DivisionActor[0] = iE.m_DivisionActor[0];
-      m_DivisionActor[1] = iE.m_DivisionActor[1];
-      m_DivisionActor[2] = iE.m_DivisionActor[2];
-      m_DivisionActor[3] = iE.m_DivisionActor[3];
+      m_DivisionActor.resize(4);
+      //m_DivisionActor[0]->ShallowCopy(iE.m_DivisionActor[0]);
+      //m_DivisionActor[1]->ShallowCopy(iE.m_DivisionActor[1]);
+      //m_DivisionActor[2]->ShallowCopy(iE.m_DivisionActor[2]);
+      //m_DivisionActor[3]->ShallowCopy(iE.m_DivisionActor[3]);
   }
 
   ~TreeNodeStructure()
@@ -111,7 +115,7 @@ public:
 
   T* m_Mother;
   T* m_Child[2];
-  std::vector<vtkActor* > m_DivisionActor;
+  std::vector< vtkActor* > m_DivisionActor;
   bool m_Visible;
   bool m_Highlighted;
 };
