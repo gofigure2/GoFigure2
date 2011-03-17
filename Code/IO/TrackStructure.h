@@ -65,6 +65,13 @@ public:
     m_Highlighted = false;
     }
 
+  TreeNodeStructure( const TreeNodeStructure & iE): m_Mother(iE.m_Mother),
+      m_Visible(iE.m_Visible), m_Highlighted(iE.m_Highlighted)
+  {
+      m_Child[0] = iE.m_Child[0];
+      m_Child[1] = iE.m_Child[1];
+  }
+
   ~TreeNodeStructure()
     {
     std::vector<vtkActor* >::iterator it = m_DivisionActor.begin();

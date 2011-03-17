@@ -58,7 +58,7 @@ TrackStructure::TrackStructure() : TraceStructure()
 
 //--------------------------------------------------------------------------
 TrackStructure::TrackStructure(const TrackStructure & iE) :
-  TraceStructure(iE), PointsMap(iE.PointsMap)
+  TraceStructure(iE), PointsMap(iE.PointsMap), TreeNode(iE.TreeNode)
 {
 }
 
