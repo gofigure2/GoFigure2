@@ -56,11 +56,9 @@ SET( QGOIO_SRC
   vtkPolyDataMySQLContourReader.cxx
   vtkPolyDataMySQLMeshReader.cxx
   vtkPolyDataMySQLTrackReader.cxx
-  vtkPolyDataMySQLLineageReader.cxx
   vtkPolyDataMySQLContourWriter.cxx
   vtkPolyDataMySQLMeshWriter.cxx
   vtkPolyDataMySQLTrackWriter.cxx
-  vtkPolyDataMySQLLineageWriter.cxx
   LSMToMegaCapture.cxx
 #  MeshTextFileImport.cxx
 #  TrackTextFileImport.cxx
