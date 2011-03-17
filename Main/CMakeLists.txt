@@ -325,12 +325,10 @@ ELSE( APPLE )
 ENDIF( APPLE )
 
 FILE( GLOB __source_file_h "${CMAKE_CURRENT_SOURCE_DIR}/*.h" )
-FILE( GLOB __source_file_txx "${CMAKE_CURRENT_SOURCE_DIR}/*.txx" )
 FILE( GLOB __binary_file_h "${CMAKE_CURRENT_BINARY_DIR}/*.h" )
-FILE( GLOB __binary_file_txx "${CMAKE_CURRENT_BINARY_DIR}/*.txx" )
 
-INSTALL( FILES ${__source_file_h} ${__source_file_txx}
-    ${__binary_file_h} ${__binary_file_txx}
+INSTALL( FILES ${__source_file_h} ${__binary_file_h}
+    ${QGoMainWindow_UI_H}
   DESTINATION ${GOFIGURE2_INSTALL_HEADER_DIR}
   COMPONENT Development
 )

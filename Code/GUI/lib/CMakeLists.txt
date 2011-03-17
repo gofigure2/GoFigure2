@@ -426,6 +426,7 @@ INSTALL( FILES ${__source_file_h} ${__source_file_txx}
     ${__source_tracevisu_h} ${__source_trace_visu_txx}
     ${__binary_tracevisu_h} ${__binary_tracevisu_txx}
     ${__source_wizard_h} ${__binary_tracevisu_h}
+    ${QGoGUILIB_UI_H}
   DESTINATION ${GOFIGURE2_INSTALL_HEADER_DIR}
   COMPONENT Development
 )
