@@ -52,6 +52,7 @@ ENDIF( WIN32 )
 # Export and Install configuration
 #
 # GOFIGURE2_INSTALL_BUNDLE_DIR       - bundle dir
+# GOFIGURE2_INSTALL_HEADER_DIR       - include dir (headers)
 # GOFIGURE2_INSTALL_BIN_DIR          - binary dir (executables)
 # GOFIGURE2_INSTALL_LIB_DIR          - library dir (libs)
 # GOFIGURE2_INSTALL_DOC_DIR          - documentation dir
@@ -60,6 +61,10 @@ ENDIF( WIN32 )
 IF( NOT GOFIGURE2_INSTALL_BUNDLE_DIR )
   SET( GOFIGURE2_INSTALL_BUNDLE_DIR "." )
 ENDIF( NOT GOFIGURE2_INSTALL_BUNDLE_DIR )
+
+IF( NOT GOFIGURE2_INSTALL_HEADER_DIR )
+  SET( GOFIGURE2_INSTALL_HEADER_DIR "include/gofigure2" )
+ENDIF( NOT GOFIGURE2_INSTALL_HEADER_DIR )
 
 IF( NOT GOFIGURE2_INSTALL_BIN_DIR )
   SET( GOFIGURE2_INSTALL_BIN_DIR "bin" )
@@ -358,6 +363,12 @@ IF( VTK_FOUND )
       ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoPlugin.cxx
       ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoImageFilterPluginBase.cxx
     )
+
+    INSTALL(
+      FILES ${QGoGUIINTERFACES_HDRS}
+      DESTINATION ${GOFIGURE2_INSTALL_HEADER_DIR}
+      COMPONENT Development
+      )
 
     ADD_SUBDIRECTORY( Code )
     ADD_SUBDIRECTORY( Main )
