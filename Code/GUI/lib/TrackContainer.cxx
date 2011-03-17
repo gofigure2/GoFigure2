@@ -894,7 +894,8 @@ CreateDivisionActor( unsigned int iMother, unsigned int iDaughter1, unsigned int
   /*
    * \todo Nicolas: Which color should it be? White as of now
    */
-  vtkProperty *trace_property = vtkProperty::New();
+  vtkSmartPointer<vtkProperty> trace_property =
+      vtkSmartPointer<vtkProperty>::New();
   double       r = 1.0;
   double       g = 1.0;
   double       b = 1.0;
