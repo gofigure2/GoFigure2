@@ -484,8 +484,9 @@ QGoMainWindow::LoadMeshesFromDatabase(const int & iT)
           GoFigureMeshAttributes attributes =
             w3t->ComputeMeshAttributes(
               mesh_list_it->Nodes, // mesh
-              false);              // do not need to compute intensity based
-                                   // measure
+              false, // do not need to compute intensity based measure
+              mesh_list_it->TCoord
+              );
           w3t->m_DataBaseTables->PrintVolumeAreaForMesh(
             &attributes, mesh_list_it->TraceID);
           }
