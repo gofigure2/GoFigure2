@@ -366,6 +366,9 @@ IF( VTK_FOUND )
 
     INSTALL(
       FILES ${QGoGUIINTERFACES_HDRS}
+        ${GOFIGURE2_SOURCE_DIR}/Interfaces/PluginInformationBase.h
+        ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoImageSegmentationPluginBase.h
+        ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoPluginHelper.h
       DESTINATION ${GOFIGURE2_INSTALL_HEADER_DIR}
       COMPONENT Development
       )
