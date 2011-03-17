@@ -83,12 +83,13 @@ ELSE( SUPERBUILD )
   # Export and Install configuration
   #
   # GOFIGURE2_INSTALL_BUNDLE_DIR       - bundle dir
+  # GOFIGURE2_INSTALL_HEADER_DIR       - include dir (headers)
   # GOFIGURE2_INSTALL_BIN_DIR          - binary dir (executables)
   # GOFIGURE2_INSTALL_LIB_DIR          - library dir (libs)
   # GOFIGURE2_INSTALL_DOC_DIR          - documentation dir
   # GOFIGURE2_INSTALL_LICENSE_DIR      - licenses dir
   #-----------------------------------------------------------------------
-  
+
   IF( NOT GOFIGURE2_INSTALL_BUNDLE_DIR )
     SET( GOFIGURE2_INSTALL_BUNDLE_DIR "." )
   ENDIF( NOT GOFIGURE2_INSTALL_BUNDLE_DIR )
@@ -96,6 +97,10 @@ ELSE( SUPERBUILD )
   IF( NOT GOFIGURE2_INSTALL_BIN_DIR )
     SET( GOFIGURE2_INSTALL_BIN_DIR "bin" )
   ENDIF( NOT GOFIGURE2_INSTALL_BIN_DIR )
+
+  IF( NOT GOFIGURE2_INSTALL_HEADER_DIR )
+    SET( GOFIGURE2_INSTALL_HEADER_DIR "include/gofigure2/" )
+  ENDIF( NOT GOFIGURE2_INSTALL_HEADER_DIR )
 
   IF( NOT GOFIGURE2_INSTALL_LIB_DIR )
     SET( GOFIGURE2_INSTALL_LIB_DIR "lib/gofigure2" )
@@ -252,6 +257,9 @@ ELSE( SUPERBUILD )
 
   INSTALL(
       FILES ${QGoGUIINTERFACES_HDRS}
+        ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoPluginHelper.h
+        ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoImageSegmentationPluginBase.h
+        ${GOFIGURE2_SOURCE_DIR}/Interfaces/PluginInformationBase.h
       DESTINATION ${GOFIGURE2_INSTALL_HEADER_DIR}
       COMPONENT Development
       )

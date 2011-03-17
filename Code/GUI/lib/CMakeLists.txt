@@ -396,8 +396,36 @@ FILE( GLOB __source_file_txx "${CMAKE_CURRENT_SOURCE_DIR}/*.txx" )
 FILE( GLOB __binary_file_h "${CMAKE_CURRENT_BINARY_DIR}/*.h" )
 FILE( GLOB __binary_file_txx "${CMAKE_CURRENT_BINARY_DIR}/*.txx" )
 
+FILE( GLOB __source_video_h "${CMAKE_CURRENT_SOURCE_DIR}/Video/*.h" )
+FILE( GLOB __binary_video_h "${CMAKE_CURRENT_BINARY_DIR}/Video/*.h" )
+
+FILE( GLOB __source_sync_h
+  "${CMAKE_CURRENT_SOURCE_DIR}/SynchronizedViews/*.h"
+)
+FILE( GLOB __binary_sync_h
+  "${CMAKE_CURRENT_BINARY_DIR}/SynchronizedViews/*.h"
+)
+FILE( GLOB __source_tracevisu_h
+  "${CMAKE_CURRENT_SOURCE_DIR}/VisualizationTraceContainers/*.h" )
+FILE( GLOB __source_trace_visu_txx
+  "${CMAKE_CURRENT_SOURCE_DIR}/VisualizationTraceContainers/*.txx" )
+FILE( GLOB __binary_tracevisu_h
+  "${CMAKE_CURRENT_BINARY_DIR}/VisualizationTraceContainers/*.h" )
+FILE( GLOB __binary_tracevisu_txx
+  "${CMAKE_CURRENT_BINARY_DIR}/VisualizationTraceContainers/*.txx" )
+
+FILE( GLOB __source_wizard_h
+  "${CMAKE_CURRENT_SOURCE_DIR}/Wizard/*.h" )
+FILE( GLOB __binary_tracevisu_h
+  "${CMAKE_CURRENT_BINARY_DIR}/Wizard/*.h" )
+
 INSTALL( FILES ${__source_file_h} ${__source_file_txx}
     ${__binary_file_h} ${__binary_file_txx}
+    ${__source_video_h} ${__binary_video_h}
+    ${__source_sync_h} ${__binary_sync_h}
+    ${__source_tracevisu_h} ${__source_trace_visu_txx}
+    ${__binary_tracevisu_h} ${__binary_tracevisu_txx}
+    ${__source_wizard_h} ${__binary_tracevisu_h}
   DESTINATION ${GOFIGURE2_INSTALL_HEADER_DIR}
   COMPONENT Development
 )
