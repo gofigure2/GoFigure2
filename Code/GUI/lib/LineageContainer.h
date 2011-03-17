@@ -124,24 +124,6 @@ public:
   /** \brief Destructor. */
   virtual ~LineageContainer();
 
-  /*
-   * \brief Extract 1 polydata from a lineage. Useful for the database.
-   * Use vtkAppendFilter??
-   * \param[in] iLineageID lineage of interest
-   * \return Pointer to the new polydata. Has to be deleted?? HOW IMPLEMENT IT WITH REAL TRACKS
-   */
-  vtkPolyData* extractPolyDataFromLineage( unsigned int iLineageID);
-
-  /*
-   * \brief Create a lineage from a polydata. Useful when reading the database.
-   * Format: NbOfTracks TrackID MotherTrackID NbOfPoints Points[...]
-   *                    TrackID MotherTrackID NbOfPoints Points[...]
-   *                    TrackID MotherTrackID NbOfPoints Points[...]
-   *                    ...
-   * \param[in] iPolyData Pointer to the base polydata
-   */
-  void extractLineageFromPolyData( vtkPolyData* iPolyData);
-
   /**
   \brief insert a new element in the container with all the info needed
   \param[in] iLineageID ID for the new lineage
@@ -152,61 +134,19 @@ public:
   void InsertNewLineage(unsigned int iLineageID, 
     double irgba[4], unsigned int iTrackIDRoot,
     bool IsVisible = false);
-  /*
-   * \brief Create a new connection between the selected points
-   * \param[in] iMoTrackID ID of the mother to find it in the container
-   * \param[in] iD1TrackID ID of the first daughter
-   * \param[in] iD1PolyData PolyData of the first daughter
-   * \param[in] iD2TrackID ID of the second daughter (not required)
-   * \param[in] iD2PolyData PolyData of the second daughter (not required)
-   */
- /* void connectTracks( unsigned int iMoTrackID,
-                      unsigned int iD1TrackID, vtkPolyData* iD1PolyData,
-                      unsigned int iD2TrackID = 0, vtkPolyData* iD2PolyData = NULL);
-*/
 
   /*
-   * \brief Create a basic lineage
-   * \param[in] iLineageID is root ID
-   * \param[in] iMoTrackID ID of the mother to find it in the container
-   * \param[in] iMotherFirst
-   * \param[in] iMotherLast
-   * \param[in] iD1TrackID ID of the first daughter
-   * \param[in] iD1First
-   * \param[in] iD1Last
-   * \param[in] iD2TrackID ID of the second daughter (not required)
-   * \param[in] iD2First (not required)
-   * \param[in] iD2Last (not required)
+   * \brief Get the list of all the lineages roots, as track IDs
+   * \return list containg the track root ids
    */
-  void addDivisionToLineage( unsigned int iLineageID, bool iIsRoot,
-                      unsigned int iMoTrackID, double* iMotherFirstPoint,
-                      unsigned int iD1TrackID, double* iD1LastPoint,
-                      unsigned int iD2TrackID, double* iD2LastPoint);
+  std::list<unsigned int> GetListOfTrackRootIDs();
 
   /*
-   * \brief Basic lineage for testing purpose
+   * \brief Get the track root ID of the given lineage
+   * \param[in] iTraceID lineage ID of interest
+   * \return related track root ID
    */
-  void createBasicLineageFromCurrentElement( 
-    double* iMother, // Arnaud: what is iMother?
-    double* iDaughter, // Arnaud: what is iDaugher* ?
-    double* iDaughter2);
-
-
-  /*
-   * \brief Cut a lineage after the chosen point.
-   * Will Create 2 new lineage from the 2 daughters.
-   * \param[in] iMoTrackID ID of the mother to find it in the container
-   * \param[in] iNewLineageID1 ID of the first new lineage
-   * \param[in] iNewLineageID2 ID of the second new lineage
-   * \param[in] iRootPolyData Polydata representing the root track.
-   * Required if we cut a track at the root level
-   */
-  void cutLineage( unsigned int iMoTrackID,
-                   unsigned int iNewLineageID1,
-                   unsigned int iNewLineageID2,
-                   vtkPolyData* iRootPolyData = NULL);
-
-  std::list<unsigned int> GetLineagesTrackRootIDs();
+  unsigned int GetLineageTrackRootID( unsigned int iTraceID );
 
   //void updateActor( unsigned int iLineageID );
 

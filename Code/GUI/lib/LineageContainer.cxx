@@ -34,10 +34,6 @@
 
 #include "LineageContainer.h"
 
-#include "vtkPolyData.h"
-#include "vtkCellArray.h"
-#include "vtkLine.h"
-
 //-------------------------------------------------------------------------
 LineageContainer::
 LineageContainer(QObject *iParent,QGoImageView3D *iView):Superclass(iParent, iView)
@@ -59,26 +55,6 @@ LineageContainer::
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void
-LineageContainer::
-addDivisionToLineage( unsigned int iLineageID, bool iIsRoot,
-                    unsigned int iMoTrackID, double* iMotherLast,
-                    unsigned int iD1TrackID, double* iD1First,
-                    unsigned int iD2TrackID, double* iD2First)
-{
-  // Create the polydata and actors
-	createBasicLineageFromCurrentElement(iMotherLast, iD1First, iD2First);
-/*
-  // update ID fields
-  this->m_CurrentElement.SetRootID(iLineageID);
-  this->m_CurrentElement.SetMotherID(iMoTrackID);
-  this->m_CurrentElement.SetDaughter1ID(iD1TrackID);
-  this->m_CurrentElement.SetDaughter2ID(iD2TrackID);
-  this->m_CurrentElement.Root = iIsRoot;*/
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 void LineageContainer::InsertNewLineage(unsigned int iLineageID, 
     double irgba[4], unsigned int iTrackIDRoot,
     bool IsVisible)
@@ -92,137 +68,6 @@ void LineageContainer::InsertNewLineage(unsigned int iLineageID,
   NewElement.TrackRootID = iTrackIDRoot;
   NewElement.Visible = IsVisible;
   this->Insert(NewElement);
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-//void
-//LineageContainer::
-//createLineage( unsigned int iLineageID,
-//               unsigned int iMoTrackID, double* iMotherFirst, double* iMotherLast,
-//               unsigned int iD1TrackID, double* iD1First, double* iD1Last,
-//               unsigned int iD2TrackID, double* iD2First, double* iD2Last)
-//{
-/*
-  // Create temp structure
-  TrackStructure tempStructure(*iIterator);
-
-  //add the point in the map
-  bool pointDeleted = tempStructure.DeleteElement(iTime);
-
-  // build the new polydata if a point has been deleted
-  if ( pointDeleted && iReconstructPolyData )
-    {
-    UpdateTrackStructurePolyData(tempStructure);
-    }
-
-  // Replace
-  m_Container.get< TraceID >().replace(iIterator, tempStructure);*/
-/*
-  LineageStructure motherStructure;
-
-  // Create Mother structure
-  motherStructure.m_LineageID = iLineageID;
-  motherStructure.m_FirstPoint = iMotherFirst;
-  motherStructure.m_LastPoint = iMotherLast;
-  motherStructure.TrackID = iMoTrackID;
-  motherStructure.Root = true;
-  m_Container.insert(motherStructure);
-
-  // Create Daughter structures
-  LineageStructure daughter1Structure;
-  daughter1Structure.m_LineageID = iLineageID;
-  daughter1Structure.m_FirstPoint = iD1First;
-  daughter1Structure.m_LastPoint = iD1Last;
-  daughter1Structure.TrackID = iD1TrackID;
-  daughter1Structure.Root = false;
-  m_Container.insert(daughter1Structure);
-
-  LineageStructure daughter2Structure;
-  daughter2Structure.m_LineageID = iLineageID;
-  daughter2Structure.m_FirstPoint = iD2First;
-  daughter2Structure.m_LastPoint = iD2Last;
-  daughter2Structure.TrackID = iD2TrackID;
-  daughter2Structure.Root = false;
-  m_Container.insert(daughter2Structure);
-*/
-  // insert elements (to lock "address")
-
-  /*
-  // Set up relationship
-  // For mother
-  SetRoot(Self* iRoot);
-  SetMother(Self* iMother);
-  SetDaughter1(Self* iDaughter1);
-  SetDaughter2(Self* iDaughter2);
-
-  // Create Data for root
-  m_CurrentElement.ActorXY = NULL;
-  m_CurrentElement.ActorXZ = NULL;
-  m_CurrentElement.ActorYZ = NULL;
-  m_CurrentElement.ActorXYZ = NULL;*/
-//}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-LineageContainer::
-createBasicLineageFromCurrentElement( double* iMother, double* iDaughter1, double* iDaughter2)
-{
-  // Arnaud: what about if any of the parameter is NULL?
-  // Arnaud: what about if one daughter is in the field of view,
-  // and not the other one?
-
-  // Create the triangle polydata
-  //setup points (geometry)
-  vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
-  points->InsertNextPoint ( iDaughter1[0], iDaughter1[1], iDaughter1[2] );
-  points->InsertNextPoint ( iMother[0], iMother[1], iMother[2] );
-  points->InsertNextPoint ( iDaughter2[0], iDaughter2[1], iDaughter2[2] );
-
-  vtkSmartPointer<vtkCellArray> lines = vtkSmartPointer<vtkCellArray>::New();
-
-  for(int i=0; i<2; ++i)
-    {
-    //Create the first line (between Origin and P0)
-    vtkSmartPointer<vtkLine> line =
-        vtkSmartPointer<vtkLine>::New();
-    line->GetPointIds()->SetId(0,i);
-    line->GetPointIds()->SetId(1,i+1);
-    lines->InsertNextCell(line);
-    }
-
-  //add the geometry and topology to the polydata
-  this->m_CurrentElement.Nodes = vtkPolyData::New();
-  this->m_CurrentElement.Nodes->SetPoints ( points );
-  this->m_CurrentElement.Nodes->SetLines ( lines );
-
-  // Add the actors
-  if ( this->m_ImageView )
-    {
-    //Create new actors (new address)
-    vtkProperty *trace_property = vtkProperty::New();
-    double       r = 1.0;
-    double       g = 1.0;
-    double       b = 1.0;
-    double       a = 1.0;
-
-    trace_property->SetColor(r,
-                             g,
-                             b);
-    trace_property->SetOpacity(a);
-    // Not working only open gl
-    //trace_property->SetLineWidth(10.0);
-
-    // Add contour
-    std::vector< vtkActor * > lineageActors =
-      m_ImageView->AddContour(this->m_CurrentElement.Nodes, trace_property);
-
-    this->m_CurrentElement.ActorXY = lineageActors[0];
-    this->m_CurrentElement.ActorXZ = lineageActors[1];
-    this->m_CurrentElement.ActorYZ = lineageActors[2];
-    this->m_CurrentElement.ActorXYZ = lineageActors[3];
-    }
 }
 //-------------------------------------------------------------------------
 
@@ -257,7 +102,7 @@ std::vector< vtkActor* > LineageContainer::AddTrace( vtkPolyData* , vtkProperty*
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::list<unsigned int> LineageContainer::GetLineagesTrackRootIDs()
+std::list<unsigned int> LineageContainer::GetListOfTrackRootIDs()
 {
   std::list<unsigned int> listOfTrackIDs;
 
@@ -272,3 +117,21 @@ std::list<unsigned int> LineageContainer::GetLineagesTrackRootIDs()
 
   return listOfTrackIDs;
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+unsigned int LineageContainer::GetLineageTrackRootID( unsigned int iTraceID )
+{
+  unsigned int trackID = 0;
+
+  MultiIndexContainerType::index< TraceID >::type::iterator
+    it = m_Container.get< TraceID >().find( iTraceID );
+
+  if( it != m_Container.get< TraceID >().end() )
+    {
+    trackID = it->TrackRootID;
+    }
+
+  return trackID;
+}
+//-------------------------------------------------------------------------
