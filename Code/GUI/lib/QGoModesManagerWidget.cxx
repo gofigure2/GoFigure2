@@ -115,11 +115,13 @@ void QGoModesManagerWidget::CheckDefaultModes()
     {
     this->m_ModeComboBox->removeItem(
       this->m_ModeComboBox->findText("Automated") );
+    this->m_ModeWidgets->removeWidget(this->m_AutoAlgoManagerWidget);
     }
    if (!this->m_SemiAutoAlgoManagerWidget->HasMethod())
     {
     this->m_ModeComboBox->removeItem(
       this->m_ModeComboBox->findText("SemiAutomated") );
+    this->m_ModeWidgets->removeWidget(this->m_SemiAutoAlgoManagerWidget);
     }
 }
 //-------------------------------------------------------------------------

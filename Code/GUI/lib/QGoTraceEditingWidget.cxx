@@ -85,3 +85,33 @@ void QGoTraceEditingWidget::SetModesManager(QGoModesManagerWidget* iModeWidget)
   this->m_ModeEditingWidget = iModeWidget;
   this->m_VLayout->addWidget(this->m_ModeEditingWidget);
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTraceEditingWidget::AddAlgoWidgetForSemiAutomatedMode(
+  QGoAlgorithmWidget* iAlgoWidget)
+{
+  this->m_ModeEditingWidget->AddAlgoWidgetForSemiAutomatedMode(iAlgoWidget);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTraceEditingWidget::AddAlgoWidgetForAutomatedMode(
+  QGoAlgorithmWidget* iAlgoWidget)
+{
+  this->m_ModeEditingWidget->AddAlgoWidgetForAutomatedMode(iAlgoWidget);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTraceEditingWidget::AddWidgetForManualMode(QWidget* iWidget)
+{
+  this->m_ModeEditingWidget->AddWidgetForManualMode(iWidget);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTraceEditingWidget::CheckDefaultModes()
+{
+  this->m_ModeEditingWidget->CheckDefaultModes();
+}

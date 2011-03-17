@@ -68,6 +68,11 @@ public:
   */
   void SetModesManager(QGoModesManagerWidget* iModeWidget);
 
+  void AddAlgoWidgetForSemiAutomatedMode(QGoAlgorithmWidget* iAlgoWidget);
+  void AddAlgoWidgetForAutomatedMode(QGoAlgorithmWidget* iAlgoWidget);
+  void AddWidgetForManualMode(QWidget* iWidget);
+  void CheckDefaultModes();
+
 protected:
   void Initialize(QStringList iListChannels, 
   QStringList iListTimePoints, QWidget *iParent = 0);
