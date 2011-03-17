@@ -1003,14 +1003,15 @@ QGoTabImageView3DwT::ChannelTimeMode(bool iEnable)
 
     if ( NumberOfChannels > 1 )
       {
-      m_NavigationDockWidget->SetChannel(0);
-      m_ContourSegmentationDockWidget->SetChannel(0);
-      m_MeshSegmentationDockWidget->SetChannel(0);
+      m_NavigationDockWidget->SetChannel( 0, m_ChannelNames[0] );
+      m_ContourSegmentationDockWidget->SetChannel( 0, m_ChannelNames[0] );
+      m_MeshSegmentationDockWidget->SetChannel( 0, m_ChannelNames[0] );
       for ( unsigned int i = 1; i < NumberOfChannels; i++ )
         {
-        m_NavigationDockWidget->SetChannel(i);
-        m_ContourSegmentationDockWidget->SetChannel(i);
-        m_MeshSegmentationDockWidget->SetChannel(i);
+        m_NavigationDockWidget->SetChannel( i, m_ChannelNames[i] );
+
+        m_ContourSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
+        m_MeshSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
         }
       }
     m_NavigationDockWidget->blockSignals(false);
@@ -1035,10 +1036,11 @@ void QGoTabImageView3DwT::LoadChannelTime()
     channel << QString::number(i, 10);
     }
 
-  QString item = QInputDialog::getItem(this,
-                                       tr("Channel selection"),
-                                       tr("Please select the channel you want to track"),
-                                       channel, 0, false, &ok);
+  QString item =
+      QInputDialog::getItem(this,
+                            tr("Channel selection"),
+                            tr("Please select the channel you want to track"),
+                            channel, 0, false, &ok);
 
   if ( ok )
     {
@@ -1540,18 +1542,24 @@ QGoTabImageView3DwT::SetLSMReader(vtkLSMReader *iReader, const int & iTimePoint)
     m_ContourSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
     m_MeshSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
 
+    m_ChannelNames.resize( NumberOfChannels );
+
     if ( NumberOfChannels > 1 )
       {
       m_NavigationDockWidget->SetChannel(0);
-      m_ContourSegmentationDockWidget->SetChannel(0);
-      m_MeshSegmentationDockWidget->SetChannel(0);
+      m_ChannelNames[0] = m_NavigationDockWidget->GetChannelName( 0 );
+
+      m_ContourSegmentationDockWidget->SetChannel( 0, m_ChannelNames[0] );
+      m_MeshSegmentationDockWidget->SetChannel( 0 , m_ChannelNames[0] );
       m_InternalImages.resize(NumberOfChannels);
 
       for ( int i = 1; i < NumberOfChannels; i++ )
         {
         m_NavigationDockWidget->SetChannel(i);
-        m_ContourSegmentationDockWidget->SetChannel(i);
-        m_MeshSegmentationDockWidget->SetChannel(i);
+        m_ChannelNames[i] = m_NavigationDockWidget->GetChannelName( i );
+
+        m_ContourSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
+        m_MeshSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
 
         m_LSMReader.push_back( vtkSmartPointer< vtkLSMReader >::New() );
         m_LSMReader.back()->SetFileName( m_LSMReader[0]->GetFileName() );
@@ -1612,6 +1620,8 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
 
   unsigned int NumberOfChannels = max_ch - min_ch + 1;
 
+  m_ChannelNames.resize( NumberOfChannels );
+
   vtkImageData *temp = m_MegaCaptureReader->GetOutput(min_ch);
 
   int extent[6];
@@ -1627,15 +1637,19 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
   if ( NumberOfChannels > 1 )
     {
     m_NavigationDockWidget->SetChannel(0);
-    m_ContourSegmentationDockWidget->SetChannel(0);
-    m_MeshSegmentationDockWidget->SetChannel(0);
+    m_ChannelNames[0] = m_NavigationDockWidget->GetChannelName(0);
+
+    m_ContourSegmentationDockWidget->SetChannel( 0, m_ChannelNames[0] );
+    m_MeshSegmentationDockWidget->SetChannel( 0, m_ChannelNames[0] );
     m_InternalImages.resize(NumberOfChannels, NULL);
 
     for ( unsigned int i = 1; i < NumberOfChannels; i++ )
       {
       m_NavigationDockWidget->SetChannel(i);
-      m_ContourSegmentationDockWidget->SetChannel(i);
-      m_MeshSegmentationDockWidget->SetChannel(i);
+      m_ChannelNames[i] = m_NavigationDockWidget->GetChannelName(i);
+
+      m_ContourSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
+      m_MeshSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
       }
     }
 
@@ -2991,7 +3005,7 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
 
       if ( iIntensity )
         {
-        QString     q_channelname = this->m_NavigationDockWidget->GetChannelName(i);
+        QString     q_channelname = this->m_ChannelNames[i];
         std::string channelname = q_channelname.toStdString();
 
         oAttributes.m_TotalIntensityMap[channelname] =
@@ -3039,7 +3053,7 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
 
       if ( iIntensity )
         {
-        QString     q_channelname = this->m_NavigationDockWidget->GetChannelName(i);
+        QString     q_channelname = this->m_ChannelNames[i];
         std::string channelname = q_channelname.toStdString();
 
         oAttributes.m_TotalIntensityMap[channelname] =
@@ -3100,10 +3114,10 @@ QGoTabImageView3DwT::CreateMeshFromSelectedContours(
         {
         if ( traceid_it->TCoord != tcoord )
           {
-          QMessageBox::warning( NULL,
-                                tr("Generate Mesh From Checked Contours"),
-                                tr("Selected contours are at different time point: %1 != %2").arg(tcoord).arg(
-                                  traceid_it->TCoord) );
+          QMessageBox::warning(
+                NULL,
+                tr("Generate Mesh From Checked Contours"),
+                tr("Selected contours are at different time point: %1 != %2").arg(tcoord).arg( traceid_it->TCoord) );
           return;
           }
         }

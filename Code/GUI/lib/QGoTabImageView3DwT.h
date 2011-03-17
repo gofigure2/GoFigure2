@@ -366,6 +366,7 @@ protected:
   QAction *                                 m_TakeSnapshotAction;
 
   float m_IntersectionLineWidth;
+  std::vector< QString > m_ChannelNames;
 
   int m_PCoord;
   int m_RCoord;
