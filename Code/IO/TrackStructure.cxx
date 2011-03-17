@@ -58,7 +58,7 @@ TrackStructure::TrackStructure() : TraceStructure()
 
 //--------------------------------------------------------------------------
 TrackStructure::TrackStructure(const TrackStructure & iE) :
-  TraceStructure(iE), PointsMap(iE.PointsMap), TreeNode(iE.TreeNode)
+  TraceStructure(iE), TreeNode(iE.TreeNode), PointsMap(iE.PointsMap)
 {
 }
 
@@ -265,7 +265,8 @@ void
 TrackStructure::
 ModifyCollectionVisibility( TrackStructure* iRoot, bool iVisibility )
 {
-  std::cout << "in ModifyCollectionVisibility" << std::endl;
+  ModifyDivisionVisibility(iVisibility);
+
   if(iRoot)
     {
     if(iRoot->TreeNode.m_Child[0])
@@ -277,6 +278,21 @@ ModifyCollectionVisibility( TrackStructure* iRoot, bool iVisibility )
       ModifyCollectionVisibility(iRoot->TreeNode.m_Child[1], iVisibility);
       }
     }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+TrackStructure::
+ModifyDivisionVisibility( bool iVisibility )
+{
+  (void)iVisibility;
+  bool visibility = !this->TreeNode.m_DivisionActor[0]->GetVisibility();
+  std::cout << "visibility: " << visibility << std::endl;
+  this->TreeNode.m_DivisionActor[0]->SetVisibility( visibility );
+  this->TreeNode.m_DivisionActor[1]->SetVisibility( visibility );
+  this->TreeNode.m_DivisionActor[2]->SetVisibility( visibility );
+  this->TreeNode.m_DivisionActor[3]->SetVisibility( visibility );
 }
 //--------------------------------------------------------------------------
 
@@ -296,7 +312,8 @@ void
 TrackStructure::
 ModifyCollectionHighlight( TrackStructure* iRoot, bool iHighlight )
 {
-  std::cout << "in ModifyCollectionHighlight" << std::endl;
+  ModifyDivisionHighlight(iHighlight);
+
   if(iRoot)
     {
     if(iRoot->TreeNode.m_Child[0])
@@ -308,5 +325,17 @@ ModifyCollectionHighlight( TrackStructure* iRoot, bool iHighlight )
       ModifyCollectionHighlight(iRoot->TreeNode.m_Child[1],iHighlight);
       }
     }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+TrackStructure::
+ModifyDivisionHighlight( bool iVisibility )
+{
+  /*this->TreeNode.m_DivisionActor[0]->
+  this->TreeNode.m_DivisionActor[1]->
+  this->TreeNode.m_DivisionActor[2]->
+  this->TreeNode.m_DivisionActor[3]->*/
 }
 //--------------------------------------------------------------------------

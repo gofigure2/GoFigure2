@@ -787,8 +787,6 @@ TrackContainer::
 AddDivision( unsigned int iMotherID, unsigned int iDaughter1ID,
     unsigned int iDaughter2ID)
 {
-  std::cout << "MotherID: " << iMotherID << std::endl;
-
   // get address of the structures of interest
   //------------------------------
   MultiIndexContainerTraceIDIterator motherIt
@@ -965,6 +963,11 @@ HighlightCollection(unsigned int iRootTrackID, bool iHilighted)
       = m_Container.get< TraceID >().find(iRootTrackID);
   TrackStructure* mother =  const_cast<TrackStructure*>(&(*motherIt));
   mother->UpdateCollectionHighlight( iHilighted );
+
+  if ( m_ImageView )
+    {
+    m_ImageView->UpdateRenderWindows();
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -977,5 +980,10 @@ ShowCollection(unsigned int iRootTrackID, bool iVisible)
       = m_Container.get< TraceID >().find(iRootTrackID);
   TrackStructure* mother =  const_cast<TrackStructure*>(&(*motherIt));
   mother->UpdateCollectionVisibility( iVisible );
+
+  if ( m_ImageView )
+    {
+    m_ImageView->UpdateRenderWindows();
+    }
 }
 //-------------------------------------------------------------------------
