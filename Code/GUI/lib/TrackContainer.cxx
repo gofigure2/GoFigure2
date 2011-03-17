@@ -923,6 +923,8 @@ void
 TrackContainer::
 CutLineage(unsigned int iMotherID)
 {
+  std::cout << "CutLineage can't work because of temp structures - use const_cast instead"
+      << std::endl;
   // update connections
   //------------------------------
   // motherID->NULL
@@ -973,8 +975,8 @@ HighlightCollection(unsigned int iRootTrackID, bool iHilighted)
 {
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iRootTrackID);
-  TrackStructure tempMother(*motherIt);
-  tempMother.UpdateCollectionHighlight( iHilighted );
+  TrackStructure* mother =  const_cast<TrackStructure*>(&(*motherIt));
+  mother->UpdateCollectionHighlight( iHilighted );
 }
 //-------------------------------------------------------------------------
 
@@ -985,7 +987,7 @@ ShowCollection(unsigned int iRootTrackID, bool iVisible)
 {
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iRootTrackID);
-  TrackStructure tempMother(*motherIt);
-  tempMother.UpdateCollectionVisibility( iVisible );
+  TrackStructure* mother =  const_cast<TrackStructure*>(&(*motherIt));
+  mother->UpdateCollectionVisibility( iVisible );
 }
 //-------------------------------------------------------------------------
