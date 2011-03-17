@@ -265,6 +265,8 @@ void
 TrackStructure::
 ModifyCollectionVisibility( TrackStructure* iRoot, bool iVisibility )
 {
+  std::cout << "in ModifyCollectionVisibility" << std::endl;
+
   if(iRoot->TreeNode.m_Child[0])
     {
     ModifyCollectionVisibility(iRoot->TreeNode.m_Child[0],iVisibility);
@@ -292,6 +294,8 @@ void
 TrackStructure::
 ModifyCollectionHighlight( TrackStructure* iRoot, bool iHighlight )
 {
+  std::cout << "in ModifyCollectionHighlight" << std::endl;
+
   if(iRoot->TreeNode.m_Child[0])
     {
     ModifyCollectionHighlight(iRoot->TreeNode.m_Child[0],iHighlight);
