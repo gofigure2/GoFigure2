@@ -10,20 +10,20 @@ ELSE( ${CMAKE_BUILD_TYPE} MATCHES "Debug" )
   ADD_DEFINITIONS( -DQT_NO_DEBUG )
 ENDIF( ${CMAKE_BUILD_TYPE} MATCHES "Debug" )
 
-INCLUDE_DIRECTORIES( BEFORE 
+INCLUDE_DIRECTORIES( BEFORE
   ${GOFIGURE2_SOURCE_DIR}/Interfaces
-  ${CMAKE_CURRENT_BINARY_DIR} 
+  ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 SET( MEDIANPLUGIN_HDRS
-  medianplugin.h 
-  QCellPreprocess.h 
+  medianplugin.h
+  QCellPreprocess.h
   ${QGoGUIINTERFACES_HDRS}
   )
 
-SET( MEDIANPLUGIN_SRC 
-  medianplugin.cxx 
-  QCellPreprocess.cxx 
+SET( MEDIANPLUGIN_SRC
+  medianplugin.cxx
+  QCellPreprocess.cxx
   ${QGoGUIINTERFACES_SRC}
 )
 
@@ -32,7 +32,7 @@ QT4_WRAP_UI( MEDIANPLUGIN_UI_HDRS
  )
 
 QT4_WRAP_CPP( MEDIANPLUGIN_MOC
-  ${MEDIANPLUGIN_HDRS} 
+  ${MEDIANPLUGIN_HDRS}
   )
 
 SET_SOURCE_FILES_PROPERTIES( ${MEDIANPLUGIN_SRC} PROPERTIES
@@ -58,3 +58,14 @@ TARGET_LINK_LIBRARIES( ImageMedianPlugin
 #ADD_EXECUTABLE( medianpluginExample medianpluginMain.cxx )
 #TARGET_LINK_LIBRARIES( medianpluginExample ${QT_LIBRARIES} )
 
+FILE( GLOB __source_file_h "${CMAKE_CURRENT_SOURCE_DIR}/*.h" )
+FILE( GLOB __source_file_txx "${CMAKE_CURRENT_SOURCE_DIR}/*.txx" )
+FILE( GLOB __binary_file_h "${CMAKE_CURRENT_BINARY_DIR}/*.h" )
+FILE( GLOB __binary_file_txx "${CMAKE_CURRENT_BINARY_DIR}/*.txx" )
+
+INSTALL(
+  FILES ${__source_file_h} ${__source_file_txx}
+  ${__binary_file_h} ${__binary_file_txx}
+  DESTINATION ${GOFIGURE2_INSTALL_HEADER_DIR}
+  COMPONENT Development
+)

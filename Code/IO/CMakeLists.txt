@@ -8,8 +8,10 @@ IF( WIN32 )
   ENDIF( NOT CYGWIN )
 ENDIF( WIN32 )
 
-CONFIGURE_FILE(${GOFIGURE2_SOURCE_DIR}/Code/IO/QGoIOConfigure.h.in
-               ${GOFIGURE2_BINARY_DIR}/Code/IO/QGoIOConfigure.h @ONLY IMMEDIATE)
+CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/QGoIOConfigure.h.in
+ ${CMAKE_CURRENT_BINARY_DIR}/QGoIOConfigure.h
+ @ONLY IMMEDIATE
+)
 
 SET( QGOIO_SRC
   TraceStructure.cxx
@@ -95,4 +97,17 @@ INSTALL( TARGETS QGoIO
   ARCHIVE DESTINATION ${GOFIGURE2_INSTALL_LIB_DIR} COMPONENT Libraries
   LIBRARY DESTINATION ${GOFIGURE2_INSTALL_LIB_DIR} COMPONENT Libraries NAMELINK_ONLY
   )
+
+FILE( GLOB __source_file_h "${CMAKE_CURRENT_SOURCE_DIR}/*.h" )
+FILE( GLOB __source_file_txx "${CMAKE_CURRENT_SOURCE_DIR}/*.txx" )
+
+FILE( GLOB __binary_file_h "${CMAKE_CURRENT_BINARY_DIR}/*.h" )
+FILE( GLOB __binary_file_txx "${CMAKE_CURRENT_BINARY_DIR}/*.txx" )
+
+INSTALL( FILES ${__source_file_h} ${__source_file_txx}
+    ${__binary_file_h} ${__binary_file_txx}
+  DESTINATION ${GOFIGURE2_INSTALL_HEADER_DIR}
+  COMPONENT Development
+)
+
 
