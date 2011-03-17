@@ -1022,14 +1022,15 @@ QGoTabImageView3DwT::ChannelTimeMode(bool iEnable)
 
     if ( NumberOfChannels > 1 )
       {
-      m_NavigationDockWidget->SetChannel(0);
-      m_ContourSegmentationDockWidget->SetChannel(0);
-      m_MeshSegmentationDockWidget->SetChannel(0);
+      m_NavigationDockWidget->SetChannel( 0, m_ChannelNames[0] );
+      m_ContourSegmentationDockWidget->SetChannel( 0, m_ChannelNames[0] );
+      m_MeshSegmentationDockWidget->SetChannel( 0, m_ChannelNames[0] );
       for ( unsigned int i = 1; i < NumberOfChannels; i++ )
         {
-        m_NavigationDockWidget->SetChannel(i);
-        m_ContourSegmentationDockWidget->SetChannel(i);
-        m_MeshSegmentationDockWidget->SetChannel(i);
+        m_NavigationDockWidget->SetChannel( i, m_ChannelNames[i] );
+
+        m_ContourSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
+        m_MeshSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
         }
       }
     m_NavigationDockWidget->blockSignals(false);
@@ -1054,10 +1055,11 @@ void QGoTabImageView3DwT::LoadChannelTime()
     channel << QString::number(i, 10);
     }
 
-  QString item = QInputDialog::getItem(this,
-                                       tr("Channel selection"),
-                                       tr("Please select the channel you want to track"),
-                                       channel, 0, false, &ok);
+  QString item =
+      QInputDialog::getItem(this,
+                            tr("Channel selection"),
+                            tr("Please select the channel you want to track"),
+                            channel, 0, false, &ok);
 
   if ( ok )
     {
@@ -1559,18 +1561,24 @@ QGoTabImageView3DwT::SetLSMReader(vtkLSMReader *iReader, const int & iTimePoint)
     m_ContourSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
     m_MeshSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
 
+    m_ChannelNames.resize( NumberOfChannels );
+
     if ( NumberOfChannels > 1 )
       {
       m_NavigationDockWidget->SetChannel(0);
-      m_ContourSegmentationDockWidget->SetChannel(0);
-      m_MeshSegmentationDockWidget->SetChannel(0);
+      m_ChannelNames[0] = m_NavigationDockWidget->GetChannelName( 0 );
+
+      m_ContourSegmentationDockWidget->SetChannel( 0, m_ChannelNames[0] );
+      m_MeshSegmentationDockWidget->SetChannel( 0 , m_ChannelNames[0] );
       m_InternalImages.resize(NumberOfChannels);
 
       for ( int i = 1; i < NumberOfChannels; i++ )
         {
         m_NavigationDockWidget->SetChannel(i);
-        m_ContourSegmentationDockWidget->SetChannel(i);
-        m_MeshSegmentationDockWidget->SetChannel(i);
+        m_ChannelNames[i] = m_NavigationDockWidget->GetChannelName( i );
+
+        m_ContourSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
+        m_MeshSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
 
         m_LSMReader.push_back( vtkSmartPointer< vtkLSMReader >::New() );
         m_LSMReader.back()->SetFileName( m_LSMReader[0]->GetFileName() );
@@ -1631,6 +1639,8 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
 
   unsigned int NumberOfChannels = max_ch - min_ch + 1;
 
+  m_ChannelNames.resize( NumberOfChannels );
+
   vtkImageData *temp = m_MegaCaptureReader->GetOutput(min_ch);
 
   int extent[6];
@@ -1646,15 +1656,19 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
   if ( NumberOfChannels > 1 )
     {
     m_NavigationDockWidget->SetChannel(0);
-    m_ContourSegmentationDockWidget->SetChannel(0);
-    m_MeshSegmentationDockWidget->SetChannel(0);
+    m_ChannelNames[0] = m_NavigationDockWidget->GetChannelName(0);
+
+    m_ContourSegmentationDockWidget->SetChannel( 0, m_ChannelNames[0] );
+    m_MeshSegmentationDockWidget->SetChannel( 0, m_ChannelNames[0] );
     m_InternalImages.resize(NumberOfChannels, NULL);
 
     for ( unsigned int i = 1; i < NumberOfChannels; i++ )
       {
       m_NavigationDockWidget->SetChannel(i);
-      m_ContourSegmentationDockWidget->SetChannel(i);
-      m_MeshSegmentationDockWidget->SetChannel(i);
+      m_ChannelNames[i] = m_NavigationDockWidget->GetChannelName(i);
+
+      m_ContourSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
+      m_MeshSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
       }
     }
 
@@ -2853,8 +2867,12 @@ QGoTabImageView3DwT::SaveMesh(vtkPolyData *iView, int iTShift)
   // Compute Bounding Box
   std::vector< int > bounds = this->GetBoundingBox(iView);
 
+  int tcoord = static_cast< int >( m_TCoord ) + iTShift;
+
   // Save mesh in database
-  GoFigureMeshAttributes MeshAttributes = ComputeMeshAttributes(iView, true);
+  GoFigureMeshAttributes
+      MeshAttributes =
+        ComputeMeshAttributes( iView, true, static_cast< unsigned int >( tcoord ) );
 
   this->m_DataBaseTables->SaveMeshFromVisuInDB(bounds[0], bounds[2], bounds[4],
                                                bounds[1], bounds[3], bounds[5],
@@ -3044,8 +3062,10 @@ void QGoTabImageView3DwT::GoToDefaultMenu(bool iEnable)
 
 //-------------------------------------------------------------------------
 GoFigureMeshAttributes
-QGoTabImageView3DwT::ComputeMeshAttributes(vtkPolyData *iMesh,
-                                           const bool & iIntensity)
+QGoTabImageView3DwT::
+ComputeMeshAttributes(vtkPolyData *iMesh,
+                      const bool & iIntensity,
+                      const unsigned int& iTCoord )
 {
   typedef unsigned char PixelType;
   const unsigned int Dimension = 3;
@@ -3058,37 +3078,89 @@ QGoTabImageView3DwT::ComputeMeshAttributes(vtkPolyData *iMesh,
 
   GoFigureMeshAttributes oAttributes;
 
-  for ( size_t i = 0; i < m_InternalImages.size(); i++ )
+  if( this->m_ChannelClassicMode )
     {
-    vtkSmartPointer< vtkImageExport > vtk_exporter =
-      vtkSmartPointer< vtkImageExport >::New();
-    itk::VTKImageImport< ImageType >::Pointer itk_importer =
-      itk::VTKImageImport< ImageType >::New();
-    vtk_exporter->SetInput(m_InternalImages[i]);
-
-    ConnectPipelines< vtkImageExport, itk::VTKImageImport< ImageType >::Pointer >(
-      vtk_exporter, itk_importer);
-    calculator->SetImage( itk_importer->GetOutput() );
-    calculator->Update();
-
-    oAttributes.m_Volume = calculator->GetPhysicalSize();
-    //qDebug() << "volume:" << oAttributes.m_Volume;
-    oAttributes.m_Area = calculator->GetArea();
-    oAttributes.m_Size = calculator->GetSize();
-
-    if ( iIntensity )
+    for ( size_t i = 0; i < m_InternalImages.size(); i++ )
       {
-      QString     q_channelname = this->m_NavigationDockWidget->GetChannelName(i);
-      std::string channelname = q_channelname.toStdString();
+      vtkSmartPointer< vtkImageExport > vtk_exporter =
+        vtkSmartPointer< vtkImageExport >::New();
+      itk::VTKImageImport< ImageType >::Pointer itk_importer =
+        itk::VTKImageImport< ImageType >::New();
 
-      oAttributes.m_TotalIntensityMap[channelname] =
-        static_cast< int >( calculator->GetSumIntensity() );
-      oAttributes.m_MeanIntensityMap[channelname] =
-        calculator->GetMeanIntensity();
+      vtk_exporter->SetInput(m_InternalImages[i]);
+
+      ConnectPipelines< vtkImageExport, itk::VTKImageImport< ImageType >::Pointer >(
+        vtk_exporter, itk_importer);
+      calculator->SetImage( itk_importer->GetOutput() );
+      calculator->Update();
+
+      oAttributes.m_Volume = calculator->GetPhysicalSize();
+      //qDebug() << "volume:" << oAttributes.m_Volume;
+      oAttributes.m_Area = calculator->GetArea();
+      oAttributes.m_Size = calculator->GetSize();
+
+      if ( iIntensity )
+        {
+        QString     q_channelname = this->m_ChannelNames[i];
+        std::string channelname = q_channelname.toStdString();
+
+        oAttributes.m_TotalIntensityMap[channelname] =
+          static_cast< int >( calculator->GetSumIntensity() );
+        oAttributes.m_MeanIntensityMap[channelname] =
+          calculator->GetMeanIntensity();
+        }
+      else
+        {
+        break;
+        }
       }
-    else
+    }
+  else
+    {
+    unsigned int min_ch = m_MegaCaptureReader->GetMinChannel();
+    unsigned int max_ch = m_MegaCaptureReader->GetMaxChannel();
+    unsigned int NumberOfChannels = max_ch - min_ch + 1;
+
+    std::vector< vtkSmartPointer< vtkImageData > > temp_image( NumberOfChannels );
+
+    m_MegaCaptureReader->SetTimePoint( iTCoord );
+    m_MegaCaptureReader->Update();
+
+    for ( unsigned int i = min_ch; i <= max_ch; i++ )
       {
-      break;
+      temp_image[i] = m_MegaCaptureReader->GetOutput( i );
+
+      vtkSmartPointer< vtkImageExport > vtk_exporter =
+        vtkSmartPointer< vtkImageExport >::New();
+      itk::VTKImageImport< ImageType >::Pointer itk_importer =
+        itk::VTKImageImport< ImageType >::New();
+
+      vtk_exporter->SetInput(temp_image[i]);
+
+      ConnectPipelines< vtkImageExport, itk::VTKImageImport< ImageType >::Pointer >(
+        vtk_exporter, itk_importer);
+      calculator->SetImage( itk_importer->GetOutput() );
+      calculator->Update();
+
+      oAttributes.m_Volume = calculator->GetPhysicalSize();
+      //qDebug() << "volume:" << oAttributes.m_Volume;
+      oAttributes.m_Area = calculator->GetArea();
+      oAttributes.m_Size = calculator->GetSize();
+
+      if ( iIntensity )
+        {
+        QString     q_channelname = this->m_ChannelNames[i];
+        std::string channelname = q_channelname.toStdString();
+
+        oAttributes.m_TotalIntensityMap[channelname] =
+          static_cast< int >( calculator->GetSumIntensity() );
+        oAttributes.m_MeanIntensityMap[channelname] =
+          calculator->GetMeanIntensity();
+        }
+      else
+        {
+        break;
+        }
       }
     }
   return oAttributes;
@@ -3138,10 +3210,10 @@ QGoTabImageView3DwT::CreateMeshFromSelectedContours(
         {
         if ( traceid_it->TCoord != tcoord )
           {
-          QMessageBox::warning( NULL,
-                                tr("Generate Mesh From Checked Contours"),
-                                tr("Selected contours are at different time point: %1 != %2").arg(tcoord).arg(
-                                  traceid_it->TCoord) );
+          QMessageBox::warning(
+                NULL,
+                tr("Generate Mesh From Checked Contours"),
+                tr("Selected contours are at different time point: %1 != %2").arg(tcoord).arg( traceid_it->TCoord) );
           return;
           }
         }
