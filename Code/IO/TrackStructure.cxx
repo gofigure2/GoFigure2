@@ -271,10 +271,12 @@ ModifyCollectionVisibility( TrackStructure* iRoot, bool iVisibility )
 
   if(iRoot)
     {
+    // isLeaf()? ... to be implemented
     if(iRoot->TreeNode.m_Child[0]->TreeNode.m_Child[0])
       {
       ModifyCollectionVisibility(iRoot->TreeNode.m_Child[0],iVisibility);
       }
+    // isLeaf()? ... to be implemented
     else if(iRoot->TreeNode.m_Child[1]->TreeNode.m_Child[1])
       {
       ModifyCollectionVisibility(iRoot->TreeNode.m_Child[1], iVisibility);
@@ -315,10 +317,12 @@ ModifyCollectionHighlight( TrackStructure* iRoot, bool iHighlight )
 
   if(iRoot)
     {
+    // isLeaf()? ... to be implemented
     if(iRoot->TreeNode.m_Child[0]->TreeNode.m_Child[0])
       {
       ModifyCollectionHighlight(iRoot->TreeNode.m_Child[0],iHighlight);
       }
+    // isLeaf()? ... to be implemented
     else if(iRoot->TreeNode.m_Child[1]->TreeNode.m_Child[1])
       {
       ModifyCollectionHighlight(iRoot->TreeNode.m_Child[1],iHighlight);
