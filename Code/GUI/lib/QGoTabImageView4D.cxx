@@ -256,17 +256,17 @@ void QGoTabImageView4D::CreateModeActions()
 {
   QActionGroup *group = new QActionGroup(this);
 
-  QAction *ManualEditingAction = new QAction(tr("Manual-Editing"), this);
+  //QAction *ManualEditingAction = new QAction(tr("Manual-Editing"), this);
 
-  ManualEditingAction->setCheckable(true);
-  QIcon ManualEditingIcon;
-  ManualEditingIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/manual-editing.png") ),
-                              QIcon::Normal, QIcon::Off);
-  ManualEditingAction->setIcon(ManualEditingIcon);
+  //ManualEditingAction->setCheckable(true);
+  //QIcon ManualEditingIcon;
+  //ManualEditingIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/manual-editing.png") ),
+   //                           QIcon::Normal, QIcon::Off);
+  //ManualEditingAction->setIcon(ManualEditingIcon);
 
-  group->addAction(ManualEditingAction);
+  //group->addAction(ManualEditingAction);
 
-  this->m_ModeActions.push_back(ManualEditingAction);
+  //this->m_ModeActions.push_back(ManualEditingAction);
   /** \todo implement the manual editing mode*/
   //QObject::connect( ManualEditingAction, SIGNAL( triggered() ),
   //  this, SLOT( ManualEditingMode() ) );
