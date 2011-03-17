@@ -221,11 +221,11 @@ public:
 
   void UpdateCollectionVisibility( bool iVisibility );
   void ModifyCollectionVisibility( TrackStructure* iRoot, bool iVisibility );
-  void ModifyDivisionVisibility( bool iVisibility );
+  void ModifyDivisionVisibility( TrackStructure* iRoot, bool iVisibility );
 
   void UpdateCollectionHighlight(bool iHighlight );
   void ModifyCollectionHighlight( TrackStructure* iRoot, bool iHighlight );
-  void ModifyDivisionHighlight( bool iHighlight );
+  void ModifyDivisionHighlight( TrackStructure* iRoot, bool iHighlight );
 
 };
 

@@ -254,6 +254,8 @@ void
 TrackStructure::
 UpdateCollectionVisibility( bool iVisibility )
 {
+  ModifyDivisionVisibility(this, iVisibility);
+
   // Mother pointer is null here since we are a root
   ModifyCollectionVisibility(this->TreeNode.m_Child[0], iVisibility);
   ModifyCollectionVisibility(this->TreeNode.m_Child[1], iVisibility);
@@ -265,16 +267,15 @@ void
 TrackStructure::
 ModifyCollectionVisibility( TrackStructure* iRoot, bool iVisibility )
 {
-  std::cout << "structure address: " << iRoot << std::endl;
-  ModifyDivisionVisibility(iVisibility);
+  ModifyDivisionVisibility(iRoot, iVisibility);
 
   if(iRoot)
     {
-    if(iRoot->TreeNode.m_Child[0])
+    if(iRoot->TreeNode.m_Child[0]->TreeNode.m_Child[0])
       {
       ModifyCollectionVisibility(iRoot->TreeNode.m_Child[0],iVisibility);
       }
-    else if(iRoot->TreeNode.m_Child[1])
+    else if(iRoot->TreeNode.m_Child[1]->TreeNode.m_Child[1])
       {
       ModifyCollectionVisibility(iRoot->TreeNode.m_Child[1], iVisibility);
       }
@@ -285,13 +286,12 @@ ModifyCollectionVisibility( TrackStructure* iRoot, bool iVisibility )
 //--------------------------------------------------------------------------
 void
 TrackStructure::
-ModifyDivisionVisibility( bool iVisibility )
+ModifyDivisionVisibility( TrackStructure* iRoot, bool iVisibility )
 {
-  std::cout << "actor address: " << this->TreeNode.m_DivisionActor[0] << std::endl;
-  this->TreeNode.m_DivisionActor[0]->SetVisibility( iVisibility );
-  this->TreeNode.m_DivisionActor[1]->SetVisibility( iVisibility );
-  this->TreeNode.m_DivisionActor[2]->SetVisibility( iVisibility );
-  this->TreeNode.m_DivisionActor[3]->SetVisibility( iVisibility );
+  iRoot->TreeNode.m_DivisionActor[0]->SetVisibility( iVisibility );
+  iRoot->TreeNode.m_DivisionActor[1]->SetVisibility( iVisibility );
+  iRoot->TreeNode.m_DivisionActor[2]->SetVisibility( iVisibility );
+  iRoot->TreeNode.m_DivisionActor[3]->SetVisibility( iVisibility );
 }
 //--------------------------------------------------------------------------
 
@@ -311,15 +311,15 @@ void
 TrackStructure::
 ModifyCollectionHighlight( TrackStructure* iRoot, bool iHighlight )
 {
-  ModifyDivisionHighlight(iHighlight);
+  ModifyDivisionHighlight(iRoot, iHighlight);
 
   if(iRoot)
     {
-    if(iRoot->TreeNode.m_Child[0])
+    if(iRoot->TreeNode.m_Child[0]->TreeNode.m_Child[0])
       {
       ModifyCollectionHighlight(iRoot->TreeNode.m_Child[0],iHighlight);
       }
-    else if(iRoot->TreeNode.m_Child[1])
+    else if(iRoot->TreeNode.m_Child[1]->TreeNode.m_Child[1])
       {
       ModifyCollectionHighlight(iRoot->TreeNode.m_Child[1],iHighlight);
       }
@@ -330,11 +330,7 @@ ModifyCollectionHighlight( TrackStructure* iRoot, bool iHighlight )
 //--------------------------------------------------------------------------
 void
 TrackStructure::
-ModifyDivisionHighlight( bool iVisibility )
+ModifyDivisionHighlight( TrackStructure* iRoot, bool iVisibility )
 {
-  /*this->TreeNode.m_DivisionActor[0]->
-  this->TreeNode.m_DivisionActor[1]->
-  this->TreeNode.m_DivisionActor[2]->
-  this->TreeNode.m_DivisionActor[3]->*/
 }
 //--------------------------------------------------------------------------

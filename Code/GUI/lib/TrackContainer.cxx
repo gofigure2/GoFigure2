@@ -807,10 +807,15 @@ AddDivision( unsigned int iMotherID, unsigned int iDaughter1ID,
   // Create Actor
   std::vector< vtkActor * > actors =
       CreateDivisionActor(iMotherID, iDaughter1ID, iDaughter2ID);
+  std::cout<<"mother: " << mother << std::endl;
   mother->TreeNode.m_DivisionActor[0] = actors[0];
+  std::cout<<"actor: " << actors[0] << std::endl;
   mother->TreeNode.m_DivisionActor[1] = actors[1];
+  std::cout<<"actor: " << actors[1] << std::endl;
   mother->TreeNode.m_DivisionActor[2] = actors[2];
+  std::cout<<"actor: " << actors[2] << std::endl;
   mother->TreeNode.m_DivisionActor[3] = actors[3];
+  std::cout<<"actor: " << actors[3] << std::endl;
 
   //------------------------------
   // D1->motherID
@@ -978,6 +983,13 @@ ShowCollection(unsigned int iRootTrackID, bool iVisible)
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iRootTrackID);
   TrackStructure* mother =  const_cast<TrackStructure*>(&(*motherIt));
+
+  std::cout<<"mother: " << mother << std::endl;
+  std::cout<<"actor: " << mother->TreeNode.m_DivisionActor[0] << std::endl;
+  std::cout<<"actor: " << mother->TreeNode.m_DivisionActor[1] << std::endl;
+  std::cout<<"actor: " << mother->TreeNode.m_DivisionActor[2] << std::endl;
+  std::cout<<"actor: " << mother->TreeNode.m_DivisionActor[3] << std::endl;
+
   mother->UpdateCollectionVisibility( iVisible );
 }
 //-------------------------------------------------------------------------
