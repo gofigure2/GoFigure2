@@ -416,19 +416,16 @@ TrackContainer::DeletePointFromElement(MultiIndexContainerTraceIDIterator iItera
                                        bool iReconstructPolyData)
 {
   // Create temp structure
-  TrackStructure tempStructure(*iIterator);
+  TrackStructure* mother =  const_cast<TrackStructure*>(&(*iIterator));
 
   //add the point in the map
-  bool pointDeleted = tempStructure.DeleteElement(iTime);
+  bool pointDeleted = mother->DeleteElement(iTime);
 
   // build the new polydata if a point has been deleted
   if ( pointDeleted && iReconstructPolyData )
     {
-    UpdateTrackStructurePolyData(tempStructure);
+    UpdateTrackStructurePolyData(*mother);
     }
-
-  // Replace
-  m_Container.get< TraceID >().replace(iIterator, tempStructure);
 
   return pointDeleted;
 }
@@ -457,7 +454,7 @@ TrackContainer::UpdatePointsFromBBForGivenTrack(unsigned int iTrackID,
       std::list< std::vector< unsigned int > >::iterator end = iBoundingBox.end();
 
       //add the point in the map
-      TrackStructure tempStructure(*it);
+      TrackStructure* mother =  const_cast<TrackStructure*>(&(*it));
 
       while ( begin != end )
         {
@@ -471,7 +468,7 @@ TrackContainer::UpdatePointsFromBBForGivenTrack(unsigned int iTrackID,
         double *xyz = m_ImageView->GetImageViewer(0)
           ->GetWorldCoordinatesFromImageCoordinates(xyzBB);
 
-        bool added = tempStructure.InsertElement(time, xyz);
+        bool added = mother->InsertElement(time, xyz);
         if ( !added )
           {
           std::cout << "Element at a time point: " << time
@@ -479,7 +476,6 @@ TrackContainer::UpdatePointsFromBBForGivenTrack(unsigned int iTrackID,
           }
         ++begin;
         }
-      m_Container.get< TraceID >().replace(it, tempStructure);
 
       // Reconstruct the polydata
       UpdateTrackStructurePolyData(*it);
@@ -744,10 +740,7 @@ TrackContainer::GetLastPointOfTheTrack(unsigned int iTrackID)
 
   vtkPoints* points = it->Nodes->GetPoints();
   vtkIdType nbOfPoints = points->GetNumberOfPoints();
-  std::cout <<"LAST POINT: X: " << points->GetPoint(nbOfPoints-1)[0]
-                      << " Y: " << points->GetPoint(nbOfPoints-1)[1]
-                      << " Z: " << points->GetPoint(nbOfPoints-1)[2]
-  << std::endl;
+
   return points->GetPoint(nbOfPoints-1);
 }
 //-------------------------------------------------------------------------
@@ -760,10 +753,7 @@ TrackContainer::GetFirstPointOfTheTrack(unsigned int iTrackID)
     it = m_Container.get< TraceID >().find(iTrackID);
 
   vtkPoints* points = it->Nodes->GetPoints();
-  std::cout <<"FIRST POINT: X: " << points->GetPoint(0)[0]
-                      << " Y: " << points->GetPoint(0)[1]
-                      << " Z: " << points->GetPoint(0)[2]
-  << std::endl;
+
   return points->GetPoint(0);
 }
 //-------------------------------------------------------------------------
@@ -797,10 +787,13 @@ TrackContainer::
 AddDivision( unsigned int iMotherID, unsigned int iDaughter1ID,
     unsigned int iDaughter2ID)
 {
+  std::cout << "MotherID: " << iMotherID << std::endl;
+
   // get address of the structures of interest
   //------------------------------
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iMotherID);
+  std::cout << "ADDRESS: " << &(*motherIt) << std::endl;
   MultiIndexContainerTraceIDIterator daughter1It
       = m_Container.get< TraceID >().find(iDaughter1ID);
   MultiIndexContainerTraceIDIterator daughter2It
@@ -831,6 +824,10 @@ AddDivision( unsigned int iMotherID, unsigned int iDaughter1ID,
   TrackStructure* d2 =  const_cast<TrackStructure*>(&(*daughter2It));
   d2->TreeNode.m_Mother = const_cast<TrackStructure*>(&(*motherIt));
   std::cout << "M: " << d2->TreeNode.m_Mother << std::endl;
+
+  MultiIndexContainerTraceIDIterator motherIt2
+      = m_Container.get< TraceID >().find(iMotherID);
+  std::cout << "ADDRESS after all modifs: " << &(*motherIt2) << std::endl;
 }
 //-------------------------------------------------------------------------
 
@@ -973,9 +970,16 @@ void
 TrackContainer::
 HighlightCollection(unsigned int iRootTrackID, bool iHilighted)
 {
+  std::cout << "MotherID: " << iRootTrackID << std::endl;
+
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iRootTrackID);
+  std::cout << "ADDRESS: " << &(*motherIt) << std::endl;
   TrackStructure* mother =  const_cast<TrackStructure*>(&(*motherIt));
+  std::cout << "Root: " << mother->TreeNode.m_Mother << std::endl;
+  std::cout << "Mother: " << mother << std::endl;
+  std::cout << "child1: " << mother->TreeNode.m_Child[0] << std::endl;
+  std::cout << "child2: " << mother->TreeNode.m_Child[1] << std::endl;
   mother->UpdateCollectionHighlight( iHilighted );
 }
 //-------------------------------------------------------------------------

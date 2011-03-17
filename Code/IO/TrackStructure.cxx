@@ -295,6 +295,7 @@ TrackStructure::
 ModifyCollectionHighlight( TrackStructure* iRoot, bool iHighlight )
 {
   std::cout << "in ModifyCollectionHighlight" << std::endl;
+  std::cout << "adress: "<< iRoot << std::endl;
   if(iRoot)
     {
     if(iRoot->TreeNode.m_Child[0])
