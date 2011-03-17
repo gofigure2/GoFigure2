@@ -148,14 +148,30 @@ public:
    */
   unsigned int GetLineageTrackRootID( unsigned int iTraceID );
 
-  //void updateActor( unsigned int iLineageID );
+  /**
+  \brief Change elements highlighting property given a list of TraceIDs and the
+  new status.
+  \param[in] iList list of TraceIDs
+  \param[in] iCheck */
+  void UpdateElementHighlightingWithGivenTraceIDs( const QStringList& iList,
+                                                   const Qt::CheckState& iCheck );
 
-  //void createTreeForLineageViewer();
+  /**
+  \brief Change elements visibility property given a list of TraceIDs and the
+  new status.
+  \param[in] iList list of TraceIDs
+  \param[in] iCheck */
+  void UpdateElementVisibilityWithGivenTraceIDs( const QStringList& iList,
+                                                 const Qt::CheckState& iCheck );
 
   /**\todo implement them:*/
   virtual bool DeleteElement(const unsigned int & iId);
   virtual bool DeleteElement(MultiIndexContainerTraceIDIterator iIter);
   std::list< unsigned int > DeleteAllHighlightedElements();
+
+signals:
+  void HighlightLineage( unsigned int, bool);
+  void ShowLineage( unsigned int, bool);
 
 protected:
   std::vector< vtkActor* > AddTrace( vtkPolyData* , vtkProperty* );
