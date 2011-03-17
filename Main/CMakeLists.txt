@@ -1,5 +1,5 @@
-CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Main/gofigure.cxx.in
-  ${GOFIGURE2_BINARY_DIR}/Main/gofigure.cxx @ONLY IMMEDIATE
+CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/gofigure.cxx.in
+  ${CMAKE_CURRENT_BINARY_DIR}/gofigure.cxx @ONLY IMMEDIATE
 )
 
 SET( QGoMainWindow_UI
@@ -15,7 +15,7 @@ SET( QGoGUISRC_HDRS
 )
 
 SET( GOFIGURE_MAIN
-  ${GOFIGURE2_BINARY_DIR}/Main/gofigure.cxx
+  ${CMAKE_CURRENT_BINARY_DIR}/gofigure.cxx
 )
 
 SET( GOFIGURE_APPLICATION_SOURCE_LIST
@@ -323,3 +323,14 @@ ELSE( APPLE )
     COMPONENT Runtime
     )
 ENDIF( APPLE )
+
+FILE( GLOB __source_file_h "${CMAKE_CURRENT_SOURCE_DIR}/*.h" )
+FILE( GLOB __source_file_txx "${CMAKE_CURRENT_SOURCE_DIR}/*.txx" )
+FILE( GLOB __binary_file_h "${CMAKE_CURRENT_BINARY_DIR}/*.h" )
+FILE( GLOB __binary_file_txx "${CMAKE_CURRENT_BINARY_DIR}/*.txx" )
+
+INSTALL( FILES ${__source_file_h} ${__source_file_txx}
+    ${__binary_file_h} ${__binary_file_txx}
+  DESTINATION ${GOFIGURE2_INSTALL_HEADER_DIR}
+  COMPONENT Development
+)
