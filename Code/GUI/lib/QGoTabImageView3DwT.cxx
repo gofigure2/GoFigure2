@@ -166,6 +166,17 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_TrackContainer->SetIntersectionLineWidth(m_IntersectionLineWidth);
 
   m_LineageContainer = new LineageContainer(this, this->m_ImageView);
+
+  // Connect Lineage container to the track container
+  QObject::connect( m_LineageContainer,
+                    SIGNAL( HighlightLineage(unsigned int, bool) ),
+                    m_TrackContainer,
+                    SLOT( HighlightCollection(unsigned int, bool) ) );
+  QObject::connect( m_LineageContainer,
+                    SIGNAL( ShowLineage(unsigned int, bool) ),
+                    m_TrackContainer,
+                    SLOT( ShowCollection(unsigned int, bool) ) );
+
   CreateVisuDockWidget();
 
   // segmentation dockwidgets

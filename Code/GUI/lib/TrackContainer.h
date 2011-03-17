@@ -449,6 +449,10 @@ public slots:
 
   void UpdateTracksRepresentation( double iRadius,double iRadius2);
 
+  void HighlightCollection(unsigned int, bool);
+
+  void ShowCollection(unsigned int, bool);
+
 protected:
   /**
   \brief Recompute a polydata from a list of point (coordinates) for the

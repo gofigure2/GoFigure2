@@ -972,3 +972,22 @@ CutLineage(unsigned int iMotherID)
   // Push current element
   m_Container.get< TraceID >().replace(daughter2It, tempDaughter2);
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+HighlightCollection(unsigned int, bool)
+{
+
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+ShowCollection(unsigned int, bool)
+{
+
+}
+//-------------------------------------------------------------------------
