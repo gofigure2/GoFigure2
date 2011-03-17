@@ -93,8 +93,8 @@ public:
           }
     }
 
-  const T* m_Mother;
-  const T* m_Child[2];
+  T* m_Mother;
+  T* m_Child[2];
   std::vector<vtkActor* > m_DivisionActor;
   bool m_Visible;
   bool m_Highlighted;
@@ -192,6 +192,12 @@ public:
   void UpdateTracksRepresentation( double iRadius, double iRadius2 ) const;
 
   GoFigureTrackAttributes ComputeAttributes() const;
+
+  void UpdateCollectionVisibility( bool iVisibility );
+  void ModifyCollectionVisibility( TrackStructure* iRoot, bool iVisibility );
+
+  void UpdateCollectionHighlight(bool iHighlight );
+  void ModifyCollectionHighlight( TrackStructure* iRoot, bool iHighlight );
 
 };
 

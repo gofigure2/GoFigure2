@@ -248,3 +248,57 @@ TrackStructure::ComputeAttributes() const
 }
 
 //--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+TrackStructure::
+UpdateCollectionVisibility( bool iVisibility )
+{
+  // Mother pointer is null here since we are a root
+  ModifyCollectionVisibility(this->TreeNode.m_Child[0], iVisibility);
+  ModifyCollectionVisibility(this->TreeNode.m_Child[1], iVisibility);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+TrackStructure::
+ModifyCollectionVisibility( TrackStructure* iRoot, bool iVisibility )
+{
+  if(iRoot->TreeNode.m_Child[0])
+    {
+    ModifyCollectionVisibility(iRoot->TreeNode.m_Child[0],iVisibility);
+    }
+  else if(iRoot->TreeNode.m_Child[1])
+    {
+    ModifyCollectionVisibility(iRoot->TreeNode.m_Child[1], iVisibility);
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+TrackStructure::
+UpdateCollectionHighlight( bool iHighlight )
+{
+  // Mother pointer is null here since we are a root
+  ModifyCollectionHighlight(this->TreeNode.m_Child[0], iHighlight);
+  ModifyCollectionHighlight(this->TreeNode.m_Child[1], iHighlight);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+TrackStructure::
+ModifyCollectionHighlight( TrackStructure* iRoot, bool iHighlight )
+{
+  if(iRoot->TreeNode.m_Child[0])
+    {
+    ModifyCollectionHighlight(iRoot->TreeNode.m_Child[0],iHighlight);
+    }
+  else if(iRoot->TreeNode.m_Child[1])
+    {
+    ModifyCollectionHighlight(iRoot->TreeNode.m_Child[1],iHighlight);
+    }
+}
+//--------------------------------------------------------------------------

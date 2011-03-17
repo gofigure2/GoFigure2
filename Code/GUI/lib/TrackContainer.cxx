@@ -814,8 +814,8 @@ AddDivision( unsigned int iMotherID, unsigned int iDaughter1ID,
   // Create temporary structures so we can modify it
   TrackStructure tempMother(*motherIt);
   // Update daughters pointers
-  tempMother.TreeNode.m_Child[0] = &(*daughter1It);
-  tempMother.TreeNode.m_Child[1] = &(*daughter2It);
+  tempMother.TreeNode.m_Child[0] = const_cast<TrackStructure*>(&(*daughter1It));
+  tempMother.TreeNode.m_Child[1] = const_cast<TrackStructure*>(&(*daughter2It));
   // Create Actor
   tempMother.TreeNode.m_DivisionActor =
       CreateDivisionActor(iMotherID, iDaughter1ID, iDaughter2ID);
@@ -829,14 +829,14 @@ AddDivision( unsigned int iMotherID, unsigned int iDaughter1ID,
   // Create temporary structures so we can modify it
   TrackStructure tempDaughter1(*daughter1It);
   // Update daughters pointers
-  tempDaughter1.TreeNode.m_Mother = &(*motherIt);
+  tempDaughter1.TreeNode.m_Mother = const_cast<TrackStructure*>(&(*motherIt));
   // Push current element
   m_Container.get< TraceID >().replace(daughter1It, tempDaughter1);
 
   // Create temporary structures so we can modify it
   TrackStructure tempDaughter2(*daughter2It);
   // Update daughters pointers
-  tempDaughter2.TreeNode.m_Mother = &(*motherIt);
+  tempDaughter2.TreeNode.m_Mother = const_cast<TrackStructure*>(&(*motherIt));
   // Push current element
   m_Container.get< TraceID >().replace(daughter1It, tempDaughter2);
 }
@@ -977,17 +977,23 @@ CutLineage(unsigned int iMotherID)
 //-------------------------------------------------------------------------
 void
 TrackContainer::
-HighlightCollection(unsigned int, bool)
+HighlightCollection(unsigned int iRootTrackID, bool iHilighted)
 {
-
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iRootTrackID);
+  TrackStructure tempMother(*motherIt);
+  tempMother.UpdateCollectionHighlight( iHilighted );
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
 TrackContainer::
-ShowCollection(unsigned int, bool)
+ShowCollection(unsigned int iRootTrackID, bool iVisible)
 {
-
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iRootTrackID);
+  TrackStructure tempMother(*motherIt);
+  tempMother.UpdateCollectionVisibility( iVisible );
 }
 //-------------------------------------------------------------------------
