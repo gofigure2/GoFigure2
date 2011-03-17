@@ -61,6 +61,8 @@ public:
     m_Mother = NULL;
     m_Child[0] = NULL;
     m_Child[1] = NULL;
+    m_Visible = false;
+    m_Highlighted = false;
     }
 
   ~TreeNodeStructure()
@@ -94,6 +96,8 @@ public:
   const T* m_Mother;
   const T* m_Child[2];
   std::vector<vtkActor* > m_DivisionActor;
+  bool m_Visible;
+  bool m_Highlighted;
 };
 
 /**
