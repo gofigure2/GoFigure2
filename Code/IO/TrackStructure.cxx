@@ -266,14 +266,16 @@ TrackStructure::
 ModifyCollectionVisibility( TrackStructure* iRoot, bool iVisibility )
 {
   std::cout << "in ModifyCollectionVisibility" << std::endl;
-
-  if(iRoot->TreeNode.m_Child[0])
+  if(iRoot)
     {
-    ModifyCollectionVisibility(iRoot->TreeNode.m_Child[0],iVisibility);
-    }
-  else if(iRoot->TreeNode.m_Child[1])
-    {
-    ModifyCollectionVisibility(iRoot->TreeNode.m_Child[1], iVisibility);
+    if(iRoot->TreeNode.m_Child[0])
+      {
+      ModifyCollectionVisibility(iRoot->TreeNode.m_Child[0],iVisibility);
+      }
+    else if(iRoot->TreeNode.m_Child[1])
+      {
+      ModifyCollectionVisibility(iRoot->TreeNode.m_Child[1], iVisibility);
+      }
     }
 }
 //--------------------------------------------------------------------------
@@ -295,7 +297,6 @@ TrackStructure::
 ModifyCollectionHighlight( TrackStructure* iRoot, bool iHighlight )
 {
   std::cout << "in ModifyCollectionHighlight" << std::endl;
-  std::cout << "adress: "<< iRoot << std::endl;
   if(iRoot)
     {
     if(iRoot->TreeNode.m_Child[0])

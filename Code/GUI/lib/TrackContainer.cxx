@@ -793,7 +793,6 @@ AddDivision( unsigned int iMotherID, unsigned int iDaughter1ID,
   //------------------------------
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iMotherID);
-  std::cout << "ADDRESS: " << &(*motherIt) << std::endl;
   MultiIndexContainerTraceIDIterator daughter1It
       = m_Container.get< TraceID >().find(iDaughter1ID);
   MultiIndexContainerTraceIDIterator daughter2It
@@ -806,9 +805,7 @@ AddDivision( unsigned int iMotherID, unsigned int iDaughter1ID,
   //------------------------------
   TrackStructure* mother = const_cast<TrackStructure*>(&(*motherIt));
   mother->TreeNode.m_Child[0] = const_cast<TrackStructure*>(&(*daughter1It));
-  std::cout << "D1: " << mother->TreeNode.m_Child[0] << std::endl;
   mother->TreeNode.m_Child[1] = const_cast<TrackStructure*>(&(*daughter2It));
-  std::cout << "D2: " << mother->TreeNode.m_Child[1] << std::endl;
   // Create Actor
   mother->TreeNode.m_DivisionActor =
       CreateDivisionActor(iMotherID, iDaughter1ID, iDaughter2ID);
@@ -819,15 +816,9 @@ AddDivision( unsigned int iMotherID, unsigned int iDaughter1ID,
   //------------------------------
   TrackStructure* d1 =  const_cast<TrackStructure*>(&(*daughter1It));
   d1->TreeNode.m_Mother = const_cast<TrackStructure*>(&(*motherIt));
-  std::cout << "M: " << d1->TreeNode.m_Mother << std::endl;
 
   TrackStructure* d2 =  const_cast<TrackStructure*>(&(*daughter2It));
   d2->TreeNode.m_Mother = const_cast<TrackStructure*>(&(*motherIt));
-  std::cout << "M: " << d2->TreeNode.m_Mother << std::endl;
-
-  MultiIndexContainerTraceIDIterator motherIt2
-      = m_Container.get< TraceID >().find(iMotherID);
-  std::cout << "ADDRESS after all modifs: " << &(*motherIt2) << std::endl;
 }
 //-------------------------------------------------------------------------
 
@@ -970,16 +961,9 @@ void
 TrackContainer::
 HighlightCollection(unsigned int iRootTrackID, bool iHilighted)
 {
-  std::cout << "MotherID: " << iRootTrackID << std::endl;
-
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iRootTrackID);
-  std::cout << "ADDRESS: " << &(*motherIt) << std::endl;
   TrackStructure* mother =  const_cast<TrackStructure*>(&(*motherIt));
-  std::cout << "Root: " << mother->TreeNode.m_Mother << std::endl;
-  std::cout << "Mother: " << mother << std::endl;
-  std::cout << "child1: " << mother->TreeNode.m_Child[0] << std::endl;
-  std::cout << "child2: " << mother->TreeNode.m_Child[1] << std::endl;
   mother->UpdateCollectionHighlight( iHilighted );
 }
 //-------------------------------------------------------------------------
