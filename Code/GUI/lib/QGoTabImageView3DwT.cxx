@@ -2791,8 +2791,6 @@ void
 QGoTabImageView3DwT::SaveAndVisuMeshFromSegmentation(vtkPolyData *iView, int iTCoord)
 {
   SaveAndVisuMesh(iView, m_TCoord, iTCoord);
-  // testing purpose
-  this->m_TrackContainer->ShowCollection(7, true);
 }
 
 //-------------------------------------------------------------------------
@@ -2847,7 +2845,14 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView,
                                                 iTCoord + iTShift,
                                                 false,  // highlighted
                                                 true);  // visible
+
+  unsigned int traceID = this->m_MeshContainer->m_CurrentElement.TraceID;
   m_MeshContainer->InsertCurrentElement();
+
+  // testing purpose
+  int visibility = traceID%2;
+  std::cout << "visibility: " << visibility << std::endl;
+  this->m_TrackContainer->ShowCollection(7,visibility);
 }
 
 //-------------------------------------------------------------------------

@@ -298,11 +298,10 @@ TraceContainerBase< TContainer >::UpdateElementHighlightingWithGivenTraceID(cons
       temp_property->Delete();
       }
 
-    MultiIndexContainerElementType tempStructure(*it);
 
-    tempStructure.Highlighted = !it->Highlighted;
-
-    m_Container.get< TraceID >().replace(it, tempStructure);
+    MultiIndexContainerElementType* structure
+        = const_cast<MultiIndexContainerElementType*>(&(*it));
+    structure->Highlighted = !it->Highlighted;
 
     if ( m_ImageView )
       {
@@ -360,11 +359,9 @@ TraceContainerBase< TContainer >::UpdateElementHighlightingWithGivenTraceIDsBase
           temp_property->Delete();
           }
 
-        MultiIndexContainerElementType tempStructure(*it);
-
-        tempStructure.Highlighted = iCheck;
-
-        m_Container.get< TraceID >().replace(it, tempStructure);
+        MultiIndexContainerElementType* structure
+            = const_cast<MultiIndexContainerElementType*>(&(*it));
+        structure->Highlighted = iCheck;
         }
 
       ++constIterator;
@@ -436,11 +433,9 @@ TraceContainerBase< TContainer >::UpdateElementVisibilityWithGivenTraceIDsBase(c
 
         it->SetActorVisibility(visible);
 
-        MultiIndexContainerElementType tempStructure(*it);
-
-        tempStructure.Visible = visible;
-
-        m_Container.get< TraceID >().replace(it, tempStructure);
+        MultiIndexContainerElementType* structure
+            = const_cast<MultiIndexContainerElementType*>(&(*it));
+        structure->Visible = visible;
         }
 
       ++constIterator;
@@ -476,14 +471,13 @@ TraceContainerBase< TContainer >::UpdateAllHighlightedElementsWithGivenColor(QCo
   std::list< unsigned int > oList;
   while ( it0 != it1 )
     {
-    MultiIndexContainerElementType temp(*it0);
+    MultiIndexContainerElementType* structure
+        = const_cast<MultiIndexContainerElementType*>(&(*it0));
 
-    temp.rgba[0] = r;
-    temp.rgba[1] = g;
-    temp.rgba[2] = b;
-    temp.rgba[3] = a;
-
-    m_Container.get< Highlighted >().replace(it0, temp);
+    structure->rgba[0] = r;
+    structure->rgba[1] = g;
+    structure->rgba[2] = b;
+    structure->rgba[3] = a;
 
     oList.push_back(it0->TraceID);
 
@@ -564,11 +558,9 @@ TraceContainerBase< TContainer >::UpdateElementVisibilityWithGivenTraceID(const 
 
     it->SetActorVisibility(!it->Visible);
 
-    MultiIndexContainerElementType tempStructure(*it);
-
-    tempStructure.Visible = !it->Visible;
-
-    m_Container.get< TraceID >().replace(it, tempStructure);
+    MultiIndexContainerElementType* structure
+        = const_cast<MultiIndexContainerElementType*>(&(*it));
+    structure->Visible = !it->Visible;
 
     if ( m_ImageView )
       {

@@ -265,6 +265,7 @@ void
 TrackStructure::
 ModifyCollectionVisibility( TrackStructure* iRoot, bool iVisibility )
 {
+  std::cout << "structure address: " << iRoot << std::endl;
   ModifyDivisionVisibility(iVisibility);
 
   if(iRoot)
@@ -286,15 +287,11 @@ void
 TrackStructure::
 ModifyDivisionVisibility( bool iVisibility )
 {
-  (void)iVisibility;
-  //bool visibility = !this->TreeNode.m_DivisionActor[0]->GetVisibility();
-  std::cout << "visibility: " << iVisibility << std::endl;
-  //this->TreeNode.m_DivisionActor[0]->SetVisibility( visibility );
-  //this->TreeNode.m_DivisionActor[1]->SetVisibility( visibility );
-  //this->TreeNode.m_DivisionActor[2]->SetVisibility( visibility );
-  std::cout << "XYZ view: "
-            << this->TreeNode.m_DivisionActor[3]
-            << std::endl;
+  std::cout << "actor address: " << this->TreeNode.m_DivisionActor[0] << std::endl;
+  this->TreeNode.m_DivisionActor[0]->SetVisibility( iVisibility );
+  this->TreeNode.m_DivisionActor[1]->SetVisibility( iVisibility );
+  this->TreeNode.m_DivisionActor[2]->SetVisibility( iVisibility );
+  this->TreeNode.m_DivisionActor[3]->SetVisibility( iVisibility );
 }
 //--------------------------------------------------------------------------
 

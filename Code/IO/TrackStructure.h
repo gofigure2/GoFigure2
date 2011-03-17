@@ -79,10 +79,16 @@ public:
       m_Child[1] = iE.m_Child[1];
 
       m_DivisionActor.resize(4);
-      //m_DivisionActor[0]->ShallowCopy(iE.m_DivisionActor[0]);
-      //m_DivisionActor[1]->ShallowCopy(iE.m_DivisionActor[1]);
-      //m_DivisionActor[2]->ShallowCopy(iE.m_DivisionActor[2]);
-      //m_DivisionActor[3]->ShallowCopy(iE.m_DivisionActor[3]);
+
+      std::cout << "----------------------------" << std::endl;
+      std::cout << "in copy constructor: " << iE.m_DivisionActor[0] << std::endl;
+      std::cout << "in copy constructor: " << iE.m_DivisionActor[1] << std::endl;
+      std::cout << "in copy constructor: " << iE.m_DivisionActor[2] << std::endl;
+      std::cout << "in copy constructor: " << iE.m_DivisionActor[3] << std::endl;
+      m_DivisionActor[0] = iE.m_DivisionActor[0];
+      m_DivisionActor[1] = iE.m_DivisionActor[1];
+      m_DivisionActor[2] = iE.m_DivisionActor[2];
+      m_DivisionActor[3] = iE.m_DivisionActor[3];
   }
 
   ~TreeNodeStructure()
