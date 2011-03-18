@@ -1766,6 +1766,12 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
     m_Image->ShallowCopy( m_MegaCaptureReader->GetOutput(min_ch) );
     m_Image->SetNumberOfScalarComponents(1);
 
+    if( m_InternalImages.size() != 1 )
+      {
+      m_InternalImages.resize( 1 );
+      }
+    m_InternalImages[0] = m_Image;
+
     // LUT ENABLED
     m_ViewActions[11]->setEnabled(true);
     m_ViewActions[10]->setEnabled(true);

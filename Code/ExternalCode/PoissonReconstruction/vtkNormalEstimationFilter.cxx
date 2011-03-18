@@ -74,7 +74,8 @@ struct SurfacePoint {
 
   // simple constructor to initialise the members
   SurfacePoint() : neighbors( vtkIdList::New() ),
-                   isVisited(false), costs(NULL) {
+                   costs(NULL), isVisited(false)
+  {
 
     for( int i = 0; i < 3; i++ )
       {
