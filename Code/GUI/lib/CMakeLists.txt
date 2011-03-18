@@ -67,12 +67,6 @@ SET( QGoGUILIB_SRC
   QGoSelectedColorComboBox.cxx
   QGoCollectionColorComboBox.cxx
   QGoComboBox.cxx
-  QGoSynchronizedView.cxx
-  QGoSynchronizedView2D.cxx
-  QGoSynchronizedView3D.cxx
-  QGoSynchronizedView2DCallbacks.cxx
-  QGoSynchronizedView3DCallbacks.cxx
-  QGoSynchronizedViewManager.cxx
   QGoDBTraceManager.cxx
   QGoDBContourManager.cxx
   QGoDBMeshManager.cxx
@@ -107,6 +101,18 @@ SET( QGoGUILIB_SRC
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx
 )
+
+IF( BUILD_COMPARETOOL )
+  SET( QGoGUILIB_SRC
+    ${QGoGUILIB_SRC}
+    QGoSynchronizedView.cxx
+    QGoSynchronizedView2D.cxx
+    QGoSynchronizedView3D.cxx
+    QGoSynchronizedView2DCallbacks.cxx
+    QGoSynchronizedView3DCallbacks.cxx
+    QGoSynchronizedViewManager.cxx
+  )
+ENDIF( BUILD_COMPARETOOL )
 
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
@@ -181,12 +187,6 @@ SET( QGoGUILIB_HDRS
   QGoDBInitCreateAuthorsPage.h
   QGoDBInitCreateMicroscopePage.h
   QGoNetworkUtilities.h
-  QGoSynchronizedView.h
-  QGoSynchronizedView2D.h
-  QGoSynchronizedView3D.h
-  QGoSynchronizedView2DCallbacks.h
-  QGoSynchronizedView3DCallbacks.h
-  QGoSynchronizedViewManager.h
   QGoColorComboBox.h
   QGoSelectedColorComboBox.h
   QGoCollectionColorComboBox.h
@@ -223,6 +223,17 @@ SET( QGoGUILIB_HDRS
   QGoTrackEditingWidget.h
 )
 
+IF( BUILD_COMPARETOOL )
+  SET( QGoGUILIB_HDRS
+    ${QGoGUILIB_HDRS}
+    QGoSynchronizedView.h
+    QGoSynchronizedView2D.h
+    QGoSynchronizedView3D.h
+    QGoSynchronizedView2DCallbacks.h
+    QGoSynchronizedView3DCallbacks.h
+    QGoSynchronizedViewManager.h
+  )
+ENDIF( BUILD_COMPARETOOL )
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
 
@@ -262,8 +273,6 @@ SET( QGoGUILIB_UI
   Resources/QNameDescriptionInputDialog.ui
   Resources/QGoTraceManualEditingWidget.ui
 
-  Resources/QGoSynchronizedView.ui
-
   # seed segmentation dock widgets
   Resources/BaseAlgoSegmentationDockWidget.ui
   Resources/LevelsetWidget.ui
@@ -273,6 +282,13 @@ SET( QGoGUILIB_UI
   Resources/TrackDockWidget.ui
   Resources/TrackEditingWidget.ui
 )
+
+IF( BUILD_COMPARETOOL )
+  SET( QGoGUILIB_UI
+    ${QGoGUILIB_UI}
+    Resources/QGoSynchronizedView.ui
+  )
+ENDIF( BUILD_COMPARETOOL )
 
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
