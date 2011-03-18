@@ -67,12 +67,6 @@ SET( QGoGUILIB_SRC
   QGoSelectedColorComboBox.cxx
   QGoCollectionColorComboBox.cxx
   QGoComboBox.cxx
-  SynchronizedViews/QGoSynchronizedView.cxx
-  SynchronizedViews/QGoSynchronizedView2D.cxx
-  SynchronizedViews/QGoSynchronizedView3D.cxx
-  SynchronizedViews/QGoSynchronizedView2DCallbacks.cxx
-  SynchronizedViews/QGoSynchronizedView3DCallbacks.cxx
-  SynchronizedViews/QGoSynchronizedViewManager.cxx
   QGoDBTraceManager.cxx
   QGoDBContourManager.cxx
   QGoDBMeshManager.cxx
@@ -123,6 +117,19 @@ SET_SOURCE_FILES_PROPERTIES(
   QGoColorComboBox.cxx
   ABSTRACT
   )
+
+IF( BUILD_COMPARETOOL )
+  SET( QGoGUILIB_SRC
+    ${QGoGUILIB_SRC}
+    SynchronizedViews/QGoSynchronizedView.cxx
+    SynchronizedViews/QGoSynchronizedView2D.cxx
+    SynchronizedViews/QGoSynchronizedView3D.cxx
+    SynchronizedViews/QGoSynchronizedView2DCallbacks.cxx
+    SynchronizedViews/QGoSynchronizedView3DCallbacks.cxx
+    SynchronizedViews/QGoSynchronizedViewManager.cxx
+  )
+ENDIF( BUILD_COMPARETOOL )
+
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
 
@@ -196,12 +203,6 @@ SET( QGoGUILIB_HDRS
   Wizard/QGoDBInitCreateAuthorsPage.h
   Wizard/QGoDBInitCreateMicroscopePage.h
   QGoNetworkUtilities.h
-  SynchronizedViews/QGoSynchronizedView.h
-  SynchronizedViews/QGoSynchronizedView2D.h
-  SynchronizedViews/QGoSynchronizedView3D.h
-  SynchronizedViews/QGoSynchronizedView2DCallbacks.h
-  SynchronizedViews/QGoSynchronizedView3DCallbacks.h
-  SynchronizedViews/QGoSynchronizedViewManager.h
   QGoColorComboBox.h
   QGoSelectedColorComboBox.h
   QGoCollectionColorComboBox.h
@@ -242,6 +243,17 @@ SET( QGoGUILIB_HDRS
   QGoAlgorithmsWidget.h
 )
 
+IF( BUILD_COMPARETOOL )
+  SET( QGoGUILIB_HDRS
+    ${QGoGUILIB_HDRS}
+    SynchronizedViews/QGoSynchronizedView.h
+    SynchronizedViews/QGoSynchronizedView2D.h
+    SynchronizedViews/QGoSynchronizedView3D.h
+    SynchronizedViews/QGoSynchronizedView2DCallbacks.h
+    SynchronizedViews/QGoSynchronizedView3DCallbacks.h
+    SynchronizedViews/QGoSynchronizedViewManager.h
+  )
+ENDIF( BUILD_COMPARETOOL )
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
 
@@ -275,12 +287,12 @@ SET( QGoGUILIB_UI
 # manual contour segmentation dock widget
   Resources/ManualSegmentationSettingsDlg.ui
   Resources/ContourManualSegmentationWidget.ui
-  
+
 # seed segmentation dock widgets
   Resources/LevelsetWidget.ui
   Resources/WatershedWidget.ui
   Resources/ShapeWidget.ui
-  
+
   # other
   Resources/NavigationDockWidget.ui
   Resources/QGoPrintDatabase.ui
@@ -288,12 +300,21 @@ SET( QGoGUILIB_UI
   Resources/QNameDescriptionInputDialog.ui
   Resources/QGoTraceSettingsWidget.ui
 
-  Resources/QGoSynchronizedView.ui
+  # seed segmentation dock widgets
+  Resources/LevelsetWidget.ui
+  Resources/WatershedWidget.ui
 
   # for tracks
   Resources/TrackDockWidget.ui
   Resources/TrackEditingWidget.ui
 )
+
+IF( BUILD_COMPARETOOL )
+  SET( QGoGUILIB_UI
+    ${QGoGUILIB_UI}
+    Resources/QGoSynchronizedView.ui
+  )
+ENDIF( BUILD_COMPARETOOL )
 
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------

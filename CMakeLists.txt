@@ -49,11 +49,11 @@ OPTION( SUPERBUILD "Use SuperBuild" OFF )
 IF( SUPERBUILD )
 
   CMAKE_MINIMUM_REQUIRED( VERSION 2.8.3 )
-  
+
   PROJECT( MYSUPERPROJECT )
   INCLUDE( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/SuperBuild/SuperBuild.cmake" )
   RETURN()
-  
+
 ELSE( SUPERBUILD )
 
   # CMake >= 2.8.2 MUST be installed (which is required by ITK)
@@ -263,6 +263,8 @@ ELSE( SUPERBUILD )
       DESTINATION ${GOFIGURE2_INSTALL_HEADER_DIR}
       COMPONENT Development
       )
+
+  OPTION( BUILD_COMPARETOOL "Build image comparison tool" OFF )
 
   ADD_SUBDIRECTORY( Code )
   ADD_SUBDIRECTORY( Main )

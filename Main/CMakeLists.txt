@@ -9,7 +9,6 @@ SET( QGoMainWindow_UI
 SET( QGoGUISRC_HDRS
   QGoTabManager.h
   QGoMainWindow.h
-  QGoSynchronizedViewMainWindow.h
   QGoPluginManager.h
   ${QGoGUIINTERFACES_HDRS}
 )
@@ -21,9 +20,20 @@ SET( GOFIGURE_MAIN
 SET( GOFIGURE_APPLICATION_SOURCE_LIST
   QGoTabManager.cxx
   QGoMainWindow.cxx
-  QGoSynchronizedViewMainWindow.cxx
   QGoPluginManager.cxx
   )
+
+IF( BUILD_COMPARETOOL )
+  SET( QGoGUISRC_HDRS
+    ${QGoGUISRC_HDRS}
+    QGoSynchronizedViewMainWindow.h
+  )
+
+  SET( GOFIGURE_APPLICATION_SOURCE_LIST
+    ${GOFIGURE_APPLICATION_SOURCE_LIST}
+    ${QGoSynchronizedViewMainWindow.cxx}
+  )
+ENDIF( BUILD_COMPARETOOL )
 
 INCLUDE_DIRECTORIES( ${GOFIGURE2_BINARY_DIR}/Main/  )
 
@@ -147,22 +157,24 @@ TARGET_LINK_LIBRARIES( gofigure
   itkQt
  )
 
-# -----------
-# comparegui
-ADD_EXECUTABLE( comparegui
-  comparegui.cxx
-  ${GOFIGURE_APPLICATION_SOURCE_LIST}
-  ${QGoGUIINTERFACES_SRC}
-  ${QGoGUISRC_MOC}
-  ${QGoMainWindow_QRC}
-  ${qt_menu_nib_sources}
-)
+IF( BUILD_COMPARETOOL )
+  # comparegui
 
-TARGET_LINK_LIBRARIES( comparegui
-  QGoGui
-  QGoIO
-  itkQt
- )
+  ADD_EXECUTABLE( comparegui
+    comparegui.cxx
+    ${GOFIGURE_APPLICATION_SOURCE_LIST}
+    ${QGoGUIINTERFACES_SRC}
+    ${QGoGUISRC_MOC}
+    ${QGoMainWindow_QRC}
+    ${qt_menu_nib_sources}
+  )
+
+  TARGET_LINK_LIBRARIES( comparegui
+    QGoGui
+    QGoIO
+    itkQt
+  )
+ENDIF( BUILD_COMPARETOOL )
 
 
 #---------------------------------------------------------------------------
@@ -251,7 +263,7 @@ ELSE( UNIX AND NOT APPLE )
 
     ADD_CUSTOM_COMMAND( TARGET gofigure POST_BUILD
       COMMENT "Copying License files..."
-      COMMAND if not exist \"${OUTPUT_DIR_WIN}\\Licenses\" 
+      COMMAND if not exist \"${OUTPUT_DIR_WIN}\\Licenses\"
         mkdir \"${OUTPUT_DIR_WIN}\\Licenses\"
       COMMAND xcopy ARGS /Y
         \"${GOFIGURE2_SRC_DIR_WIN}\\Licenses\\*.txt\"
