@@ -154,6 +154,8 @@ IF( UNIX )
   SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 ENDIF( UNIX )
 
+OPTION( BUILD_COMPARETOOL "Build image comparison tool" OFF )
+
 # Everything depends on VTK first
 # that way we can get Qt info from VTK
 #### VTK ####
