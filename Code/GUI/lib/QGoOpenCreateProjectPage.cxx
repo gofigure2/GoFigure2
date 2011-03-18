@@ -387,7 +387,7 @@ void QGoOpenCreateProjectPage::DisplayInfoProject(QString ProjectName)
 
     QString AuthorName;
     for ( std::map< std::string, int >::iterator iter = m_MapAuthorIDName.begin();
-          iter != m_MapAuthorIDName.end() && AuthorName.isEmpty(); iter++ )
+          iter != m_MapAuthorIDName.end() && AuthorName.isEmpty(); ++iter )
       {
       if ( iter->second == AuthorID )
         {

@@ -393,7 +393,7 @@ void GoDBExport::WriteOnTheOutputFile(std::string iNameOfEntity,
     this->m_outfile << this->GetNameWithBrackets(iter->first);
     this->m_outfile << iter->second;
     this->m_outfile << this->GetNameWithSlashBrackets(iter->first) << std::endl;
-    iter++;
+    ++iter;
     }
   this->AddTabulation();
   this->m_outfile << GetNameWithSlashBrackets(iNameOfEntity) << std::endl;

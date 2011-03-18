@@ -70,7 +70,7 @@ int main(int argc, char **argv)
 
   for ( std::vector< QAction * >::iterator q_it = action_vector.begin();
         q_it != action_vector.end();
-        q_it++ )
+        ++q_it )
     {
     menubar->addAction(*q_it);
     }
@@ -86,7 +86,7 @@ int main(int argc, char **argv)
   for ( std::list< std::pair< QGoDockWidgetStatus *, QDockWidget * > >::iterator
         it = dockwidget_list.begin();
         it != dockwidget_list.end();
-        it++ )
+        ++it )
     {
     if ( it->second )
       {

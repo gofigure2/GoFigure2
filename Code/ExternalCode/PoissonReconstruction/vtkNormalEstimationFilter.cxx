@@ -70,10 +70,18 @@ struct SurfacePoint {
   vtkIdList *neighbors; // id's of points within LocalRadius of this point
   double *costs;        // should have same length as neighbors, cost for
                         // corresponding points
-  char isVisited;
+  bool isVisited;
 
   // simple constructor to initialise the members
-  SurfacePoint() : neighbors( vtkIdList::New() ), isVisited(0) {
+  SurfacePoint() : neighbors( vtkIdList::New() ),
+                   isVisited(false), costs(NULL) {
+
+    for( int i = 0; i < 3; i++ )
+      {
+      loc[i] = 0.;
+      o[i] = 0.;
+      n[i] = 0.;
+      }
   }
 
   ~SurfacePoint() {
@@ -341,7 +349,7 @@ int vtkNormalEstimationFilter::ConsistencyPropagation()
 
     // start with some vertex
     int first = 0; // index of starting vertex
-    m_SurfacePoints[first].isVisited = 1;
+    m_SurfacePoints[first].isVisited = true;
     // add all the neighbors of the starting vertex into nearby
     for ( j = 0; j < m_SurfacePoints[first].neighbors->GetNumberOfIds(); j++ )
       {
@@ -398,21 +406,21 @@ int vtkNormalEstimationFilter::ConsistencyPropagation()
         vtkMultiplyBy(m_SurfacePoints[cheapestNearby].n, -1);
         }
       // add this nearby point to visited
-      if ( m_SurfacePoints[cheapestNearby].isVisited != 0 )
+      if ( m_SurfacePoints[cheapestNearby].isVisited )
         {
         vtkErrorMacro (<< "Internal error in vtkNormalEstimationFilter");
         nearby->Delete();
         return 0;
         }
 
-      m_SurfacePoints[cheapestNearby].isVisited = 1;
+      m_SurfacePoints[cheapestNearby].isVisited = true;
       // remove from nearby
       nearby->DeleteId(cheapestNearby);
       // add all new nearby points to nearby
       for ( j = 0; j < m_SurfacePoints[cheapestNearby].neighbors->GetNumberOfIds(); j++ )
         {
         iNeighbor = m_SurfacePoints[cheapestNearby].neighbors->GetId(j);
-        if ( m_SurfacePoints[iNeighbor].isVisited == 0 )
+        if ( !m_SurfacePoints[iNeighbor].isVisited )
           {
           nearby->InsertUniqueId(iNeighbor);
           }

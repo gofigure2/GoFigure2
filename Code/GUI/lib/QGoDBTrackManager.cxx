@@ -293,7 +293,7 @@ void QGoDBTrackManager::UpdateBoundingBoxes(
   while ( iter != iListTracesIDs.end() )
     {
     this->UpdateTrackPolydataForVisu(iDatabaseConnector, *iter);
-    iter++;
+    ++iter;
     }
 }
 

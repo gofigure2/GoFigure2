@@ -273,9 +273,10 @@ void QGoTabImageViewElementBase::ValidateContour(const int & iId)
   contour->GetBounds(bounds);
 
   // Extract Min and Max from bounds
-  double Min[3], Max[3];
+  double Min[3] = {0., 0., 0.};
+  double Max[3] = {0., 0., 0.};
   int    k = 0;
-  for ( int i = 0; i < 3; i++ )
+  for ( int i = 0; i < 3; ++i )
     {
     Min[i] = bounds[k++];
     Max[i] = bounds[k++];

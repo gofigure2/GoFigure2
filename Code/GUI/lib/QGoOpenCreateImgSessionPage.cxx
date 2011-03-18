@@ -171,7 +171,7 @@ bool QGoOpenCreateImgSessionPage::GetListImgSession()
     while ( it != m_MapImgSessionIDName.end() )
       {
       m_ListImgSession.append( it->first.c_str() );
-      it++;
+      ++it;
       }
     return true;
     }
@@ -262,7 +262,7 @@ void QGoOpenCreateImgSessionPage::DisplayInfoImgSession(
         {
         ImagingSessionID = it->second;
         }
-      it++;
+      ++it;
       }
 
     std::vector< std::string > ListDescription = ListSpecificValuesForOneColumn(

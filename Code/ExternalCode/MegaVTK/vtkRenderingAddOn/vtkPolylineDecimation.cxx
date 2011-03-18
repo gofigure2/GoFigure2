@@ -204,7 +204,7 @@ int vtkPolylineDecimation::GetPrev(const int & iId)
     if ( this->Closed )
       {
       it = this->VertexErrorMap.end();
-      it--;
+      --it;
       return it->first;
       }
     else
@@ -214,7 +214,7 @@ int vtkPolylineDecimation::GetPrev(const int & iId)
     }
   else
     {
-    it--;
+    --it;
     return it->first;
     }
 }
@@ -235,7 +235,7 @@ int vtkPolylineDecimation::GetNext(const int & iId)
     }
   else
     {
-    it++;
+    ++it;
     return it->first;
     }
 }
