@@ -84,7 +84,7 @@ public:
 
 signals:
 
-  void ApplyClicked();
+  //void ApplyClicked();
   void ResetClicked();
 
 protected:
@@ -101,6 +101,8 @@ protected:
   for channel and timepoint
   */
   void Initialize(QStringList iListChannels, QStringList iListTime);
-  
+
+ protected slots:
+  void EmitApplyAlgo();
 };
 #endif

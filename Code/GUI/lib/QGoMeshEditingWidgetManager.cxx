@@ -31,80 +31,84 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-
+#include "QGoMeshEditingWidgetManager.h"
 #include "QGoAlgorithmWidget.h"
-#include <QLabel>
-#include <QComboBox>
-#include "ctkCollapsibleGroupBox.h"
-#include "ConvertToStringHelper.h"
+#include "QGoAlgoParameter.h"
+#include <iostream>
 
 
-QGoAlgorithmWidget::QGoAlgorithmWidget(std::string iMethodName, QWidget *iParent )
-  :QWidget(iParent)
+QGoMeshEditingWidgetManager::QGoMeshEditingWidgetManager(
+  QStringList iListChannels, 
+  QStringList iListTimePoints, QWidget* iParent)
 {
-  this->m_MethodName = iMethodName;
-  this->Initialize();
+ this->m_MeshEditingWidget = new QGoTraceEditingWidget(
+   "Mesh", iListChannels, iListTimePoints, iParent);
+ this->SetLevelSetAlgo(iParent);
+ this->SetShapeAlgo(iParent);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QGoAlgorithmWidget::~QGoAlgorithmWidget()
+QGoMeshEditingWidgetManager::~QGoMeshEditingWidgetManager()
 {
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoAlgorithmWidget::Initialize()
+void QGoMeshEditingWidgetManager::SetLevelSetAlgo(QWidget* iParent)
 {
-  this->m_VBoxLayout = new QVBoxLayout;
-  this->m_ParamLayout = new QFormLayout;
-  this->m_AdvParamLayout = new QFormLayout;
+  QGoAlgorithmWidget* LevelSetWidget = new QGoAlgorithmWidget("LevelSet 3D", iParent);
+  QGoAlgoParameter<double> Radius("Radius", false, 0.1, 99.99, 2, 3);
+  LevelSetWidget->AddParameter(&Radius);
+  QGoAlgoParameter<int> Curvature("Curvature", true, 0, 1000, 20);
+  LevelSetWidget->AddParameter(&Curvature);
+  QGoAlgoParameter<int> Iterations("Iterations", true, 0, 1000, 100);
+  LevelSetWidget->AddParameter(&Iterations);
+  this->m_MeshEditingWidget->AddAlgoWidgetForSemiAutomatedMode(LevelSetWidget);
+
+  QObject::connect(LevelSetWidget, SIGNAL(ApplyAlgo() ),
+    this, SLOT(GetSignalLevelSet() ) );
+
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoMeshEditingWidgetManager::SetShapeAlgo(QWidget* iParent)
+{
+  QGoAlgorithmWidget* ShapeWidget = new QGoAlgorithmWidget("Shape 3D", iParent);
+  QGoAlgoParameter<double> Radius("Radius", false, 0.1, 99.99, 2, 3);
+  ShapeWidget->AddParameter(&Radius);
+  QStringList ShapeList;
+  ShapeList.append("Sphere");
+  ShapeList.append("Cube");
+  QGoAlgoParameter<std::string> Shape("Shape",true, ShapeList, "Sphere");
+  ShapeWidget->AddParameter(&Shape);
   
-  this->m_VBoxLayout->addLayout(this->m_ParamLayout);
- 
-  this->setLayout(this->m_VBoxLayout);
-  this->m_VBoxLayout->setSizeConstraint(QLayout::SetFixedSize);
-  this->m_AdvParamAlreadySetUp = false;
-  //can not setflat + set checked before inserting the parameters
-  //or no ones will appear...
-  //this->m_AdvParamGroupBox->setFlat(true);
-  //this->m_AdvParamGroupBox->setChecked(false);
+  this->m_MeshEditingWidget->AddAlgoWidgetForSemiAutomatedMode(ShapeWidget);
+
+  QObject::connect(ShapeWidget, SIGNAL(ApplyAlgo() ),
+    this, SLOT(GetSignalShape() ) );
 
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::string QGoAlgorithmWidget::GetMethodName()
+void QGoMeshEditingWidgetManager::GetSignalLevelSet()
 {
-  return this->m_MethodName;
+  std::cout<<"level set signal caught"<<std::endl;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoAlgorithmWidget::show()
+void QGoMeshEditingWidgetManager::GetSignalShape()
 {
-  if (!this->m_AdvParamAlreadySetUp) //in order not to add another collapsible box
-    //each time the widget is shown
-    {
-    if (this->m_AdvParamLayout->rowCount()>0 ) //if there is at least one advanced parameter,
-      //if not, no need to add the collapsible box
-      {
-      ctkCollapsibleGroupBox* AdvParamGroupBox =
-        new ctkCollapsibleGroupBox(tr("Advanced"));
-      AdvParamGroupBox->setLayout(this->m_AdvParamLayout);
-      AdvParamGroupBox->setFlat(true);
-      AdvParamGroupBox->setChecked(false);
-      this->m_VBoxLayout->addWidget(AdvParamGroupBox);
-      }
-    this->m_AdvParamAlreadySetUp = true; //no need to check again when widget shown another time
-    }
-
-  QWidget::show();
+  std::cout<<"Shape signal caught"<<std::endl;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoAlgorithmWidget::EmitApplyAlgo()
+void QGoMeshEditingWidgetManager::showWidget()
 {
-  emit ApplyAlgo();
+  this->m_MeshEditingWidget->CheckDefaultModes();
+  this->m_MeshEditingWidget->show();
 }

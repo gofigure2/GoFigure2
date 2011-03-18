@@ -40,6 +40,7 @@ SET( QGOGUILIB_EXAMPLE_SRC
   QGoAlgorithmsManagerWidgetTest
   QGoAlgorithmWidgetTest
   QGoModesManagerWidgetTest
+  QGoMeshEditingWidgetManagerTest
 )
 
 #---------------------------------------------------------------------------

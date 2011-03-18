@@ -31,71 +31,35 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
+#ifndef __QGoMeshEditingWidgetManager_h
+#define __QGoMeshEditingWidgetManager_h
 
-#ifndef __QGoAlgorithmWidget_h
-#define __QGoAlgorithmWidget_h
-
-#include <QWidget>
-#include <QVBoxLayout>
-#include <QFormLayout>
-#include <QSpinBox>
-#include <QDoubleSpinBox>
-#include <map>
-#include "ctkCollapsibleGroupBox.h"
-#include "QGoAlgoParameter.h"
+#include "QGoTraceEditingWidget.h"
+#include "QGoGUILibConfigure.h"
 
 /**
- * \class QGoAlgorithmWidget
- * \ingroup GUI 
- * \brief 
+\class QGoMeshEditingWidgetManager
+\brief
 */
-class QGoAlgorithmWidget:
-  public QWidget
+class QGOGUILIB_EXPORT QGoMeshEditingWidgetManager: public QObject
 {
   Q_OBJECT
 public:
-  explicit QGoAlgorithmWidget(std::string iMethodName, QWidget *iParent = 0);
-  ~QGoAlgorithmWidget();
+  QGoMeshEditingWidgetManager(QStringList iListChannels, 
+    QStringList iListTimePoints, QWidget* iParent=0);
+  ~QGoMeshEditingWidgetManager();
 
-  /**
-  \brief
-  \return the name of the algorithms 
-  */
-  std::string GetMethodName();
-
-  /**
-  \brief add the Advanced parameters box if there are parameters inside and reduce it
-  before showing the widget    
-  */
-  void show();
-
-  template<typename T>
-  void AddParameter(QGoAlgoParameter<T>* iParameter)
-    {
-    if (iParameter->m_AdvParam)
-      {
-        this->m_AdvParamLayout->addRow(tr("%1:").arg(iParameter->m_ParamName.c_str() ), 
-        iParameter->m_Box);
-      }    
-    else
-      {
-        this->m_ParamLayout->addRow(tr("%1:").arg(iParameter->m_ParamName.c_str() ), 
-        iParameter->m_Box);
-      }
-    }
-
-  void EmitApplyAlgo();
-signals:
-    void ApplyAlgo();
+  void showWidget();
 
 protected:
-  QVBoxLayout*                             m_VBoxLayout;
-  std::string                              m_MethodName;
-  QFormLayout*                             m_ParamLayout;
-  QFormLayout*                             m_AdvParamLayout;
-  bool                                     m_AdvParamAlreadySetUp;
+  QGoTraceEditingWidget* m_MeshEditingWidget;
+  void SetLevelSetAlgo(QWidget* iParent=0);
+  void SetShapeAlgo(QWidget* iParent=0);
 
-  void Initialize();
+protected slots:
+  void GetSignalLevelSet();
+  void GetSignalShape();
 
 };
+
 #endif

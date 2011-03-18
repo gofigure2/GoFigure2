@@ -130,8 +130,6 @@ int main(int argc, char *argv[])
   MeshEditing->AddMode("TestAddMode", TestAddMode);
   MeshEditing->CheckDefaultModes();
   //QObject::connect( timer, SIGNAL( timeout() ), window, SLOT( close() ) );
-
-  
   //timer->start(1000);
 
   MeshEditing->show();

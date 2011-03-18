@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009-11
+ at Megason Lab, Systems biology, Harvard Medical school, 2009
 
- Copyright (c) 2009-11, President and Fellows of Harvard College.
+ Copyright (c) 2009, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,71 +31,54 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-
-#ifndef __QGoAlgorithmWidget_h
-#define __QGoAlgorithmWidget_h
-
-#include <QWidget>
-#include <QVBoxLayout>
-#include <QFormLayout>
-#include <QSpinBox>
-#include <QDoubleSpinBox>
-#include <map>
-#include "ctkCollapsibleGroupBox.h"
+#include <QApplication>
+#include <QTimer>
+#include <iostream>
+#include "QGoMeshEditingWidgetManager.h"
+#include "QGoTraceSettingsWidget.h"
+#include "QGoModesManagerWidget.h"
+#include "QGoAlgorithmWidget.h"
+#include "QGoTraceSettingsWidget.h"
 #include "QGoAlgoParameter.h"
 
-/**
- * \class QGoAlgorithmWidget
- * \ingroup GUI 
- * \brief 
-*/
-class QGoAlgorithmWidget:
-  public QWidget
+//**************************************************************************//
+//                               MAIN                                       //
+//**************************************************************************//
+
+int main(int argc, char *argv[])
 {
-  Q_OBJECT
-public:
-  explicit QGoAlgorithmWidget(std::string iMethodName, QWidget *iParent = 0);
-  ~QGoAlgorithmWidget();
-
-  /**
-  \brief
-  \return the name of the algorithms 
-  */
-  std::string GetMethodName();
-
-  /**
-  \brief add the Advanced parameters box if there are parameters inside and reduce it
-  before showing the widget    
-  */
-  void show();
-
-  template<typename T>
-  void AddParameter(QGoAlgoParameter<T>* iParameter)
+  if ( argc != 1 )
     {
-    if (iParameter->m_AdvParam)
-      {
-        this->m_AdvParamLayout->addRow(tr("%1:").arg(iParameter->m_ParamName.c_str() ), 
-        iParameter->m_Box);
-      }    
-    else
-      {
-        this->m_ParamLayout->addRow(tr("%1:").arg(iParameter->m_ParamName.c_str() ), 
-        iParameter->m_Box);
-      }
+    return EXIT_FAILURE;
     }
 
-  void EmitApplyAlgo();
-signals:
-    void ApplyAlgo();
+  QApplication app(argc, argv);
+  //QTimer *     timer = new QTimer;
+  //timer->setSingleShot(true);
 
-protected:
-  QVBoxLayout*                             m_VBoxLayout;
-  std::string                              m_MethodName;
-  QFormLayout*                             m_ParamLayout;
-  QFormLayout*                             m_AdvParamLayout;
-  bool                                     m_AdvParamAlreadySetUp;
+  QStringList ChannelName;
+  ChannelName.append("Channel 1");
+  ChannelName.append("Channel 2");
+  QStringList ListTimePoint;
+  ListTimePoint.append("t-1");
+  ListTimePoint.append("t");
+  ListTimePoint.append("t+1");
 
-  void Initialize();
+  QGoMeshEditingWidgetManager* MeshEditing = new QGoMeshEditingWidgetManager(ChannelName, ListTimePoint,NULL);
+  
+  //QObject::connect( timer, SIGNAL( timeout() ), window, SLOT( close() ) );
+  //timer->start(1000);
 
-};
-#endif
+  MeshEditing->showWidget();
+
+  app.processEvents();
+  int output = app.exec();
+
+  
+  app.closeAllWindows();
+
+  //delete timer;
+  delete MeshEditing;
+
+  return output;
+}

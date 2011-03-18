@@ -94,7 +94,9 @@ void QGoAlgorithmsManagerWidget::Initialize(QStringList iListChannels,
   QObject::connect(this->m_MethodComboBox, SIGNAL(activated(int)),
             this->m_MethodWidgets, SLOT(setCurrentIndex(int)));
 
-  QObject::connect(ApplyButton, SIGNAL(clicked()), this, SIGNAL(ApplyClicked()));
+  QObject::connect(ApplyButton, SIGNAL(clicked()), 
+    this, SLOT(EmitApplyAlgo()));
+
   QObject::connect(ResetButton, SIGNAL(clicked()), this, SIGNAL(ResetClicked()));
   //QObject::connect(this->m_MethodComboBox, SIGNAL(activated(int)),
   //           this->m_MethodsLayout, SLOT(setCurrentIndex(int)));
@@ -152,6 +154,15 @@ void QGoAlgorithmsManagerWidget::SetCurrentTimePoint(QString iTimePoint)
 bool QGoAlgorithmsManagerWidget::HasMethod()
 {
   return this->m_MethodComboBox->count();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoAlgorithmsManagerWidget::EmitApplyAlgo()
+{
+  QGoAlgorithmWidget* iCurrentWidget = 
+    dynamic_cast<QGoAlgorithmWidget*>(m_MethodWidgets->currentWidget());
+  iCurrentWidget->EmitApplyAlgo();
 }
 /*void QGoAlgorithmsManagerWidget::AddMethod(std::string iNameMethod, 
   QWidget* iParametersWidget, QWidget* iAdvParamWidget)
