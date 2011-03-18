@@ -844,7 +844,7 @@ QGoMainWindow::SetupMenusFromTab(QGoTabElementBase *iT)
   for ( std::list< QAction * >::iterator
         list_it = m_TabDimPluginActionMap[iT->GetTabDimensionType()].begin();
         list_it != m_TabDimPluginActionMap[iT->GetTabDimensionType()].end();
-        list_it++
+        ++list_it
         )
     {
     ( *list_it )->setEnabled(true);

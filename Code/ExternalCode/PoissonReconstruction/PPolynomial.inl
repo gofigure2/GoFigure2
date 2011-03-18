@@ -475,11 +475,12 @@ inline PPolynomial<Degree> PPolynomial<Degree>::GaussianApproximation(const doub
 template<int Degree>
 inline PPolynomial<Degree+1> PPolynomial<Degree>::MovingAverage(const double& radius)
 {
-	PPolynomial<Degree+1> A;
-	Polynomial<Degree+1> p;
-	StartingPolynomial<Degree+1>* sps;
+  const int UDegree = Degree+1;
+	PPolynomial<UDegree> A;
+	Polynomial<UDegree> p;
+	StartingPolynomial<UDegree>* sps;
 
-	sps=(StartingPolynomial<Degree+1>*)malloc(sizeof(StartingPolynomial<Degree+1>)*polyCount*2);
+	sps = (StartingPolynomial<UDegree>*) malloc( sizeof(StartingPolynomial<UDegree> ) * polyCount * 2);
 
 	for(int i=0;i<int(polyCount);i++){
 		sps[2*i  ].start=polys[i].start-radius;

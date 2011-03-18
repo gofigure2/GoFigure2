@@ -48,7 +48,7 @@ struct GoDBTraceInfoForVisu {
   unsigned int TimePoint;
   bool IsHighLighted;
 
-  GoDBTraceInfoForVisu()
+  GoDBTraceInfoForVisu() : Points( NULL )
   {
     TraceID       = 0;
     Red           = 0;

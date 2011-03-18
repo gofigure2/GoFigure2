@@ -971,7 +971,7 @@ void QGoTabImageView4D::FullScreenViewXYT()
 //--------------------------------------------------------------------------
 void QGoTabImageView4D::GetBackgroundColorFromImageViewer()
 {
-  double r, g, b;
+  double r(0.), g(0.), b(0.);
 
   m_XYZImageView->GetBackgroundColor(r, g, b);
   m_BackgroundColor.setRgbF(r, g, b);
@@ -1160,10 +1160,11 @@ QGoTabImageView4D::ValidateContour(const int & iId)
     std::cout << bounds[4] << " " << bounds[5] << std::endl;
 
     // Extract Min and Max from bounds
-    double       Min[3], Max[3];
+    double Min[3] = {0., 0., 0. };
+    double Max[3] = {0., 0., 0. };
     int          k = 0;
     unsigned int i;
-    for ( i = 0; i < 3; i++ )
+    for ( i = 0; i < 3; ++i )
       {
       Min[i] = bounds[k++];
       Max[i] = bounds[k++];
@@ -1255,7 +1256,7 @@ QGoTabImageView4D::AddContour(vtkPolyData *dataset,
 void
 QGoTabImageView4D::ChangeBackgroundColor()
 {
-  double r, g, b;
+  double r(0.), g(0.), b(0.);
 
   m_XYZImageView->GetBackgroundColor(r, g, b);
   m_BackgroundColor.setRgbF(r, g, b);

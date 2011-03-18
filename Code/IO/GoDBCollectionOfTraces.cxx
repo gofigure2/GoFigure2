@@ -105,10 +105,11 @@ void GoDBCollectionOfTraces::DeleteTracesInDB(std::list< unsigned int > TracesTo
   std::list< unsigned int >::iterator iter = TracesToDelete.begin();
   while ( iter != TracesToDelete.end() )
     {
-    int ID = *iter;
+    unsigned int ID = *iter;
 
-    DeleteRow( DatabaseConnector, m_TracesName, m_TracesIDName, ConvertToString< unsigned int >(ID) );
-    iter++;
+    DeleteRow( DatabaseConnector, m_TracesName, m_TracesIDName,
+      ConvertToString< unsigned int >(ID) );
+    ++iter;
     }
 }
 
@@ -140,7 +141,7 @@ void GoDBCollectionOfTraces::UpdateCollectionIDOfSelectedTraces(
     UpdateValueInDB( DatabaseConnector, m_TracesName, m_CollectionIDName,
                      newCollectionIDstring, m_TracesIDName,
                      ConvertToString< unsigned int >(TraceID) );
-    iter++;
+    ++iter;
     }
 }
 
@@ -195,7 +196,7 @@ void GoDBCollectionOfTraces::RecalculateDBBoundingBox(
   while ( iter != iListTracesIDs.end() )
     {
     this->RecalculateDBBoundingBox(iDatabaseConnector, *iter);
-    iter++;
+    ++iter;
     }
 }
 
@@ -297,16 +298,18 @@ GoDBCollectionOfTraces::GetListNameWithColorDataFromResultsQuery(
   while ( iter != iResultsQuery.end() )
     {
     std::vector< std::string > ResultsOneRow = *iter;
-    int                        intRed   = atoi( ResultsOneRow[i + 1].c_str() );
-    int                        intGreen = atoi( ResultsOneRow[i + 2].c_str() );
-    int                        intBlue  = atoi( ResultsOneRow[i + 3].c_str() );
-    int                        intAlpha = atoi( ResultsOneRow[i + 4].c_str() );
+
+    int intRed   = atoi( ResultsOneRow[i + 1].c_str() );
+    int intGreen = atoi( ResultsOneRow[i + 2].c_str() );
+    int intBlue  = atoi( ResultsOneRow[i + 3].c_str() );
+    int intAlpha = atoi( ResultsOneRow[i + 4].c_str() );
+
     QColor                     Color(intRed, intGreen, intBlue, intAlpha);
     NameWithColorData          temp;
     temp.first = ResultsOneRow[i];
     temp.second = Color;
     oListNameWithColorData.push_back(temp);
-    iter++;
+    ++iter;
     }
   return oListNameWithColorData;
 }

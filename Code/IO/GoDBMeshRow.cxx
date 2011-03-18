@@ -252,7 +252,7 @@ void GoDBMeshRow::SaveInDBTotalIntensityPerChannel(
     std::string strMeshID = this->GetMapValue("meshID");
     NewIntensity.SetField( "meshID", this->GetMapValue("meshID") );
     NewIntensity.SaveInDB(DatabaseConnector);
-    iter++;
+    ++iter;
     }
 }
 

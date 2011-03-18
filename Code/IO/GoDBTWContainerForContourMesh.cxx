@@ -127,7 +127,7 @@ void GoDBTWContainerForContourMesh::FillColumnShowHide(vtkMySQLDatabase *iDataba
       }
     Values.push_back(ShowHideValue);
     ShowHideValue.clear();
-    iter++;
+    ++iter;
     }
 
   std::vector< std::string > Fields;

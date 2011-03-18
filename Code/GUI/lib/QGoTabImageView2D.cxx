@@ -210,7 +210,7 @@ QGoTabImageView2D::SetBackgroundColorToImageViewer()
 void
 QGoTabImageView2D::GetBackgroundColorFromImageViewer()
 {
-  double r, g, b;
+  double r(0.), g(0.), b(0.);
 
   m_ImageView->GetBackgroundColor(r, g, b);
   this->m_BackgroundColor.setRgbF(r, g, b);
@@ -329,7 +329,7 @@ QGoTabImageView2D::SetSlice(int iDir, int *iIdx)
 void
 QGoTabImageView2D::ChangeBackgroundColor()
 {
-  double r, g, b;
+  double r(0.), g(0.), b(0.);
 
   m_ImageView->GetBackgroundColor(r, g, b);
   m_BackgroundColor.setRgbF(r, g, b);
