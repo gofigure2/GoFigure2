@@ -2845,8 +2845,6 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView,
                                                 iTCoord + iTShift,
                                                 false,  // highlighted
                                                 true);  // visible
-
-  unsigned int traceID = this->m_MeshContainer->m_CurrentElement.TraceID;
   m_MeshContainer->InsertCurrentElement();
 
   // testing show/hide lineage

@@ -79,7 +79,6 @@ public:
       m_Child[1] = iE.m_Child[1];
 
       m_DivisionActor.resize(4);
-
       m_DivisionActor[0] = iE.m_DivisionActor[0];
       m_DivisionActor[1] = iE.m_DivisionActor[1];
       m_DivisionActor[2] = iE.m_DivisionActor[2];
