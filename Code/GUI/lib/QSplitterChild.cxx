@@ -34,14 +34,18 @@
 
 #include "QSplitterChild.h"
 
-QSplitterChild::QSplitterChild(QWidget *iParent) : QSplitter(iParent)
+QSplitterChild::
+QSplitterChild(QWidget *iParent) : QSplitter(iParent),
+  Prevpos( 0 ),
+  Previndex( 0 )
 {
-  Prevpos = 0;
-  Previndex = 0;
 }
 
-QSplitterChild::QSplitterChild(Qt::Orientation iOrientation,
-                               QWidget *iParent) : QSplitter(iOrientation, iParent)
+QSplitterChild::
+QSplitterChild(Qt::Orientation iOrientation,
+               QWidget *iParent) : QSplitter(iOrientation, iParent),
+  Prevpos( 0 ),
+  Previndex( 0 )
 {
 }
 

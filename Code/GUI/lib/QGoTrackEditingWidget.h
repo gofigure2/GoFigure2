@@ -255,7 +255,7 @@ private:
     TrackStatusType Status;
 
     // Constructors
-    TrackInformation(){}
+    TrackInformation() : RealID( 0 ), Status( NEW_TRACK ) {}
     TrackInformation(unsigned int A, TrackStatusType B):RealID(A), Status(B){}
     };
 

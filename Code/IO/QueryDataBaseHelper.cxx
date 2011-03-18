@@ -314,7 +314,7 @@ bool DoesDatabaseExist(vtkMySQLDatabase *ServerConnector, std::string DBName)
       {
       return true;
       }
-    start++;
+    ++start;
     }
   return false;
 }
@@ -336,7 +336,7 @@ bool DoesTableExist(vtkMySQLDatabase *DatabaseConnector,
       {
       return true;
       }
-    start++;
+    ++start;
     }
   return false;
 }

@@ -293,7 +293,7 @@ void QGoDBTraceManager::DisplayInfoForExistingTraces(vtkMySQLDatabase *
   while ( iter != iListTraces.end() )
     {
     this->DisplayInfoForExistingTrace(iDatabaseConnector, *iter);
-    iter++;
+    ++iter;
     }
   this->m_Table->setSortingEnabled(true);
 }

@@ -166,7 +166,7 @@ void QGoTableWidget::SetVisibleStateForListTraceIDs(
   while ( iter != iListTraceIDs.end() )
     {
     this->SetVisibleStateForTraceID(*iter, iTraceName, iState, false);
-    iter++;
+    ++iter;
     }
 }
 
@@ -672,7 +672,7 @@ void QGoTableWidget::DeleteCheckedRows(std::string iTraceNameID,
     {
     int RowToDelete = this->findValueGivenColumn( *iter, iTraceNameID.c_str() );
     removeRow(RowToDelete);
-    iter++;
+    ++iter;
     }
   this->setSortingEnabled(true);
 }

@@ -215,7 +215,7 @@ int main(int argc, char **argv)
       return EXIT_FAILURE;
       }
 
-    double r, g, b;
+    double r(0.), g(0.), b(0.);
     viewer->SetBackgroundColor(0.5, 0.5, 0.5);
     viewer->GetBackgroundColor(r, g, b);
     if ( r != 0.5 || g != 0.5 || b != 0.5 )
