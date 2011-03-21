@@ -181,7 +181,7 @@ protected:
   element into the track container
   \param[in] iDatabaseConnector connection to the database
   */
-  void SaveTrackCurrentElement(vtkMySQLDatabase* iDatabaseConnector);
+  void SaveTrackCurrentElement(vtkMySQLDatabase* iDatabaseConnector, bool iInsert);
 
   /**
   \brief check that the 2 tracks are not overloaping, if not, return the

@@ -226,7 +226,7 @@ void QGoDBTrackManager::GetTracesInfoFromDBAndModifyContainerForVisu(
 
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::SaveTrackCurrentElement(
-  vtkMySQLDatabase *iDatabaseConnector)
+  vtkMySQLDatabase *iDatabaseConnector, bool iInsertCurrentElement)
 {
   GoDBTrackRow TrackToSave(this->m_ImgSessionID);
   unsigned int TrackID = this->m_TrackContainerInfoForVisu->m_CurrentElement.TraceID;
@@ -242,15 +242,15 @@ void QGoDBTrackManager::SaveTrackCurrentElement(
   TrackID = TrackToSave.SaveInDB(iDatabaseConnector);
 
   //save the track into the container:
-  //this->m_TrackContainerInfoForVisu->InsertCurrentElement();
+  if(iInsertCurrentElement)
+    {
+    this->m_TrackContainerInfoForVisu->InsertCurrentElement();
+    }
 
   //calculate the values to be put in the table widget:
   GoFigureTrackAttributes trackAttributes(
     this->m_TrackContainerInfoForVisu->m_CurrentElement.ComputeAttributes() );
   this->m_TWContainer->SetTrackAttributes(&trackAttributes);
-
-  // needed??
-  //this->m_TrackContainerInfoForVisu->ResetCurrentElement();
 
   //update the table widget:
   if ( TrackID == 0 )
@@ -271,7 +271,7 @@ void QGoDBTrackManager::UpdatePointsOfCurrentElementForImportedTrack(
 {
   this->m_TrackContainerInfoForVisu->UpdateCurrentElementMap(iMeshesInfo);
   std::cout << "UpdatePointsOfCurrentElementForImportedTrack" << std::endl;
-  this->SaveTrackCurrentElement(iDatabaseConnector);
+  this->SaveTrackCurrentElement(iDatabaseConnector, true);
 }
 
 //-------------------------------------------------------------------------
@@ -285,7 +285,7 @@ void QGoDBTrackManager::UpdateTrackPolydataForVisu(vtkMySQLDatabase *iDatabaseCo
     this->m_CollectionOfTraces->GetCoordinateCenterBoundingBox(
       iDatabaseConnector, iTrackID);
   this->m_TrackContainerInfoForVisu->UpdatePointsForATrack(iTrackID, ListCenters);
-  this->SaveTrackCurrentElement(iDatabaseConnector);
+  this->SaveTrackCurrentElement(iDatabaseConnector, false);
 }
 
 //-------------------------------------------------------------------------
