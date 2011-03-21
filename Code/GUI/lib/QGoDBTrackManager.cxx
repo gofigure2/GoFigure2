@@ -242,12 +242,15 @@ void QGoDBTrackManager::SaveTrackCurrentElement(
   TrackID = TrackToSave.SaveInDB(iDatabaseConnector);
 
   //save the track into the container:
-  this->m_TrackContainerInfoForVisu->InsertCurrentElement();
+  //this->m_TrackContainerInfoForVisu->InsertCurrentElement();
 
   //calculate the values to be put in the table widget:
   GoFigureTrackAttributes trackAttributes(
     this->m_TrackContainerInfoForVisu->m_CurrentElement.ComputeAttributes() );
   this->m_TWContainer->SetTrackAttributes(&trackAttributes);
+
+  // needed??
+  //this->m_TrackContainerInfoForVisu->ResetCurrentElement();
 
   //update the table widget:
   if ( TrackID == 0 )
@@ -267,6 +270,7 @@ void QGoDBTrackManager::UpdatePointsOfCurrentElementForImportedTrack(
   std::map< unsigned int, double * > iMeshesInfo, vtkMySQLDatabase *iDatabaseConnector)
 {
   this->m_TrackContainerInfoForVisu->UpdateCurrentElementMap(iMeshesInfo);
+  std::cout << "UpdatePointsOfCurrentElementForImportedTrack" << std::endl;
   this->SaveTrackCurrentElement(iDatabaseConnector);
 }
 
@@ -276,6 +280,7 @@ void QGoDBTrackManager::UpdatePointsOfCurrentElementForImportedTrack(
 void QGoDBTrackManager::UpdateTrackPolydataForVisu(vtkMySQLDatabase *iDatabaseConnector,
                                                    unsigned int iTrackID)
 {
+  std::cout << "UpdateTrackPolydataForVisu" << std::endl;
   std::list< double * > ListCenters =
     this->m_CollectionOfTraces->GetCoordinateCenterBoundingBox(
       iDatabaseConnector, iTrackID);

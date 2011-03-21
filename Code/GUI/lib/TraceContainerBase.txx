@@ -132,7 +132,7 @@ TraceContainerBase< TContainer >::GetActorGivenTraceID(unsigned int iTraceID)
 //-------------------------------------------------------------------------
 template< class TContainer >
 bool
-TraceContainerBase< TContainer >::UpdateCurrentElementFromExistingOne(unsigned int iTraceID)
+TraceContainerBase< TContainer >::UpdateCurrentElementFromExistingOne(unsigned int iTraceID, bool iErase)
 {
   using boost::multi_index:: get;
 
@@ -146,7 +146,10 @@ TraceContainerBase< TContainer >::UpdateCurrentElementFromExistingOne(unsigned i
 
     // clean the container but don't erase the pointers since we still have the
     // adresses in the m_CurrentElement
-    m_Container.get< TraceID >().erase(it);
+    if(iErase)
+      {
+      m_Container.get< TraceID >().erase(it);
+      }
 
     return true;
     }

@@ -197,7 +197,7 @@ public:
     \brief Update the current element actors from the visualization.
     \param[in] iActors Vector container an actor pointer for each view
   */
-  void UpdateCurrentElementActorsFromVisu(std::vector< vtkActor * > iActors);
+  void UpdateCurrentElementActorsFromVisu(TrackStructure iStructure, std::vector< vtkActor * > iActors);
 
   /**
     \brief Update the points strings of the tracks
@@ -243,7 +243,7 @@ public:
    * \brief Create new actors for the current polydata and update and visualize
    *  the current actors
    */
-  void CreateCurrentTrackActors();
+  void CreateCurrentTrackActors( TrackStructure iStructure);
 
   /**
   \brief get the element with iTrackID into the current element, remove it from
@@ -424,7 +424,7 @@ protected:
   current element. If the current element is a new track, then the polydata,
   actors are allocated and added in consequence.
   \param[in] iPoints list of points to generate the new polydata */
-  void RecomputeCurrentElementMap( std::list< double* > iPoints);
+  void RecomputeCurrentElementMap( TrackStructure* iStructure, std::list< double* > iPoints);
 
   std::vector< vtkActor* > AddTrace( vtkPolyData* , vtkProperty* );
 

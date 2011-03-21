@@ -327,7 +327,7 @@ public:
   \param[in] iTraceID ID of the existing element
   \return true if the element was found in the container, false if not
   */
-  bool UpdateCurrentElementFromExistingOne(unsigned int iTraceID);
+  bool UpdateCurrentElementFromExistingOne(unsigned int iTraceID, bool iErase = true);
 
   /** \brief */
   template< class TIndex >

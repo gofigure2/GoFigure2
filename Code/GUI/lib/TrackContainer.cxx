@@ -275,12 +275,17 @@ TrackContainer::UpdateTrackStructurePolyData(const TrackStructure & iTrackStruct
 
 //-------------------------------------------------------------------------
 void
-TrackContainer::UpdateCurrentElementActorsFromVisu(std::vector< vtkActor * > iActors)
+TrackContainer::UpdateCurrentElementActorsFromVisu(TrackStructure iStructure, std::vector< vtkActor * > iActors)
 {
   this->m_CurrentElement.ActorXY = iActors[0];
   this->m_CurrentElement.ActorXZ = iActors[1];
   this->m_CurrentElement.ActorYZ = iActors[2];
   this->m_CurrentElement.ActorXYZ = iActors[3];
+
+  iStructure.ActorXY = iActors[0];
+  iStructure.ActorXZ = iActors[1];
+  iStructure.ActorYZ = iActors[2];
+  iStructure.ActorXYZ = iActors[3];
 }
 
 //-------------------------------------------------------------------------
@@ -322,7 +327,7 @@ TrackContainer::UpdateCurrentElementMap(std::map< unsigned int, double * > iMesh
 
     UpdateTrackStructurePolyData(this->m_CurrentElement);
 
-    CreateCurrentTrackActors();
+    CreateCurrentTrackActors(this->m_CurrentElement);
 
     return;
     }
@@ -334,7 +339,7 @@ TrackContainer::UpdateCurrentElementMap(std::map< unsigned int, double * > iMesh
 
 //-------------------------------------------------------------------------
 void
-TrackContainer::CreateCurrentTrackActors()
+TrackContainer::CreateCurrentTrackActors( TrackStructure iStructure )
 {
   if ( this->m_ImageView )
     {
@@ -355,7 +360,7 @@ TrackContainer::CreateCurrentTrackActors()
       m_ImageView->AddContour(this->m_CurrentElement.Nodes, trace_property);
 
     //update container actors addresses
-    UpdateCurrentElementActorsFromVisu(trackActors);
+    UpdateCurrentElementActorsFromVisu(iStructure, trackActors);
 
     trace_property->Delete();
     }
@@ -364,15 +369,15 @@ TrackContainer::CreateCurrentTrackActors()
 
 //-------------------------------------------------------------------------
 void
-TrackContainer::RecomputeCurrentElementMap(std::list< double * > iPoints)
+TrackContainer::RecomputeCurrentElementMap(TrackStructure* iStructure, std::list< double * > iPoints)
 {
   std::cout << "RecomputeCurrentElementMap..." << std::endl;
 
   if ( this->m_ImageView )
     {
     // empty current element map
-    PointsMapConstIterator begin = this->m_CurrentElement.PointsMap.begin();
-    PointsMapConstIterator end = this->m_CurrentElement.PointsMap.end();
+    PointsMapConstIterator begin = iStructure->PointsMap.begin();
+    PointsMapConstIterator end = iStructure->PointsMap.end();
 
     while ( begin != end )
       {
@@ -382,6 +387,7 @@ TrackContainer::RecomputeCurrentElementMap(std::list< double * > iPoints)
       }
 
     this->m_CurrentElement.PointsMap.clear();
+    iStructure->PointsMap.clear();
 
     // add points to the map
     std::list< double * >::iterator beginList = iPoints.begin();
@@ -402,6 +408,7 @@ TrackContainer::RecomputeCurrentElementMap(std::list< double * > iPoints)
         ->GetWorldCoordinatesFromImageCoordinates(xyzBB);
 
       bool addPoint = this->m_CurrentElement.InsertElement(time, xyz);
+      iStructure->InsertElement(time, xyz);
 
       if ( !addPoint )
         {
@@ -419,6 +426,7 @@ TrackContainer::RecomputeCurrentElementMap(std::list< double * > iPoints)
       {
       //Create new polydata (new address)
       this->m_CurrentElement.Nodes = vtkPolyData::New();
+      iStructure->Nodes = this->m_CurrentElement.Nodes;
       }
 
     // update the polydata (which represents the current track)
@@ -428,7 +436,7 @@ TrackContainer::RecomputeCurrentElementMap(std::list< double * > iPoints)
     if ( IsANewTrack )
       {
       // add actors in the visualization with given property
-      CreateCurrentTrackActors();
+      CreateCurrentTrackActors( *iStructure );
       }
     }
 
@@ -446,10 +454,15 @@ TrackContainer::UpdatePointsForATrack(unsigned int iTrackID,
   std::cout << "UpdatePointsForATrack..." << std::endl;
   if ( iTrackID != 0 )
     {
-    bool updateCurrentElement = this->UpdateCurrentElementFromExistingOne(iTrackID);
+    // get pointer to the track as well
+    MultiIndexContainerTraceIDIterator motherIt
+        = m_Container.get< TraceID >().find(iTrackID);
+    TrackStructure* mother =  const_cast<TrackStructure*>(&(*motherIt));
+
+    bool updateCurrentElement = this->UpdateCurrentElementFromExistingOne(iTrackID, false);
     if ( updateCurrentElement )
       {
-      this->RecomputeCurrentElementMap(iListCenterBoundingBoxes);
+      this->RecomputeCurrentElementMap(mother, iListCenterBoundingBoxes);
       }
     else
       {
