@@ -274,11 +274,11 @@ ModifyCollectionVisibility( TrackStructure* iRoot, bool iVisibility )
 
   if(iRoot)
     {
-    if(iRoot->TreeNode.m_Child[0]->IsLeaf())
+    if(!iRoot->TreeNode.m_Child[0]->IsLeaf())
       {
       ModifyCollectionVisibility(iRoot->TreeNode.m_Child[0],iVisibility);
       }
-    else if(iRoot->TreeNode.m_Child[1]->IsLeaf())
+    else if(!iRoot->TreeNode.m_Child[1]->IsLeaf())
       {
       ModifyCollectionVisibility(iRoot->TreeNode.m_Child[1], iVisibility);
       }
@@ -303,11 +303,11 @@ void
 TrackStructure::
 UpdateCollectionHighlight( bool iHighlight )
 {
-  if(this->TreeNode.m_Child[0]->IsLeaf())
+  if(!this->TreeNode.m_Child[0]->IsLeaf())
     {
     ModifyCollectionHighlight(this->TreeNode.m_Child[0], iHighlight);
     }
-  if(this->TreeNode.m_Child[1]->IsLeaf())
+  if(!this->TreeNode.m_Child[1]->IsLeaf())
     {
     ModifyCollectionHighlight(this->TreeNode.m_Child[1], iHighlight);
     }
@@ -323,11 +323,11 @@ ModifyCollectionHighlight( TrackStructure* iRoot, bool iHighlight )
 
   if(iRoot)
     {
-    if(iRoot->TreeNode.m_Child[0]->IsLeaf())
+    if(!iRoot->TreeNode.m_Child[0]->IsLeaf())
       {
       ModifyCollectionHighlight(iRoot->TreeNode.m_Child[0],iHighlight);
       }
-    else if(iRoot->TreeNode.m_Child[1]->IsLeaf())
+    else if(!iRoot->TreeNode.m_Child[1]->IsLeaf())
       {
       ModifyCollectionHighlight(iRoot->TreeNode.m_Child[1],iHighlight);
       }
