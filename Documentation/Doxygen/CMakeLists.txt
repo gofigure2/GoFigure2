@@ -14,7 +14,7 @@ SET( ITK_URL )
 
 IF( LINK_EXTERNAL_DOC )
   OPTION( DOXYGEN_NIGHTLY_LINK
-    "Link doxygen to the nightly doxygen of VTK and ITK" OFF )
+    "Link doxygen to the nightly doxygen of VTK and ITK" ON )
 
   IF( DOXYGEN_NIGHTLY_LINK )
     FILE( DOWNLOAD http://www.vtk.org/files/nightly/vtkNightlyDoc.tag
