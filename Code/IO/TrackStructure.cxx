@@ -260,8 +260,14 @@ UpdateCollectionVisibility( bool iVisibility )
   ModifyDivisionVisibility(this, iVisibility);
 
   // Mother pointer is null here since we are a root
-  ModifyCollectionVisibility(this->TreeNode.m_Child[0], iVisibility);
-  ModifyCollectionVisibility(this->TreeNode.m_Child[1], iVisibility);
+  if(!this->TreeNode.m_Child[0]->IsLeaf())
+    {
+    ModifyCollectionVisibility(this->TreeNode.m_Child[0], iVisibility);
+    }
+  if(!this->TreeNode.m_Child[1]->IsLeaf())
+    {
+    ModifyCollectionVisibility(this->TreeNode.m_Child[1], iVisibility);
+    }
 }
 //--------------------------------------------------------------------------
 
@@ -272,6 +278,9 @@ ModifyCollectionVisibility( TrackStructure* iRoot, bool iVisibility )
 {
   ModifyDivisionVisibility(iRoot, iVisibility);
 
+  /*
+   * \todo Nicolas: unecessary condition if(iRoot)??
+   */
   if(iRoot)
     {
     if(!iRoot->TreeNode.m_Child[0]->IsLeaf())
@@ -291,6 +300,7 @@ void
 TrackStructure::
 ModifyDivisionVisibility( TrackStructure* iRoot, bool iVisibility )
 {
+  std::cout << "trace ID: " << iRoot->TraceID << std::endl;
   iRoot->TreeNode.m_DivisionActor[0]->SetVisibility( iVisibility );
   iRoot->TreeNode.m_DivisionActor[1]->SetVisibility( iVisibility );
   iRoot->TreeNode.m_DivisionActor[2]->SetVisibility( iVisibility );
@@ -348,7 +358,7 @@ bool
 TrackStructure::
 IsLeaf()
 {
-  if( this->TreeNode.m_Child[0] || this->TreeNode.m_Child[1])
+  if( TreeNode.m_Child[0] || TreeNode.m_Child[1])
     {
     return false;
     }
