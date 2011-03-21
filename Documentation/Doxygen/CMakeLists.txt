@@ -6,8 +6,14 @@
 #  * ITK can be downloaded here:
 #
 
+SET( VTK_DOX_TAG )
+SET( VTK_URL )
+
+SET( ITK_DOC_TAG )
+SET( ITK_URL )
+
 IF( LINK_EXTERNAL_DOC )
-  OPTION( DOXYGEN_NIGHTLY_LINK 
+  OPTION( DOXYGEN_NIGHTLY_LINK
     "Link doxygen to the nightly doxygen of VTK and ITK" OFF )
 
   IF( DOXYGEN_NIGHTLY_LINK )
@@ -15,8 +21,9 @@ IF( LINK_EXTERNAL_DOC )
       ${GOFIGURE2_BINARY_DIR}/Documentation/vtkNightlyDoc.tag
       )
 
-    SET( VTK_DOX_TAG 
-      ${GOFIGURE2_BINARY_DIR}/Documentation/vtkNightlyDoc.tag 
+    SET( VTK_DOX_TAG
+      ${GOFIGURE2_BINARY_DIR}/Documentation/vtkNightlyDoc.tag
+      CACHE FILEPATH "" FORCE
       )
 
     SET( VTK_URL "http://www.vtk.org/doc/nightly/html" )
@@ -28,22 +35,29 @@ IF( LINK_EXTERNAL_DOC )
 
     SET( ITK_DOX_TAG
       ${GOFIGURE2_BINARY_DIR}/Documentation/InsightDoxygen.tag
+      CACHE FILEPATH "" FORCE
       )
 
     SET( ITK_URL "http://www.itk.org/Doxygen/html" )
 
   ELSE( DOXYGEN_NIGHTLY_LINK )
-    FIND_FILE( VTK_DOX_TAG 
+    FIND_FILE( VTK_DOX_TAG
       NAMES vtkNightlyDoc.tag
+      HINTS /usr/share
+      DOC "Tag file for release of VTK"
       )
 
-    SET( VTK_URL "" )
+    SET( VTK_URL
+      "http://www.vtk.org/doc/release/${VTK_MAJOR_VERSION}.${VTK_MINOR_VERSION}/html" )
 
     FIND_FILE( ITK_DOX_TAG
       NAMES InsightDoxygen.tag
+      HINTS /usr/share
+      DOC "Tag file for release of ITK"
       )
 
-    SET( ITK_URL "" )
+    SET( ITK_URL
+      "http://www.itk.org/Doxygen${ITK_VERSION_MAJOR}${ITK_VERSION_MINOR}/html" )
 
   ENDIF( DOXYGEN_NIGHTLY_LINK )
 
@@ -53,7 +67,7 @@ IF( LINK_EXTERNAL_DOC )
 
   SET( QT_DOX_TAG ${GOFIGURE2_BINARY_DIR}/Documentation/qt.tags )
 
-  SET( QT_URL 
+  SET( QT_URL
       "http://doc.trolltech.com/4.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}"
      )
 ENDIF( LINK_EXTERNAL_DOC )
