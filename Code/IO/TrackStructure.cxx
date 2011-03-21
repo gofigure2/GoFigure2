@@ -274,13 +274,11 @@ ModifyCollectionVisibility( TrackStructure* iRoot, bool iVisibility )
 
   if(iRoot)
     {
-    // isLeaf()? ... to be implemented
-    if(iRoot->TreeNode.m_Child[0]->TreeNode.m_Child[0])
+    if(iRoot->TreeNode.m_Child[0]->IsLeaf())
       {
       ModifyCollectionVisibility(iRoot->TreeNode.m_Child[0],iVisibility);
       }
-    // isLeaf()? ... to be implemented
-    else if(iRoot->TreeNode.m_Child[1]->TreeNode.m_Child[1])
+    else if(iRoot->TreeNode.m_Child[1]->IsLeaf())
       {
       ModifyCollectionVisibility(iRoot->TreeNode.m_Child[1], iVisibility);
       }
@@ -305,9 +303,14 @@ void
 TrackStructure::
 UpdateCollectionHighlight( bool iHighlight )
 {
-  // Mother pointer is null here since we are a root
-  ModifyCollectionHighlight(this->TreeNode.m_Child[0], iHighlight);
-  ModifyCollectionHighlight(this->TreeNode.m_Child[1], iHighlight);
+  if(this->TreeNode.m_Child[0]->IsLeaf())
+    {
+    ModifyCollectionHighlight(this->TreeNode.m_Child[0], iHighlight);
+    }
+  if(this->TreeNode.m_Child[1]->IsLeaf())
+    {
+    ModifyCollectionHighlight(this->TreeNode.m_Child[1], iHighlight);
+    }
 }
 //--------------------------------------------------------------------------
 
@@ -320,13 +323,11 @@ ModifyCollectionHighlight( TrackStructure* iRoot, bool iHighlight )
 
   if(iRoot)
     {
-    // isLeaf()? ... to be implemented
-    if(iRoot->TreeNode.m_Child[0]->TreeNode.m_Child[0])
+    if(iRoot->TreeNode.m_Child[0]->IsLeaf())
       {
       ModifyCollectionHighlight(iRoot->TreeNode.m_Child[0],iHighlight);
       }
-    // isLeaf()? ... to be implemented
-    else if(iRoot->TreeNode.m_Child[1]->TreeNode.m_Child[1])
+    else if(iRoot->TreeNode.m_Child[1]->IsLeaf())
       {
       ModifyCollectionHighlight(iRoot->TreeNode.m_Child[1],iHighlight);
       }
@@ -339,5 +340,19 @@ void
 TrackStructure::
 ModifyDivisionHighlight( TrackStructure* iRoot, bool iVisibility )
 {
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+bool
+TrackStructure::
+IsLeaf()
+{
+  if( this->TreeNode.m_Child[0] || this->TreeNode.m_Child[1])
+    {
+    return false;
+    }
+
+  return true;
 }
 //--------------------------------------------------------------------------
