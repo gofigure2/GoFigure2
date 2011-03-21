@@ -98,6 +98,7 @@ public:
             {
             (*it)->Delete();
             (*it) = NULL;
+            std::cout << "division actor deleted" << std::endl;
             }
           it++;
           }

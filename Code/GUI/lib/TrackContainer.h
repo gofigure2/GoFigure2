@@ -418,6 +418,8 @@ public slots:
 
   void UpdateTrackStructureLineage(TrackStructure* iStructure);
 
+  void UpdateDivisionActor(TrackStructure* iStructure);
+
 protected:
   /**
   \brief Recompute a polydata from a list of point (coordinates) for the

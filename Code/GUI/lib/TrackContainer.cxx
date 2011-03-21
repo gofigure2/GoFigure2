@@ -888,17 +888,91 @@ UpdateTrackStructureLineage(TrackStructure* iStructure)
   // Modify Mother
   if( ! iStructure->IsMother() )
   {
-    // Update lineage mother side
-
-    // Delete previous division
-
-    // Create New
+    // What if new tracks overlap now???
+    std::cout << "Update mother division polydata/actor" << std::endl;
+    UpdateDivisionActor( iStructure->TreeNode.m_Mother );
   }
 
   // Modify Daughters
   if( ! iStructure->IsLeaf() )
   {
-
+    UpdateDivisionActor( iStructure );
+    std::cout << "Update daughter divisions polydata/actor" << std::endl;
   }
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateDivisionActor(TrackStructure* iStructure)
+{
+  double* mother = this->GetLastPointOfTheTrack(iStructure->TraceID);
+  double* daughter1 = this->GetFirstPointOfTheTrack(iStructure->TreeNode.m_Child[0]->TraceID);
+  double* daughter2 = this->GetFirstPointOfTheTrack(iStructure->TreeNode.m_Child[1]->TraceID);
+
+  //setup points (geometry)
+  vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
+  points->InsertNextPoint ( daughter1[0], daughter1[1], daughter1[2] );
+  points->InsertNextPoint ( mother[0], mother[1], mother[2] );
+  points->InsertNextPoint ( daughter2[0], daughter2[1], daughter2[2] );
+
+  // create the lines
+  vtkSmartPointer<vtkCellArray> lines = vtkSmartPointer<vtkCellArray>::New();
+  for(int i=0; i<2; ++i)
+    {
+    //Create the first line (between Origin and P0)
+    vtkSmartPointer<vtkLine> line =
+        vtkSmartPointer<vtkLine>::New();
+    line->GetPointIds()->SetId(0,i);
+    line->GetPointIds()->SetId(1,i+1);
+    lines->InsertNextCell(line);
+    }
+
+  // create polydata
+  vtkSmartPointer<vtkPolyData> division = vtkSmartPointer<vtkPolyData>::New();
+  division->SetPoints(points);
+  division->SetLines(lines);
+  /*
+   * \todo Nicolas: we might want to extend it to more parameters: color, ...
+   * and to the meshes->efficiency of show/hide, picking, boxwidget, ...!
+   */
+  // add track ID to the polydata so we can get it from the actor later on
+  vtkSmartPointer<vtkIntArray> trackIDArray = vtkSmartPointer<vtkIntArray>::New();
+  trackIDArray->SetNumberOfComponents(1);
+  trackIDArray->SetNumberOfValues(1);
+  trackIDArray->SetName("TrackID");
+  trackIDArray->SetValue(0,iStructure->TraceID);
+
+  division->GetPointData()->AddArray(trackIDArray);
+
+  vtkSmartPointer<vtkProperty> trace_property =
+      vtkSmartPointer<vtkProperty>::New();
+  double       r = 1.0;
+  double       g = 1.0;
+  double       b = 1.0;
+  double       a = 1.0;
+
+  trace_property->SetColor(r,
+                           g,
+                           b);
+  trace_property->SetOpacity(a);
+
+  // remove actor from visu and delete them
+  for (int i = 0; i<4; ++i)
+  {
+  this->m_ImageView->RemoveActor(i, iStructure->TreeNode.m_DivisionActor[i]);
+  }
+  iStructure->TreeNode.DeleteActors();
+
+  // create actors and add it to the visualization
+  std::vector< vtkActor * > divisionActors =
+        m_ImageView->AddContour( division, trace_property );
+  iStructure->TreeNode.m_DivisionActor[0] = divisionActors[0];
+  iStructure->TreeNode.m_DivisionActor[1] = divisionActors[1];
+  iStructure->TreeNode.m_DivisionActor[2] = divisionActors[2];
+  iStructure->TreeNode.m_DivisionActor[3] = divisionActors[3];
+
+}
+
 //-------------------------------------------------------------------------
