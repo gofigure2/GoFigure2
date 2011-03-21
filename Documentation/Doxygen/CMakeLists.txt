@@ -7,18 +7,55 @@
 #
 
 IF( LINK_EXTERNAL_DOC )
-  FILE( DOWNLOAD http://www.vtk.org/files/nightly/vtkNightlyDoc.tag
-    ${GOFIGURE2_BINARY_DIR}/Documentation/vtkNightlyDoc.tag
-  )
+  OPTION( DOXYGEN_NIGHTLY_LINK 
+    "Link doxygen to the nightly doxygen of VTK and ITK" OFF )
 
-  FILE( DOWNLOAD
-    http://public.kitware.com/pub/itk/NightlyDoxygen/InsightDoxygen.tag
-    ${GOFIGURE2_BINARY_DIR}/Documentation/InsightDoxygen.tag
-  )
+  IF( DOXYGEN_NIGHTLY_LINK )
+    FILE( DOWNLOAD http://www.vtk.org/files/nightly/vtkNightlyDoc.tag
+      ${GOFIGURE2_BINARY_DIR}/Documentation/vtkNightlyDoc.tag
+      )
+
+    SET( VTK_DOX_TAG 
+      ${GOFIGURE2_BINARY_DIR}/Documentation/vtkNightlyDoc.tag 
+      )
+
+    SET( VTK_URL "http://www.vtk.org/doc/nightly/html" )
+
+    FILE( DOWNLOAD
+      http://public.kitware.com/pub/itk/NightlyDoxygen/InsightDoxygen.tag
+      ${GOFIGURE2_BINARY_DIR}/Documentation/InsightDoxygen.tag
+      )
+
+    SET( ITK_DOX_TAG
+      ${GOFIGURE2_BINARY_DIR}/Documentation/InsightDoxygen.tag
+      )
+
+    SET( ITK_URL "http://www.itk.org/Doxygen/html" )
+
+  ELSE( DOXYGEN_NIGHTLY_LINK )
+    FIND_FILE( VTK_DOX_TAG 
+      NAMES vtkNightlyDoc.tag
+      )
+
+    SET( VTK_URL "" )
+
+    FIND_FILE( ITK_DOX_TAG
+      NAMES InsightDoxygen.tag
+      )
+
+    SET( ITK_URL "" )
+
+  ENDIF( DOXYGEN_NIGHTLY_LINK )
 
   FILE( COPY ${QT_DOC_DIR}/html/qt.tags
     DESTINATION ${GOFIGURE2_BINARY_DIR}/Documentation/
   )
+
+  SET( QT_DOX_TAG ${GOFIGURE2_BINARY_DIR}/Documentation/qt.tags )
+
+  SET( QT_URL 
+      "http://doc.trolltech.com/4.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}"
+     )
 ENDIF( LINK_EXTERNAL_DOC )
 
 CONFIGURE_FILE (
