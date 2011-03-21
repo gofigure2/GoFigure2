@@ -186,15 +186,6 @@ public:
   std::list< unsigned int > DeleteAllHighlightedElements();
 
   /**
-    \brief Delete a point from the current track.
-    \param[in] iTime time point to clear
-    \param[in] iReconstructPolyData should we reconstruct the polydata
-    \return true a point has been deleted
-    \return false no point has been deleted
-  */
-  bool DeletePointFromCurrentElement( unsigned int iTime,
-                                      bool iReconstructPolyData );
-  /**
     \brief Update the TrackStructure polydata according to the current map.
     \param[in] iTrackStructure Structure to be updated
     \return true if the polydata has been updated
@@ -253,34 +244,6 @@ public:
    *  the current actors
    */
   void CreateCurrentTrackActors();
-
-  /**
-   * \brief Delete the points which are at the selected time point from the
-   * current element.
-   * \param[in] iTimeList List of the time points to be deleted.
-   */
-  void DeleteListFromCurrentElement( const std::list<unsigned int>& iTimeList );
-
-  /**
-  \brief Delete a point from a track.
-  \param[in] iIterator trackstructure which will be modified
-  \param[in] iTime time point to clear
-  \param[in] iReconstructPolyData should we reconstruct the polydata
-  \return true if a point has been deleted
-  \return false no point has been deleted */
-  bool DeletePointFromElement(
-    MultiIndexContainerTraceIDIterator iIterator,
-    unsigned int iTime,
-    bool iReconstructPolyData );
-
-  /**
-  \brief Add traces (collections of contours / meshes) to a track, given their
-  bounding box.
-  \param[in] iTrackID track id
-  \param[in] iBoundingBox list of bounding boxes */
-  void UpdatePointsFromBBForGivenTrack(
-    unsigned int iTrackID,
-    std::list<std::vector<unsigned int> > iBoundingBox);
 
   /**
   \brief get the element with iTrackID into the current element, remove it from
@@ -452,6 +415,8 @@ public slots:
   void HighlightCollection(unsigned int, bool);
 
   void ShowCollection(unsigned int, bool);
+
+  void UpdateTrackStructureLineage(TrackStructure* iStructure);
 
 protected:
   /**

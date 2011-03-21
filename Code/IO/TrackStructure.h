@@ -211,6 +211,7 @@ public:
   void ModifyCollectionHighlight( TrackStructure* iRoot, bool iHighlight );
   void ModifyDivisionHighlight( TrackStructure* iRoot, bool iHighlight );
 
+  bool IsMother();
   bool IsLeaf();
 };
 

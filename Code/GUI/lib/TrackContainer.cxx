@@ -53,10 +53,6 @@
 // to convert coordinates
 #include "vtkViewImage2D.h"
 
-// FOR TESTING
-#include "VisualizePolydataHelper.h"
-#include "vtkPolyDataWriter.h"
-
 #include "vtkLookupTable.h"
 #include <limits>
 
@@ -201,25 +197,6 @@ TrackContainer::DeleteAllHighlightedElements()
 
   return oList;
 }
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-bool
-TrackContainer::DeletePointFromCurrentElement(unsigned int iTime, bool iReconstructPolyData)
-{
-  //add the point in the map
-  bool pointDeleted = this->m_CurrentElement.DeleteElement(iTime);
-
-  // build the new polydata if a point has been deleted
-  if ( pointDeleted && iReconstructPolyData )
-    {
-    UpdateTrackStructurePolyData(this->m_CurrentElement);
-    }
-
-  return pointDeleted;
-}
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -288,6 +265,9 @@ TrackContainer::UpdateTrackStructurePolyData(const TrackStructure & iTrackStruct
 
   iTrackStructure.Nodes->GetPointData()->SetActiveScalars(NULL);
 
+  // update the lineage if necessary
+  UpdateTrackStructureLineage(const_cast<TrackStructure*>(&(iTrackStructure)));
+
   return true;
 }
 
@@ -309,6 +289,8 @@ TrackContainer::UpdateCurrentElementActorsFromVisu(std::vector< vtkActor * > iAc
 void
 TrackContainer::UpdateCurrentElementMap(std::map< unsigned int, double * > iMeshes)
 {
+  std::cout << "UpdateCurrentElementMap..." << std::endl;
+
   // add points to existing map, not erasing
   std::map< unsigned int, double * >::iterator beginMesh = iMeshes.begin();
   std::map< unsigned int, double * >::iterator endMesh = iMeshes.end();
@@ -378,117 +360,14 @@ TrackContainer::CreateCurrentTrackActors()
     trace_property->Delete();
     }
 }
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-TrackContainer::DeleteListFromCurrentElement(const std::list< unsigned int > & iTimeList)
-{
-  std::list< unsigned int >::const_iterator begin = iTimeList.begin();
-  std::list< unsigned int >::const_iterator end = iTimeList.end();
-
-  bool succeed = true;
-
-  while ( begin != end )
-    {
-    succeed = DeletePointFromCurrentElement(*begin,
-                                            false);   // update the polydata
-
-    if ( !succeed )
-      {
-      qDebug() << "Time point: " << *begin << " can't be deleted";
-      }
-
-    ++begin;
-    }
-
-  // Reconstruct the polydata
-  UpdateTrackStructurePolyData(this->m_CurrentElement);
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-bool
-TrackContainer::DeletePointFromElement(MultiIndexContainerTraceIDIterator iIterator,
-                                       unsigned int iTime,
-                                       bool iReconstructPolyData)
-{
-  // Create temp structure
-  TrackStructure* mother =  const_cast<TrackStructure*>(&(*iIterator));
-
-  //add the point in the map
-  bool pointDeleted = mother->DeleteElement(iTime);
-
-  // build the new polydata if a point has been deleted
-  if ( pointDeleted && iReconstructPolyData )
-    {
-    UpdateTrackStructurePolyData(*mother);
-    }
-
-  return pointDeleted;
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-TrackContainer::UpdatePointsFromBBForGivenTrack(unsigned int iTrackID,
-                                                std::list< std::vector< unsigned int > > iBoundingBox)
-{
-  if ( this->m_ImageView )
-    {
-    if ( iBoundingBox.empty() )
-      {
-      qDebug() << "list of points to be added is empty";
-      }
-
-    MultiIndexContainerTraceIDIterator
-      it = m_Container.get< TraceID >().find(iTrackID);
-
-    // if we find the stucture, update it!
-    if ( it != m_Container.get< TraceID >().end() )
-      {
-      std::list< std::vector< unsigned int > >::iterator begin = iBoundingBox.begin();
-      std::list< std::vector< unsigned int > >::iterator end = iBoundingBox.end();
-
-      //add the point in the map
-      TrackStructure* mother =  const_cast<TrackStructure*>(&(*it));
-
-      while ( begin != end )
-        {
-        int xyzBB[3] = { static_cast< int >( ( *begin )[0] ),
-                         static_cast< int >( ( *begin )[1] ),
-                         static_cast< int >( ( *begin )[2] ) };
-
-        unsigned int time = ( *begin )[3];
-
-        // convert xyz coordinates
-        double *xyz = m_ImageView->GetImageViewer(0)
-          ->GetWorldCoordinatesFromImageCoordinates(xyzBB);
-
-        bool added = mother->InsertElement(time, xyz);
-        if ( !added )
-          {
-          std::cout << "Element at a time point: " << time
-                    << "could not be added." << std::endl;
-          }
-        ++begin;
-        }
-
-      // Reconstruct the polydata
-      UpdateTrackStructurePolyData(*it);
-      }
-    }
-}
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
 TrackContainer::RecomputeCurrentElementMap(std::list< double * > iPoints)
 {
+  std::cout << "RecomputeCurrentElementMap..." << std::endl;
+
   if ( this->m_ImageView )
     {
     // empty current element map
@@ -561,6 +440,7 @@ void
 TrackContainer::UpdatePointsForATrack(unsigned int iTrackID,
                                       std::list< double * > iListCenterBoundingBoxes)
 {
+  std::cout << "UpdatePointsForATrack..." << std::endl;
   if ( iTrackID != 0 )
     {
     bool updateCurrentElement = this->UpdateCurrentElementFromExistingOne(iTrackID);
@@ -807,15 +687,10 @@ AddDivision( unsigned int iMotherID, unsigned int iDaughter1ID,
   // Create Actor
   std::vector< vtkActor * > actors =
       CreateDivisionActor(iMotherID, iDaughter1ID, iDaughter2ID);
-  std::cout<<"mother: " << mother << std::endl;
   mother->TreeNode.m_DivisionActor[0] = actors[0];
-  std::cout<<"actor: " << actors[0] << std::endl;
   mother->TreeNode.m_DivisionActor[1] = actors[1];
-  std::cout<<"actor: " << actors[1] << std::endl;
   mother->TreeNode.m_DivisionActor[2] = actors[2];
-  std::cout<<"actor: " << actors[2] << std::endl;
   mother->TreeNode.m_DivisionActor[3] = actors[3];
-  std::cout<<"actor: " << actors[3] << std::endl;
 
   //------------------------------
   // D1->motherID
@@ -985,12 +860,29 @@ ShowCollection(unsigned int iRootTrackID, bool iVisible)
       = m_Container.get< TraceID >().find(iRootTrackID);
   TrackStructure* mother =  const_cast<TrackStructure*>(&(*motherIt));
 
-  std::cout<<"mother: " << mother << std::endl;
-  std::cout<<"actor: " << mother->TreeNode.m_DivisionActor[0] << std::endl;
-  std::cout<<"actor: " << mother->TreeNode.m_DivisionActor[1] << std::endl;
-  std::cout<<"actor: " << mother->TreeNode.m_DivisionActor[2] << std::endl;
-  std::cout<<"actor: " << mother->TreeNode.m_DivisionActor[3] << std::endl;
-
   mother->UpdateCollectionVisibility( iVisible );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateTrackStructureLineage(TrackStructure* iStructure)
+{
+  // Modify Mother
+  if( ! iStructure->IsMother() )
+  {
+    // Update lineage mother side
+
+    // Delete previous division
+
+    // Create New
+  }
+
+  // Modify Daughters
+  if( ! iStructure->IsLeaf() )
+  {
+
+  }
 }
 //-------------------------------------------------------------------------

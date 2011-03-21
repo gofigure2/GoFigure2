@@ -2838,7 +2838,7 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView,
   std::vector< vtkActor * > actors =
     VisualizeTrace(iView,
                    this->m_MeshContainer->m_CurrentElement.rgba);
-  //unsigned int traceID = this->m_MeshContainer->m_CurrentElement.TraceID;
+  unsigned int traceID = this->m_MeshContainer->m_CurrentElement.TraceID;
 
   // update container since a new mesh is created
   m_MeshContainer->UpdateCurrentElementFromVisu(actors,
@@ -2849,9 +2849,9 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView,
   m_MeshContainer->InsertCurrentElement();
 
   // testing show/hide lineage
-  //int visibility = traceID%2;
-  //std::cout << "visibility: " << visibility << std::endl;
-  //this->m_TrackContainer->ShowCollection(13,visibility);
+  int visibility = traceID%2;
+  std::cout << "visibility: " << visibility << std::endl;
+  //this->m_TrackContainer->ShowCollection(19,visibility);
 }
 
 //-------------------------------------------------------------------------

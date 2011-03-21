@@ -356,6 +356,20 @@ ModifyDivisionHighlight( TrackStructure* iRoot, bool iVisibility )
 //--------------------------------------------------------------------------
 bool
 TrackStructure::
+IsMother()
+{
+  if( TreeNode.m_Mother )
+    {
+    return false;
+    }
+
+  return true;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+bool
+TrackStructure::
 IsLeaf()
 {
   if( TreeNode.m_Child[0] || TreeNode.m_Child[1])
