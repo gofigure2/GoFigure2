@@ -431,6 +431,9 @@ TrackContainer::RecomputeCurrentElementMap(std::list< double * > iPoints)
       CreateCurrentTrackActors();
       }
     }
+
+  // testing
+  this->ShowCollection(19, true);
 }
 
 //-------------------------------------------------------------------------

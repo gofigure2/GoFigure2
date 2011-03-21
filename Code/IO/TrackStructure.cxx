@@ -260,11 +260,11 @@ UpdateCollectionVisibility( bool iVisibility )
   ModifyDivisionVisibility(this, iVisibility);
 
   // Mother pointer is null here since we are a root
-  if(!this->TreeNode.m_Child[0]->IsLeaf())
+  if(this->TreeNode.m_Child[0])
     {
     ModifyCollectionVisibility(this->TreeNode.m_Child[0], iVisibility);
     }
-  if(!this->TreeNode.m_Child[1]->IsLeaf())
+  if(this->TreeNode.m_Child[1])
     {
     ModifyCollectionVisibility(this->TreeNode.m_Child[1], iVisibility);
     }
@@ -278,16 +278,13 @@ ModifyCollectionVisibility( TrackStructure* iRoot, bool iVisibility )
 {
   ModifyDivisionVisibility(iRoot, iVisibility);
 
-  /*
-   * \todo Nicolas: unecessary condition if(iRoot)??
-   */
-  if(iRoot)
+  if( ! iRoot->IsLeaf() )
     {
-    if(!iRoot->TreeNode.m_Child[0]->IsLeaf())
+    if( ! iRoot->TreeNode.m_Child[0]->IsLeaf() )
       {
       ModifyCollectionVisibility(iRoot->TreeNode.m_Child[0],iVisibility);
       }
-    else if(!iRoot->TreeNode.m_Child[1]->IsLeaf())
+    if( ! iRoot->TreeNode.m_Child[1]->IsLeaf() )
       {
       ModifyCollectionVisibility(iRoot->TreeNode.m_Child[1], iVisibility);
       }
@@ -300,11 +297,11 @@ void
 TrackStructure::
 ModifyDivisionVisibility( TrackStructure* iRoot, bool iVisibility )
 {
-  std::cout << "trace ID: " << iRoot->TraceID << std::endl;
-  iRoot->TreeNode.m_DivisionActor[0]->SetVisibility( iVisibility );
-  iRoot->TreeNode.m_DivisionActor[1]->SetVisibility( iVisibility );
-  iRoot->TreeNode.m_DivisionActor[2]->SetVisibility( iVisibility );
-  iRoot->TreeNode.m_DivisionActor[3]->SetVisibility( iVisibility );
+  std::cout << "trace ID: " << iRoot->TraceID << " has a division actor" << std::endl;
+  //iRoot->TreeNode.m_DivisionActor[0]->SetVisibility( iVisibility );
+  //iRoot->TreeNode.m_DivisionActor[1]->SetVisibility( iVisibility );
+  //iRoot->TreeNode.m_DivisionActor[2]->SetVisibility( iVisibility );
+  //iRoot->TreeNode.m_DivisionActor[3]->SetVisibility( iVisibility );
 }
 //--------------------------------------------------------------------------
 
@@ -358,7 +355,7 @@ bool
 TrackStructure::
 IsMother()
 {
-  if( TreeNode.m_Mother )
+  if( this->TreeNode.m_Mother )
     {
     return false;
     }
@@ -372,7 +369,7 @@ bool
 TrackStructure::
 IsLeaf()
 {
-  if( TreeNode.m_Child[0] || TreeNode.m_Child[1])
+  if( this->TreeNode.m_Child[0] || this->TreeNode.m_Child[1])
     {
     return false;
     }
