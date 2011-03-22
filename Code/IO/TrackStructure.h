@@ -38,6 +38,8 @@
 #include "TraceStructure.h"
 #include "QGoIOConfigure.h"
 
+#include "TreeNodeStructure.h"
+
 #include "GoFigureTrackAttributes.h"
 
 #include "vtkActor.h"
@@ -53,6 +55,7 @@
  * \ingroup Track Trace
  * \todo use initialization in both constructor!
  */
+/*
 template <class T>
 class QGOIO_EXPORT TreeNodeStructure
 {
@@ -111,7 +114,7 @@ public:
   bool m_Visible;
   bool m_Highlighted;
 };
-
+*/
 /**
 \defgroup Track Track
 */

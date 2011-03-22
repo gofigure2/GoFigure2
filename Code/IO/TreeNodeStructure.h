@@ -43,6 +43,8 @@
 #include "StructureHelper.h"
 #endif
 
+#include "vtkActor.h"
+
 /**
  * \struct TreeNodeStructure
  * \brief  Structure which represent a tree node.
@@ -57,6 +59,12 @@ public:
     m_Mother = NULL;
     m_Child[0] = NULL;
     m_Child[1] = NULL;
+
+    m_DivisionActor.resize(4);
+    m_DivisionActor[0] = NULL;
+    m_DivisionActor[1] = NULL;
+    m_DivisionActor[2] = NULL;
+    m_DivisionActor[3] = NULL;
   }
 
   TreeNodeStructure( const TreeNodeStructure & iE ) : TraceStructure( iE ),
@@ -64,12 +72,34 @@ public:
   {
     m_Child[0] = iE.m_Child[0];
     m_Child[1] = iE.m_Child[1];
+
+    m_DivisionActor.resize(4);
+    m_DivisionActor[0] = iE.m_DivisionActor[0];
+    m_DivisionActor[1] = iE.m_DivisionActor[1];
+    m_DivisionActor[2] = iE.m_DivisionActor[2];
+    m_DivisionActor[3] = iE.m_DivisionActor[3];
   }
 
   ~TreeNodeStructure(){};
 
+  void DeleteActors()
+    {
+    std::vector<vtkActor* >::iterator it = m_DivisionActor.begin();
+        while(it != m_DivisionActor.end() )
+          {
+          if(*it)
+            {
+            (*it)->Delete();
+            (*it) = NULL;
+            std::cout << "division actor deleted" << std::endl;
+            }
+          it++;
+          }
+    }
+
   T* m_Mother;
   T* m_Child[2];
+  std::vector< vtkActor* > m_DivisionActor;
 };
 
 #endif
