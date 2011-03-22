@@ -51,6 +51,7 @@
  * \struct TreeNodeStructure
  * \brief  Structure which represent a tree node.
  * \ingroup Track Trace
+ * \todo use initialization in both constructor!
  */
 template <class T>
 class QGOIO_EXPORT TreeNodeStructure
@@ -120,6 +121,7 @@ public:
  * \brief  Structure which represent a track, and used for
  * interaction between Visualization and TableWidget
  * \ingroup Track Trace
+ * \todo passe parameters by reference for performance
  */
 class QGOIO_EXPORT TrackStructure : public TraceStructure
 {
@@ -212,6 +214,7 @@ public:
   void ModifyCollectionHighlight( TrackStructure* iRoot, bool iHighlight );
   void ModifyDivisionHighlight( TrackStructure* iRoot, bool iHighlight );
 
+  /** \todo to be renamed IsRoot */
   bool IsMother();
   bool IsLeaf();
 };

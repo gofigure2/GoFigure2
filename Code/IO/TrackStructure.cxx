@@ -355,12 +355,7 @@ bool
 TrackStructure::
 IsMother()
 {
-  if( this->TreeNode.m_Mother )
-    {
-    return false;
-    }
-
-  return true;
+  return ( this->TreeNode.m_Mother == NULL );
 }
 //--------------------------------------------------------------------------
 
@@ -369,11 +364,7 @@ bool
 TrackStructure::
 IsLeaf()
 {
-  if( this->TreeNode.m_Child[0] || this->TreeNode.m_Child[1])
-    {
-    return false;
-    }
-
-  return true;
+  return ( ( this->TreeNode.m_Child[0] == NULL ) && 
+           ( this->TreeNode.m_Child[1] == NULL ) );
 }
 //--------------------------------------------------------------------------
