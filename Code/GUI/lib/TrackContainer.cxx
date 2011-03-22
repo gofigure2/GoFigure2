@@ -886,7 +886,7 @@ TrackContainer::
 UpdateTrackStructureLineage(TrackStructure* iStructure)
 {
   // Modify Mother
-  if( ! iStructure->IsMother() )
+  if( ! iStructure->IsRoot() )
   {
     // What if new tracks overlap now???
     std::cout << "Update mother division polydata/actor" << std::endl;

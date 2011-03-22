@@ -151,8 +151,7 @@ public:
   void ModifyCollectionHighlight( TrackStructure* iRoot, bool iHighlight );
   void ModifyDivisionHighlight( TrackStructure* iRoot, bool iHighlight );
 
-  /** \todo to be renamed IsRoot */
-  bool IsMother();
+  bool IsRoot();
   bool IsLeaf();
 };
 

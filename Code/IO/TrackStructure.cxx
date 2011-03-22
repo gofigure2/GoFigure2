@@ -353,7 +353,7 @@ ModifyDivisionHighlight( TrackStructure* iRoot, bool iVisibility )
 //--------------------------------------------------------------------------
 bool
 TrackStructure::
-IsMother()
+IsRoot()
 {
   return ( this->TreeNode.m_Mother == NULL );
 }
