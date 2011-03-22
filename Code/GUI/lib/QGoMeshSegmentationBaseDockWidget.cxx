@@ -218,8 +218,8 @@ QGoMeshSegmentationBaseDockWidget::SetChannel(int iChannel, const QString & iTex
     input = QString("Channel %1").arg(iChannel);
     }
 
-  m_MeshManualSegmentation->SetChannel(iChannel, input);
-  m_MeshSemiAutoSegmentation->SetChannel(iChannel, input);
+ // m_MeshManualSegmentation->SetChannel(iChannel, input);
+ // m_MeshSemiAutoSegmentation->SetChannel(iChannel, input);
 }
 
 //---------------------------------------------------------------------------//

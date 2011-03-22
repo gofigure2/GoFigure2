@@ -215,8 +215,8 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
       new QGoDockWidgetStatus(
-        m_MeshSegmentationDockWidget, Qt::LeftDockWidgetArea, true, true),
-      m_MeshSegmentationDockWidget) );
+        this->m_MeshEditingWidget->GetDockWidget(), Qt::LeftDockWidgetArea, true, true),
+        this->m_MeshEditingWidget->GetDockWidget()) );
 
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
@@ -389,8 +389,8 @@ QGoTabImageView3DwT::CreateMeshSegmentationDockWidget()
   // basic interactor connections
   //----------------------------------------------------------------
 
-  m_MeshSegmentationDockWidget =
-    new QGoMeshSegmentationBaseDockWidget(this, m_Seeds, &m_InternalImages);
+  //m_MeshSegmentationDockWidget =
+  //  new QGoMeshSegmentationBaseDockWidget(this, m_Seeds, &m_InternalImages);
   QStringList TimePoints;
   TimePoints.append("TBD: current timepoint");
   this->m_MeshEditingWidget = new QGoMeshEditingWidgetManager(
@@ -406,7 +406,7 @@ QGoTabImageView3DwT::CreateMeshSegmentationDockWidget()
                    this,
                    SLOT(ClearAllSeeds() ) );
 
-  QObject::connect( m_MeshSegmentationDockWidget,
+  /*QObject::connect( m_MeshSegmentationDockWidget,
                     SIGNAL( ReinitializeInteractorActivated(bool) ),
                     this,
                     SLOT( DefaultInteractorBehavior(bool) ) );
@@ -452,7 +452,7 @@ QGoTabImageView3DwT::CreateMeshSegmentationDockWidget()
   QObject::connect( m_MeshSegmentationDockWidget,
                     SIGNAL( ClearAllSeeds() ),
                     m_ImageView,
-                    SLOT( ClearAllSeeds() ) );
+                    SLOT( ClearAllSeeds() ) );*/
 }
 
 //-------------------------------------------------------------------------
@@ -1032,19 +1032,19 @@ QGoTabImageView3DwT::ChannelTimeMode(bool iEnable)
     m_NavigationDockWidget->blockSignals(true);
     m_NavigationDockWidget->SetNumberOfChannels(NumberOfChannels);
     m_ContourSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
-    m_MeshSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
+    //m_MeshSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
 
     if ( NumberOfChannels > 1 )
       {
       m_NavigationDockWidget->SetChannel( 0, m_ChannelNames[0] );
       m_ContourSegmentationDockWidget->SetChannel( 0, m_ChannelNames[0] );
-      m_MeshSegmentationDockWidget->SetChannel( 0, m_ChannelNames[0] );
+      //m_MeshSegmentationDockWidget->SetChannel( 0, m_ChannelNames[0] );
       for ( unsigned int i = 1; i < NumberOfChannels; i++ )
         {
         m_NavigationDockWidget->SetChannel( i, m_ChannelNames[i] );
 
         m_ContourSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
-        m_MeshSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
+        //m_MeshSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
         }
       }
     m_NavigationDockWidget->blockSignals(false);
@@ -1160,26 +1160,27 @@ void QGoTabImageView3DwT::CreateModeActions()
   //---------------------------------//
 
   QAction *MeshSegmentationAction =
-    m_MeshSegmentationDockWidget->toggleViewAction();
+    this->m_MeshEditingWidget->GetToggleViewAction();
+    //m_MeshSegmentationDockWidget->toggleViewAction();
 
   group->addAction(MeshSegmentationAction);
 
   this->m_ModeActions.push_back(MeshSegmentationAction);
 
-  QObject::connect( MeshSegmentationAction,
-                    SIGNAL( toggled(bool) ),
-                    m_MeshSegmentationDockWidget,
-                    SLOT( interactorBehavior(bool) ) );
+  //QObject::connect( MeshSegmentationAction,
+  //                  SIGNAL( toggled(bool) ),
+  //                  m_MeshSegmentationDockWidget,
+  //                  SLOT( interactorBehavior(bool) ) );
 
-  QObject::connect( MeshSegmentationAction,
-                    SIGNAL( toggled(bool) ),
-                    this,
-                    SLOT( RequieresTraceWidget(bool) ) );
+ // QObject::connect( MeshSegmentationAction,
+  //                  SIGNAL( toggled(bool) ),
+  //                  this,
+  //                  SLOT( RequieresTraceWidget(bool) ) );
 
-  QObject::connect( MeshSegmentationAction,
-                    SIGNAL( toggled(bool) ),
-                    this,
-                    SLOT( ShowTraceWidgetsForMesh(bool) ) );
+ // QObject::connect( MeshSegmentationAction,
+ //                   SIGNAL( toggled(bool) ),
+ //                   this,
+ //                   SLOT( ShowTraceWidgetsForMesh(bool) ) );
 
   QAction *separator2 = new QAction(this);
   separator2->setSeparator(true);
@@ -1573,7 +1574,7 @@ QGoTabImageView3DwT::SetLSMReader(vtkLSMReader *iReader, const int & iTimePoint)
     // it will update the size of the related combobox
     m_NavigationDockWidget->SetNumberOfChannels(NumberOfChannels);
     m_ContourSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
-    m_MeshSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
+    //m_MeshSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
 
     m_ChannelNames.resize( NumberOfChannels );
 
@@ -1583,7 +1584,7 @@ QGoTabImageView3DwT::SetLSMReader(vtkLSMReader *iReader, const int & iTimePoint)
       m_ChannelNames[0] = m_NavigationDockWidget->GetChannelName( 0 );
 
       m_ContourSegmentationDockWidget->SetChannel( 0, m_ChannelNames[0] );
-      m_MeshSegmentationDockWidget->SetChannel( 0 , m_ChannelNames[0] );
+      //m_MeshSegmentationDockWidget->SetChannel( 0 , m_ChannelNames[0] );
       m_InternalImages.resize(NumberOfChannels);
 
       for ( int i = 1; i < NumberOfChannels; i++ )
@@ -1592,7 +1593,7 @@ QGoTabImageView3DwT::SetLSMReader(vtkLSMReader *iReader, const int & iTimePoint)
         m_ChannelNames[i] = m_NavigationDockWidget->GetChannelName( i );
 
         m_ContourSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
-        m_MeshSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
+        //m_MeshSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
 
         m_LSMReader.push_back( vtkSmartPointer< vtkLSMReader >::New() );
         m_LSMReader.back()->SetFileName( m_LSMReader[0]->GetFileName() );
@@ -1664,7 +1665,7 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
   // it will update the size of the related combobox
   m_NavigationDockWidget->SetNumberOfChannels(NumberOfChannels);
   m_ContourSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
-  m_MeshSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
+  //m_MeshSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
 
   // Set up QSpinBox in m_VideoRecorderWidget
   if ( NumberOfChannels > 1 )
@@ -1673,7 +1674,7 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
     m_ChannelNames[0] = m_NavigationDockWidget->GetChannelName(0);
 
     m_ContourSegmentationDockWidget->SetChannel( 0, m_ChannelNames[0] );
-    m_MeshSegmentationDockWidget->SetChannel( 0, m_ChannelNames[0] );
+    //m_MeshSegmentationDockWidget->SetChannel( 0, m_ChannelNames[0] );
     m_InternalImages.resize(NumberOfChannels, NULL);
 
     for ( unsigned int i = 1; i < NumberOfChannels; i++ )
@@ -1682,7 +1683,7 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
       m_ChannelNames[i] = m_NavigationDockWidget->GetChannelName(i);
 
       m_ContourSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
-      m_MeshSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
+      //m_MeshSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
       }
     }
 
@@ -1951,12 +1952,12 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels(int iChannel,
   m_ContourSegmentationDockWidget->SetCurrentChannel(1);
 
   // Create the channels labels
-  m_MeshSegmentationDockWidget->SetNumberOfChannels(3);
-  m_MeshSegmentationDockWidget->SetChannel(0, t_minus_step);
-  m_MeshSegmentationDockWidget->SetChannel(1, t_current_step);
-  m_MeshSegmentationDockWidget->SetChannel(2, t_plus_step);
+  //m_MeshSegmentationDockWidget->SetNumberOfChannels(3);
+  //m_MeshSegmentationDockWidget->SetChannel(0, t_minus_step);
+  //m_MeshSegmentationDockWidget->SetChannel(1, t_current_step);
+  //m_MeshSegmentationDockWidget->SetChannel(2, t_plus_step);
   // Update the current channel
-  m_MeshSegmentationDockWidget->SetCurrentChannel(1);
+  //m_MeshSegmentationDockWidget->SetCurrentChannel(1);
 }
 
 //-------------------------------------------------------------------------

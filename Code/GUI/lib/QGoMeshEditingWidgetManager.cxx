@@ -45,13 +45,15 @@ QGoMeshEditingWidgetManager::QGoMeshEditingWidgetManager(
   std::vector< vtkSmartPointer< vtkImageData > >* iImages, 
   QWidget* iParent)
 {
- this->m_MeshEditingWidget = new QGoTraceEditingWidget(
+  this->m_MeshEditingWidget = new QGoTraceEditingWidget(
    "Mesh", iVectChannels, iListTimePoints, iParent);
- this->m_Seeds = iSeeds;
- this->m_Images = iImages;
+  this->SetTheDockWidget(iParent);
 
- this->SetLevelSetAlgo(iParent);
- this->SetShapeAlgo(iParent);
+  this->m_Seeds = iSeeds;
+  this->m_Images = iImages;
+
+  this->SetLevelSetAlgo(iParent);
+  this->SetShapeAlgo(iParent);
 }
 //-------------------------------------------------------------------------
 
@@ -115,18 +117,12 @@ void QGoMeshEditingWidgetManager::GetSignalLevelSet()
 
   QGoFilterChanAndVese* LevelSetFilter = new QGoFilterChanAndVese(this, 2); 
   emit UpdateSeeds();
+
   std::vector<vtkPolyData*> NewMeshes = 
     LevelSetFilter->ApplyFilterLevelSet3D(m_Radius->GetValue(), 
     this->m_Seeds, m_Iterations->GetValue(),
     m_Curvature->GetValue(), this->m_Images, 
     this->m_MeshEditingWidget->GetChannelNumber() );
- /* filter = m_BaseAlgorithmSegmentationWidget->GetNumberOfFilters();
-  m_BaseAlgorithmSegmentationWidget->AddFilter( m_LevelSetfilter->getName() );
-  m_LevelSetfilter->getWidget()->setParent(m_BaseAlgorithmSegmentationWidget);
-  m_LevelSetfilter->setPoints( getSeed() );
-  m_LevelSetfilter->setOriginalImageMC(m_OriginalImage);
-  m_BaseAlgorithmSegmentationWidget->GetFrame()->addWidget( m_LevelSetfilter->getWidget() );
-  m_LevelSetfilter->ConnectSignals(filter);*/
   
 
   ClearAllSeeds();
@@ -145,4 +141,34 @@ void QGoMeshEditingWidgetManager::showWidget()
 {
   this->m_MeshEditingWidget->CheckDefaultModes();
   this->m_MeshEditingWidget->show();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoMeshEditingWidgetManager::SetTheDockWidget(QWidget* iParent)
+{
+  this->m_MeshEditingDockWidget = new QDockWidget(iParent);
+  this->m_MeshEditingDockWidget->setWidget(this->m_MeshEditingWidget);
+  QIcon MeshSegmentationIcon;
+  MeshSegmentationIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/MeshEditing.png") ),
+                                 QIcon::Normal, QIcon::Off);
+
+ this->m_MeshEditingDockWidget->toggleViewAction()->setIcon(MeshSegmentationIcon);
+ this->m_MeshEditingDockWidget->toggleViewAction()->setToolTip( tr("Mesh Editing") );
+ this->m_MeshEditingDockWidget->toggleViewAction()->setStatusTip( 
+    tr("Create meshes manually, semi-automatically or automatically") );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+QAction* QGoMeshEditingWidgetManager::GetToggleViewAction()
+{
+  return this->m_MeshEditingDockWidget->toggleViewAction();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+QDockWidget* QGoMeshEditingWidgetManager::GetDockWidget()
+{
+  return this->m_MeshEditingDockWidget;
 }

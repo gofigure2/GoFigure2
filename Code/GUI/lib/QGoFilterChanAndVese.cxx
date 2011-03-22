@@ -406,5 +406,6 @@ std::vector<vtkPolyData*> QGoFilterChanAndVese::ApplyFilterLevelSet3D(
       this->Filter3D(center2, iCurvature, iIterations, iRadius, iImages,
       iChannel) );
     }
+   delete[] center2;
    return oMeshes;
 }

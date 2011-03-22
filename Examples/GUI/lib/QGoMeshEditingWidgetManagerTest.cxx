@@ -40,6 +40,9 @@
 #include "QGoAlgorithmWidget.h"
 #include "QGoTraceSettingsWidget.h"
 #include "QGoAlgoParameter.h"
+#include "vtkSmartPointer.h"
+#include "vtkPolyData.h"
+#include "vtkImageData.h"
 
 //**************************************************************************//
 //                               MAIN                                       //
@@ -56,15 +59,18 @@ int main(int argc, char *argv[])
   //QTimer *     timer = new QTimer;
   //timer->setSingleShot(true);
 
-  QStringList ChannelName;
-  ChannelName.append("Channel 1");
-  ChannelName.append("Channel 2");
+  std::vector<QString> ChannelName;
+  ChannelName.push_back("Channel 1");
+  ChannelName.push_back("Channel 2");
   QStringList ListTimePoint;
   ListTimePoint.append("t-1");
   ListTimePoint.append("t");
   ListTimePoint.append("t+1");
+  vtkPoints* Seeds = NULL;
 
-  QGoMeshEditingWidgetManager* MeshEditing = new QGoMeshEditingWidgetManager(ChannelName, ListTimePoint,NULL);
+  std::vector< vtkSmartPointer< vtkImageData > >* Images = NULL;
+  QGoMeshEditingWidgetManager* MeshEditing = new QGoMeshEditingWidgetManager(ChannelName, ListTimePoint,
+    Seeds, Images, NULL);
   
   //QObject::connect( timer, SIGNAL( timeout() ), window, SLOT( close() ) );
   //timer->start(1000);

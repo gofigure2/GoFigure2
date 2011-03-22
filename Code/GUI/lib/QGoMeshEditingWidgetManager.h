@@ -39,6 +39,9 @@
 #include "vtkSmartPointer.h"
 #include "vtkPolyData.h"
 #include "vtkImageData.h"
+#include <QAction>
+#include <QDockWidget>
+
 
 /**
 \class QGoMeshEditingWidgetManager
@@ -55,6 +58,8 @@ public:
   ~QGoMeshEditingWidgetManager();
 
   void showWidget();
+  QAction* GetToggleViewAction();
+  QDockWidget* GetDockWidget();
 
 signals:
 
@@ -62,9 +67,8 @@ signals:
   void ClearAllSeeds();
 
 protected:
+  QDockWidget*           m_MeshEditingDockWidget;
   QGoTraceEditingWidget* m_MeshEditingWidget;
-  void SetLevelSetAlgo(QWidget* iParent=0);
-  void SetShapeAlgo(QWidget* iParent=0);
 
   vtkPoints*                                      m_Seeds;
   std::vector< vtkSmartPointer< vtkImageData > >* m_Images;
@@ -72,6 +76,10 @@ protected:
   QGoAlgoParameter<double>*  m_Radius;
   QGoAlgoParameter<int>*     m_Curvature;
   QGoAlgoParameter<int>*     m_Iterations;
+
+  void SetTheDockWidget(QWidget* iParent);
+  void SetLevelSetAlgo(QWidget* iParent=0);
+  void SetShapeAlgo(QWidget* iParent=0);
 
 protected slots:
   void GetSignalLevelSet();

@@ -75,7 +75,7 @@ void QGoModesManagerWidget::Initialize(std::vector<QString> iVectChannels,
   this->AddAlgoManagerWidget(this->m_SemiAutoAlgoManagerWidget);
 
   this->m_AutoAlgoManagerWidget = new
-    QGoAlgorithmsManagerWidget("Automated",iListChannels, 
+    QGoAlgorithmsManagerWidget("Automated",iVectChannels, 
     iListTimePoints, this);
   this->AddAlgoManagerWidget(this->m_AutoAlgoManagerWidget);
 
@@ -152,7 +152,8 @@ void QGoModesManagerWidget::AddWidgetForManualMode(QWidget* iWidget)
 //-------------------------------------------------------------------------
 int QGoModesManagerWidget::GetChannelNumber()
 {
-  dynamic_cast<QGoAlgorithmsManagerWidget*> CurrentWidget = 
-    this->m_ModeWidgets->currentWidget();
+  QGoAlgorithmsManagerWidget* CurrentWidget =  
+    dynamic_cast<QGoAlgorithmsManagerWidget*>
+      (this->m_ModeWidgets->currentWidget());
   return CurrentWidget->GetChannelNumber();
 }
