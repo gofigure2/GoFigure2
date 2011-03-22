@@ -81,6 +81,7 @@ protected:
   QStringList iListTimePoints, QWidget *iParent = 0);
   QGoModesManagerWidget* m_ModeEditingWidget;
   QVBoxLayout*           m_VLayout;
+  QStringList            m_ListTimePoints;
 
 };
 #endif

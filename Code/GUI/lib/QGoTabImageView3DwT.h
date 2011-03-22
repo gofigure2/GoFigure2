@@ -531,7 +531,8 @@ protected:
   // segmentation dockwidgets
   void CreateContourSegmentationDockWidget();
 
-  void CreateMeshSegmentationDockWidget();
+  //void CreateMeshSegmentationDockWidget();
+  void CreateMeshEditingDockWidget(int iTimeMin, int iTimemax);
 
   void CreateDataBaseTablesConnection();
 

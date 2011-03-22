@@ -40,13 +40,13 @@
 
 QGoMeshEditingWidgetManager::QGoMeshEditingWidgetManager(
   std::vector<QString> iVectChannels, 
-  QStringList iListTimePoints, 
+  int iTimeMin,
+  int iTimeMax,
   vtkPoints* iSeeds, 
   std::vector< vtkSmartPointer< vtkImageData > >* iImages, 
   QWidget* iParent)
 {
-  this->m_MeshEditingWidget = new QGoTraceEditingWidget(
-   "Mesh", iVectChannels, iListTimePoints, iParent);
+  this->SetTheMeshWidget(iVectChannels, iTimeMin, iTimeMax, iParent);
   this->SetTheDockWidget(iParent);
 
   this->m_Seeds = iSeeds;
@@ -141,6 +141,22 @@ void QGoMeshEditingWidgetManager::showWidget()
 {
   this->m_MeshEditingWidget->CheckDefaultModes();
   this->m_MeshEditingWidget->show();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoMeshEditingWidgetManager::SetTheMeshWidget(
+  std::vector<QString> iVectChannels, int iTimeMin, 
+  int iTimeMax, QWidget* iParent)
+{
+  QStringList ListTimePoints;
+  for (int i = iTimeMin; i < iTimeMax+1; ++i)
+    {
+    ListTimePoints.push_back(tr("%1").arg(i));
+    }
+
+  this->m_MeshEditingWidget = new QGoTraceEditingWidget(
+   "Mesh", iVectChannels, ListTimePoints, iParent);
 }
 //-------------------------------------------------------------------------
 

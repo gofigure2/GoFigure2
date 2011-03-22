@@ -169,7 +169,7 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
 
   // segmentation dockwidgets
   CreateContourSegmentationDockWidget();
-  CreateMeshSegmentationDockWidget();
+  //CreateMeshSegmentationDockWiget();in setmegacapture/LSM files now
 
   // track dock widget
   m_TrackDockWidget = new QGoTrackDockWidget(this);
@@ -196,7 +196,7 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
 
   CreateBookmarkActions();
 
-  CreateModeActions();
+  //CreateModeActions(); in setmegacapture/LSM files now
 
   ReadSettings();
 
@@ -212,11 +212,11 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
         m_ContourSegmentationDockWidget, Qt::LeftDockWidgetArea, true, true),
       m_ContourSegmentationDockWidget) );
 
-  m_DockWidgetList.push_back(
+  /*m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
       new QGoDockWidgetStatus(
         this->m_MeshEditingWidget->GetDockWidget(), Qt::LeftDockWidgetArea, true, true),
-        this->m_MeshEditingWidget->GetDockWidget()) );
+        this->m_MeshEditingWidget->GetDockWidget()) ); in setmegacapture/LSM files now */
 
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
@@ -382,7 +382,7 @@ QGoTabImageView3DwT::CreateContourSegmentationDockWidget()
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::CreateMeshSegmentationDockWidget()
+QGoTabImageView3DwT::CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax)
 {
   //----------------------------------------------------------------
   // Create base  contour segmentation dock widget:
@@ -391,10 +391,10 @@ QGoTabImageView3DwT::CreateMeshSegmentationDockWidget()
 
   //m_MeshSegmentationDockWidget =
   //  new QGoMeshSegmentationBaseDockWidget(this, m_Seeds, &m_InternalImages);
-  QStringList TimePoints;
-  TimePoints.append("TBD: current timepoint");
+ 
   this->m_MeshEditingWidget = new QGoMeshEditingWidgetManager(
-    this->m_ChannelNames, TimePoints, m_Seeds, &m_InternalImages);
+    this->m_ChannelNames, iTimeMin, iTimeMax, m_Seeds,
+    &m_InternalImages);
 
   QObject::connect(this->m_MeshEditingWidget,
                    SIGNAL(UpdateSeeds() ),
@@ -405,6 +405,12 @@ QGoTabImageView3DwT::CreateMeshSegmentationDockWidget()
                    SIGNAL(ClearAllSeeds() ),
                    this,
                    SLOT(ClearAllSeeds() ) );
+
+  m_DockWidgetList.push_back(
+    std::pair< QGoDockWidgetStatus *, QDockWidget * >(
+      new QGoDockWidgetStatus(
+        this->m_MeshEditingWidget->GetDockWidget(), Qt::LeftDockWidgetArea, true, true),
+        this->m_MeshEditingWidget->GetDockWidget()) );
 
   /*QObject::connect( m_MeshSegmentationDockWidget,
                     SIGNAL( ReinitializeInteractorActivated(bool) ),
@@ -1617,6 +1623,11 @@ QGoTabImageView3DwT::SetLSMReader(vtkLSMReader *iReader, const int & iTimePoint)
       SetTimePoint(iTimePoint);
       }
 
+    /**\ todo Lydie: the dock widget needs to have the channels and the timepoints,
+  do a separated method ??*/
+  CreateMeshEditingDockWidget(0, dim[3] - 1);
+  CreateModeActions();
+
 #if defined( ENABLEFFMPEG ) || defined( ENABLEAVI )
     m_VideoRecorderWidget->SetXMinAndMax(0, dim[0] - 1);
     m_VideoRecorderWidget->SetYMinAndMax(0, dim[1] - 1);
@@ -1703,6 +1714,11 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
     {
     SetTimePoint(iTimePoint);
     }
+
+  /**\ todo Lydie: the dock widget needs to have the channels and the timepoints,
+  do a separated method ??*/
+  CreateMeshEditingDockWidget(min_t, max_t);
+  CreateModeActions();
 
   // Set up QSpinBox in m_VideoRecorderWidget
 #if defined( ENABLEFFMPEG ) || defined( ENABLEAVI )

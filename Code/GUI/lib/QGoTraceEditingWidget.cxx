@@ -55,6 +55,7 @@ QGoTraceEditingWidget::~QGoTraceEditingWidget()
 void QGoTraceEditingWidget::Initialize(std::vector<QString> iVectChannels, 
   QStringList iListTimePoints, QWidget *iParent)
 {
+  this->m_ListTimePoints = iListTimePoints;
   this->m_ModeEditingWidget = new QGoModesManagerWidget(
     iVectChannels, iListTimePoints, this);
 

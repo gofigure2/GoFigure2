@@ -52,7 +52,7 @@ class QGOGUILIB_EXPORT QGoMeshEditingWidgetManager: public QObject
   Q_OBJECT
 public:
   QGoMeshEditingWidgetManager(std::vector<QString> iVectChannels, 
-    QStringList iListTimePoints, vtkPoints* iSeeds, 
+    int iTimeMin, int iTimeMax, vtkPoints* iSeeds, 
     std::vector< vtkSmartPointer< vtkImageData > >* iImages, 
     QWidget* iParent=0);
   ~QGoMeshEditingWidgetManager();
@@ -69,7 +69,7 @@ signals:
 protected:
   QDockWidget*           m_MeshEditingDockWidget;
   QGoTraceEditingWidget* m_MeshEditingWidget;
-
+ 
   vtkPoints*                                      m_Seeds;
   std::vector< vtkSmartPointer< vtkImageData > >* m_Images;
 
@@ -77,6 +77,8 @@ protected:
   QGoAlgoParameter<int>*     m_Curvature;
   QGoAlgoParameter<int>*     m_Iterations;
 
+  void SetTheMeshWidget(std::vector<QString> iVectChannels, int iTimeMin, 
+    int iTimeMax, QWidget* iParent);
   void SetTheDockWidget(QWidget* iParent);
   void SetLevelSetAlgo(QWidget* iParent=0);
   void SetShapeAlgo(QWidget* iParent=0);
