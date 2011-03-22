@@ -45,10 +45,10 @@
 
 /**
  * \class QGoAlgorithmsManagerWidget
- * \ingroup GUI manages all the algorithms widget for a same result,
+ * \ingroup GUI 
+ * \brief manages all the algorithms widget for a same mode,
  has a combobox with the name of the methods which display a different
  QGoAlgorithmWidget depending on the method selected in the combobox
- * \brief 
 */
 class QGoAlgorithmsManagerWidget:
   public QWidget
@@ -64,6 +64,8 @@ public:
   of the method associated in the combobox to display it,
   including the parameters and the advanced parameters
   displayed in an expandable box
+  \param[in] iAlgoWidget widget with all the parameters for the 
+  algorithm
   */
   void AddMethod(QGoAlgorithmWidget* iAlgoWidget);
 
@@ -78,13 +80,21 @@ public:
 
   void SetCurrentChannel(QString iChannel);
 
+  /**
+  \brief return the name of the mode
+  \return the name of the mode
+  */
   std::string GetModeName();
 
+  /**
+  \brief return true if it has at least one QGoAlgorithmWidget in 
+  the stackedWidgets
+  \return false if there is no algorithm
+  */
   bool HasMethod();
 
 signals:
 
-  //void ApplyClicked();
   void ResetClicked();
 
 protected:
@@ -94,15 +104,21 @@ protected:
   std::string                  m_ModeName;
   QComboBox*                   m_ChannelComboBox;
   QComboBox*                   m_TimeComboBox;
-  //QStackedLayout*              m_MethodsLayout;
 
   /**
   \brief add the different widgets, buttons and fill the comboboxes 
   for channel and timepoint
+  \param[in] iListChannels list of the names of the channels
+  \param[in] iListTime list of the timepoints
   */
   void Initialize(QStringList iListChannels, QStringList iListTime);
 
  protected slots:
+  /**
+  \brief after button clicked signal is emitted, get the current widget 
+  of the stackedwidgets and call the method in QGoAlgoWidget to make 
+  it emit a signal
+  */
   void EmitApplyAlgo();
 };
 #endif

@@ -84,7 +84,12 @@ public:
       }
     }
 
+  /**
+  \brief method called by the QGoAlgoManagerWidget when the apply button is clicked, 
+  emit the signal applyAlgo()
+  */
   void EmitApplyAlgo();
+
 signals:
     void ApplyAlgo();
 

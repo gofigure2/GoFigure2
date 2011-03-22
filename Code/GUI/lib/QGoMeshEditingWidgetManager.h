@@ -36,6 +36,9 @@
 
 #include "QGoTraceEditingWidget.h"
 #include "QGoGUILibConfigure.h"
+#include "vtkSmartPointer.h"
+#include "vtkPolyData.h"
+#include "vtkImageData.h"
 
 /**
 \class QGoMeshEditingWidgetManager
@@ -46,15 +49,29 @@ class QGOGUILIB_EXPORT QGoMeshEditingWidgetManager: public QObject
   Q_OBJECT
 public:
   QGoMeshEditingWidgetManager(QStringList iListChannels, 
-    QStringList iListTimePoints, QWidget* iParent=0);
+    QStringList iListTimePoints, vtkPoints* iSeeds, 
+    std::vector< vtkSmartPointer< vtkImageData > >* iImages, 
+    QWidget* iParent=0);
   ~QGoMeshEditingWidgetManager();
 
   void showWidget();
+
+signals:
+
+  void UpdateSeeds();
+  void ClearAllSeeds();
 
 protected:
   QGoTraceEditingWidget* m_MeshEditingWidget;
   void SetLevelSetAlgo(QWidget* iParent=0);
   void SetShapeAlgo(QWidget* iParent=0);
+
+  vtkPoints*                                      m_Seeds;
+  std::vector< vtkSmartPointer< vtkImageData > >* m_Images;
+
+  QGoAlgoParameter<double>*  m_Radius;
+  QGoAlgoParameter<int>*     m_Curvature;
+  QGoAlgoParameter<int>*     m_Iterations;
 
 protected slots:
   void GetSignalLevelSet();

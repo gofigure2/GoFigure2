@@ -227,7 +227,8 @@ QGoFilterChanAndVese::Filter2D(double *iCenter, const int & iOrientation)
 //--------------------------------------------------------------------------
 
 void
-QGoFilterChanAndVese::Filter3D(double *iCenter)
+QGoFilterChanAndVese::Filter3D(double *iCenter, int iCurvature, int iIterations,
+  double iRadius, std::vector< vtkSmartPointer< vtkImageData > >* iImages, )
 {
   const int dimension = 3;
 
@@ -235,7 +236,8 @@ QGoFilterChanAndVese::Filter3D(double *iCenter)
   setCenter(iCenter);
 
   vtkImageData *slice = vtkImageData::New();
-  slice->DeepCopy( getInput() );
+  //slice->DeepCopy( getInput() );
+  slice->DeepCopy( ( *iImages )[iChannel] );
 
   // run filter
   typedef itk::Image< unsigned char, dimension > FeatureImageType;
@@ -250,7 +252,7 @@ QGoFilterChanAndVese::Filter3D(double *iCenter)
   // Extract ROI
   //---------------------------------------------------------
   FeatureImageType::Pointer
-    test2 = ExtractROI< unsigned char, dimension >( itkImage, iCenter, getRadius() );
+    test2 = ExtractROI< unsigned char, dimension >( itkImage, iCenter, iRadius );
 
   // Apply filter
   // Apply LevelSet segmentation filter
@@ -270,9 +272,9 @@ QGoFilterChanAndVese::Filter3D(double *iCenter)
   pt[2] = iCenter[2];
   filter->SetCenter(pt);
 
-  filter->SetRadius( getRadius() );
-  filter->SetNumberOfIterations(m_Iterations);
-  filter->SetCurvatureWeight(m_Curvature);
+  filter->SetRadius(iRadius );
+  filter->SetNumberOfIterations(iIterations);
+  filter->SetCurvatureWeight(iCurvature);
   filter->Update();
 
   OutputImageType::Pointer test3 = filter->GetOutput();
@@ -353,7 +355,7 @@ QGoFilterChanAndVese::Apply()
       {
       getPoints()->GetPoint(i, center2);
 
-      this->Filter3D(center2);
+     // this->Filter3D(center2);
       }
     }
 
@@ -380,3 +382,23 @@ QGoFilterChanAndVese::ConnectSignals(int iFilterNumber)
 }
 
 //--------------------------------------------------------------------------
+void QGoFilterChanAndVese::ApplyFilterLevelSet3D(
+  double iRadius, vtkPoints* iPoints, int iIterations, int iCurvature,
+  std::vector< vtkSmartPointer< vtkImageData > >* iImages)
+
+{
+   if ( iRadius <= 0 )
+    {
+    std::cerr << "Radius should be > 0 " << std::endl;
+    return NULL;
+    }
+   double *center2 = new double[3];
+
+// LOOP  FOR EACH SEED
+   for ( int i = 0; i < iPoints->GetNumberOfPoints(); i++ )
+    {
+    iPoints->GetPoint(i, center2);
+
+    this->Filter3D(center2, iCurvature, iIterations, iRadius, iImages );
+    }
+}

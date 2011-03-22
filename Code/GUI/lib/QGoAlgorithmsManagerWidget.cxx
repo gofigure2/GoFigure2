@@ -73,7 +73,6 @@ void QGoAlgorithmsManagerWidget::Initialize(QStringList iListChannels,
   FormLayout->addRow(tr("Method:"), this->m_MethodComboBox);
 
   this->m_MethodWidgets = new QStackedWidget(this);
-  //this->m_MethodsLayout = new QStackedLayout(this->m_VBoxLayout);
 
   QHBoxLayout* ButtonLayout = new QHBoxLayout;
   QPushButton* ApplyButton = new QPushButton(tr("Apply"),this);
@@ -84,10 +83,7 @@ void QGoAlgorithmsManagerWidget::Initialize(QStringList iListChannels,
   this->m_VBoxLayout->addLayout(FormLayout);
   this->m_VBoxLayout->addWidget(this->m_MethodWidgets);
   this->m_VBoxLayout->addLayout(ButtonLayout);
-  //this->m_VBoxLayout->addLayout(this->m_MethodsLayout);
   
- 
-
   this->setLayout(this->m_VBoxLayout);
   this->m_VBoxLayout->setSizeConstraint(QLayout::SetFixedSize);
 
@@ -98,8 +94,6 @@ void QGoAlgorithmsManagerWidget::Initialize(QStringList iListChannels,
     this, SLOT(EmitApplyAlgo()));
 
   QObject::connect(ResetButton, SIGNAL(clicked()), this, SIGNAL(ResetClicked()));
-  //QObject::connect(this->m_MethodComboBox, SIGNAL(activated(int)),
-  //           this->m_MethodsLayout, SLOT(setCurrentIndex(int)));
 
 }
 //-------------------------------------------------------------------------
@@ -108,11 +102,8 @@ void QGoAlgorithmsManagerWidget::Initialize(QStringList iListChannels,
 void QGoAlgorithmsManagerWidget::AddMethod(QGoAlgorithmWidget* iAlgoWidget)
 {
   this->m_MethodWidgets->addWidget(iAlgoWidget);
-  //this->m_MethodsLayout->addWidget(iAlgoWidget);
   int Index = this->m_MethodWidgets->indexOf(iAlgoWidget);
-  //int Index = this->m_MethodsLayout->indexOf(iAlgoWidget);
   this->m_MethodComboBox->insertItem(Index, iAlgoWidget->GetMethodName().c_str());
-  //this->m_MethodComboBox->addItem(iAlgoWidget->GetMethodName().c_str());
   iAlgoWidget->show();
   this->m_MethodComboBox->setCurrentIndex(Index);
   this->m_MethodWidgets->setCurrentWidget(iAlgoWidget);

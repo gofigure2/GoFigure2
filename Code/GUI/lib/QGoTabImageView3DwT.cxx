@@ -391,7 +391,23 @@ QGoTabImageView3DwT::CreateMeshSegmentationDockWidget()
 
   m_MeshSegmentationDockWidget =
     new QGoMeshSegmentationBaseDockWidget(this, m_Seeds, &m_InternalImages);
-  //this->m_MeshEditingWidget = new QGoTraceEditingWidget("Mesh", this);
+  QStringList ChannelNames;
+  ChannelNames.append("TBD: Channel 0");
+  ChannelNames.append("TBD: Channel 1");
+  QStringList TimePoints;
+  TimePoints.append("TBD: current timepoint");
+  this->m_MeshEditingWidget = new QGoMeshEditingWidgetManager(
+    ChannelNames, TimePoints, m_Seeds, &m_InternalImages);
+
+  QObject::connect(this->m_MeshEditingWidget,
+                   SIGNAL(UpdateSeeds() ),
+                   this,
+                   SLOT(UpdateSeeds() ) );
+
+  QObject::connect(this->m_MeshEditingWidget,
+                   SIGNAL(ClearAllSeeds() ),
+                   this,
+                   SLOT(ClearAllSeeds() ) );
 
   QObject::connect( m_MeshSegmentationDockWidget,
                     SIGNAL( ReinitializeInteractorActivated(bool) ),

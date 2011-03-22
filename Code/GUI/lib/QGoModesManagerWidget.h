@@ -61,6 +61,8 @@ public:
   /**
   \brief add a widget in the StackedWidget with the mode name that will
   be added in the combobox.
+  \param[in] iModeName name of the mode
+  \param[in] iWidget widget that will be displayed when iModeName is selected
   */
   void AddWidgetWithModeName (std::string iModeName, QWidget* iWidget= 0);
 
@@ -73,8 +75,25 @@ public:
   void AddAlgoManagerWidget(QGoAlgorithmsManagerWidget* iAlgoManagerWidget, 
     int iDefaultIndex = 0);
 
+  /**
+  \brief add the iAlgoWidget directly in the QgoAlgomanager corresponding
+  to the Semi Automated mode
+  \param[in] iAlgoWidget widget to be added for the parameters of the algo
+  */
   void AddAlgoWidgetForSemiAutomatedMode(QGoAlgorithmWidget* iAlgoWidget);
+
+  /**
+  \brief add the iAlgoWidget directly in the QgoAlgomanager corresponding
+  to the Automated mode
+  \param[in] iAlgoWidget widget to be added for the parameters of the algo
+  */
   void AddAlgoWidgetForAutomatedMode(QGoAlgorithmWidget* iAlgoWidget);
+
+  /**
+  \brief create the "manual" mode and makes it correspond to the provided
+  widget
+  \param[in] iWidget widget to be added for the manual mode
+  */
   void AddWidgetForManualMode(QWidget* iWidget);
 
   /**
