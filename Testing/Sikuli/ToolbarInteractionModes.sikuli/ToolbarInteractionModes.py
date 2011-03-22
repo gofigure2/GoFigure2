@@ -1,11 +1,11 @@
 #will have to click trace and table to get right size for xyview images and navigation widget to see if things moved or not
 #import os
 #address = os.getcwd()
-address = "/home/es1076/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images"
+#address = "/home/es1076/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images"
 
 #address = address+"/gofigure2_images"
 
-setBundlePath(address)
+#setBundlePath(address)
 Toolbar = ("default","ZoomIcon.png","PanIcon.png","ActorPickingIcon.png")
 
 
@@ -99,7 +99,11 @@ for mode in Toolbar:
 				mouseMove(Location(pointx[0],pointy[0]))
 				wait(3)
 				#assert xyz view rotated to the right by 10 degrees
+<<<<<<< HEAD
+				#assert exists(Pattern("1298594448537.png").similar(0.99))
+=======
 				assert exists(Pattern("1298594448537.png").similar(0.99))
+>>>>>>> develop
 				
 				
 			else:	

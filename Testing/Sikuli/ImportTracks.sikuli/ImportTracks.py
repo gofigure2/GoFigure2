@@ -1,10 +1,10 @@
-import os
-address = os.getcwd()
+#import os
+#address = os.getcwd()
 #address = "/home/es1076/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images"
 
 #address = address+"/gofigure2_images"
-print address
-setBundlePath(address)
+#print address
+#setBundlePath(address)
 
 #2 scripts: one before GF closes and one after creating database. 
 #will need script to create meshes on 1 track in different time points.

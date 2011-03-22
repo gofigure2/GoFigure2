@@ -79,12 +79,12 @@ MegaCaptureImport::CreateOutput()
 //     this->/*m_ProgressBar*/->setValue( 60 );
 //     }
 
-  float counter = 0;
+  size_t counter = 0;
 
   std::vector< std::string >::iterator nit;
   for ( nit = m_FileNameS.begin();
         nit != m_FileNameS.end();
-        nit++ )
+        ++nit )
     {
     GoFigureFileInfoHelper tempInfo;
     tempInfo.m_Filename = ( *nit );
@@ -158,7 +158,7 @@ MegaCaptureImport::CreateOutput()
 //       this->m_ProgressBar->setValue( value );
 //       }
 
-    counter += 1;
+    ++counter;
     } // end for each filename
 
   m_FileNameS.clear();

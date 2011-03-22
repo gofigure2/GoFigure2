@@ -87,7 +87,6 @@ int main(int argc, char *argv[])
 
   int    resolution = 100;
   double z = 0.;
-  double lastz = 0.;
   double sphereRadius = 1.;
   double zmin = -0.9 * sphereRadius;
   double zmax = -zmin;
@@ -98,7 +97,6 @@ int main(int argc, char *argv[])
     {
     if ( ( i < 4 ) || ( i > 10 ) )
       {
-      lastz = z;
       double u = static_cast< double >( i ) / 20.;
       z = ( 1. - u ) * zmin + u * zmax;
       double radius = sqrt(sphereRadius * sphereRadius - z * z);

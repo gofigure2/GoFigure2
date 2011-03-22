@@ -145,8 +145,8 @@ std::vector< std::vector< std::string > > QGoWizardDB::GetFilenamesFromDB()
     //get the filenames of all the images corresponding to ChannelID:
     oFilenames[i] = ListSpecificValuesForOneColumn(
         DatabaseConnector, "image", "Filename", "channelID", ChannelID);
-    it++;
-    i++;
+    ++it;
+    ++i;
     }
 
   //close the database connection:

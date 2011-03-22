@@ -256,17 +256,17 @@ void QGoTabImageView4D::CreateModeActions()
 {
   QActionGroup *group = new QActionGroup(this);
 
-  QAction *ManualEditingAction = new QAction(tr("Manual-Editing"), this);
+  //QAction *ManualEditingAction = new QAction(tr("Manual-Editing"), this);
 
-  ManualEditingAction->setCheckable(true);
-  QIcon ManualEditingIcon;
-  ManualEditingIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/manual-editing.png") ),
-                              QIcon::Normal, QIcon::Off);
-  ManualEditingAction->setIcon(ManualEditingIcon);
+  //ManualEditingAction->setCheckable(true);
+  //QIcon ManualEditingIcon;
+  //ManualEditingIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/manual-editing.png") ),
+   //                           QIcon::Normal, QIcon::Off);
+  //ManualEditingAction->setIcon(ManualEditingIcon);
 
-  group->addAction(ManualEditingAction);
+  //group->addAction(ManualEditingAction);
 
-  this->m_ModeActions.push_back(ManualEditingAction);
+  //this->m_ModeActions.push_back(ManualEditingAction);
   /** \todo implement the manual editing mode*/
   //QObject::connect( ManualEditingAction, SIGNAL( triggered() ),
   //  this, SLOT( ManualEditingMode() ) );
@@ -971,7 +971,7 @@ void QGoTabImageView4D::FullScreenViewXYT()
 //--------------------------------------------------------------------------
 void QGoTabImageView4D::GetBackgroundColorFromImageViewer()
 {
-  double r, g, b;
+  double r(0.), g(0.), b(0.);
 
   m_XYZImageView->GetBackgroundColor(r, g, b);
   m_BackgroundColor.setRgbF(r, g, b);
@@ -1160,10 +1160,11 @@ QGoTabImageView4D::ValidateContour(const int & iId)
     std::cout << bounds[4] << " " << bounds[5] << std::endl;
 
     // Extract Min and Max from bounds
-    double       Min[3], Max[3];
+    double Min[3] = {0., 0., 0. };
+    double Max[3] = {0., 0., 0. };
     int          k = 0;
     unsigned int i;
-    for ( i = 0; i < 3; i++ )
+    for ( i = 0; i < 3; ++i )
       {
       Min[i] = bounds[k++];
       Max[i] = bounds[k++];
@@ -1255,7 +1256,7 @@ QGoTabImageView4D::AddContour(vtkPolyData *dataset,
 void
 QGoTabImageView4D::ChangeBackgroundColor()
 {
-  double r, g, b;
+  double r(0.), g(0.), b(0.);
 
   m_XYZImageView->GetBackgroundColor(r, g, b);
   m_BackgroundColor.setRgbF(r, g, b);

@@ -233,7 +233,8 @@ public:
   QGoPrintDatabase *m_DataBaseTables;
 
   GoFigureMeshAttributes ComputeMeshAttributes(vtkPolyData *iMesh,
-                                               const bool& iIntensity );
+                                               const bool& iIntensity,
+                                               const unsigned int& iTCoord );
 
 signals:
   void TimePointChanged(int TimePoint);
@@ -366,6 +367,7 @@ protected:
   QAction *                                 m_TakeSnapshotAction;
 
   float m_IntersectionLineWidth;
+  std::vector< QString > m_ChannelNames;
 
   int m_PCoord;
   int m_RCoord;

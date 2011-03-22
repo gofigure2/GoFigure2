@@ -117,7 +117,7 @@ void QGoTabManager::ClearTabElement(QGoTabElementBase *iE)
       {
       for ( std::list< QAction * >::iterator list_it = ( map_it->second ).begin();
             list_it != ( map_it->second ).end();
-            list_it++ )
+            ++list_it )
         {
         ( *list_it )->setDisabled(true);
         }
@@ -215,7 +215,7 @@ void QGoTabManager::SetUpTabElement(QGoTabElementBase *iE)
       {
       for ( std::list< QAction * >::iterator list_it = ( map_it->second ).begin();
             list_it != ( map_it->second ).end();
-            list_it++ )
+            ++list_it )
         {
         ( *list_it )->setEnabled(true);
         }

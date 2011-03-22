@@ -8,14 +8,14 @@ IF( WIN32 )
   ENDIF( NOT CYGWIN )
 ENDIF( WIN32 )
 
-CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/QGoGUILibConfigure.h.in
-  ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoGUILibConfigure.h @ONLY IMMEDIATE )
+CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/QGoGUILibConfigure.h.in
+  ${CMAKE_CURRENT_BINARY_DIR}/QGoGUILibConfigure.h @ONLY IMMEDIATE )
 
-CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/QGoAboutWidget.cxx.in
-  ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx @ONLY IMMEDIATE )
+CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/QGoAboutWidget.cxx.in
+  ${CMAKE_CURRENT_BINARY_DIR}/QGoAboutWidget.cxx @ONLY IMMEDIATE )
 
-CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx.in
-  ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx @ONLY IMMEDIATE )
+CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/QGoNetworkUtilities.cxx.in
+  ${CMAKE_CURRENT_BINARY_DIR}/QGoNetworkUtilities.cxx @ONLY IMMEDIATE )
 
 SET( QGoGUILIB_SRC
   VisualizationTraceContainers/ContourContainer.cxx
@@ -67,12 +67,6 @@ SET( QGoGUILIB_SRC
   QGoSelectedColorComboBox.cxx
   QGoCollectionColorComboBox.cxx
   QGoComboBox.cxx
-  SynchronizedViews/QGoSynchronizedView.cxx
-  SynchronizedViews/QGoSynchronizedView2D.cxx
-  SynchronizedViews/QGoSynchronizedView3D.cxx
-  SynchronizedViews/QGoSynchronizedView2DCallbacks.cxx
-  SynchronizedViews/QGoSynchronizedView3DCallbacks.cxx
-  SynchronizedViews/QGoSynchronizedViewManager.cxx
   QGoDBTraceManager.cxx
   QGoDBContourManager.cxx
   QGoDBMeshManager.cxx
@@ -114,6 +108,30 @@ SET( QGoGUILIB_SRC
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx
 )
+
+SET_SOURCE_FILES_PROPERTIES(
+  QGoTabElementBase.cxx
+  QGoTabImageViewNDBase.cxx
+  QGoTabImageViewElementBase.cxx
+  QGoImageView.cxx
+  QGoFilterSemiAutoBase.cxx
+  QGoDBTraceManager.cxx
+  QGoDBNameDescEntityManager.cxx
+  QGoColorComboBox.cxx
+  ABSTRACT
+  )
+
+IF( BUILD_COMPARETOOL )
+  SET( QGoGUILIB_SRC
+    ${QGoGUILIB_SRC}
+    SynchronizedViews/QGoSynchronizedView.cxx
+    SynchronizedViews/QGoSynchronizedView2D.cxx
+    SynchronizedViews/QGoSynchronizedView3D.cxx
+    SynchronizedViews/QGoSynchronizedView2DCallbacks.cxx
+    SynchronizedViews/QGoSynchronizedView3DCallbacks.cxx
+    SynchronizedViews/QGoSynchronizedViewManager.cxx
+  )
+ENDIF( BUILD_COMPARETOOL )
 
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
@@ -188,12 +206,6 @@ SET( QGoGUILIB_HDRS
   Wizard/QGoDBInitCreateAuthorsPage.h
   Wizard/QGoDBInitCreateMicroscopePage.h
   QGoNetworkUtilities.h
-  SynchronizedViews/QGoSynchronizedView.h
-  SynchronizedViews/QGoSynchronizedView2D.h
-  SynchronizedViews/QGoSynchronizedView3D.h
-  SynchronizedViews/QGoSynchronizedView2DCallbacks.h
-  SynchronizedViews/QGoSynchronizedView3DCallbacks.h
-  SynchronizedViews/QGoSynchronizedViewManager.h
   QGoColorComboBox.h
   QGoSelectedColorComboBox.h
   QGoCollectionColorComboBox.h
@@ -237,6 +249,17 @@ SET( QGoGUILIB_HDRS
   QGoMeshEditingWidgetManager.h
 )
 
+IF( BUILD_COMPARETOOL )
+  SET( QGoGUILIB_HDRS
+    ${QGoGUILIB_HDRS}
+    SynchronizedViews/QGoSynchronizedView.h
+    SynchronizedViews/QGoSynchronizedView2D.h
+    SynchronizedViews/QGoSynchronizedView3D.h
+    SynchronizedViews/QGoSynchronizedView2DCallbacks.h
+    SynchronizedViews/QGoSynchronizedView3DCallbacks.h
+    SynchronizedViews/QGoSynchronizedViewManager.h
+  )
+ENDIF( BUILD_COMPARETOOL )
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
 
@@ -270,12 +293,12 @@ SET( QGoGUILIB_UI
 # manual contour segmentation dock widget
   Resources/ManualSegmentationSettingsDlg.ui
   Resources/ContourManualSegmentationWidget.ui
-  
+
 # seed segmentation dock widgets
   Resources/LevelsetWidget.ui
   Resources/WatershedWidget.ui
   Resources/ShapeWidget.ui
-  
+
   # other
   Resources/NavigationDockWidget.ui
   Resources/QGoPrintDatabase.ui
@@ -283,12 +306,21 @@ SET( QGoGUILIB_UI
   Resources/QNameDescriptionInputDialog.ui
   Resources/QGoTraceSettingsWidget.ui
 
-  Resources/QGoSynchronizedView.ui
+  # seed segmentation dock widgets
+  Resources/LevelsetWidget.ui
+  Resources/WatershedWidget.ui
 
   # for tracks
   Resources/TrackDockWidget.ui
   Resources/TrackEditingWidget.ui
 )
+
+IF( BUILD_COMPARETOOL )
+  SET( QGoGUILIB_UI
+    ${QGoGUILIB_UI}
+    Resources/QGoSynchronizedView.ui
+  )
+ENDIF( BUILD_COMPARETOOL )
 
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
@@ -386,4 +418,43 @@ INSTALL( TARGETS QGoGui
   LIBRARY DESTINATION ${GOFIGURE2_INSTALL_LIB_DIR} COMPONENT Libraries NAMELINK_ONLY
   )
 
+FILE( GLOB __source_file_h "${CMAKE_CURRENT_SOURCE_DIR}/*.h" )
+FILE( GLOB __source_file_txx "${CMAKE_CURRENT_SOURCE_DIR}/*.txx" )
+FILE( GLOB __binary_file_h "${CMAKE_CURRENT_BINARY_DIR}/*.h" )
+FILE( GLOB __binary_file_txx "${CMAKE_CURRENT_BINARY_DIR}/*.txx" )
+
+FILE( GLOB __source_video_h "${CMAKE_CURRENT_SOURCE_DIR}/Video/*.h" )
+FILE( GLOB __binary_video_h "${CMAKE_CURRENT_BINARY_DIR}/Video/*.h" )
+
+FILE( GLOB __source_sync_h
+  "${CMAKE_CURRENT_SOURCE_DIR}/SynchronizedViews/*.h"
+)
+FILE( GLOB __binary_sync_h
+  "${CMAKE_CURRENT_BINARY_DIR}/SynchronizedViews/*.h"
+)
+FILE( GLOB __source_tracevisu_h
+  "${CMAKE_CURRENT_SOURCE_DIR}/VisualizationTraceContainers/*.h" )
+FILE( GLOB __source_trace_visu_txx
+  "${CMAKE_CURRENT_SOURCE_DIR}/VisualizationTraceContainers/*.txx" )
+FILE( GLOB __binary_tracevisu_h
+  "${CMAKE_CURRENT_BINARY_DIR}/VisualizationTraceContainers/*.h" )
+FILE( GLOB __binary_tracevisu_txx
+  "${CMAKE_CURRENT_BINARY_DIR}/VisualizationTraceContainers/*.txx" )
+
+FILE( GLOB __source_wizard_h
+  "${CMAKE_CURRENT_SOURCE_DIR}/Wizard/*.h" )
+FILE( GLOB __binary_tracevisu_h
+  "${CMAKE_CURRENT_BINARY_DIR}/Wizard/*.h" )
+
+INSTALL( FILES ${__source_file_h} ${__source_file_txx}
+    ${__binary_file_h} ${__binary_file_txx}
+    ${__source_video_h} ${__binary_video_h}
+    ${__source_sync_h} ${__binary_sync_h}
+    ${__source_tracevisu_h} ${__source_trace_visu_txx}
+    ${__binary_tracevisu_h} ${__binary_tracevisu_txx}
+    ${__source_wizard_h} ${__binary_tracevisu_h}
+    ${QGoGUILIB_UI_H}
+  DESTINATION ${GOFIGURE2_INSTALL_HEADER_DIR}
+  COMPONENT Development
+)
 

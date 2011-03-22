@@ -134,7 +134,7 @@ QStringList QGoComboBox::GetQStringListNames(NamesDescrContainerType iContainer)
   while ( iter != iContainer.end() )
     {
     oQListItems.append( iter->first.c_str() );
-    iter++;
+    ++iter;
     }
   return oQListItems;
 }

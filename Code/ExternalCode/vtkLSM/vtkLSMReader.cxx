@@ -700,9 +700,7 @@ int vtkLSMReader::ReadScanInformation(ifstream *f, unsigned long pos)
   unsigned int entry, type, size;
   unsigned int subblocksOpen = 0;
   char *       name;
-  double       gain;
   double       wavelength = 0.;
-  int          mode;
   char *       chName;
   int          chIsOn = 0, trackIsOn = 0, isOn = 0;
 
@@ -721,6 +719,8 @@ int vtkLSMReader::ReadScanInformation(ifstream *f, unsigned long pos)
 
     switch ( entry )
       {
+      double gain;
+      int mode;
       case DETCHANNEL_ENTRY_DETECTOR_GAIN_FIRST:
         gain = this->ReadDouble(f, pos);
         continue;

@@ -26,15 +26,7 @@ SET( QGOGUILIB_EXAMPLE_SRC
   QGoLevelset2DTest
   QGoDBInitCreateAuthorPageTest
   QGoDBInitCreateMicroscopePageTest
-
-  qgosynchronizedview2dtest
-  qgosynchronizedview3dtest
-  qgosynchronizedviewmanagertest
-
-  compareexample
-  comparepipelineexample
   QGoColorComboBoxTest
-  
   #QGoTrackEditingWidgetTest
   QGoTraceEditingWidgetTest
   QGoAlgorithmsManagerWidgetTest
@@ -43,6 +35,16 @@ SET( QGOGUILIB_EXAMPLE_SRC
   QGoMeshEditingWidgetManagerTest
 )
 
+IF( BUILD_COMPARETOOL )
+  SET( QGOGUILIB_EXAMPLE_SRC
+    ${QGOGUILIB_EXAMPLE_SRC}
+    qgosynchronizedview2dtest
+    qgosynchronizedview3dtest
+    qgosynchronizedviewmanagertest
+    compareexample
+    comparepipelineexample
+  )
+ENDIF( BUILD_COMPARETOOL )
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
 
@@ -181,25 +183,26 @@ SET_TESTS_PROPERTIES( qgotabimageview3dwtTest2
   lsmtomegacaptureTest
 )
 
+IF( BUILD_COMPARETOOL )
+  ADD_TEST( qgosynchronizedview2dtest
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgosynchronizedview2dtest
+    ${TESTING_DATA_PATH}/Circle.png
+    1
+  )
 
-ADD_TEST( qgosynchronizedview2dtest
-  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgosynchronizedview2dtest
-  ${TESTING_DATA_PATH}/Circle.png
-  1
-)
+  ADD_TEST( qgosynchronizedview3dtest
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgosynchronizedview3dtest
+    ${TESTING_DATA_PATH}/Circle3D.mhd
+    1
+  )
 
-ADD_TEST( qgosynchronizedview3dtest
-  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgosynchronizedview3dtest
-  ${TESTING_DATA_PATH}/Circle3D.mhd
-  1
-)
-
-ADD_TEST( qgosynchronizedviewmanagertest
-  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgosynchronizedviewmanagertest
-  ${TESTING_DATA_PATH}/Circle.png
-  ${TESTING_DATA_PATH}/Circle3D.mhd
-  1
-)
+  ADD_TEST( qgosynchronizedviewmanagertest
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgosynchronizedviewmanagertest
+    ${TESTING_DATA_PATH}/Circle.png
+    ${TESTING_DATA_PATH}/Circle3D.mhd
+    1
+  )
+ENDIF( BUILD_COMPARETOOL )
 
 ADD_TEST( QGoLevelset2DTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoLevelset2DTest

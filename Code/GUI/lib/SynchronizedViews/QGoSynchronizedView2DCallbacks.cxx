@@ -43,7 +43,7 @@
 
 QGoSynchronizedView2DCallbacks::QGoSynchronizedView2DCallbacks(
   std::vector< QGoSynchronizedView2D * > iOpenSynchronizedViews,
-  QObject *iParent) : QObject(iParent)
+  QObject *iParent) : QObject(iParent), m_vtkCallBackCamSync( NULL )
 {
   Initialize( iOpenSynchronizedViews.begin(), iOpenSynchronizedViews.end() );
 }

@@ -73,12 +73,12 @@
 <span class="cmt">#will have to click trace and table to get right size for xyview images and navigation widget to see if things moved or not
 </span><span class="cmt">#import os
 </span><span class="cmt">#address = os.getcwd()
-</span>address = <span class="str">"/home/es1076/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images"</span>
-
+</span><span class="cmt">#address = "/home/es1076/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images"
+</span>
 <span class="cmt">#address = address+"/gofigure2_images"
 </span>
-setBundlePath(address)
-Toolbar = (<span class="str">"default"</span>,<img src="ZoomIcon.png" />,<img src="PanIcon.png" />,<img src="ActorPickingIcon.png" />)
+<span class="cmt">#setBundlePath(address)
+</span>Toolbar = (<span class="str">"default"</span>,<img src="ZoomIcon.png" />,<img src="PanIcon.png" />,<img src="ActorPickingIcon.png" />)
 
 
 Mouse = (<span class="str">"Left"</span>,<span class="str">"Right"</span>,<span class="str">"Middle"</span>,<span class="str">"Scroll"</span>)
@@ -171,8 +171,13 @@ pointy = [None]*<span class="dig">4</span>
                                 mouseMove(Location(pointx[<span class="dig">0</span>],pointy[<span class="dig">0</span>]))
                                 <span class="skw">wait</span>(<span class="dig">3</span>)
                                 <span class="cmt">#assert xyz view rotated to the right by 10 degrees
+<<<<<<< HEAD
+</span>                                <span class="cmt">#assert exists(Pattern("1298594448537.png").similar(0.99))
+</span>
+=======
 </span>                                <span class="kw">assert</span> exists(Pattern(<img src="1298594448537.png" />).similar(<span class="dig">0.99</span>))
 
+>>>>>>> develop
 
                         <span class="kw">else</span>:
 

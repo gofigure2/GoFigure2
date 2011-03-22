@@ -418,7 +418,7 @@ QGoSynchronizedViewManager::Update()
   // we update all SynchronizedViews
   for ( SynchronizedViewIt = m_openSynchronizedViews.begin();
         SynchronizedViewIt != m_openSynchronizedViews.end();
-        SynchronizedViewIt++ )
+        ++SynchronizedViewIt )
     {
     ( *SynchronizedViewIt )->Update();
     }
@@ -428,7 +428,7 @@ QGoSynchronizedViewManager::Update()
   // we update all SynchronizedViews
   for ( SynchronizedView3DIt = m_openSynchronizedViews3D.begin();
         SynchronizedView3DIt != m_openSynchronizedViews3D.end();
-        SynchronizedView3DIt++ )
+        ++SynchronizedView3DIt )
     {
     ( *SynchronizedView3DIt )->Update();
     }
@@ -446,7 +446,7 @@ QGoSynchronizedViewManager::show()
   // we update all SynchronizedViews
   for ( SynchronizedViewIt = m_openSynchronizedViews.begin();
         SynchronizedViewIt != m_openSynchronizedViews.end();
-        SynchronizedViewIt++ )
+        ++SynchronizedViewIt )
     {
     ( *SynchronizedViewIt )->show();
     }
@@ -456,7 +456,7 @@ QGoSynchronizedViewManager::show()
   // we update all SynchronizedViews
   for ( SynchronizedView3DIt = m_openSynchronizedViews3D.begin();
         SynchronizedView3DIt != m_openSynchronizedViews3D.end();
-        SynchronizedView3DIt++ )
+        ++SynchronizedView3DIt )
     {
     ( *SynchronizedView3DIt )->show();
     }

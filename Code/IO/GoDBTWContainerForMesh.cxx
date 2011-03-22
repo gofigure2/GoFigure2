@@ -296,11 +296,35 @@ void GoDBTWContainerForMesh::GetValuesToFillForIntensityFromQueryResults
         {
         temp.push_back(IntensityValue);
         }
-      iterResult = iterResult + 2;
+
+      // iterResult = iterResult + 2;
+      if( iterResult != iResultQuery.end() )
+        {
+        ++iterResult;
+        }
+      else
+        {
+        itkGenericExceptionMacro( << "iterResult == iResultQuery" );
+        }
+      if( iterResult != iResultQuery.end() )
+        {
+        ++iterResult;
+        }
+      else
+        {
+        itkGenericExceptionMacro( << "iterResult == iResultQuery" );
+        }
       }
     else
       {
-      ++iterResult;
+      if( iterResult != iResultQuery.end() )
+        {
+        ++iterResult;
+        }
+      else
+        {
+        itkGenericExceptionMacro( << "iterResult == iResultQuery" );
+        }
 
       for ( i = 0; i < this->m_ChannelsInfo.size() - 1; i++ )
         {
@@ -309,11 +333,44 @@ void GoDBTWContainerForMesh::GetValuesToFillForIntensityFromQueryResults
           IntensityValue = *iterResult;
           temp.push_back(IntensityValue);
           }
-        iterResult = iterResult + 3;
+
+        // iterResult = iterResult + 3;
+        if( iterResult != iResultQuery.end() )
+          {
+          ++iterResult;
+          }
+        else
+          {
+          itkGenericExceptionMacro( << "iterResult == iResultQuery" );
+          }
+        if( iterResult != iResultQuery.end() )
+          {
+          ++iterResult;
+          }
+        else
+          {
+          itkGenericExceptionMacro( << "iterResult == iResultQuery" );
+          }
+        if( iterResult != iResultQuery.end() )
+          {
+          ++iterResult;
+          }
+        else
+          {
+          itkGenericExceptionMacro( << "iterResult == iResultQuery" );
+          }
         }
       IntensityValue = *iterResult;
       temp.push_back(IntensityValue);
-      ++iterResult;
+
+      if( iterResult != iResultQuery.end() )
+        {
+        ++iterResult;
+        }
+      else
+        {
+        itkGenericExceptionMacro( << "iterResult == iResultQuery" );
+        }
       }
     ioValuesToFill.push_back(temp);
     ++iterMeshID;

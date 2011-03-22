@@ -8,8 +8,11 @@ IF( WIN32 )
   ENDIF( NOT CYGWIN )
 ENDIF( WIN32 )
 
-CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Code/ExternalCode/PoissonReconstruction/PoissonReconstructionConfigure.h.in
-  ${GOFIGURE2_BINARY_DIR}/Code/ExternalCode/PoissonReconstruction/PoissonReconstructionConfigure.h @ONLY IMMEDIATE )
+CONFIGURE_FILE(
+  ${CMAKE_CURRENT_SOURCE_DIR}/PoissonReconstructionConfigure.h.in
+  ${CMAKE_CURRENT_BINARY_DIR}/PoissonReconstructionConfigure.h
+  @ONLY IMMEDIATE
+)
 
 ADD_LIBRARY( PoissonReconstruction
   vtkNormalEstimationFilter.cxx
@@ -49,4 +52,11 @@ INSTALL( TARGETS PoissonReconstruction
   LIBRARY DESTINATION ${GOFIGURE2_INSTALL_LIB_DIR} COMPONENT Libraries NAMELINK_ONLY
   )
 
+FILE( GLOB __source_file_h "${CMAKE_CURRENT_SOURCE_DIR}/*.h" )
+FILE( GLOB __source_file_txx "${CMAKE_CURRENT_SOURCE_DIR}/*.inl" )
 
+INSTALL( FILES ${__source_file_h} ${__source_file_txx}
+  ${CMAKE_CURRENT_BINARY_DIR}/PoissonReconstructionConfigure.h
+  DESTINATION ${GOFIGURE2_INSTALL_HEADER_DIR}
+  COMPONENT Development
+)

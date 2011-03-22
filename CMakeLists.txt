@@ -49,11 +49,11 @@ OPTION( SUPERBUILD "Use SuperBuild" OFF )
 IF( SUPERBUILD )
 
   CMAKE_MINIMUM_REQUIRED( VERSION 2.8.3 )
-  
+
   PROJECT( MYSUPERPROJECT )
   INCLUDE( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/SuperBuild/SuperBuild.cmake" )
   RETURN()
-  
+
 ELSE( SUPERBUILD )
 
   # CMake >= 2.8.2 MUST be installed (which is required by ITK)
@@ -83,12 +83,13 @@ ELSE( SUPERBUILD )
   # Export and Install configuration
   #
   # GOFIGURE2_INSTALL_BUNDLE_DIR       - bundle dir
+  # GOFIGURE2_INSTALL_HEADER_DIR       - include dir (headers)
   # GOFIGURE2_INSTALL_BIN_DIR          - binary dir (executables)
   # GOFIGURE2_INSTALL_LIB_DIR          - library dir (libs)
   # GOFIGURE2_INSTALL_DOC_DIR          - documentation dir
   # GOFIGURE2_INSTALL_LICENSE_DIR      - licenses dir
   #-----------------------------------------------------------------------
-  
+
   IF( NOT GOFIGURE2_INSTALL_BUNDLE_DIR )
     SET( GOFIGURE2_INSTALL_BUNDLE_DIR "." )
   ENDIF( NOT GOFIGURE2_INSTALL_BUNDLE_DIR )
@@ -96,6 +97,10 @@ ELSE( SUPERBUILD )
   IF( NOT GOFIGURE2_INSTALL_BIN_DIR )
     SET( GOFIGURE2_INSTALL_BIN_DIR "bin" )
   ENDIF( NOT GOFIGURE2_INSTALL_BIN_DIR )
+
+  IF( NOT GOFIGURE2_INSTALL_HEADER_DIR )
+    SET( GOFIGURE2_INSTALL_HEADER_DIR "include/gofigure2/" )
+  ENDIF( NOT GOFIGURE2_INSTALL_HEADER_DIR )
 
   IF( NOT GOFIGURE2_INSTALL_LIB_DIR )
     SET( GOFIGURE2_INSTALL_LIB_DIR "lib/gofigure2" )
@@ -250,6 +255,17 @@ ELSE( SUPERBUILD )
     ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoImageFilterPluginBase.cxx
   )
 
+  INSTALL(
+      FILES ${QGoGUIINTERFACES_HDRS}
+        ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoPluginHelper.h
+        ${GOFIGURE2_SOURCE_DIR}/Interfaces/QGoImageSegmentationPluginBase.h
+        ${GOFIGURE2_SOURCE_DIR}/Interfaces/PluginInformationBase.h
+      DESTINATION ${GOFIGURE2_INSTALL_HEADER_DIR}
+      COMPONENT Development
+      )
+
+  OPTION( BUILD_COMPARETOOL "Build image comparison tool" OFF )
+
   ADD_SUBDIRECTORY( Code )
   ADD_SUBDIRECTORY( Main )
 
@@ -307,6 +323,6 @@ ELSE( SUPERBUILD )
     "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/GOFIGURE2Uninstall.cmake"
     )
 
-  INCLUDE( GOFIGURE2CPack.cmake )  
+  INCLUDE( GOFIGURE2CPack.cmake )
 
 ENDIF( SUPERBUILD )

@@ -642,7 +642,7 @@ void QGoTabImageView3D::FullScreenViewXYZ()
  */
 void QGoTabImageView3D::GetBackgroundColorFromImageViewer()
 {
-  double r, g, b;
+  double r(0.), g(0.), b(0.);
 
   m_ImageView->GetBackgroundColor(r, g, b);
   this->m_BackgroundColor.setRgbF(r, g, b);
@@ -751,7 +751,7 @@ QGoTabImageView3D::SetSlice(int iDir, int *iIdx)
 void
 QGoTabImageView3D::ChangeBackgroundColor()
 {
-  double r, g, b;
+  double r(0.), g(0.), b(0.);
 
   m_ImageView->GetBackgroundColor(r, g, b);
   m_BackgroundColor.setRgbF(r, g, b);

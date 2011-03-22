@@ -505,8 +505,9 @@ QGoMainWindow::LoadMeshesFromDatabase(const int & iT)
           GoFigureMeshAttributes attributes =
             w3t->ComputeMeshAttributes(
               mesh_list_it->Nodes, // mesh
-              false);              // do not need to compute intensity based
-                                   // measure
+              false, // do not need to compute intensity based measure
+              mesh_list_it->TCoord
+              );
           w3t->m_DataBaseTables->PrintVolumeAreaForMesh(
             &attributes, mesh_list_it->TraceID);
           }
@@ -843,7 +844,7 @@ QGoMainWindow::SetupMenusFromTab(QGoTabElementBase *iT)
   for ( std::list< QAction * >::iterator
         list_it = m_TabDimPluginActionMap[iT->GetTabDimensionType()].begin();
         list_it != m_TabDimPluginActionMap[iT->GetTabDimensionType()].end();
-        list_it++
+        ++list_it
         )
     {
     ( *list_it )->setEnabled(true);
