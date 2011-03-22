@@ -972,7 +972,6 @@ UpdateDivisionActor(TrackStructure* iStructure)
   iStructure->TreeNode.ActorXZ = divisionActors[1];
   iStructure->TreeNode.ActorYZ = divisionActors[2];
   iStructure->TreeNode.ActorXYZ = divisionActors[3];
-
 }
 
 //-------------------------------------------------------------------------
