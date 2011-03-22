@@ -226,9 +226,10 @@ QGoFilterChanAndVese::Filter2D(double *iCenter, const int & iOrientation)
 
 //--------------------------------------------------------------------------
 
-void
+vtkPolyData *
 QGoFilterChanAndVese::Filter3D(double *iCenter, int iCurvature, int iIterations,
-  double iRadius, std::vector< vtkSmartPointer< vtkImageData > >* iImages, )
+  double iRadius, std::vector< vtkSmartPointer< vtkImageData > >* iImages,
+  int iChannel)
 {
   const int dimension = 3;
 
@@ -285,12 +286,13 @@ QGoFilterChanAndVese::Filter3D(double *iCenter, int iCurvature, int iIterations,
   setOutput(itk2vtk);
   itk2vtk->Delete();
 
-  if ( m_Dimension == 1 )
-    {
+  //if ( m_Dimension == 1 )
+ //   {
     vtkPolyData *output = ReconstructMesh(getOutput(), 0.);
-    emit         MeshCreated(output, this->getChannel() - 1);
-    }
-  else
+    //emit         MeshCreated(output, this->getChannel() - 1);
+    return output;
+ //   }
+ /* else
     {
     // Extract each slice according top the sampling
     vtkPlane *implicitFunction = vtkPlane::New();
@@ -317,7 +319,7 @@ QGoFilterChanAndVese::Filter3D(double *iCenter, int iCurvature, int iIterations,
     emit CreateCorrespondingMesh( getSampling() );
     implicitFunction->Delete();
     cutter->Delete();
-    }
+    }*/
 }
 
 //--------------------------------------------------------------------------
@@ -382,15 +384,16 @@ QGoFilterChanAndVese::ConnectSignals(int iFilterNumber)
 }
 
 //--------------------------------------------------------------------------
-void QGoFilterChanAndVese::ApplyFilterLevelSet3D(
+std::vector<vtkPolyData*> QGoFilterChanAndVese::ApplyFilterLevelSet3D(
   double iRadius, vtkPoints* iPoints, int iIterations, int iCurvature,
-  std::vector< vtkSmartPointer< vtkImageData > >* iImages)
+  std::vector< vtkSmartPointer< vtkImageData > >* iImages, int iChannel)
 
 {
+  std::vector<vtkPolyData*> oMeshes = std::vector<vtkPolyData*>();
    if ( iRadius <= 0 )
     {
     std::cerr << "Radius should be > 0 " << std::endl;
-    return NULL;
+    return oMeshes;
     }
    double *center2 = new double[3];
 
@@ -399,6 +402,9 @@ void QGoFilterChanAndVese::ApplyFilterLevelSet3D(
     {
     iPoints->GetPoint(i, center2);
 
-    this->Filter3D(center2, iCurvature, iIterations, iRadius, iImages );
+    oMeshes.push_back(
+      this->Filter3D(center2, iCurvature, iIterations, iRadius, iImages,
+      iChannel) );
     }
+   return oMeshes;
 }

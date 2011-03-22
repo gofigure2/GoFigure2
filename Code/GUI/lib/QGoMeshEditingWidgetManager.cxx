@@ -34,18 +34,19 @@
 #include "QGoMeshEditingWidgetManager.h"
 #include "QGoAlgorithmWidget.h"
 #include "QGoAlgoParameter.h"
+#include "QGoFilterChanAndVese.h"
 #include <iostream>
 
 
 QGoMeshEditingWidgetManager::QGoMeshEditingWidgetManager(
-  QStringList iListChannels, 
+  std::vector<QString> iVectChannels, 
   QStringList iListTimePoints, 
   vtkPoints* iSeeds, 
   std::vector< vtkSmartPointer< vtkImageData > >* iImages, 
   QWidget* iParent)
 {
  this->m_MeshEditingWidget = new QGoTraceEditingWidget(
-   "Mesh", iListChannels, iListTimePoints, iParent);
+   "Mesh", iVectChannels, iListTimePoints, iParent);
  this->m_Seeds = iSeeds;
  this->m_Images = iImages;
 
@@ -111,16 +112,22 @@ void QGoMeshEditingWidgetManager::GetSignalLevelSet()
   std::cout<<"Radius:"<<m_Radius->GetValue()<<std::endl;
   std::cout<<"Curvature:"<<m_Curvature->GetValue()<<std::endl;
   std::cout<<"Iterations:"<<m_Iterations->GetValue()<<std::endl;
-  /*LevelSetfilter = new QGoFilterChanAndVese(this, iSampling); // 3 i.e. 3D, to
-                                                                // create a mesh
-  filter = m_BaseAlgorithmSegmentationWidget->GetNumberOfFilters();
+
+  QGoFilterChanAndVese* LevelSetFilter = new QGoFilterChanAndVese(this, 2); 
+  emit UpdateSeeds();
+  std::vector<vtkPolyData*> NewMeshes = 
+    LevelSetFilter->ApplyFilterLevelSet3D(m_Radius->GetValue(), 
+    this->m_Seeds, m_Iterations->GetValue(),
+    m_Curvature->GetValue(), this->m_Images, 
+    this->m_MeshEditingWidget->GetChannelNumber() );
+ /* filter = m_BaseAlgorithmSegmentationWidget->GetNumberOfFilters();
   m_BaseAlgorithmSegmentationWidget->AddFilter( m_LevelSetfilter->getName() );
   m_LevelSetfilter->getWidget()->setParent(m_BaseAlgorithmSegmentationWidget);
   m_LevelSetfilter->setPoints( getSeed() );
   m_LevelSetfilter->setOriginalImageMC(m_OriginalImage);
   m_BaseAlgorithmSegmentationWidget->GetFrame()->addWidget( m_LevelSetfilter->getWidget() );
   m_LevelSetfilter->ConnectSignals(filter);*/
-  emit UpdateSeeds();
+  
 
   ClearAllSeeds();
 }

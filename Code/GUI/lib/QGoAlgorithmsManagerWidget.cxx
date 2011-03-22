@@ -40,11 +40,11 @@
 
 
 QGoAlgorithmsManagerWidget::QGoAlgorithmsManagerWidget(std::string iModeName,
-  QStringList iListChannels, QStringList iListTime, QWidget *iParent )
+  std::vector<QString> iVectChannels, QStringList iListTime, QWidget *iParent )
   :QWidget(iParent)
 {
   this->m_ModeName = iModeName;
-  this->Initialize(iListChannels, iListTime);
+  this->Initialize(iVectChannels, iListTime);
 }
 //-------------------------------------------------------------------------
 
@@ -55,14 +55,20 @@ QGoAlgorithmsManagerWidget::~QGoAlgorithmsManagerWidget()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoAlgorithmsManagerWidget::Initialize(QStringList iListChannels, 
+void QGoAlgorithmsManagerWidget::Initialize(std::vector<QString> iVectChannels, 
   QStringList iListTime)
 {
   this->m_VBoxLayout = new QVBoxLayout;
   QFormLayout* FormLayout = new QFormLayout;
  
   this->m_ChannelComboBox = new QComboBox(this);
-  this->m_ChannelComboBox->addItems(iListChannels);
+  std::vector<QString>::iterator iter = iVectChannels.begin();
+  while (iter != iVectChannels.end())
+    {
+    this->m_ChannelComboBox->addItem(*iter);
+    ++iter;
+    }
+
   FormLayout->addRow(tr("Channel:"), this->m_ChannelComboBox);
 
   this->m_TimeComboBox = new QComboBox(this);
@@ -154,6 +160,13 @@ void QGoAlgorithmsManagerWidget::EmitApplyAlgo()
   QGoAlgorithmWidget* iCurrentWidget = 
     dynamic_cast<QGoAlgorithmWidget*>(m_MethodWidgets->currentWidget());
   iCurrentWidget->EmitApplyAlgo();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int QGoAlgorithmsManagerWidget::GetChannelNumber()
+{
+  return this->m_ChannelComboBox->currentIndex();
 }
 /*void QGoAlgorithmsManagerWidget::AddMethod(std::string iNameMethod, 
   QWidget* iParametersWidget, QWidget* iAdvParamWidget)

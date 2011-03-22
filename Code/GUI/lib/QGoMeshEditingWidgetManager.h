@@ -48,7 +48,7 @@ class QGOGUILIB_EXPORT QGoMeshEditingWidgetManager: public QObject
 {
   Q_OBJECT
 public:
-  QGoMeshEditingWidgetManager(QStringList iListChannels, 
+  QGoMeshEditingWidgetManager(std::vector<QString> iVectChannels, 
     QStringList iListTimePoints, vtkPoints* iSeeds, 
     std::vector< vtkSmartPointer< vtkImageData > >* iImages, 
     QWidget* iParent=0);

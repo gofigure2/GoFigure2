@@ -34,11 +34,11 @@
 #include "QGoModesManagerWidget.h"
 #include <QLabel>
 
-QGoModesManagerWidget::QGoModesManagerWidget(QStringList iListChannels, 
+QGoModesManagerWidget::QGoModesManagerWidget(std::vector<QString> iVectChannels, 
   QStringList iListTimePoints, QWidget *iParent)
   :QWidget(iParent)
 {
-  this->Initialize(iListChannels, iListTimePoints);
+  this->Initialize(iVectChannels, iListTimePoints);
 }
 //-------------------------------------------------------------------------
 
@@ -49,7 +49,7 @@ QGoModesManagerWidget::~QGoModesManagerWidget()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoModesManagerWidget::Initialize(QStringList iListChannels, 
+void QGoModesManagerWidget::Initialize(std::vector<QString> iVectChannels, 
   QStringList iListTimePoints)
 {
   this->m_VBoxLayout = new QVBoxLayout;
@@ -70,7 +70,7 @@ void QGoModesManagerWidget::Initialize(QStringList iListChannels,
 
   //add default modes:
   this->m_SemiAutoAlgoManagerWidget = new
-    QGoAlgorithmsManagerWidget("SemiAutomated",iListChannels, 
+    QGoAlgorithmsManagerWidget("SemiAutomated",iVectChannels, 
     iListTimePoints, this);
   this->AddAlgoManagerWidget(this->m_SemiAutoAlgoManagerWidget);
 
@@ -146,4 +146,13 @@ void QGoModesManagerWidget::AddAlgoWidgetForAutomatedMode(
 void QGoModesManagerWidget::AddWidgetForManualMode(QWidget* iWidget)
 {
   this->AddWidgetWithModeName("Manual", iWidget);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int QGoModesManagerWidget::GetChannelNumber()
+{
+  dynamic_cast<QGoAlgorithmsManagerWidget*> CurrentWidget = 
+    this->m_ModeWidgets->currentWidget();
+  return CurrentWidget->GetChannelNumber();
 }

@@ -58,9 +58,9 @@ public:
 
   virtual void ConnectSignals(int iFilterNumber);
 
-  void ApplyFilterLevelSet3D(double iRadius, vtkPoints* iPoints, 
+  std::vector<vtkPolyData*> ApplyFilterLevelSet3D(double iRadius, vtkPoints* iPoints, 
     int iIterations, int iCurvature,
-    std::vector< vtkSmartPointer< vtkImageData > >* iImages);
+    std::vector< vtkSmartPointer< vtkImageData > >* iImages, int iChannel);
 
 public slots:
   void setIterations(int iIterations);
@@ -70,8 +70,10 @@ public slots:
 protected:
   void Filter2D(double *iCenter, const int & iOrientation);
 
-  void Filter3D(double *iCenter, int iCurvature, int iIterations,
-    double iRadius, std::vector< vtkSmartPointer< vtkImageData > >* iImages);
+  vtkPolyData * Filter3D(double *iCenter, int iCurvature, int iIterations,
+    double iRadius, std::vector< vtkSmartPointer< vtkImageData > >* iImages,
+    int iChannel);
+  
 
 private:
   int m_Iterations;

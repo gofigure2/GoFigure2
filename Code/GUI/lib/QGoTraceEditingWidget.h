@@ -49,8 +49,9 @@ class QGoTraceEditingWidget:
 {
   Q_OBJECT
 public:
-  explicit QGoTraceEditingWidget(std::string iTraceName , QStringList iListChannels, 
-  QStringList iListTimePoints, QWidget *iParent = 0 );
+  explicit QGoTraceEditingWidget(std::string iTraceName , 
+    std::vector<QString> iVectChannels, 
+    QStringList iListTimePoints, QWidget *iParent = 0 );
   ~QGoTraceEditingWidget();
 
   /**
@@ -73,8 +74,10 @@ public:
   void AddWidgetForManualMode(QWidget* iWidget);
   void CheckDefaultModes();
 
+  int GetChannelNumber();
+
 protected:
-  void Initialize(QStringList iListChannels, 
+  void Initialize(std::vector<QString> iVectChannels, 
   QStringList iListTimePoints, QWidget *iParent = 0);
   QGoModesManagerWidget* m_ModeEditingWidget;
   QVBoxLayout*           m_VLayout;

@@ -54,7 +54,7 @@ class QGoModesManagerWidget:
 {
   Q_OBJECT
 public:
-  explicit QGoModesManagerWidget(QStringList iListChannels, 
+  explicit QGoModesManagerWidget(std::vector<QString> iVectChannels, 
     QStringList iListTimePoints, QWidget *iParent = 0);
   ~QGoModesManagerWidget();
 
@@ -102,6 +102,11 @@ public:
   */
   void CheckDefaultModes();
 
+  /**
+  \brief return the number of the selected channel
+  */
+  int GetChannelNumber();
+
 protected:
   QVBoxLayout*                m_VBoxLayout;
   QComboBox*                  m_ModeComboBox;
@@ -109,7 +114,7 @@ protected:
   QGoAlgorithmsManagerWidget* m_SemiAutoAlgoManagerWidget;
   QGoAlgorithmsManagerWidget* m_AutoAlgoManagerWidget;
   
-  void Initialize(QStringList iListChannels, QStringList iListTimePoints);
+  void Initialize(std::vector<QString> iVectChannels, QStringList iListTimePoints);
 
 
 };

@@ -37,10 +37,10 @@
 #include <QPushButton>
 
 QGoTraceEditingWidget::QGoTraceEditingWidget(
-  std::string iTraceName, QStringList iListChannels, 
+  std::string iTraceName,std::vector<QString> iVectChannels, 
   QStringList iListTimePoints, QWidget *iParent)
 {
-  this->Initialize(iListChannels, iListTimePoints, iParent);
+  this->Initialize(iVectChannels, iListTimePoints, iParent);
   this->setWindowTitle(tr("%1 Editing").arg(iTraceName.c_str()));
 }
 //-------------------------------------------------------------------------
@@ -52,11 +52,11 @@ QGoTraceEditingWidget::~QGoTraceEditingWidget()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTraceEditingWidget::Initialize(QStringList iListChannels, 
+void QGoTraceEditingWidget::Initialize(std::vector<QString> iVectChannels, 
   QStringList iListTimePoints, QWidget *iParent)
 {
   this->m_ModeEditingWidget = new QGoModesManagerWidget(
-    iListChannels, iListTimePoints, this);
+    iVectChannels, iListTimePoints, this);
 
   this->m_VLayout = new QVBoxLayout;
   this->m_VLayout->addWidget(this->m_ModeEditingWidget);
@@ -114,4 +114,11 @@ void QGoTraceEditingWidget::AddWidgetForManualMode(QWidget* iWidget)
 void QGoTraceEditingWidget::CheckDefaultModes()
 {
   this->m_ModeEditingWidget->CheckDefaultModes();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int QGoTraceEditingWidget::GetChannelNumber()
+{
+  return this->m_ModeEditingWidget->GetChannelNumber();
 }
