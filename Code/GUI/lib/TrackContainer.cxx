@@ -703,10 +703,10 @@ AddDivision( unsigned int iMotherID, unsigned int iDaughter1ID,
   // Create Actor
   std::vector< vtkActor * > actors =
       CreateDivisionActor(iMotherID, iDaughter1ID, iDaughter2ID);
-  mother->TreeNode.m_DivisionActor[0] = actors[0];
-  mother->TreeNode.m_DivisionActor[1] = actors[1];
-  mother->TreeNode.m_DivisionActor[2] = actors[2];
-  mother->TreeNode.m_DivisionActor[3] = actors[3];
+  mother->TreeNode.ActorXY = actors[0];
+  mother->TreeNode.ActorXZ = actors[1];
+  mother->TreeNode.ActorYZ = actors[2];
+  mother->TreeNode.ActorXYZ = actors[3];
 
   //------------------------------
   // D1->motherID
@@ -959,19 +959,19 @@ UpdateDivisionActor(TrackStructure* iStructure)
   trace_property->SetOpacity(a);
 
   // remove actor from visu and delete them
-  for (int i = 0; i<4; ++i)
-  {
-  this->m_ImageView->RemoveActor(i, iStructure->TreeNode.m_DivisionActor[i]);
-  }
+  this->m_ImageView->RemoveActor(0, iStructure->TreeNode.ActorXY);
+  this->m_ImageView->RemoveActor(1, iStructure->TreeNode.ActorXZ);
+  this->m_ImageView->RemoveActor(2, iStructure->TreeNode.ActorYZ);
+  this->m_ImageView->RemoveActor(3, iStructure->TreeNode.ActorXYZ);
   iStructure->TreeNode.DeleteActors();
 
   // create actors and add it to the visualization
   std::vector< vtkActor * > divisionActors =
         m_ImageView->AddContour( division, trace_property );
-  iStructure->TreeNode.m_DivisionActor[0] = divisionActors[0];
-  iStructure->TreeNode.m_DivisionActor[1] = divisionActors[1];
-  iStructure->TreeNode.m_DivisionActor[2] = divisionActors[2];
-  iStructure->TreeNode.m_DivisionActor[3] = divisionActors[3];
+  iStructure->TreeNode.ActorXY = divisionActors[0];
+  iStructure->TreeNode.ActorXZ = divisionActors[1];
+  iStructure->TreeNode.ActorYZ = divisionActors[2];
+  iStructure->TreeNode.ActorXYZ = divisionActors[3];
 
 }
 
