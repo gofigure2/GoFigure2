@@ -125,7 +125,7 @@ TrackStructure::ReleaseData() const
     }
 
   TrackStructure* structure = const_cast<TrackStructure*>(this);
-  structure->TreeNode.DeleteActors();
+  structure->TreeNode.ReleaseData();
 }
 
 //--------------------------------------------------------------------------

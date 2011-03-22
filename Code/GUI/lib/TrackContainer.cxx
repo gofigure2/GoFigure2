@@ -827,7 +827,7 @@ CutLineage(unsigned int iMotherID)
   // Update daughters pointers
   tempMother.TreeNode.m_Child[0] = NULL;
   tempMother.TreeNode.m_Child[1] = NULL;
-  tempMother.TreeNode.DeleteActors();
+  tempMother.TreeNode.ReleaseData();
   // Push current element
   m_Container.get< TraceID >().replace(motherIt, tempMother);
 
@@ -963,7 +963,7 @@ UpdateDivisionActor(TrackStructure* iStructure)
   this->m_ImageView->RemoveActor(1, iStructure->TreeNode.ActorXZ);
   this->m_ImageView->RemoveActor(2, iStructure->TreeNode.ActorYZ);
   this->m_ImageView->RemoveActor(3, iStructure->TreeNode.ActorXYZ);
-  iStructure->TreeNode.DeleteActors();
+  iStructure->TreeNode.ReleaseData();
 
   // create actors and add it to the visualization
   std::vector< vtkActor * > divisionActors =
