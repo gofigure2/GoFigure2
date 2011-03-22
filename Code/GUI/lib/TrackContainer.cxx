@@ -441,7 +441,7 @@ TrackContainer::RecomputeCurrentElementMap(TrackStructure* iStructure, std::list
     }
 
   // testing
-  this->ShowCollection(19, true);
+  //this->ShowCollection(19, true);
 }
 
 //-------------------------------------------------------------------------
