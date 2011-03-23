@@ -209,7 +209,7 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
       new QGoDockWidgetStatus(
-        m_ContourSegmentationDockWidget, Qt::LeftDockWidgetArea, true, true),
+        m_ContourSegmentationDockWidget, Qt::LeftDockWidgetArea, false, true),
       m_ContourSegmentationDockWidget) );
 
   /*m_DockWidgetList.push_back(
@@ -221,7 +221,7 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
       new QGoDockWidgetStatus(this->m_DataBaseTables->GetTraceSettingsDockWidget(),
-                              Qt::LeftDockWidgetArea, true, true),
+                              Qt::LeftDockWidgetArea, false, true),
       this->m_DataBaseTables->GetTraceSettingsDockWidget() ) );
 
   m_DockWidgetList.push_back(
@@ -403,7 +403,7 @@ QGoTabImageView3DwT::CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax)
 
   QObject::connect(this->m_MeshEditingWidget,
                    SIGNAL(ClearAllSeeds() ),
-                   this,
+                   this->m_ImageView,
                    SLOT(ClearAllSeeds() ) );
 
   m_DockWidgetList.push_back(
@@ -420,7 +420,9 @@ QGoTabImageView3DwT::CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax)
   /*QObject::connect( m_MeshSegmentationDockWidget,
                     SIGNAL( ReinitializeInteractorActivated(bool) ),
                     this,
-                    SLOT( DefaultInteractorBehavior(bool) ) );
+                    SLOT( DefaultInteractorBehavior(bool) ) ); seems useless for now 
+    as we are in defaultmode as soon as the seedinteractorbehaviour is called
+
 
   // we need seeds for the manual mesh segmentation
   QObject::connect( m_MeshSegmentationDockWidget,

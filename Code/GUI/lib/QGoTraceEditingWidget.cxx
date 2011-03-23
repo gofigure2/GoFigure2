@@ -90,6 +90,11 @@ void QGoTraceEditingWidget::SetModesManager(QGoModesManagerWidget* iModeWidget)
                     SIGNAL (SetSeedInteractorBehaviour(bool) ),
                     this, 
                     SIGNAL (SetSeedInteractorBehaviour(bool) ) );
+
+  QObject::connect( this->m_ModeEditingWidget,
+                    SIGNAL(ResetClicked() ),
+                    this,
+                    SIGNAL(ResetClicked() ) );
 }
 //-------------------------------------------------------------------------
 

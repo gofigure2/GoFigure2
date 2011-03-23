@@ -125,7 +125,7 @@ void QGoMeshEditingWidgetManager::GetSignalLevelSet()
     this->m_MeshEditingWidget->GetChannelNumber() );
   
 
-  ClearAllSeeds();
+  emit ClearAllSeeds();
 }
 //-------------------------------------------------------------------------
 
@@ -162,6 +162,10 @@ void QGoMeshEditingWidgetManager::SetTheMeshWidget(
                     SIGNAL(SetSeedInteractorBehaviour(bool) ),
                     this,
                     SIGNAL(SetSeedInteractorBehaviour(bool) ) );
+
+  QObject::connect( this->m_MeshEditingWidget,
+                    SIGNAL(ResetClicked() ),
+                    this, SIGNAL(ClearAllSeeds() ) );
 }
 //-------------------------------------------------------------------------
 

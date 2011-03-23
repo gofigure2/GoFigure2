@@ -117,6 +117,7 @@ public slots:
 
 signals:
   void SetSeedInteractorBehaviour(bool enable);
+  void ResetClicked();
 
 protected:
   QVBoxLayout*                m_VBoxLayout;

@@ -79,10 +79,14 @@ void QGoModesManagerWidget::Initialize(std::vector<QString> iVectChannels,
     iListTimePoints, this);
   this->AddAlgoManagerWidget(this->m_AutoAlgoManagerWidget);
 
-  //QObject::connect(this->m_ModeComboBox, SIGNAL(activated(int)),
-  //             this->m_ModeWidgets, SLOT(setCurrentIndex(int)));
   QObject::connect(this->m_ModeComboBox, SIGNAL(activated(int)),
                    this, SLOT(SetTheRightMode(int)));
+
+  QObject::connect(this->m_AutoAlgoManagerWidget, SIGNAL(ResetClicked() ),
+                   this, SIGNAL(ResetClicked() ) );
+
+  QObject::connect(this->m_SemiAutoAlgoManagerWidget, SIGNAL(ResetClicked() ),
+                   this, SIGNAL(ResetClicked() ) );
   
 }
 //-------------------------------------------------------------------------

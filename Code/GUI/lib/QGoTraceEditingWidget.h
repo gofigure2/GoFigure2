@@ -80,6 +80,8 @@ public:
 signals:
   void SetSeedInteractorBehaviour(bool enable);
 
+  void ResetClicked();
+
 protected:
   void Initialize(std::vector<QString> iVectChannels, 
   QStringList iListTimePoints, QWidget *iParent = 0);
