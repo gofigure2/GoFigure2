@@ -856,6 +856,7 @@ void QGoPrintDatabase::UpdateWidgetsForCorrespondingTrace(std::string iTraceName
     this->blockSignals(true);
     this->SetTable(iTraceName);
     this->blockSignals(false);
+    this->m_TraceSettingsDockWidget->show();
     return;
     }
   this->UpdateSelectedCollectionForTableWidget(PreviousTraceName);

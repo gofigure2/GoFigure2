@@ -3393,6 +3393,7 @@ QGoTabImageView3DwT::UpdateMeshEditingWidget()
 {
   if (this->m_MeshEditingWidget != NULL)
     {
+    this->ShowTraceWidgetsForMesh(true);
     if (this->m_ChannelClassicMode)
       {
       this->m_MeshEditingWidget->SetTSliceForClassicView();
