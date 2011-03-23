@@ -1216,10 +1216,10 @@ void QGoTabImageView3DwT::CreateModeActions()
   //                  this,
   //                  SLOT( RequieresTraceWidget(bool) ) );
 
- // QObject::connect( MeshSegmentationAction,
- //                   SIGNAL( toggled(bool) ),
- //                   this,
- //                   SLOT( ShowTraceWidgetsForMesh(bool) ) );
+  QObject::connect( MeshSegmentationAction,
+                    SIGNAL( toggled(bool) ),
+                    this,
+                    SLOT( ShowTraceWidgetsForMesh(bool) ) );
 
   QAction *separator2 = new QAction(this);
   separator2->setSeparator(true);
@@ -3386,6 +3386,8 @@ QGoTabImageView3DwT::GoToLocation(int iX, int iY, int iZ, int iT)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/** \todo Lydie Nico redundant parts with the SetTimePointWithMegaCaptureTimeChannels(int iChannel,
+                                                             int iPreviousT)*/
 void
 QGoTabImageView3DwT::UpdateMeshEditingWidget()
 {

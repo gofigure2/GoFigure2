@@ -159,6 +159,10 @@ void QGoAlgorithmsManagerWidget::SetTSliceForDopplerView(QStringList iListTimePo
 {
   this->m_TimeComboBox->clear();
   this->m_TimeComboBox->addItems(iListTimePoints);
+  if (iListTimePoints.size() > 0)
+    {
+    this->m_TimeComboBox->setCurrentIndex(1);
+    }
   this->m_TimeComboBox->setEnabled(true);
   this->m_ChannelComboBox->setCurrentIndex(iIndexChannel);
   this->m_ChannelComboBox->setEnabled(false);

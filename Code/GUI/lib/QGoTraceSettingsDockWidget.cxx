@@ -42,6 +42,7 @@ QGoTraceSettingsDockWidget::QGoTraceSettingsDockWidget(
                     this, SLOT( ModifyWindowTitle(QString) ) );
   this->m_TraceWidget->UpdateTraceAndCollection("contour", "mesh");
   this->setWidget(this->m_TraceWidget);
+  //this->m_TraceWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 }
 
 //-------------------------------------------------------------------------
