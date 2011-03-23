@@ -183,9 +183,9 @@ protected:
   element into the track container
   \param[in] iDatabaseConnector connection to the database
   */
-  void SaveTrackCurrentElement(vtkMySQLDatabase* iDatabaseConnector, bool iInsert);
+  void SaveTrackCurrentElement(vtkMySQLDatabase* iDatabaseConnector);
 
-  void SaveTrackStructureInDB(vtkMySQLDatabase* iDatabaseConnector,
+  void SaveTrackStructure(vtkMySQLDatabase* iDatabaseConnector,
       TrackStructure* iStructure);
 
   /**

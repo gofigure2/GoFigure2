@@ -217,7 +217,7 @@ public:
    * \brief Update the current element map then polydata
    * \param[in] iMeshes meshes to be added in the map
    */
-  void UpdateCurrentElementMap( std::map< unsigned int, double* > iMeshes);
+  void ImportTrackInCurrentElement( std::map< unsigned int, double* > iMeshes);
 
   /**
    * \brief Create new actors for the current polydata and update and visualize

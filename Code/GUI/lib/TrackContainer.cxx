@@ -97,39 +97,32 @@ TrackContainer::DeleteElement(const unsigned int & iId)
 //-------------------------------------------------------------------------
 bool TrackContainer::DeleteElement(MultiIndexContainerTraceIDIterator iIter)
 {
-  if ( iIter != m_Container.get< TraceID >().end() )
+  assert ( iIter != m_Container.get< TraceID >().end() );
+  assert ( this->m_ImageView );
+
+  if ( iIter->ActorXY )
     {
-    if ( this->m_ImageView )
-      {
-      if ( iIter->ActorXY )
-        {
-        this->m_ImageView->RemoveActor(0, iIter->ActorXY);
-        }
-      if ( iIter->ActorXZ )
-        {
-        this->m_ImageView->RemoveActor(1, iIter->ActorXZ);
-        }
-      if ( iIter->ActorYZ )
-        {
-        this->m_ImageView->RemoveActor(2, iIter->ActorYZ);
-        }
-      if ( iIter->ActorXYZ )
-        {
-        this->m_ImageView->RemoveActor(3, iIter->ActorXYZ);
-        }
-      }
-    iIter->ReleaseData();
-
-    m_Container.get< TraceID >().erase(iIter);
-
-    if ( this->m_ImageView )
-      {
-      m_ImageView->UpdateRenderWindows();
-      }
-
-    return true;
+    this->m_ImageView->RemoveActor(0, iIter->ActorXY);
     }
-  return false;
+  if ( iIter->ActorXZ )
+    {
+    this->m_ImageView->RemoveActor(1, iIter->ActorXZ);
+    }
+  if ( iIter->ActorYZ )
+    {
+    this->m_ImageView->RemoveActor(2, iIter->ActorYZ);
+    }
+  if ( iIter->ActorXYZ )
+    {
+    this->m_ImageView->RemoveActor(3, iIter->ActorXYZ);
+    }
+
+  iIter->ReleaseData();
+
+  m_Container.get< TraceID >().erase(iIter);
+  m_ImageView->UpdateRenderWindows();
+
+  return true;
 }
 
 //-------------------------------------------------------------------------
@@ -138,6 +131,8 @@ bool TrackContainer::DeleteElement(MultiIndexContainerTraceIDIterator iIter)
 std::list< unsigned int >
 TrackContainer::DeleteAllHighlightedElements()
 {
+  assert ( this->m_ImageView );
+
   MultiIndexContainerHighlightedIterator it0, it1, it_t;
 
   boost::tuples::tie(it0, it1) =
@@ -149,24 +144,21 @@ TrackContainer::DeleteAllHighlightedElements()
     {
     oList.push_back(it0->TraceID);
 
-    if ( this->m_ImageView )
+    if ( it0->ActorXY )
       {
-      if ( it0->ActorXY )
-        {
-        this->m_ImageView->RemoveActor(0, it0->ActorXY);
-        }
-      if ( it0->ActorXZ )
-        {
-        this->m_ImageView->RemoveActor(1, it0->ActorXZ);
-        }
-      if ( it0->ActorYZ )
-        {
-        this->m_ImageView->RemoveActor(2, it0->ActorYZ);
-        }
-      if ( it0->ActorXYZ )
-        {
-        this->m_ImageView->RemoveActor(3, it0->ActorXYZ);
-        }
+      this->m_ImageView->RemoveActor(0, it0->ActorXY);
+      }
+    if ( it0->ActorXZ )
+      {
+      this->m_ImageView->RemoveActor(1, it0->ActorXZ);
+      }
+    if ( it0->ActorYZ )
+      {
+      this->m_ImageView->RemoveActor(2, it0->ActorYZ);
+      }
+    if ( it0->ActorXYZ )
+      {
+      this->m_ImageView->RemoveActor(3, it0->ActorXYZ);
       }
 
     it0->ReleaseData();
@@ -177,10 +169,7 @@ TrackContainer::DeleteAllHighlightedElements()
     m_Container.get< Highlighted >().erase(it_t);
     }
 
-  if ( this->m_ImageView )
-    {
-    m_ImageView->UpdateRenderWindows();
-    }
+  m_ImageView->UpdateRenderWindows();
 
   return oList;
 }
@@ -258,46 +247,28 @@ TrackContainer::UpdateTrackStructurePolyData(const TrackStructure & iTrackStruct
   return true;
 }
 //-------------------------------------------------------------------------
-// IMPORT TRACKS
+
 //-------------------------------------------------------------------------
 void
-TrackContainer::UpdateCurrentElementMap(std::map< unsigned int, double * > iMeshes)
+TrackContainer::ImportTrackInCurrentElement(std::map< unsigned int, double * > iMeshes)
 {
-  std::cout << "UpdateCurrentElementMap..." << std::endl;
-
-  // add points to existing map, not erasing
   std::map< unsigned int, double * >::iterator beginMesh = iMeshes.begin();
   std::map< unsigned int, double * >::iterator endMesh = iMeshes.end();
 
   while ( beginMesh != endMesh )
     {
-    bool addPoint =
-      this->m_CurrentElement.InsertElement(beginMesh->first,
+    this->m_CurrentElement.InsertElement(beginMesh->first,
                                            beginMesh->second);
-
-    if ( !addPoint )
-      {
-      // there is already sth at this time point, delete the point (should
-      // replace??)
-      delete[] beginMesh->second;
-      }
     ++beginMesh;
     }
 
-  // Create a new polydata and new actors if it is a new track
-  if ( !this->m_CurrentElement.Nodes )
-    {
-    //Create new polydata (new address)
-    this->m_CurrentElement.Nodes = vtkPolyData::New();
+  this->m_CurrentElement.Visible = true;
 
-    UpdateTrackStructurePolyData(this->m_CurrentElement);
-
-    CreateTrackActors(this->m_CurrentElement);
-
-    return;
-    }
+  this->m_CurrentElement.Nodes = vtkPolyData::New();
 
   UpdateTrackStructurePolyData(this->m_CurrentElement);
+
+  CreateTrackActors(this->m_CurrentElement);
 }
 
 //-------------------------------------------------------------------------
@@ -359,7 +330,6 @@ UpdatePointsForATrack(unsigned int iTrackID,
   // if the element has no polydata create a new address for the polydata
   if ( ! mother->Nodes )
     {
-    std::cout << "create polydata! " << std::endl;
     //Create new polydata (new address)
     mother->Nodes = vtkPolyData::New();
     }
@@ -370,12 +340,9 @@ UpdatePointsForATrack(unsigned int iTrackID,
   // if element has no actors, create it
   if ( ! mother->ActorXY )
     {
-    std::cout << "create actors! " << std::endl;
     // add actors in the visualization with given property
     CreateTrackActors( *mother );
     }
-
-  std::cout << mother->ActorXY << std::endl;
 
   return mother;
 }
@@ -573,10 +540,9 @@ TrackContainer::UpdateTracksRepresentation(double iRadius, double iRadius2)
   const char *ptr    = bytes.data();
   ChangeColorCode(ptr);
 
-  if ( this->m_ImageView )
-    {
-    m_ImageView->UpdateRenderWindows();
-    }
+  assert ( this->m_ImageView );
+
+  this->m_ImageView->UpdateRenderWindows();
 }
 
 //-------------------------------------------------------------------------
