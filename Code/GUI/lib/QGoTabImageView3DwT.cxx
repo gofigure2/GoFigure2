@@ -2194,6 +2194,10 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
 {
   if ( iChecked )
     {
+    // Requiered if we modified the window level
+    /** \todo Nicolas-Find a better solution */
+    m_ImageView->ResetWindowLevel();
+
     vtkSmartPointer< vtkImageAppendComponents > append_filter =
       vtkSmartPointer< vtkImageAppendComponents >::New();
 
