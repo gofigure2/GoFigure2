@@ -490,6 +490,7 @@ QGoMainWindow::LoadMeshesFromDatabase(const int & iT)
             &attributes, mesh_list_it->TraceID);
           }
 
+        std::cout << "mesh_list_it: " << mesh_list_it->TraceID << std::endl;
         w3t->AddMeshFromNodes< TraceID >(mesh_list_it);
 
         ++mesh_list_it;

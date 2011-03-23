@@ -256,12 +256,15 @@ public:
   template< class TActor >
   bool UpdateElementHighlightingWithGivenActor(vtkActor *iActor)
     {
-    unsigned TraceId;
+    unsigned TraceId = 0;
     Qt::CheckState state;
     bool oValue =
         Superclass::UpdateElementHighlightingWithGivenActor< TActor >( iActor,
                                                                  TraceId,
                                                                  state );
+
+    std::cout <<"TraceId picked: " << iActor << std::endl;
+
     if( oValue )
       {
       emit TracePicked(TraceId, state);

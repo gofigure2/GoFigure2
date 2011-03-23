@@ -301,16 +301,14 @@ TraceContainerBase< TContainer >::UpdateElementHighlightingWithGivenTraceID(cons
       temp_property->Delete();
       }
 
-    MultiIndexContainerElementType tempStructure(*it);
+    MultiIndexContainerElementType* tempStructure =
+        const_cast<MultiIndexContainerElementType*>(&(*it));
 
-    tempStructure.Highlighted = !it->Highlighted;
+    tempStructure->Highlighted = !it->Highlighted;
 
-    m_Container.get< TraceID >().replace(it, tempStructure);
+    assert ( m_ImageView );
 
-    if ( m_ImageView )
-      {
-      m_ImageView->UpdateRenderWindows();
-      }
+    m_ImageView->UpdateRenderWindows();
 
     return true;
     }
@@ -363,20 +361,18 @@ TraceContainerBase< TContainer >::UpdateElementHighlightingWithGivenTraceIDsBase
           temp_property->Delete();
           }
 
-        MultiIndexContainerElementType tempStructure(*it);
+        MultiIndexContainerElementType* tempStructure =
+            const_cast<MultiIndexContainerElementType*>(&(*it));
 
-        tempStructure.Highlighted = iCheck;
-
-        m_Container.get< TraceID >().replace(it, tempStructure);
+        tempStructure->Highlighted = iCheck;
         }
 
       ++constIterator;
       }
 
-    if ( m_ImageView )
-      {
-      m_ImageView->UpdateRenderWindows();
-      }
+    assert ( m_ImageView );
+
+    m_ImageView->UpdateRenderWindows();
     }
 }
 
@@ -439,11 +435,10 @@ TraceContainerBase< TContainer >::UpdateElementVisibilityWithGivenTraceIDsBase(c
 
         it->SetActorVisibility(visible);
 
-        MultiIndexContainerElementType tempStructure(*it);
+        MultiIndexContainerElementType* tempStructure =
+            const_cast<MultiIndexContainerElementType*>(&(*it));
 
-        tempStructure.Visible = visible;
-
-        m_Container.get< TraceID >().replace(it, tempStructure);
+        tempStructure->Visible = visible;
         }
 
       ++constIterator;
@@ -567,16 +562,15 @@ TraceContainerBase< TContainer >::UpdateElementVisibilityWithGivenTraceID(const 
 
     it->SetActorVisibility(!it->Visible);
 
-    MultiIndexContainerElementType tempStructure(*it);
+    MultiIndexContainerElementType* tempStructure =
+        const_cast<MultiIndexContainerElementType*>(&(*it));
 
-    tempStructure.Visible = !it->Visible;
+    tempStructure->Visible = !it->Visible;
 
-    m_Container.get< TraceID >().replace(it, tempStructure);
+    assert ( m_ImageView );
 
-    if ( m_ImageView )
-      {
-      m_ImageView->UpdateRenderWindows();
-      }
+    m_ImageView->UpdateRenderWindows();
+
     return true;
     }
 
@@ -940,6 +934,7 @@ TraceContainerBase< TContainer >::UpdateCurrentElementFromVisuBase(std::vector< 
                                                                    const bool & iHighlighted,
                                                                    const bool & iVisible)
 {
+  std::cout << "Update current..." << std::endl;
   if ( iActors.size() != 4 )
     {
     std::cerr << "iActors.size() != 4" << std::endl;

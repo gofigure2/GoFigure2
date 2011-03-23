@@ -181,32 +181,32 @@ public:
 
       if ( id_it != m_Container.get< TraceID >().end() )
         {
-        MultiIndexContainerElementType temp(*id_it);
-        temp.Highlighted = false;
-        temp.Visible = false;
+        MultiIndexContainerElementType* temp =
+            const_cast<MultiIndexContainerElementType*>(&(*id_it));
+        temp->Highlighted = false;
+        temp->Visible = false;
 
         vtkProperty *tproperty = vtkProperty::New();
         tproperty->SetColor(id_it->rgba[0], id_it->rgba[1], id_it->rgba[2]);
         tproperty->SetOpacity(id_it->rgba[3]);
         tproperty->SetLineWidth( this->m_IntersectionLineWidth );
 
-        vtkPolyData *nodes = id_it->Nodes;
-        if ( nodes )
+        if ( temp->Nodes )
           {
-          temp.Visible = id_it->Visible;
+          temp->Visible = id_it->Visible;
 
           std::vector< vtkActor * > actor =
-              this->AddTrace( nodes, tproperty );
+              this->AddTrace( temp->Nodes, tproperty );
 
-          temp.ActorXY = actor[0];
-          temp.ActorXZ = actor[1];
-          temp.ActorYZ = actor[2];
-          temp.ActorXYZ = actor[3];
+          temp->ActorXY = actor[0];
+          temp->ActorXZ = actor[1];
+          temp->ActorYZ = actor[2];
+          temp->ActorXYZ = actor[3];
 
           typedef void ( QGoImageView3D::*ImageViewMember )(const int &, vtkActor *);
           ImageViewMember f;
 
-          if ( temp.Visible )
+          if ( temp->Visible )
             {
             f = &QGoImageView3D::AddActor;
             }
@@ -215,20 +215,16 @@ public:
             f = &QGoImageView3D::RemoveActor;
             }
 
-          if( m_ImageView )
+          assert( m_ImageView );
+          for ( int i = 0; i < 4; i++ )
             {
-            for ( int i = 0; i < 4; i++ )
-              {
-              ( m_ImageView->*f )(i, actor[i]);
-              }
+            ( m_ImageView->*f )(i, actor[i]);
             }
           }
         else
           {
-          temp.Visible = false;
+          temp->Visible = false;
           }
-
-        m_Container.get< TraceID >().replace(id_it, temp);
         }
       ++it;
       }
@@ -245,22 +241,23 @@ public:
   * add it */
   template< class TIndex >
   void UpdateVisualizationForGivenElement(
-    typename MultiIndexContainerType::template index< TIndex >::type::iterator iIt,
+    typename MultiIndexContainerType::template index< TIndex >::type::iterator& iIt,
     std::vector< vtkActor * > iActors,
     const bool & iHighlighted,
     const bool & iVisible)
     {
-    MultiIndexContainerElementType temp = *iIt;
+    MultiIndexContainerElementType* temp =
+        const_cast<MultiIndexContainerElementType*>(&(*iIt));
 
     if ( iActors.size() == 4 )
       {
-      temp.ActorXY = iActors[0];
-      temp.ActorXZ = iActors[1];
-      temp.ActorYZ = iActors[2];
-      temp.ActorXYZ = iActors[3];
+      temp->ActorXY = iActors[0];
+      temp->ActorXZ = iActors[1];
+      temp->ActorYZ = iActors[2];
+      temp->ActorXYZ = iActors[3];
       }
-    temp.Highlighted = iHighlighted;
-    temp.Visible = iVisible;
+    temp->Highlighted = iHighlighted;
+    temp->Visible = iVisible;
 
     typedef void ( QGoImageView3D::*ImageViewMember )(const int &, vtkActor *);
     ImageViewMember f;
@@ -274,16 +271,11 @@ public:
       f = &QGoImageView3D::RemoveActor;
       }
 
-    if( m_ImageView )
+    assert( m_ImageView );
+    for ( int i = 0; i < 4; i++ )
       {
-      for ( int i = 0; i < 4; i++ )
-        {
-        ( m_ImageView->*f )(i, iActors[i]);
-        }
+      ( m_ImageView->*f )(i, iActors[i]);
       }
-
-    using boost::multi_index::get;
-    m_Container.get< TIndex >().replace(iIt, temp);
     }
 
   /**
@@ -565,6 +557,7 @@ protected:
     {
     using boost::multi_index::get;
 
+    // unecessary if....
     if ( iActor )
       {
       typedef typename MultiIndexContainerType::template index< TActor >::type::iterator
@@ -596,8 +589,9 @@ protected:
           temp_property->Delete();
           }
 
-        MultiIndexContainerElementType tempStructure(*it);
-        tempStructure.Highlighted = !it->Highlighted;
+        MultiIndexContainerElementType* tempStructure =
+            const_cast<MultiIndexContainerElementType*>(&(*it));
+        tempStructure->Highlighted = !it->Highlighted;
 
         // Note: it->Highlighted is the status before picking the actor
         if ( !it->Highlighted )
@@ -609,12 +603,9 @@ protected:
           oState = Qt::Unchecked;
           }
 
-        m_Container.get< TActor >().replace(it, tempStructure);
+        assert( m_ImageView );
 
-        if( m_ImageView )
-          {
-          m_ImageView->UpdateRenderWindows();
-          }
+        m_ImageView->UpdateRenderWindows();
 
         oTraceId = it->TraceID;
 
@@ -640,6 +631,8 @@ protected:
     {
     using boost::multi_index::get;
 
+    std::cout << "adress: " << iActor << std::endl;
+
     if ( iActor )
       {
       typedef typename MultiIndexContainerType::template index< TActor >::type::iterator
@@ -652,8 +645,10 @@ protected:
         {
         it->SetActorVisibility( !it->Visible );
 
-        MultiIndexContainerElementType tempStructure(*it);
-        tempStructure.Visible = !it->Visible;
+        MultiIndexContainerElementType* tempStructure =
+            const_cast<MultiIndexContainerElementType*>(&(*it));
+
+        tempStructure->Visible = !it->Visible;
 
         // Note: it->Highlighted is the status before picking the actor
         if ( !it->Visible )
@@ -665,12 +660,8 @@ protected:
           oState = Qt::Unchecked;
           }
 
-        m_Container.get< TActor >().replace(it, tempStructure);
-
-        if( m_ImageView )
-          {
-          m_ImageView->UpdateRenderWindows();
-          }
+        assert( m_ImageView );
+        m_ImageView->UpdateRenderWindows();
 
         oTraceId = it->TraceID;
 
@@ -710,8 +701,9 @@ protected:
           {
           it->SetActorVisibility( iState );
 
-          MultiIndexContainerElementType tempStructure(*it);
-          tempStructure.Visible = iState;
+          MultiIndexContainerElementType* tempStructure =
+              const_cast<MultiIndexContainerElementType*>(&(*it));
+          tempStructure->Visible = iState;
 
           // Note: it->Highlighted is the status before picking the actor
           if ( iState )
@@ -722,9 +714,6 @@ protected:
             {
             oState = Qt::Unchecked;
             }
-
-          m_Container.get< TActor >().replace(it, tempStructure);
-          //m_ImageView->UpdateRenderWindows();
 
           oTraceID = it->TraceID;
           }

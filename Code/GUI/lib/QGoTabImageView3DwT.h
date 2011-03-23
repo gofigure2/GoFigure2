@@ -492,6 +492,12 @@ protected:
       }
 
     std::vector< vtkActor * > mesh_actor = this->AddContour( temp, mesh_property );
+
+    std::cout << "mesh_actor1: " << mesh_actor[0] << std::endl;
+    std::cout << "mesh_actor2: " << mesh_actor[1] << std::endl;
+    std::cout << "mesh_actor3: " << mesh_actor[2] << std::endl;
+    std::cout << "mesh_actor4: " << mesh_actor[3] << std::endl;
+
     mesh_property->Delete();
 
     iContainer->template UpdateVisualizationForGivenElement< TIndex >( iIt,
