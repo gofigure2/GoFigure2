@@ -2849,8 +2849,8 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView,
   m_MeshContainer->InsertCurrentElement();
 
   // testing show/hide lineage
-  int visibility = traceID%2;
-  std::cout << "visibility: " << visibility << std::endl;
+  //int visibility = traceID%2;
+  //std::cout << "visibility: " << visibility << std::endl;
   //this->m_TrackContainer->ShowCollection(19,visibility);
 }
 

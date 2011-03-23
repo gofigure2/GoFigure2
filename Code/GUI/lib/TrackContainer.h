@@ -136,20 +136,6 @@ public:
   /** \brief Destructor. */
   ~TrackContainer();
 
-  /** \brief Update Current Element by providing all required information
-  from the visualization.
-  \param[in] iActors
-  \param[in] iNodes
-  \param[in] iHighlighted
-  \param[in] iVisible
-  \see TrackStructure
-  */
-  void UpdateCurrentElementFromVisu(std::vector< vtkActor * > iActors,
-                                    vtkPolyData *iNodes,
-                                    const bool & iHighlighted,
-                                    const bool & iVisible);
-
-
   /*
   \brief Remove all actors (elements) from the scene for a given time point
   \param[in] iT
@@ -192,12 +178,6 @@ public:
     \return false if it hasn't (i.e. mesh without point)
   */
   bool UpdateTrackStructurePolyData( const TrackStructure& iTrackStructure);
-
-  /**
-    \brief Update the current element actors from the visualization.
-    \param[in] iActors Vector container an actor pointer for each view
-  */
-  void UpdateCurrentElementActorsFromVisu(TrackStructure iStructure, std::vector< vtkActor * > iActors);
 
   /**
     \brief Update the points strings of the tracks
@@ -243,7 +223,7 @@ public:
    * \brief Create new actors for the current polydata and update and visualize
    *  the current actors
    */
-  void CreateCurrentTrackActors( TrackStructure iStructure);
+  void CreateTrackActors( TrackStructure& iStructure);
 
   /**
   \brief get the element with iTrackID into the current element, remove it from
@@ -252,7 +232,7 @@ public:
   \param[in] iTrackID  ID for the track to be updated
   \param[in] iListCenterBoundingBoxes list of the center of the bounding boxes
   for the meshes belonging to this track */
-  void UpdatePointsForATrack(unsigned int iTrackID,
+  TrackStructure* UpdatePointsForATrack(unsigned int iTrackID,
                              std::list< double*> iListCenterBoundingBoxes);
 
   /**
@@ -426,7 +406,7 @@ protected:
   current element. If the current element is a new track, then the polydata,
   actors are allocated and added in consequence.
   \param[in] iPoints list of points to generate the new polydata */
-  void RecomputeCurrentElementMap( TrackStructure* iStructure, std::list< double* > iPoints);
+  void RecomputeMap( TrackStructure* iStructure, std::list< double* > iPoints);
 
   std::vector< vtkActor* > AddTrace( vtkPolyData* , vtkProperty* );
 

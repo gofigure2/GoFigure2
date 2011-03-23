@@ -38,6 +38,8 @@
 #include <iostream>
 #include <sstream>
 
+#include "TrackStructure.h"
+
 QGoDBTrackManager::QGoDBTrackManager(int iImgSessionID, QWidget *iparent) :
   QGoDBTraceManager(), m_TrackContainerInfoForVisu(NULL)
 {
@@ -223,7 +225,7 @@ void QGoDBTrackManager::GetTracesInfoFromDBAndModifyContainerForVisu(
 }
 
 //-------------------------------------------------------------------------
-
+// add pointer to structure instead
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::SaveTrackCurrentElement(
   vtkMySQLDatabase *iDatabaseConnector, bool iInsertCurrentElement)
@@ -252,6 +254,8 @@ void QGoDBTrackManager::SaveTrackCurrentElement(
     this->m_TrackContainerInfoForVisu->m_CurrentElement.ComputeAttributes() );
   this->m_TWContainer->SetTrackAttributes(&trackAttributes);
 
+  this->m_TrackContainerInfoForVisu->ResetCurrentElement();
+
   //update the table widget:
   if ( TrackID == 0 )
     {
@@ -266,6 +270,40 @@ void QGoDBTrackManager::SaveTrackCurrentElement(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoDBTrackManager::SaveTrackStructureInDB(
+  vtkMySQLDatabase *iDatabaseConnector, TrackStructure* iStructure)
+{
+  GoDBTrackRow TrackToSave(this->m_ImgSessionID);
+  unsigned int TrackID = iStructure->TraceID;
+
+  if ( TrackID != 0 )
+    {
+    TrackToSave.SetValuesForSpecificID(TrackID, iDatabaseConnector);
+    }
+
+  //save the track into the database
+  TrackToSave.SetThePointsFromPolydata(iStructure->Nodes);
+  TrackID = TrackToSave.SaveInDB(iDatabaseConnector);
+
+  //calculate the values to be put in the table widget:
+  GoFigureTrackAttributes trackAttributes( iStructure->ComputeAttributes() );
+  this->m_TWContainer->SetTrackAttributes(&trackAttributes);
+
+  //update the table widget:
+  if ( TrackID == 0 )
+    {
+    this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
+    }
+  else
+    {
+    this->DisplayInfoForExistingTrace(iDatabaseConnector, TrackID);
+    }
+}
+
+//-------------------------------------------------------------------------
+
+// IMPORT
+//-------------------------------------------------------------------------
 void QGoDBTrackManager::UpdatePointsOfCurrentElementForImportedTrack(
   std::map< unsigned int, double * > iMeshesInfo, vtkMySQLDatabase *iDatabaseConnector)
 {
@@ -275,7 +313,7 @@ void QGoDBTrackManager::UpdatePointsOfCurrentElementForImportedTrack(
 }
 
 //-------------------------------------------------------------------------
-
+// ADD MESH TO A TRACK
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::UpdateTrackPolydataForVisu(vtkMySQLDatabase *iDatabaseConnector,
                                                    unsigned int iTrackID)
@@ -284,12 +322,13 @@ void QGoDBTrackManager::UpdateTrackPolydataForVisu(vtkMySQLDatabase *iDatabaseCo
   std::list< double * > ListCenters =
     this->m_CollectionOfTraces->GetCoordinateCenterBoundingBox(
       iDatabaseConnector, iTrackID);
-  this->m_TrackContainerInfoForVisu->UpdatePointsForATrack(iTrackID, ListCenters);
-  this->SaveTrackCurrentElement(iDatabaseConnector, false);
+  TrackStructure* structure =
+      this->m_TrackContainerInfoForVisu->UpdatePointsForATrack(iTrackID, ListCenters);
+  SaveTrackStructureInDB(iDatabaseConnector, structure);
 }
 
 //-------------------------------------------------------------------------
-
+// ADD MESH TO A TRACK
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::UpdateBoundingBoxes(
   vtkMySQLDatabase *iDatabaseConnector, std::list< unsigned int > iListTracesIDs)

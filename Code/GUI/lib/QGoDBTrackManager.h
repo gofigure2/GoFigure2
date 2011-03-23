@@ -42,6 +42,8 @@
 #include "QGoGUILibConfigure.h"
 #include "TrackContainer.h"
 
+class TrackStructure;
+
 /**
 \class QGoDBTrackManager
 \brief This class manages the database queries, the table widget and
@@ -182,6 +184,9 @@ protected:
   \param[in] iDatabaseConnector connection to the database
   */
   void SaveTrackCurrentElement(vtkMySQLDatabase* iDatabaseConnector, bool iInsert);
+
+  void SaveTrackStructureInDB(vtkMySQLDatabase* iDatabaseConnector,
+      TrackStructure* iStructure);
 
   /**
   \brief check that the 2 tracks are not overloaping, if not, return the
