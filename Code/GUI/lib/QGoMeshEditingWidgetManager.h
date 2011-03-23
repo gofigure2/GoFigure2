@@ -58,7 +58,6 @@ public:
     QWidget* iParent=0);
   ~QGoMeshEditingWidgetManager();
 
-  void showWidget();
   QAction* GetToggleViewAction();
   QDockWidget* GetDockWidget();
 

@@ -72,7 +72,6 @@ public:
   void AddAlgoWidgetForSemiAutomatedMode(QGoAlgorithmWidget* iAlgoWidget);
   void AddAlgoWidgetForAutomatedMode(QGoAlgorithmWidget* iAlgoWidget);
   void AddWidgetForManualMode(QWidget* iWidget);
-  void CheckDefaultModes();
 
   int GetChannelNumber();
   int GetSelectedTimePoint();

@@ -52,6 +52,7 @@ QGoModesManagerWidget::~QGoModesManagerWidget()
 void QGoModesManagerWidget::Initialize(std::vector<QString> iVectChannels, 
   QStringList iListTimePoints)
 {
+  this->m_ModeAlreadyCleaned = false;
   this->m_VBoxLayout = new QVBoxLayout;
   this->m_ModeComboBox = new QComboBox(this);
 
@@ -179,6 +180,12 @@ int QGoModesManagerWidget::GetSelectedTimePoint()
 //-------------------------------------------------------------------------
 void QGoModesManagerWidget::SetTheRightMode(int iIndex)
 {
+  if(! m_ModeAlreadyCleaned)
+    {
+      this->CheckDefaultModes();
+      m_ModeAlreadyCleaned = true;
+    }
+
   if (iIndex != -1)
     {
     this->m_ModeWidgets->setCurrentIndex(iIndex);

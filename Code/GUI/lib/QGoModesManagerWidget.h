@@ -97,12 +97,6 @@ public:
   void AddWidgetForManualMode(QWidget* iWidget);
 
   /**
-  \brief check that there is something in the default modes, if not, remove the mode
-  name from the combobox
-  */
-  void CheckDefaultModes();
-
-  /**
   \brief return the number of the selected channel
   */
   int GetChannelNumber();
@@ -129,10 +123,16 @@ protected:
   QStackedWidget*             m_ModeWidgets;  
   QGoAlgorithmsManagerWidget* m_SemiAutoAlgoManagerWidget;
   QGoAlgorithmsManagerWidget* m_AutoAlgoManagerWidget;
-  
+  bool                        m_ModeAlreadyCleaned;
+
   void Initialize(std::vector<QString> iVectChannels, QStringList iListTimePoints);
 
-protected slots:
+  /**
+  \brief check that there is something in the default modes, if not, remove the mode
+  name from the combobox
+  */
+  void CheckDefaultModes();
+
  
 };
 #endif

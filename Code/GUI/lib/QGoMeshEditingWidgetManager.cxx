@@ -136,14 +136,6 @@ void QGoMeshEditingWidgetManager::GetSignalShape()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoMeshEditingWidgetManager::showWidget()
-{
-  this->m_MeshEditingWidget->CheckDefaultModes();
-  this->m_MeshEditingWidget->show();
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 void QGoMeshEditingWidgetManager::SetTheMeshWidget(
   std::vector<QString> iVectChannels, int iTimeMin, 
   int iTimeMax, QWidget* iParent)
