@@ -393,8 +393,8 @@ QGoTabImageView3DwT::CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax)
   //  new QGoMeshSegmentationBaseDockWidget(this, m_Seeds, &m_InternalImages);
  
   this->m_MeshEditingWidget = new QGoMeshEditingWidgetManager(
-    this->m_ChannelNames, iTimeMin, iTimeMax, m_Seeds,
-    &m_InternalImages);
+    this->m_ChannelNames, iTimeMin, iTimeMax, m_Seeds, 
+    &m_InternalImages, &m_TCoord);
 
   QObject::connect(this->m_MeshEditingWidget,
                    SIGNAL(UpdateSeeds() ),
@@ -417,6 +417,10 @@ QGoTabImageView3DwT::CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax)
                     this,
                     SLOT( SeedInteractorBehavior(bool) ) );
 
+  QObject::connect( this->m_MeshEditingWidget,
+                    SIGNAL(MeshesCreatedFromAlgo(std::vector<vtkPolyData *>, int) ),
+                    this,
+                    SLOT( SaveInDBAndRenderMeshForVisu(std::vector<vtkPolyData *>, int) ) );
   /*QObject::connect( m_MeshSegmentationDockWidget,
                     SIGNAL( ReinitializeInteractorActivated(bool) ),
                     this,
@@ -2933,12 +2937,23 @@ QGoTabImageView3DwT::SaveMesh(vtkPolyData *iView, int iTShift)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void
+/*void
 QGoTabImageView3DwT::SaveAndVisuMeshFromSegmentation(vtkPolyData *iView, int iTCoord)
 {
   SaveAndVisuMesh(iView, m_TCoord, iTCoord);
-}
+}*/
+void
+QGoTabImageView3DwT::SaveInDBAndRenderMeshForVisu(
+  std::vector<vtkPolyData *> iVectPolydata, int iTCoord)
+{
+  std::vector<vtkPolyData *>::iterator iter = iVectPolydata.begin();
+  while(iter != iVectPolydata.end())
+    {
+    SaveAndVisuMesh(*iter, m_TCoord, iTCoord);
+    ++iter;
+    }
 
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

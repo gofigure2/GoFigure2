@@ -323,8 +323,9 @@ public slots:
 
   /** \brief Save a mesh in the database and render the mesh.
    * at the current time point
-  \todo to be renamed */
-  void  SaveAndVisuMeshFromSegmentation(vtkPolyData *iView, int iTCoord);
+  */
+  void SaveInDBAndRenderMeshForVisu(
+    std::vector<vtkPolyData *> iVectPolydata, int iTCoord);
 
   void ReEditContour(const unsigned int & iId);
 

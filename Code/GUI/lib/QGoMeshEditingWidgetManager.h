@@ -54,6 +54,7 @@ public:
   QGoMeshEditingWidgetManager(std::vector<QString> iVectChannels, 
     int iTimeMin, int iTimeMax, vtkPoints* iSeeds, 
     std::vector< vtkSmartPointer< vtkImageData > >* iImages, 
+    int* iCurrentTimePoint,
     QWidget* iParent=0);
   ~QGoMeshEditingWidgetManager();
 
@@ -68,6 +69,7 @@ signals:
 
   void UpdateSeeds();
   void ClearAllSeeds();
+  void MeshesCreatedFromAlgo(std::vector<vtkPolyData *> iVectPolydata, int iTCoord);
 
 protected:
   QDockWidget*           m_MeshEditingDockWidget;
@@ -75,6 +77,7 @@ protected:
  
   vtkPoints*                                      m_Seeds;
   std::vector< vtkSmartPointer< vtkImageData > >* m_Images;
+  int*                                            m_CurrentTimePoint;
 
   QGoAlgoParameter<double>*  m_Radius;
   QGoAlgoParameter<int>*     m_Curvature;

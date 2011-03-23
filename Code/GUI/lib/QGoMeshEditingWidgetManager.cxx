@@ -44,6 +44,7 @@ QGoMeshEditingWidgetManager::QGoMeshEditingWidgetManager(
   int iTimeMax,
   vtkPoints* iSeeds, 
   std::vector< vtkSmartPointer< vtkImageData > >* iImages, 
+  int* iCurrentTimePoint,
   QWidget* iParent)
 {
   this->SetTheMeshWidget(iVectChannels, iTimeMin, iTimeMax, iParent);
@@ -51,6 +52,7 @@ QGoMeshEditingWidgetManager::QGoMeshEditingWidgetManager(
 
   this->m_Seeds = iSeeds;
   this->m_Images = iImages;
+  this->m_CurrentTimePoint = iCurrentTimePoint;
 
   this->SetLevelSetAlgo(iParent);
   this->SetShapeAlgo(iParent);
@@ -124,6 +126,7 @@ void QGoMeshEditingWidgetManager::GetSignalLevelSet()
     m_Curvature->GetValue(), this->m_Images, 
     this->m_MeshEditingWidget->GetChannelNumber() );
   
+  emit MeshesCreatedFromAlgo(NewMeshes, *this->m_CurrentTimePoint);
 
   emit ClearAllSeeds();
 }
