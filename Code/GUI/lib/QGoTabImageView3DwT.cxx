@@ -409,8 +409,13 @@ QGoTabImageView3DwT::CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax)
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
       new QGoDockWidgetStatus(
-        this->m_MeshEditingWidget->GetDockWidget(), Qt::LeftDockWidgetArea, true, true),
+        this->m_MeshEditingWidget->GetDockWidget(), Qt::LeftDockWidgetArea, false, true),
         this->m_MeshEditingWidget->GetDockWidget()) );
+
+  QObject::connect( this->m_MeshEditingWidget,
+                    SIGNAL( SetSeedInteractorBehaviour(bool) ),
+                    this,
+                    SLOT( SeedInteractorBehavior(bool) ) );
 
   /*QObject::connect( m_MeshSegmentationDockWidget,
                     SIGNAL( ReinitializeInteractorActivated(bool) ),
@@ -1172,6 +1177,11 @@ void QGoTabImageView3DwT::CreateModeActions()
   group->addAction(MeshSegmentationAction);
 
   this->m_ModeActions.push_back(MeshSegmentationAction);
+
+  QObject::connect( MeshSegmentationAction,
+                    SIGNAL( toggled(bool) ),
+                    m_MeshEditingWidget,
+                    SLOT( SetVisible(bool) ) );
 
   //QObject::connect( MeshSegmentationAction,
   //                  SIGNAL( toggled(bool) ),

@@ -79,8 +79,11 @@ void QGoModesManagerWidget::Initialize(std::vector<QString> iVectChannels,
     iListTimePoints, this);
   this->AddAlgoManagerWidget(this->m_AutoAlgoManagerWidget);
 
+  //QObject::connect(this->m_ModeComboBox, SIGNAL(activated(int)),
+  //             this->m_ModeWidgets, SLOT(setCurrentIndex(int)));
   QObject::connect(this->m_ModeComboBox, SIGNAL(activated(int)),
-             this->m_ModeWidgets, SLOT(setCurrentIndex(int)));
+                   this, SLOT(SetTheRightMode(int)));
+  
 }
 //-------------------------------------------------------------------------
 
@@ -157,3 +160,25 @@ int QGoModesManagerWidget::GetChannelNumber()
       (this->m_ModeWidgets->currentWidget());
   return CurrentWidget->GetChannelNumber();
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoModesManagerWidget::SetTheRightMode(int iIndex)
+{
+  if (iIndex != -1)
+    {
+    this->m_ModeWidgets->setCurrentIndex(iIndex);
+    }
+  if (this->m_ModeComboBox->currentText() == "Automated" || 
+    this->m_ModeComboBox->currentText() == "SemiAutomated")
+    {
+    emit SetSeedInteractorBehaviour(true);
+    }
+  else
+    {
+    emit SetSeedInteractorBehaviour(false);
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------

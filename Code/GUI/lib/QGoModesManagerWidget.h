@@ -107,6 +107,17 @@ public:
   */
   int GetChannelNumber();
 
+public slots:
+   /**
+  \brief set the right mode according to the combobox if iIndex is different than
+  -1 and emit a signal to enable/disable
+  the seeds interactor mode
+  */
+  void SetTheRightMode(int iIndex = -1);
+
+signals:
+  void SetSeedInteractorBehaviour(bool enable);
+
 protected:
   QVBoxLayout*                m_VBoxLayout;
   QComboBox*                  m_ModeComboBox;
@@ -116,6 +127,7 @@ protected:
   
   void Initialize(std::vector<QString> iVectChannels, QStringList iListTimePoints);
 
-
+protected slots:
+ 
 };
 #endif

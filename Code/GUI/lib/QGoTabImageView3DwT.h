@@ -383,8 +383,8 @@ protected:
   QGoContourSegmentationBaseDockWidget *m_ContourSegmentationDockWidget;
 
   // base segmentation dockwidget for meshes
-  QGoMeshSegmentationBaseDockWidget *m_MeshSegmentationDockWidget;
-  QGoMeshEditingWidgetManager*    m_MeshEditingWidget;
+  //QGoMeshSegmentationBaseDockWidget *m_MeshSegmentationDockWidget;
+  QGoMeshEditingWidgetManager*       m_MeshEditingWidget;
 
   QGoTrackDockWidget* m_TrackDockWidget;
 

@@ -67,7 +67,7 @@ public:
   previous mode will be erased
   \param[in] iModeWidget modes manager
   */
-  void SetModesManager(QGoModesManagerWidget* iModeWidget);
+  void SetANewModesManager(QGoModesManagerWidget* iModeWidget);
 
   void AddAlgoWidgetForSemiAutomatedMode(QGoAlgorithmWidget* iAlgoWidget);
   void AddAlgoWidgetForAutomatedMode(QGoAlgorithmWidget* iAlgoWidget);
@@ -75,6 +75,10 @@ public:
   void CheckDefaultModes();
 
   int GetChannelNumber();
+ 
+  virtual void setVisible(bool IsVisible);
+signals:
+  void SetSeedInteractorBehaviour(bool enable);
 
 protected:
   void Initialize(std::vector<QString> iVectChannels, 
@@ -82,6 +86,8 @@ protected:
   QGoModesManagerWidget* m_ModeEditingWidget;
   QVBoxLayout*           m_VLayout;
   QStringList            m_ListTimePoints;
+
+  void SetModesManager(QGoModesManagerWidget* iModeWidget);
 
 };
 #endif

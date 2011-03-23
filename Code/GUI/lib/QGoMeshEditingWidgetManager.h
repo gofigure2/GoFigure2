@@ -61,6 +61,9 @@ public:
   QAction* GetToggleViewAction();
   QDockWidget* GetDockWidget();
 
+public slots:
+  void SetVisible(bool isVisible);
+
 signals:
 
   void UpdateSeeds();
@@ -82,6 +85,9 @@ protected:
   void SetTheDockWidget(QWidget* iParent);
   void SetLevelSetAlgo(QWidget* iParent=0);
   void SetShapeAlgo(QWidget* iParent=0);
+
+signals:
+  void SetSeedInteractorBehaviour(bool enable);
 
 protected slots:
   void GetSignalLevelSet();

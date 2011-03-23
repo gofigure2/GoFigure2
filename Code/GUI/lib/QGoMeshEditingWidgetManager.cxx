@@ -90,7 +90,7 @@ void QGoMeshEditingWidgetManager::SetLevelSetAlgo(QWidget* iParent)
 //-------------------------------------------------------------------------
 void QGoMeshEditingWidgetManager::SetShapeAlgo(QWidget* iParent)
 {
-    QGoAlgorithmWidget* ShapeWidget = new QGoAlgorithmWidget("Shape 3D", iParent);
+  QGoAlgorithmWidget* ShapeWidget = new QGoAlgorithmWidget("Shape 3D", iParent);
   QGoAlgoParameter<double> Radius("Radius", false, 0.1, 99.99, 2, 3);
   ShapeWidget->AddParameter(&Radius);
   QStringList ShapeList;
@@ -157,14 +157,21 @@ void QGoMeshEditingWidgetManager::SetTheMeshWidget(
 
   this->m_MeshEditingWidget = new QGoTraceEditingWidget(
    "Mesh", iVectChannels, ListTimePoints, iParent);
+
+  QObject::connect( this->m_MeshEditingWidget, 
+                    SIGNAL(SetSeedInteractorBehaviour(bool) ),
+                    this,
+                    SIGNAL(SetSeedInteractorBehaviour(bool) ) );
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoMeshEditingWidgetManager::SetTheDockWidget(QWidget* iParent)
 {
+
   this->m_MeshEditingDockWidget = new QDockWidget(iParent);
   this->m_MeshEditingDockWidget->setWidget(this->m_MeshEditingWidget);
+  //this->m_MeshEditingWidget->setVisible(false);
   QIcon MeshSegmentationIcon;
   MeshSegmentationIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/MeshEditing.png") ),
                                  QIcon::Normal, QIcon::Off);
@@ -187,4 +194,11 @@ QAction* QGoMeshEditingWidgetManager::GetToggleViewAction()
 QDockWidget* QGoMeshEditingWidgetManager::GetDockWidget()
 {
   return this->m_MeshEditingDockWidget;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoMeshEditingWidgetManager::SetVisible(bool isVisible)
+{
+  this->m_MeshEditingWidget->setVisible(isVisible);
 }

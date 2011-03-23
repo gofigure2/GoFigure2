@@ -60,7 +60,8 @@ void QGoTraceEditingWidget::Initialize(std::vector<QString> iVectChannels,
     iVectChannels, iListTimePoints, this);
 
   this->m_VLayout = new QVBoxLayout;
-  this->m_VLayout->addWidget(this->m_ModeEditingWidget);
+  
+  this->SetModesManager(this->m_ModeEditingWidget);
   this->setLayout(this->m_VLayout);
   this->m_VLayout->setSizeConstraint(QLayout::SetFixedSize);
 }
@@ -82,9 +83,21 @@ void QGoTraceEditingWidget::AddMode(
 //-------------------------------------------------------------------------
 void QGoTraceEditingWidget::SetModesManager(QGoModesManagerWidget* iModeWidget)
 {
-  delete this->m_ModeEditingWidget;
   this->m_ModeEditingWidget = iModeWidget;
   this->m_VLayout->addWidget(this->m_ModeEditingWidget);
+
+  QObject::connect( this->m_ModeEditingWidget, 
+                    SIGNAL (SetSeedInteractorBehaviour(bool) ),
+                    this, 
+                    SIGNAL (SetSeedInteractorBehaviour(bool) ) );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTraceEditingWidget::SetANewModesManager(QGoModesManagerWidget* iModeWidget)
+{
+  delete this->m_ModeEditingWidget;
+  this->SetModesManager(iModeWidget);
 }
 //-------------------------------------------------------------------------
 
@@ -123,3 +136,18 @@ int QGoTraceEditingWidget::GetChannelNumber()
 {
   return this->m_ModeEditingWidget->GetChannelNumber();
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+ void QGoTraceEditingWidget::setVisible(bool IsVisible)
+ {
+  if (IsVisible)
+    {
+    this->m_ModeEditingWidget->SetTheRightMode();
+    }
+  else
+    {
+    emit SetSeedInteractorBehaviour(false);
+    }
+  QWidget::setVisible(IsVisible);
+ }
