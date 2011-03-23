@@ -76,9 +76,12 @@ public:
   */
   void SetCurrentIndex(int iIndex);
 
-  void SetCurrentTimePoint(QString iTimePoint);
-
   void SetCurrentChannel(QString iChannel);
+
+  
+  void SetTSliceForClassicView(QString iTimePoint);
+
+  void SetTSliceForDopplerView(QStringList iListTimePoints, int iIndexChannel);
 
   /**
   \brief return the name of the mode
@@ -98,6 +101,8 @@ public:
   */
   int GetChannelNumber();
 
+  int GetSelectedTimePoint();
+
 signals:
 
   void ResetClicked();
@@ -109,7 +114,7 @@ protected:
   std::string                  m_ModeName;
   QComboBox*                   m_ChannelComboBox;
   QComboBox*                   m_TimeComboBox;
-
+  QStringList                  m_ListTimePoints;
   /**
   \brief add the different widgets, buttons and fill the comboboxes 
   for channel and timepoint

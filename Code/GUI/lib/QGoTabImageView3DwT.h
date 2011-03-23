@@ -653,6 +653,12 @@ protected slots:
   */
   void SetDatabaseContainersAndDelayedConnections();
 
+  /**
+  \brief depending on the doppler/classic mode, update the TimePoints and channels
+  of the widget
+  */
+  void UpdateMeshEditingWidget();
+
 private:
   Q_DISABLE_COPY(QGoTabImageView3DwT);
 };

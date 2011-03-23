@@ -144,7 +144,14 @@ int QGoTraceEditingWidget::GetChannelNumber()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
- void QGoTraceEditingWidget::setVisible(bool IsVisible)
+int QGoTraceEditingWidget::GetSelectedTimePoint()
+{
+  return this->m_ModeEditingWidget->GetSelectedTimePoint();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+ void QGoTraceEditingWidget::CheckTheCurrentMode(bool IsVisible)
  {
   if (IsVisible)
     {
@@ -154,5 +161,20 @@ int QGoTraceEditingWidget::GetChannelNumber()
     {
     emit SetSeedInteractorBehaviour(false);
     }
-  QWidget::setVisible(IsVisible);
+ }
+ //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+ void QGoTraceEditingWidget::SetTSliceForClassicView(int iTimePoint)
+ {
+   this->m_ModeEditingWidget->SetTSliceForClassicViewInAllAlgoModes(iTimePoint);
+ }
+ //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+ void QGoTraceEditingWidget::SetTSliceForDopplerView(QStringList iListTimePoints,
+   int iChannelNumber)
+ {
+   this->m_ModeEditingWidget->SetTSliceForDopplerViewInAllAlgoModes(
+     iListTimePoints, iChannelNumber);
  }

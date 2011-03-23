@@ -62,6 +62,9 @@ public:
   QAction* GetToggleViewAction();
   QDockWidget* GetDockWidget();
 
+  void SetTSliceForClassicView();
+  void SetTSliceForDopplerView(QStringList iListTimePoints, int iChannelNumber);
+
 public slots:
   void SetVisible(bool isVisible);
 
@@ -86,6 +89,8 @@ protected:
   void SetTheMeshWidget(std::vector<QString> iVectChannels, int iTimeMin, 
     int iTimeMax, QWidget* iParent);
   void SetTheDockWidget(QWidget* iParent);
+  int GetSelectedTimePoint();
+
   void SetLevelSetAlgo(QWidget* iParent=0);
   void SetShapeAlgo(QWidget* iParent=0);
 
@@ -93,7 +98,7 @@ signals:
   void SetSeedInteractorBehaviour(bool enable);
 
 protected slots:
-  void GetSignalLevelSet();
+  void ApplyLevelSetAlgo();
   void GetSignalShape();
 
 };

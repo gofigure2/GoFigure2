@@ -126,7 +126,8 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_YTileCoord(0),
   m_ZTileCoord(0),
   m_TCoord(-1),
-  m_TraceWidgetRequiered(false)
+  m_TraceWidgetRequiered(false),
+  m_MeshEditingWidget(NULL)
 {
   m_Image = vtkImageData::New();
   m_Seeds = vtkPoints::New();
@@ -421,6 +422,13 @@ QGoTabImageView3DwT::CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax)
                     SIGNAL(MeshesCreatedFromAlgo(std::vector<vtkPolyData *>, int) ),
                     this,
                     SLOT( SaveInDBAndRenderMeshForVisu(std::vector<vtkPolyData *>, int) ) );
+
+  QObject::connect( this,
+                    SIGNAL( TimePointChanged(int) ),
+                    this,
+                    SLOT(UpdateMeshEditingWidget() ) );
+
+
   /*QObject::connect( m_MeshSegmentationDockWidget,
                     SIGNAL( ReinitializeInteractorActivated(bool) ),
                     this,
@@ -1067,7 +1075,16 @@ QGoTabImageView3DwT::ChannelTimeMode(bool iEnable)
     m_NavigationDockWidget->blockSignals(false);
     // update visualization
     Update();
+    //this->m_MeshEditingWidget->SetTSliceForClassicView();
     }
+  //else
+    //{
+   // QStringList ListTimePoints;
+   // ListTimePoints.append(tr("%1").arg(this->m_TCoord - this->m_DopplerStep));
+   // ListTimePoints.append(tr("%1").arg(this->m_TCoord));
+   // ListTimePoints.append(tr("%1").arg(this->m_TCoord + this->m_DopplerStep));
+   // this->m_MeshEditingWidget->SetTSliceForDopplerView(ListTimePoints);
+   // }
 }
 
 //-------------------------------------------------------------------------
@@ -2062,6 +2079,7 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
       m_TCoord = iTimePoint;
       SetTimePointWithLSMReaders();
       emit TimePointChanged(m_TCoord);
+      this->UpdateMeshEditingWidget();
       }
     }
   else
@@ -2090,6 +2108,7 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
           SetTimePointWithMegaCaptureTimeChannels(m_ChannelOfInterest, previousT);
           }
         emit TimePointChanged(m_TCoord);
+        //this->UpdateMeshEditingWidget();
         }
       }
     else
@@ -2413,6 +2432,7 @@ QGoTabImageView3DwT::ModeChanged(int iChannel)
     }
 
   ChannelTimeMode(iChannel);
+  this->UpdateMeshEditingWidget();
 }
 
 //-------------------------------------------------------------------------
@@ -2424,6 +2444,7 @@ QGoTabImageView3DwT::StepChanged(int iStep)
   m_DopplerStep = iStep;
 
   SetTimePointWithMegaCaptureTimeChannels(m_ChannelOfInterest);
+  this->UpdateMeshEditingWidget();
   Update();
 }
 
@@ -3363,3 +3384,45 @@ QGoTabImageView3DwT::GoToLocation(int iX, int iY, int iZ, int iT)
 }
 
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::UpdateMeshEditingWidget()
+{
+  if (this->m_MeshEditingWidget != NULL)
+    {
+    if (this->m_ChannelClassicMode)
+      {
+      this->m_MeshEditingWidget->SetTSliceForClassicView();
+      }
+    else
+      {
+      QStringList ListTimePoints;
+      int TDopplerMin = this->m_TCoord - this->m_DopplerStep;
+      int MinTimePoint = this->m_MegaCaptureReader->GetMinTimePoint();
+      int TDopplerMax = this->m_TCoord + this->m_DopplerStep;
+      int MaxTimePoint = this->m_MegaCaptureReader->GetMaxTimePoint();
+      if ( TDopplerMin > MinTimePoint )
+        {
+        //ListTimePoints.append(tr("%1").arg(this->m_TCoord - this->m_DopplerStep));
+        ListTimePoints.append(tr("%1").arg(TDopplerMin) );
+        }
+      else
+        {
+        ListTimePoints.append(tr("%1").arg(MinTimePoint) );
+        }
+      ListTimePoints.append(tr("%1").arg(this->m_TCoord));
+      if (TDopplerMax < MaxTimePoint ) 
+        {
+        //ListTimePoints.append(tr("%1").arg(this->m_TCoord + this->m_DopplerStep));
+        ListTimePoints.append(tr("%1").arg(TDopplerMax));
+        }
+      else
+        {
+        ListTimePoints.append(tr("%1").arg(MaxTimePoint));
+        }
+      this->m_MeshEditingWidget->SetTSliceForDopplerView(ListTimePoints, 
+        this->m_ChannelOfInterest);
+      }
+    }
+}

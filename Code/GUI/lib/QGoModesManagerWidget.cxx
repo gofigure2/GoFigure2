@@ -167,6 +167,16 @@ int QGoModesManagerWidget::GetChannelNumber()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+int QGoModesManagerWidget::GetSelectedTimePoint()
+{
+  QGoAlgorithmsManagerWidget* CurrentWidget =  
+    dynamic_cast<QGoAlgorithmsManagerWidget*>
+      (this->m_ModeWidgets->currentWidget());
+  return CurrentWidget->GetSelectedTimePoint();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void QGoModesManagerWidget::SetTheRightMode(int iIndex)
 {
   if (iIndex != -1)
@@ -186,3 +196,19 @@ void QGoModesManagerWidget::SetTheRightMode(int iIndex)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoModesManagerWidget::SetTSliceForClassicViewInAllAlgoModes(int iTimePoint)
+{
+  this->m_AutoAlgoManagerWidget->SetTSliceForClassicView(tr("%1").arg(iTimePoint) );
+  this->m_SemiAutoAlgoManagerWidget->SetTSliceForClassicView(tr("%1").arg(iTimePoint) );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoModesManagerWidget::SetTSliceForDopplerViewInAllAlgoModes(
+  QStringList iListTimePoints, int iChannelNumber)
+{
+  this->m_AutoAlgoManagerWidget->SetTSliceForDopplerView(
+    iListTimePoints, iChannelNumber);
+  this->m_SemiAutoAlgoManagerWidget->SetTSliceForDopplerView(
+    iListTimePoints, iChannelNumber);
+}

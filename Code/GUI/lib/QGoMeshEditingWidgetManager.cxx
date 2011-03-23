@@ -47,12 +47,13 @@ QGoMeshEditingWidgetManager::QGoMeshEditingWidgetManager(
   int* iCurrentTimePoint,
   QWidget* iParent)
 {
-  this->SetTheMeshWidget(iVectChannels, iTimeMin, iTimeMax, iParent);
-  this->SetTheDockWidget(iParent);
-
+  
   this->m_Seeds = iSeeds;
   this->m_Images = iImages;
   this->m_CurrentTimePoint = iCurrentTimePoint;
+
+  this->SetTheMeshWidget(iVectChannels, iTimeMin, iTimeMax, iParent);
+  this->SetTheDockWidget(iParent); 
 
   this->SetLevelSetAlgo(iParent);
   this->SetShapeAlgo(iParent);
@@ -84,7 +85,7 @@ void QGoMeshEditingWidgetManager::SetLevelSetAlgo(QWidget* iParent)
   this->m_MeshEditingWidget->AddAlgoWidgetForSemiAutomatedMode(LevelSetWidget);
 
   QObject::connect(LevelSetWidget, SIGNAL(ApplyAlgo() ),
-    this, SLOT(GetSignalLevelSet() ) );
+    this, SLOT(ApplyLevelSetAlgo() ) );
 
 }
 //-------------------------------------------------------------------------
@@ -110,13 +111,8 @@ void QGoMeshEditingWidgetManager::SetShapeAlgo(QWidget* iParent)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoMeshEditingWidgetManager::GetSignalLevelSet()
+void QGoMeshEditingWidgetManager::ApplyLevelSetAlgo()
 {
-  std::cout<<"level set signal caught"<<std::endl;
-  std::cout<<"Radius:"<<m_Radius->GetValue()<<std::endl;
-  std::cout<<"Curvature:"<<m_Curvature->GetValue()<<std::endl;
-  std::cout<<"Iterations:"<<m_Iterations->GetValue()<<std::endl;
-
   QGoFilterChanAndVese* LevelSetFilter = new QGoFilterChanAndVese(this, 2); 
   emit UpdateSeeds();
 
@@ -161,6 +157,8 @@ void QGoMeshEditingWidgetManager::SetTheMeshWidget(
   this->m_MeshEditingWidget = new QGoTraceEditingWidget(
    "Mesh", iVectChannels, ListTimePoints, iParent);
 
+  this->SetTSliceForClassicView();
+
   QObject::connect( this->m_MeshEditingWidget, 
                     SIGNAL(SetSeedInteractorBehaviour(bool) ),
                     this,
@@ -177,8 +175,9 @@ void QGoMeshEditingWidgetManager::SetTheDockWidget(QWidget* iParent)
 {
 
   this->m_MeshEditingDockWidget = new QDockWidget(iParent);
+  this->m_MeshEditingDockWidget->setWindowTitle("Mesh Editing");
   this->m_MeshEditingDockWidget->setWidget(this->m_MeshEditingWidget);
-  //this->m_MeshEditingWidget->setVisible(false);
+  
   QIcon MeshSegmentationIcon;
   MeshSegmentationIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/MeshEditing.png") ),
                                  QIcon::Normal, QIcon::Off);
@@ -207,5 +206,29 @@ QDockWidget* QGoMeshEditingWidgetManager::GetDockWidget()
 //-------------------------------------------------------------------------
 void QGoMeshEditingWidgetManager::SetVisible(bool isVisible)
 {
-  this->m_MeshEditingWidget->setVisible(isVisible);
+  this->m_MeshEditingDockWidget->setVisible(isVisible);
+  this->m_MeshEditingWidget->CheckTheCurrentMode(isVisible);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoMeshEditingWidgetManager::SetTSliceForClassicView()
+{
+  this->m_MeshEditingWidget->SetTSliceForClassicView(*this->m_CurrentTimePoint);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoMeshEditingWidgetManager::SetTSliceForDopplerView(
+  QStringList iListTimePoints, int iChannelNumber)
+{
+  this->m_MeshEditingWidget->SetTSliceForDopplerView(
+    iListTimePoints, iChannelNumber);
+} 
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int QGoMeshEditingWidgetManager::GetSelectedTimePoint()
+{
+  return this->m_MeshEditingWidget->GetSelectedTimePoint();
 }

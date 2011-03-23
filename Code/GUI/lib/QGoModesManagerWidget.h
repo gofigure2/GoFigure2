@@ -106,12 +106,16 @@ public:
   \brief return the number of the selected channel
   */
   int GetChannelNumber();
+  int GetSelectedTimePoint();
+
+  void SetTSliceForClassicViewInAllAlgoModes(int iTimePoint);
+  void SetTSliceForDopplerViewInAllAlgoModes(QStringList iListTimePoint, int iChannelNumber);
 
 public slots:
    /**
   \brief set the right mode according to the combobox if iIndex is different than
-  -1 and emit a signal to enable/disable
-  the seeds interactor mode
+  -1 and emit a signal to enable/disable the seeds interactor mode based on the
+  name of the selected mode
   */
   void SetTheRightMode(int iIndex = -1);
 

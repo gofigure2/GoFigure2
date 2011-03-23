@@ -75,8 +75,17 @@ public:
   void CheckDefaultModes();
 
   int GetChannelNumber();
+  int GetSelectedTimePoint();
  
-  virtual void setVisible(bool IsVisible);
+  /**
+  \brief check which mode is selected and if the seeds are needed or not and
+  emit the corresponding signals based on the visibility of the widget
+  */
+  void CheckTheCurrentMode(bool IsVisible);
+
+  void SetTSliceForClassicView(int iTimePoint);
+  void SetTSliceForDopplerView(QStringList iListTimePoints, int iChannelNumber);
+
 signals:
   void SetSeedInteractorBehaviour(bool enable);
 

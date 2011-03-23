@@ -60,6 +60,7 @@ void QGoAlgorithmsManagerWidget::Initialize(std::vector<QString> iVectChannels,
 {
   this->m_VBoxLayout = new QVBoxLayout;
   QFormLayout* FormLayout = new QFormLayout;
+  this->m_ListTimePoints = iListTime;
  
   this->m_ChannelComboBox = new QComboBox(this);
   std::vector<QString>::iterator iter = iVectChannels.begin();
@@ -140,10 +141,27 @@ void QGoAlgorithmsManagerWidget::SetCurrentChannel(QString iChannel)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoAlgorithmsManagerWidget::SetCurrentTimePoint(QString iTimePoint)
+void QGoAlgorithmsManagerWidget::SetTSliceForClassicView(QString iTimePoint)
 {
+  this->m_TimeComboBox->clear();
+  this->m_TimeComboBox->addItems(this->m_ListTimePoints);
   this->m_TimeComboBox->setCurrentIndex(
     this->m_TimeComboBox->findText(iTimePoint) );
+  this->m_TimeComboBox->setEnabled(false);
+  this->m_ChannelComboBox->setEnabled(true);
+  
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoAlgorithmsManagerWidget::SetTSliceForDopplerView(QStringList iListTimePoints,
+  int iIndexChannel)
+{
+  this->m_TimeComboBox->clear();
+  this->m_TimeComboBox->addItems(iListTimePoints);
+  this->m_TimeComboBox->setEnabled(true);
+  this->m_ChannelComboBox->setCurrentIndex(iIndexChannel);
+  this->m_ChannelComboBox->setEnabled(false);
 }
 //-------------------------------------------------------------------------
 
@@ -167,6 +185,14 @@ void QGoAlgorithmsManagerWidget::EmitApplyAlgo()
 int QGoAlgorithmsManagerWidget::GetChannelNumber()
 {
   return this->m_ChannelComboBox->currentIndex();
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int QGoAlgorithmsManagerWidget::GetSelectedTimePoint()
+{
+  return this->m_TimeComboBox->currentText().toInt();
 }
 /*void QGoAlgorithmsManagerWidget::AddMethod(std::string iNameMethod, 
   QWidget* iParametersWidget, QWidget* iAdvParamWidget)
