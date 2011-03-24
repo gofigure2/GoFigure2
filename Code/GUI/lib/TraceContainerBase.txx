@@ -356,12 +356,6 @@ TraceContainerBase< TContainer >::UpdateElementHighlightingWithGivenTraceIDsBase
 
         it->SetActorProperties(temp_property);
 
-        std::cout << "TraceID: " << it->TraceID << std::endl;
-        std::cout << "ActorXY: " << it->ActorXY << std::endl;
-        std::cout << "ActorXZ: " << it->ActorXZ << std::endl;
-        std::cout << "ActorYZ: " << it->ActorYZ << std::endl;
-        std::cout << "ActorXYZ: " << it->ActorXYZ << std::endl;
-
         if ( !iCheck )
           {
           temp_property->Delete();
@@ -940,7 +934,6 @@ TraceContainerBase< TContainer >::UpdateCurrentElementFromVisuBase(std::vector< 
                                                                    const bool & iHighlighted,
                                                                    const bool & iVisible)
 {
-  std::cout << "Update current..." << std::endl;
   if ( iActors.size() != 4 )
     {
     std::cerr << "iActors.size() != 4" << std::endl;
