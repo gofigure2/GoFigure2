@@ -650,6 +650,8 @@ protected slots:
   */
   void SetDatabaseContainersAndDelayedConnections();
 
+  void AddTraceIDIntoPolydata( vtkPolyData* iPolydata, unsigned int iTraceID);
+
 private:
   Q_DISABLE_COPY(QGoTabImageView3DwT);
 };

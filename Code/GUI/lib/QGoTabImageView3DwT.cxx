@@ -2384,12 +2384,7 @@ QGoTabImageView3DwT::ValidateContour()
 
       // polydata
       //ADD TRACE ID IN POLYDATA
-      vtkSmartPointer<vtkIntArray> trackIDArray = vtkSmartPointer<vtkIntArray>::New();
-      trackIDArray->SetNumberOfComponents(1);
-      trackIDArray->SetNumberOfValues(1);
-      trackIDArray->SetName("TrackID");
-      trackIDArray->SetValue(0,this->m_ContourContainer->m_CurrentElement.TraceID);
-      contour->GetPointData()->AddArray(trackIDArray);
+      AddTraceIDIntoPolydata(contour, this->m_ContourContainer->m_CurrentElement.TraceID);
 
       std::vector< vtkActor * > actors =
         VisualizeTrace(contour,
@@ -2639,12 +2634,7 @@ QGoTabImageView3DwT::SaveAndVisuContour(vtkPolyData *iView)
   // polydata for bounding box, nodes for db
   SaveContour(iView, contour_nodes);
 
-  vtkSmartPointer<vtkIntArray> trackIDArray = vtkSmartPointer<vtkIntArray>::New();
-  trackIDArray->SetNumberOfComponents(1);
-  trackIDArray->SetNumberOfValues(1);
-  trackIDArray->SetName("TrackID");
-  trackIDArray->SetValue(0,this->m_ContourContainer->m_CurrentElement.TraceID);
-  iView->GetPointData()->AddArray(trackIDArray);
+  AddTraceIDIntoPolydata(iView, this->m_ContourContainer->m_CurrentElement.TraceID);
 
   // should be polydata
   std::vector< vtkActor * > actors =
@@ -2762,12 +2752,7 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView,
   SaveMesh(iView, iTShift);
 
   //ADD TRACE ID IN POLYDATA
-  vtkSmartPointer<vtkIntArray> trackIDArray = vtkSmartPointer<vtkIntArray>::New();
-  trackIDArray->SetNumberOfComponents(1);
-  trackIDArray->SetNumberOfValues(1);
-  trackIDArray->SetName("TrackID");
-  trackIDArray->SetValue(0,this->m_MeshContainer->m_CurrentElement.TraceID);
-  iView->GetPointData()->AddArray(trackIDArray);
+  AddTraceIDIntoPolydata(iView, this->m_MeshContainer->m_CurrentElement.TraceID);
 
   std::vector< vtkActor * > actors =
     VisualizeTrace(iView,
@@ -2820,12 +2805,7 @@ QGoTabImageView3DwT::AddContourForMeshToContours(vtkPolyData *iInput)
     //);
 
     // AND VISU!!!
-    vtkSmartPointer<vtkIntArray> trackIDArray = vtkSmartPointer<vtkIntArray>::New();
-    trackIDArray->SetNumberOfComponents(1);
-    trackIDArray->SetNumberOfValues(1);
-    trackIDArray->SetName("TrackID");
-    trackIDArray->SetValue(0,this->m_ContourContainer->m_CurrentElement.TraceID);
-    iInput->GetPointData()->AddArray(trackIDArray);
+    AddTraceIDIntoPolydata(iInput, this->m_ContourContainer->m_CurrentElement.TraceID);
 
     std::vector< vtkActor * > actors =
       VisualizeTrace(iInput,
@@ -3094,4 +3074,19 @@ QGoTabImageView3DwT::GoToLocation(int iX, int iY, int iZ, int iT)
   this->SetSliceViewYZ(iX);
 }
 
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+AddTraceIDIntoPolydata( vtkPolyData* iPolydata, unsigned int iTraceID)
+{
+vtkSmartPointer<vtkIntArray> trackIDArray = vtkSmartPointer<vtkIntArray>::New();
+trackIDArray->SetNumberOfComponents(1);
+trackIDArray->SetNumberOfValues(1);
+trackIDArray->SetName("TrackID");
+trackIDArray->SetValue(0,iTraceID);
+
+iPolydata->GetPointData()->AddArray(trackIDArray);
+}
 //-------------------------------------------------------------------------
