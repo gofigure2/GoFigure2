@@ -1458,8 +1458,8 @@ QGoTabImageView3DwT::setupUi(QWidget *iParent)
   QObject::connect( m_ImageView, SIGNAL( FullScreenViewChanged(int) ),
                     this, SIGNAL( FullScreenViewChanged(int) ) );
   // connect the contours selection connection
-  QObject::connect( m_ImageView, SIGNAL( SelectionXYZChanged() ),
-                    this, SLOT( HighlightXYZ() ) );
+  QObject::connect( m_ImageView, SIGNAL( SelectionChanged() ),
+                    this, SLOT( HighlightPickedActor() ) );
 
   /*
   QObject::connect(m_ImageView, SIGNAL(VisibilityXYChanged()),
@@ -2483,7 +2483,7 @@ QGoTabImageView3DwT::ReEditContour(const unsigned int & iId)
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::HighlightXYZ()
+QGoTabImageView3DwT::HighlightPickedActor()
 {
   vtkActor *temp_actor = m_ImageView->GetCurrentActor();
   vtkIntArray* testArray =
@@ -2491,6 +2491,7 @@ QGoTabImageView3DwT::HighlightXYZ()
 
   if( ! testArray )
   {
+    // we picked the background plane
     return;
   }
 
@@ -2499,9 +2500,9 @@ QGoTabImageView3DwT::HighlightXYZ()
   /*
    * \todo Nicolas: we could add an extra info in the array depending on trace type
    */
-  m_ContourContainer->UpdateElementHighlightingWithGivenActor(value);
-  m_MeshContainer->UpdateElementHighlightingWithGivenActor(value);
-  m_TrackContainer->UpdateElementHighlightingWithGivenActor(value);
+  m_ContourContainer->UpdateElementHighlighting(value);
+  m_MeshContainer->UpdateElementHighlighting(value);
+  m_TrackContainer->UpdateElementHighlighting(value);
 }
 
 //-------------------------------------------------------------------------

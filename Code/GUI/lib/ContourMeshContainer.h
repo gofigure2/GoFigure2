@@ -253,40 +253,17 @@ public:
   \return true if the element exists
   \return false else
   */
-  bool UpdateElementHighlightingWithGivenActor(unsigned int TraceId)
+  bool UpdateElementHighlighting(unsigned int TraceId)
     {
     Qt::CheckState state;
 
     bool oValue =
-        Superclass::UpdateElementHighlightingWithGivenActor(TraceId,
-                                                            state );
+        Superclass::UpdateElementHighlightingWithTraceID(TraceId,
+                                                         state );
     if( oValue )
       {
       emit TracePicked(TraceId, state);
       }
-    return oValue;
-    }
-
-  /** \brief Update element Visibility property given one actor.
-  \tparam TActor either ActorXY, ActorXZ, ActorYZ, ActorXYZ depending on the view
-  \param[in] iActor provided actor
-  \return true if iActor is in the container
-  \return false else
-  */
-  template< class TActor >
-  bool UpdateElementVisibilityWithGivenActor(vtkActor *iActor)
-    {
-    unsigned TraceId;
-    Qt::CheckState state;
-    bool oValue =
-      Superclass::UpdateElementVisibilityWithGivenActor< TActor >( iActor,
-                                                                   TraceId,
-                                                                   state );
-    if( oValue )
-      {
-      emit TraceVisibilityChanged(TraceId, state);
-      }
-
     return oValue;
     }
 
@@ -328,7 +305,6 @@ public:
             }
 
           m_Container.get< TActor >().replace(it, tempStructure);
-          //m_ImageView->UpdateRenderWindows();
 
           emit TraceVisibilityChanged(it->TraceID, State);
           }

@@ -555,7 +555,7 @@ protected:
   \return true if the element exists
   \return false else
   */
-  bool UpdateElementHighlightingWithGivenActor(
+  bool UpdateElementHighlightingWithTraceID(
       unsigned int& oTraceId,
       Qt::CheckState& oState )
     {

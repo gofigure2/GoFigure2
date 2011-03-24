@@ -1307,7 +1307,7 @@ QGoImageView3D::UpdateCurrentActorSelection(vtkObject *caller)
   if( t->GetCurrentProp() )
   {
     m_CurrentActor = vtkActor::SafeDownCast ( t->GetCurrentProp() );
-    emit SelectionXYZChanged();
+    emit SelectionChanged();
   }
 }
 

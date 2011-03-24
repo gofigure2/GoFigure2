@@ -177,7 +177,7 @@ signals:
 
   void FullScreenViewChanged(int View);
 
-  void SelectionXYZChanged();
+  void SelectionChanged();
 
   void VisibilityXYZChanged();
 
