@@ -327,6 +327,7 @@ public slots:
   void ReEditContour(const unsigned int & iId);
 
   void HighlightPickedActor();
+  void VisibilityPickedActor();
 
   void Change3DPerspectiveToAxial();
 
@@ -335,8 +336,6 @@ public slots:
   void Change3DPerspectiveToSagittal();
 
   void CreateMeshFromSelectedContours(std::list< unsigned int > ListContourIDs, int iMeshID);
-
-  void VisibilityXYZ();
 
   void AddContourForMeshToContours(vtkPolyData *);
 

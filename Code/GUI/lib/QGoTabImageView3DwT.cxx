@@ -1461,18 +1461,9 @@ QGoTabImageView3DwT::setupUi(QWidget *iParent)
   QObject::connect( m_ImageView, SIGNAL( SelectionChanged() ),
                     this, SLOT( HighlightPickedActor() ) );
 
-  /*
-  QObject::connect(m_ImageView, SIGNAL(VisibilityXYChanged()),
-                     this, SLOT(VisibilityXY()));
   // connect the contours selection connection
-  QObject::connect(m_ImageView, SIGNAL(VisibilityXZChanged()),
-                   this, SLOT(VisibilityXZ()));
-  // connect the contours selection connection
-  QObject::connect(m_ImageView, SIGNAL(VisibilityYZChanged()),
-                   this, SLOT(VisibilityYZ()));*/
-  // connect the contours selection connection
-  QObject::connect( m_ImageView, SIGNAL( VisibilityXYZChanged() ),
-                    this, SLOT( VisibilityXYZ() ) );
+  QObject::connect( m_ImageView, SIGNAL( VisibilityChanged() ),
+                    this, SLOT( VisibilityPickedActor() ) );
 
   m_HBoxLayout = new QHBoxLayout(iParent);
   m_HBoxLayout->addWidget(m_VSplitter);
@@ -2509,20 +2500,25 @@ QGoTabImageView3DwT::HighlightPickedActor()
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::VisibilityXYZ()
+QGoTabImageView3DwT::VisibilityPickedActor()
 {
   vtkActor *temp_actor = m_ImageView->GetCurrentActor();
+  vtkIntArray* testArray =
+      static_cast<vtkIntArray*>(temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("TrackID"));
 
-  if ( temp_actor )
-    {
-    m_ContourContainer->UpdateElementVisibilityWithGivenActor< ActorXYZ >(
-      temp_actor,
-      m_ImageView->GetCurrentState()
-      );
-    m_MeshContainer->UpdateElementVisibilityWithGivenActor< ActorXYZ >(
-      temp_actor,
-      m_ImageView->GetCurrentState() );
-    }
+  if( ! testArray )
+  {
+    // we picked the background plane
+    return;
+  }
+
+  int value = testArray->GetValue(0);
+
+  m_ContourContainer->UpdateElementVisibility( value, m_ImageView->GetCurrentState() );
+  m_MeshContainer->UpdateElementVisibility( value, m_ImageView->GetCurrentState() );
+  /*
+   * \todo Nicolas-Visibility for tracks
+   */
 }
 
 //-------------------------------------------------------------------------

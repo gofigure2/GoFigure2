@@ -274,23 +274,20 @@ public:
   \return true if the element exists
   \return false else
   */
-  template< class TActor >
-  bool UpdateElementVisibilityWithGivenActor(vtkActor *iActor, bool iState)
+  bool UpdateElementVisibility(unsigned int iTraceID, bool iState)
     {
-    if ( iActor )
-      {
-      typedef typename MultiIndexContainerType::index< TActor >::type::iterator
+      typedef typename MultiIndexContainerType::index< TraceID >::type::iterator
       IteratorType;
-      IteratorType it = m_Container.get< TActor >().find(iActor);
+      IteratorType it = m_Container.get< TraceID >().find(iTraceID);
 
-      if ( it != m_Container.get< TActor >().end() )
+      if ( it != m_Container.get< TraceID >().end() )
         {
         if ( it->Visible != iState )
           {
           it->SetActorVisibility( iState );
 
-          ContourMeshStructure tempStructure(*it);
-          tempStructure.Visible = iState;
+          ContourMeshStructure* tempStructure =  const_cast<ContourMeshStructure*>(&(*it));
+          tempStructure->Visible = iState;
 
           Qt::CheckState State;
 
@@ -304,15 +301,11 @@ public:
             State = Qt::Unchecked;
             }
 
-          m_Container.get< TActor >().replace(it, tempStructure);
-
           emit TraceVisibilityChanged(it->TraceID, State);
           }
 
         return true;
         }
-      }
-
     return false;
     }
 
@@ -408,11 +401,8 @@ public:
             }
           }
 
-        MultiIndexContainerElementType tempStructure(*it);
-        tempStructure.Visible = iVisibility;
-
-        using boost::multi_index::get;
-        m_Container.get< TIndex >().replace(it, tempStructure);
+        ContourMeshStructure* tempStructure =  const_cast<ContourMeshStructure*>(&(*it));
+        tempStructure->Visible = iVisibility;
 
         Qt::CheckState State;
 

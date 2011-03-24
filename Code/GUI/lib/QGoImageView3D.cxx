@@ -1324,7 +1324,7 @@ QGoImageView3D::UpdateCurrentActorVisibility(vtkObject *caller)
     SafeDownCast( t->GetInteractorStyle3D()->GetCurrentProp() );
   m_CurrentState = t->GetInteractorStyle3D()->GetCurrentState();
 
-  emit VisibilityXYZChanged();
+  emit VisibilityChanged();
 }
 
 //-------------------------------------------------------------------------

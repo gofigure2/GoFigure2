@@ -179,7 +179,7 @@ signals:
 
   void SelectionChanged();
 
-  void VisibilityXYZChanged();
+  void VisibilityChanged();
 
   void CurrentActorUpdated();
 
