@@ -2473,13 +2473,12 @@ QGoTabImageView3DwT::HighlightPickedActor()
 {
   vtkActor *temp_actor = m_ImageView->GetCurrentActor();
 
+  // mesh ID first - higher probability?
   if( temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("MESH") )
   {
     vtkIntArray* testArray =
         static_cast<vtkIntArray*>(temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("MESH"));
-    int value = testArray->GetValue(0);
-    std::cout << "mesh ID: "<< value << std::endl;
-    m_MeshContainer->UpdateElementHighlighting(value);
+    m_MeshContainer->UpdateElementHighlighting(testArray->GetValue(0));
     return;
   }
 
@@ -2487,9 +2486,7 @@ QGoTabImageView3DwT::HighlightPickedActor()
   {
     vtkIntArray* testArray =
         static_cast<vtkIntArray*>(temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("TRACK"));
-    int value = testArray->GetValue(0);
-    std::cout << "track ID: "<< value << std::endl;
-    m_TrackContainer->UpdateElementHighlighting(value);
+    m_TrackContainer->UpdateElementHighlighting(testArray->GetValue(0));
     return;
   }
 
@@ -2497,9 +2494,7 @@ QGoTabImageView3DwT::HighlightPickedActor()
   {
     vtkIntArray* testArray =
         static_cast<vtkIntArray*>(temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("CONTOUR"));
-    int value = testArray->GetValue(0);
-    std::cout << "contour ID: "<< value << std::endl;
-    m_ContourContainer->UpdateElementHighlighting(value);
+    m_ContourContainer->UpdateElementHighlighting(testArray->GetValue(0));
     return;
   }
 }
@@ -2512,13 +2507,12 @@ QGoTabImageView3DwT::VisibilityPickedActor()
 {
   vtkActor *temp_actor = m_ImageView->GetCurrentActor();
 
+  // mesh ID first - higher probability?
   if( temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("MESH") )
   {
     vtkIntArray* testArray =
         static_cast<vtkIntArray*>(temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("MESH"));
-    int value = testArray->GetValue(0);
-    std::cout << "mesh ID: "<< value << std::endl;
-    m_MeshContainer->UpdateElementVisibility( value, m_ImageView->GetCurrentState() );
+    m_MeshContainer->UpdateElementVisibility( testArray->GetValue(0), m_ImageView->GetCurrentState() );
     return;
   }
 
@@ -2526,9 +2520,7 @@ QGoTabImageView3DwT::VisibilityPickedActor()
   {
     vtkIntArray* testArray =
         static_cast<vtkIntArray*>(temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("TRACK"));
-    int value = testArray->GetValue(0);
-    std::cout << "track ID: "<< value << std::endl;
-    m_TrackContainer->UpdateElementVisibility(value, m_ImageView->GetCurrentState() );
+    m_TrackContainer->UpdateElementVisibility(testArray->GetValue(0), m_ImageView->GetCurrentState() );
     return;
   }
 
@@ -2536,9 +2528,7 @@ QGoTabImageView3DwT::VisibilityPickedActor()
   {
     vtkIntArray* testArray =
         static_cast<vtkIntArray*>(temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("CONTOUR"));
-    int value = testArray->GetValue(0);
-    std::cout << "contour ID: "<< value << std::endl;
-    m_ContourContainer->UpdateElementVisibility( value, m_ImageView->GetCurrentState() );
+    m_ContourContainer->UpdateElementVisibility( testArray->GetValue(0), m_ImageView->GetCurrentState() );
     return;
   }
 
