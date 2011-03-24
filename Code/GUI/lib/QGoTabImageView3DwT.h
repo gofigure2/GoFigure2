@@ -326,12 +326,6 @@ public slots:
 
   void ReEditContour(const unsigned int & iId);
 
-  void HighlightXY();
-
-  void HighlightXZ();
-
-  void HighlightYZ();
-
   void HighlightXYZ();
 
   void Change3DPerspectiveToAxial();

@@ -555,29 +555,15 @@ protected:
   \return true if the element exists
   \return false else
   */
-  template< class TActor >
   bool UpdateElementHighlightingWithGivenActor(
-      vtkActor *iActor,
       unsigned int& oTraceId,
       Qt::CheckState& oState )
     {
-    // unecessary if....
-    if ( iActor )
-      {
-      vtkIntArray* testArray =
-          static_cast<vtkIntArray*>(iActor->GetMapper()->GetInput()->GetPointData()->GetArray("TrackID"));
-      if(! testArray )
-        {
-        //return if we picked a plane
-        return false;
-        }
-      int value = testArray->GetValue(0);
-
       using boost::multi_index::get;
 
       typedef typename MultiIndexContainerType::template index< TraceID >::type::iterator
       IteratorType;
-      IteratorType it = m_Container.get< TraceID >().find(value);
+      IteratorType it = m_Container.get< TraceID >().find(oTraceId);
 
       vtkProperty *temp_property = NULL;
 
@@ -621,12 +607,8 @@ protected:
         assert( m_ImageView );
 
         m_ImageView->UpdateRenderWindows();
-
-        oTraceId = it->TraceID;
-
         return true;
         }
-      }
 
     return false;
     }

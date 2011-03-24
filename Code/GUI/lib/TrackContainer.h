@@ -240,15 +240,12 @@ public:
   \param[in] iActor Actor of the element to be modified
   \return true if the element exists
   \return false else */
-  template< class TActor >
-  bool UpdateElementHighlightingWithGivenActor(vtkActor *iActor)
+  bool UpdateElementHighlightingWithGivenActor(unsigned int TraceId)
     {
-    unsigned TraceId;
     Qt::CheckState state;
     bool oValue =
-        Superclass::UpdateElementHighlightingWithGivenActor< TActor >( iActor,
-                                                                 TraceId,
-                                                                 state );
+        Superclass::UpdateElementHighlightingWithGivenActor(TraceId,
+                                                            state );
     if( oValue )
       {
       emit TracePicked(TraceId, state);

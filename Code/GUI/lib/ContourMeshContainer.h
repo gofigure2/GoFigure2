@@ -253,21 +253,13 @@ public:
   \return true if the element exists
   \return false else
   */
-  template< class TActor >
-  bool UpdateElementHighlightingWithGivenActor(vtkActor *iActor)
+  bool UpdateElementHighlightingWithGivenActor(unsigned int TraceId)
     {
-    unsigned TraceId = 0;
     Qt::CheckState state;
 
-    std::cout <<"==================================" << TraceId << std::endl;
-    std::cout <<"TraceId: " << TraceId << std::endl;
-    std::cout <<"actor picked: " << iActor << std::endl;
-    std::cout <<"==================================" << TraceId << std::endl;
-
     bool oValue =
-        Superclass::UpdateElementHighlightingWithGivenActor< TActor >( iActor,
-                                                                 TraceId,
-                                                                 state );
+        Superclass::UpdateElementHighlightingWithGivenActor(TraceId,
+                                                            state );
     if( oValue )
       {
       emit TracePicked(TraceId, state);

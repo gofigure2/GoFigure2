@@ -1457,25 +1457,6 @@ QGoTabImageView3DwT::setupUi(QWidget *iParent)
 
   QObject::connect( m_ImageView, SIGNAL( FullScreenViewChanged(int) ),
                     this, SIGNAL( FullScreenViewChanged(int) ) );
-/*
-  // connect the contours selection connection
-  QObject::connect(m_ImageView, SIGNAL(ContoursSelectionChanged()),
-                   this, SLOT(HighLightContours()));
-
-  QObject::connect(m_ImageView, SIGNAL(ContoursSelectionChanged()),
-                   this, SLOT(SelectContoursInTable()));*/
-
-  // connect the contours selection connection
-  /*QObject::connect(m_ImageView, SIGNAL(ContoursSelectionXYChanged()),
-                   this, SLOT(HighlightContoursXY()));*/
-  QObject::connect( m_ImageView, SIGNAL( SelectionXYChanged() ),
-                    this, SLOT( HighlightXY() ) );
-  // connect the contours selection connection
-  QObject::connect( m_ImageView, SIGNAL( SelectionXZChanged() ),
-                    this, SLOT( HighlightXZ() ) );
-  // connect the contours selection connection
-  QObject::connect( m_ImageView, SIGNAL( SelectionYZChanged() ),
-                    this, SLOT( HighlightYZ() ) );
   // connect the contours selection connection
   QObject::connect( m_ImageView, SIGNAL( SelectionXYZChanged() ),
                     this, SLOT( HighlightXYZ() ) );
@@ -2494,92 +2475,23 @@ QGoTabImageView3DwT::ReEditContour(const unsigned int & iId)
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::HighlightXY()
-{
-  vtkActor *temp_actor = m_ImageView->GetCurrentActor();
-
-  if ( temp_actor )
-    {
-    // CODE COMMENTED AS REMINDER
-    // FIND A SOLUTION TO AVOID CHECKING THE 2 CONTAINERS
-    // FOR VISIBILITY AND HIGHLIGHT
-    /*vtkPolyData* pd =
-        dynamic_cast< vtkPolyData* >( temp_actor->GetMapper()->GetInput() );
-
-    if( pd )
-      {
-      if( ContourMeshContainer::ComputeDirectionFromContour( pd ) != -1 )
-        {*/
-    m_ContourContainer->UpdateElementHighlightingWithGivenActor< ActorXY >(
-      temp_actor);
-    /* }
-   else
-     {*/
-    m_MeshContainer->UpdateElementHighlightingWithGivenActor< ActorXY >(
-      temp_actor);
-
-    m_TrackContainer->UpdateElementHighlightingWithGivenActor< ActorXY >(
-      temp_actor);
-    /*}
-  }*/
-    }
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::HighlightXZ()
-{
-  vtkActor *temp_actor = m_ImageView->GetCurrentActor();
-
-  if ( temp_actor )
-    {
-    m_ContourContainer->UpdateElementHighlightingWithGivenActor< ActorXZ >(
-      temp_actor);
-    m_MeshContainer->UpdateElementHighlightingWithGivenActor< ActorXZ >(
-      temp_actor);
-    m_TrackContainer->UpdateElementHighlightingWithGivenActor< ActorXZ >(
-      temp_actor);
-    }
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::HighlightYZ()
-{
-  vtkActor *temp_actor = m_ImageView->GetCurrentActor();
-
-  if ( temp_actor )
-    {
-    m_ContourContainer->UpdateElementHighlightingWithGivenActor< ActorYZ >(
-      temp_actor);
-    m_MeshContainer->UpdateElementHighlightingWithGivenActor< ActorYZ >(
-      temp_actor);
-    m_TrackContainer->UpdateElementHighlightingWithGivenActor< ActorYZ >(
-      temp_actor);
-    }
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
 QGoTabImageView3DwT::HighlightXYZ()
 {
   vtkActor *temp_actor = m_ImageView->GetCurrentActor();
+  vtkIntArray* testArray =
+      static_cast<vtkIntArray*>(temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("TrackID"));
 
-  if ( temp_actor )
-    {
-    m_ContourContainer->UpdateElementHighlightingWithGivenActor< ActorXYZ >(
-      temp_actor);
-    m_MeshContainer->UpdateElementHighlightingWithGivenActor< ActorXYZ >(
-      temp_actor);
-    m_TrackContainer->UpdateElementHighlightingWithGivenActor< ActorXYZ >(
-      temp_actor);
-    }
+  if( ! testArray )
+  {
+    return;
+  }
+
+  int value = testArray->GetValue(0);
+
+  // we could add an extra info in the array depending on trace type
+  m_ContourContainer->UpdateElementHighlightingWithGivenActor(value);
+  m_MeshContainer->UpdateElementHighlightingWithGivenActor(value);
+  m_TrackContainer->UpdateElementHighlightingWithGivenActor(value);
 }
 
 //-------------------------------------------------------------------------

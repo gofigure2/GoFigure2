@@ -1304,32 +1304,11 @@ QGoImageView3D::UpdateCurrentActorSelection(vtkObject *caller)
   vtkInteractorStyleImage2D *t =
     static_cast< vtkInteractorStyleImage2D * >( caller );
 
-  m_CurrentActor = vtkActor::SafeDownCast ( t->GetCurrentProp() );
-
-  if ( t == m_Pool->GetItem(0)->GetInteractorStyle() )
-    {
-    //qDebug() << "in XY";
-    emit SelectionXYChanged();
-    }
-  else if ( t == m_Pool->GetItem(1)->GetInteractorStyle() )
-    {
-    //qDebug() << "in XZ";
-    emit SelectionXZChanged();
-    }
-  else if ( t == m_Pool->GetItem(2)->GetInteractorStyle() )
-    {
-    //qDebug() << "in YZ";
-    emit SelectionYZChanged();
-    }
-  else if ( t == (vtkInteractorStyleImage2D *)this->m_View3D->GetInteractorStyle3D() )
-    {
-    //qDebug() << "in 3D";
+  if( t->GetCurrentProp() )
+  {
+    m_CurrentActor = vtkActor::SafeDownCast ( t->GetCurrentProp() );
     emit SelectionXYZChanged();
-    }
-  else
-    {
-    qWarning() << "no match";
-    }
+  }
 }
 
 //---------------------------------------------------------------------------
