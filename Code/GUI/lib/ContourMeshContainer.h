@@ -276,37 +276,15 @@ public:
   */
   bool UpdateElementVisibility(unsigned int iTraceID, bool iState)
     {
-      typedef typename MultiIndexContainerType::index< TraceID >::type::iterator
-      IteratorType;
-      IteratorType it = m_Container.get< TraceID >().find(iTraceID);
+    Qt::CheckState state;
 
-      if ( it != m_Container.get< TraceID >().end() )
-        {
-        if ( it->Visible != iState )
-          {
-          it->SetActorVisibility( iState );
-
-          ContourMeshStructure* tempStructure =  const_cast<ContourMeshStructure*>(&(*it));
-          tempStructure->Visible = iState;
-
-          Qt::CheckState State;
-
-          // Note: it->Highlighted is the status before picking the actor
-          if ( iState )
-            {
-            State = Qt::Checked;
-            }
-          else
-            {
-            State = Qt::Unchecked;
-            }
-
-          emit TraceVisibilityChanged(it->TraceID, State);
-          }
-
-        return true;
-        }
-    return false;
+    bool oValue =
+        Superclass::UpdateElementVisibilityWithTraceID(iTraceID, iState, state );
+    if( oValue )
+      {
+      emit TraceVisibilityChanged(iTraceID, state);
+      }
+    return oValue;
     }
 
   //-------------------------------------------------------------------------

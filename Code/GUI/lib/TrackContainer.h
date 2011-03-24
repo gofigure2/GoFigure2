@@ -239,7 +239,9 @@ public:
   \brief Update highlighting property of one element given one actor.
   \param[in] iActor Actor of the element to be modified
   \return true if the element exists
-  \return false else */
+  \return false else
+  \note move to superclass
+  */
   bool UpdateElementHighlighting(unsigned int TraceId)
     {
     Qt::CheckState state;
@@ -258,20 +260,16 @@ public:
   \param[in] iActor Actor of the element to be modified
   \return true if the element exists
   \return false else
-  \note not used*/
-  template< class TActor >
-  bool UpdateElementVisibilityWithGivenActor(
-      vtkActor *iActor )
+  \note move to superclass*/
+  bool UpdateElementVisibility(unsigned int iTraceID, bool iState)
     {
-    unsigned TraceId;
     Qt::CheckState state;
+
     bool oValue =
-        Superclass::UpdateElementVisibilityWithGivenActor< TActor >( iActor,
-                                                                 TraceId,
-                                                                 state );
+        Superclass::UpdateElementVisibilityWithTraceID(iTraceID, iState, state );
     if( oValue )
       {
-      emit TraceVisibilityChanged(TraceId, state);
+      emit TraceVisibilityChanged(iTraceID, state);
       }
     return oValue;
     }

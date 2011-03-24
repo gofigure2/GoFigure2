@@ -613,42 +613,28 @@ protected:
     return false;
     }
 
-  /** \brief Update element Visibility property given one actor.
-  \tparam TActor either ActorXY, ActorXZ, ActorYZ, ActorXYZ depending on the view
-  \param[in] iActor provided actor
-  \param[out] oTraceId TraceId of the element
-  \param[out] oState Qt::Checked if the element is not visible else Qt::UnChecked
-  \return true if iActor is in the container
-  \return false else */
-  template< class TActor >
-  bool UpdateElementVisibilityWithGivenActor(
-      vtkActor *iActor,
+  bool UpdateElementVisibilityWithTraceID(
       unsigned int& oTraceId,
+      bool iState,
       Qt::CheckState& oState )
     {
     using boost::multi_index::get;
 
-    std::cout << "adress: " << iActor << std::endl;
+    typedef typename MultiIndexContainerType::template index< TraceID >::type::iterator
+    IteratorType;
+    IteratorType it = m_Container.get< TraceID >().find(oTraceId);
 
-    if ( iActor )
+    if ( it != m_Container.get< TraceID >().end() )
       {
-      typedef typename MultiIndexContainerType::template index< TActor >::type::iterator
-      IteratorType;
-      IteratorType it = m_Container.get< TActor >().find(iActor);
-
-      vtkProperty *temp_property = NULL;
-
-      if ( it != m_Container.get< TActor >().end() )
+      if ( it->Visible != iState )
         {
-        it->SetActorVisibility( !it->Visible );
-
+        it->SetActorVisibility( iState );
         MultiIndexContainerElementType* tempStructure =
             const_cast<MultiIndexContainerElementType*>(&(*it));
-
-        tempStructure->Visible = !it->Visible;
+        tempStructure->Visible = iState;
 
         // Note: it->Highlighted is the status before picking the actor
-        if ( !it->Visible )
+        if ( iState )
           {
           oState = Qt::Checked;
           }
@@ -656,69 +642,9 @@ protected:
           {
           oState = Qt::Unchecked;
           }
-
-        assert( m_ImageView );
-        m_ImageView->UpdateRenderWindows();
-
-        oTraceId = it->TraceID;
-
-        return true;
         }
+      return true;
       }
-
-    return false;
-    }
-
-  /**
-  \brief Update highlighting property of one element given one actor.
-  \param[in] iActor Actor of the element to be modified
-  \param[in] iState Visibility to applied to the element
-  \param[out] oTraceID TraceId of the element
-  \param[out] oState Qt::Checked if iState is true else Qt::UnChecked
-  \return true if the element exists
-  \return false else */
-  template< class TActor >
-  bool UpdateElementVisibilityWithGivenActor(
-      vtkActor *iActor,
-      bool iState,
-      unsigned int& oTraceID,
-      Qt::CheckState& oState )
-    {
-    using boost::multi_index::get;
-
-    if ( iActor )
-      {
-      typedef typename MultiIndexContainerType::template index< TActor >::type::iterator
-      IteratorType;
-      IteratorType it = m_Container.get< TActor >().find(iActor);
-
-      if ( it != m_Container.get< TActor >().end() )
-        {
-        if ( it->Visible != iState )
-          {
-          it->SetActorVisibility( iState );
-
-          MultiIndexContainerElementType* tempStructure =
-              const_cast<MultiIndexContainerElementType*>(&(*it));
-          tempStructure->Visible = iState;
-
-          // Note: it->Highlighted is the status before picking the actor
-          if ( iState )
-            {
-            oState = Qt::Checked;
-            }
-          else
-            {
-            oState = Qt::Unchecked;
-            }
-
-          oTraceID = it->TraceID;
-          }
-
-        return true;
-        }
-      }
-
     return false;
     }
 };
