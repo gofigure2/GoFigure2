@@ -34,12 +34,13 @@
 #include "QGoMeshEditingWidgetManager.h"
 #include "QGoAlgorithmWidget.h"
 #include "QGoAlgoParameter.h"
-#include "QGoFilterChanAndVese.h"
+//#include "QGoFilterChanAndVese.h"
 #include "QGoFilterShape.h"
 #include "vtkSmartPointer.h"
 #include "vtkImageExport.h"
 #include "vtkImageData.h"
 #include <iostream>
+#include "QGoMeshLevelSetAlgo.h"
 
 
 QGoMeshEditingWidgetManager::QGoMeshEditingWidgetManager(
@@ -67,18 +68,22 @@ QGoMeshEditingWidgetManager::QGoMeshEditingWidgetManager(
 //-------------------------------------------------------------------------
 QGoMeshEditingWidgetManager::~QGoMeshEditingWidgetManager()
 {
-  delete m_RadiusLevelSet;
-  delete m_Curvature;
-  delete m_Iterations;
+  //delete m_RadiusLevelSet;
+  //delete m_Curvature;
+  //delete m_Iterations;
   delete m_Shape;
   delete m_RadiusShape;
+  delete this->m_LevelSetAlgo;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoMeshEditingWidgetManager::SetLevelSetAlgo(QWidget* iParent)
 {
-  QGoAlgorithmWidget* LevelSetWidget = 
+  m_LevelSetAlgo = new QGoMeshLevelSetAlgo();
+  QGoAlgorithmWidget* LevelSetWidget = m_LevelSetAlgo->GetLevelSetWidget();
+  LevelSetWidget->setParent(iParent);
+  /*QGoAlgorithmWidget* LevelSetWidget = 
     new QGoAlgorithmWidget("LevelSet 3D", iParent);
 
   m_RadiusLevelSet = new QGoAlgoParameter<double>("Radius", false, 0.1, 99.99, 2, 3);
@@ -88,6 +93,7 @@ void QGoMeshEditingWidgetManager::SetLevelSetAlgo(QWidget* iParent)
   m_Iterations = new QGoAlgoParameter<int> ("Iterations", true, 0, 1000, 100);
   LevelSetWidget->AddParameter(m_Iterations);
 
+  this->m_MeshEditingWidget->AddAlgoWidgetForSemiAutomatedMode(LevelSetWidget);*/
   this->m_MeshEditingWidget->AddAlgoWidgetForSemiAutomatedMode(LevelSetWidget);
 
   QObject::connect(LevelSetWidget, SIGNAL(ApplyAlgo() ),
@@ -119,7 +125,8 @@ void QGoMeshEditingWidgetManager::SetShapeAlgo(QWidget* iParent)
 //-------------------------------------------------------------------------
 void QGoMeshEditingWidgetManager::ApplyLevelSetAlgo()
 {
-  QGoFilterChanAndVese* LevelSetFilter = new QGoFilterChanAndVese(this, 1); 
+  this->GetPolydatasFromAlgo(this->m_LevelSetAlgo);
+  /*QGoFilterChanAndVese* LevelSetFilter = new QGoFilterChanAndVese(this, 1); 
   emit UpdateSeeds();
 
   std::vector<vtkPolyData*> NewMeshes = 
@@ -127,6 +134,18 @@ void QGoMeshEditingWidgetManager::ApplyLevelSetAlgo()
     this->m_Seeds, m_Iterations->GetValue(), m_Curvature->GetValue(), 
     this->m_Images,this->m_MeshEditingWidget->GetChannelNumber() );
   
+  emit MeshesCreatedFromAlgo(NewMeshes, this->GetSelectedTimePoint() );
+  emit ClearAllSeeds();*/
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoMeshEditingWidgetManager::
+  GetPolydatasFromAlgo(QGoMeshLevelSetAlgo* iAlgo)
+{
+  emit UpdateSeeds();
+  std::vector<vtkPolyData*> NewMeshes = iAlgo->ApplyAlgo(this->m_Seeds,
+    this->m_Images, this->m_MeshEditingWidget->GetChannelNumber() );
   emit MeshesCreatedFromAlgo(NewMeshes, this->GetSelectedTimePoint() );
   emit ClearAllSeeds();
 }

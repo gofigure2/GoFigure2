@@ -39,6 +39,7 @@
 #include "vtkSmartPointer.h"
 #include "vtkPolyData.h"
 #include "vtkImageData.h"
+#include "QGoMeshLevelSetAlgo.h"
 #include <QAction>
 #include <QDockWidget>
 
@@ -82,9 +83,10 @@ protected:
   int*                                            m_CurrentTimePoint;
 
   //levelset parameters :
-  QGoAlgoParameter<double>*       m_RadiusLevelSet;
-  QGoAlgoParameter<int>*          m_Curvature;
-  QGoAlgoParameter<int>*          m_Iterations;
+  //QGoAlgoParameter<double>*       m_RadiusLevelSet;
+  //QGoAlgoParameter<int>*          m_Curvature;
+  //QGoAlgoParameter<int>*          m_Iterations;
+  QGoMeshLevelSetAlgo*            m_LevelSetAlgo;
 
   //shape parameters :
   QGoAlgoParameter<double>*       m_RadiusShape;
@@ -98,6 +100,8 @@ protected:
   void SetLevelSetAlgo(QWidget* iParent=0);
   void SetShapeAlgo(QWidget* iParent=0);
 
+  void GetPolydatasFromAlgo(QGoMeshLevelSetAlgo* iAlgo);
+  
 signals:
   void SetSeedInteractorBehaviour(bool enable);
 
