@@ -2384,7 +2384,7 @@ QGoTabImageView3DwT::ValidateContour()
 
       // polydata
       //ADD TRACE ID IN POLYDATA
-      AddTraceIDIntoPolydata(contour, this->m_ContourContainer->m_CurrentElement.TraceID);
+      AddTraceIDIntoPolydata(contour, this->m_ContourContainer->m_CurrentElement.TraceID, "CONTOUR");
 
       std::vector< vtkActor * > actors =
         VisualizeTrace(contour,
@@ -2472,23 +2472,36 @@ void
 QGoTabImageView3DwT::HighlightPickedActor()
 {
   vtkActor *temp_actor = m_ImageView->GetCurrentActor();
-  vtkIntArray* testArray =
-      static_cast<vtkIntArray*>(temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("TrackID"));
 
-  if( ! testArray )
+  if( temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("MESH") )
   {
-    // we picked the background plane
+    vtkIntArray* testArray =
+        static_cast<vtkIntArray*>(temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("MESH"));
+    int value = testArray->GetValue(0);
+    std::cout << "mesh ID: "<< value << std::endl;
+    m_MeshContainer->UpdateElementHighlighting(value);
     return;
   }
 
-  int value = testArray->GetValue(0);
+  if( temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("TRACK") )
+  {
+    vtkIntArray* testArray =
+        static_cast<vtkIntArray*>(temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("TRACK"));
+    int value = testArray->GetValue(0);
+    std::cout << "track ID: "<< value << std::endl;
+    m_TrackContainer->UpdateElementHighlighting(value);
+    return;
+  }
 
-  /*
-   * \todo Nicolas: we could add an extra info in the array depending on trace type
-   */
-  m_ContourContainer->UpdateElementHighlighting(value);
-  m_MeshContainer->UpdateElementHighlighting(value);
-  m_TrackContainer->UpdateElementHighlighting(value);
+  if( temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("CONTOUR") )
+  {
+    vtkIntArray* testArray =
+        static_cast<vtkIntArray*>(temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("CONTOUR"));
+    int value = testArray->GetValue(0);
+    std::cout << "contour ID: "<< value << std::endl;
+    m_ContourContainer->UpdateElementHighlighting(value);
+    return;
+  }
 }
 
 //-------------------------------------------------------------------------
@@ -2498,20 +2511,37 @@ void
 QGoTabImageView3DwT::VisibilityPickedActor()
 {
   vtkActor *temp_actor = m_ImageView->GetCurrentActor();
-  vtkIntArray* testArray =
-      static_cast<vtkIntArray*>(temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("TrackID"));
 
-  if( ! testArray )
+  if( temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("MESH") )
   {
-    // we picked the background plane
+    vtkIntArray* testArray =
+        static_cast<vtkIntArray*>(temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("MESH"));
+    int value = testArray->GetValue(0);
+    std::cout << "mesh ID: "<< value << std::endl;
+    m_MeshContainer->UpdateElementVisibility( value, m_ImageView->GetCurrentState() );
     return;
   }
 
-  int value = testArray->GetValue(0);
+  if( temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("TRACK") )
+  {
+    vtkIntArray* testArray =
+        static_cast<vtkIntArray*>(temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("TRACK"));
+    int value = testArray->GetValue(0);
+    std::cout << "track ID: "<< value << std::endl;
+    m_TrackContainer->UpdateElementVisibility(value, m_ImageView->GetCurrentState() );
+    return;
+  }
 
-  m_ContourContainer->UpdateElementVisibility( value, m_ImageView->GetCurrentState() );
-  m_MeshContainer->UpdateElementVisibility( value, m_ImageView->GetCurrentState() );
-  m_TrackContainer->UpdateElementVisibility(value, m_ImageView->GetCurrentState() );
+  if( temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("CONTOUR") )
+  {
+    vtkIntArray* testArray =
+        static_cast<vtkIntArray*>(temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("CONTOUR"));
+    int value = testArray->GetValue(0);
+    std::cout << "contour ID: "<< value << std::endl;
+    m_ContourContainer->UpdateElementVisibility( value, m_ImageView->GetCurrentState() );
+    return;
+  }
+
 }
 
 //-------------------------------------------------------------------------
@@ -2632,7 +2662,7 @@ QGoTabImageView3DwT::SaveAndVisuContour(vtkPolyData *iView)
   // polydata for bounding box, nodes for db
   SaveContour(iView, contour_nodes);
 
-  AddTraceIDIntoPolydata(iView, this->m_ContourContainer->m_CurrentElement.TraceID);
+  AddTraceIDIntoPolydata(iView, this->m_ContourContainer->m_CurrentElement.TraceID, "CONTOUR");
 
   // should be polydata
   std::vector< vtkActor * > actors =
@@ -2750,7 +2780,7 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView,
   SaveMesh(iView, iTShift);
 
   //ADD TRACE ID IN POLYDATA
-  AddTraceIDIntoPolydata(iView, this->m_MeshContainer->m_CurrentElement.TraceID);
+  AddTraceIDIntoPolydata(iView, this->m_MeshContainer->m_CurrentElement.TraceID, "MESH");
 
   std::vector< vtkActor * > actors =
     VisualizeTrace(iView,
@@ -2803,7 +2833,7 @@ QGoTabImageView3DwT::AddContourForMeshToContours(vtkPolyData *iInput)
     //);
 
     // AND VISU!!!
-    AddTraceIDIntoPolydata(iInput, this->m_ContourContainer->m_CurrentElement.TraceID);
+    AddTraceIDIntoPolydata(iInput, this->m_ContourContainer->m_CurrentElement.TraceID, "MESH");
 
     std::vector< vtkActor * > actors =
       VisualizeTrace(iInput,
@@ -3076,12 +3106,12 @@ QGoTabImageView3DwT::GoToLocation(int iX, int iY, int iZ, int iT)
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-AddTraceIDIntoPolydata( vtkPolyData* iPolydata, unsigned int iTraceID)
+AddTraceIDIntoPolydata( vtkPolyData* iPolydata, unsigned int iTraceID, const char* iTrace)
 {
 vtkSmartPointer<vtkIntArray> trackIDArray = vtkSmartPointer<vtkIntArray>::New();
 trackIDArray->SetNumberOfComponents(1);
 trackIDArray->SetNumberOfValues(1);
-trackIDArray->SetName("TrackID");
+trackIDArray->SetName(iTrace);
 trackIDArray->SetValue(0,iTraceID);
 
 iPolydata->GetPointData()->AddArray(trackIDArray);

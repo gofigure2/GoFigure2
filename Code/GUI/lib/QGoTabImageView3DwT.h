@@ -423,6 +423,8 @@ protected:
       vtkPolyData *contour_copy = vtkPolyData::New();
       contour_copy->DeepCopy(iContour);
 
+      AddTraceIDIntoPolydata(contour_copy, iIt->TraceID, "CONTOUR");
+
       VisualizeTraceBase< ContourContainer, TIndex >( m_ContourContainer, iIt,
                                                       highlighted, visibility,
                                                       contour_copy );
@@ -442,6 +444,8 @@ protected:
       bool visibility =
         ( static_cast< unsigned int >( m_TCoord ) == iIt->TCoord );
 
+      AddTraceIDIntoPolydata(iIt->Nodes, iIt->TraceID, "MESH");
+
       VisualizeTraceBase< MeshContainer, TIndex >( m_MeshContainer, iIt,
                                                    highlighted, visibility );
       }
@@ -456,6 +460,8 @@ protected:
       {
       bool highlighted = false;
       bool visibility = false;
+
+      AddTraceIDIntoPolydata(iIt->Nodes, iIt->TraceID, "TRACK");
 
       VisualizeTraceBase< TrackContainer, TIndex >( m_TrackContainer, iIt,
                                                    highlighted, visibility );
@@ -483,14 +489,6 @@ protected:
       {
       temp = iContour;
       }
-
-    // add trace ID in polydata
-    vtkSmartPointer<vtkIntArray> trackIDArray = vtkSmartPointer<vtkIntArray>::New();
-    trackIDArray->SetNumberOfComponents(1);
-    trackIDArray->SetNumberOfValues(1);
-    trackIDArray->SetName("TrackID");
-    trackIDArray->SetValue(0,iIt->TraceID);
-    temp->GetPointData()->AddArray(trackIDArray);
 
     std::vector< vtkActor * > mesh_actor = this->AddContour( temp, mesh_property );
 
@@ -650,7 +648,7 @@ protected slots:
   */
   void SetDatabaseContainersAndDelayedConnections();
 
-  void AddTraceIDIntoPolydata( vtkPolyData* iPolydata, unsigned int iTraceID);
+  void AddTraceIDIntoPolydata( vtkPolyData* iPolydata, unsigned int iTraceID, const char* iTrace);
 
 private:
   Q_DISABLE_COPY(QGoTabImageView3DwT);

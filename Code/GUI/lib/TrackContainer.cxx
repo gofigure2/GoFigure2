@@ -294,7 +294,7 @@ TrackContainer::CreateTrackActors( TrackStructure& iStructure )
   vtkSmartPointer<vtkIntArray> trackIDArray = vtkSmartPointer<vtkIntArray>::New();
   trackIDArray->SetNumberOfComponents(1);
   trackIDArray->SetNumberOfValues(1);
-  trackIDArray->SetName("TrackID");
+  trackIDArray->SetName("TRACK");
   trackIDArray->SetValue(0,iStructure.TraceID);
 
   iStructure.Nodes->GetPointData()->AddArray(trackIDArray);
@@ -695,7 +695,7 @@ CreateDivisionActor( unsigned int iMother, unsigned int iDaughter1, unsigned int
   vtkSmartPointer<vtkIntArray> trackIDArray = vtkSmartPointer<vtkIntArray>::New();
   trackIDArray->SetNumberOfComponents(1);
   trackIDArray->SetNumberOfValues(1);
-  trackIDArray->SetName("TrackID");
+  trackIDArray->SetName("DIVISION");
   trackIDArray->SetValue(0,iMother);
 
   division->GetPointData()->AddArray(trackIDArray);
@@ -869,7 +869,7 @@ UpdateDivisionActor(TrackStructure* iStructure)
   vtkSmartPointer<vtkIntArray> trackIDArray = vtkSmartPointer<vtkIntArray>::New();
   trackIDArray->SetNumberOfComponents(1);
   trackIDArray->SetNumberOfValues(1);
-  trackIDArray->SetName("TrackID");
+  trackIDArray->SetName("DIVISION");
   trackIDArray->SetValue(0,iStructure->TraceID);
 
   division->GetPointData()->AddArray(trackIDArray);
