@@ -894,8 +894,19 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
                            const bool & iDataVisibility)
 {
   // get trace ID - for picking
-  vtkIntArray* testArray =
-      static_cast<vtkIntArray*>(dataset->GetPointData()->GetArray("TrackID"));
+  vtkIntArray* testArray;
+  if( dataset->GetPointData()->GetArray("TRACK") )
+  {
+    testArray = static_cast<vtkIntArray*>(dataset->GetPointData()->GetArray("TRACK"));
+  }
+  else if( dataset->GetPointData()->GetArray("MESH") )
+  {
+    testArray = static_cast<vtkIntArray*>(dataset->GetPointData()->GetArray("MESH"));
+  }
+  else if( dataset->GetPointData()->GetArray("CONTOUR") )
+  {
+    testArray = static_cast<vtkIntArray*>(dataset->GetPointData()->GetArray("CONTOUR"));
+  }
 
   vtkCamera *cam = NULL;
 
