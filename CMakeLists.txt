@@ -218,6 +218,8 @@ ELSE( SUPERBUILD )
     ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/Video/
     ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/Wizard/
     ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/Wizard/
+	${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/TraceEditing/
+    ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/TraceEditing/
     ${GOFIGURE2_SOURCE_DIR}/Interfaces/
     ${GOFIGURE2_BINARY_DIR}/Interfaces/
     ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/

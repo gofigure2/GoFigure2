@@ -90,7 +90,7 @@ SET( QGoGUILIB_SRC
     QGoContourSemiAutoShapeWidget.cxx
     QGoContourSemiAutoWatershedWidget.cxx
   QGoFilterSemiAutoBase.cxx
-    QGoFilterChanAndVese.cxx
+    TraceEditing/QGoFilterChanAndVese.cxx
     QGoFilterShape.cxx
     QGoFilterWatershed.cxx
 
@@ -99,11 +99,11 @@ SET( QGoGUILIB_SRC
   QGoTrackEditingWidget.cxx
 
   # for the trace editing widget
-  QGoTraceEditingWidget.cxx
-  QGoModesManagerWidget.cxx
-  QGoAlgorithmsManagerWidget.cxx
-  QGoAlgorithmWidget.cxx
-  QGoMeshEditingWidgetManager.cxx
+  TraceEditing/QGoTraceEditingWidget.cxx
+  TraceEditing/QGoModesManagerWidget.cxx
+  TraceEditing/QGoAlgorithmsManagerWidget.cxx
+  TraceEditing/QGoAlgorithmWidget.cxx
+  TraceEditing/QGoMeshEditingWidgetManager.cxx
 
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx
@@ -233,7 +233,7 @@ SET( QGoGUILIB_HDRS
     QGoContourSemiAutoShapeWidget.h
     QGoContourSemiAutoWatershedWidget.h
   QGoFilterSemiAutoBase.h
-    QGoFilterChanAndVese.h
+    TraceEditing/QGoFilterChanAndVese.h
     QGoFilterShape.h
     QGoFilterWatershed.h
 
@@ -242,11 +242,11 @@ SET( QGoGUILIB_HDRS
   QGoTrackEditingWidget.h
 
   # for the trace editing widget
-  QGoTraceEditingWidget.h
-  QGoModesManagerWidget.h
-  QGoAlgorithmsManagerWidget.h
-  QGoAlgorithmWidget.h
-  QGoMeshEditingWidgetManager.h
+  TraceEditing/QGoTraceEditingWidget.h
+  TraceEditing/QGoModesManagerWidget.h
+  TraceEditing/QGoAlgorithmsManagerWidget.h
+  TraceEditing/QGoAlgorithmWidget.h
+  TraceEditing/QGoMeshEditingWidgetManager.h
 )
 
 IF( BUILD_COMPARETOOL )
