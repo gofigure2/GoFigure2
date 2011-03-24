@@ -555,7 +555,7 @@ protected:
   \return true if the element exists
   \return false else
   */
-  bool UpdateElementHighlightingWithTraceID(
+  void UpdateElementHighlightingWithTraceID(
       unsigned int& oTraceId,
       Qt::CheckState& oState )
     {
@@ -567,53 +567,49 @@ protected:
 
       vtkProperty *temp_property = NULL;
 
-      if ( it != m_Container.get< TraceID >().end() )
+      assert ( it != m_Container.get< TraceID >().end() );
+
+      if ( it->Highlighted )
         {
-        if ( it->Highlighted )
-          {
-          temp_property = vtkProperty::New();
-          temp_property->SetColor(it->rgba[0],
-                                  it->rgba[1],
-                                  it->rgba[2]);
-          temp_property->SetOpacity(it->rgba[3]);
-          temp_property->SetLineWidth( this->m_IntersectionLineWidth );
-          }
-        else
-          {
-          temp_property = this->m_HighlightedProperty;
-          }
-
-        it->SetActorProperties( temp_property );
-
-        if ( it->Highlighted )
-          {
-          temp_property->Delete();
-          }
-
-        MultiIndexContainerElementType* tempStructure =
-            const_cast<MultiIndexContainerElementType*>(&(*it));
-        tempStructure->Highlighted = !it->Highlighted;
-
-        // Note: it->Highlighted is the status before picking the actor
-        if ( !it->Highlighted )
-          {
-          oState = Qt::Checked;
-          }
-        else
-          {
-          oState = Qt::Unchecked;
-          }
-
-        assert( m_ImageView );
-
-        m_ImageView->UpdateRenderWindows();
-        return true;
+        temp_property = vtkProperty::New();
+        temp_property->SetColor(it->rgba[0],
+                                it->rgba[1],
+                                it->rgba[2]);
+        temp_property->SetOpacity(it->rgba[3]);
+        temp_property->SetLineWidth( this->m_IntersectionLineWidth );
+        }
+      else
+        {
+        temp_property = this->m_HighlightedProperty;
         }
 
-    return false;
+      it->SetActorProperties( temp_property );
+
+      if ( it->Highlighted )
+        {
+        temp_property->Delete();
+        }
+
+      MultiIndexContainerElementType* tempStructure =
+          const_cast<MultiIndexContainerElementType*>(&(*it));
+      tempStructure->Highlighted = !it->Highlighted;
+
+      // Note: it->Highlighted is the status before picking the actor
+      if ( !it->Highlighted )
+        {
+        oState = Qt::Checked;
+        }
+      else
+        {
+        oState = Qt::Unchecked;
+        }
+
+      assert( m_ImageView );
+
+      m_ImageView->UpdateRenderWindows();
     }
 
-  bool UpdateElementVisibilityWithTraceID(
+  void UpdateElementVisibilityWithTraceID(
       unsigned int& oTraceId,
       bool iState,
       Qt::CheckState& oState )
@@ -624,28 +620,25 @@ protected:
     IteratorType;
     IteratorType it = m_Container.get< TraceID >().find(oTraceId);
 
-    if ( it != m_Container.get< TraceID >().end() )
-      {
-      if ( it->Visible != iState )
-        {
-        it->SetActorVisibility( iState );
-        MultiIndexContainerElementType* tempStructure =
-            const_cast<MultiIndexContainerElementType*>(&(*it));
-        tempStructure->Visible = iState;
+    assert ( it != m_Container.get< TraceID >().end() );
 
-        // Note: it->Highlighted is the status before picking the actor
-        if ( iState )
-          {
-          oState = Qt::Checked;
-          }
-        else
-          {
-          oState = Qt::Unchecked;
-          }
+    if ( it->Visible != iState )
+      {
+      it->SetActorVisibility( iState );
+      MultiIndexContainerElementType* tempStructure =
+          const_cast<MultiIndexContainerElementType*>(&(*it));
+      tempStructure->Visible = iState;
+
+      // Note: it->Highlighted is the status before picking the actor
+      if ( iState )
+        {
+        oState = Qt::Checked;
         }
-      return true;
+      else
+        {
+        oState = Qt::Unchecked;
+        }
       }
-    return false;
     }
 };
 

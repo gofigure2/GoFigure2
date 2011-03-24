@@ -242,17 +242,12 @@ public:
   \return false else
   \note move to superclass
   */
-  bool UpdateElementHighlighting(unsigned int TraceId)
+  void UpdateElementHighlighting(unsigned int TraceId)
     {
     Qt::CheckState state;
-    bool oValue =
-        Superclass::UpdateElementHighlightingWithTraceID(TraceId,
-                                                            state );
-    if( oValue )
-      {
-      emit TracePicked(TraceId, state);
-      }
-    return oValue;
+    Superclass::UpdateElementHighlightingWithTraceID(TraceId,
+                                                     state );
+    emit TracePicked(TraceId, state);
     }
 
   /**
@@ -261,17 +256,11 @@ public:
   \return true if the element exists
   \return false else
   \note move to superclass*/
-  bool UpdateElementVisibility(unsigned int iTraceID, bool iState)
+  void UpdateElementVisibility(unsigned int iTraceID, bool iState)
     {
     Qt::CheckState state;
-
-    bool oValue =
-        Superclass::UpdateElementVisibilityWithTraceID(iTraceID, iState, state );
-    if( oValue )
-      {
-      emit TraceVisibilityChanged(iTraceID, state);
-      }
-    return oValue;
+    Superclass::UpdateElementVisibilityWithTraceID(iTraceID, iState, state );
+    emit TraceVisibilityChanged(iTraceID, state);
     }
 
   /*
