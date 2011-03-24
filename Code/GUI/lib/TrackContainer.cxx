@@ -291,6 +291,14 @@ TrackContainer::CreateTrackActors( TrackStructure& iStructure )
                            b);
   trace_property->SetOpacity(a);
 
+  vtkSmartPointer<vtkIntArray> trackIDArray = vtkSmartPointer<vtkIntArray>::New();
+  trackIDArray->SetNumberOfComponents(1);
+  trackIDArray->SetNumberOfValues(1);
+  trackIDArray->SetName("TrackID");
+  trackIDArray->SetValue(0,iStructure.TraceID);
+
+  iStructure.Nodes->GetPointData()->AddArray(trackIDArray);
+
   // Add contour
   std::vector< vtkActor * > trackActors =
     m_ImageView->AddContour(iStructure.Nodes, trace_property);

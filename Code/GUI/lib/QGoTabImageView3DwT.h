@@ -485,7 +485,7 @@ protected:
       temp = iContour;
       }
 
-    // add trae ID in polydata
+    // add trace ID in polydata
     vtkSmartPointer<vtkIntArray> trackIDArray = vtkSmartPointer<vtkIntArray>::New();
     trackIDArray->SetNumberOfComponents(1);
     trackIDArray->SetNumberOfValues(1);
