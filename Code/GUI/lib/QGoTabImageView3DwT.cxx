@@ -2511,9 +2511,7 @@ QGoTabImageView3DwT::VisibilityPickedActor()
 
   m_ContourContainer->UpdateElementVisibility( value, m_ImageView->GetCurrentState() );
   m_MeshContainer->UpdateElementVisibility( value, m_ImageView->GetCurrentState() );
-  /*
-   * \todo Nicolas-Visibility for tracks
-   */
+  m_TrackContainer->UpdateElementVisibility(value, m_ImageView->GetCurrentState() );
 }
 
 //-------------------------------------------------------------------------
@@ -3073,7 +3071,6 @@ QGoTabImageView3DwT::GoToLocation(int iX, int iY, int iZ, int iT)
   this->SetSliceViewXZ(iY);
   this->SetSliceViewYZ(iX);
 }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
