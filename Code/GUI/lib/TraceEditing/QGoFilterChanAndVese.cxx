@@ -228,7 +228,7 @@ QGoFilterChanAndVese::Filter2D(double *iCenter, const int & iOrientation)
 
 vtkPolyData *
 QGoFilterChanAndVese::Filter3D(double *iCenter, int iCurvature, int iIterations,
-  double iRadius, std::vector< vtkSmartPointer< vtkImageData > >* iImages,
+  double iRadius, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
   int iChannel)
 {
   const int dimension = 3;
@@ -386,7 +386,8 @@ QGoFilterChanAndVese::ConnectSignals(int iFilterNumber)
 //--------------------------------------------------------------------------
 std::vector<vtkPolyData*> QGoFilterChanAndVese::ApplyFilterLevelSet3D(
   double iRadius, vtkPoints* iPoints, int iIterations, int iCurvature,
-  std::vector< vtkSmartPointer< vtkImageData > >* iImages, int iChannel)
+  std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+  int iChannel)
 
 {
   std::vector<vtkPolyData*> oMeshes = std::vector<vtkPolyData*>();

@@ -31,53 +31,42 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __QGoFilterChanAndVese_h
-#define __QGoFilterChanAndVese_h
+#ifndef __QGoMeshLevelSetAlgo_h
+#define __QGoMeshLevelSetAlgo_h
 
-#include "QGoFilterSemiAutoBase.h"
-
+#include "QGoAlgorithmWidget.h"
+#include "QGoAlgoParameter.h"
 #include "QGoGUILibConfigure.h"
+#include "vtkSmartPointer.h"
+#include "vtkPolyData.h"
+#include "vtkImageData.h"
+
 
 /**
- * \class QGoFilterChanAndVese
- * \brief Levelset segmentation algorithm implementation.
- * Can generate contours and meshes.
- * Will generate 2D objects if m_Dimension<2, 3D objects in the other case.
- */
-class QGOGUILIB_EXPORT QGoFilterChanAndVese : public QGoFilterSemiAutoBase
+\class QGoMeshLevelSetAlgo
+\brief class to be the interface between the levelset algo for meshes 
+and GoFigure
+*/
+class QGOGUILIB_EXPORT QGoMeshLevelSetAlgo
 {
-  Q_OBJECT
 public:
-  /** \brief Constructor */
-  explicit QGoFilterChanAndVese(QObject *iParent = NULL, int iDimension = 2);
+  QGoMeshLevelSetAlgo();
+  ~QGoMeshLevelSetAlgo();
 
-  /** \brief Destructor */
-  ~QGoFilterChanAndVese();
-
-  virtual vtkPolyData * Apply();
-
-  virtual void ConnectSignals(int iFilterNumber);
-
-  std::vector<vtkPolyData*> ApplyFilterLevelSet3D(double iRadius, vtkPoints* iPoints, 
-    int iIterations, int iCurvature,
-    std::vector<vtkSmartPointer< vtkImageData > >* iImages, 
+  QGoAlgorithmWidget* GetLevelSetWidget();
+  std::vector<vtkPolyData*> ApplyAlgo(
+    vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel);
-
-public slots:
-  void setIterations(int iIterations);
-
-  void setCurvature(int iCurvature);
 
 protected:
-  void Filter2D(double *iCenter, const int & iOrientation);
+  //levelset parameters :
+  QGoAlgoParameter<double>*       m_Radius;
+  QGoAlgoParameter<int>*          m_Curvature;
+  QGoAlgoParameter<int>*          m_Iterations;
 
-  vtkPolyData * Filter3D(double *iCenter, int iCurvature, int iIterations,
-    double iRadius, std::vector< vtkSmartPointer< vtkImageData > >* iImages,
-    int iChannel);
+  QGoAlgorithmWidget*             m_LevelSetWidget;
   
-
-private:
-  int m_Iterations;
-  int m_Curvature;
+  void SetAlgoWidget();
 };
+
 #endif

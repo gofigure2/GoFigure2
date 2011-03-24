@@ -36,6 +36,9 @@
 #include "QGoAlgoParameter.h"
 #include "QGoFilterChanAndVese.h"
 #include "QGoFilterShape.h"
+#include "vtkSmartPointer.h"
+#include "vtkImageExport.h"
+#include "vtkImageData.h"
 #include <iostream>
 
 
@@ -121,9 +124,8 @@ void QGoMeshEditingWidgetManager::ApplyLevelSetAlgo()
 
   std::vector<vtkPolyData*> NewMeshes = 
     LevelSetFilter->ApplyFilterLevelSet3D(m_RadiusLevelSet->GetValue(), 
-    this->m_Seeds, m_Iterations->GetValue(),
-    m_Curvature->GetValue(), this->m_Images, 
-    this->m_MeshEditingWidget->GetChannelNumber() );
+    this->m_Seeds, m_Iterations->GetValue(), m_Curvature->GetValue(), 
+    this->m_Images,this->m_MeshEditingWidget->GetChannelNumber() );
   
   emit MeshesCreatedFromAlgo(NewMeshes, this->GetSelectedTimePoint() );
   emit ClearAllSeeds();
