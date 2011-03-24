@@ -35,9 +35,8 @@
 #include "QGoFilterChanAndVese.h"
 
 
-QGoMeshLevelSetAlgo::QGoMeshLevelSetAlgo()
+QGoMeshLevelSetAlgo::QGoMeshLevelSetAlgo():QGoMeshAlgo()
 {
-  this->SetAlgoWidget();
 }
 //-------------------------------------------------------------------------
 
@@ -53,24 +52,17 @@ QGoMeshLevelSetAlgo::~QGoMeshLevelSetAlgo()
 //-------------------------------------------------------------------------
 void QGoMeshLevelSetAlgo::SetAlgoWidget()
 {
-  this->m_LevelSetWidget = 
+  this->m_AlgoWidget = 
     new QGoAlgorithmWidget("LevelSet 3D");
 
   m_Radius = new QGoAlgoParameter<double>("Radius", false, 0.1, 99.99, 2, 3);
-  this->m_LevelSetWidget->AddParameter(m_Radius);
+  this->m_AlgoWidget->AddParameter(m_Radius);
 
   m_Curvature = new QGoAlgoParameter<int>("Curvature", true, 0, 1000, 20);
-  this->m_LevelSetWidget->AddParameter(m_Curvature);
+  this->m_AlgoWidget->AddParameter(m_Curvature);
 
   m_Iterations = new QGoAlgoParameter<int> ("Iterations", true, 0, 1000, 100);
-  this->m_LevelSetWidget->AddParameter(m_Iterations);
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-QGoAlgorithmWidget* QGoMeshLevelSetAlgo::GetLevelSetWidget()
-{
-  return this->m_LevelSetWidget;
+  this->m_AlgoWidget->AddParameter(m_Iterations);
 }
 //-------------------------------------------------------------------------
 
@@ -85,7 +77,7 @@ std::vector<vtkPolyData*> QGoMeshLevelSetAlgo::ApplyAlgo(
     LevelSetFilter->ApplyFilterLevelSet3D(m_Radius->GetValue(), 
     iSeeds, m_Iterations->GetValue(),
     m_Curvature->GetValue(), iImages, iChannel);
-
+  //delete the filter !!!!
   return NewMeshes;
 }
 //-------------------------------------------------------------------------

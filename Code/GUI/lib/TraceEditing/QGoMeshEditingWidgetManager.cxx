@@ -81,7 +81,7 @@ QGoMeshEditingWidgetManager::~QGoMeshEditingWidgetManager()
 void QGoMeshEditingWidgetManager::SetLevelSetAlgo(QWidget* iParent)
 {
   m_LevelSetAlgo = new QGoMeshLevelSetAlgo();
-  QGoAlgorithmWidget* LevelSetWidget = m_LevelSetAlgo->GetLevelSetWidget();
+  QGoAlgorithmWidget* LevelSetWidget = m_LevelSetAlgo->GetAlgoWidget();
   LevelSetWidget->setParent(iParent);
   /*QGoAlgorithmWidget* LevelSetWidget = 
     new QGoAlgorithmWidget("LevelSet 3D", iParent);

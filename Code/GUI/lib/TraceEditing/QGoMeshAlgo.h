@@ -31,12 +31,10 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __QGoMeshLevelSetAlgo_h
-#define __QGoMeshLevelSetAlgo_h
+#ifndef __QGoMeshAlgo_h
+#define __QGoMeshAlgo_h
 
-#include "QGoMeshAlgo.h"
 #include "QGoAlgorithmWidget.h"
-#include "QGoAlgoParameter.h"
 #include "QGoGUILibConfigure.h"
 #include "vtkSmartPointer.h"
 #include "vtkPolyData.h"
@@ -44,27 +42,26 @@
 
 
 /**
-\class QGoMeshLevelSetAlgo
-\brief class to be the interface between the levelset algo for meshes 
+\class QGoMeshAlgo
+\brief abstract class to be the interface between the algorithms for meshes 
 and GoFigure
 */
-class QGoMeshLevelSetAlgo: public QGoMeshAlgo
+class QGoMeshAlgo
 {
 public:
-  QGoMeshLevelSetAlgo();
-  ~QGoMeshLevelSetAlgo();
+  QGoMeshAlgo();
+  ~QGoMeshAlgo();
 
-  std::vector<vtkPolyData*> ApplyAlgo(
+  QGoAlgorithmWidget* GetAlgoWidget();
+
+  virtual std::vector<vtkPolyData*> ApplyAlgo(
     vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
-    int iChannel);
+    int iChannel) = 0;
 
 protected:
-
-  QGoAlgoParameter<double>*       m_Radius;
-  QGoAlgoParameter<int>*          m_Curvature;
-  QGoAlgoParameter<int>*          m_Iterations;
+  QGoAlgorithmWidget*             m_AlgoWidget;
   
-  void SetAlgoWidget();
+  virtual void SetAlgoWidget() = 0;
 };
 
 #endif
