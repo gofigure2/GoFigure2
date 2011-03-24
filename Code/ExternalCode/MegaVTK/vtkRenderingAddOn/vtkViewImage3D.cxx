@@ -684,25 +684,6 @@ vtkViewImage3D::AddDataSet(vtkDataSet *dataset,
   // Generates problems in visu 3d
   //contActor->GetProperty()->BackfaceCullingOn();
 
-/*
-  vtkSmartPointer< vtkClipPolyData > cutter =
-    vtkSmartPointer< vtkClipPolyData >::New();
-
-  if( intersection )
-    {
-    /// \todo to be implemented
-//     cutter->SetInputConnection( 0, dataset->GetProducerPort());
-//     cutter->SetClipFunction( this->SliceImplicitPlane );
-//     cutter->InsideOutOn();
-//     mapper->SetInputConnection( 0, cutter->GetOutputPort());
-    }
-  else
-    {
-    mapper->SetInput( vtkPolyData::SafeDownCast( dataset ) );
-    }
-*/
-//   actor->SetUserTransform( this->AdjustmentTransform );
-
   this->Renderer->AddViewProp(actor3d);
   this->Prop3DCollection->AddItem(actor3d);
 

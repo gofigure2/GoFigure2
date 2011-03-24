@@ -43,6 +43,12 @@
 #include "StructureHelper.h"
 #include "QGoGUILibConfigure.h"
 
+#include "vtkIntArray.h"
+#include "vtkActor.h"
+#include "vtkMapper.h"
+#include "vtkDataSet.h"
+#include "vtkPointData.h"
+
 #include "boost/multi_index_container.hpp"
 #include "boost/multi_index/member.hpp"
 #include "boost/multi_index/hashed_index.hpp"
@@ -558,24 +564,24 @@ protected:
     // unecessary if....
     if ( iActor )
       {
+      vtkIntArray* testArray =
+          static_cast<vtkIntArray*>(iActor->GetMapper()->GetInput()->GetPointData()->GetArray("TrackID"));
+      if(! testArray )
+        {
+        //return if we picked a plane
+        return false;
+        }
+      int value = testArray->GetValue(0);
+
       using boost::multi_index::get;
 
-      typedef typename MultiIndexContainerType::template index< TActor >::type::iterator
+      typedef typename MultiIndexContainerType::template index< TraceID >::type::iterator
       IteratorType;
-      IteratorType it = m_Container.get< TActor >().find(iActor);
-
-      IteratorType it2 = m_Container.get< TActor >().begin();
-
-      std::cout <<"looking for: " << iActor << std::endl;
-      while( it2 != m_Container.get< TActor >().end())
-      {
-        std::cout << *it2 << std::endl;
-        it2++;
-      }
+      IteratorType it = m_Container.get< TraceID >().find(value);
 
       vtkProperty *temp_property = NULL;
 
-      if ( it != m_Container.get< TActor >().end() )
+      if ( it != m_Container.get< TraceID >().end() )
         {
         if ( it->Highlighted )
           {

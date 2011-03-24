@@ -258,15 +258,16 @@ public:
     {
     unsigned TraceId = 0;
     Qt::CheckState state;
+
+    std::cout <<"==================================" << TraceId << std::endl;
+    std::cout <<"TraceId: " << TraceId << std::endl;
+    std::cout <<"actor picked: " << iActor << std::endl;
+    std::cout <<"==================================" << TraceId << std::endl;
+
     bool oValue =
         Superclass::UpdateElementHighlightingWithGivenActor< TActor >( iActor,
                                                                  TraceId,
                                                                  state );
-
-    std::cout <<"TraceId: " << TraceId << std::endl;
-
-    std::cout <<"actor picked: " << iActor << std::endl;
-
     if( oValue )
       {
       emit TracePicked(TraceId, state);

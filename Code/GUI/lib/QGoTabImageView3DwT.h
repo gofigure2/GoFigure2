@@ -491,12 +491,15 @@ protected:
       temp = iContour;
       }
 
-    std::vector< vtkActor * > mesh_actor = this->AddContour( temp, mesh_property );
+    // add trae ID in polydata
+    vtkSmartPointer<vtkIntArray> trackIDArray = vtkSmartPointer<vtkIntArray>::New();
+    trackIDArray->SetNumberOfComponents(1);
+    trackIDArray->SetNumberOfValues(1);
+    trackIDArray->SetName("TrackID");
+    trackIDArray->SetValue(0,iIt->TraceID);
+    temp->GetPointData()->AddArray(trackIDArray);
 
-    std::cout << "mesh_actor1: " << mesh_actor[0] << std::endl;
-    std::cout << "mesh_actor2: " << mesh_actor[1] << std::endl;
-    std::cout << "mesh_actor3: " << mesh_actor[2] << std::endl;
-    std::cout << "mesh_actor4: " << mesh_actor[3] << std::endl;
+    std::vector< vtkActor * > mesh_actor = this->AddContour( temp, mesh_property );
 
     mesh_property->Delete();
 
