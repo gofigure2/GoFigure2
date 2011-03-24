@@ -91,7 +91,7 @@ SET( QGoGUILIB_SRC
     QGoContourSemiAutoWatershedWidget.cxx
   QGoFilterSemiAutoBase.cxx
     TraceEditing/QGoFilterChanAndVese.cxx
-    QGoFilterShape.cxx
+    TraceEditing/QGoFilterShape.cxx
     QGoFilterWatershed.cxx
 
   # for the tracks
@@ -234,7 +234,7 @@ SET( QGoGUILIB_HDRS
     QGoContourSemiAutoWatershedWidget.h
   QGoFilterSemiAutoBase.h
     TraceEditing/QGoFilterChanAndVese.h
-    QGoFilterShape.h
+    TraceEditing/QGoFilterShape.h
     QGoFilterWatershed.h
 
   # for the tracks
