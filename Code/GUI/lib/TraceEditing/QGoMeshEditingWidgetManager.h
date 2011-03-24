@@ -81,9 +81,14 @@ protected:
   std::vector< vtkSmartPointer< vtkImageData > >* m_Images;
   int*                                            m_CurrentTimePoint;
 
-  QGoAlgoParameter<double>*  m_Radius;
-  QGoAlgoParameter<int>*     m_Curvature;
-  QGoAlgoParameter<int>*     m_Iterations;
+  //levelset parameters :
+  QGoAlgoParameter<double>*       m_RadiusLevelSet;
+  QGoAlgoParameter<int>*          m_Curvature;
+  QGoAlgoParameter<int>*          m_Iterations;
+
+  //shape parameters :
+  QGoAlgoParameter<double>*       m_RadiusShape;
+  QGoAlgoParameter<std::string>*  m_Shape;
 
   void SetTheMeshWidget(std::vector<QString> iVectChannels, int iTimeMin, 
     int iTimeMax, QWidget* iParent);
@@ -98,7 +103,7 @@ signals:
 
 protected slots:
   void ApplyLevelSetAlgo();
-  void GetSignalShape();
+  void ApplyShapeAlgo();
 
 };
 

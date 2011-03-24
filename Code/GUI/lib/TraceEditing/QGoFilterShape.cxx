@@ -120,10 +120,10 @@ QGoFilterShape::Apply()
     switch ( m_Shape )
       {
       case 0:
-        testing = GenerateSphere( getCenter() );
+        //testing = GenerateSphere( getCenter() );
         break;
       case 1:
-        testing = GenerateCube( getCenter() );
+        //testing = GenerateCube( getCenter() );
         break;
       //case 2:
       //  testing = GenerateCylinder(getCenter());
@@ -222,12 +222,14 @@ QGoFilterShape::setShape(int iShape)
 
 //--------------------------------------------------------------------------
 vtkPolyData *
-QGoFilterShape::GenerateSphere(double *iCenter)
+QGoFilterShape::GenerateSphere(double *iCenter, double iRadius,
+  std::vector< vtkSmartPointer< vtkImageData > >* iImages,
+  int iChannel)
 {
   // create sphere geometry
   vtkSphereSource *sphere = vtkSphereSource::New();
 
-  sphere->SetRadius( getRadius() );
+  sphere->SetRadius( iRadius );
   sphere->SetThetaResolution(30);
   sphere->SetPhiResolution(30);
   sphere->SetCenter(iCenter);
@@ -236,7 +238,8 @@ QGoFilterShape::GenerateSphere(double *iCenter)
 
   // Deal with borders
   vtkBox *implicitFunction = vtkBox::New();
-  implicitFunction->SetBounds( this->getInput()->GetBounds() );
+  //implicitFunction->SetBounds( this->getInput()->GetBounds() );
+  implicitFunction->SetBounds( ( *iImages )[iChannel]->GetBounds() );
 
   vtkClipPolyData *cutter = vtkClipPolyData::New();
   cutter->SetInput( sphere->GetOutput() );
@@ -258,7 +261,9 @@ QGoFilterShape::GenerateSphere(double *iCenter)
 
 //--------------------------------------------------------------------------
 vtkPolyData *
-QGoFilterShape::GenerateCube(double *iCenter)
+QGoFilterShape::GenerateCube(double *iCenter, double iRadius,
+  std::vector< vtkSmartPointer< vtkImageData > >* iImages,
+  int iChannel)
 {
   // time consuming
   /*
@@ -303,9 +308,9 @@ QGoFilterShape::GenerateCube(double *iCenter)
   vtkCubeSource *cube = vtkCubeSource::New();
 
   cube->SetCenter(iCenter);
-  cube->SetXLength( 2 * this->getRadius() );
-  cube->SetYLength( 2 * this->getRadius() );
-  cube->SetZLength( 2 * this->getRadius() );
+  cube->SetXLength( 2 * iRadius);
+  cube->SetYLength( 2 * iRadius);
+  cube->SetZLength( 2 * iRadius);
   cube->Update();
   cube->GetOutput()->GetPointData()->SetNormals(NULL);
 
@@ -315,7 +320,7 @@ QGoFilterShape::GenerateCube(double *iCenter)
 
   // Deal with borders
   vtkBox *implicitFunction = vtkBox::New();
-  implicitFunction->SetBounds( this->getInput()->GetBounds() );
+  implicitFunction->SetBounds( ( *iImages )[iChannel]->GetBounds() );
 
   vtkClipPolyData *cutter = vtkClipPolyData::New();
   cutter->SetInput( triangle->GetOutput() );
@@ -361,5 +366,50 @@ QGoFilterShape::GenerateCylinder(double *iCenter)
 
   return output;
 }
+//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+std::vector<vtkPolyData *> QGoFilterShape::ApplyFilter3D(
+  double iRadius, vtkPoints* iPoints, std::string iShape,
+  std::vector< vtkSmartPointer< vtkImageData > >* iImages,
+  int iChannel)
+{
+  std::vector<vtkPolyData*> oMeshes = std::vector<vtkPolyData*>();
+   if ( iRadius <= 0 )
+    {
+    std::cerr << "Radius should be > 0 " << std::endl;
+    return oMeshes;
+    }
+   double *center2 = new double[3];
+
+// LOOP  FOR EACH SEED
+   for ( int i = 0; i < iPoints->GetNumberOfPoints(); i++ )
+    {
+    iPoints->GetPoint(i, center2);
+    // useful to translate the polydata afterwards
+    setCenter(center2);
+
+    vtkPolyData * MeshPolydata = NULL;
+
+    if (iShape == "Sphere")
+      {
+      MeshPolydata = GenerateSphere( center2, iRadius, iImages, iChannel );
+      }
+    else
+      {
+      if (iShape == "Cube")
+        {    
+        MeshPolydata = GenerateCube( center2, iRadius, iImages, iChannel );
+        }
+      else
+        {
+        std::cout<<"doesn't know the chosen shape ";
+        std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+        std::cout << std::endl;
+        }
+      }
+    oMeshes.push_back(MeshPolydata);
+    }
+   delete[] center2;
+   return oMeshes;
+}

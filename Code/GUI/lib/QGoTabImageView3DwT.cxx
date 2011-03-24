@@ -3407,7 +3407,6 @@ QGoTabImageView3DwT::UpdateMeshEditingWidget()
       int MaxTimePoint = this->m_MegaCaptureReader->GetMaxTimePoint();
       if ( TDopplerMin > MinTimePoint )
         {
-        //ListTimePoints.append(tr("%1").arg(this->m_TCoord - this->m_DopplerStep));
         ListTimePoints.append(tr("%1").arg(TDopplerMin) );
         }
       else
@@ -3417,7 +3416,6 @@ QGoTabImageView3DwT::UpdateMeshEditingWidget()
       ListTimePoints.append(tr("%1").arg(this->m_TCoord));
       if (TDopplerMax < MaxTimePoint ) 
         {
-        //ListTimePoints.append(tr("%1").arg(this->m_TCoord + this->m_DopplerStep));
         ListTimePoints.append(tr("%1").arg(TDopplerMax));
         }
       else

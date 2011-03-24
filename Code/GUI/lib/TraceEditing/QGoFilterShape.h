@@ -61,6 +61,15 @@ public:
 
   virtual void ConnectSignals(int iFilterNumber);
 
+  //integration algo
+  /**
+  \brief return the polydatas corresponding to the new created Shapes
+  */
+  std::vector<vtkPolyData *> ApplyFilter3D( double iRadius, 
+    vtkPoints* iPoints, std::string iShape,
+    std::vector< vtkSmartPointer< vtkImageData > >* iImages,
+    int iChannel);
+
 public slots:
 
   void setShape(int);
@@ -69,9 +78,13 @@ protected:
 
   int m_Shape;
 
-  vtkPolyData * GenerateSphere(double *iCenter);
+  vtkPolyData * GenerateSphere(double *iCenter, double iRadius,
+    std::vector< vtkSmartPointer< vtkImageData > >* iImages,
+    int iChannel);
 
-  vtkPolyData * GenerateCube(double *iCenter);
+  vtkPolyData * GenerateCube(double *iCenter, double iRadius,
+    std::vector< vtkSmartPointer< vtkImageData > >* iImages,
+    int iChannel);
 
   vtkPolyData * GenerateCylinder(double *iCenter);
 
