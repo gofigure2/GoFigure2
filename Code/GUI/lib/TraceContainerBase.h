@@ -555,14 +555,23 @@ protected:
       unsigned int& oTraceId,
       Qt::CheckState& oState )
     {
-    using boost::multi_index::get;
-
     // unecessary if....
     if ( iActor )
       {
+      using boost::multi_index::get;
+
       typedef typename MultiIndexContainerType::template index< TActor >::type::iterator
       IteratorType;
       IteratorType it = m_Container.get< TActor >().find(iActor);
+
+      IteratorType it2 = m_Container.get< TActor >().begin();
+
+      std::cout <<"looking for: " << iActor << std::endl;
+      while( it2 != m_Container.get< TActor >().end())
+      {
+        std::cout << *it2 << std::endl;
+        it2++;
+      }
 
       vtkProperty *temp_property = NULL;
 

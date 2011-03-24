@@ -263,7 +263,9 @@ public:
                                                                  TraceId,
                                                                  state );
 
-    std::cout <<"TraceId picked: " << iActor << std::endl;
+    std::cout <<"TraceId: " << TraceId << std::endl;
+
+    std::cout <<"actor picked: " << iActor << std::endl;
 
     if( oValue )
       {

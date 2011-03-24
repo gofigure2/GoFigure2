@@ -296,6 +296,13 @@ TraceContainerBase< TContainer >::UpdateElementHighlightingWithGivenTraceID(cons
 
     it->SetActorProperties(temp_property);
 
+    std::cout << "TraceID: " << it->TraceID << std::endl;
+    std::cout << "ActorXY: " << it->ActorXY << std::endl;
+    std::cout << "ActorXZ: " << it->ActorXZ << std::endl;
+    std::cout << "ActorYZ: " << it->ActorYZ << std::endl;
+    std::cout << "ActorXYZ: " << it->ActorXYZ << std::endl;
+
+
     if ( it->Highlighted )
       {
       temp_property->Delete();
@@ -355,6 +362,12 @@ TraceContainerBase< TContainer >::UpdateElementHighlightingWithGivenTraceIDsBase
           }
 
         it->SetActorProperties(temp_property);
+
+        std::cout << "TraceID: " << it->TraceID << std::endl;
+        std::cout << "ActorXY: " << it->ActorXY << std::endl;
+        std::cout << "ActorXZ: " << it->ActorXZ << std::endl;
+        std::cout << "ActorYZ: " << it->ActorYZ << std::endl;
+        std::cout << "ActorXYZ: " << it->ActorXYZ << std::endl;
 
         if ( !iCheck )
           {
