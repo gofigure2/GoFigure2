@@ -53,8 +53,14 @@ public:
   QGoMeshAlgo(QWidget *iParent = 0);
   ~QGoMeshAlgo();
 
+  /**
+  \brief return the algowidget
+  */
   QGoAlgorithmWidget* GetAlgoWidget();
 
+  /**
+  \brief return the vtkpolydata created by the algorithm
+  */
   virtual std::vector<vtkPolyData*> ApplyAlgo(
     vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel) = 0;
@@ -62,6 +68,9 @@ public:
 protected:
   QGoAlgorithmWidget*             m_AlgoWidget;
   
+  /**
+  \brief construct the algowidget with the different parameters
+  */
   virtual void SetAlgoWidget(QWidget* iParent = 0) = 0;
 };
 
