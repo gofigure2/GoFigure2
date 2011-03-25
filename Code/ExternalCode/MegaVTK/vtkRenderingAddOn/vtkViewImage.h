@@ -510,15 +510,6 @@ public:
   */
   vtkGetMacro(IsColor, bool);
 
-  /**
-   * \brief Change the property of an actor
-   * \param[in] iActor vtkProp3D pointer to the actor to be modified
-   * \param[in] iProperty vtkProperty pointer containing the new property to
-   * be applied
-  */
-  virtual void ChangeActorProperty(vtkProp3D *iActor,
-                                   vtkProperty *iProperty);
-
   /** \brief Set the linewidth for added dataset in the scene (when using AddDataSet) */
   vtkSetMacro( IntersectionLineWidth, float );
 

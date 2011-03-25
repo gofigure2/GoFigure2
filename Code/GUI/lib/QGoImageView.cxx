@@ -379,13 +379,7 @@ QGoImageView::GetImageActor(const int & iId)
 }
 
 //-------------------------------------------------------------------------
-void
-QGoImageView::ChangeActorProperty(int iDir, vtkProp3D *iActor, vtkProperty *iProperty)
-{
-  m_Pool->GetItem(iDir)->ChangeActorProperty(iActor, iProperty);
-}
 
-//--------------------------------------------------------------------------
 void
 QGoImageView::ShowSplinePlane()
 {

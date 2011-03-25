@@ -517,25 +517,6 @@ void vtkViewImage::SetShowScalarBar(const bool & val)
 //----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
-void vtkViewImage::ChangeActorProperty(vtkProp3D *iActor,
-                                       vtkProperty *iProperty)
-{
-  if ( iActor && iProperty )
-    {
-    if ( Prop3DCollection->IsItemPresent(iActor) )
-      {
-      vtkActor *temp = dynamic_cast< vtkActor * >( iActor );
-      if ( temp )
-        {
-        temp->SetProperty(iProperty);
-        //temp->Modified();
-        //Render();
-        }
-      }
-    }
-}
-
-//----------------------------------------------------------------------------
 void vtkViewImage::Render()
 {
   if ( this->RenderWindow && !this->RenderWindow->GetNeverRendered() )

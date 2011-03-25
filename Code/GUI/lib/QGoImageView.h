@@ -177,11 +177,6 @@ public:
   vtkImageActor * GetImageActor(const int & iId);
 
   /**
-   * \brief Change the select actor property in the selected view
-   */
-  void ChangeActorProperty(int iDir, vtkProp3D *iActor, vtkProperty *iProperty);
-
-  /**
    * \brief Invert visibility of the Spline Plane
    */
   void ShowSplinePlane();
