@@ -40,6 +40,7 @@
 #include "vtkPolyData.h"
 #include "vtkImageData.h"
 #include "QGoMeshLevelSetAlgo.h"
+#include "QGoMeshShapeAlgo.h"
 #include <QAction>
 #include <QDockWidget>
 
@@ -83,10 +84,7 @@ protected:
   int*                                            m_CurrentTimePoint;
 
   QGoMeshLevelSetAlgo*            m_LevelSetAlgo;
-
-  //shape parameters :
-  QGoAlgoParameter<double>*       m_RadiusShape;
-  QGoAlgoParameter<std::string>*  m_Shape;
+  QGoMeshShapeAlgo*               m_ShapeAlgo;
 
   void SetTheMeshWidget(std::vector<QString> iVectChannels, int iTimeMin, 
     int iTimeMax, QWidget* iParent);
@@ -96,7 +94,15 @@ protected:
   void SetLevelSetAlgo(QWidget* iParent=0);
   void SetShapeAlgo(QWidget* iParent=0);
 
-  void GetPolydatasFromAlgo(QGoMeshLevelSetAlgo* iAlgo);
+  template<typename T>
+  void GetPolydatasFromAlgo(T* iAlgo)
+    {
+    emit UpdateSeeds();
+    std::vector<vtkPolyData*> NewMeshes = iAlgo->ApplyAlgo(this->m_Seeds,
+      this->m_Images, this->m_MeshEditingWidget->GetChannelNumber() );
+    emit MeshesCreatedFromAlgo(NewMeshes, this->GetSelectedTimePoint() );
+    emit ClearAllSeeds();
+    }
   
 signals:
   void SetSeedInteractorBehaviour(bool enable);
