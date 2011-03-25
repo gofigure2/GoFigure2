@@ -91,7 +91,6 @@
 // #include "vtkQuadricLODActor.h"
 #include "vtkActor.h"
 #include "vtkPolyDataMapper.h"
-#include "vtkProp3DCollection.h"
 #include "vtkDataSetCollection.h"
 #include "vtkPoints.h"
 #include "vtkIdList.h"

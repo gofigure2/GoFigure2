@@ -46,7 +46,6 @@
 #include "vtkRenderWindow.h"
 #include "vtkRenderWindowInteractor.h"
 #include "vtkCellPicker.h"
-#include "vtkProp3DCollection.h"
 #include "vtkViewImage2DCollection.h"
 
 //--------------------------------------------------------------------------

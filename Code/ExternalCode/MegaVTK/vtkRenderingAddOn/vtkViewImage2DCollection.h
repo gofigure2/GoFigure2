@@ -121,7 +121,6 @@ class vtkActor;
 class vtkDataSet;
 class vtkPolyData;
 class vtkProperty;
-class vtkProp3DCollection;
 class vtkDataSetCollection;
 class vtkMatrixToLinearTransform;
 class vtkViewImage2DCollectionCommand;

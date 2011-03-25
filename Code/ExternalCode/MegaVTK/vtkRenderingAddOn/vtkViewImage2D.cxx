@@ -92,7 +92,6 @@
 // #include "vtkQuadricLODActor.h"
 #include "vtkActor.h"
 #include "vtkPolyDataMapper.h"
-#include "vtkProp3DCollection.h"
 #include "vtkPoints.h"
 #include "vtkIdList.h"
 #include "vtkOutlineSource.h"
@@ -981,7 +980,6 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
   actor->GetProperty()->SetLineWidth(this->IntersectionLineWidth);
 
   this->Renderer->AddViewProp(actor);
-  this->Prop3DCollection->AddItem(actor);
 
   return actor;
 }
@@ -1044,7 +1042,6 @@ vtkViewImage2D::AddDataSet(vtkDataSet *dataset,
   actor->GetProperty()->SetLineWidth(this->IntersectionLineWidth);
 
   this->Renderer->AddViewProp(actor);
-  this->Prop3DCollection->AddItem(actor);
 
   return actor;
 }
