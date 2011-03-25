@@ -82,10 +82,6 @@ protected:
   std::vector< vtkSmartPointer< vtkImageData > >* m_Images;
   int*                                            m_CurrentTimePoint;
 
-  //levelset parameters :
-  //QGoAlgoParameter<double>*       m_RadiusLevelSet;
-  //QGoAlgoParameter<int>*          m_Curvature;
-  //QGoAlgoParameter<int>*          m_Iterations;
   QGoMeshLevelSetAlgo*            m_LevelSetAlgo;
 
   //shape parameters :

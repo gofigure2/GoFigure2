@@ -35,9 +35,9 @@
 #include "QGoFilterChanAndVese.h"
 
 
-QGoMeshLevelSetAlgo::QGoMeshLevelSetAlgo():QGoMeshAlgo()
+QGoMeshLevelSetAlgo::QGoMeshLevelSetAlgo(QWidget* iParent)
 {
-  this->SetAlgoWidget();
+  this->SetAlgoWidget(iParent);
 }
 //-------------------------------------------------------------------------
 
@@ -51,10 +51,10 @@ QGoMeshLevelSetAlgo::~QGoMeshLevelSetAlgo()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoMeshLevelSetAlgo::SetAlgoWidget()
+void QGoMeshLevelSetAlgo::SetAlgoWidget(QWidget* iParent)
 {
   this->m_AlgoWidget = 
-    new QGoAlgorithmWidget("LevelSet 3D");
+    new QGoAlgorithmWidget("LevelSet 3D", iParent);
 
   m_Radius = new QGoAlgoParameter<double>("Radius", false, 0.1, 99.99, 2, 3);
   this->m_AlgoWidget->AddParameter(m_Radius);

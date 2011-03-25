@@ -34,9 +34,8 @@
 #include "QGoMeshAlgo.h"
 
 
-QGoMeshAlgo::QGoMeshAlgo()
+QGoMeshAlgo::QGoMeshAlgo(QWidget *iParent)
 {
-  //this->SetAlgoWidget();
 }
 //-------------------------------------------------------------------------
 

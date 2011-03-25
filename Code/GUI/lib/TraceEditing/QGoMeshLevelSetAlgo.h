@@ -51,7 +51,7 @@ and GoFigure
 class QGoMeshLevelSetAlgo: public QGoMeshAlgo
 {
 public:
-  QGoMeshLevelSetAlgo();
+  QGoMeshLevelSetAlgo(QWidget *iParent = 0);
   ~QGoMeshLevelSetAlgo();
 
   std::vector<vtkPolyData*> ApplyAlgo(
@@ -64,7 +64,7 @@ protected:
   QGoAlgoParameter<int>*          m_Curvature;
   QGoAlgoParameter<int>*          m_Iterations;
   
-  void SetAlgoWidget();
+  void SetAlgoWidget(QWidget* iParent = 0);
 };
 
 #endif

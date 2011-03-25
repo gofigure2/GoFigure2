@@ -46,10 +46,11 @@
 \brief abstract class to be the interface between the algorithms for meshes 
 and GoFigure
 */
-class QGoMeshAlgo
+class QGoMeshAlgo:public QObject
 {
+  Q_OBJECT
 public:
-  QGoMeshAlgo();
+  QGoMeshAlgo(QWidget *iParent = 0);
   ~QGoMeshAlgo();
 
   QGoAlgorithmWidget* GetAlgoWidget();
@@ -61,7 +62,7 @@ public:
 protected:
   QGoAlgorithmWidget*             m_AlgoWidget;
   
-  virtual void SetAlgoWidget() = 0;
+  virtual void SetAlgoWidget(QWidget* iParent = 0) = 0;
 };
 
 #endif

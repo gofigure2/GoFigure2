@@ -68,9 +68,6 @@ QGoMeshEditingWidgetManager::QGoMeshEditingWidgetManager(
 //-------------------------------------------------------------------------
 QGoMeshEditingWidgetManager::~QGoMeshEditingWidgetManager()
 {
-  //delete m_RadiusLevelSet;
-  //delete m_Curvature;
-  //delete m_Iterations;
   delete m_Shape;
   delete m_RadiusShape;
   delete this->m_LevelSetAlgo;
@@ -80,9 +77,8 @@ QGoMeshEditingWidgetManager::~QGoMeshEditingWidgetManager()
 //-------------------------------------------------------------------------
 void QGoMeshEditingWidgetManager::SetLevelSetAlgo(QWidget* iParent)
 {
-  m_LevelSetAlgo = new QGoMeshLevelSetAlgo();
+  m_LevelSetAlgo = new QGoMeshLevelSetAlgo(iParent);
   QGoAlgorithmWidget* LevelSetWidget = m_LevelSetAlgo->GetAlgoWidget();
-  LevelSetWidget->setParent(iParent);
   this->m_MeshEditingWidget->AddAlgoWidgetForSemiAutomatedMode(LevelSetWidget);
 
   QObject::connect(LevelSetWidget, SIGNAL(ApplyAlgo() ),
