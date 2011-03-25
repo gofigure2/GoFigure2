@@ -111,6 +111,8 @@ SET( QGoGUILIB_SRC
 
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx
+
+  ${GOFIGURE2_FILTER_SOURCES}
 )
 
 SET_SOURCE_FILES_PROPERTIES(
@@ -378,10 +380,11 @@ SET( QGoGUI_LIBS
   vtkRenderingAddOn2
   PoissonReconstruction
   ctk
-  ITKIO
-  ITKCommon
-  ITKBasicFilters
-  ITKStatistics
+  ${ITK_LIBRARIES}
+  #ITKIO
+  #ITKCommon
+  #ITKBasicFilters
+  #ITKStatistics
   )
 
 IF( ( ITK_VERSION_MAJOR EQUAL 4 ) AND
@@ -391,7 +394,8 @@ IF( ( ITK_VERSION_MAJOR EQUAL 4 ) AND
 
   SET( QGoGUI_LIBS
     ${QGoGUI_LIBS}
-    ITKReview
+    # ITKReview
+    ${ITK_LIBRARIES}
     )
 
 ENDIF( ( ITK_VERSION_MAJOR EQUAL 4 ) AND

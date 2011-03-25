@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-10, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,54 +31,47 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include <QApplication>
-#include <QTimer>
-#include <QStringList>
-#include "QGoAlgorithmWidget.h"
 
+#ifndef __itkvtkMeshMergeFilterBase_h
+#define __itkvtkMeshMergeFilterBase_h
 
+#include "itkvtkMeshFilterBase.h"
+#include <list>
 
+class vtkPolyData;
 
-//**************************************************************************//
-//                               MAIN                                       //
-//**************************************************************************//
-
-int main(int argc, char *argv[])
+namespace itk
 {
-  if ( argc != 1 )
-    {
-    return EXIT_FAILURE;
-    }
+template< class TFeatureImage >
+class vtkMeshMergeFilterBase :
+    public vtkMeshFilterBase< TFeatureImage >
+{
+public:
+  typedef vtkMeshFilterBase< TFeatureImage > Superclass;
+  typedef vtkMeshMergeFilterBase Self;
+  typedef SmartPointer< Self > Pointer;
+  typedef SmartPointer< const Self > ConstPointer;
 
-  QApplication app(argc, argv);
-  QTimer *     timer = new QTimer;
-  timer->setSingleShot(true);
+  itkTypeMacro( vtkMeshMergeFilterBase, vtkMeshFilterBase );
 
-  QGoAlgorithmWidget* AlgoWidget = new QGoAlgorithmWidget("Test", NULL);
-  QStringList ChannelName;
-  ChannelName.append("Channel 1");
-  ChannelName.append("Channel 2");
-  ChannelName.append("All Channels");
-  AlgoWidget->AddParameter("Channel", ChannelName);
-  AlgoWidget->AddParameter("IntParam", 0, 100, 50);
-  AlgoWidget->AddParameter("DoubleParam", 20.56, 53.21, 24, 2);
-  AlgoWidget->AddAdvParameter("IntParam", 20, 50, 40);
-  AlgoWidget->AddAdvParameter("DoubleParam", 11, 23.00, 15, 3);
+  typedef typename Superclass::FeatureImageType FeatureImageType;
+  typedef typename Superclass::FeatureImagePointer FeatureImagePointer;
 
+  void SetInputs( std::list< vtkPolyData* > iMeshes );
 
-  //QObject::connect( timer, SIGNAL( timeout() ), AlgoWidget, SLOT( close() ) );
+  vtkPolyData* GetOutput();
 
-  AlgoWidget->show();
-  timer->start(1000);
+protected:
+  vtkMeshMergeFilterBase();
+  virtual ~vtkMeshMergeFilterBase() {}
 
+  std::list< vtkPolyData* > m_Inputs;
 
-  app.processEvents();
-  int output = app.exec();
-
-  app.closeAllWindows();
-
-  delete timer;
-  delete AlgoWidget;
-
-  return output;
+private:
+  vtkMeshMergeFilterBase( const Self& );
+  void operator = ( const Self& );
+};
 }
+
+#include "itkvtkMeshMergeFilterBase.txx"
+#endif // __itkvtkMeshMergeFilterBase_h

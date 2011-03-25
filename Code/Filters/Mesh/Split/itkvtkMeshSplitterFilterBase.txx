@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,54 +31,58 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include <QApplication>
-#include <QTimer>
-#include <QStringList>
-#include "QGoAlgorithmWidget.h"
 
+#ifndef __itkvtkMeshSplitterFilterBase_txx
+#define __itkvtkMeshSplitterFilterBase_txx
 
+#include "itkvtkMeshSplitterFilterBase.h"
 
-
-//**************************************************************************//
-//                               MAIN                                       //
-//**************************************************************************//
-
-int main(int argc, char *argv[])
+namespace itk
 {
-  if ( argc != 1 )
+template< class TFeatureImage >
+vtkMeshSplitterFilterBase< TFeatureImage >::
+vtkMeshSplitterFilterBase() : Superclass(), m_Mesh( NULL )
+  {
+  for( unsigned int dim = 0; dim < 3; ++dim )
     {
-    return EXIT_FAILURE;
+    m_Bounds[2 * dim] = NumericTraits< double >::max();
+    m_Bounds[2 * dim + 1] = NumericTraits< double >::min();
+    }
+  }
+
+template< class TFeatureImage >
+void
+vtkMeshSplitterFilterBase< TFeatureImage >::
+SetMesh( vtkPolyData* iMesh )
+{
+  if( ( iMesh ) && ( iMesh != m_Mesh ) )
+    {
+    m_Mesh = iMesh;
+    m_Mesh->GetBounds( m_Bounds );
+    this->Modified();
+    }
+}
+
+template< class TFeatureImage >
+std::vector< vtkPolyData* >
+vtkMeshSplitterFilterBase< TFeatureImage >::
+GetOutputs()
+{
+  return this->m_Outputs;
+}
+
+template< class TFeatureImage >
+void
+vtkMeshSplitterFilterBase< TFeatureImage >::
+GenerateData()
+{
+  if( !m_Mesh )
+    {
+    itkGenericExceptionMacro( << "m_Mesh is NULL" );
     }
 
-  QApplication app(argc, argv);
-  QTimer *     timer = new QTimer;
-  timer->setSingleShot(true);
-
-  QGoAlgorithmWidget* AlgoWidget = new QGoAlgorithmWidget("Test", NULL);
-  QStringList ChannelName;
-  ChannelName.append("Channel 1");
-  ChannelName.append("Channel 2");
-  ChannelName.append("All Channels");
-  AlgoWidget->AddParameter("Channel", ChannelName);
-  AlgoWidget->AddParameter("IntParam", 0, 100, 50);
-  AlgoWidget->AddParameter("DoubleParam", 20.56, 53.21, 24, 2);
-  AlgoWidget->AddAdvParameter("IntParam", 20, 50, 40);
-  AlgoWidget->AddAdvParameter("DoubleParam", 11, 23.00, 15, 3);
-
-
-  //QObject::connect( timer, SIGNAL( timeout() ), AlgoWidget, SLOT( close() ) );
-
-  AlgoWidget->show();
-  timer->start(1000);
-
-
-  app.processEvents();
-  int output = app.exec();
-
-  app.closeAllWindows();
-
-  delete timer;
-  delete AlgoWidget;
-
-  return output;
+  this->Split();
 }
+
+}
+#endif

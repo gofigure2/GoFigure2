@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-10, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,54 +31,50 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include <QApplication>
-#include <QTimer>
-#include <QStringList>
-#include "QGoAlgorithmWidget.h"
+#ifndef __ContourToMeshFilter_h
+#define __ContourToMeshFilter_h
 
+#include "itkLightObject.h"
+#include "itkObjectFactory.h"
 
-
-
-//**************************************************************************//
-//                               MAIN                                       //
-//**************************************************************************//
-
-int main(int argc, char *argv[])
+namespace itk
 {
-  if ( argc != 1 )
-    {
-    return EXIT_FAILURE;
-    }
+/**
+ * \class ContourToMeshFilter
+ * \brief
+ */
+template< class TContainer >
+class ContourToMeshFilter:public LightObject
+{
+public:
+  typedef ContourToMeshFilter        Self;
+  typedef LightObject                Superclass;
+  typedef SmartPointer< Self >       Pointer;
+  typedef SmartPointer< const Self > ConstPointer;
 
-  QApplication app(argc, argv);
-  QTimer *     timer = new QTimer;
-  timer->setSingleShot(true);
+  /** Method for creation through object factory */
+  itkNewMacro(Self);
 
-  QGoAlgorithmWidget* AlgoWidget = new QGoAlgorithmWidget("Test", NULL);
-  QStringList ChannelName;
-  ChannelName.append("Channel 1");
-  ChannelName.append("Channel 2");
-  ChannelName.append("All Channels");
-  AlgoWidget->AddParameter("Channel", ChannelName);
-  AlgoWidget->AddParameter("IntParam", 0, 100, 50);
-  AlgoWidget->AddParameter("DoubleParam", 20.56, 53.21, 24, 2);
-  AlgoWidget->AddAdvParameter("IntParam", 20, 50, 40);
-  AlgoWidget->AddAdvParameter("DoubleParam", 11, 23.00, 15, 3);
+  /** Run-time type information */
+  itkTypeMacro(ContourToMeshFilter, LightObject);
 
+  typedef TContainer                             ContainerType;
+  typedef typename ContainerType::const_iterator ContainerConstIterator;
 
-  //QObject::connect( timer, SIGNAL( timeout() ), AlgoWidget, SLOT( close() ) );
+  void ProcessContours(const ContainerType & iContainer);
 
-  AlgoWidget->show();
-  timer->start(1000);
+  vtkPolyData * GetOutput();
 
+protected:
+  ContourToMeshFilter();
+  ~ContourToMeshFilter();
 
-  app.processEvents();
-  int output = app.exec();
+  vtkPolyData *m_Output;
 
-  app.closeAllWindows();
+  vtkIdType m_ThresholdNumberOfPoints;
+  int m_TargetNumberOfPoints;
 
-  delete timer;
-  delete AlgoWidget;
-
-  return output;
+};
 }
+#include "ContourToMeshFilter.txx"
+#endif

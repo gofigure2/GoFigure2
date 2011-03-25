@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-10
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-10, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,54 +31,39 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include <QApplication>
-#include <QTimer>
-#include <QStringList>
-#include "QGoAlgorithmWidget.h"
 
+#ifndef __itkvtkMeshMergeFilterBase_txx
+#define __itkvtkMeshMergeFilterBase_txx
 
+#include "itkvtkMeshMergeFilterBase.h"
+#include "vtkPolyData.h"
 
-
-//**************************************************************************//
-//                               MAIN                                       //
-//**************************************************************************//
-
-int main(int argc, char *argv[])
+namespace itk
 {
-  if ( argc != 1 )
-    {
-    return EXIT_FAILURE;
-    }
-
-  QApplication app(argc, argv);
-  QTimer *     timer = new QTimer;
-  timer->setSingleShot(true);
-
-  QGoAlgorithmWidget* AlgoWidget = new QGoAlgorithmWidget("Test", NULL);
-  QStringList ChannelName;
-  ChannelName.append("Channel 1");
-  ChannelName.append("Channel 2");
-  ChannelName.append("All Channels");
-  AlgoWidget->AddParameter("Channel", ChannelName);
-  AlgoWidget->AddParameter("IntParam", 0, 100, 50);
-  AlgoWidget->AddParameter("DoubleParam", 20.56, 53.21, 24, 2);
-  AlgoWidget->AddAdvParameter("IntParam", 20, 50, 40);
-  AlgoWidget->AddAdvParameter("DoubleParam", 11, 23.00, 15, 3);
-
-
-  //QObject::connect( timer, SIGNAL( timeout() ), AlgoWidget, SLOT( close() ) );
-
-  AlgoWidget->show();
-  timer->start(1000);
-
-
-  app.processEvents();
-  int output = app.exec();
-
-  app.closeAllWindows();
-
-  delete timer;
-  delete AlgoWidget;
-
-  return output;
+template< class TFeature >
+vtkMeshMergeFilterBase< TFeature >::
+vtkMeshMergeFilterBase() : Superclass()
+{
+  this->m_Outputs.resize( 1, NULL );
+  this->m_Outputs[0] = vtkPolyData::New();
 }
+
+template< class TFeature >
+void
+vtkMeshMergeFilterBase< TFeature >::
+SetInputs( std::list< vtkPolyData* > iMeshes )
+{
+  m_Inputs = iMeshes;
+  this->Modified();
+}
+
+template< class TFeature >
+vtkPolyData*
+vtkMeshMergeFilterBase< TFeature >::
+GetOutput()
+{
+  return this->m_Outputs.front();
+}
+
+}
+#endif

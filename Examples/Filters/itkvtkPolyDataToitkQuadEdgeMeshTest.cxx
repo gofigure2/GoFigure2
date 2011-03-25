@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,54 +31,32 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include <QApplication>
-#include <QTimer>
-#include <QStringList>
-#include "QGoAlgorithmWidget.h"
 
+#include "vtkSphereSource.h"
+#include "itkQuadEdgeMesh.h"
+#include "itkvtkPolyDataToitkQuadEdgeMesh.h"
+#include "itkVTKPolyDataWriter.h"
 
-
-
-//**************************************************************************//
-//                               MAIN                                       //
-//**************************************************************************//
-
-int main(int argc, char *argv[])
+int main( int , char** )
 {
-  if ( argc != 1 )
-    {
-    return EXIT_FAILURE;
-    }
+  vtkSmartPointer< vtkSphereSource > sphere_source =
+      vtkSmartPointer< vtkSphereSource >::New();
+  sphere_source->SetCenter( 0., 0., 0. );
+  sphere_source->Update();
 
-  QApplication app(argc, argv);
-  QTimer *     timer = new QTimer;
-  timer->setSingleShot(true);
+  typedef itk::QuadEdgeMesh< double, 3 > MeshType;
+  typedef itk::vtkPolyDataToitkQuadEdgeMesh< MeshType > ConverterType;
+  ConverterType::Pointer converter = ConverterType::New();
+  converter->SetInput( sphere_source->GetOutput() );
+  converter->Update();
 
-  QGoAlgorithmWidget* AlgoWidget = new QGoAlgorithmWidget("Test", NULL);
-  QStringList ChannelName;
-  ChannelName.append("Channel 1");
-  ChannelName.append("Channel 2");
-  ChannelName.append("All Channels");
-  AlgoWidget->AddParameter("Channel", ChannelName);
-  AlgoWidget->AddParameter("IntParam", 0, 100, 50);
-  AlgoWidget->AddParameter("DoubleParam", 20.56, 53.21, 24, 2);
-  AlgoWidget->AddAdvParameter("IntParam", 20, 50, 40);
-  AlgoWidget->AddAdvParameter("DoubleParam", 11, 23.00, 15, 3);
+  MeshType::Pointer mesh = converter->GetOutput();
 
+  typedef itk::VTKPolyDataWriter< MeshType > WriterType;
+  WriterType::Pointer writer = WriterType::New();
+  writer->SetInput( mesh );
+  writer->SetFileName( "ConvertVTKtoITKMesh.vtk" );
+  writer->Update();
 
-  //QObject::connect( timer, SIGNAL( timeout() ), AlgoWidget, SLOT( close() ) );
-
-  AlgoWidget->show();
-  timer->start(1000);
-
-
-  app.processEvents();
-  int output = app.exec();
-
-  app.closeAllWindows();
-
-  delete timer;
-  delete AlgoWidget;
-
-  return output;
+  return EXIT_SUCCESS;
 }

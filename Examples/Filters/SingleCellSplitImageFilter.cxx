@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,54 +31,71 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include <QApplication>
-#include <QTimer>
-#include <QStringList>
-#include "QGoAlgorithmWidget.h"
 
+#include "itkImageFileReader.h"
+#include "itkImageFileWriter.h"
+#include "itkPointSet.h"
+#include "itkSingleCellSplitImageFilter.h"
+#include <list>
+#include <fstream>
 
-
-
-//**************************************************************************//
-//                               MAIN                                       //
-//**************************************************************************//
-
-int main(int argc, char *argv[])
-{
-  if ( argc != 1 )
+int main ( int argc, char* argv[] )
+  {
+  if ( argc < 3 )
     {
+    std::cerr << "Usage: " << std::endl;
+    std::cerr << argv[0] << " input output" << std::endl;
     return EXIT_FAILURE;
     }
 
-  QApplication app(argc, argv);
-  QTimer *     timer = new QTimer;
-  timer->setSingleShot(true);
+  const unsigned int Dimension = 2;
+  typedef itk::Image< unsigned char, Dimension > ImageType;
+  typedef ImageType::PointType ImagePointType;
+  typedef itk::PointSet< ImagePointType::CoordRepType, 2 > PointSetType;
 
-  QGoAlgorithmWidget* AlgoWidget = new QGoAlgorithmWidget("Test", NULL);
-  QStringList ChannelName;
-  ChannelName.append("Channel 1");
-  ChannelName.append("Channel 2");
-  ChannelName.append("All Channels");
-  AlgoWidget->AddParameter("Channel", ChannelName);
-  AlgoWidget->AddParameter("IntParam", 0, 100, 50);
-  AlgoWidget->AddParameter("DoubleParam", 20.56, 53.21, 24, 2);
-  AlgoWidget->AddAdvParameter("IntParam", 20, 50, 40);
-  AlgoWidget->AddAdvParameter("DoubleParam", 11, 23.00, 15, 3);
+  typedef itk::ImageFileReader< ImageType > ReaderType;
+  typedef itk::ImageFileWriter< ImageType > WriterType;
+  typedef itk::SingleCellSplitImageFilter< ImageType, PointSetType > FilterType;
 
+  ImageType::Pointer input;
+    {
+    ReaderType::Pointer reader = ReaderType::New();
+    reader->SetFileName ( argv[1] );
+    reader->Update();
+    input = reader->GetOutput();
+    input->DisconnectPipeline();
+    }
 
-  //QObject::connect( timer, SIGNAL( timeout() ), AlgoWidget, SLOT( close() ) );
+  FilterType::Pointer filter = FilterType::New();
+  filter->SetInput ( input );
+  filter->SetForegroundValue( 1 );
 
-  AlgoWidget->show();
-  timer->start(1000);
+  PointSetType::Pointer seeds = PointSetType::New();
 
+  ImagePointType p;
+  p[0] = 40;
+  p[1] = 40;
+  seeds->SetPoint( 0, p );
 
-  app.processEvents();
-  int output = app.exec();
+  p[0] = 60;
+  p[1] = 60;
+  seeds->SetPoint( 1, p );
 
-  app.closeAllWindows();
+  filter->SetSeeds( seeds );
+  filter->Update();
 
-  delete timer;
-  delete AlgoWidget;
+  WriterType::Pointer writer = WriterType::New();
+  writer->SetInput ( filter->GetOutput() );
+  writer->SetFileName ( argv[2] );
 
-  return output;
-}
+  try
+    {
+    writer->Update();
+    }
+  catch ( itk::ExceptionObject e )
+    {
+    std::cerr << "Error: " << e << std::endl;
+    }
+
+  return EXIT_SUCCESS;
+  }

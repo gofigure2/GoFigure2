@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,54 +31,44 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include <QApplication>
-#include <QTimer>
-#include <QStringList>
-#include "QGoAlgorithmWidget.h"
 
+#ifndef __itkvtkMeshMergeConvexHullFilter_h
+#define __itkvtkMeshMergeConvexHullFilter_h
 
+#include "itkvtkMeshMergeFilterBase.h"
 
+#include "itkObjectFactory.h"
 
-//**************************************************************************//
-//                               MAIN                                       //
-//**************************************************************************//
-
-int main(int argc, char *argv[])
+namespace itk
 {
-  if ( argc != 1 )
-    {
-    return EXIT_FAILURE;
-    }
+template< class TFeatureImage >
+class vtkMeshMergeConvexHullFilter :
+    public vtkMeshMergeFilterBase< TFeatureImage >
+{
+public:
+  typedef vtkMeshMergeFilterBase< TFeatureImage > Superclass;
+  typedef vtkMeshMergeConvexHullFilter Self;
+  typedef SmartPointer< Self > Pointer;
+  typedef SmartPointer< const Self > ConstPointer;
 
-  QApplication app(argc, argv);
-  QTimer *     timer = new QTimer;
-  timer->setSingleShot(true);
+  /** Run-time type information (and related methods). */
+  itkTypeMacro( vtkMeshMergeConvexHullFilter,
+               vtkMeshMergeFilterBase );
 
-  QGoAlgorithmWidget* AlgoWidget = new QGoAlgorithmWidget("Test", NULL);
-  QStringList ChannelName;
-  ChannelName.append("Channel 1");
-  ChannelName.append("Channel 2");
-  ChannelName.append("All Channels");
-  AlgoWidget->AddParameter("Channel", ChannelName);
-  AlgoWidget->AddParameter("IntParam", 0, 100, 50);
-  AlgoWidget->AddParameter("DoubleParam", 20.56, 53.21, 24, 2);
-  AlgoWidget->AddAdvParameter("IntParam", 20, 50, 40);
-  AlgoWidget->AddAdvParameter("DoubleParam", 11, 23.00, 15, 3);
+  /** Method for creation through the object factory. */
+  itkNewMacro(Self);
 
+protected:
+  vtkMeshMergeConvexHullFilter();
+  ~vtkMeshMergeConvexHullFilter() {}
 
-  //QObject::connect( timer, SIGNAL( timeout() ), AlgoWidget, SLOT( close() ) );
+  void GenerateData();
+  void SetRequiredAttributeComputationFlags();
 
-  AlgoWidget->show();
-  timer->start(1000);
-
-
-  app.processEvents();
-  int output = app.exec();
-
-  app.closeAllWindows();
-
-  delete timer;
-  delete AlgoWidget;
-
-  return output;
+private:
+  vtkMeshMergeConvexHullFilter( const Self& );
+  void operator = ( const Self& );
+};
 }
+#include "itkvtkMeshMergeConvexHullFilter.txx"
+#endif // __itkvtkMeshMergeConvexHullFilter_h

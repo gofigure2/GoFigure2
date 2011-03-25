@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,54 +31,50 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include <QApplication>
-#include <QTimer>
-#include <QStringList>
-#include "QGoAlgorithmWidget.h"
 
 
+#include "vtkPolyDataReader.h"
+#include "vtkPolyDataWriter.h"
+#include "vtkSmartPointer.h"
+#include "vtkAppendPolyData.h"
+#include "vtkHull.h"
 
-
-//**************************************************************************//
-//                               MAIN                                       //
-//**************************************************************************//
-
-int main(int argc, char *argv[])
+int main( int argc, char** argv )
 {
-  if ( argc != 1 )
+  if( argc < 3 )
     {
+    std::cerr << "Missing arguments" << std::endl;
+    std::cerr << "Usage: " << std::endl;
+    std::cerr << argv[0] << " polydata1 polydata2 hullOutput" << std::endl;
     return EXIT_FAILURE;
     }
 
-  QApplication app(argc, argv);
-  QTimer *     timer = new QTimer;
-  timer->setSingleShot(true);
 
-  QGoAlgorithmWidget* AlgoWidget = new QGoAlgorithmWidget("Test", NULL);
-  QStringList ChannelName;
-  ChannelName.append("Channel 1");
-  ChannelName.append("Channel 2");
-  ChannelName.append("All Channels");
-  AlgoWidget->AddParameter("Channel", ChannelName);
-  AlgoWidget->AddParameter("IntParam", 0, 100, 50);
-  AlgoWidget->AddParameter("DoubleParam", 20.56, 53.21, 24, 2);
-  AlgoWidget->AddAdvParameter("IntParam", 20, 50, 40);
-  AlgoWidget->AddAdvParameter("DoubleParam", 11, 23.00, 15, 3);
+  vtkSmartPointer<vtkPolyDataReader> reader1 = vtkSmartPointer<vtkPolyDataReader>::New();
+  reader1->SetFileName( argv[1] );
+  reader1->Update();
+  vtkPolyData* contour1 = reader1->GetOutput();
 
+  vtkSmartPointer<vtkPolyDataReader> reader2 = vtkSmartPointer<vtkPolyDataReader>::New();
+  reader2->SetFileName( argv[2] );
+  reader2->Update();
+  vtkPolyData* contour2 = reader2->GetOutput();
 
-  //QObject::connect( timer, SIGNAL( timeout() ), AlgoWidget, SLOT( close() ) );
+  // Append the local and remote data
+  vtkSmartPointer<vtkAppendPolyData> append = vtkSmartPointer<vtkAppendPolyData>::New();
+  append->AddInput( contour1 );
+  append->AddInput( contour2 );
 
-  AlgoWidget->show();
-  timer->start(1000);
+  vtkSmartPointer<vtkHull> hullFilter =  vtkSmartPointer<vtkHull>::New();
+  hullFilter->SetInputConnection( append->GetOutputPort() );
+  hullFilter->AddRecursiveSpherePlanes( 2 );
+  hullFilter->Update();
 
+  vtkSmartPointer<vtkPolyDataWriter> writer = vtkSmartPointer<vtkPolyDataWriter>::New();
+  writer->SetFileName( argv[3] );
+  writer->SetInput( hullFilter->GetOutput() );
+  writer->Write();
 
-  app.processEvents();
-  int output = app.exec();
-
-  app.closeAllWindows();
-
-  delete timer;
-  delete AlgoWidget;
-
-  return output;
+  return EXIT_SUCCESS;
 }
+

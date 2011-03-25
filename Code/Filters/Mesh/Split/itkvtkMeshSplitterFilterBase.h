@@ -31,57 +31,79 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __ContourToMeshFilter_h
-#define __ContourToMeshFilter_h
 
-#include "itkLightObject.h"
-#include "itkObjectFactory.h"
+#ifndef __itkvtkMeshSplitterFilterBase_h
+#define __itkvtkMeshSplitterFilterBase_h
+
+#include "itkvtkMeshFilterBase.h"
+#include "itkPointSet.h"
+#include "vtkPolyData.h"
+
+#include <vector>
 
 namespace itk
 {
 /**
- * \class ContourToMeshFilter
- * \brief Generate a mesh from a set of 2D contours
- * \tparam TContainer Container of Contours (e.g. std::vector< vtkPolyData* >,
- * std::list< vtkPolyData* >, etc. )
- */
-template< class TContainer >
-class ContourToMeshFilter:public LightObject
-{
+  \class vtkMeshSplitterFilterBase
+  \brief
+*/
+template< class TFeatureImage >
+class vtkMeshSplitterFilterBase : public vtkMeshFilterBase< TFeatureImage >
+  {
 public:
-  typedef ContourToMeshFilter        Self;
-  typedef LightObject                Superclass;
-  typedef SmartPointer< Self >       Pointer;
+  typedef vtkMeshFilterBase< TFeatureImage > Superclass;
+  typedef vtkMeshSplitterFilterBase Self;
+  typedef SmartPointer< Self > Pointer;
   typedef SmartPointer< const Self > ConstPointer;
 
-  /** Method for creation through object factory */
-  itkNewMacro(Self);
+  /** Run-time type information (and related methods). */
+  itkTypeMacro( vtkMeshSplitterFilterBase, vtkMeshFilterBase );
 
-  /** Run-time type information */
-  itkTypeMacro(ContourToMeshFilter, LightObject);
+  typedef typename Superclass::FeatureImageType FeatureImageType;
+  typedef typename Superclass::FeatureImagePointer FeatureImagePointer;
 
-  typedef TContainer                             ContainerType;
-  typedef typename ContainerType::const_iterator ContainerConstIterator;
+  void SetMesh( vtkPolyData* iMesh );
 
-  /** \brief Main method: where the mesh is actually calculated. */
-  void ProcessContours(const ContainerType & iContainer);
-
-  /** \brief Get the resulting mesh */
-  vtkPolyData * GetOutput();
+  std::vector< vtkPolyData* > GetOutputs();
 
 protected:
   /** \brief Constructor */
-  ContourToMeshFilter();
+  vtkMeshSplitterFilterBase();
 
   /** \brief Destructor */
-  ~ContourToMeshFilter();
+  virtual ~vtkMeshSplitterFilterBase() {}
 
-  vtkPolyData *m_Output;
+  vtkPolyData* m_Mesh;
 
-  vtkIdType m_ThresholdNumberOfPoints;
-  int m_TargetNumberOfPoints;
+  double m_Bounds[6];
 
-};
+
+  template< class TPoint >
+  bool IsPointInMeshBounds( const TPoint& iP ) const
+    {
+    for( unsigned int i = 0; i < 3; ++i )
+      {
+      double t = static_cast< double >( iP[i] );
+
+      if( ( t < m_Bounds[2*i] ) || ( t > m_Bounds[2*i+1] ) )
+        {
+        return false;
+        }
+      }
+    return true;
+    }
+
+
+  /** \brief Main method to be reimplemented in inherited classes */
+  virtual void Split() = 0;
+
+  virtual void GenerateData();
+
+private:
+  vtkMeshSplitterFilterBase( const Self& );
+  void operator = ( const Self& );
+  };
 }
-#include "ContourToMeshFilter.txx"
-#endif
+
+#include "itkvtkMeshSplitterFilterBase.txx"
+#endif // __itkvtkMeshSplitterFilterBase_h
