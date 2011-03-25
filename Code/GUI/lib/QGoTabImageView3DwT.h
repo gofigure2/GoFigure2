@@ -420,6 +420,8 @@ protected:
         ( static_cast< unsigned int >( m_TCoord ) == iIt->TCoord );
       bool highlighted = false;
 
+      std::cout <<"contour visibility: " << visibility << std::endl;
+
       vtkPolyData *contour_copy = vtkPolyData::New();
       contour_copy->DeepCopy(iContour);
 
@@ -444,6 +446,8 @@ protected:
       bool visibility =
         ( static_cast< unsigned int >( m_TCoord ) == iIt->TCoord );
 
+      std::cout <<"mesh visibility: " << visibility << std::endl;
+
       AddTraceIDIntoPolydata(iIt->Nodes, iIt->TraceID, "MESH");
 
       VisualizeTraceBase< MeshContainer, TIndex >( m_MeshContainer, iIt,
@@ -460,6 +464,8 @@ protected:
       {
       bool highlighted = false;
       bool visibility = false;
+
+      std::cout <<"track visibility: " << visibility << std::endl;
 
       AddTraceIDIntoPolydata(iIt->Nodes, iIt->TraceID, "TRACK");
 

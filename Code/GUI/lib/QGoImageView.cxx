@@ -256,22 +256,6 @@ QGoImageView::AddContour(vtkPolyData *iDataset, vtkProperty *iProperty)
 
 //--------------------------------------------------------------------------
 void
-QGoImageView::ChangeActorProperty(vtkProp3D *iActor,
-                                  vtkProperty *iProperty)
-{
-  int n = m_Pool->GetNumberOfItems();
-
-  for ( int i = 0; i < n; i++ )
-    {
-    vtkViewImage2D *viewer = m_Pool->GetItem(i);
-    viewer->ChangeActorProperty(iActor, iProperty);
-    }
-}
-
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void
 QGoImageView::RemoveActor(const int & iId, vtkActor *iActor)
 {
   if ( ( iId >= 0 ) && ( iId < m_Pool->GetNumberOfItems() ) )

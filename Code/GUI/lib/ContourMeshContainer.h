@@ -253,9 +253,13 @@ public:
   */
   void UpdateElementVisibility(unsigned int iTraceID, bool iState)
     {
-    Qt::CheckState state;
-    Superclass::UpdateElementVisibilityWithTraceID(iTraceID, iState, state );
-    emit TraceVisibilityChanged(iTraceID, state);
+    Superclass::UpdateElementVisibilityWithTraceID(iTraceID, iState);
+    if(iState)
+      {
+      emit TraceVisibilityChanged(iTraceID, Qt::Checked );
+      return;
+      }
+    emit TraceVisibilityChanged(iTraceID, Qt::Unchecked );
     }
 
   //-------------------------------------------------------------------------

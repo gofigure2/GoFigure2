@@ -258,10 +258,12 @@ public:
 
     if ( iVisible )
       {
+      std::cout<<"add actor"<< std::endl;
       f = &QGoImageView3D::AddActor;
       }
     else
       {
+      std::cout<<"remove actor"<< std::endl;
       f = &QGoImageView3D::RemoveActor;
       }
 
@@ -599,8 +601,7 @@ protected:
 
   void UpdateElementVisibilityWithTraceID(
       unsigned int& oTraceId,
-      bool iState,
-      Qt::CheckState& oState )
+      bool iState)
     {
     using boost::multi_index::get;
 
@@ -610,22 +611,16 @@ protected:
 
     assert ( it != m_Container.get< TraceID >().end() );
 
+    std::cout << "show/hide: " << iState << std::endl;
+    std::cout << "visible: " << it->Visible << std::endl;
+
     if ( it->Visible != iState )
       {
+      std::cout << "change visibility to: " << iState << std::endl;
       it->SetActorVisibility( iState );
       MultiIndexContainerElementType* tempStructure =
           const_cast<MultiIndexContainerElementType*>(&(*it));
       tempStructure->Visible = iState;
-
-      // Note: it->Highlighted is the status before picking the actor
-      if ( iState )
-        {
-        oState = Qt::Checked;
-        }
-      else
-        {
-        oState = Qt::Unchecked;
-        }
       }
     }
 };

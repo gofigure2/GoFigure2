@@ -927,36 +927,6 @@ QGoImageView3D::AddContour(vtkPolyData *iDataset, vtkProperty *iProperty)
 
   return oList;
 }
-
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void
-QGoImageView3D::ChangeActorProperty(vtkProp3D *iActor, vtkProperty *iProperty)
-{
-  m_View3D->ChangeActorProperty(iActor, iProperty);
-  QGoImageView::ChangeActorProperty(iActor, iProperty);
-}
-
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void
-QGoImageView3D::ChangeActorProperty(int iDir, vtkProp3D *iActor, vtkProperty *iProperty)
-{
-  if ( ( iDir >= 0 ) && ( iDir < m_Pool->GetNumberOfItems() ) )
-    {
-    QGoImageView::ChangeActorProperty(iDir, iActor, iProperty);
-    }
-  else
-    {
-    if ( iDir == 3 )
-      {
-      m_View3D->ChangeActorProperty(iActor, iProperty);
-      }
-    }
-}
-
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -966,6 +936,7 @@ QGoImageView3D::RemoveActor(const int & iId, vtkActor *iActor)
   if ( iId == 3 )
     {
     m_View3D->GetRenderer()->RemoveActor(iActor);
+    //m_View3D->RemoveActor(iActor);
     }
   else
     {

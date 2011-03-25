@@ -116,10 +116,6 @@ public:
 
   int GetSliceViewYZ() const;
 
-  virtual void ChangeActorProperty(vtkProp3D *iActor, vtkProperty *iProperty);
-
-  void ChangeActorProperty(int iDir, vtkProp3D *iActor, vtkProperty *iProperty);
-
   // MODES
   /**
    * \brief Use the default interactor style
