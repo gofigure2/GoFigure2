@@ -149,13 +149,18 @@ void QGoAlgorithmsManagerWidget::SetCurrentChannel(QString iChannel)
 //-------------------------------------------------------------------------
 void QGoAlgorithmsManagerWidget::SetTSliceForClassicView(QString iTimePoint)
 {
-  this->m_TimeComboBox->clear();
-  this->m_TimeComboBox->addItems(this->m_ListTimePoints);
-  this->m_TimeComboBox->setCurrentIndex(
-    this->m_TimeComboBox->findText(iTimePoint) );
-  this->m_TimeComboBox->setEnabled(false);
-  this->m_ChannelComboBox->setEnabled(true);
-  
+  if (this->m_TimeComboBox)
+    {
+    this->m_TimeComboBox->clear();
+    this->m_TimeComboBox->addItems(this->m_ListTimePoints);
+    this->m_TimeComboBox->setCurrentIndex(
+      this->m_TimeComboBox->findText(iTimePoint) );
+    this->m_TimeComboBox->setEnabled(false);
+    }
+  if (this->m_ChannelComboBox)
+    {
+    this->m_ChannelComboBox->setEnabled(true);
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -163,15 +168,21 @@ void QGoAlgorithmsManagerWidget::SetTSliceForClassicView(QString iTimePoint)
 void QGoAlgorithmsManagerWidget::SetTSliceForDopplerView(QStringList iListTimePoints,
   int iIndexChannel)
 {
-  this->m_TimeComboBox->clear();
-  this->m_TimeComboBox->addItems(iListTimePoints);
-  if (iListTimePoints.size() > 0)
+  if (this->m_TimeComboBox)
     {
-    this->m_TimeComboBox->setCurrentIndex(1);
+    this->m_TimeComboBox->clear();
+    this->m_TimeComboBox->addItems(iListTimePoints);
+    if (iListTimePoints.size() > 0)
+      {
+      this->m_TimeComboBox->setCurrentIndex(1);
+      }
+    this->m_TimeComboBox->setEnabled(true);
     }
-  this->m_TimeComboBox->setEnabled(true);
-  this->m_ChannelComboBox->setCurrentIndex(iIndexChannel);
-  this->m_ChannelComboBox->setEnabled(false);
+  if (this->m_ChannelComboBox)
+    {
+    this->m_ChannelComboBox->setCurrentIndex(iIndexChannel);
+    this->m_ChannelComboBox->setEnabled(false);
+    }
 }
 //-------------------------------------------------------------------------
 

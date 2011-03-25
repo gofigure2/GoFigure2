@@ -69,27 +69,6 @@ QGoMeshEditingWidgetManager::~QGoMeshEditingWidgetManager()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoMeshEditingWidgetManager::ApplyLevelSetAlgo()
-{
-  this->GetPolydatasFromAlgo<QGoMeshLevelSetAlgo>(this->m_LevelSetAlgo);
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoMeshEditingWidgetManager::ApplyShapeAlgo()
-{
-  this->GetPolydatasFromAlgo<QGoMeshShapeAlgo>(this->m_ShapeAlgo);
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoMeshEditingWidgetManager::ApplyWaterShedAlgo()
-{
-  this->GetPolydatasFromAlgo<QGoMeshWaterShedAlgo>(this->m_WaterShedAlgo);
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 void QGoMeshEditingWidgetManager::SetTheMeshWidget(
   std::vector<QString> iVectChannels, int iTimeMin, 
   int iTimeMax, QWidget* iParent)
@@ -103,8 +82,10 @@ void QGoMeshEditingWidgetManager::SetTheMeshWidget(
   this->m_MeshEditingWidget = new QGoTraceEditingWidget(
    "Mesh", iVectChannels, ListTimePoints, iParent);
 
-  this->SetTSliceForClassicView();
   this->SetSplitMergeMode(iParent);
+  this->SetSetOfContoursAlgorithms(iVectChannels, ListTimePoints, 
+    iParent);
+  this->SetTSliceForClassicView();
 
   QObject::connect( this->m_MeshEditingWidget, 
                     SIGNAL(SetSeedInteractorBehaviour(bool) ),
@@ -162,6 +143,8 @@ void QGoMeshEditingWidgetManager::SetVisible(bool isVisible)
 void QGoMeshEditingWidgetManager::SetTSliceForClassicView()
 {
   this->m_MeshEditingWidget->SetTSliceForClassicView(*this->m_CurrentTimePoint);
+  this->m_SetOfContoursWidget->SetTSliceForClassicView(
+    tr("%1").arg(*this->m_CurrentTimePoint) );
 }
 //-------------------------------------------------------------------------
 
@@ -170,6 +153,8 @@ void QGoMeshEditingWidgetManager::SetTSliceForDopplerView(
   QStringList iListTimePoints, int iChannelNumber)
 {
   this->m_MeshEditingWidget->SetTSliceForDopplerView(
+    iListTimePoints, iChannelNumber);
+  this->m_SetOfContoursWidget->SetTSliceForDopplerView(
     iListTimePoints, iChannelNumber);
 } 
 //-------------------------------------------------------------------------
@@ -211,6 +196,20 @@ void QGoMeshEditingWidgetManager::SetSemiAutomatedAlgorithms(QWidget* iParent)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoMeshEditingWidgetManager::SetSetOfContoursAlgorithms(
+   std::vector<QString> iVectChannels, QStringList iListTime,
+   QWidget* iParent)
+{
+    m_SetOfContoursWidget = 
+    new QGoAlgorithmsManagerWidget("Set of Contours",
+    iParent, iVectChannels, iListTime);
+  this->m_MeshEditingWidget->AddMode(m_SetOfContoursWidget);
+
+
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void QGoMeshEditingWidgetManager::SetSplitMergeMode(QWidget* iParent)
 {
   QGoAlgorithmsManagerWidget* SplitAlgoWidget = 
@@ -235,4 +234,25 @@ void QGoMeshEditingWidgetManager::SetSplitMergeMode(QWidget* iParent)
 void QGoMeshEditingWidgetManager::ApplyDanielAlgo()
 {
   this->GetPolydatasFromAlgo<QGoMeshSplitDanielssonDistanceAlgo>(this->m_DanielAlgo);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoMeshEditingWidgetManager::ApplyLevelSetAlgo()
+{
+  this->GetPolydatasFromAlgo<QGoMeshLevelSetAlgo>(this->m_LevelSetAlgo);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoMeshEditingWidgetManager::ApplyShapeAlgo()
+{
+  this->GetPolydatasFromAlgo<QGoMeshShapeAlgo>(this->m_ShapeAlgo);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoMeshEditingWidgetManager::ApplyWaterShedAlgo()
+{
+  this->GetPolydatasFromAlgo<QGoMeshWaterShedAlgo>(this->m_WaterShedAlgo);
 }

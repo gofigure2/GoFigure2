@@ -101,17 +101,17 @@ signals:
   void MeshesCreatedFromAlgo(std::vector<vtkPolyData *> iVectPolydata, int iTCoord);
 
 protected:
-  QDockWidget*           m_MeshEditingDockWidget;
-  QGoTraceEditingWidget* m_MeshEditingWidget;
- 
+  QDockWidget*                m_MeshEditingDockWidget;
+  QGoTraceEditingWidget*      m_MeshEditingWidget;
+  QGoAlgorithmsManagerWidget* m_SetOfContoursWidget;
   vtkPoints*                                      m_Seeds;
   std::vector< vtkSmartPointer< vtkImageData > >* m_Images;
   int*                                            m_CurrentTimePoint;
 
-  QGoMeshLevelSetAlgo*            m_LevelSetAlgo;
-  QGoMeshShapeAlgo*               m_ShapeAlgo;
-  QGoMeshWaterShedAlgo*           m_WaterShedAlgo;
-  QGoMeshSplitDanielssonDistanceAlgo* m_DanielAlgo;
+  QGoMeshLevelSetAlgo*                            m_LevelSetAlgo;
+  QGoMeshShapeAlgo*                               m_ShapeAlgo;
+  QGoMeshWaterShedAlgo*                           m_WaterShedAlgo;
+  QGoMeshSplitDanielssonDistanceAlgo*             m_DanielAlgo;
 
   void SetTheMeshWidget(std::vector<QString> iVectChannels, int iTimeMin, 
     int iTimeMax, QWidget* iParent);
@@ -127,6 +127,9 @@ protected:
   for the semi automated mode and set the different SIGNAL/SLOTS connections
   */
   void SetSemiAutomatedAlgorithms(QWidget* iParent = 0);
+
+  void SetSetOfContoursAlgorithms(
+   std::vector<QString> iVectChannels, QStringList iListTime, QWidget* iParent = 0);
 
   void SetSplitMergeMode(QWidget* iParent);
 
