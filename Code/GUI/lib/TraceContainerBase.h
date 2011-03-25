@@ -609,12 +609,8 @@ protected:
 
     assert ( it != m_Container.get< TraceID >().end() );
 
-    std::cout << "show/hide: " << iState << std::endl;
-    std::cout << "visible: " << it->Visible << std::endl;
-
     if ( it->Visible != iState )
       {
-      std::cout << "change visibility to: " << iState << std::endl;
       it->SetActorVisibility( iState );
       MultiIndexContainerElementType* tempStructure =
           const_cast<MultiIndexContainerElementType*>(&(*it));

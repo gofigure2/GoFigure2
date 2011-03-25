@@ -952,7 +952,6 @@ QGoImageView3D::AddActor(const int & iId, vtkActor *iActor)
 {
   if ( iId == 3 )
     {
-    std::cout<<"add actor 3d" << std::endl;
     // add to renderer and Prop3DCollection
     m_View3D->GetRenderer()->AddViewProp(iActor);
     m_View3D->AddActorToProp3DCollection(iActor);

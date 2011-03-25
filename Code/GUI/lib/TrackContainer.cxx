@@ -235,6 +235,14 @@ TrackContainer::UpdateTrackStructurePolyData(const TrackStructure & iTrackStruct
   speedArray->SetName("SpeedInformation");
   polyData->GetPointData()->AddArray(speedArray);
 
+  vtkSmartPointer<vtkIntArray> trackIDArray = vtkSmartPointer<vtkIntArray>::New();
+  trackIDArray->SetNumberOfComponents(1);
+  trackIDArray->SetNumberOfValues(1);
+  trackIDArray->SetName("TRACK");
+  trackIDArray->SetValue(0,iTrackStructure.TraceID);
+
+  polyData->GetPointData()->AddArray(trackIDArray);
+
   iTrackStructure.Nodes->DeepCopy(polyData);
   //update speed information
   iTrackStructure.ComputeAttributes();
@@ -291,14 +299,6 @@ TrackContainer::CreateTrackActors( TrackStructure& iStructure )
                            b);
   trace_property->SetOpacity(a);
 
-  vtkSmartPointer<vtkIntArray> trackIDArray = vtkSmartPointer<vtkIntArray>::New();
-  trackIDArray->SetNumberOfComponents(1);
-  trackIDArray->SetNumberOfValues(1);
-  trackIDArray->SetName("TRACK");
-  trackIDArray->SetValue(0,iStructure.TraceID);
-
-  iStructure.Nodes->GetPointData()->AddArray(trackIDArray);
-
   // Add contour
   std::vector< vtkActor * > trackActors =
     m_ImageView->AddContour(iStructure.Nodes, trace_property);
@@ -306,13 +306,13 @@ TrackContainer::CreateTrackActors( TrackStructure& iStructure )
   //has actor being created?
   assert(trackActors[0]);
 
-  this->m_ImageView->AddActor(3, trackActors[3]);
-
   // add actors address to structure
   iStructure.ActorXY = trackActors[0];
   iStructure.ActorXZ = trackActors[1];
   iStructure.ActorYZ = trackActors[2];
   iStructure.ActorXYZ = trackActors[3];
+
+  this->m_ImageView->AddActor(3, trackActors[3]);
 
   trace_property->Delete();
 }
@@ -324,6 +324,7 @@ TrackContainer::
 UpdatePointsForATrack(unsigned int iTrackID,
                       std::list< double * > iListCenterBoundingBoxes)
 {
+  std::cout << "update points..." << std::endl;
   assert( iTrackID != 0 );
 
   assert ( this->m_ImageView );
@@ -343,6 +344,8 @@ UpdatePointsForATrack(unsigned int iTrackID,
     //Create new polydata (new address)
     mother->Nodes = vtkPolyData::New();
     }
+
+  std::cout << "update pd..." << std::endl;
 
   // update the polydata (which represents the current track)
   UpdateTrackStructurePolyData( *mother );

@@ -2475,7 +2475,6 @@ void
 QGoTabImageView3DwT::HighlightPickedActor()
 {
   vtkActor *temp_actor = m_ImageView->GetCurrentActor();
-
   // mesh ID first - higher probability?
   if( temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("MESH") )
   {

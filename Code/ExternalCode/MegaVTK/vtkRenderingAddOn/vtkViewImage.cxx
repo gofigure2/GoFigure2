@@ -326,7 +326,6 @@ double vtkViewImage::GetValueAtPosition(double worldcoordinates[3],
 
 void vtkViewImage::RemoveProp(vtkProp *prop)
 {
-  std::cout<<"remove property" << std::endl;
   this->Renderer->RemoveViewProp(prop);
 
   int index = this->Prop3DCollection->IsItemPresent(prop);
@@ -334,8 +333,6 @@ void vtkViewImage::RemoveProp(vtkProp *prop)
   {
   this->Prop3DCollection->RemoveItem(index);
   }
-
-  std::cout << "Prop3DCollection sizeafter remove: " << this->Prop3DCollection->GetNumberOfItems() << std::endl;
 }
 
 //----------------------------------------------------------------------------
