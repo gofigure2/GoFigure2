@@ -33,6 +33,7 @@
 =========================================================================*/
 #include "QGoMeshSplitDanielssonDistanceAlgo.h"
 
+#include "itkvtkMeshSplitterDanielssonDistanceImageFilter.h"
 
 QGoMeshSplitDanielssonDistanceAlgo::QGoMeshSplitDanielssonDistanceAlgo(QWidget* iParent)
 {
@@ -50,7 +51,7 @@ QGoMeshSplitDanielssonDistanceAlgo::~QGoMeshSplitDanielssonDistanceAlgo()
 //-------------------------------------------------------------------------
 void QGoMeshSplitDanielssonDistanceAlgo::SetAlgoWidget(QWidget* iParent)
 {
-  this->m_AlgoWidget = 
+  this->m_AlgoWidget =
     new QGoAlgorithmWidget("Danielsson", iParent);
 }
 //-------------------------------------------------------------------------
@@ -60,15 +61,45 @@ std::vector<vtkPolyData*> QGoMeshSplitDanielssonDistanceAlgo::ApplyAlgo(
   vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel)
 {
-  std::vector<vtkPolyData*> NewMeshes = std::vector<vtkPolyData*> ();
-  /*QGoFilterChanAndVese LevelSetFilter;
+  size_t nb_ch = iImages->size();
 
-  std::vector<vtkPolyData*> NewMeshes = 
-    LevelSetFilter.ApplyFilterLevelSet3D(m_Radius->GetValue(), 
-    iSeeds, m_Iterations->GetValue(),
-    m_Curvature->GetValue(), iImages, iChannel);*/
- 
-  return NewMeshes;
+  const unsigned int Dimension = 3;
+  typedef unsigned char PixelType;
+
+  typedef itk::Image< PixelType, Dimension > ImageType;
+
+  typedef itk::vtkMeshSplitterDanielssonDistanceImageFilter< ImageType >
+      SplitterType;
+  SplitterType::Pointer filter = SplitterType::New();
+  filter->SetNumberOfImages( nb_ch );
+
+  /*
+  filter->SetMesh( mesh );
+
+  for( size_t i = 0; i < nb_ch; i++ )
+    {
+    filter->SetFeatureImage( i, (*iImages)[i] );
+    }*/
+
+  typedef SplitterType::PointSetType PointSetType;
+  PointSetType::Pointer seeds = PointSetType::New();
+
+  ImageType::PointType itk_pt;
+  double vtk_pt[3];
+
+  for( vtkIdType i = 0; i < iSeeds->GetNumberOfPoints(); i++ )
+    {
+    iSeeds->GetPoint( i, vtk_pt );
+    itk_pt[0] = vtk_pt[0];
+    itk_pt[1] = vtk_pt[1];
+    itk_pt[2] = vtk_pt[2];
+    seeds->SetPoint( i, itk_pt );
+    }
+
+  filter->SetSeeds( seeds );
+  filter->Update();
+
+  return filter->GetOutputs();
 }
 //-------------------------------------------------------------------------
 

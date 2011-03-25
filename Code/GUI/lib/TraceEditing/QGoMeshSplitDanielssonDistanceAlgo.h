@@ -45,7 +45,7 @@
 
 /**
 \class QGoMeshSplitDanielssonDistanceAlgo
-\brief class to be the interface between the QGoMeshSplitDanielssonDistanceAlgo algo for meshes 
+\brief class to be the interface between the QGoMeshSplitDanielssonDistanceAlgo algo for meshes
 and GoFigure
 */
 class QGoMeshSplitDanielssonDistanceAlgo: public QGoMeshAlgo
@@ -55,15 +55,12 @@ public:
   ~QGoMeshSplitDanielssonDistanceAlgo();
 
   std::vector<vtkPolyData*> ApplyAlgo(
-    vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+    vtkPoints* iSeeds,
+    std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel);
 
 protected:
 
-  QGoAlgoParameter<double>*       m_Radius;
-  QGoAlgoParameter<int>*          m_Curvature;
-  QGoAlgoParameter<int>*          m_Iterations;
-  
   void SetAlgoWidget(QWidget* iParent = 0);
 };
 
