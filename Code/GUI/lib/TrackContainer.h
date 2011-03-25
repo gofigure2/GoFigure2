@@ -381,8 +381,6 @@ protected:
   \param[in] iPoints list of points to generate the new polydata */
   void RecomputeMap( TrackStructure* iStructure, std::list< double* > iPoints);
 
-  std::vector< vtkActor* > AddTrace( vtkPolyData* , vtkProperty* );
-
   /** \brief Changes the scalars to be displayed and return the new range
    * \param[in] iArrayName Array to be displayed
    * \return Pointer to double[2] where [0] is the min scalar value and [1] is

@@ -2355,6 +2355,9 @@ QGoTabImageView3DwT::VisualizeTrace(vtkPolyData *iTrace, double *iRGBA)
     trace_property->Delete();
     }
 
+  // add actor to renderer and to Prop3d
+  m_ImageView->AddActor(3, oActors[3]);
+
   m_ImageView->UpdateRenderWindows();
 
   return oActors;

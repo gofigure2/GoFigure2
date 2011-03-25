@@ -303,6 +303,8 @@ TrackContainer::CreateTrackActors( TrackStructure& iStructure )
   std::vector< vtkActor * > trackActors =
     m_ImageView->AddContour(iStructure.Nodes, trace_property);
 
+  this->m_ImageView->AddActor(3, trackActors[3]);
+
   //has actor being created?
   assert(trackActors[0]);
 
@@ -420,23 +422,6 @@ TrackContainer::UpdateElementVisibilityWithGivenTraceIDs(const QStringList & iLi
 {
   Superclass::UpdateElementVisibilityWithGivenTraceIDsBase(iList, iCheck);
 }
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-std::vector< vtkActor * >
-TrackContainer::AddTrace(vtkPolyData *iNode, vtkProperty *iProperty)
-{
-  if ( this->m_ImageView )
-    {
-    return this->m_ImageView->AddContour(iNode, iProperty);
-    }
-  else
-    {
-    return std::vector< vtkActor * >();
-    }
-}
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -729,6 +714,8 @@ CreateDivisionActor( unsigned int iMother, unsigned int iDaughter1, unsigned int
   std::vector< vtkActor * > divisionActors =
         m_ImageView->AddContour( division, trace_property );
 
+  this->m_ImageView->AddActor(3, divisionActors[3]);
+
   return divisionActors;
 }
 //-------------------------------------------------------------------------
@@ -900,6 +887,8 @@ UpdateDivisionActor(TrackStructure* iStructure)
   iStructure->TreeNode.ActorXZ = divisionActors[1];
   iStructure->TreeNode.ActorYZ = divisionActors[2];
   iStructure->TreeNode.ActorXYZ = divisionActors[3];
+
+  this->m_ImageView->AddActor(3, divisionActors[3]);
 }
 
 //-------------------------------------------------------------------------

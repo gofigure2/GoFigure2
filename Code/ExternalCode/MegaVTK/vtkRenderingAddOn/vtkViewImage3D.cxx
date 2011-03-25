@@ -684,12 +684,19 @@ vtkViewImage3D::AddDataSet(vtkDataSet *dataset,
   // Generates problems in visu 3d
   //contActor->GetProperty()->BackfaceCullingOn();
 
-  this->Renderer->AddViewProp(actor3d);
-  this->Prop3DCollection->AddItem(actor3d);
+  //this->Renderer->AddViewProp(actor3d);
+  //this->Prop3DCollection->AddItem(actor3d);
 
   return actor3d;
 }
 
+//----------------------------------------------------------------------------
+
+void vtkViewImage3D::
+AddActorToProp3DCollection( vtkActor * iActor)
+{
+  this->Prop3DCollection->AddItem(iActor);
+}
 //----------------------------------------------------------------------------
 /**
  *

@@ -935,11 +935,12 @@ QGoImageView3D::RemoveActor(const int & iId, vtkActor *iActor)
 {
   if ( iId == 3 )
     {
-    m_View3D->GetRenderer()->RemoveActor(iActor);
-    //m_View3D->RemoveActor(iActor);
+    // remove from renderer and Prop3DCollection
+    m_View3D->RemoveProp(iActor);
     }
   else
     {
+    // remove from renderer
     QGoImageView::RemoveActor(iId, iActor);
     }
 }
@@ -952,10 +953,13 @@ QGoImageView3D::AddActor(const int & iId, vtkActor *iActor)
 {
   if ( iId == 3 )
     {
-    m_View3D->GetRenderer()->AddActor(iActor);
+    // add to renderer and Prop3DCollection
+    m_View3D->GetRenderer()->AddViewProp(iActor);
+    m_View3D->AddActorToProp3DCollection(iActor);
     }
   else
     {
+    // add to renderer
     QGoImageView::AddActor(iId, iActor);
     }
 }
