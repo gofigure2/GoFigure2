@@ -298,6 +298,15 @@ QGoTrackEditingWidget::computeMeshActors()
       vtkPolyData *nodes = tempStructure.Nodes;
       double *     rgba = tempStructure.rgba;
 
+      // add trace info in the polydata
+      vtkSmartPointer<vtkIntArray> trackIDArray = vtkSmartPointer<vtkIntArray>::New();
+      trackIDArray->SetNumberOfComponents(1);
+      trackIDArray->SetNumberOfValues(1);
+      trackIDArray->SetName("MESH");
+      trackIDArray->SetValue(0,tempStructure.TraceID);
+
+      nodes->GetPointData()->AddArray(trackIDArray);
+
       //setup actor and mapper
       vtkSmartPointer< vtkPolyDataMapper > mapper =
         vtkSmartPointer< vtkPolyDataMapper >::New();
@@ -814,7 +823,9 @@ QGoTrackEditingWidget::computeSphere(unsigned int iTraceID, double *iCenter, dou
     vtkSmartPointer< vtkSphereSource >::New();
   sphereSource->SetCenter(iCenter);
   sphereSource->SetRadius(iRadius);
+  sphereSource->Update();
 
+  // add trace ID into the polydata
   vtkSmartPointer<vtkIntArray> trackIDArray = vtkSmartPointer<vtkIntArray>::New();
   trackIDArray->SetNumberOfComponents(1);
   trackIDArray->SetNumberOfValues(1);
@@ -825,7 +836,7 @@ QGoTrackEditingWidget::computeSphere(unsigned int iTraceID, double *iCenter, dou
 
   vtkSmartPointer< vtkPolyDataMapper > sphereMapper =
     vtkSmartPointer< vtkPolyDataMapper >::New();
-  sphereMapper->SetInputConnection( sphereSource->GetOutputPort() );
+  sphereMapper->SetInput( sphereSource->GetOutput() );
 
   vtkActor *sphereActor = vtkActor::New();
   sphereActor->SetMapper(sphereMapper);
