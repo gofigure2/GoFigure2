@@ -420,8 +420,6 @@ protected:
         ( static_cast< unsigned int >( m_TCoord ) == iIt->TCoord );
       bool highlighted = false;
 
-      std::cout <<"contour visibility: " << visibility << std::endl;
-
       vtkPolyData *contour_copy = vtkPolyData::New();
       contour_copy->DeepCopy(iContour);
 

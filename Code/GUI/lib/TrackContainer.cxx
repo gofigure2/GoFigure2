@@ -303,10 +303,10 @@ TrackContainer::CreateTrackActors( TrackStructure& iStructure )
   std::vector< vtkActor * > trackActors =
     m_ImageView->AddContour(iStructure.Nodes, trace_property);
 
-  this->m_ImageView->AddActor(3, trackActors[3]);
-
   //has actor being created?
   assert(trackActors[0]);
+
+  this->m_ImageView->AddActor(3, trackActors[3]);
 
   // add actors address to structure
   iStructure.ActorXY = trackActors[0];

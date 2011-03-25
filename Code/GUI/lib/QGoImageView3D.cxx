@@ -922,7 +922,6 @@ QGoImageView3D::AddContour(vtkPolyData *iDataset, vtkProperty *iProperty)
   vtkActor *temp = m_View3D->AddDataSet( (vtkDataSet *)iDataset,
                                          iProperty, false, false );
 
-  //m_View3D->Render();
   oList.push_back(temp);
 
   return oList;
@@ -953,6 +952,7 @@ QGoImageView3D::AddActor(const int & iId, vtkActor *iActor)
 {
   if ( iId == 3 )
     {
+    std::cout<<"add actor 3d" << std::endl;
     // add to renderer and Prop3DCollection
     m_View3D->GetRenderer()->AddViewProp(iActor);
     m_View3D->AddActorToProp3DCollection(iActor);

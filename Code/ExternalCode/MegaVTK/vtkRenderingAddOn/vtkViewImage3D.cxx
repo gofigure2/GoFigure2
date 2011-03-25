@@ -696,6 +696,7 @@ void vtkViewImage3D::
 AddActorToProp3DCollection( vtkActor * iActor)
 {
   this->Prop3DCollection->AddItem(iActor);
+  std::cout << "Prop3DCollection size after add: " << this->Prop3DCollection->GetNumberOfItems() << std::endl;
 }
 //----------------------------------------------------------------------------
 /**
