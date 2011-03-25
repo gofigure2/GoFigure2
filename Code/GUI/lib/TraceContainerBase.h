@@ -578,10 +578,6 @@ protected:
         temp_property->Delete();
         }
 
-      MultiIndexContainerElementType* tempStructure =
-          const_cast<MultiIndexContainerElementType*>(&(*it));
-      tempStructure->Highlighted = !it->Highlighted;
-
       // Note: it->Highlighted is the status before picking the actor
       if ( !it->Highlighted )
         {
@@ -591,6 +587,10 @@ protected:
         {
         oState = Qt::Unchecked;
         }
+
+      MultiIndexContainerElementType* tempStructure =
+          const_cast<MultiIndexContainerElementType*>(&(*it));
+      tempStructure->Highlighted = !it->Highlighted;
 
       assert( m_ImageView );
 

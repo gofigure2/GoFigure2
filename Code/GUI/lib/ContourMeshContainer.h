@@ -240,9 +240,7 @@ public:
   void UpdateElementHighlighting(unsigned int TraceId)
     {
     Qt::CheckState state;
-
-    Superclass::UpdateElementHighlightingWithTraceID(TraceId,
-                                                     state );
+    Superclass::UpdateElementHighlightingWithTraceID(TraceId, state );
     emit TracePicked(TraceId, state);
     }
 
