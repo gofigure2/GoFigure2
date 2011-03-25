@@ -50,22 +50,6 @@ namespace boost
     LineageStructure,
     boost::multi_index::indexed_by<
       boost::multi_index::hashed_non_unique<
-        boost::multi_index::tag< ActorXY >,
-        BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorXY)
-        >,
-      boost::multi_index::hashed_non_unique<
-        boost::multi_index::tag< ActorXZ >,
-        BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorXZ)
-        >,
-      boost::multi_index::hashed_non_unique<
-        boost::multi_index::tag< ActorYZ >,
-        BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorYZ)
-        >,
-      boost::multi_index::hashed_non_unique<
-        boost::multi_index::tag< ActorXYZ >,
-        BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorXYZ)
-        >,
-      boost::multi_index::hashed_non_unique<
         boost::multi_index::tag< Nodes >,
         BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkPolyData *, Nodes)
         >,
@@ -107,10 +91,6 @@ class LineageContainer:
 public:
 
   typedef TraceContainerBase< boost::MultiIndexLineageContainer > Superclass;
-
-  // define lineage specific boost iterators
-  //typedef boost::MultiIndexLineageContainer::index<Root>::type::iterator
-  //    MultiIndexContainerRootIterator;
 
   typedef Superclass::MultiIndexContainerType MultiIndexContainerType;
   typedef Superclass::MultiIndexContainerElementType LineageType;

@@ -66,22 +66,6 @@ typedef multi_index::multi_index_container<
   TrackStructure,
   boost::multi_index::indexed_by<
     boost::multi_index::hashed_non_unique<
-      boost::multi_index::tag< ActorXY >,
-      BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorXY)
-    >,
-    boost::multi_index::hashed_non_unique<
-      boost::multi_index::tag< ActorXZ >,
-      BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorXZ)
-    >,
-    boost::multi_index::hashed_non_unique<
-      boost::multi_index::tag< ActorYZ >,
-      BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorYZ)
-    >,
-    boost::multi_index::hashed_non_unique<
-      boost::multi_index::tag< ActorXYZ >,
-      BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorXYZ)
-    >,
-    boost::multi_index::hashed_non_unique<
       boost::multi_index::tag< Nodes >,
       BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkPolyData *, Nodes)
     >,

@@ -192,7 +192,7 @@ private:
    */
   void      computeLineActors();
 
-  vtkActor* computeSphere( double* iCenter, double radius);
+  vtkActor* computeSphere( unsigned int iTraceID, double* iCenter, double radius);
 
   void getClosestPoints();
   /**

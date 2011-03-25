@@ -70,18 +70,6 @@ public:
   typedef TContainer                                    MultiIndexContainerType;
   typedef typename MultiIndexContainerType::value_type  MultiIndexContainerElementType;
 
-  typedef typename MultiIndexContainerType::template index< ActorXY >::type::iterator
-  MultiIndexContainerActorXYIterator;
-
-  typedef typename MultiIndexContainerType::template index< ActorXZ >::type::iterator
-  MultiIndexContainerActorXZIterator;
-
-  typedef typename MultiIndexContainerType::template index< ActorYZ >::type::iterator
-  MultiIndexContainerActorYZIterator;
-
-  typedef typename MultiIndexContainerType::template index< ActorXYZ >::type::iterator
-  MultiIndexContainerActorXYZIterator;
-
   typedef typename MultiIndexContainerType::template index< Nodes >::type::iterator
   MultiIndexContainerNodesIterator;
 

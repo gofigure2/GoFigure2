@@ -39,15 +39,10 @@
 
 struct TraceID {};
 struct CollectionID {};
-struct ActorXY {};
-struct ActorXZ {};
-struct ActorYZ {};
-struct ActorXYZ {};
 struct Nodes {};
 struct TCoord {};
 struct Highlighted {};
 struct Visible {};
-//struct Root {};
 
 #endif
 

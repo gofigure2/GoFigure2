@@ -186,20 +186,13 @@ QGoTrackEditingWidget::updateCurrentActorSelection(vtkObject *caller)
     }
   else
     {
-    if ( realMeshes->isChecked() )
-      {
-      MeshContainer::MultiIndexContainerActorXYIterator iter, c_end;
-      iter = m_MeshContainer->m_Container.get< ActorXY >().find(m_CurrentActor);
-      c_end = m_MeshContainer->m_Container.get< ActorXY >().end();
-      merge< MeshContainer::MultiIndexContainerActorXYIterator >(iter, c_end);
-      }
-    else
-      {
-      MeshContainer::MultiIndexContainerActorXZIterator iter, c_end;
-      iter = m_MeshContainer->m_Container.get< ActorXZ >().find(m_CurrentActor);
-      c_end = m_MeshContainer->m_Container.get< ActorXZ >().end();
-      merge< MeshContainer::MultiIndexContainerActorXZIterator >(iter, c_end);
-      }
+    MeshContainer::MultiIndexContainerTraceIDIterator iter, c_end;
+    vtkIntArray* testArray =
+        static_cast<vtkIntArray*>(m_CurrentActor->GetMapper()->GetInput()
+            ->GetPointData()->GetArray("MESH"));
+    iter = m_MeshContainer->m_Container.get< TraceID >().find( testArray->GetValue(0) );
+    c_end = m_MeshContainer->m_Container.get< TraceID >().end();
+    merge< MeshContainer::MultiIndexContainerTraceIDIterator >(iter, c_end);
     }
 }
 
@@ -317,7 +310,8 @@ QGoTrackEditingWidget::computeMeshActors()
       // generate sphere based on the minimal distance between 2 points in a
       // track
       // actors are invisible
-      vtkActor *sphereActor = computeSphere(actor->GetCenter(), m_MinimalDistance / 3);
+      vtkActor *sphereActor = computeSphere(tempStructure.TraceID,
+          actor->GetCenter(), m_MinimalDistance / 3);
       tempStructure.ActorXZ = sphereActor;
 
       // Add actor to visu
@@ -793,10 +787,10 @@ void
 QGoTrackEditingWidget::updateMeshesActors(bool iRealMeshes)
 {
   // Go through container and update visibility
-  MeshContainer::MultiIndexContainerActorXYIterator iter, c_end;
+  MeshContainer::MultiIndexContainerTraceIDIterator iter, c_end;
 
-  iter = m_MeshContainer->m_Container.get< ActorXY >().begin();
-  c_end = m_MeshContainer->m_Container.get< ActorXY >().end();
+  iter = m_MeshContainer->m_Container.get< TraceID >().begin();
+  c_end = m_MeshContainer->m_Container.get< TraceID >().end();
 
   while ( iter != c_end )
     {
@@ -813,13 +807,21 @@ QGoTrackEditingWidget::updateMeshesActors(bool iRealMeshes)
 
 //-------------------------------------------------------------------------
 vtkActor *
-QGoTrackEditingWidget::computeSphere(double *iCenter, double iRadius)
+QGoTrackEditingWidget::computeSphere(unsigned int iTraceID, double *iCenter, double iRadius)
 {
   // Sphere
   vtkSmartPointer< vtkSphereSource > sphereSource =
     vtkSmartPointer< vtkSphereSource >::New();
   sphereSource->SetCenter(iCenter);
   sphereSource->SetRadius(iRadius);
+
+  vtkSmartPointer<vtkIntArray> trackIDArray = vtkSmartPointer<vtkIntArray>::New();
+  trackIDArray->SetNumberOfComponents(1);
+  trackIDArray->SetNumberOfValues(1);
+  trackIDArray->SetName("MESH");
+  trackIDArray->SetValue(0,iTraceID);
+
+  sphereSource->GetOutput()->GetPointData()->AddArray(trackIDArray);
 
   vtkSmartPointer< vtkPolyDataMapper > sphereMapper =
     vtkSmartPointer< vtkPolyDataMapper >::New();
