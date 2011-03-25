@@ -56,7 +56,9 @@ class QGoAlgorithmsManagerWidget:
   Q_OBJECT
 public:
   explicit QGoAlgorithmsManagerWidget(std::string iModeName,
-    std::vector<QString> iVectChannels, QStringList iListTime, QWidget *iParent = 0);
+    QWidget *iParent = 0,
+    std::vector<QString> iVectChannels = std::vector<QString>(), 
+    QStringList iListTime = QStringList());
   ~QGoAlgorithmsManagerWidget();
 
   /**
@@ -103,8 +105,6 @@ public:
 
   int GetSelectedTimePoint();
 
-  void RemoveChannelAndTSlice();
-
 signals:
 
   void ResetClicked();
@@ -123,7 +123,8 @@ protected:
   \param[in] iListChannels list of the names of the channels
   \param[in] iListTime list of the timepoints
   */
-  void Initialize(std::vector<QString> iVectChannels, QStringList iListTime);
+  void Initialize(std::vector<QString> iVectChannels = std::vector<QString>(), 
+    QStringList iListTime = QStringList());
 
  protected slots:
   /**

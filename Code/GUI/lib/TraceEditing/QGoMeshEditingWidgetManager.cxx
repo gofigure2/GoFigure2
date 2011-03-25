@@ -104,8 +104,7 @@ void QGoMeshEditingWidgetManager::SetTheMeshWidget(
    "Mesh", iVectChannels, ListTimePoints, iParent);
 
   this->SetTSliceForClassicView();
-  this->SetSplitMergeMode(iVectChannels, 
-    ListTimePoints, iParent);
+  this->SetSplitMergeMode(iParent);
 
   QObject::connect( this->m_MeshEditingWidget, 
                     SIGNAL(SetSeedInteractorBehaviour(bool) ),
@@ -212,13 +211,12 @@ void QGoMeshEditingWidgetManager::SetSemiAutomatedAlgorithms(QWidget* iParent)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoMeshEditingWidgetManager::SetSplitMergeMode(
-  std::vector<QString> iVectChannels, QStringList iListTime, QWidget* iParent)
+void QGoMeshEditingWidgetManager::SetSplitMergeMode(QWidget* iParent)
 {
   QGoAlgorithmsManagerWidget* SplitAlgoWidget = 
-    new QGoAlgorithmsManagerWidget("Split", iVectChannels, iListTime, iParent);
+    new QGoAlgorithmsManagerWidget("Split", iParent);
   this->m_MeshEditingWidget->AddMode(SplitAlgoWidget);
-  SplitAlgoWidget->RemoveChannelAndTSlice();
+  
   m_DanielAlgo = new QGoMeshSplitDanielssonDistanceAlgo(iParent);
   QGoAlgorithmWidget * DanielWidget = m_DanielAlgo->GetAlgoWidget();
   SplitAlgoWidget->AddMethod(DanielWidget );
@@ -227,7 +225,7 @@ void QGoMeshEditingWidgetManager::SetSplitMergeMode(
                     this, SLOT(ApplyDanielAlgo() ) );
 
   QGoAlgorithmsManagerWidget* MergeAlgoWidget = 
-    new QGoAlgorithmsManagerWidget("Merge", iVectChannels, iListTime, iParent);
+    new QGoAlgorithmsManagerWidget("Merge", iParent);
   this->m_MeshEditingWidget->AddMode(MergeAlgoWidget);
 
 }

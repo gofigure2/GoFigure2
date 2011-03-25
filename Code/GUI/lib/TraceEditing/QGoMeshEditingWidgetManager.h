@@ -128,8 +128,7 @@ protected:
   */
   void SetSemiAutomatedAlgorithms(QWidget* iParent = 0);
 
-  void SetSplitMergeMode(
-    std::vector<QString> iVectChannels, QStringList iListTime, QWidget* iParent);
+  void SetSplitMergeMode(QWidget* iParent);
 
   /**
   \brief get the vtkpolydata for the new created meshes by the chosen algo

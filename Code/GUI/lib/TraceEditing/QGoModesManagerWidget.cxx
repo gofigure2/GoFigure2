@@ -71,13 +71,13 @@ void QGoModesManagerWidget::Initialize(std::vector<QString> iVectChannels,
 
   //add default modes:
   this->m_SemiAutoAlgoManagerWidget = new
-    QGoAlgorithmsManagerWidget("SemiAutomated",iVectChannels, 
-    iListTimePoints, this);
+    QGoAlgorithmsManagerWidget("SemiAutomated", this, iVectChannels, 
+    iListTimePoints);
   this->AddAlgoManagerWidget(this->m_SemiAutoAlgoManagerWidget);
 
   this->m_AutoAlgoManagerWidget = new
-    QGoAlgorithmsManagerWidget("Automated",iVectChannels, 
-    iListTimePoints, this);
+    QGoAlgorithmsManagerWidget("Automated",this, iVectChannels, 
+    iListTimePoints);
   this->AddAlgoManagerWidget(this->m_AutoAlgoManagerWidget);
 
   QObject::connect(this->m_ModeComboBox, SIGNAL(activated(int)),
