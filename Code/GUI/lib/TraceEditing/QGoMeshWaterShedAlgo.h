@@ -31,55 +31,44 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __QGoFilterWatershed_h
-#define __QGoFilterWatershed_h
+#ifndef __QGoMeshWaterShedAlgo_h
+#define __QGoMeshWaterShedAlgo_h
 
-#include "QGoFilterSemiAutoBase.h"
-
+#include "QGoMeshAlgo.h"
+#include "QGoAlgorithmWidget.h"
+#include "QGoAlgoParameter.h"
 #include "QGoGUILibConfigure.h"
+#include "vtkSmartPointer.h"
+#include "vtkPolyData.h"
+#include "vtkImageData.h"
+
 
 /**
- * \class QGoFilterWatershed
- * \brief Watershed segmentation algorithm implementation.
- * Can generate contours and meshes.
- * Will generate 2D objects if m_Dimension<2, 3D objects in the other case.
- */
-
-class QGOGUILIB_EXPORT QGoFilterWatershed:public QGoFilterSemiAutoBase
+\class QGoMeshWaterShedAlgo
+\brief class to be the interface between the watershed algo for meshes 
+and GoFigure
+*/
+class QGoMeshWaterShedAlgo: public QGoMeshAlgo
 {
-  Q_OBJECT
 public:
-  /** \brief Constructor */
-  explicit QGoFilterWatershed(QObject *iParent = NULL, int iDimension = 2);
+  QGoMeshWaterShedAlgo(QWidget* iParent = 0);
+  ~QGoMeshWaterShedAlgo();
 
-  /** \brief Destructor */
-  ~QGoFilterWatershed();
-
-  virtual vtkPolyData * Apply();
-
-  virtual void ConnectSignals(int iFilterNumber);
-
-  int m_TreshMin;
-  int m_TreshMax;
-
-  double m_CorrTresh;
-  double m_Alpha;
-  double m_Beta;
-
-public slots:
-  void setTreshMin(int);
-
-  void setTreshMax(int);
-
-  void setCorrTresh(double);
-
-  void setAlpha(double);
-
-  void setBeta(double);
+  std::vector<vtkPolyData*> ApplyAlgo(
+    vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+    int iChannel);
 
 protected:
-  void Filter2D(double *iCenter, const int & iOrientation);
 
-  void Filter3D(double *iCenter);
+  QGoAlgoParameter<double>*       m_Radius;
+  QGoAlgoParameter<int>*          m_ThresMin;
+  QGoAlgoParameter<int>*          m_ThresMax;
+  QGoAlgoParameter<double>*       m_CorrThres;
+  QGoAlgoParameter<double>*       m_Alpha;
+  QGoAlgoParameter<double>*       m_Beta;
+
+  
+  void SetAlgoWidget(QWidget* iParent = 0);
 };
+
 #endif

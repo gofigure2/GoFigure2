@@ -92,7 +92,7 @@ SET( QGoGUILIB_SRC
   QGoFilterSemiAutoBase.cxx
     TraceEditing/QGoFilterChanAndVese.cxx
     TraceEditing/QGoFilterShape.cxx
-    QGoFilterWatershed.cxx
+    TraceEditing/QGoFilterWatershed.cxx
 
   # for the tracks
   QGoTrackDockWidget.cxx
@@ -107,6 +107,7 @@ SET( QGoGUILIB_SRC
   TraceEditing/QGoMeshAlgo.cxx
   TraceEditing/QGoMeshLevelSetAlgo.cxx
   TraceEditing/QGoMeshShapeAlgo.cxx
+  TraceEditing/QGoMeshWaterShedAlgo.cxx
 
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx
@@ -238,7 +239,7 @@ SET( QGoGUILIB_HDRS
   QGoFilterSemiAutoBase.h
     TraceEditing/QGoFilterChanAndVese.h
     TraceEditing/QGoFilterShape.h
-    QGoFilterWatershed.h
+    TraceEditing/QGoFilterWatershed.h
 
   # for the tracks
   QGoTrackDockWidget.h
@@ -251,8 +252,6 @@ SET( QGoGUILIB_HDRS
   TraceEditing/QGoAlgorithmWidget.h
   TraceEditing/QGoMeshEditingWidgetManager.h
   TraceEditing/QGoMeshAlgo.h
-  TraceEditing/QGoMeshLevelSetAlgo.h
-  TraceEditing/QGoMeshShapeAlgo.h
 )
 
 IF( BUILD_COMPARETOOL )

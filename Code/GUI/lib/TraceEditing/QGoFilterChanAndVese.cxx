@@ -283,12 +283,14 @@ QGoFilterChanAndVese::Filter3D(double *iCenter, int iCurvature, int iIterations,
   // Convert output
   //---------------------------------------------------------
   vtkImageData *itk2vtk = ConvertITK2VTK< float, dimension >(test3);
-  setOutput(itk2vtk);
-  itk2vtk->Delete();
+  //setOutput(itk2vtk);
+  //itk2vtk->Delete();
 
   //if ( m_Dimension == 1 )
  //   {
-    vtkPolyData *output = ReconstructMesh(getOutput(), 0.);
+    //vtkPolyData *output = ReconstructMesh(getOutput(), 0.);
+    vtkPolyData *output = ReconstructMesh(itk2vtk, 0.);
+    itk2vtk->Delete();
     //emit         MeshCreated(output, this->getChannel() - 1);
     return output;
  //   }

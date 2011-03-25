@@ -59,6 +59,7 @@ QGoMeshEditingWidgetManager::QGoMeshEditingWidgetManager(
 
   this->SetLevelSetAlgo(iParent);
   this->SetShapeAlgo(iParent);
+  this->SetWaterShedAlgo(iParent);
 }
 //-------------------------------------------------------------------------
 
@@ -95,6 +96,18 @@ void QGoMeshEditingWidgetManager::SetShapeAlgo(QWidget* iParent)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoMeshEditingWidgetManager::SetWaterShedAlgo(QWidget* iParent )
+{
+  this->m_WaterShedAlgo = new QGoMeshWaterShedAlgo(iParent);
+  QGoAlgorithmWidget* WaterShedWidget = m_WaterShedAlgo->GetAlgoWidget();
+  this->m_MeshEditingWidget->AddAlgoWidgetForSemiAutomatedMode(WaterShedWidget);
+
+  QObject::connect(WaterShedWidget, SIGNAL(ApplyAlgo() ),
+    this, SLOT(ApplyWaterShedAlgo() ) );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void QGoMeshEditingWidgetManager::ApplyLevelSetAlgo()
 {
   this->GetPolydatasFromAlgo<QGoMeshLevelSetAlgo>(this->m_LevelSetAlgo);
@@ -105,6 +118,13 @@ void QGoMeshEditingWidgetManager::ApplyLevelSetAlgo()
 void QGoMeshEditingWidgetManager::ApplyShapeAlgo()
 {
   this->GetPolydatasFromAlgo<QGoMeshShapeAlgo>(this->m_ShapeAlgo);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoMeshEditingWidgetManager::ApplyWaterShedAlgo()
+{
+  this->GetPolydatasFromAlgo<QGoMeshWaterShedAlgo>(this->m_WaterShedAlgo);
 }
 //-------------------------------------------------------------------------
 

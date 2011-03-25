@@ -41,6 +41,7 @@
 #include "vtkImageData.h"
 #include "QGoMeshLevelSetAlgo.h"
 #include "QGoMeshShapeAlgo.h"
+#include "QGoMeshWaterShedAlgo.h"
 #include <QAction>
 #include <QDockWidget>
 
@@ -85,6 +86,7 @@ protected:
 
   QGoMeshLevelSetAlgo*            m_LevelSetAlgo;
   QGoMeshShapeAlgo*               m_ShapeAlgo;
+  QGoMeshWaterShedAlgo*           m_WaterShedAlgo;
 
   void SetTheMeshWidget(std::vector<QString> iVectChannels, int iTimeMin, 
     int iTimeMax, QWidget* iParent);
@@ -93,6 +95,7 @@ protected:
 
   void SetLevelSetAlgo(QWidget* iParent=0);
   void SetShapeAlgo(QWidget* iParent=0);
+  void SetWaterShedAlgo(QWidget* iParent = 0);
 
   template<typename T>
   void GetPolydatasFromAlgo(T* iAlgo)
@@ -110,6 +113,7 @@ signals:
 protected slots:
   void ApplyLevelSetAlgo();
   void ApplyShapeAlgo();
+  void ApplyWaterShedAlgo();
 
 };
 

@@ -1,8 +1,8 @@
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
- at Megason Lab, Systems biology, Harvard Medical school, 2009
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
- Copyright (c) 2009, President and Fellows of Harvard College.
+ Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,36 +31,63 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
+#ifndef __QGoFilterWatershed_h
+#define __QGoFilterWatershed_h
 
-#include <QApplication>
-#include <QTimer>
+#include "QGoFilterSemiAutoBase.h"
 
-#include "QGoTraceSettingsWidget.h"
+#include "QGoGUILibConfigure.h"
 
-int main(int argc, char *argv[])
+/**
+ * \class QGoFilterWatershed
+ * \brief Watershed segmentation algorithm implementation.
+ * Can generate contours and meshes.
+ * Will generate 2D objects if m_Dimension<2, 3D objects in the other case.
+ */
+
+class QGOGUILIB_EXPORT QGoFilterWatershed:public QGoFilterSemiAutoBase
 {
-  QApplication app(argc, argv);
+  Q_OBJECT
+public:
+  /** \brief Constructor */
+  explicit QGoFilterWatershed(QObject *iParent = NULL, int iDimension = 2);
 
-  QGoTraceSettingsWidget *win = new QGoTraceSettingsWidget();
+  /** \brief Destructor */
+  ~QGoFilterWatershed();
 
-  //QTimer* timer = new QTimer;
-  //timer->setSingleShot( true );
-  //QObject::connect( timer, SIGNAL( timeout() ), win, SLOT( close() ) );
+  virtual vtkPolyData * Apply();
 
-  win->show();
+  virtual void ConnectSignals(int iFilterNumber);
 
-//  if( atoi( argv[1] ) == 1 )
-//  {
-// timer->start( 1000 );
-// }
+  int m_TreshMin;
+  int m_TreshMax;
 
-  app.processEvents();
+  double m_CorrTresh;
+  double m_Alpha;
+  double m_Beta;
 
-  int output = app.exec();
+  std::vector<vtkPolyData*> ApplyFilter3D(double iRadius, 
+    int iThresMin, int iThresMax, double iCorrTresh, double iAlpha, double iBeta,  
+    vtkPoints* iPoints,
+    std::vector<vtkSmartPointer< vtkImageData > >* iImages, 
+    int iChannel);
 
-  app.closeAllWindows();
-//  delete timer;
-  delete win;
+public slots:
+  void setTreshMin(int);
 
-  return output;
-}
+  void setTreshMax(int);
+
+  void setCorrTresh(double);
+
+  void setAlpha(double);
+
+  void setBeta(double);
+
+protected:
+  void Filter2D(double *iCenter, const int & iOrientation);
+
+  vtkPolyData* Filter3D(double *iCenter, double iRadius, int iThresMin, int iThresMax,
+    double iCorrTresh, double iAlpha, double iBeta, 
+    std::vector<vtkSmartPointer< vtkImageData > >* iImages, int iChannel);
+};
+#endif

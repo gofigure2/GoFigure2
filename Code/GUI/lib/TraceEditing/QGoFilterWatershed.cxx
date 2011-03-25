@@ -216,8 +216,12 @@ QGoFilterWatershed::Filter2D(double *iCenter, const int & iOrientation)
 
 //--------------------------------------------------------------------------
 
-void
-QGoFilterWatershed::Filter3D(double *iCenter)
+vtkPolyData*
+QGoFilterWatershed::Filter3D(double *iCenter, 
+  double iRadius, int iThresMin, int iThresMax,
+  double iCorrTresh, double iAlpha, double iBeta, 
+  std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+  int iChannel)
 {
   const int dimension = 3;
 
@@ -225,7 +229,8 @@ QGoFilterWatershed::Filter3D(double *iCenter)
   setCenter(iCenter);
 
   vtkImageData *slice = vtkImageData::New();
-  slice->DeepCopy( getInput() );
+  //slice->DeepCopy( getInput() );
+  slice->DeepCopy(( *iImages )[iChannel] );
 
   // run filter
   const unsigned int Dimension = 3;
@@ -251,19 +256,24 @@ QGoFilterWatershed::Filter3D(double *iCenter)
   // Extract ROI
   //---------------------------------------------------------
   FeatureImageType::Pointer
-    test2 = ExtractROI< unsigned char, dimension >( itkImage, iCenter, getRadius() );
-
+    //test2 = ExtractROI< unsigned char, dimension >( itkImage, iCenter, getRadius() );
+    test2 = ExtractROI< unsigned char, dimension >( itkImage, iCenter,iRadius );
   // Apply filter
   // Apply watershed segmentation filter
   //---------------------------------------------------------
   SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
   filter->SetInput(test2);
   //set up parameters
-  filter->SetNucleusThresholdMin(m_TreshMin);
+  /*filter->SetNucleusThresholdMin(m_TreshMin);
   filter->SetNucleusThresholdMax(m_TreshMax);
   filter->SetCorrelationThreshold1(m_CorrTresh);
   filter->SetAlpha(m_Alpha);
-  filter->SetBeta(m_Beta);
+  filter->SetBeta(m_Beta);*/
+  filter->SetNucleusThresholdMin(iThresMin);
+  filter->SetNucleusThresholdMax(iThresMax);
+  filter->SetCorrelationThreshold1(iCorrTresh);
+  filter->SetAlpha(iAlpha);
+  filter->SetBeta(iBeta);
   // run the filter
   filter->Update();
   SegmentImagePointer test3 = filter->GetOutput();
@@ -279,8 +289,8 @@ QGoFilterWatershed::Filter3D(double *iCenter)
   // Convert output
   //---------------------------------------------------------
   vtkImageData *itk2vtk = ConvertITK2VTK< int, dimension >(test3);
-  setOutput(itk2vtk);
-  itk2vtk->Delete();
+  //setOutput(itk2vtk);
+  //itk2vtk->Delete();
 
 //   vtkSmartPointer< vtkMetaImageWriter > writer = vtkSmartPointer<
 // vtkMetaImageWriter >::New();
@@ -291,11 +301,14 @@ QGoFilterWatershed::Filter3D(double *iCenter)
 
   // 3D when m_Dimension = 1
   /// \todo rename m_Dimension
-  if ( m_Dimension == 1 )
-    {
-    vtkPolyData *output = ReconstructMesh(getOutput(), .5);
-    emit         MeshCreated(output, this->getChannel() - 1);
-    }
+  //if ( m_Dimension == 1 )
+  //  {
+    //vtkPolyData *output = ReconstructMesh(getOutput(), .5);
+  vtkPolyData *output = ReconstructMesh(itk2vtk, .5);
+  itk2vtk->Delete();
+  return output;
+ //   emit         MeshCreated(output, this->getChannel() - 1);
+ /*   }
   else
     {
     // Extract each slice according top the sampling
@@ -323,7 +336,7 @@ QGoFilterWatershed::Filter3D(double *iCenter)
     emit CreateCorrespondingMesh( getSampling() );
     implicitFunction->Delete();
     cutter->Delete();
-    }
+    }*/
 }
 
 //--------------------------------------------------------------------------
@@ -362,7 +375,7 @@ QGoFilterWatershed::Apply()
       {
       getPoints()->GetPoint(i, center2);
 
-      this->Filter3D(center2);
+      //this->Filter3D(center2);
       }
     }
 
@@ -440,3 +453,31 @@ QGoFilterWatershed::setBeta(double iBeta)
 }
 
 //--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::vector<vtkPolyData*> QGoFilterWatershed::ApplyFilter3D(double iRadius, 
+  int iThresMin, int iThresMax, double iCorrThres, double iAlpha, double iBeta,  
+  vtkPoints* iPoints,
+  std::vector<vtkSmartPointer< vtkImageData > >* iImages, 
+  int iChannel)
+{
+  std::vector<vtkPolyData*> oMeshes = std::vector<vtkPolyData*>();
+   if ( iRadius <= 0 )
+    {
+    std::cerr << "Radius should be > 0 " << std::endl;
+    return oMeshes;
+    }
+   double *center2 = new double[3];
+
+// LOOP  FOR EACH SEED
+   for ( int i = 0; i < iPoints->GetNumberOfPoints(); i++ )
+    {
+    iPoints->GetPoint(i, center2);
+
+    oMeshes.push_back(
+      this->Filter3D(center2, iRadius, iThresMin, iThresMax, iCorrThres, iAlpha,
+      iBeta, iImages, iChannel) );
+    }
+   delete[] center2;
+   return oMeshes;
+}
