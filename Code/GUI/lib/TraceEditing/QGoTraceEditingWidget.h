@@ -62,6 +62,8 @@ public:
   */
   void AddMode( std::string iModeName, QWidget* iModeWidget = 0);
 
+  void AddMode(QGoAlgorithmsManagerWidget* iAlgoModeWidget);
+
   /**
   \brief replace the existing m_ModeEditingWidget with iModeWidget: all the 
   previous mode will be erased

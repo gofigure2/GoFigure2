@@ -108,6 +108,7 @@ SET( QGoGUILIB_SRC
   TraceEditing/QGoMeshLevelSetAlgo.cxx
   TraceEditing/QGoMeshShapeAlgo.cxx
   TraceEditing/QGoMeshWaterShedAlgo.cxx
+  TraceEditing/QGoMeshSplitDanielssonDistanceAlgo.cxx
 
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx

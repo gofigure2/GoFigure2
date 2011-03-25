@@ -42,6 +42,7 @@
 #include "QGoMeshLevelSetAlgo.h"
 #include "QGoMeshShapeAlgo.h"
 #include "QGoMeshWaterShedAlgo.h"
+#include "QGoMeshSplitDanielssonDistanceAlgo.h"
 #include <QAction>
 #include <QDockWidget>
 
@@ -110,7 +111,7 @@ protected:
   QGoMeshLevelSetAlgo*            m_LevelSetAlgo;
   QGoMeshShapeAlgo*               m_ShapeAlgo;
   QGoMeshWaterShedAlgo*           m_WaterShedAlgo;
-
+  QGoMeshSplitDanielssonDistanceAlgo* m_DanielAlgo;
 
   void SetTheMeshWidget(std::vector<QString> iVectChannels, int iTimeMin, 
     int iTimeMax, QWidget* iParent);
@@ -126,6 +127,9 @@ protected:
   for the semi automated mode and set the different SIGNAL/SLOTS connections
   */
   void SetSemiAutomatedAlgorithms(QWidget* iParent = 0);
+
+  void SetSplitMergeMode(
+    std::vector<QString> iVectChannels, QStringList iListTime, QWidget* iParent);
 
   /**
   \brief get the vtkpolydata for the new created meshes by the chosen algo
@@ -150,6 +154,7 @@ protected slots:
   void ApplyLevelSetAlgo();
   void ApplyShapeAlgo();
   void ApplyWaterShedAlgo();
+  void ApplyDanielAlgo();
 
 };
 

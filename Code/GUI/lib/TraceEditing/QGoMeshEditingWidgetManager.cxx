@@ -34,6 +34,7 @@
 #include "QGoMeshEditingWidgetManager.h"
 #include "QGoAlgorithmWidget.h"
 #include "QGoAlgoParameter.h"
+#include "QGoAlgorithmsManagerWidget.h"
 #include "vtkSmartPointer.h"
 #include "vtkImageExport.h"
 #include "vtkImageData.h"
@@ -103,6 +104,8 @@ void QGoMeshEditingWidgetManager::SetTheMeshWidget(
    "Mesh", iVectChannels, ListTimePoints, iParent);
 
   this->SetTSliceForClassicView();
+  this->SetSplitMergeMode(iVectChannels, 
+    ListTimePoints, iParent);
 
   QObject::connect( this->m_MeshEditingWidget, 
                     SIGNAL(SetSeedInteractorBehaviour(bool) ),
@@ -205,4 +208,33 @@ void QGoMeshEditingWidgetManager::SetSemiAutomatedAlgorithms(QWidget* iParent)
 
   QObject::connect(WaterShedWidget, SIGNAL(ApplyAlgo() ),
     this, SLOT(ApplyWaterShedAlgo() ) );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoMeshEditingWidgetManager::SetSplitMergeMode(
+  std::vector<QString> iVectChannels, QStringList iListTime, QWidget* iParent)
+{
+  QGoAlgorithmsManagerWidget* SplitAlgoWidget = 
+    new QGoAlgorithmsManagerWidget("Split", iVectChannels, iListTime, iParent);
+  this->m_MeshEditingWidget->AddMode(SplitAlgoWidget);
+  SplitAlgoWidget->RemoveChannelAndTSlice();
+  m_DanielAlgo = new QGoMeshSplitDanielssonDistanceAlgo(iParent);
+  QGoAlgorithmWidget * DanielWidget = m_DanielAlgo->GetAlgoWidget();
+  SplitAlgoWidget->AddMethod(DanielWidget );
+
+  QObject::connect( DanielWidget, SIGNAL(ApplyAlgo() ) , 
+                    this, SLOT(ApplyDanielAlgo() ) );
+
+  QGoAlgorithmsManagerWidget* MergeAlgoWidget = 
+    new QGoAlgorithmsManagerWidget("Merge", iVectChannels, iListTime, iParent);
+  this->m_MeshEditingWidget->AddMode(MergeAlgoWidget);
+
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoMeshEditingWidgetManager::ApplyDanielAlgo()
+{
+  this->GetPolydatasFromAlgo<QGoMeshSplitDanielssonDistanceAlgo>(this->m_DanielAlgo);
 }

@@ -103,6 +103,8 @@ public:
 
   int GetSelectedTimePoint();
 
+  void RemoveChannelAndTSlice();
+
 signals:
 
   void ResetClicked();

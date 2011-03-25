@@ -81,6 +81,14 @@ void QGoTraceEditingWidget::AddMode(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoTraceEditingWidget::AddMode(QGoAlgorithmsManagerWidget* iAlgoModeWidget)
+{
+  this->m_ModeEditingWidget->AddWidgetWithModeName(iAlgoModeWidget->GetModeName(),
+    iAlgoModeWidget);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void QGoTraceEditingWidget::SetModesManager(QGoModesManagerWidget* iModeWidget)
 {
   this->m_ModeEditingWidget = iModeWidget;

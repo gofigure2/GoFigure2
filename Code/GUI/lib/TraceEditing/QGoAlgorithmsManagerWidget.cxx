@@ -198,6 +198,14 @@ int QGoAlgorithmsManagerWidget::GetSelectedTimePoint()
 {
   return this->m_TimeComboBox->currentText().toInt();
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoAlgorithmsManagerWidget::RemoveChannelAndTSlice()
+{
+  this->m_VBoxLayout->removeWidget(this->m_ChannelComboBox);
+  this->m_VBoxLayout->removeWidget(this->m_TimeComboBox);
+}
 /*void QGoAlgorithmsManagerWidget::AddMethod(std::string iNameMethod, 
   QWidget* iParametersWidget, QWidget* iAdvParamWidget)
 {
