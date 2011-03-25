@@ -600,7 +600,7 @@ std::vector< std::string > GoDBTableWidgetContainer::GetQueryStringForTraceJoine
           {
           IsTableInTheList = true;
           }
-        iter++;
+        ++iter;
         }
       //if the table is not in the list,is not the table of the trace and
       //is accessed during the first query, record the name of the table,
@@ -811,7 +811,7 @@ void GoDBTableWidgetContainer::ClearRowContainerValues()
   while ( iter != this->m_RowContainer.end() )
     {
     iter->second.clear();
-    iter++;
+    ++iter;
     }
 }
 

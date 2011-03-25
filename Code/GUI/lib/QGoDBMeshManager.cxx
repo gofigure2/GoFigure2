@@ -574,7 +574,7 @@ QString QGoDBMeshManager::CheckExistingMeshesForTheTrack(
           MeshIDToPrint += ConvertToString< unsigned int >(MeshIDKickedOut);
           MeshIDToPrint += ", ";
           }
-        iter++;
+        ++iter;
         }
       if ( !MeshIDToPrint.empty() )
         {

@@ -89,7 +89,7 @@ void QGoColorComboBox::SetItemsFromListWithColor(
       this->AddItemWithColor(*iter, false); //we don't want the signal emitted
                                             // for each added item,
       //only the currentIndex one at the end of the added list.
-      iter++;
+      ++iter;
       }
     this->AddItemsEndOfList();
     }

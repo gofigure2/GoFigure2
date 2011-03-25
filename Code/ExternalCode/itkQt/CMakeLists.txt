@@ -9,8 +9,9 @@ IF( WIN32 )
 ENDIF( WIN32 )
 
 
-CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Code/ExternalCode/itkQt/itkQtConfigure.h.in
-  ${GOFIGURE2_BINARY_DIR}/Code/ExternalCode/itkQt/itkQtConfigure.h @ONLY IMMEDIATE )
+CONFIGURE_FILE(
+  ${CMAKE_CURRENT_SOURCE_DIR}/itkQtConfigure.h.in
+  ${CMAKE_CURRENT_BINARY_DIR}/itkQtConfigure.h @ONLY IMMEDIATE )
 
 QT4_WRAP_CPP( itkQtAdaptor_MOC itkQtAdaptor.h )
 
@@ -43,3 +44,10 @@ INSTALL( TARGETS itkQt
   ARCHIVE DESTINATION ${GOFIGURE2_INSTALL_LIB_DIR} COMPONENT Libraries
   )
 
+FILE( GLOB __source_file_h "${CMAKE_CURRENT_SOURCE_DIR}/*.h" )
+FILE( GLOB __binary_file_h "${CMAKE_CURRENT_BINARY_DIR}/*.h" )
+
+INSTALL( FILES ${__source_file_h} ${__binary_file_h}
+  DESTINATION ${GOFIGURE2_INSTALL_HEADER_DIR}
+  COMPONENT Development
+)

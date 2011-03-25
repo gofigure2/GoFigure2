@@ -461,21 +461,23 @@ void QGoPrintDatabase::SaveNewCollectionFromTraceWidgetInDBAndTW()
   this->OpenDBConnection();
 
   std::string  TraceName = this->m_TraceWidget->GetTraceName();
-  unsigned int NewCollectionID = 0;
   if ( TraceName != "contour" && TraceName != "mesh" )
     {
     return;
     }
   else
     {
+    unsigned int NewCollectionID = 0;
     if ( TraceName == "contour" )
       {
-      NewCollectionID = this->m_MeshesManager->CreateNewMeshWithNoContourNoPoints(
+      NewCollectionID =
+        this->m_MeshesManager->CreateNewMeshWithNoContourNoPoints(
           this->m_DatabaseConnector);
       }
     if ( TraceName == "mesh" )
       {
-      NewCollectionID = this->m_TracksManager->CreateNewTrackWithNoMesh(
+      NewCollectionID =
+        this->m_TracksManager->CreateNewTrackWithNoMesh(
           this->m_DatabaseConnector);
       }
     ItemColorComboboxData NewCollectionData;

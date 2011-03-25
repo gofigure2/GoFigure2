@@ -8,31 +8,31 @@ IF( WIN32 )
   ENDIF( NOT CYGWIN )
 ENDIF( WIN32 )
 
-CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/QGoGUILibConfigure.h.in
-  ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoGUILibConfigure.h @ONLY IMMEDIATE )
+CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/QGoGUILibConfigure.h.in
+  ${CMAKE_CURRENT_BINARY_DIR}/QGoGUILibConfigure.h @ONLY IMMEDIATE )
 
-CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/QGoAboutWidget.cxx.in
-  ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx @ONLY IMMEDIATE )
+CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/QGoAboutWidget.cxx.in
+  ${CMAKE_CURRENT_BINARY_DIR}/QGoAboutWidget.cxx @ONLY IMMEDIATE )
 
-CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx.in
-  ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx @ONLY IMMEDIATE )
+CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/QGoNetworkUtilities.cxx.in
+  ${CMAKE_CURRENT_BINARY_DIR}/QGoNetworkUtilities.cxx @ONLY IMMEDIATE )
 
 SET( QGoGUILIB_SRC
-  ContourContainer.cxx
-  MeshContainer.cxx
-  ContourMeshContainer.cxx
-  TrackContainer.cxx
-  LineageContainer.cxx
-  QGoConnectServerPage.cxx
-  QGoCreateImgSessionPage.cxx
+  VisualizationTraceContainers/ContourContainer.cxx
+  VisualizationTraceContainers/MeshContainer.cxx
+  VisualizationTraceContainers/ContourMeshContainer.cxx
+  VisualizationTraceContainers/TrackContainer.cxx
+  VisualizationTraceContainers/LineageContainer.cxx
+  Wizard/QGoConnectServerPage.cxx
+  Wizard/QGoCreateImgSessionPage.cxx
   QGoImageView.cxx
   QGoImageView2D.cxx
   QGoImageView3D.cxx
   QGoImageInfo.cxx
   QGoLUTDialog.cxx
   QGoManualSegmentationSettingsDialog.cxx
-  QGoOpenCreateImgSessionPage.cxx
-  QGoOpenCreateProjectPage.cxx
+  Wizard/QGoOpenCreateImgSessionPage.cxx
+  Wizard/QGoOpenCreateProjectPage.cxx
   QGoPrintDatabase.cxx
   QGoTabElementBase.cxx
   QGoTabImageView2D.cxx
@@ -42,7 +42,7 @@ SET( QGoGUILIB_SRC
   QGoTabImageViewElementBase.cxx
   QGoTabImageViewNDBase.cxx
   QGoNavigationDockWidget.cxx
-  QGoWizardDB.cxx
+  Wizard/QGoWizardDB.cxx
   QSplitterChild.cxx
   QGoTableWidget.cxx
   SnapshotHelper.cxx
@@ -60,20 +60,14 @@ SET( QGoGUILIB_SRC
   QGoDBColorManager.cxx
   QGoTraceSettingsDockWidget.cxx
   QGoTraceSettingsWidget.cxx
-  QGoDBInitializationWizard.cxx
-  QGoDBInitCreateUserPage.cxx
-  QGoDBInitCreateAuthorsPage.cxx
-  QGoDBInitCreateMicroscopePage.cxx
+  Wizard/QGoDBInitializationWizard.cxx
+  Wizard/QGoDBInitCreateUserPage.cxx
+  Wizard/QGoDBInitCreateAuthorsPage.cxx
+  Wizard/QGoDBInitCreateMicroscopePage.cxx
   QGoColorComboBox.cxx
   QGoSelectedColorComboBox.cxx
   QGoCollectionColorComboBox.cxx
   QGoComboBox.cxx
-  QGoSynchronizedView.cxx
-  QGoSynchronizedView2D.cxx
-  QGoSynchronizedView3D.cxx
-  QGoSynchronizedView2DCallbacks.cxx
-  QGoSynchronizedView3DCallbacks.cxx
-  QGoSynchronizedViewManager.cxx
   QGoDBTraceManager.cxx
   QGoDBContourManager.cxx
   QGoDBMeshManager.cxx
@@ -114,6 +108,30 @@ SET( QGoGUILIB_SRC
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx
 )
 
+SET_SOURCE_FILES_PROPERTIES(
+  QGoTabElementBase.cxx
+  QGoTabImageViewNDBase.cxx
+  QGoTabImageViewElementBase.cxx
+  QGoImageView.cxx
+  QGoFilterSemiAutoBase.cxx
+  QGoDBTraceManager.cxx
+  QGoDBNameDescEntityManager.cxx
+  QGoColorComboBox.cxx
+  ABSTRACT
+  )
+
+IF( BUILD_COMPARETOOL )
+  SET( QGoGUILIB_SRC
+    ${QGoGUILIB_SRC}
+    SynchronizedViews/QGoSynchronizedView.cxx
+    SynchronizedViews/QGoSynchronizedView2D.cxx
+    SynchronizedViews/QGoSynchronizedView3D.cxx
+    SynchronizedViews/QGoSynchronizedView2DCallbacks.cxx
+    SynchronizedViews/QGoSynchronizedView3DCallbacks.cxx
+    SynchronizedViews/QGoSynchronizedViewManager.cxx
+  )
+ENDIF( BUILD_COMPARETOOL )
+
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
 
@@ -121,9 +139,9 @@ SET( QGoGUILIB_SRC
 IF( ENABLE_VIDEO_RECORD_FFMPEG )
   SET(QGoGUILIB_SRC
     ${QGoGUILIB_SRC}
-    vtkRenderWindowMovieRecorder.cxx
-    vtkFFMPEGRenderWindowRecorder.cxx
-    QGoVideoRecorder.cxx
+    Video/vtkRenderWindowMovieRecorder.cxx
+    Video/vtkFFMPEGRenderWindowRecorder.cxx
+    Video/QGoVideoRecorder.cxx
   )
 ENDIF( ENABLE_VIDEO_RECORD_FFMPEG )
 
@@ -131,9 +149,9 @@ ENDIF( ENABLE_VIDEO_RECORD_FFMPEG )
 IF( ENABLE_VIDEO_RECORD_AVI )
   SET(QGoGUILIB_SRC
     ${QGoGUILIB_SRC}
-    vtkRenderWindowMovieRecorder.cxx
-    vtkAVIRenderWindowRecorder.cxx
-    QGoVideoRecorder.cxx
+    Video/vtkRenderWindowMovieRecorder.cxx
+    Video/vtkAVIRenderWindowRecorder.cxx
+    Video/QGoVideoRecorder.cxx
   )
 ENDIF( ENABLE_VIDEO_RECORD_AVI )
 
@@ -141,21 +159,21 @@ ENDIF( ENABLE_VIDEO_RECORD_AVI )
 #---------------------------------------------------------------------------
 
 SET( QGoGUILIB_HDRS
-  ContourContainer.h
-  MeshContainer.h
-  ContourMeshContainer.h
-  TrackContainer.h
-  LineageContainer.h
-  QGoConnectServerPage.h
-  QGoCreateImgSessionPage.h
+  VisualizationTraceContainers/ContourContainer.h
+  VisualizationTraceContainers/MeshContainer.h
+  VisualizationTraceContainers/ContourMeshContainer.h
+  VisualizationTraceContainers/TrackContainer.h
+  VisualizationTraceContainers/LineageContainer.h
+  Wizard/QGoConnectServerPage.h
+  Wizard/QGoCreateImgSessionPage.h
   QGoImageView.h
   QGoImageView2D.h
   QGoImageView3D.h
   QGoImageInfo.h
   QGoLUTDialog.h
   QGoManualSegmentationSettingsDialog.h
-  QGoOpenCreateImgSessionPage.h
-  QGoOpenCreateProjectPage.h
+  Wizard/QGoOpenCreateImgSessionPage.h
+  Wizard/QGoOpenCreateProjectPage.h
   QGoPrintDatabase.h
   QGoTabElementBase.h
   QGoTabImageView2D.h
@@ -165,7 +183,7 @@ SET( QGoGUILIB_HDRS
   QGoTabImageViewElementBase.h
   QGoTabImageViewNDBase.h
   QGoNavigationDockWidget.h
-  QGoWizardDB.h
+  Wizard/QGoWizardDB.h
   QSplitterChild.h
   QGoTableWidget.h
   QGoCreateMeshDialog.h
@@ -183,17 +201,11 @@ SET( QGoGUILIB_HDRS
   QGoTraceSettingsDockWidget.h
   QGoTraceSettingsWidget.h
   QGoAboutWidget.h
-  QGoDBInitializationWizard.h
-  QGoDBInitCreateUserPage.h
-  QGoDBInitCreateAuthorsPage.h
-  QGoDBInitCreateMicroscopePage.h
+  Wizard/QGoDBInitializationWizard.h
+  Wizard/QGoDBInitCreateUserPage.h
+  Wizard/QGoDBInitCreateAuthorsPage.h
+  Wizard/QGoDBInitCreateMicroscopePage.h
   QGoNetworkUtilities.h
-  QGoSynchronizedView.h
-  QGoSynchronizedView2D.h
-  QGoSynchronizedView3D.h
-  QGoSynchronizedView2DCallbacks.h
-  QGoSynchronizedView3DCallbacks.h
-  QGoSynchronizedViewManager.h
   QGoColorComboBox.h
   QGoSelectedColorComboBox.h
   QGoCollectionColorComboBox.h
@@ -235,6 +247,17 @@ SET( QGoGUILIB_HDRS
   QGoAlgorithmsWidget.h
 )
 
+IF( BUILD_COMPARETOOL )
+  SET( QGoGUILIB_HDRS
+    ${QGoGUILIB_HDRS}
+    SynchronizedViews/QGoSynchronizedView.h
+    SynchronizedViews/QGoSynchronizedView2D.h
+    SynchronizedViews/QGoSynchronizedView3D.h
+    SynchronizedViews/QGoSynchronizedView2DCallbacks.h
+    SynchronizedViews/QGoSynchronizedView3DCallbacks.h
+    SynchronizedViews/QGoSynchronizedViewManager.h
+  )
+ENDIF( BUILD_COMPARETOOL )
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
 
@@ -242,7 +265,7 @@ SET( QGoGUILIB_HDRS
 IF( ENABLE_VIDEO_RECORD_FFMPEG )
   SET(QGoGUILIB_HDRS
     ${QGoGUILIB_HDRS}
-    QGoVideoRecorder.h
+    Video/QGoVideoRecorder.h
   )
 ENDIF( ENABLE_VIDEO_RECORD_FFMPEG )
 
@@ -250,7 +273,7 @@ ENDIF( ENABLE_VIDEO_RECORD_FFMPEG )
 IF( ENABLE_VIDEO_RECORD_AVI )
   SET(QGoGUILIB_HDRS
     ${QGoGUILIB_HDRS}
-    QGoVideoRecorder.h
+    Video/QGoVideoRecorder.h
   )
 ENDIF( ENABLE_VIDEO_RECORD_AVI )
 
@@ -258,26 +281,30 @@ ENDIF( ENABLE_VIDEO_RECORD_AVI )
 #---------------------------------------------------------------------------
 
 SET( QGoGUILIB_UI
+
+#base dockwidget
+  Resources/SegmentationDockWidgetBase.ui
+
 #segmentation widget
-  Resources/SegmentationBaseDockWidget.ui
   Resources/SegmentationSeedBaseWidget.ui
 
 # manual contour segmentation dock widget
   Resources/ManualSegmentationSettingsDlg.ui
   Resources/ContourManualSegmentationWidget.ui
-  Resources/ContourSemiAutoShapeWidget.ui
 
-# other
+# seed segmentation dock widgets
+  Resources/LevelsetWidget.ui
+  Resources/WatershedWidget.ui
+  Resources/ShapeWidget.ui
+
+  # other
   Resources/NavigationDockWidget.ui
   Resources/QGoPrintDatabase.ui
   Resources/LsmToMegaExportDialog.ui
   Resources/QNameDescriptionInputDialog.ui
   Resources/QGoTraceSettingsWidget.ui
 
-  Resources/QGoSynchronizedView.ui
-
   # seed segmentation dock widgets
-  Resources/BaseAlgoSegmentationDockWidget.ui
   Resources/LevelsetWidget.ui
   Resources/WatershedWidget.ui
 
@@ -285,6 +312,13 @@ SET( QGoGUILIB_UI
   Resources/TrackDockWidget.ui
   Resources/TrackEditingWidget.ui
 )
+
+IF( BUILD_COMPARETOOL )
+  SET( QGoGUILIB_UI
+    ${QGoGUILIB_UI}
+    Resources/QGoSynchronizedView.ui
+  )
+ENDIF( BUILD_COMPARETOOL )
 
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
@@ -382,4 +416,43 @@ INSTALL( TARGETS QGoGui
   LIBRARY DESTINATION ${GOFIGURE2_INSTALL_LIB_DIR} COMPONENT Libraries NAMELINK_ONLY
   )
 
+FILE( GLOB __source_file_h "${CMAKE_CURRENT_SOURCE_DIR}/*.h" )
+FILE( GLOB __source_file_txx "${CMAKE_CURRENT_SOURCE_DIR}/*.txx" )
+FILE( GLOB __binary_file_h "${CMAKE_CURRENT_BINARY_DIR}/*.h" )
+FILE( GLOB __binary_file_txx "${CMAKE_CURRENT_BINARY_DIR}/*.txx" )
+
+FILE( GLOB __source_video_h "${CMAKE_CURRENT_SOURCE_DIR}/Video/*.h" )
+FILE( GLOB __binary_video_h "${CMAKE_CURRENT_BINARY_DIR}/Video/*.h" )
+
+FILE( GLOB __source_sync_h
+  "${CMAKE_CURRENT_SOURCE_DIR}/SynchronizedViews/*.h"
+)
+FILE( GLOB __binary_sync_h
+  "${CMAKE_CURRENT_BINARY_DIR}/SynchronizedViews/*.h"
+)
+FILE( GLOB __source_tracevisu_h
+  "${CMAKE_CURRENT_SOURCE_DIR}/VisualizationTraceContainers/*.h" )
+FILE( GLOB __source_trace_visu_txx
+  "${CMAKE_CURRENT_SOURCE_DIR}/VisualizationTraceContainers/*.txx" )
+FILE( GLOB __binary_tracevisu_h
+  "${CMAKE_CURRENT_BINARY_DIR}/VisualizationTraceContainers/*.h" )
+FILE( GLOB __binary_tracevisu_txx
+  "${CMAKE_CURRENT_BINARY_DIR}/VisualizationTraceContainers/*.txx" )
+
+FILE( GLOB __source_wizard_h
+  "${CMAKE_CURRENT_SOURCE_DIR}/Wizard/*.h" )
+FILE( GLOB __binary_tracevisu_h
+  "${CMAKE_CURRENT_BINARY_DIR}/Wizard/*.h" )
+
+INSTALL( FILES ${__source_file_h} ${__source_file_txx}
+    ${__binary_file_h} ${__binary_file_txx}
+    ${__source_video_h} ${__binary_video_h}
+    ${__source_sync_h} ${__binary_sync_h}
+    ${__source_tracevisu_h} ${__source_trace_visu_txx}
+    ${__binary_tracevisu_h} ${__binary_tracevisu_txx}
+    ${__source_wizard_h} ${__binary_tracevisu_h}
+    ${QGoGUILIB_UI_H}
+  DESTINATION ${GOFIGURE2_INSTALL_HEADER_DIR}
+  COMPONENT Development
+)
 

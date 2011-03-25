@@ -51,12 +51,12 @@ struct TraceInfoStructure {
   GoDBCollectionOfTraces *CollectionOfTraces;
   // ContourMeshStructureMultiIndexContainer *ListTracesInfoForVisu;
 
-  TraceInfoStructure():CollectionOfTraces(NULL)//,
+  TraceInfoStructure():Table(NULL), CollectionOfTraces(NULL)//,
   //  ListTracesInfoForVisu(NULL)
   {}
 
   TraceInfoStructure(const std::string & iTraceName, QWidget *parent):
-    CollectionOfTraces(NULL)//, ListTracesInfoForVisu(NULL)
+    Table(NULL), CollectionOfTraces(NULL)//, ListTracesInfoForVisu(NULL)
   {
     SetInfoStructure(iTraceName, parent);
   }

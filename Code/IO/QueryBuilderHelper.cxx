@@ -300,7 +300,7 @@ std::vector< std::string > ListUnsgIntToVectorString(std::list< unsigned int > i
     {
     unsigned int temp = *iter;
     oVector.push_back( ConvertToString< unsigned int >(temp) );
-    iter++;
+    ++iter;
     }
   return oVector;
 }
@@ -317,7 +317,7 @@ std::list< unsigned int > VectorStringToUnsgInt(std::vector< std::string > iVect
     std::string  temp = *iter;
     unsigned int tempint = ss_atoi< unsigned int >(temp);
     oList.push_back(tempint);
-    iter++;
+    ++iter;
     }
   return oList;
 }
@@ -334,7 +334,7 @@ std::vector< std::string > VectorUnsgIntToVectorString(
     {
     unsigned int temp = *iter;
     oVector.push_back( ConvertToString< unsigned int >(temp) );
-    iter++;
+    ++iter;
     }
   return oVector;
 }

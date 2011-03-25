@@ -1,10 +1,10 @@
 #import os
 #address = os.getcwd()
-address = "/home/es1076/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images"
+#address = "/home/es1076/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images"
 
 #address = address+"/gofigure2_images"
 #print address
-setBundlePath(address)
+#setBundlePath(address)
 
 def MeshSegmentation(View):
 
@@ -18,6 +18,8 @@ def MeshSegmentation(View):
 	click("Apply.png")
 
 
+click("TableWidgetIcon.png")
+click("ContourSegmentationIcon.png")
 
 ViewRegion = ("XY_ViewRegion.png","XZ_ViewRegion.png","YZ_ViewRegion.png","last")
 

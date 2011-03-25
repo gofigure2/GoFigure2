@@ -664,3 +664,14 @@ void vtkViewImage2DCollection::EnableContourPickingMode()
     item = this->GetNextItem();
     }
 }
+
+//----------------------------------------------------------------------------
+void vtkViewImage2DCollection::SynchronizeViews( bool iSynchronize)
+{
+  this->Command->SynchronizeViews(iSynchronize);
+  if( iSynchronize )
+    {
+    this->SyncResetCamera();
+    this->SyncRender();
+    }
+}

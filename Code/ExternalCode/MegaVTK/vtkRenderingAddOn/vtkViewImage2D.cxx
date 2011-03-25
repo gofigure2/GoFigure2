@@ -481,7 +481,7 @@ vtkViewImage2D::SetAnnotationToConvention(void)
 
   unsigned int id1 = 0;
   unsigned int id2 = 0;
-  unsigned int id3 = 0;
+  // unsigned int id3 = 0;
   double       dot1 = 0;
   double       dot2 = 0;
   double       dot3 = 0;
@@ -501,7 +501,7 @@ vtkViewImage2D::SetAnnotationToConvention(void)
     if ( dot3 <= fabs(normal[i]) )
       {
       dot3 = fabs(normal[i]);
-      id3 = i;
+      // id3 = i;
       }
     }
 
@@ -594,6 +594,7 @@ vtkViewImage2D::UpdateSlicePlane(void)
     x[this->SliceOrientation] = bounds[2 * this->SliceOrientation];
     oldpoints->InsertPoint(i, x);
     }
+
   this->OrientationTransform->TransformPoints(oldpoints, points);
   this->SlicePlane->SetPoints(points);
 
@@ -1270,7 +1271,7 @@ vtkViewImage2D::SetAnnotationsFromOrientation(void)
 
   unsigned int id1 = 0;
   unsigned int id2 = 0;
-  unsigned int id3 = 0;
+//  unsigned int id3 = 0;
   double       dot1 = 0;
   double       dot2 = 0;
   double       dot3 = 0;
@@ -1290,7 +1291,7 @@ vtkViewImage2D::SetAnnotationsFromOrientation(void)
     if ( dot3 <= std::abs (normal[i]) )
       {
       dot3 = std::abs (normal[i]);
-      id3 = i;
+      //id3 = i;
       }
     }
 

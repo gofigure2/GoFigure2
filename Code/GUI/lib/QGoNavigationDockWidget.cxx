@@ -38,7 +38,9 @@
 #include <QVBoxLayout>
 #include <QShortcut>
 
-QGoNavigationDockWidget::QGoNavigationDockWidget(QWidget *iParent, const GoFigure::TabDimensionType & iDim) :
+QGoNavigationDockWidget::
+QGoNavigationDockWidget( QWidget *iParent,
+                         const GoFigure::TabDimensionType & iDim ) :
   QDockWidget(iParent),
   m_Dimension(iDim)
 {
@@ -109,22 +111,8 @@ QGoNavigationDockWidget::QGoNavigationDockWidget(QWidget *iParent, const GoFigur
   QObject::connect( this->ChannelComboBox, SIGNAL( currentIndexChanged(int) ),
                     this, SIGNAL( ShowOneChannelChanged(int) ) );
 
-  QObject::connect( this->ModeComboBox, SIGNAL( activated(int) ),
-                    this, SIGNAL( ModeChanged(int) ) );
-
-  QObject::connect( this->ModeComboBox, SIGNAL( activated(int) ),
-                    this, SLOT( StepVisibility(int) ) );
-
-  QObject::connect( this->step, SIGNAL( valueChanged(int) ),
-                    this, SIGNAL( StepChanged(int) ) );
-
-  // Hide step and setLabel at the beginning
-  this->step->hide();
   this->stepLabel->hide();
-
-  // shortcuts to move through time
-  (void)new QShortcut( QKeySequence( tr("Ctrl+Z", "Move to previous") ), this, SLOT( MoveToPreviousTimePoint() ) );
-  (void)new QShortcut( QKeySequence( tr("Ctrl+C", "Move to next") ), this, SLOT( MoveToNextTimePoint() ) );
+  this->step->hide();
 }
 
 //-------------------------------------------------------------------------
@@ -211,15 +199,34 @@ QGoNavigationDockWidget::SetChannel(const unsigned int & i, const QString & iTex
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void
+QGoNavigationDockWidget::SetCurrentChannel(unsigned int iChannel)
+{
+  this->ChannelComboBox->setCurrentIndex(iChannel);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void QGoNavigationDockWidget::SetXMinimumAndMaximum(const int & iMin, const int & iMax)
 {
-  this->XSliceSpinBox->setMinimum(iMin);
-  this->XSliceSpinBox->setMaximum(iMax);
-  this->XSliceSlider->setMinimum(iMin);
-  this->XSliceSlider->setMaximum(iMax);
-  //this->MinXSlicelbl->setText(ConvertToString<int>(iMin).c_str());
-  this->MinXSlicelbl->setText( tr("%1").arg(iMin) );
-  this->MaxXSlicelbl->setText( tr("%1").arg(iMax) );
+  if( iMin != iMax )
+    {
+    this->XSliceSpinBox->setMinimum(iMin);
+    this->XSliceSpinBox->setMaximum(iMax);
+    this->XSliceSlider->setMinimum(iMin);
+    this->XSliceSlider->setMaximum(iMax);
+    //this->MinXSlicelbl->setText(ConvertToString<int>(iMin).c_str());
+    this->MinXSlicelbl->setText( tr("%1").arg(iMin) );
+    this->MaxXSlicelbl->setText( tr("%1").arg(iMax) );
+    }
+  else
+    {
+    this->YSliceLbl->hide();
+    this->YSliceSpinBox->hide();
+    this->YSliceSlider->hide();
+    this->MinYSlicelbl->hide();
+    this->MaxYSlicelbl->hide();
+    }
 }
 
 //-------------------------------------------------------------------------
@@ -227,12 +234,23 @@ void QGoNavigationDockWidget::SetXMinimumAndMaximum(const int & iMin, const int 
 //-------------------------------------------------------------------------
 void QGoNavigationDockWidget::SetYMinimumAndMaximum(const int & iMin, const int & iMax)
 {
-  this->YSliceSpinBox->setMinimum(iMin);
-  this->YSliceSpinBox->setMaximum(iMax);
-  this->YSliceSlider->setMinimum (iMin);
-  this->YSliceSlider->setMaximum(iMax);
-  this->MinYSlicelbl->setText( tr("%1").arg(iMin) );
-  this->MaxYSlicelbl->setText( tr("%1").arg(iMax) );
+  if( iMin != iMax )
+    {
+    this->YSliceSpinBox->setMinimum(iMin);
+    this->YSliceSpinBox->setMaximum(iMax);
+    this->YSliceSlider->setMinimum (iMin);
+    this->YSliceSlider->setMaximum(iMax);
+    this->MinYSlicelbl->setText( tr("%1").arg(iMin) );
+    this->MaxYSlicelbl->setText( tr("%1").arg(iMax) );
+    }
+  else
+    {
+    this->YSliceLbl->hide();
+    this->YSliceSpinBox->hide();
+    this->YSliceSlider->hide();
+    this->MinYSlicelbl->hide();
+    this->MaxYSlicelbl->hide();
+    }
 }
 
 //-------------------------------------------------------------------------
@@ -240,12 +258,23 @@ void QGoNavigationDockWidget::SetYMinimumAndMaximum(const int & iMin, const int 
 //-------------------------------------------------------------------------
 void QGoNavigationDockWidget::SetZMinimumAndMaximum(const int & iMin, const int & iMax)
 {
-  this->ZSliceSpinBox->setMinimum(iMin);
-  this->ZSliceSpinBox->setMaximum(iMax);
-  this->ZSliceSlider->setMinimum (iMin);
-  this->ZSliceSlider->setMaximum(iMax);
-  this->MinZSlicelbl->setText( tr("%1").arg(iMin) );
-  this->MaxZSlicelbl->setText( tr("%1").arg(iMax) );
+  if( iMin != iMax )
+    {
+    this->ZSliceSpinBox->setMinimum(iMin);
+    this->ZSliceSpinBox->setMaximum(iMax);
+    this->ZSliceSlider->setMinimum (iMin);
+    this->ZSliceSlider->setMaximum(iMax);
+    this->MinZSlicelbl->setText( tr("%1").arg(iMin) );
+    this->MaxZSlicelbl->setText( tr("%1").arg(iMax) );
+    }
+  else
+    {
+    this->ZSliceLbl->hide();
+    this->ZSliceSpinBox->hide();
+    this->ZSliceSlider->hide();
+    this->MinZSlicelbl->hide();
+    this->MaxZSlicelbl->hide();
+    }
 }
 
 //-------------------------------------------------------------------------
@@ -253,12 +282,43 @@ void QGoNavigationDockWidget::SetZMinimumAndMaximum(const int & iMin, const int 
 //-------------------------------------------------------------------------
 void QGoNavigationDockWidget::SetTMinimumAndMaximum(const int & iMin, const int & iMax)
 {
-  this->TSliceSpinBox->setMinimum(iMin);
-  this->TSliceSpinBox->setMaximum(iMax);
-  this->TSliceSlider->setMinimum (iMin);
-  this->TSliceSlider->setMaximum(iMax);
-  this->MinTSlicelbl->setText( tr("%1").arg(iMin) );
-  this->MaxTSlicelbl->setText( tr("%1").arg(iMax) );
+  if( iMin != iMax )
+    {
+    this->TSliceSpinBox->setMinimum(iMin);
+    this->TSliceSpinBox->setMaximum(iMax);
+    this->TSliceSlider->setMinimum (iMin);
+    this->TSliceSlider->setMaximum(iMax);
+    this->MinTSlicelbl->setText( tr("%1").arg(iMin) );
+    this->MaxTSlicelbl->setText( tr("%1").arg(iMax) );
+
+    QObject::connect( this->ModeComboBox, SIGNAL( activated(int) ),
+                      this, SIGNAL( ModeChanged(int) ) );
+
+    QObject::connect( this->ModeComboBox, SIGNAL( activated(int) ),
+                      this, SLOT( StepVisibility(int) ) );
+
+    QObject::connect( this->step, SIGNAL( valueChanged(int) ),
+                      this, SIGNAL( StepChanged(int) ) );
+
+
+    // shortcuts to move through time
+    (void)new QShortcut( QKeySequence( tr("Ctrl+Z", "Move to previous") ),
+                        this, SLOT( MoveToPreviousTimePoint() ) );
+    (void)new QShortcut( QKeySequence( tr("Ctrl+C", "Move to next") ),
+                        this, SLOT( MoveToNextTimePoint() ) );
+    }
+  else
+    {
+    this->line_2->hide();
+    this->TSliceLbl->hide();
+    this->TSliceSpinBox->hide();
+    this->TSliceSlider->hide();
+    this->MinTSlicelbl->hide();
+    this->MaxTSlicelbl->hide();
+    this->ModeComboBox->hide();
+    this->stepLabel->hide();
+    this->step->hide();
+    }
 }
 
 //-------------------------------------------------------------------------

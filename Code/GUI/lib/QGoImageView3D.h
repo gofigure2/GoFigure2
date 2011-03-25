@@ -223,6 +223,12 @@ public slots:
 
   virtual void ShowScalarBar(const bool &);
 
+  /*
+   * \brief Synchronize the views
+   * \param[in] iSynchronize Enable/disable synchronization
+   */
+  void SynchronizeViews( bool iSynchronize);
+
 protected:
   QSplitter *     VSplitter;
   QSplitterChild *HtSplitter;
@@ -257,6 +263,7 @@ protected:
   bool m_Initialized;
 
   bool m_ShowCube;
+  bool m_SynchronizeViews;
 
   vtkOrientedBoxWidget *  m_BoxWidget;
   vtkImplicitPlaneWidget *m_PlaneWidget;

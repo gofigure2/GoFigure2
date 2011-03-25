@@ -36,7 +36,7 @@
 #define __QGoContourSemiAutoShapeWidget_h
 
 #include <QWidget>
-#include "ui_ContourSemiAutoShapeWidget.h"
+#include "ui_ShapeWidget.h"
 
 /**
  * \class QGoContourSemiAutoShapeWidget
@@ -46,7 +46,7 @@
 
 class QGoContourSemiAutoShapeWidget:
   public QWidget,
-  protected Ui::ContourSemiAutoShapeWidget
+  protected Ui::ShapeWidget
 {
   Q_OBJECT
 public:

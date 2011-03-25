@@ -37,9 +37,13 @@
 #include "QueryDataBaseHelper.h"
 #include "QGoDeleteFromListDialog.h"
 
-QGoDBNameDescEntityManager::QGoDBNameDescEntityManager(QWidget *iParent,
-                                                       std::string iEntityName, int iImgSessionID) :
-  QWidget(iParent)
+QGoDBNameDescEntityManager::
+QGoDBNameDescEntityManager(
+  QWidget *iParent,
+  std::string iEntityName,
+  int iImgSessionID) :  QWidget(iParent),
+                        m_NameDescDialog(NULL),
+                        m_DatabaseConnector(NULL)
 {
   this->m_EntityName = iEntityName;
   this->m_ImgSessionID = iImgSessionID;

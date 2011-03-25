@@ -46,7 +46,7 @@
 // base widgets
 class QGoMeshSeedSegmentation;
 
-#include "ui_SegmentationBaseDockWidget.h"
+#include "ui_SegmentationDockWidgetBase.h"
 
 /**
  * \class QGoMeshSegmentationBaseDockWidget
@@ -56,7 +56,7 @@ class QGoMeshSeedSegmentation;
 
 class QGoMeshSegmentationBaseDockWidget:
   public QDockWidget,
-  protected Ui::SegmentationBaseDockWidget
+  protected Ui::SegmentationDockWidgetBase
 {
   Q_OBJECT
 public:
@@ -65,7 +65,7 @@ public:
     vtkPoints *seeds = 0,
     std::vector< vtkSmartPointer<vtkImageData> > *iOriginalImage = 0);
 
-  ~QGoMeshSegmentationBaseDockWidget();
+  virtual ~QGoMeshSegmentationBaseDockWidget();
 
   /**
    * \brief Specify on which one the segmentation will be applied since the input
@@ -75,6 +75,8 @@ public:
    * \param[in] iText Name of the channels
    */
   void SetChannel(int iChannel, const QString & iText = QString());
+
+  void SetCurrentChannel(unsigned int iChannel);
 
   void SetNumberOfChannels(int iNumberOfChannels);
 

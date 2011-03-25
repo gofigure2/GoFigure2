@@ -141,7 +141,7 @@ void Cube::FactorFaceIndex(const int& idx,int& dir,int& offSet){
 }
 
 int Cube::FaceAdjacentToEdges(const int& eIndex1,const int& eIndex2){
-	int f1,f2,g1,g2;
+	int f1(0),f2(0),g1(0),g2(0);
 	FacesAdjacentToEdge(eIndex1,f1,f2);
 	FacesAdjacentToEdge(eIndex2,g1,g2);
 	if(f1==g1 || f1==g2){return f1;}
@@ -213,7 +213,7 @@ void Cube::FaceCorners(const int& idx,int& c1,int& c2,int& c3,int& c4){
 	}
 }
 int Cube::AntipodalCornerIndex(const int& idx){
-	int x,y,z;
+	int x(0),y(0),z(0);
 	FactorCornerIndex(idx,x,y,z);
 	return CornerIndex((x+1)%2,(y+1)%2,(z+1)%2);
 }
@@ -226,7 +226,7 @@ int Cube::FaceReflectFaceIndex(const int& idx,const int& faceIndex){
 }
 int Cube::FaceReflectEdgeIndex(const int& idx,const int& faceIndex){
 	int orientation=faceIndex/2;
-	int o,i,j;
+	int o(0),i(0),j(0);
 	FactorEdgeIndex(idx,o,i,j);
 	if(o==orientation){return idx;}
 	switch(orientation){
@@ -242,7 +242,7 @@ int Cube::FaceReflectEdgeIndex(const int& idx,const int& faceIndex){
 }
 int Cube::FaceReflectCornerIndex(const int& idx,const int& faceIndex){
 	int orientation=faceIndex/2;
-	int x,y,z;
+	int x(0),y(0),z(0);
 	FactorCornerIndex(idx,x,y,z);
 	switch(orientation){
 		case 0:	return CornerIndex((x+1)%2,y,z);
@@ -263,7 +263,7 @@ int Cube::EdgeReflectCornerIndex(const int& idx,const int& edgeIndex){
 	return -1;
 }
 int	Cube::EdgeReflectEdgeIndex(const int& edgeIndex){
-	int o,i1,i2;
+	int o(0),i1(0),i2(0);
 	FactorEdgeIndex(edgeIndex,o,i1,i2);
 	return Cube::EdgeIndex(o,(i1+1)%2,(i2+1)%2);
 }
@@ -696,7 +696,7 @@ int MarchingCubes::GetIndex(const double v[Cube::CORNERS],const double& iso){
 	return idx;
 }
 int MarchingCubes::GetFaceIndex(const double values[Cube::CORNERS],const double& iso,const int& faceIndex){
-	int i,j,x,y,z,idx=0;
+	int i(0),j(0),x(0),y(0),z(0),idx(0);
 	double v[2][2];
 	Cube::FactorFaceIndex(faceIndex,x,y,z);
 	if		(x<0){for(i=0;i<2;i++){for(j=0;j<2;j++){v[i][j]=values[Cube::CornerIndex(0,i,j)];}}}
@@ -841,7 +841,7 @@ int MarchingCubes::GetIndex(const float v[Cube::CORNERS],const float& iso){
 	return idx;
 }
 int MarchingCubes::GetFaceIndex(const float values[Cube::CORNERS],const float& iso,const int& faceIndex){
-	int i,j,x,y,z,idx=0;
+	int i(0),j(0),x(0),y(0),z(0),idx(0);
 	double v[2][2];
 	Cube::FactorFaceIndex(faceIndex,x,y,z);
 	if		(x<0){for(i=0;i<2;i++){for(j=0;j<2;j++){v[i][j]=values[Cube::CornerIndex(0,i,j)];}}}
@@ -857,7 +857,7 @@ int MarchingCubes::GetFaceIndex(const float values[Cube::CORNERS],const float& i
 	return idx;
 }
 int MarchingCubes::GetFaceIndex(const int& mcIndex,const int& faceIndex){
-	int i,j,x,y,z,idx=0;
+	int i(0),j(0),x(0),y(0),z(0),idx(0);
 	int v[2][2];
 	Cube::FactorFaceIndex(faceIndex,x,y,z);
 	if		(x<0){for(i=0;i<2;i++){for(j=0;j<2;j++){v[i][j]=mcIndex&(1<<MarchingCubes::cornerMap[Cube::CornerIndex(0,i,j)]);}}}
