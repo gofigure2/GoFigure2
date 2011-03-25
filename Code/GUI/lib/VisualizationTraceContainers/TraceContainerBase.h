@@ -258,12 +258,10 @@ public:
 
     if ( iVisible )
       {
-      std::cout<<"add actor"<< std::endl;
       f = &QGoImageView3D::AddActor;
       }
     else
       {
-      std::cout<<"remove actor"<< std::endl;
       f = &QGoImageView3D::RemoveActor;
       }
 
