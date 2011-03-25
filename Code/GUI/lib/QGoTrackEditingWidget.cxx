@@ -186,37 +186,33 @@ QGoTrackEditingWidget::updateCurrentActorSelection(vtkObject *caller)
     }
   else
     {
-    MeshContainer::MultiIndexContainerTraceIDIterator iter, c_end;
+    MeshContainer::MultiIndexContainerTraceIDIterator iter;
     vtkIntArray* testArray =
         static_cast<vtkIntArray*>(m_CurrentActor->GetMapper()->GetInput()
             ->GetPointData()->GetArray("MESH"));
     iter = m_MeshContainer->m_Container.get< TraceID >().find( testArray->GetValue(0) );
-    c_end = m_MeshContainer->m_Container.get< TraceID >().end();
-    merge< MeshContainer::MultiIndexContainerTraceIDIterator >(iter, c_end);
+    assert(iter != m_MeshContainer->m_Container.get< TraceID >().end() );
+    merge(iter);
     }
 }
 
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-template< class TIterator >
 void
-QGoTrackEditingWidget::merge(TIterator iBegin, TIterator iEnd)
+QGoTrackEditingWidget::merge(MeshContainer::MultiIndexContainerTraceIDIterator iBegin)
 {
-  if ( iBegin != iEnd )
+  if ( m_SecondClick )
     {
-    if ( m_SecondClick )
-      {
-      mergeTrack(m_FirstMeshID, iBegin->TraceID);
-      }
-    else
-      {
-      m_FirstMeshID    = iBegin->TraceID;
-      m_FirstMeshActor = m_CurrentActor;
-      m_StatusBar->showMessage("Select another mesh to merge tracks");
-      }
-    highlightFirstActor(!m_SecondClick);
+    mergeTrack(m_FirstMeshID, iBegin->TraceID);
     }
+  else
+    {
+    m_FirstMeshID    = iBegin->TraceID;
+    m_FirstMeshActor = m_CurrentActor;
+    m_StatusBar->showMessage("Select another mesh to merge tracks");
+    }
+  highlightFirstActor(!m_SecondClick);
 }
 
 //-------------------------------------------------------------------------

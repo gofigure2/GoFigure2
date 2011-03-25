@@ -162,7 +162,7 @@ private:
    */
   bool    mergeTrack( const unsigned int& iFirstMesh, const unsigned int& iSecondMesh);
 
-  template< class TIterator > void merge( TIterator iBegin, TIterator iEnd );
+  void    merge( MeshContainer::MultiIndexContainerTraceIDIterator iBegin);
 
   /**
    * \brief Get the borders of the given track.
