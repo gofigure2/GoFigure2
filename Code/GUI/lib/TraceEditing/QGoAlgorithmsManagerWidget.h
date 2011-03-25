@@ -39,13 +39,13 @@
 #include <QStackedWidget>
 #include <QStackedLayout>
 #include <QVBoxLayout>
-#include <QFormLayout.h>
+#include <QFormLayout>
 #include <QComboBox>
 #include "QGoAlgorithmWidget.h"
 
 /**
  * \class QGoAlgorithmsManagerWidget
- * \ingroup GUI 
+ * \ingroup GUI
  * \brief manages all the algorithms widget for a same mode,
  has a combobox with the name of the methods which display a different
  QGoAlgorithmWidget depending on the method selected in the combobox
@@ -55,7 +55,7 @@ class QGoAlgorithmsManagerWidget:
 {
   Q_OBJECT
 public:
-  explicit QGoAlgorithmsManagerWidget(std::string iModeName, 
+  explicit QGoAlgorithmsManagerWidget(std::string iModeName,
     std::vector<QString> iVectChannels, QStringList iListTime, QWidget *iParent = 0);
   ~QGoAlgorithmsManagerWidget();
 
@@ -64,13 +64,13 @@ public:
   of the method associated in the combobox to display it,
   including the parameters and the advanced parameters
   displayed in an expandable box
-  \param[in] iAlgoWidget widget with all the parameters for the 
+  \param[in] iAlgoWidget widget with all the parameters for the
   algorithm
   */
   void AddMethod(QGoAlgorithmWidget* iAlgoWidget);
 
   /**
-  \brief set the current index in the combobox to iIndex and 
+  \brief set the current index in the combobox to iIndex and
   get the corresponding widget to display
   \param[in] iIndex index to be displayed as the current one
   */
@@ -78,7 +78,7 @@ public:
 
   void SetCurrentChannel(QString iChannel);
 
-  
+
   void SetTSliceForClassicView(QString iTimePoint);
 
   void SetTSliceForDopplerView(QStringList iListTimePoints, int iIndexChannel);
@@ -90,7 +90,7 @@ public:
   std::string GetModeName();
 
   /**
-  \brief return true if it has at least one QGoAlgorithmWidget in 
+  \brief return true if it has at least one QGoAlgorithmWidget in
   the stackedWidgets
   \return false if there is no algorithm
   */
@@ -110,13 +110,13 @@ signals:
 protected:
   QVBoxLayout*                 m_VBoxLayout;
   QComboBox*                   m_MethodComboBox;
-  QStackedWidget*              m_MethodWidgets; 
+  QStackedWidget*              m_MethodWidgets;
   std::string                  m_ModeName;
   QComboBox*                   m_ChannelComboBox;
   QComboBox*                   m_TimeComboBox;
   QStringList                  m_ListTimePoints;
   /**
-  \brief add the different widgets, buttons and fill the comboboxes 
+  \brief add the different widgets, buttons and fill the comboboxes
   for channel and timepoint
   \param[in] iListChannels list of the names of the channels
   \param[in] iListTime list of the timepoints
@@ -125,8 +125,8 @@ protected:
 
  protected slots:
   /**
-  \brief after button clicked signal is emitted, get the current widget 
-  of the stackedwidgets and call the method in QGoAlgoWidget to make 
+  \brief after button clicked signal is emitted, get the current widget
+  of the stackedwidgets and call the method in QGoAlgoWidget to make
   it emit a signal
   */
   void EmitApplyAlgo();

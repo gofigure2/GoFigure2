@@ -126,8 +126,8 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_YTileCoord(0),
   m_ZTileCoord(0),
   m_TCoord(-1),
-  m_TraceWidgetRequiered(false),
-  m_MeshEditingWidget(NULL)
+  m_MeshEditingWidget(NULL),
+  m_TraceWidgetRequiered(false)
 {
   m_Image = vtkImageData::New();
   m_Seeds = vtkPoints::New();
@@ -392,9 +392,9 @@ QGoTabImageView3DwT::CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax)
 
   //m_MeshSegmentationDockWidget =
   //  new QGoMeshSegmentationBaseDockWidget(this, m_Seeds, &m_InternalImages);
- 
+
   this->m_MeshEditingWidget = new QGoMeshEditingWidgetManager(
-    this->m_ChannelNames, iTimeMin, iTimeMax, m_Seeds, 
+    this->m_ChannelNames, iTimeMin, iTimeMax, m_Seeds,
     &m_InternalImages, &m_TCoord);
 
   QObject::connect(this->m_MeshEditingWidget,
@@ -432,7 +432,7 @@ QGoTabImageView3DwT::CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax)
   /*QObject::connect( m_MeshSegmentationDockWidget,
                     SIGNAL( ReinitializeInteractorActivated(bool) ),
                     this,
-                    SLOT( DefaultInteractorBehavior(bool) ) ); seems useless for now 
+                    SLOT( DefaultInteractorBehavior(bool) ) ); seems useless for now
     as we are in defaultmode as soon as the seedinteractorbehaviour is called
 
 
@@ -3414,7 +3414,7 @@ QGoTabImageView3DwT::UpdateMeshEditingWidget()
         ListTimePoints.append(tr("%1").arg(MinTimePoint) );
         }
       ListTimePoints.append(tr("%1").arg(this->m_TCoord));
-      if (TDopplerMax < MaxTimePoint ) 
+      if (TDopplerMax < MaxTimePoint )
         {
         ListTimePoints.append(tr("%1").arg(TDopplerMax));
         }
@@ -3422,7 +3422,7 @@ QGoTabImageView3DwT::UpdateMeshEditingWidget()
         {
         ListTimePoints.append(tr("%1").arg(MaxTimePoint));
         }
-      this->m_MeshEditingWidget->SetTSliceForDopplerView(ListTimePoints, 
+      this->m_MeshEditingWidget->SetTSliceForDopplerView(ListTimePoints,
         this->m_ChannelOfInterest);
       }
     }
