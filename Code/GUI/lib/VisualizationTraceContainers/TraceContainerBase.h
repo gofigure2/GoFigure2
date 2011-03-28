@@ -232,32 +232,33 @@ public:
 
       if ( id_it != m_Container.get< TraceID >().end() )
         {
-        MultiIndexContainerElementType* temp =
-            const_cast<MultiIndexContainerElementType*>(&(*id_it));
-        temp->Highlighted = false;
-        temp->Visible = false;
+        bool test = false;
+        m_Container.get< TraceID >().
+            modify( id_it , change_visible<MultiIndexContainerElementType>(test) );
+        m_Container.get< TraceID >().
+            modify( id_it , change_highlighted<MultiIndexContainerElementType>(test) );
 
         vtkProperty *tproperty = vtkProperty::New();
         tproperty->SetColor(id_it->rgba[0], id_it->rgba[1], id_it->rgba[2]);
         tproperty->SetOpacity(id_it->rgba[3]);
         tproperty->SetLineWidth( this->m_IntersectionLineWidth );
 
-        if ( temp->Nodes )
+        if ( id_it->Nodes )
           {
-          temp->Visible = id_it->Visible;
+          bool test2 = id_it->Visible;
+          m_Container.get< TraceID >().
+              modify( id_it , change_visible<MultiIndexContainerElementType>( test2 ) );
 
           std::vector< vtkActor * > actor =
-              this->m_ImageView->AddContour( temp->Nodes, tproperty );
+              this->m_ImageView->AddContour( id_it->Nodes, tproperty );
 
-          temp->ActorXY = actor[0];
-          temp->ActorXZ = actor[1];
-          temp->ActorYZ = actor[2];
-          temp->ActorXYZ = actor[3];
+          m_Container.get< TraceID >().
+              modify( id_it , change_actors<MultiIndexContainerElementType>( actor ) );
 
           typedef void ( QGoImageView3D::*ImageViewMember )(const int &, vtkActor *);
           ImageViewMember f;
 
-          if ( temp->Visible )
+          if ( id_it->Visible )
             {
             f = &QGoImageView3D::AddActor;
             }
@@ -274,7 +275,8 @@ public:
           }
         else
           {
-          temp->Visible = false;
+          m_Container.get< TraceID >().
+              modify( id_it , change_visible<MultiIndexContainerElementType>(test) );
           }
         }
       ++it;
@@ -297,18 +299,20 @@ public:
     const bool & iHighlighted,
     const bool & iVisible)
     {
-    MultiIndexContainerElementType* temp =
-        const_cast<MultiIndexContainerElementType*>(&(*iIt));
+
+    using boost::multi_index::get;
 
     if ( iActors.size() == 4 )
       {
-      temp->ActorXY = iActors[0];
-      temp->ActorXZ = iActors[1];
-      temp->ActorYZ = iActors[2];
-      temp->ActorXYZ = iActors[3];
+      m_Container.get< TIndex >().
+          modify( iIt , change_actors<MultiIndexContainerElementType>(iActors) );
       }
-    temp->Highlighted = iHighlighted;
-    temp->Visible = iVisible;
+    bool highlighted = iHighlighted;
+    bool visible = iVisible;
+    m_Container.get< TIndex >().
+        modify( iIt , change_visible<MultiIndexContainerElementType>(visible) );
+    m_Container.get< TIndex >().
+        modify( iIt , change_highlighted<MultiIndexContainerElementType>(highlighted) );
 
     typedef void ( QGoImageView3D::*ImageViewMember )(const int &, vtkActor *);
     ImageViewMember f;
@@ -634,11 +638,11 @@ protected:
         }
 
       // Note: it->Highlighted is the status before picking the actor
-      bool highlighttt = false;
+      bool checked = false;
       if ( !it->Highlighted )
         {
         oState = Qt::Checked;
-        highlighttt = true;
+        checked = true;
         }
       else
         {
@@ -646,7 +650,7 @@ protected:
         }
 
       m_Container.get< TraceID >().
-          modify( it , change_highlighted<MultiIndexContainerElementType>(highlighttt) );
+          modify( it , change_highlighted<MultiIndexContainerElementType>(checked) );
 
       assert( m_ImageView );
 
@@ -668,9 +672,8 @@ protected:
     if ( it->Visible != iState )
       {
       it->SetActorVisibility( iState );
-      MultiIndexContainerElementType* tempStructure =
-          const_cast<MultiIndexContainerElementType*>(&(*it));
-      tempStructure->Visible = iState;
+      m_Container.get< TraceID >().
+          modify( it , change_visible<MultiIndexContainerElementType>(iState) );
       }
     }
 };
