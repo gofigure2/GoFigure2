@@ -2592,25 +2592,22 @@ QGoTabImageView3DwT::HighlightPickedActor()
   // mesh ID first - higher probability?
   if( temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("MESH") )
   {
-    vtkIntArray* testArray =
-        static_cast<vtkIntArray*>(temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("MESH"));
-    m_MeshContainer->UpdateElementHighlighting(testArray->GetValue(0));
+    m_MeshContainer->UpdateElementHighlighting(
+        temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("MESH")->GetTuple1(0));
     return;
   }
 
   if( temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("TRACK") )
   {
-    vtkIntArray* testArray =
-        static_cast<vtkIntArray*>(temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("TRACK"));
-    m_TrackContainer->UpdateElementHighlighting(testArray->GetValue(0));
+    m_TrackContainer->UpdateElementHighlighting(
+        temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("TRACK")->GetTuple1(0));
     return;
   }
 
   if( temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("CONTOUR") )
   {
-    vtkIntArray* testArray =
-        static_cast<vtkIntArray*>(temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("CONTOUR"));
-    m_ContourContainer->UpdateElementHighlighting(testArray->GetValue(0));
+    m_ContourContainer->UpdateElementHighlighting(
+        temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("CONTOUR")->GetTuple1(0));
     return;
   }
 }
@@ -2623,28 +2620,27 @@ QGoTabImageView3DwT::VisibilityPickedActor()
 {
   vtkActor *temp_actor = m_ImageView->GetCurrentActor();
 
-  // mesh ID first - higher probability?
   if( temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("MESH") )
   {
-    vtkIntArray* testArray =
-        static_cast<vtkIntArray*>(temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("MESH"));
-    m_MeshContainer->UpdateElementVisibility( testArray->GetValue(0), m_ImageView->GetCurrentState() );
+    m_MeshContainer->UpdateElementVisibility(
+        temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("MESH")->GetTuple1(0),
+        m_ImageView->GetCurrentState() );
     return;
   }
 
   if( temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("TRACK") )
   {
-    vtkIntArray* testArray =
-        static_cast<vtkIntArray*>(temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("TRACK"));
-    m_TrackContainer->UpdateElementVisibility(testArray->GetValue(0), m_ImageView->GetCurrentState() );
+    m_TrackContainer->UpdateElementVisibility(
+        temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("TRACK")->GetTuple1(0),
+        m_ImageView->GetCurrentState() );
     return;
   }
 
   if( temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("CONTOUR") )
   {
-    vtkIntArray* testArray =
-        static_cast<vtkIntArray*>(temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("CONTOUR"));
-    m_ContourContainer->UpdateElementVisibility( testArray->GetValue(0), m_ImageView->GetCurrentState() );
+    m_ContourContainer->UpdateElementVisibility(
+        temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("CONTOUR")->GetTuple1(0),
+        m_ImageView->GetCurrentState() );
     return;
   }
 

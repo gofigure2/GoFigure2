@@ -903,9 +903,13 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
   {
     testArray = static_cast<vtkIntArray*>(dataset->GetPointData()->GetArray("MESH"));
   }
-  else if( dataset->GetPointData()->GetArray("CONTOUR") )
+  else if ( dataset->GetPointData()->GetArray("CONTOUR") )
   {
     testArray = static_cast<vtkIntArray*>(dataset->GetPointData()->GetArray("CONTOUR"));
+  }
+  else if( dataset->GetPointData()->GetArray("DIVISION") )
+  {
+    testArray = static_cast<vtkIntArray*>(dataset->GetPointData()->GetArray("DIVISION"));
   }
 
   vtkCamera *cam = NULL;

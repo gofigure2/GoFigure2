@@ -49,12 +49,27 @@
 #include "vtkDataSet.h"
 #include "vtkPointData.h"
 
+#include "TraceStructure.h"
+
 #include "boost/multi_index_container.hpp"
 #include "boost/multi_index/member.hpp"
 #include "boost/multi_index/hashed_index.hpp"
 #include "boost/multi_index/ordered_index.hpp"
 #include "boost/numeric/conversion/cast.hpp"
 #include "boost/lexical_cast.hpp"
+
+template <class T> struct change_highlight
+{
+  change_highlight(bool& iHighlight):new_highlight(iHighlight){}
+
+  void operator()(T& iStructure)
+  {
+    iStructure.Highlighted = new_highlight;
+  }
+
+private:
+  bool new_highlight;
+};
 
 /**
  * \class TraceContainerBase
@@ -577,18 +592,19 @@ protected:
         }
 
       // Note: it->Highlighted is the status before picking the actor
+      bool highlighttt = false;
       if ( !it->Highlighted )
         {
         oState = Qt::Checked;
+        highlighttt = true;
         }
       else
         {
         oState = Qt::Unchecked;
         }
 
-      MultiIndexContainerElementType* tempStructure =
-          const_cast<MultiIndexContainerElementType*>(&(*it));
-      tempStructure->Highlighted = !it->Highlighted;
+      m_Container.get< TraceID >().
+          modify( it , change_highlight<MultiIndexContainerElementType>(highlighttt) );
 
       assert( m_ImageView );
 

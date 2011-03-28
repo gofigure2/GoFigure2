@@ -324,7 +324,6 @@ TrackContainer::
 UpdatePointsForATrack(unsigned int iTrackID,
                       std::list< double * > iListCenterBoundingBoxes)
 {
-  std::cout << "update points..." << std::endl;
   assert( iTrackID != 0 );
 
   assert ( this->m_ImageView );
@@ -344,8 +343,6 @@ UpdatePointsForATrack(unsigned int iTrackID,
     //Create new polydata (new address)
     mother->Nodes = vtkPolyData::New();
     }
-
-  std::cout << "update pd..." << std::endl;
 
   // update the polydata (which represents the current track)
   UpdateTrackStructurePolyData( *mother );
@@ -715,7 +712,7 @@ CreateDivisionActor( unsigned int iMother, unsigned int iDaughter1, unsigned int
 
   // create actors and add it to the visualization
   std::vector< vtkActor * > divisionActors =
-        m_ImageView->AddContour( division, trace_property );
+        this->m_ImageView->AddContour( division, trace_property );
 
   this->m_ImageView->AddActor(3, divisionActors[3]);
 
