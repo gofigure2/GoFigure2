@@ -1373,10 +1373,10 @@ void QGoPrintDatabase::SetTracksManager()
                               std::list<unsigned int> ) ) );
 
    QObject::connect( this->m_TracksManager,
-                   SIGNAL ( NewLineageToCreateFromCheckedTracks( std::list<unsigned int>, unsigned int,
+                   SIGNAL ( NewLineageToCreateFromTracks( std::list<unsigned int>, unsigned int,
                             std::list<unsigned int> )),
                      this,
-                   SLOT( CreateNewLineageFromCheckedTracks(std::list< unsigned int >, unsigned int,
+                   SLOT( CreateNewLineageFromTracks(std::list< unsigned int >, unsigned int,
                             std::list<unsigned int> ) ) );
 
   this->m_TracksManager->SetSelectedCollection(
@@ -1560,7 +1560,7 @@ void QGoPrintDatabase::CreateNewMeshFromCheckedContours(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoPrintDatabase::CreateNewLineageFromCheckedTracks(
+void QGoPrintDatabase::CreateNewLineageFromTracks(
   std::list< unsigned int > iListCheckedTracks, unsigned int iTrackRoot,
   std::list< unsigned int > iListLineagesToDelete)
 {

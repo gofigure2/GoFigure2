@@ -702,13 +702,13 @@ protected slots:
   void CreateNewMeshFromCheckedContours(std::list< unsigned int > iListCheckedContours);
 
   /**
-  \brief slot connected to the signal NewLineageToCreateFromCheckedTracks() emitted by
+  \brief slot connected to the signal NewLineageToCreateFromTracks() emitted by
   the m_TracksManager
-  \param[in] iListCheckedTracks list of the tracksIDs of the checked tracks in the TW
+  \param[in] iListTracks list of the tracksIDs to be part of the new lineage
   \param[in] iTrackIDRoot ID of the track to be the root of the new lineage to be created
   \param[in] iLineagesToDelete
   */
-  void CreateNewLineageFromCheckedTracks(std::list< unsigned int > iListCheckedTracks,
+  void CreateNewLineageFromTracks(std::list< unsigned int > iListCheckedTracks,
     unsigned int iTrackIDRoot, std::list<unsigned int> iLineagesToDelete);
 
   /**

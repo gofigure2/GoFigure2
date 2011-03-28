@@ -41,6 +41,7 @@
 #include "QGoDBTraceManager.h"
 #include "QGoGUILibConfigure.h"
 #include "TrackContainer.h"
+#include "GoDBTrackFamilyRow.h"
 
 class TrackStructure;
 
@@ -149,7 +150,7 @@ signals:
  
   void CheckedTracksToAddToSelectedLineage(std::list<unsigned int> iDaughtersID, unsigned int iLineageID,
     std::list<unsigned> iLineagesToDelete);
-  void NewLineageToCreateFromCheckedTracks( std::list<unsigned int> iCheckedTracksIDs, unsigned int iTrackIDRoot,
+  void NewLineageToCreateFromTracks( std::list<unsigned int> iCheckedTracksIDs, unsigned int iTrackIDRoot,
     std::list<unsigned> iLineagesToDelete);
 
 protected:
@@ -249,6 +250,27 @@ protected:
   std::list<unsigned int> GetTrackIDFromDaughtersFamilies( vtkMySQLDatabase* iDatabaseConnector,
     std::list<unsigned int> &ioTrackIDsOfTheFamilies);
 
+/**
+  \brief set the trackfamilyid of the daughters to 0 and delete the trackfamily
+  from the database and from the visu
+  */
+  void DeleteOneDivision(GoDBTrackFamilyRow iDivision, vtkMySQLDatabase* iDatabaseConnector);
+
+  /**
+  \brief build a message for the user to know which ones of the selected tracks have no division
+  and emit a signal for it to be printed into the status bar
+  \param[in] iTracksNoDivision IDs of the selected tracks that are not mothers
+  */
+  void PrintAMessageForTracksWithNoDivision(std::list<unsigned int> iTracksNoDivision);
+
+  /**
+  \brief set the trackfamilyID of the daughter to 0, check that the daughter is not a mother,
+  if she is, get all the tracks with the same lineage and emit a signal to create a lineage
+  from these tracks with the daughter as trackIDRoot
+  */
+  void UpdateValuesForTheFormerDaughterOfADeletedDivision(
+    unsigned int iDaughterID, vtkMySQLDatabase* iDatabaseConnector);
+
 protected slots:
 
   //virtual pure method in QGoDBTraceManager
@@ -288,6 +310,10 @@ protected slots:
   */
   void CreateCorrespondingTrackFamily();
 
+  /**
+  \brief slot called when the user chose "Delete the division for this tracks"
+  */
+  void DeleteTheDivisions();
   
 
 };

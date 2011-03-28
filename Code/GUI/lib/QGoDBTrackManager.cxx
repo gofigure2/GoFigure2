@@ -39,6 +39,8 @@
 #include <sstream>
 
 #include "TrackStructure.h"
+#include "ConvertToStringHelper.h"
+
 
 QGoDBTrackManager::QGoDBTrackManager(int iImgSessionID, QWidget *iparent) :
   QGoDBTraceManager(), m_TrackContainerInfoForVisu(NULL)
@@ -357,6 +359,8 @@ void QGoDBTrackManager::AddActionsContextMenu(QMenu *iMenu)
   this->m_CheckedTracesMenu->addAction( tr("Create a new division from checked %1s")
                                         .arg( this->m_TraceName.c_str() ),
                                         this, SLOT( CreateCorrespondingTrackFamily() ) );
+  this->m_CheckedTracesMenu->addAction( tr("Delete the division for this tracks") ,
+                                        this, SLOT( DeleteTheDivisions() ) );
 }
 
 //-------------------------------------------------------------------------
@@ -581,7 +585,7 @@ void QGoDBTrackManager::CreateCorrespondingTrackFamily()
       else
         {
         //the mother track already belong to the lineage, need to add the daughters and her families:
-        emit NewLineageToCreateFromCheckedTracks(
+        emit NewLineageToCreateFromTracks(
             this->m_TrackContainerInfoForVisu->GetHighlightedElementsTraceID(), MotherID,
             PreviousLineagesToDelete);
         }
@@ -724,4 +728,116 @@ void QGoDBTrackManager::LoadInfoVisuContainerForTrackFamilies(
   std::list<unsigned int> ListTrackIDs = 
     this->m_CollectionOfTraces->GetTrackFamilyDataFromDB(iDatabaseConnector);
   this->m_TrackContainerInfoForVisu->SetListOfDivisions(ListTrackIDs);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTrackManager::DeleteTheDivisions()
+{
+  //check that the checked traces are all mother, if not message in the status bar:
+  std::list<unsigned int> TrackIDNotMother = std::list<unsigned int>();
+  std::list<unsigned int> CheckedTracks = 
+    this->m_TrackContainerInfoForVisu->GetHighlightedElementsTraceID();
+  if (CheckedTracks.empty() )
+    {
+    QMessageBox msgBox;
+    msgBox.setText(
+          tr("Please select the MotherTracks you want the divisions to be deleted") );
+    msgBox.exec();
+    return;
+    }
+  emit NeedToGetDatabaseConnection();
+  std::list<unsigned int>::iterator iter = CheckedTracks.begin();
+  while (iter != CheckedTracks.end())
+    {
+    GoDBTrackFamilyRow Division;
+    Division.SetField("TrackIDMother", *iter);
+    int TrackFamilyToDelete = Division.DoesThisTrackFamilyAlreadyExists(this->m_DatabaseConnector);
+    if (TrackFamilyToDelete == -1) //the selected track is not a mother
+      {
+      TrackIDNotMother.push_back(*iter);
+      }
+    else
+      {
+      this->DeleteOneDivision(Division, this->m_DatabaseConnector);
+      }
+    //and get the corresponding trackfamily IDs
+    //delete the trackfamily IDs
+    //if the daugthers are mothers, create new lineages and update the lineageid for the tracks
+    ++iter;
+    }
+  this->PrintAMessageForTracksWithNoDivision(TrackIDNotMother);
+  emit DBConnectionNotNeededAnymore();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTrackManager::DeleteOneDivision(GoDBTrackFamilyRow iDivision,
+  vtkMySQLDatabase* iDatabaseConnector)
+{
+  //first, update the trackfamilyID for the daughters:
+  int Daughter1ID = ss_atoi<int>(iDivision.GetMapValue("TrackIDDaughter1") );
+  int Daughter2ID = ss_atoi<int>(iDivision.GetMapValue("TrackIDDaughter2") );
+
+  if (Daughter1ID != 0)
+    {
+    this->UpdateValuesForTheFormerDaughterOfADeletedDivision(Daughter1ID, iDatabaseConnector);
+    }
+  if (Daughter2ID != 0)
+    {
+    this->UpdateValuesForTheFormerDaughterOfADeletedDivision(Daughter2ID, iDatabaseConnector);
+    }
+
+  //delete from the visu: todo Nico:
+  //this->m_TrackContainerInfoForVisu->DeleteADivision(ss_atoi<int>(iDivision.GetMapValue("TrackIDMother") );
+  //delete the division from the database:
+  iDivision.DeleteFromDB(iDatabaseConnector);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTrackManager::PrintAMessageForTracksWithNoDivision(
+  std::list<unsigned int> iTracksNoDivision)
+{
+  if (!iTracksNoDivision.empty() )
+  {
+  std::string Message = "The following divisions of these tracks ";
+  std::list<unsigned int>::iterator iter = iTracksNoDivision.begin();
+  while (iter != iTracksNoDivision.end() )
+    {
+    Message += ConvertToString<unsigned int>(*iter);
+    Message += ", ";
+    ++iter;
+    }
+  Message += "have not been deleted as these tracks have no daughters";
+  emit PrintMessage(Message.c_str());
+  }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTrackManager::UpdateValuesForTheFormerDaughterOfADeletedDivision(
+  unsigned int iDaughterID, vtkMySQLDatabase* iDatabaseConnector)
+{
+  GoDBTrackFamilyRow Family;
+  Family.SetField<unsigned int>("TrackMotherID", iDaughterID);
+
+  if (Family.DoesThisTrackFamilyAlreadyExists(iDatabaseConnector) != -1) //if the daughter is a mother
+    {
+    GoDBTrackRow Daughter(iDaughterID, iDatabaseConnector);
+    Daughter.SetField<unsigned int>("TrackFamilyID", 0); //she is not a daughter anymore
+    Daughter.SaveInDB(iDatabaseConnector);
+
+    std::list<unsigned int> PreviousLineage;
+    PreviousLineage.push_back( ss_atoi<unsigned int>(Daughter.GetMapValue("LineageID") ) ); //get the previous lineage ID of the daughter
+   
+    std::list<unsigned int> TracksIDs = //get all the tracks belonging to this previous lineage
+      this->m_CollectionOfTraces->GetTraceIDsBelongingToCollectionID(iDatabaseConnector, PreviousLineage);
+
+    emit NewLineageToCreateFromTracks(TracksIDs, iDaughterID, PreviousLineage); //need to create a new lineage with them
+    }
+  else
+    {
+    this->UpdateTrackFamilyIDForDaughter(iDatabaseConnector, iDaughterID, 0); //if not a mother, just update the trackfamilyID
+    }
 }
