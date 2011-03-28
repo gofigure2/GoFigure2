@@ -147,8 +147,10 @@ signals:
   void TrackIDToBeModifiedWithWidget(std::list<unsigned int> iListTracksID);
   void MeshesToAddToTrack(std::list<unsigned int> iListMeshes, unsigned int iTrackID);
  
-  void CheckedTracksToAddToSelectedLineage(std::list<unsigned int> iDaughtersID, unsigned int iLineageID);
-  void NewLineageToCreateFromCheckedTracks( std::list<unsigned int> iCheckedTracksIDs, unsigned int iTrackIDRoot);
+  void CheckedTracksToAddToSelectedLineage(std::list<unsigned int> iDaughtersID, unsigned int iLineageID,
+    std::list<unsigned> iLineagesToDelete);
+  void NewLineageToCreateFromCheckedTracks( std::list<unsigned int> iCheckedTracksIDs, unsigned int iTrackIDRoot,
+    std::list<unsigned> iLineagesToDelete);
 
 protected:
   GoDBTWContainerForTrack *m_TWContainer;
@@ -235,6 +237,17 @@ protected:
     vtkMySQLDatabase* iDatabaseConnector,
     std::list<unsigned int> iListTracksID, unsigned int &ioMotherID,
     std::list<unsigned int> &ioDaughtersID);
+
+  /**
+  \brief get the lineage ids of the 2 daughters, then get all the tracks belonging
+  to these 2 lineages and push them into the ioTrackIDsOfTheFamilies.
+  \param[in] iDatabaseConnector connection to the database
+  \param[in,out] ioTrackIDsOfTheFamilies IDs of all the tracks that will belong to
+  the same lineage as the mother of the new created division
+  \return the lineage ids of the 2 daughters
+  */
+  std::list<unsigned int> GetTrackIDFromDaughtersFamilies( vtkMySQLDatabase* iDatabaseConnector,
+    std::list<unsigned int> &ioTrackIDsOfTheFamilies);
 
 protected slots:
 

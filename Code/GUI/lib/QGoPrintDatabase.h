@@ -702,9 +702,10 @@ protected slots:
   the m_TracksManager
   \param[in] iListCheckedTracks list of the tracksIDs of the checked tracks in the TW
   \param[in] iTrackIDRoot ID of the track to be the root of the new lineage to be created
+  \param[in] iLineagesToDelete
   */
   void CreateNewLineageFromCheckedTracks(std::list< unsigned int > iListCheckedTracks,
-    unsigned int iTrackIDRoot);
+    unsigned int iTrackIDRoot, std::list<unsigned int> iLineagesToDelete);
 
   /**
   \brief slot connected to the the signal CheckedTracesToAddToSelectedCollection
@@ -727,9 +728,12 @@ protected slots:
   lineages manager to create the division in the visu
   \param[in] iLineageID
   \param[in] iListDaughters ID of the tracks to be updated with lineageID
+  \param[in] iListLineagesToDelete list of lineageID that need to be deleted as they
+  don't have any tracks belonging to them anymore
   */
   void AddCheckedTracksToSelectedLineage(
-    std::list<unsigned int> iListDaughters, unsigned int iLineageID);
+    std::list<unsigned int> iListDaughters, unsigned int iLineageID, 
+    std::list<unsigned int> iListLineagesToDelete);
 
   /**
   \brief emit a signal TraceToReedit and set m_ReeditMode to true
