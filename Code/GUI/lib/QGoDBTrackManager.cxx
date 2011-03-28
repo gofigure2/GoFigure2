@@ -542,7 +542,7 @@ void QGoDBTrackManager::CreateCorrespondingTrackFamily()
     {
     QMessageBox msgBox;
     msgBox.setText(
-      tr("Please select 3 tracks to add your division/connection/junction ???") );
+      tr("Please select 3 tracks to add your division") );
     msgBox.exec();
     return;
     }
@@ -598,7 +598,7 @@ bool QGoDBTrackManager::IdentifyMotherDaughtersToCreateTrackFamily(
     {
     QMessageBox msgBox;
     msgBox.setText(
-      tr("Can not create the lineage as two of your selected tracks can be the mother") );
+      tr("Can not create the division as two of your selected tracks can be the mother") );
     msgBox.exec();
     return false;
     }
@@ -619,7 +619,7 @@ bool QGoDBTrackManager::IdentifyMotherDaughtersToCreateTrackFamily(
         {
         QMessageBox msgBox;
         msgBox.setText(
-          tr("Can not create the lineage as one daughter is overlapping the mother") );
+          tr("Can not create the division as one daughter is overlapping the mother") );
         msgBox.exec();
         return false;
         }
@@ -644,13 +644,13 @@ int QGoDBTrackManager::CreateTrackFamily(vtkMySQLDatabase* iDatabaseConnector,
     {
     QMessageBox msgBox;
     msgBox.setText(
-          tr("Can not create the lineage as the Mother track is already mother of other daugthers") );
+          tr("Can not create the division as the Mother track is already mother of other daugthers") );
     msgBox.exec();
     return oTrackFamilyID;
     }
   if(iDaughtersID.size() != 2)
     {
-    std::cout<<"Pb, there is more than 2 daughters to create the lineage !!";
+    std::cout<<"Pb, there is more than 2 daughters to create the division !!";
     std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
     std::cout << std::endl;
     return oTrackFamilyID;
