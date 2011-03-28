@@ -237,7 +237,13 @@ protected:
     std::list<unsigned int> iListTracksID, unsigned int &ioMotherID,
     std::list<unsigned int> &ioDaughtersID);
 
+  /**
+  \brief set the trackfamilyid of the daughters to 0 and delete the trackfamily
+  from the database and from the visu
+  */
   void DeleteOneDivision(GoDBTrackFamilyRow iDivision, vtkMySQLDatabase* iDatabaseConnector);
+
+  void PrintAMessageForTracksWithNoDivision(std::list<unsigned int> iTracksNoDivision);
 
 protected slots:
 

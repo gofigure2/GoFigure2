@@ -701,6 +701,14 @@ void QGoDBTrackManager::DeleteTheDivisions()
   std::list<unsigned int> TrackIDNotMother = std::list<unsigned int>();
   std::list<unsigned int> CheckedTracks = 
     this->m_TrackContainerInfoForVisu->GetHighlightedElementsTraceID();
+  if (CheckedTracks.empty() )
+    {
+    QMessageBox msgBox;
+    msgBox.setText(
+          tr("Please select the MotherTracks you want the divisions to be deleted") );
+    msgBox.exec();
+    return;
+    }
   emit NeedToGetDatabaseConnection();
   std::list<unsigned int>::iterator iter = CheckedTracks.begin();
   while (iter != CheckedTracks.end())
@@ -721,6 +729,7 @@ void QGoDBTrackManager::DeleteTheDivisions()
     //if the daugthers are mothers, create new lineages and update the lineageid for the tracks
     ++iter;
     }
+  this->PrintAMessageForTracksWithNoDivision(TrackIDNotMother);
   emit DBConnectionNotNeededAnymore();
 }
 //-------------------------------------------------------------------------
@@ -735,6 +744,7 @@ void QGoDBTrackManager::DeleteOneDivision(GoDBTrackFamilyRow iDivision,
 
   if (Daughter1ID != 0)
     {
+    //create a new lineage if the Daughter is a mother
     this->UpdateTrackFamilyIDForDaughter(iDatabaseConnector, Daughter1ID, 0);
     }
   if (Daughter2ID != 0)
@@ -746,4 +756,24 @@ void QGoDBTrackManager::DeleteOneDivision(GoDBTrackFamilyRow iDivision,
   //this->m_TrackContainerInfoForVisu->DeleteADivision(ss_atoi<int>(iDivision.GetMapValue("TrackIDMother") );
   //delete the division from the database:
   iDivision.DeleteFromDB(iDatabaseConnector);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTrackManager::PrintAMessageForTracksWithNoDivision(
+  std::list<unsigned int> iTracksNoDivision)
+{
+  if (!iTracksNoDivision.empty() )
+  {
+  std::string Message = "The following divisions of these tracks ";
+  std::list<unsigned int>::iterator iter = iTracksNoDivision.begin();
+  while (iter != iTracksNoDivision.end() )
+    {
+    Message += ConvertToString<unsigned int>(*iter);
+    Message += ", ";
+    ++iter;
+    }
+  Message += "have not been deleted as these tracks have no daughters";
+  emit PrintMessage(Message.c_str());
+  }
 }
