@@ -283,3 +283,15 @@ void GoDBRow::AddConditions(
 
   ioFieldWithValue.push_back(temp);
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void GoDBRow::DeleteFromDB(
+  vtkMySQLDatabase *iDatabaseConnector)
+{
+  if (this->GetMapValue(this->m_TableIDName) != "0")
+    {
+    DeleteRow(iDatabaseConnector,
+      this->m_TableName, this->m_TableIDName, this->GetMapValue(this->m_TableIDName) );
+    }
+}

@@ -1131,7 +1131,8 @@ void QGoPrintDatabase::DeleteCheckedMeshes()
 void QGoPrintDatabase::DeleteCheckedTracks()
 {
   this->DeleteCheckedTraces< QGoDBTrackManager, QGoDBMeshManager, QGoDBMeshManager >(
-    this->m_TracksManager, this->m_MeshesManager, this->m_MeshesManager, true);
+    //this->m_TracksManager, this->m_MeshesManager, this->m_MeshesManager, true);
+    this->m_TracksManager, this->m_MeshesManager, this->m_MeshesManager);
 }
 
 //--------------------------------------------------------------------------
@@ -1366,13 +1367,17 @@ void QGoPrintDatabase::SetTracksManager()
 
    QObject::connect(this->m_TracksManager,
                    SIGNAL(CheckedTracksToAddToSelectedLineage(
-                              std::list< unsigned int >, unsigned int ) ), this,
-                   SLOT( AddCheckedTracksToSelectedLineage(std::list< unsigned int >, unsigned int ) ) );
+                              std::list< unsigned int >, unsigned int,
+                              std::list<unsigned int> ) ), this,
+                   SLOT( AddCheckedTracksToSelectedLineage(std::list< unsigned int >, unsigned int,
+                              std::list<unsigned int> ) ) );
 
    QObject::connect( this->m_TracksManager,
-                   SIGNAL ( NewLineageToCreateFromCheckedTracks( std::list<unsigned int>, unsigned int )),
-                   this,
-                   SLOT( CreateNewLineageFromCheckedTracks(std::list< unsigned int >, unsigned int ) ) );
+                   SIGNAL ( NewLineageToCreateFromTracks( std::list<unsigned int>, unsigned int,
+                            std::list<unsigned int> )),
+                     this,
+                   SLOT( CreateNewLineageFromTracks(std::list< unsigned int >, unsigned int,
+                            std::list<unsigned int> ) ) );
 
   this->m_TracksManager->SetSelectedCollection(
     this->m_TraceWidget->GetPointerCollectionData() );
@@ -1555,17 +1560,21 @@ void QGoPrintDatabase::CreateNewMeshFromCheckedContours(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoPrintDatabase::CreateNewLineageFromCheckedTracks(
-  std::list< unsigned int > iListCheckedTracks, unsigned int iTrackRoot )
+void QGoPrintDatabase::CreateNewLineageFromTracks(
+  std::list< unsigned int > iListCheckedTracks, unsigned int iTrackRoot,
+  std::list< unsigned int > iListLineagesToDelete)
 {
   this->OpenDBConnection();
   unsigned int NewLineageID =
     this->m_LineagesManager->CreateNewLineageWithTrackRoot(
       this->m_DatabaseConnector, iTrackRoot);
 
-  this->AddCheckedTracesToCollection< QGoDBTrackManager, QGoDBLineageManager >(
-    this->m_TracksManager, this->m_LineagesManager,
-    NewLineageID, iListCheckedTracks);
+  //this->AddCheckedTracesToCollection< QGoDBTrackManager, QGoDBLineageManager >(
+  //  this->m_TracksManager, this->m_LineagesManager,
+  //  NewLineageID, iListCheckedTracks);
+
+  this->AddCheckedTracksToSelectedLineage
+    (iListCheckedTracks, NewLineageID, iListLineagesToDelete);
 
   this->CloseDBConnection();
 }
@@ -1678,7 +1687,8 @@ void QGoPrintDatabase::SplitMergeTracksWithWidget(
       {
       this->DeleteListTraces< QGoDBTrackManager, QGoDBMeshManager, QGoDBMeshManager >(
         this->m_TracksManager, this->m_MeshesManager, this->m_MeshesManager,
-        ListTracksToDelete, true);
+        //ListTracksToDelete, true);
+        ListTracksToDelete);
       }
     }
   delete win;
@@ -1687,8 +1697,13 @@ void QGoPrintDatabase::SplitMergeTracksWithWidget(
 
 //--------------------------------------------------------------------------
 void QGoPrintDatabase::AddCheckedTracksToSelectedLineage(
-  std::list<unsigned int> iListDaughters, unsigned int iLineageID)
+  std::list<unsigned int> iListDaughters, unsigned int iLineageID, 
+  std::list<unsigned int> iListLineagesToDelete)
 {
   this->AddCheckedTracesToCollection< QGoDBTrackManager, QGoDBLineageManager >(
     this->m_TracksManager, this->m_LineagesManager, iLineageID, iListDaughters);
+
+  this->DeleteListTraces< QGoDBLineageManager, QGoDBLineageManager > (
+    this->m_LineagesManager, this->m_LineagesManager, this->m_TracksManager, 
+    iListLineagesToDelete, true);
 }
