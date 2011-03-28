@@ -502,7 +502,8 @@ protected:
   template< typename TTrace, typename TCollection, typename TCollectionOf >
   void DeleteCheckedTraces(TTrace *iTraceManager,
                     TCollection *iCollectionManager, TCollectionOf *iCollectionOfManager,
-                    bool track = false)
+                    bool lineage = false)
+                    //bool track = false)
   {
     std::list< unsigned int > ListTracesToDelete =
       iTraceManager->GetListHighlightedIDs();
@@ -511,7 +512,8 @@ protected:
       (iTraceManager, iCollectionOfManager, ListTracesToDelete);
     this->OpenDBConnection();
     iTraceManager->DeleteCheckedTraces(this->m_DatabaseConnector);
-    if ( !ListCollectionsIDs.empty() || track )
+    //if ( !ListCollectionsIDs.empty() || track )
+    if ( !ListCollectionsIDs.empty() || lineage )
       {
       iCollectionManager->UpdateBoundingBoxes(this->m_DatabaseConnector, ListCollectionsIDs);
       }
@@ -534,14 +536,16 @@ protected:
   void DeleteListTraces(TTrace *iTraceManager,
                     TCollection *iCollectionManager, TCollectionOf *iCollectionOfManager,
                     std::list<unsigned int> iListTracesToDelete,
-                    bool track = false)
+                    bool lineage = false)
+                    //bool track = false)
   {
     std::list<unsigned int> ListCollectionsIDs =
       this->UpdateCollectionDataForTracesToBeDeleted<TTrace, TCollectionOf>
       (iTraceManager, iCollectionOfManager, iListTracesToDelete);
     this->OpenDBConnection();
     iTraceManager->DeleteListTraces(this->m_DatabaseConnector, iListTracesToDelete);
-    if ( !ListCollectionsIDs.empty() || track )
+    //if ( !ListCollectionsIDs.empty() || track )
+    if ( !ListCollectionsIDs.empty() || lineage )
       {
       iCollectionManager->UpdateBoundingBoxes(this->m_DatabaseConnector, ListCollectionsIDs);
       }

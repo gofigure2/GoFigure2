@@ -1131,7 +1131,8 @@ void QGoPrintDatabase::DeleteCheckedMeshes()
 void QGoPrintDatabase::DeleteCheckedTracks()
 {
   this->DeleteCheckedTraces< QGoDBTrackManager, QGoDBMeshManager, QGoDBMeshManager >(
-    this->m_TracksManager, this->m_MeshesManager, this->m_MeshesManager, true);
+    //this->m_TracksManager, this->m_MeshesManager, this->m_MeshesManager, true);
+    this->m_TracksManager, this->m_MeshesManager, this->m_MeshesManager);
 }
 
 //--------------------------------------------------------------------------
@@ -1686,7 +1687,8 @@ void QGoPrintDatabase::SplitMergeTracksWithWidget(
       {
       this->DeleteListTraces< QGoDBTrackManager, QGoDBMeshManager, QGoDBMeshManager >(
         this->m_TracksManager, this->m_MeshesManager, this->m_MeshesManager,
-        ListTracksToDelete, true);
+        //ListTracksToDelete, true);
+        ListTracksToDelete);
       }
     }
   delete win;
@@ -1700,6 +1702,8 @@ void QGoPrintDatabase::AddCheckedTracksToSelectedLineage(
 {
   this->AddCheckedTracesToCollection< QGoDBTrackManager, QGoDBLineageManager >(
     this->m_TracksManager, this->m_LineagesManager, iLineageID, iListDaughters);
-  //this->DeleteListTraces< QGoDBLineageManager, QGoDBLineageManager > (
-  //  this->m_LineagesManager, this->m_LineagesManager, this->m_TracksManager, iListLineagesToDelete);
+
+  this->DeleteListTraces< QGoDBLineageManager, QGoDBLineageManager > (
+    this->m_LineagesManager, this->m_LineagesManager, this->m_TracksManager, 
+    iListLineagesToDelete, true);
 }
