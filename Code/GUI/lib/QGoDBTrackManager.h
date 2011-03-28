@@ -41,6 +41,7 @@
 #include "QGoDBTraceManager.h"
 #include "QGoGUILibConfigure.h"
 #include "TrackContainer.h"
+#include "GoDBTrackFamilyRow.h"
 
 class TrackStructure;
 
@@ -235,6 +236,8 @@ protected:
     vtkMySQLDatabase* iDatabaseConnector,
     std::list<unsigned int> iListTracksID, unsigned int &ioMotherID,
     std::list<unsigned int> &ioDaughtersID);
+
+  void DeleteOneDivision(GoDBTrackFamilyRow iDivision, vtkMySQLDatabase* iDatabaseConnector);
 
 protected slots:
 
