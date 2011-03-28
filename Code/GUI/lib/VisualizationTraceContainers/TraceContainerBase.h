@@ -58,18 +58,40 @@
 #include "boost/numeric/conversion/cast.hpp"
 #include "boost/lexical_cast.hpp"
 
-template <class T> struct change_highlight
+
+//-----------------------------------------------------------------------------
+
+template <class T> struct change_highlighted
 {
-  change_highlight(bool& iHighlight):new_highlight(iHighlight){}
+  change_highlighted(bool& iHighlight):highlighted(iHighlight){}
 
   void operator()(T& iStructure)
   {
-    iStructure.Highlighted = new_highlight;
+    iStructure.Highlighted = highlighted;
   }
 
 private:
-  bool new_highlight;
+  bool highlighted;
 };
+
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+
+template <class T> struct change_visible
+{
+  change_visible(bool& iVisibile):visible(iVisibile){}
+
+  void operator()(T& iStructure)
+  {
+    iStructure.Visible = visible;
+  }
+
+private:
+  bool visible;
+};
+
+//-----------------------------------------------------------------------------
 
 /**
  * \class TraceContainerBase
@@ -604,7 +626,7 @@ protected:
         }
 
       m_Container.get< TraceID >().
-          modify( it , change_highlight<MultiIndexContainerElementType>(highlighttt) );
+          modify( it , change_highlighted<MultiIndexContainerElementType>(highlighttt) );
 
       assert( m_ImageView );
 
