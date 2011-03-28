@@ -301,10 +301,10 @@ TraceContainerBase< TContainer >::UpdateElementHighlightingWithGivenTraceID(cons
       temp_property->Delete();
       }
 
-    MultiIndexContainerElementType* tempStructure =
-        const_cast<MultiIndexContainerElementType*>(&(*it));
-
-    tempStructure->Highlighted = !it->Highlighted;
+    bool highlighted = !it->Highlighted;
+    
+    m_Container.get< TraceID >().
+        modify( it , change_highlighted<MultiIndexContainerElementType>(highlighted) );
 
     assert ( m_ImageView );
 
@@ -361,10 +361,11 @@ TraceContainerBase< TContainer >::UpdateElementHighlightingWithGivenTraceIDsBase
           temp_property->Delete();
           }
 
-        MultiIndexContainerElementType* tempStructure =
-            const_cast<MultiIndexContainerElementType*>(&(*it));
+        bool highlight = iCheck;
 
-        tempStructure->Highlighted = iCheck;
+        m_Container.get< TraceID >().
+            modify( it , change_highlighted<MultiIndexContainerElementType>(highlight) );
+
         }
 
       ++constIterator;
@@ -434,11 +435,9 @@ TraceContainerBase< TContainer >::UpdateElementVisibilityWithGivenTraceIDsBase(c
           }
 
         it->SetActorVisibility(visible);
-
-        MultiIndexContainerElementType* tempStructure =
-            const_cast<MultiIndexContainerElementType*>(&(*it));
-
-        tempStructure->Visible = visible;
+        
+        m_Container.get< TraceID >().
+            modify( it , change_visible<MultiIndexContainerElementType>(visible) );
         }
 
       ++constIterator;
@@ -561,11 +560,11 @@ TraceContainerBase< TContainer >::UpdateElementVisibilityWithGivenTraceID(const 
       }
 
     it->SetActorVisibility(!it->Visible);
-
-    MultiIndexContainerElementType* tempStructure =
-        const_cast<MultiIndexContainerElementType*>(&(*it));
-
-    tempStructure->Visible = !it->Visible;
+    
+    bool visible = !it->Visible;
+    
+    m_Container.get< TraceID >().
+        modify( it , change_visible<MultiIndexContainerElementType>(visible) );
 
     assert ( m_ImageView );
 
