@@ -93,6 +93,26 @@ private:
 
 //-----------------------------------------------------------------------------
 
+//-----------------------------------------------------------------------------
+
+template <class T> struct change_actors
+{
+  change_actors(std::vector<vtkActor*>& iActors):actor(iActors){}
+
+  void operator()(T& iStructure)
+  {
+    iStructure.ActorXY = actor[0];
+    iStructure.ActorXZ = actor[1];
+    iStructure.ActorYZ = actor[2];
+    iStructure.ActorXYZ = actor[3];
+  }
+
+private:
+  std::vector<vtkActor*> actor;
+};
+
+//-----------------------------------------------------------------------------
+
 /**
  * \class TraceContainerBase
  * \tparam TContainer boost::multi_index_container of a given TraceStructure
