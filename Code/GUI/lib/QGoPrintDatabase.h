@@ -502,7 +502,8 @@ protected:
   template< typename TTrace, typename TCollection, typename TCollectionOf >
   void DeleteCheckedTraces(TTrace *iTraceManager,
                     TCollection *iCollectionManager, TCollectionOf *iCollectionOfManager,
-                    bool track = false)
+                    bool lineage = false)
+                    //bool track = false)
   {
     std::list< unsigned int > ListTracesToDelete =
       iTraceManager->GetListHighlightedIDs();
@@ -511,7 +512,8 @@ protected:
       (iTraceManager, iCollectionOfManager, ListTracesToDelete);
     this->OpenDBConnection();
     iTraceManager->DeleteCheckedTraces(this->m_DatabaseConnector);
-    if ( !ListCollectionsIDs.empty() || track )
+    //if ( !ListCollectionsIDs.empty() || track )
+    if ( !ListCollectionsIDs.empty() || lineage )
       {
       iCollectionManager->UpdateBoundingBoxes(this->m_DatabaseConnector, ListCollectionsIDs);
       }
@@ -534,14 +536,16 @@ protected:
   void DeleteListTraces(TTrace *iTraceManager,
                     TCollection *iCollectionManager, TCollectionOf *iCollectionOfManager,
                     std::list<unsigned int> iListTracesToDelete,
-                    bool track = false)
+                    bool lineage = false)
+                    //bool track = false)
   {
     std::list<unsigned int> ListCollectionsIDs =
       this->UpdateCollectionDataForTracesToBeDeleted<TTrace, TCollectionOf>
       (iTraceManager, iCollectionOfManager, iListTracesToDelete);
     this->OpenDBConnection();
     iTraceManager->DeleteListTraces(this->m_DatabaseConnector, iListTracesToDelete);
-    if ( !ListCollectionsIDs.empty() || track )
+    //if ( !ListCollectionsIDs.empty() || track )
+    if ( !ListCollectionsIDs.empty() || lineage )
       {
       iCollectionManager->UpdateBoundingBoxes(this->m_DatabaseConnector, ListCollectionsIDs);
       }
@@ -702,9 +706,10 @@ protected slots:
   the m_TracksManager
   \param[in] iListCheckedTracks list of the tracksIDs of the checked tracks in the TW
   \param[in] iTrackIDRoot ID of the track to be the root of the new lineage to be created
+  \param[in] iLineagesToDelete
   */
   void CreateNewLineageFromCheckedTracks(std::list< unsigned int > iListCheckedTracks,
-    unsigned int iTrackIDRoot);
+    unsigned int iTrackIDRoot, std::list<unsigned int> iLineagesToDelete);
 
   /**
   \brief slot connected to the the signal CheckedTracesToAddToSelectedCollection
@@ -727,9 +732,12 @@ protected slots:
   lineages manager to create the division in the visu
   \param[in] iLineageID
   \param[in] iListDaughters ID of the tracks to be updated with lineageID
+  \param[in] iListLineagesToDelete list of lineageID that need to be deleted as they
+  don't have any tracks belonging to them anymore
   */
   void AddCheckedTracksToSelectedLineage(
-    std::list<unsigned int> iListDaughters, unsigned int iLineageID);
+    std::list<unsigned int> iListDaughters, unsigned int iLineageID, 
+    std::list<unsigned int> iListLineagesToDelete);
 
   /**
   \brief emit a signal TraceToReedit and set m_ReeditMode to true
