@@ -357,6 +357,8 @@ void QGoDBTrackManager::AddActionsContextMenu(QMenu *iMenu)
   this->m_CheckedTracesMenu->addAction( tr("Create a new division from checked %1s")
                                         .arg( this->m_TraceName.c_str() ),
                                         this, SLOT( CreateCorrespondingTrackFamily() ) );
+  this->m_CheckedTracesMenu->addAction( tr("Delete the division for this tracks") ),
+                                        this, SLOT( DeleteTheDivisions() ) );
 }
 
 //-------------------------------------------------------------------------
@@ -687,4 +689,14 @@ void QGoDBTrackManager::LoadInfoVisuContainerForTrackFamilies(
   std::list<unsigned int> ListTrackIDs = 
     this->m_CollectionOfTraces->GetTrackFamilyDataFromDB(iDatabaseConnector);
   this->m_TrackContainerInfoForVisu->SetListOfDivisions(ListTrackIDs);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTrackManager::DeleteTheDivisions()
+{
+  //check that the checked traces are all mother, if not message in the status bar
+  //and get the corresponding trackfamily IDs
+  //delete the trackfamily IDs
+  //if the daugthers are mothers, create new lineages and update the lineageid for the tracks
 }

@@ -275,6 +275,10 @@ protected slots:
   */
   void CreateCorrespondingTrackFamily();
 
+  /**
+  \brief slot called when the user chose "Delete the division for this tracks"
+  */
+  void DeleteTheDivisions();
   
 
 };
