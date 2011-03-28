@@ -1370,9 +1370,9 @@ void QGoPrintDatabase::SetTracksManager()
                    SLOT( AddCheckedTracksToSelectedLineage(std::list< unsigned int >, unsigned int ) ) );
 
    QObject::connect( this->m_TracksManager,
-                   SIGNAL ( NewLineageToCreateFromCheckedTracks( std::list<unsigned int>, unsigned int )),
+                   SIGNAL ( NewLineageToCreateFromTracks( std::list<unsigned int>, unsigned int )),
                    this,
-                   SLOT( CreateNewLineageFromCheckedTracks(std::list< unsigned int >, unsigned int ) ) );
+                   SLOT( CreateNewLineageFromTracks(std::list< unsigned int >, unsigned int ) ) );
 
   this->m_TracksManager->SetSelectedCollection(
     this->m_TraceWidget->GetPointerCollectionData() );
@@ -1555,8 +1555,8 @@ void QGoPrintDatabase::CreateNewMeshFromCheckedContours(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoPrintDatabase::CreateNewLineageFromCheckedTracks(
-  std::list< unsigned int > iListCheckedTracks, unsigned int iTrackRoot )
+void QGoPrintDatabase::CreateNewLineageFromTracks(
+  std::list< unsigned int > iListTracks, unsigned int iTrackRoot )
 {
   this->OpenDBConnection();
   unsigned int NewLineageID =
@@ -1565,7 +1565,7 @@ void QGoPrintDatabase::CreateNewLineageFromCheckedTracks(
 
   this->AddCheckedTracesToCollection< QGoDBTrackManager, QGoDBLineageManager >(
     this->m_TracksManager, this->m_LineagesManager,
-    NewLineageID, iListCheckedTracks);
+    NewLineageID, iListTracks);
 
   this->CloseDBConnection();
 }

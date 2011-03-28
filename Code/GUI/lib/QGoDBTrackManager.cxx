@@ -579,7 +579,7 @@ void QGoDBTrackManager::CreateCorrespondingTrackFamily()
         }
       else
         {
-        emit NewLineageToCreateFromCheckedTracks(
+        emit NewLineageToCreateFromTracks(
             this->m_TrackContainerInfoForVisu->GetHighlightedElementsTraceID(), MotherID);
         }
       }
@@ -744,12 +744,11 @@ void QGoDBTrackManager::DeleteOneDivision(GoDBTrackFamilyRow iDivision,
 
   if (Daughter1ID != 0)
     {
-    //create a new lineage if the Daughter is a mother
-    this->UpdateTrackFamilyIDForDaughter(iDatabaseConnector, Daughter1ID, 0);
+    this->UpdateValuesForTheFormerDaughterOfADeletedDivision(Daughter1ID, iDatabaseConnector);
     }
   if (Daughter2ID != 0)
     {
-    this->UpdateTrackFamilyIDForDaughter(iDatabaseConnector, Daughter2ID, 0);
+    this->UpdateValuesForTheFormerDaughterOfADeletedDivision(Daughter2ID, iDatabaseConnector);
     }
 
   //delete from the visu: todo Nico:
@@ -776,4 +775,32 @@ void QGoDBTrackManager::PrintAMessageForTracksWithNoDivision(
   Message += "have not been deleted as these tracks have no daughters";
   emit PrintMessage(Message.c_str());
   }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTrackManager::UpdateValuesForTheFormerDaughterOfADeletedDivision(
+  unsigned int iDaughterID, vtkMySQLDatabase* iDatabaseConnector)
+{
+  GoDBTrackFamilyRow Family;
+  Family.SetField<unsigned int>("TrackMotherID", iDaughterID);
+
+  if (Family.DoesThisTrackFamilyAlreadyExists(iDatabaseConnector) != -1) //if the daughter is a mother
+    {
+    GoDBTrackRow Daughter(iDaughterID, iDatabaseConnector);
+    Daughter.SetField<unsigned int>("TrackFamilyID", 0); //she is not a daughter anymore
+    Daughter.SaveInDB(iDatabaseConnector);
+
+    std::list<unsigned int> PreviousLineage;
+    PreviousLineage.push_back( ss_atoi<unsigned int>(Daughter.GetMapValue("LineageID") ) ); //get the previous lineage ID of the daughter
+   
+    std::list<unsigned int> TracksIDs = //get all the tracks belonging to this previous lineage
+      this->m_CollectionOfTraces->GetTraceIDsBelongingToCollectionID(iDatabaseConnector, PreviousLineage);
+
+    emit NewLineageToCreateFromTracks(TracksIDs, iDaughterID); //need to create a new lineage with them
+    }
+  else
+    {
+    this->UpdateTrackFamilyIDForDaughter(iDatabaseConnector, iDaughterID, 0); //if not a mother, just update the trackfamilyID
+    }
 }
