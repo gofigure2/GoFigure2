@@ -148,13 +148,17 @@ LineageContainer::UpdateElementHighlightingWithGivenTraceIDs(const QStringList &
     MultiIndexContainerTraceIDIterator it;
     QStringList::const_iterator constIterator = iList.begin();
 
+    bool highlighted = iCheck;
+
     while ( constIterator != iList.end() )
       {
       it = m_Container.get< TraceID >().find( ( *constIterator ).toUInt() );
 
       if ( it != m_Container.get< TraceID >().end() )
         {
-        emit HighlightLineage(it->TrackRootID, iCheck);
+        // modify the structure highlight
+        m_Container.get< TraceID >().
+            modify( id_it , change_highlighted<MultiIndexContainerElementType>(highlighted) );
         }
       ++constIterator;
       }
@@ -168,12 +172,12 @@ void
 LineageContainer::UpdateElementVisibilityWithGivenTraceIDs(const QStringList & iList,
                                                          const Qt::CheckState & iCheck)
 {
-  // emit signal for each lineage to be shown/hidden
-  // signal contains the trackIDroot and the state
   if ( !iList.empty() )
     {
     MultiIndexContainerTraceIDIterator it;
     QStringList::const_iterator constIterator = iList.begin();
+
+    bool visible = iCheck;
 
     while ( constIterator != iList.end() )
       {
@@ -181,7 +185,9 @@ LineageContainer::UpdateElementVisibilityWithGivenTraceIDs(const QStringList & i
 
       if ( it != m_Container.get< TraceID >().end() )
         {
-        emit ShowLineage(it->TrackRootID, iCheck);
+        //modify the structure visibility
+        m_Container.get< TraceID >().
+            modify( id_it , change_visible<MultiIndexContainerElementType>(visible) );
         }
       ++constIterator;
       }

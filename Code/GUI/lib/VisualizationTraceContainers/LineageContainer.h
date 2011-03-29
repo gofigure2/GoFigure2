@@ -133,10 +133,6 @@ public:
   bool DeleteElement(MultiIndexContainerTraceIDIterator iIter);
   std::list< unsigned int > DeleteAllHighlightedElements();
 
-signals:
-  void HighlightLineage( unsigned int, bool);
-  void ShowLineage( unsigned int, bool);
-
 public slots:
   /**
   \brief Change elements highlighting property given a list of TraceIDs and the
