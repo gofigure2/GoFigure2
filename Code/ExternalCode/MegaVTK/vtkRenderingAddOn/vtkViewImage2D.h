@@ -298,13 +298,6 @@ public:
    * \param[in] intersection Display projection or intersection of the dataset with the current slice
    * \param[in] iDataVisibility Visibility of the current actor
   */
-//   virtual vtkQuadricLODActor*
-  virtual vtkActor * AddDataSet(vtkDataSet *dataset,
-                                vtkProperty *property = NULL,
-                                const bool & intersection = true,
-                                const bool & iDataVisibility = false);
-
-  //virtual vtkQuadricLODActor*
   virtual vtkActor * AddDataSet(vtkPolyData *polydata,
                                 vtkProperty *property = NULL,
                                 const bool & intersection = true,
