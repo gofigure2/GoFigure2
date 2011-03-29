@@ -991,69 +991,6 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
 
   return actor;
 }
-
-//----------------------------------------------------------------------------
-//vtkQuadricLODActor*
-vtkActor *
-vtkViewImage2D::AddDataSet(vtkDataSet *dataset,
-                           vtkProperty *property,
-                           const bool & intersection,
-                           const bool & iDataVisibility)
-{
-  /* return this->AddDataSet( vtkPolyData::SafeDownCast( dataset ),
-     property, intersection, iDataVisibility );*/
-  vtkCamera *cam = NULL;
-
-  if ( this->Renderer )
-    {
-    cam = this->Renderer->GetActiveCamera();
-    }
-  else
-    {
-    return NULL;
-    }
-
-  if ( !dataset )
-    {
-    return NULL;
-    }
-
-  vtkSmartPointer< vtkPolyDataMapper > mapper =
-    vtkSmartPointer< vtkPolyDataMapper >::New();
-  mapper->SetScalarVisibility(iDataVisibility);
-
-  //vtkQuadricLODActor* actor = vtkQuadricLODActor::New();
-  vtkActor *actor = vtkActor::New();
-
-  vtkSmartPointer< vtkCutter > cutter = vtkSmartPointer< vtkCutter >::New();
-
-  if ( intersection )
-    {
-    //std::cout << "inter dataset" << std::endl;
-    cutter->SetInput(dataset);
-    cutter->SetCutFunction(this->SliceImplicitPlane);
-    mapper->SetInput( cutter->GetOutput() );
-    }
-  else
-    {
-    //std::cout << "else dataset" << std::endl;
-    mapper->SetInput( vtkPolyData::SafeDownCast(dataset) );
-    }
-  mapper->Update();
-
-  actor->SetMapper(mapper);
-  if ( property )
-    {
-    actor->SetProperty(property);
-    }
-  actor->GetProperty()->BackfaceCullingOn();
-  actor->GetProperty()->SetLineWidth(this->IntersectionLineWidth);
-
-  this->Renderer->AddViewProp(actor);
-
-  return actor;
-}
-
 //----------------------------------------------------------------------------
 void
 vtkViewImage2D::UpdateCenter(void)

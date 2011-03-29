@@ -274,20 +274,6 @@ public:
 
   virtual void SetWorldCoordinates(double pos[3]) = 0;
 
-  /**
-    \brief Add a dataset to the view (has to be subclass of vtkPointSet).
-    The dataset will be cut through the implicit slice plane
-    (GetImplicitSlicePlane()).
-
-    This results in a loss of dimensionality, i.e. tetrahedron will be displayed
-    as triangles, triangles as lines, lines as points.
-    A vtkProperty of the dataset can be specified.
-  */
-  virtual vtkActor * AddDataSet(vtkDataSet *dataset,
-                                vtkProperty *property = NULL,
-                                const bool & intersection = true,
-                                const bool & iDataVisibility = true) = 0;
-
   virtual void RemoveProp(vtkProp *iProp);
 
   /**
