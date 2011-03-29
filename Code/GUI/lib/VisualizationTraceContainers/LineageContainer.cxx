@@ -158,7 +158,7 @@ LineageContainer::UpdateElementHighlightingWithGivenTraceIDs(const QStringList &
         {
         // modify the structure highlight
         m_Container.get< TraceID >().
-            modify( id_it , change_highlighted<MultiIndexContainerElementType>(highlighted) );
+            modify( it , change_highlighted<MultiIndexContainerElementType>(highlighted) );
         }
       ++constIterator;
       }
@@ -187,7 +187,7 @@ LineageContainer::UpdateElementVisibilityWithGivenTraceIDs(const QStringList & i
         {
         //modify the structure visibility
         m_Container.get< TraceID >().
-            modify( id_it , change_visible<MultiIndexContainerElementType>(visible) );
+            modify( it , change_visible<MultiIndexContainerElementType>(visible) );
         }
       ++constIterator;
       }

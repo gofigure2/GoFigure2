@@ -398,7 +398,7 @@ public slots:
   void UpdateTracksRepresentation( double iRadius,double iRadius2);
 
   void UpdateCollectionVisibility( MultiIndexContainerTraceIDIterator it, bool iVisibility,
-      int (*iFunction)(MultiIndexContainerTraceIDIterator, bool));
+      int (TrackContainer::*iFunction)(MultiIndexContainerTraceIDIterator, bool));
 
   void HighlightCollection(unsigned int, bool);
   int ModifyDivisionHighlight( MultiIndexContainerTraceIDIterator it, bool iHighlight );

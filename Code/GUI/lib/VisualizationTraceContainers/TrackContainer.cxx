@@ -793,7 +793,7 @@ ShowCollection(unsigned int iRootTrackID, bool iVisible)
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iRootTrackID);
 
-  UpdateCollectionVisibility(motherIt, iVisible, ModifyDivisionVisibility);
+  UpdateCollectionVisibility(motherIt, iVisible, &TrackContainer::ModifyDivisionVisibility);
 }
 //-------------------------------------------------------------------------
 
@@ -801,11 +801,11 @@ ShowCollection(unsigned int iRootTrackID, bool iVisible)
 void
 TrackContainer::
 UpdateCollectionVisibility( MultiIndexContainerTraceIDIterator it, bool iVisibility,
-    int (*iFunction)(MultiIndexContainerTraceIDIterator, bool) )
+    int (TrackContainer::*iFunction)(MultiIndexContainerTraceIDIterator, bool) )
 {
   if( !it->IsLeaf() )
     {
-    (*iFunction)(it, iVisibility);
+    (this->*iFunction)(it, iVisibility);
     }
 
   if(it->TreeNode.m_Child[0])
