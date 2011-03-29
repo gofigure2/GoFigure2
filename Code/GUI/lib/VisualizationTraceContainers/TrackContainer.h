@@ -60,6 +60,37 @@
 #include "QGoGUILibConfigure.h"
 #include <QString>
 
+//-----------------------------------------------------------------------------
+
+struct change_visible_lineage
+{
+  change_visible_lineage(bool& iVisible):visible(iVisible){}
+
+  void operator()(TrackStructure iStructure)
+  {
+    iStructure.UpdateCollectionVisibility(visible);
+  }
+
+private:
+  bool visible;
+};
+
+//-----------------------------------------------------------------------------
+
+struct change_highlighted_lineage
+{
+  change_highlighted_lineage(bool& iHilighted):highlighted(iHilighted){}
+
+  void operator()(TrackStructure iStructure)
+  {
+    iStructure.UpdateCollectionHighlight(highlighted);
+  }
+
+private:
+  bool highlighted;
+};
+//-----------------------------------------------------------------------------
+
 namespace boost
 {
 typedef multi_index::multi_index_container<

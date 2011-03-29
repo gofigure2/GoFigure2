@@ -334,6 +334,9 @@ UpdatePointsForATrack(unsigned int iTrackID,
 
   assert ( motherIt != m_Container.get< TraceID >().end() );
 
+  /*
+   * \todo Nicolas- const_cast is OK to modify polydata but better avoid it
+   */
   TrackStructure* mother =  const_cast<TrackStructure*>(&(*motherIt));
   RecomputeMap(mother, iListCenterBoundingBoxes);
 
@@ -777,8 +780,8 @@ HighlightCollection(unsigned int iRootTrackID, bool iHilighted)
 {
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iRootTrackID);
-  TrackStructure* mother =  const_cast<TrackStructure*>(&(*motherIt));
-  mother->UpdateCollectionHighlight( iHilighted );
+  m_Container.get< TraceID >().
+      modify( motherIt , change_highlighted_lineage(iHilighted) );
 }
 //-------------------------------------------------------------------------
 
@@ -789,9 +792,8 @@ ShowCollection(unsigned int iRootTrackID, bool iVisible)
 {
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iRootTrackID);
-  TrackStructure* mother =  const_cast<TrackStructure*>(&(*motherIt));
-
-  mother->UpdateCollectionVisibility( iVisible );
+  m_Container.get< TraceID >().
+      modify( motherIt , change_visible_lineage(iVisible) );
 }
 //-------------------------------------------------------------------------
 
