@@ -354,8 +354,9 @@ public:
             }
           }
 
-        ContourMeshStructure* tempStructure =  const_cast<ContourMeshStructure*>(&(*it));
-        tempStructure->Visible = iVisibility;
+        bool visible = iVisibility;
+        m_Container.get< TIndex >().
+            modify( it , change_visible<ContourMeshStructure>(visible) );
 
         Qt::CheckState State;
 
