@@ -828,7 +828,7 @@ void QGoDBTrackManager::UpdateValuesForTheFormerDaughterOfADeletedDivision(
   unsigned int iDaughterID, vtkMySQLDatabase* iDatabaseConnector)
 {
   GoDBTrackFamilyRow Family;
-  Family.SetField<unsigned int>("TrackMotherID", iDaughterID);
+  Family.SetField<unsigned int>("TrackIDMother", iDaughterID);
 
   if (Family.DoesThisTrackFamilyAlreadyExists(iDatabaseConnector) != -1) //if the daughter is a mother
     {
@@ -846,6 +846,9 @@ void QGoDBTrackManager::UpdateValuesForTheFormerDaughterOfADeletedDivision(
     }
   else
     {
-    this->UpdateTrackFamilyIDForDaughter(iDatabaseConnector, iDaughterID, 0); //if not a mother, just update the trackfamilyID
+    std::list<unsigned int> DaughterID;
+    DaughterID.push_back(iDaughterID);
+    this->UpdateCollectionID(iDatabaseConnector, DaughterID, 0); //if not a mother, set the lineageID to 0
+    this->UpdateTrackFamilyIDForDaughter(iDatabaseConnector, iDaughterID, 0); //if not a mother, update the trackfamilyID
     }
 }

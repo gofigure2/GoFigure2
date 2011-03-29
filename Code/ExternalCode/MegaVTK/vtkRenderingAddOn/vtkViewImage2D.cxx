@@ -963,7 +963,7 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
       //std::cout << "intersection" << std::endl;
       cutter->SetInput(dataset);
       cutter->SetCutFunction(this->SliceImplicitPlane);
-      cutter->Update();
+      //cutter->Update();
       cutter->GetOutput();
       cutter->GetOutput()->GetPointData();
       cutter->GetOutput()->GetPointData()->AddArray(testArray);
@@ -976,7 +976,7 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
       }
     }
 
-  mapper->Update();
+  //mapper->Update();
   actor->SetMapper(mapper);
 
   if ( property )
