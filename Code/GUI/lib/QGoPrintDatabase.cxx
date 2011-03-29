@@ -1700,10 +1700,14 @@ void QGoPrintDatabase::AddCheckedTracksToSelectedLineage(
   std::list<unsigned int> iListDaughters, unsigned int iLineageID, 
   std::list<unsigned int> iListLineagesToDelete)
 {
+  if (!iListLineagesToDelete.empty() )
+    {
+    this->DeleteListTraces< QGoDBLineageManager, QGoDBLineageManager > (
+      this->m_LineagesManager, this->m_LineagesManager, this->m_TracksManager, 
+      iListLineagesToDelete, true);
+    }
+
   this->AddCheckedTracesToCollection< QGoDBTrackManager, QGoDBLineageManager >(
     this->m_TracksManager, this->m_LineagesManager, iLineageID, iListDaughters);
-
-  this->DeleteListTraces< QGoDBLineageManager, QGoDBLineageManager > (
-    this->m_LineagesManager, this->m_LineagesManager, this->m_TracksManager, 
-    iListLineagesToDelete, true);
+  
 }
