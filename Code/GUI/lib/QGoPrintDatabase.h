@@ -513,7 +513,7 @@ protected:
     this->OpenDBConnection();
     iTraceManager->DeleteCheckedTraces(this->m_DatabaseConnector);
     //if ( !ListCollectionsIDs.empty() || track )
-    if ( !ListCollectionsIDs.empty() || lineage )
+    if ( !ListCollectionsIDs.empty() || !lineage )
       {
       iCollectionManager->UpdateBoundingBoxes(this->m_DatabaseConnector, ListCollectionsIDs);
       }
@@ -545,7 +545,7 @@ protected:
     this->OpenDBConnection();
     iTraceManager->DeleteListTraces(this->m_DatabaseConnector, iListTracesToDelete);
     //if ( !ListCollectionsIDs.empty() || track )
-    if ( !ListCollectionsIDs.empty() || lineage )
+    if ( !ListCollectionsIDs.empty() || !lineage )
       {
       iCollectionManager->UpdateBoundingBoxes(this->m_DatabaseConnector, ListCollectionsIDs);
       }
