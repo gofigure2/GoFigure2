@@ -584,10 +584,9 @@ void QGoDBTrackManager::CreateCorrespondingTrackFamily()
         }
       else
         {
-        //the mother track already belong to the lineage, need to add the daughters and her families:
-        emit NewLineageToCreateFromTracks(
-            this->m_TrackContainerInfoForVisu->GetHighlightedElementsTraceID(), MotherID,
-            PreviousLineagesToDelete);
+        //need to add to the new lineage the mother track, the daughters and her families:
+        DaughtersIDs.push_back(MotherID);
+        emit NewLineageToCreateFromTracks(DaughtersIDs, MotherID, PreviousLineagesToDelete);
         }
       }
     } 
@@ -696,28 +695,44 @@ std::list<unsigned int> QGoDBTrackManager::GetTrackIDFromDaughtersFamilies(
   vtkMySQLDatabase* iDatabaseConnector,
   std::list<unsigned int> &ioTrackIDsOfTheFamilies)
 {
+  
+  std::list<unsigned int> DaughtersLineageIDWithNoZero = 
+      this->m_CollectionOfTraces->GetListCollectionIDs(iDatabaseConnector, 
+      ioTrackIDsOfTheFamilies, true, true);
+
   std::list<unsigned int> DaughtersLineageID = 
       this->m_CollectionOfTraces->GetListCollectionIDs(iDatabaseConnector, 
-      ioTrackIDsOfTheFamilies);
+      ioTrackIDsOfTheFamilies, false, false);
+  std::list<unsigned int> FirstDaugthersIDs = ioTrackIDsOfTheFamilies;
+  std::list<unsigned int>::iterator iterFirstDaughters = FirstDaugthersIDs.begin();
+  ioTrackIDsOfTheFamilies.clear(); //in order not to have twice the daughtersIDs
   //delete the daughtersLineageID then as they are useless
   std::list<unsigned int>::iterator iter = DaughtersLineageID.begin();
-  while (iter != DaughtersLineageID.end() && *iter != 0)
+  while (iter != DaughtersLineageID.end() && iterFirstDaughters != FirstDaugthersIDs.end() )
     {
-    std::list<unsigned int> CollectionID;
-    CollectionID.push_back(*iter);
-    std::list<unsigned int> TrackIDsofTheFamily = 
-      this->m_CollectionOfTraces->GetTraceIDsBelongingToCollectionID(
-      iDatabaseConnector, CollectionID);
-    std::list<unsigned int>::iterator iterTrackIDs = TrackIDsofTheFamily.begin();
-    while (iterTrackIDs != TrackIDsofTheFamily.end() )
+    if (*iter == 0) //need to put back the ID of the daughter as it won't be returned by the query
       {
-      ioTrackIDsOfTheFamilies.push_back(*iterTrackIDs);
-      ++iterTrackIDs;
+      ioTrackIDsOfTheFamilies.push_back(*iterFirstDaughters);
       }
+    else
+      {
+      std::list<unsigned int> CollectionID;
+      CollectionID.push_back(*iter);
+      std::list<unsigned int> TrackIDsofTheFamily = 
+        this->m_CollectionOfTraces->GetTraceIDsBelongingToCollectionID(
+        iDatabaseConnector, CollectionID);
+      std::list<unsigned int>::iterator iterTrackIDs = TrackIDsofTheFamily.begin();
+      while (iterTrackIDs != TrackIDsofTheFamily.end() )
+        {
+        ioTrackIDsOfTheFamilies.push_back(*iterTrackIDs);
+        ++iterTrackIDs;
+        }
+        }
     ++iter;
+    ++iterFirstDaughters;
     }
 
-  return DaughtersLineageID;
+  return DaughtersLineageIDWithNoZero;
 }
 //-------------------------------------------------------------------------
 

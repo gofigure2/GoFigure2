@@ -1,3 +1,4 @@
+
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-11
@@ -290,10 +291,13 @@ public:
  \brief get the list of IDs that are collection of iListTraces
  \param[in] iDatabaseConnector connection to the database
  \param[in] iListTracesIDs list of traces IDs for which we need the collectionIDs
+ \param[in] ExcludeZero if set to true, will not return the collectionID = 0
+ \param[in] Distinct if set to true, will not return doublon
  \return std::list<unsigned int> list of the tracesIDs
  */
   std::list< unsigned int > GetListCollectionIDs(
-    vtkMySQLDatabase *iDatabaseConnector, std::list< unsigned int > iListTracesIDs);
+    vtkMySQLDatabase *iDatabaseConnector, std::list< unsigned int > iListTracesIDs,
+    bool ExcludeZero = true, bool Distinct = true);
 
   /**
   \brief get the list of tracesIDs that have no points
