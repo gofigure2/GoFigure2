@@ -404,6 +404,8 @@ public slots:
 
   void UpdateDivisionActor(TrackStructure* iStructure);
 
+  void DeleteADivision( unsigned int iMotherID);
+
 protected:
   /**
   \brief Recompute a polydata from a list of point (coordinates) for the

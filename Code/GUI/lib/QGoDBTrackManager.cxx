@@ -788,8 +788,11 @@ void QGoDBTrackManager::DeleteOneDivision(GoDBTrackFamilyRow iDivision,
     this->UpdateValuesForTheFormerDaughterOfADeletedDivision(Daughter2ID, iDatabaseConnector);
     }
 
-  //delete from the visu: todo Nico:
-  //this->m_TrackContainerInfoForVisu->DeleteADivision(ss_atoi<int>(iDivision.GetMapValue("TrackIDMother") );
+  /*
+   * \todo delete from the visu: todo Nico:
+   */
+  int MotherID = ss_atoi<int>(iDivision.GetMapValue("TrackIDMother"));
+  this->m_TrackContainerInfoForVisu->DeleteADivision( MotherID );
   //delete the division from the database:
   iDivision.DeleteFromDB(iDatabaseConnector);
 }

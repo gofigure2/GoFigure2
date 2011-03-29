@@ -894,3 +894,33 @@ UpdateDivisionActor(TrackStructure* iStructure)
 }
 
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+DeleteADivision( unsigned int iMotherID)
+{
+  // find iterator
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iMotherID);
+
+  TrackStructure* mother =  const_cast<TrackStructure*>(&(*motherIt));
+
+ // Delete the actor
+  // remove actor from visu and delete them
+  this->m_ImageView->RemoveActor(0, mother->TreeNode.ActorXY);
+  this->m_ImageView->RemoveActor(1, mother->TreeNode.ActorXZ);
+  this->m_ImageView->RemoveActor(2, mother->TreeNode.ActorYZ);
+  this->m_ImageView->RemoveActor(3, mother->TreeNode.ActorXYZ);
+  mother->TreeNode.ReleaseData();
+
+  // Reset pointers
+  // child (to do first)
+  mother->TreeNode.m_Child[0]->TreeNode.m_Mother = NULL;
+  mother->TreeNode.m_Child[1]->TreeNode.m_Mother = NULL;
+
+  // mother
+  mother->TreeNode.m_Child[0] = NULL;
+  mother->TreeNode.m_Child[1] = NULL;
+}
+//-------------------------------------------------------------------------
