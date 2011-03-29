@@ -941,7 +941,6 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
     {
     if ( intersection )
       {
-      //std::cout << "intersection" << std::endl;
       cutter->SetInput(dataset);
       cutter->SetCutFunction(this->SliceImplicitPlane);
       cutter->Update();

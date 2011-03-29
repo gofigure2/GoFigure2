@@ -3270,9 +3270,16 @@ AddTraceIDIntoPolydata( vtkPolyData* iPolydata, unsigned int iTraceID, const cha
 {
 vtkSmartPointer<vtkIntArray> trackIDArray = vtkSmartPointer<vtkIntArray>::New();
 trackIDArray->SetNumberOfComponents(1);
-trackIDArray->SetNumberOfValues(1);
+//trackIDArray->SetNumberOfValues(1);
 trackIDArray->SetName(iTrace);
-trackIDArray->SetValue(0,iTraceID);
+
+/*
+ * \todo Nicolas-Time consuming, should get a better solution
+ */
+for(int i=0; i<iPolydata->GetNumberOfPoints(); ++i)
+{
+  trackIDArray->InsertNextValue(iTraceID);
+}
 
 iPolydata->GetPointData()->AddArray(trackIDArray);
 }
