@@ -893,23 +893,26 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
                            const bool & intersection,
                            const bool & iDataVisibility)
 {
+  /*
+   * \todo Nicolas- no static cast
+   */
   // get trace ID - for picking
-  vtkIntArray* testArray;
+  vtkDataArray* testArray = NULL;
   if( dataset->GetPointData()->GetArray("TRACK") )
   {
-    testArray = static_cast<vtkIntArray*>(dataset->GetPointData()->GetArray("TRACK"));
+    testArray = dataset->GetPointData()->GetArray("TRACK");
   }
   else if( dataset->GetPointData()->GetArray("MESH") )
   {
-    testArray = static_cast<vtkIntArray*>(dataset->GetPointData()->GetArray("MESH"));
+    testArray = dataset->GetPointData()->GetArray("MESH");
   }
   else if ( dataset->GetPointData()->GetArray("CONTOUR") )
   {
-    testArray = static_cast<vtkIntArray*>(dataset->GetPointData()->GetArray("CONTOUR"));
+    testArray = dataset->GetPointData()->GetArray("CONTOUR");
   }
   else if( dataset->GetPointData()->GetArray("DIVISION") )
   {
-    testArray = static_cast<vtkIntArray*>(dataset->GetPointData()->GetArray("DIVISION"));
+    testArray = dataset->GetPointData()->GetArray("DIVISION");
   }
 
   vtkCamera *cam = NULL;
