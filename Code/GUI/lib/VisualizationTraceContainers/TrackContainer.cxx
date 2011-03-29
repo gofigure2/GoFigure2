@@ -728,7 +728,7 @@ void
 TrackContainer::
 CutLineage(unsigned int iMotherID)
 {
-  std::cout << "CutLineage can't work because of temp structures - use const_cast instead"
+  std::cout << "CutLineage can't work because of temp structures - use modify instead"
       << std::endl;
   // update connections
   //------------------------------

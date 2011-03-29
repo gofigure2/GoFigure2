@@ -463,27 +463,12 @@ TraceContainerBase< TContainer >::UpdateAllHighlightedElementsWithGivenColor(QCo
   boost::tuples::tie(it0, it1) =
     m_Container.get< Highlighted >().equal_range(true);
 
-  double r(1.), g(1.), b(1.), a(1.);
-
-  if ( iColor.isValid() )
-    {
-    iColor.getRgbF(&r, &g, &b, &a);
-    }
-
   std::list< unsigned int > oList;
   while ( it0 != it1 )
     {
-    MultiIndexContainerElementType temp(*it0);
-
-    temp.rgba[0] = r;
-    temp.rgba[1] = g;
-    temp.rgba[2] = b;
-    temp.rgba[3] = a;
-
-    m_Container.get< Highlighted >().replace(it0, temp);
-
+    m_Container.get< Highlighted >().modify(it0,
+        change_color<MultiIndexContainerElementType>(iColor));
     oList.push_back(it0->TraceID);
-
     ++it0;
     }
 

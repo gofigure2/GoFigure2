@@ -113,6 +113,26 @@ private:
 
 //-----------------------------------------------------------------------------
 
+//-----------------------------------------------------------------------------
+
+template <class T> struct change_color
+{
+  change_color(QColor iColor):color(iColor){}
+
+  void operator()(T& iStructure)
+  {
+    iStructure.rgba[0] = color.redF();
+    iStructure.rgba[1] = color.greenF();
+    iStructure.rgba[2] = color.blueF();
+    iStructure.rgba[3] = color.alphaF();
+  }
+
+private:
+  QColor color;
+};
+
+//-----------------------------------------------------------------------------
+
 /**
  * \class TraceContainerBase
  * \tparam TContainer boost::multi_index_container of a given TraceStructure
