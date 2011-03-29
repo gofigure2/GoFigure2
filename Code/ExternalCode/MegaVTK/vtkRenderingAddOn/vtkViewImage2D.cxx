@@ -893,28 +893,6 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
                            const bool & intersection,
                            const bool & iDataVisibility)
 {
-  /*
-   * \todo Nicolas- no static cast
-   */
-  // get trace ID - for picking
-  vtkDataArray* testArray = NULL;
-  if( dataset->GetPointData()->GetArray("TRACK") )
-  {
-    testArray = dataset->GetPointData()->GetArray("TRACK");
-  }
-  else if( dataset->GetPointData()->GetArray("MESH") )
-  {
-    testArray = dataset->GetPointData()->GetArray("MESH");
-  }
-  else if ( dataset->GetPointData()->GetArray("CONTOUR") )
-  {
-    testArray = dataset->GetPointData()->GetArray("CONTOUR");
-  }
-  else if( dataset->GetPointData()->GetArray("DIVISION") )
-  {
-    testArray = dataset->GetPointData()->GetArray("DIVISION");
-  }
-
   vtkCamera *cam = NULL;
 
   if ( this->Renderer )
@@ -955,7 +933,7 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
     extracter->SetInput(dataset);
     extracter->SetImplicitFunction(this->SliceImplicitPlane);
     extracter->Update();
-    extracter->GetOutput()->GetPointData()->AddArray(testArray);
+    extracter->GetOutput()->GetPointData()->ShallowCopy( dataset->GetPointData() );
     mapper->SetInput( extracter->GetOutput() );
     }
   // i.e. if we cut a volume
@@ -967,7 +945,7 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
       cutter->SetInput(dataset);
       cutter->SetCutFunction(this->SliceImplicitPlane);
       cutter->Update();
-      cutter->GetOutput()->GetPointData()->AddArray(testArray);
+      cutter->GetOutput()->GetPointData()->ShallowCopy( dataset->GetPointData() );
       mapper->SetInput( cutter->GetOutput() );
       }
     else
