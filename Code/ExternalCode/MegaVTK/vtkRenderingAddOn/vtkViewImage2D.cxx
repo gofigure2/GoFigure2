@@ -894,7 +894,7 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
                            const bool & iDataVisibility)
 {
   // get trace ID - for picking
-  vtkIntArray* testArray;
+  vtkIntArray* testArray = NULL;
   if( dataset->GetPointData()->GetArray("TRACK") )
   {
     testArray = static_cast<vtkIntArray*>(dataset->GetPointData()->GetArray("TRACK"));
@@ -964,6 +964,8 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
       cutter->SetInput(dataset);
       cutter->SetCutFunction(this->SliceImplicitPlane);
       cutter->Update();
+      cutter->GetOutput();
+      cutter->GetOutput()->GetPointData();
       cutter->GetOutput()->GetPointData()->AddArray(testArray);
       mapper->SetInput( cutter->GetOutput() );
       }

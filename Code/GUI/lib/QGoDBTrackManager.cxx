@@ -759,6 +759,7 @@ void QGoDBTrackManager::DeleteTheDivisions()
       }
     else
       {
+      Division.SetValuesForSpecificID(TrackFamilyToDelete, this->m_DatabaseConnector); //set the value of the existing TrackFamily
       this->DeleteOneDivision(Division, this->m_DatabaseConnector);
       }
     //and get the corresponding trackfamily IDs
