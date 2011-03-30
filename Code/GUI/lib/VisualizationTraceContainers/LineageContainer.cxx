@@ -141,7 +141,7 @@ void
 LineageContainer::UpdateElementHighlightingWithGivenTraceIDs(const QStringList & iList,
                                                            const Qt::CheckState & iCheck)
 {
-  std::cout << "highlight lineage list not connected" << std::endl;
+  std::cout << "highlight lineage list not tested" << std::endl;
   // emit signal for each lineage to be highlighted
   // signal contains the trackIDroot and the state
   if ( !iList.empty() )
@@ -173,13 +173,10 @@ void
 LineageContainer::UpdateElementVisibilityWithGivenTraceIDs(const QStringList & iList,
                                                          const Qt::CheckState & iCheck)
 {
-<<<<<<< HEAD
-  std::cout << "visible lineage list not connected" << std::endl;
+  std::cout << "visible lineage list not tested" << std::endl;
   // emit signal for each lineage to be shown/hidden
   // signal contains the trackIDroot and the state
-  /*
-=======
->>>>>>> feature_functionPointer
+
   if ( !iList.empty() )
     {
     MultiIndexContainerTraceIDIterator it;
@@ -200,6 +197,5 @@ LineageContainer::UpdateElementVisibilityWithGivenTraceIDs(const QStringList & i
       ++constIterator;
       }
     }
-    */
 }
 //-------------------------------------------------------------------------

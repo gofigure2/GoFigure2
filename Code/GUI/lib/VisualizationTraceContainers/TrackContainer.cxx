@@ -786,10 +786,10 @@ void
 TrackContainer::
 HighlightCollection(unsigned int iRootTrackID, bool iHilighted)
 {
-  MultiIndexContainerTraceIDIterator motherIt
-      = m_Container.get< TraceID >().find(iRootTrackID);
-  m_Container.get< TraceID >().
-      modify( motherIt , change_highlighted_division(iHilighted) );
+//  MultiIndexContainerTraceIDIterator motherIt
+//      = m_Container.get< TraceID >().find(iRootTrackID);
+//  m_Container.get< TraceID >().
+//      modify( motherIt , change_highlighted_division(iHilighted) );
 }
 //-------------------------------------------------------------------------
 
@@ -801,19 +801,18 @@ ShowCollection(unsigned int iRootTrackID, bool iVisible)
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iRootTrackID);
 
-  UpdateCollectionVisibility(motherIt, iVisible, &TrackContainer::ModifyDivisionVisibility);
+  UpdateCollectionVisibility(motherIt, iVisible);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
 TrackContainer::
-UpdateCollectionVisibility( MultiIndexContainerTraceIDIterator it, bool iVisibility,
-    int (TrackContainer::*iFunction)(MultiIndexContainerTraceIDIterator, bool) )
+UpdateCollectionVisibility( MultiIndexContainerTraceIDIterator it, bool iVisibility)
 {
   if( !it->IsLeaf() )
     {
-    (this->*iFunction)(it, iVisibility);
+    ModifyDivisionVisibility(it, iVisibility);
     }
 
   if(it->TreeNode.m_Child[0])
@@ -821,7 +820,7 @@ UpdateCollectionVisibility( MultiIndexContainerTraceIDIterator it, bool iVisibil
     // find the iterator
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
-    UpdateCollectionVisibility(childIt, iVisibility,iFunction);
+    UpdateCollectionVisibility(childIt, iVisibility);
     }
 
   if(it->TreeNode.m_Child[1])
@@ -829,7 +828,7 @@ UpdateCollectionVisibility( MultiIndexContainerTraceIDIterator it, bool iVisibil
     // find the iterator
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
-    UpdateCollectionVisibility(childIt, iVisibility, iFunction);
+    UpdateCollectionVisibility(childIt, iVisibility);
     }
 }
 //-------------------------------------------------------------------------
