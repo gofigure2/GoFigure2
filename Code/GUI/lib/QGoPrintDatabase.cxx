@@ -1687,7 +1687,6 @@ void QGoPrintDatabase::SplitMergeTracksWithWidget(
       {
       this->DeleteListTraces< QGoDBTrackManager, QGoDBMeshManager, QGoDBMeshManager >(
         this->m_TracksManager, this->m_MeshesManager, this->m_MeshesManager,
-        //ListTracksToDelete, true);
         ListTracksToDelete);
       }
     }
@@ -1700,14 +1699,14 @@ void QGoPrintDatabase::AddCheckedTracksToSelectedLineage(
   std::list<unsigned int> iListDaughters, unsigned int iLineageID, 
   std::list<unsigned int> iListLineagesToDelete)
 {
-  this->OpenDBConnection();
-
   if (!iListLineagesToDelete.empty() )
     {
     this->DeleteListTraces< QGoDBLineageManager, QGoDBLineageManager > (
       this->m_LineagesManager, this->m_LineagesManager, this->m_TracksManager, 
       iListLineagesToDelete, true);
     }
+
+  this->OpenDBConnection();
 
   this->AddCheckedTracesToCollection< QGoDBTrackManager, QGoDBLineageManager >(
     this->m_TracksManager, this->m_LineagesManager, iLineageID, iListDaughters);
