@@ -686,7 +686,7 @@ CreateDivisionActor( unsigned int iMother, unsigned int iDaughter1, unsigned int
   trackIDArray->SetName("DIVISION");
   trackIDArray->SetValue(0,iMother);
 
-  division->GetPointData()->AddArray(trackIDArray);
+  division->GetFieldData()->AddArray(trackIDArray);
 /*
   // Get info back from actor
   vtkIntArray* testArray =
