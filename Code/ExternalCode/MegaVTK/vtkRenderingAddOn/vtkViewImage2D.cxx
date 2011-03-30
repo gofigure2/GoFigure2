@@ -942,7 +942,7 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
       {
       cutter->SetInput(dataset);
       cutter->SetCutFunction(this->SliceImplicitPlane);
-      cutter->Update();
+      //cutter->Update();
       mapper->SetInput( cutter->GetOutput() );
       }
     else
@@ -952,7 +952,7 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
       }
     }
 
-  mapper->Update();
+  //mapper->Update();
   actor->SetMapper(mapper);
 
   if ( property )

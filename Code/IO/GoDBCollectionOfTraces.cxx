@@ -703,14 +703,15 @@ std::list< unsigned int > GoDBCollectionOfTraces::GetListTracesIDsFromThisCollec
 
 //------------------------------------------------------------------------
 std::list< unsigned int > GoDBCollectionOfTraces::GetListCollectionIDs(
-  vtkMySQLDatabase *iDatabaseConnector, std::list< unsigned int > iListTracesIDs)
+  vtkMySQLDatabase *iDatabaseConnector, std::list< unsigned int > iListTracesIDs,
+  bool ExcludeZero, bool Distinct)
 {
   std::list< unsigned int > ListCollectionIDs = std::list< unsigned int >();
   if ( this->m_CollectionName != "None" )
     {
     ListCollectionIDs = ListSpecificValuesForOneColumn(
         iDatabaseConnector, this->m_TracesName, this->m_CollectionIDName,
-        this->m_TracesIDName, iListTracesIDs, true, true);
+        this->m_TracesIDName, iListTracesIDs, Distinct, ExcludeZero);
     }
   return ListCollectionIDs;
 }

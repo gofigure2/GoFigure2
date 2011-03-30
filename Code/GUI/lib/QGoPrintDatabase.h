@@ -604,7 +604,10 @@ protected:
     iTraceManager->UpdateCollectionID(this->m_DatabaseConnector,
                                       iListCheckedTraces, iCollectionID);
 
-    ListCollectionIDsToUpdate.push_back(iCollectionID);
+    if (iCollectionID != 0)
+      {
+      ListCollectionIDsToUpdate.push_back(iCollectionID);
+      }
     iCollectionManager->UpdateBoundingBoxes(this->m_DatabaseConnector,
                                             ListCollectionIDsToUpdate);
   }
