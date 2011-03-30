@@ -61,34 +61,35 @@
 #include <QString>
 
 //-----------------------------------------------------------------------------
-
-struct change_visible_lineage
+struct change_visible_division
 {
-  change_visible_lineage(bool& iVisible):visible(iVisible){}
+  change_visible_division(bool& iVisible):visible(iVisible){}
 
   void operator()(TrackStructure iStructure)
   {
-    iStructure.UpdateCollectionVisibility(visible);
+    iStructure.ModifyDivisionVisibility(visible);
   }
 
 private:
   bool visible;
 };
-
 //-----------------------------------------------------------------------------
 
-struct change_highlighted_lineage
+//-----------------------------------------------------------------------------
+struct change_highlighted_division
 {
-  change_highlighted_lineage(bool& iHilighted):highlighted(iHilighted){}
+  change_highlighted_division(bool& iHilighted):highlighted(iHilighted){}
 
   void operator()(TrackStructure iStructure)
   {
-    iStructure.UpdateCollectionHighlight(highlighted);
+    iStructure.ModifyDivisionHighlight(highlighted);
   }
 
 private:
   bool highlighted;
 };
+//-----------------------------------------------------------------------------
+
 //-----------------------------------------------------------------------------
 
 namespace boost
@@ -398,9 +399,14 @@ public slots:
 
   void UpdateTracksRepresentation( double iRadius,double iRadius2);
 
+  void UpdateCollectionVisibility( MultiIndexContainerTraceIDIterator it, bool iVisibility,
+      int (TrackContainer::*iFunction)(MultiIndexContainerTraceIDIterator, bool));
+
   void HighlightCollection(unsigned int, bool);
+  int ModifyDivisionHighlight( MultiIndexContainerTraceIDIterator it, bool iHighlight );
 
   void ShowCollection(unsigned int, bool);
+  int ModifyDivisionVisibility( MultiIndexContainerTraceIDIterator it, bool iVisibility );
 
   void UpdateTrackStructureLineage(TrackStructure* iStructure);
 

@@ -789,7 +789,7 @@ HighlightCollection(unsigned int iRootTrackID, bool iHilighted)
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iRootTrackID);
   m_Container.get< TraceID >().
-      modify( motherIt , change_highlighted_lineage(iHilighted) );
+      modify( motherIt , change_highlighted_division(iHilighted) );
 }
 //-------------------------------------------------------------------------
 
@@ -800,8 +800,55 @@ ShowCollection(unsigned int iRootTrackID, bool iVisible)
 {
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iRootTrackID);
-  m_Container.get< TraceID >().
-      modify( motherIt , change_visible_lineage(iVisible) );
+
+  UpdateCollectionVisibility(motherIt, iVisible, &TrackContainer::ModifyDivisionVisibility);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateCollectionVisibility( MultiIndexContainerTraceIDIterator it, bool iVisibility,
+    int (TrackContainer::*iFunction)(MultiIndexContainerTraceIDIterator, bool) )
+{
+  if( !it->IsLeaf() )
+    {
+    (this->*iFunction)(it, iVisibility);
+    }
+
+  if(it->TreeNode.m_Child[0])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
+    UpdateCollectionVisibility(childIt, iVisibility,iFunction);
+    }
+
+  if(it->TreeNode.m_Child[1])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
+    UpdateCollectionVisibility(childIt, iVisibility, iFunction);
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int
+TrackContainer::ModifyDivisionVisibility( MultiIndexContainerTraceIDIterator it, bool iVisibility )
+{
+  m_Container.get< TraceID >().modify( it , change_visible_division(iVisibility) );
+  return 1;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int
+TrackContainer::ModifyDivisionHighlight( MultiIndexContainerTraceIDIterator it, bool iHighlight )
+{
+  m_Container.get< TraceID >().modify( it , change_highlighted_division(iHighlight) );
+  return 1;
 }
 //-------------------------------------------------------------------------
 

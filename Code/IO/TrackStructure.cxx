@@ -255,49 +255,9 @@ TrackStructure::ComputeAttributes() const
 //--------------------------------------------------------------------------
 void
 TrackStructure::
-UpdateCollectionVisibility( bool iVisibility )
+ModifyDivisionVisibility( bool iVisibility )
 {
-  ModifyDivisionVisibility(this, iVisibility);
-
-  // Mother pointer is null here since we are a root
-  if(this->TreeNode.m_Child[0])
-    {
-    ModifyCollectionVisibility(this->TreeNode.m_Child[0], iVisibility);
-    }
-  if(this->TreeNode.m_Child[1])
-    {
-    ModifyCollectionVisibility(this->TreeNode.m_Child[1], iVisibility);
-    }
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void
-TrackStructure::
-ModifyCollectionVisibility( TrackStructure* iRoot, bool iVisibility )
-{
-  ModifyDivisionVisibility(iRoot, iVisibility);
-
-  if( ! iRoot->IsLeaf() )
-    {
-    if( ! iRoot->TreeNode.m_Child[0]->IsLeaf() )
-      {
-      ModifyCollectionVisibility(iRoot->TreeNode.m_Child[0],iVisibility);
-      }
-    if( ! iRoot->TreeNode.m_Child[1]->IsLeaf() )
-      {
-      ModifyCollectionVisibility(iRoot->TreeNode.m_Child[1], iVisibility);
-      }
-    }
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void
-TrackStructure::
-ModifyDivisionVisibility( TrackStructure* iRoot, bool iVisibility )
-{
-  std::cout << "trace ID: " << iRoot->TraceID << " has a division actor" << std::endl;
+  std::cout << "trace ID: " << this->TraceID << " has a division actor visibility" << std::endl;
   //iRoot->TreeNode.m_DivisionActor[0]->SetVisibility( iVisibility );
   //iRoot->TreeNode.m_DivisionActor[1]->SetVisibility( iVisibility );
   //iRoot->TreeNode.m_DivisionActor[2]->SetVisibility( iVisibility );
@@ -308,61 +268,25 @@ ModifyDivisionVisibility( TrackStructure* iRoot, bool iVisibility )
 //--------------------------------------------------------------------------
 void
 TrackStructure::
-UpdateCollectionHighlight( bool iHighlight )
+ModifyDivisionHighlight( bool iVisibility )
 {
-  if(!this->TreeNode.m_Child[0]->IsLeaf())
-    {
-    ModifyCollectionHighlight(this->TreeNode.m_Child[0], iHighlight);
-    }
-  if(!this->TreeNode.m_Child[1]->IsLeaf())
-    {
-    ModifyCollectionHighlight(this->TreeNode.m_Child[1], iHighlight);
-    }
+  std::cout << "trace ID: " << this->TraceID << " has a division actor highlight" << std::endl;
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void
+const bool
 TrackStructure::
-ModifyCollectionHighlight( TrackStructure* iRoot, bool iHighlight )
-{
-  ModifyDivisionHighlight(iRoot, iHighlight);
-
-  if(iRoot)
-    {
-    if(!iRoot->TreeNode.m_Child[0]->IsLeaf())
-      {
-      ModifyCollectionHighlight(iRoot->TreeNode.m_Child[0],iHighlight);
-      }
-    else if(!iRoot->TreeNode.m_Child[1]->IsLeaf())
-      {
-      ModifyCollectionHighlight(iRoot->TreeNode.m_Child[1],iHighlight);
-      }
-    }
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void
-TrackStructure::
-ModifyDivisionHighlight( TrackStructure* iRoot, bool iVisibility )
-{
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-bool
-TrackStructure::
-IsRoot()
+IsRoot() const
 {
   return ( this->TreeNode.m_Mother == NULL );
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-bool
+const bool
 TrackStructure::
-IsLeaf()
+IsLeaf() const
 {
   return ( ( this->TreeNode.m_Child[0] == NULL ) && 
            ( this->TreeNode.m_Child[1] == NULL ) );

@@ -143,16 +143,11 @@ public:
 
   GoFigureTrackAttributes ComputeAttributes() const;
 
-  void UpdateCollectionVisibility( bool iVisibility );
-  void ModifyCollectionVisibility( TrackStructure* iRoot, bool iVisibility );
-  void ModifyDivisionVisibility( TrackStructure* iRoot, bool iVisibility );
+  void ModifyDivisionVisibility( bool iVisibility );
+  void ModifyDivisionHighlight(  bool iHighlight );
 
-  void UpdateCollectionHighlight(bool iHighlight );
-  void ModifyCollectionHighlight( TrackStructure* iRoot, bool iHighlight );
-  void ModifyDivisionHighlight( TrackStructure* iRoot, bool iHighlight );
-
-  bool IsRoot();
-  bool IsLeaf();
+  const bool IsRoot() const;
+  const bool IsLeaf() const;
 };
 
 #endif
