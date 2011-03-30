@@ -641,6 +641,7 @@ AddDivision( unsigned int iMotherID, unsigned int iDaughter1ID,
   mother->TreeNode.ActorXZ = actors[1];
   mother->TreeNode.ActorYZ = actors[2];
   mother->TreeNode.ActorXYZ = actors[3];
+  mother->TreeNode.Visible = true;
 
   //------------------------------
   // D1->motherID
@@ -870,7 +871,6 @@ int
 TrackContainer::ModifyDivisionVisibility( MultiIndexContainerTraceIDIterator it, bool iVisible)
 {
   m_Container.get< TraceID >().modify( it , change_visible_division(iVisible) );
-
   return 1;
 }
 //-------------------------------------------------------------------------

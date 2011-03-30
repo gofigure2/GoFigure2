@@ -131,7 +131,7 @@ unsigned int QGoDBLineageManager::CreateNewLineageWithTrackRoot(
 
   this->m_LineageContainerInfoForVisu->InsertNewLineage(NewLineageID, 
     this->GetVectorFromQColor(this->m_SelectedColorData->second), iTrackRoot,
-    false);
+    true);
   this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
   
   return NewLineageID;
@@ -220,6 +220,7 @@ void QGoDBLineageManager::UpdateVisibleElementsInVisuContainer(int iTraceID)
     GetLineageTrackRootID(iTraceID);
   bool visible = this->m_LineageContainerInfoForVisu->
       GetLineageVisibile(iTraceID);
+  std::cout << "Visibility of the element: " << visible << std::endl;
   // update container
   this->m_TrackContainerInfoForVisu->ShowCollection(trackRootID, visible);
 }
