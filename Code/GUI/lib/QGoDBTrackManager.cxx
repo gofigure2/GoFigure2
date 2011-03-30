@@ -776,9 +776,6 @@ void QGoDBTrackManager::DeleteTheDivisions()
       Division.SetValuesForSpecificID(TrackFamilyToDelete, this->m_DatabaseConnector); //set the value of the existing TrackFamily
       this->DeleteOneDivision(Division, this->m_DatabaseConnector, TrackIDsWithNoLineage );
       }
-    //and get the corresponding trackfamily IDs
-    //delete the trackfamily IDs
-    //if the daugthers are mothers, create new lineages and update the lineageid for the tracks
     ++iter;
     }
   this->PrintAMessageForTracksWithNoDivision(TrackIDNotMother);
@@ -797,44 +794,18 @@ void QGoDBTrackManager::DeleteTheDivisions()
 void QGoDBTrackManager::DeleteOneDivision(GoDBTrackFamilyRow iDivision,
   vtkMySQLDatabase* iDatabaseConnector, std::list<unsigned int> &ioTrackIDsNoLineage)
 {
-  //first, update the trackfamilyID for the daughters:
   std::list<unsigned int> DaughtersIDs;
   DaughtersIDs.push_back( ss_atoi<int>(iDivision.GetMapValue("TrackIDDaughter1") ) );
   DaughtersIDs.push_back( ss_atoi<int>(iDivision.GetMapValue("TrackIDDaughter2") ) );
+  
+  //update the different values for the daughters of the division:
   this->UpdateFormerDaughtersOfADeletedDivision(DaughtersIDs, 
     iDatabaseConnector, ioTrackIDsNoLineage);
-  /*if (Daughter1ID != 0 )
-    {
-    if (this->IsTheTrackAMother(Daughter1ID, iDatabaseConnector) )
-      {
-      this->CreateALineageWithFormerDaughterOfADeletedDivision(Daughter1ID, iDatabaseConnector);
-      }
-    else
-      {
-      this->UpdateTrackFamilyIDForDaughter(iDatabaseConnector, Daughter1ID, 0);
-      ioTrackIDsNoLineage.push_back(Daughter1ID);
-      }
-    }
-  if (Daughter2ID != 0)
-    {
-    if (this->IsTheTrackAMother(Daughter2ID, iDatabaseConnector) )
-      {
-      this->CreateALineageWithFormerDaughterOfADeletedDivision(Daughter2ID, iDatabaseConnector);
-      }
-    else
-      {
-      this->UpdateTrackFamilyIDForDaughter(iDatabaseConnector, Daughter1ID, 0);
-      ioTrackIDsNoLineage.push_back(Daughter2ID);
-      }
-    }*/
-  /*
-   * \todo Nicolas, what if there is only one daughter? enough for now
-   */
-  //if( Daughter1ID != 0 && Daughter2ID != 0)
-  //  {
-    int MotherID = ss_atoi<int>(iDivision.GetMapValue("TrackIDMother"));
-    this->m_TrackContainerInfoForVisu->DeleteADivision( MotherID );
-  //  }
+ 
+  //delete the division from the visu:
+  int MotherID = ss_atoi<int>(iDivision.GetMapValue("TrackIDMother"));
+  this->m_TrackContainerInfoForVisu->DeleteADivision( MotherID );
+  
   //delete the division from the database:
   iDivision.DeleteFromDB(iDatabaseConnector);
 }

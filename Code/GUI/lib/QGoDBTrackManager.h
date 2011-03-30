@@ -252,9 +252,11 @@ protected:
   std::list<unsigned int> GetTrackIDFromDaughtersFamilies( vtkMySQLDatabase* iDatabaseConnector,
     std::list<unsigned int> &ioTrackIDsOfTheFamilies);
 
-/**
-  \brief set the trackfamilyid of the daughters to 0 and delete the trackfamily
-  from the database and from the visu
+  /**
+  \brief set the trackfamilyid of the daughters to 0, delete the trackfamily
+  from the database and from the visu and check if the daughters are mothers, if not
+  fill the ioTrackIDsNoLineage, if yes, update the all family
+  \
   */
   void DeleteOneDivision(GoDBTrackFamilyRow iDivision, vtkMySQLDatabase* iDatabaseConnector,
     std::list<unsigned int> &ioTrackIDsNoLineage);
@@ -273,9 +275,16 @@ protected:
   void CreateALineageWithFormerDaughterOfADeletedDivision(
     unsigned int iDaughterID, vtkMySQLDatabase* iDatabaseConnector);
 
+  /**
+  \brief return true if the track is a mother
+  */
   bool IsTheTrackAMother(unsigned int iDaughterID, 
     vtkMySQLDatabase* iDatabaseConnector);
 
+  /**
+  \brief check if the daughters are mothers, if yes, create a new lineage for them,
+  if not, update the track familyID to 0 and fill the ioTrackIDsNoLineage with them
+  */
   void UpdateFormerDaughtersOfADeletedDivision(
     std::list<unsigned int> iDaughtersID, vtkMySQLDatabase* iDatabaseConnector, 
     std::list<unsigned int> &ioTrackIDsNoLineage);
