@@ -319,11 +319,27 @@ TrackContainer::CreateTrackActors( TrackStructure& iStructure )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void
+TrackContainer::UpdateTrackActors( TrackStructure& iStructure )
+{
+  if(iStructure.Nodes->GetNumberOfPoints() < 2 )
+  {
+  // clean actor
+  this->m_ImageView->RemoveActor(0, iStructure.TreeNode.ActorXY);
+  this->m_ImageView->RemoveActor(1, iStructure.TreeNode.ActorXZ);
+  this->m_ImageView->RemoveActor(2, iStructure.TreeNode.ActorYZ);
+  this->m_ImageView->RemoveActor(3, iStructure.TreeNode.ActorXYZ);
+  }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 TrackStructure*
 TrackContainer::
 UpdatePointsForATrack(unsigned int iTrackID,
                       std::list< double * > iListCenterBoundingBoxes)
 {
+  std::cout << "iTrackID: " << iTrackID << std::endl;
   assert( iTrackID != 0 );
 
   assert ( this->m_ImageView );
@@ -355,7 +371,10 @@ UpdatePointsForATrack(unsigned int iTrackID,
     {
     // add actors in the visualization with given property
     CreateTrackActors( *mother );
+    return mother;
     }
+
+  UpdateTrackActors( *mother );
 
   return mother;
 }

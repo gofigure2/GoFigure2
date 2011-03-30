@@ -240,6 +240,8 @@ public:
    */
   void CreateTrackActors( TrackStructure& iStructure);
 
+  void UpdateTrackActors( TrackStructure& iStructure);
+
   /**
   \brief get the element with iTrackID into the current element, remove it from
   the container, recalculate the points from the iListCenterBoundingBox and emit
