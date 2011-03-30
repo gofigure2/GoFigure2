@@ -41,6 +41,7 @@
 #include "QGoDBTraceManager.h"
 #include "QGoGUILibConfigure.h"
 #include "LineageContainer.h"
+#include "TrackContainer.h"
 
 /**
 \class QGoDBLineageManager
@@ -61,10 +62,13 @@ public:
                                            int iTraceID);
 
   /**
-  \brief set the m_LineageContainerInfoForVisu to the iContainerForVisu
+  \brief set the m_LineageContainerInfoForVisu and the m_TrackContainerInfoForVisu 
+  to the iContainerForVisu and iTrackContainerInfoForvisu
   \param[in] iContainerForVisu common container for the visu and database
+  \param[in] iTrackContainerInfoForvisu common container for tracks for the visu and database
   */
-  void SetLineagesInfoContainerForVisu(LineageContainer *iContainerForVisu);
+  void SetLineagesInfoContainersForVisu( LineageContainer *iContainerForVisu, 
+    TrackContainer *iTrackContainerInfoForvisu);
 
   /**
   \brief get all the data from the database to load all the lineages for the imagingsession
@@ -113,6 +117,7 @@ signals:
 protected:
   GoDBTWContainerForLineage      *m_TWContainer;
   LineageContainer               *m_LineageContainerInfoForVisu;
+  TrackContainer                 *m_TrackContainerInfoForVisu;
 
   //virtual pure method in QGoDBTraceManager
   virtual void SetCollectionsTraceNames();

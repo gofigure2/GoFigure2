@@ -259,8 +259,10 @@ public:
   iContainer
   \param[in] iContainer pointer for the container of lineages
   for the visu
+  \Param[in] iTrackContainer pointer for the container of tracks
   */
-  void SetLineagesContainer(LineageContainer *iContainer);
+  void SetLineagesContainers(LineageContainer *iContainer,
+    TrackContainer *iTrackContainer);
 
 public slots:
   void DeleteBookmarks();

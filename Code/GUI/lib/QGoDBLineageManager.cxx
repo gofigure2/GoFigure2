@@ -38,7 +38,7 @@
 #include <sstream>
 
 QGoDBLineageManager::QGoDBLineageManager(int iImgSessionID, QWidget *iparent) :
-  QGoDBTraceManager(), m_LineageContainerInfoForVisu(NULL)
+  QGoDBTraceManager(), m_LineageContainerInfoForVisu(NULL), m_TrackContainerInfoForVisu(NULL)
 {
   this->SetInfo(iImgSessionID, iparent);
   this->m_TWContainer = new GoDBTWContainerForLineage(iImgSessionID);
@@ -58,16 +58,13 @@ QGoDBLineageManager::~QGoDBLineageManager()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBLineageManager::SetLineagesInfoContainerForVisu(
-  LineageContainer *iContainerForVisu)
+void QGoDBLineageManager::SetLineagesInfoContainersForVisu(
+  LineageContainer *iContainerForVisu, TrackContainer *iTrackContainerInfoForVisu)
 {
   this->SetTracesInfoContainerForVisuTemplate< LineageContainer >(
     iContainerForVisu, &this->m_LineageContainerInfoForVisu);
 
-  /*QObject::connect( this->m_TrackContainerInfoForVisu,
-                    SIGNAL( NeedMeshesInfoForImportedTrack(unsigned int) ),
-                    this,
-                    SIGNAL( NeedMeshesInfoForImportedTrack(unsigned int) ) );*/
+  this->m_TrackContainerInfoForVisu = iTrackContainerInfoForVisu;
 }
 
 //-------------------------------------------------------------------------

@@ -1208,9 +1208,11 @@ QGoPrintDatabase::SetTracksContainer(TrackContainer *iContainer)
 
 //--------------------------------------------------------------------------
 void
-QGoPrintDatabase::SetLineagesContainer(LineageContainer *iContainer)
+QGoPrintDatabase::SetLineagesContainers(LineageContainer *iContainer,
+  TrackContainer *iTrackContainer)
 {
-  this->m_LineagesManager->SetLineagesInfoContainerForVisu(iContainer);
+  this->m_LineagesManager->SetLineagesInfoContainersForVisu(iContainer,
+    iTrackContainer);
 }
 
 //--------------------------------------------------------------------------
