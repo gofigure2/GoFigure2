@@ -652,6 +652,8 @@ AddDivision( unsigned int iMotherID, unsigned int iDaughter1ID,
 
   TrackStructure* d2 =  const_cast<TrackStructure*>(&(*daughter2It));
   d2->TreeNode.m_Mother = const_cast<TrackStructure*>(&(*motherIt));
+
+  this->m_ImageView->UpdateRenderWindows();
 }
 //-------------------------------------------------------------------------
 
