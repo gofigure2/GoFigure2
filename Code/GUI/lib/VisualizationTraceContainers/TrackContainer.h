@@ -359,6 +359,14 @@ public:
    */
   void CutLineage(unsigned int iMotherID);
 
+  /*
+   * \brief get the tree below a given division
+   * \param[in] iTrackID division to start the search
+   * \return list containing all the track IDs
+   */
+  std::list<unsigned int> GetSubLineage( unsigned int iTrackID );
+  void UpdateSubLineage( MultiIndexContainerTraceIDIterator it, std::list<unsigned int>& iList);
+
 
 signals:
   /** \brief When one track has been picked (highlighted) from the visualization */

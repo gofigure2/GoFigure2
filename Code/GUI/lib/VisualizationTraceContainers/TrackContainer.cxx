@@ -1039,3 +1039,45 @@ DeleteADivision( unsigned int iMotherID)
   mother->TreeNode.m_Child[1] = NULL;
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list<unsigned int>
+TrackContainer::
+GetSubLineage( unsigned int iTrackID )
+{
+  std::list<unsigned int> listOfIDs;
+
+  // find the iterator
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iTrackID);
+
+  UpdateSubLineage(motherIt, listOfIDs);
+
+  return listOfIDs;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateSubLineage( MultiIndexContainerTraceIDIterator it, std::list<unsigned int>& iList)
+{
+  iList.push_back( it->TraceID );
+
+  if(it->TreeNode.m_Child[0])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
+    UpdateSubLineage(childIt,iList);
+    }
+
+  if(it->TreeNode.m_Child[1])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
+    UpdateSubLineage(childIt,iList);
+    }
+}
+//-------------------------------------------------------------------------
