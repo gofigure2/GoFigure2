@@ -192,8 +192,19 @@ std::list< unsigned int > QGoDBLineageManager::GetListHighlightedIDs()
 void QGoDBLineageManager::UpdateHighlightedElementsInVisuContainer(
   int iTraceID)
 {
+  // update  container element
   this->m_LineageContainerInfoForVisu->
     UpdateElementHighlightingWithGivenTraceID(iTraceID);
+  //get root track
+  unsigned int trackRootID = this->m_LineageContainerInfoForVisu->
+    GetLineageTrackRootID(iTraceID);
+  bool highlighted = this->m_LineageContainerInfoForVisu->
+      GetLineageHighlighted(iTraceID);
+  /*
+   * \todo Nicolas - might want to get the color of the lineage as well
+   */
+  // update container
+  this->m_TrackContainerInfoForVisu->HighlightCollection(trackRootID, highlighted);
 }
 
 //-------------------------------------------------------------------------
@@ -201,8 +212,16 @@ void QGoDBLineageManager::UpdateHighlightedElementsInVisuContainer(
 //-------------------------------------------------------------------------
 void QGoDBLineageManager::UpdateVisibleElementsInVisuContainer(int iTraceID)
 {
+  // update container element
   this->m_LineageContainerInfoForVisu->
     UpdateElementVisibilityWithGivenTraceID(iTraceID);
+  //get root track
+  unsigned int trackRootID = this->m_LineageContainerInfoForVisu->
+    GetLineageTrackRootID(iTraceID);
+  bool visible = this->m_LineageContainerInfoForVisu->
+      GetLineageVisibile(iTraceID);
+  // update container
+  this->m_TrackContainerInfoForVisu->ShowCollection(trackRootID, visible);
 }
 
 //-------------------------------------------------------------------------
@@ -237,7 +256,5 @@ void QGoDBLineageManager::UpdateTrackRootSelectedLineage(
   LastLineage.SetField("TrackIDRoot", iTrackIDRoot);
   LastLineage.SaveInDB(iDatabaseConnector);
 }
-
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

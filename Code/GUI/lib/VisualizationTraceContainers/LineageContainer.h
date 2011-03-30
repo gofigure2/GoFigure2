@@ -128,14 +128,24 @@ public:
    */
   unsigned int GetLineageTrackRootID( unsigned int iTraceID );
 
+  /*
+   * \brief Get the visibility of the given lineage
+   * \param[in] iTraceID lineage ID of interest
+   * \return visibility
+   */
+  bool GetLineageVisibile( unsigned int iTraceID );
+
+  /*
+   * \brief Get the hilighted of the given lineage
+   * \param[in] iTraceID lineage ID of interest
+   * \return highlighted
+   */
+  bool GetLineageHighlighted( unsigned int iTraceID );
+
   /**\todo implement them:*/
   bool DeleteElement(const unsigned int & iId);
   bool DeleteElement(MultiIndexContainerTraceIDIterator iIter);
   std::list< unsigned int > DeleteAllHighlightedElements();
-
-signals:
-  void HighlightLineage( unsigned int, bool);
-  void ShowLineage( unsigned int, bool);
 
 public slots:
   /**
