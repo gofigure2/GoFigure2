@@ -912,6 +912,8 @@ DeleteADivision( unsigned int iMotherID)
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iMotherID);
 
+  assert( motherIt != m_Container.get< TraceID >().end() );
+
   TrackStructure* mother =  const_cast<TrackStructure*>(&(*motherIt));
 
  // Delete the actor
