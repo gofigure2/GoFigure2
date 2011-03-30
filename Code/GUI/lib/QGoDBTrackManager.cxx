@@ -564,7 +564,6 @@ void QGoDBTrackManager::CreateCorrespondingTrackFamily()
       std::list<unsigned int> LineageIDToCheck = 
         this->m_CollectionOfTraces->GetListCollectionIDs(this->m_DatabaseConnector,TrackID);
       //update the trackFamilyID for the daughters:
-      //emit NeedToGetDatabaseConnection();
       std::list<unsigned int>::iterator iter = DaughtersIDs.begin();
       while(iter != DaughtersIDs.end() )
         {

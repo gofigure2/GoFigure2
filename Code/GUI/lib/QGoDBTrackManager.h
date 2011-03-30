@@ -150,6 +150,7 @@ signals:
  
   void CheckedTracksToAddToSelectedLineage(std::list<unsigned int> iDaughtersID, unsigned int iLineageID,
     std::list<unsigned> iLineagesToDelete);
+
   void NewLineageToCreateFromTracks( std::list<unsigned int> iCheckedTracksIDs, unsigned int iTrackIDRoot,
     std::list<unsigned> iLineagesToDelete);
 
