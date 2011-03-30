@@ -200,6 +200,9 @@ void QGoDBLineageManager::UpdateHighlightedElementsInVisuContainer(
     GetLineageTrackRootID(iTraceID);
   bool highlighted = this->m_LineageContainerInfoForVisu->
       GetLineageHighlighted(iTraceID);
+  /*
+   * \todo Nicolas - might want to get the color of the lineage as well
+   */
   // update container
   this->m_TrackContainerInfoForVisu->HighlightCollection(trackRootID, highlighted);
 }
