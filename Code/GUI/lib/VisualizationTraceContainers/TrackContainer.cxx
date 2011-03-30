@@ -802,17 +802,19 @@ ShowCollection(unsigned int iRootTrackID, bool iVisible)
       = m_Container.get< TraceID >().find(iRootTrackID);
 
   UpdateCollectionVisibility(motherIt, iVisible);
+
+  this->m_ImageView->UpdateRenderWindows();
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
 TrackContainer::
-UpdateCollectionVisibility( MultiIndexContainerTraceIDIterator it, bool iVisibility)
+UpdateCollectionVisibility( MultiIndexContainerTraceIDIterator it, bool iVisible)
 {
   if( !it->IsLeaf() )
     {
-    ModifyDivisionVisibility(it, iVisibility);
+    ModifyDivisionVisibility(it, iVisible);
     }
 
   if(it->TreeNode.m_Child[0])
@@ -820,7 +822,7 @@ UpdateCollectionVisibility( MultiIndexContainerTraceIDIterator it, bool iVisibil
     // find the iterator
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
-    UpdateCollectionVisibility(childIt, iVisibility);
+    UpdateCollectionVisibility(childIt,iVisible);
     }
 
   if(it->TreeNode.m_Child[1])
@@ -828,16 +830,16 @@ UpdateCollectionVisibility( MultiIndexContainerTraceIDIterator it, bool iVisibil
     // find the iterator
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
-    UpdateCollectionVisibility(childIt, iVisibility);
+    UpdateCollectionVisibility(childIt,iVisible);
     }
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 int
-TrackContainer::ModifyDivisionVisibility( MultiIndexContainerTraceIDIterator it, bool iVisibility )
+TrackContainer::ModifyDivisionVisibility( MultiIndexContainerTraceIDIterator it, bool iVisible)
 {
-  m_Container.get< TraceID >().modify( it , change_visible_division(iVisibility) );
+  m_Container.get< TraceID >().modify( it , change_visible_division(iVisible) );
   return 1;
 }
 //-------------------------------------------------------------------------

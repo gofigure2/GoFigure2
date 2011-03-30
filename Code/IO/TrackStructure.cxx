@@ -258,10 +258,11 @@ TrackStructure::
 ModifyDivisionVisibility( bool iVisibility )
 {
   std::cout << "trace ID: " << this->TraceID << " has a division actor visibility" << std::endl;
-  //iRoot->TreeNode.m_DivisionActor[0]->SetVisibility( iVisibility );
-  //iRoot->TreeNode.m_DivisionActor[1]->SetVisibility( iVisibility );
-  //iRoot->TreeNode.m_DivisionActor[2]->SetVisibility( iVisibility );
-  //iRoot->TreeNode.m_DivisionActor[3]->SetVisibility( iVisibility );
+  this->TreeNode.Visible = iVisibility;
+  this->TreeNode.ActorXY->SetVisibility( iVisibility );
+  this->TreeNode.ActorXZ->SetVisibility( iVisibility );
+  this->TreeNode.ActorYZ->SetVisibility( iVisibility );
+  this->TreeNode.ActorXYZ->SetVisibility( iVisibility );
 }
 //--------------------------------------------------------------------------
 

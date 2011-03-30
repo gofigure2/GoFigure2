@@ -417,6 +417,7 @@ public:
     \brief Update element visibility given it TraceId
     \param[in] iId TraceID of the element to be modified
     \return true if the element was present in the container.
+    \todo Nicolas-should return visibility instead??
   */
   bool UpdateElementVisibilityWithGivenTraceID(const unsigned int & iId);
 

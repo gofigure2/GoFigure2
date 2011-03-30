@@ -192,13 +192,9 @@ std::list< unsigned int > QGoDBLineageManager::GetListHighlightedIDs()
 void QGoDBLineageManager::UpdateHighlightedElementsInVisuContainer(
   int iTraceID)
 {
-  // update element
+  // update  container element
   this->m_LineageContainerInfoForVisu->
     UpdateElementHighlightingWithGivenTraceID(iTraceID);
-  //get root track
-  unsigned int trackRootID = this->m_LineageContainerInfoForVisu->
-    GetLineageTrackRootID(iTraceID);
-  // update tree
 }
 
 //-------------------------------------------------------------------------
@@ -206,8 +202,16 @@ void QGoDBLineageManager::UpdateHighlightedElementsInVisuContainer(
 //-------------------------------------------------------------------------
 void QGoDBLineageManager::UpdateVisibleElementsInVisuContainer(int iTraceID)
 {
+  // update container element
   this->m_LineageContainerInfoForVisu->
     UpdateElementVisibilityWithGivenTraceID(iTraceID);
+  //get root track
+  unsigned int trackRootID = this->m_LineageContainerInfoForVisu->
+    GetLineageTrackRootID(iTraceID);
+  bool visible = this->m_LineageContainerInfoForVisu->
+      GetLineageVisibile(iTraceID);
+  // update tree (invert state)
+  this->m_TrackContainerInfoForVisu->ShowCollection(trackRootID, visible);
 }
 
 //-------------------------------------------------------------------------

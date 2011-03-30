@@ -128,6 +128,13 @@ public:
    */
   unsigned int GetLineageTrackRootID( unsigned int iTraceID );
 
+  /*
+   * \brief Get the visibility of the given lineage
+   * \param[in] iTraceID lineage ID of interest
+   * \return visibility
+   */
+  bool GetLineageVisibile( unsigned int iTraceID );
+
   /**\todo implement them:*/
   bool DeleteElement(const unsigned int & iId);
   bool DeleteElement(MultiIndexContainerTraceIDIterator iIter);
