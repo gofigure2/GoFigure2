@@ -195,8 +195,13 @@ std::list< unsigned int > QGoDBLineageManager::GetListHighlightedIDs()
 void QGoDBLineageManager::UpdateHighlightedElementsInVisuContainer(
   int iTraceID)
 {
+  // update element
   this->m_LineageContainerInfoForVisu->
     UpdateElementHighlightingWithGivenTraceID(iTraceID);
+  //get root track
+  unsigned int trackRootID = this->m_LineageContainerInfoForVisu->
+    GetLineageTrackRootID(iTraceID);
+  // update tree
 }
 
 //-------------------------------------------------------------------------
@@ -240,7 +245,5 @@ void QGoDBLineageManager::UpdateTrackRootSelectedLineage(
   LastLineage.SetField("TrackIDRoot", iTrackIDRoot);
   LastLineage.SaveInDB(iDatabaseConnector);
 }
-
-//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
