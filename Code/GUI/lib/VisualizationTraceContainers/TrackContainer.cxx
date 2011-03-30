@@ -241,7 +241,7 @@ TrackContainer::UpdateTrackStructurePolyData(const TrackStructure & iTrackStruct
   trackIDArray->SetName("TRACK");
   trackIDArray->SetValue(0,iTrackStructure.TraceID);
 
-  polyData->GetPointData()->AddArray(trackIDArray);
+  polyData->GetFieldData()->AddArray(trackIDArray);
 
   iTrackStructure.Nodes->DeepCopy(polyData);
   //update speed information
@@ -319,6 +319,21 @@ TrackContainer::CreateTrackActors( TrackStructure& iStructure )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void
+TrackContainer::UpdateTrackActors( TrackStructure& iStructure )
+{
+  if(iStructure.Nodes->GetNumberOfPoints() < 2 )
+  {
+  // clean actor
+  this->m_ImageView->RemoveActor(0, iStructure.TreeNode.ActorXY);
+  this->m_ImageView->RemoveActor(1, iStructure.TreeNode.ActorXZ);
+  this->m_ImageView->RemoveActor(2, iStructure.TreeNode.ActorYZ);
+  this->m_ImageView->RemoveActor(3, iStructure.TreeNode.ActorXYZ);
+  }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 TrackStructure*
 TrackContainer::
 UpdatePointsForATrack(unsigned int iTrackID,
@@ -355,7 +370,10 @@ UpdatePointsForATrack(unsigned int iTrackID,
     {
     // add actors in the visualization with given property
     CreateTrackActors( *mother );
+    return mother;
     }
+
+  UpdateTrackActors( *mother );
 
   return mother;
 }
@@ -520,10 +538,10 @@ TrackContainer::UpdateTracksRepresentation(double iRadius, double iRadius2)
   while ( it != m_Container.end() )
     {
     // restore original polydata
-    UpdateTrackStructurePolyData( ( *it ) );
+    bool pointsInPolydata = UpdateTrackStructurePolyData( ( *it ) );
 
     // add glyphs if necessary
-    if ( ( iRadius || iRadius2 ) && it->Nodes )
+    if ( ( iRadius || iRadius2 ) && pointsInPolydata )
       {
       it->UpdateTracksRepresentation(iRadius, iRadius2);
       }
@@ -686,18 +704,8 @@ CreateDivisionActor( unsigned int iMother, unsigned int iDaughter1, unsigned int
   trackIDArray->SetName("DIVISION");
   trackIDArray->SetValue(0,iMother);
 
-  division->GetPointData()->AddArray(trackIDArray);
-/*
-  // Get info back from actor
-  vtkIntArray* testArray =
-      static_cast<vtkIntArray*>(actors[3]->GetMapper()->GetInput()->GetPointData()->GetArray("TrackID"));
-  int nbcompo = testArray->GetNumberOfComponents();
-  std::cout << "nb of components: " << nbcompo << std::endl;
-  int* range = testArray->GetValueRange();
-  std::cout << "range: " << range[0] << " to " << range[1] << std::endl;
-  int value = testArray->GetValue(0);
-  std::cout << "value: " << value << std::endl;
-*/
+  division->GetFieldData()->AddArray(trackIDArray);
+
   /*
    * \todo Nicolas: Which color should it be? White as of now
    */
@@ -861,7 +869,7 @@ UpdateDivisionActor(TrackStructure* iStructure)
   trackIDArray->SetName("DIVISION");
   trackIDArray->SetValue(0,iStructure->TraceID);
 
-  division->GetPointData()->AddArray(trackIDArray);
+  division->GetFieldData()->AddArray(trackIDArray);
 
   vtkSmartPointer<vtkProperty> trace_property =
       vtkSmartPointer<vtkProperty>::New();
@@ -903,6 +911,8 @@ DeleteADivision( unsigned int iMotherID)
   // find iterator
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iMotherID);
+
+  assert( motherIt != m_Container.get< TraceID >().end() );
 
   TrackStructure* mother =  const_cast<TrackStructure*>(&(*motherIt));
 

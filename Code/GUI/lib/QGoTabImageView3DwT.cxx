@@ -2590,24 +2590,24 @@ QGoTabImageView3DwT::HighlightPickedActor()
 {
   vtkActor *temp_actor = m_ImageView->GetCurrentActor();
   // mesh ID first - higher probability?
-  if( temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("MESH") )
+  if( temp_actor->GetMapper()->GetInput()->GetFieldData()->GetArray("MESH") )
   {
     m_MeshContainer->UpdateElementHighlighting(
-        temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("MESH")->GetTuple1(0));
+        temp_actor->GetMapper()->GetInput()->GetFieldData()->GetArray("MESH")->GetTuple1(0));
     return;
   }
 
-  if( temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("TRACK") )
+  if( temp_actor->GetMapper()->GetInput()->GetFieldData()->GetArray("TRACK") )
   {
     m_TrackContainer->UpdateElementHighlighting(
-        temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("TRACK")->GetTuple1(0));
+        temp_actor->GetMapper()->GetInput()->GetFieldData()->GetArray("TRACK")->GetTuple1(0));
     return;
   }
 
-  if( temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("CONTOUR") )
+  if( temp_actor->GetMapper()->GetInput()->GetFieldData()->GetArray("CONTOUR") )
   {
     m_ContourContainer->UpdateElementHighlighting(
-        temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("CONTOUR")->GetTuple1(0));
+        temp_actor->GetMapper()->GetInput()->GetFieldData()->GetArray("CONTOUR")->GetTuple1(0));
     return;
   }
 }
@@ -2620,26 +2620,26 @@ QGoTabImageView3DwT::VisibilityPickedActor()
 {
   vtkActor *temp_actor = m_ImageView->GetCurrentActor();
 
-  if( temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("MESH") )
+  if( temp_actor->GetMapper()->GetInput()->GetFieldData()->GetArray("MESH") )
   {
     m_MeshContainer->UpdateElementVisibility(
-        temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("MESH")->GetTuple1(0),
+        temp_actor->GetMapper()->GetInput()->GetFieldData()->GetArray("MESH")->GetTuple1(0),
         m_ImageView->GetCurrentState() );
     return;
   }
 
-  if( temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("TRACK") )
+  if( temp_actor->GetMapper()->GetInput()->GetFieldData()->GetArray("TRACK") )
   {
     m_TrackContainer->UpdateElementVisibility(
-        temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("TRACK")->GetTuple1(0),
+        temp_actor->GetMapper()->GetInput()->GetFieldData()->GetArray("TRACK")->GetTuple1(0),
         m_ImageView->GetCurrentState() );
     return;
   }
 
-  if( temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("CONTOUR") )
+  if( temp_actor->GetMapper()->GetInput()->GetFieldData()->GetArray("CONTOUR") )
   {
     m_ContourContainer->UpdateElementVisibility(
-        temp_actor->GetMapper()->GetInput()->GetPointData()->GetArray("CONTOUR")->GetTuple1(0),
+        temp_actor->GetMapper()->GetInput()->GetFieldData()->GetArray("CONTOUR")->GetTuple1(0),
         m_ImageView->GetCurrentState() );
     return;
   }
@@ -3270,17 +3270,10 @@ AddTraceIDIntoPolydata( vtkPolyData* iPolydata, unsigned int iTraceID, const cha
 {
 vtkSmartPointer<vtkIntArray> trackIDArray = vtkSmartPointer<vtkIntArray>::New();
 trackIDArray->SetNumberOfComponents(1);
-//trackIDArray->SetNumberOfValues(1);
+trackIDArray->SetNumberOfValues(1);
 trackIDArray->SetName(iTrace);
+trackIDArray->SetValue(0, iTraceID);
 
-/*
- * \todo Nicolas-Time consuming, should get a better solution
- */
-for(int i=0; i<iPolydata->GetNumberOfPoints(); ++i)
-{
-  trackIDArray->InsertNextValue(iTraceID);
-}
-
-iPolydata->GetPointData()->AddArray(trackIDArray);
+iPolydata->GetFieldData()->AddArray(trackIDArray);
 }
 //-------------------------------------------------------------------------
