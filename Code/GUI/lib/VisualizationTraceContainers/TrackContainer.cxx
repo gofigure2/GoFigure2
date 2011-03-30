@@ -362,7 +362,6 @@ UpdatePointsForATrack(unsigned int iTrackID,
     mother->Nodes = vtkPolyData::New();
     }
 
-  std::cout << "Update PD iTrackID: " << iTrackID << std::endl;
   // update the polydata (which represents the current track)
   UpdateTrackStructurePolyData( *mother );
 
@@ -492,7 +491,6 @@ TrackContainer::setNodeScalars(const char *iArrayName)
 
   while ( it != m_Container.get< TraceID >().end() )
     {
-    std::cout <<"ID range: " << it->TraceID << std::endl;
     // does the track have a polydata
     if ( it->Nodes )
       {
@@ -539,14 +537,12 @@ TrackContainer::UpdateTracksRepresentation(double iRadius, double iRadius2)
 
   while ( it != m_Container.end() )
     {
-    std::cout << " Update Polydata from track rep " << it->TraceID << std::endl;
     // restore original polydata
     bool pointsInPolydata = UpdateTrackStructurePolyData( ( *it ) );
 
     // add glyphs if necessary
     if ( ( iRadius || iRadius2 ) && pointsInPolydata )
       {
-      std::cout << " Node + Radius " << std::endl;
       it->UpdateTracksRepresentation(iRadius, iRadius2);
       }
     ++it;
