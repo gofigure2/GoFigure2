@@ -861,7 +861,7 @@ UpdateDivisionActor(TrackStructure* iStructure)
   trackIDArray->SetName("DIVISION");
   trackIDArray->SetValue(0,iStructure->TraceID);
 
-  division->GetPointData()->AddArray(trackIDArray);
+  division->GetFieldData()->AddArray(trackIDArray);
 
   vtkSmartPointer<vtkProperty> trace_property =
       vtkSmartPointer<vtkProperty>::New();
