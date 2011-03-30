@@ -855,7 +855,7 @@ UpdateCollectionHighlighted( MultiIndexContainerTraceIDIterator it, bool iHighli
     // find the iterator
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
-    ModifyDivisionHighlight(childIt,iHighlighted);
+    UpdateCollectionHighlighted(childIt,iHighlighted);
     }
 
   if(it->TreeNode.m_Child[1])
@@ -863,7 +863,7 @@ UpdateCollectionHighlighted( MultiIndexContainerTraceIDIterator it, bool iHighli
     // find the iterator
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
-    ModifyDivisionHighlight(childIt,iHighlighted);
+    UpdateCollectionHighlighted(childIt,iHighlighted);
     }
 }
 //-------------------------------------------------------------------------
