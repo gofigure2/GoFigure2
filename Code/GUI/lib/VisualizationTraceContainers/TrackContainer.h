@@ -78,7 +78,7 @@ private:
 //-----------------------------------------------------------------------------
 struct change_highlighted_division
 {
-  change_highlighted_division(bool& iHilighted):highlighted(iHilighted){}
+  change_highlighted_division(vtkProperty* iHilighted):highlighted(iHilighted){}
 
   void operator()(TrackStructure iStructure)
   {
@@ -86,7 +86,7 @@ struct change_highlighted_division
   }
 
 private:
-  bool highlighted;
+  vtkProperty* highlighted;
 };
 //-----------------------------------------------------------------------------
 
@@ -399,12 +399,12 @@ public slots:
 
   void UpdateTracksRepresentation( double iRadius,double iRadius2);
 
-  void UpdateCollectionVisibility( MultiIndexContainerTraceIDIterator it, bool iVisibility);
-
   void HighlightCollection(unsigned int, bool);
+  void UpdateCollectionHighlighted( MultiIndexContainerTraceIDIterator it, bool iHighlighted);
   int ModifyDivisionHighlight( MultiIndexContainerTraceIDIterator it, bool iHighlight );
 
   void ShowCollection(unsigned int, bool);
+  void UpdateCollectionVisibility( MultiIndexContainerTraceIDIterator it, bool iVisibility);
   int ModifyDivisionVisibility( MultiIndexContainerTraceIDIterator it, bool iVisibility );
 
   void UpdateTrackStructureLineage(TrackStructure* iStructure);

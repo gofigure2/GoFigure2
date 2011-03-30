@@ -786,10 +786,12 @@ void
 TrackContainer::
 HighlightCollection(unsigned int iRootTrackID, bool iHilighted)
 {
-//  MultiIndexContainerTraceIDIterator motherIt
-//      = m_Container.get< TraceID >().find(iRootTrackID);
-//  m_Container.get< TraceID >().
-//      modify( motherIt , change_highlighted_division(iHilighted) );
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iRootTrackID);
+
+  UpdateCollectionHighlighted(motherIt, iHilighted);
+
+  this->m_ImageView->UpdateRenderWindows();
 }
 //-------------------------------------------------------------------------
 
@@ -836,10 +838,39 @@ UpdateCollectionVisibility( MultiIndexContainerTraceIDIterator it, bool iVisible
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateCollectionHighlighted( MultiIndexContainerTraceIDIterator it, bool iHighlighted)
+{
+  if( !it->IsLeaf() )
+    {
+    ModifyDivisionHighlight(it, iHighlighted);
+    }
+
+  if(it->TreeNode.m_Child[0])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
+    ModifyDivisionHighlight(childIt,iHighlighted);
+    }
+
+  if(it->TreeNode.m_Child[1])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
+    ModifyDivisionHighlight(childIt,iHighlighted);
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 int
 TrackContainer::ModifyDivisionVisibility( MultiIndexContainerTraceIDIterator it, bool iVisible)
 {
   m_Container.get< TraceID >().modify( it , change_visible_division(iVisible) );
+
   return 1;
 }
 //-------------------------------------------------------------------------
@@ -848,7 +879,31 @@ TrackContainer::ModifyDivisionVisibility( MultiIndexContainerTraceIDIterator it,
 int
 TrackContainer::ModifyDivisionHighlight( MultiIndexContainerTraceIDIterator it, bool iHighlight )
 {
-  m_Container.get< TraceID >().modify( it , change_highlighted_division(iHighlight) );
+  vtkProperty* temp_property = NULL;
+  if ( !iHighlight )
+    {
+    /*
+     * \todo Nicolas - which color for the divisions??
+     */
+    temp_property = vtkProperty::New();
+    temp_property->SetColor(1,
+                            1,
+                            1);
+    temp_property->SetOpacity(1);
+    temp_property->SetLineWidth(this->m_IntersectionLineWidth);
+    }
+  else
+    {
+    temp_property = this->m_HighlightedProperty;
+    }
+
+  m_Container.get< TraceID >().modify( it , change_highlighted_division(temp_property) );
+
+  if(!iHighlight)
+    {
+    temp_property->Delete();
+    }
+
   return 1;
 }
 //-------------------------------------------------------------------------

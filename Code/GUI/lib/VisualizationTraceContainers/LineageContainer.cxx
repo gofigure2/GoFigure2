@@ -157,6 +157,26 @@ bool LineageContainer::GetLineageVisibile( unsigned int iTraceID )
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+bool LineageContainer::GetLineageHighlighted( unsigned int iTraceID )
+{
+  bool highlighted = true;
+
+  MultiIndexContainerType::index< TraceID >::type::iterator
+    it = m_Container.get< TraceID >().find( iTraceID );
+
+  /*
+   * \todo Nicolas - assert instead of if
+   */
+  if( it != m_Container.get< TraceID >().end() )
+    {
+    highlighted = it->Highlighted;
+    }
+
+  return highlighted;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void
 LineageContainer::UpdateElementHighlightingWithGivenTraceIDs(const QStringList & iList,
                                                            const Qt::CheckState & iCheck)

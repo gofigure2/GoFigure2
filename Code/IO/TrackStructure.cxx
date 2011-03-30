@@ -257,21 +257,20 @@ void
 TrackStructure::
 ModifyDivisionVisibility( bool iVisibility )
 {
-  std::cout << "trace ID: " << this->TraceID << " has a division actor visibility" << std::endl;
+  /*
+   * \todo Nicolas- should we add/remove the actors from the view
+   */
   this->TreeNode.Visible = iVisibility;
-  this->TreeNode.ActorXY->SetVisibility( iVisibility );
-  this->TreeNode.ActorXZ->SetVisibility( iVisibility );
-  this->TreeNode.ActorYZ->SetVisibility( iVisibility );
-  this->TreeNode.ActorXYZ->SetVisibility( iVisibility );
+  this->TreeNode.SetActorVisibility( iVisibility );
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
 TrackStructure::
-ModifyDivisionHighlight( bool iVisibility )
+ModifyDivisionHighlight( vtkProperty* iVisibility )
 {
-  std::cout << "trace ID: " << this->TraceID << " has a division actor highlight" << std::endl;
+  this->TreeNode.SetActorProperties(iVisibility);
 }
 //--------------------------------------------------------------------------
 

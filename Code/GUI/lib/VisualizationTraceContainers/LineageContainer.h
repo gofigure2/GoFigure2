@@ -135,6 +135,13 @@ public:
    */
   bool GetLineageVisibile( unsigned int iTraceID );
 
+  /*
+   * \brief Get the hilighted of the given lineage
+   * \param[in] iTraceID lineage ID of interest
+   * \return highlighted
+   */
+  bool GetLineageHighlighted( unsigned int iTraceID );
+
   /**\todo implement them:*/
   bool DeleteElement(const unsigned int & iId);
   bool DeleteElement(MultiIndexContainerTraceIDIterator iIter);

@@ -513,6 +513,9 @@ TraceContainerBase< TContainer >::UpdateElementVisibilityWithGivenTraceID(const 
   typedef void ( QGoImageView3D::*ImageViewMember )(const int &, vtkActor *);
   ImageViewMember f;
 
+/*
+* \todo Nicolas-should be an assert
+*/
   if ( it != m_Container.get< TraceID >().end() )
     {
     if ( it->Visible )
