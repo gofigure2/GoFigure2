@@ -564,7 +564,7 @@ void QGoDBTrackManager::CreateCorrespondingTrackFamily()
       std::list<unsigned int> LineageIDToCheck = 
         this->m_CollectionOfTraces->GetListCollectionIDs(this->m_DatabaseConnector,TrackID);
       //update the trackFamilyID for the daughters:
-      emit NeedToGetDatabaseConnection();
+      //emit NeedToGetDatabaseConnection();
       std::list<unsigned int>::iterator iter = DaughtersIDs.begin();
       while(iter != DaughtersIDs.end() )
         {
@@ -695,20 +695,15 @@ std::list<unsigned int> QGoDBTrackManager::GetTrackIDFromDaughtersFamilies(
   vtkMySQLDatabase* iDatabaseConnector,
   std::list<unsigned int> &ioTrackIDsOfTheFamilies)
 {
-  
+  //delete the daughtersLineageID then as they are useless:
   std::list<unsigned int> DaughtersLineageID = 
       this->m_CollectionOfTraces->GetListCollectionIDs(iDatabaseConnector, 
       ioTrackIDsOfTheFamilies);
 
-  /*std::list<unsigned int> DaughtersLineageID = 
-      this->m_CollectionOfTraces->GetListCollectionIDs(iDatabaseConnector, 
-      ioTrackIDsOfTheFamilies, false, false);*/
   std::list<unsigned int> FirstDaugthersIDs = ioTrackIDsOfTheFamilies;
   std::list<unsigned int>::iterator iter = FirstDaugthersIDs.begin();
   ioTrackIDsOfTheFamilies.clear(); //in order not to have twice the daughtersIDs
-  //delete the daughtersLineageID then as they are useless
-  //std::list<unsigned int>::iterator iter = DaughtersLineageID.begin();
-  //while (iter != DaughtersLineageID.end() && iterFirstDaughters != FirstDaugthersIDs.end() )
+
   while(iter != FirstDaugthersIDs.end() )
     {
     std::list<unsigned int> ListDaughterID;
@@ -732,9 +727,8 @@ std::list<unsigned int> QGoDBTrackManager::GetTrackIDFromDaughtersFamilies(
         ioTrackIDsOfTheFamilies.push_back(*iterTrackIDs);
         ++iterTrackIDs;
         }
-        }
+      }
     ++iter;
-    //++iterFirstDaughters;
     }
 
   return DaughtersLineageID;
@@ -754,7 +748,7 @@ void QGoDBTrackManager::LoadInfoVisuContainerForTrackFamilies(
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::DeleteTheDivisions()
 {
-  //check that the checked traces are all mother, if not message in the status bar:
+  //check that the selected traces are all mother, if not message in the status bar:
   std::list<unsigned int> TrackIDNotMother = std::list<unsigned int>();
   std::list<unsigned int> CheckedTracks = 
     this->m_TrackContainerInfoForVisu->GetHighlightedElementsTraceID();
