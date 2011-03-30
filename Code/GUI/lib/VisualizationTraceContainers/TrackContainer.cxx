@@ -241,7 +241,7 @@ TrackContainer::UpdateTrackStructurePolyData(const TrackStructure & iTrackStruct
   trackIDArray->SetName("TRACK");
   trackIDArray->SetValue(0,iTrackStructure.TraceID);
 
-  polyData->GetPointData()->AddArray(trackIDArray);
+  polyData->GetFieldData()->AddArray(trackIDArray);
 
   iTrackStructure.Nodes->DeepCopy(polyData);
   //update speed information
@@ -706,17 +706,7 @@ CreateDivisionActor( unsigned int iMother, unsigned int iDaughter1, unsigned int
   trackIDArray->SetValue(0,iMother);
 
   division->GetFieldData()->AddArray(trackIDArray);
-/*
-  // Get info back from actor
-  vtkIntArray* testArray =
-      static_cast<vtkIntArray*>(actors[3]->GetMapper()->GetInput()->GetPointData()->GetArray("TrackID"));
-  int nbcompo = testArray->GetNumberOfComponents();
-  std::cout << "nb of components: " << nbcompo << std::endl;
-  int* range = testArray->GetValueRange();
-  std::cout << "range: " << range[0] << " to " << range[1] << std::endl;
-  int value = testArray->GetValue(0);
-  std::cout << "value: " << value << std::endl;
-*/
+
   /*
    * \todo Nicolas: Which color should it be? White as of now
    */
