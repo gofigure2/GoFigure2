@@ -306,43 +306,8 @@ UpdateDivisionsColor( unsigned int iLineageID)
   std::list< unsigned int >::iterator itTrack = trackIDList.begin();
   while( itTrack != trackIDList.end() )
   {
-    std::cout<< "track: " << *itTrack << std::endl;
     this->m_TrackContainerInfoForVisu->UpdateDivisionColor(*itTrack, color);
     ++itTrack;
   }
   emit DBConnectionNotNeededAnymore();
-  /*
-  //------------------------------------------------------------------------------
-  //------------------------------------------------------------------------------
-  // update division color
-  std::list< unsigned int > motherIDs = m_TrackContainerInfoForVisu->GetSubLineage( MotherID );
-
-  std::list< unsigned int >::iterator sublineageTracks = motherIDs.begin();
-
-  while( sublineageTracks != motherIDs.end() )
-  {
-    std::cout << "sublineage track: " << *sublineageTracks << std::endl;
-    ++sublineageTracks;
-  }
-
-  std::cout<< " =====================================" << std::endl;
-
-   std::list< unsigned int > lineageIDList =
-       this->m_CollectionOfTraces->GetListCollectionIDs( this->m_DatabaseConnector, motherIDs, true, false);
-
-   std::list< unsigned int >::iterator itLineage = lineageIDList.begin();
-   std::list< unsigned int >::iterator itTrack = motherIDs.begin();
-   while( itTrack != motherIDs.end() )
-   {
-     std::cout<< "lineage: " << *itLineage << std::endl;
-     std::cout<< "track: " << *itTrack << std::endl;
-     //emit GetDivisionColor(*itLineage, *itTrack);
-     ++itLineage;
-     ++itTrack;
-
-     std::cout<< "------------------" << std::endl;
-   }
-   //------------------------------------------------------------------------------
-   //------------------------------------------------------------------------------
-   */
 }

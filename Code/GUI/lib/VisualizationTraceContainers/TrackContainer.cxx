@@ -1164,5 +1164,10 @@ UpdateDivisionColor(unsigned int iTrackID, double* iColor)
     {
     m_Container.get< TraceID >().modify( motherIt , change_color_division(iColor) );
     }
+
+  /*
+   * \todo might not be efficient enough
+   */
+  m_ImageView->UpdateRenderWindows();
 }
 //-------------------------------------------------------------------------
