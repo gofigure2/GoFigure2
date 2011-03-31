@@ -884,6 +884,25 @@ int
 TrackContainer::ModifyDivisionVisibility( MultiIndexContainerTraceIDIterator& it, bool iVisible)
 {
   m_Container.get< TraceID >().modify( it , change_visible_division(iVisible) );
+
+  typedef void ( QGoImageView3D::*ImageViewMember )(const int &, vtkActor *);
+  ImageViewMember f;
+
+  if ( iVisible )
+    {
+    f = &QGoImageView3D::AddActor;
+    }
+  else
+    {
+    f = &QGoImageView3D::RemoveActor;
+    }
+
+  assert( m_ImageView );
+  ( m_ImageView->*f )(0, it->TreeNode.ActorXY);
+  ( m_ImageView->*f )(1, it->TreeNode.ActorXZ);
+  ( m_ImageView->*f )(2, it->TreeNode.ActorYZ);
+  ( m_ImageView->*f )(3, it->TreeNode.ActorXYZ);
+
   return 1;
 }
 //-------------------------------------------------------------------------
