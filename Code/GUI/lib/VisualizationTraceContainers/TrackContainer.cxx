@@ -899,7 +899,7 @@ TrackContainer::ModifyDivisionHighlight( MultiIndexContainerTraceIDIterator it, 
     temp_property = this->m_HighlightedProperty;
     }
 
-  m_Container.get< TraceID >().modify( it , change_highlighted_division(temp_property) );
+  m_Container.get< TraceID >().modify( it , change_highlighted_division(temp_property, iHighlight) );
 
   if(!iHighlight)
     {
@@ -1092,7 +1092,10 @@ UpdateCollectionHighlighting(unsigned int iTraceId)
 
   GetRootIterator( motherIt );
 
-  // invert lineage highlight state
+  HighlightCollection(motherIt->TraceID, !motherIt->TreeNode.Highlighted);
+
+  // send root track ID to lineage container
+
 }
 //-------------------------------------------------------------------------
 

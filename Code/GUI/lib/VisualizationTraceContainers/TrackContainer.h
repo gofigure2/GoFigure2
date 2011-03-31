@@ -78,15 +78,17 @@ private:
 //-----------------------------------------------------------------------------
 struct change_highlighted_division
 {
-  change_highlighted_division(vtkProperty* iHilighted):highlighted(iHilighted){}
+  change_highlighted_division(vtkProperty* iProperty, bool iHighlight):
+    property(iProperty),highlight(iHighlight){}
 
   void operator()(TrackStructure iStructure)
   {
-    iStructure.ModifyDivisionHighlight(highlighted);
+    iStructure.ModifyDivisionHighlight(property,highlight);
   }
 
 private:
-  vtkProperty* highlighted;
+  vtkProperty* property;
+  bool highlight;
 };
 //-----------------------------------------------------------------------------
 
