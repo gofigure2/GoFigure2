@@ -606,7 +606,7 @@ SetListOfDivisions( std::list<unsigned int> iListOfDivisions)
     unsigned int daughter2 = *it;
     ++it;
     // create connections and actor for the division of interest
-    AddDivision(mother, daughter1, daughter2);
+    AddDivision(mother, daughter1, daughter2, false);
     }
 }
 //-------------------------------------------------------------------------
@@ -615,7 +615,7 @@ SetListOfDivisions( std::list<unsigned int> iListOfDivisions)
 void
 TrackContainer::
 AddDivision( unsigned int iMotherID, unsigned int iDaughter1ID,
-    unsigned int iDaughter2ID)
+    unsigned int iDaughter2ID, bool iVisible)
 {
   // get address of the structures of interest
   //------------------------------
@@ -636,12 +636,12 @@ AddDivision( unsigned int iMotherID, unsigned int iDaughter1ID,
   mother->TreeNode.m_Child[1] = const_cast<TrackStructure*>(&(*daughter2It));
   // Create Actor
   std::vector< vtkActor * > actors =
-      CreateDivisionActor(iMotherID, iDaughter1ID, iDaughter2ID);
+      CreateDivisionActor(iMotherID, iDaughter1ID, iDaughter2ID, iVisible);
   mother->TreeNode.ActorXY = actors[0];
   mother->TreeNode.ActorXZ = actors[1];
   mother->TreeNode.ActorYZ = actors[2];
   mother->TreeNode.ActorXYZ = actors[3];
-  mother->TreeNode.Visible = true;
+  mother->TreeNode.Visible = iVisible;
 
   //------------------------------
   // D1->motherID
@@ -660,7 +660,7 @@ AddDivision( unsigned int iMotherID, unsigned int iDaughter1ID,
 //-------------------------------------------------------------------------
 std::vector<vtkActor* >
 TrackContainer::
-CreateDivisionActor( unsigned int iMother, unsigned int iDaughter1, unsigned int iDaughter2)
+CreateDivisionActor( unsigned int iMother, unsigned int iDaughter1, unsigned int iDaughter2, bool iVisible)
 {
   // Arnaud: what about if any of the parameter is NULL?
   // Arnaud: what about if one daughter is in the field of view,
@@ -724,11 +724,22 @@ CreateDivisionActor( unsigned int iMother, unsigned int iDaughter1, unsigned int
                            b);
   trace_property->SetOpacity(a);
 
-  // create actors and add it to the visualization
   std::vector< vtkActor * > divisionActors =
-        this->m_ImageView->AddContour( division, trace_property );
+      this->m_ImageView->AddContour( division, trace_property );
 
-  this->m_ImageView->AddActor(3, divisionActors[3]);
+  // add it to visu??
+  if( iVisible )
+    {
+    // add to 3d
+    this->m_ImageView->AddActor(3, divisionActors[3]);
+    }
+  else
+    {
+    // remove from 2d
+    this->m_ImageView->RemoveActor(0, divisionActors[0]);
+    this->m_ImageView->RemoveActor(1, divisionActors[1]);
+    this->m_ImageView->RemoveActor(2, divisionActors[2]);
+    }
 
   return divisionActors;
 }

@@ -1715,5 +1715,4 @@ void QGoPrintDatabase::AddCheckedTracksToSelectedLineage(
     this->m_TracksManager, this->m_LineagesManager, iLineageID, iListDaughters);
 
   this->CloseDBConnection();
-  
 }

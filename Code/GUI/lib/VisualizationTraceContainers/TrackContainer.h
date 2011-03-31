@@ -361,7 +361,7 @@ public:
    * \param[in] iDaughter2ID ID of the daughter2 of the division
    */
   void AddDivision( unsigned int iMotherID, unsigned int iDaughter1ID,
-      unsigned int iDaughter2ID);
+      unsigned int iDaughter2ID, bool iVisible = true);
 
   /*
    * \brief Create 4 actors (one for each view)
@@ -372,7 +372,7 @@ public:
    * \return vector of 4 actors (1 for each view) representing the division
    */
   std::vector<vtkActor* > CreateDivisionActor( unsigned int iMother, unsigned int iDaughter1,
-      unsigned int iDaughter2);
+      unsigned int iDaughter2, bool iVisible = true);
 
   /*
    * \brief Cut the lineage after the given track ID. Modifies mother child pointers to NULL.
