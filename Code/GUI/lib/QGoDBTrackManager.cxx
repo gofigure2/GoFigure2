@@ -911,26 +911,35 @@ void QGoDBTrackManager::CreateALineageWithFormerDaughterOfADeletedDivision(
     //Daughter.SetField<unsigned int>("TrackFamilyID", 0); //she is not a daughter anymore
     //Daughter.SaveInDB(iDatabaseConnector);
 
-    std::list<unsigned int> PreviousLineage;
-    PreviousLineage.push_back( ss_atoi<unsigned int>(Daughter.GetMapValue("lineageID") ) ); //get the previous lineage ID of the daughter
-   
-    if (PreviousLineage.front() == 0)
+    std::list<unsigned int> PreviousLineageToDelete = std::list<unsigned int>();
+    if (!iPartOfHigherLineage) //the lineage should not be deleted if higher tracks belong to it
+      {
+      PreviousLineageToDelete.push_back( 
+        ss_atoi<unsigned int>(Daughter.GetMapValue("lineageID") ) ); //get the previous lineage ID of the daughter
+      }
+    //get all the tracks daugthers of the DaughterID:
+    std::list<unsigned int> TracksIDs = this->m_TrackContainerInfoForVisu->GetSubLineage(iDaughterID);
+
+    /*if (PreviousLineage.front() == 0)
       {
       std::cout<<"The daughter has no lineage, there was a pb with the creation of the division, can not delete it ";
       std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
       std::cout << std::endl;
       return;
-      }
+      }*/
 
-    std::list<unsigned int> TracksIDs = //get all the tracks belonging to this previous lineage
-      this->m_CollectionOfTraces->GetTraceIDsBelongingToCollectionID(iDatabaseConnector, PreviousLineage);
+    //std::list<unsigned int> TracksIDs = //get all the tracks belonging to this previous lineage
+     // this->m_CollectionOfTraces->GetTraceIDsBelongingToCollectionID(iDatabaseConnector, PreviousLineage);
 
-    if (iPartOfHigherLineage) //the lineage should not be deleted then as higher tracks belong to it
+   // if (iPartOfHigherLineage) //the lineage should not be deleted then as higher tracks belong to it
+   //   {
+   //   PreviousLineage.clear();
+   //   }
+    if (TracksIDs.size() > 1)
       {
-      PreviousLineage.clear();
+      emit NewLineageToCreateFromTracks(TracksIDs, iDaughterID, PreviousLineageToDelete); //need to create a new lineage with 
+      //the family of the daughter
       }
-
-    emit NewLineageToCreateFromTracks(TracksIDs, iDaughterID, PreviousLineage); //need to create a new lineage with them
   //  }
  // else
  //   {
