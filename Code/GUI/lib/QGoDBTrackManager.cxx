@@ -83,6 +83,11 @@ void QGoDBTrackManager::SetTracksInfoContainerForVisu(
                     SIGNAL( UpdateCollectionHighlighting(unsigned int) ),
                     this->m_TrackContainerInfoForVisu,
                     SIGNAL( UpdateLineageHighlighting(unsigned int) ) );
+
+  QObject::connect( this,
+                    SIGNAL( GetDivisionColor( unsigned int, unsigned int) ),
+                    this->m_TrackContainerInfoForVisu,
+                    SIGNAL( GetDivisionColor( unsigned int, unsigned int) ) );
 }
 
 //-------------------------------------------------------------------------
@@ -941,8 +946,6 @@ void
 QGoDBTrackManager::
 GetCollectionIDForHighlgiht(unsigned int iTraceRootID)
 {
-  std::cout << "TrackIDRoot: " << iTraceRootID << std::endl;
-
   std::list<unsigned int> trackIDList;
   trackIDList.push_back(iTraceRootID);
 
@@ -954,9 +957,45 @@ GetCollectionIDForHighlgiht(unsigned int iTraceRootID)
   std::list< unsigned int >::iterator it = lineageIDList.begin();
   while( it != lineageIDList.end() )
   {
-    std::cout << "lineage ID: " << *it << std::endl;
     emit UpdateCollectionHighlighting( *it );
     ++it;
   }
   emit DBConnectionNotNeededAnymore();
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoDBTrackManager::
+UpdateDivisionsColors()
+{
+  emit NeedToGetDatabaseConnection();
+
+  std::list<unsigned int> ListTrackIDs =
+    this->m_CollectionOfTraces->GetTrackFamilyDataFromDB(this->m_DatabaseConnector);
+
+  std::list<unsigned int>::iterator it = ListTrackIDs.begin();
+  std::list<unsigned int> motherIDs;
+  while( it != ListTrackIDs.end() )
+  {
+    motherIDs.push_back(*it);
+    ++it;
+    ++it;
+    ++it;
+  }
+
+  std::list< unsigned int > lineageIDList =
+      this->m_CollectionOfTraces->GetListCollectionIDs( this->m_DatabaseConnector, motherIDs, true, false);
+
+  std::list< unsigned int >::iterator itLineage = lineageIDList.begin();
+  std::list< unsigned int >::iterator itTrack = motherIDs.begin();
+  while( itTrack != motherIDs.end() )
+  {
+    emit GetDivisionColor(*itLineage, *itTrack);
+    ++itLineage;
+    ++itTrack;
+  }
+
+  emit DBConnectionNotNeededAnymore();
+}
+//-------------------------------------------------------------------------

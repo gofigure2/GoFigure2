@@ -1084,6 +1084,7 @@ void QGoPrintDatabase::GetContentAndDisplayAllTracesInfo(
   this->m_TracksManager->LoadInfoVisuContainerForTrackFamilies(iDatabaseConnector);
   this->m_LineagesManager->DisplayInfoAndLoadVisuContainerForAllLineages(
     iDatabaseConnector);
+  this->m_TracksManager->UpdateDivisionsColors();
 }
 
 //-------------------------------------------------------------------------
@@ -1579,6 +1580,9 @@ void QGoPrintDatabase::CreateNewLineageFromTracks(
     (iListCheckedTracks, NewLineageID, iListLineagesToDelete);
 
   this->CloseDBConnection();
+
+  // Update divisions colors
+  this->m_LineagesManager->UpdateDivisionsColor(NewLineageID);
 }
 //--------------------------------------------------------------------------
 
@@ -1717,5 +1721,7 @@ void QGoPrintDatabase::AddCheckedTracksToSelectedLineage(
 
     this->CloseDBConnection();
     }
-  
+
+  // Update divisions colors
+  this->m_LineagesManager->UpdateDivisionsColor(iLineageID);
 }

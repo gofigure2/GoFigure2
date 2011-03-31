@@ -145,6 +145,7 @@ public:
 
   void ModifyDivisionVisibility( bool iVisibility );
   void ModifyDivisionHighlight(  vtkProperty* iProperty, bool iHighlight );
+  void ModifyDivisionColor( double* iColor );
 
   const bool IsRoot() const;
   const bool IsLeaf() const;

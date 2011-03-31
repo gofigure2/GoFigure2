@@ -606,7 +606,7 @@ SetListOfDivisions( std::list<unsigned int> iListOfDivisions)
     unsigned int daughter2 = *it;
     ++it;
     // create connections and actor for the division of interest
-    AddDivision(mother, daughter1, daughter2);
+    AddDivision(mother, daughter1, daughter2, false);
     }
 }
 //-------------------------------------------------------------------------
@@ -615,7 +615,7 @@ SetListOfDivisions( std::list<unsigned int> iListOfDivisions)
 void
 TrackContainer::
 AddDivision( unsigned int iMotherID, unsigned int iDaughter1ID,
-    unsigned int iDaughter2ID)
+    unsigned int iDaughter2ID, bool iVisible)
 {
   // get address of the structures of interest
   //------------------------------
@@ -636,12 +636,12 @@ AddDivision( unsigned int iMotherID, unsigned int iDaughter1ID,
   mother->TreeNode.m_Child[1] = const_cast<TrackStructure*>(&(*daughter2It));
   // Create Actor
   std::vector< vtkActor * > actors =
-      CreateDivisionActor(iMotherID, iDaughter1ID, iDaughter2ID);
+      CreateDivisionActor(iMotherID, iDaughter1ID, iDaughter2ID, iVisible);
   mother->TreeNode.ActorXY = actors[0];
   mother->TreeNode.ActorXZ = actors[1];
   mother->TreeNode.ActorYZ = actors[2];
   mother->TreeNode.ActorXYZ = actors[3];
-  mother->TreeNode.Visible = true;
+  mother->TreeNode.Visible = iVisible;
 
   //------------------------------
   // D1->motherID
@@ -660,7 +660,7 @@ AddDivision( unsigned int iMotherID, unsigned int iDaughter1ID,
 //-------------------------------------------------------------------------
 std::vector<vtkActor* >
 TrackContainer::
-CreateDivisionActor( unsigned int iMother, unsigned int iDaughter1, unsigned int iDaughter2)
+CreateDivisionActor( unsigned int iMother, unsigned int iDaughter1, unsigned int iDaughter2, bool iVisible)
 {
   // Arnaud: what about if any of the parameter is NULL?
   // Arnaud: what about if one daughter is in the field of view,
@@ -724,11 +724,22 @@ CreateDivisionActor( unsigned int iMother, unsigned int iDaughter1, unsigned int
                            b);
   trace_property->SetOpacity(a);
 
-  // create actors and add it to the visualization
   std::vector< vtkActor * > divisionActors =
-        this->m_ImageView->AddContour( division, trace_property );
+      this->m_ImageView->AddContour( division, trace_property );
 
-  this->m_ImageView->AddActor(3, divisionActors[3]);
+  // add it to visu??
+  if( iVisible )
+    {
+    // add to 3d
+    this->m_ImageView->AddActor(3, divisionActors[3]);
+    }
+  else
+    {
+    // remove from 2d
+    this->m_ImageView->RemoveActor(0, divisionActors[0]);
+    this->m_ImageView->RemoveActor(1, divisionActors[1]);
+    this->m_ImageView->RemoveActor(2, divisionActors[2]);
+    }
 
   return divisionActors;
 }
@@ -873,6 +884,25 @@ int
 TrackContainer::ModifyDivisionVisibility( MultiIndexContainerTraceIDIterator& it, bool iVisible)
 {
   m_Container.get< TraceID >().modify( it , change_visible_division(iVisible) );
+
+  typedef void ( QGoImageView3D::*ImageViewMember )(const int &, vtkActor *);
+  ImageViewMember f;
+
+  if ( iVisible )
+    {
+    f = &QGoImageView3D::AddActor;
+    }
+  else
+    {
+    f = &QGoImageView3D::RemoveActor;
+    }
+
+  assert( m_ImageView );
+  ( m_ImageView->*f )(0, it->TreeNode.ActorXY);
+  ( m_ImageView->*f )(1, it->TreeNode.ActorXZ);
+  ( m_ImageView->*f )(2, it->TreeNode.ActorYZ);
+  ( m_ImageView->*f )(3, it->TreeNode.ActorXYZ);
+
   return 1;
 }
 //-------------------------------------------------------------------------
@@ -888,10 +918,10 @@ TrackContainer::ModifyDivisionHighlight( MultiIndexContainerTraceIDIterator& it,
      * \todo Nicolas - which color for the divisions??
      */
     temp_property = vtkProperty::New();
-    temp_property->SetColor(1,
-                            1,
-                            1);
-    temp_property->SetOpacity(1);
+    temp_property->SetColor(it->TreeNode.rgba[0],
+                            it->TreeNode.rgba[1],
+                            it->TreeNode.rgba[2]);
+    temp_property->SetOpacity(it->TreeNode.rgba[3]);
     temp_property->SetLineWidth(this->m_IntersectionLineWidth);
     }
   else
@@ -1092,9 +1122,6 @@ UpdateCollectionHighlighting(unsigned int iTraceId)
 
   GetRootIterator( motherIt );
 
-  std::cout << "trace ID? " << motherIt->TraceID << std::endl;
-  std::cout << "highlighted? " << motherIt->TreeNode.Highlighted << std::endl;
-
   bool highlight = !motherIt->TreeNode.Highlighted;
   unsigned int id = motherIt->TraceID;
 
@@ -1120,5 +1147,27 @@ GetRootIterator(MultiIndexContainerTraceIDIterator& iMotherIterator)
   iMotherIterator
       = m_Container.get< TraceID >().find( iMotherIterator->TreeNode.m_Mother->TraceID );
   GetRootIterator( iMotherIterator );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateDivisionColor(unsigned int iTrackID, double* iColor)
+{
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iTrackID);
+
+  assert( motherIt != m_Container.get< TraceID >().end() );
+
+  if( !motherIt->IsLeaf() )
+    {
+    m_Container.get< TraceID >().modify( motherIt , change_color_division(iColor) );
+    }
+
+  /*
+   * \todo might not be efficient enough
+   */
+  m_ImageView->UpdateRenderWindows();
 }
 //-------------------------------------------------------------------------

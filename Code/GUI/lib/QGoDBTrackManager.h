@@ -142,6 +142,8 @@ public:
   void UpdateBoundingBoxes(
   vtkMySQLDatabase *iDatabaseConnector,std::list< unsigned int > iListTracesIDs);
 
+  void UpdateDivisionsColors();
+
 signals:
   void NeedMeshesInfoForImportedTrack(unsigned int iTrackID);
   void TrackToSplit(unsigned int iTrackID, std::list<unsigned int> iListMeshIDs);
@@ -155,6 +157,8 @@ signals:
     std::list<unsigned> iLineagesToDelete);
 
   void UpdateCollectionHighlighting(unsigned int);
+
+  void GetDivisionColor(unsigned int, unsigned int);
 
 protected:
   GoDBTWContainerForTrack *m_TWContainer;
