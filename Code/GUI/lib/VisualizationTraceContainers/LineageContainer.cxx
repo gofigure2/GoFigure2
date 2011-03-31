@@ -172,9 +172,14 @@ GetLineageColor( unsigned int iTraceID )
   MultiIndexContainerType::index< TraceID >::type::iterator
     it = m_Container.get< TraceID >().find( iTraceID );
 
-  assert( it != m_Container.get< TraceID >().end() );
+  double* color = NULL;
 
-  double* color = const_cast<double*>(it->rgba);
+  // might not find it when delete disions
+  // lineage ID can be 0->not found
+  if( it != m_Container.get< TraceID >().end() );
+  {
+  color = const_cast<double*>(it->rgba);
+  }
 
   return color;
 }

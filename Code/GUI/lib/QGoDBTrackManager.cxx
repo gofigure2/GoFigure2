@@ -88,6 +88,11 @@ void QGoDBTrackManager::SetTracksInfoContainerForVisu(
                     SIGNAL( GetDivisionColor( unsigned int, unsigned int) ),
                     this->m_TrackContainerInfoForVisu,
                     SIGNAL( GetDivisionColor( unsigned int, unsigned int) ) );
+
+  QObject::connect( this,
+                    SIGNAL( UpdateCollectionsColors( std::list<unsigned int>) ),
+                    this->m_TrackContainerInfoForVisu,
+                    SIGNAL( UpdateCollectionsColors( std::list<unsigned int>) ) );
 }
 
 //-------------------------------------------------------------------------
@@ -801,6 +806,11 @@ void QGoDBTrackManager::DeleteTheDivisions()
     emit CheckedTracksToAddToSelectedLineage(TrackIDsWithNoLineage, 0, LineagesToDelete);  
     }
 
+  // Update colors
+  //std::list<unsigned int> lineages = this->m_CollectionOfTraces->GetListCollectionIDs(
+  //    this->m_DatabaseConnector, CheckedTracks);
+  //emit UpdateCollectionsColors(lineages);
+
   emit DBConnectionNotNeededAnymore();
 }
 //-------------------------------------------------------------------------
@@ -839,8 +849,7 @@ void QGoDBTrackManager::DeleteOneDivision(GoDBTrackFamilyRow iDivision,
     GoDBTrackRow Mother(MotherID, this->m_DatabaseConnector);
     emit DBConnectionNotNeededAnymore();
     ioMotherLineageToDelete.push_back(ss_atoi<unsigned int>(Mother.GetMapValue("lineageID") ) );    
-    } 
-  
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -984,15 +993,23 @@ UpdateDivisionsColors()
     ++it;
   }
 
-  std::list< unsigned int > lineageIDList =
-      this->m_CollectionOfTraces->GetListCollectionIDs( this->m_DatabaseConnector, motherIDs, true, false);
+  //std::list< unsigned int > lineageIDList =
+  //   this->m_CollectionOfTraces->GetListCollectionIDs( this->m_DatabaseConnector, motherIDs, true, false);
 
-  std::list< unsigned int >::iterator itLineage = lineageIDList.begin();
+  //std::list< unsigned int >::iterator itLineage = lineageIDList.begin();
   std::list< unsigned int >::iterator itTrack = motherIDs.begin();
+  /*
+   * \todo Nicolas-enhance efficiency NO LIST!!
+   */
   while( itTrack != motherIDs.end() )
   {
-    emit GetDivisionColor(*itLineage, *itTrack);
-    ++itLineage;
+    std::list<unsigned int> trackList;
+    trackList.push_back(*itTrack);
+    //get lineage ID
+    std::list< unsigned int > lineageIDList =
+        this->m_CollectionOfTraces->GetListCollectionIDs( this->m_DatabaseConnector, trackList);
+    emit GetDivisionColor(lineageIDList.front(), *itTrack);
+    //++itLineage;
     ++itTrack;
   }
 

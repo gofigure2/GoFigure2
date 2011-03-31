@@ -76,6 +76,15 @@ void QGoDBLineageManager::SetLineagesInfoContainersForVisu(
                     SIGNAL( GetDivisionColor(unsigned int, unsigned int) ),
                     this,
                     SLOT( SetDivisionColor( unsigned int, unsigned int) ) );
+
+  QObject::connect( m_TrackContainerInfoForVisu,
+                    SIGNAL( UpdateCollectionsColors( std::list<unsigned int>) ),
+                    this,
+                    SLOT( UpdateElementsColors( std::list<unsigned int>) ) );
+
+
+
+
 }
 
 //-------------------------------------------------------------------------
@@ -284,7 +293,15 @@ QGoDBLineageManager::
 SetDivisionColor(unsigned int iLineageID, unsigned int iTrackID)
 {
   double* color = this->m_LineageContainerInfoForVisu->GetLineageColor(iLineageID);
-  this->m_TrackContainerInfoForVisu->UpdateDivisionColor(iTrackID, color);
+
+  std::cout<< "lineage: " << iLineageID << std::endl;
+  std::cout<< "track: " << iTrackID << std::endl;
+
+  if(color)
+    {
+    std::cout<< "color: " << color[0] << " " << color[1] << " " << color[2] << std::endl;
+    this->m_TrackContainerInfoForVisu->UpdateDivisionColor(iTrackID, color);
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -303,11 +320,30 @@ UpdateDivisionsColor( unsigned int iLineageID)
 
   double* color = this->m_LineageContainerInfoForVisu->GetLineageColor(iLineageID);
 
-  std::list< unsigned int >::iterator itTrack = trackIDList.begin();
-  while( itTrack != trackIDList.end() )
-  {
-    this->m_TrackContainerInfoForVisu->UpdateDivisionColor(*itTrack, color);
-    ++itTrack;
-  }
+  if(color)
+    {
+    std::list< unsigned int >::iterator itTrack = trackIDList.begin();
+    while( itTrack != trackIDList.end() )
+      {
+      this->m_TrackContainerInfoForVisu->UpdateDivisionColor(*itTrack, color);
+      ++itTrack;
+      }
+    }
   emit DBConnectionNotNeededAnymore();
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoDBLineageManager::
+UpdateElementsColors( std::list<unsigned int> iListLineages)
+{
+  std::list<unsigned int>::iterator it = iListLineages.begin();
+  while( it != iListLineages.end() )
+  {
+    UpdateDivisionsColor(*it);
+    ++it;
+  }
+
+}
+//-------------------------------------------------------------------------

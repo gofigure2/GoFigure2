@@ -412,6 +412,7 @@ signals:
   void UpdateLineageHighlighting(unsigned int);
   void GetCollectionIDForHighlgiht(unsigned int);
   void GetDivisionColor(unsigned int, unsigned int);
+  void UpdateCollectionsColors( std::list<unsigned int>);
 
 public slots:
 

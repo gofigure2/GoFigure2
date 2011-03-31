@@ -118,6 +118,8 @@ public:
 
   void SetDivisionColor(unsigned int, unsigned int);
 
+  void UpdateElementsColors( std::list<unsigned int>);
+
 protected:
   GoDBTWContainerForLineage      *m_TWContainer;
   LineageContainer               *m_LineageContainerInfoForVisu;
