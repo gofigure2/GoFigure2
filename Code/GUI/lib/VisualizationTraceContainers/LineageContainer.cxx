@@ -139,40 +139,44 @@ unsigned int LineageContainer::GetLineageTrackRootID( unsigned int iTraceID )
 //-------------------------------------------------------------------------
 bool LineageContainer::GetLineageVisibile( unsigned int iTraceID )
 {
-  bool visible = true;
-
   MultiIndexContainerType::index< TraceID >::type::iterator
     it = m_Container.get< TraceID >().find( iTraceID );
 
-  /*
-   * \todo Nicolas - assert instead of if
-   */
-  if( it != m_Container.get< TraceID >().end() )
-    {
-    visible = it->Visible;
-    }
+  assert( it != m_Container.get< TraceID >().end() );
 
-  return visible;
+  bool visible = it->Visible;
+
+  return it->Visible;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 bool LineageContainer::GetLineageHighlighted( unsigned int iTraceID )
 {
-  bool highlighted = true;
-
   MultiIndexContainerType::index< TraceID >::type::iterator
     it = m_Container.get< TraceID >().find( iTraceID );
 
-  /*
-   * \todo Nicolas - assert instead of if
-   */
-  if( it != m_Container.get< TraceID >().end() )
-    {
-    highlighted = it->Highlighted;
-    }
+  assert( it != m_Container.get< TraceID >().end() );
+
+  bool highlighted = it->Highlighted;
 
   return highlighted;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+double*
+LineageContainer::
+GetLineageColor( unsigned int iTraceID )
+{
+  MultiIndexContainerType::index< TraceID >::type::iterator
+    it = m_Container.get< TraceID >().find( iTraceID );
+
+  assert( it != m_Container.get< TraceID >().end() );
+
+  double* color = const_cast<double*>(it->rgba);
+
+  return color;
 }
 //-------------------------------------------------------------------------
 

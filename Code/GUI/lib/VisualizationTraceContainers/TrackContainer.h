@@ -93,6 +93,21 @@ private:
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
+struct change_color_division
+{
+  change_color_division(double* iColor):color(iColor){}
+
+  void operator()(TrackStructure& iStructure)
+  {
+    iStructure.ModifyDivisionColor(color);
+  }
+
+private:
+  double* color;
+};
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
 
 namespace boost
 {
@@ -374,6 +389,8 @@ public:
   std::list<unsigned int> GetSubLineage( unsigned int iTrackID );
   void UpdateSubLineage( MultiIndexContainerTraceIDIterator it, std::list<unsigned int>& iList);
 
+  void UpdateDivisionColor(unsigned int iTrackID, double* iColor);
+
 
 signals:
   /** \brief When one track has been picked (highlighted) from the visualization */
@@ -394,6 +411,7 @@ signals:
    */
   void UpdateLineageHighlighting(unsigned int);
   void GetCollectionIDForHighlgiht(unsigned int);
+  void GetDivisionColor(unsigned int, unsigned int);
 
 public slots:
 

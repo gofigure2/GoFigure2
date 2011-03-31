@@ -71,6 +71,11 @@ void QGoDBLineageManager::SetLineagesInfoContainersForVisu(
                     SIGNAL( UpdateLineageHighlighting(unsigned int) ),
                     this,
                     SLOT( UpdateElementHighlighting(unsigned int) ) );
+
+  QObject::connect( m_TrackContainerInfoForVisu,
+                    SIGNAL( GetDivisionColor(unsigned int, unsigned int) ),
+                    this,
+                    SLOT( SetDivisionColor( unsigned int, unsigned int) ) );
 }
 
 //-------------------------------------------------------------------------
@@ -270,5 +275,21 @@ QGoDBLineageManager::
 UpdateElementHighlighting(unsigned int iTraceRootID)
 {
   this->m_LineageContainerInfoForVisu->UpdateElementHighlighting(iTraceRootID);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoDBLineageManager::
+SetDivisionColor(unsigned int iLineageID, unsigned int iTrackID)
+{
+  std::cout << "lineage: " << iLineageID << std::endl;
+  std::cout << "track: " << iTrackID << std::endl;
+
+  double* color = this->m_LineageContainerInfoForVisu->GetLineageColor(iLineageID);
+
+  std::cout << "color: " << color[0] << " " << color[1] << " " << color[2] << std::endl;
+
+  this->m_TrackContainerInfoForVisu->UpdateDivisionColor(iTrackID, color);
 }
 //-------------------------------------------------------------------------

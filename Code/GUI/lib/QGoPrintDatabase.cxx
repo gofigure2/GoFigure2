@@ -1084,6 +1084,7 @@ void QGoPrintDatabase::GetContentAndDisplayAllTracesInfo(
   this->m_TracksManager->LoadInfoVisuContainerForTrackFamilies(iDatabaseConnector);
   this->m_LineagesManager->DisplayInfoAndLoadVisuContainerForAllLineages(
     iDatabaseConnector);
+  this->m_TracksManager->UpdateDivisionsColors();
 }
 
 //-------------------------------------------------------------------------

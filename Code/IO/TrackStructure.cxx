@@ -43,6 +43,8 @@
 #include "vtkDoubleArray.h"
 #include "vtkPointData.h"
 
+#include "vtkProperty.h"
+
 #include "vtkSphereSource.h"
 #include "vtkGlyph3D.h"
 #include "vtkTubeFilter.h"
@@ -272,6 +274,29 @@ ModifyDivisionHighlight( vtkProperty* iProperty, bool iHighlight )
 {
   this->TreeNode.SetActorProperties(iProperty);
   this->TreeNode.Highlighted = iHighlight;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+TrackStructure::
+ModifyDivisionColor( double* iColor )
+{
+  this->TreeNode.rgba[0] = iColor[0];
+  this->TreeNode.rgba[1] = iColor[1];
+  this->TreeNode.rgba[2] = iColor[2];
+  this->TreeNode.rgba[3] = iColor[3];
+
+  // update actors
+  vtkProperty* temp_property = vtkProperty::New();
+  temp_property->SetColor(iColor[0],
+                          iColor[1],
+                          iColor[2]);
+  temp_property->SetOpacity(iColor[3]);
+
+  this->TreeNode.SetActorProperties(temp_property);
+
+  temp_property->Delete();
 }
 //--------------------------------------------------------------------------
 

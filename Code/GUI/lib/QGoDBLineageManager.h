@@ -114,7 +114,7 @@ public:
 
   void UpdateElementHighlighting(unsigned int);
 
-signals:
+  void SetDivisionColor(unsigned int, unsigned int);
 
 protected:
   GoDBTWContainerForLineage      *m_TWContainer;

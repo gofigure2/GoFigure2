@@ -1092,9 +1092,6 @@ UpdateCollectionHighlighting(unsigned int iTraceId)
 
   GetRootIterator( motherIt );
 
-  std::cout << "trace ID? " << motherIt->TraceID << std::endl;
-  std::cout << "highlighted? " << motherIt->TreeNode.Highlighted << std::endl;
-
   bool highlight = !motherIt->TreeNode.Highlighted;
   unsigned int id = motherIt->TraceID;
 
@@ -1120,5 +1117,19 @@ GetRootIterator(MultiIndexContainerTraceIDIterator& iMotherIterator)
   iMotherIterator
       = m_Container.get< TraceID >().find( iMotherIterator->TreeNode.m_Mother->TraceID );
   GetRootIterator( iMotherIterator );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateDivisionColor(unsigned int iTrackID, double* iColor)
+{
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iTrackID);
+
+  assert( motherIt != m_Container.get< TraceID >().end() );
+
+  m_Container.get< TraceID >().modify( motherIt , change_color_division(iColor) );
 }
 //-------------------------------------------------------------------------
