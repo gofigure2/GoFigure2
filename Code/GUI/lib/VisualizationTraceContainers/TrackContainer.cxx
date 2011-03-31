@@ -1081,3 +1081,33 @@ UpdateSubLineage( MultiIndexContainerTraceIDIterator it, std::list<unsigned int>
     }
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateCollectionHighlighting(unsigned int iTraceId)
+{
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iTraceId);
+
+  GetRootIterator( motherIt );
+
+  // invert lineage highlight state
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+GetRootIterator(MultiIndexContainerTraceIDIterator& iMotherIterator)
+{
+  if( iMotherIterator->IsRoot() )
+  {
+    return;
+  }
+
+  iMotherIterator
+      = m_Container.get< TraceID >().find( iMotherIterator->TreeNode.m_Mother->TraceID );
+  GetRootIterator( iMotherIterator );
+}
+//-------------------------------------------------------------------------

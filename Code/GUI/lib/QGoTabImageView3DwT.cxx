@@ -2604,6 +2604,13 @@ QGoTabImageView3DwT::HighlightPickedActor()
     return;
   }
 
+  if( temp_actor->GetMapper()->GetInput()->GetFieldData()->GetArray("DIVISION") )
+  {
+    m_TrackContainer->UpdateCollectionHighlighting(
+        temp_actor->GetMapper()->GetInput()->GetFieldData()->GetArray("DIVISION")->GetTuple1(0));
+    return;
+  }
+
   if( temp_actor->GetMapper()->GetInput()->GetFieldData()->GetArray("CONTOUR") )
   {
     m_ContourContainer->UpdateElementHighlighting(

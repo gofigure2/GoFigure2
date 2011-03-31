@@ -268,6 +268,11 @@ public:
     emit TracePicked(TraceId, state);
     }
 
+  void UpdateCollectionHighlighting(unsigned int iTraceId);
+
+  void GetRootIterator(
+      MultiIndexContainerTraceIDIterator& iMotherIterator);
+
   /**
   \brief Update highlighting property of one element given one actor.
   \param[in] iActor Actor of the element to be modified
