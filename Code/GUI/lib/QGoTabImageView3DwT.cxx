@@ -167,7 +167,9 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
 
   m_LineageContainer = new LineageContainer(this, this->m_ImageView);
 
-  // Connect Lineage container to the track container
+  /*
+   * \todo Nicolas-Move to lineage manager
+   */
   QObject::connect( m_LineageContainer,
                     SIGNAL( HighlightLineage(unsigned int, bool) ),
                     m_TrackContainer,

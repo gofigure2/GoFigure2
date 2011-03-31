@@ -65,6 +65,12 @@ void QGoDBLineageManager::SetLineagesInfoContainersForVisu(
     iContainerForVisu, &this->m_LineageContainerInfoForVisu);
 
   this->m_TrackContainerInfoForVisu = iTrackContainerInfoForVisu;
+
+  // Connect signals
+  QObject::connect( m_TrackContainerInfoForVisu,
+                    SIGNAL( UpdateLineageHighlighting(unsigned int) ),
+                    this,
+                    SLOT( UpdateElementHighlighting(unsigned int) ) );
 }
 
 //-------------------------------------------------------------------------
@@ -256,5 +262,13 @@ void QGoDBLineageManager::UpdateTrackRootSelectedLineage(
   LastLineage.SetField("TrackIDRoot", iTrackIDRoot);
   LastLineage.SaveInDB(iDatabaseConnector);
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+void
+QGoDBLineageManager::
+UpdateElementHighlighting(unsigned int iTraceRootID)
+{
+  this->m_LineageContainerInfoForVisu->UpdateElementHighlighting(iTraceRootID);
+}
 //-------------------------------------------------------------------------
