@@ -203,17 +203,27 @@ void QGoMeshEditingWidgetManager::SetSetOfContoursAlgorithms(
   m_SetOfContoursWidget = 
     new QGoAlgorithmsManagerWidget("Set of Contours",
     iParent, iVectChannels, iListTime);
+
   this->m_SetOfContoursWaterShedAlgo = 
     new QGoSetOfContoursWaterShedAlgo(iParent);
-
   QGoAlgorithmWidget* SetOfContoursWaterShedWidget = 
     this->m_SetOfContoursWaterShedAlgo->GetAlgoWidget();
   this->m_SetOfContoursWidget->AddMethod(SetOfContoursWaterShedWidget);
+
+  this->m_SetOfContoursLevelSetAlgo = 
+    new QGoSetOfContoursLevelSetAlgo(iParent);
+  QGoAlgorithmWidget* SetOfContoursLevelSetWidget = 
+    this->m_SetOfContoursLevelSetAlgo->GetAlgoWidget();
+  this->m_SetOfContoursWidget->AddMethod(SetOfContoursLevelSetWidget);
 
   this->m_MeshEditingWidget->AddMode(m_SetOfContoursWidget, true);
 
   QObject::connect(SetOfContoursWaterShedWidget, SIGNAL(ApplyAlgo() ),
     this, SLOT(ApplySetOfContoursWaterShedAlgo() ) );
+
+  QObject::connect(SetOfContoursLevelSetWidget, SIGNAL(ApplyAlgo() ),
+    this, SLOT(ApplySetOfContoursLevelSetAlgo() ) );
+
 
 }
 //-------------------------------------------------------------------------
@@ -270,15 +280,14 @@ void QGoMeshEditingWidgetManager::ApplyWaterShedAlgo()
 //-------------------------------------------------------------------------
 void QGoMeshEditingWidgetManager::ApplySetOfContoursWaterShedAlgo()
 {
-  emit UpdateSeeds();
-  
-  std::vector< std::vector<vtkPolyData*> > NewSetsOfContours = 
-    this->m_SetOfContoursWaterShedAlgo->ApplyAlgoSeveralSeeds(this->m_Seeds, this->m_Images,
-    this->m_MeshEditingWidget->GetChannelNumber() );
-    std::vector< std::vector<vtkPolyData*> >();
+  this->GetSetOfPolydatasFromAlgo<QGoSetOfContoursWaterShedAlgo>(
+    this->m_SetOfContoursWaterShedAlgo);
+}
+//-------------------------------------------------------------------------
 
-  emit SetOfContoursFromAlgo(NewSetsOfContours , 
-    this->GetSelectedTimePoint() );
-
-  emit ClearAllSeeds();
+//-------------------------------------------------------------------------
+void QGoMeshEditingWidgetManager::ApplySetOfContoursLevelSetAlgo()
+{
+  this->GetSetOfPolydatasFromAlgo<QGoSetOfContoursLevelSetAlgo>(
+    this->m_SetOfContoursLevelSetAlgo);
 }

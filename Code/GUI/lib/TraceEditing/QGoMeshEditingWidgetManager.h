@@ -43,6 +43,7 @@
 #include "QGoMeshShapeAlgo.h"
 #include "QGoMeshWaterShedAlgo.h"
 #include "QGoSetOfContoursWaterShedAlgo.h"
+#include "QGoSetOfContoursLevelSetAlgo.h"
 #include "QGoMeshSplitDanielssonDistanceAlgo.h"
 #include <QAction>
 #include <QDockWidget>
@@ -116,6 +117,7 @@ protected:
   QGoMeshSplitDanielssonDistanceAlgo*             m_DanielAlgo;
 
   QGoSetOfContoursWaterShedAlgo*                  m_SetOfContoursWaterShedAlgo;
+  QGoSetOfContoursLevelSetAlgo*                   m_SetOfContoursLevelSetAlgo;
 
   void SetTheMeshWidget(std::vector<QString> iVectChannels, int iTimeMin, 
     int iTimeMax, QWidget* iParent);
@@ -149,6 +151,22 @@ protected:
     emit MeshesCreatedFromAlgo(NewMeshes, this->GetSelectedTimePoint() );
     emit ClearAllSeeds();
     }
+
+  /**
+  \brief get the sets of vtkpolydata for the new created sets of contours
+  by the chosen algo
+  */
+  template<typename T>
+  void GetSetOfPolydatasFromAlgo(T* iAlgo)
+    {
+    emit UpdateSeeds(); 
+    std::vector< std::vector<vtkPolyData*> > NewSetsOfContours = 
+      iAlgo->ApplyAlgoSeveralSeeds(this->m_Seeds, this->m_Images,
+        this->m_MeshEditingWidget->GetChannelNumber() );
+    emit SetOfContoursFromAlgo(NewSetsOfContours , 
+      this->GetSelectedTimePoint() );
+    emit ClearAllSeeds();
+    }
   
 signals:
   /**
@@ -162,6 +180,7 @@ protected slots:
   void ApplyWaterShedAlgo();
   void ApplyDanielAlgo();
   void ApplySetOfContoursWaterShedAlgo();
+  void ApplySetOfContoursLevelSetAlgo();
 
 };
 

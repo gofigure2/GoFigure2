@@ -111,6 +111,7 @@ SET( QGoGUILIB_SRC
   TraceEditing/QGoMeshSplitDanielssonDistanceAlgo.cxx
   TraceEditing/QGoWaterShedAlgo.cxx
   TraceEditing/QGoSetOfContoursWaterShedAlgo.cxx
+  TraceEditing/QGoSetOfContoursLevelSetAlgo.cxx
   TraceEditing/QGoLevelSetAlgo.cxx
 
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx
@@ -259,6 +260,7 @@ SET( QGoGUILIB_HDRS
   TraceEditing/QGoMeshEditingWidgetManager.h
   TraceEditing/QGoSegmentationAlgo.h
   TraceEditing/QGoSetOfContoursWaterShedAlgo.h
+  TraceEditing/QGoSetOfContoursLevelSetAlgo.h
   TraceEditing/QGoLevelSetAlgo.h
 )
 
