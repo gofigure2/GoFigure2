@@ -293,6 +293,7 @@ ModifyDivisionColor( double* iColor )
                           iColor[1],
                           iColor[2]);
   temp_property->SetOpacity(iColor[3]);
+  temp_property->SetLineWidth(1.);
 
   this->TreeNode.SetActorProperties(temp_property);
 

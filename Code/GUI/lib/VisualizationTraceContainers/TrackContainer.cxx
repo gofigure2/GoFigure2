@@ -888,10 +888,10 @@ TrackContainer::ModifyDivisionHighlight( MultiIndexContainerTraceIDIterator& it,
      * \todo Nicolas - which color for the divisions??
      */
     temp_property = vtkProperty::New();
-    temp_property->SetColor(1,
-                            1,
-                            1);
-    temp_property->SetOpacity(1);
+    temp_property->SetColor(it->TreeNode.rgba[0],
+                            it->TreeNode.rgba[1],
+                            it->TreeNode.rgba[2]);
+    temp_property->SetOpacity(it->TreeNode.rgba[3]);
     temp_property->SetLineWidth(this->m_IntersectionLineWidth);
     }
   else
