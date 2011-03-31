@@ -61,34 +61,35 @@
 #include <QString>
 
 //-----------------------------------------------------------------------------
-
-struct change_visible_lineage
+struct change_visible_division
 {
-  change_visible_lineage(bool& iVisible):visible(iVisible){}
+  change_visible_division(bool& iVisible):visible(iVisible){}
 
   void operator()(TrackStructure iStructure)
   {
-    iStructure.UpdateCollectionVisibility(visible);
+    iStructure.ModifyDivisionVisibility(visible);
   }
 
 private:
   bool visible;
 };
-
 //-----------------------------------------------------------------------------
 
-struct change_highlighted_lineage
+//-----------------------------------------------------------------------------
+struct change_highlighted_division
 {
-  change_highlighted_lineage(bool& iHilighted):highlighted(iHilighted){}
+  change_highlighted_division(vtkProperty* iHilighted):highlighted(iHilighted){}
 
   void operator()(TrackStructure iStructure)
   {
-    iStructure.UpdateCollectionHighlight(highlighted);
+    iStructure.ModifyDivisionHighlight(highlighted);
   }
 
 private:
-  bool highlighted;
+  vtkProperty* highlighted;
 };
+//-----------------------------------------------------------------------------
+
 //-----------------------------------------------------------------------------
 
 namespace boost
@@ -358,6 +359,14 @@ public:
    */
   void CutLineage(unsigned int iMotherID);
 
+  /*
+   * \brief get the tree below a given division
+   * \param[in] iTrackID division to start the search
+   * \return list containing all the track IDs
+   */
+  std::list<unsigned int> GetSubLineage( unsigned int iTrackID );
+  void UpdateSubLineage( MultiIndexContainerTraceIDIterator it, std::list<unsigned int>& iList);
+
 
 signals:
   /** \brief When one track has been picked (highlighted) from the visualization */
@@ -399,8 +408,12 @@ public slots:
   void UpdateTracksRepresentation( double iRadius,double iRadius2);
 
   void HighlightCollection(unsigned int, bool);
+  void UpdateCollectionHighlighted( MultiIndexContainerTraceIDIterator it, bool iHighlighted);
+  int ModifyDivisionHighlight( MultiIndexContainerTraceIDIterator it, bool iHighlight );
 
   void ShowCollection(unsigned int, bool);
+  void UpdateCollectionVisibility( MultiIndexContainerTraceIDIterator it, bool iVisibility);
+  int ModifyDivisionVisibility( MultiIndexContainerTraceIDIterator it, bool iVisibility );
 
   void UpdateTrackStructureLineage(TrackStructure* iStructure);
 
