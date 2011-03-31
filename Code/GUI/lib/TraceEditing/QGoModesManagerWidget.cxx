@@ -73,12 +73,15 @@ void QGoModesManagerWidget::Initialize(std::vector<QString> iVectChannels,
   this->m_SemiAutoAlgoManagerWidget = new
     QGoAlgorithmsManagerWidget("SemiAutomated", this, iVectChannels, 
     iListTimePoints);
-  this->AddAlgoManagerWidget(this->m_SemiAutoAlgoManagerWidget);
+  this->AddAlgoManagerWidget(this->m_SemiAutoAlgoManagerWidget, true);
 
   this->m_AutoAlgoManagerWidget = new
     QGoAlgorithmsManagerWidget("Automated",this, iVectChannels, 
     iListTimePoints);
-  this->AddAlgoManagerWidget(this->m_AutoAlgoManagerWidget);
+  this->AddAlgoManagerWidget(this->m_AutoAlgoManagerWidget, false);
+
+  m_ModesWhoNeedSeeds.append("SemiAutomated");
+  m_ModesWhoNeedSeeds.append("Automated");
 
   QObject::connect(this->m_ModeComboBox, SIGNAL(activated(int)),
                    this, SLOT(SetTheRightMode(int)));
@@ -94,24 +97,30 @@ void QGoModesManagerWidget::Initialize(std::vector<QString> iVectChannels,
 
 //-------------------------------------------------------------------------
 void QGoModesManagerWidget::AddWidgetWithModeName(
-  std::string iModeName, QWidget* iWidget )
+  std::string iModeName, QWidget* iWidget, bool ModeNeedSeeds )
 {
   int Index = 0;
   if (iWidget != 0)
-  {
-  this->m_ModeWidgets->addWidget(iWidget);  
-  Index = this->m_ModeWidgets->indexOf(iWidget);
-  }
+    {
+    this->m_ModeWidgets->addWidget(iWidget);  
+    Index = this->m_ModeWidgets->indexOf(iWidget);
+    }
   this->m_ModeComboBox->insertItem(Index,iModeName.c_str());
+
+  if (ModeNeedSeeds)
+    {
+    this->m_ModesWhoNeedSeeds.append(iModeName.c_str() );
+    }
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoModesManagerWidget::AddAlgoManagerWidget(
-    QGoAlgorithmsManagerWidget* iAlgoManagerWidget,int iDefaultIndex)
+    QGoAlgorithmsManagerWidget* iAlgoManagerWidget, bool ModeNeedSeeds,
+    int iDefaultIndex)
 {
   this->AddWidgetWithModeName(iAlgoManagerWidget->GetModeName(), 
-    iAlgoManagerWidget);
+    iAlgoManagerWidget, ModeNeedSeeds);
   iAlgoManagerWidget->SetCurrentIndex(iDefaultIndex);
 }
 //-------------------------------------------------------------------------
@@ -151,9 +160,10 @@ void QGoModesManagerWidget::AddAlgoWidgetForAutomatedMode(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoModesManagerWidget::AddWidgetForManualMode(QWidget* iWidget)
+void QGoModesManagerWidget::AddWidgetForManualMode(QWidget* iWidget, 
+  bool ModeNeedSeeds)
 {
-  this->AddWidgetWithModeName("Manual", iWidget);
+  this->AddWidgetWithModeName("Manual", iWidget, ModeNeedSeeds);
 }
 //-------------------------------------------------------------------------
 
@@ -190,8 +200,10 @@ void QGoModesManagerWidget::SetTheRightMode(int iIndex)
     {
     this->m_ModeWidgets->setCurrentIndex(iIndex);
     }
-  if (this->m_ModeComboBox->currentText() == "Automated" || 
-    this->m_ModeComboBox->currentText() == "SemiAutomated")
+  //if (this->m_ModeComboBox->currentText() == "Automated" || 
+  //  this->m_ModeComboBox->currentText() == "SemiAutomated")
+  if (this->m_ModesWhoNeedSeeds.indexOf(
+        this->m_ModeComboBox->currentText() ) != -1)
     {
     emit SetSeedInteractorBehaviour(true);
     }

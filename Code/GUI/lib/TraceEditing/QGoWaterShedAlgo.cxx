@@ -32,7 +32,6 @@
 
 =========================================================================*/
 #include "QGoWaterShedAlgo.h"
-#include "QGoFilterWatershed.h"
 
 
 QGoWaterShedAlgo::QGoWaterShedAlgo(QWidget* iParent)

@@ -203,7 +203,18 @@ void QGoMeshEditingWidgetManager::SetSetOfContoursAlgorithms(
   m_SetOfContoursWidget = 
     new QGoAlgorithmsManagerWidget("Set of Contours",
     iParent, iVectChannels, iListTime);
-  this->m_MeshEditingWidget->AddMode(m_SetOfContoursWidget);
+  this->m_SetOfContoursWaterShedAlgo = 
+    new QGoSetOfContoursWaterShedAlgo(iParent);
+
+  QGoAlgorithmWidget* SetOfContoursWaterShedWidget = 
+    this->m_SetOfContoursWaterShedAlgo->GetAlgoWidget();
+  this->m_SetOfContoursWidget->AddMethod(SetOfContoursWaterShedWidget);
+
+  this->m_MeshEditingWidget->AddMode(m_SetOfContoursWidget, true);
+
+  QObject::connect(SetOfContoursWaterShedWidget, SIGNAL(ApplyAlgo() ),
+    this, SLOT(ApplySetOfContoursWaterShedAlgo() ) );
+
 }
 //-------------------------------------------------------------------------
 
@@ -212,7 +223,7 @@ void QGoMeshEditingWidgetManager::SetSplitMergeMode(QWidget* iParent)
 {
   QGoAlgorithmsManagerWidget* SplitAlgoWidget = 
     new QGoAlgorithmsManagerWidget("Split", iParent);
-  this->m_MeshEditingWidget->AddMode(SplitAlgoWidget);
+  this->m_MeshEditingWidget->AddMode(SplitAlgoWidget, true);
   
   m_DanielAlgo = new QGoMeshSplitDanielssonDistanceAlgo(iParent);
   QGoAlgorithmWidget * DanielWidget = m_DanielAlgo->GetAlgoWidget();
@@ -223,7 +234,7 @@ void QGoMeshEditingWidgetManager::SetSplitMergeMode(QWidget* iParent)
 
   QGoAlgorithmsManagerWidget* MergeAlgoWidget = 
     new QGoAlgorithmsManagerWidget("Merge", iParent);
-  this->m_MeshEditingWidget->AddMode(MergeAlgoWidget);
+  this->m_MeshEditingWidget->AddMode(MergeAlgoWidget, true);
 
 }
 //-------------------------------------------------------------------------
@@ -253,4 +264,24 @@ void QGoMeshEditingWidgetManager::ApplyShapeAlgo()
 void QGoMeshEditingWidgetManager::ApplyWaterShedAlgo()
 {
   this->GetPolydatasFromAlgo<QGoMeshWaterShedAlgo>(this->m_WaterShedAlgo);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoMeshEditingWidgetManager::ApplySetOfContoursWaterShedAlgo()
+{
+  emit UpdateSeeds();
+  
+  std::vector< std::vector<vtkPolyData*> > NewSetsOfContours = 
+    this->m_SetOfContoursWaterShedAlgo->ApplyAlgoSeveralSeeds(this->m_Seeds, this->m_Images,
+    this->m_MeshEditingWidget->GetChannelNumber() );
+    std::vector< std::vector<vtkPolyData*> >();
+   /// this->m_SetOfContoursWaterShedAlgo->ApplyAlgoSeveralSeeds(
+   // this->m_Seeds, this->m_Images, 
+   // this->m_MeshEditingWidget->GetChannelNumber() );
+
+  emit SetOfContoursFromAlgo(NewSetsOfContours , 
+    this->GetSelectedTimePoint() );
+
+  emit ClearAllSeeds();
 }

@@ -59,16 +59,6 @@ public:
     int iChannel);
 
 protected:
-
-  /*QGoAlgoParameter<double>*       m_Radius;
-  QGoAlgoParameter<int>*          m_ThresMin;
-  QGoAlgoParameter<int>*          m_ThresMax;
-  QGoAlgoParameter<double>*       m_CorrThres;
-  QGoAlgoParameter<double>*       m_Alpha;
-  QGoAlgoParameter<double>*       m_Beta;
-
-  
-  void SetAlgoWidget(QWidget* iParent = 0);*/
 };
 
 #endif

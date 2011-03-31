@@ -42,6 +42,7 @@
 #include "QGoMeshLevelSetAlgo.h"
 #include "QGoMeshShapeAlgo.h"
 #include "QGoMeshWaterShedAlgo.h"
+#include "QGoSetOfContoursWaterShedAlgo.h"
 #include "QGoMeshSplitDanielssonDistanceAlgo.h"
 #include <QAction>
 #include <QDockWidget>
@@ -99,6 +100,7 @@ signals:
   vizu, return the TSlice selected in the TSlice combobox
   */
   void MeshesCreatedFromAlgo(std::vector<vtkPolyData *> iVectPolydata, int iTCoord);
+  void SetOfContoursFromAlgo(std::vector<std::vector<vtkPolyData*> > iVectVectPolydata, int iTCoord);
 
 protected:
   QDockWidget*                m_MeshEditingDockWidget;
@@ -112,6 +114,8 @@ protected:
   QGoMeshShapeAlgo*                               m_ShapeAlgo;
   QGoMeshWaterShedAlgo*                           m_WaterShedAlgo;
   QGoMeshSplitDanielssonDistanceAlgo*             m_DanielAlgo;
+
+  QGoSetOfContoursWaterShedAlgo*                  m_SetOfContoursWaterShedAlgo;
 
   void SetTheMeshWidget(std::vector<QString> iVectChannels, int iTimeMin, 
     int iTimeMax, QWidget* iParent);
@@ -157,6 +161,7 @@ protected slots:
   void ApplyShapeAlgo();
   void ApplyWaterShedAlgo();
   void ApplyDanielAlgo();
+  void ApplySetOfContoursWaterShedAlgo();
 
 };
 
