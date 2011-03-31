@@ -73,6 +73,16 @@ void QGoDBTrackManager::SetTracksInfoContainerForVisu(
                     SIGNAL( NeedMeshesInfoForImportedTrack(unsigned int) ),
                     this,
                     SIGNAL( NeedMeshesInfoForImportedTrack(unsigned int) ) );
+
+  QObject::connect( this->m_TrackContainerInfoForVisu,
+                    SIGNAL( GetCollectionIDForHighlgiht(unsigned int) ),
+                    this,
+                    SLOT( GetCollectionIDForHighlgiht(unsigned int) ) );
+
+  QObject::connect( this,
+                    SIGNAL( UpdateCollectionHighlighting(unsigned int) ),
+                    this->m_TrackContainerInfoForVisu,
+                    SIGNAL( UpdateLineageHighlighting(unsigned int) ) );
 }
 
 //-------------------------------------------------------------------------
@@ -873,4 +883,30 @@ void QGoDBTrackManager::UpdateValuesForTheFormerDaughterOfADeletedDivision(
     emit CheckedTracksToAddToSelectedLineage(DaughterID, 0, NoLineagesToDelete);   
     this->UpdateTrackFamilyIDForDaughter(iDatabaseConnector, iDaughterID, 0); //if not a mother, update the trackfamilyID
     }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoDBTrackManager::
+GetCollectionIDForHighlgiht(unsigned int iTraceRootID)
+{
+  std::cout << "TrackIDRoot: " << iTraceRootID << std::endl;
+
+  std::list<unsigned int> trackIDList;
+  trackIDList.push_back(iTraceRootID);
+
+  emit NeedToGetDatabaseConnection();
+
+  std::list< unsigned int > lineageIDList =
+      this->m_CollectionOfTraces->GetListCollectionIDs( this->m_DatabaseConnector, trackIDList);
+
+  std::list< unsigned int >::iterator it = lineageIDList.begin();
+  while( it != lineageIDList.end() )
+  {
+    std::cout << "lineage ID: " << *it << std::endl;
+    emit UpdateCollectionHighlighting( *it );
+    ++it;
+  }
+  emit DBConnectionNotNeededAnymore();
 }

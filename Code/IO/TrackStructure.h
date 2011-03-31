@@ -144,7 +144,7 @@ public:
   GoFigureTrackAttributes ComputeAttributes() const;
 
   void ModifyDivisionVisibility( bool iVisibility );
-  void ModifyDivisionHighlight(  vtkProperty* iHighlight );
+  void ModifyDivisionHighlight(  vtkProperty* iProperty, bool iHighlight );
 
   const bool IsRoot() const;
   const bool IsLeaf() const;

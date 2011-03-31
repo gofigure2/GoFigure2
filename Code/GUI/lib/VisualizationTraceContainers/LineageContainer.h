@@ -150,6 +150,8 @@ public:
 signals:
   void HighlightLineage(unsigned int, bool);
   void ShowLineage(unsigned int, bool);
+  /** \brief When one track has been picked (highlighted) from the visualization */
+  void TracePicked(unsigned int, Qt::CheckState);
 
 public slots:
   /**
@@ -167,6 +169,19 @@ public slots:
   \param[in] iCheck */
   virtual void UpdateElementVisibilityWithGivenTraceIDs( const QStringList& iList,
                                                  const Qt::CheckState& iCheck );
+
+  /**
+  \brief Update highlighting property of one element given one actor.
+  \param[in] iActor Actor of the element to be modified
+  \return true if the element exists
+  \return false else
+  */
+  void UpdateElementHighlighting(unsigned int iTraceID)
+    {
+    Qt::CheckState state;
+    Superclass::UpdateElementHighlightingWithTraceID( iTraceID, state );
+    emit TracePicked(iTraceID, state);
+    }
 
 protected:
   std::vector< vtkActor* > AddTrace( vtkPolyData* , vtkProperty* );

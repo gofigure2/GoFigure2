@@ -65,7 +65,7 @@ struct change_visible_division
 {
   change_visible_division(bool& iVisible):visible(iVisible){}
 
-  void operator()(TrackStructure iStructure)
+  void operator()(TrackStructure& iStructure)
   {
     iStructure.ModifyDivisionVisibility(visible);
   }
@@ -78,15 +78,17 @@ private:
 //-----------------------------------------------------------------------------
 struct change_highlighted_division
 {
-  change_highlighted_division(vtkProperty* iHilighted):highlighted(iHilighted){}
+  change_highlighted_division(vtkProperty* iProperty, bool iHighlight):
+    property(iProperty),highlight(iHighlight){}
 
-  void operator()(TrackStructure iStructure)
+  void operator()(TrackStructure& iStructure)
   {
-    iStructure.ModifyDivisionHighlight(highlighted);
+    iStructure.ModifyDivisionHighlight(property,highlight);
   }
 
 private:
-  vtkProperty* highlighted;
+  vtkProperty* property;
+  bool highlight;
 };
 //-----------------------------------------------------------------------------
 
@@ -268,6 +270,11 @@ public:
     emit TracePicked(TraceId, state);
     }
 
+  void UpdateCollectionHighlighting(unsigned int iTraceId);
+
+  void GetRootIterator(
+      MultiIndexContainerTraceIDIterator& iMotherIterator);
+
   /**
   \brief Update highlighting property of one element given one actor.
   \param[in] iActor Actor of the element to be modified
@@ -382,6 +389,12 @@ signals:
   /** \brief When we want to import meshes into a track */
   void NeedMeshesInfoForImportedTrack(unsigned int);
 
+  /*
+   * \brief Send signal to tell to the lineage container which lineage to highlight
+   */
+  void UpdateLineageHighlighting(unsigned int);
+  void GetCollectionIDForHighlgiht(unsigned int);
+
 public slots:
 
   /**
@@ -408,12 +421,12 @@ public slots:
   void UpdateTracksRepresentation( double iRadius,double iRadius2);
 
   void HighlightCollection(unsigned int, bool);
-  void UpdateCollectionHighlighted( MultiIndexContainerTraceIDIterator it, bool iHighlighted);
-  int ModifyDivisionHighlight( MultiIndexContainerTraceIDIterator it, bool iHighlight );
+  void UpdateCollectionHighlighted( MultiIndexContainerTraceIDIterator& it, bool iHighlighted);
+  int ModifyDivisionHighlight( MultiIndexContainerTraceIDIterator& it, bool iHighlight );
 
   void ShowCollection(unsigned int, bool);
-  void UpdateCollectionVisibility( MultiIndexContainerTraceIDIterator it, bool iVisibility);
-  int ModifyDivisionVisibility( MultiIndexContainerTraceIDIterator it, bool iVisibility );
+  void UpdateCollectionVisibility( MultiIndexContainerTraceIDIterator& it, bool iVisibility);
+  int ModifyDivisionVisibility( MultiIndexContainerTraceIDIterator& it, bool iVisibility );
 
   void UpdateTrackStructureLineage(TrackStructure* iStructure);
 

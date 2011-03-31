@@ -167,7 +167,9 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
 
   m_LineageContainer = new LineageContainer(this, this->m_ImageView);
 
-  // Connect Lineage container to the track container
+  /*
+   * \todo Nicolas-Move to lineage manager
+   */
   QObject::connect( m_LineageContainer,
                     SIGNAL( HighlightLineage(unsigned int, bool) ),
                     m_TrackContainer,
@@ -2601,6 +2603,13 @@ QGoTabImageView3DwT::HighlightPickedActor()
   {
     m_TrackContainer->UpdateElementHighlighting(
         temp_actor->GetMapper()->GetInput()->GetFieldData()->GetArray("TRACK")->GetTuple1(0));
+    return;
+  }
+
+  if( temp_actor->GetMapper()->GetInput()->GetFieldData()->GetArray("DIVISION") )
+  {
+    m_TrackContainer->UpdateCollectionHighlighting(
+        temp_actor->GetMapper()->GetInput()->GetFieldData()->GetArray("DIVISION")->GetTuple1(0));
     return;
   }
 

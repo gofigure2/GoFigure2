@@ -112,6 +112,8 @@ public:
 
   public slots:
 
+  void UpdateElementHighlighting(unsigned int);
+
 signals:
 
 protected:

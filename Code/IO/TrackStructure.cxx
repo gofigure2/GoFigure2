@@ -268,9 +268,10 @@ ModifyDivisionVisibility( bool iVisibility )
 //--------------------------------------------------------------------------
 void
 TrackStructure::
-ModifyDivisionHighlight( vtkProperty* iVisibility )
+ModifyDivisionHighlight( vtkProperty* iProperty, bool iHighlight )
 {
-  this->TreeNode.SetActorProperties(iVisibility);
+  this->TreeNode.SetActorProperties(iProperty);
+  this->TreeNode.Highlighted = iHighlight;
 }
 //--------------------------------------------------------------------------
 

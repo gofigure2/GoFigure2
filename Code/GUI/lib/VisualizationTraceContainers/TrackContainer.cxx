@@ -815,7 +815,7 @@ ShowCollection(unsigned int iRootTrackID, bool iVisible)
 //-------------------------------------------------------------------------
 void
 TrackContainer::
-UpdateCollectionVisibility( MultiIndexContainerTraceIDIterator it, bool iVisible)
+UpdateCollectionVisibility( MultiIndexContainerTraceIDIterator& it, bool iVisible)
 {
   if( !it->IsLeaf() )
     {
@@ -843,7 +843,7 @@ UpdateCollectionVisibility( MultiIndexContainerTraceIDIterator it, bool iVisible
 //-------------------------------------------------------------------------
 void
 TrackContainer::
-UpdateCollectionHighlighted( MultiIndexContainerTraceIDIterator it, bool iHighlighted)
+UpdateCollectionHighlighted( MultiIndexContainerTraceIDIterator& it, bool iHighlighted)
 {
   if( !it->IsLeaf() )
     {
@@ -870,7 +870,7 @@ UpdateCollectionHighlighted( MultiIndexContainerTraceIDIterator it, bool iHighli
 
 //-------------------------------------------------------------------------
 int
-TrackContainer::ModifyDivisionVisibility( MultiIndexContainerTraceIDIterator it, bool iVisible)
+TrackContainer::ModifyDivisionVisibility( MultiIndexContainerTraceIDIterator& it, bool iVisible)
 {
   m_Container.get< TraceID >().modify( it , change_visible_division(iVisible) );
   return 1;
@@ -879,7 +879,7 @@ TrackContainer::ModifyDivisionVisibility( MultiIndexContainerTraceIDIterator it,
 
 //-------------------------------------------------------------------------
 int
-TrackContainer::ModifyDivisionHighlight( MultiIndexContainerTraceIDIterator it, bool iHighlight )
+TrackContainer::ModifyDivisionHighlight( MultiIndexContainerTraceIDIterator& it, bool iHighlight )
 {
   vtkProperty* temp_property = NULL;
   if ( !iHighlight )
@@ -899,7 +899,7 @@ TrackContainer::ModifyDivisionHighlight( MultiIndexContainerTraceIDIterator it, 
     temp_property = this->m_HighlightedProperty;
     }
 
-  m_Container.get< TraceID >().modify( it , change_highlighted_division(temp_property) );
+  m_Container.get< TraceID >().modify( it , change_highlighted_division(temp_property, iHighlight) );
 
   if(!iHighlight)
     {
@@ -1079,5 +1079,46 @@ UpdateSubLineage( MultiIndexContainerTraceIDIterator it, std::list<unsigned int>
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
     UpdateSubLineage(childIt,iList);
     }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateCollectionHighlighting(unsigned int iTraceId)
+{
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iTraceId);
+
+  GetRootIterator( motherIt );
+
+  std::cout << "trace ID? " << motherIt->TraceID << std::endl;
+  std::cout << "highlighted? " << motherIt->TreeNode.Highlighted << std::endl;
+
+  bool highlight = !motherIt->TreeNode.Highlighted;
+  unsigned int id = motherIt->TraceID;
+
+  UpdateCollectionHighlighted(motherIt, highlight);
+
+  this->m_ImageView->UpdateRenderWindows();
+
+  // send signal to track manager with TraceID
+  emit GetCollectionIDForHighlgiht( motherIt->TraceID );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+GetRootIterator(MultiIndexContainerTraceIDIterator& iMotherIterator)
+{
+  if( iMotherIterator->IsRoot() )
+  {
+    return;
+  }
+
+  iMotherIterator
+      = m_Container.get< TraceID >().find( iMotherIterator->TreeNode.m_Mother->TraceID );
+  GetRootIterator( iMotherIterator );
 }
 //-------------------------------------------------------------------------
