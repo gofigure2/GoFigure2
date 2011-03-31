@@ -287,17 +287,10 @@ ModifyDivisionColor( double* iColor )
   this->TreeNode.rgba[2] = iColor[2];
   this->TreeNode.rgba[3] = iColor[3];
 
-  // update actors
-  vtkProperty* temp_property = vtkProperty::New();
-  temp_property->SetColor(iColor[0],
-                          iColor[1],
-                          iColor[2]);
-  temp_property->SetOpacity(iColor[3]);
-  temp_property->SetLineWidth(1.);
-
-  this->TreeNode.SetActorProperties(temp_property);
-
-  temp_property->Delete();
+  this->TreeNode.ActorXY->GetProperty()->SetColor(iColor);
+  this->TreeNode.ActorXZ->GetProperty()->SetColor(iColor);
+  this->TreeNode.ActorYZ->GetProperty()->SetColor(iColor);
+  this->TreeNode.ActorXYZ->GetProperty()->SetColor(iColor);
 }
 //--------------------------------------------------------------------------
 
