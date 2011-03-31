@@ -602,24 +602,6 @@ void QGoDBTrackManager::CreateCorrespondingTrackFamily()
         DaughtersIDs.push_back(MotherID);
         emit NewLineageToCreateFromTracks(DaughtersIDs, MotherID, PreviousLineagesToDelete);
         }
-      //------------------------------------------------------------------------------
-      //------------------------------------------------------------------------------
-      // update division color
-      /*std::list< unsigned int > motherIDs = m_TrackContainerInfoForVisu->GetSubLineage( MotherID );
-
-       std::list< unsigned int > lineageIDList =
-           this->m_CollectionOfTraces->GetListCollectionIDs( this->m_DatabaseConnector, motherIDs, true, false);
-
-       std::list< unsigned int >::iterator itLineage = lineageIDList.begin();
-       std::list< unsigned int >::iterator itTrack = motherIDs.begin();
-       while( itTrack != motherIDs.end() )
-       {
-         emit GetDivisionColor(*itLineage, *itTrack);
-         ++itLineage;
-         ++itTrack;
-       }*/
-       //------------------------------------------------------------------------------
-       //------------------------------------------------------------------------------
       }
     } 
   emit DBConnectionNotNeededAnymore();

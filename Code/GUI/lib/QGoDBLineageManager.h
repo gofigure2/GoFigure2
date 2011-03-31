@@ -110,6 +110,8 @@ public:
    //virtual pure method in QGoDBTraceManager
   virtual std::list< unsigned int > GetListHighlightedIDs();
 
+  void UpdateDivisionsColor( unsigned int iLineageID);
+
   public slots:
 
   void UpdateElementHighlighting(unsigned int);

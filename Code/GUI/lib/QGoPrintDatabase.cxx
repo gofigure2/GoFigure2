@@ -1580,6 +1580,9 @@ void QGoPrintDatabase::CreateNewLineageFromTracks(
     (iListCheckedTracks, NewLineageID, iListLineagesToDelete);
 
   this->CloseDBConnection();
+
+  // Update divisions colors
+  this->m_LineagesManager->UpdateDivisionsColor(NewLineageID);
 }
 //--------------------------------------------------------------------------
 
@@ -1715,4 +1718,7 @@ void QGoPrintDatabase::AddCheckedTracksToSelectedLineage(
     this->m_TracksManager, this->m_LineagesManager, iLineageID, iListDaughters);
 
   this->CloseDBConnection();
+
+  // Update divisions colors
+  this->m_LineagesManager->UpdateDivisionsColor(iLineageID);
 }

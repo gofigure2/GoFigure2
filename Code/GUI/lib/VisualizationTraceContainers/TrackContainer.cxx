@@ -1160,6 +1160,9 @@ UpdateDivisionColor(unsigned int iTrackID, double* iColor)
 
   assert( motherIt != m_Container.get< TraceID >().end() );
 
-  m_Container.get< TraceID >().modify( motherIt , change_color_division(iColor) );
+  if( !motherIt->IsLeaf() )
+    {
+    m_Container.get< TraceID >().modify( motherIt , change_color_division(iColor) );
+    }
 }
 //-------------------------------------------------------------------------
