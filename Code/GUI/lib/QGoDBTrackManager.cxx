@@ -935,13 +935,13 @@ UpdateDivisionsColors()
   }
 
   std::list< unsigned int > lineageIDList =
-      this->m_CollectionOfTraces->GetListCollectionIDs( this->m_DatabaseConnector, motherIDs);
+      this->m_CollectionOfTraces->GetListCollectionIDs( this->m_DatabaseConnector, motherIDs, true, false);
 
   std::list< unsigned int >::iterator itLineage = lineageIDList.begin();
   std::list< unsigned int >::iterator itTrack = motherIDs.begin();
-  while( itLineage != lineageIDList.end() )
+  while( itTrack != motherIDs.end() )
   {
-    emit GetDivisionColor(*itLineage, *itLineage);
+    emit GetDivisionColor(*itLineage, *itTrack);
     ++itLineage;
     ++itTrack;
   }
