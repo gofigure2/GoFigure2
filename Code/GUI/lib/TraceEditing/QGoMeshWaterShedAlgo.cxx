@@ -36,46 +36,15 @@
 
 
 QGoMeshWaterShedAlgo::QGoMeshWaterShedAlgo(QWidget* iParent)
+  :QGoWaterShedAlgo(iParent)
 {
-  this->SetAlgoWidget(iParent);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 QGoMeshWaterShedAlgo::~QGoMeshWaterShedAlgo()
 {
-  delete m_Radius;
-  delete m_ThresMin;
-  delete m_ThresMax;
-  delete m_CorrThres;
-  delete m_Alpha;
-  delete m_Beta;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoMeshWaterShedAlgo::SetAlgoWidget(QWidget* iParent)
-{
-  this->m_AlgoWidget = 
-    new QGoAlgorithmWidget("WaterShed 3D", iParent);
-
-  m_Radius = new QGoAlgoParameter<double>("Radius", false, 0.1, 99.99, 2, 3);
-  this->m_AlgoWidget->AddParameter(m_Radius);
-
-  m_ThresMin = new QGoAlgoParameter<int>("Thres.Min.", true, 0, 999, 10);
-  this->m_AlgoWidget->AddParameter(m_ThresMin);
-
-  m_ThresMax = new QGoAlgoParameter<int>("Thres.Max.", true, 0, 999, 30);
-  this->m_AlgoWidget->AddParameter(m_ThresMax);
-
-  m_CorrThres = new QGoAlgoParameter<double>("Corr.Thres.", true, 0, 99.99, 2, 0.5);
-  this->m_AlgoWidget->AddParameter(m_CorrThres);
-
-  m_Alpha = new QGoAlgoParameter<double>("Alpha", true, 0, 99.99, 2, 1.5);
-  this->m_AlgoWidget->AddParameter(m_Alpha);
- 
-  m_Beta = new QGoAlgoParameter<double>("Beta", true, 0, 99.99, 2, 3);
-  this->m_AlgoWidget->AddParameter(m_Beta);
+  this->DeleteParameters();
 }
 //-------------------------------------------------------------------------
 

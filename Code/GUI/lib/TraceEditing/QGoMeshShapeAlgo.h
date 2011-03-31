@@ -34,7 +34,7 @@
 #ifndef __QGoMeshShapeAlgo_h
 #define __QGoMeshShapeAlgo_h
 
-#include "QGoMeshAlgo.h"
+#include "QGoSegmentationAlgo.h"
 #include "QGoAlgorithmWidget.h"
 #include "QGoAlgoParameter.h"
 #include "QGoGUILibConfigure.h"
@@ -48,7 +48,7 @@
 \brief class to be the interface between the shape algo for meshes 
 and GoFigure
 */
-class QGoMeshShapeAlgo: public QGoMeshAlgo
+class QGoMeshShapeAlgo: public QGoSegmentationAlgo
 {
 public:
   QGoMeshShapeAlgo(QWidget* iParent = 0);
@@ -64,6 +64,8 @@ protected:
   QGoAlgoParameter<std::string>*  m_Shape;
   
   void SetAlgoWidget(QWidget* iParent = 0);
+
+  void DeleteParameters();
 };
 
 #endif

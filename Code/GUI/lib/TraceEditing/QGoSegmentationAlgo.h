@@ -31,12 +31,10 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __QGoMeshWaterShedAlgo_h
-#define __QGoMeshWaterShedAlgo_h
+#ifndef __QGoSegmentationAlgo_h
+#define __QGoSegmentationAlgo_h
 
-#include "QGoWaterShedAlgo.h"
 #include "QGoAlgorithmWidget.h"
-#include "QGoAlgoParameter.h"
 #include "QGoGUILibConfigure.h"
 #include "vtkSmartPointer.h"
 #include "vtkPolyData.h"
@@ -44,31 +42,41 @@
 
 
 /**
-\class QGoMeshWaterShedAlgo
-\brief class to be the interface between the watershed algo for meshes 
+\class QGoSegmentationAlgo
+\brief abstract class to be the interface between the algorithms for meshes 
 and GoFigure
 */
-class QGoMeshWaterShedAlgo: public QGoWaterShedAlgo
+class QGoSegmentationAlgo:public QObject
 {
+  Q_OBJECT
 public:
-  QGoMeshWaterShedAlgo(QWidget* iParent = 0);
-  ~QGoMeshWaterShedAlgo();
+  QGoSegmentationAlgo(QWidget *iParent = 0);
+  ~QGoSegmentationAlgo();
 
-  std::vector<vtkPolyData*> ApplyAlgo(
+  /**
+  \brief return the algowidget
+  */
+  QGoAlgorithmWidget* GetAlgoWidget();
+
+  /**
+  \brief return the vtkpolydata created by the algorithm
+  */
+  virtual std::vector<vtkPolyData*> ApplyAlgo(
     vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
-    int iChannel);
+    int iChannel) = 0;
 
 protected:
-
-  /*QGoAlgoParameter<double>*       m_Radius;
-  QGoAlgoParameter<int>*          m_ThresMin;
-  QGoAlgoParameter<int>*          m_ThresMax;
-  QGoAlgoParameter<double>*       m_CorrThres;
-  QGoAlgoParameter<double>*       m_Alpha;
-  QGoAlgoParameter<double>*       m_Beta;
-
+  QGoAlgorithmWidget*             m_AlgoWidget;
   
-  void SetAlgoWidget(QWidget* iParent = 0);*/
+  /**
+  \brief construct the algowidget with the different parameters
+  */
+  virtual void SetAlgoWidget(QWidget* iParent = 0) = 0;
+
+  /**
+  \brief delete the different parameters
+  */
+  virtual void DeleteParameters() = 0;
 };
 
 #endif

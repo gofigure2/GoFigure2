@@ -44,6 +44,15 @@ QGoMeshShapeAlgo::QGoMeshShapeAlgo(QWidget* iParent)
 //-------------------------------------------------------------------------
 QGoMeshShapeAlgo::~QGoMeshShapeAlgo()
 {
+  this->DeleteParameters();
+  //delete m_Radius;
+  //delete m_Shape;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoMeshShapeAlgo::DeleteParameters()
+{
   delete m_Radius;
   delete m_Shape;
 }

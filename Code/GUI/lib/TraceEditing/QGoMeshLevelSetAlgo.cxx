@@ -44,6 +44,16 @@ QGoMeshLevelSetAlgo::QGoMeshLevelSetAlgo(QWidget* iParent)
 //-------------------------------------------------------------------------
 QGoMeshLevelSetAlgo::~QGoMeshLevelSetAlgo()
 {
+  this->DeleteParameters();
+  //delete m_Radius;
+  //delete m_Curvature;
+  //delete m_Iterations;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoMeshLevelSetAlgo::DeleteParameters()
+{
   delete m_Radius;
   delete m_Curvature;
   delete m_Iterations;

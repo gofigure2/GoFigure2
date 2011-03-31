@@ -34,7 +34,7 @@
 #ifndef __QGoMeshSplitDanielssonDistanceAlgo_h
 #define __QGoMeshSplitDanielssonDistanceAlgo_h
 
-#include "QGoMeshAlgo.h"
+#include "QGoSegmentationAlgo.h"
 #include "QGoAlgorithmWidget.h"
 #include "QGoAlgoParameter.h"
 #include "QGoGUILibConfigure.h"
@@ -48,7 +48,7 @@
 \brief class to be the interface between the QGoMeshSplitDanielssonDistanceAlgo algo for meshes 
 and GoFigure
 */
-class QGoMeshSplitDanielssonDistanceAlgo: public QGoMeshAlgo
+class QGoMeshSplitDanielssonDistanceAlgo: public QGoSegmentationAlgo
 {
 public:
   QGoMeshSplitDanielssonDistanceAlgo(QWidget *iParent = 0);
@@ -65,6 +65,7 @@ protected:
   QGoAlgoParameter<int>*          m_Iterations;
   
   void SetAlgoWidget(QWidget* iParent = 0);
+  void DeleteParameters();
 };
 
 #endif

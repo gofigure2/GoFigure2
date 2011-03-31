@@ -31,47 +31,26 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __QGoMeshAlgo_h
-#define __QGoMeshAlgo_h
-
-#include "QGoAlgorithmWidget.h"
-#include "QGoGUILibConfigure.h"
-#include "vtkSmartPointer.h"
-#include "vtkPolyData.h"
-#include "vtkImageData.h"
+#include "QGoSegmentationAlgo.h"
 
 
-/**
-\class QGoMeshAlgo
-\brief abstract class to be the interface between the algorithms for meshes 
-and GoFigure
-*/
-class QGoMeshAlgo:public QObject
+QGoSegmentationAlgo::QGoSegmentationAlgo(QWidget *iParent)
 {
-  Q_OBJECT
-public:
-  QGoMeshAlgo(QWidget *iParent = 0);
-  ~QGoMeshAlgo();
+}
+//-------------------------------------------------------------------------
 
-  /**
-  \brief return the algowidget
-  */
-  QGoAlgorithmWidget* GetAlgoWidget();
+//-------------------------------------------------------------------------
+QGoSegmentationAlgo::~QGoSegmentationAlgo()
+{
+}
+//-------------------------------------------------------------------------
 
-  /**
-  \brief return the vtkpolydata created by the algorithm
-  */
-  virtual std::vector<vtkPolyData*> ApplyAlgo(
-    vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
-    int iChannel) = 0;
+//-------------------------------------------------------------------------
+QGoAlgorithmWidget* QGoSegmentationAlgo::GetAlgoWidget()
+{
+  return this->m_AlgoWidget;
+}
+//-------------------------------------------------------------------------
 
-protected:
-  QGoAlgorithmWidget*             m_AlgoWidget;
-  
-  /**
-  \brief construct the algowidget with the different parameters
-  */
-  virtual void SetAlgoWidget(QWidget* iParent = 0) = 0;
-};
+//-------------------------------------------------------------------------
 
-#endif

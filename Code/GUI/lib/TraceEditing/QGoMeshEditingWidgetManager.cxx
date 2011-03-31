@@ -200,12 +200,10 @@ void QGoMeshEditingWidgetManager::SetSetOfContoursAlgorithms(
    std::vector<QString> iVectChannels, QStringList iListTime,
    QWidget* iParent)
 {
-    m_SetOfContoursWidget = 
+  m_SetOfContoursWidget = 
     new QGoAlgorithmsManagerWidget("Set of Contours",
     iParent, iVectChannels, iListTime);
   this->m_MeshEditingWidget->AddMode(m_SetOfContoursWidget);
-
-
 }
 //-------------------------------------------------------------------------
 

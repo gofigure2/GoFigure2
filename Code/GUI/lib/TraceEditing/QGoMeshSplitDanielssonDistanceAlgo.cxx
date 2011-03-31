@@ -43,7 +43,12 @@ QGoMeshSplitDanielssonDistanceAlgo::QGoMeshSplitDanielssonDistanceAlgo(QWidget* 
 //-------------------------------------------------------------------------
 QGoMeshSplitDanielssonDistanceAlgo::~QGoMeshSplitDanielssonDistanceAlgo()
 {
+}
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+void QGoMeshSplitDanielssonDistanceAlgo::DeleteParameters()
+{
 }
 //-------------------------------------------------------------------------
 
