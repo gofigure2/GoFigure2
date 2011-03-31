@@ -209,7 +209,8 @@ protected:
 
   /**
   \brief update the trackFamilyID in the database for the track corresponding
-  to iDaughterID
+  to iDaughterID, if the trackfamilyID is 0, then the lineageID will be set to
+  0 also for this track
   \param[in] iDatabaseconnector connection to the database
   \param[in] iDaughterID ID of the track to be updated
   \param[in] iTrackFamilyID
@@ -253,11 +254,14 @@ protected:
   std::list<unsigned int> GetTrackIDFromDaughtersFamilies( vtkMySQLDatabase* iDatabaseConnector,
     std::list<unsigned int> &ioTrackIDsOfTheFamilies);
 
-/**
-  \brief set the trackfamilyid of the daughters to 0 and delete the trackfamily
-  from the database and from the visu
+  /**
+  \brief set the trackfamilyid of the daughters to 0, delete the trackfamily
+  from the database and from the visu and check if the daughters are mothers, if not
+  fill the ioTrackIDsNoLineage, if yes, update the all family
+  \
   */
-  void DeleteOneDivision(GoDBTrackFamilyRow iDivision, vtkMySQLDatabase* iDatabaseConnector);
+  void DeleteOneDivision(GoDBTrackFamilyRow iDivision, vtkMySQLDatabase* iDatabaseConnector,
+    std::list<unsigned int> &ioTrackIDsNoLineage, std::list<unsigned int> &ioMotherLineageToDelete);
 
   /**
   \brief build a message for the user to know which ones of the selected tracks have no division
@@ -267,12 +271,36 @@ protected:
   void PrintAMessageForTracksWithNoDivision(std::list<unsigned int> iTracksNoDivision);
 
   /**
-  \brief set the trackfamilyID of the daughter to 0, check that the daughter is not a mother,
-  if she is, get all the tracks with the same lineage and emit a signal to create a lineage
-  from these tracks with the daughter as trackIDRoot
+  \brief set the trackfamilyID of the daughter to 0, get all the tracks with the same lineage 
+  and emit a signal to create a lineage from these tracks with the daughter as trackIDRoot
+  if ioPartOfHigherLineage, the lineage of the division will not be deleted as higher tracks belong to it
   */
-  void UpdateValuesForTheFormerDaughterOfADeletedDivision(
-    unsigned int iDaughterID, vtkMySQLDatabase* iDatabaseConnector);
+  void CreateALineageWithFormerDaughterOfADeletedDivision(
+    unsigned int iDaughterID, vtkMySQLDatabase* iDatabaseConnector, bool &ioPartOfHigherLineage);
+
+  /**
+  \brief return true if the track is a mother
+  */
+  bool IsTheTrackAMother(unsigned int iDaughterID, 
+    vtkMySQLDatabase* iDatabaseConnector);
+
+  /**
+  \brief return true if the track is a daughter
+  */
+  bool IsTheTrackADaughter(unsigned int iTrackID, 
+  vtkMySQLDatabase* iDatabaseConnector);
+
+  /**
+  \brief check if the daughters are mothers, if yes, create a new lineage for them,
+  if not, update the track familyID to 0 and fill the ioTrackIDsNoLineage with them,
+  if ioPartOfHigherLineage is false, delete the lineage after creating a new one 
+  for the daughter family if the daughter is a mother and set the ioPartOfHigherLineage
+  to true
+  */
+  void UpdateFormerDaughtersOfADeletedDivision(
+    std::list<unsigned int> iDaughtersID,
+    std::list<unsigned int> &ioTrackIDsNoLineage,
+    bool &ioPartOfHigherLineage);
 
 protected slots:
 

@@ -1708,11 +1708,14 @@ void QGoPrintDatabase::AddCheckedTracksToSelectedLineage(
       iListLineagesToDelete, true);
     }
 
-  this->OpenDBConnection();
+  if (!iListDaughters.empty() )
+    {
+    this->OpenDBConnection();
 
-  this->AddCheckedTracesToCollection< QGoDBTrackManager, QGoDBLineageManager >(
-    this->m_TracksManager, this->m_LineagesManager, iLineageID, iListDaughters);
+    this->AddCheckedTracesToCollection< QGoDBTrackManager, QGoDBLineageManager >(
+      this->m_TracksManager, this->m_LineagesManager, iLineageID, iListDaughters);
 
-  this->CloseDBConnection();
+    this->CloseDBConnection();
+    }
   
 }
