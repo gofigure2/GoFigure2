@@ -31,58 +31,42 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "QGoWaterShedAlgo.h"
+#ifndef __QGoLevelSetAlgo_h
+#define __QGoLevelSetAlgo_h
+
+#include "QGoSegmentationAlgo.h"
+#include "QGoAlgorithmWidget.h"
+#include "QGoAlgoParameter.h"
+#include "QGoGUILibConfigure.h"
+#include "vtkSmartPointer.h"
+#include "vtkPolyData.h"
+#include "vtkImageData.h"
 
 
-QGoWaterShedAlgo::QGoWaterShedAlgo(QWidget* iParent)
+/**
+\class QGoLevelSetAlgo
+\brief class to be the interface between the levelset algo for meshes,
+contours and set of contours and GoFigure
+*/
+class QGoLevelSetAlgo: public QGoSegmentationAlgo
 {
-  this->SetAlgoWidget(iParent);
-}
-//-------------------------------------------------------------------------
+public:
+  QGoLevelSetAlgo(QWidget* iParent = 0);
+  ~QGoLevelSetAlgo();
 
-//-------------------------------------------------------------------------
-QGoWaterShedAlgo::~QGoWaterShedAlgo()
-{
-}
-//-------------------------------------------------------------------------
+  virtual std::vector<vtkPolyData*> ApplyAlgo(
+    vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+    int iChannel) = 0;
 
-//-------------------------------------------------------------------------
-void QGoWaterShedAlgo::DeleteParameters()
-{
-  delete m_Radius;
-  delete m_ThresMin;
-  delete m_ThresMax;
-  delete m_CorrThres;
-  delete m_Alpha;
-  delete m_Beta;
-}
-//-------------------------------------------------------------------------
+protected:
 
-//-------------------------------------------------------------------------
-void QGoWaterShedAlgo::SetAlgoWidget(QWidget* iParent)
-{
-  this->m_AlgoWidget = 
-    new QGoAlgorithmWidget("WaterShed 3D", iParent);
+  QGoAlgoParameter<double>*       m_Radius;
+  QGoAlgoParameter<int>*          m_Curvature;
+  QGoAlgoParameter<int>*          m_Iterations;
 
-  m_Radius = new QGoAlgoParameter<double>("Radius", false, 0.1, 99.99, 2, 3);
-  this->m_AlgoWidget->AddParameter(m_Radius);
+  virtual void SetAlgoWidget(QWidget* iParent = 0);
 
-  m_ThresMin = new QGoAlgoParameter<int>("Thres.Min.", true, 0, 999, 10);
-  this->m_AlgoWidget->AddParameter(m_ThresMin);
+  void DeleteParameters();
+};
 
-  m_ThresMax = new QGoAlgoParameter<int>("Thres.Max.", true, 0, 999, 30);
-  this->m_AlgoWidget->AddParameter(m_ThresMax);
-
-  m_CorrThres = new QGoAlgoParameter<double>("Corr.Thres.", true, 0, 99.99, 2, 0.5);
-  this->m_AlgoWidget->AddParameter(m_CorrThres);
-
-  m_Alpha = new QGoAlgoParameter<double>("Alpha", true, 0, 99.99, 2, 1.5);
-  this->m_AlgoWidget->AddParameter(m_Alpha);
- 
-  m_Beta = new QGoAlgoParameter<double>("Beta", true, 0, 99.99, 2, 3);
-  this->m_AlgoWidget->AddParameter(m_Beta);
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-
+#endif

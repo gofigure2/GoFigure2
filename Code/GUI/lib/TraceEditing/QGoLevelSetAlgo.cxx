@@ -31,56 +31,45 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "QGoWaterShedAlgo.h"
+#include "QGoLevelSetAlgo.h"
 
 
-QGoWaterShedAlgo::QGoWaterShedAlgo(QWidget* iParent)
+QGoLevelSetAlgo::QGoLevelSetAlgo(QWidget* iParent)
 {
   this->SetAlgoWidget(iParent);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QGoWaterShedAlgo::~QGoWaterShedAlgo()
+QGoLevelSetAlgo::~QGoLevelSetAlgo()
 {
+  this->DeleteParameters();
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoWaterShedAlgo::DeleteParameters()
+void QGoLevelSetAlgo::DeleteParameters()
 {
   delete m_Radius;
-  delete m_ThresMin;
-  delete m_ThresMax;
-  delete m_CorrThres;
-  delete m_Alpha;
-  delete m_Beta;
+  delete m_Curvature;
+  delete m_Iterations;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoWaterShedAlgo::SetAlgoWidget(QWidget* iParent)
+void QGoLevelSetAlgo::SetAlgoWidget(QWidget* iParent)
 {
   this->m_AlgoWidget = 
-    new QGoAlgorithmWidget("WaterShed 3D", iParent);
+    new QGoAlgorithmWidget("LevelSet 3D", iParent);
 
   m_Radius = new QGoAlgoParameter<double>("Radius", false, 0.1, 99.99, 2, 3);
   this->m_AlgoWidget->AddParameter(m_Radius);
 
-  m_ThresMin = new QGoAlgoParameter<int>("Thres.Min.", true, 0, 999, 10);
-  this->m_AlgoWidget->AddParameter(m_ThresMin);
+  m_Curvature = new QGoAlgoParameter<int>("Curvature", true, 0, 1000, 20);
+  this->m_AlgoWidget->AddParameter(m_Curvature);
 
-  m_ThresMax = new QGoAlgoParameter<int>("Thres.Max.", true, 0, 999, 30);
-  this->m_AlgoWidget->AddParameter(m_ThresMax);
-
-  m_CorrThres = new QGoAlgoParameter<double>("Corr.Thres.", true, 0, 99.99, 2, 0.5);
-  this->m_AlgoWidget->AddParameter(m_CorrThres);
-
-  m_Alpha = new QGoAlgoParameter<double>("Alpha", true, 0, 99.99, 2, 1.5);
-  this->m_AlgoWidget->AddParameter(m_Alpha);
- 
-  m_Beta = new QGoAlgoParameter<double>("Beta", true, 0, 99.99, 2, 3);
-  this->m_AlgoWidget->AddParameter(m_Beta);
+  m_Iterations = new QGoAlgoParameter<int> ("Iterations", true, 0, 1000, 100);
+  this->m_AlgoWidget->AddParameter(m_Iterations);
 }
 //-------------------------------------------------------------------------
 

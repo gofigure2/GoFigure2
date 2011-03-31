@@ -36,8 +36,9 @@
 
 
 QGoMeshLevelSetAlgo::QGoMeshLevelSetAlgo(QWidget* iParent)
+  :QGoLevelSetAlgo(iParent)
 {
-  this->SetAlgoWidget(iParent);
+  //this->SetAlgoWidget(iParent);
 }
 //-------------------------------------------------------------------------
 
@@ -52,16 +53,16 @@ QGoMeshLevelSetAlgo::~QGoMeshLevelSetAlgo()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoMeshLevelSetAlgo::DeleteParameters()
+/*void QGoMeshLevelSetAlgo::DeleteParameters()
 {
-  delete m_Radius;
-  delete m_Curvature;
-  delete m_Iterations;
-}
+  //delete m_Radius;
+  //delete m_Curvature;
+  //delete m_Iterations;
+}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoMeshLevelSetAlgo::SetAlgoWidget(QWidget* iParent)
+/*void QGoMeshLevelSetAlgo::SetAlgoWidget(QWidget* iParent)
 {
   this->m_AlgoWidget = 
     new QGoAlgorithmWidget("LevelSet 3D", iParent);
@@ -74,7 +75,7 @@ void QGoMeshLevelSetAlgo::SetAlgoWidget(QWidget* iParent)
 
   m_Iterations = new QGoAlgoParameter<int> ("Iterations", true, 0, 1000, 100);
   this->m_AlgoWidget->AddParameter(m_Iterations);
-}
+}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

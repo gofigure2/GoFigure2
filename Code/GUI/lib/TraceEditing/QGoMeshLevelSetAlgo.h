@@ -34,7 +34,7 @@
 #ifndef __QGoMeshLevelSetAlgo_h
 #define __QGoMeshLevelSetAlgo_h
 
-#include "QGoSegmentationAlgo.h"
+#include "QGoLevelSetAlgo.h"
 #include "QGoAlgorithmWidget.h"
 #include "QGoAlgoParameter.h"
 #include "QGoGUILibConfigure.h"
@@ -48,7 +48,7 @@
 \brief class to be the interface between the levelset algo for meshes 
 and GoFigure
 */
-class QGoMeshLevelSetAlgo: public QGoSegmentationAlgo
+class QGoMeshLevelSetAlgo: public QGoLevelSetAlgo
 {
 public:
   QGoMeshLevelSetAlgo(QWidget *iParent = 0);
@@ -60,13 +60,13 @@ public:
 
 protected:
 
-  QGoAlgoParameter<double>*       m_Radius;
-  QGoAlgoParameter<int>*          m_Curvature;
-  QGoAlgoParameter<int>*          m_Iterations;
+  //QGoAlgoParameter<double>*       m_Radius;
+  //QGoAlgoParameter<int>*          m_Curvature;
+  //QGoAlgoParameter<int>*          m_Iterations;
   
-  void SetAlgoWidget(QWidget* iParent = 0);
+  //void SetAlgoWidget(QWidget* iParent = 0);
 
-  void DeleteParameters();
+  //void DeleteParameters();
 };
 
 #endif

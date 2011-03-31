@@ -276,9 +276,6 @@ void QGoMeshEditingWidgetManager::ApplySetOfContoursWaterShedAlgo()
     this->m_SetOfContoursWaterShedAlgo->ApplyAlgoSeveralSeeds(this->m_Seeds, this->m_Images,
     this->m_MeshEditingWidget->GetChannelNumber() );
     std::vector< std::vector<vtkPolyData*> >();
-   /// this->m_SetOfContoursWaterShedAlgo->ApplyAlgoSeveralSeeds(
-   // this->m_Seeds, this->m_Images, 
-   // this->m_MeshEditingWidget->GetChannelNumber() );
 
   emit SetOfContoursFromAlgo(NewSetsOfContours , 
     this->GetSelectedTimePoint() );
