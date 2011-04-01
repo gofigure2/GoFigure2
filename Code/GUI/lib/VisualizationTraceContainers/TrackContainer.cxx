@@ -483,19 +483,13 @@ TrackContainer::ChangeColorCode(const char *iColorCode)
 void
 TrackContainer::ChangeDivisionsColorCode(const char *iColorCode)
 {
-  std::cout<<" received signal "<< std::endl;
-
   m_ActiveDivisionScalars.clear();
   m_ActiveDivisionScalars.append(iColorCode);
-
-  std::cout<<" compare:  " << m_ActiveDivisionScalars.compare("Original") << std::endl;
 
   if ( m_ActiveDivisionScalars.compare("Original") )
     {
     // get range for the division
     double *range = setDivisionNodeScalars(iColorCode);
-
-    std::cout<<"range: " << range[0] << " to " << range[1] << std::endl;
 
     // associated LUT
     vtkSmartPointer< vtkLookupTable > LUT = vtkSmartPointer< vtkLookupTable >::New();
@@ -1339,7 +1333,6 @@ UpdateDivisionScalar(MultiIndexContainerTraceIDIterator& it, unsigned int iDepth
 {
   if( !it->IsLeaf() )
     {
-    std::cout << "depth: " << iDepth << std::endl;
     //add array
     vtkSmartPointer< vtkIntArray > depthArray =
         vtkSmartPointer< vtkIntArray >::New();
