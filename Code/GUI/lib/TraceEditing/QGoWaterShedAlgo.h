@@ -34,7 +34,7 @@
 #ifndef __QGoWaterShedAlgo_h
 #define __QGoWaterShedAlgo_h
 
-#include "QGoSegmentationAlgo.h"
+#include "QGoSemiAutoSegmentationAlgo.h"
 #include "QGoAlgorithmWidget.h"
 #include "QGoAlgoParameter.h"
 #include "QGoGUILibConfigure.h"
@@ -48,14 +48,14 @@
 \brief class to be the interface between the watershed algo for meshes 
 and GoFigure
 */
-class QGoWaterShedAlgo: public QGoSegmentationAlgo
+class QGoWaterShedAlgo: public QGoSemiAutoSegmentationAlgo
 {
 public:
-  QGoWaterShedAlgo(QWidget* iParent = 0);
+  QGoWaterShedAlgo(vtkPoints* iSeeds, QWidget* iParent = 0);
   ~QGoWaterShedAlgo();
 
   virtual std::vector<vtkPolyData*> ApplyAlgo(
-    vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+    std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel) = 0;
 
 protected:

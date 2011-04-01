@@ -35,7 +35,8 @@
 #include "QGoFilterShape.h"
 
 
-QGoMeshShapeAlgo::QGoMeshShapeAlgo(QWidget* iParent)
+QGoMeshShapeAlgo::QGoMeshShapeAlgo(vtkPoints* iSeeds, QWidget* iParent)
+  :QGoShapeAlgo(iSeeds, iParent)
 {
   this->SetAlgoWidget(iParent);
 }
@@ -50,14 +51,14 @@ QGoMeshShapeAlgo::~QGoMeshShapeAlgo()
 
 //-------------------------------------------------------------------------
 std::vector<vtkPolyData*> QGoMeshShapeAlgo::ApplyAlgo(
-  vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+  std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel)
 {
   QGoFilterShape ShapeFilter;
 
   std::vector<vtkPolyData*> NewMeshes = 
     ShapeFilter.ApplyFilter3D(m_Radius->GetValue(), 
-    iSeeds, this->m_Shape->Getvalue(), iImages, iChannel);
+    this->m_Seeds, this->m_Shape->Getvalue(), iImages, iChannel);
 
   return NewMeshes;
 }

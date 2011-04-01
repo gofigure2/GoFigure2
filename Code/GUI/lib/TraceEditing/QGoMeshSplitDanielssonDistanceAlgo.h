@@ -55,7 +55,7 @@ public:
   ~QGoMeshSplitDanielssonDistanceAlgo();
 
   std::vector<vtkPolyData*> ApplyAlgo(
-    vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+    std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel);
 
 protected:

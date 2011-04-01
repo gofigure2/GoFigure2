@@ -34,7 +34,8 @@
 #include "QGoShapeAlgo.h"
 
 
-QGoShapeAlgo::QGoShapeAlgo(QWidget* iParent)
+QGoShapeAlgo::QGoShapeAlgo(vtkPoints* iSeeds, QWidget* iParent)
+  :QGoSemiAutoSegmentationAlgo(iSeeds, iParent)
 {
   this->SetAlgoWidget(iParent);
 }

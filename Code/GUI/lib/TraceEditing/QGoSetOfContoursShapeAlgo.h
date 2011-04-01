@@ -51,14 +51,14 @@ and GoFigure
 class QGoSetOfContoursShapeAlgo: public QGoShapeAlgo
 {
 public:
-  QGoSetOfContoursShapeAlgo(QWidget* iParent = 0);
+  QGoSetOfContoursShapeAlgo(vtkPoints* iSeeds, QWidget* iParent = 0);
   ~QGoSetOfContoursShapeAlgo();
 
   std::vector<vtkPolyData*> ApplyAlgo(
-    vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+    std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel);
 
-  std::vector<std::vector<vtkPolyData*> > ApplyAlgoSeveralSeeds( vtkPoints* iSeeds, 
+  std::vector<std::vector<vtkPolyData*> > ApplyAlgoSeveralSeeds( 
     std::vector<vtkSmartPointer< vtkImageData > >* iImages, int iChannel);
 
 protected:

@@ -115,6 +115,7 @@ SET( QGoGUILIB_SRC
   TraceEditing/QGoLevelSetAlgo.cxx
   TraceEditing/QGoShapeAlgo.cxx
   TraceEditing/QGoSetOfContoursShapeAlgo.cxx
+  TraceEditing/QGoSemiAutoSegmentationAlgo.cxx
 
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx
@@ -261,6 +262,7 @@ SET( QGoGUILIB_HDRS
   TraceEditing/QGoAlgorithmWidget.h
   TraceEditing/QGoMeshEditingWidgetManager.h
   TraceEditing/QGoSegmentationAlgo.h
+  TraceEditing/QGoSemiAutoSegmentationAlgo.h
 )
 
 IF( BUILD_COMPARETOOL )

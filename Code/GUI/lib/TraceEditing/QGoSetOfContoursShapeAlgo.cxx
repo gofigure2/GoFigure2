@@ -34,8 +34,8 @@
 #include "QGoSetOfContoursShapeAlgo.h"
 #include "QGoFilterShape.h"
 
-QGoSetOfContoursShapeAlgo::QGoSetOfContoursShapeAlgo(QWidget* iParent)
-  :QGoShapeAlgo(iParent)
+QGoSetOfContoursShapeAlgo::QGoSetOfContoursShapeAlgo(vtkPoints* iSeeds, QWidget* iParent)
+  :QGoShapeAlgo(iSeeds, iParent)
 {
   m_Sampling = new QGoAlgoParameter<int>("Sampling", true, 0, 999, 3);
   this->m_AlgoWidget->AddParameter(m_Sampling);
@@ -52,7 +52,7 @@ QGoSetOfContoursShapeAlgo::~QGoSetOfContoursShapeAlgo()
 
 //-------------------------------------------------------------------------
 std::vector<vtkPolyData*> QGoSetOfContoursShapeAlgo::ApplyAlgo(
-  vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+  std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel)
 {
   std::vector<vtkPolyData*> NewContours = std::vector<vtkPolyData*>();
@@ -62,7 +62,7 @@ std::vector<vtkPolyData*> QGoSetOfContoursShapeAlgo::ApplyAlgo(
 
 //-------------------------------------------------------------------------
 std::vector<std::vector<vtkPolyData*> > QGoSetOfContoursShapeAlgo::
-  ApplyAlgoSeveralSeeds( vtkPoints* iSeeds, 
+  ApplyAlgoSeveralSeeds(
     std::vector<vtkSmartPointer< vtkImageData > >* iImages, int iChannel)
 {
   std::vector<std::vector<vtkPolyData*> > NewContours;
@@ -71,7 +71,7 @@ std::vector<std::vector<vtkPolyData*> > QGoSetOfContoursShapeAlgo::
 
     NewContours = 
       ShapeFilter.ApplyFilterSetOf2D(this->m_Radius->GetValue(), 
-      this->m_Shape->Getvalue(), this->m_Sampling->GetValue(), iSeeds, 
+      this->m_Shape->Getvalue(), this->m_Sampling->GetValue(), this->m_Seeds, 
       iImages, iChannel );
  
    return NewContours;

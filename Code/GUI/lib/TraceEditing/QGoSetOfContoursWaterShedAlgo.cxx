@@ -34,8 +34,8 @@
 #include "QGoSetOfContoursWaterShedAlgo.h"
 #include "QGoFilterWatershed.h"
 
-QGoSetOfContoursWaterShedAlgo::QGoSetOfContoursWaterShedAlgo(QWidget* iParent)
-  :QGoWaterShedAlgo(iParent)
+QGoSetOfContoursWaterShedAlgo::QGoSetOfContoursWaterShedAlgo(vtkPoints* iSeeds, QWidget* iParent)
+  :QGoWaterShedAlgo(iSeeds, iParent)
 {
   m_Sampling = new QGoAlgoParameter<int>("Sampling", true, 0, 999, 3);
   this->m_AlgoWidget->AddParameter(m_Sampling);
@@ -45,14 +45,14 @@ QGoSetOfContoursWaterShedAlgo::QGoSetOfContoursWaterShedAlgo(QWidget* iParent)
 //-------------------------------------------------------------------------
 QGoSetOfContoursWaterShedAlgo::~QGoSetOfContoursWaterShedAlgo()
 {
-  this->DeleteParameters();
+  //this->DeleteParameters();
   delete m_Sampling;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 std::vector<vtkPolyData*> QGoSetOfContoursWaterShedAlgo::ApplyAlgo(
-  vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+  std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel)
 {
   std::vector<vtkPolyData*> NewContours = std::vector<vtkPolyData*>();
@@ -62,7 +62,7 @@ std::vector<vtkPolyData*> QGoSetOfContoursWaterShedAlgo::ApplyAlgo(
 
 //-------------------------------------------------------------------------
 std::vector<std::vector<vtkPolyData*> > QGoSetOfContoursWaterShedAlgo::
-  ApplyAlgoSeveralSeeds( vtkPoints* iSeeds, 
+  ApplyAlgoSeveralSeeds(
     std::vector<vtkSmartPointer< vtkImageData > >* iImages, int iChannel)
 {
   std::vector<std::vector<vtkPolyData*> > NewContours;
@@ -73,7 +73,7 @@ std::vector<std::vector<vtkPolyData*> > QGoSetOfContoursWaterShedAlgo::
       WatershedFilter.ApplyFilterSetOf2D(this->m_Radius->GetValue(), 
       this->m_ThresMin->GetValue(), this->m_ThresMax->GetValue(), 
       this->m_CorrThres->GetValue(),this->m_Alpha->GetValue(),this->m_Beta->GetValue(),
-      this->m_Sampling->GetValue(), iSeeds, iImages, iChannel );
+      this->m_Sampling->GetValue(), this->m_Seeds, iImages, iChannel );
  
    return NewContours;
 }

@@ -34,7 +34,7 @@
 #ifndef __QGoLevelSetAlgo_h
 #define __QGoLevelSetAlgo_h
 
-#include "QGoSegmentationAlgo.h"
+#include "QGoSemiAutoSegmentationAlgo.h"
 #include "QGoAlgorithmWidget.h"
 #include "QGoAlgoParameter.h"
 #include "QGoGUILibConfigure.h"
@@ -48,14 +48,14 @@
 \brief class to be the interface between the levelset algo for meshes,
 contours and set of contours and GoFigure
 */
-class QGoLevelSetAlgo: public QGoSegmentationAlgo
+class QGoLevelSetAlgo: public QGoSemiAutoSegmentationAlgo
 {
 public:
-  QGoLevelSetAlgo(QWidget* iParent = 0);
+  QGoLevelSetAlgo(vtkPoints* iSeeds, QWidget* iParent = 0);
   virtual ~QGoLevelSetAlgo();
 
   virtual std::vector<vtkPolyData*> ApplyAlgo(
-    vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+    std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel) = 0;
 
 protected:

@@ -62,7 +62,7 @@ void QGoMeshSplitDanielssonDistanceAlgo::SetAlgoWidget(QWidget* iParent)
 
 //-------------------------------------------------------------------------
 std::vector<vtkPolyData*> QGoMeshSplitDanielssonDistanceAlgo::ApplyAlgo(
-  vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+  std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel)
 {
   std::vector<vtkPolyData*> NewMeshes = std::vector<vtkPolyData*> ();

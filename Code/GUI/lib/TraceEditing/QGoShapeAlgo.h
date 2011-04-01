@@ -34,7 +34,7 @@
 #ifndef __QGoShapeAlgo_h
 #define __QGoShapeAlgo_h
 
-#include "QGoSegmentationAlgo.h"
+#include "QGoSemiAutoSegmentationAlgo.h"
 #include "QGoAlgorithmWidget.h"
 #include "QGoAlgoParameter.h"
 #include "QGoGUILibConfigure.h"
@@ -48,14 +48,14 @@
 \brief class to be the interface between the shape algo for meshes,
 contours and set of contours and GoFigure
 */
-class QGoShapeAlgo: public QGoSegmentationAlgo
+class QGoShapeAlgo: public QGoSemiAutoSegmentationAlgo
 {
 public:
-  QGoShapeAlgo(QWidget* iParent = 0);
+  QGoShapeAlgo(vtkPoints* iSeeds, QWidget* iParent = 0);
   ~QGoShapeAlgo();
 
   virtual std::vector<vtkPolyData*> ApplyAlgo(
-    vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+    std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel) = 0;
 
 protected:

@@ -51,11 +51,11 @@ and GoFigure
 class QGoMeshShapeAlgo: public QGoShapeAlgo
 {
 public:
-  QGoMeshShapeAlgo(QWidget* iParent = 0);
+  QGoMeshShapeAlgo(vtkPoints* iSeeds, QWidget* iParent = 0);
   ~QGoMeshShapeAlgo();
 
   std::vector<vtkPolyData*> ApplyAlgo(
-    vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+    std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel);
 
 protected:

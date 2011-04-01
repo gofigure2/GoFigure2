@@ -34,7 +34,8 @@
 #include "QGoWaterShedAlgo.h"
 
 
-QGoWaterShedAlgo::QGoWaterShedAlgo(QWidget* iParent)
+QGoWaterShedAlgo::QGoWaterShedAlgo(vtkPoints* iSeeds, QWidget* iParent)
+  :QGoSemiAutoSegmentationAlgo(iSeeds,iParent)
 {
   this->SetAlgoWidget(iParent);
 }

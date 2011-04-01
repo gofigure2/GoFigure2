@@ -35,6 +35,7 @@
 
 
 QGoSegmentationAlgo::QGoSegmentationAlgo(QWidget *iParent)
+  :m_AlgoWidget(NULL)
 {
 }
 //-------------------------------------------------------------------------

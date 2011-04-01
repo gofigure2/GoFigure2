@@ -51,14 +51,14 @@ and GoFigure
 class QGoSetOfContoursWaterShedAlgo: public QGoWaterShedAlgo
 {
 public:
-  QGoSetOfContoursWaterShedAlgo(QWidget* iParent = 0);
+  QGoSetOfContoursWaterShedAlgo(vtkPoints* iSeeds, QWidget* iParent = 0);
   ~QGoSetOfContoursWaterShedAlgo();
 
   std::vector<vtkPolyData*> ApplyAlgo(
-    vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+    std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel);
 
-  std::vector<std::vector<vtkPolyData*> > ApplyAlgoSeveralSeeds( vtkPoints* iSeeds, 
+  std::vector<std::vector<vtkPolyData*> > ApplyAlgoSeveralSeeds(
     std::vector<vtkSmartPointer< vtkImageData > >* iImages, int iChannel);
 
 protected:

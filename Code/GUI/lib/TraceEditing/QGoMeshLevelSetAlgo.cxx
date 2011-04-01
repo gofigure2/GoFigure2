@@ -35,8 +35,8 @@
 #include "QGoFilterChanAndVese.h"
 
 
-QGoMeshLevelSetAlgo::QGoMeshLevelSetAlgo(QWidget* iParent)
-  :QGoLevelSetAlgo(iParent)
+QGoMeshLevelSetAlgo::QGoMeshLevelSetAlgo(vtkPoints* iSeeds, QWidget* iParent)
+  :QGoLevelSetAlgo(iSeeds, iParent)
 {
 }
 //-------------------------------------------------------------------------
@@ -49,14 +49,14 @@ QGoMeshLevelSetAlgo::~QGoMeshLevelSetAlgo()
 
 //-------------------------------------------------------------------------
 std::vector<vtkPolyData*> QGoMeshLevelSetAlgo::ApplyAlgo(
-  vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+  std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel)
 {
   QGoFilterChanAndVese LevelSetFilter;
 
   std::vector<vtkPolyData*> NewMeshes = 
     LevelSetFilter.ApplyFilterLevelSet3D(m_Radius->GetValue(), 
-    iSeeds, m_Iterations->GetValue(),
+    this->m_Seeds, m_Iterations->GetValue(),
     m_Curvature->GetValue(), iImages, iChannel);
  
   return NewMeshes;

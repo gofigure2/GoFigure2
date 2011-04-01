@@ -31,50 +31,57 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "QGoSetOfContoursLevelSetAlgo.h"
-#include "QGoFilterChanAndVese.h"
+#ifndef __QGoSemiAutoSegmentationAlgo_h
+#define __QGoSemiAutoSegmentationAlgo_h
 
-QGoSetOfContoursLevelSetAlgo::QGoSetOfContoursLevelSetAlgo(
-  vtkPoints* iSeeds, QWidget* iParent)
-  :QGoLevelSetAlgo(iSeeds, iParent)
+#include "QGoSegmentationAlgo.h"
+#include "QGoAlgorithmWidget.h"
+#include "QGoGUILibConfigure.h"
+#include "vtkSmartPointer.h"
+#include "vtkPolyData.h"
+#include "vtkImageData.h"
+#include "QGoGUILibConfigure.h"
+
+/**
+\class QGoSemiAutoSegmentationAlgo
+\brief abstract class to be the interface between the semi automatic 
+algorithms for meshes and contours and GoFigure
+*/
+class QGOGUILIB_EXPORT QGoSemiAutoSegmentationAlgo:public QGoSegmentationAlgo
 {
-  m_Sampling = new QGoAlgoParameter<int>("Sampling", true, 0, 999, 3);
-  this->m_AlgoWidget->AddParameter(m_Sampling);
-}
-//-------------------------------------------------------------------------
+  Q_OBJECT
+public:
+  QGoSemiAutoSegmentationAlgo(vtkPoints* iSeeds, QWidget *iParent = 0);
+  ~QGoSemiAutoSegmentationAlgo();
 
-//-------------------------------------------------------------------------
-QGoSetOfContoursLevelSetAlgo::~QGoSetOfContoursLevelSetAlgo()
-{
-  //this->DeleteParameters();
-  delete m_Sampling;
-}
-//-------------------------------------------------------------------------
+  /**
+  \brief return the algowidget
+  */
+  //QGoAlgorithmWidget* GetAlgoWidget();
 
-//-------------------------------------------------------------------------
-std::vector<vtkPolyData*> QGoSetOfContoursLevelSetAlgo::ApplyAlgo(
-  std::vector<vtkSmartPointer< vtkImageData > >* iImages,
-    int iChannel)
-{
-  std::vector<vtkPolyData*> NewContours = std::vector<vtkPolyData*>();
-  return NewContours;
-}
-//-------------------------------------------------------------------------
+  /**
+  \brief return the vtkpolydata created by the algorithm
+  */
+  virtual std::vector<vtkPolyData*> ApplyAlgo(
+    //vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+    std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+    int iChannel) = 0;
 
-//-------------------------------------------------------------------------
-std::vector<std::vector<vtkPolyData*> > QGoSetOfContoursLevelSetAlgo::
-  ApplyAlgoSeveralSeeds(
-    std::vector<vtkSmartPointer< vtkImageData > >* iImages, int iChannel)
-{
-  std::vector<std::vector<vtkPolyData*> > NewContours;
-  QGoFilterChanAndVese LevelSetFilter;
-  double *center = new double[3];
+protected:
+  vtkPoints*                      m_Seeds;
 
-    NewContours = 
-      LevelSetFilter.ApplyFilterSetOf2D(this->m_Radius->GetValue(), 
-      this->m_Seeds, this->m_Iterations->GetValue(), 
-      this->m_Curvature->GetValue(),this->m_Sampling->GetValue(),
-      iImages, iChannel );
+  /**
+  \brief construct the algowidget with the different parameters
+  */
+  virtual void SetAlgoWidget(QWidget* iParent = 0) = 0;
+
+  /**
+  \brief delete the different parameters
+  */
+  virtual void DeleteParameters() = 0;
+
+  //add a method setBounds(std::vector<double> iCenter, iRadius)
  
-   return NewContours;
-}
+};
+
+#endif

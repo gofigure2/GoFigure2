@@ -34,7 +34,8 @@
 #include "QGoLevelSetAlgo.h"
 
 
-QGoLevelSetAlgo::QGoLevelSetAlgo(QWidget* iParent)
+QGoLevelSetAlgo::QGoLevelSetAlgo(vtkPoints* iSeeds, QWidget* iParent)
+  :QGoSemiAutoSegmentationAlgo(iSeeds, iParent)
 {
   this->SetAlgoWidget(iParent);
 }

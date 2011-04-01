@@ -31,50 +31,23 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "QGoSetOfContoursLevelSetAlgo.h"
-#include "QGoFilterChanAndVese.h"
+#include "QGoSemiAutoSegmentationAlgo.h"
 
-QGoSetOfContoursLevelSetAlgo::QGoSetOfContoursLevelSetAlgo(
-  vtkPoints* iSeeds, QWidget* iParent)
-  :QGoLevelSetAlgo(iSeeds, iParent)
+
+QGoSemiAutoSegmentationAlgo::QGoSemiAutoSegmentationAlgo(
+  vtkPoints* iSeeds, QWidget *iParent)
 {
-  m_Sampling = new QGoAlgoParameter<int>("Sampling", true, 0, 999, 3);
-  this->m_AlgoWidget->AddParameter(m_Sampling);
+  this->m_Seeds = iSeeds;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QGoSetOfContoursLevelSetAlgo::~QGoSetOfContoursLevelSetAlgo()
+QGoSemiAutoSegmentationAlgo::~QGoSemiAutoSegmentationAlgo()
 {
-  //this->DeleteParameters();
-  delete m_Sampling;
+  this->m_Seeds->Delete();
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::vector<vtkPolyData*> QGoSetOfContoursLevelSetAlgo::ApplyAlgo(
-  std::vector<vtkSmartPointer< vtkImageData > >* iImages,
-    int iChannel)
-{
-  std::vector<vtkPolyData*> NewContours = std::vector<vtkPolyData*>();
-  return NewContours;
-}
-//-------------------------------------------------------------------------
 
-//-------------------------------------------------------------------------
-std::vector<std::vector<vtkPolyData*> > QGoSetOfContoursLevelSetAlgo::
-  ApplyAlgoSeveralSeeds(
-    std::vector<vtkSmartPointer< vtkImageData > >* iImages, int iChannel)
-{
-  std::vector<std::vector<vtkPolyData*> > NewContours;
-  QGoFilterChanAndVese LevelSetFilter;
-  double *center = new double[3];
 
-    NewContours = 
-      LevelSetFilter.ApplyFilterSetOf2D(this->m_Radius->GetValue(), 
-      this->m_Seeds, this->m_Iterations->GetValue(), 
-      this->m_Curvature->GetValue(),this->m_Sampling->GetValue(),
-      iImages, iChannel );
- 
-   return NewContours;
-}

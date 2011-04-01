@@ -51,11 +51,11 @@ and GoFigure
 class QGoMeshLevelSetAlgo: public QGoLevelSetAlgo
 {
 public:
-  QGoMeshLevelSetAlgo(QWidget *iParent = 0);
+  QGoMeshLevelSetAlgo(vtkPoints* iSeeds, QWidget *iParent = 0);
   ~QGoMeshLevelSetAlgo();
 
   std::vector<vtkPolyData*> ApplyAlgo(
-    vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+    std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel);
 
 protected:

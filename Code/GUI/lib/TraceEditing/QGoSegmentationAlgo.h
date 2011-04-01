@@ -39,14 +39,14 @@
 #include "vtkSmartPointer.h"
 #include "vtkPolyData.h"
 #include "vtkImageData.h"
-
+#include "QGoGUILibConfigure.h"
 
 /**
 \class QGoSegmentationAlgo
 \brief abstract class to be the interface between the algorithms for meshes 
 and contours and GoFigure
 */
-class QGoSegmentationAlgo:public QObject
+class QGOGUILIB_EXPORT QGoSegmentationAlgo:public QObject
 {
   Q_OBJECT
 public:
@@ -62,12 +62,13 @@ public:
   \brief return the vtkpolydata created by the algorithm
   */
   virtual std::vector<vtkPolyData*> ApplyAlgo(
-    vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+    //vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+    std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel) = 0;
 
 protected:
   QGoAlgorithmWidget*             m_AlgoWidget;
-  
+
   /**
   \brief construct the algowidget with the different parameters
   */
@@ -77,6 +78,11 @@ protected:
   \brief delete the different parameters
   */
   virtual void DeleteParameters() = 0;
+
+  //add a method std::vector<vtkImageData> ExtractROI(Bounds, std::vector<vtkImageData> iImages)
+  //add a method vtkImageData>ExtractROI(Bounds, vtkImageData iImage)
+  //add a method std::vector<PolyData*> ConvertITKImagesToPolyData(std::vector<itk::Image> iImages)
+  //add a method std::vector<TraceAttribut> GetAttribut(std::vector<vtkPolyData*> iNewTraces)
 };
 
 #endif

@@ -148,7 +148,7 @@ protected:
   void GetPolydatasFromAlgo(T* iAlgo)
     {
     emit UpdateSeeds();
-    std::vector<vtkPolyData*> NewMeshes = iAlgo->ApplyAlgo(this->m_Seeds,
+    std::vector<vtkPolyData*> NewMeshes = iAlgo->ApplyAlgo(
       this->m_Images, this->m_MeshEditingWidget->GetChannelNumber() );
     emit MeshesCreatedFromAlgo(NewMeshes, this->GetSelectedTimePoint() );
     emit ClearAllSeeds();
@@ -163,7 +163,7 @@ protected:
     {
     emit UpdateSeeds(); 
     std::vector< std::vector<vtkPolyData*> > NewSetsOfContours = 
-      iAlgo->ApplyAlgoSeveralSeeds(this->m_Seeds, this->m_Images,
+      iAlgo->ApplyAlgoSeveralSeeds(this->m_Images,
         this->m_MeshEditingWidget->GetChannelNumber() );
     emit SetOfContoursFromAlgo(NewSetsOfContours , 
       this->GetSelectedTimePoint() );

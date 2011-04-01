@@ -51,11 +51,11 @@ and GoFigure
 class QGoMeshWaterShedAlgo: public QGoWaterShedAlgo
 {
 public:
-  QGoMeshWaterShedAlgo(QWidget* iParent = 0);
+  QGoMeshWaterShedAlgo(vtkPoints* iSeeds, QWidget* iParent = 0);
   ~QGoMeshWaterShedAlgo();
 
   std::vector<vtkPolyData*> ApplyAlgo(
-    vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+    std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel);
 
 protected:

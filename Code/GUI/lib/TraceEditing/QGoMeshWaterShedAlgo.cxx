@@ -35,8 +35,8 @@
 #include "QGoFilterWatershed.h"
 
 
-QGoMeshWaterShedAlgo::QGoMeshWaterShedAlgo(QWidget* iParent)
-  :QGoWaterShedAlgo(iParent)
+QGoMeshWaterShedAlgo::QGoMeshWaterShedAlgo(vtkPoints* iSeeds, QWidget* iParent)
+  :QGoWaterShedAlgo(iSeeds, iParent)
 {
 }
 //-------------------------------------------------------------------------
@@ -50,7 +50,7 @@ QGoMeshWaterShedAlgo::~QGoMeshWaterShedAlgo()
 
 //-------------------------------------------------------------------------
 std::vector<vtkPolyData*> QGoMeshWaterShedAlgo::ApplyAlgo(
-  vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+  std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel)
 {
   QGoFilterWatershed WatershedFilter;
@@ -59,7 +59,7 @@ std::vector<vtkPolyData*> QGoMeshWaterShedAlgo::ApplyAlgo(
     WatershedFilter.ApplyFilter3D(this->m_Radius->GetValue(), 
     this->m_ThresMin->GetValue(), this->m_ThresMax->GetValue(), 
     this->m_CorrThres->GetValue(),this->m_Alpha->GetValue(),this->m_Beta->GetValue(),  
-    iSeeds, iImages, iChannel);
+    this->m_Seeds, iImages, iChannel);
  
   return NewMeshes;
 }
