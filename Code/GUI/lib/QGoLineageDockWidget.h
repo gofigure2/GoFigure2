@@ -49,15 +49,10 @@ public:
   ~QGoLineageDockWidget();
 
 public slots:
-  void Glyphs( bool );
-  void glyphValueChanged( double );
-  void Tubes( bool );
-  void tubeValueChanged( double );
   void ColorCodeLineagesByTime(bool);
-  void ColorCodeLineagesBySpeed(bool);
+  void ColorCodeLineagesByDepth(bool);
   void ColorCodeLineagesByOriginalColor(bool);
 signals:
-  void UpdateLineagesRepresentation(double, double);
   void ChangeDivisionsColorCode( const char* );
 
 };

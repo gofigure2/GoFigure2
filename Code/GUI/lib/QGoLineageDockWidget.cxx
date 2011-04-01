@@ -33,8 +33,6 @@
 =========================================================================*/
 #include "QGoLineageDockWidget.h"
 
-#include "ctkDoubleRangeSlider.h"
-
 #include <iostream>
 
 //-------------------------------------------------------------------------
@@ -48,31 +46,14 @@ QGoLineageDockWidget::QGoLineageDockWidget(
   this->toggleViewAction()->setIcon(Lineageicon);
   this->toggleViewAction()->setToolTip("Lineage View");
   this->setWindowTitle("Lineage View");
-  // appearance
-  QObject::connect( this->glyph, SIGNAL( toggled(bool) ),
-                    this, SLOT( Glyphs(bool) ) );
-  QObject::connect( this->glyphSpinBox, SIGNAL( valueChanged(double) ),
-                    this, SLOT( glyphValueChanged(double) ) );
-
-  QObject::connect( this->tube, SIGNAL( toggled(bool) ),
-                    this, SLOT( Tubes(bool) ) );
-  QObject::connect( this->tubeSpinBox, SIGNAL( valueChanged(double) ),
-                    this, SLOT( tubeValueChanged(double) ) );
 
   // color code
   QObject::connect( this->time, SIGNAL( toggled(bool) ),
                     this, SLOT( ColorCodeLineagesByTime(bool) ) );
-  QObject::connect( this->speed, SIGNAL( toggled(bool) ),
-                    this, SLOT( ColorCodeLineagesBySpeed(bool) ) );
+  QObject::connect( this->depthLineage, SIGNAL( toggled(bool) ),
+                    this, SLOT( ColorCodeLineagesByDepth(bool) ) );
   QObject::connect( this->real, SIGNAL( toggled(bool) ),
                     this, SLOT( ColorCodeLineagesByOriginalColor(bool) ) );
-
-  /*
-  // double slider
-  ctkDoubleRangeSlider *rangeSlider =
-      new ctkDoubleRangeSlider(Qt::Horizontal , this->dockWidgetContents);
-  gridLayout->addWidget(rangeSlider, 2, 0, 1, 1);
-  */
 }
 
 //-------------------------------------------------------------------------
@@ -81,64 +62,6 @@ QGoLineageDockWidget::QGoLineageDockWidget(
 QGoLineageDockWidget::
 ~QGoLineageDockWidget()
 {
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoLineageDockWidget::glyphValueChanged(double)
-{
-  //to avoid useless update
-  if ( this->glyph->isChecked() )
-    {
-    Glyphs(true);
-    }
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoLineageDockWidget::Glyphs(bool iActivated)
-{
-  if ( iActivated )
-    {
-    emit UpdateLineagesRepresentation( this->glyphSpinBox->value(), this->tubeSpinBox->value() * this->tube->isChecked() );
-    }
-  else
-    {
-    emit UpdateLineagesRepresentation( 0, this->tubeSpinBox->value() * this->tube->isChecked() );
-    }
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoLineageDockWidget::tubeValueChanged(double)
-{
-  //to avoid useless update
-  if ( this->tube->isChecked() )
-    {
-    Tubes(true);
-    }
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoLineageDockWidget::Tubes(bool iActivated)
-{
-  if ( iActivated )
-    {
-    emit UpdateLineagesRepresentation( this->glyphSpinBox->value() * this->glyph->isChecked(), this->tubeSpinBox->value() );
-    }
-  else
-    {
-    emit UpdateLineagesRepresentation(this->glyphSpinBox->value() * this->glyph->isChecked(), 0);
-    }
 }
 
 //-------------------------------------------------------------------------
@@ -157,11 +80,11 @@ QGoLineageDockWidget::ColorCodeLineagesByTime(bool iChecked)
 
 //-------------------------------------------------------------------------
 void
-QGoLineageDockWidget::ColorCodeLineagesBySpeed(bool iChecked)
+QGoLineageDockWidget::ColorCodeLineagesByDepth(bool iChecked)
 {
   if ( iChecked )
     {
-    emit ChangeDivisionsColorCode("SpeedInformation");
+    emit ChangeDivisionsColorCode("DepthInformation");
     }
 }
 
