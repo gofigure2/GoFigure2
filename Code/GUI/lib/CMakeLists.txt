@@ -99,6 +99,10 @@ SET( QGoGUILIB_SRC
   # for the tracks
   QGoTrackDockWidget.cxx
   QGoTrackEditingWidget.cxx
+  
+  #for the lineages
+  QGoLineageDockWidget.cxx
+  
   QGoTraceEditingWidget.cxx
   QGoModeEditingWidget.cxx
   QGoAdvancedParametersWidget.cxx
@@ -241,6 +245,10 @@ SET( QGoGUILIB_HDRS
   # for the tracks
   QGoTrackDockWidget.h
   QGoTrackEditingWidget.h
+  
+  # for the lineages
+  QGoLineageDockWidget.h
+  
   QGoTraceEditingWidget.h
   QGoModeEditingWidget.h
   QGoAdvancedParametersWidget.h
@@ -311,6 +319,9 @@ SET( QGoGUILIB_UI
   # for tracks
   Resources/TrackDockWidget.ui
   Resources/TrackEditingWidget.ui
+  
+  # for lineages
+  Resources/LineageDockWidget.ui
 )
 
 IF( BUILD_COMPARETOOL )

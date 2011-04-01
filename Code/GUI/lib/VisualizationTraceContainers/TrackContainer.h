@@ -108,6 +108,36 @@ private:
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
+struct add_array_division
+{
+  add_array_division(vtkIntArray* iArray):array(iArray){}
+
+  void operator()(TrackStructure& iStructure)
+  {
+    iStructure.AddDivisionArray(array);
+  }
+
+private:
+  vtkIntArray* array;
+};
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+struct create_node_division
+{
+  create_node_division(vtkPolyData* iNode):node(iNode){}
+
+  void operator()(TrackStructure& iStructure)
+  {
+    iStructure.CreateDivisionNode(node);
+  }
+
+private:
+  vtkPolyData* node;
+};
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
 
 namespace boost
 {
@@ -371,8 +401,10 @@ public:
    * \param[in] iDaughter2ID ID of the daughter2 of the division
    * \return vector of 4 actors (1 for each view) representing the division
    */
-  std::vector<vtkActor* > CreateDivisionActor( unsigned int iMother, unsigned int iDaughter1,
-      unsigned int iDaughter2, bool iVisible = true);
+  std::vector<vtkActor* > CreateDivisionActor( vtkPolyData* iPolyData, bool iVisible = true);
+
+  void CreateDivisionPolydata( unsigned int iMother, unsigned int iDaughter1,
+      unsigned int iDaughter2);
 
   /*
    * \brief Cut the lineage after the given track ID. Modifies mother child pointers to NULL.
@@ -390,6 +422,10 @@ public:
   void UpdateSubLineage( MultiIndexContainerTraceIDIterator it, std::list<unsigned int>& iList);
 
   void UpdateDivisionColor(unsigned int iTrackID, double* iColor);
+
+  void UpdateCollectionScalars( unsigned int iTrackID);
+  void UpdateDivisionScalar(
+      MultiIndexContainerTraceIDIterator& iMotherIterator, unsigned int iDepth);
 
 
 signals:
@@ -412,7 +448,7 @@ signals:
   void UpdateLineageHighlighting(unsigned int);
   void GetCollectionIDForHighlgiht(unsigned int);
   void GetDivisionColor(unsigned int, unsigned int);
-  void UpdateCollectionsColors( std::list<unsigned int>);
+  void UpdateCollectionsColors( std::list<unsigned int> );
 
 public slots:
 
@@ -436,6 +472,8 @@ public slots:
   \brief Color code the track by time.
   \param[in] iColorCode Display Time Color Code (true) or Real Color (false) */
   void ChangeColorCode( const char* iColorCode);
+
+  void ChangeDivisionsColorCode( const char* iColorCode );
 
   void UpdateTracksRepresentation( double iRadius,double iRadius2);
 
@@ -465,13 +503,20 @@ protected:
    * \param[in] iArrayName Array to be displayed
    * \return Pointer to double[2] where [0] is the min scalar value and [1] is
    * the max scalar value. Pointer has to be deleted (delete[] pointer) */
-  double* setNodeScalars(const char *iArrayName);
+  double* setTrackNodeScalars(const char *iArrayName);
+
+  double* setDivisionNodeScalars(const char *iArrayName);
+
+  void SetScalarRangeForAllDivisions(double iMin, double iMax);
+  void SetLookupTableForAllDivisionsColorCoding(vtkLookupTable *iLut);
+  void RenderAllDivisionsWithOriginalColors();
 
   void ComputeSpeed();
 
 private:
   int m_TimeInterval;
-  QString m_ActiveScalars;
+  QString m_ActiveTrackScalars;
+  QString m_ActiveDivisionScalars;
 
   Q_DISABLE_COPY(TrackContainer);
 };

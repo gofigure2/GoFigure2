@@ -32,76 +32,28 @@
 
 =========================================================================*/
 
-#ifndef __TreeNodeStructure_h
-#define __TreeNodeStructure_h
+#ifndef __QGoLineageDockWidget_h
+#define __QGoLineageDockWidget_h
 
-#include "TraceStructure.h"
+#include <QDockWidget>
 
-#include "QGoIOConfigure.h"
+#include "ui_LineageDockWidget.h"
 
-#ifndef DOXYGEN_SHOULD_SKIP_THIS
-#include "StructureHelper.h"
-#endif
-
-#include "vtkActor.h"
-#include "vtkPolyData.h"
-
-/**
- * \struct TreeNodeStructure
- * \brief  Structure which represent a tree node.
- * \ingroup Track Trace
- */
-template <class T>
-class QGOIO_EXPORT TreeNodeStructure : public TraceStructure
+class QGoLineageDockWidget:
+  public QDockWidget,
+  protected Ui::LineageDockWidget
 {
+  Q_OBJECT
 public:
-  TreeNodeStructure() : TraceStructure()
-  {
-    m_Mother = NULL;
-    m_Child[0] = NULL;
-    m_Child[1] = NULL;
-  }
+  explicit QGoLineageDockWidget(QWidget *iParent = 0);
+  ~QGoLineageDockWidget();
 
-  TreeNodeStructure( const TreeNodeStructure & iE ) : TraceStructure( iE ),
-      m_Mother(iE.m_Mother)
-  {
-    m_Child[0] = iE.m_Child[0];
-    m_Child[1] = iE.m_Child[1];
-  }
+public slots:
+  void ColorCodeLineagesByTime(bool);
+  void ColorCodeLineagesByDepth(bool);
+  void ColorCodeLineagesByOriginalColor(bool);
+signals:
+  void ChangeDivisionsColorCode( const char* );
 
-  ~TreeNodeStructure(){};
-
-  virtual void ReleaseData()
-    {
-    if(ActorXY)
-      {
-      ActorXY->Delete();
-      ActorXY = NULL;
-      }
-    if(ActorXZ)
-      {
-      ActorXZ->Delete();
-      ActorXZ = NULL;
-      }
-    if(ActorYZ)
-      {
-      ActorYZ->Delete();
-      ActorYZ = NULL;
-      }
-    if(ActorXYZ)
-      {
-      ActorXYZ->Delete();
-      ActorXYZ = NULL;
-      }
-    if(Nodes)
-      {
-      Nodes->Delete();
-      Nodes = NULL;
-      }
-    }
-
-  T* m_Mother;
-  T* m_Child[2];
 };
-
 #endif

@@ -62,7 +62,8 @@
 TrackContainer::TrackContainer(QObject *iParent, QGoImageView3D *iView) : Superclass(iParent, iView)
 {
   m_TimeInterval = 0;
-  m_ActiveScalars.append("Original");
+  m_ActiveTrackScalars.append("Original");
+  m_ActiveDivisionScalars.append("Original");
 }
 
 //-------------------------------------------------------------------------
@@ -449,13 +450,13 @@ TrackContainer::UpdateElementVisibilityWithGivenTraceIDs(const QStringList & iLi
 void
 TrackContainer::ChangeColorCode(const char *iColorCode)
 {
-  m_ActiveScalars.clear();
-  m_ActiveScalars.append(iColorCode);
+  m_ActiveTrackScalars.clear();
+  m_ActiveTrackScalars.append(iColorCode);
 
-  if ( m_ActiveScalars.compare("Original") )
+  if ( m_ActiveTrackScalars.compare("Original") )
     {
     // get range for the tracks
-    double *range = setNodeScalars(iColorCode);
+    double *range = setTrackNodeScalars(iColorCode);
 
     // associated LUT
     vtkSmartPointer< vtkLookupTable > LUT = vtkSmartPointer< vtkLookupTable >::New();
@@ -476,10 +477,105 @@ TrackContainer::ChangeColorCode(const char *iColorCode)
     this->RenderAllElementsWithOriginalColors();
     }
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::ChangeDivisionsColorCode(const char *iColorCode)
+{
+  m_ActiveDivisionScalars.clear();
+  m_ActiveDivisionScalars.append(iColorCode);
+
+  if ( m_ActiveDivisionScalars.compare("Original") )
+    {
+    // get range for the division
+    double *range = setDivisionNodeScalars(iColorCode);
+
+    // associated LUT
+    vtkSmartPointer< vtkLookupTable > LUT = vtkSmartPointer< vtkLookupTable >::New();
+    LUT->SetTableRange(range);
+    LUT->SetNumberOfTableValues(1024);
+    LUT->SetHueRange(0, 0.7);
+    LUT->SetSaturationRange(1, 1);
+    LUT->SetValueRange(1, 1);
+    LUT->Build();
+
+    SetScalarRangeForAllDivisions(range[0], range[1]);
+    SetLookupTableForAllDivisionsColorCoding(LUT);
+    }
+  else
+    {
+    RenderAllDivisionsWithOriginalColors();
+    }
+
+  assert ( m_ImageView );
+  this->m_ImageView->UpdateRenderWindows();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+SetScalarRangeForAllDivisions(double iMin, double iMax)
+{
+  MultiIndexContainerType::index< TraceID >::type::iterator
+    it = m_Container.get< TraceID >().begin();
+
+  while ( it != m_Container.get< TraceID >().end() )
+   {
+    if ( !it->IsLeaf() )
+      {
+      it->TreeNode.SetScalarRange(iMin, iMax);
+      }
+   ++it;
+   }
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+SetLookupTableForAllDivisionsColorCoding(vtkLookupTable *iLut)
+{
+  MultiIndexContainerType::index< TraceID >::type::iterator
+    it = m_Container.get< TraceID >().begin();
+
+  while ( it != m_Container.get< TraceID >().end() )
+   {
+    if ( !it->IsLeaf() )
+      {
+      it->TreeNode.SetLookupTable(iLut);
+      }
+   ++it;
+   }
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+RenderAllDivisionsWithOriginalColors()
+{
+  MultiIndexContainerType::index< TraceID >::type::iterator
+    it = m_Container.get< TraceID >().begin();
+
+  while ( it != m_Container.get< TraceID >().end() )
+   {
+    if ( !it->IsLeaf() )
+      {
+      it->TreeNode.RenderWithOriginalColors();
+      }
+   ++it;
+   }
+}
+
+//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 double *
-TrackContainer::setNodeScalars(const char *iArrayName)
+TrackContainer::setTrackNodeScalars(const char *iArrayName)
 {
   double *range =  new double[2];
 
@@ -501,6 +597,40 @@ TrackContainer::setNodeScalars(const char *iArrayName)
 
       //set active scalar
       it->Nodes->GetPointData()->SetActiveScalars(iArrayName);
+      }
+
+    ++it;
+    }
+
+  return range;
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+double *
+TrackContainer::setDivisionNodeScalars(const char *iArrayName)
+{
+  double *range =  new double[2];
+
+  range[0] = std::numeric_limits< double >::max();
+  range[1] = std::numeric_limits< double >::min();
+
+  MultiIndexContainerType::index< TraceID >::type::iterator
+    it = m_Container.get< TraceID >().begin();
+
+  while ( it != m_Container.get< TraceID >().end() )
+    {
+    // does the division have a polydata
+    if ( !it->IsLeaf() )
+      {
+      double *realTime =
+        it->TreeNode.Nodes->GetPointData()->GetArray(iArrayName)->GetRange();
+      range[0] = std::min(range[0], realTime[0]);
+      range[1] = std::max(range[1], realTime[1]);
+
+      //set active scalar
+      it->TreeNode.Nodes->GetPointData()->SetActiveScalars(iArrayName);
       }
 
     ++it;
@@ -550,7 +680,7 @@ TrackContainer::UpdateTracksRepresentation(double iRadius, double iRadius2)
 
   // update color since active scalar is set to NULL in
   // UpdateTrackStructurePolyData
-  QByteArray  bytes  = m_ActiveScalars.toAscii();
+  QByteArray  bytes  = m_ActiveTrackScalars.toAscii();
   const char *ptr    = bytes.data();
   ChangeColorCode(ptr);
 
@@ -634,9 +764,11 @@ AddDivision( unsigned int iMotherID, unsigned int iDaughter1ID,
   TrackStructure* mother = const_cast<TrackStructure*>(&(*motherIt));
   mother->TreeNode.m_Child[0] = const_cast<TrackStructure*>(&(*daughter1It));
   mother->TreeNode.m_Child[1] = const_cast<TrackStructure*>(&(*daughter2It));
+  // Create Polydata
+  CreateDivisionPolydata(iMotherID, iDaughter1ID, iDaughter2ID);
   // Create Actor
   std::vector< vtkActor * > actors =
-      CreateDivisionActor(iMotherID, iDaughter1ID, iDaughter2ID, iVisible);
+      CreateDivisionActor(mother->TreeNode.Nodes, iVisible);
   mother->TreeNode.ActorXY = actors[0];
   mother->TreeNode.ActorXZ = actors[1];
   mother->TreeNode.ActorYZ = actors[2];
@@ -656,11 +788,9 @@ AddDivision( unsigned int iMotherID, unsigned int iDaughter1ID,
   this->m_ImageView->UpdateRenderWindows();
 }
 //-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-std::vector<vtkActor* >
+void
 TrackContainer::
-CreateDivisionActor( unsigned int iMother, unsigned int iDaughter1, unsigned int iDaughter2, bool iVisible)
+CreateDivisionPolydata(unsigned int iMother, unsigned int iDaughter1, unsigned int iDaughter2)
 {
   // Arnaud: what about if any of the parameter is NULL?
   // Arnaud: what about if one daughter is in the field of view,
@@ -709,6 +839,18 @@ CreateDivisionActor( unsigned int iMother, unsigned int iDaughter1, unsigned int
 
   division->GetFieldData()->AddArray(trackIDArray);
 
+  // update structure
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iMother);
+  m_Container.get< TraceID >().modify( motherIt , create_node_division(division) );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::vector<vtkActor* >
+TrackContainer::
+CreateDivisionActor(vtkPolyData* iPolyData, bool iVisible)
+{
   /*
    * \todo Nicolas: Which color should it be? White as of now
    */
@@ -725,7 +867,7 @@ CreateDivisionActor( unsigned int iMother, unsigned int iDaughter1, unsigned int
   trace_property->SetOpacity(a);
 
   std::vector< vtkActor * > divisionActors =
-      this->m_ImageView->AddContour( division, trace_property );
+      this->m_ImageView->AddContour( iPolyData, trace_property );
 
   // add it to visu??
   if( iVisible )
@@ -1169,5 +1311,53 @@ UpdateDivisionColor(unsigned int iTrackID, double* iColor)
    * \todo might not be efficient enough
    */
   m_ImageView->UpdateRenderWindows();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateCollectionScalars( unsigned int iTrackID)
+{
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iTrackID);
+
+  UpdateDivisionScalar(motherIt, 0); // 0=depth of the root
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateDivisionScalar(MultiIndexContainerTraceIDIterator& it, unsigned int iDepth)
+{
+  if( !it->IsLeaf() )
+    {
+    //add array
+    vtkSmartPointer< vtkIntArray > depthArray =
+        vtkSmartPointer< vtkIntArray >::New();
+    depthArray->SetNumberOfComponents(1);
+    depthArray->SetName("DepthInformation");
+    depthArray->InsertNextValue(iDepth);
+    depthArray->InsertNextValue(iDepth);
+    depthArray->InsertNextValue(iDepth);
+    m_Container.get< TraceID >().modify( it , add_array_division(depthArray) );
+    }
+
+  if(it->TreeNode.m_Child[0])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
+    UpdateDivisionScalar(childIt,iDepth+1);
+    }
+
+  if(it->TreeNode.m_Child[1])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
+    UpdateDivisionScalar(childIt,iDepth+1);
+    }
 }
 //-------------------------------------------------------------------------

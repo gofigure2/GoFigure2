@@ -295,6 +295,31 @@ ModifyDivisionColor( double* iColor )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+void
+TrackStructure::
+AddDivisionArray( vtkIntArray* iArray )
+{
+  /*
+   * \todo Nicolas-Shouldnt be necessary, missing IsLeaf update??
+   */
+  if(this->TreeNode.Nodes)
+    {
+    this->TreeNode.Nodes->GetPointData()->AddArray(iArray);
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+TrackStructure::
+CreateDivisionNode( vtkPolyData* iNode)
+{
+  this->TreeNode.Nodes = vtkPolyData::New();
+  this->TreeNode.Nodes->DeepCopy( iNode );
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 const bool
 TrackStructure::
 IsRoot() const

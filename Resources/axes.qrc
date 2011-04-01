@@ -37,6 +37,7 @@
         <file>fig/ObjectPicking.png</file>
         <file>fig/ContourEditing.png</file>
         <file>fig/TrackView.png</file>
+        <file>fig/LineageView.png</file>
         <file>fig/synchronize.png</file>
     </qresource>
 </RCC>

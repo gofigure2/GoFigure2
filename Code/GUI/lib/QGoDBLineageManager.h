@@ -110,7 +110,9 @@ public:
    //virtual pure method in QGoDBTraceManager
   virtual std::list< unsigned int > GetListHighlightedIDs();
 
+  /// add a new division (not on OPEN IMAGEING SESSION)
   void UpdateDivisionsColor( unsigned int iLineageID);
+  void UpdateDivisionsScalars( unsigned int iLineageID);
 
   public slots:
 
@@ -119,6 +121,8 @@ public:
   void SetDivisionColor(unsigned int, unsigned int);
 
   void UpdateElementsColors( std::list<unsigned int>);
+
+  void UpdateDivisionsScalars();
 
 protected:
   GoDBTWContainerForLineage      *m_TWContainer;
