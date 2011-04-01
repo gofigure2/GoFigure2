@@ -43,7 +43,7 @@ QGoLineageDockWidget::QGoLineageDockWidget(
 {
   this->setupUi(this);
   QIcon Lineageicon;
-  Lineageicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/TrackView.png") ),
+  Lineageicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/LineageView.png") ),
                       QIcon::Normal, QIcon::Off);
   this->toggleViewAction()->setIcon(Lineageicon);
   this->toggleViewAction()->setToolTip("Lineage View");
