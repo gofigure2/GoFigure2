@@ -507,6 +507,9 @@ protected:
 
   double* setDivisionNodeScalars(const char *iArrayName);
 
+  void SetScalarRangeForAllDivisions(double iMin, double iMax);
+  void SetLookupTableForAllDivisionsColorCoding(vtkLookupTable *iLut);
+
   void ComputeSpeed();
 
 private:

@@ -506,37 +506,11 @@ TrackContainer::ChangeDivisionsColorCode(const char *iColorCode)
     LUT->SetValueRange(1, 1);
     LUT->Build();
 
+    SetScalarRangeForAllDivisions(range[0], range[1]);
+    SetLookupTableForAllDivisionsColorCoding(LUT);
 
-    //SetScalarRangeForAllElements(range[0], range[1]);
-    /*
-     *   typename MultiIndexContainerType::iterator t_it = m_Container.begin();
-
-  while ( t_it != m_Container.end() )
-    {
-    t_it->SetScalarRange(iMin, iMax);
-    ++t_it;
-    }
-     */
-    //SetLookupTableForColorCoding(LUT);
-    /*TraceContainerBase< TContainer >::SetLookupTableForColorCoding(vtkLookupTable *iLut)
-{
-  if ( iLut )
-    {
-    typename MultiIndexContainerType::iterator it = m_Container.begin();
-
-    while ( it != m_Container.end() )
-      {
-      it->SetLookupTable(iLut);
-      ++it;
-      }
-    if ( m_ImageView )
-      {
-      this->m_ImageView->UpdateRenderWindows();
-      }
-    }
-}*/
-
-    //delete[] range;
+    assert ( m_ImageView );
+    this->m_ImageView->UpdateRenderWindows();
     }
   else
     {
@@ -559,6 +533,46 @@ TrackContainer::ChangeDivisionsColorCode(const char *iColorCode)
      */
     }
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+SetScalarRangeForAllDivisions(double iMin, double iMax)
+{
+  MultiIndexContainerType::index< TraceID >::type::iterator
+    it = m_Container.get< TraceID >().begin();
+
+  while ( it != m_Container.get< TraceID >().end() )
+   {
+    if ( !it->IsLeaf() )
+      {
+      it->TreeNode.SetScalarRange(iMin, iMax);
+      }
+   ++it;
+   }
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+SetLookupTableForAllDivisionsColorCoding(vtkLookupTable *iLut)
+{
+  MultiIndexContainerType::index< TraceID >::type::iterator
+    it = m_Container.get< TraceID >().begin();
+
+  while ( it != m_Container.get< TraceID >().end() )
+   {
+    if ( !it->IsLeaf() )
+      {
+      it->TreeNode.SetLookupTable(iLut);
+      }
+   ++it;
+   }
+}
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
