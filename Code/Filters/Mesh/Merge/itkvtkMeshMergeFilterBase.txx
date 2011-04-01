@@ -40,26 +40,26 @@
 
 namespace itk
 {
-template< class TFeature >
-vtkMeshMergeFilterBase< TFeature >::
+template< class TFeature, class TPolyDataContainer >
+vtkMeshMergeFilterBase< TFeature, TPolyDataContainer  >::
 vtkMeshMergeFilterBase() : Superclass()
 {
   this->m_Outputs.resize( 1, NULL );
   this->m_Outputs[0] = vtkPolyData::New();
 }
 
-template< class TFeature >
+template< class TFeature, class TPolyDataContainer >
 void
-vtkMeshMergeFilterBase< TFeature >::
-SetInputs( std::list< vtkPolyData* > iMeshes )
+vtkMeshMergeFilterBase< TFeature, TPolyDataContainer  >::
+SetInputs( const PolyDataContainerType& iMeshes )
 {
   m_Inputs = iMeshes;
   this->Modified();
 }
 
-template< class TFeature >
+template< class TFeature, class TPolyDataContainer >
 vtkPolyData*
-vtkMeshMergeFilterBase< TFeature >::
+vtkMeshMergeFilterBase< TFeature, TPolyDataContainer >::
 GetOutput()
 {
   return this->m_Outputs.front();

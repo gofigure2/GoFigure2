@@ -41,12 +41,12 @@
 
 namespace itk
 {
-template< class TFeatureImage >
+template< class TFeatureImage, class TPolyDataContainer >
 class vtkMeshMergeConvexHullFilter :
-    public vtkMeshMergeFilterBase< TFeatureImage >
+    public vtkMeshMergeFilterBase< TFeatureImage, TPolyDataContainer >
 {
 public:
-  typedef vtkMeshMergeFilterBase< TFeatureImage > Superclass;
+  typedef vtkMeshMergeFilterBase< TFeatureImage, TPolyDataContainer > Superclass;
   typedef vtkMeshMergeConvexHullFilter Self;
   typedef SmartPointer< Self > Pointer;
   typedef SmartPointer< const Self > ConstPointer;

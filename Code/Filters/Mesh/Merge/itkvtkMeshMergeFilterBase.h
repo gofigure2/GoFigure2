@@ -42,7 +42,7 @@ class vtkPolyData;
 
 namespace itk
 {
-template< class TFeatureImage >
+template< class TFeatureImage, class TPolyDataContainer >
 class vtkMeshMergeFilterBase :
     public vtkMeshFilterBase< TFeatureImage >
 {
@@ -52,12 +52,15 @@ public:
   typedef SmartPointer< Self > Pointer;
   typedef SmartPointer< const Self > ConstPointer;
 
+  typedef TPolyDataContainer PolyDataContainerType;
+  typedef typename PolyDataContainerType::value_type PolyDataType;
+
   itkTypeMacro( vtkMeshMergeFilterBase, vtkMeshFilterBase );
 
   typedef typename Superclass::FeatureImageType FeatureImageType;
   typedef typename Superclass::FeatureImagePointer FeatureImagePointer;
 
-  void SetInputs( std::list< vtkPolyData* > iMeshes );
+  void SetInputs( const PolyDataContainerType& iMeshes );
 
   vtkPolyData* GetOutput();
 
@@ -65,7 +68,7 @@ protected:
   vtkMeshMergeFilterBase();
   virtual ~vtkMeshMergeFilterBase() {}
 
-  std::list< vtkPolyData* > m_Inputs;
+  PolyDataContainerType m_Inputs;
 
 private:
   vtkMeshMergeFilterBase( const Self& );
