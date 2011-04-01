@@ -508,30 +508,14 @@ TrackContainer::ChangeDivisionsColorCode(const char *iColorCode)
 
     SetScalarRangeForAllDivisions(range[0], range[1]);
     SetLookupTableForAllDivisionsColorCoding(LUT);
-
-    assert ( m_ImageView );
-    this->m_ImageView->UpdateRenderWindows();
     }
   else
     {
-    //this->RenderAllElementsWithOriginalColors();
-    /*
-     * TraceContainerBase< TContainer >::RenderAllElementsWithOriginalColors()
-{
-  typename MultiIndexContainerType::iterator t_it = m_Container.begin();
+    RenderAllDivisionsWithOriginalColors();
+    }
 
-  while ( t_it != m_Container.end() )
-    {
-    t_it->RenderWithOriginalColors();
-    ++t_it;
-    }
-  if ( m_ImageView )
-    {
-    this->m_ImageView->UpdateRenderWindows();
-    }
-}
-     */
-    }
+  assert ( m_ImageView );
+  this->m_ImageView->UpdateRenderWindows();
 }
 //-------------------------------------------------------------------------
 
@@ -568,6 +552,26 @@ SetLookupTableForAllDivisionsColorCoding(vtkLookupTable *iLut)
     if ( !it->IsLeaf() )
       {
       it->TreeNode.SetLookupTable(iLut);
+      }
+   ++it;
+   }
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+RenderAllDivisionsWithOriginalColors()
+{
+  MultiIndexContainerType::index< TraceID >::type::iterator
+    it = m_Container.get< TraceID >().begin();
+
+  while ( it != m_Container.get< TraceID >().end() )
+   {
+    if ( !it->IsLeaf() )
+      {
+      it->TreeNode.RenderWithOriginalColors();
       }
    ++it;
    }

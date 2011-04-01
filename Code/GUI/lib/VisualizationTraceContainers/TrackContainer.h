@@ -509,6 +509,7 @@ protected:
 
   void SetScalarRangeForAllDivisions(double iMin, double iMax);
   void SetLookupTableForAllDivisionsColorCoding(vtkLookupTable *iLut);
+  void RenderAllDivisionsWithOriginalColors();
 
   void ComputeSpeed();
 
