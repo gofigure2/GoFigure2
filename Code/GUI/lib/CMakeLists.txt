@@ -261,10 +261,6 @@ SET( QGoGUILIB_HDRS
   TraceEditing/QGoAlgorithmWidget.h
   TraceEditing/QGoMeshEditingWidgetManager.h
   TraceEditing/QGoSegmentationAlgo.h
-  TraceEditing/QGoSetOfContoursWaterShedAlgo.h
-  TraceEditing/QGoSetOfContoursLevelSetAlgo.h
-  TraceEditing/QGoSetOfContoursShapeAlgo.h
-  TraceEditing/QGoShapeAlgo.h
 )
 
 IF( BUILD_COMPARETOOL )
