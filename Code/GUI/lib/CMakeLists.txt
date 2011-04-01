@@ -104,13 +104,22 @@ SET( QGoGUILIB_SRC
   TraceEditing/QGoAlgorithmsManagerWidget.cxx
   TraceEditing/QGoAlgorithmWidget.cxx
   TraceEditing/QGoMeshEditingWidgetManager.cxx
-  TraceEditing/QGoMeshAlgo.cxx
+  TraceEditing/QGoSegmentationAlgo.cxx
   TraceEditing/QGoMeshLevelSetAlgo.cxx
   TraceEditing/QGoMeshShapeAlgo.cxx
   TraceEditing/QGoMeshWaterShedAlgo.cxx
+  TraceEditing/QGoMeshSplitDanielssonDistanceAlgo.cxx
+  TraceEditing/QGoWaterShedAlgo.cxx
+  TraceEditing/QGoSetOfContoursWaterShedAlgo.cxx
+  TraceEditing/QGoSetOfContoursLevelSetAlgo.cxx
+  TraceEditing/QGoLevelSetAlgo.cxx
+  TraceEditing/QGoShapeAlgo.cxx
+  TraceEditing/QGoSetOfContoursShapeAlgo.cxx
 
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx
+
+  ${GOFIGURE2_FILTER_SOURCES}
 )
 
 SET_SOURCE_FILES_PROPERTIES(
@@ -251,7 +260,11 @@ SET( QGoGUILIB_HDRS
   TraceEditing/QGoAlgorithmsManagerWidget.h
   TraceEditing/QGoAlgorithmWidget.h
   TraceEditing/QGoMeshEditingWidgetManager.h
-  TraceEditing/QGoMeshAlgo.h
+  TraceEditing/QGoSegmentationAlgo.h
+  TraceEditing/QGoSetOfContoursWaterShedAlgo.h
+  TraceEditing/QGoSetOfContoursLevelSetAlgo.h
+  TraceEditing/QGoSetOfContoursShapeAlgo.h
+  TraceEditing/QGoShapeAlgo.h
 )
 
 IF( BUILD_COMPARETOOL )
@@ -378,10 +391,11 @@ SET( QGoGUI_LIBS
   vtkRenderingAddOn2
   PoissonReconstruction
   ctk
-  ITKIO
-  ITKCommon
-  ITKBasicFilters
-  ITKStatistics
+  ${ITK_LIBRARIES}
+  #ITKIO
+  #ITKCommon
+  #ITKBasicFilters
+  #ITKStatistics
   )
 
 IF( ( ITK_VERSION_MAJOR EQUAL 4 ) AND
@@ -391,7 +405,8 @@ IF( ( ITK_VERSION_MAJOR EQUAL 4 ) AND
 
   SET( QGoGUI_LIBS
     ${QGoGUI_LIBS}
-    ITKReview
+    # ITKReview
+    ${ITK_LIBRARIES}
     )
 
 ENDIF( ( ITK_VERSION_MAJOR EQUAL 4 ) AND

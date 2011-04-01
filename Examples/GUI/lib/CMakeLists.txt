@@ -28,11 +28,11 @@ SET( QGOGUILIB_EXAMPLE_SRC
   QGoDBInitCreateMicroscopePageTest
   QGoColorComboBoxTest
   #QGoTrackEditingWidgetTest
-  QGoTraceEditingWidgetTest
-  QGoAlgorithmsManagerWidgetTest
-  QGoAlgorithmWidgetTest
-  QGoModesManagerWidgetTest
-  QGoMeshEditingWidgetManagerTest
+#  QGoTraceEditingWidgetTest
+#  QGoAlgorithmsManagerWidgetTest
+#  QGoAlgorithmWidgetTest
+#  QGoModesManagerWidgetTest
+#  QGoMeshEditingWidgetManagerTest
 )
 
 IF( BUILD_COMPARETOOL )

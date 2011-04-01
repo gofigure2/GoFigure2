@@ -31,47 +31,49 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __QGoMeshAlgo_h
-#define __QGoMeshAlgo_h
+#include "QGoSetOfContoursWaterShedAlgo.h"
+#include "QGoFilterWatershed.h"
 
-#include "QGoAlgorithmWidget.h"
-#include "QGoGUILibConfigure.h"
-#include "vtkSmartPointer.h"
-#include "vtkPolyData.h"
-#include "vtkImageData.h"
-
-
-/**
-\class QGoMeshAlgo
-\brief abstract class to be the interface between the algorithms for meshes 
-and GoFigure
-*/
-class QGoMeshAlgo:public QObject
+QGoSetOfContoursWaterShedAlgo::QGoSetOfContoursWaterShedAlgo(QWidget* iParent)
+  :QGoWaterShedAlgo(iParent)
 {
-  Q_OBJECT
-public:
-  QGoMeshAlgo(QWidget *iParent = 0);
-  ~QGoMeshAlgo();
+  m_Sampling = new QGoAlgoParameter<int>("Sampling", true, 0, 999, 3);
+  this->m_AlgoWidget->AddParameter(m_Sampling);
+}
+//-------------------------------------------------------------------------
 
-  /**
-  \brief return the algowidget
-  */
-  QGoAlgorithmWidget* GetAlgoWidget();
+//-------------------------------------------------------------------------
+QGoSetOfContoursWaterShedAlgo::~QGoSetOfContoursWaterShedAlgo()
+{
+  this->DeleteParameters();
+  delete m_Sampling;
+}
+//-------------------------------------------------------------------------
 
-  /**
-  \brief return the vtkpolydata created by the algorithm
-  */
-  virtual std::vector<vtkPolyData*> ApplyAlgo(
-    vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
-    int iChannel) = 0;
+//-------------------------------------------------------------------------
+std::vector<vtkPolyData*> QGoSetOfContoursWaterShedAlgo::ApplyAlgo(
+  vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+    int iChannel)
+{
+  std::vector<vtkPolyData*> NewContours = std::vector<vtkPolyData*>();
+  return NewContours;
+}
+//-------------------------------------------------------------------------
 
-protected:
-  QGoAlgorithmWidget*             m_AlgoWidget;
-  
-  /**
-  \brief construct the algowidget with the different parameters
-  */
-  virtual void SetAlgoWidget(QWidget* iParent = 0) = 0;
-};
+//-------------------------------------------------------------------------
+std::vector<std::vector<vtkPolyData*> > QGoSetOfContoursWaterShedAlgo::
+  ApplyAlgoSeveralSeeds( vtkPoints* iSeeds, 
+    std::vector<vtkSmartPointer< vtkImageData > >* iImages, int iChannel)
+{
+  std::vector<std::vector<vtkPolyData*> > NewContours;
+  QGoFilterWatershed WatershedFilter;
+  double *center = new double[3];
 
-#endif
+    NewContours = 
+      WatershedFilter.ApplyFilterSetOf2D(this->m_Radius->GetValue(), 
+      this->m_ThresMin->GetValue(), this->m_ThresMax->GetValue(), 
+      this->m_CorrThres->GetValue(),this->m_Alpha->GetValue(),this->m_Beta->GetValue(),
+      this->m_Sampling->GetValue(), iSeeds, iImages, iChannel );
+ 
+   return NewContours;
+}

@@ -395,7 +395,7 @@ QGoTabImageView3DwT::CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax)
 
   this->m_MeshEditingWidget = new QGoMeshEditingWidgetManager(
     this->m_ChannelNames, iTimeMin, iTimeMax, m_Seeds,
-    &m_InternalImages, &m_TCoord);
+    &m_InternalImages, &m_TCoord, this);
 
   QObject::connect(this->m_MeshEditingWidget,
                    SIGNAL(UpdateSeeds() ),
@@ -422,6 +422,12 @@ QGoTabImageView3DwT::CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax)
                     SIGNAL(MeshesCreatedFromAlgo(std::vector<vtkPolyData *>, int) ),
                     this,
                     SLOT( SaveInDBAndRenderMeshForVisu(std::vector<vtkPolyData *>, int) ) );
+
+  /** \todo connect the signal, reimplement the slot*/
+  /*QObject::connect( this->m_MeshEditingWidget,
+                    SIGNAL(SetOfContoursFromAlgo(std::vector<std::vector<vtkPolyData*> >, int) ),
+                    this,
+                    SLOT( ) ) );*/
 
   QObject::connect( this,
                     SIGNAL( TimePointChanged(int) ),

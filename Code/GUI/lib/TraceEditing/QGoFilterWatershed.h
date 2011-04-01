@@ -72,6 +72,11 @@ public:
     std::vector<vtkSmartPointer< vtkImageData > >* iImages, 
     int iChannel);
 
+  std::vector<std::vector<vtkPolyData*> > ApplyFilterSetOf2D(double iRadius, 
+    int iThresMin, int iThresMax, double iCorrTresh, double iAlpha, 
+    double iBeta,  int iSampling,  vtkPoints* iPoints,
+    std::vector<vtkSmartPointer< vtkImageData > >* iImages, int iChannel);
+
 public slots:
   void setTreshMin(int);
 

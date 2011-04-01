@@ -40,8 +40,8 @@
 
 
 QGoAlgorithmsManagerWidget::QGoAlgorithmsManagerWidget(std::string iModeName,
-  std::vector<QString> iVectChannels, QStringList iListTime, QWidget *iParent )
-  :QWidget(iParent)
+  QWidget *iParent, std::vector<QString> iVectChannels, QStringList iListTime)
+  :QWidget(iParent), m_ChannelComboBox(NULL), m_TimeComboBox(NULL)
 {
   this->m_ModeName = iModeName;
   this->Initialize(iVectChannels, iListTime);
@@ -60,22 +60,27 @@ void QGoAlgorithmsManagerWidget::Initialize(std::vector<QString> iVectChannels,
 {
   this->m_VBoxLayout = new QVBoxLayout;
   QFormLayout* FormLayout = new QFormLayout;
-  this->m_ListTimePoints = iListTime;
- 
-  this->m_ChannelComboBox = new QComboBox(this);
-  std::vector<QString>::iterator iter = iVectChannels.begin();
-  while (iter != iVectChannels.end())
+  if (!iListTime.empty() )
     {
-    this->m_ChannelComboBox->addItem(*iter);
-    ++iter;
+    this->m_ListTimePoints = iListTime;
+    this->m_TimeComboBox = new QComboBox(this);
+    this->m_TimeComboBox->addItems(iListTime);
+    FormLayout->addRow(tr("TSlice:"), this->m_TimeComboBox);
     }
 
-  FormLayout->addRow(tr("Channel:"), this->m_ChannelComboBox);
+  if (!iVectChannels.empty() )
+    {
+    this->m_ChannelComboBox = new QComboBox(this);
+    std::vector<QString>::iterator iter = iVectChannels.begin();
+    while (iter != iVectChannels.end())
+      {
+      this->m_ChannelComboBox->addItem(*iter);
+      ++iter;
+      }
 
-  this->m_TimeComboBox = new QComboBox(this);
-  this->m_TimeComboBox->addItems(iListTime);
-  FormLayout->addRow(tr("TSlice:"), this->m_TimeComboBox);
-
+    FormLayout->addRow(tr("Channel:"), this->m_ChannelComboBox);
+    }
+    
   this->m_MethodComboBox = new QComboBox(this);
   FormLayout->addRow(tr("Method:"), this->m_MethodComboBox);
 
@@ -86,8 +91,9 @@ void QGoAlgorithmsManagerWidget::Initialize(std::vector<QString> iVectChannels,
   QPushButton* ResetButton = new QPushButton(tr("Reset"), this);
   ButtonLayout->addWidget(ApplyButton);
   ButtonLayout->addWidget(ResetButton);
-
+  
   this->m_VBoxLayout->addLayout(FormLayout);
+ 
   this->m_VBoxLayout->addWidget(this->m_MethodWidgets);
   this->m_VBoxLayout->addLayout(ButtonLayout);
   
@@ -143,13 +149,18 @@ void QGoAlgorithmsManagerWidget::SetCurrentChannel(QString iChannel)
 //-------------------------------------------------------------------------
 void QGoAlgorithmsManagerWidget::SetTSliceForClassicView(QString iTimePoint)
 {
-  this->m_TimeComboBox->clear();
-  this->m_TimeComboBox->addItems(this->m_ListTimePoints);
-  this->m_TimeComboBox->setCurrentIndex(
-    this->m_TimeComboBox->findText(iTimePoint) );
-  this->m_TimeComboBox->setEnabled(false);
-  this->m_ChannelComboBox->setEnabled(true);
-  
+  if (this->m_TimeComboBox)
+    {
+    this->m_TimeComboBox->clear();
+    this->m_TimeComboBox->addItems(this->m_ListTimePoints);
+    this->m_TimeComboBox->setCurrentIndex(
+      this->m_TimeComboBox->findText(iTimePoint) );
+    this->m_TimeComboBox->setEnabled(false);
+    }
+  if (this->m_ChannelComboBox)
+    {
+    this->m_ChannelComboBox->setEnabled(true);
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -157,15 +168,21 @@ void QGoAlgorithmsManagerWidget::SetTSliceForClassicView(QString iTimePoint)
 void QGoAlgorithmsManagerWidget::SetTSliceForDopplerView(QStringList iListTimePoints,
   int iIndexChannel)
 {
-  this->m_TimeComboBox->clear();
-  this->m_TimeComboBox->addItems(iListTimePoints);
-  if (iListTimePoints.size() > 0)
+  if (this->m_TimeComboBox)
     {
-    this->m_TimeComboBox->setCurrentIndex(1);
+    this->m_TimeComboBox->clear();
+    this->m_TimeComboBox->addItems(iListTimePoints);
+    if (iListTimePoints.size() > 0)
+      {
+      this->m_TimeComboBox->setCurrentIndex(1);
+      }
+    this->m_TimeComboBox->setEnabled(true);
     }
-  this->m_TimeComboBox->setEnabled(true);
-  this->m_ChannelComboBox->setCurrentIndex(iIndexChannel);
-  this->m_ChannelComboBox->setEnabled(false);
+  if (this->m_ChannelComboBox)
+    {
+    this->m_ChannelComboBox->setCurrentIndex(iIndexChannel);
+    this->m_ChannelComboBox->setEnabled(false);
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -198,6 +215,9 @@ int QGoAlgorithmsManagerWidget::GetSelectedTimePoint()
 {
   return this->m_TimeComboBox->currentText().toInt();
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 /*void QGoAlgorithmsManagerWidget::AddMethod(std::string iNameMethod, 
   QWidget* iParametersWidget, QWidget* iAdvParamWidget)
 {

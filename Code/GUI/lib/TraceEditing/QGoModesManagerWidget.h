@@ -63,8 +63,11 @@ public:
   be added in the combobox.
   \param[in] iModeName name of the mode
   \param[in] iWidget widget that will be displayed when iModeName is selected
+  \param[in] ModeNeedSeeds if true, a signal will be emitted everytime the mode name appear
+  in the combobox
   */
-  void AddWidgetWithModeName (std::string iModeName, QWidget* iWidget= 0);
+  void AddWidgetWithModeName (std::string iModeName, QWidget* iWidget, 
+    bool ModeNeedSeeds);
 
   /**
   \brief add a QGoAlgorithmsManagerWidget and set the default index of this algo widget
@@ -73,7 +76,7 @@ public:
   \param[in] iDefaultIndex default index for the algo widget
   */
   void AddAlgoManagerWidget(QGoAlgorithmsManagerWidget* iAlgoManagerWidget, 
-    int iDefaultIndex = 0);
+    bool ModeNeedSeeds, int iDefaultIndex = 0);
 
   /**
   \brief add the iAlgoWidget directly in the QgoAlgomanager corresponding
@@ -94,7 +97,7 @@ public:
   widget
   \param[in] iWidget widget to be added for the manual mode
   */
-  void AddWidgetForManualMode(QWidget* iWidget);
+  void AddWidgetForManualMode(QWidget* iWidget, bool ModeNeedSeeds);
 
   /**
   \brief return the number of the selected channel
@@ -124,6 +127,7 @@ protected:
   QGoAlgorithmsManagerWidget* m_SemiAutoAlgoManagerWidget;
   QGoAlgorithmsManagerWidget* m_AutoAlgoManagerWidget;
   bool                        m_ModeAlreadyCleaned;
+  QStringList                 m_ModesWhoNeedSeeds;
 
   void Initialize(std::vector<QString> iVectChannels, QStringList iListTimePoints);
 

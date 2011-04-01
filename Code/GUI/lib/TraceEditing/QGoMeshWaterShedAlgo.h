@@ -34,7 +34,7 @@
 #ifndef __QGoMeshWaterShedAlgo_h
 #define __QGoMeshWaterShedAlgo_h
 
-#include "QGoMeshAlgo.h"
+#include "QGoWaterShedAlgo.h"
 #include "QGoAlgorithmWidget.h"
 #include "QGoAlgoParameter.h"
 #include "QGoGUILibConfigure.h"
@@ -48,7 +48,7 @@
 \brief class to be the interface between the watershed algo for meshes 
 and GoFigure
 */
-class QGoMeshWaterShedAlgo: public QGoMeshAlgo
+class QGoMeshWaterShedAlgo: public QGoWaterShedAlgo
 {
 public:
   QGoMeshWaterShedAlgo(QWidget* iParent = 0);
@@ -59,16 +59,6 @@ public:
     int iChannel);
 
 protected:
-
-  QGoAlgoParameter<double>*       m_Radius;
-  QGoAlgoParameter<int>*          m_ThresMin;
-  QGoAlgoParameter<int>*          m_ThresMax;
-  QGoAlgoParameter<double>*       m_CorrThres;
-  QGoAlgoParameter<double>*       m_Alpha;
-  QGoAlgoParameter<double>*       m_Beta;
-
-  
-  void SetAlgoWidget(QWidget* iParent = 0);
 };
 
 #endif

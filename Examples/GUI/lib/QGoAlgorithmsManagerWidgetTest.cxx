@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
   QApplication app(argc, argv);
   QTimer *     timer = new QTimer;
   timer->setSingleShot(true);
-  
+
   QGoAlgorithmsManagerWidget* SemiAutoModeMeshEditingAlgoWidget = new QGoAlgorithmsManagerWidget("SemiAutomatedWidget", NULL);
 
   QGoAlgorithmWidget* LevelSetWidget = new QGoAlgorithmWidget("LevelSet", SemiAutoModeMeshEditingAlgoWidget);
@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
 
   QObject::connect( timer, SIGNAL( timeout() ), SemiAutoModeMeshEditingAlgoWidget, SLOT( close() ) );
 
-  
+
   timer->start(1000);
 
   SemiAutoModeMeshEditingAlgoWidget->show();

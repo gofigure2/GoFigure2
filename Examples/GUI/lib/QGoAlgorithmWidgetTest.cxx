@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
   AlgoWidget->show();
   timer->start(1000);
 
- 
+
   app.processEvents();
   int output = app.exec();
 

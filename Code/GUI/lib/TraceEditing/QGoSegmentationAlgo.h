@@ -31,57 +31,52 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __ContourToMeshFilter_h
-#define __ContourToMeshFilter_h
+#ifndef __QGoSegmentationAlgo_h
+#define __QGoSegmentationAlgo_h
 
-#include "itkLightObject.h"
-#include "itkObjectFactory.h"
+#include "QGoAlgorithmWidget.h"
+#include "QGoGUILibConfigure.h"
+#include "vtkSmartPointer.h"
+#include "vtkPolyData.h"
+#include "vtkImageData.h"
 
-namespace itk
-{
+
 /**
- * \class ContourToMeshFilter
- * \brief Generate a mesh from a set of 2D contours
- * \tparam TContainer Container of Contours (e.g. std::vector< vtkPolyData* >,
- * std::list< vtkPolyData* >, etc. )
- */
-template< class TContainer >
-class ContourToMeshFilter:public LightObject
+\class QGoSegmentationAlgo
+\brief abstract class to be the interface between the algorithms for meshes 
+and contours and GoFigure
+*/
+class QGoSegmentationAlgo:public QObject
 {
+  Q_OBJECT
 public:
-  typedef ContourToMeshFilter        Self;
-  typedef LightObject                Superclass;
-  typedef SmartPointer< Self >       Pointer;
-  typedef SmartPointer< const Self > ConstPointer;
+  QGoSegmentationAlgo(QWidget *iParent = 0);
+  ~QGoSegmentationAlgo();
 
-  /** Method for creation through object factory */
-  itkNewMacro(Self);
+  /**
+  \brief return the algowidget
+  */
+  QGoAlgorithmWidget* GetAlgoWidget();
 
-  /** Run-time type information */
-  itkTypeMacro(ContourToMeshFilter, LightObject);
-
-  typedef TContainer                             ContainerType;
-  typedef typename ContainerType::const_iterator ContainerConstIterator;
-
-  /** \brief Main method: where the mesh is actually calculated. */
-  void ProcessContours(const ContainerType & iContainer);
-
-  /** \brief Get the resulting mesh */
-  vtkPolyData * GetOutput();
+  /**
+  \brief return the vtkpolydata created by the algorithm
+  */
+  virtual std::vector<vtkPolyData*> ApplyAlgo(
+    vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+    int iChannel) = 0;
 
 protected:
-  /** \brief Constructor */
-  ContourToMeshFilter();
+  QGoAlgorithmWidget*             m_AlgoWidget;
+  
+  /**
+  \brief construct the algowidget with the different parameters
+  */
+  virtual void SetAlgoWidget(QWidget* iParent = 0) = 0;
 
-  /** \brief Destructor */
-  ~ContourToMeshFilter();
-
-  vtkPolyData *m_Output;
-
-  vtkIdType m_ThresholdNumberOfPoints;
-  int m_TargetNumberOfPoints;
-
+  /**
+  \brief delete the different parameters
+  */
+  virtual void DeleteParameters() = 0;
 };
-}
-#include "ContourToMeshFilter.txx"
+
 #endif

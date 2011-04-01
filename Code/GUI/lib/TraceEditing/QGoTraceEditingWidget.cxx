@@ -69,14 +69,24 @@ void QGoTraceEditingWidget::Initialize(std::vector<QString> iVectChannels,
 
 //-------------------------------------------------------------------------
 void QGoTraceEditingWidget::AddMode(
-  std::string iModeName, QWidget* iModeWidget)
+  std::string iModeName, QWidget* iModeWidget, bool ModeNeedSeeds)
 {
   QWidget* ModeWidget = new QWidget;
   if (iModeWidget != 0)
     {
     ModeWidget = iModeWidget;
     }
-  this->m_ModeEditingWidget->AddWidgetWithModeName(iModeName, ModeWidget); 
+  this->m_ModeEditingWidget->AddWidgetWithModeName(iModeName, ModeWidget, 
+    ModeNeedSeeds); 
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTraceEditingWidget::AddMode(QGoAlgorithmsManagerWidget* iAlgoModeWidget,
+  bool ModeNeedSeeds)
+{
+  this->m_ModeEditingWidget->AddWidgetWithModeName(iAlgoModeWidget->GetModeName(),
+    iAlgoModeWidget, ModeNeedSeeds);
 }
 //-------------------------------------------------------------------------
 
@@ -123,9 +133,10 @@ void QGoTraceEditingWidget::AddAlgoWidgetForAutomatedMode(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTraceEditingWidget::AddWidgetForManualMode(QWidget* iWidget)
+void QGoTraceEditingWidget::AddWidgetForManualMode(QWidget* iWidget,
+  bool ModeNeedSeeds)
 {
-  this->m_ModeEditingWidget->AddWidgetForManualMode(iWidget);
+  this->m_ModeEditingWidget->AddWidgetForManualMode(iWidget, ModeNeedSeeds);
 }
 //-------------------------------------------------------------------------
 

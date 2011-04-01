@@ -411,3 +411,17 @@ std::vector<vtkPolyData *> QGoFilterShape::ApplyFilter3D(
    delete[] center2;
    return oMeshes;
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::vector<std::vector<vtkPolyData*> > QGoFilterShape::
+  ApplyFilterSetOf2D(double iRadius, 
+    std::string iShape, int iSampling,  vtkPoints* iPoints,
+    std::vector<vtkSmartPointer< vtkImageData > >* iImages, int iChannel)
+{
+  std::vector<std::vector<vtkPolyData*> > oSetOfContours =
+    std::vector<std::vector<vtkPolyData*> >();
+
+
+  return oSetOfContours;
+}

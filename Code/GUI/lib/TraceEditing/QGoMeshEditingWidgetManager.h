@@ -42,6 +42,10 @@
 #include "QGoMeshLevelSetAlgo.h"
 #include "QGoMeshShapeAlgo.h"
 #include "QGoMeshWaterShedAlgo.h"
+#include "QGoSetOfContoursWaterShedAlgo.h"
+#include "QGoSetOfContoursLevelSetAlgo.h"
+#include "QGoSetOfContoursShapeAlgo.h"
+#include "QGoMeshSplitDanielssonDistanceAlgo.h"
 #include <QAction>
 #include <QDockWidget>
 
@@ -98,19 +102,24 @@ signals:
   vizu, return the TSlice selected in the TSlice combobox
   */
   void MeshesCreatedFromAlgo(std::vector<vtkPolyData *> iVectPolydata, int iTCoord);
+  void SetOfContoursFromAlgo(std::vector<std::vector<vtkPolyData*> > iVectVectPolydata, int iTCoord);
 
 protected:
-  QDockWidget*           m_MeshEditingDockWidget;
-  QGoTraceEditingWidget* m_MeshEditingWidget;
- 
+  QDockWidget*                m_MeshEditingDockWidget;
+  QGoTraceEditingWidget*      m_MeshEditingWidget;
+  QGoAlgorithmsManagerWidget* m_SetOfContoursWidget;
   vtkPoints*                                      m_Seeds;
   std::vector< vtkSmartPointer< vtkImageData > >* m_Images;
   int*                                            m_CurrentTimePoint;
 
-  QGoMeshLevelSetAlgo*            m_LevelSetAlgo;
-  QGoMeshShapeAlgo*               m_ShapeAlgo;
-  QGoMeshWaterShedAlgo*           m_WaterShedAlgo;
+  QGoMeshLevelSetAlgo*                            m_LevelSetAlgo;
+  QGoMeshShapeAlgo*                               m_ShapeAlgo;
+  QGoMeshWaterShedAlgo*                           m_WaterShedAlgo;
+  QGoMeshSplitDanielssonDistanceAlgo*             m_DanielAlgo;
 
+  QGoSetOfContoursWaterShedAlgo*                  m_SetOfContoursWaterShedAlgo;
+  QGoSetOfContoursLevelSetAlgo*                   m_SetOfContoursLevelSetAlgo;
+  QGoSetOfContoursShapeAlgo*                      m_SetOfContoursShapeAlgo;
 
   void SetTheMeshWidget(std::vector<QString> iVectChannels, int iTimeMin, 
     int iTimeMax, QWidget* iParent);
@@ -127,6 +136,11 @@ protected:
   */
   void SetSemiAutomatedAlgorithms(QWidget* iParent = 0);
 
+  void SetSetOfContoursAlgorithms(
+   std::vector<QString> iVectChannels, QStringList iListTime, QWidget* iParent = 0);
+
+  void SetSplitMergeMode(QWidget* iParent);
+
   /**
   \brief get the vtkpolydata for the new created meshes by the chosen algo
   */
@@ -137,6 +151,22 @@ protected:
     std::vector<vtkPolyData*> NewMeshes = iAlgo->ApplyAlgo(this->m_Seeds,
       this->m_Images, this->m_MeshEditingWidget->GetChannelNumber() );
     emit MeshesCreatedFromAlgo(NewMeshes, this->GetSelectedTimePoint() );
+    emit ClearAllSeeds();
+    }
+
+  /**
+  \brief get the sets of vtkpolydata for the new created sets of contours
+  by the chosen algo
+  */
+  template<typename T>
+  void GetSetOfPolydatasFromAlgo(T* iAlgo)
+    {
+    emit UpdateSeeds(); 
+    std::vector< std::vector<vtkPolyData*> > NewSetsOfContours = 
+      iAlgo->ApplyAlgoSeveralSeeds(this->m_Seeds, this->m_Images,
+        this->m_MeshEditingWidget->GetChannelNumber() );
+    emit SetOfContoursFromAlgo(NewSetsOfContours , 
+      this->GetSelectedTimePoint() );
     emit ClearAllSeeds();
     }
   
@@ -150,6 +180,10 @@ protected slots:
   void ApplyLevelSetAlgo();
   void ApplyShapeAlgo();
   void ApplyWaterShedAlgo();
+  void ApplyDanielAlgo();
+  void ApplySetOfContoursWaterShedAlgo();
+  void ApplySetOfContoursLevelSetAlgo();
+  void ApplySetOfContoursShapeAlgo();
 
 };
 

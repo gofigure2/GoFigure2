@@ -31,26 +31,79 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "QGoMeshAlgo.h"
 
+#ifndef __itkvtkMeshSplitterFilterBase_h
+#define __itkvtkMeshSplitterFilterBase_h
 
-QGoMeshAlgo::QGoMeshAlgo(QWidget *iParent)
+#include "itkvtkMeshFilterBase.h"
+#include "itkPointSet.h"
+#include "vtkPolyData.h"
+
+#include <vector>
+
+namespace itk
 {
+/**
+  \class vtkMeshSplitterFilterBase
+  \brief
+*/
+template< class TFeatureImage >
+class vtkMeshSplitterFilterBase : public vtkMeshFilterBase< TFeatureImage >
+  {
+public:
+  typedef vtkMeshFilterBase< TFeatureImage > Superclass;
+  typedef vtkMeshSplitterFilterBase Self;
+  typedef SmartPointer< Self > Pointer;
+  typedef SmartPointer< const Self > ConstPointer;
+
+  /** Run-time type information (and related methods). */
+  itkTypeMacro( vtkMeshSplitterFilterBase, vtkMeshFilterBase );
+
+  typedef typename Superclass::FeatureImageType FeatureImageType;
+  typedef typename Superclass::FeatureImagePointer FeatureImagePointer;
+
+  void SetMesh( vtkPolyData* iMesh );
+
+  std::vector< vtkPolyData* > GetOutputs();
+
+protected:
+  /** \brief Constructor */
+  vtkMeshSplitterFilterBase();
+
+  /** \brief Destructor */
+  virtual ~vtkMeshSplitterFilterBase() {}
+
+  vtkPolyData* m_Mesh;
+
+  double m_Bounds[6];
+
+
+  template< class TPoint >
+  bool IsPointInMeshBounds( const TPoint& iP ) const
+    {
+    for( unsigned int i = 0; i < 3; ++i )
+      {
+      double t = static_cast< double >( iP[i] );
+
+      if( ( t < m_Bounds[2*i] ) || ( t > m_Bounds[2*i+1] ) )
+        {
+        return false;
+        }
+      }
+    return true;
+    }
+
+
+  /** \brief Main method to be reimplemented in inherited classes */
+  virtual void Split() = 0;
+
+  virtual void GenerateData();
+
+private:
+  vtkMeshSplitterFilterBase( const Self& );
+  void operator = ( const Self& );
+  };
 }
-//-------------------------------------------------------------------------
 
-//-------------------------------------------------------------------------
-QGoMeshAlgo::~QGoMeshAlgo()
-{
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-QGoAlgorithmWidget* QGoMeshAlgo::GetAlgoWidget()
-{
-  return this->m_AlgoWidget;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-
+#include "itkvtkMeshSplitterFilterBase.txx"
+#endif // __itkvtkMeshSplitterFilterBase_h

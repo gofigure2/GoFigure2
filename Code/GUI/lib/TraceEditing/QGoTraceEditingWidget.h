@@ -60,7 +60,9 @@ public:
   \param[in] iModeName name of the mode corresponding to iModeWidget
   \param[in] iModeWidget Widget corresponding to iModeName
   */
-  void AddMode( std::string iModeName, QWidget* iModeWidget = 0);
+  void AddMode( std::string iModeName, QWidget* iModeWidget, bool ModeNeedSeeds);
+
+  void AddMode(QGoAlgorithmsManagerWidget* iAlgoModeWidget, bool ModeNeedSeeds);
 
   /**
   \brief replace the existing m_ModeEditingWidget with iModeWidget: all the 
@@ -71,7 +73,7 @@ public:
 
   void AddAlgoWidgetForSemiAutomatedMode(QGoAlgorithmWidget* iAlgoWidget);
   void AddAlgoWidgetForAutomatedMode(QGoAlgorithmWidget* iAlgoWidget);
-  void AddWidgetForManualMode(QWidget* iWidget);
+  void AddWidgetForManualMode(QWidget* iWidget, bool ModeNeedSeeds);
 
   int GetChannelNumber();
   int GetSelectedTimePoint();
