@@ -37,7 +37,7 @@
 QGoSetOfContoursWaterShedAlgo::QGoSetOfContoursWaterShedAlgo(vtkPoints* iSeeds, QWidget* iParent)
   :QGoWaterShedAlgo(iSeeds, iParent)
 {
-  m_Sampling = new QGoAlgoParameter<int>("Sampling", true, 0, 999, 3);
+  m_Sampling = new QGoAlgoParameter<int>("Sampling", false, 0, 999, 3);
   this->m_AlgoWidget->AddParameter(m_Sampling);
 }
 //-------------------------------------------------------------------------

@@ -204,11 +204,11 @@ void QGoMeshEditingWidgetManager::SetSetOfContoursAlgorithms(
     new QGoAlgorithmsManagerWidget("Set of Contours",
     iParent, iVectChannels, iListTime);
 
-  /*this->m_SetOfContoursWaterShedAlgo = 
+  this->m_SetOfContoursWaterShedAlgo = 
     new QGoSetOfContoursWaterShedAlgo(this->m_Seeds, iParent);
   QGoAlgorithmWidget* SetOfContoursWaterShedWidget = 
     this->m_SetOfContoursWaterShedAlgo->GetAlgoWidget();
-  this->m_SetOfContoursWidget->AddMethod(SetOfContoursWaterShedWidget);*/
+  this->m_SetOfContoursWidget->AddMethod(SetOfContoursWaterShedWidget);
 
   this->m_SetOfContoursLevelSetAlgo = 
     new QGoSetOfContoursLevelSetAlgo(this->m_Seeds, iParent);
@@ -224,8 +224,8 @@ void QGoMeshEditingWidgetManager::SetSetOfContoursAlgorithms(
 
   this->m_MeshEditingWidget->AddMode(m_SetOfContoursWidget, true);
 
-  //QObject::connect(SetOfContoursWaterShedWidget, SIGNAL(ApplyAlgo() ),
-  //  this, SLOT(ApplySetOfContoursWaterShedAlgo() ) );
+  QObject::connect(SetOfContoursWaterShedWidget, SIGNAL(ApplyAlgo() ),
+    this, SLOT(ApplySetOfContoursWaterShedAlgo() ) );
 
   QObject::connect(SetOfContoursLevelSetWidget, SIGNAL(ApplyAlgo() ),
     this, SLOT(ApplySetOfContoursLevelSetAlgo() ) );
