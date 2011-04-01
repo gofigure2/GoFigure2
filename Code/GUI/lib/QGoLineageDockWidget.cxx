@@ -72,7 +72,7 @@ QGoLineageDockWidget::ColorCodeLineagesByTime(bool iChecked)
 {
   if ( iChecked )
     {
-    emit ChangeDivisionsColorCode("TemporalInformation");
+    //emit ChangeDivisionsColorCode("TemporalInformation");
     }
 }
 
