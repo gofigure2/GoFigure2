@@ -62,7 +62,8 @@
 TrackContainer::TrackContainer(QObject *iParent, QGoImageView3D *iView) : Superclass(iParent, iView)
 {
   m_TimeInterval = 0;
-  m_ActiveScalars.append("Original");
+  m_ActiveTrackScalars.append("Original");
+  m_ActiveDivisionScalars.append("Original");
 }
 
 //-------------------------------------------------------------------------
@@ -449,13 +450,13 @@ TrackContainer::UpdateElementVisibilityWithGivenTraceIDs(const QStringList & iLi
 void
 TrackContainer::ChangeColorCode(const char *iColorCode)
 {
-  m_ActiveScalars.clear();
-  m_ActiveScalars.append(iColorCode);
+  m_ActiveTrackScalars.clear();
+  m_ActiveTrackScalars.append(iColorCode);
 
-  if ( m_ActiveScalars.compare("Original") )
+  if ( m_ActiveTrackScalars.compare("Original") )
     {
     // get range for the tracks
-    double *range = setNodeScalars(iColorCode);
+    double *range = setTrackNodeScalars(iColorCode);
 
     // associated LUT
     vtkSmartPointer< vtkLookupTable > LUT = vtkSmartPointer< vtkLookupTable >::New();
@@ -482,13 +483,83 @@ TrackContainer::ChangeColorCode(const char *iColorCode)
 void
 TrackContainer::ChangeDivisionsColorCode(const char *iColorCode)
 {
-std::cout<< "change divisions color code received" << std::endl;
+  m_ActiveDivisionScalars.clear();
+  m_ActiveDivisionScalars.append(iColorCode);
+
+  if ( m_ActiveTrackScalars.compare("Original") )
+    {
+    // get range for the division
+    double *range = setDivisionNodeScalars(iColorCode);
+
+    std::cout<<"range: " << range[0] << " to " << range[1] << std::endl;
+
+    // associated LUT
+    vtkSmartPointer< vtkLookupTable > LUT = vtkSmartPointer< vtkLookupTable >::New();
+    LUT->SetTableRange(range);
+    LUT->SetNumberOfTableValues(1024);
+    LUT->SetHueRange(0, 0.7);
+    LUT->SetSaturationRange(1, 1);
+    LUT->SetValueRange(1, 1);
+    LUT->Build();
+
+
+    //SetScalarRangeForAllElements(range[0], range[1]);
+    /*
+     *   typename MultiIndexContainerType::iterator t_it = m_Container.begin();
+
+  while ( t_it != m_Container.end() )
+    {
+    t_it->SetScalarRange(iMin, iMax);
+    ++t_it;
+    }
+     */
+    //SetLookupTableForColorCoding(LUT);
+    /*TraceContainerBase< TContainer >::SetLookupTableForColorCoding(vtkLookupTable *iLut)
+{
+  if ( iLut )
+    {
+    typename MultiIndexContainerType::iterator it = m_Container.begin();
+
+    while ( it != m_Container.end() )
+      {
+      it->SetLookupTable(iLut);
+      ++it;
+      }
+    if ( m_ImageView )
+      {
+      this->m_ImageView->UpdateRenderWindows();
+      }
+    }
+}*/
+
+    //delete[] range;
+    }
+  else
+    {
+    //this->RenderAllElementsWithOriginalColors();
+    /*
+     * TraceContainerBase< TContainer >::RenderAllElementsWithOriginalColors()
+{
+  typename MultiIndexContainerType::iterator t_it = m_Container.begin();
+
+  while ( t_it != m_Container.end() )
+    {
+    t_it->RenderWithOriginalColors();
+    ++t_it;
+    }
+  if ( m_ImageView )
+    {
+    this->m_ImageView->UpdateRenderWindows();
+    }
+}
+     */
+    }
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 double *
-TrackContainer::setNodeScalars(const char *iArrayName)
+TrackContainer::setTrackNodeScalars(const char *iArrayName)
 {
   double *range =  new double[2];
 
@@ -510,6 +581,40 @@ TrackContainer::setNodeScalars(const char *iArrayName)
 
       //set active scalar
       it->Nodes->GetPointData()->SetActiveScalars(iArrayName);
+      }
+
+    ++it;
+    }
+
+  return range;
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+double *
+TrackContainer::setDivisionNodeScalars(const char *iArrayName)
+{
+  double *range =  new double[2];
+
+  range[0] = std::numeric_limits< double >::max();
+  range[1] = std::numeric_limits< double >::min();
+
+  MultiIndexContainerType::index< TraceID >::type::iterator
+    it = m_Container.get< TraceID >().begin();
+
+  while ( it != m_Container.get< TraceID >().end() )
+    {
+    // does the division have a polydata
+    if ( !it->IsLeaf() )
+      {
+      double *realTime =
+        it->TreeNode.Nodes->GetPointData()->GetArray(iArrayName)->GetRange();
+      range[0] = std::min(range[0], realTime[0]);
+      range[1] = std::max(range[1], realTime[1]);
+
+      //set active scalar
+      it->TreeNode.Nodes->GetPointData()->SetActiveScalars(iArrayName);
       }
 
     ++it;
@@ -559,7 +664,7 @@ TrackContainer::UpdateTracksRepresentation(double iRadius, double iRadius2)
 
   // update color since active scalar is set to NULL in
   // UpdateTrackStructurePolyData
-  QByteArray  bytes  = m_ActiveScalars.toAscii();
+  QByteArray  bytes  = m_ActiveTrackScalars.toAscii();
   const char *ptr    = bytes.data();
   ChangeColorCode(ptr);
 

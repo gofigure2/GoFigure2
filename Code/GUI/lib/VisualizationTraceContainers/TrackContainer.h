@@ -503,13 +503,16 @@ protected:
    * \param[in] iArrayName Array to be displayed
    * \return Pointer to double[2] where [0] is the min scalar value and [1] is
    * the max scalar value. Pointer has to be deleted (delete[] pointer) */
-  double* setNodeScalars(const char *iArrayName);
+  double* setTrackNodeScalars(const char *iArrayName);
+
+  double* setDivisionNodeScalars(const char *iArrayName);
 
   void ComputeSpeed();
 
 private:
   int m_TimeInterval;
-  QString m_ActiveScalars;
+  QString m_ActiveTrackScalars;
+  QString m_ActiveDivisionScalars;
 
   Q_DISABLE_COPY(TrackContainer);
 };
