@@ -105,6 +105,9 @@
 // track dockwidget
 #include "QGoTrackDockWidget.h"
 
+// lineage dockwidget
+#include "QGoLineageDockWidget.h"
+
 //trackediting dw
 #include "QGoTrackEditingWidget.h"
 
@@ -198,6 +201,14 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
                     m_TrackContainer,
                     SLOT( UpdateTracksRepresentation(double, double) ) );
 
+  // track dock widget
+  m_LineageDockWidget = new QGoLineageDockWidget(this);
+
+  QObject::connect( m_LineageDockWidget,
+                    SIGNAL( ChangeDivisionsColorCode(const char *) ),
+                    m_TrackContainer,
+                    SLOT( ChangeDivisionsColorCode(const char *) ) );
+
   CreateDataBaseTablesConnection();
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
@@ -243,6 +254,12 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
       new QGoDockWidgetStatus(this->m_TrackDockWidget,
                               Qt::LeftDockWidgetArea, false, true),
       this->m_TrackDockWidget) );
+
+  m_DockWidgetList.push_back(
+    std::pair< QGoDockWidgetStatus *, QDockWidget * >(
+      new QGoDockWidgetStatus(this->m_LineageDockWidget,
+                              Qt::LeftDockWidgetArea, false, true),
+      this->m_LineageDockWidget) );
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
   m_DockWidgetList.push_back(
@@ -994,6 +1011,9 @@ QGoTabImageView3DwT::CreateAllViewActions()
 
   // Track Color Coding
   this->m_ViewActions.push_back( m_TrackDockWidget->toggleViewAction() );
+
+  // Lineage Color Coding
+  this->m_ViewActions.push_back( m_LineageDockWidget->toggleViewAction() );
 
   QAction *separator9 = new QAction(this);
   separator9->setSeparator(true);

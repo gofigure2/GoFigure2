@@ -476,6 +476,15 @@ TrackContainer::ChangeColorCode(const char *iColorCode)
     this->RenderAllElementsWithOriginalColors();
     }
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::ChangeDivisionsColorCode(const char *iColorCode)
+{
+std::cout<< "change divisions color code received" << std::endl;
+}
+//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 double *

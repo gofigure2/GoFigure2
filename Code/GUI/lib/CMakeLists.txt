@@ -99,6 +99,10 @@ SET( QGoGUILIB_SRC
   # for the tracks
   QGoTrackDockWidget.cxx
   QGoTrackEditingWidget.cxx
+  
+  #for the lineages
+  QGoLineageDockWidget.cxx
+  
   QGoTraceEditingWidget.cxx
   QGoModeEditingWidget.cxx
   QGoAdvancedParametersWidget.cxx

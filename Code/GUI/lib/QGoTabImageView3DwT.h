@@ -61,6 +61,9 @@ class QGoMeshSegmentationBaseDockWidget;
 //track dockwidget
 class QGoTrackDockWidget;
 
+//lineage dock widget
+class QGoLineageDockWidget;
+
 class QGoImageView3D;
 class QGoNavigationDockWidget;
 class QGoPrintDatabase;
@@ -378,6 +381,8 @@ protected:
   QGoMeshSegmentationBaseDockWidget *m_MeshSegmentationDockWidget;
 
   QGoTrackDockWidget* m_TrackDockWidget;
+
+  QGoLineageDockWidget* m_LineageDockWidget;
 
   vtkPoints *m_Seeds;
 

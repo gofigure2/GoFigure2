@@ -437,6 +437,8 @@ public slots:
   \param[in] iColorCode Display Time Color Code (true) or Real Color (false) */
   void ChangeColorCode( const char* iColorCode);
 
+  void ChangeDivisionsColorCode( const char* iColorCode );
+
   void UpdateTracksRepresentation( double iRadius,double iRadius2);
 
   void HighlightCollection(unsigned int, bool);

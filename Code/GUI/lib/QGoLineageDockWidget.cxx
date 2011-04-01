@@ -43,7 +43,7 @@ QGoLineageDockWidget::QGoLineageDockWidget(
 {
   this->setupUi(this);
   QIcon Lineageicon;
-  Lineageicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/LineageView.png") ),
+  Lineageicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/TrackView.png") ),
                       QIcon::Normal, QIcon::Off);
   this->toggleViewAction()->setIcon(Lineageicon);
   this->toggleViewAction()->setToolTip("Lineage View");
@@ -149,7 +149,7 @@ QGoLineageDockWidget::ColorCodeLineagesByTime(bool iChecked)
 {
   if ( iChecked )
     {
-    emit ChangeColorCode("TemporalInformation");
+    emit ChangeDivisionsColorCode("TemporalInformation");
     }
 }
 
@@ -161,7 +161,7 @@ QGoLineageDockWidget::ColorCodeLineagesBySpeed(bool iChecked)
 {
   if ( iChecked )
     {
-    emit ChangeColorCode("SpeedInformation");
+    emit ChangeDivisionsColorCode("SpeedInformation");
     }
 }
 
@@ -173,7 +173,7 @@ QGoLineageDockWidget::ColorCodeLineagesByOriginalColor(bool iChecked)
 {
   if ( iChecked )
     {
-    emit ChangeColorCode("Original");
+    emit ChangeDivisionsColorCode("Original");
     }
 }
 

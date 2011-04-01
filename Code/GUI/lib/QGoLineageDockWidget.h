@@ -58,7 +58,7 @@ public slots:
   void ColorCodeLineagesByOriginalColor(bool);
 signals:
   void UpdateLineagesRepresentation(double, double);
-  void ChangeColorCode( const char* );
+  void ChangeDivisionsColorCode( const char* );
 
 };
 #endif
