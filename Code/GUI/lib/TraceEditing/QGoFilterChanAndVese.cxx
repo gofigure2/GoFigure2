@@ -185,7 +185,7 @@ QGoFilterChanAndVese::Filter2D(double *iCenter, const int & iOrientation)
 
   pt[0] = center[0];
   pt[1] = center[1];
-  pt[2] = center[2];
+  //pt[2] = center[2];
   filter->SetCenter(pt);
 
   filter->SetRadius( getRadius() );
