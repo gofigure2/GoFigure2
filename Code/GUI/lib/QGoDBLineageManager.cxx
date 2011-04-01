@@ -363,3 +363,14 @@ UpdateDivisionsScalars()
   emit DBConnectionNotNeededAnymore();
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoDBLineageManager::
+UpdateDivisionsScalars( unsigned int iLineageID )
+{
+  unsigned int root =
+      this->m_LineageContainerInfoForVisu->GetLineageTrackRootID(iLineageID);
+  m_TrackContainerInfoForVisu->UpdateCollectionScalars( root );
+}
+//-------------------------------------------------------------------------
