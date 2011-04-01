@@ -1180,3 +1180,52 @@ UpdateDivisionColor(unsigned int iTrackID, double* iColor)
   m_ImageView->UpdateRenderWindows();
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateCollectionScalars( unsigned int iTrackID)
+{
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iTrackID);
+
+  UpdateDivisionScalar(motherIt, 0); // 0=depth of the root
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateDivisionScalar(MultiIndexContainerTraceIDIterator& it, unsigned int iDepth)
+{
+  if( !it->IsLeaf() )
+    {
+    std::cout << "depth: " << iDepth << std::endl;
+    //add array
+    vtkSmartPointer< vtkIntArray > depthArray =
+        vtkSmartPointer< vtkIntArray >::New();
+    depthArray->SetNumberOfComponents(1);
+    depthArray->SetName("DepthInformation");
+    depthArray->InsertNextValue(iDepth);
+    depthArray->InsertNextValue(iDepth);
+    depthArray->InsertNextValue(iDepth);
+    m_Container.get< TraceID >().modify( it , add_array_division(depthArray) );
+    }
+
+  if(it->TreeNode.m_Child[0])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
+    UpdateDivisionScalar(childIt,iDepth+1);
+    }
+
+  if(it->TreeNode.m_Child[1])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
+    UpdateDivisionScalar(childIt,iDepth+1);
+    }
+}
+//-------------------------------------------------------------------------

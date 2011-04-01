@@ -295,6 +295,15 @@ ModifyDivisionColor( double* iColor )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+void
+TrackStructure::
+AddDivisionArray( vtkIntArray* iArray )
+{
+  this->TreeNode.Nodes->GetPointData()->AddArray(iArray);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 const bool
 TrackStructure::
 IsRoot() const

@@ -49,6 +49,8 @@
 #include "StructureHelper.h"
 #endif
 
+class vtkIntArray;
+
 /**
 \defgroup Track Track
 */
@@ -146,6 +148,8 @@ public:
   void ModifyDivisionVisibility( bool iVisibility );
   void ModifyDivisionHighlight(  vtkProperty* iProperty, bool iHighlight );
   void ModifyDivisionColor( double* iColor );
+
+  void AddDivisionArray( vtkIntArray* iArray );
 
   const bool IsRoot() const;
   const bool IsLeaf() const;

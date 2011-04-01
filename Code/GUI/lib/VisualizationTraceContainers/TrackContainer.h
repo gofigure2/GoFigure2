@@ -108,6 +108,21 @@ private:
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
+struct add_array_division
+{
+  add_array_division(vtkIntArray* iArray):array(iArray){}
+
+  void operator()(TrackStructure& iStructure)
+  {
+    iStructure.AddDivisionArray(array);
+  }
+
+private:
+  vtkIntArray* array;
+};
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
 
 namespace boost
 {
@@ -391,6 +406,10 @@ public:
 
   void UpdateDivisionColor(unsigned int iTrackID, double* iColor);
 
+  void UpdateCollectionScalars( unsigned int iTrackID);
+  void UpdateDivisionScalar(
+      MultiIndexContainerTraceIDIterator& iMotherIterator, unsigned int iDepth);
+
 
 signals:
   /** \brief When one track has been picked (highlighted) from the visualization */
@@ -412,7 +431,7 @@ signals:
   void UpdateLineageHighlighting(unsigned int);
   void GetCollectionIDForHighlgiht(unsigned int);
   void GetDivisionColor(unsigned int, unsigned int);
-  void UpdateCollectionsColors( std::list<unsigned int>);
+  void UpdateCollectionsColors( std::list<unsigned int> );
 
 public slots:
 

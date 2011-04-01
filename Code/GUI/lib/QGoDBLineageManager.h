@@ -120,6 +120,8 @@ public:
 
   void UpdateElementsColors( std::list<unsigned int>);
 
+  void UpdateDivisionsScalars();
+
 protected:
   GoDBTWContainerForLineage      *m_TWContainer;
   LineageContainer               *m_LineageContainerInfoForVisu;
