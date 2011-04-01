@@ -151,6 +151,8 @@ public:
 
   void AddDivisionArray( vtkIntArray* iArray );
 
+  void CreateDivisionNode( vtkPolyData* iNode);
+
   const bool IsRoot() const;
   const bool IsLeaf() const;
 };

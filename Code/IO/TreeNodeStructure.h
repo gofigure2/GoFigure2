@@ -92,6 +92,11 @@ public:
       ActorXYZ->Delete();
       ActorXYZ = NULL;
       }
+    if(Nodes)
+      {
+      Nodes->Delete();
+      Nodes = NULL;
+      }
     }
 
   T* m_Mother;

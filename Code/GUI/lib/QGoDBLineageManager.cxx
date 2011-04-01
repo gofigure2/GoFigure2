@@ -360,39 +360,6 @@ UpdateDivisionsScalars()
     m_TrackContainerInfoForVisu->UpdateCollectionScalars( *it );
     ++it;
     }
- /* std::list<unsigned int> ListTrackIDs =
-    this->m_CollectionOfTraces->GetTrackFamilyDataFromDB(this->m_DatabaseConnector);
-
-  std::list<unsigned int>::iterator it = ListTrackIDs.begin();
-  std::list<unsigned int> motherIDs;
-  while( it != ListTrackIDs.end() )
-  {
-    motherIDs.push_back(*it);
-    ++it;
-    ++it;
-    ++it;
-  }
-
-  //std::list< unsigned int > lineageIDList =
-  //   this->m_CollectionOfTraces->GetListCollectionIDs( this->m_DatabaseConnector, motherIDs, true, false);
-
-  //std::list< unsigned int >::iterator itLineage = lineageIDList.begin();
-  std::list< unsigned int >::iterator itTrack = motherIDs.begin();*/
-  /*
-   * \todo Nicolas-enhance efficiency NO LIST!!
-   *//*
-  while( itTrack != motherIDs.end() )
-  {
-    std::list<unsigned int> trackList;
-    trackList.push_back(*itTrack);
-    //get lineage ID
-    std::list< unsigned int > lineageIDList =
-        this->m_CollectionOfTraces->GetListCollectionIDs( this->m_DatabaseConnector, trackList);
-    emit GetDivisionColor(lineageIDList.front(), *itTrack);
-    //++itLineage;
-    ++itTrack;
-  }
-*/
   emit DBConnectionNotNeededAnymore();
 }
 //-------------------------------------------------------------------------

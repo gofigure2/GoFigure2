@@ -643,9 +643,11 @@ AddDivision( unsigned int iMotherID, unsigned int iDaughter1ID,
   TrackStructure* mother = const_cast<TrackStructure*>(&(*motherIt));
   mother->TreeNode.m_Child[0] = const_cast<TrackStructure*>(&(*daughter1It));
   mother->TreeNode.m_Child[1] = const_cast<TrackStructure*>(&(*daughter2It));
+  // Create Polydata
+  CreateDivisionPolydata(iMotherID, iDaughter1ID, iDaughter2ID);
   // Create Actor
   std::vector< vtkActor * > actors =
-      CreateDivisionActor(iMotherID, iDaughter1ID, iDaughter2ID, iVisible);
+      CreateDivisionActor(mother->TreeNode.Nodes, iVisible);
   mother->TreeNode.ActorXY = actors[0];
   mother->TreeNode.ActorXZ = actors[1];
   mother->TreeNode.ActorYZ = actors[2];
@@ -665,11 +667,9 @@ AddDivision( unsigned int iMotherID, unsigned int iDaughter1ID,
   this->m_ImageView->UpdateRenderWindows();
 }
 //-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-std::vector<vtkActor* >
+void
 TrackContainer::
-CreateDivisionActor( unsigned int iMother, unsigned int iDaughter1, unsigned int iDaughter2, bool iVisible)
+CreateDivisionPolydata(unsigned int iMother, unsigned int iDaughter1, unsigned int iDaughter2)
 {
   // Arnaud: what about if any of the parameter is NULL?
   // Arnaud: what about if one daughter is in the field of view,
@@ -718,6 +718,18 @@ CreateDivisionActor( unsigned int iMother, unsigned int iDaughter1, unsigned int
 
   division->GetFieldData()->AddArray(trackIDArray);
 
+  // update structure
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iMother);
+  m_Container.get< TraceID >().modify( motherIt , create_node_division(division) );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::vector<vtkActor* >
+TrackContainer::
+CreateDivisionActor(vtkPolyData* iPolyData, bool iVisible)
+{
   /*
    * \todo Nicolas: Which color should it be? White as of now
    */
@@ -734,7 +746,7 @@ CreateDivisionActor( unsigned int iMother, unsigned int iDaughter1, unsigned int
   trace_property->SetOpacity(a);
 
   std::vector< vtkActor * > divisionActors =
-      this->m_ImageView->AddContour( division, trace_property );
+      this->m_ImageView->AddContour( iPolyData, trace_property );
 
   // add it to visu??
   if( iVisible )

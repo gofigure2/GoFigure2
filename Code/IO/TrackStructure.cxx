@@ -304,6 +304,16 @@ AddDivisionArray( vtkIntArray* iArray )
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+void
+TrackStructure::
+CreateDivisionNode( vtkPolyData* iNode)
+{
+  this->TreeNode.Nodes = vtkPolyData::New();
+  this->TreeNode.Nodes->DeepCopy( iNode );
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 const bool
 TrackStructure::
 IsRoot() const

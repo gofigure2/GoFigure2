@@ -123,6 +123,21 @@ private:
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
+struct create_node_division
+{
+  create_node_division(vtkPolyData* iNode):node(iNode){}
+
+  void operator()(TrackStructure& iStructure)
+  {
+    iStructure.CreateDivisionNode(node);
+  }
+
+private:
+  vtkPolyData* node;
+};
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
 
 namespace boost
 {
@@ -386,8 +401,10 @@ public:
    * \param[in] iDaughter2ID ID of the daughter2 of the division
    * \return vector of 4 actors (1 for each view) representing the division
    */
-  std::vector<vtkActor* > CreateDivisionActor( unsigned int iMother, unsigned int iDaughter1,
-      unsigned int iDaughter2, bool iVisible = true);
+  std::vector<vtkActor* > CreateDivisionActor( vtkPolyData* iPolyData, bool iVisible = true);
+
+  void CreateDivisionPolydata( unsigned int iMother, unsigned int iDaughter1,
+      unsigned int iDaughter2);
 
   /*
    * \brief Cut the lineage after the given track ID. Modifies mother child pointers to NULL.
