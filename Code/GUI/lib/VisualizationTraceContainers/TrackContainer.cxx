@@ -483,10 +483,14 @@ TrackContainer::ChangeColorCode(const char *iColorCode)
 void
 TrackContainer::ChangeDivisionsColorCode(const char *iColorCode)
 {
+  std::cout<<" received signal "<< std::endl;
+
   m_ActiveDivisionScalars.clear();
   m_ActiveDivisionScalars.append(iColorCode);
 
-  if ( m_ActiveTrackScalars.compare("Original") )
+  std::cout<<" compare:  " << m_ActiveDivisionScalars.compare("Original") << std::endl;
+
+  if ( m_ActiveDivisionScalars.compare("Original") )
     {
     // get range for the division
     double *range = setDivisionNodeScalars(iColorCode);
