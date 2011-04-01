@@ -44,6 +44,7 @@
 #endif
 
 #include "vtkActor.h"
+#include "vtkPolyData.h"
 
 /**
  * \struct TreeNodeStructure
