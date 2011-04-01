@@ -31,36 +31,41 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "QGoMeshLevelSetAlgo.h"
-#include "QGoFilterChanAndVese.h"
+#ifndef __QGoShapeAlgo_h
+#define __QGoShapeAlgo_h
+
+#include "QGoSegmentationAlgo.h"
+#include "QGoAlgorithmWidget.h"
+#include "QGoAlgoParameter.h"
+#include "QGoGUILibConfigure.h"
+#include "vtkSmartPointer.h"
+#include "vtkPolyData.h"
+#include "vtkImageData.h"
 
 
-QGoMeshLevelSetAlgo::QGoMeshLevelSetAlgo(QWidget* iParent)
-  :QGoLevelSetAlgo(iParent)
+/**
+\class QGoShapeAlgo
+\brief class to be the interface between the shape algo for meshes,
+contours and set of contours and GoFigure
+*/
+class QGoShapeAlgo: public QGoSegmentationAlgo
 {
-}
-//-------------------------------------------------------------------------
+public:
+  QGoShapeAlgo(QWidget* iParent = 0);
+  ~QGoShapeAlgo();
 
-//-------------------------------------------------------------------------
-QGoMeshLevelSetAlgo::~QGoMeshLevelSetAlgo()
-{
-}
-//-------------------------------------------------------------------------
+  virtual std::vector<vtkPolyData*> ApplyAlgo(
+    vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+    int iChannel) = 0;
 
-//-------------------------------------------------------------------------
-std::vector<vtkPolyData*> QGoMeshLevelSetAlgo::ApplyAlgo(
-  vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
-    int iChannel)
-{
-  QGoFilterChanAndVese LevelSetFilter;
+protected:
 
-  std::vector<vtkPolyData*> NewMeshes = 
-    LevelSetFilter.ApplyFilterLevelSet3D(m_Radius->GetValue(), 
-    iSeeds, m_Iterations->GetValue(),
-    m_Curvature->GetValue(), iImages, iChannel);
- 
-  return NewMeshes;
-}
-//-------------------------------------------------------------------------
+  QGoAlgoParameter<double>*       m_Radius;
+  QGoAlgoParameter<std::string>*  m_Shape;
 
-//-------------------------------------------------------------------------
+  virtual void SetAlgoWidget(QWidget* iParent = 0);
+
+  void DeleteParameters();
+};
+
+#endif

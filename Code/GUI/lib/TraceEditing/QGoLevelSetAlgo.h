@@ -52,7 +52,7 @@ class QGoLevelSetAlgo: public QGoSegmentationAlgo
 {
 public:
   QGoLevelSetAlgo(QWidget* iParent = 0);
-  ~QGoLevelSetAlgo();
+  virtual ~QGoLevelSetAlgo();
 
   virtual std::vector<vtkPolyData*> ApplyAlgo(
     vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,

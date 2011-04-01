@@ -44,6 +44,7 @@
 #include "QGoMeshWaterShedAlgo.h"
 #include "QGoSetOfContoursWaterShedAlgo.h"
 #include "QGoSetOfContoursLevelSetAlgo.h"
+#include "QGoSetOfContoursShapeAlgo.h"
 #include "QGoMeshSplitDanielssonDistanceAlgo.h"
 #include <QAction>
 #include <QDockWidget>
@@ -118,6 +119,7 @@ protected:
 
   QGoSetOfContoursWaterShedAlgo*                  m_SetOfContoursWaterShedAlgo;
   QGoSetOfContoursLevelSetAlgo*                   m_SetOfContoursLevelSetAlgo;
+  QGoSetOfContoursShapeAlgo*                      m_SetOfContoursShapeAlgo;
 
   void SetTheMeshWidget(std::vector<QString> iVectChannels, int iTimeMin, 
     int iTimeMax, QWidget* iParent);
@@ -181,6 +183,7 @@ protected slots:
   void ApplyDanielAlgo();
   void ApplySetOfContoursWaterShedAlgo();
   void ApplySetOfContoursLevelSetAlgo();
+  void ApplySetOfContoursShapeAlgo();
 
 };
 

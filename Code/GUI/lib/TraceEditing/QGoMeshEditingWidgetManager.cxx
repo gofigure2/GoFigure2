@@ -216,6 +216,12 @@ void QGoMeshEditingWidgetManager::SetSetOfContoursAlgorithms(
     this->m_SetOfContoursLevelSetAlgo->GetAlgoWidget();
   this->m_SetOfContoursWidget->AddMethod(SetOfContoursLevelSetWidget);
 
+  this->m_SetOfContoursShapeAlgo = 
+    new QGoSetOfContoursShapeAlgo(iParent);
+  QGoAlgorithmWidget* SetOfContoursShapeWidget = 
+    this->m_SetOfContoursShapeAlgo->GetAlgoWidget();
+  this->m_SetOfContoursWidget->AddMethod(SetOfContoursShapeWidget);
+
   this->m_MeshEditingWidget->AddMode(m_SetOfContoursWidget, true);
 
   QObject::connect(SetOfContoursWaterShedWidget, SIGNAL(ApplyAlgo() ),
@@ -223,6 +229,9 @@ void QGoMeshEditingWidgetManager::SetSetOfContoursAlgorithms(
 
   QObject::connect(SetOfContoursLevelSetWidget, SIGNAL(ApplyAlgo() ),
     this, SLOT(ApplySetOfContoursLevelSetAlgo() ) );
+
+  QObject::connect(SetOfContoursShapeWidget, SIGNAL(ApplyAlgo() ),
+    this, SLOT(ApplySetOfContoursShapeAlgo() ) );
 
 
 }
@@ -290,4 +299,12 @@ void QGoMeshEditingWidgetManager::ApplySetOfContoursLevelSetAlgo()
 {
   this->GetSetOfPolydatasFromAlgo<QGoSetOfContoursLevelSetAlgo>(
     this->m_SetOfContoursLevelSetAlgo);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoMeshEditingWidgetManager::ApplySetOfContoursShapeAlgo()
+{
+  this->GetSetOfPolydatasFromAlgo<QGoSetOfContoursShapeAlgo>(
+    this->m_SetOfContoursShapeAlgo);
 }

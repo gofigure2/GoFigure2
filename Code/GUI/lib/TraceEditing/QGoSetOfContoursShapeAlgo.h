@@ -31,36 +31,40 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "QGoMeshLevelSetAlgo.h"
-#include "QGoFilterChanAndVese.h"
+#ifndef __QGoSetOfContoursShapeAlgo_h
+#define __QGoSetOfContoursShapeAlgo_h
+
+#include "QGoShapeAlgo.h"
+#include "QGoAlgorithmWidget.h"
+#include "QGoAlgoParameter.h"
+#include "QGoGUILibConfigure.h"
+#include "vtkSmartPointer.h"
+#include "vtkPolyData.h"
+#include "vtkImageData.h"
 
 
-QGoMeshLevelSetAlgo::QGoMeshLevelSetAlgo(QWidget* iParent)
-  :QGoLevelSetAlgo(iParent)
+/**
+\class QGoSetOfContoursShapeAlgo
+\brief class to be the interface between the shape algo for set of contours
+and GoFigure
+*/
+class QGoSetOfContoursShapeAlgo: public QGoShapeAlgo
 {
-}
-//-------------------------------------------------------------------------
+public:
+  QGoSetOfContoursShapeAlgo(QWidget* iParent = 0);
+  ~QGoSetOfContoursShapeAlgo();
 
-//-------------------------------------------------------------------------
-QGoMeshLevelSetAlgo::~QGoMeshLevelSetAlgo()
-{
-}
-//-------------------------------------------------------------------------
+  std::vector<vtkPolyData*> ApplyAlgo(
+    vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+    int iChannel);
 
-//-------------------------------------------------------------------------
-std::vector<vtkPolyData*> QGoMeshLevelSetAlgo::ApplyAlgo(
-  vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
-    int iChannel)
-{
-  QGoFilterChanAndVese LevelSetFilter;
+  std::vector<std::vector<vtkPolyData*> > ApplyAlgoSeveralSeeds( vtkPoints* iSeeds, 
+    std::vector<vtkSmartPointer< vtkImageData > >* iImages, int iChannel);
 
-  std::vector<vtkPolyData*> NewMeshes = 
-    LevelSetFilter.ApplyFilterLevelSet3D(m_Radius->GetValue(), 
-    iSeeds, m_Iterations->GetValue(),
-    m_Curvature->GetValue(), iImages, iChannel);
- 
-  return NewMeshes;
-}
-//-------------------------------------------------------------------------
+protected:
 
-//-------------------------------------------------------------------------
+  QGoAlgoParameter<int>*          m_Sampling;
+
+};
+
+#endif

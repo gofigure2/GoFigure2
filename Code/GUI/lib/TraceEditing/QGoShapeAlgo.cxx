@@ -31,36 +31,44 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "QGoMeshLevelSetAlgo.h"
-#include "QGoFilterChanAndVese.h"
+#include "QGoShapeAlgo.h"
 
 
-QGoMeshLevelSetAlgo::QGoMeshLevelSetAlgo(QWidget* iParent)
-  :QGoLevelSetAlgo(iParent)
+QGoShapeAlgo::QGoShapeAlgo(QWidget* iParent)
 {
+  this->SetAlgoWidget(iParent);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QGoMeshLevelSetAlgo::~QGoMeshLevelSetAlgo()
+QGoShapeAlgo::~QGoShapeAlgo()
 {
+  this->DeleteParameters();
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::vector<vtkPolyData*> QGoMeshLevelSetAlgo::ApplyAlgo(
-  vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
-    int iChannel)
+void QGoShapeAlgo::DeleteParameters()
 {
-  QGoFilterChanAndVese LevelSetFilter;
-
-  std::vector<vtkPolyData*> NewMeshes = 
-    LevelSetFilter.ApplyFilterLevelSet3D(m_Radius->GetValue(), 
-    iSeeds, m_Iterations->GetValue(),
-    m_Curvature->GetValue(), iImages, iChannel);
- 
-  return NewMeshes;
+  delete m_Radius;
+  delete m_Shape;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoShapeAlgo::SetAlgoWidget(QWidget* iParent)
+{
+  this->m_AlgoWidget = 
+    new QGoAlgorithmWidget("Shape 3D", iParent);
+  this->m_Radius = new QGoAlgoParameter<double>("Radius", false, 0.1, 99.99, 2, 3);
+  this->m_AlgoWidget->AddParameter(m_Radius);
+  QStringList ShapeList;
+  ShapeList.append("Sphere");
+  ShapeList.append("Cube");
+  this->m_Shape = new QGoAlgoParameter<std::string>("Shape",true, ShapeList, "Sphere");
+  this->m_AlgoWidget->AddParameter(m_Shape);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+

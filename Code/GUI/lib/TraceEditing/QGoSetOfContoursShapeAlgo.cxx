@@ -31,36 +31,48 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "QGoMeshLevelSetAlgo.h"
-#include "QGoFilterChanAndVese.h"
+#include "QGoSetOfContoursShapeAlgo.h"
+#include "QGoFilterShape.h"
 
-
-QGoMeshLevelSetAlgo::QGoMeshLevelSetAlgo(QWidget* iParent)
-  :QGoLevelSetAlgo(iParent)
+QGoSetOfContoursShapeAlgo::QGoSetOfContoursShapeAlgo(QWidget* iParent)
+  :QGoShapeAlgo(iParent)
 {
+  m_Sampling = new QGoAlgoParameter<int>("Sampling", true, 0, 999, 3);
+  this->m_AlgoWidget->AddParameter(m_Sampling);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QGoMeshLevelSetAlgo::~QGoMeshLevelSetAlgo()
+QGoSetOfContoursShapeAlgo::~QGoSetOfContoursShapeAlgo()
 {
+  this->DeleteParameters();
+  delete m_Sampling;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::vector<vtkPolyData*> QGoMeshLevelSetAlgo::ApplyAlgo(
+std::vector<vtkPolyData*> QGoSetOfContoursShapeAlgo::ApplyAlgo(
   vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel)
 {
-  QGoFilterChanAndVese LevelSetFilter;
-
-  std::vector<vtkPolyData*> NewMeshes = 
-    LevelSetFilter.ApplyFilterLevelSet3D(m_Radius->GetValue(), 
-    iSeeds, m_Iterations->GetValue(),
-    m_Curvature->GetValue(), iImages, iChannel);
- 
-  return NewMeshes;
+  std::vector<vtkPolyData*> NewContours = std::vector<vtkPolyData*>();
+  return NewContours;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+std::vector<std::vector<vtkPolyData*> > QGoSetOfContoursShapeAlgo::
+  ApplyAlgoSeveralSeeds( vtkPoints* iSeeds, 
+    std::vector<vtkSmartPointer< vtkImageData > >* iImages, int iChannel)
+{
+  std::vector<std::vector<vtkPolyData*> > NewContours;
+  QGoFilterShape ShapeFilter;
+  double *center = new double[3];
+
+    NewContours = 
+      ShapeFilter.ApplyFilterSetOf2D(this->m_Radius->GetValue(), 
+      this->m_Shape->Getvalue(), this->m_Sampling->GetValue(), iSeeds, 
+      iImages, iChannel );
+ 
+   return NewContours;
+}
