@@ -292,14 +292,9 @@ void
 QGoDBLineageManager::
 SetDivisionColor(unsigned int iLineageID, unsigned int iTrackID)
 {
-  double* color = this->m_LineageContainerInfoForVisu->GetLineageColor(iLineageID);
-
-  std::cout<< "lineage: " << iLineageID << std::endl;
-  std::cout<< "track: " << iTrackID << std::endl;
-
-  if(color)
+  if( iLineageID )
     {
-    std::cout<< "color: " << color[0] << " " << color[1] << " " << color[2] << std::endl;
+    double* color = this->m_LineageContainerInfoForVisu->GetLineageColor(iLineageID);
     this->m_TrackContainerInfoForVisu->UpdateDivisionColor(iTrackID, color);
     }
 }
