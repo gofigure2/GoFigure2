@@ -299,7 +299,13 @@ void
 TrackStructure::
 AddDivisionArray( vtkIntArray* iArray )
 {
-  this->TreeNode.Nodes->GetPointData()->AddArray(iArray);
+  /*
+   * \todo Nicolas-Shouldnt be necessary, missing IsLeaf update??
+   */
+  if(this->TreeNode.Nodes)
+    {
+    this->TreeNode.Nodes->GetPointData()->AddArray(iArray);
+    }
 }
 //--------------------------------------------------------------------------
 

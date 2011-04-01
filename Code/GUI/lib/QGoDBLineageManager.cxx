@@ -292,9 +292,9 @@ void
 QGoDBLineageManager::
 SetDivisionColor(unsigned int iLineageID, unsigned int iTrackID)
 {
-  if( iLineageID )
+  double* color = this->m_LineageContainerInfoForVisu->GetLineageColor(iLineageID);
+  if( color)
     {
-    double* color = this->m_LineageContainerInfoForVisu->GetLineageColor(iLineageID);
     this->m_TrackContainerInfoForVisu->UpdateDivisionColor(iTrackID, color);
     }
 }
@@ -369,8 +369,11 @@ void
 QGoDBLineageManager::
 UpdateDivisionsScalars( unsigned int iLineageID )
 {
-  unsigned int root =
-      this->m_LineageContainerInfoForVisu->GetLineageTrackRootID(iLineageID);
-  m_TrackContainerInfoForVisu->UpdateCollectionScalars( root );
+  if(iLineageID)
+    {
+    unsigned int root =
+        this->m_LineageContainerInfoForVisu->GetLineageTrackRootID(iLineageID);
+    m_TrackContainerInfoForVisu->UpdateCollectionScalars( root );
+    }
 }
 //-------------------------------------------------------------------------
