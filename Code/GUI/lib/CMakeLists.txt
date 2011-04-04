@@ -104,6 +104,7 @@ SET( QGoGUILIB_SRC
   TraceEditing/QGoAlgorithmsManagerWidget.cxx
   TraceEditing/QGoAlgorithmWidget.cxx
   TraceEditing/QGoMeshEditingWidgetManager.cxx
+  TraceEditing/QGoTraceEditingWidgetManager.cxx
   TraceEditing/QGoSegmentationAlgo.cxx
   TraceEditing/QGoMeshLevelSetAlgo.cxx
   TraceEditing/QGoMeshShapeAlgo.cxx
@@ -263,6 +264,7 @@ SET( QGoGUILIB_HDRS
   TraceEditing/QGoMeshEditingWidgetManager.h
   TraceEditing/QGoSegmentationAlgo.h
   TraceEditing/QGoSemiAutoSegmentationAlgo.h
+  TraceEditing/QGoTraceEditingWidgetManager.h
 )
 
 IF( BUILD_COMPARETOOL )

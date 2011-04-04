@@ -31,7 +31,7 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "QGoMeshEditingWidgetManager.h"
+#include "QGoTraceEditingWidgetManager.h"
 #include "QGoAlgorithmWidget.h"
 #include "QGoAlgoParameter.h"
 #include "QGoAlgorithmsManagerWidget.h"
@@ -41,63 +41,142 @@
 #include <iostream>
 
 
-QGoMeshEditingWidgetManager::QGoMeshEditingWidgetManager(
+QGoTraceEditingWidgetManager::QGoTraceEditingWidgetManager(
+  std::string iTraceName,
   std::vector<QString> iVectChannels, 
   int iTimeMin,
   int iTimeMax,
   vtkPoints* iSeeds, 
   std::vector< vtkSmartPointer< vtkImageData > >* iImages, 
   int* iCurrentTimePoint,
-  QWidget* iParent): QGoTraceEditingWidgetManager("Mesh", 
-  iVectChannels, iTimeMin, iTimeMax, iSeeds, iImages, 
-  iCurrentTimePoint, iParent)
+  QWidget* iParent)
 {
-  this->SetSemiAutomaticAlgorithms(iParent);
-  this->SetSplitMergeMode(iParent);
-  this->SetSetOfContoursAlgorithms(iVectChannels, this->m_ListTimePoint, 
-    iParent);
-  this->m_SetOfContoursWidget->SetTSliceForClassicView(
-    tr("%1").arg(*iCurrentTimePoint) );
+  this->m_TraceName = iTraceName;
+  this->m_Seeds = iSeeds;
+  this->m_Images = iImages;
+  this->m_CurrentTimePoint = iCurrentTimePoint;
+
+  this->SetTheTraceWidget(iVectChannels, iTimeMin, iTimeMax, iParent);
+  this->SetTheDockWidget(iParent); 
+
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QGoMeshEditingWidgetManager::~QGoMeshEditingWidgetManager()
+QGoTraceEditingWidgetManager::~QGoTraceEditingWidgetManager()
 {
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoMeshEditingWidgetManager::SetTSliceForClassicView()
+void QGoTraceEditingWidgetManager::SetTheTraceWidget(
+  std::vector<QString> iVectChannels, int iTimeMin, 
+  int iTimeMax, QWidget* iParent)
 {
-  QGoTraceEditingWidgetManager::SetTSliceForClassicView();
-  if (this->m_SetOfContoursWidget != NULL)
+ 
+  QStringList ListTimePoints;
+  for (int i = iTimeMin; i < iTimeMax+1; ++i)
     {
-    int CurrentTimePoint = *this->m_CurrentTimePoint;
-    this->m_SetOfContoursWidget->SetTSliceForClassicView(
-      tr("%1").arg(*this->m_CurrentTimePoint) );
+    ListTimePoints.push_back(tr("%1").arg(i));
     }
+  this->m_ListTimePoint = ListTimePoints;
+
+  this->m_TraceEditingWidget = new QGoTraceEditingWidget(
+   this->m_TraceName.c_str(), iVectChannels, ListTimePoints, iParent);
+
+  this->SetTSliceForClassicView();
+
+  QObject::connect( this->m_TraceEditingWidget, 
+                    SIGNAL(SetSeedInteractorBehaviour(bool) ),
+                    this,
+                    SIGNAL(SetSeedInteractorBehaviour(bool) ) );
+
+  QObject::connect( this->m_TraceEditingWidget,
+                    SIGNAL(ResetClicked() ),
+                    this, SIGNAL(ClearAllSeeds() ) );
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoMeshEditingWidgetManager::SetTSliceForDopplerView(
+void QGoTraceEditingWidgetManager::SetTheDockWidget(QWidget* iParent)
+{
+
+  this->m_TraceEditingDockWidget = new QDockWidget(iParent);
+  std::string WindowTitle = this->m_TraceName;
+  WindowTitle += " Editing";
+  this->m_TraceEditingDockWidget->setWindowTitle(WindowTitle.c_str());
+  this->m_TraceEditingDockWidget->setWidget(this->m_TraceEditingWidget);
+  
+  QIcon TraceSegmentationIcon;
+  std::string PathIcon = ":/fig/";
+  PathIcon += this->m_TraceName;
+  PathIcon += "Editing.png";
+  
+  TraceSegmentationIcon.addPixmap(QPixmap( QString::fromUtf8(PathIcon.c_str() ) ),
+                                 QIcon::Normal, QIcon::Off);
+
+ this->m_TraceEditingDockWidget->toggleViewAction()->setIcon(TraceSegmentationIcon);
+ this->m_TraceEditingDockWidget->toggleViewAction()->setToolTip( tr("%1 Editing").arg(this->m_TraceName.c_str() ) );
+ this->m_TraceEditingDockWidget->toggleViewAction()->setStatusTip( 
+    tr("Create %1s manually, semi-automatically or automatically").arg(this->m_TraceName.c_str() ) );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+QAction* QGoTraceEditingWidgetManager::GetToggleViewAction()
+{
+  return this->m_TraceEditingDockWidget->toggleViewAction();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+QDockWidget* QGoTraceEditingWidgetManager::GetDockWidget()
+{
+  return this->m_TraceEditingDockWidget;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTraceEditingWidgetManager::SetVisible(bool isVisible)
+{
+  this->m_TraceEditingDockWidget->setVisible(isVisible);
+  this->m_TraceEditingWidget->CheckTheCurrentMode(isVisible);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTraceEditingWidgetManager::SetTSliceForClassicView()
+{
+  this->m_TraceEditingWidget->SetTSliceForClassicView(
+    *this->m_CurrentTimePoint);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTraceEditingWidgetManager::SetTSliceForDopplerView(
   QStringList iListTimePoints, int iChannelNumber)
 {
-  QGoTraceEditingWidgetManager::SetTSliceForDopplerView(
+  this->m_TraceEditingWidget->SetTSliceForDopplerView(
     iListTimePoints, iChannelNumber);
-  this->m_SetOfContoursWidget->SetTSliceForDopplerView(
-    iListTimePoints, iChannelNumber);
+  //this->m_SetOfContoursWidget->SetTSliceForDopplerView(
+  //  iListTimePoints, iChannelNumber);
 } 
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoMeshEditingWidgetManager::SetSemiAutomaticAlgorithms(QWidget* iParent)
+int QGoTraceEditingWidgetManager::GetSelectedTimePoint()
+{
+  return this->m_TraceEditingWidget->GetSelectedTimePoint();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+/*void QGoMeshEditingWidgetManager::SetSemiAutomaticAlgorithms(QWidget* iParent)
 {
   //level set:
   m_LevelSetAlgo = new QGoMeshLevelSetAlgo(this->m_Seeds, iParent);
   QGoAlgorithmWidget* LevelSetWidget = m_LevelSetAlgo->GetAlgoWidget();
-  this->m_TraceEditingWidget->AddAlgoWidgetForSemiAutomaticMode(LevelSetWidget);
+  this->m_MeshEditingWidget->AddAlgoWidgetForSemiAutomaticMode(LevelSetWidget);
 
   QObject::connect(LevelSetWidget, SIGNAL(ApplyAlgo() ),
     this, SLOT(ApplyLevelSetAlgo() ) );
@@ -105,7 +184,7 @@ void QGoMeshEditingWidgetManager::SetSemiAutomaticAlgorithms(QWidget* iParent)
   //shape:
   this->m_ShapeAlgo = new QGoMeshShapeAlgo(this->m_Seeds, iParent);
   QGoAlgorithmWidget* ShapeWidget = this->m_ShapeAlgo->GetAlgoWidget();
-  this->m_TraceEditingWidget->AddAlgoWidgetForSemiAutomaticMode(ShapeWidget);
+  this->m_MeshEditingWidget->AddAlgoWidgetForSemiAutomaticMode(ShapeWidget);
 
   QObject::connect(ShapeWidget, SIGNAL(ApplyAlgo() ),
     this, SLOT(ApplyShapeAlgo() ) );
@@ -113,7 +192,7 @@ void QGoMeshEditingWidgetManager::SetSemiAutomaticAlgorithms(QWidget* iParent)
   //watershed:
   this->m_WaterShedAlgo = new QGoMeshWaterShedAlgo(this->m_Seeds, iParent);
   QGoAlgorithmWidget* WaterShedWidget = m_WaterShedAlgo->GetAlgoWidget();
-  this->m_TraceEditingWidget->AddAlgoWidgetForSemiAutomaticMode(WaterShedWidget);
+  this->m_MeshEditingWidget->AddAlgoWidgetForSemiAutomaticMode(WaterShedWidget);
 
   QObject::connect(WaterShedWidget, SIGNAL(ApplyAlgo() ),
     this, SLOT(ApplyWaterShedAlgo() ) );
@@ -147,7 +226,7 @@ void QGoMeshEditingWidgetManager::SetSetOfContoursAlgorithms(
     this->m_SetOfContoursShapeAlgo->GetAlgoWidget();
   this->m_SetOfContoursWidget->AddMethod(SetOfContoursShapeWidget);
 
-  this->m_TraceEditingWidget->AddMode(m_SetOfContoursWidget, true);
+  this->m_MeshEditingWidget->AddMode(m_SetOfContoursWidget, true);
 
   QObject::connect(SetOfContoursWaterShedWidget, SIGNAL(ApplyAlgo() ),
     this, SLOT(ApplySetOfContoursWaterShedAlgo() ) );
@@ -167,7 +246,7 @@ void QGoMeshEditingWidgetManager::SetSplitMergeMode(QWidget* iParent)
 {
   QGoAlgorithmsManagerWidget* SplitAlgoWidget = 
     new QGoAlgorithmsManagerWidget("Split", iParent);
-  this->m_TraceEditingWidget->AddMode(SplitAlgoWidget, true);
+  this->m_MeshEditingWidget->AddMode(SplitAlgoWidget, true);
   
   m_DanielAlgo = new QGoMeshSplitDanielssonDistanceAlgo(iParent);
   QGoAlgorithmWidget * DanielWidget = m_DanielAlgo->GetAlgoWidget();
@@ -178,7 +257,7 @@ void QGoMeshEditingWidgetManager::SetSplitMergeMode(QWidget* iParent)
 
   QGoAlgorithmsManagerWidget* MergeAlgoWidget = 
     new QGoAlgorithmsManagerWidget("Merge", iParent);
-  this->m_TraceEditingWidget->AddMode(MergeAlgoWidget, true);
+  this->m_MeshEditingWidget->AddMode(MergeAlgoWidget, true);
 
 }
 //-------------------------------------------------------------------------
@@ -232,4 +311,4 @@ void QGoMeshEditingWidgetManager::ApplySetOfContoursShapeAlgo()
 {
   this->GetSetOfPolydatasFromAlgo<QGoSetOfContoursShapeAlgo>(
     this->m_SetOfContoursShapeAlgo);
-}
+}*/

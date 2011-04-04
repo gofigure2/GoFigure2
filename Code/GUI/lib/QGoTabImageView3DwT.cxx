@@ -419,7 +419,7 @@ QGoTabImageView3DwT::CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax)
                     SLOT( SeedInteractorBehavior(bool) ) );
 
   QObject::connect( this->m_MeshEditingWidget,
-                    SIGNAL(MeshesCreatedFromAlgo(std::vector<vtkPolyData *>, int) ),
+                    SIGNAL(TracesCreatedFromAlgo(std::vector<vtkPolyData *>, int) ),
                     this,
                     SLOT( SaveInDBAndRenderMeshForVisu(std::vector<vtkPolyData *>, int) ) );
 
