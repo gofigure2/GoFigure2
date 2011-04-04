@@ -524,6 +524,8 @@ public:
   //Color coding
   void SetDivisionColorCode(const std::string& iColumnName,
       const std::map< unsigned int, std::string >& iValues);
+  void SetDivisionRandomColor(const std::string & iColumnName,
+      const std::map< unsigned int, std::string > & iValues);
 
   void SetScalarRangeForAllDivisions(double iMin, double iMax);
   void SetLookupTableForAllDivisionsColorCoding(vtkLookupTable *iLut);

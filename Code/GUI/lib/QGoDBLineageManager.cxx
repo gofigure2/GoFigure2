@@ -283,12 +283,12 @@ void QGoDBLineageManager::SetColorCoding(bool IsChecked)
         break;
 
       case QGoColorCodingDialog::Random:
-        //m_TrackContainerInfoForVisu->SetDivisionRandomColor(ColumnName,Values );
+        m_TrackContainerInfoForVisu->SetDivisionRandomColor(ColumnName,Values );
         break;
 
       case QGoColorCodingDialog::LUT:
         m_TrackContainerInfoForVisu->SetDivisionColorCode( ColumnName,Values );
-        //m_TrackContainerInfoForVisu->SetDivisionLookupTableForColorCoding(LUT);
+        m_TrackContainerInfoForVisu->SetLookupTableForAllDivisionsColorCoding(LUT);
         break;
 
       default:
