@@ -60,7 +60,6 @@ public:
 
 protected:
 
-  QGoAlgoParameter<double>*       m_Radius;
   QGoAlgoParameter<int>*          m_ThresMin;
   QGoAlgoParameter<int>*          m_ThresMax;
   QGoAlgoParameter<double>*       m_CorrThres;

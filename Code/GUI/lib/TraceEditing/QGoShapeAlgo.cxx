@@ -51,7 +51,6 @@ QGoShapeAlgo::~QGoShapeAlgo()
 //-------------------------------------------------------------------------
 void QGoShapeAlgo::DeleteParameters()
 {
-  delete m_Radius;
   delete m_Shape;
 }
 //-------------------------------------------------------------------------
@@ -61,13 +60,14 @@ void QGoShapeAlgo::SetAlgoWidget(QWidget* iParent)
 {
   this->m_AlgoWidget = 
     new QGoAlgorithmWidget("Shape 3D", iParent);
-  this->m_Radius = new QGoAlgoParameter<double>("Radius", false, 0.1, 99.99, 2, 3);
-  this->m_AlgoWidget->AddParameter(m_Radius);
+ 
   QStringList ShapeList;
   ShapeList.append("Sphere");
   ShapeList.append("Cube");
   this->m_Shape = new QGoAlgoParameter<std::string>("Shape",true, ShapeList, "Sphere");
   this->m_AlgoWidget->AddParameter(m_Shape);
+
+  QGoSemiAutoSegmentationAlgo::SetAlgoWidget();
 }
 //-------------------------------------------------------------------------
 

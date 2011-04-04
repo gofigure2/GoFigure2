@@ -60,7 +60,6 @@ public:
 
 protected:
 
-  QGoAlgoParameter<double>*       m_Radius;
   QGoAlgoParameter<int>*          m_Curvature;
   QGoAlgoParameter<int>*          m_Iterations;
 

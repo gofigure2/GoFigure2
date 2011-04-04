@@ -58,7 +58,7 @@ QGoMeshEditingWidgetManager::QGoMeshEditingWidgetManager(
   this->SetTheMeshWidget(iVectChannels, iTimeMin, iTimeMax, iParent);
   this->SetTheDockWidget(iParent); 
 
-  this->SetSemiAutomatedAlgorithms(iParent);
+  this->SetSemiAutomaticAlgorithms(iParent);
 }
 //-------------------------------------------------------------------------
 
@@ -167,12 +167,12 @@ int QGoMeshEditingWidgetManager::GetSelectedTimePoint()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoMeshEditingWidgetManager::SetSemiAutomatedAlgorithms(QWidget* iParent)
+void QGoMeshEditingWidgetManager::SetSemiAutomaticAlgorithms(QWidget* iParent)
 {
   //level set:
   m_LevelSetAlgo = new QGoMeshLevelSetAlgo(this->m_Seeds, iParent);
   QGoAlgorithmWidget* LevelSetWidget = m_LevelSetAlgo->GetAlgoWidget();
-  this->m_MeshEditingWidget->AddAlgoWidgetForSemiAutomatedMode(LevelSetWidget);
+  this->m_MeshEditingWidget->AddAlgoWidgetForSemiAutomaticMode(LevelSetWidget);
 
   QObject::connect(LevelSetWidget, SIGNAL(ApplyAlgo() ),
     this, SLOT(ApplyLevelSetAlgo() ) );
@@ -180,7 +180,7 @@ void QGoMeshEditingWidgetManager::SetSemiAutomatedAlgorithms(QWidget* iParent)
   //shape:
   this->m_ShapeAlgo = new QGoMeshShapeAlgo(this->m_Seeds, iParent);
   QGoAlgorithmWidget* ShapeWidget = this->m_ShapeAlgo->GetAlgoWidget();
-  this->m_MeshEditingWidget->AddAlgoWidgetForSemiAutomatedMode(ShapeWidget);
+  this->m_MeshEditingWidget->AddAlgoWidgetForSemiAutomaticMode(ShapeWidget);
 
   QObject::connect(ShapeWidget, SIGNAL(ApplyAlgo() ),
     this, SLOT(ApplyShapeAlgo() ) );
@@ -188,7 +188,7 @@ void QGoMeshEditingWidgetManager::SetSemiAutomatedAlgorithms(QWidget* iParent)
   //watershed:
   this->m_WaterShedAlgo = new QGoMeshWaterShedAlgo(this->m_Seeds, iParent);
   QGoAlgorithmWidget* WaterShedWidget = m_WaterShedAlgo->GetAlgoWidget();
-  this->m_MeshEditingWidget->AddAlgoWidgetForSemiAutomatedMode(WaterShedWidget);
+  this->m_MeshEditingWidget->AddAlgoWidgetForSemiAutomaticMode(WaterShedWidget);
 
   QObject::connect(WaterShedWidget, SIGNAL(ApplyAlgo() ),
     this, SLOT(ApplyWaterShedAlgo() ) );

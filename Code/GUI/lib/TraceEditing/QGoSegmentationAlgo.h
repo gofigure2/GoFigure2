@@ -62,7 +62,6 @@ public:
   \brief return the vtkpolydata created by the algorithm
   */
   virtual std::vector<vtkPolyData*> ApplyAlgo(
-    //vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel) = 0;
 
@@ -81,8 +80,9 @@ protected:
 
   //add a method std::vector<vtkImageData> ExtractROI(Bounds, std::vector<vtkImageData> iImages)
   //add a method vtkImageData>ExtractROI(Bounds, vtkImageData iImage)
-  //add a method std::vector<PolyData*> ConvertITKImagesToPolyData(std::vector<itk::Image> iImages)
+  //add a method std::vector<VTKPolyData*> ConvertITKImagesToVTKPolyData(std::vector<itk::Image> iImages)
   //add a method std::vector<TraceAttribut> GetAttribut(std::vector<vtkPolyData*> iNewTraces)
+  //add a method itkImage ConvertVTKToITK(vtkImageIData iImage)
 };
 
 #endif

@@ -47,7 +47,7 @@
  * \brief widget that manages the different modes for the TraceEditingWidget,
  has a combobox with the mode names and a corresponging stackedWidgets which
  display the right widget according to the mode selected in the combobox,
- has semiautomated and automated default modes
+ has semiautomatic and automatic default modes
 */
 class QGoModesManagerWidget:
   public QWidget
@@ -80,17 +80,17 @@ public:
 
   /**
   \brief add the iAlgoWidget directly in the QgoAlgomanager corresponding
-  to the Semi Automated mode
+  to the Semi Automatic mode
   \param[in] iAlgoWidget widget to be added for the parameters of the algo
   */
-  void AddAlgoWidgetForSemiAutomatedMode(QGoAlgorithmWidget* iAlgoWidget);
+  void AddAlgoWidgetForSemiAutomaticMode(QGoAlgorithmWidget* iAlgoWidget);
 
   /**
   \brief add the iAlgoWidget directly in the QgoAlgomanager corresponding
-  to the Automated mode
+  to the Automatic mode
   \param[in] iAlgoWidget widget to be added for the parameters of the algo
   */
-  void AddAlgoWidgetForAutomatedMode(QGoAlgorithmWidget* iAlgoWidget);
+  void AddAlgoWidgetForAutomaticMode(QGoAlgorithmWidget* iAlgoWidget);
 
   /**
   \brief create the "manual" mode and makes it correspond to the provided

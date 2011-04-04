@@ -54,31 +54,28 @@ public:
   QGoSemiAutoSegmentationAlgo(vtkPoints* iSeeds, QWidget *iParent = 0);
   ~QGoSemiAutoSegmentationAlgo();
 
-  /**
-  \brief return the algowidget
-  */
-  //QGoAlgorithmWidget* GetAlgoWidget();
 
   /**
   \brief return the vtkpolydata created by the algorithm
   */
   virtual std::vector<vtkPolyData*> ApplyAlgo(
-    //vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel) = 0;
 
 protected:
   vtkPoints*                      m_Seeds;
+  QGoAlgoParameter<double>*       m_Radius;
 
   /**
   \brief construct the algowidget with the different parameters
   */
-  virtual void SetAlgoWidget(QWidget* iParent = 0) = 0;
+  virtual void SetAlgoWidget(QWidget* iParent = 0);
 
   /**
   \brief delete the different parameters
   */
   virtual void DeleteParameters() = 0;
+
 
   //add a method setBounds(std::vector<double> iCenter, iRadius)
  

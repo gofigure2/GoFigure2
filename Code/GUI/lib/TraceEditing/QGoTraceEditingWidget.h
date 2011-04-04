@@ -71,8 +71,8 @@ public:
   */
   void SetANewModesManager(QGoModesManagerWidget* iModeWidget);
 
-  void AddAlgoWidgetForSemiAutomatedMode(QGoAlgorithmWidget* iAlgoWidget);
-  void AddAlgoWidgetForAutomatedMode(QGoAlgorithmWidget* iAlgoWidget);
+  void AddAlgoWidgetForSemiAutomaticMode(QGoAlgorithmWidget* iAlgoWidget);
+  void AddAlgoWidgetForAutomaticMode(QGoAlgorithmWidget* iAlgoWidget);
   void AddWidgetForManualMode(QWidget* iWidget, bool ModeNeedSeeds);
 
   int GetChannelNumber();

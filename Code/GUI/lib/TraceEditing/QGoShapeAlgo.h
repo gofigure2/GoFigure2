@@ -60,7 +60,6 @@ public:
 
 protected:
 
-  QGoAlgoParameter<double>*       m_Radius;
   QGoAlgoParameter<std::string>*  m_Shape;
 
   virtual void SetAlgoWidget(QWidget* iParent = 0);

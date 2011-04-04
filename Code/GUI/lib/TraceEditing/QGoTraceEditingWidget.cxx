@@ -117,18 +117,18 @@ void QGoTraceEditingWidget::SetANewModesManager(QGoModesManagerWidget* iModeWidg
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTraceEditingWidget::AddAlgoWidgetForSemiAutomatedMode(
+void QGoTraceEditingWidget::AddAlgoWidgetForSemiAutomaticMode(
   QGoAlgorithmWidget* iAlgoWidget)
 {
-  this->m_ModeEditingWidget->AddAlgoWidgetForSemiAutomatedMode(iAlgoWidget);
+  this->m_ModeEditingWidget->AddAlgoWidgetForSemiAutomaticMode(iAlgoWidget);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTraceEditingWidget::AddAlgoWidgetForAutomatedMode(
+void QGoTraceEditingWidget::AddAlgoWidgetForAutomaticMode(
   QGoAlgorithmWidget* iAlgoWidget)
 {
-  this->m_ModeEditingWidget->AddAlgoWidgetForAutomatedMode(iAlgoWidget);
+  this->m_ModeEditingWidget->AddAlgoWidgetForAutomaticMode(iAlgoWidget);
 }
 //-------------------------------------------------------------------------
 

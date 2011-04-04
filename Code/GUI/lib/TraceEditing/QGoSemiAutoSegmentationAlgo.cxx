@@ -49,5 +49,18 @@ QGoSemiAutoSegmentationAlgo::~QGoSemiAutoSegmentationAlgo()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-
+void QGoSemiAutoSegmentationAlgo::SetAlgoWidget(QWidget* iParent)
+{
+  if (this->m_AlgoWidget != NULL)
+    {
+    m_Radius = new QGoAlgoParameter<double>("Radius", false, 0.1, 99.99, 2, 3);
+    this->m_AlgoWidget->AddParameter(m_Radius);
+    }
+  else
+    {
+    std::cout<<"the widget has to be created before";
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
+    }
+}
 

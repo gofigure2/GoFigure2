@@ -71,17 +71,17 @@ void QGoModesManagerWidget::Initialize(std::vector<QString> iVectChannels,
 
   //add default modes:
   this->m_SemiAutoAlgoManagerWidget = new
-    QGoAlgorithmsManagerWidget("SemiAutomated", this, iVectChannels, 
+    QGoAlgorithmsManagerWidget("SemiAutomatic", this, iVectChannels, 
     iListTimePoints);
   this->AddAlgoManagerWidget(this->m_SemiAutoAlgoManagerWidget, true);
 
   this->m_AutoAlgoManagerWidget = new
-    QGoAlgorithmsManagerWidget("Automated",this, iVectChannels, 
+    QGoAlgorithmsManagerWidget("Automatic",this, iVectChannels, 
     iListTimePoints);
   this->AddAlgoManagerWidget(this->m_AutoAlgoManagerWidget, false);
 
-  m_ModesWhoNeedSeeds.append("SemiAutomated");
-  m_ModesWhoNeedSeeds.append("Automated");
+  m_ModesWhoNeedSeeds.append("SemiAutomatic");
+  m_ModesWhoNeedSeeds.append("Automatic");
 
   QObject::connect(this->m_ModeComboBox, SIGNAL(activated(int)),
                    this, SLOT(SetTheRightMode(int)));
@@ -131,20 +131,20 @@ void QGoModesManagerWidget::CheckDefaultModes()
   if (!this->m_AutoAlgoManagerWidget->HasMethod())
     {
     this->m_ModeComboBox->removeItem(
-      this->m_ModeComboBox->findText("Automated") );
+      this->m_ModeComboBox->findText("Automatic") );
     this->m_ModeWidgets->removeWidget(this->m_AutoAlgoManagerWidget);
     }
    if (!this->m_SemiAutoAlgoManagerWidget->HasMethod())
     {
     this->m_ModeComboBox->removeItem(
-      this->m_ModeComboBox->findText("SemiAutomated") );
+      this->m_ModeComboBox->findText("SemiAutomatic") );
     this->m_ModeWidgets->removeWidget(this->m_SemiAutoAlgoManagerWidget);
     }
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoModesManagerWidget::AddAlgoWidgetForSemiAutomatedMode(
+void QGoModesManagerWidget::AddAlgoWidgetForSemiAutomaticMode(
   QGoAlgorithmWidget* iAlgoWidget)
 {
   this->m_SemiAutoAlgoManagerWidget->AddMethod(iAlgoWidget);
@@ -152,7 +152,7 @@ void QGoModesManagerWidget::AddAlgoWidgetForSemiAutomatedMode(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoModesManagerWidget::AddAlgoWidgetForAutomatedMode(
+void QGoModesManagerWidget::AddAlgoWidgetForAutomaticMode(
   QGoAlgorithmWidget* iAlgoWidget)
 {
   this->m_AutoAlgoManagerWidget->AddMethod(iAlgoWidget);
@@ -200,8 +200,8 @@ void QGoModesManagerWidget::SetTheRightMode(int iIndex)
     {
     this->m_ModeWidgets->setCurrentIndex(iIndex);
     }
-  //if (this->m_ModeComboBox->currentText() == "Automated" || 
-  //  this->m_ModeComboBox->currentText() == "SemiAutomated")
+  //if (this->m_ModeComboBox->currentText() == "Automatic" || 
+  //  this->m_ModeComboBox->currentText() == "SemiAutomatic")
   if (this->m_ModesWhoNeedSeeds.indexOf(
         this->m_ModeComboBox->currentText() ) != -1)
     {

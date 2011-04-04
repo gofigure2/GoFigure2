@@ -132,9 +132,9 @@ protected:
 
   /**
   \brief add the algowidget of the different algo in the algomanagerwidget
-  for the semi automated mode and set the different SIGNAL/SLOTS connections
+  for the semi automatic mode and set the different SIGNAL/SLOTS connections
   */
-  void SetSemiAutomatedAlgorithms(QWidget* iParent = 0);
+  void SetSemiAutomaticAlgorithms(QWidget* iParent = 0);
 
   void SetSetOfContoursAlgorithms(
    std::vector<QString> iVectChannels, QStringList iListTime, QWidget* iParent = 0);

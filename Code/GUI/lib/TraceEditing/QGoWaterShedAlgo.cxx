@@ -50,7 +50,6 @@ QGoWaterShedAlgo::~QGoWaterShedAlgo()
 //-------------------------------------------------------------------------
 void QGoWaterShedAlgo::DeleteParameters()
 {
-  delete m_Radius;
   delete m_ThresMin;
   delete m_ThresMax;
   delete m_CorrThres;
@@ -64,9 +63,6 @@ void QGoWaterShedAlgo::SetAlgoWidget(QWidget* iParent)
 {
   this->m_AlgoWidget = 
     new QGoAlgorithmWidget("WaterShed 3D", iParent);
-
-  m_Radius = new QGoAlgoParameter<double>("Radius", false, 0.1, 99.99, 2, 3);
-  this->m_AlgoWidget->AddParameter(m_Radius);
 
   m_ThresMin = new QGoAlgoParameter<int>("Thres.Min.", true, 0, 999, 10);
   this->m_AlgoWidget->AddParameter(m_ThresMin);
@@ -82,6 +78,8 @@ void QGoWaterShedAlgo::SetAlgoWidget(QWidget* iParent)
  
   m_Beta = new QGoAlgoParameter<double>("Beta", true, 0, 99.99, 2, 3);
   this->m_AlgoWidget->AddParameter(m_Beta);
+
+  QGoSemiAutoSegmentationAlgo::SetAlgoWidget();
 }
 //-------------------------------------------------------------------------
 
