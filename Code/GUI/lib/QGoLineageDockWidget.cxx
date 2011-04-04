@@ -54,8 +54,8 @@ QGoLineageDockWidget::QGoLineageDockWidget(
                     this, SLOT( ColorCodeLineagesByOriginalColor(bool) ) );
 
   //export
-  QObject::connect( this->exportLineages, SIGNAL( toggled(bool) ),
-                    this, SIGNAL( ExportLineages(bool) ) );
+  QObject::connect( this->exportLineages, SIGNAL( clicked() ),
+                    this, SIGNAL( ExportLineages() ) );
 
 
 }

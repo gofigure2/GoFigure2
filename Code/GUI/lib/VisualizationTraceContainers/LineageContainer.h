@@ -166,7 +166,7 @@ signals:
   /** \brief When one track has been picked (highlighted) from the visualization */
   void TracePicked(unsigned int, Qt::CheckState);
 
-  void ExportLineages(bool);
+  void ExportLineages();
 
 public slots:
   /**
