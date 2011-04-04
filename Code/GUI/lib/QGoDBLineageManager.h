@@ -134,6 +134,8 @@ public slots:
 
   void UpdateElementHighlighting(unsigned int);
 
+  void ExportLineages(bool);
+
 protected:
   GoDBTWContainerForLineage      *m_TWContainer;
   LineageContainer               *m_LineageContainerInfoForVisu;

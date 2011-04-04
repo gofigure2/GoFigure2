@@ -196,6 +196,10 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
                     SIGNAL( ChangeDivisionsColorCode(const char *) ),
                     m_TrackContainer,
                     SLOT( ChangeDivisionsColorCode(const char *) ) );
+  QObject::connect( m_LineageDockWidget,
+                    SIGNAL( ExportLineages(bool) ),
+                    m_LineageContainer,
+                    SIGNAL( ExportLineages(bool) ) );
 
   CreateDataBaseTablesConnection();
 

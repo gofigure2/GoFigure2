@@ -81,6 +81,11 @@ void QGoDBLineageManager::SetLineagesInfoContainersForVisu(
                     SIGNAL( ShowLineage(unsigned int, bool) ),
                     m_TrackContainerInfoForVisu,
                     SLOT( ShowCollection(unsigned int, bool) ) );
+  // export lineage
+  QObject::connect( m_LineageContainerInfoForVisu,
+                    SIGNAL( ExportLineages(bool) ),
+                    this,
+                    SLOT( ExportLineages(bool) ) );
 }
 
 //-------------------------------------------------------------------------
@@ -351,5 +356,14 @@ UpdateDivisionsColors( unsigned int iLineage)
     {
     m_TrackContainerInfoForVisu->UpdateCollectionColors( root, color );
     }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoDBLineageManager::
+ExportLineages( bool iPushed)
+{
+std::cout << "message recieved: export" << std::endl;
 }
 //-------------------------------------------------------------------------
