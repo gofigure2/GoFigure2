@@ -170,18 +170,6 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
 
   m_LineageContainer = new LineageContainer(this, this->m_ImageView);
 
-  /*
-   * \todo Nicolas-Move to lineage manager
-   */
-  QObject::connect( m_LineageContainer,
-                    SIGNAL( HighlightLineage(unsigned int, bool) ),
-                    m_TrackContainer,
-                    SLOT( HighlightCollection(unsigned int, bool) ) );
-  QObject::connect( m_LineageContainer,
-                    SIGNAL( ShowLineage(unsigned int, bool) ),
-                    m_TrackContainer,
-                    SLOT( ShowCollection(unsigned int, bool) ) );
-
   CreateVisuDockWidget();
 
   // segmentation dockwidgets

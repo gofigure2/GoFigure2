@@ -67,10 +67,20 @@ void QGoDBLineageManager::SetLineagesInfoContainersForVisu(
   this->m_TrackContainerInfoForVisu = iTrackContainerInfoForVisu;
 
   // Connect signals
+  // actor picking in visualization
   QObject::connect( m_TrackContainerInfoForVisu,
                     SIGNAL( UpdateLineageHighlighting(unsigned int) ),
                     this,
                     SLOT( UpdateElementHighlighting(unsigned int) ) );
+  // for a list of lineages - NOT TESTED
+  QObject::connect( m_LineageContainerInfoForVisu,
+                    SIGNAL( HighlightLineage(unsigned int, bool) ),
+                    m_TrackContainerInfoForVisu,
+                    SLOT( HighlightCollection(unsigned int, bool) ) );
+  QObject::connect( m_LineageContainerInfoForVisu,
+                    SIGNAL( ShowLineage(unsigned int, bool) ),
+                    m_TrackContainerInfoForVisu,
+                    SLOT( ShowCollection(unsigned int, bool) ) );
 }
 
 //-------------------------------------------------------------------------
@@ -198,18 +208,16 @@ std::list< unsigned int > QGoDBLineageManager::GetListHighlightedIDs()
 void QGoDBLineageManager::UpdateHighlightedElementsInVisuContainer(
   int iTraceID)
 {
-  // update  container element
+  // update lineage container element (invert highlighted boolean)
   this->m_LineageContainerInfoForVisu->
     UpdateElementHighlightingWithGivenTraceID(iTraceID);
-  //get root track
+  //get root track id
   unsigned int trackRootID = this->m_LineageContainerInfoForVisu->
     GetLineageTrackRootID(iTraceID);
+  // is the lineage highlighted?
   bool highlighted = this->m_LineageContainerInfoForVisu->
       GetLineageHighlighted(iTraceID);
-  /*
-   * \todo Nicolas - might want to get the color of the lineage as well
-   */
-  // update container
+  // update divisions
   this->m_TrackContainerInfoForVisu->HighlightCollection(trackRootID, highlighted);
 }
 
@@ -218,15 +226,16 @@ void QGoDBLineageManager::UpdateHighlightedElementsInVisuContainer(
 //-------------------------------------------------------------------------
 void QGoDBLineageManager::UpdateVisibleElementsInVisuContainer(int iTraceID)
 {
-  // update container element
+  // update container element (invert visible bool)
   this->m_LineageContainerInfoForVisu->
     UpdateElementVisibilityWithGivenTraceID(iTraceID);
-  //get root track
+  //get root track id
   unsigned int trackRootID = this->m_LineageContainerInfoForVisu->
     GetLineageTrackRootID(iTraceID);
+  // is the lineage visible?
   bool visible = this->m_LineageContainerInfoForVisu->
       GetLineageVisibile(iTraceID);
-  // update container
+  // update divisions
   this->m_TrackContainerInfoForVisu->ShowCollection(trackRootID, visible);
 }
 
