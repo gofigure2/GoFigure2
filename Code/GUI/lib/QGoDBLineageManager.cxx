@@ -46,6 +46,7 @@
 #include "vtkTree.h"
 #include "vtkTreeWriter.h"
 #include "vtkMutableDirectedGraph.h"
+#include "vtkGraphLayoutView.h"
 
 QGoDBLineageManager::QGoDBLineageManager(int iImgSessionID, QWidget *iparent) :
   QGoDBTraceManager(), m_LineageContainerInfoForVisu(NULL), m_TrackContainerInfoForVisu(NULL)
@@ -390,16 +391,13 @@ ExportLineages()
 
   while(itLineage != lineageIDs.end() )
     {
-    //get tree
-
-    //tree = m_TrackContainerInfoForVisu->ExportLineage(*itLineage, *itTrack);
-    vtkSmartPointer<vtkMutableDirectedGraph> graph =
-      vtkSmartPointer<vtkMutableDirectedGraph>::New();
+    vtkMutableDirectedGraph* graph =
+      m_TrackContainerInfoForVisu->ExportLineage(*itTrack);
 
     vtkSmartPointer<vtkTree> tree =
       vtkSmartPointer<vtkTree>::New();
     tree->CheckedShallowCopy(graph);
-    /*
+
     //save tree
     vtkSmartPointer<vtkTreeWriter> writer =
         vtkSmartPointer<vtkTreeWriter>::New();
@@ -411,7 +409,6 @@ ExportLineages()
     name.append(".vtk");
     writer->SetFileName(name.toLocal8Bit().data());
     writer->Write();
-*/
 
     ++itLineage;
     ++itTrack;

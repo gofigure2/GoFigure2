@@ -60,6 +60,8 @@
 #include "QGoGUILibConfigure.h"
 #include <QString>
 
+#include "vtkMutableDirectedGraph.h"
+
 /**
   \struct change_visible_division
   \brief Change the visibility of a division with an unary function.
@@ -521,6 +523,10 @@ public:
       unsigned int iDivisionDepth, unsigned int& iLineageDepth);
   // compute any stat....
 
+  vtkMutableDirectedGraph* ExportLineage(unsigned int iTrackID);
+  void UpdateLineage(MultiIndexContainerTraceIDIterator& it,
+      vtkMutableDirectedGraph* iGraph, unsigned int iPedrigree,
+      vtkIdType mother);
 
 signals:
   /** \brief When one track has been picked (highlighted) from the visualization */

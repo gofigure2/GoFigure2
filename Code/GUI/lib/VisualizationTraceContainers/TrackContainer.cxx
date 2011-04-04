@@ -1427,3 +1427,67 @@ UpdateCollectionDepth(MultiIndexContainerTraceIDIterator& it,
     }
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+vtkMutableDirectedGraph*
+TrackContainer::
+ExportLineage(unsigned int iTrackID)
+{
+
+  std::cout<<"root id: " << iTrackID << std::endl;
+
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iTrackID);
+
+  vtkMutableDirectedGraph* graph = vtkMutableDirectedGraph::New();
+
+  unsigned int pedigree = 0;
+  UpdateLineage(motherIt, graph, pedigree, 0);
+
+  return graph;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateLineage(MultiIndexContainerTraceIDIterator& it,
+    vtkMutableDirectedGraph* iGraph, unsigned int iPedrigree, vtkIdType mother)
+{
+  vtkIdType motherPedigree = iPedrigree;
+
+  // update tree
+  if( iPedrigree == 0 )
+    {
+    std::cout << "add vertex" << std::endl;
+    motherPedigree = iGraph->AddVertex();
+    }
+
+  if( it->IsLeaf() )
+    {
+    return;
+    }
+
+  if(it->TreeNode.m_Child[0])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
+    // add edge
+    std::cout << "add child" << std::endl;
+    iPedrigree = iGraph->AddChild(motherPedigree);
+    UpdateLineage(childIt,iGraph, iPedrigree, motherPedigree);
+    }
+
+  if(it->TreeNode.m_Child[1])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
+    // add edge
+    std::cout << "add child" << std::endl;
+    iPedrigree = iGraph->AddChild(motherPedigree);
+    UpdateLineage(childIt,iGraph, iPedrigree, motherPedigree);
+    }
+}
+//-------------------------------------------------------------------------
