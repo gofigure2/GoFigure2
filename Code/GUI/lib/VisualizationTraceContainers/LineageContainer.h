@@ -122,6 +122,12 @@ public:
   std::list<unsigned int> GetListOfTrackRootIDs();
 
   /*
+   * \brief Get the list of all the lineages IDs
+   * \return list containg the lineage ids
+   */
+  std::list<unsigned int> GetListOfLineageIDs();
+
+  /*
    * \brief Get the track root ID of the given lineage
    * \param[in] iTraceID lineage ID of interest
    * \return related track root ID

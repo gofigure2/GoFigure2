@@ -1087,7 +1087,8 @@ void QGoPrintDatabase::GetContentAndDisplayAllTracesInfo(
   /*
    * \todo Nicolas-Do we need to go via TrackManager for the color..?
    */
-  this->m_TracksManager->UpdateDivisionsColors();
+  //this->m_TracksManager->UpdateDivisionsColors();
+  this->m_LineagesManager->UpdateDivisionsColors();
   this->m_LineagesManager->UpdateDivisionsScalars();
 }
 

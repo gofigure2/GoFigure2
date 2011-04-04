@@ -421,11 +421,14 @@ public:
   std::list<unsigned int> GetSubLineage( unsigned int iTrackID );
   void UpdateSubLineage( MultiIndexContainerTraceIDIterator it, std::list<unsigned int>& iList);
 
-  void UpdateDivisionColor(unsigned int iTrackID, double* iColor);
-
   void UpdateCollectionScalars( unsigned int iTrackID);
   void UpdateDivisionScalar(
       MultiIndexContainerTraceIDIterator& iMotherIterator, unsigned int iDepth);
+
+  void UpdateCollectionColors( unsigned int iTrackID, double* color);
+  void UpdateDivisionColor(
+      MultiIndexContainerTraceIDIterator& iMotherIterator, double* iColor);
+  void UpdateDivisionColor(unsigned int iTrackID, double* iColor);
 
 
 signals:

@@ -123,6 +123,7 @@ public:
   void UpdateElementsColors( std::list<unsigned int>);
 
   void UpdateDivisionsScalars();
+  void UpdateDivisionsColors();
 
 protected:
   GoDBTWContainerForLineage      *m_TWContainer;
