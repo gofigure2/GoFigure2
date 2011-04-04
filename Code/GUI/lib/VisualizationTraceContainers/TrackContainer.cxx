@@ -1381,22 +1381,3 @@ UpdateDivisionColor(MultiIndexContainerTraceIDIterator& it, double* iColor)
     }
 }
 //-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-TrackContainer::
-UpdateDivisionColor(unsigned int iTrackID, double* iColor)
-{
-  MultiIndexContainerTraceIDIterator motherIt
-      = m_Container.get< TraceID >().find(iTrackID);
-
-  assert( motherIt != m_Container.get< TraceID >().end() );
-
-  if( !motherIt->IsLeaf() )
-    {
-    m_Container.get< TraceID >().modify( motherIt , change_color_division(iColor) );
-    }
-
-  m_ImageView->UpdateRenderWindows();
-}
-//-------------------------------------------------------------------------

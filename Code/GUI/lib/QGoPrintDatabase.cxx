@@ -1084,10 +1084,8 @@ void QGoPrintDatabase::GetContentAndDisplayAllTracesInfo(
   this->m_TracksManager->LoadInfoVisuContainerForTrackFamilies(iDatabaseConnector);
   this->m_LineagesManager->DisplayInfoAndLoadVisuContainerForAllLineages(
     iDatabaseConnector);
-  /*
-   * \todo Nicolas-Do we need to go via TrackManager for the color..?
-   */
-  //this->m_TracksManager->UpdateDivisionsColors();
+
+  // update the lineage
   this->m_LineagesManager->UpdateDivisionsColors();
   this->m_LineagesManager->UpdateDivisionsScalars();
 }

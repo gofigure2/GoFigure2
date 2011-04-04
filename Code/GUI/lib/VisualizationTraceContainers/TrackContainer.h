@@ -428,7 +428,6 @@ public:
   void UpdateCollectionColors( unsigned int iTrackID, double* color);
   void UpdateDivisionColor(
       MultiIndexContainerTraceIDIterator& iMotherIterator, double* iColor);
-  void UpdateDivisionColor(unsigned int iTrackID, double* iColor);
 
 
 signals:
@@ -450,7 +449,6 @@ signals:
    */
   void UpdateLineageHighlighting(unsigned int);
   void GetCollectionIDForHighlgiht(unsigned int);
-  void GetDivisionColor(unsigned int, unsigned int);
   void UpdateCollectionsColors( std::list<unsigned int> );
 
 public slots:

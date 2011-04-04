@@ -118,8 +118,6 @@ public:
 
   void UpdateElementHighlighting(unsigned int);
 
-  void SetDivisionColor(unsigned int, unsigned int);
-
   void UpdateElementsColors( std::list<unsigned int>);
 
   void UpdateDivisionsScalars();

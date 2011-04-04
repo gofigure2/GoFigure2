@@ -73,11 +73,6 @@ void QGoDBLineageManager::SetLineagesInfoContainersForVisu(
                     SLOT( UpdateElementHighlighting(unsigned int) ) );
 
   QObject::connect( m_TrackContainerInfoForVisu,
-                    SIGNAL( GetDivisionColor(unsigned int, unsigned int) ),
-                    this,
-                    SLOT( SetDivisionColor( unsigned int, unsigned int) ) );
-
-  QObject::connect( m_TrackContainerInfoForVisu,
                     SIGNAL( UpdateCollectionsColors( std::list<unsigned int>) ),
                     this,
                     SLOT( UpdateElementsColors( std::list<unsigned int>) ) );
@@ -336,63 +331,11 @@ UpdateDivisionsColors()
 
   while( itTrack != rootIDs.end() )
     {
-    std::cout << "lineage: " << *itLineage << std::endl;
-    std::cout << "root: " << *itTrack << std::endl;
     double* color = this->m_LineageContainerInfoForVisu->GetLineageColor(*itLineage);
-    if( color )
-      {
-      std::cout<< "color!" << std::endl;
-      m_TrackContainerInfoForVisu->UpdateCollectionColors( *itTrack, color );
-      }
-    else
-      {
-      std::cout<< "no color!" << std::endl;
-      }
+    m_TrackContainerInfoForVisu->UpdateCollectionColors( *itTrack, color );
     ++itTrack;
     ++itLineage;
     }
-}
-//-------------------------------------------------------------------------
-
-
-//-------------------------------------------------------------------------
-void
-QGoDBLineageManager::
-SetDivisionColor(unsigned int iLineageID, unsigned int iTrackID)
-{
-  double* color = this->m_LineageContainerInfoForVisu->GetLineageColor(iLineageID);
-  if( color)
-    {
-    this->m_TrackContainerInfoForVisu->UpdateDivisionColor(iTrackID, color);
-    }
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoDBLineageManager::
-UpdateDivisionsColor( unsigned int iLineageID)
-{
-  emit NeedToGetDatabaseConnection();
-  std::list<unsigned int> listLineages;
-  listLineages.push_back(iLineageID);
-
-  std::list< unsigned int > trackIDList =
-      this->m_CollectionOfTraces->GetListTracesIDsFromThisCollectionOf(
-          this->m_DatabaseConnector, listLineages);
-
-  double* color = this->m_LineageContainerInfoForVisu->GetLineageColor(iLineageID);
-
-  if(color)
-    {
-    std::list< unsigned int >::iterator itTrack = trackIDList.begin();
-    while( itTrack != trackIDList.end() )
-      {
-      this->m_TrackContainerInfoForVisu->UpdateDivisionColor(*itTrack, color);
-      ++itTrack;
-      }
-    }
-  emit DBConnectionNotNeededAnymore();
 }
 //-------------------------------------------------------------------------
 
@@ -404,7 +347,11 @@ UpdateElementsColors( std::list<unsigned int> iListLineages)
   std::list<unsigned int>::iterator it = iListLineages.begin();
   while( it != iListLineages.end() )
   {
-    UpdateDivisionsColor(*it);
+    double* color = this->m_LineageContainerInfoForVisu->GetLineageColor(*it);
+    if(color)
+      {
+      m_TrackContainerInfoForVisu->UpdateCollectionColors( *it, color );
+      }
     ++it;
   }
 
