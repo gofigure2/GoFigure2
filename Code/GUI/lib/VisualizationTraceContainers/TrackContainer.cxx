@@ -1433,9 +1433,6 @@ vtkMutableDirectedGraph*
 TrackContainer::
 ExportLineage(unsigned int iTrackID)
 {
-
-  std::cout<<"root id: " << iTrackID << std::endl;
-
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iTrackID);
 
@@ -1455,6 +1452,9 @@ ExportLineage(unsigned int iTrackID)
                        0,depth); // depth
 
   graph->GetVertexData()->AddArray(depth);
+
+  // delete array
+  depth->Delete();
 
   return graph;
 }

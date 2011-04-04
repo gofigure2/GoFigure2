@@ -394,19 +394,20 @@ ExportLineages()
 
     vtkSmartPointer<vtkTree> tree =
       vtkSmartPointer<vtkTree>::New();
-    tree->CheckedShallowCopy(graph);
+    tree->CheckedDeepCopy(graph);
 
     //save tree
     vtkSmartPointer<vtkTreeWriter> writer =
         vtkSmartPointer<vtkTreeWriter>::New();
     writer->SetInput(tree);
-    //name
     QString name(dir);
     name.append("/lineage_");
     name.append( QString::number(*itLineage, 10) );
     name.append(".vtk");
     writer->SetFileName(name.toLocal8Bit().data());
     writer->Write();
+
+    graph->Delete();
 
     ++itLineage;
     ++itTrack;
