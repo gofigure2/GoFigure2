@@ -396,13 +396,19 @@ public:
   /*
    * \brief Create 4 actors (one for each view)
    * for this division.
-   * \param[in] iMotherID ID of the mother of the division
-   * \param[in] iDaughter1ID ID of the daughter1 of the division
-   * \param[in] iDaughter2ID ID of the daughter2 of the division
+   * \param[in] iPolyData polydata representing the division
+   * \param[in] iVisible visibility of the polydata (defaut = true)
    * \return vector of 4 actors (1 for each view) representing the division
    */
   std::vector<vtkActor* > CreateDivisionActor( vtkPolyData* iPolyData, bool iVisible = true);
 
+  /*
+   * \brief Create Create a division from 3 track IDs.
+   * Updates the node in the structure.
+   * \param[in] iMother ID of the mother
+   * \param[in] iDaughter1 ID of the daughter1
+   * \param[in] iDaughter2 ID of the daughter2
+   */
   void CreateDivisionPolydata( unsigned int iMother, unsigned int iDaughter1,
       unsigned int iDaughter2);
 
@@ -419,13 +425,39 @@ public:
    * \return list containing all the track IDs
    */
   std::list<unsigned int> GetSubLineage( unsigned int iTrackID );
+  /*
+   * \brief Convenience method to go through the tree and get a SubLineage
+   *
+   * \param[in] it iterator to go through the lineage
+   * \param[in] iList list of tracks to be returned
+   */
   void UpdateSubLineage( MultiIndexContainerTraceIDIterator it, std::list<unsigned int>& iList);
 
+  /*
+   * \brief Update the lineage's divisions scalars given the track root ID
+   * \param[in] iTrackID track root ID
+   */
   void UpdateCollectionScalars( unsigned int iTrackID);
+  /*
+   * \brief Update the lineage's divisions scalars given the track root ID
+   * \param[in] iMotherIterator iterator to go through the lineage
+   * \param[in] iDepth depth or the structure referenced by the iterator
+   */
   void UpdateDivisionScalar(
       MultiIndexContainerTraceIDIterator& iMotherIterator, unsigned int iDepth);
 
+  /*
+   * \brief Update the lineage's divisions color given the track root ID and
+   * a color
+   * \param[in] iTrackID track root ID
+   * \param[in] color color of the divisions
+   */
   void UpdateCollectionColors( unsigned int iTrackID, double* color);
+  /*
+   * \brief Update the lineage's divisions color given the track root ID and a color
+   * \param[in] iMotherIterator iterator to go through the lineage
+   * \param[in] color color of the divisions
+   */
   void UpdateDivisionColor(
       MultiIndexContainerTraceIDIterator& iMotherIterator, double* iColor);
 
