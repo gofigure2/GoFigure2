@@ -375,7 +375,7 @@ void
 QGoDBLineageManager::
 ExportLineages()
 {
-  //get path for export
+  //get path to export somewhere
   QString dir = QFileDialog::getExistingDirectory(NULL, tr("Choose Directory"));
   //get lineages info
   std::list<unsigned int> rootIDs =
@@ -387,6 +387,7 @@ ExportLineages()
   std::list<unsigned int>::iterator itLineage = lineageIDs.begin();
   std::list<unsigned int>::iterator itTrack = rootIDs.begin();
 
+  // export all the lineages
   while(itLineage != lineageIDs.end() )
     {
     vtkMutableDirectedGraph* graph =

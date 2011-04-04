@@ -523,7 +523,23 @@ public:
       unsigned int iDivisionDepth, unsigned int& iLineageDepth);
   // compute any stat....
 
+  /*
+   * \brief Export a vtkMutableDirectedGraph from a given trackID root.
+   * \param[in] iTrackID track root ID for the lineage export.
+   * \return pointer to vtkMutableDirectedGraph. IMPORTANT: has to be deleted.
+   */
   vtkMutableDirectedGraph* ExportLineage(unsigned int iTrackID);
+
+  /*
+   * \brief Go through the lineage and update the graph structure and
+   * informations.
+   * \param[in] it iterator to go through the lineage
+   * \param[in] iGraph graph to be modified
+   * \param[in] iPedrigree vertex ID - is unique
+   * \param[in] mother vertex ID of the mother - to create edges
+   * \param[in] iDepth depth of the node in the lineage - to compute stats
+   * \param[in] iDepthArray array to be modified to add information to the graph
+   */
   void UpdateLineage(MultiIndexContainerTraceIDIterator& it,
       vtkMutableDirectedGraph* iGraph, unsigned int iPedrigree,
       vtkIdType mother,

@@ -134,6 +134,10 @@ public slots:
 
   void UpdateElementHighlighting(unsigned int);
 
+  /*
+   * \brief Export all the lineages to vtkTree into the folder chosen by the user.
+   * Those trees can be read with the lineageViewer.
+   */
   void ExportLineages();
 
 protected:

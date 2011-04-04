@@ -1436,20 +1436,19 @@ ExportLineage(unsigned int iTrackID)
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iTrackID);
 
-  /*
-   * \todo Nicolas-Fix leaks
-   */
+  // graph to be exported
   vtkMutableDirectedGraph* graph = vtkMutableDirectedGraph::New();
+  unsigned int pedigree = graph->AddVertex();
 
+  // arrays we want to export
   vtkDoubleArray* depth = vtkDoubleArray::New();
   depth->SetName("Depth");
 
-  unsigned int pedigree = 0;
   UpdateLineage(motherIt,
                    graph,
                 pedigree,
                        0,  // mother vtkIDtype
-                       0,depth); // depth
+                       0,depth); // depth information
 
   graph->GetVertexData()->AddArray(depth);
 
@@ -1467,17 +1466,11 @@ UpdateLineage(MultiIndexContainerTraceIDIterator& it,
     vtkMutableDirectedGraph* iGraph, unsigned int iPedrigree, vtkIdType mother,
     unsigned int iDepth, vtkDoubleArray* iDepthArray)
 {
-  // add info
-  iDepthArray->InsertValue(iPedrigree, iDepth);
-
-  //
+  // Update mother ID
   vtkIdType motherPedigree = iPedrigree;
 
-  // update tree
-  if( iPedrigree == 0 )
-    {
-    motherPedigree = iGraph->AddVertex();
-    }
+  // add info
+  iDepthArray->InsertValue(iPedrigree, iDepth);
 
   if( it->IsLeaf() )
     {
@@ -1491,7 +1484,7 @@ UpdateLineage(MultiIndexContainerTraceIDIterator& it,
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
     // add edge
     iPedrigree = iGraph->AddChild(motherPedigree);
-    // add info
+    //go through tree
     UpdateLineage(childIt,iGraph, iPedrigree, motherPedigree, iDepth+1, iDepthArray);
     }
 
@@ -1502,7 +1495,7 @@ UpdateLineage(MultiIndexContainerTraceIDIterator& it,
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
     // add edge
     iPedrigree = iGraph->AddChild(motherPedigree);
-    // add info
+    // go through tree
     UpdateLineage(childIt,iGraph, iPedrigree, motherPedigree, iDepth+1, iDepthArray);
     }
 }
