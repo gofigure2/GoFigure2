@@ -526,7 +526,8 @@ public:
   vtkMutableDirectedGraph* ExportLineage(unsigned int iTrackID);
   void UpdateLineage(MultiIndexContainerTraceIDIterator& it,
       vtkMutableDirectedGraph* iGraph, unsigned int iPedrigree,
-      vtkIdType mother);
+      vtkIdType mother,
+      unsigned int iDepth, vtkDoubleArray* iDepthArray);
 
 signals:
   /** \brief When one track has been picked (highlighted) from the visualization */

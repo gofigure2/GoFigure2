@@ -1439,10 +1439,22 @@ ExportLineage(unsigned int iTrackID)
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iTrackID);
 
+  /*
+   * \todo Nicolas-Fix leaks
+   */
   vtkMutableDirectedGraph* graph = vtkMutableDirectedGraph::New();
 
+  vtkDoubleArray* depth = vtkDoubleArray::New();
+  depth->SetName("Depth");
+
   unsigned int pedigree = 0;
-  UpdateLineage(motherIt, graph, pedigree, 0);
+  UpdateLineage(motherIt,
+                   graph,
+                pedigree,
+                       0,  // mother vtkIDtype
+                       0,depth); // depth
+
+  graph->GetVertexData()->AddArray(depth);
 
   return graph;
 }
@@ -1452,14 +1464,18 @@ ExportLineage(unsigned int iTrackID)
 void
 TrackContainer::
 UpdateLineage(MultiIndexContainerTraceIDIterator& it,
-    vtkMutableDirectedGraph* iGraph, unsigned int iPedrigree, vtkIdType mother)
+    vtkMutableDirectedGraph* iGraph, unsigned int iPedrigree, vtkIdType mother,
+    unsigned int iDepth, vtkDoubleArray* iDepthArray)
 {
+  // add info
+  iDepthArray->InsertValue(iPedrigree, iDepth);
+
+  //
   vtkIdType motherPedigree = iPedrigree;
 
   // update tree
   if( iPedrigree == 0 )
     {
-    std::cout << "add vertex" << std::endl;
     motherPedigree = iGraph->AddVertex();
     }
 
@@ -1474,9 +1490,9 @@ UpdateLineage(MultiIndexContainerTraceIDIterator& it,
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
     // add edge
-    std::cout << "add child" << std::endl;
     iPedrigree = iGraph->AddChild(motherPedigree);
-    UpdateLineage(childIt,iGraph, iPedrigree, motherPedigree);
+    // add info
+    UpdateLineage(childIt,iGraph, iPedrigree, motherPedigree, iDepth+1, iDepthArray);
     }
 
   if(it->TreeNode.m_Child[1])
@@ -1485,9 +1501,9 @@ UpdateLineage(MultiIndexContainerTraceIDIterator& it,
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
     // add edge
-    std::cout << "add child" << std::endl;
     iPedrigree = iGraph->AddChild(motherPedigree);
-    UpdateLineage(childIt,iGraph, iPedrigree, motherPedigree);
+    // add info
+    UpdateLineage(childIt,iGraph, iPedrigree, motherPedigree, iDepth+1, iDepthArray);
     }
 }
 //-------------------------------------------------------------------------
