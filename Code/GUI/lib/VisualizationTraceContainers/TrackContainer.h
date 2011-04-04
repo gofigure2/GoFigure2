@@ -504,6 +504,23 @@ public:
   void UpdateDivisionColor(
       MultiIndexContainerTraceIDIterator& iMotherIterator, double* iColor);
 
+  // compute statistics on the collection
+  /*
+   * \brief Get the depth of the lineage
+   * \param[in] iTrackRootID id of the track root
+   * \return depth of the lineage
+   */
+  unsigned int GetCollectionDepth( unsigned int iTrackRootID );
+  /*
+   * \brief Update the collection depth
+   * \param[in] it iterator to go through the lineage
+   * \param[in] iDivisionDepth depth of the division
+   * \param[in] iLineageDepth depth of the lineage
+   */
+  void UpdateCollectionDepth( MultiIndexContainerTraceIDIterator& it,
+      unsigned int iDivisionDepth, unsigned int& iLineageDepth);
+  // compute any stat....
+
 
 signals:
   /** \brief When one track has been picked (highlighted) from the visualization */
