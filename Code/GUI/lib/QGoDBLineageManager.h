@@ -111,14 +111,12 @@ public:
   virtual std::list< unsigned int > GetListHighlightedIDs();
 
   /// add a new division (not on OPEN IMAGEING SESSION)
-  void UpdateDivisionsColor( unsigned int iLineageID);
+  void UpdateDivisionsColors( unsigned int iLineageID);
   void UpdateDivisionsScalars( unsigned int iLineageID);
 
   public slots:
 
   void UpdateElementHighlighting(unsigned int);
-
-  void UpdateElementsColors( std::list<unsigned int>);
 
   void UpdateDivisionsScalars();
   void UpdateDivisionsColors();
