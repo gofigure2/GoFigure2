@@ -376,9 +376,7 @@ QGoDBLineageManager::
 ExportLineages()
 {
   //get path for export
-  QString dir = QFileDialog::getExistingDirectory(NULL, tr("Open Directory"),
-                                                   "/home",
-                                                   QFileDialog::ShowDirsOnly);
+  QString dir = QFileDialog::getExistingDirectory(NULL, tr("Choose Directory"));
   //get lineages info
   std::list<unsigned int> rootIDs =
       this->m_LineageContainerInfoForVisu->GetListOfTrackRootIDs();
@@ -403,9 +401,9 @@ ExportLineages()
         vtkSmartPointer<vtkTreeWriter>::New();
     writer->SetInput(tree);
     //name
-    QString name(*itLineage);
-    name.prepend("lineage-");
-    name.prepend(dir);
+    QString name(dir);
+    name.append("/lineage_");
+    name.append( QString::number(*itLineage, 10) );
     name.append(".vtk");
     writer->SetFileName(name.toLocal8Bit().data());
     writer->Write();
