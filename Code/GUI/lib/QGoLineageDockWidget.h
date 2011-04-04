@@ -49,7 +49,6 @@ public:
   ~QGoLineageDockWidget();
 
 public slots:
-  void ColorCodeLineagesByTime(bool);
   void ColorCodeLineagesByDepth(bool);
   void ColorCodeLineagesByOriginalColor(bool);
 signals:

@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>191</width>
-    <height>149</height>
+    <height>121</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,19 +30,6 @@
        <item row="0" column="0">
         <layout class="QGridLayout" name="gridLayout_2">
          <item row="2" column="0">
-          <widget class="QCheckBox" name="time">
-           <property name="text">
-            <string>Time Color code</string>
-           </property>
-           <property name="autoExclusive">
-            <bool>true</bool>
-           </property>
-           <property name="tristate">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
           <widget class="QCheckBox" name="depthLineage">
            <property name="text">
             <string>Depth Color Code</string>

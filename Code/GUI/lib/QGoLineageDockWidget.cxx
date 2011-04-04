@@ -48,8 +48,6 @@ QGoLineageDockWidget::QGoLineageDockWidget(
   this->setWindowTitle("Lineage View");
 
   // color code
-  QObject::connect( this->time, SIGNAL( toggled(bool) ),
-                    this, SLOT( ColorCodeLineagesByTime(bool) ) );
   QObject::connect( this->depthLineage, SIGNAL( toggled(bool) ),
                     this, SLOT( ColorCodeLineagesByDepth(bool) ) );
   QObject::connect( this->real, SIGNAL( toggled(bool) ),
@@ -62,18 +60,6 @@ QGoLineageDockWidget::QGoLineageDockWidget(
 QGoLineageDockWidget::
 ~QGoLineageDockWidget()
 {
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoLineageDockWidget::ColorCodeLineagesByTime(bool iChecked)
-{
-  if ( iChecked )
-    {
-    //emit ChangeDivisionsColorCode("TemporalInformation");
-    }
 }
 
 //-------------------------------------------------------------------------
