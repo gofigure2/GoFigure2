@@ -162,8 +162,6 @@ bool LineageContainer::GetLineageVisibile( unsigned int iTraceID )
 
   assert( it != m_Container.get< TraceID >().end() );
 
-  bool visible = it->Visible;
-
   return it->Visible;
 }
 //-------------------------------------------------------------------------

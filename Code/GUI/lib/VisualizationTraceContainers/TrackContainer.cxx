@@ -1265,7 +1265,6 @@ UpdateCollectionHighlighting(unsigned int iTraceId)
   GetRootIterator( motherIt );
 
   bool highlight = !motherIt->TreeNode.Highlighted;
-  unsigned int id = motherIt->TraceID;
 
   UpdateCollectionHighlighted(motherIt, highlight);
 
