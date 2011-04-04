@@ -1295,28 +1295,6 @@ GetRootIterator(MultiIndexContainerTraceIDIterator& iMotherIterator)
 //-------------------------------------------------------------------------
 void
 TrackContainer::
-UpdateDivisionColor(unsigned int iTrackID, double* iColor)
-{
-  MultiIndexContainerTraceIDIterator motherIt
-      = m_Container.get< TraceID >().find(iTrackID);
-
-  assert( motherIt != m_Container.get< TraceID >().end() );
-
-  if( !motherIt->IsLeaf() )
-    {
-    m_Container.get< TraceID >().modify( motherIt , change_color_division(iColor) );
-    }
-
-  /*
-   * \todo might not be efficient enough
-   */
-  m_ImageView->UpdateRenderWindows();
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-TrackContainer::
 UpdateCollectionScalars( unsigned int iTrackID)
 {
   MultiIndexContainerTraceIDIterator motherIt
@@ -1358,6 +1336,48 @@ UpdateDivisionScalar(MultiIndexContainerTraceIDIterator& it, unsigned int iDepth
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
     UpdateDivisionScalar(childIt,iDepth+1);
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateCollectionColors( unsigned int iTrackID, double* color)
+{
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iTrackID);
+
+  UpdateDivisionColor(motherIt, color);
+
+  m_ImageView->UpdateRenderWindows();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateDivisionColor(MultiIndexContainerTraceIDIterator& it, double* iColor)
+{
+  if( !it->IsLeaf() )
+    {
+    m_Container.get< TraceID >().modify( it , change_color_division(iColor) );
+    }
+
+  if(it->TreeNode.m_Child[0])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
+    UpdateDivisionColor(childIt,iColor);
+    }
+
+  if(it->TreeNode.m_Child[1])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
+    UpdateDivisionColor(childIt,iColor);
     }
 }
 //-------------------------------------------------------------------------

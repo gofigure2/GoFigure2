@@ -142,8 +142,6 @@ public:
   void UpdateBoundingBoxes(
   vtkMySQLDatabase *iDatabaseConnector,std::list< unsigned int > iListTracesIDs);
 
-  void UpdateDivisionsColors();
-
 signals:
   void NeedMeshesInfoForImportedTrack(unsigned int iTrackID);
   void TrackToSplit(unsigned int iTrackID, std::list<unsigned int> iListMeshIDs);

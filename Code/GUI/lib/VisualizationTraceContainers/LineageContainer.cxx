@@ -120,6 +120,24 @@ std::list<unsigned int> LineageContainer::GetListOfTrackRootIDs()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+std::list<unsigned int> LineageContainer::GetListOfLineageIDs()
+{
+  std::list<unsigned int> listOfLineageIDs;
+
+  MultiIndexContainerType::index< TraceID >::type::iterator
+    it = m_Container.get< TraceID >().begin();
+
+  while( it != m_Container.get< TraceID >().end() )
+    {
+    listOfLineageIDs.push_back(it->TraceID);
+    it++;
+    }
+
+  return listOfLineageIDs;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 unsigned int LineageContainer::GetLineageTrackRootID( unsigned int iTraceID )
 {
   unsigned int trackID = 0;
