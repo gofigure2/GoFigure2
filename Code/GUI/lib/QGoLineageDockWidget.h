@@ -51,8 +51,10 @@ public:
 public slots:
   void ColorCodeLineagesByDepth(bool);
   void ColorCodeLineagesByOriginalColor(bool);
+
 signals:
   void ChangeDivisionsColorCode( const char* );
+  void ExportLineages();
 
 };
 #endif

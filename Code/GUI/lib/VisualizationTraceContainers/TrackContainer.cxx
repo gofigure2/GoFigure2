@@ -1427,3 +1427,76 @@ UpdateCollectionDepth(MultiIndexContainerTraceIDIterator& it,
     }
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+vtkMutableDirectedGraph*
+TrackContainer::
+ExportLineage(unsigned int iTrackID)
+{
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iTrackID);
+
+  // graph to be exported
+  vtkMutableDirectedGraph* graph = vtkMutableDirectedGraph::New();
+  unsigned int pedigree = graph->AddVertex();
+
+  // arrays we want to export
+  vtkDoubleArray* depth = vtkDoubleArray::New();
+  depth->SetName("Depth");
+
+  UpdateLineage(motherIt,
+                   graph,
+                pedigree,
+                       0,  // mother vtkIDtype
+                       0,depth); // depth information
+
+  graph->GetVertexData()->AddArray(depth);
+
+  // delete array
+  depth->Delete();
+
+  return graph;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateLineage(MultiIndexContainerTraceIDIterator& it,
+    vtkMutableDirectedGraph* iGraph, unsigned int iPedrigree, vtkIdType mother,
+    unsigned int iDepth, vtkDoubleArray* iDepthArray)
+{
+  // Update mother ID
+  vtkIdType motherPedigree = iPedrigree;
+
+  // add info
+  iDepthArray->InsertValue(iPedrigree, iDepth);
+
+  if( it->IsLeaf() )
+    {
+    return;
+    }
+
+  if(it->TreeNode.m_Child[0])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
+    // add edge
+    iPedrigree = iGraph->AddChild(motherPedigree);
+    //go through tree
+    UpdateLineage(childIt,iGraph, iPedrigree, motherPedigree, iDepth+1, iDepthArray);
+    }
+
+  if(it->TreeNode.m_Child[1])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
+    // add edge
+    iPedrigree = iGraph->AddChild(motherPedigree);
+    // go through tree
+    UpdateLineage(childIt,iGraph, iPedrigree, motherPedigree, iDepth+1, iDepthArray);
+    }
+}
+//-------------------------------------------------------------------------
