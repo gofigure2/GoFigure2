@@ -37,6 +37,16 @@
 #include <iostream>
 #include <sstream>
 
+// directory for export
+ #include <QFileDialog>
+#include <QString>
+
+//writer
+#include "vtkSmartPointer.h"
+#include "vtkTree.h"
+#include "vtkTreeWriter.h"
+#include "vtkMutableDirectedGraph.h"
+
 QGoDBLineageManager::QGoDBLineageManager(int iImgSessionID, QWidget *iparent) :
   QGoDBTraceManager(), m_LineageContainerInfoForVisu(NULL), m_TrackContainerInfoForVisu(NULL)
 {
@@ -364,6 +374,47 @@ void
 QGoDBLineageManager::
 ExportLineages()
 {
-std::cout << "message recieved: export" << std::endl;
+  //get path for export
+  QString dir = QFileDialog::getExistingDirectory(NULL, tr("Open Directory"),
+                                                   "/home",
+                                                   QFileDialog::ShowDirsOnly);
+  //get lineages info
+  std::list<unsigned int> rootIDs =
+      this->m_LineageContainerInfoForVisu->GetListOfTrackRootIDs();
+
+  std::list<unsigned int> lineageIDs =
+      this->m_LineageContainerInfoForVisu->GetListOfLineageIDs();
+
+  std::list<unsigned int>::iterator itLineage = lineageIDs.begin();
+  std::list<unsigned int>::iterator itTrack = rootIDs.begin();
+
+  while(itLineage != lineageIDs.end() )
+    {
+    //get tree
+
+    //tree = m_TrackContainerInfoForVisu->ExportLineage(*itLineage, *itTrack);
+    vtkSmartPointer<vtkMutableDirectedGraph> graph =
+      vtkSmartPointer<vtkMutableDirectedGraph>::New();
+
+    vtkSmartPointer<vtkTree> tree =
+      vtkSmartPointer<vtkTree>::New();
+    tree->CheckedShallowCopy(graph);
+    /*
+    //save tree
+    vtkSmartPointer<vtkTreeWriter> writer =
+        vtkSmartPointer<vtkTreeWriter>::New();
+    writer->SetInput(tree);
+    //name
+    QString name(*itLineage);
+    name.prepend("lineage-");
+    name.prepend(dir);
+    name.append(".vtk");
+    writer->SetFileName(name.toLocal8Bit().data());
+    writer->Write();
+*/
+
+    ++itLineage;
+    ++itTrack;
+    }
 }
 //-------------------------------------------------------------------------
