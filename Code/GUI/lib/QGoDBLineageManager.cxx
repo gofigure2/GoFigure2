@@ -255,8 +255,53 @@ void QGoDBLineageManager::GetTracesInfoFromDBAndModifyContainerForVisu(
 //-------------------------------------------------------------------------
 void QGoDBLineageManager::SetColorCoding(bool IsChecked)
 {
- // this->SetColorCodingTemplate< TrackContainer >(
-  //  this->m_TrackContainerInfoForVisu, IsChecked);
+  std::string ColumnName = "";
+  std::map<unsigned int, std::string> Values;
+  m_IsColorCodingOn = IsChecked;
+
+  //create map track ID/field
+
+  if (IsChecked)
+    {
+    Values = this->m_Table->GetTraceIDAndColumnsValues(
+          this->m_TraceNameID, ColumnName);
+
+      vtkLookupTable* LUT = NULL;
+
+  bool IsRandomIncluded =
+    (ColumnName == this->m_TraceNameID) ||
+    (ColumnName == this->m_CollectionNameID);
+
+    QGoColorCodingDialog::ColorWay UserColorway =
+      QGoColorCodingDialog::GetColorWay( this->m_TraceName, &LUT,
+      IsRandomIncluded, this->m_Table );
+
+    switch ( UserColorway )
+      {
+      case QGoColorCodingDialog::Default:
+        m_TrackContainerInfoForVisu->SetDivisionColorCode( ColumnName,Values );
+        break;
+
+      case QGoColorCodingDialog::Random:
+        //m_TrackContainerInfoForVisu->SetDivisionRandomColor(ColumnName,Values );
+        break;
+
+      case QGoColorCodingDialog::LUT:
+        m_TrackContainerInfoForVisu->SetDivisionColorCode( ColumnName,Values );
+        //m_TrackContainerInfoForVisu->SetDivisionLookupTableForColorCoding(LUT);
+        break;
+
+      default:
+      case QGoColorCodingDialog::Nothing:
+        m_IsColorCodingOn = !IsChecked;
+        break;
+      }
+    }
+  else
+    {
+    m_IsColorCodingOn = IsChecked;
+    m_TrackContainerInfoForVisu->SetDivisionColorCode( ColumnName, Values );
+    }
 }
 
 //-------------------------------------------------------------------------

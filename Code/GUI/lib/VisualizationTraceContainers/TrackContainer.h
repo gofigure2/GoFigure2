@@ -521,6 +521,14 @@ public:
       unsigned int iDivisionDepth, unsigned int& iLineageDepth);
   // compute any stat....
 
+  //Color coding
+  void SetDivisionColorCode(const std::string& iColumnName,
+      const std::map< unsigned int, std::string >& iValues);
+
+  void SetScalarRangeForAllDivisions(double iMin, double iMax);
+  void SetLookupTableForAllDivisionsColorCoding(vtkLookupTable *iLut);
+  void RenderAllDivisionsWithOriginalColors();
+
 
 signals:
   /** \brief When one track has been picked (highlighted) from the visualization */
@@ -652,10 +660,6 @@ protected:
    * \return Pointer to double[2] where [0] is the min scalar value and [1] is
    * the max scalar value. Pointer has to be deleted (delete[] pointer) */
   double* setDivisionNodeScalars(const char *iArrayName);
-
-  void SetScalarRangeForAllDivisions(double iMin, double iMax);
-  void SetLookupTableForAllDivisionsColorCoding(vtkLookupTable *iLut);
-  void RenderAllDivisionsWithOriginalColors();
 
   void ComputeSpeed();
 

@@ -1427,3 +1427,107 @@ UpdateCollectionDepth(MultiIndexContainerTraceIDIterator& it,
     }
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+SetDivisionColorCode(const std::string& iColumnName,
+    const std::map< unsigned int, std::string >& iValues)
+{
+  typedef typename std::map< unsigned int, std::string > MapType;
+  typedef typename MapType::const_iterator               MapConstIterator;
+
+  std::map< std::string, double > stringmap;
+
+  using boost::multi_index:: get;
+
+  if ( iColumnName.empty() || iValues.empty() )
+    {
+    this->RenderAllDivisionsWithOriginalColors();
+    return;
+    }
+
+  MapConstIterator it = iValues.begin();
+
+  double temp = 0.;
+  try
+    {
+    temp = boost::lexical_cast< double >(it->second);
+    }
+  catch(boost::bad_lexical_cast &)
+    {
+    if ( stringmap.empty() )
+      {
+      stringmap[it->second] = 0.;
+      }
+    else
+      {
+      std::map< std::string, double >::iterator m_it = stringmap.find(it->second);
+
+      if ( m_it != stringmap.end() )
+        {
+        temp = m_it->second;
+        }
+      else
+        {
+        std::map< std::string, double >::reverse_iterator r_it = stringmap.rbegin();
+        temp = r_it->second;
+        temp += 1.0;
+        }
+      }
+    }
+
+  double min_value = temp;
+  double max_value = temp;
+
+  while ( it != iValues.end() )
+    {
+    MultiIndexContainerTraceIDIterator
+      trace_it = this->m_Container.get< TraceID >().find(it->first);
+
+    if ( trace_it != this->m_Container.get< TraceID >().end() )
+      {
+      if ( trace_it->TreeNode.Nodes ) //make sure the trace has points !!!
+        {
+        // Here let's make sure you are not passing crazy values!
+        try
+          {
+          temp = boost::lexical_cast< double >(it->second);
+          }
+        catch(boost::bad_lexical_cast &)
+          {
+          // stringmap is not empty and has at least one element
+          std::map< std::string, double >::iterator m_it = stringmap.find(it->second);
+
+          if ( m_it != stringmap.end() )
+            {
+            temp = m_it->second;
+            }
+          else
+            {
+            std::map< std::string, double >::reverse_iterator r_it = stringmap.rbegin();
+            temp = r_it->second;
+            temp += 1.0;
+            }
+          }
+
+        if ( temp > max_value )
+          {
+          max_value = temp;
+          }
+        if ( temp < min_value )
+          {
+          min_value = temp;
+          }
+        trace_it->TreeNode.SetScalarData(iColumnName, temp);
+        }
+      } //end make sure the trace has points !!!
+    ++it;
+    }
+
+  SetScalarRangeForAllDivisions(min_value, max_value);
+
+  assert ( m_ImageView );
+  this->m_ImageView->UpdateRenderWindows();
+}
+//-------------------------------------------------------------------------
