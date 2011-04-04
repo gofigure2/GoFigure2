@@ -83,11 +83,6 @@ void QGoDBTrackManager::SetTracksInfoContainerForVisu(
                     SIGNAL( UpdateCollectionHighlighting(unsigned int) ),
                     this->m_TrackContainerInfoForVisu,
                     SIGNAL( UpdateLineageHighlighting(unsigned int) ) );
-
-  QObject::connect( this,
-                    SIGNAL( UpdateCollectionsColors( std::list<unsigned int>) ),
-                    this->m_TrackContainerInfoForVisu,
-                    SIGNAL( UpdateCollectionsColors( std::list<unsigned int>) ) );
 }
 
 //-------------------------------------------------------------------------
@@ -800,11 +795,6 @@ void QGoDBTrackManager::DeleteTheDivisions()
     {
     emit CheckedTracksToAddToSelectedLineage(TrackIDsWithNoLineage, 0, LineagesToDelete);  
     }
-
-  // Update colors
-  //std::list<unsigned int> lineages = this->m_CollectionOfTraces->GetListCollectionIDs(
-  //    this->m_DatabaseConnector, CheckedTracks);
-  //emit UpdateCollectionsColors(lineages);
 
   emit DBConnectionNotNeededAnymore();
 }

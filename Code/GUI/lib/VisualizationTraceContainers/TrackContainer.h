@@ -60,6 +60,11 @@
 #include "QGoGUILibConfigure.h"
 #include <QString>
 
+/**
+  \struct change_visible_division
+  \brief Change the visibility of a division with an unary function.
+  \sa TrackStructure
+  */
 //-----------------------------------------------------------------------------
 struct change_visible_division
 {
@@ -76,6 +81,11 @@ private:
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
+/**
+  \struct change_highlighted_division
+  \brief Change the highlight of a division with an unary function.
+  \sa TrackStructure
+  */
 struct change_highlighted_division
 {
   change_highlighted_division(vtkProperty* iProperty, bool iHighlight):
@@ -93,6 +103,11 @@ private:
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
+/**
+  \struct change_color_division
+  \brief Change the color of a division with an unary function.
+  \sa TrackStructure
+  */
 struct change_color_division
 {
   change_color_division(double* iColor):color(iColor){}
@@ -108,6 +123,12 @@ private:
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
+/**
+  \struct add_array_division
+  \brief Add an array to a division with an unary function.
+  Useful for the color coding.
+  \sa TrackStructure
+  */
 struct add_array_division
 {
   add_array_division(vtkIntArray* iArray):array(iArray){}
@@ -123,6 +144,12 @@ private:
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
+/**
+  \struct create_node_division
+  \brief Create a polydata for a division with an unary function.
+  Useful for the color coding.
+  \sa TrackStructure
+  */
 struct create_node_division
 {
   create_node_division(vtkPolyData* iNode):node(iNode){}
@@ -288,6 +315,10 @@ public:
    */
   void CreateTrackActors( TrackStructure& iStructure);
 
+  /*
+   * \brief Remove the actors from the visualization if the track has less than 2 points.
+   * \param[in] iStructure structure to be tested.
+   */
   void UpdateTrackActors( TrackStructure& iStructure);
 
   /**
@@ -315,8 +346,20 @@ public:
     emit TracePicked(TraceId, state);
     }
 
+  /*
+   * \brief Update the full lineage after picking a division
+   * 1-Pick actor
+   * 2-Get track ID
+   * 3-Get root track ID
+   * 4-Modify highlight
+   * \param[in] iTraceId ID of the track which owns the picked division
+   */
   void UpdateCollectionHighlighting(unsigned int iTraceId);
 
+  /*
+   * \brief Convenience method to get an iterator to the root structure.
+   * Useful for the division picking.
+   */
   void GetRootIterator(
       MultiIndexContainerTraceIDIterator& iMotherIterator);
 
@@ -481,7 +524,6 @@ signals:
    */
   void UpdateLineageHighlighting(unsigned int);
   void GetCollectionIDForHighlgiht(unsigned int);
-  void UpdateCollectionsColors( std::list<unsigned int> );
 
 public slots:
 
@@ -502,26 +544,76 @@ public slots:
                                                  const Qt::CheckState& iCheck );
 
   /**
-  \brief Color code the track by time.
-  \param[in] iColorCode Display Time Color Code (true) or Real Color (false) */
+  \brief Color code the track by an array
+  \param[in] iColorCode  name of the active array*/
   void ChangeColorCode( const char* iColorCode);
 
+  /**
+  \brief Color code the lineage by an array
+  \param[in] iColorCode name of the active array */
   void ChangeDivisionsColorCode( const char* iColorCode );
 
+  /*
+   * \brief Change the representation of a track, adding glyphs and tubes
+   * param[in] iRadius radius of the glyph
+   * param[in] iRadius2 radius of the tube
+   */
   void UpdateTracksRepresentation( double iRadius,double iRadius2);
 
-  void HighlightCollection(unsigned int, bool);
+  /*
+   * \brief Highlight a collection given the track root ID
+   * param[in] iRootTrackID trackID root
+   * param[in] iHighlighted true (highlight) or false (real color)
+   */
+  void HighlightCollection(unsigned int iRootTrackID, bool iHighlighted);
+  /*
+   * \brief Update the collection highlight
+   * \param[in] it iterator to go through the lineage
+   * \param[in] iHighlighted highlight (true) or real color (false)
+   */
   void UpdateCollectionHighlighted( MultiIndexContainerTraceIDIterator& it, bool iHighlighted);
+/*
+ * \brief Change the highlight of the division belonging to the given structure.
+ * Structure is modified through unary function.
+ * \param[in] it iterator to the structure to be modified
+ * \param[in] iHighlight highlight (true) or real color (false)
+ */
   int ModifyDivisionHighlight( MultiIndexContainerTraceIDIterator& it, bool iHighlight );
 
+  /*
+   * \brief Show/hide a collection given the track root ID
+   * param[in] iRootTrackID trackID root
+   * param[in] iVisibility true (show) or false (hide)
+   */
   void ShowCollection(unsigned int, bool);
+  /*
+   * \brief Update the collection visibility
+   * \param[in] it iterator to go through the lineage
+   * \param[in] iVisibility show (true) or hide (false)
+   */
   void UpdateCollectionVisibility( MultiIndexContainerTraceIDIterator& it, bool iVisibility);
+  /*
+   * \brief Change the visibility of the division belonging to the given structure.
+   * Structure is modified through unary function.
+   * \param[in] it iterator to the structure to be modified
+   * \param[in] iVisibility show (true) or hide (false)
+   */
   int ModifyDivisionVisibility( MultiIndexContainerTraceIDIterator& it, bool iVisibility );
 
+  /*
+   * \note Not useful since we don't allow add point to a track if we want to add a point to a border...
+   */
   void UpdateTrackStructureLineage(TrackStructure* iStructure);
-
+  /*
+   * \note Not useful since we don't allow add point to a track if we want to add a point to a border...
+   */
   void UpdateDivisionActor(TrackStructure* iStructure);
 
+
+  /*
+   * \brief Delete the division belonging to the given track
+   * \param[in] iMotherID ID of the track which owns the division
+   */
   void DeleteADivision( unsigned int iMotherID);
 
 protected:
@@ -538,6 +630,10 @@ protected:
    * the max scalar value. Pointer has to be deleted (delete[] pointer) */
   double* setTrackNodeScalars(const char *iArrayName);
 
+  /** \brief Changes the divisions scalars to be displayed and return the new range
+   * \param[in] iArrayName Array to be displayed
+   * \return Pointer to double[2] where [0] is the min scalar value and [1] is
+   * the max scalar value. Pointer has to be deleted (delete[] pointer) */
   double* setDivisionNodeScalars(const char *iArrayName);
 
   void SetScalarRangeForAllDivisions(double iMin, double iMax);

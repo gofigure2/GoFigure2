@@ -156,10 +156,6 @@ signals:
 
   void UpdateCollectionHighlighting(unsigned int);
 
-  void GetDivisionColor(unsigned int, unsigned int);
-
-  void UpdateCollectionsColors( std::list<unsigned int>);
-
 protected:
   GoDBTWContainerForTrack *m_TWContainer;
   TrackContainer          *m_TrackContainerInfoForVisu;
