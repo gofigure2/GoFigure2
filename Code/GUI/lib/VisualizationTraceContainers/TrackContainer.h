@@ -521,7 +521,19 @@ public:
    */
   void UpdateCollectionDepth( MultiIndexContainerTraceIDIterator& it,
       unsigned int iDivisionDepth, unsigned int& iLineageDepth);
-  // compute any stat....
+  /*
+   * \brief Get the number of divisions of the lineage
+   * \param[in] iTrackRootID id of the track root
+   * \return depth of the lineage
+   */
+  unsigned int GetCollectionNumberOfDivisions( unsigned int iTrackRootID );
+  /*
+   * \brief Update the collection number of divisions
+   * \param[in] it iterator to go through the lineage
+   * \param[in] iLineageDepth number of divisions of the lineage
+   */
+  void UpdateCollectionNumberOfDivisions( MultiIndexContainerTraceIDIterator& it,
+      unsigned int& iNumberOfDivisions);
 
   /*
    * \brief Export a vtkMutableDirectedGraph from a given trackID root.

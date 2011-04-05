@@ -1429,6 +1429,50 @@ UpdateCollectionDepth(MultiIndexContainerTraceIDIterator& it,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+unsigned int
+TrackContainer::
+GetCollectionNumberOfDivisions( unsigned int iTrackRootID )
+{
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iTrackRootID);
+
+  unsigned int numberOfDivisions = 0;
+  UpdateCollectionNumberOfDivisions(motherIt,numberOfDivisions);
+
+  return numberOfDivisions;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateCollectionNumberOfDivisions(MultiIndexContainerTraceIDIterator& it,
+    unsigned int& iNumberOfDivisions)
+{
+  if( !it->IsLeaf() )
+    {
+    ++iNumberOfDivisions;
+    }
+
+  if(it->TreeNode.m_Child[0])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
+    UpdateCollectionNumberOfDivisions(childIt,iNumberOfDivisions);
+    }
+
+  if(it->TreeNode.m_Child[1])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
+    UpdateCollectionNumberOfDivisions(childIt,iNumberOfDivisions);
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 vtkMutableDirectedGraph*
 TrackContainer::
 ExportLineage(unsigned int iTrackID)
