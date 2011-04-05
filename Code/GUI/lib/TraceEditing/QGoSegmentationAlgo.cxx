@@ -33,6 +33,12 @@
 =========================================================================*/
 #include "QGoSegmentationAlgo.h"
 
+// Extract ROI
+#include <vtkExtractVOI.h>
+
+// test code
+#include <assert.h>
+
 
 QGoSegmentationAlgo::QGoSegmentationAlgo(QWidget *iParent)
   :m_AlgoWidget(NULL)
@@ -54,4 +60,83 @@ QGoAlgorithmWidget* QGoSegmentationAlgo::GetAlgoWidget()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+std::vector<vtkImageData*>
+QGoSegmentationAlgo::
+ExtractROI(double* iBounds, std::vector<vtkImageData*> iImages)
+{
+  // vector to be returned
+  std::vector<vtkImageData*> listOfImages;
 
+  //iterator on the images
+  std::vector<vtkImageData*>::iterator it = iImages.begin();
+
+  while( it != iImages.end())
+    {
+    listOfImages.push_back( ExtractROI(iBounds, *it) );
+    ++it;
+    }
+
+  return listOfImages;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+vtkImageData*
+QGoSegmentationAlgo::
+ExtractROI(double* iBounds, vtkImageData* iImage)
+{
+  // test if there are bounds....
+  assert( iBounds[0] );
+  assert( iBounds[1] );
+  assert( iBounds[2] );
+  assert( iBounds[3] );
+  assert( iBounds[4] );
+  assert( iBounds[5] );
+
+  vtkSmartPointer<vtkExtractVOI> extractVOI =
+      vtkSmartPointer<vtkExtractVOI>::New();
+  extractVOI->SetInput( iImage );
+  extractVOI->SetVOI( iBounds[0] ,iBounds[1],iBounds[2],iBounds[3], iBounds[4], iBounds[5]);
+  extractVOI->Update();
+
+  /*
+   * \note Nicolas-to be tested....
+   */
+  return extractVOI->GetOutput();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+
+// Convert vtkImageData to itkData
+//template< class PixelType, unsigned int VImageDimension >
+//typename itk::Image< PixelType, VImageDimension >::Pointer
+//QGoSegmentationAlgo::
+//ConvertVTK2ITK(vtkImageData *iInput)
+//{
+  /*
+  if ( !iInput )
+    {
+    std::cerr << "no input to be converted to itk" << std::endl;
+    }
+
+  //Export VTK image to ITK
+  m_vtk2itkImage->SetInput(iInput);
+  m_vtk2itkImage->Update();
+
+  // ImageType
+  typedef itk::Image< PixelType, VImageDimension > ImageType;
+  // Import VTK Image to ITK
+  typedef itk::VTKImageImport< ImageType >  ImageImportType;
+  typedef typename ImageImportType::Pointer ImageImportPointer;
+  ImageImportPointer movingImporter = ImageImportType::New();
+
+  ConnectPipelines< vtkImageExport, ImageImportPointer >(
+    m_vtk2itkImage,
+    movingImporter);
+
+  typename ImageType::Pointer itkImage = movingImporter->GetOutput();
+  itkImage->DisconnectPipeline();
+
+  return itkImage;*/
+//}

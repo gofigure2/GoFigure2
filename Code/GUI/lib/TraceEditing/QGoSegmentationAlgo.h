@@ -79,8 +79,26 @@ protected:
   */
   virtual void DeleteParameters() = 0;
 
-  //add a method std::vector<vtkImageData> ExtractROI(Bounds, std::vector<vtkImageData> iImages)
-  //add a method vtkImageData>ExtractROI(Bounds, vtkImageData iImage)
+  /*
+   * \brief Extract region of interest, given a bounding box and a list of vtk images
+   * \param[in] iBounds bounding box (xmin, xmax, ymin, ymax, zmin, zmax)
+   * \param[in] iImages vector of vtkimagedata
+   * \return list of roi
+   */
+  std::vector<vtkImageData*> ExtractROI(double* iBounds, std::vector<vtkImageData*> iImages);
+  /*
+   * \brief Extract region of interest, given a bounding box and a vtk image
+   * \param[in] iBounds bounding box (xmin, xmax, ymin, ymax, zmin, zmax)
+   * \param[in] iImage vtkimagedata
+   * \return roi
+   */
+  vtkImageData* ExtractROI(double* iBounds, vtkImageData* iImage);
+
+  // convert vtk to itk
+  //template< class PixelType, unsigned int VImageDimension >
+  //typename itk::Image< PixelType, VImageDimension >::Pointer
+  //ConvertVTK2ITK(vtkImageData *iInput);
+
   //add a method std::vector<PolyData*> ConvertITKImagesToPolyData(std::vector<itk::Image> iImages)
   //add a method std::vector<TraceAttribut> GetAttribut(std::vector<vtkPolyData*> iNewTraces)
 };
