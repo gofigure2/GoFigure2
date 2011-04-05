@@ -1441,18 +1441,25 @@ ExportLineage(unsigned int iTrackID)
   unsigned int pedigree = graph->AddVertex();
 
   // arrays we want to export
+  vtkDoubleArray* id = vtkDoubleArray::New();
+  id->SetName("Track ID");
+
+  // arrays we want to export
   vtkDoubleArray* depth = vtkDoubleArray::New();
-  depth->SetName("Depth");
+  depth->SetName("Lineage Depth");
 
   UpdateLineage(motherIt,
                    graph,
                 pedigree,
                        0,  // mother vtkIDtype
-                       0,depth); // depth information
+                       0,depth,// depth information
+                       id); // id info
 
+  graph->GetVertexData()->AddArray(id);
   graph->GetVertexData()->AddArray(depth);
 
   // delete array
+  id->Delete();
   depth->Delete();
 
   return graph;
@@ -1464,11 +1471,13 @@ void
 TrackContainer::
 UpdateLineage(MultiIndexContainerTraceIDIterator& it,
     vtkMutableDirectedGraph* iGraph, unsigned int iPedrigree, vtkIdType mother,
-    unsigned int iDepth, vtkDoubleArray* iDepthArray)
+    unsigned int iDepth, vtkDoubleArray* iDepthArray, vtkDoubleArray* iIDArray)
 {
   // Update mother ID
   vtkIdType motherPedigree = iPedrigree;
 
+  //add info
+  iIDArray->InsertValue(iPedrigree, it->TraceID);
   // add info
   iDepthArray->InsertValue(iPedrigree, iDepth);
 
@@ -1485,7 +1494,7 @@ UpdateLineage(MultiIndexContainerTraceIDIterator& it,
     // add edge
     iPedrigree = iGraph->AddChild(motherPedigree);
     //go through tree
-    UpdateLineage(childIt,iGraph, iPedrigree, motherPedigree, iDepth+1, iDepthArray);
+    UpdateLineage(childIt,iGraph, iPedrigree, motherPedigree, iDepth+1, iDepthArray,iIDArray);
     }
 
   if(it->TreeNode.m_Child[1])
@@ -1496,7 +1505,7 @@ UpdateLineage(MultiIndexContainerTraceIDIterator& it,
     // add edge
     iPedrigree = iGraph->AddChild(motherPedigree);
     // go through tree
-    UpdateLineage(childIt,iGraph, iPedrigree, motherPedigree, iDepth+1, iDepthArray);
+    UpdateLineage(childIt,iGraph, iPedrigree, motherPedigree, iDepth+1, iDepthArray, iIDArray);
     }
 }
 //-------------------------------------------------------------------------

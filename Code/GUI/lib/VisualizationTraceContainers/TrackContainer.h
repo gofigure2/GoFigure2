@@ -539,11 +539,13 @@ public:
    * \param[in] mother vertex ID of the mother - to create edges
    * \param[in] iDepth depth of the node in the lineage - to compute stats
    * \param[in] iDepthArray array to be modified to add information to the graph
+   * \param[in] iIDArray array to be modified to add information to the graph
    */
   void UpdateLineage(MultiIndexContainerTraceIDIterator& it,
       vtkMutableDirectedGraph* iGraph, unsigned int iPedrigree,
       vtkIdType mother,
-      unsigned int iDepth, vtkDoubleArray* iDepthArray);
+      unsigned int iDepth, vtkDoubleArray* iDepthArray,
+      vtkDoubleArray* iIDArray);
 
 signals:
   /** \brief When one track has been picked (highlighted) from the visualization */
