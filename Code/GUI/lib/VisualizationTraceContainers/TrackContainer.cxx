@@ -1436,7 +1436,7 @@ GetCollectionMinDepth( unsigned int iTrackRootID )
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iTrackRootID);
 
-  unsigned int depth = std::numeric_limits<int>::max();
+  unsigned int depth = std::numeric_limits<unsigned int>::max();
   UpdateCollectionMinDepth(motherIt, 0, depth); //0: root depth
 
   return depth;
