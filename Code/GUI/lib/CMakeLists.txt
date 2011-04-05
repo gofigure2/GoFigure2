@@ -29,7 +29,7 @@ SET( QGoGUILIB_SRC
   QGoImageView3D.cxx
   QGoImageInfo.cxx
   QGoLUTDialog.cxx
-  QGoManualSegmentationSettingsDialog.cxx
+  TraceEditing/QGoManualSegmentationSettingsDialog.cxx
   Wizard/QGoOpenCreateImgSessionPage.cxx
   Wizard/QGoOpenCreateProjectPage.cxx
   QGoPrintDatabase.cxx
@@ -78,8 +78,8 @@ SET( QGoGUILIB_SRC
   QGoMeshSegmentationBaseDockWidget.cxx
 
   #--manual segmentation--
-  QGoContourManualSegmentation.cxx
-  QGoContourManualSegmentationWidget.cxx
+  TraceEditing/QGoContourManualSegmentation.cxx
+  TraceEditing/QGoContourManualSegmentationWidget.cxx
 
   #--seed segmentation--
   QGoSeedSegmentationBase.cxx
@@ -187,7 +187,7 @@ SET( QGoGUILIB_HDRS
   QGoImageView3D.h
   QGoImageInfo.h
   QGoLUTDialog.h
-  QGoManualSegmentationSettingsDialog.h
+  TraceEditing/QGoManualSegmentationSettingsDialog.h
   Wizard/QGoOpenCreateImgSessionPage.h
   Wizard/QGoOpenCreateProjectPage.h
   QGoPrintDatabase.h
@@ -237,8 +237,8 @@ SET( QGoGUILIB_HDRS
   QGoMeshSegmentationBaseDockWidget.h
 
   #--manual segmentation--
-  QGoContourManualSegmentation.h
-  QGoContourManualSegmentationWidget.h
+  TraceEditing/QGoContourManualSegmentation.h
+  TraceEditing/QGoContourManualSegmentationWidget.h
 
   #--seed segmentation--
   QGoSeedSegmentationBase.h

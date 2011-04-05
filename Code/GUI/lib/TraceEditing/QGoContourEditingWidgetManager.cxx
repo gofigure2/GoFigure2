@@ -195,8 +195,4 @@ void QGoContourEditingWidgetManager::SetVisible(bool isVisible)
     {
     emit ManualSegmentationActivated(isVisible);
     }
-  /*else
-    {
-    emit ManualSegmentationActivated(false);
-    }*/
 }
