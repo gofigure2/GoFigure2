@@ -238,6 +238,9 @@ vtkPolyData *
 QGoSegmentationAlgo::
 ReconstructContour(vtkImageData *iInputImage, const double & iThreshold)
 {
+  /*
+   * \note Nicolas-too many deep copies
+   */
   // create iso-contours
   vtkMarchingSquares *contours = vtkMarchingSquares::New();
 
@@ -262,6 +265,9 @@ vtkPolyData *
 QGoSegmentationAlgo::
 ReorganizeContour(vtkPolyData *iInputImage, bool iDecimate)
 {
+  /*
+   * \note Nicolas-too many deep copies
+   */
   // Create reorganize contours
   vtkStripper *stripper = vtkStripper::New();
 
@@ -395,6 +401,9 @@ ReconstructMesh(vtkImageData *iInputImage, const double & iThreshold)
   smoother->NormalizeCoordinatesOn();
   smoother->Update();
 
+  /*
+   * \note Nicolas-too many deep copies
+   */
   vtkPolyData *output = vtkPolyData::New();
   output->DeepCopy( connectivityFilter->GetOutput() );
 
