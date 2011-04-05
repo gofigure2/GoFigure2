@@ -530,10 +530,23 @@ public:
   /*
    * \brief Update the collection number of divisions
    * \param[in] it iterator to go through the lineage
-   * \param[in] iLineageDepth number of divisions of the lineage
+   * \param[in] iNumberOfDivisions number of divisions of the lineage
    */
   void UpdateCollectionNumberOfDivisions( MultiIndexContainerTraceIDIterator& it,
       unsigned int& iNumberOfDivisions);
+  /*
+   * \brief Get the number of leaves of the lineage
+   * \param[in] iTrackRootID id of the track root
+   * \return depth of the lineage
+   */
+  unsigned int GetCollectionNumberOfLeaves( unsigned int iTrackRootID );
+  /*
+   * \brief Update the collection number of leaves
+   * \param[in] it iterator to go through the lineage
+   * \param[in] iNumberOfLeaves number of leaves of the lineage
+   */
+  void UpdateCollectionNumberOfLeaves( MultiIndexContainerTraceIDIterator& it,
+      unsigned int& iNumberOfLeaves);
 
   /*
    * \brief Export a vtkMutableDirectedGraph from a given trackID root.
