@@ -70,6 +70,37 @@ public:
     std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel) = 0;
 
+private:
+
+  /*
+   * \brief Reconstruct a contour from a vtkImageData and a threshold
+   * \param[in] iInputImage vtkImageData
+   * \param[in] iThreshold threshold
+   * \return Pointer to a vtkPolyData
+   */
+  vtkPolyData* ReconstructContour(vtkImageData *iInputImage,
+      const double & iThreshold);
+
+  /*
+   * \brief Reorganize points within a contour and decimate it.
+   * Required if we want to reedit this contour after.
+   * 1-reorganize
+   * 2-decimate
+   * \param[in] iInputImage vtkImageData
+   * \param[in] iDecimate enable decimation
+   * \return Pointer to a vtkPolyData
+   */
+  vtkPolyData* ReorganizeContour(vtkPolyData *iInputImage, bool iDecimate);
+
+  /*
+   * \brief Reconstruct a mesh from a vtkImageData and a threshold
+   * \param[in] iInputImage vtkImageData
+   * \param[in] iThreshold threshold
+   * \return Pointer to a vtkPolyData
+   */
+  vtkPolyData* ReconstructMesh(vtkImageData *iInputImage,
+      const double & iThreshold);
+
 protected:
   QGoAlgorithmWidget*             m_AlgoWidget;
 
@@ -120,6 +151,26 @@ protected:
   vtkImageData *
   ConvertITK2VTK(typename itk::Image< PixelType, VImageDimension >::Pointer iInput);
 
+  /*
+   * \brief Generate list of polydata given a list of vtkimages and a threshold
+   * \param[in] iInputImage list of images
+   * \param[in] iThreshold threshold
+   * \return list of polydatas
+   */
+  std::vector<vtkPolyData*>  ReconstructPolyData(std::vector<vtkImageData*> iInputImage,
+      const double & iThreshold);
+  /*
+   * \brief Generate a polydata given a vtkimage and a threshold
+   * \param[in] iInputImage vtk image
+   * \param[in] iThreshold threshold
+   * \return polydata
+   */
+  vtkPolyData *  ReconstructPolyData(vtkImageData *iInputImage,
+      const double & iThreshold);
+
+  /*
+   * \todo Arnaud has something for itkimage to vtkpolydata in 3d
+   */
   //add a method std::vector<PolyData*> ConvertITKImagesToPolyData(std::vector<itk::Image> iImages)
   //add a method std::vector<TraceAttribut> GetAttribut(std::vector<vtkPolyData*> iNewTraces)
 };
