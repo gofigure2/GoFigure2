@@ -109,6 +109,17 @@ protected:
   typename itk::Image< PixelType, VImageDimension >::Pointer
   ConvertVTK2ITK(vtkImageData *iInput);
 
+  /*
+   * \brief Convert a itkImage to a vtkImage.
+   * \tparam PixelType type of pixel (unsigned char, etc.)
+   * \tparam VImageDimension dimension of the image (2 or 3)
+   * \param[in] iInput Pointer to an itkImage
+   * \return Pointer to an vtkImageData
+  */
+  template< class PixelType, unsigned int VImageDimension >
+  vtkImageData *
+  ConvertITK2VTK(typename itk::Image< PixelType, VImageDimension >::Pointer iInput);
+
   //add a method std::vector<PolyData*> ConvertITKImagesToPolyData(std::vector<itk::Image> iImages)
   //add a method std::vector<TraceAttribut> GetAttribut(std::vector<vtkPolyData*> iNewTraces)
 };

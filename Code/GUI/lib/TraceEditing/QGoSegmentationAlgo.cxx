@@ -40,6 +40,9 @@
 #include "vtkImageExport.h"
 #include "vtkitkAdaptor.h"
 
+// convert itk to vtk
+#include "itkImageToVTKImageFilter.h"
+
 // test code
 #include <assert.h>
 
@@ -104,15 +107,13 @@ ExtractROI(double* iBounds, vtkImageData* iImage)
   extractVOI->Update();
 
   /*
-   * \note Nicolas-to be tested....
+   * \note Nicolas-to be tested....might nedd deepcopy
    */
   return extractVOI->GetOutput();
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-
-// Convert vtkImageData to itkData
 template< class PixelType, unsigned int VImageDimension >
 typename itk::Image< PixelType, VImageDimension >::Pointer
 QGoSegmentationAlgo::
@@ -143,3 +144,35 @@ ConvertVTK2ITK(vtkImageData *iInput)
 
   return itkImage;
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+template< class PixelType, unsigned int VImageDimension >
+vtkImageData *
+QGoSegmentationAlgo::
+ConvertITK2VTK(typename itk::Image< PixelType, VImageDimension >::Pointer iInput)
+{
+  typedef itk::Image< PixelType, VImageDimension >        InternalImageType;
+  typedef itk::ImageToVTKImageFilter< InternalImageType > ConverterType;
+  typedef typename ConverterType::Pointer                 ConverterPointer;
+
+  ConverterPointer converter = ConverterType::New();
+  converter->SetInput(iInput);
+
+  try
+    {
+    converter->Update();
+    }
+  catch (itk::ExceptionObject & err)
+    {
+    std::cerr << "converter Exception:" << err << std::endl;
+    }
+
+  /*
+   * \note Nicolas-to be tested.... might need deepcopy?
+   */
+  return converter->GetOutput();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
