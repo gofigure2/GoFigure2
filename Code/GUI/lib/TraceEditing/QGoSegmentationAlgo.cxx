@@ -36,6 +36,10 @@
 // Extract ROI
 #include <vtkExtractVOI.h>
 
+// convert vtk to itk
+#include "vtkImageExport.h"
+#include "vtkitkAdaptor.h"
+
 // test code
 #include <assert.h>
 
@@ -85,7 +89,7 @@ vtkImageData*
 QGoSegmentationAlgo::
 ExtractROI(double* iBounds, vtkImageData* iImage)
 {
-  // test if there are bounds....
+  // make sure there are bounds....
   assert( iBounds[0] );
   assert( iBounds[1] );
   assert( iBounds[2] );
@@ -109,34 +113,33 @@ ExtractROI(double* iBounds, vtkImageData* iImage)
 //-------------------------------------------------------------------------
 
 // Convert vtkImageData to itkData
-//template< class PixelType, unsigned int VImageDimension >
-//typename itk::Image< PixelType, VImageDimension >::Pointer
-//QGoSegmentationAlgo::
-//ConvertVTK2ITK(vtkImageData *iInput)
-//{
-  /*
-  if ( !iInput )
-    {
-    std::cerr << "no input to be converted to itk" << std::endl;
-    }
+template< class PixelType, unsigned int VImageDimension >
+typename itk::Image< PixelType, VImageDimension >::Pointer
+QGoSegmentationAlgo::
+ConvertVTK2ITK(vtkImageData *iInput)
+{
+  // make sure there is an input
+  assert ( iInput );
 
   //Export VTK image to ITK
-  m_vtk2itkImage->SetInput(iInput);
-  m_vtk2itkImage->Update();
+  vtkSmartPointer<vtkImageExport> exporter =
+      vtkSmartPointer<vtkImageExport>::New();
+  exporter->SetInput(iInput);
+  exporter->Update();
 
   // ImageType
   typedef itk::Image< PixelType, VImageDimension > ImageType;
   // Import VTK Image to ITK
   typedef itk::VTKImageImport< ImageType >  ImageImportType;
   typedef typename ImageImportType::Pointer ImageImportPointer;
-  ImageImportPointer movingImporter = ImageImportType::New();
+  ImageImportPointer importer = ImageImportType::New();
 
   ConnectPipelines< vtkImageExport, ImageImportPointer >(
-    m_vtk2itkImage,
-    movingImporter);
+    exporter,
+    importer);
 
-  typename ImageType::Pointer itkImage = movingImporter->GetOutput();
+  typename ImageType::Pointer itkImage = importer->GetOutput();
   itkImage->DisconnectPipeline();
 
-  return itkImage;*/
-//}
+  return itkImage;
+}

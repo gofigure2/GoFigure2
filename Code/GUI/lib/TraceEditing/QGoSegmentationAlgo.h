@@ -41,6 +41,10 @@
 #include "vtkImageData.h"
 #include "QGoGUILibConfigure.h"
 
+// convert VTK to ITK
+#include "itkImage.h"
+#include "itkVTKImageImport.h"
+
 /**
 \class QGoSegmentationAlgo
 \brief abstract class to be the interface between the algorithms for meshes 
@@ -94,10 +98,16 @@ protected:
    */
   vtkImageData* ExtractROI(double* iBounds, vtkImageData* iImage);
 
-  // convert vtk to itk
-  //template< class PixelType, unsigned int VImageDimension >
-  //typename itk::Image< PixelType, VImageDimension >::Pointer
-  //ConvertVTK2ITK(vtkImageData *iInput);
+  /*
+   * \brief Convert a vtkImage to a itkImage.
+   * \tparam PixelType type of pixel (unsigned char, etc.)
+   * \tparam VImageDimension dimension of the image (2 or 3)
+   * \param[in] iInput Pointer to a vtkImageData
+   * \return Pointer to an itkImage
+   */
+  template< class PixelType, unsigned int VImageDimension >
+  typename itk::Image< PixelType, VImageDimension >::Pointer
+  ConvertVTK2ITK(vtkImageData *iInput);
 
   //add a method std::vector<PolyData*> ConvertITKImagesToPolyData(std::vector<itk::Image> iImages)
   //add a method std::vector<TraceAttribut> GetAttribut(std::vector<vtkPolyData*> iNewTraces)
