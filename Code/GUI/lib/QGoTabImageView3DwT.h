@@ -504,6 +504,31 @@ protected:
                                                               iVisible );
     }
 
+  template<typename T>
+  void CreateConnectionsTraceEditingWidget(int iTimeMin, int iTimeMax, T* iTraceWidget)
+    {
+    m_DockWidgetList.push_back(
+    std::pair< QGoDockWidgetStatus *, QDockWidget * >(
+      new QGoDockWidgetStatus(
+        iTraceWidget->GetDockWidget(), Qt::LeftDockWidgetArea, false, true),
+        iTraceWidget->GetDockWidget()) );
+
+    QObject::connect(iTraceWidget,
+                   SIGNAL(UpdateSeeds() ),
+                   this,
+                   SLOT(UpdateSeeds() ) );
+
+    QObject::connect(iTraceWidget,
+                   SIGNAL(ClearAllSeeds() ),
+                   this->m_ImageView,
+                   SLOT(ClearAllSeeds() ) );
+
+    QObject::connect( iTraceWidget,
+                    SIGNAL( SetSeedInteractorBehaviour(bool) ),
+                    this,
+                    SLOT( SeedInteractorBehavior(bool) ) );
+    }
+
   std::vector< int > GetBoundingBox(vtkPolyData *contour);
 
   void CreateContour(vtkPolyData *contour_nodes, vtkPolyData *iView);
@@ -572,6 +597,9 @@ protected slots:
   void ShowTraceWidgetsForContour(bool ManualSegVisible = true);
 
   void ShowTraceWidgetsForMesh(bool MeshVisible = true);
+
+  void ShowTraceWidgetsForCorrespondingTrace(
+    std::string iTraceName, std::string iCollectionName, bool TraceVisible = true);
 
   void UpdateSeeds();
 

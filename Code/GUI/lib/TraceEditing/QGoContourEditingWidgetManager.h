@@ -31,10 +31,10 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __QGoTraceEditingWidgetManager_h
-#define __QGoTraceEditingWidgetManager_h
+#ifndef __QGoMeshEditingWidgetManager_h
+#define __QGoMeshEditingWidgetManager_h
 
-#include "QGoTraceEditingWidget.h"
+#include "QGoTraceEditingWidgetManager.h"
 #include "QGoGUILibConfigure.h"
 #include "vtkSmartPointer.h"
 #include "vtkPolyData.h"
@@ -44,106 +44,60 @@
 
 
 /**
-\class QGoTraceEditingWidgetManager abstract class handles the interactions 
-between the user and the algorithms for one kind of trace
+\class QGoContourEditingWidgetManager handles the interactions between the user
+and the algorithms for the contours
 \brief
 */
-class QGOGUILIB_EXPORT QGoTraceEditingWidgetManager: public QObject
+class QGOGUILIB_EXPORT QGoContourEditingWidgetManager: public QGoTraceEditingWidgetManager
 {
   Q_OBJECT
 public:
-  QGoTraceEditingWidgetManager(std::string iTraceName, 
-    std::vector<QString> iVectChannels, 
+
+  QGoContourEditingWidgetManager(std::vector<QString> iVectChannels, 
     int iTimeMin, int iTimeMax, vtkPoints* iSeeds, 
     std::vector< vtkSmartPointer< vtkImageData > >* iImages, 
     int* iCurrentTimePoint,
     QWidget* iParent=0);
 
-  ~QGoTraceEditingWidgetManager();
-
-  QAction* GetToggleViewAction();
-
-  /**
-  \return the dockwidget for it to be integrated in the mainwindow
-  */
-  QDockWidget* GetDockWidget();
+  ~QGoContourEditingWidgetManager();
 
   /**
   \brief display only the current timepoint in the TSlice comboboxes
   of the qgoalgomanagerwidgets, disable them and enable the channel comboboxes
   */
-  virtual void SetTSliceForClassicView();
+  //void SetTSliceForClassicView();
 
    /**
   \brief display the 3 timepoints chosen by the user in the TSlice comboboxes
   of the qgoalgomanagerwidgets, enable them, display only the channel tracked
   by the user and disable the channel comboboxes
   */
-  virtual void SetTSliceForDopplerView(QStringList iListTimePoints, int iChannelNumber);
+  //void SetTSliceForDopplerView(QStringList iListTimePoints, int iChannelNumber);
 
 public slots:
-  /**
-  \brief show or hide the dockwidget and check the current selected mode in order
-  to emit a signal to get the seeds widget if show or to disable it of hide
-  */
-  void SetVisible(bool isVisible);
-
+  
 signals:
 
-  void UpdateSeeds();
-  void ClearAllSeeds();
-  /**
-  \brief emitted when new meshes need to be saved in database and rendered in the 
-  vizu, return the TSlice selected in the TSlice combobox
-  */
-  void TracesCreatedFromAlgo(std::vector<vtkPolyData *> iVectPolydata, int iTCoord);
-
 protected:
-  QDockWidget*                m_TraceEditingDockWidget;
-  QGoTraceEditingWidget*      m_TraceEditingWidget;
-  
-  std::string                 m_TraceName;
-  vtkPoints*                                      m_Seeds; //useful ???
-  std::vector< vtkSmartPointer< vtkImageData > >* m_Images;
-  int*                                            m_CurrentTimePoint;
-  QStringList                 m_ListTimePoint;
 
-  void SetTheTraceWidget(std::vector<QString> iVectChannels, int iTimeMin, 
-    int iTimeMax, QWidget* iParent);
-
-  void SetTheDockWidget(QWidget* iParent);
-
-  /**
-  \brief return the selected timepoint in the TSlice combobox
-  */
-  int GetSelectedTimePoint();
+  /*QGoMeshLevelSetAlgo*                            m_LevelSetAlgo;
+  QGoMeshShapeAlgo*                               m_ShapeAlgo;
+  QGoMeshWaterShedAlgo*                           m_WaterShedAlgo;
+  QGoMeshSplitDanielssonDistanceAlgo*             m_DanielAlgo;*/
 
   /**
   \brief add the algowidget of the different algo in the algomanagerwidget
   for the semi automatic mode and set the different SIGNAL/SLOTS connections
   */
-  virtual void SetSemiAutomaticAlgorithms(QWidget* iParent = 0) = 0;
+  virtual void SetSemiAutomaticAlgorithms(QWidget* iParent = 0);
 
-  /**
-  \brief get the vtkpolydata for the new created meshes by the chosen algo
-  */
-  template<typename T>
-  void GetPolydatasFromAlgo(T* iAlgo)
-    {
-    emit UpdateSeeds();
-    std::vector<vtkPolyData*> NewTraces = iAlgo->ApplyAlgo(
-      this->m_Images, this->m_TraceEditingWidget->GetChannelNumber() );
-    emit TracesCreatedFromAlgo(NewTraces, this->GetSelectedTimePoint() );
-    emit ClearAllSeeds();
-    }
-
+  
 signals:
-  /**
-  \brief emit true to get the seeds widget enabled and false to disable it
-  */
-  void SetSeedInteractorBehaviour(bool enable);
-
+  
 protected slots:
+  /*void ApplyLevelSetAlgo();
+  void ApplyShapeAlgo();
+  void ApplyWaterShedAlgo();*/
 
 };
 

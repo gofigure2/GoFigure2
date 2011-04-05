@@ -31,7 +31,7 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "QGoMeshEditingWidgetManager.h"
+#include "QGoContourEditingWidgetManager.h"
 #include "QGoAlgorithmWidget.h"
 #include "QGoAlgoParameter.h"
 #include "QGoAlgorithmsManagerWidget.h"
@@ -41,34 +41,30 @@
 #include <iostream>
 
 
-QGoMeshEditingWidgetManager::QGoMeshEditingWidgetManager(
+QGoContourEditingWidgetManager::QGoContourEditingWidgetManager(
   std::vector<QString> iVectChannels, 
   int iTimeMin,
   int iTimeMax,
   vtkPoints* iSeeds, 
   std::vector< vtkSmartPointer< vtkImageData > >* iImages, 
   int* iCurrentTimePoint,
-  QWidget* iParent): QGoTraceEditingWidgetManager("Mesh", 
+  QWidget* iParent): QGoTraceEditingWidgetManager("Contour", 
   iVectChannels, iTimeMin, iTimeMax, iSeeds, iImages, 
   iCurrentTimePoint, iParent)
 {
   this->SetSemiAutomaticAlgorithms(iParent);
-  this->SetSplitMergeMode(iParent);
-  this->SetSetOfContoursAlgorithms(iVectChannels, this->m_ListTimePoint, 
-    iParent);
-  this->m_SetOfContoursWidget->SetTSliceForClassicView(
-    tr("%1").arg(*iCurrentTimePoint) );
+  //add the manual mode also
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QGoMeshEditingWidgetManager::~QGoMeshEditingWidgetManager()
+QGoContourEditingWidgetManager::~QGoContourEditingWidgetManager()
 {
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoMeshEditingWidgetManager::SetTSliceForClassicView()
+/*void QGoContourEditingWidgetManager::SetTSliceForClassicView()
 {
   QGoTraceEditingWidgetManager::SetTSliceForClassicView();
   if (this->m_SetOfContoursWidget != NULL)
@@ -87,13 +83,13 @@ void QGoMeshEditingWidgetManager::SetTSliceForDopplerView(
     iListTimePoints, iChannelNumber);
   this->m_SetOfContoursWidget->SetTSliceForDopplerView(
     iListTimePoints, iChannelNumber);
-} 
+} */
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoMeshEditingWidgetManager::SetSemiAutomaticAlgorithms(QWidget* iParent)
+void QGoContourEditingWidgetManager::SetSemiAutomaticAlgorithms(QWidget* iParent)
 {
-  //level set:
+  /*//level set:
   m_LevelSetAlgo = new QGoMeshLevelSetAlgo(this->m_Seeds, iParent);
   QGoAlgorithmWidget* LevelSetWidget = m_LevelSetAlgo->GetAlgoWidget();
   this->m_TraceEditingWidget->AddAlgoWidgetForSemiAutomaticMode(LevelSetWidget);
@@ -115,120 +111,29 @@ void QGoMeshEditingWidgetManager::SetSemiAutomaticAlgorithms(QWidget* iParent)
   this->m_TraceEditingWidget->AddAlgoWidgetForSemiAutomaticMode(WaterShedWidget);
 
   QObject::connect(WaterShedWidget, SIGNAL(ApplyAlgo() ),
-    this, SLOT(ApplyWaterShedAlgo() ) );
+    this, SLOT(ApplyWaterShedAlgo() ) );*/
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoMeshEditingWidgetManager::SetSetOfContoursAlgorithms(
-   std::vector<QString> iVectChannels, QStringList iListTime,
-   QWidget* iParent)
+/*void QGoContourEditingWidgetManager::ApplyLevelSetAlgo()
 {
-  m_SetOfContoursWidget = 
-    new QGoAlgorithmsManagerWidget("Set of Contours",
-    iParent, iVectChannels, iListTime);
-
-  this->m_SetOfContoursWaterShedAlgo = 
-    new QGoSetOfContoursWaterShedAlgo(this->m_Seeds, iParent);
-  QGoAlgorithmWidget* SetOfContoursWaterShedWidget = 
-    this->m_SetOfContoursWaterShedAlgo->GetAlgoWidget();
-  this->m_SetOfContoursWidget->AddMethod(SetOfContoursWaterShedWidget);
-
-  this->m_SetOfContoursLevelSetAlgo = 
-    new QGoSetOfContoursLevelSetAlgo(this->m_Seeds, iParent);
-  QGoAlgorithmWidget* SetOfContoursLevelSetWidget = 
-    this->m_SetOfContoursLevelSetAlgo->GetAlgoWidget();
-  this->m_SetOfContoursWidget->AddMethod(SetOfContoursLevelSetWidget);
-
-  this->m_SetOfContoursShapeAlgo = 
-    new QGoSetOfContoursShapeAlgo(this->m_Seeds, iParent);
-  QGoAlgorithmWidget* SetOfContoursShapeWidget = 
-    this->m_SetOfContoursShapeAlgo->GetAlgoWidget();
-  this->m_SetOfContoursWidget->AddMethod(SetOfContoursShapeWidget);
-
-  this->m_TraceEditingWidget->AddMode(m_SetOfContoursWidget, true);
-
-  QObject::connect(SetOfContoursWaterShedWidget, SIGNAL(ApplyAlgo() ),
-    this, SLOT(ApplySetOfContoursWaterShedAlgo() ) );
-
-  QObject::connect(SetOfContoursLevelSetWidget, SIGNAL(ApplyAlgo() ),
-    this, SLOT(ApplySetOfContoursLevelSetAlgo() ) );
-
-  QObject::connect(SetOfContoursShapeWidget, SIGNAL(ApplyAlgo() ),
-    this, SLOT(ApplySetOfContoursShapeAlgo() ) );
-
-
+  this->GetPolydatasFromAlgo<QGoContourLevelSetAlgo>(this->m_LevelSetAlgo);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoMeshEditingWidgetManager::SetSplitMergeMode(QWidget* iParent)
+void QGoContourEditingWidgetManager::ApplyShapeAlgo()
 {
-  QGoAlgorithmsManagerWidget* SplitAlgoWidget = 
-    new QGoAlgorithmsManagerWidget("Split", iParent);
-  this->m_TraceEditingWidget->AddMode(SplitAlgoWidget, true);
-  
-  m_DanielAlgo = new QGoMeshSplitDanielssonDistanceAlgo(iParent);
-  QGoAlgorithmWidget * DanielWidget = m_DanielAlgo->GetAlgoWidget();
-  SplitAlgoWidget->AddMethod(DanielWidget );
-
-  QObject::connect( DanielWidget, SIGNAL(ApplyAlgo() ) , 
-                    this, SLOT(ApplyDanielAlgo() ) );
-
-  QGoAlgorithmsManagerWidget* MergeAlgoWidget = 
-    new QGoAlgorithmsManagerWidget("Merge", iParent);
-  this->m_TraceEditingWidget->AddMode(MergeAlgoWidget, true);
-
+  this->GetPolydatasFromAlgo<QGoContourShapeAlgo>(this->m_ShapeAlgo);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoMeshEditingWidgetManager::ApplyDanielAlgo()
-{
-  this->GetPolydatasFromAlgo<QGoMeshSplitDanielssonDistanceAlgo>(this->m_DanielAlgo);
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoMeshEditingWidgetManager::ApplyLevelSetAlgo()
-{
-  this->GetPolydatasFromAlgo<QGoMeshLevelSetAlgo>(this->m_LevelSetAlgo);
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoMeshEditingWidgetManager::ApplyShapeAlgo()
-{
-  this->GetPolydatasFromAlgo<QGoMeshShapeAlgo>(this->m_ShapeAlgo);
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoMeshEditingWidgetManager::ApplyWaterShedAlgo()
+void QGoContourEditingWidgetManager::ApplyWaterShedAlgo()
 {
   this->GetPolydatasFromAlgo<QGoMeshWaterShedAlgo>(this->m_WaterShedAlgo);
-}
+}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoMeshEditingWidgetManager::ApplySetOfContoursWaterShedAlgo()
-{
-  this->GetSetOfPolydatasFromAlgo<QGoSetOfContoursWaterShedAlgo>(
-    this->m_SetOfContoursWaterShedAlgo);
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoMeshEditingWidgetManager::ApplySetOfContoursLevelSetAlgo()
-{
-  this->GetSetOfPolydatasFromAlgo<QGoSetOfContoursLevelSetAlgo>(
-    this->m_SetOfContoursLevelSetAlgo);
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoMeshEditingWidgetManager::ApplySetOfContoursShapeAlgo()
-{
-  this->GetSetOfPolydatasFromAlgo<QGoSetOfContoursShapeAlgo>(
-    this->m_SetOfContoursShapeAlgo);
-}

@@ -104,6 +104,7 @@ SET( QGoGUILIB_SRC
   TraceEditing/QGoAlgorithmsManagerWidget.cxx
   TraceEditing/QGoAlgorithmWidget.cxx
   TraceEditing/QGoMeshEditingWidgetManager.cxx
+  TraceEditing/QGoContourEditingWidgetManager.cxx
   TraceEditing/QGoTraceEditingWidgetManager.cxx
   TraceEditing/QGoSegmentationAlgo.cxx
   TraceEditing/QGoMeshLevelSetAlgo.cxx

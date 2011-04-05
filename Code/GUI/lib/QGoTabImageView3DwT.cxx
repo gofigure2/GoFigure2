@@ -397,7 +397,9 @@ QGoTabImageView3DwT::CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax)
     this->m_ChannelNames, iTimeMin, iTimeMax, m_Seeds,
     &m_InternalImages, &m_TCoord, this);
 
-  QObject::connect(this->m_MeshEditingWidget,
+  this->CreateConnectionsTraceEditingWidget<QGoMeshEditingWidgetManager>(
+    iTimeMin, iTimeMax, this->m_MeshEditingWidget);
+  /*QObject::connect(this->m_MeshEditingWidget,
                    SIGNAL(UpdateSeeds() ),
                    this,
                    SLOT(UpdateSeeds() ) );
@@ -405,7 +407,7 @@ QGoTabImageView3DwT::CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax)
   QObject::connect(this->m_MeshEditingWidget,
                    SIGNAL(ClearAllSeeds() ),
                    this->m_ImageView,
-                   SLOT(ClearAllSeeds() ) );
+                   SLOT(ClearAllSeeds() ) ); now on the template method
 
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
@@ -416,7 +418,7 @@ QGoTabImageView3DwT::CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax)
   QObject::connect( this->m_MeshEditingWidget,
                     SIGNAL( SetSeedInteractorBehaviour(bool) ),
                     this,
-                    SLOT( SeedInteractorBehavior(bool) ) );
+                    SLOT( SeedInteractorBehavior(bool) ) );*/
 
   QObject::connect( this->m_MeshEditingWidget,
                     SIGNAL(TracesCreatedFromAlgo(std::vector<vtkPolyData *>, int) ),
@@ -3090,7 +3092,9 @@ QGoTabImageView3DwT::AddContourForMeshToContours(vtkPolyData *iInput)
 void QGoTabImageView3DwT::ShowTraceWidgetsForContour(
   bool ManualSegVisible)
 {
-  if ( ManualSegVisible )
+  this->ShowTraceWidgetsForCorrespondingTrace(
+  "contour", "mesh", ManualSegVisible);
+  /*if ( ManualSegVisible )
     {
     if ( this->m_DataBaseTables->IsDatabaseUsed() )
       {
@@ -3108,7 +3112,7 @@ void QGoTabImageView3DwT::ShowTraceWidgetsForContour(
       //
       m_DataBaseTables->GetTraceSettingsDockWidget()->hide();
       }
-    }
+    }*/
 }
 
 //-------------------------------------------------------------------------
@@ -3117,7 +3121,9 @@ void QGoTabImageView3DwT::ShowTraceWidgetsForContour(
 void QGoTabImageView3DwT::ShowTraceWidgetsForMesh(
   bool MeshSegmentationVisible)
 {
-  if ( MeshSegmentationVisible )
+  this->ShowTraceWidgetsForCorrespondingTrace(
+  "mesh", "track", MeshSegmentationVisible);
+  /*if ( MeshSegmentationVisible )
     {
     if ( this->m_DataBaseTables->IsDatabaseUsed() )
       {
@@ -3135,9 +3141,35 @@ void QGoTabImageView3DwT::ShowTraceWidgetsForMesh(
       //
       m_DataBaseTables->GetTraceSettingsDockWidget()->hide();
       }
-    }
+    }*/
 }
 
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTabImageView3DwT::ShowTraceWidgetsForCorrespondingTrace(
+  std::string iTraceName, std::string iCollectionName, bool TraceVisible)
+{
+  if ( TraceVisible )
+    {
+    if ( this->m_DataBaseTables->IsDatabaseUsed() )
+      {
+      this->m_DataBaseTables->UpdateWidgetsForCorrespondingTrace(iTraceName, iCollectionName);
+      }
+    }
+  else
+    {
+    if ( m_DataBaseTables->toggleViewAction()->isChecked() )
+      {
+      // do nothing
+      }
+    else
+      {
+      //
+      m_DataBaseTables->GetTraceSettingsDockWidget()->hide();
+      }
+    }
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -3433,3 +3465,11 @@ QGoTabImageView3DwT::UpdateMeshEditingWidget()
       }
     }
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+/*void
+QGoTabImageView3DwT::UpdateTraceEditingWidget(void (*pf)(bool) )
+{
+
+}*/
