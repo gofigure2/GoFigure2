@@ -299,6 +299,7 @@ SET( DIRS
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
   ${ITK_LIBRARY_DIRS}
   ${VTK_LIBRARY_DIRS}
+  ${FFMPEG_LIBRARY_DIRS}
 )
 
 # Now the work of copying dependencies into the bundle/package
@@ -336,8 +337,10 @@ ELSE( APPLE )
 ENDIF( APPLE )
 
 FILE( GLOB __source_file_h "${CMAKE_CURRENT_SOURCE_DIR}/*.h" )
+FILE( GLOB __binary_file_h "${CMAKE_CURRENT_BINARY_DIR}/*.h" )
 
-INSTALL( FILES ${__source_file_h} ${QGoMainWindow_UI_H}
+INSTALL( FILES ${__source_file_h} ${__binary_file_h}
+    ${QGoMainWindow_UI_H}
   DESTINATION ${GOFIGURE2_INSTALL_HEADER_DIR}
   COMPONENT Development
 )

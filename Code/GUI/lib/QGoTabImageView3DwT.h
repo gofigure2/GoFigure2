@@ -53,6 +53,7 @@
 #include <string>
 
 #include "vtkSmartPointer.h"
+#include "QGoMeshEditingWidgetManager.h"
 
 // base segmentation dock widget
 class QGoContourSegmentationBaseDockWidget;
@@ -227,7 +228,7 @@ public:
 
   int GetTimeInterval() const;
 
-  QGoTraceManualEditingWidget *     GetTraceManualEditingWidget();
+  //QGoTraceManualEditingWidget *     GetTraceManualEditingWidget();
 
   QGoPrintDatabase *m_DataBaseTables;
 
@@ -322,8 +323,9 @@ public slots:
 
   /** \brief Save a mesh in the database and render the mesh.
    * at the current time point
-  \todo to be renamed */
-  void  SaveAndVisuMeshFromSegmentation(vtkPolyData *iView, int iTCoord);
+  */
+  void SaveInDBAndRenderMeshForVisu(
+    std::vector<vtkPolyData *> iVectPolydata, int iTCoord);
 
   void ReEditContour(const unsigned int & iId);
 
@@ -382,7 +384,8 @@ protected:
   QGoContourSegmentationBaseDockWidget *m_ContourSegmentationDockWidget;
 
   // base segmentation dockwidget for meshes
-  QGoMeshSegmentationBaseDockWidget *m_MeshSegmentationDockWidget;
+  //QGoMeshSegmentationBaseDockWidget *m_MeshSegmentationDockWidget;
+  QGoMeshEditingWidgetManager*       m_MeshEditingWidget;
 
   QGoTrackDockWidget* m_TrackDockWidget;
 
@@ -529,7 +532,8 @@ protected:
   // segmentation dockwidgets
   void CreateContourSegmentationDockWidget();
 
-  void CreateMeshSegmentationDockWidget();
+  //void CreateMeshSegmentationDockWidget();
+  void CreateMeshEditingDockWidget(int iTimeMin, int iTimemax);
 
   void CreateDataBaseTablesConnection();
 
@@ -548,7 +552,7 @@ protected:
 
   void SetTimePointWithMegaCapture();
 
-  void SetTimePointWithMegaCaptureTimeChannels(int channel);
+  void SetTimePointWithMegaCaptureTimeChannels(int channel, int PreviousT = 0);
 
   /**
   \brief give the adress for the contours, meshes and tracks container to the
@@ -648,6 +652,12 @@ protected slots:
   variables have been set for the QGoPrintDatabase
   */
   void SetDatabaseContainersAndDelayedConnections();
+
+  /**
+  \brief depending on the doppler/classic mode, update the TimePoints and channels
+  of the widget
+  */
+  void UpdateMeshEditingWidget();
 
 private:
   Q_DISABLE_COPY(QGoTabImageView3DwT);

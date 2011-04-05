@@ -70,14 +70,18 @@
 <h2>Bookmark.sikuli</h2> <a href="Bookmark.zip">(Download this script)</a>
 </div>
 <pre class="sikuli-code">
-<span class="kw">import</span> os
-address = os.getcwd()
-<span class="cmt">#address = "/home/es1076/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images"
+<span class="cmt">#import os
+</span><span class="cmt">#address = os.getcwd()
+</span><span class="cmt">#address = "/home/es1076/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images"
 </span>
 <span class="cmt">#address = address+"/gofigure2_images"
-</span><span class="kw">print</span> address
-setBundlePath(address)
-
+</span><span class="cmt">#print address
+</span><span class="cmt">#&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+</span><span class="cmt">#setBundlePath(address)
+</span><span class="cmt">#=======
+</span><span class="cmt">#setBundlePath(address)
+</span><span class="cmt">#&gt;&gt;&gt;&gt;&gt;&gt;&gt; develop
+</span>
 start = time.time()
 
 <span class="cmt">#Need to get to a new book mark spot in the easiest way to add a new one.
@@ -157,7 +161,8 @@ Region(<span class="dig">500</span>,<span class="dig">282</span>,<span class="di
 
 
 <span class="cmt">#Delete + ok
-</span><span class="skw">click</span>(<img src="File.png" />)
+</span><span class="cmt">#click("File.png")
+</span><span class="skw">wait</span>(<span class="dig">1</span>)
 <span class="skw">click</span>(<img src="Bookmarks.png" />)
 <span class="skw">click</span>(<img src="Delete_a_bookmark.png" />)
 Region(<span class="dig">500</span>,<span class="dig">282</span>,<span class="dig">283</span>,<span class="dig">271</span>).<span class="skw">click</span>(<img src="Test_Bookmark.png" />)

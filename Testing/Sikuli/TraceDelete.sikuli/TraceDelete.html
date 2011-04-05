@@ -70,14 +70,14 @@
 <h2>TraceDelete.sikuli</h2> <a href="TraceDelete.zip">(Download this script)</a>
 </div>
 <pre class="sikuli-code">
-<span class="kw">import</span> os
-address = os.getcwd()
-<span class="cmt">#address should be ~/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images
+<span class="cmt">#import os
+</span><span class="cmt">#address = os.getcwd()
+</span><span class="cmt">#address should be ~/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images
 </span>
 <span class="cmt">#address = address+"/gofigure2_images"
-</span><span class="kw">print</span> address
-setBundlePath(address)
-
+</span><span class="cmt">#print address
+</span><span class="cmt">#setBundlePath(address)
+</span>
 start = time.time()
 
 <span class="kw">def</span> ClickDelete(Region):
@@ -95,8 +95,8 @@ start = time.time()
 </span><span class="cmt">#       a = getLastMatch()
 </span><span class="cmt">#       a.inside().click("WidgetTestDelete.png")
 </span>
-
-TraceObject = (<img src="SelectedColor.png" />,<img src="SelectedCellType.png" />,<img src="SelectedSubCellType.png" />)
+        <span class="cmt">#"SelectedColor.png",
+</span>TraceObject = (<img src="SelectedCellType.png" />,<img src="SelectedSubCellType.png" />)
 Action = (<span class="str">"Cancel"</span>,<span class="str">"DeleteFields"</span>)
 <span class="kw">for</span> a <span class="kw">in</span> Action:
         <span class="kw">for</span> i <span class="kw">in</span> TraceObject:

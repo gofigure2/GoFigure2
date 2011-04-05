@@ -101,7 +101,7 @@ void ctkCollapsibleGroupBox::expand(bool _expand)
     this->OldSize = this->size();
     }
 
-  QObjectList childList = this->children();
+  /*QObjectList childList = this->children();
   for (int i = 0; i < childList.size(); ++i)
     {
     QObject *o = childList.at(i);
@@ -113,17 +113,19 @@ void ctkCollapsibleGroupBox::expand(bool _expand)
         w->setVisible(_expand);
         }
       }
-    }
+    }*/
 
   if (_expand)
     {
     this->setMaximumHeight(this->MaxHeight);
     this->resize(this->OldSize);
+    this->setFlat(false);
     }
   else
     {
     this->MaxHeight = this->maximumHeight();
     this->setMaximumHeight(22);
+    this->setFlat(true);
     }
 
   //this->updateGeometry();

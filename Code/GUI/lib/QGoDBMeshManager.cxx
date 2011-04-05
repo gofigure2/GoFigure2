@@ -281,7 +281,7 @@ unsigned int QGoDBMeshManager::CreateNewMeshWithNoContourNoPoints(
 
   NameWithColorData NewMeshData(ConvertToString< unsigned int >(NewMeshID),
                                 this->m_SelectedColorData->second);
-  emit AddNewTraceIDInTM(NewMeshData);
+  emit AddNewTraceIDInTS(NewMeshData);
   return NewMeshID;
 }
 

@@ -271,10 +271,10 @@ signals:
 
 /**
   \brief signal emitted when a new trace is created that need to be added in the
-  manual editing trace widget. (when a new mesh is created while contour table is
+  trace settings widget. (when a new mesh is created while contour table is
   displayed for example)
   */
-  void AddNewTraceIDInTM(std::pair<std::string, QColor> iTraceToAddData);
+  void AddNewTraceIDInTS(std::pair<std::string, QColor> iTraceToAddData);
 
   void PrintMessage(QString iMessage, int iTimeOut = 0);
 

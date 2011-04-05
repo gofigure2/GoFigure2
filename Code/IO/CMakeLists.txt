@@ -63,6 +63,14 @@ SET( QGOIO_SRC
 #  TrackTextFileImport.cxx
 )
 
+SET_SOURCE_FILES_PROPERTIES(
+  GoDBRow.cxx
+  GoDBTraceRow.cxx
+  GoDBTableWidgetContainer.cxx
+  GoDBNameDescRow.cxx
+  ABSTRACT
+  )
+
 ADD_LIBRARY( QGoIO
   ${QGOIO_SRC}
 )
@@ -76,8 +84,9 @@ TARGET_LINK_LIBRARIES( QGoIO
   vtkIO
   vtkImaging
   vtkLSMReader
-  ITKCommon
-  ITKIO
+  ${ITK_LIBRARIES}
+  #ITKCommon
+  #ITKIO
 )
 
 SET_TARGET_PROPERTIES( QGoIO PROPERTIES VERSION ${GOFIGURE2_LIB_VERSION} SOVERSION ${GOFIGURE2_LIB_VERSION} )

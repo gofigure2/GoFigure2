@@ -82,8 +82,8 @@ start = time.time()
 
 <span class="cmt">#click("MeshSegmentationIcon.png")
 </span><span class="cmt">#Need this b/c when Click on just Contour Segmentation Icon, Trace widget does not show up
-</span><span class="skw">click</span>(<img src="ContourSegmentationIcon.png" />)
-<span class="skw">wait</span>(<span class="dig">1</span>)
+</span><span class="cmt">#click("ContourSegmentationIcon.png")
+</span><span class="skw">wait</span>(<span class="dig">1</span>)
 
 <span class="kw">def</span> AddNew(Region):
 <span class="cmt">#       """Clicks on add a new... in dropdown menu of TraceWidget for Color, CellType, SubCellType. """

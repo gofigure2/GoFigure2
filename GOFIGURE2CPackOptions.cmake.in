@@ -11,7 +11,7 @@ IF( CPACK_GENERATOR MATCHES "NSIS" )
 
     # A branding image that will be displayed inside the installer.
     # We use the default one!
-#    SET(CPACK_PACKAGE_ICON "@CMake_SOURCE_DIR@/Resources/fig\\splash.png")
+#   SET(CPACK_PACKAGE_ICON "@CMake_SOURCE_DIR@/Resources/fig\\splash.png")
 
     SET( CPACK_NSIS_COMPRESSOR "/SOLID lzma" )
 

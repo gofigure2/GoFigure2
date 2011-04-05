@@ -215,6 +215,15 @@ QGoContourSegmentationBaseDockWidget::SetChannel(int iChannel, const QString & i
 
 //---------------------------------------------------------------------------//
 void
+QGoContourSegmentationBaseDockWidget::SetCurrentChannel(unsigned int iChannel)
+{
+  m_ContourSemiAutoSegmentation->SetCurrentChannel(iChannel);
+}
+
+//---------------------------------------------------------------------------//
+
+//---------------------------------------------------------------------------//
+void
 QGoContourSegmentationBaseDockWidget::SetNumberOfChannels(int iNumberOfChannels)
 {
   m_ContourSemiAutoSegmentation->SetNumberOfChannels(iNumberOfChannels);
