@@ -87,6 +87,11 @@ public:
   void SetTSliceForClassicView(int iTimePoint);
   void SetTSliceForDopplerView(QStringList iListTimePoints, int iChannelNumber);
 
+  /**
+  \brief return the name of the current mode in the combobox
+  */
+  std::string GetCurrentModeName();
+
 signals:
   void SetSeedInteractorBehaviour(bool enable);
 

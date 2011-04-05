@@ -182,3 +182,10 @@ int QGoTraceEditingWidget::GetSelectedTimePoint()
    this->m_ModeEditingWidget->SetTSliceForDopplerViewInAllAlgoModes(
      iListTimePoints, iChannelNumber);
  }
+ //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+ std::string QGoTraceEditingWidget::GetCurrentModeName()
+{
+  return this->m_ModeEditingWidget->GetCurrentModeName();
+}

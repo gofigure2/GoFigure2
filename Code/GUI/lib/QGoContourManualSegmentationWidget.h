@@ -64,6 +64,9 @@ public:
    * \brief Pop up dialog to choose the contour properties
    */
   QGoManualSegmentationSettingsDialog *m_SettingsDialog;
+
+  virtual void setVisible(bool iVisible);
+
 signals:
 /*
  * \brief Signal sent if "Reinitialize" button clicked
@@ -84,6 +87,8 @@ signals:
    * \brief Signal sent if leave the m_SettingsDialog by clicking "OK"
    */
   void UpdateContourRepresentationProperties();
+
+  void ManualSegmentationActivated(bool);
 
 private:
   Q_DISABLE_COPY(QGoContourManualSegmentationWidget);

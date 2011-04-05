@@ -66,5 +66,12 @@ QGoContourManualSegmentationWidget::
 ~QGoContourManualSegmentationWidget()
 {
 }
+//---------------------------------------------------------------------------//
 
+//---------------------------------------------------------------------------//
+void QGoContourManualSegmentationWidget::setVisible(bool iVisible)
+{
+  QWidget::setVisible(iVisible);
+  emit ManualSegmentationActivated(iVisible);
+}
 //---------------------------------------------------------------------------//

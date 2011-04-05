@@ -231,3 +231,10 @@ void QGoModesManagerWidget::SetTSliceForDopplerViewInAllAlgoModes(
   this->m_SemiAutoAlgoManagerWidget->SetTSliceForDopplerView(
     iListTimePoints, iChannelNumber);
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+ std::string QGoModesManagerWidget::GetCurrentModeName()
+{
+  return this->m_ModeComboBox->currentText().toStdString();
+}

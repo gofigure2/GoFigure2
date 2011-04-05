@@ -35,6 +35,7 @@
 #define __QGoContourEditingWidgetManager_h
 
 #include "QGoTraceEditingWidgetManager.h"
+#include "QGoContourManualSegmentation.h"
 #include "QGoGUILibConfigure.h"
 #include "vtkSmartPointer.h"
 #include "vtkPolyData.h"
@@ -60,6 +61,21 @@ public:
     QWidget* iParent=0);
 
   ~QGoContourEditingWidgetManager();
+  //related to manual mode:
+
+  /**
+   * \brief Set the reedit mode
+   * \param[in] iReeditMode true: we are in reedit mode, false:classic segmentation
+   */
+  void SetReeditMode(bool iReeditMode);
+
+  /**
+   * \brief Get the reedit mode
+   * \return true: we are in reedit mode, false:classic segmentation
+   */
+  bool GetReeditMode();
+
+  void InitializeSettingsForManualMode();
 
   /**
   \brief display only the current timepoint in the TSlice comboboxes
@@ -75,10 +91,12 @@ public:
   //void SetTSliceForDopplerView(QStringList iListTimePoints, int iChannelNumber);
 
 public slots:
+  virtual void SetVisible(bool isVisible);
   
 signals:
 
 protected:
+  QGoContourManualSegmentation*                   m_ManualMode;
 
   /*QGoMeshLevelSetAlgo*                            m_LevelSetAlgo;
   QGoMeshShapeAlgo*                               m_ShapeAlgo;
@@ -91,9 +109,16 @@ protected:
   */
   virtual void SetSemiAutomaticAlgorithms(QWidget* iParent = 0);
 
+  void SetManualMode(QWidget* iParent=0);
   
 signals:
-  
+  //from the manual mode:
+  void validateContour();
+  void reinitializeContour();
+  void changeContourRepresentationProperty(float iLinewidth, QColor iLinecolor,
+                                           QColor iNodecolor, QColor iActivenodecolor);
+  void ManualSegmentationActivated(bool);
+
 protected slots:
   /*void ApplyLevelSetAlgo();
   void ApplyShapeAlgo();

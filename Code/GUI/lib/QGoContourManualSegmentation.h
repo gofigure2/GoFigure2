@@ -106,6 +106,8 @@ signals:
   void changeContourRepresentationProperty(float iLinewidth, QColor iLinecolor,
                                            QColor iNodecolor, QColor iActivenodecolor);
 
+  void ManualSegmentationActivated(bool);
+
 protected:
   QGoContourManualSegmentationWidget *m_ContourSegmentationWidget;
 

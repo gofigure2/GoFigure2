@@ -53,6 +53,7 @@ QGoContourEditingWidgetManager::QGoContourEditingWidgetManager(
   iCurrentTimePoint, iParent)
 {
   this->SetSemiAutomaticAlgorithms(iParent);
+  this->SetManualMode(iParent);
   //add the manual mode also
 }
 //-------------------------------------------------------------------------
@@ -60,6 +61,34 @@ QGoContourEditingWidgetManager::QGoContourEditingWidgetManager(
 //-------------------------------------------------------------------------
 QGoContourEditingWidgetManager::~QGoContourEditingWidgetManager()
 {
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoContourEditingWidgetManager::SetManualMode(QWidget* iParent)
+{
+  m_ManualMode = new QGoContourManualSegmentation(iParent);
+  this->m_TraceEditingWidget->AddWidgetForManualMode(m_ManualMode->getWidget(),
+    false);
+
+  QObject::connect( this->m_ManualMode, 
+                    SIGNAL (changeContourRepresentationProperty(float, QColor,
+                                           QColor, QColor) ),
+                    this, SIGNAL(changeContourRepresentationProperty(float, QColor,
+                                           QColor, QColor) ) );
+
+  QObject::connect( this->m_ManualMode, 
+                    SIGNAL (validateContour() ),
+                    this, SIGNAL(validateContour() ) );
+
+  QObject::connect( this->m_ManualMode, 
+                    SIGNAL (reinitializeContour() ),
+                    this, SIGNAL(reinitializeContour() ) );
+
+  QObject::connect( this->m_ManualMode, 
+                    SIGNAL (ManualSegmentationActivated(bool) ),
+                    this, SIGNAL(ManualSegmentationActivated(bool) ) );
+
 }
 //-------------------------------------------------------------------------
 
@@ -137,3 +166,37 @@ void QGoContourEditingWidgetManager::ApplyWaterShedAlgo()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoContourEditingWidgetManager::SetReeditMode(bool iReeditMode)
+{
+  this->m_ManualMode->SetReeditMode(iReeditMode);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+bool QGoContourEditingWidgetManager::GetReeditMode()
+{
+  return this->m_ManualMode->GetReeditMode();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoContourEditingWidgetManager::InitializeSettingsForManualMode()
+{
+  this->m_ManualMode->GenerateContourRepresentationProperties(true);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoContourEditingWidgetManager::SetVisible(bool isVisible)
+{
+  QGoTraceEditingWidgetManager::SetVisible(isVisible);
+
+  if (this->m_TraceEditingWidget->GetCurrentModeName() == "Manual")
+    {
+    emit ManualSegmentationActivated(isVisible);
+    }
+  /*else
+    {
+    emit ManualSegmentationActivated(false);
+    }*/
+}

@@ -336,10 +336,6 @@ QGoTabImageView3DwT::CreateContourEditingDockWidget(
                     this,
                     SLOT( DefaultInteractorBehavior(bool) ) );
 
-  QObject::connect( m_ContourSegmentationDockWidget,
-                    SIGNAL( ManualSegmentationActivated(bool) ),
-                    this,
-                    SLOT( ManualInteractorBehavior(bool) ) );
 
   QObject::connect( m_ContourSegmentationDockWidget,
                     SIGNAL( SemiAutoSegmentationActivated(bool) ),
@@ -349,25 +345,31 @@ QGoTabImageView3DwT::CreateContourEditingDockWidget(
   QObject::connect( m_ContourSegmentationDockWidget,
                     SIGNAL( AutoSegmentationActivated(bool) ),
                     this,
-                    SLOT( DefaultInteractorBehavior(bool) ) );
+                    SLOT( DefaultInteractorBehavior(bool) ) );*/
 
   // signals from the manual segmentation
-  QObject::connect( m_ContourSegmentationDockWidget,
-                    SIGNAL( ValidateContour() ),
+  QObject::connect( m_ContourEditingWidget,
+                    SIGNAL( ManualSegmentationActivated(bool) ),
+                    this,
+                    SLOT( ManualInteractorBehavior(bool) ) );
+
+  QObject::connect( this->m_ContourEditingWidget,
+                    SIGNAL( validateContour() ),
                     this, SLOT( ValidateContour() ) );
 
-  QObject::connect( m_ContourSegmentationDockWidget,
-                    SIGNAL( ReinitializeContourWidget() ),
+  QObject::connect( this->m_ContourEditingWidget,
+                    SIGNAL( reinitializeContour() ),
                     m_ImageView,
                     SLOT( ReinitializeContourWidget() ) );
 
-  QObject::connect( m_ContourSegmentationDockWidget,
-                    SIGNAL( UpdateContourRepresentationProperties(float, QColor,
+  QObject::connect( this->m_ContourEditingWidget,
+                    SIGNAL( changeContourRepresentationProperty(float, QColor,
                                                                   QColor, QColor) ),
                     m_ImageView,
                     SLOT( UpdateContourRepresentationProperties(float, QColor,
                                                                 QColor, QColor) ) );
-
+  this->m_ContourEditingWidget->InitializeSettingsForManualMode();
+  /*
   // signals for the semi automated segmentation
   QObject::connect( m_ContourSegmentationDockWidget,
                     SIGNAL( UpdateSeeds() ),
@@ -2586,8 +2588,7 @@ QGoTabImageView3DwT::VisualizeTrace(vtkPolyData *iTrace, double *iRGBA)
 void
 QGoTabImageView3DwT::ValidateContour()
 {
- // bool re_edit = m_ContourSegmentationDockWidget->GetReeditMode();
-  bool re_edit = true;
+  bool re_edit = this->m_ContourEditingWidget->GetReeditMode();
   for ( int i = 0; i < m_ImageView->GetNumberOfImageViewers(); i++ )
     {
     vtkPolyData *nodes = m_ImageView->GetContourRepresentationNodePolydata(i);
@@ -2623,6 +2624,7 @@ QGoTabImageView3DwT::ValidateContour()
     {
     this->m_DataBaseTables->GetTraceSettingsDockWidget()->setEnabled(true);
     //m_ContourSegmentationDockWidget->SetReeditMode(false);
+    this->m_ContourEditingWidget->SetReeditMode(false);
     m_ImageView->ReinitializeContourWidget();
     //m_ContourSegmentationDockWidget->hide();
     this->m_ContourEditingWidget->GetDockWidget()->hide();
@@ -2679,6 +2681,7 @@ QGoTabImageView3DwT::ReEditContour(const unsigned int & iId)
       //this->m_ContourSegmentationDockWidget->show();
       //this->m_ContourSegmentationDockWidget->SegmentationMethod(0);
       //this->m_ContourSegmentationDockWidget->SetReeditMode(true);
+      this->m_ContourEditingWidget->SetReeditMode(true);
       this->m_ContourEditingWidget->GetDockWidget()->show();
       
       }

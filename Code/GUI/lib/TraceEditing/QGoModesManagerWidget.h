@@ -108,6 +108,11 @@ public:
   void SetTSliceForClassicViewInAllAlgoModes(int iTimePoint);
   void SetTSliceForDopplerViewInAllAlgoModes(QStringList iListTimePoint, int iChannelNumber);
 
+  /**
+  \brief return the mode name currently selected in the combobox
+  */
+  std::string GetCurrentModeName();
+
 public slots:
    /**
   \brief set the right mode according to the combobox if iIndex is different than
