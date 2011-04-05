@@ -31,8 +31,8 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __QGoMeshEditingWidgetManager_h
-#define __QGoMeshEditingWidgetManager_h
+#ifndef __QGoContourEditingWidgetManager_h
+#define __QGoContourEditingWidgetManager_h
 
 #include "QGoTraceEditingWidgetManager.h"
 #include "QGoGUILibConfigure.h"

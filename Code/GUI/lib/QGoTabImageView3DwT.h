@@ -54,6 +54,7 @@
 
 #include "vtkSmartPointer.h"
 #include "QGoMeshEditingWidgetManager.h"
+#include "QGoContourEditingWidgetManager.h"
 
 // base segmentation dock widget
 class QGoContourSegmentationBaseDockWidget;
@@ -381,11 +382,12 @@ protected:
   QGoNavigationDockWidget *m_NavigationDockWidget;
 
   // base segmentation dockwidget for contours
-  QGoContourSegmentationBaseDockWidget *m_ContourSegmentationDockWidget;
+  //QGoContourSegmentationBaseDockWidget *m_ContourSegmentationDockWidget;
 
   // base segmentation dockwidget for meshes
   //QGoMeshSegmentationBaseDockWidget *m_MeshSegmentationDockWidget;
   QGoMeshEditingWidgetManager*       m_MeshEditingWidget;
+  QGoContourEditingWidgetManager*    m_ContourEditingWidget;
 
   QGoTrackDockWidget* m_TrackDockWidget;
 
@@ -529,6 +531,7 @@ protected:
                     SLOT( SeedInteractorBehavior(bool) ) );
     }
 
+
   std::vector< int > GetBoundingBox(vtkPolyData *contour);
 
   void CreateContour(vtkPolyData *contour_nodes, vtkPolyData *iView);
@@ -555,10 +558,10 @@ protected:
   void CreateVisuDockWidget();
 
   // segmentation dockwidgets
-  void CreateContourSegmentationDockWidget();
-
+  //void CreateContourSegmentationDockWidget();
+  void CreateContourEditingDockWidget(int iTimeMin, int iTimeMax);
   //void CreateMeshSegmentationDockWidget();
-  void CreateMeshEditingDockWidget(int iTimeMin, int iTimemax);
+  void CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax);
 
   void CreateDataBaseTablesConnection();
 
@@ -596,7 +599,8 @@ protected slots:
 
   void ShowTraceWidgetsForContour(bool ManualSegVisible = true);
 
-  void ShowTraceWidgetsForMesh(bool MeshVisible = true);
+  //void ShowTraceWidgetsForMesh(bool MeshVisible = true);
+  void ShowTraceWidgetsForMesh(bool MeshVisible);
 
   void ShowTraceWidgetsForCorrespondingTrace(
     std::string iTraceName, std::string iCollectionName, bool TraceVisible = true);
@@ -683,9 +687,9 @@ protected slots:
 
   /**
   \brief depending on the doppler/classic mode, update the TimePoints and channels
-  of the widget
+  of the mesh and contour widget
   */
-  void UpdateMeshEditingWidget();
+  void UpdateTracesEditingWidget();
 
 private:
   Q_DISABLE_COPY(QGoTabImageView3DwT);

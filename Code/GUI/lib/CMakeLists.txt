@@ -263,6 +263,7 @@ SET( QGoGUILIB_HDRS
   TraceEditing/QGoAlgorithmsManagerWidget.h
   TraceEditing/QGoAlgorithmWidget.h
   TraceEditing/QGoMeshEditingWidgetManager.h
+  TraceEditing/QGoContourEditingWidgetManager.h
   TraceEditing/QGoSegmentationAlgo.h
   TraceEditing/QGoSemiAutoSegmentationAlgo.h
   TraceEditing/QGoTraceEditingWidgetManager.h
