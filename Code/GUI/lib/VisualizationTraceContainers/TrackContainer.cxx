@@ -1384,13 +1384,13 @@ UpdateDivisionColor(MultiIndexContainerTraceIDIterator& it, double* iColor)
 //-------------------------------------------------------------------------
 unsigned int
 TrackContainer::
-GetCollectionDepth( unsigned int iTrackRootID )
+GetCollectionMaxDepth( unsigned int iTrackRootID )
 {
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iTrackRootID);
 
   unsigned int depth = 0;
-  UpdateCollectionDepth(motherIt, 0, depth); //0: root depth
+  UpdateCollectionMaxDepth(motherIt, 0, depth); //0: root depth
 
   return depth;
 }
@@ -1399,10 +1399,10 @@ GetCollectionDepth( unsigned int iTrackRootID )
 //-------------------------------------------------------------------------
 void
 TrackContainer::
-UpdateCollectionDepth(MultiIndexContainerTraceIDIterator& it,
+UpdateCollectionMaxDepth(MultiIndexContainerTraceIDIterator& it,
     unsigned int iDivisionDepth, unsigned int& iLineageDepth)
 {
-  if( !it->IsLeaf() )
+  if( it->IsLeaf() )
     {
     if( iDivisionDepth > iLineageDepth )
       {
@@ -1415,7 +1415,7 @@ UpdateCollectionDepth(MultiIndexContainerTraceIDIterator& it,
     // find the iterator
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
-    UpdateCollectionDepth(childIt,iDivisionDepth+1,iLineageDepth);
+    UpdateCollectionMaxDepth(childIt,iDivisionDepth+1,iLineageDepth);
     }
 
   if(it->TreeNode.m_Child[1])
@@ -1423,7 +1423,54 @@ UpdateCollectionDepth(MultiIndexContainerTraceIDIterator& it,
     // find the iterator
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
-    UpdateCollectionDepth(childIt,iDivisionDepth+1, iLineageDepth);
+    UpdateCollectionMaxDepth(childIt,iDivisionDepth+1, iLineageDepth);
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+unsigned int
+TrackContainer::
+GetCollectionMinDepth( unsigned int iTrackRootID )
+{
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iTrackRootID);
+
+  unsigned int depth = std::numeric_limits<int>::max();
+  UpdateCollectionMinDepth(motherIt, 0, depth); //0: root depth
+
+  return depth;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateCollectionMinDepth(MultiIndexContainerTraceIDIterator& it,
+    unsigned int iDivisionDepth, unsigned int& iLineageDepth)
+{
+  if( it->IsLeaf() )
+    {
+    if( iDivisionDepth < iLineageDepth )
+      {
+      iLineageDepth = iDivisionDepth;
+      }
+    }
+
+  if(it->TreeNode.m_Child[0])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
+    UpdateCollectionMinDepth(childIt,iDivisionDepth+1,iLineageDepth);
+    }
+
+  if(it->TreeNode.m_Child[1])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
+    UpdateCollectionMinDepth(childIt,iDivisionDepth+1, iLineageDepth);
     }
 }
 //-------------------------------------------------------------------------

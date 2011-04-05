@@ -508,18 +508,32 @@ public:
 
   // compute statistics on the collection
   /*
-   * \brief Get the depth of the lineage
+   * \brief Get the max depth of the lineage
    * \param[in] iTrackRootID id of the track root
    * \return depth of the lineage
    */
-  unsigned int GetCollectionDepth( unsigned int iTrackRootID );
+  unsigned int GetCollectionMaxDepth( unsigned int iTrackRootID );
   /*
-   * \brief Update the collection depth
+   * \brief Update the collection max depth
    * \param[in] it iterator to go through the lineage
    * \param[in] iDivisionDepth depth of the division
    * \param[in] iLineageDepth depth of the lineage
    */
-  void UpdateCollectionDepth( MultiIndexContainerTraceIDIterator& it,
+  void UpdateCollectionMaxDepth( MultiIndexContainerTraceIDIterator& it,
+      unsigned int iDivisionDepth, unsigned int& iLineageDepth);
+  /*
+   * \brief Get the min depth of the lineage
+   * \param[in] iTrackRootID id of the track root
+   * \return depth of the lineage
+   */
+  unsigned int GetCollectionMinDepth( unsigned int iTrackRootID );
+  /*
+   * \brief Update the collection min depth
+   * \param[in] it iterator to go through the lineage
+   * \param[in] iDivisionDepth depth of the division
+   * \param[in] iLineageDepth depth of the lineage
+   */
+  void UpdateCollectionMinDepth( MultiIndexContainerTraceIDIterator& it,
       unsigned int iDivisionDepth, unsigned int& iLineageDepth);
   /*
    * \brief Get the number of divisions of the lineage
