@@ -554,10 +554,6 @@ signals:
   /** \brief When one track's visibility has been changed from the visualization */
   void TraceVisibilityChanged(unsigned int, Qt::CheckState);
 
-
-  /** \brief When a point is added to the track, update the database */
-  void CurrentTrackToSave();
-
   /** \brief When we want to import meshes into a track */
   void NeedMeshesInfoForImportedTrack(unsigned int);
 
