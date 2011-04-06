@@ -41,6 +41,7 @@
 #include <QVBoxLayout>
 #include <QFormLayout>
 #include <QComboBox>
+#include <QLabel>
 #include "QGoAlgorithmWidget.h"
 
 /**
@@ -58,7 +59,9 @@ public:
   explicit QGoAlgorithmsManagerWidget(std::string iModeName,
     QWidget *iParent = 0,
     std::vector<QString> iVectChannels = std::vector<QString>(), 
-    QStringList iListTime = QStringList());
+    QStringList iListTime = QStringList(),
+    bool iOnlyOneMethod = false,
+    bool NeedApplyResetButton = true);
   ~QGoAlgorithmsManagerWidget();
 
   /**
@@ -70,6 +73,12 @@ public:
   algorithm
   */
   void AddMethod(QGoAlgorithmWidget* iAlgoWidget);
+
+  /**
+  \brief add the widget in the stacked_widgets and hide the methodcombobox
+  as there will be only one method in this algomanagerwidget
+  */
+  void AddWidgetForOnlyOneMethod(QWidget* iWidget);
 
   /**
   \brief set the current index in the combobox to iIndex and
@@ -117,6 +126,8 @@ protected:
   QComboBox*                   m_ChannelComboBox;
   QComboBox*                   m_TimeComboBox;
   QStringList                  m_ListTimePoints;
+  QLabel*                      m_MethodLabel;
+
   /**
   \brief add the different widgets, buttons and fill the comboboxes
   for channel and timepoint
@@ -124,7 +135,8 @@ protected:
   \param[in] iListTime list of the timepoints
   */
   void Initialize(std::vector<QString> iVectChannels = std::vector<QString>(), 
-    QStringList iListTime = QStringList());
+    QStringList iListTime = QStringList(), bool iOnlyOneMethod = false,
+    bool NeedApplyResetButton = true);
 
  protected slots:
   /**

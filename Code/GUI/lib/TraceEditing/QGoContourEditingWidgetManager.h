@@ -109,7 +109,8 @@ protected:
   */
   virtual void SetSemiAutomaticAlgorithms(QWidget* iParent = 0);
 
-  void SetManualMode(QWidget* iParent=0);
+  void SetManualMode(
+    QStringList iListTimePoint, QWidget* iParent);
   
 signals:
   //from the manual mode:

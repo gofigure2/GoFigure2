@@ -161,9 +161,13 @@ void QGoModesManagerWidget::AddAlgoWidgetForAutomaticMode(
 
 //-------------------------------------------------------------------------
 void QGoModesManagerWidget::AddWidgetForManualMode(QWidget* iWidget, 
-  bool ModeNeedSeeds)
+  QStringList iListTimePoint, bool ModeNeedSeeds)
 {
-  this->AddWidgetWithModeName("Manual", iWidget, ModeNeedSeeds);
+  std::vector<QString> Channels = std::vector<QString>();
+  QGoAlgorithmsManagerWidget* ManualManager = new QGoAlgorithmsManagerWidget(
+    "Manual",this, Channels, iListTimePoint, true, false);
+  ManualManager->AddWidgetForOnlyOneMethod(iWidget);
+  this->AddAlgoManagerWidget(ManualManager, ModeNeedSeeds);
 }
 //-------------------------------------------------------------------------
 

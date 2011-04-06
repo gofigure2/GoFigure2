@@ -72,8 +72,11 @@ public:
   void SetANewModesManager(QGoModesManagerWidget* iModeWidget);
 
   void AddAlgoWidgetForSemiAutomaticMode(QGoAlgorithmWidget* iAlgoWidget);
+
   void AddAlgoWidgetForAutomaticMode(QGoAlgorithmWidget* iAlgoWidget);
-  void AddWidgetForManualMode(QWidget* iWidget, bool ModeNeedSeeds);
+
+  void AddWidgetForManualMode(QWidget* iWidget,
+    QStringList iListTimePoint, bool ModeNeedSeeds);
 
   int GetChannelNumber();
   int GetSelectedTimePoint();

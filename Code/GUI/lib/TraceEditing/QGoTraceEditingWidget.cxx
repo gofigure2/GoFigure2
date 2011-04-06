@@ -134,9 +134,10 @@ void QGoTraceEditingWidget::AddAlgoWidgetForAutomaticMode(
 
 //-------------------------------------------------------------------------
 void QGoTraceEditingWidget::AddWidgetForManualMode(QWidget* iWidget,
-  bool ModeNeedSeeds)
+  QStringList iListTimePoint, bool ModeNeedSeeds)
 {
-  this->m_ModeEditingWidget->AddWidgetForManualMode(iWidget, ModeNeedSeeds);
+  this->m_ModeEditingWidget->AddWidgetForManualMode(iWidget,
+    iListTimePoint, ModeNeedSeeds);
 }
 //-------------------------------------------------------------------------
 

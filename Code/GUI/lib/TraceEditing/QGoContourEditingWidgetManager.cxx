@@ -53,7 +53,7 @@ QGoContourEditingWidgetManager::QGoContourEditingWidgetManager(
   iCurrentTimePoint, iParent)
 {
   this->SetSemiAutomaticAlgorithms(iParent);
-  this->SetManualMode(iParent);
+  this->SetManualMode(this->m_ListTimePoint, iParent);
   //add the manual mode also
 }
 //-------------------------------------------------------------------------
@@ -65,11 +65,13 @@ QGoContourEditingWidgetManager::~QGoContourEditingWidgetManager()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoContourEditingWidgetManager::SetManualMode(QWidget* iParent)
+void QGoContourEditingWidgetManager::SetManualMode(
+  QStringList iListTimePoint, QWidget* iParent)
 {
   m_ManualMode = new QGoContourManualSegmentation(iParent);
+
   this->m_TraceEditingWidget->AddWidgetForManualMode(m_ManualMode->getWidget(),
-    false);
+    iListTimePoint, false);
 
   QObject::connect( this->m_ManualMode, 
                     SIGNAL (changeContourRepresentationProperty(float, QColor,

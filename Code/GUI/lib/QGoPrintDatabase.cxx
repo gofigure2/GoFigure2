@@ -319,7 +319,7 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
     /** \todo print a different message if several meshes are created at the
       same timepoint*/
     QString MessageToPrint = this->m_MeshesManager->CheckExistingMeshesForTheTrack(TrackID,
-                                                                                   this->m_DatabaseConnector, //iTShift);
+                                                                                   this->m_DatabaseConnector,
                                                                                    iTCoord);
     if ( MessageToPrint != "" )
       {

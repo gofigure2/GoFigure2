@@ -97,7 +97,8 @@ public:
   widget
   \param[in] iWidget widget to be added for the manual mode
   */
-  void AddWidgetForManualMode(QWidget* iWidget, bool ModeNeedSeeds);
+  void AddWidgetForManualMode(QWidget* iWidget, 
+    QStringList iListTimePoint, bool ModeNeedSeeds);
 
   /**
   \brief return the number of the selected channel
