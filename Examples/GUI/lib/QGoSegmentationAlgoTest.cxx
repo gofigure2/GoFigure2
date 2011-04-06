@@ -39,9 +39,6 @@
 #include "vtkMetaImageReader.h"
 #include "itkImage.h"
 
-// helper
-#include "VisualizePolydataHelper.h"
-
 //converter to be tested
 #include "QGoMeshLevelSetAlgo.h"
 
@@ -101,12 +98,11 @@ int main(int argc, char **argv)
                           << " x " << vtkImage3D->GetDimensions()[1]
                           << " x " << vtkImage3D->GetDimensions()[2]
                           <<std::endl;
+
   assert( vtkImage3D->GetDataDimension() == 3);
 
   // Reconstruct polydata
   vtkPolyData* poly3D = algo.ReconstructPolyData( vtkImage3D, 100 );
-
-  ShowPolyData(poly3D);
 
   vtkImage3D->Delete();
   poly3D->Delete();
@@ -140,8 +136,6 @@ int main(int argc, char **argv)
   // Reconstruct polydata
   vtkPolyData* poly3D2Large = algo.ReconstructPolyData( vtkImage3D2Large, 100 );
 
-  ShowPolyData(poly3D2Large);
-
   vtkImage3D2Large->Delete();
   poly3D2Large->Delete();
   roi3D2Large->Delete();
@@ -173,8 +167,6 @@ int main(int argc, char **argv)
 
   // Reconstruct polydata
   vtkPolyData* poly2D = algo.ReconstructPolyData( vtkImage2D, 100 );
-
-  ShowPolyData(poly2D);
 
   vtkImage2D->Delete();
   poly2D->Delete();

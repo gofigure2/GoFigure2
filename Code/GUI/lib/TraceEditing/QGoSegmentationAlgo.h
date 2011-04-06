@@ -94,7 +94,9 @@ public:
   vtkImageData* ExtractROI(double* iBounds, vtkImageData* iImage);
 
   /*
-   * \brief Convert a vtkImage to a itkImage.
+   * \brief Convert a vtkImage to a itkImage. If we call after "ExtractROI",
+   * the dimension should be 3 all the time.
+   * (Even if we extract a2D region from a 3d image)
    * \tparam PixelType type of pixel (unsigned char, etc.)
    * \tparam VImageDimension dimension of the image (2 or 3)
    * \param[in] iInput Pointer to a vtkImageData
@@ -131,7 +133,9 @@ public:
   }
 
   /*
-   * \brief Convert a itkImage to a vtkImage.
+   * \brief Convert a itkImage to a vtkImage. If we call after "ExtractROI",
+   * the dimension should be 3 all the time.
+   * (Even if we extract a2D region from a 3d image)
    * \tparam PixelType type of pixel (unsigned char, etc.)
    * \tparam VImageDimension dimension of the image (2 or 3)
    * \param[in] iInput Pointer to an itkImage

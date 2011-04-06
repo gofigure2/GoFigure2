@@ -162,6 +162,9 @@ ReconstructPolyData(vtkImageData *iInputImage, const double & iThreshold)
 }
 //-------------------------------------------------------------------------
 
+/*
+ * \todo Nicolas-do a better reconstruction..
+ */
 //--------------------------------------------------------------------------
 vtkPolyData *
 QGoSegmentationAlgo::
@@ -181,14 +184,14 @@ ReconstructContour(vtkImageData *iInputImage, const double & iThreshold)
   outputToOrganize->DeepCopy( contours->GetOutput() );
 
   /*
-   * \todo Nicolas- Not properly working
+   * \todo Nicolas-optimize it
    */
-  //vtkPolyData *output = ReorganizeContour(outputToOrganize, false);
+  vtkPolyData *output = ReorganizeContour(outputToOrganize, true);
 
   contours->Delete();
-  //outputToOrganize->Delete();
+  outputToOrganize->Delete();
 
-  return outputToOrganize;
+  return output;
 }
 //--------------------------------------------------------------------------
 
