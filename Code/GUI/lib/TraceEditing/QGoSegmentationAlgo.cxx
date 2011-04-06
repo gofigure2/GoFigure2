@@ -119,7 +119,7 @@ ExtractROI(double* iBounds, vtkImageData* iImage)
 //-------------------------------------------------------------------------
 std::vector<vtkPolyData*>
 QGoSegmentationAlgo::
-ReconstructPolyData(std::vector<vtkImageData*> iInputImage,
+ExtractPolyData(std::vector<vtkImageData*> iInputImage,
     const double & iThreshold)
 {
   // vector to be returned
@@ -130,7 +130,7 @@ ReconstructPolyData(std::vector<vtkImageData*> iInputImage,
 
   while( it != iInputImage.end())
     {
-    listOfPolys.push_back( ReconstructPolyData(*it, iThreshold) );
+    listOfPolys.push_back( ExtractPolyData(*it, iThreshold) );
     ++it;
     }
 
@@ -141,7 +141,7 @@ ReconstructPolyData(std::vector<vtkImageData*> iInputImage,
 //-------------------------------------------------------------------------
 vtkPolyData *
 QGoSegmentationAlgo::
-ReconstructPolyData(vtkImageData *iInputImage, const double & iThreshold)
+ExtractPolyData(vtkImageData *iInputImage, const double & iThreshold)
 {
   // make sure there is an image
   assert( iInputImage );
@@ -151,9 +151,9 @@ ReconstructPolyData(vtkImageData *iInputImage, const double & iThreshold)
 
   switch ( dimension ) {
       case 2 :
-        return ReconstructContour( iInputImage, iThreshold);
+        return ExtractContour( iInputImage, iThreshold);
       case 3 :
-        return ReconstructMesh( iInputImage, iThreshold);
+        return ExtractMesh( iInputImage, iThreshold);
       default :
         std::cout << "dimension unknown (Reconstruct polydata)" << std::endl;
       }
@@ -168,7 +168,7 @@ ReconstructPolyData(vtkImageData *iInputImage, const double & iThreshold)
 //--------------------------------------------------------------------------
 vtkPolyData *
 QGoSegmentationAlgo::
-ReconstructContour(vtkImageData *iInputImage, const double & iThreshold)
+ExtractContour(vtkImageData *iInputImage, const double & iThreshold)
 {
   /*
    * \note Nicolas-too many deep copies
@@ -271,7 +271,7 @@ ReorganizeContour(vtkPolyData *iInputImage, bool iDecimate)
 //--------------------------------------------------------------------------
 vtkPolyData *
 QGoSegmentationAlgo::
-ReconstructMesh(vtkImageData *iInputImage, const double & iThreshold)
+ExtractMesh(vtkImageData *iInputImage, const double & iThreshold)
 {
   vtkSmartPointer< vtkContourFilter > contours = vtkSmartPointer< vtkContourFilter >::New();
   contours->SetInput(iInputImage);

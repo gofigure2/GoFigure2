@@ -173,7 +173,7 @@ public:
    * \param[in] iThreshold threshold
    * \return list of polydatas
    */
-  std::vector<vtkPolyData*>  ReconstructPolyData(std::vector<vtkImageData*> iInputImage,
+  std::vector<vtkPolyData*>  ExtractPolyData(std::vector<vtkImageData*> iInputImage,
       const double & iThreshold);
   /*
    * \brief Generate a polydata given a vtkimage and a threshold
@@ -181,7 +181,7 @@ public:
    * \param[in] iThreshold threshold
    * \return polydata
    */
-  vtkPolyData *  ReconstructPolyData(vtkImageData *iInputImage,
+  vtkPolyData *  ExtractPolyData(vtkImageData *iInputImage,
       const double & iThreshold);
 
 private:
@@ -192,7 +192,7 @@ private:
    * \param[in] iThreshold threshold
    * \return Pointer to a vtkPolyData
    */
-  vtkPolyData* ReconstructContour(vtkImageData *iInputImage,
+  vtkPolyData* ExtractContour(vtkImageData *iInputImage,
       const double & iThreshold);
 
   /*
@@ -212,7 +212,7 @@ private:
    * \param[in] iThreshold threshold
    * \return Pointer to a vtkPolyData
    */
-  vtkPolyData* ReconstructMesh(vtkImageData *iInputImage,
+  vtkPolyData* ExtractMesh(vtkImageData *iInputImage,
       const double & iThreshold);
 
 protected:

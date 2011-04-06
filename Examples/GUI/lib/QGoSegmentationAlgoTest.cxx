@@ -112,7 +112,7 @@ int main(int argc, char **argv)
   assert( vtkImage3D->GetDataDimension() == 3);
 
   // Reconstruct polydata
-  vtkPolyData* poly3D = algo.ReconstructPolyData( vtkImage3D, 100 );
+  vtkPolyData* poly3D = algo.ExtractPolyData( vtkImage3D, 100 );
 
   //ShowPolyData(poly3D);
 
@@ -146,7 +146,7 @@ int main(int argc, char **argv)
   assert( vtkImage3D2Large->GetDataDimension() == 3);
 
   // Reconstruct polydata
-  vtkPolyData* poly3D2Large = algo.ReconstructPolyData( vtkImage3D2Large, 100 );
+  vtkPolyData* poly3D2Large = algo.ExtractPolyData( vtkImage3D2Large, 100 );
 
   //ShowPolyData(poly3D2Large);
 
@@ -180,7 +180,7 @@ int main(int argc, char **argv)
   assert( vtkImage2D->GetDataDimension() == 2);
 
   // Reconstruct polydata
-  vtkPolyData* poly2D = algo.ReconstructPolyData( vtkImage2D, 100 );
+  vtkPolyData* poly2D = algo.ExtractPolyData( vtkImage2D, 100 );
 
   //ShowPolyData(poly2D);
 
