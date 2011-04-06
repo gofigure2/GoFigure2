@@ -35,21 +35,23 @@
 
 // Extract ROI
 #include "vtkExtractVOI.h"
-#include "vtkImageReslice.h"
 
-// reconstruct polydata
+// extract polydata 2d
 #include "vtkMarchingSquares.h"
+//reorder contour
 #include "vtkStripper.h"
 #include "vtkCellArray.h"
+// extract polydata 3d
 #include "vtkContourFilter.h"
 #include "vtkFeatureEdges.h"
 #include "vtkFillHolesFilter.h"
 #include "vtkPolyDataConnectivityFilter.h"
 #include "vtkWindowedSincPolyDataFilter.h"
 
-// Decimation
-#include "vtkDecimatePro.h"
+// Decimation 2d
 #include "vtkPolylineDecimation.h"
+// Decimation 3d
+#include "vtkDecimatePro.h"
 
 
 // test code
@@ -285,7 +287,10 @@ ExtractMesh(vtkSmartPointer<vtkImageData> iInputImage, const double & iThreshold
 
   // keep the largest region
   connectivityFilter->Update();
-
+  /*
+   * \note Nicolas-Smoother not connected
+   */
+/*
   unsigned int smoothingIterations = 15;
   double passBand = 0.001;
   double featureAngle = 120.0;
@@ -302,7 +307,7 @@ ExtractMesh(vtkSmartPointer<vtkImageData> iInputImage, const double & iThreshold
   smoother->NonManifoldSmoothingOn();
   smoother->NormalizeCoordinatesOn();
   smoother->Update();
-
+*/
   return connectivityFilter->GetOutput();
 }
 //--------------------------------------------------------------------------
