@@ -183,6 +183,36 @@ public:
   vtkPolyData *  ExtractPolyData(vtkImageData *iInputImage,
       const double & iThreshold);
 
+  /*
+   * \brief Decimate a polydata
+   * \param[in] iPolyData polyData to be decimated
+   * \param[in] iNumberOfPoints target number of points
+   * \return Decimated polyData
+   */
+  vtkPolyData* DecimatePolyData( vtkPolyData* iPolyData, unsigned int iNumberOfPoints);
+
+  /*
+   * \brief Enable decimation during polydata extraction.
+   * \param[in] iDecimate yes (true), no (false)
+   */
+  void SetDecimate(bool& iDecimate);
+  /*
+   * \brief Is decimation enabled?
+   * \return true (yes), false (no)
+   */
+  bool GetDecimate();
+
+  /*
+   * \brief Set target number of points for polydata extraction
+   * \param[in] iNumberOfPoints number of points
+   */
+  void SetNumberOfPoints( unsigned int& iNumberOfPoints);
+  /*
+   * \brief Get target number of points for polydata extraction
+   * \return number of points
+   */
+  unsigned int GetNumberOfPoints();
+
 private:
 
   /*
@@ -195,15 +225,13 @@ private:
       const double & iThreshold);
 
   /*
-   * \brief Reorganize points within a contour and decimate it.
+   * \brief Reorganize points within a contour
    * Required if we want to reedit this contour after.
    * 1-reorganize
-   * 2-decimate
    * \param[in] iInputImage vtkImageData
-   * \param[in] iDecimate enable decimation
    * \return Pointer to a vtkPolyData
    */
-  vtkPolyData* ReorganizeContour(vtkPolyData *iInputImage, bool iDecimate);
+  vtkPolyData* ReorganizeContour(vtkPolyData *iInputImage);
 
   /*
    * \brief Reconstruct a mesh from a vtkImageData and a threshold
@@ -213,6 +241,25 @@ private:
    */
   vtkPolyData* ExtractMesh(vtkImageData *iInputImage,
       const double & iThreshold);
+
+  /*
+   * \brief Decimate a contour (line)
+   * \param[in] iPolyData polyData to be decimated
+   * \param[in] iNumberOfPoints target number of points
+   * \return Decimated polyData
+   */
+  vtkPolyData* DecimateContour( vtkPolyData* iPolyData, unsigned int iNumberOfPoints);
+
+  /*
+   * \brief Decimate a mesh
+   * \param[in] iPolyData polyData to be decimated
+   * \param[in] iNumberOfPoints target number of points
+   * \return Decimated polyData
+   */
+  vtkPolyData* DecimateMesh( vtkPolyData* iPolyData, unsigned int iNumberOfPoints);
+
+  bool m_Decimate;
+  unsigned int m_NumberOfPoints;
 
 protected:
   QGoAlgorithmWidget*             m_AlgoWidget;
