@@ -146,7 +146,7 @@ ExtractPolyData(std::vector<vtkImageData*> iInputImage,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-vtkPolyData *
+vtkSmartPointer<vtkPolyData>
 QGoSegmentationAlgo::
 ExtractPolyData(vtkImageData *iInputImage, const double & iThreshold)
 {
@@ -173,35 +173,29 @@ ExtractPolyData(vtkImageData *iInputImage, const double & iThreshold)
  * \todo Nicolas-do a better reconstruction..
  */
 //--------------------------------------------------------------------------
-vtkPolyData *
+vtkSmartPointer<vtkPolyData>
 QGoSegmentationAlgo::
-ExtractContour(vtkImageData *iInputImage, const double & iThreshold)
+ExtractContour( vtkSmartPointer<vtkImageData> iInputImage, const double & iThreshold)
 {
-  /*
-   * \note Nicolas-too many deep copies
-   */
   // create iso-contours
-  vtkMarchingSquares *contours = vtkMarchingSquares::New();
+  vtkSmartPointer<vtkMarchingSquares> contours =
+      vtkSmartPointer<vtkMarchingSquares>::New();
 
   contours->SetInput(iInputImage);
   contours->GenerateValues (1, iThreshold, iThreshold);
   contours->Update();
 
-  /*
-   * \todo Nicolas-optimize it
-   */
-  vtkPolyData *output = ReorganizeContour( contours->GetOutput());
-
-  contours->Delete();
+  vtkSmartPointer<vtkPolyData> output = vtkSmartPointer<vtkPolyData>::New();
+  output->ShallowCopy( ReorganizeContour( contours->GetOutput() ) );
 
   return output;
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-vtkPolyData *
+vtkSmartPointer<vtkPolyData>
 QGoSegmentationAlgo::
-ReorganizeContour(vtkPolyData *iInputImage)
+ReorganizeContour(vtkSmartPointer<vtkPolyData> iInputImage)
 {
   /*
    * \note Nicolas-to be enhanced
@@ -238,23 +232,23 @@ ReorganizeContour(vtkPolyData *iInputImage)
   lines->InsertNextCell(npts + 1, lineIndices);
   delete[] lineIndices;
 
-  vtkPolyData *testPolyD = vtkPolyData::New();
-  testPolyD->SetPoints(points);
-  testPolyD->SetLines(lines);
+  vtkSmartPointer<vtkPolyData> output = vtkSmartPointer<vtkPolyData>::New();
+  output->SetPoints(points);
+  output->SetLines(lines);
 
   lines->Delete();
   points->Delete();
   stripper->Delete();
 
-  return testPolyD;
+  return output;
 }
 
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-vtkPolyData *
+vtkSmartPointer<vtkPolyData>
 QGoSegmentationAlgo::
-ExtractMesh(vtkImageData *iInputImage, const double & iThreshold)
+ExtractMesh(vtkSmartPointer<vtkImageData> iInputImage, const double & iThreshold)
 {
   vtkSmartPointer< vtkContourFilter > contours = vtkSmartPointer< vtkContourFilter >::New();
   contours->SetInput(iInputImage);
@@ -315,11 +309,8 @@ ExtractMesh(vtkImageData *iInputImage, const double & iThreshold)
   smoother->NormalizeCoordinatesOn();
   smoother->Update();
 
-  /*
-   * \note Nicolas-too many deep copies
-   */
-  vtkPolyData *output = vtkPolyData::New();
-  output->DeepCopy( connectivityFilter->GetOutput() );
+  vtkSmartPointer<vtkPolyData> output = vtkSmartPointer<vtkPolyData>::New();
+  output->ShallowCopy( connectivityFilter->GetOutput() );
 
   return output;
 }

@@ -39,10 +39,10 @@
 #include "vtkMetaImageReader.h"
 #include "itkImage.h"
 
-/*
+
 // helper for debugging
 #include "VisualizePolydataHelper.h"
-#include "vtkPolyDataWriter.h"
+/*#include "vtkPolyDataWriter.h"
 #include "vtkContourWidget.h"
 #include "vtkOrientedGlyphContourRepresentation.h"
 #include "vtkPolyDataMapper.h"
@@ -118,7 +118,6 @@ int main(int argc, char **argv)
   //ShowPolyData(poly3D);
 
   vtkImage3D->Delete();
-  poly3D->Delete();
   roi3D->Delete();
 
   //------------------------------------------------------------------
@@ -147,16 +146,16 @@ int main(int argc, char **argv)
   assert( vtkImage3D2Large->GetDataDimension() == 3);
 
   // Reconstruct polydata
-  vtkPolyData* poly3D2Large = algo.ExtractPolyData( vtkImage3D2Large, 100 );
-  //ShowPolyData(poly3D2Large);
+  vtkSmartPointer<vtkPolyData> poly3D2Large = vtkSmartPointer<vtkPolyData>::New();
+  poly3D2Large->ShallowCopy(algo.ExtractPolyData( vtkImage3D2Large, 100 ));
+  ShowPolyData(poly3D2Large);
 
   // Decimate polydata
   vtkPolyData* decimate3D = algo.DecimatePolyData(poly3D2Large, 100);
-  //ShowPolyData(decimate3D);
+  ShowPolyData(decimate3D);
 
   decimate3D->Delete();
   vtkImage3D2Large->Delete();
-  poly3D2Large->Delete();
   roi3D2Large->Delete();
 
   //------------------------------------------------------------------
@@ -185,11 +184,13 @@ int main(int argc, char **argv)
   assert( vtkImage2D->GetDataDimension() == 2);
 
   // Reconstruct polydata
-  vtkPolyData* poly2D = algo.ExtractPolyData( vtkImage2D, 100 );
+  vtkSmartPointer<vtkPolyData> poly2D = vtkSmartPointer<vtkPolyData>::New();
+  poly2D->ShallowCopy(algo.ExtractPolyData( vtkImage2D, 100 ));
+  ShowPolyData(poly2D);
 
   vtkPolyData* decimate2D = algo.DecimatePolyData(poly2D, 10);
 
-  //ShowPolyData(poly2D);
+  ShowPolyData(decimate2D);
   /*
   vtkPolyDataWriter* writer = vtkPolyDataWriter::New();
   writer->SetFileName("contour.vtk");
@@ -233,7 +234,6 @@ int main(int argc, char **argv)
 
   decimate2D->Delete();
   vtkImage2D->Delete();
-  poly2D->Delete();
   roi2D->Delete();
 
   return EXIT_SUCCESS;

@@ -181,7 +181,7 @@ public:
    * \param[in] iThreshold threshold
    * \return polydata
    */
-  vtkPolyData *  ExtractPolyData(vtkImageData *iInputImage,
+  vtkSmartPointer<vtkPolyData>  ExtractPolyData(vtkImageData *iInputImage,
       const double & iThreshold);
 
   /*
@@ -222,7 +222,8 @@ private:
    * \param[in] iThreshold threshold
    * \return Pointer to a vtkPolyData
    */
-  vtkPolyData* ExtractContour(vtkImageData *iInputImage,
+  vtkSmartPointer<vtkPolyData> ExtractContour(
+      vtkSmartPointer<vtkImageData> iInputImage,
       const double & iThreshold);
 
   /*
@@ -232,7 +233,8 @@ private:
    * \param[in] iInputImage vtkImageData
    * \return Pointer to a vtkPolyData
    */
-  vtkPolyData* ReorganizeContour(vtkPolyData *iInputImage);
+  vtkSmartPointer<vtkPolyData> ReorganizeContour(
+      vtkSmartPointer<vtkPolyData> iInputImage);
 
   /*
    * \brief Reconstruct a mesh from a vtkImageData and a threshold
@@ -240,7 +242,8 @@ private:
    * \param[in] iThreshold threshold
    * \return Pointer to a vtkPolyData
    */
-  vtkPolyData* ExtractMesh(vtkImageData *iInputImage,
+  vtkSmartPointer<vtkPolyData> ExtractMesh(
+      vtkSmartPointer<vtkImageData> iInputImage,
       const double & iThreshold);
 
   /*
