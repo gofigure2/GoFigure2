@@ -320,7 +320,7 @@ public slots:
   /** \brief Save a mesh in the database and render the mesh
    * at the given time point.
   \todo to be renamed */
-  void  SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord, int iTShift);
+  void  SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord);
 
   /** \brief Save a mesh in the database and render the mesh.
    * at the current time point
@@ -539,9 +539,9 @@ protected:
   /**
    * \brief Save mesh in Database
    * \param[in] iMesh mesh to be saved
-   * \param[in] iTShift time shift (used in the Doppler View case)
+   * \param[in] iTCoord
    */
-  void SaveMesh(vtkPolyData *iMesh, int iTShift);
+  void SaveMesh(vtkPolyData *iMesh, int iTCoord);
 
   void GetBackgroundColorFromImageViewer();
 

@@ -664,7 +664,8 @@ QGoTabImageView3DwT::CreateDataBaseTablesConnection()
                      SIGNAL( DBVariablesSet() ),
                      this,
                      SLOT( SetDatabaseContainersAndDelayedConnections() ) );
-
+  //in order also, to update the list of meshes in the collectionIDs when
+  //the trace is contour and to update the show/hide contours and meshes
   QObject::connect( this,
                     SIGNAL( TimePointChanged(int) ),
                     this->m_DataBaseTables,
@@ -2967,21 +2968,19 @@ QGoTabImageView3DwT::CreateContour(vtkPolyData *contour_nodes, vtkPolyData *iVie
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SaveMesh(vtkPolyData *iView, int iTShift)
+QGoTabImageView3DwT::SaveMesh(vtkPolyData *iView, int iTCoord)
 {
   // Compute Bounding Box
   std::vector< int > bounds = this->GetBoundingBox(iView);
 
-  int tcoord = static_cast< int >( m_TCoord ) + iTShift;
-
   // Save mesh in database
   GoFigureMeshAttributes
       MeshAttributes =
-        ComputeMeshAttributes( iView, true, static_cast< unsigned int >( tcoord ) );
+        ComputeMeshAttributes( iView, true, static_cast< unsigned int >( iTCoord ) );
 
   this->m_DataBaseTables->SaveMeshFromVisuInDB(bounds[0], bounds[2], bounds[4],
                                                bounds[1], bounds[3], bounds[5],
-                                               iTShift,
+                                               iTCoord,
                                                iView,
                                                &MeshAttributes);
 }
@@ -3001,7 +3000,7 @@ QGoTabImageView3DwT::SaveInDBAndRenderMeshForVisu(
   std::vector<vtkPolyData *>::iterator iter = iVectPolydata.begin();
   while(iter != iVectPolydata.end())
     {
-    SaveAndVisuMesh(*iter, m_TCoord, iTCoord);
+    SaveAndVisuMesh(*iter, iTCoord);
     ++iter;
     }
 
@@ -3025,12 +3024,11 @@ QGoTabImageView3DwT::SaveInDBAndRenderMeshForVisu(
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView,
-                                     unsigned int iTCoord,
-                                     int iTShift)
+                                     unsigned int iTCoord)
 {
-  if ( !this->m_ChannelClassicMode )
+ /* if ( !this->m_ChannelClassicMode )
     {
-    iTShift = iTShift * m_DopplerStep;
+    //iTShift = iTShift * m_DopplerStep;
 
     if ( iTCoord + iTShift < m_MegaCaptureReader->GetMinTimePoint() )
       {
@@ -3052,7 +3050,7 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView,
     {
     std::cerr << "Problem with DB" << std::endl;
     return;
-    }
+    }*/
 
   if ( !iView )
     {
@@ -3060,7 +3058,7 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView,
     return;
     }
 
-  SaveMesh(iView, iTShift);
+  SaveMesh(iView, iTCoord);
 
   std::vector< vtkActor * > actors =
     VisualizeTrace(iView,
@@ -3069,7 +3067,7 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView,
   // update container since a new mesh is created
   m_MeshContainer->UpdateCurrentElementFromVisu(actors,
                                                 iView,
-                                                iTCoord + iTShift,
+                                                iTCoord,
                                                 false,  // highlighted
                                                 true);  // visible
   m_MeshContainer->InsertCurrentElement();
@@ -3413,7 +3411,7 @@ QGoTabImageView3DwT::CreateMeshFromSelectedContours(
     //as the element is already in the container we need to delete it in order
     //to update it in the SaveAndVisuMesh:
     this->m_MeshContainer->RemoveElementFromVisualizationWithGivenTraceID(iMeshID);
-    SaveAndVisuMesh(temp, tcoord, 0);
+    SaveAndVisuMesh(temp, tcoord);
     }
 }
 

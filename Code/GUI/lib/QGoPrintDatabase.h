@@ -131,7 +131,7 @@ public:
                             unsigned int iXCoordMax,
                             unsigned int iYCoordMax,
                             unsigned int iZCoordMax,
-                            int          iTShift,
+                            int iTCoord,
                             vtkPolyData *iMeshNodes, GoFigureMeshAttributes *iMeshAttributes);
 
   /**
