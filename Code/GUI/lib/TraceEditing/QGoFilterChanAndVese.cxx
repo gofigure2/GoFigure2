@@ -417,6 +417,31 @@ std::vector<vtkPolyData*> QGoFilterChanAndVese::ApplyFilterLevelSet3D(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+std::vector<vtkPolyData*> QGoFilterChanAndVese::ApplyFilter2D()
+{
+  std::vector<vtkPolyData*> oMeshes = std::vector<vtkPolyData*>();
+   if ( iRadius <= 0 )
+    {
+    std::cerr << "Radius should be > 0 " << std::endl;
+    return oMeshes;
+    }
+   double *center2 = new double[3];
+
+// LOOP  FOR EACH SEED
+   for ( int i = 0; i < iPoints->GetNumberOfPoints(); i++ )
+    {
+    iPoints->GetPoint(i, center2);
+
+    oMeshes.push_back(
+      this->Filter3D(center2, iCurvature, iIterations, iRadius, iImages,
+      iChannel) );
+    }
+   delete[] center2;
+   return oMeshes;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 std::vector<std::vector<vtkPolyData*> > QGoFilterChanAndVese::
   ApplyFilterSetOf2D(
     double iRadius, vtkPoints* iPoints, 

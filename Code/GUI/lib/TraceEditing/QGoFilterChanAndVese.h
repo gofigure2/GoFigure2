@@ -63,6 +63,8 @@ public:
     std::vector<vtkSmartPointer< vtkImageData > >* iImages, 
     int iChannel);
 
+  std::vector<vtkPolyData*> ApplyFilter2D();
+
   std::vector<std::vector<vtkPolyData*> > ApplyFilterSetOf2D(
     double iRadius, vtkPoints* iPoints, 
     int iIterations, int iCurvature, int iSampling, 
