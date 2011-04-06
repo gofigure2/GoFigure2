@@ -54,7 +54,6 @@ QGoContourEditingWidgetManager::QGoContourEditingWidgetManager(
 {
   this->SetSemiAutomaticAlgorithms(iParent);
   this->SetManualMode(this->m_ListTimePoint, iParent);
-  //add the manual mode also
 }
 //-------------------------------------------------------------------------
 
@@ -92,29 +91,6 @@ void QGoContourEditingWidgetManager::SetManualMode(
                     this, SIGNAL(ManualSegmentationActivated(bool) ) );
 
 }
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/*void QGoContourEditingWidgetManager::SetTSliceForClassicView()
-{
-  QGoTraceEditingWidgetManager::SetTSliceForClassicView();
-  if (this->m_SetOfContoursWidget != NULL)
-    {
-    this->m_SetOfContoursWidget->SetTSliceForClassicView(
-      tr("%1").arg(*this->m_CurrentTimePoint) );
-    }
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoMeshEditingWidgetManager::SetTSliceForDopplerView(
-  QStringList iListTimePoints, int iChannelNumber)
-{
-  QGoTraceEditingWidgetManager::SetTSliceForDopplerView(
-    iListTimePoints, iChannelNumber);
-  this->m_SetOfContoursWidget->SetTSliceForDopplerView(
-    iListTimePoints, iChannelNumber);
-} */
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

@@ -132,6 +132,7 @@ protected:
   QStackedWidget*             m_ModeWidgets;  
   QGoAlgorithmsManagerWidget* m_SemiAutoAlgoManagerWidget;
   QGoAlgorithmsManagerWidget* m_AutoAlgoManagerWidget;
+  QGoAlgorithmsManagerWidget* m_ManualModeManager;
   bool                        m_ModeAlreadyCleaned;
   QStringList                 m_ModesWhoNeedSeeds;
 

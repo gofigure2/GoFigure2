@@ -36,7 +36,7 @@
 
 QGoModesManagerWidget::QGoModesManagerWidget(std::vector<QString> iVectChannels, 
   QStringList iListTimePoints, QWidget *iParent)
-  :QWidget(iParent)
+  :QWidget(iParent), m_ManualModeManager(NULL)
 {
   this->Initialize(iVectChannels, iListTimePoints);
 }
@@ -164,10 +164,10 @@ void QGoModesManagerWidget::AddWidgetForManualMode(QWidget* iWidget,
   QStringList iListTimePoint, bool ModeNeedSeeds)
 {
   std::vector<QString> Channels = std::vector<QString>();
-  QGoAlgorithmsManagerWidget* ManualManager = new QGoAlgorithmsManagerWidget(
+  this->m_ManualModeManager = new QGoAlgorithmsManagerWidget(
     "Manual",this, Channels, iListTimePoint, true, false);
-  ManualManager->AddWidgetForOnlyOneMethod(iWidget);
-  this->AddAlgoManagerWidget(ManualManager, ModeNeedSeeds);
+  this->m_ManualModeManager->AddWidgetForOnlyOneMethod(iWidget);
+  this->AddAlgoManagerWidget(this->m_ManualModeManager, ModeNeedSeeds);
 }
 //-------------------------------------------------------------------------
 
@@ -204,8 +204,7 @@ void QGoModesManagerWidget::SetTheRightMode(int iIndex)
     {
     this->m_ModeWidgets->setCurrentIndex(iIndex);
     }
-  //if (this->m_ModeComboBox->currentText() == "Automatic" || 
-  //  this->m_ModeComboBox->currentText() == "SemiAutomatic")
+  
   if (this->m_ModesWhoNeedSeeds.indexOf(
         this->m_ModeComboBox->currentText() ) != -1)
     {
@@ -223,6 +222,11 @@ void QGoModesManagerWidget::SetTSliceForClassicViewInAllAlgoModes(int iTimePoint
 {
   this->m_AutoAlgoManagerWidget->SetTSliceForClassicView(tr("%1").arg(iTimePoint) );
   this->m_SemiAutoAlgoManagerWidget->SetTSliceForClassicView(tr("%1").arg(iTimePoint) );
+  if (this->m_ManualModeManager)
+    {
+    this->m_ManualModeManager->SetTSliceForClassicView(tr("%1").arg(iTimePoint) );
+    }
+ 
 }
 //-------------------------------------------------------------------------
 
@@ -234,6 +238,11 @@ void QGoModesManagerWidget::SetTSliceForDopplerViewInAllAlgoModes(
     iListTimePoints, iChannelNumber);
   this->m_SemiAutoAlgoManagerWidget->SetTSliceForDopplerView(
     iListTimePoints, iChannelNumber);
+  if (this->m_ManualModeManager)
+    {
+    this->m_ManualModeManager->SetTSliceForDopplerView(
+      iListTimePoints, iChannelNumber);
+    }
 }
 //-------------------------------------------------------------------------
 
