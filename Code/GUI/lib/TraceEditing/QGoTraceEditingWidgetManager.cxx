@@ -84,7 +84,7 @@ void QGoTraceEditingWidgetManager::SetTheTraceWidget(
   this->m_TraceEditingWidget = new QGoTraceEditingWidget(
    this->m_TraceName.c_str(), iVectChannels, ListTimePoints, iParent);
 
-  this->SetTSliceForClassicView();
+  //this->SetTSliceForClassicView();
 
   QObject::connect( this->m_TraceEditingWidget, 
                     SIGNAL(SetSeedInteractorBehaviour(bool) ),

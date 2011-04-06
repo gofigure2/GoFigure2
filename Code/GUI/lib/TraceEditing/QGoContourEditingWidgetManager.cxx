@@ -72,6 +72,8 @@ void QGoContourEditingWidgetManager::SetManualMode(
   this->m_TraceEditingWidget->AddWidgetForManualMode(m_ManualMode->getWidget(),
     iListTimePoint, false);
 
+  this->SetTSliceForClassicView();
+
   QObject::connect( this->m_ManualMode, 
                     SIGNAL (changeContourRepresentationProperty(float, QColor,
                                            QColor, QColor) ),
