@@ -112,10 +112,7 @@ ExtractROI(double* iBounds, vtkSmartPointer<vtkImageData> iImage)
                       iBounds[4], iBounds[5]);
   extractVOI->Update();
 
-  vtkSmartPointer<vtkImageData> output = vtkSmartPointer<vtkImageData>::New();
-  output->ShallowCopy( extractVOI->GetOutput() );
-
-  return output;
+  return extractVOI->GetOutput();
 }
 //-------------------------------------------------------------------------
 
@@ -185,10 +182,7 @@ ExtractContour( vtkSmartPointer<vtkImageData> iInputImage, const double & iThres
   contours->GenerateValues (1, iThreshold, iThreshold);
   contours->Update();
 
-  vtkSmartPointer<vtkPolyData> output = vtkSmartPointer<vtkPolyData>::New();
-  output->ShallowCopy( ReorganizeContour( contours->GetOutput() ) );
-
-  return output;
+  return ReorganizeContour( contours->GetOutput() );
 }
 //--------------------------------------------------------------------------
 
@@ -309,10 +303,7 @@ ExtractMesh(vtkSmartPointer<vtkImageData> iInputImage, const double & iThreshold
   smoother->NormalizeCoordinatesOn();
   smoother->Update();
 
-  vtkSmartPointer<vtkPolyData> output = vtkSmartPointer<vtkPolyData>::New();
-  output->ShallowCopy( connectivityFilter->GetOutput() );
-
-  return output;
+  return connectivityFilter->GetOutput();
 }
 //--------------------------------------------------------------------------
 
