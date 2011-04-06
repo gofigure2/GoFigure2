@@ -44,6 +44,11 @@
 // convert VTK to ITK
 #include "itkImage.h"
 #include "itkVTKImageImport.h"
+#include "vtkImageExport.h"
+#include "vtkitkAdaptor.h"
+
+// convert itk to vtk
+#include "itkImageToVTKImageFilter.h"
 
 /**
 \class QGoSegmentationAlgo
@@ -71,6 +76,9 @@ public:
     int iChannel) = 0;
 
   /*
+   * \note Nicolas-shouldnt be public-move to protected
+   */
+  /*
    * \brief Extract region of interest, given a bounding box and a list of vtk images
    * \param[in] iBounds bounding box (xmin, xmax, ymin, ymax, zmin, zmax)
    * \param[in] iImages vector of vtkimagedata
@@ -94,7 +102,33 @@ public:
    */
   template< class PixelType, unsigned int VImageDimension >
   typename itk::Image< PixelType, VImageDimension >::Pointer
-  ConvertVTK2ITK(vtkImageData *iInput);
+  ConvertVTK2ITK(vtkImageData *iInput)
+  {
+    // make sure there is an input
+    assert ( iInput );
+
+    //Export VTK image to ITK
+    vtkSmartPointer<vtkImageExport> exporter =
+        vtkSmartPointer<vtkImageExport>::New();
+    exporter->SetInput(iInput);
+    exporter->Update();
+
+    // ImageType
+    typedef itk::Image< PixelType, VImageDimension > ImageType;
+    // Import VTK Image to ITK
+    typedef itk::VTKImageImport< ImageType >  ImageImportType;
+    typedef typename ImageImportType::Pointer ImageImportPointer;
+    ImageImportPointer importer = ImageImportType::New();
+
+    ConnectPipelines< vtkImageExport, ImageImportPointer >(
+      exporter,
+      importer);
+
+    typename ImageType::Pointer itkImage = importer->GetOutput();
+    itkImage->DisconnectPipeline();
+
+    return itkImage;
+  }
 
   /*
    * \brief Convert a itkImage to a vtkImage.
@@ -105,7 +139,29 @@ public:
   */
   template< class PixelType, unsigned int VImageDimension >
   vtkImageData *
-  ConvertITK2VTK(typename itk::Image< PixelType, VImageDimension >::Pointer iInput);
+  ConvertITK2VTK(typename itk::Image< PixelType, VImageDimension >::Pointer iInput)
+  {
+    typedef itk::Image< PixelType, VImageDimension >        InternalImageType;
+    typedef itk::ImageToVTKImageFilter< InternalImageType > ConverterType;
+    typedef typename ConverterType::Pointer                 ConverterPointer;
+
+    ConverterPointer converter = ConverterType::New();
+    converter->SetInput(iInput);
+
+    try
+      {
+      converter->Update();
+      }
+    catch (itk::ExceptionObject & err)
+      {
+      std::cerr << "converter Exception:" << err << std::endl;
+      }
+
+    vtkImageData* output = vtkImageData::New();
+    output->DeepCopy( converter->GetOutput() );
+
+    return output;
+  }
 
   /*
    * \brief Generate list of polydata given a list of vtkimages and a threshold

@@ -34,14 +34,8 @@
 #include "QGoSegmentationAlgo.h"
 
 // Extract ROI
-#include <vtkExtractVOI.h>
-
-// convert vtk to itk
-#include "vtkImageExport.h"
-#include "vtkitkAdaptor.h"
-
-// convert itk to vtk
-#include "itkImageToVTKImageFilter.h"
+#include "vtkExtractVOI.h"
+#include "vtkImageReslice.h"
 
 // reconstruct polydata
 #include "vtkMarchingSquares.h"
@@ -115,72 +109,10 @@ ExtractROI(double* iBounds, vtkImageData* iImage)
                       iBounds[4], iBounds[5]);
   extractVOI->Update();
 
-  /*
-   * \note Nicolas-to be tested....might nedd deepcopy
-   */
-  return extractVOI->GetOutput();
-}
-//-------------------------------------------------------------------------
+  vtkImageData* output = vtkImageData::New();
+  output->DeepCopy( extractVOI->GetOutput() );
 
-//-------------------------------------------------------------------------
-template< class PixelType, unsigned int VImageDimension >
-typename itk::Image< PixelType, VImageDimension >::Pointer
-QGoSegmentationAlgo::
-ConvertVTK2ITK(vtkImageData *iInput)
-{
-  // make sure there is an input
-  assert ( iInput );
-
-  //Export VTK image to ITK
-  vtkSmartPointer<vtkImageExport> exporter =
-      vtkSmartPointer<vtkImageExport>::New();
-  exporter->SetInput(iInput);
-  exporter->Update();
-
-  // ImageType
-  typedef itk::Image< PixelType, VImageDimension > ImageType;
-  // Import VTK Image to ITK
-  typedef itk::VTKImageImport< ImageType >  ImageImportType;
-  typedef typename ImageImportType::Pointer ImageImportPointer;
-  ImageImportPointer importer = ImageImportType::New();
-
-  ConnectPipelines< vtkImageExport, ImageImportPointer >(
-    exporter,
-    importer);
-
-  typename ImageType::Pointer itkImage = importer->GetOutput();
-  itkImage->DisconnectPipeline();
-
-  return itkImage;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-template< class PixelType, unsigned int VImageDimension >
-vtkImageData *
-QGoSegmentationAlgo::
-ConvertITK2VTK(typename itk::Image< PixelType, VImageDimension >::Pointer iInput)
-{
-  typedef itk::Image< PixelType, VImageDimension >        InternalImageType;
-  typedef itk::ImageToVTKImageFilter< InternalImageType > ConverterType;
-  typedef typename ConverterType::Pointer                 ConverterPointer;
-
-  ConverterPointer converter = ConverterType::New();
-  converter->SetInput(iInput);
-
-  try
-    {
-    converter->Update();
-    }
-  catch (itk::ExceptionObject & err)
-    {
-    std::cerr << "converter Exception:" << err << std::endl;
-    }
-
-  /*
-   * \note Nicolas-to be tested.... might need deepcopy?
-   */
-  return converter->GetOutput();
+  return output;
 }
 //-------------------------------------------------------------------------
 
@@ -248,12 +180,15 @@ ReconstructContour(vtkImageData *iInputImage, const double & iThreshold)
   vtkPolyData *outputToOrganize = vtkPolyData::New();
   outputToOrganize->DeepCopy( contours->GetOutput() );
 
-  vtkPolyData *output = ReorganizeContour(outputToOrganize, true);
+  /*
+   * \todo Nicolas- Not properly working
+   */
+  //vtkPolyData *output = ReorganizeContour(outputToOrganize, false);
 
   contours->Delete();
-  outputToOrganize->Delete();
+  //outputToOrganize->Delete();
 
-  return output;
+  return outputToOrganize;
 }
 //--------------------------------------------------------------------------
 

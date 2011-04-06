@@ -44,7 +44,13 @@ QGoSemiAutoSegmentationAlgo::QGoSemiAutoSegmentationAlgo(
 //-------------------------------------------------------------------------
 QGoSemiAutoSegmentationAlgo::~QGoSemiAutoSegmentationAlgo()
 {
-  this->m_Seeds->Delete();
+  /*
+   * \note Nicolas-Requiered this one? We just copy the address in the constructor.
+   */
+  if(this->m_Seeds)
+    {
+    this->m_Seeds->Delete();
+    }
 }
 //-------------------------------------------------------------------------
 
