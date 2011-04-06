@@ -107,7 +107,8 @@ public:
   int GetSelectedTimePoint();
 
   void SetTSliceForClassicViewInAllAlgoModes(int iTimePoint);
-  void SetTSliceForDopplerViewInAllAlgoModes(QStringList iListTimePoint, int iChannelNumber);
+  void SetTSliceForDopplerViewInAllAlgoModes(
+    std::map<QString, QColor> iListTimePoints, int iChannelNumber);
 
   /**
   \brief return the mode name currently selected in the combobox

@@ -177,7 +177,8 @@ int QGoTraceEditingWidget::GetSelectedTimePoint()
  //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
- void QGoTraceEditingWidget::SetTSliceForDopplerView(QStringList iListTimePoints,
+ void QGoTraceEditingWidget::SetTSliceForDopplerView(
+   std::map<QString, QColor> iListTimePoints,
    int iChannelNumber)
  {
    this->m_ModeEditingWidget->SetTSliceForDopplerViewInAllAlgoModes(

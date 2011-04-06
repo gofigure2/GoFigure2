@@ -152,7 +152,7 @@ void QGoTraceEditingWidgetManager::SetTSliceForClassicView()
 
 //-------------------------------------------------------------------------
 void QGoTraceEditingWidgetManager::SetTSliceForDopplerView(
-  QStringList iListTimePoints, int iChannelNumber)
+  std::map<QString, QColor> iListTimePoints, int iChannelNumber)
 {
   this->m_TraceEditingWidget->SetTSliceForDopplerView(
     iListTimePoints, iChannelNumber);
