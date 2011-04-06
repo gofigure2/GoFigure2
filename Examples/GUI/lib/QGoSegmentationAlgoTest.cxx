@@ -103,7 +103,8 @@ int main(int argc, char **argv)
     itkImage3D = algo.ConvertVTK2ITK< PixelType, dimension >(roi3D);
 
   // convert itk to vtk
-  vtkImageData *vtkImage3D = algo.ConvertITK2VTK< PixelType, dimension >(itkImage3D);
+  vtkSmartPointer<vtkImageData> vtkImage3D = vtkSmartPointer<vtkImageData>::New();
+  vtkImage3D->ShallowCopy(algo.ConvertITK2VTK< PixelType, dimension >(itkImage3D));
   vtkImage3D->Update();
 
   std::cout << "Dimension 3D: " << vtkImage3D->GetDataDimension() <<std::endl;
@@ -116,10 +117,6 @@ int main(int argc, char **argv)
   // Reconstruct polydata
   vtkSmartPointer<vtkPolyData> poly3D = vtkSmartPointer<vtkPolyData>::New();
   poly3D->ShallowCopy(algo.ExtractPolyData( vtkImage3D, 100 ));
-
-  //ShowPolyData(poly3D);
-
-  vtkImage3D->Delete();
 
   //------------------------------------------------------------------
   // 3d - too large ROI
@@ -136,7 +133,8 @@ int main(int argc, char **argv)
     itkImage3D2Large = algo.ConvertVTK2ITK< PixelType, dimension >(roi3D2Large);
 
   // convert itk to vtk
-  vtkImageData *vtkImage3D2Large = algo.ConvertITK2VTK< PixelType, dimension >(itkImage3D2Large);
+  vtkSmartPointer<vtkImageData> vtkImage3D2Large = vtkSmartPointer<vtkImageData>::New();
+  vtkImage3D2Large->ShallowCopy(algo.ConvertITK2VTK< PixelType, dimension >(itkImage3D2Large));
   vtkImage3D2Large->Update();
 
   std::cout << "Dimension 3D Too Large: " << vtkImage3D2Large->GetDataDimension() <<std::endl;
@@ -157,7 +155,6 @@ int main(int argc, char **argv)
   ShowPolyData(decimate3D);
 
   decimate3D->Delete();
-  vtkImage3D2Large->Delete();
 
   //------------------------------------------------------------------
   // 2d
@@ -174,7 +171,8 @@ int main(int argc, char **argv)
     itkImage2D = algo.ConvertVTK2ITK< PixelType, dimension >(roi2D);
 
   // convert itk to vtk
-  vtkImageData *vtkImage2D = algo.ConvertITK2VTK< PixelType, dimension >(itkImage2D);
+  vtkSmartPointer<vtkImageData> vtkImage2D = vtkSmartPointer<vtkImageData>::New();
+  vtkImage2D->ShallowCopy(algo.ConvertITK2VTK< PixelType, dimension >(itkImage2D));
   vtkImage2D->Update();
 
   std::cout << "Dimension 2D: " << vtkImage2D->GetDataDimension() <<std::endl;
@@ -235,7 +233,6 @@ int main(int argc, char **argv)
   renderWindowInteractor->Start();*/
 
   decimate2D->Delete();
-  vtkImage2D->Delete();
 
   return EXIT_SUCCESS;
 }

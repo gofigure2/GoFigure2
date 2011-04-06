@@ -143,7 +143,7 @@ public:
    * \return Pointer to an vtkImageData
   */
   template< class PixelType, unsigned int VImageDimension >
-  vtkImageData *
+  vtkSmartPointer<vtkImageData>
   ConvertITK2VTK(typename itk::Image< PixelType, VImageDimension >::Pointer iInput)
   {
     typedef itk::Image< PixelType, VImageDimension >        InternalImageType;
@@ -162,8 +162,8 @@ public:
       std::cerr << "converter Exception:" << err << std::endl;
       }
 
-    vtkImageData* output = vtkImageData::New();
-    output->DeepCopy( converter->GetOutput() );
+    vtkSmartPointer<vtkImageData> output = vtkSmartPointer<vtkImageData>::New();
+    output->ShallowCopy( converter->GetOutput() );
 
     return output;
   }
