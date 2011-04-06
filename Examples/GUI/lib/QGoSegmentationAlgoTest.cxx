@@ -147,9 +147,13 @@ int main(int argc, char **argv)
 
   // Reconstruct polydata
   vtkPolyData* poly3D2Large = algo.ExtractPolyData( vtkImage3D2Large, 100 );
+  ShowPolyData(poly3D2Large);
 
-  //ShowPolyData(poly3D2Large);
+  // Decimate polydata
+  vtkPolyData* decimate3D = algo.DecimatePolyData(poly3D2Large, 100);
+  ShowPolyData(decimate3D);
 
+  decimate3D->Delete();
   vtkImage3D2Large->Delete();
   poly3D2Large->Delete();
   roi3D2Large->Delete();
@@ -182,6 +186,8 @@ int main(int argc, char **argv)
   // Reconstruct polydata
   vtkPolyData* poly2D = algo.ExtractPolyData( vtkImage2D, 100 );
 
+  vtkPolyData* decimate2D = algo.DecimatePolyData(poly2D, 10);
+
   //ShowPolyData(poly2D);
 
   vtkPolyDataWriter* writer = vtkPolyDataWriter::New();
@@ -190,11 +196,9 @@ int main(int argc, char **argv)
   writer->Write();
   writer->Delete();
 
-
-
   vtkSmartPointer< vtkPolyDataMapper > mapper =
     vtkSmartPointer< vtkPolyDataMapper >::New();
-  mapper->SetInput(poly2D);
+  mapper->SetInput(decimate2D);
 
   vtkSmartPointer< vtkActor > actor =
     vtkSmartPointer< vtkActor >::New();
@@ -221,11 +225,12 @@ int main(int argc, char **argv)
        contourWidget->SetInteractor(renderWindowInteractor);
        contourWidget->SetRepresentation(contourRep);
        contourWidget->On();
-  contourWidget->Initialize(poly2D);
+  contourWidget->Initialize(decimate2D);
   contourWidget->Render();
 
   renderWindowInteractor->Start();
 
+  decimate2D->Delete();
   vtkImage2D->Delete();
   poly2D->Delete();
   roi2D->Delete();

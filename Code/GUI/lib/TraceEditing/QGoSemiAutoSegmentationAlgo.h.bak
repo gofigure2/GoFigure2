@@ -31,60 +31,64 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "QGoSemiAutoSegmentationAlgo.h"
+#ifndef __QGoSemiAutoSegmentationAlgo_h
+#define __QGoSemiAutoSegmentationAlgo_h
 
+#include "QGoSegmentationAlgo.h"
+#include "QGoAlgorithmWidget.h"
+#include "QGoGUILibConfigure.h"
+#include "vtkSmartPointer.h"
+#include "vtkPolyData.h"
+#include "vtkImageData.h"
+#include "QGoGUILibConfigure.h"
 
-QGoSemiAutoSegmentationAlgo::QGoSemiAutoSegmentationAlgo(
-  vtkPoints* iSeeds, QWidget *iParent)
+/**
+\class QGoSemiAutoSegmentationAlgo
+\brief abstract class to be the interface between the semi automatic 
+algorithms for meshes and contours and GoFigure
+*/
+class QGOGUILIB_EXPORT QGoSemiAutoSegmentationAlgo:public QGoSegmentationAlgo
 {
-  this->m_Seeds = iSeeds;
-}
-//-------------------------------------------------------------------------
+  Q_OBJECT
+public:
+  QGoSemiAutoSegmentationAlgo(vtkPoints* iSeeds, QWidget *iParent = 0);
+  ~QGoSemiAutoSegmentationAlgo();
 
-//-------------------------------------------------------------------------
-QGoSemiAutoSegmentationAlgo::~QGoSemiAutoSegmentationAlgo()
-{
+
+  /**
+  \brief return the vtkpolydata created by the algorithm
+  */
+  virtual std::vector<vtkPolyData*> ApplyAlgo(
+    std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+    int iChannel) = 0;
+
+protected:
+  vtkPoints*                      m_Seeds;
+  QGoAlgoParameter<double>*       m_Radius;
+
+  /**
+  \brief construct the algowidget with the different parameters
+  */
+  virtual void SetAlgoWidget(QWidget* iParent = 0);
+
+  /**
+  \brief delete the different parameters
+  */
+  virtual void DeleteParameters() = 0;
+
+<<<<<<< HEAD
+
+  //add a method setBounds(std::vector<double> iCenter, iRadius)
+=======
   /*
-   * \note Nicolas-Requiered this one? We just copy the address in the constructor.
+   * \brief Get boundingBox from a center and a radius
+   * \param[in] iCenter center of the box
+   * \param[in] iRadius radius of the box
+   * \return vector[6] containing the bounding box (xmin, xmax, ymin, imax, ...)
    */
-  if(this->m_Seeds)
-    {
-    this->m_Seeds->Delete();
-    }
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoSemiAutoSegmentationAlgo::SetAlgoWidget(QWidget* iParent)
-{
-  if (this->m_AlgoWidget != NULL)
-    {
-    m_Radius = new QGoAlgoParameter<double>("Radius", false, 0.1, 99.99, 2, 3);
-    this->m_AlgoWidget->AddParameter(m_Radius);
-    }
-  else
-    {
-    std::cout<<"the widget has to be created before";
-    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-    std::cout << std::endl;
-    }
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-std::vector<double>
-QGoSemiAutoSegmentationAlgo::
-GetBounds(std::vector<double> iCenter, double iRadius)
-{
-  std::vector<double> boundingBox;
-
-  for(int i=0; i<3; i++)
-    {
-    boundingBox.push_back(iCenter[i] - iRadius);
-    boundingBox.push_back(iCenter[i] + iRadius);
-    }
+  std::vector<double> GetBounds(std::vector<double> iCenter, double iRadius);
+>>>>>>> add_genericMethods
  
- return boundingBox;
-}
-//-------------------------------------------------------------------------
+};
+
+#endif
