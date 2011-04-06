@@ -41,6 +41,15 @@
 #include "vtkImageData.h"
 #include "QGoGUILibConfigure.h"
 
+// convert VTK to ITK
+#include "itkImage.h"
+#include "itkVTKImageImport.h"
+#include "vtkImageExport.h"
+#include "vtkitkAdaptor.h"
+
+// convert itk to vtk
+#include "itkImageToVTKImageFilter.h"
+
 /**
 \class QGoSegmentationAlgo
 \brief abstract class to be the interface between the algorithms for meshes 
@@ -65,6 +74,146 @@ public:
     std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel) = 0;
 
+  /*
+   * \note Nicolas-shouldnt be public-move to protected
+   */
+  /*
+   * \brief Extract region of interest, given a bounding box and a list of vtk images
+   * \param[in] iBounds bounding box (xmin, xmax, ymin, ymax, zmin, zmax)
+   * \param[in] iImages vector of vtkimagedata
+   * \return list of roi
+   */
+  std::vector<vtkImageData*> ExtractROI(double* iBounds, std::vector<vtkImageData*> iImages);
+  /*
+   * \brief Extract region of interest, given a bounding box and a vtk image
+   * \param[in] iBounds bounding box (xmin, xmax, ymin, ymax, zmin, zmax)
+   * \param[in] iImage vtkimagedata
+   * \return roi
+   */
+  vtkImageData* ExtractROI(double* iBounds, vtkImageData* iImage);
+
+  /*
+   * \brief Convert a vtkImage to a itkImage. If we call after "ExtractROI",
+   * the dimension should be 3 all the time.
+   * (Even if we extract a2D region from a 3d image)
+   * \tparam PixelType type of pixel (unsigned char, etc.)
+   * \tparam VImageDimension dimension of the image (2 or 3)
+   * \param[in] iInput Pointer to a vtkImageData
+   * \return Pointer to an itkImage
+   */
+  template< class PixelType, unsigned int VImageDimension >
+  typename itk::Image< PixelType, VImageDimension >::Pointer
+  ConvertVTK2ITK(vtkImageData *iInput)
+  {
+    // make sure there is an input
+    assert ( iInput );
+
+    //Export VTK image to ITK
+    vtkSmartPointer<vtkImageExport> exporter =
+        vtkSmartPointer<vtkImageExport>::New();
+    exporter->SetInput(iInput);
+    exporter->Update();
+
+    // ImageType
+    typedef itk::Image< PixelType, VImageDimension > ImageType;
+    // Import VTK Image to ITK
+    typedef itk::VTKImageImport< ImageType >  ImageImportType;
+    typedef typename ImageImportType::Pointer ImageImportPointer;
+    ImageImportPointer importer = ImageImportType::New();
+
+    ConnectPipelines< vtkImageExport, ImageImportPointer >(
+      exporter,
+      importer);
+
+    typename ImageType::Pointer itkImage = importer->GetOutput();
+    itkImage->DisconnectPipeline();
+
+    return itkImage;
+  }
+
+  /*
+   * \brief Convert a itkImage to a vtkImage. If we call after "ExtractROI",
+   * the dimension should be 3 all the time.
+   * (Even if we extract a2D region from a 3d image)
+   * \tparam PixelType type of pixel (unsigned char, etc.)
+   * \tparam VImageDimension dimension of the image (2 or 3)
+   * \param[in] iInput Pointer to an itkImage
+   * \return Pointer to an vtkImageData
+  */
+  template< class PixelType, unsigned int VImageDimension >
+  vtkImageData *
+  ConvertITK2VTK(typename itk::Image< PixelType, VImageDimension >::Pointer iInput)
+  {
+    typedef itk::Image< PixelType, VImageDimension >        InternalImageType;
+    typedef itk::ImageToVTKImageFilter< InternalImageType > ConverterType;
+    typedef typename ConverterType::Pointer                 ConverterPointer;
+
+    ConverterPointer converter = ConverterType::New();
+    converter->SetInput(iInput);
+
+    try
+      {
+      converter->Update();
+      }
+    catch (itk::ExceptionObject & err)
+      {
+      std::cerr << "converter Exception:" << err << std::endl;
+      }
+
+    vtkImageData* output = vtkImageData::New();
+    output->DeepCopy( converter->GetOutput() );
+
+    return output;
+  }
+
+  /*
+   * \brief Generate list of polydata given a list of vtkimages and a threshold
+   * \param[in] iInputImage list of images
+   * \param[in] iThreshold threshold
+   * \return list of polydatas
+   */
+  std::vector<vtkPolyData*>  ExtractPolyData(std::vector<vtkImageData*> iInputImage,
+      const double & iThreshold);
+  /*
+   * \brief Generate a polydata given a vtkimage and a threshold
+   * \param[in] iInputImage vtk image
+   * \param[in] iThreshold threshold
+   * \return polydata
+   */
+  vtkPolyData *  ExtractPolyData(vtkImageData *iInputImage,
+      const double & iThreshold);
+
+private:
+
+  /*
+   * \brief Reconstruct a contour from a vtkImageData and a threshold
+   * \param[in] iInputImage vtkImageData
+   * \param[in] iThreshold threshold
+   * \return Pointer to a vtkPolyData
+   */
+  vtkPolyData* ExtractContour(vtkImageData *iInputImage,
+      const double & iThreshold);
+
+  /*
+   * \brief Reorganize points within a contour and decimate it.
+   * Required if we want to reedit this contour after.
+   * 1-reorganize
+   * 2-decimate
+   * \param[in] iInputImage vtkImageData
+   * \param[in] iDecimate enable decimation
+   * \return Pointer to a vtkPolyData
+   */
+  vtkPolyData* ReorganizeContour(vtkPolyData *iInputImage, bool iDecimate);
+
+  /*
+   * \brief Reconstruct a mesh from a vtkImageData and a threshold
+   * \param[in] iInputImage vtkImageData
+   * \param[in] iThreshold threshold
+   * \return Pointer to a vtkPolyData
+   */
+  vtkPolyData* ExtractMesh(vtkImageData *iInputImage,
+      const double & iThreshold);
+
 protected:
   QGoAlgorithmWidget*             m_AlgoWidget;
 
@@ -78,9 +227,10 @@ protected:
   */
   virtual void DeleteParameters() = 0;
 
-  //add a method std::vector<vtkImageData> ExtractROI(Bounds, std::vector<vtkImageData> iImages)
-  //add a method vtkImageData>ExtractROI(Bounds, vtkImageData iImage)
-  //add a method std::vector<VTKPolyData*> ConvertITKImagesToVTKPolyData(std::vector<itk::Image> iImages)
+  /*
+   * \todo Arnaud has something for itkimage to vtkpolydata in 3d
+   */
+  //add a method std::vector<PolyData*> ConvertITKImagesToPolyData(std::vector<itk::Image> iImages)
   //add a method std::vector<TraceAttribut> GetAttribut(std::vector<vtkPolyData*> iNewTraces)
   //add a method itkImage ConvertVTKToITK(vtkImageIData iImage)
 };
