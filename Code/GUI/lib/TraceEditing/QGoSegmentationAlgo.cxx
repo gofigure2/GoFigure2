@@ -104,18 +104,15 @@ vtkImageData*
 QGoSegmentationAlgo::
 ExtractROI(double* iBounds, vtkImageData* iImage)
 {
-  // make sure there are bounds....
-  assert( iBounds[0] );
-  assert( iBounds[1] );
-  assert( iBounds[2] );
-  assert( iBounds[3] );
-  assert( iBounds[4] );
-  assert( iBounds[5] );
+  // make sure there
+  assert( iBounds );
 
   vtkSmartPointer<vtkExtractVOI> extractVOI =
       vtkSmartPointer<vtkExtractVOI>::New();
   extractVOI->SetInput( iImage );
-  extractVOI->SetVOI( iBounds[0] ,iBounds[1],iBounds[2],iBounds[3], iBounds[4], iBounds[5]);
+  extractVOI->SetVOI( iBounds[0] ,iBounds[1],
+                      iBounds[2] ,iBounds[3],
+                      iBounds[4], iBounds[5]);
   extractVOI->Update();
 
   /*
