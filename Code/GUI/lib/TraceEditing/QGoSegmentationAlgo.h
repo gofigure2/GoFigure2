@@ -70,50 +70,6 @@ public:
     std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel) = 0;
 
-private:
-
-  /*
-   * \brief Reconstruct a contour from a vtkImageData and a threshold
-   * \param[in] iInputImage vtkImageData
-   * \param[in] iThreshold threshold
-   * \return Pointer to a vtkPolyData
-   */
-  vtkPolyData* ReconstructContour(vtkImageData *iInputImage,
-      const double & iThreshold);
-
-  /*
-   * \brief Reorganize points within a contour and decimate it.
-   * Required if we want to reedit this contour after.
-   * 1-reorganize
-   * 2-decimate
-   * \param[in] iInputImage vtkImageData
-   * \param[in] iDecimate enable decimation
-   * \return Pointer to a vtkPolyData
-   */
-  vtkPolyData* ReorganizeContour(vtkPolyData *iInputImage, bool iDecimate);
-
-  /*
-   * \brief Reconstruct a mesh from a vtkImageData and a threshold
-   * \param[in] iInputImage vtkImageData
-   * \param[in] iThreshold threshold
-   * \return Pointer to a vtkPolyData
-   */
-  vtkPolyData* ReconstructMesh(vtkImageData *iInputImage,
-      const double & iThreshold);
-
-protected:
-  QGoAlgorithmWidget*             m_AlgoWidget;
-
-  /**
-  \brief construct the algowidget with the different parameters
-  */
-  virtual void SetAlgoWidget(QWidget* iParent = 0) = 0;
-
-  /**
-  \brief delete the different parameters
-  */
-  virtual void DeleteParameters() = 0;
-
   /*
    * \brief Extract region of interest, given a bounding box and a list of vtk images
    * \param[in] iBounds bounding box (xmin, xmax, ymin, ymax, zmin, zmax)
@@ -167,6 +123,50 @@ protected:
    */
   vtkPolyData *  ReconstructPolyData(vtkImageData *iInputImage,
       const double & iThreshold);
+
+private:
+
+  /*
+   * \brief Reconstruct a contour from a vtkImageData and a threshold
+   * \param[in] iInputImage vtkImageData
+   * \param[in] iThreshold threshold
+   * \return Pointer to a vtkPolyData
+   */
+  vtkPolyData* ReconstructContour(vtkImageData *iInputImage,
+      const double & iThreshold);
+
+  /*
+   * \brief Reorganize points within a contour and decimate it.
+   * Required if we want to reedit this contour after.
+   * 1-reorganize
+   * 2-decimate
+   * \param[in] iInputImage vtkImageData
+   * \param[in] iDecimate enable decimation
+   * \return Pointer to a vtkPolyData
+   */
+  vtkPolyData* ReorganizeContour(vtkPolyData *iInputImage, bool iDecimate);
+
+  /*
+   * \brief Reconstruct a mesh from a vtkImageData and a threshold
+   * \param[in] iInputImage vtkImageData
+   * \param[in] iThreshold threshold
+   * \return Pointer to a vtkPolyData
+   */
+  vtkPolyData* ReconstructMesh(vtkImageData *iInputImage,
+      const double & iThreshold);
+
+protected:
+  QGoAlgorithmWidget*             m_AlgoWidget;
+
+  /**
+  \brief construct the algowidget with the different parameters
+  */
+  virtual void SetAlgoWidget(QWidget* iParent = 0) = 0;
+
+  /**
+  \brief delete the different parameters
+  */
+  virtual void DeleteParameters() = 0;
 
   /*
    * \todo Arnaud has something for itkimage to vtkpolydata in 3d
