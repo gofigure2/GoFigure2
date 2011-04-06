@@ -162,10 +162,7 @@ public:
       std::cerr << "converter Exception:" << err << std::endl;
       }
 
-    vtkSmartPointer<vtkImageData> output = vtkSmartPointer<vtkImageData>::New();
-    output->ShallowCopy( converter->GetOutput() );
-
-    return output;
+    return converter->GetOutput();
   }
 
   /*
