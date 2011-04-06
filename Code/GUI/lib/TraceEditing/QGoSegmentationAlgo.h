@@ -91,7 +91,8 @@ public:
    * \param[in] iImage vtkimagedata
    * \return roi
    */
-  vtkImageData* ExtractROI(double* iBounds, vtkImageData* iImage);
+  vtkSmartPointer<vtkImageData> ExtractROI(double* iBounds,
+      vtkSmartPointer<vtkImageData> iImage);
 
   /*
    * \brief Convert a vtkImage to a itkImage. If we call after "ExtractROI",

@@ -93,7 +93,8 @@ int main(int argc, char **argv)
   //------------------------------------------------------------------
   // extract roi
   double voi3D[6] = {10, 20, 10, 20, 10, 20};
-  vtkImageData* roi3D = algo.ExtractROI( voi3D, reader->GetOutput() );
+  vtkSmartPointer<vtkImageData> roi3D = vtkSmartPointer<vtkImageData>::New();
+  roi3D->ShallowCopy( algo.ExtractROI( voi3D, reader->GetOutput() ));
 
   assert( roi3D->GetDataDimension() == 3);
 
@@ -113,19 +114,20 @@ int main(int argc, char **argv)
   assert( vtkImage3D->GetDataDimension() == 3);
 
   // Reconstruct polydata
-  vtkPolyData* poly3D = algo.ExtractPolyData( vtkImage3D, 100 );
+  vtkSmartPointer<vtkPolyData> poly3D = vtkSmartPointer<vtkPolyData>::New();
+  poly3D->ShallowCopy(algo.ExtractPolyData( vtkImage3D, 100 ));
 
   //ShowPolyData(poly3D);
 
   vtkImage3D->Delete();
-  roi3D->Delete();
 
   //------------------------------------------------------------------
   // 3d - too large ROI
   //------------------------------------------------------------------
   // extract roi
   double voi3D2Large[6] = {0, 30, 0, 50, 0, 50};
-  vtkImageData* roi3D2Large = algo.ExtractROI( voi3D2Large, reader->GetOutput() );
+  vtkSmartPointer<vtkImageData> roi3D2Large = vtkSmartPointer<vtkImageData>::New();
+  roi3D2Large->ShallowCopy(algo.ExtractROI( voi3D2Large, reader->GetOutput() ));
 
   assert( roi3D2Large->GetDataDimension() == 3);
 
@@ -156,14 +158,14 @@ int main(int argc, char **argv)
 
   decimate3D->Delete();
   vtkImage3D2Large->Delete();
-  roi3D2Large->Delete();
 
   //------------------------------------------------------------------
   // 2d
   //------------------------------------------------------------------
   // extract roi
   double voi2D[6] = {15, 15, 0, 30, 0, 30};
-  vtkImageData* roi2D = algo.ExtractROI( voi2D, reader->GetOutput() );
+  vtkSmartPointer<vtkImageData> roi2D = vtkSmartPointer<vtkImageData>::New();
+  roi2D->ShallowCopy(algo.ExtractROI( voi2D, reader->GetOutput() ));
 
   assert( roi2D->GetDataDimension() == 2);
 
@@ -234,7 +236,6 @@ int main(int argc, char **argv)
 
   decimate2D->Delete();
   vtkImage2D->Delete();
-  roi2D->Delete();
 
   return EXIT_SUCCESS;
 }

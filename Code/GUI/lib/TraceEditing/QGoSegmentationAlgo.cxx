@@ -97,9 +97,9 @@ ExtractROI(double* iBounds, std::vector<vtkImageData*> iImages)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-vtkImageData*
+vtkSmartPointer<vtkImageData>
 QGoSegmentationAlgo::
-ExtractROI(double* iBounds, vtkImageData* iImage)
+ExtractROI(double* iBounds, vtkSmartPointer<vtkImageData> iImage)
 {
   // make sure there
   assert( iBounds );
@@ -112,8 +112,8 @@ ExtractROI(double* iBounds, vtkImageData* iImage)
                       iBounds[4], iBounds[5]);
   extractVOI->Update();
 
-  vtkImageData* output = vtkImageData::New();
-  output->DeepCopy( extractVOI->GetOutput() );
+  vtkSmartPointer<vtkImageData> output = vtkSmartPointer<vtkImageData>::New();
+  output->ShallowCopy( extractVOI->GetOutput() );
 
   return output;
 }
