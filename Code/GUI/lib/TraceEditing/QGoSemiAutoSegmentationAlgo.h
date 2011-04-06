@@ -80,7 +80,13 @@ protected:
   */
   virtual void DeleteParameters() = 0;
 
-  //add a method setBounds(std::vector<double> iCenter, iRadius)
+  /*
+   * \brief Get boundingBox from a center and a radius
+   * \param[in] iCenter center of the box
+   * \param[in] iRadius radius of the box
+   * \return vector[6] containing the bounding box (xmin, xmax, ymin, imax, ...)
+   */
+  std::vector<double> GetBounds(std::vector<double> iCenter, double iRadius);
  
 };
 

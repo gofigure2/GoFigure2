@@ -55,5 +55,18 @@ QGoSemiAutoSegmentationAlgo::~QGoSemiAutoSegmentationAlgo()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+std::vector<double>
+QGoSemiAutoSegmentationAlgo::
+GetBounds(std::vector<double> iCenter, double iRadius)
+{
+  std::vector<double> boundingBox;
 
+  for(int i=0; i<3; i++)
+    {
+    boundingBox.push_back(iCenter[i] - iRadius);
+    boundingBox.push_back(iCenter[i] + iRadius);
+    }
 
+  return boundingBox;
+}
+//-------------------------------------------------------------------------
