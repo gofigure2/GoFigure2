@@ -41,12 +41,15 @@
 #include "vtkMarchingSquares.h"
 #include "vtkStripper.h"
 #include "vtkCellArray.h"
-#include "vtkPolylineDecimation.h"
 #include "vtkContourFilter.h"
 #include "vtkFeatureEdges.h"
 #include "vtkFillHolesFilter.h"
 #include "vtkPolyDataConnectivityFilter.h"
 #include "vtkWindowedSincPolyDataFilter.h"
+
+// Decimation
+#include "vtkDecimatePro.h"
+#include "vtkPolylineDecimation.h"
 
 
 // test code
@@ -54,7 +57,7 @@
 
 
 QGoSegmentationAlgo::QGoSegmentationAlgo(QWidget *iParent)
-  :m_AlgoWidget(NULL)
+  : m_Decimate(true), m_NumberOfPoints(100), m_AlgoWidget(NULL)
 {
 }
 //-------------------------------------------------------------------------
@@ -183,7 +186,7 @@ ExtractContour(vtkImageData *iInputImage, const double & iThreshold)
   /*
    * \todo Nicolas-optimize it
    */
-  vtkPolyData *output = ReorganizeContour( contours->GetOutput(), true);
+  vtkPolyData *output = ReorganizeContour( contours->GetOutput());
 
   contours->Delete();
 
@@ -194,10 +197,10 @@ ExtractContour(vtkImageData *iInputImage, const double & iThreshold)
 //--------------------------------------------------------------------------
 vtkPolyData *
 QGoSegmentationAlgo::
-ReorganizeContour(vtkPolyData *iInputImage, bool iDecimate)
+ReorganizeContour(vtkPolyData *iInputImage)
 {
   /*
-   * \note Nicolas-too many deep copies
+   * \note Nicolas-to be enhanced
    */
   // Create reorganize contours
   vtkStripper *stripper = vtkStripper::New();
@@ -235,35 +238,11 @@ ReorganizeContour(vtkPolyData *iInputImage, bool iDecimate)
   testPolyD->SetPoints(points);
   testPolyD->SetLines(lines);
 
-  if ( iDecimate )
-    {
-    //Decimation (has to be after points reorganization)
-    vtkPolylineDecimation *decimator = vtkPolylineDecimation::New();
-    decimator->SetInput(testPolyD);
-    /// \todo instead os setting it to 0.9, compute it to make 10 to 20 control
-    // points
-    decimator->SetTargetReduction(0.9);
-    decimator->Update();
+  lines->Delete();
+  points->Delete();
+  stripper->Delete();
 
-    vtkPolyData *output = vtkPolyData::New();
-    output->DeepCopy( decimator->GetOutput() );
-
-    lines->Delete();
-    points->Delete();
-    stripper->Delete();
-    decimator->Delete();
-    testPolyD->Delete();
-
-    return output;
-    }
-  else
-    {
-    lines->Delete();
-    points->Delete();
-    stripper->Delete();
-
-    return testPolyD;
-    }
+  return testPolyD;
 }
 
 //--------------------------------------------------------------------------
@@ -339,5 +318,125 @@ ExtractMesh(vtkImageData *iInputImage, const double & iThreshold)
   output->DeepCopy( connectivityFilter->GetOutput() );
 
   return output;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+vtkPolyData*
+QGoSegmentationAlgo::
+DecimatePolyData( vtkPolyData* iPolyData, unsigned int iNumberOfPoints)
+{
+  // make sure there is a polydata
+  assert( iPolyData );
+
+  /*
+   * \todo Nicolas-might be better solution to test dimension of a PolyData
+   */
+  // test dimension of the input
+  double* bounds = iPolyData->GetBounds();
+  int dimension = 3;
+  if(bounds[0] == bounds[1] || bounds[2] == bounds[3] || bounds[4] == bounds[5])
+    {
+    --dimension;
+    }
+
+  switch ( dimension ) {
+      case 2 :
+        return DecimateContour( iPolyData, iNumberOfPoints);
+      case 3 :
+        return DecimateMesh( iPolyData, iNumberOfPoints);
+      default :
+        std::cout << "dimension unknown (Reconstruct polydata)" << std::endl;
+      }
+
+  return NULL;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+vtkPolyData*
+QGoSegmentationAlgo::
+DecimateContour( vtkPolyData* iPolyData, unsigned int iNumberOfPoints)
+{
+  // define target reduction
+  unsigned int numberOfPoints = iPolyData->GetNumberOfPoints();
+
+  double target = 1 - (double)iNumberOfPoints/(double)numberOfPoints;
+
+  vtkPolylineDecimation *decimator = vtkPolylineDecimation::New();
+  decimator->SetInput(iPolyData);
+  decimator->SetTargetReduction(target);
+  decimator->Update();
+
+  vtkPolyData *output = vtkPolyData::New();
+  output->DeepCopy( decimator->GetOutput() );
+
+  decimator->Delete();
+
+  return output;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+vtkPolyData*
+QGoSegmentationAlgo::
+DecimateMesh( vtkPolyData* iPolyData, unsigned int iNumberOfPoints)
+{
+  // define target reduction
+  unsigned int numberOfPoints = iPolyData->GetNumberOfPoints();
+
+  double target = 1 - (double)iNumberOfPoints/(double)numberOfPoints;
+
+  vtkDecimatePro *decimator = vtkDecimatePro::New();
+  decimator->SetInput(iPolyData);
+  decimator->SetTargetReduction(target);
+  decimator->Update();
+
+  /*
+   * \todo Nicolas-fill holes -smooth..?
+   */
+
+  vtkPolyData *output = vtkPolyData::New();
+  output->DeepCopy( decimator->GetOutput() );
+
+  decimator->Delete();
+
+  return output;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+QGoSegmentationAlgo::
+SetDecimate(bool& iDecimate)
+{
+  m_Decimate = iDecimate;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+bool
+QGoSegmentationAlgo::
+GetDecimate()
+{
+  return m_Decimate;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+QGoSegmentationAlgo::
+SetNumberOfPoints( unsigned int& iNumberOfPoints)
+{
+  m_NumberOfPoints = iNumberOfPoints;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+unsigned int
+QGoSegmentationAlgo::
+GetNumberOfPoints()
+{
+  return m_NumberOfPoints;
 }
 //--------------------------------------------------------------------------
