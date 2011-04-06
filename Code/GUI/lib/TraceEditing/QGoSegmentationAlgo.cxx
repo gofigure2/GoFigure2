@@ -133,7 +133,11 @@ ExtractPolyData(std::vector<vtkImageData*> iInputImage,
 
   while( it != iInputImage.end())
     {
-    listOfPolys.push_back( ExtractPolyData(*it, iThreshold) );
+    vtkPolyData* extractedPolyData = ExtractPolyData(*it, iThreshold);
+    if( extractedPolyData )
+      {
+      listOfPolys.push_back( extractedPolyData );
+      }
     ++it;
     }
 
