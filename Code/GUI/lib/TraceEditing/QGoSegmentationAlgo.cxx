@@ -180,16 +180,12 @@ ReconstructContour(vtkImageData *iInputImage, const double & iThreshold)
   contours->GenerateValues (1, iThreshold, iThreshold);
   contours->Update();
 
-  vtkPolyData *outputToOrganize = vtkPolyData::New();
-  outputToOrganize->DeepCopy( contours->GetOutput() );
-
   /*
    * \todo Nicolas-optimize it
    */
-  vtkPolyData *output = ReorganizeContour(outputToOrganize, true);
+  vtkPolyData *output = ReorganizeContour( contours->GetOutput(), true);
 
   contours->Delete();
-  outputToOrganize->Delete();
 
   return output;
 }
