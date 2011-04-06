@@ -79,7 +79,7 @@ public:
   of the qgoalgomanagerwidgets, enable them, display only the channel tracked
   by the user and disable the channel comboboxes
   */
-  void SetTSliceForDopplerView(QStringList iListTimePoints, int iChannelNumber);
+  void SetTSliceForDopplerView(std::map<QString, QColor> iListTimePoints, int iChannelNumber);
 
 public slots:
   

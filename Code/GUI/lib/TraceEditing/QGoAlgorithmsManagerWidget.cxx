@@ -37,6 +37,7 @@
 #include <QLabel>
 #include <QGroupBox>
 #include <QPushButton>
+#include <QPainter>
 
 
 QGoAlgorithmsManagerWidget::QGoAlgorithmsManagerWidget(std::string iModeName,
@@ -174,13 +175,30 @@ void QGoAlgorithmsManagerWidget::SetTSliceForClassicView(QString iTimePoint)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoAlgorithmsManagerWidget::SetTSliceForDopplerView(QStringList iListTimePoints,
-  int iIndexChannel)
+void QGoAlgorithmsManagerWidget::SetTSliceForDopplerView(
+  std::map<QString, QColor> iListTimePoints, int iIndexChannel)
 {
   if (this->m_TimeComboBox)
     {
     this->m_TimeComboBox->clear();
-    this->m_TimeComboBox->addItems(iListTimePoints);
+    if (!iListTimePoints.empty() )
+    {
+    std::map<QString, QColor>::iterator iter = iListTimePoints.begin();
+    while(iter != iListTimePoints.end() )
+      {
+      QPixmap  pix(12, 12);
+      QPainter painter(&pix);
+      painter.setPen(Qt::gray);
+      painter.setBrush( QBrush(iter->second) );
+      painter.drawRect(0, 0, 12, 12);
+      QIcon Icon;
+      Icon.addPixmap(pix);
+
+      this->m_TimeComboBox->addItem(Icon, iter->first);
+
+      ++iter;
+      }
+    }
     if (iListTimePoints.size() > 0)
       {
       this->m_TimeComboBox->setCurrentIndex(1);

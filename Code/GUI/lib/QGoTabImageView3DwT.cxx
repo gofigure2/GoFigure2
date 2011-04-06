@@ -3467,12 +3467,6 @@ QGoTabImageView3DwT::GoToLocation(int iX, int iY, int iZ, int iT)
 void
 QGoTabImageView3DwT::UpdateTracesEditingWidget()
 {
-  //this->UpdateTraceEditingWidget<QGoMeshEditingWidgetManager>(
-   // this->m_MeshEditingWidget, &QGoTabImageView3DwT::ShowTraceWidgetsForMesh );
-
-  //this->UpdateTraceEditingWidget<QGoMeshEditingWidgetManager>(
-  //  this->m_MeshEditingWidget);
-
   if (this->m_MeshEditingWidget != NULL && this->m_ContourEditingWidget != NULL)
     {
     if (this->m_ChannelClassicMode)
@@ -3482,27 +3476,30 @@ QGoTabImageView3DwT::UpdateTracesEditingWidget()
       }
     else
       {
-      QStringList ListTimePoints;
+      std::map<QString, QColor> ListTimePoints;
+      QColor Red   (165, 0, 0, 255);
+      QColor Green (0, 165, 0, 255);
+      QColor Blue  (0, 0, 165, 255);
       int TDopplerMin = this->m_TCoord - this->m_DopplerStep;
       int MinTimePoint = this->m_MegaCaptureReader->GetMinTimePoint();
       int TDopplerMax = this->m_TCoord + this->m_DopplerStep;
       int MaxTimePoint = this->m_MegaCaptureReader->GetMaxTimePoint();
       if ( TDopplerMin > MinTimePoint )
         {
-        ListTimePoints.append(tr("%1").arg(TDopplerMin) );
+        ListTimePoints[tr("%1").arg(TDopplerMin)] = Red;
         }
       else
         {
-        ListTimePoints.append(tr("%1").arg(MinTimePoint) );
+        ListTimePoints[tr("%1").arg(MinTimePoint)] = Red;
         }
-      ListTimePoints.append(tr("%1").arg(this->m_TCoord));
+      ListTimePoints[tr("%1").arg(this->m_TCoord)] = Green;
       if (TDopplerMax < MaxTimePoint )
         {
-        ListTimePoints.append(tr("%1").arg(TDopplerMax));
+        ListTimePoints[tr("%1").arg(TDopplerMax)] = Blue;
         }
       else
         {
-        ListTimePoints.append(tr("%1").arg(MaxTimePoint));
+        ListTimePoints[tr("%1").arg(MaxTimePoint)] = Blue;
         }
       this->m_MeshEditingWidget->SetTSliceForDopplerView(ListTimePoints,
         this->m_ChannelOfInterest);

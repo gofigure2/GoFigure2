@@ -88,7 +88,8 @@ public:
   void CheckTheCurrentMode(bool IsVisible);
 
   void SetTSliceForClassicView(int iTimePoint);
-  void SetTSliceForDopplerView(QStringList iListTimePoints, int iChannelNumber);
+  void SetTSliceForDopplerView(
+    std::map<QString, QColor> iListTimePoints, int iChannelNumber);
 
   /**
   \brief return the name of the current mode in the combobox

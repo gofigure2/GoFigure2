@@ -79,7 +79,7 @@ void QGoMeshEditingWidgetManager::SetTSliceForClassicView()
 
 //-------------------------------------------------------------------------
 void QGoMeshEditingWidgetManager::SetTSliceForDopplerView(
-  QStringList iListTimePoints, int iChannelNumber)
+  std::map<QString, QColor> iListTimePoints, int iChannelNumber)
 {
   QGoTraceEditingWidgetManager::SetTSliceForDopplerView(
     iListTimePoints, iChannelNumber);

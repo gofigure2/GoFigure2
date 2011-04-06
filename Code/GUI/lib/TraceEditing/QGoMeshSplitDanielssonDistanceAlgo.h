@@ -59,10 +59,6 @@ public:
     int iChannel);
 
 protected:
-
-  QGoAlgoParameter<double>*       m_Radius;
-  QGoAlgoParameter<int>*          m_Curvature;
-  QGoAlgoParameter<int>*          m_Iterations;
   
   void SetAlgoWidget(QWidget* iParent = 0);
   void DeleteParameters();

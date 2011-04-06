@@ -33,6 +33,7 @@
 =========================================================================*/
 #include "QGoModesManagerWidget.h"
 #include <QLabel>
+#include <QColor>
 
 QGoModesManagerWidget::QGoModesManagerWidget(std::vector<QString> iVectChannels, 
   QStringList iListTimePoints, QWidget *iParent)
@@ -232,7 +233,7 @@ void QGoModesManagerWidget::SetTSliceForClassicViewInAllAlgoModes(int iTimePoint
 
 //-------------------------------------------------------------------------
 void QGoModesManagerWidget::SetTSliceForDopplerViewInAllAlgoModes(
-  QStringList iListTimePoints, int iChannelNumber)
+  std::map<QString, QColor> iListTimePoints, int iChannelNumber)
 {
   this->m_AutoAlgoManagerWidget->SetTSliceForDopplerView(
     iListTimePoints, iChannelNumber);

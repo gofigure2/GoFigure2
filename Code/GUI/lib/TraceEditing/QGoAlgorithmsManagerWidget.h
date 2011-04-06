@@ -40,8 +40,8 @@
 #include <QStackedLayout>
 #include <QVBoxLayout>
 #include <QFormLayout>
-#include <QComboBox>
 #include <QLabel>
+#include <QComboBox>
 #include "QGoAlgorithmWidget.h"
 
 /**
@@ -92,7 +92,8 @@ public:
 
   void SetTSliceForClassicView(QString iTimePoint);
 
-  void SetTSliceForDopplerView(QStringList iListTimePoints, int iIndexChannel);
+  void SetTSliceForDopplerView(
+    std::map<QString, QColor> iListTimePoints, int iIndexChannel);
 
   /**
   \brief return the name of the mode
