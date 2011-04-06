@@ -39,6 +39,7 @@
 #include "vtkMetaImageReader.h"
 #include "itkImage.h"
 
+/*
 // helper for debugging
 #include "VisualizePolydataHelper.h"
 #include "vtkPolyDataWriter.h"
@@ -49,7 +50,7 @@
 #include "vtkRenderer.h"
 #include "vtkRenderWindow.h"
 #include "vtkRenderWindowInteractor.h"
-
+*/
 //converter to be tested
 #include "QGoMeshLevelSetAlgo.h"
 
@@ -147,11 +148,11 @@ int main(int argc, char **argv)
 
   // Reconstruct polydata
   vtkPolyData* poly3D2Large = algo.ExtractPolyData( vtkImage3D2Large, 100 );
-  ShowPolyData(poly3D2Large);
+  //ShowPolyData(poly3D2Large);
 
   // Decimate polydata
   vtkPolyData* decimate3D = algo.DecimatePolyData(poly3D2Large, 100);
-  ShowPolyData(decimate3D);
+  //ShowPolyData(decimate3D);
 
   decimate3D->Delete();
   vtkImage3D2Large->Delete();
@@ -189,7 +190,7 @@ int main(int argc, char **argv)
   vtkPolyData* decimate2D = algo.DecimatePolyData(poly2D, 10);
 
   //ShowPolyData(poly2D);
-
+  /*
   vtkPolyDataWriter* writer = vtkPolyDataWriter::New();
   writer->SetFileName("contour.vtk");
   writer->SetInput(poly2D);
@@ -228,7 +229,7 @@ int main(int argc, char **argv)
   contourWidget->Initialize(decimate2D);
   contourWidget->Render();
 
-  renderWindowInteractor->Start();
+  renderWindowInteractor->Start();*/
 
   decimate2D->Delete();
   vtkImage2D->Delete();
