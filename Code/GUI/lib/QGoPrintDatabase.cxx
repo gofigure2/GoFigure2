@@ -266,7 +266,8 @@ QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
   unsigned int ContourID;
   if ( !this->m_ReeditMode )
     {
-    ContourID = this->m_ContoursManager->SaveNewContourFromVisu(iXCoordMin,
+    ContourID = this->m_ContoursManager->SaveNewContourFromVisu(iTCoord,
+                                                                iXCoordMin,
                                                                 iYCoordMin,
                                                                 iZCoordMin,
                                                                 iXCoordMax,
@@ -413,13 +414,14 @@ unsigned int QGoPrintDatabase::SaveNewContourForMeshToContours(
   unsigned int iZCoordMax,
   vtkPolyData *iTraceNodes)
 {
-  this->OpenDBConnection();
+  /*this->OpenDBConnection();
   unsigned int ContourID = this->m_ContoursManager->SaveNewContourFromVisu(
       iXCoordMin, iYCoordMin, iZCoordMin,
       iXCoordMax, iYCoordMax, iZCoordMax, iTraceNodes,
       this->m_DatabaseConnector, 0);
   this->CloseDBConnection();
-  return ContourID;
+  return ContourID;*/
+  return 0;
 }
 
 //-------------------------------------------------------------------------

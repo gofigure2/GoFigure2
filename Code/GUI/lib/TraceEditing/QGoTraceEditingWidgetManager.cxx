@@ -84,8 +84,6 @@ void QGoTraceEditingWidgetManager::SetTheTraceWidget(
   this->m_TraceEditingWidget = new QGoTraceEditingWidget(
    this->m_TraceName.c_str(), iVectChannels, ListTimePoints, iParent);
 
-  //this->SetTSliceForClassicView();
-
   QObject::connect( this->m_TraceEditingWidget, 
                     SIGNAL(SetSeedInteractorBehaviour(bool) ),
                     this,
@@ -158,8 +156,6 @@ void QGoTraceEditingWidgetManager::SetTSliceForDopplerView(
 {
   this->m_TraceEditingWidget->SetTSliceForDopplerView(
     iListTimePoints, iChannelNumber);
-  //this->m_SetOfContoursWidget->SetTSliceForDopplerView(
-  //  iListTimePoints, iChannelNumber);
 } 
 //-------------------------------------------------------------------------
 

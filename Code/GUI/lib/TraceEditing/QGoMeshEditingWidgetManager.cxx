@@ -56,8 +56,6 @@ QGoMeshEditingWidgetManager::QGoMeshEditingWidgetManager(
   this->SetSplitMergeMode(iParent);
   this->SetSetOfContoursAlgorithms(iVectChannels, this->m_ListTimePoint, 
     iParent);
-  //this->m_SetOfContoursWidget->SetTSliceForClassicView(
-  //  tr("%1").arg(*iCurrentTimePoint) );
 }
 //-------------------------------------------------------------------------
 
@@ -128,8 +126,6 @@ void QGoMeshEditingWidgetManager::SetSetOfContoursAlgorithms(
     new QGoAlgorithmsManagerWidget("Set of Contours",
     iParent, iVectChannels, iListTime);
 
-  //this->m_SetOfContoursWidget->SetTSliceForClassicView(
-  //  tr("%1").arg(*iCurrentTimePoint) );
   this->SetTSliceForClassicView();
 
   this->m_SetOfContoursWaterShedAlgo = 

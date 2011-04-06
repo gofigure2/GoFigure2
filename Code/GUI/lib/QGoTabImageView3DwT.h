@@ -311,9 +311,9 @@ public slots:
 
   void StepChanged(int iStep);
 
-  void ValidateContour();
+  void ValidateContour(int iTCoord);
 
-  int SaveAndVisuContour(vtkPolyData *iView = NULL);
+  int SaveAndVisuContour(int iTCoord, vtkPolyData *iView = NULL);
 
   //void SaveAndVisuContoursList(std::vector<vtkPolyData* >* iContours);
 
@@ -414,7 +414,7 @@ protected:
   QGoVideoRecorder *m_VideoRecorderWidget;
   #endif /* ENABLEFFMPEG || ENABLEAVI */
 
-  void SaveContour(vtkPolyData *contour, vtkPolyData *contour_nodes);
+  void SaveContour(vtkPolyData *contour, vtkPolyData *contour_nodes, int iTCoord);
 
   std::vector< vtkActor * > VisualizeTrace(vtkPolyData *iTrace, double* iRGBA);
 

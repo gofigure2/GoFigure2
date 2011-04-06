@@ -354,8 +354,8 @@ QGoTabImageView3DwT::CreateContourEditingDockWidget(
                     SLOT( ManualInteractorBehavior(bool) ) );
 
   QObject::connect( this->m_ContourEditingWidget,
-                    SIGNAL( validateContour() ),
-                    this, SLOT( ValidateContour() ) );
+                    SIGNAL( ContourValidated(int) ),
+                    this, SLOT( ValidateContour(int) ) );
 
   QObject::connect( this->m_ContourEditingWidget,
                     SIGNAL( reinitializeContour() ),
@@ -2480,9 +2480,10 @@ QGoTabImageView3DwT::StepChanged(int iStep)
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SaveContour(vtkPolyData *contour, vtkPolyData *contour_nodes)
+QGoTabImageView3DwT::SaveContour(vtkPolyData *contour, vtkPolyData *contour_nodes,
+  int iTCoord)
 {
-  if ( ( contour->GetNumberOfPoints() > 2 ) && ( m_TCoord >= 0 ) )
+  if ( ( contour->GetNumberOfPoints() > 2 ) && ( iTCoord >= 0 ) )
     {
     // Compute Bounding Box
     std::vector< int > bounds = GetBoundingBox(contour);
@@ -2490,7 +2491,7 @@ QGoTabImageView3DwT::SaveContour(vtkPolyData *contour, vtkPolyData *contour_node
     this->m_DataBaseTables->SaveContoursFromVisuInDB(bounds[0],
                                                      bounds[2],
                                                      bounds[4],
-                                                     m_TCoord,
+                                                     iTCoord,
                                                      bounds[1],
                                                      bounds[3],
                                                      bounds[5],
@@ -2587,7 +2588,7 @@ QGoTabImageView3DwT::VisualizeTrace(vtkPolyData *iTrace, double *iRGBA)
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::ValidateContour()
+QGoTabImageView3DwT::ValidateContour(int iTCoord)
 {
   bool re_edit = this->m_ContourEditingWidget->GetReeditMode();
   for ( int i = 0; i < m_ImageView->GetNumberOfImageViewers(); i++ )
@@ -2602,7 +2603,7 @@ QGoTabImageView3DwT::ValidateContour()
       contour->DeepCopy( m_ImageView->GetContourRepresentationAsPolydata(i) );
 
       //polydata for bounding box, node for points
-      SaveContour(contour, nodes);
+      SaveContour(contour, nodes, iTCoord);
 
       // polydata
       std::vector< vtkActor * > actors =
@@ -2613,7 +2614,8 @@ QGoTabImageView3DwT::ValidateContour()
       //nodes
       m_ContourContainer->UpdateCurrentElementFromVisu(actors,
                                                        nodes,
-                                                       m_TCoord,
+                                                      // m_TCoord,
+                                                       iTCoord,
                                                        re_edit, //highlighted
                                                        true);   //visible
 
@@ -2898,7 +2900,7 @@ QGoTabImageView3DwT::SetSliceView()
 
 //-------------------------------------------------------------------------
 int
-QGoTabImageView3DwT::SaveAndVisuContour(vtkPolyData *iView )
+QGoTabImageView3DwT::SaveAndVisuContour(int iTCoord, vtkPolyData *iView)
 {
   if ( !m_DataBaseTables->IsDatabaseUsed() )
     {
@@ -2917,7 +2919,7 @@ QGoTabImageView3DwT::SaveAndVisuContour(vtkPolyData *iView )
   CreateContour(contour_nodes, iView);
 
   // polydata for bounding box, nodes for db
-  SaveContour(iView, contour_nodes);
+  SaveContour(iView, contour_nodes, iTCoord);
 
   // should be polydata
   std::vector< vtkActor * > actors =
@@ -2929,7 +2931,8 @@ QGoTabImageView3DwT::SaveAndVisuContour(vtkPolyData *iView )
   // update the container
   m_ContourContainer->UpdateCurrentElementFromVisu(actors,
                                                    contour_nodes,
-                                                   m_TCoord,
+                                                   //m_TCoord,
+                                                   iTCoord,
                                                    false, //highlighted
                                                    true); //visible
 

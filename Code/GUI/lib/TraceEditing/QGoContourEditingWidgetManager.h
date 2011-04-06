@@ -114,13 +114,17 @@ protected:
   
 signals:
   //from the manual mode:
-  void validateContour();
+  void ContourValidated(int iTCoord);
   void reinitializeContour();
   void changeContourRepresentationProperty(float iLinewidth, QColor iLinecolor,
                                            QColor iNodecolor, QColor iActivenodecolor);
   void ManualSegmentationActivated(bool);
 
 protected slots:
+  /**
+  \brief slot called when the user clicks on "validate" for the manual mode
+  */
+  void ContourToValidate();
   /*void ApplyLevelSetAlgo();
   void ApplyShapeAlgo();
   void ApplyWaterShedAlgo();*/

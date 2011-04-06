@@ -82,7 +82,7 @@ void QGoContourEditingWidgetManager::SetManualMode(
 
   QObject::connect( this->m_ManualMode, 
                     SIGNAL (validateContour() ),
-                    this, SIGNAL(validateContour() ) );
+                    this, SLOT(ContourToValidate() ) );
 
   QObject::connect( this->m_ManualMode, 
                     SIGNAL (reinitializeContour() ),
@@ -92,6 +92,14 @@ void QGoContourEditingWidgetManager::SetManualMode(
                     SIGNAL (ManualSegmentationActivated(bool) ),
                     this, SIGNAL(ManualSegmentationActivated(bool) ) );
 
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoContourEditingWidgetManager::ContourToValidate()
+{
+  int CurrentTimePoint = this->GetSelectedTimePoint(); //for test purpose
+  emit ContourValidated(this->GetSelectedTimePoint() );
 }
 //-------------------------------------------------------------------------
 
