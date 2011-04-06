@@ -308,9 +308,9 @@ ExtractMesh(vtkSmartPointer<vtkImageData> iInputImage, const double & iThreshold
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-vtkPolyData*
+vtkSmartPointer<vtkPolyData>
 QGoSegmentationAlgo::
-DecimatePolyData( vtkPolyData* iPolyData, unsigned int iNumberOfPoints)
+DecimatePolyData( vtkSmartPointer<vtkPolyData> iPolyData, unsigned int iNumberOfPoints)
 {
   // make sure there is a polydata
   assert( iPolyData );
@@ -340,40 +340,37 @@ DecimatePolyData( vtkPolyData* iPolyData, unsigned int iNumberOfPoints)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-vtkPolyData*
+vtkSmartPointer<vtkPolyData>
 QGoSegmentationAlgo::
-DecimateContour( vtkPolyData* iPolyData, unsigned int iNumberOfPoints)
+DecimateContour( vtkSmartPointer<vtkPolyData> iPolyData, unsigned int iNumberOfPoints)
 {
   // define target reduction
   unsigned int numberOfPoints = iPolyData->GetNumberOfPoints();
 
   double target = 1 - (double)iNumberOfPoints/(double)numberOfPoints;
 
-  vtkPolylineDecimation *decimator = vtkPolylineDecimation::New();
+  vtkSmartPointer<vtkPolylineDecimation> decimator =
+      vtkSmartPointer<vtkPolylineDecimation>::New();
   decimator->SetInput(iPolyData);
   decimator->SetTargetReduction(target);
   decimator->Update();
 
-  vtkPolyData *output = vtkPolyData::New();
-  output->DeepCopy( decimator->GetOutput() );
-
-  decimator->Delete();
-
-  return output;
+  return decimator->GetOutput();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-vtkPolyData*
+vtkSmartPointer<vtkPolyData>
 QGoSegmentationAlgo::
-DecimateMesh( vtkPolyData* iPolyData, unsigned int iNumberOfPoints)
+DecimateMesh( vtkSmartPointer<vtkPolyData> iPolyData, unsigned int iNumberOfPoints)
 {
   // define target reduction
   unsigned int numberOfPoints = iPolyData->GetNumberOfPoints();
 
   double target = 1 - (double)iNumberOfPoints/(double)numberOfPoints;
 
-  vtkDecimatePro *decimator = vtkDecimatePro::New();
+  vtkSmartPointer<vtkDecimatePro> decimator =
+      vtkSmartPointer<vtkDecimatePro>::New();
   decimator->SetInput(iPolyData);
   decimator->SetTargetReduction(target);
   decimator->Update();
@@ -382,12 +379,7 @@ DecimateMesh( vtkPolyData* iPolyData, unsigned int iNumberOfPoints)
    * \todo Nicolas-fill holes -smooth..?
    */
 
-  vtkPolyData *output = vtkPolyData::New();
-  output->DeepCopy( decimator->GetOutput() );
-
-  decimator->Delete();
-
-  return output;
+  return decimator->GetOutput();
 }
 //--------------------------------------------------------------------------
 

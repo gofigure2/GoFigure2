@@ -191,7 +191,8 @@ public:
    * \param[in] iNumberOfPoints target number of points
    * \return Decimated polyData
    */
-  vtkPolyData* DecimatePolyData( vtkPolyData* iPolyData, unsigned int iNumberOfPoints);
+  vtkSmartPointer<vtkPolyData> DecimatePolyData(
+      vtkSmartPointer<vtkPolyData> iPolyData, unsigned int iNumberOfPoints);
 
   /*
    * \brief Enable decimation during polydata extraction.
@@ -253,7 +254,8 @@ private:
    * \param[in] iNumberOfPoints target number of points
    * \return Decimated polyData
    */
-  vtkPolyData* DecimateContour( vtkPolyData* iPolyData, unsigned int iNumberOfPoints);
+  vtkSmartPointer<vtkPolyData> DecimateContour(
+      vtkSmartPointer<vtkPolyData> iPolyData, unsigned int iNumberOfPoints);
 
   /*
    * \brief Decimate a mesh
@@ -261,7 +263,8 @@ private:
    * \param[in] iNumberOfPoints target number of points
    * \return Decimated polyData
    */
-  vtkPolyData* DecimateMesh( vtkPolyData* iPolyData, unsigned int iNumberOfPoints);
+  vtkSmartPointer<vtkPolyData> DecimateMesh(
+      vtkSmartPointer<vtkPolyData> iPolyData, unsigned int iNumberOfPoints);
 
   bool m_Decimate;
   unsigned int m_NumberOfPoints;

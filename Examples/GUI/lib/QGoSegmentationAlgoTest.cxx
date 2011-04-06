@@ -151,10 +151,9 @@ int main(int argc, char **argv)
   ShowPolyData(poly3D2Large);
 
   // Decimate polydata
-  vtkPolyData* decimate3D = algo.DecimatePolyData(poly3D2Large, 100);
+  vtkSmartPointer<vtkPolyData> decimate3D = vtkSmartPointer<vtkPolyData>::New();
+  decimate3D->ShallowCopy(algo.DecimatePolyData(poly3D2Large, 100));
   ShowPolyData(decimate3D);
-
-  decimate3D->Delete();
 
   //------------------------------------------------------------------
   // 2d
@@ -188,7 +187,8 @@ int main(int argc, char **argv)
   poly2D->ShallowCopy(algo.ExtractPolyData( vtkImage2D, 100 ));
   ShowPolyData(poly2D);
 
-  vtkPolyData* decimate2D = algo.DecimatePolyData(poly2D, 10);
+  vtkSmartPointer<vtkPolyData> decimate2D = vtkSmartPointer<vtkPolyData>::New();
+  decimate2D->ShallowCopy(algo.DecimatePolyData(poly2D, 10));
 
   ShowPolyData(decimate2D);
   /*
@@ -231,8 +231,6 @@ int main(int argc, char **argv)
   contourWidget->Render();
 
   renderWindowInteractor->Start();*/
-
-  decimate2D->Delete();
 
   return EXIT_SUCCESS;
 }
