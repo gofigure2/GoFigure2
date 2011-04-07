@@ -37,6 +37,9 @@
 #include "QGoFilterSemiAutoBase.h"
 
 #include "QGoGUILibConfigure.h"
+#include "itkImage.h"
+#include "itkChanAndVeseSegmentationFilter.h"
+#include "itkVTKImageImport.h"
 
 /**
  * \class QGoFilterChanAndVese
@@ -62,6 +65,33 @@ public:
     int iIterations, int iCurvature,
     std::vector<vtkSmartPointer< vtkImageData > >* iImages, 
     int iChannel);
+
+  //template<class PixelType, unsigned int VImageDimension>
+  template<unsigned int VImageDimension>
+  typename itk::Image< float, VImageDimension >::Pointer 
+    Apply2DFilter(
+    typename itk::Image< unsigned char, VImageDimension >::Pointer iPointer,
+    int iIterations, int iCurvature)
+  {
+    //const int dimension = 2;
+  typedef itk::Image< unsigned char, VImageDimension > FeatureImageType;
+  typedef itk::Image< float, VImageDimension >         OutputImageType;
+  typedef itk::ChanAndVeseSegmentationFilter< FeatureImageType >
+  SegmentationFilterType;
+
+  //FeatureImageType::PointType pt;
+
+  SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
+
+  filter->SetFeatureImage(iPointer);
+  filter->SetPreprocess(1);
+
+  filter->SetNumberOfIterations(iIterations);
+  filter->SetCurvatureWeight(iCurvature);
+  filter->Update();
+
+  return filter->GetOutput();
+  }
 
   std::vector<std::vector<vtkPolyData*> > ApplyFilterSetOf2D(
     double iRadius, vtkPoints* iPoints, 

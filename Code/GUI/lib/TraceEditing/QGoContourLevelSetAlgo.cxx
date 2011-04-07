@@ -31,64 +31,53 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __QGoSemiAutoSegmentationAlgo_h
-#define __QGoSemiAutoSegmentationAlgo_h
+#include "QGoContourLevelSetAlgo.h"
+#include "QGoFilterChanAndVese.h"
 
-#include "QGoSegmentationAlgo.h"
-#include "QGoAlgorithmWidget.h"
-#include "QGoGUILibConfigure.h"
-#include "vtkSmartPointer.h"
-#include "vtkPolyData.h"
-#include "vtkImageData.h"
-#include "QGoGUILibConfigure.h"
 
-/**
-\class QGoSemiAutoSegmentationAlgo
-\brief abstract class to be the interface between the semi automatic 
-algorithms for meshes and contours and GoFigure
-*/
-class QGOGUILIB_EXPORT QGoSemiAutoSegmentationAlgo:public QGoSegmentationAlgo
+QGoContourLevelSetAlgo::QGoContourLevelSetAlgo(vtkPoints* iSeeds, QWidget* iParent)
+  :QGoLevelSetAlgo(iSeeds, iParent)
 {
-  Q_OBJECT
-public:
-  QGoSemiAutoSegmentationAlgo(vtkPoints* iSeeds, QWidget *iParent = 0);
-  ~QGoSemiAutoSegmentationAlgo();
+}
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+QGoContourLevelSetAlgo::~QGoContourLevelSetAlgo()
+{
+}
+//-------------------------------------------------------------------------
 
-  /**
-  \brief return the vtkpolydata created by the algorithm
-  */
-  virtual std::vector<vtkPolyData*> ApplyAlgo(
-    std::vector<vtkSmartPointer< vtkImageData > >* iImages,
-    int iChannel) = 0;
-
-protected:
-  vtkPoints*                      m_Seeds;
-  QGoAlgoParameter<double>*       m_Radius;
-
-  /**
-  \brief construct the algowidget with the different parameters
-  */
-  virtual void SetAlgoWidget(QWidget* iParent = 0);
-
-  /**
-  \brief delete the different parameters
-  */
-  virtual void DeleteParameters() = 0;
-
-<<<<<<< HEAD
-
-  //add a method setBounds(std::vector<double> iCenter, iRadius)
-=======
-  /*
-   * \brief Get boundingBox from a center and a radius
-   * \param[in] iCenter center of the box
-   * \param[in] iRadius radius of the box
-   * \return vector[6] containing the bounding box (xmin, xmax, ymin, imax, ...)
-   */
-  std::vector<double> GetBounds(std::vector<double> iCenter, double iRadius);
->>>>>>> add_genericMethods
+//-------------------------------------------------------------------------
+std::vector<vtkPolyData*> QGoContourLevelSetAlgo::ApplyAlgo(
+  std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+    int iChannel)
+{
+  const int Dimension = 2;
+  std::vector<vtkPolyData*> oNewContours = std::vector<vtkPolyData*>();
  
-};
+  if ( this->m_Radius->GetValue() <= 0 )
+    {
+    std::cerr << "Radius should be > 0 " << std::endl;
+    return oNewContours;
+    }
+   double *Center = new double[2];
 
-#endif
+// LOOP  FOR EACH SEED
+   for ( int i = 0; i < this->m_Seeds->GetNumberOfPoints(); i++ )
+    {
+    this->m_Seeds->GetPoint(i, Center);
+    std::vector<double> CenterVect;
+    CenterVect.push_back(Center[0]);
+    CenterVect.push_back(Center[1]);
+
+    oNewContours.push_back(
+      this->ApplyLevelSetFilter<unsigned int, Dimension>(CenterVect, iImages, iChannel) );   
+
+    }
+   delete[] Center;
+  
+  return oNewContours;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------

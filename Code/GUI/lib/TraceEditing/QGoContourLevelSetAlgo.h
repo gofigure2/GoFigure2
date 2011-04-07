@@ -31,59 +31,54 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "QGoSemiAutoSegmentationAlgo.h"
+#ifndef __QGoContourLevelSetAlgo_h
+#define __QGoContourLevelSetAlgo_h
+
+#include "QGoLevelSetAlgo.h"
+#include "QGoAlgorithmWidget.h"
+#include "QGoAlgoParameter.h"
+#include "QGoGUILibConfigure.h"
+#include "vtkSmartPointer.h"
+#include "vtkPolyData.h"
+#include "vtkImageData.h"
 
 
-QGoSemiAutoSegmentationAlgo::QGoSemiAutoSegmentationAlgo(
-  vtkPoints* iSeeds, QWidget *iParent)
+/**
+\class QGoContourLevelSetAlgo
+\brief class to be the interface between the levelset algo for contours 
+and GoFigure
+*/
+class QGoContourLevelSetAlgo: public QGoLevelSetAlgo
 {
-  this->m_Seeds = iSeeds;
-}
-//-------------------------------------------------------------------------
+public:
+  QGoContourLevelSetAlgo(vtkPoints* iSeeds, QWidget *iParent = 0);
+  ~QGoContourLevelSetAlgo();
 
-//-------------------------------------------------------------------------
-QGoSemiAutoSegmentationAlgo::~QGoSemiAutoSegmentationAlgo()
-{
-  /*
-   * \note Nicolas-Requiered this one? We just copy the address in the constructor.
-   */
-  if(this->m_Seeds)
-    {
-    this->m_Seeds->Delete();
-    }
-}
-//-------------------------------------------------------------------------
+  std::vector<vtkPolyData*> ApplyAlgo(
+    std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+    int iChannel);
 
-//-------------------------------------------------------------------------
-<<<<<<< HEAD
-void QGoSemiAutoSegmentationAlgo::SetAlgoWidget(QWidget* iParent)
-{
-  if (this->m_AlgoWidget != NULL)
-    {
-    m_Radius = new QGoAlgoParameter<double>("Radius", false, 0.1, 99.99, 2, 3);
-    this->m_AlgoWidget->AddParameter(m_Radius);
-    }
-  else
-    {
-    std::cout<<"the widget has to be created before";
-    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-    std::cout << std::endl;
-    }
-}
-=======
-std::vector<double>
-QGoSemiAutoSegmentationAlgo::
-GetBounds(std::vector<double> iCenter, double iRadius)
-{
-  std::vector<double> boundingBox;
+protected:
 
-  for(int i=0; i<3; i++)
+  template < class PixelType, unsigned int VImageDimension >
+  vtkPolyData * ApplyLevelSetFilter(std::vector<double> iCenter,
+  std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+    int iChannel)
     {
-    boundingBox.push_back(iCenter[i] - iRadius);
-    boundingBox.push_back(iCenter[i] + iRadius);
-    }
->>>>>>> add_genericMethods
+    std::vector<double> Bounds = this->GetBounds(iCenter, this->m_Radius->GetValue());
+    vtkImageData* ROI = ExtractROI(Bounds, ( *iImages )[iChannel]);
 
-  return boundingBox;
-}
-//-------------------------------------------------------------------------
+    itk::Image< unsigned char, VImageDimension >::Pointer ItkInput = 
+      this->ConvertVTK2ITK<unsigned char, VImageDimension>(ROI);
+
+    QGoFilterChanAndVese Filter;
+    itk::Image< float, VImageDimension >::Pointer ItkOutPut = 
+      Filter.Apply2DFilter<VImageDimension>(ItkInput,
+      this->m_Curvature->GetValue(),  this->m_Iterations->GetValue() );
+
+    vtkImageData * FilterOutPutToVTK = this->ConvertITK2VTK<float, VImageDimension>(ItkOutPut);
+    return this->ExtractPolyData(FilterOutPutToVTK, 0);
+    }
+};
+
+#endif

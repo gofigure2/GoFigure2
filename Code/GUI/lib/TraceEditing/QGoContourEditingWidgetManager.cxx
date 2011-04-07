@@ -106,15 +106,15 @@ void QGoContourEditingWidgetManager::ContourToValidate()
 //-------------------------------------------------------------------------
 void QGoContourEditingWidgetManager::SetSemiAutomaticAlgorithms(QWidget* iParent)
 {
-  /*//level set:
-  m_LevelSetAlgo = new QGoMeshLevelSetAlgo(this->m_Seeds, iParent);
+  //level set:
+  m_LevelSetAlgo = new QGoContourLevelSetAlgo(this->m_Seeds, iParent);
   QGoAlgorithmWidget* LevelSetWidget = m_LevelSetAlgo->GetAlgoWidget();
   this->m_TraceEditingWidget->AddAlgoWidgetForSemiAutomaticMode(LevelSetWidget);
 
   QObject::connect(LevelSetWidget, SIGNAL(ApplyAlgo() ),
     this, SLOT(ApplyLevelSetAlgo() ) );
 
-  //shape:
+  /*//shape:
   this->m_ShapeAlgo = new QGoMeshShapeAlgo(this->m_Seeds, iParent);
   QGoAlgorithmWidget* ShapeWidget = this->m_ShapeAlgo->GetAlgoWidget();
   this->m_TraceEditingWidget->AddAlgoWidgetForSemiAutomaticMode(ShapeWidget);
@@ -133,14 +133,14 @@ void QGoContourEditingWidgetManager::SetSemiAutomaticAlgorithms(QWidget* iParent
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/*void QGoContourEditingWidgetManager::ApplyLevelSetAlgo()
+void QGoContourEditingWidgetManager::ApplyLevelSetAlgo()
 {
   this->GetPolydatasFromAlgo<QGoContourLevelSetAlgo>(this->m_LevelSetAlgo);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoContourEditingWidgetManager::ApplyShapeAlgo()
+/*void QGoContourEditingWidgetManager::ApplyShapeAlgo()
 {
   this->GetPolydatasFromAlgo<QGoContourShapeAlgo>(this->m_ShapeAlgo);
 }

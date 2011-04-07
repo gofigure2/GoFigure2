@@ -78,7 +78,7 @@ QGoAlgorithmWidget* QGoSegmentationAlgo::GetAlgoWidget()
 //-------------------------------------------------------------------------
 std::vector<vtkImageData*>
 QGoSegmentationAlgo::
-ExtractROI(double* iBounds, std::vector<vtkImageData*> iImages)
+ExtractROI(std::vector<double> iBounds, std::vector<vtkImageData*> iImages)
 {
   // vector to be returned
   std::vector<vtkImageData*> listOfImages;
@@ -99,10 +99,10 @@ ExtractROI(double* iBounds, std::vector<vtkImageData*> iImages)
 //-------------------------------------------------------------------------
 vtkImageData*
 QGoSegmentationAlgo::
-ExtractROI(double* iBounds, vtkImageData* iImage)
+ExtractROI(std::vector<double> iBounds, vtkImageData* iImage)
 {
   // make sure there
-  assert( iBounds );
+ // assert( iBounds );
 
   vtkSmartPointer<vtkExtractVOI> extractVOI =
       vtkSmartPointer<vtkExtractVOI>::New();
