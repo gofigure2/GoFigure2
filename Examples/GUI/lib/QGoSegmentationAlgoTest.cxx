@@ -42,15 +42,7 @@
 
 // helper for debugging
 #include "VisualizePolydataHelper.h"
-/*#include "vtkPolyDataWriter.h"
-#include "vtkContourWidget.h"
-#include "vtkOrientedGlyphContourRepresentation.h"
-#include "vtkPolyDataMapper.h"
-#include "vtkActor.h"
-#include "vtkRenderer.h"
-#include "vtkRenderWindow.h"
-#include "vtkRenderWindowInteractor.h"
-*/
+
 //converter to be tested
 #include "QGoMeshLevelSetAlgo.h"
 
@@ -117,6 +109,7 @@ int main(int argc, char **argv)
   // Reconstruct polydata
   vtkSmartPointer<vtkPolyData> poly3D = vtkSmartPointer<vtkPolyData>::New();
   poly3D->ShallowCopy(algo.ExtractPolyData( vtkImage3D, 100 ));
+  ShowPolyData(poly3D);
 
   //------------------------------------------------------------------
   // 3d - too large ROI
@@ -152,7 +145,7 @@ int main(int argc, char **argv)
 
   // Decimate polydata
   vtkSmartPointer<vtkPolyData> decimate3D = vtkSmartPointer<vtkPolyData>::New();
-  decimate3D->ShallowCopy(algo.DecimatePolyData(poly3D2Large, 100));
+  decimate3D->ShallowCopy(algo.DecimatePolyData(poly3D2Large, 200));
   ShowPolyData(decimate3D);
 
   //------------------------------------------------------------------
@@ -191,46 +184,6 @@ int main(int argc, char **argv)
   decimate2D->ShallowCopy(algo.DecimatePolyData(poly2D, 10));
 
   ShowPolyData(decimate2D);
-  /*
-  vtkPolyDataWriter* writer = vtkPolyDataWriter::New();
-  writer->SetFileName("contour.vtk");
-  writer->SetInput(poly2D);
-  writer->Write();
-  writer->Delete();
-
-  vtkSmartPointer< vtkPolyDataMapper > mapper =
-    vtkSmartPointer< vtkPolyDataMapper >::New();
-  mapper->SetInput(decimate2D);
-
-  vtkSmartPointer< vtkActor > actor =
-    vtkSmartPointer< vtkActor >::New();
-  actor->SetMapper(mapper);
-
-  vtkSmartPointer< vtkRenderer > renderer =
-    vtkSmartPointer< vtkRenderer >::New();
-  renderer->AddActor(actor);
-
-  vtkSmartPointer< vtkRenderWindow > renderWindow =
-    vtkSmartPointer< vtkRenderWindow >::New();
-  renderWindow->AddRenderer(renderer);
-
-  vtkSmartPointer< vtkRenderWindowInteractor > renderWindowInteractor =
-    vtkSmartPointer< vtkRenderWindowInteractor >::New();
-  renderWindowInteractor->SetRenderWindow(renderWindow);
-  renderWindowInteractor->Initialize();
-  renderWindow->Render();
-
-  vtkSmartPointer<vtkOrientedGlyphContourRepresentation> contourRep =
-         vtkSmartPointer<vtkOrientedGlyphContourRepresentation>::New();
-       vtkSmartPointer<vtkContourWidget> contourWidget =
-         vtkSmartPointer<vtkContourWidget>::New();
-       contourWidget->SetInteractor(renderWindowInteractor);
-       contourWidget->SetRepresentation(contourRep);
-       contourWidget->On();
-  contourWidget->Initialize(decimate2D);
-  contourWidget->Render();
-
-  renderWindowInteractor->Start();*/
 
   return EXIT_SUCCESS;
 }
