@@ -390,6 +390,7 @@ protected:
   QGoTrackDockWidget* m_TrackDockWidget;
 
   vtkPoints *m_Seeds;
+  std::vector<vtkPoints*> m_OrderedSeeds;
 
   ContourContainer *m_ContourContainer;
   MeshContainer    *m_MeshContainer;
