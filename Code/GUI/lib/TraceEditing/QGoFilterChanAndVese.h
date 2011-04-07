@@ -66,24 +66,40 @@ public:
     std::vector<vtkSmartPointer< vtkImageData > >* iImages, 
     int iChannel);
 
+  template<unsigned int VImageDimension>
+  typename itk::Image< float, VImageDimension >::Pointer 
+    Apply3DFilter(
+    typename itk::Image< unsigned char, VImageDimension >::Pointer iITKInput,
+    int iIterations, int iCurvature)
+  {
+    typedef itk::Image< unsigned char, VImageDimension > FeatureImageType;
+    typedef itk::ChanAndVeseSegmentationFilter< FeatureImageType >
+      SegmentationFilterType;
+    SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
+
+    filter->SetFeatureImage(iITKInput);
+    filter->SetPreprocess(1);
+    filter->SetNumberOfIterations(iIterations);
+    filter->SetCurvatureWeight(iCurvature);
+    filter->Update();
+
+    return filter->GetOutput();
+  }
+
   //template<class PixelType, unsigned int VImageDimension>
   template<unsigned int VImageDimension>
   typename itk::Image< float, VImageDimension >::Pointer 
     Apply2DFilter(
-    typename itk::Image< unsigned char, VImageDimension >::Pointer iPointer,
+    typename itk::Image< unsigned char, VImageDimension >::Pointer iITKInput,
     int iIterations, int iCurvature)
   {
-    //const int dimension = 2;
-  typedef itk::Image< unsigned char, VImageDimension > FeatureImageType;
-  typedef itk::Image< float, VImageDimension >         OutputImageType;
-  typedef itk::ChanAndVeseSegmentationFilter< FeatureImageType >
-  SegmentationFilterType;
-
-  //FeatureImageType::PointType pt;
+    typedef itk::Image< unsigned char, VImageDimension > FeatureImageType;
+    typedef itk::ChanAndVeseSegmentationFilter< FeatureImageType >
+      SegmentationFilterType;
 
   SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
 
-  filter->SetFeatureImage(iPointer);
+  filter->SetFeatureImage(iITKInput);
   filter->SetPreprocess(1);
 
   filter->SetNumberOfIterations(iIterations);
