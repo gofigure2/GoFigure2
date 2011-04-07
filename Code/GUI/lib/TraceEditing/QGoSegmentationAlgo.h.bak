@@ -90,7 +90,12 @@ public:
    * \param[in] iImage vtkimagedata
    * \return roi
    */
-  vtkSmartPointer<vtkImageData> ExtractROI(std::vector<double> iBounds, vtkImageData* iImage);
+<<<<<<< HEAD
+  vtkImageData* ExtractROI(std::vector<double> iBounds, vtkImageData* iImage);
+=======
+  vtkSmartPointer<vtkImageData> ExtractROI(double* iBounds,
+      vtkSmartPointer<vtkImageData> iImage);
+>>>>>>> add_genericMethods
 
   /*
    * \brief Convert a vtkImage to a itkImage. If we call after "ExtractROI",

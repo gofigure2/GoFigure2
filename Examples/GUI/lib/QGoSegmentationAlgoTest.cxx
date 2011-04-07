@@ -39,16 +39,9 @@
 #include "vtkMetaImageReader.h"
 #include "itkImage.h"
 
+
 // helper for debugging
 #include "VisualizePolydataHelper.h"
-#include "vtkPolyDataWriter.h"
-#include "vtkContourWidget.h"
-#include "vtkOrientedGlyphContourRepresentation.h"
-#include "vtkPolyDataMapper.h"
-#include "vtkActor.h"
-#include "vtkRenderer.h"
-#include "vtkRenderWindow.h"
-#include "vtkRenderWindowInteractor.h"
 
 //converter to be tested
 #include "QGoMeshLevelSetAlgo.h"
@@ -99,7 +92,9 @@ int main(int argc, char **argv)
   voi3D[4] = 10;
   voi3D[5] = 20;
 
-  vtkImageData* roi3D = algo.ExtractROI( voi3D, reader->GetOutput() );
+  double voi3D[6] = {10, 20, 10, 20, 10, 20};
+  vtkSmartPointer<vtkImageData> roi3D = vtkSmartPointer<vtkImageData>::New();
+  roi3D->ShallowCopy( algo.ExtractROI( voi3D, reader->GetOutput() ));
 
   assert( roi3D->GetDataDimension() == 3);
 
@@ -108,7 +103,8 @@ int main(int argc, char **argv)
     itkImage3D = algo.ConvertVTK2ITK< PixelType, dimension >(roi3D);
 
   // convert itk to vtk
-  vtkImageData *vtkImage3D = algo.ConvertITK2VTK< PixelType, dimension >(itkImage3D);
+  vtkSmartPointer<vtkImageData> vtkImage3D = vtkSmartPointer<vtkImageData>::New();
+  vtkImage3D->ShallowCopy(algo.ConvertITK2VTK< PixelType, dimension >(itkImage3D));
   vtkImage3D->Update();
 
   std::cout << "Dimension 3D: " << vtkImage3D->GetDataDimension() <<std::endl;
@@ -119,13 +115,9 @@ int main(int argc, char **argv)
   assert( vtkImage3D->GetDataDimension() == 3);
 
   // Reconstruct polydata
-  vtkPolyData* poly3D = algo.ExtractPolyData( vtkImage3D, 100 );
-
-  //ShowPolyData(poly3D);
-
-  vtkImage3D->Delete();
-  poly3D->Delete();
-  roi3D->Delete();
+  vtkSmartPointer<vtkPolyData> poly3D = vtkSmartPointer<vtkPolyData>::New();
+  poly3D->ShallowCopy(algo.ExtractPolyData( vtkImage3D, 100 ));
+  ShowPolyData(poly3D);
 
   //------------------------------------------------------------------
   // 3d - too large ROI
@@ -139,7 +131,8 @@ int main(int argc, char **argv)
   voi3D2Large[4] = 0;
   voi3D2Large[5] = 50;
 
-  vtkImageData* roi3D2Large = algo.ExtractROI( voi3D2Large, reader->GetOutput() );
+  vtkSmartPointer<vtkImageData> roi3D2Large = vtkSmartPointer<vtkImageData>::New();
+  roi3D2Large->ShallowCopy(algo.ExtractROI( voi3D2Large, reader->GetOutput() ));
 
   assert( roi3D2Large->GetDataDimension() == 3);
 
@@ -148,7 +141,8 @@ int main(int argc, char **argv)
     itkImage3D2Large = algo.ConvertVTK2ITK< PixelType, dimension >(roi3D2Large);
 
   // convert itk to vtk
-  vtkImageData *vtkImage3D2Large = algo.ConvertITK2VTK< PixelType, dimension >(itkImage3D2Large);
+  vtkSmartPointer<vtkImageData> vtkImage3D2Large = vtkSmartPointer<vtkImageData>::New();
+  vtkImage3D2Large->ShallowCopy(algo.ConvertITK2VTK< PixelType, dimension >(itkImage3D2Large));
   vtkImage3D2Large->Update();
 
   std::cout << "Dimension 3D Too Large: " << vtkImage3D2Large->GetDataDimension() <<std::endl;
@@ -160,17 +154,14 @@ int main(int argc, char **argv)
   assert( vtkImage3D2Large->GetDataDimension() == 3);
 
   // Reconstruct polydata
-  vtkPolyData* poly3D2Large = algo.ExtractPolyData( vtkImage3D2Large, 100 );
+  vtkSmartPointer<vtkPolyData> poly3D2Large = vtkSmartPointer<vtkPolyData>::New();
+  poly3D2Large->ShallowCopy(algo.ExtractPolyData( vtkImage3D2Large, 100 ));
   ShowPolyData(poly3D2Large);
 
   // Decimate polydata
-  vtkPolyData* decimate3D = algo.DecimatePolyData(poly3D2Large, 100);
+  vtkSmartPointer<vtkPolyData> decimate3D = vtkSmartPointer<vtkPolyData>::New();
+  decimate3D->ShallowCopy(algo.DecimatePolyData(poly3D2Large, 200));
   ShowPolyData(decimate3D);
-
-  decimate3D->Delete();
-  vtkImage3D2Large->Delete();
-  poly3D2Large->Delete();
-  roi3D2Large->Delete();
 
   //------------------------------------------------------------------
   // 2d
@@ -184,7 +175,9 @@ int main(int argc, char **argv)
   voi2D[4] = 0;
   voi2D[5] = 30;
 
-  vtkImageData* roi2D = algo.ExtractROI( voi2D, reader->GetOutput() );
+  double voi2D[6] = {15, 15, 0, 30, 0, 30};
+  vtkSmartPointer<vtkImageData> roi2D = vtkSmartPointer<vtkImageData>::New();
+  roi2D->ShallowCopy(algo.ExtractROI( voi2D, reader->GetOutput() ));
 
   assert( roi2D->GetDataDimension() == 2);
 
@@ -193,7 +186,8 @@ int main(int argc, char **argv)
     itkImage2D = algo.ConvertVTK2ITK< PixelType, dimension >(roi2D);
 
   // convert itk to vtk
-  vtkImageData *vtkImage2D = algo.ConvertITK2VTK< PixelType, dimension >(itkImage2D);
+  vtkSmartPointer<vtkImageData> vtkImage2D = vtkSmartPointer<vtkImageData>::New();
+  vtkImage2D->ShallowCopy(algo.ConvertITK2VTK< PixelType, dimension >(itkImage2D));
   vtkImage2D->Update();
 
   std::cout << "Dimension 2D: " << vtkImage2D->GetDataDimension() <<std::endl;
@@ -205,56 +199,14 @@ int main(int argc, char **argv)
   assert( vtkImage2D->GetDataDimension() == 2);
 
   // Reconstruct polydata
-  vtkPolyData* poly2D = algo.ExtractPolyData( vtkImage2D, 100 );
+  vtkSmartPointer<vtkPolyData> poly2D = vtkSmartPointer<vtkPolyData>::New();
+  poly2D->ShallowCopy(algo.ExtractPolyData( vtkImage2D, 100 ));
+  ShowPolyData(poly2D);
 
-  vtkPolyData* decimate2D = algo.DecimatePolyData(poly2D, 10);
+  vtkSmartPointer<vtkPolyData> decimate2D = vtkSmartPointer<vtkPolyData>::New();
+  decimate2D->ShallowCopy(algo.DecimatePolyData(poly2D, 10));
 
-  //ShowPolyData(poly2D);
-
-  vtkPolyDataWriter* writer = vtkPolyDataWriter::New();
-  writer->SetFileName("contour.vtk");
-  writer->SetInput(poly2D);
-  writer->Write();
-  writer->Delete();
-
-  vtkSmartPointer< vtkPolyDataMapper > mapper =
-    vtkSmartPointer< vtkPolyDataMapper >::New();
-  mapper->SetInput(decimate2D);
-
-  vtkSmartPointer< vtkActor > actor =
-    vtkSmartPointer< vtkActor >::New();
-  actor->SetMapper(mapper);
-
-  vtkSmartPointer< vtkRenderer > renderer =
-    vtkSmartPointer< vtkRenderer >::New();
-  renderer->AddActor(actor);
-
-  vtkSmartPointer< vtkRenderWindow > renderWindow =
-    vtkSmartPointer< vtkRenderWindow >::New();
-  renderWindow->AddRenderer(renderer);
-
-  vtkSmartPointer< vtkRenderWindowInteractor > renderWindowInteractor =
-    vtkSmartPointer< vtkRenderWindowInteractor >::New();
-  renderWindowInteractor->SetRenderWindow(renderWindow);
-  renderWindowInteractor->Initialize();
-  renderWindow->Render();
-
-  vtkSmartPointer<vtkOrientedGlyphContourRepresentation> contourRep =
-         vtkSmartPointer<vtkOrientedGlyphContourRepresentation>::New();
-       vtkSmartPointer<vtkContourWidget> contourWidget =
-         vtkSmartPointer<vtkContourWidget>::New();
-       contourWidget->SetInteractor(renderWindowInteractor);
-       contourWidget->SetRepresentation(contourRep);
-       contourWidget->On();
-  contourWidget->Initialize(decimate2D);
-  contourWidget->Render();
-
-  renderWindowInteractor->Start();
-
-  decimate2D->Delete();
-  vtkImage2D->Delete();
-  poly2D->Delete();
-  roi2D->Delete();
+  ShowPolyData(decimate2D);
 
   return EXIT_SUCCESS;
 }
