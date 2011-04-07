@@ -60,6 +60,25 @@ public:
 
 protected:
 
+  template < class PixelType, unsigned int VImageDimension >
+  vtkPolyData * ApplyLevelSetFilter(std::vector<double> iCenter,
+  std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+    int iChannel)
+    {
+    //const int Dimension = 2;
+    std::vector<double> Bounds = this->GetBounds(iCenter, this->m_Radius->GetValue());
+    vtkImageData* ROI = ExtractROI(Bounds, ( *iImages )[iChannel]);
+    itk::Image< unsigned char, VImageDimension >::Pointer ItkInput = 
+      this->ConvertVTK2ITK<unsigned char, VImageDimension>(ROI);
+
+    QGoFilterChanAndVese Filter;
+    itk::Image< float, VImageDimension >::Pointer ItkOutPut = 
+      Filter.Apply2DFilter<VImageDimension>(ItkInput,
+      this->m_Curvature->GetValue(),  this->m_Iterations->GetValue() );
+
+    vtkImageData * FilterOutPutToVTK = this->ConvertITK2VTK<float, VImageDimension>(ItkOutPut);
+    return this->ExtractPolyData(FilterOutPutToVTK, 0);
+    }
 };
 
 #endif

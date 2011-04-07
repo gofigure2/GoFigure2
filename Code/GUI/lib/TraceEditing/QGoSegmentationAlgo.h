@@ -83,14 +83,14 @@ public:
    * \param[in] iImages vector of vtkimagedata
    * \return list of roi
    */
-  std::vector<vtkImageData*> ExtractROI(double* iBounds, std::vector<vtkImageData*> iImages);
+  std::vector<vtkImageData*> ExtractROI(std::vector<double> iBounds, std::vector<vtkImageData*> iImages);
   /*
    * \brief Extract region of interest, given a bounding box and a vtk image
    * \param[in] iBounds bounding box (xmin, xmax, ymin, ymax, zmin, zmax)
    * \param[in] iImage vtkimagedata
    * \return roi
    */
-  vtkImageData* ExtractROI(double* iBounds, vtkImageData* iImage);
+  vtkImageData* ExtractROI(std::vector<double> iBounds, vtkImageData* iImage);
 
   /*
    * \brief Convert a vtkImage to a itkImage. If we call after "ExtractROI",
