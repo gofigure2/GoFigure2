@@ -132,12 +132,13 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_Image = vtkImageData::New();
   m_Seeds = vtkPoints::New();
   // new
+  /*
   vtkPoints* xy = vtkPoints::New();
   vtkPoints* xz = vtkPoints::New();
   vtkPoints* yz = vtkPoints::New();
   m_OrderedSeeds.push_back(xy);
   m_OrderedSeeds.push_back(xz);
-  m_OrderedSeeds.push_back(yz);
+  m_OrderedSeeds.push_back(yz);*/
 
   m_ChannelClassicMode = true;
   m_ChannelOfInterest = 0;
@@ -258,6 +259,7 @@ QGoTabImageView3DwT::
   m_Image->Delete();
   m_Seeds->Delete();
   // new
+  /*
   std::vector<vtkPoints*>::iterator it = m_OrderedSeeds.begin();
   while(it != m_OrderedSeeds.end())
   {
@@ -265,7 +267,7 @@ QGoTabImageView3DwT::
     (*it) = NULL;
     ++it;
   }
-
+*/
   if ( !m_LSMReader.empty() )
     {
     if ( m_LSMReader[0] )
