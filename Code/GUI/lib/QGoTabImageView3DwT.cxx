@@ -326,9 +326,25 @@ QGoTabImageView3DwT::UpdateSeeds()
     ++it;
   }
   m_ImageView->GetSeeds(m_OrderedSeeds);*/
+
+  m_Seeds->Initialize();
   vtkPoints *temp = m_ImageView->GetAllSeeds();
 
-  m_Seeds->DeepCopy(temp);
+  // deep copy vtkPoints not properly working (warning)
+  for(int l = 0; l< temp->GetNumberOfPoints(); l++)
+    {
+    m_Seeds->InsertNextPoint( temp->GetPoint(l) );
+    }
+  m_Seeds->GetData()->DeepCopy( temp->GetData() );
+
+  /*
+  for(int l = 0; l<m_Seeds->GetData()->GetNumberOfTuples(); l++)
+    {
+    double* value = m_Seeds->GetData()->GetTuple(l);
+    std::cout << "m_Seeds: " << l << " orientation: " << value[0] << std::endl;
+    }
+    */
+
   temp->Delete();
 }
 
