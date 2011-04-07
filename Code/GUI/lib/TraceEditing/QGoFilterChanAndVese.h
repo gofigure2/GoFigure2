@@ -61,13 +61,13 @@ public:
 
   virtual void ConnectSignals(int iFilterNumber);
 
-  std::vector<vtkPolyData*> ApplyFilterLevelSet3D(double iRadius, vtkPoints* iPoints, 
+  std::vector<vtkPolyData*> ApplyFilterLevelSet3D(double iRadius, vtkPoints* iPoints,
     int iIterations, int iCurvature,
-    std::vector<vtkSmartPointer< vtkImageData > >* iImages, 
+    std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel);
 
   template<unsigned int VImageDimension>
-  typename itk::Image< float, VImageDimension >::Pointer 
+  typename itk::Image< float, VImageDimension >::Pointer
     Apply3DFilter(
     typename itk::Image< unsigned char, VImageDimension >::Pointer iITKInput,
     int iIterations, int iCurvature)
@@ -75,7 +75,7 @@ public:
     typedef itk::Image< unsigned char, VImageDimension > FeatureImageType;
     typedef itk::ChanAndVeseSegmentationFilter< FeatureImageType >
       SegmentationFilterType;
-    SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
+    typename SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
 
     filter->SetFeatureImage(iITKInput);
     filter->SetPreprocess(1);
@@ -88,7 +88,7 @@ public:
 
   //template<class PixelType, unsigned int VImageDimension>
   template<unsigned int VImageDimension>
-  typename itk::Image< float, VImageDimension >::Pointer 
+  typename itk::Image< float, VImageDimension >::Pointer
     Apply2DFilter(
     typename itk::Image< unsigned char, VImageDimension >::Pointer iITKInput,
     int iIterations, int iCurvature)
@@ -97,21 +97,21 @@ public:
     typedef itk::ChanAndVeseSegmentationFilter< FeatureImageType >
       SegmentationFilterType;
 
-  SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
+    typename SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
 
-  filter->SetFeatureImage(iITKInput);
-  filter->SetPreprocess(1);
+    filter->SetFeatureImage(iITKInput);
+    filter->SetPreprocess(1);
 
-  filter->SetNumberOfIterations(iIterations);
-  filter->SetCurvatureWeight(iCurvature);
-  filter->Update();
+    filter->SetNumberOfIterations(iIterations);
+    filter->SetCurvatureWeight(iCurvature);
+    filter->Update();
 
-  return filter->GetOutput();
+    return filter->GetOutput();
   }
 
   std::vector<std::vector<vtkPolyData*> > ApplyFilterSetOf2D(
-    double iRadius, vtkPoints* iPoints, 
-    int iIterations, int iCurvature, int iSampling, 
+    double iRadius, vtkPoints* iPoints,
+    int iIterations, int iCurvature, int iSampling,
     std::vector<vtkSmartPointer< vtkImageData > >* iImages, int iChannel);
 
 public slots:
@@ -125,7 +125,7 @@ protected:
   vtkPolyData * Filter3D(double *iCenter, int iCurvature, int iIterations,
     double iRadius, std::vector< vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel);
-  
+
 
 private:
   int m_Iterations;

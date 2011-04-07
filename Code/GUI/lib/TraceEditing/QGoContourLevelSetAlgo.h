@@ -35,6 +35,7 @@
 #define __QGoContourLevelSetAlgo_h
 
 #include "QGoLevelSetAlgo.h"
+#include "QGoFilterChanAndVese.h"
 #include "QGoAlgorithmWidget.h"
 #include "QGoAlgoParameter.h"
 #include "QGoGUILibConfigure.h"
@@ -45,7 +46,7 @@
 
 /**
 \class QGoContourLevelSetAlgo
-\brief class to be the interface between the levelset algo for contours 
+\brief class to be the interface between the levelset algo for contours
 and GoFigure
 */
 class QGoContourLevelSetAlgo: public QGoLevelSetAlgo
@@ -68,11 +69,11 @@ protected:
     std::vector<double> Bounds = this->GetBounds(iCenter, this->m_Radius->GetValue());
     vtkImageData* ROI = ExtractROI(Bounds, ( *iImages )[iChannel]);
 
-    itk::Image< unsigned char, VImageDimension >::Pointer ItkInput = 
+    typename itk::Image< unsigned char, VImageDimension >::Pointer ItkInput =
       this->ConvertVTK2ITK<unsigned char, VImageDimension>(ROI);
 
     QGoFilterChanAndVese Filter;
-    itk::Image< float, VImageDimension >::Pointer ItkOutPut = 
+    typename itk::Image< float, VImageDimension >::Pointer ItkOutPut =
       Filter.Apply2DFilter<VImageDimension>(ItkInput,
       this->m_Curvature->GetValue(),  this->m_Iterations->GetValue() );
 

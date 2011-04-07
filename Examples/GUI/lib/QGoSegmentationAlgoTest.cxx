@@ -91,7 +91,14 @@ int main(int argc, char **argv)
   // 3d
   //------------------------------------------------------------------
   // extract roi
-  double voi3D[6] = {10, 20, 10, 20, 10, 20};
+  std::vector< double > voi3D(6);
+  voi3D[0] = 10;
+  voi3D[1] = 20;
+  voi3D[2] = 10;
+  voi3D[3] = 20;
+  voi3D[4] = 10;
+  voi3D[5] = 20;
+
   vtkImageData* roi3D = algo.ExtractROI( voi3D, reader->GetOutput() );
 
   assert( roi3D->GetDataDimension() == 3);
@@ -124,7 +131,14 @@ int main(int argc, char **argv)
   // 3d - too large ROI
   //------------------------------------------------------------------
   // extract roi
-  double voi3D2Large[6] = {0, 30, 0, 50, 0, 50};
+  std::vector< double > voi3D2Large(6);
+  voi3D2Large[0] = 0;
+  voi3D2Large[1] = 30;
+  voi3D2Large[2] = 0;
+  voi3D2Large[3] = 50;
+  voi3D2Large[4] = 0;
+  voi3D2Large[5] = 50;
+
   vtkImageData* roi3D2Large = algo.ExtractROI( voi3D2Large, reader->GetOutput() );
 
   assert( roi3D2Large->GetDataDimension() == 3);
@@ -162,7 +176,14 @@ int main(int argc, char **argv)
   // 2d
   //------------------------------------------------------------------
   // extract roi
-  double voi2D[6] = {15, 15, 0, 30, 0, 30};
+  std::vector< double > voi2D(6);
+  voi2D[0] = 15;
+  voi2D[1] = 15;
+  voi2D[2] = 0;
+  voi2D[3] = 30;
+  voi2D[4] = 0;
+  voi2D[5] = 30;
+
   vtkImageData* roi2D = algo.ExtractROI( voi2D, reader->GetOutput() );
 
   assert( roi2D->GetDataDimension() == 2);

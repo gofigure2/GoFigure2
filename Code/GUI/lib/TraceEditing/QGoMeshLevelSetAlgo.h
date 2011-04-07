@@ -35,6 +35,7 @@
 #define __QGoMeshLevelSetAlgo_h
 
 #include "QGoLevelSetAlgo.h"
+#include "QGoFilterChanAndVese.h"
 #include "QGoAlgorithmWidget.h"
 #include "QGoAlgoParameter.h"
 #include "QGoGUILibConfigure.h"
@@ -45,7 +46,7 @@
 
 /**
 \class QGoMeshLevelSetAlgo
-\brief class to be the interface between the levelset algo for meshes 
+\brief class to be the interface between the levelset algo for meshes
 and GoFigure
 */
 class QGoMeshLevelSetAlgo: public QGoLevelSetAlgo
@@ -68,11 +69,11 @@ protected:
     std::vector<double> Bounds = this->GetBounds(iCenter, this->m_Radius->GetValue());
     vtkImageData* ROI = ExtractROI(Bounds, ( *iImages )[iChannel]);
 
-    itk::Image< unsigned char, VImageDimension >::Pointer ItkInput = 
+    typename itk::Image< unsigned char, VImageDimension >::Pointer ItkInput =
       this->ConvertVTK2ITK<unsigned char, VImageDimension>(ROI);
 
     QGoFilterChanAndVese Filter;
-    itk::Image< float, VImageDimension >::Pointer ItkOutPut = 
+    typename itk::Image< float, VImageDimension >::Pointer ItkOutPut =
       Filter.Apply3DFilter<VImageDimension>(ItkInput,
       this->m_Curvature->GetValue(),  this->m_Iterations->GetValue() );
 
