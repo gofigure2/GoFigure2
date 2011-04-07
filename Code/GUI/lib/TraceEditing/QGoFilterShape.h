@@ -65,13 +65,14 @@ public:
   /**
   \brief return the polydatas corresponding to the new created Shapes
   */
-  std::vector<vtkPolyData *> ApplyFilter3D( double iRadius, 
-    vtkPoints* iPoints, std::string iShape,
+  std::vector<vtkPolyData *> ApplyFilter3D( double iRadius,
+    std::vector< vtkPoints* >* iPoints, std::string iShape,
     std::vector< vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel);
 
-  std::vector<std::vector<vtkPolyData*> > ApplyFilterSetOf2D(double iRadius, 
-    std::string iShape, int iSampling,  vtkPoints* iPoints,
+  std::vector<std::vector<vtkPolyData*> > ApplyFilterSetOf2D(double iRadius,
+    std::string iShape, int iSampling,
+    std::vector< vtkPoints* >* iPoints,
     std::vector<vtkSmartPointer< vtkImageData > >* iImages, int iChannel);
 
 public slots:

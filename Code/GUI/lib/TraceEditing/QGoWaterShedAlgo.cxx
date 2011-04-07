@@ -34,7 +34,7 @@
 #include "QGoWaterShedAlgo.h"
 
 
-QGoWaterShedAlgo::QGoWaterShedAlgo(vtkPoints* iSeeds, QWidget* iParent)
+QGoWaterShedAlgo::QGoWaterShedAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent)
   :QGoSemiAutoSegmentationAlgo(iSeeds,iParent)
 {
   this->SetAlgoWidget(iParent);
@@ -61,7 +61,7 @@ void QGoWaterShedAlgo::DeleteParameters()
 //-------------------------------------------------------------------------
 void QGoWaterShedAlgo::SetAlgoWidget(QWidget* iParent)
 {
-  this->m_AlgoWidget = 
+  this->m_AlgoWidget =
     new QGoAlgorithmWidget("WaterShed 3D", iParent);
 
   m_ThresMin = new QGoAlgoParameter<int>("Thres.Min.", true, 0, 999, 10);
@@ -75,7 +75,7 @@ void QGoWaterShedAlgo::SetAlgoWidget(QWidget* iParent)
 
   m_Alpha = new QGoAlgoParameter<double>("Alpha", true, 0, 99.99, 2, 1.5);
   this->m_AlgoWidget->AddParameter(m_Alpha);
- 
+
   m_Beta = new QGoAlgoParameter<double>("Beta", true, 0, 99.99, 2, 3);
   this->m_AlgoWidget->AddParameter(m_Beta);
 

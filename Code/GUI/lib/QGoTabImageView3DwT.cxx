@@ -127,10 +127,14 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_ZTileCoord(0),
   m_TCoord(-1),
   m_MeshEditingWidget(NULL),
+  m_Seeds( 3, NULL ),
   m_TraceWidgetRequiered(false)
 {
   m_Image = vtkImageData::New();
-  m_Seeds = vtkPoints::New();
+
+  m_Seeds[0] = vtkPoints::New();
+  m_Seeds[1] = vtkPoints::New();
+  m_Seeds[2] = vtkPoints::New();
   // new
   /*
   vtkPoints* xy = vtkPoints::New();
@@ -257,7 +261,9 @@ QGoTabImageView3DwT::
   m_HighlightedMeshesProperty->Delete();
 
   m_Image->Delete();
-  m_Seeds->Delete();
+  m_Seeds[0]->Delete();
+  m_Seeds[1]->Delete();
+  m_Seeds[2]->Delete();
   // new
   /*
   std::vector<vtkPoints*>::iterator it = m_OrderedSeeds.begin();
@@ -327,25 +333,33 @@ QGoTabImageView3DwT::UpdateSeeds()
   }
   m_ImageView->GetSeeds(m_OrderedSeeds);*/
 
-  m_Seeds->Initialize();
-  vtkPoints *temp = m_ImageView->GetAllSeeds();
-
-  // deep copy vtkPoints not properly working (warning)
-  for(int l = 0; l< temp->GetNumberOfPoints(); l++)
+  for( size_t id = 0; id < m_Seeds.size(); id++ )
     {
-    m_Seeds->InsertNextPoint( temp->GetPoint(l) );
+    m_Seeds[id]->Initialize();
     }
-  m_Seeds->GetData()->DeepCopy( temp->GetData() );
 
-  /*
-  for(int l = 0; l<m_Seeds->GetData()->GetNumberOfTuples(); l++)
-    {
-    double* value = m_Seeds->GetData()->GetTuple(l);
-    std::cout << "m_Seeds: " << l << " orientation: " << value[0] << std::endl;
-    }
-    */
+  m_ImageView->GetSeeds( m_Seeds );
 
-  temp->Delete();
+//    vtkPoints *temp = m_ImageView->GetAllSeeds();
+
+//  // deep copy vtkPoints not properly working (warning)
+//  for(int l = 0; l< temp->GetNumberOfPoints(); l++)
+//    {
+//    double p[3];
+//    temp->GetPoint(l,p);
+//    m_Seeds->InsertNextPoint(p);
+//    }
+//  m_Seeds->GetData()->DeepCopy( temp->GetData() );
+
+//  /*
+//  for(int l = 0; l<m_Seeds->GetData()->GetNumberOfTuples(); l++)
+//    {
+//    double* value = m_Seeds->GetData()->GetTuple(l);
+//    std::cout << "m_Seeds: " << l << " orientation: " << value[0] << std::endl;
+//    }
+//    */
+
+//  temp->Delete();
 }
 
 //-------------------------------------------------------------------------
@@ -363,7 +377,7 @@ QGoTabImageView3DwT::CreateContourEditingDockWidget(
   //m_ContourSegmentationDockWidget =
   //  new QGoContourSegmentationBaseDockWidget(this, m_Seeds, &m_InternalImages);
   this->m_ContourEditingWidget = new QGoContourEditingWidgetManager(
-    this->m_ChannelNames, iTimeMin, iTimeMax, m_Seeds,
+    this->m_ChannelNames, iTimeMin, iTimeMax, &m_Seeds,
     &m_InternalImages, &m_TCoord, this);
 
   this->CreateConnectionsTraceEditingWidget<QGoContourEditingWidgetManager>(
@@ -451,7 +465,7 @@ QGoTabImageView3DwT::CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax)
   //  new QGoMeshSegmentationBaseDockWidget(this, m_Seeds, &m_InternalImages);
 
   this->m_MeshEditingWidget = new QGoMeshEditingWidgetManager(
-    this->m_ChannelNames, iTimeMin, iTimeMax, m_Seeds,
+    this->m_ChannelNames, iTimeMin, iTimeMax, &m_Seeds,
     &m_InternalImages, &m_TCoord, this);
 
   this->CreateConnectionsTraceEditingWidget<QGoMeshEditingWidgetManager>(
@@ -2729,7 +2743,7 @@ QGoTabImageView3DwT::ReEditContour(const unsigned int & iId)
       //this->m_ContourSegmentationDockWidget->SetReeditMode(true);
       this->m_ContourEditingWidget->SetReeditMode(true);
       this->m_ContourEditingWidget->GetDockWidget()->show();
-      
+
       }
     }
 }

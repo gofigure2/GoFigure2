@@ -66,25 +66,63 @@ public:
     std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel);
 
-  template<unsigned int VImageDimension>
-  typename itk::Image< float, VImageDimension >::Pointer
-    Apply3DFilter(
-    typename itk::Image< unsigned char, VImageDimension >::Pointer iITKInput,
-    int iIterations, int iCurvature)
+  template< typename TPixel >
+  void Apply3DFilter(
+    typename itk::Image< TPixel, 3 >::Pointer iITKInput,
+    const std::vector< double >& iCenter,
+    const double& iRadius,
+    const int& iIterations,
+    const int& iCurvature)
   {
-    typedef itk::Image< unsigned char, VImageDimension > FeatureImageType;
+    typedef itk::Image< TPixel, 3 > FeatureImageType;
     typedef itk::ChanAndVeseSegmentationFilter< FeatureImageType >
       SegmentationFilterType;
-    typename SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
+    typedef typename SegmentationFilterType::Pointer SegmentationFilterPointer;
 
+    typedef typename SegmentationFilterType::InternalPointType ITKPointType;
+    typedef typename SegmentationFilterType::InternalCoordRepType ITKCoordType;
+
+    // convert center into ITKPointType
+    ITKPointType itk_center;
+
+    for( unsigned int dim = 0; dim < 3; dim++ )
+      {
+      itk_center[dim] = static_cast< ITKCoordType >( iCenter[dim] );
+      }
+
+    // convert radius into ITKCoordType
+    ITKCoordType itk_radius = static_cast< ITKCoordType >( iRadius );
+
+    // ITK filter
+    SegmentationFilterPointer filter = SegmentationFilterType::New();
+    filter->SetCenter( itk_center );
+    filter->SetRadius( itk_radius );
     filter->SetFeatureImage(iITKInput);
-    filter->SetPreprocess(1);
+    filter->SetPreprocess(0);//1);
     filter->SetNumberOfIterations(iIterations);
     filter->SetCurvatureWeight(iCurvature);
     filter->Update();
 
-    return filter->GetOutput();
+    typename itk::Image< float, 3 >::Pointer resulting_image = filter->GetOutput();
+
+    if( resulting_image )
+      {
+      m_Image3D->Graft( resulting_image );
+      }
+    else
+      {
+      itkGenericExceptionMacro(
+            <<"ChanAndVeseSegmentationFilter's output is NULL" );
+      }
   }
+
+
+  itk::Image< float, 3 >::Pointer GetOutput3D()
+    {
+    return m_Image3D;
+    }
+
+
 
   //template<class PixelType, unsigned int VImageDimension>
   template<unsigned int VImageDimension>
@@ -110,7 +148,7 @@ public:
   }
 
   std::vector<std::vector<vtkPolyData*> > ApplyFilterSetOf2D(
-    double iRadius, vtkPoints* iPoints,
+    double iRadius, std::vector< vtkPoints* >* iPoints,
     int iIterations, int iCurvature, int iSampling,
     std::vector<vtkSmartPointer< vtkImageData > >* iImages, int iChannel);
 
@@ -126,9 +164,11 @@ protected:
     double iRadius, std::vector< vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel);
 
-
 private:
   int m_Iterations;
   int m_Curvature;
+
+  itk::Image< float, 3 >::Pointer m_Image3D;
+  itk::Image< float, 2 >::Pointer m_Image2D;
 };
 #endif

@@ -58,6 +58,9 @@
 QGoFilterChanAndVese::QGoFilterChanAndVese(QObject *iParent, int iDimension) :
   QGoFilterSemiAutoBase(iParent)
 {
+  m_Image3D = itk::Image< float, 3 >::New();
+  m_Image2D = itk::Image< float, 2 >::New();
+
   m_Dimension = iDimension;
   m_Iterations = 15;
   m_Curvature = 5;
@@ -185,7 +188,7 @@ QGoFilterChanAndVese::Filter2D(double *iCenter, const int & iOrientation)
 
   pt[0] = center[0];
   pt[1] = center[1];
- 
+
   filter->SetCenter(pt);
 
   filter->SetRadius( getRadius() );
@@ -419,8 +422,8 @@ std::vector<vtkPolyData*> QGoFilterChanAndVese::ApplyFilterLevelSet3D(
 //--------------------------------------------------------------------------
 std::vector<std::vector<vtkPolyData*> > QGoFilterChanAndVese::
   ApplyFilterSetOf2D(
-    double iRadius, vtkPoints* iPoints, 
-    int iIterations, int iCurvature, int iSampling, 
+    double iRadius, std::vector< vtkPoints* >* iPoints,
+    int iIterations, int iCurvature, int iSampling,
     std::vector<vtkSmartPointer< vtkImageData > >* iImages, int iChannel)
 {
   std::vector<std::vector<vtkPolyData*> > oSetOfContours =
@@ -432,126 +435,126 @@ std::vector<std::vector<vtkPolyData*> > QGoFilterChanAndVese::
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-/*itk::Image< float, VImageDimension >::Pointer QGoFilterChanAndVese::Apply2DFilter(
-  itk::Image< unsigned int, VImageDimension >::Pointer iPointer,
-  int iIterations, int iCurvature)
-{
-  //const int dimension = 2;
+//itk::Image< float, VImageDimension >::Pointer QGoFilterChanAndVese::Apply2DFilter(
+//  itk::Image< unsigned int, VImageDimension >::Pointer iPointer,
+//  int iIterations, int iCurvature)
+//{
+//  //const int dimension = 2;
 
-  // useful to translate the polydata afterwards
-  //setCenter(iCenter);
+//  // useful to translate the polydata afterwards
+//  //setCenter(iCenter);
 
-  //vtkImageData *slice = vtkImageData::New();
+//  //vtkImageData *slice = vtkImageData::New();
 
-  // Extract one slice if dimenesion == 2
-  //vtkImageData *input = extractOneSlice(getInput(), iCenter, iOrientation);
-  //slice->DeepCopy(input);
-  //input->Delete();
+//  // Extract one slice if dimenesion == 2
+//  //vtkImageData *input = extractOneSlice(getInput(), iCenter, iOrientation);
+//  //slice->DeepCopy(input);
+//  //input->Delete();
 
-  // Recompute new center
-  //double *newOrigin = slice->GetOrigin();
-  //double  center[3];
+//  // Recompute new center
+//  //double *newOrigin = slice->GetOrigin();
+//  //double  center[3];
 
-  /*switch ( iOrientation )
-    {
-    case 0:
-      {
-      center[0] = iCenter[0] + newOrigin[0];
-      center[1] = iCenter[1] + newOrigin[1];
-      center[2] = 0.;
-      break;
-      }
-    case 1:
-      {
-      center[0] = iCenter[0] + newOrigin[0];
-      center[1] = iCenter[2] + newOrigin[1];
-      center[2] = 0.;
-      break;
-      }
-    case 2:
-      {
-      center[0] = iCenter[1] + newOrigin[0];
-      center[1] = iCenter[2] + newOrigin[1];
-      center[2] = 0.;
-      break;
-      }
-    default:
-      {
-      break;
-      }
-    }
+//  switch ( iOrientation )
+//    {
+//    case 0:
+//      {
+//      center[0] = iCenter[0] + newOrigin[0];
+//      center[1] = iCenter[1] + newOrigin[1];
+//      center[2] = 0.;
+//      break;
+//      }
+//    case 1:
+//      {
+//      center[0] = iCenter[0] + newOrigin[0];
+//      center[1] = iCenter[2] + newOrigin[1];
+//      center[2] = 0.;
+//      break;
+//      }
+//    case 2:
+//      {
+//      center[0] = iCenter[1] + newOrigin[0];
+//      center[1] = iCenter[2] + newOrigin[1];
+//      center[2] = 0.;
+//      break;
+//      }
+//    default:
+//      {
+//      break;
+//      }
+//    }
 
-  // run filter
-  typedef itk::Image< unsigned char, dimension > FeatureImageType;
-  typedef itk::Image< float, dimension >         OutputImageType;
+//  // run filter
+//  typedef itk::Image< unsigned char, dimension > FeatureImageType;
+//  typedef itk::Image< float, dimension >         OutputImageType;
 
-  //VTK to ITK
-  //---------------------------------------------------------
-  FeatureImageType::Pointer
-    itkImage = ConvertVTK2ITK< unsigned char, dimension >(slice);
-  slice->Delete();
+//  //VTK to ITK
+//  //---------------------------------------------------------
+//  FeatureImageType::Pointer
+//    itkImage = ConvertVTK2ITK< unsigned char, dimension >(slice);
+//  slice->Delete();
 
-  // Extract ROI
-  //---------------------------------------------------------
-  FeatureImageType::Pointer
-    test2 = ExtractROI< unsigned char, dimension >( itkImage, center, getRadius() );
+//  // Extract ROI
+//  //---------------------------------------------------------
+//  FeatureImageType::Pointer
+//    test2 = ExtractROI< unsigned char, dimension >( itkImage, center, getRadius() );
 
-  // Apply filter
-  // Apply LevelSet segmentation filter
-  //----------------------------------------------------------
-  const int dimension = 2;
-  typedef itk::Image< unsigned char, dimension > FeatureImageType;
-  typedef itk::Image< float, dimension >         OutputImageType;
-  typedef itk::ChanAndVeseSegmentationFilter< FeatureImageType >
-  SegmentationFilterType;
+//  // Apply filter
+//  // Apply LevelSet segmentation filter
+//  //----------------------------------------------------------
+//  const int dimension = 2;
+//  typedef itk::Image< unsigned char, dimension > FeatureImageType;
+//  typedef itk::Image< float, dimension >         OutputImageType;
+//  typedef itk::ChanAndVeseSegmentationFilter< FeatureImageType >
+//  SegmentationFilterType;
 
-  FeatureImageType::PointType pt;
+//  FeatureImageType::PointType pt;
 
-  SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
+//  SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
 
-  //filter->SetFeatureImage(test2);
-  filter->SetFeatureImage(iPointer);
-  filter->SetPreprocess(1);
+//  //filter->SetFeatureImage(test2);
+//  filter->SetFeatureImage(iPointer);
+//  filter->SetPreprocess(1);
 
-  //pt[0] = center[0];
-  //pt[1] = center[1];
- 
-  //filter->SetCenter(pt);
+//  //pt[0] = center[0];
+//  //pt[1] = center[1];
 
-  //filter->SetRadius( getRadius() );
-  //filter->SetNumberOfIterations(m_Iterations);
-  //filter->SetCurvatureWeight(m_Curvature);
-  filter->SetNumberOfIterations(iIterations);
-  filter->SetCurvatureWeight(iCurvature);
-  filter->Update();
+//  //filter->SetCenter(pt);
 
-  //OutputImageType::Pointer test3 = filter->GetOutput();
-  return filter->GetOutput();
-  // Convert output
-  //---------------------------------------------------------
-  /*vtkImageData *itk2vtk = ConvertITK2VTK< float, dimension >(test3);
-  setOutput(itk2vtk);
-  itk2vtk->Delete();
+//  //filter->SetRadius( getRadius() );
+//  //filter->SetNumberOfIterations(m_Iterations);
+//  //filter->SetCurvatureWeight(m_Curvature);
+//  filter->SetNumberOfIterations(iIterations);
+//  filter->SetCurvatureWeight(iCurvature);
+//  filter->Update();
 
-  vtkPolyData *reconstructed = ReconstructContour(getOutput(), 0.);
+//  //OutputImageType::Pointer test3 = filter->GetOutput();
+//  return filter->GetOutput();
+//  // Convert output
+//  //---------------------------------------------------------
+//  vtkImageData *itk2vtk = ConvertITK2VTK< float, dimension >(test3);
+//  setOutput(itk2vtk);
+//  itk2vtk->Delete();
 
-  // Translate to real location (i.e. see_pos[])
-  vtkTransform *t = vtkTransform::New();
-  t->Translate(getCenter()[0],
-               getCenter()[1],
-               getCenter()[2]);
+//  vtkPolyData *reconstructed = ReconstructContour(getOutput(), 0.);
 
-  vtkTransformPolyDataFilter *tf = vtkTransformPolyDataFilter::New();
-  tf->SetTransform(t);
-  tf->SetInput(reconstructed);
-  tf->Update();
+//  // Translate to real location (i.e. see_pos[])
+//  vtkTransform *t = vtkTransform::New();
+//  t->Translate(getCenter()[0],
+//               getCenter()[1],
+//               getCenter()[2]);
 
-  vtkPolyData *contour = vtkPolyData::New();
-  contour->DeepCopy( tf->GetOutput() );
+//  vtkTransformPolyDataFilter *tf = vtkTransformPolyDataFilter::New();
+//  tf->SetTransform(t);
+//  tf->SetInput(reconstructed);
+//  tf->Update();
 
-  tf->Delete();
-  t->Delete();
-  reconstructed->Delete();
+//  vtkPolyData *contour = vtkPolyData::New();
+//  contour->DeepCopy( tf->GetOutput() );
 
-  emit ContourCreated(contour);
-}*/
+//  tf->Delete();
+//  t->Delete();
+//  reconstructed->Delete();
+
+//  emit ContourCreated(contour);
+//}

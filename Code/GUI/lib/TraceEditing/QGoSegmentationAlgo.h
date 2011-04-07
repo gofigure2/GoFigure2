@@ -52,7 +52,7 @@
 
 /**
 \class QGoSegmentationAlgo
-\brief abstract class to be the interface between the algorithms for meshes 
+\brief abstract class to be the interface between the algorithms for meshes
 and contours and GoFigure
 */
 class QGOGUILIB_EXPORT QGoSegmentationAlgo:public QObject
@@ -83,14 +83,18 @@ public:
    * \param[in] iImages vector of vtkimagedata
    * \return list of roi
    */
-  std::vector<vtkImageData*> ExtractROI(std::vector<double> iBounds, std::vector<vtkImageData*> iImages);
+  std::vector<vtkImageData*> ExtractROI(
+    const std::vector<double>& iBounds,
+    std::vector< vtkSmartPointer< vtkImageData > >& iImages);
   /*
    * \brief Extract region of interest, given a bounding box and a vtk image
    * \param[in] iBounds bounding box (xmin, xmax, ymin, ymax, zmin, zmax)
    * \param[in] iImage vtkimagedata
    * \return roi
    */
-  vtkSmartPointer<vtkImageData> ExtractROI(std::vector<double> iBounds, vtkImageData* iImage);
+  vtkImageData* ExtractROI(
+    const std::vector<double>& iBounds,
+    vtkSmartPointer< vtkImageData > iImage);
 
   /*
    * \brief Convert a vtkImage to a itkImage. If we call after "ExtractROI",
@@ -141,7 +145,7 @@ public:
    * \return Pointer to an vtkImageData
   */
   template< class PixelType, unsigned int VImageDimension >
-  vtkSmartPointer<vtkImageData>
+  vtkImageData*
   ConvertITK2VTK(typename itk::Image< PixelType, VImageDimension >::Pointer iInput)
   {
     typedef itk::Image< PixelType, VImageDimension >        InternalImageType;
@@ -160,7 +164,10 @@ public:
       std::cerr << "converter Exception:" << err << std::endl;
       }
 
-    return converter->GetOutput();
+    vtkImageData* output_image = vtkImageData::New();
+    output_image->DeepCopy( converter->GetOutput() );
+
+    return output_image;
   }
 
   /*

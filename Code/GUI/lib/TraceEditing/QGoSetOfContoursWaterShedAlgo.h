@@ -51,7 +51,7 @@ and GoFigure
 class QGoSetOfContoursWaterShedAlgo: public QGoWaterShedAlgo
 {
 public:
-  QGoSetOfContoursWaterShedAlgo(vtkPoints* iSeeds, QWidget* iParent = 0);
+  QGoSetOfContoursWaterShedAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent = 0);
   ~QGoSetOfContoursWaterShedAlgo();
 
   std::vector<vtkPolyData*> ApplyAlgo(

@@ -35,7 +35,7 @@
 #include "QGoFilterChanAndVese.h"
 
 QGoSetOfContoursLevelSetAlgo::QGoSetOfContoursLevelSetAlgo(
-  vtkPoints* iSeeds, QWidget* iParent)
+  std::vector< vtkPoints* >* iSeeds, QWidget* iParent)
   :QGoLevelSetAlgo(iSeeds, iParent)
 {
   m_Sampling = new QGoAlgoParameter<int>("Sampling", false, 0, 999, 3);
@@ -68,13 +68,13 @@ std::vector<std::vector<vtkPolyData*> > QGoSetOfContoursLevelSetAlgo::
 {
   std::vector<std::vector<vtkPolyData*> > NewContours;
   QGoFilterChanAndVese LevelSetFilter;
-  double *center = new double[3];
+  //double *center = new double[3];
 
-    NewContours = 
-      LevelSetFilter.ApplyFilterSetOf2D(this->m_Radius->GetValue(), 
-      this->m_Seeds, this->m_Iterations->GetValue(), 
+    NewContours =
+      LevelSetFilter.ApplyFilterSetOf2D(this->m_Radius->GetValue(),
+      this->m_Seeds, this->m_Iterations->GetValue(),
       this->m_Curvature->GetValue(),this->m_Sampling->GetValue(),
       iImages, iChannel );
- 
+
    return NewContours;
 }

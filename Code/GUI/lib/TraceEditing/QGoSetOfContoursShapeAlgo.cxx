@@ -34,7 +34,7 @@
 #include "QGoSetOfContoursShapeAlgo.h"
 #include "QGoFilterShape.h"
 
-QGoSetOfContoursShapeAlgo::QGoSetOfContoursShapeAlgo(vtkPoints* iSeeds, QWidget* iParent)
+QGoSetOfContoursShapeAlgo::QGoSetOfContoursShapeAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent)
   :QGoShapeAlgo(iSeeds, iParent)
 {
   m_Sampling = new QGoAlgoParameter<int>("Sampling", false, 0, 999, 3);
@@ -67,12 +67,12 @@ std::vector<std::vector<vtkPolyData*> > QGoSetOfContoursShapeAlgo::
 {
   std::vector<std::vector<vtkPolyData*> > NewContours;
   QGoFilterShape ShapeFilter;
-  double *center = new double[3];
+  //double *center = new double[3];
 
-    NewContours = 
-      ShapeFilter.ApplyFilterSetOf2D(this->m_Radius->GetValue(), 
-      this->m_Shape->Getvalue(), this->m_Sampling->GetValue(), this->m_Seeds, 
+    NewContours =
+      ShapeFilter.ApplyFilterSetOf2D(this->m_Radius->GetValue(),
+      this->m_Shape->Getvalue(), this->m_Sampling->GetValue(), this->m_Seeds,
       iImages, iChannel );
- 
+
    return NewContours;
 }

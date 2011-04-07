@@ -66,15 +66,16 @@ public:
   double m_Alpha;
   double m_Beta;
 
-  std::vector<vtkPolyData*> ApplyFilter3D(double iRadius, 
-    int iThresMin, int iThresMax, double iCorrTresh, double iAlpha, double iBeta,  
-    vtkPoints* iPoints,
-    std::vector<vtkSmartPointer< vtkImageData > >* iImages, 
+  std::vector<vtkPolyData*> ApplyFilter3D(double iRadius,
+    int iThresMin, int iThresMax, double iCorrTresh, double iAlpha, double iBeta,
+    std::vector< vtkPoints* >* iPoints,
+    std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel);
 
-  std::vector<std::vector<vtkPolyData*> > ApplyFilterSetOf2D(double iRadius, 
-    int iThresMin, int iThresMax, double iCorrTresh, double iAlpha, 
-    double iBeta,  int iSampling,  vtkPoints* iPoints,
+  std::vector<std::vector<vtkPolyData*> > ApplyFilterSetOf2D(double iRadius,
+    int iThresMin, int iThresMax, double iCorrTresh, double iAlpha,
+    double iBeta,  int iSampling,
+    std::vector< vtkPoints* >* iPoints,
     std::vector<vtkSmartPointer< vtkImageData > >* iImages, int iChannel);
 
 public slots:
@@ -92,7 +93,7 @@ protected:
   void Filter2D(double *iCenter, const int & iOrientation);
 
   vtkPolyData* Filter3D(double *iCenter, double iRadius, int iThresMin, int iThresMax,
-    double iCorrTresh, double iAlpha, double iBeta, 
+    double iCorrTresh, double iAlpha, double iBeta,
     std::vector<vtkSmartPointer< vtkImageData > >* iImages, int iChannel);
 };
 #endif

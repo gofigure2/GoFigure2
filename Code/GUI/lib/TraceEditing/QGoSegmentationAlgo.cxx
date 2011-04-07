@@ -48,6 +48,8 @@
 #include "vtkPolyDataConnectivityFilter.h"
 #include "vtkWindowedSincPolyDataFilter.h"
 
+#include "vtkMath.h"
+
 // Decimation 2d
 #include "vtkPolylineDecimation.h"
 // Decimation 3d
@@ -79,13 +81,15 @@ QGoAlgorithmWidget* QGoSegmentationAlgo::GetAlgoWidget()
 
 //-------------------------------------------------------------------------
 std::vector<vtkImageData*>
-QGoSegmentationAlgo::ExtractROI(std::vector<double> iBounds, std::vector<vtkImageData*> iImages)
+QGoSegmentationAlgo::ExtractROI(
+  const std::vector<double>& iBounds,
+  std::vector< vtkSmartPointer< vtkImageData > > & iImages)
 {
   // vector to be returned
   std::vector<vtkImageData*> listOfImages;
 
   //iterator on the images
-  std::vector<vtkImageData*>::iterator it = iImages.begin();
+  std::vector< vtkSmartPointer< vtkImageData > >::iterator it = iImages.begin();
 
   while( it != iImages.end())
     {
@@ -98,22 +102,43 @@ QGoSegmentationAlgo::ExtractROI(std::vector<double> iBounds, std::vector<vtkImag
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-vtkSmartPointer<vtkImageData>
+vtkImageData*
 QGoSegmentationAlgo::
- ExtractROI(std::vector<double> iBounds, vtkImageData* iImage)
+ ExtractROI(const std::vector<double>& iBounds,
+            vtkSmartPointer< vtkImageData > iImage)
 {
   // make sure there
- // assert( iBounds );
+  assert( iBounds.size() == 6 );
+
+  double org[3];
+  iImage->GetOrigin( org );
+
+  double spacing[3];
+  iImage->GetSpacing( spacing );
+
+  std::vector< int > bounds_idx(6);
+
+  int k = 0;
+  for( int i = 0; i < 3; i++ )
+    {
+    bounds_idx[k] = vtkMath::Round( ( iBounds[k] - org[i] ) / spacing[i] );
+    ++k;
+    bounds_idx[k] = vtkMath::Round( ( iBounds[k] - org[i] ) / spacing[i] );
+    ++k;
+    }
 
   vtkSmartPointer<vtkExtractVOI> extractVOI =
       vtkSmartPointer<vtkExtractVOI>::New();
   extractVOI->SetInput( iImage );
-  extractVOI->SetVOI( iBounds[0] ,iBounds[1],
-                      iBounds[2] ,iBounds[3],
-                      iBounds[4], iBounds[5]);
+  extractVOI->SetVOI( bounds_idx[0], bounds_idx[1],
+                      bounds_idx[2], bounds_idx[3],
+                      bounds_idx[4], bounds_idx[5]);
   extractVOI->Update();
 
-  return extractVOI->GetOutput();
+  vtkImageData* temp_image = vtkImageData::New();
+  temp_image->DeepCopy( extractVOI->GetOutput() );
+
+  return temp_image;
 }
 //-------------------------------------------------------------------------
 
@@ -152,9 +177,21 @@ ExtractPolyData(vtkImageData *iInputImage, const double & iThreshold)
   assert( iInputImage );
 
   // test dimension of the input
-  int dimension = iInputImage->GetDataDimension();
+  int extent[6];
+  iInputImage->GetExtent( extent );
 
-  switch ( dimension ) {
+  int dimension = 3;
+
+  for( int i = 0; i < 3; i++ )
+    {
+    if( extent[2*i] == extent[2*i+1] )
+      {
+      --dimension;
+      }
+    }
+
+  switch ( dimension )
+    {
       case 2 :
         return ExtractContour( iInputImage, iThreshold);
       case 3 :
@@ -307,7 +344,10 @@ ExtractMesh(vtkSmartPointer<vtkImageData> iInputImage, const double & iThreshold
   smoother->NormalizeCoordinatesOn();
   smoother->Update();
 */
-  return connectivityFilter->GetOutput();
+  vtkPolyData* output = vtkPolyData::New();
+  output->DeepCopy( connectivityFilter->GetOutput() );
+
+  return output;
 }
 //--------------------------------------------------------------------------
 
@@ -325,19 +365,24 @@ DecimatePolyData( vtkSmartPointer<vtkPolyData> iPolyData, unsigned int iNumberOf
   // test dimension of the input
   double* bounds = iPolyData->GetBounds();
   int dimension = 3;
-  if(bounds[0] == bounds[1] || bounds[2] == bounds[3] || bounds[4] == bounds[5])
+
+  for( int i = 0; i < 3; i++ )
     {
-    --dimension;
+    if( bounds[2*i] == bounds[2*i+1] )
+      {
+      --dimension;
+      }
     }
 
-  switch ( dimension ) {
-      case 2 :
-        return DecimateContour( iPolyData, iNumberOfPoints);
-      case 3 :
-        return DecimateMesh( iPolyData, iNumberOfPoints);
-      default :
-        std::cout << "dimension unknown (Reconstruct polydata)" << std::endl;
-      }
+  switch ( dimension )
+    {
+    case 2 :
+      return DecimateContour( iPolyData, iNumberOfPoints);
+    case 3 :
+      return DecimateMesh( iPolyData, iNumberOfPoints);
+    default :
+      itkGenericExceptionMacro( << "dimension unknown (Reconstruct polydata)" );
+    }
 
   return NULL;
 }

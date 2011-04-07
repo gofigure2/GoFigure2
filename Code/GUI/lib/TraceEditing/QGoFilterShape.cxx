@@ -368,55 +368,62 @@ QGoFilterShape::GenerateCylinder(double *iCenter)
 
 //--------------------------------------------------------------------------
 std::vector<vtkPolyData *> QGoFilterShape::ApplyFilter3D(
-  double iRadius, vtkPoints* iPoints, std::string iShape,
+  double iRadius, std::vector< vtkPoints* >* iPoints, std::string iShape,
   std::vector< vtkSmartPointer< vtkImageData > >* iImages,
   int iChannel)
 {
   std::vector<vtkPolyData*> oMeshes = std::vector<vtkPolyData*>();
-   if ( iRadius <= 0 )
+  if ( iRadius <= 0 )
     {
     std::cerr << "Radius should be > 0 " << std::endl;
     return oMeshes;
     }
-   double *center2 = new double[3];
 
-// LOOP  FOR EACH SEED
-   for ( int i = 0; i < iPoints->GetNumberOfPoints(); i++ )
+  vtkImageData* temp_image = (*iImages) [iChannel];
+
+  double center2[3];
+
+  for ( size_t id = 0; id < iPoints->size(); id++ )
     {
-    iPoints->GetPoint(i, center2);
-    // useful to translate the polydata afterwards
-    setCenter(center2);
-
-    vtkPolyData * MeshPolydata = NULL;
-
-    if (iShape == "Sphere")
+    // LOOP  FOR EACH SEED
+    for ( vtkIdType i = 0; i < (*iPoints)[id]->GetNumberOfPoints(); i++ )
       {
-      MeshPolydata = GenerateSphere( center2, iRadius, (*iImages) [iChannel] );
-      }
-    else
-      {
-      if (iShape == "Cube")
-        {    
-        MeshPolydata = GenerateCube( center2, iRadius, (*iImages)[iChannel] );
+      (*iPoints)[id]->GetPoint(i, center2);
+
+      // useful to translate the polydata afterwards
+      setCenter(center2);
+
+      vtkPolyData * MeshPolydata = NULL;
+
+      if (iShape == "Sphere")
+        {
+        MeshPolydata = GenerateSphere( center2, iRadius, temp_image );
         }
       else
         {
-        std::cout<<"doesn't know the chosen shape ";
-        std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-        std::cout << std::endl;
+        if (iShape == "Cube")
+          {
+          MeshPolydata = GenerateCube( center2, iRadius, temp_image );
+          }
+        else
+          {
+          std::cout<<"doesn't know the chosen shape ";
+          std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+          std::cout << std::endl;
+          }
         }
+      oMeshes.push_back(MeshPolydata);
       }
-    oMeshes.push_back(MeshPolydata);
-    }
-   delete[] center2;
+     }
    return oMeshes;
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 std::vector<std::vector<vtkPolyData*> > QGoFilterShape::
-  ApplyFilterSetOf2D(double iRadius, 
-    std::string iShape, int iSampling,  vtkPoints* iPoints,
+  ApplyFilterSetOf2D(double iRadius,
+    std::string iShape, int iSampling,
+    std::vector< vtkPoints* >* iPoints,
     std::vector<vtkSmartPointer< vtkImageData > >* iImages, int iChannel)
 {
   std::vector<std::vector<vtkPolyData*> > oSetOfContours =

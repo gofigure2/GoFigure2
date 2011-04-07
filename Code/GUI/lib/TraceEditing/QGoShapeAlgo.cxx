@@ -34,7 +34,7 @@
 #include "QGoShapeAlgo.h"
 
 
-QGoShapeAlgo::QGoShapeAlgo(vtkPoints* iSeeds, QWidget* iParent)
+QGoShapeAlgo::QGoShapeAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent)
   :QGoSemiAutoSegmentationAlgo(iSeeds, iParent)
 {
   this->SetAlgoWidget(iParent);
@@ -58,9 +58,9 @@ void QGoShapeAlgo::DeleteParameters()
 //-------------------------------------------------------------------------
 void QGoShapeAlgo::SetAlgoWidget(QWidget* iParent)
 {
-  this->m_AlgoWidget = 
+  this->m_AlgoWidget =
     new QGoAlgorithmWidget("Shape 3D", iParent);
- 
+
   QStringList ShapeList;
   ShapeList.append("Sphere");
   ShapeList.append("Cube");

@@ -55,9 +55,9 @@ class QGOGUILIB_EXPORT QGoContourEditingWidgetManager: public QGoTraceEditingWid
   Q_OBJECT
 public:
 
-  QGoContourEditingWidgetManager(std::vector<QString> iVectChannels, 
-    int iTimeMin, int iTimeMax, vtkPoints* iSeeds, 
-    std::vector< vtkSmartPointer< vtkImageData > >* iImages, 
+  QGoContourEditingWidgetManager(std::vector<QString> iVectChannels,
+    int iTimeMin, int iTimeMax, std::vector< vtkPoints* >* iSeeds,
+    std::vector< vtkSmartPointer< vtkImageData > >* iImages,
     int* iCurrentTimePoint,
     QWidget* iParent=0);
 
@@ -93,7 +93,7 @@ public:
 
 public slots:
   virtual void SetVisible(bool isVisible);
-  
+
 signals:
 
 protected:
@@ -112,7 +112,7 @@ protected:
 
   void SetManualMode(
     QStringList iListTimePoint, QWidget* iParent);
-  
+
 signals:
   //from the manual mode:
   void ContourValidated(int iTCoord);
