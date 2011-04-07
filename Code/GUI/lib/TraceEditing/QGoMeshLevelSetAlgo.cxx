@@ -48,7 +48,7 @@ QGoMeshLevelSetAlgo::~QGoMeshLevelSetAlgo()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::vector<vtkPolyData*> QGoMeshLevelSetAlgo::ApplyAlgo(
+/*std::vector<vtkPolyData*> QGoMeshLevelSetAlgo::ApplyAlgo(
   std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel)
 {
@@ -60,6 +60,40 @@ std::vector<vtkPolyData*> QGoMeshLevelSetAlgo::ApplyAlgo(
     m_Curvature->GetValue(), iImages, iChannel);
  
   return NewMeshes;
+}*/
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::vector<vtkPolyData*> QGoMeshLevelSetAlgo::ApplyAlgo(
+  std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+    int iChannel)
+{
+  const int Dimension = 3;
+  std::vector<vtkPolyData*> oNewMeshes = std::vector<vtkPolyData*>();
+ 
+  if ( this->m_Radius->GetValue() <= 0 )
+    {
+    std::cerr << "Radius should be > 0 " << std::endl;
+    return oNewMeshes;
+    }
+   double *Center = new double[3];
+
+// LOOP  FOR EACH SEED
+   for ( int i = 0; i < this->m_Seeds->GetNumberOfPoints(); i++ )
+    {
+    this->m_Seeds->GetPoint(i, Center);
+    std::vector<double> CenterVect;
+    CenterVect.push_back(Center[0]);
+    CenterVect.push_back(Center[1]);
+    CenterVect.push_back(Center[2]);
+
+    oNewMeshes.push_back(
+      this->ApplyLevelSetFilter<unsigned int, Dimension>(CenterVect, iImages, iChannel) );   
+
+    }
+   delete[] Center;
+  
+  return oNewMeshes;
 }
 //-------------------------------------------------------------------------
 

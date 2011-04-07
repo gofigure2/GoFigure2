@@ -209,14 +209,27 @@ protected:
     InternalPointType origin;
     InternalIndexType cen;
 
+    NodeType node;
+
+    if (m_Radius == 0 )
+      {
+      origin = m_FeatureImage->GetOrigin();
+      m_Size = inputSize;
+      //node.SetValue( (static_cast<InternalCoordRepType>(m_Size[0]) *spacing[0])/4.);
+      m_Radius = static_cast<InternalCoordRepType>(m_Size[0]) *spacing[0] /2.;    
+      }
+   
     for ( unsigned int j = 0; j < Dimension; j++ )
       {
       m_Size[j] =
-        1 + 4. * static_cast< InternalSizeValueType >( m_Radius / spacing[j] );
+          1 + 4. * static_cast< InternalSizeValueType >( m_Radius / spacing[j] );
       cen[j] = static_cast< InternalSizeValueType >( 2 * m_Radius / spacing[j] );
       origin[j] = m_Center[j] - 2 * m_Radius;
       start2[j] = 0;
-      }
+        }
+
+    node.SetValue(-m_Radius / 2);
+    node.SetIndex(cen);
 
     std::cout << "Spacing: " << spacing << std::endl;
     std::cout << "Input Size: " << inputSize << std::endl;
@@ -224,10 +237,6 @@ protected:
     std::cout << "Origin: " << origin << std::endl;
     std::cout << "Radius: " << m_Radius << std::endl;
     std::cout << "Center: " << cen << std::endl;
-
-    NodeType node;
-    node.SetValue(-m_Radius / 2);
-    node.SetIndex(cen);
 
     typename NodeContainer::Pointer seeds = NodeContainer::New();
     seeds->Initialize();
@@ -274,6 +283,7 @@ protected:
       PreprocessFilterPointer preprocess = PreprocessFilterType::New();
       preprocess->SetInput (m_FeatureImage);
       preprocess->SetLargestCellRadius (m_Radius);   // in real coordinates
+
       try
         {
         preprocess->Update();
