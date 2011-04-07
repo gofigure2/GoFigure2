@@ -92,7 +92,6 @@ int main(int argc, char **argv)
   voi3D[4] = 10;
   voi3D[5] = 20;
 
-  double voi3D[6] = {10, 20, 10, 20, 10, 20};
   vtkSmartPointer<vtkImageData> roi3D = vtkSmartPointer<vtkImageData>::New();
   roi3D->ShallowCopy( algo.ExtractROI( voi3D, reader->GetOutput() ));
 
@@ -175,7 +174,6 @@ int main(int argc, char **argv)
   voi2D[4] = 0;
   voi2D[5] = 30;
 
-  double voi2D[6] = {15, 15, 0, 30, 0, 30};
   vtkSmartPointer<vtkImageData> roi2D = vtkSmartPointer<vtkImageData>::New();
   roi2D->ShallowCopy(algo.ExtractROI( voi2D, reader->GetOutput() ));
 
