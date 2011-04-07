@@ -240,6 +240,12 @@ public:
    */
   vtkPoints * GetAllSeeds();
 
+  /*
+   * \brief Get seeds ordered by view in a vector
+   * \param iPoints vector of points containing the seeds
+   */
+  void GetSeeds( std::vector<vtkPoints*> iPoints );
+
 public slots:
   /** \brief Set background color for all views.
   \param[in] r red

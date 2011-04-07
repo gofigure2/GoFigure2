@@ -75,14 +75,22 @@ void QGoSemiAutoSegmentationAlgo::SetAlgoWidget(QWidget* iParent)
 //-------------------------------------------------------------------------
 std::vector<double>
 QGoSemiAutoSegmentationAlgo::
-GetBounds(std::vector<double> iCenter, double iRadius)
+GetBounds(std::vector<double> iCenter, double iRadius, unsigned int iOrientation)
 {
   std::vector<double> boundingBox;
 
   for(int i=0; i<3; i++)
     {
-    boundingBox.push_back(iCenter[i] - iRadius);
-    boundingBox.push_back(iCenter[i] + iRadius);
+    if(i == iOrientation)
+      {
+      boundingBox.push_back(iCenter[i]);
+      boundingBox.push_back(iCenter[i]);
+      }
+    else
+      {
+      boundingBox.push_back(iCenter[i] - iRadius);
+      boundingBox.push_back(iCenter[i] + iRadius);
+      }
     }
  
  return boundingBox;

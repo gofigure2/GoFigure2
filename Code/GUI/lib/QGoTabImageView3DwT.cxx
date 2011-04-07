@@ -131,6 +131,14 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
 {
   m_Image = vtkImageData::New();
   m_Seeds = vtkPoints::New();
+  // new
+  /*
+  vtkPoints* xy = vtkPoints::New();
+  vtkPoints* xz = vtkPoints::New();
+  vtkPoints* yz = vtkPoints::New();
+  m_OrderedSeeds.push_back(xy);
+  m_OrderedSeeds.push_back(xz);
+  m_OrderedSeeds.push_back(yz);*/
 
   m_ChannelClassicMode = true;
   m_ChannelOfInterest = 0;
@@ -250,7 +258,16 @@ QGoTabImageView3DwT::
 
   m_Image->Delete();
   m_Seeds->Delete();
-
+  // new
+  /*
+  std::vector<vtkPoints*>::iterator it = m_OrderedSeeds.begin();
+  while(it != m_OrderedSeeds.end())
+  {
+    (*it)->Delete();
+    (*it) = NULL;
+    ++it;
+  }
+*/
   if ( !m_LSMReader.empty() )
     {
     if ( m_LSMReader[0] )
@@ -299,9 +316,35 @@ QGoTabImageView3DwT::
 void
 QGoTabImageView3DwT::UpdateSeeds()
 {
+  // should be used now
+  // clean the ordered seeds
+  /*
+  std::vector<vtkPoints*>::iterator it = m_OrderedSeeds.begin();
+  while(it != m_OrderedSeeds.end())
+  {
+    (*it)->Initialize();
+    ++it;
+  }
+  m_ImageView->GetSeeds(m_OrderedSeeds);*/
+
+  m_Seeds->Initialize();
   vtkPoints *temp = m_ImageView->GetAllSeeds();
 
-  m_Seeds->DeepCopy(temp);
+  // deep copy vtkPoints not properly working (warning)
+  for(int l = 0; l< temp->GetNumberOfPoints(); l++)
+    {
+    m_Seeds->InsertNextPoint( temp->GetPoint(l) );
+    }
+  m_Seeds->GetData()->DeepCopy( temp->GetData() );
+
+  /*
+  for(int l = 0; l<m_Seeds->GetData()->GetNumberOfTuples(); l++)
+    {
+    double* value = m_Seeds->GetData()->GetTuple(l);
+    std::cout << "m_Seeds: " << l << " orientation: " << value[0] << std::endl;
+    }
+    */
+
   temp->Delete();
 }
 

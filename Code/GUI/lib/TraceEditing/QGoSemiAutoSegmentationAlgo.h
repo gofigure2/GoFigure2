@@ -80,9 +80,11 @@ protected:
    * \brief Get boundingBox from a center and a radius
    * \param[in] iCenter center of the box
    * \param[in] iRadius radius of the box
+   * \param[in] iOrientation 0-xy, 1-xz, 2-yz, 3-xyz
    * \return vector[6] containing the bounding box (xmin, xmax, ymin, imax, ...)
    */
-  std::vector<double> GetBounds(std::vector<double> iCenter, double iRadius);
+  std::vector<double> GetBounds(std::vector<double> iCenter, double iRadius,
+      unsigned int iOrientation = 3);
  
 };
 
