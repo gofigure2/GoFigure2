@@ -53,19 +53,8 @@ std::vector<vtkPolyData*> QGoContourLevelSetAlgo::ApplyAlgo(
     int iChannel)
 {
   const int Dimension = 2;
-  //getbounds
-  //extractROI
-  //vtk to itk:
-  //this->ConvertVTK2ITK<unsigned int, Dimension>()
-  //run the filter
-  //ExtractPolyData()
   std::vector<vtkPolyData*> oNewContours = std::vector<vtkPolyData*>();
-  /*QGoFilterChanAndVese LevelSetFilter;
-
-  std::vector<vtkPolyData*> NewMeshes = 
-    LevelSetFilter.ApplyFilterLevelSet2D(m_Radius->GetValue(), 
-    this->m_Seeds, m_Iterations->GetValue(),
-    m_Curvature->GetValue(), iImages, iChannel);*/
+ 
   if ( this->m_Radius->GetValue() <= 0 )
     {
     std::cerr << "Radius should be > 0 " << std::endl;
@@ -80,8 +69,10 @@ std::vector<vtkPolyData*> QGoContourLevelSetAlgo::ApplyAlgo(
     std::vector<double> CenterVect;
     CenterVect.push_back(Center[0]);
     CenterVect.push_back(Center[1]);
+
     oNewContours.push_back(
       this->ApplyLevelSetFilter<unsigned int, Dimension>(CenterVect, iImages, iChannel) );   
+
     }
    delete[] Center;
   
@@ -90,20 +81,3 @@ std::vector<vtkPolyData*> QGoContourLevelSetAlgo::ApplyAlgo(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/*void QGoContourLevelSetAlgo::ApplyLevelSetFilter(std::vector<double> iCenter,
-  std::vector<vtkSmartPointer< vtkImageData > >* iImages,
-    int iChannel)
-{
-  const int Dimension = 2;
-  std::vector<double> Bounds = this->GetBounds(iCenter, this->m_Radius->GetValue());
-  vtkImageData* ROI = ExtractROI(Bounds, ( *iImages )[iChannel]);
-  itk::Image< unsigned int, Dimension >::Pointer ItkInput = 
-    this->ConvertVTK2ITK<unsigned int, Dimension>(ROI);
-
-  itk::Image< float, Dimension >::Pointer ItkOutPut = Apply2DFilter(
-   this->m_Curvature->GetValue(),  this->m_Iterations->GetValue(), ItkInput);
-
-  vtkImageData * FilterOutPutToVTK = this->ConvertITK2VTK(ItkOutPut);
-  this->ExtractPolyData(FilterOutPutToVTK, 0);
-
-}*/

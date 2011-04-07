@@ -65,9 +65,9 @@ protected:
   std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel)
     {
-    //const int Dimension = 2;
     std::vector<double> Bounds = this->GetBounds(iCenter, this->m_Radius->GetValue());
     vtkImageData* ROI = ExtractROI(Bounds, ( *iImages )[iChannel]);
+
     itk::Image< unsigned char, VImageDimension >::Pointer ItkInput = 
       this->ConvertVTK2ITK<unsigned char, VImageDimension>(ROI);
 

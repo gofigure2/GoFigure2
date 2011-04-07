@@ -42,6 +42,7 @@
 #include "vtkImageData.h"
 #include <QAction>
 #include <QDockWidget>
+#include "QGoContourLevelSetAlgo.h"
 
 
 /**
@@ -98,8 +99,8 @@ signals:
 protected:
   QGoContourManualSegmentation*                   m_ManualMode;
 
-  /*QGoMeshLevelSetAlgo*                            m_LevelSetAlgo;
-  QGoMeshShapeAlgo*                               m_ShapeAlgo;
+  QGoContourLevelSetAlgo*                         m_LevelSetAlgo;
+  /*QGoMeshShapeAlgo*                               m_ShapeAlgo;
   QGoMeshWaterShedAlgo*                           m_WaterShedAlgo;
   QGoMeshSplitDanielssonDistanceAlgo*             m_DanielAlgo;*/
 
@@ -125,8 +126,8 @@ protected slots:
   \brief slot called when the user clicks on "validate" for the manual mode
   */
   void ContourToValidate();
-  /*void ApplyLevelSetAlgo();
-  void ApplyShapeAlgo();
+  void ApplyLevelSetAlgo();
+  /*void ApplyShapeAlgo();
   void ApplyWaterShedAlgo();*/
 
 };
