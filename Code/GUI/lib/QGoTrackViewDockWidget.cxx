@@ -209,19 +209,19 @@ void QGoTrackViewDockWidget::SetUpUi()
   QLabel* Blank = new QLabel(tr("  ") );
   Vlayout->addWidget(Blank);
 
-  QLabel* ColorCode = new QLabel(tr("Color Code:"), this);
+  //QLabel* ColorCode = new QLabel(tr("Color Code:"), this);
 
-  this->m_real = new QRadioButton(tr("Real Color") );
-  this->m_time = new QRadioButton(tr("Time Color") );
-  this->m_speed = new QRadioButton(tr("Speed Color") );
+  this->m_real = new QRadioButton(tr("Real Color Code") );
+  this->m_time = new QRadioButton(tr("Time Color Code") );
+  this->m_speed = new QRadioButton(tr("Speed Color Code") );
   this->m_real->setChecked(true);
 
   QVBoxLayout* VColorCodeLayout = new QVBoxLayout;
-  VColorCodeLayout->addWidget(ColorCode);
+  //VColorCodeLayout->addWidget(ColorCode);
   VColorCodeLayout->addWidget(this->m_real);
   VColorCodeLayout->addWidget(this->m_time);
   VColorCodeLayout->addWidget(this->m_speed);
-  VColorCodeLayout->setAlignment(Qt::AlignCenter);
+  //VColorCodeLayout->setAlignment(Qt::AlignCenter);
   Vlayout->addLayout(VColorCodeLayout, 1);
 
   TrackViewWidget->setLayout(Vlayout);
