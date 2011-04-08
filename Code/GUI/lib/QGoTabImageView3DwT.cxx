@@ -197,11 +197,6 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
                     m_TrackContainer,
                     SLOT( ChangeDivisionsColorCode(const char *) ) );
 
-  /*QObject::connect( m_LineageDockWidget,
-                    SIGNAL( ExportLineages() ),
-                    m_LineageContainer,
-                    SIGNAL( ExportLineages() ) );*/
-
   CreateDataBaseTablesConnection();
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
@@ -1365,11 +1360,11 @@ void QGoTabImageView3DwT::GetTheRelatedToDBActions()
   ImportMenu->addAction(ImportTracksAction);
   QMenu *  ExportMenu = new QMenu(tr("Export"), this);
   QAction *ExportContoursAction = new QAction(tr("Contours"), this);
-  
+ 
   QAction *ExportMeshesAction = new QAction(tr("3DMeshes"), this);
 
   QAction *ExportLineagesAction = new QAction(tr("Lineages For Lineage Viewer"), this);
-  ExportLineagesAction->setToolTip(
+  ExportLineagesAction->setStatusTip(
     tr("Export each lineage into a vtkFile in order to be visualized separately into the lineage viewer outside of Gofigure") );
 
   ExportMenu->addAction(ExportContoursAction);

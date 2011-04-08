@@ -70,13 +70,6 @@
          </property>
         </spacer>
        </item>
-       <item row="2" column="0">
-        <widget class="QPushButton" name="exportLineages">
-         <property name="text">
-          <string>Export Lineages</string>
-         </property>
-        </widget>
-       </item>
       </layout>
      </widget>
     </item>

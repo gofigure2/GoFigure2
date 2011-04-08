@@ -54,7 +54,6 @@ public slots:
 
 signals:
   void ChangeDivisionsColorCode( const char* );
-  void ExportLineages();
 
 };
 #endif
