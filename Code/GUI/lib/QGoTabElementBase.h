@@ -86,6 +86,9 @@ public:
   /** \brief Get all actions belonging to Mode Menu and Toolbar.*/
   virtual std::vector< QAction * > ModeActions();
 
+  /** \brief Get all actions belonging to the Traces Toolbar.*/
+  virtual std::vector< QAction * > TracesActions();
+
   /** \brief Get all the DockWidgets with its status (visibility, location). */
   virtual std::list< QGoDockWidgetStatusPair > & DockWidget();
 
@@ -127,6 +130,7 @@ protected:
   std::vector< QAction * > m_ToolsActions;
   std::vector< QAction * > m_BookmarkActions;
   std::vector< QAction * > m_ModeActions;
+  std::vector< QAction * > m_TracesActions;
 
   std::list< QGoDockWidgetStatusPair > m_DockWidgetList;
   QStatusBar*              m_StatusBar;

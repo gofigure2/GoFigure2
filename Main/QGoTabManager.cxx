@@ -78,6 +78,7 @@ void QGoTabManager::ClearTabElement(QGoTabElementBase *iE)
     // First remove all toolbar related to the previous tab
     m_MainWindow->m_ViewToolBar->clear();
     m_MainWindow->m_ModeToolBar->clear();
+    m_MainWindow->m_TracesToolBar->clear();
     // Then remove all actions related to the previous tab from menuView
     m_MainWindow->menuView->clear();
 
@@ -178,6 +179,15 @@ void QGoTabManager::SetUpTabElement(QGoTabElementBase *iE)
           ++it )
       {
       m_MainWindow->menuBookmarks->addAction(*it);
+      }
+
+    action_vector2 = iE->TracesActions();
+
+    for ( std::vector< QAction * >::iterator it = action_vector2.begin();
+          it != action_vector2.end();
+          ++it )
+      {
+        m_MainWindow->m_TracesToolBar->addAction(*it);
       }
 
     std::list< QGoTabElementBase::QGoDockWidgetStatusPair > dock_list = iE->DockWidget();

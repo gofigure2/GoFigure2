@@ -524,6 +524,8 @@ protected:
 
   void CreateAllViewActions();
 
+  void CreateTracesActions();
+
   void CreateToolsActions();
 
   void CreateBookmarkActions();

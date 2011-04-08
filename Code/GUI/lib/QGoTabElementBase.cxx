@@ -99,6 +99,14 @@ std::vector< QAction * > QGoTabElementBase::ModeActions()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+std::vector< QAction * > QGoTabElementBase::TracesActions()
+{
+  return m_TracesActions;
+}
+
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 std::list< QGoTabElementBase::QGoDockWidgetStatusPair > &
 QGoTabElementBase::DockWidget()
 {

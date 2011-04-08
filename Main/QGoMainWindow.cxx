@@ -125,6 +125,10 @@ QGoMainWindow::QGoMainWindow(QWidget *iParent, Qt::WindowFlags iFlags) :
   this->m_ModeToolBar->setObjectName( tr("Mode") );
   this->addToolBar(Qt::TopToolBarArea, this->m_ModeToolBar);
 
+  this->m_TracesToolBar = new QToolBar(tr("Tools For Traces"), this);
+  this->m_ModeToolBar->setObjectName( tr("Traces") );
+  this->addToolBar(Qt::TopToolBarArea, this->m_TracesToolBar);
+
 //   m_LSMReader = vtkLSMReader::New();
   m_DBWizard  = new QGoWizardDB(this);
   m_DBWizard->hide();

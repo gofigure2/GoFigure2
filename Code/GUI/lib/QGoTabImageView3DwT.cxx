@@ -213,6 +213,8 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
 
   CreateBookmarkActions();
 
+  CreateTracesActions();
+
   CreateModeActions();
 
   ReadSettings();
@@ -1001,15 +1003,15 @@ QGoTabImageView3DwT::CreateAllViewActions()
   separator8->setSeparator(true);
   this->m_ViewActions.push_back(separator8);
 
-  // Track Color Coding
-  this->m_ViewActions.push_back( m_TrackDockWidget->toggleViewAction() );
-
-  // Lineage Color Coding
-  this->m_ViewActions.push_back( m_LineageDockWidget->toggleViewAction() );
-
   QAction *separator9 = new QAction(this);
   separator9->setSeparator(true);
   this->m_ViewActions.push_back(separator9);
+
+   // Track Color Coding
+  //this->m_ViewActions.push_back( m_TrackDockWidget->toggleViewAction() );
+
+  // Lineage Color Coding
+  //this->m_ViewActions.push_back( m_LineageDockWidget->toggleViewAction() );
 
   // Enable synchronization
   QAction *SynchronizeViewsAction =
@@ -1026,6 +1028,20 @@ QGoTabImageView3DwT::CreateAllViewActions()
   QObject::connect( SynchronizeViewsAction, SIGNAL( toggled(bool) ),
                     this->m_ImageView, SLOT( SynchronizeViews(bool) ) );
 }
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::CreateTracesActions()
+{
+   // Track Color Coding
+  this->m_TracesActions.push_back( m_TrackDockWidget->toggleViewAction() );
+
+  // Lineage Color Coding
+  this->m_TracesActions.push_back( m_LineageDockWidget->toggleViewAction() );
+}
+//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
