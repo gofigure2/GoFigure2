@@ -196,10 +196,11 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
                     SIGNAL( ChangeDivisionsColorCode(const char *) ),
                     m_TrackContainer,
                     SLOT( ChangeDivisionsColorCode(const char *) ) );
-  QObject::connect( m_LineageDockWidget,
+
+  /*QObject::connect( m_LineageDockWidget,
                     SIGNAL( ExportLineages() ),
                     m_LineageContainer,
-                    SIGNAL( ExportLineages() ) );
+                    SIGNAL( ExportLineages() ) );*/
 
   CreateDataBaseTablesConnection();
 
@@ -213,9 +214,9 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
 
   CreateBookmarkActions();
 
-  CreateTracesActions();
-
   CreateModeActions();
+
+  CreateTracesActions();
 
   ReadSettings();
 
@@ -1281,7 +1282,7 @@ void QGoTabImageView3DwT::CreateModeActions()
 
   group->addAction(ContourSegmentationAction);
 
-  this->m_ModeActions.push_back(ContourSegmentationAction);
+  this->m_TracesActions.push_back(ContourSegmentationAction); 
 
   QObject::connect( ContourSegmentationAction,
                     SIGNAL( toggled(bool) ),
@@ -1307,7 +1308,7 @@ void QGoTabImageView3DwT::CreateModeActions()
 
   group->addAction(MeshSegmentationAction);
 
-  this->m_ModeActions.push_back(MeshSegmentationAction);
+  this->m_TracesActions.push_back(MeshSegmentationAction);
 
   QObject::connect( MeshSegmentationAction,
                     SIGNAL( toggled(bool) ),
@@ -1364,11 +1365,20 @@ void QGoTabImageView3DwT::GetTheRelatedToDBActions()
   ImportMenu->addAction(ImportTracksAction);
   QMenu *  ExportMenu = new QMenu(tr("Export"), this);
   QAction *ExportContoursAction = new QAction(tr("Contours"), this);
+  
   QAction *ExportMeshesAction = new QAction(tr("3DMeshes"), this);
+
+  QAction *ExportLineagesAction = new QAction(tr("Lineages For Lineage Viewer"), this);
+  ExportLineagesAction->setToolTip(
+    tr("Export each lineage into a vtkFile in order to be visualized separately into the lineage viewer outside of Gofigure") );
+
   ExportMenu->addAction(ExportContoursAction);
   ExportMenu->addAction(ExportMeshesAction);
+  ExportMenu->addAction(ExportLineagesAction);
+
   this->m_ToolsActions.push_back( ImportMenu->menuAction() );
   this->m_ToolsActions.push_back( ExportMenu->menuAction() );
+
   QObject::connect( ExportContoursAction, SIGNAL( triggered() ),
                     this->m_DataBaseTables, SLOT( ExportContours () ) );
   QObject::connect( ImportContoursAction, SIGNAL( triggered() ),
@@ -1379,6 +1389,9 @@ void QGoTabImageView3DwT::GetTheRelatedToDBActions()
                     this, SLOT ( ImportMeshes() ) );
   QObject::connect( ImportTracksAction, SIGNAL ( triggered() ),
                     this, SLOT ( ImportTracks() ) );
+  QObject::connect( ExportLineagesAction, SIGNAL ( triggered() ),
+                    m_LineageContainer,
+                    SIGNAL( ExportLineages() ) );
 }
 
 //-------------------------------------------------------------------------
