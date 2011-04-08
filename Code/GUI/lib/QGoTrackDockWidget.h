@@ -36,12 +36,15 @@
 #define __QGoTrackDockWidget_h
 
 #include <QDockWidget>
+#include <QRadioButton>
+#include <QCheckBox>
+#include <QDoubleSpinBox>
 
-#include "ui_TrackDockWidget.h"
+//#include "ui_TrackDockWidget.h"
 
 class QGoTrackDockWidget:
-  public QDockWidget,
-  protected Ui::TrackDockWidget
+  public QDockWidget//,
+  //protected Ui::TrackDockWidget
 {
   Q_OBJECT
 public:
@@ -60,5 +63,18 @@ signals:
   void UpdateTracksRepresentation(double, double);
   void ChangeColorCode( const char* );
 
+protected:
+  
+  QCheckBox*      m_glyph;
+  QCheckBox*      m_tube;
+  QDoubleSpinBox* m_glyphSpinBox;
+  QDoubleSpinBox* m_tubeSpinBox;
+
+  QRadioButton*   m_time;
+  QRadioButton*   m_real;
+  QRadioButton*   m_speed;
+
+  void SetUpUi();
+  void SetDoubleSpinBox(QDoubleSpinBox* iSpinBox);
 };
 #endif

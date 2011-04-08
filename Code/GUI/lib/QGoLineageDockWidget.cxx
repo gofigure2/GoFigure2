@@ -99,6 +99,7 @@ void QGoLineageDockWidget::SetUpUi()
 
   this->m_depthLineage = new QRadioButton(tr("Depth Color Code") );  
   this->m_real = new QRadioButton(tr("Real Color Code") );
+  this->m_real->setChecked(true);
 
   QVBoxLayout* VLayout = new QVBoxLayout;
   VLayout->addWidget(this->m_real);

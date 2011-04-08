@@ -317,7 +317,6 @@ SET( QGoGUILIB_UI
   Resources/WatershedWidget.ui
 
   # for tracks
-  Resources/TrackDockWidget.ui
   Resources/TrackEditingWidget.ui
 )
 
