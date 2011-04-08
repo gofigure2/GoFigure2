@@ -36,12 +36,12 @@
 #define __QGoLineageDockWidget_h
 
 #include <QDockWidget>
-
-#include "ui_LineageDockWidget.h"
+#include <QRadioButton>
+//#include "ui_LineageDockWidget.h"
 
 class QGoLineageDockWidget:
-  public QDockWidget,
-  protected Ui::LineageDockWidget
+  public QDockWidget//,
+  //protected Ui::LineageDockWidget
 {
   Q_OBJECT
 public:
@@ -55,5 +55,9 @@ public slots:
 signals:
   void ChangeDivisionsColorCode( const char* );
 
+protected:
+  void SetUpUi();
+  QRadioButton*  m_depthLineage;
+  QRadioButton*  m_real;
 };
 #endif

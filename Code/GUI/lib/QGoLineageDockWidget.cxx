@@ -34,12 +34,15 @@
 #include "QGoLineageDockWidget.h"
 
 #include <iostream>
+#include <QVBoxLayout>
+#include <QAction>
 
 //-------------------------------------------------------------------------
 QGoLineageDockWidget::QGoLineageDockWidget(
   QWidget *iParent) : QDockWidget(iParent)
 {
-  this->setupUi(this);
+  //this->setupUi(this);
+  this->SetUpUi();
   QIcon Lineageicon;
   Lineageicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/LineageView.png") ),
                       QIcon::Normal, QIcon::Off);
@@ -47,10 +50,11 @@ QGoLineageDockWidget::QGoLineageDockWidget(
   this->toggleViewAction()->setToolTip("Lineage View");
   this->setWindowTitle("Lineage View");
 
+  
   // color code
-  QObject::connect( this->depthLineage, SIGNAL( toggled(bool) ),
+  QObject::connect( this->m_depthLineage, SIGNAL( toggled(bool) ),
                     this, SLOT( ColorCodeLineagesByDepth(bool) ) );
-  QObject::connect( this->real, SIGNAL( toggled(bool) ),
+  QObject::connect( this->m_real, SIGNAL( toggled(bool) ),
                     this, SLOT( ColorCodeLineagesByOriginalColor(bool) ) );
 }
 
@@ -87,3 +91,20 @@ QGoLineageDockWidget::ColorCodeLineagesByOriginalColor(bool iChecked)
 }
 
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoLineageDockWidget::SetUpUi()
+{
+  QWidget* LineageViewWidget = new QWidget;//(this);
+
+  this->m_depthLineage = new QRadioButton(tr("Depth Color Code") );  
+  this->m_real = new QRadioButton(tr("Real Color Code") );
+
+  QVBoxLayout* VLayout = new QVBoxLayout;
+  VLayout->addWidget(this->m_real);
+  VLayout->addWidget(this->m_depthLineage);
+
+  LineageViewWidget->setLayout(VLayout);
+  this->setWidget(LineageViewWidget);
+
+}

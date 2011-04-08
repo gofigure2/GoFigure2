@@ -1353,15 +1353,27 @@ void QGoTabImageView3DwT::GetTheRelatedToDBActions()
   this->GetTheOpenBookmarksActions();
   QMenu *  ImportMenu = new QMenu(tr("Import"), this);
   QAction *ImportContoursAction = new QAction(tr("Contours"), this);
+  ImportContoursAction->setStatusTip(
+    tr("Import the data of the contours from the text file into the GoFigure database" ) );
   QAction *ImportMeshesAction = new QAction(tr("3DMeshes"), this);
+  ImportMeshesAction->setStatusTip(
+    tr("Import the data of the meshes from the text file into the GoFigure database" ) );
   QAction *ImportTracksAction = new QAction(tr("Tracks"), this);
+  ImportTracksAction->setStatusTip(
+    tr("Import the data of the tracks from the text file into the GoFigure database" ) );
+
   ImportMenu->addAction(ImportContoursAction);
   ImportMenu->addAction(ImportMeshesAction);
   ImportMenu->addAction(ImportTracksAction);
+
   QMenu *  ExportMenu = new QMenu(tr("Export"), this);
   QAction *ExportContoursAction = new QAction(tr("Contours"), this);
- 
+  ExportContoursAction->setStatusTip(
+    tr("Export all the data related to all contours of the imagingsession from the database into a .txt file") );
+
   QAction *ExportMeshesAction = new QAction(tr("3DMeshes"), this);
+  ExportMeshesAction->setStatusTip(
+    tr("Export all the data related to all meshes of the imagingsession from the database into a .txt file") );
 
   QAction *ExportLineagesAction = new QAction(tr("Lineages For Lineage Viewer"), this);
   ExportLineagesAction->setStatusTip(
