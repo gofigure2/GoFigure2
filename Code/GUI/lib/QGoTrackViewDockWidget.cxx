@@ -31,7 +31,7 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "QGoTrackDockWidget.h"
+#include "QGoTrackViewDockWidget.h"
 
 #include "ctkDoubleRangeSlider.h"
 
@@ -42,7 +42,7 @@
 #include <QLabel>
 
 //-------------------------------------------------------------------------
-QGoTrackDockWidget::QGoTrackDockWidget(
+QGoTrackViewDockWidget::QGoTrackViewDockWidget(
   QWidget *iParent) : QDockWidget(iParent)
 {
   //this->setupUi(this);
@@ -83,8 +83,8 @@ QGoTrackDockWidget::QGoTrackDockWidget(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QGoTrackDockWidget::
-~QGoTrackDockWidget()
+QGoTrackViewDockWidget::
+~QGoTrackViewDockWidget()
 {
 }
 
@@ -92,7 +92,7 @@ QGoTrackDockWidget::
 
 //-------------------------------------------------------------------------
 void
-QGoTrackDockWidget::glyphValueChanged(double)
+QGoTrackViewDockWidget::glyphValueChanged(double)
 {
   //to avoid useless update
   if ( this->m_glyph->isChecked() )
@@ -105,7 +105,7 @@ QGoTrackDockWidget::glyphValueChanged(double)
 
 //-------------------------------------------------------------------------
 void
-QGoTrackDockWidget::Glyphs(bool iActivated)
+QGoTrackViewDockWidget::Glyphs(bool iActivated)
 {
   if ( iActivated )
     {
@@ -121,7 +121,7 @@ QGoTrackDockWidget::Glyphs(bool iActivated)
 
 //-------------------------------------------------------------------------
 void
-QGoTrackDockWidget::tubeValueChanged(double)
+QGoTrackViewDockWidget::tubeValueChanged(double)
 {
   //to avoid useless update
   if ( this->m_tube->isChecked() )
@@ -134,7 +134,7 @@ QGoTrackDockWidget::tubeValueChanged(double)
 
 //-------------------------------------------------------------------------
 void
-QGoTrackDockWidget::Tubes(bool iActivated)
+QGoTrackViewDockWidget::Tubes(bool iActivated)
 {
   if ( iActivated )
     {
@@ -150,7 +150,7 @@ QGoTrackDockWidget::Tubes(bool iActivated)
 
 //-------------------------------------------------------------------------
 void
-QGoTrackDockWidget::ColorCodeTracksByTime(bool iChecked)
+QGoTrackViewDockWidget::ColorCodeTracksByTime(bool iChecked)
 {
   if ( iChecked )
     {
@@ -162,7 +162,7 @@ QGoTrackDockWidget::ColorCodeTracksByTime(bool iChecked)
 
 //-------------------------------------------------------------------------
 void
-QGoTrackDockWidget::ColorCodeTracksBySpeed(bool iChecked)
+QGoTrackViewDockWidget::ColorCodeTracksBySpeed(bool iChecked)
 {
   if ( iChecked )
     {
@@ -174,7 +174,7 @@ QGoTrackDockWidget::ColorCodeTracksBySpeed(bool iChecked)
 
 //-------------------------------------------------------------------------
 void
-QGoTrackDockWidget::ColorCodeTracksByOriginalColor(bool iChecked)
+QGoTrackViewDockWidget::ColorCodeTracksByOriginalColor(bool iChecked)
 {
   if ( iChecked )
     {
@@ -183,7 +183,7 @@ QGoTrackDockWidget::ColorCodeTracksByOriginalColor(bool iChecked)
 }
 
 //-------------------------------------------------------------------------
-void QGoTrackDockWidget::SetUpUi()
+void QGoTrackViewDockWidget::SetUpUi()
 {
   QWidget* TrackViewWidget = new QWidget;
 
@@ -234,7 +234,7 @@ void QGoTrackDockWidget::SetUpUi()
 
 //-------------------------------------------------------------------------
 void
-QGoTrackDockWidget::SetDoubleSpinBox(QDoubleSpinBox* iSpinBox)
+QGoTrackViewDockWidget::SetDoubleSpinBox(QDoubleSpinBox* iSpinBox)
 {
   iSpinBox->setDecimals(2);
   iSpinBox->setMaximum(99);

@@ -32,8 +32,8 @@
 
 =========================================================================*/
 
-#ifndef __QGoTrackDockWidget_h
-#define __QGoTrackDockWidget_h
+#ifndef __QGoTrackViewDockWidget_h
+#define __QGoTrackViewDockWidget_h
 
 #include <QDockWidget>
 #include <QRadioButton>
@@ -42,14 +42,14 @@
 
 //#include "ui_TrackDockWidget.h"
 
-class QGoTrackDockWidget:
+class QGoTrackViewDockWidget:
   public QDockWidget//,
   //protected Ui::TrackDockWidget
 {
   Q_OBJECT
 public:
-  explicit QGoTrackDockWidget(QWidget *iParent = 0);
-  ~QGoTrackDockWidget();
+  explicit QGoTrackViewDockWidget(QWidget *iParent = 0);
+  ~QGoTrackViewDockWidget();
 
 public slots:
   void Glyphs( bool );

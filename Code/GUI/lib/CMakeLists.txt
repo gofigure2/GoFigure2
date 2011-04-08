@@ -97,7 +97,7 @@ SET( QGoGUILIB_SRC
     QGoFilterWatershed.cxx
 
   # for the tracks
-  QGoTrackDockWidget.cxx
+  QGoTrackViewDockWidget.cxx
   QGoTrackEditingWidget.cxx
   
   #for the lineages
@@ -243,7 +243,7 @@ SET( QGoGUILIB_HDRS
     QGoFilterWatershed.h
 
   # for the tracks
-  QGoTrackDockWidget.h
+  QGoTrackViewDockWidget.h
   QGoTrackEditingWidget.h
   
   # for the lineages

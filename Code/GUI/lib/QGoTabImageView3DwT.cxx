@@ -103,7 +103,7 @@
 #include "QGoMeshSegmentationBaseDockWidget.h"
 
 // track dockwidget
-#include "QGoTrackDockWidget.h"
+#include "QGoTrackViewDockWidget.h"
 
 // lineage dockwidget
 #include "QGoLineageDockWidget.h"
@@ -177,14 +177,14 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   CreateMeshSegmentationDockWidget();
 
   // track dock widget
-  m_TrackDockWidget = new QGoTrackDockWidget(this);
+  m_TrackViewDockWidget = new QGoTrackViewDockWidget(this);
 
-  QObject::connect( m_TrackDockWidget,
+  QObject::connect( m_TrackViewDockWidget,
                     SIGNAL( ChangeColorCode(const char *) ),
                     m_TrackContainer,
                     SLOT( ChangeColorCode(const char *) ) );
 
-  QObject::connect( m_TrackDockWidget,
+  QObject::connect( m_TrackViewDockWidget,
                     SIGNAL( UpdateTracksRepresentation(double, double) ),
                     m_TrackContainer,
                     SLOT( UpdateTracksRepresentation(double, double) ) );
@@ -241,9 +241,9 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
 
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
-      new QGoDockWidgetStatus(this->m_TrackDockWidget,
+      new QGoDockWidgetStatus(this->m_TrackViewDockWidget,
                               Qt::LeftDockWidgetArea, false, true),
-      this->m_TrackDockWidget) );
+      this->m_TrackViewDockWidget) );
 
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
@@ -1004,7 +1004,7 @@ QGoTabImageView3DwT::CreateAllViewActions()
   this->m_ViewActions.push_back(separator9);
 
    // Track Color Coding
-  //this->m_ViewActions.push_back( m_TrackDockWidget->toggleViewAction() );
+  //this->m_ViewActions.push_back( m_TrackViewDockWidget->toggleViewAction() );
 
   // Lineage Color Coding
   //this->m_ViewActions.push_back( m_LineageDockWidget->toggleViewAction() );
@@ -1032,7 +1032,7 @@ void
 QGoTabImageView3DwT::CreateTracesActions()
 {
    // Track Color Coding
-  this->m_TracesActions.push_back( m_TrackDockWidget->toggleViewAction() );
+  this->m_TracesActions.push_back( m_TrackViewDockWidget->toggleViewAction() );
 
   // Lineage Color Coding
   this->m_TracesActions.push_back( m_LineageDockWidget->toggleViewAction() );

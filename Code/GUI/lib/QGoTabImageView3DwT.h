@@ -59,7 +59,7 @@ class QGoContourSegmentationBaseDockWidget;
 class QGoMeshSegmentationBaseDockWidget;
 
 //track dockwidget
-class QGoTrackDockWidget;
+class QGoTrackViewDockWidget;
 
 //lineage dock widget
 class QGoLineageDockWidget;
@@ -380,7 +380,7 @@ protected:
   // base segmentation dockwidget for meshes
   QGoMeshSegmentationBaseDockWidget *m_MeshSegmentationDockWidget;
 
-  QGoTrackDockWidget* m_TrackDockWidget;
+  QGoTrackViewDockWidget* m_TrackViewDockWidget;
 
   QGoLineageDockWidget* m_LineageDockWidget;
 
