@@ -1146,62 +1146,6 @@ void QGoTabImageView3DwT::CreateModeActions()
   separator1->setSeparator(true);
   this->m_ModeActions.push_back(separator1);
 
-  //--------------------------------//
-  //  Contour segmentation mode     //
-  //--------------------------------//
-
-  QAction *ContourSegmentationAction =
-    m_ContourSegmentationDockWidget->toggleViewAction();
-
-  group->addAction(ContourSegmentationAction);
-
-  this->m_ModeActions.push_back(ContourSegmentationAction);
-
-  QObject::connect( ContourSegmentationAction,
-                    SIGNAL( toggled(bool) ),
-                    m_ContourSegmentationDockWidget,
-                    SLOT( interactorBehavior(bool) ) );
-
-  QObject::connect( ContourSegmentationAction,
-                    SIGNAL( toggled(bool) ),
-                    this,
-                    SLOT( RequieresTraceWidget(bool) ) );
-
-  QObject::connect( ContourSegmentationAction,
-                    SIGNAL( toggled(bool) ),
-                    this,
-                    SLOT( ShowTraceWidgetsForContour(bool) ) );
-
-  //---------------------------------//
-  //        Mesh segmentation        //
-  //---------------------------------//
-
-  QAction *MeshSegmentationAction =
-    m_MeshSegmentationDockWidget->toggleViewAction();
-
-  group->addAction(MeshSegmentationAction);
-
-  this->m_ModeActions.push_back(MeshSegmentationAction);
-
-  QObject::connect( MeshSegmentationAction,
-                    SIGNAL( toggled(bool) ),
-                    m_MeshSegmentationDockWidget,
-                    SLOT( interactorBehavior(bool) ) );
-
-  QObject::connect( MeshSegmentationAction,
-                    SIGNAL( toggled(bool) ),
-                    this,
-                    SLOT( RequieresTraceWidget(bool) ) );
-
-  QObject::connect( MeshSegmentationAction,
-                    SIGNAL( toggled(bool) ),
-                    this,
-                    SLOT( ShowTraceWidgetsForMesh(bool) ) );
-
-  QAction *separator2 = new QAction(this);
-  separator2->setSeparator(true);
-  this->m_ModeActions.push_back(separator2);
-
   //---------------------------------//
   //       Actor picking  mode       //
   //---------------------------------//
@@ -1311,6 +1255,62 @@ void QGoTabImageView3DwT::CreateModeActions()
 
   QObject::connect( AngleAction, SIGNAL( toggled(bool) ),
                     this, SLOT( AngleWidgetInteractorBehavior(bool) ) );
+
+  //--------------------------------//
+  //  Contour segmentation mode     //
+  //--------------------------------//
+
+  QAction *ContourSegmentationAction =
+    m_ContourSegmentationDockWidget->toggleViewAction();
+
+  group->addAction(ContourSegmentationAction);
+
+  this->m_ModeActions.push_back(ContourSegmentationAction);
+
+  QObject::connect( ContourSegmentationAction,
+                    SIGNAL( toggled(bool) ),
+                    m_ContourSegmentationDockWidget,
+                    SLOT( interactorBehavior(bool) ) );
+
+  QObject::connect( ContourSegmentationAction,
+                    SIGNAL( toggled(bool) ),
+                    this,
+                    SLOT( RequieresTraceWidget(bool) ) );
+
+  QObject::connect( ContourSegmentationAction,
+                    SIGNAL( toggled(bool) ),
+                    this,
+                    SLOT( ShowTraceWidgetsForContour(bool) ) );
+
+  //---------------------------------//
+  //        Mesh segmentation        //
+  //---------------------------------//
+
+  QAction *MeshSegmentationAction =
+    m_MeshSegmentationDockWidget->toggleViewAction();
+
+  group->addAction(MeshSegmentationAction);
+
+  this->m_ModeActions.push_back(MeshSegmentationAction);
+
+  QObject::connect( MeshSegmentationAction,
+                    SIGNAL( toggled(bool) ),
+                    m_MeshSegmentationDockWidget,
+                    SLOT( interactorBehavior(bool) ) );
+
+  QObject::connect( MeshSegmentationAction,
+                    SIGNAL( toggled(bool) ),
+                    this,
+                    SLOT( RequieresTraceWidget(bool) ) );
+
+  QObject::connect( MeshSegmentationAction,
+                    SIGNAL( toggled(bool) ),
+                    this,
+                    SLOT( ShowTraceWidgetsForMesh(bool) ) );
+
+  QAction *separator2 = new QAction(this);
+  separator2->setSeparator(true);
+  this->m_ModeActions.push_back(separator2);
 }
 
 //-------------------------------------------------------------------------
