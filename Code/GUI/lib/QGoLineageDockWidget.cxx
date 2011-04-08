@@ -95,7 +95,7 @@ QGoLineageDockWidget::ColorCodeLineagesByOriginalColor(bool iChecked)
 //-------------------------------------------------------------------------
 void QGoLineageDockWidget::SetUpUi()
 {
-  QWidget* LineageViewWidget = new QWidget;//(this);
+  QWidget* LineageViewWidget = new QWidget;
 
   this->m_depthLineage = new QRadioButton(tr("Depth Color Code") );  
   this->m_real = new QRadioButton(tr("Real Color Code") );
@@ -106,5 +106,7 @@ void QGoLineageDockWidget::SetUpUi()
 
   LineageViewWidget->setLayout(VLayout);
   this->setWidget(LineageViewWidget);
+  LineageViewWidget->setSizePolicy(
+    QSizePolicy::Expanding, QSizePolicy::Fixed);
 
 }

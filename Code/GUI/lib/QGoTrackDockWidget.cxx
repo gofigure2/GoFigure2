@@ -178,3 +178,8 @@ QGoTrackDockWidget::ColorCodeTracksByOriginalColor(bool iChecked)
 }
 
 //-------------------------------------------------------------------------
+void QGoTrackDockWidget::SetUpUi()
+{
+  QWidget* TrackViewWidget = new QWidget;
+
+}

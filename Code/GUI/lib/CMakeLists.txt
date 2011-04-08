@@ -319,9 +319,6 @@ SET( QGoGUILIB_UI
   # for tracks
   Resources/TrackDockWidget.ui
   Resources/TrackEditingWidget.ui
-  
-  # for lineages
-  Resources/LineageDockWidget.ui
 )
 
 IF( BUILD_COMPARETOOL )
