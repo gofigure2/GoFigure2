@@ -32,21 +32,21 @@
 
 =========================================================================*/
 
-#ifndef __QGoLineageDockWidget_h
-#define __QGoLineageDockWidget_h
+#ifndef __QGoLineageViewDockWidget_h
+#define __QGoLineageViewDockWidget_h
 
 #include <QDockWidget>
 #include <QRadioButton>
-//#include "ui_LineageDockWidget.h"
+//#include "ui_LineageViewDockWidget.h"
 
-class QGoLineageDockWidget:
+class QGoLineageViewDockWidget:
   public QDockWidget//,
-  //protected Ui::LineageDockWidget
+  //protected Ui::LineageViewDockWidget
 {
   Q_OBJECT
 public:
-  explicit QGoLineageDockWidget(QWidget *iParent = 0);
-  ~QGoLineageDockWidget();
+  explicit QGoLineageViewDockWidget(QWidget *iParent = 0);
+  ~QGoLineageViewDockWidget();
 
 public slots:
   void ColorCodeLineagesByDepth(bool);

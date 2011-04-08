@@ -101,7 +101,7 @@ SET( QGoGUILIB_SRC
   QGoTrackEditingWidget.cxx
   
   #for the lineages
-  QGoLineageDockWidget.cxx
+  QGoLineageViewDockWidget.cxx
   
   QGoTraceEditingWidget.cxx
   QGoModeEditingWidget.cxx
@@ -247,7 +247,7 @@ SET( QGoGUILIB_HDRS
   QGoTrackEditingWidget.h
   
   # for the lineages
-  QGoLineageDockWidget.h
+  QGoLineageViewDockWidget.h
   
   QGoTraceEditingWidget.h
   QGoModeEditingWidget.h

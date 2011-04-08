@@ -31,14 +31,14 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "QGoLineageDockWidget.h"
+#include "QGoLineageViewDockWidget.h"
 
 #include <iostream>
 #include <QVBoxLayout>
 #include <QAction>
 
 //-------------------------------------------------------------------------
-QGoLineageDockWidget::QGoLineageDockWidget(
+QGoLineageViewDockWidget::QGoLineageViewDockWidget(
   QWidget *iParent) : QDockWidget(iParent)
 {
   //this->setupUi(this);
@@ -61,8 +61,8 @@ QGoLineageDockWidget::QGoLineageDockWidget(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QGoLineageDockWidget::
-~QGoLineageDockWidget()
+QGoLineageViewDockWidget::
+~QGoLineageViewDockWidget()
 {
 }
 
@@ -70,7 +70,7 @@ QGoLineageDockWidget::
 
 //-------------------------------------------------------------------------
 void
-QGoLineageDockWidget::ColorCodeLineagesByDepth(bool iChecked)
+QGoLineageViewDockWidget::ColorCodeLineagesByDepth(bool iChecked)
 {
   if ( iChecked )
     {
@@ -82,7 +82,7 @@ QGoLineageDockWidget::ColorCodeLineagesByDepth(bool iChecked)
 
 //-------------------------------------------------------------------------
 void
-QGoLineageDockWidget::ColorCodeLineagesByOriginalColor(bool iChecked)
+QGoLineageViewDockWidget::ColorCodeLineagesByOriginalColor(bool iChecked)
 {
   if ( iChecked )
     {
@@ -93,7 +93,7 @@ QGoLineageDockWidget::ColorCodeLineagesByOriginalColor(bool iChecked)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoLineageDockWidget::SetUpUi()
+void QGoLineageViewDockWidget::SetUpUi()
 {
   QWidget* LineageViewWidget = new QWidget;
 

@@ -106,7 +106,7 @@
 #include "QGoTrackViewDockWidget.h"
 
 // lineage dockwidget
-#include "QGoLineageDockWidget.h"
+#include "QGoLineageViewDockWidget.h"
 
 //trackediting dw
 #include "QGoTrackEditingWidget.h"
@@ -190,9 +190,9 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
                     SLOT( UpdateTracksRepresentation(double, double) ) );
 
   // track dock widget
-  m_LineageDockWidget = new QGoLineageDockWidget(this);
+  m_LineageViewDockWidget = new QGoLineageViewDockWidget(this);
 
-  QObject::connect( m_LineageDockWidget,
+  QObject::connect( m_LineageViewDockWidget,
                     SIGNAL( ChangeDivisionsColorCode(const char *) ),
                     m_TrackContainer,
                     SLOT( ChangeDivisionsColorCode(const char *) ) );
@@ -247,9 +247,9 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
 
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
-      new QGoDockWidgetStatus(this->m_LineageDockWidget,
+      new QGoDockWidgetStatus(this->m_LineageViewDockWidget,
                               Qt::LeftDockWidgetArea, false, true),
-      this->m_LineageDockWidget) );
+      this->m_LineageViewDockWidget) );
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
   m_DockWidgetList.push_back(
@@ -1007,7 +1007,7 @@ QGoTabImageView3DwT::CreateAllViewActions()
   //this->m_ViewActions.push_back( m_TrackViewDockWidget->toggleViewAction() );
 
   // Lineage Color Coding
-  //this->m_ViewActions.push_back( m_LineageDockWidget->toggleViewAction() );
+  //this->m_ViewActions.push_back( m_LineageViewDockWidget->toggleViewAction() );
 
   // Enable synchronization
   QAction *SynchronizeViewsAction =
@@ -1035,7 +1035,7 @@ QGoTabImageView3DwT::CreateTracesActions()
   this->m_TracesActions.push_back( m_TrackViewDockWidget->toggleViewAction() );
 
   // Lineage Color Coding
-  this->m_TracesActions.push_back( m_LineageDockWidget->toggleViewAction() );
+  this->m_TracesActions.push_back( m_LineageViewDockWidget->toggleViewAction() );
 }
 //-------------------------------------------------------------------------
 

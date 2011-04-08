@@ -40,11 +40,9 @@
 #include <QCheckBox>
 #include <QDoubleSpinBox>
 
-//#include "ui_TrackDockWidget.h"
 
 class QGoTrackViewDockWidget:
-  public QDockWidget//,
-  //protected Ui::TrackDockWidget
+  public QDockWidget
 {
   Q_OBJECT
 public:

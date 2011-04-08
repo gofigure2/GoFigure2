@@ -45,7 +45,6 @@
 QGoTrackViewDockWidget::QGoTrackViewDockWidget(
   QWidget *iParent) : QDockWidget(iParent)
 {
-  //this->setupUi(this);
   this->SetUpUi();
   QIcon trackicon;
   trackicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/TrackView.png") ),
