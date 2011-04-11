@@ -162,6 +162,7 @@ public:
 
 signals:
   void HighlightLineage(unsigned int, bool);
+  //void TraceVisibilityChanged(unsigned int, Qt::CheckState);
   void ShowLineage(unsigned int, bool);
   /** \brief When one track has been picked (highlighted) from the visualization */
   void TracePicked(unsigned int, Qt::CheckState);

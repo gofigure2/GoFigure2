@@ -83,11 +83,13 @@ void QGoDBLineageManager::SetLineagesInfoContainersForVisu(
                     SIGNAL( UpdateLineageHighlighting(unsigned int) ),
                     this,
                     SLOT( UpdateElementHighlighting(unsigned int) ) );
+
   // for a list of lineages - NOT TESTED
   QObject::connect( m_LineageContainerInfoForVisu,
                     SIGNAL( HighlightLineage(unsigned int, bool) ),
                     m_TrackContainerInfoForVisu,
                     SLOT( HighlightCollection(unsigned int, bool) ) );
+
   QObject::connect( m_LineageContainerInfoForVisu,
                     SIGNAL( ShowLineage(unsigned int, bool) ),
                     m_TrackContainerInfoForVisu,
@@ -271,8 +273,8 @@ void QGoDBLineageManager::GetTracesInfoFromDBAndModifyContainerForVisu(
 //-------------------------------------------------------------------------
 void QGoDBLineageManager::SetColorCoding(bool IsChecked)
 {
- // this->SetColorCodingTemplate< TrackContainer >(
-  //  this->m_TrackContainerInfoForVisu, IsChecked);
+  this->SetColorCodingTemplate< LineageContainer >(
+    this->m_LineageContainerInfoForVisu, IsChecked);
 }
 
 //-------------------------------------------------------------------------

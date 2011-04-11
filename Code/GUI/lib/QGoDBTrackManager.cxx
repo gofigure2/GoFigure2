@@ -74,6 +74,7 @@ void QGoDBTrackManager::SetTracksInfoContainerForVisu(
                     this,
                     SIGNAL( NeedMeshesInfoForImportedTrack(unsigned int) ) );
 
+  /** \lydie : what's the point ? */
   QObject::connect( this->m_TrackContainerInfoForVisu,
                     SIGNAL( GetCollectionIDForHighlgiht(unsigned int) ),
                     this,
@@ -936,6 +937,8 @@ void QGoDBTrackManager::CreateALineageWithFormerDaughterOfADeletedDivision(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+/**\ todo Lydie:Nico get the lineageID for the TraceRootID in the lineagecontainer directly...
+no need to be here*/
 void
 QGoDBTrackManager::
 GetCollectionIDForHighlgiht(unsigned int iTraceRootID)

@@ -164,6 +164,7 @@ void QGoDBTraceManager::AddGeneralActionsContextMenu(QMenu *iMenu)
   ColorMenu->addAction( tr("To the selected color for the checked %1s")
                         .arg( this->m_TraceName.c_str() ),
                         this, SLOT( ChangeTraceColor() ) );
+
   QAction *ColorCoding = new QAction(tr("Based on the selected column"), ColorMenu);
   ColorCoding->setCheckable(true);
   ColorCoding->setChecked(m_IsColorCodingOn);

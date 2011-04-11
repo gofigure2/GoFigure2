@@ -116,6 +116,7 @@ QGoPrintDatabase::QGoPrintDatabase(QWidget *iParent) :
 
   QObject::connect( this, SIGNAL( customContextMenuRequested(const QPoint &) ),
                     this, SLOT( CreateContextMenu(const QPoint &) ) );
+
   QObject::connect( this->DBTabWidget, SIGNAL( currentChanged(int) ),
                     this, SLOT( TheTabIsChanged(int) ) );
 }
@@ -1108,6 +1109,10 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint & iPos)
   if ( TraceName == "track" )
     {
     this->m_TracksManager->CreateContextMenu(iPos);
+    }
+  if ( TraceName == "lineage")
+    {
+    this->m_LineagesManager->CreateContextMenu(iPos);
     }
 }
 
