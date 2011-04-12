@@ -141,12 +141,14 @@ public:
     return os;
   }
 
-  void UpdateTracksRepresentation( double iRadius, double iRadius2 ) const;
+  void UpdateTracksRepresentation( const double& iRadius,
+                                  const double& iRadius2 ) const;
 
   GoFigureTrackAttributes ComputeAttributes() const;
 
-  void ModifyDivisionVisibility( bool iVisibility );
-  void ModifyDivisionHighlight(  vtkProperty* iProperty, bool iHighlight );
+  void ModifyDivisionVisibility( const bool& iVisibility );
+  void ModifyDivisionHighlight( vtkProperty* iProperty,
+                               const bool& iHighlight );
   void ModifyDivisionColor( double* iColor );
 
   void AddDivisionArray( vtkIntArray* iArray );

@@ -55,9 +55,8 @@ template <class T>
 class QGOIO_EXPORT TreeNodeStructure : public TraceStructure
 {
 public:
-  TreeNodeStructure() : TraceStructure()
+  TreeNodeStructure() : TraceStructure(), m_Mother( NULL )
   {
-    m_Mother = NULL;
     m_Child[0] = NULL;
     m_Child[1] = NULL;
   }
@@ -98,6 +97,17 @@ public:
       Nodes->Delete();
       Nodes = NULL;
       }
+    }
+
+  const bool IsRoot() const
+    {
+    return ( this->m_Mother == NULL );
+    }
+
+  const bool IsLeaf() const
+    {
+    return ( ( this->m_Child[0] == NULL ) &&
+             ( this->m_Child[1] == NULL ) );
     }
 
   T* m_Mother;

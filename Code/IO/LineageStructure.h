@@ -70,7 +70,7 @@ public:
 /*
   // Add daughters to the current node. 1 or 2
   // Arnaud: Note implemented!
-  void ConnectTracks( 
+  void ConnectTracks(
     unsigned int iD1TrackID, vtkPolyData* iD1PolyData,
     unsigned int iD2TrackID = 0, vtkPolyData* iD2PolyData = NULL );
 
@@ -133,7 +133,7 @@ public:
 
   unsigned int TrackRootID;
 
-private:
+//private:
   // only lineage ID of root is relevant as well??
   // Arnaud why using unsigned int? what about pointers?
   // Arnaud: what is m_RootID? Her mother? the root?

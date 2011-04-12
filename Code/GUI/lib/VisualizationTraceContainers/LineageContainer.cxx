@@ -33,6 +33,7 @@
 =========================================================================*/
 
 #include "LineageContainer.h"
+#include "itkMacro.h"
 
 //-------------------------------------------------------------------------
 LineageContainer::
@@ -55,9 +56,10 @@ LineageContainer::
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void LineageContainer::InsertNewLineage(unsigned int iLineageID, 
-    double irgba[4], unsigned int iTrackIDRoot,
-    bool IsVisible)
+void LineageContainer::
+InsertNewLineage(const unsigned int& iLineageID,
+    double irgba[4], const unsigned int& iTrackIDRoot,
+    const bool& IsVisible)
 {
   MultiIndexContainerElementType NewElement;
   NewElement.TraceID = iLineageID;
@@ -88,16 +90,14 @@ bool LineageContainer::DeleteElement(MultiIndexContainerTraceIDIterator iIter)
 //-------------------------------------------------------------------------
 std::list< unsigned int > LineageContainer::DeleteAllHighlightedElements()
 {
-  std::list< unsigned int > toreturn = std::list< unsigned int >();
-  return toreturn;
+  return std::list< unsigned int >();
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 std::vector< vtkActor* > LineageContainer::AddTrace( vtkPolyData* , vtkProperty* )
 {
-  std::vector< vtkActor* > toreturn = std::vector< vtkActor* >();
-  return toreturn;
+  return std::vector< vtkActor* >();
 }
 //-------------------------------------------------------------------------
 
@@ -106,13 +106,13 @@ std::list<unsigned int> LineageContainer::GetListOfTrackRootIDs()
 {
   std::list<unsigned int> listOfTrackIDs;
 
-  MultiIndexContainerType::index< TraceID >::type::iterator
+  MultiIndexContainerTraceIDIterator
     it = m_Container.get< TraceID >().begin();
 
   while( it != m_Container.get< TraceID >().end() )
     {
     listOfTrackIDs.push_back(it->TrackRootID);
-    it++;
+    ++it;
     }
 
   return listOfTrackIDs;
@@ -124,13 +124,13 @@ std::list<unsigned int> LineageContainer::GetListOfLineageIDs()
 {
   std::list<unsigned int> listOfLineageIDs;
 
-  MultiIndexContainerType::index< TraceID >::type::iterator
+  MultiIndexContainerTraceIDIterator
     it = m_Container.get< TraceID >().begin();
 
   while( it != m_Container.get< TraceID >().end() )
     {
     listOfLineageIDs.push_back(it->TraceID);
-    it++;
+    ++it;
     }
 
   return listOfLineageIDs;
@@ -138,54 +138,65 @@ std::list<unsigned int> LineageContainer::GetListOfLineageIDs()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-unsigned int LineageContainer::GetLineageTrackRootID( unsigned int iTraceID )
+unsigned int LineageContainer::GetLineageTrackRootID( const unsigned int& iTraceID )
 {
-  unsigned int trackID = 0;
-
-  MultiIndexContainerType::index< TraceID >::type::iterator
+  MultiIndexContainerTraceIDIterator
     it = m_Container.get< TraceID >().find( iTraceID );
 
   if( it != m_Container.get< TraceID >().end() )
     {
-    trackID = it->TrackRootID;
+    return it->TrackRootID;
     }
-
-  return trackID;
+  else
+    {
+    itkGenericExceptionMacro( <<"iTraceId is not in this container" );
+    return 0;
+    }
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-bool LineageContainer::GetLineageVisibile( unsigned int iTraceID )
+bool LineageContainer::GetLineageVisibile( const unsigned int& iTraceID )
 {
-  MultiIndexContainerType::index< TraceID >::type::iterator
+  MultiIndexContainerTraceIDIterator
     it = m_Container.get< TraceID >().find( iTraceID );
 
-  assert( it != m_Container.get< TraceID >().end() );
-
-  return it->Visible;
+  if( it != m_Container.get< TraceID >().end() )
+    {
+    return it->Visible;
+    }
+  else
+    {
+    itkGenericExceptionMacro( <<"iTraceId is not in this container" );
+    return false;
+    }
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-bool LineageContainer::GetLineageHighlighted( unsigned int iTraceID )
+bool LineageContainer::GetLineageHighlighted( const unsigned int& iTraceID )
 {
-  MultiIndexContainerType::index< TraceID >::type::iterator
+  MultiIndexContainerTraceIDIterator
     it = m_Container.get< TraceID >().find( iTraceID );
 
-  assert( it != m_Container.get< TraceID >().end() );
-
-  bool highlighted = it->Highlighted;
-
-  return highlighted;
+  if( it != m_Container.get< TraceID >().end() )
+    {
+    return it->Highlighted;
+    }
+  else
+    {
+    itkGenericExceptionMacro( <<"iTraceId is not in this container" );
+    return false;
+    }
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 double*
 LineageContainer::
-GetLineageColor( unsigned int iTraceID )
+GetLineageColor( const unsigned int& iTraceID )
 {
-  MultiIndexContainerType::index< TraceID >::type::iterator
+  MultiIndexContainerTraceIDIterator
     it = m_Container.get< TraceID >().find( iTraceID );
 
   double* color = NULL;
@@ -201,8 +212,9 @@ GetLineageColor( unsigned int iTraceID )
 
 //-------------------------------------------------------------------------
 void
-LineageContainer::UpdateElementHighlightingWithGivenTraceIDs(const QStringList & iList,
-                                                           const Qt::CheckState & iCheck)
+LineageContainer::
+UpdateElementHighlightingWithGivenTraceIDs( const QStringList & iList,
+                                            const Qt::CheckState & iCheck)
 {
   std::cout << "highlight lineage list not tested" << std::endl;
   // emit signal for each lineage to be highlighted

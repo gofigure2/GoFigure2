@@ -505,7 +505,7 @@ TrackContainer::ChangeDivisionsColorCode(const char *iColorCode)
     }
   else
     {
-    RenderAllDivisionsWithOriginalColors();
+    this->RenderAllDivisionsWithOriginalColors();
     }
 
   assert ( m_ImageView );
@@ -518,7 +518,7 @@ void
 TrackContainer::
 SetScalarRangeForAllDivisions(double iMin, double iMax)
 {
-  MultiIndexContainerType::index< TraceID >::type::iterator
+  MultiIndexContainerTraceIDIterator
     it = m_Container.get< TraceID >().begin();
 
   while ( it != m_Container.get< TraceID >().end() )
@@ -538,7 +538,7 @@ void
 TrackContainer::
 SetLookupTableForAllDivisionsColorCoding(vtkLookupTable *iLut)
 {
-  MultiIndexContainerType::index< TraceID >::type::iterator
+  MultiIndexContainerTraceIDIterator
     it = m_Container.get< TraceID >().begin();
 
   while ( it != m_Container.get< TraceID >().end() )
@@ -558,7 +558,7 @@ void
 TrackContainer::
 RenderAllDivisionsWithOriginalColors()
 {
-  MultiIndexContainerType::index< TraceID >::type::iterator
+  MultiIndexContainerTraceIDIterator
     it = m_Container.get< TraceID >().begin();
 
   while ( it != m_Container.get< TraceID >().end() )
@@ -582,7 +582,7 @@ TrackContainer::setTrackNodeScalars(const char *iArrayName)
   range[0] = std::numeric_limits< double >::max();
   range[1] = std::numeric_limits< double >::min();
 
-  MultiIndexContainerType::index< TraceID >::type::iterator
+  MultiIndexContainerTraceIDIterator
     it = m_Container.get< TraceID >().begin();
 
   while ( it != m_Container.get< TraceID >().end() )
@@ -616,7 +616,7 @@ TrackContainer::setDivisionNodeScalars(const char *iArrayName)
   range[0] = std::numeric_limits< double >::max();
   range[1] = std::numeric_limits< double >::min();
 
-  MultiIndexContainerType::index< TraceID >::type::iterator
+  MultiIndexContainerTraceIDIterator
     it = m_Container.get< TraceID >().begin();
 
   while ( it != m_Container.get< TraceID >().end() )
@@ -698,10 +698,15 @@ TrackContainer::GetLastPointOfTheTrack(unsigned int iTrackID)
   MultiIndexContainerTraceIDIterator
     it = m_Container.get< TraceID >().find(iTrackID);
 
-  vtkPoints* points = it->Nodes->GetPoints();
-  vtkIdType nbOfPoints = points->GetNumberOfPoints();
+  if( it != m_Container.get< TraceID >().end() )
+    {
+    vtkPoints* points = it->Nodes->GetPoints();
+    vtkIdType nbOfPoints = points->GetNumberOfPoints();
 
-  return points->GetPoint(nbOfPoints-1);
+    return points->GetPoint(nbOfPoints-1);
+    }
+
+  return NULL;
 }
 //-------------------------------------------------------------------------
 
@@ -712,9 +717,14 @@ TrackContainer::GetFirstPointOfTheTrack(unsigned int iTrackID)
   MultiIndexContainerTraceIDIterator
     it = m_Container.get< TraceID >().find(iTrackID);
 
-  vtkPoints* points = it->Nodes->GetPoints();
+  if( it != m_Container.get< TraceID >().end() )
+    {
+    vtkPoints* points = it->Nodes->GetPoints();
 
-  return points->GetPoint(0);
+    return points->GetPoint(0);
+    }
+
+  return NULL;
 }
 //-------------------------------------------------------------------------
 
@@ -751,47 +761,65 @@ AddDivision( unsigned int iMotherID, unsigned int iDaughter1ID,
   //------------------------------
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iMotherID);
-  MultiIndexContainerTraceIDIterator daughter1It
-      = m_Container.get< TraceID >().find(iDaughter1ID);
-  MultiIndexContainerTraceIDIterator daughter2It
-      = m_Container.get< TraceID >().find(iDaughter2ID);
 
-  // create connections
-  //------------------------------
-  // motherID->D1
-  //         ->D2
-  //------------------------------
-  TrackStructure* mother = const_cast<TrackStructure*>(&(*motherIt));
-  mother->TreeNode.m_Child[0] = const_cast<TrackStructure*>(&(*daughter1It));
-  mother->TreeNode.m_Child[1] = const_cast<TrackStructure*>(&(*daughter2It));
-  // Create Polydata
-  CreateDivisionPolydata(iMotherID, iDaughter1ID, iDaughter2ID);
-  // Create Actor
-  std::vector< vtkActor * > actors =
-      CreateDivisionActor(mother->TreeNode.Nodes, iVisible);
-  mother->TreeNode.ActorXY = actors[0];
-  mother->TreeNode.ActorXZ = actors[1];
-  mother->TreeNode.ActorYZ = actors[2];
-  mother->TreeNode.ActorXYZ = actors[3];
-  mother->TreeNode.Visible = iVisible;
+  if( motherIt != m_Container.get< TraceID >().end() )
+    {
+    MultiIndexContainerTraceIDIterator daughter1It
+        = m_Container.get< TraceID >().find(iDaughter1ID);
 
-  //------------------------------
-  // D1->motherID
-  // D2->motherID
-  //------------------------------
-  TrackStructure* d1 =  const_cast<TrackStructure*>(&(*daughter1It));
-  d1->TreeNode.m_Mother = const_cast<TrackStructure*>(&(*motherIt));
+    if( daughter1It != m_Container.get< TraceID >().end() )
+      {
+      MultiIndexContainerTraceIDIterator daughter2It
+          = m_Container.get< TraceID >().find(iDaughter2ID);
 
-  TrackStructure* d2 =  const_cast<TrackStructure*>(&(*daughter2It));
-  d2->TreeNode.m_Mother = const_cast<TrackStructure*>(&(*motherIt));
+      if( daughter2It != m_Container.get< TraceID >().end() )
+        {
+        // create connections
+        //------------------------------
+        // motherID->D1
+        //         ->D2
+        //------------------------------
+        TrackStructure* mother = const_cast<TrackStructure*>(&(*motherIt));
+        mother->TreeNode.m_Child[0] = const_cast<TrackStructure*>(&(*daughter1It));
+        mother->TreeNode.m_Child[1] = const_cast<TrackStructure*>(&(*daughter2It));
 
-  this->m_ImageView->UpdateRenderWindows();
+        // Create Polydata
+        CreateDivisionPolydata(iMotherID, iDaughter1ID, iDaughter2ID);
+
+        // Create Actor
+        std::vector< vtkActor * > actors =
+            CreateDivisionActor(mother->TreeNode.Nodes, iVisible);
+        mother->TreeNode.ActorXY = actors[0];
+        mother->TreeNode.ActorXZ = actors[1];
+        mother->TreeNode.ActorYZ = actors[2];
+        mother->TreeNode.ActorXYZ = actors[3];
+        mother->TreeNode.Visible = iVisible;
+
+        //------------------------------
+        // D1->motherID
+        // D2->motherID
+        //------------------------------
+        TrackStructure* d1 =  const_cast<TrackStructure*>(&(*daughter1It));
+        d1->TreeNode.m_Mother = const_cast<TrackStructure*>(&(*motherIt));
+
+        TrackStructure* d2 =  const_cast<TrackStructure*>(&(*daughter2It));
+        d2->TreeNode.m_Mother = const_cast<TrackStructure*>(&(*motherIt));
+
+        this->m_ImageView->UpdateRenderWindows();
+        }
+      }
+    }
 }
 //-------------------------------------------------------------------------
 void
 TrackContainer::
 CreateDivisionPolydata(unsigned int iMother, unsigned int iDaughter1, unsigned int iDaughter2)
 {
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iMother);
+
+  if( motherIt != m_Container.get< TraceID >().end() )
+    {
   // Arnaud: what about if any of the parameter is NULL?
   // Arnaud: what about if one daughter is in the field of view,
   // and not the other one?
@@ -840,9 +868,9 @@ CreateDivisionPolydata(unsigned int iMother, unsigned int iDaughter1, unsigned i
   division->GetFieldData()->AddArray(trackIDArray);
 
   // update structure
-  MultiIndexContainerTraceIDIterator motherIt
-      = m_Container.get< TraceID >().find(iMother);
+
   m_Container.get< TraceID >().modify( motherIt , create_node_division(division) );
+  }
 }
 //-------------------------------------------------------------------------
 
@@ -901,39 +929,58 @@ CutLineage(unsigned int iMotherID)
   //------------------------------
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iMotherID);
-  // Create temporary structures so we can modify it
-  TrackStructure tempMother(*motherIt);
-  // Get daughters IDs
-  unsigned int daughter1ID = (*(tempMother.TreeNode.m_Child[0])).TraceID;
-  unsigned int daughter2ID = (*(tempMother.TreeNode.m_Child[2])).TraceID;
-  // Update daughters pointers
-  tempMother.TreeNode.m_Child[0] = NULL;
-  tempMother.TreeNode.m_Child[1] = NULL;
-  tempMother.TreeNode.ReleaseData();
-  // Push current element
-  m_Container.get< TraceID >().replace(motherIt, tempMother);
 
-  // Find the daughter1 and update mother connection to NULL
-  //------------------------------
-  MultiIndexContainerTraceIDIterator daughter1It
-      = m_Container.get< TraceID >().find(daughter1ID);
-  // Create temporary structures so we can modify it
-  TrackStructure tempDaughter1(*daughter1It);
-  // Update daughters pointers
-  tempDaughter1.TreeNode.m_Mother = NULL;
-  // Push current element
-  m_Container.get< TraceID >().replace(daughter1It, tempDaughter1);
+  if( motherIt != m_Container.get< TraceID >().end() )
+    {
+    // Create temporary structures so we can modify it
+    TrackStructure tempMother(*motherIt);
 
-  // Find the daughter2 and update mother connection to NULL
-  //------------------------------
-  MultiIndexContainerTraceIDIterator daughter2It
-      = m_Container.get< TraceID >().find(daughter2ID);
-  // Create temporary structures so we can modify it
-  TrackStructure tempDaughter2(*daughter2It);
-  // Update daughters pointers
-  tempDaughter2.TreeNode.m_Mother = NULL;
-  // Push current element
-  m_Container.get< TraceID >().replace(daughter2It, tempDaughter2);
+    // Get daughters IDs
+    unsigned int daughter1ID = (*(tempMother.TreeNode.m_Child[0])).TraceID;
+    unsigned int daughter2ID = (*(tempMother.TreeNode.m_Child[2])).TraceID;
+
+    // Update daughters pointers
+    tempMother.TreeNode.m_Child[0] = NULL;
+    tempMother.TreeNode.m_Child[1] = NULL;
+    tempMother.TreeNode.ReleaseData();
+
+    // Push current element
+    m_Container.get< TraceID >().replace(motherIt, tempMother);
+
+    // Find the daughter1 and update mother connection to NULL
+    //------------------------------
+    MultiIndexContainerTraceIDIterator daughter1It
+        = m_Container.get< TraceID >().find(daughter1ID);
+
+    if( daughter1It != m_Container.get< TraceID >().end() )
+      {
+      // Create temporary structures so we can modify it
+      TrackStructure tempDaughter1(*daughter1It);
+
+      // Update daughters pointers
+      tempDaughter1.TreeNode.m_Mother = NULL;
+
+      // Push current element
+      m_Container.get< TraceID >().replace(daughter1It, tempDaughter1);
+      }
+
+    // Find the daughter2 and update mother connection to NULL
+    //------------------------------
+    MultiIndexContainerTraceIDIterator daughter2It
+        = m_Container.get< TraceID >().find(daughter2ID);
+
+    if( daughter2It != m_Container.get< TraceID >().end() )
+      {
+      // Create temporary structures so we can modify it
+      TrackStructure tempDaughter2(*daughter2It);
+
+      // Update daughters pointers
+      tempDaughter2.TreeNode.m_Mother = NULL;
+
+      // Push current element
+      m_Container.get< TraceID >().replace(daughter2It, tempDaughter2);
+      }
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -945,9 +992,12 @@ HighlightCollection(unsigned int iRootTrackID, bool iHilighted)
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iRootTrackID);
 
-  UpdateCollectionHighlighted(motherIt, iHilighted);
+  if( motherIt != m_Container.get< TraceID >().end() )
+    {
+    UpdateCollectionHighlighted(motherIt, iHilighted);
 
-  this->m_ImageView->UpdateRenderWindows();
+    this->m_ImageView->UpdateRenderWindows();
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -959,9 +1009,12 @@ ShowCollection(unsigned int iRootTrackID, bool iVisible)
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iRootTrackID);
 
-  UpdateCollectionVisibility(motherIt, iVisible);
+  if( motherIt != m_Container.get< TraceID >().end() )
+    {
+    UpdateCollectionVisibility(motherIt, iVisible);
 
-  this->m_ImageView->UpdateRenderWindows();
+    this->m_ImageView->UpdateRenderWindows();
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -980,7 +1033,11 @@ UpdateCollectionVisibility( MultiIndexContainerTraceIDIterator& it, bool iVisibl
     // find the iterator
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
-    UpdateCollectionVisibility(childIt,iVisible);
+
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateCollectionVisibility(childIt,iVisible);
+      }
     }
 
   if(it->TreeNode.m_Child[1])
@@ -988,7 +1045,11 @@ UpdateCollectionVisibility( MultiIndexContainerTraceIDIterator& it, bool iVisibl
     // find the iterator
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
-    UpdateCollectionVisibility(childIt,iVisible);
+
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateCollectionVisibility(childIt,iVisible);
+      }
     }
 }
 //-------------------------------------------------------------------------
@@ -1008,7 +1069,11 @@ UpdateCollectionHighlighted( MultiIndexContainerTraceIDIterator& it, bool iHighl
     // find the iterator
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
-    UpdateCollectionHighlighted(childIt,iHighlighted);
+
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateCollectionHighlighted(childIt,iHighlighted);
+      }
     }
 
   if(it->TreeNode.m_Child[1])
@@ -1016,7 +1081,11 @@ UpdateCollectionHighlighted( MultiIndexContainerTraceIDIterator& it, bool iHighl
     // find the iterator
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
-    UpdateCollectionHighlighted(childIt,iHighlighted);
+
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateCollectionHighlighted(childIt,iHighlighted);
+      }
     }
 }
 //-------------------------------------------------------------------------
@@ -1189,26 +1258,27 @@ DeleteADivision( unsigned int iMotherID)
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iMotherID);
 
-  assert( motherIt != m_Container.get< TraceID >().end() );
+  if( motherIt != m_Container.get< TraceID >().end() )
+    {
+    TrackStructure* mother =  const_cast<TrackStructure*>(&(*motherIt));
 
-  TrackStructure* mother =  const_cast<TrackStructure*>(&(*motherIt));
+    // Delete the actor
+    // remove actor from visu and delete them
+    this->m_ImageView->RemoveActor(0, mother->TreeNode.ActorXY);
+    this->m_ImageView->RemoveActor(1, mother->TreeNode.ActorXZ);
+    this->m_ImageView->RemoveActor(2, mother->TreeNode.ActorYZ);
+    this->m_ImageView->RemoveActor(3, mother->TreeNode.ActorXYZ);
+    mother->TreeNode.ReleaseData();
 
- // Delete the actor
-  // remove actor from visu and delete them
-  this->m_ImageView->RemoveActor(0, mother->TreeNode.ActorXY);
-  this->m_ImageView->RemoveActor(1, mother->TreeNode.ActorXZ);
-  this->m_ImageView->RemoveActor(2, mother->TreeNode.ActorYZ);
-  this->m_ImageView->RemoveActor(3, mother->TreeNode.ActorXYZ);
-  mother->TreeNode.ReleaseData();
+    // Reset pointers
+    // child (to do first)
+    mother->TreeNode.m_Child[0]->TreeNode.m_Mother = NULL;
+    mother->TreeNode.m_Child[1]->TreeNode.m_Mother = NULL;
 
-  // Reset pointers
-  // child (to do first)
-  mother->TreeNode.m_Child[0]->TreeNode.m_Mother = NULL;
-  mother->TreeNode.m_Child[1]->TreeNode.m_Mother = NULL;
-
-  // mother
-  mother->TreeNode.m_Child[0] = NULL;
-  mother->TreeNode.m_Child[1] = NULL;
+    // mother
+    mother->TreeNode.m_Child[0] = NULL;
+    mother->TreeNode.m_Child[1] = NULL;
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -1223,7 +1293,10 @@ GetSubLineage( unsigned int iTrackID )
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iTrackID);
 
-  UpdateSubLineage(motherIt, listOfIDs);
+  if( motherIt != m_Container.get< TraceID >().end() )
+    {
+    UpdateSubLineage(motherIt, listOfIDs);
+    }
 
   return listOfIDs;
 }
@@ -1241,7 +1314,10 @@ UpdateSubLineage( MultiIndexContainerTraceIDIterator it, std::list<unsigned int>
     // find the iterator
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
-    UpdateSubLineage(childIt,iList);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateSubLineage(childIt,iList);
+      }
     }
 
   if(it->TreeNode.m_Child[1])
@@ -1249,7 +1325,10 @@ UpdateSubLineage( MultiIndexContainerTraceIDIterator it, std::list<unsigned int>
     // find the iterator
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
-    UpdateSubLineage(childIt,iList);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateSubLineage(childIt,iList);
+      }
     }
 }
 //-------------------------------------------------------------------------
@@ -1262,16 +1341,19 @@ UpdateCollectionHighlighting(unsigned int iTraceId)
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iTraceId);
 
-  GetRootIterator( motherIt );
+  if( motherIt != m_Container.get< TraceID >().end() )
+    {
+    GetRootIterator( motherIt );
 
-  bool highlight = !motherIt->TreeNode.Highlighted;
+    bool highlight = !motherIt->TreeNode.Highlighted;
 
-  UpdateCollectionHighlighted(motherIt, highlight);
+    UpdateCollectionHighlighted(motherIt, highlight);
 
-  this->m_ImageView->UpdateRenderWindows();
+    this->m_ImageView->UpdateRenderWindows();
 
-  // send signal to track manager with TraceID
-  emit GetCollectionIDForHighlgiht( motherIt->TraceID );
+    // send signal to track manager with TraceID
+    emit GetCollectionIDForHighlgiht( motherIt->TraceID );
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -1299,7 +1381,10 @@ UpdateCollectionScalars( unsigned int iTrackID)
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iTrackID);
 
-  UpdateDivisionScalar(motherIt, 0); // 0=depth of the root
+  if( motherIt != m_Container.get< TraceID >().end() )
+    {
+    UpdateDivisionScalar(motherIt, 0); // 0=depth of the root
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -1326,7 +1411,10 @@ UpdateDivisionScalar(MultiIndexContainerTraceIDIterator& it, unsigned int iDepth
     // find the iterator
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
-    UpdateDivisionScalar(childIt,iDepth+1);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateDivisionScalar(childIt,iDepth+1);
+      }
     }
 
   if(it->TreeNode.m_Child[1])
@@ -1334,7 +1422,10 @@ UpdateDivisionScalar(MultiIndexContainerTraceIDIterator& it, unsigned int iDepth
     // find the iterator
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
-    UpdateDivisionScalar(childIt,iDepth+1);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateDivisionScalar(childIt,iDepth+1);
+      }
     }
 }
 //-------------------------------------------------------------------------
@@ -1347,9 +1438,12 @@ UpdateCollectionColors( unsigned int iTrackID, double* color)
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iTrackID);
 
-  UpdateDivisionColor(motherIt, color);
+  if( motherIt != m_Container.get< TraceID >().end() )
+    {
+    UpdateDivisionColor(motherIt, color);
 
-  m_ImageView->UpdateRenderWindows();
+    m_ImageView->UpdateRenderWindows();
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -1368,7 +1462,10 @@ UpdateDivisionColor(MultiIndexContainerTraceIDIterator& it, double* iColor)
     // find the iterator
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
-    UpdateDivisionColor(childIt,iColor);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateDivisionColor(childIt,iColor);
+      }
     }
 
   if(it->TreeNode.m_Child[1])
@@ -1376,7 +1473,10 @@ UpdateDivisionColor(MultiIndexContainerTraceIDIterator& it, double* iColor)
     // find the iterator
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
-    UpdateDivisionColor(childIt,iColor);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateDivisionColor(childIt,iColor);
+      }
     }
 }
 //-------------------------------------------------------------------------
@@ -1389,10 +1489,17 @@ GetCollectionMaxDepth( unsigned int iTrackRootID )
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iTrackRootID);
 
-  unsigned int depth = 0;
-  UpdateCollectionMaxDepth(motherIt, 0, depth); //0: root depth
+  if( motherIt != m_Container.get< TraceID >().end() )
+    {
+    unsigned int depth = 0;
+    UpdateCollectionMaxDepth(motherIt, 0, depth); //0: root depth
 
-  return depth;
+    return depth;
+    }
+  else
+    {
+    return 0;
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -1415,7 +1522,10 @@ UpdateCollectionMaxDepth(MultiIndexContainerTraceIDIterator& it,
     // find the iterator
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
-    UpdateCollectionMaxDepth(childIt,iDivisionDepth+1,iLineageDepth);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateCollectionMaxDepth(childIt,iDivisionDepth+1,iLineageDepth);
+      }
     }
 
   if(it->TreeNode.m_Child[1])
@@ -1423,7 +1533,10 @@ UpdateCollectionMaxDepth(MultiIndexContainerTraceIDIterator& it,
     // find the iterator
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
-    UpdateCollectionMaxDepth(childIt,iDivisionDepth+1, iLineageDepth);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateCollectionMaxDepth(childIt,iDivisionDepth+1, iLineageDepth);
+      }
     }
 }
 //-------------------------------------------------------------------------
@@ -1436,10 +1549,17 @@ GetCollectionMinDepth( unsigned int iTrackRootID )
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iTrackRootID);
 
-  unsigned int depth = std::numeric_limits<unsigned int>::max();
-  UpdateCollectionMinDepth(motherIt, 0, depth); //0: root depth
+  if( motherIt != m_Container.get< TraceID >().end() )
+    {
+    unsigned int depth = std::numeric_limits<unsigned int>::max();
+    UpdateCollectionMinDepth(motherIt, 0, depth); //0: root depth
 
-  return depth;
+    return depth;
+    }
+  else
+    {
+    return 0;
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -1462,7 +1582,10 @@ UpdateCollectionMinDepth(MultiIndexContainerTraceIDIterator& it,
     // find the iterator
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
-    UpdateCollectionMinDepth(childIt,iDivisionDepth+1,iLineageDepth);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateCollectionMinDepth(childIt,iDivisionDepth+1,iLineageDepth);
+      }
     }
 
   if(it->TreeNode.m_Child[1])
@@ -1470,7 +1593,10 @@ UpdateCollectionMinDepth(MultiIndexContainerTraceIDIterator& it,
     // find the iterator
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
-    UpdateCollectionMinDepth(childIt,iDivisionDepth+1, iLineageDepth);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateCollectionMinDepth(childIt,iDivisionDepth+1, iLineageDepth);
+      }
     }
 }
 //-------------------------------------------------------------------------
@@ -1483,10 +1609,17 @@ GetCollectionNumberOfDivisions( unsigned int iTrackRootID )
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iTrackRootID);
 
-  unsigned int numberOfDivisions = 0;
-  UpdateCollectionNumberOfDivisions(motherIt,numberOfDivisions);
+  if( motherIt != m_Container.get< TraceID >().end() )
+    {
+    unsigned int numberOfDivisions = 0;
+    UpdateCollectionNumberOfDivisions(motherIt,numberOfDivisions);
 
-  return numberOfDivisions;
+    return numberOfDivisions;
+    }
+  else
+    {
+    return 0;
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -1506,7 +1639,10 @@ UpdateCollectionNumberOfDivisions(MultiIndexContainerTraceIDIterator& it,
     // find the iterator
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
-    UpdateCollectionNumberOfDivisions(childIt,iNumberOfDivisions);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateCollectionNumberOfDivisions(childIt,iNumberOfDivisions);
+      }
     }
 
   if(it->TreeNode.m_Child[1])
@@ -1514,7 +1650,10 @@ UpdateCollectionNumberOfDivisions(MultiIndexContainerTraceIDIterator& it,
     // find the iterator
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
-    UpdateCollectionNumberOfDivisions(childIt,iNumberOfDivisions);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateCollectionNumberOfDivisions(childIt,iNumberOfDivisions);
+      }
     }
 }
 //-------------------------------------------------------------------------
@@ -1527,10 +1666,17 @@ GetCollectionNumberOfLeaves( unsigned int iTrackRootID )
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iTrackRootID);
 
-  unsigned int numberOfLeaves = 0;
-  UpdateCollectionNumberOfDivisions(motherIt,numberOfLeaves);
+  if( motherIt != m_Container.get< TraceID >().end() )
+    {
+    unsigned int numberOfLeaves = 0;
+    UpdateCollectionNumberOfDivisions(motherIt,numberOfLeaves);
 
-  return numberOfLeaves;
+    return numberOfLeaves;
+    }
+  else
+    {
+    return 0;
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -1550,7 +1696,10 @@ UpdateCollectionNumberOfLeaves(MultiIndexContainerTraceIDIterator& it,
     // find the iterator
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
-    UpdateCollectionNumberOfLeaves(childIt,iNumberOfLeaves);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateCollectionNumberOfLeaves(childIt,iNumberOfLeaves);
+      }
     }
 
   if(it->TreeNode.m_Child[1])
@@ -1558,7 +1707,10 @@ UpdateCollectionNumberOfLeaves(MultiIndexContainerTraceIDIterator& it,
     // find the iterator
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
-    UpdateCollectionNumberOfLeaves(childIt,iNumberOfLeaves);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateCollectionNumberOfLeaves(childIt,iNumberOfLeaves);
+      }
     }
 }
 //-------------------------------------------------------------------------
