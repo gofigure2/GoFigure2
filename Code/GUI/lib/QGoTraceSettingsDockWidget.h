@@ -230,6 +230,9 @@ signals:
 protected:
   QLabel *                    m_TraceName;
   QLabel *                    m_CollectionName;
+  QLabel*                     m_TraceLbl;
+  QLabel*                     m_CollectionLbl;
+
   QGoSelectedColorComboBox*   m_SelectedColorComboBox;
   QGoCollectionColorComboBox* m_CollectionColorComboBox;
   QLabel*                     m_LabelCellType;
@@ -269,6 +272,8 @@ protected:
   void SetSubCellTypeComboBox(QVBoxLayout* iSubCellLayout);
 
   void ChangeWindowTitle(std::string iTraceName);
+
+  void SetWidgetFont();
 
   /**
   \brief call the right methods to initialize the list if there is no iTextItemToSelect

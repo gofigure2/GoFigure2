@@ -39,8 +39,6 @@
 #include <QVBoxLayout>
 #include <QFont>
 
-// DEBUG
-#include <QtDebug>
 #include <iostream>
 
 QGoTraceSettingsDockWidget::QGoTraceSettingsDockWidget(QWidget *iParent) :
@@ -91,10 +89,16 @@ void QGoTraceSettingsDockWidget::SetUpUi()
   SetSubCellTypeComboBox(SubCellLayout);
 
   QVBoxLayout* MainLayout = new QVBoxLayout;
+  QLabel* Blank = new QLabel(this);
   MainLayout->addLayout(TraceCollectionLayout);
+  MainLayout->addWidget(Blank);
   MainLayout->addLayout(ColorLayout);
+  MainLayout->addWidget(Blank);
   MainLayout->addLayout(CellTypeLayout);
   MainLayout->addLayout(SubCellLayout);
+
+  this->SetWidgetFont();
+  this->UpdateTraceAndCollection("contour", "mesh");
 
   TraceSettingsWidget->setLayout(MainLayout);
   TraceSettingsWidget->setSizePolicy(
@@ -121,16 +125,6 @@ QGoTraceSettingsDockWidget::SetListCollectionID(
     this->m_CollectionColorComboBox->InitializeTheListWithColor( iListExistingID,
                                                                  this->m_CollectionName->text().toStdString() );
     }
-  /** \todo Lydie: when using lineages, remove the following*/
-  /*if ( this->m_CollectionName->text() == "lineage" ) //at that time we don't
-                                                     // show lineages
-    {
-    this->m_CollectionColorComboBox->hide();
-    }
-  else
-    {
-    this->m_CollectionColorComboBox->show();
-    }*/
 }
 
 //-------------------------------------------------------------------------
@@ -231,36 +225,21 @@ void
 QGoTraceSettingsDockWidget::SetTraceCollectionColorComboBox(
   QVBoxLayout* iLayoutTraceCollection)
 {
-  this->m_TraceName = new QLabel( tr("contour") );
-  this->setWindowTitle(tr("contour settings") );
-  QFont font;
-  font.setCapitalization(QFont::AllUppercase);
-  font.setBold(true);
-  this->m_TraceName->setFont(font);
+  this->m_TraceName = new QLabel(this);
   QHBoxLayout *HLayoutForTrace = new QHBoxLayout;
-  font.setCapitalization(QFont::Capitalize);
-  font.setPointSize(8);
-  font.setUnderline(true);
-  font.setWeight(50);
-  font.setBold(false);
-  QLabel* TraceLbl = new QLabel(tr("Trace:"), this);
-  TraceLbl->setFont(font);
-  HLayoutForTrace->addWidget(TraceLbl);
+  
+  this->m_TraceLbl = new QLabel(tr("Trace:"), this);
+  HLayoutForTrace->addWidget(this->m_TraceLbl);
   HLayoutForTrace->addWidget(this->m_TraceName);
-  QLabel *CollectionLbl = new QLabel( tr("Collection:") ); 
-  CollectionLbl->setFont(font);
+  this->m_CollectionLbl = new QLabel( tr("Collection:") ); 
   this->m_CollectionColorComboBox = new QGoCollectionColorComboBox;
   this->m_CollectionName = new QLabel ( tr("mesh") );
-  font.setUnderline(false);
-  font.setCapitalization(QFont::AllUppercase);
-  font.setBold(true);
-  this->m_CollectionName->setFont(font);
 
   QHBoxLayout *HLayoutForCollection = new QHBoxLayout;
   HLayoutForCollection->addWidget(this->m_CollectionName);
   HLayoutForCollection->addWidget(this->m_CollectionColorComboBox);
   iLayoutTraceCollection->addLayout(HLayoutForTrace);
-  iLayoutTraceCollection->addWidget(CollectionLbl);
+  iLayoutTraceCollection->addWidget(this->m_CollectionLbl);
   iLayoutTraceCollection->addLayout(HLayoutForCollection);
 
   this->m_SelectedCollectionData = new ItemColorComboboxData;
@@ -274,16 +253,6 @@ QGoTraceSettingsDockWidget::SetTraceCollectionColorComboBox(
                     this, SIGNAL( NewCollectionToBeCreated() ) );
 }
 
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/*void
-QGoTraceManualEditingWidget::
-SetEnableTraceCollectionColorBoxes(bool Enable)
-{
-  this->m_CollectionColorComboBox->setEnabled(Enable);
-  this->m_SelectedColorComboBox->setEnabled(Enable);
-}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -411,6 +380,7 @@ void QGoTraceSettingsDockWidget::UpdateTraceAndCollection(
   this->m_TraceName->setText( iTrace.c_str() );
   this->m_CollectionName->setText( iCollection.c_str() );
   this->m_CollectionName->show();
+  this->m_CollectionLbl->show();
   
   if ( iTrace == "contour" || iTrace == "mesh" )
     {
@@ -433,6 +403,7 @@ void QGoTraceSettingsDockWidget::UpdateTraceAndCollection(
   if (iTrace == "lineage")
     {
     this->m_CollectionName->hide();
+    this->m_CollectionLbl->hide();
     }
   // update visualization
   this->show();
@@ -443,37 +414,34 @@ void QGoTraceSettingsDockWidget::UpdateTraceAndCollection(
 //-------------------------------------------------------------------------
 void QGoTraceSettingsDockWidget::ChangeWindowTitle(std::string iTrace)
 {
-  /*if (iTrace == "contour")
-    {
-    this->setWindowTitle("Contour Settings");
-    }
-  if (iTrace == "mesh")
-    {
-    this->setWindowTitle("Mesh Settings");
-    }
-  if (iTrace == "track")
-    {
-    this->setWindowTitle("Track Settings");
-    }*/
   QString Title(tr("%1 Settings").arg(iTrace.c_str() ) );
+  this->setWindowTitle(Title);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTraceSettingsDockWidget::SetWidgetFont()
+{
+  //all widget:
   QFont Font;
   Font.setCapitalization(QFont::Capitalize);
   this->setFont(Font);
-  this->setWindowTitle(Title);
-  if (iTrace == "lineage")
-    {
-    //this->setWindowTitle("Lineage Settings");
-    this->m_CollectionName->hide();
-    }
-  if (iTrace == "lineage" || iTrace == "track")
-    {
-    this->m_CollectionColorComboBox->hide();
-    }
-  else
-    {
-    this->m_CollectionName->show();
-    this->m_CollectionColorComboBox->show();
-    }
+
+  //trace and collection name:
+  Font.setCapitalization(QFont::AllUppercase);
+  Font.setBold(true);
+  this->m_TraceName->setFont(Font);
+  this->m_CollectionName->setFont(Font);
+
+  //trace and collection label:
+  Font.setCapitalization(QFont::Capitalize);
+  Font.setPointSize(8);
+  Font.setUnderline(true);
+  Font.setWeight(50);
+  Font.setBold(false);
+  
+  this->m_TraceLbl->setFont(Font);
+  this->m_CollectionLbl->setFont(Font);
 }
 //-------------------------------------------------------------------------
 
