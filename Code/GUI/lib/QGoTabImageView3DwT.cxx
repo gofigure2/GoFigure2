@@ -83,7 +83,6 @@
 #include "ContourToMeshFilter.h"
 
 #include "GoFigureMeshAttributes.h"
-#include "QGoTraceSettingsWidget.h"
 
 #include <QCursor>
 

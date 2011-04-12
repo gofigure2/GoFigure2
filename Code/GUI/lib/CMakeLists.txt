@@ -59,7 +59,6 @@ SET( QGoGUILIB_SRC
   QGoDBSubCellTypeManager.cxx
   QGoDBColorManager.cxx
   QGoTraceSettingsDockWidget.cxx
-  QGoTraceSettingsWidget.cxx
   Wizard/QGoDBInitializationWizard.cxx
   Wizard/QGoDBInitCreateUserPage.cxx
   Wizard/QGoDBInitCreateAuthorsPage.cxx
@@ -203,7 +202,6 @@ SET( QGoGUILIB_HDRS
   QGoDBSubCellTypeManager.h
   QGoDBColorManager.h
   QGoTraceSettingsDockWidget.h
-  QGoTraceSettingsWidget.h
   QGoAboutWidget.h
   Wizard/QGoDBInitializationWizard.h
   Wizard/QGoDBInitCreateUserPage.h
@@ -310,7 +308,6 @@ SET( QGoGUILIB_UI
   Resources/QGoPrintDatabase.ui
   Resources/LsmToMegaExportDialog.ui
   Resources/QNameDescriptionInputDialog.ui
-  Resources/QGoTraceSettingsWidget.ui
 
   # seed segmentation dock widgets
   Resources/LevelsetWidget.ui
