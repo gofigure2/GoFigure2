@@ -1347,9 +1347,12 @@ UpdateCollectionColors( unsigned int iTrackID, double* color)
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iTrackID);
 
-  UpdateDivisionColor(motherIt, color);
+  if( motherIt != m_Container.get< TraceID >().end() )
+    {
+    UpdateDivisionColor(motherIt, color);
 
-  m_ImageView->UpdateRenderWindows();
+    m_ImageView->UpdateRenderWindows();
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -1368,7 +1371,10 @@ UpdateDivisionColor(MultiIndexContainerTraceIDIterator& it, double* iColor)
     // find the iterator
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
-    UpdateDivisionColor(childIt,iColor);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateDivisionColor(childIt,iColor);
+      }
     }
 
   if(it->TreeNode.m_Child[1])
@@ -1376,7 +1382,10 @@ UpdateDivisionColor(MultiIndexContainerTraceIDIterator& it, double* iColor)
     // find the iterator
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
-    UpdateDivisionColor(childIt,iColor);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateDivisionColor(childIt,iColor);
+      }
     }
 }
 //-------------------------------------------------------------------------
@@ -1389,10 +1398,17 @@ GetCollectionMaxDepth( unsigned int iTrackRootID )
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iTrackRootID);
 
-  unsigned int depth = 0;
-  UpdateCollectionMaxDepth(motherIt, 0, depth); //0: root depth
+  if( motherIt != m_Container.get< TraceID >().end() )
+    {
+    unsigned int depth = 0;
+    UpdateCollectionMaxDepth(motherIt, 0, depth); //0: root depth
 
-  return depth;
+    return depth;
+    }
+  else
+    {
+    return 0;
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -1415,7 +1431,10 @@ UpdateCollectionMaxDepth(MultiIndexContainerTraceIDIterator& it,
     // find the iterator
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
-    UpdateCollectionMaxDepth(childIt,iDivisionDepth+1,iLineageDepth);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateCollectionMaxDepth(childIt,iDivisionDepth+1,iLineageDepth);
+      }
     }
 
   if(it->TreeNode.m_Child[1])
@@ -1423,7 +1442,10 @@ UpdateCollectionMaxDepth(MultiIndexContainerTraceIDIterator& it,
     // find the iterator
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
-    UpdateCollectionMaxDepth(childIt,iDivisionDepth+1, iLineageDepth);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateCollectionMaxDepth(childIt,iDivisionDepth+1, iLineageDepth);
+      }
     }
 }
 //-------------------------------------------------------------------------
@@ -1436,10 +1458,17 @@ GetCollectionMinDepth( unsigned int iTrackRootID )
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iTrackRootID);
 
-  unsigned int depth = std::numeric_limits<unsigned int>::max();
-  UpdateCollectionMinDepth(motherIt, 0, depth); //0: root depth
+  if( motherIt != m_Container.get< TraceID >().end() )
+    {
+    unsigned int depth = std::numeric_limits<unsigned int>::max();
+    UpdateCollectionMinDepth(motherIt, 0, depth); //0: root depth
 
-  return depth;
+    return depth;
+    }
+  else
+    {
+    return 0;
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -1462,7 +1491,10 @@ UpdateCollectionMinDepth(MultiIndexContainerTraceIDIterator& it,
     // find the iterator
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
-    UpdateCollectionMinDepth(childIt,iDivisionDepth+1,iLineageDepth);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateCollectionMinDepth(childIt,iDivisionDepth+1,iLineageDepth);
+      }
     }
 
   if(it->TreeNode.m_Child[1])
@@ -1470,7 +1502,10 @@ UpdateCollectionMinDepth(MultiIndexContainerTraceIDIterator& it,
     // find the iterator
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
-    UpdateCollectionMinDepth(childIt,iDivisionDepth+1, iLineageDepth);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateCollectionMinDepth(childIt,iDivisionDepth+1, iLineageDepth);
+      }
     }
 }
 //-------------------------------------------------------------------------
@@ -1483,10 +1518,17 @@ GetCollectionNumberOfDivisions( unsigned int iTrackRootID )
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iTrackRootID);
 
-  unsigned int numberOfDivisions = 0;
-  UpdateCollectionNumberOfDivisions(motherIt,numberOfDivisions);
+  if( motherIt != m_Container.get< TraceID >().end() )
+    {
+    unsigned int numberOfDivisions = 0;
+    UpdateCollectionNumberOfDivisions(motherIt,numberOfDivisions);
 
-  return numberOfDivisions;
+    return numberOfDivisions;
+    }
+  else
+    {
+    return 0;
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -1506,7 +1548,10 @@ UpdateCollectionNumberOfDivisions(MultiIndexContainerTraceIDIterator& it,
     // find the iterator
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
-    UpdateCollectionNumberOfDivisions(childIt,iNumberOfDivisions);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateCollectionNumberOfDivisions(childIt,iNumberOfDivisions);
+      }
     }
 
   if(it->TreeNode.m_Child[1])
@@ -1514,7 +1559,10 @@ UpdateCollectionNumberOfDivisions(MultiIndexContainerTraceIDIterator& it,
     // find the iterator
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
-    UpdateCollectionNumberOfDivisions(childIt,iNumberOfDivisions);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateCollectionNumberOfDivisions(childIt,iNumberOfDivisions);
+      }
     }
 }
 //-------------------------------------------------------------------------
@@ -1527,10 +1575,17 @@ GetCollectionNumberOfLeaves( unsigned int iTrackRootID )
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iTrackRootID);
 
-  unsigned int numberOfLeaves = 0;
-  UpdateCollectionNumberOfDivisions(motherIt,numberOfLeaves);
+  if( motherIt != m_Container.get< TraceID >().end() )
+    {
+    unsigned int numberOfLeaves = 0;
+    UpdateCollectionNumberOfDivisions(motherIt,numberOfLeaves);
 
-  return numberOfLeaves;
+    return numberOfLeaves;
+    }
+  else
+    {
+    return 0;
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -1550,7 +1605,10 @@ UpdateCollectionNumberOfLeaves(MultiIndexContainerTraceIDIterator& it,
     // find the iterator
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
-    UpdateCollectionNumberOfLeaves(childIt,iNumberOfLeaves);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateCollectionNumberOfLeaves(childIt,iNumberOfLeaves);
+      }
     }
 
   if(it->TreeNode.m_Child[1])
@@ -1558,7 +1616,10 @@ UpdateCollectionNumberOfLeaves(MultiIndexContainerTraceIDIterator& it,
     // find the iterator
     MultiIndexContainerTraceIDIterator childIt
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
-    UpdateCollectionNumberOfLeaves(childIt,iNumberOfLeaves);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateCollectionNumberOfLeaves(childIt,iNumberOfLeaves);
+      }
     }
 }
 //-------------------------------------------------------------------------
