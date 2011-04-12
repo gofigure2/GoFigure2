@@ -51,7 +51,6 @@
 #include "QGoGUILibConfigure.h"
 #include "GoFigureMeshAttributes.h"
 #include "QGoTraceSettingsDockWidget.h"
-#include "QGoTraceSettingsWidget.h"
 #include "QGoDBCellTypeManager.h"
 #include "QGoDBSubCellTypeManager.h"
 #include "QGoDBColorManager.h"
@@ -87,7 +86,7 @@ public:
 
   typedef GoDBCollectionOfTraces::TWContainerType            TWContainerType;
   typedef QGoDBBookmarkManager::NamesDescrContainerType      NamesDescrContainerType;
-  typedef QGoTraceSettingsWidget::ItemColorComboboxData ItemColorComboboxData; 
+  typedef QGoTraceSettingsDockWidget::ItemColorComboboxData  ItemColorComboboxData; 
   typedef std::pair< int, QColor >                           IDWithColorData;
 
   /** \brief set all the values needed for the database*/
@@ -308,7 +307,6 @@ protected:
   QGoDBSubCellTypeManager*          m_SubCellTypeManager;
   QGoDBColorManager*                m_ColorManager;
   QGoTraceSettingsDockWidget*       m_TraceSettingsDockWidget;
-  QGoTraceSettingsWidget*           m_TraceWidget;
 
   QGoDBContourManager*              m_ContoursManager;
   QGoDBMeshManager*                 m_MeshesManager;
