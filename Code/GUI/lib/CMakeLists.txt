@@ -305,7 +305,6 @@ SET( QGoGUILIB_UI
 
   # other
   Resources/NavigationDockWidget.ui
-  Resources/QGoPrintDatabase.ui
   Resources/LsmToMegaExportDialog.ui
   Resources/QNameDescriptionInputDialog.ui
 

@@ -83,10 +83,10 @@ QGoPrintDatabase::QGoPrintDatabase(QWidget *iParent) :
   m_ReeditMode(false),
   m_MeshGenerationMode(false)
 {
-  this->setupUi(this);
-  DBTabWidget->setTabShape(QTabWidget::Triangular);
-  DBTabWidget->removeTab(0);
-
+  QVBoxLayout* verticalLayout = new QVBoxLayout(this);
+  this->m_StackedTables = new QStackedWidget(this);
+  verticalLayout->addWidget(this->m_StackedTables);
+  this->setLayout(verticalLayout);
   this->setContextMenuPolicy(Qt::CustomContextMenu);
 
   m_VisibilityAction = new QAction(tr("Show/hide the table widget"), this);
@@ -113,9 +113,6 @@ QGoPrintDatabase::QGoPrintDatabase(QWidget *iParent) :
 
   QObject::connect( this, SIGNAL( customContextMenuRequested(const QPoint &) ),
                     this, SLOT( CreateContextMenu(const QPoint &) ) );
-
-  //QObject::connect( this->DBTabWidget, SIGNAL( currentChanged(int) ),
-  //                  this, SLOT( TheTabIsChanged(int) ) );
 
   QObject::connect( this->m_TraceSettingsWidget, SIGNAL( TraceChanged( int ) ),
                     this, SLOT( TheTabIsChanged( int ) ) );
@@ -221,17 +218,12 @@ void QGoPrintDatabase::FillTableFromDatabase()
 
   QString title = QString("Imaging Session: %1 ").arg( m_ImgSessionName.c_str() );
   this->setWindowTitle(title);
-  this->DBTabWidget->blockSignals(true);
-  this->DBTabWidget->removeTab(0);
-  this->DBTabWidget->addTab(this->m_ContoursManager->GetTableWidget(), "" );//, "contour");
-  this->DBTabWidget->addTab(this->m_MeshesManager->GetTableWidget(), "" );//, "mesh");
-  this->DBTabWidget->addTab(this->m_TracksManager->GetTableWidget(), "" );//, "track");
-  this->DBTabWidget->addTab(this->m_LineagesManager->GetTableWidget(), "" );//, "lineage");
-  this->DBTabWidget->blockSignals(false);
-  //this->DBTabWidget->setTabPosition(QTabWidget:North);
-  //this->DBTabWidget->setTabShape(QTabWidget::Triangular);
   
-
+  this->m_StackedTables->addWidget(this->m_ContoursManager->GetTableWidget());
+  this->m_StackedTables->addWidget(this->m_MeshesManager->GetTableWidget());
+  this->m_StackedTables->addWidget(this->m_TracksManager->GetTableWidget());
+  this->m_StackedTables->addWidget(this->m_LineagesManager->GetTableWidget());
+  
   m_IsDatabaseUsed = true;
   emit PrintDBReady();
 }
@@ -250,9 +242,7 @@ void QGoPrintDatabase::closeEvent(QCloseEvent *iEvent)
 //--------------------------------------------------------------------------
 std::string QGoPrintDatabase::InWhichTableAreWe()
 {
-  int CurrentIndex = this->DBTabWidget->currentIndex();
-
-  return this->DBTabWidget->tabText(CurrentIndex).toStdString();
+  return this->m_TraceSettingsWidget->GetTraceName();
 }
 
 //-------------------------------------------------------------------------
@@ -572,24 +562,7 @@ void QGoPrintDatabase::UpdateSelectedTimePoint(int iTimePoint)
 //-------------------------------------------------------------------------
 void QGoPrintDatabase::TheTabIsChanged(int iIndex)
 {
-  this->DBTabWidget->setCurrentIndex(iIndex);
-  /*switch ( iIndex )
-    {
-    case 1:
-      
-      //this->UpdateWidgetsForCorrespondingTrace("mesh", "track", false);
-      break;
-    case 2:
-      //this->UpdateWidgetsForCorrespondingTrace("track", "lineage", false);
-      break;
-    case 3:
-      //this->UpdateWidgetsForCorrespondingTrace("lineage", "None", false);
-      break;
-    default:
-      //this->UpdateWidgetsForCorrespondingTrace("contour", "mesh", false);
-      break;
-    }*/
-  //emit TableWidgetTabChanged();
+  this->m_StackedTables->setCurrentIndex(iIndex);
 }
 
 //-------------------------------------------------------------------------
@@ -611,7 +584,7 @@ void QGoPrintDatabase::SetTable(std::string iTablename)
     {
     Index = 3;
     }
-  this->DBTabWidget->setCurrentIndex(Index);
+  this->m_StackedTables->setCurrentIndex(Index);
 }
 
 //-------------------------------------------------------------------------

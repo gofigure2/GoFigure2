@@ -38,7 +38,8 @@
 #include <QTableWidget>
 #include <QColor>
 #include <string>
-#include "ui_QGoPrintDatabase.h"
+#include <QStackedWidget>
+//#include "ui_QGoPrintDatabase.h"
 #include "MegaVTK2Configure.h"
 #include "GoDBRecordSet.h"
 #include "GoDBContourRow.h"
@@ -72,8 +73,8 @@
 QGoDBTraceManager...
 \ingroup DB GUI
 */
-class QGOGUILIB_EXPORT QGoPrintDatabase:public QWidget,
-  private Ui::WidgetPrintDatabase
+class QGOGUILIB_EXPORT QGoPrintDatabase:public QWidget//,
+  //private Ui::WidgetPrintDatabase
 {
   Q_OBJECT
 public:
@@ -313,6 +314,7 @@ protected:
   QGoDBMeshManager*                 m_MeshesManager;
   QGoDBTrackManager*                m_TracksManager;
   QGoDBLineageManager*              m_LineagesManager;
+  QStackedWidget*                   m_StackedTables;
 
   //Database variables:
   vtkMySQLDatabase* m_DatabaseConnector;
