@@ -42,6 +42,8 @@
 #include "vtkSmartPointer.h"
 #include "vtkPolyData.h"
 #include "vtkImageData.h"
+#include "vtkTransform.h"
+#include "vtkTransformPolyDataFilter.h"
 
 
 /**
@@ -52,7 +54,7 @@ and GoFigure
 class QGoMeshLevelSetAlgo: public QGoLevelSetAlgo
 {
 public:
-  QGoMeshLevelSetAlgo(vtkPoints* iSeeds, QWidget *iParent = 0);
+  QGoMeshLevelSetAlgo(std::vector< vtkPoints* >* iSeeds, QWidget *iParent = 0);
   ~QGoMeshLevelSetAlgo();
 
   std::vector<vtkPolyData*> ApplyAlgo(
@@ -62,23 +64,54 @@ public:
 protected:
 
   template < class PixelType, unsigned int VImageDimension >
-  vtkPolyData * ApplyLevelSetFilter(std::vector<double> iCenter,
+  vtkPolyData * ApplyLevelSetFilter(const std::vector<double>& iCenter,
   std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel)
     {
-    std::vector<double> Bounds = this->GetBounds(iCenter, this->m_Radius->GetValue());
-    vtkImageData* ROI = ExtractROI(Bounds, ( *iImages )[iChannel]);
+    //std::vector<double> Bounds = this->GetBounds(iCenter, this->m_Radius->GetValue());
+    //tkImageData* ROI = ExtractROI(Bounds, ( *iImages )[iChannel]);
 
+    // Since the pipeline is in ITK, first let's convert the image into ITK
     typename itk::Image< unsigned char, VImageDimension >::Pointer ItkInput =
-      this->ConvertVTK2ITK<unsigned char, VImageDimension>(ROI);
+      this->ConvertVTK2ITK<unsigned char, VImageDimension>( ( *iImages )[iChannel] );
 
+    double radius = this->m_Radius->GetValue();
+    int curvature_weight = this->m_Curvature->GetValue();
+    int nb_iterations = this->m_Iterations->GetValue();
+
+    // Compute the segmentation in 3D
     QGoFilterChanAndVese Filter;
-    typename itk::Image< float, VImageDimension >::Pointer ItkOutPut =
-      Filter.Apply3DFilter<VImageDimension>(ItkInput,
-      this->m_Curvature->GetValue(),  this->m_Iterations->GetValue() );
+    Filter.Apply3DFilter<unsigned char>( ItkInput,
+          iCenter,
+          radius,
+          curvature_weight,
+          nb_iterations );
 
-    vtkImageData * FilterOutPutToVTK = this->ConvertITK2VTK<float, VImageDimension>(ItkOutPut);
-    return this->ExtractPolyData(FilterOutPutToVTK, 0);
+    typename itk::Image< float, VImageDimension >::Pointer ItkOutPut =
+        Filter.GetOutput3D();
+
+
+    // Here it would be better if the mesh extraction would be performed directly
+    // in ITK instead.
+    vtkImageData * FilterOutPutToVTK =
+        this->ConvertITK2VTK<float, VImageDimension>(ItkOutPut);
+
+    vtkPolyData* temp_output = this->ExtractPolyData(FilterOutPutToVTK, 0);
+
+    vtkSmartPointer< vtkTransform > translation =
+        vtkSmartPointer< vtkTransform >::New();
+    translation->Translate(iCenter[0], iCenter[1], iCenter[2] );
+
+    vtkSmartPointer< vtkTransformPolyDataFilter > mesh_transform =
+        vtkSmartPointer< vtkTransformPolyDataFilter >::New();
+    mesh_transform->SetTransform(translation);
+    mesh_transform->SetInput( temp_output );
+    mesh_transform->Update();
+
+    vtkPolyData* mesh = vtkPolyData::New();
+    mesh->DeepCopy( mesh_transform->GetOutput() );
+
+    return mesh;
     }
 };
 

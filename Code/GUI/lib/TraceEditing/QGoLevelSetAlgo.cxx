@@ -34,7 +34,7 @@
 #include "QGoLevelSetAlgo.h"
 
 
-QGoLevelSetAlgo::QGoLevelSetAlgo(vtkPoints* iSeeds, QWidget* iParent)
+QGoLevelSetAlgo::QGoLevelSetAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent)
   :QGoSemiAutoSegmentationAlgo(iSeeds, iParent)
 {
   this->SetAlgoWidget(iParent);
@@ -59,7 +59,7 @@ void QGoLevelSetAlgo::DeleteParameters()
 //-------------------------------------------------------------------------
 void QGoLevelSetAlgo::SetAlgoWidget(QWidget* iParent)
 {
-  this->m_AlgoWidget = 
+  this->m_AlgoWidget =
     new QGoAlgorithmWidget("LevelSet 3D", iParent);
 
   m_Curvature = new QGoAlgoParameter<int>("Curvature", true, 0, 1000, 20);

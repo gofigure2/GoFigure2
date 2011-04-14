@@ -35,7 +35,7 @@
 
 
 QGoSemiAutoSegmentationAlgo::QGoSemiAutoSegmentationAlgo(
-  vtkPoints* iSeeds, QWidget *iParent)
+  std::vector< vtkPoints* >* iSeeds, QWidget *iParent)
 {
   this->m_Seeds = iSeeds;
 }
@@ -46,11 +46,11 @@ QGoSemiAutoSegmentationAlgo::~QGoSemiAutoSegmentationAlgo()
 {
   /*
    * \note Nicolas-Requiered this one? We just copy the address in the constructor.
-   */
-  if(this->m_Seeds)
+   if(this->m_Seeds)
     {
     this->m_Seeds->Delete();
     }
+    */
 }
 //-------------------------------------------------------------------------
 
@@ -75,24 +75,27 @@ void QGoSemiAutoSegmentationAlgo::SetAlgoWidget(QWidget* iParent)
 //-------------------------------------------------------------------------
 std::vector<double>
 QGoSemiAutoSegmentationAlgo::
-GetBounds(std::vector<double> iCenter, double iRadius, unsigned int iOrientation)
+GetBounds(const std::vector<double>& iCenter,
+          const double& iRadius,
+          const unsigned int& iOrientation)
 {
-  std::vector<double> boundingBox;
+  std::vector<double> boundingBox(6);
+  unsigned int k = 0;
 
-  for(int i=0; i<3; i++)
+  for(unsigned int i=0; i<3; i++)
     {
     if(i == iOrientation)
       {
-      boundingBox.push_back(iCenter[i]);
-      boundingBox.push_back(iCenter[i]);
+      boundingBox[k++] = iCenter[i];
+      boundingBox[k++] = iCenter[i];
       }
     else
       {
-      boundingBox.push_back(iCenter[i] - iRadius);
-      boundingBox.push_back(iCenter[i] + iRadius);
+      boundingBox[k++] = iCenter[i] - iRadius;
+      boundingBox[k++] = iCenter[i] + iRadius;
       }
     }
- 
+
  return boundingBox;
 }
 //-------------------------------------------------------------------------

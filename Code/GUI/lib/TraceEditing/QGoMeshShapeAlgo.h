@@ -45,13 +45,13 @@
 
 /**
 \class QGoMeshShapeAlgo
-\brief class to be the interface between the shape algo for meshes 
+\brief class to be the interface between the shape algo for meshes
 and GoFigure
 */
 class QGoMeshShapeAlgo: public QGoShapeAlgo
 {
 public:
-  QGoMeshShapeAlgo(vtkPoints* iSeeds, QWidget* iParent = 0);
+  QGoMeshShapeAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent = 0);
   ~QGoMeshShapeAlgo();
 
   std::vector<vtkPolyData*> ApplyAlgo(

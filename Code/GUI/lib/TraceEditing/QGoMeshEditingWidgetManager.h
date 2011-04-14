@@ -60,9 +60,10 @@ class QGOGUILIB_EXPORT QGoMeshEditingWidgetManager: public QGoTraceEditingWidget
   Q_OBJECT
 public:
 
-  QGoMeshEditingWidgetManager(std::vector<QString> iVectChannels, 
-    int iTimeMin, int iTimeMax, vtkPoints* iSeeds, 
-    std::vector< vtkSmartPointer< vtkImageData > >* iImages, 
+  QGoMeshEditingWidgetManager(std::vector<QString> iVectChannels,
+    int iTimeMin, int iTimeMax,
+    std::vector< vtkPoints* >* iSeeds,
+    std::vector< vtkSmartPointer< vtkImageData > >* iImages,
     int* iCurrentTimePoint,
     QWidget* iParent=0);
 
@@ -82,7 +83,7 @@ public:
   void SetTSliceForDopplerView(std::map<QString, QColor> iListTimePoints, int iChannelNumber);
 
 public slots:
-  
+
 signals:
 
   void SetOfContoursFromAlgo(std::vector<std::vector<vtkPolyData*> > iVectVectPolydata, int iTCoord);
@@ -117,17 +118,17 @@ protected:
   template<typename T>
   void GetSetOfPolydatasFromAlgo(T* iAlgo)
     {
-    emit UpdateSeeds(); 
-    std::vector< std::vector<vtkPolyData*> > NewSetsOfContours = 
+    emit UpdateSeeds();
+    std::vector< std::vector<vtkPolyData*> > NewSetsOfContours =
       iAlgo->ApplyAlgoSeveralSeeds(this->m_Images,
         this->m_TraceEditingWidget->GetChannelNumber() );
-    emit SetOfContoursFromAlgo(NewSetsOfContours , 
+    emit SetOfContoursFromAlgo(NewSetsOfContours ,
       this->GetSelectedTimePoint() );
     emit ClearAllSeeds();
     }
-  
+
 signals:
-  
+
 protected slots:
   void ApplyLevelSetAlgo();
   void ApplyShapeAlgo();

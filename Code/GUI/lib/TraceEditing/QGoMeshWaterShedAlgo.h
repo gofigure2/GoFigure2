@@ -45,13 +45,13 @@
 
 /**
 \class QGoMeshWaterShedAlgo
-\brief class to be the interface between the watershed algo for meshes 
+\brief class to be the interface between the watershed algo for meshes
 and GoFigure
 */
 class QGoMeshWaterShedAlgo: public QGoWaterShedAlgo
 {
 public:
-  QGoMeshWaterShedAlgo(vtkPoints* iSeeds, QWidget* iParent = 0);
+  QGoMeshWaterShedAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent = 0);
   ~QGoMeshWaterShedAlgo();
 
   std::vector<vtkPolyData*> ApplyAlgo(

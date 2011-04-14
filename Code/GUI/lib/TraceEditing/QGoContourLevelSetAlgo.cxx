@@ -35,7 +35,8 @@
 #include "QGoFilterChanAndVese.h"
 
 
-QGoContourLevelSetAlgo::QGoContourLevelSetAlgo(vtkPoints* iSeeds, QWidget* iParent)
+QGoContourLevelSetAlgo::
+QGoContourLevelSetAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent)
   :QGoLevelSetAlgo(iSeeds, iParent)
 {
 }
@@ -54,29 +55,32 @@ std::vector<vtkPolyData*> QGoContourLevelSetAlgo::ApplyAlgo(
 {
   const int Dimension = 2;
   std::vector<vtkPolyData*> oNewContours = std::vector<vtkPolyData*>();
- 
+
   if ( this->m_Radius->GetValue() <= 0 )
     {
     std::cerr << "Radius should be > 0 " << std::endl;
     return oNewContours;
     }
-   double *Center = new double[2];
 
-// LOOP  FOR EACH SEED
-   for ( int i = 0; i < this->m_Seeds->GetNumberOfPoints(); i++ )
+  double Center[3];
+  std::vector<double> CenterVect(2);
+
+  for( size_t id = 0; id < this->m_Seeds->size(); id++ )
     {
-    this->m_Seeds->GetPoint(i, Center);
-    std::vector<double> CenterVect;
-    CenterVect.push_back(Center[0]);
-    CenterVect.push_back(Center[1]);
+    // LOOP  FOR EACH SEED
+    for ( int i = 0; i < (*this->m_Seeds)[id]->GetNumberOfPoints(); i++ )
+      {
+      (*this->m_Seeds)[id]->GetPoint(i, Center);
 
-    oNewContours.push_back(
-      this->ApplyLevelSetFilter<unsigned int, Dimension>(CenterVect, iImages, iChannel) );   
+      CenterVect[0] = Center[0];
+      CenterVect[1] = Center[1];
 
+      oNewContours.push_back(
+        this->ApplyLevelSetFilter<unsigned int, Dimension>(CenterVect, iImages, iChannel) );
+      }
     }
-   delete[] Center;
-  
-  return oNewContours;
+
+   return oNewContours;
 }
 //-------------------------------------------------------------------------
 

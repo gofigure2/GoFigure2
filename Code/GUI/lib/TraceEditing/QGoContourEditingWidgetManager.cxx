@@ -42,14 +42,14 @@
 
 
 QGoContourEditingWidgetManager::QGoContourEditingWidgetManager(
-  std::vector<QString> iVectChannels, 
+  std::vector<QString> iVectChannels,
   int iTimeMin,
   int iTimeMax,
-  vtkPoints* iSeeds, 
-  std::vector< vtkSmartPointer< vtkImageData > >* iImages, 
+  std::vector< vtkPoints* >* iSeeds,
+  std::vector< vtkSmartPointer< vtkImageData > >* iImages,
   int* iCurrentTimePoint,
-  QWidget* iParent): QGoTraceEditingWidgetManager("Contour", 
-  iVectChannels, iTimeMin, iTimeMax, iSeeds, iImages, 
+  QWidget* iParent): QGoTraceEditingWidgetManager("Contour",
+  iVectChannels, iTimeMin, iTimeMax, iSeeds, iImages,
   iCurrentTimePoint, iParent)
 {
   this->SetSemiAutomaticAlgorithms(iParent);
@@ -74,21 +74,21 @@ void QGoContourEditingWidgetManager::SetManualMode(
 
   this->SetTSliceForClassicView();
 
-  QObject::connect( this->m_ManualMode, 
+  QObject::connect( this->m_ManualMode,
                     SIGNAL (changeContourRepresentationProperty(float, QColor,
                                            QColor, QColor) ),
                     this, SIGNAL(changeContourRepresentationProperty(float, QColor,
                                            QColor, QColor) ) );
 
-  QObject::connect( this->m_ManualMode, 
+  QObject::connect( this->m_ManualMode,
                     SIGNAL (validateContour() ),
                     this, SLOT(ContourToValidate() ) );
 
-  QObject::connect( this->m_ManualMode, 
+  QObject::connect( this->m_ManualMode,
                     SIGNAL (reinitializeContour() ),
                     this, SIGNAL(reinitializeContour() ) );
 
-  QObject::connect( this->m_ManualMode, 
+  QObject::connect( this->m_ManualMode,
                     SIGNAL (ManualSegmentationActivated(bool) ),
                     this, SIGNAL(ManualSegmentationActivated(bool) ) );
 
@@ -99,7 +99,7 @@ void QGoContourEditingWidgetManager::SetManualMode(
 void QGoContourEditingWidgetManager::ContourToValidate()
 {
   int CurrentTimePoint = this->GetSelectedTimePoint(); //for test purpose
-  emit ContourValidated(this->GetSelectedTimePoint() );
+  emit ContourValidated( CurrentTimePoint );
 }
 //-------------------------------------------------------------------------
 

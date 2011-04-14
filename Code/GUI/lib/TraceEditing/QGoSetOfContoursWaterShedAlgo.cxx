@@ -34,7 +34,8 @@
 #include "QGoSetOfContoursWaterShedAlgo.h"
 #include "QGoFilterWatershed.h"
 
-QGoSetOfContoursWaterShedAlgo::QGoSetOfContoursWaterShedAlgo(vtkPoints* iSeeds, QWidget* iParent)
+QGoSetOfContoursWaterShedAlgo::
+QGoSetOfContoursWaterShedAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent)
   :QGoWaterShedAlgo(iSeeds, iParent)
 {
   m_Sampling = new QGoAlgoParameter<int>("Sampling", false, 0, 999, 3);
@@ -67,13 +68,13 @@ std::vector<std::vector<vtkPolyData*> > QGoSetOfContoursWaterShedAlgo::
 {
   std::vector<std::vector<vtkPolyData*> > NewContours;
   QGoFilterWatershed WatershedFilter;
-  double *center = new double[3];
+  //double *center = new double[3];
 
-    NewContours = 
-      WatershedFilter.ApplyFilterSetOf2D(this->m_Radius->GetValue(), 
-      this->m_ThresMin->GetValue(), this->m_ThresMax->GetValue(), 
+    NewContours =
+      WatershedFilter.ApplyFilterSetOf2D(this->m_Radius->GetValue(),
+      this->m_ThresMin->GetValue(), this->m_ThresMax->GetValue(),
       this->m_CorrThres->GetValue(),this->m_Alpha->GetValue(),this->m_Beta->GetValue(),
       this->m_Sampling->GetValue(), this->m_Seeds, iImages, iChannel );
- 
+
    return NewContours;
 }

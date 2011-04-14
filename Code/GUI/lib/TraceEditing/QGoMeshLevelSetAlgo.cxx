@@ -35,7 +35,8 @@
 #include "QGoFilterChanAndVese.h"
 
 
-QGoMeshLevelSetAlgo::QGoMeshLevelSetAlgo(vtkPoints* iSeeds, QWidget* iParent)
+QGoMeshLevelSetAlgo::
+QGoMeshLevelSetAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent)
   :QGoLevelSetAlgo(iSeeds, iParent)
 {
 }
@@ -54,11 +55,11 @@ QGoMeshLevelSetAlgo::~QGoMeshLevelSetAlgo()
 {
   QGoFilterChanAndVese LevelSetFilter;
 
-  std::vector<vtkPolyData*> NewMeshes = 
-    LevelSetFilter.ApplyFilterLevelSet3D(m_Radius->GetValue(), 
+  std::vector<vtkPolyData*> NewMeshes =
+    LevelSetFilter.ApplyFilterLevelSet3D(m_Radius->GetValue(),
     this->m_Seeds, m_Iterations->GetValue(),
     m_Curvature->GetValue(), iImages, iChannel);
- 
+
   return NewMeshes;
 }*/
 //-------------------------------------------------------------------------
@@ -70,29 +71,41 @@ std::vector<vtkPolyData*> QGoMeshLevelSetAlgo::ApplyAlgo(
 {
   const int Dimension = 3;
   std::vector<vtkPolyData*> oNewMeshes = std::vector<vtkPolyData*>();
- 
+
   if ( this->m_Radius->GetValue() <= 0 )
     {
     std::cerr << "Radius should be > 0 " << std::endl;
     return oNewMeshes;
     }
-   double *Center = new double[3];
 
-// LOOP  FOR EACH SEED
-   for ( int i = 0; i < this->m_Seeds->GetNumberOfPoints(); i++ )
+  double Center[3];
+  std::vector<double> CenterVect(3);
+
+  // LOOP  FOR EACH SEED
+  for( size_t id = 0; id < this->m_Seeds->size(); id++ )
     {
-    this->m_Seeds->GetPoint(i, Center);
-    std::vector<double> CenterVect;
-    CenterVect.push_back(Center[0]);
-    CenterVect.push_back(Center[1]);
-    CenterVect.push_back(Center[2]);
+    for ( int i = 0; i < (*this->m_Seeds)[id]->GetNumberOfPoints(); i++ )
+      {
+      (*this->m_Seeds)[id]->GetPoint(i, Center);
 
-    oNewMeshes.push_back(
-      this->ApplyLevelSetFilter<unsigned int, Dimension>(CenterVect, iImages, iChannel) );   
+      CenterVect[0] = Center[0];
+      CenterVect[1] = Center[1];
+      CenterVect[2] = Center[2];
 
+      vtkPolyData* temp_output =
+          this->ApplyLevelSetFilter<unsigned int, Dimension>(
+            CenterVect, iImages, iChannel);
+
+      vtkPolyData* output = vtkPolyData::New();
+      output->DeepCopy( temp_output );
+
+      oNewMeshes.push_back( output );
+
+      temp_output->Delete();
+      }
     }
-   delete[] Center;
-  
+   //delete[] Center;
+
   return oNewMeshes;
 }
 //-------------------------------------------------------------------------

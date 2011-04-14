@@ -44,7 +44,7 @@
 
 
 /**
-\class QGoTraceEditingWidgetManager abstract class handles the interactions 
+\class QGoTraceEditingWidgetManager abstract class handles the interactions
 between the user and the algorithms for one kind of trace
 \brief
 */
@@ -52,10 +52,11 @@ class QGOGUILIB_EXPORT QGoTraceEditingWidgetManager: public QObject
 {
   Q_OBJECT
 public:
-  QGoTraceEditingWidgetManager(std::string iTraceName, 
-    std::vector<QString> iVectChannels, 
-    int iTimeMin, int iTimeMax, vtkPoints* iSeeds, 
-    std::vector< vtkSmartPointer< vtkImageData > >* iImages, 
+  QGoTraceEditingWidgetManager(std::string iTraceName,
+    std::vector<QString> iVectChannels,
+    int iTimeMin, int iTimeMax,
+    std::vector< vtkPoints* >* iSeeds,
+    std::vector< vtkSmartPointer< vtkImageData > >* iImages,
     int* iCurrentTimePoint,
     QWidget* iParent=0);
 
@@ -94,7 +95,7 @@ signals:
   void UpdateSeeds();
   void ClearAllSeeds();
   /**
-  \brief emitted when new meshes need to be saved in database and rendered in the 
+  \brief emitted when new meshes need to be saved in database and rendered in the
   vizu, return the TSlice selected in the TSlice combobox
   */
   void TracesCreatedFromAlgo(std::vector<vtkPolyData *> iVectPolydata, int iTCoord);
@@ -102,14 +103,14 @@ signals:
 protected:
   QDockWidget*                m_TraceEditingDockWidget;
   QGoTraceEditingWidget*      m_TraceEditingWidget;
-  
+
   std::string                 m_TraceName;
-  vtkPoints*                                      m_Seeds; //useful ???
+  std::vector< vtkPoints* >*                      m_Seeds; //useful ???
   std::vector< vtkSmartPointer< vtkImageData > >* m_Images;
   int*                                            m_CurrentTimePoint;
   QStringList                 m_ListTimePoint;
 
-  void SetTheTraceWidget(std::vector<QString> iVectChannels, int iTimeMin, 
+  void SetTheTraceWidget(std::vector<QString> iVectChannels, int iTimeMin,
     int iTimeMax, QWidget* iParent);
 
   void SetTheDockWidget(QWidget* iParent);

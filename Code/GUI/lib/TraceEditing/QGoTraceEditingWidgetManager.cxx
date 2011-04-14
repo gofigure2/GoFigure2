@@ -43,11 +43,11 @@
 
 QGoTraceEditingWidgetManager::QGoTraceEditingWidgetManager(
   std::string iTraceName,
-  std::vector<QString> iVectChannels, 
+  std::vector<QString> iVectChannels,
   int iTimeMin,
   int iTimeMax,
-  vtkPoints* iSeeds, 
-  std::vector< vtkSmartPointer< vtkImageData > >* iImages, 
+  std::vector< vtkPoints* >* iSeeds,
+  std::vector< vtkSmartPointer< vtkImageData > >* iImages,
   int* iCurrentTimePoint,
   QWidget* iParent)
 {
@@ -57,7 +57,7 @@ QGoTraceEditingWidgetManager::QGoTraceEditingWidgetManager(
   this->m_CurrentTimePoint = iCurrentTimePoint;
 
   this->SetTheTraceWidget(iVectChannels, iTimeMin, iTimeMax, iParent);
-  this->SetTheDockWidget(iParent); 
+  this->SetTheDockWidget(iParent);
 
 }
 //-------------------------------------------------------------------------
@@ -70,10 +70,10 @@ QGoTraceEditingWidgetManager::~QGoTraceEditingWidgetManager()
 
 //-------------------------------------------------------------------------
 void QGoTraceEditingWidgetManager::SetTheTraceWidget(
-  std::vector<QString> iVectChannels, int iTimeMin, 
+  std::vector<QString> iVectChannels, int iTimeMin,
   int iTimeMax, QWidget* iParent)
 {
- 
+
   QStringList ListTimePoints;
   for (int i = iTimeMin; i < iTimeMax+1; ++i)
     {
@@ -84,7 +84,7 @@ void QGoTraceEditingWidgetManager::SetTheTraceWidget(
   this->m_TraceEditingWidget = new QGoTraceEditingWidget(
    this->m_TraceName.c_str(), iVectChannels, ListTimePoints, iParent);
 
-  QObject::connect( this->m_TraceEditingWidget, 
+  QObject::connect( this->m_TraceEditingWidget,
                     SIGNAL(SetSeedInteractorBehaviour(bool) ),
                     this,
                     SIGNAL(SetSeedInteractorBehaviour(bool) ) );
@@ -104,18 +104,18 @@ void QGoTraceEditingWidgetManager::SetTheDockWidget(QWidget* iParent)
   WindowTitle += " Editing";
   this->m_TraceEditingDockWidget->setWindowTitle(WindowTitle.c_str());
   this->m_TraceEditingDockWidget->setWidget(this->m_TraceEditingWidget);
-  
+
   QIcon TraceSegmentationIcon;
   std::string PathIcon = ":/fig/";
   PathIcon += this->m_TraceName;
   PathIcon += "Editing.png";
-  
+
   TraceSegmentationIcon.addPixmap(QPixmap( QString::fromUtf8(PathIcon.c_str() ) ),
                                  QIcon::Normal, QIcon::Off);
 
  this->m_TraceEditingDockWidget->toggleViewAction()->setIcon(TraceSegmentationIcon);
  this->m_TraceEditingDockWidget->toggleViewAction()->setToolTip( tr("%1 Editing").arg(this->m_TraceName.c_str() ) );
- this->m_TraceEditingDockWidget->toggleViewAction()->setStatusTip( 
+ this->m_TraceEditingDockWidget->toggleViewAction()->setStatusTip(
     tr("Create %1s manually, semi-automatically or automatically").arg(this->m_TraceName.c_str() ) );
 }
 //-------------------------------------------------------------------------
@@ -156,7 +156,7 @@ void QGoTraceEditingWidgetManager::SetTSliceForDopplerView(
 {
   this->m_TraceEditingWidget->SetTSliceForDopplerView(
     iListTimePoints, iChannelNumber);
-} 
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -200,25 +200,25 @@ void QGoMeshEditingWidgetManager::SetSetOfContoursAlgorithms(
    std::vector<QString> iVectChannels, QStringList iListTime,
    QWidget* iParent)
 {
-  m_SetOfContoursWidget = 
+  m_SetOfContoursWidget =
     new QGoAlgorithmsManagerWidget("Set of Contours",
     iParent, iVectChannels, iListTime);
 
-  this->m_SetOfContoursWaterShedAlgo = 
+  this->m_SetOfContoursWaterShedAlgo =
     new QGoSetOfContoursWaterShedAlgo(this->m_Seeds, iParent);
-  QGoAlgorithmWidget* SetOfContoursWaterShedWidget = 
+  QGoAlgorithmWidget* SetOfContoursWaterShedWidget =
     this->m_SetOfContoursWaterShedAlgo->GetAlgoWidget();
   this->m_SetOfContoursWidget->AddMethod(SetOfContoursWaterShedWidget);
 
-  this->m_SetOfContoursLevelSetAlgo = 
+  this->m_SetOfContoursLevelSetAlgo =
     new QGoSetOfContoursLevelSetAlgo(this->m_Seeds, iParent);
-  QGoAlgorithmWidget* SetOfContoursLevelSetWidget = 
+  QGoAlgorithmWidget* SetOfContoursLevelSetWidget =
     this->m_SetOfContoursLevelSetAlgo->GetAlgoWidget();
   this->m_SetOfContoursWidget->AddMethod(SetOfContoursLevelSetWidget);
 
-  this->m_SetOfContoursShapeAlgo = 
+  this->m_SetOfContoursShapeAlgo =
     new QGoSetOfContoursShapeAlgo(this->m_Seeds, iParent);
-  QGoAlgorithmWidget* SetOfContoursShapeWidget = 
+  QGoAlgorithmWidget* SetOfContoursShapeWidget =
     this->m_SetOfContoursShapeAlgo->GetAlgoWidget();
   this->m_SetOfContoursWidget->AddMethod(SetOfContoursShapeWidget);
 
@@ -240,18 +240,18 @@ void QGoMeshEditingWidgetManager::SetSetOfContoursAlgorithms(
 //-------------------------------------------------------------------------
 void QGoMeshEditingWidgetManager::SetSplitMergeMode(QWidget* iParent)
 {
-  QGoAlgorithmsManagerWidget* SplitAlgoWidget = 
+  QGoAlgorithmsManagerWidget* SplitAlgoWidget =
     new QGoAlgorithmsManagerWidget("Split", iParent);
   this->m_MeshEditingWidget->AddMode(SplitAlgoWidget, true);
-  
+
   m_DanielAlgo = new QGoMeshSplitDanielssonDistanceAlgo(iParent);
   QGoAlgorithmWidget * DanielWidget = m_DanielAlgo->GetAlgoWidget();
   SplitAlgoWidget->AddMethod(DanielWidget );
 
-  QObject::connect( DanielWidget, SIGNAL(ApplyAlgo() ) , 
+  QObject::connect( DanielWidget, SIGNAL(ApplyAlgo() ) ,
                     this, SLOT(ApplyDanielAlgo() ) );
 
-  QGoAlgorithmsManagerWidget* MergeAlgoWidget = 
+  QGoAlgorithmsManagerWidget* MergeAlgoWidget =
     new QGoAlgorithmsManagerWidget("Merge", iParent);
   this->m_MeshEditingWidget->AddMode(MergeAlgoWidget, true);
 

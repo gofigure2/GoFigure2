@@ -513,7 +513,7 @@ QGoImageView::GetAllSeeds()
       // (3D))
       this->m_SeedRep[i]->GetSeedWorldPosition(j, worldPosition);
       // Get indexes of the closest point
-      int *index = this->m_Pool->GetItem(i)->GetImageCoordinatesFromWorldCoordinates(worldPosition);
+      /*int *index = this->m_Pool->GetItem(i)->GetImageCoordinatesFromWorldCoordinates(worldPosition);
 
       // Convert it back into world position
       double spacing[3] = { 0., 0., 0. };
@@ -522,12 +522,13 @@ QGoImageView::GetAllSeeds()
       correctedPosition[0] = static_cast< double >( index[0] ) * spacing[0];
       correctedPosition[1] = static_cast< double >( index[1] ) * spacing[1];
 
-      oPoints->InsertNextPoint(correctedPosition);
+      oPoints->InsertNextPoint(correctedPosition);*/
+      oPoints->InsertNextPoint( worldPosition );
       orientation->InsertNextValue(i);
       }
     }
 
-  oPoints->GetData()->DeepCopy(orientation);
+  //oPoints->GetData()->DeepCopy(orientation);
   orientation->Delete();
 
   return oPoints;
@@ -537,30 +538,20 @@ QGoImageView::GetAllSeeds()
 //-------------------------------------------------------------------------
 void
 QGoImageView::
-GetSeeds(std::vector<vtkPoints*> iPoints)
+GetSeeds(std::vector<vtkPoints*>& iPoints)
 {
   for ( unsigned int i = 0; i < 3; i++ )
     {
     double worldPosition[3];
     int N = this->m_SeedRep[i]->GetNumberOfSeeds();
+
     for ( int j = 0; j < N; j++ )
       {
       // Get World position (may be not accurate if we are between 8 pixels
       // (3D))
       this->m_SeedRep[i]->GetSeedWorldPosition(j, worldPosition);
-      // Get indexes of the closest point
-      int *index = this->m_Pool->GetItem(i)->GetImageCoordinatesFromWorldCoordinates(worldPosition);
 
-      double spacing[3] = { 0., 0., 0. };
-      this->m_Pool->GetItem(i)->GetInput()->GetSpacing(spacing);
-      double correctedPosition[3];
-      correctedPosition[0] = static_cast< double >( index[0] ) * spacing[0];
-      correctedPosition[1] = static_cast< double >( index[1] ) * spacing[1];
-      correctedPosition[2] = static_cast< double >( index[2] ) * spacing[2];
-
-      (iPoints[i])->InsertNextPoint(correctedPosition);
-
-      delete[] index;
+      iPoints[i]->InsertNextPoint(worldPosition);
       }
     }
 }

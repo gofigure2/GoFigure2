@@ -51,7 +51,7 @@ contours and set of contours and GoFigure
 class QGoLevelSetAlgo: public QGoSemiAutoSegmentationAlgo
 {
 public:
-  QGoLevelSetAlgo(vtkPoints* iSeeds, QWidget* iParent = 0);
+  QGoLevelSetAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent = 0);
   virtual ~QGoLevelSetAlgo();
 
   virtual std::vector<vtkPolyData*> ApplyAlgo(

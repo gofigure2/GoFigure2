@@ -44,14 +44,14 @@
 
 /**
 \class QGoSemiAutoSegmentationAlgo
-\brief abstract class to be the interface between the semi automatic 
+\brief abstract class to be the interface between the semi automatic
 algorithms for meshes and contours and GoFigure
 */
 class QGOGUILIB_EXPORT QGoSemiAutoSegmentationAlgo:public QGoSegmentationAlgo
 {
   Q_OBJECT
 public:
-  QGoSemiAutoSegmentationAlgo(vtkPoints* iSeeds, QWidget *iParent = 0);
+  QGoSemiAutoSegmentationAlgo(std::vector< vtkPoints* >* iSeeds, QWidget *iParent = 0);
   ~QGoSemiAutoSegmentationAlgo();
 
 
@@ -63,7 +63,7 @@ public:
     int iChannel) = 0;
 
 protected:
-  vtkPoints*                      m_Seeds;
+  std::vector< vtkPoints* >*      m_Seeds;
   QGoAlgoParameter<double>*       m_Radius;
 
   /**
@@ -83,9 +83,11 @@ protected:
    * \param[in] iOrientation 0-xy, 1-xz, 2-yz, 3-xyz
    * \return vector[6] containing the bounding box (xmin, xmax, ymin, imax, ...)
    */
-  std::vector<double> GetBounds(std::vector<double> iCenter, double iRadius,
-      unsigned int iOrientation = 3);
- 
+  std::vector<double> GetBounds(
+      const std::vector<double>& iCenter,
+      const double& iRadius,
+      const unsigned int& iOrientation = 3);
+
 };
 
 #endif

@@ -51,7 +51,7 @@ contours and set of contours and GoFigure
 class QGoShapeAlgo: public QGoSemiAutoSegmentationAlgo
 {
 public:
-  QGoShapeAlgo(vtkPoints* iSeeds, QWidget* iParent = 0);
+  QGoShapeAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent = 0);
   ~QGoShapeAlgo();
 
   virtual std::vector<vtkPolyData*> ApplyAlgo(

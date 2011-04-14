@@ -51,7 +51,7 @@ and GoFigure
 class QGoSetOfContoursLevelSetAlgo: public QGoLevelSetAlgo
 {
 public:
-  QGoSetOfContoursLevelSetAlgo(vtkPoints* iSeeds, QWidget* iParent = 0);
+  QGoSetOfContoursLevelSetAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent = 0);
   ~QGoSetOfContoursLevelSetAlgo();
 
   std::vector<vtkPolyData*> ApplyAlgo(

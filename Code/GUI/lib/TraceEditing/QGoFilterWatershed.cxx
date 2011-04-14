@@ -217,9 +217,9 @@ QGoFilterWatershed::Filter2D(double *iCenter, const int & iOrientation)
 //--------------------------------------------------------------------------
 
 vtkPolyData*
-QGoFilterWatershed::Filter3D(double *iCenter, 
+QGoFilterWatershed::Filter3D(double *iCenter,
   double iRadius, int iThresMin, int iThresMax,
-  double iCorrTresh, double iAlpha, double iBeta, 
+  double iCorrTresh, double iAlpha, double iBeta,
   std::vector<vtkSmartPointer< vtkImageData > >* iImages,
   int iChannel)
 {
@@ -455,39 +455,43 @@ QGoFilterWatershed::setBeta(double iBeta)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::vector<vtkPolyData*> QGoFilterWatershed::ApplyFilter3D(double iRadius, 
-  int iThresMin, int iThresMax, double iCorrThres, double iAlpha, double iBeta,  
-  vtkPoints* iPoints,
-  std::vector<vtkSmartPointer< vtkImageData > >* iImages, 
+std::vector<vtkPolyData*> QGoFilterWatershed::ApplyFilter3D(double iRadius,
+  int iThresMin, int iThresMax, double iCorrThres, double iAlpha, double iBeta,
+  std::vector< vtkPoints* >* iPoints,
+  std::vector<vtkSmartPointer< vtkImageData > >* iImages,
   int iChannel)
 {
   std::vector<vtkPolyData*> oMeshes = std::vector<vtkPolyData*>();
-   if ( iRadius <= 0 )
+
+  if ( iRadius <= 0 )
     {
     std::cerr << "Radius should be > 0 " << std::endl;
     return oMeshes;
     }
-   double *center2 = new double[3];
+  double center2[3];
 
-// LOOP  FOR EACH SEED
-   for ( int i = 0; i < iPoints->GetNumberOfPoints(); i++ )
+  // LOOP  FOR EACH SEED
+  for( size_t id = 0 ; id < iPoints->size(); id++ )
     {
-    iPoints->GetPoint(i, center2);
+    for ( int i = 0; i < (*iPoints)[id]->GetNumberOfPoints(); i++ )
+      {
+      (*iPoints)[id]->GetPoint(i, center2);
 
-    oMeshes.push_back(
-      this->Filter3D(center2, iRadius, iThresMin, iThresMax, iCorrThres, iAlpha,
-      iBeta, iImages, iChannel) );
+      oMeshes.push_back(
+        this->Filter3D(center2, iRadius, iThresMin, iThresMax, iCorrThres, iAlpha,
+        iBeta, iImages, iChannel) );
+      }
     }
-   delete[] center2;
    return oMeshes;
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 std::vector<std::vector<vtkPolyData*> > QGoFilterWatershed::
-  ApplyFilterSetOf2D(double iRadius, 
-    int iThresMin, int iThresMax, double iCorrTresh, double iAlpha, 
-    double iBeta,  int iSampling, vtkPoints* iPoints,
+  ApplyFilterSetOf2D(double iRadius,
+    int iThresMin, int iThresMax, double iCorrTresh, double iAlpha,
+    double iBeta,  int iSampling,
+    std::vector< vtkPoints* >* iPoints,
     std::vector<vtkSmartPointer< vtkImageData > >* iImages, int iChannel)
 {
   std::vector<std::vector<vtkPolyData*> > oSetOfContours =
