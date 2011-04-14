@@ -791,7 +791,7 @@ std::vector< int > QGoPrintDatabase::ImportTracks()
 
 //-------------------------------------------------------------------------
 //******related to TraceManualEditingDockWidget:****************************
-QGoTraceSettingsDockWidget * QGoPrintDatabase::GetTraceSettingsDockWidget()
+QGoTraceSettingsDockWidget * QGoPrintDatabase::GetTraceSettingsWidget()
 {
   return this->m_TraceSettingsDockWidget;
 }

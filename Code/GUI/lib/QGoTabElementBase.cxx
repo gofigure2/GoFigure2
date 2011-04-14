@@ -107,6 +107,13 @@ std::vector< QAction * > QGoTabElementBase::TracesActions()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+QWidget*  QGoTabElementBase::TraceSettingsWidget()
+{
+  return m_TraceSettingsWidget;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 std::list< QGoTabElementBase::QGoDockWidgetStatusPair > &
 QGoTabElementBase::DockWidget()
 {

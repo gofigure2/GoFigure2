@@ -210,7 +210,8 @@ public:
                         iTrackAttributes, unsigned int iTrackID);
 
   /** \brief return the TraceSettingsDockWidget*/
-  QGoTraceSettingsDockWidget * GetTraceSettingsDockWidget();
+  //QGoTraceSettingsDockWidget * GetTraceSettingsDockWidget();
+  QGoTraceSettingsDockWidget*  GetTraceSettingsWidget();
 
   /**
   \brief update the traceSettingswidget for the trace with the

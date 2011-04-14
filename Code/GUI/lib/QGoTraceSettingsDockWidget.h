@@ -54,7 +54,8 @@ celltypes and subcelltypes, and displays the trace and collection name.
 \ingroup GUI
 */
 class QGOGUILIB_EXPORT QGoTraceSettingsDockWidget:
-  public QDockWidget
+  //public QDockWidget
+  public QWidget
 {
   Q_OBJECT
 public:
@@ -198,7 +199,7 @@ public:
 
   unsigned int GetCurrentSelectedCollectionID();
 
-  QToolBar* GetTraceSettingsToolBar();
+  //QToolBar* GetTraceSettingsToolBar();
 
 public slots:
 
@@ -250,7 +251,7 @@ protected:
   QToolBar*                   m_ToolBar;
 
   void SetUpUi();
-  void SetUpToolBar();
+  //void SetUpToolBar();
   /**
   \brief add the SelectedColorCombobox to the layout and make the signal/slot connections
   for it

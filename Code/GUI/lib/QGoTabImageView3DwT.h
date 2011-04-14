@@ -153,7 +153,8 @@ public:
    */
   void retranslateUi(QWidget *parent);
 
-  QToolBar* GetTraceSettingsToolBar();
+  //QToolBar* GetTraceSettingsToolBar();
+  QWidget*  GetTraceSettingsWidget();
 
   /**
    *
@@ -583,9 +584,9 @@ protected slots:
 
   void GoToLocation(int iX, int iY, int iZ, int iT);
 
-  void CloseTabRequest(bool iTable);
+  //void CloseTabRequest(bool iTable);
 
-  void RequieresTraceWidget(bool iTable);
+  //void RequieresTraceWidget(bool iTable);
 
   /**
    * \brief Mouse interaction style allows contours segmentation, according to

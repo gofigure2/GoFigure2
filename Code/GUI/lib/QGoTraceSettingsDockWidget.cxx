@@ -42,7 +42,8 @@
 #include <iostream>
 
 QGoTraceSettingsDockWidget::QGoTraceSettingsDockWidget(QWidget *iParent) :
-  QDockWidget(iParent)
+  //QDockWidget(iParent)
+  QWidget(iParent)
 {
   this->SetUpUi();
 }
@@ -104,21 +105,26 @@ void QGoTraceSettingsDockWidget::SetUpUi()
   this->SetWidgetFont();
   this->UpdateTraceAndCollection("contour", "mesh");
 
-  TraceSettingsWidget->setLayout(MainLayout);
-  TraceSettingsWidget->setSizePolicy(
-    QSizePolicy::Fixed, QSizePolicy::Expanding);
+  this->setLayout(MainLayout);
+  this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
 
+//  TraceSettingsWidget->setLayout(MainLayout);
+ // TraceSettingsWidget->setSizePolicy(
+  //  QSizePolicy::Fixed, QSizePolicy::Expanding);
+
+  //this->SetWidgetFont();
   //this->setWidget(TraceSettingsWidget);
-  this->SetUpToolBar();
-  this->m_ToolBar->addWidget(TraceSettingsWidget);
+  //this->SetUpToolBar();
+  //this->m_ToolBar->addWidget(TraceSettingsWidget);
+  //this->m_ToolBar->addWidget(this);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTraceSettingsDockWidget::SetUpToolBar()
+/*void QGoTraceSettingsDockWidget::SetUpToolBar()
 {
   this->m_ToolBar = new QToolBar(tr("TraceSettings"), this);
-  /*QLabel* ColorLbl = new QLabel(tr("Color:"), this);
+  QLabel* ColorLbl = new QLabel(tr("Color:"), this);
   
   this->m_TraceName = new QLabel(this);
   this->m_TraceLbl = new QLabel(tr("Trace:"), this);
@@ -143,10 +149,10 @@ void QGoTraceSettingsDockWidget::SetUpToolBar()
   this->m_ToolBar->addWidget(this->m_LabelCellType);
   this->m_ToolBar->addWidget(this->m_ChoseCellType);
   this->m_ToolBar->addWidget(this->m_LabelSubCellType);
-  this->m_ToolBar->addWidget(this->m_ChoseSubCellType);*/
+  this->m_ToolBar->addWidget(this->m_ChoseSubCellType);
 
   this->SetWidgetFont();
-}
+}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -596,7 +602,7 @@ unsigned int QGoTraceSettingsDockWidget::GetCurrentSelectedCollectionID()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QToolBar* QGoTraceSettingsDockWidget::GetTraceSettingsToolBar()
+/*QToolBar* QGoTraceSettingsDockWidget::GetTraceSettingsToolBar()
 {
   return this->m_ToolBar;
-}
+}*/

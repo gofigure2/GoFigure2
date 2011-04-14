@@ -232,11 +232,11 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
         m_MeshSegmentationDockWidget, Qt::LeftDockWidgetArea, true, true),
       m_MeshSegmentationDockWidget) );
 
-  m_DockWidgetList.push_back(
+  /*m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
       new QGoDockWidgetStatus(this->m_DataBaseTables->GetTraceSettingsDockWidget(),
                               Qt::LeftDockWidgetArea, true, true),
-      this->m_DataBaseTables->GetTraceSettingsDockWidget() ) );
+      this->m_DataBaseTables->GetTraceSettingsDockWidget() ) );*/
 
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
@@ -645,19 +645,28 @@ QGoTabImageView3DwT::CreateDataBaseTablesConnection()
 
   QObject::connect( this->m_DataBaseTables, SIGNAL( NeedToGoToTheLocation(int, int, int, int) ),
                     this, SLOT( GoToLocation(int, int, int, int) ) );
+
+  this->m_TraceSettingsWidget = this->m_DataBaseTables->GetTraceSettingsWidget();
 }
 
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QToolBar* QGoTabImageView3DwT::GetTraceSettingsToolBar()
+/*QToolBar* QGoTabImageView3DwT::GetTraceSettingsToolBar()
 {
   return this->m_DataBaseTables->GetTraceSettingsDockWidget()->GetTraceSettingsToolBar();
+}*/
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+QWidget*  QGoTabImageView3DwT::GetTraceSettingsWidget()
+{
+  return this->m_DataBaseTables->GetTraceSettingsWidget();
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void
+/*void
 QGoTabImageView3DwT::CloseTabRequest(bool iTable)
 {
   if ( iTable )
@@ -670,16 +679,16 @@ QGoTabImageView3DwT::CloseTabRequest(bool iTable)
     {
     m_DataBaseTables->GetTraceSettingsDockWidget()->hide();
     }
-}
+}*/
 
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void
+/*void
 QGoTabImageView3DwT::RequieresTraceWidget(bool iTable)
 {
   m_TraceWidgetRequiered = iTable;
-}
+}*/
 
 //-------------------------------------------------------------------------
 
@@ -1290,10 +1299,10 @@ void QGoTabImageView3DwT::CreateModeActions()
                     m_ContourSegmentationDockWidget,
                     SLOT( interactorBehavior(bool) ) );
 
-  QObject::connect( ContourSegmentationAction,
+  /*QObject::connect( ContourSegmentationAction,
                     SIGNAL( toggled(bool) ),
                     this,
-                    SLOT( RequieresTraceWidget(bool) ) );
+                    SLOT( RequieresTraceWidget(bool) ) );*/
 
   QObject::connect( ContourSegmentationAction,
                     SIGNAL( toggled(bool) ),
@@ -1316,10 +1325,10 @@ void QGoTabImageView3DwT::CreateModeActions()
                     m_MeshSegmentationDockWidget,
                     SLOT( interactorBehavior(bool) ) );
 
-  QObject::connect( MeshSegmentationAction,
+  /*QObject::connect( MeshSegmentationAction,
                     SIGNAL( toggled(bool) ),
                     this,
-                    SLOT( RequieresTraceWidget(bool) ) );
+                    SLOT( RequieresTraceWidget(bool) ) );*/
 
   QObject::connect( MeshSegmentationAction,
                     SIGNAL( toggled(bool) ),
@@ -2577,7 +2586,7 @@ QGoTabImageView3DwT::ValidateContour()
   /** \todo useful ?? */
   if ( re_edit )
     {
-    this->m_DataBaseTables->GetTraceSettingsDockWidget()->setEnabled(true);
+    this->m_DataBaseTables->GetTraceSettingsWidget()->setEnabled(true);
     m_ContourSegmentationDockWidget->SetReeditMode(false);
     m_ImageView->ReinitializeContourWidget();
     m_ContourSegmentationDockWidget->hide();
@@ -3036,7 +3045,7 @@ void QGoTabImageView3DwT::ShowTraceWidgetsForContour(
     else
       {
       //
-      m_DataBaseTables->GetTraceSettingsDockWidget()->hide();
+      m_DataBaseTables->GetTraceSettingsWidget()->hide();
       }
     }
 }
@@ -3063,7 +3072,7 @@ void QGoTabImageView3DwT::ShowTraceWidgetsForMesh(
     else
       {
       //
-      m_DataBaseTables->GetTraceSettingsDockWidget()->hide();
+      m_DataBaseTables->GetTraceSettingsWidget()->hide();
       }
     }
 }
