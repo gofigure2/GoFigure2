@@ -81,14 +81,18 @@ void QGoTraceSettingsDockWidget::SetUpUi()
   QHBoxLayout* ColorLayout = new QHBoxLayout;
   SetSelectedColorComboBox(ColorLayout);
   QHBoxLayout* TraceLayout = new QHBoxLayout;
-  QVBoxLayout* TraceCollectionLayout = new QVBoxLayout;
+  //QVBoxLayout* TraceCollectionLayout = new QVBoxLayout;
+  QHBoxLayout* TraceCollectionLayout = new QHBoxLayout;
   SetTraceCollectionColorComboBox(TraceCollectionLayout);
-  QVBoxLayout* CellTypeLayout = new QVBoxLayout;
+  //QVBoxLayout* CellTypeLayout = new QVBoxLayout;
+  QHBoxLayout* CellTypeLayout = new QHBoxLayout;
   SetCellTypeComboBox(CellTypeLayout);
-  QVBoxLayout* SubCellLayout = new QVBoxLayout;
+  //QVBoxLayout* SubCellLayout = new QVBoxLayout;
+  QHBoxLayout* SubCellLayout = new QHBoxLayout;
   SetSubCellTypeComboBox(SubCellLayout);
 
-  QVBoxLayout* MainLayout = new QVBoxLayout;
+  //QVBoxLayout* MainLayout = new QVBoxLayout;
+  QHBoxLayout* MainLayout = new QHBoxLayout;
   QLabel* Blank = new QLabel(this);
   MainLayout->addLayout(TraceCollectionLayout);
   MainLayout->addWidget(Blank);
@@ -102,9 +106,46 @@ void QGoTraceSettingsDockWidget::SetUpUi()
 
   TraceSettingsWidget->setLayout(MainLayout);
   TraceSettingsWidget->setSizePolicy(
-    QSizePolicy::Expanding, QSizePolicy::Fixed);
+    QSizePolicy::Fixed, QSizePolicy::Expanding);
 
-  this->setWidget(TraceSettingsWidget);
+  //this->setWidget(TraceSettingsWidget);
+  this->SetUpToolBar();
+  this->m_ToolBar->addWidget(TraceSettingsWidget);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTraceSettingsDockWidget::SetUpToolBar()
+{
+  this->m_ToolBar = new QToolBar(tr("TraceSettings"), this);
+  /*QLabel* ColorLbl = new QLabel(tr("Color:"), this);
+  
+  this->m_TraceName = new QLabel(this);
+  this->m_TraceLbl = new QLabel(tr("Trace:"), this);
+  this->m_CollectionLbl = new QLabel( tr("Collection:") ); 
+  this->m_CollectionColorComboBox = new QGoCollectionColorComboBox;
+  this->m_CollectionName = new QLabel ( tr("mesh") );
+  this->m_SelectedColorComboBox = new QGoSelectedColorComboBox;
+  this->m_LabelCellType = new QLabel(tr("CellType:"), this);
+  this->m_LabelSubCellType = new QLabel(tr("SubCellType:"), this);
+  this->m_ChoseCellType = new QGoComboBox("Add a new celltype...",
+                                          this, "Delete a celltype...");
+  this->m_ChoseSubCellType = new QGoComboBox("Add a new subcelltype...",
+                                          this, "Delete a subcelltype...");
+
+  this->m_ToolBar->addWidget(this->m_TraceLbl);
+  this->m_ToolBar->addWidget(this->m_TraceName);
+  this->m_ToolBar->addWidget(this->m_CollectionLbl);
+  this->m_ToolBar->addWidget(this->m_CollectionName);
+  this->m_ToolBar->addWidget(this->m_CollectionColorComboBox);
+  this->m_ToolBar->addWidget(ColorLbl);
+  this->m_ToolBar->addWidget(this->m_SelectedColorComboBox);
+  this->m_ToolBar->addWidget(this->m_LabelCellType);
+  this->m_ToolBar->addWidget(this->m_ChoseCellType);
+  this->m_ToolBar->addWidget(this->m_LabelSubCellType);
+  this->m_ToolBar->addWidget(this->m_ChoseSubCellType);*/
+
+  this->SetWidgetFont();
 }
 //-------------------------------------------------------------------------
 
@@ -223,7 +264,8 @@ QGoTraceSettingsDockWidget::SetSelectedColorComboBox(
 //-------------------------------------------------------------------------
 void
 QGoTraceSettingsDockWidget::SetTraceCollectionColorComboBox(
-  QVBoxLayout* iLayoutTraceCollection)
+  //QVBoxLayout* iLayoutTraceCollection)
+  QHBoxLayout* iLayoutTraceCollection)
 {
   this->m_TraceName = new QLabel(this);
   QHBoxLayout *HLayoutForTrace = new QHBoxLayout;
@@ -257,7 +299,8 @@ QGoTraceSettingsDockWidget::SetTraceCollectionColorComboBox(
 
 //-------------------------------------------------------------------------
 void
-QGoTraceSettingsDockWidget::SetCellTypeComboBox(QVBoxLayout* iCellLayout)
+QGoTraceSettingsDockWidget::SetCellTypeComboBox(//QVBoxLayout* iCellLayout)
+  QHBoxLayout* iCellLayout)
 {
   this->m_ChoseCellType = new QGoComboBox("Add a new celltype...",
                                           this, "Delete a celltype...");
@@ -288,7 +331,8 @@ QGoTraceSettingsDockWidget::SetCellTypeComboBox(QVBoxLayout* iCellLayout)
 
 //-------------------------------------------------------------------------
 void
-QGoTraceSettingsDockWidget::SetSubCellTypeComboBox(QVBoxLayout* iSubCellLayout)
+QGoTraceSettingsDockWidget::SetSubCellTypeComboBox(//QVBoxLayout* iSubCellLayout)
+  QHBoxLayout* iSubCellLayout)
 {
   this->m_ChoseSubCellType = new QGoComboBox("Add a new subcelltype...", this,
                                              "Delete a subcelltype...");
@@ -548,4 +592,11 @@ void QGoTraceSettingsDockWidget::UpdateValueSelectedColor(
 unsigned int QGoTraceSettingsDockWidget::GetCurrentSelectedCollectionID()
 {
   return atoi( this->m_SelectedCollectionData->first.c_str() );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+QToolBar* QGoTraceSettingsDockWidget::GetTraceSettingsToolBar()
+{
+  return this->m_ToolBar;
 }

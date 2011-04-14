@@ -396,6 +396,7 @@ void QGoMainWindow::DisplayFilesfromDB(std::string iFirst_Filename)
   LoadAllTracesFromDatabaseManager(TimePoint);
 
   this->menuBookmarks->setEnabled(true);
+  this->addToolBar(w3t->GetTraceSettingsToolBar() );
 }
 
 //--------------------------------------------------------------------------

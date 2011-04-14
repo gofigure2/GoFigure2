@@ -153,6 +153,8 @@ public:
    */
   void retranslateUi(QWidget *parent);
 
+  QToolBar* GetTraceSettingsToolBar();
+
   /**
    *
    */

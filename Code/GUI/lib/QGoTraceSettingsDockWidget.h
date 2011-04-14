@@ -44,6 +44,7 @@
 #include "QGoCollectionColorComboBox.h"
 #include "QGoComboBox.h"
 
+#include <QToolBar>
 #include "QGoGUILibConfigure.h"
 
 /**
@@ -197,6 +198,8 @@ public:
 
   unsigned int GetCurrentSelectedCollectionID();
 
+  QToolBar* GetTraceSettingsToolBar();
+
 public slots:
 
   /**
@@ -244,8 +247,10 @@ protected:
   ItemColorComboboxData *     m_SelectedCollectionData;
   ItemColorComboboxData *     m_SelectedColorData;
 
+  QToolBar*                   m_ToolBar;
 
   void SetUpUi();
+  void SetUpToolBar();
   /**
   \brief add the SelectedColorCombobox to the layout and make the signal/slot connections
   for it
@@ -257,19 +262,22 @@ protected:
   and make the signal/slot connections
   for it
   */
-  void SetTraceCollectionColorComboBox(QVBoxLayout* iLayoutTraceCollection);
+  void SetTraceCollectionColorComboBox(//QVBoxLayout* iLayoutTraceCollection);
+    QHBoxLayout* iLayoutTraceCollection);
 
   /**
   \brief add the Celltype QGoCombobox to the layout and make the signal/slot connections
   for it
   */
-  void SetCellTypeComboBox(QVBoxLayout* iCellLayout);
+  void SetCellTypeComboBox(//QVBoxLayout* iCellLayout);
+    QHBoxLayout* iCellLayout);
 
   /**
   \brief add the SubCellType QGoCombobox to the layout and make the signal/slot connections
   for it
   */
-  void SetSubCellTypeComboBox(QVBoxLayout* iSubCellLayout);
+  void SetSubCellTypeComboBox(//QVBoxLayout* iSubCellLayout);
+    QHBoxLayout* iSubCellLayout);
 
   void ChangeWindowTitle(std::string iTraceName);
 

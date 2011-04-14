@@ -650,6 +650,13 @@ QGoTabImageView3DwT::CreateDataBaseTablesConnection()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+QToolBar* QGoTabImageView3DwT::GetTraceSettingsToolBar()
+{
+  return this->m_DataBaseTables->GetTraceSettingsDockWidget()->GetTraceSettingsToolBar();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::CloseTabRequest(bool iTable)
 {
