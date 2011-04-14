@@ -114,8 +114,11 @@ QGoPrintDatabase::QGoPrintDatabase(QWidget *iParent) :
   QObject::connect( this, SIGNAL( customContextMenuRequested(const QPoint &) ),
                     this, SLOT( CreateContextMenu(const QPoint &) ) );
 
-  QObject::connect( this->DBTabWidget, SIGNAL( currentChanged(int) ),
-                    this, SLOT( TheTabIsChanged(int) ) );
+  //QObject::connect( this->DBTabWidget, SIGNAL( currentChanged(int) ),
+  //                  this, SLOT( TheTabIsChanged(int) ) );
+
+  QObject::connect( this->m_TraceSettingsWidget, SIGNAL( TraceChanged( int ) ),
+                    this, SLOT( TheTabIsChanged( int ) ) );
 }
 
 //--------------------------------------------------------------------------
@@ -220,13 +223,14 @@ void QGoPrintDatabase::FillTableFromDatabase()
   this->setWindowTitle(title);
   this->DBTabWidget->blockSignals(true);
   this->DBTabWidget->removeTab(0);
-  this->DBTabWidget->addTab(this->m_ContoursManager->GetTableWidget(), "contour");
-  this->DBTabWidget->addTab(this->m_MeshesManager->GetTableWidget(), "mesh");
-  this->DBTabWidget->addTab(this->m_TracksManager->GetTableWidget(), "track");
-  this->DBTabWidget->addTab(this->m_LineagesManager->GetTableWidget(), "lineage");
+  this->DBTabWidget->addTab(this->m_ContoursManager->GetTableWidget(), "" );//, "contour");
+  this->DBTabWidget->addTab(this->m_MeshesManager->GetTableWidget(), "" );//, "mesh");
+  this->DBTabWidget->addTab(this->m_TracksManager->GetTableWidget(), "" );//, "track");
+  this->DBTabWidget->addTab(this->m_LineagesManager->GetTableWidget(), "" );//, "lineage");
   this->DBTabWidget->blockSignals(false);
   //this->DBTabWidget->setTabPosition(QTabWidget:North);
-  this->DBTabWidget->setTabShape(QTabWidget::Triangular);
+  //this->DBTabWidget->setTabShape(QTabWidget::Triangular);
+  
 
   m_IsDatabaseUsed = true;
   emit PrintDBReady();
@@ -568,22 +572,24 @@ void QGoPrintDatabase::UpdateSelectedTimePoint(int iTimePoint)
 //-------------------------------------------------------------------------
 void QGoPrintDatabase::TheTabIsChanged(int iIndex)
 {
-  switch ( iIndex )
+  this->DBTabWidget->setCurrentIndex(iIndex);
+  /*switch ( iIndex )
     {
     case 1:
-      this->UpdateWidgetsForCorrespondingTrace("mesh", "track", false);
+      
+      //this->UpdateWidgetsForCorrespondingTrace("mesh", "track", false);
       break;
     case 2:
-      this->UpdateWidgetsForCorrespondingTrace("track", "lineage", false);
+      //this->UpdateWidgetsForCorrespondingTrace("track", "lineage", false);
       break;
     case 3:
-      this->UpdateWidgetsForCorrespondingTrace("lineage", "None", false);
+      //this->UpdateWidgetsForCorrespondingTrace("lineage", "None", false);
       break;
     default:
-      this->UpdateWidgetsForCorrespondingTrace("contour", "mesh", false);
+      //this->UpdateWidgetsForCorrespondingTrace("contour", "mesh", false);
       break;
-    }
-  emit TableWidgetTabChanged();
+    }*/
+  //emit TableWidgetTabChanged();
 }
 
 //-------------------------------------------------------------------------

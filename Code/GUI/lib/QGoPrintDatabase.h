@@ -286,7 +286,7 @@ signals:
 
   void OpenBookmarksToUpdate();
 
-  void TableWidgetTabChanged();
+  //void TableWidgetTabChanged();
 
   void NewMeshToGenerate(std::list< unsigned int > ListContourIDs, int iNewMeshID);
 
