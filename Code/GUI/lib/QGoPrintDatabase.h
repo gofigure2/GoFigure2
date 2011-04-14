@@ -95,8 +95,6 @@ public:
     const std::string & iUser, const std::string & iPassword,
     const unsigned int & iImgSessionID, const std::string & iImgSessionName);
 
-  void SetTraceSettingsAction(QAction* iAction);
-
   /** \brief Create the QTableWidgetChild,get the columns names and the
  * values stored in the database, display them in the QTableWidgetChild
  * and fill the info for the contours and meshes*/
@@ -310,7 +308,6 @@ protected:
   QGoDBSubCellTypeManager*          m_SubCellTypeManager;
   QGoDBColorManager*                m_ColorManager;
   QGoTraceSettingsWidget*           m_TraceSettingsWidget;
-  QAction*                          m_TraceSettingsAction;
 
   QGoDBContourManager*              m_ContoursManager;
   QGoDBMeshManager*                 m_MeshesManager;
@@ -516,7 +513,7 @@ protected:
       (iTraceManager, iCollectionOfManager, ListTracesToDelete);
     this->OpenDBConnection();
     iTraceManager->DeleteCheckedTraces(this->m_DatabaseConnector);
-    //if ( !ListCollectionsIDs.empty() || track )
+
     if ( !ListCollectionsIDs.empty() || !lineage )
       {
       iCollectionManager->UpdateBoundingBoxes(this->m_DatabaseConnector, ListCollectionsIDs);
@@ -541,14 +538,13 @@ protected:
                     TCollection *iCollectionManager, TCollectionOf *iCollectionOfManager,
                     std::list<unsigned int> iListTracesToDelete,
                     bool lineage = false)
-                    //bool track = false)
   {
     std::list<unsigned int> ListCollectionsIDs =
       this->UpdateCollectionDataForTracesToBeDeleted<TTrace, TCollectionOf>
       (iTraceManager, iCollectionOfManager, iListTracesToDelete);
     this->OpenDBConnection();
     iTraceManager->DeleteListTraces(this->m_DatabaseConnector, iListTracesToDelete);
-    //if ( !ListCollectionsIDs.empty() || track )
+
     if ( !ListCollectionsIDs.empty() || !lineage )
       {
       iCollectionManager->UpdateBoundingBoxes(this->m_DatabaseConnector, ListCollectionsIDs);

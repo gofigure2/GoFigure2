@@ -641,10 +641,10 @@ QGoTabImageView3DwT::CreateDataBaseTablesConnection()
                     this, SLOT( GoToLocation(int, int, int, int) ) );
 
   this->m_TraceSettingsWidget = this->m_DataBaseTables->GetTraceSettingsWidget();
-  if(this->m_TraceSettingsAction)
+  /*if(this->m_TraceSettingsAction)
     {
     this->m_DataBaseTables->SetTraceSettingsAction(this->m_TraceSettingsAction);
-    }
+    }*/
 }
 
 //-------------------------------------------------------------------------
@@ -2581,10 +2581,11 @@ QGoTabImageView3DwT::ValidateContour()
       m_ContourContainer->InsertCurrentElement();
       }
     }
-  /** \todo useful ?? */
-  if ( re_edit )
+
+  if ( re_edit ) //need to set the widgets to a normal mode
     {
-    this->m_DataBaseTables->GetTraceSettingsWidget()->setEnabled(true);
+    //this->m_DataBaseTables->GetTraceSettingsWidget()->setEnabled(true);
+    this->m_TraceSettingsAction->setEnabled(true);
     m_ContourSegmentationDockWidget->SetReeditMode(false);
     m_ImageView->ReinitializeContourWidget();
     m_ContourSegmentationDockWidget->hide();
@@ -2638,6 +2639,7 @@ QGoTabImageView3DwT::ReEditContour(const unsigned int & iId)
 
       m_ImageView->InitializeContourWidgetNodes(dir, nodes);
 
+      this->m_TraceSettingsAction->setEnabled(false);
       this->m_ContourSegmentationDockWidget->show();
       this->m_ContourSegmentationDockWidget->SegmentationMethod(0);
       this->m_ContourSegmentationDockWidget->SetReeditMode(true);
@@ -3043,7 +3045,8 @@ void QGoTabImageView3DwT::ShowTraceWidgetsForContour(
     else
       {
       //
-      m_DataBaseTables->GetTraceSettingsWidget()->hide();
+      //m_DataBaseTables->GetTraceSettingsWidget()->hide();
+      this->m_TraceSettingsAction->setVisible(false);
       }
     }
 }
@@ -3070,7 +3073,8 @@ void QGoTabImageView3DwT::ShowTraceWidgetsForMesh(
     else
       {
       //
-      m_DataBaseTables->GetTraceSettingsWidget()->hide();
+      //m_DataBaseTables->GetTraceSettingsWidget()->hide();
+      this->m_TraceSettingsAction->setVisible(false);
       }
     }
 }

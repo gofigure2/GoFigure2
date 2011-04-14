@@ -99,9 +99,6 @@ QGoPrintDatabase::QGoPrintDatabase(QWidget *iParent) :
   this->m_TraceSettingsWidget =
     new QGoTraceSettingsWidget(this);
 
-  //this->m_TraceSettingsDockWidget =
-    //this->m_TraceSettingsDockWidget->m_TraceWidget;
-
   this->m_CellTypeManager = new QGoDBCellTypeManager(this);
 
   this->m_SubCellTypeManager = new QGoDBSubCellTypeManager(this);
@@ -187,13 +184,6 @@ void QGoPrintDatabase::SetDatabaseVariables(
   emit DBVariablesSet();
 }
 
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void QGoPrintDatabase::SetTraceSettingsAction(QAction* iAction)
-{
-  this->m_TraceSettingsAction = iAction;
-}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -294,8 +284,6 @@ QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
         iXCoordMin, iYCoordMin, iZCoordMin, iTCoord, iXCoordMax, iYCoordMax, iZCoordMax,
         iContourNodes, this->m_DatabaseConnector);
     this->m_ReeditMode = false;
-    //this->m_TraceSettingsWidget->setEnabled(true);
-    this->m_TraceSettingsAction->setEnabled(true);
     }
 
   std::list< unsigned int > ListContours;
@@ -580,10 +568,6 @@ void QGoPrintDatabase::UpdateSelectedTimePoint(int iTimePoint)
 //-------------------------------------------------------------------------
 void QGoPrintDatabase::TheTabIsChanged(int iIndex)
 {
-  //this->m_TraceSettingsDockWidget->show();
-  this->m_TraceSettingsAction->setVisible(true);
-
-  //this->m_TraceManualEditingDockWidget->setEnabled(true);
   switch ( iIndex )
     {
     case 1:
@@ -861,9 +845,6 @@ void QGoPrintDatabase::UpdateWidgetsForCorrespondingTrace(std::string iTraceName
       this->UpdateSelectedCollectionForTableWidget(PreviousTraceName);
       this->m_TraceSettingsWidget->UpdateTraceAndCollection(iTraceName, iCollectionName);
       this->SetTSListCollectionID();
-      // show the updated widget
-      //this->m_TraceSettingsDockWidget->show();
-      this->m_TraceSettingsAction->setVisible(true);
       }
     //if the TableWidget has to be set to match the trace name, no need for the
     //signal TabHasChanged to be emitted, it would results in the Segmentation
@@ -876,9 +857,6 @@ void QGoPrintDatabase::UpdateWidgetsForCorrespondingTrace(std::string iTraceName
   this->UpdateSelectedCollectionForTableWidget(PreviousTraceName);
   this->m_TraceSettingsWidget->UpdateTraceAndCollection(iTraceName, iCollectionName);
   this->SetTSListCollectionID();
-  // show the updated widget
-  //this->m_TraceSettingsDockWidget->show();
-  this->m_TraceSettingsAction->setVisible(true);
 }
 
 //-------------------------------------------------------------------------
@@ -1021,7 +999,6 @@ void QGoPrintDatabase::AddNewColor()
       this->m_DatabaseConnector);
   if ( !NewColor.first.empty() )
     {
-    //*this->m_SelectedColorData = NewColor;
     this->SetTSListColors(NewColor.first);
     }
   else //if the NewColor name is empty, go to the last selected one:
@@ -1151,7 +1128,6 @@ void QGoPrintDatabase::DeleteCheckedMeshes()
 void QGoPrintDatabase::DeleteCheckedTracks()
 {
   this->DeleteCheckedTraces< QGoDBTrackManager, QGoDBMeshManager, QGoDBMeshManager >(
-    //this->m_TracksManager, this->m_MeshesManager, this->m_MeshesManager, true);
     this->m_TracksManager, this->m_MeshesManager, this->m_MeshesManager);
 }
 
@@ -1466,8 +1442,6 @@ void QGoPrintDatabase::PassDBConnectionToLineagesManager()
 void QGoPrintDatabase::ReEditTrace(unsigned int iTraceID)
 {
   this->m_ReeditMode = true;
-  //this->m_TraceSettingsDockWidget->setEnabled(false);
-  this->m_TraceSettingsAction->setEnabled(true);
   emit TraceToReEdit(iTraceID);
 }
 
@@ -1591,10 +1565,6 @@ void QGoPrintDatabase::CreateNewLineageFromTracks(
   unsigned int NewLineageID =
     this->m_LineagesManager->CreateNewLineageWithTrackRoot(
       this->m_DatabaseConnector, iTrackRoot);
-
-  //this->AddCheckedTracesToCollection< QGoDBTrackManager, QGoDBLineageManager >(
-  //  this->m_TracksManager, this->m_LineagesManager,
-  //  NewLineageID, iListCheckedTracks);
 
   this->AddCheckedTracksToSelectedLineage
     (iListCheckedTracks, NewLineageID, iListLineagesToDelete);
