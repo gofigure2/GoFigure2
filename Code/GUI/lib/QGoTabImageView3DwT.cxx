@@ -232,12 +232,6 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
         m_MeshSegmentationDockWidget, Qt::LeftDockWidgetArea, true, true),
       m_MeshSegmentationDockWidget) );
 
-  /*m_DockWidgetList.push_back(
-    std::pair< QGoDockWidgetStatus *, QDockWidget * >(
-      new QGoDockWidgetStatus(this->m_DataBaseTables->GetTraceSettingsDockWidget(),
-                              Qt::LeftDockWidgetArea, true, true),
-      this->m_DataBaseTables->GetTraceSettingsDockWidget() ) );*/
-
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
       new QGoDockWidgetStatus(this->m_TrackViewDockWidget,
@@ -647,6 +641,10 @@ QGoTabImageView3DwT::CreateDataBaseTablesConnection()
                     this, SLOT( GoToLocation(int, int, int, int) ) );
 
   this->m_TraceSettingsWidget = this->m_DataBaseTables->GetTraceSettingsWidget();
+  if(this->m_TraceSettingsAction)
+    {
+    this->m_DataBaseTables->SetTraceSettingsAction(this->m_TraceSettingsAction);
+    }
 }
 
 //-------------------------------------------------------------------------

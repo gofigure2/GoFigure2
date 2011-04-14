@@ -50,7 +50,7 @@
 #include "QGoDBBookmarkManager.h"
 #include "QGoGUILibConfigure.h"
 #include "GoFigureMeshAttributes.h"
-#include "QGoTraceSettingsDockWidget.h"
+#include "QGoTraceSettingsWidget.h"
 #include "QGoDBCellTypeManager.h"
 #include "QGoDBSubCellTypeManager.h"
 #include "QGoDBColorManager.h"
@@ -86,7 +86,7 @@ public:
 
   typedef GoDBCollectionOfTraces::TWContainerType            TWContainerType;
   typedef QGoDBBookmarkManager::NamesDescrContainerType      NamesDescrContainerType;
-  typedef QGoTraceSettingsDockWidget::ItemColorComboboxData  ItemColorComboboxData; 
+  typedef QGoTraceSettingsWidget::ItemColorComboboxData  ItemColorComboboxData; 
   typedef std::pair< int, QColor >                           IDWithColorData;
 
   /** \brief set all the values needed for the database*/
@@ -94,6 +94,8 @@ public:
     const std::string & iNameDB, const std::string & iServer,
     const std::string & iUser, const std::string & iPassword,
     const unsigned int & iImgSessionID, const std::string & iImgSessionName);
+
+  void SetTraceSettingsAction(QAction* iAction);
 
   /** \brief Create the QTableWidgetChild,get the columns names and the
  * values stored in the database, display them in the QTableWidgetChild
@@ -211,7 +213,7 @@ public:
 
   /** \brief return the TraceSettingsDockWidget*/
   //QGoTraceSettingsDockWidget * GetTraceSettingsDockWidget();
-  QGoTraceSettingsDockWidget*  GetTraceSettingsWidget();
+  QGoTraceSettingsWidget*  GetTraceSettingsWidget();
 
   /**
   \brief update the traceSettingswidget for the trace with the
@@ -307,7 +309,8 @@ protected:
   QGoDBCellTypeManager*             m_CellTypeManager;
   QGoDBSubCellTypeManager*          m_SubCellTypeManager;
   QGoDBColorManager*                m_ColorManager;
-  QGoTraceSettingsDockWidget*       m_TraceSettingsDockWidget;
+  QGoTraceSettingsWidget*           m_TraceSettingsWidget;
+  QAction*                          m_TraceSettingsAction;
 
   QGoDBContourManager*              m_ContoursManager;
   QGoDBMeshManager*                 m_MeshesManager;

@@ -45,7 +45,7 @@
 
 //--------------------------------------------------------------------------
 QGoTabElementBase::QGoTabElementBase(QWidget *iParent) : QWidget(iParent),
-  m_StatusBar(NULL)
+  m_StatusBar(NULL), m_TraceSettingsAction(NULL)
 {
 }
 
@@ -110,6 +110,13 @@ std::vector< QAction * > QGoTabElementBase::TracesActions()
 QWidget*  QGoTabElementBase::TraceSettingsWidget()
 {
   return m_TraceSettingsWidget;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTabElementBase::SetTraceSettingsAction(QAction* iAction)
+{
+  this->m_TraceSettingsAction = iAction;
 }
 //--------------------------------------------------------------------------
 

@@ -32,10 +32,10 @@
 
 =========================================================================*/
 
-#ifndef __QGoTraceSettingsDockWidget_h
-#define __QGoTraceSettingsDockWidget_h
+#ifndef __QGoTraceSettingsWidget_h
+#define __QGoTraceSettingsWidget_h
 
-#include <QDockWidget>
+#include <QWidget>
 #include <QComboBox>
 #include <QLabel>
 #include <QHBoxLayout>
@@ -48,25 +48,22 @@
 #include "QGoGUILibConfigure.h"
 
 /**
-\class QGoTraceSettingsDockWidget
+\class QGoTraceSettingsWidget
 \brief this class contains all the comboboxes for collectionID,color,
 celltypes and subcelltypes, and displays the trace and collection name.
 \ingroup GUI
 */
-class QGOGUILIB_EXPORT QGoTraceSettingsDockWidget:
-  //public QDockWidget
+class QGOGUILIB_EXPORT QGoTraceSettingsWidget:
   public QWidget
 {
   Q_OBJECT
 public:
-  explicit QGoTraceSettingsDockWidget(QWidget *parent = 0);
-  ~QGoTraceSettingsDockWidget();
+  explicit QGoTraceSettingsWidget(QWidget *parent = 0);
+  ~QGoTraceSettingsWidget();
 
   typedef QGoColorComboBox::ItemColorComboboxData ItemColorComboboxData;
   typedef std::vector< std::pair< std::string, std::string > >
   NamesDescrContainerType;
-
-  //void SetEnableTraceCollectionColorBoxes(bool Enable);
 
   /**
   \brief get the name of the trace currently displayed in the QLabel
@@ -199,8 +196,6 @@ public:
 
   unsigned int GetCurrentSelectedCollectionID();
 
-  //QToolBar* GetTraceSettingsToolBar();
-
 public slots:
 
   /**
@@ -222,14 +217,9 @@ signals:
 
   void DeleteColor();
 
-  //void NewCollectionActivated(ItemColorComboboxData);
-  //void NewSelectedColorActivated(ItemColorComboboxData);
-  //void NewSubCellTypeActivated(std::string);
-
-  //void NewCellTypeActivated(std::string);
-
   void NewCollectionToBeCreated();
-  void WindowsTitleToModify(QString);
+
+  //void WindowsTitleToModify(QString);
 
 protected:
   QLabel *                    m_TraceName;
@@ -251,7 +241,7 @@ protected:
   QToolBar*                   m_ToolBar;
 
   void SetUpUi();
-  //void SetUpToolBar();
+  
   /**
   \brief add the SelectedColorCombobox to the layout and make the signal/slot connections
   for it
@@ -263,24 +253,24 @@ protected:
   and make the signal/slot connections
   for it
   */
-  void SetTraceCollectionColorComboBox(//QVBoxLayout* iLayoutTraceCollection);
+  void SetTraceCollectionColorComboBox(
     QHBoxLayout* iLayoutTraceCollection);
 
   /**
   \brief add the Celltype QGoCombobox to the layout and make the signal/slot connections
   for it
   */
-  void SetCellTypeComboBox(//QVBoxLayout* iCellLayout);
+  void SetCellTypeComboBox(
     QHBoxLayout* iCellLayout);
 
   /**
   \brief add the SubCellType QGoCombobox to the layout and make the signal/slot connections
   for it
   */
-  void SetSubCellTypeComboBox(//QVBoxLayout* iSubCellLayout);
+  void SetSubCellTypeComboBox(
     QHBoxLayout* iSubCellLayout);
 
-  void ChangeWindowTitle(std::string iTraceName);
+  //void ChangeWindowTitle(std::string iTraceName);
 
   void SetWidgetFont();
 
