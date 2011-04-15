@@ -34,12 +34,11 @@
 #ifndef __QGoPrintDatabase_h
 #define __QGoPrintDatabase_h
 
-#include <QWidget>
+#include <QDockWidget>
 #include <QTableWidget>
 #include <QColor>
 #include <string>
 #include <QStackedWidget>
-//#include "ui_QGoPrintDatabase.h"
 #include "MegaVTK2Configure.h"
 #include "GoDBRecordSet.h"
 #include "GoDBContourRow.h"
@@ -73,7 +72,7 @@
 QGoDBTraceManager...
 \ingroup DB GUI
 */
-class QGOGUILIB_EXPORT QGoPrintDatabase:public QWidget//,
+class QGOGUILIB_EXPORT QGoPrintDatabase:public QDockWidget//,
   //private Ui::WidgetPrintDatabase
 {
   Q_OBJECT
@@ -287,8 +286,6 @@ signals:
 
   void OpenBookmarksToUpdate();
 
-  //void TableWidgetTabChanged();
-
   void NewMeshToGenerate(std::list< unsigned int > ListContourIDs, int iNewMeshID);
 
   /**
@@ -315,6 +312,7 @@ protected:
   QGoDBTrackManager*                m_TracksManager;
   QGoDBLineageManager*              m_LineagesManager;
   QStackedWidget*                   m_StackedTables;
+  //QToolBar*                         m_ToolBar; //test
 
   //Database variables:
   vtkMySQLDatabase* m_DatabaseConnector;
@@ -843,8 +841,9 @@ protected slots:
   */
   void DeleteColor();
 
-  //**********************End TraceSettingsWidget slots
-  // related****************
+  virtual void resizeEvent(QResizeEvent* event);
+
+  //**********************End TraceSettingsWidget slots // related****************
 private:
   Q_DISABLE_COPY(QGoPrintDatabase);
 };

@@ -73,7 +73,7 @@
 
 //--------------------------------------------------------------------------
 QGoPrintDatabase::QGoPrintDatabase(QWidget *iParent) :
-  QWidget(iParent),
+  QDockWidget(iParent),
   m_ContoursManager(NULL),
   m_MeshesManager(NULL),
   m_TracksManager(NULL),
@@ -82,13 +82,7 @@ QGoPrintDatabase::QGoPrintDatabase(QWidget *iParent) :
   m_IsDatabaseUsed(false),
   m_ReeditMode(false),
   m_MeshGenerationMode(false)
-{
-  QVBoxLayout* verticalLayout = new QVBoxLayout(this);
-  this->m_StackedTables = new QStackedWidget(this);
-  verticalLayout->addWidget(this->m_StackedTables);
-  this->setLayout(verticalLayout);
-  this->setContextMenuPolicy(Qt::CustomContextMenu);
-
+{ 
   m_VisibilityAction = new QAction(tr("Show/hide the table widget"), this);
   QIcon TableWidgetIcon;
   TableWidgetIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/TableWidget.png") ),
@@ -98,6 +92,18 @@ QGoPrintDatabase::QGoPrintDatabase(QWidget *iParent) :
 
   this->m_TraceSettingsWidget =
     new QGoTraceSettingsWidget(this);
+
+  QWidget* Widget = new QWidget;
+  QVBoxLayout* verticalLayout = new QVBoxLayout(Widget);
+  this->m_StackedTables = new QStackedWidget(Widget);
+  verticalLayout->addWidget(this->m_TraceSettingsWidget);
+  verticalLayout->addWidget(this->m_StackedTables);
+  Widget->setLayout(verticalLayout);
+  this->setContextMenuPolicy(Qt::CustomContextMenu);
+  this->setWidget(Widget);
+
+  //m_ToolBar = new QToolBar(this);
+  //m_ToolBar->addWidget(this->m_TraceSettingsWidget);
 
   this->m_CellTypeManager = new QGoDBCellTypeManager(this);
 
@@ -1695,4 +1701,18 @@ void QGoPrintDatabase::AddCheckedTracksToSelectedLineage(
   // Update lineage attributes
   this->m_LineagesManager->UpdateDivisionsColors(iLineageID);
   this->m_LineagesManager->UpdateDivisionsScalars(iLineageID);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoPrintDatabase::resizeEvent(QResizeEvent* event)
+{
+  QDockWidget::resizeEvent(event);
+
+  // set toolbar's geometry so that it covers the whole are above
+  // the widget which has been set as dock widget's insider
+  //QRect r = geometry();
+  //QRect r = this->m_TraceSettingsWidget->geometry();
+  //r.setBottom(this->widget()->geometry().top());
+  //m_ToolBar->setGeometry(r);
 }
