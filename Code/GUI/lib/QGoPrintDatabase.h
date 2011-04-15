@@ -339,7 +339,7 @@ protected:
   \brief set the tracesettings widget to be in the mainwindow toolbar and the connection
   between the 2 instances of tracesettingswidget
   */
-  void SetTraceSettingsForMainWindow();
+  void SetConnectionsBetweenTheInstancesOfTraceSettings();
   /**
   \brief create the m_ContoursManager and its SLOT/SIGNAL connection
   */
@@ -635,7 +635,10 @@ protected slots:
   */
   void ShowHideTraceSettingsFromContextMenu(bool isVisible);
 
-  void TheTabIsChanged(int iIndex);
+  /**
+  \brief slot connected to the combobox for the trace in the trace settings widget
+  */
+  void TheTraceHasChanged(int iIndex);
 
   /**
   \brief get a list of the IDs with their colors for the collection corresponding to

@@ -102,10 +102,10 @@ QGoPrintDatabase::QGoPrintDatabase(QWidget *iParent) :
                     this, SLOT( CreateContextMenu(const QPoint &) ) );
 
   QObject::connect( this->m_TraceSettingsWidget, SIGNAL( TraceChanged( int ) ),
-                    this, SLOT( TheTabIsChanged( int ) ) );
+                    this, SLOT( TheTraceHasChanged( int ) ) );
 
   QObject::connect( this->m_TraceSettingsWidgetForToolBar, SIGNAL( TraceChanged( int ) ),
-                    this, SLOT( TheTabIsChanged( int ) ) );
+                    this, SLOT( TheTraceHasChanged( int ) ) );
 }
 
 //--------------------------------------------------------------------------
@@ -164,7 +164,7 @@ void QGoPrintDatabase::SetUpUi()
   this->setContextMenuPolicy(Qt::CustomContextMenu);
   this->setWidget(Widget);
   this->m_TraceSettingsVisible = true;
-  this->SetTraceSettingsForMainWindow();
+  this->SetConnectionsBetweenTheInstancesOfTraceSettings();
 }
 //--------------------------------------------------------------------------
 
@@ -576,9 +576,10 @@ void QGoPrintDatabase::UpdateSelectedTimePoint(int iTimePoint)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::TheTabIsChanged(int iIndex)
+void QGoPrintDatabase::TheTraceHasChanged(int iIndex)
 {
   this->m_StackedTables->setCurrentIndex(iIndex);
+  this->SetTSListCollectionID();
 }
 
 //-------------------------------------------------------------------------
@@ -794,7 +795,7 @@ QGoTraceSettingsWidget*  QGoPrintDatabase::GetTraceSettingsWidgetForToolBar()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::SetTraceSettingsForMainWindow()
+void QGoPrintDatabase::SetConnectionsBetweenTheInstancesOfTraceSettings()
 {
   this->m_TraceSettingsWidgetForToolBar = new QGoTraceSettingsWidget(this);
   this->m_TraceSettingsWidgetForToolBar->SetPointerCollectionData(
