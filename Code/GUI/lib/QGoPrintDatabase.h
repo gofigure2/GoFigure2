@@ -72,8 +72,7 @@
 QGoDBTraceManager...
 \ingroup DB GUI
 */
-class QGOGUILIB_EXPORT QGoPrintDatabase:public QDockWidget//,
-  //private Ui::WidgetPrintDatabase
+class QGOGUILIB_EXPORT QGoPrintDatabase:public QDockWidget
 {
   Q_OBJECT
 public:
