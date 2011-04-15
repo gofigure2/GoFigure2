@@ -145,6 +145,8 @@ void QGoTabManager::SetUpTabElement(QGoTabElementBase *iE)
       m_MainWindow->m_ViewToolBar->addAction(*it);
       }
 
+    this->UpdateViewMenu(iE->ViewNoToolBarActions() );
+
     action_vector2 = iE->ModeActions();
 
     for ( std::vector< QAction * >::iterator it = action_vector2.begin();
@@ -281,6 +283,18 @@ void QGoTabManager::UpdateBookmarkMenu(std::vector< QAction * > iBookmarkActions
     }
 }
 
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTabManager::UpdateViewMenu(std::vector< QAction* > iViewNoToolBarActions)
+{
+  for ( std::vector< QAction * >::iterator it = iViewNoToolBarActions.begin();
+        it != iViewNoToolBarActions.end();
+        ++it )
+    {
+    m_MainWindow->menuView->addAction(*it);
+    }
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------

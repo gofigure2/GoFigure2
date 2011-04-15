@@ -810,7 +810,8 @@ QGoTabImageView3DwT::CreateAllViewActions()
   QObject::connect( ActionDisplayAnnotations, SIGNAL( triggered() ),
                     this->m_ImageView, SLOT( ShowAnnotations() ) );
 
-  this->m_ViewActions.push_back(ActionDisplayAnnotations);
+  //this->m_ViewActions.push_back(ActionDisplayAnnotations);
+  this->m_ViewNoToolBarActions.push_back(ActionDisplayAnnotations);
 
   QAction *ActionDisplaySplinePlanes =
     new QAction(tr("Display spline planes"), this);
@@ -822,11 +823,11 @@ QGoTabImageView3DwT::CreateAllViewActions()
   displaysplineplaneicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/C_M_L.png") ),
                                    QIcon::Normal, QIcon::Off);
   ActionDisplaySplinePlanes->setIcon(displaysplineplaneicon);
+  //this->m_ViewActions.push_back(ActionDisplaySplinePlanes);
+  this->m_ViewNoToolBarActions.push_back(ActionDisplaySplinePlanes);
 
   QObject::connect( ActionDisplaySplinePlanes, SIGNAL( triggered() ),
                     this->m_ImageView, SLOT( ShowSplinePlane() ) );
-
-  this->m_ViewActions.push_back(ActionDisplaySplinePlanes);
 
   QAction *DisplayCube3D = new QAction(tr("Display 3D cube"), this);
   DisplayCube3D->setCheckable(true);
@@ -841,14 +842,16 @@ QGoTabImageView3DwT::CreateAllViewActions()
   QObject::connect( DisplayCube3D, SIGNAL( triggered() ),
                     this->m_ImageView, SLOT( ShowCube3D() ) );
 
-  this->m_ViewActions.push_back(DisplayCube3D);
+  //this->m_ViewActions.push_back(DisplayCube3D);
+  this->m_ViewNoToolBarActions.push_back(DisplayCube3D);
 
-  QAction *separator3 = new QAction(this);
+  /*QAction *separator3 = new QAction(this);
   separator3->setSeparator(true);
 
-  this->m_ViewActions.push_back(separator3);
+  this->m_ViewActions.push_back(separator3);*/
 
   QAction *LookupTableAction = new QAction(tr("Lookup Table"), this);
+  LookupTableAction->setObjectName("LUT");
   LookupTableAction->setEnabled(false);
   LookupTableAction->setStatusTip( tr(" Change the associated lookup table") );
 
@@ -867,6 +870,7 @@ QGoTabImageView3DwT::CreateAllViewActions()
   QAction *ScalarBarAction = new QAction(tr("Display Scalar Bar"), this);
   ScalarBarAction->setEnabled(false);
   ScalarBarAction->setCheckable(true);
+  ScalarBarAction->setObjectName("ScalarBar");
 
   QIcon scalarbaricon;
   scalarbaricon.addPixmap(QPixmap( QString::fromUtf8(":/fig/scalarbar.png") ),
@@ -892,49 +896,49 @@ QGoTabImageView3DwT::CreateAllViewActions()
 
   this->m_ViewActions.push_back( m_NavigationDockWidget->toggleViewAction() );
 
-  QAction *separator5 = new QAction(this);
+  /*QAction *separator5 = new QAction(this);
   separator5->setSeparator(true);
-  this->m_ViewActions.push_back(separator5);
+  this->m_ViewActions.push_back(separator5);*/
 
   this->m_ViewActions.push_back( m_DataBaseTables->toggleViewAction() );
 
-  QAction *separator6 = new QAction(this);
+  /*QAction *separator6 = new QAction(this);
   separator6->setSeparator(true);
-  this->m_ViewActions.push_back(separator6);
+  this->m_ViewActions.push_back(separator6);*/
 
   /// \todo create group actions for views changing
   QAction *Change3DPerspectiveToAxialAction =
     new QAction(tr("Change 3D view to Posterior "), this);
-  this->m_ViewActions.push_back(Change3DPerspectiveToAxialAction);
-
   QIcon axialicon;
   axialicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/PosteriorView.png") ),
                       QIcon::Normal, QIcon::Off);
   Change3DPerspectiveToAxialAction->setIcon(axialicon);
+  this->m_ViewNoToolBarActions.push_back(Change3DPerspectiveToAxialAction);
+  //this->m_ViewActions.push_back(Change3DPerspectiveToAxialAction); 
 
   QObject::connect( Change3DPerspectiveToAxialAction, SIGNAL( triggered() ),
                     this, SLOT( Change3DPerspectiveToAxial() ) );
 
   QAction *Change3DPerspectiveToCoronalAction =
     new QAction(tr("Change 3D view to Dorsal "), this);
-  this->m_ViewActions.push_back(Change3DPerspectiveToCoronalAction);
-
   QIcon coronalicon;
   coronalicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/DorsalView.png") ),
                         QIcon::Normal, QIcon::Off);
   Change3DPerspectiveToCoronalAction->setIcon(coronalicon);
+  //this->m_ViewActions.push_back(Change3DPerspectiveToCoronalAction);
+  this->m_ViewNoToolBarActions.push_back(Change3DPerspectiveToCoronalAction);
 
   QObject::connect( Change3DPerspectiveToCoronalAction, SIGNAL( triggered() ),
                     this, SLOT( Change3DPerspectiveToCoronal() ) );
 
   QAction *Change3DPerspectiveToSagittalAction =
     new QAction(tr("Change 3D view to Left "), this);
-  this->m_ViewActions.push_back(Change3DPerspectiveToSagittalAction);
-
   QIcon sagittalicon;
   sagittalicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/LeftView.png") ),
                          QIcon::Normal, QIcon::Off);
   Change3DPerspectiveToSagittalAction->setIcon(sagittalicon);
+  //this->m_ViewActions.push_back(Change3DPerspectiveToSagittalAction);
+  this->m_ViewNoToolBarActions.push_back(Change3DPerspectiveToSagittalAction);
 
   QObject::connect( Change3DPerspectiveToSagittalAction, SIGNAL( triggered() ),
                     this, SLOT( Change3DPerspectiveToSagittal() ) );
@@ -1745,8 +1749,8 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
       m_Image->ShallowCopy( append_filter->GetOutput() );
 
       // LUT DISABLED
-      m_ViewActions[11]->setEnabled(false);
-      m_ViewActions[10]->setEnabled(false);
+      this->findChild<QAction*>("LUT")->setEnabled(false);
+      this->findChild<QAction*>("ScalarBar")->setEnabled(false);
       }
     else
       {
@@ -1756,8 +1760,8 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
         m_Image->ShallowCopy(m_InternalImages[ch]);
         }
       // LUT ENABLED
-      m_ViewActions[11]->setEnabled(true);
-      m_ViewActions[10]->setEnabled(true);
+      this->findChild<QAction*>("LUT")->setEnabled(true);
+      this->findChild<QAction*>("ScalarBar")->setEnabled(true);
       }
     }
   else
@@ -1772,8 +1776,8 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
     m_InternalImages[0] = m_Image;
 
     // LUT ENABLED
-    m_ViewActions[11]->setEnabled(true);
-    m_ViewActions[10]->setEnabled(true);
+    this->findChild<QAction*>("LUT")->setEnabled(true);
+    this->findChild<QAction*>("ScalarBar")->setEnabled(true);
     }
 }
 
@@ -1887,8 +1891,8 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels(int iChannel,
     m_Image->ShallowCopy( append_filter->GetOutput() );
 
     // LUT DISABLED
-    m_ViewActions[11]->setEnabled(false);
-    m_ViewActions[10]->setEnabled(false);
+    this->findChild<QAction*>("LUT")->setEnabled(false);
+    this->findChild<QAction*>("ScalarBar")->setEnabled(false);
     }
   else
     {
@@ -1898,8 +1902,8 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels(int iChannel,
       m_Image->ShallowCopy(m_InternalImages[ch]);
       }
     // LUT ENABLED
-    m_ViewActions[11]->setEnabled(true);
-    m_ViewActions[10]->setEnabled(true);
+    this->findChild<QAction*>("LUT")->setEnabled(true);
+    this->findChild<QAction*>("ScalarBar")->setEnabled(true);
     }
 
   // Create channels names
@@ -2310,8 +2314,8 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
     Update();
 
     // Update LUT
-    m_ViewActions[11]->setEnabled(false);
-    m_ViewActions[10]->setEnabled(false);
+    this->findChild<QAction*>("LUT")->setEnabled(false);
+    this->findChild<QAction*>("ScalarBar")->setEnabled(false);
     }
   else
     {
@@ -2323,11 +2327,11 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
       }
 
     // Update LUT
-    m_ViewActions[11]->setEnabled(true);
-    m_ViewActions[10]->setEnabled(true);
+    this->findChild<QAction*>("LUT")->setEnabled(true);
+    this->findChild<QAction*>("ScalarBar")->setEnabled(true);
 
     // show the scalarbar automatically if the button is checked
-    bool showScalarBar = m_ViewActions[11]->isChecked();
+    bool showScalarBar = this->findChild<QAction*>("ScalarBar")->isChecked();
     m_ImageView->ShowScalarBar(showScalarBar);
     }
 }
@@ -2341,8 +2345,8 @@ QGoTabImageView3DwT::ShowOneChannel(int iChannel)
   if ( ( iChannel != -1 ) && ( !m_InternalImages.empty() ) )
     {
     // Update lut
-    m_ViewActions[11]->setEnabled(true);
-    m_ViewActions[10]->setEnabled(true);
+    this->findChild<QAction*>("LUT")->setEnabled(true);
+    this->findChild<QAction*>("ScalarBar")->setEnabled(true);
 
     m_Image->ShallowCopy(m_InternalImages[iChannel]);
     Update();

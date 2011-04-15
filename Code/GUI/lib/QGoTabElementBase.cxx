@@ -67,6 +67,13 @@ std::vector< QAction * > QGoTabElementBase::ViewActions()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+std::vector< QAction * > QGoTabElementBase::ViewNoToolBarActions()
+{
+  return this->m_ViewNoToolBarActions;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 std::vector< QAction * > QGoTabElementBase::SegmentationActions()
 {
   return m_SegmentationActions;
