@@ -57,22 +57,18 @@ QGoTraceSettingsWidget::
   if ( this->m_SelectedCollectionData )
     {
     delete this->m_SelectedCollectionData;
-    this->m_SelectedCollectionData = NULL;
     }
   if ( this->m_SelectedCellType )
     {
     delete this->m_SelectedCellType;
-    this->m_SelectedCellType = NULL;
     }
   if ( this->m_SelectedSubCellType )
     {
     delete this->m_SelectedSubCellType;
-    this->m_SelectedSubCellType = NULL;
     }
   if ( this->m_SelectedColorData )
     {
     delete this->m_SelectedColorData;
-    this->m_SelectedColorData = NULL;
     }
 }
 
@@ -670,5 +666,8 @@ void QGoTraceSettingsWidget::SetPointerColorData(ItemColorComboboxData* iColorDa
 //-------------------------------------------------------------------------
 void QGoTraceSettingsWidget::SetSelectedPointersToNull()
 {
-  
+  this->m_SelectedCollectionData = NULL;
+  this->m_SelectedColorData = NULL;
+  this->m_SelectedCellType = NULL;
+  this->m_SelectedSubCellType = NULL;
 }
