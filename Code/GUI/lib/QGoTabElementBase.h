@@ -136,7 +136,7 @@ protected:
   std::vector< QAction * > m_BookmarkActions;
   std::vector< QAction * > m_ModeActions;
   std::vector< QAction * > m_TracesActions;
-  QWidget*                 m_TraceSettingsWidget;
+  QWidget*                 m_TraceSettingsWidgetForToolBar;
   QAction*                 m_TraceSettingsAction;
 
   std::list< QGoDockWidgetStatusPair > m_DockWidgetList;

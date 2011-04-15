@@ -127,8 +127,8 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_XTileCoord(0),
   m_YTileCoord(0),
   m_ZTileCoord(0),
-  m_TCoord(-1),
-  m_TraceWidgetRequiered(false)
+  m_TCoord(-1)//,
+  //m_TraceWidgetRequiered(false)
 {
   m_Image = vtkImageData::New();
   m_Seeds = vtkPoints::New();
@@ -640,6 +640,7 @@ QGoTabImageView3DwT::CreateDataBaseTablesConnection()
                     this, SLOT( GoToLocation(int, int, int, int) ) );
 
   this->m_TraceSettingsWidget = this->m_DataBaseTables->GetTraceSettingsWidget();
+  this->m_TraceSettingsWidgetForToolBar = this->m_DataBaseTables->GetTraceSettingsWidgetForToolBar();
 }
 //-------------------------------------------------------------------------
 
@@ -1471,16 +1472,13 @@ QGoTabImageView3DwT::setupUi(QWidget *iParent)
 
   m_ImageView = new QGoImageView3D;
   this->setCentralWidget(m_ImageView);
-  //m_VSplitter  = new QSplitter(Qt::Vertical, iParent);
   m_DataBaseTables = new QGoPrintDatabase;
-  this->addDockWidget(Qt::DockWidgetArea::TopDockWidgetArea, m_DataBaseTables);
-  //m_VSplitter->addWidget(m_DataBaseTables);
+  this->addDockWidget(Qt::TopDockWidgetArea, m_DataBaseTables);
   m_DataBaseTables->hide();
 
   
   m_ImageView->SetIntersectionLineWidth(this->m_IntersectionLineWidth);
   m_ImageView->SetBackgroundColor(m_BackgroundColor);
-  //m_VSplitter->addWidget(m_ImageView);
 
   QObject::connect( m_ImageView, SIGNAL( SliceViewXYChanged(int) ),
                     this, SIGNAL( SliceViewXYChanged(int) ) );
@@ -1500,9 +1498,6 @@ QGoTabImageView3DwT::setupUi(QWidget *iParent)
   // connect the contours selection connection
   QObject::connect( m_ImageView, SIGNAL( VisibilityChanged() ),
                     this, SLOT( VisibilityPickedActor() ) );
-
-  //m_HBoxLayout = new QHBoxLayout(iParent);
-  //m_HBoxLayout->addWidget(m_VSplitter);
 
   retranslateUi(iParent);
 

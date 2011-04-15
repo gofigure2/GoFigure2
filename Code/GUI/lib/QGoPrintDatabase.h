@@ -212,6 +212,8 @@ public:
   //QGoTraceSettingsDockWidget * GetTraceSettingsDockWidget();
   QGoTraceSettingsWidget*  GetTraceSettingsWidget();
 
+  QGoTraceSettingsWidget*  GetTraceSettingsWidgetForToolBar();
+
   /**
   \brief update the traceSettingswidget for the trace with the
   corresponding list of collectionID and set the tablewidget for the
@@ -305,6 +307,7 @@ protected:
   QGoDBSubCellTypeManager*          m_SubCellTypeManager;
   QGoDBColorManager*                m_ColorManager;
   QGoTraceSettingsWidget*           m_TraceSettingsWidget;
+  QGoTraceSettingsWidget*           m_TraceSettingsWidgetForToolBar;
 
   QGoDBContourManager*              m_ContoursManager;
   QGoDBMeshManager*                 m_MeshesManager;
@@ -331,6 +334,12 @@ protected:
   void OpenDBConnection();
 
   void SetUpUi();
+
+  /** 
+  \brief set the tracesettings widget to be in the mainwindow toolbar and the connection
+  between the 2 instances of tracesettingswidget
+  */
+  void SetTraceSettingsForMainWindow();
   /**
   \brief create the m_ContoursManager and its SLOT/SIGNAL connection
   */
@@ -357,7 +366,7 @@ protected:
   \brief create all the connections between the QGoPrintDatabase and the
   QGoTraceSettingsWidget (TS)
   */
-  void CreateConnectionsForTraceSettingsWidget();
+  void CreateConnectionsForTraceSettingsWidget(QGoTraceSettingsWidget* iTraceSettingsWidget);
 
   /**
   \brief get the list of celltypes from the database, put them in
