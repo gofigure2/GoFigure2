@@ -1469,15 +1469,18 @@ QGoTabImageView3DwT::setupUi(QWidget *iParent)
     iParent->resize(800, 800);
     }
 
-  m_VSplitter  = new QSplitter(Qt::Vertical, iParent);
+  m_ImageView = new QGoImageView3D;
+  this->setCentralWidget(m_ImageView);
+  //m_VSplitter  = new QSplitter(Qt::Vertical, iParent);
   m_DataBaseTables = new QGoPrintDatabase;
-  m_VSplitter->addWidget(m_DataBaseTables);
+  this->addDockWidget(Qt::DockWidgetArea::TopDockWidgetArea, m_DataBaseTables);
+  //m_VSplitter->addWidget(m_DataBaseTables);
   m_DataBaseTables->hide();
 
-  m_ImageView = new QGoImageView3D;
+  
   m_ImageView->SetIntersectionLineWidth(this->m_IntersectionLineWidth);
   m_ImageView->SetBackgroundColor(m_BackgroundColor);
-  m_VSplitter->addWidget(m_ImageView);
+  //m_VSplitter->addWidget(m_ImageView);
 
   QObject::connect( m_ImageView, SIGNAL( SliceViewXYChanged(int) ),
                     this, SIGNAL( SliceViewXYChanged(int) ) );
@@ -1498,8 +1501,8 @@ QGoTabImageView3DwT::setupUi(QWidget *iParent)
   QObject::connect( m_ImageView, SIGNAL( VisibilityChanged() ),
                     this, SLOT( VisibilityPickedActor() ) );
 
-  m_HBoxLayout = new QHBoxLayout(iParent);
-  m_HBoxLayout->addWidget(m_VSplitter);
+  //m_HBoxLayout = new QHBoxLayout(iParent);
+  //m_HBoxLayout->addWidget(m_VSplitter);
 
   retranslateUi(iParent);
 

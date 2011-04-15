@@ -330,6 +330,7 @@ protected:
 
   void OpenDBConnection();
 
+  void SetUpUi();
   /**
   \brief create the m_ContoursManager and its SLOT/SIGNAL connection
   */
@@ -619,6 +620,10 @@ protected:
 protected slots:
   void CreateContextMenu(const QPoint & iPos);
 
+  /** 
+  \brief show/hide the Trace Settings widget depending on the checkstate of
+  the action in the context menu of the dockwidget
+  */
   void ShowHideTraceSettingsFromContextMenu(bool isVisible);
 
   void TheTabIsChanged(int iIndex);

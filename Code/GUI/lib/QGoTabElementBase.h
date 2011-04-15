@@ -35,7 +35,7 @@
 #ifndef __QGoTabElementBase_h
 #define __QGoTabElementBase_h
 
-#include <QWidget>
+#include <QMainWindow>
 #include <QDir>
 #include <QStatusBar>
 
@@ -56,7 +56,7 @@ class QGoPluginManager;
 \brief Abstract class for one tab element in GoFigure2.
 \example GUI/lib/qgotabelementbase.cxx
 */
-class QGOGUILIB_EXPORT QGoTabElementBase:public QWidget
+class QGOGUILIB_EXPORT QGoTabElementBase:public QMainWindow
 {
   Q_OBJECT
 public:

@@ -83,25 +83,7 @@ QGoPrintDatabase::QGoPrintDatabase(QWidget *iParent) :
   m_ReeditMode(false),
   m_MeshGenerationMode(false)
 { 
-  m_VisibilityAction = new QAction(tr("Show/hide the table widget"), this);
-  QIcon TableWidgetIcon;
-  TableWidgetIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/TableWidget.png") ),
-                            QIcon::Normal, QIcon::Off);
-  m_VisibilityAction->setIcon(TableWidgetIcon);
-  m_VisibilityAction->setCheckable(true);
-
-  this->m_TraceSettingsWidget =
-    new QGoTraceSettingsWidget(this);
-
-  QWidget* Widget = new QWidget;
-  QVBoxLayout* verticalLayout = new QVBoxLayout(Widget);
-  this->m_StackedTables = new QStackedWidget(Widget);
-  verticalLayout->addWidget(this->m_TraceSettingsWidget);
-  verticalLayout->addWidget(this->m_StackedTables);
-  Widget->setLayout(verticalLayout);
-  this->setContextMenuPolicy(Qt::CustomContextMenu);
-  this->setWidget(Widget);
-  this->m_TraceSettingsVisible = true;
+  this->SetUpUi();
 
   this->m_CellTypeManager = new QGoDBCellTypeManager(this);
 
@@ -154,6 +136,31 @@ QGoPrintDatabase::~QGoPrintDatabase()
     }
 }
 
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoPrintDatabase::SetUpUi()
+{
+  m_VisibilityAction = new QAction(tr("Show/hide the table widget"), this);
+  QIcon TableWidgetIcon;
+  TableWidgetIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/TableWidget.png") ),
+                            QIcon::Normal, QIcon::Off);
+  m_VisibilityAction->setIcon(TableWidgetIcon);
+  m_VisibilityAction->setCheckable(true);
+
+  this->m_TraceSettingsWidget =
+    new QGoTraceSettingsWidget(this);
+
+  QWidget* Widget = new QWidget;
+  QVBoxLayout* verticalLayout = new QVBoxLayout(Widget);
+  this->m_StackedTables = new QStackedWidget(Widget);
+  verticalLayout->addWidget(this->m_TraceSettingsWidget);
+  verticalLayout->addWidget(this->m_StackedTables);
+  Widget->setLayout(verticalLayout);
+  this->setContextMenuPolicy(Qt::CustomContextMenu);
+  this->setWidget(Widget);
+  this->m_TraceSettingsVisible = true;
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------

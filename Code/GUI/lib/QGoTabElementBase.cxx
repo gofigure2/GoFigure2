@@ -44,7 +44,7 @@
 #include <iostream>
 
 //--------------------------------------------------------------------------
-QGoTabElementBase::QGoTabElementBase(QWidget *iParent) : QWidget(iParent),
+QGoTabElementBase::QGoTabElementBase(QWidget *iParent) : QMainWindow(iParent),
   m_StatusBar(NULL), m_TraceSettingsAction(NULL)
 {
 }
