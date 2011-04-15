@@ -312,7 +312,6 @@ protected:
   QGoDBTrackManager*                m_TracksManager;
   QGoDBLineageManager*              m_LineagesManager;
   QStackedWidget*                   m_StackedTables;
-  //QToolBar*                         m_ToolBar; //test
 
   //Database variables:
   vtkMySQLDatabase* m_DatabaseConnector;
@@ -326,6 +325,7 @@ protected:
 
   bool m_ReeditMode;
   bool m_MeshGenerationMode;
+  bool m_TraceSettingsVisible;
 
   QAction*  m_VisibilityAction;
 
@@ -620,6 +620,8 @@ protected:
 protected slots:
   void CreateContextMenu(const QPoint & iPos);
 
+  void ShowHideTraceSettingsFromContextMenu(bool isVisible);
+
   void TheTabIsChanged(int iIndex);
 
   /**
@@ -840,8 +842,6 @@ protected slots:
   list in the TraceManualEditingWidget
   */
   void DeleteColor();
-
-  virtual void resizeEvent(QResizeEvent* event);
 
   //**********************End TraceSettingsWidget slots // related****************
 private:

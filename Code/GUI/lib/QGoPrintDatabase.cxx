@@ -101,9 +101,7 @@ QGoPrintDatabase::QGoPrintDatabase(QWidget *iParent) :
   Widget->setLayout(verticalLayout);
   this->setContextMenuPolicy(Qt::CustomContextMenu);
   this->setWidget(Widget);
-
-  //m_ToolBar = new QToolBar(this);
-  //m_ToolBar->addWidget(this->m_TraceSettingsWidget);
+  this->m_TraceSettingsVisible = true;
 
   this->m_CellTypeManager = new QGoDBCellTypeManager(this);
 
@@ -1069,24 +1067,18 @@ void QGoPrintDatabase::GetContentAndDisplayAllTracesInfo(
 //-------------------------------------------------------------------------
 void QGoPrintDatabase::CreateContextMenu(const QPoint & iPos)
 {
-  /*std::string TraceName = this->m_TraceSettingsWidget->GetTraceName();
+  QMenu *ContextMenu = new QMenu;
 
-  if ( TraceName == "contour" )
-    {
-    this->m_ContoursManager->CreateContextMenu(iPos);
-    }
-  if ( TraceName == "mesh" )
-    {
-    this->m_MeshesManager->CreateContextMenu(iPos);
-    }
-  if ( TraceName == "track" )
-    {
-    this->m_TracksManager->CreateContextMenu(iPos);
-    }
-  if ( TraceName == "lineage")
-    {
-    this->m_LineagesManager->CreateContextMenu(iPos);
-    }*/
+  QAction *TraceSettings = new QAction(tr("TraceSettings"), ContextMenu);
+  TraceSettings->setCheckable(true);
+  TraceSettings->setChecked(this->m_TraceSettingsVisible);
+
+  QObject::connect( TraceSettings, SIGNAL( triggered (bool) ), this, 
+    SLOT( ShowHideTraceSettingsFromContextMenu(bool) ) );
+
+  ContextMenu->addAction(TraceSettings);
+
+  ContextMenu->exec( this->mapToGlobal(iPos) );
 }
 
 //--------------------------------------------------------------------------
@@ -1705,14 +1697,8 @@ void QGoPrintDatabase::AddCheckedTracksToSelectedLineage(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoPrintDatabase::resizeEvent(QResizeEvent* event)
+void QGoPrintDatabase::ShowHideTraceSettingsFromContextMenu(bool isVisible)
 {
-  QDockWidget::resizeEvent(event);
-
-  // set toolbar's geometry so that it covers the whole are above
-  // the widget which has been set as dock widget's insider
-  //QRect r = geometry();
-  //QRect r = this->m_TraceSettingsWidget->geometry();
-  //r.setBottom(this->widget()->geometry().top());
-  //m_ToolBar->setGeometry(r);
+  this->m_TraceSettingsWidget->setVisible(isVisible);
+  this->m_TraceSettingsVisible = isVisible;
 }
