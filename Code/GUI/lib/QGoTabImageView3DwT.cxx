@@ -886,6 +886,10 @@ QGoTabImageView3DwT::CreateAllViewActions()
   QObject::connect( m_BackgroundColorAction, SIGNAL( triggered() ),
                     this, SLOT( ChangeBackgroundColor() ) );
 
+  QAction *separator4 = new QAction(this);
+  separator4->setSeparator(true);
+  this->m_ViewActions.push_back(separator4);
+
   this->m_ViewActions.push_back( m_NavigationDockWidget->toggleViewAction() );
 
   this->m_ViewActions.push_back( m_DataBaseTables->toggleViewAction() );
@@ -944,14 +948,6 @@ QGoTabImageView3DwT::CreateAllViewActions()
 
   QObject::connect( VolumeRenderingAction, SIGNAL( toggled(bool) ),
                     this->m_ImageView, SLOT( EnableVolumeRendering(bool) ) );
-
-  QAction *separator8 = new QAction(this);
-  separator8->setSeparator(true);
-  this->m_ViewActions.push_back(separator8);
-
-  QAction *separator9 = new QAction(this);
-  separator9->setSeparator(true);
-  this->m_ViewActions.push_back(separator9);
 
   // Enable synchronization
   QAction *SynchronizeViewsAction =
@@ -1263,10 +1259,6 @@ void QGoTabImageView3DwT::CreateModeActions()
                     SIGNAL( toggled(bool) ),
                     this,
                     SLOT( ShowTraceWidgetsForMesh(bool) ) );
-
-  QAction *separator2 = new QAction(this);
-  separator2->setSeparator(true);
-  this->m_ModeActions.push_back(separator2);
 }
 
 //-------------------------------------------------------------------------
