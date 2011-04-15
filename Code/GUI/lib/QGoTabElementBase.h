@@ -89,6 +89,9 @@ public:
   /** \brief Get all actions belonging to the Traces Toolbar.*/
   virtual std::vector< QAction * > TracesActions();
 
+  /** \brief Get the widget for the trace settings to be added in the TraceSettings Toolbar*/
+  virtual QWidget* TraceSettingsWidget();
+
   /** \brief Get all the DockWidgets with its status (visibility, location). */
   virtual std::list< QGoDockWidgetStatusPair > & DockWidget();
 
@@ -122,6 +125,8 @@ public:
 
   void SetStatusBarPointer(QStatusBar* iStatusbar);
 
+  virtual void SetTraceSettingsAction(QAction* iAction);
+
 protected:
   std::list< QAction * > m_PluginActionList;
 
@@ -131,6 +136,8 @@ protected:
   std::vector< QAction * > m_BookmarkActions;
   std::vector< QAction * > m_ModeActions;
   std::vector< QAction * > m_TracesActions;
+  QWidget*                 m_TraceSettingsWidget;
+  QAction*                 m_TraceSettingsAction;
 
   std::list< QGoDockWidgetStatusPair > m_DockWidgetList;
   QStatusBar*              m_StatusBar;

@@ -34,11 +34,11 @@
 #ifndef __QGoPrintDatabase_h
 #define __QGoPrintDatabase_h
 
-#include <QWidget>
+#include <QDockWidget>
 #include <QTableWidget>
 #include <QColor>
 #include <string>
-#include "ui_QGoPrintDatabase.h"
+#include <QStackedWidget>
 #include "MegaVTK2Configure.h"
 #include "GoDBRecordSet.h"
 #include "GoDBContourRow.h"
@@ -50,7 +50,7 @@
 #include "QGoDBBookmarkManager.h"
 #include "QGoGUILibConfigure.h"
 #include "GoFigureMeshAttributes.h"
-#include "QGoTraceSettingsDockWidget.h"
+#include "QGoTraceSettingsWidget.h"
 #include "QGoDBCellTypeManager.h"
 #include "QGoDBSubCellTypeManager.h"
 #include "QGoDBColorManager.h"
@@ -72,8 +72,7 @@
 QGoDBTraceManager...
 \ingroup DB GUI
 */
-class QGOGUILIB_EXPORT QGoPrintDatabase:public QWidget,
-  private Ui::WidgetPrintDatabase
+class QGOGUILIB_EXPORT QGoPrintDatabase:public QDockWidget
 {
   Q_OBJECT
 public:
@@ -86,7 +85,7 @@ public:
 
   typedef GoDBCollectionOfTraces::TWContainerType            TWContainerType;
   typedef QGoDBBookmarkManager::NamesDescrContainerType      NamesDescrContainerType;
-  typedef QGoTraceSettingsDockWidget::ItemColorComboboxData  ItemColorComboboxData; 
+  typedef QGoTraceSettingsWidget::ItemColorComboboxData  ItemColorComboboxData; 
   typedef std::pair< int, QColor >                           IDWithColorData;
 
   /** \brief set all the values needed for the database*/
@@ -210,7 +209,8 @@ public:
                         iTrackAttributes, unsigned int iTrackID);
 
   /** \brief return the TraceSettingsDockWidget*/
-  QGoTraceSettingsDockWidget * GetTraceSettingsDockWidget();
+  //QGoTraceSettingsDockWidget * GetTraceSettingsDockWidget();
+  QGoTraceSettingsWidget*  GetTraceSettingsWidget();
 
   /**
   \brief update the traceSettingswidget for the trace with the
@@ -285,8 +285,6 @@ signals:
 
   void OpenBookmarksToUpdate();
 
-  void TableWidgetTabChanged();
-
   void NewMeshToGenerate(std::list< unsigned int > ListContourIDs, int iNewMeshID);
 
   /**
@@ -306,12 +304,13 @@ protected:
   QGoDBCellTypeManager*             m_CellTypeManager;
   QGoDBSubCellTypeManager*          m_SubCellTypeManager;
   QGoDBColorManager*                m_ColorManager;
-  QGoTraceSettingsDockWidget*       m_TraceSettingsDockWidget;
+  QGoTraceSettingsWidget*           m_TraceSettingsWidget;
 
   QGoDBContourManager*              m_ContoursManager;
   QGoDBMeshManager*                 m_MeshesManager;
   QGoDBTrackManager*                m_TracksManager;
   QGoDBLineageManager*              m_LineagesManager;
+  QStackedWidget*                   m_StackedTables;
 
   //Database variables:
   vtkMySQLDatabase* m_DatabaseConnector;
@@ -325,6 +324,7 @@ protected:
 
   bool m_ReeditMode;
   bool m_MeshGenerationMode;
+  bool m_TraceSettingsVisible;
 
   QAction*  m_VisibilityAction;
 
@@ -512,7 +512,7 @@ protected:
       (iTraceManager, iCollectionOfManager, ListTracesToDelete);
     this->OpenDBConnection();
     iTraceManager->DeleteCheckedTraces(this->m_DatabaseConnector);
-    //if ( !ListCollectionsIDs.empty() || track )
+
     if ( !ListCollectionsIDs.empty() || !lineage )
       {
       iCollectionManager->UpdateBoundingBoxes(this->m_DatabaseConnector, ListCollectionsIDs);
@@ -537,14 +537,13 @@ protected:
                     TCollection *iCollectionManager, TCollectionOf *iCollectionOfManager,
                     std::list<unsigned int> iListTracesToDelete,
                     bool lineage = false)
-                    //bool track = false)
   {
     std::list<unsigned int> ListCollectionsIDs =
       this->UpdateCollectionDataForTracesToBeDeleted<TTrace, TCollectionOf>
       (iTraceManager, iCollectionOfManager, iListTracesToDelete);
     this->OpenDBConnection();
     iTraceManager->DeleteListTraces(this->m_DatabaseConnector, iListTracesToDelete);
-    //if ( !ListCollectionsIDs.empty() || track )
+
     if ( !ListCollectionsIDs.empty() || !lineage )
       {
       iCollectionManager->UpdateBoundingBoxes(this->m_DatabaseConnector, ListCollectionsIDs);
@@ -619,6 +618,8 @@ protected:
 //-------------------------------------------------------------------------
 protected slots:
   void CreateContextMenu(const QPoint & iPos);
+
+  void ShowHideTraceSettingsFromContextMenu(bool isVisible);
 
   void TheTabIsChanged(int iIndex);
 
@@ -841,8 +842,7 @@ protected slots:
   */
   void DeleteColor();
 
-  //**********************End TraceSettingsWidget slots
-  // related****************
+  //**********************End TraceSettingsWidget slots // related****************
 private:
   Q_DISABLE_COPY(QGoPrintDatabase);
 };
