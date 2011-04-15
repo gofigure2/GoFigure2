@@ -2532,6 +2532,7 @@ QGoTabImageView3DwT::ValidateContour()
   if ( re_edit ) //need to set the widgets to a normal mode
     {
     this->m_TraceSettingsAction->setEnabled(true);
+    this->m_TraceSettingsWidget->setEnabled(true);
     m_ContourSegmentationDockWidget->SetReeditMode(false);
     m_ImageView->ReinitializeContourWidget();
     m_ContourSegmentationDockWidget->hide();
@@ -2586,6 +2587,7 @@ QGoTabImageView3DwT::ReEditContour(const unsigned int & iId)
       m_ImageView->InitializeContourWidgetNodes(dir, nodes);
 
       this->m_TraceSettingsAction->setEnabled(false);
+      this->m_TraceSettingsWidget->setEnabled(false);
       this->m_ContourSegmentationDockWidget->show();
       this->m_ContourSegmentationDockWidget->SegmentationMethod(0);
       this->m_ContourSegmentationDockWidget->SetReeditMode(true);
@@ -2991,6 +2993,7 @@ void QGoTabImageView3DwT::ShowTraceWidgetsForContour(
     else
       {
       this->m_TraceSettingsAction->setVisible(false);
+      this->m_TraceSettingsWidget->setVisible(false);
       }
     }
 }
@@ -3017,6 +3020,7 @@ void QGoTabImageView3DwT::ShowTraceWidgetsForMesh(
     else
       {
       this->m_TraceSettingsAction->setVisible(false);
+      this->m_TraceSettingsWidget->setVisible(false);
       }
     }
 }
