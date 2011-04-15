@@ -212,6 +212,8 @@ public:
   //QGoTraceSettingsDockWidget * GetTraceSettingsDockWidget();
   QGoTraceSettingsWidget*  GetTraceSettingsWidget();
 
+  QGoTraceSettingsWidget*  GetTraceSettingsWidgetForToolBar();
+
   /**
   \brief update the traceSettingswidget for the trace with the
   corresponding list of collectionID and set the tablewidget for the
@@ -305,6 +307,7 @@ protected:
   QGoDBSubCellTypeManager*          m_SubCellTypeManager;
   QGoDBColorManager*                m_ColorManager;
   QGoTraceSettingsWidget*           m_TraceSettingsWidget;
+  QGoTraceSettingsWidget*           m_TraceSettingsWidgetForToolBar;
 
   QGoDBContourManager*              m_ContoursManager;
   QGoDBMeshManager*                 m_MeshesManager;
@@ -330,6 +333,13 @@ protected:
 
   void OpenDBConnection();
 
+  void SetUpUi();
+
+  /** 
+  \brief set the tracesettings widget to be in the mainwindow toolbar and the connection
+  between the 2 instances of tracesettingswidget
+  */
+  void SetConnectionsBetweenTheInstancesOfTraceSettings();
   /**
   \brief create the m_ContoursManager and its SLOT/SIGNAL connection
   */
@@ -356,7 +366,7 @@ protected:
   \brief create all the connections between the QGoPrintDatabase and the
   QGoTraceSettingsWidget (TS)
   */
-  void CreateConnectionsForTraceSettingsWidget();
+  void CreateConnectionsForTraceSettingsWidget(QGoTraceSettingsWidget* iTraceSettingsWidget);
 
   /**
   \brief get the list of celltypes from the database, put them in
@@ -619,9 +629,16 @@ protected:
 protected slots:
   void CreateContextMenu(const QPoint & iPos);
 
+  /** 
+  \brief show/hide the Trace Settings widget depending on the checkstate of
+  the action in the context menu of the dockwidget
+  */
   void ShowHideTraceSettingsFromContextMenu(bool isVisible);
 
-  void TheTabIsChanged(int iIndex);
+  /**
+  \brief slot connected to the combobox for the trace in the trace settings widget
+  */
+  void TheTraceHasChanged(int iIndex);
 
   /**
   \brief get a list of the IDs with their colors for the collection corresponding to

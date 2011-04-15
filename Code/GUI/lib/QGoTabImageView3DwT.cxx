@@ -127,8 +127,8 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_XTileCoord(0),
   m_YTileCoord(0),
   m_ZTileCoord(0),
-  m_TCoord(-1),
-  m_TraceWidgetRequiered(false)
+  m_TCoord(-1)//,
+  //m_TraceWidgetRequiered(false)
 {
   m_Image = vtkImageData::New();
   m_Seeds = vtkPoints::New();
@@ -640,6 +640,7 @@ QGoTabImageView3DwT::CreateDataBaseTablesConnection()
                     this, SLOT( GoToLocation(int, int, int, int) ) );
 
   this->m_TraceSettingsWidget = this->m_DataBaseTables->GetTraceSettingsWidget();
+  this->m_TraceSettingsWidgetForToolBar = this->m_DataBaseTables->GetTraceSettingsWidgetForToolBar();
 }
 //-------------------------------------------------------------------------
 
@@ -1469,15 +1470,15 @@ QGoTabImageView3DwT::setupUi(QWidget *iParent)
     iParent->resize(800, 800);
     }
 
-  m_VSplitter  = new QSplitter(Qt::Vertical, iParent);
+  m_ImageView = new QGoImageView3D;
+  this->setCentralWidget(m_ImageView);
   m_DataBaseTables = new QGoPrintDatabase;
-  m_VSplitter->addWidget(m_DataBaseTables);
+  this->addDockWidget(Qt::TopDockWidgetArea, m_DataBaseTables);
   m_DataBaseTables->hide();
 
-  m_ImageView = new QGoImageView3D;
+  
   m_ImageView->SetIntersectionLineWidth(this->m_IntersectionLineWidth);
   m_ImageView->SetBackgroundColor(m_BackgroundColor);
-  m_VSplitter->addWidget(m_ImageView);
 
   QObject::connect( m_ImageView, SIGNAL( SliceViewXYChanged(int) ),
                     this, SIGNAL( SliceViewXYChanged(int) ) );
@@ -1497,9 +1498,6 @@ QGoTabImageView3DwT::setupUi(QWidget *iParent)
   // connect the contours selection connection
   QObject::connect( m_ImageView, SIGNAL( VisibilityChanged() ),
                     this, SLOT( VisibilityPickedActor() ) );
-
-  m_HBoxLayout = new QHBoxLayout(iParent);
-  m_HBoxLayout->addWidget(m_VSplitter);
 
   retranslateUi(iParent);
 
@@ -2534,6 +2532,7 @@ QGoTabImageView3DwT::ValidateContour()
   if ( re_edit ) //need to set the widgets to a normal mode
     {
     this->m_TraceSettingsAction->setEnabled(true);
+    this->m_TraceSettingsWidget->setEnabled(true);
     m_ContourSegmentationDockWidget->SetReeditMode(false);
     m_ImageView->ReinitializeContourWidget();
     m_ContourSegmentationDockWidget->hide();
@@ -2588,6 +2587,7 @@ QGoTabImageView3DwT::ReEditContour(const unsigned int & iId)
       m_ImageView->InitializeContourWidgetNodes(dir, nodes);
 
       this->m_TraceSettingsAction->setEnabled(false);
+      this->m_TraceSettingsWidget->setEnabled(false);
       this->m_ContourSegmentationDockWidget->show();
       this->m_ContourSegmentationDockWidget->SegmentationMethod(0);
       this->m_ContourSegmentationDockWidget->SetReeditMode(true);
@@ -2993,6 +2993,7 @@ void QGoTabImageView3DwT::ShowTraceWidgetsForContour(
     else
       {
       this->m_TraceSettingsAction->setVisible(false);
+      this->m_TraceSettingsWidget->setVisible(false);
       }
     }
 }
@@ -3019,6 +3020,7 @@ void QGoTabImageView3DwT::ShowTraceWidgetsForMesh(
     else
       {
       this->m_TraceSettingsAction->setVisible(false);
+      this->m_TraceSettingsWidget->setVisible(false);
       }
     }
 }

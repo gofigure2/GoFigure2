@@ -65,6 +65,11 @@ public:
   typedef std::vector< std::pair< std::string, std::string > >
   NamesDescrContainerType;
 
+  QComboBox *                 m_SelectedTrace;
+  QGoSelectedColorComboBox*   m_SelectedColorComboBox;
+  QGoCollectionColorComboBox* m_CollectionColorComboBox;
+  QGoComboBox *               m_ChoseCellType;
+  QGoComboBox *               m_ChoseSubCellType;
   /**
   \brief get the name of the trace currently displayed in the QLabel
   \return std::string contains the name of the trace
@@ -194,6 +199,11 @@ public:
   ItemColorComboboxData* GetPointerCollectionData();
   ItemColorComboboxData* GetPointerColorData();
 
+  void SetPointerSelectedCellType(std::string* iCellType);
+  void SetPointerSelectedSubCellType(std::string* iSubCellType);
+  void SetPointerCollectionData(ItemColorComboboxData* iCollectionData);
+  void SetPointerColorData(ItemColorComboboxData* iColorData);
+
   unsigned int GetCurrentSelectedCollectionID();
 
 public slots:
@@ -224,17 +234,13 @@ signals:
 
 protected:
   //QLabel *                    m_TraceName;
-  QComboBox *                 m_SelectedTrace;
   QLabel *                    m_CollectionName;
   //QLabel*                     m_TraceLbl;
   //QLabel*                     m_CollectionLbl;
 
-  QGoSelectedColorComboBox*   m_SelectedColorComboBox;
-  QGoCollectionColorComboBox* m_CollectionColorComboBox;
+  
   QLabel*                     m_LabelCellType;
   QLabel*                     m_LabelSubCellType;
-  QGoComboBox *               m_ChoseCellType;
-  QGoComboBox *               m_ChoseSubCellType;
   std::string *               m_SelectedCellType;
   std::string *               m_SelectedSubCellType;
   ItemColorComboboxData *     m_SelectedCollectionData;

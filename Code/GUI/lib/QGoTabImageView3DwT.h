@@ -344,8 +344,6 @@ public slots:
   void AddContourForMeshToContours(vtkPolyData *);
 
 protected:
-  QHBoxLayout *                                  m_HBoxLayout;
-  QSplitter *                                    m_VSplitter;
   QGoImageView3D *                               m_ImageView;
   std::vector< vtkSmartPointer< vtkLSMReader > > m_LSMReader;
   std::vector< vtkSmartPointer< vtkImageData > > m_InternalImages;
@@ -380,9 +378,11 @@ protected:
   // base segmentation dockwidget for meshes
   QGoMeshSegmentationBaseDockWidget *m_MeshSegmentationDockWidget;
 
-  QGoTrackViewDockWidget* m_TrackViewDockWidget;
+  QGoTrackViewDockWidget*   m_TrackViewDockWidget;
 
   QGoLineageViewDockWidget* m_LineageViewDockWidget;
+
+  QGoTraceSettingsWidget*   m_TraceSettingsWidget;
 
   vtkPoints *m_Seeds;
 
@@ -391,7 +391,7 @@ protected:
   TrackContainer   *m_TrackContainer;
   LineageContainer *m_LineageContainer;
 
-  bool m_TraceWidgetRequiered;
+  //bool m_TraceWidgetRequiered;
 
   /** \brief We are in the regular visualization mode (true) or in the time
    * visualization mode (false) */

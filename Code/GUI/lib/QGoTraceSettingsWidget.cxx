@@ -633,3 +633,31 @@ void QGoTraceSettingsWidget::TraceToUpdate( int iIndexTrace )
 
   emit TraceChanged( iIndexTrace );
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTraceSettingsWidget::SetPointerSelectedCellType(std::string* iCellType)
+{
+  this->m_SelectedCellType = iCellType;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTraceSettingsWidget::SetPointerSelectedSubCellType(std::string* iSubCellType)
+{
+  this->m_SelectedSubCellType = iSubCellType;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTraceSettingsWidget::SetPointerCollectionData(ItemColorComboboxData* iCollectionData)
+{
+  this->m_SelectedCollectionData = iCollectionData;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTraceSettingsWidget::SetPointerColorData(ItemColorComboboxData* iColorData)
+{
+  this->m_SelectedColorData = iColorData;
+}
