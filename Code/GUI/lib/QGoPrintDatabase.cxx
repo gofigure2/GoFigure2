@@ -797,24 +797,36 @@ QGoTraceSettingsWidget*  QGoPrintDatabase::GetTraceSettingsWidgetForToolBar()
 void QGoPrintDatabase::SetTraceSettingsForMainWindow()
 {
   this->m_TraceSettingsWidgetForToolBar = new QGoTraceSettingsWidget(this);
+  this->m_TraceSettingsWidgetForToolBar->SetPointerCollectionData(
+    this->m_TraceSettingsWidget->GetPointerCollectionData() );
+  this->m_TraceSettingsWidgetForToolBar->SetPointerColorData(
+    this->m_TraceSettingsWidget->GetPointerColorData() );
+  this->m_TraceSettingsWidgetForToolBar->SetPointerSelectedCellType(
+    this->m_TraceSettingsWidget->GetPointerSelectedCellType() );
+  this->m_TraceSettingsWidgetForToolBar->SetPointerSelectedSubCellType(
+    this->m_TraceSettingsWidget->GetPointerSelectedSubCellType() );
 
-  QObject::connect(this->m_TraceSettingsWidget->m_SelectedTrace, SIGNAL(activated(int) ),
+  QObject::connect(this->m_TraceSettingsWidget->m_SelectedTrace, SIGNAL(currentIndexChanged (int) ),
     this->m_TraceSettingsWidgetForToolBar->m_SelectedTrace, SLOT(setCurrentIndex(int) ) );
-  QObject::connect(this->m_TraceSettingsWidget->m_SelectedColorComboBox, SIGNAL(activated(int) ),
+  QObject::connect(this->m_TraceSettingsWidget->m_SelectedColorComboBox, SIGNAL(currentIndexChanged (int) ),
     this->m_TraceSettingsWidgetForToolBar->m_SelectedColorComboBox, SLOT(setCurrentIndex(int) ) );
-  QObject::connect(this->m_TraceSettingsWidget->m_ChoseCellType, SIGNAL(activated(int) ),
+  QObject::connect(this->m_TraceSettingsWidget->m_ChoseCellType, SIGNAL(currentIndexChanged (int) ),
     this->m_TraceSettingsWidgetForToolBar->m_ChoseCellType, SLOT(setCurrentIndex(int) ) );
-  QObject::connect(this->m_TraceSettingsWidget->m_ChoseSubCellType, SIGNAL(activated(int) ),
+  QObject::connect(this->m_TraceSettingsWidget->m_ChoseSubCellType, SIGNAL(currentIndexChanged (int) ),
     this->m_TraceSettingsWidgetForToolBar->m_ChoseSubCellType, SLOT(setCurrentIndex(int) ) );
+  QObject::connect(this->m_TraceSettingsWidget->m_CollectionColorComboBox, SIGNAL(currentIndexChanged (int) ),
+    this->m_TraceSettingsWidgetForToolBar->m_CollectionColorComboBox, SLOT(setCurrentIndex(int) ) );
 
-  QObject::connect(this->m_TraceSettingsWidgetForToolBar->m_SelectedTrace, SIGNAL(activated(int) ),
+  QObject::connect(this->m_TraceSettingsWidgetForToolBar->m_SelectedTrace, SIGNAL(currentIndexChanged (int) ),
     this->m_TraceSettingsWidget->m_SelectedTrace, SLOT(setCurrentIndex(int) ) );
-  QObject::connect(this->m_TraceSettingsWidgetForToolBar->m_SelectedColorComboBox, SIGNAL(activated(int) ),
+  QObject::connect(this->m_TraceSettingsWidgetForToolBar->m_SelectedColorComboBox, SIGNAL(currentIndexChanged (int) ),
     this->m_TraceSettingsWidget->m_SelectedColorComboBox, SLOT(setCurrentIndex(int) ) );
-  QObject::connect(this->m_TraceSettingsWidgetForToolBar->m_ChoseCellType, SIGNAL(activated(int) ),
+  QObject::connect(this->m_TraceSettingsWidgetForToolBar->m_ChoseCellType, SIGNAL(currentIndexChanged (int) ),
     this->m_TraceSettingsWidget->m_ChoseCellType, SLOT(setCurrentIndex(int) ) );
-  QObject::connect(this->m_TraceSettingsWidgetForToolBar->m_ChoseSubCellType, SIGNAL(activated(int) ),
+  QObject::connect(this->m_TraceSettingsWidgetForToolBar->m_ChoseSubCellType, SIGNAL(currentIndexChanged (int) ),
     this->m_TraceSettingsWidget->m_ChoseSubCellType, SLOT(setCurrentIndex(int) ) );
+  QObject::connect(this->m_TraceSettingsWidgetForToolBar->m_CollectionColorComboBox, SIGNAL(currentIndexChanged (int) ),
+    this->m_TraceSettingsWidget->m_CollectionColorComboBox, SLOT(setCurrentIndex(int) ) );
 
 }
 //--------------------------------------------------------------------------
@@ -906,12 +918,14 @@ void QGoPrintDatabase::InitializeTheComboboxesNotTraceRelated()
 void QGoPrintDatabase::SetTSListColors(std::string iNewColorToSelect)
 {
   this->OpenDBConnection();
+  this->blockSignals(true);
   this->m_TraceSettingsWidget->SetListColors(
     this->m_ColorManager->GetListExistingColors(this->m_DatabaseConnector),
     iNewColorToSelect);
   this->m_TraceSettingsWidgetForToolBar->SetListColors(
     this->m_ColorManager->GetListExistingColors(this->m_DatabaseConnector),
     iNewColorToSelect);
+  this->blockSignals(false);
   this->CloseDBConnection();
 }
 

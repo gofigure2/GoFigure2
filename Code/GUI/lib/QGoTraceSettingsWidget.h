@@ -199,6 +199,11 @@ public:
   ItemColorComboboxData* GetPointerCollectionData();
   ItemColorComboboxData* GetPointerColorData();
 
+  void SetPointerSelectedCellType(std::string* iCellType);
+  void SetPointerSelectedSubCellType(std::string* iSubCellType);
+  void SetPointerCollectionData(ItemColorComboboxData* iCollectionData);
+  void SetPointerColorData(ItemColorComboboxData* iColorData);
+
   unsigned int GetCurrentSelectedCollectionID();
 
 public slots:
