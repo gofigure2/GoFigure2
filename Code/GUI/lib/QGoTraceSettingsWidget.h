@@ -213,6 +213,10 @@ public slots:
   \param[in] iNewCollectionID ID and QColor of the new item
   */
   void AddANewCollectionID(std::pair<std::string, QColor> iNewCollectionID);
+  /**
+  \brief in order the pointers already deleted are not deleted again
+  */
+  void SetSelectedPointersToNull();
 
 signals:
   void AddANewCellType();

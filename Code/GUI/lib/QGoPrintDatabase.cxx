@@ -829,6 +829,11 @@ void QGoPrintDatabase::SetConnectionsBetweenTheInstancesOfTraceSettings()
   QObject::connect(this->m_TraceSettingsWidgetForToolBar->m_CollectionColorComboBox, SIGNAL(currentIndexChanged (int) ),
     this->m_TraceSettingsWidget->m_CollectionColorComboBox, SLOT(setCurrentIndex(int) ) );
 
+  QObject::connect(this->m_TraceSettingsWidget, SIGNAL(	destroyed() ),
+    this->m_TraceSettingsWidgetForToolBar, SLOT(SetSelectedPointersToNull() ) );
+
+  QObject::connect(this->m_TraceSettingsWidgetForToolBar, SIGNAL(	destroyed() ),
+    this->m_TraceSettingsWidget, SLOT(SetSelectedPointersToNull() ) );
 }
 //--------------------------------------------------------------------------
 

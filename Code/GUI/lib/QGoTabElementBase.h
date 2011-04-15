@@ -74,6 +74,9 @@ public:
   /** \brief Get all actions belonging to View Menu and Toolbar.*/
   virtual std::vector< QAction * > ViewActions();
 
+  /** \brief Get all actions belonging to View Menu only.*/
+  virtual std::vector< QAction * > ViewNoToolBarActions();
+
   /** \brief Get all actions belonging to Segmentation Menu and Toolbar. */
   virtual std::vector< QAction * > SegmentationActions();
 
@@ -131,6 +134,7 @@ protected:
   std::list< QAction * > m_PluginActionList;
 
   std::vector< QAction * > m_ViewActions;
+  std::vector< QAction* >  m_ViewNoToolBarActions;
   std::vector< QAction * > m_SegmentationActions;
   std::vector< QAction * > m_ToolsActions;
   std::vector< QAction * > m_BookmarkActions;
