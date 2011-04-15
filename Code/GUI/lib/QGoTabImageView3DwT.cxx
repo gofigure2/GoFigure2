@@ -713,6 +713,10 @@ QGoTabImageView3DwT::SetRendererWindow(int iValue)
 void
 QGoTabImageView3DwT::CreateAllViewActions()
 {
+  QAction *separator1 = new QAction(this);
+  separator1->setSeparator(true);
+  this->m_ViewNoToolBarActions.push_back(separator1);
+
   QActionGroup *group = new QActionGroup(this);
 
   QAction *QuadViewAction = new QAction(tr("Quad-View"), this);
@@ -810,7 +814,6 @@ QGoTabImageView3DwT::CreateAllViewActions()
   QObject::connect( ActionDisplayAnnotations, SIGNAL( triggered() ),
                     this->m_ImageView, SLOT( ShowAnnotations() ) );
 
-  //this->m_ViewActions.push_back(ActionDisplayAnnotations);
   this->m_ViewNoToolBarActions.push_back(ActionDisplayAnnotations);
 
   QAction *ActionDisplaySplinePlanes =
@@ -823,7 +826,6 @@ QGoTabImageView3DwT::CreateAllViewActions()
   displaysplineplaneicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/C_M_L.png") ),
                                    QIcon::Normal, QIcon::Off);
   ActionDisplaySplinePlanes->setIcon(displaysplineplaneicon);
-  //this->m_ViewActions.push_back(ActionDisplaySplinePlanes);
   this->m_ViewNoToolBarActions.push_back(ActionDisplaySplinePlanes);
 
   QObject::connect( ActionDisplaySplinePlanes, SIGNAL( triggered() ),
@@ -842,13 +844,7 @@ QGoTabImageView3DwT::CreateAllViewActions()
   QObject::connect( DisplayCube3D, SIGNAL( triggered() ),
                     this->m_ImageView, SLOT( ShowCube3D() ) );
 
-  //this->m_ViewActions.push_back(DisplayCube3D);
   this->m_ViewNoToolBarActions.push_back(DisplayCube3D);
-
-  /*QAction *separator3 = new QAction(this);
-  separator3->setSeparator(true);
-
-  this->m_ViewActions.push_back(separator3);*/
 
   QAction *LookupTableAction = new QAction(tr("Lookup Table"), this);
   LookupTableAction->setObjectName("LUT");
@@ -890,21 +886,9 @@ QGoTabImageView3DwT::CreateAllViewActions()
   QObject::connect( m_BackgroundColorAction, SIGNAL( triggered() ),
                     this, SLOT( ChangeBackgroundColor() ) );
 
-  QAction *separator4 = new QAction(this);
-  separator4->setSeparator(true);
-  this->m_ViewActions.push_back(separator4);
-
   this->m_ViewActions.push_back( m_NavigationDockWidget->toggleViewAction() );
 
-  /*QAction *separator5 = new QAction(this);
-  separator5->setSeparator(true);
-  this->m_ViewActions.push_back(separator5);*/
-
   this->m_ViewActions.push_back( m_DataBaseTables->toggleViewAction() );
-
-  /*QAction *separator6 = new QAction(this);
-  separator6->setSeparator(true);
-  this->m_ViewActions.push_back(separator6);*/
 
   /// \todo create group actions for views changing
   QAction *Change3DPerspectiveToAxialAction =
@@ -914,8 +898,7 @@ QGoTabImageView3DwT::CreateAllViewActions()
                       QIcon::Normal, QIcon::Off);
   Change3DPerspectiveToAxialAction->setIcon(axialicon);
   this->m_ViewNoToolBarActions.push_back(Change3DPerspectiveToAxialAction);
-  //this->m_ViewActions.push_back(Change3DPerspectiveToAxialAction); 
-
+ 
   QObject::connect( Change3DPerspectiveToAxialAction, SIGNAL( triggered() ),
                     this, SLOT( Change3DPerspectiveToAxial() ) );
 
@@ -925,7 +908,7 @@ QGoTabImageView3DwT::CreateAllViewActions()
   coronalicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/DorsalView.png") ),
                         QIcon::Normal, QIcon::Off);
   Change3DPerspectiveToCoronalAction->setIcon(coronalicon);
-  //this->m_ViewActions.push_back(Change3DPerspectiveToCoronalAction);
+ 
   this->m_ViewNoToolBarActions.push_back(Change3DPerspectiveToCoronalAction);
 
   QObject::connect( Change3DPerspectiveToCoronalAction, SIGNAL( triggered() ),
@@ -937,7 +920,7 @@ QGoTabImageView3DwT::CreateAllViewActions()
   sagittalicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/LeftView.png") ),
                          QIcon::Normal, QIcon::Off);
   Change3DPerspectiveToSagittalAction->setIcon(sagittalicon);
-  //this->m_ViewActions.push_back(Change3DPerspectiveToSagittalAction);
+  
   this->m_ViewNoToolBarActions.push_back(Change3DPerspectiveToSagittalAction);
 
   QObject::connect( Change3DPerspectiveToSagittalAction, SIGNAL( triggered() ),
@@ -969,12 +952,6 @@ QGoTabImageView3DwT::CreateAllViewActions()
   QAction *separator9 = new QAction(this);
   separator9->setSeparator(true);
   this->m_ViewActions.push_back(separator9);
-
-   // Track Color Coding
-  //this->m_ViewActions.push_back( m_TrackViewDockWidget->toggleViewAction() );
-
-  // Lineage Color Coding
-  //this->m_ViewActions.push_back( m_LineageViewDockWidget->toggleViewAction() );
 
   // Enable synchronization
   QAction *SynchronizeViewsAction =

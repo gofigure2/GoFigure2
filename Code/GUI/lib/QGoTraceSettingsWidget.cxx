@@ -665,3 +665,10 @@ void QGoTraceSettingsWidget::SetPointerColorData(ItemColorComboboxData* iColorDa
 {
   this->m_SelectedColorData = iColorData;
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTraceSettingsWidget::SetSelectedPointersToNull()
+{
+  
+}
