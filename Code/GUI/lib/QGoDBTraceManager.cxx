@@ -78,6 +78,9 @@ void QGoDBTraceManager::SetInfo(unsigned int iImgSessionID, QWidget *iParent)
   QObject::connect( this->m_Table, SIGNAL( VisibleRowsChanged(int) ),
                     this, SLOT( UpdateVisibleElementsInVisuContainer(int) ) );
 
+  QObject::connect( this->m_Table, SIGNAL(customContextMenuRequested (const QPoint &) ),
+                    this, SLOT(	CreateContextMenu ( const QPoint &) ) );
+
   this->m_ImgSessionID = iImgSessionID;
 }
 

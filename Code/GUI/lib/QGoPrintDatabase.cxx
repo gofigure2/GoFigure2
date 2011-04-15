@@ -1069,7 +1069,7 @@ void QGoPrintDatabase::GetContentAndDisplayAllTracesInfo(
 //-------------------------------------------------------------------------
 void QGoPrintDatabase::CreateContextMenu(const QPoint & iPos)
 {
-  std::string TraceName = this->m_TraceSettingsWidget->GetTraceName();
+  /*std::string TraceName = this->m_TraceSettingsWidget->GetTraceName();
 
   if ( TraceName == "contour" )
     {
@@ -1086,7 +1086,7 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint & iPos)
   if ( TraceName == "lineage")
     {
     this->m_LineagesManager->CreateContextMenu(iPos);
-    }
+    }*/
 }
 
 //--------------------------------------------------------------------------

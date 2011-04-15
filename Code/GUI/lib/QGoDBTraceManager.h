@@ -195,13 +195,6 @@ public:
   */
   void DisplayInfoForExistingTraces(vtkMySQLDatabase *iDatabaseConnector,
                                     std::list< unsigned int > iListTraces);
-
-  /**
-  \brief create the context menu when the user clicks on the table widget
-  \param[in] iPos position of the context menu event
-  */
-  void CreateContextMenu(const QPoint & iPos);
-
   /**
   \brief get the last saved traces in the database
   \param[in] iDatabaseConnector connection to the database
@@ -804,6 +797,12 @@ protected:
 
 protected slots:
   //context menu:
+  /**
+  \brief create the context menu when the user clicks on the table widget
+  \param[in] iPos position of the context menu event
+  */
+  void CreateContextMenu(const QPoint & iPos);
+
   void CheckSelectedRows();
 
   void UncheckSelectedRows();

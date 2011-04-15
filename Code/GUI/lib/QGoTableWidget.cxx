@@ -50,6 +50,8 @@ QGoTableWidget::QGoTableWidget(QWidget *iParent) : QTableWidget(iParent)
   QObject::connect( this,
                     SIGNAL( cellClicked(int, int) ),
                     this, SLOT( UpdateColumnsWithCheckBoxes(int, int) ) );
+
+  this->setContextMenuPolicy(Qt::CustomContextMenu);
 }
 
 //--------------------------------------------------------------------------
