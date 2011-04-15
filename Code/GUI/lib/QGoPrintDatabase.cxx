@@ -220,7 +220,7 @@ void QGoPrintDatabase::FillTableFromDatabase()
   this->GetContentAndDisplayAllTracesInfo(this->m_DatabaseConnector);
   CloseDBConnection();
 
-  QString title = QString("Imaging Session: %1 ").arg( m_ImgSessionName.c_str() );
+  QString title = QString("Table for: %1 ").arg( m_ImgSessionName.c_str() );
   this->setWindowTitle(title);
   
   this->m_StackedTables->addWidget(this->m_ContoursManager->GetTableWidget());
