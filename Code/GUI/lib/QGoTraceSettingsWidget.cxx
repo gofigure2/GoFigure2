@@ -79,35 +79,20 @@ void QGoTraceSettingsWidget::SetUpUi()
 {
   QWidget* TraceSettingsWidget = new QWidget(this);
 
- // QHBoxLayout* ColorLayout = new QHBoxLayout;
-  //SetSelectedColorComboBox(ColorLayout);
-  //QHBoxLayout* TraceLayout = new QHBoxLayout;
-  
-  //QHBoxLayout* TraceCollectionLayout = new QHBoxLayout;
- // SetTraceCollectionColorComboBox(TraceCollectionLayout);
-
-  //QHBoxLayout* CellTypeLayout = new QHBoxLayout;
-  //SetCellTypeComboBox(CellTypeLayout);
-
-  //QHBoxLayout* SubCellLayout = new QHBoxLayout;
-  //SetSubCellTypeComboBox(SubCellLayout);
-
   QHBoxLayout* MainLayout = new QHBoxLayout;
   QLabel* Blank = new QLabel(this);
 
-  //MainLayout->addLayout(TraceCollectionLayout);
   SetTraceCollectionColorComboBox(MainLayout, Blank);
   MainLayout->addWidget(Blank);
   SetSelectedColorComboBox(MainLayout);
-  //MainLayout->addLayout(ColorLayout);
+
   MainLayout->addWidget(Blank);
   SetCellTypeComboBox(MainLayout);
   SetSubCellTypeComboBox(MainLayout);
-  //MainLayout->addLayout(CellTypeLayout);
-  //MainLayout->addLayout(SubCellLayout);
 
   this->SetWidgetFont();
-  this->UpdateTraceAndCollection("contour", "mesh");
+  //this->UpdateTraceAndCollection("contour", "mesh");
+  this->SetCurrentTraceName("contour");
 
   this->setLayout(MainLayout);
   this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -122,14 +107,17 @@ QGoTraceSettingsWidget::SetListCollectionID(
 {
   if ( !iCollectionIDtoSelect.empty() )
     {
-    this->m_CollectionColorComboBox->SetItemsFromListWithColor( iListExistingID,
-                                                                this->m_CollectionName->text().toStdString() );
-    this->m_CollectionColorComboBox->SetCurrentItemAndActivate(iCollectionIDtoSelect);
+    this->m_CollectionColorComboBox->
+      SetItemsFromListWithColor( iListExistingID,
+                                 this->m_CollectionName->text().toStdString() );
+    this->m_CollectionColorComboBox->
+      SetCurrentItemAndActivate(iCollectionIDtoSelect);
     }
   else
     {
-    this->m_CollectionColorComboBox->InitializeTheListWithColor( iListExistingID,
-                                                                 this->m_CollectionName->text().toStdString() );
+    this->m_CollectionColorComboBox->
+      InitializeTheListWithColor( iListExistingID,
+                                  this->m_CollectionName->text().toStdString() );
     }
 }
 
@@ -235,7 +223,6 @@ void
 QGoTraceSettingsWidget::SetTraceCollectionColorComboBox(
   QHBoxLayout* iLayoutTraceCollection, QLabel* iLabel)
 {
-  //this->m_TraceName = new QLabel(this);
   QString Tooltip(tr("Current trace you are working on") );
   this->m_SelectedTrace = new QComboBox(this);
   this->m_SelectedTrace->setToolTip(Tooltip);
@@ -285,7 +272,7 @@ QGoTraceSettingsWidget::SetTraceCollectionColorComboBox(
 
   QObject::connect( this->m_SelectedTrace,
                     SIGNAL( currentIndexChanged ( int ) ),
-                    this, SLOT ( TraceToUpdate( int ) ) );
+                    this, SLOT ( CurrentTraceToUpdate( int ) ) );
 }
 
 //-------------------------------------------------------------------------
@@ -416,28 +403,22 @@ void QGoTraceSettingsWidget::SetCurrentCollectionID(std::string iID)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTraceSettingsWidget::UpdateTraceAndCollection(std::string iTrace, 
+/*void QGoTraceSettingsWidget::UpdateTraceAndCollection(std::string iTrace, 
   std::string iCollection)
 {
   this->m_SelectedTrace->setCurrentIndex(
     this->m_SelectedTrace->findText(iTrace.c_str() ) );
   this->UpdateCollection(iCollection);
-}
+}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoTraceSettingsWidget::UpdateCollection(
-  //std::string iTrace, 
   std::string iCollection)
 {
-  //this->ChangeWindowTitle(iTrace);
-
-  //this->m_TraceName->setText( iTrace.c_str() );
   this->m_CollectionName->setText( iCollection.c_str() );
   this->m_CollectionName->show();
-  //this->m_CollectionLbl->show();
-  
-  //if ( iTrace == "contour" || iTrace == "mesh" )
+
   if (this->m_SelectedTrace->currentText() == "contour" || 
     this->m_SelectedTrace->currentText() == "mesh")
     {
@@ -457,24 +438,12 @@ void QGoTraceSettingsWidget::UpdateCollection(
     this->m_CollectionColorComboBox->hide();
     }
 
-  //if (iTrace == "lineage")
   if (this->m_SelectedTrace->currentText() == "lineage")
     {
     this->m_CollectionName->hide();
-    //this->m_CollectionLbl->hide();
     }
-  // update visualization
-  this->show();
 }
 
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/*void QGoTraceSettingsWidget::ChangeWindowTitle(std::string iTrace)
-{
-  QString Title(tr("%1 Settings").arg(iTrace.c_str() ) );
-  this->setWindowTitle(Title);
-}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -488,26 +457,15 @@ void QGoTraceSettingsWidget::SetWidgetFont()
   //trace and collection name:
   Font.setCapitalization(QFont::AllUppercase);
   Font.setBold(true);
-  //this->m_TraceName->setFont(Font);
+
   this->m_SelectedTrace->setFont(Font);
   this->m_CollectionName->setFont(Font);
-
-  //trace and collection label:
-  //Font.setCapitalization(QFont::Capitalize);
-  //Font.setPointSize(8);
-  //Font.setUnderline(true);
-  //Font.setWeight(50);
-  //Font.setBold(false);
-  
-  //this->m_TraceLbl->setFont(Font);
-  //this->m_CollectionLbl->setFont(Font);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 std::string QGoTraceSettingsWidget::GetTraceName()
 {
-  //return this->m_TraceName->text().toStdString();
   return this->m_SelectedTrace->currentText().toStdString();
 }
 
@@ -612,7 +570,7 @@ unsigned int QGoTraceSettingsWidget::GetCurrentSelectedCollectionID()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTraceSettingsWidget::TraceToUpdate( int iIndexTrace ) 
+void QGoTraceSettingsWidget::CurrentTraceToUpdate( int iIndexTrace ) 
 {
   if (this->m_SelectedTrace->currentText() == "contour")
     {
@@ -670,4 +628,12 @@ void QGoTraceSettingsWidget::SetSelectedPointersToNull()
   this->m_SelectedColorData = NULL;
   this->m_SelectedCellType = NULL;
   this->m_SelectedSubCellType = NULL;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTraceSettingsWidget::SetCurrentTraceName(std::string iTraceName)
+{
+  this->m_SelectedTrace->setCurrentIndex(
+    this->m_SelectedTrace->findText(iTraceName.c_str() ) );
 }

@@ -158,12 +158,15 @@ void QGoPrintDatabase::SetUpUi()
   QWidget* Widget = new QWidget;
   QVBoxLayout* verticalLayout = new QVBoxLayout(Widget);
   this->m_StackedTables = new QStackedWidget(Widget);
+
   verticalLayout->addWidget(this->m_TraceSettingsWidget);
+  this->m_TraceSettingsWidget->setVisible(false);
+  this->m_TraceSettingsVisible = false;
+
   verticalLayout->addWidget(this->m_StackedTables);
   Widget->setLayout(verticalLayout);
   this->setContextMenuPolicy(Qt::CustomContextMenu);
   this->setWidget(Widget);
-  this->m_TraceSettingsVisible = true;
   this->SetConnectionsBetweenTheInstancesOfTraceSettings();
 }
 //--------------------------------------------------------------------------
@@ -585,7 +588,7 @@ void QGoPrintDatabase::TheTraceHasChanged(int iIndex)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::SetTable(std::string iTablename)
+/*void QGoPrintDatabase::SetTable(std::string iTablename)
 {
   int Index = 0;
 
@@ -602,7 +605,7 @@ void QGoPrintDatabase::SetTable(std::string iTablename)
     Index = 3;
     }
   this->m_StackedTables->setCurrentIndex(Index);
-}
+}*/
 
 //-------------------------------------------------------------------------
 
@@ -834,6 +837,9 @@ void QGoPrintDatabase::SetConnectionsBetweenTheInstancesOfTraceSettings()
 
   QObject::connect(this->m_TraceSettingsWidgetForToolBar, SIGNAL(	destroyed() ),
     this->m_TraceSettingsWidget, SLOT(SetSelectedPointersToNull() ) );
+
+  QObject::connect( this, SIGNAL(topLevelChanged(bool) ),
+                     this, SLOT(ShowHideTraceSettingsFromContextMenu(bool) ) );
 }
 //--------------------------------------------------------------------------
 
@@ -879,33 +885,14 @@ void QGoPrintDatabase::CreateConnectionsForTraceSettingsWidget(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::UpdateWidgetsForCorrespondingTrace(std::string iTraceName,
-                                                          std::string iCollectionName, bool UpdateTableWidget)
+void QGoPrintDatabase::SetTraceNameForTableWidget(std::string iTraceName)
 {
   std::string PreviousTraceName = this->m_TraceSettingsWidget->GetTraceName();
-
-  if ( UpdateTableWidget )
+  if (PreviousTraceName != iTraceName)
     {
-    std::string CurrentTableName = this->InWhichTableAreWe();
-    if ( CurrentTableName != iTraceName )
-      {
-      this->UpdateSelectedCollectionForTableWidget(PreviousTraceName);
-      this->m_TraceSettingsWidget->UpdateTraceAndCollection(iTraceName, iCollectionName);
-      this->m_TraceSettingsWidgetForToolBar->UpdateTraceAndCollection(iTraceName, iCollectionName);
-      this->SetTSListCollectionID();
-      }
-    //if the TableWidget has to be set to match the trace name, no need for the
-    //signal TabHasChanged to be emitted, it would results in the Segmentation
-    //widgets to be hidden
-    this->blockSignals(true);
-    this->SetTable(iTraceName);
-    this->blockSignals(false);
-    return;
+    this->UpdateSelectedCollectionForTableWidget(PreviousTraceName);
+    this->m_TraceSettingsWidget->SetCurrentTraceName(iTraceName);
     }
-  this->UpdateSelectedCollectionForTableWidget(PreviousTraceName);
-  this->m_TraceSettingsWidget->UpdateTraceAndCollection(iTraceName, iCollectionName);
-  this->m_TraceSettingsWidgetForToolBar->UpdateTraceAndCollection(iTraceName, iCollectionName);
-  this->SetTSListCollectionID();
 }
 
 //-------------------------------------------------------------------------
@@ -1800,3 +1787,18 @@ void QGoPrintDatabase::ShowHideTraceSettingsFromContextMenu(bool isVisible)
   this->m_TraceSettingsWidget->setVisible(isVisible);
   this->m_TraceSettingsVisible = isVisible;
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+ bool QGoPrintDatabase::NeedTraceSettingsToolBarVisible()
+ {
+   if (!this->isVisible() )
+    {
+    return true;
+    }
+   if(this->isFloating())
+    {
+    return false;
+    }
+   return !this->m_TraceSettingsVisible;
+ }

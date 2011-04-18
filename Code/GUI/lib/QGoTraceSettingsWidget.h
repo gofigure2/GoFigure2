@@ -118,6 +118,8 @@ public:
   */
   void SetCurrentCollectionID(std::string iID);
 
+  void SetCurrentTraceName(std::string iTraceName);
+
   /**
   \brief update the QLabel with iTrace and iCollection, the "add a new.." in the
   CollectionColorComboBox and hide/show the celltype and subcelltype comboboxes
@@ -125,8 +127,8 @@ public:
   \param[in] iTrace name of the trace to update
   \param[in] iCollection name of the collection to update
   */
-  void UpdateTraceAndCollection(
-    std::string iTrace, std::string iCollection);
+  //void UpdateTraceAndCollection(
+  //  std::string iTrace, std::string iCollection);
 
   /**
   \brief replace the list of collectionID with the ID and corresponding color
@@ -234,15 +236,9 @@ signals:
   void NewCollectionToBeCreated();
 
   void TraceChanged( int );
-  //void WindowsTitleToModify(QString);
 
 protected:
-  //QLabel *                    m_TraceName;
-  QLabel *                    m_CollectionName;
-  //QLabel*                     m_TraceLbl;
-  //QLabel*                     m_CollectionLbl;
-
-  
+  QLabel *                    m_CollectionName;  
   QLabel*                     m_LabelCellType;
   QLabel*                     m_LabelSubCellType;
   std::string *               m_SelectedCellType;
@@ -279,8 +275,6 @@ protected:
   */
   void SetSubCellTypeComboBox(
     QHBoxLayout* iSubCellLayout);
-
-  //void ChangeWindowTitle(std::string iTraceName);
 
   void SetWidgetFont();
 
@@ -342,10 +336,15 @@ protected:
   }
 
 protected slots:
+
   void UpdateValueSelectedCollection(ItemColorComboboxData iCollectionData);
   void UpdateValueSelectedCellType(std::string iCellType);
   void UpdateValueSelectedSubCellType(std::string iSubCellType);
   void UpdateValueSelectedColor(ItemColorComboboxData iColorData);
-  void TraceToUpdate(int iIndex);
+  /** 
+  brief update the correspodning collection when the current trace has been changed 
+  and emit a signal that the trace has been changed
+  */
+  void CurrentTraceToUpdate(int iIndex);
 };
 #endif

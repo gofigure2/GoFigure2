@@ -45,7 +45,7 @@
 
 //--------------------------------------------------------------------------
 QGoTabElementBase::QGoTabElementBase(QWidget *iParent) : QMainWindow(iParent),
-  m_StatusBar(NULL), m_TraceSettingsAction(NULL)
+  m_StatusBar(NULL), m_TraceSettingsToolBar(NULL)
 {
 }
 
@@ -121,9 +121,9 @@ QWidget*  QGoTabElementBase::TraceSettingsWidget()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoTabElementBase::SetTraceSettingsAction(QAction* iAction)
+void QGoTabElementBase::SetTraceSettingsToolBar(QToolBar* iToolBar)
 {
-  this->m_TraceSettingsAction = iAction;
+  this->m_TraceSettingsToolBar = iToolBar;
 }
 //--------------------------------------------------------------------------
 

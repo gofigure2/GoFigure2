@@ -573,17 +573,16 @@ protected slots:
 
   void OpenExistingBookmark();
 
-  void ShowTraceWidgetsForContour(bool ManualSegVisible = true);
-
-  void ShowTraceWidgetsForMesh(bool MeshVisible = true);
+  /**
+  \brief slot connected to the toggleaction of the TW, the contour and mesh editing,
+  update the trace and collection name of the trace settings toolbar and widget and
+  check if the trace settings toolbar needs to be shown/hidden
+  */
+  void SetTraceSettingsToolBarVisible(bool IsVisible);
 
   void UpdateSeeds();
 
   void GoToLocation(int iX, int iY, int iZ, int iT);
-
-  //void CloseTabRequest(bool iTable);
-
-  //void RequieresTraceWidget(bool iTable);
 
   /**
    * \brief Mouse interaction style allows contours segmentation, according to
