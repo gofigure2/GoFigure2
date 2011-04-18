@@ -2965,8 +2965,8 @@ void QGoTabImageView3DwT::ShowTraceWidgetsForContour(
       }
     else
       {
-      this->m_TraceSettingsAction->setVisible(false);
-      this->m_TraceSettingsWidget->setVisible(false);
+      //this->m_TraceSettingsAction->setVisible(false);
+      //this->m_TraceSettingsWidget->setVisible(false);
       }
     }
 }
@@ -2992,8 +2992,8 @@ void QGoTabImageView3DwT::ShowTraceWidgetsForMesh(
       }
     else
       {
-      this->m_TraceSettingsAction->setVisible(false);
-      this->m_TraceSettingsWidget->setVisible(false);
+      //this->m_TraceSettingsAction->setVisible(false);
+      //this->m_TraceSettingsWidget->setVisible(false);
       }
     }
 }

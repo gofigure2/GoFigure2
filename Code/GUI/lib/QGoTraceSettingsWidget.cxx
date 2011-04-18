@@ -464,7 +464,7 @@ void QGoTraceSettingsWidget::UpdateCollection(
     //this->m_CollectionLbl->hide();
     }
   // update visualization
-  this->show();
+  //this->show();
 }
 
 //-------------------------------------------------------------------------
