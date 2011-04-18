@@ -79,7 +79,6 @@ void QGoTabManager::ClearTabElement(QGoTabElementBase *iE)
     m_MainWindow->m_ViewToolBar->clear();
     m_MainWindow->m_ModeToolBar->clear();
     m_MainWindow->m_TracesToolBar->clear();
-    //m_MainWindow->m_TraceSettingsToolBar->clear();
     // Then remove all actions related to the previous tab from menuView
     m_MainWindow->menuView->clear();
 
@@ -210,7 +209,14 @@ void QGoTabManager::SetUpTabElement(QGoTabElementBase *iE)
           {
           dck_it->first->m_Area = dck_it->first->m_DefaultArea;
           }
-        m_MainWindow->addDockWidget(dck_it->first->m_Area, dck_it->second);
+        if( dck_it->first->m_MainWindow != 0)
+          {
+          dck_it->first->m_MainWindow->addDockWidget(dck_it->first->m_Area, dck_it->second);
+          }
+        else
+          {
+          m_MainWindow->addDockWidget(dck_it->first->m_Area, dck_it->second);
+          }
         }
       dck_it->second->setVisible(dck_it->first->m_Visibility);
       }
