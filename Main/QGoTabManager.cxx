@@ -192,11 +192,9 @@ void QGoTabManager::SetUpTabElement(QGoTabElementBase *iE)
       {
         m_MainWindow->m_TracesToolBar->addAction(*it);
       }
-
-    QAction* TracesAction = 
-      m_MainWindow->m_TraceSettingsToolBar->addWidget(iE->TraceSettingsWidget() );
-    TracesAction->setVisible(true);
-    iE->SetTraceSettingsAction(TracesAction);
+    
+    m_MainWindow->m_TraceSettingsToolBar->addWidget(iE->TraceSettingsWidget() );
+    iE->SetTraceSettingsToolBar(m_MainWindow->m_TraceSettingsToolBar);
    
     
     std::list< QGoTabElementBase::QGoDockWidgetStatusPair > dock_list = iE->DockWidget();

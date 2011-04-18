@@ -128,7 +128,7 @@ public:
 
   void SetStatusBarPointer(QStatusBar* iStatusbar);
 
-  virtual void SetTraceSettingsAction(QAction* iAction);
+  virtual void SetTraceSettingsToolBar(QToolBar* iToolBar);
 
 protected:
   std::list< QAction * > m_PluginActionList;
@@ -141,7 +141,7 @@ protected:
   std::vector< QAction * > m_ModeActions;
   std::vector< QAction * > m_TracesActions;
   QWidget*                 m_TraceSettingsWidgetForToolBar;
-  QAction*                 m_TraceSettingsAction;
+  QToolBar*                m_TraceSettingsToolBar;
 
   std::list< QGoDockWidgetStatusPair > m_DockWidgetList;
   QStatusBar*              m_StatusBar;

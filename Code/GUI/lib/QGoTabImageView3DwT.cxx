@@ -2504,7 +2504,7 @@ QGoTabImageView3DwT::ValidateContour()
 
   if ( re_edit ) //need to set the widgets to a normal mode
     {
-    this->m_TraceSettingsAction->setEnabled(true);
+    this->m_TraceSettingsToolBar->setEnabled(true);
     this->m_TraceSettingsWidget->setEnabled(true);
     m_ContourSegmentationDockWidget->SetReeditMode(false);
     m_ImageView->ReinitializeContourWidget();
@@ -2559,7 +2559,7 @@ QGoTabImageView3DwT::ReEditContour(const unsigned int & iId)
 
       m_ImageView->InitializeContourWidgetNodes(dir, nodes);
 
-      this->m_TraceSettingsAction->setEnabled(false);
+      this->m_TraceSettingsToolBar->setEnabled(false);
       this->m_TraceSettingsWidget->setEnabled(false);
       this->m_ContourSegmentationDockWidget->show();
       this->m_ContourSegmentationDockWidget->SegmentationMethod(0);
@@ -2955,6 +2955,7 @@ void QGoTabImageView3DwT::ShowTraceWidgetsForContour(
     if ( this->m_DataBaseTables->IsDatabaseUsed() )
       {
       this->m_DataBaseTables->UpdateWidgetsForCorrespondingTrace("contour", "mesh");
+      this->m_TraceSettingsToolBar->setVisible(true);
       }
     }
   else
@@ -2965,8 +2966,8 @@ void QGoTabImageView3DwT::ShowTraceWidgetsForContour(
       }
     else
       {
-      //this->m_TraceSettingsAction->setVisible(false);
       //this->m_TraceSettingsWidget->setVisible(false);
+      this->m_TraceSettingsToolBar->setVisible(true);
       }
     }
 }
@@ -2982,6 +2983,7 @@ void QGoTabImageView3DwT::ShowTraceWidgetsForMesh(
     if ( this->m_DataBaseTables->IsDatabaseUsed() )
       {
       this->m_DataBaseTables->UpdateWidgetsForCorrespondingTrace("mesh", "track");
+      this->m_TraceSettingsToolBar->setVisible(true);
       }
     }
   else
@@ -2992,8 +2994,8 @@ void QGoTabImageView3DwT::ShowTraceWidgetsForMesh(
       }
     else
       {
-      //this->m_TraceSettingsAction->setVisible(false);
       //this->m_TraceSettingsWidget->setVisible(false);
+      this->m_TraceSettingsToolBar->setVisible(false);
       }
     }
 }

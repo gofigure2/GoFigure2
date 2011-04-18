@@ -130,6 +130,7 @@ QGoMainWindow::QGoMainWindow(QWidget *iParent, Qt::WindowFlags iFlags) :
   this->addToolBar(Qt::TopToolBarArea, this->m_TracesToolBar);
 
   this->m_TraceSettingsToolBar = new QToolBar(tr("Settings For the Trace"), this);
+  this->m_TraceSettingsToolBar->setObjectName(tr("TraceSettingsToolBar"));
   this->addToolBar(Qt::TopToolBarArea, this->m_TraceSettingsToolBar);
 
 //   m_LSMReader = vtkLSMReader::New();
