@@ -265,6 +265,12 @@ public:
   void SetLineagesContainers(LineageContainer *iContainer,
     TrackContainer *iTrackContainer);
 
+  /**
+  \brief check if the tracesettingsWidget is visible, if not,
+  return true.
+  */
+  bool NeedTraceSettingsToolBarVisible();
+
 public slots:
   void DeleteBookmarks();
 

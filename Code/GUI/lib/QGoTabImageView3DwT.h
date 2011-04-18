@@ -576,6 +576,7 @@ protected slots:
   void ShowTraceWidgetsForContour(bool ManualSegVisible = true);
 
   void ShowTraceWidgetsForMesh(bool MeshVisible = true);
+  void SetTraceSettingsToolBarVisible(bool IsVisible);
 
   void UpdateSeeds();
 

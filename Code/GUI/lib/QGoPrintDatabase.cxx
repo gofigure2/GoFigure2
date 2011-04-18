@@ -837,6 +837,9 @@ void QGoPrintDatabase::SetConnectionsBetweenTheInstancesOfTraceSettings()
 
   QObject::connect(this->m_TraceSettingsWidgetForToolBar, SIGNAL(	destroyed() ),
     this->m_TraceSettingsWidget, SLOT(SetSelectedPointersToNull() ) );
+
+  QObject::connect( this, SIGNAL(topLevelChanged(bool) ),
+                     this, SLOT(ShowHideTraceSettingsFromContextMenu(bool) ) );
 }
 //--------------------------------------------------------------------------
 
@@ -1803,3 +1806,18 @@ void QGoPrintDatabase::ShowHideTraceSettingsFromContextMenu(bool isVisible)
   this->m_TraceSettingsWidget->setVisible(isVisible);
   this->m_TraceSettingsVisible = isVisible;
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+ bool QGoPrintDatabase::NeedTraceSettingsToolBarVisible()
+ {
+   if (!this->isVisible() )
+    {
+    return true;
+    }
+   if(this->isFloating())
+    {
+    return false;
+    }
+   return !this->m_TraceSettingsVisible;
+ }

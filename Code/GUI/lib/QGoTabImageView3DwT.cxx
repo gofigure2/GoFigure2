@@ -639,6 +639,9 @@ QGoTabImageView3DwT::CreateDataBaseTablesConnection()
   QObject::connect( this->m_DataBaseTables, SIGNAL( NeedToGoToTheLocation(int, int, int, int) ),
                     this, SLOT( GoToLocation(int, int, int, int) ) );
 
+  QObject::connect( this->m_DataBaseTables->toggleViewAction(), SIGNAL (toggled(bool) ),
+                    this, SLOT(SetTraceSettingsToolBarVisible(bool) ) );
+
   this->m_TraceSettingsWidget = this->m_DataBaseTables->GetTraceSettingsWidget();
   this->m_TraceSettingsWidgetForToolBar = this->m_DataBaseTables->GetTraceSettingsWidgetForToolBar();
 }
@@ -1229,10 +1232,14 @@ void QGoTabImageView3DwT::CreateModeActions()
                     this,
                     SLOT( RequieresTraceWidget(bool) ) );*/
 
+  /*QObject::connect( ContourSegmentationAction,
+                    SIGNAL( toggled(bool) ),
+                    this,
+                    SLOT( ShowTraceWidgetsForContour(bool) ) );*/
   QObject::connect( ContourSegmentationAction,
                     SIGNAL( toggled(bool) ),
                     this,
-                    SLOT( ShowTraceWidgetsForContour(bool) ) );
+                    SLOT( SetTraceSettingsToolBarVisible(bool) ) );
 
   //---------------------------------//
   //        Mesh segmentation        //
@@ -1255,10 +1262,14 @@ void QGoTabImageView3DwT::CreateModeActions()
                     this,
                     SLOT( RequieresTraceWidget(bool) ) );*/
 
+  /*QObject::connect( MeshSegmentationAction,
+                    SIGNAL( toggled(bool) ),
+                    this,
+                    SLOT( ShowTraceWidgetsForMesh(bool) ) );*/
   QObject::connect( MeshSegmentationAction,
                     SIGNAL( toggled(bool) ),
                     this,
-                    SLOT( ShowTraceWidgetsForMesh(bool) ) );
+                    SLOT( SetTraceSettingsToolBarVisible(bool) ) );
 }
 
 //-------------------------------------------------------------------------
@@ -2967,7 +2978,8 @@ void QGoTabImageView3DwT::ShowTraceWidgetsForContour(
     else
       {
       //this->m_TraceSettingsWidget->setVisible(false);
-      this->m_TraceSettingsToolBar->setVisible(true);
+      this->SetTraceSettingsToolBarVisible(false);
+      this->m_TraceSettingsToolBar->setVisible(false);
       }
     }
 }
@@ -2995,6 +3007,7 @@ void QGoTabImageView3DwT::ShowTraceWidgetsForMesh(
     else
       {
       //this->m_TraceSettingsWidget->setVisible(false);
+      this->SetTraceSettingsToolBarVisible(false);
       this->m_TraceSettingsToolBar->setVisible(false);
       }
     }
@@ -3266,3 +3279,35 @@ trackIDArray->SetValue(0, iTraceID);
 iPolydata->GetFieldData()->AddArray(trackIDArray);
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::SetTraceSettingsToolBarVisible(bool IsVisible)
+{
+  if (!IsVisible)
+    {
+    if (!this->m_ContourSegmentationDockWidget->toggleViewAction()->isChecked() &&
+      !this->m_MeshSegmentationDockWidget->toggleViewAction()->isChecked() &&
+      !this->m_DataBaseTables->toggleViewAction()->isChecked() )
+      {
+      this->m_TraceSettingsToolBar->setVisible(IsVisible);
+      }
+    }
+  else
+    {
+    if (this->m_ContourSegmentationDockWidget->toggleViewAction()->isChecked())
+      {
+      this->m_DataBaseTables->UpdateWidgetsForCorrespondingTrace("contour", "mesh");
+      }
+    if (this->m_MeshSegmentationDockWidget->toggleViewAction()->isChecked() )
+      {
+      this->m_DataBaseTables->UpdateWidgetsForCorrespondingTrace("mesh","track");
+      }
+    if(this->m_DataBaseTables->NeedTraceSettingsToolBarVisible() ) //if the dockwidget is not on floating mode 
+      //or if the trace settings widget is not already visible in the dockwidget or if the TW is not visible
+      {
+      this->m_TraceSettingsToolBar->setVisible(IsVisible);
+      }
+    }
+    
+}
