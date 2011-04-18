@@ -79,7 +79,7 @@ void QGoTabManager::ClearTabElement(QGoTabElementBase *iE)
     m_MainWindow->m_ViewToolBar->clear();
     m_MainWindow->m_ModeToolBar->clear();
     m_MainWindow->m_TracesToolBar->clear();
-    m_MainWindow->m_TraceSettingsToolBar->clear();
+    //m_MainWindow->m_TraceSettingsToolBar->clear();
     // Then remove all actions related to the previous tab from menuView
     m_MainWindow->menuView->clear();
 

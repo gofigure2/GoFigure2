@@ -124,7 +124,6 @@ QWidget*  QGoTabElementBase::TraceSettingsWidget()
 void QGoTabElementBase::SetTraceSettingsToolBar(QToolBar* iToolBar)
 {
   this->m_TraceSettingsToolBar = iToolBar;
-  this->m_TraceSettingsToolBar->setVisible(false);
 }
 //--------------------------------------------------------------------------
 

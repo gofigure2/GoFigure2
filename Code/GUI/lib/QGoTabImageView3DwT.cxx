@@ -177,6 +177,7 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
 
   // track dock widget
   m_TrackViewDockWidget = new QGoTrackViewDockWidget(this);
+  this->m_TrackViewDockWidget->setObjectName("TrackViewDockWidget");
 
   QObject::connect( m_TrackViewDockWidget,
                     SIGNAL( ChangeColorCode(const char *) ),
@@ -188,8 +189,9 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
                     m_TrackContainer,
                     SLOT( UpdateTracksRepresentation(double, double) ) );
 
-  // track dock widget
+  // lineage dock widget
   m_LineageViewDockWidget = new QGoLineageViewDockWidget(this);
+  this->m_LineageViewDockWidget->setObjectName("LineageViewDockWidget");
 
   QObject::connect( m_LineageViewDockWidget,
                     SIGNAL( ChangeDivisionsColorCode(const char *) ),
