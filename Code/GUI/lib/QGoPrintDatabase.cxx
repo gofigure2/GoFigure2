@@ -158,12 +158,15 @@ void QGoPrintDatabase::SetUpUi()
   QWidget* Widget = new QWidget;
   QVBoxLayout* verticalLayout = new QVBoxLayout(Widget);
   this->m_StackedTables = new QStackedWidget(Widget);
+
   verticalLayout->addWidget(this->m_TraceSettingsWidget);
+  this->m_TraceSettingsWidget->setVisible(false);
+  this->m_TraceSettingsVisible = false;
+
   verticalLayout->addWidget(this->m_StackedTables);
   Widget->setLayout(verticalLayout);
   this->setContextMenuPolicy(Qt::CustomContextMenu);
   this->setWidget(Widget);
-  this->m_TraceSettingsVisible = true;
   this->SetConnectionsBetweenTheInstancesOfTraceSettings();
 }
 //--------------------------------------------------------------------------
