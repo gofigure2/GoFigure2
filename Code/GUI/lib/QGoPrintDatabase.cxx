@@ -588,7 +588,7 @@ void QGoPrintDatabase::TheTraceHasChanged(int iIndex)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::SetTable(std::string iTablename)
+/*void QGoPrintDatabase::SetTable(std::string iTablename)
 {
   int Index = 0;
 
@@ -605,7 +605,7 @@ void QGoPrintDatabase::SetTable(std::string iTablename)
     Index = 3;
     }
   this->m_StackedTables->setCurrentIndex(Index);
-}
+}*/
 
 //-------------------------------------------------------------------------
 
@@ -885,33 +885,14 @@ void QGoPrintDatabase::CreateConnectionsForTraceSettingsWidget(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoPrintDatabase::UpdateWidgetsForCorrespondingTrace(std::string iTraceName,
-                                                          std::string iCollectionName, bool UpdateTableWidget)
+void QGoPrintDatabase::SetTraceNameForTableWidget(std::string iTraceName)
 {
   std::string PreviousTraceName = this->m_TraceSettingsWidget->GetTraceName();
-
-  if ( UpdateTableWidget )
+  if (PreviousTraceName != iTraceName)
     {
-    std::string CurrentTableName = this->InWhichTableAreWe();
-    if ( CurrentTableName != iTraceName )
-      {
-      this->UpdateSelectedCollectionForTableWidget(PreviousTraceName);
-      this->m_TraceSettingsWidget->UpdateTraceAndCollection(iTraceName, iCollectionName);
-      this->m_TraceSettingsWidgetForToolBar->UpdateTraceAndCollection(iTraceName, iCollectionName);
-      this->SetTSListCollectionID();
-      }
-    //if the TableWidget has to be set to match the trace name, no need for the
-    //signal TabHasChanged to be emitted, it would results in the Segmentation
-    //widgets to be hidden
-    this->blockSignals(true);
-    this->SetTable(iTraceName);
-    this->blockSignals(false);
-    return;
+    this->UpdateSelectedCollectionForTableWidget(PreviousTraceName);
+    this->m_TraceSettingsWidget->SetCurrentTraceName(iTraceName);
     }
-  this->UpdateSelectedCollectionForTableWidget(PreviousTraceName);
-  this->m_TraceSettingsWidget->UpdateTraceAndCollection(iTraceName, iCollectionName);
-  this->m_TraceSettingsWidgetForToolBar->UpdateTraceAndCollection(iTraceName, iCollectionName);
-  this->SetTSListCollectionID();
 }
 
 //-------------------------------------------------------------------------

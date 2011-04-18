@@ -209,7 +209,6 @@ public:
                         iTrackAttributes, unsigned int iTrackID);
 
   /** \brief return the TraceSettingsDockWidget*/
-  //QGoTraceSettingsDockWidget * GetTraceSettingsDockWidget();
   QGoTraceSettingsWidget*  GetTraceSettingsWidget();
 
   QGoTraceSettingsWidget*  GetTraceSettingsWidgetForToolBar();
@@ -219,13 +218,8 @@ public:
   corresponding list of collectionID and set the tablewidget for the
   trace table
   \param[in] iTraceName name of the corresponding trace
-  \param[in] iCollectionName name of the corresponding collection
-  \param[in] UpdateTableWidget true if the tablewidget has to be
-  updated also
   */
-  void UpdateWidgetsForCorrespondingTrace(std::string iTraceName,
-                                          std::string iCollectionName, 
-                                          bool UpdateTableWidget = true);
+  void SetTraceNameForTableWidget(std::string iTraceName);
 
   /** \brief Initialize or reinitialized the celltype,subcelltype
   and color list from the database into the traceSettingswidget*/
@@ -274,7 +268,7 @@ public:
 public slots:
   void DeleteBookmarks();
 
-  void SetTable(std::string iTablename);
+  //void SetTable(std::string iTablename);
 
   void ExportContours();
 

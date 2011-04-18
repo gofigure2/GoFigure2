@@ -1227,15 +1227,6 @@ void QGoTabImageView3DwT::CreateModeActions()
                     m_ContourSegmentationDockWidget,
                     SLOT( interactorBehavior(bool) ) );
 
-  /*QObject::connect( ContourSegmentationAction,
-                    SIGNAL( toggled(bool) ),
-                    this,
-                    SLOT( RequieresTraceWidget(bool) ) );*/
-
-  /*QObject::connect( ContourSegmentationAction,
-                    SIGNAL( toggled(bool) ),
-                    this,
-                    SLOT( ShowTraceWidgetsForContour(bool) ) );*/
   QObject::connect( ContourSegmentationAction,
                     SIGNAL( toggled(bool) ),
                     this,
@@ -1257,15 +1248,6 @@ void QGoTabImageView3DwT::CreateModeActions()
                     m_MeshSegmentationDockWidget,
                     SLOT( interactorBehavior(bool) ) );
 
-  /*QObject::connect( MeshSegmentationAction,
-                    SIGNAL( toggled(bool) ),
-                    this,
-                    SLOT( RequieresTraceWidget(bool) ) );*/
-
-  /*QObject::connect( MeshSegmentationAction,
-                    SIGNAL( toggled(bool) ),
-                    this,
-                    SLOT( ShowTraceWidgetsForMesh(bool) ) );*/
   QObject::connect( MeshSegmentationAction,
                     SIGNAL( toggled(bool) ),
                     this,
@@ -2958,64 +2940,6 @@ QGoTabImageView3DwT::AddContourForMeshToContours(vtkPolyData *iInput)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTabImageView3DwT::ShowTraceWidgetsForContour(
-  bool ManualSegVisible)
-{
-  if ( ManualSegVisible )
-    {
-    if ( this->m_DataBaseTables->IsDatabaseUsed() )
-      {
-      this->m_DataBaseTables->UpdateWidgetsForCorrespondingTrace("contour", "mesh");
-      this->m_TraceSettingsToolBar->setVisible(true);
-      }
-    }
-  else
-    {
-    if ( m_DataBaseTables->toggleViewAction()->isChecked() )
-      {
-      // do nothing
-      }
-    else
-      {
-      //this->m_TraceSettingsWidget->setVisible(false);
-      this->SetTraceSettingsToolBarVisible(false);
-      this->m_TraceSettingsToolBar->setVisible(false);
-      }
-    }
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoTabImageView3DwT::ShowTraceWidgetsForMesh(
-  bool MeshSegmentationVisible)
-{
-  if ( MeshSegmentationVisible )
-    {
-    if ( this->m_DataBaseTables->IsDatabaseUsed() )
-      {
-      this->m_DataBaseTables->UpdateWidgetsForCorrespondingTrace("mesh", "track");
-      this->m_TraceSettingsToolBar->setVisible(true);
-      }
-    }
-  else
-    {
-    if ( m_DataBaseTables->toggleViewAction()->isChecked() )
-      {
-      // do nothing
-      }
-    else
-      {
-      //this->m_TraceSettingsWidget->setVisible(false);
-      this->SetTraceSettingsToolBarVisible(false);
-      this->m_TraceSettingsToolBar->setVisible(false);
-      }
-    }
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 void QGoTabImageView3DwT::GoToDefaultMenu(bool iEnable)
 {
   if ( iEnable )
@@ -3297,11 +3221,11 @@ QGoTabImageView3DwT::SetTraceSettingsToolBarVisible(bool IsVisible)
     {
     if (this->m_ContourSegmentationDockWidget->toggleViewAction()->isChecked())
       {
-      this->m_DataBaseTables->UpdateWidgetsForCorrespondingTrace("contour", "mesh");
+      this->m_DataBaseTables->SetTraceNameForTableWidget("contour");
       }
     if (this->m_MeshSegmentationDockWidget->toggleViewAction()->isChecked() )
       {
-      this->m_DataBaseTables->UpdateWidgetsForCorrespondingTrace("mesh","track");
+      this->m_DataBaseTables->SetTraceNameForTableWidget("mesh");
       }
     if(this->m_DataBaseTables->NeedTraceSettingsToolBarVisible() ) //if the dockwidget is not on floating mode 
       //or if the trace settings widget is not already visible in the dockwidget or if the TW is not visible
