@@ -35,14 +35,14 @@
 #ifndef __QGoTrackViewDockWidget_h
 #define __QGoTrackViewDockWidget_h
 
-#include <QDockWidget>
 #include <QRadioButton>
 #include <QCheckBox>
 #include <QDoubleSpinBox>
 
+#include "QGoDockWidget.h"
 
 class QGoTrackViewDockWidget:
-  public QDockWidget
+  public QGoDockWidget
 {
   Q_OBJECT
 public:

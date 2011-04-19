@@ -36,7 +36,7 @@
 
 #include <iostream>
 
-QGoDockWidgetStatus::QGoDockWidgetStatus(QDockWidget *iW) : QObject(iW),
+QGoDockWidgetStatus::QGoDockWidgetStatus(QGoDockWidget *iW) : QObject(iW),
   m_DockWidget(iW),
   m_Area(Qt::LeftDockWidgetArea), m_DefaultArea(Qt::LeftDockWidgetArea),
   m_Visibility(true), m_Attached(true)
@@ -53,14 +53,15 @@ QGoDockWidgetStatus::QGoDockWidgetStatus(QDockWidget *iW) : QObject(iW),
 QGoDockWidgetStatus::QGoDockWidgetStatus(const QGoDockWidgetStatus & iS) :
   QObject(iS.m_DockWidget), m_Area(iS.m_Area), m_DefaultArea(iS.m_Area),
   m_Visibility(iS.m_Visibility), m_Attached(iS.m_Attached), 
-  m_ToggleAction(iS.m_ToggleAction), m_MainWindow(iS.m_MainWindow)
+  //m_ToggleAction(iS.m_ToggleAction), 
+  m_MainWindow(iS.m_MainWindow)
 {
   QObject::connect( m_DockWidget, SIGNAL( dockLocationChanged(Qt::DockWidgetArea) ),
                     this, SLOT( SetArea(Qt::DockWidgetArea) ) );
 
-  if (m_ToggleAction)
+  if (m_DockWidget->toggleViewAction())
     {
-    QObject::connect(m_ToggleAction, SIGNAL(toggled(bool) ),
+    QObject::connect(m_DockWidget->toggleViewAction(), SIGNAL(toggled(bool) ),
                       this, SLOT(SetVisibility(bool) ) );
     }
   else
@@ -72,20 +73,21 @@ QGoDockWidgetStatus::QGoDockWidgetStatus(const QGoDockWidgetStatus & iS) :
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-QGoDockWidgetStatus::QGoDockWidgetStatus(QDockWidget *iW, Qt::DockWidgetArea iArea,
+QGoDockWidgetStatus::QGoDockWidgetStatus(QGoDockWidget *iW, Qt::DockWidgetArea iArea,
                                          const bool & iVisibility, const bool & iAttached,
-                                         QAction* iToggleAction,
+                                         //QAction* iToggleAction,
                                          QMainWindow* iMainWindow) :
   QObject(iW), m_DockWidget(iW), m_Area(iArea),
   m_DefaultArea(iArea), m_Visibility(iVisibility),
-  m_Attached(iAttached), m_ToggleAction(iToggleAction), m_MainWindow(iMainWindow)
+  m_Attached(iAttached), //m_ToggleAction(iToggleAction), 
+  m_MainWindow(iMainWindow)
 {
   QObject::connect( m_DockWidget, SIGNAL( dockLocationChanged(Qt::DockWidgetArea) ),
                     this, SLOT( SetArea(Qt::DockWidgetArea) ) );
 
-  if (m_ToggleAction)
+  if (m_DockWidget->toggleViewAction())
     {
-    QObject::connect(m_ToggleAction, SIGNAL(toggled(bool) ),
+    QObject::connect(m_DockWidget->toggleViewAction(), SIGNAL(toggled(bool) ),
                         this, SLOT(SetVisibility(bool) ) );
     //QObject::connect(m_DockWidget, SIGNAL(clo
 

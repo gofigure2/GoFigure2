@@ -225,8 +225,7 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
       new QGoDockWidgetStatus(
-        m_ContourSegmentationDockWidget, Qt::LeftDockWidgetArea, false, true,
-        m_ContourSegmentationDockWidget->toggleViewAction()),
+        m_ContourSegmentationDockWidget, Qt::LeftDockWidgetArea, false, true),
       m_ContourSegmentationDockWidget) );
 
   m_DockWidgetList.push_back(
@@ -250,7 +249,7 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
     new QGoDockWidgetStatus(this->m_DataBaseTables,
-    Qt::TopDockWidgetArea, false, true, this->m_DataBaseTables->toggleViewAction(), this),
+    Qt::TopDockWidgetArea, false, true, this),
                               this->m_DataBaseTables) );
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )

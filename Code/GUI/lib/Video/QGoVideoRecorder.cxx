@@ -51,7 +51,7 @@
 #endif
 
 //-------------------------------------------------------------------------
-QGoVideoRecorder::QGoVideoRecorder(QWidget *iParent) : QDockWidget(iParent),
+QGoVideoRecorder::QGoVideoRecorder(QWidget *iParent) : QGoDockWidget(iParent),
   m_VideoName2(""), m_FrameRate2(10), m_VideoQuality2(2), m_SliceFT(0),
   m_WindowSelected(0), m_XMinForVideo(0), m_XMaxForVideo(0),
   m_YMinForVideo(0), m_YMaxForVideo(0), m_ZMinForVideo(0),
@@ -68,8 +68,8 @@ QGoVideoRecorder::QGoVideoRecorder(QWidget *iParent) : QDockWidget(iParent),
                     this, SLOT( onEndRecordClicked() ) );
 
   QIcon videoIcon( QPixmap( QString::fromUtf8(":/fig/video.png") ) );
-  this->toggleViewAction()->setIcon(videoIcon);
-  this->toggleViewAction()
+  this->m_ToggleAction->setIcon(videoIcon);
+  this->m_ToggleAction
   ->setStatusTip( tr("You have to be in full screen view to use the video recording") );
   this->warning_1->hide();
   this->warning_2->hide();

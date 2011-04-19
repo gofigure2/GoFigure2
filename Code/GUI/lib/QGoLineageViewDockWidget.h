@@ -35,12 +35,13 @@
 #ifndef __QGoLineageViewDockWidget_h
 #define __QGoLineageViewDockWidget_h
 
-#include <QDockWidget>
+
 #include <QRadioButton>
+#include "QGoDockWidget.h"
 //#include "ui_LineageViewDockWidget.h"
 
 class QGoLineageViewDockWidget:
-  public QDockWidget//,
+  public QGoDockWidget//,
   //protected Ui::LineageViewDockWidget
 {
   Q_OBJECT

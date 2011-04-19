@@ -330,8 +330,6 @@ protected:
   bool m_MeshGenerationMode;
   bool m_TraceSettingsVisible;
 
-  //QAction*  m_VisibilityAction;
-
   void OpenDBConnection();
 
   void SetUpUi();

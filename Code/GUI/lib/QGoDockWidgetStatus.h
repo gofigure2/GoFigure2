@@ -37,27 +37,27 @@
 
 #include <Qt>
 #include <QObject>
-#include <QDockWidget>
 #include <QAction>
+#include "QGoDockWidget.h"
 
 class QGoDockWidgetStatus:public QObject
 {
   Q_OBJECT
 public:
-  explicit QGoDockWidgetStatus(QDockWidget *iW);
+  explicit QGoDockWidgetStatus(QGoDockWidget *iW);
 
   explicit QGoDockWidgetStatus(const QGoDockWidgetStatus & iS);
 
-  explicit QGoDockWidgetStatus(QDockWidget *iW,
+  explicit QGoDockWidgetStatus(QGoDockWidget *iW,
                                Qt::DockWidgetArea iArea,
                                const bool & iVisibility,
                                const bool & iAttached,
-                               QAction* iToggleAction = 0,
+                               //QAction* iToggleAction = 0,
                                QMainWindow* iMainWindow = 0);
 
   virtual ~QGoDockWidgetStatus();
 
-  QDockWidget *m_DockWidget;
+  QGoDockWidget *m_DockWidget;
 
   /** \brief Position */
   Qt::DockWidgetArea m_Area;
@@ -72,7 +72,7 @@ public:
   /** \brief which main window the dock widget belongs to*/
   QMainWindow* m_MainWindow;
 
-  QAction* m_ToggleAction;
+  //QAction* m_ToggleAction;
 
 public slots:
   void SetArea(Qt::DockWidgetArea iArea);

@@ -43,14 +43,14 @@
 
 //-------------------------------------------------------------------------
 QGoTrackViewDockWidget::QGoTrackViewDockWidget(
-  QWidget *iParent) : QDockWidget(iParent)
+  QWidget *iParent) : QGoDockWidget(iParent)
 {
   this->SetUpUi();
   QIcon trackicon;
   trackicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/TrackView.png") ),
                       QIcon::Normal, QIcon::Off);
-  this->toggleViewAction()->setIcon(trackicon);
-  this->toggleViewAction()->setToolTip("Track View");
+  this->m_ToggleAction->setIcon(trackicon);
+  this->m_ToggleAction->setToolTip("Track View");
   this->setWindowTitle("Track View");
   // appearance
   QObject::connect( this->m_glyph, SIGNAL( toggled(bool) ),

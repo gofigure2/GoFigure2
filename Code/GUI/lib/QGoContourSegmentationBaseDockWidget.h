@@ -35,13 +35,13 @@
 #ifndef __QGoContourSegmentationBaseDockWidget_h
 #define __QGoContourSegmentationBaseDockWidget_h
 
-#include <QDockWidget>
 #include <QLayout>
 
 #include "vtkPoints.h"
 #include "vtkImageData.h"
 #include "vtkPolyData.h"
 #include "vtkSmartPointer.h"
+#include "QGoDockWidget.h"
 
 // base widgets
 class QGoContourManualSegmentation;
@@ -56,7 +56,7 @@ class QGoContourSeedSegmentation;
 */
 
 class QGoContourSegmentationBaseDockWidget:
-  public QDockWidget,
+  public QGoDockWidget,
   protected Ui::SegmentationDockWidgetBase
 {
   Q_OBJECT
@@ -97,7 +97,7 @@ public:
    */
   void Initialize();
 
-  QAction* toggleViewAction();
+  //QAction* toggleViewAction();
 
 public slots:
   /**
@@ -172,8 +172,8 @@ signals:
 protected:
   QGoContourManualSegmentation *m_ContourManualSegmentation;
   QGoContourSeedSegmentation *  m_ContourSemiAutoSegmentation;
-  QAction*                      m_ToggleAction;
-  void closeEvent(QCloseEvent *iEvent);
+  //QAction*                      m_ToggleAction;
+  //void closeEvent(QCloseEvent *iEvent);
 private:
   Q_DISABLE_COPY(QGoContourSegmentationBaseDockWidget);
 };

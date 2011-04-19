@@ -39,15 +39,14 @@
 
 //-------------------------------------------------------------------------
 QGoLineageViewDockWidget::QGoLineageViewDockWidget(
-  QWidget *iParent) : QDockWidget(iParent)
+  QWidget *iParent) : QGoDockWidget(iParent)
 {
-  //this->setupUi(this);
   this->SetUpUi();
   QIcon Lineageicon;
   Lineageicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/LineageView.png") ),
                       QIcon::Normal, QIcon::Off);
-  this->toggleViewAction()->setIcon(Lineageicon);
-  this->toggleViewAction()->setToolTip("Lineage View");
+  this->m_ToggleAction->setIcon(Lineageicon);
+  this->m_ToggleAction->setToolTip("Lineage View");
   this->setWindowTitle("Lineage View");
 
   
