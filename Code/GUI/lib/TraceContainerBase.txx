@@ -466,7 +466,7 @@ TraceContainerBase< TContainer >::UpdateAllHighlightedElementsWithGivenColor(QCo
   boost::tuples::tie(it0, it1) =
     m_Container.get< Highlighted >().equal_range(true);
 
-  double r(1.), g(1.), b(1.), a(1.);
+  qreal r(1.), g(1.), b(1.), a(1.);
 
   if ( iColor.isValid() )
     {
@@ -478,10 +478,10 @@ TraceContainerBase< TContainer >::UpdateAllHighlightedElementsWithGivenColor(QCo
     {
     MultiIndexContainerElementType temp(*it0);
 
-    temp.rgba[0] = r;
-    temp.rgba[1] = g;
-    temp.rgba[2] = b;
-    temp.rgba[3] = a;
+    temp.rgba[0] = static_cast< double >( r );
+    temp.rgba[1] = static_cast< double >( g );
+    temp.rgba[2] = static_cast< double >( b );
+    temp.rgba[3] = static_cast< double >( a );
 
     m_Container.get< Highlighted >().replace(it0, temp);
 
