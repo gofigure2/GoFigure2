@@ -375,10 +375,10 @@ double * QGoDBTraceManager::GetVectorFromQColor(QColor iColor)
 
   iColor.getRgbF(&r, &g, &b, &a);
   double *rgba = new double[4];
-  rgba[0] = r;
-  rgba[1] = g;
-  rgba[2] = b;
-  rgba[3] = a;
+  rgba[0] = static_cast< double >( r );
+  rgba[1] = static_cast< double >( g );
+  rgba[2] = static_cast< double >( b );
+  rgba[3] = static_cast< double >( a );
   return rgba;
 }
 
