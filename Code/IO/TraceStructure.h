@@ -35,6 +35,8 @@
 #ifndef TRACESTRUCTURE_H
 #define TRACESTRUCTURE_H
 
+#include "vtkSmartPointer.h"
+
 class vtkActor;
 class vtkPolyData;
 class vtkProperty;

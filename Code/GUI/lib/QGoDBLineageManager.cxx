@@ -273,8 +273,63 @@ void QGoDBLineageManager::GetTracesInfoFromDBAndModifyContainerForVisu(
 //-------------------------------------------------------------------------
 void QGoDBLineageManager::SetColorCoding(bool IsChecked)
 {
-  this->SetColorCodingTemplate< LineageContainer >(
-    this->m_LineageContainerInfoForVisu, IsChecked);
+  std::string ColumnName = "";
+  std::map<unsigned int, std::string> Values;
+  std::map<unsigned int, std::string> NewValues;
+  m_IsColorCodingOn = IsChecked;
+
+  //create map track ID/field
+  if (IsChecked)
+    {
+    Values = this->m_Table->GetTraceIDAndColumnsValues(
+          this->m_TraceNameID, ColumnName);
+
+    // change lineage id by track root id
+    std::map<unsigned int, std::string>::iterator trackRootIt = Values.begin();
+    while(trackRootIt != Values.end())
+      {
+      unsigned int trackRoot =
+          m_LineageContainerInfoForVisu->GetLineageTrackRootID(trackRootIt->first);
+      NewValues.insert(
+          std::pair<unsigned int,std::string>(trackRoot, trackRootIt->second) );
+      ++trackRootIt;
+      }
+
+      vtkLookupTable* LUT = NULL;
+
+    bool IsRandomIncluded =
+      (ColumnName == this->m_TraceNameID) ||
+      (ColumnName == this->m_CollectionNameID);
+
+    QGoColorCodingDialog::ColorWay UserColorway =
+      QGoColorCodingDialog::GetColorWay( this->m_TraceName, &LUT,
+      IsRandomIncluded, this->m_Table );
+
+    switch ( UserColorway )
+      {
+      case QGoColorCodingDialog::Default:
+        m_TrackContainerInfoForVisu->SetCollectionColorCode( ColumnName,NewValues );
+        break;
+
+      case QGoColorCodingDialog::Random:
+        m_TrackContainerInfoForVisu->SetDivisionRandomColor(ColumnName,NewValues );
+        break;
+
+      case QGoColorCodingDialog::LUT:
+        m_TrackContainerInfoForVisu->SetCollectionColorCode( ColumnName,NewValues );
+        m_TrackContainerInfoForVisu->SetLookupTableForAllDivisionsColorCoding(LUT);
+        break;
+
+      default:
+      case QGoColorCodingDialog::Nothing:
+        m_IsColorCodingOn = !IsChecked;
+        break;
+      }
+    }
+  else
+    {
+    m_TrackContainerInfoForVisu->SetCollectionColorCode( ColumnName, NewValues );
+    }
 }
 
 //-------------------------------------------------------------------------

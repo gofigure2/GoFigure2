@@ -1796,3 +1796,246 @@ UpdateLineage(MultiIndexContainerTraceIDIterator& it,
     }
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+SetCollectionColorCode(const std::string& iColumnName,
+    const std::map< unsigned int, std::string >& iValues)
+{
+  typedef typename std::map< unsigned int, std::string > MapType;
+  typedef typename MapType::const_iterator               MapConstIterator;
+
+  std::map< std::string, double > stringmap;
+
+  if ( iColumnName.empty() || iValues.empty() )
+    {
+    this->RenderAllDivisionsWithOriginalColors();
+    assert ( m_ImageView );
+    this->m_ImageView->UpdateRenderWindows();
+    return;
+    }
+
+  MapConstIterator it = iValues.begin();
+
+  double temp = 0.;
+  try
+    {
+    temp = boost::lexical_cast< double >(it->second);
+    }
+  catch(boost::bad_lexical_cast &)
+    {
+    if ( stringmap.empty() )
+      {
+      stringmap[it->second] = 0.;
+      }
+    else
+      {
+      std::map< std::string, double >::iterator m_it = stringmap.find(it->second);
+
+      if ( m_it != stringmap.end() )
+        {
+        temp = m_it->second;
+        }
+      else
+        {
+        std::map< std::string, double >::reverse_iterator r_it = stringmap.rbegin();
+        temp = r_it->second;
+        temp += 1.0;
+        }
+      }
+    }
+
+  double min_value = temp;
+  double max_value = temp;
+
+  while ( it != iValues.end() )
+    {
+
+    MultiIndexContainerTraceIDIterator
+      trace_it = this->m_Container.get< TraceID >().find(it->first);
+
+    // convert value
+    // Here let's make sure you are not passing crazy values!
+    try
+      {
+      temp = boost::lexical_cast< double >(it->second);
+      }
+    catch(boost::bad_lexical_cast &)
+      {
+      // stringmap is not empty and has at least one elements
+      std::map< std::string, double >::iterator m_it = stringmap.find(it->second);
+
+      if ( m_it != stringmap.end() )
+        {
+        temp = m_it->second;
+        }
+      else
+        {
+        std::map< std::string, double >::reverse_iterator r_it = stringmap.rbegin();
+        temp = r_it->second;
+        temp += 1.0;
+        }
+      }
+
+    UpdateDivisionScalarData(trace_it, it->second, temp, min_value, max_value);
+    ++it;
+    }
+
+  SetScalarRangeForAllDivisions(min_value, max_value);
+
+  assert ( m_ImageView );
+  this->m_ImageView->UpdateRenderWindows();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateDivisionScalarData(MultiIndexContainerTraceIDIterator& it,
+    std::string iColumnName, double& iValue,
+    double& iMin, double& iMax)
+{
+
+  if( !it->IsLeaf() )
+    {
+    if ( iValue > iMax )
+      {
+      iMax = iValue;
+      }
+    if ( iValue < iMin )
+      {
+      iMin = iValue;
+      }
+
+    it->TreeNode.SetScalarData(iColumnName, iValue);
+    }
+
+  if(it->TreeNode.m_Child[0])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateDivisionScalarData(childIt, iColumnName, iValue, iMin, iMax);
+      }
+    }
+
+  if(it->TreeNode.m_Child[1])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateDivisionScalarData(childIt, iColumnName, iValue, iMin, iMax);
+      }
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+SetDivisionRandomColor(const std::string & iColumnName,
+                       const std::map< unsigned int, std::string > & iValues)
+{
+  typedef std::map< unsigned int, std::string > MapType;
+  typedef MapType::const_iterator               MapConstIterator;
+
+  std::map< std::string, double > stringmap;
+
+  if ( iColumnName.empty() || iValues.empty() )
+    {
+    this->RenderAllDivisionsWithOriginalColors();
+    return;
+    }
+
+  MapConstIterator it = iValues.begin();
+
+  double temp = 0.;
+  try
+    {
+    temp = boost::lexical_cast< double >(it->second);
+    }
+  catch(boost::bad_lexical_cast &)
+    {
+    if ( stringmap.empty() )
+      {
+      stringmap[it->second] = 0.;
+      }
+    else
+      {
+      std::map< std::string, double >::iterator m_it = stringmap.find(it->second);
+
+      if ( m_it != stringmap.end() )
+        {
+        temp = m_it->second;
+        }
+      else
+        {
+        std::map< std::string, double >::reverse_iterator r_it = stringmap.rbegin();
+        temp = r_it->second;
+        temp += 1.0;
+        }
+      }
+    }
+
+  unsigned int val = static_cast< unsigned int >(temp);
+  unsigned int modulo = val % 30;
+
+  temp = static_cast< double >(modulo);
+
+  double min_value = temp;
+  double max_value = temp;
+
+  using boost::multi_index:: get;
+
+  while ( it != iValues.end() )
+    {
+    MultiIndexContainerTraceIDIterator
+      trace_it = this->m_Container.get< TraceID >().find(it->first);
+
+    if ( trace_it != this->m_Container.get< TraceID >().end() )
+      {
+      if ( trace_it->TreeNode.Nodes ) //make sure the trace has points !!!
+        {
+        // Here let's make sure you are not passing crazy values!
+        try
+          {
+          temp = boost::lexical_cast< double >(it->second);
+          }
+        catch(boost::bad_lexical_cast &)
+          {
+          // stringmap is not empty and has at least one element
+          std::map< std::string, double >::iterator m_it = stringmap.find(it->second);
+
+          if ( m_it != stringmap.end() )
+            {
+            temp = m_it->second;
+            }
+          else
+            {
+            std::map< std::string, double >::reverse_iterator r_it = stringmap.rbegin();
+            temp = r_it->second;
+            temp += 1.0;
+            }
+          }
+
+        val = static_cast< unsigned int >(temp);
+        modulo = val % 30;
+
+        temp = static_cast< double >(modulo);
+
+        UpdateDivisionScalarData(trace_it, it->second, temp, min_value, max_value);
+        }
+      } //end make sure the trace has points !!!
+    ++it;
+    }
+
+  SetScalarRangeForAllDivisions(min_value, max_value);
+
+  assert ( m_ImageView );
+  this->m_ImageView->UpdateRenderWindows();
+}

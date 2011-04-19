@@ -57,10 +57,6 @@ ContourMeshContainer::
     {
     if ( it->Nodes )
       {
-      if ( it->Nodes->GetPointData()->GetScalars() )
-        {
-        it->Nodes->GetPointData()->GetScalars()->Delete();
-        }
       it->Nodes->Delete();
       }
     if ( it->ActorXY )

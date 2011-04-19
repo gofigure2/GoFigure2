@@ -38,8 +38,6 @@
 #include "vtkPolyData.h"
 #include "vtkActor.h"
 
-#include "vtkSmartPointer.h"
-
 #include "vtkDoubleArray.h"
 #include "vtkPointData.h"
 

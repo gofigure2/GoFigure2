@@ -570,6 +570,53 @@ public:
   vtkMutableDirectedGraph* ExportLineage(unsigned int iTrackID);
 
   /*
+   * \brief Color code lineages from the table widget
+   * \param[in] iColumnName selected column name
+   * \param[in] iValues pair track root id/value
+   */
+  void SetCollectionColorCode(const std::string& iColumnName,
+      const std::map< unsigned int, std::string >& iValues);
+
+  /*
+   * \brief Randomly color code lineages from the table widget
+   * \param[in] iColumnName selected column name
+   * \param[in] iValues pair track root id/value
+   */
+  void SetDivisionRandomColor(const std::string & iColumnName,
+      const std::map< unsigned int, std::string > & iValues);
+
+  /*
+   * \brief Update whole tree for table widget color coding
+   * \param[in] it iterator to go through the lineage
+   * \param[in] iColumnName selected column name
+   * \param[in] iValue value of the current lineage
+   * \param[in|out] iMin to adjust the lookup table after modifying polydata scalars
+   * \param[in|out] iMax to adjust the lookup table after modifying polydata scalars
+   */
+  void UpdateDivisionScalarData(MultiIndexContainerTraceIDIterator& it,
+      std::string iColumnName, double& iValue,
+      double& iMin, double& iMax);
+
+  /*
+   * \brief Set the scalar range for all the divisions
+   * \param[in] iMin min scalar
+   * \param[in] iMax max value
+   */
+  void SetScalarRangeForAllDivisions(double iMin, double iMax);
+
+  /*
+   * \brief Set the LUT for all the divisions
+   * \param[in] iLut the lookup table
+   */
+  void SetLookupTableForAllDivisionsColorCoding(vtkLookupTable *iLut);
+
+  /*
+   * \brief Render all the divisions of all the lineages with the original
+   * lineage color
+   */
+  void RenderAllDivisionsWithOriginalColors();
+
+  /*
    * \brief Go through the lineage and update the graph structure and
    * informations.
    * \param[in] it iterator to go through the lineage
@@ -712,10 +759,6 @@ protected:
    * \return Pointer to double[2] where [0] is the min scalar value and [1] is
    * the max scalar value. Pointer has to be deleted (delete[] pointer) */
   double* setDivisionNodeScalars(const char *iArrayName);
-
-  void SetScalarRangeForAllDivisions(double iMin, double iMax);
-  void SetLookupTableForAllDivisionsColorCoding(vtkLookupTable *iLut);
-  void RenderAllDivisionsWithOriginalColors();
 
   void ComputeSpeed();
 
