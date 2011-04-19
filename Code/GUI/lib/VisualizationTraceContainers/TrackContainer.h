@@ -575,8 +575,7 @@ public:
 
   void UpdateDivisionScalarData(MultiIndexContainerTraceIDIterator& it,
       std::string iColumnName, double& iValue,
-      double& iMin, double& iMax,
-      std::map< std::string, double >& stringmap);
+      double& iMin, double& iMax);
 
   void SetDivisionRandomColor(const std::string & iColumnName,
       const std::map< unsigned int, std::string > & iValues);

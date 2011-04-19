@@ -1854,8 +1854,6 @@ SetCollectionColorCode(const std::string& iColumnName,
   while ( it != iValues.end() )
     {
 
-    std::cout << "it: " << it->first << std::endl;
-
     MultiIndexContainerTraceIDIterator
       trace_it = this->m_Container.get< TraceID >().find(it->first);
 
@@ -1882,8 +1880,7 @@ SetCollectionColorCode(const std::string& iColumnName,
         }
       }
 
-    UpdateDivisionScalarData(trace_it, it->second, temp, min_value, max_value,
-        stringmap);
+    UpdateDivisionScalarData(trace_it, it->second, temp, min_value, max_value);
     ++it;
     }
 
@@ -1899,7 +1896,7 @@ void
 TrackContainer::
 UpdateDivisionScalarData(MultiIndexContainerTraceIDIterator& it,
     std::string iColumnName, double& iValue,
-    double& iMin, double& iMax, std::map< std::string, double >& stringmap)
+    double& iMin, double& iMax)
 {
 
   if( !it->IsLeaf() )
@@ -1923,7 +1920,7 @@ UpdateDivisionScalarData(MultiIndexContainerTraceIDIterator& it,
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
     if( childIt != m_Container.get< TraceID >().end() )
       {
-      UpdateDivisionScalarData(childIt, iColumnName, iValue, iMin, iMax, stringmap);
+      UpdateDivisionScalarData(childIt, iColumnName, iValue, iMin, iMax);
       }
     }
 
@@ -1934,7 +1931,7 @@ UpdateDivisionScalarData(MultiIndexContainerTraceIDIterator& it,
         = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
     if( childIt != m_Container.get< TraceID >().end() )
       {
-      UpdateDivisionScalarData(childIt, iColumnName, iValue, iMin, iMax, stringmap);
+      UpdateDivisionScalarData(childIt, iColumnName, iValue, iMin, iMax);
       }
     }
 }
@@ -2033,15 +2030,7 @@ SetDivisionRandomColor(const std::string & iColumnName,
 
         temp = static_cast< double >(modulo);
 
-        if ( temp > max_value )
-          {
-          max_value = temp;
-          }
-        if ( temp < min_value )
-          {
-          min_value = temp;
-          }
-        trace_it->TreeNode.SetScalarData(iColumnName, temp);
+        UpdateDivisionScalarData(trace_it, it->second, temp, min_value, max_value);
         }
       } //end make sure the trace has points !!!
     ++it;
