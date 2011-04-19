@@ -200,11 +200,13 @@ QGoImageView::SetBackgroundColor(double rgb[3])
 void
 QGoImageView::SetBackgroundColor(const QColor & iColor)
 {
-  double r, g, b;
+  qreal r, g, b;
 
   iColor.getRgbF(&r, &g, &b);
 
-  this->SetBackgroundColor(r, g, b);
+  this->SetBackgroundColor( static_cast< double >( r ),
+                            static_cast< double >( g ),
+                            static_cast< double >( b ) );
 }
 
 //--------------------------------------------------------------------------
@@ -704,13 +706,13 @@ QGoImageView::UpdateContourRepresentationProperties(float linewidth, QColor line
   m_NodesColor = nodecolor;
   m_ActiveNodesColor = activenodecolor;
 
-  double rl, gl, bl;
+  qreal rl, gl, bl;
   linecolor.getRgbF(&rl, &gl, &bl);
 
-  double rn, gn, bn;
+  qreal rn, gn, bn;
   nodecolor.getRgbF(&rn, &gn, &bn);
 
-  double ra, ga, ba;
+  qreal ra, ga, ba;
   activenodecolor.getRgbF(&ra, &ga, &ba);
 
   std::vector< vtkSmartPointer< vtkOrientedGlyphContourRepresentation > >::iterator
@@ -718,9 +720,20 @@ QGoImageView::UpdateContourRepresentationProperties(float linewidth, QColor line
   while ( it != m_ContourRepresentation.end() )
     {
     ( *it )->GetLinesProperty()->SetLineWidth(linewidth);
-    ( *it )->GetLinesProperty()->SetColor(rl, gl, bl);
-    ( *it )->GetProperty()->SetColor(rn, gn, bn);
-    ( *it )->GetActiveProperty()->SetColor(ra, ga, ba);
+    ( *it )->GetLinesProperty()->SetColor(
+      static_cast< double >( rl ),
+      static_cast< double >( gl ),
+      static_cast< double >( bl ) );
+
+    ( *it )->GetProperty()->SetColor(
+      static_cast< double >( rn ),
+      static_cast< double >( gn ),
+      static_cast< double >( bn ) );
+
+    ( *it )->GetActiveProperty()->SetColor(
+      static_cast< double >( ra ),
+      static_cast< double >( ga ),
+      static_cast< double >( ba ) );
     ++it;
     }
 }
