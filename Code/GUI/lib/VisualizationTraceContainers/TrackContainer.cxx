@@ -1813,6 +1813,8 @@ SetCollectionColorCode(const std::string& iColumnName,
   if ( iColumnName.empty() || iValues.empty() )
     {
     this->RenderAllDivisionsWithOriginalColors();
+    assert ( m_ImageView );
+    this->m_ImageView->UpdateRenderWindows();
     return;
     }
 

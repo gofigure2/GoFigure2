@@ -328,7 +328,6 @@ void QGoDBLineageManager::SetColorCoding(bool IsChecked)
     }
   else
     {
-    m_IsColorCodingOn = IsChecked;
     m_TrackContainerInfoForVisu->SetCollectionColorCode( ColumnName, NewValues );
     }
 }
