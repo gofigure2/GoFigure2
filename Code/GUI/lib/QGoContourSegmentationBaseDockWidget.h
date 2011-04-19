@@ -97,6 +97,8 @@ public:
    */
   void Initialize();
 
+  QAction* toggleViewAction();
+
 public slots:
   /**
    * \brief Slot to know if we are in Manual, Semi Automatic ou Automatic segmentation
@@ -170,6 +172,8 @@ signals:
 protected:
   QGoContourManualSegmentation *m_ContourManualSegmentation;
   QGoContourSeedSegmentation *  m_ContourSemiAutoSegmentation;
+  QAction*                      m_ToggleAction;
+  void closeEvent(QCloseEvent *iEvent);
 private:
   Q_DISABLE_COPY(QGoContourSegmentationBaseDockWidget);
 };

@@ -38,10 +38,11 @@
 #include <QObject>
 #include <QAction>
 #include <vector>
+#include "QGoTabElementBase.h"
 
 class QTabWidget;
 class QGoMainWindow;
-class QGoTabElementBase;
+//class QGoTabElementBase;
 
 /**
 \class QGoTabManager
@@ -54,6 +55,7 @@ public:
 
   explicit QGoTabManager(QGoMainWindow *iMW = 0, QTabWidget *iTW = 0);
   ~QGoTabManager();
+  typedef QGoTabElementBase::QGoDockWidgetStatusPair QGoDockWidgetStatusPair;
 
   /** \brief Set the MainWindow if it has not been set by calling the
     constructor.*/
@@ -82,6 +84,8 @@ private:
   void SetUpTabElement(QGoTabElementBase *iE);
 
   void UpdateViewMenu(std::vector< QAction* > iViewNoToolBarActions);
+
+  QMainWindow* GetMainWindow(QGoDockWidgetStatusPair iDockStatus);
 
   Q_DISABLE_COPY(QGoTabManager);
 };

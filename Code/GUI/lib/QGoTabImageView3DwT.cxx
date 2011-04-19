@@ -225,7 +225,8 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
       new QGoDockWidgetStatus(
-        m_ContourSegmentationDockWidget, Qt::LeftDockWidgetArea, false, true),
+        m_ContourSegmentationDockWidget, Qt::LeftDockWidgetArea, false, true,
+        m_ContourSegmentationDockWidget->toggleViewAction()),
       m_ContourSegmentationDockWidget) );
 
   m_DockWidgetList.push_back(
@@ -249,7 +250,7 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
     new QGoDockWidgetStatus(this->m_DataBaseTables,
-                            Qt::TopDockWidgetArea, false, true, this),
+    Qt::TopDockWidgetArea, false, true, this->m_DataBaseTables->toggleViewAction(), this),
                               this->m_DataBaseTables) );
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
@@ -1228,8 +1229,10 @@ void QGoTabImageView3DwT::CreateModeActions()
     m_ContourSegmentationDockWidget->toggleViewAction();
 
   group->addAction(ContourSegmentationAction);
+  //group->addAction(this->m_ContourSegmentationDockWidget->GetActionForToggle() );
 
   this->m_TracesActions.push_back(ContourSegmentationAction); 
+  //this->m_TracesActions.push_back(this->m_ContourSegmentationDockWidget->GetActionForToggle()); 
 
   QObject::connect( ContourSegmentationAction,
                     SIGNAL( toggled(bool) ),

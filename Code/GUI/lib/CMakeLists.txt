@@ -73,6 +73,7 @@ SET( QGoGUILIB_SRC
   QGoDBTrackManager.cxx
   QGoDBLineageManager.cxx
   QGoColorCodingDialog.cxx
+  QGoDockWidget.cxx
 
   # base segmentation widgets
   QGoContourSegmentationBaseDockWidget.cxx
@@ -218,6 +219,7 @@ SET( QGoGUILIB_HDRS
   QGoDBTrackManager.h
   QGoDBLineageManager.h
   QGoColorCodingDialog.h
+  QGoDockWidget.h
 
   # base segmentation widgets
   QGoContourSegmentationBaseDockWidget.h

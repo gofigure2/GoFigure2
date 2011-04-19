@@ -73,7 +73,7 @@
 
 //--------------------------------------------------------------------------
 QGoPrintDatabase::QGoPrintDatabase(QWidget *iParent) :
-  QDockWidget(iParent),
+  QGoDockWidget(iParent),
   m_ContoursManager(NULL),
   m_MeshesManager(NULL),
   m_TracksManager(NULL),
@@ -95,8 +95,8 @@ QGoPrintDatabase::QGoPrintDatabase(QWidget *iParent) :
   this->CreateConnectionsForTraceSettingsWidget(this->m_TraceSettingsWidget);
   this->CreateConnectionsForTraceSettingsWidget(this->m_TraceSettingsWidgetForToolBar);
 
-  QObject::connect( m_VisibilityAction, SIGNAL( toggled(bool) ),
-                    this, SLOT( setVisible(bool) ) );
+  //QObject::connect( m_VisibilityAction, SIGNAL( toggled(bool) ),
+  //                  this, SLOT( setVisible(bool) ) );
 
   QObject::connect( this, SIGNAL( customContextMenuRequested(const QPoint &) ),
                     this, SLOT( CreateContextMenu(const QPoint &) ) );
@@ -145,12 +145,19 @@ QGoPrintDatabase::~QGoPrintDatabase()
 //--------------------------------------------------------------------------
 void QGoPrintDatabase::SetUpUi()
 {
-  m_VisibilityAction = new QAction(tr("Show/hide the table widget"), this);
+ /* m_VisibilityAction = new QAction(tr("Show/hide the table widget"), this);
   QIcon TableWidgetIcon;
   TableWidgetIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/TableWidget.png") ),
                             QIcon::Normal, QIcon::Off);
   m_VisibilityAction->setIcon(TableWidgetIcon);
   m_VisibilityAction->setCheckable(true);
+  m_VisibilityAction->setObjectName("TWAction");*/
+  // m_VisibilityAction = new QAction(tr("Show/hide the table widget"), this);
+  this->m_ToggleAction->setToolTip(tr("Show/hide the table widget"));
+  QIcon TableWidgetIcon;
+  TableWidgetIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/TableWidget.png") ),
+                            QIcon::Normal, QIcon::Off);
+  this->m_ToggleAction->setIcon(TableWidgetIcon);
 
   this->m_TraceSettingsWidget =
     new QGoTraceSettingsWidget(this);
@@ -172,11 +179,11 @@ void QGoPrintDatabase::SetUpUi()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-QAction *
+/*QAction *
 QGoPrintDatabase::toggleViewAction()
 {
   return m_VisibilityAction;
-}
+}*/
 
 //--------------------------------------------------------------------------
 
@@ -250,11 +257,11 @@ void QGoPrintDatabase::FillTableFromDatabase()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoPrintDatabase::closeEvent(QCloseEvent *iEvent)
+/*void QGoPrintDatabase::closeEvent(QCloseEvent *iEvent)
 {
   (void)iEvent;
   m_VisibilityAction->setChecked(false);
-}
+}*/
 
 //--------------------------------------------------------------------------
 

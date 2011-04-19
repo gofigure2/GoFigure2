@@ -31,54 +31,39 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
+#include "QGoDockWidget.h"
 
-#ifndef __QGoDockWidgetStatus_h
-#define __QGoDockWidgetStatus_h
-
-#include <Qt>
-#include <QObject>
-#include <QDockWidget>
-#include <QAction>
-
-class QGoDockWidgetStatus:public QObject
+QGoDockWidget::QGoDockWidget(QWidget* iParent) :
+  QDockWidget(iParent)
 {
-  Q_OBJECT
-public:
-  explicit QGoDockWidgetStatus(QDockWidget *iW);
+ this->m_ToggleAction = new QAction(this);
+ 
+ this->m_ToggleAction->setCheckable(true);
 
-  explicit QGoDockWidgetStatus(const QGoDockWidgetStatus & iS);
 
-  explicit QGoDockWidgetStatus(QDockWidget *iW,
-                               Qt::DockWidgetArea iArea,
-                               const bool & iVisibility,
-                               const bool & iAttached,
-                               QAction* iToggleAction = 0,
-                               QMainWindow* iMainWindow = 0);
+ QObject::connect(m_ToggleAction, SIGNAL(toggled(bool) ),
+                     this, SLOT(setVisible(bool) ) );
+}
 
-  virtual ~QGoDockWidgetStatus();
+//--------------------------------------------------------------------------
 
-  QDockWidget *m_DockWidget;
+//--------------------------------------------------------------------------
+QGoDockWidget::~QGoDockWidget()
+{
+}
 
-  /** \brief Position */
-  Qt::DockWidgetArea m_Area;
-  Qt::DockWidgetArea m_DefaultArea;
+//--------------------------------------------------------------------------
 
-  /** \brief is Visible */
-  bool m_Visibility;
+//--------------------------------------------------------------------------
+QAction* QGoDockWidget::toggleViewAction()
+{
+  return this->m_ToggleAction;
+}
+//--------------------------------------------------------------------------
 
-  /** \brief Attached to QGoMainWindow*/
-  bool m_Attached;
-
-  /** \brief which main window the dock widget belongs to*/
-  QMainWindow* m_MainWindow;
-
-  QAction* m_ToggleAction;
-
-public slots:
-  void SetArea(Qt::DockWidgetArea iArea);
-
-  void SetVisibility(bool iVisibility);
-
-  void SetAttached(bool iAttached);
-};
-#endif
+//--------------------------------------------------------------------------
+void QGoDockWidget::closeEvent(QCloseEvent *iEvent)
+{
+  (void)iEvent;
+  this->m_ToggleAction->setChecked(false);
+}

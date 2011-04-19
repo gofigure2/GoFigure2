@@ -32,53 +32,33 @@
 
 =========================================================================*/
 
-#ifndef __QGoDockWidgetStatus_h
-#define __QGoDockWidgetStatus_h
+#ifndef __QGoDockWidget_h
+#define __QGoDockWidget_h
 
-#include <Qt>
-#include <QObject>
 #include <QDockWidget>
 #include <QAction>
-
-class QGoDockWidgetStatus:public QObject
+#include "QGoGUILibConfigure.h"
+/**
+\class QGoDockWidget
+\brief inherits from Qt QDockWidget.toggle action reimplemented
+in order the state is saved when changing tabs
+\ingroup GUI
+*/
+class QGOGUILIB_EXPORT QGoDockWidget:public QDockWidget
 {
   Q_OBJECT
 public:
-  explicit QGoDockWidgetStatus(QDockWidget *iW);
+  explicit QGoDockWidget(QWidget* iParent = 0);
 
-  explicit QGoDockWidgetStatus(const QGoDockWidgetStatus & iS);
+  virtual ~QGoDockWidget();
 
-  explicit QGoDockWidgetStatus(QDockWidget *iW,
-                               Qt::DockWidgetArea iArea,
-                               const bool & iVisibility,
-                               const bool & iAttached,
-                               QAction* iToggleAction = 0,
-                               QMainWindow* iMainWindow = 0);
+  QAction* toggleViewAction();
 
-  virtual ~QGoDockWidgetStatus();
+protected:
+  QAction*  m_ToggleAction;
 
-  QDockWidget *m_DockWidget;
+  void closeEvent(QCloseEvent *iEvent);
 
-  /** \brief Position */
-  Qt::DockWidgetArea m_Area;
-  Qt::DockWidgetArea m_DefaultArea;
-
-  /** \brief is Visible */
-  bool m_Visibility;
-
-  /** \brief Attached to QGoMainWindow*/
-  bool m_Attached;
-
-  /** \brief which main window the dock widget belongs to*/
-  QMainWindow* m_MainWindow;
-
-  QAction* m_ToggleAction;
-
-public slots:
-  void SetArea(Qt::DockWidgetArea iArea);
-
-  void SetVisibility(bool iVisibility);
-
-  void SetAttached(bool iAttached);
 };
+
 #endif

@@ -47,38 +47,67 @@ QGoDockWidgetStatus::QGoDockWidgetStatus(QDockWidget *iW) : QObject(iW),
   QObject::connect( m_DockWidget, SIGNAL( visibilityChanged(bool) ),
                     this, SLOT( SetVisibility(bool) ) );
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
 QGoDockWidgetStatus::QGoDockWidgetStatus(const QGoDockWidgetStatus & iS) :
   QObject(iS.m_DockWidget), m_Area(iS.m_Area), m_DefaultArea(iS.m_Area),
-  m_Visibility(iS.m_Visibility), m_Attached(iS.m_Attached)
+  m_Visibility(iS.m_Visibility), m_Attached(iS.m_Attached), 
+  m_ToggleAction(iS.m_ToggleAction), m_MainWindow(iS.m_MainWindow)
 {
   QObject::connect( m_DockWidget, SIGNAL( dockLocationChanged(Qt::DockWidgetArea) ),
                     this, SLOT( SetArea(Qt::DockWidgetArea) ) );
 
+  if (m_ToggleAction)
+    {
+    QObject::connect(m_ToggleAction, SIGNAL(toggled(bool) ),
+                      this, SLOT(SetVisibility(bool) ) );
+    }
+  else
+    {
   QObject::connect( m_DockWidget, SIGNAL( visibilityChanged(bool) ),
                     this, SLOT( SetVisibility(bool) ) );
+    }
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
 QGoDockWidgetStatus::QGoDockWidgetStatus(QDockWidget *iW, Qt::DockWidgetArea iArea,
                                          const bool & iVisibility, const bool & iAttached,
+                                         QAction* iToggleAction,
                                          QMainWindow* iMainWindow) :
   QObject(iW), m_DockWidget(iW), m_Area(iArea),
   m_DefaultArea(iArea), m_Visibility(iVisibility),
-  m_Attached(iAttached)
+  m_Attached(iAttached), m_ToggleAction(iToggleAction), m_MainWindow(iMainWindow)
 {
-  this->m_MainWindow = iMainWindow;
   QObject::connect( m_DockWidget, SIGNAL( dockLocationChanged(Qt::DockWidgetArea) ),
                     this, SLOT( SetArea(Qt::DockWidgetArea) ) );
 
-  QObject::connect( m_DockWidget, SIGNAL( visibilityChanged(bool) ),
-                    this, SLOT( SetVisibility(bool) ) );
-}
+  if (m_ToggleAction)
+    {
+    QObject::connect(m_ToggleAction, SIGNAL(toggled(bool) ),
+                        this, SLOT(SetVisibility(bool) ) );
+    //QObject::connect(m_DockWidget, SIGNAL(clo
 
+    //QObject::connect(m_ToggleAction, SIGNAL(toggled(bool) ),
+    //                 m_DockWidget, SLOT(setVisible(bool) ) );
+    }
+  else
+    {
+    QObject::connect( m_DockWidget, SIGNAL( visibilityChanged(bool) ),
+                      this, SLOT( SetVisibility(bool) ) );
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 QGoDockWidgetStatus::
 ~QGoDockWidgetStatus()
 {
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
 void
 QGoDockWidgetStatus::SetArea(Qt::DockWidgetArea iArea)
 {
@@ -106,7 +135,9 @@ QGoDockWidgetStatus::SetArea(Qt::DockWidgetArea iArea)
 //     }
   m_Area = iArea;
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
 void
 QGoDockWidgetStatus::SetVisibility(bool iVisibility)
 {
@@ -118,9 +149,12 @@ QGoDockWidgetStatus::SetVisibility(bool iVisibility)
 //     {
 //     std::cout <<"Invisible" <<std::endl;
 //     }
-  m_Visibility = iVisibility;
+   m_Visibility = iVisibility;
+   this->m_DockWidget->setVisible(iVisibility);
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
 void
 QGoDockWidgetStatus::SetAttached(bool iAttached)
 {
