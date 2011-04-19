@@ -60,6 +60,8 @@
 #include "QGoGUILibConfigure.h"
 #include <QString>
 
+#include "vtkMutableDirectedGraph.h"
+
 /**
   \struct change_visible_division
   \brief Change the visibility of a division with an unary function.
@@ -506,24 +508,76 @@ public:
 
   // compute statistics on the collection
   /*
-   * \brief Get the depth of the lineage
+   * \brief Get the max depth of the lineage
    * \param[in] iTrackRootID id of the track root
    * \return depth of the lineage
    */
-  unsigned int GetCollectionDepth( unsigned int iTrackRootID );
+  unsigned int GetCollectionMaxDepth( unsigned int iTrackRootID );
   /*
-   * \brief Update the collection depth
+   * \brief Update the collection max depth
    * \param[in] it iterator to go through the lineage
    * \param[in] iDivisionDepth depth of the division
    * \param[in] iLineageDepth depth of the lineage
    */
-  void UpdateCollectionDepth( MultiIndexContainerTraceIDIterator& it,
+  void UpdateCollectionMaxDepth( MultiIndexContainerTraceIDIterator& it,
       unsigned int iDivisionDepth, unsigned int& iLineageDepth);
-  // compute any stat....
+  /*
+   * \brief Get the min depth of the lineage
+   * \param[in] iTrackRootID id of the track root
+   * \return depth of the lineage
+   */
+  unsigned int GetCollectionMinDepth( unsigned int iTrackRootID );
+  /*
+   * \brief Update the collection min depth
+   * \param[in] it iterator to go through the lineage
+   * \param[in] iDivisionDepth depth of the division
+   * \param[in] iLineageDepth depth of the lineage
+   */
+  void UpdateCollectionMinDepth( MultiIndexContainerTraceIDIterator& it,
+      unsigned int iDivisionDepth, unsigned int& iLineageDepth);
+  /*
+   * \brief Get the number of divisions of the lineage
+   * \param[in] iTrackRootID id of the track root
+   * \return depth of the lineage
+   */
+  unsigned int GetCollectionNumberOfDivisions( unsigned int iTrackRootID );
+  /*
+   * \brief Update the collection number of divisions
+   * \param[in] it iterator to go through the lineage
+   * \param[in] iNumberOfDivisions number of divisions of the lineage
+   */
+  void UpdateCollectionNumberOfDivisions( MultiIndexContainerTraceIDIterator& it,
+      unsigned int& iNumberOfDivisions);
+  /*
+   * \brief Get the number of leaves of the lineage
+   * \param[in] iTrackRootID id of the track root
+   * \return depth of the lineage
+   */
+  unsigned int GetCollectionNumberOfLeaves( unsigned int iTrackRootID );
+  /*
+   * \brief Update the collection number of leaves
+   * \param[in] it iterator to go through the lineage
+   * \param[in] iNumberOfLeaves number of leaves of the lineage
+   */
+  void UpdateCollectionNumberOfLeaves( MultiIndexContainerTraceIDIterator& it,
+      unsigned int& iNumberOfLeaves);
+
+  /*
+   * \brief Export a vtkMutableDirectedGraph from a given trackID root.
+   * \param[in] iTrackID track root ID for the lineage export.
+   * \return pointer to vtkMutableDirectedGraph. IMPORTANT: has to be deleted.
+   */
+  vtkMutableDirectedGraph* ExportLineage(unsigned int iTrackID);
 
   //Color coding
-  void SetDivisionColorCode(const std::string& iColumnName,
+  void SetCollectionColorCode(const std::string& iColumnName,
       const std::map< unsigned int, std::string >& iValues);
+
+  void UpdateDivisionScalarData(MultiIndexContainerTraceIDIterator& it,
+      std::string iColumnName, double& iValue,
+      double& iMin, double& iMax,
+      std::map< std::string, double >& stringmap);
+
   void SetDivisionRandomColor(const std::string & iColumnName,
       const std::map< unsigned int, std::string > & iValues);
 
@@ -531,6 +585,22 @@ public:
   void SetLookupTableForAllDivisionsColorCoding(vtkLookupTable *iLut);
   void RenderAllDivisionsWithOriginalColors();
 
+  /*
+   * \brief Go through the lineage and update the graph structure and
+   * informations.
+   * \param[in] it iterator to go through the lineage
+   * \param[in] iGraph graph to be modified
+   * \param[in] iPedrigree vertex ID - is unique
+   * \param[in] mother vertex ID of the mother - to create edges
+   * \param[in] iDepth depth of the node in the lineage - to compute stats
+   * \param[in] iDepthArray array to be modified to add information to the graph
+   * \param[in] iIDArray array to be modified to add information to the graph
+   */
+  void UpdateLineage(MultiIndexContainerTraceIDIterator& it,
+      vtkMutableDirectedGraph* iGraph, unsigned int iPedrigree,
+      vtkIdType mother,
+      unsigned int iDepth, vtkDoubleArray* iDepthArray,
+      vtkDoubleArray* iIDArray);
 
 signals:
   /** \brief When one track has been picked (highlighted) from the visualization */
@@ -538,10 +608,6 @@ signals:
 
   /** \brief When one track's visibility has been changed from the visualization */
   void TraceVisibilityChanged(unsigned int, Qt::CheckState);
-
-
-  /** \brief When a point is added to the track, update the database */
-  void CurrentTrackToSave();
 
   /** \brief When we want to import meshes into a track */
   void NeedMeshesInfoForImportedTrack(unsigned int);

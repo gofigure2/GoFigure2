@@ -32,28 +32,47 @@
 
 =========================================================================*/
 
-#ifndef __QGoLineageDockWidget_h
-#define __QGoLineageDockWidget_h
+#ifndef __QGoTrackViewDockWidget_h
+#define __QGoTrackViewDockWidget_h
 
 #include <QDockWidget>
+#include <QRadioButton>
+#include <QCheckBox>
+#include <QDoubleSpinBox>
 
-#include "ui_LineageDockWidget.h"
 
-class QGoLineageDockWidget:
-  public QDockWidget,
-  protected Ui::LineageDockWidget
+class QGoTrackViewDockWidget:
+  public QDockWidget
 {
   Q_OBJECT
 public:
-  explicit QGoLineageDockWidget(QWidget *iParent = 0);
-  ~QGoLineageDockWidget();
+  explicit QGoTrackViewDockWidget(QWidget *iParent = 0);
+  ~QGoTrackViewDockWidget();
 
 public slots:
-  void ColorCodeLineagesByTime(bool);
-  void ColorCodeLineagesByDepth(bool);
-  void ColorCodeLineagesByOriginalColor(bool);
+  void Glyphs( bool );
+  void glyphValueChanged( double );
+  void Tubes( bool );
+  void tubeValueChanged( double );
+  void ColorCodeTracksByTime(bool);
+  void ColorCodeTracksBySpeed(bool);
+  void ColorCodeTracksByOriginalColor(bool);
 signals:
-  void ChangeDivisionsColorCode( const char* );
+  void UpdateTracksRepresentation(double, double);
+  void ChangeColorCode( const char* );
 
+protected:
+  
+  QCheckBox*      m_glyph;
+  QCheckBox*      m_tube;
+  QDoubleSpinBox* m_glyphSpinBox;
+  QDoubleSpinBox* m_tubeSpinBox;
+
+  QRadioButton*   m_time;
+  QRadioButton*   m_real;
+  QRadioButton*   m_speed;
+
+  void SetUpUi();
+  void SetDoubleSpinBox(QDoubleSpinBox* iSpinBox);
 };
 #endif

@@ -259,6 +259,8 @@ private:
   QGoTabManager *             m_TabManager;
   QToolBar *                  m_ViewToolBar;
   QToolBar *                  m_ModeToolBar;
+  QToolBar *                  m_TracesToolBar;
+  QToolBar *                  m_TraceSettingsToolBar;
   std::list< vtkLSMReader * > m_LSMReader;
   QGoWizardDB *               m_DBWizard;
   QGoAboutWidget *            m_AboutWidget;

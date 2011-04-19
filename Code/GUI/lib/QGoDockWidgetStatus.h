@@ -50,7 +50,8 @@ public:
   explicit QGoDockWidgetStatus(QDockWidget *iW,
                                Qt::DockWidgetArea iArea,
                                const bool & iVisibility,
-                               const bool & iAttached);
+                               const bool & iAttached,
+                               QMainWindow* iMainWindow = 0);
 
   virtual ~QGoDockWidgetStatus();
 
@@ -65,6 +66,10 @@ public:
 
   /** \brief Attached to QGoMainWindow*/
   bool m_Attached;
+
+  /** \brief which main window the dock widget belongs to*/
+  QMainWindow* m_MainWindow;
+
 public slots:
   void SetArea(Qt::DockWidgetArea iArea);
 

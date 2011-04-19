@@ -32,33 +32,32 @@
 
 =========================================================================*/
 
-#ifndef __QGoTrackDockWidget_h
-#define __QGoTrackDockWidget_h
+#ifndef __QGoLineageViewDockWidget_h
+#define __QGoLineageViewDockWidget_h
 
 #include <QDockWidget>
+#include <QRadioButton>
+//#include "ui_LineageViewDockWidget.h"
 
-#include "ui_TrackDockWidget.h"
-
-class QGoTrackDockWidget:
-  public QDockWidget,
-  protected Ui::TrackDockWidget
+class QGoLineageViewDockWidget:
+  public QDockWidget//,
+  //protected Ui::LineageViewDockWidget
 {
   Q_OBJECT
 public:
-  explicit QGoTrackDockWidget(QWidget *iParent = 0);
-  ~QGoTrackDockWidget();
+  explicit QGoLineageViewDockWidget(QWidget *iParent = 0);
+  ~QGoLineageViewDockWidget();
 
 public slots:
-  void Glyphs( bool );
-  void glyphValueChanged( double );
-  void Tubes( bool );
-  void tubeValueChanged( double );
-  void ColorCodeTracksByTime(bool);
-  void ColorCodeTracksBySpeed(bool);
-  void ColorCodeTracksByOriginalColor(bool);
-signals:
-  void UpdateTracksRepresentation(double, double);
-  void ChangeColorCode( const char* );
+  void ColorCodeLineagesByDepth(bool);
+  void ColorCodeLineagesByOriginalColor(bool);
 
+signals:
+  void ChangeDivisionsColorCode( const char* );
+
+protected:
+  void SetUpUi();
+  QRadioButton*  m_depthLineage;
+  QRadioButton*  m_real;
 };
 #endif

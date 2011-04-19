@@ -44,8 +44,8 @@
 #include <iostream>
 
 //--------------------------------------------------------------------------
-QGoTabElementBase::QGoTabElementBase(QWidget *iParent) : QWidget(iParent),
-  m_StatusBar(NULL)
+QGoTabElementBase::QGoTabElementBase(QWidget *iParent) : QMainWindow(iParent),
+  m_StatusBar(NULL), m_TraceSettingsToolBar(NULL)
 {
 }
 
@@ -64,6 +64,13 @@ std::vector< QAction * > QGoTabElementBase::ViewActions()
   return m_ViewActions;
 }
 
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::vector< QAction * > QGoTabElementBase::ViewNoToolBarActions()
+{
+  return this->m_ViewNoToolBarActions;
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -96,6 +103,28 @@ std::vector< QAction * > QGoTabElementBase::ModeActions()
   return m_ModeActions;
 }
 
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::vector< QAction * > QGoTabElementBase::TracesActions()
+{
+  return m_TracesActions;
+}
+
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+QWidget*  QGoTabElementBase::TraceSettingsWidget()
+{
+  return m_TraceSettingsWidgetForToolBar;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTabElementBase::SetTraceSettingsToolBar(QToolBar* iToolBar)
+{
+  this->m_TraceSettingsToolBar = iToolBar;
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------

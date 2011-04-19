@@ -81,6 +81,8 @@ private:
 
   void SetUpTabElement(QGoTabElementBase *iE);
 
+  void UpdateViewMenu(std::vector< QAction* > iViewNoToolBarActions);
+
   Q_DISABLE_COPY(QGoTabManager);
 };
 #endif

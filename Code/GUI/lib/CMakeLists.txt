@@ -58,7 +58,6 @@ SET( QGoGUILIB_SRC
   QGoDBCellTypeManager.cxx
   QGoDBSubCellTypeManager.cxx
   QGoDBColorManager.cxx
-  QGoTraceSettingsDockWidget.cxx
   QGoTraceSettingsWidget.cxx
   Wizard/QGoDBInitializationWizard.cxx
   Wizard/QGoDBInitCreateUserPage.cxx
@@ -97,11 +96,11 @@ SET( QGoGUILIB_SRC
     QGoFilterWatershed.cxx
 
   # for the tracks
-  QGoTrackDockWidget.cxx
+  QGoTrackViewDockWidget.cxx
   QGoTrackEditingWidget.cxx
   
   #for the lineages
-  QGoLineageDockWidget.cxx
+  QGoLineageViewDockWidget.cxx
   
   QGoTraceEditingWidget.cxx
   QGoModeEditingWidget.cxx
@@ -202,7 +201,6 @@ SET( QGoGUILIB_HDRS
   QGoDBCellTypeManager.h
   QGoDBSubCellTypeManager.h
   QGoDBColorManager.h
-  QGoTraceSettingsDockWidget.h
   QGoTraceSettingsWidget.h
   QGoAboutWidget.h
   Wizard/QGoDBInitializationWizard.h
@@ -243,11 +241,11 @@ SET( QGoGUILIB_HDRS
     QGoFilterWatershed.h
 
   # for the tracks
-  QGoTrackDockWidget.h
+  QGoTrackViewDockWidget.h
   QGoTrackEditingWidget.h
   
   # for the lineages
-  QGoLineageDockWidget.h
+  QGoLineageViewDockWidget.h
   
   QGoTraceEditingWidget.h
   QGoModeEditingWidget.h
@@ -307,21 +305,15 @@ SET( QGoGUILIB_UI
 
   # other
   Resources/NavigationDockWidget.ui
-  Resources/QGoPrintDatabase.ui
   Resources/LsmToMegaExportDialog.ui
   Resources/QNameDescriptionInputDialog.ui
-  Resources/QGoTraceSettingsWidget.ui
 
   # seed segmentation dock widgets
   Resources/LevelsetWidget.ui
   Resources/WatershedWidget.ui
 
   # for tracks
-  Resources/TrackDockWidget.ui
   Resources/TrackEditingWidget.ui
-  
-  # for lineages
-  Resources/LineageDockWidget.ui
 )
 
 IF( BUILD_COMPARETOOL )

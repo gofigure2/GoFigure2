@@ -35,7 +35,7 @@
 #ifndef __QGoTabElementBase_h
 #define __QGoTabElementBase_h
 
-#include <QWidget>
+#include <QMainWindow>
 #include <QDir>
 #include <QStatusBar>
 
@@ -56,7 +56,7 @@ class QGoPluginManager;
 \brief Abstract class for one tab element in GoFigure2.
 \example GUI/lib/qgotabelementbase.cxx
 */
-class QGOGUILIB_EXPORT QGoTabElementBase:public QWidget
+class QGOGUILIB_EXPORT QGoTabElementBase:public QMainWindow
 {
   Q_OBJECT
 public:
@@ -74,6 +74,9 @@ public:
   /** \brief Get all actions belonging to View Menu and Toolbar.*/
   virtual std::vector< QAction * > ViewActions();
 
+  /** \brief Get all actions belonging to View Menu only.*/
+  virtual std::vector< QAction * > ViewNoToolBarActions();
+
   /** \brief Get all actions belonging to Segmentation Menu and Toolbar. */
   virtual std::vector< QAction * > SegmentationActions();
 
@@ -85,6 +88,12 @@ public:
 
   /** \brief Get all actions belonging to Mode Menu and Toolbar.*/
   virtual std::vector< QAction * > ModeActions();
+
+  /** \brief Get all actions belonging to the Traces Toolbar.*/
+  virtual std::vector< QAction * > TracesActions();
+
+  /** \brief Get the widget for the trace settings to be added in the TraceSettings Toolbar*/
+  virtual QWidget* TraceSettingsWidget();
 
   /** \brief Get all the DockWidgets with its status (visibility, location). */
   virtual std::list< QGoDockWidgetStatusPair > & DockWidget();
@@ -119,14 +128,20 @@ public:
 
   void SetStatusBarPointer(QStatusBar* iStatusbar);
 
+  virtual void SetTraceSettingsToolBar(QToolBar* iToolBar);
+
 protected:
   std::list< QAction * > m_PluginActionList;
 
   std::vector< QAction * > m_ViewActions;
+  std::vector< QAction* >  m_ViewNoToolBarActions;
   std::vector< QAction * > m_SegmentationActions;
   std::vector< QAction * > m_ToolsActions;
   std::vector< QAction * > m_BookmarkActions;
   std::vector< QAction * > m_ModeActions;
+  std::vector< QAction * > m_TracesActions;
+  QWidget*                 m_TraceSettingsWidgetForToolBar;
+  QToolBar*                m_TraceSettingsToolBar;
 
   std::list< QGoDockWidgetStatusPair > m_DockWidgetList;
   QStatusBar*              m_StatusBar;

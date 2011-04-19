@@ -59,10 +59,10 @@ class QGoContourSegmentationBaseDockWidget;
 class QGoMeshSegmentationBaseDockWidget;
 
 //track dockwidget
-class QGoTrackDockWidget;
+class QGoTrackViewDockWidget;
 
 //lineage dock widget
-class QGoLineageDockWidget;
+class QGoLineageViewDockWidget;
 
 class QGoImageView3D;
 class QGoNavigationDockWidget;
@@ -344,8 +344,6 @@ public slots:
   void AddContourForMeshToContours(vtkPolyData *);
 
 protected:
-  QHBoxLayout *                                  m_HBoxLayout;
-  QSplitter *                                    m_VSplitter;
   QGoImageView3D *                               m_ImageView;
   std::vector< vtkSmartPointer< vtkLSMReader > > m_LSMReader;
   std::vector< vtkSmartPointer< vtkImageData > > m_InternalImages;
@@ -380,9 +378,11 @@ protected:
   // base segmentation dockwidget for meshes
   QGoMeshSegmentationBaseDockWidget *m_MeshSegmentationDockWidget;
 
-  QGoTrackDockWidget* m_TrackDockWidget;
+  QGoTrackViewDockWidget*   m_TrackViewDockWidget;
 
-  QGoLineageDockWidget* m_LineageDockWidget;
+  QGoLineageViewDockWidget* m_LineageViewDockWidget;
+
+  QGoTraceSettingsWidget*   m_TraceSettingsWidget;
 
   vtkPoints *m_Seeds;
 
@@ -391,7 +391,7 @@ protected:
   TrackContainer   *m_TrackContainer;
   LineageContainer *m_LineageContainer;
 
-  bool m_TraceWidgetRequiered;
+  //bool m_TraceWidgetRequiered;
 
   /** \brief We are in the regular visualization mode (true) or in the time
    * visualization mode (false) */
@@ -524,6 +524,8 @@ protected:
 
   void CreateAllViewActions();
 
+  void CreateTracesActions();
+
   void CreateToolsActions();
 
   void CreateBookmarkActions();
@@ -571,17 +573,16 @@ protected slots:
 
   void OpenExistingBookmark();
 
-  void ShowTraceWidgetsForContour(bool ManualSegVisible = true);
-
-  void ShowTraceWidgetsForMesh(bool MeshVisible = true);
+  /**
+  \brief slot connected to the toggleaction of the TW, the contour and mesh editing,
+  update the trace and collection name of the trace settings toolbar and widget and
+  check if the trace settings toolbar needs to be shown/hidden
+  */
+  void SetTraceSettingsToolBarVisible(bool IsVisible);
 
   void UpdateSeeds();
 
   void GoToLocation(int iX, int iY, int iZ, int iT);
-
-  void CloseTabRequest(bool iTable);
-
-  void RequieresTraceWidget(bool iTable);
 
   /**
    * \brief Mouse interaction style allows contours segmentation, according to

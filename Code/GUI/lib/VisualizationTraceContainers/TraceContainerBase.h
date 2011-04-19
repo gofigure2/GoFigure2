@@ -682,7 +682,6 @@ protected:
       unsigned int& oTraceId,
       bool iState)
     {
-    std::cout << "update visibility trace" << std::endl;
     using boost::multi_index::get;
 
     typedef typename MultiIndexContainerType::template index< TraceID >::type::iterator

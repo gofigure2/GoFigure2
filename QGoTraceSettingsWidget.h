@@ -65,11 +65,6 @@ public:
   typedef std::vector< std::pair< std::string, std::string > >
   NamesDescrContainerType;
 
-  QComboBox *                 m_SelectedTrace;
-  QGoSelectedColorComboBox*   m_SelectedColorComboBox;
-  QGoCollectionColorComboBox* m_CollectionColorComboBox;
-  QGoComboBox *               m_ChoseCellType;
-  QGoComboBox *               m_ChoseSubCellType;
   /**
   \brief get the name of the trace currently displayed in the QLabel
   \return std::string contains the name of the trace
@@ -118,8 +113,6 @@ public:
   */
   void SetCurrentCollectionID(std::string iID);
 
-  void SetCurrentTraceName(std::string iTraceName);
-
   /**
   \brief update the QLabel with iTrace and iCollection, the "add a new.." in the
   CollectionColorComboBox and hide/show the celltype and subcelltype comboboxes
@@ -127,8 +120,8 @@ public:
   \param[in] iTrace name of the trace to update
   \param[in] iCollection name of the collection to update
   */
-  //void UpdateTraceAndCollection(
-  //  std::string iTrace, std::string iCollection);
+  void UpdateTraceAndCollection(
+    std::string iTrace, std::string iCollection);
 
   /**
   \brief replace the list of collectionID with the ID and corresponding color
@@ -201,11 +194,6 @@ public:
   ItemColorComboboxData* GetPointerCollectionData();
   ItemColorComboboxData* GetPointerColorData();
 
-  void SetPointerSelectedCellType(std::string* iCellType);
-  void SetPointerSelectedSubCellType(std::string* iSubCellType);
-  void SetPointerCollectionData(ItemColorComboboxData* iCollectionData);
-  void SetPointerColorData(ItemColorComboboxData* iColorData);
-
   unsigned int GetCurrentSelectedCollectionID();
 
 public slots:
@@ -215,10 +203,6 @@ public slots:
   \param[in] iNewCollectionID ID and QColor of the new item
   */
   void AddANewCollectionID(std::pair<std::string, QColor> iNewCollectionID);
-  /**
-  \brief in order the pointers already deleted are not deleted again
-  */
-  void SetSelectedPointersToNull();
 
 signals:
   void AddANewCellType();
@@ -235,16 +219,26 @@ signals:
 
   void NewCollectionToBeCreated();
 
-  void TraceChanged( int );
+  //void WindowsTitleToModify(QString);
 
 protected:
-  QLabel *                    m_CollectionName;  
+  QLabel *                    m_TraceName;
+  QLabel *                    m_CollectionName;
+  QLabel*                     m_TraceLbl;
+  QLabel*                     m_CollectionLbl;
+
+  QGoSelectedColorComboBox*   m_SelectedColorComboBox;
+  QGoCollectionColorComboBox* m_CollectionColorComboBox;
   QLabel*                     m_LabelCellType;
   QLabel*                     m_LabelSubCellType;
+  QGoComboBox *               m_ChoseCellType;
+  QGoComboBox *               m_ChoseSubCellType;
   std::string *               m_SelectedCellType;
   std::string *               m_SelectedSubCellType;
   ItemColorComboboxData *     m_SelectedCollectionData;
   ItemColorComboboxData *     m_SelectedColorData;
+
+  QToolBar*                   m_ToolBar;
 
   void SetUpUi();
   
@@ -260,7 +254,7 @@ protected:
   for it
   */
   void SetTraceCollectionColorComboBox(
-    QHBoxLayout* iLayoutTraceCollection, QLabel* iLabel);
+    QHBoxLayout* iLayoutTraceCollection);
 
   /**
   \brief add the Celltype QGoCombobox to the layout and make the signal/slot connections
@@ -276,9 +270,9 @@ protected:
   void SetSubCellTypeComboBox(
     QHBoxLayout* iSubCellLayout);
 
-  void SetWidgetFont();
+  //void ChangeWindowTitle(std::string iTraceName);
 
-  void UpdateCollection(std::string iCollection);
+  void SetWidgetFont();
 
   /**
   \brief call the right methods to initialize the list if there is no iTextItemToSelect
@@ -336,15 +330,9 @@ protected:
   }
 
 protected slots:
-
   void UpdateValueSelectedCollection(ItemColorComboboxData iCollectionData);
   void UpdateValueSelectedCellType(std::string iCellType);
   void UpdateValueSelectedSubCellType(std::string iSubCellType);
   void UpdateValueSelectedColor(ItemColorComboboxData iColorData);
-  /** 
-  brief update the correspodning collection when the current trace has been changed 
-  and emit a signal that the trace has been changed
-  */
-  void CurrentTraceToUpdate(int iIndex);
 };
 #endif

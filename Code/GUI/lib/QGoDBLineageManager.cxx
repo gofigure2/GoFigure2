@@ -37,6 +37,17 @@
 #include <iostream>
 #include <sstream>
 
+// directory for export
+ #include <QFileDialog>
+#include <QString>
+
+//writer
+#include "vtkSmartPointer.h"
+#include "vtkTree.h"
+#include "vtkTreeWriter.h"
+#include "vtkMutableDirectedGraph.h"
+#include "vtkGraphLayoutView.h"
+
 QGoDBLineageManager::QGoDBLineageManager(int iImgSessionID, QWidget *iparent) :
   QGoDBTraceManager(), m_LineageContainerInfoForVisu(NULL), m_TrackContainerInfoForVisu(NULL)
 {
@@ -72,15 +83,22 @@ void QGoDBLineageManager::SetLineagesInfoContainersForVisu(
                     SIGNAL( UpdateLineageHighlighting(unsigned int) ),
                     this,
                     SLOT( UpdateElementHighlighting(unsigned int) ) );
+
   // for a list of lineages - NOT TESTED
   QObject::connect( m_LineageContainerInfoForVisu,
                     SIGNAL( HighlightLineage(unsigned int, bool) ),
                     m_TrackContainerInfoForVisu,
                     SLOT( HighlightCollection(unsigned int, bool) ) );
+
   QObject::connect( m_LineageContainerInfoForVisu,
                     SIGNAL( ShowLineage(unsigned int, bool) ),
                     m_TrackContainerInfoForVisu,
                     SLOT( ShowCollection(unsigned int, bool) ) );
+  // export lineage
+  QObject::connect( m_LineageContainerInfoForVisu,
+                    SIGNAL( ExportLineages() ),
+                    this,
+                    SLOT( ExportLineages() ) );
 }
 
 //-------------------------------------------------------------------------
@@ -257,20 +275,31 @@ void QGoDBLineageManager::SetColorCoding(bool IsChecked)
 {
   std::string ColumnName = "";
   std::map<unsigned int, std::string> Values;
+  std::map<unsigned int, std::string> NewValues;
   m_IsColorCodingOn = IsChecked;
 
   //create map track ID/field
-
   if (IsChecked)
     {
     Values = this->m_Table->GetTraceIDAndColumnsValues(
           this->m_TraceNameID, ColumnName);
 
+    // change lineage id by track root id
+    std::map<unsigned int, std::string>::iterator trackRootIt = Values.begin();
+    while(trackRootIt != Values.end())
+      {
+      unsigned int trackRoot =
+          m_LineageContainerInfoForVisu->GetLineageTrackRootID(trackRootIt->first);
+      NewValues.insert(
+          std::pair<unsigned int,std::string>(trackRoot, trackRootIt->second) );
+      ++trackRootIt;
+      }
+
       vtkLookupTable* LUT = NULL;
 
-  bool IsRandomIncluded =
-    (ColumnName == this->m_TraceNameID) ||
-    (ColumnName == this->m_CollectionNameID);
+    bool IsRandomIncluded =
+      (ColumnName == this->m_TraceNameID) ||
+      (ColumnName == this->m_CollectionNameID);
 
     QGoColorCodingDialog::ColorWay UserColorway =
       QGoColorCodingDialog::GetColorWay( this->m_TraceName, &LUT,
@@ -279,15 +308,15 @@ void QGoDBLineageManager::SetColorCoding(bool IsChecked)
     switch ( UserColorway )
       {
       case QGoColorCodingDialog::Default:
-        m_TrackContainerInfoForVisu->SetDivisionColorCode( ColumnName,Values );
+        m_TrackContainerInfoForVisu->SetCollectionColorCode( ColumnName,NewValues );
         break;
 
       case QGoColorCodingDialog::Random:
-        m_TrackContainerInfoForVisu->SetDivisionRandomColor(ColumnName,Values );
+        m_TrackContainerInfoForVisu->SetDivisionRandomColor(ColumnName,NewValues );
         break;
 
       case QGoColorCodingDialog::LUT:
-        m_TrackContainerInfoForVisu->SetDivisionColorCode( ColumnName,Values );
+        m_TrackContainerInfoForVisu->SetCollectionColorCode( ColumnName,NewValues );
         m_TrackContainerInfoForVisu->SetLookupTableForAllDivisionsColorCoding(LUT);
         break;
 
@@ -300,7 +329,7 @@ void QGoDBLineageManager::SetColorCoding(bool IsChecked)
   else
     {
     m_IsColorCodingOn = IsChecked;
-    m_TrackContainerInfoForVisu->SetDivisionColorCode( ColumnName, Values );
+    m_TrackContainerInfoForVisu->SetCollectionColorCode( ColumnName, NewValues );
     }
 }
 
@@ -395,6 +424,52 @@ UpdateDivisionsColors( unsigned int iLineage)
   if(color)
     {
     m_TrackContainerInfoForVisu->UpdateCollectionColors( root, color );
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoDBLineageManager::
+ExportLineages()
+{
+  //get path to export somewhere
+  QString dir = QFileDialog::getExistingDirectory(NULL, tr("Choose Directory"));
+  //get lineages info
+  std::list<unsigned int> rootIDs =
+      this->m_LineageContainerInfoForVisu->GetListOfTrackRootIDs();
+
+  std::list<unsigned int> lineageIDs =
+      this->m_LineageContainerInfoForVisu->GetListOfLineageIDs();
+
+  std::list<unsigned int>::iterator itLineage = lineageIDs.begin();
+  std::list<unsigned int>::iterator itTrack = rootIDs.begin();
+
+  // export all the lineages
+  while(itLineage != lineageIDs.end() )
+    {
+    vtkMutableDirectedGraph* graph =
+      m_TrackContainerInfoForVisu->ExportLineage(*itTrack);
+
+    vtkSmartPointer<vtkTree> tree =
+      vtkSmartPointer<vtkTree>::New();
+    tree->CheckedDeepCopy(graph);
+
+    //save tree
+    vtkSmartPointer<vtkTreeWriter> writer =
+        vtkSmartPointer<vtkTreeWriter>::New();
+    writer->SetInput(tree);
+    QString name(dir);
+    name.append("/lineage_");
+    name.append( QString::number(*itLineage, 10) );
+    name.append(".vtk");
+    writer->SetFileName(name.toLocal8Bit().data());
+    writer->Write();
+
+    graph->Delete();
+
+    ++itLineage;
+    ++itTrack;
     }
 }
 //-------------------------------------------------------------------------

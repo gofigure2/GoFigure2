@@ -78,6 +78,7 @@ void QGoTabManager::ClearTabElement(QGoTabElementBase *iE)
     // First remove all toolbar related to the previous tab
     m_MainWindow->m_ViewToolBar->clear();
     m_MainWindow->m_ModeToolBar->clear();
+    m_MainWindow->m_TracesToolBar->clear();
     // Then remove all actions related to the previous tab from menuView
     m_MainWindow->menuView->clear();
 
@@ -143,6 +144,8 @@ void QGoTabManager::SetUpTabElement(QGoTabElementBase *iE)
       m_MainWindow->m_ViewToolBar->addAction(*it);
       }
 
+    this->UpdateViewMenu(iE->ViewNoToolBarActions() );
+
     action_vector2 = iE->ModeActions();
 
     for ( std::vector< QAction * >::iterator it = action_vector2.begin();
@@ -180,6 +183,19 @@ void QGoTabManager::SetUpTabElement(QGoTabElementBase *iE)
       m_MainWindow->menuBookmarks->addAction(*it);
       }
 
+    action_vector2 = iE->TracesActions();
+
+    for ( std::vector< QAction * >::iterator it = action_vector2.begin();
+          it != action_vector2.end();
+          ++it )
+      {
+        m_MainWindow->m_TracesToolBar->addAction(*it);
+      }
+    
+    m_MainWindow->m_TraceSettingsToolBar->addWidget(iE->TraceSettingsWidget() );
+    iE->SetTraceSettingsToolBar(m_MainWindow->m_TraceSettingsToolBar);
+   
+    
     std::list< QGoTabElementBase::QGoDockWidgetStatusPair > dock_list = iE->DockWidget();
 
     for ( std::list< QGoTabElementBase::QGoDockWidgetStatusPair >::iterator
@@ -193,7 +209,14 @@ void QGoTabManager::SetUpTabElement(QGoTabElementBase *iE)
           {
           dck_it->first->m_Area = dck_it->first->m_DefaultArea;
           }
-        m_MainWindow->addDockWidget(dck_it->first->m_Area, dck_it->second);
+        if( dck_it->first->m_MainWindow != 0)
+          {
+          dck_it->first->m_MainWindow->addDockWidget(dck_it->first->m_Area, dck_it->second);
+          }
+        else
+          {
+          m_MainWindow->addDockWidget(dck_it->first->m_Area, dck_it->second);
+          }
         }
       dck_it->second->setVisible(dck_it->first->m_Visibility);
       }
@@ -264,6 +287,18 @@ void QGoTabManager::UpdateBookmarkMenu(std::vector< QAction * > iBookmarkActions
     }
 }
 
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTabManager::UpdateViewMenu(std::vector< QAction* > iViewNoToolBarActions)
+{
+  for ( std::vector< QAction * >::iterator it = iViewNoToolBarActions.begin();
+        it != iViewNoToolBarActions.end();
+        ++it )
+    {
+    m_MainWindow->menuView->addAction(*it);
+    }
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------

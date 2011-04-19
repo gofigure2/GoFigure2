@@ -134,7 +134,9 @@ TrackStructure::ReleaseData() const
 
 //--------------------------------------------------------------------------
 void
-TrackStructure::UpdateTracksRepresentation(double iRadius, double iRadius2) const
+TrackStructure::
+UpdateTracksRepresentation(const double& iRadius,
+                           const double& iRadius2) const
 {
   vtkSmartPointer< vtkAppendPolyData > apd =
     vtkSmartPointer< vtkAppendPolyData >::New();
@@ -180,30 +182,28 @@ TrackStructure::UpdateTracksRepresentation(double iRadius, double iRadius2) cons
 GoFigureTrackAttributes
 TrackStructure::ComputeAttributes() const
 {
-  GoFigureTrackAttributes attributes;
+  GoFigureTrackAttributes oAttributes;
 
-  attributes.total_length = 0.;
-  attributes.distance = 0.;
-  attributes.avg_speed = 0.;
-  attributes.max_speed = 0.;
-  unsigned int t0, t1;
-  attributes.theta = 0.;
-  attributes.phi = 0.;
+  // check if there are no points in the map
+  if( PointsMap.empty() )
+    {
+    return oAttributes;
+    }
 
   PointsMapConstIterator it = this->PointsMap.begin();
 
-  // check if there are no points in the map
   if ( it == this->PointsMap.end() )
     {
-    return attributes;
+    return oAttributes;
     }
 
   unsigned int tmin = it->first;
-  t0 = tmin;
-  t1 = tmin;
+  unsigned int t0 = tmin;
+  unsigned int t1 = tmin;
   double *org = it->second;
   double *p = it->second;
   double *q = it->second; // if we only have one point in the map
+
   ++it;
 
   // reset the array
@@ -216,40 +216,41 @@ TrackStructure::ComputeAttributes() const
     {
     t1 = it->first;
     q = it->second;
-    attributes.distance = sqrt( vtkMath::Distance2BetweenPoints(p, q) );
-    attributes.total_length += attributes.distance;
-    attributes.max_speed = std::max( attributes.max_speed,
-                                     attributes.distance / ( static_cast< double >( t1 - t0 ) ) );
+    oAttributes.distance = sqrt( vtkMath::Distance2BetweenPoints(p, q) );
+    oAttributes.total_length += oAttributes.distance;
+    oAttributes.max_speed = std::max( oAttributes.max_speed,
+                                     oAttributes.distance / ( static_cast< double >( t1 - t0 ) ) );
 
-    double speed = attributes.distance / ( static_cast< double >( t1 - t0 ) );
+    double speed = oAttributes.distance / ( static_cast< double >( t1 - t0 ) );
     newArray->InsertNextValue(speed);
 
     p = q;
     t0 = t1;
+
     ++it;
     }
 
   if ( t1 == tmin )
     {
-    attributes.avg_speed = 0;
+    oAttributes.avg_speed = 0.;
     }
   else
     {
-    attributes.avg_speed = attributes.total_length
+    oAttributes.avg_speed = oAttributes.total_length
       / static_cast< double >( t1 - tmin );
     }
 
-  attributes.distance = sqrt( vtkMath::Distance2BetweenPoints(org, q) );
+  oAttributes.distance = sqrt( vtkMath::Distance2BetweenPoints(org, q) );
 
-  if ( attributes.distance )
+  if ( oAttributes.distance )
     {
-    attributes.theta = vtkMath::DegreesFromRadians( atan2( ( q[1] - org[1] ),
+    oAttributes.theta = vtkMath::DegreesFromRadians( atan2( ( q[1] - org[1] ),
                                                            ( q[0] - org[0] ) ) );
-    attributes.phi   = vtkMath::DegreesFromRadians( acos( ( q[2] - org[2] )
-                                                          / attributes.distance ) );
+    oAttributes.phi   = vtkMath::DegreesFromRadians( acos( ( q[2] - org[2] )
+                                                          / oAttributes.distance ) );
     }
 
-  return attributes;
+  return oAttributes;
 }
 
 //--------------------------------------------------------------------------
@@ -257,7 +258,7 @@ TrackStructure::ComputeAttributes() const
 //--------------------------------------------------------------------------
 void
 TrackStructure::
-ModifyDivisionVisibility( bool iVisibility )
+ModifyDivisionVisibility( const bool& iVisibility )
 {
   /*
    * \todo Nicolas- should we add/remove the actors from the view
@@ -270,7 +271,7 @@ ModifyDivisionVisibility( bool iVisibility )
 //--------------------------------------------------------------------------
 void
 TrackStructure::
-ModifyDivisionHighlight( vtkProperty* iProperty, bool iHighlight )
+ModifyDivisionHighlight( vtkProperty* iProperty, const bool& iHighlight )
 {
   this->TreeNode.SetActorProperties(iProperty);
   this->TreeNode.Highlighted = iHighlight;
@@ -314,7 +315,10 @@ void
 TrackStructure::
 CreateDivisionNode( vtkPolyData* iNode)
 {
-  this->TreeNode.Nodes = vtkPolyData::New();
+  if( !this->TreeNode.Nodes )
+    {
+    this->TreeNode.Nodes = vtkPolyData::New();
+    }
   this->TreeNode.Nodes->DeepCopy( iNode );
 }
 //--------------------------------------------------------------------------
@@ -324,7 +328,7 @@ const bool
 TrackStructure::
 IsRoot() const
 {
-  return ( this->TreeNode.m_Mother == NULL );
+  return this->TreeNode.IsRoot();
 }
 //--------------------------------------------------------------------------
 
@@ -333,7 +337,6 @@ const bool
 TrackStructure::
 IsLeaf() const
 {
-  return ( ( this->TreeNode.m_Child[0] == NULL ) && 
-           ( this->TreeNode.m_Child[1] == NULL ) );
+  return this->TreeNode.IsLeaf();
 }
 //--------------------------------------------------------------------------

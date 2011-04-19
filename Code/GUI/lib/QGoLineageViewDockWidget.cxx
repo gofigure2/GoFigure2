@@ -31,30 +31,83 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "QGoTraceSettingsDockWidget.h"
+#include "QGoLineageViewDockWidget.h"
 
-QGoTraceSettingsDockWidget::QGoTraceSettingsDockWidget(
+#include <iostream>
+#include <QVBoxLayout>
+#include <QAction>
+
+//-------------------------------------------------------------------------
+QGoLineageViewDockWidget::QGoLineageViewDockWidget(
   QWidget *iParent) : QDockWidget(iParent)
 {
-  this->m_TraceWidget =
-    new QGoTraceSettingsWidget(this);
-  QObject::connect( this->m_TraceWidget, SIGNAL( WindowsTitleToModify(QString) ),
-                    this, SLOT( ModifyWindowTitle(QString) ) );
-  this->m_TraceWidget->UpdateTraceAndCollection("contour", "mesh");
-  this->setWidget(this->m_TraceWidget);
+  //this->setupUi(this);
+  this->SetUpUi();
+  QIcon Lineageicon;
+  Lineageicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/LineageView.png") ),
+                      QIcon::Normal, QIcon::Off);
+  this->toggleViewAction()->setIcon(Lineageicon);
+  this->toggleViewAction()->setToolTip("Lineage View");
+  this->setWindowTitle("Lineage View");
+
+  
+  // color code
+  QObject::connect( this->m_depthLineage, SIGNAL( toggled(bool) ),
+                    this, SLOT( ColorCodeLineagesByDepth(bool) ) );
+  QObject::connect( this->m_real, SIGNAL( toggled(bool) ),
+                    this, SLOT( ColorCodeLineagesByOriginalColor(bool) ) );
 }
 
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QGoTraceSettingsDockWidget::~QGoTraceSettingsDockWidget()
+QGoLineageViewDockWidget::
+~QGoLineageViewDockWidget()
 {
 }
 
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTraceSettingsDockWidget::ModifyWindowTitle(QString iTitle)
+void
+QGoLineageViewDockWidget::ColorCodeLineagesByDepth(bool iChecked)
 {
-  this->setWindowTitle(iTitle);
+  if ( iChecked )
+    {
+    emit ChangeDivisionsColorCode("DepthInformation");
+    }
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoLineageViewDockWidget::ColorCodeLineagesByOriginalColor(bool iChecked)
+{
+  if ( iChecked )
+    {
+    emit ChangeDivisionsColorCode("Original");
+    }
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoLineageViewDockWidget::SetUpUi()
+{
+  QWidget* LineageViewWidget = new QWidget;
+
+  this->m_depthLineage = new QRadioButton(tr("Depth Color Code") );  
+  this->m_real = new QRadioButton(tr("Original Color") );
+  this->m_real->setChecked(true);
+
+  QVBoxLayout* VLayout = new QVBoxLayout;
+  VLayout->addWidget(this->m_real);
+  VLayout->addWidget(this->m_depthLineage);
+
+  LineageViewWidget->setLayout(VLayout);
+  this->setWidget(LineageViewWidget);
+  LineageViewWidget->setSizePolicy(
+    QSizePolicy::Expanding, QSizePolicy::Fixed);
+
 }

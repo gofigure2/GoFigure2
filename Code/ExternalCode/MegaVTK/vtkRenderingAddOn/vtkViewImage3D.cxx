@@ -797,27 +797,20 @@ vtkViewImage3D::ComputeDistances(double *n, double *origin)
       + n[1] * ( point[1] - origin[1] )
       + n[2] * ( point[2] - origin[2] );
 
-    // condition on distance to the plane
-    //if(abs(distance) < 50)
-    //  {
-
-    // TEST CONTAINER
     bool state;
     if ( distance < 0 )
       {
       state = false;
-      //  prop_temp->SetVisibility(0);
       }
     else
       {
       state = true;
-      //  prop_temp->SetVisibility(1);
       }
 
     this->GetInteractorStyle3D()->SetCurrentProp(prop_temp);
     this->GetInteractorStyle3D()->SetCurrentState(state);
     this->InvokeEvent(vtkViewImage3DCommand::VisibilityUpdatedEvent);
-    //  }
+
     prop_temp = Prop3DCollection->GetNextProp3D();
     }
   // emit signal to say to render
@@ -848,7 +841,7 @@ vtkViewImage3D::ComputeDistancesToSquare(vtkPlanes *planes)
         + n[1] * ( point[1] - origin[1] )
         + n[2] * ( point[2] - origin[2] );
 
-      if ( distance )
+      if ( distance > 0 )
         {
         show = false;
         break;

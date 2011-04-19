@@ -109,11 +109,13 @@ public:
   \param[in] iLineageID ID for the new lineage
   \param[in] irgba color of the lineage
   \param[in] iTrackIDRoot for the new lineage
-  \param[in] IsVisible 
+  \param[in] IsVisible
   */
-  void InsertNewLineage(unsigned int iLineageID, 
-    double irgba[4], unsigned int iTrackIDRoot,
-    bool IsVisible = false);
+  void InsertNewLineage(
+    const unsigned int& iLineageID,
+    double irgba[4],
+    const unsigned int& iTrackIDRoot,
+    const bool& IsVisible = false);
 
   /*
    * \brief Get the list of all the lineages roots, as track IDs
@@ -132,28 +134,28 @@ public:
    * \param[in] iTraceID lineage ID of interest
    * \return related track root ID
    */
-  unsigned int GetLineageTrackRootID( unsigned int iTraceID );
+  unsigned int GetLineageTrackRootID( const unsigned int& iTraceID );
 
   /*
    * \brief Get the visibility of the given lineage
    * \param[in] iTraceID lineage ID of interest
    * \return visibility
    */
-  bool GetLineageVisibile( unsigned int iTraceID );
+  bool GetLineageVisibile( const unsigned int& iTraceID );
 
   /*
    * \brief Get the hilighted of the given lineage
    * \param[in] iTraceID lineage ID of interest
    * \return highlighted
    */
-  bool GetLineageHighlighted( unsigned int iTraceID );
+  bool GetLineageHighlighted( const unsigned int& iTraceID );
 
   /*
    * \brief Get the color of the given lineage
    * \param[in] iTraceID lineage ID of interest
    * \return color
    */
-  double* GetLineageColor( unsigned int iTraceID );
+  double* GetLineageColor( const unsigned int& iTraceID );
 
   /**\todo implement them:*/
   bool DeleteElement(const unsigned int & iId);
@@ -162,9 +164,12 @@ public:
 
 signals:
   void HighlightLineage(unsigned int, bool);
+  //void TraceVisibilityChanged(unsigned int, Qt::CheckState);
   void ShowLineage(unsigned int, bool);
   /** \brief When one track has been picked (highlighted) from the visualization */
   void TracePicked(unsigned int, Qt::CheckState);
+
+  void ExportLineages();
 
 public slots:
   /**

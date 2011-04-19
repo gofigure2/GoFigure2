@@ -125,6 +125,14 @@ QGoMainWindow::QGoMainWindow(QWidget *iParent, Qt::WindowFlags iFlags) :
   this->m_ModeToolBar->setObjectName( tr("Mode") );
   this->addToolBar(Qt::TopToolBarArea, this->m_ModeToolBar);
 
+  this->m_TracesToolBar = new QToolBar(tr("Tools For Traces"), this);
+  this->m_ModeToolBar->setObjectName( tr("Traces") );
+  this->addToolBar(Qt::TopToolBarArea, this->m_TracesToolBar);
+
+  this->m_TraceSettingsToolBar = new QToolBar(tr("Settings For the Trace"), this);
+  this->m_TraceSettingsToolBar->setObjectName(tr("TraceSettingsToolBar"));
+  this->addToolBar(Qt::TopToolBarArea, this->m_TraceSettingsToolBar);
+
 //   m_LSMReader = vtkLSMReader::New();
   m_DBWizard  = new QGoWizardDB(this);
   m_DBWizard->hide();
@@ -392,6 +400,7 @@ void QGoMainWindow::DisplayFilesfromDB(std::string iFirst_Filename)
   LoadAllTracesFromDatabaseManager(TimePoint);
 
   this->menuBookmarks->setEnabled(true);
+  //this->addToolBar(w3t->GetTraceSettingsToolBar() );
 }
 
 //--------------------------------------------------------------------------

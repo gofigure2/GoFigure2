@@ -83,7 +83,6 @@
 #include "ContourToMeshFilter.h"
 
 #include "GoFigureMeshAttributes.h"
-#include "QGoTraceSettingsWidget.h"
 
 #include <QCursor>
 
@@ -103,10 +102,10 @@
 #include "QGoMeshSegmentationBaseDockWidget.h"
 
 // track dockwidget
-#include "QGoTrackDockWidget.h"
+#include "QGoTrackViewDockWidget.h"
 
 // lineage dockwidget
-#include "QGoLineageDockWidget.h"
+#include "QGoLineageViewDockWidget.h"
 
 //trackediting dw
 #include "QGoTrackEditingWidget.h"
@@ -128,8 +127,8 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_XTileCoord(0),
   m_YTileCoord(0),
   m_ZTileCoord(0),
-  m_TCoord(-1),
-  m_TraceWidgetRequiered(false)
+  m_TCoord(-1)//,
+  //m_TraceWidgetRequiered(false)
 {
   m_Image = vtkImageData::New();
   m_Seeds = vtkPoints::New();
@@ -177,22 +176,24 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   CreateMeshSegmentationDockWidget();
 
   // track dock widget
-  m_TrackDockWidget = new QGoTrackDockWidget(this);
+  m_TrackViewDockWidget = new QGoTrackViewDockWidget(this);
+  this->m_TrackViewDockWidget->setObjectName("TrackViewDockWidget");
 
-  QObject::connect( m_TrackDockWidget,
+  QObject::connect( m_TrackViewDockWidget,
                     SIGNAL( ChangeColorCode(const char *) ),
                     m_TrackContainer,
                     SLOT( ChangeColorCode(const char *) ) );
 
-  QObject::connect( m_TrackDockWidget,
+  QObject::connect( m_TrackViewDockWidget,
                     SIGNAL( UpdateTracksRepresentation(double, double) ),
                     m_TrackContainer,
                     SLOT( UpdateTracksRepresentation(double, double) ) );
 
-  // track dock widget
-  m_LineageDockWidget = new QGoLineageDockWidget(this);
+  // lineage dock widget
+  m_LineageViewDockWidget = new QGoLineageViewDockWidget(this);
+  this->m_LineageViewDockWidget->setObjectName("LineageViewDockWidget");
 
-  QObject::connect( m_LineageDockWidget,
+  QObject::connect( m_LineageViewDockWidget,
                     SIGNAL( ChangeDivisionsColorCode(const char *) ),
                     m_TrackContainer,
                     SLOT( ChangeDivisionsColorCode(const char *) ) );
@@ -211,6 +212,8 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
 
   CreateModeActions();
 
+  CreateTracesActions();
+
   ReadSettings();
 
   m_DockWidgetList.push_back(
@@ -222,38 +225,39 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
       new QGoDockWidgetStatus(
-        m_ContourSegmentationDockWidget, Qt::LeftDockWidgetArea, true, true),
+        m_ContourSegmentationDockWidget, Qt::LeftDockWidgetArea, false, true),
       m_ContourSegmentationDockWidget) );
 
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
       new QGoDockWidgetStatus(
-        m_MeshSegmentationDockWidget, Qt::LeftDockWidgetArea, true, true),
+        m_MeshSegmentationDockWidget, Qt::LeftDockWidgetArea, false, true),
       m_MeshSegmentationDockWidget) );
 
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
-      new QGoDockWidgetStatus(this->m_DataBaseTables->GetTraceSettingsDockWidget(),
-                              Qt::LeftDockWidgetArea, true, true),
-      this->m_DataBaseTables->GetTraceSettingsDockWidget() ) );
+      new QGoDockWidgetStatus(this->m_TrackViewDockWidget,
+                              Qt::LeftDockWidgetArea, false, true),
+      this->m_TrackViewDockWidget) );
 
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
-      new QGoDockWidgetStatus(this->m_TrackDockWidget,
+      new QGoDockWidgetStatus(this->m_LineageViewDockWidget,
                               Qt::LeftDockWidgetArea, false, true),
-      this->m_TrackDockWidget) );
+      this->m_LineageViewDockWidget) );
 
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
-      new QGoDockWidgetStatus(this->m_LineageDockWidget,
-                              Qt::LeftDockWidgetArea, false, true),
-      this->m_LineageDockWidget) );
+    new QGoDockWidgetStatus(this->m_DataBaseTables,
+                            Qt::TopDockWidgetArea, false, true, this),
+                              this->m_DataBaseTables) );
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
       new QGoDockWidgetStatus(m_VideoRecorderWidget, Qt::LeftDockWidgetArea, false, true),
       m_VideoRecorderWidget) );
+
 #endif
 }
 
@@ -625,7 +629,6 @@ QGoTabImageView3DwT::CreateDataBaseTablesConnection()
   QObject::connect ( this->m_DataBaseTables,
                      SIGNAL( DBVariablesSet() ),
                      this,
-                     //SLOT( SetTheContainersForDB() ) );
                      SLOT( SetDatabaseContainersAndDelayedConnections() ) );
 
   QObject::connect( this,
@@ -644,35 +647,13 @@ QGoTabImageView3DwT::CreateDataBaseTablesConnection()
 
   QObject::connect( this->m_DataBaseTables, SIGNAL( NeedToGoToTheLocation(int, int, int, int) ),
                     this, SLOT( GoToLocation(int, int, int, int) ) );
+
+  QObject::connect( this->m_DataBaseTables->toggleViewAction(), SIGNAL (toggled(bool) ),
+                    this, SLOT(SetTraceSettingsToolBarVisible(bool) ) );
+
+  this->m_TraceSettingsWidget = this->m_DataBaseTables->GetTraceSettingsWidget();
+  this->m_TraceSettingsWidgetForToolBar = this->m_DataBaseTables->GetTraceSettingsWidgetForToolBar();
 }
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::CloseTabRequest(bool iTable)
-{
-  if ( iTable )
-    {
-    m_DataBaseTables->GetTraceSettingsDockWidget()->show();
-    return;
-    }
-
-  if ( !m_TraceWidgetRequiered )
-    {
-    m_DataBaseTables->GetTraceSettingsDockWidget()->hide();
-    }
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::RequieresTraceWidget(bool iTable)
-{
-  m_TraceWidgetRequiered = iTable;
-}
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -744,6 +725,10 @@ QGoTabImageView3DwT::SetRendererWindow(int iValue)
 void
 QGoTabImageView3DwT::CreateAllViewActions()
 {
+  QAction *separator1 = new QAction(this);
+  separator1->setSeparator(true);
+  this->m_ViewNoToolBarActions.push_back(separator1);
+
   QActionGroup *group = new QActionGroup(this);
 
   QAction *QuadViewAction = new QAction(tr("Quad-View"), this);
@@ -841,7 +826,7 @@ QGoTabImageView3DwT::CreateAllViewActions()
   QObject::connect( ActionDisplayAnnotations, SIGNAL( triggered() ),
                     this->m_ImageView, SLOT( ShowAnnotations() ) );
 
-  this->m_ViewActions.push_back(ActionDisplayAnnotations);
+  this->m_ViewNoToolBarActions.push_back(ActionDisplayAnnotations);
 
   QAction *ActionDisplaySplinePlanes =
     new QAction(tr("Display spline planes"), this);
@@ -853,11 +838,10 @@ QGoTabImageView3DwT::CreateAllViewActions()
   displaysplineplaneicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/C_M_L.png") ),
                                    QIcon::Normal, QIcon::Off);
   ActionDisplaySplinePlanes->setIcon(displaysplineplaneicon);
+  this->m_ViewNoToolBarActions.push_back(ActionDisplaySplinePlanes);
 
   QObject::connect( ActionDisplaySplinePlanes, SIGNAL( triggered() ),
                     this->m_ImageView, SLOT( ShowSplinePlane() ) );
-
-  this->m_ViewActions.push_back(ActionDisplaySplinePlanes);
 
   QAction *DisplayCube3D = new QAction(tr("Display 3D cube"), this);
   DisplayCube3D->setCheckable(true);
@@ -872,14 +856,10 @@ QGoTabImageView3DwT::CreateAllViewActions()
   QObject::connect( DisplayCube3D, SIGNAL( triggered() ),
                     this->m_ImageView, SLOT( ShowCube3D() ) );
 
-  this->m_ViewActions.push_back(DisplayCube3D);
-
-  QAction *separator3 = new QAction(this);
-  separator3->setSeparator(true);
-
-  this->m_ViewActions.push_back(separator3);
+  this->m_ViewNoToolBarActions.push_back(DisplayCube3D);
 
   QAction *LookupTableAction = new QAction(tr("Lookup Table"), this);
+  LookupTableAction->setObjectName("LUT");
   LookupTableAction->setEnabled(false);
   LookupTableAction->setStatusTip( tr(" Change the associated lookup table") );
 
@@ -898,6 +878,7 @@ QGoTabImageView3DwT::CreateAllViewActions()
   QAction *ScalarBarAction = new QAction(tr("Display Scalar Bar"), this);
   ScalarBarAction->setEnabled(false);
   ScalarBarAction->setCheckable(true);
+  ScalarBarAction->setObjectName("ScalarBar");
 
   QIcon scalarbaricon;
   scalarbaricon.addPixmap(QPixmap( QString::fromUtf8(":/fig/scalarbar.png") ),
@@ -923,53 +904,40 @@ QGoTabImageView3DwT::CreateAllViewActions()
 
   this->m_ViewActions.push_back( m_NavigationDockWidget->toggleViewAction() );
 
-  QAction *separator5 = new QAction(this);
-  separator5->setSeparator(true);
-  this->m_ViewActions.push_back(separator5);
-
   this->m_ViewActions.push_back( m_DataBaseTables->toggleViewAction() );
-
-  // to know if we should close the trace widget as well
-  QObject::connect( m_DataBaseTables->toggleViewAction(), SIGNAL( toggled(bool) ),
-                    this, SLOT( CloseTabRequest(bool) ) );
-
-  QAction *separator6 = new QAction(this);
-  separator6->setSeparator(true);
-  this->m_ViewActions.push_back(separator6);
 
   /// \todo create group actions for views changing
   QAction *Change3DPerspectiveToAxialAction =
     new QAction(tr("Change 3D view to Posterior "), this);
-  this->m_ViewActions.push_back(Change3DPerspectiveToAxialAction);
-
   QIcon axialicon;
   axialicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/PosteriorView.png") ),
                       QIcon::Normal, QIcon::Off);
   Change3DPerspectiveToAxialAction->setIcon(axialicon);
-
+  this->m_ViewNoToolBarActions.push_back(Change3DPerspectiveToAxialAction);
+ 
   QObject::connect( Change3DPerspectiveToAxialAction, SIGNAL( triggered() ),
                     this, SLOT( Change3DPerspectiveToAxial() ) );
 
   QAction *Change3DPerspectiveToCoronalAction =
     new QAction(tr("Change 3D view to Dorsal "), this);
-  this->m_ViewActions.push_back(Change3DPerspectiveToCoronalAction);
-
   QIcon coronalicon;
   coronalicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/DorsalView.png") ),
                         QIcon::Normal, QIcon::Off);
   Change3DPerspectiveToCoronalAction->setIcon(coronalicon);
+ 
+  this->m_ViewNoToolBarActions.push_back(Change3DPerspectiveToCoronalAction);
 
   QObject::connect( Change3DPerspectiveToCoronalAction, SIGNAL( triggered() ),
                     this, SLOT( Change3DPerspectiveToCoronal() ) );
 
   QAction *Change3DPerspectiveToSagittalAction =
     new QAction(tr("Change 3D view to Left "), this);
-  this->m_ViewActions.push_back(Change3DPerspectiveToSagittalAction);
-
   QIcon sagittalicon;
   sagittalicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/LeftView.png") ),
                          QIcon::Normal, QIcon::Off);
   Change3DPerspectiveToSagittalAction->setIcon(sagittalicon);
+  
+  this->m_ViewNoToolBarActions.push_back(Change3DPerspectiveToSagittalAction);
 
   QObject::connect( Change3DPerspectiveToSagittalAction, SIGNAL( triggered() ),
                     this, SLOT( Change3DPerspectiveToSagittal() ) );
@@ -993,20 +961,6 @@ QGoTabImageView3DwT::CreateAllViewActions()
   QObject::connect( VolumeRenderingAction, SIGNAL( toggled(bool) ),
                     this->m_ImageView, SLOT( EnableVolumeRendering(bool) ) );
 
-  QAction *separator8 = new QAction(this);
-  separator8->setSeparator(true);
-  this->m_ViewActions.push_back(separator8);
-
-  // Track Color Coding
-  this->m_ViewActions.push_back( m_TrackDockWidget->toggleViewAction() );
-
-  // Lineage Color Coding
-  this->m_ViewActions.push_back( m_LineageDockWidget->toggleViewAction() );
-
-  QAction *separator9 = new QAction(this);
-  separator9->setSeparator(true);
-  this->m_ViewActions.push_back(separator9);
-
   // Enable synchronization
   QAction *SynchronizeViewsAction =
     new QAction(tr("synchronize the different views"), this);
@@ -1022,6 +976,20 @@ QGoTabImageView3DwT::CreateAllViewActions()
   QObject::connect( SynchronizeViewsAction, SIGNAL( toggled(bool) ),
                     this->m_ImageView, SLOT( SynchronizeViews(bool) ) );
 }
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::CreateTracesActions()
+{
+   // Track Color Coding
+  this->m_TracesActions.push_back( m_TrackViewDockWidget->toggleViewAction() );
+
+  // Lineage Color Coding
+  this->m_TracesActions.push_back( m_LineageViewDockWidget->toggleViewAction() );
+}
+//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
@@ -1142,62 +1110,6 @@ void QGoTabImageView3DwT::CreateModeActions()
   separator1->setSeparator(true);
   this->m_ModeActions.push_back(separator1);
 
-  //--------------------------------//
-  //  Contour segmentation mode     //
-  //--------------------------------//
-
-  QAction *ContourSegmentationAction =
-    m_ContourSegmentationDockWidget->toggleViewAction();
-
-  group->addAction(ContourSegmentationAction);
-
-  this->m_ModeActions.push_back(ContourSegmentationAction);
-
-  QObject::connect( ContourSegmentationAction,
-                    SIGNAL( toggled(bool) ),
-                    m_ContourSegmentationDockWidget,
-                    SLOT( interactorBehavior(bool) ) );
-
-  QObject::connect( ContourSegmentationAction,
-                    SIGNAL( toggled(bool) ),
-                    this,
-                    SLOT( RequieresTraceWidget(bool) ) );
-
-  QObject::connect( ContourSegmentationAction,
-                    SIGNAL( toggled(bool) ),
-                    this,
-                    SLOT( ShowTraceWidgetsForContour(bool) ) );
-
-  //---------------------------------//
-  //        Mesh segmentation        //
-  //---------------------------------//
-
-  QAction *MeshSegmentationAction =
-    m_MeshSegmentationDockWidget->toggleViewAction();
-
-  group->addAction(MeshSegmentationAction);
-
-  this->m_ModeActions.push_back(MeshSegmentationAction);
-
-  QObject::connect( MeshSegmentationAction,
-                    SIGNAL( toggled(bool) ),
-                    m_MeshSegmentationDockWidget,
-                    SLOT( interactorBehavior(bool) ) );
-
-  QObject::connect( MeshSegmentationAction,
-                    SIGNAL( toggled(bool) ),
-                    this,
-                    SLOT( RequieresTraceWidget(bool) ) );
-
-  QObject::connect( MeshSegmentationAction,
-                    SIGNAL( toggled(bool) ),
-                    this,
-                    SLOT( ShowTraceWidgetsForMesh(bool) ) );
-
-  QAction *separator2 = new QAction(this);
-  separator2->setSeparator(true);
-  this->m_ModeActions.push_back(separator2);
-
   //---------------------------------//
   //       Actor picking  mode       //
   //---------------------------------//
@@ -1307,6 +1219,48 @@ void QGoTabImageView3DwT::CreateModeActions()
 
   QObject::connect( AngleAction, SIGNAL( toggled(bool) ),
                     this, SLOT( AngleWidgetInteractorBehavior(bool) ) );
+
+  //--------------------------------//
+  //  Contour segmentation mode     //
+  //--------------------------------//
+
+  QAction *ContourSegmentationAction =
+    m_ContourSegmentationDockWidget->toggleViewAction();
+
+  group->addAction(ContourSegmentationAction);
+
+  this->m_TracesActions.push_back(ContourSegmentationAction); 
+
+  QObject::connect( ContourSegmentationAction,
+                    SIGNAL( toggled(bool) ),
+                    m_ContourSegmentationDockWidget,
+                    SLOT( interactorBehavior(bool) ) );
+
+  QObject::connect( ContourSegmentationAction,
+                    SIGNAL( toggled(bool) ),
+                    this,
+                    SLOT( SetTraceSettingsToolBarVisible(bool) ) );
+
+  //---------------------------------//
+  //        Mesh segmentation        //
+  //---------------------------------//
+
+  QAction *MeshSegmentationAction =
+    m_MeshSegmentationDockWidget->toggleViewAction();
+
+  group->addAction(MeshSegmentationAction);
+
+  this->m_TracesActions.push_back(MeshSegmentationAction);
+
+  QObject::connect( MeshSegmentationAction,
+                    SIGNAL( toggled(bool) ),
+                    m_MeshSegmentationDockWidget,
+                    SLOT( interactorBehavior(bool) ) );
+
+  QObject::connect( MeshSegmentationAction,
+                    SIGNAL( toggled(bool) ),
+                    this,
+                    SLOT( SetTraceSettingsToolBarVisible(bool) ) );
 }
 
 //-------------------------------------------------------------------------
@@ -1337,18 +1291,39 @@ void QGoTabImageView3DwT::GetTheRelatedToDBActions()
   this->GetTheOpenBookmarksActions();
   QMenu *  ImportMenu = new QMenu(tr("Import"), this);
   QAction *ImportContoursAction = new QAction(tr("Contours"), this);
+  ImportContoursAction->setStatusTip(
+    tr("Import the data of the contours from the text file into the GoFigure database" ) );
   QAction *ImportMeshesAction = new QAction(tr("3DMeshes"), this);
+  ImportMeshesAction->setStatusTip(
+    tr("Import the data of the meshes from the text file into the GoFigure database" ) );
   QAction *ImportTracksAction = new QAction(tr("Tracks"), this);
+  ImportTracksAction->setStatusTip(
+    tr("Import the data of the tracks from the text file into the GoFigure database" ) );
+
   ImportMenu->addAction(ImportContoursAction);
   ImportMenu->addAction(ImportMeshesAction);
   ImportMenu->addAction(ImportTracksAction);
+
   QMenu *  ExportMenu = new QMenu(tr("Export"), this);
   QAction *ExportContoursAction = new QAction(tr("Contours"), this);
+  ExportContoursAction->setStatusTip(
+    tr("Export all the data related to all contours of the imagingsession from the database into a .txt file") );
+
   QAction *ExportMeshesAction = new QAction(tr("3DMeshes"), this);
+  ExportMeshesAction->setStatusTip(
+    tr("Export all the data related to all meshes of the imagingsession from the database into a .txt file") );
+
+  QAction *ExportLineagesAction = new QAction(tr("Lineages For Lineage Viewer"), this);
+  ExportLineagesAction->setStatusTip(
+    tr("Export each lineage into a vtkFile in order to be visualized separately into the lineage viewer outside of Gofigure") );
+
   ExportMenu->addAction(ExportContoursAction);
   ExportMenu->addAction(ExportMeshesAction);
+  ExportMenu->addAction(ExportLineagesAction);
+
   this->m_ToolsActions.push_back( ImportMenu->menuAction() );
   this->m_ToolsActions.push_back( ExportMenu->menuAction() );
+
   QObject::connect( ExportContoursAction, SIGNAL( triggered() ),
                     this->m_DataBaseTables, SLOT( ExportContours () ) );
   QObject::connect( ImportContoursAction, SIGNAL( triggered() ),
@@ -1359,6 +1334,9 @@ void QGoTabImageView3DwT::GetTheRelatedToDBActions()
                     this, SLOT ( ImportMeshes() ) );
   QObject::connect( ImportTracksAction, SIGNAL ( triggered() ),
                     this, SLOT ( ImportTracks() ) );
+  QObject::connect( ExportLineagesAction, SIGNAL ( triggered() ),
+                    m_LineageContainer,
+                    SIGNAL( ExportLineages() ) );
 }
 
 //-------------------------------------------------------------------------
@@ -1467,15 +1445,15 @@ QGoTabImageView3DwT::setupUi(QWidget *iParent)
     iParent->resize(800, 800);
     }
 
-  m_VSplitter  = new QSplitter(Qt::Vertical, iParent);
+  m_ImageView = new QGoImageView3D;
+  this->setCentralWidget(m_ImageView);
   m_DataBaseTables = new QGoPrintDatabase;
-  m_VSplitter->addWidget(m_DataBaseTables);
+  this->addDockWidget(Qt::TopDockWidgetArea, m_DataBaseTables);
   m_DataBaseTables->hide();
 
-  m_ImageView = new QGoImageView3D;
+  
   m_ImageView->SetIntersectionLineWidth(this->m_IntersectionLineWidth);
   m_ImageView->SetBackgroundColor(m_BackgroundColor);
-  m_VSplitter->addWidget(m_ImageView);
 
   QObject::connect( m_ImageView, SIGNAL( SliceViewXYChanged(int) ),
                     this, SIGNAL( SliceViewXYChanged(int) ) );
@@ -1495,9 +1473,6 @@ QGoTabImageView3DwT::setupUi(QWidget *iParent)
   // connect the contours selection connection
   QObject::connect( m_ImageView, SIGNAL( VisibilityChanged() ),
                     this, SLOT( VisibilityPickedActor() ) );
-
-  m_HBoxLayout = new QHBoxLayout(iParent);
-  m_HBoxLayout->addWidget(m_VSplitter);
 
   retranslateUi(iParent);
 
@@ -1745,8 +1720,8 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
       m_Image->ShallowCopy( append_filter->GetOutput() );
 
       // LUT DISABLED
-      m_ViewActions[11]->setEnabled(false);
-      m_ViewActions[10]->setEnabled(false);
+      this->findChild<QAction*>("LUT")->setEnabled(false);
+      this->findChild<QAction*>("ScalarBar")->setEnabled(false);
       }
     else
       {
@@ -1756,8 +1731,8 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
         m_Image->ShallowCopy(m_InternalImages[ch]);
         }
       // LUT ENABLED
-      m_ViewActions[11]->setEnabled(true);
-      m_ViewActions[10]->setEnabled(true);
+      this->findChild<QAction*>("LUT")->setEnabled(true);
+      this->findChild<QAction*>("ScalarBar")->setEnabled(true);
       }
     }
   else
@@ -1772,8 +1747,8 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
     m_InternalImages[0] = m_Image;
 
     // LUT ENABLED
-    m_ViewActions[11]->setEnabled(true);
-    m_ViewActions[10]->setEnabled(true);
+    this->findChild<QAction*>("LUT")->setEnabled(true);
+    this->findChild<QAction*>("ScalarBar")->setEnabled(true);
     }
 }
 
@@ -1887,8 +1862,8 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels(int iChannel,
     m_Image->ShallowCopy( append_filter->GetOutput() );
 
     // LUT DISABLED
-    m_ViewActions[11]->setEnabled(false);
-    m_ViewActions[10]->setEnabled(false);
+    this->findChild<QAction*>("LUT")->setEnabled(false);
+    this->findChild<QAction*>("ScalarBar")->setEnabled(false);
     }
   else
     {
@@ -1898,8 +1873,8 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels(int iChannel,
       m_Image->ShallowCopy(m_InternalImages[ch]);
       }
     // LUT ENABLED
-    m_ViewActions[11]->setEnabled(true);
-    m_ViewActions[10]->setEnabled(true);
+    this->findChild<QAction*>("LUT")->setEnabled(true);
+    this->findChild<QAction*>("ScalarBar")->setEnabled(true);
     }
 
   // Create channels names
@@ -2310,8 +2285,8 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
     Update();
 
     // Update LUT
-    m_ViewActions[11]->setEnabled(false);
-    m_ViewActions[10]->setEnabled(false);
+    this->findChild<QAction*>("LUT")->setEnabled(false);
+    this->findChild<QAction*>("ScalarBar")->setEnabled(false);
     }
   else
     {
@@ -2323,11 +2298,11 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
       }
 
     // Update LUT
-    m_ViewActions[11]->setEnabled(true);
-    m_ViewActions[10]->setEnabled(true);
+    this->findChild<QAction*>("LUT")->setEnabled(true);
+    this->findChild<QAction*>("ScalarBar")->setEnabled(true);
 
     // show the scalarbar automatically if the button is checked
-    bool showScalarBar = m_ViewActions[11]->isChecked();
+    bool showScalarBar = this->findChild<QAction*>("ScalarBar")->isChecked();
     m_ImageView->ShowScalarBar(showScalarBar);
     }
 }
@@ -2341,8 +2316,8 @@ QGoTabImageView3DwT::ShowOneChannel(int iChannel)
   if ( ( iChannel != -1 ) && ( !m_InternalImages.empty() ) )
     {
     // Update lut
-    m_ViewActions[11]->setEnabled(true);
-    m_ViewActions[10]->setEnabled(true);
+    this->findChild<QAction*>("LUT")->setEnabled(true);
+    this->findChild<QAction*>("ScalarBar")->setEnabled(true);
 
     m_Image->ShallowCopy(m_InternalImages[iChannel]);
     Update();
@@ -2528,10 +2503,11 @@ QGoTabImageView3DwT::ValidateContour()
       m_ContourContainer->InsertCurrentElement();
       }
     }
-  /** \todo useful ?? */
-  if ( re_edit )
+
+  if ( re_edit ) //need to set the widgets to a normal mode
     {
-    this->m_DataBaseTables->GetTraceSettingsDockWidget()->setEnabled(true);
+    this->m_TraceSettingsToolBar->setEnabled(true);
+    this->m_TraceSettingsWidget->setEnabled(true);
     m_ContourSegmentationDockWidget->SetReeditMode(false);
     m_ImageView->ReinitializeContourWidget();
     m_ContourSegmentationDockWidget->hide();
@@ -2585,6 +2561,8 @@ QGoTabImageView3DwT::ReEditContour(const unsigned int & iId)
 
       m_ImageView->InitializeContourWidgetNodes(dir, nodes);
 
+      this->m_TraceSettingsToolBar->setEnabled(false);
+      this->m_TraceSettingsWidget->setEnabled(false);
       this->m_ContourSegmentationDockWidget->show();
       this->m_ContourSegmentationDockWidget->SegmentationMethod(0);
       this->m_ContourSegmentationDockWidget->SetReeditMode(true);
@@ -2971,60 +2949,6 @@ QGoTabImageView3DwT::AddContourForMeshToContours(vtkPolyData *iInput)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTabImageView3DwT::ShowTraceWidgetsForContour(
-  bool ManualSegVisible)
-{
-  if ( ManualSegVisible )
-    {
-    if ( this->m_DataBaseTables->IsDatabaseUsed() )
-      {
-      this->m_DataBaseTables->UpdateWidgetsForCorrespondingTrace("contour", "mesh");
-      }
-    }
-  else
-    {
-    if ( m_DataBaseTables->toggleViewAction()->isChecked() )
-      {
-      // do nothing
-      }
-    else
-      {
-      //
-      m_DataBaseTables->GetTraceSettingsDockWidget()->hide();
-      }
-    }
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoTabImageView3DwT::ShowTraceWidgetsForMesh(
-  bool MeshSegmentationVisible)
-{
-  if ( MeshSegmentationVisible )
-    {
-    if ( this->m_DataBaseTables->IsDatabaseUsed() )
-      {
-      this->m_DataBaseTables->UpdateWidgetsForCorrespondingTrace("mesh", "track");
-      }
-    }
-  else
-    {
-    if ( m_DataBaseTables->toggleViewAction()->isChecked() )
-      {
-      // do nothing
-      }
-    else
-      {
-      //
-      m_DataBaseTables->GetTraceSettingsDockWidget()->hide();
-      }
-    }
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 void QGoTabImageView3DwT::GoToDefaultMenu(bool iEnable)
 {
   if ( iEnable )
@@ -3288,3 +3212,35 @@ trackIDArray->SetValue(0, iTraceID);
 iPolydata->GetFieldData()->AddArray(trackIDArray);
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::SetTraceSettingsToolBarVisible(bool IsVisible)
+{
+  if (!IsVisible)
+    {
+    if (!this->m_ContourSegmentationDockWidget->toggleViewAction()->isChecked() &&
+      !this->m_MeshSegmentationDockWidget->toggleViewAction()->isChecked() &&
+      !this->m_DataBaseTables->toggleViewAction()->isChecked() )
+      {
+      this->m_TraceSettingsToolBar->setVisible(IsVisible);
+      }
+    }
+  else
+    {
+    if (this->m_ContourSegmentationDockWidget->toggleViewAction()->isChecked())
+      {
+      this->m_DataBaseTables->SetTraceNameForTableWidget("contour");
+      }
+    if (this->m_MeshSegmentationDockWidget->toggleViewAction()->isChecked() )
+      {
+      this->m_DataBaseTables->SetTraceNameForTableWidget("mesh");
+      }
+    if(this->m_DataBaseTables->NeedTraceSettingsToolBarVisible() ) //if the dockwidget is not on floating mode 
+      //or if the trace settings widget is not already visible in the dockwidget or if the TW is not visible
+      {
+      this->m_TraceSettingsToolBar->setVisible(IsVisible);
+      }
+    }
+    
+}

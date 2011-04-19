@@ -60,11 +60,13 @@ QGoDockWidgetStatus::QGoDockWidgetStatus(const QGoDockWidgetStatus & iS) :
 }
 
 QGoDockWidgetStatus::QGoDockWidgetStatus(QDockWidget *iW, Qt::DockWidgetArea iArea,
-                                         const bool & iVisibility, const bool & iAttached) :
+                                         const bool & iVisibility, const bool & iAttached,
+                                         QMainWindow* iMainWindow) :
   QObject(iW), m_DockWidget(iW), m_Area(iArea),
   m_DefaultArea(iArea), m_Visibility(iVisibility),
   m_Attached(iAttached)
 {
+  this->m_MainWindow = iMainWindow;
   QObject::connect( m_DockWidget, SIGNAL( dockLocationChanged(Qt::DockWidgetArea) ),
                     this, SLOT( SetArea(Qt::DockWidgetArea) ) );
 
