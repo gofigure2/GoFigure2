@@ -226,7 +226,8 @@ TraceStructure::SetScalarData(const std::string & iName,
   if ( this->Nodes )
     {
     vtkIdType       NbOfPoints = this->Nodes->GetNumberOfPoints();
-    vtkDoubleArray *data = vtkDoubleArray::New();
+    vtkSmartPointer<vtkDoubleArray> data =
+        vtkSmartPointer<vtkDoubleArray>::New();
     data->SetNumberOfComponents(1);
     data->SetName( iName.c_str() );
 

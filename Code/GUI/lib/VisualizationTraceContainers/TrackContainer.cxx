@@ -1808,8 +1808,6 @@ SetCollectionColorCode(const std::string& iColumnName,
 
   std::map< std::string, double > stringmap;
 
-  using boost::multi_index:: get;
-
   if ( iColumnName.empty() || iValues.empty() )
     {
     this->RenderAllDivisionsWithOriginalColors();
