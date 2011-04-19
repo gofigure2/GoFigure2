@@ -1859,6 +1859,29 @@ SetCollectionColorCode(const std::string& iColumnName,
     MultiIndexContainerTraceIDIterator
       trace_it = this->m_Container.get< TraceID >().find(it->first);
 
+    // convert value
+    // Here let's make sure you are not passing crazy values!
+    try
+      {
+      temp = boost::lexical_cast< double >(it->second);
+      }
+    catch(boost::bad_lexical_cast &)
+      {
+      // stringmap is not empty and has at least one elements
+      std::map< std::string, double >::iterator m_it = stringmap.find(it->second);
+
+      if ( m_it != stringmap.end() )
+        {
+        temp = m_it->second;
+        }
+      else
+        {
+        std::map< std::string, double >::reverse_iterator r_it = stringmap.rbegin();
+        temp = r_it->second;
+        temp += 1.0;
+        }
+      }
+
     UpdateDivisionScalarData(trace_it, it->second, temp, min_value, max_value,
         stringmap);
     ++it;
@@ -1881,29 +1904,6 @@ UpdateDivisionScalarData(MultiIndexContainerTraceIDIterator& it,
 
   if( !it->IsLeaf() )
     {
-    // convert value
-    // Here let's make sure you are not passing crazy values!
-    try
-      {
-      iValue = boost::lexical_cast< double >(iColumnName);
-      }
-    catch(boost::bad_lexical_cast &)
-      {
-      // stringmap is not empty and has at least one element
-      std::map< std::string, double >::iterator m_it = stringmap.find(iColumnName);
-
-      if ( m_it != stringmap.end() )
-        {
-        iValue = m_it->second;
-        }
-      else
-        {
-        std::map< std::string, double >::reverse_iterator r_it = stringmap.rbegin();
-        iValue = r_it->second;
-        iValue += 1.0;
-        }
-      }
-
     if ( iValue > iMax )
       {
       iMax = iValue;
