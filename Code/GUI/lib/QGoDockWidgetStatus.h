@@ -52,7 +52,6 @@ public:
                                Qt::DockWidgetArea iArea,
                                const bool & iVisibility,
                                const bool & iAttached,
-                               //QAction* iToggleAction = 0,
                                QMainWindow* iMainWindow = 0);
 
   virtual ~QGoDockWidgetStatus();
@@ -72,13 +71,19 @@ public:
   /** \brief which main window the dock widget belongs to*/
   QMainWindow* m_MainWindow;
 
-  //QAction* m_ToggleAction;
-
 public slots:
+  /** \brief set the area of the m_dockwidget*/
   void SetArea(Qt::DockWidgetArea iArea);
 
+  /** \brief set the visibility of the m_dockwidget*/
   void SetVisibility(bool iVisibility);
 
+  /** \brief set the floated status of the m_dockwidget*/
   void SetAttached(bool iAttached);
+
+protected:
+  /** \brief set the signal slots connections to update m_visibility, m_Attached and 
+  m_Area*/
+  void SetConnections();
 };
 #endif
