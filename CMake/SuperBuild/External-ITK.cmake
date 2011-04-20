@@ -5,7 +5,7 @@ set(proj ITK)
 
 ExternalProject_Add(${proj}
   GIT_REPOSITORY "${git_protocol}://itk.org/ITK.git"
-  GIT_TAG "v4.0a06"
+  GIT_TAG "v4.0a07"
   UPDATE_COMMAND ""
   SOURCE_DIR ${proj}
   BINARY_DIR ${proj}-build
@@ -13,7 +13,9 @@ ExternalProject_Add(${proj}
   CMAKE_ARGS
     ${ep_common_args}
     -DITK_INSTALL_LIB_DIR:PATH=${GOFIGURE2_INSTALL_LIB_DIR}
-    -DITK_USE_REVIEW:BOOL=ON
+    #to be modified
+    -DITK_BUILD_ALL_MODULES:BOOL=ON
+    -DModule_ITK-Review:INTERNAL=ON
   INSTALL_COMMAND ""
   DEPENDS
     ${ITK_DEPENDENCIES}
