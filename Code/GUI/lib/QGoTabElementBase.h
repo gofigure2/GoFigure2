@@ -43,6 +43,7 @@
 #include "QGoDockWidgetStatus.h"
 
 #include "QGoGUILibConfigure.h"
+#include "QGoTraceSettingsWidget.h"
 
 class QAction;
 class QActionGroup;
@@ -93,7 +94,7 @@ public:
   virtual std::vector< QAction * > TracesActions();
 
   /** \brief Get the widget for the trace settings to be added in the TraceSettings Toolbar*/
-  virtual QWidget* TraceSettingsWidget();
+  virtual QGoTraceSettingsWidget* TraceSettingsWidget();
 
   /** \brief Get all the DockWidgets with its status (visibility, location). */
   virtual std::list< QGoDockWidgetStatusPair > & DockWidget();
@@ -140,7 +141,7 @@ protected:
   std::vector< QAction * > m_BookmarkActions;
   std::vector< QAction * > m_ModeActions;
   std::vector< QAction * > m_TracesActions;
-  QWidget*                 m_TraceSettingsWidgetForToolBar;
+  QGoTraceSettingsWidget*  m_TraceSettingsWidgetForToolBar;
   QToolBar*                m_TraceSettingsToolBar;
 
   std::list< QGoDockWidgetStatusPair > m_DockWidgetList;

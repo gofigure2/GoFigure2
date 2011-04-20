@@ -49,6 +49,7 @@
 #include "QGoAboutWidget.h"
 #include "QGoDBInitializationWizard.h"
 
+
 class vtkImageData;
 
 class vtkLSMReader;

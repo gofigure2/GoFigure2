@@ -114,7 +114,7 @@ std::vector< QAction * > QGoTabElementBase::TracesActions()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-QWidget*  QGoTabElementBase::TraceSettingsWidget()
+QGoTraceSettingsWidget*  QGoTabElementBase::TraceSettingsWidget()
 {
   return m_TraceSettingsWidgetForToolBar;
 }
