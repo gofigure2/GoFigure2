@@ -374,33 +374,12 @@ SET( QGoGUI_LIBS
   vtkRenderingAddOn2
   PoissonReconstruction
   ctk
-  ITKIO
-  ITKCommon
-  ITKBasicFilters
-  ITKStatistics
+  ${ITK-IO}
+  ITK-Common
+  #ITK-ImageFilterBase
+  ITK-Statistics
+  ITK-Review
   )
-
-IF( ( ITK_VERSION_MAJOR EQUAL 4 ) AND
-    ( ITK_VERSION_MINOR EQUAL 0 ) AND
-    ( ITK_VERSION_PATCH EQUAL 0 )
-    )
-IF( SUPERBUILD )
-  SET( QGoGUI_LIBS
-    ${QGoGUI_LIBS}
-    ITK-Review
-    )
-ELSE( SUPERBUILD )
-  SET( QGoGUI_LIBS
-    ${QGoGUI_LIBS}
-    ITKReview
-    )
-ENDIF( SUPERBUILD )
-
-ENDIF( ( ITK_VERSION_MAJOR EQUAL 4 ) AND
-    ( ITK_VERSION_MINOR EQUAL 0 ) AND
-    ( ITK_VERSION_PATCH EQUAL 0 )
-  )
-
 
 TARGET_LINK_LIBRARIES( QGoGui
   ${QGoGUI_LIBS}
