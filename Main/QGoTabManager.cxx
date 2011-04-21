@@ -87,7 +87,6 @@ void QGoTabManager::ClearTabElement(QGoTabElementBase *iE)
       ToolBar->ClearToolBar();
       ++iter;
       }
-    //iE->TracesActions()->ClearToolBar();
     
     this->m_MainWindow->m_TraceSettingsToolBar->toggleViewAction()->disconnect(
       this->m_MainWindow->m_TraceSettingsToolBar->findChild<QGoTraceSettingsWidget*>("TraceSettingsWidget") );
@@ -192,7 +191,6 @@ void QGoTabManager::SetUpTabElement(QGoTabElementBase *iE)
       m_MainWindow->menuBookmarks->addAction(*it);
       }
 
-    //iE->TracesActions()->SetUpToolBar();
     std::list<QGoToolBarStatus*> ToolBarList = iE->GetToolBarsStatus();
     std::list<QGoToolBarStatus*>::iterator iter = ToolBarList.begin();
     while (iter != ToolBarList.end() )
