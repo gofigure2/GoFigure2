@@ -647,7 +647,6 @@ signals:
    * \brief Send signal to tell to the lineage container which lineage to highlight
    */
   void UpdateLineageHighlighting(unsigned int);
-  void GetCollectionIDForHighlgiht(unsigned int);
 
 public slots:
 

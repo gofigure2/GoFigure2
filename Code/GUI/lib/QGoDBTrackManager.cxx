@@ -73,17 +73,6 @@ void QGoDBTrackManager::SetTracksInfoContainerForVisu(
                     SIGNAL( NeedMeshesInfoForImportedTrack(unsigned int) ),
                     this,
                     SIGNAL( NeedMeshesInfoForImportedTrack(unsigned int) ) );
-
-  /** \lydie : what's the point ? */
-  QObject::connect( this->m_TrackContainerInfoForVisu,
-                    SIGNAL( GetCollectionIDForHighlgiht(unsigned int) ),
-                    this,
-                    SLOT( GetCollectionIDForHighlgiht(unsigned int) ) );
-
-  QObject::connect( this,
-                    SIGNAL( UpdateCollectionHighlighting(unsigned int) ),
-                    this->m_TrackContainerInfoForVisu,
-                    SIGNAL( UpdateLineageHighlighting(unsigned int) ) );
 }
 
 //-------------------------------------------------------------------------
@@ -932,20 +921,5 @@ void QGoDBTrackManager::CreateALineageWithFormerDaughterOfADeletedDivision(
     emit NewLineageToCreateFromTracks(TracksIDs, iDaughterID, PreviousLineageToDelete); //need to create a new lineage with 
       //the family of the daughter
     }
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/**\ todo Lydie:Nico get the lineageID for the TraceRootID in the lineagecontainer directly...
-no need to be here
-Nicolas-this is even better is guess?
-*/
-void
-QGoDBTrackManager::
-GetCollectionIDForHighlgiht(unsigned int iTraceRootID)
-{
-  int collectionID =
-      m_TrackContainerInfoForVisu->GetCollectionIDOfGivenTraceID(iTraceRootID);
-  emit UpdateCollectionHighlighting( collectionID );
 }
 //-------------------------------------------------------------------------

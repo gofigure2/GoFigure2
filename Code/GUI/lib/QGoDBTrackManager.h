@@ -154,8 +154,6 @@ signals:
   void NewLineageToCreateFromTracks( std::list<unsigned int> iCheckedTracksIDs, unsigned int iTrackIDRoot,
     std::list<unsigned> iLineagesToDelete);
 
-  void UpdateCollectionHighlighting(unsigned int);
-
 protected:
   GoDBTWContainerForTrack *m_TWContainer;
   TrackContainer          *m_TrackContainerInfoForVisu;
@@ -345,7 +343,5 @@ protected slots:
   \brief slot called when the user chose "Delete the division for this tracks"
   */
   void DeleteTheDivisions();
-  
-  void GetCollectionIDForHighlgiht(unsigned int);
 };
 #endif

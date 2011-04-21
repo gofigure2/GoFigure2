@@ -1351,8 +1351,10 @@ UpdateCollectionHighlighting(unsigned int iTraceId)
 
     this->m_ImageView->UpdateRenderWindows();
 
-    // send signal to track manager with TraceID
-    emit GetCollectionIDForHighlgiht( motherIt->TraceID );
+    // send signal to lineage container
+    int collectionID =
+        this->GetCollectionIDOfGivenTraceID(iTraceId);
+    emit UpdateCollectionHighlighting( collectionID );
     }
 }
 //-------------------------------------------------------------------------
