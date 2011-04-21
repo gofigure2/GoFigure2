@@ -1634,6 +1634,8 @@ void QGoPrintDatabase::CreateNewLineageFromTracks(
   this->CloseDBConnection();
 
   // Update lineage attributes
+  std::cout << "create new lineage..." << std::endl;
+  std::cout << "lineage ID: "<< NewLineageID << std::endl;
   this->m_LineagesManager->UpdateDivisionsColors(NewLineageID);
   this->m_LineagesManager->UpdateDivisionsScalars(NewLineageID);
 }
@@ -1776,6 +1778,11 @@ void QGoPrintDatabase::AddCheckedTracksToSelectedLineage(
     }
 
   // Update lineage attributes
+  std::cout << "add checked track...." << std::endl;
+  std::cout << "lineage ID: "<< iLineageID << std::endl;
+  /*
+   \todo Nicolas-scalars don't have to be updated
+   */
   this->m_LineagesManager->UpdateDivisionsColors(iLineageID);
   this->m_LineagesManager->UpdateDivisionsScalars(iLineageID);
 }

@@ -424,12 +424,15 @@ UpdateDivisionsColors( unsigned int iLineage)
 {
         std::cout<<"update colors" << std::endl;
         std::cout<<"lineage id: "<< iLineage << std::endl;
-  unsigned int root =
-      this->m_LineageContainerInfoForVisu->GetLineageTrackRootID(iLineage);
-  double* color = this->m_LineageContainerInfoForVisu->GetLineageColor(iLineage);
-  if(color)
+  if(iLineage)
     {
-    m_TrackContainerInfoForVisu->UpdateCollectionColors( root, color );
+      unsigned int root =
+          this->m_LineageContainerInfoForVisu->GetLineageTrackRootID(iLineage);
+      double* color = this->m_LineageContainerInfoForVisu->GetLineageColor(iLineage);
+      if(color)
+        {
+        m_TrackContainerInfoForVisu->UpdateCollectionColors( root, color );
+        }
     }
 }
 //-------------------------------------------------------------------------
