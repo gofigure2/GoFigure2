@@ -12,6 +12,7 @@ SET( QGOIO_EXAMPLES_SRC
   vtkPolyDataMySQLContourWriter
   vtkPolyDataMySQLMeshWriter
   vtkPolyDataMySQLTrack
+  GoDBImportTracksTest
 #  kishmeshtextfilereader
 #  trackTextFilesReader
 )
@@ -30,7 +31,6 @@ SET( GODB_SRC
   GoDBProjectRowTest
   GoDBCoordinateRowTest
   GoDBImgSessionRowTest
-  GoDBImportTracksTest
 )
 
 SET( QGOIO_EXAMPLES_SRC
