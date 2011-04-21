@@ -44,6 +44,7 @@
 
 #include "QGoGUILibConfigure.h"
 #include "QGoTraceSettingsWidget.h"
+#include "QGoToolBarStatus.h"
 
 class QAction;
 class QActionGroup;
@@ -72,6 +73,8 @@ public:
   /** \brief Get the dimension type of the underlying data set.*/
   virtual GoFigure::TabDimensionType GetTabDimensionType() const = 0;
 
+  virtual std::list< QGoToolBarStatus > GetToolBarsStatus();
+
   /** \brief Get all actions belonging to View Menu and Toolbar.*/
   virtual std::vector< QAction * > ViewActions();
 
@@ -91,7 +94,8 @@ public:
   virtual std::vector< QAction * > ModeActions();
 
   /** \brief Get all actions belonging to the Traces Toolbar.*/
-  virtual std::vector< QAction * > TracesActions();
+  //virtual std::vector< QAction * > TracesActions();
+  virtual QGoToolBarStatus* TracesActions();
 
   /** \brief Get the widget for the trace settings to be added in the TraceSettings Toolbar*/
   virtual QGoTraceSettingsWidget* TraceSettingsWidget();
@@ -131,6 +135,9 @@ public:
 
   virtual void SetTraceSettingsToolBar(QToolBar* iToolBar);
 
+  virtual void InitializeToolBarsAndMenus(
+    QMenu* iTracesMenu, QToolBar* iTracesToolbar);
+
 protected:
   std::list< QAction * > m_PluginActionList;
 
@@ -140,11 +147,13 @@ protected:
   std::vector< QAction * > m_ToolsActions;
   std::vector< QAction * > m_BookmarkActions;
   std::vector< QAction * > m_ModeActions;
-  std::vector< QAction * > m_TracesActions;
+  //std::vector< QAction * > m_TracesActions;
+  QGoToolBarStatus*        m_TracesActions;
   QGoTraceSettingsWidget*  m_TraceSettingsWidgetForToolBar;
   QToolBar*                m_TraceSettingsToolBar;
 
   std::list< QGoDockWidgetStatusPair > m_DockWidgetList;
+  std::list< QGoToolBarStatus >        m_ToolBarList;
   QStatusBar*              m_StatusBar;
 private:
   Q_DISABLE_COPY(QGoTabElementBase);

@@ -41,7 +41,6 @@ QGoDockWidgetStatus::QGoDockWidgetStatus(QGoDockWidget *iW) : QObject(iW),
   m_Area(Qt::LeftDockWidgetArea), m_DefaultArea(Qt::LeftDockWidgetArea),
   m_Visibility(true), m_Attached(true)
 {
-  this->SetConnections();
 }
 //--------------------------------------------------------------------------
 
@@ -51,7 +50,6 @@ QGoDockWidgetStatus::QGoDockWidgetStatus(const QGoDockWidgetStatus & iS) :
   m_Visibility(iS.m_Visibility), m_Attached(iS.m_Attached), 
   m_MainWindow(iS.m_MainWindow)
 {
-  this->SetConnections();
 }
 //--------------------------------------------------------------------------
 
@@ -64,7 +62,6 @@ QGoDockWidgetStatus::QGoDockWidgetStatus(QGoDockWidget *iW, Qt::DockWidgetArea i
   m_Attached(iAttached),
   m_MainWindow(iMainWindow)
 {
-  this->SetConnections();
 }
 //--------------------------------------------------------------------------
 

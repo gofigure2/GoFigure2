@@ -44,9 +44,11 @@
 #include <iostream>
 
 //--------------------------------------------------------------------------
-QGoTabElementBase::QGoTabElementBase(QWidget *iParent) : QMainWindow(iParent),
-  m_StatusBar(NULL), m_TraceSettingsToolBar(NULL)
+QGoTabElementBase::QGoTabElementBase(QWidget *iParent) 
+  : QMainWindow(iParent),
+  m_StatusBar(NULL), m_TracesActions(NULL), m_TraceSettingsToolBar(NULL)
 {
+  //this->m_TracesActions = new QGoToolBarStatus;
 }
 
 //--------------------------------------------------------------------------
@@ -106,7 +108,8 @@ std::vector< QAction * > QGoTabElementBase::ModeActions()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::vector< QAction * > QGoTabElementBase::TracesActions()
+//std::vector< QAction * > QGoTabElementBase::TracesActions()
+QGoToolBarStatus* QGoTabElementBase::TracesActions()
 {
   return m_TracesActions;
 }
@@ -226,4 +229,19 @@ void QGoTabElementBase::CreateModeActions(QActionGroup *group)
 void QGoTabElementBase::SetStatusBarPointer(QStatusBar *iStatusbar)
 {
   this->m_StatusBar = iStatusbar;
+}
+//--------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTabElementBase::InitializeToolBarsAndMenus(
+    QMenu* iTracesMenu, QToolBar* iTracesToolbar)
+{
+  //this->m_TracesActions->InitializeToolBarAndMenu(iTracesToolbar, iTracesMenu);
+}
+//--------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list< QGoToolBarStatus > QGoTabElementBase::GetToolBarsStatus()
+{
+  return this->m_ToolBarList;
 }

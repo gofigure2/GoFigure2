@@ -87,7 +87,8 @@
 
 //--------------------------------------------------------------------------
 QGoMainWindow::QGoMainWindow(QWidget *iParent, Qt::WindowFlags iFlags) :
-  QMainWindow(iParent, iFlags)
+  QMainWindow(iParent, iFlags), m_TraceSettingsToolBar(NULL),
+  m_TracesToolBar(NULL)
 {
   QString title("<*)0|00|0>< ~~ <*)0|00|0><     GoFigure    ><0|00|0(*> ~~ ><0|00|0(*>");
 
@@ -125,13 +126,13 @@ QGoMainWindow::QGoMainWindow(QWidget *iParent, Qt::WindowFlags iFlags) :
   this->m_ModeToolBar->setObjectName( tr("Mode") );
   this->addToolBar(Qt::TopToolBarArea, this->m_ModeToolBar);
 
-  this->m_TracesToolBar = new QToolBar(tr("Tools For Traces"), this);
-  this->m_ModeToolBar->setObjectName( tr("Traces") );
+  /*this->m_TracesToolBar = new QToolBar(tr("Tools For Traces"), this);
+  this->m_TracesToolBar->setObjectName( tr("Traces") );
   this->addToolBar(Qt::TopToolBarArea, this->m_TracesToolBar);
 
   this->m_TraceSettingsToolBar = new QToolBar(tr("Settings For the Trace"), this);
   this->m_TraceSettingsToolBar->setObjectName(tr("TraceSettingsToolBar"));
-  this->addToolBar(Qt::TopToolBarArea, this->m_TraceSettingsToolBar);
+  this->addToolBar(Qt::TopToolBarArea, this->m_TraceSettingsToolBar);*/
 
 //   m_LSMReader = vtkLSMReader::New();
   m_DBWizard  = new QGoWizardDB(this);
@@ -838,7 +839,9 @@ QGoMainWindow::CreateNewTabFor3DwtImage(
     w3t->setWindowTitle( QFileInfo( QString::fromStdString(iHeader) ).fileName() );
     }
 
-  SetupMenusFromTab(w3t);
+  //w3t->InitializeToolBarsAndMenus(this->menuTools, this->m_TracesToolBar);
+  //SetupMenusFromTab(w3t);
+  this->SetUpMenusToolBarsFor3dwtImage(w3t);
 
   return w3t;
 }
@@ -887,6 +890,26 @@ QGoMainWindow::SetupMenusFromTab(QGoTabElementBase *iT)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+void QGoMainWindow::SetUpMenusToolBarsFor3dwtImage(QGoTabImageView3DwT* iT)
+{
+  if (!this->m_TracesToolBar)
+    {
+    this->m_TracesToolBar = new QToolBar(tr("Tools For Traces"), this);
+    this->m_TracesToolBar->setObjectName( tr("Traces") );
+    this->addToolBar(Qt::TopToolBarArea, this->m_TracesToolBar);
+    }
+  if (!this->m_TraceSettingsToolBar)
+    {
+    this->m_TraceSettingsToolBar = new QToolBar(tr("Settings For the Trace"), this);
+    m_TraceSettingsToolBar->setObjectName(tr("TraceSettingsToolBar"));
+    this->addToolBar(Qt::TopToolBarArea, m_TraceSettingsToolBar);
+    }
+  iT->InitializeToolsForTracesToolBar(this->menuTools, this->m_TracesToolBar);
+  this->SetupMenusFromTab(iT);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 QGoTabImageView3DwT *
 QGoMainWindow::CreateNewTabFor3DwtImage(vtkLSMReader *iReader, const QString & iFile)
 {
@@ -895,7 +918,8 @@ QGoMainWindow::CreateNewTabFor3DwtImage(vtkLSMReader *iReader, const QString & i
   w3t->setWindowTitle( QFileInfo(iFile).fileName() );
   w3t->SetLSMReader(iReader, 0);
 
-  SetupMenusFromTab(w3t);
+  //SetupMenusFromTab(w3t);
+  this->SetUpMenusToolBarsFor3dwtImage(w3t);
 
   // w3t->m_DataBaseTables->hide();
   w3t->SetStatusBarPointer( this->statusBar() );

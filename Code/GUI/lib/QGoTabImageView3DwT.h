@@ -238,6 +238,9 @@ public:
                                                const bool& iIntensity,
                                                const unsigned int& iTCoord );
 
+  void InitializeToolsForTracesToolBar(QMenu* iMenu, QToolBar* iToolBar);
+  void InitializeTraceSettingsToolBar(QMenu* iMenu, QToolBar* iToolBar);
+
 signals:
   void TimePointChanged(int TimePoint);
 
