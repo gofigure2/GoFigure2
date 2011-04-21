@@ -226,6 +226,8 @@ std::list< unsigned int > QGoDBLineageManager::GetListHighlightedIDs()
 void QGoDBLineageManager::UpdateHighlightedElementsInVisuContainer(
   int iTraceID)
 {
+    std::cout<<"update highlight" << std::endl;
+
   // update lineage container element (invert highlighted boolean)
   this->m_LineageContainerInfoForVisu->
     UpdateElementHighlightingWithGivenTraceID(iTraceID);
@@ -244,6 +246,7 @@ void QGoDBLineageManager::UpdateHighlightedElementsInVisuContainer(
 //-------------------------------------------------------------------------
 void QGoDBLineageManager::UpdateVisibleElementsInVisuContainer(int iTraceID)
 {
+        std::cout<<"update visible" << std::endl;
   // update container element (invert visible bool)
   this->m_LineageContainerInfoForVisu->
     UpdateElementVisibilityWithGivenTraceID(iTraceID);
@@ -378,6 +381,8 @@ void
 QGoDBLineageManager::
 UpdateDivisionsScalars( unsigned int iLineageID )
 {
+        std::cout<<"update divisions scalars" << std::endl;
+        std::cout<<"lineage id: " << iLineageID << std::endl;
   if(iLineageID)
     {
     unsigned int root =
@@ -391,7 +396,7 @@ UpdateDivisionsScalars( unsigned int iLineageID )
 void
 QGoDBLineageManager::
 UpdateDivisionsColors()
-{
+{    std::cout<<"update divisions colors" << std::endl;
   // Get track root IDs
   std::list<unsigned int> rootIDs =
       this->m_LineageContainerInfoForVisu->GetListOfTrackRootIDs();
@@ -417,6 +422,8 @@ void
 QGoDBLineageManager::
 UpdateDivisionsColors( unsigned int iLineage)
 {
+        std::cout<<"update colors" << std::endl;
+        std::cout<<"lineage id: "<< iLineage << std::endl;
   unsigned int root =
       this->m_LineageContainerInfoForVisu->GetLineageTrackRootID(iLineage);
   double* color = this->m_LineageContainerInfoForVisu->GetLineageColor(iLineage);

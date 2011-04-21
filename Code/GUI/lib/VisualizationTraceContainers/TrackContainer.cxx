@@ -1803,8 +1803,8 @@ TrackContainer::
 SetCollectionColorCode(const std::string& iColumnName,
     const std::map< unsigned int, std::string >& iValues)
 {
-  typedef typename std::map< unsigned int, std::string > MapType;
-  typedef typename MapType::const_iterator               MapConstIterator;
+  typedef  std::map< unsigned int, std::string > MapType;
+  typedef  MapType::const_iterator               MapConstIterator;
 
   std::map< std::string, double > stringmap;
 
