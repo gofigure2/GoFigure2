@@ -196,6 +196,7 @@ public slots:
   */
   void UpdateElementHighlighting(unsigned int iTraceID)
     {
+    std::cout << "lineage picked: " << iTraceID << std::endl;
     Qt::CheckState state;
     Superclass::UpdateElementHighlightingWithTraceID( iTraceID, state );
     emit TracePicked(iTraceID, state);
