@@ -1634,8 +1634,11 @@ void QGoPrintDatabase::CreateNewLineageFromTracks(
   this->CloseDBConnection();
 
   // Update lineage attributes
-  this->m_LineagesManager->UpdateDivisionsColors(NewLineageID);
-  this->m_LineagesManager->UpdateDivisionsScalars(NewLineageID);
+  if(NewLineageID)
+    {
+    this->m_LineagesManager->UpdateDivisionsColors(NewLineageID);
+    this->m_LineagesManager->UpdateDivisionsScalars(NewLineageID);
+    }
 }
 //--------------------------------------------------------------------------
 
@@ -1776,8 +1779,11 @@ void QGoPrintDatabase::AddCheckedTracksToSelectedLineage(
     }
 
   // Update lineage attributes
+  if(iLineageID)
+  {
   this->m_LineagesManager->UpdateDivisionsColors(iLineageID);
   this->m_LineagesManager->UpdateDivisionsScalars(iLineageID);
+  }
 }
 //--------------------------------------------------------------------------
 

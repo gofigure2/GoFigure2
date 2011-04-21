@@ -76,13 +76,18 @@ InsertNewLineage(const unsigned int& iLineageID,
 //-------------------------------------------------------------------------
 bool LineageContainer::DeleteElement(const unsigned int & iId)
 {
-  return true;
+  MultiIndexContainerTraceIDIterator
+    it = m_Container.get< TraceID >().find(iId);
+
+  return DeleteElement(it);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 bool LineageContainer::DeleteElement(MultiIndexContainerTraceIDIterator iIter)
 {
+  assert(iIter != m_Container.get< TraceID >().end() );
+  m_Container.get< TraceID >().erase(iIter);
   return true;
 }
 //-------------------------------------------------------------------------
@@ -143,6 +148,9 @@ unsigned int LineageContainer::GetLineageTrackRootID( const unsigned int& iTrace
   MultiIndexContainerTraceIDIterator
     it = m_Container.get< TraceID >().find( iTraceID );
 
+  /*
+   \todo Nicolas-shouldnt have to check it - sth has to be found here or bug somewhere
+   */
   if( it != m_Container.get< TraceID >().end() )
     {
     return it->TrackRootID;
