@@ -46,7 +46,8 @@
 //--------------------------------------------------------------------------
 QGoTabElementBase::QGoTabElementBase(QWidget *iParent) 
   : QMainWindow(iParent),
-  m_StatusBar(NULL), m_TracesActions(NULL), m_TraceSettingsToolBar(NULL)
+  m_StatusBar(NULL), m_TracesActions(NULL), m_TraceSettingsToolBar(NULL),
+  m_ToolBarList(NULL)
 {
   //this->m_TracesActions = new QGoToolBarStatus;
 }
@@ -241,7 +242,7 @@ void QGoTabElementBase::InitializeToolBarsAndMenus(
 //--------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::list< QGoToolBarStatus > QGoTabElementBase::GetToolBarsStatus()
+std::list< QGoToolBarStatus* > QGoTabElementBase::GetToolBarsStatus()
 {
   return this->m_ToolBarList;
 }

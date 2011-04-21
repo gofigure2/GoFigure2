@@ -3254,7 +3254,7 @@ QGoTabImageView3DwT::InitializeToolsForTracesToolBar(
 QMenu* iMenu, QToolBar* iToolBar)
 {
   iToolBar->clear();
-  this->m_TracesActions = new QGoToolBarStatus(iToolBar, iMenu, Qt::TopToolBarArea,
+  m_TracesActions = new QGoToolBarStatus(iToolBar, iMenu, Qt::TopToolBarArea,
                             true, true);
 
   QActionGroup* group = this->findChild< QActionGroup* >("ModeGroup");
@@ -3266,7 +3266,7 @@ QMenu* iMenu, QToolBar* iToolBar)
   group->addAction(ContourSegmentationAction);
   //group->addAction(this->m_ContourSegmentationDockWidget->GetActionForToggle() );
 
-  this->m_TracesActions->m_VectorAction.push_back(ContourSegmentationAction); 
+  m_TracesActions->m_VectorAction.push_back(ContourSegmentationAction); 
   //this->m_TracesActions.push_back(this->m_ContourSegmentationDockWidget->GetActionForToggle()); 
 
   //Mesh Editing
@@ -3275,14 +3275,14 @@ QMenu* iMenu, QToolBar* iToolBar)
 
   group->addAction(MeshSegmentationAction);
 
-  this->m_TracesActions->m_VectorAction.push_back(MeshSegmentationAction);
+  m_TracesActions->m_VectorAction.push_back(MeshSegmentationAction);
 
   // Track Color Coding
-  this->m_TracesActions->m_VectorAction.push_back( 
+  m_TracesActions->m_VectorAction.push_back( 
     m_TrackViewDockWidget->toggleViewAction() );
 
   // Lineage Color Coding
-  this->m_TracesActions->m_VectorAction.push_back( 
+  m_TracesActions->m_VectorAction.push_back( 
     m_LineageViewDockWidget->toggleViewAction() );
 
   QObject::connect( ContourSegmentationAction,
@@ -3305,11 +3305,12 @@ QMenu* iMenu, QToolBar* iToolBar)
                     this,
                     SLOT( SetTraceSettingsToolBarVisible(bool) ) );
 
+  this->m_ToolBarList.push_back(m_TracesActions);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::InitializeTraceSettingsToolBar(QMenu* iMenu, QToolBar* iToolBar)
+QGoTabImageView3DwT::InitializeTraceSettingsToolBar(QToolBar* iToolBar)
 {
 }

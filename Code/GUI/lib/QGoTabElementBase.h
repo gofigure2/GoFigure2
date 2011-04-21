@@ -73,7 +73,7 @@ public:
   /** \brief Get the dimension type of the underlying data set.*/
   virtual GoFigure::TabDimensionType GetTabDimensionType() const = 0;
 
-  virtual std::list< QGoToolBarStatus > GetToolBarsStatus();
+  virtual std::list< QGoToolBarStatus* > GetToolBarsStatus();
 
   /** \brief Get all actions belonging to View Menu and Toolbar.*/
   virtual std::vector< QAction * > ViewActions();
@@ -152,8 +152,8 @@ protected:
   QGoTraceSettingsWidget*  m_TraceSettingsWidgetForToolBar;
   QToolBar*                m_TraceSettingsToolBar;
 
-  std::list< QGoDockWidgetStatusPair > m_DockWidgetList;
-  std::list< QGoToolBarStatus >        m_ToolBarList;
+  std::list< QGoDockWidgetStatusPair >  m_DockWidgetList;
+  std::list< QGoToolBarStatus* >        m_ToolBarList;
   QStatusBar*              m_StatusBar;
 private:
   Q_DISABLE_COPY(QGoTabElementBase);
