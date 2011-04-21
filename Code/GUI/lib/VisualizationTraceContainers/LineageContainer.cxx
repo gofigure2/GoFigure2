@@ -76,7 +76,6 @@ InsertNewLineage(const unsigned int& iLineageID,
 //-------------------------------------------------------------------------
 bool LineageContainer::DeleteElement(const unsigned int & iId)
 {
-  std::cout << " const unsigned int & iId " << std::endl;
   return true;
 }
 //-------------------------------------------------------------------------
@@ -84,7 +83,6 @@ bool LineageContainer::DeleteElement(const unsigned int & iId)
 //-------------------------------------------------------------------------
 bool LineageContainer::DeleteElement(MultiIndexContainerTraceIDIterator iIter)
 {
-  std::cout << " MultiIndexContainerTraceIDIterator iIter " << std::endl;
   return true;
 }
 //-------------------------------------------------------------------------
@@ -92,7 +90,6 @@ bool LineageContainer::DeleteElement(MultiIndexContainerTraceIDIterator iIter)
 //-------------------------------------------------------------------------
 std::list< unsigned int > LineageContainer::DeleteAllHighlightedElements()
 {
-  std::cout << " DeleteAllHighlightedElements " << std::endl;
   return std::list< unsigned int >();
 }
 //-------------------------------------------------------------------------
