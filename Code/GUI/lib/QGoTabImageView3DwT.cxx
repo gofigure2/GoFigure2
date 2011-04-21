@@ -127,7 +127,8 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_XTileCoord(0),
   m_YTileCoord(0),
   m_ZTileCoord(0),
-  m_TCoord(-1)//,
+  m_TCoord(-1),
+  m_TraceSettingsToolBar(NULL)
   //m_TraceWidgetRequiered(false)
 {
   m_Image = vtkImageData::New();
@@ -652,7 +653,7 @@ QGoTabImageView3DwT::CreateDataBaseTablesConnection()
                     this, SLOT(SetTraceSettingsToolBarVisible(bool) ) );
 
   this->m_TraceSettingsWidget = this->m_DataBaseTables->GetTraceSettingsWidget();
-  this->m_TraceSettingsWidgetForToolBar = this->m_DataBaseTables->GetTraceSettingsWidgetForToolBar();
+  //this->m_TraceSettingsWidgetForToolBar = this->m_DataBaseTables->GetTraceSettingsWidgetForToolBar();
 }
 //-------------------------------------------------------------------------
 
@@ -3252,8 +3253,8 @@ void
 QGoTabImageView3DwT::InitializeToolsForTracesToolBar(
 QMenu* iMenu, QToolBar* iToolBar)
 {
-  iToolBar->clear();
-  QGoToolBarStatus* TracesActions = 
+  //iToolBar->clear();
+  QGoToolBarStatus* TracesToolBar = 
     new QGoToolBarStatus(iToolBar, iMenu, Qt::TopToolBarArea, true, true, this);
 
   QActionGroup* group = this->findChild< QActionGroup* >("ModeGroup");
@@ -3265,7 +3266,7 @@ QMenu* iMenu, QToolBar* iToolBar)
   group->addAction(ContourSegmentationAction);
   //group->addAction(this->m_ContourSegmentationDockWidget->GetActionForToggle() );
 
-  m_TracesActions->m_VectorAction.push_back(ContourSegmentationAction); 
+  TracesToolBar->m_VectorAction.push_back(ContourSegmentationAction); 
   //this->m_TracesActions.push_back(this->m_ContourSegmentationDockWidget->GetActionForToggle()); 
 
   //Mesh Editing
@@ -3274,14 +3275,14 @@ QMenu* iMenu, QToolBar* iToolBar)
 
   group->addAction(MeshSegmentationAction);
 
-  m_TracesActions->m_VectorAction.push_back(MeshSegmentationAction);
+  TracesToolBar->m_VectorAction.push_back(MeshSegmentationAction);
 
   // Track Color Coding
-  m_TracesActions->m_VectorAction.push_back( 
+  TracesToolBar->m_VectorAction.push_back( 
     m_TrackViewDockWidget->toggleViewAction() );
 
   // Lineage Color Coding
-  m_TracesActions->m_VectorAction.push_back( 
+  TracesToolBar->m_VectorAction.push_back( 
     m_LineageViewDockWidget->toggleViewAction() );
 
   QObject::connect( ContourSegmentationAction,
@@ -3304,7 +3305,7 @@ QMenu* iMenu, QToolBar* iToolBar)
                     this,
                     SLOT( SetTraceSettingsToolBarVisible(bool) ) );
 
-  this->m_ToolBarList.push_back(m_TracesActions);
+  this->m_ToolBarList.push_back(TracesToolBar);
 }
 //-------------------------------------------------------------------------
 
@@ -3312,4 +3313,10 @@ QMenu* iMenu, QToolBar* iToolBar)
 void
 QGoTabImageView3DwT::InitializeTraceSettingsToolBar(QToolBar* iToolBar)
 {
+  m_TraceSettingsToolBar = iToolBar;
+  QGoToolBarStatus* TraceSettingsToolBar = new QGoToolBarStatus(
+    iToolBar, 0, Qt::TopToolBarArea,false,true,this,
+    this->m_DataBaseTables->GetTraceSettingsWidgetForToolBar() );
+
+  this->m_ToolBarList.push_back(TraceSettingsToolBar);
 }

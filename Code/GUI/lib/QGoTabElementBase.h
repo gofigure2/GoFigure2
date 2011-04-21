@@ -95,10 +95,10 @@ public:
 
   /** \brief Get all actions belonging to the Traces Toolbar.*/
   //virtual std::vector< QAction * > TracesActions();
-  virtual QGoToolBarStatus* TracesActions();
+  //virtual QGoToolBarStatus* TracesActions();
 
   /** \brief Get the widget for the trace settings to be added in the TraceSettings Toolbar*/
-  virtual QGoTraceSettingsWidget* TraceSettingsWidget();
+  //virtual QGoTraceSettingsWidget* TraceSettingsWidget();
 
   /** \brief Get all the DockWidgets with its status (visibility, location). */
   virtual std::list< QGoDockWidgetStatusPair > & DockWidget();
@@ -133,7 +133,7 @@ public:
 
   void SetStatusBarPointer(QStatusBar* iStatusbar);
 
-  virtual void SetTraceSettingsToolBar(QToolBar* iToolBar);
+  //virtual void SetTraceSettingsToolBar(QToolBar* iToolBar);
 
   virtual void InitializeToolBarsAndMenus(
     QMenu* iTracesMenu, QToolBar* iTracesToolbar);
@@ -148,9 +148,9 @@ protected:
   std::vector< QAction * > m_BookmarkActions;
   std::vector< QAction * > m_ModeActions;
   //std::vector< QAction * > m_TracesActions;
-  QGoToolBarStatus*        m_TracesActions;
-  QGoTraceSettingsWidget*  m_TraceSettingsWidgetForToolBar;
-  QToolBar*                m_TraceSettingsToolBar;
+  //QGoToolBarStatus*        m_TracesActions;
+  //QGoTraceSettingsWidget*  m_TraceSettingsWidgetForToolBar;
+  //QToolBar*                m_TraceSettingsToolBar;
 
   std::list< QGoDockWidgetStatusPair >  m_DockWidgetList;
   std::list< QGoToolBarStatus* >        m_ToolBarList;

@@ -361,6 +361,7 @@ protected:
   QColor                                    m_BackgroundColor;
   QAction *                                 m_BackgroundColorAction;
   QAction *                                 m_TakeSnapshotAction;
+  QToolBar*                                 m_TraceSettingsToolBar;
 
   float m_IntersectionLineWidth;
   std::vector< QString > m_ChannelNames;

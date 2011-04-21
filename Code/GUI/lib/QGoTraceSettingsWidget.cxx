@@ -97,7 +97,7 @@ void QGoTraceSettingsWidget::SetUpUi()
 
   this->setLayout(MainLayout);
   this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-  m_IsToolBarVisible = false;
+  //m_IsToolBarVisible = false;
 }
 //-------------------------------------------------------------------------
 
@@ -642,7 +642,7 @@ void QGoTraceSettingsWidget::SetCurrentTraceName(std::string iTraceName)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-bool QGoTraceSettingsWidget::GetIsToolBarVisible()
+/*bool QGoTraceSettingsWidget::GetIsToolBarVisible()
 {
   return this->m_IsToolBarVisible;
 }
@@ -652,4 +652,4 @@ bool QGoTraceSettingsWidget::GetIsToolBarVisible()
 void QGoTraceSettingsWidget::SetVisibilityStatus(bool IsVisible)
 {
   this->m_IsToolBarVisible = IsVisible;
-}
+}*/

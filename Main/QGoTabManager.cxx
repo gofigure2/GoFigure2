@@ -88,9 +88,9 @@ void QGoTabManager::ClearTabElement(QGoTabElementBase *iE)
       ++iter;
       }
     
-    this->m_MainWindow->m_TraceSettingsToolBar->toggleViewAction()->disconnect(
-      this->m_MainWindow->m_TraceSettingsToolBar->findChild<QGoTraceSettingsWidget*>("TraceSettingsWidget") );
-    m_MainWindow->m_TraceSettingsToolBar->clear();
+    //this->m_MainWindow->m_TraceSettingsToolBar->toggleViewAction()->disconnect(
+    //  this->m_MainWindow->m_TraceSettingsToolBar->findChild<QGoTraceSettingsWidget*>("TraceSettingsWidget") );
+    //m_MainWindow->m_TraceSettingsToolBar->clear();
    
     // Then remove all actions related to the previous tab from menuView
     m_MainWindow->menuView->clear();
@@ -200,7 +200,7 @@ void QGoTabManager::SetUpTabElement(QGoTabElementBase *iE)
       ++iter;
       }
     
-    QAction* TraceSettingsAction = 
+    /*QAction* TraceSettingsAction = 
       m_MainWindow->m_TraceSettingsToolBar->addWidget(iE->TraceSettingsWidget() );
     TraceSettingsAction->setVisible(true);
     iE->SetTraceSettingsToolBar(m_MainWindow->m_TraceSettingsToolBar);
@@ -210,7 +210,7 @@ void QGoTabManager::SetUpTabElement(QGoTabElementBase *iE)
     QObject::connect(this->m_MainWindow->m_TraceSettingsToolBar->toggleViewAction(), 
                      SIGNAL(	toggled (bool) ),
                       this->m_MainWindow->m_TraceSettingsToolBar->findChild<QGoTraceSettingsWidget*>("TraceSettingsWidget"), 
-                      SLOT(SetVisibilityStatus(bool) ) );
+                      SLOT(SetVisibilityStatus(bool) ) );*/
     
     std::list< QGoTabElementBase::QGoDockWidgetStatusPair > dock_list = iE->DockWidget();
 
