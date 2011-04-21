@@ -730,7 +730,6 @@ QGoTabImageView3DwT::CreateAllViewActions()
   this->m_ViewNoToolBarActions.push_back(separator1);
 
   QActionGroup *group = new QActionGroup(this);
-  group->setObjectName("ModeGroup");
 
   QAction *QuadViewAction = new QAction(tr("Quad-View"), this);
 
@@ -1103,7 +1102,7 @@ QGoTabImageView3DwT::CreateToolsActions()
 void QGoTabImageView3DwT::CreateModeActions()
 {
   QActionGroup *group = new QActionGroup(this);
-
+  group->setObjectName("ModeGroup");
   // Call superclass
   QGoTabElementBase::CreateModeActions(group);
 
