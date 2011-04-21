@@ -1460,15 +1460,6 @@ void QGoPrintDatabase::SetLineagesManager()
                     this,
                     SLOT( CloseDBConnection() ) );
 
-  /*
-   \todo Nicolas- Lydie, is it a good way to go?
-   */
-  //connect track manager to lineage manager
-  QObject::connect( this->m_TracksManager,
-                    SIGNAL( DeleteLineageFromTrackRootID( int ) ),
-                    this->m_LineagesManager,
-                    SLOT( DeleteLineageFromTrackRootID( int ) ) );
-
   this->m_LineagesManager->SetSelectedColor( this->m_TraceSettingsWidget->GetPointerColorData() );
 }
 //--------------------------------------------------------------------------

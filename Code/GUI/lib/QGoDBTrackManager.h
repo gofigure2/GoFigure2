@@ -156,8 +156,6 @@ signals:
 
   void UpdateCollectionHighlighting(unsigned int);
 
-  void DeleteLineageFromTrackRootID(int);
-
 protected:
   GoDBTWContainerForTrack *m_TWContainer;
   TrackContainer          *m_TrackContainerInfoForVisu;

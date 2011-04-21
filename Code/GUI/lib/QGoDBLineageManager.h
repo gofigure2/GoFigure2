@@ -140,8 +140,6 @@ public slots:
    */
   void ExportLineages();
 
-  void DeleteLineageFromTrackRootID(int);
-
 protected:
   GoDBTWContainerForLineage      *m_TWContainer;
   LineageContainer               *m_LineageContainerInfoForVisu;

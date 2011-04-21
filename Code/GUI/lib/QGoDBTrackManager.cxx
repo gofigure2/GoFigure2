@@ -816,12 +816,6 @@ void QGoDBTrackManager::DeleteOneDivision(GoDBTrackFamilyRow iDivision,
     {
     ioTrackIDsNoLineage.push_back(MotherID);
     IsPartOfBiggerLineage = false;
-    // send a signal to lineage container to delete the lineage
-    /*
-     \todo Nicolas: Lydie, is it the good way to go?
-     */
-    int collectionID = m_TrackContainerInfoForVisu->GetCollectionIDOfGivenTraceID(MotherID);
-    emit DeleteLineageFromTrackRootID( collectionID );
     }
   
   //delete the division from the database:

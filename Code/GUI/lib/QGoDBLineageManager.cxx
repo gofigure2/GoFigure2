@@ -471,12 +471,3 @@ ExportLineages()
     }
 }
 //-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoDBLineageManager::
-DeleteLineageFromTrackRootID(int iTrackRootID)
-{
-  std::cout << "track root id to delete lineage: " << iTrackRootID << std::endl;
-  //m_LineageContainerInfoForVisu->DeleteElement( iTrackRootID );
-}
