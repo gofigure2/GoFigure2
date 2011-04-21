@@ -79,11 +79,6 @@ bool LineageContainer::DeleteElement(const unsigned int & iId)
   MultiIndexContainerTraceIDIterator
     it = m_Container.get< TraceID >().find(iId);
 
-  std::cout<< "looking for: " << iId << std::endl;
-
-  std::cout<< "in container:" << std::endl;
-  Print();
-
   return DeleteElement(it);
 }
 //-------------------------------------------------------------------------

@@ -444,8 +444,6 @@ ExportLineages()
   // export all the lineages
   while(itLineage != lineageIDs.end() )
     {
-      std::cout << "lineage IDs in the lineage container: " << *itLineage
-              << std::endl;
     vtkMutableDirectedGraph* graph =
       m_TrackContainerInfoForVisu->ExportLineage(*itTrack);
 
