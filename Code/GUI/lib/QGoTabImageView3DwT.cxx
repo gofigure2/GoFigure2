@@ -3253,8 +3253,8 @@ QGoTabImageView3DwT::InitializeToolsForTracesToolBar(
 QMenu* iMenu, QToolBar* iToolBar)
 {
   iToolBar->clear();
-  m_TracesActions = new QGoToolBarStatus(iToolBar, iMenu, Qt::TopToolBarArea,
-                            true, true);
+  QGoToolBarStatus* TracesActions = 
+    new QGoToolBarStatus(iToolBar, iMenu, Qt::TopToolBarArea, true, true, this);
 
   QActionGroup* group = this->findChild< QActionGroup* >("ModeGroup");
 
