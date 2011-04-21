@@ -76,13 +76,17 @@ InsertNewLineage(const unsigned int& iLineageID,
 //-------------------------------------------------------------------------
 bool LineageContainer::DeleteElement(const unsigned int & iId)
 {
-  return true;
+  MultiIndexContainerTraceIDIterator
+    it = m_Container.get< TraceID >().find(iId);
+
+  return DeleteElement(it);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 bool LineageContainer::DeleteElement(MultiIndexContainerTraceIDIterator iIter)
 {
+  m_Container.get< TraceID >().erase(iIter);
   return true;
 }
 //-------------------------------------------------------------------------
