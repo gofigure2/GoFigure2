@@ -383,12 +383,9 @@ UpdateDivisionsScalars( unsigned int iLineageID )
 {
         std::cout<<"update divisions scalars" << std::endl;
         std::cout<<"lineage id: " << iLineageID << std::endl;
-  if(iLineageID)
-    {
-    unsigned int root =
-        this->m_LineageContainerInfoForVisu->GetLineageTrackRootID(iLineageID);
-    m_TrackContainerInfoForVisu->UpdateCollectionScalars( root );
-    }
+  unsigned int root =
+      this->m_LineageContainerInfoForVisu->GetLineageTrackRootID(iLineageID);
+  m_TrackContainerInfoForVisu->UpdateCollectionScalars( root );
 }
 //-------------------------------------------------------------------------
 
@@ -424,16 +421,14 @@ UpdateDivisionsColors( unsigned int iLineage)
 {
         std::cout<<"update colors" << std::endl;
         std::cout<<"lineage id: "<< iLineage << std::endl;
-  if(iLineage)
-    {
-      unsigned int root =
-          this->m_LineageContainerInfoForVisu->GetLineageTrackRootID(iLineage);
-      double* color = this->m_LineageContainerInfoForVisu->GetLineageColor(iLineage);
-      if(color)
-        {
-        m_TrackContainerInfoForVisu->UpdateCollectionColors( root, color );
-        }
-    }
+
+    unsigned int root =
+        this->m_LineageContainerInfoForVisu->GetLineageTrackRootID(iLineage);
+    double* color = this->m_LineageContainerInfoForVisu->GetLineageColor(iLineage);
+    if(color)
+      {
+      m_TrackContainerInfoForVisu->UpdateCollectionColors( root, color );
+      }
 }
 //-------------------------------------------------------------------------
 
