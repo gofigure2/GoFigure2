@@ -1786,6 +1786,7 @@ void QGoPrintDatabase::AddCheckedTracksToSelectedLineage(
   if(iLineageID)
   {
   this->m_LineagesManager->UpdateDivisionsColors(iLineageID);
+  this->m_LineagesManager->UpdateDivisionsScalars(iLineageID);
   }
 }
 //--------------------------------------------------------------------------
