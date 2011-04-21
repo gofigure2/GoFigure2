@@ -816,6 +816,12 @@ void QGoDBTrackManager::DeleteOneDivision(GoDBTrackFamilyRow iDivision,
     {
     ioTrackIDsNoLineage.push_back(MotherID);
     IsPartOfBiggerLineage = false;
+    // send a signal to lineage container to delete the lineage
+    /*
+     \todo Nicolas: Lydie, is it the good way to go?
+     */
+    int collectionID = m_TrackContainerInfoForVisu->GetCollectionIDOfGivenTraceID(MotherID);
+    emit DeleteLineageFromTrackRootID( collectionID );
     }
   
   //delete the division from the database:
@@ -826,7 +832,6 @@ void QGoDBTrackManager::DeleteOneDivision(GoDBTrackFamilyRow iDivision,
     IsPartOfBiggerLineage);
  
   //delete the division from the visu:
-  
   this->m_TrackContainerInfoForVisu->DeleteADivision( MotherID );
 
   if (!IsPartOfBiggerLineage) //the mother is not a daughter and the daughters are not mother, the lineage need to be deleted
@@ -834,7 +839,7 @@ void QGoDBTrackManager::DeleteOneDivision(GoDBTrackFamilyRow iDivision,
     emit NeedToGetDatabaseConnection();
     GoDBTrackRow Mother(MotherID, this->m_DatabaseConnector);
     emit DBConnectionNotNeededAnymore();
-    ioMotherLineageToDelete.push_back(ss_atoi<unsigned int>(Mother.GetMapValue("lineageID") ) );    
+    ioMotherLineageToDelete.push_back(ss_atoi<unsigned int>(Mother.GetMapValue("lineageID") ) );
     }
 }
 //-------------------------------------------------------------------------
@@ -938,25 +943,15 @@ void QGoDBTrackManager::CreateALineageWithFormerDaughterOfADeletedDivision(
 
 //-------------------------------------------------------------------------
 /**\ todo Lydie:Nico get the lineageID for the TraceRootID in the lineagecontainer directly...
-no need to be here*/
+no need to be here
+Nicolas-this is even better is guess?
+*/
 void
 QGoDBTrackManager::
 GetCollectionIDForHighlgiht(unsigned int iTraceRootID)
 {
-  std::list<unsigned int> trackIDList;
-  trackIDList.push_back(iTraceRootID);
-
-  emit NeedToGetDatabaseConnection();
-
-  std::list< unsigned int > lineageIDList =
-      this->m_CollectionOfTraces->GetListCollectionIDs( this->m_DatabaseConnector, trackIDList);
-
-  std::list< unsigned int >::iterator it = lineageIDList.begin();
-  while( it != lineageIDList.end() )
-  {
-    emit UpdateCollectionHighlighting( *it );
-    ++it;
-  }
-  emit DBConnectionNotNeededAnymore();
+  int collectionID =
+      m_TrackContainerInfoForVisu->GetCollectionIDOfGivenTraceID(iTraceRootID);
+  emit UpdateCollectionHighlighting( collectionID );
 }
 //-------------------------------------------------------------------------

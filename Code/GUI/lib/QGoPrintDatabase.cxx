@@ -1460,6 +1460,15 @@ void QGoPrintDatabase::SetLineagesManager()
                     this,
                     SLOT( CloseDBConnection() ) );
 
+  /*
+   \todo Nicolas- Lydie, is it a good way to go?
+   */
+  //connect track manager to lineage manager
+  QObject::connect( this->m_TracksManager,
+                    SIGNAL( DeleteLineageFromTrackRootID( int ) ),
+                    this->m_LineagesManager,
+                    SLOT( DeleteLineageFromTrackRootID( int ) ) );
+
   this->m_LineagesManager->SetSelectedColor( this->m_TraceSettingsWidget->GetPointerColorData() );
 }
 //--------------------------------------------------------------------------
@@ -1634,8 +1643,6 @@ void QGoPrintDatabase::CreateNewLineageFromTracks(
   this->CloseDBConnection();
 
   // Update lineage attributes
-  std::cout << "create new lineage..." << std::endl;
-  std::cout << "lineage ID: "<< NewLineageID << std::endl;
   if(NewLineageID)
     {
     this->m_LineagesManager->UpdateDivisionsColors(NewLineageID);
@@ -1781,8 +1788,6 @@ void QGoPrintDatabase::AddCheckedTracksToSelectedLineage(
     }
 
   // Update lineage attributes
-  std::cout << "add checked track...." << std::endl;
-  std::cout << "lineage ID: "<< iLineageID << std::endl;
   if(iLineageID)
   {
   this->m_LineagesManager->UpdateDivisionsColors(iLineageID);
