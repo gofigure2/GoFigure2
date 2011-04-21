@@ -1354,7 +1354,7 @@ UpdateCollectionHighlighting(unsigned int iTraceId)
     // send signal to lineage container
     int collectionID =
         this->GetCollectionIDOfGivenTraceID(iTraceId);
-    emit UpdateCollectionHighlighting( collectionID );
+    emit UpdateLineageHighlighting( collectionID );
     }
 }
 //-------------------------------------------------------------------------
