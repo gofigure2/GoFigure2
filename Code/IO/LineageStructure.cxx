@@ -36,8 +36,7 @@
 
 //--------------------------------------------------------------------------
 LineageStructure::
-LineageStructure():TraceStructure(), TrackRootID(0)/*, Root(true),
-m_RootID(0), m_Daughter1(0), m_Daughter2(0)*/
+LineageStructure():TraceStructure(), TrackRootID(0)
 {
 }
 //--------------------------------------------------------------------------
@@ -48,14 +47,3 @@ LineageStructure::
 {
 }
 //--------------------------------------------------------------------------
-/*
-//--------------------------------------------------------------------------
-bool
-LineageStructure::
-HasDaughters()
-{
-  // Arnaud: if m_Daughter* are unsigned int, use the largest unsigned int
-  // instead
-  return !( m_Daughter1==0 && m_Daughter1==0);
-}
-*/
