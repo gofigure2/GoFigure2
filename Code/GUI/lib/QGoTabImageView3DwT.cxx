@@ -2561,7 +2561,8 @@ QGoTabImageView3DwT::ReEditContour(const unsigned int & iId)
       this->GoToLocation(idx[0], idx[1], idx[2], m_TCoord);
 
       //this->m_ModeActions[0]->setChecked(true);
-      this->findChild< QAction* >("ContourEditingMode")->setChecked(true);
+      QAction* action = this->findChild< QAction* >("ContourEditingMode");//->setChecked(true);
+      action->setChecked(true);
       m_ImageView->InitializeContourWidgetNodes(dir, nodes);
 
       this->m_TraceSettingsToolBar->setEnabled(false);
@@ -3263,6 +3264,7 @@ QMenu* iMenu, QToolBar* iToolBar)
   //Contour Editing
   QAction *ContourSegmentationAction =
     m_ContourSegmentationDockWidget->toggleViewAction();
+  ContourSegmentationAction->setParent(this);
   ContourSegmentationAction->setObjectName("ContourEditingMode");
 
   group->addAction(ContourSegmentationAction);
