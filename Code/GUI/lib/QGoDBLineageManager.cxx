@@ -221,21 +221,22 @@ std::list< unsigned int > QGoDBLineageManager::GetListHighlightedIDs()
 }
 
 //-------------------------------------------------------------------------
-
+// From table widget
 //-------------------------------------------------------------------------
 void QGoDBLineageManager::UpdateHighlightedElementsInVisuContainer(
   int iTraceID)
 {
-  // get lineage ID from track root
-  unsigned int lineageID = 0;
   // update lineage container element (invert highlighted boolean)
   this->m_LineageContainerInfoForVisu->
-    UpdateElementHighlightingWithGivenTraceID(lineageID);
+    UpdateElementHighlightingWithGivenTraceID(iTraceID);
+  //get root track id
+  unsigned int trackRootID = this->m_LineageContainerInfoForVisu->
+    GetLineageTrackRootID(iTraceID);
   // is the lineage highlighted?
   bool highlighted = this->m_LineageContainerInfoForVisu->
-      GetLineageHighlighted(lineageID);
+      GetLineageHighlighted(iTraceID);
   // update divisions
-  this->m_TrackContainerInfoForVisu->HighlightCollection(iTraceID, highlighted);
+  this->m_TrackContainerInfoForVisu->HighlightCollection(trackRootID, highlighted);
 }
 
 //-------------------------------------------------------------------------
@@ -344,13 +345,15 @@ void QGoDBLineageManager::UpdateTrackRootSelectedLineage(
   LastLineage.SaveInDB(iDatabaseConnector);
 }
 //-------------------------------------------------------------------------
-
+// actor picking
 //-------------------------------------------------------------------------
 void
 QGoDBLineageManager::
 UpdateElementHighlighting(unsigned int iTraceRootID)
 {
-  this->m_LineageContainerInfoForVisu->UpdateElementHighlighting(iTraceRootID);
+  unsigned int lineageID = this->m_LineageContainerInfoForVisu->GetTraceIDFromTrackRootID(
+          iTraceRootID);
+  this->m_LineageContainerInfoForVisu->UpdateElementHighlighting(lineageID);
 }
 //-------------------------------------------------------------------------
 

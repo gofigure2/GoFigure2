@@ -91,8 +91,8 @@ public:
   typedef Superclass::MultiIndexContainerType MultiIndexContainerType;
   typedef Superclass::MultiIndexContainerElementType LineageType;
 
-  //typedef typename MultiIndexContainerType::template index< TrackRootID >::type::iterator
-  //MultiIndexContainerTrackRootIDIterator;
+  typedef MultiIndexContainerType::index< TrackRootID >::type::iterator
+  MultiIndexContainerTrackRootIDIterator;
 
   //------------------------------------------------------------------------
 
