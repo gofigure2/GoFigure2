@@ -37,12 +37,15 @@
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
+// General attributes
 struct TraceID {};
 struct CollectionID {};
-struct Nodes {};
 struct TCoord {};
 struct Highlighted {};
 struct Visible {};
+
+// Lineage specific
+struct TrackRootID{};
 
 #endif
 

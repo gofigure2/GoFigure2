@@ -49,10 +49,6 @@ namespace boost
   typedef multi_index::multi_index_container<
     LineageStructure,
     boost::multi_index::indexed_by<
-      boost::multi_index::hashed_non_unique<
-        boost::multi_index::tag< Nodes >,
-        BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkPolyData *, Nodes)
-        >,
       boost::multi_index::ordered_unique<
         boost::multi_index::tag< TraceID >,
         BOOST_MULTI_INDEX_MEMBER(TraceStructure, unsigned int, TraceID)
@@ -68,11 +64,11 @@ namespace boost
       boost::multi_index::ordered_non_unique<
         boost::multi_index::tag< Visible >,
         BOOST_MULTI_INDEX_MEMBER(TraceStructure, bool, Visible)
-        >/*,
+        >,
       boost::multi_index::ordered_non_unique<
-        boost::multi_index::tag< Root >,
-        BOOST_MULTI_INDEX_MEMBER(LineageStructure, bool, Root)
-        >*/
+        boost::multi_index::tag< TrackRootID >,
+        BOOST_MULTI_INDEX_MEMBER(LineageStructure, unsigned int, TrackRootID)
+        >
       >
     > MultiIndexLineageContainer;
 }
@@ -94,6 +90,9 @@ public:
 
   typedef Superclass::MultiIndexContainerType MultiIndexContainerType;
   typedef Superclass::MultiIndexContainerElementType LineageType;
+
+  typedef MultiIndexContainerType::index< TrackRootID >::type::iterator
+  MultiIndexContainerTrackRootIDIterator;
 
   //------------------------------------------------------------------------
 
@@ -135,6 +134,13 @@ public:
    * \return related track root ID
    */
   unsigned int GetLineageTrackRootID( const unsigned int& iTraceID );
+
+  /*
+   * \brief Get the trace root ID from the track root ID
+   * \param[in] iTraceID track root id
+   * \return related lineage ID
+   */
+  unsigned int GetTraceIDFromTrackRootID( const unsigned int& iTraceID );
 
   /*
    * \brief Get the visibility of the given lineage
@@ -196,6 +202,7 @@ public slots:
   */
   void UpdateElementHighlighting(unsigned int iTraceID)
     {
+    std::cout << "lineage picked: " << iTraceID << std::endl;
     Qt::CheckState state;
     Superclass::UpdateElementHighlightingWithTraceID( iTraceID, state );
     emit TracePicked(iTraceID, state);

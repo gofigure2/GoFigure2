@@ -757,6 +757,8 @@ TrackContainer::
 AddDivision( unsigned int iMotherID, unsigned int iDaughter1ID,
     unsigned int iDaughter2ID, bool iVisible)
 {
+  //todo Update Tracks Collection IDs
+
   // get address of the structures of interest
   //------------------------------
   MultiIndexContainerTraceIDIterator motherIt
@@ -1352,9 +1354,7 @@ UpdateCollectionHighlighting(unsigned int iTraceId)
     this->m_ImageView->UpdateRenderWindows();
 
     // send signal to lineage container
-    int collectionID =
-        this->GetCollectionIDOfGivenTraceID(iTraceId);
-    emit UpdateLineageHighlighting( collectionID );
+    emit UpdateLineageHighlightingFromTrackRootID( motherIt->TraceID );
     }
 }
 //-------------------------------------------------------------------------

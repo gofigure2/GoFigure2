@@ -80,7 +80,7 @@ void QGoDBLineageManager::SetLineagesInfoContainersForVisu(
   // Connect signals
   // actor picking in visualization
   QObject::connect( m_TrackContainerInfoForVisu,
-                    SIGNAL( UpdateLineageHighlighting(unsigned int) ),
+                    SIGNAL(UpdateLineageHighlightingFromTrackRootID(unsigned int)),
                     this,
                     SLOT( UpdateElementHighlighting(unsigned int) ) );
 
@@ -221,7 +221,7 @@ std::list< unsigned int > QGoDBLineageManager::GetListHighlightedIDs()
 }
 
 //-------------------------------------------------------------------------
-
+// From table widget
 //-------------------------------------------------------------------------
 void QGoDBLineageManager::UpdateHighlightedElementsInVisuContainer(
   int iTraceID)
@@ -345,13 +345,15 @@ void QGoDBLineageManager::UpdateTrackRootSelectedLineage(
   LastLineage.SaveInDB(iDatabaseConnector);
 }
 //-------------------------------------------------------------------------
-
+// actor picking
 //-------------------------------------------------------------------------
 void
 QGoDBLineageManager::
 UpdateElementHighlighting(unsigned int iTraceRootID)
 {
-  this->m_LineageContainerInfoForVisu->UpdateElementHighlighting(iTraceRootID);
+  unsigned int lineageID = this->m_LineageContainerInfoForVisu->GetTraceIDFromTrackRootID(
+          iTraceRootID);
+  this->m_LineageContainerInfoForVisu->UpdateElementHighlighting(lineageID);
 }
 //-------------------------------------------------------------------------
 

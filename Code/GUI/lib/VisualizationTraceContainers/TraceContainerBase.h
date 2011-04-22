@@ -147,9 +147,6 @@ public:
   typedef TContainer                                    MultiIndexContainerType;
   typedef typename MultiIndexContainerType::value_type  MultiIndexContainerElementType;
 
-  typedef typename MultiIndexContainerType::template index< Nodes >::type::iterator
-  MultiIndexContainerNodesIterator;
-
   typedef typename MultiIndexContainerType::template index< TraceID >::type::iterator
   MultiIndexContainerTraceIDIterator;
 
