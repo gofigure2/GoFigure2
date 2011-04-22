@@ -129,6 +129,9 @@ void QGoDBLineageManager::DisplayInfoAndLoadVisuContainerForAllLineages(
 {
   this->DisplayInfoAndLoadVisuContainerWithAllTraces< GoDBTWContainerForLineage >
     (this->m_TWContainer, iDatabaseConnector);
+
+  this->UpdateDivisionsColors();
+  this->UpdateDivisionsScalars();
 }
 
 //-------------------------------------------------------------------------
@@ -277,7 +280,6 @@ void QGoDBLineageManager::SetColorCoding(bool IsChecked)
   std::map<unsigned int, std::string> Values;
   std::map<unsigned int, std::string> NewValues;
   m_IsColorCodingOn = IsChecked;
-
   //create map track ID/field
   if (IsChecked)
     {
@@ -471,3 +473,17 @@ ExportLineages()
     }
 }
 //-------------------------------------------------------------------------
+void
+QGoDBLineageManager::UpdateBoundingBoxes(vtkMySQLDatabase *iDatabaseConnector,
+                                   std::list< unsigned int > iListTracesIDs,
+                                   bool UpdateTW)
+{
+  QGoDBTraceManager::UpdateBoundingBoxes(iDatabaseConnector, iListTracesIDs, UpdateTW);
+  std::list<unsigned int>::iterator iter = iListTracesIDs.begin();
+  while(iter != iListTracesIDs.end() )
+    {
+    this->UpdateDivisionsColors(*iter);
+    this->UpdateDivisionsScalars(*iter);
+    ++iter;
+    }
+}

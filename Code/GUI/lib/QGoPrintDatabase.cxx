@@ -1111,12 +1111,6 @@ void QGoPrintDatabase::GetContentAndDisplayAllTracesInfo(
   this->m_TracksManager->LoadInfoVisuContainerForTrackFamilies(iDatabaseConnector);
   this->m_LineagesManager->DisplayInfoAndLoadVisuContainerForAllLineages(
     iDatabaseConnector);
-
-  // update the lineage attributes
-  // update track collectionIDs
-  std::cout << "GetContentAndDisplay" << std::endl;
-  this->m_LineagesManager->UpdateDivisionsColors();
-  this->m_LineagesManager->UpdateDivisionsScalars();
 }
 
 //-------------------------------------------------------------------------
@@ -1612,16 +1606,6 @@ void QGoPrintDatabase::CreateNewLineageFromTracks(
     (iListCheckedTracks, NewLineageID, iListLineagesToDelete);
 
   this->CloseDBConnection();
-
-  // Update lineage attributes
-  if(NewLineageID)
-    {
-    //todo Update Tracks Collection IDs
-    std::cout << "CreateNewLineageFromTracks" << std::endl;
-    //this->m_LineagesManager->UpdateTracksCollectionID(NewLineageID, iTrackRoot);
-    this->m_LineagesManager->UpdateDivisionsColors(NewLineageID);
-    this->m_LineagesManager->UpdateDivisionsScalars(NewLineageID);
-    }
 }
 //--------------------------------------------------------------------------
 
@@ -1760,16 +1744,6 @@ void QGoPrintDatabase::AddCheckedTracksToSelectedLineage(
 
     this->CloseDBConnection();
     }
-
-  // Update lineage attributes
-  if(iLineageID)
-  {
-  //todo Update Tracks Collection IDs
-      std::cout << "AddCheckedTracksToSelectedLineage" << std::endl;
-  //this->m_LineagesManager->UpdateTracksCollectionID(iLineageID);
-  this->m_LineagesManager->UpdateDivisionsColors(iLineageID);
-  this->m_LineagesManager->UpdateDivisionsScalars(iLineageID);
-  }
 }
 //--------------------------------------------------------------------------
 

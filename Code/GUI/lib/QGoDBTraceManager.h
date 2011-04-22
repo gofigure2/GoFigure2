@@ -151,7 +151,7 @@ public:
   to update
   \param[in] UpdateTW display the updates in the TW
   */
-  void UpdateBoundingBoxes(vtkMySQLDatabase *iDatabaseConnector,
+  virtual void UpdateBoundingBoxes(vtkMySQLDatabase *iDatabaseConnector,
                                    std::list< unsigned int > iListTracesIDs,
                                    bool UpdateTW = true);
 

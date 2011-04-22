@@ -110,25 +110,9 @@ public:
    //virtual pure method in QGoDBTraceManager
   virtual std::list< unsigned int > GetListHighlightedIDs();
 
-  /*
-   * \brief Update the scalars for all the divisions of all the lineages
-   */
-  void UpdateDivisionsScalars();
-  /*
-   * \brief Update the scalars for all the divisions of the given lineage
-   * \param[in] iLineageID ID of the lineage to be processed
-   */
-  void UpdateDivisionsScalars( unsigned int iLineageID);
-  /*
-   * \brief Update the color for all the divisions of all the lineages
-   */
-  void UpdateDivisionsColors();
-  /*
-   * \brief Update the color for all the divisions of the given lineage
-   * \param[in] iLineageID ID of the lineage to be processed
-   */
-  void UpdateDivisionsColors( unsigned int iLineageID);
-
+  virtual void UpdateBoundingBoxes(vtkMySQLDatabase *iDatabaseConnector,
+                                   std::list< unsigned int > iListTracesIDs,
+                                   bool UpdateTW = true);
 
 public slots:
 
@@ -164,6 +148,25 @@ protected:
   */
   void UpdateTrackRootSelectedLineage(vtkMySQLDatabase* iDatabaseConnector, 
     unsigned int iLineageID, unsigned int iTrackIDRoot);
+
+   /*
+   * \brief Update the scalars for all the divisions of all the lineages
+   */
+  void UpdateDivisionsScalars();
+  /*
+   * \brief Update the scalars for all the divisions of the given lineage
+   * \param[in] iLineageID ID of the lineage to be processed
+   */
+  void UpdateDivisionsScalars( unsigned int iLineageID);
+  /*
+   * \brief Update the color for all the divisions of all the lineages
+   */
+  void UpdateDivisionsColors();
+  /*
+   * \brief Update the color for all the divisions of the given lineage
+   * \param[in] iLineageID ID of the lineage to be processed
+   */
+  void UpdateDivisionsColors( unsigned int iLineageID);
 
 protected slots:
   //virtual pure method in QGoDBTraceManager
