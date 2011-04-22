@@ -91,7 +91,7 @@ public:
   virtual std::vector< QAction * > BookmarkActions();
 
   /** \brief Get all actions belonging to Mode Menu and Toolbar.*/
-  virtual std::vector< QAction * > ModeActions();
+  //virtual std::vector< QAction * > ModeActions();
 
   /** \brief Get all actions belonging to the Traces Toolbar.*/
   //virtual std::vector< QAction * > TracesActions();
@@ -115,8 +115,6 @@ public:
   /** \brief Read Settings for the related tab element.*/
   virtual void ReadSettings() = 0;
 
-  void CreateModeActions(QActionGroup *group);
-
   /**
    * \brief Mouse interaction style set as default
    */
@@ -138,6 +136,8 @@ public:
   virtual void InitializeToolBarsAndMenus(
     QMenu* iTracesMenu, QToolBar* iTracesToolbar);
 
+  virtual void CreateModeToolBar(QMenu* iMenu, QToolBar* iToolBar);
+
 protected:
   std::list< QAction * > m_PluginActionList;
 
@@ -146,7 +146,8 @@ protected:
   std::vector< QAction * > m_SegmentationActions;
   std::vector< QAction * > m_ToolsActions;
   std::vector< QAction * > m_BookmarkActions;
-  std::vector< QAction * > m_ModeActions;
+  //std::vector< QAction * > m_ModeActions;
+  QGoToolBarStatus*        m_ModeToolBar;
   //std::vector< QAction * > m_TracesActions;
   //QGoToolBarStatus*        m_TracesActions;
   //QGoTraceSettingsWidget*  m_TraceSettingsWidgetForToolBar;
@@ -155,6 +156,7 @@ protected:
   std::list< QGoDockWidgetStatusPair >  m_DockWidgetList;
   std::list< QGoToolBarStatus* >        m_ToolBarList;
   QStatusBar*              m_StatusBar;
+
 private:
   Q_DISABLE_COPY(QGoTabElementBase);
 };

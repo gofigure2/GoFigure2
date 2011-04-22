@@ -147,6 +147,8 @@ public:
    */
   void setupUi(QWidget *parent);
 
+  void CreateModeToolBar(QMenu* iMenu, QToolBar* iToolBar);
+
   /**
    * \brief
    * \param parent
@@ -534,7 +536,7 @@ protected:
 
   void CreateBookmarkActions();
 
-  void CreateModeActions();
+  //void CreateModeActions();
 
   void CreateVisuDockWidget();
 

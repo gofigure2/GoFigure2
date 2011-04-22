@@ -210,7 +210,9 @@ private:
  * */
   void OpenLSMImage(const QString & iFile, const int & iTimePoint);
 
-  void SetupMenusFromTab(QGoTabElementBase *iT);
+  void SetupPluginsAndDockWidgetFromTab(QGoTabElementBase *iT);
+
+  void SetUpGeneralMenusToolBars(QGoTabElementBase *iT);
 
   void SetUpMenusToolBarsFor3dwtImage(QGoTabImageView3DwT* iT);
 

@@ -105,7 +105,7 @@ QGoTabImageView4D::QGoTabImageView4D(QWidget *iParent) :
 #endif
 
   CreateAllViewActions();
-  CreateModeActions();
+ // CreateModeActions();
 
   ReadSettings();
 }
@@ -252,8 +252,10 @@ void QGoTabImageView4D::CreateAllViewActions()
 
 //--------------------------------------------------------------------------
 //--------------------------------------------------------------------------
-void QGoTabImageView4D::CreateModeActions()
+void QGoTabImageView4D::CreateModeToolBar(QMenu* iMenu, QToolBar* iToolBar)
 {
+  this->m_ModeToolBar = new QGoToolBarStatus(iToolBar, iMenu, Qt::TopToolBarArea,
+    true, true, this);
   QActionGroup *group = new QActionGroup(this);
 
   //QAction *ManualEditingAction = new QAction(tr("Manual-Editing"), this);
@@ -283,10 +285,11 @@ void QGoTabImageView4D::CreateModeActions()
 
   group->addAction(DefaultAction);
 
-  this->m_ModeActions.push_back(DefaultAction);
+  this->m_ModeToolBar->m_VectorAction.push_back(DefaultAction);
   /** \todo implement default mode*/
   //QObject::connect( DefaultAction, SIGNAL( triggered() ),
   // this, SLOT( DefaultMode() ) );
+  this->m_ToolBarList.push_back(this->m_ModeToolBar);
 }
 
 //-------------------------------------------------------------------------

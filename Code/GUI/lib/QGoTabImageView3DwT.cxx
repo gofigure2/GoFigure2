@@ -211,7 +211,7 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
 
   CreateBookmarkActions();
 
-  CreateModeActions();
+  //CreateModeActions();
 
   CreateTracesActions();
 
@@ -1100,9 +1100,9 @@ QGoTabImageView3DwT::CreateToolsActions()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTabImageView3DwT::CreateModeActions()
+/*void QGoTabImageView3DwT::CreateModeActions()
 {
-  QActionGroup *group = new QActionGroup(this);
+  /*QActionGroup *group = new QActionGroup(this);
   group->setObjectName("ModeGroup");
   // Call superclass
   QGoTabElementBase::CreateModeActions(group);
@@ -1263,8 +1263,8 @@ void QGoTabImageView3DwT::CreateModeActions()
   QObject::connect( MeshSegmentationAction,
                     SIGNAL( toggled(bool) ),
                     this,
-                    SLOT( SetTraceSettingsToolBarVisible(bool) ) );*/
-}
+                    SLOT( SetTraceSettingsToolBarVisible(bool) ) );
+}*/
 
 //-------------------------------------------------------------------------
 
@@ -2560,8 +2560,8 @@ QGoTabImageView3DwT::ReEditContour(const unsigned int & iId)
 
       this->GoToLocation(idx[0], idx[1], idx[2], m_TCoord);
 
-      this->m_ModeActions[0]->setChecked(true);
-
+      //this->m_ModeActions[0]->setChecked(true);
+      this->findChild< QAction* >("ContourEditingMode")->setChecked(true);
       m_ImageView->InitializeContourWidgetNodes(dir, nodes);
 
       this->m_TraceSettingsToolBar->setEnabled(false);
@@ -2956,7 +2956,8 @@ void QGoTabImageView3DwT::GoToDefaultMenu(bool iEnable)
 {
   if ( iEnable )
     {
-    this->m_ModeActions.at(0)->setChecked(true);
+    //this->m_ModeActions.at(0)->setChecked(true);
+    this->findChild< QAction* >("DefaultMode")->setChecked(true);
     }
 }
 
@@ -3262,6 +3263,7 @@ QMenu* iMenu, QToolBar* iToolBar)
   //Contour Editing
   QAction *ContourSegmentationAction =
     m_ContourSegmentationDockWidget->toggleViewAction();
+  ContourSegmentationAction->setObjectName("ContourEditingMode");
 
   group->addAction(ContourSegmentationAction);
   //group->addAction(this->m_ContourSegmentationDockWidget->GetActionForToggle() );
@@ -3319,4 +3321,129 @@ QGoTabImageView3DwT::InitializeTraceSettingsToolBar(QToolBar* iToolBar)
     this->m_DataBaseTables->GetTraceSettingsWidgetForToolBar() );
 
   this->m_ToolBarList.push_back(TraceSettingsToolBar);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::CreateModeToolBar(QMenu* iMenu, QToolBar* iToolBar)
+{
+  QGoTabElementBase::CreateModeToolBar(iMenu, iToolBar);
+
+  QActionGroup* group = this->findChild<QActionGroup*>("ModeGroup");
+  QAction *separator1 = new QAction(this);
+  separator1->setSeparator(true);
+  this->m_ModeToolBar->m_VectorAction.push_back(separator1);
+
+  //---------------------------------//
+  //       Actor picking  mode       //
+  //---------------------------------//
+  QAction *ActorPickingAction = new QAction(tr("Object Picking"), this);
+  ActorPickingAction->setCheckable(true);
+  ActorPickingAction->setChecked(false);
+
+  QIcon ActorPickingIcon;
+  ActorPickingIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/ObjectPicking.png") ),
+                             QIcon::Normal, QIcon::Off);
+  ActorPickingAction->setIcon(ActorPickingIcon);
+  ActorPickingAction->setStatusTip( tr(
+                                      "Select a contour or a mesh (left click when the bounding box of the object of interest is visible)") );
+
+  group->addAction(ActorPickingAction);
+
+  this->m_ModeToolBar->m_VectorAction.push_back(ActorPickingAction);
+  // it also updates the interactor behaviour
+  QObject::connect( ActorPickingAction, SIGNAL( toggled(bool) ),
+                    this, SLOT( ActorPickingInteractorBehavior(bool) ) );
+
+  //---------------------------------//
+  //       Box 3D picking  mode      //
+  //---------------------------------//
+  QAction *Box3DPickingAction = new QAction(tr("Show/hide objects using Box"), this);
+  Box3DPickingAction->setCheckable(true);
+  Box3DPickingAction->setChecked(false);
+
+  QIcon Box3DPickingIcon;
+  Box3DPickingIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/Box3DPicking.png") ),
+                             QIcon::Normal, QIcon::Off);
+  Box3DPickingAction->setIcon(Box3DPickingIcon);
+  Box3DPickingAction->setStatusTip( tr("Show only the objects in the box") );
+
+  group->addAction(Box3DPickingAction);
+
+  this->m_ModeToolBar->m_VectorAction.push_back(Box3DPickingAction);
+  // it also updates the interactor behaviour
+  QObject::connect( Box3DPickingAction, SIGNAL( toggled(bool) ),
+                    this, SLOT( Box3DPicking(bool) ) );
+
+  //---------------------------------//
+  //        Plane  widget  mode      //
+  //---------------------------------//
+  QAction *PlaneWidgetAction = new QAction(tr("Show/hide objects using Plane"), this);
+  PlaneWidgetAction->setCheckable(true);
+  PlaneWidgetAction->setChecked(false);
+
+  QIcon PlaneWidgetIcon;
+  PlaneWidgetIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/PlaneSelection.png") ),
+                            QIcon::Normal, QIcon::Off);
+  PlaneWidgetAction->setIcon(PlaneWidgetIcon);
+  PlaneWidgetAction->setStatusTip( tr("Show only the objects located in front of the plane") );
+
+  group->addAction(PlaneWidgetAction);
+
+  this->m_ModeToolBar->m_VectorAction.push_back(PlaneWidgetAction);
+  // it also updates the interactor behaviour
+  QObject::connect( PlaneWidgetAction, SIGNAL( toggled(bool) ),
+                    this, SLOT( PlaneWidgetInteractorBehavior(bool) ) );
+
+  // NOT A MODE: ANNOTATION
+
+  QAction *separator3 = new QAction(this);
+  separator3->setSeparator(true);
+  this->m_ModeToolBar->m_VectorAction.push_back(separator3);
+
+  //---------------------------------//
+  //         Distance    mode        //
+  //---------------------------------//
+  QAction *DistanceAction = new QAction(tr("Measure a Distance"), this);
+
+  DistanceAction->setCheckable(true);
+  DistanceAction->setChecked(false);
+
+  QIcon DistanceIcon;
+  DistanceIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/Distance.png") ),
+                         QIcon::Normal, QIcon::Off);
+  DistanceAction->setIcon(DistanceIcon);
+  DistanceAction->setStatusTip( tr("Measure a distance between 2 points (left click to place/drag the points)") );
+
+  group->addAction(DistanceAction);
+
+  this->m_ModeToolBar->m_VectorAction.push_back(DistanceAction);
+
+  QObject::connect( DistanceAction, SIGNAL( toggled(bool) ),
+                    this, SLOT( DistanceWidgetInteractorBehavior(bool) ) );
+
+  // NOT A MODE: ANNOTATION
+
+  //---------------------------------//
+  //           Angle     mode        //
+  //---------------------------------//
+  QAction *AngleAction = new QAction(tr("Measure an Angle"), this);
+  AngleAction->setCheckable(true);
+  AngleAction->setChecked(false);
+
+  QIcon AngleIcon;
+  AngleIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/Angle.png") ),
+                      QIcon::Normal, QIcon::Off);
+  AngleAction->setIcon(AngleIcon);
+  AngleAction->setStatusTip( tr("Measure an angle between 3 points (left click to place/drag the points)") );
+
+  group->addAction(AngleAction);
+
+  this->m_ModeToolBar->m_VectorAction.push_back(AngleAction);
+
+  QObject::connect( AngleAction, SIGNAL( toggled(bool) ),
+                    this, SLOT( AngleWidgetInteractorBehavior(bool) ) );
+
+  this->m_ToolBarList.push_back(this->m_ModeToolBar);
 }

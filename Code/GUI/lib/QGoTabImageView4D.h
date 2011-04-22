@@ -99,6 +99,9 @@ public:
   virtual void ValidateContour(const int & iId);
 
   QGoPrintDatabase *m_DataBaseTables;
+
+  void CreateModeToolBar(QMenu* iMenu, QToolBar* iToolBar);
+
 signals:
   void TimePointChanged(int TimePoint);
 
@@ -211,8 +214,6 @@ protected:
   std::vector< vtkSmartPointer< vtkOrientedGlyphContourRepresentation > > m_ContourRepresentation;
 
   void CreateAllViewActions();
-
-  void CreateModeActions();
 
   void CreateVisuDockWidget();
 

@@ -77,7 +77,7 @@ void QGoTabManager::ClearTabElement(QGoTabElementBase *iE)
     {
     // First remove all toolbar related to the previous tab
     m_MainWindow->m_ViewToolBar->clear();
-    m_MainWindow->m_ModeToolBar->clear();
+    //m_MainWindow->m_ModeToolBar->clear();
     
     std::list<QGoToolBarStatus*> ListToolBars = iE->GetToolBarsStatus();
     std::list<QGoToolBarStatus*>::iterator iter =ListToolBars .begin();
@@ -154,7 +154,7 @@ void QGoTabManager::SetUpTabElement(QGoTabElementBase *iE)
 
     this->UpdateViewMenu(iE->ViewNoToolBarActions() );
 
-    action_vector2 = iE->ModeActions();
+    /*action_vector2 = iE->ModeActions();
 
     for ( std::vector< QAction * >::iterator it = action_vector2.begin();
           it != action_vector2.end();
@@ -162,7 +162,7 @@ void QGoTabManager::SetUpTabElement(QGoTabElementBase *iE)
       {
       m_MainWindow->menuMode->addAction(*it);
       m_MainWindow->m_ModeToolBar->addAction(*it);
-      }
+      }*/
 
     action_vector2 = iE->SegmentationActions();
 

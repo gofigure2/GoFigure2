@@ -841,7 +841,9 @@ QGoMainWindow::CreateNewTabFor3DwtImage(
 
   //w3t->InitializeToolBarsAndMenus(this->menuTools, this->m_TracesToolBar);
   //SetupMenusFromTab(w3t);
+  this->SetUpGeneralMenusToolBars(w3t);
   this->SetUpMenusToolBarsFor3dwtImage(w3t);
+  this->SetupPluginsAndDockWidgetFromTab(w3t);
 
   return w3t;
 }
@@ -850,7 +852,7 @@ QGoMainWindow::CreateNewTabFor3DwtImage(
 
 //--------------------------------------------------------------------------
 void
-QGoMainWindow::SetupMenusFromTab(QGoTabElementBase *iT)
+QGoMainWindow::SetupPluginsAndDockWidgetFromTab(QGoTabElementBase *iT)
 {
   for ( std::list< QAction * >::iterator
         list_it = m_TabDimPluginActionMap[iT->GetTabDimensionType()].begin();
@@ -861,6 +863,7 @@ QGoMainWindow::SetupMenusFromTab(QGoTabElementBase *iT)
     ( *list_it )->setEnabled(true);
     }
 
+  //iT->CreateModeToolBar(this->menuMode, this->m_ModeToolBar);
   iT->SetPluginActions(m_TabDimPluginActionMap[iT->GetTabDimensionType()]);
 
   std::list< QGoTabElementBase::QGoDockWidgetStatusPair > dock_list = iT->DockWidget();
@@ -878,11 +881,11 @@ QGoMainWindow::SetupMenusFromTab(QGoTabElementBase *iT)
     }
 
   int idx = this->CentralTabWidget->addTab( iT, iT->windowTitle() );
-  this->menuView->setEnabled(true);
+  /*this->menuView->setEnabled(true);
   this->menuFiltering->setEnabled(true);
   this->menuSegmentation->setEnabled(true);
   this->menuTools->setEnabled(true);
-  this->menuMode->setEnabled(true);
+  this->menuMode->setEnabled(true);*/
 
   this->CentralTabWidget->setCurrentIndex(idx);
 }
@@ -890,8 +893,21 @@ QGoMainWindow::SetupMenusFromTab(QGoTabElementBase *iT)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+void QGoMainWindow::SetUpGeneralMenusToolBars(QGoTabElementBase *iT)
+{
+  iT->CreateModeToolBar(this->menuMode, this->m_ModeToolBar);
+  this->menuView->setEnabled(true);
+  this->menuFiltering->setEnabled(true);
+  this->menuSegmentation->setEnabled(true);
+  this->menuTools->setEnabled(true);
+  this->menuMode->setEnabled(true);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 void QGoMainWindow::SetUpMenusToolBarsFor3dwtImage(QGoTabImageView3DwT* iT)
 {
+  //this->SetupMenusFromTab(iT);
   if (!this->m_TracesToolBar)
     {
     this->m_TracesToolBar = new QToolBar(tr("Tools For Traces"), this);
@@ -905,9 +921,10 @@ void QGoMainWindow::SetUpMenusToolBarsFor3dwtImage(QGoTabImageView3DwT* iT)
     this->addToolBar(Qt::TopToolBarArea, m_TraceSettingsToolBar);
     }
 
+  //iT->InitializeModeToolBar(this->menuMode, this->m_ModeToolBar);
+
   iT->InitializeToolsForTracesToolBar(this->menuTools, this->m_TracesToolBar);
   iT->InitializeTraceSettingsToolBar(this->m_TraceSettingsToolBar);
-  this->SetupMenusFromTab(iT);
 }
 //--------------------------------------------------------------------------
 
@@ -921,7 +938,9 @@ QGoMainWindow::CreateNewTabFor3DwtImage(vtkLSMReader *iReader, const QString & i
   w3t->SetLSMReader(iReader, 0);
 
   //SetupMenusFromTab(w3t);
+  this->SetUpGeneralMenusToolBars(w3t);
   this->SetUpMenusToolBarsFor3dwtImage(w3t);
+  this->SetupPluginsAndDockWidgetFromTab(w3t);
 
   // w3t->m_DataBaseTables->hide();
   w3t->SetStatusBarPointer( this->statusBar() );
@@ -941,7 +960,9 @@ QGoMainWindow::CreateNewTabFor3DImage(vtkImageData *iInput, const QString & iFil
   w3->setWindowTitle( QFileInfo(iFile).fileName() );
   w3->Update();
 
-  SetupMenusFromTab(w3);
+  //SetupMenusFromTab(w3);
+  this->SetUpGeneralMenusToolBars(w3);
+  this->SetupPluginsAndDockWidgetFromTab(w3);
 
   return w3;
 }
@@ -958,7 +979,9 @@ QGoMainWindow::CreateNewTabFor2DImage(vtkImageData *iInput, const QString & iFil
   w2->setWindowTitle( QFileInfo(iFile).fileName() );
   w2->Update();
 
-  SetupMenusFromTab(w2);
+  //SetupMenusFromTab(w2);
+  this->SetUpGeneralMenusToolBars(w2);
+  this->SetupPluginsAndDockWidgetFromTab(w2);
 
   return w2;
 }
