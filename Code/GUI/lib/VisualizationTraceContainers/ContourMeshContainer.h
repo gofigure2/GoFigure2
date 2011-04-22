@@ -67,10 +67,6 @@ typedef multi_index::multi_index_container<
       boost::multi_index::tag< TCoord >,
       BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, unsigned int, TCoord)
     >,
-    boost::multi_index::hashed_non_unique<
-      boost::multi_index::tag< Nodes >,
-      BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkPolyData *, Nodes)
-    >,
     boost::multi_index::ordered_unique<
       boost::multi_index::tag< TraceID >,
       BOOST_MULTI_INDEX_MEMBER(TraceStructure, unsigned int, TraceID)

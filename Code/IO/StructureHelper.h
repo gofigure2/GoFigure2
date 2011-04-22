@@ -40,7 +40,6 @@
 // General attributes
 struct TraceID {};
 struct CollectionID {};
-struct Nodes {};
 struct TCoord {};
 struct Highlighted {};
 struct Visible {};

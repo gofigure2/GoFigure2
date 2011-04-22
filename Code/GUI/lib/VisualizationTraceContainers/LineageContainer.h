@@ -49,10 +49,6 @@ namespace boost
   typedef multi_index::multi_index_container<
     LineageStructure,
     boost::multi_index::indexed_by<
-      boost::multi_index::hashed_non_unique<
-        boost::multi_index::tag< Nodes >,
-        BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkPolyData *, Nodes)
-        >,
       boost::multi_index::ordered_unique<
         boost::multi_index::tag< TraceID >,
         BOOST_MULTI_INDEX_MEMBER(TraceStructure, unsigned int, TraceID)
@@ -95,9 +91,8 @@ public:
   typedef Superclass::MultiIndexContainerType MultiIndexContainerType;
   typedef Superclass::MultiIndexContainerElementType LineageType;
 
-  // lineage specific iterator
-  typedef MultiIndexContainerType::index< TrackRootID >::type::iterator
-  MultiIndexContainerTrackRootIDIterator;
+  //typedef typename MultiIndexContainerType::template index< TrackRootID >::type::iterator
+  //MultiIndexContainerTrackRootIDIterator;
 
   //------------------------------------------------------------------------
 

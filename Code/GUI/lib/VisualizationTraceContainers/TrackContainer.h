@@ -173,10 +173,6 @@ namespace boost
 typedef multi_index::multi_index_container<
   TrackStructure,
   boost::multi_index::indexed_by<
-    boost::multi_index::hashed_non_unique<
-      boost::multi_index::tag< Nodes >,
-      BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkPolyData *, Nodes)
-    >,
     boost::multi_index::ordered_unique<
       boost::multi_index::tag< TraceID >,
       BOOST_MULTI_INDEX_MEMBER(TraceStructure, unsigned int, TraceID)

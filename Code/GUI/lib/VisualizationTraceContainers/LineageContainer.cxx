@@ -166,13 +166,13 @@ unsigned int LineageContainer::GetLineageTrackRootID( const unsigned int& iTrace
 //-------------------------------------------------------------------------
 unsigned int LineageContainer::GetTraceIDFromTrackRootID( const unsigned int& iTraceID )
 {
-  MultiIndexContainerTraceIDIterator
-    it = m_Container.get< TraceID >().find( iTraceID );
+  //MultiIndexContainerTrackRootIDIterator
+  //  it = m_Container.get< TrackRootID >().find( iTraceID );
 
 /*
    \todo Nicolas-shouldnt have to check it - sth has to be found here or bug somewhere
    */
-  if( it != m_Container.get< TraceID >().end() )
+  /*if( it != m_Container.get< TrackRootID >().end() )
     {
     return it->TraceID;
     }
@@ -180,7 +180,8 @@ unsigned int LineageContainer::GetTraceIDFromTrackRootID( const unsigned int& iT
     {
     itkGenericExceptionMacro( <<"trackroot id is not in this container" );
     return 0;
-    }
+    }*/
+    return false;
 }
 //-------------------------------------------------------------------------
 
