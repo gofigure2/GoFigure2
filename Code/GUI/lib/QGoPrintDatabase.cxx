@@ -1640,6 +1640,7 @@ void QGoPrintDatabase::CreateNewLineageFromTracks(
     {
     //todo Update Tracks Collection IDs
     std::cout << "CreateNewLineageFromTracks" << std::endl;
+    //this->m_LineagesManager->UpdateTracksCollectionID(NewLineageID, iTrackRoot);
     this->m_LineagesManager->UpdateDivisionsColors(NewLineageID);
     this->m_LineagesManager->UpdateDivisionsScalars(NewLineageID);
     }
@@ -1787,6 +1788,7 @@ void QGoPrintDatabase::AddCheckedTracksToSelectedLineage(
   {
   //todo Update Tracks Collection IDs
       std::cout << "AddCheckedTracksToSelectedLineage" << std::endl;
+  //this->m_LineagesManager->UpdateTracksCollectionID(iLineageID);
   this->m_LineagesManager->UpdateDivisionsColors(iLineageID);
   this->m_LineagesManager->UpdateDivisionsScalars(iLineageID);
   }

@@ -646,7 +646,7 @@ signals:
   /*
    * \brief Send signal to tell to the lineage container which lineage to highlight
    */
-  void UpdateLineageHighlighting(unsigned int);
+  void UpdateLineageHighlightingFromTrackRootID(unsigned int);
 
 public slots:
 

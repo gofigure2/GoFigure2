@@ -137,6 +137,13 @@ public:
   unsigned int GetLineageTrackRootID( const unsigned int& iTraceID );
 
   /*
+   * \brief Get the trace root ID from the track root ID
+   * \param[in] iTraceID track root id
+   * \return related lineage ID
+   */
+  unsigned int GetTraceIDFromTrackRootID( const unsigned int& iTraceID );
+
+  /*
    * \brief Get the visibility of the given lineage
    * \param[in] iTraceID lineage ID of interest
    * \return visibility

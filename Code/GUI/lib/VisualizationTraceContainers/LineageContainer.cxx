@@ -164,6 +164,27 @@ unsigned int LineageContainer::GetLineageTrackRootID( const unsigned int& iTrace
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+unsigned int LineageContainer::GetTraceIDFromTrackRootID( const unsigned int& iTraceID )
+{
+  MultiIndexContainerTraceIDIterator
+    it = m_Container.get< TraceID >().find( iTraceID );
+
+/*
+   \todo Nicolas-shouldnt have to check it - sth has to be found here or bug somewhere
+   */
+  if( it != m_Container.get< TraceID >().end() )
+    {
+    return it->TraceID;
+    }
+  else
+    {
+    itkGenericExceptionMacro( <<"trackroot id is not in this container" );
+    return 0;
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 bool LineageContainer::GetLineageVisibile( const unsigned int& iTraceID )
 {
   MultiIndexContainerTraceIDIterator
