@@ -235,17 +235,15 @@ void QGoTabElementBase::CreateModeToolBar(
 //--------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTabElementBase::SetStatusBarPointer(QStatusBar *iStatusbar)
+void QGoTabElementBase::CreateViewToolBar(QMenu* iMenu, QToolBar* iToolBar)
 {
-  this->m_StatusBar = iStatusbar;
 }
 //--------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTabElementBase::InitializeToolBarsAndMenus(
-    QMenu* iTracesMenu, QToolBar* iTracesToolbar)
+void QGoTabElementBase::SetStatusBarPointer(QStatusBar *iStatusbar)
 {
-  //this->m_TracesActions->InitializeToolBarAndMenu(iTracesToolbar, iTracesMenu);
+  this->m_StatusBar = iStatusbar;
 }
 //--------------------------------------------------------------------------
 

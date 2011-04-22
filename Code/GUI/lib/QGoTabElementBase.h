@@ -133,10 +133,8 @@ public:
 
   //virtual void SetTraceSettingsToolBar(QToolBar* iToolBar);
 
-  virtual void InitializeToolBarsAndMenus(
-    QMenu* iTracesMenu, QToolBar* iTracesToolbar);
-
   virtual void CreateModeToolBar(QMenu* iMenu, QToolBar* iToolBar);
+  virtual void CreateViewToolBar(QMenu* iMenu, QToolBar* iToolBar);
 
 protected:
   std::list< QAction * > m_PluginActionList;
