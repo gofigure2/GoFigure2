@@ -277,7 +277,7 @@ void QGoTabManager::ChangeCurrentTab(int iIdx)
 
     SetUpTabElement(w2);
     }
-
+  
   m_PreviousTabIndex = iIdx;
 }
 

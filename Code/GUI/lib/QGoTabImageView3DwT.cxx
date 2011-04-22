@@ -3445,5 +3445,5 @@ QGoTabImageView3DwT::CreateModeToolBar(QMenu* iMenu, QToolBar* iToolBar)
   QObject::connect( AngleAction, SIGNAL( toggled(bool) ),
                     this, SLOT( AngleWidgetInteractorBehavior(bool) ) );
 
-  this->m_ToolBarList.push_back(this->m_ModeToolBar);
+  //this->m_ToolBarList.push_back(this->m_ModeToolBar);
 }

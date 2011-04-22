@@ -230,6 +230,8 @@ void QGoTabElementBase::CreateModeToolBar(
   // it also updates the interactor behaviour
   QObject::connect( PanAction, SIGNAL( toggled(bool) ),
                     this, SLOT( PanInteractorBehavior(bool) ) );
+
+  this->m_ToolBarList.push_back(this->m_ModeToolBar);
 }
 
 //--------------------------------------------------------------------------

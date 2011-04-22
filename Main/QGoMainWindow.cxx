@@ -88,7 +88,7 @@
 //--------------------------------------------------------------------------
 QGoMainWindow::QGoMainWindow(QWidget *iParent, Qt::WindowFlags iFlags) :
   QMainWindow(iParent, iFlags), m_TraceSettingsToolBar(NULL),
-  m_TracesToolBar(NULL)
+  m_TracesToolBar(NULL), m_ViewToolBar(NULL), m_ModeToolBar(NULL)
 {
   QString title("<*)0|00|0>< ~~ <*)0|00|0><     GoFigure    ><0|00|0(*> ~~ ><0|00|0(*>");
 
@@ -118,7 +118,7 @@ QGoMainWindow::QGoMainWindow(QWidget *iParent, Qt::WindowFlags iFlags) :
   this->statusbar->addPermanentWidget(&m_Bar);
 
   m_TabManager = new QGoTabManager(this, this->CentralTabWidget);
-  this->m_ViewToolBar = new QToolBar(tr("View"), this);
+  /*this->m_ViewToolBar = new QToolBar(tr("View"), this);
   this->m_ViewToolBar->setObjectName( tr("View") );
   this->addToolBar(Qt::TopToolBarArea, this->m_ViewToolBar);
 
@@ -126,7 +126,7 @@ QGoMainWindow::QGoMainWindow(QWidget *iParent, Qt::WindowFlags iFlags) :
   this->m_ModeToolBar->setObjectName( tr("Mode") );
   this->addToolBar(Qt::TopToolBarArea, this->m_ModeToolBar);
 
-  /*this->m_TracesToolBar = new QToolBar(tr("Tools For Traces"), this);
+  this->m_TracesToolBar = new QToolBar(tr("Tools For Traces"), this);
   this->m_TracesToolBar->setObjectName( tr("Traces") );
   this->addToolBar(Qt::TopToolBarArea, this->m_TracesToolBar);
 
@@ -895,7 +895,22 @@ QGoMainWindow::SetupPluginsAndDockWidgetFromTab(QGoTabElementBase *iT)
 //--------------------------------------------------------------------------
 void QGoMainWindow::SetUpGeneralMenusToolBars(QGoTabElementBase *iT)
 {
+  if (!this->m_ViewToolBar)
+    {
+    this->m_ViewToolBar = new QToolBar(tr("View"), this);
+    this->m_ViewToolBar->setObjectName( tr("View") );
+    this->addToolBar(Qt::TopToolBarArea, this->m_ViewToolBar);
+    }
+
+  if(!this->m_ModeToolBar)
+    {
+    this->m_ModeToolBar = new QToolBar(tr("Mode"), this);
+    this->m_ModeToolBar->setObjectName( tr("Mode") );
+    this->addToolBar(Qt::TopToolBarArea, this->m_ModeToolBar);
+    }
+
   iT->CreateModeToolBar(this->menuMode, this->m_ModeToolBar);
+
   this->menuView->setEnabled(true);
   this->menuFiltering->setEnabled(true);
   this->menuSegmentation->setEnabled(true);

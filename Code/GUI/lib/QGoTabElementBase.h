@@ -140,6 +140,7 @@ protected:
   std::list< QAction * > m_PluginActionList;
 
   std::vector< QAction * > m_ViewActions;
+  QGoToolBarStatus*        m_ViewActionsMenuToolBar;
   std::vector< QAction* >  m_ViewNoToolBarActions;
   std::vector< QAction * > m_SegmentationActions;
   std::vector< QAction * > m_ToolsActions;
