@@ -107,6 +107,11 @@ QGoTraceSettingsWidget::SetListCollectionID(
   std::list< ItemColorComboboxData > iListExistingID,
   std::string iCollectionIDtoSelect)
 {
+  if (this->m_CollectionName->text() == "lineage" || 
+    this->m_CollectionName->text() == "")
+    {
+    return;
+    }
   if ( !iCollectionIDtoSelect.empty() )
     {
     this->m_CollectionColorComboBox->
