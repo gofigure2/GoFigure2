@@ -918,13 +918,17 @@ void QGoPrintDatabase::SetTSListColorsWithPreviousSelectedOne()
 //-------------------------------------------------------------------------
 void QGoPrintDatabase::SetTSListCollectionID()
 {
-  this->OpenDBConnection();
-  std::string                        IDToSelect;
-  std::list< ItemColorComboboxData > ListCollectionID =
-    this->GetListCollectionIDFromDB(this->m_DatabaseConnector, IDToSelect);
-  this->m_TraceSettingsWidget->SetListCollectionID(ListCollectionID, IDToSelect);
-  this->m_TraceSettingsWidgetForToolBar->SetListCollectionID(ListCollectionID, IDToSelect);
-  this->CloseDBConnection();
+  //std::string TraceName = this->InWhichTableAreWe();
+  //if (TraceName == "contour" || TraceName == "mesh")
+  //  {
+    this->OpenDBConnection();
+    std::string                        IDToSelect;
+    std::list< ItemColorComboboxData > ListCollectionID =
+      this->GetListCollectionIDFromDB(this->m_DatabaseConnector, IDToSelect);
+    this->m_TraceSettingsWidget->SetListCollectionID(ListCollectionID, IDToSelect);
+    this->m_TraceSettingsWidgetForToolBar->SetListCollectionID(ListCollectionID, IDToSelect);
+    this->CloseDBConnection();
+  //  }
 }
 
 //-------------------------------------------------------------------------
