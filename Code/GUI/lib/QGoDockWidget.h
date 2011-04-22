@@ -32,33 +32,33 @@
 
 =========================================================================*/
 
-#ifndef __QGoLineageViewDockWidget_h
-#define __QGoLineageViewDockWidget_h
+#ifndef __QGoDockWidget_h
+#define __QGoDockWidget_h
 
-
-#include <QRadioButton>
-#include "QGoDockWidget.h"
-//#include "ui_LineageViewDockWidget.h"
-
-class QGoLineageViewDockWidget:
-  public QGoDockWidget//,
-  //protected Ui::LineageViewDockWidget
+#include <QDockWidget>
+#include <QAction>
+#include "QGoGUILibConfigure.h"
+/**
+\class QGoDockWidget
+\brief inherits from Qt QDockWidget.toggle action reimplemented
+in order the state is saved when changing tabs
+\ingroup GUI
+*/
+class QGOGUILIB_EXPORT QGoDockWidget:public QDockWidget
 {
   Q_OBJECT
 public:
-  explicit QGoLineageViewDockWidget(QWidget *iParent = 0);
-  ~QGoLineageViewDockWidget();
+  explicit QGoDockWidget(QWidget* iParent = 0);
 
-public slots:
-  void ColorCodeLineagesByDepth(bool);
-  void ColorCodeLineagesByOriginalColor(bool);
+  virtual ~QGoDockWidget();
 
-signals:
-  void ChangeDivisionsColorCode( const char* );
+  QAction* toggleViewAction();
 
 protected:
-  void SetUpUi();
-  QRadioButton*  m_depthLineage;
-  QRadioButton*  m_real;
+  QAction*  m_ToggleAction;
+
+  void closeEvent(QCloseEvent *iEvent);
+
 };
+
 #endif

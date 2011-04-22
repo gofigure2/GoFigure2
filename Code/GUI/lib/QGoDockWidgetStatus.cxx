@@ -36,91 +36,79 @@
 
 #include <iostream>
 
-QGoDockWidgetStatus::QGoDockWidgetStatus(QDockWidget *iW) : QObject(iW),
+QGoDockWidgetStatus::QGoDockWidgetStatus(QGoDockWidget *iW) : QObject(iW),
   m_DockWidget(iW),
   m_Area(Qt::LeftDockWidgetArea), m_DefaultArea(Qt::LeftDockWidgetArea),
   m_Visibility(true), m_Attached(true)
 {
-  QObject::connect( m_DockWidget, SIGNAL( dockLocationChanged(Qt::DockWidgetArea) ),
-                    this, SLOT( SetArea(Qt::DockWidgetArea) ) );
-
-  QObject::connect( m_DockWidget, SIGNAL( visibilityChanged(bool) ),
-                    this, SLOT( SetVisibility(bool) ) );
+  this->SetConnections();
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
 QGoDockWidgetStatus::QGoDockWidgetStatus(const QGoDockWidgetStatus & iS) :
   QObject(iS.m_DockWidget), m_Area(iS.m_Area), m_DefaultArea(iS.m_Area),
-  m_Visibility(iS.m_Visibility), m_Attached(iS.m_Attached)
+  m_Visibility(iS.m_Visibility), m_Attached(iS.m_Attached), 
+  m_MainWindow(iS.m_MainWindow)
 {
-  QObject::connect( m_DockWidget, SIGNAL( dockLocationChanged(Qt::DockWidgetArea) ),
-                    this, SLOT( SetArea(Qt::DockWidgetArea) ) );
-
-  QObject::connect( m_DockWidget, SIGNAL( visibilityChanged(bool) ),
-                    this, SLOT( SetVisibility(bool) ) );
+  this->SetConnections();
 }
+//--------------------------------------------------------------------------
 
-QGoDockWidgetStatus::QGoDockWidgetStatus(QDockWidget *iW, Qt::DockWidgetArea iArea,
+//--------------------------------------------------------------------------
+QGoDockWidgetStatus::QGoDockWidgetStatus(QGoDockWidget *iW, Qt::DockWidgetArea iArea,
                                          const bool & iVisibility, const bool & iAttached,
                                          QMainWindow* iMainWindow) :
   QObject(iW), m_DockWidget(iW), m_Area(iArea),
   m_DefaultArea(iArea), m_Visibility(iVisibility),
-  m_Attached(iAttached)
+  m_Attached(iAttached),
+  m_MainWindow(iMainWindow)
 {
-  this->m_MainWindow = iMainWindow;
-  QObject::connect( m_DockWidget, SIGNAL( dockLocationChanged(Qt::DockWidgetArea) ),
-                    this, SLOT( SetArea(Qt::DockWidgetArea) ) );
-
-  QObject::connect( m_DockWidget, SIGNAL( visibilityChanged(bool) ),
-                    this, SLOT( SetVisibility(bool) ) );
+  this->SetConnections();
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
 QGoDockWidgetStatus::
 ~QGoDockWidgetStatus()
 {
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
+void QGoDockWidgetStatus::SetConnections()
+{
+  QObject::connect( m_DockWidget, SIGNAL( dockLocationChanged(Qt::DockWidgetArea) ),
+                    this, SLOT( SetArea(Qt::DockWidgetArea) ) );
+
+  //QObject::connect( m_DockWidget, SIGNAL( visibilityChanged(bool) ),
+  //                  this, SLOT( SetVisibility(bool) ) );
+  QObject::connect(m_DockWidget->toggleViewAction(), SIGNAL(toggled(bool) ),
+                    this, SLOT(SetVisibility(bool) ) );
+
+  QObject::connect(m_DockWidget, SIGNAL(topLevelChanged (bool) ),
+                    this, SLOT( SetAttached(bool) ) );
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 void
 QGoDockWidgetStatus::SetArea(Qt::DockWidgetArea iArea)
 {
-//   switch( iArea )
-//     {
-//     case Qt::LeftDockWidgetArea:
-//       std::cout <<"Left" <<std::endl;
-//       break;
-//     case Qt::RightDockWidgetArea:
-//       std::cout <<"Right" <<std::endl;
-//       break;
-//     case Qt::TopDockWidgetArea:
-//       std::cout <<"Top" <<std::endl;
-//       break;
-//     case Qt::BottomDockWidgetArea:
-//       std::cout <<"Bottom" <<std::endl;
-//       break;
-//     case Qt::AllDockWidgetAreas:
-//       std::cout <<"All Area" <<std::endl;
-//       break;
-//     default:
-//     case Qt::NoDockWidgetArea:
-//       std::cout <<"No dockWidget" <<std::endl;
-//       break;
-//     }
   m_Area = iArea;
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
 void
 QGoDockWidgetStatus::SetVisibility(bool iVisibility)
 {
-//   if( iVisibility )
-//     {
-//     std::cout <<"Visible" <<std::endl;
-//     }
-//   else
-//     {
-//     std::cout <<"Invisible" <<std::endl;
-//     }
-  m_Visibility = iVisibility;
+   m_Visibility = iVisibility;
+   this->m_DockWidget->setVisible(iVisibility);
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
 void
 QGoDockWidgetStatus::SetAttached(bool iAttached)
 {

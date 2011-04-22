@@ -207,6 +207,7 @@ public:
   void SetPointerColorData(ItemColorComboboxData* iColorData);
 
   unsigned int GetCurrentSelectedCollectionID();
+  //bool GetIsToolBarVisible();
 
 public slots:
 
@@ -219,6 +220,8 @@ public slots:
   \brief in order the pointers already deleted are not deleted again
   */
   void SetSelectedPointersToNull();
+
+  //void SetVisibilityStatus(bool IsVisible);
 
 signals:
   void AddANewCellType();
@@ -245,6 +248,7 @@ protected:
   std::string *               m_SelectedSubCellType;
   ItemColorComboboxData *     m_SelectedCollectionData;
   ItemColorComboboxData *     m_SelectedColorData;
+  //bool                        m_IsToolBarVisible;
 
   void SetUpUi();
   

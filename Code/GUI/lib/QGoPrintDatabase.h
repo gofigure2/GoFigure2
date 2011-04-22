@@ -61,6 +61,7 @@
 #include "ContourContainer.h"
 #include "MeshContainer.h"
 #include "TrackContainer.h"
+#include "QGoDockWidget.h"
 /**
 \defgroup DB Database
 \defgroup GUI GUI
@@ -72,7 +73,7 @@
 QGoDBTraceManager...
 \ingroup DB GUI
 */
-class QGOGUILIB_EXPORT QGoPrintDatabase:public QDockWidget
+class QGOGUILIB_EXPORT QGoPrintDatabase:public QGoDockWidget
 {
   Q_OBJECT
 public:
@@ -168,7 +169,7 @@ public:
  * not*/
   bool IsDatabaseUsed();
 
-  QAction * toggleViewAction();
+  //QAction * toggleViewAction();
 
   /**
   \brief get the info from a textfile, save it into the database,
@@ -329,8 +330,6 @@ protected:
   bool m_MeshGenerationMode;
   bool m_TraceSettingsVisible;
 
-  QAction*  m_VisibilityAction;
-
   void OpenDBConnection();
 
   void SetUpUi();
@@ -424,7 +423,7 @@ protected:
   std::list< ItemColorComboboxData > GetListCollectionIDFromDB(
     vtkMySQLDatabase *iDatabaseConnector, std::string & ioIDToSelect);
 
-  void closeEvent(QCloseEvent *event);
+  //void closeEvent(QCloseEvent *event);
 
   /**
   \brief set all the traces manager

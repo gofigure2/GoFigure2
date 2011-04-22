@@ -42,19 +42,19 @@
 QGoContourSegmentationBaseDockWidget::QGoContourSegmentationBaseDockWidget(
   QWidget *iParent,
   vtkPoints *seeds,
-  std::vector< vtkSmartPointer< vtkImageData > > *iOriginalImage) : QDockWidget(iParent)
+  std::vector< vtkSmartPointer< vtkImageData > > *iOriginalImage) : QGoDockWidget(iParent)
 {
   this->setupUi(this);
 
   this->setWindowTitle( QString::fromUtf8("Contour Editing") );
 
+  this->m_ToggleAction->setToolTip( tr("Contour Editing") );
   QIcon ContourSegmentationIcon;
   ContourSegmentationIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/ContourEditing.png") ),
                                     QIcon::Normal, QIcon::Off);
-  this->toggleViewAction()->setIcon(ContourSegmentationIcon);
-  this->toggleViewAction()->setToolTip( tr("Contour Editing") );
-  this->toggleViewAction()->setStatusTip( tr("Create contours manually, semi-automatically or automatically") );
 
+  this->m_ToggleAction->setIcon(ContourSegmentationIcon);
+  this->m_ToggleAction->setStatusTip( tr("Create contours manually, semi-automatically or automatically") );
   // update interactor behavior
   QObject::connect( this->mode, SIGNAL( activated(int) ),
                     this, SLOT( SegmentationMethod(int) ) );
@@ -253,3 +253,6 @@ QGoContourSegmentationBaseDockWidget::Initialize()
 {
   m_ContourManualSegmentation->GenerateContourRepresentationProperties(true);
 }
+//---------------------------------------------------------------------------//
+
+//---------------------------------------------------------------------------//

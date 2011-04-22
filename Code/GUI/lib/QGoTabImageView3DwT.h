@@ -147,6 +147,8 @@ public:
    */
   void setupUi(QWidget *parent);
 
+  void CreateModeToolBar(QMenu* iMenu, QToolBar* iToolBar);
+
   /**
    * \brief
    * \param parent
@@ -237,6 +239,9 @@ public:
   GoFigureMeshAttributes ComputeMeshAttributes(vtkPolyData *iMesh,
                                                const bool& iIntensity,
                                                const unsigned int& iTCoord );
+
+  void InitializeToolsForTracesToolBar(QMenu* iMenu, QToolBar* iToolBar);
+  void InitializeTraceSettingsToolBar(QToolBar* iToolBar);
 
 signals:
   void TimePointChanged(int TimePoint);
@@ -358,6 +363,7 @@ protected:
   QColor                                    m_BackgroundColor;
   QAction *                                 m_BackgroundColorAction;
   QAction *                                 m_TakeSnapshotAction;
+  QToolBar*                                 m_TraceSettingsToolBar;
 
   float m_IntersectionLineWidth;
   std::vector< QString > m_ChannelNames;
@@ -530,7 +536,7 @@ protected:
 
   void CreateBookmarkActions();
 
-  void CreateModeActions();
+  //void CreateModeActions();
 
   void CreateVisuDockWidget();
 

@@ -31,34 +31,39 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-
-#ifndef __QGoLineageViewDockWidget_h
-#define __QGoLineageViewDockWidget_h
-
-
-#include <QRadioButton>
 #include "QGoDockWidget.h"
-//#include "ui_LineageViewDockWidget.h"
 
-class QGoLineageViewDockWidget:
-  public QGoDockWidget//,
-  //protected Ui::LineageViewDockWidget
+QGoDockWidget::QGoDockWidget(QWidget* iParent) :
+  QDockWidget(iParent)
 {
-  Q_OBJECT
-public:
-  explicit QGoLineageViewDockWidget(QWidget *iParent = 0);
-  ~QGoLineageViewDockWidget();
+ this->m_ToggleAction = new QAction(this);
+ 
+ this->m_ToggleAction->setCheckable(true);
 
-public slots:
-  void ColorCodeLineagesByDepth(bool);
-  void ColorCodeLineagesByOriginalColor(bool);
 
-signals:
-  void ChangeDivisionsColorCode( const char* );
+ QObject::connect(m_ToggleAction, SIGNAL(toggled(bool) ),
+                     this, SLOT(setVisible(bool) ) );
+}
 
-protected:
-  void SetUpUi();
-  QRadioButton*  m_depthLineage;
-  QRadioButton*  m_real;
-};
-#endif
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+QGoDockWidget::~QGoDockWidget()
+{
+}
+
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+QAction* QGoDockWidget::toggleViewAction()
+{
+  return this->m_ToggleAction;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoDockWidget::closeEvent(QCloseEvent *iEvent)
+{
+  (void)iEvent;
+  this->m_ToggleAction->setChecked(false);
+}

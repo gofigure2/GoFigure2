@@ -37,17 +37,18 @@
 
 #include <Qt>
 #include <QObject>
-#include <QDockWidget>
+#include <QAction>
+#include "QGoDockWidget.h"
 
 class QGoDockWidgetStatus:public QObject
 {
   Q_OBJECT
 public:
-  explicit QGoDockWidgetStatus(QDockWidget *iW);
+  explicit QGoDockWidgetStatus(QGoDockWidget *iW);
 
   explicit QGoDockWidgetStatus(const QGoDockWidgetStatus & iS);
 
-  explicit QGoDockWidgetStatus(QDockWidget *iW,
+  explicit QGoDockWidgetStatus(QGoDockWidget *iW,
                                Qt::DockWidgetArea iArea,
                                const bool & iVisibility,
                                const bool & iAttached,
@@ -55,7 +56,7 @@ public:
 
   virtual ~QGoDockWidgetStatus();
 
-  QDockWidget *m_DockWidget;
+  QGoDockWidget *m_DockWidget;
 
   /** \brief Position */
   Qt::DockWidgetArea m_Area;
@@ -71,10 +72,18 @@ public:
   QMainWindow* m_MainWindow;
 
 public slots:
+  /** \brief set the area of the m_dockwidget*/
   void SetArea(Qt::DockWidgetArea iArea);
 
+  /** \brief set the visibility of the m_dockwidget*/
   void SetVisibility(bool iVisibility);
 
+  /** \brief set the floated status of the m_dockwidget*/
   void SetAttached(bool iAttached);
+
+protected:
+  /** \brief set the signal slots connections to update m_visibility, m_Attached and 
+  m_Area*/
+  void SetConnections();
 };
 #endif

@@ -76,6 +76,9 @@ public:
 
   virtual void WriteSettings() {}
   virtual void ReadSettings() {}
+
+  void CreateModeToolBar(QMenu* iMenu, QToolBar* iToolBar);
+
 signals:
   void SliceViewXYChanged(int Slice);
 
@@ -162,8 +165,6 @@ protected:
   void SetBackgroundColorToImageViewer();
 
   void CreateAllViewActions();
-
-  void CreateModeActions();
 
   void SetImageToImageViewer(vtkImageData *image);
 

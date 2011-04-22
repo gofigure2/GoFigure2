@@ -77,8 +77,21 @@ void QGoTabManager::ClearTabElement(QGoTabElementBase *iE)
     {
     // First remove all toolbar related to the previous tab
     m_MainWindow->m_ViewToolBar->clear();
-    m_MainWindow->m_ModeToolBar->clear();
-    m_MainWindow->m_TracesToolBar->clear();
+    //m_MainWindow->m_ModeToolBar->clear();
+    
+    std::list<QGoToolBarStatus*> ListToolBars = iE->GetToolBarsStatus();
+    std::list<QGoToolBarStatus*>::iterator iter =ListToolBars .begin();
+    while (iter != ListToolBars.end())
+      {
+      QGoToolBarStatus* ToolBar= *iter;
+      ToolBar->ClearToolBar();
+      ++iter;
+      }
+    
+    //this->m_MainWindow->m_TraceSettingsToolBar->toggleViewAction()->disconnect(
+    //  this->m_MainWindow->m_TraceSettingsToolBar->findChild<QGoTraceSettingsWidget*>("TraceSettingsWidget") );
+    //m_MainWindow->m_TraceSettingsToolBar->clear();
+   
     // Then remove all actions related to the previous tab from menuView
     m_MainWindow->menuView->clear();
 
@@ -101,12 +114,7 @@ void QGoTabManager::ClearTabElement(QGoTabElementBase *iE)
           dck_it != dock_list.end();
           ++dck_it )
       {
-      dck_it->first->m_Area = m_MainWindow->dockWidgetArea(dck_it->second);
-      bool temp = dck_it->second->isVisible();
-
-      m_MainWindow->removeDockWidget(dck_it->second);
-
-      dck_it->first->m_Visibility = temp;
+      this->GetMainWindow(*dck_it)->removeDockWidget(dck_it->first->m_DockWidget);
       }
 
     GoFigure::TabDimensionType dim = iE->GetTabDimensionType();
@@ -146,7 +154,7 @@ void QGoTabManager::SetUpTabElement(QGoTabElementBase *iE)
 
     this->UpdateViewMenu(iE->ViewNoToolBarActions() );
 
-    action_vector2 = iE->ModeActions();
+    /*action_vector2 = iE->ModeActions();
 
     for ( std::vector< QAction * >::iterator it = action_vector2.begin();
           it != action_vector2.end();
@@ -154,7 +162,7 @@ void QGoTabManager::SetUpTabElement(QGoTabElementBase *iE)
       {
       m_MainWindow->menuMode->addAction(*it);
       m_MainWindow->m_ModeToolBar->addAction(*it);
-      }
+      }*/
 
     action_vector2 = iE->SegmentationActions();
 
@@ -183,18 +191,26 @@ void QGoTabManager::SetUpTabElement(QGoTabElementBase *iE)
       m_MainWindow->menuBookmarks->addAction(*it);
       }
 
-    action_vector2 = iE->TracesActions();
-
-    for ( std::vector< QAction * >::iterator it = action_vector2.begin();
-          it != action_vector2.end();
-          ++it )
+    std::list<QGoToolBarStatus*> ToolBarList = iE->GetToolBarsStatus();
+    std::list<QGoToolBarStatus*>::iterator iter = ToolBarList.begin();
+    while (iter != ToolBarList.end() )
       {
-        m_MainWindow->m_TracesToolBar->addAction(*it);
+      QGoToolBarStatus* ToolBar = *iter;
+      ToolBar->SetUpToolBar();
+      ++iter;
       }
     
-    m_MainWindow->m_TraceSettingsToolBar->addWidget(iE->TraceSettingsWidget() );
+    /*QAction* TraceSettingsAction = 
+      m_MainWindow->m_TraceSettingsToolBar->addWidget(iE->TraceSettingsWidget() );
+    TraceSettingsAction->setVisible(true);
     iE->SetTraceSettingsToolBar(m_MainWindow->m_TraceSettingsToolBar);
-   
+    m_MainWindow->m_TraceSettingsToolBar->setVisible(
+      iE->TraceSettingsWidget()->GetIsToolBarVisible());
+
+    QObject::connect(this->m_MainWindow->m_TraceSettingsToolBar->toggleViewAction(), 
+                     SIGNAL(	toggled (bool) ),
+                      this->m_MainWindow->m_TraceSettingsToolBar->findChild<QGoTraceSettingsWidget*>("TraceSettingsWidget"), 
+                      SLOT(SetVisibilityStatus(bool) ) );*/
     
     std::list< QGoTabElementBase::QGoDockWidgetStatusPair > dock_list = iE->DockWidget();
 
@@ -209,14 +225,7 @@ void QGoTabManager::SetUpTabElement(QGoTabElementBase *iE)
           {
           dck_it->first->m_Area = dck_it->first->m_DefaultArea;
           }
-        if( dck_it->first->m_MainWindow != 0)
-          {
-          dck_it->first->m_MainWindow->addDockWidget(dck_it->first->m_Area, dck_it->second);
-          }
-        else
-          {
-          m_MainWindow->addDockWidget(dck_it->first->m_Area, dck_it->second);
-          }
+        this->GetMainWindow(*dck_it)->addDockWidget(dck_it->first->m_Area, dck_it->second);
         }
       dck_it->second->setVisible(dck_it->first->m_Visibility);
       }
@@ -268,7 +277,7 @@ void QGoTabManager::ChangeCurrentTab(int iIdx)
 
     SetUpTabElement(w2);
     }
-
+  
   m_PreviousTabIndex = iIdx;
 }
 
@@ -347,3 +356,17 @@ void QGoTabManager::CloseAllTabs()
 }
 
 //--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+QMainWindow* QGoTabManager::GetMainWindow(
+    QGoTabManager::QGoDockWidgetStatusPair iDockStatus)
+{
+    if (iDockStatus.first->m_MainWindow != 0)
+        {
+        return iDockStatus.first->m_MainWindow;
+        }
+      else
+        {
+        return m_MainWindow;
+        }
+}
