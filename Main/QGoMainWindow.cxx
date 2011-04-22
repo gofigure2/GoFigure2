@@ -928,6 +928,7 @@ void QGoMainWindow::SetUpMenusToolBarsFor3dwtImage(QGoTabImageView3DwT* iT)
     this->m_TracesToolBar = new QToolBar(tr("Tools For Traces"), this);
     this->m_TracesToolBar->setObjectName( tr("Traces") );
     this->addToolBar(Qt::TopToolBarArea, this->m_TracesToolBar);
+    this->addToolBarBreak(Qt::TopToolBarArea);
     }
   if (!this->m_TraceSettingsToolBar)
     {
