@@ -94,6 +94,11 @@ void QGoDBLineageManager::SetLineagesInfoContainersForVisu(
                     SIGNAL( ShowLineage(unsigned int, bool) ),
                     m_TrackContainerInfoForVisu,
                     SLOT( ShowCollection(unsigned int, bool) ) );
+
+  QObject::connect( m_LineageContainerInfoForVisu,
+                    SIGNAL( DeleteLineage(unsigned int) ),
+                    m_TrackContainerInfoForVisu,
+                    SLOT( DeleteCollection(unsigned int) ) );
   // export lineage
   QObject::connect( m_LineageContainerInfoForVisu,
                     SIGNAL( ExportLineages() ),

@@ -108,11 +108,12 @@ std::list< unsigned int > LineageContainer::DeleteAllHighlightedElements()
       {
       oList.push_back(it0->TraceID);
 
-      m_Container.get< Highlighted >().erase(it_t);
-
       // to delete the divisions of the lineage in the track container
       // signals connected in the QGoDBLineageManager
       emit DeleteLineage(it0->TrackRootID);
+
+      m_Container.get< Highlighted >().erase(it0);
+      ++it0;
       }
 
     m_ImageView->UpdateRenderWindows();

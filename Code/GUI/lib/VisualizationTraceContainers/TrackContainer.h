@@ -716,6 +716,16 @@ public slots:
    */
   void UpdateCollectionVisibility( MultiIndexContainerTraceIDIterator& it, bool iVisibility);
   /*
+   * \brief Delete a collection given the track root ID
+   * param[in] iRootTrackID trackID root
+   */
+  void DeleteCollection(unsigned int);  /*
+   * \brief Update the collection delete
+   * \param[in] it iterator to go through the lineage
+   */
+  void UpdateCollectionDelete( MultiIndexContainerTraceIDIterator& it);
+
+  /*
    * \brief Change the visibility of the division belonging to the given structure.
    * Structure is modified through unary function.
    * \param[in] it iterator to the structure to be modified
