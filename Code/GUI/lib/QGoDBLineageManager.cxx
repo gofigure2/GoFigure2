@@ -201,6 +201,8 @@ void QGoDBLineageManager::UpdateTWAndContainerForImportedTraces(
 //-------------------------------------------------------------------------
 void QGoDBLineageManager::DeleteCheckedTraces(vtkMySQLDatabase *iDatabaseConnector)
 {
+  //
+    std::cout << "Delete checked traces in lineage manager" << std::endl;
   this->DeleteTracesTemplate< LineageContainer >(iDatabaseConnector,
                                                this->m_LineageContainerInfoForVisu);
 }

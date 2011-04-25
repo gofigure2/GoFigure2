@@ -700,6 +700,12 @@ protected slots:
   void DeleteCheckedTracks();
 
   /**
+  \brief slot connected to the signal TracesToDelete() emitted by the
+  m_LineagesManager
+  */
+  void DeleteCheckedLineages();
+
+  /**
   \brief create a new track and call the AddCheckedTracesToCollection template method
   to add the meshes from the list to this new track
   \param[in] iListMeshes list of the meshIDs to belong to the new track
