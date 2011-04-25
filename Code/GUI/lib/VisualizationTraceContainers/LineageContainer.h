@@ -170,7 +170,10 @@ public:
 
 signals:
   void HighlightLineage(unsigned int, bool);
-  //void TraceVisibilityChanged(unsigned int, Qt::CheckState);
+  /*
+   \todo Nicolas-Signal there to avoid warning but has to be connected to the box widget
+   */
+  void TraceVisibilityChanged(unsigned int, Qt::CheckState);
   void ShowLineage(unsigned int, bool);
   /** \brief When one track has been picked (highlighted) from the visualization */
   void TracePicked(unsigned int, Qt::CheckState);
@@ -202,7 +205,6 @@ public slots:
   */
   void UpdateElementHighlighting(unsigned int iTraceID)
     {
-    std::cout << "lineage picked: " << iTraceID << std::endl;
     Qt::CheckState state;
     Superclass::UpdateElementHighlightingWithTraceID( iTraceID, state );
     emit TracePicked(iTraceID, state);
