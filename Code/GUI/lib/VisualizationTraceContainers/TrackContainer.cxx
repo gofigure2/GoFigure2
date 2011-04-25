@@ -1125,12 +1125,12 @@ int
 TrackContainer::ModifyDivisionHighlight( MultiIndexContainerTraceIDIterator& it, bool iHighlight )
 {
   vtkProperty* temp_property = NULL;
+  temp_property = vtkProperty::New();
   if ( !iHighlight )
     {
     /*
      * \todo Nicolas - which color for the divisions??
      */
-    temp_property = vtkProperty::New();
     temp_property->SetColor(it->TreeNode.rgba[0],
                             it->TreeNode.rgba[1],
                             it->TreeNode.rgba[2]);
@@ -1139,15 +1139,12 @@ TrackContainer::ModifyDivisionHighlight( MultiIndexContainerTraceIDIterator& it,
     }
   else
     {
-    temp_property = this->m_HighlightedProperty;
+    temp_property->DeepCopy(this->m_HighlightedProperty);
     }
 
   m_Container.get< TraceID >().modify( it , change_highlighted_division(temp_property, iHighlight) );
 
-  if(!iHighlight)
-    {
-    temp_property->Delete();
-    }
+  temp_property->Delete();
 
   return 1;
 }
