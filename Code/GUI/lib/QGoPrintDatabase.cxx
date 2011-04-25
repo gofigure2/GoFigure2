@@ -1183,6 +1183,15 @@ void QGoPrintDatabase::ChangeTrackColor()
 
 //-------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
+void QGoPrintDatabase::ChangeLineageColor()
+{
+  this->ChangeTraceColor< QGoDBLineageManager, QGoDBTrackManager >(
+    this->m_LineagesManager, this->m_TracksManager);
+}
+
+//-------------------------------------------------------------------------
+
 //-------------------------------------------------------------------------
 void QGoPrintDatabase::PrintVolumeAreaForMesh(GoFigureMeshAttributes *
                                               iMeshAttributes, unsigned int iMeshID)
@@ -1437,6 +1446,11 @@ void QGoPrintDatabase::SetLineagesManager()
                     SIGNAL( DBConnectionNotNeededAnymore() ),
                     this,
                     SLOT( CloseDBConnection() ) );
+
+  QObject::connect( this->m_LineagesManager,
+                    SIGNAL( TraceColorToChange() ),
+                    this,
+                    SLOT( ChangeLineageColor() ) );
 
   this->m_LineagesManager->SetSelectedColor( this->m_TraceSettingsWidget->GetPointerColorData() );
 }
