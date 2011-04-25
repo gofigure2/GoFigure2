@@ -284,7 +284,8 @@ ModifyDivisionColor( double* iColor )
   this->TreeNode.rgba[0] = iColor[0];
   this->TreeNode.rgba[1] = iColor[1];
   this->TreeNode.rgba[2] = iColor[2];
-  this->TreeNode.rgba[3] = iColor[3];
+  // get visibility of the actor
+  iColor[3] = this->TreeNode.rgba[3];
 
   this->TreeNode.ActorXY->GetProperty()->SetColor(iColor);
   this->TreeNode.ActorXZ->GetProperty()->SetColor(iColor);

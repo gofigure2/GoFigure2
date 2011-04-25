@@ -192,8 +192,7 @@ std::list< unsigned int > QGoDBLineageManager::UpdateTheTracesColor(
     {
       unsigned int trackRoot = this->m_LineageContainerInfoForVisu->GetLineageTrackRootID(*it);
 
-      std::cout << "track root id...? " << trackRoot << std::endl;
-      double* color = new double[3];
+      double* color = new double[4];
       color[0] = this->m_SelectedColorData->second.redF();
       color[1] = this->m_SelectedColorData->second.greenF();
       color[2] = this->m_SelectedColorData->second.blueF();
