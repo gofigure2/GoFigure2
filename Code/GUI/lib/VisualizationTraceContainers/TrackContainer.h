@@ -338,6 +338,8 @@ public:
   */
   void UpdateElementHighlighting(unsigned int TraceId)
     {
+          std::cout << "UpdateElementHighlighting" << std::endl;
+
     Qt::CheckState state;
     Superclass::UpdateElementHighlightingWithTraceID(TraceId,
                                                      state );
@@ -369,6 +371,8 @@ public:
   \note move to superclass*/
   void UpdateElementVisibility(unsigned int iTraceID, bool iState)
     {
+    std::cout << "UpdateElementVisibility" << std::endl;
+
     Superclass::UpdateElementVisibilityWithTraceID(iTraceID, iState);
     if(iState)
       {

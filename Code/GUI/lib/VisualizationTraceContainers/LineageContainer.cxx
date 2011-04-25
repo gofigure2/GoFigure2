@@ -265,7 +265,7 @@ UpdateElementHighlightingWithGivenTraceIDs( const QStringList & iList,
         m_Container.get< TraceID >().
             modify( it , change_highlighted<MultiIndexContainerElementType>(highlighted) );
         //send signal to track container
-        emit HighlightLineage(it->TraceID, highlighted);
+        emit HighlightLineage(it->TrackRootID, highlighted);
         }
       ++constIterator;
       }
@@ -300,7 +300,7 @@ LineageContainer::UpdateElementVisibilityWithGivenTraceIDs(const QStringList & i
         m_Container.get< TraceID >().
             modify( it , change_visible<MultiIndexContainerElementType>(visible) );
         //send signal to track container
-        emit ShowLineage(it->TraceID, visible);
+        emit ShowLineage(it->TrackRootID, visible);
         }
       ++constIterator;
       }
