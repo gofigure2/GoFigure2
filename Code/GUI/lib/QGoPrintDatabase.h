@@ -682,6 +682,12 @@ protected slots:
   void ChangeTrackColor();
 
   /**
+  \brief slot connected to the TraceColorToChange() emitted by the
+  m_MeshesManager
+  */
+  void ChangeLineageColor();
+
+  /**
   \brief slot connected to the signal TracesToDelete() emitted by the
   m_ContoursManager
   */

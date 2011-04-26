@@ -276,13 +276,12 @@ TraceContainerBase< TContainer >::UpdateElementHighlightingWithGivenTraceID(cons
   MultiIndexContainerTraceIDIterator
     it = m_Container.get< TraceID >().find(iId);
 
-  vtkProperty *temp_property = NULL;
+  vtkProperty *temp_property = vtkProperty::New();
 
   if ( it != m_Container.get< TraceID >().end() )
     {
     if ( it->Highlighted )
       {
-      temp_property = vtkProperty::New();
       temp_property->SetColor(it->rgba[0],
                               it->rgba[1],
                               it->rgba[2]);
@@ -291,15 +290,12 @@ TraceContainerBase< TContainer >::UpdateElementHighlightingWithGivenTraceID(cons
       }
     else
       {
-      temp_property = this->m_HighlightedProperty;
+      temp_property->DeepCopy(this->m_HighlightedProperty);
       }
 
     it->SetActorProperties(temp_property);
 
-    if ( it->Highlighted )
-      {
-      temp_property->Delete();
-      }
+    temp_property->Delete();
 
     bool highlighted = !it->Highlighted;
     
@@ -330,7 +326,7 @@ TraceContainerBase< TContainer >::UpdateElementHighlightingWithGivenTraceIDsBase
     {
     MultiIndexContainerTraceIDIterator it;
 
-    vtkProperty *temp_property = NULL;
+    vtkProperty *temp_property = vtkProperty::New();
 
     QStringList::const_iterator constIterator = iList.begin();
 
@@ -342,7 +338,6 @@ TraceContainerBase< TContainer >::UpdateElementHighlightingWithGivenTraceIDsBase
         {
         if ( !iCheck )
           {
-          temp_property = vtkProperty::New();
           temp_property->SetColor(it->rgba[0],
                                   it->rgba[1],
                                   it->rgba[2]);
@@ -351,15 +346,12 @@ TraceContainerBase< TContainer >::UpdateElementHighlightingWithGivenTraceIDsBase
           }
         else
           {
-          temp_property = this->m_HighlightedProperty;
+          temp_property->DeepCopy(this->m_HighlightedProperty);
           }
 
         it->SetActorProperties(temp_property);
 
-        if ( !iCheck )
-          {
-          temp_property->Delete();
-          }
+        temp_property->Delete();
 
         bool highlight = iCheck;
 

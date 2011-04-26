@@ -1124,13 +1124,12 @@ TrackContainer::ModifyDivisionVisibility( MultiIndexContainerTraceIDIterator& it
 int
 TrackContainer::ModifyDivisionHighlight( MultiIndexContainerTraceIDIterator& it, bool iHighlight )
 {
-  vtkProperty* temp_property = NULL;
+  vtkProperty* temp_property = vtkProperty::New();
   if ( !iHighlight )
     {
     /*
      * \todo Nicolas - which color for the divisions??
      */
-    temp_property = vtkProperty::New();
     temp_property->SetColor(it->TreeNode.rgba[0],
                             it->TreeNode.rgba[1],
                             it->TreeNode.rgba[2]);
@@ -1139,15 +1138,12 @@ TrackContainer::ModifyDivisionHighlight( MultiIndexContainerTraceIDIterator& it,
     }
   else
     {
-    temp_property = this->m_HighlightedProperty;
+    temp_property->DeepCopy(this->m_HighlightedProperty);
     }
 
   m_Container.get< TraceID >().modify( it , change_highlighted_division(temp_property, iHighlight) );
 
-  if(!iHighlight)
-    {
-    temp_property->Delete();
-    }
+  temp_property->Delete();
 
   return 1;
 }
@@ -1456,7 +1452,8 @@ UpdateDivisionColor(MultiIndexContainerTraceIDIterator& it, double* iColor)
 {
   if( !it->IsLeaf() )
     {
-    m_Container.get< TraceID >().modify( it , change_color_division(iColor) );
+    m_Container.get< TraceID >().modify( it , change_data_color_division(iColor) );
+    m_Container.get< TraceID >().modify( it , change_actor_color_division(iColor) );
     }
 
   if(it->TreeNode.m_Child[0])
@@ -1478,6 +1475,57 @@ UpdateDivisionColor(MultiIndexContainerTraceIDIterator& it, double* iColor)
     if( childIt != m_Container.get< TraceID >().end() )
       {
       UpdateDivisionColor(childIt,iColor);
+      }
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateCollectionColorsData( unsigned int iTrackID, double* color)
+{
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iTrackID);
+
+  if( motherIt != m_Container.get< TraceID >().end() )
+    {
+    UpdateDivisionColorData(motherIt, color);
+
+    m_ImageView->UpdateRenderWindows();
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateDivisionColorData(MultiIndexContainerTraceIDIterator& it, double* iColor)
+{
+  if( !it->IsLeaf() )
+    {
+    m_Container.get< TraceID >().modify( it , change_data_color_division(iColor) );
+    }
+
+  if(it->TreeNode.m_Child[0])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateDivisionColorData(childIt,iColor);
+      }
+    }
+
+  if(it->TreeNode.m_Child[1])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateDivisionColorData(childIt,iColor);
       }
     }
 }

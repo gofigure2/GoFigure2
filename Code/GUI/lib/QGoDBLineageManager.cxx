@@ -180,8 +180,32 @@ unsigned int QGoDBLineageManager::CreateNewLineageWithTrackRoot(
 std::list< unsigned int > QGoDBLineageManager::UpdateTheTracesColor(
   vtkMySQLDatabase *iDatabaseConnector)
 {
-  return this->UpdateTheTracesColorTemplate< GoDBLineageRow,
-                                             LineageContainer >(iDatabaseConnector, this->m_LineageContainerInfoForVisu);
+      this->UpdateTheTracesColorTemplate< GoDBLineageRow,
+      LineageContainer >(iDatabaseConnector, this->m_LineageContainerInfoForVisu);
+
+    std::list< unsigned int > oList =
+        this->m_LineageContainerInfoForVisu->GetHighlightedElementsTraceID();
+
+  std::list< unsigned int >::iterator it = oList.begin();
+
+  while( it != oList.end() )
+    {
+    unsigned int trackRoot = this->m_LineageContainerInfoForVisu->GetLineageTrackRootID(*it);
+
+    double* color = new double[4];
+    color[0] = this->m_SelectedColorData->second.redF();
+    color[1] = this->m_SelectedColorData->second.greenF();
+    color[2] = this->m_SelectedColorData->second.blueF();
+    color[3] = this->m_SelectedColorData->second.alphaF();
+    //change the data color
+    m_TrackContainerInfoForVisu->UpdateCollectionColorsData( trackRoot, color );
+
+    delete[] color;
+
+    ++it;
+    }
+
+  return oList;
 }
 
 //-------------------------------------------------------------------------
@@ -482,6 +506,7 @@ QGoDBLineageManager::UpdateBoundingBoxes(vtkMySQLDatabase *iDatabaseConnector,
   std::list<unsigned int>::iterator iter = iListTracesIDs.begin();
   while(iter != iListTracesIDs.end() )
     {
+    // update color data and actors
     this->UpdateDivisionsColors(*iter);
     this->UpdateDivisionsScalars(*iter);
     ++iter;
