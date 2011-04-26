@@ -1124,8 +1124,7 @@ TrackContainer::ModifyDivisionVisibility( MultiIndexContainerTraceIDIterator& it
 int
 TrackContainer::ModifyDivisionHighlight( MultiIndexContainerTraceIDIterator& it, bool iHighlight )
 {
-  vtkProperty* temp_property = NULL;
-  temp_property = vtkProperty::New();
+  vtkProperty* temp_property = vtkProperty::New();
   if ( !iHighlight )
     {
     /*

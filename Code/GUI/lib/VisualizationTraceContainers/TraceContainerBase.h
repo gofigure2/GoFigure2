@@ -630,13 +630,12 @@ protected:
       IteratorType;
       IteratorType it = m_Container.get< TraceID >().find(oTraceId);
 
-      vtkProperty *temp_property = NULL;
+      vtkProperty *temp_property = vtkProperty::New();
 
       assert ( it != m_Container.get< TraceID >().end() );
 
       if ( it->Highlighted )
         {
-        temp_property = vtkProperty::New();
         temp_property->SetColor(it->rgba[0],
                                 it->rgba[1],
                                 it->rgba[2]);
@@ -650,10 +649,7 @@ protected:
 
       it->SetActorProperties( temp_property );
 
-      if ( it->Highlighted )
-        {
-        temp_property->Delete();
-        }
+      temp_property->Delete();
 
       // Note: it->Highlighted is the status before picking the actor
       bool checked = false;
