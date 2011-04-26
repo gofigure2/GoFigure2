@@ -119,7 +119,7 @@ protected:
 
   virtual void SetSlice(int iDir, int *iIdx);
 
-  void CreateModeActions();
+  void CreateModeToolBar(QMenu* iMenu, QToolBar* iToolBar);
 
 private:
   Q_DISABLE_COPY(QGoTabImageView2D);

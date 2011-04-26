@@ -42,7 +42,6 @@ class vtkProperty;
 class QGoManualSegmentationSettingsDialog;
 
 #include "QGoManualSegmentationSettingsDialog.h"
-#include "QGoTraceSettingsWidget.h"
 #include "QGoIOConfigure.h"
 
 /**

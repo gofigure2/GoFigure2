@@ -31,31 +31,31 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "QGoTraceSettingsDockWidget.h"
+#ifndef __GoDBTWContainerForLineage_h
+#define __GoDBTWContainerForLineage_h
 
-QGoTraceSettingsDockWidget::QGoTraceSettingsDockWidget(
-  QWidget *iParent) : QDockWidget(iParent)
+#include "GoDBTWContainerForTrackLineage.h"
+#include "QGoIOConfigure.h"
+
+/**
+\class GoDBTWContainerForLineage
+\brief This class describes the specificities of the GoDBTWContainerForTrackLineage for 
+lineage
+\ingroup DB
+*/
+class QGOIO_EXPORT GoDBTWContainerForLineage:public GoDBTWContainerForTrackLineage
 {
-  this->m_TraceWidget =
-    new QGoTraceSettingsWidget(this);
-  QObject::connect( this->m_TraceWidget, SIGNAL( WindowsTitleToModify(QString) ),
-                    this, SLOT( ModifyWindowTitle(QString) ) );
-  this->m_TraceWidget->UpdateTraceAndCollection("contour", "mesh");
-  this->setWidget(this->m_TraceWidget);
-  this->m_TraceWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-}
 
-//-------------------------------------------------------------------------
+public:
+  GoDBTWContainerForLineage(int iImgSessionID);
+  ~GoDBTWContainerForLineage();
 
-//-------------------------------------------------------------------------
-QGoTraceSettingsDockWidget::~QGoTraceSettingsDockWidget()
-{
-}
+protected:
 
-//-------------------------------------------------------------------------
+  /**
+  \brief add the specific info for a lineage to the columns description
+  */
+  void SetSpecificInfoForLineageTable();
 
-//-------------------------------------------------------------------------
-void QGoTraceSettingsDockWidget::ModifyWindowTitle(QString iTitle)
-{
-  this->setWindowTitle(iTitle);
-}
+};
+#endif

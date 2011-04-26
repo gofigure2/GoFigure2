@@ -35,10 +35,10 @@
 #ifndef __QGoNavigationDockWidget_h
 #define __QGoNavigationDockWidget_h
 
-#include <QDockWidget>
 #include <QComboBox>
 #include "ui_NavigationDockWidget.h"
 #include "GoFigureGlobalDefinition.h"
+#include "QGoDockWidget.h"
 
 #include "QGoGUILibConfigure.h"
 
@@ -50,7 +50,7 @@ class QVBoxLayout;
  *  \ingroup GUI
  */
 class QGOGUILIB_EXPORT QGoNavigationDockWidget:
-  public QDockWidget,
+  public QGoDockWidget,
   private Ui::NavigationDockWidget
 {
   Q_OBJECT

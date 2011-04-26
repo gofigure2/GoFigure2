@@ -50,6 +50,8 @@ QGoTableWidget::QGoTableWidget(QWidget *iParent) : QTableWidget(iParent)
   QObject::connect( this,
                     SIGNAL( cellClicked(int, int) ),
                     this, SLOT( UpdateColumnsWithCheckBoxes(int, int) ) );
+
+  this->setContextMenuPolicy(Qt::CustomContextMenu);
 }
 
 //--------------------------------------------------------------------------
@@ -365,7 +367,10 @@ void QGoTableWidget::DisplayContent(TWContainerType iTWRowContainer,
       }
 
     this->SetColorForTable(iTWRowContainer, iIndexColorTraceRowContainer, iTraceName, 0);
-    this->SetColorForTable(iTWRowContainer, iIndexColorCollectionRowContainer, iCollectionName, 0);
+    if (iCollectionName != "None") //no collection for lineages
+      {
+      this->SetColorForTable(iTWRowContainer, iIndexColorCollectionRowContainer, iCollectionName, 0);
+      }
     } //ENDELSE
   this->setSortingEnabled(true);
   this->resizeColumnsToContents();
@@ -545,7 +550,10 @@ void QGoTableWidget::InsertNewRow(TWContainerType iTWRowContainer,
     SetSelectedColumn(1, NewRow - 1);
     SetVisibleColumn(1, NewRow - 1);
     this->SetColorForTable(iTWRowContainer, iIndexColorTraceRowContainer, TraceName, NewRow - 1);
-    this->SetColorForTable(iTWRowContainer, iIndexColorCollectionRowContainer, CollectionName, NewRow - 1);
+    if (CollectionName != "None") //no collection for lineages
+      {
+      this->SetColorForTable(iTWRowContainer, iIndexColorCollectionRowContainer, CollectionName, NewRow - 1);
+      }
     } //ENDELSE
   this->setSortingEnabled(true);
 }
@@ -645,8 +653,11 @@ void QGoTableWidget::UpdateRow(TWContainerType iTWRowContainer,
           }       //ENDFOR
         this->SetColorForTable(
           iTWRowContainer, iIndexColorTraceRowContainer, iTraceName, IndexUpdateRow);
-        this->SetColorForTable(
-          iTWRowContainer, iIndexColorCollectionRowContainer, iCollectionName, IndexUpdateRow);
+        if (iCollectionName != "None") //no collection for lineages
+          {
+          this->SetColorForTable(
+            iTWRowContainer, iIndexColorCollectionRowContainer, iCollectionName, IndexUpdateRow);
+          }
         }
       else
         {

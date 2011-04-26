@@ -41,7 +41,7 @@
 QGoNavigationDockWidget::
 QGoNavigationDockWidget( QWidget *iParent,
                          const GoFigure::TabDimensionType & iDim ) :
-  QDockWidget(iParent),
+  QGoDockWidget(iParent),
   m_Dimension(iDim)
 {
   this->setupUi(this);
@@ -49,7 +49,8 @@ QGoNavigationDockWidget( QWidget *iParent,
   Navigation.addPixmap(QPixmap( QString::fromUtf8(":/fig/navigation.png") ),
                        QIcon::Normal, QIcon::Off);
   //temp->setIcon(Navigation);
-  this->toggleViewAction()->setIcon(Navigation);
+  //this->toggleViewAction()->setIcon(Navigation);
+  this->m_ToggleAction->setIcon(Navigation);
 
   switch ( m_Dimension )
     {

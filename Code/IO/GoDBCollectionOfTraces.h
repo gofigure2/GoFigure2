@@ -1,3 +1,4 @@
+
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-11
@@ -182,9 +183,17 @@ public:
     std::string CollectionID = iNewCollection.GetMapValue(this->m_CollectionIDName);
     if ( CollectionID != "0" )
       {
-      return this->CreateNewTraceInDB< T >( iNewCollection, iDatabaseConnector,
-                                            CoordIDMin, CoordIDMax, iColor,
-                                            ss_atoi< unsigned int >(CollectionID) );
+      if (CollectionID == "noValue") //case for lineage
+        {
+        return this->CreateNewTraceInDB< T >( iNewCollection, iDatabaseConnector,
+                                              CoordIDMin, CoordIDMax, iColor);
+        }
+      else
+        {
+        return this->CreateNewTraceInDB< T >( iNewCollection, iDatabaseConnector,
+                                              CoordIDMin, CoordIDMax, iColor,
+                                              ss_atoi< unsigned int >(CollectionID) );
+        }
       }
     else
       {
@@ -234,6 +243,22 @@ public:
   }
 
   /**
+  \overload
+  */
+  template< typename T > //for lineage
+  unsigned int CreateNewTraceInDB(T iTrace, vtkMySQLDatabase *iDatabaseConnector,
+                                  unsigned int iCoordIDMin, unsigned int iCoordIDMax, 
+                                  NameWithColorData iColor)
+  {
+    iTrace.SetField( "CoordIDMin", ConvertToString< unsigned int >(iCoordIDMin) );
+    iTrace.SetField( "CoordIDMax", ConvertToString< unsigned int >(iCoordIDMax) );
+    iTrace.SetColor(iColor.second.red(), iColor.second.green(),
+                    iColor.second.blue(), iColor.second.alpha(), iColor.first,
+                    iDatabaseConnector);
+    return iTrace.SaveInDB(iDatabaseConnector);
+  }
+
+  /**
   \brief update the color of the specified trace with iNewColor in the database
   \param[in] iTraceID ID of the trace with the color to modify
   \param[in] iNewColor name and rgba values of the new color
@@ -266,10 +291,13 @@ public:
  \brief get the list of IDs that are collection of iListTraces
  \param[in] iDatabaseConnector connection to the database
  \param[in] iListTracesIDs list of traces IDs for which we need the collectionIDs
+ \param[in] ExcludeZero if set to true, will not return the collectionID = 0
+ \param[in] Distinct if set to true, will not return doublon
  \return std::list<unsigned int> list of the tracesIDs
  */
   std::list< unsigned int > GetListCollectionIDs(
-    vtkMySQLDatabase *iDatabaseConnector, std::list< unsigned int > iListTracesIDs);
+    vtkMySQLDatabase *iDatabaseConnector, std::list< unsigned int > iListTracesIDs,
+    bool ExcludeZero = true, bool Distinct = true);
 
   /**
   \brief get the list of tracesIDs that have no points
@@ -445,6 +473,15 @@ public:
     iImgSessionID, this->m_TracesIDName, iListTraces);
   return oListTracesResults;
 }
+  /**
+  \brief return the traceID with the lowest timepoint or -1 if there
+  is not only one that have the lowest timepoint
+  */
+  int GetTraceIDWithLowestTimePoint(vtkMySQLDatabase *iDatabaseConnector,
+    std::list<unsigned int> iListTraceIDs);
+
+  std::list<unsigned int> GetTrackFamilyDataFromDB(
+    vtkMySQLDatabase *iDatabaseConnector);
 
 protected:
 

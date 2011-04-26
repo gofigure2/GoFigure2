@@ -32,33 +32,57 @@
 
 =========================================================================*/
 
-#ifndef __QGoTrackDockWidget_h
-#define __QGoTrackDockWidget_h
+#ifndef __LineageStructure_h
+#define __LineageStructure_h
 
-#include <QDockWidget>
+#include "TraceStructure.h"
+#include "QGoIOConfigure.h"
 
-#include "ui_TrackDockWidget.h"
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+#include "StructureHelper.h"
+#endif
 
-class QGoTrackDockWidget:
-  public QDockWidget,
-  protected Ui::TrackDockWidget
+/**
+\defgroup Lineage Lineage
+*/
+
+/**
+ * \struct LineageStructure
+ * \brief  Structure which represent a lineage, and used for
+ * interaction between Visualization and TableWidget
+ * \ingroup Lineage Trace
+ */
+class QGOIO_EXPORT LineageStructure : public TraceStructure
 {
-  Q_OBJECT
 public:
-  explicit QGoTrackDockWidget(QWidget *iParent = 0);
-  ~QGoTrackDockWidget();
+  /**
+   * \brief Default Constructor
+   * */
+  LineageStructure();
 
-public slots:
-  void Glyphs( bool );
-  void glyphValueChanged( double );
-  void Tubes( bool );
-  void tubeValueChanged( double );
-  void ColorCodeTracksByTime(bool);
-  void ColorCodeTracksBySpeed(bool);
-  void ColorCodeTracksByOriginalColor(bool);
-signals:
-  void UpdateTracksRepresentation(double, double);
-  void ChangeColorCode( const char* );
+  /** Destructor */
+  ~LineageStructure();
 
+  unsigned int TrackRootID;
+
+  /** Printing one element. std::cout << element << std::endl; */
+  friend std::ostream & operator<<
+    (std::ostream & os, const LineageStructure & c)
+  {
+    os << "TraceID " << c.TraceID << std::endl;
+    os << "TrackRootID " << c.TrackRootID << std::endl;
+    os << "ActorXY " << c.ActorXY << std::endl;
+    os << "ActorXZ " << c.ActorXZ << std::endl;
+    os << "ActorYZ " << c.ActorYZ << std::endl;
+    os << "ActorXYZ " << c.ActorXYZ << std::endl;
+    os << "Nodes " << c.Nodes << std::endl;
+    os << "Highlighted " << c.Highlighted << std::endl;
+    os << "Visible " << c.Visible << std::endl;
+    os << "RGBA [" << c.rgba[0] << ", " << c.rgba[1] << ", " << c.rgba[2]
+    << ", " << c.rgba[3] << "]" << std::endl;
+
+    return os;
+  }
 };
+
 #endif

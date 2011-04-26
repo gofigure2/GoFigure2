@@ -47,12 +47,11 @@
 #include "vtkTubeFilter.h"
 #include "vtkAppendPolyData.h"
 
+// division polydata
+#include "vtkLine.h"
+
 // to convert coordinates
 #include "vtkViewImage2D.h"
-
-// FOR TESTING
-#include "VisualizePolydataHelper.h"
-#include "vtkPolyDataWriter.h"
 
 #include "vtkLookupTable.h"
 #include <limits>
@@ -63,7 +62,8 @@
 TrackContainer::TrackContainer(QObject *iParent, QGoImageView3D *iView) : Superclass(iParent, iView)
 {
   m_TimeInterval = 0;
-  m_ActiveScalars.append("Original");
+  m_ActiveTrackScalars.append("Original");
+  m_ActiveDivisionScalars.append("Original");
 }
 
 //-------------------------------------------------------------------------
@@ -84,19 +84,6 @@ TrackContainer::
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void
-TrackContainer::UpdateCurrentElementFromVisu(std::vector< vtkActor * > iActors,
-                                             vtkPolyData *iNodes,
-                                             const bool & iHighlighted,
-                                             const bool & iVisible)
-{
-  this->UpdateCurrentElementFromVisuBase(iActors, iNodes,
-                                         iHighlighted, iVisible);
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 bool
 TrackContainer::DeleteElement(const unsigned int & iId)
 {
@@ -111,39 +98,32 @@ TrackContainer::DeleteElement(const unsigned int & iId)
 //-------------------------------------------------------------------------
 bool TrackContainer::DeleteElement(MultiIndexContainerTraceIDIterator iIter)
 {
-  if ( iIter != m_Container.get< TraceID >().end() )
+  assert ( iIter != m_Container.get< TraceID >().end() );
+  assert ( this->m_ImageView );
+
+  if ( iIter->ActorXY )
     {
-    if ( this->m_ImageView )
-      {
-      if ( iIter->ActorXY )
-        {
-        this->m_ImageView->RemoveActor(0, iIter->ActorXY);
-        }
-      if ( iIter->ActorXZ )
-        {
-        this->m_ImageView->RemoveActor(1, iIter->ActorXZ);
-        }
-      if ( iIter->ActorYZ )
-        {
-        this->m_ImageView->RemoveActor(2, iIter->ActorYZ);
-        }
-      if ( iIter->ActorXYZ )
-        {
-        this->m_ImageView->RemoveActor(3, iIter->ActorXYZ);
-        }
-      }
-    iIter->ReleaseData();
-
-    m_Container.get< TraceID >().erase(iIter);
-
-    if ( this->m_ImageView )
-      {
-      m_ImageView->UpdateRenderWindows();
-      }
-
-    return true;
+    this->m_ImageView->RemoveActor(0, iIter->ActorXY);
     }
-  return false;
+  if ( iIter->ActorXZ )
+    {
+    this->m_ImageView->RemoveActor(1, iIter->ActorXZ);
+    }
+  if ( iIter->ActorYZ )
+    {
+    this->m_ImageView->RemoveActor(2, iIter->ActorYZ);
+    }
+  if ( iIter->ActorXYZ )
+    {
+    this->m_ImageView->RemoveActor(3, iIter->ActorXYZ);
+    }
+
+  iIter->ReleaseData();
+
+  m_Container.get< TraceID >().erase(iIter);
+  m_ImageView->UpdateRenderWindows();
+
+  return true;
 }
 
 //-------------------------------------------------------------------------
@@ -152,6 +132,8 @@ bool TrackContainer::DeleteElement(MultiIndexContainerTraceIDIterator iIter)
 std::list< unsigned int >
 TrackContainer::DeleteAllHighlightedElements()
 {
+  assert ( this->m_ImageView );
+
   MultiIndexContainerHighlightedIterator it0, it1, it_t;
 
   boost::tuples::tie(it0, it1) =
@@ -163,24 +145,21 @@ TrackContainer::DeleteAllHighlightedElements()
     {
     oList.push_back(it0->TraceID);
 
-    if ( this->m_ImageView )
+    if ( it0->ActorXY )
       {
-      if ( it0->ActorXY )
-        {
-        this->m_ImageView->RemoveActor(0, it0->ActorXY);
-        }
-      if ( it0->ActorXZ )
-        {
-        this->m_ImageView->RemoveActor(1, it0->ActorXZ);
-        }
-      if ( it0->ActorYZ )
-        {
-        this->m_ImageView->RemoveActor(2, it0->ActorYZ);
-        }
-      if ( it0->ActorXYZ )
-        {
-        this->m_ImageView->RemoveActor(3, it0->ActorXYZ);
-        }
+      this->m_ImageView->RemoveActor(0, it0->ActorXY);
+      }
+    if ( it0->ActorXZ )
+      {
+      this->m_ImageView->RemoveActor(1, it0->ActorXZ);
+      }
+    if ( it0->ActorYZ )
+      {
+      this->m_ImageView->RemoveActor(2, it0->ActorYZ);
+      }
+    if ( it0->ActorXYZ )
+      {
+      this->m_ImageView->RemoveActor(3, it0->ActorXYZ);
       }
 
     it0->ReleaseData();
@@ -191,32 +170,10 @@ TrackContainer::DeleteAllHighlightedElements()
     m_Container.get< Highlighted >().erase(it_t);
     }
 
-  if ( this->m_ImageView )
-    {
-    m_ImageView->UpdateRenderWindows();
-    }
+  m_ImageView->UpdateRenderWindows();
 
   return oList;
 }
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-bool
-TrackContainer::DeletePointFromCurrentElement(unsigned int iTime, bool iReconstructPolyData)
-{
-  //add the point in the map
-  bool pointDeleted = this->m_CurrentElement.DeleteElement(iTime);
-
-  // build the new polydata if a point has been deleted
-  if ( pointDeleted && iReconstructPolyData )
-    {
-    UpdateTrackStructurePolyData(this->m_CurrentElement);
-    }
-
-  return pointDeleted;
-}
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -279,301 +236,192 @@ TrackContainer::UpdateTrackStructurePolyData(const TrackStructure & iTrackStruct
   speedArray->SetName("SpeedInformation");
   polyData->GetPointData()->AddArray(speedArray);
 
+  vtkSmartPointer<vtkIntArray> trackIDArray = vtkSmartPointer<vtkIntArray>::New();
+  trackIDArray->SetNumberOfComponents(1);
+  trackIDArray->SetNumberOfValues(1);
+  trackIDArray->SetName("TRACK");
+  trackIDArray->SetValue(0,iTrackStructure.TraceID);
+
+  polyData->GetFieldData()->AddArray(trackIDArray);
+
   iTrackStructure.Nodes->DeepCopy(polyData);
   //update speed information
   iTrackStructure.ComputeAttributes();
 
   iTrackStructure.Nodes->GetPointData()->SetActiveScalars(NULL);
 
+  // update the lineage if necessary
+  //UpdateTrackStructureLineage(const_cast<TrackStructure*>(&(iTrackStructure)));
+
   return true;
 }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
-TrackContainer::UpdateCurrentElementActorsFromVisu(std::vector< vtkActor * > iActors)
+TrackContainer::ImportTrackInCurrentElement(std::map< unsigned int, double * > iMeshes)
 {
-  this->m_CurrentElement.ActorXY = iActors[0];
-  this->m_CurrentElement.ActorXZ = iActors[1];
-  this->m_CurrentElement.ActorYZ = iActors[2];
-  this->m_CurrentElement.ActorXYZ = iActors[3];
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-TrackContainer::UpdateCurrentElementMap(std::map< unsigned int, double * > iMeshes)
-{
-  // add points to existing map, not erasing
   std::map< unsigned int, double * >::iterator beginMesh = iMeshes.begin();
   std::map< unsigned int, double * >::iterator endMesh = iMeshes.end();
 
   while ( beginMesh != endMesh )
     {
-    bool addPoint =
-      this->m_CurrentElement.InsertElement(beginMesh->first,
+    this->m_CurrentElement.InsertElement(beginMesh->first,
                                            beginMesh->second);
-
-    if ( addPoint )
-      {
-      // Point has been added
-      }
-    else
-      {
-      // there is already sth at this time point, delete the point (should
-      // replace??)
-      delete[] beginMesh->second;
-      }
     ++beginMesh;
     }
 
-  // Create a new polydata and new actors if it is a new track
-  if ( !this->m_CurrentElement.Nodes )
-    {
-    //Create new polydata (new address)
-    this->m_CurrentElement.Nodes = vtkPolyData::New();
+  this->m_CurrentElement.Visible = true;
 
-    UpdateTrackStructurePolyData(this->m_CurrentElement);
-
-    CreateCurrentTrackActors();
-
-    return;
-    }
+  this->m_CurrentElement.Nodes = vtkPolyData::New();
 
   UpdateTrackStructurePolyData(this->m_CurrentElement);
+
+  CreateTrackActors(this->m_CurrentElement);
 }
 
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
-TrackContainer::CreateCurrentTrackActors()
+TrackContainer::CreateTrackActors( TrackStructure& iStructure )
 {
-  if ( this->m_ImageView )
+  assert( this->m_ImageView );
+
+  //Create new actors (new address)
+  vtkProperty *trace_property = vtkProperty::New();
+  double       r = iStructure.rgba[0];
+  double       g = iStructure.rgba[1];
+  double       b = iStructure.rgba[2];
+  double       a = iStructure.rgba[3];
+
+  trace_property->SetColor(r,
+                           g,
+                           b);
+  trace_property->SetOpacity(a);
+
+  // Add contour
+  std::vector< vtkActor * > trackActors =
+    m_ImageView->AddContour(iStructure.Nodes, trace_property);
+
+  //has actor being created?
+  assert(trackActors[0]);
+
+  // add actors address to structure
+  iStructure.ActorXY = trackActors[0];
+  iStructure.ActorXZ = trackActors[1];
+  iStructure.ActorYZ = trackActors[2];
+  iStructure.ActorXYZ = trackActors[3];
+
+  this->m_ImageView->AddActor(3, trackActors[3]);
+
+  trace_property->Delete();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::UpdateTrackActors( TrackStructure& iStructure )
+{
+  if(iStructure.Nodes->GetNumberOfPoints() < 2 )
+  {
+  // clean actor
+  this->m_ImageView->RemoveActor(0, iStructure.TreeNode.ActorXY);
+  this->m_ImageView->RemoveActor(1, iStructure.TreeNode.ActorXZ);
+  this->m_ImageView->RemoveActor(2, iStructure.TreeNode.ActorYZ);
+  this->m_ImageView->RemoveActor(3, iStructure.TreeNode.ActorXYZ);
+  }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+TrackStructure*
+TrackContainer::
+UpdatePointsForATrack(unsigned int iTrackID,
+                      std::list< double * > iListCenterBoundingBoxes)
+{
+  assert( iTrackID != 0 );
+
+  assert ( this->m_ImageView );
+
+  // get pointer to the track
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iTrackID);
+
+  assert ( motherIt != m_Container.get< TraceID >().end() );
+
+  /*
+   * \todo Nicolas- const_cast is OK to modify polydata but better avoid it
+   */
+  TrackStructure* mother =  const_cast<TrackStructure*>(&(*motherIt));
+  RecomputeMap(mother, iListCenterBoundingBoxes);
+
+  // if the element has no polydata create a new address for the polydata
+  if ( ! mother->Nodes )
     {
-    //Create new actors (new address)
-    vtkProperty *trace_property = vtkProperty::New();
-    double       r = this->m_CurrentElement.rgba[0];
-    double       g = this->m_CurrentElement.rgba[1];
-    double       b = this->m_CurrentElement.rgba[2];
-    double       a = this->m_CurrentElement.rgba[3];
-
-    trace_property->SetColor(r,
-                             g,
-                             b);
-    trace_property->SetOpacity(a);
-
-    // Add contour
-    std::vector< vtkActor * > trackActors =
-      m_ImageView->AddContour(this->m_CurrentElement.Nodes, trace_property);
-
-    //update container actors addresses
-    UpdateCurrentElementActorsFromVisu(trackActors);
-
-    trace_property->Delete();
+    //Create new polydata (new address)
+    mother->Nodes = vtkPolyData::New();
     }
-}
 
+  // update the polydata (which represents the current track)
+  UpdateTrackStructurePolyData( *mother );
+
+  // if element has no actors, create it
+  if ( ! mother->ActorXY )
+    {
+    // add actors in the visualization with given property
+    CreateTrackActors( *mother );
+    return mother;
+    }
+
+  UpdateTrackActors( *mother );
+
+  return mother;
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
-TrackContainer::DeleteListFromCurrentElement(const std::list< unsigned int > & iTimeList)
+TrackContainer::RecomputeMap(TrackStructure* iStructure, std::list< double * > iPoints)
 {
-  std::list< unsigned int >::const_iterator begin = iTimeList.begin();
-  std::list< unsigned int >::const_iterator end = iTimeList.end();
 
-  bool succeed = true;
+  // empty current element map
+  PointsMapConstIterator begin = iStructure->PointsMap.begin();
+  PointsMapConstIterator end = iStructure->PointsMap.end();
 
   while ( begin != end )
     {
-    succeed = DeletePointFromCurrentElement(*begin,
-                                            false);   // update the polydata
-
-    if ( !succeed )
-      {
-      qDebug() << "Time point: " << *begin << " can't be deleted";
-      }
-
+    // free memory
+    delete[] begin->second;
     ++begin;
     }
 
-  // Reconstruct the polydata
-  UpdateTrackStructurePolyData(this->m_CurrentElement);
-}
+  iStructure->PointsMap.clear();
 
-//-------------------------------------------------------------------------
+  // add points to the map
+  std::list< double * >::iterator beginList = iPoints.begin();
+  std::list< double * >::iterator endList = iPoints.end();
 
-//-------------------------------------------------------------------------
-bool
-TrackContainer::DeletePointFromElement(MultiIndexContainerTraceIDIterator iIterator,
-                                       unsigned int iTime,
-                                       bool iReconstructPolyData)
-{
-  // Create temp structure
-  TrackStructure tempStructure(*iIterator);
-
-  //add the point in the map
-  bool pointDeleted = tempStructure.DeleteElement(iTime);
-
-  // build the new polydata if a point has been deleted
-  if ( pointDeleted && iReconstructPolyData )
+  while ( beginList != endList )
     {
-    UpdateTrackStructurePolyData(tempStructure);
-    }
+    int xyzBB[3] = {
+      static_cast< int >( ( *beginList )[0] ),
+      static_cast< int >( ( *beginList )[1] ),
+      static_cast< int >( ( *beginList )[2] )
+      };
 
-  // Replace
-  m_Container.get< TraceID >().replace(iIterator, tempStructure);
+  unsigned int time = static_cast< unsigned int >( ( *beginList )[3] );
 
-  return pointDeleted;
-}
+  // convert xyz coordinates
+  double *xyz = m_ImageView->GetImageViewer(0)
+    ->GetWorldCoordinatesFromImageCoordinates(xyzBB);
 
-//-------------------------------------------------------------------------
+  bool insertElement = iStructure->InsertElement(time, xyz);
 
-//-------------------------------------------------------------------------
-void
-TrackContainer::UpdatePointsFromBBForGivenTrack(unsigned int iTrackID,
-                                                std::list< std::vector< unsigned int > > iBoundingBox)
-{
-  if ( this->m_ImageView )
-    {
-    if ( iBoundingBox.empty() )
-      {
-      qDebug() << "list of points to be added is empty";
-      }
+  assert ( insertElement );
 
-    MultiIndexContainerTraceIDIterator
-      it = m_Container.get< TraceID >().find(iTrackID);
-
-    // if we find the stucture, update it!
-    if ( it != m_Container.get< TraceID >().end() )
-      {
-      std::list< std::vector< unsigned int > >::iterator begin = iBoundingBox.begin();
-      std::list< std::vector< unsigned int > >::iterator end = iBoundingBox.end();
-
-      //add the point in the map
-      TrackStructure tempStructure(*it);
-
-      while ( begin != end )
-        {
-        int xyzBB[3] = { static_cast< int >( ( *begin )[0] ),
-                         static_cast< int >( ( *begin )[1] ),
-                         static_cast< int >( ( *begin )[2] ) };
-
-        unsigned int time = ( *begin )[3];
-
-        // convert xyz coordinates
-        double *xyz = m_ImageView->GetImageViewer(0)
-          ->GetWorldCoordinatesFromImageCoordinates(xyzBB);
-
-        bool added = tempStructure.InsertElement(time, xyz);
-        if ( !added )
-          {
-          std::cout << "Element at a time point: " << time
-                    << "could not be added." << std::endl;
-          }
-        ++begin;
-        }
-      m_Container.get< TraceID >().replace(it, tempStructure);
-
-      // Reconstruct the polydata
-      UpdateTrackStructurePolyData(*it);
-      }
-    }
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-TrackContainer::RecomputeCurrentElementMap(std::list< double * > iPoints)
-{
-  if ( this->m_ImageView )
-    {
-    // empty current element map
-    PointsMapConstIterator begin = this->m_CurrentElement.PointsMap.begin();
-    PointsMapConstIterator end = this->m_CurrentElement.PointsMap.end();
-
-    while ( begin != end )
-      {
-      // free memory
-      delete[] begin->second;
-      ++begin;
-      }
-
-    this->m_CurrentElement.PointsMap.clear();
-
-    // add points to the map
-    std::list< double * >::iterator beginList = iPoints.begin();
-    std::list< double * >::iterator endList = iPoints.end();
-
-    while ( beginList != endList )
-      {
-      int xyzBB[3] = {
-        static_cast< int >( ( *beginList )[0] ),
-        static_cast< int >( ( *beginList )[1] ),
-        static_cast< int >( ( *beginList )[2] )
-        };
-
-      unsigned int time = static_cast< unsigned int >( ( *beginList )[3] );
-
-      // convert xyz coordinates
-      double *xyz = m_ImageView->GetImageViewer(0)
-        ->GetWorldCoordinatesFromImageCoordinates(xyzBB);
-
-      bool addPoint = this->m_CurrentElement.InsertElement(time, xyz);
-
-      if ( !addPoint )
-        {
-        std::cout << "problem while inserting element in the map" << std::endl;
-        std::cout << " x: " << xyz[0] << " y: " << xyz[1] << " z: " << xyz[2]
-                  << " t: " << xyz[3] << std::endl;
-        }
-
-      ++beginList;
-      }
-
-    bool IsANewTrack = ( this->m_CurrentElement.Nodes == NULL );
-    // Create a new polydata and new actors if it is a new track
-    if ( IsANewTrack )
-      {
-      //Create new polydata (new address)
-      this->m_CurrentElement.Nodes = vtkPolyData::New();
-      }
-
-    // update the polydata (which represents the current track)
-    UpdateTrackStructurePolyData(this->m_CurrentElement);
-
-    // if it is a new track, we need to add the actors in viewer / scene
-    if ( IsANewTrack )
-      {
-      // add actors in the visualization with given property
-      CreateCurrentTrackActors();
-      }
-    }
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-TrackContainer::UpdatePointsForATrack(unsigned int iTrackID,
-                                      std::list< double * > iListCenterBoundingBoxes)
-{
-  if ( iTrackID != 0 )
-    {
-    bool updateCurrentElement = this->UpdateCurrentElementFromExistingOne(iTrackID);
-    if ( updateCurrentElement )
-      {
-      this->RecomputeCurrentElementMap(iListCenterBoundingBoxes);
-      }
-    else
-      {
-      std::cout << "TrackID: " << iTrackID << " not found" << std::endl;
-      }
-    }
+  ++beginList;
+  }
 }
 
 //-------------------------------------------------------------------------
@@ -596,63 +444,19 @@ TrackContainer::UpdateElementVisibilityWithGivenTraceIDs(const QStringList & iLi
 {
   Superclass::UpdateElementVisibilityWithGivenTraceIDsBase(iList, iCheck);
 }
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-std::vector< vtkActor * >
-TrackContainer::AddTrace(vtkPolyData *iNode, vtkProperty *iProperty)
-{
-  if ( this->m_ImageView )
-    {
-    return this->m_ImageView->AddContour(iNode, iProperty);
-    }
-  else
-    {
-    return std::vector< vtkActor * >();
-    }
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-std::map< unsigned int, std::pair< const double *, vtkPolyData * > >
-TrackContainer::GetHighlightedElementsTrackPolyData()
-{
-  // Map to be returned
-  std::map< unsigned int,
-            std::pair< const double *, vtkPolyData * > >
-  listOfPolyDatas;
-
-  MultiIndexContainerType::index< Highlighted >::type::iterator
-    it = m_Container.get< Highlighted >().begin();
-
-  while ( it != m_Container.get< Highlighted >().end() )
-    {
-    // Get iterator to the selectedID
-    // Get Polydata from this iterator
-    listOfPolyDatas[it->TraceID] =
-      std::pair< const double *, vtkPolyData * >(it->rgba, it->Nodes);
-    // Go to next ID
-    ++it;
-    }
-
-  return listOfPolyDatas;
-}
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
 TrackContainer::ChangeColorCode(const char *iColorCode)
 {
-  m_ActiveScalars.clear();
-  m_ActiveScalars.append(iColorCode);
+  m_ActiveTrackScalars.clear();
+  m_ActiveTrackScalars.append(iColorCode);
 
-  if ( m_ActiveScalars.compare("Original") )
+  if ( m_ActiveTrackScalars.compare("Original") )
     {
     // get range for the tracks
-    double *range = setNodeScalars(iColorCode);
+    double *range = setTrackNodeScalars(iColorCode);
 
     // associated LUT
     vtkSmartPointer< vtkLookupTable > LUT = vtkSmartPointer< vtkLookupTable >::New();
@@ -673,17 +477,112 @@ TrackContainer::ChangeColorCode(const char *iColorCode)
     this->RenderAllElementsWithOriginalColors();
     }
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::ChangeDivisionsColorCode(const char *iColorCode)
+{
+  m_ActiveDivisionScalars.clear();
+  m_ActiveDivisionScalars.append(iColorCode);
+
+  if ( m_ActiveDivisionScalars.compare("Original") )
+    {
+    // get range for the division
+    double *range = setDivisionNodeScalars(iColorCode);
+
+    // associated LUT
+    vtkSmartPointer< vtkLookupTable > LUT = vtkSmartPointer< vtkLookupTable >::New();
+    LUT->SetTableRange(range);
+    LUT->SetNumberOfTableValues(1024);
+    LUT->SetHueRange(0, 0.7);
+    LUT->SetSaturationRange(1, 1);
+    LUT->SetValueRange(1, 1);
+    LUT->Build();
+
+    SetScalarRangeForAllDivisions(range[0], range[1]);
+    SetLookupTableForAllDivisionsColorCoding(LUT);
+    }
+  else
+    {
+    this->RenderAllDivisionsWithOriginalColors();
+    }
+
+  assert ( m_ImageView );
+  this->m_ImageView->UpdateRenderWindows();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+SetScalarRangeForAllDivisions(double iMin, double iMax)
+{
+  MultiIndexContainerTraceIDIterator
+    it = m_Container.get< TraceID >().begin();
+
+  while ( it != m_Container.get< TraceID >().end() )
+   {
+    if ( !it->IsLeaf() )
+      {
+      it->TreeNode.SetScalarRange(iMin, iMax);
+      }
+   ++it;
+   }
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+SetLookupTableForAllDivisionsColorCoding(vtkLookupTable *iLut)
+{
+  MultiIndexContainerTraceIDIterator
+    it = m_Container.get< TraceID >().begin();
+
+  while ( it != m_Container.get< TraceID >().end() )
+   {
+    if ( !it->IsLeaf() )
+      {
+      it->TreeNode.SetLookupTable(iLut);
+      }
+   ++it;
+   }
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+RenderAllDivisionsWithOriginalColors()
+{
+  MultiIndexContainerTraceIDIterator
+    it = m_Container.get< TraceID >().begin();
+
+  while ( it != m_Container.get< TraceID >().end() )
+   {
+    if ( !it->IsLeaf() )
+      {
+      it->TreeNode.RenderWithOriginalColors();
+      }
+   ++it;
+   }
+}
+
+//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 double *
-TrackContainer::setNodeScalars(const char *iArrayName)
+TrackContainer::setTrackNodeScalars(const char *iArrayName)
 {
   double *range =  new double[2];
 
   range[0] = std::numeric_limits< double >::max();
   range[1] = std::numeric_limits< double >::min();
 
-  MultiIndexContainerType::index< TraceID >::type::iterator
+  MultiIndexContainerTraceIDIterator
     it = m_Container.get< TraceID >().begin();
 
   while ( it != m_Container.get< TraceID >().end() )
@@ -698,6 +597,40 @@ TrackContainer::setNodeScalars(const char *iArrayName)
 
       //set active scalar
       it->Nodes->GetPointData()->SetActiveScalars(iArrayName);
+      }
+
+    ++it;
+    }
+
+  return range;
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+double *
+TrackContainer::setDivisionNodeScalars(const char *iArrayName)
+{
+  double *range =  new double[2];
+
+  range[0] = std::numeric_limits< double >::max();
+  range[1] = std::numeric_limits< double >::min();
+
+  MultiIndexContainerTraceIDIterator
+    it = m_Container.get< TraceID >().begin();
+
+  while ( it != m_Container.get< TraceID >().end() )
+    {
+    // does the division have a polydata
+    if ( !it->IsLeaf() )
+      {
+      double *realTime =
+        it->TreeNode.Nodes->GetPointData()->GetArray(iArrayName)->GetRange();
+      range[0] = std::min(range[0], realTime[0]);
+      range[1] = std::max(range[1], realTime[1]);
+
+      //set active scalar
+      it->TreeNode.Nodes->GetPointData()->SetActiveScalars(iArrayName);
       }
 
     ++it;
@@ -735,10 +668,10 @@ TrackContainer::UpdateTracksRepresentation(double iRadius, double iRadius2)
   while ( it != m_Container.end() )
     {
     // restore original polydata
-    UpdateTrackStructurePolyData( ( *it ) );
+    bool pointsInPolydata = UpdateTrackStructurePolyData( ( *it ) );
 
     // add glyphs if necessary
-    if ( ( iRadius || iRadius2 ) && it->Nodes )
+    if ( ( iRadius || iRadius2 ) && pointsInPolydata )
       {
       it->UpdateTracksRepresentation(iRadius, iRadius2);
       }
@@ -747,14 +680,1364 @@ TrackContainer::UpdateTracksRepresentation(double iRadius, double iRadius2)
 
   // update color since active scalar is set to NULL in
   // UpdateTrackStructurePolyData
-  QByteArray  bytes  = m_ActiveScalars.toAscii();
+  QByteArray  bytes  = m_ActiveTrackScalars.toAscii();
   const char *ptr    = bytes.data();
   ChangeColorCode(ptr);
 
-  if ( this->m_ImageView )
-    {
-    m_ImageView->UpdateRenderWindows();
-    }
+  assert ( this->m_ImageView );
+
+  this->m_ImageView->UpdateRenderWindows();
 }
 
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+double*
+TrackContainer::GetLastPointOfTheTrack(unsigned int iTrackID)
+{
+  MultiIndexContainerTraceIDIterator
+    it = m_Container.get< TraceID >().find(iTrackID);
+
+  if( it != m_Container.get< TraceID >().end() )
+    {
+    vtkPoints* points = it->Nodes->GetPoints();
+    vtkIdType nbOfPoints = points->GetNumberOfPoints();
+
+    return points->GetPoint(nbOfPoints-1);
+    }
+
+  return NULL;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+double*
+TrackContainer::GetFirstPointOfTheTrack(unsigned int iTrackID)
+{
+  MultiIndexContainerTraceIDIterator
+    it = m_Container.get< TraceID >().find(iTrackID);
+
+  if( it != m_Container.get< TraceID >().end() )
+    {
+    vtkPoints* points = it->Nodes->GetPoints();
+
+    return points->GetPoint(0);
+    }
+
+  return NULL;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+SetListOfDivisions( std::list<unsigned int> iListOfDivisions)
+{
+  // Create list iterator
+  std::list<unsigned int>::iterator it = iListOfDivisions.begin();
+
+  while( it != iListOfDivisions.end() )
+    {
+    // get ids
+    unsigned int mother = *it;
+    ++it;
+    unsigned int daughter1 = *it;
+    ++it;
+    unsigned int daughter2 = *it;
+    ++it;
+    // create connections and actor for the division of interest
+    AddDivision(mother, daughter1, daughter2, false);
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+AddDivision( unsigned int iMotherID, unsigned int iDaughter1ID,
+    unsigned int iDaughter2ID, bool iVisible)
+{
+  //todo Update Tracks Collection IDs
+
+  // get address of the structures of interest
+  //------------------------------
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iMotherID);
+
+  if( motherIt != m_Container.get< TraceID >().end() )
+    {
+    MultiIndexContainerTraceIDIterator daughter1It
+        = m_Container.get< TraceID >().find(iDaughter1ID);
+
+    if( daughter1It != m_Container.get< TraceID >().end() )
+      {
+      MultiIndexContainerTraceIDIterator daughter2It
+          = m_Container.get< TraceID >().find(iDaughter2ID);
+
+      if( daughter2It != m_Container.get< TraceID >().end() )
+        {
+        // create connections
+        //------------------------------
+        // motherID->D1
+        //         ->D2
+        //------------------------------
+        TrackStructure* mother = const_cast<TrackStructure*>(&(*motherIt));
+        mother->TreeNode.m_Child[0] = const_cast<TrackStructure*>(&(*daughter1It));
+        mother->TreeNode.m_Child[1] = const_cast<TrackStructure*>(&(*daughter2It));
+
+        // Create Polydata
+        CreateDivisionPolydata(iMotherID, iDaughter1ID, iDaughter2ID);
+
+        // Create Actor
+        std::vector< vtkActor * > actors =
+            CreateDivisionActor(mother->TreeNode.Nodes, iVisible);
+        mother->TreeNode.ActorXY = actors[0];
+        mother->TreeNode.ActorXZ = actors[1];
+        mother->TreeNode.ActorYZ = actors[2];
+        mother->TreeNode.ActorXYZ = actors[3];
+        mother->TreeNode.Visible = iVisible;
+
+        //------------------------------
+        // D1->motherID
+        // D2->motherID
+        //------------------------------
+        TrackStructure* d1 =  const_cast<TrackStructure*>(&(*daughter1It));
+        d1->TreeNode.m_Mother = const_cast<TrackStructure*>(&(*motherIt));
+
+        TrackStructure* d2 =  const_cast<TrackStructure*>(&(*daughter2It));
+        d2->TreeNode.m_Mother = const_cast<TrackStructure*>(&(*motherIt));
+
+        this->m_ImageView->UpdateRenderWindows();
+        }
+      }
+    }
+}
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+CreateDivisionPolydata(unsigned int iMother, unsigned int iDaughter1, unsigned int iDaughter2)
+{
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iMother);
+
+  if( motherIt != m_Container.get< TraceID >().end() )
+    {
+  // Arnaud: what about if any of the parameter is NULL?
+  // Arnaud: what about if one daughter is in the field of view,
+  // and not the other one?
+  // Nicolas: dont deal with any of that yet
+
+  // Get points of interest:
+  // Mother: last point
+  // D1 & D2: first point
+  double* mother = this->GetLastPointOfTheTrack(iMother);
+  double* daughter1 = this->GetFirstPointOfTheTrack(iDaughter1);
+  double* daughter2 = this->GetFirstPointOfTheTrack(iDaughter2);
+
+  //setup points (geometry)
+  vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
+  points->InsertNextPoint ( daughter1[0], daughter1[1], daughter1[2] );
+  points->InsertNextPoint ( mother[0], mother[1], mother[2] );
+  points->InsertNextPoint ( daughter2[0], daughter2[1], daughter2[2] );
+
+  // create the lines
+  vtkSmartPointer<vtkCellArray> lines = vtkSmartPointer<vtkCellArray>::New();
+  for(int i=0; i<2; ++i)
+    {
+    //Create the first line (between Origin and P0)
+    vtkSmartPointer<vtkLine> line =
+        vtkSmartPointer<vtkLine>::New();
+    line->GetPointIds()->SetId(0,i);
+    line->GetPointIds()->SetId(1,i+1);
+    lines->InsertNextCell(line);
+    }
+
+  // create polydata
+  vtkSmartPointer<vtkPolyData> division = vtkSmartPointer<vtkPolyData>::New();
+  division->SetPoints(points);
+  division->SetLines(lines);
+  /*
+   * \todo Nicolas: we might want to extend it to more parameters: color, ...
+   * and to the meshes->efficiency of show/hide, picking, boxwidget, ...!
+   */
+  // add track ID to the polydata so we can get it from the actor later on
+  vtkSmartPointer<vtkIntArray> trackIDArray = vtkSmartPointer<vtkIntArray>::New();
+  trackIDArray->SetNumberOfComponents(1);
+  trackIDArray->SetNumberOfValues(1);
+  trackIDArray->SetName("DIVISION");
+  trackIDArray->SetValue(0,iMother);
+
+  division->GetFieldData()->AddArray(trackIDArray);
+
+  // update structure
+
+  m_Container.get< TraceID >().modify( motherIt , create_node_division(division) );
+  }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::vector<vtkActor* >
+TrackContainer::
+CreateDivisionActor(vtkPolyData* iPolyData, bool iVisible)
+{
+  /*
+   * \todo Nicolas: Which color should it be? White as of now
+   */
+  vtkSmartPointer<vtkProperty> trace_property =
+      vtkSmartPointer<vtkProperty>::New();
+  double       r = 1.0;
+  double       g = 1.0;
+  double       b = 1.0;
+  double       a = 1.0;
+
+  trace_property->SetColor(r,
+                           g,
+                           b);
+  trace_property->SetOpacity(a);
+
+  std::vector< vtkActor * > divisionActors =
+      this->m_ImageView->AddContour( iPolyData, trace_property );
+
+  // add it to visu??
+  if( iVisible )
+    {
+    // add to 3d
+    this->m_ImageView->AddActor(3, divisionActors[3]);
+    }
+  else
+    {
+    // remove from 2d
+    this->m_ImageView->RemoveActor(0, divisionActors[0]);
+    this->m_ImageView->RemoveActor(1, divisionActors[1]);
+    this->m_ImageView->RemoveActor(2, divisionActors[2]);
+    }
+
+  return divisionActors;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+CutLineage(unsigned int iMotherID)
+{
+  std::cout << "CutLineage can't work because of temp structures - use modify instead"
+      << std::endl;
+  // update connections
+  //------------------------------
+  // motherID->NULL
+  //         ->NULL
+  //------------------------------
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iMotherID);
+
+  if( motherIt != m_Container.get< TraceID >().end() )
+    {
+    // Create temporary structures so we can modify it
+    TrackStructure tempMother(*motherIt);
+
+    // Get daughters IDs
+    unsigned int daughter1ID = (*(tempMother.TreeNode.m_Child[0])).TraceID;
+    unsigned int daughter2ID = (*(tempMother.TreeNode.m_Child[2])).TraceID;
+
+    // Update daughters pointers
+    tempMother.TreeNode.m_Child[0] = NULL;
+    tempMother.TreeNode.m_Child[1] = NULL;
+    tempMother.TreeNode.ReleaseData();
+
+    // Push current element
+    m_Container.get< TraceID >().replace(motherIt, tempMother);
+
+    // Find the daughter1 and update mother connection to NULL
+    //------------------------------
+    MultiIndexContainerTraceIDIterator daughter1It
+        = m_Container.get< TraceID >().find(daughter1ID);
+
+    if( daughter1It != m_Container.get< TraceID >().end() )
+      {
+      // Create temporary structures so we can modify it
+      TrackStructure tempDaughter1(*daughter1It);
+
+      // Update daughters pointers
+      tempDaughter1.TreeNode.m_Mother = NULL;
+
+      // Push current element
+      m_Container.get< TraceID >().replace(daughter1It, tempDaughter1);
+      }
+
+    // Find the daughter2 and update mother connection to NULL
+    //------------------------------
+    MultiIndexContainerTraceIDIterator daughter2It
+        = m_Container.get< TraceID >().find(daughter2ID);
+
+    if( daughter2It != m_Container.get< TraceID >().end() )
+      {
+      // Create temporary structures so we can modify it
+      TrackStructure tempDaughter2(*daughter2It);
+
+      // Update daughters pointers
+      tempDaughter2.TreeNode.m_Mother = NULL;
+
+      // Push current element
+      m_Container.get< TraceID >().replace(daughter2It, tempDaughter2);
+      }
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+HighlightCollection(unsigned int iRootTrackID, bool iHilighted)
+{
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iRootTrackID);
+
+  if( motherIt != m_Container.get< TraceID >().end() )
+    {
+    UpdateCollectionHighlighted(motherIt, iHilighted);
+
+    this->m_ImageView->UpdateRenderWindows();
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+ShowCollection(unsigned int iRootTrackID, bool iVisible)
+{
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iRootTrackID);
+
+  if( motherIt != m_Container.get< TraceID >().end() )
+    {
+    UpdateCollectionVisibility(motherIt, iVisible);
+
+    this->m_ImageView->UpdateRenderWindows();
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateCollectionVisibility( MultiIndexContainerTraceIDIterator& it, bool iVisible)
+{
+  if( !it->IsLeaf() )
+    {
+    ModifyDivisionVisibility(it, iVisible);
+    }
+
+  if(it->TreeNode.m_Child[0])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
+
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateCollectionVisibility(childIt,iVisible);
+      }
+    }
+
+  if(it->TreeNode.m_Child[1])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
+
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateCollectionVisibility(childIt,iVisible);
+      }
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateCollectionHighlighted( MultiIndexContainerTraceIDIterator& it, bool iHighlighted)
+{
+  if( !it->IsLeaf() )
+    {
+    ModifyDivisionHighlight(it, iHighlighted);
+    }
+
+  if(it->TreeNode.m_Child[0])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
+
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateCollectionHighlighted(childIt,iHighlighted);
+      }
+    }
+
+  if(it->TreeNode.m_Child[1])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
+
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateCollectionHighlighted(childIt,iHighlighted);
+      }
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int
+TrackContainer::ModifyDivisionVisibility( MultiIndexContainerTraceIDIterator& it, bool iVisible)
+{
+  m_Container.get< TraceID >().modify( it , change_visible_division(iVisible) );
+
+  typedef void ( QGoImageView3D::*ImageViewMember )(const int &, vtkActor *);
+  ImageViewMember f;
+
+  if ( iVisible )
+    {
+    f = &QGoImageView3D::AddActor;
+    }
+  else
+    {
+    f = &QGoImageView3D::RemoveActor;
+    }
+
+  assert( m_ImageView );
+  ( m_ImageView->*f )(0, it->TreeNode.ActorXY);
+  ( m_ImageView->*f )(1, it->TreeNode.ActorXZ);
+  ( m_ImageView->*f )(2, it->TreeNode.ActorYZ);
+  ( m_ImageView->*f )(3, it->TreeNode.ActorXYZ);
+
+  return 1;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int
+TrackContainer::ModifyDivisionHighlight( MultiIndexContainerTraceIDIterator& it, bool iHighlight )
+{
+  vtkProperty* temp_property = NULL;
+  if ( !iHighlight )
+    {
+    /*
+     * \todo Nicolas - which color for the divisions??
+     */
+    temp_property = vtkProperty::New();
+    temp_property->SetColor(it->TreeNode.rgba[0],
+                            it->TreeNode.rgba[1],
+                            it->TreeNode.rgba[2]);
+    temp_property->SetOpacity(it->TreeNode.rgba[3]);
+    temp_property->SetLineWidth(this->m_IntersectionLineWidth);
+    }
+  else
+    {
+    temp_property = this->m_HighlightedProperty;
+    }
+
+  m_Container.get< TraceID >().modify( it , change_highlighted_division(temp_property, iHighlight) );
+
+  if(!iHighlight)
+    {
+    temp_property->Delete();
+    }
+
+  return 1;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateTrackStructureLineage(TrackStructure* iStructure)
+{
+  // Modify Mother
+  if( ! iStructure->IsRoot() )
+  {
+    // What if new tracks overlap now???
+    std::cout << "Update mother division polydata/actor" << std::endl;
+    UpdateDivisionActor( iStructure->TreeNode.m_Mother );
+  }
+
+  // Modify Daughters
+  if( ! iStructure->IsLeaf() )
+  {
+    UpdateDivisionActor( iStructure );
+    std::cout << "Update daughter divisions polydata/actor" << std::endl;
+  }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateDivisionActor(TrackStructure* iStructure)
+{
+  double* mother = this->GetLastPointOfTheTrack(iStructure->TraceID);
+  double* daughter1 = this->GetFirstPointOfTheTrack(iStructure->TreeNode.m_Child[0]->TraceID);
+  double* daughter2 = this->GetFirstPointOfTheTrack(iStructure->TreeNode.m_Child[1]->TraceID);
+
+  //setup points (geometry)
+  vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
+  points->InsertNextPoint ( daughter1[0], daughter1[1], daughter1[2] );
+  points->InsertNextPoint ( mother[0], mother[1], mother[2] );
+  points->InsertNextPoint ( daughter2[0], daughter2[1], daughter2[2] );
+
+  // create the lines
+  vtkSmartPointer<vtkCellArray> lines = vtkSmartPointer<vtkCellArray>::New();
+  for(int i=0; i<2; ++i)
+    {
+    //Create the first line (between Origin and P0)
+    vtkSmartPointer<vtkLine> line =
+        vtkSmartPointer<vtkLine>::New();
+    line->GetPointIds()->SetId(0,i);
+    line->GetPointIds()->SetId(1,i+1);
+    lines->InsertNextCell(line);
+    }
+
+  // create polydata
+  vtkSmartPointer<vtkPolyData> division = vtkSmartPointer<vtkPolyData>::New();
+  division->SetPoints(points);
+  division->SetLines(lines);
+  /*
+   * \todo Nicolas: we might want to extend it to more parameters: color, ...
+   * and to the meshes->efficiency of show/hide, picking, boxwidget, ...!
+   */
+  // add track ID to the polydata so we can get it from the actor later on
+  vtkSmartPointer<vtkIntArray> trackIDArray = vtkSmartPointer<vtkIntArray>::New();
+  trackIDArray->SetNumberOfComponents(1);
+  trackIDArray->SetNumberOfValues(1);
+  trackIDArray->SetName("DIVISION");
+  trackIDArray->SetValue(0,iStructure->TraceID);
+
+  division->GetFieldData()->AddArray(trackIDArray);
+
+  vtkSmartPointer<vtkProperty> trace_property =
+      vtkSmartPointer<vtkProperty>::New();
+  double       r = 1.0;
+  double       g = 1.0;
+  double       b = 1.0;
+  double       a = 1.0;
+
+  trace_property->SetColor(r,
+                           g,
+                           b);
+  trace_property->SetOpacity(a);
+
+  // remove actor from visu and delete them
+  this->m_ImageView->RemoveActor(0, iStructure->TreeNode.ActorXY);
+  this->m_ImageView->RemoveActor(1, iStructure->TreeNode.ActorXZ);
+  this->m_ImageView->RemoveActor(2, iStructure->TreeNode.ActorYZ);
+  this->m_ImageView->RemoveActor(3, iStructure->TreeNode.ActorXYZ);
+  iStructure->TreeNode.ReleaseData();
+
+  // create actors and add it to the visualization
+  std::vector< vtkActor * > divisionActors =
+        m_ImageView->AddContour( division, trace_property );
+  iStructure->TreeNode.ActorXY = divisionActors[0];
+  iStructure->TreeNode.ActorXZ = divisionActors[1];
+  iStructure->TreeNode.ActorYZ = divisionActors[2];
+  iStructure->TreeNode.ActorXYZ = divisionActors[3];
+
+  this->m_ImageView->AddActor(3, divisionActors[3]);
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+DeleteADivision( unsigned int iMotherID)
+{
+  // find iterator
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iMotherID);
+
+  if( motherIt != m_Container.get< TraceID >().end() )
+    {
+    TrackStructure* mother =  const_cast<TrackStructure*>(&(*motherIt));
+
+    // Delete the actor
+    // remove actor from visu and delete them
+    this->m_ImageView->RemoveActor(0, mother->TreeNode.ActorXY);
+    this->m_ImageView->RemoveActor(1, mother->TreeNode.ActorXZ);
+    this->m_ImageView->RemoveActor(2, mother->TreeNode.ActorYZ);
+    this->m_ImageView->RemoveActor(3, mother->TreeNode.ActorXYZ);
+    mother->TreeNode.ReleaseData();
+
+    // Reset pointers
+    // child (to do first)
+    mother->TreeNode.m_Child[0]->TreeNode.m_Mother = NULL;
+    mother->TreeNode.m_Child[1]->TreeNode.m_Mother = NULL;
+
+    // mother
+    mother->TreeNode.m_Child[0] = NULL;
+    mother->TreeNode.m_Child[1] = NULL;
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list<unsigned int>
+TrackContainer::
+GetSubLineage( unsigned int iTrackID )
+{
+  std::list<unsigned int> listOfIDs;
+
+  // find the iterator
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iTrackID);
+
+  if( motherIt != m_Container.get< TraceID >().end() )
+    {
+    UpdateSubLineage(motherIt, listOfIDs);
+    }
+
+  return listOfIDs;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateSubLineage( MultiIndexContainerTraceIDIterator it, std::list<unsigned int>& iList)
+{
+  iList.push_back( it->TraceID );
+
+  if(it->TreeNode.m_Child[0])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateSubLineage(childIt,iList);
+      }
+    }
+
+  if(it->TreeNode.m_Child[1])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateSubLineage(childIt,iList);
+      }
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateCollectionHighlighting(unsigned int iTraceId)
+{
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iTraceId);
+
+  if( motherIt != m_Container.get< TraceID >().end() )
+    {
+    GetRootIterator( motherIt );
+
+    bool highlight = !motherIt->TreeNode.Highlighted;
+
+    UpdateCollectionHighlighted(motherIt, highlight);
+
+    this->m_ImageView->UpdateRenderWindows();
+
+    // send signal to lineage container
+    emit UpdateLineageHighlightingFromTrackRootID( motherIt->TraceID );
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+GetRootIterator(MultiIndexContainerTraceIDIterator& iMotherIterator)
+{
+  if( iMotherIterator->IsRoot() )
+  {
+    return;
+  }
+
+  iMotherIterator
+      = m_Container.get< TraceID >().find( iMotherIterator->TreeNode.m_Mother->TraceID );
+  GetRootIterator( iMotherIterator );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateCollectionScalars( unsigned int iTrackID)
+{
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iTrackID);
+
+  if( motherIt != m_Container.get< TraceID >().end() )
+    {
+    UpdateDivisionScalar(motherIt, 0); // 0=depth of the root
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateDivisionScalar(MultiIndexContainerTraceIDIterator& it, unsigned int iDepth)
+{
+  if( !it->IsLeaf() )
+    {
+    //add array
+    vtkSmartPointer< vtkIntArray > depthArray =
+        vtkSmartPointer< vtkIntArray >::New();
+    depthArray->SetNumberOfComponents(1);
+    depthArray->SetName("DepthInformation");
+    depthArray->InsertNextValue(iDepth);
+    depthArray->InsertNextValue(iDepth);
+    depthArray->InsertNextValue(iDepth);
+    m_Container.get< TraceID >().modify( it , add_array_division(depthArray) );
+    }
+
+  if(it->TreeNode.m_Child[0])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateDivisionScalar(childIt,iDepth+1);
+      }
+    }
+
+  if(it->TreeNode.m_Child[1])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateDivisionScalar(childIt,iDepth+1);
+      }
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateCollectionColors( unsigned int iTrackID, double* color)
+{
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iTrackID);
+
+  if( motherIt != m_Container.get< TraceID >().end() )
+    {
+    UpdateDivisionColor(motherIt, color);
+
+    m_ImageView->UpdateRenderWindows();
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateDivisionColor(MultiIndexContainerTraceIDIterator& it, double* iColor)
+{
+  if( !it->IsLeaf() )
+    {
+    m_Container.get< TraceID >().modify( it , change_color_division(iColor) );
+    }
+
+  if(it->TreeNode.m_Child[0])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateDivisionColor(childIt,iColor);
+      }
+    }
+
+  if(it->TreeNode.m_Child[1])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateDivisionColor(childIt,iColor);
+      }
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+unsigned int
+TrackContainer::
+GetCollectionMaxDepth( unsigned int iTrackRootID )
+{
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iTrackRootID);
+
+  if( motherIt != m_Container.get< TraceID >().end() )
+    {
+    unsigned int depth = 0;
+    UpdateCollectionMaxDepth(motherIt, 0, depth); //0: root depth
+
+    return depth;
+    }
+  else
+    {
+    return 0;
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateCollectionMaxDepth(MultiIndexContainerTraceIDIterator& it,
+    unsigned int iDivisionDepth, unsigned int& iLineageDepth)
+{
+  if( it->IsLeaf() )
+    {
+    if( iDivisionDepth > iLineageDepth )
+      {
+      iLineageDepth = iDivisionDepth;
+      }
+    }
+
+  if(it->TreeNode.m_Child[0])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateCollectionMaxDepth(childIt,iDivisionDepth+1,iLineageDepth);
+      }
+    }
+
+  if(it->TreeNode.m_Child[1])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateCollectionMaxDepth(childIt,iDivisionDepth+1, iLineageDepth);
+      }
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+unsigned int
+TrackContainer::
+GetCollectionMinDepth( unsigned int iTrackRootID )
+{
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iTrackRootID);
+
+  if( motherIt != m_Container.get< TraceID >().end() )
+    {
+    unsigned int depth = std::numeric_limits<unsigned int>::max();
+    UpdateCollectionMinDepth(motherIt, 0, depth); //0: root depth
+
+    return depth;
+    }
+  else
+    {
+    return 0;
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateCollectionMinDepth(MultiIndexContainerTraceIDIterator& it,
+    unsigned int iDivisionDepth, unsigned int& iLineageDepth)
+{
+  if( it->IsLeaf() )
+    {
+    if( iDivisionDepth < iLineageDepth )
+      {
+      iLineageDepth = iDivisionDepth;
+      }
+    }
+
+  if(it->TreeNode.m_Child[0])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateCollectionMinDepth(childIt,iDivisionDepth+1,iLineageDepth);
+      }
+    }
+
+  if(it->TreeNode.m_Child[1])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateCollectionMinDepth(childIt,iDivisionDepth+1, iLineageDepth);
+      }
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+unsigned int
+TrackContainer::
+GetCollectionNumberOfDivisions( unsigned int iTrackRootID )
+{
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iTrackRootID);
+
+  if( motherIt != m_Container.get< TraceID >().end() )
+    {
+    unsigned int numberOfDivisions = 0;
+    UpdateCollectionNumberOfDivisions(motherIt,numberOfDivisions);
+
+    return numberOfDivisions;
+    }
+  else
+    {
+    return 0;
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateCollectionNumberOfDivisions(MultiIndexContainerTraceIDIterator& it,
+    unsigned int& iNumberOfDivisions)
+{
+  if( !it->IsLeaf() )
+    {
+    ++iNumberOfDivisions;
+    }
+
+  if(it->TreeNode.m_Child[0])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateCollectionNumberOfDivisions(childIt,iNumberOfDivisions);
+      }
+    }
+
+  if(it->TreeNode.m_Child[1])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateCollectionNumberOfDivisions(childIt,iNumberOfDivisions);
+      }
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+unsigned int
+TrackContainer::
+GetCollectionNumberOfLeaves( unsigned int iTrackRootID )
+{
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iTrackRootID);
+
+  if( motherIt != m_Container.get< TraceID >().end() )
+    {
+    unsigned int numberOfLeaves = 0;
+    UpdateCollectionNumberOfDivisions(motherIt,numberOfLeaves);
+
+    return numberOfLeaves;
+    }
+  else
+    {
+    return 0;
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateCollectionNumberOfLeaves(MultiIndexContainerTraceIDIterator& it,
+    unsigned int& iNumberOfLeaves)
+{
+  if( it->IsLeaf() )
+    {
+    ++iNumberOfLeaves;
+    }
+
+  if(it->TreeNode.m_Child[0])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateCollectionNumberOfLeaves(childIt,iNumberOfLeaves);
+      }
+    }
+
+  if(it->TreeNode.m_Child[1])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateCollectionNumberOfLeaves(childIt,iNumberOfLeaves);
+      }
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+vtkMutableDirectedGraph*
+TrackContainer::
+ExportLineage(unsigned int iTrackID)
+{
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iTrackID);
+
+  // graph to be exported
+  vtkMutableDirectedGraph* graph = vtkMutableDirectedGraph::New();
+  unsigned int pedigree = graph->AddVertex();
+
+  // arrays we want to export
+  vtkDoubleArray* id = vtkDoubleArray::New();
+  id->SetName("Track ID");
+
+  // arrays we want to export
+  vtkDoubleArray* depth = vtkDoubleArray::New();
+  depth->SetName("Lineage Depth");
+
+  UpdateLineage(motherIt,
+                   graph,
+                pedigree,
+                       0,  // mother vtkIDtype
+                       0,depth,// depth information
+                       id); // id info
+
+  graph->GetVertexData()->AddArray(id);
+  graph->GetVertexData()->AddArray(depth);
+
+  // delete array
+  id->Delete();
+  depth->Delete();
+
+  return graph;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateLineage(MultiIndexContainerTraceIDIterator& it,
+    vtkMutableDirectedGraph* iGraph, unsigned int iPedrigree, vtkIdType mother,
+    unsigned int iDepth, vtkDoubleArray* iDepthArray, vtkDoubleArray* iIDArray)
+{
+  // Update mother ID
+  vtkIdType motherPedigree = iPedrigree;
+
+  //add info
+  iIDArray->InsertValue(iPedrigree, it->TraceID);
+  // add info
+  iDepthArray->InsertValue(iPedrigree, iDepth);
+
+  if( it->IsLeaf() )
+    {
+    return;
+    }
+
+  if(it->TreeNode.m_Child[0])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
+    // add edge
+    iPedrigree = iGraph->AddChild(motherPedigree);
+    //go through tree
+    UpdateLineage(childIt,iGraph, iPedrigree, motherPedigree, iDepth+1, iDepthArray,iIDArray);
+    }
+
+  if(it->TreeNode.m_Child[1])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
+    // add edge
+    iPedrigree = iGraph->AddChild(motherPedigree);
+    // go through tree
+    UpdateLineage(childIt,iGraph, iPedrigree, motherPedigree, iDepth+1, iDepthArray, iIDArray);
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+SetCollectionColorCode(const std::string& iColumnName,
+    const std::map< unsigned int, std::string >& iValues)
+{
+  typedef  std::map< unsigned int, std::string > MapType;
+  typedef  MapType::const_iterator               MapConstIterator;
+
+  std::map< std::string, double > stringmap;
+
+  if ( iColumnName.empty() || iValues.empty() )
+    {
+    this->RenderAllDivisionsWithOriginalColors();
+    assert ( m_ImageView );
+    this->m_ImageView->UpdateRenderWindows();
+    return;
+    }
+
+  MapConstIterator it = iValues.begin();
+
+  double temp = 0.;
+  try
+    {
+    temp = boost::lexical_cast< double >(it->second);
+    }
+  catch(boost::bad_lexical_cast &)
+    {
+    if ( stringmap.empty() )
+      {
+      stringmap[it->second] = 0.;
+      }
+    else
+      {
+      std::map< std::string, double >::iterator m_it = stringmap.find(it->second);
+
+      if ( m_it != stringmap.end() )
+        {
+        temp = m_it->second;
+        }
+      else
+        {
+        std::map< std::string, double >::reverse_iterator r_it = stringmap.rbegin();
+        temp = r_it->second;
+        temp += 1.0;
+        }
+      }
+    }
+
+  double min_value = temp;
+  double max_value = temp;
+
+  while ( it != iValues.end() )
+    {
+
+    MultiIndexContainerTraceIDIterator
+      trace_it = this->m_Container.get< TraceID >().find(it->first);
+
+    // convert value
+    // Here let's make sure you are not passing crazy values!
+    try
+      {
+      temp = boost::lexical_cast< double >(it->second);
+      }
+    catch(boost::bad_lexical_cast &)
+      {
+      // stringmap is not empty and has at least one elements
+      std::map< std::string, double >::iterator m_it = stringmap.find(it->second);
+
+      if ( m_it != stringmap.end() )
+        {
+        temp = m_it->second;
+        }
+      else
+        {
+        std::map< std::string, double >::reverse_iterator r_it = stringmap.rbegin();
+        temp = r_it->second;
+        temp += 1.0;
+        }
+      }
+
+    UpdateDivisionScalarData(trace_it, it->second, temp, min_value, max_value);
+    ++it;
+    }
+
+  SetScalarRangeForAllDivisions(min_value, max_value);
+
+  assert ( m_ImageView );
+  this->m_ImageView->UpdateRenderWindows();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateDivisionScalarData(MultiIndexContainerTraceIDIterator& it,
+    std::string iColumnName, double& iValue,
+    double& iMin, double& iMax)
+{
+
+  if( !it->IsLeaf() )
+    {
+    if ( iValue > iMax )
+      {
+      iMax = iValue;
+      }
+    if ( iValue < iMin )
+      {
+      iMin = iValue;
+      }
+
+    it->TreeNode.SetScalarData(iColumnName, iValue);
+    }
+
+  if(it->TreeNode.m_Child[0])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateDivisionScalarData(childIt, iColumnName, iValue, iMin, iMax);
+      }
+    }
+
+  if(it->TreeNode.m_Child[1])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateDivisionScalarData(childIt, iColumnName, iValue, iMin, iMax);
+      }
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+SetDivisionRandomColor(const std::string & iColumnName,
+                       const std::map< unsigned int, std::string > & iValues)
+{
+  typedef std::map< unsigned int, std::string > MapType;
+  typedef MapType::const_iterator               MapConstIterator;
+
+  std::map< std::string, double > stringmap;
+
+  if ( iColumnName.empty() || iValues.empty() )
+    {
+    this->RenderAllDivisionsWithOriginalColors();
+    return;
+    }
+
+  MapConstIterator it = iValues.begin();
+
+  double temp = 0.;
+  try
+    {
+    temp = boost::lexical_cast< double >(it->second);
+    }
+  catch(boost::bad_lexical_cast &)
+    {
+    if ( stringmap.empty() )
+      {
+      stringmap[it->second] = 0.;
+      }
+    else
+      {
+      std::map< std::string, double >::iterator m_it = stringmap.find(it->second);
+
+      if ( m_it != stringmap.end() )
+        {
+        temp = m_it->second;
+        }
+      else
+        {
+        std::map< std::string, double >::reverse_iterator r_it = stringmap.rbegin();
+        temp = r_it->second;
+        temp += 1.0;
+        }
+      }
+    }
+
+  unsigned int val = static_cast< unsigned int >(temp);
+  unsigned int modulo = val % 30;
+
+  temp = static_cast< double >(modulo);
+
+  double min_value = temp;
+  double max_value = temp;
+
+  using boost::multi_index:: get;
+
+  while ( it != iValues.end() )
+    {
+    MultiIndexContainerTraceIDIterator
+      trace_it = this->m_Container.get< TraceID >().find(it->first);
+
+    if ( trace_it != this->m_Container.get< TraceID >().end() )
+      {
+      if ( trace_it->TreeNode.Nodes ) //make sure the trace has points !!!
+        {
+        // Here let's make sure you are not passing crazy values!
+        try
+          {
+          temp = boost::lexical_cast< double >(it->second);
+          }
+        catch(boost::bad_lexical_cast &)
+          {
+          // stringmap is not empty and has at least one element
+          std::map< std::string, double >::iterator m_it = stringmap.find(it->second);
+
+          if ( m_it != stringmap.end() )
+            {
+            temp = m_it->second;
+            }
+          else
+            {
+            std::map< std::string, double >::reverse_iterator r_it = stringmap.rbegin();
+            temp = r_it->second;
+            temp += 1.0;
+            }
+          }
+
+        val = static_cast< unsigned int >(temp);
+        modulo = val % 30;
+
+        temp = static_cast< double >(modulo);
+
+        UpdateDivisionScalarData(trace_it, it->second, temp, min_value, max_value);
+        }
+      } //end make sure the trace has points !!!
+    ++it;
+    }
+
+  SetScalarRangeForAllDivisions(min_value, max_value);
+
+  assert ( m_ImageView );
+  this->m_ImageView->UpdateRenderWindows();
+}

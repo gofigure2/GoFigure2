@@ -78,6 +78,9 @@ void QGoDBTraceManager::SetInfo(unsigned int iImgSessionID, QWidget *iParent)
   QObject::connect( this->m_Table, SIGNAL( VisibleRowsChanged(int) ),
                     this, SLOT( UpdateVisibleElementsInVisuContainer(int) ) );
 
+  QObject::connect( this->m_Table, SIGNAL(customContextMenuRequested (const QPoint &) ),
+                    this, SLOT(	CreateContextMenu ( const QPoint &) ) );
+
   this->m_ImgSessionID = iImgSessionID;
 }
 
@@ -164,6 +167,7 @@ void QGoDBTraceManager::AddGeneralActionsContextMenu(QMenu *iMenu)
   ColorMenu->addAction( tr("To the selected color for the checked %1s")
                         .arg( this->m_TraceName.c_str() ),
                         this, SLOT( ChangeTraceColor() ) );
+
   QAction *ColorCoding = new QAction(tr("Based on the selected column"), ColorMenu);
   ColorCoding->setCheckable(true);
   ColorCoding->setChecked(m_IsColorCodingOn);
@@ -375,10 +379,10 @@ double * QGoDBTraceManager::GetVectorFromQColor(QColor iColor)
 
   iColor.getRgbF(&r, &g, &b, &a);
   double *rgba = new double[4];
-  rgba[0] = r;
-  rgba[1] = g;
-  rgba[2] = b;
-  rgba[3] = a;
+  rgba[0] = static_cast< double >( r );
+  rgba[1] = static_cast< double >( g );
+  rgba[2] = static_cast< double >( b );
+  rgba[3] = static_cast< double >( a );
   return rgba;
 }
 

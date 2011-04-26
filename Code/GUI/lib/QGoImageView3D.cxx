@@ -944,41 +944,10 @@ QGoImageView3D::AddContour(vtkPolyData *iDataset, vtkProperty *iProperty)
   vtkActor *temp = m_View3D->AddDataSet( (vtkDataSet *)iDataset,
                                          iProperty, false, false );
 
-  //m_View3D->Render();
   oList.push_back(temp);
 
   return oList;
 }
-
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void
-QGoImageView3D::ChangeActorProperty(vtkProp3D *iActor, vtkProperty *iProperty)
-{
-  m_View3D->ChangeActorProperty(iActor, iProperty);
-  QGoImageView::ChangeActorProperty(iActor, iProperty);
-}
-
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void
-QGoImageView3D::ChangeActorProperty(int iDir, vtkProp3D *iActor, vtkProperty *iProperty)
-{
-  if ( ( iDir >= 0 ) && ( iDir < m_Pool->GetNumberOfItems() ) )
-    {
-    QGoImageView::ChangeActorProperty(iDir, iActor, iProperty);
-    }
-  else
-    {
-    if ( iDir == 3 )
-      {
-      m_View3D->ChangeActorProperty(iActor, iProperty);
-      }
-    }
-}
-
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -987,10 +956,12 @@ QGoImageView3D::RemoveActor(const int & iId, vtkActor *iActor)
 {
   if ( iId == 3 )
     {
-    m_View3D->GetRenderer()->RemoveActor(iActor);
+    // remove from renderer and Prop3DCollection
+    m_View3D->RemoveProp(iActor);
     }
   else
     {
+    // remove from renderer
     QGoImageView::RemoveActor(iId, iActor);
     }
 }
@@ -1003,10 +974,13 @@ QGoImageView3D::AddActor(const int & iId, vtkActor *iActor)
 {
   if ( iId == 3 )
     {
-    m_View3D->GetRenderer()->AddActor(iActor);
+    // add to renderer and Prop3DCollection
+    m_View3D->GetRenderer()->AddViewProp(iActor);
+    m_View3D->AddActorToProp3DCollection(iActor);
     }
   else
     {
+    // add to renderer
     QGoImageView::AddActor(iId, iActor);
     }
 }
@@ -1326,32 +1300,11 @@ QGoImageView3D::UpdateCurrentActorSelection(vtkObject *caller)
   vtkInteractorStyleImage2D *t =
     static_cast< vtkInteractorStyleImage2D * >( caller );
 
-  m_CurrentActor = vtkActor::SafeDownCast ( t->GetCurrentProp() );
-
-  if ( t == m_Pool->GetItem(0)->GetInteractorStyle() )
-    {
-    //qDebug() << "in XY";
-    emit SelectionXYChanged();
-    }
-  else if ( t == m_Pool->GetItem(1)->GetInteractorStyle() )
-    {
-    //qDebug() << "in XZ";
-    emit SelectionXZChanged();
-    }
-  else if ( t == m_Pool->GetItem(2)->GetInteractorStyle() )
-    {
-    //qDebug() << "in YZ";
-    emit SelectionYZChanged();
-    }
-  else if ( t == (vtkInteractorStyleImage2D *)this->m_View3D->GetInteractorStyle3D() )
-    {
-    //qDebug() << "in 3D";
-    emit SelectionXYZChanged();
-    }
-  else
-    {
-    qWarning() << "no match";
-    }
+  if( t->GetCurrentProp() )
+  {
+    m_CurrentActor = vtkActor::SafeDownCast ( t->GetCurrentProp() );
+    emit SelectionChanged();
+  }
 }
 
 //---------------------------------------------------------------------------
@@ -1367,7 +1320,7 @@ QGoImageView3D::UpdateCurrentActorVisibility(vtkObject *caller)
     SafeDownCast( t->GetInteractorStyle3D()->GetCurrentProp() );
   m_CurrentState = t->GetInteractorStyle3D()->GetCurrentState();
 
-  emit VisibilityXYZChanged();
+  emit VisibilityChanged();
 }
 
 //-------------------------------------------------------------------------

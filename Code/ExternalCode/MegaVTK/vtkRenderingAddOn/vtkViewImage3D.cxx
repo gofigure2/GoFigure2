@@ -665,11 +665,6 @@ vtkViewImage3D::AddDataSet(vtkDataSet *dataset,
   mapper->SetScalarVisibility(iDataVisibility);
   mapper->StaticOn();
 
-  // actor coordinates geometry, properties, transformation
-
-  //   vtkQuadricLODActor* actor = vtkQuadricLODActor::New();
-  //   actor->GetLODFilter()->SetNumberOfDivisions( 3, 3, 3 );
-
   vtkActor *actor3d = vtkActor::New();
   actor3d->SetMapper(mapper);
 
@@ -681,34 +676,19 @@ vtkViewImage3D::AddDataSet(vtkDataSet *dataset,
     actor3d->GetProperty()->SetOpacity( property->GetOpacity() );
     actor3d->GetProperty()->SetLineWidth(this->IntersectionLineWidth);
     }
-  // Generates problems in visu 3d
-  //contActor->GetProperty()->BackfaceCullingOn();
-
-/*
-  vtkSmartPointer< vtkClipPolyData > cutter =
-    vtkSmartPointer< vtkClipPolyData >::New();
-
-  if( intersection )
-    {
-    /// \todo to be implemented
-//     cutter->SetInputConnection( 0, dataset->GetProducerPort());
-//     cutter->SetClipFunction( this->SliceImplicitPlane );
-//     cutter->InsideOutOn();
-//     mapper->SetInputConnection( 0, cutter->GetOutputPort());
-    }
-  else
-    {
-    mapper->SetInput( vtkPolyData::SafeDownCast( dataset ) );
-    }
-*/
-//   actor->SetUserTransform( this->AdjustmentTransform );
-
-  this->Renderer->AddViewProp(actor3d);
-  this->Prop3DCollection->AddItem(actor3d);
 
   return actor3d;
 }
 
+//----------------------------------------------------------------------------
+/*
+ * \todo Nicolas-Get rid of Prop3DCollection
+ */
+void vtkViewImage3D::
+AddActorToProp3DCollection( vtkActor * iActor)
+{
+  this->Prop3DCollection->AddItem(iActor);
+}
 //----------------------------------------------------------------------------
 /**
  *
@@ -817,27 +797,20 @@ vtkViewImage3D::ComputeDistances(double *n, double *origin)
       + n[1] * ( point[1] - origin[1] )
       + n[2] * ( point[2] - origin[2] );
 
-    // condition on distance to the plane
-    //if(abs(distance) < 50)
-    //  {
-
-    // TEST CONTAINER
     bool state;
     if ( distance < 0 )
       {
       state = false;
-      //  prop_temp->SetVisibility(0);
       }
     else
       {
       state = true;
-      //  prop_temp->SetVisibility(1);
       }
 
     this->GetInteractorStyle3D()->SetCurrentProp(prop_temp);
     this->GetInteractorStyle3D()->SetCurrentState(state);
     this->InvokeEvent(vtkViewImage3DCommand::VisibilityUpdatedEvent);
-    //  }
+
     prop_temp = Prop3DCollection->GetNextProp3D();
     }
   // emit signal to say to render
@@ -857,8 +830,8 @@ vtkViewImage3D::ComputeDistancesToSquare(vtkPlanes *planes)
 
   while ( prop_temp )
     {
-    double *point = prop_temp->GetCenter();
-    bool    show = true;
+    double *point(prop_temp->GetCenter());
+    bool    show(true);
 
     for ( int i = 0; i < 6; ++i )
       {
@@ -874,14 +847,11 @@ vtkViewImage3D::ComputeDistancesToSquare(vtkPlanes *planes)
         break;
         }
       }
-    //if (abs(distance0) < 50 || abs(distance1) < 50 || abs(distance2) < 50
-    //     || abs(distance3) < 50 || abs(distance4) < 50 || abs(distance5) < 50)
-    //   {
 
     this->GetInteractorStyle3D()->SetCurrentProp(prop_temp);
     this->GetInteractorStyle3D()->SetCurrentState(show);
     this->InvokeEvent(vtkViewImage3DCommand::VisibilityUpdatedEvent);
-    //  }
+
     prop_temp = Prop3DCollection->GetNextProp3D();
     }
 

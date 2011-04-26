@@ -22,6 +22,7 @@ SET( QGoGUILIB_SRC
   VisualizationTraceContainers/MeshContainer.cxx
   VisualizationTraceContainers/ContourMeshContainer.cxx
   VisualizationTraceContainers/TrackContainer.cxx
+  VisualizationTraceContainers/LineageContainer.cxx
   Wizard/QGoConnectServerPage.cxx
   Wizard/QGoCreateImgSessionPage.cxx
   QGoImageView.cxx
@@ -57,7 +58,6 @@ SET( QGoGUILIB_SRC
   QGoDBCellTypeManager.cxx
   QGoDBSubCellTypeManager.cxx
   QGoDBColorManager.cxx
-  QGoTraceSettingsDockWidget.cxx
   QGoTraceSettingsWidget.cxx
   Wizard/QGoDBInitializationWizard.cxx
   Wizard/QGoDBInitCreateUserPage.cxx
@@ -71,7 +71,10 @@ SET( QGoGUILIB_SRC
   QGoDBContourManager.cxx
   QGoDBMeshManager.cxx
   QGoDBTrackManager.cxx
+  QGoDBLineageManager.cxx
   QGoColorCodingDialog.cxx
+  QGoDockWidget.cxx
+  QGoToolBarStatus.cxx
 
   # base segmentation widgets
   QGoContourSegmentationBaseDockWidget.cxx
@@ -95,8 +98,11 @@ SET( QGoGUILIB_SRC
     TraceEditing/QGoFilterWatershed.cxx
 
   # for the tracks
-  QGoTrackDockWidget.cxx
+  QGoTrackViewDockWidget.cxx
   QGoTrackEditingWidget.cxx
+
+  #for the lineages
+  QGoLineageViewDockWidget.cxx
 
   # for the trace editing widget
   TraceEditing/QGoTraceEditingWidget.cxx
@@ -181,6 +187,7 @@ SET( QGoGUILIB_HDRS
   VisualizationTraceContainers/MeshContainer.h
   VisualizationTraceContainers/ContourMeshContainer.h
   VisualizationTraceContainers/TrackContainer.h
+  VisualizationTraceContainers/LineageContainer.h
   Wizard/QGoConnectServerPage.h
   Wizard/QGoCreateImgSessionPage.h
   QGoImageView.h
@@ -215,7 +222,6 @@ SET( QGoGUILIB_HDRS
   QGoDBCellTypeManager.h
   QGoDBSubCellTypeManager.h
   QGoDBColorManager.h
-  QGoTraceSettingsDockWidget.h
   QGoTraceSettingsWidget.h
   QGoAboutWidget.h
   Wizard/QGoDBInitializationWizard.h
@@ -231,7 +237,10 @@ SET( QGoGUILIB_HDRS
   QGoDBContourManager.h
   QGoDBMeshManager.h
   QGoDBTrackManager.h
+  QGoDBLineageManager.h
   QGoColorCodingDialog.h
+  QGoDockWidget.h
+  QGoToolBarStatus.h
 
   # base segmentation widgets
   QGoContourSegmentationBaseDockWidget.h
@@ -255,7 +264,7 @@ SET( QGoGUILIB_HDRS
     TraceEditing/QGoFilterWatershed.h
 
   # for the tracks
-  QGoTrackDockWidget.h
+  QGoTrackViewDockWidget.h
   QGoTrackEditingWidget.h
 
   # for the trace editing widget
@@ -322,17 +331,14 @@ SET( QGoGUILIB_UI
 
   # other
   Resources/NavigationDockWidget.ui
-  Resources/QGoPrintDatabase.ui
   Resources/LsmToMegaExportDialog.ui
   Resources/QNameDescriptionInputDialog.ui
-  Resources/QGoTraceSettingsWidget.ui
 
   # seed segmentation dock widgets
   Resources/LevelsetWidget.ui
   Resources/WatershedWidget.ui
 
   # for tracks
-  Resources/TrackDockWidget.ui
   Resources/TrackEditingWidget.ui
 )
 

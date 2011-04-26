@@ -105,7 +105,7 @@ QGoTabImageView4D::QGoTabImageView4D(QWidget *iParent) :
 #endif
 
   CreateAllViewActions();
-  CreateModeActions();
+ // CreateModeActions();
 
   ReadSettings();
 }
@@ -252,8 +252,10 @@ void QGoTabImageView4D::CreateAllViewActions()
 
 //--------------------------------------------------------------------------
 //--------------------------------------------------------------------------
-void QGoTabImageView4D::CreateModeActions()
+void QGoTabImageView4D::CreateModeToolBar(QMenu* iMenu, QToolBar* iToolBar)
 {
+  this->m_ModeToolBar = new QGoToolBarStatus(iToolBar, iMenu, Qt::TopToolBarArea,
+    true, true, this);
   QActionGroup *group = new QActionGroup(this);
 
   //QAction *ManualEditingAction = new QAction(tr("Manual-Editing"), this);
@@ -283,10 +285,11 @@ void QGoTabImageView4D::CreateModeActions()
 
   group->addAction(DefaultAction);
 
-  this->m_ModeActions.push_back(DefaultAction);
+  this->m_ModeToolBar->m_VectorAction.push_back(DefaultAction);
   /** \todo implement default mode*/
   //QObject::connect( DefaultAction, SIGNAL( triggered() ),
   // this, SLOT( DefaultMode() ) );
+  this->m_ToolBarList.push_back(this->m_ModeToolBar);
 }
 
 //-------------------------------------------------------------------------
@@ -1097,23 +1100,31 @@ QGoTabImageView4D::ChangeContourRepresentationProperty()
   QColor activenodecolor; // =
                           // m_ManualSegmentationWidget->GetActiveNodesColor();
 
-  double rl, gl, bl;
-
+  qreal rl, gl, bl;
   linecolor.getRgbF(&rl, &gl, &bl);
 
-  double rn, gn, bn;
+  qreal rn, gn, bn;
   nodecolor.getRgbF(&rn, &gn, &bn);
 
-  double ra, ga, ba;
+  qreal ra, ga, ba;
   activenodecolor.getRgbF(&ra, &ga, &ba);
 
   for ( unsigned int i = 0; i < m_ContourRepresentation.size(); i++ )
     {
     m_ContourRepresentation[i]->GetLinesProperty()->SetLineWidth(linewidth);
-    m_ContourRepresentation[i]->GetLinesProperty()->SetColor(rl, gl, bl);
+    m_ContourRepresentation[i]->GetLinesProperty()->SetColor(
+      static_cast< double >( rl ),
+      static_cast< double >( gl ),
+      static_cast< double >( bl ) );
 
-    m_ContourRepresentation[i]->GetProperty()->SetColor(rn, gn, bn);
-    m_ContourRepresentation[i]->GetActiveProperty()->SetColor(ra, ga, ba);
+    m_ContourRepresentation[i]->GetProperty()->SetColor(
+      static_cast< double >( rn ),
+      static_cast< double >( gn ),
+      static_cast< double >( bn ) );
+    m_ContourRepresentation[i]->GetActiveProperty()->SetColor(
+      static_cast< double >( ra ),
+      static_cast< double >( ga ),
+      static_cast< double >( ba ) );
     }
 }
 

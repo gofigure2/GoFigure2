@@ -35,13 +35,13 @@
 #ifndef __QGoMeshSegmentationBaseDockWidget_h
 #define __QGoMeshSegmentationBaseDockWidget_h
 
-#include <QDockWidget>
 #include <QLayout>
 
 #include "vtkPoints.h"
 #include "vtkImageData.h"
 #include "vtkPolyData.h"
 #include "vtkSmartPointer.h"
+#include "QGoDockWidget.h"
 
 // base widgets
 class QGoMeshSeedSegmentation;
@@ -55,7 +55,7 @@ class QGoMeshSeedSegmentation;
 */
 
 class QGoMeshSegmentationBaseDockWidget:
-  public QDockWidget,
+  public QGoDockWidget,
   protected Ui::SegmentationDockWidgetBase
 {
   Q_OBJECT

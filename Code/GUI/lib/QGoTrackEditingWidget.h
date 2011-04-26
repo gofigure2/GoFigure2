@@ -162,7 +162,7 @@ private:
    */
   bool    mergeTrack( const unsigned int& iFirstMesh, const unsigned int& iSecondMesh);
 
-  template< class TIterator > void merge( TIterator iBegin, TIterator iEnd );
+  void    merge( MeshContainer::MultiIndexContainerTraceIDIterator iBegin);
 
   /**
    * \brief Get the borders of the given track.
@@ -192,7 +192,7 @@ private:
    */
   void      computeLineActors();
 
-  vtkActor* computeSphere( double* iCenter, double radius);
+  vtkActor* computeSphere( unsigned int iTraceID, double* iCenter, double radius);
 
   void getClosestPoints();
   /**

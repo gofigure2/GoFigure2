@@ -44,6 +44,7 @@
 #include "GoDBTraceInfoForVisu.h"
 #include "ContourMeshStructure.h"
 #include "TrackStructure.h"
+#include "LineageStructure.h"
 #include "QueryBuilderHelper.h"
 #include "ConvertToStringHelper.h"
 
@@ -304,15 +305,22 @@ std::vector< std::pair< int, std::string > > ListSpecificValuesForTwoColumnsAndT
 \param[in] iTraceName name of the trace
 */
 QGOIO_EXPORT
-void ModifyStructureWithTCoordAndPoints(ContourMeshStructure & ioStructure,
+void ModifyStructureWithSpecificities(ContourMeshStructure & ioStructure,
   unsigned int iTCoord, std::string iPoints, std::string iTraceName);
 
 /**
 \overload
 */
 QGOIO_EXPORT
-void ModifyStructureWithTCoordAndPoints(TrackStructure & ioStructure,
+void ModifyStructureWithSpecificities(TrackStructure & ioStructure,
   unsigned int iTCoord, std::string iPoints, std::string iTraceName);
+
+/**
+\overload
+*/
+QGOIO_EXPORT
+void ModifyStructureWithSpecificities(LineageStructure & ioStructure,
+  unsigned int iTrackRootID, std::string iPoints, std::string iTraceName);
 /**
 \brief execute iQueryString and put the results in a list of T structure
 \param[in] iDatabaseConnector
@@ -342,7 +350,18 @@ void ExecuteQueryAndModifyListStructure(vtkMySQLDatabase* iDatabaseConnector,
       {
       T temp;
       temp.TraceID = query->DataValue(0).ToUnsignedInt();
-      temp.CollectionID = query->DataValue(1).ToUnsignedInt();     
+      unsigned int SpecifiedValue;
+      if (iTableOne == "lineage")
+        {
+        SpecifiedValue = query->DataValue(1).ToUnsignedInt();   
+        }
+      else
+        {
+        temp.CollectionID = query->DataValue(1).ToUnsignedInt(); 
+        SpecifiedValue = query->DataValue(7).ToUnsignedInt();
+        }    
+       ModifyStructureWithSpecificities(temp, SpecifiedValue,  
+         query->DataValue(6).ToString(), iTableOne);
       /// \note For the visualization rgba values are supposed to be double in
       /// between 0 and 1; whereas in the database these values are in between
       /// 0 and 255.
@@ -351,8 +370,8 @@ void ExecuteQueryAndModifyListStructure(vtkMySQLDatabase* iDatabaseConnector,
       temp.rgba[2]      = ( query->DataValue(4).ToDouble() ) / 255.;
       temp.rgba[3]      = ( query->DataValue(5).ToDouble() ) / 255.;
    
-      ModifyStructureWithTCoordAndPoints(temp, query->DataValue(7).ToUnsignedInt(),  
-          query->DataValue(6).ToString(), iTableOne);
+      //ModifyStructureWithTCoordAndPoints(temp, query->DataValue(7).ToUnsignedInt(),  
+      //    query->DataValue(6).ToString(), iTableOne);
       ioListStructure.push_back(temp);
       }
     }
@@ -559,7 +578,8 @@ QGOIO_EXPORT
 std::vector<std::string> GetAllSelectedValuesFromTwoTables(
   vtkMySQLDatabase *iDatabaseConnector, std::string iTableOne, std::string iTableTwo,
   std::vector<std::string> iListAttributes, FieldWithValue iJoinCondition,
-  std::vector<FieldWithValue> iFieldsWithValues);
+  std::vector<FieldWithValue> iFieldsWithValues, std::string iConditionConnector = "AND",
+  std::string ColumnNameOrder = "");
 
 QGOIO_EXPORT
 std::list< unsigned int > GetAllSelectedValuesFromTwoTables(vtkMySQLDatabase *iDatabaseConnector,
@@ -573,6 +593,15 @@ std::list< unsigned int > GetAllSelectedValuesFromTwoTables(vtkMySQLDatabase *iD
   std::string iColumn, FieldWithValue iJoinCondition,
   std::string iField, std::vector<std::string> iVectorValues,FieldWithValue iAndCondition);
 
+QGOIO_EXPORT
+std::list<unsigned int> GetAllSelectedValuesFromTwoTables(vtkMySQLDatabase *iDatabaseConnector,
+                                                            std::string iTableOne,
+                                                            std::string iTableTwo,
+                                                            std::vector<std::string> iSelectedFields,
+                                                            FieldWithValue iJoinCondition,
+                                                            std::string iField,
+                                                            std::string iValue,
+                                                            bool NonNULLRows);
 QGOIO_EXPORT
 std::list< unsigned int > GetDoublonValuesFromTwoTables(
       vtkMySQLDatabase* iDatabaseConnector, std::string iTableOne, std::string iTableTwo,

@@ -91,7 +91,6 @@
 // #include "vtkQuadricLODActor.h"
 #include "vtkActor.h"
 #include "vtkPolyDataMapper.h"
-#include "vtkProp3DCollection.h"
 #include "vtkDataSetCollection.h"
 #include "vtkPoints.h"
 #include "vtkIdList.h"
@@ -215,8 +214,7 @@ void vtkViewImage2DCollection::Initialize()
       {
 //       vtkQuadricLODActor* temp =
       vtkActor *temp =  this->GetItem(j)->AddDataSet(
-          static_cast< vtkDataSet * >( this->GetItem(i)->GetSlicePlane() ),
-          plane_property, ( i != j ), true);
+          this->GetItem(i)->GetSlicePlane(), plane_property, ( i != j ), true);
       //store all slice actors
       this->SlicePlaneActors.push_back(temp);
       /// \todo Check if delete makes sense here
@@ -351,20 +349,6 @@ vtkViewImage2DCollection::SetSplinePlaneActorsVisibility(bool iVisibility)
     {
     ( *SlicePlaneActorsIterator )->SetVisibility(iVisibility);
     ++SlicePlaneActorsIterator;
-    }
-}
-
-//----------------------------------------------------------------------------
-
-//----------------------------------------------------------------------------
-void vtkViewImage2DCollection::SyncAddDataSet(vtkDataSet *dataset, vtkProperty *property)
-{
-  this->InitTraversal();
-  vtkViewImage2D *item = this->GetNextItem();
-  while ( item )
-    {
-    item->AddDataSet (dataset, property);
-    item = this->GetNextItem();
     }
 }
 

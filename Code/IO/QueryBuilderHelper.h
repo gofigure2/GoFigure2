@@ -285,7 +285,8 @@ std::string SelectQueryStreamListConditions(std::string iTable,
                                             std::vector<std::string> iListAttributes,
                                             std::vector<FieldWithValue> iConditions,
                                             std::string iConditionConnector = "OR",
-                                            bool Distinct = false);
+                                            bool Distinct = false,
+                                            std::string iOrderByColumnName = "");
 
 QGOIO_EXPORT
 std::vector< std::string > ListUnsgIntToVectorString(std::list< unsigned int > iList);
@@ -301,11 +302,12 @@ std::vector< std::string > VectorUnsgIntToVectorString(std::vector<unsigned int>
 \param[in] iTableOne table to be joined
 \param[in] iTableTwo table to be joined to
 \param[in] iOnCondition join on which condition
+\param[in] NonNULLRows if the connection is not found for 2 tables, there won't be a result
 \return the string corresponding to the query part
 */
 QGOIO_EXPORT
 std::string GetLeftJoinTwoTables(std::string iTableOne,std::string iTableTwo,
-  FieldWithValue iOnCondition);
+  FieldWithValue iOnCondition, bool NonNULLRows = false);
 
 /**
 \brief (iTable LEFT JOIN iTableTwo ON iTable.iOnCondition/Field = iTableTwo.iOnCondition/Value)
