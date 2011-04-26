@@ -44,6 +44,7 @@
 
 #include "QGoIOConfigure.h"
 #include "SelectQueryDatabaseHelper.h"
+#include "QueryDataBaseHelper.h"
 
 /**
 \class GoDBRow
@@ -186,6 +187,12 @@ public:
   \return false if the ID hasn't been found in the database
   */
   virtual bool SetValuesForSpecificID(int ID, vtkMySQLDatabase *iDatabaseConnector);
+
+  /**
+  \brief delete from the database the row which has the same TableID
+  \param[in] iDatabaseConnector connection to the database
+  */
+  void DeleteFromDB(vtkMySQLDatabase *iDatabaseConnector);
 
 protected:
 

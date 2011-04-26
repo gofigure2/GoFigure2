@@ -59,7 +59,7 @@
      <x>0</x>
      <y>0</y>
      <width>1434</width>
-     <height>23</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -202,7 +202,7 @@
   </widget>
   <widget class="QToolBar" name="FileToolBar">
    <property name="windowTitle">
-    <string>toolBar</string>
+    <string>Open Files</string>
    </property>
    <property name="iconSize">
     <size>
@@ -282,9 +282,6 @@
   <action name="actionAbout">
    <property name="text">
     <string>About</string>
-   </property>
-   <property name="menuRole">
-    <enum>QAction::AboutRole</enum>
    </property>
   </action>
   <action name="actionAbout_Qt">

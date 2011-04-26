@@ -247,28 +247,11 @@ QGoImageView::AddContour(vtkPolyData *iDataset, vtkProperty *iProperty)
       {
       vtkViewImage2D *viewer = m_Pool->GetItem(i);
       vtkActor *      temp = viewer->AddDataSet(iDataset, iProperty);
-      //viewer->Render();
       oActorVector[i] = temp;
       }
     }
 
   return oActorVector;
-}
-
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void
-QGoImageView::ChangeActorProperty(vtkProp3D *iActor,
-                                  vtkProperty *iProperty)
-{
-  int n = m_Pool->GetNumberOfItems();
-
-  for ( int i = 0; i < n; i++ )
-    {
-    vtkViewImage2D *viewer = m_Pool->GetItem(i);
-    viewer->ChangeActorProperty(iActor, iProperty);
-    }
 }
 
 //--------------------------------------------------------------------------
@@ -398,13 +381,7 @@ QGoImageView::GetImageActor(const int & iId)
 }
 
 //-------------------------------------------------------------------------
-void
-QGoImageView::ChangeActorProperty(int iDir, vtkProp3D *iActor, vtkProperty *iProperty)
-{
-  m_Pool->GetItem(iDir)->ChangeActorProperty(iActor, iProperty);
-}
 
-//--------------------------------------------------------------------------
 void
 QGoImageView::ShowSplinePlane()
 {

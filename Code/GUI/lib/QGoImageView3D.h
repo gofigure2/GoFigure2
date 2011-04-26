@@ -116,10 +116,6 @@ public:
 
   int GetSliceViewYZ() const;
 
-  virtual void ChangeActorProperty(vtkProp3D *iActor, vtkProperty *iProperty);
-
-  void ChangeActorProperty(int iDir, vtkProp3D *iActor, vtkProperty *iProperty);
-
   // MODES
   /**
    * \brief Use the default interactor style
@@ -177,15 +173,9 @@ signals:
 
   void FullScreenViewChanged(int View);
 
-  void SelectionXYChanged();
+  void SelectionChanged();
 
-  void SelectionXZChanged();
-
-  void SelectionYZChanged();
-
-  void SelectionXYZChanged();
-
-  void VisibilityXYZChanged();
+  void VisibilityChanged();
 
   void CurrentActorUpdated();
 

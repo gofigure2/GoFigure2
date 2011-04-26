@@ -75,7 +75,7 @@ public:
 
 protected:
   vtkPolyDataMySQLTrackWriter();
-  ~vtkPolyDataMySQLTrackWriter();
+  virtual ~vtkPolyDataMySQLTrackWriter();
 
 private:
   vtkPolyDataMySQLTrackWriter(const vtkPolyDataMySQLTrackWriter &);

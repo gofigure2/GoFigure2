@@ -92,6 +92,5 @@ int GoDBLineageRow::DoesThisBoundingBoxLineageExist(vtkMySQLDatabase *DatabaseCo
 //-------------------------------------------------------------------------
 int GoDBLineageRow::SaveInDB(vtkMySQLDatabase *DatabaseConnector)
 {
-  return AddOnlyOneNewObjectInTable< GoDBLineageRow >(DatabaseConnector,
-                                                      "lineage", *this, "lineageID");
+  return this->SaveInDBTemplate< GoDBLineageRow >(DatabaseConnector, this);
 }

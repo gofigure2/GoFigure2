@@ -44,9 +44,13 @@
 #include <iostream>
 
 //--------------------------------------------------------------------------
-QGoTabElementBase::QGoTabElementBase(QWidget *iParent) : QWidget(iParent),
-  m_StatusBar(NULL)
+QGoTabElementBase::QGoTabElementBase(QWidget *iParent) 
+  : QMainWindow(iParent),
+  m_StatusBar(NULL), //m_TracesActions(NULL), 
+  //m_TraceSettingsToolBar(NULL),
+  m_ToolBarList(NULL)
 {
+  //this->m_TracesActions = new QGoToolBarStatus;
 }
 
 //--------------------------------------------------------------------------
@@ -64,6 +68,13 @@ std::vector< QAction * > QGoTabElementBase::ViewActions()
   return m_ViewActions;
 }
 
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::vector< QAction * > QGoTabElementBase::ViewNoToolBarActions()
+{
+  return this->m_ViewNoToolBarActions;
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -91,11 +102,35 @@ std::vector< QAction * > QGoTabElementBase::BookmarkActions()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::vector< QAction * > QGoTabElementBase::ModeActions()
+/*std::vector< QAction * > QGoTabElementBase::ModeActions()
 {
   return m_ModeActions;
 }
 
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+//std::vector< QAction * > QGoTabElementBase::TracesActions()
+/*QGoToolBarStatus* QGoTabElementBase::TracesActions()
+{
+  return m_TracesActions;
+}
+
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+QGoTraceSettingsWidget*  QGoTabElementBase::TraceSettingsWidget()
+{
+  return m_TraceSettingsWidgetForToolBar;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTabElementBase::SetTraceSettingsToolBar(
+  QToolBar* iToolBar)
+{
+  this->m_TraceSettingsToolBar = iToolBar;
+}*/
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -124,14 +159,21 @@ void QGoTabElementBase::SetPluginActions(std::list< QAction * > iList)
 //--------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTabElementBase::CreateModeActions(QActionGroup *group)
+void QGoTabElementBase::CreateModeToolBar(
+  QMenu* iMenu, QToolBar* iToolBar)
 {
+  QActionGroup* ModeGroup = new QActionGroup(this);
+  ModeGroup->setObjectName("ModeGroup");
+
+  this->m_ModeToolBar = new QGoToolBarStatus(iToolBar, iMenu, Qt::TopToolBarArea,
+      true, true, this);
   //---------------------------------//
   //           default mode          //
   //---------------------------------//
 
   // Create/initialize the default action
   QAction *DefaultAction = new QAction(tr("Default"), this);
+  DefaultAction->setObjectName("DefaultMode");
 
   DefaultAction->setCheckable(true);
   DefaultAction->setChecked(true);
@@ -141,13 +183,13 @@ void QGoTabElementBase::CreateModeActions(QActionGroup *group)
                         QIcon::Normal, QIcon::Off);
   DefaultAction->setIcon(DefaultIcon);
 
-  group->addAction(DefaultAction);
+  ModeGroup->addAction(DefaultAction);
 
   // it also updates the interactor behaviour
   QObject::connect( DefaultAction, SIGNAL( toggled(bool) ),
                     this, SLOT( DefaultInteractorBehavior(bool) ) );
 
-  this->m_ModeActions.push_back(DefaultAction);
+  this->m_ModeToolBar->m_VectorAction.push_back(DefaultAction);
 
   //---------------------------------//
   //            Zoom mode            //
@@ -162,9 +204,9 @@ void QGoTabElementBase::CreateModeActions(QActionGroup *group)
                      QIcon::Normal, QIcon::Off);
   ZoomAction->setIcon(ZoomIcon);
 
-  group->addAction(ZoomAction);
+  ModeGroup->addAction(ZoomAction);
 
-  this->m_ModeActions.push_back(ZoomAction);
+  this->m_ModeToolBar->m_VectorAction.push_back(ZoomAction);
   // it also updates the interactor behaviour
   QObject::connect( ZoomAction, SIGNAL( toggled(bool) ),
                     this, SLOT( ZoomInteractorBehavior(bool) ) );
@@ -182,18 +224,33 @@ void QGoTabElementBase::CreateModeActions(QActionGroup *group)
                     QIcon::Normal, QIcon::Off);
   PanAction->setIcon(PanIcon);
 
-  group->addAction(PanAction);
+  ModeGroup->addAction(PanAction);
 
-  this->m_ModeActions.push_back(PanAction);
+  this->m_ModeToolBar->m_VectorAction.push_back(PanAction);
   // it also updates the interactor behaviour
   QObject::connect( PanAction, SIGNAL( toggled(bool) ),
                     this, SLOT( PanInteractorBehavior(bool) ) );
+
+  this->m_ToolBarList.push_back(this->m_ModeToolBar);
 }
 
+//--------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTabElementBase::CreateViewToolBar(QMenu* iMenu, QToolBar* iToolBar)
+{
+}
 //--------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoTabElementBase::SetStatusBarPointer(QStatusBar *iStatusbar)
 {
   this->m_StatusBar = iStatusbar;
+}
+//--------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list< QGoToolBarStatus* > QGoTabElementBase::GetToolBarsStatus()
+{
+  return this->m_ToolBarList;
 }

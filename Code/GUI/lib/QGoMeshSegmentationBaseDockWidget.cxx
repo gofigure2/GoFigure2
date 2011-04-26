@@ -43,7 +43,7 @@ QGoMeshSegmentationBaseDockWidget::QGoMeshSegmentationBaseDockWidget(
   vtkPoints *seeds,
   std::vector< vtkSmartPointer< vtkImageData > > *
   iOriginalImage) :
-  QDockWidget(iParent)
+  QGoDockWidget(iParent)
 {
   this->setupUi(this);
 
@@ -55,9 +55,9 @@ QGoMeshSegmentationBaseDockWidget::QGoMeshSegmentationBaseDockWidget(
   MeshSegmentationIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/MeshEditing.png") ),
                                  QIcon::Normal, QIcon::Off);
 
-  this->toggleViewAction()->setIcon(MeshSegmentationIcon);
-  this->toggleViewAction()->setToolTip( tr("Mesh Editing") );
-  this->toggleViewAction()->setStatusTip( tr("Create meshes manually, semi-automatically or automatically") );
+  this->m_ToggleAction->setIcon(MeshSegmentationIcon);
+  this->m_ToggleAction->setToolTip( tr("Mesh Editing") );
+  this->m_ToggleAction->setStatusTip( tr("Create meshes manually, semi-automatically or automatically") );
 
   // update interactor behavior
   QObject::connect( this->mode, SIGNAL( activated(int) ),

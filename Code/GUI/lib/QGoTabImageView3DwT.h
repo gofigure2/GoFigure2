@@ -59,7 +59,10 @@ class QGoContourSegmentationBaseDockWidget;
 class QGoMeshSegmentationBaseDockWidget;
 
 //track dockwidget
-class QGoTrackDockWidget;
+class QGoTrackViewDockWidget;
+
+//lineage dock widget
+class QGoLineageViewDockWidget;
 
 class QGoImageView3D;
 class QGoNavigationDockWidget;
@@ -143,6 +146,8 @@ public:
    * \param parent
    */
   void setupUi(QWidget *parent);
+
+  void CreateModeToolBar(QMenu* iMenu, QToolBar* iToolBar);
 
   /**
    * \brief
@@ -234,6 +239,9 @@ public:
   GoFigureMeshAttributes ComputeMeshAttributes(vtkPolyData *iMesh,
                                                const bool& iIntensity,
                                                const unsigned int& iTCoord );
+
+  void InitializeToolsForTracesToolBar(QMenu* iMenu, QToolBar* iToolBar);
+  void InitializeTraceSettingsToolBar(QToolBar* iToolBar);
 
 signals:
   void TimePointChanged(int TimePoint);
@@ -327,13 +335,8 @@ public slots:
 
   void ReEditContour(const unsigned int & iId);
 
-  void HighlightXY();
-
-  void HighlightXZ();
-
-  void HighlightYZ();
-
-  void HighlightXYZ();
+  void HighlightPickedActor();
+  void VisibilityPickedActor();
 
   void Change3DPerspectiveToAxial();
 
@@ -343,13 +346,9 @@ public slots:
 
   void CreateMeshFromSelectedContours(std::list< unsigned int > ListContourIDs, int iMeshID);
 
-  void VisibilityXYZ();
-
   void AddContourForMeshToContours(vtkPolyData *);
 
 protected:
-  QHBoxLayout *                                  m_HBoxLayout;
-  QSplitter *                                    m_VSplitter;
   QGoImageView3D *                               m_ImageView;
   std::vector< vtkSmartPointer< vtkLSMReader > > m_LSMReader;
   std::vector< vtkSmartPointer< vtkImageData > > m_InternalImages;
@@ -364,6 +363,7 @@ protected:
   QColor                                    m_BackgroundColor;
   QAction *                                 m_BackgroundColorAction;
   QAction *                                 m_TakeSnapshotAction;
+  QToolBar*                                 m_TraceSettingsToolBar;
 
   float m_IntersectionLineWidth;
   std::vector< QString > m_ChannelNames;
@@ -384,15 +384,20 @@ protected:
   // base segmentation dockwidget for meshes
   QGoMeshSegmentationBaseDockWidget *m_MeshSegmentationDockWidget;
 
-  QGoTrackDockWidget* m_TrackDockWidget;
+  QGoTrackViewDockWidget*   m_TrackViewDockWidget;
+
+  QGoLineageViewDockWidget* m_LineageViewDockWidget;
+
+  QGoTraceSettingsWidget*   m_TraceSettingsWidget;
 
   vtkPoints *m_Seeds;
 
   ContourContainer *m_ContourContainer;
   MeshContainer    *m_MeshContainer;
   TrackContainer   *m_TrackContainer;
+  LineageContainer *m_LineageContainer;
 
-  bool m_TraceWidgetRequiered;
+  //bool m_TraceWidgetRequiered;
 
   /** \brief We are in the regular visualization mode (true) or in the time
    * visualization mode (false) */
@@ -431,6 +436,8 @@ protected:
       vtkPolyData *contour_copy = vtkPolyData::New();
       contour_copy->DeepCopy(iContour);
 
+      AddTraceIDIntoPolydata(contour_copy, iIt->TraceID, "CONTOUR");
+
       VisualizeTraceBase< ContourContainer, TIndex >( m_ContourContainer, iIt,
                                                       highlighted, visibility,
                                                       contour_copy );
@@ -450,6 +457,8 @@ protected:
       bool visibility =
         ( static_cast< unsigned int >( m_TCoord ) == iIt->TCoord );
 
+      AddTraceIDIntoPolydata(iIt->Nodes, iIt->TraceID, "MESH");
+
       VisualizeTraceBase< MeshContainer, TIndex >( m_MeshContainer, iIt,
                                                    highlighted, visibility );
       }
@@ -464,6 +473,8 @@ protected:
       {
       bool highlighted = false;
       bool visibility = false;
+
+      AddTraceIDIntoPolydata(iIt->Nodes, iIt->TraceID, "TRACK");
 
       VisualizeTraceBase< TrackContainer, TIndex >( m_TrackContainer, iIt,
                                                    highlighted, visibility );
@@ -493,6 +504,7 @@ protected:
       }
 
     std::vector< vtkActor * > mesh_actor = this->AddContour( temp, mesh_property );
+
     mesh_property->Delete();
 
     iContainer->template UpdateVisualizationForGivenElement< TIndex >( iIt,
@@ -518,11 +530,13 @@ protected:
 
   void CreateAllViewActions();
 
+  void CreateTracesActions();
+
   void CreateToolsActions();
 
   void CreateBookmarkActions();
 
-  void CreateModeActions();
+  //void CreateModeActions();
 
   void CreateVisuDockWidget();
 
@@ -565,17 +579,16 @@ protected slots:
 
   void OpenExistingBookmark();
 
-  void ShowTraceWidgetsForContour(bool ManualSegVisible = true);
-
-  void ShowTraceWidgetsForMesh(bool MeshVisible = true);
+  /**
+  \brief slot connected to the toggleaction of the TW, the contour and mesh editing,
+  update the trace and collection name of the trace settings toolbar and widget and
+  check if the trace settings toolbar needs to be shown/hidden
+  */
+  void SetTraceSettingsToolBarVisible(bool IsVisible);
 
   void UpdateSeeds();
 
   void GoToLocation(int iX, int iY, int iZ, int iT);
-
-  void CloseTabRequest(bool iTable);
-
-  void RequieresTraceWidget(bool iTable);
 
   /**
    * \brief Mouse interaction style allows contours segmentation, according to
@@ -648,6 +661,8 @@ protected slots:
   variables have been set for the QGoPrintDatabase
   */
   void SetDatabaseContainersAndDelayedConnections();
+
+  void AddTraceIDIntoPolydata( vtkPolyData* iPolydata, unsigned int iTraceID, const char* iTrace);
 
 private:
   Q_DISABLE_COPY(QGoTabImageView3DwT);

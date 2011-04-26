@@ -31,28 +31,40 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
+#include "GoDBTWContainerForLineage.h"
 
-#ifndef __QGoTraceSettingsDockWidget_h
-#define __QGoTraceSettingsDockWidget_h
-
-#include <QDockWidget>
-#include "QGoTraceSettingsWidget.h"
-
-/**
-\class QGoTraceManualEditingDockWidget
-\brief dock widget for the QGoTraceManualEditingWidget, has a window
-title that can be modified according to the content of its widget
-\ingroup GUI
-*/
-class QGOGUILIB_EXPORT QGoTraceSettingsDockWidget:
-  public QDockWidget
+GoDBTWContainerForLineage::GoDBTWContainerForLineage(int iImgSessionID) :
+  GoDBTWContainerForTrackLineage("lineage", "None", iImgSessionID)
 {
-  Q_OBJECT
-public:
-  explicit QGoTraceSettingsDockWidget(QWidget *iParent = 0);
-  ~QGoTraceSettingsDockWidget();
-  QGoTraceSettingsWidget *m_TraceWidget;
-protected slots:
-  void ModifyWindowTitle(QString iTitle);
-};
-#endif
+  this->SetSpecificInfoForLineageTable();
+}
+
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+GoDBTWContainerForLineage::~GoDBTWContainerForLineage()
+{
+}
+
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBTWContainerForLineage::SetSpecificInfoForLineageTable()
+{
+  GoDBTraceInfoForTableWidget temp;
+
+  std::pair< GoDBTraceInfoForTableWidget,
+             std::vector< std::string > > PairTemp;
+
+  //Get the info for the TrackIDRoot:
+  temp.InfoName = "TrackIDRoot";
+  temp.ColumnNameDatabase = "TrackIDRoot";
+  temp.TableNameDatabase = "lineage";
+  m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
+  temp.Clear();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------

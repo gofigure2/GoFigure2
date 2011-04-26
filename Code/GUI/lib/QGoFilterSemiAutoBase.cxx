@@ -465,9 +465,10 @@ QGoFilterSemiAutoBase::ReorganizeContour(vtkPolyData *iInputImage, bool iDecimat
     //Decimation (has to be after points reorganization)
     vtkPolylineDecimation *decimator = vtkPolylineDecimation::New();
     decimator->SetInput(testPolyD);
-    /// \todo instead os setting it to 0.9, compute it to make 10 to 20 control
-    // points
-    decimator->SetTargetReduction(0.9);
+
+    double ratio = 1. - 20. / static_cast< double >( npts );
+
+    decimator->SetTargetReduction(ratio);
     decimator->Update();
 
     vtkPolyData *output = vtkPolyData::New();

@@ -17,6 +17,7 @@ SET( QGOIO_SRC
   TraceStructure.cxx
   ContourMeshStructure.cxx
   TrackStructure.cxx
+  LineageStructure.cxx
   CreateDataBaseHelper.cxx
   GoDBAuthorRow.cxx
   GoDBChannelRow.cxx
@@ -31,6 +32,7 @@ SET( QGOIO_SRC
   GoDBTraceRow.cxx
   GoDBRow.cxx
   GoDBTrackRow.cxx
+  GoDBTrackFamilyRow.cxx
   GoDBLineageRow.cxx
   GoDBNameDescRow.cxx
   GoDBBookmarkRow.cxx
@@ -42,6 +44,7 @@ SET( QGOIO_SRC
   GoDBTWContainerForTrackLineage.cxx
   GoDBTWContainerForMesh.cxx
   GoDBTWContainerForTrack.cxx
+  GoDBTWContainerForLineage.cxx
   GoDBExport.cxx
   GoDBImport.cxx
   MegaCaptureHeaderReader.cxx

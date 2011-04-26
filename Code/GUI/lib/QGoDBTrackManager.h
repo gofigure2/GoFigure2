@@ -41,6 +41,9 @@
 #include "QGoDBTraceManager.h"
 #include "QGoGUILibConfigure.h"
 #include "TrackContainer.h"
+#include "GoDBTrackFamilyRow.h"
+
+class TrackStructure;
 
 /**
 \class QGoDBTrackManager
@@ -73,6 +76,13 @@ public:
   */
   void DisplayInfoAndLoadVisuContainerForAllTracks(
     vtkMySQLDatabase *iDatabaseConnector);
+
+  /**
+  \brief get all the data from the database of the track family table and give the corresponding
+  info to the track container for visu
+  \param[in] iDatabaseConnector connection to the database
+  */
+  void LoadInfoVisuContainerForTrackFamilies(vtkMySQLDatabase *iDatabaseConnector);
 
   /**
   \brief display in the TW the values extracted from iTrackAttributes
@@ -137,6 +147,12 @@ signals:
   void TrackToSplit(unsigned int iTrackID, std::list<unsigned int> iListMeshIDs);
   void TrackIDToBeModifiedWithWidget(std::list<unsigned int> iListTracksID);
   void MeshesToAddToTrack(std::list<unsigned int> iListMeshes, unsigned int iTrackID);
+ 
+  void CheckedTracksToAddToSelectedLineage(std::list<unsigned int> iDaughtersID, unsigned int iLineageID,
+    std::list<unsigned> iLineagesToDelete);
+
+  void NewLineageToCreateFromTracks( std::list<unsigned int> iCheckedTracksIDs, unsigned int iTrackIDRoot,
+    std::list<unsigned> iLineagesToDelete);
 
 protected:
   GoDBTWContainerForTrack *m_TWContainer;
@@ -165,13 +181,6 @@ protected:
   //virtual in QGoDBTraceManager
   void AddActionsContextMenu(QMenu *iMenu);
 
-protected slots:
-  //virtual pure method in QGoDBTraceManager
-  virtual void UpdateHighlightedElementsInVisuContainer(int iTraceID);
-
-  //virtual pure method in QGoDBTraceManager
-  virtual void UpdateVisibleElementsInVisuContainer(int iTraceID);
-
   /**
   \brief create or update the track contained in the current element of the
   track container into the database, the table widget and insert the current
@@ -179,6 +188,126 @@ protected slots:
   \param[in] iDatabaseConnector connection to the database
   */
   void SaveTrackCurrentElement(vtkMySQLDatabase* iDatabaseConnector);
+
+  void SaveTrackStructure(vtkMySQLDatabase* iDatabaseConnector,
+      TrackStructure* iStructure);
+
+  /**
+  \brief check that the 2 tracks are not overloaping, if not, return the
+  trackID to keep for the merge and the one to delete
+  \param[in] iTrackIDs IDs of both tracks to check
+  \param[in,out] ioTraceIDToKeep ID of the trace to keep after the merge
+  \param[in,out] ioTraceIDToDelete ID of the trace to delete after the merge
+  \param[in] iDatabaseConnector connection to the database
+  \return false of the tracks are not overlapping, true if they are
+  */
+  bool CheckOverlappingTracks(std::list<unsigned int> iTrackIDs,
+    unsigned int &ioTraceIDToKeep, unsigned int &ioTraceIDToDelete,
+    vtkMySQLDatabase* iDatabaseConnector);
+
+  /**
+  \brief update the trackFamilyID in the database for the track corresponding
+  to iDaughterID, if the trackfamilyID is 0, then the lineageID will be set to
+  0 also for this track
+  \param[in] iDatabaseconnector connection to the database
+  \param[in] iDaughterID ID of the track to be updated
+  \param[in] iTrackFamilyID
+  */
+  void UpdateTrackFamilyIDForDaughter(vtkMySQLDatabase* iDatabaseConnector,
+    unsigned int iDaughterID,unsigned int iTrackFamilyID);
+
+  /**
+  \brief check that the mothertrackID is not already a mother in another
+  trackfamily, create the trackfamily if not and return the trackfamilyID
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iMotherTrackID 
+  \param[in] iDaughtersID
+  \return ID of the new created trackfamily
+  */
+  int CreateTrackFamily(vtkMySQLDatabase* iDatabaseConnector,
+    unsigned int iMotherTrackID, std::list<unsigned int> iDaughtersID);
+
+  /**
+  \brief get the trackID with the lowest timepoint as the mother trackID, 
+  if several tracks have the lowest timepoint, return false. if other tracks 
+  from the list are overlapping the mother trackID, return false.
+  \param[in] iListTracksID tracks ID to be identified
+  \param[in,out] ioMotherID to be modified with the identified mother TrackID 
+  \param[in,out] ioDaughtersID to be modified with the identified daughters TrackID
+  \return false if it was not possible to identify them based on the timepoints
+  */
+  bool IdentifyMotherDaughtersToCreateTrackFamily(
+    vtkMySQLDatabase* iDatabaseConnector,
+    std::list<unsigned int> iListTracksID, unsigned int &ioMotherID,
+    std::list<unsigned int> &ioDaughtersID);
+
+  /**
+  \brief get the lineage ids of the 2 daughters, then get all the tracks belonging
+  to these 2 lineages and push them into the ioTrackIDsOfTheFamilies.
+  \param[in] iDatabaseConnector connection to the database
+  \param[in,out] ioTrackIDsOfTheFamilies IDs of all the tracks that will belong to
+  the same lineage as the mother of the new created division
+  \return the lineage ids of the 2 daughters
+  */
+  std::list<unsigned int> GetTrackIDFromDaughtersFamilies( vtkMySQLDatabase* iDatabaseConnector,
+    std::list<unsigned int> &ioTrackIDsOfTheFamilies);
+
+  /**
+  \brief set the trackfamilyid of the daughters to 0, delete the trackfamily
+  from the database and from the visu and check if the daughters are mothers, if not
+  fill the ioTrackIDsNoLineage, if yes, update the all family
+  \
+  */
+  void DeleteOneDivision(GoDBTrackFamilyRow iDivision, vtkMySQLDatabase* iDatabaseConnector,
+    std::list<unsigned int> &ioTrackIDsNoLineage, std::list<unsigned int> &ioMotherLineageToDelete);
+
+  /**
+  \brief build a message for the user to know which ones of the selected tracks have no division
+  and emit a signal for it to be printed into the status bar
+  \param[in] iTracksNoDivision IDs of the selected tracks that are not mothers
+  */
+  void PrintAMessageForTracksWithNoDivision(std::list<unsigned int> iTracksNoDivision);
+
+  /**
+  \brief set the trackfamilyID of the daughter to 0, get all the tracks with the same lineage 
+  and emit a signal to create a lineage from these tracks with the daughter as trackIDRoot
+  if ioPartOfHigherLineage, the lineage of the division will not be deleted as higher tracks belong to it
+  */
+  void CreateALineageWithFormerDaughterOfADeletedDivision(
+    unsigned int iDaughterID, vtkMySQLDatabase* iDatabaseConnector, bool &ioPartOfHigherLineage);
+
+  /**
+  \brief return true if the track is a mother
+  */
+  bool IsTheTrackAMother(unsigned int iDaughterID, 
+    vtkMySQLDatabase* iDatabaseConnector);
+
+  /**
+  \brief return true if the track is a daughter
+  */
+  bool IsTheTrackADaughter(unsigned int iTrackID, 
+  vtkMySQLDatabase* iDatabaseConnector);
+
+  /**
+  \brief check if the daughters are mothers, if yes, create a new lineage for them,
+  if not, update the track familyID to 0 and fill the ioTrackIDsNoLineage with them,
+  if ioPartOfHigherLineage is false, delete the lineage after creating a new one 
+  for the daughter family if the daughter is a mother and set the ioPartOfHigherLineage
+  to true
+  */
+  void UpdateFormerDaughtersOfADeletedDivision(
+    std::list<unsigned int> iDaughtersID,
+    std::list<unsigned int> &ioTrackIDsNoLineage,
+    bool &ioPartOfHigherLineage);
+
+protected slots:
+
+  //virtual pure method in QGoDBTraceManager
+  virtual void UpdateHighlightedElementsInVisuContainer(int iTraceID);
+
+  //virtual pure method in QGoDBTraceManager
+  virtual void UpdateVisibleElementsInVisuContainer(int iTraceID);
+
 
  //virtual pure method in QGoDBTraceManager
   virtual void SetColorCoding(bool IsChecked);
@@ -206,17 +335,13 @@ protected slots:
   void MergeTracks();
 
   /**
-  \brief check that the 2 tracks are not overloaping, if not, return the
-  trackID to keep for the merge and the one to delete
-  \param[in] iTrackIDs IDs of both tracks to check
-  \param[in,out] ioTraceIDToKeep ID of the trace to keep after the merge
-  \param[in,out] ioTraceIDToDelete ID of the trace to delete after the merge
-  \param[in] iDatabaseConnector connection to the database
-  \return false of the tracks are not overlapping, true if they are
+  \brief slot called when the user chose "Create a new division from checked tracks"
   */
-  bool CheckOverlappingTracks(std::list<unsigned int> iTrackIDs,
-    unsigned int &ioTraceIDToKeep, unsigned int &ioTraceIDToDelete,
-    vtkMySQLDatabase* iDatabaseConnector);
+  void CreateCorrespondingTrackFamily();
 
+  /**
+  \brief slot called when the user chose "Delete the division for this tracks"
+  */
+  void DeleteTheDivisions();
 };
 #endif

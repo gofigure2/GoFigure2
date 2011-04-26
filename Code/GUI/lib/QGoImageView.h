@@ -137,13 +137,6 @@ public:
                                                vtkProperty *iProperty = NULL);
 
   /**
-   * \brief Highlight contour (or not).
-   * \param[in] iActor contour
-   * \param[in] iProperty to be highlighted
-   */
-  virtual void ChangeActorProperty(vtkProp3D *iActor, vtkProperty *iProperty);
-
-  /**
    * \brief Use the default interactor style
    */
   void DefaultMode();
@@ -182,11 +175,6 @@ public:
    * \brief Get the image actor
    */
   vtkImageActor * GetImageActor(const int & iId);
-
-  /**
-   * \brief Change the select actor property in the selected view
-   */
-  void ChangeActorProperty(int iDir, vtkProp3D *iActor, vtkProperty *iProperty);
 
   /**
    * \brief Invert visibility of the Spline Plane

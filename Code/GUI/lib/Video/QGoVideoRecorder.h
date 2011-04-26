@@ -44,6 +44,7 @@
 #include "QGoGUILibConfigure.h"
 
 #include "vtkSmartPointer.h"
+#include "QGoDockWidget.h"
 
 class vtkRenderWindow;
 class vtkRenderWindowMovieRecorder;
@@ -59,7 +60,7 @@ class vtkAVIRenderWindowRecorder;
  * \brief QGoVideoRecorder to record videos to using AVI or FFMPEG
  */
 class QGOGUILIB_EXPORT QGoVideoRecorder:
-  public QDockWidget, private Ui::NewDockWidgetVideoRecorder
+  public QGoDockWidget, private Ui::NewDockWidgetVideoRecorder
 {
   Q_OBJECT
 public:

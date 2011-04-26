@@ -328,8 +328,11 @@ void vtkViewImage::RemoveProp(vtkProp *prop)
 {
   this->Renderer->RemoveViewProp(prop);
 
-  unsigned int index = this->Prop3DCollection->IsItemPresent(prop);
+  int index = this->Prop3DCollection->IsItemPresent(prop);
+  if( index )
+  {
   this->Prop3DCollection->RemoveItem(index);
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -515,25 +518,6 @@ void vtkViewImage::SetShowScalarBar(const bool & val)
 }
 
 //----------------------------------------------------------------------------
-
-//----------------------------------------------------------------------------
-void vtkViewImage::ChangeActorProperty(vtkProp3D *iActor,
-                                       vtkProperty *iProperty)
-{
-  if ( iActor && iProperty )
-    {
-    if ( Prop3DCollection->IsItemPresent(iActor) )
-      {
-      vtkActor *temp = dynamic_cast< vtkActor * >( iActor );
-      if ( temp )
-        {
-        temp->SetProperty(iProperty);
-        //temp->Modified();
-        //Render();
-        }
-      }
-    }
-}
 
 //----------------------------------------------------------------------------
 void vtkViewImage::Render()

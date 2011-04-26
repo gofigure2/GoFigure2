@@ -1091,11 +1091,18 @@ std::list< unsigned int > GetAllSelectedValuesFromTwoTables(
 std::vector< std::string > GetAllSelectedValuesFromTwoTables(
   vtkMySQLDatabase *iDatabaseConnector, std::string iTableOne, std::string iTableTwo,
   std::vector< std::string > iSelectedFields, FieldWithValue iJoinCondition,
-  std::vector< FieldWithValue > iFieldsWithValues)
+  std::vector< FieldWithValue > iFieldsWithValues, std::string iConditionConnector,
+  std::string ColumnNameOrder)
 {
   std::string Where = GetLeftJoinTwoTables(iTableOne, iTableTwo, iJoinCondition);
+
   std::string QueryString = SelectQueryStreamListConditions(Where, iSelectedFields,
-                                                            iFieldsWithValues, "AND");
+       iFieldsWithValues, iConditionConnector, false, ColumnNameOrder);
+  /*if (!ColumnNameOrder.empty())
+    {
+    QueryString = SelectQueryStreamListConditions(Where, iSelectedFields, iFieldsWithValues, "AND",
+      false, ColumnNameOrder);
+    }*/
 
   return ExecuteSelectQuery< std::vector< std::string > >(iDatabaseConnector, QueryString);
 }
@@ -1144,6 +1151,24 @@ std::list< unsigned int > GetAllSelectedValuesFromTwoTables(vtkMySQLDatabase *iD
   return ExecuteSelectQuery< std::list< unsigned int > >(iDatabaseConnector, QueryString);
 }
 
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list<unsigned int> GetAllSelectedValuesFromTwoTables(  vtkMySQLDatabase *iDatabaseConnector,
+                                                            std::string iTableOne,
+                                                            std::string iTableTwo,
+                                                            std::vector<std::string> iSelectedFields,
+                                                            FieldWithValue iJoinCondition,
+                                                            std::string iField,
+                                                            std::string iValue,
+                                                            bool NonNULLRows)
+{
+  std::string Where = GetLeftJoinTwoTables(iTableOne, iTableTwo, iJoinCondition, true);
+  std::string QueryString = SelectQueryStreamCondition(Where, iSelectedFields,
+       iField, iValue);
+
+  return ExecuteSelectQuery< std::list< unsigned int > >(iDatabaseConnector, QueryString);
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -1266,7 +1291,7 @@ std::string GetCoordinateValuesQueryString(std::string iTableName, std::string i
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void ModifyStructureWithTCoordAndPoints(ContourMeshStructure & ioStructure,
+void ModifyStructureWithSpecificities(ContourMeshStructure & ioStructure,
                                         unsigned int iTCoord, std::string iPoints, std::string iTraceName)
 {
   ioStructure.TCoord = iTCoord;
@@ -1306,7 +1331,7 @@ void ModifyStructureWithTCoordAndPoints(ContourMeshStructure & ioStructure,
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void ModifyStructureWithTCoordAndPoints(TrackStructure & ioStructure,
+void ModifyStructureWithSpecificities(TrackStructure & ioStructure,
                                         unsigned int iTCoord, std::string iPoints, std::string iTraceName)
 {
   (void)iTCoord;
@@ -1338,7 +1363,22 @@ void ModifyStructureWithTCoordAndPoints(TrackStructure & ioStructure,
     ioStructure.Nodes = NULL;
     }
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
+void ModifyStructureWithSpecificities(LineageStructure & ioStructure,
+  unsigned int iTrackRootID, std::string iPoints, std::string iTraceName)
+{
+  (void) iPoints;
+  if ( iTraceName != "lineage" )
+    {
+    std::cout << "this method is only for lineage";
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
+    return;
+    }
+  ioStructure.TrackRootID = iTrackRootID;
+}
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
