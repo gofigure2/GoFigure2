@@ -110,13 +110,33 @@ private:
   \brief Change the color of a division with an unary function.
   \sa TrackStructure
   */
-struct change_color_division
+struct change_data_color_division
 {
-  change_color_division(double* iColor):color(iColor){}
+  change_data_color_division(double* iColor):color(iColor){}
 
   void operator()(TrackStructure& iStructure)
   {
-    iStructure.ModifyDivisionColor(color);
+    iStructure.ModifyDivisionColorData(color);
+  }
+
+private:
+  double* color;
+};
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+/**
+  \struct change_color_division
+  \brief Change the color of a division with an unary function.
+  \sa TrackStructure
+  */
+struct change_actor_color_division
+{
+  change_actor_color_division(double* iColor):color(iColor){}
+
+  void operator()(TrackStructure& iStructure)
+  {
+    iStructure.ModifyDivisionColorActor(color);
   }
 
 private:
@@ -504,6 +524,22 @@ public:
    * \param[in] color color of the divisions
    */
   void UpdateDivisionColor(
+      MultiIndexContainerTraceIDIterator& iMotherIterator, double* iColor);
+
+
+  /*
+   * \brief Update the lineage's divisions data color given the track root ID and
+   * a color
+   * \param[in] iTrackID track root ID
+   * \param[in] color color of the divisions
+   */
+  void UpdateCollectionColorsData( unsigned int iTrackID, double* color);
+  /*
+   * \brief Update the lineage's divisions data color given the track root ID and a color
+   * \param[in] iMotherIterator iterator to go through the lineage
+   * \param[in] color color of the divisions
+   */
+  void UpdateDivisionColorData(
       MultiIndexContainerTraceIDIterator& iMotherIterator, double* iColor);
 
   // compute statistics on the collection

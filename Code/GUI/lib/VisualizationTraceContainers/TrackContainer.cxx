@@ -1452,7 +1452,8 @@ UpdateDivisionColor(MultiIndexContainerTraceIDIterator& it, double* iColor)
 {
   if( !it->IsLeaf() )
     {
-    m_Container.get< TraceID >().modify( it , change_color_division(iColor) );
+    m_Container.get< TraceID >().modify( it , change_data_color_division(iColor) );
+    m_Container.get< TraceID >().modify( it , change_actor_color_division(iColor) );
     }
 
   if(it->TreeNode.m_Child[0])
@@ -1474,6 +1475,57 @@ UpdateDivisionColor(MultiIndexContainerTraceIDIterator& it, double* iColor)
     if( childIt != m_Container.get< TraceID >().end() )
       {
       UpdateDivisionColor(childIt,iColor);
+      }
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateCollectionColorsData( unsigned int iTrackID, double* color)
+{
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iTrackID);
+
+  if( motherIt != m_Container.get< TraceID >().end() )
+    {
+    UpdateDivisionColorData(motherIt, color);
+
+    m_ImageView->UpdateRenderWindows();
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateDivisionColorData(MultiIndexContainerTraceIDIterator& it, double* iColor)
+{
+  if( !it->IsLeaf() )
+    {
+    m_Container.get< TraceID >().modify( it , change_data_color_division(iColor) );
+    }
+
+  if(it->TreeNode.m_Child[0])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateDivisionColorData(childIt,iColor);
+      }
+    }
+
+  if(it->TreeNode.m_Child[1])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateDivisionColorData(childIt,iColor);
       }
     }
 }
