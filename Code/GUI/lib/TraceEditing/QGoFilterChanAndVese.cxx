@@ -52,7 +52,7 @@
 #include "vtkTransform.h"
 #include "vtkTransformPolyDataFilter.h"
 
-#include "QGoContourSemiAutoLevelsetWidget.h"
+//#include "QGoContourSemiAutoLevelsetWidget.h"
 
 //--------------------------------------------------------------------------
 QGoFilterChanAndVese::QGoFilterChanAndVese(QObject *iParent, int iDimension) :
@@ -76,9 +76,9 @@ QGoFilterChanAndVese::QGoFilterChanAndVese(QObject *iParent, int iDimension) :
     name = "2D Levelset in 1 mesh";
     }
 
-  setName(name);
-  QGoContourSemiAutoLevelsetWidget *widget = new QGoContourSemiAutoLevelsetWidget;
-  setWidget(widget);
+  //setName(name);
+  //QGoContourSemiAutoLevelsetWidget *widget = new QGoContourSemiAutoLevelsetWidget;
+  //setWidget(widget);
 }
 
 //--------------------------------------------------------------------------
@@ -92,7 +92,7 @@ QGoFilterChanAndVese::
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void
+/*void
 QGoFilterChanAndVese::setIterations(int iIterations)
 {
   m_Iterations = iIterations;
@@ -105,7 +105,7 @@ void
 QGoFilterChanAndVese::setCurvature(int iCurvature)
 {
   m_Curvature = iCurvature;
-}
+}*/
 
 //--------------------------------------------------------------------------
 
@@ -376,7 +376,7 @@ QGoFilterChanAndVese::Apply()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void
+/*void
 QGoFilterChanAndVese::ConnectSignals(int iFilterNumber)
 {
   QGoFilterSemiAutoBase::ConnectSignals(iFilterNumber);
@@ -386,7 +386,7 @@ QGoFilterChanAndVese::ConnectSignals(int iFilterNumber)
                     this, SLOT( setCurvature(int) ) );
   QObject::connect( getWidget(), SIGNAL( Iterations(int) ),
                     this, SLOT( setIterations(int) ) );
-}
+}*/
 
 //--------------------------------------------------------------------------
 

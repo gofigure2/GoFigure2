@@ -85,14 +85,14 @@ SET( QGoGUILIB_SRC
   TraceEditing/QGoContourManualSegmentationWidget.cxx
 
   #--seed segmentation--
-  QGoSeedSegmentationBase.cxx
-    QGoContourSeedSegmentation.cxx
-    QGoMeshSeedSegmentation.cxx
-  QGoSeedBaseWidget.cxx
+  #QGoSeedSegmentationBase.cxx
+   # QGoContourSeedSegmentation.cxx
+   # QGoMeshSeedSegmentation.cxx
+   #QGoSeedBaseWidget.cxx
     QGoContourSemiAutoLevelsetWidget.cxx
     QGoContourSemiAutoShapeWidget.cxx
     QGoContourSemiAutoWatershedWidget.cxx
-  QGoFilterSemiAutoBase.cxx
+	QGoFilterSemiAutoBase.cxx
     TraceEditing/QGoFilterChanAndVese.cxx
     TraceEditing/QGoFilterShape.cxx
     TraceEditing/QGoFilterWatershed.cxx
@@ -254,11 +254,11 @@ SET( QGoGUILIB_HDRS
   QGoSeedSegmentationBase.h
     QGoContourSeedSegmentation.h
     QGoMeshSeedSegmentation.h
-  QGoSeedBaseWidget.h
+  #QGoSeedBaseWidget.h
     QGoContourSemiAutoLevelsetWidget.h
     QGoContourSemiAutoShapeWidget.h
     QGoContourSemiAutoWatershedWidget.h
-  QGoFilterSemiAutoBase.h
+	QGoFilterSemiAutoBase.h
     TraceEditing/QGoFilterChanAndVese.h
     TraceEditing/QGoFilterShape.h
     TraceEditing/QGoFilterWatershed.h
@@ -321,7 +321,7 @@ SET( QGoGUILIB_UI
   Resources/SegmentationDockWidgetBase.ui
 
 #segmentation widget
-  Resources/SegmentationSeedBaseWidget.ui
+  #Resources/SegmentationSeedBaseWidget.ui
 
 # manual contour segmentation dock widget
   Resources/ManualSegmentationSettingsDlg.ui

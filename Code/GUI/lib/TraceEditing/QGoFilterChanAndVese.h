@@ -35,11 +35,13 @@
 #define __QGoFilterChanAndVese_h
 
 #include "QGoFilterSemiAutoBase.h"
-
+#include <QObject>
 #include "QGoGUILibConfigure.h"
 #include "itkImage.h"
 #include "itkChanAndVeseSegmentationFilter.h"
 #include "itkVTKImageImport.h"
+#include "vtkSmartPointer.h"
+#include "vtkPolyData.h"
 
 /**
  * \class QGoFilterChanAndVese
@@ -59,7 +61,7 @@ public:
 
   virtual vtkPolyData * Apply();
 
-  virtual void ConnectSignals(int iFilterNumber);
+  //virtual void ConnectSignals(int iFilterNumber);
 
   std::vector<vtkPolyData*> ApplyFilterLevelSet3D(double iRadius, vtkPoints* iPoints,
     int iIterations, int iCurvature,
@@ -153,9 +155,9 @@ public:
     std::vector<vtkSmartPointer< vtkImageData > >* iImages, int iChannel);
 
 public slots:
-  void setIterations(int iIterations);
+  //void setIterations(int iIterations);
 
-  void setCurvature(int iCurvature);
+  //void setCurvature(int iCurvature);
 
 protected:
   void Filter2D(double *iCenter, const int & iOrientation);
@@ -167,6 +169,7 @@ protected:
 private:
   int m_Iterations;
   int m_Curvature;
+  int m_Dimension;
 
   itk::Image< float, 3 >::Pointer m_Image3D;
   itk::Image< float, 2 >::Pointer m_Image2D;

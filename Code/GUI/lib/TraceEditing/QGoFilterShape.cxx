@@ -72,10 +72,10 @@ QGoFilterShape::QGoFilterShape(QObject *iParent, int iDimension) :
     name = "2D Shapes in 1 mesh";
     }
 
-  setName(name);
-  QGoContourSemiAutoShapeWidget *widget =
-    new QGoContourSemiAutoShapeWidget(NULL);
-  setWidget(widget);
+  //setName(name);
+  //QGoContourSemiAutoShapeWidget *widget =
+  //  new QGoContourSemiAutoShapeWidget(NULL);
+  //setWidget(widget);
 
   m_Shape = 0;
 }

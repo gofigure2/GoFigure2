@@ -38,7 +38,6 @@
 QGoMeshShapeAlgo::QGoMeshShapeAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent)
   :QGoShapeAlgo(iSeeds, iParent)
 {
-  this->SetAlgoWidget(iParent);
 }
 //-------------------------------------------------------------------------
 

@@ -78,9 +78,9 @@ QGoFilterWatershed::QGoFilterWatershed(QObject *iParent, int iDimension) :
     name = "2D Watershed within 1 mesh";
     }
 
-  setName(name);
-  QGoContourSemiAutoWatershedWidget *widget = new QGoContourSemiAutoWatershedWidget;
-  setWidget(widget);
+  //setName(name);
+  //QGoContourSemiAutoWatershedWidget *widget = new QGoContourSemiAutoWatershedWidget;
+  //setWidget(widget);
 }
 
 //--------------------------------------------------------------------------

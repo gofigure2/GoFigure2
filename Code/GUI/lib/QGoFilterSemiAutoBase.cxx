@@ -38,7 +38,7 @@
 #include "vtkSmartPointer.h"
 #include "vtkImageData.h"
 
-#include "QGoSeedBaseWidget.h"
+//#include "QGoSeedBaseWidget.h"
 
 //Extract one slice
 #include "vtkMatrix4x4.h"
@@ -121,7 +121,7 @@ QGoFilterSemiAutoBase::getName()
 void
 QGoFilterSemiAutoBase::setWidget(QWidget *iWidget)
 {
-  m_Widget = iWidget;
+  //m_Widget = iWidget;
 }
 
 //--------------------------------------------------------------------------
@@ -269,7 +269,7 @@ QGoFilterSemiAutoBase::setOriginalImageMC(std::vector< vtkSmartPointer< vtkImage
 void
 QGoFilterSemiAutoBase::UpdateVisibility(int iCurrentFilter)
 {
-  QWidget *w = m_Widget->parentWidget()->parentWidget();
+  /*QWidget *w = m_Widget->parentWidget()->parentWidget();
 
   if ( m_Number == iCurrentFilter )
     {
@@ -282,7 +282,7 @@ QGoFilterSemiAutoBase::UpdateVisibility(int iCurrentFilter)
     m_Widget->hide();
     QObject::disconnect( w, SIGNAL( Apply() ),
                          this, SLOT( Apply() ) );
-    }
+    }*/
 }
 
 //--------------------------------------------------------------------------
@@ -291,13 +291,13 @@ QGoFilterSemiAutoBase::UpdateVisibility(int iCurrentFilter)
 void
 QGoFilterSemiAutoBase::UpdateAdvancedMode(bool checked)
 {
-  QWidget *          w = m_Widget->parentWidget()->parentWidget();
-  QGoSeedBaseWidget *baseWidget = dynamic_cast< QGoSeedBaseWidget * >( w );
+  //QWidget *          w = m_Widget->parentWidget()->parentWidget();
+  //QGoSeedBaseWidget *baseWidget = dynamic_cast< QGoSeedBaseWidget * >( w );
 
-  if ( checked && ( m_Number != baseWidget->GetCurrentFilter() ) )
-    {
-    m_Widget->hide();
-    }
+  //if ( checked && ( m_Number != baseWidget->GetCurrentFilter() ) )
+  //  {
+  //  m_Widget->hide();
+  //  }
 }
 
 //--------------------------------------------------------------------------
@@ -306,7 +306,7 @@ QGoFilterSemiAutoBase::UpdateAdvancedMode(bool checked)
 void
 QGoFilterSemiAutoBase::ConnectSignals(int iFilterNumber)
 {
-  m_Number = iFilterNumber;
+  /*m_Number = iFilterNumber;
 
   QWidget *w = m_Widget->parentWidget()->parentWidget();
 
@@ -340,7 +340,7 @@ QGoFilterSemiAutoBase::ConnectSignals(int iFilterNumber)
   QObject::connect( this, SIGNAL( UpdateSeeds() ),
                     w, SIGNAL( UpdateSeeds() ) );
   QObject::connect( this, SIGNAL( SegmentationFinished() ),
-                    w, SIGNAL( SegmentationFinished() ) );
+                    w, SIGNAL( SegmentationFinished() ) );*/
 }
 
 //--------------------------------------------------------------------------
