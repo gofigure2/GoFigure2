@@ -644,7 +644,7 @@ protected:
         }
       else
         {
-        temp_property = this->m_HighlightedProperty;
+        temp_property->DeepCopy(this->m_HighlightedProperty);
         }
 
       it->SetActorProperties( temp_property );
