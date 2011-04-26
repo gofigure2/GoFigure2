@@ -99,7 +99,7 @@ void QGoTraceEditingWidgetManager::SetTheTraceWidget(
 void QGoTraceEditingWidgetManager::SetTheDockWidget(QWidget* iParent)
 {
 
-  this->m_TraceEditingDockWidget = new QDockWidget(iParent);
+  this->m_TraceEditingDockWidget = new QGoDockWidget(iParent);
   std::string WindowTitle = this->m_TraceName;
   WindowTitle += " Editing";
   this->m_TraceEditingDockWidget->setWindowTitle(WindowTitle.c_str());
@@ -128,7 +128,7 @@ QAction* QGoTraceEditingWidgetManager::GetToggleViewAction()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QDockWidget* QGoTraceEditingWidgetManager::GetDockWidget()
+QGoDockWidget* QGoTraceEditingWidgetManager::GetDockWidget()
 {
   return this->m_TraceEditingDockWidget;
 }

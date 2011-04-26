@@ -130,7 +130,7 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_TCoord(-1),
   m_TraceSettingsToolBar(NULL),
   m_MeshEditingWidget(NULL),
-  m_Seeds( 3, NULL ),
+  m_Seeds( 3, NULL )
   //m_TraceWidgetRequiered(false)
 {
   m_Image = vtkImageData::New();
@@ -1717,7 +1717,7 @@ QGoTabImageView3DwT::SetLSMReader(vtkLSMReader *iReader, const int & iTimePoint)
   do a separated method ??*/
   CreateMeshEditingDockWidget(0, dim[3] - 1);
   CreateContourEditingDockWidget(0, dim[3] - 1);
-  CreateModeActions();
+  //CreateModeActions();
 
 #if defined( ENABLEFFMPEG ) || defined( ENABLEAVI )
     m_VideoRecorderWidget->SetXMinAndMax(0, dim[0] - 1);
@@ -1810,7 +1810,7 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
   do a separated method ??*/
   CreateMeshEditingDockWidget(min_t, max_t);
   CreateContourEditingDockWidget(min_t, max_t);
-  CreateModeActions();
+  //CreateModeActions();
 
   // Set up QSpinBox in m_VideoRecorderWidget
 #if defined( ENABLEFFMPEG ) || defined( ENABLEAVI )
@@ -2660,7 +2660,7 @@ QGoTabImageView3DwT::ValidateContour(int iTCoord)
     {
     this->m_TraceSettingsToolBar->setEnabled(true);
     this->m_TraceSettingsWidget->setEnabled(true);
-    m_ContourSegmentationDockWidget->SetReeditMode(false);
+    this->m_ContourEditingWidget->SetReeditMode(false);
     m_ImageView->ReinitializeContourWidget();
     //m_ContourSegmentationDockWidget->hide();
     this->m_ContourEditingWidget->GetDockWidget()->hide();
@@ -3400,8 +3400,8 @@ QGoTabImageView3DwT::SetTraceSettingsToolBarVisible(bool IsVisible)
 {
   if (!IsVisible)
     {
-    if (!this->m_ContourSegmentationDockWidget->toggleViewAction()->isChecked() &&
-      !this->m_MeshSegmentationDockWidget->toggleViewAction()->isChecked() &&
+      if (!this->m_ContourEditingWidget->GetToggleViewAction()->isChecked() &&
+        !this->m_MeshEditingWidget->GetToggleViewAction()->isChecked() &&
       !this->m_DataBaseTables->toggleViewAction()->isChecked() )
       {
       this->m_TraceSettingsToolBar->setVisible(IsVisible);
@@ -3409,11 +3409,11 @@ QGoTabImageView3DwT::SetTraceSettingsToolBarVisible(bool IsVisible)
     }
   else
     {
-    if (this->m_ContourSegmentationDockWidget->toggleViewAction()->isChecked())
+      if (this->m_ContourEditingWidget->GetToggleViewAction()->isChecked())
       {
       this->m_DataBaseTables->SetTraceNameForTableWidget("contour");
       }
-    if (this->m_MeshSegmentationDockWidget->toggleViewAction()->isChecked() )
+      if (this->m_MeshEditingWidget->GetToggleViewAction()->isChecked() )
       {
       this->m_DataBaseTables->SetTraceNameForTableWidget("mesh");
       }
@@ -3439,7 +3439,7 @@ QMenu* iMenu, QToolBar* iToolBar)
 
   //Contour Editing
   QAction *ContourSegmentationAction =
-    m_ContourSegmentationDockWidget->toggleViewAction();
+    this->m_ContourEditingWidget->GetToggleViewAction();
   ContourSegmentationAction->setParent(this);
   ContourSegmentationAction->setObjectName("ContourEditingMode");
 
@@ -3451,7 +3451,7 @@ QMenu* iMenu, QToolBar* iToolBar)
 
   //Mesh Editing
   QAction *MeshSegmentationAction =
-    m_MeshSegmentationDockWidget->toggleViewAction();
+    this->m_MeshEditingWidget->GetToggleViewAction();
 
   group->addAction(MeshSegmentationAction);
 
@@ -3465,20 +3465,20 @@ QMenu* iMenu, QToolBar* iToolBar)
   TracesToolBar->m_VectorAction.push_back( 
     m_LineageViewDockWidget->toggleViewAction() );
 
-  QObject::connect( ContourSegmentationAction,
-                    SIGNAL( toggled(bool) ),
-                    m_ContourSegmentationDockWidget,
-                    SLOT( interactorBehavior(bool) ) );
+  //QObject::connect( ContourSegmentationAction,
+  //                  SIGNAL( toggled(bool) ),
+  //                  m_ContourSegmentationDockWidget,
+   //                 SLOT( interactorBehavior(bool) ) );
 
   QObject::connect( ContourSegmentationAction,
                     SIGNAL( toggled(bool) ),
                     this,
                     SLOT( SetTraceSettingsToolBarVisible(bool) ) );
 
-  QObject::connect( MeshSegmentationAction,
-                    SIGNAL( toggled(bool) ),
-                    m_MeshSegmentationDockWidget,
-                    SLOT( interactorBehavior(bool) ) );
+  //QObject::connect( MeshSegmentationAction,
+  //                  SIGNAL( toggled(bool) ),
+  //                  m_MeshSegmentationDockWidget,
+  //                  SLOT( interactorBehavior(bool) ) );
 
   QObject::connect( MeshSegmentationAction,
                     SIGNAL( toggled(bool) ),

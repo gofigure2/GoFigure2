@@ -39,6 +39,7 @@
 #include "vtkSmartPointer.h"
 #include "vtkPolyData.h"
 #include "vtkImageData.h"
+#include "QGoDockWidget.h"
 #include <QAction>
 #include <QDockWidget>
 
@@ -67,7 +68,7 @@ public:
   /**
   \return the dockwidget for it to be integrated in the mainwindow
   */
-  QDockWidget* GetDockWidget();
+  QGoDockWidget* GetDockWidget();
 
   /**
   \brief display only the current timepoint in the TSlice comboboxes
@@ -101,7 +102,7 @@ signals:
   void TracesCreatedFromAlgo(std::vector<vtkPolyData *> iVectPolydata, int iTCoord);
 
 protected:
-  QDockWidget*                m_TraceEditingDockWidget;
+  QGoDockWidget*              m_TraceEditingDockWidget;
   QGoTraceEditingWidget*      m_TraceEditingWidget;
 
   std::string                 m_TraceName;

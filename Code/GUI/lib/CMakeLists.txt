@@ -267,6 +267,9 @@ SET( QGoGUILIB_HDRS
   QGoTrackViewDockWidget.h
   QGoTrackEditingWidget.h
 
+  # for the lineages:
+  QGoLineageViewDockWidget.h
+
   # for the trace editing widget
   TraceEditing/QGoTraceEditingWidget.h
   TraceEditing/QGoModesManagerWidget.h
