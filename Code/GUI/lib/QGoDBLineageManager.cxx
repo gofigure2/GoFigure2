@@ -97,10 +97,6 @@ void QGoDBLineageManager::SetLineagesInfoContainersForVisu(
                     m_TrackContainerInfoForVisu,
                     SLOT( ShowCollection(unsigned int, bool) ) );
 
-  //QObject::connect( m_LineageContainerInfoForVisu,
-  //                  SIGNAL( DeleteLineage(unsigned int) ),
-  //                  m_TrackContainerInfoForVisu,
-  //                  SLOT( DeleteCollection(unsigned int) ) );
   // export lineage
   QObject::connect( m_LineageContainerInfoForVisu,
                     SIGNAL( ExportLineages() ),
@@ -217,13 +213,6 @@ void QGoDBLineageManager::DeleteCheckedTraces(vtkMySQLDatabase *iDatabaseConnect
 void QGoDBLineageManager::DeleteListTraces(vtkMySQLDatabase *iDatabaseConnector,
                                          std::list< unsigned int > iListTraces)
 {
-  
-  //delete the divisions of the checked lineages from the visu and the database: 
-  //if (!iListTraces.empty() )
-  ///  {
-  //  this->DeleteDivisionsForLineages(iDatabaseConnector, iListTraces);
-  //  }
-  
   //delete the lineages from the visu, the database and the TW:
   this->DeleteTracesTemplate< LineageContainer >(iDatabaseConnector,
                                                this->m_LineageContainerInfoForVisu, iListTraces, false);
