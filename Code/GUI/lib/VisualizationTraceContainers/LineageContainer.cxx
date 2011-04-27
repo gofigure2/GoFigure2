@@ -97,7 +97,7 @@ std::list< unsigned int > LineageContainer::DeleteAllHighlightedElements()
 {
     assert ( this->m_ImageView );
 
-    MultiIndexContainerHighlightedIterator it0, it1;
+    MultiIndexContainerHighlightedIterator it0, it1, it_t;
 
     boost::tuples::tie(it0, it1) =
       m_Container.get< Highlighted >().equal_range(true);
@@ -112,8 +112,9 @@ std::list< unsigned int > LineageContainer::DeleteAllHighlightedElements()
       // signals connected in the QGoDBLineageManager
       emit DeleteLineage(it0->TrackRootID);
 
-      m_Container.get< Highlighted >().erase(it0);
+      it_t = it0;
       ++it0;
+      m_Container.get< Highlighted >().erase(it_t);
       }
 
     m_ImageView->UpdateRenderWindows();
