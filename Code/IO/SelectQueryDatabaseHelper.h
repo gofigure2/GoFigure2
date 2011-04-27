@@ -585,7 +585,8 @@ QGOIO_EXPORT
 std::list< unsigned int > GetAllSelectedValuesFromTwoTables(vtkMySQLDatabase *iDatabaseConnector,
   std::string iTableOne, std::string iTableTwo,
   std::string iColumn, FieldWithValue iJoinCondition,
-  std::string iField, std::vector<std::string> iVectorValues, bool Distinct = false);
+  std::string iField, std::vector<std::string> iVectorValues, bool Distinct = false , 
+  bool NonNULLRows = false);
 
 QGOIO_EXPORT
 std::list< unsigned int > GetAllSelectedValuesFromTwoTables(vtkMySQLDatabase *iDatabaseConnector,

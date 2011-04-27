@@ -168,6 +168,15 @@ protected:
    */
   void UpdateDivisionsColors( unsigned int iLineageID);
 
+  /**
+  \brief delete the divisions of a lineage in the database and in the visu 
+  */
+  void DeleteDivisionsForLineages(
+  vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iLineageID);
+
+  void DeleteADivision(
+  vtkMySQLDatabase *iDatabaseConnector, unsigned int iTrackFamilyID);
+
 protected slots:
   //virtual pure method in QGoDBTraceManager
   virtual void UpdateHighlightedElementsInVisuContainer(int iTraceID);
@@ -177,6 +186,8 @@ protected slots:
 
  //virtual pure method in QGoDBTraceManager
   virtual void SetColorCoding(bool IsChecked);
+
+  virtual void DeleteTracesFromContextMenu();
 
 };
 #endif

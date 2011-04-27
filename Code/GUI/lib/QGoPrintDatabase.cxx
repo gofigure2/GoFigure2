@@ -1159,11 +1159,8 @@ void QGoPrintDatabase::DeleteCheckedMeshes()
 //--------------------------------------------------------------------------
 void QGoPrintDatabase::DeleteCheckedTracks()
 {
-    /*
-     \todo Nicolas-track mesh mesh - shouldnt it be track lineages mesh?
-     */
-  this->DeleteCheckedTraces< QGoDBTrackManager, QGoDBMeshManager, QGoDBMeshManager >(
-    this->m_TracksManager, this->m_MeshesManager, this->m_MeshesManager);
+  this->DeleteCheckedTraces< QGoDBTrackManager, QGoDBLineageManager, QGoDBMeshManager >(
+    this->m_TracksManager, this->m_LineagesManager, this->m_MeshesManager);
 }
 
 //--------------------------------------------------------------------------
@@ -1171,9 +1168,8 @@ void QGoPrintDatabase::DeleteCheckedTracks()
 //--------------------------------------------------------------------------
 void QGoPrintDatabase::DeleteCheckedLineages()
 {
-  std::cout << "Lydie-to be checked- "<< __FILE__  << "  "<< __LINE__ << std::endl;
   this->DeleteCheckedTraces< QGoDBLineageManager, QGoDBLineageManager, QGoDBTrackManager >(
-    this->m_LineagesManager, this->m_LineagesManager, this->m_TracksManager);
+    this->m_LineagesManager, this->m_LineagesManager, this->m_TracksManager, true);
 }
 
 //--------------------------------------------------------------------------

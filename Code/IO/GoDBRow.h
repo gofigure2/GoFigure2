@@ -162,6 +162,13 @@ public:
   */
   std::string GetMapValue(std::string key);
 
+  template<typename T>
+  T GetMapValue(std::string key)
+  {
+    std::string Value = this->GetMapValue(key);
+    return ss_atoi<T>(Value);
+  }
+
   /**
   \brief print the keys and values of the map in a cout
   \param[in,out] os 

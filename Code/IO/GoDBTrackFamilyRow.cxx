@@ -42,6 +42,15 @@ GoDBTrackFamilyRow::GoDBTrackFamilyRow() : GoDBRow()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+GoDBTrackFamilyRow::GoDBTrackFamilyRow(unsigned int iExistingID, 
+  vtkMySQLDatabase* iDatabaseConnector)
+{
+  this->InitializeMap();
+  this->SetValuesForSpecificID(iExistingID, iDatabaseConnector);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void GoDBTrackFamilyRow::InitializeMap()
 {
   this->m_TableName = "trackfamily";

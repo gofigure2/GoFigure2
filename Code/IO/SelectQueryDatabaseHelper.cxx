@@ -1117,9 +1117,10 @@ std::list< unsigned int > GetAllSelectedValuesFromTwoTables(vtkMySQLDatabase *iD
                                                             FieldWithValue iJoinCondition,
                                                             std::string iField,
                                                             std::vector< std::string > iVectorValues,
-                                                            bool Distinct)
+                                                            bool Distinct,
+                                                            bool NonNULLRows)
 {
-  std::string Where = GetLeftJoinTwoTables(iTableOne, iTableTwo, iJoinCondition);
+  std::string Where = GetLeftJoinTwoTables(iTableOne, iTableTwo, iJoinCondition, NonNULLRows);
   std::string QueryString = SelectQueryStreamListConditions(Where, iColumn, iField, iVectorValues, Distinct);
 
   return ExecuteSelectQuery< std::list< unsigned int > >(iDatabaseConnector, QueryString);

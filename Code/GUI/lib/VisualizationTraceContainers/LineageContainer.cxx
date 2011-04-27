@@ -110,7 +110,7 @@ std::list< unsigned int > LineageContainer::DeleteAllHighlightedElements()
 
       // to delete the divisions of the lineage in the track container
       // signals connected in the QGoDBLineageManager
-      emit DeleteLineage(it0->TrackRootID);
+      //emit DeleteLineage(it0->TrackRootID);
 
       it_t = it0;
       ++it0;

@@ -305,12 +305,38 @@ void QGoDBTraceManager::DisplayInfoForExistingTraces(vtkMySQLDatabase *
 //-------------------------------------------------------------------------
 
 //------------------------------------------------------------------------
+bool QGoDBTraceManager::CheckThatThereAreTracesToDelete(
+  std::list<unsigned int> iListTracesIDToDelete)
+{
+
+  if ( iListTracesIDToDelete.empty() )
+    {
+    QMessageBox msgBox;
+    msgBox.setText(
+      tr("Please check at least one %1 to be deleted")
+      .arg( this->m_TraceName.c_str() ) );
+    msgBox.exec();
+    return false;
+    }
+  else
+    {
+    int r = QMessageBox::warning(this->m_Table, tr(""),
+                                 tr("Are you sure you want to delete\n"
+                                    "permanently the selected %1s?").arg( this->m_TraceName.c_str() ),
+                                 QMessageBox::Yes,
+                                 QMessageBox::No | QMessageBox::Default);
+    return r;
+    }
+}
+//-------------------------------------------------------------------------
+
+//------------------------------------------------------------------------
 void QGoDBTraceManager::DeleteTracesFromContextMenu()
 {
   std::list< unsigned int > ListTracesIDToDelete =
     this->GetListHighlightedIDs();
 
-  if ( ListTracesIDToDelete.empty() )
+ /* if ( ListTracesIDToDelete.empty() )
     {
     QMessageBox msgBox;
     msgBox.setText(
@@ -324,14 +350,15 @@ void QGoDBTraceManager::DeleteTracesFromContextMenu()
                                  tr("Are you sure you want to delete\n"
                                     "permanently the selected %1s?").arg( this->m_TraceName.c_str() ),
                                  QMessageBox::Yes,
-                                 QMessageBox::No | QMessageBox::Default);
-    if ( r == QMessageBox::Yes )
+                                 QMessageBox::No | QMessageBox::Default);*/
+   // if ( r == QMessageBox::Yes )
+  if (this->CheckThatThereAreTracesToDelete(ListTracesIDToDelete) )
       {
       //as it impacts also on the collection and the collectionOf,
       //a signal has to be emitted for another traceManager:
       emit CheckedTracesToDelete();
       }
-    }
+    //}
 }
 
 //-------------------------------------------------------------------------
