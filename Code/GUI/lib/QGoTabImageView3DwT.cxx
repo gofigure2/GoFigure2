@@ -3469,6 +3469,10 @@ QMenu* iMenu, QToolBar* iToolBar)
   //                  SIGNAL( toggled(bool) ),
   //                  m_ContourSegmentationDockWidget,
    //                 SLOT( interactorBehavior(bool) ) );
+  QObject::connect( ContourSegmentationAction,
+                    SIGNAL( toggled(bool) ),
+                    m_ContourEditingWidget,
+                    SLOT( SetVisible(bool) ) );
 
   QObject::connect( ContourSegmentationAction,
                     SIGNAL( toggled(bool) ),
@@ -3479,6 +3483,10 @@ QMenu* iMenu, QToolBar* iToolBar)
   //                  SIGNAL( toggled(bool) ),
   //                  m_MeshSegmentationDockWidget,
   //                  SLOT( interactorBehavior(bool) ) );
+  QObject::connect( MeshSegmentationAction,
+                    SIGNAL( toggled(bool) ),
+                    m_MeshEditingWidget,
+                    SLOT( SetVisible(bool) ) );
 
   QObject::connect( MeshSegmentationAction,
                     SIGNAL( toggled(bool) ),
