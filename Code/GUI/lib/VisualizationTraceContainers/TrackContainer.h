@@ -358,8 +358,6 @@ public:
   */
   void UpdateElementHighlighting(unsigned int TraceId)
     {
-          std::cout << "UpdateElementHighlighting" << std::endl;
-
     Qt::CheckState state;
     Superclass::UpdateElementHighlightingWithTraceID(TraceId,
                                                      state );
