@@ -47,13 +47,18 @@ SET( QGOIO_SRC
   GoDBTWContainerForLineage.cxx
   GoDBExport.cxx
   GoDBImport.cxx
+
+  # Mega related files
   MegaCaptureHeaderReader.cxx
+  MegaImageProcessor.cxx
+  itkMegaCaptureImport.cxx
+  itkMegaCaptureReader.cxx
+
   QueryDataBaseHelper.cxx
   SelectQueryDatabaseHelper.cxx
   QueryBuilderHelper.cxx
   # itkLsm3DSerieImport.cxx
-  itkMegaCaptureImport.cxx
-  itkMegaCaptureReader.cxx
+
   GoFigureFileInfoMultiIndexContainerHelper.cxx
   vtkPolyDataMySQLContourReader.cxx
   vtkPolyDataMySQLMeshReader.cxx
