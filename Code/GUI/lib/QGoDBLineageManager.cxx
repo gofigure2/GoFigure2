@@ -34,6 +34,8 @@
 
 #include "QGoDBLineageManager.h"
 #include "GoDBLineageRow.h"
+#include "GoDBTrackRow.h"
+#include "GoDBTrackFamilyRow.h"
 #include <iostream>
 #include <sstream>
 
@@ -94,6 +96,7 @@ void QGoDBLineageManager::SetLineagesInfoContainersForVisu(
                     SIGNAL( ShowLineage(unsigned int, bool) ),
                     m_TrackContainerInfoForVisu,
                     SLOT( ShowCollection(unsigned int, bool) ) );
+
   // export lineage
   QObject::connect( m_LineageContainerInfoForVisu,
                     SIGNAL( ExportLineages() ),
@@ -225,8 +228,7 @@ void QGoDBLineageManager::UpdateTWAndContainerForImportedTraces(
 //-------------------------------------------------------------------------
 void QGoDBLineageManager::DeleteCheckedTraces(vtkMySQLDatabase *iDatabaseConnector)
 {
-  this->DeleteTracesTemplate< LineageContainer >(iDatabaseConnector,
-                                               this->m_LineageContainerInfoForVisu);
+  this->DeleteListTraces(iDatabaseConnector, this->GetListHighlightedIDs() );  
 }
 
 //-------------------------------------------------------------------------
@@ -235,6 +237,7 @@ void QGoDBLineageManager::DeleteCheckedTraces(vtkMySQLDatabase *iDatabaseConnect
 void QGoDBLineageManager::DeleteListTraces(vtkMySQLDatabase *iDatabaseConnector,
                                          std::list< unsigned int > iListTraces)
 {
+  //delete the lineages from the visu, the database and the TW:
   this->DeleteTracesTemplate< LineageContainer >(iDatabaseConnector,
                                                this->m_LineageContainerInfoForVisu, iListTraces, false);
 }
@@ -497,6 +500,8 @@ ExportLineages()
     }
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void
 QGoDBLineageManager::UpdateBoundingBoxes(vtkMySQLDatabase *iDatabaseConnector,
                                    std::list< unsigned int > iListTracesIDs,
@@ -511,4 +516,63 @@ QGoDBLineageManager::UpdateBoundingBoxes(vtkMySQLDatabase *iDatabaseConnector,
     this->UpdateDivisionsScalars(*iter);
     ++iter;
     }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBLineageManager::DeleteTracesFromContextMenu()
+{
+  std::list<unsigned int> ListLineagesToDelete = 
+    this->GetListHighlightedIDs();
+  if ( QGoDBTraceManager::CheckThatThereAreTracesToDelete(ListLineagesToDelete) )
+    {
+    emit NeedToGetDatabaseConnection();
+    this->DeleteDivisionsForLineages(
+      this->m_DatabaseConnector, ListLineagesToDelete );
+    DBConnectionNotNeededAnymore();
+
+    emit CheckedTracesToDelete();
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBLineageManager::DeleteDivisionsForLineages(
+  vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iLineagesID)
+{
+  std::list<unsigned int> TrackFamiliesToDelete = 
+    this->m_CollectionOfTraces->GetTrackFamiliesForLineages(iDatabaseConnector, iLineagesID);
+  std::list<unsigned int>::iterator iter = TrackFamiliesToDelete.begin();
+  while(iter != TrackFamiliesToDelete.end() )
+    {
+     if (*iter != 0)
+       {
+       this->DeleteADivision(iDatabaseConnector, *iter);
+       }
+    ++iter;
+    }
+
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBLineageManager::DeleteADivision(
+  vtkMySQLDatabase *iDatabaseConnector, unsigned int iTrackFamilyID)
+{
+  GoDBTrackFamilyRow TrackFamily(iTrackFamilyID, iDatabaseConnector);
+
+  //update the trackfamilyID of the daughter:
+  GoDBTrackRow Daughter(TrackFamily.GetMapValue<unsigned int>("TrackIDDaughter1"), iDatabaseConnector);
+  Daughter.SetField("TrackFamilyID", 0);
+  Daughter.SaveInDB(iDatabaseConnector);
+  Daughter.SetValuesForSpecificID(TrackFamily.GetMapValue<unsigned int>("TrackIDDaughter2"), iDatabaseConnector);
+  Daughter.SetField("TrackFamilyID", 0);
+  Daughter.SaveInDB(iDatabaseConnector);
+
+  //delete the division in the visu
+  this->m_TrackContainerInfoForVisu->DeleteADivision(
+    TrackFamily.GetMapValue<unsigned int>("TrackIDMother") );
+
+  //delete the division from the database:
+  TrackFamily.DeleteFromDB(iDatabaseConnector);
 }

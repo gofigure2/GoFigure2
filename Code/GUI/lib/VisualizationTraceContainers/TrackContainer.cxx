@@ -1055,6 +1055,66 @@ UpdateCollectionVisibility( MultiIndexContainerTraceIDIterator& it, bool iVisibl
     }
 }
 //-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+DeleteCollection(unsigned int iRootTrackID)
+{
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iRootTrackID);
+
+  //DeleteADivision;
+
+  if( motherIt != m_Container.get< TraceID >().end() )
+    {
+    UpdateCollectionDelete(motherIt);
+
+    this->m_ImageView->UpdateRenderWindows();
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateCollectionDelete( MultiIndexContainerTraceIDIterator& it)
+{
+    std::cout<< "update delete " << it->TraceID << std::endl;
+
+  if(it->TreeNode.m_Child[0])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
+
+    std::cout<< "child 1 " << it->TreeNode.m_Child[0]->TraceID << std::endl;
+
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateCollectionDelete(childIt);
+      }
+    }
+
+  if(it->TreeNode.m_Child[1])
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
+
+        std::cout<< "child 2 " << it->TreeNode.m_Child[1]->TraceID << std::endl;
+
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      UpdateCollectionDelete(childIt);
+      }
+    }
+
+  if( !it->IsLeaf() )
+    {
+    DeleteADivision(it->TraceID);
+    }
+}
+//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void

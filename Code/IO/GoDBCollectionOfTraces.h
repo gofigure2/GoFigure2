@@ -483,6 +483,9 @@ public:
   std::list<unsigned int> GetTrackFamilyDataFromDB(
     vtkMySQLDatabase *iDatabaseConnector);
 
+  std::list<unsigned int> GetTrackFamiliesForLineages(
+    vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iLineagesID);
+
 protected:
 
   std::string  m_CollectionName;

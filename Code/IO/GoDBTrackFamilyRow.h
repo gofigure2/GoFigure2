@@ -52,6 +52,9 @@ class QGOIO_EXPORT GoDBTrackFamilyRow:public GoDBRow
 public:
   GoDBTrackFamilyRow(); 
 
+  GoDBTrackFamilyRow(unsigned int iExistingID, 
+    vtkMySQLDatabase *DatabaseConnector);
+
   ~GoDBTrackFamilyRow()
   {}
   int SaveInDB(vtkMySQLDatabase *DatabaseConnector);

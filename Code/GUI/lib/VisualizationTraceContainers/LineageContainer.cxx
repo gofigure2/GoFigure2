@@ -95,7 +95,31 @@ bool LineageContainer::DeleteElement(MultiIndexContainerTraceIDIterator iIter)
 //-------------------------------------------------------------------------
 std::list< unsigned int > LineageContainer::DeleteAllHighlightedElements()
 {
-  return std::list< unsigned int >();
+    assert ( this->m_ImageView );
+
+    MultiIndexContainerHighlightedIterator it0, it1, it_t;
+
+    boost::tuples::tie(it0, it1) =
+      m_Container.get< Highlighted >().equal_range(true);
+
+    std::list< unsigned int > oList;
+
+    while ( it0 != it1 )
+      {
+      oList.push_back(it0->TraceID);
+
+      // to delete the divisions of the lineage in the track container
+      // signals connected in the QGoDBLineageManager
+      //emit DeleteLineage(it0->TrackRootID);
+
+      it_t = it0;
+      ++it0;
+      m_Container.get< Highlighted >().erase(it_t);
+      }
+
+    m_ImageView->UpdateRenderWindows();
+
+  return oList;
 }
 //-------------------------------------------------------------------------
 

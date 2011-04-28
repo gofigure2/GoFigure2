@@ -1159,8 +1159,17 @@ void QGoPrintDatabase::DeleteCheckedMeshes()
 //--------------------------------------------------------------------------
 void QGoPrintDatabase::DeleteCheckedTracks()
 {
-  this->DeleteCheckedTraces< QGoDBTrackManager, QGoDBMeshManager, QGoDBMeshManager >(
-    this->m_TracksManager, this->m_MeshesManager, this->m_MeshesManager);
+  this->DeleteCheckedTraces< QGoDBTrackManager, QGoDBLineageManager, QGoDBMeshManager >(
+    this->m_TracksManager, this->m_LineagesManager, this->m_MeshesManager);
+}
+
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoPrintDatabase::DeleteCheckedLineages()
+{
+  this->DeleteCheckedTraces< QGoDBLineageManager, QGoDBLineageManager, QGoDBTrackManager >(
+    this->m_LineagesManager, this->m_LineagesManager, this->m_TracksManager, true);
 }
 
 //--------------------------------------------------------------------------
@@ -1446,6 +1455,13 @@ void QGoPrintDatabase::SetLineagesManager()
                     SIGNAL( DBConnectionNotNeededAnymore() ),
                     this,
                     SLOT( CloseDBConnection() ) );
+  QObject::connect( this->m_LineagesManager,
+                    SIGNAL( CheckedTracesToDelete() ),
+                    this,
+                    SLOT( DeleteCheckedLineages() ) );
+  /*
+   \todo Nicolas - change color
+   */
 
   QObject::connect( this->m_LineagesManager,
                     SIGNAL( TraceColorToChange() ),

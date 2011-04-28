@@ -795,6 +795,8 @@ protected:
     vtkMySQLDatabase* iDatabaseConnector,
     std::list<unsigned int> iListTraceIDs = std::list< unsigned int >())= 0;
 
+  bool CheckThatThereAreTracesToDelete(std::list<unsigned int> iListTracesIDToDelete);
+
 protected slots:
   //context menu:
   /**
