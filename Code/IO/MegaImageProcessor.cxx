@@ -44,7 +44,7 @@
 //--------------------------------------------------------------------------
 MegaImageProcessor::MegaImageProcessor(itk::MegaCaptureReader::Pointer iReader)
 {
-  // Nicolas - might need another king of copy
+  // Nicolas - might need another kind of copy
   m_MegaImageReader = iReader;
 
   //Create the new MegaImageStructure
@@ -56,7 +56,7 @@ MegaImageProcessor::MegaImageProcessor(itk::MegaCaptureReader::Pointer iReader)
 //--------------------------------------------------------------------------
 MegaImageProcessor::MegaImageProcessor(const MegaImageProcessor & iE)
 {
-  // Nicolas - might need another king of copy
+  // Nicolas - might need another kind of copy
   m_MegaImageReader = iE.m_MegaImageReader;
   m_MegaImageContainer = iE.m_MegaImageContainer;
   m_Output = iE.m_Output;
