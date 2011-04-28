@@ -140,6 +140,9 @@ protected:
     vtkMySQLDatabase* iDatabaseConnector,
     std::list<unsigned int> iListTraceIDs = std::list< unsigned int >());
 
+  void InsertLineageInTW(vtkMySQLDatabase *iDatabaseConnector,
+    unsigned int iTraceID);
+
   /**
   \brief update the trackID root for the lineage with iTrackIDRoot
   \param[in] iDatabaseConnector connection to the database

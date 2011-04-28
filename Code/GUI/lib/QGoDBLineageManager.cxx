@@ -141,6 +141,9 @@ void QGoDBLineageManager::DisplayInfoAndLoadVisuContainerForAllLineages(
       this->m_CollectionOfTraces->GetListStructureFromDB<LineageStructure>(
       iDatabaseConnector, this->m_ImgSessionID, ListIDs);
 
+  this->m_Table->DisplayColumnNames(
+    this->m_TWContainer->GetListColumnsNamesAndToolTipsForTableWidget() );
+
   std::list<LineageStructure>::iterator it = list_of_traces.begin();
   while ( it != list_of_traces.end() )
     {
@@ -150,11 +153,28 @@ void QGoDBLineageManager::DisplayInfoAndLoadVisuContainerForAllLineages(
       Lineage.TrackRootID, Lineage.rgba);
     this->m_LineageContainerInfoForVisu->Insert(*it);
     this->m_TWContainer->SetLineageAttributes(&Attributes);
-    this->DisplayInfoForExistingTrace(iDatabaseConnector, Lineage.TraceID);
+    this->InsertLineageInTW(iDatabaseConnector, Lineage.TraceID);
     ++it;
     }
 }
 
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBLineageManager::InsertLineageInTW(vtkMySQLDatabase *iDatabaseConnector,
+  unsigned int iTraceID)
+  {
+    TWContainerType RowContainer =
+      this->m_TWContainer->GetContainerForOneSpecificTrace(iDatabaseConnector,
+                                                    iTraceID);
+
+    //this->m_Table->setSortingEnabled(false);
+    this->m_Table->InsertNewRow(RowContainer,
+                                this->m_TWContainer->GetIndexForGroupColor(this->m_TraceName),
+                                this->m_TWContainer->GetIndexForGroupColor(this->m_CollectionName),
+                                this->m_TraceName, this->m_CollectionName);
+    //this->m_Table->setSortingEnabled(true);
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
