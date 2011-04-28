@@ -133,16 +133,38 @@ public:
     return os;
   }
 
-  // LUT
+  /*
+   * \brief create a lookuptable (LUT) given r, g, b and a.
+   * LUT will go from black to the color.
+   * \param[in] iRed red value
+   * \param[in] iGreen green value
+   * \param[in] iBlue blue value
+   * \param[in] iAlpha alpha value
+   * \return new LUT
+   */
   vtkSmartPointer<vtkLookupTable> createLUT(const double& iRed,
                                             const double& iGreen,
                                             const double& iBlue,
                                             const double& iAlpha = 0);
+  /*
+   * \brief modify a lookuptable (LUT) given a channel, a time point and a LUT
+   * Will remplace the existing one.
+   * \param[in] iLUT new LUT
+   * \param[in] iChannel channel to be modified
+   * \param[in] iTime time point to be modified
+   */
   void setLookupTable(vtkSmartPointer<vtkLookupTable> iLUT,
                       const unsigned int& iChannel,
                       const unsigned int& iTime);
+
+  /*
+   * \brief get a lookuptable (LUT) given a channel and a time point
+   * \param[in] iChannel requested channel
+   * \param[in] iTime requested time point
+   * \return current LUT
+   */
   vtkSmartPointer<vtkLookupTable> getLookuptable(const unsigned int& iChannel,
-                                                 const unsigned int& iTime);
+                                                 const unsigned int& iTime) const;
 
   // Get processed data
   vtkSmartPointer<vtkImageData> getTime(const unsigned int& iTime,

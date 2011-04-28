@@ -137,6 +137,25 @@ setLookupTable(vtkSmartPointer<vtkLookupTable> iLUT,
       }
     ++it;
     }
+}
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
+vtkSmartPointer<vtkLookupTable>
+MegaImageProcessor::
+getLookuptable(const unsigned int& iChannel, const unsigned int& iTime) const
+{
+  MegaImageStructureMultiIndexContainer::index<Channel>::type::iterator it =
+      m_MegaImageContainer.get< Channel >().find(iChannel);
+
+  while(it!=m_MegaImageContainer.get< Channel >().end())
+    {
+    if(it->Time==iTime)
+      {
+      return it->LUT;
+      }
+    ++it;
+    }
+  return NULL;
 }
 //--------------------------------------------------------------------------
