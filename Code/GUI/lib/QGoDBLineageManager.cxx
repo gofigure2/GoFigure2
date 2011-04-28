@@ -49,6 +49,7 @@
 #include "vtkTreeWriter.h"
 #include "vtkMutableDirectedGraph.h"
 #include "vtkGraphLayoutView.h"
+#include "LineageStructure.h"
 
 QGoDBLineageManager::QGoDBLineageManager(int iImgSessionID, QWidget *iparent) :
   QGoDBTraceManager(), m_LineageContainerInfoForVisu(NULL), m_TrackContainerInfoForVisu(NULL)
@@ -133,7 +134,7 @@ void QGoDBLineageManager::DisplayInfoAndLoadVisuContainerForAllLineages(
   this->DisplayInfoAndLoadVisuContainerWithAllTraces< GoDBTWContainerForLineage >
     (this->m_TWContainer, iDatabaseConnector);
 
-  this->UpdateDivisionsColors();
+  //this->UpdateDivisionsColors();
   this->UpdateDivisionsScalars();
 }
 
@@ -194,18 +195,8 @@ std::list< unsigned int > QGoDBLineageManager::UpdateTheTracesColor(
   while( it != oList.end() )
     {
     unsigned int trackRoot = this->m_LineageContainerInfoForVisu->GetLineageTrackRootID(*it);
-    
-    /*double* color = new double[4];
-    color[0] = this->m_SelectedColorData->second.redF();
-    color[1] = this->m_SelectedColorData->second.greenF();
-    color[2] = this->m_SelectedColorData->second.blueF();
-    color[3] = this->m_SelectedColorData->second.alphaF();
-    //change the data color
-    m_TrackContainerInfoForVisu->UpdateCollectionColorsData( trackRoot, color );
-    delete[] color;*/
      m_TrackContainerInfoForVisu->UpdateCollectionColorsData( trackRoot, 
        this->GetVectorFromQColor(this->m_SelectedColorData->second) );
-
     ++it;
     }
 
@@ -295,8 +286,19 @@ void QGoDBLineageManager::GetTracesInfoFromDBAndModifyContainerForVisu(
   vtkMySQLDatabase *iDatabaseConnector,
   std::list< unsigned int > iListTraceIDs)
 {
-  this->GetTracesInfoFromDBAndModifyContainerForVisuTemplate< LineageContainer >(
-    this->m_LineageContainerInfoForVisu, iDatabaseConnector, iListTraceIDs);
+    std::list<LineageStructure> list_of_traces =
+      this->m_CollectionOfTraces->GetListStructureFromDB<LineageStructure>(
+      iDatabaseConnector, this->m_ImgSessionID, iListTraceIDs);
+    std::list<LineageStructure>::iterator it = list_of_traces.begin();
+    while ( it != list_of_traces.end() )
+      {
+      LineageStructure Lineage = *it;
+      m_TrackContainerInfoForVisu->UpdateCollectionColors(
+        Lineage.TrackRootID, Lineage.rgba);
+      //same for attributes ???
+      this->m_LineageContainerInfoForVisu->Insert(*it);
+      ++it;
+      }
 }
 
 //-------------------------------------------------------------------------
