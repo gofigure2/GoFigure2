@@ -501,7 +501,8 @@ void QGoTableWidget::SetColorForTable(TWContainerType iTWRowContainer,
 void QGoTableWidget::InsertNewRow(TWContainerType iTWRowContainer,
                                   std::vector< int > iIndexColorTraceRowContainer,
                                   std::vector< int > iIndexColorCollectionRowContainer,
-                                  std::string TraceName, std::string CollectionName)
+                                  std::string TraceName, std::string CollectionName,
+                                  Qt::CheckState iVisible)
 {
   this->setSortingEnabled(false);
   if ( iTWRowContainer.size() == 0 || iTWRowContainer[1].second.size() != 1 )
@@ -547,8 +548,8 @@ void QGoTableWidget::InsertNewRow(TWContainerType iTWRowContainer,
           }   //ENDFOR
         }     //ENDIF
       }       //ENDFOR
-    SetSelectedColumn(1, NewRow - 1);
-    SetVisibleColumn(1, NewRow - 1);
+    SetSelectedColumn(1, NewRow - 1);  
+    SetVisibleColumn(1, NewRow - 1, iVisible);
     this->SetColorForTable(iTWRowContainer, iIndexColorTraceRowContainer, TraceName, NewRow - 1);
     if (CollectionName != "None") //no collection for lineages
       {

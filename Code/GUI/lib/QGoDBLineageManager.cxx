@@ -131,10 +131,7 @@ void QGoDBLineageManager::DisplayInfoForAllTraces(
 void QGoDBLineageManager::DisplayInfoAndLoadVisuContainerForAllLineages(
   vtkMySQLDatabase *iDatabaseConnector)
 {
-  //this->DisplayInfoAndLoadVisuContainerWithAllTraces< GoDBTWContainerForLineage >
-    //(this->m_TWContainer, iDatabaseConnector);
-  std::vector< int >           VectorIDs = this->m_TWContainer->GetAllTraceIDsInContainer();
-    //std::vector< int >::iterator iter = VectorIDs.begin();
+  std::vector< int > VectorIDs = this->m_TWContainer->GetAllTraceIDsInContainer();
   std::list<unsigned int> ListIDs(VectorIDs.begin(), VectorIDs.end());
 
   std::list<LineageStructure> list_of_traces =
@@ -172,7 +169,7 @@ void QGoDBLineageManager::InsertLineageInTW(vtkMySQLDatabase *iDatabaseConnector
     this->m_Table->InsertNewRow(RowContainer,
                                 this->m_TWContainer->GetIndexForGroupColor(this->m_TraceName),
                                 this->m_TWContainer->GetIndexForGroupColor(this->m_CollectionName),
-                                this->m_TraceName, this->m_CollectionName);
+                                this->m_TraceName, this->m_CollectionName, Qt::Unchecked);
     //this->m_Table->setSortingEnabled(true);
   }
 //-------------------------------------------------------------------------

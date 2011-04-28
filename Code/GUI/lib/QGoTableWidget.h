@@ -107,7 +107,8 @@ public:
   void InsertNewRow(TWContainerType iTWRowContainer,
                     std::vector< int > iIndexColorTraceRowContainer,
                     std::vector< int > iIndexColorCollectionRowContainer,
-                    std::string iTraceName, std::string iCollectionName);
+                    std::string iTraceName, std::string iCollectionName,
+                    Qt::CheckState iVisible = Qt::Checked);
 
   /**
   \brief Replace the data in the cells corresponding to the traceID with
