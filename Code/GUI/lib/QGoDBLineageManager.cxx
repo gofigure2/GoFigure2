@@ -194,16 +194,17 @@ std::list< unsigned int > QGoDBLineageManager::UpdateTheTracesColor(
   while( it != oList.end() )
     {
     unsigned int trackRoot = this->m_LineageContainerInfoForVisu->GetLineageTrackRootID(*it);
-
-    double* color = new double[4];
+    
+    /*double* color = new double[4];
     color[0] = this->m_SelectedColorData->second.redF();
     color[1] = this->m_SelectedColorData->second.greenF();
     color[2] = this->m_SelectedColorData->second.blueF();
     color[3] = this->m_SelectedColorData->second.alphaF();
     //change the data color
     m_TrackContainerInfoForVisu->UpdateCollectionColorsData( trackRoot, color );
-
-    delete[] color;
+    delete[] color;*/
+     m_TrackContainerInfoForVisu->UpdateCollectionColorsData( trackRoot, 
+       this->GetVectorFromQColor(this->m_SelectedColorData->second) );
 
     ++it;
     }
