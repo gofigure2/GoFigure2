@@ -133,9 +133,6 @@ void QGoDBLineageManager::DisplayInfoAndLoadVisuContainerForAllLineages(
 {
   this->DisplayInfoAndLoadVisuContainerWithAllTraces< GoDBTWContainerForLineage >
     (this->m_TWContainer, iDatabaseConnector);
-
-  //this->UpdateDivisionsColors();
-  this->UpdateDivisionsScalars();
 }
 
 //-------------------------------------------------------------------------
@@ -295,6 +292,7 @@ void QGoDBLineageManager::GetTracesInfoFromDBAndModifyContainerForVisu(
       LineageStructure Lineage = *it;
       m_TrackContainerInfoForVisu->UpdateCollectionColors(
         Lineage.TrackRootID, Lineage.rgba);
+      m_TrackContainerInfoForVisu->UpdateCollectionScalars( Lineage.TrackRootID );
       //same for attributes ???
       this->m_LineageContainerInfoForVisu->Insert(*it);
       ++it;
@@ -392,54 +390,11 @@ UpdateElementHighlighting(unsigned int iTraceRootID)
 //-------------------------------------------------------------------------
 void
 QGoDBLineageManager::
-UpdateDivisionsScalars()
-{
-  // Get track root IDs
-  std::list<unsigned int> rootIDs =
-      this->m_LineageContainerInfoForVisu->GetListOfTrackRootIDs();
-
-  std::list<unsigned int>::iterator it = rootIDs.begin();
-  while( it != rootIDs.end() )
-    {
-    m_TrackContainerInfoForVisu->UpdateCollectionScalars( *it );
-    ++it;
-    }
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoDBLineageManager::
 UpdateDivisionsScalars( unsigned int iLineageID )
 {
   unsigned int root =
       this->m_LineageContainerInfoForVisu->GetLineageTrackRootID(iLineageID);
   m_TrackContainerInfoForVisu->UpdateCollectionScalars( root );
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoDBLineageManager::
-UpdateDivisionsColors()
-{
-  // Get track root IDs
-  std::list<unsigned int> rootIDs =
-      this->m_LineageContainerInfoForVisu->GetListOfTrackRootIDs();
-
-  std::list<unsigned int> lineageIDs =
-      this->m_LineageContainerInfoForVisu->GetListOfLineageIDs();
-
-  std::list<unsigned int>::iterator itTrack = rootIDs.begin();
-  std::list<unsigned int>::iterator itLineage = lineageIDs.begin();
-
-  while( itTrack != rootIDs.end() )
-    {
-    double* color = this->m_LineageContainerInfoForVisu->GetLineageColor(*itLineage);
-    m_TrackContainerInfoForVisu->UpdateCollectionColors( *itTrack, color );
-    ++itTrack;
-    ++itLineage;
-    }
 }
 //-------------------------------------------------------------------------
 

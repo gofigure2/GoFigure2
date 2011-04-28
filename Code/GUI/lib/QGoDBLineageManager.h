@@ -152,16 +152,13 @@ protected:
    /*
    * \brief Update the scalars for all the divisions of all the lineages
    */
-  void UpdateDivisionsScalars();
+  //void UpdateDivisionsScalars();
   /*
    * \brief Update the scalars for all the divisions of the given lineage
    * \param[in] iLineageID ID of the lineage to be processed
    */
   void UpdateDivisionsScalars( unsigned int iLineageID);
-  /*
-   * \brief Update the color for all the divisions of all the lineages
-   */
-  void UpdateDivisionsColors();
+  
   /*
    * \brief Update the color for all the divisions of the given lineage
    * \param[in] iLineageID ID of the lineage to be processed
