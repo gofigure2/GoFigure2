@@ -64,6 +64,96 @@ void GoDBTWContainerForLineage::SetSpecificInfoForLineageTable()
   PairTemp.first = temp;
   m_RowContainer.push_back(PairTemp);
   temp.Clear();
+
+  //Get the info for the Max Depth:
+  temp.InfoName = "MaxDepth";
+  temp.ColumnNameTableWidget = "MaxDepth";
+  temp.ToolTip = "TBD";
+  m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
+  temp.Clear();
+
+  //Get the info for the Min Depth:
+  temp.InfoName = "MinDepth";
+  temp.ColumnNameTableWidget = "MinDepth";
+  temp.ToolTip = "TBD";
+  m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
+  temp.Clear();
+
+  //Get the info for the number of divisions:
+  temp.InfoName = "NbDivisions";
+  temp.ColumnNameTableWidget = "NbDivisions";
+  temp.ToolTip = "Number of divisions";
+  m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
+  temp.Clear();
+
+  //Get the info for the number of leaves:
+  temp.InfoName = "NbLeaves";
+  temp.ColumnNameTableWidget = "NbLeaves";
+  temp.ToolTip = "Number of leaves";
+  m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
+  temp.Clear();
+
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBTWContainerForLineage::SetLineageAttributes(GoFigureLineageAttributes *iLineageAttributes)
+{
+  this->m_LineageAttributes = iLineageAttributes;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBTWContainerForLineage::FillRowContainerForLineageComputedValues()
+{
+  std::vector< std::string >                VectorNames;
+  std::vector< std::vector< std::string > > VectorValues;
+  this->GetValuesAndNamesForLineageComputedValues(this->m_LineageAttributes, VectorValues,
+                                                VectorNames);
+  this->FillRowContainer(VectorValues, VectorNames, "ColumnNameTableWidget");
+  this->m_LineageAttributes = 0;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+GoDBTableWidgetContainer::TWContainerType
+GoDBTWContainerForLineage::GetContainerForOneSpecificTrace(
+  vtkMySQLDatabase *iDatabaseConnector, int iTraceID)
+{
+  GoDBTableWidgetContainer::GetContainerForOneSpecificTrace(iDatabaseConnector,
+                                                            iTraceID);
+  this->FillRowContainerForLineageComputedValues();
+  return this->m_RowContainer;
+}
+
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBTWContainerForLineage::GetValuesAndNamesForLineageComputedValues(
+  GoFigureLineageAttributes *iLineageAttributes,
+  std::vector< std::vector< std::string > > & ioValues,
+  std::vector< std::string > & ioNames)
+{
+  if ( iLineageAttributes != 0 )
+    {
+    std::vector< std::string > temp;
+    ioNames.push_back("MaxDepth");
+    temp.push_back( ConvertToString< unsigned int >(iLineageAttributes->MaxDepth) );
+    ioNames.push_back("MinDepth");
+    temp.push_back( ConvertToString< unsigned int >(iLineageAttributes->MinDepth) );
+    ioNames.push_back("NbDivisions");
+    temp.push_back( ConvertToString< unsigned int >(iLineageAttributes->NumberOfDivisions) );
+    ioNames.push_back("NbLeaves");
+    temp.push_back( ConvertToString< unsigned int >(iLineageAttributes->NumberOfLeaves) );
+    }
 }
 //--------------------------------------------------------------------------
 

@@ -36,6 +36,7 @@
 
 #include "GoDBTWContainerForTrackLineage.h"
 #include "QGoIOConfigure.h"
+#include "GoFigureLineageAttributes.h"
 
 /**
 \class GoDBTWContainerForLineage
@@ -50,12 +51,31 @@ public:
   GoDBTWContainerForLineage(int iImgSessionID);
   ~GoDBTWContainerForLineage();
 
+  virtual TWContainerType GetContainerForOneSpecificTrace(
+    vtkMySQLDatabase *iDatabaseConnector, int iTraceID );
+
+  void SetLineageAttributes(GoFigureLineageAttributes *iLineageAttributes);
+
 protected:
+
+  GoFigureLineageAttributes* m_LineageAttributes;
 
   /**
   \brief add the specific info for a lineage to the columns description
   */
   void SetSpecificInfoForLineageTable();
+
+  /**
+  \brief get the values from m_LineageAttributes and the names of the calculated
+  values from m_LineageAttributes and fill the corresponding columns of the row 
+  container with them
+  */
+  void FillRowContainerForLineageComputedValues();
+
+  void GetValuesAndNamesForLineageComputedValues(
+    GoFigureLineageAttributes *iLineageAttributes,
+    std::vector< std::vector< std::string > > & ioValues,
+    std::vector< std::string > & ioNames);
 
 };
 #endif

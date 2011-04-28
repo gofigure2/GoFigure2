@@ -131,8 +131,28 @@ void QGoDBLineageManager::DisplayInfoForAllTraces(
 void QGoDBLineageManager::DisplayInfoAndLoadVisuContainerForAllLineages(
   vtkMySQLDatabase *iDatabaseConnector)
 {
-  this->DisplayInfoAndLoadVisuContainerWithAllTraces< GoDBTWContainerForLineage >
-    (this->m_TWContainer, iDatabaseConnector);
+  //this->DisplayInfoAndLoadVisuContainerWithAllTraces< GoDBTWContainerForLineage >
+    //(this->m_TWContainer, iDatabaseConnector);
+  std::vector< int >           VectorIDs = this->m_TWContainer->GetAllTraceIDsInContainer();
+    //std::vector< int >::iterator iter = VectorIDs.begin();
+  std::list<unsigned int> ListIDs(VectorIDs.begin(), VectorIDs.end());
+
+  std::list<LineageStructure> list_of_traces =
+      this->m_CollectionOfTraces->GetListStructureFromDB<LineageStructure>(
+      iDatabaseConnector, this->m_ImgSessionID, ListIDs);
+
+  std::list<LineageStructure>::iterator it = list_of_traces.begin();
+  while ( it != list_of_traces.end() )
+    {
+    LineageStructure Lineage = *it;
+    GoFigureLineageAttributes Attributes = 
+      m_TrackContainerInfoForVisu->UpdateDivisionsForALineage(
+      Lineage.TrackRootID, Lineage.rgba);
+    this->m_LineageContainerInfoForVisu->Insert(*it);
+    this->m_TWContainer->SetLineageAttributes(&Attributes);
+    this->DisplayInfoForExistingTrace(iDatabaseConnector, Lineage.TraceID);
+    ++it;
+    }
 }
 
 //-------------------------------------------------------------------------
