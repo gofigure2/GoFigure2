@@ -169,7 +169,7 @@ public:
    * MegaImageStructure
    * \param[in] iTime requested time point
    */
-  void setTimePoint(const unsigned int& iTime);
+  void setTimePoint(const int& iTime);
 
   /*
    * \brief load all time points of the given channel into the
@@ -212,9 +212,6 @@ public:
   vtkSmartPointer<vtkImageData> getChannelAllTimes(const unsigned int& iChannel);
 
 private:
-
-  void initialize(); // to be called in contructor - First T all channels with associated color from Readers
-  
   // Mega reader - might not be necessary...? should be required in constructor...
   //void setMegaReader(itkMegaCaptureReader* iReader);
 
