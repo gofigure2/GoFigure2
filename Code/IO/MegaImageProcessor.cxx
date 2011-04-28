@@ -41,11 +41,8 @@
 #include "vtkImageMapToColors.h"
 #include "vtkImageWeightedSum.h"
 
-// project include
-#include "itkMegaCaptureReader.h"
-
 //--------------------------------------------------------------------------
-MegaImageProcessor::MegaImageProcessor(itkMegaCaptureReader* iReader)
+MegaImageProcessor::MegaImageProcessor(itk::MegaCaptureReader::Pointer iReader)
 {
   // Nicolas - might need another king of copy
   m_MegaImageReader = iReader;
@@ -79,24 +76,36 @@ MegaImageProcessor::
 initialize()
 {
   // Get Number of channels from reader
-  unsigned int numberOfChannels(0);
-  unsigned int firstTimePoint(0);
+  unsigned int min_ch = m_MegaImageReader->GetMinChannel();
+  unsigned int max_ch = m_MegaImageReader->GetMaxChannel();
+  unsigned int numberOfChannels = max_ch - min_ch +1;
+
+  // Get First Time Point
+  unsigned int firstTimePoint = m_MegaImageReader->GetMinTimePoint();
+  m_MegaImageReader->SetTimePoint(firstTimePoint);
+  m_MegaImageReader->Update();
 
   while(numberOfChannels>0)
     {
     // Get useful information from the reader
     // Get Image
+    vtkSmartPointer<vtkImageData> image =
+        m_MegaImageReader->GetOutput(numberOfChannels);
 
     // Get Color
     // Create LUT
-    vtkSmartPointer<vtkLookupTable> lut = createLUT(0, 0, 0, 0);
+    // generates random colors as of now
+    vtkSmartPointer<vtkLookupTable> lut = createLUT((rand() % 255 )/255,
+                                                    (rand() % 255 )/255,
+                                                    (rand() % 255 )/255,
+                                                    1);
 
     // Update the MegaImageStructure
     // image, LUT, channel, time point
     m_MegaImageContainer.insert(MegaImageStructure(firstTimePoint,
                                                    numberOfChannels,
                                                    lut,
-                                                   NULL));// Image
+                                                   image));// Image
 
     --numberOfChannels;
     }
@@ -250,4 +259,28 @@ getChannelAllTimes(const unsigned int& iChannel)
     }
   return weightedImage->GetOutput();
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+MegaImageProcessor::
+setTimePoint(const unsigned int& iTime)
+{
+  /*m_MegaCaptureReader->SetInput(m_FileList);
+  m_MegaCaptureReader->SetMegaCaptureHeader(iHeader);
+  m_MegaCaptureReader->SetFileType(m_FileType);
+  m_MegaCaptureReader->SetTimeBased(true);
+  m_MegaCaptureReader->SetTimePoint(iTimePoint);
+  m_MegaCaptureReader->Update();
+
+  unsigned int min_t = m_MegaCaptureReader->GetMinTimePoint();
+  unsigned int max_t = m_MegaCaptureReader->GetMaxTimePoint();
+
+  unsigned int min_ch = m_MegaCaptureReader->GetMinChannel();
+  unsigned int max_ch = m_MegaCaptureReader->GetMaxChannel();
+
+  unsigned int NumberOfChannels = max_ch - min_ch + 1;
+  */
+}
+
 //--------------------------------------------------------------------------

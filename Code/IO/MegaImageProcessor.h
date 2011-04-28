@@ -48,13 +48,11 @@
 
 // include project
 #include "MegaImageStructure.h"
+#include "itkMegaCaptureReader.h"
 
 // external include
 class vtkLookupTable;
 class vtkImageData;
-
-// project include
-class itkMegaCaptureReader;
 
 //-----------------------------------------------------------------------------
 
@@ -117,7 +115,7 @@ class QGOIO_EXPORT MegaImageProcessor
 public:
 
   /** Constructor */
-  MegaImageProcessor(itkMegaCaptureReader* iReader);
+  MegaImageProcessor(itk::MegaCaptureReader::Pointer iReader);
 
   /** Constructor */
   MegaImageProcessor( const MegaImageProcessor& iE );
@@ -166,7 +164,26 @@ public:
   vtkSmartPointer<vtkLookupTable> getLookuptable(const unsigned int& iChannel,
                                                  const unsigned int& iTime) const;
 
+  /*
+   * \brief load all the channels for the given time point into the
+   * MegaImageStructure
+   * \param[in] iTime requested time point
+   */
   void setTimePoint(const unsigned int& iTime);
+
+  /*
+   * \brief load all time points of the given channel into the
+   * MegaImageStructure. Called Doppler View.
+   * \param[in] iChannel requested channel
+   * \param[in] iFirstTime first time point
+   * \param[in] iNumberOfImages number of images to be loaded
+   * \param[in] iStepBetweenImages step between each image
+   * \note need to store parameters if we want to go through volume
+  * efficiently (not reload everything all the time)
+   */
+  void setDoppler(const unsigned int& iChannel, const unsigned int& iFirstTime,
+                  const unsigned int& iNumberOfImages,
+                  const unsigned int& iStepBetweenImages = 1);
 
   /*
    * \brief get single channel image given time point and channel from the
@@ -194,12 +211,6 @@ public:
    */
   vtkSmartPointer<vtkImageData> getChannelAllTimes(const unsigned int& iChannel);
 
-
-  vtkSmartPointer<vtkImageData> getDoppler(const unsigned int& iChannel,
-                                           const unsigned int& iFirstTime,
-                                           const unsigned int& iNumberOfImages,
-                                           const unsigned int& iStepBetweenImages);
-
 private:
 
   void initialize(); // to be called in contructor - First T all channels with associated color from Readers
@@ -219,9 +230,9 @@ private:
   vtkSmartPointer<vtkImageData> colorImage(vtkSmartPointer<vtkImageData> iImage,
                                            vtkSmartPointer<vtkLookupTable> iLUT);
 
-  itkMegaCaptureReader*                 m_MegaImageReader;
-  MegaImageStructureMultiIndexContainer m_MegaImageContainer;
-  vtkSmartPointer<vtkImageData>         m_Output;
+  itk::MegaCaptureReader::Pointer        m_MegaImageReader;
+  MegaImageStructureMultiIndexContainer  m_MegaImageContainer;
+  vtkSmartPointer<vtkImageData>          m_Output;
 };
 
 #endif // MEGAIMAGEPROCESSOR_H
