@@ -153,6 +153,7 @@ void GoDBTWContainerForLineage::GetValuesAndNamesForLineageComputedValues(
     temp.push_back( ConvertToString< unsigned int >(iLineageAttributes->NumberOfDivisions) );
     ioNames.push_back("NbLeaves");
     temp.push_back( ConvertToString< unsigned int >(iLineageAttributes->NumberOfLeaves) );
+    ioValues.push_back(temp);
     }
 }
 //--------------------------------------------------------------------------

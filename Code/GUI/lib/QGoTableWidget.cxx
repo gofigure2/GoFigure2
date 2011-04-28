@@ -556,6 +556,7 @@ void QGoTableWidget::InsertNewRow(TWContainerType iTWRowContainer,
       }
     } //ENDELSE
   this->setSortingEnabled(true);
+  this->resizeColumnsToContents();
 }
 
 //--------------------------------------------------------------------------
