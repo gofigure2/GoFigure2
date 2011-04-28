@@ -35,6 +35,10 @@
 
 #include "MegaImageProcessor.h"
 
+// external library include
+#include "vtkLookupTable.h"
+#include "vtkMath.h"
+
 // project include
 #include "itkMegaCaptureReader.h"
 
@@ -43,6 +47,10 @@ MegaImageProcessor::MegaImageProcessor(itkMegaCaptureReader* iReader)
 {
   // Nicolas - might need another king of copy
   m_MegaImageReader = iReader;
+
+  //Create the new MegaImageStructure
+  // with the first time point and all the channels
+  Initialize();
 }
 //--------------------------------------------------------------------------
 
@@ -51,10 +59,9 @@ MegaImageProcessor::MegaImageProcessor(const MegaImageProcessor & iE)
 {
   // Nicolas - might need another king of copy
   m_MegaImageReader = iE.m_MegaImageReader;
-  m_MegaImageStructure = iE.m_MegaImageStructure;
+  m_MegaImageContainer = iE.m_MegaImageContainer;
   m_Output = iE.m_Output;
 }
-
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -62,3 +69,74 @@ MegaImageProcessor::
 ~MegaImageProcessor()
 {
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+MegaImageProcessor::
+Initialize()
+{
+  // Get Number of channels from reader
+  unsigned int numberOfChannels(0);
+  unsigned int firstTimePoint(0);
+
+  while(numberOfChannels>0)
+    {
+    // Get useful information from the reader
+    // Get Image
+
+    // Get Color
+    // Create LUT
+    vtkSmartPointer<vtkLookupTable> lut = createLUT(0, 0, 0, 0);
+
+    // Update the MegaImageStructure
+    // image, LUT, channel, time point
+    m_MegaImageContainer.insert(MegaImageStructure(firstTimePoint,
+                                                   numberOfChannels,
+                                                   lut,
+                                                   NULL));// Image
+
+    --numberOfChannels;
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+vtkSmartPointer<vtkLookupTable>
+MegaImageProcessor::
+createLUT(const double& iRed, const double& iGreen, const double& iBlue,
+          const double& iAlpha)
+{
+  vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
+  double* HSV = vtkMath::RGBToHSV(iRed,iGreen,iBlue);
+  lut->SetAlpha(iAlpha);
+  lut->SetHueRange(HSV[0], HSV[0]);
+  lut->SetSaturationRange(1, 1);
+  lut->SetValueRange(0, 1);
+  lut->Build();
+  return lut;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+MegaImageProcessor::
+setLookupTable(vtkSmartPointer<vtkLookupTable> iLUT,
+                    const unsigned int& iChannel,
+                    const unsigned int& iTime)
+{
+  MegaImageStructureMultiIndexContainer::index<Channel>::type::iterator it =
+      m_MegaImageContainer.get< Channel >().find(iChannel);
+
+  while(it!=m_MegaImageContainer.get< Channel >().end())
+    {
+    if(it->Time==iTime)
+      {
+      m_MegaImageContainer.get< Channel >().modify( it , set_lut(iLUT) );
+      break;
+      }
+    ++it;
+    }
+
+}
+//--------------------------------------------------------------------------

@@ -39,7 +39,10 @@
 #include "QGoIOConfigure.h"
 
 // includes from external libs
+// VTK
 #include "vtkSmartPointer.h"
+#include "vtkLookupTable.h"
+#include "vtkImageData.h"
 
 /**
 \defgroup Mega Mega
@@ -50,17 +53,30 @@
  * \brief  Convenience structure to store visible image
  * \ingroup Mega
  */
-class QGOIO_EXPORT MegaImageStructure
+struct QGOIO_EXPORT MegaImageStructure
 {
-public:
+    unsigned int                    Time;
+    unsigned int                    Channel;
+    vtkSmartPointer<vtkLookupTable> LUT;
+    vtkSmartPointer<vtkImageData>   Image;
+
     /** Constructor */
-    MegaImageStructure();
+    MegaImageStructure(unsigned int iTime, unsigned int iChannel,
+                       vtkSmartPointer<vtkLookupTable> iLUT,
+                       vtkSmartPointer<vtkImageData> iImage):
+                       Time(iTime), Channel(iChannel), LUT(iLUT), Image(iImage)
+    {}
 
-    /** Destructor */
-    ~MegaImageStructure();
+   void  setLUT(vtkSmartPointer<vtkLookupTable> iLUT)
+   {
+     LUT = iLUT;
+   }
 
-private:
-
+    friend std::ostream& operator<<(std::ostream& os,const MegaImageStructure& e)
+    {
+      os<< "time: "<<e.Time<<"  channel: "<<e.Channel<<std::endl;
+      return os;
+    }
 };
 
 #endif // MEGAIMAGESTRUCTURE_H

@@ -38,8 +38,13 @@
 // Required for dynamic libs on Windows (QGoIOExport)
 #include "QGoIOConfigure.h"
 
-// includes from external libs
+// external library include
+// VTK
 #include "vtkSmartPointer.h"
+// BOOST
+#include <boost/multi_index_container.hpp>
+#include <boost/multi_index/member.hpp>
+#include <boost/multi_index/ordered_index.hpp>
 
 // include project
 #include "MegaImageStructure.h"
@@ -47,10 +52,56 @@
 // external include
 class vtkLookupTable;
 class vtkImageData;
-class vtkLookupTable;
 
 // project include
 class itkMegaCaptureReader;
+
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+/**
+  \struct set_lut
+  \brief change lut of given structure
+  \sa MegaImageStructure
+  */
+struct set_lut
+{
+  set_lut(vtkSmartPointer<vtkLookupTable> iLUT):lut(iLUT){}
+
+  void operator()(MegaImageStructure& iStructure)
+  {
+    iStructure.setLUT(lut);
+  }
+
+private:
+  vtkSmartPointer<vtkLookupTable> lut;
+};
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+using boost::multi_index_container;
+using namespace boost::multi_index;
+
+/* tags for accessing the corresponding indices of megaImageStructure */
+
+struct Time{};
+struct Channel{};
+
+/* Define a multi_index_container of employees with following indices:
+ *   - a unique index sorted by MegaImageStructure::Time,
+ *   - a non-unique index sorted by MegaImageStructure::Channel,
+ */
+
+typedef multi_index_container<
+  MegaImageStructure,
+  indexed_by<
+    ordered_unique<
+      tag<Time>,  BOOST_MULTI_INDEX_MEMBER(MegaImageStructure,unsigned int,Time)>,
+    ordered_non_unique<
+      tag<Channel>, BOOST_MULTI_INDEX_MEMBER(MegaImageStructure,unsigned int,Channel)> >
+> MegaImageStructureMultiIndexContainer;
+
+//-----------------------------------------------------------------------------
 
 /**
 \defgroup Mega Mega
@@ -86,7 +137,7 @@ public:
   vtkSmartPointer<vtkLookupTable> createLUT(const double& iRed,
                                             const double& iGreen,
                                             const double& iBlue,
-                                            const double& iAlpha);
+                                            const double& iAlpha = 0);
   void setLookupTable(vtkSmartPointer<vtkLookupTable> iLUT,
                       const unsigned int& iChannel,
                       const unsigned int& iTime);
@@ -115,9 +166,9 @@ private:
   // Mega reader - might not be necessary...? should be required in constructor...
   void setMegaReader(itkMegaCaptureReader* iReader);
 
-  itkMegaCaptureReader*         m_MegaImageReader;
-  MegaImageStructure            m_MegaImageStructure;
-  vtkSmartPointer<vtkImageData> m_Output;
+  itkMegaCaptureReader*                 m_MegaImageReader;
+  MegaImageStructureMultiIndexContainer m_MegaImageContainer;
+  vtkSmartPointer<vtkImageData>         m_Output;
 };
 
 #endif // MEGAIMAGEPROCESSOR_H
