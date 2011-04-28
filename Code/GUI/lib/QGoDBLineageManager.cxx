@@ -489,14 +489,17 @@ void QGoDBLineageManager::UpdateDivisionsInTrackContainer(unsigned int iLineageI
       this->m_LineageContainerInfoForVisu->GetLineageTrackRootID(iLineageID);
   double* color = this->m_LineageContainerInfoForVisu->GetLineageColor(iLineageID);
 
+  GoFigureLineageAttributes Attributes;
   if(color)
     {
-    m_TrackContainerInfoForVisu->UpdateDivisionsForALineage(root, color);
+    Attributes = m_TrackContainerInfoForVisu->UpdateDivisionsForALineage(root, color);
     }
   else
     {
-    m_TrackContainerInfoForVisu->UpdateCollectionScalars( root ); 
+    Attributes = m_TrackContainerInfoForVisu->UpdateCollectionScalars( root ); 
     }
+
+  this->m_TWContainer->SetLineageAttributes(&Attributes);
 }
 //-------------------------------------------------------------------------
 

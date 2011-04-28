@@ -506,7 +506,7 @@ public:
    * \brief Update the lineage's divisions scalars given the track root ID
    * \param[in] iTrackID track root ID
    */
-  void UpdateCollectionScalars( unsigned int iTrackID);
+  GoFigureLineageAttributes UpdateCollectionScalars( unsigned int iTrackID);
   /*
    * \brief Update the lineage's divisions scalars given the track root ID
    * \param[in] iMotherIterator iterator to go through the lineage

@@ -1441,7 +1441,7 @@ TrackContainer::UpdateDivisionsForALineage(
   GoFigureLineageAttributes Attributes;
   if( motherIt != m_Container.get< TraceID >().end() )
     {
-    //UpdateDivisionScalar(motherIt, 0); // 0=depth of the root
+    UpdateDivisionScalar(motherIt, 0); // 0=depth of the root
     Attributes = this->GetLineageAttributes(iTrackIDRoot);
     UpdateDivisionColor(motherIt, color);
     m_ImageView->UpdateRenderWindows();
@@ -1452,17 +1452,20 @@ TrackContainer::UpdateDivisionsForALineage(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void
+GoFigureLineageAttributes
 TrackContainer::
 UpdateCollectionScalars( unsigned int iTrackID)
 {
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iTrackID);
-
+  GoFigureLineageAttributes oAttributes;
   if( motherIt != m_Container.get< TraceID >().end() )
     {
-    UpdateDivisionScalar(motherIt, 0); // 0=depth of the root
+    UpdateDivisionScalar(motherIt, 0); 
+    oAttributes = this->GetLineageAttributes(iTrackID);
+      // 0=depth of the root
     }
+  return oAttributes;
 }
 //-------------------------------------------------------------------------
 
