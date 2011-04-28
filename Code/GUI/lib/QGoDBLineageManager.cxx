@@ -181,14 +181,12 @@ unsigned int QGoDBLineageManager::CreateNewLineageWithTrackRoot(
 std::list< unsigned int > QGoDBLineageManager::UpdateTheTracesColor(
   vtkMySQLDatabase *iDatabaseConnector)
 {
-      this->UpdateTheTracesColorTemplate< GoDBLineageRow,
+  this->UpdateTheTracesColorTemplate< GoDBLineageRow,
       LineageContainer >(iDatabaseConnector, this->m_LineageContainerInfoForVisu);
 
-    std::list< unsigned int > oList =
-        this->m_LineageContainerInfoForVisu->GetHighlightedElementsTraceID();
+  std::list< unsigned int > oList = this->GetListHighlightedIDs();
 
   std::list< unsigned int >::iterator it = oList.begin();
-
   while( it != oList.end() )
     {
     unsigned int trackRoot = this->m_LineageContainerInfoForVisu->GetLineageTrackRootID(*it);
@@ -497,7 +495,6 @@ void QGoDBLineageManager::DeleteDivisionsForLineages(
        }
     ++iter;
     }
-
 }
 //-------------------------------------------------------------------------
 
