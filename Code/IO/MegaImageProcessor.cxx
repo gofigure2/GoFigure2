@@ -38,6 +38,7 @@
 // external library include
 #include "vtkLookupTable.h"
 #include "vtkMath.h"
+#include "vtkImageMapToColors.h"
 
 // project include
 #include "itkMegaCaptureReader.h"
@@ -50,7 +51,7 @@ MegaImageProcessor::MegaImageProcessor(itkMegaCaptureReader* iReader)
 
   //Create the new MegaImageStructure
   // with the first time point and all the channels
-  Initialize();
+  initialize();
 }
 //--------------------------------------------------------------------------
 
@@ -74,7 +75,7 @@ MegaImageProcessor::
 //--------------------------------------------------------------------------
 void
 MegaImageProcessor::
-Initialize()
+initialize()
 {
   // Get Number of channels from reader
   unsigned int numberOfChannels(0);
@@ -157,5 +158,21 @@ getLookuptable(const unsigned int& iChannel, const unsigned int& iTime) const
     ++it;
     }
   return NULL;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+vtkSmartPointer<vtkImageData>
+MegaImageProcessor::
+colorImage(vtkSmartPointer<vtkImageData> iImage,
+           vtkSmartPointer<vtkLookupTable> iLUT)
+{
+  vtkSmartPointer<vtkImageMapToColors> coloredImage =
+      vtkSmartPointer<vtkImageMapToColors>::New();
+  coloredImage->SetInput( iImage);
+  coloredImage->SetLookupTable(iLUT);
+  coloredImage->Update();
+
+  return coloredImage->GetOutput();
 }
 //--------------------------------------------------------------------------

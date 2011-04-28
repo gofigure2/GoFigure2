@@ -178,15 +178,24 @@ public:
                                            const unsigned int& iNumberOfImages,
                                            const unsigned int& iStepBetweenImages);
 
-  // public or private..?
-  void Update();
-
 private:
 
-  void Initialize(); // to be called in contructor - First T all channels with associated color from Readers
+  void initialize(); // to be called in contructor - First T all channels with associated color from Readers
   
   // Mega reader - might not be necessary...? should be required in constructor...
-  void setMegaReader(itkMegaCaptureReader* iReader);
+  //void setMegaReader(itkMegaCaptureReader* iReader);
+
+  // public or private..?
+  void update();
+
+  /*
+   * \brief Color an image given the original image and a lookuptable (LUT)
+   * \param[in] iImage image to be colored
+   * \param[in] iLUT LUT to be applied to the image
+   * \return colored image
+   */
+  vtkSmartPointer<vtkImageData> colorImage(vtkSmartPointer<vtkImageData> iImage,
+                                           vtkSmartPointer<vtkLookupTable> iLUT);
 
   itkMegaCaptureReader*                 m_MegaImageReader;
   MegaImageStructureMultiIndexContainer m_MegaImageContainer;
