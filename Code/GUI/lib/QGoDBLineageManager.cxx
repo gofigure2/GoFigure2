@@ -290,10 +290,8 @@ void QGoDBLineageManager::GetTracesInfoFromDBAndModifyContainerForVisu(
     while ( it != list_of_traces.end() )
       {
       LineageStructure Lineage = *it;
-      m_TrackContainerInfoForVisu->UpdateCollectionColors(
+      m_TrackContainerInfoForVisu->UpdateDivisionsForALineage(
         Lineage.TrackRootID, Lineage.rgba);
-      m_TrackContainerInfoForVisu->UpdateCollectionScalars( Lineage.TrackRootID );
-      //same for attributes ???
       this->m_LineageContainerInfoForVisu->Insert(*it);
       ++it;
       }
@@ -390,32 +388,6 @@ UpdateElementHighlighting(unsigned int iTraceRootID)
 //-------------------------------------------------------------------------
 void
 QGoDBLineageManager::
-UpdateDivisionsScalars( unsigned int iLineageID )
-{
-  unsigned int root =
-      this->m_LineageContainerInfoForVisu->GetLineageTrackRootID(iLineageID);
-  m_TrackContainerInfoForVisu->UpdateCollectionScalars( root );
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoDBLineageManager::
-UpdateDivisionsColors( unsigned int iLineage)
-{
-    unsigned int root =
-        this->m_LineageContainerInfoForVisu->GetLineageTrackRootID(iLineage);
-    double* color = this->m_LineageContainerInfoForVisu->GetLineageColor(iLineage);
-    if(color)
-      {
-      m_TrackContainerInfoForVisu->UpdateCollectionColors( root, color );
-      }
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoDBLineageManager::
 ExportLineages()
 {
   //get path to export somewhere
@@ -469,10 +441,26 @@ QGoDBLineageManager::UpdateBoundingBoxes(vtkMySQLDatabase *iDatabaseConnector,
   std::list<unsigned int>::iterator iter = iListTracesIDs.begin();
   while(iter != iListTracesIDs.end() )
     {
-    // update color data and actors
-    this->UpdateDivisionsColors(*iter);
-    this->UpdateDivisionsScalars(*iter);
+    this->UpdateDivisionsInTrackContainer(*iter);
     ++iter;
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBLineageManager::UpdateDivisionsInTrackContainer(unsigned int iLineageID)
+{
+  unsigned int root =
+      this->m_LineageContainerInfoForVisu->GetLineageTrackRootID(iLineageID);
+  double* color = this->m_LineageContainerInfoForVisu->GetLineageColor(iLineageID);
+
+  if(color)
+    {
+    m_TrackContainerInfoForVisu->UpdateDivisionsForALineage(root, color);
+    }
+  else
+    {
+    m_TrackContainerInfoForVisu->UpdateCollectionScalars( root ); 
     }
 }
 //-------------------------------------------------------------------------

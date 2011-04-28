@@ -1432,6 +1432,23 @@ GetRootIterator(MultiIndexContainerTraceIDIterator& iMotherIterator)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void 
+TrackContainer::UpdateDivisionsForALineage(
+  unsigned int iTrackIDRoot, double* color)
+{
+  MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(iTrackIDRoot);
+
+  if( motherIt != m_Container.get< TraceID >().end() )
+    {
+    UpdateDivisionScalar(motherIt, 0); // 0=depth of the root
+    UpdateDivisionColor(motherIt, color);
+    m_ImageView->UpdateRenderWindows();
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void
 TrackContainer::
 UpdateCollectionScalars( unsigned int iTrackID)
