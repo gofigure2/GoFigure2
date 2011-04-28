@@ -150,24 +150,11 @@ protected:
     unsigned int iLineageID, unsigned int iTrackIDRoot);
 
    /*
-   * \brief Update the scalars for all the divisions of all the lineages
+   * \brief Update the scalars and colors for all the divisions of a 
+   lineage in the trackContainer for the visu
    */
-  void UpdateDivisionsScalars();
-  /*
-   * \brief Update the scalars for all the divisions of the given lineage
-   * \param[in] iLineageID ID of the lineage to be processed
-   */
-  void UpdateDivisionsScalars( unsigned int iLineageID);
-  /*
-   * \brief Update the color for all the divisions of all the lineages
-   */
-  void UpdateDivisionsColors();
-  /*
-   * \brief Update the color for all the divisions of the given lineage
-   * \param[in] iLineageID ID of the lineage to be processed
-   */
-  void UpdateDivisionsColors( unsigned int iLineageID);
-
+  void UpdateDivisionsInTrackContainer(unsigned int iLineageID);
+ 
   /**
   \brief delete the divisions of a lineage in the database and in the visu 
   */

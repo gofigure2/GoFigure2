@@ -358,8 +358,6 @@ public:
   */
   void UpdateElementHighlighting(unsigned int TraceId)
     {
-          std::cout << "UpdateElementHighlighting" << std::endl;
-
     Qt::CheckState state;
     Superclass::UpdateElementHighlightingWithTraceID(TraceId,
                                                      state );
@@ -498,6 +496,11 @@ public:
    */
   void UpdateSubLineage( MultiIndexContainerTraceIDIterator it, std::list<unsigned int>& iList);
 
+  /**
+  \brief update the color and the divisions scalars of an all lineage which has
+  iTrackIDRoot as track root
+  */
+  void UpdateDivisionsForALineage( unsigned int iTrackIDRoot, double* color);
   /*
    * \brief Update the lineage's divisions scalars given the track root ID
    * \param[in] iTrackID track root ID
