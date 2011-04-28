@@ -39,6 +39,7 @@
 #include "vtkLookupTable.h"
 #include "vtkMath.h"
 #include "vtkImageMapToColors.h"
+#include "vtkImageWeightedSum.h"
 
 // project include
 #include "itkMegaCaptureReader.h"
@@ -174,5 +175,79 @@ colorImage(vtkSmartPointer<vtkImageData> iImage,
   coloredImage->Update();
 
   return coloredImage->GetOutput();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+vtkSmartPointer<vtkImageData>
+MegaImageProcessor::
+getImage(const unsigned int& iTime, const unsigned int& iChannel)
+{
+  MegaImageStructureMultiIndexContainer::index<Channel>::type::iterator it =
+      m_MegaImageContainer.get< Channel >().find(iChannel);
+
+  while(it!=m_MegaImageContainer.get< Channel >().end())
+    {
+    if(it->Time==iTime)
+      {
+      return colorImage(it->Image, it->LUT);
+      }
+    ++it;
+    }
+  return NULL;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+vtkSmartPointer<vtkImageData>
+MegaImageProcessor::
+getTimeAllChannels(const unsigned int& iTime)
+{
+  vtkSmartPointer<vtkImageWeightedSum> weightedImage =
+      vtkSmartPointer<vtkImageWeightedSum>::New();
+
+  MegaImageStructureMultiIndexContainer::index<Time>::type::iterator it =
+      m_MegaImageContainer.get< Time >().find(iTime);
+
+  vtkIdType i(0);
+
+  while(it!=m_MegaImageContainer.get< Time >().end())
+    {
+    weightedImage->AddInput(colorImage(it->Image, it->LUT));
+
+    // might not be requiered - to be checked
+    weightedImage->SetWeight(i, 1);
+    ++i;
+
+    ++it;
+    }
+  return weightedImage->GetOutput();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+vtkSmartPointer<vtkImageData>
+MegaImageProcessor::
+getChannelAllTimes(const unsigned int& iChannel)
+{
+  vtkSmartPointer<vtkImageWeightedSum> weightedImage =
+      vtkSmartPointer<vtkImageWeightedSum>::New();
+
+  MegaImageStructureMultiIndexContainer::index<Channel>::type::iterator it =
+      m_MegaImageContainer.get< Channel >().find(iChannel);
+
+  vtkIdType i(0);
+
+  while(it!=m_MegaImageContainer.get< Channel >().end())
+    {
+    weightedImage->AddInput(colorImage(it->Image, it->LUT));
+
+   // might not be requiered - to be checked
+    weightedImage->SetWeight(i, 1);
+    ++i;
+
+    ++it;
+    }
+  return weightedImage->GetOutput();
 }
 //--------------------------------------------------------------------------

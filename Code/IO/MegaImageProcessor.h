@@ -166,13 +166,35 @@ public:
   vtkSmartPointer<vtkLookupTable> getLookuptable(const unsigned int& iChannel,
                                                  const unsigned int& iTime) const;
 
-  // Get processed data
-  vtkSmartPointer<vtkImageData> getTime(const unsigned int& iTime,
-                                        const unsigned int& iChannel); // all channels for given T // no doppler
-  vtkSmartPointer<vtkImageData> getTimeAllChannels(const unsigned int& iTime); // all channels for given T // no doppler
-  vtkSmartPointer<vtkImageData> getChannel(const unsigned int& iChannel,
-                                           const unsigned int& iTime);
+  void setTimePoint(const unsigned int& iTime);
+
+  /*
+   * \brief get single channel image given time point and channel from the
+   * structure. Will create the new image from the structure.
+   * \param[in] iTime requested time point
+   * \param[in] iChannel requested channel
+   * \return colored image.
+   */
+  vtkSmartPointer<vtkImageData> getImage(const unsigned int& iTime,
+                                         const unsigned int& iChannel);
+
+  /*
+   * \brief get all channels image given a time point. Will create the new
+   * image from the structure.
+   * \param[in] iTime requested time point
+   * \return colored image.
+   */
+  vtkSmartPointer<vtkImageData> getTimeAllChannels(const unsigned int& iTime);
+
+  /*
+   * \brief get all time points image given a channel. Will create the new
+   * image from the structure.
+   * \param[in] iChannel requested channel
+   * \return colored image.
+   */
   vtkSmartPointer<vtkImageData> getChannelAllTimes(const unsigned int& iChannel);
+
+
   vtkSmartPointer<vtkImageData> getDoppler(const unsigned int& iChannel,
                                            const unsigned int& iFirstTime,
                                            const unsigned int& iNumberOfImages,
