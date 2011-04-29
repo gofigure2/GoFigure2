@@ -69,5 +69,13 @@ struct QGOIO_EXPORT GoFigureLineageAttributes
     this->NumberOfLeaves = iE.NumberOfLeaves;
     return *this;
     }
+
+  void clear()
+  {
+    this->MaxDepth = 0;
+    this->MinDepth = 0;
+    this->NumberOfDivisions = 0;
+    this->NumberOfLeaves = 0;
+  }
 };
 #endif

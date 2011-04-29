@@ -54,11 +54,11 @@ public:
   virtual TWContainerType GetContainerForOneSpecificTrace(
     vtkMySQLDatabase *iDatabaseConnector, int iTraceID );
 
-  void SetLineageAttributes(GoFigureLineageAttributes *iLineageAttributes);
+  void SetLineageAttributes(GoFigureLineageAttributes iLineageAttributes);
 
 protected:
 
-  GoFigureLineageAttributes* m_LineageAttributes;
+  GoFigureLineageAttributes m_LineageAttributes;
 
   /**
   \brief add the specific info for a lineage to the columns description
@@ -73,7 +73,7 @@ protected:
   void FillRowContainerForLineageComputedValues();
 
   void GetValuesAndNamesForLineageComputedValues(
-    GoFigureLineageAttributes *iLineageAttributes,
+    GoFigureLineageAttributes iLineageAttributes,
     std::vector< std::vector< std::string > > & ioValues,
     std::vector< std::string > & ioNames);
 

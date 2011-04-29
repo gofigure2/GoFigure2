@@ -105,7 +105,7 @@ void GoDBTWContainerForLineage::SetSpecificInfoForLineageTable()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBTWContainerForLineage::SetLineageAttributes(GoFigureLineageAttributes *iLineageAttributes)
+void GoDBTWContainerForLineage::SetLineageAttributes(GoFigureLineageAttributes iLineageAttributes)
 {
   this->m_LineageAttributes = iLineageAttributes;
 }
@@ -119,7 +119,7 @@ void GoDBTWContainerForLineage::FillRowContainerForLineageComputedValues()
   this->GetValuesAndNamesForLineageComputedValues(this->m_LineageAttributes, VectorValues,
                                                 VectorNames);
   this->FillRowContainer(VectorValues, VectorNames, "ColumnNameTableWidget");
-  this->m_LineageAttributes = 0;
+  this->m_LineageAttributes.clear();
 }
 //--------------------------------------------------------------------------
 
@@ -138,23 +138,23 @@ GoDBTWContainerForLineage::GetContainerForOneSpecificTrace(
 
 //--------------------------------------------------------------------------
 void GoDBTWContainerForLineage::GetValuesAndNamesForLineageComputedValues(
-  GoFigureLineageAttributes *iLineageAttributes,
+  GoFigureLineageAttributes iLineageAttributes,
   std::vector< std::vector< std::string > > & ioValues,
   std::vector< std::string > & ioNames)
 {
-  if ( iLineageAttributes != 0 )
-    {
+  //if ( iLineageAttributes != 0 )
+  //  {
     std::vector< std::string > temp;
     ioNames.push_back("MaxDepth");
-    temp.push_back( ConvertToString< unsigned int >(iLineageAttributes->MaxDepth) );
+    temp.push_back( ConvertToString< unsigned int >(iLineageAttributes.MaxDepth) );
     ioNames.push_back("MinDepth");
-    temp.push_back( ConvertToString< unsigned int >(iLineageAttributes->MinDepth) );
+    temp.push_back( ConvertToString< unsigned int >(iLineageAttributes.MinDepth) );
     ioNames.push_back("NbDivisions");
-    temp.push_back( ConvertToString< unsigned int >(iLineageAttributes->NumberOfDivisions) );
+    temp.push_back( ConvertToString< unsigned int >(iLineageAttributes.NumberOfDivisions) );
     ioNames.push_back("NbLeaves");
-    temp.push_back( ConvertToString< unsigned int >(iLineageAttributes->NumberOfLeaves) );
+    temp.push_back( ConvertToString< unsigned int >(iLineageAttributes.NumberOfLeaves) );
     ioValues.push_back(temp);
-    }
+ //   }
 }
 //--------------------------------------------------------------------------
 

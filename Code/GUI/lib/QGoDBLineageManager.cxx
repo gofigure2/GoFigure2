@@ -149,7 +149,7 @@ void QGoDBLineageManager::DisplayInfoAndLoadVisuContainerForAllLineages(
       m_TrackContainerInfoForVisu->UpdateDivisionsForALineage(
       Lineage.TrackRootID, Lineage.rgba);
     this->m_LineageContainerInfoForVisu->Insert(*it);
-    this->m_TWContainer->SetLineageAttributes(&Attributes);
+    this->m_TWContainer->SetLineageAttributes(Attributes);
     this->InsertLineageInTW(iDatabaseConnector, Lineage.TraceID);
     ++it;
     }
@@ -472,11 +472,16 @@ QGoDBLineageManager::UpdateBoundingBoxes(vtkMySQLDatabase *iDatabaseConnector,
                                    std::list< unsigned int > iListTracesIDs,
                                    bool UpdateTW)
 {
-  QGoDBTraceManager::UpdateBoundingBoxes(iDatabaseConnector, iListTracesIDs, UpdateTW);
+  this->m_CollectionOfTraces->RecalculateDBBoundingBox(
+    iDatabaseConnector, iListTracesIDs);
   std::list<unsigned int>::iterator iter = iListTracesIDs.begin();
   while(iter != iListTracesIDs.end() )
     {
     this->UpdateDivisionsInTrackContainer(*iter);
+    if ( UpdateTW )
+      {
+      this->DisplayInfoForExistingTrace(iDatabaseConnector, *iter);
+      }
     ++iter;
     }
 }
@@ -499,7 +504,7 @@ void QGoDBLineageManager::UpdateDivisionsInTrackContainer(unsigned int iLineageI
     Attributes = m_TrackContainerInfoForVisu->UpdateCollectionScalars( root ); 
     }
 
-  this->m_TWContainer->SetLineageAttributes(&Attributes);
+  this->m_TWContainer->SetLineageAttributes(Attributes);
 }
 //-------------------------------------------------------------------------
 
