@@ -187,9 +187,8 @@ public:
    * \note need to store parameters if we want to go through volume
   * efficiently (not reload everything all the time)
    */
-  void setDoppler(const unsigned int& iChannel, const unsigned int& iFirstTime,
-                  const unsigned int& iNumberOfImages,
-                  const unsigned int& iStepBetweenImages = 1);
+  void setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
+                  const unsigned int& iPrevious);
 
   /*
    * \brief get single channel image given time point and channel from the
@@ -200,6 +199,9 @@ public:
    */
   vtkSmartPointer<vtkImageData> getImage(const unsigned int& iTime,
                                          const unsigned int& iChannel);
+
+  vtkSmartPointer<vtkImageData> getImageBW(const unsigned int& iTime,
+                                           const unsigned int& iChannel);
 
   /*
    * \brief get all channels image given a time point. Will create the new
@@ -217,8 +219,22 @@ public:
    */
   vtkSmartPointer<vtkImageData> getChannelAllTimes(const unsigned int& iChannel);
 
+  // Image parameters
+  //--------------------
   unsigned int* getBoundsTime();
   unsigned int* getBoundsChannel();
+
+  int*          getExtent();
+
+  unsigned int getNumberOfTimePoints();
+  unsigned int getNumberOfChannels();
+
+  unsigned int getTimeInterval() const;
+
+  // Doppler parameters
+  //--------------------
+  unsigned int getDopplerStep();
+  void setDopplerStep(unsigned int iStep);
 
 private:
   // public or private..?
@@ -237,10 +253,20 @@ private:
   MegaImageStructureMultiIndexContainer  m_MegaImageContainer;
   vtkSmartPointer<vtkImageData>          m_Output;
 
-
+  // Image parameters
+  //--------------------
   std::vector< std::vector< int > > m_ChannelColor;
   unsigned int* m_BoundsTime;
   unsigned int* m_BoundsChannel;
+  int* m_Extent;
+  unsigned int m_TimeInterval;
+  //--------------------
+
+  // Doppler view parameters
+  //--------------------
+  unsigned int m_DopplerStep;
+  unsigned int m_NumberOfImages;
+  //--------------------
 };
 
 #endif // MEGAIMAGEPROCESSOR_H

@@ -45,18 +45,19 @@
 #include "VisualizePolydataHelper.h"
 
 //--------------------------------------------------------------------------
-MegaImageProcessor::MegaImageProcessor():m_MegaImageReader(NULL), m_Output(NULL)
+MegaImageProcessor::MegaImageProcessor():m_MegaImageReader(NULL), m_Output(NULL),
+  m_BoundsTime(NULL), m_BoundsChannel(NULL), m_Extent(NULL), m_DopplerStep(1),
+  m_NumberOfImages(3)
 {
-  std::cout << "simple constructor" << std::endl;
   m_MegaImageReader = itk::MegaCaptureReader::New();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 MegaImageProcessor::MegaImageProcessor(itk::MegaCaptureReader::Pointer iReader):
-  m_MegaImageReader(iReader)
+  m_MegaImageReader(iReader), m_Output(NULL), m_BoundsTime(NULL),
+  m_BoundsChannel(NULL), m_Extent(NULL), m_DopplerStep(1), m_NumberOfImages(3)
 {
-  std::cout << "overloaded constructor" << std::endl;
   //Create the new MegaImageStructure
   // with the first time point and all the channels
   unsigned int time = m_MegaImageReader->GetMinTimePoint();
@@ -67,12 +68,11 @@ MegaImageProcessor::MegaImageProcessor(itk::MegaCaptureReader::Pointer iReader):
 //--------------------------------------------------------------------------
 MegaImageProcessor::MegaImageProcessor(const MegaImageProcessor & iE):
   m_MegaImageReader(iE.m_MegaImageReader),
-  m_MegaImageContainer(iE.m_MegaImageContainer),
-  m_Output(iE.m_Output)
+  m_MegaImageContainer(iE.m_MegaImageContainer), m_Output(iE.m_Output),
+  m_BoundsTime(iE.m_BoundsTime), m_BoundsChannel(iE.m_BoundsChannel),
+  m_Extent(iE.m_Extent), m_DopplerStep(iE.m_DopplerStep),
+  m_NumberOfImages(iE.m_NumberOfImages)
 {
-    std::cout << "copy constructor" << std::endl;
-  //Create the new MegaImageStructure
-  // with the first time point and all the channels
   unsigned int time = m_MegaImageReader->GetMinTimePoint();
   setTimePoint(time);
 }
@@ -85,11 +85,19 @@ MegaImageProcessor::
   if(m_BoundsTime)
     {
     delete[] m_BoundsTime;
+    m_BoundsTime = NULL;
     }
 
   if(m_BoundsChannel)
     {
     delete[] m_BoundsChannel;
+    m_BoundsChannel = NULL;
+    }
+
+  if(m_Extent)
+    {
+    delete[] m_Extent;
+    m_Extent = NULL;
     }
 }
 //--------------------------------------------------------------------------
@@ -102,20 +110,24 @@ setMegaReader(itk::MegaCaptureReader::Pointer iReader)
   m_MegaImageReader = iReader;
 
   // update general parameters
+  //--------------------
+  // todo Nicolas- Create a method for that...
   m_BoundsTime = new unsigned int[2];
   m_BoundsTime[0] = m_MegaImageReader->GetMinTimePoint();
   m_BoundsTime[1] = m_MegaImageReader->GetMaxTimePoint();
-
   m_BoundsChannel = new unsigned int[2];
   m_BoundsChannel[0] = m_MegaImageReader->GetMinChannel();
   m_BoundsChannel[1] = m_MegaImageReader->GetMaxChannel();
-
+  m_Extent = new int[6];
+  (m_MegaImageReader->GetImage(m_BoundsChannel[0], m_BoundsTime[0]))->
+      GetExtent(m_Extent);
   m_ChannelColor = m_MegaImageReader->GetChannelColor();
+  m_TimeInterval = m_MegaImageReader->GetTimeInterval();
 
-  //Create the new MegaImageStructure
-  // with the first time point and all the channels
+  //--------------------
+
   unsigned int time = m_MegaImageReader->GetMinTimePoint();
-  std::cout << "min time: " << time << std::endl;
+
   setTimePoint(time);
 }
 //--------------------------------------------------------------------------
@@ -222,6 +234,26 @@ getImage(const unsigned int& iTime, const unsigned int& iChannel)
 //--------------------------------------------------------------------------
 vtkSmartPointer<vtkImageData>
 MegaImageProcessor::
+getImageBW(const unsigned int& iTime, const unsigned int& iChannel)
+{
+  MegaImageStructureMultiIndexContainer::index<Channel>::type::iterator it =
+      m_MegaImageContainer.get< Channel >().find(iChannel);
+
+  while(it!=m_MegaImageContainer.get< Channel >().end())
+    {
+    if(it->Time==iTime)
+      {
+      return it->Image;
+      }
+    ++it;
+    }
+  return NULL;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+vtkSmartPointer<vtkImageData>
+MegaImageProcessor::
 getTimeAllChannels(const unsigned int& iTime)
 {
   vtkSmartPointer<vtkImageBlend> blendedImage =
@@ -301,6 +333,7 @@ setTimePoint(const unsigned int& iTime)
       iTime <= m_MegaImageReader->GetMaxTimePoint())
     {
     m_MegaImageReader->SetTimePoint(iTime);
+    m_MegaImageReader->Update();
     m_MegaImageContainer.clear();
     }
   else
@@ -310,28 +343,17 @@ setTimePoint(const unsigned int& iTime)
 
   // update the container
   // Get Number of channels from reader
-  unsigned int min_ch = m_MegaImageReader->GetMinChannel();
-  unsigned int max_ch = m_MegaImageReader->GetMaxChannel();
-  int numberOfChannels = max_ch - min_ch;
-
-  std::cout << "fill container: "<< std::endl;
-  std::cout << "container size: "<< m_MegaImageContainer.size() << std::endl;
-  std::cout << "number of channels: " << numberOfChannels << std::endl;
-
-  m_MegaImageReader->Update();
+  int numberOfChannels = getNumberOfChannels();
 
   while(numberOfChannels>=0)
     {
-        std::cout << "time: " << iTime  << std::endl;
-        std::cout << "channel: " << numberOfChannels  << std::endl;
     // Get useful information from the reader
     // Get Image
     vtkSmartPointer<vtkImageData> image =
         m_MegaImageReader->GetOutput(numberOfChannels);
 
-    // Get Color
     // Create LUT
-    // generates random colors as of now
+    // Get Color
     double random1 = m_ChannelColor[numberOfChannels][0];
     double value1 = random1/255;
 
@@ -354,12 +376,32 @@ setTimePoint(const unsigned int& iTime)
     m_MegaImageContainer.insert(MegaImageStructure(iTime,
                                                    numberOfChannels,
                                                    lut,
-                                                   image));// Image
-    std::cout << "container after insert: "<< m_MegaImageContainer.size() << std::endl;
+                                                   image));
 
     --numberOfChannels;
     }
-    std::cout << "container final size: "<< m_MegaImageContainer.size() << std::endl;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+MegaImageProcessor::
+setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
+           const unsigned int& iPrevious)
+{
+  //check if time point exists
+  if(iTime >= m_MegaImageReader->GetMinTimePoint() &&
+      iTime <= m_MegaImageReader->GetMaxTimePoint())
+    {
+    m_MegaImageReader->SetTimePoint(iTime);
+    m_MegaImageReader->Update();
+    m_MegaImageContainer.clear();
+    }
+  else
+    {
+    return;
+    }
+
 }
 //--------------------------------------------------------------------------
 
@@ -378,5 +420,59 @@ MegaImageProcessor::
 getBoundsChannel()
 {
   return m_BoundsChannel;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+int*
+MegaImageProcessor::
+getExtent()
+{
+  return m_Extent;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+unsigned int
+MegaImageProcessor::
+getNumberOfTimePoints()
+{
+  return m_BoundsTime[1] - m_BoundsTime[0] + 1;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+unsigned int
+MegaImageProcessor::
+getNumberOfChannels()
+{
+  return m_BoundsChannel[1] - m_BoundsChannel[0] + 1;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+unsigned int
+MegaImageProcessor::
+getTimeInterval() const
+{
+  return m_MegaImageReader->GetTimeInterval();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+unsigned int
+MegaImageProcessor::
+getDopplerStep()
+{
+  return m_DopplerStep;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+MegaImageProcessor::
+setDopplerStep(unsigned int iStep)
+{
+  m_DopplerStep = iStep;
 }
 //--------------------------------------------------------------------------
