@@ -106,11 +106,15 @@ MegaImageProcessor::
 createLUT(const double& iRed, const double& iGreen, const double& iBlue,
           const double& iAlpha)
 {
+  std::cout<< " R: " << iRed
+           << " G: " << iGreen
+           << " B: " << iBlue
+           << std::endl;
   vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
   double* HSV = vtkMath::RGBToHSV(iRed,iGreen,iBlue);
-  lut->SetAlpha(1);
-  lut->SetHueRange(0, 1);
-  lut->SetSaturationRange(0, 1);
+  lut->SetAlpha(iAlpha);
+  lut->SetHueRange(HSV[0], HSV[0]);
+  lut->SetSaturationRange(1, 1);
   lut->SetValueRange(0, 1);
   lut->Build();
   return lut;
@@ -165,14 +169,18 @@ MegaImageProcessor::
 colorImage(vtkSmartPointer<vtkImageData> iImage,
            vtkSmartPointer<vtkLookupTable> iLUT)
 {
-  /*vtkSmartPointer<vtkImageMapToColors> coloredImage =
+
+  // todo - Nicolas move somewhere else
+  iLUT->SetRange(iImage->GetScalarRange());
+  iLUT->Build();
+
+  vtkSmartPointer<vtkImageMapToColors> coloredImage =
       vtkSmartPointer<vtkImageMapToColors>::New();
   coloredImage->SetInput( iImage);
   coloredImage->SetLookupTable(iLUT);
   coloredImage->Update();
 
-  return coloredImage->GetOutput();*/
-  return iImage;
+  return coloredImage->GetOutput();
 }
 //--------------------------------------------------------------------------
 
@@ -298,9 +306,9 @@ setTimePoint(const unsigned int& iTime)
     // Get Color
     // Create LUT
     // generates random colors as of now
-    vtkSmartPointer<vtkLookupTable> lut = createLUT(1.0,
-                                                    0.0,
-                                                    0.0,
+    vtkSmartPointer<vtkLookupTable> lut = createLUT(0,
+                                                    1,
+                                                    0,
                                                     1);
 
     // Update the MegaImageStructure
