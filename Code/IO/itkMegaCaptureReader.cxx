@@ -136,6 +136,9 @@ MegaCaptureReader::SetMegaCaptureHeader(const std::string & iHeader)
 {
   m_HeaderReader->SetFileName(iHeader);
   m_HeaderReader->Read();
+
+  m_ChannelColor = m_HeaderReader->m_ChannelColor;
+
   m_Modified = true;
 }
 
@@ -272,7 +275,6 @@ MegaCaptureReader::Update()
       }
 
     // prepare the final output
-
     std::map< unsigned int, std::list< std::string > >::iterator
       fch_it = filelistperchannel.begin();
     std::map< unsigned int, std::list< std::string > >::iterator
@@ -402,5 +404,14 @@ MegaCaptureReader::GetOutputs()
 {
   return m_OutputImageMap;
 }
+//--------------------------------------------------------------------------
 
-} //end of namespace
+//--------------------------------------------------------------------------
+std::vector< std::vector< int > >
+MegaCaptureReader::
+GetChannelColor()
+{
+  return m_ChannelColor;
+}
+//--------------------------------------------------------------------------
+}//end of namespace

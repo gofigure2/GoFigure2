@@ -56,7 +56,7 @@ MegaImageProcessor::MegaImageProcessor():m_MegaImageReader(NULL), m_Output(NULL)
 MegaImageProcessor::MegaImageProcessor(itk::MegaCaptureReader::Pointer iReader):
   m_MegaImageReader(iReader)
 {
-    std::cout << "overloaded constructor" << std::endl;
+  std::cout << "overloaded constructor" << std::endl;
   //Create the new MegaImageStructure
   // with the first time point and all the channels
   unsigned int time = m_MegaImageReader->GetMinTimePoint();
@@ -82,6 +82,15 @@ MegaImageProcessor::MegaImageProcessor(const MegaImageProcessor & iE):
 MegaImageProcessor::
 ~MegaImageProcessor()
 {
+  if(m_BoundsTime)
+    {
+    delete[] m_BoundsTime;
+    }
+
+  if(m_BoundsChannel)
+    {
+    delete[] m_BoundsChannel;
+    }
 }
 //--------------------------------------------------------------------------
 
@@ -91,6 +100,17 @@ MegaImageProcessor::
 setMegaReader(itk::MegaCaptureReader::Pointer iReader)
 {
   m_MegaImageReader = iReader;
+
+  // update general parameters
+  m_BoundsTime = new unsigned int[2];
+  m_BoundsTime[0] = m_MegaImageReader->GetMinTimePoint();
+  m_BoundsTime[1] = m_MegaImageReader->GetMaxTimePoint();
+
+  m_BoundsChannel = new unsigned int[2];
+  m_BoundsChannel[0] = m_MegaImageReader->GetMinChannel();
+  m_BoundsChannel[1] = m_MegaImageReader->GetMaxChannel();
+
+  m_ChannelColor = m_MegaImageReader->GetChannelColor();
 
   //Create the new MegaImageStructure
   // with the first time point and all the channels
@@ -312,13 +332,13 @@ setTimePoint(const unsigned int& iTime)
     // Get Color
     // Create LUT
     // generates random colors as of now
-    double random1 = rand() % 255;
+    double random1 = m_ChannelColor[numberOfChannels][0];
     double value1 = random1/255;
 
-    double random2 = rand() % 255;
+    double random2 = m_ChannelColor[numberOfChannels][1];
     double value2 = random2/255;
 
-    double random3= rand() % 255;
+    double random3 = m_ChannelColor[numberOfChannels][2];
     double value3 = random3/255;
 
     vtkSmartPointer<vtkLookupTable> lut = createLUT(value1,
@@ -340,5 +360,23 @@ setTimePoint(const unsigned int& iTime)
     --numberOfChannels;
     }
     std::cout << "container final size: "<< m_MegaImageContainer.size() << std::endl;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+unsigned int*
+MegaImageProcessor::
+getBoundsTime()
+{
+  return m_BoundsTime;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+unsigned int*
+MegaImageProcessor::
+getBoundsChannel()
+{
+  return m_BoundsChannel;
 }
 //--------------------------------------------------------------------------

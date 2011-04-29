@@ -217,6 +217,9 @@ public:
    */
   vtkSmartPointer<vtkImageData> getChannelAllTimes(const unsigned int& iChannel);
 
+  unsigned int* getBoundsTime();
+  unsigned int* getBoundsChannel();
+
 private:
   // public or private..?
   void update();
@@ -233,6 +236,11 @@ private:
   itk::MegaCaptureReader::Pointer        m_MegaImageReader;
   MegaImageStructureMultiIndexContainer  m_MegaImageContainer;
   vtkSmartPointer<vtkImageData>          m_Output;
+
+
+  std::vector< std::vector< int > > m_ChannelColor;
+  unsigned int* m_BoundsTime;
+  unsigned int* m_BoundsChannel;
 };
 
 #endif // MEGAIMAGEPROCESSOR_H

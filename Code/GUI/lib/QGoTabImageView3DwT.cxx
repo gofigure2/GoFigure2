@@ -1609,21 +1609,15 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
   m_MegaCaptureReader->SetTimePoint(iTimePoint);
   m_MegaCaptureReader->Update();
 
-  std::cout << "set mega capture reader" << std::endl;
   m_MegaImageProcessor.setMegaReader(m_MegaCaptureReader);
+ unsigned int*  boundTime    = m_MegaImageProcessor.getBoundsTime();
+ unsigned int*  boundChannel = m_MegaImageProcessor.getBoundsChannel();
 
-  unsigned int min_t = m_MegaCaptureReader->GetMinTimePoint();
-  unsigned int max_t = m_MegaCaptureReader->GetMaxTimePoint();
-
-  unsigned int min_ch = m_MegaCaptureReader->GetMinChannel();
-  unsigned int max_ch = m_MegaCaptureReader->GetMaxChannel();
-
-  unsigned int NumberOfChannels = max_ch - min_ch + 1;
-
+  unsigned int NumberOfChannels = boundChannel[1] - boundChannel[0] + 1;
   m_ChannelNames.resize( NumberOfChannels );
 
-  vtkImageData *temp = m_MegaCaptureReader->GetOutput(min_ch);
-
+  vtkSmartPointer<vtkImageData> temp =
+      m_MegaImageProcessor.getImage(boundTime[0], boundChannel[0]);
   int extent[6];
   temp->GetExtent(extent);
 
@@ -1662,7 +1656,7 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
   m_NavigationDockWidget->SetZMinimumAndMaximum(extent[4], extent[5]);
   m_NavigationDockWidget->SetZSlice( ( extent[4] + extent[5] ) / 2 );
 
-  m_NavigationDockWidget->SetTMinimumAndMaximum(min_t, max_t);
+  m_NavigationDockWidget->SetTMinimumAndMaximum(boundTime[0], boundTime[1]);
   m_NavigationDockWidget->SetTSlice(iTimePoint);
 
   if ( static_cast< unsigned int >( m_TCoord ) != iTimePoint )
@@ -1675,7 +1669,7 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
   m_VideoRecorderWidget->SetXMinAndMax(extent[0], extent[1]);
   m_VideoRecorderWidget->SetYMinAndMax(extent[2], extent[3]);
   m_VideoRecorderWidget->SetZMinAndMax(extent[4], extent[5]);
-  m_VideoRecorderWidget->SetTMinAndMax(min_t, max_t);
+  m_VideoRecorderWidget->SetTMinAndMax(boundTime[0], boundTime[1]);
 #endif /* ENABLEVIDEORECORD */
 }
 
@@ -1689,28 +1683,24 @@ void
 QGoTabImageView3DwT::SetTimePointWithMegaCapture()
 {
   std::cout << "set t with mega capture" << std::endl;
-  m_MegaCaptureReader->SetTimePoint(m_TCoord);
+  m_MegaImageProcessor.setTimePoint(m_TCoord);
 
-  unsigned int min_ch = m_MegaCaptureReader->GetMinChannel();
-  unsigned int max_ch = m_MegaCaptureReader->GetMaxChannel();
+  unsigned int* boundsChannel = m_MegaImageProcessor.getBoundsChannel();
 
-  unsigned int NumberOfChannels = max_ch - min_ch + 1;
+  unsigned int NumberOfChannels = boundsChannel[1] - boundsChannel[0] + 1;
   // delete the preivous pointers
   // and reassign it
-  m_InternalImages.resize(NumberOfChannels, NULL);
+  //m_InternalImages.resize(NumberOfChannels, NULL);
 
-  m_MegaCaptureReader->Update();
+  std::cout << "NumberOfChannels: " << NumberOfChannels << std::endl;
+  std::cout << "boundsChannel[0]: " << boundsChannel[0] << std::endl;
+  std::cout << "boundsChannel[1]: " << boundsChannel[1] << std::endl;
 
-  if ( max_ch != min_ch )
+  if ( NumberOfChannels>1 )
     {
-    m_MegaImageProcessor.setTimePoint(m_TCoord);
-    vtkSmartPointer< vtkImageData > input =
-        m_MegaImageProcessor.getTimeAllChannels(m_TCoord);
-
     if ( this->m_NavigationDockWidget->ShowAllChannels() )
       {
-      m_Image->ShallowCopy( input );
-
+      m_Image->ShallowCopy(m_MegaImageProcessor.getTimeAllChannels(m_TCoord));
       // LUT DISABLED
       this->findChild<QAction*>("LUT")->setEnabled(false);
       this->findChild<QAction*>("ScalarBar")->setEnabled(false);
@@ -1720,7 +1710,7 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
       int ch = this->m_NavigationDockWidget->GetCurrentChannel();
       if ( ch != -1 )
         {
-        m_Image->ShallowCopy(m_InternalImages[ch]);
+        m_Image->ShallowCopy(m_MegaImageProcessor.getImage(m_TCoord, ch));
         }
       // LUT ENABLED
       this->findChild<QAction*>("LUT")->setEnabled(true);
@@ -1729,13 +1719,14 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
     }
   else
     {
-    m_Image->ShallowCopy( m_MegaImageProcessor.getChannelAllTimes(min_ch) );
+    m_Image->ShallowCopy(
+          m_MegaImageProcessor.getImage(m_TCoord, boundsChannel[0]));
 
-    if( m_InternalImages.size() != 1 )
-      {
-      m_InternalImages.resize( 1 );
-      }
-    m_InternalImages[0] = m_Image;
+    //if( m_InternalImages.size() != 1 )
+    //  {
+    //  m_InternalImages.resize( 1 );
+    //  }
+    //m_InternalImages[0] = m_Image;
 
     // LUT ENABLED
     this->findChild<QAction*>("LUT")->setEnabled(true);
@@ -1750,6 +1741,7 @@ void
 QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels(int iChannel,
                                                              int iPreviousT)
 {
+  /*
   int min_t = m_MegaCaptureReader->GetMinTimePoint();
   int max_t = m_MegaCaptureReader->GetMaxTimePoint();
 
@@ -1908,6 +1900,8 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels(int iChannel,
   m_MeshSegmentationDockWidget->SetChannel(2, t_plus_step);
   // Update the current channel
   m_MeshSegmentationDockWidget->SetCurrentChannel(1);
+
+  */
 }
 
 //-------------------------------------------------------------------------
@@ -2253,50 +2247,23 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
     // Requiered if we modified the window level
     /** \todo Nicolas-Find a better solution */
     m_ImageView->ResetWindowLevel();
-
-    vtkSmartPointer< vtkImageAppendComponents > append_filter =
-      vtkSmartPointer< vtkImageAppendComponents >::New();
-
-    for ( unsigned int i = 0; i < m_InternalImages.size(); i++ )
-      {
-      append_filter->AddInput(m_InternalImages[i]);
-      }
-
-    // This is really stupid!!!
-    if ( m_InternalImages.size() < 3 )
-      {
-      for ( size_t i = m_InternalImages.size(); i < 3; i++ )
-        {
-        append_filter->AddInput(m_InternalImages[0]);
-        }
-      }
-
-    append_filter->Update();
-
-    m_Image->ShallowCopy( append_filter->GetOutput() );
-    Update();
-
-    // Update LUT
-    this->findChild<QAction*>("LUT")->setEnabled(false);
-    this->findChild<QAction*>("ScalarBar")->setEnabled(false);
+    m_Image->ShallowCopy(m_MegaImageProcessor.getTimeAllChannels(m_TCoord));
     }
   else
     {
     int ch = this->m_NavigationDockWidget->GetCurrentChannel();
-    if ( ch != -1 )
-      {
-      m_Image->ShallowCopy(m_InternalImages[ch]);
-      Update();
-      }
-
-    // Update LUT
-    this->findChild<QAction*>("LUT")->setEnabled(true);
-    this->findChild<QAction*>("ScalarBar")->setEnabled(true);
-
-    // show the scalarbar automatically if the button is checked
-    bool showScalarBar = this->findChild<QAction*>("ScalarBar")->isChecked();
-    m_ImageView->ShowScalarBar(showScalarBar);
+    m_Image->ShallowCopy(m_MegaImageProcessor.getImage(m_TCoord, ch));
     }
+
+  Update();
+
+  // Update LUT
+  this->findChild<QAction*>("LUT")->setEnabled(!iChecked);
+  this->findChild<QAction*>("ScalarBar")->setEnabled(!iChecked);
+
+  // show the scalarbar automatically if the button is checked
+  bool showScalarBar = this->findChild<QAction*>("ScalarBar")->isChecked();
+  m_ImageView->ShowScalarBar(showScalarBar);
 }
 
 //------------------------------------------------------------------------
@@ -2311,7 +2278,7 @@ QGoTabImageView3DwT::ShowOneChannel(int iChannel)
     this->findChild<QAction*>("LUT")->setEnabled(true);
     this->findChild<QAction*>("ScalarBar")->setEnabled(true);
 
-    m_Image->ShallowCopy(m_InternalImages[iChannel]);
+    m_Image->ShallowCopy(m_MegaImageProcessor.getImage(m_TCoord, iChannel));
     Update();
     }
 }
@@ -2960,6 +2927,7 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
                       const bool & iIntensity,
                       const unsigned int& iTCoord )
 {
+
   typedef unsigned char PixelType;
   const unsigned int Dimension = 3;
   typedef itk::Image< PixelType, Dimension > ImageType;
@@ -2970,7 +2938,7 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
   calculator->SetIntensityBasedComputation(iIntensity);
 
   GoFigureMeshAttributes oAttributes;
-
+/*
   if( this->m_ChannelClassicMode )
     {
     for ( size_t i = 0; i < m_InternalImages.size(); i++ )
@@ -3056,6 +3024,7 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
         }
       }
     }
+    */
   return oAttributes;
 }
 
