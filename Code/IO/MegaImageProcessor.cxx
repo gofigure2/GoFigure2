@@ -214,15 +214,15 @@ getTimeAllChannels(const unsigned int& iTime)
 
   while(it!=m_MegaImageContainer.get< Time >().end())
     {
+     ShowImage(colorImage(it->Image, it->LUT));
     blendedImage->AddInput(colorImage(it->Image, it->LUT));
-
-    // might not be requiered - to be checked
-    blendedImage->SetOpacity(i, 1);
+    // to be enhanced
+    blendedImage->SetOpacity(i, 0.5);
     ++i;
     ++it;
     }
   blendedImage->Update();
-  return weightedImage->GetOutput();
+  return blendedImage->GetOutput();
 }
 //--------------------------------------------------------------------------
 
@@ -241,7 +241,7 @@ getChannelAllTimes(const unsigned int& iChannel)
 
   while(it!=m_MegaImageContainer.get< Channel >().end())
     {
-    weightedImage->AddInput(colorImage(it->Image, it->LUT));
+    blendedImage->AddInput(colorImage(it->Image, it->LUT));
 
    // might not be requiered - to be checked
     blendedImage->SetOpacity(i, 1);
@@ -294,9 +294,18 @@ setTimePoint(const unsigned int& iTime)
     // Get Color
     // Create LUT
     // generates random colors as of now
-    vtkSmartPointer<vtkLookupTable> lut = createLUT(0,
-                                                    1,
-                                                    0,
+    double random1 = rand() % 255;
+    double value1 = random1/255;
+
+    double random2 = rand() % 255;
+    double value2 = random2/255;
+
+    double random3= rand() % 255;
+    double value3 = random3/255;
+
+    vtkSmartPointer<vtkLookupTable> lut = createLUT(value1,
+                                                    value2,
+                                                    value3,
                                                     1);
     // set up range
     lut->SetRange(image->GetScalarRange());
