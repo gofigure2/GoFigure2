@@ -82,6 +82,7 @@ using namespace boost::multi_index;
 
 /* tags for accessing the corresponding indices of megaImageStructure */
 
+struct ID{};
 struct Time{};
 struct Channel{};
 
@@ -93,7 +94,7 @@ struct Channel{};
 typedef multi_index_container<
   MegaImageStructure,
   indexed_by<
-    ordered_unique<
+    ordered_non_unique<
       tag<Time>,  BOOST_MULTI_INDEX_MEMBER(MegaImageStructure,unsigned int,Time)>,
     ordered_non_unique<
       tag<Channel>, BOOST_MULTI_INDEX_MEMBER(MegaImageStructure,unsigned int,Channel)> >

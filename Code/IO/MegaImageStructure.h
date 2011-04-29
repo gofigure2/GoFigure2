@@ -66,8 +66,7 @@ struct QGOIO_EXPORT MegaImageStructure
                        vtkSmartPointer<vtkImageData> iImage):
                        Time(iTime), Channel(iChannel), LUT(iLUT)
     {
-    Image = vtkSmartPointer<vtkImageData>::New();
-    Image->ShallowCopy(iImage);
+    Image = iImage;
     }
 
     // functions to modify the structure through the boost::multiindexcontainer

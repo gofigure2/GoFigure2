@@ -108,9 +108,9 @@ createLUT(const double& iRed, const double& iGreen, const double& iBlue,
 {
   vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
   double* HSV = vtkMath::RGBToHSV(iRed,iGreen,iBlue);
-  lut->SetAlpha(iAlpha);
-  lut->SetHueRange(HSV[0], HSV[0]);
-  lut->SetSaturationRange(1, 1);
+  lut->SetAlpha(1);
+  lut->SetHueRange(0, 1);
+  lut->SetSaturationRange(0, 1);
   lut->SetValueRange(0, 1);
   lut->Build();
   return lut;
@@ -165,13 +165,14 @@ MegaImageProcessor::
 colorImage(vtkSmartPointer<vtkImageData> iImage,
            vtkSmartPointer<vtkLookupTable> iLUT)
 {
-  vtkSmartPointer<vtkImageMapToColors> coloredImage =
+  /*vtkSmartPointer<vtkImageMapToColors> coloredImage =
       vtkSmartPointer<vtkImageMapToColors>::New();
   coloredImage->SetInput( iImage);
   coloredImage->SetLookupTable(iLUT);
   coloredImage->Update();
 
-  return coloredImage->GetOutput();
+  return coloredImage->GetOutput();*/
+  return iImage;
 }
 //--------------------------------------------------------------------------
 
@@ -208,21 +209,22 @@ getTimeAllChannels(const unsigned int& iTime)
 
   vtkIdType i(0);
 
+  std::cout << "load time: " << iTime << std::endl;
+
   while(it!=m_MegaImageContainer.get< Time >().end())
     {
+        std::cout << "image: " << i << std::endl;
     ShowImage(it->Image);
     ShowImage(colorImage(it->Image, it->LUT));
     weightedImage->AddInput(colorImage(it->Image, it->LUT));
 
     // might not be requiered - to be checked
     weightedImage->SetWeight(i, 1);
-    ShowImage(weightedImage->GetOutput());
-
-    weightedImage->Update();
     ++i;
-
     ++it;
     }
+      weightedImage->Update();
+          ShowImage(weightedImage->GetOutput());
   return weightedImage->GetOutput();
 }
 //--------------------------------------------------------------------------
@@ -264,6 +266,7 @@ setTimePoint(const unsigned int& iTime)
       iTime <= m_MegaImageReader->GetMaxTimePoint())
     {
     m_MegaImageReader->SetTimePoint(iTime);
+    m_MegaImageContainer.clear();
     }
   else
     {
@@ -276,23 +279,28 @@ setTimePoint(const unsigned int& iTime)
   unsigned int max_ch = m_MegaImageReader->GetMaxChannel();
   int numberOfChannels = max_ch - min_ch;
 
+  std::cout << "fill container: "<< std::endl;
+  std::cout << "container size: "<< m_MegaImageContainer.size() << std::endl;
+  std::cout << "number of channels: " << numberOfChannels << std::endl;
+
   m_MegaImageReader->Update();
+
 
   while(numberOfChannels>=0)
     {
+        std::cout << "time: " << iTime  << std::endl;
+        std::cout << "channel: " << numberOfChannels  << std::endl;
     // Get useful information from the reader
     // Get Image
     vtkSmartPointer<vtkImageData> image =
         m_MegaImageReader->GetOutput(numberOfChannels);
 
-    ShowImage(image);
-
     // Get Color
     // Create LUT
     // generates random colors as of now
-    vtkSmartPointer<vtkLookupTable> lut = createLUT(((rand() % 255)/255 ),
-                                                    ((rand() % 255)/255 ),
-                                                    ((rand() % 255)/255 ),
+    vtkSmartPointer<vtkLookupTable> lut = createLUT(1.0,
+                                                    0.0,
+                                                    0.0,
                                                     1);
 
     // Update the MegaImageStructure
@@ -301,8 +309,10 @@ setTimePoint(const unsigned int& iTime)
                                                    numberOfChannels,
                                                    lut,
                                                    image));// Image
+    std::cout << "container after insert: "<< m_MegaImageContainer.size() << std::endl;
 
     --numberOfChannels;
     }
+    std::cout << "container final size: "<< m_MegaImageContainer.size() << std::endl;
 }
 //--------------------------------------------------------------------------
