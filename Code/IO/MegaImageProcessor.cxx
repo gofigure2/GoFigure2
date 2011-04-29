@@ -169,11 +169,6 @@ MegaImageProcessor::
 colorImage(vtkSmartPointer<vtkImageData> iImage,
            vtkSmartPointer<vtkLookupTable> iLUT)
 {
-
-  // todo - Nicolas move somewhere else
-  iLUT->SetRange(iImage->GetScalarRange());
-  iLUT->Build();
-
   vtkSmartPointer<vtkImageMapToColors> coloredImage =
       vtkSmartPointer<vtkImageMapToColors>::New();
   coloredImage->SetInput( iImage);
@@ -293,7 +288,6 @@ setTimePoint(const unsigned int& iTime)
 
   m_MegaImageReader->Update();
 
-
   while(numberOfChannels>=0)
     {
         std::cout << "time: " << iTime  << std::endl;
@@ -310,6 +304,9 @@ setTimePoint(const unsigned int& iTime)
                                                     1,
                                                     0,
                                                     1);
+    // set up range
+    lut->SetRange(image->GetScalarRange());
+    lut->Build();
 
     // Update the MegaImageStructure
     // image, LUT, channel, time point
