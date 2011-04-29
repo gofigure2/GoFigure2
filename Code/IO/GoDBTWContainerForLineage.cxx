@@ -142,8 +142,6 @@ void GoDBTWContainerForLineage::GetValuesAndNamesForLineageComputedValues(
   std::vector< std::vector< std::string > > & ioValues,
   std::vector< std::string > & ioNames)
 {
-  //if ( iLineageAttributes != 0 )
-  //  {
     std::vector< std::string > temp;
     ioNames.push_back("MaxDepth");
     temp.push_back( ConvertToString< unsigned int >(iLineageAttributes.MaxDepth) );
@@ -154,7 +152,6 @@ void GoDBTWContainerForLineage::GetValuesAndNamesForLineageComputedValues(
     ioNames.push_back("NbLeaves");
     temp.push_back( ConvertToString< unsigned int >(iLineageAttributes.NumberOfLeaves) );
     ioValues.push_back(temp);
- //   }
 }
 //--------------------------------------------------------------------------
 

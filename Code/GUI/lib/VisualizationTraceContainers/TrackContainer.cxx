@@ -1801,7 +1801,7 @@ GetCollectionNumberOfLeaves( unsigned int iTrackRootID )
 
   if( motherIt != m_Container.get< TraceID >().end() )
     {
-    unsigned int numberOfLeaves = 0;
+    unsigned int numberOfLeaves = 1;
     UpdateCollectionNumberOfDivisions(motherIt,numberOfLeaves);
 
     return numberOfLeaves;
