@@ -41,10 +41,22 @@
 #include "vtkImageMapToColors.h"
 #include "vtkImageWeightedSum.h"
 
+// debug
+#include "VisualizePolydataHelper.h"
+
+//--------------------------------------------------------------------------
+MegaImageProcessor::MegaImageProcessor():m_MegaImageReader(NULL), m_Output(NULL)
+{
+  std::cout << "simple constructor" << std::endl;
+  m_MegaImageReader = itk::MegaCaptureReader::New();
+}
+//--------------------------------------------------------------------------
+
 //--------------------------------------------------------------------------
 MegaImageProcessor::MegaImageProcessor(itk::MegaCaptureReader::Pointer iReader):
   m_MegaImageReader(iReader)
 {
+    std::cout << "overloaded constructor" << std::endl;
   //Create the new MegaImageStructure
   // with the first time point and all the channels
   unsigned int time = m_MegaImageReader->GetMinTimePoint();
@@ -58,6 +70,7 @@ MegaImageProcessor::MegaImageProcessor(const MegaImageProcessor & iE):
   m_MegaImageContainer(iE.m_MegaImageContainer),
   m_Output(iE.m_Output)
 {
+    std::cout << "copy constructor" << std::endl;
   //Create the new MegaImageStructure
   // with the first time point and all the channels
   unsigned int time = m_MegaImageReader->GetMinTimePoint();
@@ -69,6 +82,21 @@ MegaImageProcessor::MegaImageProcessor(const MegaImageProcessor & iE):
 MegaImageProcessor::
 ~MegaImageProcessor()
 {
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+MegaImageProcessor::
+setMegaReader(itk::MegaCaptureReader::Pointer iReader)
+{
+  m_MegaImageReader = iReader;
+
+  //Create the new MegaImageStructure
+  // with the first time point and all the channels
+  unsigned int time = m_MegaImageReader->GetMinTimePoint();
+  std::cout << "min time: " << time << std::endl;
+  setTimePoint(time);
 }
 //--------------------------------------------------------------------------
 
@@ -182,10 +210,15 @@ getTimeAllChannels(const unsigned int& iTime)
 
   while(it!=m_MegaImageContainer.get< Time >().end())
     {
+    ShowImage(it->Image);
+    ShowImage(colorImage(it->Image, it->LUT));
     weightedImage->AddInput(colorImage(it->Image, it->LUT));
 
     // might not be requiered - to be checked
     weightedImage->SetWeight(i, 1);
+    ShowImage(weightedImage->GetOutput());
+
+    weightedImage->Update();
     ++i;
 
     ++it;
@@ -237,28 +270,29 @@ setTimePoint(const unsigned int& iTime)
     return;
     }
 
-
   // update the container
   // Get Number of channels from reader
   unsigned int min_ch = m_MegaImageReader->GetMinChannel();
   unsigned int max_ch = m_MegaImageReader->GetMaxChannel();
-  unsigned int numberOfChannels = max_ch - min_ch +1;
+  int numberOfChannels = max_ch - min_ch;
 
   m_MegaImageReader->Update();
 
-  while(numberOfChannels>0)
+  while(numberOfChannels>=0)
     {
     // Get useful information from the reader
     // Get Image
     vtkSmartPointer<vtkImageData> image =
         m_MegaImageReader->GetOutput(numberOfChannels);
 
+    ShowImage(image);
+
     // Get Color
     // Create LUT
     // generates random colors as of now
-    vtkSmartPointer<vtkLookupTable> lut = createLUT((rand() % 255 )/255,
-                                                    (rand() % 255 )/255,
-                                                    (rand() % 255 )/255,
+    vtkSmartPointer<vtkLookupTable> lut = createLUT(((rand() % 255)/255 ),
+                                                    ((rand() % 255)/255 ),
+                                                    ((rand() % 255)/255 ),
                                                     1);
 
     // Update the MegaImageStructure

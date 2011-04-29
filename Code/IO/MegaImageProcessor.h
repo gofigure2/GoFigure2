@@ -115,6 +115,9 @@ class QGOIO_EXPORT MegaImageProcessor
 public:
 
   /** Constructor */
+  MegaImageProcessor();
+
+  /** Constructor */
   MegaImageProcessor(itk::MegaCaptureReader::Pointer iReader);
 
   /** Constructor */
@@ -130,6 +133,8 @@ public:
     //os << "TraceID " << c.TraceID << std::endl;
     return os;
   }
+
+    void setMegaReader(itk::MegaCaptureReader::Pointer iReader);
 
   /*
    * \brief create a lookuptable (LUT) given r, g, b and a.
@@ -212,9 +217,6 @@ public:
   vtkSmartPointer<vtkImageData> getChannelAllTimes(const unsigned int& iChannel);
 
 private:
-  // Mega reader - might not be necessary...? should be required in constructor...
-  //void setMegaReader(itkMegaCaptureReader* iReader);
-
   // public or private..?
   void update();
 

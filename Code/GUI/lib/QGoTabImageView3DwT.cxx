@@ -113,6 +113,7 @@
 // TESTS
 #include "vtkPolyDataWriter.h"
 #include "vtkViewImage3D.h"
+//#include "VisualizePolydataHelper.h"
 
 //-------------------------------------------------------------------------
 QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
@@ -1608,6 +1609,9 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
   m_MegaCaptureReader->SetTimePoint(iTimePoint);
   m_MegaCaptureReader->Update();
 
+  std::cout << "set mega capture reader" << std::endl;
+  m_MegaImageProcessor.setMegaReader(m_MegaCaptureReader);
+
   unsigned int min_t = m_MegaCaptureReader->GetMinTimePoint();
   unsigned int max_t = m_MegaCaptureReader->GetMaxTimePoint();
 
@@ -1684,6 +1688,7 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
 void
 QGoTabImageView3DwT::SetTimePointWithMegaCapture()
 {
+  std::cout << "set t with mega capture" << std::endl;
   m_MegaCaptureReader->SetTimePoint(m_TCoord);
 
   unsigned int min_ch = m_MegaCaptureReader->GetMinChannel();
@@ -1698,29 +1703,15 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
 
   if ( max_ch != min_ch )
     {
-    vtkSmartPointer< vtkImageAppendComponents > append_filter =
-      vtkSmartPointer< vtkImageAppendComponents >::New();
+    m_MegaImageProcessor.setTimePoint(m_TCoord);
+    vtkSmartPointer< vtkImageData > input =
+        m_MegaImageProcessor.getTimeAllChannels(m_TCoord);
 
-    for ( unsigned int i = min_ch; i <= max_ch; i++ )
-      {
-      vtkSmartPointer< vtkImageData > input = vtkSmartPointer< vtkImageData >::New();
-      input->ShallowCopy( m_MegaCaptureReader->GetOutput(i) );
-      m_InternalImages[i] = input;
-      append_filter->AddInput(m_InternalImages[i]);
-      }
-    // This is really stupid!!!
-    if ( max_ch < 2 )
-      {
-      for ( unsigned int i = max_ch + 1; i < 3; i++ )
-        {
-        append_filter->AddInput(m_InternalImages[0]);
-        }
-      }
-    append_filter->Update();
+    //ShowImage(input);
 
     if ( this->m_NavigationDockWidget->ShowAllChannels() )
       {
-      m_Image->ShallowCopy( append_filter->GetOutput() );
+      m_Image->ShallowCopy( input );
 
       // LUT DISABLED
       this->findChild<QAction*>("LUT")->setEnabled(false);
@@ -1740,7 +1731,7 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
     }
   else
     {
-    m_Image->ShallowCopy( m_MegaCaptureReader->GetOutput(min_ch) );
+    m_Image->ShallowCopy( m_MegaImageProcessor.getChannelAllTimes(min_ch) );
     m_Image->SetNumberOfScalarComponents(1);
 
     if( m_InternalImages.size() != 1 )
@@ -2041,6 +2032,7 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
 //-------------------------------------------------------------------------
 void QGoTabImageView3DwT::Update()
 {
+  //ShowImage(m_Image);
   m_ImageView->SetImage(m_Image);
   m_ImageView->Update();
 }

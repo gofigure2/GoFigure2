@@ -84,6 +84,8 @@ class vtkProp3D;
 
 class QGoSeedsSegmentation;
 
+#include "MegaImageProcessor.h"
+
 #include "QGoGUILibConfigure.h"
 
 /**
@@ -357,6 +359,7 @@ protected:
   vtkProperty *m_HighlightedContoursProperty;
   vtkProperty *m_HighlightedMeshesProperty;
 
+  MegaImageProcessor                        m_MegaImageProcessor;
   itk::MegaCaptureReader::Pointer           m_MegaCaptureReader;
   GoFigureFileInfoHelperMultiIndexContainer m_FileList;
   GoFigure::FileType                        m_FileType;
