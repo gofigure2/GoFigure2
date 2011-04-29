@@ -796,9 +796,9 @@ void QGoDBTrackManager::DeleteOneDivision(GoDBTrackFamilyRow iDivision,
   std::list<unsigned int> &ioMotherLineageToDelete)
 {
   std::list<unsigned int> DaughtersIDs;
-  DaughtersIDs.push_back( ss_atoi<int>(iDivision.GetMapValue("TrackIDDaughter1") ) );
-  DaughtersIDs.push_back( ss_atoi<int>(iDivision.GetMapValue("TrackIDDaughter2") ) );
-  int MotherID = ss_atoi<int>(iDivision.GetMapValue("TrackIDMother"));
+  DaughtersIDs.push_back( iDivision.GetMapValue<unsigned int>("TrackIDDaughter1") );
+  DaughtersIDs.push_back( iDivision.GetMapValue<unsigned int>("TrackIDDaughter2") );
+  int MotherID = iDivision.GetMapValue<int>("TrackIDMother");
   bool IsPartOfBiggerLineage = true;
 
   if (!this->IsTheTrackADaughter(MotherID, iDatabaseConnector) ) // set the lineageID to 0
@@ -822,7 +822,7 @@ void QGoDBTrackManager::DeleteOneDivision(GoDBTrackFamilyRow iDivision,
     emit NeedToGetDatabaseConnection();
     GoDBTrackRow Mother(MotherID, this->m_DatabaseConnector);
     emit DBConnectionNotNeededAnymore();
-    ioMotherLineageToDelete.push_back(ss_atoi<unsigned int>(Mother.GetMapValue("lineageID") ) );
+    ioMotherLineageToDelete.push_back(Mother.GetMapValue<unsigned int>("lineageID") );
     }
 }
 //-------------------------------------------------------------------------
@@ -909,8 +909,8 @@ void QGoDBTrackManager::CreateALineageWithFormerDaughterOfADeletedDivision(
   if (!ioPartOfHigherLineage) //the lineage should not be deleted if higher tracks belong to it
     {
     GoDBTrackRow Daughter(iDaughterID, iDatabaseConnector);
-    PreviousLineageToDelete.push_back( 
-      ss_atoi<unsigned int>(Daughter.GetMapValue("lineageID") ) ); //get the previous lineage ID of the daughter
+    PreviousLineageToDelete.push_back( Daughter.GetMapValue<unsigned int>("lineageID") );
+      //get the previous lineage ID of the daughter
     ioPartOfHigherLineage = true; // the second daughter will have a lineage set to 0 anyway
     }
 

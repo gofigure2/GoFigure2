@@ -449,12 +449,12 @@ protected:
   {
     GoDBColorRow ColorRow;
 
-    ColorRow.SetValuesForSpecificID(atoi( iTraceRow.GetMapValue("ColorID").c_str() ),
+    ColorRow.SetValuesForSpecificID(iTraceRow.GetMapValue<int>("ColorID"), 
                                     iDatabaseConnector);
-    QColor Color( atoi( ColorRow.GetMapValue("Red").c_str() ),
-                  atoi( ColorRow.GetMapValue("Green").c_str() ),
-                  atoi( ColorRow.GetMapValue("Blue").c_str() ),
-                  atoi( ColorRow.GetMapValue("Alpha").c_str() ) );
+    QColor Color( ColorRow.GetMapValue<int>("Red"),
+                  ColorRow.GetMapValue<int>("Green"),
+                  ColorRow.GetMapValue<int>("Blue"),
+                  ColorRow.GetMapValue<int>("Alpha") );
     return Color;
   }
 

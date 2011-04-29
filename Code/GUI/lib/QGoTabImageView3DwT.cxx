@@ -1389,10 +1389,10 @@ void QGoTabImageView3DwT::OpenExistingBookmark()
   std::string       BookmarkName = taction->text().toStdString();
   GoDBCoordinateRow Coord = this->m_DataBaseTables->GetCoordinateForBookmark(BookmarkName);
 
-  int tt = atoi( Coord.GetMapValue("TCoord").c_str() );
-  int tz = atoi( Coord.GetMapValue("ZCoord").c_str() );
-  int ty = atoi( Coord.GetMapValue("YCoord").c_str() );
-  int tx = atoi( Coord.GetMapValue("XCoord").c_str() );
+  int tt = Coord.GetMapValue<int>("TCoord");
+  int tz = Coord.GetMapValue<int>("ZCoord");
+  int ty = Coord.GetMapValue<int>("YCoord");
+  int tx = Coord.GetMapValue<int>("XCoord");
 
   this->SetTimePoint(tt);
   this->SetSliceViewXY(tz);

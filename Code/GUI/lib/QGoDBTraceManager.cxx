@@ -449,10 +449,10 @@ void QGoDBTraceManager::GoToTheTrace()
     this->m_Table->GetCoordinateCenterBoundingBox(ListCheckedTraces.front(),
                                                   this->m_TraceName);
 
-  emit NeedToGoToTheLocation( atoi( CoordCenter.GetMapValue("XCoord").c_str() ),
-                              atoi( CoordCenter.GetMapValue("YCoord").c_str() ),
-                              atoi( CoordCenter.GetMapValue("ZCoord").c_str() ),
-                              atoi( CoordCenter.GetMapValue("TCoord").c_str() ) );
+  emit NeedToGoToTheLocation( CoordCenter.GetMapValue<int>("XCoord"),
+                              CoordCenter.GetMapValue<int>("YCoord"),
+                              CoordCenter.GetMapValue<int>("ZCoord"),
+                              CoordCenter.GetMapValue<int>("TCoord") );
 }
 
 //-------------------------------------------------------------------------
