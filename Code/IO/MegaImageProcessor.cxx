@@ -210,18 +210,27 @@ getTimeAllChannels(const unsigned int& iTime)
   MegaImageStructureMultiIndexContainer::index<Time>::type::iterator it =
       m_MegaImageContainer.get< Time >().find(iTime);
 
-  vtkIdType i(0);
-
+  /*
+    \todo Nicolas - do sth else....
+   */
+  unsigned int size(0);
   while(it!=m_MegaImageContainer.get< Time >().end())
     {
-     ShowImage(colorImage(it->Image, it->LUT));
+    ++size;
+    ++it;
+    }
+  it = m_MegaImageContainer.get< Time >().find(iTime);
+
+  vtkIdType i(0);
+  while(it!=m_MegaImageContainer.get< Time >().end())
+    {
     blendedImage->AddInput(colorImage(it->Image, it->LUT));
-    // to be enhanced
-    blendedImage->SetOpacity(i, 0.5);
+    blendedImage->SetOpacity(i, 1/size);
     ++i;
     ++it;
     }
   blendedImage->Update();
+
   return blendedImage->GetOutput();
 }
 //--------------------------------------------------------------------------
@@ -237,18 +246,27 @@ getChannelAllTimes(const unsigned int& iChannel)
   MegaImageStructureMultiIndexContainer::index<Channel>::type::iterator it =
       m_MegaImageContainer.get< Channel >().find(iChannel);
 
-  vtkIdType i(0);
+  /*
+    \todo Nicolas - do sth else....
+   */
+  unsigned int size(0);
+  while(it!=m_MegaImageContainer.get< Channel >().end())
+    {
+    ++size;
+    ++it;
+    }
+  it = m_MegaImageContainer.get< Channel >().find(iChannel);
 
+  vtkIdType i(0);
   while(it!=m_MegaImageContainer.get< Channel >().end())
     {
     blendedImage->AddInput(colorImage(it->Image, it->LUT));
-
-   // might not be requiered - to be checked
-    blendedImage->SetOpacity(i, 1);
+    blendedImage->SetOpacity(i, 1/size);
     ++i;
     ++it;
     }
   blendedImage->Update();
+
   return blendedImage->GetOutput();
 }
 //--------------------------------------------------------------------------
