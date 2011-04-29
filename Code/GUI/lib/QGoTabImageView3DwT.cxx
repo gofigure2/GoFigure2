@@ -1441,7 +1441,6 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
 
     m_ContourSegmentationDockWidget->SetChannel( 0, m_ChannelNames[0] );
     m_MeshSegmentationDockWidget->SetChannel( 0, m_ChannelNames[0] );
-    m_InternalImages.resize(NumberOfChannels, NULL);
 
     for ( unsigned int i = 1; i < NumberOfChannels; i++ )
       {
@@ -2057,7 +2056,7 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
 void
 QGoTabImageView3DwT::ShowOneChannel(int iChannel)
 {
-  /*if ( m_MegaImageProcessor.getBoundsChannel() )
+  if ( m_MegaImageProcessor.getImage(m_TCoord, iChannel) )
     {
     // Update lut
     this->findChild<QAction*>("LUT")->setEnabled(true);
@@ -2066,7 +2065,6 @@ QGoTabImageView3DwT::ShowOneChannel(int iChannel)
     m_Image->ShallowCopy(m_MegaImageProcessor.getImage(m_TCoord, iChannel));
     Update();
     }
-    */
 }
 
 //------------------------------------------------------------------------

@@ -109,6 +109,8 @@ setMegaReader(itk::MegaCaptureReader::Pointer iReader)
 {
   m_MegaImageReader = iReader;
 
+  std::cout << "init parameters" << std::endl;
+
   // update general parameters
   //--------------------
   // todo Nicolas- Create a method for that...
