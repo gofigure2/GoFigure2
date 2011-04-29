@@ -54,7 +54,7 @@ public:
     vtkMySQLDatabase *iDatabaseConnector, int iTraceID );
 
   /**
-  \brief set m_TrackAttributes to iMeshAttributes, needs to be called
+  \brief set m_TrackAttributes to iTrackAttributes, needs to be called
   before displaying the volume, area values
   \param[in] iTrackAttributes values for the track computed from visu
   */

@@ -61,6 +61,7 @@
 #include <QString>
 
 #include "vtkMutableDirectedGraph.h"
+#include "GoFigureLineageAttributes.h"
 
 /**
   \struct change_visible_division
@@ -500,12 +501,12 @@ public:
   \brief update the color and the divisions scalars of an all lineage which has
   iTrackIDRoot as track root
   */
-  void UpdateDivisionsForALineage( unsigned int iTrackIDRoot, double* color);
+  GoFigureLineageAttributes UpdateDivisionsForALineage( unsigned int iTrackIDRoot, double* color);
   /*
    * \brief Update the lineage's divisions scalars given the track root ID
    * \param[in] iTrackID track root ID
    */
-  void UpdateCollectionScalars( unsigned int iTrackID);
+  GoFigureLineageAttributes UpdateCollectionScalars( unsigned int iTrackID);
   /*
    * \brief Update the lineage's divisions scalars given the track root ID
    * \param[in] iMotherIterator iterator to go through the lineage
@@ -513,6 +514,8 @@ public:
    */
   void UpdateDivisionScalar(
       MultiIndexContainerTraceIDIterator& iMotherIterator, unsigned int iDepth);
+
+  GoFigureLineageAttributes GetLineageAttributes(unsigned int iTrackRootID);
 
   /*
    * \brief Update the lineage's divisions color given the track root ID and

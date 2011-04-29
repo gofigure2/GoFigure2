@@ -1432,34 +1432,40 @@ GetRootIterator(MultiIndexContainerTraceIDIterator& iMotherIterator)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void 
+GoFigureLineageAttributes 
 TrackContainer::UpdateDivisionsForALineage(
   unsigned int iTrackIDRoot, double* color)
 {
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iTrackIDRoot);
-
+  GoFigureLineageAttributes Attributes;
   if( motherIt != m_Container.get< TraceID >().end() )
     {
     UpdateDivisionScalar(motherIt, 0); // 0=depth of the root
+    Attributes = this->GetLineageAttributes(iTrackIDRoot);
     UpdateDivisionColor(motherIt, color);
     m_ImageView->UpdateRenderWindows();
     }
+
+  return Attributes;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void
+GoFigureLineageAttributes
 TrackContainer::
 UpdateCollectionScalars( unsigned int iTrackID)
 {
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iTrackID);
-
+  GoFigureLineageAttributes oAttributes;
   if( motherIt != m_Container.get< TraceID >().end() )
     {
-    UpdateDivisionScalar(motherIt, 0); // 0=depth of the root
+    UpdateDivisionScalar(motherIt, 0); 
+    oAttributes = this->GetLineageAttributes(iTrackID);
+      // 0=depth of the root
     }
+  return oAttributes;
 }
 //-------------------------------------------------------------------------
 
@@ -1795,7 +1801,7 @@ GetCollectionNumberOfLeaves( unsigned int iTrackRootID )
 
   if( motherIt != m_Container.get< TraceID >().end() )
     {
-    unsigned int numberOfLeaves = 0;
+    unsigned int numberOfLeaves = 1;
     UpdateCollectionNumberOfDivisions(motherIt,numberOfLeaves);
 
     return numberOfLeaves;
@@ -1804,6 +1810,22 @@ GetCollectionNumberOfLeaves( unsigned int iTrackRootID )
     {
     return 0;
     }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+GoFigureLineageAttributes TrackContainer::GetLineageAttributes(
+  unsigned int iTrackRootID)
+{
+  //check if possible to iterate on the tree only once
+  GoFigureLineageAttributes LineageAttributes;
+  
+  LineageAttributes.MaxDepth = this->GetCollectionMaxDepth(iTrackRootID);
+  LineageAttributes.MinDepth = this->GetCollectionMinDepth(iTrackRootID);
+  LineageAttributes.NumberOfDivisions = this->GetCollectionNumberOfDivisions(iTrackRootID);
+  LineageAttributes.NumberOfLeaves = this->GetCollectionNumberOfLeaves( iTrackRootID);
+
+  return LineageAttributes;
 }
 //-------------------------------------------------------------------------
 

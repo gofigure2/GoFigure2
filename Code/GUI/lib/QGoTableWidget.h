@@ -107,7 +107,8 @@ public:
   void InsertNewRow(TWContainerType iTWRowContainer,
                     std::vector< int > iIndexColorTraceRowContainer,
                     std::vector< int > iIndexColorCollectionRowContainer,
-                    std::string iTraceName, std::string iCollectionName);
+                    std::string iTraceName, std::string iCollectionName,
+                    Qt::CheckState iVisible = Qt::Checked);
 
   /**
   \brief Replace the data in the cells corresponding to the traceID with
@@ -213,6 +214,15 @@ public:
 
   void ShowAllRows();
 
+  /**
+  \brief create the table widget items for the columns Header and set the
+  corresponding tooltips for them
+  \param[in] iColumnNamesAndToolTip list of all the names of the columns to be displayed in the
+  table with their tooltips
+  */
+  void DisplayColumnNames(
+    std::list< std::pair<std::string, std::string > > iColumnNamesAndToolTip);
+
 public slots:
 
   /**
@@ -261,15 +271,6 @@ signals:
 protected:
   int PrevCol;
   int PrevOrder;
-
-  /**
-  \brief create the table widget items for the columns Header and set the
-  corresponding tooltips for them
-  \param[in] iColumnNamesAndToolTip list of all the names of the columns to be displayed in the
-  table with their tooltips
-  */
-  void DisplayColumnNames(
-    std::list< std::pair<std::string, std::string > > iColumnNamesAndToolTip);
 
   /**
   \brief get the value in the table for the given iRowIndex and

@@ -31,51 +31,51 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __GoDBTWContainerForLineage_h
-#define __GoDBTWContainerForLineage_h
 
-#include "GoDBTWContainerForTrackLineage.h"
+#ifndef __GoFigureLineageAttributes_h
+#define __GoFigureLineageAttributes_h
+
+#include <map>
+#include <string>
 #include "QGoIOConfigure.h"
-#include "GoFigureLineageAttributes.h"
 
-/**
-\class GoDBTWContainerForLineage
-\brief This class describes the specificities of the GoDBTWContainerForTrackLineage for 
-lineage
-\ingroup DB
+/*
+\struct GoFigureLineageAttributes
+\brief Lineage attributes to be displayed in the table widget
 */
-class QGOIO_EXPORT GoDBTWContainerForLineage:public GoDBTWContainerForTrackLineage
+
+struct QGOIO_EXPORT GoFigureLineageAttributes
 {
+  unsigned int MaxDepth;
+  unsigned int MinDepth;
+  unsigned int NumberOfDivisions;
+  unsigned int NumberOfLeaves;
 
-public:
-  GoDBTWContainerForLineage(int iImgSessionID);
-  ~GoDBTWContainerForLineage();
+  /** Constructors */
+  GoFigureLineageAttributes() : MaxDepth( 0 ), MinDepth( 0 ),
+    NumberOfDivisions( 0 ), NumberOfLeaves( 0)
+    {}
 
-  virtual TWContainerType GetContainerForOneSpecificTrace(
-    vtkMySQLDatabase *iDatabaseConnector, int iTraceID );
+  GoFigureLineageAttributes(const GoFigureLineageAttributes & iE):
+    MaxDepth(iE.MaxDepth), MinDepth(iE.MinDepth),
+    NumberOfDivisions(iE.NumberOfDivisions), NumberOfLeaves(iE.NumberOfLeaves)
+  {}
 
-  void SetLineageAttributes(GoFigureLineageAttributes iLineageAttributes);
+  GoFigureLineageAttributes& operator = ( GoFigureLineageAttributes & iE )
+    {
+    this->MaxDepth = iE.MaxDepth;
+    this->MinDepth = iE.MinDepth;
+    this->NumberOfDivisions = iE.NumberOfDivisions;
+    this->NumberOfLeaves = iE.NumberOfLeaves;
+    return *this;
+    }
 
-protected:
-
-  GoFigureLineageAttributes m_LineageAttributes;
-
-  /**
-  \brief add the specific info for a lineage to the columns description
-  */
-  void SetSpecificInfoForLineageTable();
-
-  /**
-  \brief get the values from m_LineageAttributes and the names of the calculated
-  values from m_LineageAttributes and fill the corresponding columns of the row 
-  container with them
-  */
-  void FillRowContainerForLineageComputedValues();
-
-  void GetValuesAndNamesForLineageComputedValues(
-    GoFigureLineageAttributes iLineageAttributes,
-    std::vector< std::vector< std::string > > & ioValues,
-    std::vector< std::string > & ioNames);
-
+  void clear()
+  {
+    this->MaxDepth = 0;
+    this->MinDepth = 0;
+    this->NumberOfDivisions = 0;
+    this->NumberOfLeaves = 0;
+  }
 };
 #endif
