@@ -39,7 +39,7 @@
 #include "vtkLookupTable.h"
 #include "vtkMath.h"
 #include "vtkImageMapToColors.h"
-#include "vtkImageWeightedSum.h"
+#include "vtkImageBlend.h"
 
 // debug
 #include "VisualizePolydataHelper.h"
@@ -204,30 +204,24 @@ vtkSmartPointer<vtkImageData>
 MegaImageProcessor::
 getTimeAllChannels(const unsigned int& iTime)
 {
-  vtkSmartPointer<vtkImageWeightedSum> weightedImage =
-      vtkSmartPointer<vtkImageWeightedSum>::New();
+  vtkSmartPointer<vtkImageBlend> blendedImage =
+      vtkSmartPointer<vtkImageBlend>::New();
 
   MegaImageStructureMultiIndexContainer::index<Time>::type::iterator it =
       m_MegaImageContainer.get< Time >().find(iTime);
 
   vtkIdType i(0);
 
-  std::cout << "load time: " << iTime << std::endl;
-
   while(it!=m_MegaImageContainer.get< Time >().end())
     {
-        std::cout << "image: " << i << std::endl;
-    ShowImage(it->Image);
-    ShowImage(colorImage(it->Image, it->LUT));
-    weightedImage->AddInput(colorImage(it->Image, it->LUT));
+    blendedImage->AddInput(colorImage(it->Image, it->LUT));
 
     // might not be requiered - to be checked
-    weightedImage->SetWeight(i, 1);
+    blendedImage->SetOpacity(i, 1);
     ++i;
     ++it;
     }
-      weightedImage->Update();
-          ShowImage(weightedImage->GetOutput());
+  blendedImage->Update();
   return weightedImage->GetOutput();
 }
 //--------------------------------------------------------------------------
@@ -237,8 +231,8 @@ vtkSmartPointer<vtkImageData>
 MegaImageProcessor::
 getChannelAllTimes(const unsigned int& iChannel)
 {
-  vtkSmartPointer<vtkImageWeightedSum> weightedImage =
-      vtkSmartPointer<vtkImageWeightedSum>::New();
+  vtkSmartPointer<vtkImageBlend> blendedImage =
+      vtkSmartPointer<vtkImageBlend>::New();
 
   MegaImageStructureMultiIndexContainer::index<Channel>::type::iterator it =
       m_MegaImageContainer.get< Channel >().find(iChannel);
@@ -250,12 +244,12 @@ getChannelAllTimes(const unsigned int& iChannel)
     weightedImage->AddInput(colorImage(it->Image, it->LUT));
 
    // might not be requiered - to be checked
-    weightedImage->SetWeight(i, 1);
+    blendedImage->SetOpacity(i, 1);
     ++i;
-
     ++it;
     }
-  return weightedImage->GetOutput();
+  blendedImage->Update();
+  return blendedImage->GetOutput();
 }
 //--------------------------------------------------------------------------
 
