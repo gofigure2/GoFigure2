@@ -61,7 +61,8 @@
 
 
 QGoSegmentationAlgo::QGoSegmentationAlgo(QWidget *iParent)
-  : m_Decimate(true), m_NumberOfPoints(100), m_AlgoWidget(NULL)
+  : QObject( iParent ), m_Decimate(true),
+    m_NumberOfPoints(100), m_AlgoWidget(NULL)
 {
 }
 //-------------------------------------------------------------------------
@@ -83,13 +84,16 @@ QGoAlgorithmWidget* QGoSegmentationAlgo::GetAlgoWidget()
 std::vector<vtkImageData*>
 QGoSegmentationAlgo::ExtractROI(
   const std::vector<double>& iBounds,
-  std::vector< vtkSmartPointer< vtkImageData > > & iImages)
+  const std::vector< vtkSmartPointer< vtkImageData > > & iImages)
 {
+  assert( iBounds.size() == 6 );
+
   // vector to be returned
   std::vector<vtkImageData*> listOfImages;
 
   //iterator on the images
-  std::vector< vtkSmartPointer< vtkImageData > >::iterator it = iImages.begin();
+  std::vector< vtkSmartPointer< vtkImageData > >::const_iterator
+      it = iImages.begin();
 
   while( it != iImages.end())
     {
@@ -105,7 +109,7 @@ QGoSegmentationAlgo::ExtractROI(
 vtkImageData*
 QGoSegmentationAlgo::
  ExtractROI(const std::vector<double>& iBounds,
-            vtkSmartPointer< vtkImageData > iImage)
+            const vtkSmartPointer< vtkImageData > & iImage)
 {
   // make sure there
   assert( iBounds.size() == 6 );
@@ -145,8 +149,9 @@ QGoSegmentationAlgo::
 //-------------------------------------------------------------------------
 std::vector<vtkPolyData*>
 QGoSegmentationAlgo::
-ExtractPolyData(std::vector<vtkImageData*> iInputImage,
-    const double & iThreshold)
+ExtractPolyData(
+  std::vector<vtkImageData*>& iInputImage,
+  const double & iThreshold)
 {
   // vector to be returned
   std::vector<vtkPolyData*> listOfPolys;
@@ -354,7 +359,9 @@ ExtractMesh(vtkSmartPointer<vtkImageData> iInputImage, const double & iThreshold
 //--------------------------------------------------------------------------
 vtkSmartPointer<vtkPolyData>
 QGoSegmentationAlgo::
-DecimatePolyData( vtkSmartPointer<vtkPolyData> iPolyData, unsigned int iNumberOfPoints)
+DecimatePolyData(
+  vtkSmartPointer<vtkPolyData>& iPolyData,
+  const unsigned int& iNumberOfPoints)
 {
   // make sure there is a polydata
   assert( iPolyData );
@@ -453,7 +460,7 @@ GetDecimate()
 //--------------------------------------------------------------------------
 void
 QGoSegmentationAlgo::
-SetNumberOfPoints( unsigned int& iNumberOfPoints)
+SetNumberOfPoints( const unsigned int& iNumberOfPoints)
 {
   m_NumberOfPoints = iNumberOfPoints;
 }
@@ -462,7 +469,7 @@ SetNumberOfPoints( unsigned int& iNumberOfPoints)
 //--------------------------------------------------------------------------
 unsigned int
 QGoSegmentationAlgo::
-GetNumberOfPoints()
+GetNumberOfPoints() const
 {
   return m_NumberOfPoints;
 }

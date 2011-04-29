@@ -59,8 +59,8 @@ class QGOGUILIB_EXPORT QGoSegmentationAlgo:public QObject
 {
   Q_OBJECT
 public:
-  QGoSegmentationAlgo(QWidget *iParent = 0);
-  ~QGoSegmentationAlgo();
+  explicit QGoSegmentationAlgo(QWidget *iParent = 0);
+  virtual ~QGoSegmentationAlgo();
 
   /**
   \brief return the algowidget
@@ -85,7 +85,7 @@ public:
    */
   std::vector<vtkImageData*> ExtractROI(
     const std::vector<double>& iBounds,
-    std::vector< vtkSmartPointer< vtkImageData > >& iImages);
+    const std::vector< vtkSmartPointer< vtkImageData > >& iImages);
   /*
    * \brief Extract region of interest, given a bounding box and a vtk image
    * \param[in] iBounds bounding box (xmin, xmax, ymin, ymax, zmin, zmax)
@@ -94,7 +94,7 @@ public:
    */
   vtkImageData* ExtractROI(
     const std::vector<double>& iBounds,
-    vtkSmartPointer< vtkImageData > iImage);
+    const vtkSmartPointer< vtkImageData > & iImage);
 
   /*
    * \brief Convert a vtkImage to a itkImage. If we call after "ExtractROI",
@@ -176,16 +176,18 @@ public:
    * \param[in] iThreshold threshold
    * \return list of polydatas
    */
-  std::vector<vtkPolyData*>  ExtractPolyData(std::vector<vtkImageData*> iInputImage,
-      const double & iThreshold);
+  std::vector<vtkPolyData*>  ExtractPolyData(
+    std::vector<vtkImageData*>& iInputImage,
+    const double & iThreshold);
   /*
    * \brief Generate a polydata given a vtkimage and a threshold
    * \param[in] iInputImage vtk image
    * \param[in] iThreshold threshold
    * \return polydata
    */
-  vtkSmartPointer<vtkPolyData>  ExtractPolyData(vtkImageData *iInputImage,
-      const double & iThreshold);
+  vtkSmartPointer<vtkPolyData>  ExtractPolyData(
+    vtkImageData *iInputImage,
+    const double & iThreshold);
 
   /*
    * \brief Decimate a polydata
@@ -194,7 +196,8 @@ public:
    * \return Decimated polyData
    */
   vtkSmartPointer<vtkPolyData> DecimatePolyData(
-      vtkSmartPointer<vtkPolyData> iPolyData, unsigned int iNumberOfPoints);
+    vtkSmartPointer<vtkPolyData>& iPolyData,
+    const unsigned int& iNumberOfPoints);
 
   /*
    * \brief Enable decimation during polydata extraction.
@@ -211,12 +214,12 @@ public:
    * \brief Set target number of points for polydata extraction
    * \param[in] iNumberOfPoints number of points
    */
-  void SetNumberOfPoints( unsigned int& iNumberOfPoints);
+  void SetNumberOfPoints( const unsigned int& iNumberOfPoints);
   /*
    * \brief Get target number of points for polydata extraction
    * \return number of points
    */
-  unsigned int GetNumberOfPoints();
+  unsigned int GetNumberOfPoints() const;
 
 private:
 

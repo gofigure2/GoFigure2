@@ -79,7 +79,11 @@ GetBounds(const std::vector<double>& iCenter,
           const double& iRadius,
           const unsigned int& iOrientation)
 {
-  std::vector<double> boundingBox(6);
+  assert( iCenter.size() == 3 );
+  assert( iRadius >= 0. );
+  assert( iOrientation < 4 );
+
+  std::vector<double> boundingBox( 6, 0. );
   unsigned int k = 0;
 
   for(unsigned int i=0; i<3; i++)

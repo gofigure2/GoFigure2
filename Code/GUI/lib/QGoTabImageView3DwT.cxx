@@ -120,6 +120,7 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_LSMReader(0),
   m_Image(0),
   m_BackgroundColor(Qt::black),
+  m_TraceSettingsToolBar(NULL),
   m_IntersectionLineWidth(2.),
   m_PCoord(0),
   m_RCoord(0),
@@ -128,7 +129,6 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_YTileCoord(0),
   m_ZTileCoord(0),
   m_TCoord(-1),
-  m_TraceSettingsToolBar(NULL),
   m_MeshEditingWidget(NULL),
   m_Seeds( 3, NULL )
   //m_TraceWidgetRequiered(false)
@@ -139,13 +139,13 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_Seeds[1] = vtkPoints::New();
   m_Seeds[2] = vtkPoints::New();
   // new
-  /*
-  vtkPoints* xy = vtkPoints::New();
-  vtkPoints* xz = vtkPoints::New();
-  vtkPoints* yz = vtkPoints::New();
-  m_OrderedSeeds.push_back(xy);
-  m_OrderedSeeds.push_back(xz);
-  m_OrderedSeeds.push_back(yz);*/
+
+//  vtkPoints* xy = vtkPoints::New();
+//  vtkPoints* xz = vtkPoints::New();
+//  vtkPoints* yz = vtkPoints::New();
+//  m_OrderedSeeds.push_back(xy);
+//  m_OrderedSeeds.push_back(xz);
+//  m_OrderedSeeds.push_back(yz);
 
   m_ChannelClassicMode = true;
   m_ChannelOfInterest = 0;
@@ -224,10 +224,10 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
 
   CreateBookmarkActions();
 
-  //CreateModeActions(); in setmegacapture/LSM files now
+	//CreateModeActions(); in setmegacapture/LSM files now
 	//CreateTracesActions();
 
-  ReadSettings();
+	ReadSettings();
 
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
@@ -252,13 +252,13 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
       new QGoDockWidgetStatus(this->m_DataBaseTables->GetTraceSettingsDockWidget(),
                               Qt::LeftDockWidgetArea, false, true),
       this->m_DataBaseTables->GetTraceSettingsDockWidget() ) );*/
-	
+
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
       new QGoDockWidgetStatus(this->m_TrackViewDockWidget,
                               Qt::LeftDockWidgetArea, false, true),
       this->m_TrackViewDockWidget) );
-  
+
 
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
@@ -1040,7 +1040,7 @@ QGoTabImageView3DwT::CreateAllViewActions()
                       QIcon::Normal, QIcon::Off);
   Change3DPerspectiveToAxialAction->setIcon(axialicon);
   this->m_ViewNoToolBarActions.push_back(Change3DPerspectiveToAxialAction);
- 
+
   QObject::connect( Change3DPerspectiveToAxialAction, SIGNAL( triggered() ),
                     this, SLOT( Change3DPerspectiveToAxial() ) );
 
@@ -1050,7 +1050,7 @@ QGoTabImageView3DwT::CreateAllViewActions()
   coronalicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/DorsalView.png") ),
                         QIcon::Normal, QIcon::Off);
   Change3DPerspectiveToCoronalAction->setIcon(coronalicon);
- 
+
   this->m_ViewNoToolBarActions.push_back(Change3DPerspectiveToCoronalAction);
 
   QObject::connect( Change3DPerspectiveToCoronalAction, SIGNAL( triggered() ),
@@ -1062,7 +1062,7 @@ QGoTabImageView3DwT::CreateAllViewActions()
   sagittalicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/LeftView.png") ),
                          QIcon::Normal, QIcon::Off);
   Change3DPerspectiveToSagittalAction->setIcon(sagittalicon);
-  
+
   this->m_ViewNoToolBarActions.push_back(Change3DPerspectiveToSagittalAction);
 
   QObject::connect( Change3DPerspectiveToSagittalAction, SIGNAL( triggered() ),
@@ -1236,7 +1236,7 @@ QGoTabImageView3DwT::CreateToolsActions()
 //-------------------------------------------------------------------------
 /*void QGoTabImageView3DwT::CreateModeActions()
 {
-  /*QActionGroup *group = new QActionGroup(this);
+  QActionGroup *group = new QActionGroup(this);
   group->setObjectName("ModeGroup");
   // Call superclass
   QGoTabElementBase::CreateModeActions(group);
@@ -1359,14 +1359,14 @@ QGoTabImageView3DwT::CreateToolsActions()
   //  Contour segmentation mode     //
   //--------------------------------//
 
- /* QAction *ContourSegmentationAction =
+ QAction *ContourSegmentationAction =
     m_ContourSegmentationDockWidget->toggleViewAction();
 
   group->addAction(ContourSegmentationAction);
   //group->addAction(this->m_ContourSegmentationDockWidget->GetActionForToggle() );
 
-  this->m_TracesActions->m_VectorAction.push_back(ContourSegmentationAction); 
-  //this->m_TracesActions.push_back(this->m_ContourSegmentationDockWidget->GetActionForToggle()); 
+  this->m_TracesActions->m_VectorAction.push_back(ContourSegmentationAction);
+  //this->m_TracesActions.push_back(this->m_ContourSegmentationDockWidget->GetActionForToggle());
 
   QObject::connect( ContourSegmentationAction,
                     SIGNAL( toggled(bool) ),
@@ -1588,7 +1588,7 @@ QGoTabImageView3DwT::setupUi(QWidget *iParent)
   this->addDockWidget(Qt::TopDockWidgetArea, m_DataBaseTables);
   m_DataBaseTables->hide();
 
-  
+
   m_ImageView->SetIntersectionLineWidth(this->m_IntersectionLineWidth);
   m_ImageView->SetBackgroundColor(m_BackgroundColor);
 
@@ -2717,7 +2717,7 @@ QGoTabImageView3DwT::ReEditContour(const unsigned int & iId)
 
       this->m_TraceSettingsToolBar->setEnabled(false);
       this->m_TraceSettingsWidget->setEnabled(false);
-		//this->m_ContourSegmentationDockWidget->show();
+    //this->m_ContourSegmentationDockWidget->show();
       //this->m_ContourSegmentationDockWidget->SegmentationMethod(0);
       //this->m_ContourSegmentationDockWidget->SetReeditMode(true);
       this->m_ContourEditingWidget->SetReeditMode(true);
@@ -3417,7 +3417,7 @@ QGoTabImageView3DwT::SetTraceSettingsToolBarVisible(bool IsVisible)
       {
       this->m_DataBaseTables->SetTraceNameForTableWidget("mesh");
       }
-    if(this->m_DataBaseTables->NeedTraceSettingsToolBarVisible() ) //if the dockwidget is not on floating mode 
+    if(this->m_DataBaseTables->NeedTraceSettingsToolBarVisible() ) //if the dockwidget is not on floating mode
       //or if the trace settings widget is not already visible in the dockwidget or if the TW is not visible
       {
       this->m_TraceSettingsToolBar->setVisible(IsVisible);
@@ -3432,7 +3432,7 @@ QGoTabImageView3DwT::InitializeToolsForTracesToolBar(
 QMenu* iMenu, QToolBar* iToolBar)
 {
   //iToolBar->clear();
-  QGoToolBarStatus* TracesToolBar = 
+  QGoToolBarStatus* TracesToolBar =
     new QGoToolBarStatus(iToolBar, iMenu, Qt::TopToolBarArea, true, true, this);
 
   QActionGroup* group = this->findChild< QActionGroup* >("ModeGroup");
@@ -3446,8 +3446,8 @@ QMenu* iMenu, QToolBar* iToolBar)
   group->addAction(ContourSegmentationAction);
   //group->addAction(this->m_ContourSegmentationDockWidget->GetActionForToggle() );
 
-  TracesToolBar->m_VectorAction.push_back(ContourSegmentationAction); 
-  //this->m_TracesActions.push_back(this->m_ContourSegmentationDockWidget->GetActionForToggle()); 
+  TracesToolBar->m_VectorAction.push_back(ContourSegmentationAction);
+  //this->m_TracesActions.push_back(this->m_ContourSegmentationDockWidget->GetActionForToggle());
 
   //Mesh Editing
   QAction *MeshSegmentationAction =
@@ -3458,11 +3458,11 @@ QMenu* iMenu, QToolBar* iToolBar)
   TracesToolBar->m_VectorAction.push_back(MeshSegmentationAction);
 
   // Track Color Coding
-  TracesToolBar->m_VectorAction.push_back( 
+  TracesToolBar->m_VectorAction.push_back(
     m_TrackViewDockWidget->toggleViewAction() );
 
   // Lineage Color Coding
-  TracesToolBar->m_VectorAction.push_back( 
+  TracesToolBar->m_VectorAction.push_back(
     m_LineageViewDockWidget->toggleViewAction() );
 
   //QObject::connect( ContourSegmentationAction,
