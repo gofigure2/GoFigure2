@@ -182,6 +182,8 @@ protected:
     m_Size.Fill(0);
     m_Radius = 0.;
     m_Preprocess = false;
+
+    m_Output = InternalImageType::New();
   }
 
   ~ChanAndVeseSegmentationFilter()  {}
@@ -342,7 +344,7 @@ protected:
       std::cerr << "levelsetfilter Exception:" << err << std::endl;
       }
 
-    m_Output = LevelSetFilter->GetLevelSet(0);
+    m_Output->Graft( LevelSetFilter->GetLevelSet(0) );
   }
 
 private:

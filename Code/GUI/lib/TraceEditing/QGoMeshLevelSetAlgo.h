@@ -84,8 +84,8 @@ protected:
     Filter.Apply3DFilter<unsigned char>( ItkInput,
           iCenter,
           radius,
-          curvature_weight,
-          nb_iterations );
+          nb_iterations,
+          curvature_weight );
 
     typename itk::Image< float, VImageDimension >::Pointer ItkOutPut =
         Filter.GetOutput3D();

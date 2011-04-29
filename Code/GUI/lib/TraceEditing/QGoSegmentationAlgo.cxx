@@ -296,6 +296,9 @@ ExtractMesh(vtkSmartPointer<vtkImageData> iInputImage, const double & iThreshold
   contours->SetValue(0, iThreshold);
   contours->Update();
 
+  std::cout << "Number Of Points: " << contours->GetOutput()->GetNumberOfPoints()
+            << std::endl;
+
   vtkSmartPointer< vtkFeatureEdges > feature =
       vtkSmartPointer< vtkFeatureEdges >::New();
   feature->SetInputConnection( contours->GetOutputPort() );

@@ -107,7 +107,7 @@ public:
 
     typename itk::Image< float, 3 >::Pointer resulting_image = filter->GetOutput();
 
-    if( resulting_image )
+    if( resulting_image.IsNotNull() )
       {
       m_Image3D->Graft( resulting_image );
       }
