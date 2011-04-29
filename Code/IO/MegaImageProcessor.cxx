@@ -47,7 +47,8 @@ MegaImageProcessor::MegaImageProcessor(itk::MegaCaptureReader::Pointer iReader):
 {
   //Create the new MegaImageStructure
   // with the first time point and all the channels
-  setTimePoint(-1);
+  unsigned int time = m_MegaImageReader->GetMinTimePoint();
+  setTimePoint(time);
 }
 //--------------------------------------------------------------------------
 
@@ -59,7 +60,8 @@ MegaImageProcessor::MegaImageProcessor(const MegaImageProcessor & iE):
 {
   //Create the new MegaImageStructure
   // with the first time point and all the channels
-  setTimePoint(-1);
+  unsigned int time = m_MegaImageReader->GetMinTimePoint();
+  setTimePoint(time);
 }
 //--------------------------------------------------------------------------
 
@@ -222,25 +224,19 @@ getChannelAllTimes(const unsigned int& iChannel)
 //--------------------------------------------------------------------------
 void
 MegaImageProcessor::
-setTimePoint(const int& iTime)
+setTimePoint(const unsigned int& iTime)
 {
-  unsigned int time(0);
-
-  if( iTime > 0)
+  //check if time point exists
+  if(iTime >= m_MegaImageReader->GetMinTimePoint() &&
+      iTime <= m_MegaImageReader->GetMaxTimePoint())
     {
-    // todo - check if time point exists
-    bool exists(false);
-    if(exists)
-      {
-      m_MegaImageReader->SetTimePoint(iTime);
-      time = iTime;
-      }
+    m_MegaImageReader->SetTimePoint(iTime);
     }
   else
     {
-    time = m_MegaImageReader->GetMinTimePoint();
-    m_MegaImageReader->SetTimePoint(time);
+    return;
     }
+
 
   // update the container
   // Get Number of channels from reader
@@ -267,7 +263,7 @@ setTimePoint(const int& iTime)
 
     // Update the MegaImageStructure
     // image, LUT, channel, time point
-    m_MegaImageContainer.insert(MegaImageStructure(time,
+    m_MegaImageContainer.insert(MegaImageStructure(iTime,
                                                    numberOfChannels,
                                                    lut,
                                                    image));// Image
@@ -275,5 +271,4 @@ setTimePoint(const int& iTime)
     --numberOfChannels;
     }
 }
-
 //--------------------------------------------------------------------------

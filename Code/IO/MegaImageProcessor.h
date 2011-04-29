@@ -169,7 +169,7 @@ public:
    * MegaImageStructure
    * \param[in] iTime requested time point
    */
-  void setTimePoint(const int& iTime);
+  void setTimePoint(const unsigned int& iTime);
 
   /*
    * \brief load all time points of the given channel into the
