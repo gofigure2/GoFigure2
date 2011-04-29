@@ -68,6 +68,8 @@ protected:
   std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel)
     {
+    assert( iCenter.size() == 3);
+
     //std::vector<double> Bounds = this->GetBounds(iCenter, this->m_Radius->GetValue());
     //tkImageData* ROI = ExtractROI(Bounds, ( *iImages )[iChannel]);
 
@@ -98,9 +100,21 @@ protected:
 
     vtkPolyData* temp_output = this->ExtractPolyData(FilterOutPutToVTK, 0);
 
+    double temp_bounds[6];
+    temp_output->GetBounds( temp_bounds );
+
+    double temp_center[3];
+    temp_center[0] = ( temp_bounds[0] + temp_bounds[1] ) * 0.5;
+    temp_center[1] = ( temp_bounds[2] + temp_bounds[3] ) * 0.5;
+    temp_center[2] = ( temp_bounds[4] + temp_bounds[5] ) * 0.5;
+
     vtkSmartPointer< vtkTransform > translation =
         vtkSmartPointer< vtkTransform >::New();
-    translation->Translate(iCenter[0], iCenter[1], iCenter[2] );
+
+    /// \todo fix it to get the real center!!!
+    translation->Translate(iCenter[0] - temp_center[0],
+                           iCenter[1] - temp_center[1],
+                           iCenter[2] - temp_center[2] );
 
     vtkSmartPointer< vtkTransformPolyDataFilter > mesh_transform =
         vtkSmartPointer< vtkTransformPolyDataFilter >::New();
