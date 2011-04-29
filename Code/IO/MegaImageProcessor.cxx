@@ -329,8 +329,7 @@ MegaImageProcessor::
 setTimePoint(const unsigned int& iTime)
 {
   //check if time point exists
-  if(iTime >= m_MegaImageReader->GetMinTimePoint() &&
-      iTime <= m_MegaImageReader->GetMaxTimePoint())
+  if(iTime >= m_BoundsTime[0] && iTime <= m_BoundsTime[1])
     {
     m_MegaImageReader->SetTimePoint(iTime);
     m_MegaImageReader->Update();
@@ -345,8 +344,10 @@ setTimePoint(const unsigned int& iTime)
   // Get Number of channels from reader
   int numberOfChannels = getNumberOfChannels();
 
-  while(numberOfChannels>=0)
+  while(numberOfChannels>0)
     {
+    --numberOfChannels;
+
     // Get useful information from the reader
     // Get Image
     vtkSmartPointer<vtkImageData> image =
@@ -377,8 +378,6 @@ setTimePoint(const unsigned int& iTime)
                                                    numberOfChannels,
                                                    lut,
                                                    image));
-
-    --numberOfChannels;
     }
 }
 //--------------------------------------------------------------------------
@@ -390,8 +389,7 @@ setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
            const unsigned int& iPrevious)
 {
   //check if time point exists
-  if(iTime >= m_MegaImageReader->GetMinTimePoint() &&
-      iTime <= m_MegaImageReader->GetMaxTimePoint())
+  if(iTime >= m_BoundsTime[0] && iTime <= m_BoundsTime[1])
     {
     m_MegaImageReader->SetTimePoint(iTime);
     m_MegaImageReader->Update();
