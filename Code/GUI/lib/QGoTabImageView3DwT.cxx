@@ -1707,8 +1707,6 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
     vtkSmartPointer< vtkImageData > input =
         m_MegaImageProcessor.getTimeAllChannels(m_TCoord);
 
-    //ShowImage(input);
-
     if ( this->m_NavigationDockWidget->ShowAllChannels() )
       {
       m_Image->ShallowCopy( input );
@@ -1732,7 +1730,6 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
   else
     {
     m_Image->ShallowCopy( m_MegaImageProcessor.getChannelAllTimes(min_ch) );
-    m_Image->SetNumberOfScalarComponents(1);
 
     if( m_InternalImages.size() != 1 )
       {

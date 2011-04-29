@@ -213,7 +213,7 @@ getTimeAllChannels(const unsigned int& iTime)
   /*
     \todo Nicolas - do sth else....
    */
-  unsigned int size(0);
+  double size(0);
   while(it!=m_MegaImageContainer.get< Time >().end())
     {
     ++size;
@@ -249,7 +249,7 @@ getChannelAllTimes(const unsigned int& iChannel)
   /*
     \todo Nicolas - do sth else....
    */
-  unsigned int size(0);
+  double size(0);
   while(it!=m_MegaImageContainer.get< Channel >().end())
     {
     ++size;
