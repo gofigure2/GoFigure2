@@ -38,17 +38,17 @@
 
 QGoToolBarStatus::QGoToolBarStatus(QWidget* iParent) :
   QObject(iParent),
-  m_Area(Qt::TopToolBarArea), m_DefaultArea(Qt::TopToolBarArea),
-  m_Visibility(true), m_Attached(true), m_ToolBar(NULL), m_Menu(NULL), m_Widget(NULL)
+   m_ToolBar(NULL), m_Menu(NULL), m_Area(Qt::TopToolBarArea), m_DefaultArea(Qt::TopToolBarArea),
+   m_Visibility(true), m_Attached(true),  m_Widget(NULL)
 {
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 QGoToolBarStatus::QGoToolBarStatus(const QGoToolBarStatus & iS) :
-    m_Area(iS.m_Area), m_DefaultArea(iS.m_Area),
-    m_Visibility(iS.m_Visibility), m_Attached(iS.m_Attached), m_ToolBar(iS.m_ToolBar),
-    m_Menu(iS.m_Menu), m_Widget(iS.m_Widget), m_VectorAction(iS.m_VectorAction)
+    m_ToolBar(iS.m_ToolBar), m_Menu(iS.m_Menu), m_Area(iS.m_Area), m_DefaultArea(iS.m_Area),
+    m_Visibility(iS.m_Visibility), m_Attached(iS.m_Attached), 
+    m_VectorAction(iS.m_VectorAction), m_Widget(iS.m_Widget)
 {
   this->setParent(iS.parent());
 }
@@ -59,9 +59,9 @@ QGoToolBarStatus::QGoToolBarStatus(Qt::ToolBarArea iArea,
                                     const bool & iVisibility, const bool & iAttached,
                                     QWidget* iParent) :
   QObject(iParent),
-  m_Area(iArea),
+  m_ToolBar(NULL), m_Menu(NULL), m_Area(iArea),
   m_DefaultArea(iArea), m_Visibility(iVisibility),
-  m_Attached(iAttached), m_ToolBar(NULL), m_Menu(NULL), m_Widget(NULL)
+  m_Attached(iAttached), m_Widget(NULL)
 {
 }
 //--------------------------------------------------------------------------
@@ -71,8 +71,9 @@ QGoToolBarStatus::QGoToolBarStatus(QToolBar* iToolBar, QMenu* iMenu,
   Qt::ToolBarArea iArea,
     const bool & iVisibility, const bool & iAttached, QWidget* iParent, QWidget* iWidget):
   QObject(iParent),
+  m_ToolBar(iToolBar), m_Menu(iMenu), 
   m_Area(iArea), m_Visibility(iVisibility), m_Attached(iAttached), 
-  m_ToolBar(iToolBar), m_Menu(iMenu), m_Widget(iWidget)
+  m_Widget(iWidget)
 {
   if(m_Widget && m_ToolBar)
     {

@@ -261,10 +261,10 @@ private:
   QDir                        m_PluginsDir;
   QStringList                 m_PluginFileNames;
   QGoTabManager *             m_TabManager;
-  QToolBar *                  m_ViewToolBar;
   QToolBar *                  m_ModeToolBar;
   QToolBar *                  m_TracesToolBar;
   QToolBar *                  m_TraceSettingsToolBar;
+  QToolBar *                  m_ViewToolBar;
   std::list< vtkLSMReader * > m_LSMReader;
   QGoWizardDB *               m_DBWizard;
   QGoAboutWidget *            m_AboutWidget;

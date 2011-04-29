@@ -78,7 +78,7 @@ QGoTraceSettingsWidget::
 //-------------------------------------------------------------------------
 void QGoTraceSettingsWidget::SetUpUi()
 {
-  QWidget* TraceSettingsWidget = new QWidget(this);
+  //QWidget* TraceSettingsWidget = new QWidget(this);
 
   QHBoxLayout* MainLayout = new QHBoxLayout;
   QLabel* Blank = new QLabel(this);

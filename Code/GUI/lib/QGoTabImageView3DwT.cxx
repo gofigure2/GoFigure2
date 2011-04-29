@@ -127,8 +127,8 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_XTileCoord(0),
   m_YTileCoord(0),
   m_ZTileCoord(0),
-  m_TCoord(-1),
-  m_TraceSettingsToolBar(NULL)
+  m_TraceSettingsToolBar(NULL),
+  m_TCoord(-1)
   //m_TraceWidgetRequiered(false)
 {
   m_Image = vtkImageData::New();
@@ -1102,7 +1102,7 @@ QGoTabImageView3DwT::CreateToolsActions()
 //-------------------------------------------------------------------------
 /*void QGoTabImageView3DwT::CreateModeActions()
 {
-  /*QActionGroup *group = new QActionGroup(this);
+  QActionGroup *group = new QActionGroup(this);
   group->setObjectName("ModeGroup");
   // Call superclass
   QGoTabElementBase::CreateModeActions(group);
@@ -1225,7 +1225,7 @@ QGoTabImageView3DwT::CreateToolsActions()
   //  Contour segmentation mode     //
   //--------------------------------//
 
- /* QAction *ContourSegmentationAction =
+  QAction *ContourSegmentationAction =
     m_ContourSegmentationDockWidget->toggleViewAction();
 
   group->addAction(ContourSegmentationAction);
