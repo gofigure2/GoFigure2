@@ -51,8 +51,8 @@ class QGOGUILIB_EXPORT QGoSemiAutoSegmentationAlgo:public QGoSegmentationAlgo
 {
   Q_OBJECT
 public:
-  QGoSemiAutoSegmentationAlgo(std::vector< vtkPoints* >* iSeeds, QWidget *iParent = 0);
-  ~QGoSemiAutoSegmentationAlgo();
+  explicit QGoSemiAutoSegmentationAlgo(std::vector< vtkPoints* >* iSeeds, QWidget *iParent = 0);
+  virtual ~QGoSemiAutoSegmentationAlgo();
 
 
   /**

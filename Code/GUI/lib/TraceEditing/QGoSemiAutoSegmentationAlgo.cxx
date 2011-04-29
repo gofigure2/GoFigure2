@@ -33,12 +33,12 @@
 =========================================================================*/
 #include "QGoSemiAutoSegmentationAlgo.h"
 
-
-QGoSemiAutoSegmentationAlgo::QGoSemiAutoSegmentationAlgo(
-  std::vector< vtkPoints* >* iSeeds, QWidget *iParent)
-{
-  this->m_Seeds = iSeeds;
-}
+//-------------------------------------------------------------------------
+QGoSemiAutoSegmentationAlgo::
+QGoSemiAutoSegmentationAlgo(
+  std::vector< vtkPoints* >* iSeeds,
+  QWidget *iParent) : QGoSegmentationAlgo( iParent ), m_Seeds( iSeeds )
+{}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
