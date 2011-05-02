@@ -32,8 +32,8 @@
 
 =========================================================================*/
 
-#ifndef MEGAIMAGESTRUCTURE_H
-#define MEGAIMAGESTRUCTURE_H
+#ifndef GoMegaImageStructure_H
+#define GoMegaImageStructure_H
 
 // Required for dynamic libs on Windows (QGoIOExport)
 #include "QGoIOConfigure.h"
@@ -49,11 +49,11 @@
 */
 
 /**
- * \struct MegaImageStructure
+ * \struct GoMegaImageStructure
  * \brief  Convenience structure to store visible image
  * \ingroup Mega
  */
-struct QGOIO_EXPORT MegaImageStructure
+struct QGOIO_EXPORT GoMegaImageStructure
 {
     unsigned int                    Time;
     unsigned int                    Channel;
@@ -61,7 +61,7 @@ struct QGOIO_EXPORT MegaImageStructure
     vtkSmartPointer<vtkImageData>   Image;
 
     /** Constructor */
-    MegaImageStructure(unsigned int iTime, unsigned int iChannel,
+    GoMegaImageStructure(unsigned int iTime, unsigned int iChannel,
                        vtkSmartPointer<vtkLookupTable> iLUT,
                        vtkSmartPointer<vtkImageData> iImage):
                        Time(iTime), Channel(iChannel), LUT(iLUT)
@@ -75,11 +75,11 @@ struct QGOIO_EXPORT MegaImageStructure
      LUT = iLUT;
    }
 
-    friend std::ostream& operator<<(std::ostream& os,const MegaImageStructure& e)
+    friend std::ostream& operator<<(std::ostream& os,const GoMegaImageStructure& e)
     {
       os<< "time: "<<e.Time<<"  channel: "<<e.Channel<<std::endl;
       return os;
     }
 };
 
-#endif // MEGAIMAGESTRUCTURE_H
+#endif // GoMegaImageStructure_H

@@ -32,8 +32,8 @@
 
 =========================================================================*/
 
-#ifndef MEGAIMAGEPROCESSOR_H
-#define MEGAIMAGEPROCESSOR_H
+#ifndef GoMegaImageProcessor_H
+#define GoMegaImageProcessor_H
 
 // Required for dynamic libs on Windows (QGoIOExport)
 #include "QGoIOConfigure.h"
@@ -47,7 +47,7 @@
 #include <boost/multi_index/ordered_index.hpp>
 
 // include project
-#include "MegaImageStructure.h"
+#include "GoMegaImageStructure.h"
 #include "itkMegaCaptureReader.h"
 
 // external include
@@ -60,13 +60,13 @@ class vtkImageData;
 /**
   \struct set_lut
   \brief change lut of given structure
-  \sa MegaImageStructure
+  \sa GoMegaImageStructure
   */
 struct set_lut
 {
   set_lut(vtkSmartPointer<vtkLookupTable> iLUT):lut(iLUT){}
 
-  void operator()(MegaImageStructure& iStructure)
+  void operator()(GoMegaImageStructure& iStructure)
   {
     iStructure.setLUT(lut);
   }
@@ -80,25 +80,25 @@ private:
 using boost::multi_index_container;
 using namespace boost::multi_index;
 
-/* tags for accessing the corresponding indices of megaImageStructure */
+/* tags for accessing the corresponding indices of GoMegaImageStructure */
 
 struct ID{};
 struct Time{};
 struct Channel{};
 
 /* Define a multi_index_container of employees with following indices:
- *   - a unique index sorted by MegaImageStructure::Time,
- *   - a non-unique index sorted by MegaImageStructure::Channel,
+ *   - a unique index sorted by GoMegaImageStructure::Time,
+ *   - a non-unique index sorted by GoMegaImageStructure::Channel,
  */
 
 typedef multi_index_container<
-  MegaImageStructure,
+  GoMegaImageStructure,
   indexed_by<
     ordered_non_unique<
-      tag<Time>,  BOOST_MULTI_INDEX_MEMBER(MegaImageStructure,unsigned int,Time)>,
+      tag<Time>,  BOOST_MULTI_INDEX_MEMBER(GoMegaImageStructure,unsigned int,Time)>,
     ordered_non_unique<
-      tag<Channel>, BOOST_MULTI_INDEX_MEMBER(MegaImageStructure,unsigned int,Channel)> >
-> MegaImageStructureMultiIndexContainer;
+      tag<Channel>, BOOST_MULTI_INDEX_MEMBER(GoMegaImageStructure,unsigned int,Channel)> >
+> GoMegaImageStructureMultiIndexContainer;
 
 //-----------------------------------------------------------------------------
 
@@ -107,29 +107,29 @@ typedef multi_index_container<
 */
 
 /**
- * \struct MegaImageProcessor
+ * \struct GoMegaImageProcessor
  * \brief  Interface between MegaReader and vtkImageData
  * \ingroup Mega
  */
-class QGOIO_EXPORT MegaImageProcessor
+class QGOIO_EXPORT GoMegaImageProcessor
 {
 public:
 
   /** Constructor */
-  MegaImageProcessor();
+  GoMegaImageProcessor();
 
   /** Constructor */
-  MegaImageProcessor(itk::MegaCaptureReader::Pointer iReader);
+  GoMegaImageProcessor(itk::MegaCaptureReader::Pointer iReader);
 
   /** Constructor */
-  MegaImageProcessor( const MegaImageProcessor& iE );
+  GoMegaImageProcessor( const GoMegaImageProcessor& iE );
 
   /** Destructor */
-  ~MegaImageProcessor();
+  ~GoMegaImageProcessor();
   
   /** Printing one element. std::cout << element << std::endl; */
   friend std::ostream & operator<<
-    (std::ostream & os, const MegaImageProcessor & c)
+    (std::ostream & os, const GoMegaImageProcessor & c)
   {
     //os << "TraceID " << c.TraceID << std::endl;
     return os;
@@ -172,14 +172,14 @@ public:
 
   /*
    * \brief load all the channels for the given time point into the
-   * MegaImageStructure
+   * GoMegaImageStructure
    * \param[in] iTime requested time point
    */
   void setTimePoint(const unsigned int& iTime);
 
   /*
    * \brief load all time points of the given channel into the
-   * MegaImageStructure. Called Doppler View.
+   * GoMegaImageStructure. Called Doppler View.
    * \param[in] iChannel requested channel
    * \param[in] iFirstTime first time point
    * \param[in] iNumberOfImages number of images to be loaded
@@ -250,7 +250,7 @@ private:
                                            vtkSmartPointer<vtkLookupTable> iLUT);
 
   itk::MegaCaptureReader::Pointer        m_MegaImageReader;
-  MegaImageStructureMultiIndexContainer  m_MegaImageContainer;
+  GoMegaImageStructureMultiIndexContainer  m_MegaImageContainer;
   vtkSmartPointer<vtkImageData>          m_Output;
 
   // Image parameters
@@ -269,4 +269,4 @@ private:
   //--------------------
 };
 
-#endif // MEGAIMAGEPROCESSOR_H
+#endif // GoMegaImageProcessor_H

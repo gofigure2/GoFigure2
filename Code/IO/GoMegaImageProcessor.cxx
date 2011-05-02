@@ -33,7 +33,7 @@
 
 =========================================================================*/
 
-#include "MegaImageProcessor.h"
+#include "GoMegaImageProcessor.h"
 
 // external library include
 #include "vtkLookupTable.h"
@@ -45,7 +45,7 @@
 #include "VisualizePolydataHelper.h"
 
 //--------------------------------------------------------------------------
-MegaImageProcessor::MegaImageProcessor():m_MegaImageReader(NULL), m_Output(NULL),
+GoMegaImageProcessor::GoMegaImageProcessor():m_MegaImageReader(NULL), m_Output(NULL),
   m_BoundsTime(NULL), m_BoundsChannel(NULL), m_Extent(NULL), m_DopplerStep(1),
   m_NumberOfImages(3)
 {
@@ -54,7 +54,7 @@ MegaImageProcessor::MegaImageProcessor():m_MegaImageReader(NULL), m_Output(NULL)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-MegaImageProcessor::MegaImageProcessor(itk::MegaCaptureReader::Pointer iReader):
+GoMegaImageProcessor::GoMegaImageProcessor(itk::MegaCaptureReader::Pointer iReader):
   m_MegaImageReader(iReader), m_Output(NULL), m_BoundsTime(NULL),
   m_BoundsChannel(NULL), m_Extent(NULL), m_DopplerStep(1), m_NumberOfImages(3)
 {
@@ -66,7 +66,7 @@ MegaImageProcessor::MegaImageProcessor(itk::MegaCaptureReader::Pointer iReader):
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-MegaImageProcessor::MegaImageProcessor(const MegaImageProcessor & iE):
+GoMegaImageProcessor::GoMegaImageProcessor(const GoMegaImageProcessor & iE):
   m_MegaImageReader(iE.m_MegaImageReader),
   m_MegaImageContainer(iE.m_MegaImageContainer), m_Output(iE.m_Output),
   m_BoundsTime(iE.m_BoundsTime), m_BoundsChannel(iE.m_BoundsChannel),
@@ -79,8 +79,8 @@ MegaImageProcessor::MegaImageProcessor(const MegaImageProcessor & iE):
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-MegaImageProcessor::
-~MegaImageProcessor()
+GoMegaImageProcessor::
+~GoMegaImageProcessor()
 {
   if(m_BoundsTime)
     {
@@ -104,7 +104,7 @@ MegaImageProcessor::
 
 //--------------------------------------------------------------------------
 void
-MegaImageProcessor::
+GoMegaImageProcessor::
 setMegaReader(itk::MegaCaptureReader::Pointer iReader)
 {
   m_MegaImageReader = iReader;
@@ -136,7 +136,7 @@ setMegaReader(itk::MegaCaptureReader::Pointer iReader)
 
 //--------------------------------------------------------------------------
 vtkSmartPointer<vtkLookupTable>
-MegaImageProcessor::
+GoMegaImageProcessor::
 createLUT(const double& iRed, const double& iGreen, const double& iBlue,
           const double& iAlpha)
 {
@@ -157,12 +157,12 @@ createLUT(const double& iRed, const double& iGreen, const double& iBlue,
 
 //--------------------------------------------------------------------------
 void
-MegaImageProcessor::
+GoMegaImageProcessor::
 setLookupTable(vtkSmartPointer<vtkLookupTable> iLUT,
                     const unsigned int& iChannel,
                     const unsigned int& iTime)
 {
-  MegaImageStructureMultiIndexContainer::index<Channel>::type::iterator it =
+  GoMegaImageStructureMultiIndexContainer::index<Channel>::type::iterator it =
       m_MegaImageContainer.get< Channel >().find(iChannel);
 
   while(it!=m_MegaImageContainer.get< Channel >().end())
@@ -179,10 +179,10 @@ setLookupTable(vtkSmartPointer<vtkLookupTable> iLUT,
 
 //--------------------------------------------------------------------------
 vtkSmartPointer<vtkLookupTable>
-MegaImageProcessor::
+GoMegaImageProcessor::
 getLookuptable(const unsigned int& iChannel, const unsigned int& iTime) const
 {
-  MegaImageStructureMultiIndexContainer::index<Channel>::type::iterator it =
+  GoMegaImageStructureMultiIndexContainer::index<Channel>::type::iterator it =
       m_MegaImageContainer.get< Channel >().find(iChannel);
 
   while(it!=m_MegaImageContainer.get< Channel >().end())
@@ -199,7 +199,7 @@ getLookuptable(const unsigned int& iChannel, const unsigned int& iTime) const
 
 //--------------------------------------------------------------------------
 vtkSmartPointer<vtkImageData>
-MegaImageProcessor::
+GoMegaImageProcessor::
 colorImage(vtkSmartPointer<vtkImageData> iImage,
            vtkSmartPointer<vtkLookupTable> iLUT)
 {
@@ -215,16 +215,20 @@ colorImage(vtkSmartPointer<vtkImageData> iImage,
 
 //--------------------------------------------------------------------------
 vtkSmartPointer<vtkImageData>
-MegaImageProcessor::
+GoMegaImageProcessor::
 getImage(const unsigned int& iTime, const unsigned int& iChannel)
 {
-  MegaImageStructureMultiIndexContainer::index<Channel>::type::iterator it =
+  GoMegaImageStructureMultiIndexContainer::index<Channel>::type::iterator it =
       m_MegaImageContainer.get< Channel >().find(iChannel);
 
   while(it!=m_MegaImageContainer.get< Channel >().end())
     {
     if(it->Time==iTime)
       {
+        cout  << "The size of the image is: "
+              << "\npointer: "<< sizeof( colorImage(it->Image, it->LUT) )
+              << "\ndata: "<< sizeof( *colorImage(it->Image, it->LUT) )
+              << endl;
       return colorImage(it->Image, it->LUT);
       }
     ++it;
@@ -235,10 +239,10 @@ getImage(const unsigned int& iTime, const unsigned int& iChannel)
 
 //--------------------------------------------------------------------------
 vtkSmartPointer<vtkImageData>
-MegaImageProcessor::
+GoMegaImageProcessor::
 getImageBW(const unsigned int& iTime, const unsigned int& iChannel)
 {
-  MegaImageStructureMultiIndexContainer::index<Channel>::type::iterator it =
+  GoMegaImageStructureMultiIndexContainer::index<Channel>::type::iterator it =
       m_MegaImageContainer.get< Channel >().find(iChannel);
 
   while(it!=m_MegaImageContainer.get< Channel >().end())
@@ -255,13 +259,13 @@ getImageBW(const unsigned int& iTime, const unsigned int& iChannel)
 
 //--------------------------------------------------------------------------
 vtkSmartPointer<vtkImageData>
-MegaImageProcessor::
+GoMegaImageProcessor::
 getTimeAllChannels(const unsigned int& iTime)
 {
   vtkSmartPointer<vtkImageBlend> blendedImage =
       vtkSmartPointer<vtkImageBlend>::New();
 
-  MegaImageStructureMultiIndexContainer::index<Time>::type::iterator it =
+  GoMegaImageStructureMultiIndexContainer::index<Time>::type::iterator it =
       m_MegaImageContainer.get< Time >().find(iTime);
 
   /*
@@ -291,13 +295,13 @@ getTimeAllChannels(const unsigned int& iTime)
 
 //--------------------------------------------------------------------------
 vtkSmartPointer<vtkImageData>
-MegaImageProcessor::
+GoMegaImageProcessor::
 getChannelAllTimes(const unsigned int& iChannel)
 {
   vtkSmartPointer<vtkImageBlend> blendedImage =
       vtkSmartPointer<vtkImageBlend>::New();
 
-  MegaImageStructureMultiIndexContainer::index<Channel>::type::iterator it =
+  GoMegaImageStructureMultiIndexContainer::index<Channel>::type::iterator it =
       m_MegaImageContainer.get< Channel >().find(iChannel);
 
   /*
@@ -327,7 +331,7 @@ getChannelAllTimes(const unsigned int& iChannel)
 
 //--------------------------------------------------------------------------
 void
-MegaImageProcessor::
+GoMegaImageProcessor::
 setTimePoint(const unsigned int& iTime)
 {
   //check if time point exists
@@ -376,7 +380,7 @@ setTimePoint(const unsigned int& iTime)
 
     // Update the MegaImageStructure
     // image, LUT, channel, time point
-    m_MegaImageContainer.insert(MegaImageStructure(iTime,
+    m_MegaImageContainer.insert(GoMegaImageStructure(iTime,
                                                    numberOfChannels,
                                                    lut,
                                                    image));
@@ -386,7 +390,7 @@ setTimePoint(const unsigned int& iTime)
 
 //--------------------------------------------------------------------------
 void
-MegaImageProcessor::
+GoMegaImageProcessor::
 setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
            const unsigned int& iPrevious)
 {
@@ -407,7 +411,7 @@ setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
 
 //--------------------------------------------------------------------------
 unsigned int*
-MegaImageProcessor::
+GoMegaImageProcessor::
 getBoundsTime()
 {
   return m_BoundsTime;
@@ -416,7 +420,7 @@ getBoundsTime()
 
 //--------------------------------------------------------------------------
 unsigned int*
-MegaImageProcessor::
+GoMegaImageProcessor::
 getBoundsChannel()
 {
   return m_BoundsChannel;
@@ -425,7 +429,7 @@ getBoundsChannel()
 
 //--------------------------------------------------------------------------
 int*
-MegaImageProcessor::
+GoMegaImageProcessor::
 getExtent()
 {
   return m_Extent;
@@ -434,7 +438,7 @@ getExtent()
 
 //--------------------------------------------------------------------------
 unsigned int
-MegaImageProcessor::
+GoMegaImageProcessor::
 getNumberOfTimePoints()
 {
   return m_BoundsTime[1] - m_BoundsTime[0] + 1;
@@ -443,7 +447,7 @@ getNumberOfTimePoints()
 
 //--------------------------------------------------------------------------
 unsigned int
-MegaImageProcessor::
+GoMegaImageProcessor::
 getNumberOfChannels()
 {
   return m_BoundsChannel[1] - m_BoundsChannel[0] + 1;
@@ -452,7 +456,7 @@ getNumberOfChannels()
 
 //--------------------------------------------------------------------------
 unsigned int
-MegaImageProcessor::
+GoMegaImageProcessor::
 getTimeInterval() const
 {
   return m_MegaImageReader->GetTimeInterval();
@@ -461,7 +465,7 @@ getTimeInterval() const
 
 //--------------------------------------------------------------------------
 unsigned int
-MegaImageProcessor::
+GoMegaImageProcessor::
 getDopplerStep()
 {
   return m_DopplerStep;
@@ -470,7 +474,7 @@ getDopplerStep()
 
 //--------------------------------------------------------------------------
 void
-MegaImageProcessor::
+GoMegaImageProcessor::
 setDopplerStep(unsigned int iStep)
 {
   m_DopplerStep = iStep;
