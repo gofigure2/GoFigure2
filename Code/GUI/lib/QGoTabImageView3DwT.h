@@ -54,6 +54,8 @@
 
 #include "vtkSmartPointer.h"
 
+#include "GoImageProcessor.h"
+
 // base segmentation dock widget
 class QGoContourSegmentationBaseDockWidget;
 class QGoMeshSegmentationBaseDockWidget;
@@ -83,8 +85,6 @@ class vtkViewImage2D;
 class vtkProp3D;
 
 class QGoSeedsSegmentation;
-
-#include "GoMegaImageProcessor.h"
 
 #include "QGoGUILibConfigure.h"
 
@@ -359,7 +359,7 @@ protected:
   vtkProperty *m_HighlightedContoursProperty;
   vtkProperty *m_HighlightedMeshesProperty;
 
-  GoMegaImageProcessor                        m_MegaImageProcessor;
+  GoImageProcessor*                         m_ImageProcessor;
   itk::MegaCaptureReader::Pointer           m_MegaCaptureReader;
   GoFigureFileInfoHelperMultiIndexContainer m_FileList;
   GoFigure::FileType                        m_FileType;

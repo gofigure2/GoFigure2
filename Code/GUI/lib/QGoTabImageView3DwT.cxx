@@ -110,6 +110,10 @@
 //trackediting dw
 #include "QGoTrackEditingWidget.h"
 
+//
+#include "GoMegaImageProcessor.h"
+//#include "GoLSMImageProcessor.h"
+
 // TESTS
 #include "vtkPolyDataWriter.h"
 #include "vtkViewImage3D.h"
@@ -1001,7 +1005,7 @@ QGoTabImageView3DwT::ChannelTimeMode(bool iEnable)
   // if we leave the time mode, go back to the classic mode automatically
   if ( m_ChannelClassicMode )
     {
-    unsigned int NumberOfChannels = m_MegaImageProcessor.getNumberOfChannels();
+    unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
 
     // resize internal and update the internal image
     SetTimePointWithMegaCapture();
@@ -1039,7 +1043,7 @@ void QGoTabImageView3DwT::LoadChannelTime()
 {
   bool         ok;
   QStringList  channel;
-  unsigned int* boundChannel = m_MegaImageProcessor.getBoundsChannel();
+  unsigned int* boundChannel = m_ImageProcessor->getBoundsChannel();
 
   for ( unsigned int i = boundChannel[0]; i < boundChannel[1]+1; ++i )
     {
@@ -1385,6 +1389,8 @@ QGoTabImageView3DwT::SetLSMReader(vtkLSMReader *iReader, const int & iTimePoint)
 
     m_NavigationDockWidget->SetTMinimumAndMaximum(0, dim[3] - 1);
     m_NavigationDockWidget->SetTSlice(iTimePoint);
+
+
     if ( m_TCoord != iTimePoint )
       {
       SetTimePoint(iTimePoint);
@@ -1420,10 +1426,12 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
   m_MegaCaptureReader->SetTimePoint(iTimePoint);
   m_MegaCaptureReader->Update();
 
-  m_MegaImageProcessor.setMegaReader(m_MegaCaptureReader);
-  unsigned int*  boundTime    = m_MegaImageProcessor.getBoundsTime();
-  unsigned int NumberOfChannels = m_MegaImageProcessor.getNumberOfChannels();
-  int* extent = m_MegaImageProcessor.getExtent();
+  //GoMegaImageProcessor* processor = new GoMegaImageProcessor;
+  m_ImageProcessor = new GoMegaImageProcessor;
+  m_ImageProcessor->setReader(m_MegaCaptureReader);
+  unsigned int*  boundTime    = m_ImageProcessor->getBoundsTime();
+  unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
+  int* extent = m_ImageProcessor->getExtent();
 
   m_ChannelNames.resize( NumberOfChannels );
 
@@ -1487,20 +1495,20 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
 void
 QGoTabImageView3DwT::SetTimePointWithMegaCapture()
 {
-  unsigned int NumberOfChannels = m_MegaImageProcessor.getNumberOfChannels();
+  unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
 
-  m_MegaImageProcessor.setTimePoint(m_TCoord);
+  m_ImageProcessor->setTimePoint(m_TCoord);
 
   if ( NumberOfChannels>1 )
     {
     if ( this->m_NavigationDockWidget->ShowAllChannels() )
       {
-      m_Image->ShallowCopy(m_MegaImageProcessor.getTimeAllChannels(m_TCoord));
+      m_Image->ShallowCopy(m_ImageProcessor->getTimeAllChannels(m_TCoord));
       }
     else
       {
       int ch = this->m_NavigationDockWidget->GetCurrentChannel();
-      m_Image->ShallowCopy(m_MegaImageProcessor.getImage(m_TCoord, ch));
+      m_Image->ShallowCopy(m_ImageProcessor->getImage(m_TCoord, ch));
       }
 
     // CONFIGURE LUT
@@ -1511,9 +1519,9 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
     }
   else
     {
-    unsigned int* boundsChannel = m_MegaImageProcessor.getBoundsChannel();
+    unsigned int* boundsChannel = m_ImageProcessor->getBoundsChannel();
     m_Image->ShallowCopy(
-          m_MegaImageProcessor.getImage(m_TCoord, boundsChannel[0]));
+          m_ImageProcessor->getImage(m_TCoord, boundsChannel[0]));
 
     // CONFIGURE LUT
     this->findChild<QAction*>("LUT")->setEnabled(true);
@@ -1529,7 +1537,7 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels(int iChannel,
                                                              int iPreviousT)
 {
 
-  m_MegaImageProcessor.setTimePoint(m_TCoord);
+  m_ImageProcessor->setTimePoint(m_TCoord);
   /*
   int min_t = m_MegaCaptureReader->GetMinTimePoint();
   int max_t = m_MegaCaptureReader->GetMaxTimePoint();
@@ -1770,7 +1778,7 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
     if ( !m_FileList.empty() )
       {
       unsigned int t = static_cast< unsigned int >( iTimePoint );
-      unsigned int* time = m_MegaImageProcessor.getBoundsTime();
+      unsigned int* time = m_ImageProcessor->getBoundsTime();
       if ( ( t < time[0] ) || ( t > time[1] ) )
         {
         return;
@@ -2031,12 +2039,12 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
     // Requiered if we modified the window level
     /** \todo Nicolas-Find a better solution */
     m_ImageView->ResetWindowLevel();
-    m_Image->ShallowCopy(m_MegaImageProcessor.getTimeAllChannels(m_TCoord));
+    m_Image->ShallowCopy(m_ImageProcessor->getTimeAllChannels(m_TCoord));
     }
   else
     {
     int ch = this->m_NavigationDockWidget->GetCurrentChannel();
-    m_Image->ShallowCopy(m_MegaImageProcessor.getImage(m_TCoord, ch));
+    m_Image->ShallowCopy(m_ImageProcessor->getImage(m_TCoord, ch));
     }
 
   Update();
@@ -2056,13 +2064,13 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
 void
 QGoTabImageView3DwT::ShowOneChannel(int iChannel)
 {
-  if ( m_MegaImageProcessor.getImage(m_TCoord, iChannel) )
+  if ( m_ImageProcessor->getImage(m_TCoord, iChannel) )
     {
     // Update lut
     this->findChild<QAction*>("LUT")->setEnabled(true);
     this->findChild<QAction*>("ScalarBar")->setEnabled(true);
 
-    m_Image->ShallowCopy(m_MegaImageProcessor.getImage(m_TCoord, iChannel));
+    m_Image->ShallowCopy(m_ImageProcessor->getImage(m_TCoord, iChannel));
     Update();
     }
 }
@@ -2089,7 +2097,7 @@ QGoTabImageView3DwT::ModeChanged(int iChannel)
 void
 QGoTabImageView3DwT::StepChanged(int iStep)
 {
-  m_MegaImageProcessor.setDopplerStep(iStep);
+  m_ImageProcessor->setDopplerStep(iStep);
 
   SetTimePointWithMegaCaptureTimeChannels(m_ChannelOfInterest);
   Update();
@@ -2423,7 +2431,7 @@ int QGoTabImageView3DwT::GetTimePoint() const
 //-------------------------------------------------------------------------
 int QGoTabImageView3DwT::GetTimeInterval() const
 {
-  return m_MegaImageProcessor.getTimeInterval();
+  return m_ImageProcessor->getTimeInterval();
 }
 
 //-------------------------------------------------------------------------
@@ -2592,8 +2600,8 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView,
 {
   if ( !this->m_ChannelClassicMode )
     {
-    iTShift = iTShift * m_MegaImageProcessor.getDopplerStep();
-    unsigned int* time = m_MegaImageProcessor.getBoundsTime();
+    iTShift = iTShift * m_ImageProcessor->getDopplerStep();
+    unsigned int* time = m_ImageProcessor->getBoundsTime();
 
     if ( iTCoord + iTShift < time[0] )
       {
@@ -2726,14 +2734,14 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
 
   if( this->m_ChannelClassicMode )
     {
-    for ( size_t i = 0; i < m_MegaImageProcessor.getNumberOfChannels(); i++ )
+    for ( size_t i = 0; i < m_ImageProcessor->getNumberOfChannels(); i++ )
       {
       vtkSmartPointer< vtkImageExport > vtk_exporter =
         vtkSmartPointer< vtkImageExport >::New();
       itk::VTKImageImport< ImageType >::Pointer itk_importer =
         itk::VTKImageImport< ImageType >::New();
 
-      vtk_exporter->SetInput(m_MegaImageProcessor.getImageBW(m_TCoord, i));
+      vtk_exporter->SetInput(m_ImageProcessor->getImageBW(m_TCoord, i));
 
       ConnectPipelines< vtkImageExport, itk::VTKImageImport< ImageType >::Pointer >(
         vtk_exporter, itk_importer);
@@ -2763,16 +2771,16 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
     }
   else
     {
-    unsigned int* boundChannel = m_MegaImageProcessor.getBoundsChannel();
-    unsigned int NumberOfChannels = m_MegaImageProcessor.getNumberOfChannels();
+    unsigned int* boundChannel = m_ImageProcessor->getBoundsChannel();
+    unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
 
     std::vector< vtkSmartPointer< vtkImageData > > temp_image( NumberOfChannels );
 
-    m_MegaImageProcessor.setTimePoint( iTCoord );
+    m_ImageProcessor->setTimePoint( iTCoord );
 
     for ( unsigned int i = boundChannel[0]; i <= boundChannel[1]; i++ )
       {
-      temp_image[i] = m_MegaImageProcessor.getImageBW(iTCoord, i );
+      temp_image[i] = m_ImageProcessor->getImageBW(iTCoord, i );
 
       vtkSmartPointer< vtkImageExport > vtk_exporter =
         vtkSmartPointer< vtkImageExport >::New();

@@ -49,10 +49,11 @@ SET( QGOIO_SRC
   GoDBImport.cxx
 
   # Mega related files
-  MegaCaptureHeaderReader.cxx
-  GoMegaImageProcessor.cxx
+  GoImage/GoImageProcessor.cxx
+  GoImage/GoMegaImageProcessor.cxx
   itkMegaCaptureImport.cxx
   itkMegaCaptureReader.cxx
+  MegaCaptureHeaderReader.cxx
 
   QueryDataBaseHelper.cxx
   SelectQueryDatabaseHelper.cxx

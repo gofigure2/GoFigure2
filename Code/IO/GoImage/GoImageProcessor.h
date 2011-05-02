@@ -32,8 +32,8 @@
 
 =========================================================================*/
 
-#ifndef GoMegaImageProcessor_H
-#define GoMegaImageProcessor_H
+#ifndef GoImageProcessor_H
+#define GoImageProcessor_H
 
 // Required for dynamic libs on Windows (QGoIOExport)
 #include "QGoIOConfigure.h"
@@ -106,35 +106,35 @@ typedef multi_index_container<
 */
 
 /**
- * \struct GoMegaImageProcessor
+ * \struct GoImageProcessor
  * \brief  Interface between MegaReader and vtkImageData
  * \ingroup Mega
  */
-class QGOIO_EXPORT GoMegaImageProcessor
+class QGOIO_EXPORT GoImageProcessor
 {
 public:
 
   /** Constructor */
-  GoMegaImageProcessor();
+  GoImageProcessor();
 
   /** Constructor */
-  GoMegaImageProcessor(itk::MegaCaptureReader::Pointer iReader);
+  GoImageProcessor(itk::MegaCaptureReader::Pointer iReader);
 
   /** Constructor */
-  GoMegaImageProcessor( const GoMegaImageProcessor& iE );
+  GoImageProcessor( const GoImageProcessor& iE );
 
   /** Destructor */
-  ~GoMegaImageProcessor();
+  ~GoImageProcessor();
   
   /** Printing one element. std::cout << element << std::endl; */
   friend std::ostream & operator<<
-    (std::ostream & os, const GoMegaImageProcessor & c)
+    (std::ostream & os, const GoImageProcessor & c)
   {
     //os << "TraceID " << c.TraceID << std::endl;
     return os;
   }
 
-    void setMegaReader(itk::MegaCaptureReader::Pointer iReader);
+    void setReader(itk::MegaCaptureReader::Pointer iReader);
 
   /*
    * \brief create a lookuptable (LUT) given r, g, b and a.
@@ -267,16 +267,16 @@ private:
   vtkSmartPointer<vtkImageData> colorImage(vtkSmartPointer<vtkImageData> iImage,
                                            vtkSmartPointer<vtkLookupTable> iLUT);
 
-  itk::MegaCaptureReader::Pointer        m_MegaImageReader;
-  GoMegaImageStructureMultiIndexContainer  m_MegaImageContainer;
-  vtkSmartPointer<vtkImageData>          m_Output;
+  itk::MegaCaptureReader::Pointer         m_MegaImageReader;
+  GoMegaImageStructureMultiIndexContainer m_MegaImageContainer;
+  vtkSmartPointer<vtkImageData>           m_Output;
 
   // Image parameters
   //--------------------
   unsigned int* m_BoundsTime;
   unsigned int* m_BoundsChannel;
-  int* m_Extent;
-  unsigned int m_TimeInterval;
+  int*          m_Extent;
+  unsigned int  m_TimeInterval;
   //--------------------
 
   // Doppler view parameters
@@ -284,6 +284,24 @@ private:
   unsigned int m_DopplerStep;
   unsigned int m_NumberOfImages;
   //--------------------
+
+  // overload = operator
+  GoImageProcessor& operator=(const GoImageProcessor &rhs)
+  {
+    // Only do assignment if RHS is a different object from this.
+    if (this != &rhs)
+      {
+      this->m_MegaImageReader = rhs.m_MegaImageReader;
+      this->m_MegaImageContainer = rhs.m_MegaImageContainer;
+      this->m_BoundsTime = rhs.m_BoundsTime;
+      this->m_BoundsChannel = rhs.m_BoundsChannel;
+      this->m_Extent = rhs.m_Extent;
+      this->m_TimeInterval = rhs.m_TimeInterval;
+      this->m_DopplerStep = rhs.m_DopplerStep;
+      }
+    return *this;
+  }
+
 };
 
-#endif // GoMegaImageProcessor_H
+#endif // GoImageProcessor_H
