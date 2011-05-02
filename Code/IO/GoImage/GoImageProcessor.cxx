@@ -45,36 +45,20 @@
 #include "VisualizePolydataHelper.h"
 
 //--------------------------------------------------------------------------
-GoImageProcessor::GoImageProcessor():m_MegaImageReader(NULL), m_Output(NULL),
+GoImageProcessor::GoImageProcessor():m_Output(NULL),
   m_BoundsTime(NULL), m_BoundsChannel(NULL), m_Extent(NULL), m_DopplerStep(1),
   m_NumberOfImages(3)
 {
-  m_MegaImageReader = itk::MegaCaptureReader::New();
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-GoImageProcessor::GoImageProcessor(itk::MegaCaptureReader::Pointer iReader):
-  m_MegaImageReader(iReader), m_Output(NULL), m_BoundsTime(NULL),
-  m_BoundsChannel(NULL), m_Extent(NULL), m_DopplerStep(1), m_NumberOfImages(3)
-{
-  //Create the new MegaImageStructure
-  // with the first time point and all the channels
-  unsigned int time = m_MegaImageReader->GetMinTimePoint();
-  setTimePoint(time);
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 GoImageProcessor::GoImageProcessor(const GoImageProcessor & iE):
-  m_MegaImageReader(iE.m_MegaImageReader),
   m_MegaImageContainer(iE.m_MegaImageContainer), m_Output(iE.m_Output),
   m_BoundsTime(iE.m_BoundsTime), m_BoundsChannel(iE.m_BoundsChannel),
   m_Extent(iE.m_Extent), m_DopplerStep(iE.m_DopplerStep),
   m_NumberOfImages(iE.m_NumberOfImages)
 {
-  unsigned int time = m_MegaImageReader->GetMinTimePoint();
-  setTimePoint(time);
 }
 //--------------------------------------------------------------------------
 
@@ -99,38 +83,6 @@ GoImageProcessor::
     delete[] m_Extent;
     m_Extent = NULL;
     }
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void
-GoImageProcessor::
-setReader(itk::MegaCaptureReader::Pointer iReader)
-{
-  m_MegaImageReader = iReader;
-
-  std::cout << "init parameters" << std::endl;
-
-  // update general parameters
-  //--------------------
-  // todo Nicolas- Create a method for that...
-  m_BoundsTime = new unsigned int[2];
-  m_BoundsTime[0] = m_MegaImageReader->GetMinTimePoint();
-  m_BoundsTime[1] = m_MegaImageReader->GetMaxTimePoint();
-  m_BoundsChannel = new unsigned int[2];
-  m_BoundsChannel[0] = m_MegaImageReader->GetMinChannel();
-  m_BoundsChannel[1] = m_MegaImageReader->GetMaxChannel();
-  m_Extent = new int[6];
-  (m_MegaImageReader->GetImage(m_BoundsChannel[0], m_BoundsTime[0]))->
-      GetExtent(m_Extent);
-
-  m_TimeInterval = m_MegaImageReader->GetTimeInterval();
-
-  //--------------------
-
-  unsigned int time = m_MegaImageReader->GetMinTimePoint();
-
-  setTimePoint(time);
 }
 //--------------------------------------------------------------------------
 
@@ -330,97 +282,6 @@ getChannelAllTimes(const unsigned int& iChannel)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void
-GoImageProcessor::
-setTimePoint(const unsigned int& iTime)
-{
-  //check if time point exists
-  if(iTime >= m_BoundsTime[0] && iTime <= m_BoundsTime[1])
-    {
-    m_MegaImageReader->SetTimePoint(iTime);
-    m_MegaImageReader->Update();
-    m_MegaImageContainer.clear();
-    }
-  else
-    {
-    return;
-    }
-
-  // update the container
-  // Get Number of channels from reader
-  int numberOfChannels = getNumberOfChannels();
-
-  while(numberOfChannels>0)
-    {
-    --numberOfChannels;
-
-    // Get useful information from the reader
-    // Get Image
-    vtkSmartPointer<vtkImageData> image =
-        m_MegaImageReader->GetOutput(numberOfChannels);
-
-    // Get Color
-    std::vector<std::vector<int> >channelColor =
-        m_MegaImageReader->GetChannelColor();
-
-
-    double random1 = channelColor[numberOfChannels][0];
-    double value1 = random1/255;
-
-    double random2 = channelColor[numberOfChannels][1];
-    double value2 = random2/255;
-
-    double random3 = channelColor[numberOfChannels][2];
-    double value3 = random3/255;
-
-    std::vector<double> color;
-    color.push_back(value1);
-    color.push_back(value2);
-    color.push_back(value3);
-    color.push_back(1);
-
-    // Create LUT
-    vtkSmartPointer<vtkLookupTable> lut = createLUT(color[0],
-                                                    color[1],
-                                                    color[2],
-                                                    color[3]);
-    // set up range
-    lut->SetRange(image->GetScalarRange());
-    lut->Build();
-
-    // Update the MegaImageStructure
-    // image, LUT, channel, time point
-    m_MegaImageContainer.insert(GoMegaImageStructure(iTime,
-                                                   numberOfChannels,
-                                                   lut,
-                                                   image,
-                                                   color));
-    }
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void
-GoImageProcessor::
-setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
-           const unsigned int& iPrevious)
-{
-  //check if time point exists
-  if(iTime >= m_BoundsTime[0] && iTime <= m_BoundsTime[1])
-    {
-    m_MegaImageReader->SetTimePoint(iTime);
-    m_MegaImageReader->Update();
-    m_MegaImageContainer.clear();
-    }
-  else
-    {
-    return;
-    }
-
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
 unsigned int*
 GoImageProcessor::
 getBoundsTime()
@@ -470,7 +331,7 @@ unsigned int
 GoImageProcessor::
 getTimeInterval() const
 {
-  return m_MegaImageReader->GetTimeInterval();
+  return m_TimeInterval;
 }
 //--------------------------------------------------------------------------
 

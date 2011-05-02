@@ -41,6 +41,9 @@
 // include project
 #include "GoImageProcessor.h"
 
+// external includes
+#include "vtkLSMReader.h"
+
 /**
 \defgroup Mega Mega
 */
@@ -53,7 +56,15 @@
 class QGOIO_EXPORT GoLSMImageProcessor:public GoImageProcessor
 {
 public:
+  void setReader(vtkLSMReader* iReader){}
 
+  virtual void setTimePoint(const unsigned int& iTime);
+
+  virtual void setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
+                  const unsigned int& iPrevious);
+
+private:
+  vtkLSMReader *m_Reader;
 };
 
 #endif // GoLSMImageProcessor_H

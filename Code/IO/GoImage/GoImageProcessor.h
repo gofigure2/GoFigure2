@@ -48,7 +48,6 @@
 
 // include project
 #include "GoMegaImageStructure.h"
-#include "itkMegaCaptureReader.h"
 
 // external include
 class vtkLookupTable;
@@ -118,9 +117,6 @@ public:
   GoImageProcessor();
 
   /** Constructor */
-  GoImageProcessor(itk::MegaCaptureReader::Pointer iReader);
-
-  /** Constructor */
   GoImageProcessor( const GoImageProcessor& iE );
 
   /** Destructor */
@@ -134,7 +130,7 @@ public:
     return os;
   }
 
-    void setReader(itk::MegaCaptureReader::Pointer iReader);
+  //virtual void setReader() = 0;
 
   /*
    * \brief create a lookuptable (LUT) given r, g, b and a.
@@ -174,7 +170,7 @@ public:
    * GoMegaImageStructure
    * \param[in] iTime requested time point
    */
-  void setTimePoint(const unsigned int& iTime);
+  virtual void setTimePoint(const unsigned int& iTime) = 0;
 
   /*
    * \brief load all time points of the given channel into the
@@ -186,8 +182,9 @@ public:
    * \note need to store parameters if we want to go through volume
   * efficiently (not reload everything all the time)
    */
-  void setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
-                  const unsigned int& iPrevious);
+  virtual void setDoppler(const unsigned int& iChannel,
+                          const unsigned int& iTime,
+                          const unsigned int& iPrevious) = 0;
 
   /*
    * \brief get single channel image given time point and channel from the
@@ -254,10 +251,7 @@ public:
   unsigned int getDopplerStep();
   void setDopplerStep(unsigned int iStep);
 
-private:
-  // public or private..?
-  void update();
-
+protected:
   /*
    * \brief Color an image given the original image and a lookuptable (LUT)
    * \param[in] iImage image to be colored
@@ -267,7 +261,6 @@ private:
   vtkSmartPointer<vtkImageData> colorImage(vtkSmartPointer<vtkImageData> iImage,
                                            vtkSmartPointer<vtkLookupTable> iLUT);
 
-  itk::MegaCaptureReader::Pointer         m_MegaImageReader;
   GoMegaImageStructureMultiIndexContainer m_MegaImageContainer;
   vtkSmartPointer<vtkImageData>           m_Output;
 
@@ -285,13 +278,16 @@ private:
   unsigned int m_NumberOfImages;
   //--------------------
 
+private:
+  // public or private..?
+  void update();
+
   // overload = operator
   GoImageProcessor& operator=(const GoImageProcessor &rhs)
   {
     // Only do assignment if RHS is a different object from this.
     if (this != &rhs)
       {
-      this->m_MegaImageReader = rhs.m_MegaImageReader;
       this->m_MegaImageContainer = rhs.m_MegaImageContainer;
       this->m_BoundsTime = rhs.m_BoundsTime;
       this->m_BoundsChannel = rhs.m_BoundsChannel;

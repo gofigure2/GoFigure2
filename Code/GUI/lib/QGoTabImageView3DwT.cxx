@@ -112,7 +112,7 @@
 
 //
 #include "GoMegaImageProcessor.h"
-//#include "GoLSMImageProcessor.h"
+#include "GoLSMImageProcessor.h"
 
 // TESTS
 #include "vtkPolyDataWriter.h"
@@ -1342,6 +1342,11 @@ QGoTabImageView3DwT::SetLSMReader(vtkLSMReader *iReader, const int & iTimePoint)
 
     m_LSMReader[0]->Update();
     }
+  GoLSMImageProcessor* processor = new GoLSMImageProcessor;
+  processor->setReader(iReader);
+  m_ImageProcessor = processor;
+
+  UpdateWidgetsFromImageProcessor(iTimePoint);
 }
 
 //-------------------------------------------------------------------------
@@ -1365,11 +1370,19 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
   m_MegaCaptureReader->SetTimePoint(iTimePoint);
   m_MegaCaptureReader->Update();
 
-  //GoMegaImageProcessor* processor = new GoMegaImageProcessor;
-  m_ImageProcessor = new GoMegaImageProcessor;
-  m_ImageProcessor->setReader(m_MegaCaptureReader);
+  GoMegaImageProcessor* processor = new GoMegaImageProcessor;
+  processor->setReader(m_MegaCaptureReader);
+  m_ImageProcessor = processor;
 
+  UpdateWidgetsFromImageProcessor(iTimePoint);
+}
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+UpdateWidgetsFromImageProcessor(const unsigned int & iTimePoint)
+{
   unsigned int*  boundTime    = m_ImageProcessor->getBoundsTime();
   unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
   int* extent = m_ImageProcessor->getExtent();
@@ -1426,7 +1439,6 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
   m_VideoRecorderWidget->SetTMinAndMax(boundTime[0], boundTime[1]);
 #endif /* ENABLEVIDEORECORD */
 }
-
 //-------------------------------------------------------------------------
 
 //#########################################################################
