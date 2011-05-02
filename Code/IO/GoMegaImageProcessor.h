@@ -202,6 +202,25 @@ public:
   vtkSmartPointer<vtkImageData> getImageBW(const unsigned int& iTime,
                                            const unsigned int& iChannel);
 
+  template< class PixelType, unsigned int VImageDimension >
+  typename itk::Image< PixelType, VImageDimension >::Pointer
+  getImageITK(const unsigned int& iTime,
+              const unsigned int& iChannel)
+  {
+  GoMegaImageStructureMultiIndexContainer::index<Channel>::type::iterator it =
+      m_MegaImageContainer.get< Channel >().find(iChannel);
+
+    while(it!=m_MegaImageContainer.get< Channel >().end())
+      {
+      if(it->Time==iTime)
+        {
+        return it->Convert2ITK<PixelType, VImageDimension>();
+        }
+      ++it;
+      }
+    return NULL;
+  }
+
   /*
    * \brief get all channels image given a time point. Will create the new
    * image from the structure.

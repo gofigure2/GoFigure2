@@ -44,6 +44,12 @@
 #include "vtkLookupTable.h"
 #include "vtkImageData.h"
 
+// convert VTK to ITK
+#include "itkImage.h"
+#include "itkVTKImageImport.h"
+#include "vtkImageExport.h"
+#include "vtkitkAdaptor.h"
+
 /**
 \defgroup Mega Mega
 */
@@ -76,6 +82,42 @@ struct QGOIO_EXPORT GoMegaImageStructure
    {
      LUT = iLUT;
    }
+
+   /*
+     * \brief Convert a vtkImage to a itkImage. If we call after "ExtractROI",
+     * the dimension should be 3 all the time.
+     * (Even if we extract a2D region from a 3d image)
+     * \tparam PixelType type of pixel (unsigned char, etc.)
+     * \tparam VImageDimension dimension of the image (2 or 3)
+     * \param[in] iInput Pointer to a vtkImageData
+     * \return Pointer to an itkImage
+     */
+    template< class PixelType, unsigned int VImageDimension >
+    typename itk::Image< PixelType, VImageDimension >::Pointer
+    Convert2ITK()
+    {
+      //Export VTK image to ITK
+      vtkSmartPointer<vtkImageExport> exporter =
+          vtkSmartPointer<vtkImageExport>::New();
+      exporter->SetInput(Image);
+      exporter->Update();
+
+      // ImageType
+      typedef itk::Image< PixelType, VImageDimension > ImageType;
+      // Import VTK Image to ITK
+      typedef itk::VTKImageImport< ImageType >  ImageImportType;
+      typedef typename ImageImportType::Pointer ImageImportPointer;
+      ImageImportPointer importer = ImageImportType::New();
+
+      ConnectPipelines< vtkImageExport, ImageImportPointer >(
+        exporter,
+        importer);
+
+      typename ImageType::Pointer itkImage = importer->GetOutput();
+      itkImage->DisconnectPipeline();
+
+      return itkImage;
+    }
 
     friend std::ostream& operator<<(std::ostream& os,const GoMegaImageStructure& e)
     {
