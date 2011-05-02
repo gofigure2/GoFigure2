@@ -444,12 +444,12 @@ protected:
   \param[in] iDatabaseConnector connection to the database
   \return QColor with the values corresponding to the color values of the iTraceRow
   */
-  template< typename T >
+  /*template< typename T >
   QColor GetQColorFromTraceRow(T iTraceRow, vtkMySQLDatabase *iDatabaseConnector)
   {
     GoDBColorRow ColorRow;
 
-    ColorRow.SetValuesForSpecificID(iTraceRow.GetMapValue<int>("ColorID"), 
+    ColorRow.SetValuesForSpecificID(iTraceRow.GetMapValue<int>("ColorID"),
                                     iDatabaseConnector);
     QColor Color( ColorRow.GetMapValue<int>("Red"),
                   ColorRow.GetMapValue<int>("Green"),
@@ -457,7 +457,7 @@ protected:
                   ColorRow.GetMapValue<int>("Alpha") );
     return Color;
   }
-
+*/
   /**
   \brief set the color of the traceRow according to the iColor
   \param[in,out] ioRow traceRow with the color to be set up

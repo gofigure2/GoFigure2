@@ -61,7 +61,7 @@ struct QGOIO_EXPORT GoFigureLineageAttributes
     NumberOfDivisions(iE.NumberOfDivisions), NumberOfLeaves(iE.NumberOfLeaves)
   {}
 
-  GoFigureLineageAttributes& operator = ( GoFigureLineageAttributes & iE )
+  GoFigureLineageAttributes& operator = ( const GoFigureLineageAttributes & iE )
     {
     this->MaxDepth = iE.MaxDepth;
     this->MinDepth = iE.MinDepth;
