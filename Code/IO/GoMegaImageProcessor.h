@@ -82,7 +82,6 @@ using namespace boost::multi_index;
 
 /* tags for accessing the corresponding indices of GoMegaImageStructure */
 
-struct ID{};
 struct Time{};
 struct Channel{};
 
@@ -255,7 +254,6 @@ private:
 
   // Image parameters
   //--------------------
-  std::vector< std::vector< int > > m_ChannelColor;
   unsigned int* m_BoundsTime;
   unsigned int* m_BoundsChannel;
   int* m_Extent;

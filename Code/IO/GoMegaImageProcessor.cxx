@@ -123,7 +123,7 @@ setMegaReader(itk::MegaCaptureReader::Pointer iReader)
   m_Extent = new int[6];
   (m_MegaImageReader->GetImage(m_BoundsChannel[0], m_BoundsTime[0]))->
       GetExtent(m_Extent);
-  m_ChannelColor = m_MegaImageReader->GetChannelColor();
+
   m_TimeInterval = m_MegaImageReader->GetTimeInterval();
 
   //--------------------
@@ -359,21 +359,31 @@ setTimePoint(const unsigned int& iTime)
     vtkSmartPointer<vtkImageData> image =
         m_MegaImageReader->GetOutput(numberOfChannels);
 
-    // Create LUT
     // Get Color
-    double random1 = m_ChannelColor[numberOfChannels][0];
+    std::vector<std::vector<int> >channelColor =
+        m_MegaImageReader->GetChannelColor();
+
+
+    double random1 = channelColor[numberOfChannels][0];
     double value1 = random1/255;
 
-    double random2 = m_ChannelColor[numberOfChannels][1];
+    double random2 = channelColor[numberOfChannels][1];
     double value2 = random2/255;
 
-    double random3 = m_ChannelColor[numberOfChannels][2];
+    double random3 = channelColor[numberOfChannels][2];
     double value3 = random3/255;
 
-    vtkSmartPointer<vtkLookupTable> lut = createLUT(value1,
-                                                    value2,
-                                                    value3,
-                                                    1);
+    std::vector<double> color;
+    color.push_back(value1);
+    color.push_back(value2);
+    color.push_back(value3);
+    color.push_back(1);
+
+    // Create LUT
+    vtkSmartPointer<vtkLookupTable> lut = createLUT(color[0],
+                                                    color[1],
+                                                    color[2],
+                                                    color[3]);
     // set up range
     lut->SetRange(image->GetScalarRange());
     lut->Build();
@@ -383,7 +393,8 @@ setTimePoint(const unsigned int& iTime)
     m_MegaImageContainer.insert(GoMegaImageStructure(iTime,
                                                    numberOfChannels,
                                                    lut,
-                                                   image));
+                                                   image,
+                                                   color));
     }
 }
 //--------------------------------------------------------------------------

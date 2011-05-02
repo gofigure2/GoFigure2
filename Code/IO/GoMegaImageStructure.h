@@ -59,12 +59,14 @@ struct QGOIO_EXPORT GoMegaImageStructure
     unsigned int                    Channel;
     vtkSmartPointer<vtkLookupTable> LUT;
     vtkSmartPointer<vtkImageData>   Image;
+    std::vector< double >              Color;
 
     /** Constructor */
     GoMegaImageStructure(unsigned int iTime, unsigned int iChannel,
                        vtkSmartPointer<vtkLookupTable> iLUT,
-                       vtkSmartPointer<vtkImageData> iImage):
-                       Time(iTime), Channel(iChannel), LUT(iLUT)
+                       vtkSmartPointer<vtkImageData> iImage,
+                       std::vector< double > iColor):
+                       Time(iTime), Channel(iChannel), LUT(iLUT), Color(iColor)
     {
     Image = iImage;
     }
