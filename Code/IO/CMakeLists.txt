@@ -51,6 +51,7 @@ SET( QGOIO_SRC
   # Mega related files
   GoImage/GoImageProcessor.cxx
   GoImage/GoMegaImageProcessor.cxx
+  GoImage/GoLSMImageProcessor.cxx
   itkMegaCaptureImport.cxx
   itkMegaCaptureReader.cxx
   MegaCaptureHeaderReader.cxx

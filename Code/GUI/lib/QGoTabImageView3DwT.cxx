@@ -1341,67 +1341,6 @@ QGoTabImageView3DwT::SetLSMReader(vtkLSMReader *iReader, const int & iTimePoint)
       }
 
     m_LSMReader[0]->Update();
-
-    int dim[5];
-    m_LSMReader[0]->GetDimensions(dim);
-
-    int NumberOfChannels = m_LSMReader[0]->GetNumberOfChannels();
-
-    // Initialize the widgets with the good number of channels
-    // it will update the size of the related combobox
-    m_NavigationDockWidget->SetNumberOfChannels(NumberOfChannels);
-    m_ContourSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
-    m_MeshSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
-
-    m_ChannelNames.resize( NumberOfChannels );
-
-    if ( NumberOfChannels > 1 )
-      {
-      m_NavigationDockWidget->SetChannel(0);
-      m_ChannelNames[0] = m_NavigationDockWidget->GetChannelName( 0 );
-
-      m_ContourSegmentationDockWidget->SetChannel( 0, m_ChannelNames[0] );
-      m_MeshSegmentationDockWidget->SetChannel( 0 , m_ChannelNames[0] );
-      m_InternalImages.resize(NumberOfChannels);
-
-      for ( int i = 1; i < NumberOfChannels; i++ )
-        {
-        m_NavigationDockWidget->SetChannel(i);
-        m_ChannelNames[i] = m_NavigationDockWidget->GetChannelName( i );
-
-        m_ContourSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
-        m_MeshSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
-
-        m_LSMReader.push_back( vtkSmartPointer< vtkLSMReader >::New() );
-        m_LSMReader.back()->SetFileName( m_LSMReader[0]->GetFileName() );
-        m_LSMReader.back()->SetUpdateChannel(i);
-        }
-      }
-
-    m_NavigationDockWidget->SetXMinimumAndMaximum(0, dim[0] - 1);
-    m_NavigationDockWidget->SetXSlice( ( dim[0] - 1 ) / 2 );
-
-    m_NavigationDockWidget->SetYMinimumAndMaximum(0, dim[1] - 1);
-    m_NavigationDockWidget->SetYSlice( ( dim[1] - 1 ) / 2 );
-
-    m_NavigationDockWidget->SetZMinimumAndMaximum(0, dim[2] - 1);
-    m_NavigationDockWidget->SetZSlice( ( dim[2] - 1 ) / 2 );
-
-    m_NavigationDockWidget->SetTMinimumAndMaximum(0, dim[3] - 1);
-    m_NavigationDockWidget->SetTSlice(iTimePoint);
-
-
-    if ( m_TCoord != iTimePoint )
-      {
-      SetTimePoint(iTimePoint);
-      }
-
-#if defined( ENABLEFFMPEG ) || defined( ENABLEAVI )
-    m_VideoRecorderWidget->SetXMinAndMax(0, dim[0] - 1);
-    m_VideoRecorderWidget->SetYMinAndMax(0, dim[1] - 1);
-    m_VideoRecorderWidget->SetZMinAndMax(0, dim[2] - 1);
-    m_VideoRecorderWidget->SetTMinAndMax(0, dim[3] - 1);
-#endif /* ENABLEVIDEORECORD */
     }
 }
 
@@ -1429,6 +1368,8 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
   //GoMegaImageProcessor* processor = new GoMegaImageProcessor;
   m_ImageProcessor = new GoMegaImageProcessor;
   m_ImageProcessor->setReader(m_MegaCaptureReader);
+
+
   unsigned int*  boundTime    = m_ImageProcessor->getBoundsTime();
   unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
   int* extent = m_ImageProcessor->getExtent();
