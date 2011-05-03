@@ -64,7 +64,7 @@ protected:
             // note this will work only in 3D, so we can remove the template
             // parameter on the image dimension
              //unsigned int VImageDimension >
-  vtkPolyData * ApplyLevelSetFilter(const std::vector<double>& iCenter,
+  vtkPolyData * ApplyWaterShedFilter(const std::vector<double>& iCenter,
   std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel)
     {
@@ -109,7 +109,7 @@ protected:
           nb_iterations,
           curvature_weight );
 
-    typename QGoFilterChanAndVese::Output3DPointer
+    typename QGoFilterWaterShed::Output3DPointer
         ItkOutPut = Filter.GetOutput3D();
 
     // Here it would be better if the mesh extraction would be performed directly

@@ -53,7 +53,7 @@ std::vector<vtkPolyData*> QGoMeshWaterShedAlgo::ApplyAlgo(
   std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel)
 {
-  QGoFilterWatershed WatershedFilter;
+  /*QGoFilterWatershed WatershedFilter;
 
   std::vector<vtkPolyData*> NewMeshes =
     WatershedFilter.ApplyFilter3D(this->m_Radius->GetValue(),
@@ -61,8 +61,43 @@ std::vector<vtkPolyData*> QGoMeshWaterShedAlgo::ApplyAlgo(
     this->m_CorrThres->GetValue(),this->m_Alpha->GetValue(),this->m_Beta->GetValue(),
     this->m_Seeds, iImages, iChannel);
 
-  return NewMeshes;
-}
-//-------------------------------------------------------------------------
+  return NewMeshes;*/
 
-//-------------------------------------------------------------------------
+ const int Dimension = 3;
+  std::vector<vtkPolyData*> oNewMeshes = std::vector<vtkPolyData*>();
+
+  if ( this->m_Radius->GetValue() <= 0 )
+    {
+    std::cerr << "Radius should be > 0 " << std::endl;
+    return oNewMeshes;
+    }
+
+  double Center[3];
+  std::vector<double> CenterVect(3);
+
+  // LOOP  FOR EACH SEED
+  for( size_t id = 0; id < this->m_Seeds->size(); id++ )
+    {
+    for ( int i = 0; i < (*this->m_Seeds)[id]->GetNumberOfPoints(); i++ )
+      {
+      (*this->m_Seeds)[id]->GetPoint(i, Center);
+
+      CenterVect[0] = Center[0];
+      CenterVect[1] = Center[1];
+      CenterVect[2] = Center[2];
+
+      vtkPolyData* temp_output =
+          this->ApplyWaterShedFilter< unsigned char >(
+            CenterVect, iImages, iChannel);
+
+      vtkPolyData* output = vtkPolyData::New();
+      output->DeepCopy( temp_output );
+
+      oNewMeshes.push_back( output );
+
+      temp_output->Delete();
+      }
+    }
+
+  return oNewMeshes;
+}
