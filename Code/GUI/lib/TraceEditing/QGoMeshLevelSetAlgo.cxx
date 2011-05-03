@@ -104,7 +104,6 @@ std::vector<vtkPolyData*> QGoMeshLevelSetAlgo::ApplyAlgo(
       temp_output->Delete();
       }
     }
-   //delete[] Center;
 
   return oNewMeshes;
 }

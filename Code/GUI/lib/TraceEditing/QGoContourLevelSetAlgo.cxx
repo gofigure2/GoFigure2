@@ -75,8 +75,8 @@ std::vector<vtkPolyData*> QGoContourLevelSetAlgo::ApplyAlgo(
       CenterVect[0] = Center[0];
       CenterVect[1] = Center[1];
 
-      oNewContours.push_back(
-        this->ApplyLevelSetFilter<unsigned int, Dimension>(CenterVect, iImages, iChannel) );
+      //oNewContours.push_back(
+      //  this->ApplyLevelSetFilter<unsigned int, Dimension>(CenterVect, iImages, iChannel) );
       }
     }
 
