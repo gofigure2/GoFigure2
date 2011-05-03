@@ -41,9 +41,6 @@
 #include "vtkImageMapToColors.h"
 #include "vtkImageBlend.h"
 
-// debug
-#include "VisualizePolydataHelper.h"
-
 //--------------------------------------------------------------------------
 GoImageProcessor::GoImageProcessor():m_Output(NULL),
   m_BoundsTime(NULL), m_BoundsChannel(NULL), m_Extent(NULL), m_DopplerStep(1),
@@ -141,10 +138,12 @@ getLookuptable(const unsigned int& iChannel, const unsigned int& iTime) const
     {
     if(it->Time==iTime)
       {
+      std::cout << "return sth" << std::endl;
       return it->LUT;
       }
     ++it;
     }
+  std::cout << "return NULL" << std::endl;
   return NULL;
 }
 //--------------------------------------------------------------------------

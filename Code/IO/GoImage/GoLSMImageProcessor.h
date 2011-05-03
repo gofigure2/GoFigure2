@@ -56,7 +56,7 @@
 class QGOIO_EXPORT GoLSMImageProcessor:public GoImageProcessor
 {
 public:
-  void setReader(vtkLSMReader* iReader){}
+  void setReader(vtkLSMReader* iReader);
 
   virtual void setTimePoint(const unsigned int& iTime);
 
@@ -64,7 +64,7 @@ public:
                   const unsigned int& iPrevious);
 
 private:
-  vtkLSMReader *m_Reader;
+  vtkLSMReader *m_LSMReader;
 };
 
 #endif // GoLSMImageProcessor_H

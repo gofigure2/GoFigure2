@@ -36,35 +36,36 @@
 #include "GoLSMImageProcessor.h"
 
 //--------------------------------------------------------------------------
-/*void
+void
 GoLSMImageProcessor::
 setReader(vtkLSMReader* iReader)
 {
-  m_Reader = iReader;
+  m_LSMReader = iReader;
 
-  std::cout << "init parameters" << std::endl;*/
-/*
+  std::cout << "init parameters" << std::endl;
+
   // update general parameters
   //--------------------
-  // todo Nicolas- Create a method for that...
+  int numberOfTimePoints = m_LSMReader->GetNumberOfTimePoints();
   m_BoundsTime = new unsigned int[2];
-  m_BoundsTime[0] = m_MegaImageReader->GetMinTimePoint();
-  m_BoundsTime[1] = m_MegaImageReader->GetMaxTimePoint();
+  m_BoundsTime[0] = 0;
+  m_BoundsTime[1] = numberOfTimePoints -1;
+
+  int numberOfChannels = m_LSMReader->GetNumberOfChannels();
   m_BoundsChannel = new unsigned int[2];
-  m_BoundsChannel[0] = m_MegaImageReader->GetMinChannel();
-  m_BoundsChannel[1] = m_MegaImageReader->GetMaxChannel();
+  m_BoundsChannel[0] = 0;
+  m_BoundsChannel[1] = numberOfChannels -1;
+
   m_Extent = new int[6];
-  (m_MegaImageReader->GetImage(m_BoundsChannel[0], m_BoundsTime[0]))->
+  (m_LSMReader->GetTimePointOutput(m_BoundsChannel[0], m_BoundsTime[0]))->
       GetExtent(m_Extent);
 
-  m_TimeInterval = m_MegaImageReader->GetTimeInterval();
+  m_TimeInterval = m_LSMReader->GetTimeInterval();
 
   //--------------------
 
-  unsigned int time = m_MegaImageReader->GetMinTimePoint();
-
-  setTimePoint(time);*/
-//}
+  setTimePoint(m_BoundsTime[0]);
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -72,11 +73,9 @@ void
 GoLSMImageProcessor::
 setTimePoint(const unsigned int& iTime)
 {
-/*  //check if time point exists
+  //check if time point exists
   if(iTime >= m_BoundsTime[0] && iTime <= m_BoundsTime[1])
     {
-    m_MegaImageReader->SetTimePoint(iTime);
-    m_MegaImageReader->Update();
     m_MegaImageContainer.clear();
     }
   else
@@ -95,20 +94,26 @@ setTimePoint(const unsigned int& iTime)
     // Get useful information from the reader
     // Get Image
     vtkSmartPointer<vtkImageData> image =
-        m_MegaImageReader->GetOutput(numberOfChannels);
+        m_LSMReader->GetTimePointOutput(numberOfChannels, iTime);
 
     // Get Color
-    std::vector<std::vector<int> >channelColor =
-        m_MegaImageReader->GetChannelColor();
+    // vtkGetObjectMacro(ChannelColors, vtkIntArray);
+
+    // int vtkLSMReader::GetChannelColorComponent(int ch, int component)
+    //std::vector<std::vector<int> >channelColor =
+    //    m_MegaImageReader->GetChannelColor();
 
 
-    double random1 = channelColor[numberOfChannels][0];
+    double random1 = m_LSMReader->
+        GetChannelColorComponent(numberOfChannels, 0);//channelColor[numberOfChannels][0];
     double value1 = random1/255;
 
-    double random2 = channelColor[numberOfChannels][1];
+    double random2 = m_LSMReader->
+        GetChannelColorComponent(numberOfChannels, 1);
     double value2 = random2/255;
 
-    double random3 = channelColor[numberOfChannels][2];
+    double random3 = m_LSMReader->
+        GetChannelColorComponent(numberOfChannels, 2);
     double value3 = random3/255;
 
     std::vector<double> color;
@@ -133,7 +138,7 @@ setTimePoint(const unsigned int& iTime)
                                                    lut,
                                                    image,
                                                    color));
-    }*/
+    }
 }
 //--------------------------------------------------------------------------
 
