@@ -1997,10 +1997,9 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
     {
     // Requiered if we modified the window level
     /** \todo Nicolas-Find a better solution */
+    m_ImageView->ResetWindowLevel();
     m_Image->ShallowCopy(m_ImageProcessor->getTimeAllChannels(m_TCoord));
     m_ImageView->SetImage(m_Image);
-    m_ImageView->Update();
-    m_ImageView->SetLookupTable(NULL);
     m_ImageView->Update();
     double* test = m_Image->GetScalarRange();
     std::cout << "scalar range rgb: " << test[0] << " to " << test[1] << std::endl;

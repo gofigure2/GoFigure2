@@ -40,6 +40,9 @@
 #include "vtkMath.h"
 #include "vtkImageMapToColors.h"
 #include "vtkImageBlend.h"
+//update scalar range...
+#include "vtkPointData.h"
+
 
 #include "vtkImageWeightedSum.h"
 #include "vtkImageCast.h"
@@ -244,9 +247,10 @@ getTimeAllChannels(const unsigned int& iTime)
     ++i;
     ++it;
     }
-  blendedImage->GetOutput()->Modified();
+
   blendedImage->Update();
-    blendedImage->GetOutput()->Modified();
+  blendedImage->GetOutput()->GetPointData()->Modified();
+  blendedImage->GetOutput()->Modified();
 
   double* test = blendedImage->GetOutput()->GetScalarRange();
   //blendedImage->GetOutput()->Print(cout);
