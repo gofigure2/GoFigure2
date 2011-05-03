@@ -133,8 +133,8 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_YTileCoord(0),
   m_ZTileCoord(0),
   m_TCoord(-1),
-  m_TraceSettingsToolBar(NULL)
-  //m_TraceWidgetRequiered(false)
+  m_TraceSettingsToolBar(NULL),
+  m_ImageProcessor(NULL)
 {
   m_Image = vtkImageData::New();
   m_Seeds = vtkPoints::New();
@@ -322,6 +322,11 @@ QGoTabImageView3DwT::
     {
     delete m_LineageContainer;
     }
+
+  if(m_ImageProcessor)
+  {
+    delete m_ImageProcessor;
+  }
 }
 
 //-------------------------------------------------------------------------

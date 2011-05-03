@@ -238,13 +238,15 @@ getTimeAllChannels(const unsigned int& iTime)
   vtkIdType i(0);
   while(it!=m_MegaImageContainer.get< Time >().end())
     {
-    blendedImage->SetInput(i, colorImage(it->Image, it->LUT));
+    blendedImage->AddInputConnection(
+          (colorImage(it->Image, it->LUT))->GetProducerPort());
     blendedImage->SetOpacity(i,1/size);
     ++i;
     ++it;
     }
-
+  blendedImage->GetOutput()->Modified();
   blendedImage->Update();
+    blendedImage->GetOutput()->Modified();
 
   double* test = blendedImage->GetOutput()->GetScalarRange();
   //blendedImage->GetOutput()->Print(cout);
