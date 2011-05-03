@@ -55,11 +55,11 @@ class QGOGUILIB_EXPORT QGoFilterChanAndVese : public QGoFilterSemiAutoBase
 public:
   typedef float                   OutputPixelType;
 
-  typedef itk::Image< float, 3 >  Output3DType;
-  typedef Output3DType::Pointer   Output3DPointer;
+  typedef itk::Image< OutputPixelType, 3 >  Output3DType;
+  typedef typename Output3DType::Pointer    Output3DPointer;
 
-  typedef itk::Image< float, 2 >  Output2DType;
-  typedef Output2DType::Pointer   Output2DPointer;
+  typedef itk::Image< OutputPixelType, 2 >  Output2DType;
+  typedef typename Output2DType::Pointer    Output2DPointer;
 
   /** \brief Constructor */
   explicit QGoFilterChanAndVese(QObject *iParent = NULL, int iDimension = 2);
@@ -76,15 +76,16 @@ public:
     std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel);
 
-  template< typename TPixel >
-  void Apply3DFilter(
-    typename itk::Image< TPixel, 3 >::Pointer iITKInput,
+  template< typename TPixel, unsigned int VImageDimension >
+  void ApplyFilter(
+    typename itk::Image< TPixel, VImageDimension >::Pointer iITKInput,
+    typename itk::Image< OutputPixelType, VImageDimension >::Pointer & oITKOutput,
     const std::vector< double >& iCenter,
     const double& iRadius,
     const int& iIterations,
     const int& iCurvature)
   {
-    typedef itk::Image< TPixel, 3 > FeatureImageType;
+    typedef itk::Image< TPixel, VImageDimension > FeatureImageType;
     typedef itk::ChanAndVeseSegmentationFilter< FeatureImageType >
       SegmentationFilterType;
     typedef typename SegmentationFilterType::Pointer SegmentationFilterPointer;
@@ -95,7 +96,7 @@ public:
     // convert center into ITKPointType
     ITKPointType itk_center;
 
-    for( unsigned int dim = 0; dim < 3; dim++ )
+    for( unsigned int dim = 0; dim < VImageDimension; dim++ )
       {
       itk_center[dim] = static_cast< ITKCoordType >( iCenter[dim] );
       }
@@ -107,54 +108,21 @@ public:
     SegmentationFilterPointer filter = SegmentationFilterType::New();
     filter->SetCenter( itk_center );
     filter->SetRadius( itk_radius );
-    filter->SetFeatureImage(iITKInput);
-    filter->SetPreprocess(0);//1);
-    filter->SetNumberOfIterations(iIterations);
-    filter->SetCurvatureWeight(iCurvature);
-    filter->Update();
+    filter->SetFeatureImage( iITKInput );
+    filter->SetPreprocess( 1 );
+    filter->SetNumberOfIterations( iIterations );
+    filter->SetCurvatureWeight( iCurvature );
 
-    typename Output3DType::Pointer resulting_image = filter->GetOutput();
-
-    if( resulting_image.IsNotNull() )
+    try
       {
-      m_Image3D->Graft( resulting_image );
+      filter->Update();
       }
-    else
+    catch (itk::ExceptionObject & e)
       {
-      itkGenericExceptionMacro(
-            <<"ChanAndVeseSegmentationFilter's output is NULL" );
+      std::cerr << "Error: " << e <<std::endl;
       }
-  }
 
-
-  Output3DType::Pointer GetOutput3D()
-    {
-    return m_Image3D;
-    }
-
-
-
-  //template<class PixelType, unsigned int VImageDimension>
-  template<unsigned int VImageDimension>
-  typename itk::Image< float, VImageDimension >::Pointer
-    Apply2DFilter(
-    typename itk::Image< unsigned char, VImageDimension >::Pointer iITKInput,
-    int iIterations, int iCurvature)
-  {
-    typedef itk::Image< unsigned char, VImageDimension > FeatureImageType;
-    typedef itk::ChanAndVeseSegmentationFilter< FeatureImageType >
-      SegmentationFilterType;
-
-    typename SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
-
-    filter->SetFeatureImage(iITKInput);
-    filter->SetPreprocess(1);
-
-    filter->SetNumberOfIterations(iIterations);
-    filter->SetCurvatureWeight(iCurvature);
-    filter->Update();
-
-    return filter->GetOutput();
+    oITKOutput->Graft( filter->GetOutput() );
   }
 
   std::vector<std::vector<vtkPolyData*> > ApplyFilterSetOf2D(
@@ -179,7 +147,5 @@ private:
   int m_Curvature;
   int m_Dimension;
 
-  Output3DType::Pointer m_Image3D;
-  Output2DType::Pointer m_Image2D;
 };
 #endif

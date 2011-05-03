@@ -63,35 +63,30 @@ public:
 
 protected:
 
-  template < class TPixel >
-            // note this will work only in 3D, so we can remove the template
-            // parameter on the image dimension
-             //unsigned int VImageDimension >
+  template < class TPixel, unsigned int VImageDimension >
   vtkPolyData * ApplyLevelSetFilter(const std::vector<double>& iCenter,
   std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel)
     {
-    assert( iCenter.size() == 3);
-
-    const unsigned int ImageDimension = 3;
+    assert( iCenter.size() == VImageDimension );
 
     typedef TPixel PixelType;
 
-    typedef itk::Image< PixelType, ImageDimension >  ImageType;
+    typedef itk::Image< PixelType, VImageDimension >  ImageType;
     typedef typename ImageType::Pointer               ImagePointer;
 
     // Since the pipeline is in ITK, first let's convert the image into ITK
     ImagePointer ItkInput =
-        this->ConvertVTK2ITK< PixelType, ImageDimension>(
+        this->ConvertVTK2ITK< PixelType, VImageDimension>(
           ( *iImages )[iChannel] );
 
 
     // let's compute the bounds of the region of interest
     double radius = this->m_Radius->GetValue();
 
-    std::vector< double > bounds( 2 * ImageDimension, 0. );
+    std::vector< double > bounds( 2 * VImageDimension, 0. );
     unsigned int k = 0;
-    for( unsigned int dim = 0; dim < ImageDimension; dim++ )
+    for( unsigned int dim = 0; dim < VImageDimension; dim++ )
       {
       bounds[k++] = iCenter[dim] - 2. * radius;
       bounds[k++] = iCenter[dim] + 2. * radius;
@@ -99,28 +94,31 @@ protected:
 
     // then let's extract the Region of Interest
     ImagePointer ITK_ROI_Image =
-        this->ITKExtractROI< PixelType, ImageDimension >( bounds, ItkInput );
+        this->ITKExtractROI< PixelType, VImageDimension >( bounds, ItkInput );
 
     int curvature_weight = this->m_Curvature->GetValue();
     int nb_iterations = this->m_Iterations->GetValue();
 
+    typedef itk::Image< QGoFilterChanAndVese::OutputPixelType, VImageDimension >
+        OutputImageType;
+
+    typename OutputImageType::Pointer ItkOutput = OutputImageType::New();
+
     // Compute the segmentation in 3D
     QGoFilterChanAndVese Filter;
-    Filter.Apply3DFilter< PixelType >( ITK_ROI_Image,
+    Filter.ApplyFilter< PixelType, VImageDimension >( ITK_ROI_Image,
+          ItkOutput,
           iCenter,
           radius,
           nb_iterations,
           curvature_weight );
-
-    typename QGoFilterChanAndVese::Output3DPointer
-        ItkOutPut = Filter.GetOutput3D();
 
     // Here it would be better if the mesh extraction would be performed directly
     // in ITK instead.
     vtkImageData * FilterOutPutToVTK =
         this->ConvertITK2VTK<
           typename QGoFilterChanAndVese::OutputPixelType,
-          ImageDimension>( ItkOutPut );
+          VImageDimension >( ItkOutput );
 
     vtkPolyData* temp_output = this->ExtractPolyData(FilterOutPutToVTK, 0);
 
