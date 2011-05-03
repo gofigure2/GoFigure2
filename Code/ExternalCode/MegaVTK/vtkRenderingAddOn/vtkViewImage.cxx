@@ -172,6 +172,12 @@ void vtkViewImage::SetInput(vtkImageData *in)
     if ( this->IsColor )
       {
       this->WindowLevel->SetLookupTable(NULL);
+      double* range = in->GetScalarRange();
+      double window = range[1] -range[0];
+      double level = window*0.5 + range[0];
+      this->WindowLevel->SetWindow(window);
+      this->WindowLevel->SetLevel(level);
+      this->UpdateDisplayExtent();
       this->ShowScalarBar = false;
       this->ScalarBarActor->SetVisibility(this->ShowScalarBar);
       }
@@ -456,7 +462,7 @@ void vtkViewImage::ResetWindowLevel(void)
     return;
     }
 
-  if ( !this->IsColor )
+ if ( !this->IsColor )
     {
     double *range = input->GetScalarRange();
     double  window = range[1] - range[0];

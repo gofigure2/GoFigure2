@@ -991,11 +991,7 @@ QGoImageView3D::AddActor(const int & iId, vtkActor *iActor)
 void
 QGoImageView3D::SetLookupTable(vtkLookupTable *iLut)
 {
-  if ( this->m_Image->GetNumberOfScalarComponents() == 1 )
-    {
-    m_View3D->SetLookupTable(iLut);
-    }
-
+  m_View3D->SetLookupTable(iLut);
   QGoImageView::SetLookupTable(iLut);
 }
 

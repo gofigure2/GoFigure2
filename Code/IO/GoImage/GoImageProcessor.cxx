@@ -41,6 +41,10 @@
 #include "vtkImageMapToColors.h"
 #include "vtkImageBlend.h"
 
+#include "vtkImageWeightedSum.h"
+#include "vtkImageCast.h"
+#include "VisualizePolydataHelper.h"
+
 //--------------------------------------------------------------------------
 GoImageProcessor::GoImageProcessor():m_Output(NULL),
   m_BoundsTime(NULL), m_BoundsChannel(NULL), m_Extent(NULL), m_DopplerStep(1),
@@ -215,6 +219,7 @@ getTimeAllChannels(const unsigned int& iTime)
 {
   vtkSmartPointer<vtkImageBlend> blendedImage =
       vtkSmartPointer<vtkImageBlend>::New();
+  //blendedImage->RemoveAllInputs();
 
   GoMegaImageStructureMultiIndexContainer::index<Time>::type::iterator it =
       m_MegaImageContainer.get< Time >().find(iTime);
@@ -233,12 +238,19 @@ getTimeAllChannels(const unsigned int& iTime)
   vtkIdType i(0);
   while(it!=m_MegaImageContainer.get< Time >().end())
     {
-    blendedImage->AddInput(colorImage(it->Image, it->LUT));
-    blendedImage->SetOpacity(i, 1/size);
+    blendedImage->SetInput(i, colorImage(it->Image, it->LUT));
+    blendedImage->SetOpacity(i,1/size);
     ++i;
     ++it;
     }
+
   blendedImage->Update();
+
+  double* test = blendedImage->GetOutput()->GetScalarRange();
+  //blendedImage->GetOutput()->Print(cout);
+  std::cout << "scalar range rgb: " << test[0] << " to " << test[1] << std::endl;
+
+  ShowImage(blendedImage->GetOutput());
 
   return blendedImage->GetOutput();
 }

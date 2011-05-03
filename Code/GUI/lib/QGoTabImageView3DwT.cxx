@@ -1461,7 +1461,7 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
     else
       {
       int ch = this->m_NavigationDockWidget->GetCurrentChannel();
-      m_Image->ShallowCopy(m_ImageProcessor->getImage(m_TCoord, ch));
+      m_Image->ShallowCopy(m_ImageProcessor->getImageBW(m_TCoord, ch));
       }
 
     // CONFIGURE LUT
@@ -1767,6 +1767,7 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
 }
 
 //-------------------------------------------------------------------------
+// TODO Nicolas- rename this method:
 void QGoTabImageView3DwT::Update()
 {
   m_ImageView->SetImage(m_Image);
@@ -1991,16 +1992,25 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
     {
     // Requiered if we modified the window level
     /** \todo Nicolas-Find a better solution */
-    m_ImageView->ResetWindowLevel();
     m_Image->ShallowCopy(m_ImageProcessor->getTimeAllChannels(m_TCoord));
+    m_ImageView->SetImage(m_Image);
+    m_ImageView->Update();
+    m_ImageView->SetLookupTable(NULL);
+    m_ImageView->Update();
+    double* test = m_Image->GetScalarRange();
+    std::cout << "scalar range rgb: " << test[0] << " to " << test[1] << std::endl;
     }
   else
     {
     int ch = this->m_NavigationDockWidget->GetCurrentChannel();
-    m_Image->ShallowCopy(m_ImageProcessor->getImage(m_TCoord, ch));
+    m_Image->ShallowCopy(m_ImageProcessor->getImageBW(m_TCoord, ch));
+    m_ImageView->SetImage(m_Image);
+    m_ImageView->Update();
+    m_ImageView->SetLookupTable(m_ImageProcessor->getLookuptable(ch, m_TCoord));
+    m_ImageView->Update();
+    double* test = m_Image->GetScalarRange();
+    std::cout << "scalar range rgb: " << test[0] << " to " << test[1] << std::endl;
     }
-
-  Update();
 
   // Update LUT
   this->findChild<QAction*>("LUT")->setEnabled(!iChecked);
@@ -2023,8 +2033,11 @@ QGoTabImageView3DwT::ShowOneChannel(int iChannel)
     this->findChild<QAction*>("LUT")->setEnabled(true);
     this->findChild<QAction*>("ScalarBar")->setEnabled(true);
 
-    m_Image->ShallowCopy(m_ImageProcessor->getImage(m_TCoord, iChannel));
-    Update();
+      m_Image->ShallowCopy(m_ImageProcessor->getImageBW(m_TCoord, iChannel));
+      m_ImageView->SetImage(m_Image);
+      m_ImageView->Update();
+      m_ImageView->SetLookupTable(m_ImageProcessor->getLookuptable(iChannel, m_TCoord));
+      m_ImageView->Update();
     }
 }
 
