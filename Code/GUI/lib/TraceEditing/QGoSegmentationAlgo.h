@@ -49,6 +49,7 @@
 
 // convert itk to vtk
 #include "itkImageToVTKImageFilter.h"
+#include "itkRegionOfInterestImageFilter.h"
 
 /**
 \class QGoSegmentationAlgo
@@ -83,7 +84,7 @@ public:
    * \param[in] iImages vector of vtkimagedata
    * \return list of roi
    */
-  std::vector<vtkImageData*> ExtractROI(
+  std::vector<vtkImageData*> VTKExtractROI(
     const std::vector<double>& iBounds,
     const std::vector< vtkSmartPointer< vtkImageData > >& iImages);
   /*
@@ -92,7 +93,7 @@ public:
    * \param[in] iImage vtkimagedata
    * \return roi
    */
-  vtkImageData* ExtractROI(
+  vtkImageData* VTKExtractROI(
     const std::vector<double>& iBounds,
     const vtkSmartPointer< vtkImageData > & iImage);
 
@@ -168,6 +169,98 @@ public:
     output_image->DeepCopy( converter->GetOutput() );
 
     return output_image;
+  }
+
+  //-------------------------------------------------------------------------
+  template< class PixelType, unsigned int VImageDimension >
+  typename itk::Image< PixelType, VImageDimension >::Pointer
+  ITKExtractROI(
+    const std::vector< double > & iBounds,
+    typename itk::Image< PixelType, VImageDimension >::Pointer iInput )
+  {
+    typedef itk::Image< PixelType, VImageDimension >  ImageType;
+    typedef typename ImageType::PointType             ImagePointType;
+    typedef typename ImageType::IndexType             ImageIndexType;
+    typedef typename ImageType::IndexValueType        ImageIndexValueType;
+    typedef typename ImageType::SizeType              ImageSizeType;
+    typedef typename ImageType::SizeValueType         ImageSizeValueType;
+    typedef typename ImageType::RegionType            ImageRegionType;
+    typedef typename ImageType::SpacingType           ImageSpacingType;
+
+    assert( iBounds.size() == 2 * VImageDimension );
+
+    if ( iInput.IsNull() )
+      {
+      std::cerr << "iInput is Null" << std::endl;
+      }
+
+    ImagePointType t_min, t_max;
+
+    unsigned int k = 0;
+    for( unsigned int dim = 0; dim < VImageDimension; dim++ )
+      {
+      t_min[dim] = iBounds[k++];
+      t_max[dim] = iBounds[k++];
+      }
+
+    ImageIndexType startOfROI, endOfROI;
+    iInput->TransformPhysicalPointToIndex( t_min, startOfROI );
+    iInput->TransformPhysicalPointToIndex( t_max, endOfROI );
+
+    ImageSizeType  sizeOfLargeImage =
+        iInput->GetLargestPossibleRegion().GetSize();
+
+    ImageSizeType  size;
+    size.Fill( 0 );
+
+    for( unsigned int dim = 0; dim < VImageDimension; dim++ )
+      {
+      if( startOfROI[dim] < 0 )
+        {
+        startOfROI[dim] = 0;
+        }
+      if( startOfROI[dim] > sizeOfLargeImage[dim] )
+        {
+        startOfROI[dim] = sizeOfLargeImage[dim] - 1;
+        }
+
+      if( endOfROI[dim] < 0 )
+        {
+        endOfROI[dim] = 0;
+        }
+      if( endOfROI[dim] > sizeOfLargeImage[dim] )
+        {
+        endOfROI[dim] = sizeOfLargeImage[dim] - 1;
+        }
+
+      size[dim] = endOfROI[dim] - startOfROI[dim];
+
+      if( size[dim] < 0 )
+        {
+        size[dim] = 0;
+        }
+      }
+
+    ImageRegionType region;
+    region.SetSize(size);
+    region.SetIndex(startOfROI);
+
+    typedef itk::RegionOfInterestImageFilter< ImageType, ImageType >  ROIFilterType;
+    typedef typename ROIFilterType::Pointer                           ROIFilterPointer;
+
+    ROIFilterPointer roi = ROIFilterType::New();
+    roi->SetInput(iInput);
+    roi->SetRegionOfInterest(region);
+    try
+      {
+      roi->Update();
+      }
+    catch (itk::ExceptionObject & err)
+      {
+      std::cerr << "roi Exception:" << err << std::endl;
+      }
+
+    return roi->GetOutput();
   }
 
   /*

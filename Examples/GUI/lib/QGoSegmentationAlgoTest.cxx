@@ -93,7 +93,7 @@ int main(int argc, char **argv)
   voi3D[5] = 20;
 
   vtkSmartPointer<vtkImageData> roi3D = vtkSmartPointer<vtkImageData>::New();
-  roi3D->ShallowCopy( algo.ExtractROI( voi3D, reader->GetOutput() ));
+  roi3D->ShallowCopy( algo.VTKExtractROI( voi3D, reader->GetOutput() ));
 
   assert( roi3D->GetDataDimension() == 3);
 
@@ -131,7 +131,7 @@ int main(int argc, char **argv)
   voi3D2Large[5] = 50;
 
   vtkSmartPointer<vtkImageData> roi3D2Large = vtkSmartPointer<vtkImageData>::New();
-  roi3D2Large->ShallowCopy(algo.ExtractROI( voi3D2Large, reader->GetOutput() ));
+  roi3D2Large->ShallowCopy(algo.VTKExtractROI( voi3D2Large, reader->GetOutput() ));
 
   assert( roi3D2Large->GetDataDimension() == 3);
 
@@ -175,7 +175,7 @@ int main(int argc, char **argv)
   voi2D[5] = 30;
 
   vtkSmartPointer<vtkImageData> roi2D = vtkSmartPointer<vtkImageData>::New();
-  roi2D->ShallowCopy(algo.ExtractROI( voi2D, reader->GetOutput() ));
+  roi2D->ShallowCopy(algo.VTKExtractROI( voi2D, reader->GetOutput() ));
 
   assert( roi2D->GetDataDimension() == 2);
 

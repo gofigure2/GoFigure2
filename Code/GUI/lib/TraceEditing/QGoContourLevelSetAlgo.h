@@ -66,19 +66,19 @@ protected:
   std::vector<vtkSmartPointer< vtkImageData > >* iImages,
     int iChannel)
     {
-    std::vector<double> Bounds = this->GetBounds(iCenter, this->m_Radius->GetValue());
-    vtkImageData* ROI = ExtractROI(Bounds, ( *iImages )[iChannel]);
+//    std::vector<double> Bounds = this->GetBounds(iCenter, this->m_Radius->GetValue());
+//    vtkImageData* ROI = ExtractROI(Bounds, ( *iImages )[iChannel]);
 
-    typename itk::Image< unsigned char, VImageDimension >::Pointer ItkInput =
-      this->ConvertVTK2ITK<unsigned char, VImageDimension>(ROI);
+//    typename itk::Image< unsigned char, VImageDimension >::Pointer ItkInput =
+//      this->ConvertVTK2ITK<unsigned char, VImageDimension>(ROI);
 
-    QGoFilterChanAndVese Filter;
-    typename itk::Image< float, VImageDimension >::Pointer ItkOutPut =
-      Filter.Apply2DFilter<VImageDimension>(ItkInput,
-      this->m_Curvature->GetValue(),  this->m_Iterations->GetValue() );
+//    QGoFilterChanAndVese Filter;
+//    typename itk::Image< float, VImageDimension >::Pointer ItkOutPut =
+//      Filter.Apply2DFilter<VImageDimension>(ItkInput,
+//      this->m_Curvature->GetValue(),  this->m_Iterations->GetValue() );
 
-    vtkImageData * FilterOutPutToVTK = this->ConvertITK2VTK<float, VImageDimension>(ItkOutPut);
-    return this->ExtractPolyData(FilterOutPutToVTK, 0);
+//    vtkImageData * FilterOutPutToVTK = this->ConvertITK2VTK<float, VImageDimension>(ItkOutPut);
+//    return this->ExtractPolyData(FilterOutPutToVTK, 0);
     }
 };
 

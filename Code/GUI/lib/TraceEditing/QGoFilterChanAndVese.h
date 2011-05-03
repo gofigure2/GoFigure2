@@ -53,6 +53,14 @@ class QGOGUILIB_EXPORT QGoFilterChanAndVese : public QGoFilterSemiAutoBase
 {
   Q_OBJECT
 public:
+  typedef float                   OutputPixelType;
+
+  typedef itk::Image< float, 3 >  Output3DType;
+  typedef Output3DType::Pointer   Output3DPointer;
+
+  typedef itk::Image< float, 2 >  Output2DType;
+  typedef Output2DType::Pointer   Output2DPointer;
+
   /** \brief Constructor */
   explicit QGoFilterChanAndVese(QObject *iParent = NULL, int iDimension = 2);
 
@@ -105,7 +113,7 @@ public:
     filter->SetCurvatureWeight(iCurvature);
     filter->Update();
 
-    typename itk::Image< float, 3 >::Pointer resulting_image = filter->GetOutput();
+    typename Output3DType::Pointer resulting_image = filter->GetOutput();
 
     if( resulting_image.IsNotNull() )
       {
@@ -119,7 +127,7 @@ public:
   }
 
 
-  itk::Image< float, 3 >::Pointer GetOutput3D()
+  Output3DType::Pointer GetOutput3D()
     {
     return m_Image3D;
     }
@@ -171,7 +179,7 @@ private:
   int m_Curvature;
   int m_Dimension;
 
-  itk::Image< float, 3 >::Pointer m_Image3D;
-  itk::Image< float, 2 >::Pointer m_Image2D;
+  Output3DType::Pointer m_Image3D;
+  Output2DType::Pointer m_Image2D;
 };
 #endif

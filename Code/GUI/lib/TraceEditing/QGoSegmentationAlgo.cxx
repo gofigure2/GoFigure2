@@ -82,7 +82,7 @@ QGoAlgorithmWidget* QGoSegmentationAlgo::GetAlgoWidget()
 
 //-------------------------------------------------------------------------
 std::vector<vtkImageData*>
-QGoSegmentationAlgo::ExtractROI(
+QGoSegmentationAlgo::VTKExtractROI(
   const std::vector<double>& iBounds,
   const std::vector< vtkSmartPointer< vtkImageData > > & iImages)
 {
@@ -97,7 +97,7 @@ QGoSegmentationAlgo::ExtractROI(
 
   while( it != iImages.end())
     {
-    listOfImages.push_back( ExtractROI(iBounds, *it) );
+    listOfImages.push_back( VTKExtractROI(iBounds, *it) );
     ++it;
     }
 
@@ -108,7 +108,7 @@ QGoSegmentationAlgo::ExtractROI(
 //-------------------------------------------------------------------------
 vtkImageData*
 QGoSegmentationAlgo::
- ExtractROI(const std::vector<double>& iBounds,
+VTKExtractROI(const std::vector<double>& iBounds,
             const vtkSmartPointer< vtkImageData > & iImage)
 {
   // make sure there
