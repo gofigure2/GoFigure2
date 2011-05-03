@@ -148,7 +148,7 @@ CellForegroundExtraction< TFeatureImage, TInputImage, TSegmentImage >::GenerateD
         {
         gaussCorr->Update();
         }
-      catch (itk::ExceptionObject e)
+      catch (itk::ExceptionObject & e)
         {
         std::cerr << "Error: " << e << std::endl;
         }

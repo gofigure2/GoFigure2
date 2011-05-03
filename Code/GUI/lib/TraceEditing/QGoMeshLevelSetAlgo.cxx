@@ -93,7 +93,7 @@ std::vector<vtkPolyData*> QGoMeshLevelSetAlgo::ApplyAlgo(
       CenterVect[2] = Center[2];
 
       vtkPolyData* temp_output =
-          this->ApplyLevelSetFilter< unsigned char >(
+          this->ApplyLevelSetFilter< unsigned char, Dimension >(
             CenterVect, iImages, iChannel);
 
       vtkPolyData* output = vtkPolyData::New();
