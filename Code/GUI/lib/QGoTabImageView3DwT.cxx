@@ -1505,8 +1505,28 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels(int iChannel,
   else
     {
     int ch = this->m_NavigationDockWidget->GetCurrentChannel();
+
+    unsigned int* time = m_ImageProcessor->getBoundsTime();
+
+    int t0 = m_TCoord - m_ImageProcessor->getDopplerStep();
+    int t1 = m_TCoord;
+    int t2 = m_TCoord + m_ImageProcessor->getDopplerStep();
+
+    // special case if we are at the borders
+    if ( t0 < time[0] )
+      {
+      t0 = time[0];
+      }
+
+    if ( t2 > time[1] )
+      {
+      t2 = time[1];
+      }
+
+    int realTime[3] = {t0, t1, t2};
+
     // channel is time for the doppler
-    m_Image->ShallowCopy(m_ImageProcessor->getImageBW(ch, iChannel));
+    m_Image->ShallowCopy(m_ImageProcessor->getImageBW(realTime[ch], iChannel));
     }
 
   // CONFIGURE LUT
@@ -1929,11 +1949,26 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
       }
     else
       {
-      m_Image->ShallowCopy(m_ImageProcessor->getImageBW(ch, m_ChannelOfInterest));
+      unsigned int* time = m_ImageProcessor->getBoundsTime();
+      int t0 = m_TCoord - m_ImageProcessor->getDopplerStep();
+      int t1 = m_TCoord;
+      int t2 = m_TCoord + m_ImageProcessor->getDopplerStep();
+      // special case if we are at the borders
+      if ( t0 < time[0] )
+        {
+        t0 = time[0];
+        }
+      if ( t2 > time[1] )
+        {
+        t2 = time[1];
+        }
+      int realTime[3] = {t0, t1, t2};
+
+      m_Image->ShallowCopy(m_ImageProcessor->getImageBW(realTime[ch], m_ChannelOfInterest));
       m_ImageView->SetImage(m_Image);
       m_ImageView->Update();
       vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
-      lut->DeepCopy(m_ImageProcessor->getLookuptable(m_ChannelOfInterest, ch));
+      lut->DeepCopy(m_ImageProcessor->getLookuptable(m_ChannelOfInterest, realTime[ch]));
       m_ImageView->SetLookupTable(lut);
       }
     m_ImageView->Update();
