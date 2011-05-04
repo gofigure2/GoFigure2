@@ -126,10 +126,8 @@ setTimePoint(const unsigned int& iTime)
     vtkSmartPointer<vtkLookupTable> lut = createLUT(color[0],
                                                     color[1],
                                                     color[2],
-                                                    color[3]);
-    // set up range
-    lut->SetRange(image->GetScalarRange());
-    lut->Build();
+                                                    color[3],
+                                                    image->GetScalarRange());
 
     // Update the MegaImageStructure
     // image, LUT, channel, time point

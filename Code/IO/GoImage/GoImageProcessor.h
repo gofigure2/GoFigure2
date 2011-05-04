@@ -144,7 +144,8 @@ public:
   vtkSmartPointer<vtkLookupTable> createLUT(const double& iRed,
                                             const double& iGreen,
                                             const double& iBlue,
-                                            const double& iAlpha = 0);
+                                            const double& iAlpha,
+                                            const double* iRange);
   /*
    * \brief modify a lookuptable (LUT) given a channel, a time point and a LUT
    * Will remplace the existing one.
@@ -233,6 +234,8 @@ public:
    * \return colored image.
    */
   vtkSmartPointer<vtkImageData> getChannelAllTimes(const unsigned int& iChannel);
+
+  vtkSmartPointer<vtkImageData> getAllImages();
 
   // Image parameters
   //--------------------

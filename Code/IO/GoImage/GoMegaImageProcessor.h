@@ -55,34 +55,7 @@ class QGOIO_EXPORT GoMegaImageProcessor:public GoImageProcessor
 {
 public:
 
-  void setReader(itk::MegaCaptureReader::Pointer iReader)
-  {
-    m_MegaImageReader = iReader;
-
-        std::cout << "test parent" << std::endl;
-
-    // update general parameters
-    //--------------------
-    // todo Nicolas- Create a method for that...
-    m_BoundsTime = new unsigned int[2];
-    m_BoundsTime[0] = m_MegaImageReader->GetMinTimePoint();
-    m_BoundsTime[1] = m_MegaImageReader->GetMaxTimePoint();
-    m_BoundsChannel = new unsigned int[2];
-    m_BoundsChannel[0] = m_MegaImageReader->GetMinChannel();
-    m_BoundsChannel[1] = m_MegaImageReader->GetMaxChannel();
-    m_Extent = new int[6];
-    (m_MegaImageReader->GetImage(m_BoundsChannel[0], m_BoundsTime[0]))->
-        GetExtent(m_Extent);
-
-    m_TimeInterval = m_MegaImageReader->GetTimeInterval();
-
-    //--------------------
-
-    unsigned int time = m_MegaImageReader->GetMinTimePoint();
-
-    setTimePoint(time);
-  }
-
+  void setReader(itk::MegaCaptureReader::Pointer iReader);
 
   virtual void setTimePoint(const unsigned int& iTime);
 

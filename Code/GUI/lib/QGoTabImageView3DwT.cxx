@@ -1461,7 +1461,7 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
     {
     if ( this->m_NavigationDockWidget->ShowAllChannels() )
       {
-      m_Image->ShallowCopy(m_ImageProcessor->getTimeAllChannels(m_TCoord));
+      m_Image->ShallowCopy(m_ImageProcessor->getAllImages());
       }
     else
       {
@@ -1479,7 +1479,7 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
     {
     unsigned int* boundsChannel = m_ImageProcessor->getBoundsChannel();
     m_Image->ShallowCopy(
-          m_ImageProcessor->getImage(m_TCoord, boundsChannel[0]));
+          m_ImageProcessor->getImageBW(m_TCoord, boundsChannel[0]));
 
     // CONFIGURE LUT
     this->findChild<QAction*>("LUT")->setEnabled(true);
@@ -1494,125 +1494,42 @@ void
 QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels(int iChannel,
                                                              int iPreviousT)
 {
-
-  m_ImageProcessor->setTimePoint(m_TCoord);
-  /*
-  int min_t = m_MegaCaptureReader->GetMinTimePoint();
-  int max_t = m_MegaCaptureReader->GetMaxTimePoint();
-
-  int t0 = m_TCoord - m_DopplerStep;
-  int t1 = m_TCoord;
-  int t2 = m_TCoord + m_DopplerStep;
-
-  // special case if we are at the borders
-  if ( t0 < min_t )
-    {
-    t0 = min_t;
-    }
-
-  if ( t2 > max_t )
-    {
-    t2 = max_t;
-    }
-
-  vtkSmartPointer< vtkImageAppendComponents > append_filter =
-    vtkSmartPointer< vtkImageAppendComponents >::New();
-
-  // if step != 1 and we have previous and next time point loaded
-  if( m_DopplerStep != 1 || iPreviousT == 0 )
-    {
-    // resize internal image
-    // clean the vector since is is a vector of smartpointers
-    m_InternalImages.resize(3, NULL);
-
-    vtkSmartPointer< vtkImageData > i0 = vtkSmartPointer< vtkImageData >::New();
-    i0->ShallowCopy( m_MegaCaptureReader->GetImage(iChannel, t0) );
-    m_InternalImages[0] = i0;
-    append_filter->AddInput(m_InternalImages[0]);
-
-    vtkSmartPointer< vtkImageData > i1 = vtkSmartPointer< vtkImageData >::New();
-    i1->ShallowCopy( m_MegaCaptureReader->GetImage(iChannel, t1) );
-    m_InternalImages[1] = i1;
-    append_filter->AddInput(m_InternalImages[1]);
-
-    vtkSmartPointer< vtkImageData > i2 = vtkSmartPointer< vtkImageData >::New();
-    i2->ShallowCopy( m_MegaCaptureReader->GetImage(iChannel, t2) );
-    m_InternalImages[2] = i2;
-    append_filter->AddInput(m_InternalImages[2]);
-    }
-  else
-    {
-    // if we go FORWARD and step == 1
-    if( iPreviousT < m_TCoord)
-      {
-      // assume we imcrease t point all the time for testing
-      vtkSmartPointer< vtkImageData > i0 = vtkSmartPointer< vtkImageData >::New();
-      i0->ShallowCopy(m_InternalImages[1]);
-      // clean smartpointer
-      m_InternalImages[0] = NULL;
-      m_InternalImages[0] = i0;
-      append_filter->AddInput(m_InternalImages[0]);
-
-      vtkSmartPointer< vtkImageData > i1 = vtkSmartPointer< vtkImageData >::New();
-      i1->ShallowCopy(m_InternalImages[2]);
-      // clean smartpointer
-      m_InternalImages[1] = NULL;
-      m_InternalImages[1] = i1;
-      append_filter->AddInput(m_InternalImages[1]);
-
-      vtkSmartPointer< vtkImageData > i2 = vtkSmartPointer< vtkImageData >::New();
-      i2->ShallowCopy( m_MegaCaptureReader->GetImage(iChannel, t2) );
-      // clean smartpointer
-      m_InternalImages[2] = NULL;
-      m_InternalImages[2] = i2;
-      append_filter->AddInput(m_InternalImages[2]);
-      }
-    // if we go BACKWARD and step == 1
-    else
-      {
-      vtkSmartPointer< vtkImageData > i2 = vtkSmartPointer< vtkImageData >::New();
-      i2->ShallowCopy(m_InternalImages[1]);
-      // clean smartpointer
-      m_InternalImages[2] = NULL;
-      m_InternalImages[2] = i2;
-      append_filter->AddInput(m_InternalImages[2]);
-
-      vtkSmartPointer< vtkImageData > i1 = vtkSmartPointer< vtkImageData >::New();
-      i1->ShallowCopy(m_InternalImages[0]);
-      // clean smartpointer
-      m_InternalImages[1] = NULL;
-      m_InternalImages[1] = i1;
-      append_filter->AddInput(m_InternalImages[1]);
-
-      vtkSmartPointer< vtkImageData > i0 = vtkSmartPointer< vtkImageData >::New();
-      i0->ShallowCopy( m_MegaCaptureReader->GetImage(iChannel, t0) );
-      // clean smartpointer
-      m_InternalImages[0] = NULL;
-      m_InternalImages[0] = i0;
-      append_filter->AddInput(m_InternalImages[0]);
-      }
-    }
-
-  append_filter->Update();
+  // previous not used yet.
+  // useful for the optimizations
+  m_ImageProcessor->setDoppler(iChannel, m_TCoord, iPreviousT);
 
   if ( this->m_NavigationDockWidget->ShowAllChannels() )
     {
-    m_Image->ShallowCopy( append_filter->GetOutput() );
-
-    // LUT DISABLED
-    this->findChild<QAction*>("LUT")->setEnabled(false);
-    this->findChild<QAction*>("ScalarBar")->setEnabled(false);
+    m_Image->ShallowCopy(m_ImageProcessor->getAllImages());
     }
   else
     {
     int ch = this->m_NavigationDockWidget->GetCurrentChannel();
-    if ( ch != -1 )
-      {
-      m_Image->ShallowCopy(m_InternalImages[ch]);
-      }
-    // LUT ENABLED
-    this->findChild<QAction*>("LUT")->setEnabled(true);
-    this->findChild<QAction*>("ScalarBar")->setEnabled(true);
+    m_Image->ShallowCopy(m_ImageProcessor->getImageBW(m_TCoord, ch));
+    }
+
+  // CONFIGURE LUT
+  this->findChild<QAction*>("LUT")->setEnabled(
+        !this->m_NavigationDockWidget->ShowAllChannels());
+  this->findChild<QAction*>("ScalarBar")->setEnabled(
+        !this->m_NavigationDockWidget->ShowAllChannels());
+
+  // update widgets....
+  unsigned int* time = m_ImageProcessor->getBoundsTime();
+
+  int t0 = m_TCoord - m_ImageProcessor->getDopplerStep();
+  int t1 = m_TCoord;
+  int t2 = m_TCoord + m_ImageProcessor->getDopplerStep();
+
+  // special case if we are at the borders
+  if ( t0 < time[0] )
+    {
+    t0 = time[0];
+    }
+
+  if ( t2 > time[1] )
+    {
+    t2 = time[1];
     }
 
   // Create channels names
@@ -1655,8 +1572,6 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels(int iChannel,
   m_MeshSegmentationDockWidget->SetChannel(2, t_plus_step);
   // Update the current channel
   m_MeshSegmentationDockWidget->SetCurrentChannel(1);
-
-  */
 }
 
 //-------------------------------------------------------------------------
@@ -1995,7 +1910,7 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
 {
   if ( iChecked )
     {
-    m_Image->ShallowCopy(m_ImageProcessor->getTimeAllChannels(m_TCoord));
+    m_Image->ShallowCopy(m_ImageProcessor->getAllImages());
     m_ImageView->SetImage(m_Image);
     m_ImageView->Update();
     }
@@ -2028,6 +1943,9 @@ QGoTabImageView3DwT::ShowOneChannel(int iChannel)
   //todo Find sth better
   if ( m_ImageProcessor->getImage(m_TCoord, iChannel) )
     {
+    std::cout << "show one channel..." << std::endl;
+
+
     this->findChild<QAction*>("LUT")->setEnabled(true);
     this->findChild<QAction*>("ScalarBar")->setEnabled(true);
 

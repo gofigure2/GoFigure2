@@ -41,6 +41,8 @@
 #include "vtkImageMapToColors.h"
 #include "vtkImageBlend.h"
 
+#include "VisualizePolydataHelper.h"
+
 //--------------------------------------------------------------------------
 GoImageProcessor::GoImageProcessor():m_Output(NULL),
   m_BoundsTime(NULL), m_BoundsChannel(NULL), m_Extent(NULL), m_DopplerStep(1),
@@ -87,7 +89,7 @@ GoImageProcessor::
 vtkSmartPointer<vtkLookupTable>
 GoImageProcessor::
 createLUT(const double& iRed, const double& iGreen, const double& iBlue,
-          const double& iAlpha)
+          const double& iAlpha, const double* iRange)
 {
   vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
   double* HSV = vtkMath::RGBToHSV(iRed,iGreen,iBlue);
@@ -95,6 +97,7 @@ createLUT(const double& iRed, const double& iGreen, const double& iBlue,
   lut->SetHueRange(HSV[0], HSV[0]);
   lut->SetSaturationRange(1, 1);
   lut->SetValueRange(0, 1);
+  lut->SetRange(const_cast<double*>(iRange));
   lut->Build();
   return lut;
 }
@@ -247,6 +250,7 @@ getChannelAllTimes(const unsigned int& iChannel)
 {
   vtkSmartPointer<vtkImageBlend> blendedImage =
       vtkSmartPointer<vtkImageBlend>::New();
+  blendedImage->RemoveAllInputs();
 
   GoMegaImageStructureMultiIndexContainer::index<Channel>::type::iterator it =
       m_MegaImageContainer.get< Channel >().find(iChannel);
@@ -264,6 +268,43 @@ getChannelAllTimes(const unsigned int& iChannel)
 
   vtkIdType i(0);
   while(it!=m_MegaImageContainer.get< Channel >().end())
+    {
+    blendedImage->AddInput(colorImage(it->Image, it->LUT));
+    blendedImage->SetOpacity(i, 1/size);
+    ++i;
+    ++it;
+    }
+  blendedImage->Update();
+
+  return blendedImage->GetOutput();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+vtkSmartPointer<vtkImageData>
+GoImageProcessor::
+getAllImages()
+{
+  vtkSmartPointer<vtkImageBlend> blendedImage =
+      vtkSmartPointer<vtkImageBlend>::New();
+  blendedImage->RemoveAllInputs();
+
+  GoMegaImageStructureMultiIndexContainer::iterator it =
+      m_MegaImageContainer.begin();
+
+  /*
+    \todo Nicolas - do sth else....
+   */
+  double size(0);
+  while(it!=m_MegaImageContainer.end())
+    {
+    ++size;
+    ++it;
+    }
+  it = m_MegaImageContainer.begin();
+
+  vtkIdType i(0);
+  while(it!=m_MegaImageContainer.end())
     {
     blendedImage->AddInput(colorImage(it->Image, it->LUT));
     blendedImage->SetOpacity(i, 1/size);
