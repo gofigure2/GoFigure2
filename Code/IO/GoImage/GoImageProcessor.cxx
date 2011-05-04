@@ -40,13 +40,6 @@
 #include "vtkMath.h"
 #include "vtkImageMapToColors.h"
 #include "vtkImageBlend.h"
-//update scalar range...
-#include "vtkPointData.h"
-
-
-#include "vtkImageWeightedSum.h"
-#include "vtkImageCast.h"
-#include "VisualizePolydataHelper.h"
 
 //--------------------------------------------------------------------------
 GoImageProcessor::GoImageProcessor():m_Output(NULL),
@@ -89,17 +82,13 @@ GoImageProcessor::
     }
 }
 //--------------------------------------------------------------------------
-
+// TODO Nicolas-Range is missing
 //--------------------------------------------------------------------------
 vtkSmartPointer<vtkLookupTable>
 GoImageProcessor::
 createLUT(const double& iRed, const double& iGreen, const double& iBlue,
           const double& iAlpha)
 {
-  std::cout<< " R: " << iRed
-           << " G: " << iGreen
-           << " B: " << iBlue
-           << std::endl;
   vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
   double* HSV = vtkMath::RGBToHSV(iRed,iGreen,iBlue);
   lut->SetAlpha(iAlpha);
@@ -159,12 +148,6 @@ GoImageProcessor::
 colorImage(vtkSmartPointer<vtkImageData> iImage,
            vtkSmartPointer<vtkLookupTable> iLUT)
 {
-  std::cout << "==============================" << std::endl;
-  //iLUT->Print(cout);
-  std::cout << "==============================" << std::endl;
-  //iImage->Print(cout);
-  std::cout << "==============================" << std::endl;
-
   vtkSmartPointer<vtkImageMapToColors> coloredImage =
       vtkSmartPointer<vtkImageMapToColors>::New();
   coloredImage->SetLookupTable(iLUT);
@@ -172,25 +155,8 @@ colorImage(vtkSmartPointer<vtkImageData> iImage,
   coloredImage->PassAlphaToOutputOff();
   coloredImage->SetOutputFormatToRGB();
   coloredImage->Update();
-  coloredImage->UpdateInformation();
 
-
-  double* test = iLUT->GetRange();
-  std::cout << "LUT RANGE " << test[0] << " to " << test[1] << std::endl;
-
-  test = iImage->GetScalarRange();
-  std::cout << "IMAGE RANGE " << test[0] << " to " << test[1] << std::endl;
-
-
-  vtkSmartPointer<vtkImageData> testimage = vtkSmartPointer<vtkImageData>::New();
-  testimage->DeepCopy(coloredImage->GetOutput());
-  testimage->Modified();
-  testimage->GetPointData()->Modified();
-
-  test = testimage->GetScalarRange();
-  std::cout << "get RANGE " << test[0] << " to " << test[1] << std::endl;
-
-  return testimage;
+  return coloredImage->GetOutput();
 }
 //--------------------------------------------------------------------------
 
@@ -226,8 +192,6 @@ getImageBW(const unsigned int& iTime, const unsigned int& iChannel)
     {
     if(it->Time==iTime)
       {
-      double* test = it->Image->GetScalarRange();
-      std::cout << "get b/W: " << test[0] << " to " << test[1] << std::endl;
       return it->Image;
       }
     ++it;
@@ -270,15 +234,7 @@ getTimeAllChannels(const unsigned int& iTime)
     ++i;
     ++it;
     }
-
   blendedImage->Update();
-
-  blendedImage->GetOutput()->GetPointData()->Modified();
-  blendedImage->GetOutput()->Modified();
-
-  double* test = blendedImage->GetOutput()->GetScalarRange();
-  //blendedImage->GetOutput()->Print(cout);
-  std::cout << "scalar range rgb: " << test[0] << " to " << test[1] << std::endl;
 
   return blendedImage->GetOutput();
 }

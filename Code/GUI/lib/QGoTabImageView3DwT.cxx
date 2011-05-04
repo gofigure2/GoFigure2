@@ -1995,9 +1995,6 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
 {
   if ( iChecked )
     {
-    // Requiered if we modified the window level
-    ///** \todo Nicolas-Find a better solution */
-    m_ImageView->ResetWindowLevel();
     m_Image->ShallowCopy(m_ImageProcessor->getTimeAllChannels(m_TCoord));
     m_ImageView->SetImage(m_Image);
     m_ImageView->Update();
@@ -2022,7 +2019,6 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
   bool showScalarBar = this->findChild<QAction*>("ScalarBar")->isChecked();
   m_ImageView->ShowScalarBar(showScalarBar);
 }
-
 //------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -2032,22 +2028,19 @@ QGoTabImageView3DwT::ShowOneChannel(int iChannel)
   //todo Find sth better
   if ( m_ImageProcessor->getImage(m_TCoord, iChannel) )
     {
-
-    // Update lut
     this->findChild<QAction*>("LUT")->setEnabled(true);
     this->findChild<QAction*>("ScalarBar")->setEnabled(true);
 
-      m_Image->ShallowCopy(m_ImageProcessor->getImageBW(m_TCoord, iChannel));
-      m_ImageView->SetImage(m_Image);
-      m_ImageView->Update();
-      vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
-      lut->DeepCopy(m_ImageProcessor->getLookuptable(iChannel, m_TCoord));
-      m_ImageView->SetLookupTable(lut);
-      m_ImageView->Update();
-
+    // Update lut
+    m_Image->ShallowCopy(m_ImageProcessor->getImageBW(m_TCoord, iChannel));
+    m_ImageView->SetImage(m_Image);
+    m_ImageView->Update();
+    vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
+    lut->DeepCopy(m_ImageProcessor->getLookuptable(iChannel, m_TCoord));
+    m_ImageView->SetLookupTable(lut);
+    m_ImageView->Update();
     }
 }
-
 //------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -2061,7 +2054,6 @@ QGoTabImageView3DwT::ModeChanged(int iChannel)
 
   ChannelTimeMode(iChannel);
 }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -2073,7 +2065,6 @@ QGoTabImageView3DwT::StepChanged(int iStep)
   SetTimePointWithMegaCaptureTimeChannels(m_ChannelOfInterest);
   Update();
 }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
