@@ -1953,10 +1953,14 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
 void
 QGoTabImageView3DwT::ShowOneChannel(int iChannel)
 {
+  std::cout << "update single requested" << std::endl;
   if(m_ChannelClassicMode)
     {
+    std::cout << "CLASSIC" << std::endl;
     if (m_ImageProcessor->getImageBW(m_TCoord, iChannel) )
       {
+      std::cout << "channel: "<< iChannel << std::endl;
+      std::cout << "time point: "<< m_TCoord << std::endl;
       this->findChild<QAction*>("LUT")->setEnabled(true);
       this->findChild<QAction*>("ScalarBar")->setEnabled(true);
       m_Image->ShallowCopy(m_ImageProcessor->getImageBW(m_TCoord, iChannel));
@@ -1970,13 +1974,35 @@ QGoTabImageView3DwT::ShowOneChannel(int iChannel)
     }
   else
     {
-    if (m_ImageProcessor->getImageBW(iChannel, m_ChannelOfInterest) )
+    std::cout << "DOPPLER" << std::endl;
+    unsigned int* time = m_ImageProcessor->getBoundsTime();
+
+    int t0 = m_TCoord - m_ImageProcessor->getDopplerStep();
+    int t1 = m_TCoord;
+    int t2 = m_TCoord + m_ImageProcessor->getDopplerStep();
+
+    // special case if we are at the borders
+    if ( t0 < time[0] )
       {
-      m_Image->ShallowCopy(m_ImageProcessor->getImageBW(iChannel, m_ChannelOfInterest));
+      t0 = time[0];
+      }
+
+    if ( t2 > time[1] )
+      {
+      t2 = time[1];
+      }
+
+    int realTime[3] = {t0, t1, t2};
+
+    if (m_ImageProcessor->getImageBW(realTime[iChannel], m_ChannelOfInterest) )
+      {
+      std::cout << "channel: "<< m_ChannelOfInterest << std::endl;
+      std::cout << "time point: "<< realTime[iChannel] << std::endl;
+      m_Image->ShallowCopy(m_ImageProcessor->getImageBW(realTime[iChannel], m_ChannelOfInterest));
       m_ImageView->SetImage(m_Image);
       m_ImageView->Update();
       vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
-      lut->DeepCopy(m_ImageProcessor->getLookuptable(m_ChannelOfInterest, iChannel));
+      lut->DeepCopy(m_ImageProcessor->getLookuptable(realTime[iChannel], iChannel));
       m_ImageView->SetLookupTable(lut);
       m_ImageView->Update();
       }
