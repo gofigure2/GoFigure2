@@ -2029,9 +2029,10 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
 void
 QGoTabImageView3DwT::ShowOneChannel(int iChannel)
 {
+  //todo Find sth better
   if ( m_ImageProcessor->getImage(m_TCoord, iChannel) )
     {
-      /*
+
     // Update lut
     this->findChild<QAction*>("LUT")->setEnabled(true);
     this->findChild<QAction*>("ScalarBar")->setEnabled(true);
@@ -2043,7 +2044,7 @@ QGoTabImageView3DwT::ShowOneChannel(int iChannel)
       lut->DeepCopy(m_ImageProcessor->getLookuptable(iChannel, m_TCoord));
       m_ImageView->SetLookupTable(lut);
       m_ImageView->Update();
-      */
+
     }
 }
 
@@ -2053,8 +2054,6 @@ QGoTabImageView3DwT::ShowOneChannel(int iChannel)
 void
 QGoTabImageView3DwT::ModeChanged(int iChannel)
 {
-  //std::cout << "channel: " << iChannel << std::endl;
-
   if ( iChannel == 1 )
     {
     LoadChannelTime();

@@ -273,7 +273,6 @@ getTimeAllChannels(const unsigned int& iTime)
 
   blendedImage->Update();
 
-  ShowImage(blendedImage->GetOutput());
   blendedImage->GetOutput()->GetPointData()->Modified();
   blendedImage->GetOutput()->Modified();
 
