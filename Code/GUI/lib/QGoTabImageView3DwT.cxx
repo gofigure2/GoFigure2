@@ -2037,7 +2037,7 @@ QGoTabImageView3DwT::ShowOneChannel(int iChannel)
       m_ImageView->SetImage(m_Image);
       m_ImageView->Update();
       vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
-      lut->DeepCopy(m_ImageProcessor->getLookuptable(realTime[iChannel], iChannel));
+      lut->DeepCopy(m_ImageProcessor->getLookuptable(m_ChannelOfInterest, realTime[iChannel]));
       m_ImageView->SetLookupTable(lut);
       m_ImageView->Update();
       }
