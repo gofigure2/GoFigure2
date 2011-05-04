@@ -1505,7 +1505,8 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels(int iChannel,
   else
     {
     int ch = this->m_NavigationDockWidget->GetCurrentChannel();
-    m_Image->ShallowCopy(m_ImageProcessor->getImageBW(m_TCoord, ch));
+    // channel is time for the doppler
+    m_Image->ShallowCopy(m_ImageProcessor->getImageBW(ch, iChannel));
     }
 
   // CONFIGURE LUT
@@ -1917,12 +1918,24 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
   else
     {
     int ch = this->m_NavigationDockWidget->GetCurrentChannel();
-    m_Image->ShallowCopy(m_ImageProcessor->getImageBW(m_TCoord, ch));
-    m_ImageView->SetImage(m_Image);
-    m_ImageView->Update();
-    vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
-    lut->DeepCopy(m_ImageProcessor->getLookuptable(ch, m_TCoord));
-    m_ImageView->SetLookupTable(lut);
+    if(m_ChannelClassicMode)
+      {
+      m_Image->ShallowCopy(m_ImageProcessor->getImageBW(m_TCoord, ch));
+      m_ImageView->SetImage(m_Image);
+      m_ImageView->Update();
+      vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
+      lut->DeepCopy(m_ImageProcessor->getLookuptable(ch, m_TCoord));
+      m_ImageView->SetLookupTable(lut);
+      }
+    else
+      {
+      m_Image->ShallowCopy(m_ImageProcessor->getImageBW(ch, m_ChannelOfInterest));
+      m_ImageView->SetImage(m_Image);
+      m_ImageView->Update();
+      vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
+      lut->DeepCopy(m_ImageProcessor->getLookuptable(m_ChannelOfInterest, ch));
+      m_ImageView->SetLookupTable(lut);
+      }
     m_ImageView->Update();
     }
 
@@ -1941,8 +1954,8 @@ void
 QGoTabImageView3DwT::ShowOneChannel(int iChannel)
 {
   //todo Find sth better
-  if ( m_ImageProcessor->getImage(m_TCoord, iChannel) )
-    {
+  //if ( m_ImageProcessor->getImage(m_TCoord, iChannel) )
+ //   {
     std::cout << "show one channel..." << std::endl;
 
 
@@ -1950,14 +1963,26 @@ QGoTabImageView3DwT::ShowOneChannel(int iChannel)
     this->findChild<QAction*>("ScalarBar")->setEnabled(true);
 
     // Update lut
-    m_Image->ShallowCopy(m_ImageProcessor->getImageBW(m_TCoord, iChannel));
-    m_ImageView->SetImage(m_Image);
+    if(m_ChannelClassicMode)
+      {
+      m_Image->ShallowCopy(m_ImageProcessor->getImageBW(m_TCoord, iChannel));
+      m_ImageView->SetImage(m_Image);
+      m_ImageView->Update();
+      vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
+      lut->DeepCopy(m_ImageProcessor->getLookuptable(iChannel, m_TCoord));
+      m_ImageView->SetLookupTable(lut);
+      }
+    else
+      {
+      m_Image->ShallowCopy(m_ImageProcessor->getImageBW(iChannel, m_ChannelOfInterest));
+      m_ImageView->SetImage(m_Image);
+      m_ImageView->Update();
+      vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
+      lut->DeepCopy(m_ImageProcessor->getLookuptable(m_ChannelOfInterest, iChannel));
+      m_ImageView->SetLookupTable(lut);
+      }
     m_ImageView->Update();
-    vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
-    lut->DeepCopy(m_ImageProcessor->getLookuptable(iChannel, m_TCoord));
-    m_ImageView->SetLookupTable(lut);
-    m_ImageView->Update();
-    }
+  //  }
 }
 //------------------------------------------------------------------------
 
