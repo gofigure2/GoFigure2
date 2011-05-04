@@ -1953,26 +1953,24 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
 void
 QGoTabImageView3DwT::ShowOneChannel(int iChannel)
 {
-  //todo Find sth better
-  //if ( m_ImageProcessor->getImage(m_TCoord, iChannel) )
- //   {
-    std::cout << "show one channel..." << std::endl;
-
-
-    this->findChild<QAction*>("LUT")->setEnabled(true);
-    this->findChild<QAction*>("ScalarBar")->setEnabled(true);
-
-    // Update lut
-    if(m_ChannelClassicMode)
+  if(m_ChannelClassicMode)
+    {
+    if (m_ImageProcessor->getImageBW(m_TCoord, iChannel) )
       {
+      this->findChild<QAction*>("LUT")->setEnabled(true);
+      this->findChild<QAction*>("ScalarBar")->setEnabled(true);
       m_Image->ShallowCopy(m_ImageProcessor->getImageBW(m_TCoord, iChannel));
       m_ImageView->SetImage(m_Image);
       m_ImageView->Update();
       vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
       lut->DeepCopy(m_ImageProcessor->getLookuptable(iChannel, m_TCoord));
       m_ImageView->SetLookupTable(lut);
+      m_ImageView->Update();
       }
-    else
+    }
+  else
+    {
+    if (m_ImageProcessor->getImageBW(iChannel, m_ChannelOfInterest) )
       {
       m_Image->ShallowCopy(m_ImageProcessor->getImageBW(iChannel, m_ChannelOfInterest));
       m_ImageView->SetImage(m_Image);
@@ -1980,9 +1978,9 @@ QGoTabImageView3DwT::ShowOneChannel(int iChannel)
       vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
       lut->DeepCopy(m_ImageProcessor->getLookuptable(m_ChannelOfInterest, iChannel));
       m_ImageView->SetLookupTable(lut);
+      m_ImageView->Update();
       }
-    m_ImageView->Update();
-  //  }
+    }
 }
 //------------------------------------------------------------------------
 

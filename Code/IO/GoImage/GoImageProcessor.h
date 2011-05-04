@@ -130,8 +130,6 @@ public:
     return os;
   }
 
-  //virtual void setReader() = 0;
-
   /*
    * \brief create a lookuptable (LUT) given r, g, b and a.
    * LUT will go from black to the color.
