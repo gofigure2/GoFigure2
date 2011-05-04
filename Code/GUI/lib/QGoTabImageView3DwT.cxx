@@ -1996,13 +1996,11 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
   if ( iChecked )
     {
     // Requiered if we modified the window level
-    /** \todo Nicolas-Find a better solution */
+    ///** \todo Nicolas-Find a better solution */
     m_ImageView->ResetWindowLevel();
     m_Image->ShallowCopy(m_ImageProcessor->getTimeAllChannels(m_TCoord));
     m_ImageView->SetImage(m_Image);
     m_ImageView->Update();
-    double* test = m_Image->GetScalarRange();
-    std::cout << "scalar range rgb: " << test[0] << " to " << test[1] << std::endl;
     }
   else
     {
@@ -2010,10 +2008,10 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
     m_Image->ShallowCopy(m_ImageProcessor->getImageBW(m_TCoord, ch));
     m_ImageView->SetImage(m_Image);
     m_ImageView->Update();
-    m_ImageView->SetLookupTable(m_ImageProcessor->getLookuptable(ch, m_TCoord));
+    vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
+    lut->DeepCopy(m_ImageProcessor->getLookuptable(ch, m_TCoord));
+    m_ImageView->SetLookupTable(lut);
     m_ImageView->Update();
-    double* test = m_Image->GetScalarRange();
-    std::cout << "scalar range rgb: " << test[0] << " to " << test[1] << std::endl;
     }
 
   // Update LUT
@@ -2033,6 +2031,7 @@ QGoTabImageView3DwT::ShowOneChannel(int iChannel)
 {
   if ( m_ImageProcessor->getImage(m_TCoord, iChannel) )
     {
+      /*
     // Update lut
     this->findChild<QAction*>("LUT")->setEnabled(true);
     this->findChild<QAction*>("ScalarBar")->setEnabled(true);
@@ -2040,8 +2039,11 @@ QGoTabImageView3DwT::ShowOneChannel(int iChannel)
       m_Image->ShallowCopy(m_ImageProcessor->getImageBW(m_TCoord, iChannel));
       m_ImageView->SetImage(m_Image);
       m_ImageView->Update();
-      m_ImageView->SetLookupTable(m_ImageProcessor->getLookuptable(iChannel, m_TCoord));
+      vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
+      lut->DeepCopy(m_ImageProcessor->getLookuptable(iChannel, m_TCoord));
+      m_ImageView->SetLookupTable(lut);
       m_ImageView->Update();
+      */
     }
 }
 

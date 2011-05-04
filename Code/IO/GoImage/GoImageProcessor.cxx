@@ -145,12 +145,10 @@ getLookuptable(const unsigned int& iChannel, const unsigned int& iTime) const
     {
     if(it->Time==iTime)
       {
-      std::cout << "return sth" << std::endl;
       return it->LUT;
       }
     ++it;
     }
-  std::cout << "return NULL" << std::endl;
   return NULL;
 }
 //--------------------------------------------------------------------------
@@ -161,13 +159,38 @@ GoImageProcessor::
 colorImage(vtkSmartPointer<vtkImageData> iImage,
            vtkSmartPointer<vtkLookupTable> iLUT)
 {
+  std::cout << "==============================" << std::endl;
+  //iLUT->Print(cout);
+  std::cout << "==============================" << std::endl;
+  //iImage->Print(cout);
+  std::cout << "==============================" << std::endl;
+
   vtkSmartPointer<vtkImageMapToColors> coloredImage =
       vtkSmartPointer<vtkImageMapToColors>::New();
-  coloredImage->SetInput( iImage);
   coloredImage->SetLookupTable(iLUT);
+  coloredImage->SetInputConnection( iImage->GetProducerPort() );
+  coloredImage->PassAlphaToOutputOff();
+  coloredImage->SetOutputFormatToRGB();
   coloredImage->Update();
+  coloredImage->UpdateInformation();
 
-  return coloredImage->GetOutput();
+
+  double* test = iLUT->GetRange();
+  std::cout << "LUT RANGE " << test[0] << " to " << test[1] << std::endl;
+
+  test = iImage->GetScalarRange();
+  std::cout << "IMAGE RANGE " << test[0] << " to " << test[1] << std::endl;
+
+
+  vtkSmartPointer<vtkImageData> testimage = vtkSmartPointer<vtkImageData>::New();
+  testimage->DeepCopy(coloredImage->GetOutput());
+  testimage->Modified();
+  testimage->GetPointData()->Modified();
+
+  test = testimage->GetScalarRange();
+  std::cout << "get RANGE " << test[0] << " to " << test[1] << std::endl;
+
+  return testimage;
 }
 //--------------------------------------------------------------------------
 
@@ -183,10 +206,6 @@ getImage(const unsigned int& iTime, const unsigned int& iChannel)
     {
     if(it->Time==iTime)
       {
-        cout  << "The size of the image is: "
-              << "\npointer: "<< sizeof( colorImage(it->Image, it->LUT) )
-              << "\ndata: "<< sizeof( *colorImage(it->Image, it->LUT) )
-              << endl;
       return colorImage(it->Image, it->LUT);
       }
     ++it;
@@ -207,6 +226,8 @@ getImageBW(const unsigned int& iTime, const unsigned int& iChannel)
     {
     if(it->Time==iTime)
       {
+      double* test = it->Image->GetScalarRange();
+      std::cout << "get b/W: " << test[0] << " to " << test[1] << std::endl;
       return it->Image;
       }
     ++it;
@@ -222,7 +243,7 @@ getTimeAllChannels(const unsigned int& iTime)
 {
   vtkSmartPointer<vtkImageBlend> blendedImage =
       vtkSmartPointer<vtkImageBlend>::New();
-  //blendedImage->RemoveAllInputs();
+  blendedImage->RemoveAllInputs();
 
   GoMegaImageStructureMultiIndexContainer::index<Time>::type::iterator it =
       m_MegaImageContainer.get< Time >().find(iTime);
@@ -241,22 +262,24 @@ getTimeAllChannels(const unsigned int& iTime)
   vtkIdType i(0);
   while(it!=m_MegaImageContainer.get< Time >().end())
     {
+    it->LUT->Modified();
+    it->LUT->Build();
     blendedImage->AddInputConnection(
-          (colorImage(it->Image, it->LUT))->GetProducerPort());
+          (this->colorImage(it->Image, it->LUT))->GetProducerPort());
     blendedImage->SetOpacity(i,1/size);
     ++i;
     ++it;
     }
 
   blendedImage->Update();
+
+  ShowImage(blendedImage->GetOutput());
   blendedImage->GetOutput()->GetPointData()->Modified();
   blendedImage->GetOutput()->Modified();
 
   double* test = blendedImage->GetOutput()->GetScalarRange();
   //blendedImage->GetOutput()->Print(cout);
   std::cout << "scalar range rgb: " << test[0] << " to " << test[1] << std::endl;
-
-  ShowImage(blendedImage->GetOutput());
 
   return blendedImage->GetOutput();
 }

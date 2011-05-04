@@ -123,6 +123,7 @@ setTimePoint(const unsigned int& iTime)
                                                     color[2],
                                                     color[3]);
     // set up range
+    //double range[2] = {0, 255};
     lut->SetRange(image->GetScalarRange());
     lut->Build();
 
@@ -133,6 +134,9 @@ setTimePoint(const unsigned int& iTime)
                                                    lut,
                                                    image,
                                                    color));
+
+    double* test = image->GetScalarRange();
+    std::cout << "set time point: " << test[0] << " to " << test[1] << std::endl;
     }
 }
 //--------------------------------------------------------------------------
