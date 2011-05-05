@@ -1498,44 +1498,8 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels(int iChannel,
   // useful for the optimizations
   m_ImageProcessor->setDoppler(iChannel, m_TCoord, iPreviousT);
 
-  if ( this->m_NavigationDockWidget->ShowAllChannels() )
-    {
-    m_Image->ShallowCopy(m_ImageProcessor->getAllImages());
-    }
-  else
-    {
-    int ch = this->m_NavigationDockWidget->GetCurrentChannel();
-
-    unsigned int* time = m_ImageProcessor->getBoundsTime();
-
-    int t0 = m_TCoord - m_ImageProcessor->getDopplerStep();
-    int t1 = m_TCoord;
-    int t2 = m_TCoord + m_ImageProcessor->getDopplerStep();
-
-    // special case if we are at the borders
-    if ( t0 < time[0] )
-      {
-      t0 = time[0];
-      }
-
-    if ( t2 > time[1] )
-      {
-      t2 = time[1];
-      }
-
-    int realTime[3] = {t0, t1, t2};
-
-    // channel is time for the doppler
-    m_Image->ShallowCopy(m_ImageProcessor->getImageBW(realTime[ch], iChannel));
-    }
-
-  // CONFIGURE LUT
-  this->findChild<QAction*>("LUT")->setEnabled(
-        !this->m_NavigationDockWidget->ShowAllChannels());
-  this->findChild<QAction*>("ScalarBar")->setEnabled(
-        !this->m_NavigationDockWidget->ShowAllChannels());
-
-  // update widgets....
+  // Nicolas- should be in a different method
+  //--------------------------------
   unsigned int* time = m_ImageProcessor->getBoundsTime();
 
   int t0 = m_TCoord - m_ImageProcessor->getDopplerStep();
@@ -1545,54 +1509,63 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels(int iChannel,
   // special case if we are at the borders
   if ( t0 < time[0] )
     {
-    t0 = time[0];
+    t0 = -1;
     }
 
   if ( t2 > time[1] )
     {
-    t2 = time[1];
+    t2 = -1;
     }
 
-  // Create channels names
-  QString t_minus_step;
-  t_minus_step.append( QLatin1String("t: ") ); // + m_DopplerStep);
-  t_minus_step.append( QString::number(t0, 10) );
+  int realTime[3] = {t0, t1, t2};
+  //--------------------------------
 
-  QString t_current_step;
-  t_current_step.append( QLatin1String("t: ") ); // + m_DopplerStep);
-  t_current_step.append( QString::number(t1, 10) );
+  if ( this->m_NavigationDockWidget->ShowAllChannels() )
+    {
+    m_Image->ShallowCopy(m_ImageProcessor->getAllImages());
+    }
+  else
+    {
+    int ch = this->m_NavigationDockWidget->GetCurrentChannel();
+    // channel is time for the doppler
+    m_Image->ShallowCopy(m_ImageProcessor->getImageBW(realTime[ch], iChannel));
+    }
 
-  QString t_plus_step;
-  t_plus_step.append( QLatin1String("t: ") ); //() + m_DopplerStep);
-  t_plus_step.append( QString::number(t2, 10) );
-
-  // update channels in navigation DockWidget
+  // update widgets....
+  // Nicolas - might be only 2 channels on borders...
   m_NavigationDockWidget->SetNumberOfChannels(3);
-  m_NavigationDockWidget->blockSignals(true);
-  // Create the channels labels
-  m_NavigationDockWidget->SetChannel(0, t_minus_step);
-  m_NavigationDockWidget->SetChannel(1, t_current_step);
-  m_NavigationDockWidget->SetChannel(2, t_plus_step);
-  // Update the current channel
-  m_NavigationDockWidget->SetCurrentChannel(1);
-  m_NavigationDockWidget->blockSignals(false);
-
-  //update channels in segmentation widgets
-  // Create the channels labels
   m_ContourSegmentationDockWidget->SetNumberOfChannels(3);
-  m_ContourSegmentationDockWidget->SetChannel(0, t_minus_step);
-  m_ContourSegmentationDockWidget->SetChannel(1, t_current_step);
-  m_ContourSegmentationDockWidget->SetChannel(2, t_plus_step);
-  // Update the current channel
-  m_ContourSegmentationDockWidget->SetCurrentChannel(1);
-
-  // Create the channels labels
   m_MeshSegmentationDockWidget->SetNumberOfChannels(3);
-  m_MeshSegmentationDockWidget->SetChannel(0, t_minus_step);
-  m_MeshSegmentationDockWidget->SetChannel(1, t_current_step);
-  m_MeshSegmentationDockWidget->SetChannel(2, t_plus_step);
-  // Update the current channel
+
+
+  for(int i = 0; i<3; ++i)
+    {
+    std::cout <<"realTime[i]: " << realTime[i] << std::endl;
+
+    QString t_step;
+    t_step.append( QLatin1String("t: ") );
+    t_step.append( QString::number(realTime[i], 10) );
+
+    // Update the current channel
+    m_NavigationDockWidget->blockSignals(true);
+    m_NavigationDockWidget->SetChannel(i, t_step);
+    m_NavigationDockWidget->blockSignals(false);
+
+    m_ContourSegmentationDockWidget->SetChannel(i, t_step);
+    m_MeshSegmentationDockWidget->SetChannel(i, t_step);
+   }
+
+  // set current channel
+  m_NavigationDockWidget->SetCurrentChannel(1);
+  m_ContourSegmentationDockWidget->SetCurrentChannel(1);
   m_MeshSegmentationDockWidget->SetCurrentChannel(1);
+
+
+  // CONFIGURE LUT
+  this->findChild<QAction*>("LUT")->setEnabled(
+        !this->m_NavigationDockWidget->ShowAllChannels());
+  this->findChild<QAction*>("ScalarBar")->setEnabled(
+        !this->m_NavigationDockWidget->ShowAllChannels());
 }
 
 //-------------------------------------------------------------------------
