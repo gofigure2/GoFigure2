@@ -50,12 +50,16 @@
 
 /**
  * \struct GoLSMImageProcessor
- * \brief  Interface between MegaReader and vtkImageData
+ * \brief  Specialization of GoImageProcessor to handle LSM files
  * \ingroup Mega
  */
 class QGOIO_EXPORT GoLSMImageProcessor:public GoImageProcessor
 {
 public:
+  /*
+   * \brief Set the reader.
+   * \param[in] iReader Pointer to the reader
+   */
   void setReader(vtkLSMReader* iReader);
 
   virtual void setTimePoint(const unsigned int& iTime);

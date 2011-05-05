@@ -41,6 +41,7 @@
 GoLSMImageProcessor::
 ~GoLSMImageProcessor()
 {
+  // not working
   if(m_LSMReader)
    {
     m_LSMReader->Delete();
@@ -113,7 +114,6 @@ setTimePoint(const unsigned int& iTime)
     // get image
     m_LSMReaderVector[numberOfChannels]->SetUpdateTimePoint(iTime);
     m_LSMReaderVector[numberOfChannels]->Update();
-
     vtkSmartPointer<vtkImageData> image =
         m_LSMReaderVector[numberOfChannels]->GetOutput();
 
@@ -207,8 +207,6 @@ setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
       // get image
       m_LSMReaderVector[numberOfChannels]->SetUpdateTimePoint(dopplerTime[i]);
       m_LSMReaderVector[numberOfChannels]->Update();
-
-      // Get useful information from the reader
       vtkSmartPointer<vtkImageData> image =
           m_LSMReaderVector[numberOfChannels]->GetOutput();
 

@@ -48,13 +48,16 @@
 
 /**
  * \struct GoMegaImageProcessor
- * \brief  Interface between MegaReader and vtkImageData
+ * \brief  Specialization of GoImageProcessor to handle mega capture files
  * \ingroup Mega
  */
 class QGOIO_EXPORT GoMegaImageProcessor:public GoImageProcessor
 {
 public:
-
+  /*
+   * \brief Set the reader.
+   * \param[in] iReader Pointer to the reader
+   */
   void setReader(itk::MegaCaptureReader::Pointer iReader);
 
   virtual void setTimePoint(const unsigned int& iTime);
