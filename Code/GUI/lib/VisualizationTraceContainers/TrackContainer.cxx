@@ -998,34 +998,20 @@ void
 TrackContainer::
 UpdateCollectionDelete( MultiIndexContainerTraceIDIterator& it)
 {
-    std::cout<< "update delete " << it->TraceID << std::endl;
+  std::vector<TrackStructure*>::const_iterator itDivision =
+      it->TreeNode.m_Child.begin();
 
-  if(it->TreeNode.m_Child[0])
+  while(itDivision != it->TreeNode.m_Child.end())
     {
     // find the iterator
     MultiIndexContainerTraceIDIterator childIt
-        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[0]->TraceID);
-
-    std::cout<< "child 1 " << it->TreeNode.m_Child[0]->TraceID << std::endl;
+        = m_Container.get< TraceID >().find((*itDivision)->TraceID);
 
     if( childIt != m_Container.get< TraceID >().end() )
       {
       UpdateCollectionDelete(childIt);
       }
-    }
-
-  if(it->TreeNode.m_Child[1])
-    {
-    // find the iterator
-    MultiIndexContainerTraceIDIterator childIt
-        = m_Container.get< TraceID >().find(it->TreeNode.m_Child[1]->TraceID);
-
-        std::cout<< "child 2 " << it->TreeNode.m_Child[1]->TraceID << std::endl;
-
-    if( childIt != m_Container.get< TraceID >().end() )
-      {
-      UpdateCollectionDelete(childIt);
-      }
+    ++itDivision;
     }
 
   if( !it->IsLeaf() )
