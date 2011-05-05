@@ -41,6 +41,9 @@
 #include "vtkImageMapToColors.h"
 #include "vtkImageBlend.h"
 
+// test
+#include "vtkImageShiftScale.h"
+
 //--------------------------------------------------------------------------
 GoImageProcessor::GoImageProcessor():m_Output(NULL),
   m_BoundsTime(NULL), m_BoundsChannel(NULL), m_Extent(NULL), m_DopplerStep(1),
@@ -318,7 +321,19 @@ getAllImages()
     }
   blendedImage->Update();
 
-  return blendedImage->GetOutput();
+  double* range = blendedImage->GetOutput()->GetScalarRange();
+  std::cout << "range: " << range[0] << " to " << range[1] << std::endl;
+
+  vtkSmartPointer<vtkImageShiftScale> scale =
+      vtkSmartPointer<vtkImageShiftScale>::New();
+  scale->SetInput(blendedImage->GetOutput());
+  scale->SetShift(-range[0]);
+  scale->SetScale(255/(range[1]-range[0]));
+  scale->SetOutputScalarTypeToUnsignedChar();
+
+  scale->Update();
+
+  return scale->GetOutput();
 }
 //--------------------------------------------------------------------------
 
