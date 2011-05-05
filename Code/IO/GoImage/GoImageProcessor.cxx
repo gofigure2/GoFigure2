@@ -48,6 +48,7 @@ GoImageProcessor::GoImageProcessor():m_Output(NULL),
   m_BoundsTime(NULL), m_BoundsChannel(NULL), m_Extent(NULL), m_DopplerStep(1),
   m_NumberOfImages(3)
 {
+  m_DopplerTime = new int[3];
 }
 //--------------------------------------------------------------------------
 
@@ -56,7 +57,7 @@ GoImageProcessor::GoImageProcessor(const GoImageProcessor & iE):
   m_MegaImageContainer(iE.m_MegaImageContainer), m_Output(iE.m_Output),
   m_BoundsTime(iE.m_BoundsTime), m_BoundsChannel(iE.m_BoundsChannel),
   m_Extent(iE.m_Extent), m_DopplerStep(iE.m_DopplerStep),
-  m_NumberOfImages(iE.m_NumberOfImages)
+  m_NumberOfImages(iE.m_NumberOfImages), m_DopplerTime(iE.m_DopplerTime)
 {
 }
 //--------------------------------------------------------------------------
@@ -82,6 +83,12 @@ GoImageProcessor::
     delete[] m_Extent;
     m_Extent = NULL;
     }
+
+  if(m_DopplerTime)
+   {
+    delete[] m_DopplerTime;
+    m_DopplerTime = NULL;
+   }
 }
 //--------------------------------------------------------------------------
 // TODO Nicolas-Range is missing
@@ -386,5 +393,28 @@ GoImageProcessor::
 setDopplerStep(unsigned int iStep)
 {
   m_DopplerStep = iStep;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+int*
+GoImageProcessor::
+getDopplerTime(unsigned int iTime)
+{
+  m_DopplerTime[0] = iTime - m_DopplerStep;
+  m_DopplerTime[1] = iTime;
+  m_DopplerTime[2]= iTime + m_DopplerStep;
+
+  // special case if we are at the borders
+  if ( m_DopplerTime[0] < m_BoundsTime[0] )
+    {
+    m_DopplerTime[0] = -1;
+    }
+  if ( m_DopplerTime[2] > m_BoundsTime[1] )
+    {
+    m_DopplerTime[2] = -1;
+    }
+
+  return m_DopplerTime;
 }
 //--------------------------------------------------------------------------

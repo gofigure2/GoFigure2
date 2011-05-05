@@ -251,6 +251,7 @@ public:
   //--------------------
   unsigned int getDopplerStep();
   void setDopplerStep(unsigned int iStep);
+  int* getDopplerTime(unsigned int iTime);
 
 protected:
   /*
@@ -277,6 +278,7 @@ protected:
   //--------------------
   unsigned int m_DopplerStep;
   unsigned int m_NumberOfImages;
+  int*         m_DopplerTime;
   //--------------------
 
 private:

@@ -1498,27 +1498,7 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels(int iChannel,
   // useful for the optimizations
   m_ImageProcessor->setDoppler(iChannel, m_TCoord, iPreviousT);
 
-  // Nicolas- should be in a different method
-  //--------------------------------
-  unsigned int* time = m_ImageProcessor->getBoundsTime();
-
-  int t0 = m_TCoord - m_ImageProcessor->getDopplerStep();
-  int t1 = m_TCoord;
-  int t2 = m_TCoord + m_ImageProcessor->getDopplerStep();
-
-  // special case if we are at the borders
-  if ( t0 < time[0] )
-    {
-    t0 = -1;
-    }
-
-  if ( t2 > time[1] )
-    {
-    t2 = -1;
-    }
-
-  int realTime[3] = {t0, t1, t2};
-  //--------------------------------
+  int* realTime = m_ImageProcessor->getDopplerTime(m_TCoord);
 
   if ( this->m_NavigationDockWidget->ShowAllChannels() )
     {
@@ -1533,6 +1513,7 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels(int iChannel,
 
   // update widgets....
   // Nicolas - might be only 2 channels on borders...
+  m_NavigationDockWidget->blockSignals(true);
   m_NavigationDockWidget->SetNumberOfChannels(3);
   m_ContourSegmentationDockWidget->SetNumberOfChannels(3);
   m_MeshSegmentationDockWidget->SetNumberOfChannels(3);
@@ -1540,23 +1521,19 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels(int iChannel,
 
   for(int i = 0; i<3; ++i)
     {
-    std::cout <<"realTime[i]: " << realTime[i] << std::endl;
-
     QString t_step;
     t_step.append( QLatin1String("t: ") );
     t_step.append( QString::number(realTime[i], 10) );
 
     // Update the current channel
-    m_NavigationDockWidget->blockSignals(true);
     m_NavigationDockWidget->SetChannel(i, t_step);
-    m_NavigationDockWidget->blockSignals(false);
-
     m_ContourSegmentationDockWidget->SetChannel(i, t_step);
     m_MeshSegmentationDockWidget->SetChannel(i, t_step);
    }
 
   // set current channel
   m_NavigationDockWidget->SetCurrentChannel(1);
+  m_NavigationDockWidget->blockSignals(false);
   m_ContourSegmentationDockWidget->SetCurrentChannel(1);
   m_MeshSegmentationDockWidget->SetCurrentChannel(1);
 
@@ -1922,20 +1899,7 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
       }
     else
       {
-      unsigned int* time = m_ImageProcessor->getBoundsTime();
-      int t0 = m_TCoord - m_ImageProcessor->getDopplerStep();
-      int t1 = m_TCoord;
-      int t2 = m_TCoord + m_ImageProcessor->getDopplerStep();
-      // special case if we are at the borders
-      if ( t0 < time[0] )
-        {
-        t0 = time[0];
-        }
-      if ( t2 > time[1] )
-        {
-        t2 = time[1];
-        }
-      int realTime[3] = {t0, t1, t2};
+      int* realTime = m_ImageProcessor->getDopplerTime(m_TCoord);
 
       m_Image->ShallowCopy(m_ImageProcessor->getImageBW(realTime[ch], m_ChannelOfInterest));
       m_ImageView->SetImage(m_Image);
@@ -1961,14 +1925,10 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
 void
 QGoTabImageView3DwT::ShowOneChannel(int iChannel)
 {
-  std::cout << "update single requested" << std::endl;
   if(m_ChannelClassicMode)
     {
-    std::cout << "CLASSIC" << std::endl;
     if (m_ImageProcessor->getImageBW(m_TCoord, iChannel) )
       {
-      std::cout << "channel: "<< iChannel << std::endl;
-      std::cout << "time point: "<< m_TCoord << std::endl;
       this->findChild<QAction*>("LUT")->setEnabled(true);
       this->findChild<QAction*>("ScalarBar")->setEnabled(true);
       m_Image->ShallowCopy(m_ImageProcessor->getImageBW(m_TCoord, iChannel));
@@ -1982,30 +1942,10 @@ QGoTabImageView3DwT::ShowOneChannel(int iChannel)
     }
   else
     {
-    std::cout << "DOPPLER" << std::endl;
-    unsigned int* time = m_ImageProcessor->getBoundsTime();
-
-    int t0 = m_TCoord - m_ImageProcessor->getDopplerStep();
-    int t1 = m_TCoord;
-    int t2 = m_TCoord + m_ImageProcessor->getDopplerStep();
-
-    // special case if we are at the borders
-    if ( t0 < time[0] )
-      {
-      t0 = time[0];
-      }
-
-    if ( t2 > time[1] )
-      {
-      t2 = time[1];
-      }
-
-    int realTime[3] = {t0, t1, t2};
+    int* realTime = m_ImageProcessor->getDopplerTime(m_TCoord);
 
     if (m_ImageProcessor->getImageBW(realTime[iChannel], m_ChannelOfInterest) )
       {
-      std::cout << "channel: "<< m_ChannelOfInterest << std::endl;
-      std::cout << "time point: "<< realTime[iChannel] << std::endl;
       m_Image->ShallowCopy(m_ImageProcessor->getImageBW(realTime[iChannel], m_ChannelOfInterest));
       m_ImageView->SetImage(m_Image);
       m_ImageView->Update();
