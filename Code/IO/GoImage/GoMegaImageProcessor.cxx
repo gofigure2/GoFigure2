@@ -148,24 +148,8 @@ setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
     return;
     }
 
-  unsigned int* time = getBoundsTime();
+  int* dopplerTime = getDopplerTime(iTime);
 
-  int t0 = iTime - m_DopplerStep;
-  int t1 = iTime;
-  int t2 = iTime + m_DopplerStep;
-
-  // special case if we are at the borders
-  if ( t0 < time[0] )
-    {
-    t0 = -1;
-    }
-
-  if ( t2 > time[1] )
-    {
-    t2 = -1;
-    }
-
-  int dopplerTime[3] = {t0, t1, t2};
   unsigned int channel = iChannel;
 
   for(unsigned int i=0; i<3; ++i)

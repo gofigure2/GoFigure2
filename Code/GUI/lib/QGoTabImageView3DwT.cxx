@@ -279,21 +279,6 @@ QGoTabImageView3DwT::
   m_Image->Delete();
   m_Seeds->Delete();
 
-  if ( !m_LSMReader.empty() )
-    {
-    if ( m_LSMReader[0] )
-      {
-      m_LSMReader[0]->Delete();
-      }
-    }
-
-  // clean the LSMReader vector
-  /*while(!m_LSMReader.empty())
-    {
-    m_LSMReader.back()->Delete();
-    m_LSMReader.pop_back();
-    }
-*/
   unsigned int minch = m_MegaCaptureReader->GetMinChannel();
   unsigned int maxch = m_MegaCaptureReader->GetMaxChannel();
 

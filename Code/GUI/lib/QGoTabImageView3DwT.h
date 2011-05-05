@@ -352,13 +352,13 @@ public slots:
 
 protected:
   QGoImageView3D *                               m_ImageView;
-  std::vector< vtkSmartPointer< vtkLSMReader > > m_LSMReader;
   vtkImageData *                                 m_Image;
 
   vtkProperty *m_HighlightedContoursProperty;
   vtkProperty *m_HighlightedMeshesProperty;
 
   GoImageProcessor*                         m_ImageProcessor;
+  // TODO Nicolas don't need it...
   itk::MegaCaptureReader::Pointer           m_MegaCaptureReader;
   GoFigureFileInfoHelperMultiIndexContainer m_FileList;
   GoFigure::FileType                        m_FileType;

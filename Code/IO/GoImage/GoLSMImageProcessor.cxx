@@ -38,6 +38,18 @@
 #include "VisualizePolydataHelper.h"
 
 //--------------------------------------------------------------------------
+GoLSMImageProcessor::
+~GoLSMImageProcessor()
+{
+  if(m_LSMReader)
+   {
+    m_LSMReader->Delete();
+    m_LSMReader = NULL;
+   }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 void
 GoLSMImageProcessor::
 setReader(vtkLSMReader* iReader)
@@ -69,24 +81,6 @@ void
 GoLSMImageProcessor::
 setTimePoint(const unsigned int& iTime)
 {
-  /*
-  int NumberOfChannels = m_LSMReader[0]->GetNumberOfChannels();
-
-  if ( NumberOfChannels > 1 )
-    {
-    m_InternalImages[0] = m_LSMReader[0]->GetOutput();
-
-    vtkSmartPointer< vtkImageAppendComponents > append_filter =
-      vtkSmartPointer< vtkImageAppendComponents >::New();
-    append_filter->AddInput(m_InternalImages[0]);
-
-    for ( int i = 1; i < NumberOfChannels; i++ )
-      {
-      m_LSMReader[i]->SetUpdateTimePoint(m_TCoord);
-      m_LSMReader[i]->Update();
-
-      m_InternalImages[i] = m_LSMReader[i]->GetOutput();
-    */
   //check if time point exists
   if(iTime >= m_BoundsTime[0] && iTime <= m_BoundsTime[1])
     {
@@ -125,7 +119,7 @@ setTimePoint(const unsigned int& iTime)
 
     // Get Color
     double random1 = m_LSMReader->
-        GetChannelColorComponent(numberOfChannels, 0);//channelColor[numberOfChannels][0];
+        GetChannelColorComponent(numberOfChannels, 0);
     double value1 = random1/255;
 
     double random2 = m_LSMReader->
@@ -166,17 +160,82 @@ GoLSMImageProcessor::
 setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
            const unsigned int& iPrevious)
 {
-/*  //check if time point exists
+  //to optimize doppler view later on
+  (void) iPrevious;
+
+  //check if time point exists
   if(iTime >= m_BoundsTime[0] && iTime <= m_BoundsTime[1])
     {
-    m_MegaImageReader->SetTimePoint(iTime);
-    m_MegaImageReader->Update();
     m_MegaImageContainer.clear();
+    m_LSMReader->SetUpdateTimePoint(iTime);
+    m_LSMReader->Update();
     }
   else
     {
     return;
     }
-*/
+
+  int* dopplerTime = getDopplerTime(iTime);
+  m_LSMReaderVector.clear();
+
+  int numberOfChannels(0);
+  for(unsigned int i=0; i<3; ++i)
+    {
+      if(dopplerTime[i] >= 0)
+      {
+      ++numberOfChannels;
+      }
+    }
+
+  m_LSMReaderVector.resize(numberOfChannels);
+
+  unsigned int channel = iChannel;
+
+  for(unsigned int i=0; i<3; ++i)
+    {
+    if(dopplerTime[i] >= 0)
+      {
+      --numberOfChannels;
+      // Fill vector
+      m_LSMReaderVector[numberOfChannels] =
+            vtkSmartPointer< vtkLSMReader >::New();
+      m_LSMReaderVector[numberOfChannels]->SetFileName(
+            m_LSMReader->GetFileName() );
+      m_LSMReaderVector[numberOfChannels]->SetUpdateChannel(
+            iChannel);
+
+      // get image
+      m_LSMReaderVector[numberOfChannels]->SetUpdateTimePoint(dopplerTime[i]);
+      m_LSMReaderVector[numberOfChannels]->Update();
+
+      // Get useful information from the reader
+      vtkSmartPointer<vtkImageData> image =
+          m_LSMReaderVector[numberOfChannels]->GetOutput();
+
+      // color from red to blue
+      std::vector<double> color;
+      color.push_back(0.0);
+      color.push_back(0.0);
+      color.push_back(0.0);
+      color.push_back(0.0);
+
+      color[i] = 1.0;
+
+      // Create LUT
+      vtkSmartPointer<vtkLookupTable> lut = createLUT(color[0],
+                                                      color[1],
+                                                      color[2],
+                                                      color[3],
+                                                      image->GetScalarRange());
+
+      // Update the MegaImageStructure
+      // image, LUT, channel, time point
+      m_MegaImageContainer.insert(GoMegaImageStructure(dopplerTime[i],
+                                                       channel,
+                                                       lut,
+                                                       image,
+                                                       color));
+      }
+    }
 }
 //--------------------------------------------------------------------------
