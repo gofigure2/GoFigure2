@@ -1003,6 +1003,11 @@ QGoTabImageView3DwT::ChannelTimeMode(bool iEnable)
     unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
 
     // resize internal and update the internal image
+    if(NumberOfChannels == 1)
+      {
+      m_NavigationDockWidget->SetShowAllChannels(true);
+      }
+
     SetTimePointWithMegaCapture();
 
     // Update navigation widget
@@ -1016,7 +1021,6 @@ QGoTabImageView3DwT::ChannelTimeMode(bool iEnable)
     for ( unsigned int i = 0; i < NumberOfChannels; i++ )
       {
       m_NavigationDockWidget->SetChannel( i, m_ChannelNames[i] );
-
       m_ContourSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
       m_MeshSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
       }

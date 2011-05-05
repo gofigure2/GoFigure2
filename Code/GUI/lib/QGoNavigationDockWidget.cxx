@@ -167,15 +167,16 @@ QGoNavigationDockWidget::SetNumberOfChannels(const unsigned int & iN)
     this->line->setVisible(false);
     this->AllChannelsBtn->setVisible(false);
     this->OneChannelBtn->setVisible(false);
-    this->ChannelComboBox->setVisible(false);
     }
   else
     {
     this->line->setVisible(true);
     this->AllChannelsBtn->setVisible(true);
     this->OneChannelBtn->setVisible(true);
-    this->ChannelComboBox->setMaxCount(iN);
     }
+
+  // always required
+  this->ChannelComboBox->setMaxCount(iN);
 }
 
 //-------------------------------------------------------------------------
@@ -383,4 +384,12 @@ void QGoNavigationDockWidget::StepVisibility(int iStep)
     this->step->show();
     this->stepLabel->show();
     }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoNavigationDockWidget::
+SetShowAllChannels(const bool& iValue)
+{
+  this->AllChannelsBtn->setChecked(iValue);
 }

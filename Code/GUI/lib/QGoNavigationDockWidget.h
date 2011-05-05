@@ -107,6 +107,8 @@ public:
   /** \brief Get the channel name */
   QString GetChannelName(const int &);
 
+  void SetShowAllChannels(const bool& iValue);
+
 public slots:
   /** Set X Slice */
   void SetXSlice(int iSlice);
