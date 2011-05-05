@@ -186,9 +186,9 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
                     SLOT( ChangeColorCode(const char *) ) );
 
   QObject::connect( m_TrackViewDockWidget,
-                    SIGNAL( UpdateTracksRepresentation(double, double) ),
+                    SIGNAL( UpdateTracksRepresentation(const double&, const double&) ),
                     m_TrackContainer,
-                    SLOT( UpdateTracksRepresentation(double, double) ) );
+                    SLOT( UpdateTracksRepresentation(const double&, const double&) ) );
 
   // lineage dock widget
   m_LineageViewDockWidget = new QGoLineageViewDockWidget(this);

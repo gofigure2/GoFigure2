@@ -279,7 +279,7 @@ ModifyDivisionHighlight( vtkProperty* iProperty, const bool& iHighlight )
 //--------------------------------------------------------------------------
 void
 TrackStructure::
-ModifyDivisionColorData( double* iColor )
+ModifyDivisionColorData( const double* iColor )
 {
 this->TreeNode.rgba[0] = iColor[0];
 this->TreeNode.rgba[1] = iColor[1];
@@ -291,12 +291,12 @@ this->TreeNode.rgba[3] = iColor[3];
 //--------------------------------------------------------------------------
 void
 TrackStructure::
-ModifyDivisionColorActor( double* iColor )
+ModifyDivisionColorActor( const double* iColor )
 {
-  this->TreeNode.ActorXY->GetProperty()->SetColor(iColor);
-  this->TreeNode.ActorXZ->GetProperty()->SetColor(iColor);
-  this->TreeNode.ActorYZ->GetProperty()->SetColor(iColor);
-  this->TreeNode.ActorXYZ->GetProperty()->SetColor(iColor);
+  this->TreeNode.ActorXY->GetProperty()->SetColor(const_cast<double*>(iColor));
+  this->TreeNode.ActorXZ->GetProperty()->SetColor(const_cast<double*>(iColor));
+  this->TreeNode.ActorYZ->GetProperty()->SetColor(const_cast<double*>(iColor));
+  this->TreeNode.ActorXYZ->GetProperty()->SetColor(const_cast<double*>(iColor));
 }
 //--------------------------------------------------------------------------
 

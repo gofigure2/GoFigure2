@@ -87,17 +87,16 @@ void QGoDBLineageManager::SetLineagesInfoContainersForVisu(
                     this,
                     SLOT( UpdateElementHighlighting(unsigned int) ) );
 
-  // for a list of lineages - NOT TESTED
+  // for a list of lineages
   QObject::connect( m_LineageContainerInfoForVisu,
-                    SIGNAL( HighlightLineage(unsigned int, bool) ),
+                    SIGNAL( HighlightLineage(const unsigned int&, const bool&) ),
                     m_TrackContainerInfoForVisu,
-                    SLOT( HighlightCollection(unsigned int, bool) ) );
+                    SLOT( HighlightCollection(const unsigned int&, const bool&) ) );
 
   QObject::connect( m_LineageContainerInfoForVisu,
-                    SIGNAL( ShowLineage(unsigned int, bool) ),
+                    SIGNAL( ShowLineage(const unsigned int&, const bool&) ),
                     m_TrackContainerInfoForVisu,
-                    SLOT( ShowCollection(unsigned int, bool) ) );
-
+                    SLOT( ShowCollection(const unsigned int&, const bool&) ) );
   // export lineage
   QObject::connect( m_LineageContainerInfoForVisu,
                     SIGNAL( ExportLineages() ),

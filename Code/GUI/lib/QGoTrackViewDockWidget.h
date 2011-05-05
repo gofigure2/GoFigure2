@@ -58,7 +58,7 @@ public slots:
   void ColorCodeTracksBySpeed(bool);
   void ColorCodeTracksByOriginalColor(bool);
 signals:
-  void UpdateTracksRepresentation(double, double);
+  void UpdateTracksRepresentation(const double&, const double&);
   void ChangeColorCode( const char* );
 
 protected:

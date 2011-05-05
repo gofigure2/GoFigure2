@@ -164,7 +164,7 @@ public:
 
   /** \brief Set the lookup table
       \param[in] iLut */
-  void SetLookupTable( vtkLookupTable* iLut ) const;
+  void SetLookupTable( const vtkLookupTable* iLut ) const;
 
   virtual void ReleaseData() const;
 

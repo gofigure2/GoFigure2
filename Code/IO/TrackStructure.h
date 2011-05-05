@@ -150,9 +150,9 @@ public:
   void ModifyDivisionHighlight( vtkProperty* iProperty,
                                const bool& iHighlight );
 
-  void ModifyDivisionColorData( double* iColor );
+  void ModifyDivisionColorData( const double* iColor );
   // for the highlight
-  void ModifyDivisionColorActor( double* iColor );
+  void ModifyDivisionColorActor( const double* iColor );
 
   void AddDivisionArray( vtkIntArray* iArray );
 

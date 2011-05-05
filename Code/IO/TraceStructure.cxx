@@ -302,25 +302,29 @@ TraceStructure::RenderWithOriginalColors() const
 
 //--------------------------------------------------------------------------
 void
-TraceStructure::SetLookupTable(vtkLookupTable *iLut) const
+TraceStructure::SetLookupTable(const vtkLookupTable *iLut) const
 {
   if ( iLut )
     {
     if ( this->ActorXY )
       {
-      this->ActorXY->GetMapper()->SetLookupTable(iLut);
+      this->ActorXY->GetMapper()->SetLookupTable(
+              const_cast<vtkLookupTable*>(iLut));
       }
     if ( this->ActorXZ )
       {
-      this->ActorXZ->GetMapper()->SetLookupTable(iLut);
+      this->ActorXZ->GetMapper()->SetLookupTable(
+              const_cast<vtkLookupTable*>(iLut));
       }
     if ( this->ActorYZ )
       {
-      this->ActorYZ->GetMapper()->SetLookupTable(iLut);
+      this->ActorYZ->GetMapper()->SetLookupTable(
+              const_cast<vtkLookupTable*>(iLut));
       }
     if ( this->ActorXYZ )
       {
-      this->ActorXYZ->GetMapper()->SetLookupTable(iLut);
+      this->ActorXYZ->GetMapper()->SetLookupTable(
+              const_cast<vtkLookupTable*>(iLut));
       }
     }
 }
