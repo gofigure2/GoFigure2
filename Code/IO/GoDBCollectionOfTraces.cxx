@@ -1079,11 +1079,10 @@ int GoDBCollectionOfTraces::GetTraceIDWithLowestTimePoint(
  std::list<unsigned int> GoDBCollectionOfTraces::GetTrackFamilyID(
    vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTrackIDs)
  {
+   FieldWithValue JoinCondition = { "trackID", "trackIDMother", "=" };
    std::vector<std::string> VectTrackIDs = ListUnsgIntToVectorString(iListTrackIDs);
-   std::list<unsigned int> oList =
-   GetTwoFieldsFromTwoTables(
-   iDatabaseConnector, this->m_TracesName,
-  "trackfamily", "track.trackfamilyID", "trackfamily.trackfamilyID",
-  this->m_TracesIDName, VectTrackIDs, true);
+   std::list<unsigned int> oList = GetTwoFieldsFromTwoTables(iDatabaseConnector, 
+     this->m_TracesName, "trackfamily", JoinCondition, "track.trackfamilyID", 
+     "trackfamily.trackfamilyID", this->m_TracesIDName, VectTrackIDs, true);
    return oList;
  }

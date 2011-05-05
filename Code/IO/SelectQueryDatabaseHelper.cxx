@@ -718,13 +718,13 @@ std::vector< std::string > GetSamefieldFromTwoTables(
 //------------------------------------------------------------------------------
 std::list< unsigned int > GetTwoFieldsFromTwoTables(
   vtkMySQLDatabase *iDatabaseConnector, std::string iTableOne,
-  std::string iTableTwo, std::string iColumnOne, std::string iColumnTwo,
+  std::string iTableTwo, FieldWithValue iOnCondition, std::string iColumnOne, std::string iColumnTwo,
   std::string iField, std::vector< std::string > iListValues, bool Distinct)
 {
   std::string QueryString = SelectQueryStreamListConditions(iTableOne, iColumnOne, iField, iListValues, Distinct);
   QueryString += " UNION ";
-  QueryString += SelectQueryStreamListConditions(iTableTwo, iColumnTwo,
-                                                 iField, iListValues, Distinct);
+  std::string What = GetLeftJoinTwoTables(iTableOne, iTableTwo, iOnCondition);
+  QueryString += SelectQueryStreamListConditions(What, iColumnTwo, iField, iListValues, Distinct);
 
   return ExecuteSelectQuery< std::list< unsigned int > >(iDatabaseConnector, QueryString);
 }
