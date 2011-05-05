@@ -61,10 +61,6 @@ setReader(vtkLSMReader* iReader)
       GetExtent(m_Extent);
 
   m_TimeInterval = m_LSMReader->GetTimeInterval();
-
-  //--------------------
-
-  setTimePoint(m_BoundsTime[0]);
 }
 //--------------------------------------------------------------------------
 

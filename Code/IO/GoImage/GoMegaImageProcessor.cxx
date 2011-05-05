@@ -56,12 +56,6 @@ setReader(itk::MegaCaptureReader::Pointer iReader)
       GetExtent(m_Extent);
 
   m_TimeInterval = m_MegaImageReader->GetTimeInterval();
-
-  //--------------------
-
-  unsigned int time = m_MegaImageReader->GetMinTimePoint();
-
-  setTimePoint(time);
 }
 //--------------------------------------------------------------------------
 
