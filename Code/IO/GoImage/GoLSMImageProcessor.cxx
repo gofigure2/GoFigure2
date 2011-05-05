@@ -35,14 +35,14 @@
 
 #include "GoLSMImageProcessor.h"
 
+#include "VisualizePolydataHelper.h"
+
 //--------------------------------------------------------------------------
 void
 GoLSMImageProcessor::
 setReader(vtkLSMReader* iReader)
 {
   m_LSMReader = iReader;
-
-  std::cout << "init parameters" << std::endl;
 
   // update general parameters
   //--------------------
@@ -69,10 +69,30 @@ void
 GoLSMImageProcessor::
 setTimePoint(const unsigned int& iTime)
 {
+  /*
+  int NumberOfChannels = m_LSMReader[0]->GetNumberOfChannels();
+
+  if ( NumberOfChannels > 1 )
+    {
+    m_InternalImages[0] = m_LSMReader[0]->GetOutput();
+
+    vtkSmartPointer< vtkImageAppendComponents > append_filter =
+      vtkSmartPointer< vtkImageAppendComponents >::New();
+    append_filter->AddInput(m_InternalImages[0]);
+
+    for ( int i = 1; i < NumberOfChannels; i++ )
+      {
+      m_LSMReader[i]->SetUpdateTimePoint(m_TCoord);
+      m_LSMReader[i]->Update();
+
+      m_InternalImages[i] = m_LSMReader[i]->GetOutput();
+    */
   //check if time point exists
   if(iTime >= m_BoundsTime[0] && iTime <= m_BoundsTime[1])
     {
     m_MegaImageContainer.clear();
+    m_LSMReader->SetUpdateTimePoint(iTime);
+    m_LSMReader->Update();
     }
   else
     {
@@ -82,24 +102,28 @@ setTimePoint(const unsigned int& iTime)
   // update the container
   // Get Number of channels from reader
   int numberOfChannels = getNumberOfChannels();
+  m_LSMReaderVector.resize(numberOfChannels);
 
   while(numberOfChannels>0)
     {
     --numberOfChannels;
 
-    // Get useful information from the reader
-    // Get Image
+    // Fill vector
+    m_LSMReaderVector[numberOfChannels] =
+          vtkSmartPointer< vtkLSMReader >::New();
+    m_LSMReaderVector[numberOfChannels]->SetFileName(
+          m_LSMReader->GetFileName() );
+    m_LSMReaderVector[numberOfChannels]->SetUpdateChannel(
+          numberOfChannels );
+
+    // get image
+    m_LSMReaderVector[numberOfChannels]->SetUpdateTimePoint(iTime);
+    m_LSMReaderVector[numberOfChannels]->Update();
+
     vtkSmartPointer<vtkImageData> image =
-        m_LSMReader->GetTimePointOutput(numberOfChannels, iTime);
+        m_LSMReaderVector[numberOfChannels]->GetOutput();
 
     // Get Color
-    // vtkGetObjectMacro(ChannelColors, vtkIntArray);
-
-    // int vtkLSMReader::GetChannelColorComponent(int ch, int component)
-    //std::vector<std::vector<int> >channelColor =
-    //    m_MegaImageReader->GetChannelColor();
-
-
     double random1 = m_LSMReader->
         GetChannelColorComponent(numberOfChannels, 0);//channelColor[numberOfChannels][0];
     double value1 = random1/255;

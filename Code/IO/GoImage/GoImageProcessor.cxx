@@ -41,8 +41,6 @@
 #include "vtkImageMapToColors.h"
 #include "vtkImageBlend.h"
 
-#include "VisualizePolydataHelper.h"
-
 //--------------------------------------------------------------------------
 GoImageProcessor::GoImageProcessor():m_Output(NULL),
   m_BoundsTime(NULL), m_BoundsChannel(NULL), m_Extent(NULL), m_DopplerStep(1),

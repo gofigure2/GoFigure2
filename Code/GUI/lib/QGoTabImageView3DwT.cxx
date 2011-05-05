@@ -122,7 +122,6 @@
 //-------------------------------------------------------------------------
 QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   QGoTabElementBase(iParent),
-  m_LSMReader(0),
   m_Image(0),
   m_BackgroundColor(Qt::black),
   m_IntersectionLineWidth(2.),
@@ -139,6 +138,8 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_Image = vtkImageData::New();
   m_Seeds = vtkPoints::New();
 
+  // doppler view useful variables
+  // to be moved in ImageProcessor or somewhere else
   m_ChannelClassicMode = true;
   m_ChannelOfInterest = 0;
 
@@ -352,8 +353,10 @@ QGoTabImageView3DwT::CreateContourSegmentationDockWidget()
   // basic interactor connections
   //----------------------------------------------------------------
 
+  //m_ContourSegmentationDockWidget =
+  //  new QGoContourSegmentationBaseDockWidget(this, m_Seeds, &m_InternalImages);
   m_ContourSegmentationDockWidget =
-    new QGoContourSegmentationBaseDockWidget(this, m_Seeds, &m_InternalImages);
+    new QGoContourSegmentationBaseDockWidget(this, m_Seeds, NULL);
 
   QObject::connect( m_ContourSegmentationDockWidget,
                     SIGNAL( ReinitializeInteractorActivated(bool) ),
@@ -426,8 +429,11 @@ QGoTabImageView3DwT::CreateMeshSegmentationDockWidget()
   // basic interactor connections
   //----------------------------------------------------------------
 
+  //m_MeshSegmentationDockWidget =
+  //  new QGoMeshSegmentationBaseDockWidget(this, m_Seeds, &m_InternalImages);
+
   m_MeshSegmentationDockWidget =
-    new QGoMeshSegmentationBaseDockWidget(this, m_Seeds, &m_InternalImages);
+    new QGoMeshSegmentationBaseDockWidget(this, m_Seeds, NULL);
 
   QObject::connect( m_MeshSegmentationDockWidget,
                     SIGNAL( ReinitializeInteractorActivated(bool) ),
@@ -1331,22 +1337,6 @@ QGoTabImageView3DwT::GetTabDimensionType() const
 void
 QGoTabImageView3DwT::SetLSMReader(vtkLSMReader *iReader, const int & iTimePoint)
 {
-  if ( iReader )
-    {
-    if ( m_LSMReader.empty() )
-      {
-      m_LSMReader.push_back(iReader);
-      }
-    else
-      {
-      if ( iReader != m_LSMReader[0] )
-        {
-        m_LSMReader[0] = iReader;
-        }
-      }
-
-    m_LSMReader[0]->Update();
-    }
   GoLSMImageProcessor* processor = new GoLSMImageProcessor;
   processor->setReader(iReader);
   m_ImageProcessor = processor;
@@ -1494,7 +1484,7 @@ void
 QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels(int iChannel,
                                                              int iPreviousT)
 {
-  // previous not used yet.
+  // iPreviousT not used yet.
   // useful for the optimizations
   m_ImageProcessor->setDoppler(iChannel, m_TCoord, iPreviousT);
 
@@ -1549,52 +1539,6 @@ QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels(int iChannel,
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SetTimePointWithLSMReaders()
-{
-  m_LSMReader[0]->SetUpdateTimePoint(m_TCoord);
-
-  int NumberOfChannels = m_LSMReader[0]->GetNumberOfChannels();
-
-  if ( NumberOfChannels > 1 )
-    {
-    m_InternalImages[0] = m_LSMReader[0]->GetOutput();
-
-    vtkSmartPointer< vtkImageAppendComponents > append_filter =
-      vtkSmartPointer< vtkImageAppendComponents >::New();
-    append_filter->AddInput(m_InternalImages[0]);
-
-    for ( int i = 1; i < NumberOfChannels; i++ )
-      {
-      m_LSMReader[i]->SetUpdateTimePoint(m_TCoord);
-      m_LSMReader[i]->Update();
-
-      m_InternalImages[i] = m_LSMReader[i]->GetOutput();
-      append_filter->AddInput(m_InternalImages[i]);
-      }
-    // This is really stupid!!!
-    if ( NumberOfChannels < 3 )
-      {
-      for ( int i = NumberOfChannels; i < 3; i++ )
-        {
-        append_filter->AddInput(m_InternalImages[0]);
-        }
-      }
-    append_filter->Update();
-
-    m_Image->ShallowCopy( append_filter->GetOutput() );
-    }
-  else
-    {
-    m_LSMReader[0]->Update();
-
-    m_Image->ShallowCopy( m_LSMReader[0]->GetOutput() );
-    }
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
 QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
 {
   if ( iTimePoint == m_TCoord )
@@ -1604,49 +1548,25 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
 
   QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
 
-  if ( !m_LSMReader.empty() )
+  unsigned int t = static_cast< unsigned int >( iTimePoint );
+  unsigned int* time = m_ImageProcessor->getBoundsTime();
+  if ( ( t < time[0] ) || ( t > time[1] ) )
     {
-    if ( iTimePoint >= m_LSMReader[0]->GetNumberOfTimePoints() )
-      {
-      return;
-      }
-    else
-      {
-      m_TCoord = iTimePoint;
-      SetTimePointWithLSMReaders();
-      emit TimePointChanged(m_TCoord);
-      }
+    return;
     }
   else
     {
-    if ( !m_FileList.empty() )
+    int previousT = m_TCoord;
+    m_TCoord = iTimePoint;
+    if ( m_ChannelClassicMode )
       {
-      unsigned int t = static_cast< unsigned int >( iTimePoint );
-      unsigned int* time = m_ImageProcessor->getBoundsTime();
-      if ( ( t < time[0] ) || ( t > time[1] ) )
-        {
-        return;
-        }
-      else
-        {
-        int previousT = m_TCoord;
-        m_TCoord = iTimePoint;
-        if ( m_ChannelClassicMode )
-          {
-          SetTimePointWithMegaCapture();
-          }
-        else
-          {
-          SetTimePointWithMegaCaptureTimeChannels(m_ChannelOfInterest, previousT);
-          }
-        emit TimePointChanged(m_TCoord);
-        }
+      SetTimePointWithMegaCapture();
       }
     else
       {
-      // no lsm reader, no file list. did you really provide any input?
-      qWarning() << "No lsm reader. No file list";
+      SetTimePointWithMegaCaptureTimeChannels(m_ChannelOfInterest, previousT);
       }
+    emit TimePointChanged(m_TCoord);
     }
 
   this->m_ContourContainer->ShowActorsWithGivenTimePoint(m_TCoord);
@@ -2765,7 +2685,8 @@ QGoTabImageView3DwT::CreateMeshFromSelectedContours(
     vtkPolyData *mesh = filter->GetOutput();
 
     vtkBox *implicitFunction = vtkBox::New();
-    implicitFunction->SetBounds( m_InternalImages[0]->GetBounds() );
+    //m_InternalImages[0]->GetBounds()
+    implicitFunction->SetBounds( NULL );
 
     vtkClipPolyData *cutter = vtkClipPolyData::New();
     cutter->SetInput(mesh);

@@ -353,7 +353,6 @@ public slots:
 protected:
   QGoImageView3D *                               m_ImageView;
   std::vector< vtkSmartPointer< vtkLSMReader > > m_LSMReader;
-  std::vector< vtkSmartPointer< vtkImageData > > m_InternalImages;
   vtkImageData *                                 m_Image;
 
   vtkProperty *m_HighlightedContoursProperty;
@@ -559,10 +558,10 @@ protected:
   std::vector< vtkActor * > AddContour(vtkPolyData *dataset,
                                        vtkProperty *property = NULL);
 
-  void SetTimePointWithLSMReaders();
-
+  // TODO remove megacapture
   void SetTimePointWithMegaCapture();
 
+    // TODO remove megacaptureZz
   void SetTimePointWithMegaCaptureTimeChannels(int channel, int PreviousT = 0);
 
   /**
