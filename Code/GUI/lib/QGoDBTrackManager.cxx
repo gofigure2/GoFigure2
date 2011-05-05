@@ -174,8 +174,13 @@ void QGoDBTrackManager::UpdateTWAndContainerForImportedTraces(
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::DeleteCheckedTraces(vtkMySQLDatabase *iDatabaseConnector)
 {
+  std::list<unsigned int> ListDivisionsToDelete = 
+    this->m_CollectionOfTraces->GetTrackFamilyID(iDatabaseConnector, 
+    this->GetListHighlightedIDs() );
   this->DeleteTracesTemplate< TrackContainer >(iDatabaseConnector,
                                                this->m_TrackContainerInfoForVisu);
+  //check that the tracks to be deleted are not part of a trackfamily (as daughters or mother)
+  //this->DeleteOneDivision();
 }
 
 //-------------------------------------------------------------------------
