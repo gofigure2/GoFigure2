@@ -117,7 +117,6 @@
 // TESTS
 #include "vtkPolyDataWriter.h"
 #include "vtkViewImage3D.h"
-//#include "VisualizePolydataHelper.h"
 
 //-------------------------------------------------------------------------
 QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
@@ -1014,18 +1013,12 @@ QGoTabImageView3DwT::ChannelTimeMode(bool iEnable)
     m_ContourSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
     m_MeshSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
 
-    if ( NumberOfChannels > 1 )
+    for ( unsigned int i = 0; i < NumberOfChannels; i++ )
       {
-      m_NavigationDockWidget->SetChannel( 0, m_ChannelNames[0] );
-      m_ContourSegmentationDockWidget->SetChannel( 0, m_ChannelNames[0] );
-      m_MeshSegmentationDockWidget->SetChannel( 0, m_ChannelNames[0] );
-      for ( unsigned int i = 1; i < NumberOfChannels; i++ )
-        {
-        m_NavigationDockWidget->SetChannel( i, m_ChannelNames[i] );
+      m_NavigationDockWidget->SetChannel( i, m_ChannelNames[i] );
 
-        m_ContourSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
-        m_MeshSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
-        }
+      m_ContourSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
+      m_MeshSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
       }
     m_NavigationDockWidget->blockSignals(false);
     // update visualization
@@ -1326,7 +1319,12 @@ QGoTabImageView3DwT::SetLSMReader(vtkLSMReader *iReader, const int & iTimePoint)
   processor->setReader(iReader);
   m_ImageProcessor = processor;
 
-  UpdateWidgetsFromImageProcessor(iTimePoint);
+  UpdateWidgetsFromImageProcessor();
+
+  if ( static_cast< unsigned int >( m_TCoord ) != iTimePoint )
+    {
+    SetTimePoint(iTimePoint);
+    }
 }
 
 //-------------------------------------------------------------------------
@@ -1354,14 +1352,19 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
   processor->setReader(m_MegaCaptureReader);
   m_ImageProcessor = processor;
 
-  UpdateWidgetsFromImageProcessor(iTimePoint);
+  UpdateWidgetsFromImageProcessor();
+
+  if ( static_cast< unsigned int >( m_TCoord ) != iTimePoint )
+    {
+    SetTimePoint(iTimePoint);
+    }
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-UpdateWidgetsFromImageProcessor(const unsigned int & iTimePoint)
+UpdateWidgetsFromImageProcessor()
 {
   unsigned int*  boundTime    = m_ImageProcessor->getBoundsTime();
   unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
@@ -1375,24 +1378,15 @@ UpdateWidgetsFromImageProcessor(const unsigned int & iTimePoint)
   m_ContourSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
   m_MeshSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
 
-  // Set up QSpinBox in m_VideoRecorderWidget
-  if ( NumberOfChannels > 1 )
+  for ( unsigned int i = 0; i < NumberOfChannels; i++ )
     {
-    m_NavigationDockWidget->SetChannel(0);
-    m_ChannelNames[0] = m_NavigationDockWidget->GetChannelName(0);
+    m_NavigationDockWidget->SetChannel(i);
+    m_ChannelNames[i] = m_NavigationDockWidget->GetChannelName(i);
 
-    m_ContourSegmentationDockWidget->SetChannel( 0, m_ChannelNames[0] );
-    m_MeshSegmentationDockWidget->SetChannel( 0, m_ChannelNames[0] );
-
-    for ( unsigned int i = 1; i < NumberOfChannels; i++ )
-      {
-      m_NavigationDockWidget->SetChannel(i);
-      m_ChannelNames[i] = m_NavigationDockWidget->GetChannelName(i);
-
-      m_ContourSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
-      m_MeshSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
-      }
+    m_ContourSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
+    m_MeshSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
     }
+
 
   m_NavigationDockWidget->SetXMinimumAndMaximum(extent[0], extent[1]);
   m_NavigationDockWidget->SetXSlice( ( extent[0] + extent[1] ) / 2 );
@@ -1404,12 +1398,8 @@ UpdateWidgetsFromImageProcessor(const unsigned int & iTimePoint)
   m_NavigationDockWidget->SetZSlice( ( extent[4] + extent[5] ) / 2 );
 
   m_NavigationDockWidget->SetTMinimumAndMaximum(boundTime[0], boundTime[1]);
-  m_NavigationDockWidget->SetTSlice(iTimePoint);
-
-  if ( static_cast< unsigned int >( m_TCoord ) != iTimePoint )
-    {
-    SetTimePoint(iTimePoint);
-    }
+  m_NavigationDockWidget->SetTSlice(
+        boundTime[0]+(boundTime[1]-boundTime[0])/2);
 
   // Set up QSpinBox in m_VideoRecorderWidget
 #if defined( ENABLEFFMPEG ) || defined( ENABLEAVI )
@@ -1440,6 +1430,8 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
       }
     else
       {
+      // good LUT already there
+      // - updated when we go from all channels to one channel
       int ch = this->m_NavigationDockWidget->GetCurrentChannel();
       m_Image->ShallowCopy(m_ImageProcessor->getImageBW(m_TCoord, ch));
       }
@@ -1452,9 +1444,14 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
     }
   else
     {
-    unsigned int* boundsChannel = m_ImageProcessor->getBoundsChannel();
-    m_Image->ShallowCopy(
-          m_ImageProcessor->getImageBW(m_TCoord, boundsChannel[0]));
+    int ch(0);
+    //update LUT
+    m_Image->ShallowCopy(m_ImageProcessor->getImageBW(m_TCoord, ch));
+    m_ImageView->SetImage(m_Image);
+    m_ImageView->Update();
+    vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
+    lut->DeepCopy(m_ImageProcessor->getLookuptable(ch, m_TCoord));
+    m_ImageView->SetLookupTable(lut);
 
     // CONFIGURE LUT
     this->findChild<QAction*>("LUT")->setEnabled(true);

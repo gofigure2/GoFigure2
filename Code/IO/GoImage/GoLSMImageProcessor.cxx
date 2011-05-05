@@ -35,8 +35,6 @@
 
 #include "GoLSMImageProcessor.h"
 
-#include "VisualizePolydataHelper.h"
-
 //--------------------------------------------------------------------------
 GoLSMImageProcessor::
 ~GoLSMImageProcessor()

@@ -665,7 +665,7 @@ protected slots:
   void AddTraceIDIntoPolydata( vtkPolyData* iPolydata, unsigned int iTraceID, const char* iTrace);
 
 private:
-  void UpdateWidgetsFromImageProcessor(const unsigned int & iTimePoint);
+  void UpdateWidgetsFromImageProcessor();
 
   Q_DISABLE_COPY(QGoTabImageView3DwT);
 };
