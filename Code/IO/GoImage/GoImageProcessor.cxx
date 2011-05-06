@@ -170,8 +170,8 @@ colorImage(vtkSmartPointer<vtkImageData> iImage,
   vtkSmartPointer<vtkImageMapToWindowLevelColors> coloredImage =
       vtkSmartPointer<vtkImageMapToWindowLevelColors>::New();
   coloredImage->SetLookupTable(iLUT);
-  coloredImage->SetInputConnection( iImage->GetProducerPort() );
-  coloredImage->PassAlphaToOutputOff();
+  coloredImage->SetInput( iImage );
+  //coloredImage->PassAlphaToOutputOff();
   coloredImage->SetOutputFormatToRGB();
   coloredImage->Update();
 
