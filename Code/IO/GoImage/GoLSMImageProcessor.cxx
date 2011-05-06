@@ -213,7 +213,7 @@ setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
       color.push_back(0.0);
       color.push_back(0.0);
       color.push_back(0.0);
-      color.push_back(0.0);
+      color.push_back(1.0);
 
       color[i] = 1.0;
 

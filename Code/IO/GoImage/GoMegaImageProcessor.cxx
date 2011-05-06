@@ -95,19 +95,23 @@ setTimePoint(const unsigned int& iTime)
 
 
     double random1 = channelColor[numberOfChannels][0];
-    double value1 = random1/255;
+    double value1 = random1;
 
     double random2 = channelColor[numberOfChannels][1];
-    double value2 = random2/255;
+    double value2 = random2;
 
     double random3 = channelColor[numberOfChannels][2];
-    double value3 = random3/255;
+    double value3 = random3;
 
     std::vector<double> color;
     color.push_back(value1);
     color.push_back(value2);
     color.push_back(value3);
-    color.push_back(1);
+    color.push_back(255);
+
+    std::cout << "channel: " << numberOfChannels << std::endl;
+    std::cout << "real color: " << color[0] <<"-"<< color[1] <<"-"
+              << color[2] <<"-" << color[3] << std::endl;
 
     // Create LUT
     vtkSmartPointer<vtkLookupTable> lut = createLUT(color[0],
@@ -148,14 +152,16 @@ setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
     return;
     }
 
+  std::cout << "BEFORE container size: " << m_MegaImageContainer.size() << std::endl;
+
   int* dopplerTime = getDopplerTime(iTime);
 
   unsigned int channel = iChannel;
 
   for(unsigned int i=0; i<3; ++i)
     {
-      if(dopplerTime[i] >= 0)
-      {
+    if(dopplerTime[i] >= 0)
+    {
     // Get useful information from the reader
     // Nicolas Get Image or get output...?
     vtkSmartPointer<vtkImageData> image =
@@ -166,9 +172,13 @@ setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
     color.push_back(0.0);
     color.push_back(0.0);
     color.push_back(0.0);
-    color.push_back(0.0);
+    color.push_back(255);
 
-    color[i] = 1.0;
+    color[i] = 255;
+
+    std::cout << "doppler time: " << dopplerTime[i] << std::endl;
+    std::cout << "doppler color: " << color[0] <<"-"<< color[1] <<"-"
+              << color[2] <<"-" << color[3] << std::endl;
 
     // Create LUT
     vtkSmartPointer<vtkLookupTable> lut = createLUT(color[0],
@@ -186,6 +196,8 @@ setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
                                                      color));
       }
     }
+
+  std::cout << "AFTER container size: " << m_MegaImageContainer.size() << std::endl;
 /*
   vtkSmartPointer< vtkImageAppendComponents > append_filter =
     vtkSmartPointer< vtkImageAppendComponents >::New();

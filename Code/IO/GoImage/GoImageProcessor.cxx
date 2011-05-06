@@ -38,16 +38,18 @@
 // external library include
 #include "vtkLookupTable.h"
 #include "vtkMath.h"
-#include "vtkImageMapToColors.h"
+#include "vtkImageMapToWindowLevelColors.h"
 #include "vtkImageBlend.h"
 
 // test
 #include "vtkImageShiftScale.h"
 
+#include "VisualizePolydataHelper.h"
+
 //--------------------------------------------------------------------------
 GoImageProcessor::GoImageProcessor():m_Output(NULL),
   m_BoundsTime(NULL), m_BoundsChannel(NULL), m_Extent(NULL), m_DopplerStep(1),
-  m_NumberOfImages(3)
+  m_NumberOfImages(3), m_DopplerMode(false)
 {
   m_DopplerTime = new int[3];
 }
@@ -58,7 +60,8 @@ GoImageProcessor::GoImageProcessor(const GoImageProcessor & iE):
   m_MegaImageContainer(iE.m_MegaImageContainer), m_Output(iE.m_Output),
   m_BoundsTime(iE.m_BoundsTime), m_BoundsChannel(iE.m_BoundsChannel),
   m_Extent(iE.m_Extent), m_DopplerStep(iE.m_DopplerStep),
-  m_NumberOfImages(iE.m_NumberOfImages), m_DopplerTime(iE.m_DopplerTime)
+  m_NumberOfImages(iE.m_NumberOfImages), m_DopplerTime(iE.m_DopplerTime),
+  m_DopplerMode(iE.m_DopplerMode)
 {
 }
 //--------------------------------------------------------------------------
@@ -159,13 +162,21 @@ GoImageProcessor::
 colorImage(vtkSmartPointer<vtkImageData> iImage,
            vtkSmartPointer<vtkLookupTable> iLUT)
 {
-  vtkSmartPointer<vtkImageMapToColors> coloredImage =
-      vtkSmartPointer<vtkImageMapToColors>::New();
+  double* range = iLUT->GetRange();
+  std::cout << "range LUT: " << range[0] << " to " << range[1] << std::endl;
+  range = iImage->GetScalarRange();
+  std::cout << "range image: " << range[0] << " to " << range[1] << std::endl;
+
+  vtkSmartPointer<vtkImageMapToWindowLevelColors> coloredImage =
+      vtkSmartPointer<vtkImageMapToWindowLevelColors>::New();
   coloredImage->SetLookupTable(iLUT);
   coloredImage->SetInputConnection( iImage->GetProducerPort() );
   coloredImage->PassAlphaToOutputOff();
   coloredImage->SetOutputFormatToRGB();
   coloredImage->Update();
+
+  range = coloredImage->GetOutput()->GetScalarRange();
+  std::cout << "range after color image: " << range[0] << " to " << range[1] << std::endl;
 
   return coloredImage->GetOutput();
 }
@@ -296,37 +307,34 @@ getAllImages()
   vtkSmartPointer<vtkImageBlend> blendedImage =
       vtkSmartPointer<vtkImageBlend>::New();
   blendedImage->RemoveAllInputs();
+  blendedImage->SetBlendModeToCompound();
+
+  double size = m_MegaImageContainer.size();
 
   GoMegaImageStructureMultiIndexContainer::iterator it =
       m_MegaImageContainer.begin();
 
-  /*
-    \todo Nicolas - do sth else....
-   */
-  double size(0);
-  while(it!=m_MegaImageContainer.end())
-    {
-    ++size;
-    ++it;
-    }
-  it = m_MegaImageContainer.begin();
-
   vtkIdType i(0);
   while(it!=m_MegaImageContainer.end())
     {
+    std::cout << "in loop... " << i << std::endl;
+    //double* range = colorImage(it->Image, it->LUT)->GetScalarRange();
     blendedImage->AddInput(colorImage(it->Image, it->LUT));
-    blendedImage->SetOpacity(i, 1/size);
+    blendedImage->SetOpacity(i,1/size);
     ++i;
     ++it;
     }
   blendedImage->Update();
 
+  double* range = blendedImage->GetOutput()->GetScalarRange();
+
+  std::cout << "range after blending: " << range[0] << " to " << range[1] << std::endl;
+
   vtkSmartPointer<vtkImageShiftScale> scale =
       vtkSmartPointer<vtkImageShiftScale>::New();
   scale->SetInput(blendedImage->GetOutput());
-  scale->SetScale(255/(255/size));
+  scale->SetScale(255/range[1]);
   scale->SetOutputScalarTypeToUnsignedChar();
-
   scale->Update();
 
   return scale->GetOutput();
@@ -425,5 +433,23 @@ getDopplerTime(unsigned int iTime)
     }
 
   return m_DopplerTime;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+GoImageProcessor::
+setDopplerMode(const bool& iEnable)
+{
+  m_DopplerMode = iEnable;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+bool
+GoImageProcessor::
+getDopplerMode()
+{
+  return m_DopplerMode;
 }
 //--------------------------------------------------------------------------

@@ -252,6 +252,8 @@ public:
   unsigned int getDopplerStep();
   void setDopplerStep(unsigned int iStep);
   int* getDopplerTime(unsigned int iTime);
+  void setDopplerMode(const bool& iEnable);
+  bool getDopplerMode();
 
 protected:
   /*
@@ -276,6 +278,7 @@ protected:
 
   // Doppler view parameters
   //--------------------
+  bool         m_DopplerMode;
   unsigned int m_DopplerStep;
   unsigned int m_NumberOfImages;
   int*         m_DopplerTime;

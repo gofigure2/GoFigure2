@@ -401,9 +401,6 @@ protected:
 
   //bool m_TraceWidgetRequiered;
 
-  /** \brief We are in the regular visualization mode (true) or in the time
-   * visualization mode (false) */
-  bool m_ChannelClassicMode;
   /** \brief ID of the channel that we want to visualize in the time
    * visualization mode */
   int  m_ChannelOfInterest;

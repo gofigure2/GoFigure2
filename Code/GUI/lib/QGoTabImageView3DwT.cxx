@@ -139,7 +139,6 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
 
   // doppler view useful variables
   // to be moved in ImageProcessor or somewhere else
-  m_ChannelClassicMode = true;
   m_ChannelOfInterest = 0;
 
   m_HighlightedContoursProperty = vtkProperty::New();
@@ -995,10 +994,8 @@ QGoTabImageView3DwT::CreateTracesActions()
 void
 QGoTabImageView3DwT::ChannelTimeMode(bool iEnable)
 {
-  m_ChannelClassicMode = !iEnable;
-
   // if we leave the time mode, go back to the classic mode automatically
-  if ( m_ChannelClassicMode )
+  if ( !iEnable )
     {
     unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
 
@@ -1051,6 +1048,7 @@ void QGoTabImageView3DwT::LoadChannelTime()
 
   if ( ok )
     {
+    m_ImageProcessor->setDopplerMode(ok);
     int value = item.toInt(&ok, 10);
     m_ChannelOfInterest = value;
     SetTimePointWithMegaCaptureTimeChannels(m_ChannelOfInterest);
@@ -1546,7 +1544,7 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
     {
     int previousT = m_TCoord;
     m_TCoord = iTimePoint;
-    if ( m_ChannelClassicMode )
+    if (!m_ImageProcessor->getDopplerMode())
       {
       SetTimePointWithMegaCapture();
       }
@@ -1796,7 +1794,7 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
   else
     {
     int ch = this->m_NavigationDockWidget->GetCurrentChannel();
-    if(m_ChannelClassicMode)
+    if(!m_ImageProcessor->getDopplerMode())
       {
       m_Image->ShallowCopy(m_ImageProcessor->getImageBW(m_TCoord, ch));
       m_ImageView->SetImage(m_Image);
@@ -1808,7 +1806,6 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
     else
       {
       int* realTime = m_ImageProcessor->getDopplerTime(m_TCoord);
-
       m_Image->ShallowCopy(m_ImageProcessor->getImageBW(realTime[ch], m_ChannelOfInterest));
       m_ImageView->SetImage(m_Image);
       m_ImageView->Update();
@@ -1833,8 +1830,9 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
 void
 QGoTabImageView3DwT::ShowOneChannel(int iChannel)
 {
-  if(m_ChannelClassicMode)
+  if(!m_ImageProcessor->getDopplerMode())
     {
+    // add test to see if channel exists (on borders)
     this->findChild<QAction*>("LUT")->setEnabled(true);
     this->findChild<QAction*>("ScalarBar")->setEnabled(true);
     m_Image->ShallowCopy(m_ImageProcessor->getImageBW(m_TCoord, iChannel));
@@ -1848,13 +1846,20 @@ QGoTabImageView3DwT::ShowOneChannel(int iChannel)
   else
     {
     int* realTime = m_ImageProcessor->getDopplerTime(m_TCoord);
-    m_Image->ShallowCopy(m_ImageProcessor->getImageBW(realTime[iChannel], m_ChannelOfInterest));
-    m_ImageView->SetImage(m_Image);
-    m_ImageView->Update();
-    vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
-    lut->DeepCopy(m_ImageProcessor->getLookuptable(m_ChannelOfInterest, realTime[iChannel]));
-    m_ImageView->SetLookupTable(lut);
-    m_ImageView->Update();
+    // should check that since combo box should have the good number of
+    // elements on border
+    // not working....
+    std::cout << "real time: " << realTime[iChannel] << std::endl;
+    if(realTime[iChannel] >= 0)
+      {
+      m_Image->ShallowCopy(m_ImageProcessor->getImageBW(realTime[iChannel], m_ChannelOfInterest));
+      m_ImageView->SetImage(m_Image);
+      m_ImageView->Update();
+      vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
+      lut->DeepCopy(m_ImageProcessor->getLookuptable(m_ChannelOfInterest, realTime[iChannel]));
+      m_ImageView->SetLookupTable(lut);
+      m_ImageView->Update();
+      }
     }
 }
 //------------------------------------------------------------------------
@@ -1867,8 +1872,10 @@ QGoTabImageView3DwT::ModeChanged(int iChannel)
     {
     LoadChannelTime();
     }
-
-  ChannelTimeMode(iChannel);
+  else
+    {
+    ChannelTimeMode(iChannel);
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -2376,7 +2383,7 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView,
                                      unsigned int iTCoord,
                                      int iTShift)
 {
-  if ( !this->m_ChannelClassicMode )
+  if (m_ImageProcessor->getDopplerMode())
     {
     iTShift = iTShift * m_ImageProcessor->getDopplerStep();
     unsigned int* time = m_ImageProcessor->getBoundsTime();
@@ -2510,7 +2517,7 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
 
   GoFigureMeshAttributes oAttributes;
 
-  if( this->m_ChannelClassicMode )
+  if(!m_ImageProcessor->getDopplerMode())
     {
     for ( size_t i = 0; i < m_ImageProcessor->getNumberOfChannels(); i++ )
       {
@@ -2527,7 +2534,6 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
       calculator->Update();
 
       oAttributes.m_Volume = calculator->GetPhysicalSize();
-      //qDebug() << "volume:" << oAttributes.m_Volume;
       oAttributes.m_Area = calculator->GetArea();
       oAttributes.m_Size = calculator->GetSize();
 
