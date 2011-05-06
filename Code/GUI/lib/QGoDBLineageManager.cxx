@@ -477,10 +477,16 @@ QGoDBLineageManager::UpdateBoundingBoxes(vtkMySQLDatabase *iDatabaseConnector,
   std::list<unsigned int>::iterator iter = iListTracesIDs.begin();
   while(iter != iListTracesIDs.end() )
     {
-    this->UpdateDivisionsInTrackContainer(*iter);
-    if ( UpdateTW )
+    std::list<unsigned int> Listiter;
+    Listiter.push_back(*iter);
+    //need to check first that the lineage does exist, which corresponds to check if there are tracks that have this lineageid:
+    if (!this->m_CollectionOfTraces->GetListTracesIDsFromThisCollectionOf(iDatabaseConnector, Listiter).empty())
       {
-      this->DisplayInfoForExistingTrace(iDatabaseConnector, *iter);
+      this->UpdateDivisionsInTrackContainer(*iter);
+      if ( UpdateTW )
+        {
+        this->DisplayInfoForExistingTrace(iDatabaseConnector, *iter);
+        }
       }
     ++iter;
     }
