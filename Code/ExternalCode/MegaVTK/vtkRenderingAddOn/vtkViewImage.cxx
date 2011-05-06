@@ -171,8 +171,11 @@ void vtkViewImage::SetInput(vtkImageData *in)
 
     if ( this->IsColor )
       {
-      // add directly rgb image to actor to avoid problem linked to window level
-      this->ImageActor->SetInput(in);
+      this->ImageActor->SetInput(this->WindowLevel->GetOutput());
+      this->WindowLevel->SetLookupTable(NULL);
+      // image is unsigned char ()
+      this->WindowLevel->SetWindow(255);
+      this->WindowLevel->SetLevel(127.5);
       this->ShowScalarBar = false;
       this->ScalarBarActor->SetVisibility(this->ShowScalarBar);
       }
