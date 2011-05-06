@@ -1378,6 +1378,7 @@ UpdateWidgetsFromImageProcessor()
 
   // Initialize the widgets with the good number of channels
   // it will update the size of the related combobox
+  m_NavigationDockWidget->blockSignals(true);
   m_NavigationDockWidget->SetNumberOfChannels(NumberOfChannels);
   m_ContourSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
   m_MeshSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
@@ -1404,6 +1405,7 @@ UpdateWidgetsFromImageProcessor()
   m_NavigationDockWidget->SetTMinimumAndMaximum(boundTime[0], boundTime[1]);
   m_NavigationDockWidget->SetTSlice(
         boundTime[0]+(boundTime[1]-boundTime[0])/2);
+  m_NavigationDockWidget->blockSignals(false);
 
   // Set up QSpinBox in m_VideoRecorderWidget
 #if defined( ENABLEFFMPEG ) || defined( ENABLEAVI )
@@ -1833,33 +1835,26 @@ QGoTabImageView3DwT::ShowOneChannel(int iChannel)
 {
   if(m_ChannelClassicMode)
     {
-    if (m_ImageProcessor->getImageBW(m_TCoord, iChannel) )
-      {
-      this->findChild<QAction*>("LUT")->setEnabled(true);
-      this->findChild<QAction*>("ScalarBar")->setEnabled(true);
-      m_Image->ShallowCopy(m_ImageProcessor->getImageBW(m_TCoord, iChannel));
-      m_ImageView->SetImage(m_Image);
-      m_ImageView->Update();
-      vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
-      lut->DeepCopy(m_ImageProcessor->getLookuptable(iChannel, m_TCoord));
-      m_ImageView->SetLookupTable(lut);
-      m_ImageView->Update();
-      }
+    this->findChild<QAction*>("LUT")->setEnabled(true);
+    this->findChild<QAction*>("ScalarBar")->setEnabled(true);
+    m_Image->ShallowCopy(m_ImageProcessor->getImageBW(m_TCoord, iChannel));
+    m_ImageView->SetImage(m_Image);
+    m_ImageView->Update();
+    vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
+    lut->DeepCopy(m_ImageProcessor->getLookuptable(iChannel, m_TCoord));
+    m_ImageView->SetLookupTable(lut);
+    m_ImageView->Update();
     }
   else
     {
     int* realTime = m_ImageProcessor->getDopplerTime(m_TCoord);
-
-    if (m_ImageProcessor->getImageBW(realTime[iChannel], m_ChannelOfInterest) )
-      {
-      m_Image->ShallowCopy(m_ImageProcessor->getImageBW(realTime[iChannel], m_ChannelOfInterest));
-      m_ImageView->SetImage(m_Image);
-      m_ImageView->Update();
-      vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
-      lut->DeepCopy(m_ImageProcessor->getLookuptable(m_ChannelOfInterest, realTime[iChannel]));
-      m_ImageView->SetLookupTable(lut);
-      m_ImageView->Update();
-      }
+    m_Image->ShallowCopy(m_ImageProcessor->getImageBW(realTime[iChannel], m_ChannelOfInterest));
+    m_ImageView->SetImage(m_Image);
+    m_ImageView->Update();
+    vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
+    lut->DeepCopy(m_ImageProcessor->getLookuptable(m_ChannelOfInterest, realTime[iChannel]));
+    m_ImageView->SetLookupTable(lut);
+    m_ImageView->Update();
     }
 }
 //------------------------------------------------------------------------
