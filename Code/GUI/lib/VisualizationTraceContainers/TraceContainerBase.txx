@@ -908,7 +908,7 @@ TraceContainerBase< TContainer >::SetRandomColor(const std::string & iColumnName
 //-------------------------------------------------------------------------
 template< class TContainer >
 void
-TraceContainerBase< TContainer >::UpdateCurrentElementFromVisuBase(std::vector< vtkActor * > iActors,
+TraceContainerBase< TContainer >::UpdateCurrentElementFromVisuBase(std::vector< vtkActor * >& iActors,
                                                                    vtkPolyData *iNodes,
                                                                    const bool & iHighlighted,
                                                                    const bool & iVisible)

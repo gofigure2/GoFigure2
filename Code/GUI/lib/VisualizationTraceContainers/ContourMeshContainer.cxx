@@ -93,7 +93,7 @@ ContourMeshContainer::SetTimePoint(const unsigned int & iT)
 
 //-------------------------------------------------------------------------
 void
-ContourMeshContainer::UpdateCurrentElementFromVisu(std::vector< vtkActor * > iActors,
+ContourMeshContainer::UpdateCurrentElementFromVisu(std::vector< vtkActor * >& iActors,
                                                    vtkPolyData *iNodes,
                                                    const unsigned int & iT,
                                                    const bool & iHighlighted,

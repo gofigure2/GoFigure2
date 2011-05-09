@@ -607,7 +607,7 @@ protected:
   /** \brief Set the scalar range */
   void SetScalarRangeForAllElements(const double& iMin, const double& iMax );
 
-  void UpdateCurrentElementFromVisuBase( std::vector< vtkActor* > iActors,
+  void UpdateCurrentElementFromVisuBase( std::vector< vtkActor* >& iActors,
                                          vtkPolyData* iNodes,
                                          const bool& iHighlighted,
                                          const bool& iVisible );

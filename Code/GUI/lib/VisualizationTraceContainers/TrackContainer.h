@@ -435,7 +435,7 @@ public:
    * motherID daughter1ID daughter2ID motherID daughter1ID ...
    * \param[in] iListOfDivisions list of the track ids to create the divisions
    */
-  void SetListOfDivisions(std::list<unsigned int> iListOfDivisions);
+  void SetListOfDivisions(std::list<unsigned int>& iListOfDivisions);
 
   /*
    * \brief Create a division between 3 tracks.
@@ -804,7 +804,7 @@ protected:
   current element. If the current element is a new track, then the polydata,
   actors are allocated and added in consequence.
   \param[in] iPoints list of points to generate the new polydata */
-  void RecomputeMap( TrackStructure* iStructure, std::list< double* > iPoints);
+  void RecomputeMap( TrackStructure* iStructure, std::list< double* >& iPoints);
 
   /** \brief Changes the scalars to be displayed and return the new range
    * \param[in] iArrayName Array to be displayed

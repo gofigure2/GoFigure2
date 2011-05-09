@@ -144,7 +144,7 @@ public:
   \param[in] iVisible
   \see ContourMeshStructure
   */
-  void UpdateCurrentElementFromVisu(std::vector< vtkActor * > iActors,
+  void UpdateCurrentElementFromVisu(std::vector< vtkActor * >& iActors,
                                     vtkPolyData *iNodes,
                                     const unsigned int & iT,
                                     const bool & iHighlighted,
