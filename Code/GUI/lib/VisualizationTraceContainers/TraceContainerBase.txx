@@ -326,8 +326,6 @@ TraceContainerBase< TContainer >::UpdateElementHighlightingWithGivenTraceIDsBase
     {
     MultiIndexContainerTraceIDIterator it;
 
-    vtkProperty *temp_property = vtkProperty::New();
-
     QStringList::const_iterator constIterator = iList.begin();
 
     while ( constIterator != iList.end() )
@@ -336,6 +334,8 @@ TraceContainerBase< TContainer >::UpdateElementHighlightingWithGivenTraceIDsBase
 
       if ( it != m_Container.get< TraceID >().end() )
         {
+        vtkProperty *temp_property = vtkProperty::New();
+
         if ( !iCheck )
           {
           temp_property->SetColor(it->rgba[0],
@@ -350,16 +350,13 @@ TraceContainerBase< TContainer >::UpdateElementHighlightingWithGivenTraceIDsBase
           }
 
         it->SetActorProperties(temp_property);
-
         temp_property->Delete();
 
         bool highlight = iCheck;
 
         m_Container.get< TraceID >().
             modify( it , change_highlighted<MultiIndexContainerElementType>(highlight) );
-
         }
-
       ++constIterator;
       }
 
