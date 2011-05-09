@@ -142,18 +142,17 @@ vtkLSMReader::~vtkLSMReader()
     this->TimeStampInformation->Delete();
     }
 
-/// \todo Fix leaks
-/*
 if(Description)
     {
     delete[] Description;
+    Description = NULL;
     }
 
   if(Objective)
     {
     delete[] Objective;
+    Objective = NULL;
     }
-*/
 }
 
 void vtkLSMReader::ClearFileName()

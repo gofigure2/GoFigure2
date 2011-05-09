@@ -39,12 +39,7 @@
 GoLSMImageProcessor::
 ~GoLSMImageProcessor()
 {
-  // not working - still leaking
-  if(m_LSMReader)
-   {
-    m_LSMReader->Delete();
-    m_LSMReader = NULL;
-   }
+  m_LSMReaderVector.clear();
 }
 //--------------------------------------------------------------------------
 
@@ -86,6 +81,7 @@ setTimePoint(const unsigned int& iTime)
     m_MegaImageContainer.clear();
     m_LSMReader->SetUpdateTimePoint(iTime);
     m_LSMReader->Update();
+    m_LSMReaderVector.clear();
     }
   else
     {
@@ -95,6 +91,7 @@ setTimePoint(const unsigned int& iTime)
   // update the container
   // Get Number of channels from reader
   int numberOfChannels = getNumberOfChannels();
+
   m_LSMReaderVector.resize(numberOfChannels);
 
   while(numberOfChannels>0)

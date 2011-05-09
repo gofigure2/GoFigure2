@@ -184,7 +184,8 @@ QGoMainWindow::QGoMainWindow(QWidget *iParent, Qt::WindowFlags iFlags) :
 //--------------------------------------------------------------------------
 QGoMainWindow::~QGoMainWindow()
 {
-//   m_LSMReader->Delete();
+  // clear will call destructor on all of the element in the list
+  m_LSMReader.clear();
   this->WriteSettings();
   delete m_TabManager;
   delete m_DBWizard;
