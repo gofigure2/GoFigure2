@@ -603,6 +603,12 @@ void QGoTraceSettingsWidget::CurrentTraceToUpdate( int iIndexTrace )
 //-------------------------------------------------------------------------
 void QGoTraceSettingsWidget::SetPointerSelectedCellType(std::string* iCellType)
 {
+  if(this->m_SelectedCellType)
+    {
+    delete this->m_SelectedCellType;
+    this->m_SelectedCellType = NULL;
+    }
+
   this->m_SelectedCellType = iCellType;
 }
 //-------------------------------------------------------------------------
@@ -610,6 +616,12 @@ void QGoTraceSettingsWidget::SetPointerSelectedCellType(std::string* iCellType)
 //-------------------------------------------------------------------------
 void QGoTraceSettingsWidget::SetPointerSelectedSubCellType(std::string* iSubCellType)
 {
+  if(this->m_SelectedSubCellType)
+    {
+    delete this->m_SelectedSubCellType;
+    this->m_SelectedSubCellType = NULL;
+    }
+
   this->m_SelectedSubCellType = iSubCellType;
 }
 //-------------------------------------------------------------------------
@@ -617,6 +629,12 @@ void QGoTraceSettingsWidget::SetPointerSelectedSubCellType(std::string* iSubCell
 //-------------------------------------------------------------------------
 void QGoTraceSettingsWidget::SetPointerCollectionData(ItemColorComboboxData* iCollectionData)
 {
+  if(this->m_SelectedCollectionData)
+    {
+    delete this->m_SelectedCollectionData;
+    this->m_SelectedCollectionData = NULL;
+    }
+
   this->m_SelectedCollectionData = iCollectionData;
 }
 //-------------------------------------------------------------------------
@@ -624,6 +642,12 @@ void QGoTraceSettingsWidget::SetPointerCollectionData(ItemColorComboboxData* iCo
 //-------------------------------------------------------------------------
 void QGoTraceSettingsWidget::SetPointerColorData(ItemColorComboboxData* iColorData)
 {
+  if(this->m_SelectedColorData)
+    {
+    delete this->m_SelectedColorData;
+    this->m_SelectedColorData = NULL;
+    }
+
   this->m_SelectedColorData = iColorData;
 }
 //-------------------------------------------------------------------------
