@@ -345,7 +345,7 @@ UpdateTrackActors(TrackStructure& iStructure )
 TrackStructure*
 TrackContainer::
 UpdatePointsForATrack(const unsigned int& iTrackID,
-                      std::list< double * > iListCenterBoundingBoxes)
+                      std::list< double * >& iListCenterBoundingBoxes)
 {
   assert( iTrackID != 0 );
 
@@ -391,7 +391,7 @@ UpdatePointsForATrack(const unsigned int& iTrackID,
 //-------------------------------------------------------------------------
 void
 TrackContainer::
-RecomputeMap(TrackStructure* iStructure, std::list< double * > iPoints)
+RecomputeMap(TrackStructure* iStructure, std::list< double * >& iPoints)
 {
 
   // empty current element map
@@ -736,7 +736,7 @@ TrackContainer::GetBorderOfTheTrack( const unsigned int& iTrackID,
 //-------------------------------------------------------------------------
 void
 TrackContainer::
-SetListOfDivisions( std::list<unsigned int> iListOfDivisions)
+SetListOfDivisions( std::list<unsigned int>& iListOfDivisions)
 {
   // Create list iterator
   std::list<unsigned int>::iterator it = iListOfDivisions.begin();

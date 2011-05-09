@@ -340,7 +340,7 @@ public:
   \param[in] iListCenterBoundingBoxes list of the center of the bounding boxes
   for the meshes belonging to this track */
   TrackStructure* UpdatePointsForATrack(const unsigned int& iTrackID,
-                             std::list< double*> iListCenterBoundingBoxes);
+                             std::list< double*>& iListCenterBoundingBoxes);
 
   /**
   \brief Update highlighting property of one element given one actor.
