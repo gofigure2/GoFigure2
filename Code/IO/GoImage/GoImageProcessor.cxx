@@ -45,8 +45,8 @@
 
 //--------------------------------------------------------------------------
 GoImageProcessor::GoImageProcessor():m_Output(NULL),
-  m_BoundsTime(NULL), m_BoundsChannel(NULL), m_Extent(NULL), m_DopplerStep(1),
-  m_NumberOfImages(3), m_DopplerMode(false)
+  m_BoundsTime(NULL), m_BoundsChannel(NULL), m_Extent(NULL),
+  m_DopplerMode(false), m_DopplerStep(1)
 {
   m_DopplerTime = new int[3];
 }
@@ -56,9 +56,8 @@ GoImageProcessor::GoImageProcessor():m_Output(NULL),
 GoImageProcessor::GoImageProcessor(const GoImageProcessor & iE):
   m_MegaImageContainer(iE.m_MegaImageContainer), m_Output(iE.m_Output),
   m_BoundsTime(iE.m_BoundsTime), m_BoundsChannel(iE.m_BoundsChannel),
-  m_Extent(iE.m_Extent), m_DopplerStep(iE.m_DopplerStep),
-  m_NumberOfImages(iE.m_NumberOfImages), m_DopplerTime(iE.m_DopplerTime),
-  m_DopplerMode(iE.m_DopplerMode)
+  m_Extent(iE.m_Extent),  m_DopplerMode(iE.m_DopplerMode),
+  m_DopplerStep(iE.m_DopplerStep), m_DopplerTime(iE.m_DopplerTime)
 {
 }
 //--------------------------------------------------------------------------
@@ -318,11 +317,11 @@ getDopplerTime(unsigned int iTime)
 
   // special case if we are at the borders
   // value will be -1
-  if ( m_DopplerTime[0] < m_BoundsTime[0] )
+  if (m_DopplerTime[0] < static_cast<int>(m_BoundsTime[0]))
     {
     m_DopplerTime[0] = -1;
     }
-  if ( m_DopplerTime[2] > m_BoundsTime[1] )
+  if (m_DopplerTime[2] > static_cast<int>(m_BoundsTime[1]))
     {
     m_DopplerTime[2] = -1;
     }

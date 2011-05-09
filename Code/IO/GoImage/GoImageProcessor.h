@@ -267,7 +267,6 @@ protected:
   //--------------------
   bool         m_DopplerMode;
   unsigned int m_DopplerStep;
-  unsigned int m_NumberOfImages;
   int*         m_DopplerTime;
   //--------------------
 
