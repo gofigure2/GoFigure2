@@ -101,8 +101,8 @@ vtkLSMReader::vtkLSMReader()
   this->ChannelDataTypes = 0;
   this->TrackWavelengths = 0;
   this->ImageOffsets = 0;
-  this->ReadSizes = 0;
-  this->Description = 0;
+  this->ReadSizes = NULL;
+  this->Description = NULL;
 
 #ifdef VTK_WORDS_BIGENDIAN
   this->SwapBytes = true;
@@ -142,18 +142,17 @@ vtkLSMReader::~vtkLSMReader()
     this->TimeStampInformation->Delete();
     }
 
-/// \todo Fix leaks
-/*
 if(Description)
     {
     delete[] Description;
+    Description = NULL;
     }
 
   if(Objective)
     {
     delete[] Objective;
+    Objective = NULL;
     }
-*/
 }
 
 void vtkLSMReader::ClearFileName()
