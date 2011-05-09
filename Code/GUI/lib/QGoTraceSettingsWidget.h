@@ -244,8 +244,8 @@ protected:
   QLabel *                    m_CollectionName;  
   QLabel*                     m_LabelCellType;
   QLabel*                     m_LabelSubCellType;
-  std::string *               m_SelectedCellType;
-  std::string *               m_SelectedSubCellType;
+  std::string                 m_SelectedCellType;
+  std::string                 m_SelectedSubCellType;
   ItemColorComboboxData *     m_SelectedCollectionData;
   ItemColorComboboxData *     m_SelectedColorData;
   //bool                        m_IsToolBarVisible;
