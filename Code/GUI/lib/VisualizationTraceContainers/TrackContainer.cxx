@@ -429,8 +429,9 @@ void
 TrackContainer::UpdateElementHighlightingWithGivenTraceIDs(const QStringList & iList,
                                                            const Qt::CheckState & iCheck)
 {
+ 
   Superclass::UpdateElementHighlightingWithGivenTraceIDsBase(iList,
-                                                             iCheck);
+                                                               iCheck);
 }
 
 //-------------------------------------------------------------------------

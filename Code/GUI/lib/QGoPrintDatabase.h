@@ -524,6 +524,7 @@ protected:
 
     if ( !ListCollectionsIDs.empty() || !lineage )
       {
+      this->OpenDBConnection(); //in some cases the DeleteCheckedTraces closes the connection
       iCollectionManager->UpdateBoundingBoxes(this->m_DatabaseConnector, ListCollectionsIDs);
       }
     this->CloseDBConnection();
