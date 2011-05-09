@@ -447,6 +447,14 @@ std::vector< std::string > GetSamefieldsFromTwoTables(vtkMySQLDatabase *Database
                                                       std::string iField,
                                                       std::string iValue);
 
+//query: select distinct iColumnOne FROM TableOne where ifield = listconditions union select
+//distinct icolumntwo from tableOne left join tabletwo on iOnCondition where ifield = listconditions
+QGOIO_EXPORT
+std::list< unsigned int > GetTwoFieldsFromTwoTables(
+  vtkMySQLDatabase *DatabaseConnector, std::string iTableOne,
+  std::string iTableTwo, FieldWithValue iOnCondition, std::string iColumnOne, std::string iColumnTwo,
+  std::string iField, std::vector< std::string >  iListValues, bool Distinct);
+
 //query: SELECT iColumnOne FROM TableOne WHERE...UNION SELECT iColumnTwo FROM
 // TableOne...
 //UNION SELECT iColumnOne FROM TableTwo WHERE listconditions2....

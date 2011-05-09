@@ -486,6 +486,13 @@ public:
   std::list<unsigned int> GetTrackFamiliesForLineages(
     vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iLineagesID);
 
+  /** 
+  \brief return the trackFamilyIDs the track belongs to (as a mother or as 
+  a daughter)
+  */
+  std::list<unsigned int> GetTrackFamilyID(vtkMySQLDatabase *iDatabaseConnector, 
+    std::list<unsigned int> iListTrackIDs);
+
 protected:
 
   std::string  m_CollectionName;

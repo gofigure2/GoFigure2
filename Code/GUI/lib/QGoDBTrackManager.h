@@ -122,6 +122,7 @@ public:
   //virtual pure method in QGoDBTraceManager
   virtual void DeleteCheckedTraces( vtkMySQLDatabase *iDatabaseConnector);
 
+
    //virtual pure method in QGoDBTraceManager
   virtual std::list< unsigned int > GetListHighlightedIDs();
 
