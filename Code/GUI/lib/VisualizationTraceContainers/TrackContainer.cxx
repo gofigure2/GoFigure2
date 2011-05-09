@@ -460,7 +460,7 @@ UpdateElementVisibilityWithGivenTraceIDs(const QStringList & iList,
 //-------------------------------------------------------------------------
 void
 TrackContainer::
-ChangeColorCode(const char *iColorCode)
+ChangeColorCode(const QString& iColorCode)
 {
   m_ActiveTrackScalars.clear();
   m_ActiveTrackScalars.append(iColorCode);
@@ -494,7 +494,7 @@ ChangeColorCode(const char *iColorCode)
 //-------------------------------------------------------------------------
 void
 TrackContainer::
-ChangeDivisionsColorCode(const char *iColorCode)
+ChangeDivisionsColorCode(const QString& iColorCode)
 {
   m_ActiveDivisionScalars.clear();
   m_ActiveDivisionScalars.append(iColorCode);
@@ -588,7 +588,7 @@ RenderAllDivisionsWithOriginalColors()
 //-------------------------------------------------------------------------
 double *
 TrackContainer::
-setTrackNodeScalars(const char *iArrayName)
+setTrackNodeScalars(const QString& iArrayName)
 {
   double *range =  new double[2];
 
@@ -603,13 +603,17 @@ setTrackNodeScalars(const char *iArrayName)
     // does the track have a polydata
     if ( it->Nodes )
       {
+      // convert qstring to const char*
       double *realTime =
-        it->Nodes->GetPointData()->GetArray(iArrayName)->GetRange();
+        it->Nodes->GetPointData()->GetArray(
+            iArrayName.toLocal8Bit().data())->GetRange();
       range[0] = std::min(range[0], realTime[0]);
       range[1] = std::max(range[1], realTime[1]);
 
       //set active scalar
-      it->Nodes->GetPointData()->SetActiveScalars(iArrayName);
+      // convert qstring to const char*
+      it->Nodes->GetPointData()->SetActiveScalars(
+            iArrayName.toLocal8Bit().data());
       }
     ++it;
     }
@@ -622,7 +626,7 @@ setTrackNodeScalars(const char *iArrayName)
 //-------------------------------------------------------------------------
 double *
 TrackContainer::
-setDivisionNodeScalars(const char *iArrayName)
+setDivisionNodeScalars(const QString& iArrayName)
 {
   double *range =  new double[2];
 
@@ -637,13 +641,17 @@ setDivisionNodeScalars(const char *iArrayName)
     // does the division have a polydata
     if ( !it->IsLeaf() )
       {
+      // convert qstring to const char*
       double *realTime =
-        it->TreeNode.Nodes->GetPointData()->GetArray(iArrayName)->GetRange();
+        it->TreeNode.Nodes->GetPointData()->GetArray(
+            iArrayName.toLocal8Bit().data())->GetRange();
       range[0] = std::min(range[0], realTime[0]);
       range[1] = std::max(range[1], realTime[1]);
 
       //set active scalar
-      it->TreeNode.Nodes->GetPointData()->SetActiveScalars(iArrayName);
+      // convert qstring to const char*
+      it->TreeNode.Nodes->GetPointData()->SetActiveScalars(
+            iArrayName.toLocal8Bit().data());
       }
 
     ++it;
@@ -696,9 +704,7 @@ UpdateTracksRepresentation(const double& iRadius, const double& iRadius2)
 
   // update color since active scalar is set to NULL in
   // UpdateTrackStructurePolyData
-  QByteArray  bytes  = m_ActiveTrackScalars.toAscii();
-  const char *ptr    = bytes.data();
-  ChangeColorCode(ptr);
+  ChangeColorCode(m_ActiveTrackScalars);
 
   assert ( this->m_ImageView );
 

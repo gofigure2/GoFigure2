@@ -54,7 +54,7 @@ public slots:
   void ColorCodeLineagesByOriginalColor(bool);
 
 signals:
-  void ChangeDivisionsColorCode( const char* );
+  void ChangeDivisionsColorCode(const QString &);
 
 protected:
   void SetUpUi();

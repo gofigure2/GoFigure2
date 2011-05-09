@@ -719,12 +719,12 @@ public slots:
   /**
   \brief Color code the track by an array
   \param[in] iColorCode  name of the active array*/
-  void ChangeColorCode(const char* iColorCode);
+  void ChangeColorCode(const QString& iColorCode);
 
   /**
   \brief Color code the lineage by an array
   \param[in] iColorCode name of the active array */
-  void ChangeDivisionsColorCode(const char* iColorCode);
+  void ChangeDivisionsColorCode(const QString& iColorCode);
 
   /*
    * \brief Change the representation of a track, adding glyphs and tubes
@@ -810,13 +810,13 @@ protected:
    * \param[in] iArrayName Array to be displayed
    * \return Pointer to double[2] where [0] is the min scalar value and [1] is
    * the max scalar value. Pointer has to be deleted (delete[] pointer) */
-  double* setTrackNodeScalars(const char *iArrayName);
+  double* setTrackNodeScalars(const QString& iArrayName);
 
   /** \brief Changes the divisions scalars to be displayed and return the new range
    * \param[in] iArrayName Array to be displayed
    * \return Pointer to double[2] where [0] is the min scalar value and [1] is
    * the max scalar value. Pointer has to be deleted (delete[] pointer) */
-  double* setDivisionNodeScalars(const char *iArrayName);
+  double* setDivisionNodeScalars(const QString& iArrayName);
 
   void ComputeSpeed();
 
