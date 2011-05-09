@@ -216,6 +216,10 @@ public slots:
   \param[in] iNewCollectionID ID and QColor of the new item
   */
   void AddANewCollectionID(std::pair<std::string, QColor> iNewCollectionID);
+  /**
+  \brief in order the pointers already deleted are not deleted again
+  */
+  void SetSelectedPointersToNull();
 
   //void SetVisibilityStatus(bool IsVisible);
 
@@ -240,10 +244,10 @@ protected:
   QLabel *                    m_CollectionName;  
   QLabel*                     m_LabelCellType;
   QLabel*                     m_LabelSubCellType;
-  std::string                 m_SelectedCellType;
-  std::string                 m_SelectedSubCellType;
-  ItemColorComboboxData       m_SelectedCollectionData;
-  ItemColorComboboxData       m_SelectedColorData;
+  std::string *               m_SelectedCellType;
+  std::string *               m_SelectedSubCellType;
+  ItemColorComboboxData *     m_SelectedCollectionData;
+  ItemColorComboboxData *     m_SelectedColorData;
   //bool                        m_IsToolBarVisible;
 
   void SetUpUi();

@@ -55,7 +55,24 @@ QGoTraceSettingsWidget::QGoTraceSettingsWidget(QWidget *iParent) :
 QGoTraceSettingsWidget::
 ~QGoTraceSettingsWidget()
 {
+  if ( this->m_SelectedCollectionData )
+    {
+    delete this->m_SelectedCollectionData;
+    }
+  if ( this->m_SelectedCellType )
+    {
+    delete this->m_SelectedCellType;
+    }
+  if ( this->m_SelectedSubCellType )
+    {
+    delete this->m_SelectedSubCellType;
+    }
+  if ( this->m_SelectedColorData )
+    {
+    delete this->m_SelectedColorData;
+    }
 }
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -128,7 +145,7 @@ void QGoTraceSettingsWidget::SetListColors(
 void QGoTraceSettingsWidget::SetListColorsWithSelectedOne(
   std::list< ItemColorComboboxData > iListColors)
 {
-  this->SetListColors(iListColors, this->m_SelectedColorData.first);
+  this->SetListColors(iListColors, this->m_SelectedColorData->first);
 }
 
 //-------------------------------------------------------------------------
@@ -150,7 +167,7 @@ void
 QGoTraceSettingsWidget::SetListCellTypeWithSelectedOne(
   NamesDescrContainerType iCellTypesData)
 {
-  this->SetListCellTypes(iCellTypesData, this->m_SelectedCellType);
+  this->SetListCellTypes(iCellTypesData, *this->m_SelectedCellType);
 }
 
 //-------------------------------------------------------------------------
@@ -172,7 +189,7 @@ void
 QGoTraceSettingsWidget::SetListSubCellTypeWithSelectedOne(
   NamesDescrContainerType iSubCellTypesData)
 {
-  this->SetListSubCellTypes(iSubCellTypesData, this->m_SelectedSubCellType);
+  this->SetListSubCellTypes(iSubCellTypesData, *this->m_SelectedSubCellType);
 }
 
 //-------------------------------------------------------------------------
@@ -190,6 +207,8 @@ QGoTraceSettingsWidget::SetSelectedColorComboBox(
   ColorLbl->setToolTip(Tooltip);
   iColorLayout->addWidget(ColorLbl);
   iColorLayout->addWidget(this->m_SelectedColorComboBox);
+
+  this->m_SelectedColorData = new ItemColorComboboxData;
   
   QObject::connect( this->m_SelectedColorComboBox,
                     SIGNAL( ItemSelected(ItemColorComboboxData) ),
@@ -248,6 +267,8 @@ QGoTraceSettingsWidget::SetTraceCollectionColorComboBox(
   iLayoutTraceCollection->addWidget(this->m_CollectionColorComboBox);
   //iLayoutTraceCollection->addLayout(HLayoutForCollection);
 
+  this->m_SelectedCollectionData = new ItemColorComboboxData;
+
   QObject::connect( this->m_CollectionColorComboBox,
                     SIGNAL( ItemSelected(ItemColorComboboxData) ),
                     this, SLOT( UpdateValueSelectedCollection(ItemColorComboboxData) ) );
@@ -282,6 +303,8 @@ QGoTraceSettingsWidget::SetCellTypeComboBox(
 
   iCellLayout->addLayout(HLayoutForCellType);
 
+  this->m_SelectedCellType = new std::string;
+
   QObject::connect( this->m_ChoseCellType,
                     SIGNAL( ItemSelected(std::string) ),
                     this, SLOT( UpdateValueSelectedCellType(std::string) ) );
@@ -311,6 +334,8 @@ QGoTraceSettingsWidget::SetSubCellTypeComboBox(
   iSubCellLayout->addWidget(this->m_LabelSubCellType);
   iSubCellLayout->addWidget(m_ChoseSubCellType);
 
+  this->m_SelectedSubCellType = new std::string;
+
   QObject::connect( this->m_ChoseSubCellType,
                     SIGNAL( ItemSelected(std::string) ),
                     this, SLOT( UpdateValueSelectedSubCellType(std::string) ) );
@@ -338,7 +363,7 @@ void QGoTraceSettingsWidget::SetCurrentCellType(
 //-------------------------------------------------------------------------
 void QGoTraceSettingsWidget::SetCurrentCellTypeToSelectedOne()
 {
-  this->SetCurrentCellType(this->m_SelectedCellType);
+  this->SetCurrentCellType(*this->m_SelectedCellType);
 }
 
 //-------------------------------------------------------------------------
@@ -355,7 +380,7 @@ void QGoTraceSettingsWidget::SetCurrentSubCellType(
 //-------------------------------------------------------------------------
 void QGoTraceSettingsWidget::SetCurrentSubCellTypeToSelectedOne()
 {
-  this->SetCurrentSubCellType(this->m_SelectedSubCellType);
+  this->SetCurrentSubCellType(*this->m_SelectedSubCellType);
 }
 
 //-------------------------------------------------------------------------
@@ -371,7 +396,7 @@ void QGoTraceSettingsWidget::SetCurrentColor(std::string iColorText)
 //-------------------------------------------------------------------------
 void QGoTraceSettingsWidget::SetCurrentColorToSelectedOne()
 {
-  this->SetCurrentColor(this->m_SelectedColorData.first);
+  this->SetCurrentColor(this->m_SelectedColorData->first);
 }
 
 //-------------------------------------------------------------------------
@@ -465,7 +490,7 @@ void QGoTraceSettingsWidget::AddANewCollectionID(
 //-------------------------------------------------------------------------
 std::string * QGoTraceSettingsWidget::GetPointerSelectedCellType()
 {
-  return &(this->m_SelectedCellType);
+  return this->m_SelectedCellType;
 }
 
 //-------------------------------------------------------------------------
@@ -473,7 +498,7 @@ std::string * QGoTraceSettingsWidget::GetPointerSelectedCellType()
 //-------------------------------------------------------------------------
 std::string * QGoTraceSettingsWidget::GetPointerSelectedSubCellType()
 {
-  return &(this->m_SelectedSubCellType);
+  return this->m_SelectedSubCellType;
 }
 
 //-------------------------------------------------------------------------
@@ -482,7 +507,7 @@ std::string * QGoTraceSettingsWidget::GetPointerSelectedSubCellType()
 QGoTraceSettingsWidget::ItemColorComboboxData *
 QGoTraceSettingsWidget::GetPointerCollectionData()
 {
-  return &(this->m_SelectedCollectionData);
+  return this->m_SelectedCollectionData;
 }
 
 //-------------------------------------------------------------------------
@@ -491,7 +516,7 @@ QGoTraceSettingsWidget::GetPointerCollectionData()
 QGoTraceSettingsWidget::ItemColorComboboxData *
 QGoTraceSettingsWidget::GetPointerColorData()
 {
-  return &(this->m_SelectedColorData);
+  return this->m_SelectedColorData;
 }
 
 //-------------------------------------------------------------------------
@@ -506,12 +531,12 @@ void QGoTraceSettingsWidget::UpdateValueSelectedCollection(
     {
     if ( CollectionID.substr(0, 9) == "Add a new" )
       {
-      this->m_SelectedCollectionData.first = "0";
+      this->m_SelectedCollectionData->first = "0";
       }
     }
   else
     {
-    this->m_SelectedCollectionData = iCollectionData;
+    *this->m_SelectedCollectionData = iCollectionData;
     }
 }
 
@@ -522,7 +547,7 @@ void QGoTraceSettingsWidget::UpdateValueSelectedCollection(
 twice when something changes in the comboboxes*/
 void QGoTraceSettingsWidget::UpdateValueSelectedCellType(std::string iCellType)
 {
-  this->m_SelectedCellType = iCellType;
+  *this->m_SelectedCellType = iCellType;
 }
 
 //-------------------------------------------------------------------------
@@ -530,7 +555,7 @@ void QGoTraceSettingsWidget::UpdateValueSelectedCellType(std::string iCellType)
 //-------------------------------------------------------------------------
 void QGoTraceSettingsWidget::UpdateValueSelectedSubCellType(std::string iSubCellType)
 {
-  this->m_SelectedSubCellType = iSubCellType;
+  *this->m_SelectedSubCellType = iSubCellType;
 }
 
 //-------------------------------------------------------------------------
@@ -539,7 +564,7 @@ void QGoTraceSettingsWidget::UpdateValueSelectedSubCellType(std::string iSubCell
 void QGoTraceSettingsWidget::UpdateValueSelectedColor(
   ItemColorComboboxData iColorData)
 {
-  this->m_SelectedColorData = iColorData;
+  *this->m_SelectedColorData = iColorData;
 }
 
 //-------------------------------------------------------------------------
@@ -547,7 +572,7 @@ void QGoTraceSettingsWidget::UpdateValueSelectedColor(
 //-------------------------------------------------------------------------
 unsigned int QGoTraceSettingsWidget::GetCurrentSelectedCollectionID()
 {
-  return atoi( this->m_SelectedCollectionData.first.c_str() );
+  return atoi( this->m_SelectedCollectionData->first.c_str() );
 }
 //-------------------------------------------------------------------------
 
@@ -578,28 +603,38 @@ void QGoTraceSettingsWidget::CurrentTraceToUpdate( int iIndexTrace )
 //-------------------------------------------------------------------------
 void QGoTraceSettingsWidget::SetPointerSelectedCellType(std::string* iCellType)
 {
-  this->m_SelectedCellType = *iCellType;
+  this->m_SelectedCellType = iCellType;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoTraceSettingsWidget::SetPointerSelectedSubCellType(std::string* iSubCellType)
 {
-  this->m_SelectedSubCellType = *iSubCellType;
+  this->m_SelectedSubCellType = iSubCellType;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoTraceSettingsWidget::SetPointerCollectionData(ItemColorComboboxData* iCollectionData)
 {
-  this->m_SelectedCollectionData = *iCollectionData;
+  this->m_SelectedCollectionData = iCollectionData;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoTraceSettingsWidget::SetPointerColorData(ItemColorComboboxData* iColorData)
 {
-  this->m_SelectedColorData = *iColorData;
+  this->m_SelectedColorData = iColorData;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTraceSettingsWidget::SetSelectedPointersToNull()
+{
+  this->m_SelectedCollectionData = NULL;
+  this->m_SelectedColorData = NULL;
+  this->m_SelectedCellType = NULL;
+  this->m_SelectedSubCellType = NULL;
 }
 //-------------------------------------------------------------------------
 
