@@ -215,12 +215,11 @@ public:
   }
 
   /*
-   * \brief get all time points image given a channel. Will create the new
+   * \brief get all the images present in the containerl. Will create the new
    * image from the structure.
    * \param[in] iChannel requested channel
    * \return colored image.
    */
-
   vtkSmartPointer<vtkImageData> getAllImages();
 
   // Image parameters
@@ -273,10 +272,7 @@ protected:
   //--------------------
 
 private:
-  // public or private..?
-  void update();
-
-  // overload = operator
+  // overload "=" operator
   GoImageProcessor& operator=(const GoImageProcessor &rhs)
   {
     // Only do assignment if RHS is a different object from this.

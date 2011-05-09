@@ -43,9 +43,6 @@
 #include "vtkPointData.h"
 #include "vtkImageShiftScale.h"
 
-// tests
-#include "VisualizePolydataHelper.h"
-
 //--------------------------------------------------------------------------
 GoImageProcessor::GoImageProcessor():m_Output(NULL),
   m_BoundsTime(NULL), m_BoundsChannel(NULL), m_Extent(NULL), m_DopplerStep(1),
