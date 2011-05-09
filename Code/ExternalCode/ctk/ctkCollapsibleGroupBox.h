@@ -27,6 +27,32 @@
 // CTK includes
 #include "ctkConfigure.h"
 
+#if QT_VERSION >= 0x040600
+#include <QProxyStyle>
+
+//-----------------------------------------------------------------------------
+class ctkCollapsibleGroupBoxStyle:public QProxyStyle
+{
+  public:
+
+  virtual void drawPrimitive(PrimitiveElement pe, const QStyleOption * opt, QPainter * p, const QWidget * widget = 0) const
+  {
+    if (pe == QStyle::PE_IndicatorCheckBox)
+      {
+      const QGroupBox* groupBox= qobject_cast<const QGroupBox*>(widget);
+      if (groupBox)
+        {
+        this->QProxyStyle::drawPrimitive(groupBox->isChecked() ? QStyle::PE_IndicatorArrowUp : QStyle::PE_IndicatorArrowDown, opt, p, widget);
+        return;
+        }
+      }
+    this->QProxyStyle::drawPrimitive(pe, opt, p, widget);
+  }
+};
+#else
+
+#endif
+
 /// A QGroupBox with an arrow indicator that shows/hides the groupbox contents
 /// when clicked. It responds to the slot QGroupBox::setChecked(bool) or
 /// ctkCollapsibleGroupBox::setCollapsed(bool)
@@ -78,6 +104,7 @@ private:
   QSize OldSize;
   /// Maximum allowed height
   int   MaxHeight;
+  ctkCollapsibleGroupBoxStyle* Style;
 };
 
 //----------------------------------------------------------------------------

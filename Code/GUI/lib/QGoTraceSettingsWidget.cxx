@@ -645,5 +645,3 @@ void QGoTraceSettingsWidget::SetCurrentTraceName(std::string iTraceName)
     this->m_SelectedTrace->findText(iTraceName.c_str() ) );
 }
 //-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
