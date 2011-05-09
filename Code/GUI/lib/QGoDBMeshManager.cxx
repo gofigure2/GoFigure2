@@ -201,10 +201,11 @@ unsigned int QGoDBMeshManager::SaveNewMeshFromVisu(
   unsigned int NewMeshID = this->m_CollectionOfTraces->CreateNewTraceInDB< GoDBMeshRow >(
       NewMesh, iDatabaseConnector, *this->m_SelectedColorData,
       ss_atoi< unsigned int >(this->m_SelectedCollectionData->first) );
-
+  // pointer to double has to be deleted after usage...
   double *rgba = this->GetVectorFromQColor(this->m_SelectedColorData->second);
   this->m_MeshContainerInfoForVisu->UpdateCurrentElementFromDB(
     NewMeshID, rgba);
+  delete[] rgba;
   this->DisplayInfoForLastCreatedMesh(iDatabaseConnector, iMeshAttributes);
   return NewMeshID;
 }
@@ -270,12 +271,12 @@ unsigned int QGoDBMeshManager::CreateNewMeshWithNoContourNoPoints(
   unsigned int NewMeshID =
     this->m_CollectionOfTraces->CreateCollectionWithNoTracesNoPoints< GoDBMeshRow >(
       iDatabaseConnector, *this->m_SelectedColorData, NewMesh, *this->m_CurrentTimePoint);
+  // pointer to double has to be deleted after usage...
   double *color = this->GetVectorFromQColor(this->m_SelectedColorData->second);
   this->m_MeshContainerInfoForVisu->ResetCurrentElement();
   this->m_MeshContainerInfoForVisu->UpdateCurrentElementFromDB(
     NewMeshID, color);
   delete[] color;
-
   this->m_MeshContainerInfoForVisu->InsertCurrentElement();
   this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
 

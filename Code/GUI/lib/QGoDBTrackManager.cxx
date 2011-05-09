@@ -137,8 +137,11 @@ unsigned int QGoDBTrackManager::CreateNewTrackWithNoMesh(
       iDatabaseConnector, *this->m_SelectedColorData, NewTrack);
 
   this->m_TrackContainerInfoForVisu->ResetCurrentElement();
+  // pointer to double has to be deleted after usage...
+  double* color = this->GetVectorFromQColor(this->m_SelectedColorData->second);
   this->m_TrackContainerInfoForVisu->UpdateCurrentElementFromDB(
-    NewTrackID, this->GetVectorFromQColor(this->m_SelectedColorData->second), true);
+    NewTrackID, color, true);
+  delete[] color;
   this->m_TrackContainerInfoForVisu->InsertCurrentElement();
   this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
   NameWithColorData NewTrackData(ConvertToString< unsigned int >(NewTrackID),
