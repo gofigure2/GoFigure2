@@ -197,10 +197,10 @@ void QGoDBTrackManager::DeleteCheckedTraces(vtkMySQLDatabase *iDatabaseConnector
     {
     emit CheckedTracksToAddToSelectedLineage(TrackIDsWithNoLineage, 0, LineagesToDelete);  
     }
-  //this->DeleteTracesTemplate< TrackContainer >(iDatabaseConnector,
-    //                                           this->m_TrackContainerInfoForVisu);
-  //check that the tracks to be deleted are not part of a trackfamily (as daughters or mother)
-  //this->DeleteOneDivision();
+
+  emit NeedToGetDatabaseConnection(); 
+  this->DeleteTracesTemplate< TrackContainer >(this->m_DatabaseConnector,
+                                               this->m_TrackContainerInfoForVisu);
 }
 
 //-------------------------------------------------------------------------
