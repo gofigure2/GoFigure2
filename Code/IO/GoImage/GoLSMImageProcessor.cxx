@@ -39,7 +39,7 @@
 GoLSMImageProcessor::
 ~GoLSMImageProcessor()
 {
-  // not working
+  // not working - still leaking
   if(m_LSMReader)
    {
     m_LSMReader->Delete();
@@ -118,21 +118,21 @@ setTimePoint(const unsigned int& iTime)
     // Get Color
     double random1 = m_LSMReader->
         GetChannelColorComponent(numberOfChannels, 0);
-    double value1 = random1/255;
+    double value1 = random1;
 
     double random2 = m_LSMReader->
         GetChannelColorComponent(numberOfChannels, 1);
-    double value2 = random2/255;
+    double value2 = random2;
 
     double random3 = m_LSMReader->
         GetChannelColorComponent(numberOfChannels, 2);
-    double value3 = random3/255;
+    double value3 = random3;
 
     std::vector<double> color;
     color.push_back(value1);
     color.push_back(value2);
     color.push_back(value3);
-    color.push_back(1);
+    color.push_back(255);
 
     // Create LUT
     vtkSmartPointer<vtkLookupTable> lut = createLUT(color[0],
@@ -213,9 +213,9 @@ setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
       color.push_back(0.0);
       color.push_back(0.0);
       color.push_back(0.0);
-      color.push_back(1.0);
+      color.push_back(255.0);
 
-      color[i] = 1.0;
+      color[i] = 255.0;
 
       // Create LUT
       vtkSmartPointer<vtkLookupTable> lut = createLUT(color[0],

@@ -190,11 +190,8 @@ public:
    * structure. Will create the new image from the structure.
    * \param[in] iTime requested time point
    * \param[in] iChannel requested channel
-   * \return colored image.
+   * \return raw image.
    */
-  vtkSmartPointer<vtkImageData> getImage(const unsigned int& iTime,
-                                         const unsigned int& iChannel);
-
   vtkSmartPointer<vtkImageData> getImageBW(const unsigned int& iTime,
                                            const unsigned int& iChannel);
 

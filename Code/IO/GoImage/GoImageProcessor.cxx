@@ -38,7 +38,7 @@
 // external library include
 #include "vtkLookupTable.h"
 #include "vtkMath.h"
-#include "vtkImageMapToWindowLevelColors.h"
+#include "vtkImageMapToColors.h"
 #include "vtkImageBlend.h"
 #include "vtkPointData.h"
 #include "vtkImageShiftScale.h"
@@ -95,7 +95,7 @@ GoImageProcessor::
    }
 }
 //--------------------------------------------------------------------------
-// TODO Nicolas-Range is missing
+
 //--------------------------------------------------------------------------
 vtkSmartPointer<vtkLookupTable>
 GoImageProcessor::
@@ -162,34 +162,14 @@ GoImageProcessor::
 colorImage(vtkSmartPointer<vtkImageData> iImage,
            vtkSmartPointer<vtkLookupTable> iLUT)
 {
-  vtkSmartPointer<vtkImageMapToWindowLevelColors> coloredImage =
-      vtkSmartPointer<vtkImageMapToWindowLevelColors>::New();
+  vtkSmartPointer<vtkImageMapToColors> coloredImage =
+      vtkSmartPointer<vtkImageMapToColors>::New();
   coloredImage->SetLookupTable(iLUT);
   coloredImage->SetInput( iImage );
   coloredImage->SetOutputFormatToRGB();
   coloredImage->Update();
 
   return coloredImage->GetOutput();
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-vtkSmartPointer<vtkImageData>
-GoImageProcessor::
-getImage(const unsigned int& iTime, const unsigned int& iChannel)
-{
-  GoMegaImageStructureMultiIndexContainer::index<Channel>::type::iterator it =
-      m_MegaImageContainer.get< Channel >().find(iChannel);
-
-  while(it!=m_MegaImageContainer.get< Channel >().end())
-    {
-    if(it->Time==iTime)
-      {
-      return colorImage(it->Image, it->LUT);
-      }
-    ++it;
-    }
-  return NULL;
 }
 //--------------------------------------------------------------------------
 
@@ -340,6 +320,7 @@ getDopplerTime(unsigned int iTime)
   m_DopplerTime[2]= iTime + m_DopplerStep;
 
   // special case if we are at the borders
+  // value will be -1
   if ( m_DopplerTime[0] < m_BoundsTime[0] )
     {
     m_DopplerTime[0] = -1;

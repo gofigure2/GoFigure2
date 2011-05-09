@@ -292,7 +292,7 @@ void vtkViewImage2DCommand::PrintInformation()
  /*
   * \todo Nicolas- show channel value if we look at a multi channel image
   */
-  else
+  /*else
     {
     os2 << "Value : [";
     for ( int i = 0; i < 3; i++ )
@@ -300,7 +300,7 @@ void vtkViewImage2DCommand::PrintInformation()
       os2 << this->Viewer->GetValueAtPosition (pos, i) << ", ";
       }
     os2 << "]";
-    }
+    }*/
 
 
   this->Viewer->GetCornerAnnotation()->SetText ( 3, os2.str().c_str() );
