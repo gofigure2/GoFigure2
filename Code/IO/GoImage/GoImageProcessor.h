@@ -218,20 +218,11 @@ public:
   }
 
   /*
-   * \brief get all channels image given a time point. Will create the new
-   * image from the structure.
-   * \param[in] iTime requested time point
-   * \return colored image.
-   */
-  vtkSmartPointer<vtkImageData> getTimeAllChannels(const unsigned int& iTime);
-
-  /*
    * \brief get all time points image given a channel. Will create the new
    * image from the structure.
    * \param[in] iChannel requested channel
    * \return colored image.
    */
-  vtkSmartPointer<vtkImageData> getChannelAllTimes(const unsigned int& iChannel);
 
   vtkSmartPointer<vtkImageData> getAllImages();
 

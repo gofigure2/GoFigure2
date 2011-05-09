@@ -40,10 +40,10 @@
 #include "vtkMath.h"
 #include "vtkImageMapToWindowLevelColors.h"
 #include "vtkImageBlend.h"
-
-// test
+#include "vtkPointData.h"
 #include "vtkImageShiftScale.h"
 
+// tests
 #include "VisualizePolydataHelper.h"
 
 //--------------------------------------------------------------------------
@@ -162,21 +162,12 @@ GoImageProcessor::
 colorImage(vtkSmartPointer<vtkImageData> iImage,
            vtkSmartPointer<vtkLookupTable> iLUT)
 {
-  double* range = iLUT->GetRange();
-  std::cout << "range LUT: " << range[0] << " to " << range[1] << std::endl;
-  range = iImage->GetScalarRange();
-  std::cout << "range image: " << range[0] << " to " << range[1] << std::endl;
-
   vtkSmartPointer<vtkImageMapToWindowLevelColors> coloredImage =
       vtkSmartPointer<vtkImageMapToWindowLevelColors>::New();
   coloredImage->SetLookupTable(iLUT);
   coloredImage->SetInput( iImage );
-  //coloredImage->PassAlphaToOutputOff();
   coloredImage->SetOutputFormatToRGB();
   coloredImage->Update();
-
-  range = coloredImage->GetOutput()->GetScalarRange();
-  std::cout << "range after color image: " << range[0] << " to " << range[1] << std::endl;
 
   return coloredImage->GetOutput();
 }
@@ -225,83 +216,6 @@ getImageBW(const unsigned int& iTime, const unsigned int& iChannel)
 //--------------------------------------------------------------------------
 vtkSmartPointer<vtkImageData>
 GoImageProcessor::
-getTimeAllChannels(const unsigned int& iTime)
-{
-  vtkSmartPointer<vtkImageBlend> blendedImage =
-      vtkSmartPointer<vtkImageBlend>::New();
-  blendedImage->RemoveAllInputs();
-
-  GoMegaImageStructureMultiIndexContainer::index<Time>::type::iterator it =
-      m_MegaImageContainer.get< Time >().find(iTime);
-
-  /*
-    \todo Nicolas - do sth else....
-   */
-  double size(0);
-  while(it!=m_MegaImageContainer.get< Time >().end())
-    {
-    ++size;
-    ++it;
-    }
-  it = m_MegaImageContainer.get< Time >().find(iTime);
-
-  vtkIdType i(0);
-  while(it!=m_MegaImageContainer.get< Time >().end())
-    {
-    it->LUT->Modified();
-    it->LUT->Build();
-    blendedImage->AddInputConnection(
-          (this->colorImage(it->Image, it->LUT))->GetProducerPort());
-    blendedImage->SetOpacity(i,1/size);
-    ++i;
-    ++it;
-    }
-  blendedImage->Update();
-
-  return blendedImage->GetOutput();
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-vtkSmartPointer<vtkImageData>
-GoImageProcessor::
-getChannelAllTimes(const unsigned int& iChannel)
-{
-  vtkSmartPointer<vtkImageBlend> blendedImage =
-      vtkSmartPointer<vtkImageBlend>::New();
-  blendedImage->RemoveAllInputs();
-
-  GoMegaImageStructureMultiIndexContainer::index<Channel>::type::iterator it =
-      m_MegaImageContainer.get< Channel >().find(iChannel);
-
-  /*
-    \todo Nicolas - do sth else....
-   */
-  double size(0);
-  while(it!=m_MegaImageContainer.get< Channel >().end())
-    {
-    ++size;
-    ++it;
-    }
-  it = m_MegaImageContainer.get< Channel >().find(iChannel);
-
-  vtkIdType i(0);
-  while(it!=m_MegaImageContainer.get< Channel >().end())
-    {
-    blendedImage->AddInput(colorImage(it->Image, it->LUT));
-    blendedImage->SetOpacity(i, 1/size);
-    ++i;
-    ++it;
-    }
-  blendedImage->Update();
-
-  return blendedImage->GetOutput();
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-vtkSmartPointer<vtkImageData>
-GoImageProcessor::
 getAllImages()
 {
   vtkSmartPointer<vtkImageBlend> blendedImage =
@@ -317,8 +231,6 @@ getAllImages()
   vtkIdType i(0);
   while(it!=m_MegaImageContainer.end())
     {
-    std::cout << "in loop... " << i << std::endl;
-    //double* range = colorImage(it->Image, it->LUT)->GetScalarRange();
     blendedImage->AddInput(colorImage(it->Image, it->LUT));
     blendedImage->SetOpacity(i,1/size);
     ++i;
@@ -326,14 +238,19 @@ getAllImages()
     }
   blendedImage->Update();
 
-  double* range = blendedImage->GetOutput()->GetScalarRange();
+  double rangeR[2];
+  blendedImage->GetOutput()->GetPointData()->GetScalars()->GetRange(rangeR, 0);
+  double rangeG[2];
+  blendedImage->GetOutput()->GetPointData()->GetScalars()->GetRange(rangeG, 1);
+  double rangeB[2];
+  blendedImage->GetOutput()->GetPointData()->GetScalars()->GetRange(rangeB, 2);
 
-  std::cout << "range after blending: " << range[0] << " to " << range[1] << std::endl;
+  double range = std::max(rangeB[1], std::max(rangeR[1], rangeG[1]));
 
   vtkSmartPointer<vtkImageShiftScale> scale =
       vtkSmartPointer<vtkImageShiftScale>::New();
   scale->SetInput(blendedImage->GetOutput());
-  scale->SetScale(255/range[1]);
+  scale->SetScale(255/range);
   scale->SetOutputScalarTypeToUnsignedChar();
   scale->Update();
 

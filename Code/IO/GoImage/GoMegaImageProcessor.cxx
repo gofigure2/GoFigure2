@@ -109,10 +109,6 @@ setTimePoint(const unsigned int& iTime)
     color.push_back(value3);
     color.push_back(255);
 
-    std::cout << "channel: " << numberOfChannels << std::endl;
-    std::cout << "real color: " << color[0] <<"-"<< color[1] <<"-"
-              << color[2] <<"-" << color[3] << std::endl;
-
     // Create LUT
     vtkSmartPointer<vtkLookupTable> lut = createLUT(color[0],
                                                     color[1],
@@ -152,8 +148,6 @@ setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
     return;
     }
 
-  std::cout << "BEFORE container size: " << m_MegaImageContainer.size() << std::endl;
-
   int* dopplerTime = getDopplerTime(iTime);
 
   unsigned int channel = iChannel;
@@ -176,10 +170,6 @@ setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
 
     color[i] = 255;
 
-    std::cout << "doppler time: " << dopplerTime[i] << std::endl;
-    std::cout << "doppler color: " << color[0] <<"-"<< color[1] <<"-"
-              << color[2] <<"-" << color[3] << std::endl;
-
     // Create LUT
     vtkSmartPointer<vtkLookupTable> lut = createLUT(color[0],
                                                     color[1],
@@ -197,7 +187,6 @@ setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
       }
     }
 
-  std::cout << "AFTER container size: " << m_MegaImageContainer.size() << std::endl;
 /*
   vtkSmartPointer< vtkImageAppendComponents > append_filter =
     vtkSmartPointer< vtkImageAppendComponents >::New();
