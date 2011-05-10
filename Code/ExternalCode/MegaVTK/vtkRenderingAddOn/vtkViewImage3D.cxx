@@ -440,12 +440,12 @@ void vtkViewImage3D::SetVolumeRenderingOn()
         }
       else
       {
-              std::cout << "single channel" << std::endl;
+      std::cout << "single channel" << std::endl;
       vtkImageData* temp = this->GetInput();
       vtkImageMapToColors* map = vtkImageMapToColors::New();
       map->SetLookupTable(this->LookupTable);
       map->SetInput(temp);
-      map->SetOutputFormatToRGBA();
+      map->SetOutputFormatToRGB();
       map->Update();
       image = map->GetOutput();
       }
@@ -456,10 +456,25 @@ void vtkViewImage3D::SetVolumeRenderingOn()
     if ( NbOfComp > 1 && NbOfComp != 4 && NbOfComp < 5 )
       {
       std::cout << "between 2 and 3 components"<< std::endl;
+
+      // get the index of the first non-NULL component
+      int i(0);
+      for(i=0; i<3;++i)
+        {
+        double range[2];
+        image->GetPointData()->GetScalars()->GetRange(range,i);
+        if(range[1]>0)
+          {
+          break;
+          }
+        }
+
+      std::cout << "index: " << i << std::endl;
+
       vtkSmartPointer< vtkImageExtractComponents > extComp =
         vtkSmartPointer< vtkImageExtractComponents >::New();
       extComp->SetInput(image);
-      extComp->SetComponents(0);
+      extComp->SetComponents(i);
       extComp->Update();
 
       vtkSmartPointer< vtkImageAppendComponents > addComp =
@@ -470,10 +485,12 @@ void vtkViewImage3D::SetVolumeRenderingOn()
 
       if ( addComp->GetOutput()->GetNumberOfScalarComponents() == 4 )
         {
+          std::cout << "4 scalars component" << std::endl;
         this->VolumeMapper3D->SetInput( addComp->GetOutput() );
         }
       else
         {
+          std::cout << "not 4 scalars component" << std::endl;
         vtkSmartPointer< vtkImageData > temp =
           vtkSmartPointer< vtkImageData >::New();
         temp->ShallowCopy( addComp->GetOutput() );
