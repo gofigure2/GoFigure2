@@ -417,107 +417,73 @@ void vtkViewImage3D::SetVolumeRenderingOff()
  */
 void vtkViewImage3D::SetVolumeRenderingOn()
 {
-  if ( 1 )  //  !this->IsColor )
+  int *size = this->GetInput()->GetDimensions();
+
+  if ( ( size[0] < 2 )
+    || ( size[1] < 2 )
+    || ( size[2] < 2 ) )
     {
-      int *size = this->GetInput()->GetDimensions();
-
-      if ( ( size[0] < 2 )
-           || ( size[1] < 2 )
-           || ( size[2] < 2 ) )
-        {
-        vtkWarningMacro (<< "Cannot do volume rendering for a single slice, skipping" << endl);
-        return;
-        }
-
-      // check if RGB already
-      // or create RGB using LUT if single channel input
-      int NbOfComp2 = this->GetInput()->GetNumberOfScalarComponents();
-      vtkImageData *image;
-      if ( NbOfComp2 > 1 && NbOfComp2 != 4 && NbOfComp2 < 5 )
-        {
-          std::cout << "color channel >1 <4 components" << std::endl;
-          image = this->GetInput();
-        }
-      else
-      {
-      std::cout << "single channel" << std::endl;
-      vtkImageData* temp = this->GetInput();
-      vtkImageMapToColors* map = vtkImageMapToColors::New();
-      map->SetLookupTable(this->LookupTable);
-      map->SetInput(temp);
-      map->SetOutputFormatToRGB();
-      map->Update();
-      image = map->GetOutput();
-      }
-
-    this->SetupVolumeRendering();
-
-    int NbOfComp = image->GetNumberOfScalarComponents();
-    if ( NbOfComp > 1 && NbOfComp != 4 && NbOfComp < 5 )
-      {
-      std::cout << "between 2 and 3 components"<< std::endl;
-
-      // get the index of the first non-NULL component
-      int i(0);
-      for(i=0; i<3;++i)
-        {
-        double range[2];
-        image->GetPointData()->GetScalars()->GetRange(range,i);
-        if(range[1]>0)
-          {
-          break;
-          }
-        }
-
-      std::cout << "index: " << i << std::endl;
-
-      vtkSmartPointer< vtkImageExtractComponents > extComp =
-        vtkSmartPointer< vtkImageExtractComponents >::New();
-      extComp->SetInput(image);
-      extComp->SetComponents(i);
-      extComp->Update();
-
-      vtkSmartPointer< vtkImageAppendComponents > addComp =
-        vtkSmartPointer< vtkImageAppendComponents >::New();
-      addComp->AddInput(image);
-      addComp->AddInput( extComp->GetOutput() );
-      addComp->Update();
-
-      if ( addComp->GetOutput()->GetNumberOfScalarComponents() == 4 )
-        {
-          std::cout << "4 scalars component" << std::endl;
-        this->VolumeMapper3D->SetInput( addComp->GetOutput() );
-        }
-      else
-        {
-          std::cout << "not 4 scalars component" << std::endl;
-        vtkSmartPointer< vtkImageData > temp =
-          vtkSmartPointer< vtkImageData >::New();
-        temp->ShallowCopy( addComp->GetOutput() );
-        addComp->SetInput(0, temp);
-        addComp->Update();
-        this->VolumeMapper3D->SetInput( addComp->GetOutput() );
-        }
-      }
-    else
-      {
-      if ( NbOfComp == 1 || NbOfComp == 4 )
-        {
-        std::cout << "1 or 4 components"<< std::endl;
-        this->VolumeMapper3D->SetInput(image);
-        }
-      }
-
-    //if ( !this->IsColor )
-    //  {
-    //  this->VolumeRayCastMapper->SetInput(image);
-    //  }
-
-    // check if 3d mapper is supported
-    this->SetupTextureMapper();
-
-    this->VolumeActor->SetVisibility (true);
+    vtkWarningMacro (<< "Cannot do volume rendering for a single slice, skipping" << endl);
+    return;
     }
+
+  // check if RGB already
+  // or create RGB using LUT if single channel input
+  int NbOfComp = this->GetInput()->GetNumberOfScalarComponents();
+
+  vtkSmartPointer<vtkImageData> image;
+
+  if ( NbOfComp > 1 && NbOfComp != 4 && NbOfComp < 5 )
+    {
+    image = this->GetInput();
+    }
+  else
+    {
+    // color single channel image with current LUT
+    vtkImageData* temp = this->GetInput();
+    vtkSmartPointer<vtkImageMapToColors> map =
+        vtkSmartPointer<vtkImageMapToColors>::New();
+    map->SetLookupTable(this->LookupTable);
+    map->SetInput(temp);
+    map->SetOutputFormatToRGB();
+    map->Update();
+    image = map->GetOutput();
+    }
+
+  this->SetupVolumeRendering();
+
+  // get the index of the first non-NULL component
+  int i(0);
+  for(i=0; i<3;++i)
+    {
+    double range[2];
+    image->GetPointData()->GetScalars()->GetRange(range,i);
+    if(range[1]>0)
+      {
+      break;
+      }
+    }
+
+  //mix components
+  vtkSmartPointer< vtkImageExtractComponents > extComp =
+    vtkSmartPointer< vtkImageExtractComponents >::New();
+  extComp->SetInput(image.GetPointer());
+  extComp->SetComponents(i);
+  extComp->Update();
+
+  vtkSmartPointer< vtkImageAppendComponents > addComp =
+    vtkSmartPointer< vtkImageAppendComponents >::New();
+  addComp->AddInput(image);
+  addComp->AddInput( extComp->GetOutput() );
+  addComp->Update();
+
+  // add output to mapper
+  this->VolumeMapper3D->SetInput( addComp->GetOutput() );
+
+  // check if 3d mapper is supported
+  this->SetupTextureMapper();
+
+  this->VolumeActor->SetVisibility (true);
 }
 
 //----------------------------------------------------------------------------
