@@ -419,31 +419,43 @@ void vtkViewImage3D::SetVolumeRenderingOn()
 {
   if ( 1 )  //  !this->IsColor )
     {
-    vtkImageData *image = this->GetInput();
+      int *size = this->GetInput()->GetDimensions();
 
-    int *size = image->GetDimensions();
+      if ( ( size[0] < 2 )
+           || ( size[1] < 2 )
+           || ( size[2] < 2 ) )
+        {
+        vtkWarningMacro (<< "Cannot do volume rendering for a single slice, skipping" << endl);
+        return;
+        }
 
-    if ( ( size[0] < 2 )
-         || ( size[1] < 2 )
-         || ( size[2] < 2 ) )
+      // check if RGB already
+      // or create RGB using LUT if single channel input
+      int NbOfComp2 = this->GetInput()->GetNumberOfScalarComponents();
+      vtkImageData *image;
+      if ( NbOfComp2 > 1 && NbOfComp2 != 4 && NbOfComp2 < 5 )
+        {
+          std::cout << "color channel >1 <4 components" << std::endl;
+          image = this->GetInput();
+        }
+      else
       {
-      vtkWarningMacro (<< "Cannot do volume rendering for a single slice, skipping" << endl);
-      return;
+              std::cout << "single channel" << std::endl;
+      vtkImageData* temp = this->GetInput();
+      vtkImageMapToColors* map = vtkImageMapToColors::New();
+      map->SetLookupTable(this->LookupTable);
+      map->SetInput(temp);
+      map->SetOutputFormatToRGBA();
+      map->Update();
+      image = map->GetOutput();
       }
-/*
-    if (!this->IsColor)
-          {
-    vtkImageMapToWindowLevelColors* test = this->GetWindowLevel();
-    test->SetInput(image);
-    vtkImageData* imagenew = vtkImageData::New();
-    imagenew = test->GetOutput();
-    image = imagenew;
-          }*/
+
     this->SetupVolumeRendering();
 
     int NbOfComp = image->GetNumberOfScalarComponents();
     if ( NbOfComp > 1 && NbOfComp != 4 && NbOfComp < 5 )
       {
+      std::cout << "between 2 and 3 components"<< std::endl;
       vtkSmartPointer< vtkImageExtractComponents > extComp =
         vtkSmartPointer< vtkImageExtractComponents >::New();
       extComp->SetInput(image);
@@ -474,18 +486,18 @@ void vtkViewImage3D::SetVolumeRenderingOn()
       {
       if ( NbOfComp == 1 || NbOfComp == 4 )
         {
+        std::cout << "1 or 4 components"<< std::endl;
         this->VolumeMapper3D->SetInput(image);
         }
       }
-    if ( !this->IsColor )
-      {
-      this->VolumeRayCastMapper->SetInput(image);
-      }
 
+    //if ( !this->IsColor )
+    //  {
+    //  this->VolumeRayCastMapper->SetInput(image);
+    //  }
+
+    // check if 3d mapper is supported
     this->SetupTextureMapper();
-
-    //this->PlaneWidget->SetInput (this->GetInput());
-    //this->PlaneWidget->PlaceWidget();
 
     this->VolumeActor->SetVisibility (true);
     }
@@ -746,9 +758,19 @@ void vtkViewImage3D::SetupTextureMapper()
         newMapper->CroppingOn();
         newMapper->SetCroppingRegionFlags (0x7ffdfff);
 
-        double *range = this->GetInput()->GetScalarRange();
-        double  shift = 0 - range[0];
-        double  scale = 65535.0 / ( range[1] - range[0] );
+        double rangeR[2];
+        this->GetInput()->GetPointData()->GetScalars()->GetRange(rangeR, 0);
+        double rangeG[2];
+        this->GetInput()->GetPointData()->GetScalars()->GetRange(rangeG, 1);
+        double rangeB[2];
+        this->GetInput()->GetPointData()->GetScalars()->GetRange(rangeB, 2);
+
+        double rangeMax = std::max(rangeB[1], std::max(rangeR[1], rangeG[1]));
+        double rangeMin = std::min(rangeB[0], std::min(rangeR[0], rangeG[0]));
+
+
+        double  shift = 0 - rangeMin;
+        double  scale = 65535.0 / ( rangeMax - rangeMin );
 
         vtkSmartPointer< vtkImageShiftScale > scaler =
           vtkSmartPointer< vtkImageShiftScale >::New();
