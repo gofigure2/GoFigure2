@@ -378,11 +378,7 @@ SET( QGoGUI_LIBS
   vtkRenderingAddOn2
   PoissonReconstruction
   ctk
-  ${ITK-IO}
-  ITK-Common
-  #ITK-ImageFilterBase
-  ITK-Statistics
-  ITK-Review
+  ${ITK_LIBRARIES}
   )
 
 TARGET_LINK_LIBRARIES( QGoGui

@@ -2,8 +2,7 @@ ADD_EXECUTABLE( itkvtkPolyDatatoBinaryMaskImageFilterTest
   itkvtkPolyDatatoBinaryMaskImageFilterTest.cxx )
 
 TARGET_LINK_LIBRARIES( itkvtkPolyDatatoBinaryMaskImageFilterTest
-  ${ITK-IO}
-  ITK-Common
+  ${ITK_LIBRARIES}
   vtkGraphics
   vtkHybrid
 )
@@ -51,7 +50,7 @@ TARGET_LINK_LIBRARIES( ContourToMeshFilterTest
   PoissonReconstruction
   vtkHybrid
   vtkRenderingAddOn2
-  ITK-Common
+  ${ITK_LIBRARIES}
   )
 
 ADD_TEST( ContourToMeshFilterTest
