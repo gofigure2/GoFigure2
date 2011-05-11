@@ -140,13 +140,11 @@ setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
 {
   //to optimize doppler view later on
   (void) iPrevious;
-/*
+
   //check if time point exists
   if(iTime >= m_BoundsTime[0] && iTime <= m_BoundsTime[1])
     {
     m_MegaImageContainer.clear();
-    m_LSMReader->SetUpdateTimePoint(iTime);
-    m_LSMReader->Update();
     }
   else
     {
@@ -154,39 +152,20 @@ setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
     }
 
   int* dopplerTime = getDopplerTime(iTime);
-  m_LSMReaderVector.clear();
-
-  int numberOfChannels(0);
-  for(unsigned int i=0; i<3; ++i)
-    {
-      if(dopplerTime[i] >= 0)
-      {
-      ++numberOfChannels;
-      }
-    }
-
-  m_LSMReaderVector.resize(numberOfChannels);
-
-  unsigned int channel = iChannel;
 
   for(unsigned int i=0; i<3; ++i)
     {
     if(dopplerTime[i] >= 0)
       {
-      --numberOfChannels;
-      // Fill vector
-      m_LSMReaderVector[numberOfChannels] =
-            vtkSmartPointer< vtkLSMReader >::New();
-      m_LSMReaderVector[numberOfChannels]->SetFileName(
-            m_LSMReader->GetFileName() );
-      m_LSMReaderVector[numberOfChannels]->SetUpdateChannel(
-            iChannel);
+      vtkSmartPointer<vtkLSMReader> reader =
+          vtkSmartPointer<vtkLSMReader>::New();
+      reader->SetFileName(m_LSMReader->GetFileName());
+      reader->SetUpdateChannel(iChannel);
+      reader->SetUpdateTimePoint(dopplerTime[i]);
+      reader->Update();
 
       // get image
-      m_LSMReaderVector[numberOfChannels]->SetUpdateTimePoint(dopplerTime[i]);
-      m_LSMReaderVector[numberOfChannels]->Update();
-      vtkSmartPointer<vtkImageData> image =
-          m_LSMReaderVector[numberOfChannels]->GetOutput();
+      vtkSmartPointer<vtkImageData> image = reader->GetOutput();
 
       // color from red to blue
       std::vector<double> color;
@@ -207,11 +186,11 @@ setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
       // Update the MegaImageStructure
       // image, LUT, channel, time point
       m_MegaImageContainer.insert(GoMegaImageStructure(dopplerTime[i],
-                                                       channel,
+                                                       iChannel,
                                                        lut,
                                                        image,
                                                        color));
       }
-    }*/
+    }
 }
 //--------------------------------------------------------------------------
