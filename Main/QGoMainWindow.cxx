@@ -185,7 +185,11 @@ QGoMainWindow::QGoMainWindow(QWidget *iParent, Qt::WindowFlags iFlags) :
 QGoMainWindow::~QGoMainWindow()
 {
   // clear will call destructor on all of the element in the list
-  m_LSMReader.clear();
+  // what is the point of the list?
+  if(this->m_LSMReader.back())
+    {
+    this->m_LSMReader.back()->Delete();
+    }
   this->WriteSettings();
   delete m_TabManager;
   delete m_DBWizard;

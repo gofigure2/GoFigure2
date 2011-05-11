@@ -36,14 +36,6 @@
 #include "GoLSMImageProcessor.h"
 
 //--------------------------------------------------------------------------
-GoLSMImageProcessor::
-~GoLSMImageProcessor()
-{
-  m_LSMReaderVector.clear();
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
 void
 GoLSMImageProcessor::
 setReader(vtkLSMReader* iReader)
@@ -79,9 +71,6 @@ setTimePoint(const unsigned int& iTime)
   if(iTime >= m_BoundsTime[0] && iTime <= m_BoundsTime[1])
     {
     m_MegaImageContainer.clear();
-    m_LSMReader->SetUpdateTimePoint(iTime);
-    m_LSMReader->Update();
-    m_LSMReaderVector.clear();
     }
   else
     {
@@ -92,36 +81,30 @@ setTimePoint(const unsigned int& iTime)
   // Get Number of channels from reader
   int numberOfChannels = getNumberOfChannels();
 
-  m_LSMReaderVector.resize(numberOfChannels);
-
   while(numberOfChannels>0)
     {
     --numberOfChannels;
 
-    // Fill vector
-    m_LSMReaderVector[numberOfChannels] =
-          vtkSmartPointer< vtkLSMReader >::New();
-    m_LSMReaderVector[numberOfChannels]->SetFileName(
-          m_LSMReader->GetFileName() );
-    m_LSMReaderVector[numberOfChannels]->SetUpdateChannel(
-          numberOfChannels );
+    vtkSmartPointer<vtkLSMReader> reader =
+        vtkSmartPointer<vtkLSMReader>::New();
+    reader->SetFileName(m_LSMReader->GetFileName());
+    reader->SetUpdateChannel(numberOfChannels);
+    reader->SetUpdateTimePoint(iTime);
+    reader->Update();
 
-    // get image
-    m_LSMReaderVector[numberOfChannels]->SetUpdateTimePoint(iTime);
-    m_LSMReaderVector[numberOfChannels]->Update();
-    vtkSmartPointer<vtkImageData> image =
-        m_LSMReaderVector[numberOfChannels]->GetOutput();
+   // get image
+    vtkSmartPointer<vtkImageData> image = reader->GetOutput();
 
     // Get Color
-    double random1 = m_LSMReader->
+    double random1 = reader->
         GetChannelColorComponent(numberOfChannels, 0);
     double value1 = random1;
 
-    double random2 = m_LSMReader->
+    double random2 = reader->
         GetChannelColorComponent(numberOfChannels, 1);
     double value2 = random2;
 
-    double random3 = m_LSMReader->
+    double random3 = reader->
         GetChannelColorComponent(numberOfChannels, 2);
     double value3 = random3;
 
@@ -157,7 +140,7 @@ setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
 {
   //to optimize doppler view later on
   (void) iPrevious;
-
+/*
   //check if time point exists
   if(iTime >= m_BoundsTime[0] && iTime <= m_BoundsTime[1])
     {
@@ -229,6 +212,6 @@ setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
                                                        image,
                                                        color));
       }
-    }
+    }*/
 }
 //--------------------------------------------------------------------------

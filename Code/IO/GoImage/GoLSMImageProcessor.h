@@ -72,7 +72,6 @@ private:
   ~GoLSMImageProcessor();
 
   vtkLSMReader *m_LSMReader;
-  std::vector<vtkSmartPointer<vtkLSMReader> > m_LSMReaderVector;
 };
 
 #endif // GoLSMImageProcessor_H
