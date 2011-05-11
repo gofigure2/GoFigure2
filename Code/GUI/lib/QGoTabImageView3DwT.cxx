@@ -992,44 +992,36 @@ QGoTabImageView3DwT::CreateTracesActions()
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::ChannelTimeMode(bool iEnable)
+QGoTabImageView3DwT::SetupWidgetsDoppler2ClassicMode()
 {
-  // if we leave the time mode, go back to the classic mode automatically
-  if ( !iEnable )
+  unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
+
+  // resize internal and update the internal image
+  if(NumberOfChannels == 1)
     {
-    unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
-
-    // resize internal and update the internal image
-    if(NumberOfChannels == 1)
-      {
-      m_NavigationDockWidget->SetShowAllChannels(true);
-      }
-
-    SetTimePointWithMegaCapture();
-
-    // Update navigation widget
-    // Initialize the widgets with the good number of channels
-    // it will update the size of the related combobox
-    m_NavigationDockWidget->blockSignals(true);
-    m_NavigationDockWidget->SetNumberOfChannels(NumberOfChannels);
-    m_ContourSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
-    m_MeshSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
-
-    for ( unsigned int i = 0; i < NumberOfChannels; i++ )
-      {
-      m_NavigationDockWidget->SetChannel( i, m_ChannelNames[i] );
-      m_ContourSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
-      m_MeshSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
-      }
-    m_NavigationDockWidget->blockSignals(false);
-    // update visualization
-    Update();
+    m_NavigationDockWidget->SetShowAllChannels(true);
     }
+
+  // Update navigation widget
+  // Initialize the widgets with the good number of channels
+  // it will update the size of the related combobox
+  m_NavigationDockWidget->blockSignals(true);
+  m_NavigationDockWidget->SetNumberOfChannels(NumberOfChannels);
+  m_ContourSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
+  m_MeshSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
+
+  for ( unsigned int i = 0; i < NumberOfChannels; i++ )
+    {
+    m_NavigationDockWidget->SetChannel( i, m_ChannelNames[i] );
+    m_ContourSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
+    m_MeshSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
+    }
+  m_NavigationDockWidget->blockSignals(false);
 }
 
 //-------------------------------------------------------------------------
 
-void QGoTabImageView3DwT::LoadChannelTime()
+void QGoTabImageView3DwT::StartDopplerView()
 {
   bool         ok;
   QStringList  channel;
@@ -1051,7 +1043,7 @@ void QGoTabImageView3DwT::LoadChannelTime()
     m_ImageProcessor->setDopplerMode(ok);
     int value = item.toInt(&ok, 10);
     m_ChannelOfInterest = value;
-    SetTimePointWithMegaCaptureTimeChannels(m_ChannelOfInterest);
+    SetTimePointDoppler(m_ChannelOfInterest);
     Update();
     }
 }
@@ -1420,7 +1412,7 @@ UpdateWidgetsFromImageProcessor()
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SetTimePointWithMegaCapture()
+QGoTabImageView3DwT::SetTimePoint()
 {
   unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
 
@@ -1467,7 +1459,7 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels(int iChannel,
+QGoTabImageView3DwT::SetTimePointDoppler(int iChannel,
                                                              int iPreviousT)
 {
   // iPreviousT not used yet.
@@ -1546,11 +1538,11 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
     m_TCoord = iTimePoint;
     if (!m_ImageProcessor->getDopplerMode())
       {
-      SetTimePointWithMegaCapture();
+      SetTimePoint();
       }
     else
       {
-      SetTimePointWithMegaCaptureTimeChannels(m_ChannelOfInterest, previousT);
+      SetTimePointDoppler(m_ChannelOfInterest, previousT);
       }
     emit TimePointChanged(m_TCoord);
     }
@@ -1849,7 +1841,6 @@ QGoTabImageView3DwT::ShowOneChannel(int iChannel)
     // should check that since combo box should have the good number of
     // elements on border
     // not working....
-    std::cout << "real time: " << realTime[iChannel] << std::endl;
     if(realTime[iChannel] >= 0)
       {
       m_Image->ShallowCopy(m_ImageProcessor->getImageBW(realTime[iChannel], m_ChannelOfInterest));
@@ -1870,12 +1861,16 @@ QGoTabImageView3DwT::ModeChanged(int iChannel)
 {
   if ( iChannel == 1 )
     {
-    LoadChannelTime();
+    StartDopplerView();
     }
   else
     {
     m_ImageProcessor->setDopplerMode(false);
-    ChannelTimeMode(iChannel);
+    SetupWidgetsDoppler2ClassicMode();
+    // to be renamed
+    SetTimePoint();
+    // update visualization
+    Update();
     }
 }
 //-------------------------------------------------------------------------
@@ -1886,7 +1881,7 @@ QGoTabImageView3DwT::StepChanged(int iStep)
 {
   m_ImageProcessor->setDopplerStep(iStep);
 
-  SetTimePointWithMegaCaptureTimeChannels(m_ChannelOfInterest);
+  SetTimePointDoppler(m_ChannelOfInterest);
   Update();
 }
 //-------------------------------------------------------------------------

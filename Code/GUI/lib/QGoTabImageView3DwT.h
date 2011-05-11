@@ -556,10 +556,10 @@ protected:
                                        vtkProperty *property = NULL);
 
   // TODO remove megacapture
-  void SetTimePointWithMegaCapture();
+  void SetTimePoint();
 
     // TODO remove megacaptureZz
-  void SetTimePointWithMegaCaptureTimeChannels(int channel, int PreviousT = 0);
+  void SetTimePointDoppler(int channel, int PreviousT = 0);
 
   /**
   \brief give the adress for the contours, meshes and tracks container to the
@@ -645,12 +645,12 @@ protected slots:
   -time mode where a channel represents the same entity through the time. (t-1, t and t+1).
     updates the navigation widget.
   */
-  void ChannelTimeMode( bool );
+  void SetupWidgetsDoppler2ClassicMode();
   /**
   \brief access to the megacapture reader to get the entity of interest images through time.
   updates the navigation widget.
   */
-  void LoadChannelTime();
+  void StartDopplerView();
 
   /**
   \brief give the adress for the contours, meshes and tracks container to the
