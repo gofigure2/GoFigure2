@@ -1874,6 +1874,7 @@ QGoTabImageView3DwT::ModeChanged(int iChannel)
     }
   else
     {
+    m_ImageProcessor->setDopplerMode(false);
     ChannelTimeMode(iChannel);
     }
 }
