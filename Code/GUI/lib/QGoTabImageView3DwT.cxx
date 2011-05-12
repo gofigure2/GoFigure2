@@ -2653,11 +2653,15 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
   calculator->SetIntensityBasedComputation(iIntensity);
 
   GoFigureMeshAttributes oAttributes;
-
+  std::cout << "compute attributes..." << std::endl;
   if(!m_ImageProcessor->getDopplerMode())
     {
     for ( size_t i = 0; i < m_ImageProcessor->getNumberOfChannels(); i++ )
       {
+        std::cout <<"NUMBER OF CHANNELS: "<<
+                    m_ImageProcessor->getNumberOfChannels()
+                    << std::endl;
+
       vtkSmartPointer< vtkImageExport > vtk_exporter =
         vtkSmartPointer< vtkImageExport >::New();
       itk::VTKImageImport< ImageType >::Pointer itk_importer =
@@ -2736,6 +2740,8 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
         }
       }
     }
+
+    std::cout << "FINISH COMPUTING..." << std::endl;
 
   return oAttributes;
 }

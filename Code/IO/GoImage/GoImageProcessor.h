@@ -196,7 +196,7 @@ public:
   GoMegaImageStructureMultiIndexContainer::index<Index>::type::iterator it =
       m_MegaImageContainer.get< Index >().find(iIndex);
 
-  if(it==m_MegaImageContainer.get< Index >().end())
+  if(it!=m_MegaImageContainer.get< Index >().end())
     {
     return it->Convert2ITK<PixelType, VImageDimension>();
     }

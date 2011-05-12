@@ -167,11 +167,13 @@ getImageBW(const unsigned int& iIndex)
 {
   GoMegaImageStructureMultiIndexContainer::index<Index>::type::iterator it =
       m_MegaImageContainer.get< Index >().find(iIndex);
-
-  if(it== m_MegaImageContainer.get< Index >().end())
+  std::cout << "look for image: " << iIndex << std::endl;
+  if(it!=m_MegaImageContainer.get< Index >().end())
     {
+    std::cout << "FOUND: " << iIndex << std::endl;
     return it->Image;
     }
+  std::cout << "NOT FOUND: " << iIndex << std::endl;
   return NULL;
 }
 //--------------------------------------------------------------------------
