@@ -34,6 +34,8 @@
 #include "QGoSetOfContoursWaterShedAlgo.h"
 #include "QGoFilterWatershed.h"
 
+#include "GoImageProcessor.h"
+
 QGoSetOfContoursWaterShedAlgo::
 QGoSetOfContoursWaterShedAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent)
   :QGoWaterShedAlgo(iSeeds, iParent)
@@ -53,7 +55,7 @@ QGoSetOfContoursWaterShedAlgo::~QGoSetOfContoursWaterShedAlgo()
 
 //-------------------------------------------------------------------------
 std::vector<vtkPolyData*> QGoSetOfContoursWaterShedAlgo::ApplyAlgo(
-  std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+  GoImageProcessor* iImages,
     int iChannel)
 {
   std::vector<vtkPolyData*> NewContours = std::vector<vtkPolyData*>();
@@ -64,7 +66,7 @@ std::vector<vtkPolyData*> QGoSetOfContoursWaterShedAlgo::ApplyAlgo(
 //-------------------------------------------------------------------------
 std::vector<std::vector<vtkPolyData*> > QGoSetOfContoursWaterShedAlgo::
   ApplyAlgoSeveralSeeds(
-    std::vector<vtkSmartPointer< vtkImageData > >* iImages, int iChannel)
+    GoImageProcessor* iImages, int iChannel)
 {
   std::vector<std::vector<vtkPolyData*> > NewContours;
   QGoFilterWatershed WatershedFilter;

@@ -40,6 +40,8 @@
 #include "vtkImageData.h"
 #include <iostream>
 
+#include "GoImageProcessor.h"
+
 
 QGoTraceEditingWidgetManager::QGoTraceEditingWidgetManager(
   std::string iTraceName,
@@ -47,7 +49,7 @@ QGoTraceEditingWidgetManager::QGoTraceEditingWidgetManager(
   int iTimeMin,
   int iTimeMax,
   std::vector< vtkPoints* >* iSeeds,
-  std::vector< vtkSmartPointer< vtkImageData > >* iImages,
+  GoImageProcessor* iImages,
   int* iCurrentTimePoint,
   QWidget* iParent)
 {

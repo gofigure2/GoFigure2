@@ -42,6 +42,8 @@
 #include "vtkPolyData.h"
 #include "vtkImageData.h"
 
+class GoImageProcessor;
+
 
 /**
 \class QGoSetOfContoursWaterShedAlgo
@@ -55,11 +57,11 @@ public:
   ~QGoSetOfContoursWaterShedAlgo();
 
   std::vector<vtkPolyData*> ApplyAlgo(
-    std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+    GoImageProcessor* iImages,
     int iChannel);
 
   std::vector<std::vector<vtkPolyData*> > ApplyAlgoSeveralSeeds(
-    std::vector<vtkSmartPointer< vtkImageData > >* iImages, int iChannel);
+    GoImageProcessor* iImages, int iChannel);
 
 protected:
 

@@ -44,6 +44,8 @@
 #include <QDockWidget>
 #include "QGoContourLevelSetAlgo.h"
 
+class GoImageProcessor;
+
 
 /**
 \class QGoContourEditingWidgetManager handles the interactions between the user
@@ -57,7 +59,7 @@ public:
 
   QGoContourEditingWidgetManager(std::vector<QString> iVectChannels,
     int iTimeMin, int iTimeMax, std::vector< vtkPoints* >* iSeeds,
-    std::vector< vtkSmartPointer< vtkImageData > >* iImages,
+    GoImageProcessor* iImages,
     int* iCurrentTimePoint,
     QWidget* iParent=0);
 

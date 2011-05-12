@@ -38,6 +38,7 @@
 
 #include "QGoGUILibConfigure.h"
 
+class GoImageProcessor;
 /**
  * \class QGoFilterWatershed
  * \brief Watershed segmentation algorithm implementation.
@@ -69,14 +70,14 @@ public:
   std::vector<vtkPolyData*> ApplyFilter3D(double iRadius,
     int iThresMin, int iThresMax, double iCorrTresh, double iAlpha, double iBeta,
     std::vector< vtkPoints* >* iPoints,
-    std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+    GoImageProcessor* iImages,
     int iChannel);
 
   std::vector<std::vector<vtkPolyData*> > ApplyFilterSetOf2D(double iRadius,
     int iThresMin, int iThresMax, double iCorrTresh, double iAlpha,
     double iBeta,  int iSampling,
     std::vector< vtkPoints* >* iPoints,
-    std::vector<vtkSmartPointer< vtkImageData > >* iImages, int iChannel);
+    GoImageProcessor* iImages, int iChannel);
 
 public slots:
   void setTreshMin(int);
@@ -94,6 +95,6 @@ protected:
 
   vtkPolyData* Filter3D(double *iCenter, double iRadius, int iThresMin, int iThresMax,
     double iCorrTresh, double iAlpha, double iBeta,
-    std::vector<vtkSmartPointer< vtkImageData > >* iImages, int iChannel);
+    GoImageProcessor* iImages, int iChannel);
 };
 #endif

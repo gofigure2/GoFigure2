@@ -43,6 +43,8 @@
 #include "vtkSmartPointer.h"
 #include "vtkPolyData.h"
 
+class GoImageProcessor;
+
 /**
  * \class QGoFilterChanAndVese
  * \brief Levelset segmentation algorithm implementation.
@@ -73,7 +75,7 @@ public:
 
   std::vector<vtkPolyData*> ApplyFilterLevelSet3D(double iRadius, vtkPoints* iPoints,
     int iIterations, int iCurvature,
-    std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+    GoImageProcessor* iImages,
     int iChannel);
 
   template< typename TPixel >
@@ -160,7 +162,7 @@ public:
   std::vector<std::vector<vtkPolyData*> > ApplyFilterSetOf2D(
     double iRadius, std::vector< vtkPoints* >* iPoints,
     int iIterations, int iCurvature, int iSampling,
-    std::vector<vtkSmartPointer< vtkImageData > >* iImages, int iChannel);
+    GoImageProcessor* iImages, int iChannel);
 
 public slots:
   //void setIterations(int iIterations);
@@ -171,7 +173,7 @@ protected:
   void Filter2D(double *iCenter, const int & iOrientation);
 
   vtkPolyData * Filter3D(double *iCenter, int iCurvature, int iIterations,
-    double iRadius, std::vector< vtkSmartPointer< vtkImageData > >* iImages,
+    double iRadius, GoImageProcessor* iImages,
     int iChannel);
 
 private:

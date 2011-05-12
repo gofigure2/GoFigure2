@@ -42,6 +42,8 @@
 #include "vtkPolyData.h"
 #include "vtkImageData.h"
 
+class GoImageProcessor;
+
 
 /**
 \class QGoMeshShapeAlgo
@@ -55,7 +57,7 @@ public:
   ~QGoMeshShapeAlgo();
 
   std::vector<vtkPolyData*> ApplyAlgo(
-    std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+    GoImageProcessor* iImages,
     int iChannel);
 
 protected:

@@ -38,6 +38,7 @@
 
 #include "QGoGUILibConfigure.h"
 
+class GoImageProcessor;
 class vtkPolyData;
 
 /**
@@ -67,13 +68,13 @@ public:
   */
   std::vector<vtkPolyData *> ApplyFilter3D( double iRadius,
     std::vector< vtkPoints* >* iPoints, std::string iShape,
-    std::vector< vtkSmartPointer< vtkImageData > >* iImages,
+    GoImageProcessor* iImages,
     int iChannel);
 
   std::vector<std::vector<vtkPolyData*> > ApplyFilterSetOf2D(double iRadius,
     std::string iShape, int iSampling,
     std::vector< vtkPoints* >* iPoints,
-    std::vector<vtkSmartPointer< vtkImageData > >* iImages, int iChannel);
+    GoImageProcessor* iImages, int iChannel);
 
 public slots:
 

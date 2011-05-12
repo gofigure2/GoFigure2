@@ -43,6 +43,8 @@
 #include "vtkPolyData.h"
 #include "vtkImageData.h"
 
+class GoImageProcessor;
+
 
 /**
 \class QGoContourLevelSetAlgo
@@ -56,14 +58,14 @@ public:
   ~QGoContourLevelSetAlgo();
 
   std::vector<vtkPolyData*> ApplyAlgo(
-    std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+    GoImageProcessor* iImages,
     int iChannel);
 
 protected:
 
   template < class PixelType, unsigned int VImageDimension >
   vtkPolyData * ApplyLevelSetFilter(std::vector<double> iCenter,
-  std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+  GoImageProcessor* iImages,
     int iChannel)
     {
 //    std::vector<double> Bounds = this->GetBounds(iCenter, this->m_Radius->GetValue());

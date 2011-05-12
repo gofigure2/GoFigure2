@@ -81,8 +81,7 @@ using namespace boost::multi_index;
 
 /* tags for accessing the corresponding indices of GoMegaImageStructure */
 
-struct Time{};
-struct Channel{};
+struct Index{};
 
 /* Define a multi_index_container of employees with following indices:
  *   - a unique index sorted by GoMegaImageStructure::Time,
@@ -93,9 +92,7 @@ typedef multi_index_container<
   GoMegaImageStructure,
   indexed_by<
     ordered_non_unique<
-      tag<Time>,  BOOST_MULTI_INDEX_MEMBER(GoMegaImageStructure,unsigned int,Time)>,
-    ordered_non_unique<
-      tag<Channel>, BOOST_MULTI_INDEX_MEMBER(GoMegaImageStructure,unsigned int,Channel)> >
+      tag<Index>,  BOOST_MULTI_INDEX_MEMBER(GoMegaImageStructure,unsigned int,Index)> >
 > GoMegaImageStructureMultiIndexContainer;
 
 //-----------------------------------------------------------------------------
@@ -152,8 +149,7 @@ public:
    * \param[in] iTime time point to be modified
    */
   void setLookupTable(vtkSmartPointer<vtkLookupTable> iLUT,
-                      const unsigned int& iChannel,
-                      const unsigned int& iTime);
+                      const unsigned int& iIndex);
 
   /*
    * \brief get a lookuptable (LUT) given a channel and a time point
@@ -161,8 +157,7 @@ public:
    * \param[in] iTime requested time point
    * \return current LUT
    */
-  vtkSmartPointer<vtkLookupTable> getLookuptable(const unsigned int& iChannel,
-                                                 const unsigned int& iTime) const;
+  vtkSmartPointer<vtkLookupTable> getLookuptable(const unsigned int& iIndex) const;
 
   /*
    * \brief load all the channels for the given time point into the
@@ -192,27 +187,24 @@ public:
    * \param[in] iChannel requested channel
    * \return raw image.
    */
-  vtkSmartPointer<vtkImageData> getImageBW(const unsigned int& iTime,
-                                           const unsigned int& iChannel);
+  vtkSmartPointer<vtkImageData> getImageBW(const unsigned int& iIndex);
 
   template< class PixelType, unsigned int VImageDimension >
   typename itk::Image< PixelType, VImageDimension >::Pointer
-  getImageITK(const unsigned int& iTime,
-              const unsigned int& iChannel)
+  getImageITK(int& iIndex)
   {
-  GoMegaImageStructureMultiIndexContainer::index<Channel>::type::iterator it =
-      m_MegaImageContainer.get< Channel >().find(iChannel);
+  GoMegaImageStructureMultiIndexContainer::index<Index>::type::iterator it =
+      m_MegaImageContainer.get< Index >().find(iIndex);
 
-    while(it!=m_MegaImageContainer.get< Channel >().end())
-      {
-      if(it->Time==iTime)
-        {
-        return it->Convert2ITK<PixelType, VImageDimension>();
-        }
-      ++it;
-      }
+  if(it==m_MegaImageContainer.get< Index >().end())
+    {
+    return it->Convert2ITK<PixelType, VImageDimension>();
+    }
+
     return NULL;
   }
+
+  // find constant paramter and the other one return 4 point?
 
   /*
    * \brief get all the images present in the containerl. Will create the new

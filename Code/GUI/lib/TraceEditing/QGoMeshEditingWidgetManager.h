@@ -49,6 +49,8 @@
 #include <QAction>
 #include <QDockWidget>
 
+class GoImageProcessor;
+
 
 /**
 \class QGoMeshEditingWidgetManager handles the interactions between the user
@@ -63,7 +65,7 @@ public:
   QGoMeshEditingWidgetManager(std::vector<QString> iVectChannels,
     int iTimeMin, int iTimeMax,
     std::vector< vtkPoints* >* iSeeds,
-    std::vector< vtkSmartPointer< vtkImageData > >* iImages,
+    GoImageProcessor* iImages,
     int* iCurrentTimePoint,
     QWidget* iParent=0);
 

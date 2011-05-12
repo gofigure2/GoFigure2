@@ -51,6 +51,8 @@
 #include "itkImageToVTKImageFilter.h"
 #include "itkRegionOfInterestImageFilter.h"
 
+class GoImageProcessor;
+
 /**
 \class QGoSegmentationAlgo
 \brief abstract class to be the interface between the algorithms for meshes
@@ -72,7 +74,7 @@ public:
   \brief return the vtkpolydata created by the algorithm
   */
   virtual std::vector<vtkPolyData*> ApplyAlgo(
-    std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+    GoImageProcessor* iImages,
     int iChannel) = 0;
 
   /*

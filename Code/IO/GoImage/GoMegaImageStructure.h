@@ -61,18 +61,17 @@
  */
 struct QGOIO_EXPORT GoMegaImageStructure
 {
-    unsigned int                    Time;
-    unsigned int                    Channel;
+    unsigned int                    Index;
     vtkSmartPointer<vtkLookupTable> LUT;
     vtkSmartPointer<vtkImageData>   Image;
     std::vector< double >              Color;
 
     /** Constructor */
-    GoMegaImageStructure(unsigned int iTime, unsigned int iChannel,
+    GoMegaImageStructure(unsigned int iIndex,
                        vtkSmartPointer<vtkLookupTable> iLUT,
                        vtkSmartPointer<vtkImageData> iImage,
                        std::vector< double > iColor):
-                       Time(iTime), Channel(iChannel), LUT(iLUT), Color(iColor)
+                       Index(iIndex), LUT(iLUT), Color(iColor)
     {
     Image = iImage;
     }
@@ -121,7 +120,7 @@ struct QGOIO_EXPORT GoMegaImageStructure
 
     friend std::ostream& operator<<(std::ostream& os,const GoMegaImageStructure& e)
     {
-      os<< "time: "<<e.Time<<"  channel: "<<e.Channel<<std::endl;
+      os<< "index: "<<e.Index<<std::endl;
       return os;
     }
 };

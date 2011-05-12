@@ -66,7 +66,7 @@ QGoMeshLevelSetAlgo::~QGoMeshLevelSetAlgo()
 
 //-------------------------------------------------------------------------
 std::vector<vtkPolyData*> QGoMeshLevelSetAlgo::ApplyAlgo(
-  std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+  GoImageProcessor* iImages,
     int iChannel)
 {
   const int Dimension = 3;

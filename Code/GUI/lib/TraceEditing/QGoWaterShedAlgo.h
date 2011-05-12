@@ -42,6 +42,8 @@
 #include "vtkPolyData.h"
 #include "vtkImageData.h"
 
+#include "GoImageProcessor.h"
+
 
 /**
 \class QGoWaterShedAlgo
@@ -55,7 +57,7 @@ public:
   ~QGoWaterShedAlgo();
 
   virtual std::vector<vtkPolyData*> ApplyAlgo(
-    std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+    GoImageProcessor* iImages,
     int iChannel) = 0;
 
 protected:

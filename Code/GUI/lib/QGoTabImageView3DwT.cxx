@@ -403,13 +403,10 @@ QGoTabImageView3DwT::CreateContourEditingDockWidget(
   // basic interactor connections
   //----------------------------------------------------------------
 
-  //m_ContourSegmentationDockWidget =
-  //  new QGoContourSegmentationBaseDockWidget(this, m_Seeds, &m_InternalImages);
-
   //m_InternalImages
   this->m_ContourEditingWidget = new QGoContourEditingWidgetManager(
     this->m_ChannelNames, iTimeMin, iTimeMax, &m_Seeds,
-    NULL, &m_TCoord, this);
+    m_ImageProcessor, &m_TCoord, this);
 
   this->CreateConnectionsTraceEditingWidget<QGoContourEditingWidgetManager>(
     iTimeMin, iTimeMax, this->m_ContourEditingWidget);
@@ -492,13 +489,10 @@ QGoTabImageView3DwT::CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax)
   // basic interactor connections
   //----------------------------------------------------------------
 
-  //m_MeshSegmentationDockWidget =
-  //  new QGoMeshSegmentationBaseDockWidget(this, m_Seeds, &m_InternalImages);
-
   //m_InternalImages
   this->m_MeshEditingWidget = new QGoMeshEditingWidgetManager(
     this->m_ChannelNames, iTimeMin, iTimeMax, &m_Seeds,
-    NULL, &m_TCoord, this);
+    m_ImageProcessor, &m_TCoord, this);
 
   this->CreateConnectionsTraceEditingWidget<QGoMeshEditingWidgetManager>(
     iTimeMin, iTimeMax, this->m_MeshEditingWidget);
@@ -1551,7 +1545,7 @@ QGoTabImageView3DwT::SetTimePoint()
       // good LUT already there
       // - updated when we go from all channels to one channel
       int ch = this->m_NavigationDockWidget->GetCurrentChannel();
-      m_Image->ShallowCopy(m_ImageProcessor->getImageBW(m_TCoord, ch));
+      m_Image->ShallowCopy(m_ImageProcessor->getImageBW(ch));
       }
 
     // CONFIGURE LUT
@@ -1564,11 +1558,11 @@ QGoTabImageView3DwT::SetTimePoint()
     {
     int ch(0);
     //update LUT
-    m_Image->ShallowCopy(m_ImageProcessor->getImageBW(m_TCoord, ch));
+    m_Image->ShallowCopy(m_ImageProcessor->getImageBW(ch));
     m_ImageView->SetImage(m_Image);
     m_ImageView->Update();
     vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
-    lut->DeepCopy(m_ImageProcessor->getLookuptable(ch, m_TCoord));
+    lut->DeepCopy(m_ImageProcessor->getLookuptable(ch));
     m_ImageView->SetLookupTable(lut);
 
     // CONFIGURE LUT
@@ -1598,7 +1592,7 @@ QGoTabImageView3DwT::SetTimePointDoppler(int iChannel,
     {
     int ch = this->m_NavigationDockWidget->GetCurrentChannel();
     // channel is time for the doppler
-    m_Image->ShallowCopy(m_ImageProcessor->getImageBW(realTime[ch], iChannel));
+    m_Image->ShallowCopy(m_ImageProcessor->getImageBW(realTime[ch]));
     }
 
   // update widgets....
@@ -1903,21 +1897,21 @@ QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
     int ch = this->m_NavigationDockWidget->GetCurrentChannel();
     if(!m_ImageProcessor->getDopplerMode())
       {
-      m_Image->ShallowCopy(m_ImageProcessor->getImageBW(m_TCoord, ch));
+      m_Image->ShallowCopy(m_ImageProcessor->getImageBW(ch));
       m_ImageView->SetImage(m_Image);
       m_ImageView->Update();
       vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
-      lut->DeepCopy(m_ImageProcessor->getLookuptable(ch, m_TCoord));
+      lut->DeepCopy(m_ImageProcessor->getLookuptable(ch));
       m_ImageView->SetLookupTable(lut);
       }
     else
       {
       int* realTime = m_ImageProcessor->getDopplerTime(m_TCoord);
-      m_Image->ShallowCopy(m_ImageProcessor->getImageBW(realTime[ch], m_ChannelOfInterest));
+      m_Image->ShallowCopy(m_ImageProcessor->getImageBW(realTime[ch]));
       m_ImageView->SetImage(m_Image);
       m_ImageView->Update();
       vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
-      lut->DeepCopy(m_ImageProcessor->getLookuptable(m_ChannelOfInterest, realTime[ch]));
+      lut->DeepCopy(m_ImageProcessor->getLookuptable(realTime[ch]));
       m_ImageView->SetLookupTable(lut);
       }
     m_ImageView->Update();
@@ -1942,11 +1936,11 @@ QGoTabImageView3DwT::ShowOneChannel(int iChannel)
     // add test to see if channel exists (on borders)
     this->findChild<QAction*>("LUT")->setEnabled(true);
     this->findChild<QAction*>("ScalarBar")->setEnabled(true);
-    m_Image->ShallowCopy(m_ImageProcessor->getImageBW(m_TCoord, iChannel));
+    m_Image->ShallowCopy(m_ImageProcessor->getImageBW(iChannel));
     m_ImageView->SetImage(m_Image);
     m_ImageView->Update();
     vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
-    lut->DeepCopy(m_ImageProcessor->getLookuptable(iChannel, m_TCoord));
+    lut->DeepCopy(m_ImageProcessor->getLookuptable(iChannel));
     m_ImageView->SetLookupTable(lut);
     m_ImageView->Update();
     }
@@ -1958,11 +1952,11 @@ QGoTabImageView3DwT::ShowOneChannel(int iChannel)
     // not working....
     if(realTime[iChannel] >= 0)
       {
-      m_Image->ShallowCopy(m_ImageProcessor->getImageBW(realTime[iChannel], m_ChannelOfInterest));
+      m_Image->ShallowCopy(m_ImageProcessor->getImageBW(realTime[iChannel]));
       m_ImageView->SetImage(m_Image);
       m_ImageView->Update();
       vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
-      lut->DeepCopy(m_ImageProcessor->getLookuptable(m_ChannelOfInterest, realTime[iChannel]));
+      lut->DeepCopy(m_ImageProcessor->getLookuptable(realTime[iChannel]));
       m_ImageView->SetLookupTable(lut);
       m_ImageView->Update();
       }
@@ -2669,7 +2663,7 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
       itk::VTKImageImport< ImageType >::Pointer itk_importer =
         itk::VTKImageImport< ImageType >::New();
 
-      vtk_exporter->SetInput(m_ImageProcessor->getImageBW(m_TCoord, i));
+      vtk_exporter->SetInput(m_ImageProcessor->getImageBW(i));
 
       ConnectPipelines< vtkImageExport, itk::VTKImageImport< ImageType >::Pointer >(
         vtk_exporter, itk_importer);
@@ -2707,7 +2701,7 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
 
     for ( unsigned int i = boundChannel[0]; i <= boundChannel[1]; i++ )
       {
-      temp_image[i] = m_ImageProcessor->getImageBW(iTCoord, i );
+      temp_image[i] = m_ImageProcessor->getImageBW(i);
 
       vtkSmartPointer< vtkImageExport > vtk_exporter =
         vtkSmartPointer< vtkImageExport >::New();

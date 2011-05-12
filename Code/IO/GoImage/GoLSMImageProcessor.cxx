@@ -123,11 +123,10 @@ setTimePoint(const unsigned int& iTime)
 
     // Update the MegaImageStructure
     // image, LUT, channel, time point
-    m_MegaImageContainer.insert(GoMegaImageStructure(iTime,
-                                                   numberOfChannels,
-                                                   lut,
-                                                   image,
-                                                   color));
+    m_MegaImageContainer.insert(GoMegaImageStructure(numberOfChannels,
+                                                     lut,
+                                                     image,
+                                                     color));
     }
 }
 //--------------------------------------------------------------------------
@@ -186,7 +185,6 @@ setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
       // Update the MegaImageStructure
       // image, LUT, channel, time point
       m_MegaImageContainer.insert(GoMegaImageStructure(dopplerTime[i],
-                                                       iChannel,
                                                        lut,
                                                        image,
                                                        color));

@@ -45,6 +45,8 @@
 #include "vtkTransform.h"
 #include "vtkTransformPolyDataFilter.h"
 
+#include "GoImageProcessor.h"
+
 
 /**
 \class QGoMeshLevelSetAlgo
@@ -58,7 +60,7 @@ public:
   ~QGoMeshLevelSetAlgo();
 
   std::vector<vtkPolyData*> ApplyAlgo(
-    std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+    GoImageProcessor* iImages,
     int iChannel);
 
 protected:
@@ -68,11 +70,11 @@ protected:
             // parameter on the image dimension
              //unsigned int VImageDimension >
   vtkPolyData * ApplyLevelSetFilter(const std::vector<double>& iCenter,
-  std::vector<vtkSmartPointer< vtkImageData > >* iImages,
-    int iChannel)
+                                    GoImageProcessor* iImages,
+                                    int iChannel)
     {
     assert( iCenter.size() == 3);
-
+/*
     const unsigned int ImageDimension = 3;
 
     typedef TPixel PixelType;
@@ -81,10 +83,7 @@ protected:
     typedef typename ImageType::Pointer               ImagePointer;
 
     // Since the pipeline is in ITK, first let's convert the image into ITK
-    ImagePointer ItkInput =
-        this->ConvertVTK2ITK< PixelType, ImageDimension>(
-          ( *iImages )[iChannel] );
-
+    ImagePointer ItkInput = iImages->getImageITK< unsigned char, ImageDimension>(iChannel);
 
     // let's compute the bounds of the region of interest
     double radius = this->m_Radius->GetValue();
@@ -145,9 +144,9 @@ protected:
     mesh_transform->SetTransform(translation);
     mesh_transform->SetInput( temp_output );
     mesh_transform->Update();
-
+*/
     vtkPolyData* mesh = vtkPolyData::New();
-    mesh->DeepCopy( mesh_transform->GetOutput() );
+   // mesh->DeepCopy( mesh_transform->GetOutput() );
 
     return mesh;
     }

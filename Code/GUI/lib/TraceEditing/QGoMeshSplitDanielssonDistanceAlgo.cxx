@@ -33,6 +33,8 @@
 =========================================================================*/
 #include "QGoMeshSplitDanielssonDistanceAlgo.h"
 
+#include "GoImageProcessor.h"
+
 
 QGoMeshSplitDanielssonDistanceAlgo::QGoMeshSplitDanielssonDistanceAlgo(QWidget* iParent)
 {
@@ -62,7 +64,7 @@ void QGoMeshSplitDanielssonDistanceAlgo::SetAlgoWidget(QWidget* iParent)
 
 //-------------------------------------------------------------------------
 std::vector<vtkPolyData*> QGoMeshSplitDanielssonDistanceAlgo::ApplyAlgo(
-  std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+  GoImageProcessor* iImages,
     int iChannel)
 {
   std::vector<vtkPolyData*> NewMeshes = std::vector<vtkPolyData*> ();

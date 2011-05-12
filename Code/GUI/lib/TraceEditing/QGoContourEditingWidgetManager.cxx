@@ -35,6 +35,8 @@
 #include "QGoAlgorithmWidget.h"
 #include "QGoAlgoParameter.h"
 #include "QGoAlgorithmsManagerWidget.h"
+#include "GoImageProcessor.h"
+
 #include "vtkSmartPointer.h"
 #include "vtkImageExport.h"
 #include "vtkImageData.h"
@@ -46,7 +48,7 @@ QGoContourEditingWidgetManager::QGoContourEditingWidgetManager(
   int iTimeMin,
   int iTimeMax,
   std::vector< vtkPoints* >* iSeeds,
-  std::vector< vtkSmartPointer< vtkImageData > >* iImages,
+  GoImageProcessor* iImages,
   int* iCurrentTimePoint,
   QWidget* iParent): QGoTraceEditingWidgetManager("Contour",
   iVectChannels, iTimeMin, iTimeMax, iSeeds, iImages,

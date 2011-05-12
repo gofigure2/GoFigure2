@@ -40,13 +40,15 @@
 #include "vtkImageData.h"
 #include <iostream>
 
+#include "GoImageProcessor.h"
+
 
 QGoMeshEditingWidgetManager::QGoMeshEditingWidgetManager(
   std::vector<QString> iVectChannels,
   int iTimeMin,
   int iTimeMax,
   std::vector< vtkPoints* >* iSeeds,
-  std::vector< vtkSmartPointer< vtkImageData > >* iImages,
+  GoImageProcessor* iImages,
   int* iCurrentTimePoint,
   QWidget* iParent): QGoTraceEditingWidgetManager("Mesh",
   iVectChannels, iTimeMin, iTimeMax, iSeeds, iImages,

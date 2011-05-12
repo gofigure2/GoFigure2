@@ -118,11 +118,10 @@ setTimePoint(const unsigned int& iTime)
 
     // Update the MegaImageStructure
     // image, LUT, channel, time point
-    m_MegaImageContainer.insert(GoMegaImageStructure(iTime,
-                                                   numberOfChannels,
-                                                   lut,
-                                                   image,
-                                                   color));
+    m_MegaImageContainer.insert(GoMegaImageStructure(numberOfChannels,
+                                                     lut,
+                                                     image,
+                                                     color));
     }
 }
 //--------------------------------------------------------------------------
@@ -149,8 +148,6 @@ setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
     }
 
   int* dopplerTime = getDopplerTime(iTime);
-
-  unsigned int channel = iChannel;
 
   for(unsigned int i=0; i<3; ++i)
     {
@@ -180,7 +177,6 @@ setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
     // Update the MegaImageStructure
     // image, LUT, channel, time point
     m_MegaImageContainer.insert(GoMegaImageStructure(dopplerTime[i],
-                                                     channel,
                                                      lut,
                                                      image,
                                                      color));

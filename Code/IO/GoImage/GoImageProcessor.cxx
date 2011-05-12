@@ -114,20 +114,14 @@ createLUT(const double& iRed, const double& iGreen, const double& iBlue,
 void
 GoImageProcessor::
 setLookupTable(vtkSmartPointer<vtkLookupTable> iLUT,
-                    const unsigned int& iChannel,
-                    const unsigned int& iTime)
+                    const unsigned int& iIndex)
 {
-  GoMegaImageStructureMultiIndexContainer::index<Channel>::type::iterator it =
-      m_MegaImageContainer.get< Channel >().find(iChannel);
+  GoMegaImageStructureMultiIndexContainer::index<Index>::type::iterator it =
+      m_MegaImageContainer.get< Index >().find(iIndex);
 
-  while(it!=m_MegaImageContainer.get< Channel >().end())
+  if(it!=m_MegaImageContainer.get< Index >().end())
     {
-    if(it->Time==iTime)
-      {
-      m_MegaImageContainer.get< Channel >().modify( it , set_lut(iLUT) );
-      break;
-      }
-    ++it;
+    m_MegaImageContainer.get< Index >().modify( it , set_lut(iLUT) );
     }
 }
 //--------------------------------------------------------------------------
@@ -135,19 +129,16 @@ setLookupTable(vtkSmartPointer<vtkLookupTable> iLUT,
 //--------------------------------------------------------------------------
 vtkSmartPointer<vtkLookupTable>
 GoImageProcessor::
-getLookuptable(const unsigned int& iChannel, const unsigned int& iTime) const
+getLookuptable(const unsigned int& iIndex) const
 {
-  GoMegaImageStructureMultiIndexContainer::index<Channel>::type::iterator it =
-      m_MegaImageContainer.get< Channel >().find(iChannel);
+  GoMegaImageStructureMultiIndexContainer::index<Index>::type::iterator it =
+      m_MegaImageContainer.get< Index >().find(iIndex);
 
-  while(it!=m_MegaImageContainer.get< Channel >().end())
+  if(it!=m_MegaImageContainer.get< Index >().end())
     {
-    if(it->Time==iTime)
-      {
-      return it->LUT;
-      }
-    ++it;
+    return it->LUT;
     }
+
   return NULL;
 }
 //--------------------------------------------------------------------------
@@ -172,18 +163,14 @@ colorImage(vtkSmartPointer<vtkImageData> iImage,
 //--------------------------------------------------------------------------
 vtkSmartPointer<vtkImageData>
 GoImageProcessor::
-getImageBW(const unsigned int& iTime, const unsigned int& iChannel)
+getImageBW(const unsigned int& iIndex)
 {
-  GoMegaImageStructureMultiIndexContainer::index<Channel>::type::iterator it =
-      m_MegaImageContainer.get< Channel >().find(iChannel);
+  GoMegaImageStructureMultiIndexContainer::index<Index>::type::iterator it =
+      m_MegaImageContainer.get< Index >().find(iIndex);
 
-  while(it!=m_MegaImageContainer.get< Channel >().end())
+  if(it== m_MegaImageContainer.get< Index >().end())
     {
-    if(it->Time==iTime)
-      {
-      return it->Image;
-      }
-    ++it;
+    return it->Image;
     }
   return NULL;
 }

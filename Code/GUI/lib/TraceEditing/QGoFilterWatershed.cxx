@@ -55,6 +55,8 @@
 
 #include "QGoContourSemiAutoWatershedWidget.h"
 
+#include "GoImageProcessor.h"
+
 //--------------------------------------------------------------------------
 QGoFilterWatershed::QGoFilterWatershed(QObject *iParent, int iDimension) :
   QGoFilterSemiAutoBase(iParent)
@@ -220,9 +222,10 @@ vtkPolyData*
 QGoFilterWatershed::Filter3D(double *iCenter,
   double iRadius, int iThresMin, int iThresMax,
   double iCorrTresh, double iAlpha, double iBeta,
-  std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+  GoImageProcessor* iImages,
   int iChannel)
 {
+  /*
   const int dimension = 3;
 
   // useful to translate the polydata afterwards
@@ -263,12 +266,15 @@ QGoFilterWatershed::Filter3D(double *iCenter,
   //---------------------------------------------------------
   SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
   filter->SetInput(test2);
+
+  */
   //set up parameters
   /*filter->SetNucleusThresholdMin(m_TreshMin);
   filter->SetNucleusThresholdMax(m_TreshMax);
   filter->SetCorrelationThreshold1(m_CorrTresh);
   filter->SetAlpha(m_Alpha);
   filter->SetBeta(m_Beta);*/
+  /*
   filter->SetNucleusThresholdMin(iThresMin);
   filter->SetNucleusThresholdMax(iThresMax);
   filter->SetCorrelationThreshold1(iCorrTresh);
@@ -277,7 +283,7 @@ QGoFilterWatershed::Filter3D(double *iCenter,
   // run the filter
   filter->Update();
   SegmentImagePointer test3 = filter->GetOutput();
-
+*/
 /*
   typedef itk::ImageFileWriter< SegmentImageType > WriterType;
   WriterType::Pointer writer = WriterType::New();
@@ -285,7 +291,7 @@ QGoFilterWatershed::Filter3D(double *iCenter,
   writer->SetInput( test3 );
   writer->Update();
 */
-
+/*
   // Convert output
   //---------------------------------------------------------
   vtkImageData *itk2vtk = ConvertITK2VTK< int, dimension >(test3);
@@ -307,6 +313,8 @@ QGoFilterWatershed::Filter3D(double *iCenter,
   vtkPolyData *output = ReconstructMesh(itk2vtk, .5);
   itk2vtk->Delete();
   return output;
+
+  */
  //   emit         MeshCreated(output, this->getChannel() - 1);
  /*   }
   else
@@ -337,6 +345,7 @@ QGoFilterWatershed::Filter3D(double *iCenter,
     implicitFunction->Delete();
     cutter->Delete();
     }*/
+  return NULL;
 }
 
 //--------------------------------------------------------------------------
@@ -458,7 +467,7 @@ QGoFilterWatershed::setBeta(double iBeta)
 std::vector<vtkPolyData*> QGoFilterWatershed::ApplyFilter3D(double iRadius,
   int iThresMin, int iThresMax, double iCorrThres, double iAlpha, double iBeta,
   std::vector< vtkPoints* >* iPoints,
-  std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+  GoImageProcessor* iImages,
   int iChannel)
 {
   std::vector<vtkPolyData*> oMeshes = std::vector<vtkPolyData*>();
@@ -492,7 +501,7 @@ std::vector<std::vector<vtkPolyData*> > QGoFilterWatershed::
     int iThresMin, int iThresMax, double iCorrTresh, double iAlpha,
     double iBeta,  int iSampling,
     std::vector< vtkPoints* >* iPoints,
-    std::vector<vtkSmartPointer< vtkImageData > >* iImages, int iChannel)
+    GoImageProcessor* iImages, int iChannel)
 {
   std::vector<std::vector<vtkPolyData*> > oSetOfContours =
     std::vector<std::vector<vtkPolyData*> >();
