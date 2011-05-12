@@ -131,7 +131,6 @@
 #include <vtkTextProperty.h>
 #include <vtkCaptionActor2D.h>
 #include <vtkPointData.h>
-#include <vtkImageBlend.h>
 #include <vtkImageReslice.h>
 #include "vtkRenderWindow.h"
 #include "vtkScalarsToColors.h"
@@ -204,15 +203,8 @@ vtkViewImage3D::vtkViewImage3D()
 {
   this->VolumeProperty  = vtkVolumeProperty::New();
   this->VolumeActor     = vtkVolume::New();
-  this->VolumeRayCastMapper = vtkVolumeRayCastMapper::New();
-  this->VolumeRayCastMIPFunction = vtkVolumeRayCastMIPFunction::New();
-  this->VolumeRayCastCompositeFunction =
-    vtkVolumeRayCastCompositeFunction::New();
-  this->VolumeRayCastIsosurfaceFunction =
-    vtkVolumeRayCastIsosurfaceFunction::New();
   this->OpacityFunction = vtkPiecewiseFunction::New();
   this->Callback = vtkImage3DCroppingBoxCallback::New();
-  this->Blender = vtkImageBlend::New();
   this->VolumeMapper3D = vtkVolumeTextureMapper3D::New();
 
   this->Phantom.push_back( vtkImageActor::New() );
@@ -250,12 +242,6 @@ vtkViewImage3D::~vtkViewImage3D()
   this->Callback->Delete();
   this->Cube->Delete();
   this->Marker->Delete();
-  this->Blender->Delete();
-  //this->PlaneWidget->Delete();
-  this->VolumeRayCastMapper->Delete();
-  this->VolumeRayCastMIPFunction->Delete();
-  this->VolumeRayCastCompositeFunction->Delete();
-  this->VolumeRayCastIsosurfaceFunction->Delete();
   this->Phantom[0]->Delete();
   this->Phantom[1]->Delete();
   this->Phantom[2]->Delete();
@@ -276,36 +262,16 @@ vtkViewImage3D::~vtkViewImage3D()
  */
 void vtkViewImage3D::SetupVolumeRendering()
 {
-  this->Blender->SetBlendModeToNormal();
-  this->Blender->SetOpacity (0, 0.25);
-  this->Blender->SetOpacity (1, 0.75);
-  vtkVolumeTextureMapper3D *texturemapper =
-    vtkVolumeTextureMapper3D::SafeDownCast ( this->VolumeActor->GetMapper() );
-  if ( texturemapper )
-    {
-    texturemapper->SetSampleDistance(0.5);
-    //texturemapper->SetPreferredMethodToNVidia();
-    }
-
   this->VolumeMapper3D->CroppingOn();
   this->VolumeMapper3D->SetCroppingRegionFlagsToSubVolume();
   this->VolumeMapper3D->SetCroppingRegionFlags (0x7ffdfff);
-  this->VolumeRayCastMapper->SetSampleDistance(2.0);
-  this->VolumeRayCastMapper->CroppingOn();
-  this->VolumeRayCastMapper->SetCroppingRegionFlags (0x7ffdfff);
-  vtkFiniteDifferenceGradientEstimator *gradest =
-    vtkFiniteDifferenceGradientEstimator::New();
-  this->VolumeRayCastMapper->SetGradientEstimator(gradest);
-  gradest->Delete();
-  this->VolumeRayCastMapper->SetVolumeRayCastFunction (
-    this->VolumeRayCastCompositeFunction);
   this->OpacityFunction->AddPoint (0, 0.0);
   this->OpacityFunction->AddPoint (255, 1.0);
   vtkColorTransferFunction *colorfunction = vtkColorTransferFunction::New();
   colorfunction->AddRGBPoint (0, 0.0, 0.0, 0.0);
   colorfunction->AddRGBPoint (255, 1.0, 1.0, 1.0);
   this->VolumeProperty->IndependentComponentsOff();
-  this->VolumeProperty->SetColor (colorfunction);
+  this->VolumeProperty->SetColor(colorfunction);
   colorfunction->Delete();
   this->VolumeProperty->SetScalarOpacity(this->OpacityFunction);
   this->VolumeProperty->SetInterpolationTypeToLinear();
