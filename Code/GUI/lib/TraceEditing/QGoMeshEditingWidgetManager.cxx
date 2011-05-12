@@ -109,11 +109,11 @@ void QGoMeshEditingWidgetManager::SetSemiAutomaticAlgorithms(QWidget* iParent)
 
   //watershed:
   //this->m_WaterShedAlgo = new QGoMeshWaterShedAlgo(this->m_Seeds, iParent);
-  QGoAlgorithmWidget* WaterShedWidget;// = m_WaterShedAlgo->GetAlgoWidget();
-  this->m_TraceEditingWidget->AddAlgoWidgetForSemiAutomaticMode(WaterShedWidget);
+ // QGoAlgorithmWidget* WaterShedWidget = m_WaterShedAlgo->GetAlgoWidget();
+ // this->m_TraceEditingWidget->AddAlgoWidgetForSemiAutomaticMode(WaterShedWidget);
 
-  QObject::connect(WaterShedWidget, SIGNAL(ApplyAlgo() ),
-    this, SLOT(ApplyWaterShedAlgo() ) );
+  //QObject::connect(WaterShedWidget, SIGNAL(ApplyAlgo() ),
+  //  this, SLOT(ApplyWaterShedAlgo() ) );
 }
 //-------------------------------------------------------------------------
 
