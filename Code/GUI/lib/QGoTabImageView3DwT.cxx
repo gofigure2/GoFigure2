@@ -123,7 +123,6 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   QGoTabElementBase(iParent),
   m_Image(0),
   m_BackgroundColor(Qt::black),
-  m_TraceSettingsToolBar(NULL),
   m_IntersectionLineWidth(2.),
   m_PCoord(0),
   m_RCoord(0),
@@ -133,7 +132,7 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_ZTileCoord(0),
   m_TCoord(-1),
   m_TraceSettingsToolBar(NULL),
-  m_ImageProcessor(NULL)
+  m_ImageProcessor(NULL),
   m_MeshEditingWidget(NULL),
   m_Seeds( 3, NULL )
   //m_TraceWidgetRequiered(false)
@@ -308,6 +307,8 @@ QGoTabImageView3DwT::
     (*it) = NULL;
     ++it;
   }
+
+  */
   unsigned int minch = m_MegaCaptureReader->GetMinChannel();
   unsigned int maxch = m_MegaCaptureReader->GetMaxChannel();
 
@@ -404,9 +405,11 @@ QGoTabImageView3DwT::CreateContourEditingDockWidget(
 
   //m_ContourSegmentationDockWidget =
   //  new QGoContourSegmentationBaseDockWidget(this, m_Seeds, &m_InternalImages);
+
+  //m_InternalImages
   this->m_ContourEditingWidget = new QGoContourEditingWidgetManager(
     this->m_ChannelNames, iTimeMin, iTimeMax, &m_Seeds,
-    &m_InternalImages, &m_TCoord, this);
+    NULL, &m_TCoord, this);
 
   this->CreateConnectionsTraceEditingWidget<QGoContourEditingWidgetManager>(
     iTimeMin, iTimeMax, this->m_ContourEditingWidget);
@@ -492,9 +495,10 @@ QGoTabImageView3DwT::CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax)
   //m_MeshSegmentationDockWidget =
   //  new QGoMeshSegmentationBaseDockWidget(this, m_Seeds, &m_InternalImages);
 
+  //m_InternalImages
   this->m_MeshEditingWidget = new QGoMeshEditingWidgetManager(
     this->m_ChannelNames, iTimeMin, iTimeMax, &m_Seeds,
-    &m_InternalImages, &m_TCoord, this);
+    NULL, &m_TCoord, this);
 
   this->CreateConnectionsTraceEditingWidget<QGoMeshEditingWidgetManager>(
     iTimeMin, iTimeMax, this->m_MeshEditingWidget);
@@ -1128,14 +1132,10 @@ QGoTabImageView3DwT::SetupWidgetsDoppler2ClassicMode()
   // it will update the size of the related combobox
   m_NavigationDockWidget->blockSignals(true);
   m_NavigationDockWidget->SetNumberOfChannels(NumberOfChannels);
-  m_ContourSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
-  m_MeshSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
 
   for ( unsigned int i = 0; i < NumberOfChannels; i++ )
     {
     m_NavigationDockWidget->SetChannel( i, m_ChannelNames[i] );
-    m_ContourSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
-    m_MeshSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
     }
   m_NavigationDockWidget->blockSignals(false);
 }
@@ -1491,8 +1491,6 @@ UpdateWidgetsFromImageProcessor()
   // it will update the size of the related combobox
   m_NavigationDockWidget->blockSignals(true);
   m_NavigationDockWidget->SetNumberOfChannels(NumberOfChannels);
-  //m_ContourSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
-  //m_MeshSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
 
   for ( unsigned int i = 0; i < NumberOfChannels; i++ )
     {
@@ -1989,6 +1987,7 @@ QGoTabImageView3DwT::ModeChanged(int iChannel)
     // update visualization
     Update();
     }
+  UpdateTracesEditingWidget();
 }
 //-------------------------------------------------------------------------
 
@@ -2526,6 +2525,7 @@ void
 QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView,
                                      unsigned int iTCoord)
 {
+  /*
   if (m_ImageProcessor->getDopplerMode())
     {
     iTShift = iTShift * m_ImageProcessor->getDopplerStep();
@@ -3017,7 +3017,7 @@ QGoTabImageView3DwT::UpdateTracesEditingWidget()
 {
   if (this->m_MeshEditingWidget != NULL && this->m_ContourEditingWidget != NULL)
     {
-    if (this->m_ChannelClassicMode)
+    if (!this->m_ImageProcessor->getDopplerMode())
       {
       this->m_MeshEditingWidget->SetTSliceForClassicView();
       this->m_ContourEditingWidget->SetTSliceForClassicView();
@@ -3025,29 +3025,28 @@ QGoTabImageView3DwT::UpdateTracesEditingWidget()
     else
       {
       std::map<QString, QColor> ListTimePoints;
-      QColor Red   (165, 0, 0, 255);
-      QColor Green (0, 165, 0, 255);
-      QColor Blue  (0, 0, 165, 255);
-      int TDopplerMin = this->m_TCoord - this->m_DopplerStep;
-      int MinTimePoint = this->m_MegaCaptureReader->GetMinTimePoint();
-      int TDopplerMax = this->m_TCoord + this->m_DopplerStep;
-      int MaxTimePoint = this->m_MegaCaptureReader->GetMaxTimePoint();
-      if ( TDopplerMin > MinTimePoint )
+      QColor Red   (255, 0, 0, 255);
+      QColor Green (0, 255, 0, 255);
+      QColor Blue  (0, 0, 255, 255);
+      int* dopplerT = this->m_ImageProcessor->getDopplerTime(this->m_TCoord);
+      unsigned int* realT = this->m_ImageProcessor->getBoundsTime();
+
+      if ( dopplerT[0] > realT[0] )
         {
-        ListTimePoints[tr("%1").arg(TDopplerMin)] = Red;
+        ListTimePoints[tr("%1").arg(dopplerT[0])] = Red;
         }
       else
         {
-        ListTimePoints[tr("%1").arg(MinTimePoint)] = Red;
+          ListTimePoints[tr("%1").arg(realT[0])] = Red;
         }
       ListTimePoints[tr("%1").arg(this->m_TCoord)] = Green;
-      if (TDopplerMax < MaxTimePoint )
+      if (dopplerT[2] < realT[1] )
         {
-        ListTimePoints[tr("%1").arg(TDopplerMax)] = Blue;
+        ListTimePoints[tr("%1").arg(dopplerT[2])] = Blue;
         }
       else
         {
-        ListTimePoints[tr("%1").arg(MaxTimePoint)] = Blue;
+        ListTimePoints[tr("%1").arg(realT[1])] = Blue;
         }
       this->m_MeshEditingWidget->SetTSliceForDopplerView(ListTimePoints,
         this->m_ChannelOfInterest);
