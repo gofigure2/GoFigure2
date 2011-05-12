@@ -436,7 +436,7 @@ void vtkViewImage3D::SetVolumeRenderingOn()
 
   // mix components
   // dont't really get the point but has sth to do with the alpha component
-  // create a "FAKE ALPHA CHANNEL..."
+  // create a "FAKE" 4th alpha channel...??
   vtkSmartPointer< vtkImageExtractComponents > extComp =
     vtkSmartPointer< vtkImageExtractComponents >::New();
   extComp->SetInput(image.GetPointer());
