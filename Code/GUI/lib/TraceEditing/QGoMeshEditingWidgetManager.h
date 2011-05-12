@@ -41,7 +41,7 @@
 #include "vtkImageData.h"
 #include "QGoMeshLevelSetAlgo.h"
 #include "QGoMeshShapeAlgo.h"
-#include "QGoMeshWaterShedAlgo.h"
+//#include "QGoMeshWaterShedAlgo.h"
 #include "QGoSetOfContoursWaterShedAlgo.h"
 #include "QGoSetOfContoursLevelSetAlgo.h"
 #include "QGoSetOfContoursShapeAlgo.h"
@@ -93,7 +93,7 @@ protected:
 
   QGoMeshLevelSetAlgo*                            m_LevelSetAlgo;
   QGoMeshShapeAlgo*                               m_ShapeAlgo;
-  QGoMeshWaterShedAlgo*                           m_WaterShedAlgo;
+  //QGoMeshWaterShedAlgo*                           m_WaterShedAlgo;
   QGoMeshSplitDanielssonDistanceAlgo*             m_DanielAlgo;
 
   QGoSetOfContoursWaterShedAlgo*                  m_SetOfContoursWaterShedAlgo;
