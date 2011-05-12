@@ -69,7 +69,6 @@ void QGoDBMeshManager::SetMeshesInfoContainerForVisu(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-
 void QGoDBMeshManager::SetCollectionsTraceNames()
 {
   this->m_TraceName = "mesh";

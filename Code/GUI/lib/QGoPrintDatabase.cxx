@@ -316,6 +316,16 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
       {
       emit PrintMessage(MessageToPrint);
       }
+    std::list<unsigned int> MotherTrackDivisionToUpdate;
+    MessageToPrint = this->m_TracksManager->CheckMeshCanBeAddedToTrack(this->m_DatabaseConnector, TrackID, 
+      *this->m_SelectedTimePoint, MotherTrackDivisionToUpdate).c_str();
+    if (!MessageToPrint.isEmpty() )
+      {
+      this->CloseDBConnection();
+      emit PrintMessage(MessageToPrint);
+      return;
+      }
+
     unsigned int NewMeshID = this->m_MeshesManager->SaveNewMeshFromVisu(iXCoordMin,
                                                                         iYCoordMin,
                                                                         iZCoordMin,
@@ -336,6 +346,10 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
                                                                                      ListNewMeshes);
     this->m_TracksManager->UpdateBoundingBoxes(this->m_DatabaseConnector,
                                                trackIDs);
+    if (!MotherTrackDivisionToUpdate.empty() )
+      {
+      //update the divisions
+      }
     }
   else //for mesh generated from contours:
     {

@@ -951,3 +951,122 @@ void QGoDBTrackManager::CreateALineageWithFormerDaughterOfADeletedDivision(
     }
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::string QGoDBTrackManager::CheckMeshCanBeAddedToTrack(
+  vtkMySQLDatabase* iDatabaseConnector, unsigned int iTrackID, 
+  unsigned int iMeshTimePoint,
+  std::list<unsigned int> &ioMotherTrackDivisionToUpdate)
+{
+  std::string Message = "";
+  unsigned int TrackMinTimePoint = 
+    this->m_CollectionOfTraces->GetBoundedBoxTimePoint(iDatabaseConnector, iTrackID, true);
+  unsigned int TrackMaxTimePoint = 
+    this->m_CollectionOfTraces->GetBoundedBoxTimePoint(iDatabaseConnector, iTrackID, false);
+  //if the mesh inside the bounding box of the track, no pb:
+  if (iMeshTimePoint > TrackMinTimePoint && iMeshTimePoint < TrackMaxTimePoint)
+    {
+    return Message;
+    }
+
+  bool TrackIsAMother = this->IsTheTrackAMother(iTrackID, iDatabaseConnector);
+  bool TrackIsADaughter = this->IsTheTrackADaughter(iTrackID, iDatabaseConnector);
+  //if the track doesn't belong to any division, no pb:
+  if (!TrackIsAMother && !TrackIsADaughter)
+    {
+    return Message;
+    }
+  
+  if (TrackIsAMother && !TrackIsADaughter)
+    {
+    if (iMeshTimePoint < TrackMinTimePoint )
+      {
+      return Message;
+      }
+    //so the meshtimepoint > timepoint max of the track: 
+      //check that the meshtimepoint < timepoint min daughter if not, message
+    }
+  if (!TrackIsAMother && TrackIsADaughter)
+    {
+    if (iMeshTimePoint > TrackMaxTimePoint)
+      {
+      return Message;
+      }
+      //check that the meshtimepoint > timepoint max mother if not, message
+    unsigned int DivisionToUpdate = 
+      this->CheckBoundingBoxDivisionAsADaughter(iDatabaseConnector, iMeshTimePoint,
+      iTrackID);
+    if (DivisionToUpdate != 0)
+      {
+      ioMotherTrackDivisionToUpdate.push_back(DivisionToUpdate);
+      }
+    else
+      {
+      Message = "Delete the division first before adding the mesh to this track as the tracks are overlapping now";
+      return Message;
+      }
+    }
+  if (TrackIsAMother && TrackIsADaughter)
+    {
+    //check that the meshtimepoint < timepoint min of the track: 
+      //check that the meshtimepoint > timepoint max mother if not, message
+    //check that the meshtimepoint > timepoint max of the track: 
+      //check that the meshtimepoint < timepoint min daughter if not, message
+      return Message;
+    }
+  return Message;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+unsigned int QGoDBTrackManager::CheckBoundingBoxDivisionAsAMother(
+  vtkMySQLDatabase* iDatabaseConnector, unsigned int iTimePoint, unsigned int iTrackID )
+{
+    std::list<unsigned int> DivisionIDs = this->GetDivisionIDsTheTrackBelongsTo(
+    iDatabaseConnector, iTrackID);
+    if (!DivisionIDs.empty() )
+      {
+      GoDBTrackFamilyRow Division(DivisionIDs.front(), iDatabaseConnector);
+      if ( (iTimePoint < this->m_CollectionOfTraces->GetBoundedBoxTimePoint(
+        iDatabaseConnector, Division.GetMapValue<unsigned int>("TrackIDDaughter1") )
+        && (iTimePoint < this->m_CollectionOfTraces->GetBoundedBoxTimePoint(
+        iDatabaseConnector, Division.GetMapValue<unsigned int>("TrackIDDaughter2") ) ) ) )
+        {
+        return Division.GetMapValue<unsigned int>("TrackIDMother");
+        }
+      return 0;
+      }   
+    return 0;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+unsigned int QGoDBTrackManager::CheckBoundingBoxDivisionAsADaughter(
+  vtkMySQLDatabase* iDatabaseConnector, unsigned int iTimePoint, unsigned int iTrackID )
+{
+  std::list<unsigned int> DivisionIDs = this->GetDivisionIDsTheTrackBelongsTo(
+    iDatabaseConnector, iTrackID);
+    if (!DivisionIDs.empty() )
+      {
+      GoDBTrackFamilyRow Division(DivisionIDs.front(), iDatabaseConnector);
+      if ( iTimePoint > this->m_CollectionOfTraces->GetBoundedBoxTimePoint(
+        iDatabaseConnector, Division.GetMapValue<unsigned int>("TrackIDMother") ) )
+        {
+        return Division.GetMapValue<unsigned int>("TrackIDMother");
+        }
+      return 0;
+      }   
+    return 0;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list<unsigned int> QGoDBTrackManager::GetDivisionIDsTheTrackBelongsTo(
+  vtkMySQLDatabase* iDatabaseConnector, unsigned int iTrackID )
+{
+  std::list<unsigned int> Tracks;
+    Tracks.push_back(iTrackID);
+    std::list<unsigned int> oDivisionIDs = this->m_CollectionOfTraces->GetTrackFamilyID(
+      iDatabaseConnector, Tracks );
+  return oDivisionIDs;
+}
