@@ -44,11 +44,12 @@
 #include <iostream>
 
 //--------------------------------------------------------------------------
-QGoTabElementBase::QGoTabElementBase(QWidget *iParent) 
+QGoTabElementBase::QGoTabElementBase(QWidget *iParent)
   : QMainWindow(iParent),
-  m_StatusBar(NULL), //m_TracesActions(NULL), 
+  m_ToolBarList(NULL),
+  m_StatusBar(NULL)
+  //m_TracesActions(NULL),
   //m_TraceSettingsToolBar(NULL),
-  m_ToolBarList(NULL)
 {
   //this->m_TracesActions = new QGoToolBarStatus;
 }
@@ -102,35 +103,35 @@ std::vector< QAction * > QGoTabElementBase::BookmarkActions()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-/*std::vector< QAction * > QGoTabElementBase::ModeActions()
-{
-  return m_ModeActions;
-}
+//std::vector< QAction * > QGoTabElementBase::ModeActions()
+//{
+//  return m_ModeActions;
+//}
 
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 //std::vector< QAction * > QGoTabElementBase::TracesActions()
-/*QGoToolBarStatus* QGoTabElementBase::TracesActions()
-{
-  return m_TracesActions;
-}
+//QGoToolBarStatus* QGoTabElementBase::TracesActions()
+//{
+//  return m_TracesActions;
+//}
 
-//--------------------------------------------------------------------------
+////--------------------------------------------------------------------------
 
-//--------------------------------------------------------------------------
-QGoTraceSettingsWidget*  QGoTabElementBase::TraceSettingsWidget()
-{
-  return m_TraceSettingsWidgetForToolBar;
-}
-//--------------------------------------------------------------------------
+////--------------------------------------------------------------------------
+//QGoTraceSettingsWidget*  QGoTabElementBase::TraceSettingsWidget()
+//{
+//  return m_TraceSettingsWidgetForToolBar;
+//}
+////--------------------------------------------------------------------------
 
-//--------------------------------------------------------------------------
-void QGoTabElementBase::SetTraceSettingsToolBar(
-  QToolBar* iToolBar)
-{
-  this->m_TraceSettingsToolBar = iToolBar;
-}*/
+////--------------------------------------------------------------------------
+//void QGoTabElementBase::SetTraceSettingsToolBar(
+//  QToolBar* iToolBar)
+//{
+//  this->m_TraceSettingsToolBar = iToolBar;
+//}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------

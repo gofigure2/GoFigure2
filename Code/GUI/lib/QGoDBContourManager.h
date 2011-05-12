@@ -62,7 +62,8 @@ public:
   */
   void SetContoursInfoContainerForVisu(ContourContainer *iContainerForVisu);
 
-  unsigned int SaveNewContourFromVisu(unsigned int iXCoordMin,
+  unsigned int SaveNewContourFromVisu(int iTCoord,
+                                      unsigned int iXCoordMin,
                                       unsigned int iYCoordMin,
                                       unsigned int iZCoordMin,
                                       unsigned int iXCoordMax,

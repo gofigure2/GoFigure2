@@ -30,7 +30,7 @@ SET( QGoGUILIB_SRC
   QGoImageView3D.cxx
   QGoImageInfo.cxx
   QGoLUTDialog.cxx
-  QGoManualSegmentationSettingsDialog.cxx
+  TraceEditing/QGoManualSegmentationSettingsDialog.cxx
   Wizard/QGoOpenCreateImgSessionPage.cxx
   Wizard/QGoOpenCreateProjectPage.cxx
   QGoPrintDatabase.cxx
@@ -81,36 +81,55 @@ SET( QGoGUILIB_SRC
   QGoMeshSegmentationBaseDockWidget.cxx
 
   #--manual segmentation--
-  QGoContourManualSegmentation.cxx
-  QGoContourManualSegmentationWidget.cxx
+  TraceEditing/QGoContourManualSegmentation.cxx
+  TraceEditing/QGoContourManualSegmentationWidget.cxx
 
   #--seed segmentation--
-  QGoSeedSegmentationBase.cxx
-    QGoContourSeedSegmentation.cxx
-    QGoMeshSeedSegmentation.cxx
-  QGoSeedBaseWidget.cxx
+  #QGoSeedSegmentationBase.cxx
+   # QGoContourSeedSegmentation.cxx
+   # QGoMeshSeedSegmentation.cxx
+   #QGoSeedBaseWidget.cxx
     QGoContourSemiAutoLevelsetWidget.cxx
     QGoContourSemiAutoShapeWidget.cxx
     QGoContourSemiAutoWatershedWidget.cxx
-  QGoFilterSemiAutoBase.cxx
-    QGoFilterChanAndVese.cxx
-    QGoFilterShape.cxx
-    QGoFilterWatershed.cxx
+	QGoFilterSemiAutoBase.cxx
+    TraceEditing/QGoFilterChanAndVese.cxx
+    TraceEditing/QGoFilterShape.cxx
+    TraceEditing/QGoFilterWatershed.cxx
 
   # for the tracks
   QGoTrackViewDockWidget.cxx
   QGoTrackEditingWidget.cxx
-  
+
   #for the lineages
   QGoLineageViewDockWidget.cxx
-  
-  QGoTraceEditingWidget.cxx
-  QGoModeEditingWidget.cxx
-  QGoAdvancedParametersWidget.cxx
-  QGoAlgorithmsWidget.cxx
+
+  # for the trace editing widget
+  TraceEditing/QGoTraceEditingWidget.cxx
+  TraceEditing/QGoModesManagerWidget.cxx
+  TraceEditing/QGoAlgorithmsManagerWidget.cxx
+  TraceEditing/QGoAlgorithmWidget.cxx
+  TraceEditing/QGoMeshEditingWidgetManager.cxx
+  TraceEditing/QGoContourEditingWidgetManager.cxx
+  TraceEditing/QGoTraceEditingWidgetManager.cxx
+  TraceEditing/QGoSegmentationAlgo.cxx
+  TraceEditing/QGoContourLevelSetAlgo.cxx
+  TraceEditing/QGoMeshLevelSetAlgo.cxx
+  TraceEditing/QGoMeshShapeAlgo.cxx
+  #TraceEditing/QGoMeshWaterShedAlgo.cxx
+  TraceEditing/QGoMeshSplitDanielssonDistanceAlgo.cxx
+  TraceEditing/QGoWaterShedAlgo.cxx
+  TraceEditing/QGoSetOfContoursWaterShedAlgo.cxx
+  TraceEditing/QGoSetOfContoursLevelSetAlgo.cxx
+  TraceEditing/QGoLevelSetAlgo.cxx
+  TraceEditing/QGoShapeAlgo.cxx
+  TraceEditing/QGoSetOfContoursShapeAlgo.cxx
+  TraceEditing/QGoSemiAutoSegmentationAlgo.cxx
 
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx
+
+  ${GOFIGURE2_FILTER_SOURCES}
 )
 
 SET_SOURCE_FILES_PROPERTIES(
@@ -176,7 +195,7 @@ SET( QGoGUILIB_HDRS
   QGoImageView3D.h
   QGoImageInfo.h
   QGoLUTDialog.h
-  QGoManualSegmentationSettingsDialog.h
+  TraceEditing/QGoManualSegmentationSettingsDialog.h
   Wizard/QGoOpenCreateImgSessionPage.h
   Wizard/QGoOpenCreateProjectPage.h
   QGoPrintDatabase.h
@@ -228,33 +247,39 @@ SET( QGoGUILIB_HDRS
   QGoMeshSegmentationBaseDockWidget.h
 
   #--manual segmentation--
-  QGoContourManualSegmentation.h
-  QGoContourManualSegmentationWidget.h
+  TraceEditing/QGoContourManualSegmentation.h
+  TraceEditing/QGoContourManualSegmentationWidget.h
 
   #--seed segmentation--
   QGoSeedSegmentationBase.h
     QGoContourSeedSegmentation.h
     QGoMeshSeedSegmentation.h
-  QGoSeedBaseWidget.h
+  #QGoSeedBaseWidget.h
     QGoContourSemiAutoLevelsetWidget.h
     QGoContourSemiAutoShapeWidget.h
     QGoContourSemiAutoWatershedWidget.h
-  QGoFilterSemiAutoBase.h
-    QGoFilterChanAndVese.h
-    QGoFilterShape.h
-    QGoFilterWatershed.h
+	QGoFilterSemiAutoBase.h
+    TraceEditing/QGoFilterChanAndVese.h
+    TraceEditing/QGoFilterShape.h
+    TraceEditing/QGoFilterWatershed.h
 
   # for the tracks
   QGoTrackViewDockWidget.h
   QGoTrackEditingWidget.h
-  
-  # for the lineages
+
+  # for the lineages:
   QGoLineageViewDockWidget.h
-  
-  QGoTraceEditingWidget.h
-  QGoModeEditingWidget.h
-  QGoAdvancedParametersWidget.h
-  QGoAlgorithmsWidget.h
+
+  # for the trace editing widget
+  TraceEditing/QGoTraceEditingWidget.h
+  TraceEditing/QGoModesManagerWidget.h
+  TraceEditing/QGoAlgorithmsManagerWidget.h
+  TraceEditing/QGoAlgorithmWidget.h
+  TraceEditing/QGoMeshEditingWidgetManager.h
+  TraceEditing/QGoContourEditingWidgetManager.h
+  TraceEditing/QGoSegmentationAlgo.h
+  TraceEditing/QGoSemiAutoSegmentationAlgo.h
+  TraceEditing/QGoTraceEditingWidgetManager.h
 )
 
 IF( BUILD_COMPARETOOL )
@@ -296,7 +321,7 @@ SET( QGoGUILIB_UI
   Resources/SegmentationDockWidgetBase.ui
 
 #segmentation widget
-  Resources/SegmentationSeedBaseWidget.ui
+  #Resources/SegmentationSeedBaseWidget.ui
 
 # manual contour segmentation dock widget
   Resources/ManualSegmentationSettingsDlg.ui
@@ -378,10 +403,11 @@ SET( QGoGUI_LIBS
   vtkRenderingAddOn2
   PoissonReconstruction
   ctk
-  ITKIO
-  ITKCommon
-  ITKBasicFilters
-  ITKStatistics
+  ${ITK_LIBRARIES}
+  #ITKIO
+  #ITKCommon
+  #ITKBasicFilters
+  #ITKStatistics
   )
 
 IF( ( ITK_VERSION_MAJOR EQUAL 4 ) AND
@@ -391,7 +417,8 @@ IF( ( ITK_VERSION_MAJOR EQUAL 4 ) AND
 
   SET( QGoGUI_LIBS
     ${QGoGUI_LIBS}
-    ITKReview
+    # ITKReview
+    ${ITK_LIBRARIES}
     )
 
 ENDIF( ( ITK_VERSION_MAJOR EQUAL 4 ) AND

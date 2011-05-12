@@ -27,9 +27,13 @@ SET( QGOGUILIB_EXAMPLE_SRC
   QGoDBInitCreateAuthorPageTest
   QGoDBInitCreateMicroscopePageTest
   QGoColorComboBoxTest
+  QGoSegmentationAlgoTest
   #QGoTrackEditingWidgetTest
-  QGoTraceEditingWidgetTest
-  QGoAlgorithmsWidgetTest
+#  QGoTraceEditingWidgetTest
+#  QGoAlgorithmsManagerWidgetTest
+#  QGoAlgorithmWidgetTest
+#  QGoModesManagerWidgetTest
+#  QGoMeshEditingWidgetManagerTest
 )
 
 IF( BUILD_COMPARETOOL )
@@ -217,6 +221,11 @@ ADD_TEST( QGoDBInitCreateMicroscopePageTest
   1
 )
 
+ADD_TEST( QGoSegmentationAlgoTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoSegmentationAlgoTest
+  ${TESTING_DATA_PATH}/Circle3D.mhd
+  1
+)
 
 #ADD_TEST( QGoTrackEditingWidgetTest
 #  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoTrackEditingWidgetTest

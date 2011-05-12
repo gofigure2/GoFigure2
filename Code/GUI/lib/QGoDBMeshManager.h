@@ -194,7 +194,7 @@ public slots:
   reassigned, the message will be ""
   */
   QString CheckExistingMeshesForTheTrack(
-   unsigned int iTrackID, vtkMySQLDatabase* iDatabaseConnector, int iShift = 0);
+   unsigned int iTrackID, vtkMySQLDatabase* iDatabaseConnector, int iTCoord);//int iShift = 0);
 
   /**
   \overload

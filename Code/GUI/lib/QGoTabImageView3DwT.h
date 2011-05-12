@@ -53,6 +53,8 @@
 #include <string>
 
 #include "vtkSmartPointer.h"
+#include "QGoMeshEditingWidgetManager.h"
+#include "QGoContourEditingWidgetManager.h"
 
 #include "GoImageProcessor.h"
 
@@ -319,21 +321,22 @@ public slots:
 
   void StepChanged(int iStep);
 
-  void ValidateContour();
+  void ValidateContour(int iTCoord);
 
-  int SaveAndVisuContour(vtkPolyData *iView = NULL);
+  int SaveAndVisuContour(int iTCoord, vtkPolyData *iView = NULL);
 
   //void SaveAndVisuContoursList(std::vector<vtkPolyData* >* iContours);
 
   /** \brief Save a mesh in the database and render the mesh
    * at the given time point.
   \todo to be renamed */
-  void  SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord, int iTShift);
+  void  SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord);
 
   /** \brief Save a mesh in the database and render the mesh.
    * at the current time point
-  \todo to be renamed */
-  void  SaveAndVisuMeshFromSegmentation(vtkPolyData *iView, int iTCoord);
+  */
+  void SaveInDBAndRenderMeshForVisu(
+    std::vector<vtkPolyData *> iVectPolydata, int iTCoord);
 
   void ReEditContour(const unsigned int & iId);
 
@@ -381,10 +384,12 @@ protected:
   QGoNavigationDockWidget *m_NavigationDockWidget;
 
   // base segmentation dockwidget for contours
-  QGoContourSegmentationBaseDockWidget *m_ContourSegmentationDockWidget;
+  //QGoContourSegmentationBaseDockWidget *m_ContourSegmentationDockWidget;
 
   // base segmentation dockwidget for meshes
-  QGoMeshSegmentationBaseDockWidget *m_MeshSegmentationDockWidget;
+  //QGoMeshSegmentationBaseDockWidget *m_MeshSegmentationDockWidget;
+  QGoMeshEditingWidgetManager*       m_MeshEditingWidget;
+  QGoContourEditingWidgetManager*    m_ContourEditingWidget;
 
   QGoTrackViewDockWidget*   m_TrackViewDockWidget;
 
@@ -392,7 +397,8 @@ protected:
 
   QGoTraceSettingsWidget*   m_TraceSettingsWidget;
 
-  vtkPoints *m_Seeds;
+  std::vector< vtkPoints* > m_Seeds;
+  //std::vector<vtkPoints*> m_OrderedSeeds;
 
   ContourContainer *m_ContourContainer;
   MeshContainer    *m_MeshContainer;
@@ -411,7 +417,7 @@ protected:
   QGoVideoRecorder *m_VideoRecorderWidget;
   #endif /* ENABLEFFMPEG || ENABLEAVI */
 
-  void SaveContour(vtkPolyData *contour, vtkPolyData *contour_nodes);
+  void SaveContour(vtkPolyData *contour, vtkPolyData *contour_nodes, int iTCoord);
 
   std::vector< vtkActor * > VisualizeTrace(vtkPolyData *iTrace, double* iRGBA);
 
@@ -510,6 +516,32 @@ protected:
                                                               iVisible );
     }
 
+  template<typename T>
+  void CreateConnectionsTraceEditingWidget(int iTimeMin, int iTimeMax, T* iTraceWidget)
+    {
+    m_DockWidgetList.push_back(
+    std::pair< QGoDockWidgetStatus *, QDockWidget * >(
+      new QGoDockWidgetStatus(
+        iTraceWidget->GetDockWidget(), Qt::LeftDockWidgetArea, false, true),
+        iTraceWidget->GetDockWidget()) );
+
+    QObject::connect(iTraceWidget,
+                   SIGNAL(UpdateSeeds() ),
+                   this,
+                   SLOT(UpdateSeeds() ) );
+
+    QObject::connect(iTraceWidget,
+                   SIGNAL(ClearAllSeeds() ),
+                   this->m_ImageView,
+                   SLOT(ClearAllSeeds() ) );
+
+    QObject::connect( iTraceWidget,
+                    SIGNAL( SetSeedInteractorBehaviour(bool) ),
+                    this,
+                    SLOT( SeedInteractorBehavior(bool) ) );
+    }
+
+
   std::vector< int > GetBoundingBox(vtkPolyData *contour);
 
   void CreateContour(vtkPolyData *contour_nodes, vtkPolyData *iView);
@@ -517,9 +549,9 @@ protected:
   /**
    * \brief Save mesh in Database
    * \param[in] iMesh mesh to be saved
-   * \param[in] iTShift time shift (used in the Doppler View case)
+   * \param[in] iTCoord
    */
-  void SaveMesh(vtkPolyData *iMesh, int iTShift);
+  void SaveMesh(vtkPolyData *iMesh, int iTCoord);
 
   void GetBackgroundColorFromImageViewer();
 
@@ -538,9 +570,10 @@ protected:
   void CreateVisuDockWidget();
 
   // segmentation dockwidgets
-  void CreateContourSegmentationDockWidget();
-
-  void CreateMeshSegmentationDockWidget();
+  //void CreateContourSegmentationDockWidget();
+  void CreateContourEditingDockWidget(int iTimeMin, int iTimeMax);
+  //void CreateMeshSegmentationDockWidget();
+  void CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax);
 
   void CreateDataBaseTablesConnection();
 
@@ -660,6 +693,12 @@ protected slots:
   void SetDatabaseContainersAndDelayedConnections();
 
   void AddTraceIDIntoPolydata( vtkPolyData* iPolydata, unsigned int iTraceID, const char* iTrace);
+
+  /**
+  \brief depending on the doppler/classic mode, update the TimePoints and channels
+  of the mesh and contour widget
+  */
+  void UpdateTracesEditingWidget();
 
 private:
   void UpdateWidgetsFromImageProcessor();
