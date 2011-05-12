@@ -275,13 +275,6 @@ void vtkViewImage3D::SetupVolumeRendering()
   this->VolumeProperty->SetScalarOpacity(opacityfunction);
   opacityfunction->Delete();
 
-  // color TF
-  vtkColorTransferFunction *colorfunction = vtkColorTransferFunction::New();
-  colorfunction->AddRGBPoint (0, 0.0, 0.0, 0.0);
-  colorfunction->AddRGBPoint (255, 1.0, 1.0, 1.0);
-  this->VolumeProperty->SetColor(colorfunction);
-  colorfunction->Delete();
-
   // one dataset-1 tf, not 1 tf for each component
   this->VolumeProperty->IndependentComponentsOff();
   this->VolumeProperty->SetInterpolationTypeToLinear();
@@ -441,7 +434,9 @@ void vtkViewImage3D::SetVolumeRenderingOn()
       }
     }
 
-  //mix components
+  // mix components
+  // dont't really get the point but has sth to do with the alpha component
+  // create a "FAKE ALPHA CHANNEL..."
   vtkSmartPointer< vtkImageExtractComponents > extComp =
     vtkSmartPointer< vtkImageExtractComponents >::New();
   extComp->SetInput(image.GetPointer());

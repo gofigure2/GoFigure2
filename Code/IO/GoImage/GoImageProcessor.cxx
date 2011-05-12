@@ -100,7 +100,7 @@ createLUT(const double& iRed, const double& iGreen, const double& iBlue,
 {
   vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
   double* HSV = vtkMath::RGBToHSV(iRed,iGreen,iBlue);
-  lut->SetAlpha(iAlpha);
+  lut->SetAlphaRange(0, 1);
   lut->SetHueRange(HSV[0], HSV[0]);
   lut->SetSaturationRange(1, 1);
   lut->SetValueRange(0, 1);
