@@ -374,8 +374,6 @@ protected:
   vtkVolume *VolumeActor;
   // opacity transfer function
   vtkPiecewiseFunction *OpacityFunction;
-  // blender
-  vtkImageBlend *Blender;
   // image 3D cropping box callback
   vtkImage3DCroppingBoxCallback *Callback;
 
