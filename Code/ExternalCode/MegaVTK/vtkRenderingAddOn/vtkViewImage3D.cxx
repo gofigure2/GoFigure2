@@ -203,7 +203,6 @@ vtkViewImage3D::vtkViewImage3D()
 {
   this->VolumeProperty  = vtkVolumeProperty::New();
   this->VolumeActor     = vtkVolume::New();
-  this->OpacityFunction = vtkPiecewiseFunction::New();
   this->Callback = vtkImage3DCroppingBoxCallback::New();
   this->VolumeMapper3D = vtkVolumeTextureMapper3D::New();
 
@@ -238,7 +237,6 @@ vtkViewImage3D::~vtkViewImage3D()
   this->VolumeMapper3D->Delete();
   this->VolumeProperty->Delete();
   this->VolumeActor->Delete();
-  this->OpacityFunction->Delete();
   this->Callback->Delete();
   this->Cube->Delete();
   this->Marker->Delete();
@@ -262,25 +260,38 @@ vtkViewImage3D::~vtkViewImage3D()
  */
 void vtkViewImage3D::SetupVolumeRendering()
 {
+  // MAPPER
+  // crop volume into 27? small regions
+  // for efficiency?
   this->VolumeMapper3D->CroppingOn();
   this->VolumeMapper3D->SetCroppingRegionFlagsToSubVolume();
   this->VolumeMapper3D->SetCroppingRegionFlags (0x7ffdfff);
-  this->OpacityFunction->AddPoint (0, 0.0);
-  this->OpacityFunction->AddPoint (255, 1.0);
+
+  // PROPERTY
+  // opacity TF
+  vtkPiecewiseFunction* opacityfunction = vtkPiecewiseFunction::New();
+  opacityfunction->AddPoint (0, 0.0);
+  opacityfunction->AddPoint (255, 1.0);
+  this->VolumeProperty->SetScalarOpacity(opacityfunction);
+  opacityfunction->Delete();
+
+  // color TF
   vtkColorTransferFunction *colorfunction = vtkColorTransferFunction::New();
   colorfunction->AddRGBPoint (0, 0.0, 0.0, 0.0);
   colorfunction->AddRGBPoint (255, 1.0, 1.0, 1.0);
-  this->VolumeProperty->IndependentComponentsOff();
   this->VolumeProperty->SetColor(colorfunction);
   colorfunction->Delete();
-  this->VolumeProperty->SetScalarOpacity(this->OpacityFunction);
+
+  // one dataset-1 tf, not 1 tf for each component
+  this->VolumeProperty->IndependentComponentsOff();
   this->VolumeProperty->SetInterpolationTypeToLinear();
   this->VolumeProperty->ShadeOff();
   this->VolumeProperty->SetDiffuse (0.9);
   this->VolumeProperty->SetAmbient (0.2);
   this->VolumeProperty->SetSpecular (0.3);
   this->VolumeProperty->SetSpecularPower (15.0);
-  // set up the vtk pipeline: volume rendering
+
+  // ACTOR
   this->VolumeActor->SetProperty (this->VolumeProperty);
   this->VolumeActor->SetMapper (this->VolumeMapper3D);
   this->VolumeActor->PickableOff();

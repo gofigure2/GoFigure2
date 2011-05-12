@@ -93,8 +93,6 @@
 class vtkViewImage3DCommand;
 class vtkVolumeTextureMapper3D;
 class vtkVolumeMapper;
-class vtkPiecewiseFunction;
-class vtkColorTransferFunction;
 class vtkVolume;
 class vtkImageActor;
 class vtkAxes;
@@ -300,8 +298,6 @@ protected:
   vtkVolumeProperty *VolumeProperty;
   // volume actor
   vtkVolume *VolumeActor;
-  // opacity transfer function
-  vtkPiecewiseFunction *OpacityFunction;
   // image 3D cropping box callback
   vtkImage3DCroppingBoxCallback *Callback;
 
