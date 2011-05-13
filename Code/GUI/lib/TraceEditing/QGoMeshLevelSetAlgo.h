@@ -109,8 +109,8 @@ protected:
     // why no call to the filter itself...?
     QGoFilterChanAndVese Filter;
     Filter.Apply3DFilter< PixelType >( ITK_ROI_Image,
-          NULL,// we dont want to extract ROI from input since we already did
-          0,   // we dont want to extract ROI from input since we already did
+          iCenter,
+          0, // we dont want to extract ROI from input since we already did
           nb_iterations,
           curvature_weight );
 
