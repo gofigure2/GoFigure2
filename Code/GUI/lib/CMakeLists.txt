@@ -404,28 +404,7 @@ SET( QGoGUI_LIBS
   PoissonReconstruction
   ctk
   ${ITK_LIBRARIES}
-  #ITKIO
-  #ITKCommon
-  #ITKBasicFilters
-  #ITKStatistics
   )
-
-IF( ( ITK_VERSION_MAJOR EQUAL 4 ) AND
-    ( ITK_VERSION_MINOR EQUAL 0 ) AND
-    ( ITK_VERSION_PATCH EQUAL 0 )
-    )
-
-  SET( QGoGUI_LIBS
-    ${QGoGUI_LIBS}
-    # ITKReview
-    ${ITK_LIBRARIES}
-    )
-
-ENDIF( ( ITK_VERSION_MAJOR EQUAL 4 ) AND
-    ( ITK_VERSION_MINOR EQUAL 0 ) AND
-    ( ITK_VERSION_PATCH EQUAL 0 )
-  )
-
 
 TARGET_LINK_LIBRARIES( QGoGui
   ${QGoGUI_LIBS}
