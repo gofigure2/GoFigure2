@@ -46,7 +46,6 @@
 //--------------------------------------------------------------------------
 QGoTabElementBase::QGoTabElementBase(QWidget *iParent)
   : QMainWindow(iParent),
-  m_ToolBarList(NULL),
   m_StatusBar(NULL)
   //m_TracesActions(NULL),
   //m_TraceSettingsToolBar(NULL),

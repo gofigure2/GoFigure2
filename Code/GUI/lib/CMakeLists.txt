@@ -38,7 +38,6 @@ SET( QGoGUILIB_SRC
   QGoTabImageView2D.cxx
   QGoTabImageView3D.cxx
   QGoTabImageView3DwT.cxx
-  QGoTabImageView4D.cxx
   QGoTabImageViewElementBase.cxx
   QGoTabImageViewNDBase.cxx
   QGoNavigationDockWidget.cxx
@@ -92,7 +91,7 @@ SET( QGoGUILIB_SRC
     QGoContourSemiAutoLevelsetWidget.cxx
     QGoContourSemiAutoShapeWidget.cxx
     QGoContourSemiAutoWatershedWidget.cxx
-	QGoFilterSemiAutoBase.cxx
+  QGoFilterSemiAutoBase.cxx
     TraceEditing/QGoFilterChanAndVese.cxx
     TraceEditing/QGoFilterShape.cxx
     TraceEditing/QGoFilterWatershed.cxx
@@ -203,7 +202,6 @@ SET( QGoGUILIB_HDRS
   QGoTabImageView2D.h
   QGoTabImageView3D.h
   QGoTabImageView3DwT.h
-  QGoTabImageView4D.h
   QGoTabImageViewElementBase.h
   QGoTabImageViewNDBase.h
   QGoNavigationDockWidget.h
@@ -258,7 +256,7 @@ SET( QGoGUILIB_HDRS
     QGoContourSemiAutoLevelsetWidget.h
     QGoContourSemiAutoShapeWidget.h
     QGoContourSemiAutoWatershedWidget.h
-	QGoFilterSemiAutoBase.h
+  QGoFilterSemiAutoBase.h
     TraceEditing/QGoFilterChanAndVese.h
     TraceEditing/QGoFilterShape.h
     TraceEditing/QGoFilterWatershed.h

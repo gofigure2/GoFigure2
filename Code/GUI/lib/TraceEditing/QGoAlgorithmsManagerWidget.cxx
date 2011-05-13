@@ -40,10 +40,14 @@
 #include <QPainter>
 
 
-QGoAlgorithmsManagerWidget::QGoAlgorithmsManagerWidget(std::string iModeName,
-  QWidget *iParent, std::vector<QString> iVectChannels, QStringList iListTime, 
-  bool iOnlyOneMethod, bool NeedApplyResetButton)
-  :QWidget(iParent), m_ChannelComboBox(NULL), m_TimeComboBox(NULL), m_MethodComboBox(NULL)
+QGoAlgorithmsManagerWidget::
+QGoAlgorithmsManagerWidget( std::string iModeName,
+  QWidget *iParent,
+  std::vector<QString> iVectChannels,
+  QStringList iListTime,
+  bool iOnlyOneMethod,
+  bool NeedApplyResetButton ) : QWidget(iParent), m_MethodComboBox(NULL),
+    m_ChannelComboBox(NULL), m_TimeComboBox(NULL)
 {
   this->m_ModeName = iModeName;
   this->Initialize(iVectChannels, iListTime, iOnlyOneMethod, NeedApplyResetButton);
@@ -57,7 +61,7 @@ QGoAlgorithmsManagerWidget::~QGoAlgorithmsManagerWidget()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoAlgorithmsManagerWidget::Initialize(std::vector<QString> iVectChannels, 
+void QGoAlgorithmsManagerWidget::Initialize(std::vector<QString> iVectChannels,
   QStringList iListTime, bool iOnlyOneMethod, bool NeedApplyResetButton)
 {
   this->m_VBoxLayout = new QVBoxLayout;
@@ -82,7 +86,7 @@ void QGoAlgorithmsManagerWidget::Initialize(std::vector<QString> iVectChannels,
 
     FormLayout->addRow(tr("Channel:"), this->m_ChannelComboBox);
     }
-   
+
   this->m_MethodWidgets = new QStackedWidget(this);
 
   if (!iOnlyOneMethod)
@@ -94,7 +98,7 @@ void QGoAlgorithmsManagerWidget::Initialize(std::vector<QString> iVectChannels,
             this->m_MethodWidgets, SLOT(setCurrentIndex(int)));
     }
 
-   this->m_VBoxLayout->addLayout(FormLayout); 
+   this->m_VBoxLayout->addLayout(FormLayout);
    this->m_VBoxLayout->addWidget(this->m_MethodWidgets);
 
   if (NeedApplyResetButton)
@@ -106,15 +110,15 @@ void QGoAlgorithmsManagerWidget::Initialize(std::vector<QString> iVectChannels,
     ButtonLayout->addWidget(ResetButton);
     this->m_VBoxLayout->addLayout(ButtonLayout);
 
-     QObject::connect(ApplyButton, SIGNAL(clicked()), 
+     QObject::connect(ApplyButton, SIGNAL(clicked()),
     this, SLOT(EmitApplyAlgo()));
 
     QObject::connect(ResetButton, SIGNAL(clicked()), this, SIGNAL(ResetClicked()));
 
     }
- 
+
   this->setLayout(this->m_VBoxLayout);
-  this->m_VBoxLayout->setSizeConstraint(QLayout::SetFixedSize); 
+  this->m_VBoxLayout->setSizeConstraint(QLayout::SetFixedSize);
 }
 //-------------------------------------------------------------------------
 
@@ -223,7 +227,7 @@ bool QGoAlgorithmsManagerWidget::HasMethod()
 //-------------------------------------------------------------------------
 void QGoAlgorithmsManagerWidget::EmitApplyAlgo()
 {
-  QGoAlgorithmWidget* iCurrentWidget = 
+  QGoAlgorithmWidget* iCurrentWidget =
     dynamic_cast<QGoAlgorithmWidget*>(m_MethodWidgets->currentWidget());
   iCurrentWidget->EmitApplyAlgo();
 }
@@ -255,18 +259,18 @@ void QGoAlgorithmsManagerWidget::AddWidgetForOnlyOneMethod(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/*void QGoAlgorithmsManagerWidget::AddMethod(std::string iNameMethod, 
+/*void QGoAlgorithmsManagerWidget::AddMethod(std::string iNameMethod,
   QWidget* iParametersWidget, QWidget* iAdvParamWidget)
 {
   QWidget* MethodWidget = new QWidget(this);
 
   QVBoxLayout* MethodLayout = new QVBoxLayout;
   MethodLayout->addWidget(iParametersWidget);
-  
-  QGoAdvancedParametersWidget* AdvParamWidget = 
+
+  QGoAdvancedParametersWidget* AdvParamWidget =
     new QGoAdvancedParametersWidget(this);
   AdvParamWidget->AddAdvancedParamWidget(iAdvParamWidget);
-  
+
 
   MethodLayout->addWidget(AdvParamWidget);
 

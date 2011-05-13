@@ -81,6 +81,7 @@ protected:
 
 //    vtkImageData * FilterOutPutToVTK = this->ConvertITK2VTK<float, VImageDimension>(ItkOutPut);
 //    return this->ExtractPolyData(FilterOutPutToVTK, 0);
+    return NULL;
     }
 };
 

@@ -893,14 +893,14 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
                            const bool & intersection,
                            const bool & iDataVisibility)
 {
-  vtkCamera *cam = NULL;
+//  vtkCamera *cam = NULL;
 
-  if ( this->Renderer )
+  if ( !this->Renderer )
     {
-    cam = this->Renderer->GetActiveCamera();
-    }
-  else
-    {
+//    cam = this->Renderer->GetActiveCamera();
+//    }
+//  else
+//    {
     return NULL;
     }
 
@@ -974,15 +974,15 @@ vtkViewImage2D::UpdateCenter(void)
     {
     return;
     }
-  vtkCamera *cam = NULL;
+//  vtkCamera *cam = NULL;
 
-  if ( this->Renderer )
+  if ( !this->Renderer )
     {
-    cam = this->Renderer->GetActiveCamera();
-    }
-  else
-    {
-    return;
+//    cam = this->Renderer->GetActiveCamera();
+//    }
+//  else
+//    {
+//    return;
     }
   int *dimensions = this->GetInput()->GetDimensions();
 

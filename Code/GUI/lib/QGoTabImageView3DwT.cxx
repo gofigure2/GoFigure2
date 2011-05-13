@@ -123,6 +123,7 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   QGoTabElementBase(iParent),
   m_Image(0),
   m_BackgroundColor(Qt::black),
+  m_TraceSettingsToolBar(NULL),
   m_IntersectionLineWidth(2.),
   m_PCoord(0),
   m_RCoord(0),
@@ -131,7 +132,6 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_YTileCoord(0),
   m_ZTileCoord(0),
   m_TCoord(-1),
-  m_TraceSettingsToolBar(NULL),
   m_ImageProcessor(NULL),
   m_MeshEditingWidget(NULL),
   m_Seeds( 3, NULL )
@@ -1599,7 +1599,7 @@ QGoTabImageView3DwT::SetTimePointDoppler(int iChannel,
   // Nicolas - might be only 2 channels on borders...
   m_NavigationDockWidget->blockSignals(true);
   m_NavigationDockWidget->SetNumberOfChannels(3);
-  
+
 
   for(int i = 0; i<3; ++i)
     {
@@ -3037,7 +3037,7 @@ QGoTabImageView3DwT::UpdateTracesEditingWidget()
         }
       else
         {
-          ListTimePoints[tr("%1").arg(realT[0])] = Red;
+        ListTimePoints[tr("%1").arg(realT[0])] = Red;
         }
       ListTimePoints[tr("%1").arg(this->m_TCoord)] = Green;
       if (dopplerT[2] < realT[1] )
