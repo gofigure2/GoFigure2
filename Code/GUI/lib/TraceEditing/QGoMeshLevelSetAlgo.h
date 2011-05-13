@@ -85,9 +85,10 @@ protected:
     // Since the pipeline is in ITK, first let's convert the image into ITK
    ImagePointer ItkInput =
        iImages->getImageITK< PixelType, ImageDimension>(iChannel);
-/*
+
     // let's compute the bounds of the region of interest
     double radius = this->m_Radius->GetValue();
+    std::cout << "radius: " << radius << std::endl;
 
     std::vector< double > bounds( 2 * ImageDimension, 0. );
     unsigned int k = 0;
@@ -105,10 +106,11 @@ protected:
     int nb_iterations = this->m_Iterations->GetValue();
 
     // Compute the segmentation in 3D
+    // why no call to the filter itself...?
     QGoFilterChanAndVese Filter;
     Filter.Apply3DFilter< PixelType >( ITK_ROI_Image,
-          iCenter,
-          radius,
+          NULL,// we dont want to extract ROI from input since we already did
+          0,   // we dont want to extract ROI from input since we already did
           nb_iterations,
           curvature_weight );
 
@@ -145,10 +147,9 @@ protected:
     mesh_transform->SetTransform(translation);
     mesh_transform->SetInput( temp_output );
     mesh_transform->Update();
-*/
+
     vtkPolyData* mesh = vtkPolyData::New();
-    std::cout << "return sth..." << std::endl;
-    //mesh->DeepCopy( mesh_transform->GetOutput() );
+    mesh->DeepCopy( mesh_transform->GetOutput() );
 
     return mesh;
     }
