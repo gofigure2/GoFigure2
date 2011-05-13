@@ -74,7 +74,7 @@ protected:
                                     int iChannel)
     {
     assert( iCenter.size() == 3);
-/*
+
     const unsigned int ImageDimension = 3;
 
     typedef TPixel PixelType;
@@ -83,8 +83,9 @@ protected:
     typedef typename ImageType::Pointer               ImagePointer;
 
     // Since the pipeline is in ITK, first let's convert the image into ITK
-    ImagePointer ItkInput = iImages->getImageITK< unsigned char, ImageDimension>(iChannel);
-
+   ImagePointer ItkInput =
+       iImages->getImageITK< PixelType, ImageDimension>(iChannel);
+/*
     // let's compute the bounds of the region of interest
     double radius = this->m_Radius->GetValue();
 
@@ -146,7 +147,8 @@ protected:
     mesh_transform->Update();
 */
     vtkPolyData* mesh = vtkPolyData::New();
-   // mesh->DeepCopy( mesh_transform->GetOutput() );
+    std::cout << "return sth..." << std::endl;
+    //mesh->DeepCopy( mesh_transform->GetOutput() );
 
     return mesh;
     }

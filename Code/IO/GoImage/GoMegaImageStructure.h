@@ -91,9 +91,9 @@ struct QGOIO_EXPORT GoMegaImageStructure
      * \param[in] iInput Pointer to a vtkImageData
      * \return Pointer to an itkImage
      */
-    template< class PixelType, unsigned int VImageDimension >
+    template< class PixelType, const unsigned int VImageDimension >
     typename itk::Image< PixelType, VImageDimension >::Pointer
-    Convert2ITK()
+    Convert2ITK() const
     {
       //Export VTK image to ITK
       vtkSmartPointer<vtkImageExport> exporter =

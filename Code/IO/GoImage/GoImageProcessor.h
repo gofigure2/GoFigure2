@@ -189,7 +189,7 @@ public:
    */
   vtkSmartPointer<vtkImageData> getImageBW(const unsigned int& iIndex);
 
-  template< class PixelType, unsigned int VImageDimension >
+  template< class PixelType, const unsigned int VImageDimension >
   typename itk::Image< PixelType, VImageDimension >::Pointer
   getImageITK(int& iIndex)
   {
