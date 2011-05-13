@@ -35,7 +35,7 @@
 
 
 QGoShapeAlgo::QGoShapeAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent)
-  :QGoSemiAutoSegmentationAlgo(iSeeds, iParent)
+  :QGoSemiAutoSegmentationAlgo(iSeeds, iParent), m_Shape(NULL)
 {
   this->SetAlgoWidget(iParent);
 }
@@ -51,7 +51,11 @@ QGoShapeAlgo::~QGoShapeAlgo()
 //-------------------------------------------------------------------------
 void QGoShapeAlgo::DeleteParameters()
 {
-  delete m_Shape;
+  if(m_Shape)
+    {
+    delete m_Shape;
+    m_Shape = NULL;
+    }
 }
 //-------------------------------------------------------------------------
 
