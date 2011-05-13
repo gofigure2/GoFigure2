@@ -274,8 +274,6 @@ public:
    * */
   void ComputeDistancesToSquare(vtkPlanes *planes);
 
-  void AddActorToProp3DCollection( vtkActor * iActor);
-
 protected:
 
   vtkViewImage3D();

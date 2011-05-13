@@ -97,7 +97,6 @@
 // #include "vtkQuadricLODActor.h"
 #include "vtkActor.h"
 #include "vtkPolyDataMapper.h"
-#include "vtkProp3DCollection.h"
 #include "vtkPoints.h"
 #include "vtkIdList.h"
 #include "vtkOutlineSource.h"
@@ -646,16 +645,8 @@ vtkViewImage3D::AddDataSet(vtkDataSet *dataset,
 
   return actor3d;
 }
-
 //----------------------------------------------------------------------------
-/*
- * \todo Nicolas-Get rid of Prop3DCollection
- */
-void vtkViewImage3D::
-AddActorToProp3DCollection( vtkActor * iActor)
-{
-  this->Prop3DCollection->AddItem(iActor);
-}
+
 //----------------------------------------------------------------------------
 /**
  *
@@ -764,8 +755,9 @@ vtkViewImage3D::ComputeDistances(double *n, double *origin)
 {
   // go through all actors
   // relative distance from point to plane
-  Prop3DCollection->InitTraversal();
-  vtkProp3D *prop_temp = Prop3DCollection->GetNextProp3D();
+  vtkActorCollection *test = this->Renderer->GetActors();
+  test->InitTraversal();
+  vtkProp3D *prop_temp = test->GetNextActor();
 
   while ( prop_temp )
     {
@@ -788,7 +780,7 @@ vtkViewImage3D::ComputeDistances(double *n, double *origin)
     this->GetInteractorStyle3D()->SetCurrentState(state);
     this->InvokeEvent(vtkViewImage3DCommand::VisibilityUpdatedEvent);
 
-    prop_temp = Prop3DCollection->GetNextProp3D();
+    prop_temp = test->GetNextActor();
     }
   // emit signal to say to render
   this->InvokeEvent(vtkViewImage3DCommand::UpdateRenderEvent);
@@ -802,8 +794,9 @@ vtkViewImage3D::ComputeDistancesToSquare(vtkPlanes *planes)
 {
   // go through all actors
   // relative distance from point to plane
-  Prop3DCollection->InitTraversal();
-  vtkProp3D *prop_temp = Prop3DCollection->GetNextProp3D();
+  vtkActorCollection *test = this->Renderer->GetActors();
+  test->InitTraversal();
+  vtkProp3D *prop_temp = test->GetNextActor();
 
   while ( prop_temp )
     {
@@ -829,7 +822,7 @@ vtkViewImage3D::ComputeDistancesToSquare(vtkPlanes *planes)
     this->GetInteractorStyle3D()->SetCurrentState(show);
     this->InvokeEvent(vtkViewImage3DCommand::VisibilityUpdatedEvent);
 
-    prop_temp = Prop3DCollection->GetNextProp3D();
+    prop_temp = test->GetNextActor();
     }
 
   planes->Delete();

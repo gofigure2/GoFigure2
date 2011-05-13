@@ -92,7 +92,6 @@
 #include "vtkProperty.h"
 #include "vtkActor.h"
 #include "vtkPolyDataMapper.h"
-#include "vtkProp3DCollection.h"
 #include "vtkPoints.h"
 #include "vtkIdList.h"
 #include "vtkOutlineSource.h"
@@ -117,7 +116,6 @@ vtkViewImage::vtkViewImage()
   this->TextProperty = vtkTextProperty::New();
   this->LookupTable = vtkLookupTable::New();
   this->ScalarBarActor = vtkScalarBarActor::New();
-  this->Prop3DCollection = vtkProp3DCollection::New();
   this->OrientationTransform = vtkMatrixToLinearTransform::New();
 
   this->OrientationMatrix->Identity();
@@ -202,9 +200,6 @@ vtkViewImage::~vtkViewImage()
   this->CornerAnnotation->Delete();
   this->LookupTable->Delete();
   this->ScalarBarActor->Delete();
-
-  // delete the collection
-  this->Prop3DCollection->Delete();
 }
 
 //----------------------------------------------------------------------------
@@ -326,19 +321,7 @@ double vtkViewImage::GetValueAtPosition(double worldcoordinates[3],
 
   return value;
 }
-
 //----------------------------------------------------------------------------
-
-void vtkViewImage::RemoveProp(vtkProp *prop)
-{
-  this->Renderer->RemoveViewProp(prop);
-
-  int index = this->Prop3DCollection->IsItemPresent(prop);
-  if( index )
-  {
-  this->Prop3DCollection->RemoveItem(index);
-  }
-}
 
 //----------------------------------------------------------------------------
 double * vtkViewImage::GetWorldCoordinatesFromImageCoordinates(int indices[3])
