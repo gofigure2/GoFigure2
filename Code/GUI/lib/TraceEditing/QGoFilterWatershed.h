@@ -83,6 +83,7 @@ public:
   typedef typename InputImageType::Pointer   InputImagePointer;
   typedef itk::Image< int, Dimension >       SegmentImageType;
   typedef typename SegmentImageType::Pointer SegmentImagePointer;
+
   // Apply filter
   // Apply watershed segmentation filter
   //---------------------------------------------------------

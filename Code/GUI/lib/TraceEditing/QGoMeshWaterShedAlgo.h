@@ -47,6 +47,12 @@
 
 #include "GoImageProcessor.h"
 
+#include "vtkRenderer.h"
+#include "vtkRenderWindow.h"
+#include  "vtkImageViewer2.h"
+#include "vtkRenderWindowInteractor.h"
+#include "vtkPolyDataMapper.h"
+#include "vtkActor.h"
 
 /**
 \class QGoMeshWaterShedAlgo
@@ -121,7 +127,8 @@ protected:
           typename QGoFilterWatershed::OutputPixelType,
           ImageDimension>( ItkOutPut );
 
-    vtkPolyData* temp_output = this->ExtractPolyData(FilterOutPutToVTK, 0);
+    // Nicolas- should be able to tune the parameter -0.5-
+    vtkPolyData* temp_output = this->ExtractPolyData(FilterOutPutToVTK, 0.5);
 
     double temp_bounds[6];
     temp_output->GetBounds( temp_bounds );
