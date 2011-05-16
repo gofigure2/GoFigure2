@@ -47,13 +47,6 @@
 
 #include "GoImageProcessor.h"
 
-#include "vtkRenderer.h"
-#include "vtkRenderWindow.h"
-#include  "vtkImageViewer2.h"
-#include "vtkRenderWindowInteractor.h"
-#include "vtkPolyDataMapper.h"
-#include "vtkActor.h"
-
 /**
 \class QGoMeshWaterShedAlgo
 \brief class to be the interface between the watershed algo for meshes
