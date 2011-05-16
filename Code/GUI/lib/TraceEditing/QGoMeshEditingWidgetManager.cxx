@@ -40,6 +40,7 @@
 #include "vtkImageData.h"
 #include <iostream>
 
+#include "QGoMeshWaterShedAlgo.h"
 #include "GoImageProcessor.h"
 
 
@@ -110,12 +111,12 @@ void QGoMeshEditingWidgetManager::SetSemiAutomaticAlgorithms(QWidget* iParent)
     this, SLOT(ApplyShapeAlgo() ) );
 
   //watershed:
-  //this->m_WaterShedAlgo = new QGoMeshWaterShedAlgo(this->m_Seeds, iParent);
- // QGoAlgorithmWidget* WaterShedWidget = m_WaterShedAlgo->GetAlgoWidget();
- // this->m_TraceEditingWidget->AddAlgoWidgetForSemiAutomaticMode(WaterShedWidget);
+  this->m_WaterShedAlgo = new QGoMeshWaterShedAlgo(this->m_Seeds, iParent);
+  QGoAlgorithmWidget* WaterShedWidget = m_WaterShedAlgo->GetAlgoWidget();
+  this->m_TraceEditingWidget->AddAlgoWidgetForSemiAutomaticMode(WaterShedWidget);
 
-  //QObject::connect(WaterShedWidget, SIGNAL(ApplyAlgo() ),
-  //  this, SLOT(ApplyWaterShedAlgo() ) );
+  QObject::connect(WaterShedWidget, SIGNAL(ApplyAlgo() ),
+    this, SLOT(ApplyWaterShedAlgo() ) );
 }
 //-------------------------------------------------------------------------
 
@@ -208,7 +209,7 @@ void QGoMeshEditingWidgetManager::ApplyShapeAlgo()
 //-------------------------------------------------------------------------
 void QGoMeshEditingWidgetManager::ApplyWaterShedAlgo()
 {
-  //this->GetPolydatasFromAlgo<QGoMeshWaterShedAlgo>(this->m_WaterShedAlgo);
+  this->GetPolydatasFromAlgo<QGoMeshWaterShedAlgo>(this->m_WaterShedAlgo);
 }
 //-------------------------------------------------------------------------
 

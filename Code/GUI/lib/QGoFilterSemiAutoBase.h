@@ -67,6 +67,14 @@ class QGOGUILIB_EXPORT QGoFilterSemiAutoBase:public QObject
 {
   Q_OBJECT
 public:
+  typedef float                   OutputPixelType;
+
+  typedef itk::Image< float, 3 >  Output3DType;
+  typedef Output3DType::Pointer   Output3DPointer;
+
+  typedef itk::Image< float, 2 >  Output2DType;
+  typedef Output2DType::Pointer   Output2DPointer;
+
   /** \brief Constructor */
   explicit QGoFilterSemiAutoBase(QObject *iParent = NULL);
 
@@ -176,10 +184,13 @@ public:
   ExtractROI(typename itk::Image< PixelType, VImageDimension >::Pointer,
              double *iCenter, double iRadius);
 
+  Output3DType::Pointer GetOutput3D()
+    {
+    return m_Image3D;
+    }
+
   int m_Dimension;
 public slots:
-
-  virtual vtkPolyData * Apply() = 0;
 
   void    UpdateVisibility(int iFilter);
 
@@ -218,6 +229,10 @@ private:
   vtkPoints *                                   m_Points;
   std::vector< vtkSmartPointer<vtkImageData> > *m_OriginalImageMC;
   int                                           m_Sampling;
+
+protected:
+  Output3DType::Pointer m_Image3D;
+  Output2DType::Pointer m_Image2D;
 };
 
 #include "QGoFilterSemiAutoBase.txx"

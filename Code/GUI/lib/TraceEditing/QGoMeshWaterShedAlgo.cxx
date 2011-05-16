@@ -35,23 +35,25 @@
 #include "QGoFilterWatershed.h"
 
 
-QGoMeshWaterShedAlgo::QGoMeshWaterShedAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent)
+QGoMeshWaterShedAlgo::
+QGoMeshWaterShedAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent)
   :QGoWaterShedAlgo(iSeeds, iParent)
 {
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QGoMeshWaterShedAlgo::~QGoMeshWaterShedAlgo()
+QGoMeshWaterShedAlgo::
+~QGoMeshWaterShedAlgo()
 {
   this->DeleteParameters();
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::vector<vtkPolyData*> QGoMeshWaterShedAlgo::ApplyAlgo(
-  std::vector<vtkSmartPointer< vtkImageData > >* iImages,
-    int iChannel)
+std::vector<vtkPolyData*>
+QGoMeshWaterShedAlgo::
+ApplyAlgo(GoImageProcessor* iImages, int iChannel)
 {
   /*QGoFilterWatershed WatershedFilter;
 
@@ -101,3 +103,4 @@ std::vector<vtkPolyData*> QGoMeshWaterShedAlgo::ApplyAlgo(
 
   return oNewMeshes;
 }
+//-------------------------------------------------------------------------

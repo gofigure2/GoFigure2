@@ -102,17 +102,14 @@ protected:
     ImagePointer ITK_ROI_Image =
         this->ITKExtractROI< PixelType, ImageDimension >( bounds, ItkInput );
 
-    int curvature_weight = this->m_Curvature->GetValue();
-    int nb_iterations = this->m_Iterations->GetValue();
-
     // Compute the segmentation in 3D
     // why no call to the filter itself...?
     QGoFilterChanAndVese Filter;
     Filter.Apply3DFilter< PixelType >( ITK_ROI_Image,
           iCenter,
           0, // we dont want to extract ROI from input since we already did
-          nb_iterations,
-          curvature_weight );
+          this->m_Iterations->GetValue(),
+          this->m_Curvature->GetValue());
 
     typename QGoFilterChanAndVese::Output3DPointer
         ItkOutPut = Filter.GetOutput3D();

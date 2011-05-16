@@ -55,23 +55,11 @@ class QGOGUILIB_EXPORT QGoFilterChanAndVese : public QGoFilterSemiAutoBase
 {
   Q_OBJECT
 public:
-  typedef float                   OutputPixelType;
-
-  typedef itk::Image< float, 3 >  Output3DType;
-  typedef Output3DType::Pointer   Output3DPointer;
-
-  typedef itk::Image< float, 2 >  Output2DType;
-  typedef Output2DType::Pointer   Output2DPointer;
-
   /** \brief Constructor */
   explicit QGoFilterChanAndVese(QObject *iParent = NULL, int iDimension = 2);
 
   /** \brief Destructor */
   ~QGoFilterChanAndVese();
-
-  virtual vtkPolyData * Apply();
-
-  //virtual void ConnectSignals(int iFilterNumber);
 
   std::vector<vtkPolyData*> ApplyFilterLevelSet3D(double iRadius, vtkPoints* iPoints,
     int iIterations, int iCurvature,
@@ -128,14 +116,6 @@ public:
       }
   }
 
-
-  Output3DType::Pointer GetOutput3D()
-    {
-    return m_Image3D;
-    }
-
-
-
   //template<class PixelType, unsigned int VImageDimension>
   template<unsigned int VImageDimension>
   typename itk::Image< float, VImageDimension >::Pointer
@@ -164,24 +144,11 @@ public:
     int iIterations, int iCurvature, int iSampling,
     GoImageProcessor* iImages, int iChannel);
 
-public slots:
-  //void setIterations(int iIterations);
-
-  //void setCurvature(int iCurvature);
-
-protected:
-  void Filter2D(double *iCenter, const int & iOrientation);
-
-  vtkPolyData * Filter3D(double *iCenter, int iCurvature, int iIterations,
-    double iRadius, GoImageProcessor* iImages,
-    int iChannel);
-
 private:
+  //void Filter2D(double *iCenter, const int & iOrientation);
+
   int m_Iterations;
   int m_Curvature;
   int m_Dimension;
-
-  Output3DType::Pointer m_Image3D;
-  Output2DType::Pointer m_Image2D;
 };
 #endif

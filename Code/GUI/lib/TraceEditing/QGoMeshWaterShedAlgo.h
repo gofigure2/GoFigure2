@@ -35,12 +35,15 @@
 #define __QGoMeshWaterShedAlgo_h
 
 #include "QGoWaterShedAlgo.h"
+#include "QGoFilterWatershed.h"
 #include "QGoAlgorithmWidget.h"
 #include "QGoAlgoParameter.h"
 #include "QGoGUILibConfigure.h"
 #include "vtkSmartPointer.h"
 #include "vtkPolyData.h"
 #include "vtkImageData.h"
+
+#include "GoImageProcessor.h"
 
 
 /**
@@ -55,7 +58,7 @@ public:
   ~QGoMeshWaterShedAlgo();
 
   std::vector<vtkPolyData*> ApplyAlgo(
-    std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+    GoImageProcessor* iImages,
     int iChannel);
 
 protected:
@@ -65,7 +68,7 @@ protected:
             // parameter on the image dimension
              //unsigned int VImageDimension >
   vtkPolyData * ApplyWaterShedFilter(const std::vector<double>& iCenter,
-  std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+  GoImageProcessor* iImages,
     int iChannel)
     {
     assert( iCenter.size() == 3);
@@ -79,9 +82,7 @@ protected:
 
     // Since the pipeline is in ITK, first let's convert the image into ITK
     ImagePointer ItkInput =
-        this->ConvertVTK2ITK< PixelType, ImageDimension>(
-          ( *iImages )[iChannel] );
-
+        iImages->getImageITK< PixelType, ImageDimension>(iChannel);
 
     // let's compute the bounds of the region of interest
     double radius = this->m_Radius->GetValue();
@@ -98,18 +99,17 @@ protected:
     ImagePointer ITK_ROI_Image =
         this->ITKExtractROI< PixelType, ImageDimension >( bounds, ItkInput );
 
-    int curvature_weight = this->m_Curvature->GetValue();
-    int nb_iterations = this->m_Iterations->GetValue();
-
     // Compute the segmentation in 3D
     QGoFilterWatershed Filter;
-    Filter.Apply3DFilter< PixelType >( ITK_ROI_Image,
-          iCenter,
-          radius,
-          nb_iterations,
-          curvature_weight );
+    Filter.Apply3DFilter< PixelType >(
+          ITK_ROI_Image,
+          this->m_ThresMin->GetValue(),
+          this->m_ThresMax->GetValue(),
+          this->m_CorrThres->GetValue(),
+          this->m_Alpha->GetValue(),
+          this->m_Beta->GetValue());
 
-    typename QGoFilterWaterShed::Output3DPointer
+    typename QGoFilterWatershed::Output3DPointer
         ItkOutPut = Filter.GetOutput3D();
 
     // Here it would be better if the mesh extraction would be performed directly
