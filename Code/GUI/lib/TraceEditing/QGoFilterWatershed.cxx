@@ -61,8 +61,8 @@
 QGoFilterWatershed::QGoFilterWatershed(QObject *iParent, int iDimension) :
   QGoFilterSemiAutoBase(iParent)
 {
-  m_Image3D = itk::Image< float, 3 >::New();
-  m_Image2D = itk::Image< float, 2 >::New();
+  m_Image3D = itk::Image< int, 3 >::New();
+  m_Image2D = itk::Image< int, 2 >::New();
 
   m_Dimension = iDimension;
   m_TreshMin  = 10;

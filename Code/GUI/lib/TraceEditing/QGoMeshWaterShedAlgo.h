@@ -42,6 +42,8 @@
 #include "vtkSmartPointer.h"
 #include "vtkPolyData.h"
 #include "vtkImageData.h"
+#include "vtkTransform.h"
+#include "vtkTransformPolyDataFilter.h"
 
 #include "GoImageProcessor.h"
 
@@ -116,7 +118,7 @@ protected:
     // in ITK instead.
     vtkImageData * FilterOutPutToVTK =
         this->ConvertITK2VTK<
-          typename QGoFilterChanAndVese::OutputPixelType,
+          typename QGoFilterWatershed::OutputPixelType,
           ImageDimension>( ItkOutPut );
 
     vtkPolyData* temp_output = this->ExtractPolyData(FilterOutPutToVTK, 0);

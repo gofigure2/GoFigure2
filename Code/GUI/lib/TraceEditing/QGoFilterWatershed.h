@@ -52,6 +52,14 @@ class QGOGUILIB_EXPORT QGoFilterWatershed:public QGoFilterSemiAutoBase
 {
   Q_OBJECT
 public:
+  typedef int                   OutputPixelType;
+
+  typedef itk::Image< int, 3 >  Output3DType;
+  typedef Output3DType::Pointer   Output3DPointer;
+
+  typedef itk::Image< int, 2 >  Output2DType;
+  typedef Output2DType::Pointer   Output2DPointer;
+
   /** \brief Constructor */
   explicit QGoFilterWatershed(QObject *iParent = NULL, int iDimension = 2);
 
@@ -84,9 +92,6 @@ public:
     SegmentationFilterType;
   typedef typename SegmentationFilterType::Pointer SegmentationFilterPointer;
 
-  typedef typename SegmentationFilterType::InternalPointType ITKPointType;
-  typedef typename SegmentationFilterType::InternalCoordRepType ITKCoordType;
-
   // ITK filter
   SegmentationFilterPointer filter = SegmentationFilterType::New();
   filter->SetInput(iITKInput);
@@ -116,12 +121,19 @@ public:
     std::vector< vtkPoints* >* iPoints,
     GoImageProcessor* iImages, int iChannel);
 
+  Output3DType::Pointer GetOutput3D()
+    {
+    return m_Image3D;
+    }
+
 private:
   void Filter2D(double *iCenter, const int & iOrientation);
 
+  Output3DType::Pointer m_Image3D;
+  Output2DType::Pointer m_Image2D;
+
   int m_TreshMin;
   int m_TreshMax;
-
   double m_CorrTresh;
   double m_Alpha;
   double m_Beta;

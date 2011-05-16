@@ -38,8 +38,6 @@
 #include "QGoImageView3D.h"
 #include "QGoLUTDialog.h"
 #include "QGoNavigationDockWidget.h"
-#include "GoDBCoordinateRow.h"
-#include "GoDBMeshRow.h"
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
 
