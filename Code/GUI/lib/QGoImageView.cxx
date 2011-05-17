@@ -398,23 +398,18 @@ QGoImageView::InitializeSeedWidget()
 {
   int N = this->m_Pool->GetNumberOfItems();
 
-  // Enable seed interaction
-  this->m_Handle.resize(N);
-  this->m_SeedRep.resize(N);
-  this->m_SeedWidget.resize(N);
-
   for ( int i = 0; i < N; ++i )
     {
-    this->m_Handle[i] = vtkSmartPointer< vtkConstrainedPointHandleRepresentation >::New();
-    this->m_Handle[i]->GetProperty()->SetColor(1, 0, 0);
+    this->m_Handle.push_back(vtkSmartPointer< vtkConstrainedPointHandleRepresentation >::New());
+    this->m_Handle.back()->GetProperty()->SetColor(1, 0, 0);
 
-    this->m_SeedRep[i] = vtkSmartPointer< vtkSeedRepresentation >::New();
-    this->m_SeedRep[i]->SetHandleRepresentation(this->m_Handle[i]);
+    this->m_SeedRep.push_back(vtkSmartPointer< vtkSeedRepresentation >::New());
+    this->m_SeedRep.back()->SetHandleRepresentation(this->m_Handle.back());
 
-    this->m_SeedWidget[i] = vtkSmartPointer< vtkSeedWidget >::New();
-    this->m_SeedWidget[i]->SetRepresentation(this->m_SeedRep[i]);
+    this->m_SeedWidget.push_back(vtkSmartPointer< vtkSeedWidget >::New());
+    this->m_SeedWidget.back()->SetRepresentation(this->m_SeedRep.back());
 
-    this->m_SeedWidget[i]->SetInteractor(
+    this->m_SeedWidget.back()->SetInteractor(
       this->m_Pool->GetItem(i)->GetInteractor() );
 
     // to remove right click interaction in the one click widget
