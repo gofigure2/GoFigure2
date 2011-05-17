@@ -118,6 +118,7 @@ protected:
 
     // Nicolas- should be able to tune the parameter -0.5-
     vtkPolyData* temp_output = this->ExtractPolyData(FilterOutPutToVTK, 0.5);
+    FilterOutPutToVTK->Delete();
 
     double temp_bounds[6];
     temp_output->GetBounds( temp_bounds );
@@ -140,6 +141,7 @@ protected:
     mesh_transform->SetTransform(translation);
     mesh_transform->SetInput( temp_output );
     mesh_transform->Update();
+    temp_output->Delete();
 
     // MIGHT LEAK! CHECK IT  IS DELETED!
     vtkPolyData* mesh = vtkPolyData::New();
