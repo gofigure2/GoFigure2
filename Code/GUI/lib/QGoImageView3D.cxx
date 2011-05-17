@@ -957,6 +957,7 @@ QGoImageView3D::RemoveActor(const int & iId, vtkActor *iActor)
   if ( iId == 3 )
     {
     // remove from renderer
+    // should be add/remove view property
     m_View3D->GetRenderer()->RemoveActor(iActor);
     }
   else

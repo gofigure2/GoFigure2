@@ -101,4 +101,23 @@ void ShowImage(vtkImageData *iData)
   iren->Start();
 }
 
+void ShowActor(vtkActor *iActor)
+{
+  vtkSmartPointer< vtkRenderer > renderer =
+    vtkSmartPointer< vtkRenderer >::New();
+  renderer->AddActor(iActor);
+
+  vtkSmartPointer< vtkRenderWindow > renderWindow =
+    vtkSmartPointer< vtkRenderWindow >::New();
+  renderWindow->AddRenderer(renderer);
+
+  vtkSmartPointer< vtkRenderWindowInteractor > renderWindowInteractor =
+    vtkSmartPointer< vtkRenderWindowInteractor >::New();
+  renderWindowInteractor->SetRenderWindow(renderWindow);
+
+  renderWindowInteractor->Initialize();
+  renderWindow->Render();
+  renderWindowInteractor->Start();
+}
+
 #endif
