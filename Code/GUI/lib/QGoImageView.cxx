@@ -47,7 +47,7 @@
 
 // For the seed widget
 #include "vtkIntArray.h"
-#include "vtkConstrainedPointHandleRepresentation.h"
+#include "vtkPointHandleRepresentation3D.h"
 #include "vtkSeedWidget.h"
 #include "vtkImageActorPointPlacer.h"
 #include "vtkProperty.h"
@@ -400,7 +400,7 @@ QGoImageView::InitializeSeedWidget()
 
   for ( int i = 0; i < N; ++i )
     {
-    this->m_Handle.push_back(vtkSmartPointer< vtkConstrainedPointHandleRepresentation >::New());
+    this->m_Handle.push_back(vtkSmartPointer< vtkPointHandleRepresentation3D >::New());
     this->m_Handle.back()->GetProperty()->SetColor(1, 0, 0);
 
     this->m_SeedRep.push_back(vtkSmartPointer< vtkSeedRepresentation >::New());
