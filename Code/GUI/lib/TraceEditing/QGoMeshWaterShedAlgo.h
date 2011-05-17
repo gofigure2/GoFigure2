@@ -68,9 +68,9 @@ protected:
             // note this will work only in 3D, so we can remove the template
             // parameter on the image dimension
              //unsigned int VImageDimension >
-  vtkPolyData * ApplyWaterShedFilter(const std::vector<double>& iCenter,
-  GoImageProcessor* iImages,
-    int iChannel)
+  vtkPolyData * ApplyWaterShedFilter(
+    const std::vector<double>& iCenter,
+    typename itk::Image< TPixel, 3 >::Pointer iImages)
     {
     assert( iCenter.size() == 3);
 
@@ -80,10 +80,6 @@ protected:
 
     typedef itk::Image< PixelType, ImageDimension >  ImageType;
     typedef typename ImageType::Pointer               ImagePointer;
-
-    // Since the pipeline is in ITK, first let's convert the image into ITK
-    ImagePointer ItkInput =
-        iImages->getImageITK< PixelType, ImageDimension>(iChannel);
 
     // let's compute the bounds of the region of interest
     double radius = this->m_Radius->GetValue();
@@ -98,7 +94,7 @@ protected:
 
     // then let's extract the Region of Interest
     ImagePointer ITK_ROI_Image =
-        this->ITKExtractROI< PixelType, ImageDimension >( bounds, ItkInput );
+        this->ITKExtractROI< PixelType, ImageDimension >( bounds, iImages );
 
     // Compute the segmentation in 3D
     QGoFilterWatershed Filter;
@@ -145,6 +141,7 @@ protected:
     mesh_transform->SetInput( temp_output );
     mesh_transform->Update();
 
+    // MIGHT LEAK! CHECK IT  IS DELETED!
     vtkPolyData* mesh = vtkPolyData::New();
     mesh->DeepCopy( mesh_transform->GetOutput() );
 
