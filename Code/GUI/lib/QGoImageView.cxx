@@ -86,30 +86,6 @@ QGoImageView::QGoImageView(QWidget *iParent) : QWidget(iParent),
 QGoImageView::
 ~QGoImageView()
 {
-  /*
-  std::vector<vtkSeedWidget*>::iterator seedWidgetIterator = m_SeedWidget.begin();
-  while (seedWidgetIterator != m_SeedWidget.end())
-    {
-    (*seedWidgetIterator)->Delete();
-    ++seedWidgetIterator;
-    }
-
-  std::vector<vtkConstrainedPointHandleRepresentation*>::iterator
-  handleIterator = m_Handle.begin();
-  while (handleIterator != m_Handle.end())
-    {
-    (*handleIterator)->Delete();
-    ++handleIterator;
-    }
-
-  std::vector<vtkSeedRepresentation*>::iterator
-  seedIterator = m_SeedRep.begin();
-  while (seedIterator != m_SeedRep.end())
-    {
-    (*seedIterator)->Delete();
-    ++seedIterator;
-    }
-*/
   if ( m_Pool )
     {
     m_Pool->Delete();
@@ -437,7 +413,6 @@ QGoImageView::InitializeSeedWidget()
 
     this->m_SeedWidget[i] = vtkSmartPointer< vtkSeedWidget >::New();
     this->m_SeedWidget[i]->SetRepresentation(this->m_SeedRep[i]);
-    this->m_SeedWidget[i]->SetRepresentation(this->m_SeedRep[i]);
 
     this->m_SeedWidget[i]->SetInteractor(
       this->m_Pool->GetItem(i)->GetInteractor() );
@@ -469,48 +444,6 @@ QGoImageView::EnableSeedWidget(bool iEnable)
     ( *it )->SetEnabled(iEnable);
     ++it;
     }
-}
-
-/// NOTE Returned value has to be deleted
-//-------------------------------------------------------------------------
-vtkPoints *
-QGoImageView::GetAllSeeds()
-{
-  double worldPosition[3];
-
-  vtkPoints *oPoints = vtkPoints::New();
-  vtkIntArray* orientation = vtkIntArray::New();
-  orientation->SetName("Orientation");
-
-  for ( unsigned int i = 0; i < this->m_SeedWidget.size(); i++ )
-    {
-    int N = this->m_SeedRep[i]->GetNumberOfSeeds();
-
-    for ( int j = 0; j < N; j++ )
-      {
-      // Get World position (may be not accurate if we are between 8 pixels
-      // (3D))
-      this->m_SeedRep[i]->GetSeedWorldPosition(j, worldPosition);
-      // Get indexes of the closest point
-      /*int *index = this->m_Pool->GetItem(i)->GetImageCoordinatesFromWorldCoordinates(worldPosition);
-
-      // Convert it back into world position
-      double spacing[3] = { 0., 0., 0. };
-      this->m_Pool->GetItem(i)->GetInput()->GetSpacing(spacing);
-      double correctedPosition[3];
-      correctedPosition[0] = static_cast< double >( index[0] ) * spacing[0];
-      correctedPosition[1] = static_cast< double >( index[1] ) * spacing[1];
-
-      oPoints->InsertNextPoint(correctedPosition);*/
-      oPoints->InsertNextPoint( worldPosition );
-      orientation->InsertNextValue(i);
-      }
-    }
-
-  //oPoints->GetData()->DeepCopy(orientation);
-  orientation->Delete();
-
-  return oPoints;
 }
 //-------------------------------------------------------------------------
 
@@ -545,7 +478,7 @@ QGoImageView::ClearAllSeeds()
     for ( int k = this->m_SeedRep[i]->GetNumberOfSeeds() - 1; k >= 0; --k )
       {
       this->m_SeedWidget[i]->DeleteSeed(k);
-      this->m_SeedRep[i]->RemoveLastHandle();
+      this->m_SeedRep[i]->RemoveHandle(k);
       }
     }
   // automatically remove seeds from the visualization

@@ -82,7 +82,18 @@ ApplyAlgo(GoImageProcessor* iImages, int iChannel)
             CenterVect, //cente
             iImages->getImageITK< unsigned char, 3>(iChannel)); //input raw image
 
-      oNewMeshes.push_back( temp_output );
+      std::cout << "ApplyWaterShedFilter called" << std::endl;
+
+      if(temp_output->GetNumberOfCells() > 0)
+        {
+        oNewMeshes.push_back( temp_output );
+        }
+   /*   else
+        {
+        std::cout << "No polydata could be generated - check parameters"
+                  << std::endl;
+        temp_output->Delete();
+        }*/
       }
     }
 

@@ -360,6 +360,8 @@ QGoTabImageView3DwT::UpdateSeeds()
   }
   m_ImageView->GetSeeds(m_OrderedSeeds);*/
 
+  std::cout << "Update seeds" << std::endl;
+
   for( size_t id = 0; id < m_Seeds.size(); id++ )
     {
     m_Seeds[id]->Initialize();
@@ -453,12 +455,6 @@ QGoTabImageView3DwT::CreateContourEditingDockWidget(
                                                                 QColor, QColor) ) );
   this->m_ContourEditingWidget->InitializeSettingsForManualMode();
   /*
-  // signals for the semi automated segmentation
-  QObject::connect( m_ContourSegmentationDockWidget,
-                    SIGNAL( UpdateSeeds() ),
-                    this,
-                    SLOT( UpdateSeeds() ) );
-
   QObject::connect( m_ContourSegmentationDockWidget,
                     SIGNAL( SaveAndVisuContour(vtkPolyData *) ),
                     this,
@@ -494,11 +490,7 @@ QGoTabImageView3DwT::CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax)
 
   this->CreateConnectionsTraceEditingWidget<QGoMeshEditingWidgetManager>(
     iTimeMin, iTimeMax, this->m_MeshEditingWidget);
-  /*QObject::connect(this->m_MeshEditingWidget,
-                   SIGNAL(UpdateSeeds() ),
-                   this,
-                   SLOT(UpdateSeeds() ) );
-
+  /*
   QObject::connect(this->m_MeshEditingWidget,
                    SIGNAL(ClearAllSeeds() ),
                    this->m_ImageView,
@@ -565,12 +557,6 @@ QGoTabImageView3DwT::CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax)
                     SIGNAL( AddContourForMeshToContours(vtkPolyData *) ),
                     this,
                     SLOT( AddContourForMeshToContours(vtkPolyData *) ) );
-
-  // signals for the semi automatic segmentation
-  QObject::connect( m_MeshSegmentationDockWidget,
-                    SIGNAL( UpdateSeeds() ),
-                    this,
-                    SLOT( UpdateSeeds() ) );
 
   QObject::connect( m_MeshSegmentationDockWidget,
                     SIGNAL( SaveAndVisuMesh(vtkPolyData *, int) ),

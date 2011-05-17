@@ -49,22 +49,6 @@ QGoMeshLevelSetAlgo::~QGoMeshLevelSetAlgo()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/*std::vector<vtkPolyData*> QGoMeshLevelSetAlgo::ApplyAlgo(
-  std::vector<vtkSmartPointer< vtkImageData > >* iImages,
-    int iChannel)
-{
-  QGoFilterChanAndVese LevelSetFilter;
-
-  std::vector<vtkPolyData*> NewMeshes =
-    LevelSetFilter.ApplyFilterLevelSet3D(m_Radius->GetValue(),
-    this->m_Seeds, m_Iterations->GetValue(),
-    m_Curvature->GetValue(), iImages, iChannel);
-
-  return NewMeshes;
-}*/
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 std::vector<vtkPolyData*> QGoMeshLevelSetAlgo::ApplyAlgo(
   GoImageProcessor* iImages,
     int iChannel)
@@ -96,7 +80,16 @@ std::vector<vtkPolyData*> QGoMeshLevelSetAlgo::ApplyAlgo(
             CenterVect,
             iImages->getImageITK< unsigned char, 3>(iChannel)); //input raw image
 
-      oNewMeshes.push_back( temp_output );
+      if(temp_output->GetNumberOfCells() > 0)
+        {
+        oNewMeshes.push_back( temp_output );
+        }
+      /*else
+        {
+        std::cout << "No polydata could be generated - check parameters"
+                  << std::endl;
+        temp_output->Delete();
+        }*/
       }
     }
 
