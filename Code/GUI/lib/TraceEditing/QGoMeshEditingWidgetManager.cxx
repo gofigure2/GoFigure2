@@ -125,42 +125,44 @@ void QGoMeshEditingWidgetManager::SetSetOfContoursAlgorithms(
    std::vector<QString> iVectChannels, QStringList iListTime,
    QWidget* iParent)
 {
+  // initialize the widget
   m_SetOfContoursWidget =
     new QGoAlgorithmsManagerWidget("Set of Contours",
     iParent, iVectChannels, iListTime);
 
   this->SetTSliceForClassicView();
 
+  this->m_TraceEditingWidget->AddMode(m_SetOfContoursWidget, true);
+
+  //watershed
   this->m_SetOfContoursWaterShedAlgo =
     new QGoSetOfContoursWaterShedAlgo(this->m_Seeds, iParent);
   QGoAlgorithmWidget* SetOfContoursWaterShedWidget =
     this->m_SetOfContoursWaterShedAlgo->GetAlgoWidget();
   this->m_SetOfContoursWidget->AddMethod(SetOfContoursWaterShedWidget);
 
+  QObject::connect(SetOfContoursWaterShedWidget, SIGNAL(ApplyAlgo() ),
+    this, SLOT(ApplySetOfContoursWaterShedAlgo() ) );
+
+  //levelset
   this->m_SetOfContoursLevelSetAlgo =
     new QGoSetOfContoursLevelSetAlgo(this->m_Seeds, iParent);
   QGoAlgorithmWidget* SetOfContoursLevelSetWidget =
     this->m_SetOfContoursLevelSetAlgo->GetAlgoWidget();
   this->m_SetOfContoursWidget->AddMethod(SetOfContoursLevelSetWidget);
 
+  QObject::connect(SetOfContoursLevelSetWidget, SIGNAL(ApplyAlgo() ),
+    this, SLOT(ApplySetOfContoursLevelSetAlgo() ) );
+
+  //shape
   this->m_SetOfContoursShapeAlgo =
     new QGoSetOfContoursShapeAlgo(this->m_Seeds, iParent);
   QGoAlgorithmWidget* SetOfContoursShapeWidget =
     this->m_SetOfContoursShapeAlgo->GetAlgoWidget();
   this->m_SetOfContoursWidget->AddMethod(SetOfContoursShapeWidget);
 
-  this->m_TraceEditingWidget->AddMode(m_SetOfContoursWidget, true);
-
-  QObject::connect(SetOfContoursWaterShedWidget, SIGNAL(ApplyAlgo() ),
-    this, SLOT(ApplySetOfContoursWaterShedAlgo() ) );
-
-  QObject::connect(SetOfContoursLevelSetWidget, SIGNAL(ApplyAlgo() ),
-    this, SLOT(ApplySetOfContoursLevelSetAlgo() ) );
-
   QObject::connect(SetOfContoursShapeWidget, SIGNAL(ApplyAlgo() ),
     this, SLOT(ApplySetOfContoursShapeAlgo() ) );
-
-
 }
 //-------------------------------------------------------------------------
 

@@ -116,6 +116,57 @@ public:
     }
   }
 
+
+  template< typename TPixel >
+  void Apply2DFilter(
+    typename itk::Image< TPixel, 2 >::Pointer iITKInput,
+    const int& iThresMin,
+    const int& iThresMax,
+    const double& iCorrTresh,
+    const double& iAlpha,
+    const double& iBeta)
+  {
+  const unsigned int Dimension = 2;
+  typedef itk::Image< TPixel, Dimension >    FeatureImageType;
+  typedef typename FeatureImageType::Pointer FeatureImagePointer;
+  typedef itk::Image< double, Dimension >    InputImageType;
+  typedef typename InputImageType::IndexType InputImageIndexType;
+  typedef typename InputImageType::Pointer   InputImagePointer;
+  typedef itk::Image< int, Dimension >       SegmentImageType;
+  typedef typename SegmentImageType::Pointer SegmentImagePointer;
+
+  // Apply filter
+  // Apply watershed segmentation filter
+  //---------------------------------------------------------
+  typedef itk::Image< TPixel, 2 > FeatureImageType;
+  typedef itk::WatershedBasedCellSegmentation
+      <FeatureImageType, InputImageType,SegmentImageType>
+    SegmentationFilterType;
+  typedef typename SegmentationFilterType::Pointer SegmentationFilterPointer;
+
+  // ITK filter
+  SegmentationFilterPointer filter = SegmentationFilterType::New();
+  filter->SetInput(iITKInput);
+  filter->SetNucleusThresholdMin(iThresMin);
+  filter->SetNucleusThresholdMax(iThresMax);
+  filter->SetCorrelationThreshold1(iCorrTresh);
+  filter->SetAlpha(iAlpha);
+  filter->SetBeta(iBeta);
+  filter->Update();
+
+  typename Output2DType::Pointer resulting_image = filter->GetOutput();
+
+  if( resulting_image.IsNotNull() )
+    {
+    m_Image2D->Graft( resulting_image );
+    }
+  else
+    {
+    itkGenericExceptionMacro(
+          <<"WaterShedSegmentationFilter's output is NULL" );
+    }
+  }
+
   std::vector<std::vector<vtkPolyData*> > ApplyFilterSetOf2D(double iRadius,
     int iThresMin, int iThresMax, double iCorrTresh, double iAlpha,
     double iBeta,  int iSampling,
@@ -125,6 +176,11 @@ public:
   Output3DType::Pointer GetOutput3D()
     {
     return m_Image3D;
+    }
+
+  Output2DType::Pointer GetOutput2D()
+    {
+    return m_Image2D;
     }
 
 private:

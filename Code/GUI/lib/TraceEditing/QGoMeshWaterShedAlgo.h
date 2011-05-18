@@ -96,6 +96,10 @@ protected:
     ImagePointer ITK_ROI_Image =
         this->ITKExtractROI< PixelType, ImageDimension >( bounds, iImages );
 
+    std::cout << "origin: " << ITK_ROI_Image->GetOrigin()[0] <<
+                 " - " << ITK_ROI_Image->GetOrigin()[1] <<
+                 " - " << ITK_ROI_Image->GetOrigin()[2] << std::endl;
+
     // Compute the segmentation in 3D
     QGoFilterWatershed Filter;
     Filter.Apply3DFilter< PixelType >(
@@ -115,6 +119,9 @@ protected:
         this->ConvertITK2VTK<
           typename QGoFilterWatershed::OutputPixelType,
           ImageDimension>( ItkOutPut );
+
+FilterOutPutToVTK->Print(cout);
+
 
     // Nicolas- should be able to tune the parameter -0.5-
     vtkPolyData* temp_output = this->ExtractPolyData(FilterOutPutToVTK, 0.5);

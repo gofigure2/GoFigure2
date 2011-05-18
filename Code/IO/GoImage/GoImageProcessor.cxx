@@ -43,6 +43,8 @@
 #include "vtkPointData.h"
 #include "vtkImageShiftScale.h"
 
+#include "vtkImageWeightedSum.h"
+
 //--------------------------------------------------------------------------
 GoImageProcessor::GoImageProcessor():m_Output(NULL),
   m_BoundsTime(NULL), m_BoundsChannel(NULL), m_Extent(NULL),
@@ -197,7 +199,7 @@ getAllImages()
   while(it!=m_MegaImageContainer.end())
     {
     blendedImage->AddInput(colorImage(it->Image, it->LUT));
-    blendedImage->SetOpacity(i,1/size);
+    //blendedImage->SetOpacity(i,1);
     ++i;
     ++it;
     }

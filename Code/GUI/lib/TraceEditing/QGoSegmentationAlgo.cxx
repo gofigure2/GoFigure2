@@ -195,6 +195,7 @@ ExtractPolyData(vtkImageData *iInputImage, const double & iThreshold)
       }
     }
 
+  std::cout << "dimension here: " << dimension << std::endl;
   switch ( dimension )
     {
       case 2 :

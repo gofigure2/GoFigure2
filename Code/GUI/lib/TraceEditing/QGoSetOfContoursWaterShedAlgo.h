@@ -34,13 +34,26 @@
 #ifndef __QGoSetOfContoursWaterShedAlgo_h
 #define __QGoSetOfContoursWaterShedAlgo_h
 
+// external files
+#include "vtkSmartPointer.h"
+#include "vtkPolyData.h"
+#include "vtkImageData.h"
+#include "vtkTransform.h"
+#include "vtkTransformPolyDataFilter.h"
+
+// project files
 #include "QGoWaterShedAlgo.h"
 #include "QGoAlgorithmWidget.h"
 #include "QGoAlgoParameter.h"
 #include "QGoGUILibConfigure.h"
-#include "vtkSmartPointer.h"
-#include "vtkPolyData.h"
-#include "vtkImageData.h"
+#include "QGoFilterWatershed.h"
+
+// temp for debug purpose
+#include "vtkPolyDataMapper.h"
+#include "vtkActor.h"
+#include "vtkRenderer.h"
+#include "vtkRenderWindow.h"
+#include "vtkRenderWindowInteractor.h"
 
 class GoImageProcessor;
 
@@ -56,6 +69,7 @@ public:
   QGoSetOfContoursWaterShedAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent = 0);
   ~QGoSetOfContoursWaterShedAlgo();
 
+  // should not be virutal pure since we dont implement it....
   std::vector<vtkPolyData*> ApplyAlgo(
     GoImageProcessor* iImages,
     int iChannel);
@@ -67,6 +81,160 @@ protected:
 
   QGoAlgoParameter<int>*          m_Sampling;
 
+  template < class TPixel >
+            // note this will work only in 3D, so we can remove the template
+            // parameter on the image dimension
+             //unsigned int VImageDimension >
+  std::vector<vtkPolyData *> ApplyWaterShedFilter(
+    const std::vector<double>& iCenter,
+    typename itk::Image< TPixel, 3 >::Pointer iImages,
+    const unsigned int& iOrientation)
+    {
+    assert( iCenter.size() == 3);
+
+    const unsigned int ImageDimension = 3;
+
+    typedef TPixel PixelType;
+    typedef itk::Image< PixelType, ImageDimension > ImageType;
+    typedef typename ImageType::Pointer             ImagePointer;
+    typedef itk::Image< PixelType, 2 > ImageType2D;
+    typedef typename ImageType2D::Pointer             ImageType2DPointer;
+    typedef typename ImageType::SpacingType         ImageSpacingType;
+
+    std::vector<vtkPolyData*> output;
+
+    ImageSpacingType spacing = iImages->GetSpacing();
+
+    std::cout << "spacing: " << spacing[0] << "-" << spacing[1] << "-"
+              << spacing[2] << std::endl;
+
+    //for(unsigned int i= 0; i<this->m_Sampling->GetValue(); ++i)
+      {
+      // let's compute the bounds of the region of interest
+      double radius = this->m_Radius->GetValue();
+
+      std::vector< double > bounds( 2 * ImageDimension, 0. );
+      unsigned int k = 0;
+      for( unsigned int dim = 0; dim < ImageDimension; dim++ )
+        {
+        bounds[k++] = iCenter[dim] - 2. * radius;
+        bounds[k++] = iCenter[dim] + 2. * radius;
+        }
+
+      bounds[2*iOrientation]    = iCenter[iOrientation];
+      bounds[2*iOrientation +1] = iCenter[iOrientation];
+
+      std::cout << "orientation: " << iOrientation << std::endl;
+
+      std::cout << "first bounds: " << bounds[0] << "-" << bounds[1] << std::endl;
+      std::cout << "first bounds: " << bounds[2] << "-" << bounds[3] << std::endl;
+      std::cout << "first bounds: " << bounds[4] << "-" << bounds[5] << std::endl;
+
+      // then let's extract the Slice of Interest
+      ImageType2DPointer ITK_Slice_Image =
+     this->ITKExtractSlice<PixelType>( bounds, iImages );
+
+      std::cout << "origin: " << ITK_Slice_Image->GetOrigin()[0] <<
+                   " - " << ITK_Slice_Image->GetOrigin()[1] <<
+                   " - " << ITK_Slice_Image->GetOrigin()[2] << std::endl;
+
+      // Compute the segmentation in 3D
+      QGoFilterWatershed Filter;
+      Filter.Apply2DFilter< PixelType >(
+            ITK_Slice_Image,
+            this->m_ThresMin->GetValue(),
+            this->m_ThresMax->GetValue(),
+            this->m_CorrThres->GetValue(),
+            this->m_Alpha->GetValue(),
+            this->m_Beta->GetValue());
+
+      typename QGoFilterWatershed::Output2DPointer
+          ItkOutPut = Filter.GetOutput2D();
+
+      // Here it would be better if the mesh extraction would be performed directly
+      // in ITK instead.
+      vtkImageData * FilterOutPutToVTK =
+          this->ConvertITK2VTK<
+            typename QGoFilterWatershed::OutputPixelType,
+            2>( ItkOutPut );
+
+     double* boundtest = FilterOutPutToVTK->GetBounds();
+     std::cout << "last bounds: " << boundtest[0] << "-" << boundtest[1] << std::endl;
+     std::cout << "last bounds: " << boundtest[2] << "-" << boundtest[3] << std::endl;
+     std::cout << "last bounds: " << boundtest[4] << "-" << boundtest[5] << std::endl;
+
+     FilterOutPutToVTK->Print(cout);
+
+     double* range = FilterOutPutToVTK->GetScalarRange();
+
+     std::cout << "range: " << range[0] << "-" << range[1] << std::endl;
+
+      // Nicolas- should be able to tune the parameter -0.5-
+      vtkPolyData* temp_output = this->ExtractPolyData(FilterOutPutToVTK, 0.5);
+
+      std::cout << "nb of points:" << temp_output->GetNumberOfPoints() << std::endl;
+      //FilterOutPutToVTK->Delete();
+
+/*
+      double temp_bounds[6];
+      temp_output->GetBounds( temp_bounds );
+
+      double temp_center[3];
+      temp_center[0] = ( temp_bounds[0] + temp_bounds[1] ) * 0.5;
+      temp_center[1] = ( temp_bounds[2] + temp_bounds[3] ) * 0.5;
+      temp_center[2] = ( temp_bounds[4] + temp_bounds[5] ) * 0.5;
+
+      vtkSmartPointer< vtkTransform > translation =
+          vtkSmartPointer< vtkTransform >::New();
+
+      /// \todo fix it to get the real center!!!
+      translation->Translate(iCenter[0] - temp_center[0],
+                             iCenter[1] - temp_center[1],
+                             iCenter[2] - temp_center[2] );
+
+      vtkSmartPointer< vtkTransformPolyDataFilter > mesh_transform =
+          vtkSmartPointer< vtkTransformPolyDataFilter >::New();
+      mesh_transform->SetTransform(translation);
+      mesh_transform->SetInput( temp_output );
+      mesh_transform->Update();
+      temp_output->Delete();
+*/
+      // MIGHT LEAK! CHECK IT  IS DELETED!
+      vtkPolyData* mesh = vtkPolyData::New();
+      //mesh->DeepCopy( mesh_transform->GetOutput() );
+      //mesh->DeepCopy(temp_output);
+
+      vtkSmartPointer< vtkPolyDataMapper > mapper =
+        vtkSmartPointer< vtkPolyDataMapper >::New();
+      mapper->SetInput(temp_output);
+
+      vtkSmartPointer< vtkActor > actor =
+        vtkSmartPointer< vtkActor >::New();
+      actor->SetMapper(mapper);
+
+      vtkSmartPointer< vtkRenderer > renderer =
+        vtkSmartPointer< vtkRenderer >::New();
+      renderer->AddActor(actor);
+
+      vtkSmartPointer< vtkRenderWindow > renderWindow =
+        vtkSmartPointer< vtkRenderWindow >::New();
+      renderWindow->AddRenderer(renderer);
+
+      vtkSmartPointer< vtkRenderWindowInteractor > renderWindowInteractor =
+        vtkSmartPointer< vtkRenderWindowInteractor >::New();
+      renderWindowInteractor->SetRenderWindow(renderWindow);
+
+      renderWindowInteractor->Initialize();
+      renderWindow->Render();
+      renderWindowInteractor->Start();
+
+
+
+      //output.push_back(mesh);
+      }
+
+    return output;
+    }
 };
 
 #endif

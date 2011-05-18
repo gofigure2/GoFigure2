@@ -32,7 +32,6 @@
 
 =========================================================================*/
 #include "QGoSetOfContoursWaterShedAlgo.h"
-#include "QGoFilterWatershed.h"
 
 #include "GoImageProcessor.h"
 
@@ -46,7 +45,8 @@ QGoSetOfContoursWaterShedAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParen
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QGoSetOfContoursWaterShedAlgo::~QGoSetOfContoursWaterShedAlgo()
+QGoSetOfContoursWaterShedAlgo::
+~QGoSetOfContoursWaterShedAlgo()
 {
   //this->DeleteParameters();
   delete m_Sampling;
@@ -54,9 +54,9 @@ QGoSetOfContoursWaterShedAlgo::~QGoSetOfContoursWaterShedAlgo()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::vector<vtkPolyData*> QGoSetOfContoursWaterShedAlgo::ApplyAlgo(
-  GoImageProcessor* iImages,
-    int iChannel)
+std::vector<vtkPolyData*>
+QGoSetOfContoursWaterShedAlgo::
+ApplyAlgo(GoImageProcessor* iImages,int iChannel)
 {
   std::vector<vtkPolyData*> NewContours = std::vector<vtkPolyData*>();
   return NewContours;
@@ -64,11 +64,11 @@ std::vector<vtkPolyData*> QGoSetOfContoursWaterShedAlgo::ApplyAlgo(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::vector<std::vector<vtkPolyData*> > QGoSetOfContoursWaterShedAlgo::
-  ApplyAlgoSeveralSeeds(
-    GoImageProcessor* iImages, int iChannel)
+std::vector<std::vector<vtkPolyData*> >
+QGoSetOfContoursWaterShedAlgo::
+ApplyAlgoSeveralSeeds( GoImageProcessor* iImages, int iChannel)
 {
-  std::vector<std::vector<vtkPolyData*> > NewContours;
+  /*std::vector<std::vector<vtkPolyData*> > NewContours;
   QGoFilterWatershed WatershedFilter;
   //double *center = new double[3];
 
@@ -78,5 +78,48 @@ std::vector<std::vector<vtkPolyData*> > QGoSetOfContoursWaterShedAlgo::
       this->m_CorrThres->GetValue(),this->m_Alpha->GetValue(),this->m_Beta->GetValue(),
       this->m_Sampling->GetValue(), this->m_Seeds, iImages, iChannel );
 
-   return NewContours;
+   return NewContours;*/
+
+
+  std::vector<std::vector<vtkPolyData*> > NewContours;
+
+  if ( this->m_Radius->GetValue() <= 0 )
+    {
+    std::cerr << "Radius should be > 0 " << std::endl;
+    return NewContours;
+    }
+
+  double Center[3];
+  std::vector<double> CenterVect(3);
+
+  // LOOP  FOR EACH SEED
+  for( size_t id = 0; id < this->m_Seeds->size(); id++ )
+    {
+    for ( int i = 0; i < (*this->m_Seeds)[id]->GetNumberOfPoints(); i++ )
+      {
+      (*this->m_Seeds)[id]->GetPoint(i, Center);
+
+      CenterVect[0] = Center[0];
+      CenterVect[1] = Center[1];
+      CenterVect[2] = Center[2];
+
+      std::vector<vtkPolyData*> temp_output =
+          this->ApplyWaterShedFilter< unsigned char >(
+            CenterVect,
+            iImages->getImageITK< unsigned char, 3>(iChannel),//input raw image
+            id);// orientation of the seed (0=xy, 1=xz, 2=yz)
+
+      //if(temp_output->GetNumberOfCells() > 0)
+      //  {
+        //oNewMeshes.push_back( temp_output );
+      //  }
+      /*else
+        {
+        std::cout << "No polydata could be generated - check parameters"
+                  << std::endl;
+        }*/
+      }
+    }
+
+  return NewContours;
 }
