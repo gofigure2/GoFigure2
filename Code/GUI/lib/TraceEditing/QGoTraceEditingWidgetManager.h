@@ -43,6 +43,8 @@
 #include <QAction>
 #include <QDockWidget>
 
+class GoImageProcessor;
+
 
 /**
 \class QGoTraceEditingWidgetManager abstract class handles the interactions
@@ -57,7 +59,7 @@ public:
     std::vector<QString> iVectChannels,
     int iTimeMin, int iTimeMax,
     std::vector< vtkPoints* >* iSeeds,
-    std::vector< vtkSmartPointer< vtkImageData > >* iImages,
+    GoImageProcessor* iImages,
     int* iCurrentTimePoint,
     QWidget* iParent=0);
 
@@ -105,11 +107,11 @@ protected:
   QGoDockWidget*              m_TraceEditingDockWidget;
   QGoTraceEditingWidget*      m_TraceEditingWidget;
 
-  std::string                 m_TraceName;
-  std::vector< vtkPoints* >*                      m_Seeds; //useful ???
-  std::vector< vtkSmartPointer< vtkImageData > >* m_Images;
-  int*                                            m_CurrentTimePoint;
-  QStringList                 m_ListTimePoint;
+  std::string                m_TraceName;
+  std::vector< vtkPoints* >* m_Seeds; //useful ???
+  GoImageProcessor*          m_Images;
+  int*                       m_CurrentTimePoint;
+  QStringList                m_ListTimePoint;
 
   void SetTheTraceWidget(std::vector<QString> iVectChannels, int iTimeMin,
     int iTimeMax, QWidget* iParent);

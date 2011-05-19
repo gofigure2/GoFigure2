@@ -52,7 +52,7 @@ class QVTKInteractor;
 #include "vtkPoints.h"
 #include "vtkSeedRepresentation.h"
 class vtkSeedWidget;
-class vtkConstrainedPointHandleRepresentation;
+class vtkPointHandleRepresentation3D;
 class vtkImageActorPointPlacer;
 
 // For the distance widget...
@@ -222,12 +222,6 @@ public:
 
   void EnableSeedWidget(bool iEnable);
 
-  /**
-   * \brief Get all the seeds positions.
-   * The seeds have been defined using the one click mode.
-   */
-  vtkPoints * GetAllSeeds();
-
   /*
    * \brief Get seeds ordered by view in a vector
    * \param iPoints vector of points containing the seeds
@@ -274,7 +268,7 @@ protected:
 
   // Seed Widget specific members
   std::vector< vtkSmartPointer< vtkSeedWidget > >                           m_SeedWidget;
-  std::vector< vtkSmartPointer< vtkConstrainedPointHandleRepresentation > > m_Handle;
+  std::vector< vtkSmartPointer< vtkPointHandleRepresentation3D > > m_Handle;
   std::vector< vtkSmartPointer< vtkSeedRepresentation > >                   m_SeedRep;
 
   // Distance Widget specific members

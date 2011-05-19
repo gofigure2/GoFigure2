@@ -80,10 +80,6 @@
 #include "vtkOrientedBoxWidget.h"
 #include <vtkPlaneWidget.h>
 #include <vtkOrientationMarkerWidget.h>
-#include <vtkVolumeRayCastMapper.h>
-#include <vtkVolumeRayCastCompositeFunction.h>
-#include <vtkVolumeRayCastMIPFunction.h>
-#include <vtkVolumeRayCastIsosurfaceFunction.h>
 #include <vtkVolumeProperty.h>
 #include "vtkImage3DCroppingBoxCallback.h"
 #include <vtkObjectFactory.h>
@@ -97,9 +93,6 @@
 class vtkViewImage3DCommand;
 class vtkVolumeTextureMapper3D;
 class vtkVolumeMapper;
-class vtkVolumeRayCastFunction;
-class vtkPiecewiseFunction;
-class vtkColorTransferFunction;
 class vtkVolume;
 class vtkImageActor;
 class vtkAxes;
@@ -108,7 +101,6 @@ class vtkTubeFilter;
 class vtkAnnotatedCubeActor;
 class vtkOrientationMarkerWidget;
 class vtkAxesActor;
-class vtkImageBlend;
 class vtkViewImage2D;
 class vtkScalarsToColors;
 class vtkColorTransferFunction;
@@ -207,64 +199,6 @@ public:
     this->Callback->SetVolumeMapper (this->VolumeMapper3D);
   }
 
-  /*
-   * \brief Set the volume mapper to ray cast (for volume rendering purpose)
-   */
-  void SetVolumeMapperToRayCast(void)
-  {
-    this->VolumeActor->SetMapper (this->VolumeRayCastMapper);
-    this->Callback->SetVolumeMapper (this->VolumeRayCastMapper);
-  }
-
-  /*
-   * \brief Set the volume ray cast function to composite
-   * (for volume rendering purpose)
-   */
-  void SetVolumeRayCastFunctionToComposite(void)
-  {
-    this->VolumeRayCastMapper->SetVolumeRayCastFunction
-      (this->VolumeRayCastCompositeFunction);
-  }
-
-  /*
-   * \brief Set the volume ray cast function to MIP
-   * (for volume rendering purpose)
-   */
-  void SetVolumeRayCastFunctionToMIP(void)
-  {
-    this->VolumeRayCastMapper->SetVolumeRayCastFunction
-      (this->VolumeRayCastMIPFunction);
-  }
-
-  void SetVolumeRayCastFunctionToIsosurface(void)
-  {
-    this->VolumeRayCastMapper->SetVolumeRayCastFunction
-      (this->VolumeRayCastIsosurfaceFunction);
-  }
-
-  /** Set the box widget visibility */
-  /*void SetBoxWidgetVisibility(const bool& a)
-  {
-    if (this->Interactor) this->BoxWidget->SetEnabled (a);
-  }
-  bool GetBoxWidgetVisibility(void)
-  {
-    return (this->BoxWidget->GetEnabled() == 1);
-  }
-  vtkBooleanMacro (BoxWidgetVisibility, int);
-*/
-  /** Set the plane widget on */
-  /*void SetPlaneWidgetVisibility (const bool& a)
-  {
-    if (this->Interactor)
-      this->PlaneWidget->SetEnabled (a);
-  }
-  bool GetPlaneWidgetVisibility (void)
-  {
-    return ( this->PlaneWidget->GetEnabled() == 1 );
-  }
-  vtkBooleanMacro (PlaneWidgetVisibility, int);*/
-
   /**
    * \brief Set the cube visibility
    * \param[in] a true: visible, false: not visible
@@ -340,8 +274,6 @@ public:
    * */
   void ComputeDistancesToSquare(vtkPlanes *planes);
 
-  void AddActorToProp3DCollection( vtkActor * iActor);
-
 protected:
 
   vtkViewImage3D();
@@ -360,22 +292,10 @@ protected:
 
   // texture mapper in 3D
   vtkVolumeMapper *VolumeMapper3D;
-  // volume ray cast mapper
-  vtkVolumeRayCastMapper *VolumeRayCastMapper;
-  // ray cast function
-  vtkVolumeRayCastMIPFunction *VolumeRayCastMIPFunction;
-  // ray cast function
-  vtkVolumeRayCastCompositeFunction *VolumeRayCastCompositeFunction;
-  // ray cast function
-  vtkVolumeRayCastIsosurfaceFunction *VolumeRayCastIsosurfaceFunction;
   // volume property
   vtkVolumeProperty *VolumeProperty;
   // volume actor
   vtkVolume *VolumeActor;
-  // opacity transfer function
-  vtkPiecewiseFunction *OpacityFunction;
-  // blender
-  vtkImageBlend *Blender;
   // image 3D cropping box callback
   vtkImage3DCroppingBoxCallback *Callback;
 

@@ -55,6 +55,8 @@
 #include "vtkCylinderSource.h"
 //#include "vtkTriangleFilter.h"
 
+#include "GoImageProcessor.h"
+
 //--------------------------------------------------------------------------
 QGoFilterShape::QGoFilterShape(QObject *iParent, int iDimension) :
   QGoFilterSemiAutoBase(iParent)
@@ -369,7 +371,7 @@ QGoFilterShape::GenerateCylinder(double *iCenter)
 //--------------------------------------------------------------------------
 std::vector<vtkPolyData *> QGoFilterShape::ApplyFilter3D(
   double iRadius, std::vector< vtkPoints* >* iPoints, std::string iShape,
-  std::vector< vtkSmartPointer< vtkImageData > >* iImages,
+  GoImageProcessor* iImages,
   int iChannel)
 {
   std::vector<vtkPolyData*> oMeshes = std::vector<vtkPolyData*>();
@@ -379,7 +381,7 @@ std::vector<vtkPolyData *> QGoFilterShape::ApplyFilter3D(
     return oMeshes;
     }
 
-  vtkImageData* temp_image = (*iImages) [iChannel];
+  vtkImageData* temp_image = iImages->getImageBW(iChannel);
 
   double center2[3];
 
@@ -424,7 +426,7 @@ std::vector<std::vector<vtkPolyData*> > QGoFilterShape::
   ApplyFilterSetOf2D(double iRadius,
     std::string iShape, int iSampling,
     std::vector< vtkPoints* >* iPoints,
-    std::vector<vtkSmartPointer< vtkImageData > >* iImages, int iChannel)
+    GoImageProcessor* iImages, int iChannel)
 {
   std::vector<std::vector<vtkPolyData*> > oSetOfContours =
     std::vector<std::vector<vtkPolyData*> >();

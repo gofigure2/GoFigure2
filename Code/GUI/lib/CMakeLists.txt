@@ -38,7 +38,6 @@ SET( QGoGUILIB_SRC
   QGoTabImageView2D.cxx
   QGoTabImageView3D.cxx
   QGoTabImageView3DwT.cxx
-  QGoTabImageView4D.cxx
   QGoTabImageViewElementBase.cxx
   QGoTabImageViewNDBase.cxx
   QGoNavigationDockWidget.cxx
@@ -92,7 +91,7 @@ SET( QGoGUILIB_SRC
     QGoContourSemiAutoLevelsetWidget.cxx
     QGoContourSemiAutoShapeWidget.cxx
     QGoContourSemiAutoWatershedWidget.cxx
-	QGoFilterSemiAutoBase.cxx
+  QGoFilterSemiAutoBase.cxx
     TraceEditing/QGoFilterChanAndVese.cxx
     TraceEditing/QGoFilterShape.cxx
     TraceEditing/QGoFilterWatershed.cxx
@@ -116,7 +115,7 @@ SET( QGoGUILIB_SRC
   TraceEditing/QGoContourLevelSetAlgo.cxx
   TraceEditing/QGoMeshLevelSetAlgo.cxx
   TraceEditing/QGoMeshShapeAlgo.cxx
-  #TraceEditing/QGoMeshWaterShedAlgo.cxx
+  TraceEditing/QGoMeshWaterShedAlgo.cxx
   TraceEditing/QGoMeshSplitDanielssonDistanceAlgo.cxx
   TraceEditing/QGoWaterShedAlgo.cxx
   TraceEditing/QGoSetOfContoursWaterShedAlgo.cxx
@@ -203,7 +202,6 @@ SET( QGoGUILIB_HDRS
   QGoTabImageView2D.h
   QGoTabImageView3D.h
   QGoTabImageView3DwT.h
-  QGoTabImageView4D.h
   QGoTabImageViewElementBase.h
   QGoTabImageViewNDBase.h
   QGoNavigationDockWidget.h
@@ -258,7 +256,7 @@ SET( QGoGUILIB_HDRS
     QGoContourSemiAutoLevelsetWidget.h
     QGoContourSemiAutoShapeWidget.h
     QGoContourSemiAutoWatershedWidget.h
-	QGoFilterSemiAutoBase.h
+  QGoFilterSemiAutoBase.h
     TraceEditing/QGoFilterChanAndVese.h
     TraceEditing/QGoFilterShape.h
     TraceEditing/QGoFilterWatershed.h
@@ -404,28 +402,7 @@ SET( QGoGUI_LIBS
   PoissonReconstruction
   ctk
   ${ITK_LIBRARIES}
-  #ITKIO
-  #ITKCommon
-  #ITKBasicFilters
-  #ITKStatistics
   )
-
-IF( ( ITK_VERSION_MAJOR EQUAL 4 ) AND
-    ( ITK_VERSION_MINOR EQUAL 0 ) AND
-    ( ITK_VERSION_PATCH EQUAL 0 )
-    )
-
-  SET( QGoGUI_LIBS
-    ${QGoGUI_LIBS}
-    # ITKReview
-    ${ITK_LIBRARIES}
-    )
-
-ENDIF( ( ITK_VERSION_MAJOR EQUAL 4 ) AND
-    ( ITK_VERSION_MINOR EQUAL 0 ) AND
-    ( ITK_VERSION_PATCH EQUAL 0 )
-  )
-
 
 TARGET_LINK_LIBRARIES( QGoGui
   ${QGoGUI_LIBS}

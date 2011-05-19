@@ -49,7 +49,17 @@
 
 // convert itk to vtk
 #include "itkImageToVTKImageFilter.h"
+
+// extract 2d from 2d or 3d from 3d
 #include "itkRegionOfInterestImageFilter.h"
+
+// extract 2d from 3d
+#include "itkExtractImageFilter.h"
+
+// change info
+#include "itkChangeInformationImageFilter.h"
+
+class GoImageProcessor;
 
 /**
 \class QGoSegmentationAlgo
@@ -72,7 +82,7 @@ public:
   \brief return the vtkpolydata created by the algorithm
   */
   virtual std::vector<vtkPolyData*> ApplyAlgo(
-    std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+    GoImageProcessor* iImages,
     int iChannel) = 0;
 
   /*
@@ -201,11 +211,20 @@ public:
       {
       t_min[dim] = iBounds[k++];
       t_max[dim] = iBounds[k++];
+
+      std::cout << "tmin: " << t_min[dim] << std::endl;
+      std::cout << "tmax: " << t_max[dim] << std::endl;
       }
 
     ImageIndexType startOfROI, endOfROI;
     iInput->TransformPhysicalPointToIndex( t_min, startOfROI );
     iInput->TransformPhysicalPointToIndex( t_max, endOfROI );
+
+    for( unsigned int dim = 0; dim < 3; dim++ )
+      {
+      std::cout << "start of roi: " << startOfROI[dim] << std::endl;
+      std::cout << "end of roi: " << endOfROI[dim] << std::endl;
+      }
 
     ImageSizeType  sizeOfLargeImage =
         iInput->GetLargestPossibleRegion().GetSize();
@@ -260,7 +279,132 @@ public:
       std::cerr << "roi Exception:" << err << std::endl;
       }
 
+        roi->GetOutput()->Print(cout);
+
     return roi->GetOutput();
+  }
+
+  template< class PixelType>
+  typename itk::Image< PixelType, 2>::Pointer
+  ITKExtractSlice(
+    const std::vector< double > & iBounds,
+    typename itk::Image< PixelType, 3 >::Pointer iInput )
+  {
+    typedef itk::Image< PixelType, 3 > InputImageType;
+    typedef itk::Image< PixelType, 2 > OutputImageType;
+
+    typedef typename InputImageType::PointType             ImagePointType;
+    typedef typename InputImageType::IndexType             ImageIndexType;
+    typedef typename InputImageType::IndexValueType        ImageIndexValueType;
+    typedef typename InputImageType::SizeType              ImageSizeType;
+    typedef typename InputImageType::SizeValueType         ImageSizeValueType;
+    typedef typename InputImageType::RegionType            ImageRegionType;
+    typedef typename InputImageType::SpacingType           ImageSpacingType;
+
+    typedef typename OutputImageType::PointType            oImagePointType;
+        typedef typename OutputImageType::OffsetType         oImageOffsetType;
+
+    ImagePointType t_min, t_max;
+    oImagePointType new_origin;
+
+    // create ROI
+    unsigned int k = 0;
+    for( unsigned int dim = 0; dim < 3; dim++ )
+      {
+      t_min[dim] = iBounds[k++];
+      t_max[dim] = iBounds[k++];
+      }
+
+    ImageIndexType startOfROI, endOfROI;
+    iInput->TransformPhysicalPointToIndex( t_min, startOfROI );
+    iInput->TransformPhysicalPointToIndex( t_max, endOfROI );
+
+    ImageSizeType  sizeOfLargeImage =
+        iInput->GetLargestPossibleRegion().GetSize();
+
+    ImageSizeType  size;
+        size.Fill( 0 );
+    oImageOffsetType  new_offset;
+
+
+    int l = 0;
+
+    for( unsigned int dim = 0; dim < 3; dim++ )
+      {
+      if( startOfROI[dim] < 0 )
+        {
+        startOfROI[dim] = 0;
+        }
+      if( startOfROI[dim] > sizeOfLargeImage[dim] )
+        {
+        startOfROI[dim] = sizeOfLargeImage[dim] - 1;
+        }
+
+      if( endOfROI[dim] < 0 )
+        {
+        endOfROI[dim] = 0;
+        }
+      if( endOfROI[dim] > sizeOfLargeImage[dim] )
+        {
+        endOfROI[dim] = sizeOfLargeImage[dim] - 1;
+        }
+
+      size[dim] = endOfROI[dim] - startOfROI[dim];
+
+      if( size[dim] < 0 )
+        {
+        size[dim] = 0;
+        }
+
+      // new origin
+      if( size[dim] > 0 )
+        {
+        new_origin[l] = t_min[dim];
+        double sizeTest = startOfROI[dim];
+        new_offset[l] = -sizeTest;
+        ++l;
+        }
+      }
+
+    ImageRegionType region;
+    region.SetSize(size);
+    region.SetIndex(startOfROI);
+
+    typedef itk::ExtractImageFilter< InputImageType, OutputImageType > FilterType;
+    typedef typename FilterType::Pointer FilterTypePointer;
+    FilterTypePointer filter = FilterType::New();
+    filter->SetExtractionRegion( region );
+    filter->SetInput( iInput );
+    filter->SetDirectionCollapseToIdentity();
+    try
+      {
+      filter->Update();
+      }
+    catch (itk::ExceptionObject & err)
+      {
+      std::cerr << "extract slice Exception:" << err << std::endl;
+      }
+
+    // change information
+    typedef typename itk::ChangeInformationImageFilter<OutputImageType > CenterFilterType;
+    typedef typename CenterFilterType::Pointer CenterFilterTypePointer;
+
+    CenterFilterTypePointer center = CenterFilterType::New();
+    center->SetInput(filter->GetOutput());
+    center->ChangeOriginOn();
+    center->SetOutputOrigin(new_origin);
+    center->ChangeRegionOn();
+    center->SetOutputOffset(new_offset);
+
+    try
+      {
+      center->Update();
+      }
+    catch (itk::ExceptionObject & err)
+      {
+      std::cerr << "change information slice Exception:" << err << std::endl;
+      }
+    return center->GetOutput();
   }
 
   /*

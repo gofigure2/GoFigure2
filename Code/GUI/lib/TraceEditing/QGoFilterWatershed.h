@@ -36,8 +36,11 @@
 
 #include "QGoFilterSemiAutoBase.h"
 
+#include "itkWatershedBasedCellSegmentation.h"
+
 #include "QGoGUILibConfigure.h"
 
+class GoImageProcessor;
 /**
  * \class QGoFilterWatershed
  * \brief Watershed segmentation algorithm implementation.
@@ -49,51 +52,147 @@ class QGOGUILIB_EXPORT QGoFilterWatershed:public QGoFilterSemiAutoBase
 {
   Q_OBJECT
 public:
+  typedef int                   OutputPixelType;
+
+  typedef itk::Image< int, 3 >  Output3DType;
+  typedef Output3DType::Pointer   Output3DPointer;
+
+  typedef itk::Image< int, 2 >  Output2DType;
+  typedef Output2DType::Pointer   Output2DPointer;
+
   /** \brief Constructor */
   explicit QGoFilterWatershed(QObject *iParent = NULL, int iDimension = 2);
 
   /** \brief Destructor */
   ~QGoFilterWatershed();
 
-  virtual vtkPolyData * Apply();
+  template< typename TPixel >
+  void Apply3DFilter(
+    typename itk::Image< TPixel, 3 >::Pointer iITKInput,
+    const int& iThresMin,
+    const int& iThresMax,
+    const double& iCorrTresh,
+    const double& iAlpha,
+    const double& iBeta)
+  {
+  const unsigned int Dimension = 3;
+  typedef itk::Image< TPixel, Dimension >    FeatureImageType;
+  typedef typename FeatureImageType::Pointer FeatureImagePointer;
+  typedef itk::Image< double, Dimension >    InputImageType;
+  typedef typename InputImageType::IndexType InputImageIndexType;
+  typedef typename InputImageType::Pointer   InputImagePointer;
+  typedef itk::Image< int, Dimension >       SegmentImageType;
+  typedef typename SegmentImageType::Pointer SegmentImagePointer;
 
-  virtual void ConnectSignals(int iFilterNumber);
+  // Apply filter
+  // Apply watershed segmentation filter
+  //---------------------------------------------------------
+  typedef itk::Image< TPixel, 3 > FeatureImageType;
+  typedef itk::WatershedBasedCellSegmentation
+      <FeatureImageType, InputImageType,SegmentImageType>
+    SegmentationFilterType;
+  typedef typename SegmentationFilterType::Pointer SegmentationFilterPointer;
 
-  int m_TreshMin;
-  int m_TreshMax;
+  // ITK filter
+  SegmentationFilterPointer filter = SegmentationFilterType::New();
+  filter->SetInput(iITKInput);
+  filter->SetNucleusThresholdMin(iThresMin);
+  filter->SetNucleusThresholdMax(iThresMax);
+  filter->SetCorrelationThreshold1(iCorrTresh);
+  filter->SetAlpha(iAlpha);
+  filter->SetBeta(iBeta);
+  filter->Update();
 
-  double m_CorrTresh;
-  double m_Alpha;
-  double m_Beta;
+  typename Output3DType::Pointer resulting_image = filter->GetOutput();
 
-  std::vector<vtkPolyData*> ApplyFilter3D(double iRadius,
-    int iThresMin, int iThresMax, double iCorrTresh, double iAlpha, double iBeta,
-    std::vector< vtkPoints* >* iPoints,
-    std::vector<vtkSmartPointer< vtkImageData > >* iImages,
-    int iChannel);
+  if( resulting_image.IsNotNull() )
+    {
+    m_Image3D->Graft( resulting_image );
+    }
+  else
+    {
+    itkGenericExceptionMacro(
+          <<"WaterShedSegmentationFilter's output is NULL" );
+    }
+  }
+
+
+  template< typename TPixel >
+  void Apply2DFilter(
+    typename itk::Image< TPixel, 2 >::Pointer iITKInput,
+    const int& iThresMin,
+    const int& iThresMax,
+    const double& iCorrTresh,
+    const double& iAlpha,
+    const double& iBeta)
+  {
+  const unsigned int Dimension = 2;
+  typedef itk::Image< TPixel, Dimension >    FeatureImageType;
+  typedef typename FeatureImageType::Pointer FeatureImagePointer;
+  typedef itk::Image< double, Dimension >    InputImageType;
+  typedef typename InputImageType::IndexType InputImageIndexType;
+  typedef typename InputImageType::Pointer   InputImagePointer;
+  typedef itk::Image< int, Dimension >       SegmentImageType;
+  typedef typename SegmentImageType::Pointer SegmentImagePointer;
+
+  // Apply filter
+  // Apply watershed segmentation filter
+  //---------------------------------------------------------
+  typedef itk::Image< TPixel, 2 > FeatureImageType;
+  typedef itk::WatershedBasedCellSegmentation
+      <FeatureImageType, InputImageType,SegmentImageType>
+    SegmentationFilterType;
+  typedef typename SegmentationFilterType::Pointer SegmentationFilterPointer;
+
+  // ITK filter
+  SegmentationFilterPointer filter = SegmentationFilterType::New();
+  filter->SetInput(iITKInput);
+  filter->SetNucleusThresholdMin(iThresMin);
+  filter->SetNucleusThresholdMax(iThresMax);
+  filter->SetCorrelationThreshold1(iCorrTresh);
+  filter->SetAlpha(iAlpha);
+  filter->SetBeta(iBeta);
+  filter->Update();
+
+  typename Output2DType::Pointer resulting_image = filter->GetOutput();
+
+  if( resulting_image.IsNotNull() )
+    {
+    m_Image2D->Graft( resulting_image );
+    }
+  else
+    {
+    itkGenericExceptionMacro(
+          <<"WaterShedSegmentationFilter's output is NULL" );
+    }
+  }
 
   std::vector<std::vector<vtkPolyData*> > ApplyFilterSetOf2D(double iRadius,
     int iThresMin, int iThresMax, double iCorrTresh, double iAlpha,
     double iBeta,  int iSampling,
     std::vector< vtkPoints* >* iPoints,
-    std::vector<vtkSmartPointer< vtkImageData > >* iImages, int iChannel);
+    GoImageProcessor* iImages, int iChannel);
 
-public slots:
-  void setTreshMin(int);
+  Output3DType::Pointer GetOutput3D()
+    {
+    return m_Image3D;
+    }
 
-  void setTreshMax(int);
+  Output2DType::Pointer GetOutput2D()
+    {
+    return m_Image2D;
+    }
 
-  void setCorrTresh(double);
-
-  void setAlpha(double);
-
-  void setBeta(double);
-
-protected:
+private:
   void Filter2D(double *iCenter, const int & iOrientation);
 
-  vtkPolyData* Filter3D(double *iCenter, double iRadius, int iThresMin, int iThresMax,
-    double iCorrTresh, double iAlpha, double iBeta,
-    std::vector<vtkSmartPointer< vtkImageData > >* iImages, int iChannel);
+  Output3DType::Pointer m_Image3D;
+  Output2DType::Pointer m_Image2D;
+
+  int m_TreshMin;
+  int m_TreshMax;
+  double m_CorrTresh;
+  double m_Alpha;
+  double m_Beta;
 };
 #endif

@@ -167,7 +167,6 @@ ELSE( SUPERBUILD )
   #----------------------------------------------------------
   # Then find ITK
   #### ITK ####
-
   INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigITK.cmake" )
 
   #----------------------------------------------------------
@@ -203,6 +202,8 @@ ELSE( SUPERBUILD )
     ${GOFIGURE2_BINARY_DIR}/Code/
     ${GOFIGURE2_SOURCE_DIR}/Code/IO/
     ${GOFIGURE2_BINARY_DIR}/Code/IO/
+    ${GOFIGURE2_SOURCE_DIR}/Code/IO/GoImage/
+    ${GOFIGURE2_BINARY_DIR}/Code/IO/GoImage/
     ${GOFIGURE2_SOURCE_DIR}/Code/Filters/
     ${GOFIGURE2_BINARY_DIR}/Code/Filters/
     ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Contour/

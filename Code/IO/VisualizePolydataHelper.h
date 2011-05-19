@@ -44,6 +44,8 @@
 
 #include "vtkImageViewer2.h"
 
+#include "vtkExtractVOI.h"
+
 void ShowPolyData(vtkPolyData *iPolyData)
 {
   vtkSmartPointer< vtkPolyDataMapper > mapper =
@@ -84,6 +86,12 @@ void ShowImage(vtkImageData *iData)
 
   vtkSmartPointer< vtkImageViewer2 > viewer = vtkSmartPointer< vtkImageViewer2 >::New();
 
+  /*vtkSmartPointer<vtkExtractVOI> voi = vtkSmartPointer<vtkExtractVOI>::New();
+  voi->SetInput(iData);
+  voi->SetVOI(25, 75, 25, 75, 25, 75);
+  voi->Update();*/
+
+
   viewer->SetInput(iData);
   viewer->SetRenderWindow(renWin);
   viewer->SetRenderer(ren1);
@@ -91,6 +99,25 @@ void ShowImage(vtkImageData *iData)
   iren->Initialize();
   viewer->Render();
   iren->Start();
+}
+
+void ShowActor(vtkActor *iActor)
+{
+  vtkSmartPointer< vtkRenderer > renderer =
+    vtkSmartPointer< vtkRenderer >::New();
+  renderer->AddActor(iActor);
+
+  vtkSmartPointer< vtkRenderWindow > renderWindow =
+    vtkSmartPointer< vtkRenderWindow >::New();
+  renderWindow->AddRenderer(renderer);
+
+  vtkSmartPointer< vtkRenderWindowInteractor > renderWindowInteractor =
+    vtkSmartPointer< vtkRenderWindowInteractor >::New();
+  renderWindowInteractor->SetRenderWindow(renderWindow);
+
+  renderWindowInteractor->Initialize();
+  renderWindow->Render();
+  renderWindowInteractor->Start();
 }
 
 #endif

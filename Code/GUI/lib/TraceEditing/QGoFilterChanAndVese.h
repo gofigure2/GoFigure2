@@ -43,6 +43,8 @@
 #include "vtkSmartPointer.h"
 #include "vtkPolyData.h"
 
+class GoImageProcessor;
+
 /**
  * \class QGoFilterChanAndVese
  * \brief Levelset segmentation algorithm implementation.
@@ -67,13 +69,9 @@ public:
   /** \brief Destructor */
   ~QGoFilterChanAndVese();
 
-  virtual vtkPolyData * Apply();
-
-  //virtual void ConnectSignals(int iFilterNumber);
-
   std::vector<vtkPolyData*> ApplyFilterLevelSet3D(double iRadius, vtkPoints* iPoints,
     int iIterations, int iCurvature,
-    std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+    GoImageProcessor* iImages,
     int iChannel);
 
   template< typename TPixel >
@@ -126,14 +124,6 @@ public:
       }
   }
 
-
-  Output3DType::Pointer GetOutput3D()
-    {
-    return m_Image3D;
-    }
-
-
-
   //template<class PixelType, unsigned int VImageDimension>
   template<unsigned int VImageDimension>
   typename itk::Image< float, VImageDimension >::Pointer
@@ -160,26 +150,20 @@ public:
   std::vector<std::vector<vtkPolyData*> > ApplyFilterSetOf2D(
     double iRadius, std::vector< vtkPoints* >* iPoints,
     int iIterations, int iCurvature, int iSampling,
-    std::vector<vtkSmartPointer< vtkImageData > >* iImages, int iChannel);
+    GoImageProcessor* iImages, int iChannel);
 
-public slots:
-  //void setIterations(int iIterations);
-
-  //void setCurvature(int iCurvature);
-
-protected:
-  void Filter2D(double *iCenter, const int & iOrientation);
-
-  vtkPolyData * Filter3D(double *iCenter, int iCurvature, int iIterations,
-    double iRadius, std::vector< vtkSmartPointer< vtkImageData > >* iImages,
-    int iChannel);
+  Output3DType::Pointer GetOutput3D()
+    {
+    return m_Image3D;
+    }
 
 private:
+  //void Filter2D(double *iCenter, const int & iOrientation);
+  Output3DType::Pointer m_Image3D;
+  Output2DType::Pointer m_Image2D;
+
   int m_Iterations;
   int m_Curvature;
   int m_Dimension;
-
-  Output3DType::Pointer m_Image3D;
-  Output2DType::Pointer m_Image2D;
 };
 #endif

@@ -56,6 +56,8 @@
 #include "QGoMeshEditingWidgetManager.h"
 #include "QGoContourEditingWidgetManager.h"
 
+#include "GoImageProcessor.h"
+
 // base segmentation dock widget
 class QGoContourSegmentationBaseDockWidget;
 class QGoMeshSegmentationBaseDockWidget;
@@ -353,13 +355,13 @@ public slots:
 
 protected:
   QGoImageView3D *                               m_ImageView;
-  std::vector< vtkSmartPointer< vtkLSMReader > > m_LSMReader;
-  std::vector< vtkSmartPointer< vtkImageData > > m_InternalImages;
   vtkImageData *                                 m_Image;
 
   vtkProperty *m_HighlightedContoursProperty;
   vtkProperty *m_HighlightedMeshesProperty;
 
+  GoImageProcessor*                         m_ImageProcessor;
+  // TODO Nicolas don't need it...
   itk::MegaCaptureReader::Pointer           m_MegaCaptureReader;
   GoFigureFileInfoHelperMultiIndexContainer m_FileList;
   GoFigure::FileType                        m_FileType;
@@ -405,14 +407,9 @@ protected:
 
   //bool m_TraceWidgetRequiered;
 
-  /** \brief We are in the regular visualization mode (true) or in the time
-   * visualization mode (false) */
-  bool m_ChannelClassicMode;
   /** \brief ID of the channel that we want to visualize in the time
    * visualization mode */
   int  m_ChannelOfInterest;
-
-  int m_DopplerStep;
 
   /// \todo remove m_FFMPEGWriter and m_AVIWriter from this class
 
@@ -591,11 +588,11 @@ protected:
   std::vector< vtkActor * > AddContour(vtkPolyData *dataset,
                                        vtkProperty *property = NULL);
 
-  void SetTimePointWithLSMReaders();
+  // TODO remove megacapture
+  void SetTimePoint();
 
-  void SetTimePointWithMegaCapture();
-
-  void SetTimePointWithMegaCaptureTimeChannels(int channel, int PreviousT = 0);
+    // TODO remove megacaptureZz
+  void SetTimePointDoppler(int channel, int PreviousT = 0);
 
   /**
   \brief give the adress for the contours, meshes and tracks container to the
@@ -681,12 +678,12 @@ protected slots:
   -time mode where a channel represents the same entity through the time. (t-1, t and t+1).
     updates the navigation widget.
   */
-  void ChannelTimeMode( bool );
+  void SetupWidgetsDoppler2ClassicMode();
   /**
   \brief access to the megacapture reader to get the entity of interest images through time.
   updates the navigation widget.
   */
-  void LoadChannelTime();
+  void StartDopplerView();
 
   /**
   \brief give the adress for the contours, meshes and tracks container to the
@@ -704,6 +701,8 @@ protected slots:
   void UpdateTracesEditingWidget();
 
 private:
+  void UpdateWidgetsFromImageProcessor();
+
   Q_DISABLE_COPY(QGoTabImageView3DwT);
 };
 

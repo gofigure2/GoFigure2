@@ -179,8 +179,6 @@ public:
   int m_Dimension;
 public slots:
 
-  virtual vtkPolyData * Apply() = 0;
-
   void    UpdateVisibility(int iFilter);
 
   void    setRadius(double iRadius);

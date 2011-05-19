@@ -34,6 +34,8 @@
 #include "QGoMeshShapeAlgo.h"
 #include "QGoFilterShape.h"
 
+#include "GoImageProcessor.h"
+
 
 QGoMeshShapeAlgo::QGoMeshShapeAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent)
   :QGoShapeAlgo(iSeeds, iParent)
@@ -50,7 +52,7 @@ QGoMeshShapeAlgo::~QGoMeshShapeAlgo()
 
 //-------------------------------------------------------------------------
 std::vector<vtkPolyData*> QGoMeshShapeAlgo::ApplyAlgo(
-  std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+  GoImageProcessor* iImages,
     int iChannel)
 {
   QGoFilterShape ShapeFilter;

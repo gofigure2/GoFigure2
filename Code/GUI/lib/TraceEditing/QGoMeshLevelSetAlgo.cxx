@@ -49,27 +49,10 @@ QGoMeshLevelSetAlgo::~QGoMeshLevelSetAlgo()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/*std::vector<vtkPolyData*> QGoMeshLevelSetAlgo::ApplyAlgo(
-  std::vector<vtkSmartPointer< vtkImageData > >* iImages,
-    int iChannel)
-{
-  QGoFilterChanAndVese LevelSetFilter;
-
-  std::vector<vtkPolyData*> NewMeshes =
-    LevelSetFilter.ApplyFilterLevelSet3D(m_Radius->GetValue(),
-    this->m_Seeds, m_Iterations->GetValue(),
-    m_Curvature->GetValue(), iImages, iChannel);
-
-  return NewMeshes;
-}*/
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 std::vector<vtkPolyData*> QGoMeshLevelSetAlgo::ApplyAlgo(
-  std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+  GoImageProcessor* iImages,
     int iChannel)
 {
-  const int Dimension = 3;
   std::vector<vtkPolyData*> oNewMeshes = std::vector<vtkPolyData*>();
 
   if ( this->m_Radius->GetValue() <= 0 )
@@ -94,19 +77,22 @@ std::vector<vtkPolyData*> QGoMeshLevelSetAlgo::ApplyAlgo(
 
       vtkPolyData* temp_output =
           this->ApplyLevelSetFilter< unsigned char >(
-            CenterVect, iImages, iChannel);
+            CenterVect,
+            iImages->getImageITK< unsigned char, 3>(iChannel)); //input raw image
 
-      vtkPolyData* output = vtkPolyData::New();
-      output->DeepCopy( temp_output );
-
-      oNewMeshes.push_back( output );
-
-      temp_output->Delete();
+      if(temp_output->GetNumberOfCells() > 0)
+        {
+        oNewMeshes.push_back( temp_output );
+        }
+      /*else
+        {
+        std::cout << "No polydata could be generated - check parameters"
+                  << std::endl;
+        temp_output->Delete();
+        }*/
       }
     }
 
   return oNewMeshes;
 }
-//-------------------------------------------------------------------------
-
 //-------------------------------------------------------------------------

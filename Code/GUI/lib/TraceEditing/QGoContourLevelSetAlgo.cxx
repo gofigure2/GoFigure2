@@ -34,6 +34,8 @@
 #include "QGoContourLevelSetAlgo.h"
 #include "QGoFilterChanAndVese.h"
 
+#include "GoImageProcessor.h"
+
 
 QGoContourLevelSetAlgo::
 QGoContourLevelSetAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent)
@@ -50,7 +52,7 @@ QGoContourLevelSetAlgo::~QGoContourLevelSetAlgo()
 
 //-------------------------------------------------------------------------
 std::vector<vtkPolyData*> QGoContourLevelSetAlgo::ApplyAlgo(
-  std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+  GoImageProcessor* iImages,
     int iChannel)
 {
   const int Dimension = 2;

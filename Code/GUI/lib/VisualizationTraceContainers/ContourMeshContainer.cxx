@@ -265,6 +265,9 @@ ContourMeshContainer::DeleteAllHighlightedElements()
 
   while ( it0 != it1 )
     {
+
+      std::cout << "TRACE ID TO BE DELETED: " << it0->TraceID << std::endl;
+
     oList.push_back(it0->TraceID);
 
     if ( it0->ActorXY )

@@ -149,7 +149,10 @@ public:
   void ModifyDivisionVisibility( const bool& iVisibility );
   void ModifyDivisionHighlight( vtkProperty* iProperty,
                                const bool& iHighlight );
-  void ModifyDivisionColor( double* iColor );
+
+  void ModifyDivisionColorData( double* iColor );
+  // for the highlight
+  void ModifyDivisionColorActor( double* iColor );
 
   void AddDivisionArray( vtkIntArray* iArray );
 

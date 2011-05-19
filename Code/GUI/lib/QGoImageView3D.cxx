@@ -956,8 +956,9 @@ QGoImageView3D::RemoveActor(const int & iId, vtkActor *iActor)
 {
   if ( iId == 3 )
     {
-    // remove from renderer and Prop3DCollection
-    m_View3D->RemoveProp(iActor);
+    // remove from renderer
+    // should be add/remove view property
+    m_View3D->GetRenderer()->RemoveActor(iActor);
     }
   else
     {
@@ -974,9 +975,8 @@ QGoImageView3D::AddActor(const int & iId, vtkActor *iActor)
 {
   if ( iId == 3 )
     {
-    // add to renderer and Prop3DCollection
-    m_View3D->GetRenderer()->AddViewProp(iActor);
-    m_View3D->AddActorToProp3DCollection(iActor);
+    // add to renderer
+    m_View3D->GetRenderer()->AddActor(iActor);
     }
   else
     {
@@ -991,11 +991,7 @@ QGoImageView3D::AddActor(const int & iId, vtkActor *iActor)
 void
 QGoImageView3D::SetLookupTable(vtkLookupTable *iLut)
 {
-  if ( this->m_Image->GetNumberOfScalarComponents() == 1 )
-    {
-    m_View3D->SetLookupTable(iLut);
-    }
-
+  m_View3D->SetLookupTable(iLut);
   QGoImageView::SetLookupTable(iLut);
 }
 

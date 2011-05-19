@@ -195,6 +195,7 @@ ExtractPolyData(vtkImageData *iInputImage, const double & iThreshold)
       }
     }
 
+  std::cout << "dimension here: " << dimension << std::endl;
   switch ( dimension )
     {
       case 2 :
@@ -277,7 +278,10 @@ ReorganizeContour(vtkSmartPointer<vtkPolyData> iInputImage)
   points->Delete();
   stripper->Delete();
 
-  return output;
+  vtkPolyData* output2 = vtkPolyData::New();
+  output2->DeepCopy(output);
+
+  return output2;
 }
 
 //--------------------------------------------------------------------------
@@ -296,7 +300,7 @@ ExtractMesh(vtkSmartPointer<vtkImageData> iInputImage, const double & iThreshold
   contours->SetValue(0, iThreshold);
   contours->Update();
 
-  std::cout << "Number Of Points: " << contours->GetOutput()->GetNumberOfPoints()
+  std::cout << "Number Of Points: " << iInputImage->GetNumberOfPoints()
             << std::endl;
 
   vtkSmartPointer< vtkFeatureEdges > feature =

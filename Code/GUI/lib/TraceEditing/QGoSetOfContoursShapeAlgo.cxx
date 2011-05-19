@@ -34,6 +34,8 @@
 #include "QGoSetOfContoursShapeAlgo.h"
 #include "QGoFilterShape.h"
 
+#include "GoImageProcessor.h"
+
 QGoSetOfContoursShapeAlgo::QGoSetOfContoursShapeAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent)
   :QGoShapeAlgo(iSeeds, iParent)
 {
@@ -52,7 +54,7 @@ QGoSetOfContoursShapeAlgo::~QGoSetOfContoursShapeAlgo()
 
 //-------------------------------------------------------------------------
 std::vector<vtkPolyData*> QGoSetOfContoursShapeAlgo::ApplyAlgo(
-  std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+  GoImageProcessor* iImages,
     int iChannel)
 {
   std::vector<vtkPolyData*> NewContours = std::vector<vtkPolyData*>();
@@ -63,7 +65,7 @@ std::vector<vtkPolyData*> QGoSetOfContoursShapeAlgo::ApplyAlgo(
 //-------------------------------------------------------------------------
 std::vector<std::vector<vtkPolyData*> > QGoSetOfContoursShapeAlgo::
   ApplyAlgoSeveralSeeds(
-    std::vector<vtkSmartPointer< vtkImageData > >* iImages, int iChannel)
+    GoImageProcessor* iImages, int iChannel)
 {
   std::vector<std::vector<vtkPolyData*> > NewContours;
   QGoFilterShape ShapeFilter;

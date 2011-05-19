@@ -34,6 +34,8 @@
 #include "QGoSetOfContoursLevelSetAlgo.h"
 #include "QGoFilterChanAndVese.h"
 
+#include "GoImageProcessor.h"
+
 QGoSetOfContoursLevelSetAlgo::QGoSetOfContoursLevelSetAlgo(
   std::vector< vtkPoints* >* iSeeds, QWidget* iParent)
   :QGoLevelSetAlgo(iSeeds, iParent)
@@ -53,7 +55,7 @@ QGoSetOfContoursLevelSetAlgo::~QGoSetOfContoursLevelSetAlgo()
 
 //-------------------------------------------------------------------------
 std::vector<vtkPolyData*> QGoSetOfContoursLevelSetAlgo::ApplyAlgo(
-  std::vector<vtkSmartPointer< vtkImageData > >* iImages,
+  GoImageProcessor* iImages,
     int iChannel)
 {
   std::vector<vtkPolyData*> NewContours = std::vector<vtkPolyData*>();
@@ -64,7 +66,7 @@ std::vector<vtkPolyData*> QGoSetOfContoursLevelSetAlgo::ApplyAlgo(
 //-------------------------------------------------------------------------
 std::vector<std::vector<vtkPolyData*> > QGoSetOfContoursLevelSetAlgo::
   ApplyAlgoSeveralSeeds(
-    std::vector<vtkSmartPointer< vtkImageData > >* iImages, int iChannel)
+    GoImageProcessor* iImages, int iChannel)
 {
   std::vector<std::vector<vtkPolyData*> > NewContours;
   QGoFilterChanAndVese LevelSetFilter;

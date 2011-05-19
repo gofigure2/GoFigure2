@@ -35,35 +35,26 @@
 #include "QGoFilterWatershed.h"
 
 
-QGoMeshWaterShedAlgo::QGoMeshWaterShedAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent)
+QGoMeshWaterShedAlgo::
+QGoMeshWaterShedAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent)
   :QGoWaterShedAlgo(iSeeds, iParent)
 {
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QGoMeshWaterShedAlgo::~QGoMeshWaterShedAlgo()
+QGoMeshWaterShedAlgo::
+~QGoMeshWaterShedAlgo()
 {
   this->DeleteParameters();
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::vector<vtkPolyData*> QGoMeshWaterShedAlgo::ApplyAlgo(
-  std::vector<vtkSmartPointer< vtkImageData > >* iImages,
-    int iChannel)
+std::vector<vtkPolyData*>
+QGoMeshWaterShedAlgo::
+ApplyAlgo(GoImageProcessor* iImages, int iChannel)
 {
-  /*QGoFilterWatershed WatershedFilter;
-
-  std::vector<vtkPolyData*> NewMeshes =
-    WatershedFilter.ApplyFilter3D(this->m_Radius->GetValue(),
-    this->m_ThresMin->GetValue(), this->m_ThresMax->GetValue(),
-    this->m_CorrThres->GetValue(),this->m_Alpha->GetValue(),this->m_Beta->GetValue(),
-    this->m_Seeds, iImages, iChannel);
-
-  return NewMeshes;*/
-
- const int Dimension = 3;
   std::vector<vtkPolyData*> oNewMeshes = std::vector<vtkPolyData*>();
 
   if ( this->m_Radius->GetValue() <= 0 )
@@ -88,16 +79,24 @@ std::vector<vtkPolyData*> QGoMeshWaterShedAlgo::ApplyAlgo(
 
       vtkPolyData* temp_output =
           this->ApplyWaterShedFilter< unsigned char >(
-            CenterVect, iImages, iChannel);
+            CenterVect, //cente
+            iImages->getImageITK< unsigned char, 3>(iChannel)); //input raw image
 
-      vtkPolyData* output = vtkPolyData::New();
-      output->DeepCopy( temp_output );
+      std::cout << "ApplyWaterShedFilter called" << std::endl;
 
-      oNewMeshes.push_back( output );
-
-      temp_output->Delete();
+      if(temp_output->GetNumberOfCells() > 0)
+        {
+        oNewMeshes.push_back( temp_output );
+        }
+   /*   else
+        {
+        std::cout << "No polydata could be generated - check parameters"
+                  << std::endl;
+        temp_output->Delete();
+        }*/
       }
     }
 
   return oNewMeshes;
 }
+//-------------------------------------------------------------------------
