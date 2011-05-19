@@ -211,11 +211,20 @@ public:
       {
       t_min[dim] = iBounds[k++];
       t_max[dim] = iBounds[k++];
+
+      std::cout << "tmin: " << t_min[dim] << std::endl;
+      std::cout << "tmax: " << t_max[dim] << std::endl;
       }
 
     ImageIndexType startOfROI, endOfROI;
     iInput->TransformPhysicalPointToIndex( t_min, startOfROI );
     iInput->TransformPhysicalPointToIndex( t_max, endOfROI );
+
+    for( unsigned int dim = 0; dim < 3; dim++ )
+      {
+      std::cout << "start of roi: " << startOfROI[dim] << std::endl;
+      std::cout << "end of roi: " << endOfROI[dim] << std::endl;
+      }
 
     ImageSizeType  sizeOfLargeImage =
         iInput->GetLargestPossibleRegion().GetSize();
@@ -270,6 +279,8 @@ public:
       std::cerr << "roi Exception:" << err << std::endl;
       }
 
+        roi->GetOutput()->Print(cout);
+
     return roi->GetOutput();
   }
 
@@ -291,6 +302,7 @@ public:
     typedef typename InputImageType::SpacingType           ImageSpacingType;
 
     typedef typename OutputImageType::PointType            oImagePointType;
+        typedef typename OutputImageType::OffsetType         oImageOffsetType;
 
     ImagePointType t_min, t_max;
     oImagePointType new_origin;
@@ -311,7 +323,9 @@ public:
         iInput->GetLargestPossibleRegion().GetSize();
 
     ImageSizeType  size;
-    size.Fill( 0 );
+        size.Fill( 0 );
+    oImageOffsetType  new_offset;
+
 
     int l = 0;
 
@@ -337,8 +351,6 @@ public:
 
       size[dim] = endOfROI[dim] - startOfROI[dim];
 
-      std::cout << "SIZE: " << dim << " is " << size[dim] << std::endl;
-
       if( size[dim] < 0 )
         {
         size[dim] = 0;
@@ -347,7 +359,9 @@ public:
       // new origin
       if( size[dim] > 0 )
         {
-        new_origin[l] = size[dim];
+        new_origin[l] = t_min[dim];
+        double sizeTest = startOfROI[dim];
+        new_offset[l] = -sizeTest;
         ++l;
         }
       }
@@ -377,8 +391,11 @@ public:
 
     CenterFilterTypePointer center = CenterFilterType::New();
     center->SetInput(filter->GetOutput());
+    //center->CenterImageOn();
     center->ChangeOriginOn();
     center->SetOutputOrigin(new_origin);
+    center->ChangeRegionOn();
+    center->SetOutputOffset(new_offset);
 
     try
       {
@@ -389,6 +406,7 @@ public:
       std::cerr << "change information slice Exception:" << err << std::endl;
       }
 
+    center->GetOutput()->Print(cout);
     return center->GetOutput();
   }
 

@@ -278,7 +278,10 @@ ReorganizeContour(vtkSmartPointer<vtkPolyData> iInputImage)
   points->Delete();
   stripper->Delete();
 
-  return output;
+  vtkPolyData* output2 = vtkPolyData::New();
+  output2->DeepCopy(output);
+
+  return output2;
 }
 
 //--------------------------------------------------------------------------

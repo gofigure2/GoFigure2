@@ -54,6 +54,7 @@
 #include "vtkRenderer.h"
 #include "vtkRenderWindow.h"
 #include "vtkRenderWindowInteractor.h"
+#include "itkImageFileWriter.h"
 
 class GoImageProcessor;
 
@@ -103,11 +104,6 @@ protected:
 
     std::vector<vtkPolyData*> output;
 
-    ImageSpacingType spacing = iImages->GetSpacing();
-
-    std::cout << "spacing: " << spacing[0] << "-" << spacing[1] << "-"
-              << spacing[2] << std::endl;
-
     //for(unsigned int i= 0; i<this->m_Sampling->GetValue(); ++i)
       {
       // let's compute the bounds of the region of interest
@@ -121,22 +117,13 @@ protected:
         bounds[k++] = iCenter[dim] + 2. * radius;
         }
 
-      bounds[2*iOrientation]    = iCenter[iOrientation];
-      bounds[2*iOrientation +1] = iCenter[iOrientation];
-
-      std::cout << "orientation: " << iOrientation << std::endl;
-
-      std::cout << "first bounds: " << bounds[0] << "-" << bounds[1] << std::endl;
-      std::cout << "first bounds: " << bounds[2] << "-" << bounds[3] << std::endl;
-      std::cout << "first bounds: " << bounds[4] << "-" << bounds[5] << std::endl;
+      int orientation = 2;
+      bounds[2*orientation]    = iCenter[orientation];
+      bounds[2*orientation +1] = iCenter[orientation];
 
       // then let's extract the Slice of Interest
       ImageType2DPointer ITK_Slice_Image =
      this->ITKExtractSlice<PixelType>( bounds, iImages );
-
-      std::cout << "origin: " << ITK_Slice_Image->GetOrigin()[0] <<
-                   " - " << ITK_Slice_Image->GetOrigin()[1] <<
-                   " - " << ITK_Slice_Image->GetOrigin()[2] << std::endl;
 
       // Compute the segmentation in 3D
       QGoFilterWatershed Filter;
@@ -151,6 +138,14 @@ protected:
       typename QGoFilterWatershed::Output2DPointer
           ItkOutPut = Filter.GetOutput2D();
 
+      typedef typename itk::ImageFileWriter<
+          typename QGoFilterWatershed::Output2DType > WriterType2;
+      typedef typename WriterType2::Pointer WriterTypePointer2;
+      WriterTypePointer2 writer2 = WriterType2::New();
+      writer2->SetFileName("Watershed_Slice_Image.mha");
+      writer2->SetInput(ItkOutPut);
+      writer2->Update();
+
       // Here it would be better if the mesh extraction would be performed directly
       // in ITK instead.
       vtkImageData * FilterOutPutToVTK =
@@ -158,24 +153,9 @@ protected:
             typename QGoFilterWatershed::OutputPixelType,
             2>( ItkOutPut );
 
-     double* boundtest = FilterOutPutToVTK->GetBounds();
-     std::cout << "last bounds: " << boundtest[0] << "-" << boundtest[1] << std::endl;
-     std::cout << "last bounds: " << boundtest[2] << "-" << boundtest[3] << std::endl;
-     std::cout << "last bounds: " << boundtest[4] << "-" << boundtest[5] << std::endl;
-
-     FilterOutPutToVTK->Print(cout);
-
-     double* range = FilterOutPutToVTK->GetScalarRange();
-
-     std::cout << "range: " << range[0] << "-" << range[1] << std::endl;
-
       // Nicolas- should be able to tune the parameter -0.5-
       vtkPolyData* temp_output = this->ExtractPolyData(FilterOutPutToVTK, 0.5);
 
-      std::cout << "nb of points:" << temp_output->GetNumberOfPoints() << std::endl;
-      //FilterOutPutToVTK->Delete();
-
-/*
       double temp_bounds[6];
       temp_output->GetBounds( temp_bounds );
 
@@ -198,39 +178,8 @@ protected:
       mesh_transform->SetInput( temp_output );
       mesh_transform->Update();
       temp_output->Delete();
-*/
-      // MIGHT LEAK! CHECK IT  IS DELETED!
-      vtkPolyData* mesh = vtkPolyData::New();
-      //mesh->DeepCopy( mesh_transform->GetOutput() );
-      //mesh->DeepCopy(temp_output);
 
-      vtkSmartPointer< vtkPolyDataMapper > mapper =
-        vtkSmartPointer< vtkPolyDataMapper >::New();
-      mapper->SetInput(temp_output);
-
-      vtkSmartPointer< vtkActor > actor =
-        vtkSmartPointer< vtkActor >::New();
-      actor->SetMapper(mapper);
-
-      vtkSmartPointer< vtkRenderer > renderer =
-        vtkSmartPointer< vtkRenderer >::New();
-      renderer->AddActor(actor);
-
-      vtkSmartPointer< vtkRenderWindow > renderWindow =
-        vtkSmartPointer< vtkRenderWindow >::New();
-      renderWindow->AddRenderer(renderer);
-
-      vtkSmartPointer< vtkRenderWindowInteractor > renderWindowInteractor =
-        vtkSmartPointer< vtkRenderWindowInteractor >::New();
-      renderWindowInteractor->SetRenderWindow(renderWindow);
-
-      renderWindowInteractor->Initialize();
-      renderWindow->Render();
-      renderWindowInteractor->Start();
-
-
-
-      //output.push_back(mesh);
+      //output.push_back(mesh_transform->GetOutput());
       }
 
     return output;
