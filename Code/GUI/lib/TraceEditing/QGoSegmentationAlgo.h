@@ -391,7 +391,6 @@ public:
 
     CenterFilterTypePointer center = CenterFilterType::New();
     center->SetInput(filter->GetOutput());
-    //center->CenterImageOn();
     center->ChangeOriginOn();
     center->SetOutputOrigin(new_origin);
     center->ChangeRegionOn();
@@ -405,8 +404,6 @@ public:
       {
       std::cerr << "change information slice Exception:" << err << std::endl;
       }
-
-    center->GetOutput()->Print(cout);
     return center->GetOutput();
   }
 

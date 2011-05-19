@@ -104,7 +104,9 @@ protected:
 
     std::vector<vtkPolyData*> output;
 
-    //for(unsigned int i= 0; i<this->m_Sampling->GetValue(); ++i)
+    ImageSpacingType spacing = iImages->GetSpacing();
+
+    for(unsigned int i= 0; i<this->m_Sampling->GetValue(); ++i)
       {
       // let's compute the bounds of the region of interest
       double radius = this->m_Radius->GetValue();
@@ -117,9 +119,14 @@ protected:
         bounds[k++] = iCenter[dim] + 2. * radius;
         }
 
-      int orientation = 2;
-      bounds[2*orientation]    = iCenter[orientation];
-      bounds[2*orientation +1] = iCenter[orientation];
+      unsigned int pair = i+ i%2 -1;
+
+      bounds[2*iOrientation]    =
+          iCenter[iOrientation] + (pair*(pow(-1, i))*spacing[iOrientation]);
+      bounds[2*iOrientation +1] =
+          iCenter[iOrientation] + (pair*(pow(-1, i))*spacing[iOrientation]);
+
+      std::cout << "orientation: " << bounds[2*iOrientation] << std::endl;
 
       // then let's extract the Slice of Interest
       ImageType2DPointer ITK_Slice_Image =
@@ -179,7 +186,7 @@ protected:
       mesh_transform->Update();
       temp_output->Delete();
 
-      //output.push_back(mesh_transform->GetOutput());
+      output.push_back(mesh_transform->GetOutput());
       }
 
     return output;

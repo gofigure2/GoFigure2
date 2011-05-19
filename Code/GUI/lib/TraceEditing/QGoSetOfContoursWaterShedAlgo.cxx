@@ -107,11 +107,11 @@ ApplyAlgoSeveralSeeds( GoImageProcessor* iImages, int iChannel)
           this->ApplyWaterShedFilter< unsigned char >(
             CenterVect,
             iImages->getImageITK< unsigned char, 3>(iChannel),//input raw image
-            id);// orientation of the seed (0=xy, 1=xz, 2=yz)
+            2);// axe to be compressed(0=x, 1=y, 2=z)
 
       //if(temp_output->GetNumberOfCells() > 0)
       //  {
-        //oNewMeshes.push_back( temp_output );
+      NewContours.push_back( temp_output );
       //  }
       /*else
         {
