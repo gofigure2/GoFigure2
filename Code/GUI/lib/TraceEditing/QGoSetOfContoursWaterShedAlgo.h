@@ -152,14 +152,6 @@ protected:
       typename QGoFilterWatershed::Output2DPointer
           ItkOutPut = Filter.GetOutput2D();
 
-      typedef typename itk::ImageFileWriter<
-          typename QGoFilterWatershed::Output2DType > WriterType2;
-      typedef typename WriterType2::Pointer WriterTypePointer2;
-      WriterTypePointer2 writer2 = WriterType2::New();
-      writer2->SetFileName("Watershed_Slice_Image.mha");
-      writer2->SetInput(ItkOutPut);
-      writer2->Update();
-
       // Here it would be better if the mesh extraction would be performed directly
       // in ITK instead.
       vtkImageData * FilterOutPutToVTK =
@@ -173,21 +165,40 @@ protected:
       // Nicolas- should be able to tune the parameter -0.5-
       vtkPolyData* temp_output = this->ExtractPolyData(FilterOutPutToVTK, 0.5);
 
-      double temp_bounds[6];
+      double temp_bounds[4];
       temp_output->GetBounds( temp_bounds );
 
-      double temp_center[3];
+      double temp_center[2];
       temp_center[0] = ( temp_bounds[0] + temp_bounds[1] ) * 0.5;
       temp_center[1] = ( temp_bounds[2] + temp_bounds[3] ) * 0.5;
-      temp_center[2] = ( temp_bounds[4] + temp_bounds[5] ) * 0.5;
+      //temp_center[2] = ( temp_bounds[4] + temp_bounds[5] ) * 0.5;
 
       vtkSmartPointer< vtkTransform > translation =
           vtkSmartPointer< vtkTransform >::New();
 
-      /// \todo fix it to get the real center!!!
-      translation->Translate(iCenter[0] - temp_center[0],
-                             iCenter[1] - temp_center[1],
-                             iCenter[2] - temp_center[2] );
+
+      double center[3] = {0, 0, 0};
+      center[0] = iCenter[0];
+      center[1] = iCenter[1];
+      center[2] = iCenter[2];
+
+      // rotate polydata if necessary
+      if(iOrientation == 0)
+        {
+        translation->RotateY(-90);
+
+        //center[0] = iCenter[0] - temp_center[0];
+        }
+      else if(iOrientation == 1)
+        {
+        translation->RotateX(-90);
+        }
+      else if(iOrientation == 2)
+        {
+        // no rotation, we are in the good plan
+        }
+
+      //translation->Translate(center);
 
       vtkSmartPointer< vtkTransformPolyDataFilter > mesh_transform =
           vtkSmartPointer< vtkTransformPolyDataFilter >::New();
@@ -198,7 +209,10 @@ protected:
 
       mesh_transform->GetOutput()->Print(cout);
 
-      output.push_back(mesh_transform->GetOutput());
+      vtkPolyData* testt = vtkPolyData::New();
+      testt->DeepCopy(mesh_transform->GetOutput());
+
+      output.push_back(testt);
       }
 
     return output;

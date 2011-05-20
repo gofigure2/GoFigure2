@@ -513,10 +513,10 @@ QGoTabImageView3DwT::CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax)
                     SLOT( SaveInDBAndRenderMeshForVisu(std::vector<vtkPolyData *>, int) ) );
 
   /** \todo connect the signal, reimplement the slot*/
-  /*QObject::connect( this->m_MeshEditingWidget,
+  QObject::connect( this->m_MeshEditingWidget,
                     SIGNAL(SetOfContoursFromAlgo(std::vector<std::vector<vtkPolyData*> >, int) ),
                     this,
-                    SLOT( ) ) );*/
+                    SLOT(SaveInDBAndRenderSetOfContoursForVisu(std::vector<std::vector<vtkPolyData*> >, int)));
 
   QObject::connect( this,
                     SIGNAL( TimePointChanged(int) ),
@@ -2483,6 +2483,37 @@ QGoTabImageView3DwT::SaveInDBAndRenderMeshForVisu(
 
 }
 //-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+SaveInDBAndRenderSetOfContoursForVisu(
+  std::vector<std::vector<vtkPolyData*> > iVectorSetOfContours, int iTCoord)
+{
+  // just add to visu as of now
+  std::vector<std::vector<vtkPolyData*> >::iterator it1 =
+      iVectorSetOfContours.begin();
+  while(it1!=iVectorSetOfContours.end())
+    {
+    std::vector<vtkPolyData*>::iterator it2 = (*it1).begin();
+    while(it2!=(*it1).end())
+      {
+      vtkPolyData* data = vtkPolyData::New();
+      data->DeepCopy(*it2);
+
+      vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
+      mapper->SetInput(data);
+
+      vtkActor* actor = vtkActor::New();
+      actor->SetMapper(mapper);
+
+      for(int i=0; i<3; ++i)
+        {
+        m_ImageView->AddActor(i, actor);
+        }
+      ++it2;
+      }
+    ++it1;
+    }
+}
 
 //-------------------------------------------------------------------------
 /*void QGoTabImageView3DwT::SaveInDBAndRenderContourForVisu(

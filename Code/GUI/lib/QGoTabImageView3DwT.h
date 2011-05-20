@@ -338,6 +338,9 @@ public slots:
   void SaveInDBAndRenderMeshForVisu(
     std::vector<vtkPolyData *> iVectPolydata, int iTCoord);
 
+  void SaveInDBAndRenderSetOfContoursForVisu(
+    std::vector<std::vector<vtkPolyData*> >, int);
+
   void ReEditContour(const unsigned int & iId);
 
   void HighlightPickedActor();
