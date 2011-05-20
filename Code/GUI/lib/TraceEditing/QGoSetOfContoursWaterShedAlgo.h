@@ -119,14 +119,21 @@ protected:
         bounds[k++] = iCenter[dim] + 2. * radius;
         }
 
-      unsigned int pair = i+ i%2 -1;
+      int pair = i+ i%2 -1;
+      if(pair < 0)
+        {
+        pair = 0;
+        }
 
       bounds[2*iOrientation]    =
           iCenter[iOrientation] + (pair*(pow(-1, i))*spacing[iOrientation]);
       bounds[2*iOrientation +1] =
           iCenter[iOrientation] + (pair*(pow(-1, i))*spacing[iOrientation]);
 
-      std::cout << "orientation: " << bounds[2*iOrientation] << std::endl;
+      for( unsigned int dim = 0; dim < 6; dim++ )
+        {
+        std::cout << "bounds: " << bounds[dim] << std::endl;
+        }
 
       // then let's extract the Slice of Interest
       ImageType2DPointer ITK_Slice_Image =
@@ -160,6 +167,9 @@ protected:
             typename QGoFilterWatershed::OutputPixelType,
             2>( ItkOutPut );
 
+      // put image in good position
+      FilterOutPutToVTK->Print(cout);
+
       // Nicolas- should be able to tune the parameter -0.5-
       vtkPolyData* temp_output = this->ExtractPolyData(FilterOutPutToVTK, 0.5);
 
@@ -185,6 +195,8 @@ protected:
       mesh_transform->SetInput( temp_output );
       mesh_transform->Update();
       temp_output->Delete();
+
+      mesh_transform->GetOutput()->Print(cout);
 
       output.push_back(mesh_transform->GetOutput());
       }
