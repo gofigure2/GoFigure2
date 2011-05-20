@@ -56,6 +56,9 @@
 #include "vtkRenderWindowInteractor.h"
 #include "itkImageFileWriter.h"
 
+
+#include "vtkPointData.h"
+
 class GoImageProcessor;
 
 
@@ -130,11 +133,6 @@ protected:
       bounds[2*iOrientation +1] =
           iCenter[iOrientation] + (pair*(pow(-1, i))*spacing[iOrientation]);
 
-      for( unsigned int dim = 0; dim < 6; dim++ )
-        {
-        std::cout << "bounds: " << bounds[dim] << std::endl;
-        }
-
       // then let's extract the Slice of Interest
       ImageType2DPointer ITK_Slice_Image =
      this->ITKExtractSlice<PixelType>( bounds, iImages );
@@ -160,33 +158,51 @@ protected:
             2>( ItkOutPut );
 
       // put image in good position
-      FilterOutPutToVTK->Print(cout);
+      //FilterOutPutToVTK->Print(cout);
 
       // Nicolas- should be able to tune the parameter -0.5-
       vtkPolyData* temp_output = this->ExtractPolyData(FilterOutPutToVTK, 0.5);
 
-      double temp_bounds[4];
-      temp_output->GetBounds( temp_bounds );
+      // translation transform -----------------------
+      double temp_bounds[6];
+      FilterOutPutToVTK->GetBounds( temp_bounds );
 
-      double temp_center[2];
+      double temp_center[3];
       temp_center[0] = ( temp_bounds[0] + temp_bounds[1] ) * 0.5;
       temp_center[1] = ( temp_bounds[2] + temp_bounds[3] ) * 0.5;
-      //temp_center[2] = ( temp_bounds[4] + temp_bounds[5] ) * 0.5;
+      temp_center[2] = ( temp_bounds[4] + temp_bounds[5] ) * 0.5;
 
-      vtkSmartPointer< vtkTransform > translation =
+      double temp_center2[3];
+      temp_center2[0] = ( bounds[0] + bounds[1] ) * 0.5;
+      temp_center2[1] = ( bounds[2] + bounds[3] ) * 0.5;
+      temp_center2[2] = ( bounds[4] + bounds[5] ) * 0.5;
+
+      for( unsigned int dim = 0; dim < 3; dim++ )
+        {
+        std::cout << "temp_center2: " << temp_center2[dim] << std::endl;
+        }
+
+      vtkSmartPointer< vtkTransform > translation2 =
           vtkSmartPointer< vtkTransform >::New();
 
+       translation2->Translate(temp_center2[0] - temp_center[0],
+                               temp_center2[1] - temp_center[1],
+                               temp_center2[2] - temp_center[2]);
 
-      double center[3] = {0, 0, 0};
-      center[0] = iCenter[0];
-      center[1] = iCenter[1];
-      center[2] = iCenter[2];
+       vtkSmartPointer< vtkTransformPolyDataFilter > mesh_transform2 =
+           vtkSmartPointer< vtkTransformPolyDataFilter >::New();
+       mesh_transform2->SetTransform(translation2);
+       mesh_transform2->SetInput( temp_output );
+       mesh_transform2->Update();
 
+
+      // rotation transform -----------------------
+      vtkSmartPointer< vtkTransform > translation =
+          vtkSmartPointer< vtkTransform >::New();
       // rotate polydata if necessary
       if(iOrientation == 0)
         {
         translation->RotateY(-90);
-
         //center[0] = iCenter[0] - temp_center[0];
         }
       else if(iOrientation == 1)
@@ -198,19 +214,18 @@ protected:
         // no rotation, we are in the good plan
         }
 
-      //translation->Translate(center);
-
       vtkSmartPointer< vtkTransformPolyDataFilter > mesh_transform =
           vtkSmartPointer< vtkTransformPolyDataFilter >::New();
       mesh_transform->SetTransform(translation);
-      mesh_transform->SetInput( temp_output );
+      mesh_transform->SetInput( mesh_transform2->GetOutput() );
       mesh_transform->Update();
-      temp_output->Delete();
 
-      mesh_transform->GetOutput()->Print(cout);
+       temp_output->Delete();
 
       vtkPolyData* testt = vtkPolyData::New();
-      testt->DeepCopy(mesh_transform->GetOutput());
+      testt->DeepCopy(mesh_transform2->GetOutput());
+
+      testt->Print(cout);
 
       output.push_back(testt);
       }

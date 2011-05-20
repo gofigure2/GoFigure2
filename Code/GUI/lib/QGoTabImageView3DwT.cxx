@@ -2505,7 +2505,7 @@ SaveInDBAndRenderSetOfContoursForVisu(
       vtkActor* actor = vtkActor::New();
       actor->SetMapper(mapper);
 
-      for(int i=0; i<3; ++i)
+      for(int i=0; i<4; ++i)
         {
         m_ImageView->AddActor(i, actor);
         }
