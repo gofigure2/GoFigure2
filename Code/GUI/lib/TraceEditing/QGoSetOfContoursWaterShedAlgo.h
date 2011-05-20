@@ -163,7 +163,11 @@ protected:
       // Nicolas- should be able to tune the parameter -0.5-
       vtkPolyData* temp_output = this->ExtractPolyData(FilterOutPutToVTK, 0.5);
 
+
+      std::cout << "orientation: " << iOrientation << std::endl;
+
       // translation transform -----------------------
+      //------------------------------------------------------------------------
       double temp_bounds[6];
       FilterOutPutToVTK->GetBounds( temp_bounds );
 
@@ -172,22 +176,17 @@ protected:
       temp_center[1] = ( temp_bounds[2] + temp_bounds[3] ) * 0.5;
       temp_center[2] = ( temp_bounds[4] + temp_bounds[5] ) * 0.5;
 
-      double temp_center2[3];
-      temp_center2[0] = ( bounds[0] + bounds[1] ) * 0.5;
-      temp_center2[1] = ( bounds[2] + bounds[3] ) * 0.5;
-      temp_center2[2] = ( bounds[4] + bounds[5] ) * 0.5;
-
       for( unsigned int dim = 0; dim < 3; dim++ )
         {
-        std::cout << "temp_center2: " << temp_center2[dim] << std::endl;
+        std::cout << "crop image center: " << temp_center[dim] << std::endl;
         }
 
       vtkSmartPointer< vtkTransform > translation2 =
           vtkSmartPointer< vtkTransform >::New();
 
-       translation2->Translate(temp_center2[0] - temp_center[0],
-                               temp_center2[1] - temp_center[1],
-                               temp_center2[2] - temp_center[2]);
+       translation2->Translate(-temp_center[0],
+                               -temp_center[1],
+                               -temp_center[2]);
 
        vtkSmartPointer< vtkTransformPolyDataFilter > mesh_transform2 =
            vtkSmartPointer< vtkTransformPolyDataFilter >::New();
@@ -195,8 +194,8 @@ protected:
        mesh_transform2->SetInput( temp_output );
        mesh_transform2->Update();
 
-
       // rotation transform -----------------------
+      //------------------------------------------------------------------------
       vtkSmartPointer< vtkTransform > translation =
           vtkSmartPointer< vtkTransform >::New();
       // rotate polydata if necessary
@@ -220,12 +219,39 @@ protected:
       mesh_transform->SetInput( mesh_transform2->GetOutput() );
       mesh_transform->Update();
 
+      // translate back -----------------------
+      //------------------------------------------------------------------------
+      double temp_center2[3];
+      temp_center2[0] = ( bounds[0] + bounds[1] ) * 0.5;
+      temp_center2[1] = ( bounds[2] + bounds[3] ) * 0.5;
+      temp_center2[2] = ( bounds[4] + bounds[5] ) * 0.5;
+
+      for( unsigned int dim = 0; dim < 3; dim++ )
+        {
+        std::cout << "seed center: " << temp_center2[dim] << std::endl;
+        }
+
+      vtkSmartPointer< vtkTransform > translation23 =
+          vtkSmartPointer< vtkTransform >::New();
+
+       translation23->Translate(temp_center2[0],
+                                temp_center2[1],
+                                temp_center2[2]);
+
+       vtkSmartPointer< vtkTransformPolyDataFilter > mesh_transform23 =
+           vtkSmartPointer< vtkTransformPolyDataFilter >::New();
+       mesh_transform23->SetTransform(translation23);
+       mesh_transform23->SetInput( mesh_transform->GetOutput() );
+       mesh_transform23->Update();
+
+       //-----------------------------------------------------------------------
+
        temp_output->Delete();
 
       vtkPolyData* testt = vtkPolyData::New();
-      testt->DeepCopy(mesh_transform2->GetOutput());
+      testt->DeepCopy(mesh_transform23->GetOutput());
 
-      testt->Print(cout);
+      //testt->Print(cout);
 
       output.push_back(testt);
       }

@@ -211,20 +211,11 @@ public:
       {
       t_min[dim] = iBounds[k++];
       t_max[dim] = iBounds[k++];
-
-      std::cout << "tmin: " << t_min[dim] << std::endl;
-      std::cout << "tmax: " << t_max[dim] << std::endl;
       }
 
     ImageIndexType startOfROI, endOfROI;
     iInput->TransformPhysicalPointToIndex( t_min, startOfROI );
     iInput->TransformPhysicalPointToIndex( t_max, endOfROI );
-
-    for( unsigned int dim = 0; dim < 3; dim++ )
-      {
-      std::cout << "start of roi: " << startOfROI[dim] << std::endl;
-      std::cout << "end of roi: " << endOfROI[dim] << std::endl;
-      }
 
     ImageSizeType  sizeOfLargeImage =
         iInput->GetLargestPossibleRegion().GetSize();
@@ -278,9 +269,6 @@ public:
       {
       std::cerr << "roi Exception:" << err << std::endl;
       }
-
-        roi->GetOutput()->Print(cout);
-
     return roi->GetOutput();
   }
 
