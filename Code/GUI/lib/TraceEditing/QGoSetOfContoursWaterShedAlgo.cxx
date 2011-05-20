@@ -95,8 +95,23 @@ ApplyAlgoSeveralSeeds( GoImageProcessor* iImages, int iChannel)
   // LOOP  FOR EACH SEED
   for( size_t id = 0; id < this->m_Seeds->size(); id++ )
     {
+    unsigned int dimension2Collapse(0);
+    if(id == 0)
+      {
+      dimension2Collapse = 2; // we are in XY view, collapse Z
+      }
+    else if(id == 1)
+      {
+      dimension2Collapse = 1; // we are in XZ view, collapse Y
+      }
+    else if(id == 2)
+      {
+      dimension2Collapse = 0; // we are in YZ view, collapse X
+      }
+
     for ( int i = 0; i < (*this->m_Seeds)[id]->GetNumberOfPoints(); i++ )
       {
+      std::cout << "dimension2Collapse: " << dimension2Collapse << std::endl;
       (*this->m_Seeds)[id]->GetPoint(i, Center);
 
       CenterVect[0] = Center[0];
@@ -107,17 +122,9 @@ ApplyAlgoSeveralSeeds( GoImageProcessor* iImages, int iChannel)
           this->ApplyWaterShedFilter< unsigned char >(
             CenterVect,
             iImages->getImageITK< unsigned char, 3>(iChannel),//input raw image
-            2);// axe to be compressed(0=x, 1=y, 2=z)
+            dimension2Collapse);// axe to be collapsed(0=x, 1=y, 2=z)
 
-      //if(temp_output->GetNumberOfCells() > 0)
-      //  {
       NewContours.push_back( temp_output );
-      //  }
-      /*else
-        {
-        std::cout << "No polydata could be generated - check parameters"
-                  << std::endl;
-        }*/
       }
     }
 
