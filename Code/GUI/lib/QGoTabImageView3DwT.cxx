@@ -2498,17 +2498,7 @@ SaveInDBAndRenderSetOfContoursForVisu(
       {
       vtkPolyData* data = vtkPolyData::New();
       data->DeepCopy(*it2);
-
-      vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
-      mapper->SetInput(data);
-
-      vtkActor* actor = vtkActor::New();
-      actor->SetMapper(mapper);
-
-      for(int i=0; i<4; ++i)
-        {
-        m_ImageView->AddActor(i, actor);
-        }
+      this->AddContour(data);
       ++it2;
       }
     ++it1;
