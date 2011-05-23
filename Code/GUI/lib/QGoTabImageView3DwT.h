@@ -359,6 +359,8 @@ public slots:
 
   void AddContourForMeshToContours(vtkPolyData *);
 
+  void visibilityChanged(QString iName, bool iVisibility);
+
 protected:
   QGoImageView3D *                               m_ImageView;
   vtkImageData *                                 m_Image;

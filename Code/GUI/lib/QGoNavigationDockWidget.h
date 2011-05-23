@@ -110,7 +110,8 @@ public:
   void SetShowAllChannels(const bool& iValue);
 
   // new channels representation
-  void AddChannel(const QString& iName, const QColor& iColor,const unsigned int& iNumber);
+  void AddChannel(const QString& iName, const QColor& iColor,const unsigned int& iNumber,
+                  const bool& iChecked);
 
 public slots:
   /** Set X Slice */
@@ -133,6 +134,8 @@ public slots:
 
   void StepVisibility(int);
 
+  void visibilityChanged(bool);
+
 signals:
   void ShowAllChannelsChanged(bool iChanged);
 
@@ -149,6 +152,8 @@ signals:
   void ModeChanged(int Mode);
 
   void StepChanged(int Step);
+
+  void visibilityChanged(QString, bool);
 
 protected:
   GoFigure::TabDimensionType m_Dimension;

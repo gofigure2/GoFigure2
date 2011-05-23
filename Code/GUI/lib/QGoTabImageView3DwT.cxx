@@ -723,6 +723,9 @@ QGoTabImageView3DwT::CreateVisuDockWidget()
 
   QObject::connect( m_NavigationDockWidget, SIGNAL( StepChanged(int) ),
                     this, SLOT( StepChanged(int) ) );
+
+  QObject::connect( m_NavigationDockWidget, SIGNAL( visibilityChanged(QString, bool) ),
+                    this, SLOT( visibilityChanged(QString, bool) ) );
 }
 
 //-------------------------------------------------------------------------
@@ -1479,15 +1482,18 @@ UpdateWidgetsFromImageProcessor()
     m_NavigationDockWidget->SetChannel(i);
     m_ChannelNames[i] = m_NavigationDockWidget->GetChannelName(i);
 
-    std::vector<double> color = m_ImageProcessor->getColor(i);
+    m_ImageProcessor->setVisibilityChannel(i, true);
+    m_ImageProcessor->setNameChannel(i, m_ChannelNames[i].toStdString());
 
+    std::vector<double> color = m_ImageProcessor->getColor(i);
     m_NavigationDockWidget->AddChannel(
           m_ChannelNames[i],
           QColor(color[0],
                  color[1],
                  color[2],
                  color[3]),
-          i);
+          i,
+          true);
     }
 
 
@@ -3201,4 +3207,15 @@ QGoTabImageView3DwT::CreateModeToolBar(QMenu* iMenu, QToolBar* iToolBar)
                     this, SLOT( AngleWidgetInteractorBehavior(bool) ) );
 
   //this->m_ToolBarList.push_back(this->m_ModeToolBar);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+visibilityChanged(QString iName, bool iVisibility)
+{
+  m_ImageProcessor->visibilityChanged(iName.toStdString(), iVisibility);
+  m_Image->ShallowCopy(m_ImageProcessor->getAllImages());
+  Update();
 }

@@ -53,6 +53,8 @@
 class vtkLookupTable;
 class vtkImageData;
 
+class QString;
+
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
@@ -76,12 +78,54 @@ private:
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
+/**
+  \struct set_visibility
+  \brief change visibility of given structure
+  \sa GoMegaImageStructure
+  */
+struct set_visibility
+{
+  set_visibility(bool iVisibility):visibility(iVisibility){}
+
+  void operator()(GoMegaImageStructure& iStructure)
+  {
+    iStructure.setVisibility(visibility);
+  }
+
+private:
+  bool visibility;
+};
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+/**
+  \struct set_name
+  \brief change visibility of given structure
+  \sa GoMegaImageStructure
+  */
+struct set_name
+{
+  set_name(std::string iName):name(iName){}
+
+  void operator()(GoMegaImageStructure& iStructure)
+  {
+    iStructure.setName(name);
+  }
+
+private:
+  std::string name;
+};
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
 using boost::multi_index_container;
 using namespace boost::multi_index;
 
 /* tags for accessing the corresponding indices of GoMegaImageStructure */
 
 struct Index{};
+struct Visibility{};
+struct Name{};
 
 /* Define a multi_index_container of employees with following indices:
  *   - a unique index sorted by GoMegaImageStructure::Time,
@@ -92,7 +136,11 @@ typedef multi_index_container<
   GoMegaImageStructure,
   indexed_by<
     ordered_non_unique<
-      tag<Index>,  BOOST_MULTI_INDEX_MEMBER(GoMegaImageStructure,unsigned int,Index)> >
+      tag<Index>,  BOOST_MULTI_INDEX_MEMBER(GoMegaImageStructure,unsigned int,Index)>,
+    ordered_non_unique<
+      tag<Visibility>,  BOOST_MULTI_INDEX_MEMBER(GoMegaImageStructure,bool,Visibility)>,
+    ordered_non_unique<
+      tag<Name>,  BOOST_MULTI_INDEX_MEMBER(GoMegaImageStructure,std::string,Name)> >
 > GoMegaImageStructureMultiIndexContainer;
 
 //-----------------------------------------------------------------------------
@@ -191,6 +239,10 @@ public:
    */
   vtkSmartPointer<vtkImageData> getImageBW(const unsigned int& iIndex);
 
+  void setVisibilityChannel(const unsigned int& iIndex, const bool& iVisibility);
+
+  void setNameChannel(const unsigned int& iIndex, const std::string& iName);
+
   template< class PixelType, const unsigned int VImageDimension >
   typename itk::Image< PixelType, VImageDimension >::Pointer
   getImageITK(int& iIndex)
@@ -235,6 +287,8 @@ public:
   int* getDopplerTime(unsigned int iTime);
   void setDopplerMode(const bool& iEnable);
   bool getDopplerMode();
+
+  void visibilityChanged(std::string, bool);
 
 protected:
   /*

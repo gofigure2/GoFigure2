@@ -64,7 +64,6 @@ void
 GoMegaImageProcessor::
 setTimePoint(const unsigned int& iTime)
 {
-  std::cout << "set time point: " << iTime << std::endl;
   //check if time point exists
   if(iTime >= m_BoundsTime[0] && iTime <= m_BoundsTime[1])
     {
@@ -77,12 +76,9 @@ setTimePoint(const unsigned int& iTime)
     return;
     }
 
-  std::cout << "image exists: " << std::endl;
   // update the container
   // Get Number of channels from reader
   int numberOfChannels = getNumberOfChannels();
-
-    std::cout << "numberOfChannels: " << numberOfChannels << std::endl;
 
   while(numberOfChannels>0)
     {
@@ -122,7 +118,6 @@ setTimePoint(const unsigned int& iTime)
 
     // Update the MegaImageStructure
     // image, LUT, channel, time point
-    std::cout << "insert image: " << numberOfChannels << std::endl;
     m_MegaImageContainer.insert(GoMegaImageStructure(numberOfChannels,
                                                      lut,
                                                      image,

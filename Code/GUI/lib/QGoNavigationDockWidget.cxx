@@ -41,6 +41,8 @@
 #include <QCheckBox>
 #include <QPushButton>
 
+#include <QtDebug>
+
 QGoNavigationDockWidget::
 QGoNavigationDockWidget( QWidget *iParent,
                          const GoFigure::TabDimensionType & iDim ) :
@@ -401,11 +403,15 @@ SetShowAllChannels(const bool& iValue)
 //-------------------------------------------------------------------------
 void
 QGoNavigationDockWidget::
-AddChannel(const QString& iName, const QColor& iColor, const unsigned int& iNumber)
+AddChannel(const QString& iName, const QColor& iColor, const unsigned int& iNumber,
+           const bool& iChecked)
 {
   // create check box + colored push button
-  QCheckBox *checkBox1 = new QCheckBox(iName);
-  QPushButton *pushButton = new QPushButton(iName);
+  QCheckBox *checkBox1 = new QCheckBox(iName, this);
+  checkBox1->setObjectName(iName);
+  checkBox1->setChecked(iChecked);
+  QPushButton *pushButton = new QPushButton(this);
+  pushButton->setObjectName(iName);
   QString style = "background: rgb(%1, %2, %3);";
   pushButton->setStyleSheet(
         style.arg(iColor.red()).arg(iColor .green()).arg(iColor.blue()));
@@ -415,7 +421,20 @@ AddChannel(const QString& iName, const QColor& iColor, const unsigned int& iNumb
   layout->addWidget(pushButton);
   this->gridLayout_2->addLayout(layout, 7+iNumber, 0, 0);
   //create signals connections
+  QObject::connect( checkBox1, SIGNAL( clicked(bool) ),
+                    this, SLOT( visibilityChanged(bool) ) );
   // show hide modify?
   // vector of widget so we can remove it from layout efficiently
+
   // vector of doppler and vector of classic
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoNavigationDockWidget::
+visibilityChanged(bool iVisibility)
+{
+  emit visibilityChanged(QObject::sender()->objectName(), iVisibility);
+  //QCheckBox* test = qobject_cast<QCheckBox*>(sender());
 }

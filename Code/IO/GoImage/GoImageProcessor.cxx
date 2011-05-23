@@ -43,6 +43,8 @@
 #include "vtkPointData.h"
 #include "vtkImageShiftScale.h"
 
+#include <QString>
+
 #include "vtkImageWeightedSum.h"
 
 //--------------------------------------------------------------------------
@@ -204,16 +206,13 @@ getAllImages()
   blendedImage->RemoveAllInputs();
   blendedImage->SetBlendModeToCompound();
 
-  double size = m_MegaImageContainer.size();
-
-  GoMegaImageStructureMultiIndexContainer::iterator it =
-      m_MegaImageContainer.begin();
+  GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator it =
+      m_MegaImageContainer.get< Visibility >().find(true);
 
   vtkIdType i(0);
-  while(it!=m_MegaImageContainer.end())
+  while(it!=m_MegaImageContainer.get< Visibility >().end())
     {
     blendedImage->AddInput(colorImage(it->Image, it->LUT));
-    //blendedImage->SetOpacity(i,1);
     ++i;
     ++it;
     }
@@ -352,3 +351,47 @@ getDopplerMode()
   return m_DopplerMode;
 }
 //--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+GoImageProcessor::
+setVisibilityChannel(const unsigned int& iIndex, const bool& iVisibility)
+{
+  GoMegaImageStructureMultiIndexContainer::index<Index>::type::iterator it =
+      m_MegaImageContainer.get< Index >().find(iIndex);
+
+  if(it!=m_MegaImageContainer.get< Index >().end())
+    {
+    m_MegaImageContainer.get< Index >().modify( it , set_visibility(iVisibility) );
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+GoImageProcessor::
+setNameChannel(const unsigned int& iIndex, const std::string& iName)
+{
+  GoMegaImageStructureMultiIndexContainer::index<Index>::type::iterator it =
+      m_MegaImageContainer.get< Index >().find(iIndex);
+
+  if(it!=m_MegaImageContainer.get< Index >().end())
+    {
+    m_MegaImageContainer.get< Index >().modify( it , set_name(iName) );
+    }
+}
+//--------------------------------------------------------------------------
+void
+GoImageProcessor::
+visibilityChanged(std::string iName, bool iVisibility)
+{
+  GoMegaImageStructureMultiIndexContainer::index<Name>::type::iterator it =
+      m_MegaImageContainer.get< Name >().find(iName);
+
+  if(it!=m_MegaImageContainer.get< Name >().end())
+    {
+    m_MegaImageContainer.get< Name >().modify( it , set_visibility(iVisibility));
+    }
+
+ std::cout << "name: "<< iName << " visibility: " << iVisibility << std::endl;
+}
