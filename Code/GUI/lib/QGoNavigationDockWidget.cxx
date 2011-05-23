@@ -38,6 +38,9 @@
 #include <QVBoxLayout>
 #include <QShortcut>
 
+#include <QCheckBox>
+#include <QPushButton>
+
 QGoNavigationDockWidget::
 QGoNavigationDockWidget( QWidget *iParent,
                          const GoFigure::TabDimensionType & iDim ) :
@@ -392,4 +395,27 @@ void QGoNavigationDockWidget::
 SetShowAllChannels(const bool& iValue)
 {
   this->AllChannelsBtn->setChecked(iValue);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoNavigationDockWidget::
+AddChannel(const QString& iName, const QColor& iColor, const unsigned int& iNumber)
+{
+  // create check box + colored push button
+  QCheckBox *checkBox1 = new QCheckBox(iName);
+  QPushButton *pushButton = new QPushButton();
+  QString style = "background: rgb(%1, %2, %3);";
+  pushButton->setStyleSheet(
+        style.arg(iColor.red()).arg(iColor .green()).arg(iColor.blue()));
+ // pushButton->setStyleSheet("QPushButton { background: red } ");
+  QHBoxLayout *layout = new QHBoxLayout;
+  layout->addWidget(checkBox1);
+  layout->addWidget(pushButton);
+  this->gridLayout_2->addLayout(layout, 7+iNumber, 0, 0);
+  //create signals connections
+  // show hide modify?
+  // vector of widget so we can remove it from layout efficiently
+  // vector of doppler and vector of classic
 }

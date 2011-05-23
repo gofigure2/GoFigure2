@@ -109,6 +109,9 @@ public:
 
   void SetShowAllChannels(const bool& iValue);
 
+  // new channels representation
+  void AddChannel(const QString& iName, const QColor& iColor,const unsigned int& iNumber);
+
 public slots:
   /** Set X Slice */
   void SetXSlice(int iSlice);

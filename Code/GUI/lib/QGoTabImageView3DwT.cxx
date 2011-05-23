@@ -1478,6 +1478,10 @@ UpdateWidgetsFromImageProcessor()
     {
     m_NavigationDockWidget->SetChannel(i);
     m_ChannelNames[i] = m_NavigationDockWidget->GetChannelName(i);
+
+    QString string("test");
+    QColor color(255, 0, 0, 255);
+    m_NavigationDockWidget->AddChannel(string, color, i);
     }
 
 
