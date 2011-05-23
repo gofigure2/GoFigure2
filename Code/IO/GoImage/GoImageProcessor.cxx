@@ -146,6 +146,20 @@ getLookuptable(const unsigned int& iIndex) const
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+std::vector<double>
+GoImageProcessor::
+getColor(const unsigned int& iIndex) const
+{
+  GoMegaImageStructureMultiIndexContainer::index<Index>::type::iterator it =
+      m_MegaImageContainer.get< Index >().find(iIndex);
+
+  assert(it!=m_MegaImageContainer.get< Index >().end());
+
+  return it->Color;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 vtkSmartPointer<vtkImageData>
 GoImageProcessor::
 colorImage(vtkSmartPointer<vtkImageData> iImage,

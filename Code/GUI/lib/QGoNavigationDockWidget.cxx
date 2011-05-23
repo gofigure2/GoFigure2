@@ -405,7 +405,7 @@ AddChannel(const QString& iName, const QColor& iColor, const unsigned int& iNumb
 {
   // create check box + colored push button
   QCheckBox *checkBox1 = new QCheckBox(iName);
-  QPushButton *pushButton = new QPushButton();
+  QPushButton *pushButton = new QPushButton(iName);
   QString style = "background: rgb(%1, %2, %3);";
   pushButton->setStyleSheet(
         style.arg(iColor.red()).arg(iColor .green()).arg(iColor.blue()));

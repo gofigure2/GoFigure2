@@ -1416,12 +1416,12 @@ QGoTabImageView3DwT::SetLSMReader(vtkLSMReader *iReader, const int & iTimePoint)
   processor->setReader(iReader);
   m_ImageProcessor = processor;
 
-  UpdateWidgetsFromImageProcessor();
-
   if ( static_cast< unsigned int >( m_TCoord ) != iTimePoint )
     {
     SetTimePoint(iTimePoint);
     }
+
+  UpdateWidgetsFromImageProcessor();
 }
 
 //-------------------------------------------------------------------------
@@ -1449,12 +1449,12 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
   processor->setReader(m_MegaCaptureReader);
   m_ImageProcessor = processor;
 
-  UpdateWidgetsFromImageProcessor();
-
   if ( static_cast< unsigned int >( m_TCoord ) != iTimePoint )
     {
     SetTimePoint(iTimePoint);
     }
+
+  UpdateWidgetsFromImageProcessor();
 }
 //-------------------------------------------------------------------------
 
@@ -1479,9 +1479,15 @@ UpdateWidgetsFromImageProcessor()
     m_NavigationDockWidget->SetChannel(i);
     m_ChannelNames[i] = m_NavigationDockWidget->GetChannelName(i);
 
-    QString string("test");
-    QColor color(255, 0, 0, 255);
-    m_NavigationDockWidget->AddChannel(string, color, i);
+    std::vector<double> color = m_ImageProcessor->getColor(i);
+
+    m_NavigationDockWidget->AddChannel(
+          m_ChannelNames[i],
+          QColor(color[0],
+                 color[1],
+                 color[2],
+                 color[3]),
+          i);
     }
 
 

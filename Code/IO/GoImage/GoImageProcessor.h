@@ -159,6 +159,8 @@ public:
    */
   vtkSmartPointer<vtkLookupTable> getLookuptable(const unsigned int& iIndex) const;
 
+  std::vector<double> getColor(const unsigned int& iIndex) const;
+
   /*
    * \brief load all the channels for the given time point into the
    * GoMegaImageStructure
