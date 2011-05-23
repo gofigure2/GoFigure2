@@ -98,11 +98,11 @@ protected:
 
     const unsigned int ImageDimension = 3;
 
-    typedef TPixel PixelType;
+    typedef TPixel                                  PixelType;
     typedef itk::Image< PixelType, ImageDimension > ImageType;
     typedef typename ImageType::Pointer             ImagePointer;
-    typedef itk::Image< PixelType, 2 > ImageType2D;
-    typedef typename ImageType2D::Pointer             ImageType2DPointer;
+    typedef itk::Image< PixelType, 2 >              ImageType2D;
+    typedef typename ImageType2D::Pointer           ImageType2DPointer;
     typedef typename ImageType::SpacingType         ImageSpacingType;
 
     std::vector<vtkPolyData*> output;
@@ -157,14 +157,8 @@ protected:
             typename QGoFilterWatershed::OutputPixelType,
             2>( ItkOutPut );
 
-      // put image in good position
-      //FilterOutPutToVTK->Print(cout);
-
       // Nicolas- should be able to tune the parameter -0.5-
       vtkPolyData* temp_output = this->ExtractPolyData(FilterOutPutToVTK, 0.5);
-
-
-      std::cout << "orientation: " << iOrientation << std::endl;
 
       // translation transform -----------------------
       //------------------------------------------------------------------------
@@ -175,11 +169,6 @@ protected:
       temp_center[0] = ( temp_bounds[0] + temp_bounds[1] ) * 0.5;
       temp_center[1] = ( temp_bounds[2] + temp_bounds[3] ) * 0.5;
       temp_center[2] = ( temp_bounds[4] + temp_bounds[5] ) * 0.5;
-
-      for( unsigned int dim = 0; dim < 3; dim++ )
-        {
-        std::cout << "crop image center: " << temp_center[dim] << std::endl;
-        }
 
       vtkSmartPointer< vtkTransform > translation2 =
           vtkSmartPointer< vtkTransform >::New();
@@ -201,12 +190,11 @@ protected:
       // rotate polydata if necessary
       if(iOrientation == 0)
         {
-        translation->RotateY(-90);
-        //center[0] = iCenter[0] - temp_center[0];
+        translation->RotateY(-90); // check if + or - 90
         }
       else if(iOrientation == 1)
         {
-        translation->RotateX(-90);
+        translation->RotateX(-90); // check if + or - 90
         }
       else if(iOrientation == 2)
         {
@@ -225,11 +213,6 @@ protected:
       temp_center2[0] = ( bounds[0] + bounds[1] ) * 0.5;
       temp_center2[1] = ( bounds[2] + bounds[3] ) * 0.5;
       temp_center2[2] = ( bounds[4] + bounds[5] ) * 0.5;
-
-      for( unsigned int dim = 0; dim < 3; dim++ )
-        {
-        std::cout << "seed center: " << temp_center2[dim] << std::endl;
-        }
 
       vtkSmartPointer< vtkTransform > translation23 =
           vtkSmartPointer< vtkTransform >::New();
@@ -250,8 +233,6 @@ protected:
 
       vtkPolyData* testt = vtkPolyData::New();
       testt->DeepCopy(mesh_transform23->GetOutput());
-
-      //testt->Print(cout);
 
       output.push_back(testt);
       }

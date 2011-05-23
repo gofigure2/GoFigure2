@@ -60,7 +60,7 @@ void QGoLevelSetAlgo::DeleteParameters()
 void QGoLevelSetAlgo::SetAlgoWidget(QWidget* iParent)
 {
   this->m_AlgoWidget =
-    new QGoAlgorithmWidget("LevelSet 3D", iParent);
+    new QGoAlgorithmWidget("LevelSet", iParent);
 
   m_Curvature = new QGoAlgoParameter<int>("Curvature", true, 0, 1000, 20);
   this->m_AlgoWidget->AddParameter(m_Curvature);

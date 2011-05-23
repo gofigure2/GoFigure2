@@ -52,10 +52,8 @@ QGoContourLevelSetAlgo::~QGoContourLevelSetAlgo()
 
 //-------------------------------------------------------------------------
 std::vector<vtkPolyData*> QGoContourLevelSetAlgo::ApplyAlgo(
-  GoImageProcessor* iImages,
-    int iChannel)
+  GoImageProcessor* iImages, int iChannel)
 {
-  const int Dimension = 2;
   std::vector<vtkPolyData*> oNewContours = std::vector<vtkPolyData*>();
 
   if ( this->m_Radius->GetValue() <= 0 )
@@ -65,20 +63,40 @@ std::vector<vtkPolyData*> QGoContourLevelSetAlgo::ApplyAlgo(
     }
 
   double Center[3];
-  std::vector<double> CenterVect(2);
+  std::vector<double> CenterVect(3);
 
+  // LOOP  FOR EACH SEED
   for( size_t id = 0; id < this->m_Seeds->size(); id++ )
     {
-    // LOOP  FOR EACH SEED
+    unsigned int dimension2Collapse(0);
+    if(id == 0)
+      {
+      dimension2Collapse = 2; // we are in XY view, collapse Z
+      }
+    else if(id == 1)
+      {
+      dimension2Collapse = 1; // we are in XZ view, collapse Y
+      }
+    else if(id == 2)
+      {
+      dimension2Collapse = 0; // we are in YZ view, collapse X
+      }
+
     for ( int i = 0; i < (*this->m_Seeds)[id]->GetNumberOfPoints(); i++ )
       {
       (*this->m_Seeds)[id]->GetPoint(i, Center);
 
       CenterVect[0] = Center[0];
       CenterVect[1] = Center[1];
+      CenterVect[2] = Center[2];
 
-      //oNewContours.push_back(
-      //  this->ApplyLevelSetFilter<unsigned int, Dimension>(CenterVect, iImages, iChannel) );
+      vtkPolyData* temp_output =
+          this->ApplyLevelSetFilter< unsigned char >(
+            CenterVect,
+            iImages->getImageITK< unsigned char, 3>(iChannel),//input raw image
+            dimension2Collapse);// axe to be collapsed(0=x, 1=y, 2=z)
+
+      oNewContours.push_back( temp_output );
       }
     }
 

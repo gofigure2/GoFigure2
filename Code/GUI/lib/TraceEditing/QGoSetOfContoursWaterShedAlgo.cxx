@@ -68,19 +68,6 @@ std::vector<std::vector<vtkPolyData*> >
 QGoSetOfContoursWaterShedAlgo::
 ApplyAlgoSeveralSeeds( GoImageProcessor* iImages, int iChannel)
 {
-  /*std::vector<std::vector<vtkPolyData*> > NewContours;
-  QGoFilterWatershed WatershedFilter;
-  //double *center = new double[3];
-
-    NewContours =
-      WatershedFilter.ApplyFilterSetOf2D(this->m_Radius->GetValue(),
-      this->m_ThresMin->GetValue(), this->m_ThresMax->GetValue(),
-      this->m_CorrThres->GetValue(),this->m_Alpha->GetValue(),this->m_Beta->GetValue(),
-      this->m_Sampling->GetValue(), this->m_Seeds, iImages, iChannel );
-
-   return NewContours;*/
-
-
   std::vector<std::vector<vtkPolyData*> > NewContours;
 
   if ( this->m_Radius->GetValue() <= 0 )

@@ -62,7 +62,7 @@ void QGoWaterShedAlgo::DeleteParameters()
 void QGoWaterShedAlgo::SetAlgoWidget(QWidget* iParent)
 {
   this->m_AlgoWidget =
-    new QGoAlgorithmWidget("WaterShed 3D", iParent);
+    new QGoAlgorithmWidget("WaterShed", iParent);
 
   m_ThresMin = new QGoAlgoParameter<int>("Thres.Min.", true, 0, 999, 10);
   this->m_AlgoWidget->AddParameter(m_ThresMin);

@@ -124,27 +124,55 @@ public:
       }
   }
 
-  //template<class PixelType, unsigned int VImageDimension>
-  template<unsigned int VImageDimension>
-  typename itk::Image< float, VImageDimension >::Pointer
-    Apply2DFilter(
-    typename itk::Image< unsigned char, VImageDimension >::Pointer iITKInput,
-    int iIterations, int iCurvature)
+
+  template< typename TPixel >
+  void Apply2DFilter(
+    typename itk::Image< TPixel, 2 >::Pointer iITKInput,
+    const std::vector< double >& iCenter,
+    const double& iRadius,
+    const int& iIterations,
+    const int& iCurvature)
   {
-    typedef itk::Image< unsigned char, VImageDimension > FeatureImageType;
+    typedef itk::Image< TPixel, 2 > FeatureImageType;
     typedef itk::ChanAndVeseSegmentationFilter< FeatureImageType >
       SegmentationFilterType;
+    typedef typename SegmentationFilterType::Pointer SegmentationFilterPointer;
 
-    typename SegmentationFilterType::Pointer filter = SegmentationFilterType::New();
+    typedef typename SegmentationFilterType::InternalPointType ITKPointType;
+    typedef typename SegmentationFilterType::InternalCoordRepType ITKCoordType;
 
+    // convert center into ITKPointType
+    ITKPointType itk_center;
+
+    for( unsigned int dim = 0; dim < 2; dim++ )
+      {
+      itk_center[dim] = static_cast< ITKCoordType >( iCenter[dim] );
+      }
+
+    // convert radius into ITKCoordType
+    ITKCoordType itk_radius = static_cast< ITKCoordType >( iRadius );
+
+    // ITK filter
+    SegmentationFilterPointer filter = SegmentationFilterType::New();
+    filter->SetCenter( itk_center );
+    filter->SetRadius( itk_radius );
     filter->SetFeatureImage(iITKInput);
-    filter->SetPreprocess(1);
-
+    filter->SetPreprocess(0);//1);
     filter->SetNumberOfIterations(iIterations);
     filter->SetCurvatureWeight(iCurvature);
     filter->Update();
 
-    return filter->GetOutput();
+    typename Output2DType::Pointer resulting_image = filter->GetOutput();
+
+    if( resulting_image.IsNotNull() )
+      {
+      m_Image2D->Graft( resulting_image );
+      }
+    else
+      {
+      itkGenericExceptionMacro(
+            <<"ChanAndVeseSegmentationFilter's output is NULL" );
+      }
   }
 
   std::vector<std::vector<vtkPolyData*> > ApplyFilterSetOf2D(
@@ -155,6 +183,11 @@ public:
   Output3DType::Pointer GetOutput3D()
     {
     return m_Image3D;
+    }
+
+  Output2DType::Pointer GetOutput2D()
+    {
+    return m_Image2D;
     }
 
 private:

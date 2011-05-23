@@ -53,14 +53,14 @@
 #include <string>
 
 #include "vtkSmartPointer.h"
-#include "QGoMeshEditingWidgetManager.h"
-#include "QGoContourEditingWidgetManager.h"
 
 #include "GoImageProcessor.h"
 
 // base segmentation dock widget
-class QGoContourSegmentationBaseDockWidget;
-class QGoMeshSegmentationBaseDockWidget;
+class QGoContourEditingWidgetManager;
+class QGoMeshEditingWidgetManager;
+//class QGoContourSegmentationBaseDockWidget;
+//class QGoMeshSegmentationBaseDockWidget;
 
 //track dockwidget
 class QGoTrackViewDockWidget;
@@ -340,6 +340,9 @@ public slots:
 
   void SaveInDBAndRenderSetOfContoursForVisu(
     std::vector<std::vector<vtkPolyData*> >, int);
+
+  void SaveInDBAndRenderContourForVisu(
+    std::vector<vtkPolyData *> iVectPolydata, int iTCoord);
 
   void ReEditContour(const unsigned int & iId);
 

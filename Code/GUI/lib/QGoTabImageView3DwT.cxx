@@ -96,8 +96,10 @@
 #include <set>
 
 // base segmentation dock widgets
-#include "QGoContourSegmentationBaseDockWidget.h"
-#include "QGoMeshSegmentationBaseDockWidget.h"
+//#include "QGoContourSegmentationBaseDockWidget.h"
+//#include "QGoMeshSegmentationBaseDockWidget.h"
+#include "QGoMeshEditingWidgetManager.h"
+#include "QGoContourEditingWidgetManager.h"
 
 // track dockwidget
 #include "QGoTrackViewDockWidget.h"
@@ -411,11 +413,6 @@ QGoTabImageView3DwT::CreateContourEditingDockWidget(
   this->CreateConnectionsTraceEditingWidget<QGoContourEditingWidgetManager>(
     iTimeMin, iTimeMax, this->m_ContourEditingWidget);
 
-  QObject::connect( this->m_ContourEditingWidget,
-                    SIGNAL(TracesCreatedFromAlgo(std::vector<vtkPolyData *>, int) ),
-                    this,
-                    SLOT( SaveAndVisuContour(std::vector<vtkPolyData *>, int) ) );
-
   /*QObject::connect( m_ContourSegmentationDockWidget,
                     SIGNAL( ReinitializeInteractorActivated(bool) ),
                     this,
@@ -453,6 +450,13 @@ QGoTabImageView3DwT::CreateContourEditingDockWidget(
                     m_ImageView,
                     SLOT( UpdateContourRepresentationProperties(float, QColor,
                                                                 QColor, QColor) ) );
+
+  QObject::connect( this->m_ContourEditingWidget,
+                    SIGNAL(TracesCreatedFromAlgo(std::vector<vtkPolyData *>, int) ),
+                    this,
+                    SLOT( SaveInDBAndRenderContourForVisu(std::vector<vtkPolyData *>, int) ) );
+
+
   this->m_ContourEditingWidget->InitializeSettingsForManualMode();
   /*
   QObject::connect( m_ContourSegmentationDockWidget,
@@ -2480,7 +2484,6 @@ QGoTabImageView3DwT::SaveInDBAndRenderMeshForVisu(
     SaveAndVisuMesh(*iter, iTCoord);
     ++iter;
     }
-
 }
 //-------------------------------------------------------------------------
 void
@@ -2506,17 +2509,21 @@ SaveInDBAndRenderSetOfContoursForVisu(
 }
 
 //-------------------------------------------------------------------------
-/*void QGoTabImageView3DwT::SaveInDBAndRenderContourForVisu(
-  std::vector<vtkPolyData *> iVectPolydata, unsigned int iTCoord)
+void QGoTabImageView3DwT::SaveInDBAndRenderContourForVisu(
+  std::vector<vtkPolyData *> iVectPolydata, int iTCoord)
 {
   std::vector<vtkPolyData *>::iterator iter = iVectPolydata.begin();
   while(iter != iVectPolydata.end())
     {
-    SaveAndVisuContour(*iter, m_TCoord, iTCoord);
+      std::cout << "receive polydata" << std::endl;
+    vtkPolyData* data = vtkPolyData::New();
+    data->DeepCopy(*iter);
+    this->AddContour(data);
+    //SaveAndVisuContour(*iter, m_TCoord, iTCoord);
     ++iter;
     }
 
-}*/
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
