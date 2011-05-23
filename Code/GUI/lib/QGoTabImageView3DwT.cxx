@@ -712,12 +712,6 @@ QGoTabImageView3DwT::CreateVisuDockWidget()
   QObject::connect( this, SIGNAL( TimePointChanged(int) ),
                     m_NavigationDockWidget, SLOT( SetTSlice(int) ) );
 
-  QObject::connect( m_NavigationDockWidget, SIGNAL( ShowAllChannelsChanged(bool) ),
-                    this, SLOT( ShowAllChannels(bool) ) );
-
-  QObject::connect( m_NavigationDockWidget, SIGNAL( ShowOneChannelChanged(int) ),
-                    this, SLOT( ShowOneChannel(int) ) );
-
   QObject::connect( m_NavigationDockWidget, SIGNAL( ModeChanged(int) ),
                     this, SLOT( ModeChanged(int) ) );
 
@@ -1104,7 +1098,7 @@ QGoTabImageView3DwT::CreateTracesActions()
 void
 QGoTabImageView3DwT::SetupWidgetsDoppler2ClassicMode()
 {
-  unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
+ /* unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
 
   // resize internal and update the internal image
   if(NumberOfChannels == 1)
@@ -1122,7 +1116,7 @@ QGoTabImageView3DwT::SetupWidgetsDoppler2ClassicMode()
     {
     m_NavigationDockWidget->SetChannel( i, m_ChannelNames[i] );
     }
-  m_NavigationDockWidget->blockSignals(false);
+  m_NavigationDockWidget->blockSignals(false);*/
 }
 
 //-------------------------------------------------------------------------
@@ -1534,39 +1528,24 @@ UpdateWidgetsFromImageProcessor()
 void
 QGoTabImageView3DwT::SetTimePoint()
 {
-  unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
+  // get number of visible channels instead
+  unsigned int NumberOfVisibleChannels = m_ImageProcessor->getNumberOfVisibleChannels();
 
+  // should keep visibility from previous T if any
   m_ImageProcessor->setTimePoint(m_TCoord);
 
-  if ( NumberOfChannels>1 )
+  if ( NumberOfVisibleChannels>1 )
     {
-    if ( this->m_NavigationDockWidget->ShowAllChannels() )
-      {
-      m_Image->ShallowCopy(m_ImageProcessor->getAllImages());
-      }
-    else
-      {
-      // good LUT already there
-      // - updated when we go from all channels to one channel
-      int ch = this->m_NavigationDockWidget->GetCurrentChannel();
-      m_Image->ShallowCopy(m_ImageProcessor->getImageBW(ch));
-      }
-
-    // CONFIGURE LUT
-    this->findChild<QAction*>("LUT")->setEnabled(
-          !this->m_NavigationDockWidget->ShowAllChannels());
-    this->findChild<QAction*>("ScalarBar")->setEnabled(
-          !this->m_NavigationDockWidget->ShowAllChannels());
+    m_Image->ShallowCopy(m_ImageProcessor->getAllImages());
     }
   else
     {
-    int ch(0);
     //update LUT
-    m_Image->ShallowCopy(m_ImageProcessor->getImageBW(ch));
+    m_Image->ShallowCopy(m_ImageProcessor->getImageBW());
     m_ImageView->SetImage(m_Image);
     m_ImageView->Update();
     vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
-    lut->DeepCopy(m_ImageProcessor->getLookuptable(ch));
+    lut->DeepCopy(m_ImageProcessor->getLookuptable());
     m_ImageView->SetLookupTable(lut);
 
     // CONFIGURE LUT
@@ -1579,8 +1558,7 @@ QGoTabImageView3DwT::SetTimePoint()
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SetTimePointDoppler(int iChannel,
-                                                             int iPreviousT)
+QGoTabImageView3DwT::SetTimePointDoppler(int iChannel,int iPreviousT)
 {
   // iPreviousT not used yet.
   // useful for the optimizations
@@ -1588,16 +1566,7 @@ QGoTabImageView3DwT::SetTimePointDoppler(int iChannel,
 
   int* realTime = m_ImageProcessor->getDopplerTime(m_TCoord);
 
-  if ( this->m_NavigationDockWidget->ShowAllChannels() )
-    {
-    m_Image->ShallowCopy(m_ImageProcessor->getAllImages());
-    }
-  else
-    {
-    int ch = this->m_NavigationDockWidget->GetCurrentChannel();
-    // channel is time for the doppler
-    m_Image->ShallowCopy(m_ImageProcessor->getImageBW(realTime[ch]));
-    }
+  m_Image->ShallowCopy(m_ImageProcessor->getAllImages());
 
   // update widgets....
   // Nicolas - might be only 2 channels on borders...
@@ -1618,12 +1587,6 @@ QGoTabImageView3DwT::SetTimePointDoppler(int iChannel,
   // set current channel
   m_NavigationDockWidget->SetCurrentChannel(1);
   m_NavigationDockWidget->blockSignals(false);
-
-  // CONFIGURE LUT
-  this->findChild<QAction*>("LUT")->setEnabled(
-        !this->m_NavigationDockWidget->ShowAllChannels());
-  this->findChild<QAction*>("ScalarBar")->setEnabled(
-        !this->m_NavigationDockWidget->ShowAllChannels());
 }
 
 //-------------------------------------------------------------------------
@@ -1885,88 +1848,6 @@ QGoTabImageView3DwT::ChangeBackgroundColor()
     m_BackgroundColorAction->setIcon(Pix);
     }
 }
-
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
-{
-  if ( iChecked )
-    {
-    m_Image->ShallowCopy(m_ImageProcessor->getAllImages());
-    m_ImageView->SetImage(m_Image);
-    m_ImageView->Update();
-    }
-  else
-    {
-    int ch = this->m_NavigationDockWidget->GetCurrentChannel();
-    if(!m_ImageProcessor->getDopplerMode())
-      {
-      m_Image->ShallowCopy(m_ImageProcessor->getImageBW(ch));
-      m_ImageView->SetImage(m_Image);
-      m_ImageView->Update();
-      vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
-      lut->DeepCopy(m_ImageProcessor->getLookuptable(ch));
-      m_ImageView->SetLookupTable(lut);
-      }
-    else
-      {
-      int* realTime = m_ImageProcessor->getDopplerTime(m_TCoord);
-      m_Image->ShallowCopy(m_ImageProcessor->getImageBW(realTime[ch]));
-      m_ImageView->SetImage(m_Image);
-      m_ImageView->Update();
-      vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
-      lut->DeepCopy(m_ImageProcessor->getLookuptable(realTime[ch]));
-      m_ImageView->SetLookupTable(lut);
-      }
-    m_ImageView->Update();
-    }
-
-  // Update LUT
-  this->findChild<QAction*>("LUT")->setEnabled(!iChecked);
-  this->findChild<QAction*>("ScalarBar")->setEnabled(!iChecked);
-
-  // show the scalarbar automatically if the button is checked
-  bool showScalarBar = this->findChild<QAction*>("ScalarBar")->isChecked();
-  m_ImageView->ShowScalarBar(showScalarBar);
-}
-//------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::ShowOneChannel(int iChannel)
-{
-  if(!m_ImageProcessor->getDopplerMode())
-    {
-    // add test to see if channel exists (on borders)
-    this->findChild<QAction*>("LUT")->setEnabled(true);
-    this->findChild<QAction*>("ScalarBar")->setEnabled(true);
-    m_Image->ShallowCopy(m_ImageProcessor->getImageBW(iChannel));
-    m_ImageView->SetImage(m_Image);
-    m_ImageView->Update();
-    vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
-    lut->DeepCopy(m_ImageProcessor->getLookuptable(iChannel));
-    m_ImageView->SetLookupTable(lut);
-    m_ImageView->Update();
-    }
-  else
-    {
-    int* realTime = m_ImageProcessor->getDopplerTime(m_TCoord);
-    // should check that since combo box should have the good number of
-    // elements on border
-    // not working....
-    if(realTime[iChannel] >= 0)
-      {
-      m_Image->ShallowCopy(m_ImageProcessor->getImageBW(realTime[iChannel]));
-      m_ImageView->SetImage(m_Image);
-      m_ImageView->Update();
-      vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
-      lut->DeepCopy(m_ImageProcessor->getLookuptable(realTime[iChannel]));
-      m_ImageView->SetLookupTable(lut);
-      m_ImageView->Update();
-      }
-    }
-}
-//------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
@@ -3219,3 +3100,4 @@ visibilityChanged(QString iName, bool iVisibility)
   m_Image->ShallowCopy(m_ImageProcessor->getAllImages());
   Update();
 }
+//-------------------------------------------------------------------------

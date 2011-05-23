@@ -148,6 +148,23 @@ getLookuptable(const unsigned int& iIndex) const
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+vtkSmartPointer<vtkLookupTable>
+GoImageProcessor::
+getLookuptable() const
+{
+  GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator it =
+      m_MegaImageContainer.get< Visibility >().find(true);
+
+  if(it!=m_MegaImageContainer.get< Visibility >().end())
+    {
+    return it->LUT;
+    }
+
+  return NULL;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 std::vector<double>
 GoImageProcessor::
 getColor(const unsigned int& iIndex) const
@@ -199,6 +216,22 @@ getImageBW(const unsigned int& iIndex)
 //--------------------------------------------------------------------------
 vtkSmartPointer<vtkImageData>
 GoImageProcessor::
+getImageBW()
+{
+  GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator it =
+      m_MegaImageContainer.get< Visibility >().find(true);
+
+  if(it!=m_MegaImageContainer.get< Visibility >().end())
+    {
+    return it->Image;
+    }
+  return NULL;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+vtkSmartPointer<vtkImageData>
+GoImageProcessor::
 getAllImages()
 {
   vtkSmartPointer<vtkImageBlend> blendedImage =
@@ -212,6 +245,7 @@ getAllImages()
   vtkIdType i(0);
   while(it!=m_MegaImageContainer.get< Visibility >().end())
     {
+      std::cout << "add image to blender" << std::endl;
     blendedImage->AddInput(colorImage(it->Image, it->LUT));
     ++i;
     ++it;
@@ -381,6 +415,8 @@ setNameChannel(const unsigned int& iIndex, const std::string& iName)
     }
 }
 //--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 void
 GoImageProcessor::
 visibilityChanged(std::string iName, bool iVisibility)
@@ -393,5 +429,24 @@ visibilityChanged(std::string iName, bool iVisibility)
     m_MegaImageContainer.get< Name >().modify( it , set_visibility(iVisibility));
     }
 
- std::cout << "name: "<< iName << " visibility: " << iVisibility << std::endl;
+  if(iVisibility == true)
+    {
+    ++m_NumberOfVisibleChannels;
+    }
+  else
+    {
+    --m_NumberOfVisibleChannels;
+    }
+
+  std::cout << "image processor m_NumberOfVisibleChannels: "
+            << m_NumberOfVisibleChannels <<std::endl;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+unsigned int
+GoImageProcessor::
+getNumberOfVisibleChannels()
+{
+  return m_NumberOfVisibleChannels;
 }

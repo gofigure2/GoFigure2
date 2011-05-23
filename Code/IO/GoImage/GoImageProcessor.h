@@ -207,6 +207,8 @@ public:
    */
   vtkSmartPointer<vtkLookupTable> getLookuptable(const unsigned int& iIndex) const;
 
+  vtkSmartPointer<vtkLookupTable> getLookuptable() const;
+
   std::vector<double> getColor(const unsigned int& iIndex) const;
 
   /*
@@ -238,6 +240,7 @@ public:
    * \return raw image.
    */
   vtkSmartPointer<vtkImageData> getImageBW(const unsigned int& iIndex);
+  vtkSmartPointer<vtkImageData> getImageBW();
 
   void setVisibilityChannel(const unsigned int& iIndex, const bool& iVisibility);
 
@@ -290,6 +293,8 @@ public:
 
   void visibilityChanged(std::string, bool);
 
+  unsigned int getNumberOfVisibleChannels();
+
 protected:
   /*
    * \brief Color an image given the original image and a lookuptable (LUT)
@@ -317,6 +322,9 @@ protected:
   unsigned int m_DopplerStep;
   int*         m_DopplerTime;
   //--------------------
+
+  // other
+  unsigned int m_NumberOfVisibleChannels;
 
 private:
   // overload "=" operator

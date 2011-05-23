@@ -313,10 +313,6 @@ public slots:
 
   void ChangeBackgroundColor();
 
-  void ShowAllChannels(bool iChecked);
-
-  void ShowOneChannel(int iChannel);
-
   void ModeChanged(int iChannel);
 
   void StepChanged(int iStep);
