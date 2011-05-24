@@ -1934,12 +1934,17 @@ QGoTabImageView3DwT::ModeChanged(int iChannel)
     {
     this->m_NavigationDockWidget->DeleteDopplerWidgets();
     m_ImageProcessor->setDopplerMode(false);
-    SetupWidgetsDoppler2ClassicMode();
-    // to be renamed
-    //SetTimePoint();
+    // update image processor
+    m_ImageProcessor->setTimePoint(m_TCoord);
+    //update images
+    SetTimePoint();
+    // change visibility
+    this->m_NavigationDockWidget->VisibilityListChannels(true);
+    // check everything
     // update visualization
     Update();
     }
+
   UpdateTracesEditingWidget();
 }
 //-------------------------------------------------------------------------

@@ -45,6 +45,9 @@
 class QHBoxLayout;
 class QVBoxLayout;
 
+class QPushButton;
+class QCheckBox;
+
 /** \class QGoNavigationDockWidget
  *  \brief Dock Widget for browsing images (changing slice, time point...)
  *  \ingroup GUI
@@ -144,7 +147,8 @@ protected:
   GoFigure::TabDimensionType m_Dimension;
 
 private:
-  QList<QWidget*> m_ListChannels;
+  QList<QPushButton*> m_ListPushButtons;
+  QList<QCheckBox*> m_ListCheckBoxes;
   QList<QWidget*> m_ListDoppler;
 };
 #endif

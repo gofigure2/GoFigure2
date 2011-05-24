@@ -353,8 +353,8 @@ AddChannel(const QString& iName, const QColor& iColor, const unsigned int& iNumb
   // more signals for modify LUT
 
   // vector of widget so we can remove it from layout efficiently
-  m_ListChannels.push_back(checkBox1);
-  m_ListChannels.push_back(pushButton);
+  m_ListCheckBoxes.push_back(checkBox1);
+  m_ListPushButtons.push_back(pushButton);
 }
 //-------------------------------------------------------------------------
 
@@ -372,12 +372,20 @@ void
 QGoNavigationDockWidget::
 VisibilityListChannels(const bool& iVisibility)
 {
-  QList<QWidget*>::iterator it = m_ListChannels.begin();
-  while(it != m_ListChannels.end())
-  {
+  QList<QCheckBox*>::iterator it = m_ListCheckBoxes.begin();
+  while(it != m_ListCheckBoxes.end())
+    {
     (*it)->setVisible(iVisibility);
+    (*it)->setChecked(iVisibility);
     ++it;
-  }
+    }
+
+  QList<QPushButton*>::iterator it2 = m_ListPushButtons.begin();
+  while(it2 != m_ListPushButtons.end())
+    {
+    (*it2)->setVisible(iVisibility);
+    ++it2;
+    }
 }
 //-------------------------------------------------------------------------
 
