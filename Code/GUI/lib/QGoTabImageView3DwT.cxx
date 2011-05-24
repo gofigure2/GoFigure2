@@ -1151,7 +1151,10 @@ void QGoTabImageView3DwT::StartDopplerView()
     this->m_NavigationDockWidget->VisibilityListChannels(false);
     //update values - show requiered widgets
     int* time = m_ImageProcessor->getDopplerTime(m_TCoord);
-    for(int i=0; i<3; ++i)
+
+    unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
+
+    for(int i=0; i<NumberOfChannels; ++i)
       {
       // channel name
       QString t_step;
@@ -1181,6 +1184,7 @@ void QGoTabImageView3DwT::StartDopplerView()
             i,
             true); // all checkboxes are check edwhen we start
       }
+    m_Image->ShallowCopy(m_ImageProcessor->getAllImages());
 
     // render
     Update();
