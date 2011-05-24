@@ -63,17 +63,6 @@ public:
   /** \brief Destructor */
   ~QGoNavigationDockWidget();
 
-  /** \brief Set the number of channels */
-  void SetNumberOfChannels(const unsigned int & iN);
-
-  /** \brief Set channel name
-  *    \param[in] i channel id
-  *    \param[in] iText channel name
-  */
-  void SetChannel( const unsigned int & i, const QString & iText = QString() );
-
-  void SetCurrentChannel(unsigned int iChannel);
-
  /** \brief Set the extent of the images in the X direction
  * \param[in] iMin XMin
  * \param[in] iMax XMax
@@ -98,20 +87,16 @@ public:
  */
   void SetTMinimumAndMaximum(const int & iMin, const int & iMax);
 
-  /** \brief Get the selected channel id */
-  int  GetCurrentChannel() const;
-
-  /** \brief Select and show all channels */
-  bool ShowAllChannels()   const;
-
-  /** \brief Get the channel name */
-  QString GetChannelName(const int &);
-
-  void SetShowAllChannels(const bool& iValue);
-
   // new channels representation
   void AddChannel(const QString& iName, const QColor& iColor,const unsigned int& iNumber,
                   const bool& iChecked);
+
+  void VisibilityListChannels(const bool& iVisibility);
+
+  void AddDoppler(const QString& iName, const QColor& iColor,const unsigned int& iNumber,
+                  const bool& iChecked);
+
+  void VisibilityListDoppler(const bool& iVisibility);
 
 public slots:
   /** Set X Slice */
@@ -132,15 +117,11 @@ public slots:
   /** Move to the next time point using shortcuts */
   void MoveToNextTimePoint();
 
-  void StepVisibility(int);
+  void UpdateWidget(int);
 
   void visibilityChanged(bool);
 
 signals:
-  void ShowAllChannelsChanged(bool iChanged);
-
-  void ShowOneChannelChanged(int Channel);
-
   void XSliceChanged(int Slice);
 
   void YSliceChanged(int Slice);
@@ -157,5 +138,9 @@ signals:
 
 protected:
   GoFigure::TabDimensionType m_Dimension;
+
+private:
+  QList<QWidget*> m_ListChannels;
+  QList<QWidget*> m_ListDoppler;
 };
 #endif

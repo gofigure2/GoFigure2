@@ -1143,7 +1143,46 @@ void QGoTabImageView3DwT::StartDopplerView()
     m_ImageProcessor->setDopplerMode(ok);
     int value = item.toInt(&ok, 10);
     m_ChannelOfInterest = value;
-    SetTimePointDoppler(m_ChannelOfInterest);
+    //SetTimePointDoppler(m_ChannelOfInterest);
+    // update image
+    m_ImageProcessor->setDoppler(value, m_TCoord, 0); // 0 is for optimization later on...
+    // update widget
+    // hide channels
+    this->m_NavigationDockWidget->VisibilityListChannels(false);
+    //update values - show requiered widgets
+    int* time = m_ImageProcessor->getDopplerTime(m_TCoord);
+    for(int i=0; i<3; ++i)
+      {
+      // channel name
+      QString t_step;
+      t_step.append( QLatin1String("t: ") );
+      t_step.append( QString::number(time[i], 10) );
+
+      // channel visibility
+      m_ImageProcessor->setVisibilityChannel(i, true);
+
+      m_ImageProcessor->setNameChannel(i, t_step.toStdString());
+      // channel color
+      std::vector<double> color;
+      color.push_back(0.0);
+      color.push_back(0.0);
+      color.push_back(0.0);
+      color.push_back(255);
+
+      color[i] = 255;
+      //std::vector<double> color = m_ImageProcessor->getColor(i);
+      // update navigation dockwidget
+      m_NavigationDockWidget->AddDoppler(
+            t_step,
+            QColor(color[0],
+                   color[1],
+                   color[2],
+                   color[3]),
+            i,
+            true); // all checkboxes are check edwhen we start
+      }
+
+    // render
     Update();
     }
 }
@@ -1485,25 +1524,25 @@ UpdateWidgetsFromImageProcessor()
   // Initialize the widgets with the good number of channels
   // it will update the size of the related combobox
   m_NavigationDockWidget->blockSignals(true);
-  m_NavigationDockWidget->SetNumberOfChannels(NumberOfChannels);
 
   for ( unsigned int i = 0; i < NumberOfChannels; i++ )
     {
-    m_NavigationDockWidget->SetChannel(i);
-    m_ChannelNames[i] = m_NavigationDockWidget->GetChannelName(i);
-
+    // channel visibility
     m_ImageProcessor->setVisibilityChannel(i, true);
-    m_ImageProcessor->setNameChannel(i, m_ChannelNames[i].toStdString());
-
+    // channel name - shouldnt be here
+    QString channel = QString("Channel %1").arg(i);
+    m_ImageProcessor->setNameChannel(i, channel.toStdString());
+    // channel color
     std::vector<double> color = m_ImageProcessor->getColor(i);
+    // update navigation dockwidget
     m_NavigationDockWidget->AddChannel(
-          m_ChannelNames[i],
+          channel,
           QColor(color[0],
                  color[1],
                  color[2],
                  color[3]),
           i,
-          true);
+          true); // all checkboxes are check edwhen we start
     }
 
 
@@ -1574,7 +1613,6 @@ QGoTabImageView3DwT::SetTimePointDoppler(int iChannel,int iPreviousT)
 {
   // iPreviousT not used yet.
   // useful for the optimizations
-  m_ImageProcessor->setDoppler(iChannel, m_TCoord, iPreviousT);
 
   int* realTime = m_ImageProcessor->getDopplerTime(m_TCoord);
 
@@ -1583,7 +1621,7 @@ QGoTabImageView3DwT::SetTimePointDoppler(int iChannel,int iPreviousT)
   // update widgets....
   // Nicolas - might be only 2 channels on borders...
   m_NavigationDockWidget->blockSignals(true);
-  m_NavigationDockWidget->SetNumberOfChannels(3);
+  //m_NavigationDockWidget->SetNumberOfChannels(3);
 
 
   for(int i = 0; i<3; ++i)
@@ -1593,11 +1631,11 @@ QGoTabImageView3DwT::SetTimePointDoppler(int iChannel,int iPreviousT)
     t_step.append( QString::number(realTime[i], 10) );
 
     // Update the current channel
-    m_NavigationDockWidget->SetChannel(i, t_step);
+   // m_NavigationDockWidget->SetChannel(i, t_step);
    }
 
   // set current channel
-  m_NavigationDockWidget->SetCurrentChannel(1);
+ //m_NavigationDockWidget->SetCurrentChannel(1);
   m_NavigationDockWidget->blockSignals(false);
 }
 
@@ -1882,12 +1920,12 @@ QGoTabImageView3DwT::ModeChanged(int iChannel)
 void
 QGoTabImageView3DwT::StepChanged(int iStep)
 {
-  m_ImageProcessor->setDopplerStep(iStep);
+  //m_ImageProcessor->setDopplerStep(iStep);
 
 
   // todo nicolas -check utility
-  SetTimePointDoppler(m_ChannelOfInterest);
-  Update();
+  //SetTimePointDoppler(m_ChannelOfInterest);
+  //Update();
 }
 //-------------------------------------------------------------------------
 
