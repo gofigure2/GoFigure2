@@ -297,8 +297,8 @@ public:
 
   unsigned int getNumberOfVisibleChannels();
 
-  std::vector<bool> getVisibilityVector();
-  void setVisibilityVector(const std::vector<bool>& iVisibility);
+  std::vector<std::string> getVisibilityVector();
+  void setVisibilityVector(const std::vector<std::string>& iVisibility);
 
   unsigned int getContainerSize();
 

@@ -1633,8 +1633,6 @@ QGoTabImageView3DwT::SetTimePointDoppler(int iChannel,int iPreviousT)
   // set channel name
   this->m_NavigationDockWidget->setChannelName(
         QString("Channel %1").arg(iChannel));
-
-  SetTimePoint();
 }
 
 //-------------------------------------------------------------------------
@@ -1655,7 +1653,7 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
 
   if (!m_ImageProcessor->getDopplerMode())
     {
-    std::vector<bool> visibility = m_ImageProcessor->getVisibilityVector();
+    std::vector<std::string> visibility = m_ImageProcessor->getVisibilityVector();
     // update image processor
     m_ImageProcessor->setTimePoint(m_TCoord);
     // update visibility
@@ -1665,8 +1663,10 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
     }
   else
     {
-     // todo: sth for the visibility as we did for the classic mode
+    // update image processor
     SetTimePointDoppler(m_ChannelOfInterest, 0);
+    //update images
+    SetTimePoint();
     }
 
   //for the trace editing widget
@@ -1929,6 +1929,8 @@ QGoTabImageView3DwT::StepChanged(int iStep)
 {
   m_ImageProcessor->setDopplerStep(iStep);
   SetTimePointDoppler(m_ChannelOfInterest);
+  SetTimePoint();
+  Update();
 }
 //-------------------------------------------------------------------------
 

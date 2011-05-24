@@ -467,16 +467,19 @@ getNumberOfVisibleChannels()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::vector<bool>
+std::vector<std::string>
 GoImageProcessor::
 getVisibilityVector()
 {
-std::vector<bool> visibility;
+std::vector<std::string> visibility;
 GoMegaImageStructureMultiIndexContainer::iterator it =
         m_MegaImageContainer.begin();
 while(it!=m_MegaImageContainer.end())
   {
-  visibility.push_back(it->Visibility);
+  if(!it->Visibility)
+    {
+    visibility.push_back(it->Name);
+    }
   ++it;
   }
 return visibility;
@@ -486,12 +489,17 @@ return visibility;
 //--------------------------------------------------------------------------
 void
 GoImageProcessor::
-setVisibilityVector(const std::vector<bool>& iVisibility)
+setVisibilityVector(const std::vector<std::string>& iVisibility)
 {
   for(int i =0; i<iVisibility.size(); ++i)
-  {
-    setVisibilityChannel(i, iVisibility[i]);
-  }
+    {
+    GoMegaImageStructureMultiIndexContainer::index<Name>::type::iterator it =
+        m_MegaImageContainer.get< Name >().find(iVisibility[i]);
+    if(it!=m_MegaImageContainer.get< Name >().end())
+      {
+      setVisibilityChannel(it->Index, false);
+      }
+    }
 }
 //--------------------------------------------------------------------------
 
