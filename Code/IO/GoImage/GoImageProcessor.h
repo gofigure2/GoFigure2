@@ -298,6 +298,8 @@ public:
   std::vector<bool> getVisibilityVector();
   void setVisibilityVector(const std::vector<bool>& iVisibility);
 
+  unsigned int getContainerSize();
+
 protected:
   /*
    * \brief Color an image given the original image and a lookuptable (LUT)

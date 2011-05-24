@@ -426,3 +426,11 @@ VisibilityListDoppler(const bool& iVisibility)
   }
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoNavigationDockWidget::
+setChannelName(QString iChannelName)
+{
+  this->channelName->setText(iChannelName);
+}

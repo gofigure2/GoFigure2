@@ -356,7 +356,9 @@ getDopplerTime(unsigned int iTime)
   // value will be -1
   if (m_DopplerTime[0] < static_cast<int>(m_BoundsTime[0]))
     {
-    m_DopplerTime[0] = -1;
+    m_DopplerTime[0] = m_DopplerTime[1];
+    m_DopplerTime[1] = m_DopplerTime[2];
+    m_DopplerTime[2] = -1;
     }
   if (m_DopplerTime[2] > static_cast<int>(m_BoundsTime[1]))
     {
@@ -475,7 +477,15 @@ setVisibilityVector(const std::vector<bool>& iVisibility)
 {
   for(int i =0; i<iVisibility.size(); ++i)
   {
-    std::cout<< "channel: " << i << " visibility: " << iVisibility[i] << std::endl;
     setVisibilityChannel(i, iVisibility[i]);
   }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+unsigned int
+GoImageProcessor::
+getContainerSize()
+{
+  return m_MegaImageContainer.size();
 }

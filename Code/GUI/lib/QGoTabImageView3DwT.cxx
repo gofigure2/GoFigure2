@@ -1152,7 +1152,9 @@ void QGoTabImageView3DwT::StartDopplerView()
     //update values - show requiered widgets
     int* time = m_ImageProcessor->getDopplerTime(m_TCoord);
 
-    unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
+    // get number of items in container
+    // requiereds to call this method since the number of items varies
+    unsigned int NumberOfChannels = m_ImageProcessor->getContainerSize();
 
     for(int i=0; i<NumberOfChannels; ++i)
       {
@@ -1163,17 +1165,11 @@ void QGoTabImageView3DwT::StartDopplerView()
 
       // channel visibility
       m_ImageProcessor->setVisibilityChannel(i, true);
-
+      // channel name
       m_ImageProcessor->setNameChannel(i, t_step.toStdString());
       // channel color
-      std::vector<double> color;
-      color.push_back(0.0);
-      color.push_back(0.0);
-      color.push_back(0.0);
-      color.push_back(255);
+      std::vector<double> color = m_ImageProcessor->getColor(i);
 
-      color[i] = 255;
-      //std::vector<double> color = m_ImageProcessor->getColor(i);
       // update navigation dockwidget
       m_NavigationDockWidget->AddDoppler(
             t_step,
@@ -1184,6 +1180,10 @@ void QGoTabImageView3DwT::StartDopplerView()
             i,
             true); // all checkboxes are check edwhen we start
       }
+    // set channel name
+    this->m_NavigationDockWidget->setChannelName(
+          QString("Channel %1").arg(value));
+    // copy image
     m_Image->ShallowCopy(m_ImageProcessor->getAllImages());
 
     // render

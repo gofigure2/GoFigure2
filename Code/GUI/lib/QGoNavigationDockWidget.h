@@ -98,6 +98,8 @@ public:
 
   void VisibilityListDoppler(const bool& iVisibility);
 
+  void setChannelName(QString iChannelName);
+
 public slots:
   /** Set X Slice */
   void SetXSlice(int iSlice);
