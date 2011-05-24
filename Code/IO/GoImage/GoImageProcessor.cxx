@@ -189,6 +189,7 @@ colorImage(vtkSmartPointer<vtkImageData> iImage,
   coloredImage->SetLookupTable(iLUT);
   coloredImage->SetInput( iImage );
   coloredImage->SetOutputFormatToRGB();
+  coloredImage->SetNumberOfThreads(VTK_MAX_THREADS);
   coloredImage->Update();
 
   return coloredImage->GetOutput();
@@ -202,13 +203,10 @@ getImageBW(const unsigned int& iIndex)
 {
   GoMegaImageStructureMultiIndexContainer::index<Index>::type::iterator it =
       m_MegaImageContainer.get< Index >().find(iIndex);
-  std::cout << "look for image: " << iIndex << std::endl;
   if(it!=m_MegaImageContainer.get< Index >().end())
     {
-    std::cout << "FOUND: " << iIndex << std::endl;
     return it->Image;
     }
-  std::cout << "NOT FOUND: " << iIndex << std::endl;
   return NULL;
 }
 //--------------------------------------------------------------------------
@@ -238,6 +236,7 @@ getAllImages()
       vtkSmartPointer<vtkImageBlend>::New();
   blendedImage->RemoveAllInputs();
   blendedImage->SetBlendModeToCompound();
+  blendedImage->SetNumberOfThreads(VTK_MAX_THREADS);
 
   GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator it =
       m_MegaImageContainer.get< Visibility >().find(true);
@@ -245,7 +244,6 @@ getAllImages()
   vtkIdType i(0);
   while(it!=m_MegaImageContainer.get< Visibility >().end())
     {
-      std::cout << "add image to blender" << std::endl;
     blendedImage->AddInput(colorImage(it->Image, it->LUT));
     ++i;
     ++it;
@@ -266,6 +264,7 @@ getAllImages()
   scale->SetInput(blendedImage->GetOutput());
   scale->SetScale(255/range);
   scale->SetOutputScalarTypeToUnsignedChar();
+  scale->SetNumberOfThreads(VTK_MAX_THREADS);
   scale->Update();
 
   return scale->GetOutput();
