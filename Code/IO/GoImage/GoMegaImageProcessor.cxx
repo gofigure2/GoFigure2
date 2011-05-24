@@ -35,6 +35,8 @@
 
 #include "GoMegaImageProcessor.h"
 
+#include <QString>
+
 //--------------------------------------------------------------------------
 void
 GoMegaImageProcessor::
@@ -118,11 +120,14 @@ setTimePoint(const unsigned int& iTime)
 
     // Update the MegaImageStructure
     // image, LUT, channel, time point
-    std::cout <<"index: " << numberOfChannels << std::endl;
     m_MegaImageContainer.insert(GoMegaImageStructure(numberOfChannels,
                                                      lut,
                                                      image,
                                                      color));
+
+    // channel name
+    QString channel = QString("Channel %1").arg(numberOfChannels);
+    this->setNameChannel(numberOfChannels, channel.toStdString());
     }
 }
 //--------------------------------------------------------------------------
@@ -181,6 +186,12 @@ setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
                                                      lut,
                                                      image,
                                                      color));
+    // channel name
+    QString t_step;
+    t_step.append( QLatin1String("t: ") );
+    t_step.append( QString::number(dopplerTime[i], 10) );
+    // channel name
+    this->setNameChannel(dopplerTime[i], t_step.toStdString());
       }
     }
 

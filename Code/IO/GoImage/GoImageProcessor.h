@@ -246,6 +246,8 @@ public:
 
   void setNameChannel(const unsigned int& iIndex, const std::string& iName);
 
+  std::string getNameChannel(const unsigned int& iIndex);
+
   template< class PixelType, const unsigned int VImageDimension >
   typename itk::Image< PixelType, VImageDimension >::Pointer
   getImageITK(int& iIndex)

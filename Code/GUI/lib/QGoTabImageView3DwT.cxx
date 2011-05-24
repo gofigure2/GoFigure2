@@ -1157,21 +1157,11 @@ void QGoTabImageView3DwT::StartDopplerView()
       {
       if(time[i]>=0)
         {
-        // channel name
-        QString t_step;
-        t_step.append( QLatin1String("t: ") );
-        t_step.append( QString::number(time[i], 10) );
-
-        // channel visibility
-        m_ImageProcessor->setVisibilityChannel(time[i], true);
-        // channel name
-        m_ImageProcessor->setNameChannel(time[i], t_step.toStdString());
         // channel color
         std::vector<double> color = m_ImageProcessor->getColor(time[i]);
-
         // update navigation dockwidget
         m_NavigationDockWidget->AddDoppler(
-              t_step,
+              QString::fromStdString(m_ImageProcessor->getNameChannel(time[i])),
               QColor(color[0],
                      color[1],
                      color[2],
@@ -1183,6 +1173,7 @@ void QGoTabImageView3DwT::StartDopplerView()
     // set channel name
     this->m_NavigationDockWidget->setChannelName(
           QString("Channel %1").arg(value));
+
     // copy image
     m_Image->ShallowCopy(m_ImageProcessor->getAllImages());
 
@@ -1533,14 +1524,11 @@ UpdateWidgetsFromImageProcessor()
 
   for ( unsigned int i = 0; i < NumberOfChannels; i++ )
     {
-    // channel name - shouldnt be here
-    QString channel = QString("Channel %1").arg(i);
-    m_ImageProcessor->setNameChannel(i, channel.toStdString());
     // channel color
     std::vector<double> color = m_ImageProcessor->getColor(i);
     // update navigation dockwidget
     m_NavigationDockWidget->AddChannel(
-          channel,
+          QString::fromStdString(m_ImageProcessor->getNameChannel(i)),
           QColor(color[0],
                  color[1],
                  color[2],
@@ -1616,9 +1604,7 @@ void
 QGoTabImageView3DwT::SetTimePointDoppler(int iChannel,int iPreviousT)
 {
   // delete previous doppler widget
-  std::cout << "delete doppler widget" << std::endl;
   this->m_NavigationDockWidget->DeleteDopplerWidgets();
-  std::cout << "doppler widget deleted" << std::endl;
 
   m_ImageProcessor->setDoppler(iChannel, m_TCoord, 0); // 0 is for optimization later on...
 
@@ -1631,22 +1617,11 @@ QGoTabImageView3DwT::SetTimePointDoppler(int iChannel,int iPreviousT)
     {
     if(time[i]>=0)
       {
-        std::cout << "adding time point: " << time[i] << std::endl;
-      // channel name
-      QString t_step;
-      t_step.append( QLatin1String("t: ") );
-      t_step.append( QString::number(time[i], 10) );
-
-      // channel visibility
-      m_ImageProcessor->setVisibilityChannel(time[i], true);
-      // channel name
-      m_ImageProcessor->setNameChannel(time[i], t_step.toStdString());
       // channel color
       std::vector<double> color = m_ImageProcessor->getColor(time[i]);
-
       // update navigation dockwidget
       m_NavigationDockWidget->AddDoppler(
-            t_step,
+            QString::fromStdString(m_ImageProcessor->getNameChannel(time[i])),
             QColor(color[0],
                    color[1],
                    color[2],
@@ -1940,7 +1915,6 @@ QGoTabImageView3DwT::ModeChanged(int iChannel)
     SetTimePoint();
     // change visibility
     this->m_NavigationDockWidget->VisibilityListChannels(true);
-    // check everything
     // update visualization
     Update();
     }

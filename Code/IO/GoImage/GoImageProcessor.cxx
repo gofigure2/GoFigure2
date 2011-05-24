@@ -416,6 +416,22 @@ setNameChannel(const unsigned int& iIndex, const std::string& iName)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+std::string
+GoImageProcessor::
+getNameChannel(const unsigned int& iIndex)
+{
+  GoMegaImageStructureMultiIndexContainer::index<Index>::type::iterator it =
+      m_MegaImageContainer.get< Index >().find(iIndex);
+
+  if(it!=m_MegaImageContainer.get< Index >().end())
+    {
+    return it->Name;
+    }
+  return "";
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 void
 GoImageProcessor::
 visibilityChanged(std::string iName, bool iVisibility)
