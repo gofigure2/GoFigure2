@@ -123,11 +123,9 @@ setTimePoint(const unsigned int& iTime)
     m_MegaImageContainer.insert(GoMegaImageStructure(numberOfChannels,
                                                      lut,
                                                      image,
-                                                     color));
-
-    // channel name
-    QString channel = QString("Channel %1").arg(numberOfChannels);
-    this->setNameChannel(numberOfChannels, channel.toStdString());
+                                                     color,
+                                                     true,
+                                                     QString("Channel %1").arg(numberOfChannels).toStdString()));
     }
 }
 //--------------------------------------------------------------------------
@@ -180,18 +178,20 @@ setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
                                                     color[3],
                                                     image->GetScalarRange());
 
+    // channel name
+    QString t_step;
+    t_step.append( QLatin1String("t: ") );
+    t_step.append( QString::number(dopplerTime[i], 10) );
+
     // Update the MegaImageStructure
     // image, LUT, channel, time point
     m_MegaImageContainer.insert(GoMegaImageStructure(dopplerTime[i],
                                                      lut,
                                                      image,
-                                                     color));
-    // channel name
-    QString t_step;
-    t_step.append( QLatin1String("t: ") );
-    t_step.append( QString::number(dopplerTime[i], 10) );
-    // channel name
-    this->setNameChannel(dopplerTime[i], t_step.toStdString());
+                                                     color,
+                                                     true,
+                                                     t_step.toStdString()));
+
       }
     }
 

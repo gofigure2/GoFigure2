@@ -1927,12 +1927,8 @@ QGoTabImageView3DwT::ModeChanged(int iChannel)
 void
 QGoTabImageView3DwT::StepChanged(int iStep)
 {
-  //m_ImageProcessor->setDopplerStep(iStep);
-
-
-  // todo nicolas -check utility
-  //SetTimePointDoppler(m_ChannelOfInterest);
-  //Update();
+  m_ImageProcessor->setDopplerStep(iStep);
+  SetTimePointDoppler(m_ChannelOfInterest);
 }
 //-------------------------------------------------------------------------
 

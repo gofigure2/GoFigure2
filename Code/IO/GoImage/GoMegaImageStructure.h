@@ -72,12 +72,13 @@ struct QGOIO_EXPORT GoMegaImageStructure
     GoMegaImageStructure(unsigned int iIndex,
                        vtkSmartPointer<vtkLookupTable> iLUT,
                        vtkSmartPointer<vtkImageData> iImage,
-                       std::vector< double > iColor):
-      Index(iIndex), LUT(iLUT), Color(iColor)
+                       std::vector< double > iColor,
+                       bool iVisibility,
+                       std::string iName):
+      Index(iIndex), LUT(iLUT), Color(iColor), Visibility(iVisibility),
+      Name(iName)
     {
     Image = iImage;
-    Visibility = true;
-    Name = "";
     }
 
     // functions to modify the structure through the boost::multiindexcontainer
