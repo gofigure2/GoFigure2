@@ -57,8 +57,6 @@ setReader(itk::MegaCaptureReader::Pointer iReader)
 
   m_TimeInterval = m_MegaImageReader->GetTimeInterval();
   m_NumberOfVisibleChannels = m_BoundsChannel[1]- m_BoundsChannel[0] +1;
-
-  std::cout <<"m_NumberOfVisibleChannels: " << m_NumberOfVisibleChannels << std::endl;
 }
 //--------------------------------------------------------------------------
 
@@ -121,6 +119,7 @@ setTimePoint(const unsigned int& iTime)
 
     // Update the MegaImageStructure
     // image, LUT, channel, time point
+    std::cout <<"index: " << numberOfChannels << std::endl;
     m_MegaImageContainer.insert(GoMegaImageStructure(numberOfChannels,
                                                      lut,
                                                      image,

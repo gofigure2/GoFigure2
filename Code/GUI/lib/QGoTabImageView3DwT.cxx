@@ -1413,12 +1413,19 @@ QGoTabImageView3DwT::SetLSMReader(vtkLSMReader *iReader, const int & iTimePoint)
   processor->setReader(iReader);
   m_ImageProcessor = processor;
 
-  if ( static_cast< unsigned int >( m_TCoord ) != iTimePoint )
-    {
-    SetTimePoint(iTimePoint);
-    }
-
+  m_TCoord = iTimePoint;
+  // update image processor
+  m_ImageProcessor->setTimePoint(m_TCoord);
+  //update images
+  SetTimePoint();
+  emit TimePointChanged(iTimePoint);
+  // update actors
+  this->m_ContourContainer->ShowActorsWithGivenTimePoint(iTimePoint);
+  this->m_MeshContainer->ShowActorsWithGivenTimePoint(iTimePoint);
+  // update widgets on image loading
   UpdateWidgetsFromImageProcessor();
+  // render
+  Update();
 }
 
 //-------------------------------------------------------------------------
@@ -1446,12 +1453,21 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
   processor->setReader(m_MegaCaptureReader);
   m_ImageProcessor = processor;
 
-  if ( static_cast< unsigned int >( m_TCoord ) != iTimePoint )
-    {
-    SetTimePoint(iTimePoint);
-    }
-
+  std::cout << "time point: " << iTimePoint << std::endl;
+  m_TCoord = iTimePoint;
+  // update image processor
+  m_ImageProcessor->setTimePoint(m_TCoord);
+  //update images
+  SetTimePoint();
+  // update navigation widget..?
+  emit TimePointChanged(iTimePoint);
+  // update actors
+  this->m_ContourContainer->ShowActorsWithGivenTimePoint(iTimePoint);
+  this->m_MeshContainer->ShowActorsWithGivenTimePoint(iTimePoint);
+  // update widgets on image loading
   UpdateWidgetsFromImageProcessor();
+  // render
+  Update();
 }
 //-------------------------------------------------------------------------
 
@@ -1501,8 +1517,7 @@ UpdateWidgetsFromImageProcessor()
   m_NavigationDockWidget->SetZSlice( ( extent[4] + extent[5] ) / 2 );
 
   m_NavigationDockWidget->SetTMinimumAndMaximum(boundTime[0], boundTime[1]);
-  m_NavigationDockWidget->SetTSlice(
-        boundTime[0]+(boundTime[1]-boundTime[0])/2);
+  m_NavigationDockWidget->SetTSlice(boundTime[0]);
   m_NavigationDockWidget->blockSignals(false);
 
   /**\ todo Lydie: the dock widget needs to have the channels and the timepoints,
@@ -1530,9 +1545,6 @@ QGoTabImageView3DwT::SetTimePoint()
 {
   // get number of visible channels instead
   unsigned int NumberOfVisibleChannels = m_ImageProcessor->getNumberOfVisibleChannels();
-
-  // should keep visibility from previous T if any
-  m_ImageProcessor->setTimePoint(m_TCoord);
 
   if ( NumberOfVisibleChannels>1 )
     {
@@ -1602,32 +1614,28 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
 
   QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
 
-  unsigned int t = static_cast< unsigned int >( iTimePoint );
-  unsigned int* time = m_ImageProcessor->getBoundsTime();
-  if ( ( t < time[0] ) || ( t > time[1] ) )
+  //int previousT = m_TCoord;
+  m_TCoord = iTimePoint;
+  if (!m_ImageProcessor->getDopplerMode())
     {
-    return;
+    std::vector<bool> visibility = m_ImageProcessor->getVisibilityVector();
+    // update image processor
+    m_ImageProcessor->setTimePoint(m_TCoord);
+    // update visibility
+    m_ImageProcessor->setVisibilityVector(visibility);
+    //update images
+    SetTimePoint();
     }
   else
     {
-    int previousT = m_TCoord;
-    m_TCoord = iTimePoint;
-    if (!m_ImageProcessor->getDopplerMode())
-      {
-      SetTimePoint();
-      }
-    else
-      {
-      SetTimePointDoppler(m_ChannelOfInterest, previousT);
-      }
-    emit TimePointChanged(m_TCoord);
+    //SetTimePointDoppler(m_ChannelOfInterest, previousT);
     }
+  emit TimePointChanged(m_TCoord);
 
   this->m_ContourContainer->ShowActorsWithGivenTimePoint(m_TCoord);
   this->m_MeshContainer->ShowActorsWithGivenTimePoint(m_TCoord);
 
   Update();
-
   QApplication::restoreOverrideCursor();
 }
 
@@ -1862,7 +1870,7 @@ QGoTabImageView3DwT::ModeChanged(int iChannel)
     m_ImageProcessor->setDopplerMode(false);
     SetupWidgetsDoppler2ClassicMode();
     // to be renamed
-    SetTimePoint();
+    //SetTimePoint();
     // update visualization
     Update();
     }
@@ -3097,7 +3105,7 @@ QGoTabImageView3DwT::
 visibilityChanged(QString iName, bool iVisibility)
 {
   m_ImageProcessor->visibilityChanged(iName.toStdString(), iVisibility);
-  m_Image->ShallowCopy(m_ImageProcessor->getAllImages());
+  SetTimePoint();
   Update();
 }
 //-------------------------------------------------------------------------

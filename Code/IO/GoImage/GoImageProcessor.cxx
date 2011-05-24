@@ -449,3 +449,33 @@ getNumberOfVisibleChannels()
 {
   return m_NumberOfVisibleChannels;
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::vector<bool>
+GoImageProcessor::
+getVisibilityVector()
+{
+std::vector<bool> visibility;
+GoMegaImageStructureMultiIndexContainer::iterator it =
+        m_MegaImageContainer.begin();
+while(it!=m_MegaImageContainer.end())
+  {
+  visibility.push_back(it->Visibility);
+  ++it;
+  }
+return visibility;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+GoImageProcessor::
+setVisibilityVector(const std::vector<bool>& iVisibility)
+{
+  for(int i =0; i<iVisibility.size(); ++i)
+  {
+    std::cout<< "channel: " << i << " visibility: " << iVisibility[i] << std::endl;
+    setVisibilityChannel(i, iVisibility[i]);
+  }
+}

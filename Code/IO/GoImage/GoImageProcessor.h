@@ -295,6 +295,9 @@ public:
 
   unsigned int getNumberOfVisibleChannels();
 
+  std::vector<bool> getVisibilityVector();
+  void setVisibilityVector(const std::vector<bool>& iVisibility);
+
 protected:
   /*
    * \brief Color an image given the original image and a lookuptable (LUT)
