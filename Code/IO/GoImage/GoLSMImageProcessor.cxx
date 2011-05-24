@@ -59,7 +59,6 @@ setReader(vtkLSMReader* iReader)
       GetExtent(m_Extent);
 
   m_TimeInterval = m_LSMReader->GetTimeInterval();
-  m_NumberOfVisibleChannels = m_BoundsChannel[1]- m_BoundsChannel[0] + 1;
 }
 //--------------------------------------------------------------------------
 

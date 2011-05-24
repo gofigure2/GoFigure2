@@ -100,6 +100,8 @@ public:
 
   void setChannelName(QString iChannelName);
 
+  void DeleteDopplerWidgets();
+
 public slots:
   /** Set X Slice */
   void SetXSlice(int iSlice);

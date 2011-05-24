@@ -328,9 +328,6 @@ protected:
   int*         m_DopplerTime;
   //--------------------
 
-  // other
-  unsigned int m_NumberOfVisibleChannels;
-
 private:
   // overload "=" operator
   GoImageProcessor& operator=(const GoImageProcessor &rhs)

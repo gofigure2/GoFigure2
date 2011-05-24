@@ -434,3 +434,12 @@ setChannelName(QString iChannelName)
 {
   this->channelName->setText(iChannelName);
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoNavigationDockWidget:: DeleteDopplerWidgets()
+{
+  qDeleteAll(m_ListDoppler.begin(), m_ListDoppler.end());
+  m_ListDoppler.clear();
+}

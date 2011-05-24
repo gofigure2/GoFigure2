@@ -356,9 +356,7 @@ getDopplerTime(unsigned int iTime)
   // value will be -1
   if (m_DopplerTime[0] < static_cast<int>(m_BoundsTime[0]))
     {
-    m_DopplerTime[0] = m_DopplerTime[1];
-    m_DopplerTime[1] = m_DopplerTime[2];
-    m_DopplerTime[2] = -1;
+    m_DopplerTime[0] = -1;
     }
   if (m_DopplerTime[2] > static_cast<int>(m_BoundsTime[1]))
     {
@@ -429,18 +427,6 @@ visibilityChanged(std::string iName, bool iVisibility)
     {
     m_MegaImageContainer.get< Name >().modify( it , set_visibility(iVisibility));
     }
-
-  if(iVisibility == true)
-    {
-    ++m_NumberOfVisibleChannels;
-    }
-  else
-    {
-    --m_NumberOfVisibleChannels;
-    }
-
-  std::cout << "image processor m_NumberOfVisibleChannels: "
-            << m_NumberOfVisibleChannels <<std::endl;
 }
 //--------------------------------------------------------------------------
 
@@ -449,7 +435,18 @@ unsigned int
 GoImageProcessor::
 getNumberOfVisibleChannels()
 {
-  return m_NumberOfVisibleChannels;
+  unsigned int numberOfVisibleChannels(0);
+
+  GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator it =
+      m_MegaImageContainer.get< Visibility >().find(true)
+      ;
+  while(it!=m_MegaImageContainer.get< Visibility >().end())
+    {
+    ++numberOfVisibleChannels;
+    ++it;
+    }
+
+  return numberOfVisibleChannels;
 }
 //--------------------------------------------------------------------------
 
