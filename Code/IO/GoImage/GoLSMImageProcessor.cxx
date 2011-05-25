@@ -138,8 +138,7 @@ setTimePoint(const unsigned int& iTime)
 //--------------------------------------------------------------------------
 void
 GoLSMImageProcessor::
-setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
-           const unsigned int& iPrevious)
+setDoppler(const unsigned int& iTime, const unsigned int& iPrevious)
 {
   //to optimize doppler view later on
   (void) iPrevious;
@@ -163,7 +162,7 @@ setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
       vtkSmartPointer<vtkLSMReader> reader =
           vtkSmartPointer<vtkLSMReader>::New();
       reader->SetFileName(m_LSMReader->GetFileName());
-      reader->SetUpdateChannel(iChannel);
+      reader->SetUpdateChannel(m_DopplerChannel);
       reader->SetUpdateTimePoint(dopplerTime[i]);
       reader->Update();
 

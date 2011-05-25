@@ -50,7 +50,7 @@
 //--------------------------------------------------------------------------
 GoImageProcessor::GoImageProcessor():m_Output(NULL),
   m_BoundsTime(NULL), m_BoundsChannel(NULL), m_Extent(NULL),
-  m_DopplerMode(false), m_DopplerStep(1)
+  m_DopplerMode(false), m_DopplerStep(1), m_DopplerChannel(0)
 {
   m_DopplerTime = new int[3];
 }
@@ -61,7 +61,8 @@ GoImageProcessor::GoImageProcessor(const GoImageProcessor & iE):
   m_MegaImageContainer(iE.m_MegaImageContainer), m_Output(iE.m_Output),
   m_BoundsTime(iE.m_BoundsTime), m_BoundsChannel(iE.m_BoundsChannel),
   m_Extent(iE.m_Extent),  m_DopplerMode(iE.m_DopplerMode),
-  m_DopplerStep(iE.m_DopplerStep), m_DopplerTime(iE.m_DopplerTime)
+  m_DopplerStep(iE.m_DopplerStep), m_DopplerTime(iE.m_DopplerTime),
+  m_DopplerChannel(iE.m_DopplerChannel)
 {
 }
 //--------------------------------------------------------------------------
@@ -370,9 +371,10 @@ getDopplerTime(unsigned int iTime)
 //--------------------------------------------------------------------------
 void
 GoImageProcessor::
-setDopplerMode(const bool& iEnable)
+setDopplerMode(const bool& iEnable, const unsigned int& iChannel)
 {
   m_DopplerMode = iEnable;
+  m_DopplerChannel = iChannel;
 }
 //--------------------------------------------------------------------------
 
@@ -384,6 +386,12 @@ getDopplerMode()
   return m_DopplerMode;
 }
 //--------------------------------------------------------------------------
+unsigned int
+GoImageProcessor::
+getDopplerChannel()
+{
+  return m_DopplerChannel;
+}
 
 //--------------------------------------------------------------------------
 void

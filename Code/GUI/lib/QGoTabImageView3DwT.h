@@ -411,10 +411,6 @@ protected:
 
   //bool m_TraceWidgetRequiered;
 
-  /** \brief ID of the channel that we want to visualize in the time
-   * visualization mode */
-  int  m_ChannelOfInterest;
-
   /// \todo remove m_FFMPEGWriter and m_AVIWriter from this class
 
   #if defined ENABLEFFMPEG || defined ENABLEAVI
@@ -596,7 +592,7 @@ protected:
   void SetTimePoint();
 
     // TODO remove megacaptureZz
-  void SetTimePointDoppler(int channel, int PreviousT = 0);
+  void BuildDopplerWidget();
 
   /**
   \brief give the adress for the contours, meshes and tracks container to the

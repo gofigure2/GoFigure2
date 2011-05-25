@@ -64,8 +64,7 @@ public:
 
   virtual void setTimePoint(const unsigned int& iTime);
 
-  virtual void setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
-                  const unsigned int& iPrevious);
+  virtual void setDoppler(const unsigned int& iTime, const unsigned int& iPrevious);
 
 private:
 

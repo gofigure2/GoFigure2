@@ -228,8 +228,7 @@ public:
    * \note need to store parameters if we want to go through volume
   * efficiently (not reload everything all the time)
    */
-  virtual void setDoppler(const unsigned int& iChannel,
-                          const unsigned int& iTime,
+  virtual void setDoppler(const unsigned int& iTime,
                           const unsigned int& iPrevious) = 0;
 
   /*
@@ -290,8 +289,9 @@ public:
   unsigned int getDopplerStep();
   void setDopplerStep(unsigned int iStep);
   int* getDopplerTime(unsigned int iTime);
-  void setDopplerMode(const bool& iEnable);
+  void setDopplerMode(const bool& iEnable, const unsigned int& iChannel);
   bool getDopplerMode();
+  unsigned int getDopplerChannel();
 
   void visibilityChanged(std::string, bool);
 
@@ -328,6 +328,7 @@ protected:
   bool         m_DopplerMode;
   unsigned int m_DopplerStep;
   int*         m_DopplerTime;
+  unsigned int m_DopplerChannel;
   //--------------------
 
 private:

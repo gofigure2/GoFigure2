@@ -149,10 +149,6 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
 //  m_OrderedSeeds.push_back(xz);
 //  m_OrderedSeeds.push_back(yz);
 
-  // doppler view useful variables
-  // to be moved in ImageProcessor or somewhere else
-  m_ChannelOfInterest = 0;
-
   m_HighlightedContoursProperty = vtkProperty::New();
   m_HighlightedContoursProperty->SetColor(1., 0., 0.);
   m_HighlightedContoursProperty->SetOpacity(1.);
@@ -359,8 +355,6 @@ QGoTabImageView3DwT::UpdateSeeds()
     ++it;
   }
   m_ImageView->GetSeeds(m_OrderedSeeds);*/
-
-  std::cout << "Update seeds" << std::endl;
 
   for( size_t id = 0; id < m_Seeds.size(); id++ )
     {
@@ -1138,11 +1132,10 @@ void QGoTabImageView3DwT::StartDopplerView()
 
   if ( ok )
     {
-    m_ImageProcessor->setDopplerMode(ok);
-    int value = item.toInt(&ok, 10);
-    m_ChannelOfInterest = value;
+    m_ImageProcessor->setDopplerMode(ok, // bool: true/false
+                                     item.toInt(&ok, 10)); // selected channel ID
     // update image
-    m_ImageProcessor->setDoppler(value, m_TCoord, 0); // 0 is for optimization later on...
+    m_ImageProcessor->setDoppler(m_TCoord, 0); // 0 is for optimization later on...
 
     // update widget
     // hide channels
@@ -1170,13 +1163,10 @@ void QGoTabImageView3DwT::StartDopplerView()
       }
     // set channel name
     this->m_NavigationDockWidget->setChannelName(
-          QString("Channel %1").arg(value));
+          QString("Channel %1").arg(m_ImageProcessor->getDopplerChannel()));
 
     // copy image
     m_Image->ShallowCopy(m_ImageProcessor->getAllImages());
-
-    // render
-    Update();
     }
 }
 
@@ -1458,7 +1448,7 @@ QGoTabImageView3DwT::SetLSMReader(vtkLSMReader *iReader, const int & iTimePoint)
   // render
   Update();
 
-  // for the trace widget
+  // for the trace widget, navigation widget and table widget
   emit TimePointChanged(m_TCoord);
 }
 
@@ -1500,7 +1490,7 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
   // render
   Update();
 
-  // for the trace widget
+  // for the trace widget, navigation widget and table widget
   emit TimePointChanged(m_TCoord);
 }
 //-------------------------------------------------------------------------
@@ -1599,13 +1589,8 @@ QGoTabImageView3DwT::SetTimePoint()
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SetTimePointDoppler(int iChannel,int iPreviousT)
+QGoTabImageView3DwT::BuildDopplerWidget()
 {
-  // delete previous doppler widget
-  this->m_NavigationDockWidget->DeleteDopplerWidgets();
-
-  m_ImageProcessor->setDoppler(iChannel, m_TCoord, 0); // 0 is for optimization later on...
-
   // update widget
   //update values - show requiered widgets
   int* time = m_ImageProcessor->getDopplerTime(m_TCoord);
@@ -1630,7 +1615,7 @@ QGoTabImageView3DwT::SetTimePointDoppler(int iChannel,int iPreviousT)
     }
   // set channel name
   this->m_NavigationDockWidget->setChannelName(
-        QString("Channel %1").arg(iChannel));
+        QString("Channel %1").arg(m_ImageProcessor->getDopplerChannel()));
 }
 
 //-------------------------------------------------------------------------
@@ -1661,13 +1646,17 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
     }
   else
     {
-    // update image processor
-    SetTimePointDoppler(m_ChannelOfInterest, 0);
+    // delete previous doppler widget
+    this->m_NavigationDockWidget->DeleteDopplerWidgets();
+    // update the image processor
+    m_ImageProcessor->setDoppler(m_TCoord, 0); // 0 is for optimization later on...
+    //rebuild navigation widget
+    BuildDopplerWidget();
     //update images
     SetTimePoint();
     }
 
-  //for the trace editing widget
+  // for the trace widget, navigation widget and table widget
   emit TimePointChanged(m_TCoord);
 
   this->m_ContourContainer->ShowActorsWithGivenTimePoint(m_TCoord);
@@ -1901,22 +1890,24 @@ QGoTabImageView3DwT::ModeChanged(int iChannel)
 {
   if ( iChannel == 1 )
     {
+    // set image processor and build navigation widget if we click on ok
     StartDopplerView();
     }
   else
     {
     this->m_NavigationDockWidget->DeleteDopplerWidgets();
-    m_ImageProcessor->setDopplerMode(false);
+    m_ImageProcessor->setDopplerMode(false, 0);
     // update image processor
     m_ImageProcessor->setTimePoint(m_TCoord);
     //update images
     SetTimePoint();
     // change visibility
     this->m_NavigationDockWidget->VisibilityListChannels(true);
-    // update visualization
-    Update();
     }
 
+  // update visualization
+  Update();
+  //update the trace editing widget
   UpdateTracesEditingWidget();
 }
 //-------------------------------------------------------------------------
@@ -1925,8 +1916,15 @@ QGoTabImageView3DwT::ModeChanged(int iChannel)
 void
 QGoTabImageView3DwT::StepChanged(int iStep)
 {
+  // delete previous doppler widget
+  this->m_NavigationDockWidget->DeleteDopplerWidgets();
+  // set the new doppler step
   m_ImageProcessor->setDopplerStep(iStep);
-  SetTimePointDoppler(m_ChannelOfInterest);
+  // update the image processor
+  m_ImageProcessor->setDoppler(m_TCoord, 0); // 0 is for optimization later on...
+  //rebuild navigation widget
+  BuildDopplerWidget();
+  // build new image
   SetTimePoint();
   Update();
 }
@@ -3007,9 +3005,9 @@ QGoTabImageView3DwT::UpdateTracesEditingWidget()
         ListTimePoints[tr("%1").arg(realT[1])] = Blue;
         }
       this->m_MeshEditingWidget->SetTSliceForDopplerView(ListTimePoints,
-        this->m_ChannelOfInterest);
+        m_ImageProcessor->getDopplerChannel());
       this->m_ContourEditingWidget->SetTSliceForDopplerView(ListTimePoints,
-        this->m_ChannelOfInterest);
+        m_ImageProcessor->getDopplerChannel());
       }
     }
 }
