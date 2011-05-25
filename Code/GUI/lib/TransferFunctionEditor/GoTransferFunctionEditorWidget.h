@@ -38,28 +38,35 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
+#ifndef __GoTransferFunctionEditorWidget_h
+#define __GoTransferFunctionEditorWidget_h
+
+#include "QGoGUILibConfigure.h"
 
 #include <QtGui>
 
 class HoverPoints;
+class GoTransferFunctionWidget;
 
-class GradientEditor : public QWidget
+class GoTransferFunctionEditorWidget : public QWidget
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
-    GradientEditor(QWidget *parent);
+  GoTransferFunctionEditorWidget(QWidget *parent);
 
-    void setGradientStops(const QGradientStops &stops);
+  void setGradientStops(const QGradientStops &stops);
 
 public slots:
-    void pointsUpdated();
+  void pointsUpdated();
 
 signals:
-    void gradientStopsChanged(const QGradientStops &stops);
+  void gradientStopsChanged(const QGradientStops &stops);
 
 private:
-    ShadeWidget *m_red_shade;
-    ShadeWidget *m_green_shade;
-    ShadeWidget *m_blue_shade;
-    ShadeWidget *m_alpha_shade;
+  GoTransferFunctionWidget *m_red_shade;
+  GoTransferFunctionWidget *m_green_shade;
+  GoTransferFunctionWidget *m_blue_shade;
+  GoTransferFunctionWidget *m_alpha_shade;
 };
+
+#endif

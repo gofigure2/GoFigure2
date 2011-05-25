@@ -113,6 +113,7 @@ SET( QGoGUILIB_SRC
   # transfer function widget
   TransferFunctionEditor/GoTransferFunctionEditorWidget.cxx
   TransferFunctionEditor/GoTransferFunctionWidget.cxx
+  TransferFunctionEditor/hoverpoints.cpp
 
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx
@@ -256,6 +257,7 @@ SET( QGoGUILIB_HDRS
   # transfer function widget
   TransferFunctionEditor/GoTransferFunctionEditorWidget.h
   TransferFunctionEditor/GoTransferFunctionWidget.h
+  TransferFunctionEditor/hoverpoints.h
 )
 
 IF( BUILD_COMPARETOOL )

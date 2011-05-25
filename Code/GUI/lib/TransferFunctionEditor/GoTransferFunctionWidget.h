@@ -38,13 +38,15 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
+#ifndef __GoTransferFunctionWidget_h
+#define __GoTransferFunctionWidget_h
 
 #include <QtGui>
 
 class HoverPoints;
 
 
-class ShadeWidget : public QWidget
+class GoTransferFunctionWidget : public QWidget
 {
     Q_OBJECT
 public:
@@ -55,7 +57,7 @@ public:
         ARGBShade
     };
 
-    ShadeWidget(ShadeType type, QWidget *parent);
+    GoTransferFunctionWidget(ShadeType type, QWidget *parent);
 
     void setGradientStops(const QGradientStops &stops);
 
@@ -79,3 +81,5 @@ private:
     HoverPoints *m_hoverPoints;
     QLinearGradient m_alpha_gradient;
 };
+
+#endif

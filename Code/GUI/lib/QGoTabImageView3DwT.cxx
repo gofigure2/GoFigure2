@@ -108,9 +108,12 @@
 //trackediting dw
 #include "QGoTrackEditingWidget.h"
 
-//
+// image processors
 #include "GoMegaImageProcessor.h"
 #include "GoLSMImageProcessor.h"
+
+// transfer function editor
+#include "GoTransferFunctionEditorWidget.h"
 
 // TESTS
 #include "vtkPolyDataWriter.h"
@@ -1482,6 +1485,8 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
   InitializeImageRelatedWidget();
   // render
   Update();
+
+  modifyTransferFunction("hello");
 
   // for the trace widget, navigation widget and table widget
   // should not be requiered since we just initialize it before
@@ -3143,3 +3148,22 @@ visibilityChanged(QString iName, bool iVisibility)
   Update();
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+modifyTransferFunction(QString iName)
+{
+  // get related TF
+
+  // get related color
+
+  // update editor
+
+  // open editor
+  std::cout << "OPEN EDITOR" << std::endl;
+  GoTransferFunctionEditorWidget* editor =
+      new GoTransferFunctionEditorWidget(NULL);
+  editor->show();
+}
+

@@ -357,6 +357,8 @@ public slots:
 
   void visibilityChanged(QString iName, bool iVisibility);
 
+  void modifyTransferFunction(QString iName);
+
 protected:
   QGoImageView3D *                               m_ImageView;
   vtkImageData *                                 m_Image;
