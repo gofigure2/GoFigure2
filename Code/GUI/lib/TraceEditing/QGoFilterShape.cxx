@@ -35,8 +35,6 @@
 
 #include "QGoGUILibConfigure.h"
 
-#include "QGoContourSemiAutoShapeWidget.h"
-
 // Shapes to be generated
 #include "vtkPolyData.h"
 #include "vtkPointData.h"

@@ -74,36 +74,20 @@ SET( QGoGUILIB_SRC
   QGoColorCodingDialog.cxx
   QGoDockWidget.cxx
   QGoToolBarStatus.cxx
-
-  # base segmentation widgets
-  QGoContourSegmentationBaseDockWidget.cxx
-  QGoMeshSegmentationBaseDockWidget.cxx
-
-  #--manual segmentation--
-  TraceEditing/QGoContourManualSegmentation.cxx
-  TraceEditing/QGoContourManualSegmentationWidget.cxx
-
-  #--seed segmentation--
-  #QGoSeedSegmentationBase.cxx
-   # QGoContourSeedSegmentation.cxx
-   # QGoMeshSeedSegmentation.cxx
-   #QGoSeedBaseWidget.cxx
-    QGoContourSemiAutoLevelsetWidget.cxx
-    QGoContourSemiAutoShapeWidget.cxx
-    QGoContourSemiAutoWatershedWidget.cxx
-  QGoFilterSemiAutoBase.cxx
-    TraceEditing/QGoFilterChanAndVese.cxx
-    TraceEditing/QGoFilterShape.cxx
-    TraceEditing/QGoFilterWatershed.cxx
-
-  # for the tracks
+  
+# for the tracks
   QGoTrackViewDockWidget.cxx
   QGoTrackEditingWidget.cxx
 
   #for the lineages
   QGoLineageViewDockWidget.cxx
 
-  # for the trace editing widget
+  #--manual segmentation--
+  TraceEditing/QGoContourManualSegmentation.cxx
+  TraceEditing/QGoContourManualSegmentationWidget.cxx
+  TraceEditing/QGoFilterChanAndVese.cxx
+  TraceEditing/QGoFilterShape.cxx
+  TraceEditing/QGoFilterWatershed.cxx
   TraceEditing/QGoTraceEditingWidget.cxx
   TraceEditing/QGoModesManagerWidget.cxx
   TraceEditing/QGoAlgorithmsManagerWidget.cxx
@@ -124,6 +108,7 @@ SET( QGoGUILIB_SRC
   TraceEditing/QGoShapeAlgo.cxx
   TraceEditing/QGoSetOfContoursShapeAlgo.cxx
   TraceEditing/QGoSemiAutoSegmentationAlgo.cxx
+  TraceEditing/QGoFilterSemiAutoBase.cxx
 
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx
@@ -240,35 +225,19 @@ SET( QGoGUILIB_HDRS
   QGoDockWidget.h
   QGoToolBarStatus.h
 
-  # base segmentation widgets
-  QGoContourSegmentationBaseDockWidget.h
-  QGoMeshSegmentationBaseDockWidget.h
-
-  #--manual segmentation--
-  TraceEditing/QGoContourManualSegmentation.h
-  TraceEditing/QGoContourManualSegmentationWidget.h
-
-  #--seed segmentation--
-  QGoSeedSegmentationBase.h
-    QGoContourSeedSegmentation.h
-    QGoMeshSeedSegmentation.h
-  #QGoSeedBaseWidget.h
-    QGoContourSemiAutoLevelsetWidget.h
-    QGoContourSemiAutoShapeWidget.h
-    QGoContourSemiAutoWatershedWidget.h
-  QGoFilterSemiAutoBase.h
-    TraceEditing/QGoFilterChanAndVese.h
-    TraceEditing/QGoFilterShape.h
-    TraceEditing/QGoFilterWatershed.h
-
   # for the tracks
   QGoTrackViewDockWidget.h
   QGoTrackEditingWidget.h
 
   # for the lineages:
   QGoLineageViewDockWidget.h
-
-  # for the trace editing widget
+  
+  #--manual segmentation--
+  TraceEditing/QGoContourManualSegmentation.h
+  TraceEditing/QGoContourManualSegmentationWidget.h
+  TraceEditing/QGoFilterChanAndVese.h
+  TraceEditing/QGoFilterShape.h
+  TraceEditing/QGoFilterWatershed.h
   TraceEditing/QGoTraceEditingWidget.h
   TraceEditing/QGoModesManagerWidget.h
   TraceEditing/QGoAlgorithmsManagerWidget.h
@@ -278,6 +247,7 @@ SET( QGoGUILIB_HDRS
   TraceEditing/QGoSegmentationAlgo.h
   TraceEditing/QGoSemiAutoSegmentationAlgo.h
   TraceEditing/QGoTraceEditingWidgetManager.h
+  TraceEditing/QGoFilterSemiAutoBase.h
 )
 
 IF( BUILD_COMPARETOOL )
@@ -325,19 +295,10 @@ SET( QGoGUILIB_UI
   Resources/ManualSegmentationSettingsDlg.ui
   Resources/ContourManualSegmentationWidget.ui
 
-# seed segmentation dock widgets
-  Resources/LevelsetWidget.ui
-  Resources/WatershedWidget.ui
-  Resources/ShapeWidget.ui
-
   # other
   Resources/NavigationDockWidget.ui
   Resources/LsmToMegaExportDialog.ui
   Resources/QNameDescriptionInputDialog.ui
-
-  # seed segmentation dock widgets
-  Resources/LevelsetWidget.ui
-  Resources/WatershedWidget.ui
 
   # for tracks
   Resources/TrackEditingWidget.ui

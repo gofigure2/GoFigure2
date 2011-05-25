@@ -96,8 +96,6 @@
 #include <set>
 
 // base segmentation dock widgets
-//#include "QGoContourSegmentationBaseDockWidget.h"
-//#include "QGoMeshSegmentationBaseDockWidget.h"
 #include "QGoMeshEditingWidgetManager.h"
 #include "QGoContourEditingWidgetManager.h"
 

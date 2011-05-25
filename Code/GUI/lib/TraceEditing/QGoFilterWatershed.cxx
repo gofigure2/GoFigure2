@@ -53,8 +53,6 @@
 #include "vtkTransform.h"
 #include "vtkTransformPolyDataFilter.h"
 
-#include "QGoContourSemiAutoWatershedWidget.h"
-
 #include "GoImageProcessor.h"
 
 //--------------------------------------------------------------------------
