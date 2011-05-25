@@ -35,6 +35,8 @@
 
 #include "GoLSMImageProcessor.h"
 
+#include <QString>
+
 //--------------------------------------------------------------------------
 void
 GoLSMImageProcessor::
@@ -126,7 +128,9 @@ setTimePoint(const unsigned int& iTime)
     m_MegaImageContainer.insert(GoMegaImageStructure(numberOfChannels,
                                                      lut,
                                                      image,
-                                                     color));
+                                                     color,
+                                                     true,
+                                                     QString("Channel %1").arg(numberOfChannels).toStdString()));
     }
 }
 //--------------------------------------------------------------------------
@@ -134,8 +138,7 @@ setTimePoint(const unsigned int& iTime)
 //--------------------------------------------------------------------------
 void
 GoLSMImageProcessor::
-setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
-           const unsigned int& iPrevious)
+setDoppler(const unsigned int& iTime, const unsigned int& iPrevious)
 {
   //to optimize doppler view later on
   (void) iPrevious;
@@ -159,7 +162,7 @@ setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
       vtkSmartPointer<vtkLSMReader> reader =
           vtkSmartPointer<vtkLSMReader>::New();
       reader->SetFileName(m_LSMReader->GetFileName());
-      reader->SetUpdateChannel(iChannel);
+      reader->SetUpdateChannel(m_DopplerChannel);
       reader->SetUpdateTimePoint(dopplerTime[i]);
       reader->Update();
 
@@ -182,12 +185,19 @@ setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
                                                       color[3],
                                                       image->GetScalarRange());
 
+      // channel name
+      QString t_step;
+      t_step.append( QLatin1String("t: ") );
+      t_step.append( QString::number(dopplerTime[i], 10) );
+
       // Update the MegaImageStructure
       // image, LUT, channel, time point
       m_MegaImageContainer.insert(GoMegaImageStructure(dopplerTime[i],
                                                        lut,
                                                        image,
-                                                       color));
+                                                       color,
+                                                       true,
+                                                       t_step.toStdString()));
       }
     }
 }

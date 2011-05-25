@@ -313,10 +313,6 @@ public slots:
 
   void ChangeBackgroundColor();
 
-  void ShowAllChannels(bool iChecked);
-
-  void ShowOneChannel(int iChannel);
-
   void ModeChanged(int iChannel);
 
   void StepChanged(int iStep);
@@ -359,6 +355,8 @@ public slots:
 
   void AddContourForMeshToContours(vtkPolyData *);
 
+  void visibilityChanged(QString iName, bool iVisibility);
+
 protected:
   QGoImageView3D *                               m_ImageView;
   vtkImageData *                                 m_Image;
@@ -377,7 +375,6 @@ protected:
   QToolBar*                                 m_TraceSettingsToolBar;
 
   float m_IntersectionLineWidth;
-  std::vector< QString > m_ChannelNames;
 
   int m_PCoord;
   int m_RCoord;
@@ -412,10 +409,6 @@ protected:
   LineageContainer *m_LineageContainer;
 
   //bool m_TraceWidgetRequiered;
-
-  /** \brief ID of the channel that we want to visualize in the time
-   * visualization mode */
-  int  m_ChannelOfInterest;
 
   /// \todo remove m_FFMPEGWriter and m_AVIWriter from this class
 
@@ -595,10 +588,10 @@ protected:
                                        vtkProperty *property = NULL);
 
   // TODO remove megacapture
-  void SetTimePoint();
+  void UpdateImage();
 
     // TODO remove megacaptureZz
-  void SetTimePointDoppler(int channel, int PreviousT = 0);
+  void BuildDopplerWidget();
 
   /**
   \brief give the adress for the contours, meshes and tracks container to the
@@ -679,13 +672,6 @@ protected slots:
   void ImportTracks();
 
   /**
-  \brief switch between the 2 visualization modes:
-  -classic mode where a channel is an entity (nuclei, membrane) of interest.
-  -time mode where a channel represents the same entity through the time. (t-1, t and t+1).
-    updates the navigation widget.
-  */
-  void SetupWidgetsDoppler2ClassicMode();
-  /**
   \brief access to the megacapture reader to get the entity of interest images through time.
   updates the navigation widget.
   */
@@ -707,7 +693,7 @@ protected slots:
   void UpdateTracesEditingWidget();
 
 private:
-  void UpdateWidgetsFromImageProcessor();
+  void InitializeImageRelatedWidget();
 
   Q_DISABLE_COPY(QGoTabImageView3DwT);
 };

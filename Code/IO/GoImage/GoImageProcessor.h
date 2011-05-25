@@ -53,6 +53,8 @@
 class vtkLookupTable;
 class vtkImageData;
 
+class QString;
+
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
@@ -76,12 +78,54 @@ private:
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
+/**
+  \struct set_visibility
+  \brief change visibility of given structure
+  \sa GoMegaImageStructure
+  */
+struct set_visibility
+{
+  set_visibility(bool iVisibility):visibility(iVisibility){}
+
+  void operator()(GoMegaImageStructure& iStructure)
+  {
+    iStructure.setVisibility(visibility);
+  }
+
+private:
+  bool visibility;
+};
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+/**
+  \struct set_name
+  \brief change visibility of given structure
+  \sa GoMegaImageStructure
+  */
+struct set_name
+{
+  set_name(std::string iName):name(iName){}
+
+  void operator()(GoMegaImageStructure& iStructure)
+  {
+    iStructure.setName(name);
+  }
+
+private:
+  std::string name;
+};
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
 using boost::multi_index_container;
 using namespace boost::multi_index;
 
 /* tags for accessing the corresponding indices of GoMegaImageStructure */
 
 struct Index{};
+struct Visibility{};
+struct Name{};
 
 /* Define a multi_index_container of employees with following indices:
  *   - a unique index sorted by GoMegaImageStructure::Time,
@@ -92,7 +136,11 @@ typedef multi_index_container<
   GoMegaImageStructure,
   indexed_by<
     ordered_non_unique<
-      tag<Index>,  BOOST_MULTI_INDEX_MEMBER(GoMegaImageStructure,unsigned int,Index)> >
+      tag<Index>,  BOOST_MULTI_INDEX_MEMBER(GoMegaImageStructure,unsigned int,Index)>,
+    ordered_non_unique<
+      tag<Visibility>,  BOOST_MULTI_INDEX_MEMBER(GoMegaImageStructure,bool,Visibility)>,
+    ordered_non_unique<
+      tag<Name>,  BOOST_MULTI_INDEX_MEMBER(GoMegaImageStructure,std::string,Name)> >
 > GoMegaImageStructureMultiIndexContainer;
 
 //-----------------------------------------------------------------------------
@@ -159,6 +207,10 @@ public:
    */
   vtkSmartPointer<vtkLookupTable> getLookuptable(const unsigned int& iIndex) const;
 
+  vtkSmartPointer<vtkLookupTable> getLookuptable() const;
+
+  std::vector<double> getColor(const unsigned int& iIndex) const;
+
   /*
    * \brief load all the channels for the given time point into the
    * GoMegaImageStructure
@@ -176,8 +228,7 @@ public:
    * \note need to store parameters if we want to go through volume
   * efficiently (not reload everything all the time)
    */
-  virtual void setDoppler(const unsigned int& iChannel,
-                          const unsigned int& iTime,
+  virtual void setDoppler(const unsigned int& iTime,
                           const unsigned int& iPrevious) = 0;
 
   /*
@@ -188,6 +239,13 @@ public:
    * \return raw image.
    */
   vtkSmartPointer<vtkImageData> getImageBW(const unsigned int& iIndex);
+  vtkSmartPointer<vtkImageData> getImageBW();
+
+  void setVisibilityChannel(const unsigned int& iIndex, const bool& iVisibility);
+
+  void setNameChannel(const unsigned int& iIndex, const std::string& iName);
+
+  std::string getNameChannel(const unsigned int& iIndex);
 
   template< class PixelType, const unsigned int VImageDimension >
   typename itk::Image< PixelType, VImageDimension >::Pointer
@@ -231,8 +289,18 @@ public:
   unsigned int getDopplerStep();
   void setDopplerStep(unsigned int iStep);
   int* getDopplerTime(unsigned int iTime);
-  void setDopplerMode(const bool& iEnable);
+  void setDopplerMode(const bool& iEnable, const unsigned int& iChannel);
   bool getDopplerMode();
+  unsigned int getDopplerChannel();
+
+  void visibilityChanged(std::string, bool);
+
+  unsigned int getNumberOfVisibleChannels();
+
+  std::vector<std::string> getVisibilityVector();
+  void setVisibilityVector(const std::vector<std::string>& iVisibility);
+
+  unsigned int getContainerSize();
 
 protected:
   /*
@@ -260,6 +328,7 @@ protected:
   bool         m_DopplerMode;
   unsigned int m_DopplerStep;
   int*         m_DopplerTime;
+  unsigned int m_DopplerChannel;
   //--------------------
 
 private:

@@ -96,8 +96,6 @@
 #include <set>
 
 // base segmentation dock widgets
-//#include "QGoContourSegmentationBaseDockWidget.h"
-//#include "QGoMeshSegmentationBaseDockWidget.h"
 #include "QGoMeshEditingWidgetManager.h"
 #include "QGoContourEditingWidgetManager.h"
 
@@ -150,10 +148,6 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
 //  m_OrderedSeeds.push_back(xy);
 //  m_OrderedSeeds.push_back(xz);
 //  m_OrderedSeeds.push_back(yz);
-
-  // doppler view useful variables
-  // to be moved in ImageProcessor or somewhere else
-  m_ChannelOfInterest = 0;
 
   m_HighlightedContoursProperty = vtkProperty::New();
   m_HighlightedContoursProperty->SetColor(1., 0., 0.);
@@ -362,8 +356,6 @@ QGoTabImageView3DwT::UpdateSeeds()
   }
   m_ImageView->GetSeeds(m_OrderedSeeds);*/
 
-  std::cout << "Update seeds" << std::endl;
-
   for( size_t id = 0; id < m_Seeds.size(); id++ )
     {
     m_Seeds[id]->Initialize();
@@ -405,9 +397,18 @@ QGoTabImageView3DwT::CreateContourEditingDockWidget(
   // basic interactor connections
   //----------------------------------------------------------------
 
-  //m_InternalImages
+  // build channel vector
+  unsigned int numberOfChannels = m_ImageProcessor->getNumberOfChannels();
+  std::vector< QString > channelNames;
+  channelNames.resize( numberOfChannels );
+  for(int i =0; i<numberOfChannels; ++i)
+    {
+    channelNames[i] = QString::fromStdString(
+          m_ImageProcessor->getNameChannel(i));
+    }
+
   this->m_ContourEditingWidget = new QGoContourEditingWidgetManager(
-    this->m_ChannelNames, iTimeMin, iTimeMax, &m_Seeds,
+    channelNames, iTimeMin, iTimeMax, &m_Seeds,
     m_ImageProcessor, &m_TCoord, this);
 
   this->CreateConnectionsTraceEditingWidget<QGoContourEditingWidgetManager>(
@@ -487,9 +488,18 @@ QGoTabImageView3DwT::CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax)
   // basic interactor connections
   //----------------------------------------------------------------
 
-  //m_InternalImages
+  // build channel vector
+  unsigned int numberOfChannels = m_ImageProcessor->getNumberOfChannels();
+  std::vector< QString > channelNames;
+  channelNames.resize( numberOfChannels );
+  for(int i =0; i<numberOfChannels; ++i)
+    {
+    channelNames[i] = QString::fromStdString(
+          m_ImageProcessor->getNameChannel(i));
+    }
+
   this->m_MeshEditingWidget = new QGoMeshEditingWidgetManager(
-    this->m_ChannelNames, iTimeMin, iTimeMax, &m_Seeds,
+    channelNames, iTimeMin, iTimeMax, &m_Seeds,
     m_ImageProcessor, &m_TCoord, this);
 
   this->CreateConnectionsTraceEditingWidget<QGoMeshEditingWidgetManager>(
@@ -712,17 +722,14 @@ QGoTabImageView3DwT::CreateVisuDockWidget()
   QObject::connect( this, SIGNAL( TimePointChanged(int) ),
                     m_NavigationDockWidget, SLOT( SetTSlice(int) ) );
 
-  QObject::connect( m_NavigationDockWidget, SIGNAL( ShowAllChannelsChanged(bool) ),
-                    this, SLOT( ShowAllChannels(bool) ) );
-
-  QObject::connect( m_NavigationDockWidget, SIGNAL( ShowOneChannelChanged(int) ),
-                    this, SLOT( ShowOneChannel(int) ) );
-
   QObject::connect( m_NavigationDockWidget, SIGNAL( ModeChanged(int) ),
                     this, SLOT( ModeChanged(int) ) );
 
   QObject::connect( m_NavigationDockWidget, SIGNAL( StepChanged(int) ),
                     this, SLOT( StepChanged(int) ) );
+
+  QObject::connect( m_NavigationDockWidget, SIGNAL( visibilityChanged(QString, bool) ),
+                    this, SLOT( visibilityChanged(QString, bool) ) );
 }
 
 //-------------------------------------------------------------------------
@@ -1098,32 +1105,6 @@ QGoTabImageView3DwT::CreateTracesActions()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::SetupWidgetsDoppler2ClassicMode()
-{
-  unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
-
-  // resize internal and update the internal image
-  if(NumberOfChannels == 1)
-    {
-    m_NavigationDockWidget->SetShowAllChannels(true);
-    }
-
-  // Update navigation widget
-  // Initialize the widgets with the good number of channels
-  // it will update the size of the related combobox
-  m_NavigationDockWidget->blockSignals(true);
-  m_NavigationDockWidget->SetNumberOfChannels(NumberOfChannels);
-
-  for ( unsigned int i = 0; i < NumberOfChannels; i++ )
-    {
-    m_NavigationDockWidget->SetChannel( i, m_ChannelNames[i] );
-    }
-  m_NavigationDockWidget->blockSignals(false);
-}
-
-//-------------------------------------------------------------------------
-
 void QGoTabImageView3DwT::StartDopplerView()
 {
   bool         ok;
@@ -1143,11 +1124,41 @@ void QGoTabImageView3DwT::StartDopplerView()
 
   if ( ok )
     {
-    m_ImageProcessor->setDopplerMode(ok);
-    int value = item.toInt(&ok, 10);
-    m_ChannelOfInterest = value;
-    SetTimePointDoppler(m_ChannelOfInterest);
-    Update();
+    m_ImageProcessor->setDopplerMode(ok, // bool: true/false
+                                     item.toInt(&ok, 10)); // selected channel ID
+    // update image
+    m_ImageProcessor->setDoppler(m_TCoord, 0); // 0 is for optimization later on...
+
+    // update widget
+    // hide channels
+    this->m_NavigationDockWidget->VisibilityListChannels(false);
+    //update values - show requiered widgets
+    int* time = m_ImageProcessor->getDopplerTime(m_TCoord);
+    // get number of items in container
+    // requiereds to call this method since the number of items varies
+    for(int i=0; i<3; ++i)
+      {
+      if(time[i]>=0)
+        {
+        // channel color
+        std::vector<double> color = m_ImageProcessor->getColor(time[i]);
+        // update navigation dockwidget
+        m_NavigationDockWidget->AddDoppler(
+              QString::fromStdString(m_ImageProcessor->getNameChannel(time[i])),
+              QColor(color[0],
+                     color[1],
+                     color[2],
+                     color[3]),
+              time[i],
+              true); // all checkboxes are check edwhen we start
+        }
+      }
+    // set channel name
+    this->m_NavigationDockWidget->setChannelName(
+          QString("Channel %1").arg(m_ImageProcessor->getDopplerChannel()));
+
+    // copy image
+    m_Image->ShallowCopy(m_ImageProcessor->getAllImages());
     }
 }
 
@@ -1416,12 +1427,22 @@ QGoTabImageView3DwT::SetLSMReader(vtkLSMReader *iReader, const int & iTimePoint)
   processor->setReader(iReader);
   m_ImageProcessor = processor;
 
-  UpdateWidgetsFromImageProcessor();
+  m_TCoord = iTimePoint;
+  // update image processor
+  m_ImageProcessor->setTimePoint(m_TCoord);
+  //update images
+  UpdateImage();
+  // update actors
+  this->m_ContourContainer->ShowActorsWithGivenTimePoint(iTimePoint);
+  this->m_MeshContainer->ShowActorsWithGivenTimePoint(iTimePoint);
+  // update widgets on image loading
+  InitializeImageRelatedWidget();
+  // render
+  Update();
 
-  if ( static_cast< unsigned int >( m_TCoord ) != iTimePoint )
-    {
-    SetTimePoint(iTimePoint);
-    }
+  // for the trace widget, navigation widget and table widget
+  // should not be requiered since we just initialize it before
+  emit TimePointChanged(m_TCoord);
 }
 
 //-------------------------------------------------------------------------
@@ -1449,35 +1470,51 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
   processor->setReader(m_MegaCaptureReader);
   m_ImageProcessor = processor;
 
-  UpdateWidgetsFromImageProcessor();
+  m_TCoord = iTimePoint;
+  // update image processor
+  m_ImageProcessor->setTimePoint(m_TCoord);
+  //update images
+  UpdateImage();
+  // update actors
+  this->m_ContourContainer->ShowActorsWithGivenTimePoint(iTimePoint);
+  this->m_MeshContainer->ShowActorsWithGivenTimePoint(iTimePoint);
+  // update widgets on image loading
+  InitializeImageRelatedWidget();
+  // render
+  Update();
 
-  if ( static_cast< unsigned int >( m_TCoord ) != iTimePoint )
-    {
-    SetTimePoint(iTimePoint);
-    }
+  // for the trace widget, navigation widget and table widget
+  // should not be requiered since we just initialize it before
+  emit TimePointChanged(m_TCoord);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-UpdateWidgetsFromImageProcessor()
+InitializeImageRelatedWidget()
 {
   unsigned int*  boundTime    = m_ImageProcessor->getBoundsTime();
   unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
   int* extent = m_ImageProcessor->getExtent();
 
-  m_ChannelNames.resize( NumberOfChannels );
-
   // Initialize the widgets with the good number of channels
   // it will update the size of the related combobox
   m_NavigationDockWidget->blockSignals(true);
-  m_NavigationDockWidget->SetNumberOfChannels(NumberOfChannels);
 
   for ( unsigned int i = 0; i < NumberOfChannels; i++ )
     {
-    m_NavigationDockWidget->SetChannel(i);
-    m_ChannelNames[i] = m_NavigationDockWidget->GetChannelName(i);
+    // channel color
+    std::vector<double> color = m_ImageProcessor->getColor(i);
+    // update navigation dockwidget
+    m_NavigationDockWidget->AddChannel(
+          QString::fromStdString(m_ImageProcessor->getNameChannel(i)),
+          QColor(color[0],
+                 color[1],
+                 color[2],
+                 color[3]),
+          i,
+          true); // all checkboxes are check edwhen we start
     }
 
 
@@ -1491,8 +1528,7 @@ UpdateWidgetsFromImageProcessor()
   m_NavigationDockWidget->SetZSlice( ( extent[4] + extent[5] ) / 2 );
 
   m_NavigationDockWidget->SetTMinimumAndMaximum(boundTime[0], boundTime[1]);
-  m_NavigationDockWidget->SetTSlice(
-        boundTime[0]+(boundTime[1]-boundTime[0])/2);
+  m_NavigationDockWidget->SetTSlice(boundTime[0]);
   m_NavigationDockWidget->blockSignals(false);
 
   /**\ todo Lydie: the dock widget needs to have the channels and the timepoints,
@@ -1516,41 +1552,23 @@ UpdateWidgetsFromImageProcessor()
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SetTimePoint()
+QGoTabImageView3DwT::UpdateImage()
 {
-  unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
+  // get number of visible channels instead
+  unsigned int NumberOfVisibleChannels = m_ImageProcessor->getNumberOfVisibleChannels();
 
-  m_ImageProcessor->setTimePoint(m_TCoord);
-
-  if ( NumberOfChannels>1 )
+  if ( NumberOfVisibleChannels>1 )
     {
-    if ( this->m_NavigationDockWidget->ShowAllChannels() )
-      {
-      m_Image->ShallowCopy(m_ImageProcessor->getAllImages());
-      }
-    else
-      {
-      // good LUT already there
-      // - updated when we go from all channels to one channel
-      int ch = this->m_NavigationDockWidget->GetCurrentChannel();
-      m_Image->ShallowCopy(m_ImageProcessor->getImageBW(ch));
-      }
-
-    // CONFIGURE LUT
-    this->findChild<QAction*>("LUT")->setEnabled(
-          !this->m_NavigationDockWidget->ShowAllChannels());
-    this->findChild<QAction*>("ScalarBar")->setEnabled(
-          !this->m_NavigationDockWidget->ShowAllChannels());
+    m_Image->ShallowCopy(m_ImageProcessor->getAllImages());
     }
   else
     {
-    int ch(0);
     //update LUT
-    m_Image->ShallowCopy(m_ImageProcessor->getImageBW(ch));
+    m_Image->ShallowCopy(m_ImageProcessor->getImageBW());
     m_ImageView->SetImage(m_Image);
     m_ImageView->Update();
     vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
-    lut->DeepCopy(m_ImageProcessor->getLookuptable(ch));
+    lut->DeepCopy(m_ImageProcessor->getLookuptable());
     m_ImageView->SetLookupTable(lut);
 
     // CONFIGURE LUT
@@ -1563,51 +1581,33 @@ QGoTabImageView3DwT::SetTimePoint()
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SetTimePointDoppler(int iChannel,
-                                                             int iPreviousT)
+QGoTabImageView3DwT::BuildDopplerWidget()
 {
-  // iPreviousT not used yet.
-  // useful for the optimizations
-  m_ImageProcessor->setDoppler(iChannel, m_TCoord, iPreviousT);
-
-  int* realTime = m_ImageProcessor->getDopplerTime(m_TCoord);
-
-  if ( this->m_NavigationDockWidget->ShowAllChannels() )
+  // update widget
+  //update values - show requiered widgets
+  int* time = m_ImageProcessor->getDopplerTime(m_TCoord);
+  // get number of items in container
+  // requiereds to call this method since the number of items varies
+  for(int i=0; i<3; ++i)
     {
-    m_Image->ShallowCopy(m_ImageProcessor->getAllImages());
+    if(time[i]>=0)
+      {
+      // channel color
+      std::vector<double> color = m_ImageProcessor->getColor(time[i]);
+      // update navigation dockwidget
+      m_NavigationDockWidget->AddDoppler(
+            QString::fromStdString(m_ImageProcessor->getNameChannel(time[i])),
+            QColor(color[0],
+                   color[1],
+                   color[2],
+                   color[3]),
+            time[i],
+            true); // all checkboxes are check edwhen we start
+      }
     }
-  else
-    {
-    int ch = this->m_NavigationDockWidget->GetCurrentChannel();
-    // channel is time for the doppler
-    m_Image->ShallowCopy(m_ImageProcessor->getImageBW(realTime[ch]));
-    }
-
-  // update widgets....
-  // Nicolas - might be only 2 channels on borders...
-  m_NavigationDockWidget->blockSignals(true);
-  m_NavigationDockWidget->SetNumberOfChannels(3);
-
-
-  for(int i = 0; i<3; ++i)
-    {
-    QString t_step;
-    t_step.append( QLatin1String("t: ") );
-    t_step.append( QString::number(realTime[i], 10) );
-
-    // Update the current channel
-    m_NavigationDockWidget->SetChannel(i, t_step);
-   }
-
-  // set current channel
-  m_NavigationDockWidget->SetCurrentChannel(1);
-  m_NavigationDockWidget->blockSignals(false);
-
-  // CONFIGURE LUT
-  this->findChild<QAction*>("LUT")->setEnabled(
-        !this->m_NavigationDockWidget->ShowAllChannels());
-  this->findChild<QAction*>("ScalarBar")->setEnabled(
-        !this->m_NavigationDockWidget->ShowAllChannels());
+  // set channel name
+  this->m_NavigationDockWidget->setChannelName(
+        QString("Channel %1").arg(m_ImageProcessor->getDopplerChannel()));
 }
 
 //-------------------------------------------------------------------------
@@ -1623,32 +1623,37 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
 
   QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
 
-  unsigned int t = static_cast< unsigned int >( iTimePoint );
-  unsigned int* time = m_ImageProcessor->getBoundsTime();
-  if ( ( t < time[0] ) || ( t > time[1] ) )
+  m_TCoord = iTimePoint;
+
+  if (!m_ImageProcessor->getDopplerMode())
     {
-    return;
+    std::vector<std::string> visibility = m_ImageProcessor->getVisibilityVector();
+    // update image processor
+    m_ImageProcessor->setTimePoint(m_TCoord);
+    // update visibility
+    m_ImageProcessor->setVisibilityVector(visibility);
+    //update images
+    UpdateImage();
     }
   else
     {
-    int previousT = m_TCoord;
-    m_TCoord = iTimePoint;
-    if (!m_ImageProcessor->getDopplerMode())
-      {
-      SetTimePoint();
-      }
-    else
-      {
-      SetTimePointDoppler(m_ChannelOfInterest, previousT);
-      }
-    emit TimePointChanged(m_TCoord);
+    // delete previous doppler widget
+    this->m_NavigationDockWidget->DeleteDopplerWidgets();
+    // update the image processor
+    m_ImageProcessor->setDoppler(m_TCoord, 0); // 0 is for optimization later on...
+    //rebuild navigation widget
+    BuildDopplerWidget();
+    //update images
+    UpdateImage();
     }
+
+  // for the trace widget, navigation widget and table widget
+  emit TimePointChanged(m_TCoord);
 
   this->m_ContourContainer->ShowActorsWithGivenTimePoint(m_TCoord);
   this->m_MeshContainer->ShowActorsWithGivenTimePoint(m_TCoord);
 
   Update();
-
   QApplication::restoreOverrideCursor();
 }
 
@@ -1872,103 +1877,28 @@ QGoTabImageView3DwT::ChangeBackgroundColor()
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
-{
-  if ( iChecked )
-    {
-    m_Image->ShallowCopy(m_ImageProcessor->getAllImages());
-    m_ImageView->SetImage(m_Image);
-    m_ImageView->Update();
-    }
-  else
-    {
-    int ch = this->m_NavigationDockWidget->GetCurrentChannel();
-    if(!m_ImageProcessor->getDopplerMode())
-      {
-      m_Image->ShallowCopy(m_ImageProcessor->getImageBW(ch));
-      m_ImageView->SetImage(m_Image);
-      m_ImageView->Update();
-      vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
-      lut->DeepCopy(m_ImageProcessor->getLookuptable(ch));
-      m_ImageView->SetLookupTable(lut);
-      }
-    else
-      {
-      int* realTime = m_ImageProcessor->getDopplerTime(m_TCoord);
-      m_Image->ShallowCopy(m_ImageProcessor->getImageBW(realTime[ch]));
-      m_ImageView->SetImage(m_Image);
-      m_ImageView->Update();
-      vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
-      lut->DeepCopy(m_ImageProcessor->getLookuptable(realTime[ch]));
-      m_ImageView->SetLookupTable(lut);
-      }
-    m_ImageView->Update();
-    }
-
-  // Update LUT
-  this->findChild<QAction*>("LUT")->setEnabled(!iChecked);
-  this->findChild<QAction*>("ScalarBar")->setEnabled(!iChecked);
-
-  // show the scalarbar automatically if the button is checked
-  bool showScalarBar = this->findChild<QAction*>("ScalarBar")->isChecked();
-  m_ImageView->ShowScalarBar(showScalarBar);
-}
-//------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::ShowOneChannel(int iChannel)
-{
-  if(!m_ImageProcessor->getDopplerMode())
-    {
-    // add test to see if channel exists (on borders)
-    this->findChild<QAction*>("LUT")->setEnabled(true);
-    this->findChild<QAction*>("ScalarBar")->setEnabled(true);
-    m_Image->ShallowCopy(m_ImageProcessor->getImageBW(iChannel));
-    m_ImageView->SetImage(m_Image);
-    m_ImageView->Update();
-    vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
-    lut->DeepCopy(m_ImageProcessor->getLookuptable(iChannel));
-    m_ImageView->SetLookupTable(lut);
-    m_ImageView->Update();
-    }
-  else
-    {
-    int* realTime = m_ImageProcessor->getDopplerTime(m_TCoord);
-    // should check that since combo box should have the good number of
-    // elements on border
-    // not working....
-    if(realTime[iChannel] >= 0)
-      {
-      m_Image->ShallowCopy(m_ImageProcessor->getImageBW(realTime[iChannel]));
-      m_ImageView->SetImage(m_Image);
-      m_ImageView->Update();
-      vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
-      lut->DeepCopy(m_ImageProcessor->getLookuptable(realTime[iChannel]));
-      m_ImageView->SetLookupTable(lut);
-      m_ImageView->Update();
-      }
-    }
-}
-//------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
 QGoTabImageView3DwT::ModeChanged(int iChannel)
 {
   if ( iChannel == 1 )
     {
+    // set image processor and build navigation widget if we click on ok
     StartDopplerView();
     }
   else
     {
-    m_ImageProcessor->setDopplerMode(false);
-    SetupWidgetsDoppler2ClassicMode();
-    // to be renamed
-    SetTimePoint();
-    // update visualization
-    Update();
+    this->m_NavigationDockWidget->DeleteDopplerWidgets();
+    m_ImageProcessor->setDopplerMode(false, 0);
+    // update image processor
+    m_ImageProcessor->setTimePoint(m_TCoord);
+    //update images
+    UpdateImage();
+    // change visibility
+    this->m_NavigationDockWidget->VisibilityListChannels(true);
     }
+
+  // update visualization
+  Update();
+  //update the trace editing widget
   UpdateTracesEditingWidget();
 }
 //-------------------------------------------------------------------------
@@ -1977,12 +1907,20 @@ QGoTabImageView3DwT::ModeChanged(int iChannel)
 void
 QGoTabImageView3DwT::StepChanged(int iStep)
 {
+  // delete previous doppler widget
+  this->m_NavigationDockWidget->DeleteDopplerWidgets();
+  // set the new doppler step
   m_ImageProcessor->setDopplerStep(iStep);
-
-
-  // todo nicolas -check utility
-  SetTimePointDoppler(m_ChannelOfInterest);
+  // update the image processor
+  m_ImageProcessor->setDoppler(m_TCoord, 0); // 0 is for optimization later on...
+  //rebuild navigation widget
+  BuildDopplerWidget();
+  // build new image
+  UpdateImage();
+  //update
   Update();
+  //update the trace editing widget
+  UpdateTracesEditingWidget();
 }
 //-------------------------------------------------------------------------
 
@@ -2692,8 +2630,7 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
 
       if ( iIntensity )
         {
-        QString     q_channelname = this->m_ChannelNames[i];
-        std::string channelname = q_channelname.toStdString();
+        std::string channelname = m_ImageProcessor->getNameChannel(i);
 
         oAttributes.m_TotalIntensityMap[channelname] =
           static_cast< int >( calculator->GetSumIntensity() );
@@ -2738,8 +2675,7 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
 
       if ( iIntensity )
         {
-        QString     q_channelname = this->m_ChannelNames[i];
-        std::string channelname = q_channelname.toStdString();
+        std::string channelname = m_ImageProcessor->getNameChannel(i);
 
         oAttributes.m_TotalIntensityMap[channelname] =
           static_cast< int >( calculator->GetSumIntensity() );
@@ -2827,8 +2763,8 @@ QGoTabImageView3DwT::CreateMeshFromSelectedContours(
     vtkPolyData *mesh = filter->GetOutput();
 
     vtkBox *implicitFunction = vtkBox::New();
-    //m_InternalImages[0]->GetBounds()
-    implicitFunction->SetBounds( NULL );
+    // get bounds from the first visible image
+    implicitFunction->SetBounds( m_ImageProcessor->getImageBW()->GetBounds() );
 
     vtkClipPolyData *cutter = vtkClipPolyData::New();
     cutter->SetInput(mesh);
@@ -3041,29 +2977,32 @@ QGoTabImageView3DwT::UpdateTracesEditingWidget()
       QColor Green (0, 255, 0, 255);
       QColor Blue  (0, 0, 255, 255);
       int* dopplerT = this->m_ImageProcessor->getDopplerTime(this->m_TCoord);
-      unsigned int* realT = this->m_ImageProcessor->getBoundsTime();
+      //unsigned int* realT = this->m_ImageProcessor->getBoundsTime();
 
-      if ( dopplerT[0] > realT[0] )
+      if ( dopplerT[0] >= 0 )
         {
         ListTimePoints[tr("%1").arg(dopplerT[0])] = Red;
         }
-      else
+      /*else
         {
         ListTimePoints[tr("%1").arg(realT[0])] = Red;
-        }
+        }*/
+
       ListTimePoints[tr("%1").arg(this->m_TCoord)] = Green;
-      if (dopplerT[2] < realT[1] )
+
+      if (dopplerT[2] >= 0 )
         {
         ListTimePoints[tr("%1").arg(dopplerT[2])] = Blue;
         }
-      else
+      /*else
         {
         ListTimePoints[tr("%1").arg(realT[1])] = Blue;
-        }
+        }*/
+
       this->m_MeshEditingWidget->SetTSliceForDopplerView(ListTimePoints,
-        this->m_ChannelOfInterest);
+        m_ImageProcessor->getDopplerChannel());
       this->m_ContourEditingWidget->SetTSliceForDopplerView(ListTimePoints,
-        this->m_ChannelOfInterest);
+        m_ImageProcessor->getDopplerChannel());
       }
     }
 }
@@ -3192,3 +3131,15 @@ QGoTabImageView3DwT::CreateModeToolBar(QMenu* iMenu, QToolBar* iToolBar)
 
   //this->m_ToolBarList.push_back(this->m_ModeToolBar);
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+visibilityChanged(QString iName, bool iVisibility)
+{
+  m_ImageProcessor->visibilityChanged(iName.toStdString(), iVisibility);
+  UpdateImage();
+  Update();
+}
+//-------------------------------------------------------------------------

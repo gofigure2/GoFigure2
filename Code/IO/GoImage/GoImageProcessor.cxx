@@ -43,12 +43,14 @@
 #include "vtkPointData.h"
 #include "vtkImageShiftScale.h"
 
+#include <QString>
+
 #include "vtkImageWeightedSum.h"
 
 //--------------------------------------------------------------------------
 GoImageProcessor::GoImageProcessor():m_Output(NULL),
   m_BoundsTime(NULL), m_BoundsChannel(NULL), m_Extent(NULL),
-  m_DopplerMode(false), m_DopplerStep(1)
+  m_DopplerMode(false), m_DopplerStep(1), m_DopplerChannel(0)
 {
   m_DopplerTime = new int[3];
 }
@@ -59,7 +61,8 @@ GoImageProcessor::GoImageProcessor(const GoImageProcessor & iE):
   m_MegaImageContainer(iE.m_MegaImageContainer), m_Output(iE.m_Output),
   m_BoundsTime(iE.m_BoundsTime), m_BoundsChannel(iE.m_BoundsChannel),
   m_Extent(iE.m_Extent),  m_DopplerMode(iE.m_DopplerMode),
-  m_DopplerStep(iE.m_DopplerStep), m_DopplerTime(iE.m_DopplerTime)
+  m_DopplerStep(iE.m_DopplerStep), m_DopplerTime(iE.m_DopplerTime),
+  m_DopplerChannel(iE.m_DopplerChannel)
 {
 }
 //--------------------------------------------------------------------------
@@ -146,6 +149,37 @@ getLookuptable(const unsigned int& iIndex) const
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+vtkSmartPointer<vtkLookupTable>
+GoImageProcessor::
+getLookuptable() const
+{
+  GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator it =
+      m_MegaImageContainer.get< Visibility >().find(true);
+
+  if(it!=m_MegaImageContainer.get< Visibility >().end())
+    {
+    return it->LUT;
+    }
+
+  return NULL;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::vector<double>
+GoImageProcessor::
+getColor(const unsigned int& iIndex) const
+{
+  GoMegaImageStructureMultiIndexContainer::index<Index>::type::iterator it =
+      m_MegaImageContainer.get< Index >().find(iIndex);
+
+  assert(it!=m_MegaImageContainer.get< Index >().end());
+
+  return it->Color;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 vtkSmartPointer<vtkImageData>
 GoImageProcessor::
 colorImage(vtkSmartPointer<vtkImageData> iImage,
@@ -156,6 +190,7 @@ colorImage(vtkSmartPointer<vtkImageData> iImage,
   coloredImage->SetLookupTable(iLUT);
   coloredImage->SetInput( iImage );
   coloredImage->SetOutputFormatToRGB();
+  coloredImage->SetNumberOfThreads(VTK_MAX_THREADS);
   coloredImage->Update();
 
   return coloredImage->GetOutput();
@@ -169,13 +204,26 @@ getImageBW(const unsigned int& iIndex)
 {
   GoMegaImageStructureMultiIndexContainer::index<Index>::type::iterator it =
       m_MegaImageContainer.get< Index >().find(iIndex);
-  std::cout << "look for image: " << iIndex << std::endl;
   if(it!=m_MegaImageContainer.get< Index >().end())
     {
-    std::cout << "FOUND: " << iIndex << std::endl;
     return it->Image;
     }
-  std::cout << "NOT FOUND: " << iIndex << std::endl;
+  return NULL;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+vtkSmartPointer<vtkImageData>
+GoImageProcessor::
+getImageBW()
+{
+  GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator it =
+      m_MegaImageContainer.get< Visibility >().find(true);
+
+  if(it!=m_MegaImageContainer.get< Visibility >().end())
+    {
+    return it->Image;
+    }
   return NULL;
 }
 //--------------------------------------------------------------------------
@@ -189,17 +237,15 @@ getAllImages()
       vtkSmartPointer<vtkImageBlend>::New();
   blendedImage->RemoveAllInputs();
   blendedImage->SetBlendModeToCompound();
+  blendedImage->SetNumberOfThreads(VTK_MAX_THREADS);
 
-  double size = m_MegaImageContainer.size();
-
-  GoMegaImageStructureMultiIndexContainer::iterator it =
-      m_MegaImageContainer.begin();
+  GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator it =
+      m_MegaImageContainer.get< Visibility >().find(true);
 
   vtkIdType i(0);
-  while(it!=m_MegaImageContainer.end())
+  while(it!=m_MegaImageContainer.get< Visibility >().end())
     {
     blendedImage->AddInput(colorImage(it->Image, it->LUT));
-    //blendedImage->SetOpacity(i,1);
     ++i;
     ++it;
     }
@@ -219,6 +265,7 @@ getAllImages()
   scale->SetInput(blendedImage->GetOutput());
   scale->SetScale(255/range);
   scale->SetOutputScalarTypeToUnsignedChar();
+  scale->SetNumberOfThreads(VTK_MAX_THREADS);
   scale->Update();
 
   return scale->GetOutput();
@@ -324,9 +371,10 @@ getDopplerTime(unsigned int iTime)
 //--------------------------------------------------------------------------
 void
 GoImageProcessor::
-setDopplerMode(const bool& iEnable)
+setDopplerMode(const bool& iEnable, const unsigned int& iChannel)
 {
   m_DopplerMode = iEnable;
+  m_DopplerChannel = iChannel;
 }
 //--------------------------------------------------------------------------
 
@@ -338,3 +386,135 @@ getDopplerMode()
   return m_DopplerMode;
 }
 //--------------------------------------------------------------------------
+unsigned int
+GoImageProcessor::
+getDopplerChannel()
+{
+  return m_DopplerChannel;
+}
+
+//--------------------------------------------------------------------------
+void
+GoImageProcessor::
+setVisibilityChannel(const unsigned int& iIndex, const bool& iVisibility)
+{
+  GoMegaImageStructureMultiIndexContainer::index<Index>::type::iterator it =
+      m_MegaImageContainer.get< Index >().find(iIndex);
+
+  if(it!=m_MegaImageContainer.get< Index >().end())
+    {
+    m_MegaImageContainer.get< Index >().modify( it , set_visibility(iVisibility) );
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+GoImageProcessor::
+setNameChannel(const unsigned int& iIndex, const std::string& iName)
+{
+  GoMegaImageStructureMultiIndexContainer::index<Index>::type::iterator it =
+      m_MegaImageContainer.get< Index >().find(iIndex);
+
+  if(it!=m_MegaImageContainer.get< Index >().end())
+    {
+    m_MegaImageContainer.get< Index >().modify( it , set_name(iName) );
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::string
+GoImageProcessor::
+getNameChannel(const unsigned int& iIndex)
+{
+  GoMegaImageStructureMultiIndexContainer::index<Index>::type::iterator it =
+      m_MegaImageContainer.get< Index >().find(iIndex);
+
+  if(it!=m_MegaImageContainer.get< Index >().end())
+    {
+    return it->Name;
+    }
+  return "";
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+GoImageProcessor::
+visibilityChanged(std::string iName, bool iVisibility)
+{
+  GoMegaImageStructureMultiIndexContainer::index<Name>::type::iterator it =
+      m_MegaImageContainer.get< Name >().find(iName);
+
+  if(it!=m_MegaImageContainer.get< Name >().end())
+    {
+    m_MegaImageContainer.get< Name >().modify( it , set_visibility(iVisibility));
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+unsigned int
+GoImageProcessor::
+getNumberOfVisibleChannels()
+{
+  unsigned int numberOfVisibleChannels(0);
+
+  GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator it =
+      m_MegaImageContainer.get< Visibility >().find(true)
+      ;
+  while(it!=m_MegaImageContainer.get< Visibility >().end())
+    {
+    ++numberOfVisibleChannels;
+    ++it;
+    }
+
+  return numberOfVisibleChannels;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::vector<std::string>
+GoImageProcessor::
+getVisibilityVector()
+{
+std::vector<std::string> visibility;
+GoMegaImageStructureMultiIndexContainer::iterator it =
+        m_MegaImageContainer.begin();
+while(it!=m_MegaImageContainer.end())
+  {
+  if(!it->Visibility)
+    {
+    visibility.push_back(it->Name);
+    }
+  ++it;
+  }
+return visibility;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+GoImageProcessor::
+setVisibilityVector(const std::vector<std::string>& iVisibility)
+{
+  for(int i =0; i<iVisibility.size(); ++i)
+    {
+    GoMegaImageStructureMultiIndexContainer::index<Name>::type::iterator it =
+        m_MegaImageContainer.get< Name >().find(iVisibility[i]);
+    if(it!=m_MegaImageContainer.get< Name >().end())
+      {
+      setVisibilityChannel(it->Index, false);
+      }
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+unsigned int
+GoImageProcessor::
+getContainerSize()
+{
+  return m_MegaImageContainer.size();
+}

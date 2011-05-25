@@ -35,6 +35,8 @@
 
 #include "GoMegaImageProcessor.h"
 
+#include <QString>
+
 //--------------------------------------------------------------------------
 void
 GoMegaImageProcessor::
@@ -64,7 +66,6 @@ void
 GoMegaImageProcessor::
 setTimePoint(const unsigned int& iTime)
 {
-  std::cout << "set time point: " << iTime << std::endl;
   //check if time point exists
   if(iTime >= m_BoundsTime[0] && iTime <= m_BoundsTime[1])
     {
@@ -77,12 +78,9 @@ setTimePoint(const unsigned int& iTime)
     return;
     }
 
-  std::cout << "image exists: " << std::endl;
   // update the container
   // Get Number of channels from reader
   int numberOfChannels = getNumberOfChannels();
-
-    std::cout << "numberOfChannels: " << numberOfChannels << std::endl;
 
   while(numberOfChannels>0)
     {
@@ -122,11 +120,12 @@ setTimePoint(const unsigned int& iTime)
 
     // Update the MegaImageStructure
     // image, LUT, channel, time point
-    std::cout << "insert image: " << numberOfChannels << std::endl;
     m_MegaImageContainer.insert(GoMegaImageStructure(numberOfChannels,
                                                      lut,
                                                      image,
-                                                     color));
+                                                     color,
+                                                     true,
+                                                     QString("Channel %1").arg(numberOfChannels).toStdString()));
     }
 }
 //--------------------------------------------------------------------------
@@ -134,8 +133,7 @@ setTimePoint(const unsigned int& iTime)
 //--------------------------------------------------------------------------
 void
 GoMegaImageProcessor::
-setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
-           const unsigned int& iPrevious)
+setDoppler(const unsigned int& iTime, const unsigned int& iPrevious)
 {
   //to optimize doppler view later on
   (void) iPrevious;
@@ -161,7 +159,7 @@ setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
     // Get useful information from the reader
     // Nicolas Get Image or get output...?
     vtkSmartPointer<vtkImageData> image =
-        m_MegaImageReader->GetImage(iChannel,dopplerTime[i]);
+        m_MegaImageReader->GetImage(m_DopplerChannel,dopplerTime[i]);
 
     // color from red to blue
     std::vector<double> color;
@@ -179,12 +177,20 @@ setDoppler(const unsigned int& iChannel, const unsigned int& iTime,
                                                     color[3],
                                                     image->GetScalarRange());
 
+    // channel name
+    QString t_step;
+    t_step.append( QLatin1String("t: ") );
+    t_step.append( QString::number(dopplerTime[i], 10) );
+
     // Update the MegaImageStructure
     // image, LUT, channel, time point
     m_MegaImageContainer.insert(GoMegaImageStructure(dopplerTime[i],
                                                      lut,
                                                      image,
-                                                     color));
+                                                     color,
+                                                     true,
+                                                     t_step.toStdString()));
+
       }
     }
 
