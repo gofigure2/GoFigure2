@@ -207,6 +207,8 @@ public:
    */
   vtkSmartPointer<vtkLookupTable> getLookuptable(const unsigned int& iIndex) const;
 
+  vtkSmartPointer<vtkLookupTable> getLookuptable(const std::string& iIndex) const;
+
   vtkSmartPointer<vtkLookupTable> getLookuptable() const;
 
   std::vector<double> getColor(const unsigned int& iIndex) const;

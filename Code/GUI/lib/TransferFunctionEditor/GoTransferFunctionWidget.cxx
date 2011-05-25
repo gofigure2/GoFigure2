@@ -31,11 +31,12 @@ GoTransferFunctionWidget::GoTransferFunctionWidget(ShadeType type, QWidget *pare
          << QPointF(sizeHint().width(), 0);
 
   m_hoverPoints = new HoverPoints(this, HoverPoints::CircleShape);
-//     m_hoverPoints->setConnectionType(HoverPoints::LineConnection);
-  m_hoverPoints->setPoints(points);
+  m_hoverPoints->setConnectionType(HoverPoints::LineConnection);
+
+  /*m_hoverPoints->setPoints(points);
   m_hoverPoints->setPointLock(0, HoverPoints::LockToLeft);
   m_hoverPoints->setPointLock(1, HoverPoints::LockToRight);
-  m_hoverPoints->setSortType(HoverPoints::XSort);
+  m_hoverPoints->setSortType(HoverPoints::XSort);*/
 
   setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 

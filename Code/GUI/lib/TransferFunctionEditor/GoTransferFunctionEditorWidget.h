@@ -52,7 +52,7 @@ class GoTransferFunctionEditorWidget : public QWidget
 {
   Q_OBJECT
 public:
-  GoTransferFunctionEditorWidget(QWidget *parent);
+  GoTransferFunctionEditorWidget(QWidget *parent, QPolygonF iPoints);
 
   void setGradientStops(const QGradientStops &stops);
 

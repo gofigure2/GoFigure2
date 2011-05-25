@@ -350,7 +350,8 @@ AddChannel(const QString& iName, const QColor& iColor, const unsigned int& iNumb
   //create signals connections
   QObject::connect( checkBox1, SIGNAL( clicked(bool) ),
                     this, SLOT( visibilityChanged(bool) ) );
-  // more signals for modify LUT
+  QObject::connect( pushButton, SIGNAL( pressed() ),
+                    this, SLOT( changeColor() ) );
 
   // vector of widget so we can remove it from layout efficiently
   m_ListCheckBoxes.push_back(checkBox1);
@@ -413,6 +414,8 @@ AddDoppler(const QString& iName, const QColor& iColor, const unsigned int& iNumb
   //create signals connections
   QObject::connect( checkBox1, SIGNAL( clicked(bool) ),
                     this, SLOT( visibilityChanged(bool) ) );
+  QObject::connect( pushButton, SIGNAL( pressed() ),
+                    this, SLOT( changeColor() ) );
   // more signals for modify LUT
 
   // vector of widget so we can remove it from layout efficiently
@@ -450,4 +453,12 @@ QGoNavigationDockWidget:: DeleteDopplerWidgets()
 {
   qDeleteAll(m_ListDoppler.begin(), m_ListDoppler.end());
   m_ListDoppler.clear();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoNavigationDockWidget:: changeColor()
+{
+  emit openTransferFunctionEditor(QObject::sender()->objectName());
 }

@@ -128,6 +128,8 @@ public slots:
 
   void visibilityChanged(bool);
 
+  void changeColor();
+
 signals:
   void XSliceChanged(int Slice);
 
@@ -142,6 +144,8 @@ signals:
   void StepChanged(int Step);
 
   void visibilityChanged(QString, bool);
+
+  void openTransferFunctionEditor(QString);
 
 protected:
   GoFigure::TabDimensionType m_Dimension;

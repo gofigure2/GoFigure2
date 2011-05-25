@@ -733,6 +733,9 @@ QGoTabImageView3DwT::CreateVisuDockWidget()
 
   QObject::connect( m_NavigationDockWidget, SIGNAL( visibilityChanged(QString, bool) ),
                     this, SLOT( visibilityChanged(QString, bool) ) );
+
+  QObject::connect( m_NavigationDockWidget, SIGNAL( openTransferFunctionEditor(QString) ),
+                    this, SLOT( openTransferFunctionEditor(QString) ) );
 }
 
 //-------------------------------------------------------------------------
@@ -1485,8 +1488,6 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
   InitializeImageRelatedWidget();
   // render
   Update();
-
-  modifyTransferFunction("hello");
 
   // for the trace widget, navigation widget and table widget
   // should not be requiered since we just initialize it before
@@ -3152,18 +3153,37 @@ visibilityChanged(QString iName, bool iVisibility)
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-modifyTransferFunction(QString iName)
+openTransferFunctionEditor(QString iName)
 {
   // get related TF
+  //vtkLookupTable* lut = m_ImageProcessor->getLookuptable(iName.toStdString());
+  // would need LUT points rather than LUT...!
+  // at least 2 points
+  // x, r, g, b, a
+  /*double first[5] = {0, 0, 0, 0, 255};
+
+  double last[5] = {1, 255, 0,  0, 255};
+
+  std::vector<double[5]> colors;
+  colors.push_back(first);
+  colors.push_back(second);
+*/
+  QPolygonF points;
+  //points += first;
+  //points += last;
+
+  // sort point...?
 
   // get related color
 
   // update editor
 
   // open editor
-  std::cout << "OPEN EDITOR" << std::endl;
+
   GoTransferFunctionEditorWidget* editor =
-      new GoTransferFunctionEditorWidget(NULL);
+      new GoTransferFunctionEditorWidget(NULL, points);
+  // add points
+
   editor->show();
 }
 

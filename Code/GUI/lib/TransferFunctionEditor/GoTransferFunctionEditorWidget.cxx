@@ -6,8 +6,8 @@
 
 //-------------------------------------------------------------------------
 
-GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent)
-    : QWidget(parent)
+GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent, QPolygonF iPoints)
+    : QWidget(parent )
 {
   QVBoxLayout *vbox = new QVBoxLayout(this);
   vbox->setSpacing(1);

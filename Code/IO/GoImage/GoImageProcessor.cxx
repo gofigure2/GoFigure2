@@ -151,6 +151,23 @@ getLookuptable(const unsigned int& iIndex) const
 //--------------------------------------------------------------------------
 vtkSmartPointer<vtkLookupTable>
 GoImageProcessor::
+getLookuptable(const std::string& iIndex) const
+{
+  GoMegaImageStructureMultiIndexContainer::index<Name>::type::iterator it =
+      m_MegaImageContainer.get< Name >().find(iIndex);
+
+  if(it!=m_MegaImageContainer.get< Name >().end())
+    {
+    return it->LUT;
+    }
+
+  return NULL;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+vtkSmartPointer<vtkLookupTable>
+GoImageProcessor::
 getLookuptable() const
 {
   GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator it =
