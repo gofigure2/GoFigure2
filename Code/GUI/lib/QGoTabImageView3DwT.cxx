@@ -397,9 +397,18 @@ QGoTabImageView3DwT::CreateContourEditingDockWidget(
   // basic interactor connections
   //----------------------------------------------------------------
 
-  //m_InternalImages
+  // build channel vector
+  unsigned int numberOfChannels = m_ImageProcessor->getNumberOfChannels();
+  std::vector< QString > channelNames;
+  channelNames.resize( numberOfChannels );
+  for(int i =0; i<numberOfChannels; ++i)
+    {
+    channelNames[i] = QString::fromStdString(
+          m_ImageProcessor->getNameChannel(i));
+    }
+
   this->m_ContourEditingWidget = new QGoContourEditingWidgetManager(
-    this->m_ChannelNames, iTimeMin, iTimeMax, &m_Seeds,
+    channelNames, iTimeMin, iTimeMax, &m_Seeds,
     m_ImageProcessor, &m_TCoord, this);
 
   this->CreateConnectionsTraceEditingWidget<QGoContourEditingWidgetManager>(
@@ -479,9 +488,18 @@ QGoTabImageView3DwT::CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax)
   // basic interactor connections
   //----------------------------------------------------------------
 
-  //m_InternalImages
+  // build channel vector
+  unsigned int numberOfChannels = m_ImageProcessor->getNumberOfChannels();
+  std::vector< QString > channelNames;
+  channelNames.resize( numberOfChannels );
+  for(int i =0; i<numberOfChannels; ++i)
+    {
+    channelNames[i] = QString::fromStdString(
+          m_ImageProcessor->getNameChannel(i));
+    }
+
   this->m_MeshEditingWidget = new QGoMeshEditingWidgetManager(
-    this->m_ChannelNames, iTimeMin, iTimeMax, &m_Seeds,
+    channelNames, iTimeMin, iTimeMax, &m_Seeds,
     m_ImageProcessor, &m_TCoord, this);
 
   this->CreateConnectionsTraceEditingWidget<QGoMeshEditingWidgetManager>(
@@ -1087,32 +1105,6 @@ QGoTabImageView3DwT::CreateTracesActions()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::SetupWidgetsDoppler2ClassicMode()
-{
- /* unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
-
-  // resize internal and update the internal image
-  if(NumberOfChannels == 1)
-    {
-    m_NavigationDockWidget->SetShowAllChannels(true);
-    }
-
-  // Update navigation widget
-  // Initialize the widgets with the good number of channels
-  // it will update the size of the related combobox
-  m_NavigationDockWidget->blockSignals(true);
-  m_NavigationDockWidget->SetNumberOfChannels(NumberOfChannels);
-
-  for ( unsigned int i = 0; i < NumberOfChannels; i++ )
-    {
-    m_NavigationDockWidget->SetChannel( i, m_ChannelNames[i] );
-    }
-  m_NavigationDockWidget->blockSignals(false);*/
-}
-
-//-------------------------------------------------------------------------
-
 void QGoTabImageView3DwT::StartDopplerView()
 {
   bool         ok;
@@ -1439,16 +1431,17 @@ QGoTabImageView3DwT::SetLSMReader(vtkLSMReader *iReader, const int & iTimePoint)
   // update image processor
   m_ImageProcessor->setTimePoint(m_TCoord);
   //update images
-  SetTimePoint();
+  UpdateImage();
   // update actors
   this->m_ContourContainer->ShowActorsWithGivenTimePoint(iTimePoint);
   this->m_MeshContainer->ShowActorsWithGivenTimePoint(iTimePoint);
   // update widgets on image loading
-  UpdateWidgetsFromImageProcessor();
+  InitializeImageRelatedWidget();
   // render
   Update();
 
   // for the trace widget, navigation widget and table widget
+  // should not be requiered since we just initialize it before
   emit TimePointChanged(m_TCoord);
 }
 
@@ -1481,16 +1474,17 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
   // update image processor
   m_ImageProcessor->setTimePoint(m_TCoord);
   //update images
-  SetTimePoint();
+  UpdateImage();
   // update actors
   this->m_ContourContainer->ShowActorsWithGivenTimePoint(iTimePoint);
   this->m_MeshContainer->ShowActorsWithGivenTimePoint(iTimePoint);
   // update widgets on image loading
-  UpdateWidgetsFromImageProcessor();
+  InitializeImageRelatedWidget();
   // render
   Update();
 
   // for the trace widget, navigation widget and table widget
+  // should not be requiered since we just initialize it before
   emit TimePointChanged(m_TCoord);
 }
 //-------------------------------------------------------------------------
@@ -1498,13 +1492,11 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-UpdateWidgetsFromImageProcessor()
+InitializeImageRelatedWidget()
 {
   unsigned int*  boundTime    = m_ImageProcessor->getBoundsTime();
   unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
   int* extent = m_ImageProcessor->getExtent();
-
-  m_ChannelNames.resize( NumberOfChannels );
 
   // Initialize the widgets with the good number of channels
   // it will update the size of the related combobox
@@ -1560,7 +1552,7 @@ UpdateWidgetsFromImageProcessor()
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SetTimePoint()
+QGoTabImageView3DwT::UpdateImage()
 {
   // get number of visible channels instead
   unsigned int NumberOfVisibleChannels = m_ImageProcessor->getNumberOfVisibleChannels();
@@ -1631,7 +1623,6 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
 
   QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
 
-  //int previousT = m_TCoord;
   m_TCoord = iTimePoint;
 
   if (!m_ImageProcessor->getDopplerMode())
@@ -1642,7 +1633,7 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
     // update visibility
     m_ImageProcessor->setVisibilityVector(visibility);
     //update images
-    SetTimePoint();
+    UpdateImage();
     }
   else
     {
@@ -1653,7 +1644,7 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
     //rebuild navigation widget
     BuildDopplerWidget();
     //update images
-    SetTimePoint();
+    UpdateImage();
     }
 
   // for the trace widget, navigation widget and table widget
@@ -1900,7 +1891,7 @@ QGoTabImageView3DwT::ModeChanged(int iChannel)
     // update image processor
     m_ImageProcessor->setTimePoint(m_TCoord);
     //update images
-    SetTimePoint();
+    UpdateImage();
     // change visibility
     this->m_NavigationDockWidget->VisibilityListChannels(true);
     }
@@ -1925,7 +1916,7 @@ QGoTabImageView3DwT::StepChanged(int iStep)
   //rebuild navigation widget
   BuildDopplerWidget();
   // build new image
-  SetTimePoint();
+  UpdateImage();
   Update();
 }
 //-------------------------------------------------------------------------
@@ -2636,8 +2627,7 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
 
       if ( iIntensity )
         {
-        QString     q_channelname = this->m_ChannelNames[i];
-        std::string channelname = q_channelname.toStdString();
+        std::string channelname = m_ImageProcessor->getNameChannel(i);
 
         oAttributes.m_TotalIntensityMap[channelname] =
           static_cast< int >( calculator->GetSumIntensity() );
@@ -2682,8 +2672,7 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
 
       if ( iIntensity )
         {
-        QString     q_channelname = this->m_ChannelNames[i];
-        std::string channelname = q_channelname.toStdString();
+        std::string channelname = m_ImageProcessor->getNameChannel(i);
 
         oAttributes.m_TotalIntensityMap[channelname] =
           static_cast< int >( calculator->GetSumIntensity() );
@@ -2771,8 +2760,8 @@ QGoTabImageView3DwT::CreateMeshFromSelectedContours(
     vtkPolyData *mesh = filter->GetOutput();
 
     vtkBox *implicitFunction = vtkBox::New();
-    //m_InternalImages[0]->GetBounds()
-    implicitFunction->SetBounds( NULL );
+    // get bounds from the first visible image
+    implicitFunction->SetBounds( m_ImageProcessor->getImageBW()->GetBounds() );
 
     vtkClipPolyData *cutter = vtkClipPolyData::New();
     cutter->SetInput(mesh);
@@ -3144,7 +3133,7 @@ QGoTabImageView3DwT::
 visibilityChanged(QString iName, bool iVisibility)
 {
   m_ImageProcessor->visibilityChanged(iName.toStdString(), iVisibility);
-  SetTimePoint();
+  UpdateImage();
   Update();
 }
 //-------------------------------------------------------------------------

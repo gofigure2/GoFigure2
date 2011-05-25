@@ -375,7 +375,6 @@ protected:
   QToolBar*                                 m_TraceSettingsToolBar;
 
   float m_IntersectionLineWidth;
-  std::vector< QString > m_ChannelNames;
 
   int m_PCoord;
   int m_RCoord;
@@ -589,7 +588,7 @@ protected:
                                        vtkProperty *property = NULL);
 
   // TODO remove megacapture
-  void SetTimePoint();
+  void UpdateImage();
 
     // TODO remove megacaptureZz
   void BuildDopplerWidget();
@@ -673,13 +672,6 @@ protected slots:
   void ImportTracks();
 
   /**
-  \brief switch between the 2 visualization modes:
-  -classic mode where a channel is an entity (nuclei, membrane) of interest.
-  -time mode where a channel represents the same entity through the time. (t-1, t and t+1).
-    updates the navigation widget.
-  */
-  void SetupWidgetsDoppler2ClassicMode();
-  /**
   \brief access to the megacapture reader to get the entity of interest images through time.
   updates the navigation widget.
   */
@@ -701,7 +693,7 @@ protected slots:
   void UpdateTracesEditingWidget();
 
 private:
-  void UpdateWidgetsFromImageProcessor();
+  void InitializeImageRelatedWidget();
 
   Q_DISABLE_COPY(QGoTabImageView3DwT);
 };
