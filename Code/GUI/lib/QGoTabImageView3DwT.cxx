@@ -1917,7 +1917,10 @@ QGoTabImageView3DwT::StepChanged(int iStep)
   BuildDopplerWidget();
   // build new image
   UpdateImage();
+  //update
   Update();
+  //update the trace editing widget
+  UpdateTracesEditingWidget();
 }
 //-------------------------------------------------------------------------
 
@@ -2974,25 +2977,28 @@ QGoTabImageView3DwT::UpdateTracesEditingWidget()
       QColor Green (0, 255, 0, 255);
       QColor Blue  (0, 0, 255, 255);
       int* dopplerT = this->m_ImageProcessor->getDopplerTime(this->m_TCoord);
-      unsigned int* realT = this->m_ImageProcessor->getBoundsTime();
+      //unsigned int* realT = this->m_ImageProcessor->getBoundsTime();
 
-      if ( dopplerT[0] > realT[0] )
+      if ( dopplerT[0] >= 0 )
         {
         ListTimePoints[tr("%1").arg(dopplerT[0])] = Red;
         }
-      else
+      /*else
         {
         ListTimePoints[tr("%1").arg(realT[0])] = Red;
-        }
+        }*/
+
       ListTimePoints[tr("%1").arg(this->m_TCoord)] = Green;
-      if (dopplerT[2] < realT[1] )
+
+      if (dopplerT[2] >= 0 )
         {
         ListTimePoints[tr("%1").arg(dopplerT[2])] = Blue;
         }
-      else
+      /*else
         {
         ListTimePoints[tr("%1").arg(realT[1])] = Blue;
-        }
+        }*/
+
       this->m_MeshEditingWidget->SetTSliceForDopplerView(ListTimePoints,
         m_ImageProcessor->getDopplerChannel());
       this->m_ContourEditingWidget->SetTSliceForDopplerView(ListTimePoints,
