@@ -91,8 +91,8 @@
 #include "vtkProp3D.h"
 
 class vtkViewImage3DCommand;
-class vtkVolumeTextureMapper3D;
-class vtkVolumeMapper;
+class vtkSmartVolumeMapper;
+class vtkSmartVolumeMapper;
 class vtkVolume;
 class vtkImageActor;
 class vtkAxes;
@@ -190,15 +190,6 @@ public:
    */
   void SetTriPlanarRenderingOff();
 
-  /*
-   * \brief Set the volume mapper to texture (for volume rendering purpose)
-   */
-  void SetVolumeMapperToTexture(void)
-  {
-    this->VolumeActor->SetMapper (this->VolumeMapper3D);
-    this->Callback->SetVolumeMapper (this->VolumeMapper3D);
-  }
-
   /**
    * \brief Set the cube visibility
    * \param[in] a true: visible, false: not visible
@@ -288,10 +279,8 @@ protected:
 
   virtual void SetupWidgets();
 
-  virtual void SetupTextureMapper();
-
   // texture mapper in 3D
-  vtkVolumeMapper *VolumeMapper3D;
+  vtkSmartVolumeMapper *SmartVolumeMapper3D;
   // volume property
   vtkVolumeProperty *VolumeProperty;
   // volume actor

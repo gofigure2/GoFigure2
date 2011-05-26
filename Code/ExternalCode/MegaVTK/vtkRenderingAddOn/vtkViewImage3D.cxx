@@ -113,8 +113,8 @@
 #include <vtkImageData.h>
 #include <vtkPiecewiseFunction.h>
 #include <vtkColorTransferFunction.h>
-#include <vtkVolumeTextureMapper3D.h>
-#include <vtkVolumeMapper.h>
+#include <vtkSmartVolumeMapper.h>
+#include <vtkSmartVolumeMapper.h>
 #include <vtkFiniteDifferenceGradientEstimator.h>
 #include <vtkVolumeTextureMapper2D.h>
 #include <vtkProperty.h>
@@ -203,7 +203,7 @@ vtkViewImage3D::vtkViewImage3D()
   this->VolumeProperty  = vtkVolumeProperty::New();
   this->VolumeActor     = vtkVolume::New();
   this->Callback = vtkImage3DCroppingBoxCallback::New();
-  this->VolumeMapper3D = vtkVolumeTextureMapper3D::New();
+  this->SmartVolumeMapper3D = vtkSmartVolumeMapper::New();
 
   this->Phantom.push_back( vtkImageActor::New() );
   this->Phantom.push_back( vtkImageActor::New() );
@@ -233,7 +233,7 @@ vtkViewImage3D::vtkViewImage3D()
 vtkViewImage3D::~vtkViewImage3D()
 {
   // delete all vtk objetcts:
-  this->VolumeMapper3D->Delete();
+  this->SmartVolumeMapper3D->Delete();
   this->VolumeProperty->Delete();
   this->VolumeActor->Delete();
   this->Callback->Delete();
@@ -262,9 +262,9 @@ void vtkViewImage3D::SetupVolumeRendering()
   // MAPPER
   // crop volume into 27? small regions
   // for efficiency?
-  this->VolumeMapper3D->CroppingOn();
-  this->VolumeMapper3D->SetCroppingRegionFlagsToSubVolume();
-  this->VolumeMapper3D->SetCroppingRegionFlags (0x7ffdfff);
+  this->SmartVolumeMapper3D->CroppingOn();
+  this->SmartVolumeMapper3D->SetCroppingRegionFlagsToSubVolume();
+  this->SmartVolumeMapper3D->SetCroppingRegionFlags (0x7ffdfff);
 
   // PROPERTY
   // opacity TF
@@ -285,13 +285,13 @@ void vtkViewImage3D::SetupVolumeRendering()
 
   // ACTOR
   this->VolumeActor->SetProperty (this->VolumeProperty);
-  this->VolumeActor->SetMapper (this->VolumeMapper3D);
+  this->VolumeActor->SetMapper (this->SmartVolumeMapper3D);
   this->VolumeActor->PickableOff();
   this->VolumeActor->DragableOff();
   this->VolumeActor->SetVisibility (0);
 
   // set up the boxwidget/ callback
-  this->Callback->SetVolumeMapper (this->VolumeMapper3D);
+  this->Callback->SetVolumeMapper (this->SmartVolumeMapper3D);
 
   this->Renderer->AddViewProp (this->VolumeActor);
 }
@@ -449,10 +449,7 @@ void vtkViewImage3D::SetVolumeRenderingOn()
   addComp->Update();
 
   // add output to mapper
-  this->VolumeMapper3D->SetInput( addComp->GetOutput() );
-
-  // check if 3d mapper is supported
-  this->SetupTextureMapper();
+  this->SmartVolumeMapper3D->SetInput( addComp->GetOutput() );
 
   this->VolumeActor->SetVisibility (true);
 }
@@ -662,80 +659,6 @@ void vtkViewImage3D::SetOrientationMatrix(vtkMatrix4x4 *matrix)
 }
 
 //----------------------------------------------------------------------------
-/**
- *
- */
-void vtkViewImage3D::SetupTextureMapper()
-{
-  if ( !this->GetInput() )
-    {
-    return;
-    }
-
-  vtkVolumeTextureMapper3D *mapper3D =
-    vtkVolumeTextureMapper3D::SafeDownCast( this->VolumeActor->GetMapper() );
-
-  if ( mapper3D && !this->GetRenderWindow()->GetNeverRendered() )
-    {
-#if VTK_MAJOR_VERSION == 5 && VTK_MINOR_VERSION == 6 && VTK_BUILD_VERSION == 0
-    if ( !mapper3D->IsRenderSupported (this->VolumeProperty) )
-#else
-    if ( !mapper3D->IsRenderSupported( this->VolumeProperty,
-                                       this->GetRenderer() ) )
-#endif
-      {
-      //try the ATI fragment program implementation
-      // mapper3D->SetPreferredMethodToFragmentProgram();
-
-#if VTK_MAJOR_VERSION == 5 && VTK_MINOR_VERSION == 6 && VTK_BUILD_VERSION == 0
-      if ( !mapper3D->IsRenderSupported (this->VolumeProperty) )
-#else
-      if ( !mapper3D->IsRenderSupported( this->VolumeProperty,
-                                         this->GetRenderer() ) )
-#endif
-        {
-        vtkWarningMacro (
-          << "Warning: 3D Texture volume rendering is not supported by your"
-          << " hardware, I switch to 2D Texture rendering." << endl);
-
-        /// \todo FIX LEAK
-        vtkVolumeTextureMapper2D *newMapper =
-          vtkVolumeTextureMapper2D::New();
-        newMapper->CroppingOn();
-        newMapper->SetCroppingRegionFlags (0x7ffdfff);
-
-        double rangeR[2];
-        this->GetInput()->GetPointData()->GetScalars()->GetRange(rangeR, 0);
-        double rangeG[2];
-        this->GetInput()->GetPointData()->GetScalars()->GetRange(rangeG, 1);
-        double rangeB[2];
-        this->GetInput()->GetPointData()->GetScalars()->GetRange(rangeB, 2);
-
-        double rangeMax = std::max(rangeB[1], std::max(rangeR[1], rangeG[1]));
-        double rangeMin = std::min(rangeB[0], std::min(rangeR[0], rangeG[0]));
-
-
-        double  shift = 0 - rangeMin;
-        double  scale = 65535.0 / ( rangeMax - rangeMin );
-
-        vtkSmartPointer< vtkImageShiftScale > scaler =
-          vtkSmartPointer< vtkImageShiftScale >::New();
-        scaler->SetInput ( this->GetInput() );
-        scaler->SetShift (shift);
-        scaler->SetScale (scale);
-        scaler->SetOutputScalarTypeToUnsignedShort();
-        scaler->Update();
-        newMapper->SetInput ( scaler->GetOutput() );
-        scaler->Delete();
-        this->Callback->SetVolumeMapper (newMapper);
-
-        mapper3D->Delete();
-        this->VolumeMapper3D = newMapper;
-        this->VolumeActor->SetMapper (this->VolumeMapper3D);
-        }
-      }
-    }
-}
 
 //----------------------------------------------------------------------------
 /**
