@@ -4,6 +4,12 @@
 
 #include "hoverpoints.h"
 
+//vtk
+#include "vtkLookupTable.h"
+
+// temp
+#include <iostream>
+
 //-------------------------------------------------------------------------
 
 GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent, QPolygonF iPoints)
@@ -22,10 +28,20 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent, 
   m_alpha_shade = new GoTransferFunctionWidget(
         GoTransferFunctionWidget::ARGBShade, this);
 
+  m_LUT = NULL;
+
+  QPushButton *okPushButton = new QPushButton("OK", this);
+  QPushButton *resetPushButton = new QPushButton("Reset", this);
+
+  QHBoxLayout *layout = new QHBoxLayout;
+  layout->addWidget(okPushButton);
+  layout->addWidget(resetPushButton);
+
   vbox->addWidget(m_red_shade);
   vbox->addWidget(m_green_shade);
   vbox->addWidget(m_blue_shade);
   vbox->addWidget(m_alpha_shade);
+  vbox->addLayout(layout);
 
   connect(m_red_shade, SIGNAL(colorsChanged()), this, SLOT(pointsUpdated()));
   connect(m_green_shade, SIGNAL(colorsChanged()), this, SLOT(pointsUpdated()));
@@ -70,11 +86,31 @@ void GoTransferFunctionEditorWidget::pointsUpdated()
           return;
 
       stops << QGradientStop(x / w, color);
+      //temp->
   }
 
   m_alpha_shade->setGradientStops(stops);
 
   emit gradientStopsChanged(stops);
+
+  // update the LUT
+  if(m_LUT)
+    {
+    // temp LUT
+    vtkLookupTable* temp = vtkLookupTable::New();
+    temp->SetTableRange (m_LUT->GetRange());
+    m_alpha_shade->UpdateLookupTable(temp);
+    m_LUT->DeepCopy(temp);
+    m_LUT->Modified();
+    temp->Delete();
+    }
+
+  // update the opcity TF
+
+  // save points on quit only
+
+  // send signal to update the visualization
+  emit updateVisualization();
 }
 //-------------------------------------------------------------------------
 
@@ -113,3 +149,35 @@ void GoTransferFunctionEditorWidget::setGradientStops(const QGradientStops &stop
   set_shade_points(pts_alpha, m_alpha_shade);
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+GoTransferFunctionEditorWidget::
+AddPoints( const std::vector< std::map< unsigned int, unsigned int> >& iRGBA)
+{
+  std::map< unsigned int, unsigned int>::const_iterator it0 = iRGBA[0].find(0);
+  std::map< unsigned int, unsigned int>::const_iterator it255 = iRGBA[0].find(255);
+
+  m_red_shade->AddLockPoints(double(it0->second)/255, double(it255->second)/255);
+
+  it0 = iRGBA[1].find(0);
+  it255 = iRGBA[1].find(255);
+  m_green_shade->AddLockPoints(double(it0->second)/255, double(it255->second)/255);
+
+  it0 = iRGBA[2].find(0);
+  it255 = iRGBA[2].find(255);
+  m_blue_shade->AddLockPoints(double(it0->second)/255, double(it255->second)/255);
+
+  it0 = iRGBA[3].find(0);
+  it255 = iRGBA[3].find(255);
+  m_alpha_shade->AddLockPoints(double(it0->second)/255, double(it255->second)/255);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+GoTransferFunctionEditorWidget::
+AddLookupTable(vtkLookupTable* iLUT)
+{
+  m_LUT = iLUT;
+}

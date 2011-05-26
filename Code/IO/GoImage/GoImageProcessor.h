@@ -213,6 +213,10 @@ public:
 
   std::vector<double> getColor(const unsigned int& iIndex) const;
 
+  std::vector<double> getColor(const std::string& iIndex) const;
+
+  std::vector<std::map<unsigned int, unsigned int> > getRGBA(const std::string& iIndex) const;
+
   /*
    * \brief load all the channels for the given time point into the
    * GoMegaImageStructure

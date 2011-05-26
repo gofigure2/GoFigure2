@@ -359,6 +359,8 @@ public slots:
 
   void openTransferFunctionEditor(QString iName);
 
+  void updateSlot();
+
 protected:
   QGoImageView3D *                               m_ImageView;
   vtkImageData *                                 m_Image;

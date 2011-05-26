@@ -278,10 +278,10 @@ void vtkViewImage3D::SetupVolumeRendering()
   this->VolumeProperty->IndependentComponentsOff();
   this->VolumeProperty->SetInterpolationTypeToLinear();
   this->VolumeProperty->ShadeOff();
-  this->VolumeProperty->SetDiffuse (0.9);
-  this->VolumeProperty->SetAmbient (0.2);
-  this->VolumeProperty->SetSpecular (0.3);
-  this->VolumeProperty->SetSpecularPower (15.0);
+  //this->VolumeProperty->SetDiffuse (0.9);
+  //this->VolumeProperty->SetAmbient (0.2);
+  //this->VolumeProperty->SetSpecular (0.3);
+  //this->VolumeProperty->SetSpecularPower (15.0);
 
   // ACTOR
   this->VolumeActor->SetProperty (this->VolumeProperty);

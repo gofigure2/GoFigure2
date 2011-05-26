@@ -45,6 +45,9 @@
 
 class HoverPoints;
 
+// vtk
+class vtkLookupTable;
+
 
 class GoTransferFunctionWidget : public QWidget
 {
@@ -69,6 +72,10 @@ public:
     HoverPoints *hoverPoints() const { return m_hoverPoints; }
 
     uint colorAt(int x);
+
+    void AddLockPoints(const double& iFirstPoint, const double& iLastPoint);
+
+    void UpdateLookupTable(vtkLookupTable* iLUT);
 
 signals:
     void colorsChanged();

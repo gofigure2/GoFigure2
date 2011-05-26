@@ -61,12 +61,13 @@
  */
 struct QGOIO_EXPORT GoMegaImageStructure
 {
-    unsigned int                    Index;
-    vtkSmartPointer<vtkLookupTable> LUT;
-    vtkSmartPointer<vtkImageData>   Image;
-    std::vector< double >           Color;
-    bool                            Visibility;
-    std::string                     Name;
+    unsigned int                                       Index;
+    vtkSmartPointer<vtkLookupTable>                    LUT;
+    vtkSmartPointer<vtkImageData>                      Image;
+    std::vector< double >                              Color;
+    bool                                               Visibility;
+    std::string                                        Name;
+    std::vector<std::map<unsigned int, unsigned int> > RGBA;
 
     /** Constructor */
     GoMegaImageStructure(unsigned int iIndex,
@@ -79,6 +80,15 @@ struct QGOIO_EXPORT GoMegaImageStructure
       Name(iName)
     {
     Image = iImage;
+
+    // init RGBA vectors
+    // vector might not be the best....
+    RGBA.resize(4);
+    for(int i; i<4; ++i)
+      {
+      RGBA[i][0] = 0;
+      RGBA[i][255] = Color[i];
+      }
     }
 
     // functions to modify the structure through the boost::multiindexcontainer
@@ -96,6 +106,11 @@ struct QGOIO_EXPORT GoMegaImageStructure
    {
      Name = iName;
    }
+
+   //void setRGBA(std::vector<std::vector<double> > iRGBA)
+   //{
+   //  RGBA = iRGBA;
+   //}
 
    /*
      * \brief Convert a vtkImage to a itkImage. If we call after "ExtractROI",

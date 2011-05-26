@@ -48,6 +48,9 @@
 class HoverPoints;
 class GoTransferFunctionWidget;
 
+//vtk
+class vtkLookupTable;
+
 class GoTransferFunctionEditorWidget : public QWidget
 {
   Q_OBJECT
@@ -56,17 +59,26 @@ public:
 
   void setGradientStops(const QGradientStops &stops);
 
+  void AddPoints(
+    const std::vector<std::map<unsigned int, unsigned int> >& iRGBA);
+
+  void AddLookupTable(vtkLookupTable* iLUT);
+
 public slots:
   void pointsUpdated();
 
 signals:
   void gradientStopsChanged(const QGradientStops &stops);
 
+  void updateVisualization();
+
 private:
   GoTransferFunctionWidget *m_red_shade;
   GoTransferFunctionWidget *m_green_shade;
   GoTransferFunctionWidget *m_blue_shade;
   GoTransferFunctionWidget *m_alpha_shade;
+
+  vtkLookupTable           *m_LUT;
 };
 
 #endif

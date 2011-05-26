@@ -2,6 +2,9 @@
 
 #include "hoverpoints.h"
 
+//vtk
+#include "vtkLookupTable.h"
+
 //-------------------------------------------------------------------------
 
 GoTransferFunctionWidget::GoTransferFunctionWidget(ShadeType type, QWidget *parent)
@@ -26,17 +29,8 @@ GoTransferFunctionWidget::GoTransferFunctionWidget(ShadeType type, QWidget *pare
 
   }
 
-  QPolygonF points;
-  points << QPointF(0, sizeHint().height())
-         << QPointF(sizeHint().width(), 0);
-
   m_hoverPoints = new HoverPoints(this, HoverPoints::CircleShape);
   m_hoverPoints->setConnectionType(HoverPoints::LineConnection);
-
-  /*m_hoverPoints->setPoints(points);
-  m_hoverPoints->setPointLock(0, HoverPoints::LockToLeft);
-  m_hoverPoints->setPointLock(1, HoverPoints::LockToRight);
-  m_hoverPoints->setSortType(HoverPoints::XSort);*/
 
   setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
@@ -134,5 +128,38 @@ void GoTransferFunctionWidget::generateShade()
           p.fillRect(rect(), shade);
       }
   }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+GoTransferFunctionWidget::
+AddLockPoints(const double& iFirstPoint, const double& iLastPoint)
+{
+QPolygonF points;
+points << QPointF(0, height()*(1 - iFirstPoint))
+       << QPointF(width(), height()*(1-iLastPoint));
+m_hoverPoints->setPoints(points);
+m_hoverPoints->setPointLock(0, HoverPoints::LockToLeft);
+m_hoverPoints->setPointLock(1, HoverPoints::LockToRight);
+m_hoverPoints->setSortType(HoverPoints::XSort);
+
+emit colorsChanged();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+GoTransferFunctionWidget::
+UpdateLookupTable(vtkLookupTable* iLUT)
+{
+  iLUT->SetNumberOfTableValues(m_shade.width());
+  iLUT->Build();
+
+  for(int i=0; i<m_shade.width();++i)
+    {
+    QColor color(m_shade.pixel(i, 0));
+    iLUT->SetTableValue(i, color.redF(), color.greenF(), color.blueF());
+    }
 }
 //-------------------------------------------------------------------------

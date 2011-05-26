@@ -3178,12 +3178,30 @@ openTransferFunctionEditor(QString iName)
 
   // update editor
 
-  // open editor
-
+  // create editor
   GoTransferFunctionEditorWidget* editor =
       new GoTransferFunctionEditorWidget(NULL, points);
-  // add points
+  // connect signals
 
+  QObject::connect( editor,
+                    SIGNAL( updateVisualization() ),
+                    this,
+                    SLOT( updateSlot()) );
+
+  // show editor - to have consistent geomerty to add the points
   editor->show();
-}
 
+  // add points
+  editor->AddPoints(m_ImageProcessor->getRGBA(iName.toStdString()));
+  // add LUT
+  editor->AddLookupTable(m_ImageProcessor->getLookuptable(iName.toStdString()));
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::updateSlot()
+{
+  UpdateImage();
+  Update();
+}

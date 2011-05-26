@@ -173,12 +173,9 @@ getLookuptable() const
   GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator it =
       m_MegaImageContainer.get< Visibility >().find(true);
 
-  if(it!=m_MegaImageContainer.get< Visibility >().end())
-    {
-    return it->LUT;
-    }
+  assert(it!=m_MegaImageContainer.get< Visibility >().end());
 
-  return NULL;
+  return it->LUT;
 }
 //--------------------------------------------------------------------------
 
@@ -193,6 +190,34 @@ getColor(const unsigned int& iIndex) const
   assert(it!=m_MegaImageContainer.get< Index >().end());
 
   return it->Color;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::vector<double>
+GoImageProcessor::
+getColor(const std::string& iIndex) const
+{
+  GoMegaImageStructureMultiIndexContainer::index<Name>::type::iterator it =
+      m_MegaImageContainer.get< Name >().find(iIndex);
+
+  assert(it!=m_MegaImageContainer.get< Name >().end());
+
+  return it->Color;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::vector<std::map<unsigned int, unsigned int> >
+GoImageProcessor::
+getRGBA(const std::string& iIndex) const
+{
+  GoMegaImageStructureMultiIndexContainer::index<Name>::type::iterator it =
+      m_MegaImageContainer.get< Name >().find(iIndex);
+
+  assert(it!=m_MegaImageContainer.get< Name >().end());
+
+  return it->RGBA;
 }
 //--------------------------------------------------------------------------
 
