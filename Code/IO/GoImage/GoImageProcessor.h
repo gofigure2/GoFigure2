@@ -52,6 +52,7 @@
 // external include
 class vtkLookupTable;
 class vtkImageData;
+class vtkXYPlotActor;
 
 class QString;
 
@@ -216,6 +217,8 @@ public:
   std::vector<double> getColor(const std::string& iIndex) const;
 
   std::vector<std::map<unsigned int, unsigned int> > getRGBA(const std::string& iIndex) const;
+
+  vtkXYPlotActor* getHistogram(const std::string& iIndex) const;
 
   /*
    * \brief load all the channels for the given time point into the

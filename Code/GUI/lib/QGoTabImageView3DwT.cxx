@@ -118,6 +118,10 @@
 // TESTS
 #include "vtkPolyDataWriter.h"
 #include "vtkViewImage3D.h"
+#include "vtkRenderer.h"
+#include "vtkRenderWindow.h"
+#include "vtkRenderWindowInteractor.h"
+#include "vtkXYPlotActor.h"
 
 //-------------------------------------------------------------------------
 QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
@@ -3177,6 +3181,32 @@ openTransferFunctionEditor(QString iName)
   // get related color
 
   // update editor
+
+
+  vtkXYPlotActor* histogram = m_ImageProcessor->getHistogram(iName.toStdString());
+  vtkActorCollection* collection = vtkActorCollection::New();
+  histogram->GetActors(collection);
+
+  collection->InitTraversal();
+  collection->GetNextActor();
+
+  // Visualize the histogram(s)
+  vtkSmartPointer<vtkRenderer> renderer =
+    vtkSmartPointer<vtkRenderer>::New();
+  renderer->AddActor(collection->GetNextActor());
+
+  vtkSmartPointer<vtkRenderWindow> renderWindow =
+    vtkSmartPointer<vtkRenderWindow>::New();
+  renderWindow->AddRenderer( renderer );
+  renderWindow->SetSize(640, 480);
+
+  vtkSmartPointer<vtkRenderWindowInteractor> interactor =
+    vtkSmartPointer<vtkRenderWindowInteractor>::New();
+  interactor->SetRenderWindow( renderWindow );
+
+  // Initialize the event loop and then start it
+  interactor->Initialize();
+  interactor->Start();
 
   // create editor
   GoTransferFunctionEditorWidget* editor =

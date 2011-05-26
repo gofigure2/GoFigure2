@@ -42,9 +42,14 @@
 #include "vtkImageBlend.h"
 #include "vtkPointData.h"
 #include "vtkImageShiftScale.h"
+//histogram
+#include "vtkXYPlotActor.h"
+#include "vtkImageExtractComponents.h"
+#include "vtkImageAccumulate.h"
 
 #include <QString>
 
+// temp
 #include "vtkImageWeightedSum.h"
 
 //--------------------------------------------------------------------------
@@ -218,6 +223,72 @@ getRGBA(const std::string& iIndex) const
   assert(it!=m_MegaImageContainer.get< Name >().end());
 
   return it->RGBA;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+vtkXYPlotActor*
+GoImageProcessor::
+getHistogram(const std::string& iIndex) const
+{
+  GoMegaImageStructureMultiIndexContainer::index<Name>::type::iterator it =
+      m_MegaImageContainer.get< Name >().find(iIndex);
+
+  assert(it!=m_MegaImageContainer.get< Name >().end());
+
+  // Create a vtkXYPlotActor
+  vtkXYPlotActor* plot = vtkXYPlotActor::New();
+  plot->ExchangeAxesOff();
+  plot->SetLabelFormat( "%g" );
+  plot->SetXTitle( "Level" );
+  plot->SetYTitle( "Frequency" );
+  plot->SetXValuesToValue();
+
+  double xmax = 0.;
+  double ymax = 0.;
+
+  double colors[3] = { 1, 1, 1 };
+
+  // Process the image, extracting and plotting a histogram for each
+  // component
+
+  vtkSmartPointer<vtkImageExtractComponents> extract =
+    vtkSmartPointer<vtkImageExtractComponents>::New();
+  //SetInputConnection
+  extract->SetInput( it->Image );
+  extract->SetComponents( 0 );
+  extract->Update();
+
+  double range[2];
+  extract->GetOutput()->GetScalarRange( range );
+
+  vtkSmartPointer<vtkImageAccumulate> histogram =
+    vtkSmartPointer<vtkImageAccumulate>::New();
+  histogram->SetInputConnection( extract->GetOutputPort() );
+  histogram->SetComponentExtent(
+    0,
+    static_cast<int>(range[1])-static_cast<int>(range[0])-1,0,0,0,0 );
+  histogram->SetComponentOrigin( range[0],0,0 );
+  histogram->SetComponentSpacing( 1,0,0 );
+  histogram->SetIgnoreZero( true );
+  histogram->Update();
+
+  if( range[1] > xmax )
+    {
+    xmax = range[1];
+    }
+  if( histogram->GetOutput()->GetScalarRange()[1] > ymax )
+    {
+    ymax = histogram->GetOutput()->GetScalarRange()[1];
+    }
+
+  plot->AddInput( histogram->GetOutput() );
+
+  plot->SetXRange( 0, xmax );
+  plot->SetYRange( 0, ymax );
+  plot->SetPlotColor(0, colors);
+
+  return plot;
 }
 //--------------------------------------------------------------------------
 
