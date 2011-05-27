@@ -91,6 +91,9 @@ void GoTransferFunctionWidget::paintEvent(QPaintEvent *)
 
   p.setPen(QColor(146, 146, 146));
   p.drawRect(0, 0, width() - 1, height() - 1);
+
+  // draw histogram
+  p.drawLine(0, 0, m_shade.width(), m_shade.height());
 }
 //-------------------------------------------------------------------------
 

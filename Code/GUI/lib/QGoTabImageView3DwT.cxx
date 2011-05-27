@@ -3182,7 +3182,7 @@ openTransferFunctionEditor(QString iName)
 
   // update editor
 
-
+/*
   vtkXYPlotActor* histogram = m_ImageProcessor->getHistogram(iName.toStdString());
   vtkActorCollection* collection = vtkActorCollection::New();
   histogram->GetActors(collection);
@@ -3206,7 +3206,7 @@ openTransferFunctionEditor(QString iName)
 
   // Initialize the event loop and then start it
   interactor->Initialize();
-  interactor->Start();
+  interactor->Start();*/
 
   // create editor
   GoTransferFunctionEditorWidget* editor =
