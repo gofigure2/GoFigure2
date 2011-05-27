@@ -237,8 +237,7 @@ getHistogram(const std::string& iIndex) const
 
   // Process the image, extracting and plotting a histogram for each
   // component
-  vtkSmartPointer<vtkImageExtractComponents> extract =
-    vtkSmartPointer<vtkImageExtractComponents>::New();
+  vtkImageExtractComponents* extract = vtkImageExtractComponents::New();
   //SetInputConnection
   extract->SetInput( it->Image );
   extract->SetComponents( 0 );

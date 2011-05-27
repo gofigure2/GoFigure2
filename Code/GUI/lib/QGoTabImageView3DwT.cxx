@@ -3229,7 +3229,7 @@ openTransferFunctionEditor(QString iName)
   // add LUT
   editor->AddLookupTable(m_ImageProcessor->getLookuptable(iName.toStdString()));
   // add histogram
-  //editor->AddHistogram(m_ImageProcessor->getHistogram(iName.toStdString()));
+  editor->AddHistogram(m_ImageProcessor->getHistogram(iName.toStdString()));
   //vtkImageAccumulate* histogram = m_ImageProcessor->getHistogram(iName.toStdString());
 }
 //-------------------------------------------------------------------------

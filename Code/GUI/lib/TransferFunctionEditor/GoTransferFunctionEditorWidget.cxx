@@ -194,7 +194,7 @@ AddHistogram(vtkImageAccumulate* iHistogram)
   int x_range = iHistogram->GetOutput()->GetNumberOfPoints();
   vtkDataArray* scalars =
       iHistogram->GetOutput()->GetPointData()->GetScalars();
-  double* range;
+  double range[2];
   scalars->GetRange(range);
 
   qDebug() << "x range: "<< x_range;
@@ -202,6 +202,7 @@ AddHistogram(vtkImageAccumulate* iHistogram)
 
   QVector<qreal> histo;
 
+  // we don't want the 0 since it is background and it's going to poluute the histogram
   for(int i=1; i<x_range; ++i)
     {
     double value;

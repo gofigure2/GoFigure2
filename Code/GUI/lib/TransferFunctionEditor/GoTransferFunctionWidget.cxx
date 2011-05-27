@@ -93,8 +93,29 @@ void GoTransferFunctionWidget::paintEvent(QPaintEvent *)
   p.drawRect(0, 0, width() - 1, height() - 1);
 
   // draw histogram
-  //if(m_Histogram.size() > 0)
+  if(m_Histogram.size() > 0)
     {
+      qreal x_range = m_Histogram.size();
+
+      //get max Y
+      qreal y_max = 0;
+      for(int i=0; i<x_range; ++i)
+      {
+        if(m_Histogram[i] > y_max)
+        {
+          y_max = m_Histogram[i];
+        }
+      }
+
+      QVector<QPointF> listOfPoints;
+
+      for(int i=0; i<x_range-1; ++i)
+      {
+        QPointF point(i*m_shade.width()/x_range, m_shade.height()- m_Histogram[i]*m_shade.height()/y_max);
+        listOfPoints.push_back(point);
+        qDebug() << point;
+      }
+
 //    QPen pen;  // creates a default pen
 //    pen.setWidth(3);
 //    pen.setBrush(Qt::black);
@@ -103,19 +124,8 @@ void GoTransferFunctionWidget::paintEvent(QPaintEvent *)
 
 //    p.setPen(pen);
 
-      //get all points
-      //int* extent = m_Histogram->GetOutput()->GetExtent();
-      //m_Histogram->get
-
-
-      // should be gloabl variable
-      QVector<QPointF> listOfPoints;
-
-
-
-      //p.drawLines();
-
-    p.drawLine(0, 0, m_shade.width(), m_shade.height());
+    p.drawLines(listOfPoints);
+    //p.drawLine(0, 0, m_shade.width(), m_shade.height());
     }
 }
 //-------------------------------------------------------------------------
