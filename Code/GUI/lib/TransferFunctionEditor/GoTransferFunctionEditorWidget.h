@@ -50,6 +50,7 @@ class GoTransferFunctionWidget;
 
 //vtk
 class vtkLookupTable;
+class vtkImageAccumulate;
 
 class GoTransferFunctionEditorWidget : public QWidget
 {
@@ -63,6 +64,8 @@ public:
     const std::vector<std::map<unsigned int, unsigned int> >& iRGBA);
 
   void AddLookupTable(vtkLookupTable* iLUT);
+
+  void AddHistogram(vtkImageAccumulate* iHistogram);
 
 public slots:
   void pointsUpdated();

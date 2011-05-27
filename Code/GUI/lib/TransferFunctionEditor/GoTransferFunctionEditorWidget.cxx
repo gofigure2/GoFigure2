@@ -6,6 +6,9 @@
 
 //vtk
 #include "vtkLookupTable.h"
+#include "vtkImageAccumulate.h"
+#include "vtkImageData.h"
+#include "vtkPointData.h"
 
 // temp
 #include <iostream>
@@ -181,3 +184,35 @@ AddLookupTable(vtkLookupTable* iLUT)
 {
   m_LUT = iLUT;
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+GoTransferFunctionEditorWidget::
+AddHistogram(vtkImageAccumulate* iHistogram)
+{
+  int x_range = iHistogram->GetOutput()->GetNumberOfPoints();
+  vtkDataArray* scalars =
+      iHistogram->GetOutput()->GetPointData()->GetScalars();
+  double* range;
+  scalars->GetRange(range);
+
+  qDebug() << "x range: "<< x_range;
+  qDebug() << "range: " << range[0] << " to " << range[1];
+
+  QVector<qreal> histo;
+
+  for(int i=1; i<x_range; ++i)
+    {
+    double value;
+    value = scalars->GetTuple1(i);
+    qDebug() << "value: " << value;
+    histo.push_back(value);
+    }
+
+  m_red_shade->SetHistogram(histo);
+  m_green_shade->SetHistogram(histo);
+  m_blue_shade->SetHistogram(histo);
+  m_alpha_shade->SetHistogram(histo);
+}
+//-------------------------------------------------------------------------

@@ -77,6 +77,8 @@ public:
 
     void UpdateLookupTable(vtkLookupTable* iLUT);
 
+    void SetHistogram(QVector<qreal> iHistogram);
+
 signals:
     void colorsChanged();
 
@@ -87,6 +89,8 @@ private:
     QImage m_shade;
     HoverPoints *m_hoverPoints;
     QLinearGradient m_alpha_gradient;
+
+    QVector<qreal> m_Histogram;
 };
 
 #endif

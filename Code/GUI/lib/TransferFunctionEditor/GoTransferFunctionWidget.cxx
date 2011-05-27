@@ -93,7 +93,30 @@ void GoTransferFunctionWidget::paintEvent(QPaintEvent *)
   p.drawRect(0, 0, width() - 1, height() - 1);
 
   // draw histogram
-  p.drawLine(0, 0, m_shade.width(), m_shade.height());
+  //if(m_Histogram.size() > 0)
+    {
+//    QPen pen;  // creates a default pen
+//    pen.setWidth(3);
+//    pen.setBrush(Qt::black);
+//    pen.setCapStyle(Qt::RoundCap);
+//    pen.setJoinStyle(Qt::RoundJoin);
+
+//    p.setPen(pen);
+
+      //get all points
+      //int* extent = m_Histogram->GetOutput()->GetExtent();
+      //m_Histogram->get
+
+
+      // should be gloabl variable
+      QVector<QPointF> listOfPoints;
+
+
+
+      //p.drawLines();
+
+    p.drawLine(0, 0, m_shade.width(), m_shade.height());
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -164,5 +187,14 @@ UpdateLookupTable(vtkLookupTable* iLUT)
     QColor color(m_shade.pixel(i, 0));
     iLUT->SetTableValue(i, color.redF(), color.greenF(), color.blueF());
     }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+GoTransferFunctionWidget::
+SetHistogram(QVector<qreal> iHistogram)
+{
+  m_Histogram = iHistogram;
 }
 //-------------------------------------------------------------------------

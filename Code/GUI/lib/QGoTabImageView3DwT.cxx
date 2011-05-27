@@ -116,12 +116,14 @@
 #include "GoTransferFunctionEditorWidget.h"
 
 // TESTS
-#include "vtkPolyDataWriter.h"
+/*#include "vtkPolyDataWriter.h"
 #include "vtkViewImage3D.h"
 #include "vtkRenderer.h"
 #include "vtkRenderWindow.h"
 #include "vtkRenderWindowInteractor.h"
+*/
 #include "vtkXYPlotActor.h"
+#include "vtkImageAccumulate.h"
 
 //-------------------------------------------------------------------------
 QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
@@ -3182,8 +3184,9 @@ openTransferFunctionEditor(QString iName)
 
   // update editor
 
-/*
-  vtkXYPlotActor* histogram = m_ImageProcessor->getHistogram(iName.toStdString());
+
+  vtkXYPlotActor* histogram ;
+  /*= m_ImageProcessor->getHistogram(iName.toStdString());
   vtkActorCollection* collection = vtkActorCollection::New();
   histogram->GetActors(collection);
 
@@ -3225,6 +3228,9 @@ openTransferFunctionEditor(QString iName)
   editor->AddPoints(m_ImageProcessor->getRGBA(iName.toStdString()));
   // add LUT
   editor->AddLookupTable(m_ImageProcessor->getLookuptable(iName.toStdString()));
+  // add histogram
+  //editor->AddHistogram(m_ImageProcessor->getHistogram(iName.toStdString()));
+  //vtkImageAccumulate* histogram = m_ImageProcessor->getHistogram(iName.toStdString());
 }
 //-------------------------------------------------------------------------
 
