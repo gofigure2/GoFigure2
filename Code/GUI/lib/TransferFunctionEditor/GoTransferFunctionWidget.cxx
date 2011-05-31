@@ -95,37 +95,18 @@ void GoTransferFunctionWidget::paintEvent(QPaintEvent *)
   // draw histogram
   if(m_Histogram.size() > 0)
     {
-      qreal x_range = m_Histogram.size();
+    QVector<QPointF> listOfPoints;
+    qreal x_range = m_Histogram.size();
 
-      //get max Y
-      qreal y_max = 0;
-      for(int i=0; i<x_range; ++i)
+    for(int i=0; i<x_range; ++i)
       {
-        if(m_Histogram[i] > y_max)
-        {
-          y_max = m_Histogram[i];
-        }
+      QPointF point(i*width()/x_range, height()- m_Histogram[i]*height());
+      QPointF point2(i*width()/x_range, height());
+      listOfPoints.push_back(point2);
+      listOfPoints.push_back(point);
       }
-
-      QVector<QPointF> listOfPoints;
-
-      for(int i=0; i<x_range-1; ++i)
-      {
-        QPointF point(i*m_shade.width()/x_range, m_shade.height()- m_Histogram[i]*m_shade.height()/y_max);
-        listOfPoints.push_back(point);
-        qDebug() << point;
-      }
-
-//    QPen pen;  // creates a default pen
-//    pen.setWidth(3);
-//    pen.setBrush(Qt::black);
-//    pen.setCapStyle(Qt::RoundCap);
-//    pen.setJoinStyle(Qt::RoundJoin);
-
-//    p.setPen(pen);
 
     p.drawLines(listOfPoints);
-    //p.drawLine(0, 0, m_shade.width(), m_shade.height());
     }
 }
 //-------------------------------------------------------------------------
@@ -189,12 +170,9 @@ void
 GoTransferFunctionWidget::
 UpdateLookupTable(vtkLookupTable* iLUT)
 {
-  iLUT->SetNumberOfTableValues(m_shade.width());
-  iLUT->Build();
-
-  for(int i=0; i<m_shade.width();++i)
+  for(int i=0; i<iLUT->GetNumberOfTableValues();++i)
     {
-    QColor color(m_shade.pixel(i, 0));
+    QColor color(m_shade.pixel(i*m_shade.width()/iLUT->GetNumberOfTableValues()+1, 0+1));
     iLUT->SetTableValue(i, color.redF(), color.greenF(), color.blueF());
     }
 }

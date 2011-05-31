@@ -99,21 +99,12 @@ void GoTransferFunctionEditorWidget::pointsUpdated()
   // update the LUT
   if(m_LUT)
     {
-    // temp LUT
-    vtkLookupTable* temp = vtkLookupTable::New();
-    temp->SetTableRange (m_LUT->GetRange());
-    m_alpha_shade->UpdateLookupTable(temp);
-    m_LUT->DeepCopy(temp);
-    m_LUT->Modified();
-    temp->Delete();
+    m_alpha_shade->UpdateLookupTable(m_LUT);
+    // send signal to update the visualization
+    emit updateVisualization();
     }
-
   // update the opcity TF
-
   // save points on quit only
-
-  // send signal to update the visualization
-  emit updateVisualization();
 }
 //-------------------------------------------------------------------------
 
@@ -174,6 +165,9 @@ AddPoints( const std::vector< std::map< unsigned int, unsigned int> >& iRGBA)
   it0 = iRGBA[3].find(0);
   it255 = iRGBA[3].find(255);
   m_alpha_shade->AddLockPoints(double(it0->second)/255, double(it255->second)/255);
+
+  // update visu
+  pointsUpdated();
 }
 //-------------------------------------------------------------------------
 
@@ -192,23 +186,17 @@ GoTransferFunctionEditorWidget::
 AddHistogram(vtkImageAccumulate* iHistogram)
 {
   int x_range = iHistogram->GetOutput()->GetNumberOfPoints();
-  vtkDataArray* scalars =
-      iHistogram->GetOutput()->GetPointData()->GetScalars();
-  double range[2];
-  scalars->GetRange(range);
-
-  qDebug() << "x range: "<< x_range;
-  qDebug() << "range: " << range[0] << " to " << range[1];
+  vtkDataArray* scalars = iHistogram->GetOutput()->GetPointData()->GetScalars();
+  double* range = iHistogram->GetOutput()->GetScalarRange();
 
   QVector<qreal> histo;
 
-  // we don't want the 0 since it is background and it's going to poluute the histogram
-  for(int i=1; i<x_range; ++i)
+  // do we want the background values in the histogram...?
+  for(int i=0; i<x_range; ++i)
     {
     double value;
     value = scalars->GetTuple1(i);
-    qDebug() << "value: " << value;
-    histo.push_back(value);
+    histo.push_back(log(value)/log(range[1]));
     }
 
   m_red_shade->SetHistogram(histo);

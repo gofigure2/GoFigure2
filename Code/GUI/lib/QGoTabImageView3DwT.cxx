@@ -116,13 +116,6 @@
 #include "GoTransferFunctionEditorWidget.h"
 
 // TESTS
-/*#include "vtkPolyDataWriter.h"
-#include "vtkViewImage3D.h"
-#include "vtkRenderer.h"
-#include "vtkRenderWindow.h"
-#include "vtkRenderWindowInteractor.h"
-*/
-#include "vtkXYPlotActor.h"
 #include "vtkImageAccumulate.h"
 
 //-------------------------------------------------------------------------
@@ -1582,6 +1575,8 @@ QGoTabImageView3DwT::UpdateImage()
     vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
     lut->DeepCopy(m_ImageProcessor->getLookuptable());
     m_ImageView->SetLookupTable(lut);
+
+    //lut->Print(cout);
 
     // CONFIGURE LUT
     this->findChild<QAction*>("LUT")->setEnabled(true);
@@ -3184,33 +3179,6 @@ openTransferFunctionEditor(QString iName)
 
   // update editor
 
-
-  vtkXYPlotActor* histogram ;
-  /*= m_ImageProcessor->getHistogram(iName.toStdString());
-  vtkActorCollection* collection = vtkActorCollection::New();
-  histogram->GetActors(collection);
-
-  collection->InitTraversal();
-  collection->GetNextActor();
-
-  // Visualize the histogram(s)
-  vtkSmartPointer<vtkRenderer> renderer =
-    vtkSmartPointer<vtkRenderer>::New();
-  renderer->AddActor(collection->GetNextActor());
-
-  vtkSmartPointer<vtkRenderWindow> renderWindow =
-    vtkSmartPointer<vtkRenderWindow>::New();
-  renderWindow->AddRenderer( renderer );
-  renderWindow->SetSize(640, 480);
-
-  vtkSmartPointer<vtkRenderWindowInteractor> interactor =
-    vtkSmartPointer<vtkRenderWindowInteractor>::New();
-  interactor->SetRenderWindow( renderWindow );
-
-  // Initialize the event loop and then start it
-  interactor->Initialize();
-  interactor->Start();*/
-
   // create editor
   GoTransferFunctionEditorWidget* editor =
       new GoTransferFunctionEditorWidget(NULL, points);
@@ -3230,7 +3198,6 @@ openTransferFunctionEditor(QString iName)
   editor->AddLookupTable(m_ImageProcessor->getLookuptable(iName.toStdString()));
   // add histogram
   editor->AddHistogram(m_ImageProcessor->getHistogram(iName.toStdString()));
-  //vtkImageAccumulate* histogram = m_ImageProcessor->getHistogram(iName.toStdString());
 }
 //-------------------------------------------------------------------------
 

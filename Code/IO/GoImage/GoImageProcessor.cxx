@@ -109,7 +109,7 @@ createLUT(const double& iRed, const double& iGreen, const double& iBlue,
 {
   vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
   double* HSV = vtkMath::RGBToHSV(iRed,iGreen,iBlue);
-  lut->SetAlphaRange(0, 1);
+  lut->SetAlphaRange(1, 1);
   lut->SetHueRange(HSV[0], HSV[0]);
   lut->SetSaturationRange(1, 1);
   lut->SetValueRange(0, 1);
@@ -235,25 +235,17 @@ getHistogram(const std::string& iIndex) const
 
   assert(it!=m_MegaImageContainer.get< Name >().end());
 
-  // Process the image, extracting and plotting a histogram for each
-  // component
-  vtkImageExtractComponents* extract = vtkImageExtractComponents::New();
-  //SetInputConnection
-  extract->SetInput( it->Image );
-  extract->SetComponents( 0 );
-  extract->Update();
-
-  double range[2];
-  extract->GetOutput()->GetScalarRange( range );
+  double* range;
+  range =  it->Image->GetScalarRange();
 
   vtkImageAccumulate* histogram = vtkImageAccumulate::New();
-  histogram->SetInputConnection( extract->GetOutputPort() );
+  histogram->SetInput( it->Image );
   histogram->SetComponentExtent(
     0,
     static_cast<int>(range[1])-static_cast<int>(range[0])-1,0,0,0,0 );
   histogram->SetComponentOrigin( range[0],0,0 );
   histogram->SetComponentSpacing( 1,0,0 );
-  histogram->SetIgnoreZero( true );
+  histogram->SetIgnoreZero( false );
   histogram->Update();
 
   return histogram;
