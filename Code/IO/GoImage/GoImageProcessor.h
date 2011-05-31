@@ -119,6 +119,26 @@ private:
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
+/**
+  \struct set_image
+  \brief change visibility of given structure
+  \sa GoMegaImageStructure
+  */
+struct set_image
+{
+  set_image(vtkImageData* iImage):image(iImage){}
+
+  void operator()(GoMegaImageStructure& iStructure)
+  {
+    iStructure.setImage(image);
+  }
+
+private:
+  vtkImageData* image;
+};
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
 using boost::multi_index_container;
 using namespace boost::multi_index;
 
@@ -225,6 +245,8 @@ public:
    * GoMegaImageStructure
    * \param[in] iTime requested time point
    */
+  virtual void initTimePoint(const unsigned int& iTime) = 0;
+
   virtual void setTimePoint(const unsigned int& iTime) = 0;
 
   /*

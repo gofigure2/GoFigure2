@@ -67,8 +67,12 @@ public:
 
   void AddHistogram(vtkImageAccumulate* iHistogram);
 
+  void AddColor(const std::vector<double>& iColor);
+
 public slots:
   void pointsUpdated();
+  void presetLUT();
+  void resetLUT();
 
 signals:
   void gradientStopsChanged(const QGradientStops &stops);
@@ -82,6 +86,8 @@ private:
   GoTransferFunctionWidget *m_alpha_shade;
 
   vtkLookupTable           *m_LUT;
+
+  QColor                    m_Color;
 };
 
 #endif

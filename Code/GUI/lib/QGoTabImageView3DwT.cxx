@@ -36,7 +36,7 @@
 #include "QDebug"
 
 #include "QGoImageView3D.h"
-#include "QGoLUTDialog.h"
+//#include "QGoLUTDialog.h"
 #include "QGoNavigationDockWidget.h"
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
@@ -982,7 +982,7 @@ QGoTabImageView3DwT::CreateAllViewActions()
   LookupTableAction->setStatusTip( tr(" Change the associated lookup table") );
 
   //take
-  QIcon luticon;
+  /*QIcon luticon;
   luticon.addPixmap(QPixmap( QString::fromUtf8(":/fig/LookupTable.png") ),
                     QIcon::Normal, QIcon::Off);
   LookupTableAction->setIcon(luticon);
@@ -991,7 +991,7 @@ QGoTabImageView3DwT::CreateAllViewActions()
   QObject::connect( LookupTableAction, SIGNAL( triggered() ),
                     this, SLOT( ChangeLookupTable() ) );
 
-  this->m_ViewActions.push_back(LookupTableAction);
+  this->m_ViewActions.push_back(LookupTableAction);*/
 
   QAction *ScalarBarAction = new QAction(tr("Display Scalar Bar"), this);
   ScalarBarAction->setEnabled(false);
@@ -1434,7 +1434,7 @@ QGoTabImageView3DwT::SetLSMReader(vtkLSMReader *iReader, const int & iTimePoint)
 
   m_TCoord = iTimePoint;
   // update image processor
-  m_ImageProcessor->setTimePoint(m_TCoord);
+  m_ImageProcessor->initTimePoint(m_TCoord);
   //update images
   UpdateImage();
   // update actors
@@ -1477,7 +1477,7 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
 
   m_TCoord = iTimePoint;
   // update image processor
-  m_ImageProcessor->setTimePoint(m_TCoord);
+  m_ImageProcessor->initTimePoint(m_TCoord);
   //update images
   UpdateImage();
   // update actors
@@ -1635,13 +1635,13 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
 
   if (!m_ImageProcessor->getDopplerMode())
     {
-    std::vector<std::string> visibility = m_ImageProcessor->getVisibilityVector();
+    //std::vector<std::string> visibility = m_ImageProcessor->getVisibilityVector();
     // update image processor
     m_ImageProcessor->setTimePoint(m_TCoord);
     // update visibility
-    m_ImageProcessor->setVisibilityVector(visibility);
+    //m_ImageProcessor->setVisibilityVector(visibility);
     //update images
-    UpdateImage();
+
     }
   else
     {
@@ -1651,9 +1651,9 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
     m_ImageProcessor->setDoppler(m_TCoord, 0); // 0 is for optimization later on...
     //rebuild navigation widget
     BuildDopplerWidget();
-    //update images
-    UpdateImage();
     }
+
+  UpdateImage();
 
   // for the trace widget, navigation widget and table widget
   emit TimePointChanged(m_TCoord);
@@ -1674,7 +1674,7 @@ void QGoTabImageView3DwT::Update()
 }
 
 //-------------------------------------------------------------------------
-void
+/*void
 QGoTabImageView3DwT::ChangeLookupTable()
 {
   vtkImageData *image = m_ImageView->GetImage();
@@ -1691,7 +1691,7 @@ QGoTabImageView3DwT::ChangeLookupTable()
       lut->Delete();
       }
     }
-}
+}*/
 
 //-------------------------------------------------------------------------
 
@@ -1897,7 +1897,7 @@ QGoTabImageView3DwT::ModeChanged(int iChannel)
     this->m_NavigationDockWidget->DeleteDopplerWidgets();
     m_ImageProcessor->setDopplerMode(false, 0);
     // update image processor
-    m_ImageProcessor->setTimePoint(m_TCoord);
+    m_ImageProcessor->initTimePoint(m_TCoord);
     //update images
     UpdateImage();
     // change visibility
@@ -3192,12 +3192,13 @@ openTransferFunctionEditor(QString iName)
 
   // show editor - to have consistent geomerty to add the points
   editor->show();
-
+  // add color
+  editor->AddColor(m_ImageProcessor->getColor(iName.toStdString()));
   // add points
   editor->AddPoints(m_ImageProcessor->getRGBA(iName.toStdString()));
   // add LUT
   editor->AddLookupTable(m_ImageProcessor->getLookuptable(iName.toStdString()));
-  // add histogram
+  // add histogram - should not recalculate all the time...
   editor->AddHistogram(m_ImageProcessor->getHistogram(iName.toStdString()));
 }
 //-------------------------------------------------------------------------

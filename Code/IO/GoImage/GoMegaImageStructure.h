@@ -107,6 +107,11 @@ struct QGOIO_EXPORT GoMegaImageStructure
      Name = iName;
    }
 
+   void  setImage(vtkImageData* iImage)
+   {
+     Image = iImage;
+   }
+
    //void setRGBA(std::vector<std::vector<double> > iRGBA)
    //{
    //  RGBA = iRGBA;

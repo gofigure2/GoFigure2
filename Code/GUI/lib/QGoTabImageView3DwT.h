@@ -309,7 +309,7 @@ public slots:
 
   void FullScreenViewXYZ();
 
-  void ChangeLookupTable();
+  //void ChangeLookupTable();
 
   void ChangeBackgroundColor();
 

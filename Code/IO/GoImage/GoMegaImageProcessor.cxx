@@ -64,7 +64,7 @@ setReader(itk::MegaCaptureReader::Pointer iReader)
 //--------------------------------------------------------------------------
 void
 GoMegaImageProcessor::
-setTimePoint(const unsigned int& iTime)
+initTimePoint(const unsigned int& iTime)
 {
   //check if time point exists
   if(iTime >= m_BoundsTime[0] && iTime <= m_BoundsTime[1])
@@ -126,6 +126,46 @@ setTimePoint(const unsigned int& iTime)
                                                      color,
                                                      true,
                                                      QString("Channel %1").arg(numberOfChannels).toStdString()));
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+GoMegaImageProcessor::
+setTimePoint(const unsigned int& iTime)
+{
+  //check if time point exists
+  if(iTime >= m_BoundsTime[0] && iTime <= m_BoundsTime[1])
+    {
+    m_MegaImageReader->SetTimePoint(iTime);
+    m_MegaImageReader->Update();
+    }
+  else
+    {
+    return;
+    }
+
+  // update the container
+  // Get Number of channels from reader
+  int numberOfChannels = getNumberOfChannels();
+
+  while(numberOfChannels>0)
+    {
+    --numberOfChannels;
+
+    // Get useful information from the reader
+    // Nicolas Get Image or get output...?
+    vtkSmartPointer<vtkImageData> image =
+        m_MegaImageReader->GetOutput(numberOfChannels);
+
+    GoMegaImageStructureMultiIndexContainer::index<Index>::type::iterator it =
+        m_MegaImageContainer.get< Index >().find(numberOfChannels);
+
+    if(it!=m_MegaImageContainer.get< Index >().end())
+      {
+      m_MegaImageContainer.get< Index >().modify( it , set_image(image) );
+      }
     }
 }
 //--------------------------------------------------------------------------

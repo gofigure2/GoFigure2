@@ -67,6 +67,77 @@ setReader(vtkLSMReader* iReader)
 //--------------------------------------------------------------------------
 void
 GoLSMImageProcessor::
+initTimePoint(const unsigned int& iTime)
+{
+  //check if time point exists
+  if(iTime >= m_BoundsTime[0] && iTime <= m_BoundsTime[1])
+    {
+    m_MegaImageContainer.clear();
+    }
+  else
+    {
+    return;
+    }
+
+  // update the container
+  // Get Number of channels from reader
+  int numberOfChannels = getNumberOfChannels();
+
+  while(numberOfChannels>0)
+    {
+    --numberOfChannels;
+
+    vtkSmartPointer<vtkLSMReader> reader =
+        vtkSmartPointer<vtkLSMReader>::New();
+    reader->SetFileName(m_LSMReader->GetFileName());
+    reader->SetUpdateChannel(numberOfChannels);
+    reader->SetUpdateTimePoint(iTime);
+    reader->Update();
+
+   // get image
+    vtkSmartPointer<vtkImageData> image = reader->GetOutput();
+
+    // Get Color
+    double random1 = reader->
+        GetChannelColorComponent(numberOfChannels, 0);
+    double value1 = random1;
+
+    double random2 = reader->
+        GetChannelColorComponent(numberOfChannels, 1);
+    double value2 = random2;
+
+    double random3 = reader->
+        GetChannelColorComponent(numberOfChannels, 2);
+    double value3 = random3;
+
+    std::vector<double> color;
+    color.push_back(value1);
+    color.push_back(value2);
+    color.push_back(value3);
+    color.push_back(255);
+
+    // Create LUT
+    vtkSmartPointer<vtkLookupTable> lut = createLUT(color[0],
+                                                    color[1],
+                                                    color[2],
+                                                    color[3],
+                                                    image->GetScalarRange());
+
+    // Update the MegaImageStructure
+    // image, LUT, channel, time point
+    m_MegaImageContainer.insert(GoMegaImageStructure(numberOfChannels,
+                                                     lut,
+                                                     image,
+                                                     color,
+                                                     true,
+                                                     QString("Channel %1").arg(numberOfChannels).toStdString()));
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+GoLSMImageProcessor::
 setTimePoint(const unsigned int& iTime)
 {
   //check if time point exists
@@ -146,7 +217,6 @@ setDoppler(const unsigned int& iTime, const unsigned int& iPrevious)
   //check if time point exists
   if(iTime >= m_BoundsTime[0] && iTime <= m_BoundsTime[1])
     {
-    m_MegaImageContainer.clear();
     }
   else
     {

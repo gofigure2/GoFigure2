@@ -1,7 +1,10 @@
 #include "GoTransferFunctionEditorWidget.h"
 
+// Gofigure
 #include "GoTransferFunctionWidget.h"
+#include "QGoLUTDialog.h"
 
+//qt
 #include "hoverpoints.h"
 
 //vtk
@@ -33,6 +36,8 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent, 
 
   m_LUT = NULL;
 
+  QPushButton *loadLUTPushButton = new QPushButton("Load LUT", this);
+
   QPushButton *okPushButton = new QPushButton("OK", this);
   QPushButton *resetPushButton = new QPushButton("Reset", this);
 
@@ -44,12 +49,18 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent, 
   vbox->addWidget(m_green_shade);
   vbox->addWidget(m_blue_shade);
   vbox->addWidget(m_alpha_shade);
+  vbox->addWidget(loadLUTPushButton);
   vbox->addLayout(layout);
 
   connect(m_red_shade, SIGNAL(colorsChanged()), this, SLOT(pointsUpdated()));
   connect(m_green_shade, SIGNAL(colorsChanged()), this, SLOT(pointsUpdated()));
   connect(m_blue_shade, SIGNAL(colorsChanged()), this, SLOT(pointsUpdated()));
   connect(m_alpha_shade, SIGNAL(colorsChanged()), this, SLOT(pointsUpdated()));
+
+  connect(loadLUTPushButton, SIGNAL(pressed()), this, SLOT(presetLUT()));
+
+  connect(okPushButton, SIGNAL(pressed()), this, SLOT(close()));
+  connect(resetPushButton, SIGNAL(pressed()), this, SLOT(resetLUT()));
 }
 //-------------------------------------------------------------------------
 
@@ -89,7 +100,6 @@ void GoTransferFunctionEditorWidget::pointsUpdated()
           return;
 
       stops << QGradientStop(x / w, color);
-      //temp->
   }
 
   m_alpha_shade->setGradientStops(stops);
@@ -203,5 +213,63 @@ AddHistogram(vtkImageAccumulate* iHistogram)
   m_green_shade->SetHistogram(histo);
   m_blue_shade->SetHistogram(histo);
   m_alpha_shade->SetHistogram(histo);
+
+  iHistogram->Delete();
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+GoTransferFunctionEditorWidget::
+AddColor(const std::vector<double>& iColor)
+{
+  m_Color.setRedF(iColor[0]/255);
+  m_Color.setGreenF(iColor[1]/255);
+  m_Color.setBlue(iColor[2]/255);
+  m_Color.setAlphaF(iColor[3]/255);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+GoTransferFunctionEditorWidget::
+presetLUT()
+{
+  vtkLookupTable *lut = QGoLUTDialog::GetLookupTable( this,
+                                                      tr("Choose one look-up table") );
+  if ( lut )
+    {
+      if(m_LUT)
+        {
+          m_LUT->DeepCopy(lut);
+          //m_red_shade->setEnabled(false);
+          m_red_shade->setDisabled(true);
+          //m_green_shade->setEnabled(false);
+          //m_blue_shade->setEnabled(false);
+          // update alpha color..
+
+        //m_->UpdateLookupTable(m_LUT);
+        // send signal to update the visualization
+        emit updateVisualization();
+        }
+    // free memory since it is not freed in the QGoLUTDialog
+    lut->Delete();
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+GoTransferFunctionEditorWidget::
+resetLUT()
+{
+  m_red_shade->setEnabled(true);
+  m_green_shade->setEnabled(true);
+  m_blue_shade->setEnabled(true);
+  /*m_red_shade->AddLockPoints(0, m_Color.redF());
+  m_green_shade->AddLockPoints(0, m_Color.greenF());
+  m_blue_shade->AddLockPoints(0, m_Color.blueF());
+  m_alpha_shade->AddLockPoints(0, m_Color.alphaF());*/
+}
+//-------------------------------------------------------------------------
+
