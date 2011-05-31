@@ -1574,6 +1574,7 @@ QGoTabImageView3DwT::UpdateImage()
     m_ImageView->Update();
     vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
     lut->DeepCopy(m_ImageProcessor->getLookuptable());
+    // WHEN WE MODIFY WE WANT TO KEEP THE MODIF (FROM ANDREA)
     m_ImageView->SetLookupTable(lut);
 
     //lut->Print(cout);
