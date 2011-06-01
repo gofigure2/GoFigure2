@@ -91,7 +91,6 @@ bool HoverPoints::eventFilter(QObject *object, QEvent *event)
             QMouseEvent *me = (QMouseEvent *) event;
 
             QPointF clickPos = me->pos();
-            qDebug() << clickPos;
             int index = -1;
             for (int i=0; i<m_points.size(); ++i) {
                 QPainterPath path;

@@ -69,15 +69,19 @@ public:
 
   void AddColor(const std::vector<double>& iColor);
 
+  void AddName(QString iChannel);
+
 public slots:
   void pointsUpdated();
   void presetLUT();
   void resetLUT();
+  void savePoints();
 
 signals:
   void gradientStopsChanged(const QGradientStops &stops);
 
   void updateVisualization();
+  void updatePoints(QString, std::vector< std::map< unsigned int, unsigned int> >);
 
 private:
   GoTransferFunctionWidget *m_red_shade;
@@ -88,6 +92,8 @@ private:
   vtkLookupTable           *m_LUT;
 
   QColor                    m_Color;
+
+  QString                   m_Channel;
 };
 
 #endif

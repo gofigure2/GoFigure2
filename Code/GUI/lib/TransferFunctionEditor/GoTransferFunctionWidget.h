@@ -73,11 +73,14 @@ public:
 
     uint colorAt(int x);
 
-    void AddLockPoints(const double& iFirstPoint, const double& iLastPoint);
+    //void AddLockPoints(const double& iFirstPoint, const double& iLastPoint);
+    void AddPoints(const QPolygonF& iPoints);
 
     void UpdateLookupTable(vtkLookupTable* iLUT);
 
     void SetHistogram(QVector<qreal> iHistogram);
+
+    void Reset(const qreal& iValue);
 
 signals:
     void colorsChanged();

@@ -591,3 +591,18 @@ getContainerSize()
 {
   return m_MegaImageContainer.size();
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+GoImageProcessor::
+updatePoints(QString iName, std::vector< std::map< unsigned int, unsigned int> > iVector)
+{
+  GoMegaImageStructureMultiIndexContainer::index<Name>::type::iterator it =
+      m_MegaImageContainer.get< Name >().find(iName.toStdString());
+
+  if(it!=m_MegaImageContainer.get< Name >().end())
+    {
+    m_MegaImageContainer.get< Name >().modify( it , set_PointsRGBA(iVector));
+    }
+}

@@ -112,10 +112,10 @@ struct QGOIO_EXPORT GoMegaImageStructure
      Image = iImage;
    }
 
-   //void setRGBA(std::vector<std::vector<double> > iRGBA)
-   //{
-   //  RGBA = iRGBA;
-   //}
+   void setPointsRGBA(std::vector< std::map< unsigned int, unsigned int> > iRGBA)
+   {
+     RGBA = iRGBA;
+   }
 
    /*
      * \brief Convert a vtkImage to a itkImage. If we call after "ExtractROI",

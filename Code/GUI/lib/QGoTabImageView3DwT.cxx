@@ -3190,6 +3190,11 @@ openTransferFunctionEditor(QString iName)
                     this,
                     SLOT( updateSlot()) );
 
+  QObject::connect( editor,
+                    SIGNAL( updatePoints(QString, std::vector< std::map< unsigned int, unsigned int> >) ),
+                    this,
+                    SLOT( updatePoints(QString, std::vector< std::map< unsigned int, unsigned int> >)) );
+
   // show editor - to have consistent geomerty to add the points
   editor->show();
   // add color
@@ -3200,6 +3205,8 @@ openTransferFunctionEditor(QString iName)
   editor->AddLookupTable(m_ImageProcessor->getLookuptable(iName.toStdString()));
   // add histogram - should not recalculate all the time...
   editor->AddHistogram(m_ImageProcessor->getHistogram(iName.toStdString()));
+  // add a name - to send signal and update good points when ok clicked
+  editor->AddName(iName);
 }
 //-------------------------------------------------------------------------
 
@@ -3210,3 +3217,13 @@ QGoTabImageView3DwT::updateSlot()
   UpdateImage();
   Update();
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+updatePoints(QString iName, std::vector< std::map< unsigned int, unsigned int> > iPoints)
+{
+  m_ImageProcessor->updatePoints(iName, iPoints);
+}
+//-------------------------------------------------------------------------

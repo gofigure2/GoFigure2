@@ -100,8 +100,8 @@ void GoTransferFunctionWidget::paintEvent(QPaintEvent *)
 
     for(int i=0; i<x_range; ++i)
       {
-      QPointF point(i*width()/x_range, height()- m_Histogram[i]*height());
-      QPointF point2(i*width()/x_range, height());
+      QPointF point(i*(width()-1)/x_range, (height()-1) - m_Histogram[i]*(height()-1));
+      QPointF point2(i*(width()-1)/x_range, (height()-1));
       listOfPoints.push_back(point2);
       listOfPoints.push_back(point);
       }
@@ -149,19 +149,30 @@ void GoTransferFunctionWidget::generateShade()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void
+/*void
 GoTransferFunctionWidget::
 AddLockPoints(const double& iFirstPoint, const double& iLastPoint)
 {
-QPolygonF points;
-points << QPointF(0, height()*(1 - iFirstPoint))
-       << QPointF(width(), height()*(1-iLastPoint));
-m_hoverPoints->setPoints(points);
+*/
+//m_Points << QPointF(0, height()*(1 - iFirstPoint))
+//       << QPointF(width(), height()*(1-iLastPoint));
+/*m_hoverPoints->setPoints(points);
 m_hoverPoints->setPointLock(0, HoverPoints::LockToLeft);
 m_hoverPoints->setPointLock(1, HoverPoints::LockToRight);
-m_hoverPoints->setSortType(HoverPoints::XSort);
+m_hoverPoints->setSortType(HoverPoints::XSort);*/
+//}
+//-------------------------------------------------------------------------
 
-emit colorsChanged();
+
+//-------------------------------------------------------------------------
+void
+GoTransferFunctionWidget::
+AddPoints(const QPolygonF& iPoints)
+{
+  m_hoverPoints->setPoints(iPoints);
+  m_hoverPoints->setPointLock(0, HoverPoints::LockToLeft);
+  m_hoverPoints->setPointLock(1, HoverPoints::LockToRight);
+  m_hoverPoints->setSortType(HoverPoints::XSort);
 }
 //-------------------------------------------------------------------------
 
@@ -184,5 +195,20 @@ GoTransferFunctionWidget::
 SetHistogram(QVector<qreal> iHistogram)
 {
   m_Histogram = iHistogram;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+GoTransferFunctionWidget::
+Reset(const qreal& iValue)
+{
+QPolygonF points;
+points << QPointF(0, height()-1)
+       << QPointF(width()-1,(height()-1)*(1-iValue));
+m_hoverPoints->setPoints(points);
+m_hoverPoints->setPointLock(0, HoverPoints::LockToLeft);
+m_hoverPoints->setPointLock(1, HoverPoints::LockToRight);
+m_hoverPoints->setSortType(HoverPoints::XSort);
 }
 //-------------------------------------------------------------------------

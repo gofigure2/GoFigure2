@@ -139,6 +139,26 @@ private:
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
+/**
+  \struct set_image
+  \brief change visibility of given structure
+  \sa GoMegaImageStructure
+  */
+struct set_PointsRGBA
+{
+  set_PointsRGBA(std::vector< std::map< unsigned int, unsigned int> > iPoints):points(iPoints){}
+
+  void operator()(GoMegaImageStructure& iStructure)
+  {
+    iStructure.setPointsRGBA(points);
+  }
+
+private:
+  std::vector< std::map< unsigned int, unsigned int> > points;
+};
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
 using boost::multi_index_container;
 using namespace boost::multi_index;
 
@@ -332,6 +352,8 @@ public:
   void setVisibilityVector(const std::vector<std::string>& iVisibility);
 
   unsigned int getContainerSize();
+
+  void updatePoints(QString iChannel, std::vector< std::map< unsigned int, unsigned int> > iPointsRGBA);
 
 protected:
   /*

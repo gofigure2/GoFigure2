@@ -36,7 +36,14 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent, 
 
   m_LUT = NULL;
 
+  QPushButton *presetLUTPushButton = new QPushButton("Preset LUT", this);
+
+
+  QHBoxLayout *lutLayout = new QHBoxLayout;
+  QPushButton *saveLUTPushButton = new QPushButton("Save LUT", this);
   QPushButton *loadLUTPushButton = new QPushButton("Load LUT", this);
+  lutLayout->addWidget(loadLUTPushButton);
+  lutLayout->addWidget(saveLUTPushButton);
 
   QPushButton *okPushButton = new QPushButton("OK", this);
   QPushButton *resetPushButton = new QPushButton("Reset", this);
@@ -49,7 +56,8 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent, 
   vbox->addWidget(m_green_shade);
   vbox->addWidget(m_blue_shade);
   vbox->addWidget(m_alpha_shade);
-  vbox->addWidget(loadLUTPushButton);
+  vbox->addLayout(lutLayout);
+  vbox->addWidget(presetLUTPushButton);
   vbox->addLayout(layout);
 
   connect(m_red_shade, SIGNAL(colorsChanged()), this, SLOT(pointsUpdated()));
@@ -57,9 +65,11 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent, 
   connect(m_blue_shade, SIGNAL(colorsChanged()), this, SLOT(pointsUpdated()));
   connect(m_alpha_shade, SIGNAL(colorsChanged()), this, SLOT(pointsUpdated()));
 
-  connect(loadLUTPushButton, SIGNAL(pressed()), this, SLOT(presetLUT()));
+  connect(presetLUTPushButton, SIGNAL(pressed()), this, SLOT(presetLUT()));
 
-  connect(okPushButton, SIGNAL(pressed()), this, SLOT(close()));
+  connect(okPushButton, SIGNAL(released()), this, SLOT(close()));
+  connect(okPushButton, SIGNAL(released()), this, SLOT(savePoints()));
+
   connect(resetPushButton, SIGNAL(pressed()), this, SLOT(resetLUT()));
 }
 //-------------------------------------------------------------------------
@@ -113,8 +123,6 @@ void GoTransferFunctionEditorWidget::pointsUpdated()
     // send signal to update the visualization
     emit updateVisualization();
     }
-  // update the opcity TF
-  // save points on quit only
 }
 //-------------------------------------------------------------------------
 
@@ -159,22 +167,64 @@ void
 GoTransferFunctionEditorWidget::
 AddPoints( const std::vector< std::map< unsigned int, unsigned int> >& iRGBA)
 {
-  std::map< unsigned int, unsigned int>::const_iterator it0 = iRGBA[0].find(0);
-  std::map< unsigned int, unsigned int>::const_iterator it255 = iRGBA[0].find(255);
+  std::map< unsigned int, unsigned int>::const_iterator it0;
+  std::map< unsigned int, unsigned int>::const_iterator it255;
 
-  m_red_shade->AddLockPoints(double(it0->second)/255, double(it255->second)/255);
+  //red
+  QPolygonF redPoints;
+  it0 = iRGBA[0].begin();
+  it255 = iRGBA[0].end();
 
-  it0 = iRGBA[1].find(0);
-  it255 = iRGBA[1].find(255);
-  m_green_shade->AddLockPoints(double(it0->second)/255, double(it255->second)/255);
+  while(it0!=it255)
+    {
+    redPoints << QPointF((qreal)(it0->first)*(m_red_shade->width()-1)/255,
+                         (m_red_shade->height()-1)*(1-(qreal)(it0->second)/255));
+    ++it0;
+    }
 
-  it0 = iRGBA[2].find(0);
-  it255 = iRGBA[2].find(255);
-  m_blue_shade->AddLockPoints(double(it0->second)/255, double(it255->second)/255);
+  m_red_shade->AddPoints(redPoints);
 
-  it0 = iRGBA[3].find(0);
-  it255 = iRGBA[3].find(255);
-  m_alpha_shade->AddLockPoints(double(it0->second)/255, double(it255->second)/255);
+  // green
+  QPolygonF greenPoints;
+  it0 = iRGBA[1].begin();
+  it255 = iRGBA[1].end();
+
+  while(it0!=it255)
+    {
+    greenPoints << QPointF((qreal)(it0->first)*(m_green_shade->width()-1)/255,
+                         (m_green_shade->height()-1)*(1-(qreal)(it0->second)/255));
+    ++it0;
+    }
+
+  m_green_shade->AddPoints(greenPoints);
+
+  // blue
+  QPolygonF bluePoints;
+  it0 = iRGBA[2].begin();
+  it255 = iRGBA[2].end();
+
+  while(it0!=it255)
+    {
+    bluePoints << QPointF((qreal)(it0->first)*(m_blue_shade->width()-1)/255,
+                         (m_blue_shade->height()-1)*(1-(qreal)(it0->second)/255));
+    ++it0;
+    }
+
+  m_blue_shade->AddPoints(bluePoints);
+
+  // alpha
+  QPolygonF alphaPoints;
+  it0 = iRGBA[3].begin();
+  it255 = iRGBA[3].end();
+
+  while(it0!=it255)
+    {
+    alphaPoints << QPointF((qreal)(it0->first)*(m_alpha_shade->width()-1)/255,
+                         (m_alpha_shade->height()-1)*(1-(qreal)(it0->second)/255));
+    ++it0;
+    }
+
+  m_alpha_shade->AddPoints(alphaPoints);
 
   // update visu
   pointsUpdated();
@@ -225,8 +275,17 @@ AddColor(const std::vector<double>& iColor)
 {
   m_Color.setRedF(iColor[0]/255);
   m_Color.setGreenF(iColor[1]/255);
-  m_Color.setBlue(iColor[2]/255);
+  m_Color.setBlueF(iColor[2]/255);
   m_Color.setAlphaF(iColor[3]/255);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+GoTransferFunctionEditorWidget::
+AddName(QString iChannel)
+{
+  m_Channel = iChannel;
 }
 //-------------------------------------------------------------------------
 
@@ -263,13 +322,104 @@ void
 GoTransferFunctionEditorWidget::
 resetLUT()
 {
-  m_red_shade->setEnabled(true);
-  m_green_shade->setEnabled(true);
-  m_blue_shade->setEnabled(true);
-  /*m_red_shade->AddLockPoints(0, m_Color.redF());
-  m_green_shade->AddLockPoints(0, m_Color.greenF());
-  m_blue_shade->AddLockPoints(0, m_Color.blueF());
-  m_alpha_shade->AddLockPoints(0, m_Color.alphaF());*/
+  m_red_shade->Reset(m_Color.redF());
+  m_green_shade->Reset(m_Color.greenF());
+  m_blue_shade->Reset(m_Color.blueF());
+  m_alpha_shade->Reset(m_Color.alphaF());
+
+  // update visu
+  pointsUpdated();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+GoTransferFunctionEditorWidget::
+savePoints()
+{
+  std::vector< std::map< unsigned int, unsigned int> > pointsVector;
+  pointsVector.resize(4);
+
+  qreal width = m_red_shade->width() - 1;
+  qreal height = m_red_shade->height() - 1;
+
+  // RED ------------------------------
+  QPolygonF redPoints = m_red_shade->points();
+
+  int numberOfRedPoints = redPoints.size();
+
+  if(numberOfRedPoints>255)
+  {
+    qDebug() << "Too many red points: " << numberOfRedPoints << " red points";
+    return;
+  }
+
+  for(int i=0; i<numberOfRedPoints; ++i)
+    {
+    // to be inline..?
+    unsigned int x = (redPoints.at(i).x())*255/width;
+    unsigned int y = (1-(redPoints.at(i).y())/height)*255;
+    pointsVector[0][x]  = y;
+    }
+
+  // GREEN ------------------------------
+
+  QPolygonF greenPoints = m_green_shade->points();
+
+  int numberOfGreenPoints = greenPoints.size();
+
+  if(numberOfRedPoints>255)
+  {
+    qDebug() << "Too many green points: " << numberOfGreenPoints << " green points";
+    return;
+  }
+
+  for(int i=0; i<numberOfGreenPoints; ++i)
+    {
+    unsigned int x = (greenPoints.at(i).x())*255/width;
+    unsigned int y = (1-(greenPoints.at(i).y())/height)*255;
+    pointsVector[1][x]  = y;
+    }
+
+  // BLUE ------------------------------
+
+  QPolygonF bluePoints = m_blue_shade->points();
+
+  int numberOfBluePoints = bluePoints.size();
+
+  if(numberOfBluePoints>255)
+  {
+    qDebug() << "Too many blue points: " << numberOfBluePoints << " blue points";
+    return;
+  }
+
+  for(int i=0; i<numberOfBluePoints; ++i)
+    {
+    unsigned int x = (bluePoints.at(i).x())*255/width;
+    unsigned int y = (1-(bluePoints.at(i).y())/height)*255;
+    pointsVector[2][x]  = y;
+    }
+
+  // BLUE ------------------------------
+
+  QPolygonF alphaPoints = m_alpha_shade->points();
+
+  int numberOfAlphaPoints = alphaPoints.size();
+
+  if(numberOfAlphaPoints>255)
+  {
+    qDebug() << "Too many alpha points: " << numberOfAlphaPoints << " alpha points";
+    return;
+  }
+
+  for(int i=0; i<numberOfAlphaPoints; ++i)
+    {
+    unsigned int x = (alphaPoints.at(i).x())*255/width;
+    unsigned int y = (1-(alphaPoints.at(i).y())/height)*255;
+    pointsVector[3][x]  = y;
+    }
+
+  emit updatePoints(m_Channel, pointsVector);
 }
 //-------------------------------------------------------------------------
 
