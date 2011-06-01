@@ -51,6 +51,7 @@ class GoTransferFunctionWidget;
 //vtk
 class vtkLookupTable;
 class vtkImageAccumulate;
+class vtkPiecewiseFunction;
 
 class GoTransferFunctionEditorWidget : public QWidget
 {
@@ -71,13 +72,20 @@ public:
 
   void AddName(QString iChannel);
 
+  void AddOpacityTransferFunction(vtkPiecewiseFunction* iOpacity);
+
 public slots:
   void pointsUpdated();
+
+  // LUT
   void presetLUT();
   void resetLUT();
   void saveLUT();
   void readLUT();
   void savePoints();
+
+  // opacity TF
+  void updateOpacityTF();
 
 signals:
   void gradientStopsChanged(const QGradientStops &stops);
@@ -108,9 +116,11 @@ private:
   GoTransferFunctionWidget *m_blue_shade;
   GoTransferFunctionWidget *m_alpha_shade;
 
-  vtkLookupTable           *m_LUT;
   QColor                    m_Color;
   QString                   m_Channel;
+
+  vtkLookupTable           *m_LUT;
+  vtkPiecewiseFunction     *m_OpacityTF;
 };
 
 #endif

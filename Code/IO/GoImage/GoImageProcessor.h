@@ -252,6 +252,11 @@ public:
 
   vtkSmartPointer<vtkLookupTable> getLookuptable() const;
 
+  vtkSmartPointer<vtkPiecewiseFunction> getOpacityTransferFunction() const;
+
+  vtkSmartPointer<vtkPiecewiseFunction>
+  getOpacityTransferFunction(const std::string& iIndex) const;
+
   std::vector<double> getColor(const unsigned int& iIndex) const;
 
   std::vector<double> getColor(const std::string& iIndex) const;

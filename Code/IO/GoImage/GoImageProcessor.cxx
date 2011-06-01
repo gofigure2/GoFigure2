@@ -46,6 +46,8 @@
 #include "vtkImageExtractComponents.h"
 #include "vtkImageAccumulate.h"
 
+#include "vtkPiecewiseFunction.h"
+
 #include <QString>
 
 // temp
@@ -180,6 +182,40 @@ getLookuptable() const
   assert(it!=m_MegaImageContainer.get< Visibility >().end());
 
   return it->LUT;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+vtkSmartPointer<vtkPiecewiseFunction>
+GoImageProcessor::
+getOpacityTransferFunction(const std::string& iIndex) const
+{
+  GoMegaImageStructureMultiIndexContainer::index<Name>::type::iterator it =
+      m_MegaImageContainer.get< Name >().find(iIndex);
+
+  if(it!=m_MegaImageContainer.get< Name >().end())
+    {
+    return it->OpacityTF;
+    }
+
+  return NULL;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+vtkSmartPointer<vtkPiecewiseFunction>
+GoImageProcessor::
+getOpacityTransferFunction() const
+{
+  GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator it =
+      m_MegaImageContainer.get< Visibility >().find(true);
+
+  if(it!=m_MegaImageContainer.get< Visibility >().end())
+    {
+    return it->OpacityTF;
+    }
+
+  return NULL;
 }
 //--------------------------------------------------------------------------
 

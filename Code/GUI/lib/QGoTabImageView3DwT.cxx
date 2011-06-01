@@ -1077,7 +1077,7 @@ QGoTabImageView3DwT::CreateAllViewActions()
   VolumeRenderingAction->setIcon(volumerenderingicon);
 
   QObject::connect( VolumeRenderingAction, SIGNAL( toggled(bool) ),
-                    this->m_ImageView, SLOT( EnableVolumeRendering(bool) ) );
+                    this, SLOT( EnableVolumeRendering(bool) ) );
 
   // Enable synchronization
   QAction *SynchronizeViewsAction =
@@ -3203,6 +3203,9 @@ openTransferFunctionEditor(QString iName)
   editor->AddPoints(m_ImageProcessor->getRGBA(iName.toStdString()));
   // add LUT
   editor->AddLookupTable(m_ImageProcessor->getLookuptable(iName.toStdString()));
+  // add Opacity TF
+  editor->AddOpacityTransferFunction(
+        m_ImageProcessor->getOpacityTransferFunction(iName.toStdString()));
   // add histogram - should not recalculate all the time...
   editor->AddHistogram(m_ImageProcessor->getHistogram(iName.toStdString()));
   // add a name - to send signal and update good points when ok clicked
@@ -3227,3 +3230,12 @@ updatePoints(QString iName, std::vector< std::map< unsigned int, unsigned int> >
   m_ImageProcessor->updatePoints(iName, iPoints);
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+EnableVolumeRendering(bool iEnable)
+{
+  m_ImageView->EnableVolumeRendering(iEnable,
+                                     m_ImageProcessor->getOpacityTransferFunction());
+}

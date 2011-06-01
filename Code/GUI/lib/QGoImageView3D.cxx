@@ -77,6 +77,8 @@
 #include "vtkImplicitPlaneWidget.h"
 #include "vtkPlane.h"
 
+#include "vtkPiecewiseFunction.h"
+
 #include <cstdlib>
 
 //-------------------------------------------------------------------------
@@ -1273,12 +1275,12 @@ QGoImageView3D::InitializePlaneWidget()
 /// \todo Add button to enable/disable tri planar rendering
 //-------------------------------------------------------------------------
 void
-QGoImageView3D::EnableVolumeRendering(bool iValue)
+QGoImageView3D::EnableVolumeRendering(bool iValue, vtkPiecewiseFunction* iOpacity)
 {
   if ( iValue )
     {
     //m_View3D->SetTriPlanarRenderingOff();
-    m_View3D->SetVolumeRenderingOn();
+    m_View3D->SetVolumeRenderingOn(iOpacity);
     }
   else
     {

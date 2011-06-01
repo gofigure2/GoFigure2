@@ -257,7 +257,7 @@ vtkViewImage3D::~vtkViewImage3D()
 /**
  *
  */
-void vtkViewImage3D::SetupVolumeRendering()
+void vtkViewImage3D::SetupVolumeRendering(vtkPiecewiseFunction* iOpacity)
 {
   // MAPPER
   // crop volume into 27? small regions
@@ -268,20 +268,20 @@ void vtkViewImage3D::SetupVolumeRendering()
 
   // PROPERTY
   // opacity TF
-  vtkPiecewiseFunction* opacityfunction = vtkPiecewiseFunction::New();
-  opacityfunction->AddPoint (0, 0.0);
-  opacityfunction->AddPoint (255, 1.0);
-  this->VolumeProperty->SetScalarOpacity(opacityfunction);
-  opacityfunction->Delete();
+  //vtkPiecewiseFunction* opacityfunction = vtkPiecewiseFunction::New();
+ // opacityfunction->AddPoint (0, 0.0);
+ // opacityfunction->AddPoint (255, 1.0);
+  this->VolumeProperty->SetScalarOpacity(iOpacity);
+  //opacityfunction->Delete();
 
   // one dataset-1 tf, not 1 tf for each component
   this->VolumeProperty->IndependentComponentsOff();
   this->VolumeProperty->SetInterpolationTypeToLinear();
   this->VolumeProperty->ShadeOff();
-  //this->VolumeProperty->SetDiffuse (0.9);
-  //this->VolumeProperty->SetAmbient (0.2);
-  //this->VolumeProperty->SetSpecular (0.3);
-  //this->VolumeProperty->SetSpecularPower (15.0);
+  this->VolumeProperty->SetDiffuse (0.9);
+  this->VolumeProperty->SetAmbient (0.2);
+  this->VolumeProperty->SetSpecular (0.3);
+  this->VolumeProperty->SetSpecularPower (15.0);
 
   // ACTOR
   this->VolumeActor->SetProperty (this->VolumeProperty);
@@ -384,7 +384,7 @@ void vtkViewImage3D::SetVolumeRenderingOff()
 /**
  *
  */
-void vtkViewImage3D::SetVolumeRenderingOn()
+void vtkViewImage3D::SetVolumeRenderingOn(vtkPiecewiseFunction* iOpacity)
 {
   int *size = this->GetInput()->GetDimensions();
 
@@ -419,7 +419,7 @@ void vtkViewImage3D::SetVolumeRenderingOn()
     image = map->GetOutput();
     }
 
-  this->SetupVolumeRendering();
+  this->SetupVolumeRendering(iOpacity);
 
   // get the index of the first non-NULL component
   int i(0);

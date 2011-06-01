@@ -12,6 +12,7 @@
 #include "vtkImageAccumulate.h"
 #include "vtkImageData.h"
 #include "vtkPointData.h"
+#include "vtkPiecewiseFunction.h"
 
 // temp
 #include <iostream>
@@ -65,6 +66,7 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent, 
   connect(m_green_shade, SIGNAL(colorsChanged()), this, SLOT(pointsUpdated()));
   connect(m_blue_shade, SIGNAL(colorsChanged()), this, SLOT(pointsUpdated()));
   connect(m_alpha_shade, SIGNAL(colorsChanged()), this, SLOT(pointsUpdated()));
+  connect(m_alpha_shade, SIGNAL(colorsChanged()), this, SLOT(updateOpacityTF()));
 
   connect(okPushButton, SIGNAL(released()), this, SLOT(close()));
   connect(okPushButton, SIGNAL(released()), this, SLOT(savePoints()));
@@ -207,6 +209,15 @@ AddLookupTable(vtkLookupTable* iLUT)
 //-------------------------------------------------------------------------
 void
 GoTransferFunctionEditorWidget::
+AddOpacityTransferFunction(vtkPiecewiseFunction* iOpacity)
+{
+  m_OpacityTF = iOpacity;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+GoTransferFunctionEditorWidget::
 AddHistogram(vtkImageAccumulate* iHistogram)
 {
   int x_range = iHistogram->GetOutput()->GetNumberOfPoints();
@@ -293,6 +304,9 @@ resetLUT()
 
   // update gradient and transfer function
   pointsUpdated();
+
+  //update opacity TF
+  updateOpacityTF();
 }
 //-------------------------------------------------------------------------
 
@@ -511,5 +525,29 @@ ReadLUTComponent(GoTransferFunctionWidget* iTFWidget, QTextStream& iStream, cons
       break;
       }
 
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+GoTransferFunctionEditorWidget::
+updateOpacityTF()
+{
+  qDebug() << "Update TF";
+  // all shades have same width and height
+  qreal width = m_red_shade->width();
+  qreal height = m_red_shade->height();
+  int numberOfPoints = m_alpha_shade->points().size();
+
+  m_OpacityTF->Initialize();
+
+  for(int i=0; i<numberOfPoints; ++i)
+    {
+    // x 0 to 255
+    double x = (m_alpha_shade->points().at(i).x())*255/width;
+    // y 0 to 1
+    double y = (1-(m_alpha_shade->points().at(i).y())/height);
+    m_OpacityTF->AddPoint(x, y);
     }
 }

@@ -698,6 +698,8 @@ protected slots:
   */
   void UpdateTracesEditingWidget();
 
+  void EnableVolumeRendering(bool iEnable);
+
 private:
   void InitializeImageRelatedWidget();
 

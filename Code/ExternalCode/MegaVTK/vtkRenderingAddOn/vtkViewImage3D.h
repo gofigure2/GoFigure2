@@ -173,7 +173,7 @@ public:
   /*
    * \brief Set volume rendering on
    */
-  void SetVolumeRenderingOn();
+  void SetVolumeRenderingOn(vtkPiecewiseFunction* iOpacity);
 
   /*
    * \brief Set volume rendering off
@@ -275,7 +275,7 @@ protected:
 
   virtual void UpdateOrientation(){}
 
-  virtual void SetupVolumeRendering();
+  void SetupVolumeRendering( vtkPiecewiseFunction* iOpacity );
 
   virtual void SetupWidgets();
 

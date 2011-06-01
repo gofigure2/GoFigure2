@@ -43,6 +43,7 @@
 #include "vtkSmartPointer.h"
 #include "vtkLookupTable.h"
 #include "vtkImageData.h"
+#include "vtkPiecewiseFunction.h"
 
 // convert VTK to ITK
 #include "itkImage.h"
@@ -68,6 +69,7 @@ struct QGOIO_EXPORT GoMegaImageStructure
     bool                                               Visibility;
     std::string                                        Name;
     std::vector<std::map<unsigned int, unsigned int> > RGBA;
+    vtkSmartPointer<vtkPiecewiseFunction>              OpacityTF;
 
     /** Constructor */
     GoMegaImageStructure(unsigned int iIndex,
@@ -89,6 +91,11 @@ struct QGOIO_EXPORT GoMegaImageStructure
       RGBA[i][0] = 0;
       RGBA[i][255] = Color[i];
       }
+
+    //temp
+    OpacityTF = vtkSmartPointer<vtkPiecewiseFunction>::New();
+    OpacityTF->AddPoint(0, 0);
+    OpacityTF->AddPoint(255, Color[3]/255);
     }
 
     // functions to modify the structure through the boost::multiindexcontainer
