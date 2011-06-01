@@ -76,6 +76,7 @@ public slots:
   void presetLUT();
   void resetLUT();
   void saveLUT();
+  void readLUT();
   void savePoints();
 
 signals:

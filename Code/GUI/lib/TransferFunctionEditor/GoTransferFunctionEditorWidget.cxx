@@ -37,6 +37,7 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent, 
   m_LUT = NULL;
 
   QPushButton *presetLUTPushButton = new QPushButton("Preset LUT", this);
+  presetLUTPushButton->setEnabled(false);
 
 
   QHBoxLayout *lutLayout = new QHBoxLayout;
@@ -46,11 +47,11 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent, 
   lutLayout->addWidget(saveLUTPushButton);
 
   QPushButton *okPushButton = new QPushButton("OK", this);
-  QPushButton *resetPushButton = new QPushButton("Reset", this);
+  QPushButton *resetLUTPushButton = new QPushButton("Reset", this);
 
   QHBoxLayout *layout = new QHBoxLayout;
   layout->addWidget(okPushButton);
-  layout->addWidget(resetPushButton);
+  layout->addWidget(resetLUTPushButton);
 
   vbox->addWidget(m_red_shade);
   vbox->addWidget(m_green_shade);
@@ -65,13 +66,15 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent, 
   connect(m_blue_shade, SIGNAL(colorsChanged()), this, SLOT(pointsUpdated()));
   connect(m_alpha_shade, SIGNAL(colorsChanged()), this, SLOT(pointsUpdated()));
 
-  connect(presetLUTPushButton, SIGNAL(pressed()), this, SLOT(presetLUT()));
-
   connect(okPushButton, SIGNAL(released()), this, SLOT(close()));
   connect(okPushButton, SIGNAL(released()), this, SLOT(savePoints()));
 
-  connect(resetPushButton, SIGNAL(pressed()), this, SLOT(resetLUT()));
+  connect(resetLUTPushButton, SIGNAL(pressed()), this, SLOT(resetLUT()));
   connect(saveLUTPushButton, SIGNAL(pressed()), this, SLOT(saveLUT()));
+  connect(loadLUTPushButton, SIGNAL(pressed()), this, SLOT(readLUT()));
+  // useless...?
+  connect(presetLUTPushButton, SIGNAL(pressed()), this, SLOT(presetLUT()));
+
 
   // enable event filter
   this->installEventFilter(this);
@@ -415,10 +418,23 @@ saveLUT()
 
   QTextStream out(&file);
 
+  // format text file
+  // RED ------------------------------
+  out <<"<RED> ";
   WriteLUTComponent(m_red_shade, out);
+  out <<"</RED>\n";
+  // GREEN ------------------------------
+  out <<"<GREEN> ";
   WriteLUTComponent(m_green_shade, out);
+  out <<"</GREEN>\n";
+  // BLUE ------------------------------
+  out <<"<BLUE> ";
   WriteLUTComponent(m_blue_shade, out);
+  out <<"</BLUE>\n";
+  // ALPHA ------------------------------
+  out <<"<ALPHA> ";
   WriteLUTComponent(m_alpha_shade, out);
+  out <<"</ALPHA>\n";
 
   file.close();
 }
@@ -440,6 +456,103 @@ WriteLUTComponent(GoTransferFunctionWidget* iTFWidget, QTextStream& iStream)
     unsigned int y = (1-(iTFWidget->points().at(i).y())/height)*255;
     iStream << x  << " " << y << " ";
     }
-  iStream <<"\n";
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+GoTransferFunctionEditorWidget::
+readLUT()
+{
+  QString fileName = QFileDialog::getOpenFileName(this, tr("Save File"));
+  //qDebug() << "filename: " << fileName;
+  QFile file(fileName);
+  file.open(QIODevice::ReadOnly | QIODevice::Text);
+
+  QTextStream in(&file);
+
+  QString x;
+  QString y;
+  in >> x;
+
+  qreal width = m_red_shade->width();
+  qreal height = m_red_shade->height();
+
+  // RED ------------------------------
+  QPolygonF redPoints;
+  while (1)
+    {
+    in >> x;
+    in >> y;
+    if(x!="</RED>")
+      {
+      redPoints << QPointF((x.toDouble())*width/255,
+                           height*(1-(y.toDouble()/255)));
+      }
+    else
+      {
+      m_red_shade->AddPoints(redPoints);
+      break;
+      }
+    }
+
+  // GREEN ------------------------------
+  QPolygonF greenPoints;
+  while (1)
+    {
+    in >> x;
+    in >> y;
+    if(x!="</GREEN>")
+      {
+      greenPoints << QPointF((x.toDouble())*width/255,
+                             height*(1-(y.toDouble()/255)));
+      }
+    else
+      {
+      m_green_shade->AddPoints(greenPoints);
+      break;
+      }
+    }
+
+  // BLUE ------------------------------
+  QPolygonF bluePoints;
+  while (1)
+    {
+    in >> x;
+    in >> y;
+    if(x!="</BLUE>")
+      {
+      bluePoints << QPointF((x.toDouble())*width/255,
+                             height*(1-(y.toDouble()/255)));
+      }
+    else
+      {
+      m_blue_shade->AddPoints(bluePoints);
+      break;
+      }
+    }
+
+  // ALPHA ------------------------------
+  QPolygonF alphaPoints;
+  while (1)
+    {
+    in >> x;
+    in >> y;
+    if(x!="</ALPHA>")
+      {
+      alphaPoints << QPointF((x.toDouble())*width/255,
+                             height*(1-(y.toDouble()/255)));
+      }
+    else
+      {
+      m_alpha_shade->AddPoints(alphaPoints);
+      break;
+      }
+
+    }
+  file.close();
+
+  // update histogram and alpha gradient
+  pointsUpdated();
 }
 //-------------------------------------------------------------------------
