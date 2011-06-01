@@ -73,7 +73,6 @@ public:
 
     uint colorAt(int x);
 
-    //void AddLockPoints(const double& iFirstPoint, const double& iLastPoint);
     void AddPoints(const QPolygonF& iPoints);
 
     void UpdateLookupTable(vtkLookupTable* iLUT);

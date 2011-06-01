@@ -83,7 +83,8 @@ signals:
   void gradientStopsChanged(const QGradientStops &stops);
 
   void updateVisualization();
-  void updatePoints(QString, std::vector< std::map< unsigned int, unsigned int> >);
+  void updatePoints(QString,
+                    std::vector< std::map< unsigned int, unsigned int> >);
 
 private:
 
@@ -96,7 +97,11 @@ private:
   void computePointsFromMap(
     const std::map< unsigned int, unsigned int>& iMap, QPolygonF& iPoints);
 
-  void WriteLUTComponent(GoTransferFunctionWidget* iTFWidget, QTextStream& iStream);
+  void WriteLUTComponent(GoTransferFunctionWidget* iTFWidget,
+                         QTextStream& iStream);
+  void ReadLUTComponent(GoTransferFunctionWidget* iTFWidget,
+                        QTextStream& iStream,
+                        const QString& iBalise);
 
   GoTransferFunctionWidget *m_red_shade;
   GoTransferFunctionWidget *m_green_shade;
@@ -104,9 +109,7 @@ private:
   GoTransferFunctionWidget *m_alpha_shade;
 
   vtkLookupTable           *m_LUT;
-
   QColor                    m_Color;
-
   QString                   m_Channel;
 };
 

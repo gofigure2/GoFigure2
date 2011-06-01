@@ -149,22 +149,6 @@ void GoTransferFunctionWidget::generateShade()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/*void
-GoTransferFunctionWidget::
-AddLockPoints(const double& iFirstPoint, const double& iLastPoint)
-{
-*/
-//m_Points << QPointF(0, height()*(1 - iFirstPoint))
-//       << QPointF(width(), height()*(1-iLastPoint));
-/*m_hoverPoints->setPoints(points);
-m_hoverPoints->setPointLock(0, HoverPoints::LockToLeft);
-m_hoverPoints->setPointLock(1, HoverPoints::LockToRight);
-m_hoverPoints->setSortType(HoverPoints::XSort);*/
-//}
-//-------------------------------------------------------------------------
-
-
-//-------------------------------------------------------------------------
 void
 GoTransferFunctionWidget::
 AddPoints(const QPolygonF& iPoints)

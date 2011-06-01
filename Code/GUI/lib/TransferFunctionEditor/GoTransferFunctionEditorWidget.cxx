@@ -418,7 +418,7 @@ saveLUT()
 
   QTextStream out(&file);
 
-  // format text file
+  // format text file - xml style
   // RED ------------------------------
   out <<"<RED> ";
   WriteLUTComponent(m_red_shade, out);
@@ -470,89 +470,46 @@ readLUT()
   file.open(QIODevice::ReadOnly | QIODevice::Text);
 
   QTextStream in(&file);
+  QString firstBalise;
+  in >> firstBalise;
 
-  QString x;
-  QString y;
-  in >> x;
+  ReadLUTComponent(m_red_shade, in, "</RED>");
+  ReadLUTComponent(m_green_shade, in, "</GREEN>");
+  ReadLUTComponent(m_blue_shade, in, "</BLUE>");
+  ReadLUTComponent(m_alpha_shade, in, "</ALPHA>");
 
-  qreal width = m_red_shade->width();
-  qreal height = m_red_shade->height();
-
-  // RED ------------------------------
-  QPolygonF redPoints;
-  while (1)
-    {
-    in >> x;
-    in >> y;
-    if(x!="</RED>")
-      {
-      redPoints << QPointF((x.toDouble())*width/255,
-                           height*(1-(y.toDouble()/255)));
-      }
-    else
-      {
-      m_red_shade->AddPoints(redPoints);
-      break;
-      }
-    }
-
-  // GREEN ------------------------------
-  QPolygonF greenPoints;
-  while (1)
-    {
-    in >> x;
-    in >> y;
-    if(x!="</GREEN>")
-      {
-      greenPoints << QPointF((x.toDouble())*width/255,
-                             height*(1-(y.toDouble()/255)));
-      }
-    else
-      {
-      m_green_shade->AddPoints(greenPoints);
-      break;
-      }
-    }
-
-  // BLUE ------------------------------
-  QPolygonF bluePoints;
-  while (1)
-    {
-    in >> x;
-    in >> y;
-    if(x!="</BLUE>")
-      {
-      bluePoints << QPointF((x.toDouble())*width/255,
-                             height*(1-(y.toDouble()/255)));
-      }
-    else
-      {
-      m_blue_shade->AddPoints(bluePoints);
-      break;
-      }
-    }
-
-  // ALPHA ------------------------------
-  QPolygonF alphaPoints;
-  while (1)
-    {
-    in >> x;
-    in >> y;
-    if(x!="</ALPHA>")
-      {
-      alphaPoints << QPointF((x.toDouble())*width/255,
-                             height*(1-(y.toDouble()/255)));
-      }
-    else
-      {
-      m_alpha_shade->AddPoints(alphaPoints);
-      break;
-      }
-
-    }
   file.close();
 
   // update histogram and alpha gradient
   pointsUpdated();
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+GoTransferFunctionEditorWidget::
+ReadLUTComponent(GoTransferFunctionWidget* iTFWidget, QTextStream& iStream, const QString& iBalise)
+{
+  qreal width = m_red_shade->width();
+  qreal height = m_red_shade->height();
+
+  QString x,y;
+
+  QPolygonF points;
+  while (1)
+    {
+    iStream >> x;
+    iStream >> y;
+    if(x!=iBalise)
+      {
+      points << QPointF((x.toDouble())*width/255,
+                             height*(1-(y.toDouble()/255)));
+      }
+    else
+      {
+      iTFWidget->AddPoints(points);
+      break;
+      }
+
+    }
+}
