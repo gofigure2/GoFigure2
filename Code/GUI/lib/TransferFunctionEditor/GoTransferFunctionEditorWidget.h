@@ -75,6 +75,7 @@ public slots:
   void pointsUpdated();
   void presetLUT();
   void resetLUT();
+  void saveLUT();
   void savePoints();
 
 signals:
@@ -93,6 +94,8 @@ private:
     std::map< unsigned int, unsigned int>& iMap, const QPolygonF& iPoints);
   void computePointsFromMap(
     const std::map< unsigned int, unsigned int>& iMap, QPolygonF& iPoints);
+
+  void WriteLUTComponent(GoTransferFunctionWidget* iTFWidget, QTextStream& iStream);
 
   GoTransferFunctionWidget *m_red_shade;
   GoTransferFunctionWidget *m_green_shade;

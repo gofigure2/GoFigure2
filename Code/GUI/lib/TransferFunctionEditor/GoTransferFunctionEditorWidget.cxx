@@ -71,6 +71,7 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent, 
   connect(okPushButton, SIGNAL(released()), this, SLOT(savePoints()));
 
   connect(resetPushButton, SIGNAL(pressed()), this, SLOT(resetLUT()));
+  connect(saveLUTPushButton, SIGNAL(pressed()), this, SLOT(saveLUT()));
 
   // enable event filter
   this->installEventFilter(this);
@@ -397,5 +398,48 @@ changeAlphaGradients()
   m_alpha_shade->setGradientStops(stops);
 
   emit gradientStopsChanged(stops);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+GoTransferFunctionEditorWidget::
+saveLUT()
+{
+  QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"));
+  //qDebug() << "filename: " << fileName;
+  QFile file(fileName);
+  file.open(QIODevice::WriteOnly | QIODevice::Text);
+      //if (!)
+         // return 1;
+
+  QTextStream out(&file);
+
+  WriteLUTComponent(m_red_shade, out);
+  WriteLUTComponent(m_green_shade, out);
+  WriteLUTComponent(m_blue_shade, out);
+  WriteLUTComponent(m_alpha_shade, out);
+
+  file.close();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+GoTransferFunctionEditorWidget::
+WriteLUTComponent(GoTransferFunctionWidget* iTFWidget, QTextStream& iStream)
+{
+  qreal width = iTFWidget->width();
+  qreal height = iTFWidget->height();
+
+  int numberOfPoints = iTFWidget->points().size();
+
+  for(int i=0; i<numberOfPoints; ++i)
+    {
+    unsigned int x = (iTFWidget->points().at(i).x())*255/width;
+    unsigned int y = (1-(iTFWidget->points().at(i).y())/height)*255;
+    iStream << x  << " " << y << " ";
+    }
+  iStream <<"\n";
 }
 //-------------------------------------------------------------------------
