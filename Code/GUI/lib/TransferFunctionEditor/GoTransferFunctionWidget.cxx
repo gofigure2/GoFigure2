@@ -210,5 +210,7 @@ m_hoverPoints->setPoints(points);
 m_hoverPoints->setPointLock(0, HoverPoints::LockToLeft);
 m_hoverPoints->setPointLock(1, HoverPoints::LockToRight);
 m_hoverPoints->setSortType(HoverPoints::XSort);
+
+update();
 }
 //-------------------------------------------------------------------------

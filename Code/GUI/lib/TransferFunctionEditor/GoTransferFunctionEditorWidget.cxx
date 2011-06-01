@@ -71,6 +71,9 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent, 
   connect(okPushButton, SIGNAL(released()), this, SLOT(savePoints()));
 
   connect(resetPushButton, SIGNAL(pressed()), this, SLOT(resetLUT()));
+
+  // enable event filter
+  this->installEventFilter(this);
 }
 //-------------------------------------------------------------------------
 
@@ -84,37 +87,7 @@ inline static bool x_less_than(const QPointF &p1, const QPointF &p2)
 //-------------------------------------------------------------------------
 void GoTransferFunctionEditorWidget::pointsUpdated()
 {
-  qreal w = m_alpha_shade->width();
-
-  QGradientStops stops;
-
-  QPolygonF points;
-
-  points += m_red_shade->points();
-  points += m_green_shade->points();
-  points += m_blue_shade->points();
-  points += m_alpha_shade->points();
-
-  qSort(points.begin(), points.end(), x_less_than);
-
-  for (int i=0; i<points.size(); ++i) {
-      qreal x = int(points.at(i).x());
-      if (i < points.size() - 1 && x == points.at(i+1).x())
-          continue;
-      QColor color((0x00ff0000 & m_red_shade->colorAt(int(x))) >> 16,
-                   (0x0000ff00 & m_green_shade->colorAt(int(x))) >> 8,
-                   (0x000000ff & m_blue_shade->colorAt(int(x))),
-                   (0xff000000 & m_alpha_shade->colorAt(int(x))) >> 24);
-
-      if (x / w > 1)
-          return;
-
-      stops << QGradientStop(x / w, color);
-  }
-
-  m_alpha_shade->setGradientStops(stops);
-
-  emit gradientStopsChanged(stops);
+  changeAlphaGradients();
 
   // update the LUT
   if(m_LUT)
@@ -167,71 +140,54 @@ void
 GoTransferFunctionEditorWidget::
 AddPoints( const std::vector< std::map< unsigned int, unsigned int> >& iRGBA)
 {
-  std::map< unsigned int, unsigned int>::const_iterator it0;
-  std::map< unsigned int, unsigned int>::const_iterator it255;
 
-  qreal width = m_red_shade->width();
-  qreal height = m_red_shade->height();
 
   //red
   QPolygonF redPoints;
-  it0 = iRGBA[0].begin();
-  it255 = iRGBA[0].end();
-
-  // check x and y
-  while(it0!=it255)
-    {
-    redPoints << QPointF((qreal)(it0->first)*width/255,
-                         height*(1-(qreal)(it0->second)/255));
-    ++it0;
-    }
-
+  computePointsFromMap(iRGBA[0], redPoints);
   m_red_shade->AddPoints(redPoints);
 
   // green
   QPolygonF greenPoints;
-  it0 = iRGBA[1].begin();
-  it255 = iRGBA[1].end();
-
-  while(it0!=it255)
-    {
-    greenPoints << QPointF((qreal)(it0->first)*width/255,
-                         height*(1-(qreal)(it0->second)/255));
-    ++it0;
-    }
-
+  computePointsFromMap(iRGBA[1], greenPoints);
   m_green_shade->AddPoints(greenPoints);
 
   // blue
   QPolygonF bluePoints;
-  it0 = iRGBA[2].begin();
-  it255 = iRGBA[2].end();
-
-  while(it0!=it255)
-    {
-    bluePoints << QPointF((qreal)(it0->first)*width/255,
-                         height*(1-(qreal)(it0->second)/255));
-    ++it0;
-    }
-
+  computePointsFromMap(iRGBA[2], bluePoints);
   m_blue_shade->AddPoints(bluePoints);
 
   // alpha
   QPolygonF alphaPoints;
-  it0 = iRGBA[3].begin();
-  it255 = iRGBA[3].end();
+  computePointsFromMap(iRGBA[3], alphaPoints);
+  m_alpha_shade->AddPoints(alphaPoints);
 
+  // update histogram and alpha gradient
+  pointsUpdated();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+GoTransferFunctionEditorWidget::
+computePointsFromMap(const std::map< unsigned int, unsigned int>& iMap, QPolygonF& iPoints)
+{
+  // all shades have same width and height
+  qreal width = m_red_shade->width();
+  qreal height = m_red_shade->height();
+
+  std::map< unsigned int, unsigned int>::const_iterator it0;
+  std::map< unsigned int, unsigned int>::const_iterator it255;
+  it0 = iMap.begin();
+  it255 = iMap.end();
+
+  // check x and y
   while(it0!=it255)
     {
-    alphaPoints << QPointF((qreal)(it0->first)*width/255,
+    iPoints << QPointF((qreal)(it0->first)*width/255,
                          height*(1-(qreal)(it0->second)/255));
     ++it0;
     }
-
-  m_alpha_shade->AddPoints(alphaPoints);
-
-  // update visu
-  pointsUpdated();
 }
 //-------------------------------------------------------------------------
 
@@ -331,7 +287,7 @@ resetLUT()
   m_blue_shade->Reset(m_Color.blueF());
   m_alpha_shade->Reset(m_Color.alphaF());
 
-  // update visu
+  // update gradient and transfer function
   pointsUpdated();
 }
 //-------------------------------------------------------------------------
@@ -344,86 +300,102 @@ savePoints()
   std::vector< std::map< unsigned int, unsigned int> > pointsVector;
   pointsVector.resize(4);
 
-  qreal width = m_red_shade->width();
-  qreal height = m_red_shade->height();
-
   // RED ------------------------------
   QPolygonF redPoints = m_red_shade->points();
-
-  int numberOfRedPoints = redPoints.size();
-
-  if(numberOfRedPoints>255)
-  {
-    qDebug() << "Too many red points: " << numberOfRedPoints << " red points";
-    return;
-  }
-
-  for(int i=0; i<numberOfRedPoints; ++i)
-    {
-    // to be inline..?
-    unsigned int x = (redPoints.at(i).x())*255/width;
-    unsigned int y = (1-(redPoints.at(i).y())/height)*255;
-    pointsVector[0][x]  = y;
-    }
+  computeMapFromPoints(pointsVector[0], redPoints);
 
   // GREEN ------------------------------
-
   QPolygonF greenPoints = m_green_shade->points();
-
-  int numberOfGreenPoints = greenPoints.size();
-
-  if(numberOfRedPoints>255)
-  {
-    qDebug() << "Too many green points: " << numberOfGreenPoints << " green points";
-    return;
-  }
-
-  for(int i=0; i<numberOfGreenPoints; ++i)
-    {
-    unsigned int x = (greenPoints.at(i).x())*255/width;
-    unsigned int y = (1-(greenPoints.at(i).y())/height)*255;
-    pointsVector[1][x]  = y;
-    }
+  computeMapFromPoints(pointsVector[1], greenPoints);
 
   // BLUE ------------------------------
-
   QPolygonF bluePoints = m_blue_shade->points();
-
-  int numberOfBluePoints = bluePoints.size();
-
-  if(numberOfBluePoints>255)
-  {
-    qDebug() << "Too many blue points: " << numberOfBluePoints << " blue points";
-    return;
-  }
-
-  for(int i=0; i<numberOfBluePoints; ++i)
-    {
-    unsigned int x = (bluePoints.at(i).x())*255/width;
-    unsigned int y = (1-(bluePoints.at(i).y())/height)*255;
-    pointsVector[2][x]  = y;
-    }
+  computeMapFromPoints(pointsVector[2], bluePoints);
 
   // BLUE ------------------------------
-
   QPolygonF alphaPoints = m_alpha_shade->points();
-
-  int numberOfAlphaPoints = alphaPoints.size();
-
-  if(numberOfAlphaPoints>255)
-  {
-    qDebug() << "Too many alpha points: " << numberOfAlphaPoints << " alpha points";
-    return;
-  }
-
-  for(int i=0; i<numberOfAlphaPoints; ++i)
-    {
-    unsigned int x = (alphaPoints.at(i).x())*255/width;
-    unsigned int y = (1-(alphaPoints.at(i).y())/height)*255;
-    pointsVector[3][x]  = y;
-    }
+  computeMapFromPoints(pointsVector[3], alphaPoints);
 
   emit updatePoints(m_Channel, pointsVector);
 }
 //-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+void
+GoTransferFunctionEditorWidget::
+computeMapFromPoints(std::map< unsigned int, unsigned int>& iMap, const QPolygonF& iPoints)
+{
+  // all shades have same width and height
+  qreal width = m_red_shade->width();
+  qreal height = m_red_shade->height();
+  int numberOfPoints = iPoints.size();
+
+  if(numberOfPoints>255)
+  {
+    qDebug() << "Too many points: " << numberOfPoints << " points";
+    return;
+  }
+
+  for(int i=0; i<numberOfPoints; ++i)
+    {
+    unsigned int x = (iPoints.at(i).x())*255/width;
+    unsigned int y = (1-(iPoints.at(i).y())/height)*255;
+    iMap[x]  = y;
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+bool
+GoTransferFunctionEditorWidget::
+eventFilter(QObject *object, QEvent *event)
+{
+      switch (event->type()) {
+
+      case QEvent::Resize:
+        {
+        changeAlphaGradients();
+        return true;
+        }
+      default:
+        break;
+      }
+      return false;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+GoTransferFunctionEditorWidget::
+changeAlphaGradients()
+{
+  qreal w = m_alpha_shade->width();
+
+  QGradientStops stops;
+
+  QPolygonF points;
+
+  points += m_red_shade->points();
+  points += m_green_shade->points();
+  points += m_blue_shade->points();
+  points += m_alpha_shade->points();
+
+  qSort(points.begin(), points.end(), x_less_than);
+
+  for (int i=0; i<points.size(); ++i) {
+      qreal x = int(points.at(i).x());
+      if (i < points.size() - 1 && x == points.at(i+1).x())
+          continue;
+      QColor color((0x00ff0000 & m_red_shade->colorAt(int(x))) >> 16,
+                   (0x0000ff00 & m_green_shade->colorAt(int(x))) >> 8,
+                   (0x000000ff & m_blue_shade->colorAt(int(x))),
+                   (0xff000000 & m_alpha_shade->colorAt(int(x))) >> 24);
+
+      stops << QGradientStop(x / w, color);
+  }
+
+  m_alpha_shade->setGradientStops(stops);
+
+  emit gradientStopsChanged(stops);
+}
+//-------------------------------------------------------------------------

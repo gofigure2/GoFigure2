@@ -84,6 +84,16 @@ signals:
   void updatePoints(QString, std::vector< std::map< unsigned int, unsigned int> >);
 
 private:
+
+  bool eventFilter(QObject *object, QEvent *event);
+
+  void changeAlphaGradients();
+
+  void computeMapFromPoints(
+    std::map< unsigned int, unsigned int>& iMap, const QPolygonF& iPoints);
+  void computePointsFromMap(
+    const std::map< unsigned int, unsigned int>& iMap, QPolygonF& iPoints);
+
   GoTransferFunctionWidget *m_red_shade;
   GoTransferFunctionWidget *m_green_shade;
   GoTransferFunctionWidget *m_blue_shade;

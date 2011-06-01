@@ -246,7 +246,7 @@ bool HoverPoints::eventFilter(QObject *object, QEvent *event)
                 movePoint(i, QPointF(p.x() * stretch_x, p.y() * stretch_y), false);
             }
 
-            firePointChange();
+            //firePointChange();
             break;
         }
 
