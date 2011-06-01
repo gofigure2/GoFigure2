@@ -170,15 +170,19 @@ AddPoints( const std::vector< std::map< unsigned int, unsigned int> >& iRGBA)
   std::map< unsigned int, unsigned int>::const_iterator it0;
   std::map< unsigned int, unsigned int>::const_iterator it255;
 
+  qreal width = m_red_shade->width();
+  qreal height = m_red_shade->height();
+
   //red
   QPolygonF redPoints;
   it0 = iRGBA[0].begin();
   it255 = iRGBA[0].end();
 
+  // check x and y
   while(it0!=it255)
     {
-    redPoints << QPointF((qreal)(it0->first)*(m_red_shade->width()-1)/255,
-                         (m_red_shade->height()-1)*(1-(qreal)(it0->second)/255));
+    redPoints << QPointF((qreal)(it0->first)*width/255,
+                         height*(1-(qreal)(it0->second)/255));
     ++it0;
     }
 
@@ -191,8 +195,8 @@ AddPoints( const std::vector< std::map< unsigned int, unsigned int> >& iRGBA)
 
   while(it0!=it255)
     {
-    greenPoints << QPointF((qreal)(it0->first)*(m_green_shade->width()-1)/255,
-                         (m_green_shade->height()-1)*(1-(qreal)(it0->second)/255));
+    greenPoints << QPointF((qreal)(it0->first)*width/255,
+                         height*(1-(qreal)(it0->second)/255));
     ++it0;
     }
 
@@ -205,8 +209,8 @@ AddPoints( const std::vector< std::map< unsigned int, unsigned int> >& iRGBA)
 
   while(it0!=it255)
     {
-    bluePoints << QPointF((qreal)(it0->first)*(m_blue_shade->width()-1)/255,
-                         (m_blue_shade->height()-1)*(1-(qreal)(it0->second)/255));
+    bluePoints << QPointF((qreal)(it0->first)*width/255,
+                         height*(1-(qreal)(it0->second)/255));
     ++it0;
     }
 
@@ -219,8 +223,8 @@ AddPoints( const std::vector< std::map< unsigned int, unsigned int> >& iRGBA)
 
   while(it0!=it255)
     {
-    alphaPoints << QPointF((qreal)(it0->first)*(m_alpha_shade->width()-1)/255,
-                         (m_alpha_shade->height()-1)*(1-(qreal)(it0->second)/255));
+    alphaPoints << QPointF((qreal)(it0->first)*width/255,
+                         height*(1-(qreal)(it0->second)/255));
     ++it0;
     }
 
@@ -340,8 +344,8 @@ savePoints()
   std::vector< std::map< unsigned int, unsigned int> > pointsVector;
   pointsVector.resize(4);
 
-  qreal width = m_red_shade->width() - 1;
-  qreal height = m_red_shade->height() - 1;
+  qreal width = m_red_shade->width();
+  qreal height = m_red_shade->height();
 
   // RED ------------------------------
   QPolygonF redPoints = m_red_shade->points();
