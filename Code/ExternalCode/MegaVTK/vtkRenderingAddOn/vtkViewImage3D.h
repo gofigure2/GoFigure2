@@ -173,7 +173,8 @@ public:
   /*
    * \brief Set volume rendering on
    */
-  void SetVolumeRenderingOn(vtkPiecewiseFunction* iOpacity);
+  void SetVolumeRenderingOn(std::vector<vtkImageData*> iImages,
+                            std::vector<vtkPiecewiseFunction*> iOpacities);
 
   /*
    * \brief Set volume rendering off
@@ -285,6 +286,7 @@ protected:
   vtkVolumeProperty *VolumeProperty;
   // volume actor
   vtkVolume *VolumeActor;
+  std::vector<vtkVolume*> m_VolumeActors;
   // image 3D cropping box callback
   vtkImage3DCroppingBoxCallback *Callback;
 

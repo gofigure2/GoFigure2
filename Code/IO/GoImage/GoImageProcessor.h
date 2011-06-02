@@ -257,6 +257,8 @@ public:
   vtkSmartPointer<vtkPiecewiseFunction>
   getOpacityTransferFunction(const std::string& iIndex) const;
 
+  void updateOpacityTransferFunction();
+
   std::vector<vtkPiecewiseFunction*> getOpacityTransferFunctions();
 
   std::vector<double> getColor(const unsigned int& iIndex) const;

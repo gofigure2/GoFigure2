@@ -216,7 +216,9 @@ public slots:
   /**
    * \brief Creates a box in 3d view to allow multiple meshes selection
    */
-  void EnableVolumeRendering(bool iValue, vtkPiecewiseFunction* iOpacity);
+  void EnableVolumeRendering(bool iValue,
+                             std::vector<vtkImageData*> iImages,
+                             std::vector<vtkPiecewiseFunction*> iOpacities);
 
   void UpdateCurrentActorSelection(vtkObject *caller);
 

@@ -208,23 +208,21 @@ vtkSmartPointer<vtkPiecewiseFunction>
 GoImageProcessor::
 getOpacityTransferFunction() const
 {
+  return m_OpacityTF;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+GoImageProcessor::
+updateOpacityTransferFunction()
+{
   m_OpacityTF->Initialize();
 
   GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator it =
       m_MegaImageContainer.get< Visibility >().find(true);
   GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator init_it;
   init_it = it;
-
-  std::vector<vtkPiecewiseFunction*> allFunctions;
-/*
-  while(it!=m_MegaImageContainer.get< Visibility >().end())
-    {
-      // not necessary
-    //vtkPiecewiseFunction* test = vtkPiecewiseFunction::New();
-    //test->DeepCopy(it->OpacityTF);
-    allFunctions.push_back(test);
-    ++it;
-    }*/
 
   for(int i = 0; i<256; ++i)
     {
@@ -244,8 +242,6 @@ getOpacityTransferFunction() const
   m_OpacityTF->SetClamping(1);
   m_OpacityTF->ClampingOn();
   m_OpacityTF->Update();
-
-  return m_OpacityTF;
 }
 //--------------------------------------------------------------------------
 

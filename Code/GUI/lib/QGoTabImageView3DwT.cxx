@@ -1435,6 +1435,8 @@ QGoTabImageView3DwT::SetLSMReader(vtkLSMReader *iReader, const int & iTimePoint)
   m_TCoord = iTimePoint;
   // update image processor
   m_ImageProcessor->initTimePoint(m_TCoord);
+  // update opacity TF
+  m_ImageProcessor->updateOpacityTransferFunction();
   //update images
   UpdateImage();
   // update actors
@@ -1478,6 +1480,8 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
   m_TCoord = iTimePoint;
   // update image processor
   m_ImageProcessor->initTimePoint(m_TCoord);
+  // update opacity TF
+  m_ImageProcessor->updateOpacityTransferFunction();
   //update images
   UpdateImage();
   // update actors
@@ -3192,6 +3196,7 @@ openTransferFunctionEditor(QString iName)
 void
 QGoTabImageView3DwT::updateSlot()
 {
+  //m_ImageProcessor->updateOpacityTransferFunction();
   UpdateImage();
   Update();
 }
@@ -3212,5 +3217,6 @@ QGoTabImageView3DwT::
 EnableVolumeRendering(bool iEnable)
 {
   m_ImageView->EnableVolumeRendering(iEnable,
-                                     m_ImageProcessor->getOpacityTransferFunction());
+                                     m_ImageProcessor->getColoredImages(),
+                                     m_ImageProcessor->getOpacityTransferFunctions());
 }

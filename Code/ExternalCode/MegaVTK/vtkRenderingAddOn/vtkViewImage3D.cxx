@@ -377,7 +377,11 @@ void vtkViewImage3D::Render()
  */
 void vtkViewImage3D::SetVolumeRenderingOff()
 {
-  this->VolumeActor->SetVisibility (false);
+  //this->VolumeActor->SetVisibility (false);
+  for(int i=0; i<m_VolumeActors.size(); ++i)
+  {
+    m_VolumeActors[i]->SetVisibility(false);
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -386,7 +390,8 @@ void vtkViewImage3D::SetVolumeRenderingOff()
 /**
  *
  */
-void vtkViewImage3D::SetVolumeRenderingOn(vtkPiecewiseFunction* iOpacity)
+void vtkViewImage3D::SetVolumeRenderingOn(std::vector<vtkImageData*> iImages,
+                                          std::vector<vtkPiecewiseFunction*> iOpacities)
 {
   int *size = this->GetInput()->GetDimensions();
 
@@ -398,37 +403,42 @@ void vtkViewImage3D::SetVolumeRenderingOn(vtkPiecewiseFunction* iOpacity)
     return;
     }
 
-  // check if RGB already
-  // or create RGB using LUT if single channel input
-  int NbOfComp = this->GetInput()->GetNumberOfScalarComponents();
+  m_VolumeActors.clear();
 
-  vtkSmartPointer<vtkImageData> image;
+  for(int  j=0; j<iImages.size();++j)
+  {
+    // MAPPER
+    // crop volume into 27? small regions
+    // for efficiency?
+    vtkSmartVolumeMapper* smartVolumeMapper3D = vtkSmartVolumeMapper::New();
+    smartVolumeMapper3D->CroppingOn();
+    smartVolumeMapper3D->SetCroppingRegionFlagsToSubVolume();
+    smartVolumeMapper3D->SetCroppingRegionFlags (0x7ffdfff);
 
-  if ( NbOfComp > 1 && NbOfComp != 4 && NbOfComp < 5 )
-    {
-    image = this->GetInput();
-    }
-  else
-    {
-    // color single channel image with current LUT
-    vtkImageData* temp = this->GetInput();
-    vtkSmartPointer<vtkImageMapToColors> map =
-        vtkSmartPointer<vtkImageMapToColors>::New();
-    map->SetLookupTable(this->LookupTable);
-    map->SetInput(temp);
-    map->SetOutputFormatToRGB();
-    map->Update();
-    image = map->GetOutput();
-    }
+    // PROPERTY
+    vtkVolumeProperty* volumeProperty = vtkVolumeProperty::New();
+    volumeProperty->SetScalarOpacity(0, iOpacities[j]);
+    volumeProperty->SetScalarOpacity(1, iOpacities[j]);
+    volumeProperty->SetScalarOpacity(2, iOpacities[j]);
+      // one dataset-1 tf, not 1 tf for each component
+    volumeProperty->IndependentComponentsOff();
+    volumeProperty->SetInterpolationTypeToLinear();
+    volumeProperty->ShadeOff();
 
-  this->SetupVolumeRendering(iOpacity);
+    // ACTOR
+    vtkVolume* volumeActor = vtkVolume::New();
+    volumeActor->SetProperty (volumeProperty);
+    volumeActor->SetMapper (smartVolumeMapper3D);
+    volumeActor->PickableOff();
+    volumeActor->DragableOff();
+    m_VolumeActors.push_back(volumeActor);
 
   // get the index of the first non-NULL component
   int i(0);
   for(i=0; i<3;++i)
     {
     double range[2];
-    image->GetPointData()->GetScalars()->GetRange(range,i);
+    iImages[j]->GetPointData()->GetScalars()->GetRange(range,i);
     if(range[1]>0)
       {
       break;
@@ -440,20 +450,23 @@ void vtkViewImage3D::SetVolumeRenderingOn(vtkPiecewiseFunction* iOpacity)
   // create a "FAKE" 4th alpha channel...??
   vtkSmartPointer< vtkImageExtractComponents > extComp =
     vtkSmartPointer< vtkImageExtractComponents >::New();
-  extComp->SetInput(image.GetPointer());
+  extComp->SetInput(iImages[j]);
   extComp->SetComponents(i);
   extComp->Update();
 
   vtkSmartPointer< vtkImageAppendComponents > addComp =
     vtkSmartPointer< vtkImageAppendComponents >::New();
-  addComp->AddInput(image);
+  addComp->AddInput(iImages[j]);
   addComp->AddInput( extComp->GetOutput() );
   addComp->Update();
 
   // add output to mapper
-  this->SmartVolumeMapper3D->SetInput( addComp->GetOutput() );
+  smartVolumeMapper3D->SetInput( addComp->GetOutput() );
 
-  this->VolumeActor->SetVisibility (true);
+  this->Renderer->AddViewProp (volumeActor);
+
+  volumeActor->SetVisibility (true);
+  }
 }
 
 //----------------------------------------------------------------------------
