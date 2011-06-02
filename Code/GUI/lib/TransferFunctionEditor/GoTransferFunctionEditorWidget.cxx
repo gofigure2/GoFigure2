@@ -544,7 +544,6 @@ void
 GoTransferFunctionEditorWidget::
 updateOpacityTF()
 {
-  qDebug() << "Update TF";
   // all shades have same width and height
   qreal width = m_red_shade->width();
   qreal height = m_red_shade->height();
@@ -559,6 +558,6 @@ updateOpacityTF()
     // y 0 to 1
     double y = (1-(m_alpha_shade->points().at(i).y())/height);
     m_OpacityTF->AddPoint(x, y);
-    qDebug() << "new opacity: " << x << " - " << y;
     }
+  m_OpacityTF->Modified();
 }

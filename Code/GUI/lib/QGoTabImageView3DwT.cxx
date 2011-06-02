@@ -1639,13 +1639,8 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
 
   if (!m_ImageProcessor->getDopplerMode())
     {
-    //std::vector<std::string> visibility = m_ImageProcessor->getVisibilityVector();
     // update image processor
     m_ImageProcessor->setTimePoint(m_TCoord);
-    // update visibility
-    //m_ImageProcessor->setVisibilityVector(visibility);
-    //update images
-
     }
   else
     {
@@ -1658,6 +1653,8 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
     }
 
   UpdateImage();
+
+  EnableVolumeRendering(this->m_ViewActions.at(13)->isChecked());
 
   // for the trace widget, navigation widget and table widget
   emit TimePointChanged(m_TCoord);
@@ -3196,11 +3193,12 @@ openTransferFunctionEditor(QString iName)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+// color changed
 void
 QGoTabImageView3DwT::updateSlot()
 {
-  //m_ImageProcessor->updateOpacityTransferFunction();
   UpdateImage();
+  EnableVolumeRendering(this->m_ViewActions.at(13)->isChecked());
   Update();
 }
 //-------------------------------------------------------------------------
@@ -3221,6 +3219,9 @@ EnableVolumeRendering(bool iEnable)
 {
   if(iEnable)
     {
+    //clean containers
+    m_ImageView->DisableVolumeRendering();
+    // volume rendering
     m_ImageView->EnableVolumeRendering(m_ImageProcessor->getColoredImages(),
                                        m_ImageProcessor->getOpacityTransferFunctions());
     }

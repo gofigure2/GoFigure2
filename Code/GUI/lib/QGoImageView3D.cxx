@@ -1280,6 +1280,7 @@ EnableVolumeRendering(const std::vector<vtkImageData*>& iImages,
                       const std::vector<vtkPiecewiseFunction*>& iOpacities)
 {
   m_View3D->SetVolumeRenderingOn(iImages, iOpacities);
+  m_View3D->Render();
 }
 //---------------------------------------------------------------------------
 

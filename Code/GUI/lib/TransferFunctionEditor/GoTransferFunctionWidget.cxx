@@ -169,6 +169,7 @@ UpdateLookupTable(vtkLookupTable* iLUT)
     {
     QColor color(m_shade.pixel(i*(m_shade.width()-1)/iLUT->GetNumberOfTableValues(), 0));
     iLUT->SetTableValue(i, color.redF(), color.greenF(), color.blueF());
+    iLUT->Modified();
     }
 }
 //-------------------------------------------------------------------------
