@@ -257,6 +257,8 @@ public:
   vtkSmartPointer<vtkPiecewiseFunction>
   getOpacityTransferFunction(const std::string& iIndex) const;
 
+  std::vector<vtkPiecewiseFunction*> getOpacityTransferFunctions();
+
   std::vector<double> getColor(const unsigned int& iIndex) const;
 
   std::vector<double> getColor(const std::string& iIndex) const;
@@ -302,6 +304,8 @@ public:
   void setNameChannel(const unsigned int& iIndex, const std::string& iName);
 
   std::string getNameChannel(const unsigned int& iIndex);
+
+  std::vector<vtkImageData*> getColoredImages();
 
   template< class PixelType, const unsigned int VImageDimension >
   typename itk::Image< PixelType, VImageDimension >::Pointer
@@ -405,6 +409,8 @@ private:
       }
     return *this;
   }
+
+  vtkSmartPointer<vtkPiecewiseFunction> m_OpacityTF;
 
 };
 

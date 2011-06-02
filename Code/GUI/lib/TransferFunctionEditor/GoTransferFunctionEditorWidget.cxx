@@ -19,7 +19,8 @@
 
 //-------------------------------------------------------------------------
 
-GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent, QPolygonF iPoints)
+GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
+                                                               QString iChannel)
     : QWidget(parent )
 {
   QVBoxLayout *vbox = new QVBoxLayout(this);
@@ -36,6 +37,8 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent, 
         GoTransferFunctionWidget::ARGBShade, this);
 
   m_LUT = NULL;
+
+  m_Channel = iChannel;
 
   QPushButton *presetLUTPushButton = new QPushButton("Preset LUT", this);
   presetLUTPushButton->setEnabled(false);
@@ -54,6 +57,13 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent, 
   layout->addWidget(okPushButton);
   layout->addWidget(resetLUTPushButton);
 
+  QHBoxLayout *nameLayout = new QHBoxLayout;
+  QLabel* channelName = new QLabel("Channel:");
+  QLabel* channelNameText = new QLabel(iChannel);
+  nameLayout->addWidget(channelName);
+  nameLayout->addWidget(channelNameText);
+
+  vbox->addLayout(nameLayout);
   vbox->addWidget(m_red_shade);
   vbox->addWidget(m_green_shade);
   vbox->addWidget(m_blue_shade);

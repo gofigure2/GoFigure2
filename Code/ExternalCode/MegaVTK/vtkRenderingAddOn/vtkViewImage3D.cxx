@@ -271,17 +271,19 @@ void vtkViewImage3D::SetupVolumeRendering(vtkPiecewiseFunction* iOpacity)
   //vtkPiecewiseFunction* opacityfunction = vtkPiecewiseFunction::New();
  // opacityfunction->AddPoint (0, 0.0);
  // opacityfunction->AddPoint (255, 1.0);
-  this->VolumeProperty->SetScalarOpacity(iOpacity);
+  this->VolumeProperty->SetScalarOpacity(0, iOpacity);
+  this->VolumeProperty->SetScalarOpacity(1, iOpacity);
+  this->VolumeProperty->SetScalarOpacity(2, iOpacity);
   //opacityfunction->Delete();
 
   // one dataset-1 tf, not 1 tf for each component
   this->VolumeProperty->IndependentComponentsOff();
   this->VolumeProperty->SetInterpolationTypeToLinear();
   this->VolumeProperty->ShadeOff();
-  this->VolumeProperty->SetDiffuse (0.9);
+ /* this->VolumeProperty->SetDiffuse (0.9);
   this->VolumeProperty->SetAmbient (0.2);
   this->VolumeProperty->SetSpecular (0.3);
-  this->VolumeProperty->SetSpecularPower (15.0);
+  this->VolumeProperty->SetSpecularPower (15.0);*/
 
   // ACTOR
   this->VolumeActor->SetProperty (this->VolumeProperty);

@@ -59,6 +59,7 @@ GoImageProcessor::GoImageProcessor():m_Output(NULL),
   m_DopplerMode(false), m_DopplerStep(1), m_DopplerChannel(0)
 {
   m_DopplerTime = new int[3];
+  m_OpacityTF =vtkSmartPointer<vtkPiecewiseFunction>::New();
 }
 //--------------------------------------------------------------------------
 
@@ -68,7 +69,7 @@ GoImageProcessor::GoImageProcessor(const GoImageProcessor & iE):
   m_BoundsTime(iE.m_BoundsTime), m_BoundsChannel(iE.m_BoundsChannel),
   m_Extent(iE.m_Extent),  m_DopplerMode(iE.m_DopplerMode),
   m_DopplerStep(iE.m_DopplerStep), m_DopplerTime(iE.m_DopplerTime),
-  m_DopplerChannel(iE.m_DopplerChannel)
+  m_DopplerChannel(iE.m_DopplerChannel), m_OpacityTF(iE.m_OpacityTF)
 {
 }
 //--------------------------------------------------------------------------
@@ -207,15 +208,44 @@ vtkSmartPointer<vtkPiecewiseFunction>
 GoImageProcessor::
 getOpacityTransferFunction() const
 {
+  m_OpacityTF->Initialize();
+
   GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator it =
       m_MegaImageContainer.get< Visibility >().find(true);
+  GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator init_it;
+  init_it = it;
 
-  if(it!=m_MegaImageContainer.get< Visibility >().end())
+  std::vector<vtkPiecewiseFunction*> allFunctions;
+/*
+  while(it!=m_MegaImageContainer.get< Visibility >().end())
     {
-    return it->OpacityTF;
+      // not necessary
+    //vtkPiecewiseFunction* test = vtkPiecewiseFunction::New();
+    //test->DeepCopy(it->OpacityTF);
+    allFunctions.push_back(test);
+    ++it;
+    }*/
+
+  for(int i = 0; i<256; ++i)
+    {
+    double y(0);
+
+   // for(int j = 0; j<allFunctions.size(); ++j)
+    while(it!=m_MegaImageContainer.get< Visibility >().end())
+      {
+        y += it->OpacityTF->GetValue(i);
+        ++it;
+      }
+    //reinit iterator
+    it = init_it;
+    m_OpacityTF->AddPoint(i, y);
     }
 
-  return NULL;
+  m_OpacityTF->SetClamping(1);
+  m_OpacityTF->ClampingOn();
+  m_OpacityTF->Update();
+
+  return m_OpacityTF;
 }
 //--------------------------------------------------------------------------
 
@@ -338,6 +368,50 @@ getImageBW()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+std::vector<vtkImageData*>
+GoImageProcessor::
+getColoredImages()
+{
+  std::vector<vtkImageData*> images;
+
+  GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator it =
+      m_MegaImageContainer.get< Visibility >().find(true);
+
+  while(it!=m_MegaImageContainer.get< Visibility >().end())
+    {
+    vtkImageData* image = vtkImageData::New();
+    image->DeepCopy(colorImage(it->Image, it->LUT));
+    images.push_back(image);
+    ++it;
+    }
+
+  return images;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::vector<vtkPiecewiseFunction*>
+GoImageProcessor::
+getOpacityTransferFunctions()
+{
+  std::vector<vtkPiecewiseFunction*> opacityTFs;
+
+  GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator it =
+      m_MegaImageContainer.get< Visibility >().find(true);
+
+  while(it!=m_MegaImageContainer.get< Visibility >().end())
+    {
+    vtkPiecewiseFunction* tf = vtkPiecewiseFunction::New();
+    tf->DeepCopy(it->OpacityTF);
+    opacityTFs.push_back(tf);
+    ++it;
+    }
+
+  return opacityTFs;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 vtkSmartPointer<vtkImageData>
 GoImageProcessor::
 getAllImages()
@@ -352,6 +426,9 @@ getAllImages()
       m_MegaImageContainer.get< Visibility >().find(true);
 
   vtkIdType i(0);
+
+  std::cout << __FILE__ << " start coloring " << std::endl;
+
   while(it!=m_MegaImageContainer.get< Visibility >().end())
     {
     blendedImage->AddInput(colorImage(it->Image, it->LUT));
@@ -359,6 +436,8 @@ getAllImages()
     ++it;
     }
   blendedImage->Update();
+
+  std::cout << __FILE__ << " finish coloring " << std::endl;
 
   double rangeR[2];
   blendedImage->GetOutput()->GetPointData()->GetScalars()->GetRange(rangeR, 0);
@@ -376,6 +455,8 @@ getAllImages()
   scale->SetOutputScalarTypeToUnsignedChar();
   scale->SetNumberOfThreads(VTK_MAX_THREADS);
   scale->Update();
+
+  std::cout << __FILE__ << " finish rescaling" << std::endl;
 
   return scale->GetOutput();
 }

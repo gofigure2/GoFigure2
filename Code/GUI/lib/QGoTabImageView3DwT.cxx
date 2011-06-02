@@ -3157,32 +3157,9 @@ void
 QGoTabImageView3DwT::
 openTransferFunctionEditor(QString iName)
 {
-  // get related TF
-  //vtkLookupTable* lut = m_ImageProcessor->getLookuptable(iName.toStdString());
-  // would need LUT points rather than LUT...!
-  // at least 2 points
-  // x, r, g, b, a
-  /*double first[5] = {0, 0, 0, 0, 255};
-
-  double last[5] = {1, 255, 0,  0, 255};
-
-  std::vector<double[5]> colors;
-  colors.push_back(first);
-  colors.push_back(second);
-*/
-  QPolygonF points;
-  //points += first;
-  //points += last;
-
-  // sort point...?
-
-  // get related color
-
-  // update editor
-
   // create editor
   GoTransferFunctionEditorWidget* editor =
-      new GoTransferFunctionEditorWidget(NULL, points);
+      new GoTransferFunctionEditorWidget(NULL, iName );
   // connect signals
 
   QObject::connect( editor,
@@ -3208,8 +3185,6 @@ openTransferFunctionEditor(QString iName)
         m_ImageProcessor->getOpacityTransferFunction(iName.toStdString()));
   // add histogram - should not recalculate all the time...
   editor->AddHistogram(m_ImageProcessor->getHistogram(iName.toStdString()));
-  // add a name - to send signal and update good points when ok clicked
-  editor->AddName(iName);
 }
 //-------------------------------------------------------------------------
 
