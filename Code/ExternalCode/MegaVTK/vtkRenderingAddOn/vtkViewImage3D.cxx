@@ -251,6 +251,20 @@ vtkViewImage3D::~vtkViewImage3D()
 
   this->Command->Delete();
   this->InteractorStyle3D->Delete();
+
+  //
+  for(int i=0; i<m_VolumeActors.size(); ++i)
+    {
+    m_VolumeActors[i]->Delete();
+    m_VolumeMappers[i]->Delete();
+    m_VolumeProperties[i]->Delete();
+    m_Images[i]->Delete();
+    }
+
+  m_VolumeActors.clear();
+  m_VolumeMappers.clear();
+  m_VolumeProperties.clear();
+  m_Images.clear();
 }
 
 //----------------------------------------------------------------------------
@@ -382,6 +396,21 @@ void vtkViewImage3D::SetVolumeRenderingOff()
   {
     m_VolumeActors[i]->SetVisibility(false);
   }
+
+  //delete everything...
+  for(int i=0; i<m_VolumeActors.size(); ++i)
+    {
+    m_VolumeActors[i]->Delete();
+    m_VolumeMappers[i]->Delete();
+    m_VolumeProperties[i]->Delete();
+    m_Images[i]->Delete();
+    }
+
+  m_VolumeActors.clear();
+  m_VolumeMappers.clear();
+  m_VolumeProperties.clear();
+  m_Images.clear();
+
 }
 
 //----------------------------------------------------------------------------
@@ -390,8 +419,8 @@ void vtkViewImage3D::SetVolumeRenderingOff()
 /**
  *
  */
-void vtkViewImage3D::SetVolumeRenderingOn(std::vector<vtkImageData*> iImages,
-                                          std::vector<vtkPiecewiseFunction*> iOpacities)
+void vtkViewImage3D::SetVolumeRenderingOn(const std::vector<vtkImageData*>& iImages,
+                                          const std::vector<vtkPiecewiseFunction*>& iOpacities)
 {
   int *size = this->GetInput()->GetDimensions();
 
@@ -403,7 +432,7 @@ void vtkViewImage3D::SetVolumeRenderingOn(std::vector<vtkImageData*> iImages,
     return;
     }
 
-  m_VolumeActors.clear();
+  m_Images = iImages;
 
   for(int  j=0; j<iImages.size();++j)
   {
@@ -414,6 +443,7 @@ void vtkViewImage3D::SetVolumeRenderingOn(std::vector<vtkImageData*> iImages,
     smartVolumeMapper3D->CroppingOn();
     smartVolumeMapper3D->SetCroppingRegionFlagsToSubVolume();
     smartVolumeMapper3D->SetCroppingRegionFlags (0x7ffdfff);
+    m_VolumeMappers.push_back(smartVolumeMapper3D);
 
     // PROPERTY
     vtkVolumeProperty* volumeProperty = vtkVolumeProperty::New();
@@ -423,7 +453,9 @@ void vtkViewImage3D::SetVolumeRenderingOn(std::vector<vtkImageData*> iImages,
       // one dataset-1 tf, not 1 tf for each component
     volumeProperty->IndependentComponentsOff();
     volumeProperty->SetInterpolationTypeToLinear();
+    //volumeProperty->SetScalarOpacityUnitDistance(1.0);
     volumeProperty->ShadeOff();
+    m_VolumeProperties.push_back(volumeProperty);
 
     // ACTOR
     vtkVolume* volumeActor = vtkVolume::New();

@@ -375,6 +375,7 @@ getColoredImages()
 
   while(it!=m_MegaImageContainer.get< Visibility >().end())
     {
+    // requiered deepcopy....
     vtkImageData* image = vtkImageData::New();
     image->DeepCopy(colorImage(it->Image, it->LUT));
     images.push_back(image);
@@ -397,9 +398,7 @@ getOpacityTransferFunctions()
 
   while(it!=m_MegaImageContainer.get< Visibility >().end())
     {
-    vtkPiecewiseFunction* tf = vtkPiecewiseFunction::New();
-    tf->DeepCopy(it->OpacityTF);
-    opacityTFs.push_back(tf);
+    opacityTFs.push_back(it->OpacityTF);
     ++it;
     }
 

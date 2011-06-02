@@ -3152,6 +3152,9 @@ visibilityChanged(QString iName, bool iVisibility)
 {
   m_ImageProcessor->visibilityChanged(iName.toStdString(), iVisibility);
   UpdateImage();
+  //if we are in volume rendering
+  EnableVolumeRendering(this->m_ViewActions.at(13)->isChecked());
+  // update visu
   Update();
 }
 //-------------------------------------------------------------------------
@@ -3216,7 +3219,13 @@ void
 QGoTabImageView3DwT::
 EnableVolumeRendering(bool iEnable)
 {
-  m_ImageView->EnableVolumeRendering(iEnable,
-                                     m_ImageProcessor->getColoredImages(),
-                                     m_ImageProcessor->getOpacityTransferFunctions());
+  if(iEnable)
+    {
+    m_ImageView->EnableVolumeRendering(m_ImageProcessor->getColoredImages(),
+                                       m_ImageProcessor->getOpacityTransferFunctions());
+    }
+  else
+    {
+    m_ImageView->DisableVolumeRendering();
+    }
 }

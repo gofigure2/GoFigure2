@@ -559,5 +559,6 @@ updateOpacityTF()
     // y 0 to 1
     double y = (1-(m_alpha_shade->points().at(i).y())/height);
     m_OpacityTF->AddPoint(x, y);
+    qDebug() << "new opacity: " << x << " - " << y;
     }
 }

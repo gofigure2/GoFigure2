@@ -1275,22 +1275,21 @@ QGoImageView3D::InitializePlaneWidget()
 /// \todo Add button to enable/disable tri planar rendering
 //-------------------------------------------------------------------------
 void
-QGoImageView3D::EnableVolumeRendering(bool iValue,
-                                      std::vector<vtkImageData*> iImages,
-                                      std::vector<vtkPiecewiseFunction*> iOpacities)
+QGoImageView3D::
+EnableVolumeRendering(const std::vector<vtkImageData*>& iImages,
+                      const std::vector<vtkPiecewiseFunction*>& iOpacities)
 {
-  if ( iValue )
-    {
-    //m_View3D->SetTriPlanarRenderingOff();
-    m_View3D->SetVolumeRenderingOn(iImages, iOpacities);
-    }
-  else
-    {
-    //m_View3D->SetTriPlanarRenderingOn();
-    m_View3D->SetVolumeRenderingOff();
-    }
+  m_View3D->SetVolumeRenderingOn(iImages, iOpacities);
 }
+//---------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------
+void
+QGoImageView3D::
+DisableVolumeRendering()
+{
+  m_View3D->SetVolumeRenderingOff();
+}
 //---------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------
